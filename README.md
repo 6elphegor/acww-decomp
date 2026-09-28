@@ -55,6 +55,18 @@ Quirks:
 
 To check which compilers reproduce a source file's functions, run `python3 tools/compiler_search.py <file>`.
 
+## C++
+
+Parts of the game are C++, compiled with the ARM/Itanium C++ ABI:
+- Names are mangled Itanium-style (`_ZN12Unk_02050288C1Ev`). Rename a class's functions in `symbols.txt` to their
+  mangled names so that other code links against the compiled ones.
+- Vtables are `[0, 0, virtual functions...]` in `.data`, and objects point 8 bytes in. Give the vtable symbol an
+  explicit size, e.g. `_ZTV12Unk_02050288 kind:data(word[4])`, include its range in the file's `.data`, and write
+  references to it as `to:<vtable> add:0x8` in `relocs.txt`.
+- mwcc emits every constructor and destructor variant (C1, C2, D0, D1, D2); the linker dead-strips the unused ones, as
+  in the original build. Delinked code is kept through a `FORCE_ACTIVE` block, see `tools/force_active.py`.
+- Functions without known names can be declared `extern "C"` to keep their `func_*` symbols.
+
 ## Layout
 
 [`docs/layout.md`](docs/layout.md) describes where the game code, libraries and C++ files are, and how that was

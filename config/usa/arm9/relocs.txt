@@ -15461,15 +15461,15 @@ from:0x02050240 kind:load to:0x020ca494 module:main
 from:0x02050268 kind:load to:0x020ca558 module:main
 from:0x02050274 kind:load to:0x02050245 module:main
 from:0x02050284 kind:load to:0x020ca558 module:main
-from:0x02050290 kind:load to:0x020dba68 module:main
+from:0x02050290 kind:load to:0x020dba60 add:0x8 module:main
 from:0x0205029c kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x020502a8 kind:load to:0x020dba68 module:main
-from:0x020502b4 kind:load to:0x020dba68 module:main
+from:0x020502a8 kind:load to:0x020dba60 add:0x8 module:main
+from:0x020502b4 kind:load to:0x020dba60 add:0x8 module:main
 from:0x020502d0 kind:thumb_call_arm to:0x02133ef8 module:autoload(2)
-from:0x02050368 kind:load to:0x020dba68 module:main
+from:0x02050368 kind:load to:0x020dba60 add:0x8 module:main
 from:0x0205036c kind:load to:0x021c4910 module:autoload(3)
 from:0x02050388 kind:thumb_call_arm to:0x02133ef8 module:autoload(2)
-from:0x02050420 kind:load to:0x020dba68 module:main
+from:0x02050420 kind:load to:0x020dba60 add:0x8 module:main
 from:0x02050424 kind:load to:0x021c4910 module:autoload(3)
 from:0x02050436 kind:thumb_call_arm to:0x02100248 module:autoload(2)
 from:0x02050444 kind:thumb_call_arm to:0x02100260 module:autoload(2)
