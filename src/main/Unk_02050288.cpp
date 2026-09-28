@@ -2,6 +2,15 @@
 
 class Unk_02050288;
 
+struct Unk_02050288_FontInfo {
+    /* 0x00 */ u32 unk_00;
+    /* 0x04 */ u16 unk_04;
+};
+
+struct Unk_02050288_Font {
+    /* 0x00 */ Unk_02050288_FontInfo *unk_00;
+};
+
 typedef void (*Unk_02050288_LoadFunc)(void *src, u32 offset, u32 size);
 
 extern "C" {
@@ -12,8 +21,10 @@ void func_020e85fc(void *heap, void *ptr);
 void func_021145cc(void *ptr, u32 size);
 void func_02116048(void *src, u32 offset, u32 size);
 void func_020509dc(s32 arg0);
+u32 func_02050d9c(Unk_02050288_Font *font, u32 c);
+const u8 *func_02050d54(Unk_02050288_Font *font, u32 c);
 
-extern u8 data_021c4910[];
+extern Unk_02050288_Font data_021c4910;
 extern u8 data_021c48c4[];
 extern void *data_021c489c;
 extern u8 data_021c494c[];
@@ -35,6 +46,9 @@ public:
     Unk_02050288(u32 arg1, s32 arg2, s32 arg3);
     virtual ~Unk_02050288();
 
+    u32 func_020506cc();
+    void func_02050638();
+    void func_020505cc(u32 x);
     void func_02050510();
     BOOL func_020504f8();
     BOOL func_020504e0();
@@ -50,7 +64,7 @@ public:
     /* 0x1c */ s32 unk_1c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ u8 *unk_28;
+    /* 0x28 */ Unk_02050288_Font *unk_28;
     /* 0x2c */ u32 unk_2c;
     /* 0x30 */ u32 unk_30;
     /* 0x34 */ u32 unk_34;
@@ -82,6 +96,124 @@ public:
 };
 
 // mwcc 1.2 emits functions in reverse order, so they are defined here from highest to lowest address
+
+u32 Unk_02050288::func_020506cc() {
+    u32 glyphWidth;
+    const u8 *glyph;
+    u8 mask;
+    u8 fg;
+    u8 bg;
+    u32 width;
+    u32 row;
+    u32 x;
+    u32 pos;
+    u32 tile;
+    u32 index;
+    u32 bit;
+    u32 color;
+    BOOL drawBackground;
+    u8 *pixel;
+    u32 start = 0;
+
+    width = unk_28->unk_00->unk_04;
+    glyphWidth = func_02050d9c(unk_28, unk_64);
+    glyph = func_02050d54(unk_28, unk_64);
+    mask = 0x80;
+    pos = (unk_6c * width) >> 3;
+
+    drawBackground = TRUE;
+    if (!func_020504f8() && !func_020504e0()) {
+        drawBackground = FALSE;
+    }
+    fg = func_020504ac();
+    bg = func_02050478();
+
+    for (row = 0; row < 8; row++) {
+        for (x = start; x < width; x++) {
+            if (x < glyphWidth) {
+                bit = glyph[pos] & mask;
+                color = bit ? fg : bg;
+                if (bit || drawBackground) {
+                    u32 px = unk_68 + x;
+                    tile = px >> 3;
+                    index = (row * 8 + (px - tile * 8)) >> 1;
+                    if (tile < 0x20) {
+                        pixel = &data_021c494c[tile * 32] + index;
+                        if (px & 1) {
+                            *pixel &= ~0xf0;
+                            *pixel |= (u8)(color << 4);
+                        } else {
+                            *pixel &= ~0xf;
+                            *pixel |= (u8)color;
+                        }
+                    }
+                }
+            }
+            mask >>= 1;
+            if (mask == 0) {
+                mask = 0x80;
+                pos++;
+            }
+        }
+    }
+    return glyphWidth;
+}
+
+void Unk_02050288::func_02050638() {
+    u32 color;
+    u32 row;
+    u32 x;
+    u32 px;
+    u32 tile;
+    u32 index;
+    u8 *pixel;
+
+    if (func_020504f8() || func_020504e0()) {
+        color = func_02050478();
+        for (row = 0; row < 8; row++) {
+            for (x = 0; x < unk_34; x++) {
+                px = unk_68 + x;
+                tile = px >> 3;
+                index = (row * 8 + (px - tile * 8)) >> 1;
+                if (tile < 0x20) {
+                    pixel = &data_021c494c[tile * 32] + index;
+                    if (px & 1) {
+                        *pixel &= ~0xf0;
+                        *pixel |= (u8)(color << 4);
+                    } else {
+                        *pixel &= ~0xf;
+                        *pixel |= (u8)color;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Unk_02050288::func_020505cc(u32 x) {
+    u32 high;
+    u32 color;
+    u32 tile;
+    u32 index;
+    u8 *pixel;
+
+    color = func_020504ac();
+    high = color << 4;
+    for (; x < unk_68; x++) {
+        tile = x >> 3;
+        index = ((x - tile * 8) + 0x30) >> 1;
+        if (tile < 0x20) {
+            pixel = &data_021c494c[tile * 32] + index;
+            if (x & 1) {
+                *pixel &= ~0xf0;
+                *pixel |= (u8)high;
+            } else {
+                *pixel &= ~0xf;
+                *pixel |= (u8)color;
+            }
+        }
+    }
+}
 
 void Unk_02050288::func_02050510() {
     u32 size;
@@ -188,7 +320,7 @@ Unk_02050288::Unk_02050288(u32 arg1, s32 arg2, s32 arg3) {
     unk_1c = 0;
     unk_20 = arg2;
     unk_24 = arg3;
-    unk_28 = data_021c4910;
+    unk_28 = &data_021c4910;
     unk_2c = 2;
     unk_30 = 0;
     unk_34 = 1;
@@ -229,7 +361,7 @@ Unk_02050288::Unk_02050288(s32 arg1, s32 arg2, s32 arg3) {
     unk_1c = arg1;
     unk_20 = arg2;
     unk_24 = arg3;
-    unk_28 = data_021c4910;
+    unk_28 = &data_021c4910;
     unk_2c = 5;
     unk_30 = 0;
     unk_34 = 1;
