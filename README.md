@@ -52,6 +52,18 @@ Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of
 
 Quirks:
 - Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
+- A loop that tests at the top and branches back unconditionally is `for (;;) { ... if (!cond) break; ... }`;
+  `while` and `for` put the test at the bottom.
+- Local declaration order affects register allocation. If only registers differ, reorder declarations or add or
+  remove a temporary.
+- Flat two-word structs are copied with interleaved loads and stores; nested aggregates load both words first.
+- A compare whose result is unused comes from `else if (x != 0) { var = value_it_already_has; }`.
+- `if (fits) { ... } else { ...; break; }` and `if (!fits) { ...; break; }` lay out their blocks in different orders.
+- `*(p + n - 1)` and `p[n - 1]` compile differently, as do `a * b` and `size = a; size * b`.
+- A repeated expression inside a short-circuit condition may need to go into a temporary first.
+- Pure virtual slots are written as 0 in vtables.
+- Two vtable stores in a row in a constructor or destructor mean an intermediate class with an inline, empty
+  constructor or destructor.
 
 Tools for matching:
 - `python3 tools/asmdiff.py <file> <function>` compiles a file and diffs one function's disassembly against the
