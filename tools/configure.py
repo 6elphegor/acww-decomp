@@ -33,7 +33,6 @@ LD_FLAGS = " ".join([
     "-interworking",        # Enable ARM/Thumb interworking
     "-m Entry",             # Set entry function
     "-map closure,unused",  # Generate map file
-    "-nodead",              # Don't dead-strip, overlays are loaded by ID and may have no references
     "-msgstyle gcc",        # Use GCC-like messages (some IDEs will make file names clickable)
 ])
 DSD_OBJDIFF_ARGS = " ".join([
@@ -211,6 +210,12 @@ def main():
         n.newline()
 
         n.rule(
+            name="force_active",
+            command=f"{PYTHON} tools/force_active.py $in -o $out"
+        )
+        n.newline()
+
+        n.rule(
             name="rom_config",
             command=f"{DSD} rom config --elf $in --config $config_path"
         )
@@ -337,18 +342,28 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
     objects_file = str(project.arm9_objects_txt())
     delink_file = str(project.arm9_delink_yaml())
     elf_file = str(project.arm9_o())
+    # Linker script with FORCE_ACTIVE for delinked code, see tools/force_active.py
+    force_active_lcf_file = str(project.game_build / "arm9_force_active.lcf")
+    n.build(
+        inputs=[objects_file, lcf_file],
+        implicit=["tools/force_active.py", delink_file],
+        rule="force_active",
+        outputs=force_active_lcf_file,
+    )
+    n.newline()
+
     linker_implicit = [LD]
     if platform.system != "windows" and WINE == DEFAULT_WIBO_PATH:
         linker_implicit.append(WINE)
     n.build(
-        inputs=project.source_object_files() + [lcf_file, objects_file, delink_file],
+        inputs=project.source_object_files() + [force_active_lcf_file, objects_file, delink_file],
         implicit=linker_implicit,
         rule="mwld",
         outputs=elf_file,
         variables={
             "target_dir": project.game_build,
             "objects_file": objects_file,
-            "lcf_file": lcf_file,
+            "lcf_file": force_active_lcf_file,
         }
     )
     n.newline()
