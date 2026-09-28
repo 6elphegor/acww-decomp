@@ -17,5 +17,5 @@ src/main/unk_02050204.c:
 
 src/main/Unk_02050288.cpp:
     complete
-    .text       start:0x02050288 end:0x02050428
+    .text       start:0x02050288 end:0x020505cc
     .data       start:0x020dba60 end:0x020dba70
