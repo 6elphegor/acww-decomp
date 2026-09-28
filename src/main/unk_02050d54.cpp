@@ -1,32 +1,4 @@
-#include "types.h"
-
-struct Unk_02050288_FontInfo {
-    /* 0x00 */ u32 unk_00; // glyph count
-    /* 0x04 */ u16 unk_04; // cell width
-    /* 0x06 */ u16 unk_06; // cell height
-};
-
-struct Unk_02050288_Glyph {
-    /* 0x00 */ u16 unk_00; // character code
-    /* 0x02 */ u8 unk_02;  // width
-    /* 0x03 */ u8 unk_03;
-};
-
-struct Unk_02050288_Font {
-    /* 0x00 */ Unk_02050288_FontInfo *unk_00;
-    /* 0x04 */ Unk_02050288_Glyph *unk_04;
-    /* 0x08 */ u8 *unk_08; // 1bpp glyph bitmaps
-    /* 0x0c */ Unk_02050288_Font *unk_0c; // secondary font, for glyph indices with bit 31 set
-    /* 0x10 */ u8 unk_10;
-};
-
-// A byte buffer interface; callers use fixed-size implementations on the stack
-class StrBuf {
-public:
-    virtual ~StrBuf();
-    virtual u32 size();
-    virtual u8 *data();
-};
+#include "text/Unk_02050288.h"
 
 extern "C" {
 void func_020e8558(void *ptr);
