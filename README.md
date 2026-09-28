@@ -41,10 +41,14 @@ BIOS from your own DS, place it at `arm7_bios.bin` and rerun `configure.py` to h
 
 ## Compiler
 
-The game was built with the Metrowerks CodeWarrior for DS 1.2 series (`mwccarm` internal version 2.0). 2.0 and DSi
-compilers don't match, and 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's
-`pop {r3}; bx r3`, leaving 1.2/b56, base, sp2 and sp2p3. `configure.py` uses `1.2/sp2p3` until a function tells
-these apart. Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of the game are C++.
+The game was built with Metrowerks CodeWarrior for DS 1.2 (`mwccarm` internal version 2.0 build 72):
+- 2.0 and DSi compilers don't match.
+- 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's `pop {r3}; bx r3`.
+- 558 of the game's 563 Thumb switch jump tables use a dispatch sequence that only 1.2/b56 and 1.2/base generate.
+  The other 5 are in overlay 65, which uses the 1.2/sp2p3 form and was likely built separately.
+- b56 and base haven't been told apart; `configure.py` uses `1.2/base`.
+
+Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of the game are C++.
 
 Quirks:
 - Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
