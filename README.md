@@ -53,7 +53,10 @@ Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of
 Quirks:
 - Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
 
-To check which compilers reproduce a source file's functions, run `python3 tools/compiler_search.py <file>`.
+Tools for matching:
+- `python3 tools/asmdiff.py <file> <function>` compiles a file and diffs one function's disassembly against the
+  original.
+- `python3 tools/compiler_search.py <file>` checks which compiler versions reproduce each function in a file.
 
 ## C++
 
