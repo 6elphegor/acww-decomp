@@ -6,6 +6,7 @@
 #
 # Usage:
 #   python3 tools/asmdiff.py src/main/Unk_02050288.cpp _ZN12Unk_02050288C2Eiii
+#   python3 tools/asmdiff.py scratch.cpp _ZN12Unk_0205028813func_020507d8Ev --original func_020507d8
 ###
 
 import argparse
@@ -41,16 +42,18 @@ def disassemble(code: bytes, thumb: bool, address: int) -> list[str]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Diffs a compiled function against the original")
     parser.add_argument("source", type=Path)
-    parser.add_argument("function", help="Symbol name, as in symbols.txt")
+    parser.add_argument("function", help="Symbol name in the compiled object")
+    parser.add_argument("--original", help="Symbol name in symbols.txt, if different from the compiled one")
     parser.add_argument("--flags", default=CC_FLAGS, help="Compiler flags, defaults to the project's flags")
     parser.add_argument("--version", default=MWCC_VERSION, help="Compiler version, defaults to the project's")
     args = parser.parse_args()
 
+    original_name = args.original or args.function
     symbols = load_symbols()
-    if args.function not in symbols:
-        parser.error(f"{args.function} not found in symbols.txt")
-    address, size = symbols[args.function]
-    original = original_code(args.function, address, size, load_modules())
+    if original_name not in symbols:
+        parser.error(f"{original_name} not found in symbols.txt")
+    address, size = symbols[original_name]
+    original = original_code(original_name, address, size, load_modules())
 
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "out.o"
@@ -68,11 +71,11 @@ def main() -> None:
                 compiled[i] = original[i]
 
     thumb = "thumb" in next(line for p in config_path.rglob("symbols.txt") for line in p.read_text().splitlines()
-                            if line.startswith(args.function + " "))
+                            if line.startswith(original_name + " "))
     diff = list(difflib.unified_diff(disassemble(original, thumb, address), disassemble(compiled, thumb, address),
                                      "original", "compiled", lineterm="", n=3))
     if not diff:
-        print(f"{args.function}: match")
+        print(f"{original_name}: match")
     else:
         print("\n".join(diff))
 
