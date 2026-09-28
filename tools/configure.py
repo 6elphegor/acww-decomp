@@ -7,6 +7,7 @@ import sys
 
 import ninja_syntax
 from get_platform import get_platform
+from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
 
 
 DEFAULT_WIBO_PATH = "./wibo"
@@ -26,27 +27,6 @@ GAME = "acww"
 DSD_VERSION = 'v0.12.1'
 WIBO_VERSION = '1.2.0'
 OBJDIFF_VERSION = 'v3.8.1'
-MWCC_VERSION = "1.2/sp4" # 1.2 series matches the game (2.0 and DSi compilers don't); service pack not yet narrowed down
-DECOMP_ME_COMPILER = "mwcc_20_87" # decomp.me name for MWCC_VERSION (internal version 2.0 build 87)
-CC_FLAGS = " ".join([
-    "-O4,s",                # Optimize for size (speed optimization rotates loops differently from the game)
-    "-enum int",            # Use int-sized enums
-    "-char signed",         # Char type is signed
-    "-str noreuse",         # Equivalent strings are different objects
-    "-proc arm946e",        # Target processor
-    "-thumb",               # Generate Thumb code, used by nearly all of the game and SDK
-    "-gccext,on",           # Enable GCC extensions
-    "-fp soft",             # Compute float operations in software
-    "-inline noauto",       # Inline only functions marked with 'inline'
-    "-Cpp_exceptions off",  # Disable C++ exceptions
-    "-RTTI off",            # Disable runtime type information
-    "-interworking",        # Enable ARM/Thumb interworking
-    "-w off",               # Disable warnings
-    "-sym on",              # Debug info, including line numbers
-    "-gccinc",              # Interpret #include "..." and #include <...> equally
-    "-nolink",              # Do not link
-    "-msgstyle gcc",        # Use GCC-like messages (some IDEs will make file names clickable)
-])
 LD_FLAGS = " ".join([
     "-proc arm946e",        # Target processor
     "-nostdlib",            # No C/C++ standard library

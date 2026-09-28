@@ -10,3 +10,7 @@
 src/main/unk_020501d4.c:
     complete
     .text       start:0x020501d4 end:0x02050204
+
+src/main/unk_02050204.c:
+    complete
+    .text       start:0x02050204 end:0x02050288

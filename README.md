@@ -41,9 +41,15 @@ BIOS from your own DS, place it at `arm7_bios.bin` and rerun `configure.py` to h
 
 ## Compiler
 
-The game was built with the Metrowerks CodeWarrior for DS 1.2 series (`mwccarm` internal version 2.0): test
-functions match every 1.2 service pack and no 2.0 or DSi compiler. The exact service pack isn't known yet, so
-`configure.py` uses `1.2/sp4` for now. Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`.
+The game was built with the Metrowerks CodeWarrior for DS 1.2 series (`mwccarm` internal version 2.0). 2.0 and DSi
+compilers don't match, and 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's
+`pop {r3}; bx r3`, leaving 1.2/b56, base, sp2 and sp2p3. `configure.py` uses `1.2/sp2p3` until a function tells
+these apart. Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of the game are C++.
+
+Quirks:
+- Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
+
+To check which compilers reproduce a source file's functions, run `python3 tools/compiler_search.py <file>`.
 
 ## dsd
 
