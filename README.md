@@ -1,0 +1,52 @@
+# Animal Crossing: Wild World decompilation
+
+Work-in-progress matching decompilation of Animal Crossing: Wild World for the Nintendo DS, built with
+[dsd (ds-decomp)](https://github.com/AetiasHax/ds-decomp).
+
+Supported version:
+
+| Version        | Game code | SHA-1                                      |
+| -------------- | --------- | ------------------------------------------ |
+| USA (Rev 1)    | `ADME`    | `77fde3e30e1e6068395d1f96ea63be569b61c351` |
+
+## Setup
+
+Requirements:
+- Python 3.11 or newer
+- [Ninja](https://github.com/ninja-build/ninja/releases)
+- macOS on Apple silicon: Rosetta 2 (`softwareupdate --install-rosetta`), used by wibo to run the compiler
+
+1. Put your own dump of the game in `extract/`, named `baserom_acww_usa.nds`.
+2. Generate the build script:
+   ```
+   python3 tools/configure.py usa
+   ```
+3. Build:
+   ```
+   ninja
+   ```
+   The first build downloads dsd, objdiff, wibo and the Metrowerks compilers. The build ends by checking the
+   rebuilt `acww_usa.nds` against the original SHA-1.
+
+Other targets:
+- `ninja check`: verify every module and symbol address in the linked binary
+- `ninja objdiff`: generate `objdiff.json` for [objdiff](https://github.com/encounter/objdiff)
+- `ninja report`: generate a progress report
+
+### ARM7 BIOS (optional)
+
+The ROM header stores a CRC of the encrypted secure area, which dsd can only compute with the Blowfish key from
+the ARM7 BIOS. Without it, `tools/fix_header.py` copies that CRC from the base ROM instead. If you have dumped the
+BIOS from your own DS, place it at `arm7_bios.bin` and rerun `configure.py` to have dsd compute it.
+
+## Compiler
+
+The game was built with the Metrowerks CodeWarrior for DS 1.2 series (`mwccarm` internal version 2.0): test
+functions match every 1.2 service pack and no 2.0 or DSi compiler. The exact service pack isn't known yet, so
+`configure.py` uses `1.2/sp4` for now. Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`.
+
+## dsd
+
+The dsd config in `config/` was generated with `dsd init` from dsd v0.12.1 plus a fix for Thumb functions whose
+second instruction is an unconditional branch (without it, `init` fails on this ROM). Building only needs the
+released v0.12.1, which `configure.py` downloads. To rerun `init`, use a dsd build with that fix.
