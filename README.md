@@ -55,6 +55,12 @@ Quirks:
 
 To check which compilers reproduce a source file's functions, run `python3 tools/compiler_search.py <file>`.
 
+## Layout
+
+[`docs/layout.md`](docs/layout.md) describes where the game code, libraries and C++ files are, and how that was
+worked out. `python3 tools/xrefs.py <start> <end>` lists what an address range references and what references it,
+which helps find the extent of a source file.
+
 ## dsd
 
 The dsd config in `config/` was generated with `dsd init` from dsd v0.12.1 plus a fix for Thumb functions whose
