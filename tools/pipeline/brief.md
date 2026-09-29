@@ -379,3 +379,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - 64-bit delta from two words: `u64 d = now - *(u64 *)&unk_cc;` (not `(hi<<32)|lo`).
 - Storing -0x4000 to a 16-bit field gives pool word 0xffffc000 only when the field is `s16`.
 - Local classes whose storage must be 4-aligned: declare storage as `u32[n]`, not `u8[n]`.
+- `lsls; negs; adds` for `0x24 - (idx<<2)`: `s32 q = idx << 2; q = -q; v = q + 0x24;` (direct form gives `movs 0x24; subs`).
+- Operand order `sum, b`: `x = f + (g + a); x += b;`.
+- Two spilled locals computed in reverse order: declare them in slot order (`s32 y0, x0;`) and assign x0 first.
