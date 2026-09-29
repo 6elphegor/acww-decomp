@@ -199,3 +199,5 @@ func_ov001_02226214 ov001_061/ov001_061.cpp  # -O4,p ARM; loop regs: orig add r1
 func_ov002_02201f18 ov002_002/ov002_002.cpp  # -O4,s Thumb; one call arg order: orig computes row offset before loading 0x2c0 pool const
 func_ov003_02205e58 ov003_002/ov003_002.cpp  # -O4,s; value/address reg swap in 2-byte payload store (orig ldrb r1 then add r0,sp,#12)
 func_ov003_02206378 ov003_002/ov003_002.cpp  # -O4,s; -1 compare: orig movs r3,#0;mvns r1,r3 (ours movs r1,#0;mvns r1,r1)
+func_ov001_0221f7f4 ov001_051/ov001_051.cpp  # -O4,p ARM; 12 lines: h and +0x1300 name ptr swapped r7/r8; ~700 perms tried
+func_ov001_0221f944 ov001_051/ov001_051.cpp  # -O4,p ARM; 32 lines: same g/name-ptr r7/r8 swap
