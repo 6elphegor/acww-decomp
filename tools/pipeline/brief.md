@@ -407,3 +407,17 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `s32 u = (s16)((s16)f(...) + K); g(p, u);` for sign-extend/add/sign-extend into r0.
 - `if (d != 0) { ...; return call; } return 3;` vs early `if (d == 0) return 3;` differ in layout — try both.
 - Screen/state classes derive from `Unk_020e0db4` (vtable 0x020e0db4, 0xc bytes, ctor func_02089fa8, D2 func_02089f78; see unk_020899bc.cpp). Reuse that name.
+- Copying a hoisted global pointer: `T *const d = &sym;` gives `adds rX,rY,#0`; plain `T *d` gives `movs rX,rY`.
+- A zero `s32 r` that is later returned: pass `r` as the zero call argument too, so it stays in a callee-saved register.
+- `movs r0,#0; mvns r1,r0` before a call is a real -1 argument, not a forwarded parameter.
+- Load order before a group of stores: declare the temporaries in the order the original loads them.
+- 4-byte struct copied with a `subs #1; bne` byte loop at a call: pass the struct by value.
+- `push {r0-r3}` then reloads: declare params 1..3 `volatile s32` (a hand-written va_start gives `bics` instead).
+- Stack 5-5-5 colours: `volatile union { u16 v; struct { u16 r:5,g:5,b:5,x:1; } c; }` locals.
+- Signed `% 32` on a u8 field: copy into `s32` first (u32 gives `ands #31`).
+- Address-of-member null test (`adds r1,#0x10; cmp r1,#0`): `Cb *cb = &e->unk_10; if (cb) cb->fn(e);`.
+- Big constant offset kept in its own register (`ldr r2,=0x39c; ldrh [base,r2]`): `u8 *const g = (u8 *)data_021d04b0; *(u16 *)(g + 0x39c)` (r246 func_02093914).
+- Sub-object fieldwise copy with `adds r3,r0,#4`: declare a local pointer right before its own block (`V32 *p = &unk_04; p->x = ...;`).
+- Default function-pointer parameter: copy into a local (`Fn f = fn; if (!f) f = dflt;`).
+- A list walk that advances after a scoped object's dtor: `for (; n;) { Obj o; ...; n = n->next; }`.
+- Callbacks whose addresses are passed must be extern "C" free functions.
