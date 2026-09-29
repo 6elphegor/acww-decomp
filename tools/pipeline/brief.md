@@ -565,3 +565,5 @@ Some groups are in an overlay rather than the main module. For those:
 - Soft-float: C `float` code compiles to the helper calls (func_02132a4c itof, 021319d0 fadd, 02132c80 fsub, 021329d0 ftoi) with no special handling.
 - A BOOL flag merged into another flag register: compute it via a separate `static inline BOOL` helper.
 - A u8 field compared with signed branches (`blt/bgt`): copy to `s32 t = field;` first (direct u8 compare gives `bcc/bhi`).
+- In bases whose vtable is D1, D0 then slots from 0x08, do NOT declare a `vfunc_04` — it shifts every later slot by 4.
+- `(tbl + b*7)[c]` reads b first; `tbl[b*7 + c]` reads c first.
