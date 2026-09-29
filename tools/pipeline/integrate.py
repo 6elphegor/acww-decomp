@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-# integrate.py <source.cpp> <pairs.txt> <unit name> : add a matched group file as an unlinked unit
+# integrate.py <source.cpp> <pairs.txt> <unit name> [module] : add a matched group file as an unlinked unit
+# module is "main" (default) or an overlay like "ov004"
 import re, sys, shutil
 from pathlib import Path
 root = Path("/Users/belphegor/Animal Crossing Wild World/acww-decomp")
 src, pairs, unit = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
-symp = root/"config/usa/arm9/symbols.txt"; delp = root/"config/usa/arm9/delinks.txt"
+mod = sys.argv[4] if len(sys.argv) > 4 else "main"
+cfg = root/"config/usa/arm9" if mod == "main" else root/"config/usa/arm9/overlays"/mod
+symp = cfg/"symbols.txt"; delp = cfg/"delinks.txt"
 lines = symp.read_text().splitlines()
 byname = {}
 for i, l in enumerate(lines):
@@ -30,6 +33,7 @@ for orig, comp in ren.items():
 for orig, comp in ren.items():
     i = byname[orig][0]; lines[i] = comp + " " + lines[i].split(" ", 1)[1]
 symp.write_text("\n".join(lines) + "\n")
-dst = root/"src/main"/f"{unit}.cpp"; shutil.copy(src, dst)
-with delp.open("a") as f: f.write(f"\nsrc/main/{unit}.cpp:\n    .text       start:{start:#010x} end:{end:#010x}\n")
+(root/"src"/mod).mkdir(exist_ok=True)
+dst = root/"src"/mod/f"{unit}.cpp"; shutil.copy(src, dst)
+with delp.open("a") as f: f.write(f"\nsrc/{mod}/{unit}.cpp:\n    .text       start:{start:#010x} end:{end:#010x}\n")
 print(f"{unit}: {len(ren)} functions, {start:#x}-{end:#x}")

@@ -89,3 +89,4 @@ unk_0209d0e4 (r263): date/time utilities (Unk_0209d0e4 8-byte datetime) + init b
 unk_0209ecf8 (r266): Unk_0209f304 (state byte at +0x9d, unk_eb, unk_10a nibbles) is the same object as r267's Unk_0209f638 — unify. Thread wrapper Unk_0209f080, save buffer Unk_0209f14c.
 unk_0209e394 (r265): Unk_020e244c : Unk_020ddcf0 (base copied from unk_02065f14.cpp with vfunc_0c..18 added — reconcile). Unk_020e27d4 D0/D1 here, rest at 0x020a3ef4+ (member Unk_020e2824 D1 at 0x020a1598).
 unk_020a1c88 (r271): Unk_020a1c88 state-machine class (state table data_020e26cc, state byte unk_9d) = r266 Unk_0209f304 / r267 Unk_0209f638 — one class spanning ~0x0209f000..0x020a3ebc. Unify. Uses a minimal Unk_020cbb18 copy.
+unk_020a3238 (r273): Unk_020a3238 state handlers (table 0x020e2504..0x020e2750) = same state-machine class as r271 Unk_020a1c88 / r266 / r267. Unify.
