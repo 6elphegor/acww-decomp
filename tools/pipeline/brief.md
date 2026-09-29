@@ -265,3 +265,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Sparse switch (0x13..0x1b plus 0x28): leave out empty gap labels when the original has a bounded table plus a separate compare; merge shared-code cases.
 - `u32 t = o->f; a = b = c = t;` loads once; without the temp mwcc reloads the field.
 - A void function ending in `if (x) f(x)` that the original ends with `bl` + epilogue and a small frame: an unused local `struct Pad { s32 v[2]; Pad(){} ~Pad(){} }` (sized to the frame) prevents the tail call.
+- `muls` destination = stride register only when the stride is a named local (`u32 st = *(u16*)...; t + st*idx`).
+- A `u8` field before an opaque byte-array member misaligns it; declare the member as `u32[n]`.
+- `if (x != -1) return TRUE; return FALSE;` vs `BOOL r = FALSE; if (...) r = TRUE; return r;` allocate differently; try both.

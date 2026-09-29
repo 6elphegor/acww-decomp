@@ -81,3 +81,6 @@ func_02059e94 r148/r148.cpp  # same
 func_02059f3c r148/r148.cpp  # same + local array offsets
 func_0205da08 r154/r154.cpp  # volatile rem slot lands above res/sz (same slot-order issue as loop-hoist family)
 func_0205cbe8 r153/r153.cpp  # order of two initial zero stores [sp,#4]/[sp,#8]
+func_020567ec r143/r143.cpp  # final store loop reg alloc (~10 insns)
+func_020568f8 r143/r143.cpp  # v/hi stack slots swapped
+func_02056e88 r143/r143.cpp  # stack-arg homing store, muls dest, slot order

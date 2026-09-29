@@ -22,3 +22,5 @@ unk_020553f8 (r141): the model-resource base is `Unk_020dbe34 : Unk_020dbe14` (C
 unk_0204fa3c (single function, Unk_020db984::vfunc_18) belongs with unk_0204f178/unk_0204fb80; merge.
 unk_0205c158 continues unk_0205b848 (heap create/destroy stubs); merge.
 unk_0205d3d0 (r154) Unk_0205dbb8 and unk_0205dd1c (r155) Unk_0205dd1c have the same 0x1b8 layout (u32[4], Unk_020dbe24 x8 @0x10, Unk_020e45ec x8 @0xb0, @0x190, bytes 0x9e @0x1b0); likely one class (dd1c/dd38 are its dtor/ctor, dbb8.. its methods). Same file.
+unk_02056654 (r143) defines Unk_020dbe7c (frame controller; same class as unk_02055d18's) and Unk_020dbe8c : Unk_020dbe7c; its Unk_02056e38 member ctor/dtor are func_02056fac/func_02056f94 (r144 called that class Unk_02056f94). Merge unk_02055d18/unk_02056654/unk_02056f94.
+unk_02051c10 (single function) belongs with unk_02051320/unk_02051cc8 (packet-send layer); merge.
