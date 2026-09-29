@@ -61,3 +61,4 @@ unk_02082088 (r217): slot-handle base is Unk_020e0718 (vtable 0x020e0718, ctor f
 unk_02083314 (r219): Unk_02083c08 (u8 unk_70, u32 unk_74 overlay id) is the same class as unk_02083c28's Unk_02083c28 (+0x70/+0x74, func_02083e38 clears unk_70); merge.
 unk_020829b0 (r218): container base Unk_020e085c (ctor func_02082d5c) and element base Unk_02082d68 are defined here; unk_02082088 (r217) declares them. Same file; merge.
 unk_020899bc (r230): Unk_020e0d98 : Unk_020e0db4 is the class older units call Unk_02089e60 (base of Unk_020e451c); rename when merging.
+unk_0208ac84 (r232): base Unk_02089f64 is r230's Unk_020e0db4 (vtable 0x020e0db4, ctor func_02089fa8); rename when merging.

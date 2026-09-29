@@ -393,3 +393,17 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - 0x30-byte ldm/stm copy loop: assign a `struct { s64 v[6]; }` by value.
 - `strb r1,[r0,r6]` (base, index) needs `*(u8*)(i*4 + (u32)a) = 1;`; `a[i].f` gives `[r6,r0]`.
 - `x1 = bx + 0x10;` (one expression) vs `x1 = bx; x1 += 0x10;` (the add gets folded into every use).
+- A global struct read several times needs `T *const g = &global;` to stay in a callee-saved register (plain `T *g` is rematerialised).
+- A setter that calls `g(p,0,0)` then stores a constant must return void; an s32 return shifts the registers.
+- Right-nested OR chains (`f | (X | (m0 | (a | b))))`) must be written as one nested expression; sequential `t |=` differs.
+- Force a reload the original does at a join point: read through a volatile cast in one branch (`((volatile T*)e)->w0`).
+- `ldr =tbl` before the counter load: `oam = tbl; cnt = &c; oam += *cnt;` (`&tbl[*cnt]` loads the counter first).
+- Packed hardware words: use a u32 bitfield struct for `lsls/lsrs` extraction.
+- A 3-word local the original keeps in memory but reads x from a register: `volatile V v; s32 t0 = r->x; v.x = t0; v.y = ...; v.z = ...;` then use t0 for x and v.y/v.z for the rest.
+- Stack-passed param loaded with `ldrsh` is an s16 parameter, even though callers push full words.
+- Arithmetic like `a + 1 + ((b * (-0xa1 - q)) >> 12)` may only match as a single expression.
+- `Rec *r = &tbl[i]; r->f` gives `adds base,idx; movs #K; ldrsh`; `tbl[i].f` folds the offset.
+- A 3-word stack struct with dead stores that must stay in memory: a plain struct with empty ctor AND empty dtor, filled field by field.
+- `s32 u = (s16)((s16)f(...) + K); g(p, u);` for sign-extend/add/sign-extend into r0.
+- `if (d != 0) { ...; return call; } return 3;` vs early `if (d == 0) return 3;` differ in layout — try both.
+- Screen/state classes derive from `Unk_020e0db4` (vtable 0x020e0db4, 0xc bytes, ctor func_02089fa8, D2 func_02089f78; see unk_020899bc.cpp). Reuse that name.
