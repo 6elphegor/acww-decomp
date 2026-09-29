@@ -279,3 +279,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Real signatures: `func_0204e9dc(grid, s32*, s32*, s32*, s32*, u16*, u16*, filter, 0)` (9 args, out-pointers); `func_0204eb30(grid, u16 *v, x, y, 0)`.
 - Mode-state singleton `Unk_0206022c` at data_021e58a8 (unk_0206022c.cpp): 5 x `Unk_02060a90` (0x450) then a bitfield word at +0x15a0. Reuse.
 - A C bitfield struct `{u32 a:3, ...; u32 cnt:8;}` reproduces a flag word plus a separate `strb` to byte +3.
+- A byte-loop copy with `subs; cmp; bne` is a struct assignment: `struct { u8 b[16]; }` and `*(T*)dst = *(T*)src`.
+- Callers first, callees later in the file stops a small same-file callee being inlined.
