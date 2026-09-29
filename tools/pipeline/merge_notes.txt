@@ -186,3 +186,4 @@ ov004/unk_0221cbe4 (ov004_041): Unk_ov004_0224d010 : Unk_02015b54 (=Unk_020d7714
 - ov049: member at owner+0x658 is Unk_ov049_0225be74 : Unk_0202e2bc (size 0xd0) per ov049_003; ov049_004 called it Unk_ov049_0225aaac : Unk_020d7714 size 0xcc — reconcile.
 - ov050_007: three byte-identical factories 0225d68c/d7c0/d8f4 all written as new Unk_ov050_0225e400 — asmdiff masks relocs, so they may really construct 3 different classes (check their vtable/ctor relocs when merging).
 - ov003_054 split: 054a (02224ba4..022250cc, opt_loop_invariants off), 054b (02225108 only, + opt_common_subs off), 054c (02225238, loop_invariants off); b/c are full-file copies — strip when merging.
+- ov053: Owner::vfunc_4c declared (u32, u8) in ov053_000 (base copy edited); other overlays use (u32, u32) — reconcile in shared header.
