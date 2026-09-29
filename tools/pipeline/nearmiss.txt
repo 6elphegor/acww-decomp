@@ -207,3 +207,5 @@ func_ov003_02209fc8 ov003_009/ov003_009.cpp  # -O4,s; stack only: frame 4 bytes 
 func_ov003_0220a7fc ov003_010/ov003_010.cpp  # -O4,s; 2 reg diffs: orig loads x [sp+0x20] before y; zero reg r3 (ours r0) for ldrsh h-0x2000
 func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)
 func_ov003_02212680 ov003_023/ov003_023.cpp  # -O4,s; regalloc: orig moves func_02095774(4) result to r1 (adds r1,r0,#0), ours keeps it in r0
+func_ov003_02210ad4 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree shape only: orig pivots 0x1c then 0x11 w/ bounded leaf; ours pivots 0x17 (cases d,11,17,1c,25,28)
+func_ov003_02210e40 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree: orig bounded 2-case leaf for 8/0xc; ours individual (cases 8,c,16,1b,22)
