@@ -502,3 +502,8 @@ Some groups are in an overlay rather than the main module. For those:
 - Global compared then reloaded for a call argument: compare through a local (`s32 t = g; if (t == A)`) and pass `*(volatile s32 *)&g`.
 - A dead duplicate compare in an if/else chain: write the literal duplicate `else if (b == 0)` branch — mwcc doesn't fold it.
 - The enum-local trick is not universal: under register pressure it can push a different variable to the stack. For a constant the original spills to [sp], try `volatile s32 k`.
+- A struct byte used as a table index gets sunk past argument moves: read it via `*(volatile u8 *)&b.id` to pin the load.
+- `(p[1] >> 6) & 3` on u8* gives `asrs`; `((u32)p[1] >> 6) & 3` gives `lsrs`.
+- Local aggregates get ascending stack slots in declaration order; a local object with ctor/dtor goes after named locals — model it as a raw `u8 buf[N]` with explicit ctor/dtor calls to place it.
+- A spilled loop offset (`lsls r0,r4,#2; str r0,[sp,#8]`): `u32 off = i << 2;` used as `*(u32*)((u8*)a + off)`.
+- Force a data load before an address add: read the field through a volatile cast.
