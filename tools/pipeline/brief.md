@@ -157,3 +157,5 @@ If a function doesn't match after several genuinely different attempts, move on 
 - A switch on a callee's result with signed compares (`bgt`/`bge`) means the callee returns `s32`; `u32` gives `bhi`/`bcs`. `func_0204aa24(u16*)` returns s32.
 - Extra empty case labels widen a jump table. If the original's table starts partway through the case list, drop empty labels below its start so the sparse low cases become a compare tree.
 - If the original reloads a flag word after a division helper call, a plain local copy gets hoisted before the call; a real C bitfield update on the field (signed fields work too, e.g. `s32 mid:4`) keeps the load after the division.
+- `s32 *s = b->v; w = s[0]<<4; h = s[1]<<4;` reproduces `adds r1,r6,#4; ldr [r6,#4]; ldr [r1,#4]`; named struct fields fold to `[r6,#8]`.
+- `u32 b = K; b += f(); return (u16)b;` keeps the constant in a callee-saved register across the call; `(u16)(K + f())` doesn't.

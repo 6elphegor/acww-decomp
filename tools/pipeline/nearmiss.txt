@@ -31,3 +31,5 @@ func_02042588 r109/r109.cpp
 func_020431a8 r110/r110.cpp
 func_020465a4 r116/r116.cpp
 func_02046650 r116/r116.cpp
+func_020475f8 r117/r117.cpp  # hoists y-(ty<<4) into extra stack slot
+func_02047714 r117/r117.cpp  # one swapped ldr/asrs pair at 0x22
