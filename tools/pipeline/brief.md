@@ -518,3 +518,5 @@ Some groups are in an overlay rather than the main module. For those:
 - Several static objects sharing one guard bit: `static V vs[3] = {V(..), V(..), V(..)};`.
 - Zero locals the original initialises mid-function: declare them inside the block, after the preceding statement; at function scope they get hoisted.
 - Static-array element reads kept unfolded (`ldr =tbl; ldr [r0,#0xc]`): index inline (`((u32*)tbl)[3]`), not via a local pointer to the element.
+- A spilled zero later used as `ldr; mvns; cmp` is just a `-1` literal compare, not a volatile zero.
+- Dead `strh` into a stack slot: `volatile u16 tmp[1]; tmp[0] = K;`. Unused locals are dropped even if volatile — to reserve frame padding, use one function-scope anonymous struct containing the pad fields.

@@ -135,3 +135,4 @@ func_0209579c r250/r250.cpp  # frame 8 bytes too big; local buffer at sp+0x1c is
 func_02095dcc r250/r250.cpp  # loop-hoist family: y>>4 hoisted into r7 even in goto form
 func_02097110 r252/r252.cpp  # sparse switch: original range test on 13, jump table 0..10, separate tests for 16/20; ours one table or linear chain
 func_02098eb0 r255/r255.cpp  # original spills o and e=p+i (frame 0x14), a/p/i/off in r6/r5/r4/r7; ours 12-byte frame
+func_0209af4c r259/r259.cpp  # this/flag register swap (r6/r7)
