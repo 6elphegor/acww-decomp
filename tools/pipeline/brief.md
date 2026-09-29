@@ -575,3 +575,4 @@ Some groups are in an overlay rather than the main module. For those:
 - Same-class callees defined BEFORE their caller get inlined even when large; define them at the end of the file to keep the original `bl`.
 - `adds rX,r0,#0x5c` then `str [r0,#0x5c]` + `str [rX,#8]` (Vec3 member stores): take `Vec3 *pv = &o->pos;` BEFORE reading the source and write BOTH fields through `pv` (see ov004_050).
 - `movs 0; mvns; muls` (multiply by -1): `k *= -1` on a value from an enum-typed local; `-k` or `k * -1` fold to negs.
+- `adds r3,r1,#0; adds r3,#0xc` then `ldrb [r3,#1]` (address of an embedded sub-struct computed, not folded): model the sub-struct as a BASE class at that offset (`struct Item : Pad0xc, Pair {}`) and read through a reference upcast `Pair &q = *it; a = q.a;` (ov004_051).
