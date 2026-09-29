@@ -527,4 +527,6 @@ Some groups are in an overlay rather than the main module. For those:
 - Name your source `<group>.cpp` in your scratch dir.
 - mwcc evaluates call arguments RIGHT TO LEFT: `f(m, g()->x, g()->y, g()->z)` evaluates z first. To match an original that reads x from r0, precompute into locals in the original's order.
 - CSE breaker for a repeated index expression hoisted across a call: add a redundant cast in one occurrence (`((s32)(u16)(s16)r4 >> 4) * 2`).
-- For the ov004 actor class Unk_ov004_0224882c, use the REAL base `Unk_020d9670` (see scratchpad/ov004_007/ov004_007.cpp), not dummy virtual padding.
+- For the ov004 actor class Unk_ov004_0224882c, the most complete declaration is in scratchpad/ov004_008/ov004_008.cpp: `: Unk_020d9670, Unk_ov004_022488d8` (secondary vptr-only base at +0xec), size 0x840, all member sub-object offsets, ctor/dtor, and a static operator delete. Copy it; never use dummy virtual padding.
+- mwcc bitfields are LSB-first. Bitfield getters on a word passed in r0 that go through a stack copy: `Bits l; *(u32 *)&l = v; return l.f;` with an 8-byte Bits type.
+- Unexpected `adds r2,r0,#0` before a virtual call = the call passes that value as an extra argument.

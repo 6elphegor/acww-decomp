@@ -137,3 +137,4 @@ func_02097110 r252/r252.cpp  # sparse switch: original range test on 13, jump ta
 func_02098eb0 r255/r255.cpp  # original spills o and e=p+i (frame 0x14), a/p/i/off in r6/r5/r4/r7; ours 12-byte frame
 func_0209af4c r259/r259.cpp  # this/flag register swap (r6/r7)
 func_0209a7d0 r258/r258.cpp  # p/i register swap (r6/r5) in memset+loop fn
+func_0209bcf8 r260/r260.cpp  # two spilled rand results in swapped frame slots (sp+12/sp+16)
