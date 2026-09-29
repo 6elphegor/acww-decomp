@@ -24,7 +24,7 @@ for l in pairs.read_text().splitlines():
 addrs = [byname[o][1] for o in ren]; ends = [byname[o][1] + byname[o][2] for o in ren]
 start, end = min(addrs), (max(ends) + 3) & ~3
 # overlap check against existing units
-for m in re.finditer(r"\.text\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", delp.read_text().split("\n\n", 1)[1]):
+for m in re.finditer(r"\.text\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", (delp.read_text().split("\n\n", 1) + [""])[1]):
     a, b = int(m.group(1), 16), int(m.group(2), 16)
     if a < end and start < b: sys.exit(f"overlap with existing unit {a:#x}-{b:#x}")
 names = {l.split(" ", 1)[0] for l in lines}
