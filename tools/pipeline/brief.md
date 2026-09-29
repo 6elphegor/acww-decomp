@@ -272,3 +272,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Index-checked bit test: `if (i < N) { if (bit) return TRUE; return FALSE; } return FALSE;` (early return on a bad index lays out differently).
 - Objects with dtors declared in inner blocks get frame slots after function-scope locals; function-scope locals go in declaration order.
 - s16 sin/cos table: `idx = ((u16)ang >> 4) * 2; tbl[idx]; tbl[idx + 1];` (writing `tbl[idx*2]` double-shifts).
+- A member array of a class with a user ctor but no dtor gets an inline ctor loop (`bl` per element), not `__cxa_vec_ctor`; classes with dtors get `__cxa_vec_ctor`/`__cxa_vec_cleanup`.
+- Helper scripts run under zsh: an unquoted `$var` with spaces is NOT word-split; pass arguments separately.

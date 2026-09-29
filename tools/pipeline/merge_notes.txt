@@ -25,3 +25,4 @@ unk_0205d3d0 (r154) Unk_0205dbb8 and unk_0205dd1c (r155) Unk_0205dd1c have the s
 unk_02056654 (r143) defines Unk_020dbe7c (frame controller; same class as unk_02055d18's) and Unk_020dbe8c : Unk_020dbe7c; its Unk_02056e38 member ctor/dtor are func_02056fac/func_02056f94 (r144 called that class Unk_02056f94). Merge unk_02055d18/unk_02056654/unk_02056f94.
 unk_02051c10 (single function) belongs with unk_02051320/unk_02051cc8 (packet-send layer); merge.
 unk_0205ef60 (r157) Unk_0205f360 and unk_0205f8d4 (r158) Unk_0205f8d4 are the same per-effect state-machine class (same fields +0x08..+0x3c; state switcher func_0205f92c); one file, merge and pick one name.
+unk_0205e61c (r156) manager singleton at data_021c6854 is Unk_0205ec30 (size >= 0xb56); r155 (unk_0205dd1c) named the same global's class Unk_0205dd1c with only the first 0x1b8 bytes. Same class — reconcile (r156's layout is fuller).
