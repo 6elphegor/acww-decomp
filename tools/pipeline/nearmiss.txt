@@ -127,11 +127,10 @@ func_02087e70 r227/r227.cpp  # OAM builder, 12 params: hoisted (rot>>4)*2 spill 
 func_02088378 r227/r227.cpp  # single-entry OAM: sin/cos block regalloc, extra spill into scale param home
 func_0208faa0 r240/r240.cpp  # address of stack tag arg: add r3,sp,#0x10 vs ours r1
 func_0208fb20 r240/r240.cpp  # stack slot order: tag copies at 0x2c/0x30 and volatile memset zero at 0x34; ours data first
-func_02094a08 r248/r248.cpp  # constant 5 held in r5 across a call (movs r5,#5; cmp r5,r0); ours folds to cmp r0,#5, push {r4,lr}
-func_02094d60,func_02094de0,func_02094e3c,func_02094e64 r249/r249.cpp  # const-in-reg family: movs r4,#N before bl func_0200e1dc, cmp r4,r0 (same as func_02094a08)
 func_02097ff4,func_0209801c r254/r254.cpp  # bit clear/set: original idx in r4, mask computed before load, mvns+ands (not bics) — try the *(volatile u32*)&x[w] trick
 func_020984a8 r254/r254.cpp  # long fn, regalloc only: this r6 / p r5 / &local r4 (ours r5/r4/r6)
 func_020975f0 r253/r253.cpp  # r/cnt register swap (r5/r6) + strh [r1,#2] addressing
 func_02095670 r250/r250.cpp  # regalloc: original spills outb to [sp], ours spills mode
 func_0209579c r250/r250.cpp  # frame 8 bytes too big; local buffer at sp+0x1c is one aggregate; i in r4, -1 in r5
 func_02095dcc r250/r250.cpp  # loop-hoist family: y>>4 hoisted into r7 even in goto form
+func_02097110 r252/r252.cpp  # sparse switch: original range test on 13, jump table 0..10, separate tests for 16/20; ours one table or linear chain
