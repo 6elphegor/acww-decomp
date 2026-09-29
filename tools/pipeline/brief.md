@@ -481,7 +481,10 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 ## Overlay groups (ovNNN_KKK)
 Some groups are in an overlay rather than the main module. For those:
 - The function list comes from `config/usa/arm9/overlays/ovNNN/symbols.txt` and `config/usa/arm9/overlays/ovNNN/delinks.txt` (not the main files). Function names look like `func_ovNNN_0221abcd`.
-- Original asm: `build/usa/asm/_dsd_gap@ovNNN_*.s` (grep `^func_ovNNN_XXXXXXXX:`). Overlay bytes: `extract/usa/arm9_overlays/` (see overlays.yaml for file names and base addresses).
+- Original asm: `build/usa/asm/_dsd_gap@ovNNN_*.s` (grep `^func_ovNNN_XXXXXXXX:`). Overlay bytes: `extract/usa/arm9_overlays/ovNNN.bin`; file offset = address - the overlay's .text start (base addresses are in `extract/usa/arm9_overlays/overlays.yaml`).
+- An overlay's delinks.txt may have no units yet (only the section header), so nothing is excluded.
+- Calls into OTHER overlays use their names (`func_ov003_02212430`): declare them `extern "C"` too.
+- Overlay classes often derive from main-module bases (`Unk_020d9670` 0xec bytes, `Unk_020e2a30`, `Unk_020d5d84`, `include/Unk_020d8c7c.h`). Copy the base declarations from existing src/main files and keep the base layout identical; only add derived fields.
 - asmdiff works as usual; always pass `--original func_ovNNN_XXXXXXXX` when your compiled symbol differs. Free functions keep their full `func_ovNNN_...` name (extern "C").
 - Calls from an overlay into the main module use the main names (`func_0206xxxx`); calls to other functions in the same overlay use `func_ovNNN_...`. Overlays share address ranges, so never infer a callee from its address alone — read the symbol name in the asm.
 - Class names for overlay-only classes: `Unk_ovNNN_<addr>` (e.g. vtable address or first method), so they never collide with main-module classes.
