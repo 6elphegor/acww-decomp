@@ -247,3 +247,6 @@ func_ov053_022595f4 ov053_000/ov053_000.cpp  # -O4,s; Vec3 x/y/z callee-saved re
 func_ov050_0225c9dc ov050_005/ov050_005.cpp  # -O4,s; x/y/z callee-saved regs rotated (orig r4/r6/r7)
 func_ov050_0225c294 ov050_005/ov050_005.cpp  # -O4,s; &item hoisted into r6 (orig recomputes add sp,#36 and reloads ldrh)
 func_ov055_0225915c ov055_000/ov055_000.cpp  # -O4,s; this/flag r4<->r5 swap; ~60 variants tried
+func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
+func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
+func_ov065_02260a84 ov065_002/ov065_002.cpp  # -O4,p; n->unk_08=0 store: orig adds r1,r0,#0; movs r0,#0; str r0,[r1,#8]
