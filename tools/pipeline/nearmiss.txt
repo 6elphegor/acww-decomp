@@ -254,3 +254,5 @@ func_ov065_0225fb68 ov065_001/ov065_001.cpp  # -O4,p; result of 0225f4d4 copied 
 func_ov065_0225ff1c ov065_001/ov065_001.cpp  # -O4,p; same r1-copy pattern
 func_ov065_0226003c ov065_001/ov065_001.cpp  # -O4,p; same r1-copy pattern
 func_ov065_0225fd18 ov065_001/ov065_001.cpp  # -O4,p; enqueue tail test addr/value regs swapped
+func_ov065_02261638 ov065_003/ov065_003.cpp  # -O4,p; (u16)(state>>48) reg order: orig movs r1,#0; lsrs r0,r3,#16
+func_ov065_02262670 ov065_005/ov065_005.cpp  # -O4,p; unk_44 kept in r2 (orig) vs r1; adds/subs order
