@@ -569,3 +569,5 @@ Some groups are in an overlay rather than the main module. For those:
 - `(tbl + b*7)[c]` reads b first; `tbl[b*7 + c]` reads c first.
 - `movs rN,#K; mvns rN,rN` is -(K+1): `#1` → -2, `#2` → -3.
 - A pool-word-only diff usually means a struct padding/offset error (trailing u8/u16 pairs pad to 4).
+- Two-value dispatch (`cmp A; beq X; cmp B; bne end`): write a switch; source case order sets block order.
+- `bls` after comparing a call result means compare it as u32: `(u32)f() > 1`.

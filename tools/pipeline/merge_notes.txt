@@ -133,3 +133,4 @@ ov004/unk_022159a4 (ov004_029): Unk_ov004_0224c034 : Unk_020d89c8 (0xa68, sub-ob
 ov004/unk_02216c84 (ov004_031): Unk_ov004_0224c38c : Unk_020d89c8 with a plain state-machine member SM (Unk_ov004_02216ff4, 0x14 bytes, dtor func_ov004_022175b8). Also factory for Unk_ov004_0224c228.
 ov004/unk_022180e0 (ov004_033): Unk_ov004_0224c574 : Unk_020d89c8 state dialog (0xa58, menu member Unk_ov004_0224c4e4 at +0x8a4); head of Unk_ov004_0224c7d0. Base ctor mangled C2 here vs C1 in symbols.txt (0x0202e030) — check at link.
 ov004/unk_02218a20 (ov004_034): Unk_ov004_0224c7d0 : Unk_020d89c8 (menu member Unk_ov004_0224c740 at +0x914).
+ov004/unk_02219378 (ov004_035): methods attributed to Unk_ov004_0224c740 but use owner-sized fields (0x894..0xae0) — likely really Unk_ov004_0224c7d0 methods; re-check via vtable/table refs when linking.
