@@ -231,3 +231,6 @@ src/main/unk_0201745c.cpp:
 
 src/main/unk_02014d90.cpp:
     .text       start:0x02014d90 end:0x020156ac
+
+src/main/unk_02016a44.cpp:
+    .text       start:0x02016a44 end:0x0201745c
