@@ -241,3 +241,4 @@ func_ov003_0222e1e0 ov003_069/ov003_069.cpp  # -O4,s; default-path pointer setup
 func_ov003_0222ef10 ov003_070/ov003_070.cpp  # -O4,s; 0x1000-q: orig adds r3,r0,#0; ldr r0,=0x1000; subs r1,r0,r3 (one extra instr)
 func_ov047_02259448 ov047_000/ov047_000.cpp  # -O4,s; first ldrb into r1 (ours r0)
 func_ov047_02259a8c ov047_001/ov047_001.cpp  # -O4,s; vfunc_14 dispatch: orig hoists local-static table base into r7 (ours reloads), regs only
+func_ov049_0225a714 ov049_002/ov049_002.cpp  # -O4,s; vfunc_78 state==5 branch: owner/flag/halfword reg allocation (~28 lines)
