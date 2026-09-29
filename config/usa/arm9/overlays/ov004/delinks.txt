@@ -43,3 +43,6 @@ src/ov004/unk_0220d69c.cpp:
 
 src/ov004/unk_02209e64.cpp:
     .text       start:0x02209e64 end:0x0220a898
+
+src/ov004/unk_0220e060.cpp:
+    .text       start:0x0220e060 end:0x0220e9b4
