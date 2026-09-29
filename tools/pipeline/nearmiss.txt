@@ -103,6 +103,7 @@ func_0207de6c r209/r209.cpp  # same as 0207dd24
 func_0207a038 r203/r203.cpp  # one adjacent pair swapped (adds r7,r6 / ldr r5,[sp])
 func_020859b4 r223/r223.cpp  # order of three initial zero-local stores (zero-store family)
 func_020869c8 r224/r224.cpp  # second nested loop: x/y registers swapped
-func_02085188 r222/r222.cpp  # leaf bit clear: original mvns+ands in place, ours bics with push {r4}
+func_02085188 r222/r222.cpp  # leaf bit clear: original mvns+ands in place, ours bics with push {r4}. TRY: read the word via *(volatile u32*)&x[w] (r226 fix)
 func_020851a4 r222/r222.cpp  # leaf bit set: same issue
 func_020854e0 r222/r222.cpp  # cnt/data pointer registers swapped
+func_020874e8 r226/r226.cpp  # one adds operand order (sym + 0x15db4: original adds r0,r0,r1)

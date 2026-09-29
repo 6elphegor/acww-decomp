@@ -421,3 +421,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Default function-pointer parameter: copy into a local (`Fn f = fn; if (!f) f = dflt;`).
 - A list walk that advances after a scoped object's dtor: `for (; n;) { Obj o; ...; n = n->next; }`.
 - Callbacks whose addresses are passed must be extern "C" free functions.
+- Bit set/clear on a word array where the original computes the mask BEFORE loading the word: read it as `*(volatile u32*)&x[w]`.
+- Bitfield setter whose original is just `ands #1` with no byte mask: hand-write `f = (f & ~2) | ((v & 1) << 1)` on a u8 union member with an `s32` parameter.
