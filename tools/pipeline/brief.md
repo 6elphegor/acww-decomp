@@ -477,3 +477,12 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Member-function-pointer state table read at two folded addresses: use two extern symbols (`tbl` for the call, `tbl+8` as its own symbol for the test).
 - Byte stores into a local buffer re-materialising `add r0,sp,#0` each time: cast inline at each use instead of caching a `u8 *`.
 - Clamp with the call first: `s32 c = f(); s32 v = tbl[t]; if (v > c)`.
+
+## Overlay groups (ovNNN_KKK)
+Some groups are in an overlay rather than the main module. For those:
+- The function list comes from `config/usa/arm9/overlays/ovNNN/symbols.txt` and `config/usa/arm9/overlays/ovNNN/delinks.txt` (not the main files). Function names look like `func_ovNNN_0221abcd`.
+- Original asm: `build/usa/asm/_dsd_gap@ovNNN_*.s` (grep `^func_ovNNN_XXXXXXXX:`). Overlay bytes: `extract/usa/arm9_overlays/` (see overlays.yaml for file names and base addresses).
+- asmdiff works as usual; always pass `--original func_ovNNN_XXXXXXXX` when your compiled symbol differs. Free functions keep their full `func_ovNNN_...` name (extern "C").
+- Calls from an overlay into the main module use the main names (`func_0206xxxx`); calls to other functions in the same overlay use `func_ovNNN_...`. Overlays share address ranges, so never infer a callee from its address alone — read the symbol name in the asm.
+- Class names for overlay-only classes: `Unk_ovNNN_<addr>` (e.g. vtable address or first method), so they never collide with main-module classes.
+- In pairs.txt, the second field is the full original name (`func_ovNNN_...`).
