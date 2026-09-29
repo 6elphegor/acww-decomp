@@ -165,3 +165,5 @@ func_ov001_022057b0 ov001_007/ov001_007.cpp  # -O4,p; AES key wrap: same dst/src
 func_ov001_02202b3c ov001_003/ov001_003.cpp  # -O4,p; tail -1 compare: orig ldr r0,[g];movs r1,#0;mvns r1,r1 (ours swapped)
 func_ov001_02202e74 ov001_003/ov001_003.cpp  # -O4,p; regalloc: orig r6=zero, r5=counter, r4=buf (ours r4/r6/r5); perm search tried
 func_ov001_02203004 ov001_003/ov001_003.cpp  # -O4,p; loop do{...}while(z) with never-modified zero in r5 gets folded; needs trick to keep z live
+func_ov001_0220b148 ov001_017/ov001_017.cpp  # -O4,p ARM; regalloc only: orig src ptrs r3/r9, i=r2, k=r3 (ours r8/r7, lr, ip); 40 decl perms tried
+func_ov001_02209698 ov001_014/ov001_014.cpp  # -O4,p ARM; 3x 5-byte prologue copies scheduled differently (orig loads x[4] first into r5, re-adds sp+8 after guard); ~100 decl perms tried
