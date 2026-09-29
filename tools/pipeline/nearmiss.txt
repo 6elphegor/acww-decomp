@@ -58,3 +58,4 @@ func_020483b0 r119/final.cpp  # n/i registers swapped
 func_02048634 r119/final.cpp  # far off; loop-hoist family (by=y>>4 hoisted, by<<4 recomputed)
 func_0204f178 r131/r131.cpp  # stack slots a/sum swapped
 func_0204f364 r131/r131.cpp  # register numbering only (count/e in r2 vs r1)
+func_0204d7fc r128/final_r128.cpp  # reg alloc: p4 spilled / sx in reg vs original

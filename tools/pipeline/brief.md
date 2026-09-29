@@ -197,3 +197,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Keep a hardware register base (e.g. 0x4000000) in a callee-saved register: `volatile u16 *r = (volatile u16 *)0x4000000; u8 *b = (u8 *)r;` and access only through `b` (`*(volatile u16 *)(b + 0x304)`).
 - Frame order of volatile locals: declare them all up front in slot order (`volatile u32 b, a, c;`) and assign them where they're used.
 - Item/record parameter table `data_021c5330` (unk_02052f44.cpp): `func_0206d86c(tbl, idx)` returns a byte record (0x6e9 entries).
+- Two loop counters whose address goes to a callee are really `s32 xy[2]`.
+- mwcc gives all constant zeros one register and spills extras; declare the zero that should own the register first (`s32 cnt = 0;` before the other zero inits).
+- 16 extra frame bytes can be an unused `struct Pad { s32 v[4]; Pad(){} ~Pad(){} }` local.
