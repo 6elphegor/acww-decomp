@@ -85,3 +85,4 @@ unk_02098f90 (r256): Unk_020994cc derives from Unk_0209ada4 (ctor calls func_020
 unk_0209a208 (r258): all extern "C"; Unk_0209a5dc (ctor a5dc) is also declared by r257 — share. Unk_0209ab18 state class (ctor func_0209ab18) sits at the r258/r259 boundary.
 unk_0209da44 (r264): Unk_0209da44 (0x15fe0 bytes) looks like the data_021d7350 singleton — r225's Unk_02087224 (+0x228) and Unk_020872fc (+0x15fca) are its sub-objects. Unify.
 unk_0209b494 (r260): Bingo. func_0209b494/b4cc are methods of the 8-byte counter class r259 calls Unk_0209b434 (r260 put them on Unk_0209b3bc) — rename to Unk_0209b434 when linking. Board Unk_0209b5d4 real ctor func_0209c004.
+unk_0209d0e4 (r263): date/time utilities (Unk_0209d0e4 8-byte datetime) + init block on the big owner object (Unk_0209d5f8 = r264's Unk_0209da44 / data_021d7350 singleton; func_0209d7bc/d81c/d848/d994 are its methods declared in r264). Convert the free functions to methods when linking.
