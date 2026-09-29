@@ -420,3 +420,6 @@ src/main/unk_02035e2c.cpp:
 
 src/main/unk_0203a058.cpp:
     .text       start:0x0203a058 end:0x0203a9b8
+
+src/main/unk_02039698.cpp:
+    .text       start:0x02039698 end:0x0203a058
