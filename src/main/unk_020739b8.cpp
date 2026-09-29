@@ -51,7 +51,7 @@ void *func_02072998(Unk_020cbb18 *);
 void func_02072994(Unk_020cbb18 *, void *);
 void func_02076240();
 void *func_02076bb0(u32, u32);
-void func_020ebb6c(u32, u32, u32, u32, void *, u32, void *, void *);
+void func_020ebb6c(u32, u32, u32, u64, u32, void *, void *);
 s32 func_020721f8(Unk_020cbb18 *);
 s32 func_020721ec(Unk_020cbb18 *);
 void func_02115fb4(void *, u32, u32);
@@ -209,7 +209,7 @@ extern "C" s32 func_02073a78() {
 extern "C" void func_02073bac() {
     data_020cbb18->unk_74 = 1;
     func_020720f8();
-    func_020ebb6c(0x41444d45, 0x400083, 1, 0x4fe752, 0, 2, (void *)func_02076bb0, (void *)func_02076b9c);
+    func_020ebb6c(0x41444d45, 0x400083, 1, 0x4fe752, 2, (void *)func_02076bb0, (void *)func_02076b9c);
 }
 
 extern "C" void func_02073bf8(s32 a, u32 b, u32 c) {
@@ -227,7 +227,7 @@ extern "C" void func_02073bf8(s32 a, u32 b, u32 c) {
     func_020724d0(o, func_02076bb0(0xc00, 4));
     func_0207246c(o, func_02076bb0(0xc00, 4));
     func_020720f8();
-    func_020ebb6c(0x41444d45, 0x400040, 1, 0x4fe752, 0, b, (void *)func_02076bb0, (void *)func_02076b9c);
+    func_020ebb6c(0x41444d45, 0x400040, 1, 0x4fe752, b, (void *)func_02076bb0, (void *)func_02076b9c);
     if ((u8)(a + 0xff) <= 1) {
         func_0207217c();
         func_020eb9fc(a, (void *)func_02074104);

@@ -151,10 +151,10 @@ s32 Unk_0205cbe8::func_0205cbe8(u16 *s) {
         BOOL r;
         p = &id[i].v;
         if (func_0204b2d4(p)) {
-            if (func_0204b25c(p) == func_0204b25c(s)) r = TRUE; else r = z1;
+            r = (func_0204b25c(p) == func_0204b25c(s)) ? TRUE : z1;
         } else {
             u16 a = id[i].v;
-            if (a == *s) r = TRUE; else r = z2;
+            r = (a == *s) ? TRUE : z2;
         }
         if (r) return i;
     }

@@ -44,6 +44,11 @@ struct Unk_02055820_Slot {
     u32 unk_04;
 };
 
+class Unk_020dbe24 {
+public:
+    u32 func_02055300(u32 a);
+};
+
 extern "C" {
 void func_02103d48(void *p, s32 a);
 void func_02103d50(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -57,7 +62,7 @@ void func_021042f8(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_02105b3c(void *p, s32 a, s32 b, s32 c);
 s32 func_02105d50(void *p);
-void func_021039ec(void *p);
+void func_021039ec(void *p, u32 n);
 void func_02103830(void *p, u32 q);
 void func_02103f98(void *p, void *q);
 u32 func_02064f84(void);
@@ -84,7 +89,6 @@ void func_0205c1d8(void);
 void func_0205c1f4(u32 a, u32 b);
 void func_0205668c(void *p, u32 a, u32 b, u32 c, u32 d);
 void func_02056714(void *p);
-u32 func_02055300(u32 a);
 u32 func_02055328(u32 a, u32 b);
 u32 func_02055334(u32 a, u32 b);
 extern void *data_021c6214;
@@ -313,7 +317,7 @@ BOOL Unk_020dbe34::func_02055600(Unk_020553f8_Res *a, u32 b) {
     unk_5c = a;
     unk_60 = b;
     if (unk_60 != 0) {
-        func_021039ec(unk_5c);
+        func_021039ec(unk_5c, unk_60);
         func_02103830(unk_5c, unk_60);
     }
     func_0205562c();
@@ -361,7 +365,7 @@ BOOL func_02055724(Unk_02055744_Obj *a, u32 b) {
 BOOL func_02055744(Unk_02055744_Obj *a, u32 b) {
     u32 x = func_02103c34(a);
     if (b != 0) {
-        x = func_02055300(b);
+        x = ((Unk_020dbe24 *)b)->func_02055300(x);
     } else {
         x = data_0213bc18(x, 0, 0);
     }

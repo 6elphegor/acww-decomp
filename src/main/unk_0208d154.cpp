@@ -98,7 +98,7 @@ public:
     void func_0208d278();
     void func_0208d28c();
     void func_0208d2b8();
-    void func_0208d2c4();
+    static void func_0208d2c4();
     BOOL func_0208d2d8();
     BOOL func_0208d2f0();
     void func_0208d308(void *p);

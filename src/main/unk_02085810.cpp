@@ -358,9 +358,9 @@ void Unk_02085810::func_020859b4() {
             if (func_0204b2d4(&unk_2e) != 0) {
                 l.unk_04 = 0xfff1;
                 u32 t = func_0204b25c(&unk_2e);
-                if (t == func_0204b25c(&l.unk_04)) f = 1; else f = z1c;
+                f = (t == func_0204b25c(&l.unk_04)) ? 1 : z1c;
             } else {
-                if (unk_2e == 0xfff1) f = 1; else f = z20;
+                f = (unk_2e == 0xfff1) ? 1 : z20;
             }
             if (f == 0) {
                 Unk_02085df0_Str str(&unk_2e);

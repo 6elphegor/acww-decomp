@@ -119,7 +119,7 @@ void func_0203f52c(void *out, void *in, s32 v);
 s32 func_0209d374(void *a, void *b);
 void func_0209d498(void *a);
 s32 func_0209d3a4(void *a, void *b);
-u32 func_0209ceac(u32 v);
+u32 func_0209ceac(u32 v, u32 a, u32 b);
 void func_0203f7cc(void *a, s32 n);
 s32 func_0203f600(Unk_0203f408_Entry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
 s32 func_0203f69c(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, Unk_0203f408_Entry *tmp, Unk_0203f408_Entry *out, s32 n, s32 x, s32 y);
@@ -471,7 +471,7 @@ s32 func_0203f218(Unk_0203f408_Entry *out, s32 n, u8 *p) {
     w.b[3] = p[4];
     w.b[2] = p[3];
     w.b[1] = 0xc;
-    w.b[0] = func_0209ceac(p5);
+    w.b[0] = func_0209ceac(p5, p[4], p[3]);
     func_0203f7cc(out, n);
     zero = 0;
     e = data_020d9744;

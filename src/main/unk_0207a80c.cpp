@@ -25,8 +25,10 @@ struct Unk_0207ac60_Elem {
 
 struct Unk_0207ae84_Mgr {
     u8 pad_00[0x38cc];
-    u32 unk_38cc;
-    u32 unk_38d0;
+    union {
+        struct { u32 unk_38cc; u32 unk_38d0; };
+        s64 unk_38cc_64;
+    };
 };
 
 struct Unk_0207ae28_Buf {
@@ -402,10 +404,8 @@ void func_0207ae84(u8 *self, s32 flag) {
     if (func_0209d3d0(&b, self + 0x38c4, 0x3f) == -1) {
         func_02116048(&b, self + 0x38c4, 8);
         Unk_0207ae84_Mgr *m = (Unk_0207ae84_Mgr *)self;
-        u32 *q = &m->unk_38cc;
-        s64 v = *(s64 *)q;
-        if (v != 0) {
-            func_02116048(&b, q, 8);
+        if (m->unk_38cc_64 != 0) {
+            func_02116048(&b, &m->unk_38cc, 8);
         }
     }
     func_0207a550(self, &b);

@@ -23,7 +23,7 @@ extern void (*data_020cbe78[])(void *, u32, u32);
 s32 func_02072770(Unk_020cbb18 *g, void *out, u32 idx);
 void func_ov003_02226e70(u32 v);
 u32 func_ov003_02226180(u32 v);
-s32 func_ov003_02227100();
+s32 func_ov003_02227100(u32 v);
 s32 func_02072968(Unk_020cbb18 *g, u32 i);
 void *func_02072970(Unk_020cbb18 *g, u32 i);
 void func_02072960(Unk_020cbb18 *g, u32 i, s32 v);
@@ -93,13 +93,14 @@ void func_02075e98(u32 a) {
         u32 v = n;
         u32 h = (v << 20) >> 24;
         n = (v & 0xf) | 0x10;
-        if (n == 1) {
+        u32 t = n;
+        if (t == 1) {
             data_ov003_02258efc = 1;
         } else {
             h--;
             if (h == (u32)g->unk_64) {
                 data_ov003_02258efc = 0;
-                func_ov003_02227100();
+                func_ov003_02227100(t);
             } else {
                 data_ov003_02258efc = 1;
             }

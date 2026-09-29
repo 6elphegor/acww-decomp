@@ -5,7 +5,7 @@ void func_02133ef8(void *, u32);
 void func_02034d70(u32);
 void func_02034dd0(u32, u32, u32);
 void func_02034e10(u32, u32, u32, u32);
-void func_02034d84(void);
+void func_02034d84(u32 a);
 s32 func_0209cf0c(void);
 void func_0209cfb8(u16 *);
 void func_0209cf18(u16 *);
@@ -193,7 +193,7 @@ void Unk_020d8e04::func_0203693c()
 {
     u16 t = unk_0c;
     if (t != 0xffff) {
-        func_02034d84();
+        func_02034d84(t);
         unk_0c = 0xffff;
     }
 }

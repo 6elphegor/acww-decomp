@@ -24,9 +24,7 @@ func_0203b93c r097/a.cpp
 func_0203be94 r098/r098.cpp  # r0 vs r1 for data_020d9250 load
 func_0203c764 r099/r099.cpp
 func_0203d134 r100/r100.cpp
-func_0203f218 r103/fix.cpp
 func_0203fc7c r104/r104.cpp
-func_02040a84 r106/r106.cpp
 func_02042588 r109/r109.cpp
 func_020431a8 r110/r110.cpp
 func_020465a4 r116/r116.cpp
@@ -57,17 +55,11 @@ func_0204e56c r129/r129.cpp  # far off (~350 lines); stack args x,y kept in home
 func_02051844 r134/r134.cpp  # u16 loc[3] addressed from sp+16 base instead of array base (4 insns)
 func_02051a50 r134/r134.cpp  # original keeps redundant second `& 0xf` (4 bytes)
 func_0205276c r136/r136.cpp  # nibble |= order: original reloads byte before val shift
-func_02052b90 r136/r136.cpp  # order of three prologue zero spills
-func_0205415c r138/r138.cpp  # loaded p->unk_18 kept in r1 by original, r0 in ours
-func_02054628 r139/r139.cpp  # muls dest register (count vs index) swapped
 func_020549e4 r139/r139.cpp  # spilled slot order + same muls dest issue
 func_02058320 r146/r146.cpp  # shared zero reg: original fresh `movs r2,#0; adds r3,r2,#0` for last two args
 func_0204c290 r125/r125.cpp  # w/wd regs swapped; try `s32 *s = &w->unk_04; W = s[0]; H = s[1];` (adds r1,r7,#4 pattern)
 func_02055600 r141/r141.cpp  # reloaded unk_60 tested in r1 vs r0
-func_02055744 r141/r141.cpp  # original keeps `bl func_02055780` + epilogue; ours tail-calls
 func_0205b320 r150/r150.cpp  # loop-hoist family; stack-param self-copies, y0/y1 slot placement
-func_0205b7cc r150/r150.cpp  # constant-zero arg scheduled last (original: movs r3,#0 first, adds r0,r3,r2)
-func_0205b818 r150/r150.cpp  # same as 0205b7cc
 func_02059adc r148/r148.cpp  # order of first three movs (id=-1 vs t=1)
 func_02059f3c r148/r148.cpp  # same + local array offsets
 func_0205da08 r154/r154.cpp  # volatile rem slot lands above res/sz (same slot-order issue as loop-hoist family)
@@ -75,7 +67,6 @@ func_0205cbe8 r153/r153.cpp  # order of two initial zero stores [sp,#4]/[sp,#8]
 func_020567ec r143/r143.cpp  # final store loop reg alloc (~10 insns)
 func_020568f8 r143/r143.cpp  # v/hi stack slots swapped
 func_02056e88 r143/r143.cpp  # stack-arg homing store, muls dest, slot order
-func_02061794 r161/a.cpp  # order of two initial zero-BOOL stores (same family as func_0205cbe8, func_02052b90)
 func_0205a930 r149/r149.cpp  # large driver (~546 lines): param p spilled & reloaded, j/i in stack slots; frame 0x7c vs 0x84
 func_02060e3c r160/r160.cpp  # sp+0x30 address recomputed between ldrh; counter/pointer regs swapped in data_021d7350+0x15ec0 loop
 func_02063d18 r165/r165.cpp  # one lsrs (sz = h>>8) hoisted above cmp in original, sunk into branch in ours
@@ -85,17 +76,13 @@ func_0206e084 r182/r182.cpp  # heap/call-result registers swapped
 func_0206c7c8 r180/r180.cpp  # counter-increment block register rotation
 func_020720f8 r189/r189.cpp  # overlay-ID compare constants register order (pool order r2,r1,r0)
 func_02073a0c r192/r192.cpp  # r4/r5 swapped (pointer vs old irq mask)
-func_02073bac r192/r192.cpp  # stack-arg store order for func_020ebb6c 8-arg call
-func_02073bf8 r192/r192.cpp  # same as 02073bac
 func_02070fbc r187/r187.cpp  # value/mode registers swapped (r5/r6), loop counters permuted
-func_02075e98 r196/r196.cpp  # h-1 register choice
 func_020766ec r196/r196.cpp  # header ldrb scheduled later, rebuilds add r2,sp (2 bytes longer)
 func_02071460 r188/final.cpp  # loader: a/b/j registers rotated, u16 local slot +4
 func_02076e88 r197/r197.cpp  # 64-bit accumulator loop: zero/acc register pair differs
 func_02078948 r200/r200.cpp  # one insn: original movs r0,r1 vs our adds r0,r1,#0
 func_02077eb0 r199/r199.cpp  # upward tile scan: x>>4 hoisted and y-(i+1) CSEd; frame 36 vs 28 (hoist family, varying part in y only)
 func_0207ac60 r204/r204.cpp  # tile loop: x/y spill loads swapped
-func_0207ae84 r204/r204.cpp  # 64-bit test hi word via ldr r0,=0x38d0; ldr [r5,r0] (ours folds to [r1,#4])
 func_0207b238 r205/r205.cpp  # symbol loaded twice sharing one pool word; namespace-alias trick adds a pool word
 func_0207b68c r205/r205.cpp  # first s64 compare: original forms address first (adds r0,r5,r0)
 func_0207dd24 r209/r209.cpp  # 3x3 tile scan: y>>4 hoisted even with goto loops (bounds are address-taken xy[] locals)
@@ -103,10 +90,6 @@ func_0207de6c r209/r209.cpp  # same as 0207dd24
 func_0207a038 r203/r203.cpp  # one adjacent pair swapped (adds r7,r6 / ldr r5,[sp])
 func_020859b4 r223/r223.cpp  # order of three initial zero-local stores (zero-store family)
 func_020869c8 r224/r224.cpp  # second nested loop: x/y registers swapped
-func_02085188 r222/r222.cpp  # leaf bit clear: original mvns+ands in place, ours bics with push {r4}. TRY: read the word via *(volatile u32*)&x[w] (r226 fix)
-func_020851a4 r222/r222.cpp  # leaf bit set: same issue
-func_020854e0 r222/r222.cpp  # cnt/data pointer registers swapped
-func_020874e8 r226/r226.cpp  # one adds operand order (sym + 0x15db4: original adds r0,r0,r1)
 func_0208a814 r231/r231.cpp  # unk_6e byte test uses r1 in original, r0 in ours
 func_0208ab4c r231/r231.cpp  # one adds operand order
 func_020892b0 r229/r229.cpp  # original keeps b = a+1 in r4, ours keeps a and rematerializes

@@ -420,7 +420,7 @@ void func_0204c290() {
     w = func_0204da0c();
     if (w) {
         s32 *q = &w->unk_04;
-        wd = w->unk_04 << 4;
+        wd = q[0] << 4;
         ht = q[1] << 4;
         for (y = 0x30; y < ht; y++) {
             x = 0;

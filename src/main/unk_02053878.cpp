@@ -48,7 +48,7 @@ struct Unk_0205415c_Obj {
     Unk_0205415c_Item *unk_18;
 };
 void func_0205415c(void *p, void *q);
-void func_02103d64(void *p);
+void func_02103d64(void *p, void *q);
 void func_02103e40(void *p, void *q);
 void func_02053830(void *p);
 extern u8 data_020dbd28[];
@@ -480,7 +480,7 @@ extern "C" void func_0205415c(void *pv, void *qv) {
     Unk_0205415c_Item *q = (Unk_0205415c_Item *)qv;
     Unk_0205415c_Item *cur = p->unk_18;
     if (cur != q && cur != NULL && cur->unk_10 == 0) {
-        func_02103d64(&p->unk_08);
+        func_02103d64(&p->unk_08, cur);
         func_02103e40(&p->unk_08, q);
     }
 }

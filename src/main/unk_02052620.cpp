@@ -433,11 +433,9 @@ extern "C" u32 func_02052b90(u16 *p) {
         e = func_0204b248(i, z0);
         if (func_0204b2d4(&e)) {
             s32 a = func_0204b25c(&e);
-            if (a == func_0204b25c(p)) m = TRUE;
-            else m = z8;
+            m = (a == func_0204b25c(p)) ? TRUE : z8;
         } else {
-            if (e == *p) m = TRUE;
-            else m = zc;
+            m = (e == *p) ? TRUE : zc;
         }
         if (m) return (u8)cnt;
         if (t == func_020532f0(i)) cnt++;

@@ -275,10 +275,11 @@ extern "C" void func_02054628(Unk_02054628_Obj *o, s32 x)
         u8 *b = o->unk_d4;
         u32 off = *(u16 *)(b + 6);
         u8 *t = b + off;
-        u8 *e = b + *(s32 *)(t + idx * *(u16 *)(b + off) + 4);
+        u32 st = *(u16 *)(b + off);
+        u8 *e = b + *(s32 *)(t + st * idx + 4);
         s32 *v = (s32 *)(e + 4);
         Unk_02054584_Data *d = o->unk_b4;
-        d->unk_4c = ((s32 *)e)[1];
+        d->unk_4c = v[0];
         d->unk_50 = v[1];
         d->unk_54 = v[2];
     } else if (idx == 1) {
@@ -288,7 +289,8 @@ extern "C" void func_02054628(Unk_02054628_Obj *o, s32 x)
             u8 *t = b + off;
             Unk_02054584_Data *d = o->unk_b4;
             s32 old = d->unk_50;
-            u8 *e = b + *(s32 *)(t + idx * *(u16 *)(b + off) + 4);
+            u32 st = *(u16 *)(b + off);
+            u8 *e = b + *(s32 *)(t + st * idx + 4);
             d->unk_50 = old + (*(s32 *)(e + 8) - x);
         }
     }
@@ -456,7 +458,8 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
         u8 *h = (u8 *)func_021062dc(res);
         u8 *p = h + 8;
         u32 off = *(u16 *)(h + 0xe);
-        u8 *q = h + *(s32 *)(p + off + i * *(u16 *)(p + off) + 4);
+        u32 st = *(u16 *)(p + off);
+        u8 *q = h + *(s32 *)(p + off + st * i + 4);
         void *r = func_02055928(q, heap);
         func_02055600(&t->unk_08[i], r, tmp);
     }

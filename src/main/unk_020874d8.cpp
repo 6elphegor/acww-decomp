@@ -151,6 +151,7 @@ extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 extern "C" u8 *func_0208779c(u8 *p);
 extern "C" void func_020877c0(void *a, void *b);
 
+enum Unk_020874e8_K { UNK_020874E8_K = 0x15db4 };
 extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     if (func_02072e44(data_020cbb18)) {
         return FALSE;
@@ -184,7 +185,7 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
             }
             break;
         case 3:
-            u32 k = 0x15db4;
+            Unk_020874e8_K k = UNK_020874E8_K;
             if (func_020ae02c((u8 *)((u32)data_021d7350 + k)) == 3) {
                 return TRUE;
             }

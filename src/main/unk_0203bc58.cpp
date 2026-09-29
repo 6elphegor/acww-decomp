@@ -106,7 +106,7 @@ void func_0203ecec(void *a, void *b);
 Unk_0203bc68_Pos *func_020947f0(s32 id);
 void func_0203b9d4(void *self);
 s32 func_020b50e8();
-s32 func_02081640();
+s32 func_02081640(s32 a);
 Unk_0203be94_Obj *func_0208175c(s32 i);
 void *func_0209750c();
 s32 func_02098044(void *s, s32 a);
@@ -333,9 +333,10 @@ BOOL Unk_020d93b8::vfunc_00() {
     switch (r) {
     case 0x2c: {
         Unk_0203be94_Obj *p = 0;
-        s32 i = data_020d9250;
+        s32 *g = &data_020d9250;
+        s32 i = *g;
         if (i == 8) {
-            p = (Unk_0203be94_Obj *)func_02081640();
+            p = (Unk_0203be94_Obj *)func_02081640((s32)g);
         } else {
             i = i + 1;
             if (i == 8) {

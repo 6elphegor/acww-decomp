@@ -63,7 +63,7 @@ s32 func_02086f18(void);
 s32 func_02072e88(void *, s32);
 void func_0209d498(void *);
 void *func_02067918(s32);
-void func_02067958(void);
+void func_02067958(void *p);
 s32 func_020b4934(void);
 void func_020b4bbc(s32, s32);
 void func_02035368(void *, s32, s32);
@@ -337,7 +337,7 @@ void func_02040a84(s32)
 {
     Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
     if (p->unk_04 == 0) {
-        func_02067958();
+        func_02067958(p);
         func_020b4bbc(func_020b4934(), 20);
         func_02035368(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
         data_021c3c94 = 0;

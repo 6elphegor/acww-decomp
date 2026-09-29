@@ -102,11 +102,9 @@ s32 func_02061794(u16 *p) {
                 BOOL f;
                 if (func_0204b2d4(&buf)) {
                     s32 x = func_0204b25c(&buf);
-                    if (x == func_0204b25c(p)) f = TRUE;
-                    else f = a;
+                    f = (x == func_0204b25c(p)) ? TRUE : a;
                 } else {
-                    if (buf == *p) f = TRUE;
-                    else f = b;
+                    f = (buf == *p) ? TRUE : b;
                 }
                 if (f) return cnt;
                 cnt++;

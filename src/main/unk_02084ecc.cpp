@@ -273,9 +273,7 @@ extern "C" void func_02085188(u32 *w, u32 bit)
     s32 idx = bit >> 5;
     u32 b = bit & 0x1f;
     if (idx < 1) {
-        u32 m = 1 << b;
-        m = ~m;
-        w[idx] = m & w[idx];
+        w[idx] = ~(1 << b) & *(volatile u32 *)&w[idx];
     }
 }
 
@@ -285,8 +283,7 @@ extern "C" void func_020851a4(void *self, u32 bit)
     s32 idx = bit >> 5;
     u32 b = bit & 0x1f;
     if (idx < 1) {
-        u32 m = 1 << b;
-        w[idx] = m | w[idx];
+        w[idx] = *(volatile u32 *)&w[idx] | (1 << b);
     }
 }
 
@@ -461,16 +458,16 @@ extern "C" s32 func_020854e0(void *obj, void *grid)
     s32 r = 0;
     s32 i, sx, sy, z1, z2, v;
     if (func_020030b4(k) != 0) {
-        u32 mask = 0;
+        u32 mask = r;
         u8 *q = func_0207f170(obj);
         sx = q[0];
         sy = q[1];
         s32 *d = data_021cdd38;
-        s32 cnt = 0;
-        v = 0;
-        i = 0;
-        z1 = 0;
-        z2 = 0;
+        s32 cnt = mask;
+        v = cnt;
+        i = cnt;
+        z1 = cnt;
+        z2 = cnt;
         for (i = 0; i < 14; i++) {
             s32 x = sx + d[0];
             s32 y = sy + d[1];
@@ -486,7 +483,8 @@ extern "C" s32 func_020854e0(void *obj, void *grid)
             }
             d += 2;
         }
-        r = func_02085580(mask) * cnt;
+        r = func_02085580(mask);
+        r *= cnt;
     }
     return r;
 }

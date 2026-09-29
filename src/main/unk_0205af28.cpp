@@ -535,9 +535,10 @@ void func_0205b7b0() {
     data_021c621c = NULL;
 }
 
+enum Unk_0205b7cc_Zero { UNK_0205B7CC_ZERO = 0 };
 void func_0205b7cc(s32 x) {
     s32 a = x;
-    s32 z = 0;
+    Unk_0205b7cc_Zero z = UNK_0205B7CC_ZERO;
     u32 s = (data_020c8b9c + 3) & ~3;
     s = (s + 0x4b) & ~3;
     u32 e = z + s;
@@ -550,7 +551,7 @@ void func_0205b7fc() {
 }
 
 void func_0205b818(s32 x) {
-    s32 z = 0;
+    Unk_0205b7cc_Zero z = UNK_0205B7CC_ZERO;
     u32 s = (data_020c8ba0 + 3) & ~3;
     s = (s + 0x4b) & ~3;
     data_021c6198 = func_020e8da0(z + s, x, s, z);

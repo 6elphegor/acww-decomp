@@ -342,10 +342,11 @@ void Unk_020e0ef4::func_0208a7f4() {
     func_020b3270(&unk_3c, unk_68, 7, 1, 0, 1);
 }
 
+namespace Unk_0208a814_NS { extern "C" s32 func_0208a798(...); }
 BOOL Unk_020e0ef4::func_0208a814() {
     BOOL r = FALSE;
     if (unk_6e == 0) {
-        s32 v = func_0208a798();
+        s32 v = Unk_0208a814_NS::func_0208a798(this);
         if (unk_68 != v) {
             s32 d = v - unk_68;
             if (d < 0) {
@@ -514,8 +515,8 @@ void Unk_020e0ef4::vfunc_08() {
             s32 b = (unk_28 + 0x800) >> 12;
             s32 c = func_02089f64(this);
             s32 e = func_02089210(&unk_0c, -1);
-            s32 y = unk_24 + (c + e);
-            y = b + y;
+            s32 y = b;
+            y += unk_24 + (c + e);
             func_02087e70(0, (void *)h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
