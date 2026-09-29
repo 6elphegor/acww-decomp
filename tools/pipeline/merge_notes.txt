@@ -137,3 +137,4 @@ ov004/unk_02219378 (ov004_035): methods attributed to Unk_ov004_0224c740 but use
 ov004/unk_022162f0 (ov004_030): tail of Unk_ov004_0224c228 (7-state machine) + Unk_ov004_0224c198 menu vfuncs 10/14/18/78 (ov004_029 defined stubs for these — drop them).
 ov004/unk_022175b8 (ov004_032): rest of Unk_ov004_0224c38c (factory 0221785c; +0x89c member ctor 022175bc = ov004_031's SM Unk_ov004_02216ff4 — unify), Unk_ov004_0224c574 dtors/vfuncs, menu Unk_ov004_0224c4e4 methods (base unknown).
 ov004/unk_0221c2d8 (ov004_040): scene state class Unk_ov004_0224d010 (padding instead of real base) + owner Unk_ov004_0224d0a0 : Unk_020d77a4 slot 0x48.
+ov004/unk_02219d34 (ov004_036): rest of Unk_ov004_0224c7d0 (0xae4, factory 0221a1c4), Unk_ov004_0224c994 + menu Unk_ov004_0224c904, head of Unk_ov004_0224cb98 (member Unk_ov004_0224cb08 D0/D1 emitted weak/comdat).
