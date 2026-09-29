@@ -364,6 +364,8 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
   - `ldr r0,=sym; movs r1,r0; ldrh r1,[r1,#0x1c]`: `T *e = &data_021d0830; f(e, e->unk_1c, ...); g(e);` — route every use through `e`.
   - Declare the pointer AFTER any earlier unrelated call (declaring it before brings the folded form back). If plain doesn't work, try `*const` (r246/r247 matched that way in their context).
 
+- **Constant held in a callee-saved register across a call (solved, Opus 2026-09-29).** Original `movs r5,#5; bl f; cmp r5,r0` (or later `movs r1,r5` as an argument), where ours folds to `cmp r0,#5`: hold the constant in an ENUM-typed local. `enum X_Limit { X_LIMIT_5 = 5 }; X_Limit k = X_LIMIT_5; if (k > f()) ...`. Every integer type (s32, const s32, u32, u8, s8, u16, s16) gets folded. If the register is then passed to a call, the callee's parameter type picks the move: enum → `movs rN,rK`; int/s32/u32 → `adds rN,rK,#0`; narrower → `lsls/lsrs`.
+
 ### Quirks from r225/r228
 - u8 bitfield setter with unmasked arg: type the parameter `u8` (`void f(u8 v){ bf = v; }`) → `ands` only; s32/u32 adds `lsls 24; lsrs 24`.
 - `movs rX,#0; mvns rY,rX` (-1) right after a call comes from `t = f(); BOOL r = FALSE; if (t == -1) r = TRUE;`.
@@ -444,3 +446,12 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A -1 argument repeated in a call chain inside a loop stays in a register only as a literal; a named local gets spilled.
 - Stores `p[0]=x; p[1]=0; p[2]=y` with loads out of order: read `s32 yt = y;` before the stores.
 - Functions whose only return path is fallthrough may need `void` (an `s32` version moved a constant load to r3).
+- Scoped object with a dtor plus a shared early exit: put the label inside the scope (`out:;` just before the closing brace) so the dtor is emitted once.
+- `bics; lsls #24; lsrs #24` on a mask later shifted with `asrs`: `m = (u8)(m & ~3)` with `s32 m`.
+- Shared-target layout: `if ((r == 2 && (f() & 1)) || r == 1) X` rather than two separate ifs.
+- Sparse switch (padding with empty `case N: break;` labels) gives one jump table; the original's split layout (range test + small table + separate compares) is unsolved.
+- Two member arrays built from one base pointer in a ctor (`this+0x1148` reused): group them into one struct member holding both arrays plus the gap.
+- Wrong mangled symbol for a many-arg method usually means the stack-arg types are wrong: re-derive each stack param's width from the callee's loads (ldrb → u8, ldrh → u16).
+- One-bit flag byte: `struct { u8 f:1; u8 x:7; }` — read gives `lsls 31; lsrs 31`, `f = 0` gives the recomputed-address `bics` sequence.
+- A method whose result is fed straight into another call's u8 param: declare it returning `u8` so the caller emits no `lsls/lsrs`.
+- Initial zero flag stored to [sp] and later used as a byte offset: `volatile s32 z = r; *(s16*)((u8*)p + z)`.

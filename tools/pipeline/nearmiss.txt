@@ -116,3 +116,5 @@ func_0208709c r225/r225.cpp  # loop-hoist family: x>>4 hoisted despite goto form
 func_02088730 r228/r228.cpp  # idx should spill to sp+0xc (3 spills), ours keeps it in r7 -> OR-chain reg swap
 func_0208c714 r234/r234.cpp  # load order: original ldr [r4,#0x64] before pool ldr data_020cf5f0
 func_0208b9f0 r233/r233.cpp  # mwcc folds copy k=x of known-zero flag; orrs lands on r4 instead of adds r0,r6,#0; orrs r0,r1
+func_0208dd48 r237/r237.cpp  # scheduling: second range-check BOOL from func_02095134(4) sunk below flag tests
+func_0208e13c r237/r237.cpp  # j=i+1 should be computed early into r6 (8-byte record table data_020d5b0c)
