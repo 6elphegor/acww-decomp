@@ -307,3 +307,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A param stored by `push {r0-r3}` and copied with `ldm r3!,{r1,r2}` is an 8-byte struct passed by value.
 - An early return placed out of line after the fall-through path needs `goto fail; ... fail: return e;`.
 - File/LZ loader utilities (FSFile wrapper, LZ77 block files) are in unk_02063904.cpp.
+- A byte store `arr[i-1] = 1` that the original writes as `ldr r0,=K; strb [r1,r0]`: `*((u8*)this + i + K) = 1`.
+- Class with vtable and no user dtor emits no D0/D1/D2: declare `virtual ~T();` and define it out of line.
