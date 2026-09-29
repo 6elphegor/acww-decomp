@@ -54,3 +54,5 @@ func_0204452c r112/r112.cpp  # e->unk_06[i]: original `adds rB,e,#6; ldrh [rB,rI
 func_020445a4 r112/r112.cpp  # same, plus second load into volatile vv merged
 func_02044650 r112/r112.cpp  # same as 020445a4
 func_02044774 r112/r112.cpp  # prologue reg assignment / flag store order
+func_020483b0 r119/final.cpp  # n/i registers swapped
+func_02048634 r119/final.cpp  # far off; loop-hoist family (by=y>>4 hoisted, by<<4 recomputed)

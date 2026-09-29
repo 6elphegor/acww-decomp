@@ -181,3 +181,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Byte loads in the original's order: read into locals in that order (`u32 nb = p->b5; u32 na = p->b4;`) then use them.
 - A `volatile u16` local sorts before volatile s32s in the frame. To place it after them, declare `volatile u32 w32` and access `*(volatile u16 *)&w32`.
 - Don't make a parameter volatile (adds `push {r0-r3}`); use a volatile local copy.
+- Zeroing a local struct array: give the struct an inline ctor that zeroes it (`P() { x = 0; y = 0; }`) and declare `P arr[N]`; this gives the original's inline pointer zero loop.
+- To stop CSE/hoisting of a repeated `x - (bx << 4)`, write the occurrence as `x - ((u32)bx << 4)`. `bx*16`, `16*bx` and `<<3<<1` still get merged.
+- An inner loop with no initial test whose start is a volatile zero: `j = kx; do { ...; j++; } while (j < 16);`.
+- asmdiff prints nothing when the file fails to compile. Search scripts must treat empty output as a failure, not a match.
