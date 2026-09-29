@@ -145,3 +145,4 @@ func_ov004_022306f0 ov004_074/ov004_074.cpp  # unk_210 shift in switch cases 0/2
 func_ov004_02229e1c ov004_063/ov004_063.cpp  # sp2; v != -1 test: orig movs r1,#0;mvns r2,r1;cmp r4,r2, ours mvns r1,r1;cmp r4,r1
 func_ov004_0222a0bc ov004_063/ov004_063.cpp  # sp2; callee-saved regs for data_02240298[0..2]: orig a=r4,b=r6,c=r7, ours r7/r6/r4; all 6 decl orders tried
 func_ov004_022316e0 ov004_075/ov004_075.cpp  # reg rename only: orig &258=r4,&27c=r3,*p=r5; ours r5/r4/r3; ~12 variants tried
+func_ov004_02231d54 ov004_076/ov004_076.cpp  # k*=-1 on volatile stack k: orig movs r0,#0;mvns r1,r0;ldr r0,[sp];muls r0,r1 — ours loads k first into r1
