@@ -138,3 +138,5 @@ func_02098eb0 r255/r255.cpp  # original spills o and e=p+i (frame 0x14), a/p/i/o
 func_0209af4c r259/r259.cpp  # this/flag register swap (r6/r7)
 func_0209a7d0 r258/r258.cpp  # p/i register swap (r6/r5) in memset+loop fn
 func_0209bcf8 r260/r260.cpp  # two spilled rand results in swapped frame slots (sp+12/sp+16)
+func_0209ff8c r268/r268.cpp  # last loop: original loads list[i] into r1 before moving a into r0
+func_020a049c r268/r268.cpp  # checksum: original loads data_021d7350 first, reloads other address per subtract; r6/r7 swapped

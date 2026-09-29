@@ -94,3 +94,4 @@ unk_0209be24 (r261): Bingo board Unk_0209be24 = r260's Unk_0209b5d4 (same 6x6 gr
 unk_020a25d8 (r272): free-function state handlers on the same state object (Unk_020a25d8 = Unk_020a1c88 family, state byte +0x9d).
 unk_020a0868 (r269): Unk_020a09d8 save/backup state machine (singleton data_021ed3b0, dispatcher func_020a1158).
 unk_020a1224 (r270): the big state-machine object is Unk_020e2824 : Unk_020ddcf0 (vtable 0x020e2824, D0/D1/C1 here). Its methods are spread as Unk_020a09d8? no — r266 Unk_0209f304, r267 Unk_0209f638, r271 Unk_020a1c88, r272 Unk_020a25d8 (free fns), r273 Unk_020a3238: rename all to Unk_020e2824. r265 already saw Unk_020e27d4 holding Unk_020e2824 unk_54.
+unk_0209ff4c (r268): Unk_021ed3b0 (object behind data_021ed3b0) accessors as free fns — callers in unk_020742f4.cpp use func_020a0370() — probably Unk_020e2824 methods; same object as r269's Unk_020a09d8 singleton.
