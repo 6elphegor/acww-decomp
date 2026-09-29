@@ -1,2 +1,2 @@
 CompileFlags:
-  Add: [-Iinclude, -xc++, -std=c++98, -Wno-everything]
+  Add: [-Iinclude, -xc++, -std=c++98, --target=armv5te-none-eabi, -Wno-everything]

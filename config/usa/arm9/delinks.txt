@@ -27,3 +27,6 @@ src/main/unk_02051218.cpp:
 
 src/main/unk_020a6914.cpp:
     .text       start:0x020a6914 end:0x020a8c9c
+
+src/main/unk_020abbcc.cpp:
+    .text       start:0x020abbcc end:0x020acf38
