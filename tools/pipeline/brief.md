@@ -510,3 +510,6 @@ Some groups are in an overlay rather than the main module. For those:
 - Local aggregates get ascending stack slots in declaration order; a local object with ctor/dtor goes after named locals — model it as a raw `u8 buf[N]` with explicit ctor/dtor calls to place it.
 - A spilled loop offset (`lsls r0,r4,#2; str r0,[sp,#8]`): `u32 off = i << 2;` used as `*(u32*)((u8*)a + off)`.
 - Force a data load before an address add: read the field through a volatile cast.
+- **vfunc_08 / vfunc_14 take an s32** in many derived classes, but include/Unk_020d8c7c.h declares them with no params. Do NOT edit the header. In your file: `#define vfunc_14() vfunc_14(s32 a)` (and/or vfunc_08) before `#include "Unk_020d8c7c.h"`, `#undef` after — otherwise the override becomes a new slot and shifts the vtable.
+- Clamp `d >= n ? n - 1 : d` (the `>=` arm first).
+- Function-local `static T v` with inline empty dtor and no ctor gives guard + `__register_global_object` with no ctor call.
