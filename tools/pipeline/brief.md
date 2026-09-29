@@ -347,3 +347,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Open problem: 3x3 neighbourhood scans whose loop bounds are address-taken locals (`xy[i]+1`) still hoist `y>>4` even with goto loops (func_0207dd24, func_0207de6c, func_02077eb0). Report a trigger if you find one.
 - `f(g(a), g(b))` evaluates the calls in reverse of the original's order; hoist them to locals in call order.
 - The 0x700-byte player slot record is `Unk_0207fb80` (unk_0207fb80.cpp).
+- Several zero initialisers: `x = 0; y = 0; z = 0;` vs chained `y = x = z = 0;` allocate differently; try all statement orders.
+- Big early-exit function with one epilogue: `if (x != -1) { main } else { nomatch }` rather than `goto nomatch` (which gives two epilogues).
