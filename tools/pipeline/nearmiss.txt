@@ -98,3 +98,5 @@ func_0207ac60 r204/r204.cpp  # tile loop: x/y spill loads swapped
 func_0207ae84 r204/r204.cpp  # 64-bit test hi word via ldr r0,=0x38d0; ldr [r5,r0] (ours folds to [r1,#4])
 func_0207b238 r205/r205.cpp  # symbol loaded twice sharing one pool word; namespace-alias trick adds a pool word
 func_0207b68c r205/r205.cpp  # first s64 compare: original forms address first (adds r0,r5,r0)
+func_0207dd24 r209/r209.cpp  # 3x3 tile scan: y>>4 hoisted even with goto loops (bounds are address-taken xy[] locals)
+func_0207de6c r209/r209.cpp  # same as 0207dd24

@@ -342,3 +342,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A flag chain written as its own `static inline BOOL Chk(u16 *p)` that loads `v = *p` itself matches; a shared `v` in the caller lands in the wrong register.
 - `t = cond ? A : B; n = t + f();` coalesces t/n; wrap the choice in a `static inline s32 Count()` to keep them separate.
 - A callee called both with and without an argument (r0 passed through): declare it variadic, e.g. `s32 func_0209888c(...)`.
+- A chained pointer add `adds r7,r0,#0; adds r7,#0x88; adds r4,r7,#0; adds r4,#0xc` comes from nested reference upcasts through multiple-inheritance bases (`Top : P0(0x88), Mid`; `Mid : Q0(0xc), Q1`; `Mid &m = *top; Q1 &q = m;`).
+- Nested loops whose inner start is a spilled zero: declare the loop variables inside the block that holds the loops, not at function scope.
+- Open problem: 3x3 neighbourhood scans whose loop bounds are address-taken locals (`xy[i]+1`) still hoist `y>>4` even with goto loops (func_0207dd24, func_0207de6c, func_02077eb0). Report a trigger if you find one.
