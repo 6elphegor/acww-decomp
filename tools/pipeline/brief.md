@@ -312,3 +312,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `(u16)(x - 5) <= 2` compiles as subs; the `ldr =0xfffb; adds` form is `(u16)(x + 0xfffb) <= 2`.
 - Row addressing `(u16 *)((y << 6) + (u32)base)` gives `adds r1,r2,r0`; `base + y*32` reverses the operands.
 - Top-nibble insert masks: `(u32)v << 28 >> 16` gives `lsls #28; lsrs #16`.
+- 64-bit shifts call helpers func_02133120 (<<) / func_02133540 (>>): write `*(s64*)dst |= (s64)v << (i*4)`; passing the sign word by hand gets folded.
+- The thunks func_02003ac8..func_02003b4c (unk_020039ec.cpp) take real arguments (object data_021cb420 as arg 1).

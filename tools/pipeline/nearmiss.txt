@@ -80,3 +80,5 @@ func_0205a930 r149/r149.cpp  # large driver (~546 lines): param p spilled & relo
 func_02060e3c r160/r160.cpp  # sp+0x30 address recomputed between ldrh; counter/pointer regs swapped in data_021d7350+0x15ec0 loop
 func_02063d18 r165/r165.cpp  # one lsrs (sz = h>>8) hoisted above cmp in original, sunk into branch in ours
 func_02068884 r173/main.cpp  # load/test order of unk_2c/unk_30 (r0/r1 swapped)
+func_0206dbcc r182/r182.cpp  # 15-bit color halving loop: params moved to r3/r2 in original
+func_0206e084 r182/r182.cpp  # heap/call-result registers swapped
