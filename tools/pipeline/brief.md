@@ -486,3 +486,13 @@ Some groups are in an overlay rather than the main module. For those:
 - Calls from an overlay into the main module use the main names (`func_0206xxxx`); calls to other functions in the same overlay use `func_ovNNN_...`. Overlays share address ranges, so never infer a callee from its address alone — read the symbol name in the asm.
 - Class names for overlay-only classes: `Unk_ovNNN_<addr>` (e.g. vtable address or first method), so they never collide with main-module classes.
 - In pairs.txt, the second field is the full original name (`func_ovNNN_...`).
+- Function-pointer call through an odd scratch register (`ldr r2,[r5,#0x10]; blx r2`) means a hidden extra argument — give the typedef one more param.
+- Placement new: `e = new (e) T;` (assign the result back) reproduces `if (e) e = ctor(e)`.
+- A class holding a polymorphic type as a MEMBER calls its D1 and stores no vptr; subclassing gives a vptr store and a D2 call — pick by what the original does.
+- A tail-call thunk (`bx r3`) to a sibling stays a thunk only if the caller is defined before the callee.
+- `sym + K` kept as a runtime add (`ldr r1,=sym; ldr r0,=K; adds`): pass `(u8 *)((u32)sym + K)` directly.
+- Unexplained `movs r1,#0` before a conditional call is a zero argument, often a zero local reused as the result: `s32 s = 0; if (m == 1) s = f(s);`.
+- Local pointer arrays: assign elements one by one (aggregate init gives an ldm/stm copy from the pool).
+- Member-pointer dispatch: `if (tbl[i]) (this->*tbl[i])(arg);` with no local copy.
+- Unmasked bitfield store from a call result: declare the callee returning `u8` (a `u32` return adds `lsls/lsrs #24`).
+- Consecutive stores to two nibble bitfields: plain `u8 lo:4, hi:4` reproduces bics/orrs/strb + reload with no hand masks.
