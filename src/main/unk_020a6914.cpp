@@ -410,6 +410,7 @@ public:
 
 class Unk_020e2b70 : public Unk_020d8c7c {
 public:
+    Unk_020e2b70();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL vfunc_18();
@@ -466,6 +467,12 @@ extern Flag18 data_021edcfc;
 // mwcc 1.2 emits functions in reverse order, so they are defined here from highest to lowest address
 
 // ---- Unk_020e2b70
+extern "C" Unk_020e2b70 *func_020a8c84(void) {
+    return new Unk_020e2b70;
+}
+
+Unk_020e2b70::Unk_020e2b70() {}
+
 Unk_020e2b70::~Unk_020e2b70() {}
 
 BOOL Unk_020e2b70::vfunc_00() {
