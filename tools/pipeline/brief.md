@@ -316,3 +316,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - The thunks func_02003ac8..func_02003b4c (unk_020039ec.cpp) take real arguments (object data_021cb420 as arg 1).
 - Message/text buffer classes: `Unk_020e2a60` (destination, data at +0xe) and `Unk_020e2a78` (source, data at +0x12) subclasses all have vtables [D1, D0, vfunc_08 = size, vfunc_0c = data ptr]; see unk_0206c714.cpp.
 - `unk_098[i]` on a `u8[4][0x4c]` member gives one `muls`; `unk_098 + i*0x4c` double-scales.
+- ARM `asm void f() { ... }` inside `#pragma thumb off`: an instruction the assembler mangles (e.g. `stmfd sp!, {r0-r12,sp,lr,pc}`) can be emitted as `dcd 0xe92dffff`.
+- Record-table singleton data_021c5330 is `Unk_0206d7cc` (three `Unk_0206d8b8` cached tables); see unk_0206d0a0.cpp.
