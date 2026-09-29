@@ -143,3 +143,4 @@ func_020a049c r268/r268.cpp  # checksum: original loads data_021d7350 first, rel
 func_0209cd00 r262/r262.cpp  # date difference: pure register allocation (year1 r1/year0 r2/day0 r3/month0 r7)
 func_020a6214 r277/r277.cpp  # spilled constant 3 at sp+0 (volatile k): adds/ldr order and 3-byte buffer base (add r0,sp,#4) differ
 func_020a59c0 r276/r276.cpp  # r6/r7 swap: hoisted this+0xc vs i<<3
+func_020a4778 r275/r275.cpp  # original reloads ldr =data_021d7352 before the +2 (ours CSEs the address); 2 bytes short, rest likely matches
