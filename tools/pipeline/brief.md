@@ -355,3 +355,13 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A struct with a user ctor returned by value puts the hidden return pointer in r0 and `this` in r1.
 - Slot manager singleton data_021cd264 is `Unk_02081c54`; the "type" classes derive from `Unk_020821b4` with vtables 0x020e06c8..0x020e0768 [D1, D0, vfunc_08] (unk_0208175c.cpp).
 - A compare where the original loads the slot field before `*p`: `u32 a = slot.id; u32 b = *p; if (a == b)`.
+
+### Quirks from r225/r228
+- u8 bitfield setter with unmasked arg: type the parameter `u8` (`void f(u8 v){ bf = v; }`) → `ands` only; s32/u32 adds `lsls 24; lsrs 24`.
+- `movs rX,#0; mvns rY,rX` (-1) right after a call comes from `t = f(); BOOL r = FALSE; if (t == -1) r = TRUE;`.
+- A method with no return statement (`void *f() {}`) whose result callers chain reproduces bare `bl`s with r0 passing through.
+- Shared `return 0` paths: use `goto fail; ... fail: return 0;`.
+- Spilled register-arg self-stores (`ldr r0,[sp,#N]; str r0,[sp,#N]`) match once local declaration order is right — try comma-form declarations with initialisers.
+- Squared-length compare: declare `s32 len` and cast `(s64)len` at the compare (declaring s64 swaps `movs r5,#0` / `asrs`).
+- Byte-identical C1/C2 or D1/D2 pairs: assign by function order and say so in the report.
+- Global object getters (`ldr r0,=sym; bx lr`) get inlined into callers in the same file; define them at the end of the file.
