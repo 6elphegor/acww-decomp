@@ -500,3 +500,5 @@ Some groups are in an overlay rather than the main module. For those:
 - Mask literals: write `& ~0x780` / `& ~0xf800` for `0xfffff87f` / `0xffff07ff` pool words.
 - A global tested then decremented with separate address loads: declare it `extern volatile`.
 - Global compared then reloaded for a call argument: compare through a local (`s32 t = g; if (t == A)`) and pass `*(volatile s32 *)&g`.
+- A dead duplicate compare in an if/else chain: write the literal duplicate `else if (b == 0)` branch — mwcc doesn't fold it.
+- The enum-local trick is not universal: under register pressure it can push a different variable to the stack. For a constant the original spills to [sp], try `volatile s32 k`.
