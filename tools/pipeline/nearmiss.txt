@@ -45,3 +45,5 @@ func_02044d18 r113/final_r113.cpp  # one adds with swapped operands (tbl + idx<<
 func_02044dd8 r113/final_r113.cpp  # load order in byte-pair store
 func_020439f8 r111/final.cpp  # stack slots of volatile k1 / k3 swapped
 func_020497f8 r121/b.cpp  # original spills a3 and keeps stack args a4/a5 in r6/r4 (5 saved regs); ours reloads from stack
+func_0204cd00 r127/r127.cpp  # copy-loop reg alloc (shared zero in r7)
+func_0204d1dc r127/r127.cpp  # result/handle registers swapped

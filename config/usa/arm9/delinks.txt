@@ -504,3 +504,9 @@ src/main/unk_020434f0.cpp:
 
 src/main/unk_020492fc.cpp:
     .text       start:0x020492fc end:0x02049e1c
+
+src/main/unk_0204cc48.cpp:
+    .text       start:0x0204cc48 end:0x0204d560
+
+src/main/unk_02047798.cpp:
+    .text       start:0x02047798 end:0x020480a8
