@@ -333,3 +333,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Constant-bound loops that the original enters with `b test`: the goto form `i = 0; goto test; loop: ...; i++; test: if (i < N) goto loop;`.
 - Unfolded `ldr =sym; adds #K` inside loops (not hoisted/CSE'd): declare the extern as a struct and access `((T *)(u32)&sym)->field`.
 - Bit test-and-clear returning a flag: `BOOL r; if (((g >> bit) & 1) == 0) r = FALSE; else r = TRUE; g &= ~(1 << bit);`.
+- `p[0] >> 4` on a u8 may give `asrs`; `(u32)p[0] >> 4` gives `lsrs`.
+- An empty `bx lr` function whose callers use its return value: declare it returning a value and define `T f() {}` with no return statement.

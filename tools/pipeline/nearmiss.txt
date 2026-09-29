@@ -91,3 +91,4 @@ func_02070fbc r187/r187.cpp  # value/mode registers swapped (r5/r6), loop counte
 func_02075e98 r196/r196.cpp  # h-1 register choice
 func_020766ec r196/r196.cpp  # header ldrb scheduled later, rebuilds add r2,sp (2 bytes longer)
 func_02071460 r188/final.cpp  # loader: a/b/j registers rotated, u16 local slot +4
+func_02076e88 r197/r197.cpp  # 64-bit accumulator loop: zero/acc register pair differs
