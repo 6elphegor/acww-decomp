@@ -178,3 +178,7 @@ func_ov001_0220cd24 ov001_020/ov001_020.cpp  # -O4,p ARM; switch dispatch only: 
 func_ov001_02212260 ov001_028/ov001_028.cpp  # -O4,p ARM; 14 lines regs only: 2nd loop orig n in r6 (sub r6,r6,#16), i in r3 (ours n-16 in r3, i in r6)
 func_ov001_0220bfec ov001_018/ov001_018.cpp  # -O4,p ARM; prologue only: orig loads aa58[2],[3],[0],[1],ea4[0] before any strh (ours interleaves); all 180 stmt orders tried
 func_ov001_02215e1c ov001_034/ov001_034.cpp  # -O4,p ARM; 2nd branch (volatile u16 h[4]) regalloc/schedule: orig loads table entries up front into ip/r1/r3
+func_ov001_02214154 ov001_032/ov001_032.cpp  # -O4,p ARM; regalloc only (57 lines): orig g r0, base r4, i r2, off r1, zero lr, tbl r5, cursor r6, j r7, p r8
+func_ov001_022142c8 ov001_032/ov001_032.cpp  # -O4,p ARM; regalloc (35 lines): orig i r6, off r4, j r5, p r7
+func_ov001_02214488 ov001_032/ov001_032.cpp  # -O4,p ARM; sched+regs (44 lines): orig g r2, mov r0,#3 early, table byte before *reg
+func_ov001_0221381c ov001_031/ov001_031.cpp  # -O4,p ARM; prologue regs only (26 lines): orig zeroes v[4] via r0=sp+16 zero r1, first value r4; ~100 variants tried
