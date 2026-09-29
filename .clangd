@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-Iinclude, -xc++, -std=c++98, -Wno-everything]
