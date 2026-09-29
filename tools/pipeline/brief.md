@@ -154,3 +154,5 @@ If a function doesn't match after several genuinely different attempts, move on 
 - A switch over a sparse range (e.g. 6..26) needs explicit empty case labels for the gaps to get a jump table instead of a compare tree.
 - If a caller must `bl` a callee that is itself `void` (the callee's own code only matches as void), the original was probably C calling an undeclared function (implicit `int` return). Inside the `extern "C"` block, declare an `s32` prototype in a namespace used only by the caller, and define the real function as `void` at global scope. The call still resolves to the C symbol. Check with `arm-none-eabi-objdump -r` that the relocation is `func_XXXX`.
 - A global address reused via one `ldr` across several calls in one basic block: `char *const g = sym;`.
+- A switch on a callee's result with signed compares (`bgt`/`bge`) means the callee returns `s32`; `u32` gives `bhi`/`bcs`. `func_0204aa24(u16*)` returns s32.
+- Extra empty case labels widen a jump table. If the original's table starts partway through the case list, drop empty labels below its start so the sparse low cases become a compare tree.
