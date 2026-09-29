@@ -33,3 +33,9 @@ func_020465a4 r116/r116.cpp
 func_02046650 r116/r116.cpp
 func_020475f8 r117/r117.cpp  # hoists y-(ty<<4) into extra stack slot
 func_02047714 r117/r117.cpp  # one swapped ldr/asrs pair at 0x22
+func_020489cc r120/final.cpp  # far off, shape probably wrong
+func_02048c30 r120/final.cpp  # ly hoisted out of inner loop; frame +8
+func_02048cf0 r120/final.cpp  # ly hoisted out of inner loop; frame +8
+func_02048e10 r120/final.cpp  # register permutation only
+func_02048fc4 r120/final.cpp  # c % 7 div helper / tail-call form
+func_020490c8 r120/final.cpp  # w/h spill slot order

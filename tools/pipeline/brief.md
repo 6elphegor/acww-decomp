@@ -160,3 +160,6 @@ If a function doesn't match after several genuinely different attempts, move on 
 - `s32 *s = b->v; w = s[0]<<4; h = s[1]<<4;` reproduces `adds r1,r6,#4; ldr [r6,#4]; ldr [r1,#4]`; named struct fields fold to `[r6,#8]`.
 - `u32 b = K; b += f(); return (u16)b;` keeps the constant in a callee-saved register across the call; `(u16)(K + f())` doesn't.
 - `ldr r2,=sym; ldr r0,=0x15e28; ldrb [r2,r0]` (big offset kept in its own register instead of folded into the relocation): index through a local pointer with an offset the optimizer can't prove constant, e.g. `u8 *g = sym; s32 o = rt ? 0x15e28 : 0x15e28; g[o]` where `rt` is a real runtime value evaluated at that point.
+- `x - ((x>>4)<<4)` written inline folds to `movs #15; bics`; use a `hx = x>>4` temporary to get `lsls; subs`.
+- With a `for (x = 0; x < n; ...)` loop the compiler emits its own `cmp n,#0; ble` guard; don't add a manual `if (n > 0)`.
+- Open problem: mwcc sometimes hoists `y - (hy<<4)` out of an inner loop when the original recomputes it (r117 func_020475f8, r120 func_02048c30/cf0). If you find the trigger, report it.
