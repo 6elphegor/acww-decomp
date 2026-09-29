@@ -228,3 +228,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A derived class with a base virtual dtor: write `~D() {}`; don't call the base D2 by hand.
 - A `BOOL z = FALSE;` never modified, returned on every early exit and used as the loop start (`s32 i = z`), reproduces a shared zero register.
 - Fixed-point sums: mwcc evaluates the second product first, so write `(s64)t*a + (s64)k*b` to get `k*b` first.
+- A temporary passed by const reference (`f(Elem(x))`, callee `f(const Elem &)`) gets its stack slot after all named locals.
+- Tiny functions defined in the same file can still get inlined into callers even with `-inline noauto`; defining them at the end of the file avoided it.
+- A `r = TRUE; if (!(A || B)) r = FALSE;` cascade: nested `static inline BOOL` helpers, each written that way.

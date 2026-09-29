@@ -15,3 +15,4 @@ unk_02053878 (r138) models Unk_0205454c's bases flat as Unk_020dbdd4/de4/df4; un
 unk_02054ae0 (r140): calls the base at vtable 0x020dbe34 `Unk_020dbe34` (= r139's `Unk_02055704`, ctor func_02055704); its thunk-host classes model `Unk_020dbd54 : Unk_020dbd34, Unk_020dbd44` while r139 has `Unk_020dbd54 : Unk_020dbd34, Unk_020dbe7c` — reconcile (+0x9c secondary). Also contains an unpaired helper `Unk_test_thunks()` that only exists to instantiate the thunk classes; drop it once the real classes live in the same TU.
 unk_02055d18 (r142) defines Unk_020dbe6c (0x3c, vtable 0x020dbe6c) and Unk_020dbe7c (0x18) — these are r139's Unk_020dbe7c_Sub and Unk_020dbe7c; rename r139's _Sub to Unk_020dbe6c when merging.
 unk_020582a0 continues unk_02057940 (same class Unk_02057940); merge.
+unk_0204b9c0 continues unk_0204a754/unk_0204b08c (item-ID helpers); merge.
