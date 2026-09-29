@@ -558,3 +558,7 @@ Some groups are in an overlay rather than the main module. For those:
 - Adjuster thunks are emitted only for classes that are instantiated (`new X`) with a defined virtual dtor; for thunk-only groups use stub classes. In nm, thunks show as `?` — grep for `Thn`.
 - Adjacent address-taken u16 outputs: separate scalar locals (`u16 w0, w1, w2;`), not an array — arrays go after block-scoped dtor objects in the frame.
 - Keep member pointers re-read each use (`unk_1a0->...`) when the original reloads; caching into a local moves registers.
+- Function-local `static S vs[N] = {S(..), ...}` with guard code: S needs an inline ctor AND an inline empty dtor (a plain aggregate folds to const data).
+- `if (a == 0) A else if (a == 1) B` as `beq zero; cmp 1; bne end`: write `switch (v) { case 1: B; break; case 0: A; }`.
+- `||` gets jump-threaded; an original with `cmp 4; beq X; cmp b; beq body; X: cmp 4; bne end` needs explicit gotos.
+- `if (call() == 0) {big} else {small}` puts the small block last; `!= 0` flips it.
