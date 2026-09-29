@@ -100,3 +100,4 @@ unk_020c2748 (r280): tail of the same file as unk_020c1e54.cpp (Unk_020e7440 sib
 unk_0209c7a4 (r262): date/time utilities continue into unk_0209d0e4 (r263) — same file. Unk_020e2304 : Unk_020d8c7c game-loop class (factory func_0209cb48).
 unk_020a5a9c (r277): singleton data_021eda94 named Unk_020a4738 (first method may be earlier) — 4 member arrays of element classes at 0x020a66f8..0x020a6914 (r278 range).
 unk_020a63a8 (r278): element classes Unk_020a66f8/6720/6754/6790 = r277's Unk_020a670c/6740/677c/67f0 (members of the data_021eda94 singleton). Wrappers 6804..68b8 are the front of unk_020a6914.cpp. func_020a6914 declared s32 d here (real is u8).
+unk_020a512c (r276): Unk_020a512c = r277's Unk_020a4738 (singleton data_021eda94, same member arrays at 0/0xc/0x2c/0x3c); class starts ~0x020a4740. Unify.
