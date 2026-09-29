@@ -1,0 +1,33 @@
+func_0200d64c r019/final.cpp  # 0x794 bytes, one movs short
+func_0200f070 r022/r022.cpp
+func_0200f7a0 r022/r022.cpp
+func_02011f74 r027/r027.cpp
+func_02012810 r028/r028.cpp  # one extra spill slot
+func_0202203c r054/r054.cpp  # arg copy order
+func_0202bb88 r070/r070.cpp
+func_0202ca00 r072/r072.cpp  # r6/r7 swap
+func_0202cb34 r072/r072.cpp  # far: stack layout of 19 const locals
+func_0202fe84 r077/r077.cpp
+func_0203006c r078/r078.cpp
+func_020303d0 r078/r078.cpp
+func_0203081c r078/r078.cpp
+func_02030be4 r079/f.cpp  # movs r1,r0 (lsls #0) vs adds r1,r0,#0
+func_02032dc4 r083/r083.cpp  # load order in dead V3 stores
+func_020331a8 r083/r083.cpp  # two stack slots swapped
+func_0203693c r089/r089.cpp  # cmp operand regs for u16 != 0xffff
+func_02037a28 r090/r.cpp  # movs r2,#16 placement
+func_02038f10 r093/r093.cpp
+func_02038f60 r093/r093.cpp
+func_02039c08 r094/r094.cpp
+func_02039cf4 r094/r094.cpp
+func_0203b93c r097/a.cpp
+func_0203be94 r098/r098.cpp  # r0 vs r1 for data_020d9250 load
+func_0203c764 r099/r099.cpp
+func_0203d134 r100/r100.cpp
+func_0203f218 r103/fix.cpp
+func_0203fc7c r104/r104.cpp
+func_02040a84 r106/r106.cpp
+func_02042588 r109/r109.cpp
+func_020431a8 r110/r110.cpp
+func_020465a4 r116/r116.cpp
+func_02046650 r116/r116.cpp

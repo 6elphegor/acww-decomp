@@ -1,0 +1,7 @@
+Unk_0203900c (unk_02038d28.cpp) == Unk_020d9194 (unk_02039698.cpp)
+Unk_020376f4 (unk_02037108.cpp) == Unk_020d905c (unk_02037ab4.cpp)
+Unk_02037108 (unk_02037108.cpp) == Unk_02036cec (unk_020367e8.cpp)
+Unk_0203a9b8 (unk_0203a9b8.cpp) == Unk_020d93b8 (unk_0203bc58.cpp) == Unk_021c3070 (unk_0203a058.cpp, the data_021c3070 camera singleton)
+Unk_0203b350 (unk_0203b350.cpp) == camera Unk_020d93b8; Unk_02039544 (r092 decl) == Unk_020d9194/Unk_0203900c; Unk_020d9114 manager also in unk_02038d28.cpp
+unk_02040754.cpp uses fake extern func_02040974_r (s32-returning alias of void func_02040974) to force bl; fix when merging (header decl vs definition)
+unk_02035e2c.cpp uses fake call-site decl func_02036220_call (should be s32-returning real func); fix when merging
