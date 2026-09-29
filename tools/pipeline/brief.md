@@ -288,3 +288,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Constant-bound loops with no initial `b test`: use a `u32` counter (an `s32` with a `(u32)` cast gets the initial jump).
 - Declaration style matters: `s32 y; s32 x;` on separate lines and `s32 y, x;` can allocate differently.
 - Frames: locals are placed by ascending size; address-taken 2-byte scalars go first. Eleven u16 outputs in the original frame are eleven separate `u16` locals, not an array.
+- A class method named func_XXXX shadows the extern "C" function of the same name inside that class's methods; declare only the method.
