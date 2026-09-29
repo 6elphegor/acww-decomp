@@ -7,6 +7,16 @@ struct Unk_02048cc4_Pos {
 };
 typedef Unk_02048cc4_Pos Pos;
 
+struct Unk_0204da0c_Size {
+    s32 w;
+    s32 h;
+};
+
+struct Unk_0204da0c_Map {
+    u32 unk_00;
+    Unk_0204da0c_Size unk_04;
+};
+
 extern "C" {
 u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL func_0204b08c(u16 *p);
@@ -67,18 +77,24 @@ static inline u16 *CellP(void *m, const Pos &p, s32 layer)
 
 extern "C" void func_02048c30(u32 a, void *m, Pos size)
 {
-    s32 x, y, i = 0;
-    volatile s32 vy = 0;
-    volatile s32 vl = 0;
-    for (; i < 3; i++) {
-        for (y = vy; y < size.y; y++) {
-            for (x = data_020c97cc[i][y & 1]; x < size.x; x += 4) {
-                u16 *cell = Cell(m, x, y, vl);
-                if (cell) {
-                    if (func_0204b08c(cell)) {
-                        func_02048cc4(a, m, size, Pos(x, y));
+    s32 x, y, i;
+    for (i = 0; i < 3; i++) {
+        for (y = 0; y < size.y; y++) {
+            x = data_020c97cc[i][y & 1];
+            if (x < size.x) {
+                goto test;
+            loop:
+                {
+                    u16 *cell = Cell(m, x, y, 0);
+                    if (cell) {
+                        if (func_0204b08c(cell)) {
+                            func_02048cc4(a, m, size, Pos(x, y));
+                        }
                     }
                 }
+                x += 4;
+            test:
+                if (x < size.x) goto loop;
             }
         }
     }
@@ -93,21 +109,29 @@ extern "C" void func_02048cf0(u32 a, void *m, Pos size)
 {
     s32 x, y;
     for (y = 0; y < size.y; y++) {
-        for (x = 0; x < size.x; x++) {
-            u16 *cell = Cell(m, x, y, 0);
-            if (cell && func_0204b08c(cell)) {
-                switch (*cell) {
-                case 0x5d:
-                    func_02048ddc(a, m, cell, size, x, y);
-                    break;
-                case 0xc8:
-                    func_02048da8(a, m, cell, size, x, y);
-                    break;
-                default:
-                    func_02048e10(a, m, cell, size, x, y);
-                    break;
+        x = 0;
+        if (x < size.x) {
+            goto test;
+        loop:
+            {
+                u16 *cell = Cell(m, x, y, 0);
+                if (cell && func_0204b08c(cell)) {
+                    switch (*cell) {
+                    case 0x5d:
+                        func_02048ddc(a, m, cell, size, x, y);
+                        break;
+                    case 0xc8:
+                        func_02048da8(a, m, cell, size, x, y);
+                        break;
+                    default:
+                        func_02048e10(a, m, cell, size, x, y);
+                        break;
+                    }
                 }
             }
+            x++;
+        test:
+            if (x < size.x) goto loop;
         }
     }
 }
@@ -196,21 +220,26 @@ extern "C" BOOL func_02048f3c(void *m, Pos size, Pos pos, BOOL (*cb)(void *, Pos
 
 extern "C" void func_02048fc4(u32 a, void *m, s32 c)
 {
-    s32 *mp = (s32 *)m;
-    s32 *q = mp + 1;
-    s32 w;
-    u16 *cell;
+    s32 x;
+    Unk_0204da0c_Size *sz;
     s32 rem;
-    s32 h;
     u32 id;
+    s32 y;
+    u16 *cell;
     u32 t;
-    s32 x, y;
-    w = mp[1] << 4;
-    h = q[1] << 4;
+    s32 h;
+    s32 w;
+    sz = &((Unk_0204da0c_Map *)m)->unk_04;
+    w = sz->w << 4;
+    h = sz->h << 4;
     y = 0;
     rem = c % 7;
     for (; y < h; y++) {
-        for (x = 0; x < w; x++) {
+        x = 0;
+        if (x < w) {
+            goto L_test;
+        L_loop:
+            {
             cell = Cell(m, x, y, 0);
             if (cell) {
                 id = 0xffff;
@@ -249,31 +278,45 @@ extern "C" void func_02048fc4(u32 a, void *m, s32 c)
                 }
             }
         }
+            x++;
+        L_test:
+            if (x < w) goto L_loop;
+        }
     }
 }
 
 extern "C" void func_020490c8(u32 a, void *m)
 {
-    s32 *mp = (s32 *)m;
-    s32 *q = mp + 1;
-    volatile s32 w = mp[1] << 4;
-    volatile s32 h = q[1] << 4;
-    s32 x, y;
+    s32 y;
+    BOOL f;
+    u32 t;
+    u32 id;
+    BOOL g;
+    s32 h;
+    s32 w;
+    u16 *cell;
+    s32 x;
+    Unk_0204da0c_Size *sz;
+    sz = &((Unk_0204da0c_Map *)m)->unk_04;
+    w = sz->w << 4;
+    h = sz->h << 4;
     for (y = 0; y < h; y++) {
         x = 0;
-        if (w > 0) for (; x < w; x++) {
-            u16 *cell = Cell(m, x, y, 0);
+        if (x < w) {
+            goto test;
+        loop:
+            cell = Cell(m, x, y, 0);
             if (cell) {
-                u32 id = 0xffff;
-                BOOL f = FALSE;
-                u32 t = *cell;
+                id = 0xffff;
+                f = FALSE;
+                t = *cell;
                 if (t >= 0x6e && t <= 0x89) {
                     f = TRUE;
                 }
                 if (f) {
                     id = 0xfff1;
                 } else {
-                    BOOL g = FALSE;
+                    g = FALSE;
                     if (t <= 0x1a) {
                         g = TRUE;
                     }
@@ -295,6 +338,9 @@ extern "C" void func_020490c8(u32 a, void *m)
                     func_02049854(m, x, y, id, 0);
                 }
             }
+            x++;
+        test:
+            if (x < w) goto loop;
         }
     }
 }
@@ -340,14 +386,32 @@ extern "C" BOOL func_02049298(void *m, Pos p, Pos q, Pos r, u16 v)
     return result;
 }
 
+static inline BOOL Unk_020489cc_Check(u16 *p) {
+    BOOL f9 = TRUE, f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
+    u32 v = *p;
+    if (v >= 0x26 && v <= 0x2a) f1 = TRUE;
+    if (!f1 && !(v >= 0x5d && v <= 0x61)) f2 = FALSE;
+    if (!f2 && !(v >= 0x2f && v <= 0x56)) f3 = FALSE;
+    if (!f3 && !(v >= 0x57 && v <= 0x5b)) f4 = FALSE;
+    if (!f4 && !(v >= 0x66 && v <= 0x68)) f5 = FALSE;
+    if (!f5 && !(v == 0x69)) f6 = FALSE;
+    if (!f6 && !(v >= 0x6a && v <= 0x6c)) f7 = FALSE;
+    if (!f7 && !(v == 0x6d)) f8 = FALSE;
+    if (!f8 && !(v >= 0xc8 && v <= 0xcf)) f9 = FALSE;
+    return f9;
+}
 extern "C" void func_020489cc(u32 a, void *m, Pos size)
 {
     s32 x, y, i, count;
     for (y = 0; y < size.y; y++) {
-        for (x = 0; x < size.x; x++) {
+        x = 0;
+        if (x < size.x) {
+            goto L_test;
+        L_loop:
+            {
             u16 *cell = Cell(m, x, y, 0);
             if (cell) {
-                if (Match(cell, 0, 0, 0, 0, 0, 0, 0, 0, 0)) {
+                if (Unk_020489cc_Check(cell)) {
                     if (func_0204b08c(cell)) {
                         u8 *p = data_020c9850;
                         count = 0;
@@ -370,6 +434,10 @@ extern "C" void func_020489cc(u32 a, void *m, Pos size)
                     }
                 }
             }
+        }
+            x++;
+        L_test:
+            if (x < size.x) goto L_loop;
         }
     }
 }

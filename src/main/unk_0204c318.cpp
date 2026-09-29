@@ -118,21 +118,22 @@ static inline BOOL Unk_0204c318_InRange(u16 *p, u32 lo, u32 hi) {
 
 extern "C" void func_0204c6a4(Unk_0204da0c_Map *p);
 extern "C" void func_0204c318(Unk_0204c3f4 *p) {
-    volatile s32 cy;
     Unk_0204da0c_Map *m = func_0204da0c();
     if (m) {
         Unk_0204da0c_Size *sz = &m->unk_04;
         s32 w = sz->w << 4;
         s32 h = sz->h << 4;
-        s32 x, y, cx;
+        s32 x, y, cx, cy;
         y = 0;
         u16 v = data_020ca2e8[p->unk_04];
         for (; y < h; y++) {
             x = 0;
             if (w > 0) {
+                goto test;
+            loop:
+                cx = x >> 4;
                 cy = y >> 4;
-                for (; x < w; x++) {
-                    cx = x >> 4;
+                {
                     u16 *t = func_0204ebd8(m, cx, cy, x - (cx << 4), y - (cy << 4), 0);
                     if (t) {
                         if (Unk_0204c318_InRange(t, 0x2f, 0x56)) {
@@ -142,6 +143,9 @@ extern "C" void func_0204c318(Unk_0204c3f4 *p) {
                         }
                     }
                 }
+                x++;
+            test:
+                if (x < w) goto loop;
             }
         }
     }
@@ -164,15 +168,22 @@ static inline BOOL Unk_0204c6a4_Check(u16 *p) {
 }
 
 extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
-    Unk_0204da0c_Size *sz;
-    s32 w, h;
-    u16 val;
-    s32 x0, y0, x1, y1;
-    s32 x, y, cx, cy;
+    s32 x;
     u16 *t;
+    u16 val;
+    Unk_0204da0c_Size *sz;
+    s32 cx;
+    s32 y;
+    s32 w;
+    s32 y0;
+    s32 h;
+    s32 x1;
+    s32 y1;
+    s32 x0;
+    s32 cy;
     if (p == NULL) return;
     sz = &p->unk_04;
-    w = p->unk_04.w;
+    w = sz->w;
     h = sz->h;
     val = 0xfff1;
     x0 = 0;
@@ -184,38 +195,42 @@ extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
     y = y0;
     x = x0;
     if (x <= x1) {
-        cy = y >> 4;
-        for (; x <= x1; x++) {
-            func_0204e300(p, x, y);
+        goto test;
+    loop:
+        func_0204e300(p, x, y);
             cx = x >> 4;
+            cy = y >> 4;
             t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
             if (t) {
                 if (Unk_0204c6a4_Check(t)) {
                     if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
                 }
             }
-        }
+        x++;
+    test:
+        if (x <= x1) goto loop;
     }
     for (y = y0; y <= y1; y++) {
         x = x0;
         func_0204e300(p, x, y);
-        cx = x >> 4;
-        cy = y >> 4;
-        t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
-        if (t) {
-            if (Unk_0204c6a4_Check(t)) {
-                if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+            cx = x >> 4;
+            cy = y >> 4;
+            t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
+            if (t) {
+                if (Unk_0204c6a4_Check(t)) {
+                    if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+                }
             }
-        }
         x = x1;
         func_0204e300(p, x, y);
-        cx = x >> 4;
-        t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
-        if (t) {
-            if (Unk_0204c6a4_Check(t)) {
-                if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+            cx = x >> 4;
+            cy = y >> 4;
+            t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
+            if (t) {
+                if (Unk_0204c6a4_Check(t)) {
+                    if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+                }
             }
-        }
     }
 }
 

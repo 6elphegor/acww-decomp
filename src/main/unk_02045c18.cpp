@@ -598,21 +598,18 @@ void func_02046358() {
 void func_020463fc(void *p, Unk_02045e34_Map *q) {
     if (q != 0) {
         Unk_020463fc_Sz *sp = &((Unk_020463fc_Map *)q)->sz;
-        s32 h, j, i, w;
-        volatile s32 ih;
+        s32 h, j, i, w, ih;
         w = sp->w;
         h = sp->h;
-        s32 z = 0;
-        s32 z2 = 0;
-        s32 z3 = 0;
-        s32 m1 = -1;
         for (i = 0; i < h; i++) {
-            j = z;
+            j = 0;
             if (w > 0) {
-                ih = i >> 4;
-                for (; j < w; j++) {
+                goto test;
+            loop:
+                {
                     s32 jh = j >> 4;
-                    u16 *e = func_0204ebd8(q, jh, ih, j - (jh << 4), i - (ih << 4), z2);
+                    ih = i >> 4;
+                    u16 *e = func_0204ebd8(q, jh, ih, j - (jh << 4), i - (ih << 4), 0);
                     if (e != 0) {
                         if (Unk_02046358_R1(e)) {
                             s32 t;
@@ -620,7 +617,7 @@ void func_020463fc(void *p, Unk_02045e34_Map *q) {
                             if (*e >= 0x1531 && *e <= 0x153a) {
                                 t = *e - 0x1531;
                             } else {
-                                t = m1;
+                                t = -1;
                             }
                             if ((u32)t < 10) {
                                 x = 0x154a + t;
@@ -628,10 +625,13 @@ void func_020463fc(void *p, Unk_02045e34_Map *q) {
                                 x = 0x154a;
                             }
                             v = x;
-                            func_0204eb30(q, &v, j, i, z3);
+                            func_0204eb30(q, &v, j, i, 0);
                         }
                     }
                 }
+                j++;
+            test:
+                if (j < w) goto loop;
             }
         }
     }

@@ -364,13 +364,18 @@ extern "C" void func_020475f8(void *a, Unk_020475f8_Map *b, s32 c) {
     s32 h = s[1] << 4;
     s32 x, y;
     for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++) {
+        x = 0;
+        if (x < w) {
+            goto L_test;
+        L_loop:
+            {
             s32 tx = x >> 4;
             s32 ty = y >> 4;
             u16 *p = func_0204ebd8(b, tx, ty, x - (tx << 4), y - (ty << 4), 0);
             if (p != 0) {
+                BOOL r = Unk_020470b8_R(p, 0xd4, 0xda);
                 u16 t = *p;
-                if (Unk_020470b8_R(p, 0xd4, 0xda)) {
+                if (r) {
                     func_02049854(b, x, y, 0xe2, 0);
                 } else if (t >= 0xdb && t <= 0xe1) {
                     if (c > 1) {
@@ -386,6 +391,10 @@ extern "C" void func_020475f8(void *a, Unk_020475f8_Map *b, s32 c) {
                     func_02049854(b, x, y, 0xfff1, 0);
                 }
             }
+        }
+            x++;
+        L_test:
+            if (x < w) goto L_loop;
         }
     }
 }

@@ -240,9 +240,11 @@ void Unk_02059d1c::func_02059d1c(void *grid)
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;
             if (x <= unk_08) {
-            volatile s32 hy = (s32)y >> 4;
-            for (; x <= unk_08; x++) {
+            goto test0;
+        loop0:
+            {
                 s32 hx = (s32)x >> 4;
+                s32 hy = (s32)y >> 4;
                 u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && func_0204b2d4(p)) {
                     s32 v = func_0204b25c(p);
@@ -251,6 +253,9 @@ void Unk_02059d1c::func_02059d1c(void *grid)
                     }
                 }
             }
+            x++;
+        test0:
+            if (x <= unk_08) goto loop0;
             }
         }
     }
@@ -265,9 +270,11 @@ s32 Unk_02059d1c::func_02059db0(void *grid, u8 *f1, u8 *f2)
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;
             if (x <= unk_08) {
-            volatile s32 hy = (s32)y >> 4;
-            for (; x <= unk_08; x++) {
+            goto test1;
+        loop1:
+            {
                 s32 hx = (s32)x >> 4;
+                s32 hy = (s32)y >> 4;
                 u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p) {
                     if (func_0204b2d4(p)) {
@@ -284,6 +291,9 @@ s32 Unk_02059d1c::func_02059db0(void *grid, u8 *f1, u8 *f2)
                     }
                 }
             }
+            x++;
+        test1:
+            if (x <= unk_08) goto loop1;
             }
         }
     }
@@ -302,15 +312,20 @@ s32 Unk_02059d1c::func_02059e94(void *grid, s32 *out)
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;
             if (x <= unk_08) {
-            volatile s32 hy = (s32)y >> 4;
-            for (; x <= unk_08; x++) {
+            goto test2;
+        loop2:
+            {
                 s32 hx = (s32)x >> 4;
+                s32 hy = (s32)y >> 4;
                 u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && func_0204b2d4(p)) {
                     s32 k = func_020531d4(p);
                     counts[k] = counts[k] + 1;
                 }
             }
+            x++;
+        test2:
+            if (x <= unk_08) goto loop2;
             }
         }
     }
@@ -332,11 +347,20 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
     u8 a_[3];
     u8 b_[3];
     u16 arr_[24];
-    s32 total, k;
-    volatile s32 cnt, cnt2;
-    u32 i, j;
+    u32 y;
+    u32 x;
+    s32 small;
+    s32 total;
+    s32 cnt;
     u8 layer;
-    u32 y, x;
+    s32 cnt2;
+    s32 n;
+    s32 k;
+    u32 i;
+    s32 v;
+    s32 d;
+    u32 j;
+    s32 big;
     func_02115fb4(a_, 0, 3);
     func_02115fb4(b_, 0, 3);
     for (i = 0; i < 24; i++) arr_[i] = 0xffff;
@@ -347,12 +371,14 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;
             if (x <= unk_08) {
-            volatile s32 hy = (s32)y >> 4;
-            for (; x <= unk_08; x++) {
+            goto test3;
+        loop3:
+            {
                 s32 hx = (s32)x >> 4;
+                s32 hy = (s32)y >> 4;
                 u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && func_0204b2d4(p)) {
-                    s32 v = func_0204b25c(p);
+                    v = func_0204b25c(p);
                     for (j = 0; j < 24; j++) {
                         u16 *q = &arr_[j];
                         if (v == arr_[j]) break;
@@ -363,16 +389,19 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
                     cnt++;
                 }
             }
+            x++;
+        test3:
+            if (x <= unk_08) goto loop3;
             }
         }
     }
     if ((u32)cnt >= 10) {
-        s32 n = 0;
+        n = 0;
         for (i = 0; i < 24; i++) if (arr_[i] != 0xffff) n++;
         i = 0;
-        s32 d = cnt << 12;
-        s32 big = n * 300;
-        s32 small = n * 100;
+        d = cnt << 12;
+        big = n * 300;
+        small = n * 100;
         for (; i < 3; i++) {
             if (i != 0) {
                 s32 r = func_01ffc5a4(a_[i] << 12, d);
@@ -387,12 +416,14 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;
             if (x <= unk_08) {
-            volatile s32 hy = (s32)y >> 4;
-            for (; x <= unk_08; x++) {
+            goto test4;
+        loop4:
+            {
                 s32 hx = (s32)x >> 4;
+                s32 hy = (s32)y >> 4;
                 u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && func_0204b2d4(p)) {
-                    s32 v = func_0204b25c(p);
+                    v = func_0204b25c(p);
                     for (j = 0; j < 24; j++) {
                         u16 *q = &arr_[j];
                         if (v == arr_[j]) break;
@@ -403,16 +434,19 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
                     cnt2++;
                 }
             }
+            x++;
+        test4:
+            if (x <= unk_08) goto loop4;
             }
         }
     }
     if ((u32)cnt2 >= 10) {
-        s32 n = 0;
+        n = 0;
         for (i = 0; i < 24; i++) if (arr_[i] != 0xffff) n++;
         i = 0;
-        s32 d = cnt2 << 12;
-        s32 big = n * 300;
-        s32 small = n * 100;
+        d = cnt2 << 12;
+        big = n * 300;
+        small = n * 100;
         for (; i < 3; i++) {
             if (i != 0) {
                 s32 r = func_01ffc5a4(b_[i] << 12, d);

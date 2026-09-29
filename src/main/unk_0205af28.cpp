@@ -292,9 +292,14 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind) 
     s32 y, x;
     do {
         for (y = y0; (u32)y <= (u32)y1; y++) {
-            for (x = x0; (u32)x <= (u32)x1; x++) {
+            x = x0;
+            if ((u32)x <= (u32)x1) {
+                goto L_test;
+            L_loop:
+                {
                 s32 hx = x >> 4;
-                u16 *cell = (u16 *)func_0204ebd8((void *)m, hx, y >> 4, x - (hx << 4), y - ((y >> 4) << 4), layer);
+                s32 hy = y >> 4;
+                u16 *cell = (u16 *)func_0204ebd8((void *)m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (cell != NULL && func_0204b2d4(cell)) {
                     f = func_0204b25c(cell);
                     func_020524a8(&buf, cell);
@@ -314,6 +319,10 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind) 
                     }
                     func_020524a4(&buf);
                 }
+            }
+                x++;
+            L_test:
+                if ((u32)x <= (u32)x1) goto L_loop;
             }
         }
         layer++;

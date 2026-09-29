@@ -340,36 +340,38 @@ extern "C" void func_020485d4(void *a, void *q, s32 c, s32 d) {
     func_02048634(a, q, &s4);
 }
 
+static inline BOOL Unk_02048634_Check(u16 *p) {
+    BOOL f9 = TRUE, f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
+    u32 v = *p;
+    if (v >= 0x26 && v <= 0x2a) f1 = TRUE;
+    if (!f1 && !(v >= 0x5d && v <= 0x61)) f2 = FALSE;
+    if (!f2 && !(v >= 0x2f && v <= 0x56)) f3 = FALSE;
+    if (!f3 && !(v >= 0x57 && v <= 0x5b)) f4 = FALSE;
+    if (!f4 && !(v >= 0x66 && v <= 0x68)) f5 = FALSE;
+    if (!f5 && !(v == 0x69)) f6 = FALSE;
+    if (!f6 && !(v >= 0x6a && v <= 0x6c)) f7 = FALSE;
+    if (!f7 && !(v == 0x6d)) f8 = FALSE;
+    if (!f8 && !(v >= 0xc8 && v <= 0xcf)) f9 = FALSE;
+    return f9;
+}
 extern "C" void func_02048634(void *a, void *q, Unk_020485d4_Size *sz) {
-    volatile s32 kx, kl;
-    volatile s32 z0, z1, z2, z3, z4, z5, z6, z7, z8;
-    s32 x, y = 0;
-    z0 = 0; z1 = 0; z2 = 0; z3 = 0; z4 = 0; z5 = 0; z6 = 0; z7 = 0; z8 = 0;
-    kl = 0;
-    kx = 0;
-    for (; y < sz->h; y++) {
-        x = kx;
-        if (sz->w > 0) {
-            for (; x < sz->w; x++) {
+    s32 x, y;
+    for (y = 0; y < sz->h; y++) {
+        x = 0;
+        if (x < sz->w) {
+            goto test;
+        loop:
+            {
                 s32 bx = x >> 4;
                 s32 by = y >> 4;
-                u16 *t = func_0204ebd8(q, bx, by, x - (bx << 4), y - (by << 4), kl);
+                u16 *t = func_0204ebd8(q, bx, by, x - (bx << 4), y - (by << 4), 0);
                 if (t != NULL) {
-                    s32 f0, f1 = 1, f2 = 1, f3 = 1, f4 = 1, f5 = 1, f6 = 1, f7 = 1, f8 = 1;
-                    u32 v = *t;
-                    f0 = z0;
-                    if (v >= 0x26 && v <= 0x2a) f0 = 1;
-                    if (f0 == 0 && !(v >= 0x5d && v <= 0x61)) f1 = z1;
-                    if (f1 == 0 && !(v >= 0x2f && v <= 0x56)) f2 = z2;
-                    if (f2 == 0 && !(v >= 0x57 && v <= 0x5b)) f3 = z3;
-                    if (f3 == 0 && !(v >= 0x66 && v <= 0x68)) f4 = z4;
-                    if (f4 == 0 && v != 0x69) f5 = z5;
-                    if (f5 == 0 && !(v >= 0x6a && v <= 0x6c)) f6 = z6;
-                    if (f6 == 0 && v != 0x6d) f7 = z7;
-                    if (f7 == 0 && !(v >= 0xc8 && v <= 0xcf)) f8 = z8;
-                    if (f8 != 0) func_02049748(q, t, x, y);
+                    if (Unk_02048634_Check(t)) func_02049748(q, t, x, y);
                 }
             }
+            x++;
+        test:
+            if (x < sz->w) goto loop;
         }
     }
 }

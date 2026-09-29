@@ -31,11 +31,8 @@ func_02042588 r109/r109.cpp
 func_020431a8 r110/r110.cpp
 func_020465a4 r116/r116.cpp
 func_02046650 r116/r116.cpp
-func_020475f8 r117/r117.cpp  # hoists y-(ty<<4) into extra stack slot
 func_02047714 r117/r117.cpp  # one swapped ldr/asrs pair at 0x22
 func_020489cc r120/final.cpp  # far off, shape probably wrong
-func_02048c30 r120/final.cpp  # ly hoisted out of inner loop; frame +8
-func_02048cf0 r120/final.cpp  # ly hoisted out of inner loop; frame +8
 func_02048e10 r120/final.cpp  # register permutation only
 func_02048fc4 r120/final.cpp  # c % 7 div helper / tail-call form
 func_020490c8 r120/final.cpp  # w/h spill slot order
@@ -47,15 +44,12 @@ func_020439f8 r111/final.cpp  # stack slots of volatile k1 / k3 swapped
 func_020497f8 r121/b.cpp  # original spills a3 and keeps stack args a4/a5 in r6/r4 (5 saved regs); ours reloads from stack
 func_0204cd00 r127/r127.cpp  # copy-loop reg alloc (shared zero in r7)
 func_0204d1dc r127/r127.cpp  # result/handle registers swapped
-func_020463fc r115/final.cpp  # volatile ih spill slot lands after v; same loop-hoist family as r117/r120
-func_0204c318 r126/r126.cpp  # loop-hoist family; identical insns, slot offsets differ (volatile cy)
 func_0204c6a4 r126/r126.cpp  # loop-hoist family + 9-stage flag chain; frame 116 vs 124
 func_0204452c r112/r112.cpp  # e->unk_06[i]: original `adds rB,e,#6; ldrh [rB,rI]`, ours folds +6
 func_020445a4 r112/r112.cpp  # same, plus second load into volatile vv merged
 func_02044650 r112/r112.cpp  # same as 020445a4
 func_02044774 r112/r112.cpp  # prologue reg assignment / flag store order
 func_020483b0 r119/final.cpp  # n/i registers swapped
-func_02048634 r119/final.cpp  # far off; loop-hoist family (by=y>>4 hoisted, by<<4 recomputed)
 func_0204f178 r131/r131.cpp  # stack slots a/sum swapped
 func_0204f364 r131/r131.cpp  # register numbering only (count/e in r2 vs r1)
 func_0204d7fc r128/final_r128.cpp  # reg alloc: p4 spilled / sx in reg vs original
@@ -75,9 +69,6 @@ func_0205b320 r150/r150.cpp  # loop-hoist family; stack-param self-copies, y0/y1
 func_0205b7cc r150/r150.cpp  # constant-zero arg scheduled last (original: movs r3,#0 first, adds r0,r3,r2)
 func_0205b818 r150/r150.cpp  # same as 0205b7cc
 func_02059adc r148/r148.cpp  # order of first three movs (id=-1 vs t=1)
-func_02059d1c r148/r148.cpp  # loop-hoist family: volatile hy slot above spills (insns all match)
-func_02059db0 r148/r148.cpp  # same
-func_02059e94 r148/r148.cpp  # same
 func_02059f3c r148/r148.cpp  # same + local array offsets
 func_0205da08 r154/r154.cpp  # volatile rem slot lands above res/sz (same slot-order issue as loop-hoist family)
 func_0205cbe8 r153/r153.cpp  # order of two initial zero stores [sp,#4]/[sp,#8]
