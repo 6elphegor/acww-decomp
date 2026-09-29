@@ -318,3 +318,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `unk_098[i]` on a `u8[4][0x4c]` member gives one `muls`; `unk_098 + i*0x4c` double-scales.
 - ARM `asm void f() { ... }` inside `#pragma thumb off`: an instruction the assembler mangles (e.g. `stmfd sp!, {r0-r12,sp,lr,pc}`) can be emitted as `dcd 0xe92dffff`.
 - Record-table singleton data_021c5330 is `Unk_0206d7cc` (three `Unk_0206d8b8` cached tables); see unk_0206d0a0.cpp.
+- Group ranges are INCLUSIVE: "from A through B" includes the function that starts at B. Several groups skipped it; check your pairs.txt covers every symbols.txt function with A <= addr <= B.
+- A small same-class callee that gets inlined into callers (duplicated arg setup, no `bl`): define it at the end of the file.
