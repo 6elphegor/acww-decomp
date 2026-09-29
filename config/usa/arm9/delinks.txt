@@ -264,3 +264,12 @@ src/main/unk_0201a334.cpp:
 
 src/main/unk_0201c050.cpp:
     .text       start:0x0201c050 end:0x0201c98c
+
+src/main/unk_02019020.cpp:
+    .text       start:0x02019020 end:0x02019998
+
+src/main/unk_02019998.cpp:
+    .text       start:0x02019998 end:0x0201a334
+
+src/main/unk_0201ac80.cpp:
+    .text       start:0x0201ac80 end:0x0201b690
