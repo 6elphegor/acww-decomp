@@ -283,3 +283,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Callers first, callees later in the file stops a small same-file callee being inlined.
 - `u16 *volatile p` (volatile pointer) and `volatile u16 *p` (pointer to volatile) are different; use the one matching what the original reloads.
 - Grid rectangle class `Unk_02059d1c` (unk_0205989c.cpp / unk_0205a1d0.cpp): x0,y0,x1,y1 then u16 unk_10, unk_12.
+- Packed 5-5-5 colors read with one `ldrh` each and no stack copy: `Color &c = *&g->field;` (reference), not `Color c = g->field;`.
