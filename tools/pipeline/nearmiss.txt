@@ -167,3 +167,7 @@ func_ov001_02202e74 ov001_003/ov001_003.cpp  # -O4,p; regalloc: orig r6=zero, r5
 func_ov001_02203004 ov001_003/ov001_003.cpp  # -O4,p; loop do{...}while(z) with never-modified zero in r5 gets folded; needs trick to keep z live
 func_ov001_0220b148 ov001_017/ov001_017.cpp  # -O4,p ARM; regalloc only: orig src ptrs r3/r9, i=r2, k=r3 (ours r8/r7, lr, ip); 40 decl perms tried
 func_ov001_02209698 ov001_014/ov001_014.cpp  # -O4,p ARM; 3x 5-byte prologue copies scheduled differently (orig loads x[4] first into r5, re-adds sp+8 after guard); ~100 decl perms tried
+func_ov001_02205e18 ov001_008/ov001_008.cpp  # -O4,p; 64-byte copy loops: orig loads dst (r4) before src (r3) for ldm/stm
+func_ov001_0220607c ov001_008/ov001_008.cpp  # UNMATCHED draft ~336 lines: stmia r2!,{r0,r1} zero-pairs straight to global (from zero reg r7)
+func_ov001_02206248 ov001_008/ov001_008.cpp  # UNMATCHED draft ~208 lines: unrolled 6/4-byte struct copies, frame m0@sp0 m1@sp6
+func_ov001_022059fc ov001_008/ov001_008.cpp  # UNMATCHED draft ~714 lines: network handshake state machine, frame 0x64 (ours 0x5c)
