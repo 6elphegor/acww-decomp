@@ -103,3 +103,4 @@ unk_020a63a8 (r278): element classes Unk_020a66f8/6720/6754/6790 = r277's Unk_02
 unk_020a512c (r276): Unk_020a512c = r277's Unk_020a4738 (singleton data_021eda94, same member arrays at 0/0xc/0x2c/0x3c); class starts ~0x020a4740. Unify.
 unk_020a4564 (r275): HEADER CONFLICT — include/Unk_020d8c7c.h declares vfunc_08()/vfunc_14() with no params; Unk_020e2988 overrides need vfunc_08(s32)/vfunc_14(s32) (local base copy used). Unk_020a4738 (data_021eda94) = r276 Unk_020a512c = r277 Unk_020a4738 — unify.
 ov009/unk_0225b880 (ov009_000): first overlay unit. Unk_ov009_0225e29c : Unk_020d9670, Unk_020e2a30 (secondary at +0xec).
+ov004/unk_02208ba8 (ov004_007): Unk_ov004_0224882c : Unk_020d9670 — base for a family of ov004 classes. Uses #define vfunc_14() vfunc_14(s32 a) around the Unk_020d8c7c.h include (header declares no param).
