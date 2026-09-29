@@ -134,3 +134,7 @@ func_ov004_02209f38,func_ov004_02209f54 ov004_009/thunks_sp2.cpp  # _ZThn236 D0/
 func_ov004_0220a898 ov004_010/ov004_010.cpp  # post-switch regalloc: zero in r1 vs address constants in r2 swapped (base compiler only)
 func_ov004_02212de4 ov004_024/ov004_024.cpp  # unk_768 loaded into r1 (orig) vs r0 before cmp #1
 func_ov004_02217cf8 ov004_032/ov004_032.cpp  # r6/r7 swap (callee result vs data_ov004_022506c8 ptr); movs r1,r7 vs adds r1,r6,#0
+func_ov004_022218f0 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
+func_ov004_02221b38 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
+func_ov004_02221d80 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
+func_ov004_022203c8 ov004_047/ov004_047.cpp  # switch value in r0 vs r1 (jump-table temp shift); try permutation search

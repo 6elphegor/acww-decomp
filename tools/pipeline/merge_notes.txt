@@ -141,3 +141,4 @@ ov004/unk_02219d34 (ov004_036): rest of Unk_ov004_0224c7d0 (0xae4, factory 0221a
 ov004/unk_0221afc4 (ov004_038): rest of Unk_ov004_0224cb98 (0xa8c, factory 0221b450) + menu Unk_ov004_0224cb08, message owner Unk_ov004_0224ce1c : Unk_020d8bc8 with member Unk_ov004_0224cd8c : Unk_020d8b38.
 ov004/unk_0221e7a8 (ov004_044): free functions on the main-module player/actor object family (Unk_02007694/Unk_02006d14 layout) via local layout struct — convert to real class when linking.
 ov004/unk_0221cbe4 (ov004_041): Unk_ov004_0224d010 : Unk_02015b54 (=Unk_020d7714 vptr-only; ov004_040 used padding), Unk_ov004_0224d0a0 : Unk_020d8bc8 (declared flat).
+- Unk_ov004_0224d248 / Unk_ov004_0224d2d8: declared in both unk_0221d4f8.cpp (ov004_042) and unk_0221de38.cpp (ov004_043) — same source file; 0224d0a0 class also in 042. Merge these units when linking.
