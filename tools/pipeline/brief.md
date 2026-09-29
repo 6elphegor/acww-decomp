@@ -324,3 +324,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A member ctor reached with r1 unset forwards the enclosing ctor's parameter; declare it on the member ctor even if unused.
 - A derived class's first field sits right after the base's real (unaligned) size: `Unk_020e2a78` is 0x12 bytes, so a derived string buffer starts at +0x12.
 - Function-pointer call with odd scratch registers: the original forwards an extra live argument (`tbl[i](p, x)`).
+- data_020cbb18 is the singleton `Unk_020cbb18` (comm/session state, no vtable): func_02072e44 (enabled test), func_020728d4, func_020728a4(buf, n), func_02072824(cmd, arg), func_020729cc are its methods. New code may call them as methods; see unk_02072d5c.cpp.
+- Pointer-increment fill `u32 *p = arr; for (i = 2; i >= 0; i--) *p++ = v;` reproduces an `stm r0!` loop.
