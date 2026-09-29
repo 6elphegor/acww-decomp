@@ -309,3 +309,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - File/LZ loader utilities (FSFile wrapper, LZ77 block files) are in unk_02063904.cpp.
 - A byte store `arr[i-1] = 1` that the original writes as `ldr r0,=K; strb [r1,r0]`: `*((u8*)this + i + K) = 1`.
 - Class with vtable and no user dtor emits no D0/D1/D2: declare `virtual ~T();` and define it out of line.
+- `(u16)(x - 5) <= 2` compiles as subs; the `ldr =0xfffb; adds` form is `(u16)(x + 0xfffb) <= 2`.
