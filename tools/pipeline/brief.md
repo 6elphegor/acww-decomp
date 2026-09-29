@@ -460,3 +460,9 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - ARM-mode functions: wrap in `#pragma thumb off` / `#pragma thumb reset`.
 - A switch with cases 0..N already emits the `cmp #N; bhi` bound; an extra `if (k <= N)` guard duplicates the compare.
 - Callee result reassigned to `this`/param in place (`self = f(self)`) instead of a new variable.
+- Bit clear/set with the mask computed BEFORE the load (`mvns; ands`, not `bics`): `u32 m = ~(1<<b); *(volatile u32*)&w[i] = m & *(volatile u32*)&w[i];` (same with `m | ...` for set).
+- Bit test with shared FALSE exit: `BOOL r; if (w < 1) { r = TRUE; if (((r << b) & f[w]) != 0) goto end; } r = FALSE; end: return r;`.
+- Huge owner objects: explicit `u8 f_X[gap]` fields in one struct reproduce `ldr =K; adds r0,this,r0` addressing.
+- `func_0213335c(x,K)` is unsigned divmod (quotient r0, remainder r1): write `(u32)x % K` for the remainder form.
+- `f(g(), *p++)` evaluates `*p++` before the call; `f(..., *p); p++;` puts the increment after.
+- `mask = 1 << i; cnt = 1;` in that order reuses the count register as the shift temp.

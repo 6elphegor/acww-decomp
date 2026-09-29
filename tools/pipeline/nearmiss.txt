@@ -122,3 +122,5 @@ func_0208d28c r236/r236.cpp  # compare loads land in r1, original r0
 func_0208d580 r236/r236.cpp  # 0/1 flag branch layout inverted (beq -> movs 1)
 func_0208d678 r236/r236.cpp  # original keeps redundant copies adds r6,r0,#0 / adds r0,r0,#0; ours coalesces
 func_0208d9d4 r236/r236.cpp  # n=a+1 should be computed early into r6
+func_0209073c r241/r241.cpp  # original `movs r1,r0; ldrh r1,[r1,#28]` for data_021d0830.unk_1c; ours ldrh r1,[r0,#28]
+func_020909bc r241/r241.cpp  # same as func_0209073c
