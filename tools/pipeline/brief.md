@@ -185,3 +185,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - To stop CSE/hoisting of a repeated `x - (bx << 4)`, write the occurrence as `x - ((u32)bx << 4)`. `bx*16`, `16*bx` and `<<3<<1` still get merged.
 - An inner loop with no initial test whose start is a volatile zero: `j = kx; do { ...; j++; } while (j < 16);`.
 - asmdiff prints nothing when the file fails to compile. Search scripts must treat empty output as a failure, not a match.
+- `Unk_020d8c7c` is 0x50 bytes; derived fields start at +0x50. For an array-of-objects member, declare the class ctor `inline` and define it before the `new` site (an out-of-line prototype breaks the inline double-vptr ctor).
+- Multi-way status returns that come out with inverted branches: use one `s32 r; if (...) r = 4; else if (...) r = 3; ... return r;`.
+- If a caller emits `lsls/lsrs` before each call, the callee parameter is `u16` in the prototype; casting at the call site is not the same.

@@ -522,3 +522,6 @@ src/main/unk_02043e70.cpp:
 
 src/main/unk_020480a8.cpp:
     .text       start:0x020480a8 end:0x020489cc
+
+src/main/unk_0204fb80.cpp:
+    .text       start:0x0204fb80 end:0x020501d4
