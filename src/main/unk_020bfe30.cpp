@@ -258,7 +258,7 @@ public:
 
 class Unk_020e5668 : public Unk_020d8c7c {
 public:
-    virtual BOOL vfunc_08();
+    virtual void vfunc_08();
 
     /* 0x50 */ Unk_0213b938 unk_50;
 };

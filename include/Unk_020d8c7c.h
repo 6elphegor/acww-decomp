@@ -12,7 +12,7 @@ public:
     Unk_020d8c7c_Base();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_08();
+    virtual void vfunc_08();
     virtual BOOL vfunc_0c();
     virtual BOOL vfunc_10();
     virtual BOOL vfunc_14();
@@ -34,7 +34,7 @@ public:
 class Unk_020d8c7c : public Unk_020d8c7c_Base {
 public:
     Unk_020d8c7c() {}
-    virtual BOOL vfunc_08();
+    virtual void vfunc_08();
     virtual ~Unk_020d8c7c() {}
 
     /* 0x04 */ u8 unk_04[0x4c];

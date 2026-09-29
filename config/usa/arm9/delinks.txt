@@ -153,3 +153,9 @@ src/main/unk_020beb40.cpp:
 
 src/main/unk_020030d8.cpp:
     .text       start:0x020030d8 end:0x020039ec
+
+src/main/unk_020027b4.cpp:
+    .text       start:0x020027b4 end:0x020030d8
+
+src/main/unk_020044dc.cpp:
+    .text       start:0x020044dc end:0x02004e0c
