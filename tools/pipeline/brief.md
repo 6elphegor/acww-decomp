@@ -274,3 +274,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - s16 sin/cos table: `idx = ((u16)ang >> 4) * 2; tbl[idx]; tbl[idx + 1];` (writing `tbl[idx*2]` double-shifts).
 - A member array of a class with a user ctor but no dtor gets an inline ctor loop (`bl` per element), not `__cxa_vec_ctor`; classes with dtors get `__cxa_vec_ctor`/`__cxa_vec_cleanup`.
 - Helper scripts run under zsh: an unquoted `$var` with spaces is NOT word-split; pass arguments separately.
+- `if ((u32)d < n) return d + base; return base;` gives unsigned `bcs` plus the u16 cast; a ternary on signed d gives `bge`.
+- Open problem: two zero-valued spilled BOOLs whose initial stores come out in the wrong order (func_0205cbe8, func_02061794, func_02052b90). Report a trigger if you find one.
