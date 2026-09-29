@@ -200,3 +200,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Two loop counters whose address goes to a callee are really `s32 xy[2]`.
 - mwcc gives all constant zeros one register and spills extras; declare the zero that should own the register first (`s32 cnt = 0;` before the other zero inits).
 - 16 extra frame bytes can be an unused `struct Pad { s32 v[4]; Pad(){} ~Pad(){} }` local.
+- Always include near-misses in pairs.txt (so the unit covers the whole range); mark them in the report instead.
+- Grid object `Unk_0204debc` (unk_0204debc.cpp, >=0x2228 bytes, 16x16 u16 layers at +0x24) and tile buffer `Unk_0204e2f0` (0x20 bytes). Reuse those names.
+- `t = expr; vol = t; use(t);` keeps the value in a register while still emitting the original's spill store.
