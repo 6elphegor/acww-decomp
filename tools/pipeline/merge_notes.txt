@@ -16,3 +16,4 @@ unk_02054ae0 (r140): calls the base at vtable 0x020dbe34 `Unk_020dbe34` (= r139'
 unk_02055d18 (r142) defines Unk_020dbe6c (0x3c, vtable 0x020dbe6c) and Unk_020dbe7c (0x18) — these are r139's Unk_020dbe7c_Sub and Unk_020dbe7c; rename r139's _Sub to Unk_020dbe6c when merging.
 unk_020582a0 continues unk_02057940 (same class Unk_02057940); merge.
 unk_0204b9c0 continues unk_0204a754/unk_0204b08c (item-ID helpers); merge.
+Camera-transition class: unk_02056f94 (r144) names it Unk_020dc034 : Unk_020d8c7c (vtable 0x020dc034, singleton data_021c5a38); unk_02057940/unk_020582a0 (r145/r146) have the same field layout (+0x50..+0xd9) under the name Unk_02057940 with no vtable. They are almost certainly the same class — rename to Unk_020dc034 when merging.
