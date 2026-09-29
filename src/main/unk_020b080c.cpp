@@ -113,9 +113,9 @@ u32 func_020b0f80(u32 a);
 u32 func_020b0fb0(u32 a);
 u8 func_020b1034(void);
 
-extern u8 data_00000000[];
-extern u8 data_00000044[];
-extern u8 data_00000045[];
+extern u32 OVERLAY_0_ID[];
+extern u32 OVERLAY_68_ID[];
+extern u32 OVERLAY_69_ID[];
 extern volatile u8 data_021ee284;
 extern u8 data_0213af4c[];
 extern u8 data_021cc7d0[];
@@ -281,7 +281,7 @@ void func_020b0b18(void) {
     volatile u32 fill;
     u32 info[12];
     u32 start, size;
-    func_0204f054(info, data_00000000);
+    func_0204f054(info, OVERLAY_0_ID);
     start = info[1];
     fill = 0xe7fee7fe;
     size = 0x229bdc0 - start;
@@ -316,7 +316,7 @@ void func_020b0b90(void) {
     func_0210f218(1);
     func_02050170();
     func_020376c0();
-    func_02076c24(data_021cc7d0, data_00000045);
+    func_02076c24(data_021cc7d0, OVERLAY_69_ID);
     func_02076c50(data_021cc7d0);
     func_020b7eec();
     func_020ec8b0();
@@ -336,7 +336,7 @@ void func_020b0b90(void) {
     *(vu32 *)0x40004c4 = 0;
     func_0206d770();
     func_0209cb0c();
-    func_02076c24(data_021cc7d0, data_00000044);
+    func_02076c24(data_021cc7d0, OVERLAY_68_ID);
 }
 
 void func_020b0c84(void) {

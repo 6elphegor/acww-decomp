@@ -172,9 +172,9 @@ void func_020b5d00(u8 *obj) {
     }
 }
 
-extern u8 data_00000002;
-void func_020b5d3c(void) { func_0204eee4((u32)&data_00000002); }
-void func_020b5d4c(void) { func_0204ef2c((u32)&data_00000002); }
+extern u32 OVERLAY_2_ID[];
+void func_020b5d3c(void) { func_0204eee4((u32)OVERLAY_2_ID); }
+void func_020b5d4c(void) { func_0204ef2c((u32)OVERLAY_2_ID); }
 
 Unk_020e4238 *func_020b5d5c(void) {
     return new Unk_020e4238();
