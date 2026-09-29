@@ -341,3 +341,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A u64 field compared to 0: `*(u64 *)&self->unk_0c == 0`.
 - A flag chain written as its own `static inline BOOL Chk(u16 *p)` that loads `v = *p` itself matches; a shared `v` in the caller lands in the wrong register.
 - `t = cond ? A : B; n = t + f();` coalesces t/n; wrap the choice in a `static inline s32 Count()` to keep them separate.
+- A callee called both with and without an argument (r0 passed through): declare it variadic, e.g. `s32 func_0209888c(...)`.
