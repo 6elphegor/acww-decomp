@@ -35,7 +35,7 @@ void func_0203c42c(s32 a, void *b, u32 c, u32 d);
 void func_0207cf10(void *a, void *b);
 void func_02026968(u16 *out, s32 v);
 void func_02067a78(void *p);
-void func_0207cfb8(void *p);
+void func_0207cfb8(void *p, u16 *id);
 void func_02080b78(void *a, void *b);
 s32 func_02098eb0(void *p);
 void func_02097a48(s32 a, s32 b, u32 c);
@@ -316,10 +316,9 @@ void Unk_020d8938::func_0201cf74()
 {
     void *r4 = unk_fc->unk_82c;
     func_02014ce4(&unk_120, 0, 5, 0);
-    u16 *q = &unk_120;
     if (r4 != NULL) {
-        if (*q != 0xfff1) {
-            func_0207cfb8(r4);
+        if (unk_120 != 0xfff1) {
+            func_0207cfb8(r4, &unk_120);
             if (unk_128 != NULL) {
                 func_02080b78(unk_128, &unk_120);
             }
@@ -349,10 +348,9 @@ void Unk_020d8938::func_0201d060()
 {
     void *r4 = unk_fc->unk_82c;
     func_02014ce4(&unk_120, 0, 5, 0);
-    u16 *q = &unk_120;
     if (r4 != NULL) {
-        if (*q != 0xfff1) {
-            func_0207cfb8(r4);
+        if (unk_120 != 0xfff1) {
+            func_0207cfb8(r4, &unk_120);
             if (unk_128 != NULL) {
                 func_02080b78(unk_128, &unk_120);
             }

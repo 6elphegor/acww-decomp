@@ -58,7 +58,7 @@ s32 func_020374b0(void *p, u32 f);
 void *func_0207bd3c(void *a, void *b, s32 c);
 s32 func_0207bfb4(void *a, void *b);
 u32 func_0207bcfc(u32 a, u32 b, u32 c);
-s32 func_0207ac2c(void *a);
+s32 func_0207ac2c(void *a, s32 b, s32 c);
 void *func_02115fb4(void *p, s32 v, u32 n);
 void func_02133ef8(void *p, u32 n);
 s32 func_02128930(const void *a, const void *b, u32 n);
@@ -434,7 +434,7 @@ BOOL Unk_02021340::func_020219cc() {
     }
     }
     if (b.a.v != -1 && b.b.v != -1) {
-        s32 r = func_0207ac2c(data_021dfd8c);
+        s32 r = func_0207ac2c(data_021dfd8c, b.a.v, b.b.v);
         if (r == 2) {
             x = 1;
         } else if (r > 2) {

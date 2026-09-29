@@ -60,7 +60,7 @@ void func_02015144(void *, void *, s32);
 void func_020151d0(void *, s32);
 s32 func_02063b8c(s32);
 void func_0207ceb4(u16 *, void *);
-void func_0207cf10(void *);
+void func_0207cf10(void *, u16 *);
 void func_0207cfb8(void *, void *);
 s32 func_0205b4f8();
 u32 func_0202ac7c(u32);
@@ -192,7 +192,7 @@ void Unk_0201d2d0::func_02026834(void *p) {
             func_0207ceb4(&h[0], unk_fc->unk_82c);
             unk_120 = h[0];
             if (unk_120 != 0xfff1) {
-                func_0207cf10(unk_fc->unk_82c);
+                func_0207cf10(unk_fc->unk_82c, &unk_120);
             }
         } else if (r < 0x28) {
             unk_19c = 0x1f4 + func_0205b4f8() * 4;

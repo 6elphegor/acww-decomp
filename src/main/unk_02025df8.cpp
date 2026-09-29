@@ -170,7 +170,7 @@ void *func_0209750c();
 u32 func_02098750(void *);
 s32 func_02097edc(u32);
 void func_02097a48(u32, void *, s32);
-void func_02097f30(u32, u16 *);
+void func_02097f30(u32, u16 *, s32, s32);
 u32 func_020986c8(void *);
 void func_0203c42c(u32, u16 *, s32, s32);
 void func_020158e0(void *, void *, s32, s32, s32, s32, s32);
@@ -181,7 +181,7 @@ s32 func_0205b4f8();
 void *func_0202ac7c(void *);
 void func_02026968(u16 *, void *);
 void func_0207ceb4(u16 *, void *);
-void func_0207cf10(void *);
+void func_0207cf10(void *, u16 *);
 void func_0209a588(void *);
 }
 
@@ -352,7 +352,7 @@ void Unk_0201d2d0::func_02026214() {
     } else if (unk_120 != 0xfff1) {
         s32 v = func_02097edc(r4);
         if (v != -1) {
-            func_02097f30(r4, &unk_120);
+            func_02097f30(r4, &unk_120, v, 0);
             func_0203c42c(func_020986c8(p6), &unk_120, 0, 1);
         }
     }
@@ -432,7 +432,7 @@ void Unk_0201d2d0::func_02026560(Unk_0201d2d0_Out *out) {
         func_0207ceb4(&loc[0], unk_fc->unk_82c);
         unk_120 = loc[0];
         if (unk_120 != 0xfff1) {
-            func_0207cf10(unk_fc->unk_82c);
+            func_0207cf10(unk_fc->unk_82c, &unk_120);
         }
         break;
     case 1:
@@ -464,14 +464,14 @@ void Unk_0201d2d0::func_02026668(Unk_0201d2d0_Out *out) {
         func_0207ceb4(&loc[1], unk_fc->unk_82c);
         unk_120 = loc[1];
         if (unk_120 != 0xfff1) {
-            func_0207cf10(unk_fc->unk_82c);
+            func_0207cf10(unk_fc->unk_82c, &unk_120);
         }
         break;
     default:
         func_0207ceb4(&loc[2], unk_fc->unk_82c);
         unk_120 = loc[2];
         if (unk_120 != 0xfff1) {
-            func_0207cf10(unk_fc->unk_82c);
+            func_0207cf10(unk_fc->unk_82c, &unk_120);
         } else {
             func_0202cd44(&loc[3], 0);
             unk_120 = loc[3];

@@ -74,7 +74,7 @@ void *func_020291b4(void *);
 void *func_0209ab94(void *);
 void func_02014e60(void *, void *, s32, s32, s32);
 void func_02023da4(void *);
-void func_0207cfb8(void *);
+void func_0207cfb8(void *, void *);
 void func_02080b78(u32, void *);
 void func_020777b8(void *, u32, void *);
 void func_020776b4(void *, u32);
@@ -419,7 +419,7 @@ void Unk_0201d2d0::func_02024a90(Unk_0201d2d0_Out *out) {
     void *r7 = unk_fc->unk_82c;
     func_02023da4(this);
     if (unk_120.unk_00 != 0xfff1) {
-        func_0207cfb8(r7);
+        func_0207cfb8(r7, &unk_120);
         if (unk_120.unk_08 != 0 && unk_120.unk_04 != (u32)-1) {
             func_02080b78(unk_120.unk_08, &unk_120);
             func_020777b8(r7, unk_120.unk_04, &unk_120);
