@@ -224,3 +224,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Adjuster thunks are only emitted when the derived class is instantiated somewhere and its dtor is out of line; the file then needs `// mwcc-version: 1.2/sp2`.
 - Keep `lsrs #31; lsls #31` by splitting: `u32 top = (c & 0x80000000) >> 31; top <<= 31;`. Build packed values in statements, in the original's order, to avoid shifts being hoisted.
 - `movs r2,#3; mvns r2,r2` is -4.
+- Animation classes (unk_02055d18.cpp): `Unk_020dbe7c` (0x18, frame range), `Unk_020dbe5c : Unk_020dbe7c` (entry array of `Unk_0205614c`), `Unk_020dbe6c` (0x3c, transform blend). Reuse those names.
+- A derived class with a base virtual dtor: write `~D() {}`; don't call the base D2 by hand.
+- A `BOOL z = FALSE;` never modified, returned on every early exit and used as the loop start (`s32 i = z`), reproduces a shared zero register.
+- Fixed-point sums: mwcc evaluates the second product first, so write `(s64)t*a + (s64)k*b` to get `k*b` first.
