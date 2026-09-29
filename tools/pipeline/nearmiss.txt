@@ -138,3 +138,4 @@ func_ov004_022218f0 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x
 func_ov004_02221b38 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
 func_ov004_02221d80 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
 func_ov004_022203c8 ov004_047/ov004_047.cpp  # switch value in r0 vs r1 (jump-table temp shift); try permutation search
+func_ov004_02224628 ov004_054/ov004_054.cpp  # regalloc in flag=t+1 test/store block (orig r0=&unk_8e6,r1=t+1,r2=old; ours r3/r2/r1); ~20 variants tried
