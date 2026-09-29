@@ -206,3 +206,8 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Packing bits into a local buffer that is sent by address: if the original reloads it between steps, make it `volatile` and pass `(void *)&bits`; if it stays in a register, use a plain address-taken local.
 - `lsls 16; lsrs 16` on an s32 param before a bit insert is an explicit `(u16)` cast, not a u16 parameter. Hand-written inserts beat C bitfields when the source is an s32.
 - Stack args start at `sp + (pushed regs * 4) + frame`; an `ldrb` from there means a u8 parameter.
+- Callee reads a stack arg with `ldrb` but the caller stores an unmasked 0/1: declare the callee param `bool` and pass the 1-bit bitfield directly.
+- Several `x ? 1 : 0` args that must be evaluated in source order: assign them to BOOL locals first, in that order.
+- A `volatile u8` stack parameter reproduces per-use `ldrb [sp]` reloads.
+- A function-local `static T dflt;` with a zeroing ctor reproduces guard-bit code.
+- Don't leave background processes running when you report.
