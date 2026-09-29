@@ -275,7 +275,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A member array of a class with a user ctor but no dtor gets an inline ctor loop (`bl` per element), not `__cxa_vec_ctor`; classes with dtors get `__cxa_vec_ctor`/`__cxa_vec_cleanup`.
 - Helper scripts run under zsh: an unquoted `$var` with spaces is NOT word-split; pass arguments separately.
 - `if ((u32)d < n) return d + base; return base;` gives unsigned `bcs` plus the u16 cast; a ternary on signed d gives `bge`.
-- Open problem: two zero-valued spilled BOOLs whose initial stores come out in the wrong order (func_0205cbe8, func_02061794, func_02052b90). Report a trigger if you find one.
+- Two zero-valued spilled locals whose initial stores come out in the wrong order: when they are the false values of `if (x == y) t = 1; else t = zeroN;`, write the ternary `t = (x == y) ? 1 : zeroN;` (found in r164; untested on func_0205cbe8, func_02061794, func_02052b90).
 - Real signatures: `func_0204e9dc(grid, s32*, s32*, s32*, s32*, u16*, u16*, filter, 0)` (9 args, out-pointers); `func_0204eb30(grid, u16 *v, x, y, 0)`.
 - Mode-state singleton `Unk_0206022c` at data_021e58a8 (unk_0206022c.cpp): 5 x `Unk_02060a90` (0x450) then a bitfield word at +0x15a0. Reuse.
 - A C bitfield struct `{u32 a:3, ...; u32 cnt:8;}` reproduces a flag word plus a separate `strb` to byte +3.
@@ -291,3 +291,10 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A class method named func_XXXX shadows the extern "C" function of the same name inside that class's methods; declare only the method.
 - 5-bit color channels (`lsls #27; lsrs #27` plus bics/orrs on the same value): a u16 bitfield struct `{r:5,g:5,b:5,x:1}` with real bitfield reads and writes.
 - `t == 2 || t == 3` folds to `subs; cmp; bhi`; `switch (t) { case 2: case 3: ... }` gives `cmp 2; beq; cmp 3; bne`.
+- `u8 *const g = sym; ... g + 0x15fbc` gives the two-literal `ldr =sym; ldr =K; adds` form; `sym + K` folds into one relocation.
+- A callee returning a u8 field: declare it returning `u32` and cast `(u8)` at the call site to get the caller's `lsls; lsrs` mask.
+- A helper class's opaque byte-array member must be `u32 pad[n/4]` so the following member stays aligned.
+- 9-flag range-check chains before tile handlers: write them as an inline `BOOL Check(u16 *p)` with `f9..f2 = TRUE, f1 = FALSE; u32 v = *p; ...; return f9;` and NO helper zero locals. With goto loops and plain constants, mwcc's own hoisting of 0 produces the original's "load 0 from a stack slot" — volatile-zero tricks are unnecessary in these functions.
+- Sub-objects at large offsets: declare real member fields/arrays at those offsets. `(u8*)this + K` gets CSE'd into a register, while the original rematerialises `ldr rX,=K; adds rX,this,rX` per use.
+- `const char *p = a ? a : X;` and `if (!a) a = X;` allocate differently; try the ternary.
+- Keep `sym + 2` as a runtime add (not folded into the relocation): `(u8 *)((u32)sym + 2)`.
