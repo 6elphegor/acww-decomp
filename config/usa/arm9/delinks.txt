@@ -444,3 +444,9 @@ src/main/unk_0203c638.cpp:
 
 src/main/unk_02041068.cpp:
     .text       start:0x02041068 end:0x0204198c
+
+src/main/unk_0203b350.cpp:
+    .text       start:0x0203b350 end:0x0203bc58
+
+src/main/unk_020383cc.cpp:
+    .text       start:0x020383cc end:0x02038d28
