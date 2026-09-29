@@ -151,3 +151,6 @@ func_ov004_0222ca24 ov004_067/ov004_067.cpp  # stack slots only: orig idx at sp+
 func_ov004_02237ad8 ov004_086/ov004_086.cpp  # one insn moved: orig lsls r6,r4,#2 (i*4) before obj addr calc in loop body; ours after
 func_ov004_0223c4bc ov004_094/ov004_094.cpp  # regalloc: unk_192 spilled to [sp] and used from r0 in path1 / reloaded in path2; ours r1; ~60 variants tried
 func_ov004_0223c8d4 ov004_094/ov004_094.cpp  # frame 0x2c w/ this in r1,&2c8 in r0, y spilled sp0/4, px/pz sp+c/+8; ours 12-byte frame, this in r6
+func_ov004_02236320 ov004_084/ov004_084.cpp  # regalloc: func_02095204(4) result in r6 & g in r1 (ours r1/r2); decl perms tried
+func_ov004_022364d0 ov004_084/ov004_084.cpp  # hoisted &unk_230[0] in r4, count in r6 (ours swapped); volatile t1 fixes frame but ext differs
+func_ov004_02236fe0 ov004_085/ov004_085.cpp  # phase-2 loop counter in r3 (orig r1); ~250 decl shuffles tried; needs #pragma opt_loop_invariants off
