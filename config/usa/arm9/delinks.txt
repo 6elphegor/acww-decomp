@@ -879,3 +879,6 @@ src/main/unk_02088730.cpp:
 
 src/main/unk_0208c830.cpp:
     .text       start:0x0208c830 end:0x0208d154
+
+src/main/unk_0208bf00.cpp:
+    .text       start:0x0208bf00 end:0x0208c830

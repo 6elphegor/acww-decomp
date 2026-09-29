@@ -114,3 +114,4 @@ func_020896dc r229/r229.cpp  # w1/n/w0 register swap
 func_02086c04 r225/r225.cpp  # prologue only: original reloads map from [sp,#0x14] and adds 0xc in place in r1; ours copies via movs
 func_0208709c r225/r225.cpp  # loop-hoist family: x>>4 hoisted despite goto form, x in r7 vs original y in r7 (see cand709*.cpp)
 func_02088730 r228/r228.cpp  # idx should spill to sp+0xc (3 spills), ours keeps it in r7 -> OR-chain reg swap
+func_0208c714 r234/r234.cpp  # load order: original ldr [r4,#0x64] before pool ldr data_020cf5f0
