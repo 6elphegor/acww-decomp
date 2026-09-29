@@ -36,3 +36,5 @@ unk_02065f50 (r169): Unk_020e2a78 is 0xc bytes here, but unk_020383cc.cpp declar
 unk_020655e4 (r168) now puts the 26 stub virtuals and the +0x20/+0x2c/+0x3c/+0x40 accessors on Unk_020ddcf0 (ctors/dtors in unk_02065f50); merge those two files. The earlier note about Unk_020d8938 is superseded.
 unk_02064cc4 (r167) defines Unk_020dd408 (vtable 0x020dd408, global data_021c9f44) whose dtors/elements are in unk_02064398; merge.
 unk_020668a0 (r170) Unk_020668a0 and unk_02065f50 (r169) Unk_020660f8 are the same big object (+0x13b0 owner Unk_020ddcf0*, +0x19f4.. bytes, +0x314/+0x58c/+0x12c0/+0x13a4 sub-objects); merge under one name.
+unk_02067c70 (r172): the big 0x1a1c owner object Unk_02067c70 is the same as Unk_020660f8 (r169) / Unk_020668a0 (r170); C1 is func_02067c70. Merge all three under Unk_02067c70.
+unk_02062fd4 (r164): Unk_020e2a60 here needs u8 unk_04[10] so +0xe is right — check against unk_020a6914.cpp's declaration. RNG classes Unk_020dd35c (base) / Unk_020dd344.
