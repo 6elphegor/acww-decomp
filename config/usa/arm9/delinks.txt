@@ -756,3 +756,12 @@ src/main/unk_0206ebc0.cpp:
 
 src/main/unk_020739b8.cpp:
     .text       start:0x020739b8 end:0x020742f4
+
+src/main/unk_02070790.cpp:
+    .text       start:0x02070790 end:0x0207116c
+
+src/main/unk_02074c4c.cpp:
+    .text       start:0x02074c4c end:0x02075558
+
+src/main/unk_02075e60.cpp:
+    .text       start:0x02075e60 end:0x020767f8

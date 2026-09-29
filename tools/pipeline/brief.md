@@ -328,3 +328,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Pointer-increment fill `u32 *p = arr; for (i = 2; i >= 0; i--) *p++ = v;` reproduces an `stm r0!` loop.
 - Free functions must be `extern "C"` (keeps the func_XXXXXXXX symbol); never leave them C++-mangled. Never define stub bodies for functions outside your range.
 - A call with no `mov` before it may take the previous call's return value (still in r0) or a callee-saved register as its argument: write `g(f(x))`.
+- Packing a message word with clear/insert/clear-top masks: a C bitfield struct passed by address reproduces the loads and stores; hand-written masks get merged.
+- A `u16` stack parameter the callee reads with `ldrh` each time but callers pass unmasked: declare `u32 w` and use `*(u16 *)&w` at each use.
+- Constant-bound loops that the original enters with `b test`: the goto form `i = 0; goto test; loop: ...; i++; test: if (i < N) goto loop;`.

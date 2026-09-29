@@ -87,3 +87,6 @@ func_020720f8 r189/r189.cpp  # overlay-ID compare constants register order (pool
 func_02073a0c r192/r192.cpp  # r4/r5 swapped (pointer vs old irq mask)
 func_02073bac r192/r192.cpp  # stack-arg store order for func_020ebb6c 8-arg call
 func_02073bf8 r192/r192.cpp  # same as 02073bac
+func_02070fbc r187/r187.cpp  # value/mode registers swapped (r5/r6), loop counters permuted
+func_02075e98 r196/r196.cpp  # h-1 register choice
+func_020766ec r196/r196.cpp  # header ldrb scheduled later, rebuilds add r2,sp (2 bytes longer)
