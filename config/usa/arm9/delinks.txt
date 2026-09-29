@@ -168,3 +168,12 @@ src/main/unk_02001e7c.cpp:
 
 src/main/unk_02004e0c.cpp:
     .text       start:0x02004e0c end:0x02005e7c
+
+src/main/unk_020039ec.cpp:
+    .text       start:0x020039ec end:0x020044dc
+
+src/main/unk_020095f8.cpp:
+    .text       start:0x020095f8 end:0x02009f68
+
+src/main/unk_02005e7c.cpp:
+    .text       start:0x02005e7c end:0x02006d14
