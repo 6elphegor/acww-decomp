@@ -326,3 +326,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Function-pointer call with odd scratch registers: the original forwards an extra live argument (`tbl[i](p, x)`).
 - data_020cbb18 is the singleton `Unk_020cbb18` (comm/session state, no vtable): func_02072e44 (enabled test), func_020728d4, func_020728a4(buf, n), func_02072824(cmd, arg), func_020729cc are its methods. New code may call them as methods; see unk_02072d5c.cpp.
 - Pointer-increment fill `u32 *p = arr; for (i = 2; i >= 0; i--) *p++ = v;` reproduces an `stm r0!` loop.
+- Free functions must be `extern "C"` (keeps the func_XXXXXXXX symbol); never leave them C++-mangled. Never define stub bodies for functions outside your range.
