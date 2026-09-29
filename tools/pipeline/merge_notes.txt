@@ -39,3 +39,4 @@ unk_020668a0 (r170) Unk_020668a0 and unk_02065f50 (r169) Unk_020660f8 are the sa
 unk_02067c70 (r172): the big 0x1a1c owner object Unk_02067c70 is the same as Unk_020660f8 (r169) / Unk_020668a0 (r170); C1 is func_02067c70. Merge all three under Unk_02067c70.
 unk_02062fd4 (r164): Unk_020e2a60 here needs u8 unk_04[10] so +0xe is right — check against unk_020a6914.cpp's declaration. RNG classes Unk_020dd35c (base) / Unk_020dd344.
 unk_02069834 (r175): script-state class Unk_02069834 : Unk_020e2b4c; owner is the big Unk_02067c70 object; member-pointer tables at 0x020dd684..0x020dda00 interleave r169..r176 ranges (all one file).
+unk_02068f10 (r174) Unk_02068f10 : Unk_020e2b08 and unk_02069834 (r175) Unk_02069834 : Unk_020e2b4c have identical fields (+0x24 ctx, +0x30 state, +0x38 Unk_020a72b0, +0x5c idx) — the script-command handler class; one class, one file.

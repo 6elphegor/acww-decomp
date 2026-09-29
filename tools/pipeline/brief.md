@@ -298,3 +298,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Sub-objects at large offsets: declare real member fields/arrays at those offsets. `(u8*)this + K` gets CSE'd into a register, while the original rematerialises `ldr rX,=K; adds rX,this,rX` per use.
 - `const char *p = a ? a : X;` and `if (!a) a = X;` allocate differently; try the ternary.
 - Keep `sym + 2` as a runtime add (not folded into the relocation): `(u8 *)((u32)sym + 2)`.
+- `buf[1 + i]` read via `ldrb [base, idx]` with base = sp+1: write `u8 *q = &r[1]; r[0] = q[i];` (indexing `r[1 + i]` folds the +1).
+- Address-of-array null test with a separate offset add: `u32 g = (u32)arr; if (g != 0) f((u8*)g + K);`.
+- Script-command handlers (0x02068c9c..0x0206b9xx) are one class on the Unk_020e2b08/Unk_020e2b4c script base; see unk_02068f10.cpp / unk_02069834.cpp.
