@@ -492,3 +492,12 @@ src/main/unk_0203fe18.cpp:
 
 src/main/unk_020489cc.cpp:
     .text       start:0x020489cc end:0x020492fc
+
+src/main/unk_0204b08c.cpp:
+    .text       start:0x0204b08c end:0x0204b9c0
+
+src/main/unk_020449e8.cpp:
+    .text       start:0x020449e8 end:0x020452ec
+
+src/main/unk_020434f0.cpp:
+    .text       start:0x020434f0 end:0x02043e70

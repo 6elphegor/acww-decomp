@@ -163,3 +163,8 @@ If a function doesn't match after several genuinely different attempts, move on 
 - `x - ((x>>4)<<4)` written inline folds to `movs #15; bics`; use a `hx = x>>4` temporary to get `lsls; subs`.
 - With a `for (x = 0; x < n; ...)` loop the compiler emits its own `cmp n,#0; ble` guard; don't add a manual `if (n > 0)`.
 - Open problem: mwcc sometimes hoists `y - (hy<<4)` out of an inner loop when the original recomputes it (r117 func_020475f8, r120 func_02048c30/cf0). If you find the trigger, report it.
+- `u16 f(u32 x)`: `return x < N ? x + K : K;` gives a branch to a shared cast; `if (x < N) return x + K; return K;` gives two returns. Pick per function.
+- Pattern `s32 t = f(); s32 r = -1; if (t != r) t &= 7; else t = r; return t;` keeps -1 in the result register; declare the -1 after the call.
+- A local struct filled by another function with no ctor call: class with an inline empty ctor and an out-of-line dtor.
+- The `BOOL r=FALSE; ... if (b>=lo && c<=hi) r=TRUE;` range check sometimes only matches written inline in the caller (helper versions put r in r0).
+- A long chain of `kN = TRUE` flags cleared by successive range tests spills them to the stack; initialise all to TRUE and match the declaration order to the initial store order.
