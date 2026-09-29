@@ -276,3 +276,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Helper scripts run under zsh: an unquoted `$var` with spaces is NOT word-split; pass arguments separately.
 - `if ((u32)d < n) return d + base; return base;` gives unsigned `bcs` plus the u16 cast; a ternary on signed d gives `bge`.
 - Open problem: two zero-valued spilled BOOLs whose initial stores come out in the wrong order (func_0205cbe8, func_02061794, func_02052b90). Report a trigger if you find one.
+- Real signatures: `func_0204e9dc(grid, s32*, s32*, s32*, s32*, u16*, u16*, filter, 0)` (9 args, out-pointers); `func_0204eb30(grid, u16 *v, x, y, 0)`.
+- Mode-state singleton `Unk_0206022c` at data_021e58a8 (unk_0206022c.cpp): 5 x `Unk_02060a90` (0x450) then a bitfield word at +0x15a0. Reuse.
+- A C bitfield struct `{u32 a:3, ...; u32 cnt:8;}` reproduces a flag word plus a separate `strb` to byte +3.
