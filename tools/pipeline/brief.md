@@ -377,3 +377,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `cmp 0; beq T; cmp 1; bne F` (not `cmp 1; bhi`): `if (r == 0) goto yes; if (r == 1) { yes: x = TRUE; } else x = FALSE;`.
 - Store address computed before the value: `u8 *p = &unk_95; *p = f(unk_95, x);`.
 - 64-bit delta from two words: `u64 d = now - *(u64 *)&unk_cc;` (not `(hi<<32)|lo`).
+- Storing -0x4000 to a 16-bit field gives pool word 0xffffc000 only when the field is `s16`.
