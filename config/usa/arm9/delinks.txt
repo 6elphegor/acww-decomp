@@ -330,3 +330,6 @@ src/main/unk_02022608.cpp:
 
 src/main/unk_02025df8.cpp:
     .text       start:0x02025df8 end:0x020267b8
+
+src/main/unk_02021340.cpp:
+    .text       start:0x02021340 end:0x02021ce4
