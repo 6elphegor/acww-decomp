@@ -59,3 +59,4 @@ unk_020804d0 (r214): Unk_02080860 (0x700, ctor func_02080860) is the same player
 unk_0207e940 (r211): Unk_0207e940 = the same 0x700 player-slot record (pocket slots u16[10] at +0x6ac) as Unk_02080860/Unk_0207fb80/Unk_0207e268.
 unk_02082088 (r217): slot-handle base is Unk_020e0718 (vtable 0x020e0718, ctor func_020821b4) = r216's Unk_020821b4; container base Unk_020e085c with 6 global container instances. Rename r216's base when merging.
 unk_02083314 (r219): Unk_02083c08 (u8 unk_70, u32 unk_74 overlay id) is the same class as unk_02083c28's Unk_02083c28 (+0x70/+0x74, func_02083e38 clears unk_70); merge.
+unk_020829b0 (r218): container base Unk_020e085c (ctor func_02082d5c) and element base Unk_02082d68 are defined here; unk_02082088 (r217) declares them. Same file; merge.

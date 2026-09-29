@@ -382,3 +382,14 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `lsls; negs; adds` for `0x24 - (idx<<2)`: `s32 q = idx << 2; q = -q; v = q + 0x24;` (direct form gives `movs 0x24; subs`).
 - Operand order `sum, b`: `x = f + (g + a); x += b;`.
 - Two spilled locals computed in reverse order: declare them in slot order (`s32 y0, x0;`) and assign x0 first.
+- Non-tail `bl` at the end of a void method: pick the data pointer with a ternary inside the call args (a separate local + call gives a tail `b`).
+- Forwarding r2/r3 untouched while taking the address of param 2: declare all four params and copy (`u16 v = v0; f(&v)`); taking &param gives `push {r0-r3}`.
+- Callee u16 param that receives unmasked values: declare it `u32` and let `strh` truncate.
+- `__cxa_vec_ctor` args (r1 = count, r2 = size) give the element size; add explicit trailing padding if needed.
+- Caller leaves r0 = this intact before a call → the callee is a method even if its body ignores `this`.
+- `lsls 31; lsrs 31` bit read: use a u8 bitfield for reads; setters may still need the hand-written mask.
+- Pointer+counter loops: `for (i = 0; i < 10; p++, i++)` with the pointer declared first.
+- `s32 i; BOOL r = FALSE; for (i = r; ...)` fixes an i/r register swap.
+- 0x30-byte ldm/stm copy loop: assign a `struct { s64 v[6]; }` by value.
+- `strb r1,[r0,r6]` (base, index) needs `*(u8*)(i*4 + (u32)a) = 1;`; `a[i].f` gives `[r6,r0]`.
+- `x1 = bx + 0x10;` (one expression) vs `x1 = bx; x1 += 0x10;` (the add gets folded into every use).
