@@ -175,3 +175,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A `BOOL ok = FALSE;` declared before `if (p)` can hoist a stack load above the null compare; declaring it inside the `if` block keeps it after the `beq`.
 - `if (p) ctor(p)` on a freshly allocated pointer that was just stored to a global reproduces the double null check without placement new.
 - Two u32 fields compared `> 0` with `bls`: cast them to `(u8*)` pointers.
+- Volatile locals are not always placed first in the frame: in r115 func_020463fc a volatile landed after an address-taken u16.
