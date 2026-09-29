@@ -528,3 +528,6 @@ src/main/unk_0204fb80.cpp:
 
 src/main/unk_0204e858.cpp:
     .text       start:0x0204e858 end:0x0204f178
+
+src/main/unk_0204f178.cpp:
+    .text       start:0x0204f178 end:0x0204fa3c

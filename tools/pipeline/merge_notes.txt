@@ -7,3 +7,4 @@ unk_02040754.cpp uses fake extern func_02040974_r (s32-returning alias of void f
 unk_02035e2c.cpp uses fake call-site decl func_02036220_call (should be s32-returning real func); fix when merging
 unk_0204b08c continues unk_0204a754 (same u16 item-ID helper file); merge when linking.
 unk_02043e70 and unk_020449e8 look like one source file (shared globals, Unk_020449e8_Src); merge when linking.
+unk_0204f178 and unk_0204fb80 are one file with class Unk_020db984 (vtable 0x020db984); r131 uses local name Unk_020db984_Ent for Unk_0204fd24 and writes the dtor with explicit calls. Merge when linking.

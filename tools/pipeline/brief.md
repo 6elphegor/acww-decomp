@@ -191,3 +191,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Map grid (unk_0204e858.cpp): `Unk_0204e858_Grid {Cell *cells; u32 w, h;}`, cells 0x28 bytes. `func_0204ebd8(grid, hx, hy, lx, ly, u8 layer)` returns the cell's u16* (it is defined `void` with an s32-returning callee, so callers see it via an implicit-int style prototype returning `u16*`). World coords are fixed-point: block = x>>17, tile = (x>>13)&15.
 - `if (x < 16 && y < 16) r = TRUE;` can get folded; `if (x >= 16 || y >= 16) {} else { r = TRUE; }` keeps the flag join.
 - Overlay refcount table `data_021c47fc[12]` (unk_0204e858.cpp): func_0204ef2c load, func_0204eee4 unload.
+- Model-manager singleton `Unk_020db984 : Unk_020d8c7c` (vtable 0x020db984, data_021c488c) is in unk_0204fb80.cpp / unk_0204f178.cpp; entries are `Unk_0204fd24` (0x16c bytes). Reuse those declarations.
+- A field address computed twice with interleaved fieldwise copies: `Vec3 *pv = &e->unk_8c; v.x = pv->x; ...`.
+- A zero-valued `BOOL r` reused as a constant-0 call argument (`movs rX, r6`): pass `r` itself.
