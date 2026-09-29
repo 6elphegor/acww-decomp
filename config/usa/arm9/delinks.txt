@@ -300,3 +300,6 @@ src/main/unk_02022f14.cpp:
 
 src/main/unk_02012810.cpp:
     .text       start:0x02012810 end:0x020131a4
+
+src/main/unk_02020a00.cpp:
+    .text       start:0x02020a00 end:0x02021340
