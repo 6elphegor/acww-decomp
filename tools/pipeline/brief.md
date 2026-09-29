@@ -289,3 +289,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Declaration style matters: `s32 y; s32 x;` on separate lines and `s32 y, x;` can allocate differently.
 - Frames: locals are placed by ascending size; address-taken 2-byte scalars go first. Eleven u16 outputs in the original frame are eleven separate `u16` locals, not an array.
 - A class method named func_XXXX shadows the extern "C" function of the same name inside that class's methods; declare only the method.
+- 5-bit color channels (`lsls #27; lsrs #27` plus bics/orrs on the same value): a u16 bitfield struct `{r:5,g:5,b:5,x:1}` with real bitfield reads and writes.
+- `t == 2 || t == 3` folds to `subs; cmp; bhi`; `switch (t) { case 2: case 3: ... }` gives `cmp 2; beq; cmp 3; bne`.
