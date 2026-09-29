@@ -270,3 +270,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `if (x != -1) return TRUE; return FALSE;` vs `BOOL r = FALSE; if (...) r = TRUE; return r;` allocate differently; try both.
 - `for (j = 4; j < m + 4; j++)` keeps the bound unhoisted with `u32 m` and no cast; `(u32)(m + 4)` on an s32 hoists it.
 - Index-checked bit test: `if (i < N) { if (bit) return TRUE; return FALSE; } return FALSE;` (early return on a bad index lays out differently).
+- Objects with dtors declared in inner blocks get frame slots after function-scope locals; function-scope locals go in declaration order.
+- s16 sin/cos table: `idx = ((u16)ang >> 4) * 2; tbl[idx]; tbl[idx + 1];` (writing `tbl[idx*2]` double-shifts).
