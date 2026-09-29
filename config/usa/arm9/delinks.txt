@@ -381,3 +381,9 @@ src/main/unk_0202b4ac.cpp:
 
 src/main/unk_0202c7c0.cpp:
     .text       start:0x0202c7c0 end:0x0202d0e4
+
+src/main/unk_02031b78.cpp:
+    .text       start:0x02031b78 end:0x02032494
+
+src/main/unk_020341c0.cpp:
+    .text       start:0x020341c0 end:0x02034ae8
