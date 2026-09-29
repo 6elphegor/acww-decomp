@@ -321,3 +321,12 @@ src/main/unk_020241f4.cpp:
 
 src/main/unk_02027a34.cpp:
     .text       start:0x02027a34 end:0x0202839c
+
+src/main/unk_020238b0.cpp:
+    .text       start:0x020238b0 end:0x020241f4
+
+src/main/unk_02022608.cpp:
+    .text       start:0x02022608 end:0x02022f14
+
+src/main/unk_02025df8.cpp:
+    .text       start:0x02025df8 end:0x020267b8
