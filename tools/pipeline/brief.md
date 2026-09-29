@@ -350,3 +350,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Several zero initialisers: `x = 0; y = 0; z = 0;` vs chained `y = x = z = 0;` allocate differently; try all statement orders.
 - Big early-exit function with one epilogue: `if (x != -1) { main } else { nomatch }` rather than `goto nomatch` (which gives two epilogues).
 - Short-circuit OR of two inline record matches: `((r = f(a)), (r->x == q->x && ...)) || ((r = f(b)), ...)` with comma expressions keeps the original layout.
+- 0x700-byte player slot record: ctor func_02080860, layout in unk_020804d0.cpp (sub-objects at +0x340/+0x568/+0x65c/+0x6c0, u16 slots at +0x6ac/+0x6cc). Its 8 x 0x68-byte entries are `Unk_0208091c` (flag word +0x64).
