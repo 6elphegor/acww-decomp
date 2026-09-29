@@ -161,7 +161,7 @@ struct Unk_02012164 {
     void func_02012810(Unk_02011f74_Vec *p);
     void func_02012df8();
     s32 func_02012ed0(Unk_02011f74_Vec *p);
-    s32 func_02012eb0();
+    s32 func_02012eb0(s32 mask);
     void func_02013260();
     void func_020132c8();
     s32 func_020130f0();
@@ -485,10 +485,9 @@ BOOL Unk_02012164::func_02012164(Unk_02011f74_Vec *p)
 {
     s32 a = 0;
     s32 b = 0;
-    volatile s32 pad;
     func_0204ee10(&a, &b, p);
     if (a == unk_0c.a && b >= unk_0c.b && b <= unk_0c.b + 1) {
-        func_0204ed8c(p, unk_0c.a, unk_0c.b);
+        func_0204ed8c(p, ((volatile Unk_02011f74_Pair &)unk_0c).a, ((volatile Unk_02011f74_Pair &)unk_0c).b);
     } else if (a >= unk_0c.a - 3 && a <= unk_0c.a + 4 && b >= unk_0c.b && b <= unk_0c.b + 5) {
         a = unk_0c.a;
         b = unk_0c.b + func_02063b8c(2);
@@ -559,7 +558,7 @@ BOOL Unk_02012164::func_02012620(Unk_02011f74_Vec *p, Unk_02011f74_World *w)
     func_02013260();
     s32 flag = unk_88;
     if (flag != 0) {
-        s32 k = func_02012eb0();
+        s32 k = func_02012eb0(flag);
         s32 a = 0;
         s32 b = 0;
         func_0204ee10(&a, &b, p);

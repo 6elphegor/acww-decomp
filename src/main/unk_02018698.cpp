@@ -117,8 +117,7 @@ void func_0201a97c(void *a, void *b);
 void func_0201a99c(void *a, s32 b);
 void func_0201acf8(void *a, s32 b);
 BOOL func_0201acfc(void *a);
-BOOL func_02015e74(void *p);
-BOOL func_02015e74_2(void *p, void *q);
+BOOL func_02015e74(void *p, void *q);
 void func_0201610c(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 void func_02011dfc(void *a, u32 b, u32 c);
 s32 func_02011da4(void *a, u32 b, u32 c);
@@ -222,7 +221,7 @@ void Unk_02018698::func_020187d8(C *c) {
     Unk_02018698_Rec *t = unk_a4;
     if (t != 0) {
         if (unk_a8 == 1) {
-            if (func_02015e74(c->unk_334)) {
+            if (func_02015e74(c->unk_334, c)) {
                 Unk_02018698_Rec *r = unk_a4;
                 s32 *pv = &r->unk_0c;
                 if (r->unk_0c < 0x137) {
@@ -274,7 +273,7 @@ s32 Unk_02018698::func_020188b0(C *c) {
 void Unk_02018698::func_0201899c(C *c) {
     if (unk_98 >= 1) {
         if (!func_02019790(this)) {
-            if (func_02015e74_2(c->unk_334, c)) {
+            if (func_02015e74(c->unk_334, c)) {
                 func_02019498(this, 1);
             }
         }

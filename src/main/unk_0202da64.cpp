@@ -12,7 +12,7 @@ extern void *data_020cbb18;
 extern s32 data_021bf97c;
 
 u32 func_02077b04(u32 a);
-void func_020639e8(u8 *dst, u8 *fmt, s32 v);
+void func_020639e8(u8 *dst, u8 *fmt, ...);
 u32 func_02063b8c(u32 a);
 void func_0207fd90(void *o, u16 *p);
 void func_02077450(void *o, u16 *p);
@@ -277,7 +277,7 @@ u8 *Unk_020d89c8::vfunc_70() {
     if (v == -1) {
         v = 0;
     }
-    func_020639e8(data_021be6a0, data_020d8b00, v & 0xf8);
+    func_020639e8(data_021be6a0, data_020d8b00, v & 0xf8, v);
     return data_021be6a0;
 }
 
@@ -286,7 +286,7 @@ u8 *Unk_020d89c8::vfunc_6c() {
     if (v == -1) {
         v = 0;
     }
-    func_020639e8(data_021be680, data_020d8b18, v & 0xf8);
+    func_020639e8(data_021be680, data_020d8b18, v & 0xf8, v);
     return data_021be680;
 }
 

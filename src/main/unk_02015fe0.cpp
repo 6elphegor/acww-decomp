@@ -59,7 +59,7 @@ void func_0201c050(void);
 void func_020820ec(void *a);
 void func_02082104(void *a);
 BOOL func_0201b888(void *o, Unk_02015fe0_Vec *v, s16 *a);
-void func_0201ab30(void *a);
+void func_0201ab30(void *a, void *b);
 void func_0201ab4c(void *a, void *b, s32 c, s32 d, u32 e);
 s32 func_0201ab48(void *a);
 void func_0201a99c(void *a, s32 b);
@@ -272,7 +272,7 @@ void Unk_02016360::func_020163f0(Unk_02015fe0_Obj *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->unk_8e;
-    func_0201ab30(o->unk_350);
+    func_0201ab30(o->unk_350, o);
     if (func_0201b888(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;
@@ -371,7 +371,7 @@ void Unk_02016360::func_02016714(Unk_02015fe0_Obj *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->unk_8e;
-    func_0201ab30(o->unk_350);
+    func_0201ab30(o->unk_350, o);
     if (func_0201b888(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;

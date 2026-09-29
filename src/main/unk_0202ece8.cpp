@@ -12,7 +12,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc538(s64 a);
 void func_01ffca8c(Unk_0202f2ac_V3 *o, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b);
 void func_01ffd070(Unk_0202f2ac_V3 *o, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b);
-void func_020e93a0(Unk_0202f2ac_V3 *v);
+void func_020e93a0(Unk_0202f2ac_V3 *v, s16 a);
 void func_020e9960(Unk_0202f2ac_V3 *o, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b);
 void func_020e9588(Unk_0202f2ac_V3 *o, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c);
 s32 func_020e94f8(Unk_0202f2ac_V3 *v);
@@ -33,7 +33,7 @@ public:
     Unk_0202f048 *func_0202efc0(s32 k);
     s64 func_0202ef84(Unk_0202f048 *p);
     BOOL func_0202ef40();
-    void func_0202ef18();
+    void func_0202ef18(s16 a);
     void func_0202eeec(Unk_0202f048 *a, Unk_0202f048 *b);
 };
 
@@ -123,9 +123,9 @@ void Unk_0202f048::func_0202eeec(Unk_0202f048 *a, Unk_0202f048 *b) {
     func_0202ef40();
 }
 
-void Unk_0202f048::func_0202ef18() {
+void Unk_0202f048::func_0202ef18(s16 a) {
     Unk_0202f2ac_V3 v(y, x);
-    func_020e93a0(&v);
+    func_020e93a0(&v, a);
     x = v.x;
     y = v.z;
 }

@@ -171,7 +171,7 @@ void *func_0209c60c();
 s32 func_0209c86c();
 s32 func_02030814(u32);
 s32 *func_0209c868(void *);
-s32 func_01ffc5a4(s32);
+s32 func_01ffc5a4(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void func_02010380(Unk_02006d14 *, u32, u32, u32);
 void func_02053f20(void *);
@@ -180,7 +180,7 @@ s32 func_020b50e8();
 void func_02010e48(void *, s32);
 s32 func_020e9688(void *);
 s32 func_020e9650(void *, void *);
-s32 func_02010d50();
+s32 func_02010d50(s32 v, s32 min);
 s32 func_02010d68(s32, s32);
 s32 func_020e7b98(s32, s32);
 void func_02010a34(Unk_02006d14 *, void *);
@@ -188,7 +188,7 @@ BOOL func_0200e7c0(Unk_02006d14 *);
 void *func_02010d20(Unk_02006d14 *);
 void func_0209d498(void *);
 u8 *func_020952c8();
-void func_0209d164(void *);
+void func_0209d164(void *, s32);
 void func_020987b0(void *, Unk_020092c8_Bits);
 void func_0200ef08(Unk_02006d14 *);
 void func_020946f0(u32, s32);
@@ -261,10 +261,10 @@ void Unk_02006d14::func_02008eb4() {
 }
 
 void Unk_02006d14::func_02008ee4() {
-    s16 t;
     Unk_02006d14_7d0 *p = &unk_7d0;
-    p->h2 = t = unk_8e;
-    func_02010d98(&t, unk_7d0.unk_00);
+    s16 t = unk_8e;
+    p->h2 = t;
+    func_02010d98(&t, p->unk_00);
     func_02010a58(this, &t);
 }
 
@@ -328,7 +328,7 @@ void Unk_02006d14::func_0200905c() {
             if (unk_5c.y >= r6) {
                 s32 d = Unk_0200905c_abs(((s32 *)func_0209c868(r7))[2] - unk_5c.z);
                 if (d < 0x1000) {
-                    s32 m = func_01ffc5a4(0x1000 - d) * 6;
+                    s32 m = func_01ffc5a4(0x1000 - d, 0x1000) * 6;
                     *r4 = *r4 + (m >> 5);
                 } else {
                     *r4 = r6;
@@ -393,7 +393,7 @@ s32 Unk_02006d14::func_02009170() {
                 *pw = saved;
             }
         } else {
-            *r6 = func_02010d50();
+            *r6 = func_02010d50(*r6, 0x333);
         }
     } else {
         *r6 = func_02010d68(*r6, sp0);
@@ -430,7 +430,7 @@ void Unk_02006d14::func_020092c8(Unk_02006d14_Item *item, u32 old) {
                     loc.date.w1 = 0;
                     func_0209d498(&loc.date);
                     { u8 *q0 = func_020952c8(); *q0 = *q0 & 0xf9; }
-                    { u8 *q1 = func_020952c8(); if ((*q1 & 1) == 0) func_0209d164(&loc.date); }
+                    { u8 *q1 = func_020952c8(); if ((*q1 & 1) == 0) func_0209d164(&loc.date, 1); }
                     loc.bits.y = loc.date.b[5];
                     loc.bits.m = loc.date.b[4];
                     loc.bits.d = loc.date.b[3];

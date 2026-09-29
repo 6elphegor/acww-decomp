@@ -212,29 +212,31 @@ BOOL Unk_0201d2d0::func_02029968(s32 unused, s32 a, s32 b) {
 }
 
 BOOL Unk_0201d2d0::func_02029a88(s32 a, s32 b) {
-    struct { void *p; void *v; void *p10; Unk_02029a88_Pair pair; } l;
+    struct { void *p10; Unk_02029a88_Pair pair; } l;
+    void *p;
+    void *v;
     s32 r6;
     u8 cnt;
     BOOL r7;
     Unk_0201d568_S s;
-    l.v = func_02099d44(b, func_020805c4((void *)a), 1);
-    if (l.v != 0) {
-        l.p = func_0209a4f0(l.v);
+    v = func_02099d44(b, func_020805c4((void *)a), 1);
+    if (v != 0) {
+        p = func_0209a4f0(v);
     } else {
-        l.p = 0;
+        p = 0;
     }
-    r6 = l.p != 0 ? func_0209abcc(l.p) : 4;
+    r6 = p != 0 ? func_0209abcc(p) : 4;
     r7 = FALSE;
     if (r6 == 0 || r6 == 2) {
-        if (func_0209a42c(l.v) == 0) {
+        if (func_0209a42c(v) == 0) {
             cnt = 0;
             l.pair.unk_00 = cnt;
             l.pair.unk_04 = cnt;
             l.p10 = func_0209750c();
             func_0209d498(&l.pair);
             func_0201c95c(this, &s);
-            unk_15c = l.v;
-            func_0202d120(this, l.p);
+            unk_15c = v;
+            func_0202d120(this, p);
             func_020157b8(this, func_0209a4e4(unk_15c, cnt), cnt);
             func_020157b8(this, func_0209a4e4(unk_15c, 1), 1);
             func_0201578c(this, func_0209ab94(func_0202d114()), cnt, 7);
@@ -242,26 +244,26 @@ BOOL Unk_0201d2d0::func_02029a88(s32 a, s32 b) {
                 if (r6 != 0) {
                     if (r6 == 2) {
                         func_0201c938(this, &s, cnt, 0x2b, 0x2b, data_021bf394);
-                        cnt = cnt + 1;
+                        cnt++;
                         r7 = TRUE;
                     }
                 } else {
                     func_0201c938(this, &s, cnt, 0x27, 0x27, data_021bf394);
-                    cnt = cnt + 1;
+                    cnt++;
                     r7 = TRUE;
                 }
             } else {
                 if (r6 != 0) {
                     if (r6 == 2) {
                         func_0201c91c(this, &s, cnt, data_020c74f0, data_021bf3dc);
-                        cnt = cnt + 1;
+                        cnt++;
                         r7 = TRUE;
                     }
                 } else {
                     r6 = (s32)func_02098750(l.p10);
                     if (func_0202cee4((void *)r6, func_0209ab94(func_0209a4f0(unk_15c))) != -1) {
                         func_0201c91c(this, &s, cnt, data_020c74f4, data_021bf3dc);
-                        cnt = cnt + 1;
+                        cnt++;
                         r7 = TRUE;
                     }
                 }
@@ -269,8 +271,9 @@ BOOL Unk_0201d2d0::func_02029a88(s32 a, s32 b) {
             if (r7 != 0) {
                 func_0201c91c(this, &s, cnt, data_020c74fc, data_021be730);
                 func_0201c91c(this, &s, (u8)(cnt + 1), data_020c7500, data_021be668);
-                s.unk_20 = cnt + 2;
-                s.unk_21 = s.unk_20 - 1;
+                u8 t = cnt + 2;
+                s.unk_20 = t;
+                s.unk_21 = t - 1;
                 func_0201c870(this, &s);
                 func_0202d1c0(data_020d7a68);
                 func_020679c0(unk_3c, 1);

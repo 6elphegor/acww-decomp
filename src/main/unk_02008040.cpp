@@ -499,27 +499,25 @@ BOOL Unk_02008040::func_02008770(s16 v, u32 a, u32 b) {
     return r;
 }
 
-struct Unk_020087ac_Saved {
-    Unk_02008074_Vec v;
-    Unk_02008858_Blk blk1;
-    Unk_02008858_Blk blk2;
-};
-
 void Unk_02008040::func_020087ac() {
-    Unk_020087ac_Saved sv;
-    s16 d;
     func_02010914(this);
-    sv.v = unk_c4;
-    d = unk_d0;
-    sv.blk1 = unk_294;
-    sv.blk2 = unk_694;
+    Unk_02008074_Vec *pv = &unk_c4;
+    volatile Unk_02008074_Vec v;
+    v.unk_00 = pv->unk_00;
+    v.unk_04 = pv->unk_04;
+    v.unk_08 = pv->unk_08;
+    s16 d = unk_d0;
+    Unk_02008858_Blk blk1 = unk_294;
+    Unk_02008858_Blk blk2 = unk_694;
     func_0200e7f4(this);
     func_0201071c(this);
     func_02008858();
-    unk_c4 = sv.v;
+    unk_c4.unk_00 = v.unk_00;
+    unk_c4.unk_04 = v.unk_04;
+    unk_c4.unk_08 = v.unk_08;
     unk_d0 = d;
-    unk_294 = sv.blk1;
-    unk_694 = sv.blk2;
+    unk_294 = blk1;
+    unk_694 = blk2;
 }
 
 struct Unk_02008858_S16x2 {

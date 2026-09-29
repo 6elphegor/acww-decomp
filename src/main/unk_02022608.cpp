@@ -286,10 +286,7 @@ s32 Unk_0201d2d0::func_020227ac() {
     q = func_0204f0f4(((u8 *)&l)[7]);
     q = func_0204f234(x, q);
     if (q && func_0202c2d0(&l, &l.a, &l.b, &l.c, q) == 1) {
-        if (l.a >= 3) {
-            r = 1;
-        }
-        r = r * 3 + func_02022880(l.b);
+        r = (l.a >= 3 ? 1 : r) * 3 + func_02022880(l.b);
         func_0201578c(this, &l, 0, 7);
         ::func_020228b0(this, l.c, &l.unk_00, l.a, *(Unk_02022608_Ent ***)q, 1);
         func_0202d184(this, &unk_100, &unk_11e, 30, func_02003098(func_020805c4(unk_fc->unk_82c)), data_020c75f0.unk_00, data_020c75f0.unk_04, r, 0);

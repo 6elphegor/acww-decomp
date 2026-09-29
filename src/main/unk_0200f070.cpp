@@ -47,7 +47,7 @@ void func_0200f528(Unk_02006d14 *o, s32 a, s32 b);
 void func_0204edd8(void *a, Unk_0200f070_V3 *v);
 BOOL func_02010dbc(s16 *a, s32 b, s32 c, s32 d, s32 e);
 s32 func_02010a58(void *o, s16 *a);
-void func_02010d98(s16 *a);
+void func_02010d98(s16 *a, s32 b);
 s32 func_02010e48(void *a, s32 b);
 s32 func_02010e68(void *a, s32 b, s32 c, s32 d, s32 e);
 void func_02010a7c(Unk_0200f660_S *s, Unk_02006d14 *o);
@@ -279,7 +279,7 @@ s32 Unk_02006d14::func_0200f4c0(s32 a)
 s32 Unk_02006d14::func_0200f504(s32 a)
 {
     s16 t = unk_8e;
-    func_02010d98(&t);
+    func_02010d98(&t, a);
     return func_02010a58(this, &t);
 }
 

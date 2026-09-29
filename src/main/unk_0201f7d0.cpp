@@ -117,7 +117,7 @@ public:
     void func_02020010();
     void func_02020030();
     void func_02020084(Unk_0201f7d0_Out *out);
-    BOOL func_02020320();
+    BOOL func_02020320(Unk_0201f7d0_Out *out);
     void func_0202d1c0(Unk_0201f7d0_Fn fn);
     void func_0202d33c(Unk_0201f7d0_Fn fn);
     void func_0202d328(Unk_0201f7d0_Fn fn);
@@ -205,7 +205,7 @@ void Unk_0201f7d0::func_0201f9f8(Unk_0201f7d0_Out *out) {
 }
 
 void Unk_0201f7d0::func_0201fa58(Unk_0201f7d0_Out *out) {
-    if (func_02020320() != 0) {
+    if (func_02020320(out) != 0) {
         func_0202d048(this, &unk_128, &unk_124, unk_fc->unk_82c, 0);
     } else {
         if (unk_128 == 0 || func_02080a74(unk_128) == 0) {
@@ -229,7 +229,7 @@ void Unk_0201f7d0::func_0201fb20() {
 void Unk_0201f7d0::func_0201fb54(Unk_0201f7d0_Out *out) {
     u32 r5;
     void *r7 = unk_fc->unk_82c;
-    if (func_02020320() == 0) {
+    if (func_02020320(out) == 0) {
         Unk_0201fb54_Date d;
         d.a = 0;
         d.b = 0;
@@ -256,10 +256,7 @@ void Unk_0201f7d0::func_0201fb54(Unk_0201f7d0_Out *out) {
             if (func_0209ce68(((u8 *)&d)[5], ((u8 *)&d)[4], 6, 5) != -1 && r5 >= 2) {
                 r5--;
             }
-            if (r5 >= 5) {
-                r5 = 0;
-            }
-            r5 += 3;
+            r5 = (r5 >= 5 ? 0 : r5) + 3;
         }
         func_0202d184(this, &unk_100, &unk_11e, 30, func_02003098(func_020805c4(r7)), data_020c7828.unk_00, data_020c7828.unk_04, r5, 0);
         out->unk_00 = (u32)&unk_100;

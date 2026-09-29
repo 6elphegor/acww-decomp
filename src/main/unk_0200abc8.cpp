@@ -359,6 +359,7 @@ void Unk_02006d14::func_0200abc8() {
     }
     v = (unk_2d4 << 4) >> 16;
     if (v >= 6) {
+        volatile Unk_02006d14_V3 sv;
         Unk_02006d14_Blk b1, b2;
         t = 0x1000 - func_02133150((v - 6) << 12, 12);
         if (t < 0) {
@@ -368,7 +369,10 @@ void Unk_02006d14::func_0200abc8() {
         unk_82c = t;
         unk_830 = t;
         unk_834 = t;
-        Unk_02006d14_V3 sv = { unk_c4.x, unk_c4.y, unk_c4.z };
+        Unk_02006d14_V3 *pv = &unk_c4;
+        sv.x = pv->x;
+        sv.y = pv->y;
+        sv.z = pv->z;
         sh = unk_d0;
         b1 = unk_294;
         b2 = unk_694;

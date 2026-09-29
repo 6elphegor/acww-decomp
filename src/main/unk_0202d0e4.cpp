@@ -2,6 +2,7 @@
 
 class Unk_020d8938;
 typedef void (Unk_020d8938::*Unk_020d8938_Fn)();
+typedef void (Unk_020d8938::*Unk_020d8938_ArgFn)(void *arg);
 
 class Unk_020d89c8 {
 public:
@@ -148,7 +149,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78();
+    virtual void vfunc_78(void *arg);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
@@ -207,9 +208,9 @@ public:
     u32 unk_19c;
 };
 
-void Unk_020d8938::vfunc_78() {
+void Unk_020d8938::vfunc_78(void *arg) {
     if (unk_ac) {
-        (this->*unk_ac)();
+        (this->*reinterpret_cast<Unk_020d8938_ArgFn>(unk_ac))(arg);
     }
     return;
 }

@@ -287,6 +287,7 @@ void Unk_02006d14::func_0200a1bc()
 {
     Unk_02006d14_St7d0* s = &unk_7d0;
     u8* state = &s->unk_1;
+    struct { u32 pad; Unk_02006d14_Pair p[3]; u32 pad2; } l;
     switch (*state) {
     case 0:
         if (func_020565e8(unk_2cc, 1)) {
@@ -297,15 +298,13 @@ void Unk_02006d14::func_0200a1bc()
             u32 c = s->unk_3;
             u8 flag = s->unk_0;
             if (flag) {
-                Unk_02006d14_Pair p;
-                p.unk_00 = b;
-                p.unk_04 = c;
-                func_02045460(&p, 0);
+                l.p[0].unk_00 = b;
+                l.p[0].unk_04 = c;
+                func_02045460(&l.p[0], 0);
             } else {
-                Unk_02006d14_Pair p;
-                p.unk_00 = b;
-                p.unk_04 = c;
-                func_02045570(&p, 0);
+                l.p[1].unk_00 = b;
+                l.p[1].unk_04 = c;
+                func_02045570(&l.p[1], 0);
             }
             func_0200ec1c(0x1c);
             if (Unk_0200a114_IsZero(data_020e416c)) {
@@ -352,10 +351,9 @@ void Unk_02006d14::func_0200a1bc()
             u32 b = s->unk_2;
             u32 c = s->unk_3;
             unk_7f8 = func_02007c08(unk_7ec);
-            Unk_02006d14_Pair p;
-            p.unk_00 = b;
-            p.unk_04 = c;
-            func_0200a050(&p, flag, 6, -1);
+            l.p[2].unk_00 = b;
+            l.p[2].unk_04 = c;
+            func_0200a050(&l.p[2], flag, 6, -1);
         }
         break;
     }

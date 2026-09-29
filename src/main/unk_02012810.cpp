@@ -447,9 +447,8 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
             }
         }
         if (found != 0) {
-            hi = hi | found;
             if (unk_8c == 0) {
-                func_02012d6c(hi, lo, &p);
+                func_02012d6c(hi | found, lo, &p);
             }
             unk_1c.x = bx;
             unk_1c.z = bz;
