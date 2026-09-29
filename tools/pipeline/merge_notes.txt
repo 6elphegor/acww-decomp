@@ -48,3 +48,4 @@ unk_020685c4 (r173): Unk_02068808 (tile-screen loader, member of Unk_02067c70 at
 unk_0206ec04 (r184): overlay-group loader state; factory func_0206f4ac creates Unk_020de234 (dtors in unk_0206e2f4). Same file as unk_0206e2f4.
 unk_0206c714 (r180): Unk_020ddc4c : Unk_020e2a18 (vtable 0x020ddc4c) is the class r179 (unk_0206be04) and unk_02067c70 call Unk_0206c74c (member +0xa1c of Unk_02067c70, methods func_0206c6f4/c6fc/c700); rename to Unk_020ddc4c when merging.
 unk_0206d0a0 (r181): Unk_0206d0a0 : Unk_0206ce50 has the same +0x4c/+0x98/+0x1f0/+0x204 layout as r180's container Unk_0206ce98 (unk_0206c714) — reconcile. Unk_0206d7cc/Unk_0206d8b8 is the record-table singleton data_021c5330 used by unk_02052f44.
+unk_0206b4e4 (r178): Unk_0206b754 (0x490 message buffer, member +0x58c of Unk_02067c70; other methods b434/b454/b458 in unk_0206ab74) and ~60 Unk_020ddc64 state handlers (class declared in unk_0206be04). Merge.
