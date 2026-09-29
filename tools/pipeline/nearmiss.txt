@@ -78,3 +78,4 @@ func_02056e88 r143/r143.cpp  # stack-arg homing store, muls dest, slot order
 func_02061794 r161/a.cpp  # order of two initial zero-BOOL stores (same family as func_0205cbe8, func_02052b90)
 func_0205a930 r149/r149.cpp  # large driver (~546 lines): param p spilled & reloaded, j/i in stack slots; frame 0x7c vs 0x84
 func_02060e3c r160/r160.cpp  # sp+0x30 address recomputed between ldrh; counter/pointer regs swapped in data_021d7350+0x15ec0 loop
+func_02063d18 r165/r165.cpp  # one lsrs (sz = h>>8) hoisted above cmp in original, sunk into branch in ours

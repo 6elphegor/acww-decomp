@@ -300,6 +300,10 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Keep `sym + 2` as a runtime add (not folded into the relocation): `(u8 *)((u32)sym + 2)`.
 - `buf[1 + i]` read via `ldrb [base, idx]` with base = sp+1: write `u8 *q = &r[1]; r[0] = q[i];` (indexing `r[1 + i]` folds the +1).
 - Address-of-array null test with a separate offset add: `u32 g = (u32)arr; if (g != 0) f((u8*)g + K);`.
-- Script-command handlers (0x02068c9c..0x0206b9xx) are one class on the Unk_020e2b08/Unk_020e2b4c script base; see unk_02068f10.cpp / unk_02069834.cpp.
+- Script-command handlers (0x02068c9c..0x0206b140) are methods of `Unk_020ddccc : Unk_020e2b4c` (vtable 0x020ddccc, size 0xe4; see scratch r177/r177.cpp or unk_0206ab74.cpp once integrated). Older units call it Unk_02068f10 / Unk_02069834 / Unk_0206a198. The big owner object is `Unk_02067c70` (0x1a1c).
 - A static member-pointer table whose init reloads the base every 16 entries is ONE array larger than 16 (Thumb str immediates max out at 124).
 - To keep a table lookup before an `if`: `Fn f = tbl[i];` before the if, `(this->*f)()` inside it.
+- Variadic functions: `typedef char *va_list; #define va_start(ap,parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)` reproduces `add r3,sp,#..; bics 3; adds 4`.
+- A param stored by `push {r0-r3}` and copied with `ldm r3!,{r1,r2}` is an 8-byte struct passed by value.
+- An early return placed out of line after the fall-through path needs `goto fail; ... fail: return e;`.
+- File/LZ loader utilities (FSFile wrapper, LZ77 block files) are in unk_02063904.cpp.
