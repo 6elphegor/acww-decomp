@@ -339,3 +339,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Clamp that the original writes as two separate stores: `if (v > 4) { field = 0; return; } field = v;`.
 - Storing literal -1 into a byte: if the pointer is `u8 *` mwcc folds to `movs #255`; through an `s8 *` it gives `movs r1,#0; mvns r2,r1`.
 - A u64 field compared to 0: `*(u64 *)&self->unk_0c == 0`.
+- A flag chain written as its own `static inline BOOL Chk(u16 *p)` that loads `v = *p` itself matches; a shared `v` in the caller lands in the wrong register.
+- `t = cond ? A : B; n = t + f();` coalesces t/n; wrap the choice in a `static inline s32 Count()` to keep them separate.
