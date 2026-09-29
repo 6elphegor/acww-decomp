@@ -74,3 +74,8 @@ func_02055744 r141/r141.cpp  # original keeps `bl func_02055780` + epilogue; our
 func_0205b320 r150/r150.cpp  # loop-hoist family; stack-param self-copies, y0/y1 slot placement
 func_0205b7cc r150/r150.cpp  # constant-zero arg scheduled last (original: movs r3,#0 first, adds r0,r3,r2)
 func_0205b818 r150/r150.cpp  # same as 0205b7cc
+func_02059adc r148/r148.cpp  # order of first three movs (id=-1 vs t=1)
+func_02059d1c r148/r148.cpp  # loop-hoist family: volatile hy slot above spills (insns all match)
+func_02059db0 r148/r148.cpp  # same
+func_02059e94 r148/r148.cpp  # same
+func_02059f3c r148/r148.cpp  # same + local array offsets

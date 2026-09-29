@@ -104,7 +104,7 @@ If a function doesn't match after several genuinely different attempts, move on 
 - A global loaded twice (once into a local, once as an argument) needs `extern volatile`.
 - Address-taken struct locals that get scalar-replaced stay in memory if they are declared as one array (`Xyz pv[4]`).
 - A function that zeroes `out->a = out->b = 0` first and copies `*out = t` at the end is `void f(Pair *out, self, ...)` with an explicit out pointer. Struct-returning methods don't get NRVO.
-- Locals the original stores and reloads (even constants like 1 or NULL) can be `volatile` locals. Volatile locals go in the frame first, in declaration order.
+- Locals the original stores and reloads (even constants like 1 or NULL) can be `volatile` locals. Volatile locals are usually placed after (above) compiler spill temps, in declaration order; you cannot use `volatile` to put a slot below the spills.
 - `s32 c = f(); if (c == o->x)` gives `cmp r0,r1`, while `f() == o->x` gives `cmp r1,r0`.
 - A 3-word struct built as `{a, 0, b}` with interleaved loads comes from an inline ctor `V(s32 x, s32 y, s32 z)` used as `V v(d->a, 0, d->b)`. Aggregate init calls memset.
 - Member-function-pointer fields and extern member-function-pointer data work directly. `unk_c4 = data_XXX;` gives a two-word copy, and `if (unk_ac) (this->*unk_ac)(&out);` gives the virtual-flag call sequence.
@@ -243,3 +243,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Size sums: `u32 s = 0, t = 0; s += A; t += s * n;` keeps the unfolded adds; `t + expr` on a known-zero t folds. Separate `+=` statements stop `a*m + b*m` being factored.
 - `if (x == -1) return TRUE; if (f() == 0) return TRUE;` layouts: try `if (t == -1) goto yes; t = f(); if (t == 0) { yes: return TRUE; }`.
 - An object constructed after an `if` block must be declared after it, or its ctor runs at function entry.
+- A `u8` setter parameter makes tail-call wrappers mask the value; if the original passes it unmasked, declare the parameter `u32` even though the body does `strb`.
