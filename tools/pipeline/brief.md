@@ -176,3 +176,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `if (p) ctor(p)` on a freshly allocated pointer that was just stored to a global reproduces the double null check without placement new.
 - Two u32 fields compared `> 0` with `bls`: cast them to `(u8*)` pointers.
 - Volatile locals are not always placed first in the frame: in r115 func_020463fc a volatile landed after an address-taken u16.
+- For `for (s = base, i = 0; ...)` over a struct array, declare `Slot *s; s32 i;` (pointer first).
+- Reusing one `s32 i` for an earlier temporary and the later loop counter can be what matches; a separate temp swaps registers.
+- Byte loads in the original's order: read into locals in that order (`u32 nb = p->b5; u32 na = p->b4;`) then use them.

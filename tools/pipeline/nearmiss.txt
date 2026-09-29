@@ -48,3 +48,5 @@ func_020497f8 r121/b.cpp  # original spills a3 and keeps stack args a4/a5 in r6/
 func_0204cd00 r127/r127.cpp  # copy-loop reg alloc (shared zero in r7)
 func_0204d1dc r127/r127.cpp  # result/handle registers swapped
 func_020463fc r115/final.cpp  # volatile ih spill slot lands after v; same loop-hoist family as r117/r120
+func_0204c318 r126/r126.cpp  # loop-hoist family; identical insns, slot offsets differ (volatile cy)
+func_0204c6a4 r126/r126.cpp  # loop-hoist family + 9-stage flag chain; frame 116 vs 124
