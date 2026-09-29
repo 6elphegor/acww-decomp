@@ -978,3 +978,6 @@ src/main/unk_0209ecf8.cpp:
 
 src/main/unk_0209e394.cpp:
     .text       start:0x0209e394 end:0x0209ecf8
+
+src/main/unk_020a1c88.cpp:
+    .text       start:0x020a1c88 end:0x020a25d8

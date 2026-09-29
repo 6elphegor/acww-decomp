@@ -535,3 +535,9 @@ Some groups are in an overlay rather than the main module. For those:
 - A derived class starts at the unaligned end of its base — pad the base to a multiple of 4 if offsets shift by 1–3.
 - Base Unk_ov004_0224882c: `vfunc_70(u32, u8)`; secondary base at +0xec is Unk_020ddcf0-shaped (see ov004_009) — reconcile with ov004_008 if your offsets disagree.
 - C2/D2 are only emitted when another class derives from the class; mwcc reuses a non-POD base's tail padding for the derived class's first field.
+- Force an early field load before intervening calls: copy it into a local first (`u32 o = unk_590;`).
+- `hi = (t>>3)&3; t &= 7;` sinks the mask: use a new local `s32 lo = t & 7;` right after `hi`.
+- ov004 jump tables use the SIGNED halfword form (`ldrh; lsls 16; asrs 16; add pc`), which only 1.2/base produces. Files with switch tables must be base; thunk-only files sp2.
+- Identical adjacent switch cases get merged — write the original's duplicated bodies as separate case blocks, in the original's order.
+- Table-dispatch methods with no return value must be `void` (a BOOL with no return moves the pointer load to r1).
+- Range check keeping a `movs rX,#0` flag join: `if (v < LO || v > HI) {} else { ok = TRUE; }` (the `&&` form folds the flag away).
