@@ -369,3 +369,12 @@ src/main/unk_0202ff44.cpp:
 
 src/main/unk_020311c0.cpp:
     .text       start:0x020311c0 end:0x02031b78
+
+src/main/unk_0202f600.cpp:
+    .text       start:0x0202f600 end:0x0202ff44
+
+src/main/unk_02032494.cpp:
+    .text       start:0x02032494 end:0x02032dc4
+
+src/main/unk_0202b4ac.cpp:
+    .text       start:0x0202b4ac end:0x0202be64
