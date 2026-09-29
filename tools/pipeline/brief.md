@@ -268,3 +268,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `muls` destination = stride register only when the stride is a named local (`u32 st = *(u16*)...; t + st*idx`).
 - A `u8` field before an opaque byte-array member misaligns it; declare the member as `u32[n]`.
 - `if (x != -1) return TRUE; return FALSE;` vs `BOOL r = FALSE; if (...) r = TRUE; return r;` allocate differently; try both.
+- `for (j = 4; j < m + 4; j++)` keeps the bound unhoisted with `u32 m` and no cast; `(u32)(m + 4)` on an s32 hoists it.
+- Index-checked bit test: `if (i < N) { if (bit) return TRUE; return FALSE; } return FALSE;` (early return on a bad index lays out differently).
