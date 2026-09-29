@@ -122,14 +122,9 @@ func_0208d28c r236/r236.cpp  # compare loads land in r1, original r0
 func_0208d580 r236/r236.cpp  # 0/1 flag branch layout inverted (beq -> movs 1)
 func_0208d678 r236/r236.cpp  # original keeps redundant copies adds r6,r0,#0 / adds r0,r0,#0; ours coalesces
 func_0208d9d4 r236/r236.cpp  # n=a+1 should be computed early into r6
-func_0209073c r241/r241.cpp  # original `movs r1,r0; ldrh r1,[r1,#28]` for data_021d0830.unk_1c; ours ldrh r1,[r0,#28]
-func_020909bc r241/r241.cpp  # same as func_0209073c
 func_0208f6f0 r239/r239.cpp  # entry order: original ldr [r1] / movs r5,#0 before pool ldr tbl
-func_02092b0c,func_02092ba4,func_02092c54,func_02092d08,func_02093020,func_020930b8,func_0209312c r245/r245.cpp  # singleton-offset family: original ldr r2,=0x39c; ldrh [data_021d04b0,r2]; mwcc folds to data_021d04b0+0x380,#28
-func_02092f68 r245/r245.cpp  # ldrb/movs #28/muls register choice swapped
 func_02087e70 r227/r227.cpp  # OAM builder, 12 params: hoisted (rot>>4)*2 spill slot at sp+0x54; volatile puts it at 0x74; remaining diff is stack slot numbers
 func_02088378 r227/r227.cpp  # single-entry OAM: sin/cos block regalloc, extra spill into scale param home
-func_02091920,func_02091a58 r243/r243.cpp  # singleton-offset family: movs r1,r0 before ldrh [r1,#0x1c] off data_021d0830
 func_0208faa0 r240/r240.cpp  # address of stack tag arg: add r3,sp,#0x10 vs ours r1
 func_0208fb20 r240/r240.cpp  # stack slot order: tag copies at 0x2c/0x30 and volatile memset zero at 0x34; ours data first
 func_02094a08 r248/r248.cpp  # constant 5 held in r5 across a call (movs r5,#5; cmp r5,r0); ours folds to cmp r0,#5, push {r4,lr}
