@@ -244,3 +244,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `if (x == -1) return TRUE; if (f() == 0) return TRUE;` layouts: try `if (t == -1) goto yes; t = f(); if (t == 0) { yes: return TRUE; }`.
 - An object constructed after an `if` block must be declared after it, or its ctor runs at function entry.
 - A `u8` setter parameter makes tail-call wrappers mask the value; if the original passes it unmasked, declare the parameter `u32` even though the body does `strb`.
+- Several spilled values reloaded every loop iteration (no hoist/CSE): make them elements of one local array (`u32 v[4]`).
+- A ctor loop over a fixed array with no initial guard: `do { f(e); e += size; } while (e != end);`.

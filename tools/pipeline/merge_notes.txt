@@ -20,3 +20,4 @@ Camera-transition class: unk_02056f94 (r144) names it Unk_020dc034 : Unk_020d8c7
 unk_02058c58 (r147) is the canonical Unk_020dc034 (size 0x11c, vtable overrides 0x00/0x0c/0x18/0x24, factory func_02059340); merge unk_02056f94's camera part, unk_02057940 and unk_020582a0 into it. It also declares `Unk_02063388` (ctor func_0206338c, dtor func_02063388) and `func_02062f94`/`func_02062f44` returning a 2-byte class; those compile to mangled names, so the real definitions must use the same class when linking.
 unk_020553f8 (r141): the model-resource base is `Unk_020dbe34 : Unk_020dbe14` (C1 func_02055704, D2 func_020556b4). r139 calls it `Unk_02055704`, r140 `Unk_020dbe34`; use Unk_020dbe34. Also defines `Unk_020dbe4c : Unk_020dbe7c`.
 unk_0204fa3c (single function, Unk_020db984::vfunc_18) belongs with unk_0204f178/unk_0204fb80; merge.
+unk_0205c158 continues unk_0205b848 (heap create/destroy stubs); merge.
