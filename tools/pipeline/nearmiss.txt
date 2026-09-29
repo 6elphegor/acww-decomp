@@ -109,3 +109,5 @@ func_020854e0 r222/r222.cpp  # cnt/data pointer registers swapped
 func_020874e8 r226/r226.cpp  # one adds operand order (sym + 0x15db4: original adds r0,r0,r1)
 func_0208a814 r231/r231.cpp  # unk_6e byte test uses r1 in original, r0 in ours
 func_0208ab4c r231/r231.cpp  # one adds operand order
+func_020892b0 r229/r229.cpp  # original keeps b = a+1 in r4, ours keeps a and rematerializes
+func_020896dc r229/r229.cpp  # w1/n/w0 register swap

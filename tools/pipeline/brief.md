@@ -356,6 +356,11 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Slot manager singleton data_021cd264 is `Unk_02081c54`; the "type" classes derive from `Unk_020821b4` with vtables 0x020e06c8..0x020e0768 [D1, D0, vfunc_08] (unk_0208175c.cpp).
 - A compare where the original loads the slot field before `*p`: `u32 a = slot.id; u32 b = *p; if (a == b)`.
 
+- **Singleton offset folding (solved, Opus 2026-09-29).** mwcc folds `global.field` / `&global` (and usually `T *const p = &global`) into the pool word (`ldr =sym+0x380; ldrh [r,#28]`). To get the unfolded forms use a plain NON-const local pointer:
+  - big offset in its own register (`ldr r2,=0x39c; ldr r1,=sym; ldrh r1,[r1,r2]`): `u8 *s = (u8 *)data_021d04b0; ... *(u16 *)(s + 0x39c)`.
+  - `ldr r0,=sym; movs r1,r0; ldrh r1,[r1,#0x1c]`: `T *e = &data_021d0830; f(e, e->unk_1c, ...); g(e);` — route every use through `e`.
+  - Declare the pointer AFTER any earlier unrelated call (declaring it before brings the folded form back). If plain doesn't work, try `*const` (r246/r247 matched that way in their context).
+
 ### Quirks from r225/r228
 - u8 bitfield setter with unmasked arg: type the parameter `u8` (`void f(u8 v){ bf = v; }`) → `ands` only; s32/u32 adds `lsls 24; lsrs 24`.
 - `movs rX,#0; mvns rY,rX` (-1) right after a call comes from `t = f(); BOOL r = FALSE; if (t == -1) r = TRUE;`.
@@ -416,7 +421,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Stack 5-5-5 colours: `volatile union { u16 v; struct { u16 r:5,g:5,b:5,x:1; } c; }` locals.
 - Signed `% 32` on a u8 field: copy into `s32` first (u32 gives `ands #31`).
 - Address-of-member null test (`adds r1,#0x10; cmp r1,#0`): `Cb *cb = &e->unk_10; if (cb) cb->fn(e);`.
-- Big constant offset kept in its own register (`ldr r2,=0x39c; ldrh [base,r2]`): `u8 *const g = (u8 *)data_021d04b0; *(u16 *)(g + 0x39c)` (r246 func_02093914).
 - Sub-object fieldwise copy with `adds r3,r0,#4`: declare a local pointer right before its own block (`V32 *p = &unk_04; p->x = ...;`).
 - Default function-pointer parameter: copy into a local (`Fn f = fn; if (!f) f = dflt;`).
 - A list walk that advances after a scoped object's dtor: `for (; n;) { Obj o; ...; n = n->next; }`.
@@ -426,3 +430,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Vec3 copies: fieldwise `t.x = v->x; ...` rather than `Vec t = *v;` (which gives ldm/stm + extra saved reg). Mixed `v.x = o->f.x; v.y = pv->y;` with `Vec *pv = &o->f` gives `ldr [r4,#0x5c]` + `adds r3,r4,#0x5c`.
 - Then-block laid out after fall-through: `if (...) goto B; A: ...; return; B: ...`.
 - Early null check with a single `return 0` at the end: `if (o) { ... } return 0;`.
+- Derived copy ctor "base ctor forwarding r1, then copy method": `D(const D &o) : Base((void*)&o) { copy(&o); }`.
+- Vec3 copy with the address computed once: wrap each copy in its own scope block `{ Vec3 *pv = &o->f; saved = *pv; }`.
+- Switch: source case order sets block order — match the original's order.
+- Counted ctor loop with no initial test: `u32 i; for (i = 0; i < 4; i++)`.

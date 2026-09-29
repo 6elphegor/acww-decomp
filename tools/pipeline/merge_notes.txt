@@ -63,3 +63,4 @@ unk_020829b0 (r218): container base Unk_020e085c (ctor func_02082d5c) and elemen
 unk_020899bc (r230): Unk_020e0d98 : Unk_020e0db4 is the class older units call Unk_02089e60 (base of Unk_020e451c); rename when merging.
 unk_0208ac84 (r232): base Unk_02089f64 is r230's Unk_020e0db4 (vtable 0x020e0db4, ctor func_02089fa8); rename when merging.
 unk_0208a328 (r231): Unk_020e0ecc (vtable 0x020e0ecc, 0x318) is r230's Unk_0208a0ac state machine; its base-class name Unk_02089fa8 = Unk_020e0db4. Rename when merging.
+unk_02089040 (r229): Unk_020e0d44 (sprite pair) and Unk_02089270 (anim cursor) methods; unk_02067c70.cpp and unk_020102ec/unk_0201ac80 call func_020892ac/284/320/2b0 and func_02089040/0208905c as extern "C" — convert to method calls when linking. Unk_020e0d98 (text window) = older Unk_02089e60.
