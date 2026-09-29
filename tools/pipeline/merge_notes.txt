@@ -78,3 +78,4 @@ unk_02091404 (r243): local Unk_02091404_Rec/Ext/Arg/Obj = r241 Unk_02090538 / Un
 unk_0208f738 (r240): Unk_020e141c vfuncs 00/0c/18/24 here; D0/D1 in unk_0208ee00 (r239); factory func_020901b0 in unk_02090140 (r241). Unk_0208f738_B/_C = r239 Unk_0208f2e8/Unk_0208f308 = r241 Unk_0209020c/Unk_02090238. Pool Unk_0208f8fc_Pool is the +0x58 member (= r241 Unk_0208fa54).
 unk_020943dc (r248): local struct for the func_02095774(4) object; methods it calls belong to Unk_02006d14/Unk_02007094/Unk_02008040/Unk_020d6df4 — convert to real class methods when linking.
 unk_02093aa8 (r247): func_02002cf8 is called as a free 5-arg function (first arg 9) but its existing mangled symbol declares it a method — reconcile. Unk_02063954 ctors func_020639b8/bc live elsewhere.
+unk_02094d3c (r249): minimal local copy of Unk_02006d14 (vtable 0x020d6df4); methods called as extern "C" (o first) — convert to real methods when linking. Singleton data_021d085c type named Unk_02095338.
