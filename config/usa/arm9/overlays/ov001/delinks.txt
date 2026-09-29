@@ -33,3 +33,6 @@ src/ov001/unk_02207904.cpp:
 
 src/ov001/unk_02206cdc.cpp:
     .text       start:0x02206cdc end:0x02207904
+
+src/ov001/unk_022050c4.cpp:
+    .text       start:0x022050c4 end:0x022059fc

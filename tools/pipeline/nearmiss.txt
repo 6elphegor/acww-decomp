@@ -175,3 +175,4 @@ func_ov001_02206584 ov001_009/ov001_009.cpp  # -O4,p; orig adds r5,r5,#4 in plac
 func_ov001_02206b08 ov001_009/ov001_009.cpp  # -O4,p; ~20 lines: two hoisted zero spill slots swapped (0x24/0x28), 2nd fill loop zero stores before loop
 func_ov001_0220681c ov001_009/ov001_009.cpp  # -O4,p; ~245 lines regalloc/slots (orig name r6, zero r7, macp r5); frame 0x9c ok
 func_ov001_0220cd24 ov001_020/ov001_020.cpp  # -O4,p ARM; switch dispatch only: orig tree rooted at 26 + separate 0..20 jump table (cases 5,12,13,20/23,26/29,34); empty-label sets give one table or tree@29; maybe nested switches
+func_ov001_02212260 ov001_028/ov001_028.cpp  # -O4,p ARM; 14 lines regs only: 2nd loop orig n in r6 (sub r6,r6,#16), i in r3 (ours n-16 in r3, i in r6)
