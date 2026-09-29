@@ -203,3 +203,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Always include near-misses in pairs.txt (so the unit covers the whole range); mark them in the report instead.
 - Grid object `Unk_0204debc` (unk_0204debc.cpp, >=0x2228 bytes, 16x16 u16 layers at +0x24) and tile buffer `Unk_0204e2f0` (0x20 bytes). Reuse those names.
 - `t = expr; vol = t; use(t);` keeps the value in a register while still emitting the original's spill store.
+- Packing bits into a local buffer that is sent by address: if the original reloads it between steps, make it `volatile` and pass `(void *)&bits`; if it stays in a register, use a plain address-taken local.
+- `lsls 16; lsrs 16` on an s32 param before a bit insert is an explicit `(u16)` cast, not a u16 parameter. Hand-written inserts beat C bitfields when the source is an s32.
+- Stack args start at `sp + (pushed regs * 4) + frame`; an `ldrb` from there means a u8 parameter.
