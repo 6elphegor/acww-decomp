@@ -159,3 +159,4 @@ If a function doesn't match after several genuinely different attempts, move on 
 - If the original reloads a flag word after a division helper call, a plain local copy gets hoisted before the call; a real C bitfield update on the field (signed fields work too, e.g. `s32 mid:4`) keeps the load after the division.
 - `s32 *s = b->v; w = s[0]<<4; h = s[1]<<4;` reproduces `adds r1,r6,#4; ldr [r6,#4]; ldr [r1,#4]`; named struct fields fold to `[r6,#8]`.
 - `u32 b = K; b += f(); return (u16)b;` keeps the constant in a callee-saved register across the call; `(u16)(K + f())` doesn't.
+- `ldr r2,=sym; ldr r0,=0x15e28; ldrb [r2,r0]` (big offset kept in its own register instead of folded into the relocation): index through a local pointer with an offset the optimizer can't prove constant, e.g. `u8 *g = sym; s32 o = rt ? 0x15e28 : 0x15e28; g[o]` where `rt` is a real runtime value evaluated at that point.
