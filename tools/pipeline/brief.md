@@ -262,3 +262,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A `u8` setter parameter makes tail-call wrappers mask the value; if the original passes it unmasked, declare the parameter `u32` even though the body does `strb`.
 - Several spilled values reloaded every loop iteration (no hoist/CSE): make them elements of one local array (`u32 v[4]`).
 - A ctor loop over a fixed array with no initial guard: `do { f(e); e += size; } while (e != end);`.
+- Sparse switch (0x13..0x1b plus 0x28): leave out empty gap labels when the original has a bounded table plus a separate compare; merge shared-code cases.
+- `u32 t = o->f; a = b = c = t;` loads once; without the temp mwcc reloads the field.

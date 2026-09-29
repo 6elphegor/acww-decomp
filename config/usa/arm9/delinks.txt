@@ -600,3 +600,6 @@ src/main/unk_0205c158.cpp:
 
 src/main/unk_0205d3d0.cpp:
     .text       start:0x0205d3d0 end:0x0205dd1c
+
+src/main/unk_0205dd1c.cpp:
+    .text       start:0x0205dd1c end:0x0205e61c
