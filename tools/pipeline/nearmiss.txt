@@ -92,3 +92,4 @@ func_02075e98 r196/r196.cpp  # h-1 register choice
 func_020766ec r196/r196.cpp  # header ldrb scheduled later, rebuilds add r2,sp (2 bytes longer)
 func_02071460 r188/final.cpp  # loader: a/b/j registers rotated, u16 local slot +4
 func_02076e88 r197/r197.cpp  # 64-bit accumulator loop: zero/acc register pair differs
+func_02078948 r200/r200.cpp  # one insn: original movs r0,r1 vs our adds r0,r1,#0
