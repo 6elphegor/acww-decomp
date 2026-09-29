@@ -144,3 +144,4 @@ func_ov004_0222e060 ov004_069/ov004_069.cpp  # regalloc: unk_15c in r3 (orig r2)
 func_ov004_022306f0 ov004_074/ov004_074.cpp  # unk_210 shift in switch cases 0/2 uses r1, orig r2 (ldr r2;lsls/asrs r2,#1;str r2); <<=,*=,temp,s32* tried
 func_ov004_02229e1c ov004_063/ov004_063.cpp  # sp2; v != -1 test: orig movs r1,#0;mvns r2,r1;cmp r4,r2, ours mvns r1,r1;cmp r4,r1
 func_ov004_0222a0bc ov004_063/ov004_063.cpp  # sp2; callee-saved regs for data_02240298[0..2]: orig a=r4,b=r6,c=r7, ours r7/r6/r4; all 6 decl orders tried
+func_ov004_022316e0 ov004_075/ov004_075.cpp  # reg rename only: orig &258=r4,&27c=r3,*p=r5; ours r5/r4/r3; ~12 variants tried
