@@ -390,3 +390,6 @@ src/main/unk_020341c0.cpp:
 
 src/main/unk_0202be64.cpp:
     .text       start:0x0202be64 end:0x0202c7c0
+
+src/main/unk_02034ae8.cpp:
+    .text       start:0x02034ae8 end:0x020354d8
