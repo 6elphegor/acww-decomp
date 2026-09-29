@@ -130,3 +130,5 @@ func_02092f68 r245/r245.cpp  # ldrb/movs #28/muls register choice swapped
 func_02087e70 r227/r227.cpp  # OAM builder, 12 params: hoisted (rot>>4)*2 spill slot at sp+0x54; volatile puts it at 0x74; remaining diff is stack slot numbers
 func_02088378 r227/r227.cpp  # single-entry OAM: sin/cos block regalloc, extra spill into scale param home
 func_02091920,func_02091a58 r243/r243.cpp  # singleton-offset family: movs r1,r0 before ldrh [r1,#0x1c] off data_021d0830
+func_0208faa0 r240/r240.cpp  # address of stack tag arg: add r3,sp,#0x10 vs ours r1
+func_0208fb20 r240/r240.cpp  # stack slot order: tag copies at 0x2c/0x30 and volatile memset zero at 0x34; ours data first
