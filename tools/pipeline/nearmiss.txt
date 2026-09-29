@@ -82,3 +82,4 @@ func_02063d18 r165/r165.cpp  # one lsrs (sz = h>>8) hoisted above cmp in origina
 func_02068884 r173/main.cpp  # load/test order of unk_2c/unk_30 (r0/r1 swapped)
 func_0206dbcc r182/r182.cpp  # 15-bit color halving loop: params moved to r3/r2 in original
 func_0206e084 r182/r182.cpp  # heap/call-result registers swapped
+func_0206c7c8 r180/r180.cpp  # counter-increment block register rotation
