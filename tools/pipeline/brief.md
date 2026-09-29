@@ -335,3 +335,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Bit test-and-clear returning a flag: `BOOL r; if (((g >> bit) & 1) == 0) r = FALSE; else r = TRUE; g &= ~(1 << bit);`.
 - `p[0] >> 4` on a u8 may give `asrs`; `(u32)p[0] >> 4` gives `lsrs`.
 - An empty `bx lr` function whose callers use its return value: declare it returning a value and define `T f() {}` with no return statement.
+- Zero-fill loop `stm r3!,{r1}; subs r2,#1; cmp r2,#0; bge`: `u32 *p = arr; s32 i; for (i = N-1; i >= 0; i--) *p++ = 0;` with the pointer declared BEFORE `i`.
+- Clamp that the original writes as two separate stores: `if (v > 4) { field = 0; return; } field = v;`.
