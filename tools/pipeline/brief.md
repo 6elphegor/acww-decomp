@@ -458,3 +458,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - s64 sum of squares: write as statements (`s64 sum = a*a; sum += b*b; ...`); one expression gets reordered.
 - A u16 output slot the callee writes may need to be 4 bytes: `u16 out[2]; f(out); return out[0];`.
 - ARM-mode functions: wrap in `#pragma thumb off` / `#pragma thumb reset`.
+- A switch with cases 0..N already emits the `cmp #N; bhi` bound; an extra `if (k <= N)` guard duplicates the compare.
+- Callee result reassigned to `this`/param in place (`self = f(self)`) instead of a new variable.

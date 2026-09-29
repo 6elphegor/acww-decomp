@@ -118,3 +118,7 @@ func_0208c714 r234/r234.cpp  # load order: original ldr [r4,#0x64] before pool l
 func_0208b9f0 r233/r233.cpp  # mwcc folds copy k=x of known-zero flag; orrs lands on r4 instead of adds r0,r6,#0; orrs r0,r1
 func_0208dd48 r237/r237.cpp  # scheduling: second range-check BOOL from func_02095134(4) sunk below flag tests
 func_0208e13c r237/r237.cpp  # j=i+1 should be computed early into r6 (8-byte record table data_020d5b0c)
+func_0208d28c r236/r236.cpp  # compare loads land in r1, original r0
+func_0208d580 r236/r236.cpp  # 0/1 flag branch layout inverted (beq -> movs 1)
+func_0208d678 r236/r236.cpp  # original keeps redundant copies adds r6,r0,#0 / adds r0,r0,#0; ours coalesces
+func_0208d9d4 r236/r236.cpp  # n=a+1 should be computed early into r6
