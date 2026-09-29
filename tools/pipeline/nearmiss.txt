@@ -125,3 +125,5 @@ func_0208d9d4 r236/r236.cpp  # n=a+1 should be computed early into r6
 func_0209073c r241/r241.cpp  # original `movs r1,r0; ldrh r1,[r1,#28]` for data_021d0830.unk_1c; ours ldrh r1,[r0,#28]
 func_020909bc r241/r241.cpp  # same as func_0209073c
 func_0208f6f0 r239/r239.cpp  # entry order: original ldr [r1] / movs r5,#0 before pool ldr tbl
+func_02092b0c,func_02092ba4,func_02092c54,func_02092d08,func_02093020,func_020930b8,func_0209312c r245/r245.cpp  # singleton-offset family: original ldr r2,=0x39c; ldrh [data_021d04b0,r2]; mwcc folds to data_021d04b0+0x380,#28
+func_02092f68 r245/r245.cpp  # ldrb/movs #28/muls register choice swapped

@@ -469,3 +469,11 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Spilled pointers in several case blocks: declare them at function scope in slot order; block-scoped declarations reverse the order.
 - High-nibble read of a byte field as `lsls 24; lsrs 28`: `(u32)(b << 24) >> 28` (`b >> 4` simplifies to `lsrs 4`).
 - Separate array fields (`unk_f0[]` at +0xf0) rather than indexing past the end of a neighbour (`unk_eb[i+5]`), which changes the `adds`.
+- abs with a double `cmp #0; bge`: `if (r < 0) r = -r;` inside an inline helper (s16 version adds `lsls 16; asrs 16`).
+- Two pool words loaded up front (r3 first): an extra unused pointer local to the same global can force it (r263 func_0209d498).
+- `ldm/stm` into a temp then fieldwise copy out: `struct {s32 v[4]} d2 = d; out[0] = d2.v[0]; ...` with a fresh temp per copy.
+- Dead stack-arg load at entry (`ldr r0,[sp,#N]`, value unused) means a callee takes that arg as a passthrough — declare the callee with the extra param and pass it.
+- `bl f; ldr r4,=global; cmp r0,0`: `s32 r = f(); T *dst = global; if (r == 0)` — declaring dst before the call hoists it.
+- Member-function-pointer state table read at two folded addresses: use two extern symbols (`tbl` for the call, `tbl+8` as its own symbol for the test).
+- Byte stores into a local buffer re-materialising `add r0,sp,#0` each time: cast inline at each use instead of caching a `u8 *`.
+- Clamp with the call first: `s32 c = f(); s32 v = tbl[t]; if (v > c)`.
