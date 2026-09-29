@@ -23,6 +23,23 @@ Naming:
 - Non-members: `extern "C"` free functions named `func_XXXXXXXX` (symbol unchanged). Callees outside your set: `extern "C"` with plausible signatures, or methods if they clearly are.
 - Focus on matching code; you don't need to emit vtables correctly.
 
+## SOLVED: tile-map loops use goto (read this first)
+If the original recomputes `y - (hy << 4)` (or similar) inside an inner loop instead of hoisting it, the original inner loop was written with labels + goto, not for/while/do. mwcc hoists aggressively out of real loops (and adds its own entry test) but only weakly out of goto loops. Matching shape:
+```c
+x = start;
+if (x < w) {            // hand-written entry test (match the original's compare)
+    goto test0;
+loop0:
+    hx = x >> 4; hy = y >> 4;   // plain locals, NO volatile
+    t = func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+    ...
+    x++;
+test0:
+    if (x < w) goto loop0;
+}
+```
+Labels must be unique per function. Remove `volatile hy` workarounds; with them gone the spill-slot order comes out right. The outer loop can stay a normal `for`. Spelling tricks (`(u32)hy << 4`, `*16`) do not help.
+
 ## Known compiler quirks (see README.md)
 - Loop testing at the top then branching back unconditionally → `for (;;) { ...; if (!c) break; ... }`; `while`/`for` put the test at the bottom.
 - Local declaration order affects register allocation; if only registers differ, reorder declarations or add/remove a temporary. Stack locals seem placed by ascending size, then declaration order.
@@ -162,7 +179,6 @@ If a function doesn't match after several genuinely different attempts, move on 
 - `ldr r2,=sym; ldr r0,=0x15e28; ldrb [r2,r0]` (big offset kept in its own register instead of folded into the relocation): index through a local pointer with an offset the optimizer can't prove constant, e.g. `u8 *g = sym; s32 o = rt ? 0x15e28 : 0x15e28; g[o]` where `rt` is a real runtime value evaluated at that point.
 - `x - ((x>>4)<<4)` written inline folds to `movs #15; bics`; use a `hx = x>>4` temporary to get `lsls; subs`.
 - With a `for (x = 0; x < n; ...)` loop the compiler emits its own `cmp n,#0; ble` guard; don't add a manual `if (n > 0)`.
-- Open problem: mwcc sometimes hoists `y - (hy<<4)` out of an inner loop when the original recomputes it (r117 func_020475f8, r120 func_02048c30/cf0). If you find the trigger, report it.
 - `u16 f(u32 x)`: `return x < N ? x + K : K;` gives a branch to a shared cast; `if (x < N) return x + K; return K;` gives two returns. Pick per function.
 - Pattern `s32 t = f(); s32 r = -1; if (t != r) t &= 7; else t = r; return t;` keeps -1 in the result register; declare the -1 after the call.
 - A local struct filled by another function with no ctor call: class with an inline empty ctor and an out-of-line dtor.

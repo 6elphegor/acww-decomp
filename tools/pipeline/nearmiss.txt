@@ -79,3 +79,4 @@ func_02059d1c r148/r148.cpp  # loop-hoist family: volatile hy slot above spills 
 func_02059db0 r148/r148.cpp  # same
 func_02059e94 r148/r148.cpp  # same
 func_02059f3c r148/r148.cpp  # same + local array offsets
+func_0205da08 r154/r154.cpp  # volatile rem slot lands above res/sz (same slot-order issue as loop-hoist family)
