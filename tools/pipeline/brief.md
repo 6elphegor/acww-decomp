@@ -547,3 +547,14 @@ Some groups are in an overlay rather than the main module. For those:
 - A void method ending in `if (...) call();` becomes a tail branch; to get `bl` + epilogue declare it BOOL with no return and an `end:;` label (cast in member-pointer tables).
 - A zero flag (`BOOL hit = FALSE;`) declared before an if/else chain gets hoisted to entry; declare it right before first use.
 - `if (u8v >= 1)` gives `cmp #1; bcc`; `> 0` gives `cmp #0; beq`.
+
+### Rules from the Opus near-miss pass (2026-09-29)
+- MOST PRODUCTIVE: missing callee arguments. An odd register move before a `bl` (e.g. `adds r1,r0,#0`) is usually a real argument the callee takes — add it.
+- Enum local also fixes big-constant add operand order: `ldr r1,=K; ldr r0,=sym; adds r0,r0,r1` comes from an enum-typed `k` in `(u32)sym + k`.
+- Caller clobbers r0 right before `bl` to a same-class method → the method is `static` (same Itanium mangling).
+- symbols.txt names the callee `_ZN...` but you call it as extern "C": call it as a METHOD; the odd `adds r1,r0` was its real argument.
+- A zero stack arg stored after r3 is loaded (`movs r0,#0; str r0,[sp]`) = high word of a u64 argument split across r3 and the stack.
+- s64 test whose words use two large offsets (`adds r1,base,K; ldr [r1]` + `ldr rX,=K+4; ldr [base,rX]`): use a real `s64` member (union with the u32s).
+- Adjuster thunks are emitted only for classes that are instantiated (`new X`) with a defined virtual dtor; for thunk-only groups use stub classes. In nm, thunks show as `?` — grep for `Thn`.
+- Adjacent address-taken u16 outputs: separate scalar locals (`u16 w0, w1, w2;`), not an array — arrays go after block-scoped dtor objects in the frame.
+- Keep member pointers re-read each use (`unk_1a0->...`) when the original reloads; caching into a local moves registers.
