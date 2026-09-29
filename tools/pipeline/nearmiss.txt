@@ -84,3 +84,6 @@ func_0206dbcc r182/r182.cpp  # 15-bit color halving loop: params moved to r3/r2 
 func_0206e084 r182/r182.cpp  # heap/call-result registers swapped
 func_0206c7c8 r180/r180.cpp  # counter-increment block register rotation
 func_020720f8 r189/r189.cpp  # overlay-ID compare constants register order (pool order r2,r1,r0)
+func_02073a0c r192/r192.cpp  # r4/r5 swapped (pointer vs old irq mask)
+func_02073bac r192/r192.cpp  # stack-arg store order for func_020ebb6c 8-arg call
+func_02073bf8 r192/r192.cpp  # same as 02073bac
