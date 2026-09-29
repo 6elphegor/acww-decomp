@@ -81,3 +81,4 @@ unk_02093aa8 (r247): func_02002cf8 is called as a free 5-arg function (first arg
 unk_02094d3c (r249): minimal local copy of Unk_02006d14 (vtable 0x020d6df4); methods called as extern "C" (o first) — convert to real methods when linking. Singleton data_021d085c type named Unk_02095338.
 unk_02095670 (r250): Unk_020e1c30 (vtable inferred from 0x020e1c78-0x48) -> Unk_020e1c88 -> Unk_020e1ce0 state chain via vfunc_48 factories; all : Unk_020d8c7c.
 unk_0209ab54 (r259): Unk_0209ada4 ctor/dtor + methods here; r257 (unk_020998b8) declares it and derived Unk_0209a5dc/Unk_02099f98 — share one header when linking. Unk_0209b434 continues past 0x0209b46c.
+unk_02098f90 (r256): Unk_020994cc derives from Unk_0209ada4 (ctor calls func_0209ada4) and has an Unk_02003130 member — written with extern "C" helper calls; convert to real classes when linking.

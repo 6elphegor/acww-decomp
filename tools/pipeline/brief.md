@@ -520,3 +520,8 @@ Some groups are in an overlay rather than the main module. For those:
 - Static-array element reads kept unfolded (`ldr =tbl; ldr [r0,#0xc]`): index inline (`((u32*)tbl)[3]`), not via a local pointer to the element.
 - A spilled zero later used as `ldr; mvns; cmp` is just a `-1` literal compare, not a volatile zero.
 - Dead `strh` into a stack slot: `volatile u16 tmp[1]; tmp[0] = K;`. Unused locals are dropped even if volatile — to reserve frame padding, use one function-scope anonymous struct containing the pad fields.
+- Files with `_ZThn` adjuster thunks need `// mwcc-version: 1.2/sp2` and `asmdiff --version 1.2/sp2`. A thunk appears when an override's name exists in BOTH bases; to reproduce the original's slot layout you may need to rename the secondary base's other virtuals locally.
+- Chained assignment `a = b = c = v` reproduces store/reload/store chains; chain order follows the original.
+- Frame order: array locals go after every non-array local; adjacent objects walked with `p += size` are one `Obj a[2]`, not two named locals. `struct { Vec3 a, b; } x;` keeps members contiguous in memory (and can create a frame gap).
+- Repeated fail tails (N separate copies of "cleanup; return 0"): a macro expanding `{ ...; return FALSE; }` at each site; combine conditions sharing one tail into a single `if (A || B || C)`.
+- Name your source `<group>.cpp` in your scratch dir.
