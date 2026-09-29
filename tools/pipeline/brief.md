@@ -541,3 +541,7 @@ Some groups are in an overlay rather than the main module. For those:
 - Identical adjacent switch cases get merged — write the original's duplicated bodies as separate case blocks, in the original's order.
 - Table-dispatch methods with no return value must be `void` (a BOOL with no return moves the pointer load to r1).
 - Range check keeping a `movs rX,#0` flag join: `if (v < LO || v > HI) {} else { ok = TRUE; }` (the `&&` form folds the flag away).
+- Before attributing state methods to a class, check which vtable / member-pointer table references them (a function listed in class X's state table belongs to X even if it sits right after class Y's factory).
+- Nested ifs instead of `&&` when the original has a `b end` past an early `bne` (the `&&` form duplicates compares).
+- `if (t == A || t == A+1)` folds into `subs; cmp; bhi`; to keep `cmp; beq; cmp; bne` write `if (t != A && t != A+1) goto rest;`.
+- A void method ending in `if (...) call();` becomes a tail branch; to get `bl` + epilogue declare it BOOL with no return and an `end:;` label (cast in member-pointer tables).

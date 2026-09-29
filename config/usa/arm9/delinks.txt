@@ -990,3 +990,6 @@ src/main/unk_0209be24.cpp:
 
 src/main/unk_020a25d8.cpp:
     .text       start:0x020a25d8 end:0x020a3238
+
+src/main/unk_020a0868.cpp:
+    .text       start:0x020a0868 end:0x020a1224
