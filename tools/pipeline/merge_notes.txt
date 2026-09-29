@@ -93,3 +93,4 @@ unk_020a3238 (r273): Unk_020a3238 state handlers (table 0x020e2504..0x020e2750) 
 unk_0209be24 (r261): Bingo board Unk_0209be24 = r260's Unk_0209b5d4 (same 6x6 grid; ctor c004, dtor bfdc); cell Unk_0209c040 = r260's Unk_0209c060. Unify. Unk_020dbe24::func_02055340 returns a value here (existing src declares void). Pool Unk_0209c15c is Unk_020db984's unk_600.
 unk_020a25d8 (r272): free-function state handlers on the same state object (Unk_020a25d8 = Unk_020a1c88 family, state byte +0x9d).
 unk_020a0868 (r269): Unk_020a09d8 save/backup state machine (singleton data_021ed3b0, dispatcher func_020a1158).
+unk_020a1224 (r270): the big state-machine object is Unk_020e2824 : Unk_020ddcf0 (vtable 0x020e2824, D0/D1/C1 here). Its methods are spread as Unk_020a09d8? no — r266 Unk_0209f304, r267 Unk_0209f638, r271 Unk_020a1c88, r272 Unk_020a25d8 (free fns), r273 Unk_020a3238: rename all to Unk_020e2824. r265 already saw Unk_020e27d4 holding Unk_020e2824 unk_54.

@@ -545,3 +545,5 @@ Some groups are in an overlay rather than the main module. For those:
 - Nested ifs instead of `&&` when the original has a `b end` past an early `bne` (the `&&` form duplicates compares).
 - `if (t == A || t == A+1)` folds into `subs; cmp; bhi`; to keep `cmp; beq; cmp; bne` write `if (t != A && t != A+1) goto rest;`.
 - A void method ending in `if (...) call();` becomes a tail branch; to get `bl` + epilogue declare it BOOL with no return and an `end:;` label (cast in member-pointer tables).
+- A zero flag (`BOOL hit = FALSE;`) declared before an if/else chain gets hoisted to entry; declare it right before first use.
+- `if (u8v >= 1)` gives `cmp #1; bcc`; `> 0` gives `cmp #0; beq`.
