@@ -139,3 +139,8 @@ func_ov004_02221b38 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x
 func_ov004_02221d80 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
 func_ov004_022203c8 ov004_047/ov004_047.cpp  # switch value in r0 vs r1 (jump-table temp shift); try permutation search
 func_ov004_02224628 ov004_054/ov004_054.cpp  # regalloc in flag=t+1 test/store block (orig r0=&unk_8e6,r1=t+1,r2=old; ours r3/r2/r1); ~20 variants tried
+func_ov004_0222d874 ov004_069/ov004_069.cpp  # one reg: ldrb r3,[r0,#1];cmp r3,#3 (rec[1]==3) — ours uses r0; ~8 load variants tried
+func_ov004_0222e060 ov004_069/ov004_069.cpp  # regalloc: unk_15c in r3 (orig r2), &unk_1e8 in r2 (orig r4); all 120 decl-order perms tried
+func_ov004_022306f0 ov004_074/ov004_074.cpp  # unk_210 shift in switch cases 0/2 uses r1, orig r2 (ldr r2;lsls/asrs r2,#1;str r2); <<=,*=,temp,s32* tried
+func_ov004_02229e1c ov004_063/ov004_063.cpp  # sp2; v != -1 test: orig movs r1,#0;mvns r2,r1;cmp r4,r2, ours mvns r1,r1;cmp r4,r1
+func_ov004_0222a0bc ov004_063/ov004_063.cpp  # sp2; callee-saved regs for data_02240298[0..2]: orig a=r4,b=r6,c=r7, ours r7/r6/r4; all 6 decl orders tried
