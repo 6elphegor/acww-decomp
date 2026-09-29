@@ -234,3 +234,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Camera-transition class is `Unk_020dc034 : Unk_020d8c7c` (vtable 0x020dc034, singleton data_021c5a38; fields +0x50..+0xdc, see unk_02056f94.cpp). Older units call it `Unk_02057940`; use `Unk_020dc034`.
 - A caller that never sets r1 before calling a function that takes a (hidden, unused) second param: pass an uninitialized local, `s32 u; f(u);`.
 - `v < 0 ? -v : v` and `if (v < 0) v = -v;` allocate registers differently; try both.
+- An explicit inline copy ctor `v[0] = o.v[0]; v[1] = o.v[1];` gives interleaved load/store for by-value class args; the implicit one loads both first.
+- `static T t[3] = { T(0,1), T(0,2), T(0,3) };` gives one guard word, each element's ctor, then its dtor registration.
+- Member-function-pointer table test and call with different folded addresses: write the full subscript separately in the test and the call.
