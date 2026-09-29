@@ -513,3 +513,8 @@ Some groups are in an overlay rather than the main module. For those:
 - **vfunc_08 / vfunc_14 take an s32** in many derived classes, but include/Unk_020d8c7c.h declares them with no params. Do NOT edit the header. In your file: `#define vfunc_14() vfunc_14(s32 a)` (and/or vfunc_08) before `#include "Unk_020d8c7c.h"`, `#undef` after — otherwise the override becomes a new slot and shifts the vtable.
 - Clamp `d >= n ? n - 1 : d` (the `>=` arm first).
 - Function-local `static T v` with inline empty dtor and no ctor gives guard + `__register_global_object` with no ctor call.
+- Array element addressed twice with a call between, original recomputes the address: first use `&self->arr[i]`, second `(E*)((u8*)self + K) + i`.
+- An expression passed as an argument that uses a temp register: compute it into its own local first (`s32 y = f() * 100 - 0x258; g(..., y)`).
+- Several static objects sharing one guard bit: `static V vs[3] = {V(..), V(..), V(..)};`.
+- Zero locals the original initialises mid-function: declare them inside the block, after the preceding statement; at function scope they get hoisted.
+- Static-array element reads kept unfolded (`ldr =tbl; ldr [r0,#0xc]`): index inline (`((u32*)tbl)[3]`), not via a local pointer to the element.
