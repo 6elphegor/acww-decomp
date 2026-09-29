@@ -801,3 +801,6 @@ src/main/unk_0207bab0.cpp:
 
 src/main/unk_0207c3dc.cpp:
     .text       start:0x0207c3dc end:0x0207cd48
+
+src/main/unk_0207b168.cpp:
+    .text       start:0x0207b168 end:0x0207bab0
