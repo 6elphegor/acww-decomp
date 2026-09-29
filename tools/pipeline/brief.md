@@ -264,3 +264,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A ctor loop over a fixed array with no initial guard: `do { f(e); e += size; } while (e != end);`.
 - Sparse switch (0x13..0x1b plus 0x28): leave out empty gap labels when the original has a bounded table plus a separate compare; merge shared-code cases.
 - `u32 t = o->f; a = b = c = t;` loads once; without the temp mwcc reloads the field.
+- A void function ending in `if (x) f(x)` that the original ends with `bl` + epilogue and a small frame: an unused local `struct Pad { s32 v[2]; Pad(){} ~Pad(){} }` (sized to the frame) prevents the tail call.
