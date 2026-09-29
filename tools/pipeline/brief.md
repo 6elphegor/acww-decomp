@@ -301,3 +301,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `buf[1 + i]` read via `ldrb [base, idx]` with base = sp+1: write `u8 *q = &r[1]; r[0] = q[i];` (indexing `r[1 + i]` folds the +1).
 - Address-of-array null test with a separate offset add: `u32 g = (u32)arr; if (g != 0) f((u8*)g + K);`.
 - Script-command handlers (0x02068c9c..0x0206b9xx) are one class on the Unk_020e2b08/Unk_020e2b4c script base; see unk_02068f10.cpp / unk_02069834.cpp.
+- A static member-pointer table whose init reloads the base every 16 entries is ONE array larger than 16 (Thumb str immediates max out at 124).
+- To keep a table lookup before an `if`: `Fn f = tbl[i];` before the if, `(this->*f)()` inside it.
