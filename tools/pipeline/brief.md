@@ -322,3 +322,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A small same-class callee that gets inlined into callers (duplicated arg setup, no `bl`): define it at the end of the file.
 - An `s8` parameter the original sign-extends at entry (`lsls 24; asrs 24`): declare `s32 c0` and do `s8 c = (s8)c0;`.
 - A member ctor reached with r1 unset forwards the enclosing ctor's parameter; declare it on the member ctor even if unused.
+- A derived class's first field sits right after the base's real (unaligned) size: `Unk_020e2a78` is 0x12 bytes, so a derived string buffer starts at +0x12.
+- Function-pointer call with odd scratch registers: the original forwards an extra live argument (`tbl[i](p, x)`).
