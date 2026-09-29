@@ -567,3 +567,5 @@ Some groups are in an overlay rather than the main module. For those:
 - A u8 field compared with signed branches (`blt/bgt`): copy to `s32 t = field;` first (direct u8 compare gives `bcc/bhi`).
 - In bases whose vtable is D1, D0 then slots from 0x08, do NOT declare a `vfunc_04` — it shifts every later slot by 4.
 - `(tbl + b*7)[c]` reads b first; `tbl[b*7 + c]` reads c first.
+- `movs rN,#K; mvns rN,rN` is -(K+1): `#1` → -2, `#2` → -3.
+- A pool-word-only diff usually means a struct padding/offset error (trailing u8/u16 pairs pad to 4).
