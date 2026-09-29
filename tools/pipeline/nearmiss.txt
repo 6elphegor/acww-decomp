@@ -132,3 +132,6 @@ func_02094d60,func_02094de0,func_02094e3c,func_02094e64 r249/r249.cpp  # const-i
 func_02097ff4,func_0209801c r254/r254.cpp  # bit clear/set: original idx in r4, mask computed before load, mvns+ands (not bics) — try the *(volatile u32*)&x[w] trick
 func_020984a8 r254/r254.cpp  # long fn, regalloc only: this r6 / p r5 / &local r4 (ours r5/r4/r6)
 func_020975f0 r253/r253.cpp  # r/cnt register swap (r5/r6) + strh [r1,#2] addressing
+func_02095670 r250/r250.cpp  # regalloc: original spills outb to [sp], ours spills mode
+func_0209579c r250/r250.cpp  # frame 8 bytes too big; local buffer at sp+0x1c is one aggregate; i in r4, -1 in r5
+func_02095dcc r250/r250.cpp  # loop-hoist family: y>>4 hoisted into r7 even in goto form
