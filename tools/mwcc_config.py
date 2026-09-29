@@ -5,6 +5,9 @@
 # `ldrh r0, [r0, #8]; lsls; asrs; add r0, pc; bx r0` in 558 of 563 cases, which only 1.2/b56 and 1.2/base generate
 # (sp2 and sp2p3 differ). b56 and base haven't been told apart. The 5 exceptions are in overlay 65, which uses the
 # sp2p3/sp3 form and was likely built separately.
+# Adjuster thunks (secondary-base `_ZThn` entries) are the exception: all 159 in the game save r2 around the `this`
+# adjustment, which 1.2/sp2 does and 1.2/base doesn't, so the real compiler is probably 1.2/sp1, which isn't available.
+# Files containing thunks use sp2 via a `// mwcc-version: 1.2/sp2` first line (see configure.py).
 MWCC_VERSION = "1.2/base"
 DECOMP_ME_COMPILER = "mwcc_20_72" # decomp.me name for MWCC_VERSION (internal version 2.0 build 72)
 CC_FLAGS = " ".join([

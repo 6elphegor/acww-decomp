@@ -210,3 +210,24 @@ src/main/unk_0200f070.cpp:
 
 src/main/unk_0200f9bc.cpp:
     .text       start:0x0200f9bc end:0x020102ec
+
+src/main/unk_02010c74.cpp:
+    .text       start:0x02010c74 end:0x02011580
+
+src/main/unk_020102ec.cpp:
+    .text       start:0x020102ec end:0x02010c74
+
+src/main/unk_02013b10.cpp:
+    .text       start:0x02013b10 end:0x02014420
+
+src/main/unk_02011580.cpp:
+    .text       start:0x02011580 end:0x02011ec0
+
+src/main/unk_02014420.cpp:
+    .text       start:0x02014420 end:0x02014d90
+
+src/main/unk_0201745c.cpp:
+    .text       start:0x0201745c end:0x02017d74
+
+src/main/unk_02014d90.cpp:
+    .text       start:0x02014d90 end:0x020156ac

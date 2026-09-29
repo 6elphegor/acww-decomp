@@ -43,6 +43,10 @@ BIOS from your own DS, place it at `arm7_bios.bin` and rerun `configure.py` to h
 
 The game was built with Metrowerks CodeWarrior for DS 1.2 (`mwccarm` internal version 2.0 build 72):
 - 2.0 and DSi compilers don't match.
+- Secondary-base adjuster thunks (`_ZThn…`) are the one exception to 1.2/base. All 159 thunks in the game save and restore
+  r2 around the `this` adjustment, which 1.2/sp2 does and 1.2/base doesn't, while the switch tables need base. The game
+  was probably built with 1.2/sp1, which isn't available. A file containing thunks can switch compilers with a
+  `// mwcc-version: 1.2/sp2` line at the top; `configure.py` picks it up.
 - 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's `pop {r3}; bx r3`.
 - 558 of the game's 563 Thumb switch jump tables use a dispatch sequence that only 1.2/b56 and 1.2/base generate.
   The other 5 are in overlay 65, which uses the 1.2/sp2p3 form and was likely built separately.

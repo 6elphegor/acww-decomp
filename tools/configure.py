@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 from pathlib import Path
 import argparse
 import sys
@@ -182,7 +183,7 @@ def main():
         n.newline()
 
         # -MMD excludes all includes instead of just system includes for some reason, so use -MD instead.
-        mwcc_cmd = f'{WINE} "{CC}" {CC_FLAGS} {CC_INCLUDES} $cc_flags -d $game_version -MD -c $in -o $basedir'
+        mwcc_cmd = f'{WINE} "$cc" {CC_FLAGS} {CC_INCLUDES} $cc_flags -d $game_version -MD -c $in -o $basedir'
         mwcc_implicit = [CC]
         if platform.system != "windows":
             transform_dep = "tools/transform_dep.py"
@@ -440,21 +441,36 @@ def add_mwcc_builds(n: ninja_syntax.Writer, project: Project, mwcc_implicit: lis
     for source_file in get_c_cpp_files([src_path, libs_path]):
         src_obj_path = project.game_build / source_file
         cc_flags = []
+        cc = CC
+        version = source_mwcc_version(source_file)
+        if version is not None:
+            cc = os.path.join('.', str(mwcc_root / version / "mwccarm.exe"))
         if is_cpp(source_file): cc_flags.append("-lang=c++")
         elif is_c(source_file): cc_flags.append("-lang=c")
         n.build(
             inputs=str(source_file),
-            implicit=mwcc_implicit,
+            implicit=[*mwcc_implicit, cc],
             rule="mwcc",
             outputs=str(src_obj_path.with_suffix(".o")),
             variables={
                 "game_version": project.game_version,
+                "cc": cc,
                 "cc_flags": " ".join(cc_flags),
                 "basedir": os.path.dirname(src_obj_path),
                 "basefile": str(src_obj_path.with_suffix("")),
             },
         )
         n.newline()
+
+
+def source_mwcc_version(source_file: Path) -> str | None:
+    # A "// mwcc-version: 1.2/sp2" line near the top of a source file overrides the compiler for that file
+    with open(source_file, encoding="utf-8", errors="replace") as f:
+        for _, line in zip(range(10), f):
+            match = re.match(r"\s*//\s*mwcc-version:\s*(\S+)", line)
+            if match:
+                return match.group(1)
+    return None
 
 
 def get_c_cpp_files(dirs: list[Path]):
