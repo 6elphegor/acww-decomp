@@ -51,3 +51,6 @@ src/ov001/unk_0220951c.cpp:
 
 src/ov001/unk_0220d760.cpp:
     .text       start:0x0220d760 end:0x0220e0c8
+
+src/ov001/unk_0220eab0.cpp:
+    .text       start:0x0220eab0 end:0x0220f3fc

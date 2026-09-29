@@ -185,3 +185,4 @@ func_ov001_0221381c ov001_031/ov001_031.cpp  # -O4,p ARM; prologue regs only (26
 func_ov001_0221a8a8 ov001_042/ov001_042.cpp  # -O4,p ARM; sched only (~28 lines): orig pool loads r4/r5 before two str r9,[sp] zero stores
 func_ov001_0221abb4 ov001_042/ov001_042.cpp  # -O4,p ARM; tail regalloc (~24 lines): last c5a8 result r2 vs r3, ldrsb q r3 vs lr; 24 arg-order perms tried
 func_ov001_02222228 ov001_055/ov001_055.cpp  # -O4,p ARM; regs only in v0+mem+v1+v2 sum (orig addr r1, v0 r0, mem r3); ~25 variants
+func_ov001_02220444 ov001_052/ov001_052.cpp  # -O4,p ARM; final loop regs (orig r0=i,r1=temp,r2=table); ~20 lines
