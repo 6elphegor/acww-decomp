@@ -112,3 +112,4 @@ unk_020c256c (r279): Unk_020e7440 D1/D0 + vfunc_48/4c and Unk_020e73b0 methods â
 ov004/unk_0220521c (ov004_001): declares Unk_ov004_0224882c with 38 dummy virtuals instead of its real base Unk_020d9670 â€” fix when unifying with ov004_004/006/007 decls. State tables at 0x02248728..0x022487b4.
 ov004/unk_02209558 (ov004_008): AUTHORITATIVE decl of Unk_ov004_0224882c : Unk_020d9670, Unk_ov004_022488d8 (size 0x840, ctor/dtor, member offsets). Use it to unify ov004_001/004/005/006/007.
 ov004/unk_0220cd7c (ov004_014): Unk_ov004_0224ae60 and Unk_ov004_0224b1e4 both : Unk_ov004_0224882c (0x844 bytes; class operator new func_ov004_02209ef0).
+ov004/unk_0220b1e4 (ov004_011): three Unk_ov004_0224882c subclasses (0224981c, 02249ba0, 02249ccc); attribution of state handlers b3d8..ba88 to 02249ccc is a guess (names only).
