@@ -882,3 +882,6 @@ src/main/unk_0208c830.cpp:
 
 src/main/unk_0208bf00.cpp:
     .text       start:0x0208bf00 end:0x0208c830
+
+src/main/unk_0208b5e4.cpp:
+    .text       start:0x0208b5e4 end:0x0208bf00

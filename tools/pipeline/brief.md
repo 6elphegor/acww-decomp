@@ -440,3 +440,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Duplicate zero-store pairs on a stack record: inline base ctor that zeroes + derived inline ctor that zeroes again; declare the record where first used (after early returns) or the ctor hoists.
 - Two loop counters: `s32 i, cnt; cnt = 0; i = cnt;` or `s32 i = 0, j = i;` to pick registers.
 - Helpers returning table bytes that callers use as ints: return `u32`, not `u8`, or callers get extra `lsls/lsrs`.
+- `cmp 0; beq X; cmp 1; b end` with the case-0 block after: `switch (t) { case 0: {...} case 1: break; }`.
+- A -1 argument repeated in a call chain inside a loop stays in a register only as a literal; a named local gets spilled.
+- Stores `p[0]=x; p[1]=0; p[2]=y` with loads out of order: read `s32 yt = y;` before the stores.
+- Functions whose only return path is fallthrough may need `void` (an `s32` version moved a constant load to r3).
