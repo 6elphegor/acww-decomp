@@ -455,3 +455,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - One-bit flag byte: `struct { u8 f:1; u8 x:7; }` — read gives `lsls 31; lsrs 31`, `f = 0` gives the recomputed-address `bics` sequence.
 - A method whose result is fed straight into another call's u8 param: declare it returning `u8` so the caller emits no `lsls/lsrs`.
 - Initial zero flag stored to [sp] and later used as a byte offset: `volatile s32 z = r; *(s16*)((u8*)p + z)`.
+- s64 sum of squares: write as statements (`s64 sum = a*a; sum += b*b; ...`); one expression gets reordered.
+- A u16 output slot the callee writes may need to be 4 bytes: `u16 out[2]; f(out); return out[0];`.
+- ARM-mode functions: wrap in `#pragma thumb off` / `#pragma thumb reset`.
