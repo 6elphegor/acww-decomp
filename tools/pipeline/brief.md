@@ -574,3 +574,4 @@ Some groups are in an overlay rather than the main module. For those:
 - A void method ending in `sibling(1)` tail-branches; define the callee BEFORE the caller in the file to get `bl` + epilogue (thunks defined before the callee stay thunks). Preferred over the BOOL-with-no-return trick.
 - Same-class callees defined BEFORE their caller get inlined even when large; define them at the end of the file to keep the original `bl`.
 - `adds rX,r0,#0x5c` then `str [r0,#0x5c]` + `str [rX,#8]` (Vec3 member stores): take `Vec3 *pv = &o->pos;` BEFORE reading the source and write BOTH fields through `pv` (see ov004_050).
+- `movs 0; mvns; muls` (multiply by -1): `k *= -1` on a value from an enum-typed local; `-k` or `k * -1` fold to negs.
