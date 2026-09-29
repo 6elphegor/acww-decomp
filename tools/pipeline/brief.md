@@ -1,5 +1,8 @@
 # Brief: matching functions for the Animal Crossing: Wild World decomp
 
+## DISK SAFETY (read this)
+On 2026-09-29 an agent's scratch .cpp grew to 18 GB (a command appended a file to itself) and filled the disk, killing every agent. Never write a file from a command that reads the same file (`cat f >> f`, `sed ... f > f`, `cat a f > f`, loops that append to the file they iterate over). Edit sources with the Edit/Write tools, or write to a temp name then `mv`. Before each compile, if your source file is over 1 MB something is wrong: stop and fix it.
+
 Write C++ that compiles byte-identically to a set of original functions, verify each with the project's diff tool, and report the code back. Do NOT modify any file inside the repository; work only in your scratch directory (given in your prompt).
 
 ## Setup
@@ -434,3 +437,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Vec3 copy with the address computed once: wrap each copy in its own scope block `{ Vec3 *pv = &o->f; saved = *pv; }`.
 - Switch: source case order sets block order — match the original's order.
 - Counted ctor loop with no initial test: `u32 i; for (i = 0; i < 4; i++)`.
+- Duplicate zero-store pairs on a stack record: inline base ctor that zeroes + derived inline ctor that zeroes again; declare the record where first used (after early returns) or the ctor hoists.
+- Two loop counters: `s32 i, cnt; cnt = 0; i = cnt;` or `s32 i = 0, j = i;` to pick registers.
+- Helpers returning table bytes that callers use as ints: return `u32`, not `u8`, or callers get extra `lsls/lsrs`.
