@@ -711,3 +711,6 @@ src/main/unk_0206f53c.cpp:
 
 src/main/unk_02072d5c.cpp:
     .text       start:0x02072d5c end:0x020733e4
+
+src/main/unk_020742f4.cpp:
+    .text       start:0x020742f4 end:0x02074c4c
