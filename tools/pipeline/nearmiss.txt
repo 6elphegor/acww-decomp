@@ -197,3 +197,5 @@ func_ov001_0221af44 ov001_043/ov001_043.cpp  # -O4,p ARM; tail regalloc (~24 lin
 func_ov001_0221b318 ov001_043/ov001_043.cpp  # same tail as 0221af44
 func_ov001_02226214 ov001_061/ov001_061.cpp  # -O4,p ARM; loop regs: orig add r1,r1,r0,lsl#3; ldrh r2,[r1,#4] (ours r2/r1 swapped)
 func_ov002_02201f18 ov002_002/ov002_002.cpp  # -O4,s Thumb; one call arg order: orig computes row offset before loading 0x2c0 pool const
+func_ov003_02205e58 ov003_002/ov003_002.cpp  # -O4,s; value/address reg swap in 2-byte payload store (orig ldrb r1 then add r0,sp,#12)
+func_ov003_02206378 ov003_002/ov003_002.cpp  # -O4,s; -1 compare: orig movs r3,#0;mvns r1,r3 (ours movs r1,#0;mvns r1,r1)
