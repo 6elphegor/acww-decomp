@@ -239,3 +239,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Member-function-pointer table test and call with different folded addresses: write the full subscript separately in the test and the call.
 - `cnt++` vs `n = cnt; ...; cnt = n + 1;` allocate registers differently; try the plain increment first.
 - `v[0]=v[1]=v[2]=x` stores v[2] first; reverse the chain to store v[0] first.
+- Alignment `(v + a - 1) & ~(a - 1)` matches as `static inline u32 AL(u32 v, u32 a)`; a macro gives `bics`. When two aligns share the masks, write `u32 m = a - 1; u32 k = ~m;` by hand.
+- Size sums: `u32 s = 0, t = 0; s += A; t += s * n;` keeps the unfolded adds; `t + expr` on a known-zero t folds. Separate `+=` statements stop `a*m + b*m` being factored.
