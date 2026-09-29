@@ -255,3 +255,6 @@ src/main/unk_02011ec0.cpp:
 
 src/main/unk_02018698.cpp:
     .text       start:0x02018698 end:0x02019020
+
+src/main/unk_0201d2d0.cpp:
+    .text       start:0x0201d2d0 end:0x0201dc44
