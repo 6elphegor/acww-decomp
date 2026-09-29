@@ -242,3 +242,4 @@ func_ov003_0222ef10 ov003_070/ov003_070.cpp  # -O4,s; 0x1000-q: orig adds r3,r0,
 func_ov047_02259448 ov047_000/ov047_000.cpp  # -O4,s; first ldrb into r1 (ours r0)
 func_ov047_02259a8c ov047_001/ov047_001.cpp  # -O4,s; vfunc_14 dispatch: orig hoists local-static table base into r7 (ours reloads), regs only
 func_ov049_0225a714 ov049_002/ov049_002.cpp  # -O4,s; vfunc_78 state==5 branch: owner/flag/halfword reg allocation (~28 lines)
+func_ov003_02224bc4 ov003_054/ov003_054.cpp  # -O4,s; table-index temp regs r3/r1/r2 vs ours r2/r0/r1
