@@ -7,3 +7,6 @@
 
 src/ov004/unk_02208ba8.cpp:
     .text       start:0x02208ba8 end:0x02209558
+
+src/ov004/unk_02208198.cpp:
+    .text       start:0x02208198 end:0x02208ba8
