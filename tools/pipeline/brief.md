@@ -564,3 +564,4 @@ Some groups are in an overlay rather than the main module. For those:
 - `if (call() == 0) {big} else {small}` puts the small block last; `!= 0` flips it.
 - Soft-float: C `float` code compiles to the helper calls (func_02132a4c itof, 021319d0 fadd, 02132c80 fsub, 021329d0 ftoi) with no special handling.
 - A BOOL flag merged into another flag register: compute it via a separate `static inline BOOL` helper.
+- A u8 field compared with signed branches (`blt/bgt`): copy to `s32 t = field;` first (direct u8 compare gives `bcc/bhi`).
