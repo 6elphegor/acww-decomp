@@ -11,3 +11,4 @@ unk_0204f178 and unk_0204fb80 are one file with class Unk_020db984 (vtable 0x020
 unk_02050cb4 (font code->glyph index lookup) probably belongs to the file at unk_02050d54; merge when linking.
 unk_02052620: func_02052b10/b30 reference the D1 as extern "C" func_02052714 (renamed to _ZN12Unk_02052620D1Ev); fix the reference when linking. unk_02052620 and unk_02052f44 (item-record getters) are one file.
 unk_02053878 declares func_02053830 as a member of Unk_020dbd74, but unk_02052f44 defines it as extern "C" func_02053830; reconcile. Classes Unk_020dbd74 : Unk_020dbda4 : Unk_0205454c (unk_02053878.cpp) continue into r139 (0x02054190..: B's D2/C2).
+unk_02053878 (r138) models Unk_0205454c's bases flat as Unk_020dbdd4/de4/df4; unk_02054190 (r139) has the real chain Unk_02055704 <- Unk_020dbd34 <- Unk_020dbd54 (+Unk_020dbe7c @+0x9c) <- Unk_0205454c (+Unk_020dbe7c_Sub @+0xb8) <- Unk_020dbda4, backed by out-of-line base ctor/dtor calls. Use r139's when merging.
