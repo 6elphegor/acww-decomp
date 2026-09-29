@@ -157,3 +157,11 @@ func_ov004_02236fe0 ov004_085/ov004_085.cpp  # phase-2 loop counter in r3 (orig 
 func_ov001_02202050 ov001_002/ov001_002.cpp  # UNMATCHED draft (~1000 diff lines, 0xaec bytes): UDP connect/handshake state loop; prologue copies data_0222a488 as 2 halfwords; locals struct L fixes frame
 func_ov001_02203770 ov001_004/ov001_004.cpp  # -O4,p; switch value/const 2 in r2/r3 (ours r1/r2) in later cases
 func_ov001_02203c48 ov001_004/ov001_004.cpp  # -O4,p; 0xe8-byte zero-fill: orig unrolled stm r5!,{r0-r3}x2 loop counter r4 (reuses 7) + stm {r0,r1}; tried loops/memset
+func_ov001_02206d44 ov001_010/ov001_010.cpp  # -O4,p; order: orig movs r4,#0 before building -8 spill (movs r0,#7;mvns;str [sp,#4])
+func_ov001_02206ef8 ov001_010/ov001_010.cpp  # -O4,p; align: orig keeps mask 0x1f in r3 (adds rX,r0,r3; bics), ours folds adds #31
+func_ov001_0220751c ov001_010/ov001_010.cpp  # -O4,p; regs: orig keeps p[0]-load zero live in r1 through switch (scratch r2/r3)
+func_ov001_022055bc ov001_007/ov001_007.cpp  # -O4,p; AES key unwrap: 8-byte struct copy dst/src regs swapped (orig dst=r3,src=r2)
+func_ov001_022057b0 ov001_007/ov001_007.cpp  # -O4,p; AES key wrap: same dst/src swap on a=iv copy + spill slots n-hi 0x24 vs 0x20, p 0x1c vs 0x2c
+func_ov001_02202b3c ov001_003/ov001_003.cpp  # -O4,p; tail -1 compare: orig ldr r0,[g];movs r1,#0;mvns r1,r1 (ours swapped)
+func_ov001_02202e74 ov001_003/ov001_003.cpp  # -O4,p; regalloc: orig r6=zero, r5=counter, r4=buf (ours r4/r6/r5); perm search tried
+func_ov001_02203004 ov001_003/ov001_003.cpp  # -O4,p; loop do{...}while(z) with never-modified zero in r5 gets folded; needs trick to keep z live
