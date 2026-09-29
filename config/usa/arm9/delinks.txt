@@ -252,3 +252,6 @@ src/main/unk_02015fe0.cpp:
 
 src/main/unk_02011ec0.cpp:
     .text       start:0x02011ec0 end:0x02012810
+
+src/main/unk_02018698.cpp:
+    .text       start:0x02018698 end:0x02019020
