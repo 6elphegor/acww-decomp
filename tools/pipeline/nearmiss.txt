@@ -133,3 +133,4 @@ func_ov004_022053c0 ov004_001/ov004_001.cpp  # sin-table index CSE + ldrsh/ldrh 
 func_ov004_02209f38,func_ov004_02209f54 ov004_009/thunks_sp2.cpp  # _ZThn236 D0/D1 thunks of Unk_ov004_0224882c: match only under sp2, but func_ov004_0220a648 (same unit) matches only under base (switch-table encoding) — needs a split unit
 func_ov004_0220a898 ov004_010/ov004_010.cpp  # post-switch regalloc: zero in r1 vs address constants in r2 swapped (base compiler only)
 func_ov004_02212de4 ov004_024/ov004_024.cpp  # unk_768 loaded into r1 (orig) vs r0 before cmp #1
+func_ov004_02217cf8 ov004_032/ov004_032.cpp  # r6/r7 swap (callee result vs data_ov004_022506c8 ptr); movs r1,r7 vs adds r1,r6,#0
