@@ -310,3 +310,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A byte store `arr[i-1] = 1` that the original writes as `ldr r0,=K; strb [r1,r0]`: `*((u8*)this + i + K) = 1`.
 - Class with vtable and no user dtor emits no D0/D1/D2: declare `virtual ~T();` and define it out of line.
 - `(u16)(x - 5) <= 2` compiles as subs; the `ldr =0xfffb; adds` form is `(u16)(x + 0xfffb) <= 2`.
+- Row addressing `(u16 *)((y << 6) + (u32)base)` gives `adds r1,r2,r0`; `base + y*32` reverses the operands.
+- Top-nibble insert masks: `(u32)v << 28 >> 16` gives `lsls #28; lsrs #16`.

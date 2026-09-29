@@ -684,3 +684,9 @@ src/main/unk_0206ab74.cpp:
 
 src/main/unk_0206e2f4.cpp:
     .text       start:0x0206e2f4 end:0x0206ebc0
+
+src/main/unk_020685c4.cpp:
+    .text       start:0x020685c4 end:0x02068e9c
+
+src/main/unk_0206ec04.cpp:
+    .text       start:0x0206ec04 end:0x0206f4f0
