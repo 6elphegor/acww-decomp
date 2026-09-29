@@ -28,3 +28,4 @@ unk_0205ef60 (r157) Unk_0205f360 and unk_0205f8d4 (r158) Unk_0205f8d4 are the sa
 unk_0205e61c (r156) manager singleton at data_021c6854 is Unk_0205ec30 (size >= 0xb56); r155 (unk_0205dd1c) named the same global's class Unk_0205dd1c with only the first 0x1b8 bytes. Same class — reconcile (r156's layout is fuller).
 func_0204e9dc really takes 9 args: (grid, s32*, s32*, s32*, s32*, u16*, u16*, filter, 0) — the middle params are out-pointers; unk_0204e858.cpp's declaration is wrong. func_0204eb30's 2nd param is u16*.
 unk_02061d84 continues unk_02061478 (item-code utilities over data_021c7cc8); merge.
+unk_0205a1d0 (r149) continues unk_0205989c (class Unk_02059d1c, which also has u16 unk_10/unk_12 at +0x10/+0x12; same layout as unk_0205af28's Unk_0205afdc); merge.

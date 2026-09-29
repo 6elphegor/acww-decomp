@@ -281,3 +281,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A C bitfield struct `{u32 a:3, ...; u32 cnt:8;}` reproduces a flag word plus a separate `strb` to byte +3.
 - A byte-loop copy with `subs; cmp; bne` is a struct assignment: `struct { u8 b[16]; }` and `*(T*)dst = *(T*)src`.
 - Callers first, callees later in the file stops a small same-file callee being inlined.
+- `u16 *volatile p` (volatile pointer) and `volatile u16 *p` (pointer to volatile) are different; use the one matching what the original reloads.
+- Grid rectangle class `Unk_02059d1c` (unk_0205989c.cpp / unk_0205a1d0.cpp): x0,y0,x1,y1 then u16 unk_10, unk_12.

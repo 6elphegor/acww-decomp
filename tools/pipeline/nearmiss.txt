@@ -85,3 +85,4 @@ func_020567ec r143/r143.cpp  # final store loop reg alloc (~10 insns)
 func_020568f8 r143/r143.cpp  # v/hi stack slots swapped
 func_02056e88 r143/r143.cpp  # stack-arg homing store, muls dest, slot order
 func_02061794 r161/a.cpp  # order of two initial zero-BOOL stores (same family as func_0205cbe8, func_02052b90)
+func_0205a930 r149/r149.cpp  # large driver (~546 lines): param p spilled & reloaded, j/i in stack slots; frame 0x7c vs 0x84
