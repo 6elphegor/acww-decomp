@@ -193,3 +193,5 @@ func_ov001_02222c30 ov001_056/ov001_056.cpp  # -O4,p ARM; regs only: orig g=r1, 
 func_ov001_02216474 ov001_035/ov001_035.cpp  # -O4,p ARM; regs only: orig keeps 0x34-(x%0x1d) in ip (rsb ip); 48-compile perm search
 func_ov001_022168a0 ov001_035/ov001_035.cpp  # -O4,p ARM; ~16 lines: orig v[a] r3, 0x1ff r0, 0xfe00ff00 r1; 120 perms tried
 func_ov001_02225290 ov001_060/ov001_060.cpp  # -O4,p ARM; 12 lines: orig moves a1 (mov r9,r1) before a0; r0/r1 swapped; 24 decl perms tried
+func_ov001_0221af44 ov001_043/ov001_043.cpp  # -O4,p ARM; tail regalloc (~24 lines): 4x c5a8 results + 4 u16 table lookups; orig d r3, dv lr; 360 orders tried
+func_ov001_0221b318 ov001_043/ov001_043.cpp  # same tail as 0221af44
