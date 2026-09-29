@@ -201,3 +201,6 @@ src/main/unk_0200dde0.cpp:
 
 src/main/unk_0200e758.cpp:
     .text       start:0x0200e758 end:0x0200f070
+
+src/main/unk_0200abc8.cpp:
+    .text       start:0x0200abc8 end:0x0200b510
