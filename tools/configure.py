@@ -447,6 +447,7 @@ def add_mwcc_builds(n: ninja_syntax.Writer, project: Project, mwcc_implicit: lis
             cc = os.path.join('.', str(mwcc_root / version / "mwccarm.exe"))
         if is_cpp(source_file): cc_flags.append("-lang=c++")
         elif is_c(source_file): cc_flags.append("-lang=c")
+        cc_flags += source_mwcc_flags(source_file)
         n.build(
             inputs=str(source_file),
             implicit=[*mwcc_implicit, cc],
@@ -471,6 +472,16 @@ def source_mwcc_version(source_file: Path) -> str | None:
             if match:
                 return match.group(1)
     return None
+
+
+def source_mwcc_flags(source_file: Path) -> list[str]:
+    # A "// mwcc-flags: -O4,p" line near the top of a source file appends flags for that file (later flags win)
+    with open(source_file, encoding="utf-8", errors="replace") as f:
+        for _, line in zip(range(10), f):
+            match = re.match(r"\s*//\s*mwcc-flags:\s*(.+?)\s*$", line)
+            if match:
+                return match.group(1).split()
+    return []
 
 
 def get_c_cpp_files(dirs: list[Path]):
