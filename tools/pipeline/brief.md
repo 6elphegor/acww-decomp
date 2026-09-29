@@ -188,3 +188,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `Unk_020d8c7c` is 0x50 bytes; derived fields start at +0x50. For an array-of-objects member, declare the class ctor `inline` and define it before the `new` site (an out-of-line prototype breaks the inline double-vptr ctor).
 - Multi-way status returns that come out with inverted branches: use one `s32 r; if (...) r = 4; else if (...) r = 3; ... return r;`.
 - If a caller emits `lsls/lsrs` before each call, the callee parameter is `u16` in the prototype; casting at the call site is not the same.
+- Map grid (unk_0204e858.cpp): `Unk_0204e858_Grid {Cell *cells; u32 w, h;}`, cells 0x28 bytes. `func_0204ebd8(grid, hx, hy, lx, ly, u8 layer)` returns the cell's u16* (it is defined `void` with an s32-returning callee, so callers see it via an implicit-int style prototype returning `u16*`). World coords are fixed-point: block = x>>17, tile = (x>>13)&15.
+- `if (x < 16 && y < 16) r = TRUE;` can get folded; `if (x >= 16 || y >= 16) {} else { r = TRUE; }` keeps the flag join.
+- Overlay refcount table `data_021c47fc[12]` (unk_0204e858.cpp): func_0204ef2c load, func_0204eee4 unload.
