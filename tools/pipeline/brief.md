@@ -365,3 +365,15 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Squared-length compare: declare `s32 len` and cast `(s64)len` at the compare (declaring s64 swaps `movs r5,#0` / `asrs`).
 - Byte-identical C1/C2 or D1/D2 pairs: assign by function order and say so in the report.
 - Global object getters (`ldr r0,=sym; bx lr`) get inlined into callers in the same file; define them at the end of the file.
+- Ctor whose scalar stores precede member-object ctors: put those scalars before the members in the mem-initializer list (declaration order); consecutive member ctors are separate members, not an array.
+- `adds r3,r0,r4` (call result first) needs the call hoisted into a local: `s32 g = f(); by = g + t;`.
+- Ternary block layout: `x == 0 ? A : B` and `x ? B : A` differ — try both.
+- If `s32 g = f(); x = g + t;` still gives the wrong operand order, try `e = f(); e += d;`.
+- BOOL→u8 join-store: `field = (t != 0) ? 1 : 0;` (not if/else).
+- One call with a ternary argument (`f(a == 0 ? 2 : 1)`) instead of if/else calls avoids tail-call `b` + duplicated pops.
+- Mixed byte/halfword reads of a local u16 array: cast inline at each use (`((u8*)v)[i]`); a named `u8 *` makes mwcc hoist `add rX,sp,#0`.
+- func_02087e70 signature: `(0, obj, x, y, pal, -1, 0x1000, 0x1000, 0, -1, 0, 0)` — first arg is 0, pal is the first stack arg.
+- Pair reads from a table: `u8 *q = &tbl[i*2]; q[0]; q[1]` gives `adds r1,r7,r0; ldrb [r7,r0]; ldrb [r1,#1]`.
+- `cmp 0; beq T; cmp 1; bne F` (not `cmp 1; bhi`): `if (r == 0) goto yes; if (r == 1) { yes: x = TRUE; } else x = FALSE;`.
+- Store address computed before the value: `u8 *p = &unk_95; *p = f(unk_95, x);`.
+- 64-bit delta from two words: `u64 d = now - *(u64 *)&unk_cc;` (not `(hi<<32)|lo`).
