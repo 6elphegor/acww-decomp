@@ -353,3 +353,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - 0x700-byte player slot record: ctor func_02080860, layout in unk_020804d0.cpp (sub-objects at +0x340/+0x568/+0x65c/+0x6c0, u16 slots at +0x6ac/+0x6cc). Its 8 x 0x68-byte entries are `Unk_0208091c` (flag word +0x64).
 - `if (!check) return -1;` early exits often don't match; try `if (check) { ...; res = X; } else { res = -1; } return res;`.
 - A struct with a user ctor returned by value puts the hidden return pointer in r0 and `this` in r1.
+- Slot manager singleton data_021cd264 is `Unk_02081c54`; the "type" classes derive from `Unk_020821b4` with vtables 0x020e06c8..0x020e0768 [D1, D0, vfunc_08] (unk_0208175c.cpp).
+- A compare where the original loads the slot field before `*p`: `u32 a = slot.id; u32 b = *p; if (a == b)`.
