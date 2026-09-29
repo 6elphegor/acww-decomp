@@ -129,3 +129,5 @@ func_0208faa0 r240/r240.cpp  # address of stack tag arg: add r3,sp,#0x10 vs ours
 func_0208fb20 r240/r240.cpp  # stack slot order: tag copies at 0x2c/0x30 and volatile memset zero at 0x34; ours data first
 func_02094a08 r248/r248.cpp  # constant 5 held in r5 across a call (movs r5,#5; cmp r5,r0); ours folds to cmp r0,#5, push {r4,lr}
 func_02094d60,func_02094de0,func_02094e3c,func_02094e64 r249/r249.cpp  # const-in-reg family: movs r4,#N before bl func_0200e1dc, cmp r4,r0 (same as func_02094a08)
+func_02097ff4,func_0209801c r254/r254.cpp  # bit clear/set: original idx in r4, mask computed before load, mvns+ands (not bics) — try the *(volatile u32*)&x[w] trick
+func_020984a8 r254/r254.cpp  # long fn, regalloc only: this r6 / p r5 / &local r4 (ours r5/r4/r6)
