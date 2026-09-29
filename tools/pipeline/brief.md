@@ -179,3 +179,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - For `for (s = base, i = 0; ...)` over a struct array, declare `Slot *s; s32 i;` (pointer first).
 - Reusing one `s32 i` for an earlier temporary and the later loop counter can be what matches; a separate temp swaps registers.
 - Byte loads in the original's order: read into locals in that order (`u32 nb = p->b5; u32 na = p->b4;`) then use them.
+- A `volatile u16` local sorts before volatile s32s in the frame. To place it after them, declare `volatile u32 w32` and access `*(volatile u16 *)&w32`.
+- Don't make a parameter volatile (adds `push {r0-r3}`); use a volatile local copy.

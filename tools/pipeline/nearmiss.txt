@@ -50,3 +50,7 @@ func_0204d1dc r127/r127.cpp  # result/handle registers swapped
 func_020463fc r115/final.cpp  # volatile ih spill slot lands after v; same loop-hoist family as r117/r120
 func_0204c318 r126/r126.cpp  # loop-hoist family; identical insns, slot offsets differ (volatile cy)
 func_0204c6a4 r126/r126.cpp  # loop-hoist family + 9-stage flag chain; frame 116 vs 124
+func_0204452c r112/r112.cpp  # e->unk_06[i]: original `adds rB,e,#6; ldrh [rB,rI]`, ours folds +6
+func_020445a4 r112/r112.cpp  # same, plus second load into volatile vv merged
+func_02044650 r112/r112.cpp  # same as 020445a4
+func_02044774 r112/r112.cpp  # prologue reg assignment / flag store order

@@ -6,3 +6,4 @@ Unk_0203b350 (unk_0203b350.cpp) == camera Unk_020d93b8; Unk_02039544 (r092 decl)
 unk_02040754.cpp uses fake extern func_02040974_r (s32-returning alias of void func_02040974) to force bl; fix when merging (header decl vs definition)
 unk_02035e2c.cpp uses fake call-site decl func_02036220_call (should be s32-returning real func); fix when merging
 unk_0204b08c continues unk_0204a754 (same u16 item-ID helper file); merge when linking.
+unk_02043e70 and unk_020449e8 look like one source file (shared globals, Unk_020449e8_Src); merge when linking.
