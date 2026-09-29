@@ -562,3 +562,5 @@ Some groups are in an overlay rather than the main module. For those:
 - `if (a == 0) A else if (a == 1) B` as `beq zero; cmp 1; bne end`: write `switch (v) { case 1: B; break; case 0: A; }`.
 - `||` gets jump-threaded; an original with `cmp 4; beq X; cmp b; beq body; X: cmp 4; bne end` needs explicit gotos.
 - `if (call() == 0) {big} else {small}` puts the small block last; `!= 0` flips it.
+- Soft-float: C `float` code compiles to the helper calls (func_02132a4c itof, 021319d0 fadd, 02132c80 fsub, 021329d0 ftoi) with no special handling.
+- A BOOL flag merged into another flag register: compute it via a separate `static inline BOOL` helper.
