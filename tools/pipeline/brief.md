@@ -214,8 +214,13 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `t == A || t == B || t == C` folds to `subs; cmp; bhi`; for three separate `cmp; beq` write `if (t != A && t != B && t != C) return f; return FALSE;`.
 - A `volatile u16 tmp[1]` local keeps a dead `strh` to its stack slot.
 - Static-array destructor loops: call `__cxa_vec_cleanup(arr, n, size, dtor)` directly from an extern "C" function.
-- Actor sub-object classes in unk_02053878.cpp: `Unk_020dbd74 : Unk_020dbda4 : Unk_0205454c` (vptrs at 0, +0x9c, +0xb8; real multiple inheritance). `Unk_020dbda4` ctor is func_020542ec, D2 func_02054190. Reuse those declarations.
+- Actor sub-object hierarchy (unk_02054190.cpp is authoritative): `Unk_02055704` <- `Unk_020dbd34` <- `Unk_020dbd54` (+`Unk_020dbe7c` @+0x9c) <- `Unk_0205454c` (+`Unk_020dbe6c` @+0xb8) <- `Unk_020dbda4` <- `Unk_020dbd74` (unk_02053878.cpp). Reuse those declarations.
 - Stack arg read with `ldrh` but callers don't mask: declare the param `u32` and read `*(u16 *)&f`.
 - u16 field compared signed (`bge`/`blt`) against a constant: declare it `volatile u16` (also gives the strh/ldrh reloads) or cast `(s32)` at the compare.
 - Local static arrays of member-function pointers `{&C::a, &C::b}` reproduce guarded 8-byte copies and `(this->*tbl[i])()` exactly.
 - State-machine class `Unk_02057940` (unk_02057940.cpp) — reuse for 0x02057940..0x02058d54.
+- A callee reached with r1 untouched before the `bl`/tail branch takes the caller's second parameter; forward it.
+- Placement new with no preceding `if (p)` gives one null check; define the element ctor after the caller to keep it a `bl`.
+- Adjuster thunks are only emitted when the derived class is instantiated somewhere and its dtor is out of line; the file then needs `// mwcc-version: 1.2/sp2`.
+- Keep `lsrs #31; lsls #31` by splitting: `u32 top = (c & 0x80000000) >> 31; top <<= 31;`. Build packed values in statements, in the original's order, to avoid shifts being hoisted.
+- `movs r2,#3; mvns r2,r2` is -4.
