@@ -960,3 +960,6 @@ src/main/unk_02098f90.cpp:
 
 src/main/unk_0209a208.cpp:
     .text       start:0x0209a208 end:0x0209ab54
+
+src/main/unk_0209da44.cpp:
+    .text       start:0x0209da44 end:0x0209e394

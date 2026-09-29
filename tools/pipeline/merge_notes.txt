@@ -83,3 +83,4 @@ unk_02095670 (r250): Unk_020e1c30 (vtable inferred from 0x020e1c78-0x48) -> Unk_
 unk_0209ab54 (r259): Unk_0209ada4 ctor/dtor + methods here; r257 (unk_020998b8) declares it and derived Unk_0209a5dc/Unk_02099f98 — share one header when linking. Unk_0209b434 continues past 0x0209b46c.
 unk_02098f90 (r256): Unk_020994cc derives from Unk_0209ada4 (ctor calls func_0209ada4) and has an Unk_02003130 member — written with extern "C" helper calls; convert to real classes when linking.
 unk_0209a208 (r258): all extern "C"; Unk_0209a5dc (ctor a5dc) is also declared by r257 — share. Unk_0209ab18 state class (ctor func_0209ab18) sits at the r258/r259 boundary.
+unk_0209da44 (r264): Unk_0209da44 (0x15fe0 bytes) looks like the data_021d7350 singleton — r225's Unk_02087224 (+0x228) and Unk_020872fc (+0x15fca) are its sub-objects. Unify.
