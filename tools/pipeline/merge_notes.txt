@@ -109,3 +109,4 @@ ov004/unk_0220650c (ov004_003): Unk_ov004_022487cc : Unk_020d8cf4 overrides vfun
 ov004/unk_022077a4 (ov004_005): Unk_ov004_022077a4 : Unk_020d9670 — same object as Unk_ov004_0224882c (ov004_006/007: fields +0x280/+0x284/+0x6c8/+0x768 match). Unify names.
 ov004/unk_022048c0 (ov004_000): Unk_ov004_0224860c : Unk_020d9670, Unk_020ddcf0 (sp2 thunks). Local Unk_020ddcf0 redeclaration renames secondary slots 0x08/0x0c to vfunc_s08/s0c and 0x10..0x18 to vfunc_60/64/68 to get the _ZThn236 thunks — reconcile with src/main's Unk_020ddcf0 when linking.
 unk_020c256c (r279): Unk_020e7440 D1/D0 + vfunc_48/4c and Unk_020e73b0 methods — same file as unk_020c2748 (r280) and unk_020c1e54. The unit's cpp also contains func_020b60dc (not paired; separate address range).
+ov004/unk_0220521c (ov004_001): declares Unk_ov004_0224882c with 38 dummy virtuals instead of its real base Unk_020d9670 — fix when unifying with ov004_004/006/007 decls. State tables at 0x02248728..0x022487b4.
