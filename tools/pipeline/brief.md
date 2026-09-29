@@ -423,3 +423,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Callbacks whose addresses are passed must be extern "C" free functions.
 - Bit set/clear on a word array where the original computes the mask BEFORE loading the word: read it as `*(volatile u32*)&x[w]`.
 - Bitfield setter whose original is just `ands #1` with no byte mask: hand-write `f = (f & ~2) | ((v & 1) << 1)` on a u8 union member with an `s32` parameter.
+- Vec3 copies: fieldwise `t.x = v->x; ...` rather than `Vec t = *v;` (which gives ldm/stm + extra saved reg). Mixed `v.x = o->f.x; v.y = pv->y;` with `Vec *pv = &o->f` gives `ldr [r4,#0x5c]` + `adds r3,r4,#0x5c`.
+- Then-block laid out after fall-through: `if (...) goto B; A: ...; return; B: ...`.
+- Early null check with a single `return 0` at the end: `if (o) { ... } return 0;`.
