@@ -337,3 +337,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - An empty `bx lr` function whose callers use its return value: declare it returning a value and define `T f() {}` with no return statement.
 - Zero-fill loop `stm r3!,{r1}; subs r2,#1; cmp r2,#0; bge`: `u32 *p = arr; s32 i; for (i = N-1; i >= 0; i--) *p++ = 0;` with the pointer declared BEFORE `i`.
 - Clamp that the original writes as two separate stores: `if (v > 4) { field = 0; return; } field = v;`.
+- Storing literal -1 into a byte: if the pointer is `u8 *` mwcc folds to `movs #255`; through an `s8 *` it gives `movs r1,#0; mvns r2,r1`.
+- A u64 field compared to 0: `*(u64 *)&self->unk_0c == 0`.
