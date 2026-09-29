@@ -284,3 +284,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `u16 *volatile p` (volatile pointer) and `volatile u16 *p` (pointer to volatile) are different; use the one matching what the original reloads.
 - Grid rectangle class `Unk_02059d1c` (unk_0205989c.cpp / unk_0205a1d0.cpp): x0,y0,x1,y1 then u16 unk_10, unk_12.
 - Packed 5-5-5 colors read with one `ldrh` each and no stack copy: `Color &c = *&g->field;` (reference), not `Color c = g->field;`.
+- Before reporting, grep each compiled symbol in your pairs.txt against config/usa/arm9/symbols.txt: a mangled name that already exists at another address means the function belongs to a different class (usually a base). Integration rejects duplicates.
+- Constant-bound loops with no initial `b test`: use a `u32` counter (an `s32` with a `(u32)` cast gets the initial jump).
+- Declaration style matters: `s32 y; s32 x;` on separate lines and `s32 y, x;` can allocate differently.
