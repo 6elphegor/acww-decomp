@@ -531,3 +531,7 @@ Some groups are in an overlay rather than the main module. For those:
 - mwcc bitfields are LSB-first. Bitfield getters on a word passed in r0 that go through a stack copy: `Bits l; *(u32 *)&l = v; return l.f;` with an 8-byte Bits type.
 - Unexpected `adds r2,r0,#0` before a virtual call = the call passes that value as an extra argument.
 - Factory with a single null check: `void *m = alloc(size); new (m) T();` with a class `static void *operator new(unsigned long, void *)` — an explicit `if (m)` doubles the check.
+- sp2 changes switch jump-table encoding: a function with a jump table may match only under base while thunks need sp2. If both occur in your group, deliver the base-matching file plus a separate small sp2 file for the thunks, and say so.
+- A derived class starts at the unaligned end of its base — pad the base to a multiple of 4 if offsets shift by 1–3.
+- Base Unk_ov004_0224882c: `vfunc_70(u32, u8)`; secondary base at +0xec is Unk_020ddcf0-shaped (see ov004_009) — reconcile with ov004_008 if your offsets disagree.
+- C2/D2 are only emitted when another class derives from the class; mwcc reuses a non-POD base's tail padding for the derived class's first field.
