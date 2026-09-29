@@ -168,3 +168,7 @@ If a function doesn't match after several genuinely different attempts, move on 
 - A local struct filled by another function with no ctor call: class with an inline empty ctor and an out-of-line dtor.
 - The `BOOL r=FALSE; ... if (b>=lo && c<=hi) r=TRUE;` range check sometimes only matches written inline in the caller (helper versions put r in r0).
 - A long chain of `kN = TRUE` flags cleared by successive range tests spills them to the stack; initialise all to TRUE and match the declaration order to the initial store order.
+
+## Machine load (IMPORTANT)
+The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`, no xargs -P, no multiprocessing in search scripts. Keep permutation searches under ~300 candidates, and print progress so a run never goes silent for minutes.
+- For flag chains spilled by declaration order, a hill-climb over declaration permutations (swap two, keep if the diff shrinks) converges much faster than random shuffles.
