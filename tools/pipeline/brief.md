@@ -572,3 +572,4 @@ Some groups are in an overlay rather than the main module. For those:
 - Two-value dispatch (`cmp A; beq X; cmp B; bne end`): write a switch; source case order sets block order.
 - `bls` after comparing a call result means compare it as u32: `(u32)f() > 1`.
 - A void method ending in `sibling(1)` tail-branches; define the callee BEFORE the caller in the file to get `bl` + epilogue (thunks defined before the callee stay thunks). Preferred over the BOOL-with-no-return trick.
+- Same-class callees defined BEFORE their caller get inlined even when large; define them at the end of the file to keep the original `bl`.
