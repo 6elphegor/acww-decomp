@@ -250,3 +250,7 @@ func_ov055_0225915c ov055_000/ov055_000.cpp  # -O4,s; this/flag r4<->r5 swap; ~6
 func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
 func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
 func_ov065_02260a84 ov065_002/ov065_002.cpp  # -O4,p; n->unk_08=0 store: orig adds r1,r0,#0; movs r0,#0; str r0,[r1,#8]
+func_ov065_0225fb68 ov065_001/ov065_001.cpp  # -O4,p; result of 0225f4d4 copied to r1 (adds r1,r0,#0) in orig; same under sp2p3
+func_ov065_0225ff1c ov065_001/ov065_001.cpp  # -O4,p; same r1-copy pattern
+func_ov065_0226003c ov065_001/ov065_001.cpp  # -O4,p; same r1-copy pattern
+func_ov065_0225fd18 ov065_001/ov065_001.cpp  # -O4,p; enqueue tail test addr/value regs swapped
