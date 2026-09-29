@@ -154,3 +154,4 @@ func_ov004_0223c8d4 ov004_094/ov004_094.cpp  # frame 0x2c w/ this in r1,&2c8 in 
 func_ov004_02236320 ov004_084/ov004_084.cpp  # regalloc: func_02095204(4) result in r6 & g in r1 (ours r1/r2); decl perms tried
 func_ov004_022364d0 ov004_084/ov004_084.cpp  # hoisted &unk_230[0] in r4, count in r6 (ours swapped); volatile t1 fixes frame but ext differs
 func_ov004_02236fe0 ov004_085/ov004_085.cpp  # phase-2 loop counter in r3 (orig r1); ~250 decl shuffles tried; needs #pragma opt_loop_invariants off
+func_ov001_02202050 ov001_002/ov001_002.cpp  # UNMATCHED draft (~1000 diff lines, 0xaec bytes): UDP connect/handshake state loop; prologue copies data_0222a488 as 2 halfwords; locals struct L fixes frame

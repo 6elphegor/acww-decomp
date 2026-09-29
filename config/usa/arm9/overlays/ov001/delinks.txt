@@ -9,3 +9,6 @@ src/ov001/unk_02203db8.cpp:
 
 src/ov001/unk_0220106c.cpp:
     .text       start:0x0220106c end:0x02201a48
+
+src/ov001/unk_02200680.cpp:
+    .text       start:0x02200680 end:0x0220106c
