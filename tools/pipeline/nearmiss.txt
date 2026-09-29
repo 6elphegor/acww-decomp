@@ -190,3 +190,6 @@ func_ov001_02224558 ov001_058/ov001_058.cpp  # -O4,p ARM; loop preamble regs (~1
 func_ov001_02224870 ov001_059/ov001_059.cpp  # -O4,p ARM; regalloc rotated ~2 regs (orig r4=node r5=n r6=flag r7=which*0x228 r8=irq r9=which); all 24 decl perms tried
 func_ov001_02222988 ov001_056/ov001_056.cpp  # -O4,p ARM; regs only: orig shift r2, const1 r1, switch ip, cb r3
 func_ov001_02222c30 ov001_056/ov001_056.cpp  # -O4,p ARM; regs only: orig g=r1, fnptr=r2 (swapped)
+func_ov001_02216474 ov001_035/ov001_035.cpp  # -O4,p ARM; regs only: orig keeps 0x34-(x%0x1d) in ip (rsb ip); 48-compile perm search
+func_ov001_022168a0 ov001_035/ov001_035.cpp  # -O4,p ARM; ~16 lines: orig v[a] r3, 0x1ff r0, 0xfe00ff00 r1; 120 perms tried
+func_ov001_02225290 ov001_060/ov001_060.cpp  # -O4,p ARM; 12 lines: orig moves a1 (mov r9,r1) before a0; r0/r1 swapped; 24 decl perms tried
