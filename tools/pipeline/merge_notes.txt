@@ -91,3 +91,4 @@ unk_0209e394 (r265): Unk_020e244c : Unk_020ddcf0 (base copied from unk_02065f14.
 unk_020a1c88 (r271): Unk_020a1c88 state-machine class (state table data_020e26cc, state byte unk_9d) = r266 Unk_0209f304 / r267 Unk_0209f638 — one class spanning ~0x0209f000..0x020a3ebc. Unify. Uses a minimal Unk_020cbb18 copy.
 unk_020a3238 (r273): Unk_020a3238 state handlers (table 0x020e2504..0x020e2750) = same state-machine class as r271 Unk_020a1c88 / r266 / r267. Unify.
 unk_0209be24 (r261): Bingo board Unk_0209be24 = r260's Unk_0209b5d4 (same 6x6 grid; ctor c004, dtor bfdc); cell Unk_0209c040 = r260's Unk_0209c060. Unify. Unk_020dbe24::func_02055340 returns a value here (existing src declares void). Pool Unk_0209c15c is Unk_020db984's unk_600.
+unk_020a25d8 (r272): free-function state handlers on the same state object (Unk_020a25d8 = Unk_020a1c88 family, state byte +0x9d).
