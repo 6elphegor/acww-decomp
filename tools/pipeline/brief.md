@@ -345,3 +345,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A chained pointer add `adds r7,r0,#0; adds r7,#0x88; adds r4,r7,#0; adds r4,#0xc` comes from nested reference upcasts through multiple-inheritance bases (`Top : P0(0x88), Mid`; `Mid : Q0(0xc), Q1`; `Mid &m = *top; Q1 &q = m;`).
 - Nested loops whose inner start is a spilled zero: declare the loop variables inside the block that holds the loops, not at function scope.
 - Open problem: 3x3 neighbourhood scans whose loop bounds are address-taken locals (`xy[i]+1`) still hoist `y>>4` even with goto loops (func_0207dd24, func_0207de6c, func_02077eb0). Report a trigger if you find one.
+- `f(g(a), g(b))` evaluates the calls in reverse of the original's order; hoist them to locals in call order.
+- The 0x700-byte player slot record is `Unk_0207fb80` (unk_0207fb80.cpp).
