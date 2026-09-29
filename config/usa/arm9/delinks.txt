@@ -111,3 +111,6 @@ src/main/unk_020bcf04.cpp:
 
 src/main/unk_020b6818.cpp:
     .text       start:0x020b6818 end:0x020b7190
+
+src/main/unk_020c0abc.cpp:
+    .text       start:0x020c0abc end:0x020c1544
