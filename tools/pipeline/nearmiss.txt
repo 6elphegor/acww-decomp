@@ -94,3 +94,5 @@ func_02071460 r188/final.cpp  # loader: a/b/j registers rotated, u16 local slot 
 func_02076e88 r197/r197.cpp  # 64-bit accumulator loop: zero/acc register pair differs
 func_02078948 r200/r200.cpp  # one insn: original movs r0,r1 vs our adds r0,r1,#0
 func_02077eb0 r199/r199.cpp  # upward tile scan: x>>4 hoisted and y-(i+1) CSEd; frame 36 vs 28 (hoist family, varying part in y only)
+func_0207ac60 r204/r204.cpp  # tile loop: x/y spill loads swapped
+func_0207ae84 r204/r204.cpp  # 64-bit test hi word via ldr r0,=0x38d0; ldr [r5,r0] (ours folds to [r1,#4])
