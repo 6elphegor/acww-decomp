@@ -101,3 +101,4 @@ func_0207b68c r205/r205.cpp  # first s64 compare: original forms address first (
 func_0207dd24 r209/r209.cpp  # 3x3 tile scan: y>>4 hoisted even with goto loops (bounds are address-taken xy[] locals)
 func_0207de6c r209/r209.cpp  # same as 0207dd24
 func_0207a038 r203/r203.cpp  # one adjacent pair swapped (adds r7,r6 / ldr r5,[sp])
+func_020859b4 r223/r223.cpp  # order of three initial zero-local stores (zero-store family)

@@ -378,3 +378,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Store address computed before the value: `u8 *p = &unk_95; *p = f(unk_95, x);`.
 - 64-bit delta from two words: `u64 d = now - *(u64 *)&unk_cc;` (not `(hi<<32)|lo`).
 - Storing -0x4000 to a 16-bit field gives pool word 0xffffc000 only when the field is `s16`.
+- Local classes whose storage must be 4-aligned: declare storage as `u32[n]`, not `u8[n]`.
