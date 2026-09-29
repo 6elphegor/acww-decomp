@@ -206,3 +206,4 @@ func_ov003_02206a84 ov003_003/ov003_003.cpp  # -O4,s; k*k mul form: orig movs r0
 func_ov003_02209fc8 ov003_009/ov003_009.cpp  # -O4,s; stack only: frame 4 bytes short, orig has 2 extra u16 temp slots (inline Eq temps at 0xc/0xe/0x10, unused 0xa)
 func_ov003_0220a7fc ov003_010/ov003_010.cpp  # -O4,s; 2 reg diffs: orig loads x [sp+0x20] before y; zero reg r3 (ours r0) for ldrsh h-0x2000
 func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)
+func_ov003_02212680 ov003_023/ov003_023.cpp  # -O4,s; regalloc: orig moves func_02095774(4) result to r1 (adds r1,r0,#0), ours keeps it in r0
