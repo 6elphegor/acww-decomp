@@ -144,3 +144,4 @@ func_0209cd00 r262/r262.cpp  # date difference: pure register allocation (year1 
 func_020a6214 r277/r277.cpp  # spilled constant 3 at sp+0 (volatile k): adds/ldr order and 3-byte buffer base (add r0,sp,#4) differ
 func_020a59c0 r276/r276.cpp  # r6/r7 swap: hoisted this+0xc vs i<<3
 func_020a4778 r275/r275.cpp  # original reloads ldr =data_021d7352 before the +2 (ours CSEs the address); 2 bytes short, rest likely matches
+func_020b60dc r279/r279.cpp  # 0x73c collision query (Unk_020b6960): else-branch regalloc (gx/gz/cx), ours 0x14 bytes longer; NOT in any unit yet (lives between existing units at 0x020b60dc)
