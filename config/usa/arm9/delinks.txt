@@ -360,3 +360,6 @@ src/main/unk_0202ece8.cpp:
 
 src/main/unk_0202da64.cpp:
     .text       start:0x0202da64 end:0x0202e384
+
+src/main/unk_0202e384.cpp:
+    .text       start:0x0202e384 end:0x0202ece8
