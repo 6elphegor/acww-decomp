@@ -211,3 +211,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - A `volatile u8` stack parameter reproduces per-use `ldrb [sp]` reloads.
 - A function-local `static T dflt;` with a zeroing ctor reproduces guard-bit code.
 - Don't leave background processes running when you report.
+- `t == A || t == B || t == C` folds to `subs; cmp; bhi`; for three separate `cmp; beq` write `if (t != A && t != B && t != C) return f; return FALSE;`.
+- A `volatile u16 tmp[1]` local keeps a dead `strh` to its stack slot.
+- Static-array destructor loops: call `__cxa_vec_cleanup(arr, n, size, dtor)` directly from an extern "C" function.

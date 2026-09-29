@@ -62,3 +62,5 @@ func_0204d7fc r128/final_r128.cpp  # reg alloc: p4 spilled / sx in reg vs origin
 func_0204e56c r129/r129.cpp  # far off (~350 lines); stack args x,y kept in home slots, reloaded per block
 func_02051844 r134/r134.cpp  # u16 loc[3] addressed from sp+16 base instead of array base (4 insns)
 func_02051a50 r134/r134.cpp  # original keeps redundant second `& 0xf` (4 bytes)
+func_0205276c r136/r136.cpp  # nibble |= order: original reloads byte before val shift
+func_02052b90 r136/r136.cpp  # order of three prologue zero spills

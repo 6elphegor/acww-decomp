@@ -9,3 +9,4 @@ unk_0204b08c continues unk_0204a754 (same u16 item-ID helper file); merge when l
 unk_02043e70 and unk_020449e8 look like one source file (shared globals, Unk_020449e8_Src); merge when linking.
 unk_0204f178 and unk_0204fb80 are one file with class Unk_020db984 (vtable 0x020db984); r131 uses local name Unk_020db984_Ent for Unk_0204fd24 and writes the dtor with explicit calls. Merge when linking.
 unk_02050cb4 (font code->glyph index lookup) probably belongs to the file at unk_02050d54; merge when linking.
+unk_02052620: func_02052b10/b30 reference the D1 as extern "C" func_02052714 (renamed to _ZN12Unk_02052620D1Ev); fix the reference when linking. unk_02052620 and unk_02052f44 (item-record getters) are one file.
