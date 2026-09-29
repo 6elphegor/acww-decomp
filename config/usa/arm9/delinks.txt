@@ -33,3 +33,33 @@ src/main/unk_020abbcc.cpp:
 
 src/main/unk_020a8c9c.cpp:
     .text       start:0x020a8c9c end:0x020abbcc
+
+src/main/unk_020acf38.cpp:
+    .text       start:0x020acf38 end:0x020ad818
+
+src/main/unk_020ad818.cpp:
+    .text       start:0x020ad818 end:0x020ae290
+
+src/main/unk_020ae290.cpp:
+    .text       start:0x020ae290 end:0x020aebbc
+
+src/main/unk_020aebbc.cpp:
+    .text       start:0x020aebbc end:0x020af514
+
+src/main/unk_020af514.cpp:
+    .text       start:0x020af514 end:0x020afeb4
+
+src/main/unk_020b080c.cpp:
+    .text       start:0x020b080c end:0x020b11fc
+
+src/main/unk_020b11fc.cpp:
+    .text       start:0x020b11fc end:0x020b1b0c
+
+src/main/unk_020b1b0c.cpp:
+    .text       start:0x020b1b0c end:0x020b246c
+
+src/main/unk_020b36f8.cpp:
+    .text       start:0x020b36f8 end:0x020b4030
+
+src/main/unk_020b4030.cpp:
+    .text       start:0x020b4030 end:0x020b493c
