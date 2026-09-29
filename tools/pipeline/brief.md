@@ -194,3 +194,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Model-manager singleton `Unk_020db984 : Unk_020d8c7c` (vtable 0x020db984, data_021c488c) is in unk_0204fb80.cpp / unk_0204f178.cpp; entries are `Unk_0204fd24` (0x16c bytes). Reuse those declarations.
 - A field address computed twice with interleaved fieldwise copies: `Vec3 *pv = &e->unk_8c; v.x = pv->x; ...`.
 - A zero-valued `BOOL r` reused as a constant-0 call argument (`movs rX, r6`): pass `r` itself.
+- Keep a hardware register base (e.g. 0x4000000) in a callee-saved register: `volatile u16 *r = (volatile u16 *)0x4000000; u8 *b = (u8 *)r;` and access only through `b` (`*(volatile u16 *)(b + 0x304)`).
+- Frame order of volatile locals: declare them all up front in slot order (`volatile u32 b, a, c;`) and assign them where they're used.
+- Item/record parameter table `data_021c5330` (unk_02052f44.cpp): `func_0206d86c(tbl, idx)` returns a byte record (0x6e9 entries).
