@@ -64,3 +64,4 @@ func_02051844 r134/r134.cpp  # u16 loc[3] addressed from sp+16 base instead of a
 func_02051a50 r134/r134.cpp  # original keeps redundant second `& 0xf` (4 bytes)
 func_0205276c r136/r136.cpp  # nibble |= order: original reloads byte before val shift
 func_02052b90 r136/r136.cpp  # order of three prologue zero spills
+func_0205415c r138/r138.cpp  # loaded p->unk_18 kept in r1 by original, r0 in ours

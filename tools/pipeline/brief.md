@@ -214,3 +214,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `t == A || t == B || t == C` folds to `subs; cmp; bhi`; for three separate `cmp; beq` write `if (t != A && t != B && t != C) return f; return FALSE;`.
 - A `volatile u16 tmp[1]` local keeps a dead `strh` to its stack slot.
 - Static-array destructor loops: call `__cxa_vec_cleanup(arr, n, size, dtor)` directly from an extern "C" function.
+- Actor sub-object classes in unk_02053878.cpp: `Unk_020dbd74 : Unk_020dbda4 : Unk_0205454c` (vptrs at 0, +0x9c, +0xb8; real multiple inheritance). `Unk_020dbda4` ctor is func_020542ec, D2 func_02054190. Reuse those declarations.
+- Stack arg read with `ldrh` but callers don't mask: declare the param `u32` and read `*(u16 *)&f`.
