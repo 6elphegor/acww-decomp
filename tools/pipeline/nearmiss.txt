@@ -90,3 +90,4 @@ func_02073bf8 r192/r192.cpp  # same as 02073bac
 func_02070fbc r187/r187.cpp  # value/mode registers swapped (r5/r6), loop counters permuted
 func_02075e98 r196/r196.cpp  # h-1 register choice
 func_020766ec r196/r196.cpp  # header ldrb scheduled later, rebuilds add r2,sp (2 bytes longer)
+func_02071460 r188/final.cpp  # loader: a/b/j registers rotated, u16 local slot +4

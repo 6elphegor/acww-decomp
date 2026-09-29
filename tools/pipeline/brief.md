@@ -331,3 +331,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Packing a message word with clear/insert/clear-top masks: a C bitfield struct passed by address reproduces the loads and stores; hand-written masks get merged.
 - A `u16` stack parameter the callee reads with `ldrh` each time but callers pass unmasked: declare `u32 w` and use `*(u16 *)&w` at each use.
 - Constant-bound loops that the original enters with `b test`: the goto form `i = 0; goto test; loop: ...; i++; test: if (i < N) goto loop;`.
+- Unfolded `ldr =sym; adds #K` inside loops (not hoisted/CSE'd): declare the extern as a struct and access `((T *)(u32)&sym)->field`.
+- Bit test-and-clear returning a flag: `BOOL r; if (((g >> bit) & 1) == 0) r = FALSE; else r = TRUE; g &= ~(1 << bit);`.
