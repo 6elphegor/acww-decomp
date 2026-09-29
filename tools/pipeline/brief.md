@@ -156,3 +156,4 @@ If a function doesn't match after several genuinely different attempts, move on 
 - A global address reused via one `ldr` across several calls in one basic block: `char *const g = sym;`.
 - A switch on a callee's result with signed compares (`bgt`/`bge`) means the callee returns `s32`; `u32` gives `bhi`/`bcs`. `func_0204aa24(u16*)` returns s32.
 - Extra empty case labels widen a jump table. If the original's table starts partway through the case list, drop empty labels below its start so the sparse low cases become a compare tree.
+- If the original reloads a flag word after a division helper call, a plain local copy gets hoisted before the call; a real C bitfield update on the field (signed fields work too, e.g. `s32 mid:4`) keeps the load after the division.
