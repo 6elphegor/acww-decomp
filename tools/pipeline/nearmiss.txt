@@ -124,3 +124,4 @@ func_0208d678 r236/r236.cpp  # original keeps redundant copies adds r6,r0,#0 / a
 func_0208d9d4 r236/r236.cpp  # n=a+1 should be computed early into r6
 func_0209073c r241/r241.cpp  # original `movs r1,r0; ldrh r1,[r1,#28]` for data_021d0830.unk_1c; ours ldrh r1,[r0,#28]
 func_020909bc r241/r241.cpp  # same as func_0209073c
+func_0208f6f0 r239/r239.cpp  # entry order: original ldr [r1] / movs r5,#0 before pool ldr tbl

@@ -466,3 +466,6 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `func_0213335c(x,K)` is unsigned divmod (quotient r0, remainder r1): write `(u32)x % K` for the remainder form.
 - `f(g(), *p++)` evaluates `*p++` before the call; `f(..., *p); p++;` puts the increment after.
 - `mask = 1 << i; cnt = 1;` in that order reuses the count register as the shift temp.
+- Spilled pointers in several case blocks: declare them at function scope in slot order; block-scoped declarations reverse the order.
+- High-nibble read of a byte field as `lsls 24; lsrs 28`: `(u32)(b << 24) >> 28` (`b >> 4` simplifies to `lsrs 4`).
+- Separate array fields (`unk_f0[]` at +0xf0) rather than indexing past the end of a neighbour (`unk_eb[i+5]`), which changes the `adds`.
