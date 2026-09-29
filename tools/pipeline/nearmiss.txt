@@ -69,3 +69,5 @@ func_02054628 r139/r139.cpp  # muls dest register (count vs index) swapped
 func_020549e4 r139/r139.cpp  # spilled slot order + same muls dest issue
 func_02058320 r146/r146.cpp  # shared zero reg: original fresh `movs r2,#0; adds r3,r2,#0` for last two args
 func_0204c290 r125/r125.cpp  # w/wd regs swapped; try `s32 *s = &w->unk_04; W = s[0]; H = s[1];` (adds r1,r7,#4 pattern)
+func_02055600 r141/r141.cpp  # reloaded unk_60 tested in r1 vs r0
+func_02055744 r141/r141.cpp  # original keeps `bl func_02055780` + epilogue; ours tail-calls

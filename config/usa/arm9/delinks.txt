@@ -579,3 +579,9 @@ src/main/unk_02056f94.cpp:
 
 src/main/unk_02058c58.cpp:
     .text       start:0x02058c58 end:0x0205989c
+
+src/main/unk_020553f8.cpp:
+    .text       start:0x020553f8 end:0x02055d18
+
+src/main/unk_0204fa3c.cpp:
+    .text       start:0x0204fa3c end:0x0204fb80

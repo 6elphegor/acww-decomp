@@ -214,7 +214,7 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - `t == A || t == B || t == C` folds to `subs; cmp; bhi`; for three separate `cmp; beq` write `if (t != A && t != B && t != C) return f; return FALSE;`.
 - A `volatile u16 tmp[1]` local keeps a dead `strh` to its stack slot.
 - Static-array destructor loops: call `__cxa_vec_cleanup(arr, n, size, dtor)` directly from an extern "C" function.
-- Actor sub-object hierarchy (unk_02054190.cpp is authoritative): `Unk_02055704` <- `Unk_020dbd34` <- `Unk_020dbd54` (+`Unk_020dbe7c` @+0x9c) <- `Unk_0205454c` (+`Unk_020dbe6c` @+0xb8) <- `Unk_020dbda4` <- `Unk_020dbd74` (unk_02053878.cpp). Reuse those declarations.
+- Actor sub-object hierarchy (unk_02054190.cpp is authoritative): `Unk_020dbe14` <- `Unk_020dbe34` (model resource base, unk_020553f8.cpp; ctor func_02055704) <- `Unk_020dbd34` <- `Unk_020dbd54` (+`Unk_020dbe7c` @+0x9c) <- `Unk_0205454c` (+`Unk_020dbe6c` @+0xb8) <- `Unk_020dbda4` <- `Unk_020dbd74` (unk_02053878.cpp). Reuse those declarations.
 - Stack arg read with `ldrh` but callers don't mask: declare the param `u32` and read `*(u16 *)&f`.
 - u16 field compared signed (`bge`/`blt`) against a constant: declare it `volatile u16` (also gives the strh/ldrh reloads) or cast `(s32)` at the compare.
 - Local static arrays of member-function pointers `{&C::a, &C::b}` reproduce guarded 8-byte copies and `(this->*tbl[i])()` exactly.
@@ -237,3 +237,5 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - An explicit inline copy ctor `v[0] = o.v[0]; v[1] = o.v[1];` gives interleaved load/store for by-value class args; the implicit one loads both first.
 - `static T t[3] = { T(0,1), T(0,2), T(0,3) };` gives one guard word, each element's ctor, then its dtor registration.
 - Member-function-pointer table test and call with different folded addresses: write the full subscript separately in the test and the call.
+- `cnt++` vs `n = cnt; ...; cnt = n + 1;` allocate registers differently; try the plain increment first.
+- `v[0]=v[1]=v[2]=x` stores v[2] first; reverse the chain to store v[0] first.
