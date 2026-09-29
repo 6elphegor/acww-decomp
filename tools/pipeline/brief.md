@@ -525,3 +525,6 @@ Some groups are in an overlay rather than the main module. For those:
 - Frame order: array locals go after every non-array local; adjacent objects walked with `p += size` are one `Obj a[2]`, not two named locals. `struct { Vec3 a, b; } x;` keeps members contiguous in memory (and can create a frame gap).
 - Repeated fail tails (N separate copies of "cleanup; return 0"): a macro expanding `{ ...; return FALSE; }` at each site; combine conditions sharing one tail into a single `if (A || B || C)`.
 - Name your source `<group>.cpp` in your scratch dir.
+- mwcc evaluates call arguments RIGHT TO LEFT: `f(m, g()->x, g()->y, g()->z)` evaluates z first. To match an original that reads x from r0, precompute into locals in the original's order.
+- CSE breaker for a repeated index expression hoisted across a call: add a redundant cast in one occurrence (`((s32)(u16)(s16)r4 >> 4) * 2`).
+- For the ov004 actor class Unk_ov004_0224882c, use the REAL base `Unk_020d9670` (see scratchpad/ov004_007/ov004_007.cpp), not dummy virtual padding.
