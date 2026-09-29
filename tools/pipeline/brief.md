@@ -287,3 +287,4 @@ The machine has 8 cores shared by ~10 agents. Run compiles one at a time: no `&`
 - Before reporting, grep each compiled symbol in your pairs.txt against config/usa/arm9/symbols.txt: a mangled name that already exists at another address means the function belongs to a different class (usually a base). Integration rejects duplicates.
 - Constant-bound loops with no initial `b test`: use a `u32` counter (an `s32` with a `(u32)` cast gets the initial jump).
 - Declaration style matters: `s32 y; s32 x;` on separate lines and `s32 y, x;` can allocate differently.
+- Frames: locals are placed by ascending size; address-taken 2-byte scalars go first. Eleven u16 outputs in the original frame are eleven separate `u16` locals, not an array.
