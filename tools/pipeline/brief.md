@@ -496,3 +496,7 @@ Some groups are in an overlay rather than the main module. For those:
 - Member-pointer dispatch: `if (tbl[i]) (this->*tbl[i])(arg);` with no local copy.
 - Unmasked bitfield store from a call result: declare the callee returning `u8` (a `u32` return adds `lsls/lsrs #24`).
 - Consecutive stores to two nibble bitfields: plain `u8 lo:4, hi:4` reproduces bics/orrs/strb + reload with no hand masks.
+- 2-byte class passed by value (`mov r7,sp; sub r2,sp,#4; ldm r2!,{r1}`): a plain `struct { u16 v; }` with NO user copy ctor; group it with its buffer in one local aggregate to keep the frame small.
+- Mask literals: write `& ~0x780` / `& ~0xf800` for `0xfffff87f` / `0xffff07ff` pool words.
+- A global tested then decremented with separate address loads: declare it `extern volatile`.
+- Global compared then reloaded for a call argument: compare through a local (`s32 t = g; if (t == A)`) and pass `*(volatile s32 *)&g`.
