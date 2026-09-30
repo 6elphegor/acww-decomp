@@ -191,3 +191,4 @@ ov004/unk_0221cbe4 (ov004_041): Unk_ov004_0224d010 : Unk_02015b54 (=Unk_020d7714
 - ov065_012: symbol func_ov065_02266b7c is the unreachable trailing epilogue of 02266b24 (compiled into b24); needs symbols.txt fix (merge into b24) at link time.
 ov065_043/044/046: Unk_ov065_02279c7c (ghttp connection obj) declared in each; 044 uses s32 unk_5c/unk_60, Req* unk_13c, void* unk_140, s32 unk_144; 046 names it Unk_ov065_0227b2a8_Obj; merge into one header. Buf = Unk_ov065_0227931c_Buf (042) = Unk_ov065_0227b2a8_Buf (046).
 ov065_048/051: GP connection Ctx declared as Unk_ov065_0227c538_Ctx (048) and Unk_ov065_0227e350_Ctx (051, adds char unk_177[0x21], unk_474[]); merge.
+ov065_048/049: Unk_ov065_0227c538_Sub is 0x10 in 048 but 0x18 in 049 (char* unk_08/0c, unk_10 ip, unk_14 port); Node::unk_10 char* (049). Reconcile.
