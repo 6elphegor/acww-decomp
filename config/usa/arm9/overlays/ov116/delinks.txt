@@ -3,8 +3,8 @@
     .data       start:0x02297300 end:0x022973e0 kind:data align:32
     .bss        start:0x022973e0 end:0x02297460 kind:bss align:32
 
-src/ov116/unk_ov116_02297174.cpp:
-    .text       start:0x02297174 end:0x022972f8
-
 src/ov116/unk_ov116_022967e0.cpp:
-    .text       start:0x022967e0 end:0x02297174
+    complete
+    .text       start:0x022967e0 end:0x022972f8
+    .data       start:0x02297300 end:0x022973e0
+    .bss        start:0x022973e0 end:0x02297460
