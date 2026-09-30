@@ -287,3 +287,4 @@ func_ov065_0227433c ov065_034/ov065_034.cpp  # -O4,p; shared movs r0,#0 hoisted 
 func_ov065_022743e0 ov065_034/ov065_034.cpp  # -O4,p; record scan loop: r4/r5 (&g vs c/x) swapped
 func_ov065_0227ce44 ov065_049/ov065_049.cpp  # -O4,p; n->unk_10 test: ldr r0,[sp] vs orig ldr r1,[sp]
 func_ov065_0227f00c ov065_052/ov065_052.cpp  # -O4,p; x==-1 after store/reload: movs r1/mvns r2 vs ours movs r0/mvns r0 (same family as 022780e0, 0227b9c4)
+func_ov065_0227e160 ov065_050/ov065_050.cpp  # -O4,p; first block: pool offset / const 1 regs r1,r2 vs orig r0,r1

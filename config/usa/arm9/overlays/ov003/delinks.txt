@@ -7,3 +7,6 @@
 
 src/ov003/unk_ov003_022048c0.cpp:
     .text       start:0x022048c0 end:0x02204d90
+
+src/ov003/unk_02204d90.cpp:
+    .text       start:0x02204d90 end:0x022052f4
