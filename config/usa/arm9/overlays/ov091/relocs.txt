@@ -65,7 +65,7 @@ from:0x02291c1a kind:thumb_call to:0x02035bbc module:main
 from:0x02291c20 kind:thumb_call to:0x020015e0 module:main
 from:0x02291c24 kind:thumb_call to:0x0206ed68 module:main
 from:0x02291c36 kind:thumb_call to:0x0206d2e0 module:main
-from:0x02291c46 kind:thumb_call to:0x022008a8 module:overlays(1,2)
+from:0x02291c46 kind:thumb_call to:0x022008a8 module:overlay(2)
 from:0x02291c4c kind:thumb_call to:0x020020b8 module:main
 from:0x02291c58 kind:thumb_call to:0x02200840 module:overlay(2)
 from:0x02291c64 kind:thumb_call to:0x0200226c module:main
