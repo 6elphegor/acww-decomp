@@ -3,14 +3,8 @@
     .data       start:0x02298900 end:0x02298ae0 kind:data align:32
     .bss        start:0x02298ae0 end:0x02298ba0 kind:bss align:32
 
-src/ov111/unk_02298574.cpp:
-    .text       start:0x02298574 end:0x022988f8
-
-src/ov111/unk_02297224.cpp:
-    .text       start:0x02297224 end:0x02297bb0
-
-src/ov111/unk_02297bb0.cpp:
-    .text       start:0x02297bb0 end:0x02298574
-
 src/ov111/unk_02296840.cpp:
-    .text       start:0x02296840 end:0x02297224
+    complete
+    .text       start:0x02296840 end:0x022988f8
+    .data       start:0x02298900 end:0x02298ae0
+    .bss        start:0x02298ae0 end:0x02298ba0
