@@ -18,3 +18,6 @@ src/ov105/unk_022970f0.cpp:
 
 src/ov105/unk_02295594.cpp:
     .text       start:0x02295594 end:0x02295ebc
+
+src/ov105/unk_02297a4c.cpp:
+    .text       start:0x02297a4c end:0x02298314
