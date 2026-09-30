@@ -5,19 +5,8 @@
     .bss        start:0x0229a260 end:0x0229a3c0 kind:bss align:32
 
 src/ov122/unk_ov122_02296840.cpp:
-    .text       start:0x02296840 end:0x02297238
-
-src/ov122/unk_02297238.cpp:
-    .text       start:0x02297238 end:0x02297bcc
-
-src/ov122/unk_02299870.cpp:
-    .text       start:0x02299870 end:0x0229a004
-
-src/ov122/unk_02297bcc.cpp:
-    .text       start:0x02297bcc end:0x022984f4
-
-src/ov122/unk_02298ec4.cpp:
-    .text       start:0x02298ec4 end:0x02299870
-
-src/ov122/unk_022984f4.cpp:
-    .text       start:0x022984f4 end:0x02298ec4
+    complete
+    .text       start:0x02296840 end:0x0229a004
+    .rodata     start:0x0229a004 end:0x0229a01c
+    .data       start:0x0229a020 end:0x0229a260
+    .bss        start:0x0229a260 end:0x0229a3c0

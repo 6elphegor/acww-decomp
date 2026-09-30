@@ -27,6 +27,6 @@ func_ov117_02292c2c kind:function(thumb,size=0x12) addr:0x02292c2c
 func_ov117_02292c40 kind:function(thumb,size=0x24) addr:0x02292c40
 func_ov117_02292c64 kind:function(thumb,size=0x24) addr:0x02292c64
 func_ov117_02292c88 kind:function(thumb,size=0x22) addr:0x02292c88
-func_ov117_02292cac kind:function(thumb,size=0x2) addr:0x02292cac
-func_ov117_02292cb0 kind:function(thumb,size=0x22) addr:0x02292cb0
+_ZN18Unk_ov117_02292c88D1Ev kind:function(thumb,size=0x2) addr:0x02292cac
+_ZN18Unk_ov117_02292c88C1Ev kind:function(thumb,size=0x22) addr:0x02292cb0
 data_ov117_02292ce0 kind:bss addr:0x02292ce0

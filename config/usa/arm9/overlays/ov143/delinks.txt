@@ -4,10 +4,7 @@
     .bss        start:0x02293c80 end:0x02293d20 kind:bss align:32
 
 src/ov143/unk_ov143_02291f60.cpp:
-    .text       start:0x02291f60 end:0x02292898
-
-src/ov143/unk_02292898.cpp:
-    .text       start:0x02292898 end:0x022931bc
-
-src/ov143/unk_022931bc.cpp:
-    .text       start:0x022931bc end:0x022938b8
+    complete
+    .text       start:0x02291f60 end:0x022938b8
+    .data       start:0x022938c0 end:0x02293c80
+    .bss        start:0x02293c80 end:0x02293d20
