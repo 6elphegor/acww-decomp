@@ -268,3 +268,9 @@ func_ov065_02268c64 ov065_015/ov065_015.cpp  # -O4,p; state callback case 8: r1/
 func_ov065_0227112c ov065_029/ov065_029.cpp  # -O4,p; LCG seed: pointer arg computed after u64 mul+add (orig before); ~2-4B shift
 func_ov065_02272734 ov065_032/ov065_032.cpp  # -O4,p; movs r2,#0 scheduled after ldr g pair (orig before)
 func_ov065_02272dd4 ov065_032/ov065_032.cpp  # -O4,p; error mapper default path: orig keeps movs r0,#6; cmp r0,#0; beq, ours folds it
+func_ov065_022778b0 ov065_039/ov065_039.cpp  # -O4,p; RNG: movs r1,#0 scheduled before cmp r4,#0 (orig after beq)
+func_ov065_022754f0 ov065_036/ov065_036.cpp  # -O4,p; final else: zero/G regs r1<->r2 swapped
+func_ov065_02276f4c ov065_038/ov065_038.cpp  # -O4,p; final store group: movs r0,#0 / ldr r1,=data order swapped
+func_ov065_0227330c ov065_033/ov065_033.cpp  # -O4,p; 0/-1 register choice per lookup site (28 lines)
+func_ov065_02273ad0 ov065_033/ov065_033.cpp  # -O4,p; regalloc: orig &G in r4, 0 in r1, 4 in r5 (106 lines)
+func_ov065_022780e0 ov065_040/ov065_040.cpp  # -O4,p; first compare: -1 const/loaded value regs r0<->r1
