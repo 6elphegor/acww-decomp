@@ -270,3 +270,4 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov126: scene class Unk_ov126_02299ae8 (vtable 0x02299ae8, size 0x40c8), loads at 0x02297060; +0xb0 is the ov124 class (C1 0x02296e14), +0x144 the ov095 sub-object (ov112_005 nested-array pattern).
 - ov126: ov126_001's plain-C struct Unk_ov126_02297994 is ov126's scene class Unk_ov126_02299ae8; flag word u16 at 0xa4.
 - ov126: ov126_000 declares Unk_0206fca8[2] at +0x2480 as a scene member, but it is 0x144+0x233c, i.e. inside the ov095 sub-object (ov126_004's layout, which the factory needs). Use ov126_004's nesting; D1 still destroys it in the same order.
+- ov128: scene class Unk_ov128_022954e0 (vtable 0x022954e0, size 0x2d1c), loads at 0x022940e0; +0x478 is the ov127 state struct (ctor func_ov127_02292aac, 0x2838 bytes).

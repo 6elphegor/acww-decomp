@@ -15,3 +15,6 @@ src/ov067/unk_0226198c.cpp:
 
 src/ov067/unk_ov067_02260de4.cpp:
     .text       start:0x02260de4 end:0x0226198c
+
+src/ov067/unk_ov067_0225f1a0.cpp:
+    .text       start:0x0225f1a0 end:0x0225facc
