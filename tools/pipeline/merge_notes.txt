@@ -234,3 +234,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov107: scene class Unk_ov107_02296e78 (vtable 0x02296e78, size 0x281c).
 - ov107: ov107_002's plain-C struct 'Unk_ov107_02295eb8' is ov107's scene class Unk_ov107_02296e78.
 - ov108_001 (also ov105_004 Unk_ov105_Ns): calls with fewer args than the callee's real signature use a namespace-local extern "C" prototype (X::func_...). When merging groups into one file, keep that alias prototype separate from the real definition.
+- ov109: scene class Unk_ov109_02296698 (vtable 0x02296698); fields from 0x27dc.
+- ov110: scene class Unk_ov110_02297778 (vtable 0x02297778, same address as ov100's, different overlay); ov110_001's plain-C struct Unk_ov110_02295588 is this class.
