@@ -238,3 +238,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov110: scene class Unk_ov110_02297778 (vtable 0x02297778, same address as ov100's, different overlay); ov110_001's plain-C struct Unk_ov110_02295588 is this class.
 - ov109: ov109_000 declares sub-object sizes 0x160 (02292d50) / 0xc0 that don't fit the offsets; ov109_002 uses ov105 sizes (0x15e0 etc.). Size 0x2804. Sub-object class names differ between ov109_000 (Unk_ov109_sub_*) and 002 (Unk_ov109_<addr>).
 - ov111: scene class Unk_ov111_02298a48 (vtable 0x02298a48, size 0x3e58), ov095 sub-object at +0xac.
+- ov111: ov111_001 writes state handlers as extern "C" free fns on Unk_ov111_02298a48*; the {fn,0} table at 0x02298900 needs them as methods (ov111_000 already uses methods). unk_09b is volatile in ov111_001 only.
+- ov112: ov112_002 is plain C on the scene struct (Unk_ov112_02296840); ov095 menu sub-object at +0x370.
