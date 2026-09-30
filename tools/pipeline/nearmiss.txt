@@ -338,3 +338,4 @@ func_ov081_0227186c ov081_000/ov081_000.cpp  # Thumb -O4,s C++; extra add r0,sp,
 func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
 func_ov094_02293fc4 ov094_003/ov094_003.cpp  # Thumb -O4,s C++; data base/halfword regs r1<->r2 + extra adds (2 bytes long)
 func_ov093_02291a3c ov093_000/ov093_000.cpp  # Thumb -O4,s C++; last else block arg evaluation order (r3 first via zero r0), 2 bytes long
+func_ov096_02297e5c ov096_005/ov096_005.cpp  # Thumb -O4,s C; ldr r3,=0x358 vs ours r1
