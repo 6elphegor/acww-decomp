@@ -45,10 +45,10 @@ func_ov116_02297074 kind:function(thumb,size=0x4) addr:0x02297074
 func_ov116_02297078 kind:function(thumb,size=0x4) addr:0x02297078
 func_ov116_0229707c kind:function(thumb,size=0x2a) addr:0x0229707c
 func_ov116_022970a8 kind:function(thumb,size=0xcc) addr:0x022970a8
-func_ov116_02297174 kind:function(thumb,size=0x94) addr:0x02297174
-func_ov116_02297208 kind:function(thumb,size=0x5c) addr:0x02297208
-func_ov116_02297264 kind:function(thumb,size=0x1a) addr:0x02297264
-func_ov116_02297280 kind:function(thumb,size=0x20) addr:0x02297280
+_ZN18Unk_ov116_022973788vfunc_4cEv kind:function(thumb,size=0x94) addr:0x02297174
+_ZN18Unk_ov116_022973788vfunc_24Ev kind:function(thumb,size=0x5c) addr:0x02297208
+_ZN18Unk_ov116_022973788vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297264
+_ZN18Unk_ov116_022973788vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02297280
 func_ov116_022972a0 kind:function(thumb,size=0x58) addr:0x022972a0
 data_ov116_02297300 kind:data(any) addr:0x02297300
 data_ov116_02297308 kind:data(any) addr:0x02297308
