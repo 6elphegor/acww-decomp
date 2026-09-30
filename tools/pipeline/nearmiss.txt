@@ -316,3 +316,6 @@ func_ov066_02264378 ov066_008/ov066_008.cpp  # ARM -O4,p; first null-test temp r
 func_ov065_02289a00 ov065_068/ov065_068.cpp  # -O4,p; msg dispatcher: two same-address sp regs (r6/r7) merged by mwcc (~78 lines)
 func_ov065_02289f28 ov065_068/ov065_068.cpp  # -O4,p; b = a + (p[a-1]^0xea): r2/r3 swap
 func_ov068_0226196c ov068_004/ov068_004.cpp  # Thumb -O4,s C++; ldrsh global compare: r0/r1 swapped
+func_ov067_0225f8f4 ov067_000/ov067_000.cpp  # ARM -O4,p; ring search: result in r0 vs orig r6, constants ip/lr vs r0/ip, dup vs shared epilogue (29 lines)
+func_ov065_022818f4 ov065_056/ov065_056.cpp  # -O4,p; 7-word Elem zeroing via materialised sp+4 ptr vs ours sp-relative
+func_ov065_02281bf4 ov065_056/ov065_056.cpp  # -O4,p; 0x139c ghttp request builder/parser: r4-r7 class permutation only (allocator near-tie)
