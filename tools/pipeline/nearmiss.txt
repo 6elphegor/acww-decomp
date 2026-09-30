@@ -371,3 +371,4 @@ ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match
 ov145_000 func_ov145_022920b0 — known unsolved 5-5-5 colour blend (inlined; orig extracts arr[7] channels eagerly)
 ov144_001 func_ov144_02292fb4 — call result copied before cmp -1 (adds r2,r0,#0) + u16 local r3 vs r1
 ov146_000 func_ov146_022920b4 — known unsolved 5-5-5 colour blend (/20, inlined; eager channel extraction)
+ov146_001 func_ov146_02292970 — digit loop: orig hoists 0x10a into r7 and spills i*0x13; ours keeps i*0x13 in reg (~100 orderings tried)
