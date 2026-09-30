@@ -7,3 +7,6 @@
 
 src/ov076/unk_ov076_022713c0.cpp:
     .text       start:0x022713c0 end:0x02271ce8
+
+src/ov076/unk_02271ce8.cpp:
+    .text       start:0x02271ce8 end:0x02271f44

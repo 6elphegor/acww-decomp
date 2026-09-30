@@ -278,3 +278,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov132: scene class Unk_ov132_02294390 (vtable 0x02294390, size 0x1434), loads at 0x022936c0; sibling of ov131, no ov130 object.
 - ov130: ov130_000 writes extern "C" free fns on struct Unk_ov130_02292360; ov130_001 writes methods of the same class (ctor/dtor). Reconcile to methods when linking.
 - ov133: scene class Unk_ov133_022952bc (vtable 0x022952bc, size 0x1408), loads at 0x022936c0.
+- ov134: not a scene overlay; plain-C state struct Unk_ov134_02291f60 with C-style ctor func_ov134_02294bd0 / dtor func_ov134_02294bac (no vptr); polymorphic sub-object at +0x18.
+- ov134: ov134_002 names the same state struct Unk_ov134_0229323c; use Unk_ov134_02291f60 (from 000/003/004).

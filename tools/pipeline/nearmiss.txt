@@ -360,3 +360,7 @@ func_ov129_0229570c ov129_002/ov129_002.cpp  # Thumb -O4,s C; final else: pad wo
 func_ov129_022943ec ov129_000/ov129_000.cpp  # Thumb -O4,s C++; 3 stack spill slots ordered differently (&st[k] temp / n); code identical (24 decl orders + hill-climb)
 func_ov129_0229497c ov129_000/ov129_000.cpp  # Thumb -O4,s C++; scheduling: orig computes masked x/y args before this+0x6b8, ours pointer first (mask in r3 vs r0)
 func_ov127_022927a8 ov127_000/ov127_000.cpp  # Thumb -O4,s C; orig recomputes a>>2 in-loop (no LICM); file-wide #pragma opt_loop_invariants off gets close (q/off regs differ) but breaks 02291f60/02291fcc — candidate for its own split unit with the pragma
+func_ov128_022942c4 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; 2nd compare unk_2d08 != unk_2d0c: r0/r1 swapped
+func_ov128_02294930 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; cursor clamp: &unk_2cf0/x/y/mask in r5/r2/r1/r3 (orig) vs r1/r3/r2/r5 (~120 decl perms)
+func_ov133_02293988 ov133_000/ov133_000.cpp  # Thumb -O4,s C++; min/max of two u8 then fill-rect: regs (a3 r1/a2 r2, min r0/max r2) differ and arg build order vs const-8 stores (~70 variants)
+func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
