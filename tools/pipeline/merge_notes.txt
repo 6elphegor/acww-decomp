@@ -188,3 +188,4 @@ ov004/unk_0221cbe4 (ov004_041): Unk_ov004_0224d010 : Unk_02015b54 (=Unk_020d7714
 - ov003_054 split: 054a (02224ba4..022250cc, opt_loop_invariants off), 054b (02225108 only, + opt_common_subs off), 054c (02225238, loop_invariants off); b/c are full-file copies — strip when merging.
 - ov053: Owner::vfunc_4c declared (u32, u8) in ov053_000 (base copy edited); other overlays use (u32, u32) — reconcile in shared header.
 - ov065: Sess unk_00 is u32 (ov065_007) vs Thr* (ov065_005); 02263c90/02263e4c are void (ov065_005 declares s32).
+- ov065_012: symbol func_ov065_02266b7c is the unreachable trailing epilogue of 02266b24 (compiled into b24); needs symbols.txt fix (merge into b24) at link time.

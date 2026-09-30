@@ -258,3 +258,4 @@ func_ov065_02261638 ov065_003/ov065_003.cpp  # -O4,p; (u16)(state>>48) reg order
 func_ov065_02262670 ov065_005/ov065_005.cpp  # -O4,p; unk_44 kept in r2 (orig) vs r1; adds/subs order
 func_ov065_02265b9c ov065_011/ov065_011.cpp  # sp2p3 -O4,p; sparse switch tree shape (right group split at 0x10 vs linear) + n reg r7 vs r6
 func_ov065_0226b27c ov065_019/ov065_019.cpp  # -O4,p; tail bitfield section regalloc (orig pushes r6, sub sp,#0x18)
+func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb r6 order swapped
