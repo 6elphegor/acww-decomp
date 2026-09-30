@@ -330,3 +330,4 @@ func_ov068_0226e4dc ov068_025/ov068_025.cpp  # Thumb -O4,s C++; 4-instr halfword
 func_ov068_0226cd18 ov068_023/ov068_023.cpp  # Thumb -O4,s C++; table-search loop idx*12 regalloc (16 lines)
 func_ov068_0226a1a0 ov068_018/ov068_018.cpp  # Thumb -O4,s; 6-instr hx/hz load order (orig reloads spilled x after z)
 func_ov068_0226cbf8 ov068_022/ov068_022.cpp  # Thumb -O4,s C++; static-table init + loop head regalloc only
+func_ov068_0226ddac ov068_024/ov068_024.cpp  # Thumb -O4,s C++; 2 sites fold [r4,r0] vs orig materialised adds rN,this,K (4 bytes short)
