@@ -254,3 +254,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov120: size 0x2534. Layout per ov120_003: unk_91[3] + u32 unk_94 (not unk_91[7]); 0xb0 Unk_020b8800[2]; +0x438 polymorphic (ctor ov002_02202f88); +0x480 Unk_02202658. ov120_003 defines ~Unk_ov120_02295010(){} only to emit the vtable — drop it when merging (D1/D0 are in ov120_000).
 - ov121: scene class Unk_ov121_02294d68 (vtable 0x02294d68, size 0x107c), loads at 0x02292360.
 - ov119: per ov119_003, unk_9a is s16 (stores -1), unk_b4/unk_b8 are u32, unk_19d8 is [0x80] then the 0x1a58 array of 3x0x24; ov119_000's layout differs there.
+- ov120: per ov120_001, unk_9e[2]+u8 a0/a1/a2; 0x4e4..0x24e4 = four u16[0x400] tilemaps; u8 unk_24e4[13], unk_24f1[13] id lists, then 24fe[3]/2507[14] 3-byte records.
+- ov120: per ov120_002, +0x438 sub-object has a vtable (vfunc_0c called); u8 unk_b0[0x24], unk_d4[0x24]; func_ov120_02292f44 takes u32 (ov120_000 has void*).
