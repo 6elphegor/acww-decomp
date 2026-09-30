@@ -6,3 +6,15 @@
 
 src/ov105/unk_022967e8.cpp:
     .text       start:0x022967e8 end:0x022970f0
+
+src/ov105/unk_02295ebc.cpp:
+    .text       start:0x02295ebc end:0x022967e8
+
+src/ov105/unk_ov105_02294c40.cpp:
+    .text       start:0x02294c40 end:0x02295594
+
+src/ov105/unk_022970f0.cpp:
+    .text       start:0x022970f0 end:0x02297a4c
+
+src/ov105/unk_02295594.cpp:
+    .text       start:0x02295594 end:0x02295ebc

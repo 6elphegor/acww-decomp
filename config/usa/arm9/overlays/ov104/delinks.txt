@@ -14,3 +14,6 @@ src/ov104/unk_02297ad0.cpp:
 
 src/ov104/unk_02295edc.cpp:
     .text       start:0x02295edc end:0x022967e4
+
+src/ov104/unk_ov104_022971a4.cpp:
+    .text       start:0x022971a4 end:0x02297ad0
