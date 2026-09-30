@@ -76,3 +76,6 @@ src/ov003/unk_02211818.cpp:
 
 src/ov003/unk_02212140.cpp:
     .text       start:0x02212140 end:0x02212a5c
+
+src/ov003/unk_022135c4.cpp:
+    .text       start:0x022135c4 end:0x02213f70

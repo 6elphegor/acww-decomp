@@ -321,3 +321,5 @@ func_ov065_022818f4 ov065_056/ov065_056.cpp  # -O4,p; 7-word Elem zeroing via ma
 func_ov065_02281bf4 ov065_056/ov065_056.cpp  # -O4,p; 0x139c ghttp request builder/parser: r4-r7 class permutation only (allocator near-tie)
 func_ov068_02264188 ov068_008/ov068_008.cpp  # Thumb -O4,s C++; switch {8,12,22,27,34} compare-tree split differs
 func_ov068_022645dc ov068_008/ov068_008.cpp  # Thumb -O4,s C++; missing adds r0,r0,#0 before cmp #1 (2 bytes)
+func_ov066_022629cc ov066_006/ov066_006.cpp  # ARM -O4,p; 5 global-address loads + mov r2,#5 scheduled differently (26 lines)
+func_ov066_02262a34 ov066_006/ov066_006.cpp  # ARM -O4,p; push {lr};sub sp vs orig push {r4,lr} (one fewer live reg)
