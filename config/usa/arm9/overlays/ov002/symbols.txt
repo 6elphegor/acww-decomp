@@ -320,8 +320,8 @@ _ZN18Unk_ov002_022040ec19func_ov002_022041b8EPhi kind:function(thumb,size=0x7c) 
 _ZN18Unk_ov002_022040ec19func_ov002_02204234Ei kind:function(thumb,size=0x10c) addr:0x02204234
 _ZN18Unk_ov002_022040ec19func_ov002_02204340EPhij kind:function(thumb,size=0x54) addr:0x02204340
 _ZN18Unk_ov002_022040ec19func_ov002_02204394EPhij kind:function(thumb,size=0x54) addr:0x02204394
-_ZN18Unk_ov002_022040ecD2Ev kind:function(thumb,size=0x18) addr:0x022043e8
-_ZN18Unk_ov002_022040ecC2Ev kind:function(thumb,size=0x2c) addr:0x02204400
+_ZN18Unk_ov002_022040ecD1Ev kind:function(thumb,size=0x18) addr:0x022043e8
+_ZN18Unk_ov002_022040ecC1Ev kind:function(thumb,size=0x2c) addr:0x02204400
 data_ov002_0220442c kind:data(any) addr:0x0220442c
 data_ov002_02204430 kind:data(any) addr:0x02204430
 data_ov002_02204434 kind:data(any) addr:0x02204434
