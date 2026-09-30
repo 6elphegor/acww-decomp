@@ -13,3 +13,6 @@ src/ov054/unk_02259760.cpp:
 
 src/ov054/unk_ov054_0225a074.cpp:
     .text       start:0x0225a074 end:0x0225a994
+
+src/ov054/unk_ov054_02258de0.cpp:
+    .text       start:0x02258de0 end:0x02259760
