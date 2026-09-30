@@ -4,8 +4,10 @@
     .data       start:0x022720c0 end:0x022722c0 kind:data align:32
     .bss        start:0x022722c0 end:0x02272320 kind:bss align:32
 
-src/ov082/unk_ov082_02271ce4.cpp:
-    .text       start:0x02271ce4 end:0x02272044
-
 src/ov082/unk_ov082_022713c0.cpp:
-    .text       start:0x022713c0 end:0x02271ce4
+    complete
+    .text       start:0x022713c0 end:0x02272044
+    .init       start:0x02272044 end:0x022720a0
+    .ctor       start:0x022720a0 end:0x022720a4
+    .data       start:0x022720c0 end:0x022722c0
+    .bss        start:0x022722c0 end:0x02272320
