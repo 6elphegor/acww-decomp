@@ -297,3 +297,5 @@ func_ov065_022839e4 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built
 func_ov065_02283a88 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built in r1 vs orig r0 (same -1 family)
 func_ov065_02283af0 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built in r1 vs orig r0 (same -1 family)
 func_ov065_022749f8 ov065_035/ov065_035.cpp  # -O4,p; 20-case dispatcher: 4 small regalloc/frame-anchor spots, volatile ub/ps hack for frame
+func_ov065_02280a2c ov065_054/ov065_054.cpp  # -O4,p; 16-byte zero loop counter/zero regs swapped (pointer-counter form), shared-return +2
+func_ov065_02280d70 ov065_054/ov065_054.cpp  # -O4,p; frame: sockaddr/out-ptr slot order vs {0,0} zeroing form
