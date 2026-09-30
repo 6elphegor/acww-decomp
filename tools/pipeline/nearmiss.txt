@@ -348,9 +348,7 @@ func_ov087_02271b0c ov087_000/ov087_000.cpp  # Thumb -O4,s C++; unk_4cc.unk_1c |
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
 func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stack-addr temp r1 vs orig r2, x0=loc[0] r2 vs r1 (+1 pool word)
 func_ov098_0229b8ac ov098_000/ov098_000.cpp  # Thumb -O4,s C++; idx (a-0x12b0 or -1) r4 vs orig r5, s16 x swapped (~40 variants tried)
-func_ov102_02296278 ov102_002/ov102_002.cpp  # Thumb -O4,s C; &unk_24d5 ptr/value r1/r2 swapped (~25 variants tried)
 func_ov107_02295130 ov107_000/ov107_000.cpp  # Thumb -O4,s C++; this/idx/x in r6/r5/r4 (orig) vs r5/r4/r6 (~145 decl orders tried)
-func_ov114_02294ed0 ov114_000/ov114_000.cpp  # Thumb -O4,s C; c>=0xd arm: orig subs r6,#13 in place before bl, ours sinks it; pad/c regs r4/r6 swapped
 func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend: eager rgb extraction/spill order differs, mwcc hoists 'x *= d' (~150 lines)
 func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
 func_ov117_02292690 ov117_000/ov117_000.cpp  # Thumb -O4,s C; orig ldr x; ldr z; asrs; asrs (loads paired), ours ldr/asrs/ldr/asrs (~100 shapes tried)

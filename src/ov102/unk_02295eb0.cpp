@@ -296,9 +296,8 @@ void func_ov102_0229625c(S *s) {
 }
 
 void func_ov102_02296278(S *s) {
-    u8 *p = &s->unk_24d5;
-    if (*p != 0) {
-        *p = *p - 1;
+    if (s->unk_24d5 != 0) {
+        s->unk_24d5--;
     } else {
         s->unk_08c = 4;
         func_ov002_02200a60(s, 1);
