@@ -1,6 +1,6 @@
 _ZN18Unk_ov077_0227224cD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN18Unk_ov077_0227224cD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN18Unk_ov077_0227224c8vfunc_4cEjj kind:function(thumb,size=0x44) addr:0x02271414
+_ZN18Unk_ov077_0227224c8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x02271414
 _ZN18Unk_ov077_0227224c8vfunc_48Ev kind:function(thumb,size=0x4) addr:0x02271458
 _ZN18Unk_ov077_022721bc8vfunc_18Ev kind:function(thumb,size=0xb8) addr:0x0227145c
 _ZN18Unk_ov077_022721bc8vfunc_14Ev kind:function(thumb,size=0x4c) addr:0x02271514
