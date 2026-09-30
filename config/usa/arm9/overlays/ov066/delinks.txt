@@ -29,3 +29,6 @@ src/ov066/unk_02263320.cpp:
 
 src/ov066/unk_02263c3c.cpp:
     .text       start:0x02263c3c end:0x0226453c
+
+src/ov066/unk_022629cc.cpp:
+    .text       start:0x022629cc end:0x02263320
