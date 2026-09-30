@@ -6,3 +6,6 @@
 
 src/ov009/unk_0225b880.cpp:
     .text       start:0x0225b880 end:0x0225c1ac
+
+src/ov009/unk_0225c1ac.cpp:
+    .text       start:0x0225c1ac end:0x0225cb4c
