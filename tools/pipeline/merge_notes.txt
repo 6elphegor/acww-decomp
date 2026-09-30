@@ -285,3 +285,6 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov138: scene class Unk_ov138_02296380 (vtable 0x02296380, size 0x2824), same layout as ov135.
 - ov136: scene class Unk_ov136_022963b0 (vtable 0x022963b0), same layout as ov137 (subobjects +0x94/+0xf8, ov134 object +0x25c, flags +0x2820).
 - ov140: scene class Unk_ov140_02293e04 (vtable 0x02293e04, size 0x1760), loads at 0x02292900; +0x8e8 is an ov139 object (ctor func_ov139_0229256c, 0x624 bytes).
+- ov141: scene class Unk_ov141_02293968 (vtable 0x02293968, size 0x1674), loads at 0x02292900; +0x94 is the ov139 library object (ctor func_ov139_0229256c, 0x624).
+- ov142: scene class Unk_ov142_02294da8 (vtable 0x02294da8), loads at 0x02291f60; ov142_001 stands in u8 unk_00[0x9c] for base+vptr — use the real Unk_ov002_022044e4 base when merging.
+- ov139: Unk_ov139_02291f60 is a non-virtual menu helper (0x624; member at +0 is Unk_ov002_02204770; ctor func_ov139_0229256c) embedded in ov140 (+0x8e8) and ov141 (+0x94); ov142 D0/D1 of ~Unk_ov142_02294da8 emitted by ov142_004 are unreferenced (vtable slots 0x40/0x44 = func_ov142_02291f60/02291fb0) — drop if duplicate.
