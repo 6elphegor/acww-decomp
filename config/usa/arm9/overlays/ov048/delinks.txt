@@ -5,20 +5,11 @@
     .data       start:0x0225c6e0 end:0x0225d0e0 kind:data align:32
     .bss        start:0x0225d0e0 end:0x0225d2a0 kind:bss align:32
 
-src/ov048/unk_022596e8.cpp:
-    .text       start:0x022596e8 end:0x0225a000
-
 src/ov048/unk_ov048_02258de0.cpp:
-    .text       start:0x02258de0 end:0x022596e8
-
-src/ov048/unk_0225a000.cpp:
-    .text       start:0x0225a000 end:0x0225aad4
-
-src/ov048/unk_0225b444.cpp:
-    .text       start:0x0225b444 end:0x0225bde0
-
-src/ov048/unk_0225bde0.cpp:
-    .text       start:0x0225bde0 end:0x0225c324
-
-src/ov048/unk_0225aad4.cpp:
-    .text       start:0x0225aad4 end:0x0225b444
+    complete
+    .text       start:0x02258de0 end:0x0225c324
+    .rodata     start:0x0225c324 end:0x0225c370
+    .init       start:0x0225c370 end:0x0225c6d0
+    .ctor       start:0x0225c6d0 end:0x0225c6d4
+    .data       start:0x0225c6e0 end:0x0225d0e0
+    .bss        start:0x0225d0e0 end:0x0225d2a0
