@@ -6,3 +6,9 @@
 
 src/ov102/unk_022971a4.cpp:
     .text       start:0x022971a4 end:0x0229741c
+
+src/ov102/unk_02295558.cpp:
+    .text       start:0x02295558 end:0x02295eb0
+
+src/ov102/unk_ov102_02294c40.cpp:
+    .text       start:0x02294c40 end:0x02295558
