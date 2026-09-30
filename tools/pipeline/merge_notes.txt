@@ -244,3 +244,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov113: scene class Unk_ov113_02293640 (vtable 0x02293640, size 0x29cc), loads at 0x02291f60, no ov095 sub-object.
 - ov115: scene class Unk_ov115_02297378 (vtable 0x02297378, size 0x13e0), loads at 0x022967e0, ov114 sub-object at +0xf8.
 - ov116 is a near-copy of ov115 (same base 0x022967e0, 27 differing bytes in 0x02296c78..0x02296f..). ov116_001 = sed s/ov115/ov116/ of ov115_001.
+- ov118: scene class Unk_ov118_022955c8 (vtable 0x022955c8, size 0x459c), loads at 0x02292d00.
+- ov114: ov114_002's non-polymorphic class Unk_ov114_02294c40 (C1 func_ov114_022964d8, size ~0x129c, fish menu) is the ov114 sub-object embedded at +0xf8 in ov115/ov116's scene class (their Unk_ov11x_ov114_022964d8).
