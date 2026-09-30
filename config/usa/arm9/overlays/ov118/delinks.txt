@@ -6,3 +6,12 @@
 
 src/ov118/unk_02295364.cpp:
     .text       start:0x02295364 end:0x02295450
+
+src/ov118/unk_02293ff0.cpp:
+    .text       start:0x02293ff0 end:0x022948fc
+
+src/ov118/unk_02292d00.cpp:
+    .text       start:0x02292d00 end:0x02293660
+
+src/ov118/unk_02293660.cpp:
+    .text       start:0x02293660 end:0x02293ff0
