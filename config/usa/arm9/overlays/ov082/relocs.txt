@@ -178,8 +178,8 @@ from:0x02271fbe kind:thumb_call to:0x02019858 module:main
 from:0x02271fc6 kind:thumb_call to:0x02014254 module:main
 from:0x02271fd2 kind:thumb_call to:0x02082014 module:main
 from:0x02271fde kind:thumb_call to:0x02271a3c module:overlay(82)
-from:0x02271ff0 kind:load to:0x020d77a4 module:main
-from:0x02272034 kind:load to:0x020d8bc8 module:main
+from:0x02271ff0 kind:load to:0x020d779c add:0x8 module:main
+from:0x02272034 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0227203c kind:load to:0x022721dc module:overlay(82)
 from:0x02272084 kind:load to:0x022722d4 module:overlay(82)
 from:0x02272088 kind:load to:0x022720c0 module:overlay(82)

@@ -590,8 +590,8 @@ from:0x0225b6de kind:thumb_call to:0x02014254 module:main
 from:0x0225b6ea kind:thumb_call to:0x02082014 module:main
 from:0x0225b6f6 kind:thumb_call to:0x0225aaac module:overlay(49)
 from:0x0225b70e kind:thumb_call to:0x02071e74 module:main
-from:0x0225b720 kind:load to:0x020d77a4 module:main
-from:0x0225b764 kind:load to:0x020d8bc8 module:main
+from:0x0225b720 kind:load to:0x020d779c add:0x8 module:main
+from:0x0225b764 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0225b76c kind:load to:0x0225bf04 module:overlay(49)
 from:0x0225b984 kind:load to:0x0225bd70 module:overlay(49)
 from:0x0225b988 kind:load to:0x0213a740 module:autoload(2)

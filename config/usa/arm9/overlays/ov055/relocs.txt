@@ -159,8 +159,8 @@ from:0x022596e2 kind:thumb_call to:0x0208f238 module:main
 from:0x022596ea kind:thumb_call to:0x0208f0a0 module:main
 from:0x022596f4 kind:thumb_call to:0x0208f238 module:main
 from:0x022596fc kind:thumb_call to:0x0208f0a0 module:main
-from:0x02259710 kind:load to:0x020d77a4 module:main
-from:0x02259754 kind:load to:0x020d8bc8 module:main
+from:0x02259710 kind:load to:0x020d779c add:0x8 module:main
+from:0x02259754 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0225975c kind:load to:0x02259994 module:overlay(55)
 from:0x022597dc kind:load to:0x022598cc module:overlay(55)
 from:0x022597e0 kind:load to:0x0213a740 module:autoload(2)

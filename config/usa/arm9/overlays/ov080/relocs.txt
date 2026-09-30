@@ -110,8 +110,8 @@ from:0x02271ab2 kind:thumb_call to:0x02019858 module:main
 from:0x02271aba kind:thumb_call to:0x02014254 module:main
 from:0x02271ac6 kind:thumb_call to:0x02082014 module:main
 from:0x02271ad2 kind:thumb_call to:0x02271808 module:overlay(80)
-from:0x02271ae4 kind:load to:0x020d77a4 module:main
-from:0x02271b28 kind:load to:0x020d8bc8 module:main
+from:0x02271ae4 kind:load to:0x020d779c add:0x8 module:main
+from:0x02271b28 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02271b30 kind:load to:0x02271cac module:overlay(80)
 from:0x02271b78 kind:load to:0x02271da0 module:overlay(80)
 from:0x02271b7c kind:load to:0x02271bb8 module:overlay(80)

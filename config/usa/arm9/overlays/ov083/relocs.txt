@@ -101,8 +101,8 @@ from:0x02271a3a kind:thumb_call to:0x02019858 module:main
 from:0x02271a42 kind:thumb_call to:0x02014254 module:main
 from:0x02271a4e kind:thumb_call to:0x02082014 module:main
 from:0x02271a5a kind:thumb_call to:0x0227173c module:overlay(83)
-from:0x02271a6c kind:load to:0x020d77a4 module:main
-from:0x02271ab0 kind:load to:0x020d8bc8 module:main
+from:0x02271a6c kind:load to:0x020d779c add:0x8 module:main
+from:0x02271ab0 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02271ab8 kind:load to:0x02271c4c module:overlay(83)
 from:0x02271b00 kind:load to:0x02271d20 module:overlay(83)
 from:0x02271b04 kind:load to:0x02271b58 module:overlay(83)

@@ -283,8 +283,8 @@ from:0x02259dee kind:thumb_call to:0x02019858 module:main
 from:0x02259df6 kind:thumb_call to:0x02014254 module:main
 from:0x02259e02 kind:thumb_call to:0x02082014 module:main
 from:0x02259e0e kind:thumb_call to:0x02259a28 module:overlay(51)
-from:0x02259e20 kind:load to:0x020d77a4 module:main
-from:0x02259e64 kind:load to:0x020d8bc8 module:main
+from:0x02259e20 kind:load to:0x020d779c add:0x8 module:main
+from:0x02259e64 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02259e6c kind:load to:0x0225a2dc module:overlay(51)
 from:0x02259f2c kind:load to:0x0225a548 module:overlay(51)
 from:0x02259f30 kind:load to:0x0225a014 module:overlay(51)

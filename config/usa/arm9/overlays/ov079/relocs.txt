@@ -240,8 +240,8 @@ from:0x022727ae kind:thumb_call to:0x02019858 module:main
 from:0x022727b6 kind:thumb_call to:0x02014254 module:main
 from:0x022727c2 kind:thumb_call to:0x02082014 module:main
 from:0x022727ce kind:thumb_call to:0x022716f4 module:overlay(79)
-from:0x022727e0 kind:load to:0x020d77a4 module:main
-from:0x02272824 kind:load to:0x020d8bc8 module:main
+from:0x022727e0 kind:load to:0x020d779c add:0x8 module:main
+from:0x02272824 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0227282c kind:load to:0x02272ac4 module:overlay(79)
 from:0x022728f2 kind:thumb_call_arm to:0x02135558 module:autoload(2)
 from:0x02272908 kind:thumb_call_arm to:0x02135558 module:autoload(2)

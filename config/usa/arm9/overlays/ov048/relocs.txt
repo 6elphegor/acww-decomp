@@ -944,8 +944,8 @@ from:0x0225c29e kind:thumb_call to:0x02019858 module:main
 from:0x0225c2a6 kind:thumb_call to:0x02014254 module:main
 from:0x0225c2b2 kind:thumb_call to:0x02082014 module:main
 from:0x0225c2be kind:thumb_call to:0x0225b0f8 module:overlay(48)
-from:0x0225c2d0 kind:load to:0x020d77a4 module:main
-from:0x0225c314 kind:load to:0x020d8bc8 module:main
+from:0x0225c2d0 kind:load to:0x020d779c add:0x8 module:main
+from:0x0225c314 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0225c31c kind:load to:0x0225cc58 module:overlay(48)
 from:0x0225c5cc kind:load to:0x0225cd04 module:overlay(48)
 from:0x0225c5d0 kind:load to:0x0213a740 module:autoload(2)

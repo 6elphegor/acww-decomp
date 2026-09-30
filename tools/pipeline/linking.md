@@ -64,10 +64,34 @@ all of it:
   two zero words right before a vtable are the vtable's own header (offset-to-top and typeinfo), not padding.
 * `linkprep.py data` checks each object's contents; an `ERROR ... match nowhere` means a wrong initializer.
 * Strings that sit after all other data (e.g. `menu/res/d0_bg.bsc`) are string literals in the code, not
-  named arrays: the literal pool is emitted after the sorted data.
+  named arrays: the literal pool is emitted after the sorted data. Strings that sit among the sorted data
+  (typically the targets of a table of string pointers) are named `char[]` objects instead.
+* Some `symbols.txt` data labels are interior addresses of one larger table (e.g. `data_ov130_02293500/08/10`
+  inside the 32-byte table at `…4f8`): define the whole table once and refer to `table + k`; separate
+  objects make the original order unreachable. `.rodata` sorts together with `.data`/`.bss`.
+* Array sizes matter to the sort: define each object with exactly the size the original gives it (the gap to
+  the next symbol, e.g. `u8[7]`, not a rounded `u8[8]`).
+* If no placement reproduces the order (a large search stays short by two objects that swap), the original
+  likely had one extra object the linker dead-stripped: an unreferenced global not in symbols.txt, e.g.
+  `extern "C" u32 ovNNN_order_pad[4] = {0};`, created at the right point, takes part in the sort and is then
+  stripped (ov125).
 * The scene class destructor: if the original has D1 then D0 (vtable slot 0x40 then 0x44, D1 at the lower
   address) and the destructor body is empty, **leave the destructor implicit** (no `~X()` declaration or
   definition). An explicit `~X() {}` emits D0 before D1.
+
+### Overlays with `.init` / `.ctor` (static initialisers)
+
+Nothing special is needed in the source: mwcc generates `__sinit_<file>` (in `.init`) and its `.ctor` word itself
+from any file-scope object with a non-constant initialiser — typically a table of pointer-to-member-function
+pairs, e.g. `Ent data_ov083_02271d20[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
+* A NULL member pointer is copied from the runtime constant `__ptmf_null` (autoload_2 0x0213a740): add
+  `autoload_2 0213a740 __ptmf_null` to renames.txt until it is committed.
+* Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;
+  the default `-str noreuse` makes one copy per use. `#pragma reuse_strings` is ignored.
+* The overlays built on main's `Unk_020d77a4`/`Unk_020d8bc8` scene classes (ov080, ov083, ...) share a set of
+  main renames and class chains: copy `pipeline_wip/scratch/link_ov083/renames.txt` and the class declarations
+  from `link_ov083/unit.cpp` rather than inventing new names. Their inline constructors store
+  `_ZTV12Unk_020d77a4` / `_ZTV12Unk_020d8bc8` (being added to main's symbols.txt).
 
 ## 3. Order the functions
 

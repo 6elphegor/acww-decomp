@@ -131,8 +131,8 @@ from:0x02271c36 kind:thumb_call to:0x02019858 module:main
 from:0x02271c3e kind:thumb_call to:0x02014254 module:main
 from:0x02271c4a kind:thumb_call to:0x02082014 module:main
 from:0x02271c56 kind:thumb_call to:0x0227197c module:overlay(84)
-from:0x02271c68 kind:load to:0x020d77a4 module:main
-from:0x02271cac kind:load to:0x020d8bc8 module:main
+from:0x02271c68 kind:load to:0x020d779c add:0x8 module:main
+from:0x02271cac kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02271cb4 kind:load to:0x02271e6c module:overlay(84)
 from:0x02271cbc kind:load to:0x02271d70 module:overlay(84)
 from:0x02271cc4 kind:load to:0x02271d7c module:overlay(84)

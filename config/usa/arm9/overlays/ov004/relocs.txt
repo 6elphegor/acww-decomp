@@ -5191,8 +5191,8 @@ from:0x0221bf96 kind:thumb_call to:0x02019858 module:main
 from:0x0221bf9e kind:thumb_call to:0x02014254 module:main
 from:0x0221bfaa kind:thumb_call to:0x02082014 module:main
 from:0x0221bfb6 kind:thumb_call to:0x0221b8dc module:overlay(4)
-from:0x0221bfc8 kind:load to:0x020d77a4 module:main
-from:0x0221c00c kind:load to:0x020d8bc8 module:main
+from:0x0221bfc8 kind:load to:0x020d779c add:0x8 module:main
+from:0x0221c00c kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0221c014 kind:load to:0x0224ce1c module:overlay(4)
 from:0x0221c028 kind:thumb_call to:0x0221cf48 module:overlay(4)
 from:0x0221c02e kind:thumb_call to:0x0202e5a8 module:main
@@ -5525,8 +5525,8 @@ from:0x0221d6c2 kind:thumb_call to:0x02019858 module:main
 from:0x0221d6ca kind:thumb_call to:0x02014254 module:main
 from:0x0221d6d6 kind:thumb_call to:0x02082014 module:main
 from:0x0221d6e2 kind:thumb_call to:0x0221cf60 module:overlay(4)
-from:0x0221d6f4 kind:load to:0x020d77a4 module:main
-from:0x0221d738 kind:load to:0x020d8bc8 module:main
+from:0x0221d6f4 kind:load to:0x020d779c add:0x8 module:main
+from:0x0221d738 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0221d740 kind:load to:0x0224d0a0 module:overlay(4)
 from:0x0221d754 kind:thumb_call to:0x0221de74 module:overlay(4)
 from:0x0221d75a kind:thumb_call to:0x0202e5a8 module:main
@@ -5717,8 +5717,8 @@ from:0x0221e31e kind:thumb_call to:0x02019858 module:main
 from:0x0221e326 kind:thumb_call to:0x02014254 module:main
 from:0x0221e332 kind:thumb_call to:0x02082014 module:main
 from:0x0221e33e kind:thumb_call to:0x0221de8c module:overlay(4)
-from:0x0221e350 kind:load to:0x020d77a4 module:main
-from:0x0221e394 kind:load to:0x020d8bc8 module:main
+from:0x0221e350 kind:load to:0x020d779c add:0x8 module:main
+from:0x0221e394 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0221e39c kind:load to:0x0224d2d8 module:overlay(4)
 from:0x0221e3ac kind:thumb_call to:0x0202e5a8 module:main
 from:0x0221e3b8 kind:load to:0x0224d3f8 module:overlay(4)
@@ -5772,8 +5772,8 @@ from:0x0221e726 kind:thumb_call to:0x020135e4 module:main
 from:0x0221e72e kind:thumb_call to:0x02019858 module:main
 from:0x0221e736 kind:thumb_call to:0x02014254 module:main
 from:0x0221e742 kind:thumb_call to:0x02082014 module:main
-from:0x0221e758 kind:load to:0x020d77a4 module:main
-from:0x0221e79c kind:load to:0x020d8bc8 module:main
+from:0x0221e758 kind:load to:0x020d779c add:0x8 module:main
+from:0x0221e79c kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x0221e7a4 kind:load to:0x0224d3f8 module:overlay(4)
 from:0x0221e7d6 kind:thumb_call_arm to:0x020e9688 module:autoload(2)
 from:0x0221e7f4 kind:thumb_call to:0x02010e68 module:main

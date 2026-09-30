@@ -457,7 +457,6 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
         '''place: named -> gap index (0..len(anchors)); returns creation list'''
         seq = []
         gi = 0
-        items = [(defs[n][0], n) for n in named]
         # named objects at their gap, keeping current relative order inside a gap
         for g in range(len(anchors) + 1):
             seq += order_in[g] if g < len(order_in) else []
@@ -533,13 +532,16 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
             print(f"  {s}/{full}")
         if s == full:
             break
-    if best[0] < full:
-        # simulated annealing from the best hill-climb result: random single moves, occasionally downhill
-        import math
-        order_in = [g[:] for g in best[1]]
-        s = best[0]
+    import math
+
+    def anneal(start, steps, label):
+        '''simulated annealing over placements: random single moves, occasionally downhill'''
+        nonlocal order_in
+        order_in = [g[:] for g in start]
+        s = score(build(None))
+        top = (s, [g[:] for g in order_in])
         temp = 2.0
-        for step in range(60000):
+        for step in range(steps):
             n = rnd.choice(named)
             trial = [g[:] for g in order_in]
             g0 = next(i for i, g in enumerate(trial) if n in g)
@@ -551,14 +553,41 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
             t = score(build(None))
             if t >= s or rnd.random() < math.exp((t - s) / temp):
                 s = t
-                if s > best[0]:
-                    best = (s, [g[:] for g in order_in])
-                    print(f"  {s}/{full} (annealing)")
+                if s > top[0]:
+                    top = (s, [g[:] for g in order_in])
                     if s == full:
                         break
             else:
                 order_in = saved
             temp = max(0.05, temp * 0.9999)
+        if top[0] > best[0]:
+            print(f"  {top[0]}/{full} ({label})")
+        return top
+
+    if best[0] < full:
+        t = anneal(best[1], 60000, "annealing")
+        if t[0] > best[0]:
+            best = t
+    phantom = None
+    if best[0] < full and "--phantom" in sys.argv:
+        # the original may have had an object the linker dead-stripped: try one unreferenced padding object of
+        # each size at any creation position (it joins the sort but is not in the target order)
+        byname["ORDER_PAD"] = {"kind": ".bss"}
+        named.append("ORDER_PAD")
+        for sz in range(4, 0x84, 4):
+            size["ORDER_PAD"] = sz
+            for attempt in range(3):
+                start = [g[:] for g in best[1]]
+                start[rnd.randrange(slots)].append("ORDER_PAD")
+                t = anneal(start, 20000, f"padding object of {sz:#x} bytes")
+                if t[0] == full:
+                    best, phantom = t, sz
+                    break
+            if phantom:
+                break
+        if not phantom:
+            named.remove("ORDER_PAD")
+            best = (best[0], [[n for n in g if n != "ORDER_PAD"] for g in best[1]])
     s, order_in = best
     print(f"best: {s}/{full}")
     anchor_fn = {}
@@ -571,13 +600,21 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
         if order_in[g]:
             where = f"before  {anchor_fn[anchors[g]]}" if g < len(anchors) else "after the last function that creates data"
             print(f"  define {', '.join(order_in[g])}  {where}")
+    if phantom:
+        print(f"  (ORDER_PAD is an unreferenced {phantom:#x}-byte padding object; the linker strips it)")
     if apply and s == full:
-        apply_placement(src, text, defs, anchors, order_in)
+        pad = None
+        if phantom:
+            pad = (f"// Unreferenced: stands in for an object the original linker dead-stripped (it takes part in\n"
+                   f"// mwcc's data ordering)\nextern \"C\" u32 {ov}_order_pad[{phantom // 4}] = {{0}};")
+        apply_placement(src, text, defs, anchors, order_in, pad)
 
 
-def apply_placement(src, text, defs, anchors, order_in):
-    moved = [n for g in order_in for n in g]
+def apply_placement(src, text, defs, anchors, order_in, pad=None):
+    moved = [n for g in order_in for n in g if n != "ORDER_PAD"]
     pieces = {n: text[defs[n][0]:defs[n][1]].strip("\n") for n in moved}
+    if pad:
+        pieces["ORDER_PAD"] = pad
     # remove definitions (from the end so offsets stay valid), then insert at anchors (from the end)
     cuts = sorted((defs[n] for n in moved), reverse=True)
     t = text

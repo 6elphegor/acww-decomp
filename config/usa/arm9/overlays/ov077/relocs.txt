@@ -152,8 +152,8 @@ from:0x02271f2a kind:thumb_call to:0x02019858 module:main
 from:0x02271f32 kind:thumb_call to:0x02014254 module:main
 from:0x02271f3e kind:thumb_call to:0x02082014 module:main
 from:0x02271f4a kind:thumb_call to:0x02271724 module:overlay(77)
-from:0x02271f64 kind:load to:0x020d77a4 module:main
-from:0x02271fa8 kind:load to:0x020d8bc8 module:main
+from:0x02271f64 kind:load to:0x020d779c add:0x8 module:main
+from:0x02271fa8 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02271fb0 kind:load to:0x0227224c module:overlay(77)
 from:0x02272064 kind:load to:0x02272190 module:overlay(77)
 from:0x02272068 kind:load to:0x0213a740 module:autoload(2)

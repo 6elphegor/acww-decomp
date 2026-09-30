@@ -237,8 +237,8 @@ from:0x022724e2 kind:thumb_call to:0x02019858 module:main
 from:0x022724ea kind:thumb_call to:0x02014254 module:main
 from:0x022724f6 kind:thumb_call to:0x02082014 module:main
 from:0x02272502 kind:thumb_call to:0x022720ac module:overlay(70)
-from:0x02272514 kind:load to:0x020d77a4 module:main
-from:0x02272558 kind:load to:0x020d8bc8 module:main
+from:0x02272514 kind:load to:0x020d779c add:0x8 module:main
+from:0x02272558 kind:load to:0x020d8bc0 add:0x8 module:main
 from:0x02272560 kind:load to:0x0227280c module:overlay(70)
 from:0x02272568 kind:load to:0x02272718 module:overlay(70)
 from:0x02272570 kind:load to:0x02272718 module:overlay(70)
