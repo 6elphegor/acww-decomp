@@ -300,3 +300,4 @@ func_ov065_022749f8 ov065_035/ov065_035.cpp  # -O4,p; 20-case dispatcher: 4 smal
 func_ov065_02280a2c ov065_054/ov065_054.cpp  # -O4,p; 16-byte zero loop counter/zero regs swapped (pointer-counter form), shared-return +2
 func_ov065_02280d70 ov065_054/ov065_054.cpp  # -O4,p; frame: sockaddr/out-ptr slot order vs {0,0} zeroing form
 func_ov065_02288b10 ov065_066/ov065_066.cpp  # -O4,p; mgr init: zero in r1 vs orig r2
+func_ov065_022871ac ov065_063/ov065_063.cpp  # -O4,p; r=*e: ldr r6,[r0] vs orig adds r6,r1,#0 (1 instr)
