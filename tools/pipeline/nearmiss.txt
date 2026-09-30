@@ -301,3 +301,9 @@ func_ov065_02280a2c ov065_054/ov065_054.cpp  # -O4,p; 16-byte zero loop counter/
 func_ov065_02280d70 ov065_054/ov065_054.cpp  # -O4,p; frame: sockaddr/out-ptr slot order vs {0,0} zeroing form
 func_ov065_02288b10 ov065_066/ov065_066.cpp  # -O4,p; mgr init: zero in r1 vs orig r2
 func_ov065_022871ac ov065_063/ov065_063.cpp  # -O4,p; r=*e: ldr r6,[r0] vs orig adds r6,r1,#0 (1 instr)
+func_ov065_022892c8 ov065_067/ov065_067.cpp  # -O4,p; r==-1 after call (same -1 family)
+func_ov065_0228ab8c ov065_070/ov065_070.cpp  # -O4,p; fd==-1 reload compare (same -1 family, 1 instr)
+func_ov065_0228ad34 ov065_070/ov065_070.cpp  # -O4,p; ctx init store block: r1/r2 pool loads + -1 reg swapped
+func_ov065_0228758c ov065_064/ov065_064.cpp  # -O4,p; QR packet handler case 6: which sp-address is CSE'd (x base vs out.len)
+func_ov065_02287828 ov065_064/ov065_064.cpp  # -O4,p; 4 IP-byte copy addressing (add r1,sp,#8 base vs strb [r1,#8])
+func_ov065_02287aa4 ov065_064/ov065_064.cpp  # -O4,p; movs r1,r3 vs adds r1,r3,#0 (1 instr encoding)
