@@ -242,3 +242,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov112: ov112_002 is plain C on the scene struct (Unk_ov112_02296840); ov095 menu sub-object at +0x370.
 - ov112: scene class Unk_ov112_02299b10 (vtable 0x02299b10, size 0x6a7c); ov112_002/003 plain-C structs are this class.
 - ov113: scene class Unk_ov113_02293640 (vtable 0x02293640, size 0x29cc), loads at 0x02291f60, no ov095 sub-object.
+- ov115: scene class Unk_ov115_02297378 (vtable 0x02297378, size 0x13e0), loads at 0x022967e0, ov114 sub-object at +0xf8.
+- ov116 is a near-copy of ov115 (same base 0x022967e0, 27 differing bytes in 0x02296c78..0x02296f..). ov116_001 = sed s/ov115/ov116/ of ov115_001.
