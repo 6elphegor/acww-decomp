@@ -36,6 +36,12 @@ they cannot be split across files. Start from the unit files in `src/ovNNN/`.
     `((Unk_ov002_0220464c *)&unk_6b8)->func_ov002_02202b68()`.
   * a callee reached through a returned singleton (`func_020ed174()` then `func_ov092_02291c5c()` with r0
     unchanged) is `((Unk_ov092_02291ec8 *)func_020ed174())->func_ov092_02291c5c()`.
+  * Never rename a symbol of another module to change its signature: other overlays call it too. If a call site
+    needs a different argument list than the symbol's mangled signature (e.g. the original passes an extra
+    argument), declare an `extern "C"` function whose *name is the mangled symbol* and pass the object first:
+    `extern "C" void _ZN18Unk_ov002_0220455819func_ov002_02202200EP12Unk_020e0d98(void *self, void *p, s32 x);`
+    — the call compiles exactly like the method call. Renames are only for your own overlay's symbols and for
+    agreed shared names (constructors/destructors; see the renames already committed in symbols.txt).
   * Runtime helpers the compiler calls implicitly must exist by name in `autoload_2/symbols.txt`
     (`_s32_div_f`, `_u32_div_f`, `__cxa_vec_ctor`, `__cxa_vec_cleanup` already do). If another one is missing,
     find its address from the original call site in `relocs.txt` and list it in `renames.txt` (see 5).

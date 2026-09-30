@@ -575,7 +575,7 @@ def apply_placement(src, text, defs, anchors, order_in):
         d = strip_comments(pieces[n]).split("=")[0].strip()
         d = d if d.startswith("extern") else "extern " + d
         decl.append(d + ";")
-    first_fn = min(p for p in (newpos(a) for a in anchors))
+    first_fn = min([newpos(a) for a in anchors] or [len(t)])
     # put declarations before the first definition chunk that is a function or a moved object
     head_end = min([first_fn] + [t.find(pieces[n]) for n in moved if t.find(pieces[n]) >= 0])
     t = t[:head_end] + "// Declarations for data defined further down (definition order sets the data layout)\n" + \
@@ -638,6 +638,12 @@ def cmd_check(objpath, ov):
                       f"{' '.join(n for n, (m, a) in syms_by_addr(syms, want & ~1))}")
                 wrong += 1
     missing = cmd_undef(objpath)
+    # the overlay's own symbols are only defined by this object once it is linked
+    own = {y[0] for y in o.syms if y[5] != 0}
+    for name in sorted({y[0] for y in o.syms if y[5] == 0 and y[0]} - own):
+        if syms.get(name, ("", 0))[0] == ov:
+            print(f"MISSING {name} belongs to {ov} but this object does not define it (define it in the file)")
+            missing += 1
     print(f"{problems} layout problems, {wrong} wrong targets, {missing} unresolved symbols")
     return problems + missing + wrong
 

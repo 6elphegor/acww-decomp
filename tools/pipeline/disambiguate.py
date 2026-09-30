@@ -34,7 +34,7 @@ def is_scene_entry(n, addr):
     base = secs[".text"][0]
     fn, ids = struct.unpack_from("<II", b, addr - base)
     t0, t1 = secs[".text"]
-    return fn & 1 and t0 <= (fn & ~1) < t1 and (ids & 0xffff) < 0x400 and (ids >> 16) < 0x400
+    return fn & 1 and t0 <= (fn & ~1) < t1 and 0 < (ids & 0xffff) < 0x400 and 0 < (ids >> 16) < 0x400
 
 
 def main():
