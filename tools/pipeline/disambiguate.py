@@ -25,6 +25,19 @@ def sections(ov):
     return out
 
 
+SCENE_TABLE = 0x020e1e2c  # main's scene table: slot = SCENE_TABLE + 4 * (the entry's first id)
+
+
+def scene_entry_id(n, addr):
+    '''first id of overlay n's scene entry at addr, or None'''
+    if not is_scene_entry(n, addr):
+        return None
+    ov = f"ov{n:03d}"
+    secs = sections(ov)
+    b = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
+    return struct.unpack_from("<H", b, addr - secs[".text"][0] + 4)[0]
+
+
 def is_scene_entry(n, addr):
     ov = f"ov{n:03d}"
     secs = sections(ov)
@@ -96,6 +109,10 @@ def resolve_file(p, own, write):
         addr = int(m.group(2), 16)
         cands = [int(x) for x in m.group(3).split(",")]
         hits = [n for n in cands if is_scene_entry(n, addr)] if own is None else []
+        if len(hits) > 1:
+            # several overlays have an entry there: the slot's index is the owning entry's first id
+            slot = (int(m.group(1).split()[0][5:], 16) - SCENE_TABLE) // 4
+            hits = [n for n in hits if scene_entry_id(n, addr) == slot]
         if len(hits) != 1:
             # the overlay this module already depends on (e.g. ov125 on its library ov124)
             hits = [n for n in cands if n in deps]

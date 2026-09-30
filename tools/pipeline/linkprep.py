@@ -80,9 +80,9 @@ def overlay_relocs(ov):
     '''from address -> to address for the overlay's relocations'''
     out = {}
     for line in (CONFIG / "overlays" / ov / "relocs.txt").read_text().splitlines():
-        m = re.match(r"from:(0x[0-9a-f]+) kind:\S+ to:(0x[0-9a-f]+)", line)
+        m = re.match(r"from:(0x[0-9a-f]+) kind:\S+ to:(0x[0-9a-f]+)(?: add:(-?0x[0-9a-f]+))?", line)
         if m:
-            out[int(m.group(1), 16)] = int(m.group(2), 16)
+            out[int(m.group(1), 16)] = int(m.group(2), 16) + (int(m.group(3), 16) if m.group(3) else 0)
     return out
 
 
@@ -682,6 +682,73 @@ def cmd_check(objpath, ov):
     if pos != t1 and (pos + 0x1f) & ~0x1f != (t1 + 0x1f) & ~0x1f:
         print(f"SIZE    code ends at {pos:#010x}, original .text ends at {t1:#010x}")
         problems += 1
+    # every function's bytes must equal the original's (relocated words and branch fields masked)
+    orig = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
+    base = t0
+    bytes_bad = 0
+    for i, s in enumerate(o.sh):
+        if o.secname[i] != ".text" or not s[5]:
+            continue
+        names = [y[0] for y in o.syms if y[5] == i and y[3] == 2 and not y[0].startswith("$")]
+        if not names or names[0] not in syms or syms[names[0]][0] != ov:
+            continue
+        addr = syms[names[0]][1]
+        mine = o.section_bytes(i)
+        theirs = orig[addr - base:addr - base + len(mine)]
+        masked = set()
+        for off, _, _, rtype in o.relocs.get(i, []):
+            masked.update(range(off, off + 4))
+        diff = [k for k in range(len(mine)) if k not in masked and k < len(theirs) and mine[k] != theirs[k]]
+        if diff:
+            print(f"BYTES   {names[0]} differs from the original at +{diff[0]:#x} ({len(diff)} bytes)")
+            bytes_bad += 1
+    problems += bytes_bad
+    # predicted final address of every object section (the linker lays each kind out in object order)
+    layout = {}
+    for kind in (".rodata", ".data", ".bss", ".init"):
+        if kind not in secs:
+            continue
+        pos = secs[kind][0]
+        for i, s in enumerate(o.sh):
+            if o.secname[i] == kind and s[5]:
+                align = max(s[8], 4)  # mwld aligns every section to at least 4
+                pos = (pos + align - 1) // align * align
+                layout[i] = pos
+                pos += s[5]
+    local = {}
+    for name, value, size, typ, bind, shndx in o.syms:
+        if shndx in layout and name:
+            local.setdefault(name, layout[shndx] + value)
+
+    def target_addr(sname):
+        if sname in local:
+            return local[sname]
+        return syms[sname][1] if sname in syms else None
+
+    # the static initialiser (.init): bytes and every literal-pool target must equal the original's
+    if ".init" in secs:
+        i0 = secs[".init"][0]
+        irel = overlay_relocs(ov)
+        for i, s in enumerate(o.sh):
+            if o.secname[i] != ".init" or not s[5]:
+                continue
+            mine = o.section_bytes(i)
+            theirs = orig[i0 - base:i0 - base + len(mine)]
+            rel = o.relocs.get(i, [])
+            masked = set()
+            for off, _, _, _ in rel:
+                masked.update(range(off, off + 4))
+            if any(k not in masked and mine[k] != theirs[k] for k in range(min(len(mine), len(theirs)))):
+                print("BYTES   .init differs from the original")
+                problems += 1
+            for off, sname, addend, rtype in rel:
+                want = irel.get(i0 + off)
+                have = target_addr(sname)
+                if want is None or have is None or rtype in (10, 28, 30):
+                    continue
+                if ((have + addend) & ~1) != (want & ~1):
+                    print(f"TARGET  .init+{off:#x} uses {sname}+{addend:#x} (would link at {have + addend:#010x}); the original uses {want:#010x}")
+                    problems += 1
     # every relocation in the code must point where the original's does (right symbol name, not just a name)
     relocs = overlay_relocs(ov)
     local = {}  # symbols defined in this object: name -> original address (via symbols.txt)
@@ -694,12 +761,12 @@ def cmd_check(objpath, ov):
         faddr = syms[fname][1]
         for off, sname, addend, rtype in lst:
             want = relocs.get(faddr + off)
-            have = syms.get(sname)
+            have = target_addr(sname)
             if want is None or have is None:
-                continue  # local objects (@N, tables) are checked by `data`
-            got = have[1] + (addend if rtype == 2 else 0)
+                continue
+            got = have + (addend if rtype == 2 else 0)
             if rtype in (10, 28, 30):  # thumb/arm calls: compare the function address
-                got = have[1]
+                got = have
             if (got & ~1) != (want & ~1):
                 print(f"TARGET  {fname}+{off:#x} uses {sname} ({got:#010x}); the original uses {want:#010x} "
                       f"{' '.join(n for n, (m, a) in syms_by_addr(syms, want & ~1))}")

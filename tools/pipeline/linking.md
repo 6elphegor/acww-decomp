@@ -71,6 +71,12 @@ all of it:
   objects make the original order unreachable. `.rodata` sorts together with `.data`/`.bss`.
 * Array sizes matter to the sort: define each object with exactly the size the original gives it (the gap to
   the next symbol, e.g. `u8[7]`, not a rounded `u8[8]`).
+* **When the order of a static table's member-pointer constants cannot be reproduced** (ov118/ov120/ov122/ov126:
+  searches stall well short of a full match), name the constants: define each as
+  `void *data_ovNNN_<its original address>[2] = {(void *)<mangled method symbol>, 0};` (a real
+  pointer-to-member global would make mwcc emit a static initialiser) and initialise the table from them,
+  `static Fn tbl[] = {*(Fn *)data_ovNNN_..., ...};`. The code is byte-identical, and the constants are now named
+  objects whose order is set by definition order (compute it by inverting the heapsort, or `data --apply`).
 * If no placement reproduces the order (a large search stays short by two objects that swap), the original
   likely had one extra object the linker dead-stripped: an unreferenced global not in symbols.txt, e.g.
   `extern "C" u32 ovNNN_order_pad[4] = {0};`, created at the right point, takes part in the sort and is then
