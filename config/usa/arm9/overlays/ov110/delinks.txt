@@ -11,3 +11,9 @@ src/ov110/unk_ov110_02294c40.cpp:
 
 src/ov110/unk_022971d8.cpp:
     .text       start:0x022971d8 end:0x02297670
+
+src/ov110/unk_02296874.cpp:
+    .text       start:0x02296874 end:0x022971d8
+
+src/ov110/unk_ov110_02295e98.cpp:
+    .text       start:0x02295e98 end:0x02296874
