@@ -243,10 +243,12 @@ def function_key(code, addrs):
     return addrs.get(("", m.group(1))) if m else None
 
 
-def cmd_reverse(src):
+def cmd_reverse(src, ov=None):
     '''order function definitions by descending original address (mwcc emits a file's functions last to first)'''
-    m = re.search(r"src/(ov\d+)/", str(Path(src).resolve()))
-    addrs = overlay_function_addresses(m.group(1)) if m else {}
+    if ov is None:
+        m = re.search(r"src/(ov\d+)/", str(Path(src).resolve()))
+        ov = m.group(1) if m else None
+    addrs = overlay_function_addresses(ov) if ov else {}
     text = Path(src).read_text()
     chunks = top_level_chunks(text)
     parts = [text[a:b] for a, b in chunks]
@@ -549,6 +551,66 @@ def apply_placement(src, text, defs, anchors, order_in):
     print(f"applied: moved {len(moved)} definitions")
 
 
+# ---------------------------------------------------------------- check
+def cmd_check(objpath, ov):
+    '''check a compiled unit's code layout against the original overlay without linking'''
+    o = Obj(objpath)
+    syms = load_symbols()
+    secs = overlay_sections(ov)
+    t0, t1 = secs[".text"]
+    problems = 0
+    # text sections in object order are laid out in that order by the linker
+    funcs = []
+    for i, s in enumerate(o.sh):
+        if o.secname[i] == ".text" and s[5]:
+            names = [y[0] for y in o.syms if y[5] == i and y[3] == 2 and not y[0].startswith("$")]
+            funcs.append((names[0] if names else f"sec{i}", s[5]))
+    pos = t0
+    for name, size in funcs:
+        want = syms.get(name)
+        if want is None or want[0] != ov:
+            if re.search(r"(C2|D2)Ev$", name):
+                continue  # dead-stripped like the original
+            print(f"EXTRA   {name} ({size:#x} bytes) is not in {ov}'s symbols.txt; it will be linked unless unused")
+            problems += 1
+            continue
+        if want[1] != pos:
+            print(f"ORDER   {name} would link at {pos:#010x}, original {want[1]:#010x}")
+            problems += 1
+            pos = want[1]
+        pos = (pos + size + 3) & ~3
+    if pos != t1 and (pos + 0x1f) & ~0x1f != (t1 + 0x1f) & ~0x1f:
+        print(f"SIZE    code ends at {pos:#010x}, original .text ends at {t1:#010x}")
+        problems += 1
+    missing = problems_undef = cmd_undef(objpath)
+    print(f"{problems} layout problems, {missing} unresolved symbols")
+    return problems + missing
+
+
+# ---------------------------------------------------------------- compile
+def cmd_compile(src, out):
+    '''compile one file exactly as the build does (build.ninja's mwcc rule plus per-file overrides)'''
+    ninja = Path("build.ninja").read_text()
+    m = re.search(r"^rule mwcc\n  command = (.*?)\n  depfile", ninja, re.M | re.S)
+    cmd = m.group(1).replace("$\n      ", "").split(" && ")[0]
+    version = None
+    extra = []
+    for line in Path(src).read_text(errors="replace").splitlines()[:10]:
+        mv = re.match(r"\s*//\s*mwcc-version:\s*(\S+)", line)
+        mf = re.match(r"\s*//\s*mwcc-flags:\s*(.+?)\s*$", line)
+        if mv:
+            version = mv.group(1)
+        if mf:
+            extra = mf.group(1).split()
+    cc = f"./tools/mwccarm/{version or '1.2/base'}/mwccarm.exe"
+    cmd = cmd.replace('"$cc"', f'"{cc}"').replace("$cc_flags", " ".join(["-lang=c++"] + extra))
+    cmd = cmd.replace("$game_version", "usa").replace("-MD ", "").replace("$in", f'"{src}"')
+    cmd = re.sub(r"-o \$basedir\S*", f'-o "{out}"', cmd)
+    r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    sys.stdout.write(r.stdout + r.stderr)
+    return r.returncode
+
+
 # ---------------------------------------------------------------- diff
 def cmd_diff(ov):
     n = int(ov[2:])
@@ -576,12 +638,16 @@ if __name__ == "__main__":
     if not a:
         sys.exit(__doc__)
     if a[0] == "reverse":
-        cmd_reverse(a[1])
+        cmd_reverse(a[1], a[2] if len(a) > 2 else None)
+    elif a[0] == "check":
+        sys.exit(1 if cmd_check(a[1], a[2]) else 0)
     elif a[0] == "undef":
         sys.exit(1 if cmd_undef(a[1]) else 0)
     elif a[0] == "data":
         seed = int(a[a.index("--seed") + 1]) if "--seed" in a else 1
         cmd_data(a[1], a[2], a[3], "--apply" in a, seed)
+    elif a[0] == "compile":
+        sys.exit(cmd_compile(a[1], a[2]))
     elif a[0] == "diff":
         sys.exit(1 if cmd_diff(a[1]) else 0)
     else:
