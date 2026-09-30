@@ -221,3 +221,6 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov101: ov101_001's plain-C struct 'Unk_ov101_0229556c' is the ov101 scene class Unk_ov101_02296b38; rename when linking.
 - ov098: all ov098 code is methods of the ov096 scene class Unk_ov096_0229aea8 (state handlers referenced from ov096 data); ov098 has no class of its own. unk_c4 is s32; 0x27fc is Unk_ov002_022040ec (0x108).
 - ov102: scene class Unk_ov102_02297520 (vtable 0x02297520, size 0x24d8), 10-entry vfunc_4c table.
+- ov103: scene class Unk_ov103_02296da0 (vtable 0x02296da0, ~0x2b04 bytes); 0x2678 is a 0x210 sub-object (func_0206d40c), flags at 0x28f8.
+- ov103: ov103_001's plain-C struct 'Unk_ov103_0229555c' is ov103's scene class Unk_ov103_02296da0; rename when linking.
+- GENERAL (ov096-ov104 scene overlays): the _001/_002 groups often write state handlers as extern "C" free fns on a flat struct, but the vfunc_4c/vfunc_50 static member-pointer tables (in the last group) need them as methods of the scene class. When linking an overlay, convert the free-fn groups to methods of the scene class (Unk_ovNNN_<vtable>) or the table entries won't resolve.
