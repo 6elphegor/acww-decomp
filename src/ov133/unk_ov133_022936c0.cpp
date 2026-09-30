@@ -306,7 +306,7 @@ void Unk_ov133_022952bc::func_ov133_02293988() {
     u32 b = unk_a3;
     u32 a = unk_a2;
     if (a != b) {
-        s32 lo, hi;
+        u32 lo, hi;
         if (a > b) {
             lo = b;
             hi = a;
@@ -314,9 +314,9 @@ void Unk_ov133_022952bc::func_ov133_02293988() {
             lo = a;
             hi = b;
         }
-        s32 x0 = lo * 2 + 4;
-        s32 x1 = hi * 2 + 3;
-        func_0206ee80(unk_b00, x0, 7, x1, 8, 8);
+        lo = lo * 2 + 4;
+        hi = hi * 2 + 3;
+        func_0206ee80(unk_b00, lo, 7, hi, 8, 8);
     }
 }
 

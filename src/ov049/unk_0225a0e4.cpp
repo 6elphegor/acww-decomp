@@ -461,8 +461,12 @@ void Unk_ov049_0225be74::vfunc_78(Unk_ov049_0225a714_Out *out) {
         }
     } else if (func_ov049_0225aa48() == 5) {
         u8 *g = data_021d7350;
-        BOOL f = Unk_ov049_0225a434_R2(unk_ac, 0x3e04, 0x3e23);
-        u32 v = unk_ac->unk_734;
+        Unk_ov049_0225a434_Owner *o = unk_ac;
+        BOOL f = FALSE;
+        if (o->unk_734 >= 0x3e04 && o->unk_734 <= 0x3e23) {
+            f = TRUE;
+        }
+        u32 v = o->unk_734;
         s32 t;
         if (f) {
             t = (s32)(v - 0x3e04) >> 2;

@@ -408,36 +408,25 @@ void Unk_ov107_02296e78::func_ov107_022950e8(u8 a, u8 b) {
 }
 
 void Unk_ov107_02296e78::func_ov107_02295130() {
-    u8 k;
-    s32 idx;
-    s32 x;
-    u8 r;
-    BOOL ok;
-    u32 a;
-    u32 b;
-    volatile u16 v;
-    k = func_ov107_02294e14();
-    if (func_ov003_02227434(k) == 0) {
-        v = func_ov107_02295bb0(unk_b9);
-        ok = FALSE;
-        a = v;
-        b = v;
-        if (b < 0x12b0 || a > 0x12e7) {
-        } else {
+    s32 r7 = func_ov107_02294e14();
+    if (func_ov003_02227434(r7) == 0) {
+        struct { u16 a; } l;
+        l.a = func_ov107_02295bb0(unk_b9);
+        BOOL ok = FALSE;
+        volatile u16 *pv = &l.a;
+        u16 a = *pv;
+        u16 b = *pv;
+        if (b >= 0x12b0 && a <= 0x12e7) {
             ok = TRUE;
         }
-        if (ok) {
-            idx = a - 0x12b0;
-        } else {
-            idx = -1;
-        }
-        r = func_02063b8c(0x3c);
-        x = (s16)(((s32)r - 0x1e) * 0xb6);
-        x = (s16)(x + *(s16 *)(func_02095204(4) + 0x8e));
-        func_ov003_02227248((u8)idx, k);
-        func_ov003_0222746c(k, x);
+        s32 r5 = ok ? a - 0x12b0 : -1;
+        u8 t = func_02063b8c(0x3c);
+        s16 x = (t - 0x1e) * 0xb6;
+        x += *(s16 *)(func_02095204(4) + 0x8e);
+        func_ov003_02227248((u8)r5, r7);
+        func_ov003_0222746c(r7, x);
         func_ov003_02212504(0);
-        func_ov107_022950e8((u8)idx, r);
+        func_ov107_022950e8((u8)r5, t);
         func_ov002_02200a58(0x12);
         func_ov107_02295568();
     }

@@ -646,13 +646,8 @@ BOOL Unk_ov053_0225a558::func_ov053_022595f4() {
     *(Unk_ov053_02258e7c_Vec *)&v = *src;
     s32 bx1 = 0, by1 = 0, bx2 = 0, by2 = 0;
     Unk_ov053_02258e7c_Loc w;
-    s32 dz, dy, dx;
-    dx = data_ov053_0225a194.x;
-    w.x = dx;
-    dy = data_ov053_0225a194.y;
-    w.y = dy;
-    dz = data_ov053_0225a194.z;
-    w.z = dz;
+    *(Unk_ov053_02258e7c_Vec *)&w = data_ov053_0225a194;
+    s32 dx = w.x, dy = w.y, dz = w.z;
     func_0204ee10(&bx2, &by2, &w);
     func_0204ee10(&bx1, &by1, &v);
     switch (unk_714) {

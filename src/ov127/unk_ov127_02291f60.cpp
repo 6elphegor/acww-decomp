@@ -1,5 +1,8 @@
 #include "types.h"
 
+// File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
+#pragma opt_loop_invariants off
+
 struct Unk_ov127_02291f60_Vec {
     s32 x, y, z;
 };
@@ -94,8 +97,9 @@ BOOL func_ov127_02291f60(Unk_ov127_02291fcc *p)
         }
         func_ov127_02291fcc(q, data_ov127_022940b4);
         for (j = 0; j < 0x11 && data_ov127_022940a0[j] != 0xff; j++) {
+            u8 *pj = data_ov127_022940a0 + j;
             for (k = 0; k < 0x11 && data_ov127_022940b4[k] != 0xff; k++) {
-                if (data_ov127_022940a0[j] == data_ov127_022940b4[k]) {
+                if (*pj == data_ov127_022940b4[k]) {
                     return FALSE;
                 }
             }
@@ -119,9 +123,10 @@ void func_ov127_02291fcc(Unk_ov127_02291fcc *p, u8 *out)
         }
         q = func_ov127_0229207c(v);
         for (k = 0; k < 2; k++) {
-            for (j = 0; n >= j; j++) {
+            u8 *pk;
+            for (j = 0, pk = q + k; n >= j; j++) {
                 if (j == n) {
-                    out[n] = q[k];
+                    out[n] = *pk;
                     n++;
                     j = n + 1;
                 } else if (out[j] == q[k]) {
@@ -540,13 +545,10 @@ void func_ov127_02292780(void *s, s32 y)
 
 void func_ov127_022927a8(Unk_ov127_02291f60 *s, s32 a, s32 b)
 {
-    s32 q, pal, i;
-    u32 off;
+    s32 i, pal;
     for (i = 0; i < 4; i++) {
         pal = (i == s->unk_2834) ? 7 : b;
-        off = i << 2;
-        q = a >> 2;
-        func_02088730(1, data_ov127_02293fd4 + i * 8, q * *(s32 *)((u8 *)data_ov127_02293fb4 + off) + 0x80, q * *(s32 *)((u8 *)data_ov127_02293fc4 + off) + 0x60, pal, 1, 0);
+        func_02088730(1, data_ov127_02293fd4 + i * 8, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fb4 + (i << 2)) + 0x80, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fc4 + (i << 2)) + 0x60, pal, 1, 0);
     }
     s->unk_2834 = 4;
 }

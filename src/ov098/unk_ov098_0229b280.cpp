@@ -440,13 +440,9 @@ void Unk_ov096_0229aea8::func_ov098_0229b864(u8 a, u32 b) {
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
-    s32 r5;
-    s16 x;
     void *r7 = func_ov096_0229567c();
     if (func_ov003_02227434(r7) == 0) {
-        struct {
-            u16 a;
-        } l;
+        struct { u16 a; } l;
         l.a = func_ov096_02297b9c(unk_b6);
         BOOL ok = FALSE;
         volatile u16 *pv = &l.a;
@@ -455,10 +451,10 @@ void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
         if (b >= 0x12b0 && a <= 0x12e7) {
             ok = TRUE;
         }
-        r5 = ok ? a - 0x12b0 : -1;
+        s32 r5 = ok ? a - 0x12b0 : -1;
         u32 t = (u8)func_02063b8c(0x3c);
-        x = (t - 0x1e) * 0xb6;
-        x = x + *(s16 *)(func_02095204(4) + 0x8e);
+        s16 x = (t - 0x1e) * 0xb6;
+        x += *(s16 *)(func_02095204(4) + 0x8e);
         func_ov003_02227248((u8)r5, r7);
         func_ov003_0222746c(r7, x);
         func_ov003_02212504(0);

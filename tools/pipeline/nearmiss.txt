@@ -241,9 +241,7 @@ func_ov003_0222e1e0 ov003_069/ov003_069.cpp  # -O4,s; default-path pointer setup
 func_ov003_0222ef10 ov003_070/ov003_070.cpp  # -O4,s; 0x1000-q: orig adds r3,r0,#0; ldr r0,=0x1000; subs r1,r0,r3 (one extra instr)
 func_ov047_02259448 ov047_000/ov047_000.cpp  # -O4,s; first ldrb into r1 (ours r0)
 func_ov047_02259a8c ov047_001/ov047_001.cpp  # -O4,s; vfunc_14 dispatch: orig hoists local-static table base into r7 (ours reloads), regs only
-func_ov049_0225a714 ov049_002/ov049_002.cpp  # -O4,s; vfunc_78 state==5 branch: owner/flag/halfword reg allocation (~28 lines)
 func_ov003_02224bc4 ov003_054/ov003_054.cpp  # -O4,s; table-index temp regs r3/r1/r2 vs ours r2/r0/r1
-func_ov053_022595f4 ov053_000/ov053_000.cpp  # -O4,s; Vec3 x/y/z callee-saved regs rotated (orig r4/r6/r7, ours r7/r6/r4)
 func_ov050_0225c9dc ov050_005/ov050_005.cpp  # -O4,s; x/y/z callee-saved regs rotated (orig r4/r6/r7)
 func_ov050_0225c294 ov050_005/ov050_005.cpp  # -O4,s; &item hoisted into r6 (orig recomputes add sp,#36 and reloads ldrh)
 func_ov055_0225915c ov055_000/ov055_000.cpp  # -O4,s; this/flag r4<->r5 swap; ~60 variants tried
@@ -347,8 +345,6 @@ func_ov094_022937e4 ov094_002/ov094_002.cpp  # Thumb -O4,s C; ldrh *p into r2 (o
 func_ov087_02271b0c ov087_000/ov087_000.cpp  # Thumb -O4,s C++; unk_4cc.unk_1c |= 2: addr/const regs r0/r1 swapped (3 insns)
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
 func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stack-addr temp r1 vs orig r2, x0=loc[0] r2 vs r1 (+1 pool word)
-func_ov098_0229b8ac ov098_000/ov098_000.cpp  # Thumb -O4,s C++; idx (a-0x12b0 or -1) r4 vs orig r5, s16 x swapped (~40 variants tried)
-func_ov107_02295130 ov107_000/ov107_000.cpp  # Thumb -O4,s C++; this/idx/x in r6/r5/r4 (orig) vs r5/r4/r6 (~145 decl orders tried)
 func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend: eager rgb extraction/spill order differs, mwcc hoists 'x *= d' (~150 lines)
 func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
 func_ov117_02292690 ov117_000/ov117_000.cpp  # Thumb -O4,s C; orig ldr x; ldr z; asrs; asrs (loads paired), ours ldr/asrs/ldr/asrs (~100 shapes tried)
@@ -357,10 +353,8 @@ func_ov123_02293bd0 ov123_003/ov123_003.cpp  # Thumb -O4,s C; 4bpp nibble expans
 func_ov129_0229570c ov129_002/ov129_002.cpp  # Thumb -O4,s C; final else: pad word ldrh into r5 (orig) vs r0, constant reg swapped; 2 bytes short (120 decl perms tried)
 func_ov129_022943ec ov129_000/ov129_000.cpp  # Thumb -O4,s C++; 3 stack spill slots ordered differently (&st[k] temp / n); code identical (24 decl orders + hill-climb)
 func_ov129_0229497c ov129_000/ov129_000.cpp  # Thumb -O4,s C++; scheduling: orig computes masked x/y args before this+0x6b8, ours pointer first (mask in r3 vs r0)
-func_ov127_022927a8 ov127_000/ov127_000.cpp  # Thumb -O4,s C; orig recomputes a>>2 in-loop (no LICM); file-wide #pragma opt_loop_invariants off gets close (q/off regs differ) but breaks 02291f60/02291fcc — candidate for its own split unit with the pragma
 func_ov128_022942c4 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; 2nd compare unk_2d08 != unk_2d0c: r0/r1 swapped
 func_ov128_02294930 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; cursor clamp: &unk_2cf0/x/y/mask in r5/r2/r1/r3 (orig) vs r1/r3/r2/r5 (~120 decl perms)
-func_ov133_02293988 ov133_000/ov133_000.cpp  # Thumb -O4,s C++; min/max of two u8 then fill-rect: regs (a3 r1/a2 r2, min r0/max r2) differ and arg build order vs const-8 stores (~70 variants)
 func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
 ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
 ov123_002 func_ov123_02293784 — set-pixel: row/p register swap (r1/r2) only; 126 statement permutations + decl hill-climb tried
