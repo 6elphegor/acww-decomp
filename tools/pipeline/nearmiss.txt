@@ -274,3 +274,5 @@ func_ov065_02276f4c ov065_038/ov065_038.cpp  # -O4,p; final store group: movs r0
 func_ov065_0227330c ov065_033/ov065_033.cpp  # -O4,p; 0/-1 register choice per lookup site (28 lines)
 func_ov065_02273ad0 ov065_033/ov065_033.cpp  # -O4,p; regalloc: orig &G in r4, 0 in r1, 4 in r5 (106 lines)
 func_ov065_022780e0 ov065_040/ov065_040.cpp  # -O4,p; first compare: -1 const/loaded value regs r0<->r1
+func_ov065_02278c64 ov065_042/ov065_042.cpp  # -O4,p; 8-byte sockaddr copy: src/dst pointer regs swapped
+func_ov065_02278e64 ov065_042/ov065_042.cpp  # -O4,p; &data_02291094 in r1 vs orig r0
