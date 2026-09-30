@@ -79,12 +79,7 @@ public:
 // Vtable 0x0229aea8 (ov096 class; ov097 functions are free functions on it)
 class Unk_ov096_0229aea8 : public Unk_ov002_022044e4 {
 public:
-    void func_ov096_0229865c();
-    void func_ov096_02298334(s32 a, s32 b, s32 c);
-    u16 func_ov096_02297b9c(u32 a);
     void func_ov096_02294ed4();
-    void func_ov096_022980a0(u32 k, u32 x, u32 y);
-    void func_ov096_0229806c(u32 a);
 
     /* 0x91 */ u8 unk_91[0x25];
     /* 0xb6 */ u8 unk_b6;
@@ -93,6 +88,16 @@ public:
     /* 0xc8 */ u8 unk_c8[0x27f0 - 0xc8];
     /* 0x27f0 */ u8 unk_27f0[0x114];
 };
+
+extern "C" {
+void func_ov096_0229865c(class Unk_ov096_0229aea8 *self);
+void func_ov096_02298334(class Unk_ov096_0229aea8 *self, s32 a, s32 b, s32 c);
+u16 func_ov096_02297b9c(class Unk_ov096_0229aea8 *self, u32 a);
+void func_ov096_022980a0(class Unk_ov096_0229aea8 *self, u32 k, u32 x, u32 y);
+void func_ov096_0229806c(class Unk_ov096_0229aea8 *self, u32 a);
+}
+
+extern "C" BOOL func_ov097_0229b280();
 
 static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -104,57 +109,59 @@ static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" {
-BOOL func_ov097_0229b280() {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (g->func_02072e44()) {
-        if (g->unk_64 != 0 || func_020b0f54() > 1) {
-            return FALSE;
-        }
-    } else if (func_020b0f54() > 1) {
-        return FALSE;
-    }
-    return TRUE;
-}
-s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
-    u16 in = a;
-    u16 v;
-    s32 out;
-    func_02061168(&v, &in, 0);
-    if (func_0204b2d4(&v)) {
-        switch (func_ov004_02233f08(&out, &v, 1)) {
-        case 0:
-            self->func_ov096_0229865c();
-            self->func_ov096_02298334(3, 0xff, 0);
-            func_0200402c(0x73);
-            return 0;
-        case 1:
-            self->func_ov096_0229865c();
-            self->func_ov096_02298334(5, 0xff, 1);
-            func_0200402c(0x73);
-            return 0;
-        case 2:
-            self->func_ov096_0229865c();
-            self->func_ov096_02298334(3, 0xff, 0);
-            func_0200402c(0x73);
-            return 0;
-        default:
-            func_ov004_02235028(out);
-            break;
-        }
+extern "C" void func_ov097_0229b4a4(Unk_ov096_0229aea8 *self) {
+    if (!func_ov097_0229b280()) {
+        func_ov096_0229865c(self);
+        func_ov096_02298334(self, 23, 0xff, 1);
     } else {
-    self->unk_c4 = func_02042c64(data_020cbb18->unk_64, a);
-    if (self->unk_c4 == -1) {
-        self->func_ov096_0229865c();
-        self->func_ov096_02298334(3, 0xff, 0);
-        func_0200402c(0x73);
-        return 0;
+    u16 v0;
+    volatile u16 v1;
+    u32 k = self->unk_b6;
+    v0 = func_ov096_02297b9c(self, k);
+    self->func_ov096_02294ed4();
+    v1 = *func_02034250(&v0, 0, 1, 1);
+    BOOL r = FALSE;
+    u32 x = v1;
+    u32 y = v1;
+    if (y >= 0x1144 && x <= 0x1187) {
+        r = TRUE;
     }
-    return 2;
+    if (r) {
+        func_ov096_022980a0(self, k, x, 0);
+    } else {
+        func_ov096_0229806c(self, k);
     }
-    return 1;
+    func_ov096_0229865c(self);
+    }
 }
-void func_ov097_0229b3a4(Unk_ov096_0229aea8 *self, s32 a) {
+
+extern "C" void func_ov097_0229b414(Unk_ov096_0229aea8 *self) {
+    if (!func_ov097_0229b280()) {
+        func_ov096_0229865c(self);
+        func_ov096_02298334(self, 24, 0xff, 1);
+    } else {
+    u16 v0;
+    volatile u16 v1;
+    u32 k = self->unk_b6;
+    v0 = func_ov096_02297b9c(self, k);
+    self->func_ov096_02294ed4();
+    v1 = *func_020342cc(&v0, 0, 1, 1);
+    BOOL r = FALSE;
+    u32 x = v1;
+    u32 y = v1;
+    if (y >= 0x1100 && x <= 0x1143) {
+        r = TRUE;
+    }
+    if (r) {
+        func_ov096_022980a0(self, k, x, 0);
+    } else {
+        func_ov096_0229806c(self, k);
+    }
+    func_ov096_0229865c(self);
+    }
+}
+
+extern "C" void func_ov097_0229b3a4(Unk_ov096_0229aea8 *self, s32 a) {
     if (func_ov097_0229b280()) {
         volatile u16 v = a;
         BOOL r = FALSE;
@@ -170,55 +177,55 @@ void func_ov097_0229b3a4(Unk_ov096_0229aea8 *self, s32 a) {
         }
     }
 }
-void func_ov097_0229b414(Unk_ov096_0229aea8 *self) {
-    if (!func_ov097_0229b280()) {
-        self->func_ov096_0229865c();
-        self->func_ov096_02298334(24, 0xff, 1);
+
+extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
+    u16 in = a;
+    u16 v;
+    s32 out;
+    func_02061168(&v, &in, 0);
+    if (func_0204b2d4(&v)) {
+        switch (func_ov004_02233f08(&out, &v, 1)) {
+        case 0:
+            func_ov096_0229865c(self);
+            func_ov096_02298334(self, 3, 0xff, 0);
+            func_0200402c(0x73);
+            return 0;
+        case 1:
+            func_ov096_0229865c(self);
+            func_ov096_02298334(self, 5, 0xff, 1);
+            func_0200402c(0x73);
+            return 0;
+        case 2:
+            func_ov096_0229865c(self);
+            func_ov096_02298334(self, 3, 0xff, 0);
+            func_0200402c(0x73);
+            return 0;
+        default:
+            func_ov004_02235028(out);
+            break;
+        }
     } else {
-    u16 v0;
-    volatile u16 v1;
-    u32 k = self->unk_b6;
-    v0 = self->func_ov096_02297b9c(k);
-    self->func_ov096_02294ed4();
-    v1 = *func_020342cc(&v0, 0, 1, 1);
-    BOOL r = FALSE;
-    u32 x = v1;
-    u32 y = v1;
-    if (y >= 0x1100 && x <= 0x1143) {
-        r = TRUE;
+    self->unk_c4 = func_02042c64(data_020cbb18->unk_64, a);
+    if (self->unk_c4 == -1) {
+        func_ov096_0229865c(self);
+        func_ov096_02298334(self, 3, 0xff, 0);
+        func_0200402c(0x73);
+        return 0;
     }
-    if (r) {
-        self->func_ov096_022980a0(k, x, 0);
-    } else {
-        self->func_ov096_0229806c(k);
+    return 2;
     }
-    self->func_ov096_0229865c();
-    }
+    return 1;
 }
 
-void func_ov097_0229b4a4(Unk_ov096_0229aea8 *self) {
-    if (!func_ov097_0229b280()) {
-        self->func_ov096_0229865c();
-        self->func_ov096_02298334(23, 0xff, 1);
-    } else {
-    u16 v0;
-    volatile u16 v1;
-    u32 k = self->unk_b6;
-    v0 = self->func_ov096_02297b9c(k);
-    self->func_ov096_02294ed4();
-    v1 = *func_02034250(&v0, 0, 1, 1);
-    BOOL r = FALSE;
-    u32 x = v1;
-    u32 y = v1;
-    if (y >= 0x1144 && x <= 0x1187) {
-        r = TRUE;
+extern "C" BOOL func_ov097_0229b280() {
+    Unk_020cbb18 *g = data_020cbb18;
+    if (g->func_02072e44()) {
+        if (g->unk_64 != 0 || func_020b0f54() > 1) {
+            return FALSE;
+        }
+    } else if (func_020b0f54() > 1) {
+        return FALSE;
     }
-    if (r) {
-        self->func_ov096_022980a0(k, x, 0);
-    } else {
-        self->func_ov096_0229806c(k);
-    }
-    self->func_ov096_0229865c();
-    }
+    return TRUE;
 }
-}
+
