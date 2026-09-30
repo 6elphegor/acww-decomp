@@ -288,3 +288,6 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov141: scene class Unk_ov141_02293968 (vtable 0x02293968, size 0x1674), loads at 0x02292900; +0x94 is the ov139 library object (ctor func_ov139_0229256c, 0x624).
 - ov142: scene class Unk_ov142_02294da8 (vtable 0x02294da8), loads at 0x02291f60; ov142_001 stands in u8 unk_00[0x9c] for base+vptr — use the real Unk_ov002_022044e4 base when merging.
 - ov139: Unk_ov139_02291f60 is a non-virtual menu helper (0x624; member at +0 is Unk_ov002_02204770; ctor func_ov139_0229256c) embedded in ov140 (+0x8e8) and ov141 (+0x94); ov142 D0/D1 of ~Unk_ov142_02294da8 emitted by ov142_004 are unreferenced (vtable slots 0x40/0x44 = func_ov142_02291f60/02291fb0) — drop if duplicate.
+- ov143: scene class Unk_ov143_02293b80 (melody editor), loads at 0x02291f60; D1/D0 at 02291f60/02291fa4.
+- ov144: scene class Unk_ov144_02293db8 (vtable 0x02293db8, size 0x1f04), loads at 0x02291f60.
+- ov143: ov143_001 wrote extern "C" free fns on a struct S while ov143_000 uses methods of Unk_ov143_02293b80 — convert ov143_001 to methods when linking (see GENERAL note).

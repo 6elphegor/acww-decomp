@@ -6,3 +6,12 @@
 
 src/ov095/unk_02292360.cpp:
     .text       start:0x02292360 end:0x02292e50
+
+src/ov095/unk_02295340.cpp:
+    .text       start:0x02295340 end:0x02295454
+
+src/ov095/unk_022940f0.cpp:
+    .text       start:0x022940f0 end:0x02294a2c
+
+src/ov095/unk_022937a8.cpp:
+    .text       start:0x022937a8 end:0x022940f0
