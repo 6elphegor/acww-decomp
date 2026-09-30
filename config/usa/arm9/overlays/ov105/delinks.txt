@@ -4,20 +4,9 @@
     .data       start:0x02298320 end:0x02298660 kind:data align:32
     .bss        start:0x02298660 end:0x02298820 kind:bss align:32
 
-src/ov105/unk_022967e8.cpp:
-    .text       start:0x022967e8 end:0x022970f0
-
-src/ov105/unk_02295ebc.cpp:
-    .text       start:0x02295ebc end:0x022967e8
-
 src/ov105/unk_ov105_02294c40.cpp:
-    .text       start:0x02294c40 end:0x02295594
-
-src/ov105/unk_022970f0.cpp:
-    .text       start:0x022970f0 end:0x02297a4c
-
-src/ov105/unk_02295594.cpp:
-    .text       start:0x02295594 end:0x02295ebc
-
-src/ov105/unk_02297a4c.cpp:
-    .text       start:0x02297a4c end:0x02298314
+    complete
+    .text       start:0x02294c40 end:0x02298314
+    .rodata     start:0x02298314 end:0x0229831c
+    .data       start:0x02298320 end:0x02298660
+    .bss        start:0x02298660 end:0x02298820
