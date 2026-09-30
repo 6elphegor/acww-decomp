@@ -277,3 +277,4 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov127: ov129_001 calls func_ov127_022923c0(void*, u32 idx, u32 v) and func_ov127_02292380(void*, s32 x, s32 y); ov127_000's versions have different signatures — check the real ones when linking.
 - ov132: scene class Unk_ov132_02294390 (vtable 0x02294390, size 0x1434), loads at 0x022936c0; sibling of ov131, no ov130 object.
 - ov130: ov130_000 writes extern "C" free fns on struct Unk_ov130_02292360; ov130_001 writes methods of the same class (ctor/dtor). Reconcile to methods when linking.
+- ov133: scene class Unk_ov133_022952bc (vtable 0x022952bc, size 0x1408), loads at 0x022936c0.
