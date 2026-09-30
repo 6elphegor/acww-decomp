@@ -7,3 +7,6 @@
 
 src/ov050/unk_ov050_02258de0.cpp:
     .text       start:0x02258de0 end:0x02259718
+
+src/ov050/unk_0225d51c.cpp:
+    .text       start:0x0225d51c end:0x0225da28
