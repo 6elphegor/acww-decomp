@@ -4,3 +4,6 @@
 
 src/ov117/unk_02292c88.cpp:
     .text       start:0x02292c88 end:0x02292cd4
+
+src/ov117/unk_ov117_02292360.cpp:
+    .text       start:0x02292360 end:0x02292c88

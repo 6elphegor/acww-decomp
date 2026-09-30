@@ -65,8 +65,8 @@ func_ov125_022980b8 kind:function(thumb,size=0x1c) addr:0x022980b8
 func_ov125_022980d4 kind:function(thumb,size=0xe8) addr:0x022980d4
 func_ov125_022981bc kind:function(thumb,size=0xa0) addr:0x022981bc
 func_ov125_0229825c kind:function(thumb,size=0xcc) addr:0x0229825c
-func_ov125_02298328 kind:function(thumb,size=0x1a) addr:0x02298328
-func_ov125_02298344 kind:function(thumb,size=0x1e) addr:0x02298344
+_ZN18Unk_ov125_022984788vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02298328
+_ZN18Unk_ov125_022984788vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02298344
 func_ov125_02298364 kind:function(thumb,size=0x60) addr:0x02298364
 data_ov125_022983c4 kind:data(any) addr:0x022983c4
 data_ov125_022983d0 kind:data(any) addr:0x022983d0
