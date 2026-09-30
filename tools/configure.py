@@ -212,7 +212,7 @@ def main():
 
         n.rule(
             name="force_active",
-            command=f"{PYTHON} tools/force_active.py $in -o $out"
+            command=f"{PYTHON} tools/force_active.py $in -o $out --symbols $symbols_files"
         )
         n.newline()
 
@@ -347,9 +347,12 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
     force_active_lcf_file = str(project.game_build / "arm9_force_active.lcf")
     n.build(
         inputs=[objects_file, lcf_file],
-        implicit=["tools/force_active.py", delink_file],
+        implicit=["tools/force_active.py", delink_file] + project.symbols_files,
         rule="force_active",
         outputs=force_active_lcf_file,
+        variables={
+            "symbols_files": " ".join(project.symbols_files),
+        },
     )
     n.newline()
 
