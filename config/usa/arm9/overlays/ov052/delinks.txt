@@ -5,11 +5,11 @@
     .data       start:0x0225a760 end:0x0225a9c0 kind:data align:32
     .bss        start:0x0225a9c0 end:0x0225aa80 kind:bss align:32
 
-src/ov052/unk_0225a35c.cpp:
-    .text       start:0x0225a35c end:0x0225a5a4
-
-src/ov052/unk_02259a18.cpp:
-    .text       start:0x02259a18 end:0x0225a35c
-
 src/ov052/unk_ov052_02258de0.cpp:
-    .text       start:0x02258de0 end:0x02259a18
+    complete
+    .text       start:0x02258de0 end:0x0225a5a4
+    .rodata     start:0x0225a5a4 end:0x0225a60c
+    .init       start:0x0225a60c end:0x0225a750
+    .ctor       start:0x0225a750 end:0x0225a754
+    .data       start:0x0225a760 end:0x0225a9c0
+    .bss        start:0x0225a9c0 end:0x0225aa80

@@ -9,7 +9,7 @@ _ZN18Unk_ov085_02271e1c19func_ov085_02271878EP18Unk_ov085_02271eb0 kind:function
 _ZN18Unk_ov085_02271e1cD0Ev kind:function(thumb,size=0x20) addr:0x0227189c
 _ZN18Unk_ov085_02271e1cD1Ev kind:function(thumb,size=0x18) addr:0x022718bc
 _ZN18Unk_ov085_02271e1cC1Ev kind:function(thumb,size=0x18) addr:0x022718d4
-_ZN18Unk_ov085_02271e1c8vfunc_88Ev kind:function(thumb,size=0x120) addr:0x022718ec
+_ZN18Unk_ov085_02271e1c8vfunc_8cEv kind:function(thumb,size=0x120) addr:0x022718ec
 _ZN18Unk_ov085_02271eb019func_ov085_02271a0cEv kind:function(thumb,size=0x4) addr:0x02271a0c
 _ZN18Unk_ov085_02271eb019func_ov085_02271a10Ev kind:function(thumb,size=0x2c) addr:0x02271a10
 _ZN18Unk_ov085_02271eb019func_ov085_02271a3cEv kind:function(thumb,size=0x38) addr:0x02271a3c
