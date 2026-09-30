@@ -7,3 +7,6 @@
 
 src/ov048/unk_022596e8.cpp:
     .text       start:0x022596e8 end:0x0225a000
+
+src/ov048/unk_ov048_02258de0.cpp:
+    .text       start:0x02258de0 end:0x022596e8
