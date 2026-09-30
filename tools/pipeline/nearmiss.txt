@@ -319,3 +319,5 @@ func_ov068_0226196c ov068_004/ov068_004.cpp  # Thumb -O4,s C++; ldrsh global com
 func_ov067_0225f8f4 ov067_000/ov067_000.cpp  # ARM -O4,p; ring search: result in r0 vs orig r6, constants ip/lr vs r0/ip, dup vs shared epilogue (29 lines)
 func_ov065_022818f4 ov065_056/ov065_056.cpp  # -O4,p; 7-word Elem zeroing via materialised sp+4 ptr vs ours sp-relative
 func_ov065_02281bf4 ov065_056/ov065_056.cpp  # -O4,p; 0x139c ghttp request builder/parser: r4-r7 class permutation only (allocator near-tie)
+func_ov068_02264188 ov068_008/ov068_008.cpp  # Thumb -O4,s C++; switch {8,12,22,27,34} compare-tree split differs
+func_ov068_022645dc ov068_008/ov068_008.cpp  # Thumb -O4,s C++; missing adds r0,r0,#0 before cmp #1 (2 bytes)
