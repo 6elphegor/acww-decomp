@@ -336,3 +336,5 @@ func_ov074_02271b0c ov074_000/ov074_000.cpp  # Thumb -O4,s C++; same call-result
 func_ov073_02271484 ov073_000/ov073_000.cpp  # Thumb -O4,s C++; vfunc_18 switch tree: orig table under cmp 0;bge with no upper check (goto_try.cpp gets closer)
 func_ov081_0227186c ov081_000/ov081_000.cpp  # Thumb -O4,s C++; extra add r0,sp,#0 before bl (orig reuses r0=sp+0), 2 bytes long
 func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
+func_ov094_02293fc4 ov094_003/ov094_003.cpp  # Thumb -O4,s C++; data base/halfword regs r1<->r2 + extra adds (2 bytes long)
+func_ov093_02291a3c ov093_000/ov093_000.cpp  # Thumb -O4,s C++; last else block arg evaluation order (r3 first via zero r0), 2 bytes long
