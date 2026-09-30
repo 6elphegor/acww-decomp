@@ -209,3 +209,7 @@ ov074_000/001: 001 shows +0x710 member is Unk_ov074_022714e0 {u32; Unk_020b895c}
 ov082_000/001: sub-object is Unk_ov082_0227214c (000, from vtable) but 001 named it Unk_ov082_02271a3c (after ctor); 001 uses it only in declarations -> rename in 001 at merge.
 ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (001 modelled it opaque as non-derived); vfunc_a0 returns s32 in 000 local Unk_020d77a4 copy.
 - ov096: func_ov096_0229a39c is declared void in ov096_008 but ov096_007 (02299114) tests its result -> s32.
+- ov096: ov096_005/006 write functions as extern "C" free fns on `Unk_ov096_02294c40 *s`; ov096_001/002/004/007/008/010 use methods of `Unk_ov096_0229aea8` (same object). E.g. 008 declares func_ov096_02298504/0229849c/0229862c as methods; 006 defines them free. Pick one when linking.
+- ov096: func_ov002_022013e4 is s32 (self, s32, u32) per ov096_006; ov096_008 declares it void. func_ov002_02201490 returns u32.
+- ov095: func_ov095_02293b0c returns Unk_ov095_02294dc0_Entry* (8-byte {u32; u32 lo:12,pal:4,hi:16}) per ov095_004; ov095_002 declares void*.
+- ov096: func_ov096_0229a39c is defined in ov096_009 as BOOL Unk_ov096_0229aea8::func_ov096_0229a39c(s32) (resolves the 007/008 void-vs-s32 note). ov096_009's static table at 0x0229b094 also holds ov098 methods (func_ov098_0229b8ac etc.) of Unk_ov096_0229aea8, so the ov098 code is the same class.
