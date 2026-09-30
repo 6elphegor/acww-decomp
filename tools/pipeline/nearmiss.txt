@@ -276,3 +276,5 @@ func_ov065_02273ad0 ov065_033/ov065_033.cpp  # -O4,p; regalloc: orig &G in r4, 0
 func_ov065_022780e0 ov065_040/ov065_040.cpp  # -O4,p; first compare: -1 const/loaded value regs r0<->r1
 func_ov065_02278c64 ov065_042/ov065_042.cpp  # -O4,p; 8-byte sockaddr copy: src/dst pointer regs swapped
 func_ov065_02278e64 ov065_042/ov065_042.cpp  # -O4,p; &data_02291094 in r1 vs orig r0
+func_ov065_0226f9e0 ov065_027/ov065_027.cpp  # -O4,p; base64 decode: loop regalloc + tmp base sp+4 vs sp+8 (volatile max)
+func_ov065_0226fee4 ov065_027/ov065_027.cpp  # -O4,p; entry 12-byte zeroing regs r1/r0 vs orig r4/r3
