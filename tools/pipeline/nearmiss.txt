@@ -334,3 +334,5 @@ func_ov068_0226ddac ov068_024/ov068_024.cpp  # Thumb -O4,s C++; 2 sites fold [r4
 func_ov074_02271450 ov074_000/ov074_000.cpp  # Thumb -O4,s C++; call result copied to r1 (adds r1,r0,#0) before cmp; ours cmp r0
 func_ov074_02271b0c ov074_000/ov074_000.cpp  # Thumb -O4,s C++; same call-result-to-r1 pattern
 func_ov073_02271484 ov073_000/ov073_000.cpp  # Thumb -O4,s C++; vfunc_18 switch tree: orig table under cmp 0;bge with no upper check (goto_try.cpp gets closer)
+func_ov081_0227186c ov081_000/ov081_000.cpp  # Thumb -O4,s C++; extra add r0,sp,#0 before bl (orig reuses r0=sp+0), 2 bytes long
+func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
