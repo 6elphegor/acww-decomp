@@ -5,3 +5,15 @@
 
 src/ov119/unk_02295260.cpp:
     .text       start:0x02295260 end:0x02295574
+
+src/ov119/unk_02293f68.cpp:
+    .text       start:0x02293f68 end:0x02294894
+
+src/ov119/unk_ov119_02292d00.cpp:
+    .text       start:0x02292d00 end:0x02293640
+
+src/ov119/unk_02294894.cpp:
+    .text       start:0x02294894 end:0x02295260
+
+src/ov119/unk_02293640.cpp:
+    .text       start:0x02293640 end:0x02293f68
