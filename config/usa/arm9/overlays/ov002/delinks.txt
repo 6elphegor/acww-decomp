@@ -12,3 +12,6 @@ src/ov002/unk_02200fa8.cpp:
 
 src/ov002/unk_022018e4.cpp:
     .text       start:0x022018e4 end:0x02202200
+
+src/ov002/unk_02202200.cpp:
+    .text       start:0x02202200 end:0x02202b68
