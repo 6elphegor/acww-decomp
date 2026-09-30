@@ -8,3 +8,15 @@ src/ov066/unk_ov066_0225f1a0.cpp:
 
 src/ov066/unk_0225faf8.cpp:
     .text       start:0x0225faf8 end:0x02260518
+
+src/ov066/unk_02260518.cpp:
+    .text       start:0x02260518 end:0x02260e18
+
+src/ov066/unk_02260e18.cpp:
+    .text       start:0x02260e18 end:0x02261764
+
+src/ov066/unk_02262074.cpp:
+    .text       start:0x02262074 end:0x022629cc
+
+src/ov066/unk_0226453c.cpp:
+    .text       start:0x0226453c end:0x02264778

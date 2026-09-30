@@ -260,3 +260,7 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov122: scene class Unk_ov122_0229a1b8 (vtable 0x0229a1b8), loads at 0x02296840, ov095 sub-object at +0xc0; not a copy of ov111/112.
 - ov121: +0x398 sub-object needs virtual vfunc_0c (ov121_003); ov121_004's copy lacks it. ov121_003 defines 02294514/550/590/5c8 (vfunc_4c table targets) — ov121_004 only declares them.
 - ov122: size 0x4664. The two arrays at +0x23b4/+0x23fc (Unk_020b8800[2], Unk_0206fcc8[2]) belong INSIDE the ov095 sub-object at +0xc0 (size 0x23bc), not the scene class as ov122_000 has it. Fields: u8 *unk_94, s32 unk_98.
+- ov122: ov122_002's plain-C struct Unk_ov122_02296840 is ov122's scene class Unk_ov122_0229a1b8; rename when linking.
+- ov123: scene class Unk_ov123_022959c4 (vtable 0x022959c4, size 0x5168), loads at 0x02291f60. ov123_005 defines ~Unk_ov123_022959c4(){} only for the vtable — drop it (D1/D0 in ov123_000).
+- ov122: unk_a4 is s32 (ov122_000 has u8[4]); unk_94/unk_98 s32.
+- ov125: scene class Unk_ov125_02298478 (vtable 0x02298478, size 0x6bc), loads at 0x02297060; +0x94 sub-object ctor func_ov112_02296e14 (shared address).

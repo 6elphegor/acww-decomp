@@ -195,3 +195,15 @@ src/ov065/unk_022868b0.cpp:
 
 src/ov065/unk_02284b8c.cpp:
     .text       start:0x02284b8c end:0x02285630
+
+src/ov065/unk_02287b18.cpp:
+    .text       start:0x02287b18 end:0x022884fc
+
+src/ov065/unk_02288e2c.cpp:
+    .text       start:0x02288e2c end:0x02289808
+
+src/ov065/unk_0228ab3c.cpp:
+    .text       start:0x0228ab3c end:0x0228b2a4
+
+src/ov065/unk_02287200.cpp:
+    .text       start:0x02287200 end:0x02287b18
