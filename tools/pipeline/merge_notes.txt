@@ -246,3 +246,4 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov116 is a near-copy of ov115 (same base 0x022967e0, 27 differing bytes in 0x02296c78..0x02296f..). ov116_001 = sed s/ov115/ov116/ of ov115_001.
 - ov118: scene class Unk_ov118_022955c8 (vtable 0x022955c8, size 0x459c), loads at 0x02292d00.
 - ov114: ov114_002's non-polymorphic class Unk_ov114_02294c40 (C1 func_ov114_022964d8, size ~0x129c, fish menu) is the ov114 sub-object embedded at +0xf8 in ov115/ov116's scene class (their Unk_ov11x_ov114_022964d8).
+- ov114: ov114_000 writes extern "C" free fns on struct Unk_ov114_02294c40; ov114_002 writes the same object as a non-polymorphic class with methods. Same offsets (flags u16 at 0x1288 etc.). Reconcile (methods) when linking.

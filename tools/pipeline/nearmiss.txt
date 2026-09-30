@@ -351,3 +351,4 @@ func_ov098_0229b8ac ov098_000/ov098_000.cpp  # Thumb -O4,s C++; idx (a-0x12b0 or
 func_ov102_02296278 ov102_002/ov102_002.cpp  # Thumb -O4,s C; &unk_24d5 ptr/value r1/r2 swapped (~25 variants tried)
 func_ov107_02295130 ov107_000/ov107_000.cpp  # Thumb -O4,s C++; this/idx/x in r6/r5/r4 (orig) vs r5/r4/r6 (~145 decl orders tried)
 func_ov112_022998c4 ov112_005/ov112_005.cpp  # Thumb -O4,s C++ factory; inline ctor loops: orig chains loop-1 end reg (r4) as base for 0x22f4/0x233c offsets, ours folds this+0x2664/0x26ac
+func_ov114_02294ed0 ov114_000/ov114_000.cpp  # Thumb -O4,s C; c>=0xd arm: orig subs r6,#13 in place before bl, ours sinks it; pad/c regs r4/r6 swapped
