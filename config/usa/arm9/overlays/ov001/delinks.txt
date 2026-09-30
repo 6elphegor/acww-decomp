@@ -165,3 +165,6 @@ src/ov001/unk_02220178.cpp:
 
 src/ov001/unk_02220ad8.cpp:
     .text       start:0x02220ad8 end:0x02221454
+
+src/ov001/unk_02221454.cpp:
+    .text       start:0x02221454 end:0x02221db4
