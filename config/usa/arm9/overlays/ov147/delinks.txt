@@ -7,3 +7,9 @@
 
 src/ov147/unk_02292da4.cpp:
     .text       start:0x02292da4 end:0x022930bc
+
+src/ov147/unk_0229246c.cpp:
+    .text       start:0x0229246c end:0x02292da4
+
+src/ov147/unk_ov147_022918e0.cpp:
+    .text       start:0x022918e0 end:0x0229246c

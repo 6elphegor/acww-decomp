@@ -5,3 +5,12 @@
 
 src/ov146/unk_02293d2c.cpp:
     .text       start:0x02293d2c end:0x02293dec
+
+src/ov146/unk_022931f8.cpp:
+    .text       start:0x022931f8 end:0x02293d2c
+
+src/ov146/unk_ov146_02291f60.cpp:
+    .text       start:0x02291f60 end:0x022928a8
+
+src/ov146/unk_022928a8.cpp:
+    .text       start:0x022928a8 end:0x022931f8
