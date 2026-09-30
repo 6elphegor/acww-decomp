@@ -266,3 +266,7 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov125: scene class Unk_ov125_02298478 (vtable 0x02298478, size 0x6bc), loads at 0x02297060; +0x94 sub-object ctor func_ov112_02296e14 (shared address).
 - ov123: unk_98 must be s32 (ov123_004: blt/bge/rsbs); ov123_000/001 have u32. func_ov123_0229249c takes u32 (000 has void*).
 - ov124: not a scene overlay; single non-polymorphic class Unk_ov124_02296840 (C1 0x02296e14, D1 0x02296df0, ~0x94 bytes, menu/han). ov125's +0x94 sub-object (ctor 'func_ov112_02296e14', shared address) is very likely this class — ov124 is loaded alongside ov125/ov112-style scenes.
+- ov123: ov123_003's plain-C struct Unk_ov123_02293b0c is ov123's scene class Unk_ov123_022959c4.
+- ov126: scene class Unk_ov126_02299ae8 (vtable 0x02299ae8, size 0x40c8), loads at 0x02297060; +0xb0 is the ov124 class (C1 0x02296e14), +0x144 the ov095 sub-object (ov112_005 nested-array pattern).
+- ov126: ov126_001's plain-C struct Unk_ov126_02297994 is ov126's scene class Unk_ov126_02299ae8; flag word u16 at 0xa4.
+- ov126: ov126_000 declares Unk_0206fca8[2] at +0x2480 as a scene member, but it is 0x144+0x233c, i.e. inside the ov095 sub-object (ov126_004's layout, which the factory needs). Use ov126_004's nesting; D1 still destroys it in the same order.

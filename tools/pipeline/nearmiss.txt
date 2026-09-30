@@ -355,3 +355,4 @@ func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend
 func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
 func_ov117_02292690 ov117_000/ov117_000.cpp  # Thumb -O4,s C; orig ldr x; ldr z; asrs; asrs (loads paired), ours ldr/asrs/ldr/asrs (~100 shapes tried)
 func_ov117_022929f4 ov117_000/ov117_000.cpp  # same shape as 02292690
+func_ov123_02293bd0 ov123_003/ov123_003.cpp  # Thumb -O4,s C; 4bpp nibble expansion loop: register renaming (dst/src/sh/tmp) + i/j stack slots swapped; frame and insn sequence match (~50 decl perms tried)
