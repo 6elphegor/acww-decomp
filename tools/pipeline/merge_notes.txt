@@ -204,3 +204,4 @@ ov068_019/020: class Unk_ov068_02270110 : Unk_ov009_0225e29c (vtable 0x02270110)
 ov068_012: emits compiler-generated D1/D2 not in pairs.txt (Unk_ov068_0226fea4 D1 duplicates 013s func_ov068_02266f94); stand-in bases Unk_020d8bc8 / Unk_020d8b38 must be replaced by real decls (src/main/unk_0202da64.cpp etc.) at link time. Camera-mode methods belong to main class Unk_0203a9b8.
 ov068_019/020: 019 modelled Unk_ov068_02270110 bases as local stand-ins A (0xec) + B (at +0xec); 020 uses the real Unk_ov009_0225e29c : Unk_020d9670, Unk_020ddcf0 — adopt 020s.
 ov068_024: defines out-of-range ctor Unk_ov068_02270a6c::Unk_ov068_02270a6c() {} (needed so mwcc emits its D0/D1 in range); drop when the real owner group is linked. Also emits unpaired X2/X4 D2 extras.
+ov076_000/001: func_ov076_02271d20 is an owner method (setState) in 001 but a free extern "C" prototype in 000; pick method at merge.

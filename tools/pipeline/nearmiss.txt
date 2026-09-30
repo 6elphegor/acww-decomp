@@ -331,3 +331,5 @@ func_ov068_0226cd18 ov068_023/ov068_023.cpp  # Thumb -O4,s C++; table-search loo
 func_ov068_0226a1a0 ov068_018/ov068_018.cpp  # Thumb -O4,s; 6-instr hx/hz load order (orig reloads spilled x after z)
 func_ov068_0226cbf8 ov068_022/ov068_022.cpp  # Thumb -O4,s C++; static-table init + loop head regalloc only
 func_ov068_0226ddac ov068_024/ov068_024.cpp  # Thumb -O4,s C++; 2 sites fold [r4,r0] vs orig materialised adds rN,this,K (4 bytes short)
+func_ov074_02271450 ov074_000/ov074_000.cpp  # Thumb -O4,s C++; call result copied to r1 (adds r1,r0,#0) before cmp; ours cmp r0
+func_ov074_02271b0c ov074_000/ov074_000.cpp  # Thumb -O4,s C++; same call-result-to-r1 pattern
