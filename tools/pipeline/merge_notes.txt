@@ -199,3 +199,4 @@ ov068_005/006: class conflict. 006 put 02262c20..02263518 in Unk_ov068_0225fd54,
 ov068_011: probable file boundary at 0x0226647c (camera-blink helpers on data_021c3070 follow the Unk_ov068_0226fb80 owner code); also 0x894 sub-object is 0x18 bytes, 0x8ac is a member-fn-ptr (corrects ov068_000 layout).
 ov068_000/010: Obj8b4 (owner+0x8b4) fully laid out in 010 (state machine over data_ov068_02270e44); return-type conflicts: 0226594c u32 vs 000 decl, 02265918 void* (010) vs s32 (000); 02265808 returns Obj8b4*.
 ov068_009: 16 methods of Unk_ov068_0225fd54 written as extern "C" free functions (callers in 008 declare them extern "C"); convert to methods when merging.
+ov068_013/014/015: Unk_ov068_02267584 (013), Unk_ov068_022678c4 (014), Unk_ov068_02268214 (015) are probably ONE ov003-driven actor class (state table data_ov003_02230b30..; shared fields +0x268, +0x374 bitfield, +0x392..0x396, peer via func_ov003_0222ead4); unify.
