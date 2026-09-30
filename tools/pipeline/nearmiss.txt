@@ -311,3 +311,7 @@ func_ov066_02264574 ov066_009/ov066_009.cpp  # ARM -O4,p; node-pool list build: 
 func_ov065_0228a7f0 ov065_069/ov065_069.cpp  # -O4,p; final u16 len copy: d/s pointer materialization + r1 reuse
 func_ov065_0228aa34 ov065_069/ov065_069.cpp  # -O4,p; random key gen w/ parity: a in r4 vs r0, t sequence reloads (86 lines)
 func_ov067_0225fe1c ov067_001/ov067_001.cpp  # ARM -O4,p; cmp/strgt: t/field regs r1<->r2
+func_ov066_02263c3c ov066_008/ov066_008.cpp  # ARM -O4,p; 2 conditional instrs order (ldrbeq before addeq)
+func_ov066_02264378 ov066_008/ov066_008.cpp  # ARM -O4,p; first null-test temp r0 vs orig r1
+func_ov065_02289a00 ov065_068/ov065_068.cpp  # -O4,p; msg dispatcher: two same-address sp regs (r6/r7) merged by mwcc (~78 lines)
+func_ov065_02289f28 ov065_068/ov065_068.cpp  # -O4,p; b = a + (p[a-1]^0xea): r2/r3 swap

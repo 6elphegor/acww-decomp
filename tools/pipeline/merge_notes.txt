@@ -194,3 +194,5 @@ ov065_048/051: GP connection Ctx declared as Unk_ov065_0227c538_Ctx (048) and Un
 ov065_048/049: Unk_ov065_0227c538_Sub is 0x10 in 048 but 0x18 in 049 (char* unk_08/0c, unk_10 ip, unk_14 port); Node::unk_10 char* (049). Reconcile.
 ov066_000/001/002: data_ov066_022647ac declared with different struct layouts; func_ov066_0225fc78 is 3-arg (002), func_ov066_02260144 2-arg; unify.
 ov068_001/002: class Unk_ov068_0225fd54 declared in both (002 adds unk_2c s16, unk_30 s32); Unk_ov068_Owner full in 001, fwd-declared in 002; merge into one header.
+ov068_000/001: Owner = Unk_ov068_0226fb80 : Unk_020d89c8 (vtable 0x0226fb80; 000 extends base virtuals to slot 0xbc). 001 used a dummy Unk_ov068_Owner and compiled vtable slots 0x48 (0225fcf0) and 0x54 (0225fc60) as free extern "C" functions; they should become Own methods when merging.
+ov068_005/006: class conflict. 006 put 02262c20..02263518 in Unk_ov068_0225fd54, but 005 shows they are the 7-entry BOOL (C::*)(Owner*) option table dispatched from Unk_ov068_02262414::func_ov068_02262548, so they probably belong to Unk_ov068_02262414. Reconcile (mangled names differ; both link while not yet linked).
