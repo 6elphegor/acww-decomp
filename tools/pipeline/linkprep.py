@@ -35,15 +35,35 @@ CONFIG = Path("config/usa/arm9")
 
 
 # ---------------------------------------------------------------- symbols.txt
+RENAMES = {}  # (module, address) -> new name, from a renames.txt next to the object being checked
+
+
+def load_renames(path):
+    '''apply a deliverable's renames.txt ("module hexaddr newname" per line) to every symbols.txt lookup'''
+    p = Path(path).parent / "renames.txt"
+    if p.exists():
+        for line in p.read_text().splitlines():
+            f = line.split()
+            if len(f) == 3:
+                RENAMES[(f[0], int(f[1], 16))] = f[2]
+        print(f"(applying {len(RENAMES)} renames from {p})")
+
+
+def symbol_lines(p, mod):
+    for line in p.read_text().splitlines():
+        m = re.match(r"(\S+) (.*addr:(0x[0-9a-f]+).*)", line)
+        if m:
+            name = RENAMES.get((mod, int(m.group(3), 16)), m.group(1))
+            yield name, int(m.group(3), 16), line
+
+
 def load_symbols():
     '''name -> (module, address) for every symbols.txt'''
     out = {}
     for p in CONFIG.rglob("symbols.txt"):
         mod = p.parent.name if p.parent != CONFIG else "main"
-        for line in p.read_text().splitlines():
-            m = re.match(r"(\S+) .*addr:(0x[0-9a-f]+)", line)
-            if m:
-                out.setdefault(m.group(1), (mod, int(m.group(2), 16)))
+        for name, addr, _ in symbol_lines(p, mod):
+            out.setdefault(name, (mod, addr))
     return out
 
 
@@ -212,11 +232,9 @@ def strip_comments(s):
 def overlay_function_addresses(ov):
     '''(class or "", name) -> address for the overlay's functions in symbols.txt'''
     out = {}
-    for line in (CONFIG / "overlays" / ov / "symbols.txt").read_text().splitlines():
-        m = re.match(r"(\S+) kind:function.*addr:(0x[0-9a-f]+)", line)
-        if not m:
+    for name, addr, line in symbol_lines(CONFIG / "overlays" / ov / "symbols.txt", ov):
+        if "kind:function" not in line:
             continue
-        name, addr = m.group(1), int(m.group(2), 16)
         mm = re.match(r"_ZN(\d+)(\w+)", name)
         if mm:
             n = int(mm.group(1))
@@ -367,8 +385,23 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
                 cands.append(a)
         if len(cands) == 1:
             x["addr"] = cands[0]
+        elif not cands:
+            print(f"ERROR: {x['name']} ({x['size']:#x} bytes): its contents match nowhere in the original .data. "
+                  f"Check its initializer against ovdump.py (words are little-endian: 0x00c900cd is u16 0xcd then "
+                  f"0xc9) and its size (zero words before a vtable are the vtable's header, not padding).")
         else:
             print(f"warning: {x['name']} ({x['size']:#x}) matches {len(cands)} places by content")
+    # contents of every placed data object must equal the original (relocated words are not compared)
+    for x in objs:
+        if "addr" not in x or x["kind"] == ".bss":
+            continue
+        masked = {off for off, *_ in o.relocs.get(x["idx"], [])}
+        ob = orig[x["addr"] - base:x["addr"] - base + x["size"]]
+        bad = [k for k in range(0, x["size"], 4) if k not in masked and ob[k:k + 4] != x["bytes"][k:k + 4]]
+        if bad:
+            print(f"ERROR: {x['name']} at {x['addr']:#x}: {len(bad)} words differ from the original "
+                  f"(first at +{bad[0]:#x}: original {ob[bad[0]:bad[0] + 4].hex()} compiled "
+                  f"{x['bytes'][bad[0]:bad[0] + 4].hex()})")
     unplaced = [x["name"] for x in objs if "addr" not in x]
     if unplaced:
         print("cannot place:", unplaced)
@@ -582,9 +615,43 @@ def cmd_check(objpath, ov):
     if pos != t1 and (pos + 0x1f) & ~0x1f != (t1 + 0x1f) & ~0x1f:
         print(f"SIZE    code ends at {pos:#010x}, original .text ends at {t1:#010x}")
         problems += 1
-    missing = problems_undef = cmd_undef(objpath)
-    print(f"{problems} layout problems, {missing} unresolved symbols")
-    return problems + missing
+    # every relocation in the code must point where the original's does (right symbol name, not just a name)
+    relocs = overlay_relocs(ov)
+    local = {}  # symbols defined in this object: name -> original address (via symbols.txt)
+    wrong = 0
+    fsec = o.functions()
+    for sec_i, lst in o.relocs.items():
+        fname = fsec.get(sec_i)
+        if not fname or fname not in syms or syms[fname][0] != ov:
+            continue
+        faddr = syms[fname][1]
+        for off, sname, addend, rtype in lst:
+            want = relocs.get(faddr + off)
+            have = syms.get(sname)
+            if want is None or have is None:
+                continue  # local objects (@N, tables) are checked by `data`
+            got = have[1] + (addend if rtype == 2 else 0)
+            if rtype in (10, 28, 30):  # thumb/arm calls: compare the function address
+                got = have[1]
+            if (got & ~1) != (want & ~1):
+                print(f"TARGET  {fname}+{off:#x} uses {sname} ({got:#010x}); the original uses {want:#010x} "
+                      f"{' '.join(n for n, (m, a) in syms_by_addr(syms, want & ~1))}")
+                wrong += 1
+    missing = cmd_undef(objpath)
+    print(f"{problems} layout problems, {wrong} wrong targets, {missing} unresolved symbols")
+    return problems + missing + wrong
+
+
+_BY_ADDR = None
+
+
+def syms_by_addr(syms, addr):
+    global _BY_ADDR
+    if _BY_ADDR is None:
+        _BY_ADDR = {}
+        for n, (m, a) in syms.items():
+            _BY_ADDR.setdefault(a, []).append((n, (m, a)))
+    return _BY_ADDR.get(addr, [])[:3]
 
 
 # ---------------------------------------------------------------- compile
@@ -637,6 +704,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if not a:
         sys.exit(__doc__)
+    if a[0] in ("reverse", "undef", "check", "data") and len(a) > 1:
+        load_renames(a[2] if a[0] == "data" else a[1])
     if a[0] == "reverse":
         cmd_reverse(a[1], a[2] if len(a) > 2 else None)
     elif a[0] == "check":

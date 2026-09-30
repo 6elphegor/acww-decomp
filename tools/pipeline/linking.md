@@ -54,6 +54,9 @@ all of it:
 * The scene registration entry `{factory, u16, u16}` near the start of `.data` (referenced from main by
   address only) is a named definition too, e.g.
   `extern "C" Unk_ov140_SceneEntry data_ov140_02293d10 = {func_ov140_02293c6c, 0xb5, 0xb9};`.
+  Words are little-endian: the dump word `00b900b5` is the u16 `0xb5` followed by `0xb9`. The entry is 8 bytes;
+  two zero words right before a vtable are the vtable's own header (offset-to-top and typeinfo), not padding.
+* `linkprep.py data` checks each object's contents; an `ERROR ... match nowhere` means a wrong initializer.
 * Strings that sit after all other data (e.g. `menu/res/d0_bg.bsc`) are string literals in the code, not
   named arrays: the literal pool is emitted after the sorted data.
 * The scene class destructor: if the original has D1 then D0 (vtable slot 0x40 then 0x44, D1 at the lower
@@ -75,8 +78,11 @@ inline helpers above them. This is the original file's definition order, so inli
     python3 tools/pipeline/linkprep.py check <out.o> ovNNN
     python3 tools/pipeline/linkprep.py data <file.cpp> <out.o> ovNNN [--apply]
 
-* `check` must report 0 layout problems and 0 unresolved symbols (EXTRA functions are ones the original does
-  not have, e.g. an out-of-line copy of an inline function; ORDER means a definition is out of place).
+* `check` must report 0 layout problems, 0 wrong targets and 0 unresolved symbols. EXTRA functions are ones the
+  original does not have (e.g. an out-of-line copy of an inline function); ORDER means a definition is out of
+  place; TARGET means a call or pointer names a symbol that exists but at a different address than the
+  original's (typically a sub-object declared with a similar but wrong class, e.g. `Unk_ov002_02204738` instead
+  of `Unk_ov002_0220471c`) — use the class whose symbols live at the address the check prints.
 * `data` maps each data/bss object to its original address and reports whether the object's data order matches.
   mwcc heapsorts a file's data by size over the reverse of creation order, so the order depends on where each
   named object is *defined* relative to the functions. `--apply` searches for a placement that reproduces the
