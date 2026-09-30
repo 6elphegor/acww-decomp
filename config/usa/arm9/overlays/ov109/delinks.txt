@@ -2,3 +2,6 @@
     .ctor       start:0x022965c0 end:0x022965c0 kind:rodata align:4
     .data       start:0x022965e0 end:0x02296700 kind:data align:32
     .bss        start:0x02296700 end:0x022967c0 kind:bss align:32
+
+src/ov109/unk_ov109_02294c40.cpp:
+    .text       start:0x02294c40 end:0x02295570
