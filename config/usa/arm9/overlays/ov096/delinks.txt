@@ -29,3 +29,9 @@ src/ov096/unk_02298dac.cpp:
 
 src/ov096/unk_02298430.cpp:
     .text       start:0x02298430 end:0x02298dac
+
+src/ov096/unk_0229a000.cpp:
+    .text       start:0x0229a000 end:0x0229a94c
+
+src/ov096/unk_022968bc.cpp:
+    .text       start:0x022968bc end:0x022971dc

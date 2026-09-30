@@ -367,3 +367,4 @@ func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour ble
 ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
 ov123_002 func_ov123_02293784 — set-pixel: row/p register swap (r1/r2) only; 126 statement permutations + decl hill-climb tried
 ov142_000 func_ov142_02292154 — known unsolved 5-5-5 colour blend (orig extracts y channels eagerly, frame 12 vs 4)
+ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match, remaining diff is double u16 load CSE'd + [sp+4] slot order
