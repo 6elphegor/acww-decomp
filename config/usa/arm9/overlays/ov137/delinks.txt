@@ -6,3 +6,6 @@
 
 src/ov137/unk_02295c94.cpp:
     .text       start:0x02295c94 end:0x022961f8
+
+src/ov137/unk_02295380.cpp:
+    .text       start:0x02295380 end:0x02295c94
