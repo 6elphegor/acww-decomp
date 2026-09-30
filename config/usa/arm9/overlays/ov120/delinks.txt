@@ -12,3 +12,6 @@ src/ov120/unk_02294958.cpp:
 
 src/ov120/unk_02293620.cpp:
     .text       start:0x02293620 end:0x02293fc4
+
+src/ov120/unk_02293fc4.cpp:
+    .text       start:0x02293fc4 end:0x02294958
