@@ -251,3 +251,6 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov114: ov114_001's struct Unk_ov114_0229559c is the same object as Unk_ov114_02294c40 (ov114_000/002); text buffer class Unk_ov114_022965b0 : Unk_020e2a78 (0x196 bytes) at +0x808.
 - ov120: scene class Unk_ov120_02295010 (vtable 0x02295010, ~0x2534), loads at 0x02292d00, not a twin of ov118/119.
 - ov119: scene class Unk_ov119_02295840 (vtable 0x02295840, size 0x1bcc). ov119_000 and ov119_004 differ on 0x9d4..0x1a58 layout (u16[0x800] + ptr + u8[0xec] vs opaque).
+- ov120: size 0x2534. Layout per ov120_003: unk_91[3] + u32 unk_94 (not unk_91[7]); 0xb0 Unk_020b8800[2]; +0x438 polymorphic (ctor ov002_02202f88); +0x480 Unk_02202658. ov120_003 defines ~Unk_ov120_02295010(){} only to emit the vtable — drop it when merging (D1/D0 are in ov120_000).
+- ov121: scene class Unk_ov121_02294d68 (vtable 0x02294d68, size 0x107c), loads at 0x02292360.
+- ov119: per ov119_003, unk_9a is s16 (stores -1), unk_b4/unk_b8 are u32, unk_19d8 is [0x80] then the 0x1a58 array of 3x0x24; ov119_000's layout differs there.
