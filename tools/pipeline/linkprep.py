@@ -460,7 +460,7 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
         items = [(defs[n][0], n) for n in named]
         # named objects at their gap, keeping current relative order inside a gap
         for g in range(len(anchors) + 1):
-            seq += [n for n in order_in[g]]
+            seq += order_in[g] if g < len(order_in) else []
             if g < len(anchors):
                 seq += [nm for p, _, nm in fixed if p == anchors[g]]
         return seq
@@ -492,8 +492,12 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
         print("data order already matches")
         return
     rnd = random.Random(seed)
+    # nothing can be created after the vtable (it is created last): drop that slot
+    slots = len(anchors) if anchors and anchors[-1] > len(text) else len(anchors) + 1
+    if slots < len(order_in):
+        order_in[slots - 1] += order_in[slots]
+        order_in = order_in[:slots]
     best = (cur, [g[:] for g in order_in])
-    slots = len(anchors) + 1
     for restart in range(300):
         if restart:
             order_in = [[] for _ in range(slots)]
@@ -529,6 +533,32 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
             print(f"  {s}/{full}")
         if s == full:
             break
+    if best[0] < full:
+        # simulated annealing from the best hill-climb result: random single moves, occasionally downhill
+        import math
+        order_in = [g[:] for g in best[1]]
+        s = best[0]
+        temp = 2.0
+        for step in range(60000):
+            n = rnd.choice(named)
+            trial = [g[:] for g in order_in]
+            g0 = next(i for i, g in enumerate(trial) if n in g)
+            trial[g0].remove(n)
+            g = rnd.randrange(slots)
+            trial[g].insert(rnd.randrange(len(trial[g]) + 1), n)
+            saved = order_in
+            order_in = trial
+            t = score(build(None))
+            if t >= s or rnd.random() < math.exp((t - s) / temp):
+                s = t
+                if s > best[0]:
+                    best = (s, [g[:] for g in order_in])
+                    print(f"  {s}/{full} (annealing)")
+                    if s == full:
+                        break
+            else:
+                order_in = saved
+            temp = max(0.05, temp * 0.9999)
     s, order_in = best
     print(f"best: {s}/{full}")
     anchor_fn = {}
@@ -562,7 +592,7 @@ def apply_placement(src, text, defs, anchors, order_in):
     for g, names in enumerate(order_in):
         if not names:
             continue
-        pos = newpos(anchors[g]) if g < len(anchors) else None
+        pos = newpos(anchors[g]) if g < len(anchors) and anchors[g] <= len(text) else None
         inserts.append((pos, "\n\n".join(pieces[n] for n in names)))
     for pos, block in sorted(inserts, key=lambda x: -1 if x[0] is None else x[0], reverse=True):
         if pos is None:
