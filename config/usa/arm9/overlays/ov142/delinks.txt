@@ -14,3 +14,6 @@ src/ov142/unk_02293b78.cpp:
 
 src/ov142/unk_ov142_02291f60.cpp:
     .text       start:0x02291f60 end:0x0229291c
+
+src/ov142/unk_02293240.cpp:
+    .text       start:0x02293240 end:0x02293b78
