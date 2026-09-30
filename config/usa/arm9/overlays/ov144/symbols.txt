@@ -87,10 +87,10 @@ func_ov144_02293970 kind:function(thumb,size=0x4) addr:0x02293970
 func_ov144_02293974 kind:function(thumb,size=0x4) addr:0x02293974
 func_ov144_02293978 kind:function(thumb,size=0x60) addr:0x02293978
 func_ov144_022939d8 kind:function(thumb,size=0x104) addr:0x022939d8
-func_ov144_02293adc kind:function(thumb,size=0x94) addr:0x02293adc
-func_ov144_02293b70 kind:function(thumb,size=0x90) addr:0x02293b70
-func_ov144_02293c00 kind:function(thumb,size=0x1a) addr:0x02293c00
-func_ov144_02293c1c kind:function(thumb,size=0x1e) addr:0x02293c1c
+_ZN18Unk_ov144_02293db88vfunc_4cEv kind:function(thumb,size=0x94) addr:0x02293adc
+_ZN18Unk_ov144_02293db88vfunc_24Ev kind:function(thumb,size=0x90) addr:0x02293b70
+_ZN18Unk_ov144_02293db88vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02293c00
+_ZN18Unk_ov144_02293db88vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02293c1c
 func_ov144_02293c3c kind:function(thumb,size=0x8c) addr:0x02293c3c
 data_ov144_02293ce0 kind:data(any) addr:0x02293ce0 ambiguous
 data_ov144_02293ce8 kind:data(any) addr:0x02293ce8

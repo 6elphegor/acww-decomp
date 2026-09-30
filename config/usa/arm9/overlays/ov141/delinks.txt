@@ -5,3 +5,6 @@
 
 src/ov141/unk_02293254.cpp:
     .text       start:0x02293254 end:0x022938f4
+
+src/ov141/unk_ov141_02292900.cpp:
+    .text       start:0x02292900 end:0x02293254

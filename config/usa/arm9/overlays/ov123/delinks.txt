@@ -18,3 +18,6 @@ src/ov123/unk_02293b0c.cpp:
 
 src/ov123/unk_ov123_02292880.cpp:
     .text       start:0x02292880 end:0x02293190
+
+src/ov123/unk_02293190.cpp:
+    .text       start:0x02293190 end:0x02293b0c
