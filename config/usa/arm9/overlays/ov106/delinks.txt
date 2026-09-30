@@ -4,19 +4,7 @@
     .bss        start:0x02298260 end:0x02298400 kind:bss align:32
 
 src/ov106/unk_ov106_02294c40.cpp:
-    .text       start:0x02294c40 end:0x02295548
-
-src/ov106/unk_02297a44.cpp:
-    .text       start:0x02297a44 end:0x02297fdc
-
-src/ov106/unk_02296764.cpp:
-    .text       start:0x02296764 end:0x02297130
-
-src/ov106/unk_02295548.cpp:
-    .text       start:0x02295548 end:0x02295e48
-
-src/ov106/unk_02297130.cpp:
-    .text       start:0x02297130 end:0x02297a44
-
-src/ov106/unk_02295e48.cpp:
-    .text       start:0x02295e48 end:0x02296764
+    complete
+    .text       start:0x02294c40 end:0x02297fdc
+    .data       start:0x02297fe0 end:0x02298260
+    .bss        start:0x02298260 end:0x02298400
