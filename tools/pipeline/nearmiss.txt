@@ -289,3 +289,7 @@ func_ov065_0227ce44 ov065_049/ov065_049.cpp  # -O4,p; n->unk_10 test: ldr r0,[sp
 func_ov065_0227f00c ov065_052/ov065_052.cpp  # -O4,p; x==-1 after store/reload: movs r1/mvns r2 vs ours movs r0/mvns r0 (same family as 022780e0, 0227b9c4)
 func_ov065_0227e160 ov065_050/ov065_050.cpp  # -O4,p; first block: pool offset / const 1 regs r1,r2 vs orig r0,r1
 func_ov065_02280f5c ov065_055/ov065_055.cpp  # -O4,p; c->unk_204 != -1: field/const regs swapped (same -1 family)
+func_ov065_0227acfc ov065_045/ov065_045.cpp  # -O4,p; 0x14 zero loop: counter r0/zero r1 vs orig r1/r0 (pointer-counter form)
+func_ov065_0227ae94 ov065_045/ov065_045.cpp  # -O4,p; HTTP header parse: digits/len-diff regs r1<->r2 around strcmp
+func_ov065_022856f8 ov065_061/ov065_061.cpp  # -O4,p; 3-instr scheduling before 4-byte magic copy (add r0,sp first in orig)
+func_ov065_022831c0 ov065_057/ov065_057.cpp  # -O4,p; fd==-1 after store/reload (same -1 family)
