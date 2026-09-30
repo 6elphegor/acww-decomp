@@ -308,3 +308,6 @@ func_ov065_0228758c ov065_064/ov065_064.cpp  # -O4,p; QR packet handler case 6: 
 func_ov065_02287828 ov065_064/ov065_064.cpp  # -O4,p; 4 IP-byte copy addressing (add r1,sp,#8 base vs strb [r1,#8])
 func_ov065_02287aa4 ov065_064/ov065_064.cpp  # -O4,p; movs r1,r3 vs adds r1,r3,#0 (1 instr encoding)
 func_ov066_02264574 ov066_009/ov066_009.cpp  # ARM -O4,p; node-pool list build: regalloc only (n-1/head/prev/zero)
+func_ov065_0228a7f0 ov065_069/ov065_069.cpp  # -O4,p; final u16 len copy: d/s pointer materialization + r1 reuse
+func_ov065_0228aa34 ov065_069/ov065_069.cpp  # -O4,p; random key gen w/ parity: a in r4 vs r0, t sequence reloads (86 lines)
+func_ov067_0225fe1c ov067_001/ov067_001.cpp  # ARM -O4,p; cmp/strgt: t/field regs r1<->r2
