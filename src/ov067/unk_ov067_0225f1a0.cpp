@@ -409,15 +409,16 @@ extern "C" void *func_ov067_0225f8ec(Unk_ov067_0225f1a0_W *w) {
 
 extern "C" void *func_ov067_0225f8f4(Unk_ov067_0225f1a0_W *w, void *start, u32 key, u32 flag) {
     Unk_ov067_0225f1a0_Ent *s = (Unk_ov067_0225f1a0_Ent *)start;
+    Unk_ov067_0225f1a0_Ent *p;
+
     Unk_ov067_0225f1a0_Ent *e;
     Unk_ov067_0225f1a0_Ent *b;
-    Unk_ov067_0225f1a0_Ent *p;
     if (s == 0) {
         s = &w->unk_194[15];
     }
+    p = s;
     e = &w->unk_194[16];
     b = &w->unk_194[0];
-    p = s;
     do {
         BOOL m;
         p++;

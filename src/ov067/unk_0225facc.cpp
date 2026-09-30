@@ -205,10 +205,9 @@ void func_ov067_0225fe1c(Msg *m) {
         c->unk_50e2 = v;
         c->unk_5104 = 0x65;
     } else if (func_ov067_02260d64(c, m) != 0) {
-        s32 t = m->unk_0a;
         v = m->unk_08;
-        if (c->unk_5104 > t) {
-            c->unk_5104 = t;
+        if (c->unk_5104 > m->unk_0a) {
+            c->unk_5104 = m->unk_0a;
             c->unk_50e2 = v;
         }
         if (v == 32 - Clz(func_0211f800())) {
