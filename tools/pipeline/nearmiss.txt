@@ -262,3 +262,7 @@ func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb
 func_ov065_02261af8 ov065_004/ov065_004.cpp  # sp2p3 -O4,p; &data_ebfc/p regs r4<->r5, end reg
 func_ov065_0226cd84 ov065_022/ov065_022.cpp  # -O4,p; base64 decode: mwcc strength-reduces cnt*3 into extra spill (frame 44 vs 36)
 func_ov065_022702bc ov065_028/ov065_028.cpp  # -O4,p; linear byte search: n/i regs swapped (orig n r1, i r0); ~55 variants
+func_ov065_02268658 ov065_015/ov065_015.cpp  # -O4,p; bignum divmod: spill slots of cs/rp/off permuted only
+func_ov065_02268808 ov065_015/ov065_015.cpp  # -O4,p; bignum sqr: first loop strength-reduces dst[i], callee-saved regs (66 lines)
+func_ov065_02268c64 ov065_015/ov065_015.cpp  # -O4,p; state callback case 8: r1/r3/r6 assignment rotated
+func_ov065_0227112c ov065_029/ov065_029.cpp  # -O4,p; LCG seed: pointer arg computed after u64 mul+add (orig before); ~2-4B shift
