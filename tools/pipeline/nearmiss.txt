@@ -261,3 +261,4 @@ func_ov065_0226b27c ov065_019/ov065_019.cpp  # -O4,p; tail bitfield section rega
 func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb r6 order swapped
 func_ov065_02261af8 ov065_004/ov065_004.cpp  # sp2p3 -O4,p; &data_ebfc/p regs r4<->r5, end reg
 func_ov065_0226cd84 ov065_022/ov065_022.cpp  # -O4,p; base64 decode: mwcc strength-reduces cnt*3 into extra spill (frame 44 vs 36)
+func_ov065_022702bc ov065_028/ov065_028.cpp  # -O4,p; linear byte search: n/i regs swapped (orig n r1, i r0); ~55 variants
