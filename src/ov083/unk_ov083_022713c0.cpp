@@ -1,6 +1,33 @@
+// mwcc-flags: -str reuse
 #include "types.h"
-#include "Unk_020d8c7c.h"
 
+// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
+class Unk_020d8c7c_Base {
+public:
+    static void *operator new(unsigned long size);
+    static void operator delete(void *ptr);
+
+    Unk_020d8c7c_Base();
+    virtual BOOL vfunc_00();
+    virtual BOOL vfunc_04();
+    virtual void vfunc_08(s32 v);
+    virtual BOOL vfunc_0c();
+    virtual BOOL vfunc_10();
+    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_18();
+    virtual BOOL vfunc_1c();
+    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_24();
+    virtual BOOL vfunc_28();
+    virtual BOOL vfunc_2c();
+    virtual BOOL vfunc_30();
+    virtual BOOL vfunc_34();
+    virtual BOOL vfunc_38();
+    virtual BOOL vfunc_3c();
+    virtual ~Unk_020d8c7c_Base();
+};
+
+struct Unk_0201bc1c;
 class Unk_ov083_02271c4c;
 class Unk_ov083_02271bbc;
 
@@ -19,19 +46,19 @@ struct Unk_ov083_02271620_Out {
 
 extern "C" {
 void *func_0209750c();
-void *func_0209865c(void *p);
-void *func_0209868c(void *p);
-void func_02087b24(void *p);
+void *_ZN12Unk_0209865c13func_0209865cEv(void *p);
+void *_ZN12Unk_0209865c13func_0209868cEv(void *p);
+void _ZN12Unk_02087ad813func_02087b24Ev(void *p);
 s32 func_02098ffc();
 s32 func_02098eb0(u16 *p);
 void func_02099014(u16 *p, s32 v);
 void func_02099064(s32 v);
-void func_02014e60(void *p, u16 *q, s32 a, s32 b, s32 c);
-void func_02014ce4(void *p, u16 *q, s32 a, s32 b, s32 c);
-void func_0201578c(void *p, u16 *q, s32 a, s32 b);
+void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN12Unk_0201442013func_02014ce4EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN12Unk_020d771413func_0201578cEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
-BOOL func_0201bcbc(void *p, void *q);
+BOOL _ZN12Unk_020d77a413func_0201bcbcEPS_(void *p, void *q);
 void func_0203d67c(void *p);
 void func_020ac7cc(u16 *p);
 void func_0209d498(void *p);
@@ -39,17 +66,16 @@ void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
 void func_020851a4(void *p, s32 v);
 void func_02085290(void *p);
-void func_02085900(void *p, s32 v);
-void func_0209e148(void *p, s32 v);
+void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
+void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 v);
 void func_020856a4(void *p, s32 v);
 u32 func_0203f42c(s32 v);
 void func_02053848(void *p, s32 a, s32 b);
-void func_0201610c(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
+void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-extern u8 data_ov083_02271b68[];
-extern u8 data_ov083_02271b98[];
-extern u8 data_ov083_02271cf8[];
-extern u8 data_ov083_02271d08[];
+BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
+void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
+void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 data_021ed24c[];
 extern u8 data_021d7350[];
 }
@@ -63,8 +89,39 @@ public:
     Unk_020d7714();
     virtual ~Unk_020d7714();
     virtual void vfunc_08();
+    virtual void vfunc_0c();
+    virtual void vfunc_10();
+    virtual void vfunc_14();
+    virtual void vfunc_18();
+    virtual void vfunc_1c();
+    virtual void vfunc_20();
+    virtual void vfunc_24();
+    virtual void vfunc_28();
+    virtual void vfunc_2c();
+    virtual void vfunc_30();
+    virtual void vfunc_34();
+    virtual void vfunc_38(u32 v);
+    virtual void vfunc_3c();
+    virtual void vfunc_40();
+    virtual void vfunc_44();
+    virtual void vfunc_48();
+    virtual void vfunc_50();
+    virtual void vfunc_54();
+    virtual void vfunc_58();
+    virtual void vfunc_5c();
+    virtual void vfunc_60();
+    virtual void vfunc_64_alt();
+    virtual void vfunc_64();
+    virtual void vfunc_68();
+    virtual void vfunc_6c();
+    virtual void vfunc_70();
+    virtual void vfunc_74();
+    virtual void vfunc_78(Unk_ov083_02271620_Out *out);
+    virtual void vfunc_7c();
+    virtual void vfunc_80();
+    virtual void vfunc_88();
     void *func_02015aac();
-    void func_02015ab0(void *p);
+    void func_02015ab0(u32 p);
     Unk_020aa3b8 *func_02015a5c();
     u8 pad_04[0x1a];
     u8 unk_1e;
@@ -73,7 +130,34 @@ public:
     u8 pad_40[0xac - 0x40];
 };
 
-class Unk_020d8b38 : public Unk_020d7714 {
+class Unk_020ddcf0 : public Unk_020d7714 {
+public:
+    virtual void vfunc_0c();
+    virtual void vfunc_10();
+    virtual void vfunc_1c();
+    virtual void vfunc_20();
+    virtual void vfunc_24();
+    virtual void vfunc_28();
+    virtual void vfunc_2c();
+    virtual void vfunc_30();
+    virtual void vfunc_64();
+    virtual void vfunc_68();
+    virtual void vfunc_70();
+    virtual void vfunc_74();
+};
+
+class Unk_020d7710 : public Unk_020ddcf0 {
+public:
+    virtual void vfunc_50();
+    virtual void vfunc_54();
+    virtual void vfunc_58();
+    virtual void vfunc_5c();
+    virtual void vfunc_60();
+    virtual void vfunc_64_alt();
+    virtual void vfunc_88();
+};
+
+class Unk_020d8b38 : public Unk_020d7710 {
 public:
     Unk_020d8b38();
     virtual ~Unk_020d8b38();
@@ -90,34 +174,8 @@ class Unk_ov083_02271bbc : public Unk_020d8b38 {
 public:
     Unk_ov083_02271bbc();
     virtual ~Unk_ov083_02271bbc();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
     virtual void vfunc_78(Unk_ov083_02271620_Out *out);
 
     void func_ov083_022716e0(Unk_ov083_02271c4c *owner);
@@ -133,12 +191,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_02053d3c {
+struct Unk_020dbd74 {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_02053d3c();
-    ~Unk_02053d3c();
+    Unk_020dbd74();
+    ~Unk_020dbd74();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -156,7 +214,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a194, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_020323b0, 0x30);
+MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -185,7 +243,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_02082014 { u8 unk_00[8]; Unk_02082014(); };
+struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -193,10 +251,26 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-class Unk_020d9670 : public Unk_020d8c7c_Base {
+class Unk_020d5d84 : public Unk_020d8c7c_Base {
+public:
+    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_28();
+    virtual BOOL vfunc_2c();
+};
+
+struct Unk_020d77a4_Vec3;
+
+class Unk_020d9670 : public Unk_020d5d84 {
 public:
     Unk_020d9670();
     virtual ~Unk_020d9670();
+    virtual BOOL vfunc_1c();
+    virtual BOOL vfunc_48();
+    virtual void vfunc_4c(s32 v);
+    virtual void vfunc_50();
+    virtual void vfunc_54(void *p);
+    virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
     u8 pad_68[0x8e - 0x68];
@@ -211,19 +285,18 @@ public:
 class Unk_020d77a4 : public Unk_020d9670 {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4() {}
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 v);
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
+    virtual ~Unk_020d77a4();
+    virtual void vfunc_08(s32 v);
+    virtual BOOL vfunc_18();
+    virtual BOOL vfunc_24();
+    virtual BOOL vfunc_30();
+    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
     virtual void vfunc_64();
     virtual BOOL vfunc_68();
     virtual u8 *vfunc_6c();
     virtual u8 *vfunc_70();
-    virtual void vfunc_74();
+    virtual void vfunc_74(u32 v);
     virtual void vfunc_78();
     virtual void vfunc_7c();
     virtual void vfunc_80();
@@ -238,11 +311,11 @@ public:
     virtual void vfunc_a4();
     virtual s32 vfunc_a8();
 
-    void func_0201bc28(void *p);
+    void func_0201bc28(Unk_0201bc1c *p);
     void *func_0201bc4c(u32 v);
 
     u16 unk_ea;
-    Unk_02053d3c unk_ec;
+    Unk_020dbd74 unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -252,7 +325,7 @@ public:
     Unk_0201a794 unk_3b0;
     Unk_0201a194 unk_418;
     Unk_0201a13c unk_420;
-    Unk_020323b0 unk_49c;
+    Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -266,10 +339,16 @@ public:
     virtual ~Unk_020d8bc8();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
+    virtual BOOL vfunc_0c();
     virtual BOOL vfunc_10();
+    virtual void vfunc_74(u32 v);
+    virtual void vfunc_78();
+    virtual void vfunc_7c();
+    virtual void vfunc_80();
+    virtual void vfunc_84();
     virtual s32 vfunc_a8();
 
-    Unk_02082014 unk_640;
+    Unk_020e06dc unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -278,7 +357,6 @@ public:
 class Unk_ov083_02271c4c : public Unk_020d8bc8 {
 public:
     Unk_ov083_02271c4c() {}
-    virtual ~Unk_ov083_02271c4c();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -307,122 +385,139 @@ struct Unk_ov083_02271858_Ent {
 };
 
 extern "C" {
-extern Unk_ov083_02271858_Ent data_ov083_02271d20[];
-extern Unk_ov083_02271858_Ent data_ov083_02271d28[];
+extern Unk_ov083_02271858_Ent data_ov083_02271d20[3];
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-Unk_ov083_02271c4c::~Unk_ov083_02271c4c() {}
+Unk_ov083_02271858_Ent data_ov083_02271d20[3] = {
+    {&Unk_ov083_02271c4c::func_ov083_02271824, &Unk_ov083_02271c4c::func_ov083_022717d8},
+    {&Unk_ov083_02271c4c::func_ov083_02271790, &Unk_ov083_02271c4c::func_ov083_02271764},
+    {NULL, &Unk_ov083_02271c4c::func_ov083_02271760},
+};
 
-void Unk_ov083_02271c4c::vfunc_4c(s32 v) {
-    switch (v) {
-    case 0:
-        unk_65c.vfunc_08();
-        unk_65c.func_02015ab0(func_0201bc4c(4));
-        func_ov083_02271858(1);
-        break;
-    case 8:
-        func_ov083_02271858(0);
-        break;
+extern "C" u8 data_ov083_02271b98[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" u8 data_ov083_02271b68[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
+
+struct Unk_ov083_SceneEntry {
+    Unk_ov083_02271c4c *(*factory)();
+    u16 a, b;
+    s32 c, d, e, f;
+};
+extern "C" Unk_ov083_02271c4c *func_ov083_022719a8();
+extern "C" Unk_ov083_SceneEntry data_ov083_02271b80 = {func_ov083_022719a8, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
+
+
+extern "C" Unk_ov083_02271c4c *func_ov083_022719a8() {
+    return new Unk_ov083_02271c4c();
+}
+
+BOOL Unk_ov083_02271c4c::vfunc_04() {
+    if (!Unk_020d8bc8::vfunc_04()) {
+        return FALSE;
+    }
+    func_0201bc28((Unk_0201bc1c *)&unk_65c);
+    unk_65c.func_ov083_022716e0(this);
+    return TRUE;
+}
+
+BOOL Unk_ov083_02271c4c::vfunc_00() {
+    if (!Unk_020d8bc8::vfunc_00()) {
+        return FALSE;
+    }
+    func_ov083_02271858(0);
+    _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
+    func_02053848(&unk_ec, 0xc, 0xe);
+    unk_4cc.unk_1c |= 2;
+    unk_714 = func_0203f42c(0xe);
+    func_020856a4(data_021ed24c, 0);
+    return TRUE;
+}
+
+u8 *Unk_ov083_02271c4c::vfunc_6c() { return data_ov083_02271b98; }
+
+u8 *Unk_ov083_02271c4c::vfunc_70() { return data_ov083_02271b68; }
+
+BOOL Unk_ov083_02271c4c::vfunc_68() {
+    BOOL result = FALSE;
+    if (data_ov083_02271d20[unk_658].exit != NULL) {
+        result = (this->*data_ov083_02271d20[unk_658].exit)();
+    }
+    return result;
+}
+
+void Unk_ov083_02271c4c::func_ov083_02271858(s32 state) {
+    BOOL ok = TRUE;
+    if (data_ov083_02271d20[state].enter != NULL) {
+        ok = (this->*data_ov083_02271d20[state].enter)();
+    }
+    if (ok) {
+        unk_658 = state;
     }
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_48() {
-    BOOL r = FALSE;
-    if (unk_618.func_02014220() == 0) {
-        r = TRUE;
-    }
-    return r;
+BOOL Unk_ov083_02271c4c::func_ov083_02271824() {
+    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    return TRUE;
 }
 
-void Unk_ov083_02271bbc::vfunc_18() {
-    u8 b1;
-    u8 b2;
-    u16 h;
-    s32 t = func_02015a5c()->func_020aa514();
-    u8 *s = data_ov083_02271cf8;
-    u8 msg = 0xff;
-    if (unk_b0 >= 0) {
-        s = data_ov083_02271d08;
-        if (unk_1e == 0 && t == 0) {
-            if (unk_b0 >= 0) {
-                func_02099064(unk_b0);
-                h = 0x37e0;
-                func_02014ce4(this, &h, 0, 5, 0);
-            }
-            msg = 2;
-        }
-        if (msg != 0xff) {
-            b1 = msg;
-            unk_3c->func_02067a84(&b1, s);
-        }
-    } else {
-        if (unk_1e == 0xa && t == 0) {
-            if (func_02063b8c(3) == 0) {
-                msg = 0xc;
-            } else {
-                msg = func_02063b8c(0xb) + 0x1c;
-            }
-        }
-        if (msg != 0xff) {
-            b2 = msg;
-            unk_3c->func_02067a84(&b2, s);
-        }
+BOOL Unk_ov083_02271c4c::func_ov083_022717d8() {
+    if (func_ov083_022717c8(&unk_654)) {
+        return TRUE;
     }
+    unk_654 = 0x258;
+    u8 *const g = data_021ed24c;
+    func_02085290(g);
+    _ZN12Unk_0208581013func_02085900Ej(g, 3);
+    _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 0xf);
+    return TRUE;
 }
 
-void Unk_ov083_02271bbc::vfunc_14() {
-    u8 b1;
-    u8 b2;
-    u16 h1, h2, h3;
-    u8 *s = data_ov083_02271cf8;
-    u8 msg = 0xff;
-    if (unk_b0 >= 0) {
-        if (unk_1e == 1 || unk_1e == 4) {
-            unk_b0 = -2;
-        }
-        if (unk_1e == 2) {
-            h1 = 0x1559;
-            func_02014e60(this, &h1, 0, 5, 0);
-            h2 = 0x1559;
-            func_02099014(&h2, 0);
-            b1 = 4;
-            unk_3c->func_02067a84(&b1, data_ov083_02271d08);
-        }
-    } else {
-        if (unk_1e == 5 || unk_1e == 6 || unk_1e == 9) {
-            if (!func_0202e1cc(0x1d, 1)) {
-                func_02087b24(func_0209868c(func_0209750c()));
-                if (func_02098ffc() >= 0) {
-                    msg = 7;
-                    func_020ac7cc(&h3);
-                    unk_b4 = h3;
-                }
-            }
-        }
-        if (unk_1e == 7) {
-            func_02014e60(this, &unk_b4, 0, 5, 0);
-            func_02099014(&unk_b4, 0);
-            func_0201578c(this, &unk_b4, 0, 7);
-            msg = 8;
-        }
-        if (msg != 0xff) {
-            b2 = msg;
-            unk_3c->func_02067a84(&b2, s);
-        }
+s32 Unk_ov083_02271c4c::func_ov083_022717c8(s32 *p) {
+    if (*p != 0) {
+        *p = *p - 1;
     }
+    return *p;
+}
+
+BOOL Unk_ov083_02271c4c::func_ov083_02271790() {
+    void *p = unk_65c.func_02015aac();
+    u32 x = 0;
+    if (p != NULL) {
+        x = _ZN12Unk_020d77a413func_0201bcbcEPS_(this, p);
+    }
+    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
+    return TRUE;
+}
+
+BOOL Unk_ov083_02271c4c::func_ov083_02271764() {
+    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+        func_0203d67c(this);
+        func_ov083_02271858(2);
+    }
+    return TRUE;
+}
+
+BOOL Unk_ov083_02271c4c::func_ov083_02271760() { return TRUE; }
+
+Unk_ov083_02271bbc::Unk_ov083_02271bbc() : unk_b4(0xfff1) {}
+
+Unk_ov083_02271bbc::~Unk_ov083_02271bbc() {}
+
+void Unk_ov083_02271bbc::func_ov083_022716e0(Unk_ov083_02271c4c *owner) {
+    vfunc_08();
+    unk_ac = owner;
+    unk_b0 = -1;
 }
 
 void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
     u16 h;
     u32 w[2];
-    func_0209865c(func_0209750c());
-    out->a = (u32)data_ov083_02271cf8;
+    _ZN12Unk_0209865c13func_0209865cEv(func_0209750c());
+    out->a = (u32)"sp_npc_turtle3";
     if (unk_b0 == -1) {
         h = 0x37e0;
         unk_b0 = func_02098eb0(&h);
         if (unk_b0 >= 0) {
-            out->a = (u32)data_ov083_02271d08;
+            out->a = (u32)"sp_npc_turtle";
             out->b = 0;
             return;
         }
@@ -453,104 +548,103 @@ void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
     }
 }
 
-void Unk_ov083_02271bbc::func_ov083_022716e0(Unk_ov083_02271c4c *owner) {
-    vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
-}
-
-Unk_ov083_02271bbc::~Unk_ov083_02271bbc() {}
-
-Unk_ov083_02271bbc::Unk_ov083_02271bbc() : unk_b4(0xfff1) {}
-
-BOOL Unk_ov083_02271c4c::func_ov083_02271760() { return TRUE; }
-
-BOOL Unk_ov083_02271c4c::func_ov083_02271764() {
-    if (unk_618.func_02014220() == 0) {
-        func_0203d67c(this);
-        func_ov083_02271858(2);
-    }
-    return TRUE;
-}
-
-BOOL Unk_ov083_02271c4c::func_ov083_02271790() {
-    void *p = unk_65c.func_02015aac();
-    u32 x = 0;
-    if (p != NULL) {
-        x = func_0201bcbc(this, p);
-    }
-    unk_618.func_020141b4(0, x, 0);
-    return TRUE;
-}
-
-s32 Unk_ov083_02271c4c::func_ov083_022717c8(s32 *p) {
-    if (*p != 0) {
-        *p = *p - 1;
-    }
-    return *p;
-}
-
-BOOL Unk_ov083_02271c4c::func_ov083_022717d8() {
-    if (func_ov083_022717c8(&unk_654)) {
-        return TRUE;
-    }
-    unk_654 = 0x258;
-    u8 *const g = data_021ed24c;
-    func_02085290(g);
-    func_02085900(g, 3);
-    func_0209e148(data_021d7350, 0xf);
-    return TRUE;
-}
-
-BOOL Unk_ov083_02271c4c::func_ov083_02271824() {
-    unk_564.func_020196b4(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    return TRUE;
-}
-
-void Unk_ov083_02271c4c::func_ov083_02271858(s32 state) {
-    BOOL ok = TRUE;
-    if (data_ov083_02271d20[state].enter != NULL) {
-        ok = (this->*data_ov083_02271d20[state].enter)();
-    }
-    if (ok) {
-        unk_658 = state;
+void Unk_ov083_02271bbc::vfunc_14() {
+    u8 b1;
+    u8 b2;
+    u16 h1, h2, h3;
+    u8 *s = (u8 *)"sp_npc_turtle3";
+    u8 msg = 0xff;
+    if (unk_b0 >= 0) {
+        if (unk_1e == 1 || unk_1e == 4) {
+            unk_b0 = -2;
+        }
+        if (unk_1e == 2) {
+            h1 = 0x1559;
+            _ZN12Unk_020d771013func_02014e60EPtjjj(this, &h1, 0, 5, 0);
+            h2 = 0x1559;
+            func_02099014(&h2, 0);
+            b1 = 4;
+            unk_3c->func_02067a84(&b1, (void *)"sp_npc_turtle");
+        }
+    } else {
+        if (unk_1e == 5 || unk_1e == 6 || unk_1e == 9) {
+            if (!func_0202e1cc(0x1d, 1)) {
+                _ZN12Unk_02087ad813func_02087b24Ev(_ZN12Unk_0209865c13func_0209868cEv(func_0209750c()));
+                if (func_02098ffc() >= 0) {
+                    msg = 7;
+                    func_020ac7cc(&h3);
+                    unk_b4 = h3;
+                }
+            }
+        }
+        if (unk_1e == 7) {
+            _ZN12Unk_020d771013func_02014e60EPtjjj(this, &unk_b4, 0, 5, 0);
+            func_02099014(&unk_b4, 0);
+            _ZN12Unk_020d771413func_0201578cEjjj(this, &unk_b4, 0, 7);
+            msg = 8;
+        }
+        if (msg != 0xff) {
+            b2 = msg;
+            unk_3c->func_02067a84(&b2, s);
+        }
     }
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_68() {
-    BOOL result = FALSE;
-    if (data_ov083_02271d28[unk_658].enter != NULL) {
-        result = (this->*data_ov083_02271d20[unk_658].exit)();
+void Unk_ov083_02271bbc::vfunc_18() {
+    u8 b1;
+    u8 b2;
+    u16 h;
+    s32 t = func_02015a5c()->func_020aa514();
+    u8 *s = (u8 *)"sp_npc_turtle3";
+    u8 msg = 0xff;
+    if (unk_b0 >= 0) {
+        s = (u8 *)"sp_npc_turtle";
+        if (unk_1e == 0 && t == 0) {
+            if (unk_b0 >= 0) {
+                func_02099064(unk_b0);
+                h = 0x37e0;
+                _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &h, 0, 5, 0);
+            }
+            msg = 2;
+        }
+        if (msg != 0xff) {
+            b1 = msg;
+            unk_3c->func_02067a84(&b1, s);
+        }
+    } else {
+        if (unk_1e == 0xa && t == 0) {
+            if (func_02063b8c(3) == 0) {
+                msg = 0xc;
+            } else {
+                msg = func_02063b8c(0xb) + 0x1c;
+            }
+        }
+        if (msg != 0xff) {
+            b2 = msg;
+            unk_3c->func_02067a84(&b2, s);
+        }
     }
-    return result;
 }
 
-u8 *Unk_ov083_02271c4c::vfunc_70() { return data_ov083_02271b68; }
-
-u8 *Unk_ov083_02271c4c::vfunc_6c() { return data_ov083_02271b98; }
-
-BOOL Unk_ov083_02271c4c::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
-        return FALSE;
+BOOL Unk_ov083_02271c4c::vfunc_48() {
+    BOOL r = FALSE;
+    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+        r = TRUE;
     }
-    func_ov083_02271858(0);
-    func_0201610c(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
-    unk_4cc.unk_1c |= 2;
-    unk_714 = func_0203f42c(0xe);
-    func_020856a4(data_021ed24c, 0);
-    return TRUE;
+    return r;
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
-        return FALSE;
+void Unk_ov083_02271c4c::vfunc_4c(s32 v) {
+    switch (v) {
+    case 0:
+        unk_65c.vfunc_08();
+        unk_65c.func_02015ab0((u32)func_0201bc4c(4));
+        func_ov083_02271858(1);
+        break;
+    case 8:
+        func_ov083_02271858(0);
+        break;
     }
-    func_0201bc28(&unk_65c);
-    unk_65c.func_ov083_022716e0(this);
-    return TRUE;
 }
 
-extern "C" Unk_ov083_02271c4c *func_ov083_022719a8() {
-    return new Unk_ov083_02271c4c();
-}
+// ---------------------------------------------------------------------------------------------------------------------
