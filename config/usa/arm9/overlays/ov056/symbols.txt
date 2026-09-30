@@ -1,5 +1,5 @@
 func_ov056_02258de0 kind:function(thumb,size=0x2c) addr:0x02258de0
-func_ov056_02258e0c kind:function(thumb,size=0x20) addr:0x02258e0c
-func_ov056_02258e2c kind:function(thumb,size=0x28) addr:0x02258e2c
+_ZN18Unk_ov056_02258e70D1Ev kind:function(thumb,size=0x20) addr:0x02258e0c
+_ZN18Unk_ov056_02258e70D0Ev kind:function(thumb,size=0x28) addr:0x02258e2c
 data_ov056_02258e60 kind:data(any) addr:0x02258e60 ambiguous
 data_ov056_02258e70 kind:data(any) addr:0x02258e70
