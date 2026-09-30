@@ -6,3 +6,6 @@
 
 src/ov138/unk_02295d08.cpp:
     .text       start:0x02295d08 end:0x02296284
+
+src/ov138/unk_ov138_02295380.cpp:
+    .text       start:0x02295380 end:0x02295d08

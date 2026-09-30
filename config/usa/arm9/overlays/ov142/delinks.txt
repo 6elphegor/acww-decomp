@@ -2,3 +2,12 @@
     .ctor       start:0x02294c4c end:0x02294c4c kind:rodata align:4
     .data       start:0x02294c60 end:0x02294fa0 kind:data align:32
     .bss        start:0x02294fa0 end:0x02295080 kind:bss align:32
+
+src/ov142/unk_0229291c.cpp:
+    .text       start:0x0229291c end:0x02293240
+
+src/ov142/unk_022944c8.cpp:
+    .text       start:0x022944c8 end:0x02294c4c
+
+src/ov142/unk_02293b78.cpp:
+    .text       start:0x02293b78 end:0x022944c8
