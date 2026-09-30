@@ -227,3 +227,5 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov094 lib: func_ov094_02292398 / 02292380 called with no args in ov104_003 (and ov096_006); ov100_003 declares 02292398(s32). Check the real prototype.
 - ov104: scene class Unk_ov104_02298170 (vtable 0x02298170, size 0x3f80); flag-test method func_ov104_02294e1c(u32) BOOL. ov104_001/003 plain-C structs (Unk_ov104_02295590 / _022967e4) are this class.
 - ov104: both 0x2b0c and 0x3494 are Unk_02065cd4[10] arrays (0xf4 each) per ov104_005's ctor; ov104_001 and ov104_004 each only saw one.
+- ov105: scene class Unk_ov105_02298594 (vtable 0x02298594); ov105_003's plain-C struct Unk_ov105_022967e8 is this class.
+- ov106: scene class Unk_ov106_02298180 (vtable 0x02298180, size 0x3f80), sub-objects at 0xf8-based offsets.
