@@ -346,3 +346,4 @@ func_ov095_02292e50 ov095_001/ov095_001.cpp  # Thumb -O4,s C; r5/r6 swapped (p v
 func_ov094_022937e4 ov094_002/ov094_002.cpp  # Thumb -O4,s C; ldrh *p into r2 (orig) vs r1 (ours) before cmp 0xfff1
 func_ov087_02271b0c ov087_000/ov087_000.cpp  # Thumb -O4,s C++; unk_4cc.unk_1c |= 2: addr/const regs r0/r1 swapped (3 insns)
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
+func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stack-addr temp r1 vs orig r2, x0=loc[0] r2 vs r1 (+1 pool word)

@@ -214,3 +214,7 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov095: func_ov095_02293b0c returns Unk_ov095_02294dc0_Entry* (8-byte {u32; u32 lo:12,pal:4,hi:16}) per ov095_004; ov095_002 declares void*.
 - ov096: func_ov096_0229a39c is defined in ov096_009 as BOOL Unk_ov096_0229aea8::func_ov096_0229a39c(s32) (resolves the 007/008 void-vs-s32 note). ov096_009's static table at 0x0229b094 also holds ov098 methods (func_ov098_0229b8ac etc.) of Unk_ov096_0229aea8, so the ov098 code is the same class.
 - ov099: ov099_001's plain-C struct 'Unk_ov099_02295588' (S) is the same object as ov099_003's scene class Unk_ov099_02296b00 (identical sub-object offsets 0xcc/0xb2c/0x2134/0x21f4/0x220c/0x2270/0x2570). Rename to the class when linking.
+- ov096: func_ov096_022965ac is BOOL(u16) (ov096_003/004); an older sibling declares s32.
+- ov100: ov100_001's plain-C struct 'Unk_ov100_0229555c' is ov100's scene object (twin of ov099's); rename to the ov100 scene class (from ov100_004) when linking.
+- ov100: scene class is Unk_ov100_02297778 (vtable 0x02297778, size 0x2764) per ov100_004. Fields 0x26fc/0x2700 are s32 (ov100_000 has u8[0x18]). Element class at 0x2678 is Unk_0206fca8 in ov100_000 vs Unk_ov100_0206fcc8 in ov100_004.
+- ov101: scene class Unk_ov101_02296b38 (vtable 0x02296b38, size 0x2804); layout has 0x28 extra bytes before the member array vs ov099 (sub-objects at 0xf4/0xb54/0xb7c/0x215c/...).
