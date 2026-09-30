@@ -9,3 +9,9 @@ src/ov129/unk_02295d18.cpp:
 
 src/ov129/unk_02294a50.cpp:
     .text       start:0x02294a50 end:0x022953bc
+
+src/ov129/unk_022953bc.cpp:
+    .text       start:0x022953bc end:0x02295d18
+
+src/ov129/unk_022940e0.cpp:
+    .text       start:0x022940e0 end:0x02294a50

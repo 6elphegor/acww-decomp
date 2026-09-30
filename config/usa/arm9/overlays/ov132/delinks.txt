@@ -3,3 +3,9 @@
     .ctor       start:0x0229431c end:0x0229431c kind:rodata align:4
     .data       start:0x02294320 end:0x02294420 kind:data align:32
     .bss        start:0x02294420 end:0x022944a0 kind:bss align:32
+
+src/ov132/unk_02294008.cpp:
+    .text       start:0x02294008 end:0x02294304
+
+src/ov132/unk_ov132_022936c0.cpp:
+    .text       start:0x022936c0 end:0x02294008

@@ -6,3 +6,6 @@
 
 src/ov127/unk_02292950.cpp:
     .text       start:0x02292950 end:0x02292abc
+
+src/ov127/unk_ov127_02291f60.cpp:
+    .text       start:0x02291f60 end:0x02292950
