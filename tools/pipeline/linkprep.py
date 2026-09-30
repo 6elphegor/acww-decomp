@@ -1,0 +1,588 @@
+#!/usr/bin/env python3
+"""
+Tools for linking an overlay unit (marking it `complete` so the ROM is built from the compiled object).
+Run from the repository root. See tools/pipeline/linking.md for the procedure.
+
+  linkprep.py reverse <src.cpp>
+      Rewrite the file with its out-of-line function definitions in reverse order. mwcc emits a file's functions
+      last to first, so a file written in address order links backwards. Inline functions stay in place.
+
+  linkprep.py undef <obj.o>
+      List the object's undefined symbols that no symbols.txt defines (they would fail to link).
+
+  linkprep.py data <src.cpp> <obj.o> <ovNNN> [--apply] [--seed N]
+      Map every .data/.bss object of the compiled unit to its address in the original overlay, then search for
+      where to define the file-scope data objects so mwcc emits them in the original order. With --apply, move
+      the definitions (and add extern declarations for objects used before their definition).
+
+  linkprep.py diff <ovNNN>
+      Compare the built overlay (build/usa/build/arm9_ovNNN.bin) with the original and list differing ranges.
+
+Data ordering model (checked against compiler experiments and ov140): mwcc collects a file's data and bss objects
+in creation order, heapsorts the reversed list by size (ascending, unstable), and emits them in that order;
+string literals follow in a separate pool. Named objects are created at their definition; compiler objects
+(member-function-pointer constants, local static tables and guards, local array initialisers) when their
+function is compiled, numbered in creation order; the vtable is created last.
+"""
+import re
+import struct
+import subprocess
+import sys
+import random
+from pathlib import Path
+
+CONFIG = Path("config/usa/arm9")
+
+
+# ---------------------------------------------------------------- symbols.txt
+def load_symbols():
+    '''name -> (module, address) for every symbols.txt'''
+    out = {}
+    for p in CONFIG.rglob("symbols.txt"):
+        mod = p.parent.name if p.parent != CONFIG else "main"
+        for line in p.read_text().splitlines():
+            m = re.match(r"(\S+) .*addr:(0x[0-9a-f]+)", line)
+            if m:
+                out.setdefault(m.group(1), (mod, int(m.group(2), 16)))
+    return out
+
+
+def overlay_sections(ov):
+    secs = {}
+    for line in (CONFIG / "overlays" / ov / "delinks.txt").read_text().split("\n\n")[0].splitlines():
+        m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
+        if m:
+            secs[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
+    return secs
+
+
+def overlay_relocs(ov):
+    '''from address -> to address for the overlay's relocations'''
+    out = {}
+    for line in (CONFIG / "overlays" / ov / "relocs.txt").read_text().splitlines():
+        m = re.match(r"from:(0x[0-9a-f]+) kind:\S+ to:(0x[0-9a-f]+)", line)
+        if m:
+            out[int(m.group(1), 16)] = int(m.group(2), 16)
+    return out
+
+
+# ---------------------------------------------------------------- ELF object
+class Obj:
+    def __init__(self, path):
+        self.data = Path(path).read_bytes()
+        d = self.data
+        e_shoff, = struct.unpack_from("<I", d, 0x20)
+        e_shentsize, e_shnum, e_shstrndx = struct.unpack_from("<HHH", d, 0x2e)
+        self.sh = [struct.unpack_from("<10I", d, e_shoff + i * e_shentsize) for i in range(e_shnum)]
+        shstr = self.sh[e_shstrndx]
+        self.secname = [self._str(shstr, s[0]) for s in self.sh]
+        self.syms = []  # (name, value, size, type, bind, shndx)
+        for s in self.sh:
+            if s[1] == 2:  # SHT_SYMTAB
+                strtab = self.sh[s[6]]
+                for i in range(0, s[5], 16):
+                    name, value, size, info, _, shndx = struct.unpack_from("<IIIBBH", d, s[4] + i)
+                    self.syms.append((self._str(strtab, name), value, size, info & 15, info >> 4, shndx))
+        self.relocs = {}  # target section index -> [(offset, symbol name, addend, type)]
+        for s in self.sh:
+            if s[1] == 4:  # SHT_RELA
+                lst = self.relocs.setdefault(s[7], [])
+                for i in range(0, s[5], 12):
+                    off, info, addend = struct.unpack_from("<IIi", d, s[4] + i)
+                    lst.append((off, self.syms[info >> 8][0], addend, info & 0xff))
+
+    def _str(self, strsec, off):
+        start = strsec[4] + off
+        return self.data[start:self.data.index(b"\0", start)].decode()
+
+    def section_bytes(self, i):
+        s = self.sh[i]
+        return b"" if s[1] == 8 else self.data[s[4]:s[4] + s[5]]
+
+    def objects(self):
+        '''data/bss objects in section order: dict(idx, kind, size, name, bytes)'''
+        out = []
+        for i, s in enumerate(self.sh):
+            if self.secname[i] in (".data", ".bss", ".rodata") and s[5]:
+                names = [y[0] for y in self.syms if y[5] == i and y[3] == 1]
+                out.append(dict(idx=i, kind=self.secname[i], size=s[5], name=names[0] if names else f"sec{i}",
+                                bytes=self.section_bytes(i)))
+        return out
+
+    def functions(self):
+        '''text section index -> function symbol name'''
+        return {y[5]: y[0] for y in self.syms if y[3] == 2 and y[5] < len(self.sh)}
+
+
+# ---------------------------------------------------------------- heapsort model
+def heapsort(a, key):
+    a = a[:]
+    n = len(a)
+
+    def sift(s, e):
+        r = s
+        while 2 * r + 1 <= e:
+            c = 2 * r + 1
+            sw = r
+            if key(a[sw]) < key(a[c]):
+                sw = c
+            if c + 1 <= e and key(a[sw]) < key(a[c + 1]):
+                sw = c + 1
+            if sw == r:
+                return
+            a[r], a[sw] = a[sw], a[r]
+            r = sw
+    for s in range((n - 2) // 2, -1, -1):
+        sift(s, n - 1)
+    for e in range(n - 1, 0, -1):
+        a[0], a[e] = a[e], a[0]
+        sift(0, e - 1)
+    return a
+
+
+def emitted(creation, size):
+    return heapsort(creation[::-1], lambda x: size[x])
+
+
+# ---------------------------------------------------------------- source parsing
+def top_level_chunks(text):
+    '''split a C++ file into top-level chunks (start, end) at brace depth 0'''
+    chunks = []
+    depth = 0
+    start = 0
+    i = 0
+    n = len(text)
+    while i < n:
+        c = text[i]
+        if text.startswith("//", i):
+            i = text.index("\n", i) if "\n" in text[i:] else n
+            continue
+        if text.startswith("/*", i):
+            i = text.index("*/", i) + 2
+            continue
+        if c in "\"'":
+            j = i + 1
+            while text[j] != c:
+                j += 2 if text[j] == "\\" else 1
+            i = j + 1
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                j = i + 1
+                while j < n and text[j] in " \t":
+                    j += 1
+                if j < n and text[j] == ";":
+                    i = j
+                chunks.append((start, i + 1))
+                start = i + 1
+        elif c == ";" and depth == 0:
+            chunks.append((start, i + 1))
+            start = i + 1
+        elif c == "#" and depth == 0 and (i == 0 or text[i - 1] == "\n"):
+            e = text.index("\n", i)
+            chunks.append((start, e + 1))
+            start = e + 1
+            i = e
+        i += 1
+    chunks.append((start, n))
+    return chunks
+
+
+def is_function(code):
+    head = code.split("{")[0]
+    code_s = code.strip()
+    if not code_s.endswith("}") or "(" not in head:
+        return False
+    if re.match(r"(class|struct|union|enum|namespace|typedef)\b", head.strip().split("\n")[-1].strip()):
+        return False
+    if re.search(r"\bextern\s+\"C\"\s*$", head.strip()):
+        return False
+    if "=" in head.split("(")[0]:
+        return False
+    return True
+
+
+def strip_comments(s):
+    return re.sub(r"//[^\n]*", "", s).strip()
+
+
+def overlay_function_addresses(ov):
+    '''(class or "", name) -> address for the overlay's functions in symbols.txt'''
+    out = {}
+    for line in (CONFIG / "overlays" / ov / "symbols.txt").read_text().splitlines():
+        m = re.match(r"(\S+) kind:function.*addr:(0x[0-9a-f]+)", line)
+        if not m:
+            continue
+        name, addr = m.group(1), int(m.group(2), 16)
+        mm = re.match(r"_ZN(\d+)(\w+)", name)
+        if mm:
+            n = int(mm.group(1))
+            cls, rest = mm.group(2)[:n], mm.group(2)[n:]
+            if rest[:2] in ("D0", "D1", "D2", "C1", "C2"):
+                out.setdefault((cls, "~" + cls if rest[0] == "D" else cls), addr)
+                continue
+            m2 = re.match(r"(\d+)", rest)
+            if m2:
+                k = int(m2.group(1))
+                out.setdefault((cls, rest[len(m2.group(1)):len(m2.group(1)) + k]), addr)
+        else:
+            out.setdefault(("", name), addr)
+    return out
+
+
+def function_key(code, addrs):
+    '''original address of a function definition chunk, or None'''
+    head = strip_comments(code).split("{")[0].replace("\n", " ")
+    m = re.search(r"(\w+)::(~?\w+)\s*\(", head)
+    if m:
+        return addrs.get((m.group(1), m.group(2)))
+    m = re.search(r"(\w+)\s*\(", head)
+    return addrs.get(("", m.group(1))) if m else None
+
+
+def cmd_reverse(src):
+    '''order function definitions by descending original address (mwcc emits a file's functions last to first)'''
+    m = re.search(r"src/(ov\d+)/", str(Path(src).resolve()))
+    addrs = overlay_function_addresses(m.group(1)) if m else {}
+    text = Path(src).read_text()
+    chunks = top_level_chunks(text)
+    parts = [text[a:b] for a, b in chunks]
+    funcs = [i for i, p in enumerate(parts) if is_function(strip_comments(p)) and "inline" not in
+             strip_comments(p).split("(")[0]]
+    if not funcs:
+        sys.exit("no function definitions found")
+    first, last = funcs[0], funcs[-1]
+    body = parts[first:last + 1]
+    fn = [p for p in body if is_function(strip_comments(p)) and "inline" not in strip_comments(p).split("(")[0]]
+    other = [p for p in body if p not in fn]
+    keys = [function_key(p, addrs) for p in fn]
+    unknown = [strip_comments(p).split("{")[0].strip().split("\n")[-1] for p, k in zip(fn, keys) if k is None]
+    if unknown:
+        print("no address for (kept in reversed file order):", *unknown, sep="\n  ")
+    # descending address; functions without an address keep their reversed file position
+    order = sorted(range(len(fn)), key=lambda i: (-(keys[i] if keys[i] is not None else
+                                                    next((keys[j] for j in range(i, -1, -1) if keys[j] is not None), 0)), -i))
+    # non-function chunks between functions (data definitions, inline helpers) move before the functions
+    out = "".join(parts[:first]) + "".join(other).rstrip("\n") + "\n\n" + \
+        "\n\n".join(fn[i].strip("\n") for i in order) + "\n" + "".join(parts[last + 1:])
+    Path(src).write_text(re.sub(r"\n{3,}", "\n\n", out))
+    print(f"ordered {len(fn)} functions by descending address ({len(other)} other chunks moved above them)")
+
+
+# ---------------------------------------------------------------- undef
+def cmd_undef(objpath):
+    o = Obj(objpath)
+    syms = load_symbols()
+    own = {y[0] for y in o.syms if y[5] != 0}
+    missing = sorted({y[0] for y in o.syms if y[5] == 0 and y[0] and y[0] not in own and y[0] not in syms})
+    for m in missing:
+        print("MISSING", m)
+    print(f"{len(missing)} unresolved")
+    return len(missing)
+
+
+# ---------------------------------------------------------------- data
+def definition_spans(text):
+    '''file-scope data definitions: name -> (start, end) including preceding comment lines'''
+    out = {}
+    for a, b in top_level_chunks(text):
+        code = text[a:b]
+        s = strip_comments(code)
+        if not s.endswith(";") or "=" not in s or is_function(s):
+            continue
+        head = s.split("=")[0]
+        m = re.search(r"([A-Za-z_]\w*)\s*(\[[^\]]*\])*\s*$", head)
+        if m and not head.lstrip().startswith(("typedef", "#")):
+            # extend start back to include leading comment lines directly above
+            out[m.group(1)] = (a, b)
+    return out
+
+
+def function_lines(text):
+    '''method/function name -> source offset of its definition start (last occurrence wins for overloads)'''
+    out = {}
+    for a, b in top_level_chunks(text):
+        s = strip_comments(text[a:b])
+        if is_function(s):
+            head = s.split("{")[0]
+            m = re.search(r"(~?\w+)\s*\([^()]*\)\s*(const)?\s*$", head.replace("\n", " "))
+            if m:
+                out.setdefault(m.group(1), a)
+    return out
+
+
+def method_of(mangled):
+    if not mangled.startswith("_Z"):
+        return mangled
+    m = re.match(r"_ZN(\d+)(\w+)", mangled)
+    if m:
+        n = int(m.group(1))
+        rest = m.group(2)[n:]
+        if rest.startswith(("D0", "D1", "D2", "C1", "C2")):
+            return "~" if rest[0] == "D" else "ctor"
+        m2 = re.match(r"(\d+)", rest)
+        if m2:
+            k = int(m2.group(1))
+            return rest[len(m2.group(1)):len(m2.group(1)) + k]
+    return mangled
+
+
+def cmd_data(src, objpath, ov, apply=False, seed=1):
+    text = Path(src).read_text()
+    o = Obj(objpath)
+    syms = load_symbols()
+    secs = overlay_sections(ov)
+    relocs = overlay_relocs(ov)
+    orig = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
+    base = secs[".text"][0]
+    objs = o.objects()
+    byname = {x["name"]: x for x in objs}
+    funcs = o.functions()
+
+    # 1. original address of each object via the code that references it
+    for sec_i, lst in o.relocs.items():
+        fname = funcs.get(sec_i)
+        if not fname or fname not in syms:
+            continue
+        faddr = syms[fname][1]
+        for off, sname, addend, _ in lst:
+            if sname in byname and faddr + off in relocs:
+                byname[sname].setdefault("addr", relocs[faddr + off] - addend)
+                byname[sname].setdefault("refby", fname)
+    # 2. unreferenced objects: match content (words with relocations masked)
+    dstart, dend = secs.get(".data", (0, 0))
+    for x in objs:
+        if "addr" in x or x["kind"] == ".bss":
+            continue
+        masked = {off for off, *_ in o.relocs.get(x["idx"], [])}
+        cands = []
+        for a in range(dstart, dend - x["size"] + 1, 4):
+            ob = orig[a - base:a - base + x["size"]]
+            if all(ob[k:k + 4] == x["bytes"][k:k + 4] for k in range(0, x["size"], 4) if k not in masked):
+                cands.append(a)
+        if len(cands) == 1:
+            x["addr"] = cands[0]
+        else:
+            print(f"warning: {x['name']} ({x['size']:#x}) matches {len(cands)} places by content")
+    unplaced = [x["name"] for x in objs if "addr" not in x]
+    if unplaced:
+        print("cannot place:", unplaced)
+
+    # 3. split the object's order into the size-sorted block and the string pool tail
+    sizes = [x["size"] for x in objs]
+    cut = len(objs)
+    for i in range(1, len(objs)):
+        if sizes[i] < sizes[i - 1]:
+            cut = i
+            break
+    sorted_objs, tail = objs[:cut], objs[cut:]
+    target = {}
+    for kind in (".data", ".bss", ".rodata"):
+        target[kind] = [x["name"] for x in sorted(
+            [x for x in sorted_objs if x["kind"] == kind and "addr" in x], key=lambda x: x["addr"])]
+    tail_ok = [x.get("addr", 0) for x in tail] == sorted(x.get("addr", 0) for x in tail)
+    actual_ok = all([x["name"] for x in sorted_objs if x["kind"] == k and "addr" in x] == target[k] for k in target)
+    print(f"compiled object's data order: {'MATCHES the original' if actual_ok else 'differs from the original'}")
+    print(f"{len(sorted_objs)} sorted objects, {len(tail)} in the literal pool (order {'ok' if tail_ok else 'WRONG'})")
+
+    # 4. creation order units: named file-scope definitions are movable; compiler objects belong to functions
+    defs = definition_spans(text)
+    fpos = function_lines(text)
+    size = {x["name"]: x["size"] for x in sorted_objs}
+    named = [x["name"] for x in sorted_objs if x["name"] in defs]
+    fixed = []  # (source offset, number, name)
+    for x in sorted_objs:
+        if x["name"] in defs:
+            continue
+        m = re.search(r"\$?(\d+)$", x["name"])
+        if x["name"].startswith("_ZTV"):
+            fixed.append((len(text) + 1, 0, x["name"]))
+            continue
+        ref = x.get("refby")
+        if ref is None:
+            # find any function whose code references it
+            for sec_i, lst in o.relocs.items():
+                if sec_i in funcs and any(s == x["name"] for _, s, _, _ in lst):
+                    ref = funcs[sec_i]
+                    break
+        pos = fpos.get(method_of(ref)) if ref else None
+        if pos is None or not m:
+            print(f"warning: cannot tell when {x['name']} is created (referenced by {ref})")
+            pos = len(text)
+        # within a function: constants (@N) first, then local statics, then their guards (checked on ov140)
+        rank = 2 if x["name"].startswith("_ZGV") else 1 if "$" in x["name"] else 0
+        fixed.append((pos, rank * 100000 + (int(m.group(1)) if m else 0), x["name"]))
+    fixed.sort()
+    anchors = sorted({p for p, _, _ in fixed})  # function positions that create objects
+
+    def build(place):
+        '''place: named -> gap index (0..len(anchors)); returns creation list'''
+        seq = []
+        gi = 0
+        items = [(defs[n][0], n) for n in named]
+        # named objects at their gap, keeping current relative order inside a gap
+        for g in range(len(anchors) + 1):
+            seq += [n for n in order_in[g]]
+            if g < len(anchors):
+                seq += [nm for p, _, nm in fixed if p == anchors[g]]
+        return seq
+
+    def score(seq):
+        out = emitted(seq, size)
+        s = 0
+        for kind, tgt in target.items():
+            got = [n for n in out if byname[n]["kind"] == kind and n in set(tgt)]
+            s += sum(1 for a, b in zip(got, tgt) if a == b)
+        return s
+    full = sum(len(t) for t in target.values())
+
+    def gap_of(n):
+        a = defs[n][0]
+        return sum(1 for p in anchors if p < a)
+    order_in = [[] for _ in range(len(anchors) + 1)]
+    for n in sorted(named, key=lambda n: defs[n][0]):
+        order_in[gap_of(n)].append(n)
+    cur = score(build(None))
+    if "--debug" in sys.argv:
+        print("creation:", build(None))
+        print("emitted: ", emitted(build(None), size))
+        print("target:  ", target)
+        for p, k, nm in fixed:
+            print(f"   fixed {nm} at {p} (#{k}) ref {byname[nm].get('refby')}")
+    print(f"current layout: {cur}/{full} objects in place")
+    if cur == full:
+        print("data order already matches")
+        return
+    rnd = random.Random(seed)
+    best = (cur, [g[:] for g in order_in])
+    slots = len(anchors) + 1
+    for restart in range(300):
+        if restart:
+            order_in = [[] for _ in range(slots)]
+            for n in rnd.sample(named, len(named)):
+                order_in[rnd.randrange(slots)].append(n)
+        s = score(build(None))
+        improved = True
+        while improved and s < full:
+            improved = False
+            for n in named:
+                g0 = next(i for i, g in enumerate(order_in) if n in g)
+                i0 = order_in[g0].index(n)
+                for g in range(slots):
+                    for i in range(len(order_in[g]) + 1):
+                        if g == g0 and i in (i0, i0 + 1):
+                            continue
+                        trial = [x[:] for x in order_in]
+                        trial[g0].remove(n)
+                        trial[g].insert(i if not (g == g0 and i > i0) else i - 1, n)
+                        saved = order_in
+                        order_in = trial
+                        t = score(build(None))
+                        if t > s:
+                            s, improved = t, True
+                            break
+                        order_in = saved
+                    if improved:
+                        break
+                if improved:
+                    break
+        if s > best[0]:
+            best = (s, [g[:] for g in order_in])
+            print(f"  {s}/{full}")
+        if s == full:
+            break
+    s, order_in = best
+    print(f"best: {s}/{full}")
+    anchor_fn = {}
+    for p in anchors:
+        nm = next(nm for q, _, nm in fixed if q == p)
+        anchor_fn[p] = "the function using " + nm
+        if byname[nm].get("refby"):
+            anchor_fn[p] = byname[nm]["refby"]
+    for g in range(slots):
+        if order_in[g]:
+            where = f"before  {anchor_fn[anchors[g]]}" if g < len(anchors) else "after the last function that creates data"
+            print(f"  define {', '.join(order_in[g])}  {where}")
+    if apply and s == full:
+        apply_placement(src, text, defs, anchors, order_in)
+
+
+def apply_placement(src, text, defs, anchors, order_in):
+    moved = [n for g in order_in for n in g]
+    pieces = {n: text[defs[n][0]:defs[n][1]].strip("\n") for n in moved}
+    # remove definitions (from the end so offsets stay valid), then insert at anchors (from the end)
+    cuts = sorted((defs[n] for n in moved), reverse=True)
+    t = text
+    shift = []
+    for a, b in cuts:
+        t = t[:a] + t[b:]
+        shift.append((a, b - a))
+
+    def newpos(p):
+        return p - sum(ln for a, ln in shift if a < p)
+    inserts = []
+    for g, names in enumerate(order_in):
+        if not names:
+            continue
+        pos = newpos(anchors[g]) if g < len(anchors) else None
+        inserts.append((pos, "\n\n".join(pieces[n] for n in names)))
+    for pos, block in sorted(inserts, key=lambda x: -1 if x[0] is None else x[0], reverse=True):
+        if pos is None:
+            t = t.rstrip("\n") + "\n\n" + block + "\n"
+        else:
+            t = t[:pos] + "\n" + block + "\n\n" + t[pos:].lstrip("\n")
+    # extern declarations for every moved object, placed before the first function
+    decl = []
+    for n in moved:
+        d = strip_comments(pieces[n]).split("=")[0].strip()
+        d = d if d.startswith("extern") else "extern " + d
+        decl.append(d + ";")
+    first_fn = min(p for p in (newpos(a) for a in anchors))
+    # put declarations before the first definition chunk that is a function or a moved object
+    head_end = min([first_fn] + [t.find(pieces[n]) for n in moved if t.find(pieces[n]) >= 0])
+    t = t[:head_end] + "// Declarations for data defined further down (definition order sets the data layout)\n" + \
+        "\n".join(decl) + "\n\n" + t[head_end:]
+    Path(src).write_text(re.sub(r"\n{3,}", "\n\n", t))
+    print(f"applied: moved {len(moved)} definitions")
+
+
+# ---------------------------------------------------------------- diff
+def cmd_diff(ov):
+    n = int(ov[2:])
+    orig = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
+    built = Path(f"build/usa/build/arm9_ov{n:03d}.bin").read_bytes()
+    base = overlay_sections(ov)[".text"][0]
+    print(f"orig {len(orig):#x} built {len(built):#x}")
+    diffs = [i for i in range(0, min(len(orig), len(built)), 4) if orig[i:i + 4] != built[i:i + 4]]
+    print(f"{len(diffs)} differing words")
+    syms = sorted((a, nm) for nm, (mod, a) in load_symbols().items() if mod == ov)
+    runs = []
+    for d in diffs:
+        if runs and d - runs[-1][1] <= 8:
+            runs[-1][1] = d
+        else:
+            runs.append([d, d])
+    for a, b in runs[:30]:
+        owner = [nm for s, nm in syms if s <= base + a][-1:] or ["?"]
+        print(f"  {base + a:#010x}-{base + b + 4:#010x}  in {owner[0]}")
+    return len(diffs)
+
+
+if __name__ == "__main__":
+    a = sys.argv[1:]
+    if not a:
+        sys.exit(__doc__)
+    if a[0] == "reverse":
+        cmd_reverse(a[1])
+    elif a[0] == "undef":
+        sys.exit(1 if cmd_undef(a[1]) else 0)
+    elif a[0] == "data":
+        seed = int(a[a.index("--seed") + 1]) if "--seed" in a else 1
+        cmd_data(a[1], a[2], a[3], "--apply" in a, seed)
+    elif a[0] == "diff":
+        sys.exit(1 if cmd_diff(a[1]) else 0)
+    else:
+        sys.exit(__doc__)
