@@ -266,3 +266,5 @@ func_ov065_02268658 ov065_015/ov065_015.cpp  # -O4,p; bignum divmod: spill slots
 func_ov065_02268808 ov065_015/ov065_015.cpp  # -O4,p; bignum sqr: first loop strength-reduces dst[i], callee-saved regs (66 lines)
 func_ov065_02268c64 ov065_015/ov065_015.cpp  # -O4,p; state callback case 8: r1/r3/r6 assignment rotated
 func_ov065_0227112c ov065_029/ov065_029.cpp  # -O4,p; LCG seed: pointer arg computed after u64 mul+add (orig before); ~2-4B shift
+func_ov065_02272734 ov065_032/ov065_032.cpp  # -O4,p; movs r2,#0 scheduled after ldr g pair (orig before)
+func_ov065_02272dd4 ov065_032/ov065_032.cpp  # -O4,p; error mapper default path: orig keeps movs r0,#6; cmp r0,#0; beq, ours folds it
