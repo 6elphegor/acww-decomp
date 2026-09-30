@@ -23,11 +23,11 @@ func_ov081_02271c30 kind:function(thumb,size=0x38) addr:0x02271c30
 func_ov081_02271c68 kind:function(thumb,size=0x4) addr:0x02271c68
 func_ov081_02271c6c kind:function(thumb,size=0x34) addr:0x02271c6c
 func_ov081_02271ca0 kind:function(thumb,size=0x44) addr:0x02271ca0
-func_ov081_02271ce4 kind:function(thumb,size=0x4c) addr:0x02271ce4
-func_ov081_02271d30 kind:function(thumb,size=0x8) addr:0x02271d30
-func_ov081_02271d38 kind:function(thumb,size=0x8) addr:0x02271d38
-func_ov081_02271d40 kind:function(thumb,size=0x158) addr:0x02271d40
-func_ov081_02271e98 kind:function(thumb,size=0x30) addr:0x02271e98
+_ZN18Unk_ov081_0227217c8vfunc_68Ev kind:function(thumb,size=0x4c) addr:0x02271ce4
+_ZN18Unk_ov081_0227217c8vfunc_70Ev kind:function(thumb,size=0x8) addr:0x02271d30
+_ZN18Unk_ov081_0227217c8vfunc_6cEv kind:function(thumb,size=0x8) addr:0x02271d38
+_ZN18Unk_ov081_0227217c8vfunc_00Ev kind:function(thumb,size=0x158) addr:0x02271d40
+_ZN18Unk_ov081_0227217c8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271e98
 func_ov081_02271ec8 kind:function(thumb,size=0x118) addr:0x02271ec8
 __sinit_ov081_02271fe0 kind:function(thumb,size=0x5c) addr:0x02271fe0
 .p__sinit_ov081_02271fe0 kind:data(word) addr:0x0227203c

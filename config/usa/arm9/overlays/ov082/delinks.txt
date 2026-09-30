@@ -3,3 +3,6 @@
     .ctor       start:0x022720a0 end:0x022720a4 kind:rodata align:4
     .data       start:0x022720c0 end:0x022722c0 kind:data align:32
     .bss        start:0x022722c0 end:0x02272320 kind:bss align:32
+
+src/ov082/unk_ov082_02271ce4.cpp:
+    .text       start:0x02271ce4 end:0x02272044
