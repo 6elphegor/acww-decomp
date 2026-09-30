@@ -64,3 +64,24 @@ src/ov068/unk_0226a794.cpp:
 
 src/ov068/unk_0226ba48.cpp:
     .text       start:0x0226ba48 end:0x0226c3b4
+
+src/ov068/unk_0226eb90.cpp:
+    .text       start:0x0226eb90 end:0x0226f0e4
+
+src/ov068/unk_022694c0.cpp:
+    .text       start:0x022694c0 end:0x02269e54
+
+src/ov068/unk_0226e0cc.cpp:
+    .text       start:0x0226e0cc end:0x0226eb90
+
+src/ov068/unk_0226ccd4.cpp:
+    .text       start:0x0226ccd4 end:0x0226d788
+
+src/ov068/unk_02269e54.cpp:
+    .text       start:0x02269e54 end:0x0226a794
+
+src/ov068/unk_0226c3b4.cpp:
+    .text       start:0x0226c3b4 end:0x0226ccd4
+
+src/ov068/unk_0226d788.cpp:
+    .text       start:0x0226d788 end:0x0226e0cc
