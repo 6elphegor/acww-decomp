@@ -5,3 +5,12 @@
 
 src/ov100/unk_0229555c.cpp:
     .text       start:0x0229555c end:0x02295e98
+
+src/ov100/unk_02297128.cpp:
+    .text       start:0x02297128 end:0x02297664
+
+src/ov100/unk_ov100_02294c40.cpp:
+    .text       start:0x02294c40 end:0x0229555c
+
+src/ov100/unk_ov100_02296814.cpp:
+    .text       start:0x02296814 end:0x02297128

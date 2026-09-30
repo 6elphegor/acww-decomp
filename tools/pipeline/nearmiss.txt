@@ -368,3 +368,6 @@ ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extrac
 ov123_002 func_ov123_02293784 — set-pixel: row/p register swap (r1/r2) only; 126 statement permutations + decl hill-climb tried
 ov142_000 func_ov142_02292154 — known unsolved 5-5-5 colour blend (orig extracts y channels eagerly, frame 12 vs 4)
 ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match, remaining diff is double u16 load CSE'd + [sp+4] slot order
+ov145_000 func_ov145_022920b0 — known unsolved 5-5-5 colour blend (inlined; orig extracts arr[7] channels eagerly)
+ov144_001 func_ov144_02292fb4 — call result copied before cmp -1 (adds r2,r0,#0) + u16 local r3 vs r1
+ov146_000 func_ov146_022920b4 — known unsolved 5-5-5 colour blend (/20, inlined; eager channel extraction)
