@@ -326,3 +326,4 @@ func_ov066_02262a34 ov066_006/ov066_006.cpp  # ARM -O4,p; push {lr};sub sp vs or
 func_ov068_0226c2a8 ov068_021/ov068_021.cpp  # Thumb -O4,s C++; incoming p copied to r2 (adds r2,r0,#0) vs ours r1
 func_ov068_02269a28 ov068_017/ov068_017.cpp  # Thumb -O4,s C++; asrs dest r3 vs orig r2 (offset reg swapped)
 func_ov068_02269b20 ov068_017/ov068_017.cpp  # Thumb -O4,s C++; ang spill order (str before copy); uses volatile-local hack for slots
+func_ov068_0226e4dc ov068_025/ov068_025.cpp  # Thumb -O4,s C++; 4-instr halfword copy: r0/r1/r2 roles rotated
