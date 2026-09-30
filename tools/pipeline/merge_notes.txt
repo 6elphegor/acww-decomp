@@ -208,3 +208,4 @@ ov076_000/001: func_ov076_02271d20 is an owner method (setState) in 001 but a fr
 ov074_000/001: 001 shows +0x710 member is Unk_ov074_022714e0 {u32; Unk_020b895c} (ctor func_ov074_022714e0); 000 conflated it with Unk_ov074_02271450_Helper. Reconcile.
 ov082_000/001: sub-object is Unk_ov082_0227214c (000, from vtable) but 001 named it Unk_ov082_02271a3c (after ctor); 001 uses it only in declarations -> rename in 001 at merge.
 ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (001 modelled it opaque as non-derived); vfunc_a0 returns s32 in 000 local Unk_020d77a4 copy.
+- ov096: func_ov096_0229a39c is declared void in ov096_008 but ov096_007 (02299114) tests its result -> s32.

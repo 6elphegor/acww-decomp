@@ -341,3 +341,5 @@ func_ov093_02291a3c ov093_000/ov093_000.cpp  # Thumb -O4,s C++; last else block 
 func_ov096_02297e5c ov096_005/ov096_005.cpp  # Thumb -O4,s C; ldr r3,=0x358 vs ours r1
 func_ov095_02293a78 ov095_002/ov095_002.cpp  # Thumb -O4,s C; mvns -1 scheduled after 3 zero stores (orig before)
 func_ov095_02293fb4 ov095_002/ov095_002.cpp  # Thumb -O4,s C; second loop counter/zero/temp regs rotated
+func_ov096_0229619c ov096_002/ov096_002.cpp  # Thumb -O4,s C++; switch(unk_bb) cases 0x10/0x11: r1/r2 swapped for const 4/5 and unk_c0 addr
+func_ov095_02292e50 ov095_001/ov095_001.cpp  # Thumb -O4,s C; r5/r6 swapped (p vs s->unk_14) throughout
