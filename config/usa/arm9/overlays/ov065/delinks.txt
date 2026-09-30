@@ -105,3 +105,27 @@ src/ov065/unk_0227702c.cpp:
 
 src/ov065/unk_022751b0.cpp:
     .text       start:0x022751b0 end:0x02275c60
+
+src/ov065/unk_02276698.cpp:
+    .text       start:0x02276698 end:0x0227702c
+
+src/ov065/unk_02273230.cpp:
+    .text       start:0x02273230 end:0x02273b60
+
+src/ov065/unk_02277974.cpp:
+    .text       start:0x02277974 end:0x022782f4
+
+src/ov065/unk_02279588.cpp:
+    .text       start:0x02279588 end:0x02279eb4
+
+src/ov065/unk_02278c38.cpp:
+    .text       start:0x02278c38 end:0x02279588
+
+src/ov065/unk_0226f7c8.cpp:
+    .text       start:0x0226f7c8 end:0x022700e4
+
+src/ov065/unk_022782f4.cpp:
+    .text       start:0x022782f4 end:0x02278c38
+
+src/ov065/unk_0227b2a8.cpp:
+    .text       start:0x0227b2a8 end:0x0227bbf4

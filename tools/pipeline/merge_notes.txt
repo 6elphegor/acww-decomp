@@ -250,3 +250,4 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov118: ov118_002's plain-C struct Unk_ov118_02292d00 is ov118's scene class Unk_ov118_022955c8.
 - ov114: ov114_001's struct Unk_ov114_0229559c is the same object as Unk_ov114_02294c40 (ov114_000/002); text buffer class Unk_ov114_022965b0 : Unk_020e2a78 (0x196 bytes) at +0x808.
 - ov120: scene class Unk_ov120_02295010 (vtable 0x02295010, ~0x2534), loads at 0x02292d00, not a twin of ov118/119.
+- ov119: scene class Unk_ov119_02295840 (vtable 0x02295840, size 0x1bcc). ov119_000 and ov119_004 differ on 0x9d4..0x1a58 layout (u16[0x800] + ptr + u8[0xec] vs opaque).
