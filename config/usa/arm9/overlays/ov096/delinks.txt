@@ -17,3 +17,15 @@ src/ov096/unk_02297b14.cpp:
 
 src/ov096/unk_022996e8.cpp:
     .text       start:0x022996e8 end:0x0229a000
+
+src/ov096/unk_02295f94.cpp:
+    .text       start:0x02295f94 end:0x022968bc
+
+src/ov096/unk_0229a94c.cpp:
+    .text       start:0x0229a94c end:0x0229ab44
+
+src/ov096/unk_02298dac.cpp:
+    .text       start:0x02298dac end:0x022996e8
+
+src/ov096/unk_02298430.cpp:
+    .text       start:0x02298430 end:0x02298dac

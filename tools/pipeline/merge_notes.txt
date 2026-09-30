@@ -291,3 +291,6 @@ ov088_000/001: sub-object Unk_ov088_02272618 is Unk_020d8b38-derived per 000 (00
 - ov143: scene class Unk_ov143_02293b80 (melody editor), loads at 0x02291f60; D1/D0 at 02291f60/02291fa4.
 - ov144: scene class Unk_ov144_02293db8 (vtable 0x02293db8, size 0x1f04), loads at 0x02291f60.
 - ov143: ov143_001 wrote extern "C" free fns on a struct S while ov143_000 uses methods of Unk_ov143_02293b80 — convert ov143_001 to methods when linking (see GENERAL note).
+- ov146: scene class Unk_ov146_02294080 (vtable 0x02294080, size 0x1a7c), loads at 0x02291f60.
+- ov143 layout fix (from ov143_002): +0x91 is u8[3] then s32 unk_94 (ov143_000 has u8[7]); +0xe74 is a 0x24-byte Unk_020e45f8-like object (ctor func_020b8800), class size 0xe98.
+- ov145: scene class Unk_ov145_022937c0 (vtable 0x022937c0, size 0x2188), loads at 0x02291f60.
