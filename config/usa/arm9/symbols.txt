@@ -826,6 +826,7 @@ _ZN12Unk_02011b6013func_02011e9cEjjj kind:function(thumb,size=0x22) addr:0x02011
 _ZN12Unk_02011b6013func_02011ec0EjPtjt kind:function(thumb,size=0x48) addr:0x02011ec0
 _ZN12Unk_02011b6013func_02011f08Ej kind:function(thumb,size=0x38) addr:0x02011f08
 _ZN12Unk_02011b6013func_02011f40Ev kind:function(thumb,size=0x12) addr:0x02011f40
+_ZN12Unk_02011b60D1Ev kind:label(thumb) addr:0x02011f40
 _ZN12Unk_02011b6013func_02011f54Ev kind:function(thumb,size=0x20) addr:0x02011f54
 func_02011f74 kind:function(thumb,size=0xf8) addr:0x02011f74
 _ZN12Unk_0201216413func_0201206cEP16Unk_02011f74_Vec kind:function(thumb,size=0x1c) addr:0x0201206c
