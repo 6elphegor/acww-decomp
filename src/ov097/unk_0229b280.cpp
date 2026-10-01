@@ -109,7 +109,7 @@ static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" void func_ov097_0229b4a4(Unk_ov096_0229aea8 *self) {
+extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b4a4Ev(Unk_ov096_0229aea8 *self) {
     if (!func_ov097_0229b280()) {
         func_ov096_0229865c(self);
         func_ov096_02298334(self, 23, 0xff, 1);
@@ -135,7 +135,7 @@ extern "C" void func_ov097_0229b4a4(Unk_ov096_0229aea8 *self) {
     }
 }
 
-extern "C" void func_ov097_0229b414(Unk_ov096_0229aea8 *self) {
+extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b414Ev(Unk_ov096_0229aea8 *self) {
     if (!func_ov097_0229b280()) {
         func_ov096_0229865c(self);
         func_ov096_02298334(self, 24, 0xff, 1);
