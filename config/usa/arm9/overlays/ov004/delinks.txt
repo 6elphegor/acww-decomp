@@ -352,8 +352,11 @@ src/ov004/unk_ov004_0223f2c8.cpp:
     .data       start:0x0224f2cc end:0x0224f31c
     .bss        start:0x02258910 end:0x02258990
 
-src/ov004/unk_0223f3a4.cpp:
-    .text       start:0x0223f43c end:0x0223fcb4
-
-src/ov004/unk_0223fcb4.cpp:
-    .text       start:0x0223fcb4 end:0x0223fffc
+src/ov004/unk_ov004_0223f43c.cpp:
+    complete
+    .text       start:0x0223f43c end:0x0223fffc
+    .rodata     start:0x0224682c end:0x02246844
+    .init       start:0x0224840c end:0x0224851c
+    .ctor       start:0x02248590 end:0x02248594
+    .data       start:0x0224f31c end:0x0224f5c0
+    .bss        start:0x02258990 end:0x022589e0
