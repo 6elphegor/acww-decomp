@@ -399,6 +399,7 @@ whose symbol is `...C1Ev`), add the missing one in `aliases.txt`; never rename (
 ## Preparing and checking a unit
 
     python3 tools/pipeline/linkprep.py dump main spec.txt            the unit's data words, targets, labels, bss
+    python3 tools/pipeline/maindis.py 0x020c2d4c 0x28                 original code (e.g. a __sinit) with targets
     python3 tools/pipeline/linkprep.py compile unit.cpp unit.o
     python3 tools/pipeline/realnames.py unit.cpp unit.o               func_XXXXXXXX -> its symbols.txt name
     python3 tools/pipeline/linkprep.py reverse unit.cpp main          sort definitions by descending address

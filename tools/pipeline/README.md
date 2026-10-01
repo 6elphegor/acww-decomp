@@ -7,3 +7,10 @@ Files used to run parallel matching agents over ARM9 main. The originals lived i
 - `integrate.py <source.cpp> <pairs.txt> <unit>`: renames symbols in `symbols.txt`, copies the source to `src/main/<unit>.cpp` and adds an unlinked `delinks.txt` entry. Afterwards run `python3 tools/configure.py usa && ninja && ninja report`.
 - `nearmiss.txt`: functions that are close but not matching (`<orig> <scratch source>`). Sources are in `pipeline_wip/nearmiss/`.
 - `merge_notes.txt`: classes that different units named separately, plus call-site workarounds to clean up when units are merged into linkable translation units.
+
+# Linking tools
+
+`linking.md` is the playbook. Overlays: `linkprep.py`, `install_tu.py`, `install_units.py`, `ovdump.py`, `link_candidates.py`.
+Main module (see "Linking the main module" in `linking.md`): `install_tu.py main`, `linkprep.py ... main` (`mainprep.py`),
+`realnames.py`, `maindis.py`, `vtable_rename.py`, `mainbatch.sh`; build steps `tools/bss_units.py`, `tools/aliases.py`,
+`tools/object_order.py`. `maincheck.py` is the older per-function check; `linkprep.py check <o> main <spec>` replaces it.
