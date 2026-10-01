@@ -15109,10 +15109,10 @@ _ZTV12Unk_020dbe34 kind:data(any) addr:0x020dbe2c
 data_020dbe3c kind:data(any) addr:0x020dbe3c
 data_020dbe40 kind:data(any) addr:0x020dbe40
 _ZTV12Unk_020dbe4c kind:data(any) addr:0x020dbe44
-data_020dbe5c kind:data(any) addr:0x020dbe5c
-data_020dbe6c kind:data(any) addr:0x020dbe6c
+_ZTV12Unk_020dbe5c kind:data(any) addr:0x020dbe54
+_ZTV12Unk_020dbe6c kind:data(any) addr:0x020dbe64
 _ZTV12Unk_020dbe7c kind:data(any) addr:0x020dbe74
-data_020dbe8c kind:data(any) addr:0x020dbe8c
+_ZTV12Unk_020dbe8c kind:data(any) addr:0x020dbe84
 data_020dbe94 kind:data(any) addr:0x020dbe94
 data_020dbea4 kind:data(any) addr:0x020dbea4
 data_020dbeac kind:data(any) addr:0x020dbeac
