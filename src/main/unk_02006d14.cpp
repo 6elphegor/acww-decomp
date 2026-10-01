@@ -15,7 +15,7 @@ struct Unk_02006d14 {
     u8 pad_c82[2];
     u32 unk_c84;
     void func_02006d14(Unk_02006d14_Item* item);
-    void func_020076f0();
+    void func_020076f0(u32 a);
     void func_020076dc();
     void func_020076b0(u32 id);
     void func_02007c20(u32 id, u32 v);
@@ -338,7 +338,7 @@ void Unk_02006d14::func_02006d14(Unk_02006d14_Item* item)
     s16 v = item->unk_08;
     Unk_02006d14_Fn fn = table[id];
     u32 old = unk_7f0;
-    func_020076f0();
+    func_020076f0(id);
     func_020076dc();
     unk_7ec = id;
     func_020076b0(id);

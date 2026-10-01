@@ -508,11 +508,11 @@ BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     }
     if (n > 0) {
         s32 r = func_02063b8c(n);
-        for (y = 0; y < 16; y++) {
-            for (x = 0; x < 16; x++) {
-                if ((arr[y] >> x) & 1) {
+        for (x = 0; x < 16; x++) {
+            for (y = 0; y < 16; y++) {
+                if ((arr[x] >> y) & 1) {
                     if (r == 0) {
-                        func_0204ed8c(out, bx + x, by + y);
+                        func_0204ed8c(out, bx + y, by + x);
                         return TRUE;
                     }
                     r--;

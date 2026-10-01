@@ -226,24 +226,24 @@ s32 Unk_020bc58c::func_020bccc8(s32 t) {
     } else if (t == unk_1b30[grp].unk_00) {
         ok = TRUE;
     } else {
-        BOOL c0 = unk_1b30[0].unk_04 > 0 ? 1 : ok;
+        BOOL c0 = unk_1b30[0].unk_04 > 0 ? 1 : 0;
         BOOL c1 = unk_1b30[1].unk_04 > 0 ? 1 : 0;
         BOOL c2 = unk_1b30[2].unk_04 > 0 ? 1 : 0;
         BOOL c3 = unk_1b30[3].unk_04 > 0 ? 1 : 0;
         BOOL c4 = unk_1b30[4].unk_04 > 0 ? 1 : 0;
         if (grp == 0) {
-            if (c0 == 0 && c3 == 0) ok = TRUE; else ok = FALSE;
+            ok = (c0 == 0 && c3 == 0) ? TRUE : FALSE;
         } else if (grp == 1) {
-            if (c1 == 0 && c4 == 0) ok = TRUE; else ok = FALSE;
+            ok = (c1 == 0 && c4 == 0) ? TRUE : FALSE;
         } else if (grp == 2) {
-            if (c2 == 0 && c3 == 0 && c4 == 0) ok = TRUE; else ok = FALSE;
+            ok = (c2 == 0 && c3 == 0 && c4 == 0) ? TRUE : FALSE;
         } else if (grp == 3) {
-            if (c3 == 0 && c0 == 0 && c2 == 0 && c4 == 0) ok = TRUE; else ok = FALSE;
+            ok = (c3 == 0 && c0 == 0 && c2 == 0 && c4 == 0) ? TRUE : FALSE;
         } else if (grp == 4) {
-            if (c4 == 0 && c1 == 0 && c2 == 0 && c3 == 0) ok = TRUE; else ok = FALSE;
+            ok = (c4 == 0 && c1 == 0 && c2 == 0 && c3 == 0) ? TRUE : FALSE;
         }
     }
-    if (ok == 0) grp = 5;
+    if (!ok) return 5;
     return grp;
 }
 

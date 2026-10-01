@@ -172,10 +172,10 @@ public:
     virtual BOOL vfunc_18();
 
     void func_0203d078(Unk_020d94e8_Entry *e);
-    void func_0203d0d0();
-    void func_0203d11c();
-    void func_0203d124();
-    void func_0203d12c();
+    void func_0203d0d0(s32 sel);
+    void func_0203d11c(s32 sel);
+    void func_0203d124(s32 sel);
+    void func_0203d12c(s32 sel);
     void func_0203d134();
     void func_0203d188();
     void func_0203d1dc();
@@ -245,28 +245,22 @@ extern "C" BOOL func_0203cfb8(u32 a, u32 b, u32 c, u32 d, const u8 *e, const cha
     return result;
 }
 
-struct Unk_0203d134_Pad {
-    s32 v[1];
-    Unk_0203d134_Pad() {}
-    ~Unk_0203d134_Pad() {}
-};
-
+enum Unk_0203d134_E { Unk_0203d134_E0 = 0, Unk_0203d134_E15 = 15 };
 void Unk_020d94e8::func_0203d134() {
-    Unk_0203d134_Pad pad;
     s32 sel = unk_28.unk_04;
     s32 n;
     if (sel == 1) {
-        func_0203d12c();
+        func_0203d12c(sel);
     } else if (sel == 2) {
-        func_0203d124();
+        func_0203d124(sel);
     } else if (sel == 3) {
-        func_0203d11c();
+        func_0203d11c(sel);
     } else if (sel == 4) {
-        func_0203d0d0();
+        func_0203d0d0(sel);
     } else if (sel >= 5 && sel <= 15) {
-        n = sel - 5;
+        Unk_0203d134_E en = (Unk_0203d134_E)(sel - 5);
         Unk_020d94e8_Owner *o = unk_24;
-        func_0203d078(&o->unk_504[n]);
+        func_0203d078(&o->unk_504[en]);
     }
 }
 
@@ -290,7 +284,7 @@ void Unk_020d94e8::func_0203d078(Unk_020d94e8_Entry *e) {
     }
 }
 
-void Unk_020d94e8::func_0203d0d0() {
+void Unk_020d94e8::func_0203d0d0(s32 sel) {
     char *a, *b;
     unk_28.func_020a7338(&a, &b);
     if (func_0209750c()) {
@@ -306,15 +300,15 @@ void Unk_020d94e8::func_0203d0d0() {
     }
 }
 
-void Unk_020d94e8::func_0203d11c() {
+void Unk_020d94e8::func_0203d11c(s32 sel) {
     unk_45 = 1;
 }
 
-void Unk_020d94e8::func_0203d124() {
+void Unk_020d94e8::func_0203d124(s32 sel) {
     unk_4c = 2;
 }
 
-void Unk_020d94e8::func_0203d12c() {
+void Unk_020d94e8::func_0203d12c(s32 sel) {
     unk_4c = 1;
 }
 

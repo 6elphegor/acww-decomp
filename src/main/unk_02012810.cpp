@@ -27,7 +27,11 @@ struct Unk_02012e08_Pos {
     Unk_02012e08_Pos(const Unk_02012e08_Pos &o) : x(o.x), z(o.z) {}
 };
 struct Unk_02012cbc_Ent {
-    u8 x, z, b;
+    u8 x, z;
+    union {
+        u8 b;
+        struct { u8 lo : 4; u8 hi : 4; } f;
+    };
 };
 extern s32 data_021be028[];
 struct Unk_020130f0_Dir {
@@ -382,7 +386,6 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
     Unk_02012f04_Obj *o = data_021c47c4;
     s32 dirs, found;
     s32 lo2, present, dirs2, cand, bestd, i, hi, lo, w, bx, bz;
-    Unk_02012cbc_Ent e1, e2;
     Unk_02012b94_Pair q, p, r;
     Unk_02012810_Vec uv, tv;
 
@@ -422,9 +425,9 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
         hi = found;
         lo = unk_88;
         if (func_02012d3c(&p) != -1) {
-            e1 = func_02012cbc(&p);
-            hi = (u32)(e1.b << 24) >> 28;
-            lo = (u32)(e1.b << 28) >> 28;
+            Unk_02012cbc_Ent e1 = func_02012cbc(&p);
+            hi = e1.f.hi;
+            lo = e1.f.lo;
             dirs2 = dirs2 | hi;
         }
         func_0204ed8c(&tv, unk_0c, unk_10);
@@ -465,8 +468,8 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
         unk_04 = 1;
     } else if (unk_8c == 1) {
         s32 cand2, j;
-        e2 = func_02012cbc(&p);
-        lo2 = (u32)(e2.b << 28) >> 28;
+        Unk_02012cbc_Ent e2 = func_02012cbc(&p);
+        lo2 = e2.f.lo;
         w = func_02012b78(lo2);
         func_0204ed8c(&tv, unk_0c, unk_10);
         dirs = dirs | w;
@@ -494,7 +497,7 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
             }
             unk_1c.x = bx;
             unk_1c.z = bz;
-            func_02012d6c(((u32)(e2.b << 24) >> 28) | found, lo2, &p);
+            func_02012d6c(e2.f.hi | found, lo2, &p);
             unk_8c = 0;
             unk_88 = found;
         } else {

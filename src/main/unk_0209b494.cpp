@@ -382,7 +382,6 @@ BOOL Unk_0209b5d4::func_0209bcf8()
     u8 used[0x86];
     BOOL result = TRUE;
     func_02115fb4(used, 0, 0x86);
-    s32 r2, r1;
     u32 y, x;
     for (y = 0; y < 6; y++) {
         for (x = 0; x < 6; x++) {
@@ -393,7 +392,7 @@ BOOL Unk_0209b5d4::func_0209bcf8()
                 if (v == func_02037358(i) && used[i] == 0) n++;
             }
             if (n != 0) {
-                r1 = func_02063b8c(n);
+                u32 r1 = func_02063b8c(n);
                 i = 0;
                 n = i;
                 for (; n < 0x86; n++) {
@@ -413,7 +412,7 @@ BOOL Unk_0209b5d4::func_0209bcf8()
                     if (v == func_02037358(i)) n++;
                 }
                 if (n != 0) {
-                    r2 = func_02063b8c(n);
+                    u32 r2 = func_02063b8c(n);
                     i = 0;
                     n = i;
                     for (; n < 0x86; n++) {

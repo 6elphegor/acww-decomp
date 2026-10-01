@@ -237,7 +237,7 @@ extern u8 data_020e3e08[];
 void *func_020641ec(void *name, u32 a, u32 b, u32 c);
 void func_020639e8(char *buf, const void *fmt, ...);
 void func_020e8558(void *p);
-BOOL func_02101340(void *file, const void *mode);
+BOOL func_02101340(void *file, const void *mode, void *arc);
 void *func_021012bc(char *name);
 void func_02101310(void *file);
 }
@@ -300,7 +300,7 @@ extern "C" void func_020b2828(void) {
     p = func_020641ec(data_020e3df4, data_021f482c, 4, 0);
     data_021ee29c = p;
     if (p != NULL) {
-        if (func_02101340(file, data_020e3e04)) {
+        if (func_02101340(file, data_020e3e04, p)) {
             for (i = 0; i < 0x22; i++) {
                 func_020639e8(name, data_020e3e08, i);
                 data_021ee354[i] = (u32)func_021012bc(name);

@@ -20,7 +20,7 @@ void func_020897fc(void *p);
 void func_02089b18(void *p);
 s32 func_02089bb4(void *p);
 void func_02002848(void *p);
-s32 func_02003b5c(void);
+s32 func_02003b5c(u32 a);
 void func_020e7fd4(void);
 void func_020e814c(void);
 void func_0210171c(u32 a, u32 b);
@@ -241,10 +241,10 @@ void func_020b7d84(void) {
         if (data_021ef5c8 < 0xc8) {
             data_021ef5c8++;
         }
-        u32 v = (u8)data_021f4778;
+        u8 v = data_021f4778;
         data_021ef5f0 = v;
         data_021ef5ec = data_021f477c;
-        func_02003b5c();
+        func_02003b5c(v);
     } else {
         BOOL p = (data_021f4770 == 0 && data_021f4774 != 0) ? TRUE : FALSE;
         if (p) {
@@ -455,24 +455,23 @@ public:
 };
 
 extern "C" {
+static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
+    Unk_020b8340_Task *t = (Unk_020b8340_Task *)*l;
+    if (t != 0) t = (Unk_020b8340_Task *)((u8 *)t - 4);
+    return t;
+}
 void func_020b8340(void) {
-    Unk_020b8340_Task *r5 = (Unk_020b8340_Task *)data_021ef630;
-    if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 - 4);
-    u16 *vcount = (u16 *)0x4000006;
-    u8 two = 2;
-    void **list = &data_021ef630;
-    while (r5 != 0) {
-        if (*vcount + r5->unk_0f > 0x104) break;
+    Unk_020b8340_Task *r5;
+    for (r5 = Unk_020b8340_First(&data_021ef630); r5 != 0; r5 = Unk_020b8340_First(&data_021ef630)) {
+        if (*(u16 *)0x4000006 + r5->unk_0f > 0x104) break;
         BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->vfunc_00() != 0) {
-                r5->unk_0d = two;
+                r5->unk_0d = 2;
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(list, r5);
-        r5 = (Unk_020b8340_Task *)*list;
-        if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 - 4);
+        func_020e79a0(&data_021ef630, r5);
     }
 }
 
@@ -493,23 +492,17 @@ void func_020b83e0(void) {
 }
 
 void func_020b83f0(void) {
-    Unk_020b8340_Task *r5 = (Unk_020b8340_Task *)data_021ef638;
-    if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 - 4);
-    u16 *vcount = (u16 *)0x4000006;
-    u8 two = 2;
-    void **list = &data_021ef638;
-    while (r5 != 0) {
-        if (*vcount + r5->unk_0f > 0xd4) break;
+    Unk_020b8340_Task *r5;
+    for (r5 = Unk_020b8340_First(&data_021ef638); r5 != 0; r5 = Unk_020b8340_First(&data_021ef638)) {
+        if (*(u16 *)0x4000006 + r5->unk_0f > 0xd4) break;
         BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->vfunc_00() != 0) {
-                r5->unk_0d = two;
+                r5->unk_0d = 2;
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(list, r5);
-        r5 = (Unk_020b8340_Task *)*list;
-        if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 - 4);
+        func_020e79a0(&data_021ef638, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
     if (*vc <= 0xd5) {

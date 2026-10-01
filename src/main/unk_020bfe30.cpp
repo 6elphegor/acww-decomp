@@ -84,7 +84,7 @@ void func_0202e26c(void *p);
 void func_0202e2bc(void *p);
 void func_020c11b8(void *p, s32 n);
 s32 func_020a0414(void);
-s32 func_02097520(void);
+s32 func_02097520(s32 a);
 BOOL func_02094f2c(s32 a, s32 b);
 void func_02094b0c(void *v, s32 a, s32 b);
 void func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
@@ -184,7 +184,6 @@ void Unk_020bfe30::func_020bfe38() {
 
 void Unk_020bfe30::func_020bfec0(BOOL flag) {
     s32 idx;
-    u16 ang;
     s32 x = (data_020e463c * func_02063b8c(0x8a) + 0x80) << 12;
     data_020e463c *= -1;
     s32 y = -0x14000 - (func_02063b8c(0x10) << 12);
@@ -195,15 +194,14 @@ void Unk_020bfe30::func_020bfec0(BOOL flag) {
     s32 mul = data_021f43e0.unk_54;
     s32 rr = func_02063b8c(0xaac) - 0x556;
     s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
-    ang = sh;
-    idx = (ang >> 4) * 2;
+    idx = ((u16)sh >> 4) * 2;
     Unk_020bfe30_Vec *p40 = &unk_40;
     s16 *tab = data_02135f44;
     p40->x = tab[idx] * -0x24;
     p40->y = tab[idx + 1] * 0x24;
     p40->z = 0;
     unk_50 = 0x800;
-    unk_54 = ang;
+    unk_54 = (u16)sh;
     s32 r = func_02063b8c(3);
     unk_0c = r + 2;
     s32 v;
@@ -678,7 +676,7 @@ BOOL Unk_020e6924::func_020c06a0() {
     s32 r5 = func_020a0414();
     Unk_020cbb18 *r7 = data_020cbb18;
     s32 r6 = r7->unk_68;
-    s32 s = func_02097520();
+    s32 s = func_02097520(r5);
     switch (unk_724) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
