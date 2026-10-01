@@ -308,7 +308,7 @@ struct Unk_020b9c90 {
     s32 func_020ba10c(s32 *a, s32 *b, s32 c, s32 d);
 };
 
-extern "C" s32 func_020024f0(void *p, u32 a, u32 b);
+extern "C" s32 func_020024f0(void *p, u32 a, u32 b, u32 off);
 
 void Unk_020b9c90::func_020b9c90(s32 idx, u16 a, s32 b)
 {
@@ -408,7 +408,7 @@ void Unk_020b9c90::func_020b9ef8()
     s32 cur = unk_1578;
     s32 k = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
     if (k == cur) {
-        if (func_020024f0((u8 *)(k << 5) + (s32)unk_157c, 6, 0x20) != 0) {
+        if (func_020024f0((u8 *)unk_157c + (k << 5), 6, 0x20, k << 5) != 0) {
             cur++;
             if (cur >= 0x20) {
                 cur = -1;
@@ -440,7 +440,7 @@ void Unk_020b9c90::func_020b9f84()
 
 extern "C" {
 void func_0209d498(void *p);
-s32 func_0209d3a4(void *p);
+s32 func_0209d3a4(void *a, void *b);
 u32 func_020b9cd8(u32 unused, u8 *d);
 
 u32 func_020b9cb4(u32 x)
@@ -466,6 +466,6 @@ u16 func_020b9d18(u32 unused, void *unused2)
     u64 d = 0;
     u64 t = 0x100000000ULL | 0x1000000;
     d = t;
-    return (u16)((func_0209d3a4(&d) % 0x40) << 3);
+    return (u16)((func_0209d3a4(&d, unused2) % 0x40) << 3);
 }
 }

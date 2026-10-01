@@ -274,10 +274,10 @@ void Unk_020bb25c::func_020bb880(s32 *out) {
     *out = r + 0x41;
 }
 
+enum Unk_020bb8a4_E { Unk_020bb8a4_E_0 = 0 };
 void Unk_020bb25c::func_020bb8a4(s32 idx, s32 a, s32 b) {
     if (data_021ef670 != 0) {
-        u32 v = (a << 31) | (((data_020d0e90[idx] - 0x1d) & 0xf) | (((idx & 3) << 8) | (b << 28)));
-        func_020bc754(9, 0x3c, 0, v);
+        Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((data_020d0e90[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); func_020bc754(9, 0x3c, 0, fb | (i8 | (lo | fa)));
     } else if (a != 0) {
         func_02064928(idx + 5);
     } else {

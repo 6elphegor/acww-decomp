@@ -66,7 +66,7 @@ s32 func_0200402c(s32 a);
 void func_02004054();
 void func_02004064();
 void *func_0223xxxx();
-void func_020b3270(void *o, u8 a, s32 b, s32 c, s32 d, s32 e);
+void func_020b3270(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02062e90(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
 void func_02061168(void *a, void *b, s32 c);
 void func_02062f70(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
@@ -173,11 +173,12 @@ void func_020aed14(const u16 *s) {
 
 void func_020aed48(s32 x) {
     Obj30 o;
-    func_020b3270(&o, x % 12, 10, 0, 0, 0);
+    s32 m = x % 12;
+    m = (u8)m;
+    func_020b3270(&o, m, 10, 0, 0, 0);
     func_0203ce4c(2, &o);
     func_02076fc8(func_02063b8c(2) + 2, data_020e2ea8);
 }
-
 void func_020aed98(s32 a, s32 b) {
     func_0203ce38(0, a);
     func_0203ce24(1, b);

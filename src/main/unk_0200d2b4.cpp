@@ -71,7 +71,7 @@ u16 *func_0204eba0(void *a, Unk_0200d64c_Xyz *b, u32 c);
 void func_0204ee10(s32 *x, s32 *y, Unk_0200d64c_Xyz *v);
 void func_0204edd8(Unk_0200d64c_Xyz *a, Unk_0200d64c_Xyz *b);
 s32 func_0203bc7c(void *p);
-void func_0203a124(s32 *a, s32 *b);
+BOOL func_0203a124(s32 *a, s32 *b, Unk_0200d64c_Xyz *p);
 s32 func_020e9688(Unk_0200d64c_Xyz *v);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -387,14 +387,7 @@ void Unk_020d6df4::func_0200d64c() {
                     if (Unk_0200d64c_Both()) {
                         unk_140 = 1;
                         if (func_0200f5b0() != 1) {
-                            {
-                                s32 tx = *(volatile s32 *)&p68.x;
-                                Xyz *q = (Xyz *)&unk_148;
-                                q->x = tx;
-                                unk_14c = p68.y;
-                                unk_150 = p68.z;
-                                r5c = *q;
-                            }
+                            r5c = *(Xyz *)&unk_148 = p68;
                         } else {
                             u16 *hp = func_0204eba0(data_021c47c4, &p68, 0);
                             BOOL is = FALSE;
@@ -408,33 +401,12 @@ void Unk_020d6df4::func_0200d64c() {
                                 func_0204ee10(&ax, &ay, &unk_5c);
                                 func_0204ee10(&bx, &by, &p50);
                                 if (ax != bx || ay != by) {
-                                    {
-                                        s32 tx = *(volatile s32 *)&p50.x;
-                                        Xyz *q = (Xyz *)&unk_148;
-                                        q->x = tx;
-                                        unk_14c = p50.y;
-                                        unk_150 = p50.z;
-                                        r5c = *q;
-                                    }
+                                    r5c = *(Xyz *)&unk_148 = p50;
                                 } else {
-                                    {
-                                        s32 tx = *(volatile s32 *)&p68.x;
-                                        Xyz *q = (Xyz *)&unk_148;
-                                        q->x = tx;
-                                        unk_14c = p68.y;
-                                        unk_150 = p68.z;
-                                        r5c = *q;
-                                    }
+                                    r5c = *(Xyz *)&unk_148 = p68;
                                 }
                             } else {
-                                {
-                                    s32 tx = *(volatile s32 *)&p68.x;
-                                    Xyz *q = (Xyz *)&unk_148;
-                                    q->x = tx;
-                                    unk_14c = p68.y;
-                                    unk_150 = p68.z;
-                                    r5c = *q;
-                                }
+                                r5c = *(Xyz *)&unk_148 = p68;
                             }
                         }
                     }
@@ -442,14 +414,7 @@ void Unk_020d6df4::func_0200d64c() {
                 case 4:
                     if (Unk_0200d64c_Both()) {
                         unk_140 = 2;
-                        {
-                            s32 tx = *(volatile s32 *)&p68.x;
-                            Xyz *q = (Xyz *)&unk_148;
-                            q->x = tx;
-                            unk_14c = p68.y;
-                            unk_150 = p68.z;
-                            r5c = *q;
-                        }
+                        r5c = *(Xyz *)&unk_148 = p68;
                     }
                     break;
                 case 8:
@@ -473,9 +438,10 @@ void Unk_020d6df4::func_0200d64c() {
         r5c = func_0200f3ec(&unk_5c, &unk_8e, data_020d5e34);
         mode = 2;
     } else {
-        unk_13c = flag;
+        s32 fast = 0;
+        unk_13c = fast;
         if (unk_16c == 2) {
-            mode = vc ? 2 : 1;
+            if (vc) mode = 2; else mode = 1;
         } else if (data_021f47d8.a & 0x2ff3) {
             mode = 1;
         } else if (vc) {
@@ -497,10 +463,9 @@ void Unk_020d6df4::func_0200d64c() {
                 pv[0].z = p50.z - pv[2].z;
                 len = func_020e9688(&pv[0]);
             } else {
-                Xyz *q6 = &unk_6f0;
-                pv[0].x = p50.x - q6->x;
+                pv[0].x = p50.x - unk_6f0.x;
                 pv[0].z = p50.z - unk_6f0.z;
-                func_0203a124(&sp48, &sp4c);
+                func_0203a124(&sp48, &sp4c, &unk_6f0);
                 sp48 += 0x80;
                 sp4c += 0x60;
                 pv[3].x = ((u8)data_021f4778 - sp48) << 8;
@@ -528,7 +493,7 @@ void Unk_020d6df4::func_0200d64c() {
             }
             unk_130 = res;
             if (res > 0xc32) {
-                flag = 1;
+                fast = 1;
             }
             if (res > 0) {
                 unk_134 = func_020e7b98(pv[0].x, pv[0].z);
@@ -553,9 +518,9 @@ void Unk_020d6df4::func_0200d64c() {
                 mode = unk_16c;
             }
             if ((keys & 2) || (keys & 0x100) || (keys & 0x200)) {
-                flag = 1;
+                fast = 1;
             } else {
-                flag = 0;
+                fast = 0;
             }
             u32 kb = *(volatile u16 *)&data_021f47d8.b;
             v4 = 1;
@@ -574,7 +539,7 @@ void Unk_020d6df4::func_0200d64c() {
             }
             keys = data_021f47d8.a;
             if ((keys & 0x80) || (keys & 0x40) || (keys & 0x10) || (keys & 0x20)) {
-                if (flag) {
+                if (fast) {
                     unk_130 = 0x1000;
                 } else {
                     unk_130 = 0xc32;
@@ -584,7 +549,7 @@ void Unk_020d6df4::func_0200d64c() {
                 unk_130 = 0;
             }
         }
-        unk_136 = flag;
+        unk_136 = fast;
     }
     unk_137 = v4;
     unk_138 = v8;

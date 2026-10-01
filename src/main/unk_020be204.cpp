@@ -342,6 +342,8 @@ static inline u32 Unk_020be820_Nib(s32 v) {
     return (v - 0x1d) & 0xf;
 }
 
+enum Unk_020be820_E { Unk_020be820_E_0 = 0 };
+static inline u32 Unk_020be820_NibE(Unk_020be820_E v) { return (v - 0x1d) & 0xf; }
 void Unk_020be204::func_020be820() {
     s32 lim;
     u32 flags = unk_60;
@@ -384,13 +386,11 @@ void Unk_020be204::func_020be820() {
         } else {
             s32 c = unk_0c;
             m = (m & 3) << 8;
-            a = m | Unk_020be820_Nib(c - 2);
-            m |= Unk_020be820_Nib(c - 1) | 0x40000000;
+            a = m | Unk_020be820_NibE((Unk_020be820_E)(c - 2));
+            m |= Unk_020be820_NibE((Unk_020be820_E)(c - 1)) | 0x40000000;
         }
         Unk_020be204_Vec v;
-        v.x = unk_6c;
-        v.y = unk_34.z - 0x2000;
-        v.z = 0;
+        Unk_020be204_Set(&v, unk_6c, unk_34.z - 0x2000, 0);
         func_020bc754(data_021f14e0, 9, 0x3c, &v, a);
         func_020bc754(data_021f14e0, 9, 0x3c, &v, m);
     }

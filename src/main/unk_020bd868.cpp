@@ -359,36 +359,37 @@ void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     loc.unk_00[0] = data_021c309c.unk_00[0];
     loc.unk_00[1] = data_021c309c.unk_00[1];
     loc.unk_00[2] = data_021c309c.unk_00[2];
-    s32 inv, idx, z, y, t, r7, r4, r6;
-    r4 = loc.unk_00[2] - q->unk_08;
-    r6 = func_01ffc5a4(q->unk_00 - loc.unk_00[0], data_020c8cbc);
-    r4 = func_01ffc5a4(r4, data_020c8cb8 << 2);
-    t = func_01ffcb0c(-0x1000, r4 - 0x1000);
-    r7 = func_01ffcb0c(r4, t + 0x1000);
-    s32 w = func_01ffcb0c(-0x666, r7) + 0xe66;
-    y = func_01ffcb0c(r6, w);
+    s32 inv, idx, z, y, t;
+    s32 sx, sy, sc, fx, k, dz;
+    dz = loc.unk_00[2] - q->unk_08;
+    fx = func_01ffc5a4(q->unk_00 - loc.unk_00[0], data_020c8cbc);
+    dz = func_01ffc5a4(dz, data_020c8cb8 << 2);
+    t = func_01ffcb0c(-0x1000, dz - 0x1000);
+    k = func_01ffcb0c(dz, t + 0x1000);
+    s32 w = func_01ffcb0c(-0x666, k) + 0xe66;
+    y = func_01ffcb0c(fx, w);
     z = func_01ffcb0c(y + 0x800, 0x1000);
-    r4 = z << 8;
-    r6 = func_01ffcb0c(0x50000, r7) + 0x50000;
-    inv = 0x1000 - r7;
+    sx = z << 8;
+    sy = func_01ffcb0c(0x50000, k) + 0x50000;
+    inv = 0x1000 - k;
     if (data_021c3070 != 0) {
         idx = func_01ffcb0c(func_0203a4b0(), inv);
     } else {
         idx = 0;
     }
     idx = func_01ffcb0c(idx, 0x10000);
-    p->unk_34 = r4;
-    p->unk_38 = r6 - idx;
+    p->unk_34 = sx;
+    p->unk_38 = sy - idx;
     p->unk_3c = 0;
-    r4 = func_01ffcb0c(-0xc00, r7) + 0x1000;
-    if (r4 < 0x400) r4 = 0x400;
-    else if (r4 > 0x1000) r4 = 0x1000;
-    z = func_01ffc588(r4);
+    sc = func_01ffcb0c(-0xc00, k) + 0x1000;
+    if (sc < 0x400) sc = 0x400;
+    else if (sc > 0x1000) sc = 0x1000;
+    z = func_01ffc588(sc);
     p->unk_4c = z;
     p->unk_50 = z;
     idx = (u16)p->unk_2c >> 4;
     z = func_01ffcb0c(data_02135f44[idx][0], a);
-    z = func_01ffcb0c(z, r4);
+    z = func_01ffcb0c(z, sc);
     p->unk_38 += z;
 }
 
@@ -443,9 +444,10 @@ void func_02089264(void*, s32);
 s32 func_020891bc(void*);
 
 static inline Unk_021f3010* Unk_020be0bc_Get(s32 i) { return &data_020e6544[i]; }
+enum Unk_020be0bc_E { Unk_020be0bc_E_0 = 0 };
 void func_020be0bc(Unk_020be0bc* p) {
-    s32 o = p->unk_0c * 12;
-    Unk_021f3010* row = (Unk_021f3010*)((u8*)data_020e6544 + o);
+    Unk_020be0bc_E i = (Unk_020be0bc_E)p->unk_0c;
+    Unk_021f3010* row = &data_020e6544[i];
     func_02089268(p->unk_10, row);
     func_02089264(p->unk_10, row->unk_08);
     func_020891bc(p->unk_10);

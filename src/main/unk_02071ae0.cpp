@@ -402,17 +402,17 @@ Unk_02071ed0::~Unk_02071ed0() {}
 
 BOOL Unk_020942c8::func_020941e8(Unk_020942c8 *o) { return FALSE; }
 
+enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 void func_020720f8() {
     u32 x;
     if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
     BOOL ok;
-    u32 c = (u32)OVERLAY_67_ID;
-    u32 a = (u32)OVERLAY_65_ID;
-    u32 b = (u32)OVERLAY_66_ID;
+    Unk_020720f8_Id a = (Unk_020720f8_Id)(u32)OVERLAY_65_ID;
+    Unk_020720f8_Id b = (Unk_020720f8_Id)(u32)OVERLAY_66_ID;
+    Unk_020720f8_Id c = (Unk_020720f8_Id)(u32)OVERLAY_67_ID;
     if (x == a || x == b || x == c) ok = TRUE; else ok = FALSE;
     if (!ok) func_0206d49c();
 }
-
 void func_02072144() {
     u32 x;
     if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;

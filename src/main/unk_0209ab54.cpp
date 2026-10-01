@@ -316,13 +316,12 @@ void Unk_0209b3bc::func_0209af0c(u8 idx, s32 delta) {
 
 BOOL Unk_0209b3bc::func_0209af4c(s16 *p) {
     BOOL r = FALSE;
-    s32 i = r;
-    volatile s32 z = r;
-    for (; i < 8; p++, i++) {
+    s32 i;
+    for (i = 0; i < 8; p++, i++) {
         if (unk_11.func_0209b434((u8)i) < 0xff) {
             s32 t = func_02063b8c(10);
             if (t > 0) {
-                unk_11.func_0209b46c((u8)i, (u8)((t * *(s16 *)((u8 *)p + z)) >> 12));
+                unk_11.func_0209b46c((u8)i, (u8)((*p * t) >> 12));
             }
             r = TRUE;
         }
