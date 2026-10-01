@@ -4,17 +4,11 @@
     .data       start:0x0222a480 end:0x0222b8c0 kind:data align:32
     .bss        start:0x0222b8c0 end:0x0222dfc0 kind:bss align:32
 
-src/ov001/unk_02200680.cpp:
-    .text       start:0x02200680 end:0x0220106c
-
-src/ov001/unk_0220106c.cpp:
-    .text       start:0x0220106c end:0x02201a48
-
-src/ov001/unk_02201a48.cpp:
-    .text       start:0x02201a48 end:0x02202b3c
-
-src/ov001/unk_02202b3c.cpp:
-    .text       start:0x02202b3c end:0x02202c44
+src/ov001/unk_ov001_02200680.cpp:
+    complete
+    .text       start:0x02200680 end:0x02202c44
+    .data       start:0x0222a480 end:0x0222a4fc
+    .bss        start:0x0222b8c0 end:0x0222c68c
 
 src/ov001/unk_ov001_02202c44.cpp:
     complete
