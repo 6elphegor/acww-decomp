@@ -174,8 +174,15 @@ u16 *func_020b1c8c(s32 *outX, s32 *outY)
     return NULL;
 }
 
+struct Unk_020b1d3c_Pad {
+    s32 v[2];
+    Unk_020b1d3c_Pad() {}
+    ~Unk_020b1d3c_Pad() {}
+};
+
 BOOL func_020b1d3c(u32 id, u8 val)
 {
+    Unk_020b1d3c_Pad pad;
     if (InRange32(id)) {
         u32 idx;
         if (InRange32(id)) {
@@ -193,6 +200,7 @@ BOOL func_020b1d3c(u32 id, u8 val)
 
 u8 func_020b1d80(u32 id)
 {
+    Unk_020b1d3c_Pad pad;
     if (InRange32(id)) {
         u32 idx;
         if (InRange32(id)) {

@@ -258,6 +258,7 @@ void Unk_02033170::func_020331a8(Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32
 
 BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_02032dc4_Out *out, s32 arg) {
     Unk_020d8d50 *e;
+    s32 py;
     BOOL result = FALSE;
     Unk_0202f048 a, b, d;
     a.func_0202f048(pos->x, pos->z);
@@ -273,8 +274,9 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
         if (e->unk_2c - 0x700 > pos->y) {
             if (e->func_0202e9d4(&a, &b, r)) {
                 volatile Unk_0202f2ac_V3 t1b;
+                py = *(volatile s32 *)&pos->y;
                 t1b.x = a.x;
-                t1b.y = pos->y;
+                t1b.y = py;
                 t1b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {
@@ -296,8 +298,9 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
         if (e->unk_2c - 0x700 > pos->y) {
             if (e->func_0202eb30(&a, &b, r)) {
                 volatile Unk_0202f2ac_V3 t2b;
+                py = *(volatile s32 *)&pos->y;
                 t2b.x = a.x;
-                t2b.y = pos->y;
+                t2b.y = py;
                 t2b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {
@@ -318,8 +321,9 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
         if (e->unk_2c - 0x700 > pos->y) {
             if (e->func_0202ea40(&a, &b, r)) {
                 volatile Unk_0202f2ac_V3 t3b;
+                py = *(volatile s32 *)&pos->y;
                 t3b.x = a.x;
-                t3b.y = pos->y;
+                t3b.y = py;
                 t3b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {

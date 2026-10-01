@@ -243,15 +243,21 @@ void Unk_020be018::func_020bec40()
     col[1] = R1 | (G1 << 5) | (B1 << 10);
     s32 idx = unk_24;
     s32 u8v = unk_08;
-    Unk_021f4398 *pal = &data_021f4398;
+    Unk_021f4398 *const pal = &data_021f4398;
     pal->func_020bd718(lo, &col[0]);
     pal->func_020bd718(hi, &col[1]);
     func_020bd950(data_021f3010 + idx, u8v);
 }
 
+struct Unk_020bee28_V {
+    s32 x, y, z;
+    Unk_020bee28_V(const Unk_020bf1d8_Vec &o) { x = o.x; y = o.y; z = o.z; }
+    ~Unk_020bee28_V() {}
+};
+
 extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
 {
-    Unk_020bf1d8_Vec v = data_021c309c;
+    Unk_020bee28_V v = data_021c309c;
     s32 base = data_020c8cb8;
     s32 d = v.z - base;
     s32 cnt = data_020c8cbc;
@@ -263,16 +269,17 @@ extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
     if (q < 0) q = 0;
     else if (q > 0x1000) q = 0x1000;
     q = func_01ffcb0c(q - 0x1000, q - 0x1000);
+    s32 e = 0x1000;
+    e -= q;
     p = -p;
-    s32 e = 0x1000 - q;
     s32 w = (e - 0x800) << 5;
     s32 c;
     if (b < 0) c = 0;
     else if (b > 0xbf000) c = 0xbf000;
     else c = b;
     s32 m = func_01ffcb0c(w, func_01ffc5a4(0xbf000 - c, 0xbf000));
-    s32 ry = b + m;
-    return Unk_020bee28_Vec2(a + p, ry);
+    b = b + m;
+    return Unk_020bee28_Vec2(a + p, b);
 }
 
 void Unk_020be018::func_020bef24()
@@ -366,9 +373,15 @@ void Unk_020be018::func_020bf15c()
     unk_64 = 0;
 }
 
+struct Unk_020bf18c_Pad {
+    s32 v[3];
+    Unk_020bf18c_Pad() {}
+    ~Unk_020bf18c_Pad() {}
+};
+
 extern "C" void func_020bf18c(Unk_020be018_Vec *pos, s32 scale, s32 speed)
 {
-    volatile Unk_020be018_Vec tmp;
+    Unk_020bf18c_Pad tmp;
     Unk_020be018 *o = func_020bc754(data_021f14e0, 2, 0x3c, pos, 0);
     if (o) {
         o->unk_4c = scale;

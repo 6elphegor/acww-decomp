@@ -412,7 +412,10 @@ extern "C" void func_02007ebc(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n) {
         in.y = -((0xa000 - func_01ffc5a4(n * 0x5000, 0x15000)) >> 4);
     }
     func_01ffb898(&in, &m2, &res);
-    Unk_02007ebc_Vec fin = {tx + res.x, ty + res.y, tz + res.z};
+    tx += res.x;
+    ty += res.y;
+    tz += res.z;
+    Unk_02007ebc_Vec fin = {tx, ty, tz};
     func_0203ee38(out, &fin);
 }
 

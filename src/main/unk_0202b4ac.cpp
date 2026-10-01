@@ -539,18 +539,14 @@ BOOL Unk_0201d2d0::func_0202bb84() {
 }
 
 s32 Unk_0201d2d0::func_0202bb88(s32 *out) {
-    Unk_0202b4ac_Rec *rec;
     BOOL f5;
     void *h;
     void *sc;
     u16 *b;
     u16 *a;
     u32 arr[2];
-    if (func_0209750c()) {
-        rec = (Unk_0202b4ac_Rec *)func_0209888c(func_0209750c());
-    } else {
-        rec = NULL;
-    }
+    Unk_0202b4ac_Rec *rec;
+    rec = func_0209750c() ? (Unk_0202b4ac_Rec *)func_0209888c(func_0209750c()) : NULL;
     arr[0] = 0;
     arr[1] = 0;
     if (unk_128 == NULL) {
@@ -567,7 +563,7 @@ s32 Unk_0201d2d0::func_0202bb88(s32 *out) {
     h = func_02080ec8(unk_128);
     if ((u32)data_021d7352 != 0) {
         b = func_02080e1c(unk_128);
-        if (data_021d7352[0] != b[0] || func_02128930(data_021d7352 + 1, b + 1, 8) != 0) {
+        if (*(volatile u16 *)data_021d7352 != b[0] || func_02128930((u16 *)((u8 *)data_021d7352 + 2), b + 1, 8) != 0) {
             return 5;
         }
     }

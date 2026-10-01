@@ -193,7 +193,7 @@ void Unk_020be204::func_020be44c() {
     unk_57 = 0;
     unk_58 = m;
     unk_5c = 0;
-    unk_5d = m;
+    *(s8 *)&unk_5d = m;
     unk_60 = 0;
     unk_64 = 0;
     unk_68 = 0;
@@ -325,12 +325,21 @@ void Unk_020be204::func_020be7c0() {
 }
 
 void Unk_020be204::func_020be7dc() {
-    u32 t = unk_0c - 0x21;
-    BOOL m = (t <= 9 && ((1 << t) & 0x249)) ? TRUE : FALSE;
+    u32 t = unk_0c;
+    BOOL m = FALSE;
+    t -= 0x21;
+    if (t > 9) {
+    } else if ((1 << t) & 0x249) {
+        m = TRUE;
+    }
     if (!m && !((unk_60 >> 30) & 1)) {
         func_020bec00();
     }
     func_020be094();
+}
+
+static inline u32 Unk_020be820_Nib(s32 v) {
+    return (v - 0x1d) & 0xf;
 }
 
 void Unk_020be204::func_020be820() {
@@ -375,8 +384,8 @@ void Unk_020be204::func_020be820() {
         } else {
             s32 c = unk_0c;
             m = (m & 3) << 8;
-            a = m | ((c - 2 - 0x1d) & 0xf);
-            m |= ((c - 1 - 0x1d) & 0xf) | 0x40000000;
+            a = m | Unk_020be820_Nib(c - 2);
+            m |= Unk_020be820_Nib(c - 1) | 0x40000000;
         }
         Unk_020be204_Vec v;
         v.x = unk_6c;
@@ -410,8 +419,13 @@ void Unk_020be204::func_020be970() {
 
 void Unk_020be204::func_020be9e8() {
     unk_64++;
-    u32 t = unk_0c - 0x21;
-    BOOL m = (t <= 9 && ((1 << t) & 0x249)) ? TRUE : FALSE;
+    u32 t = unk_0c;
+    BOOL m = FALSE;
+    t -= 0x21;
+    if (t > 9) {
+    } else if ((1 << t) & 0x249) {
+        m = TRUE;
+    }
     if (m) {
         func_020be820();
     } else {

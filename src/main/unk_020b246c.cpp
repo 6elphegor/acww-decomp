@@ -108,9 +108,11 @@ extern "C" void func_020b2530(u8 *out) {
         s32 cnt = 0;
         for (u32 j = 0; j < 5; j++) {
             BOOL found = FALSE;
+            u32 m = 0;
             u32 v = j % 5 + base;
-            for (u32 m = 0; m < 4; m++) {
-                if (out[m] == v) {
+            for (; m < 4; m++) {
+                u32 w = out[m];
+                if (w == v) {
                     found = TRUE;
                     break;
                 }
@@ -126,7 +128,9 @@ extern "C" void func_020b2530(u8 *out) {
     }
     u32 r = func_02063b8c(5);
     s32 s = sel % 5;
-    out[3] = s * 5 + r % 5;
+    u32 q = r % 5;
+    s = s * 5;
+    out[3] = s + q;
 }
 
 // ---- Unk_020e3dcc
