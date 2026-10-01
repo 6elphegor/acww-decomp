@@ -186,10 +186,10 @@ s32 func_ov001_02222228() {
     u16 v[3];
     u16 r;
     func_02115640(v);
-    u32 t = v[0] + *(u32 *)0x27ffc3c;
-    t = v[1] + t;
-    t = v[2] + t;
-    data_ov001_0222df28->unk_58 = t;
+    u32 m = *(volatile u32 *)0x27ffc3c;
+    u32 a = v[0] + m;
+    u32 b = v[1] + a;
+    data_ov001_0222df28->unk_58 = v[2] + b;
     data_ov001_0222df28->unk_58 = data_ov001_0222df28->unk_58 * 0x10dcd + 0x3039;
     data_ov001_0222df28->unk_5c = 0;
     data_ov001_0222df28->unk_5e = 0x65;

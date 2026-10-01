@@ -323,7 +323,6 @@ void func_ov001_02215d48() {
 
 void func_ov001_02215e1c() {
     Unk_ov001_02215e1c_L l;
-    volatile u16 h[4];
     u8 *src = data_ov001_0222b050;
     s32 v;
     l = *(Unk_ov001_02215e1c_L *)src;
@@ -333,13 +332,9 @@ void func_ov001_02215e1c() {
         return;
     }
     {
-        Unk_ov001_02215e1c_E *e = &data_ov001_0222a12c[v];
-        h[1] = e->b;
-        h[0] = data_ov001_0222a12c[v].a;
-        h[2] = e->c;
-        h[1] = data_ov001_0222de8c * 0x1d + h[1];
-        h[3] = e->d;
-        func_ov001_02208780(1, h[0], h[2], h[1]);
+        Unk_ov001_02215e1c_E e = data_ov001_0222a12c[v];
+        e.b += data_ov001_0222de8c * 0x1d;
+        func_ov001_02208780(1, e.a, e.c, e.b);
     }
 }
 

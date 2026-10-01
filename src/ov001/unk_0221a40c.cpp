@@ -321,13 +321,11 @@ void func_ov001_0221abb4(s32 p) {
         data_ov001_0222debc = v;
     }
     func_ov001_0221e9a0(8);
-    u32 a = func_ov001_0220c5a8(1);
-    u32 b = func_ov001_0220c5a8(1);
-    u32 d = func_ov001_0220c5a8(1);
-    u32 e = func_ov001_0220c5a8(1);
-    s32 q = data_ov001_0222debc;
-    func_ov001_02208690(data_ov001_0222a258[a].v[q * 4], data_ov001_0222a25c[b].v[q * 4],
-                        data_ov001_0222a25a[d].v[q * 4], data_ov001_0222a25e[e].v[q * 4]);
+    // the four index calls sit directly in the argument expressions (no locals), and the selector global is re-read
+    func_ov001_02208690(data_ov001_0222a258[func_ov001_0220c5a8(1)].v[data_ov001_0222debc * 4],
+                        data_ov001_0222a25c[func_ov001_0220c5a8(1)].v[data_ov001_0222debc * 4],
+                        data_ov001_0222a25a[func_ov001_0220c5a8(1)].v[data_ov001_0222debc * 4],
+                        data_ov001_0222a25e[func_ov001_0220c5a8(1)].v[data_ov001_0222debc * 4]);
 }
 
 void func_ov001_0221acb4() {

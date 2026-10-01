@@ -88,25 +88,20 @@ void func_ov001_02214114() {
     func_ov001_0220c668((void *)func_ov001_022140bc);
 }
 
+struct Unk_ov001_02214154_Tbl { u8 b[4]; };
 s32 func_ov001_02214154() {
-    s32 i = 0, off = i, z = i, j;
-    Unk_ov001_02214154_S *g;
-    u8 tbl[4];
+    u8 *p;
+    s32 i, off, j;
+    Unk_ov001_02214154_Tbl tbl = *(Unk_ov001_02214154_Tbl *)data_ov001_0222af7c;
     s32 v;
     u8 out[4];
-    tbl[0] = data_ov001_0222af7c[0];
-    tbl[1] = data_ov001_0222af7c[1];
-    tbl[2] = data_ov001_0222af7c[2];
-    tbl[3] = data_ov001_0222af7c[3];
-    g = data_ov001_0222de7c;
-    for (; i < 4; i++, off += 3) {
-        u8 *p = g->name + off;
+    Unk_ov001_02214154_S *g = data_ov001_0222de7c;
+    for (i = 0, off = 0; i < 4; i++, off += 3) {
+        p = g->name + off;
         if (*p != 0x20) {
-            for (j = z; j < 3; j++) {
-                u32 a = p[j];
-                u32 b = tbl[j];
-                if (a > b) return 0;
-                if (a < b) break;
+            for (j = 0; j < 3; j++) {
+                if (p[j] > tbl.b[j]) return 0;
+                if (p[j] < tbl.b[j]) break;
             }
         }
     }

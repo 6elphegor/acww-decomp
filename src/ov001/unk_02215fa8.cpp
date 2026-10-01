@@ -6,10 +6,10 @@
 struct Unk_ov001_0222de94 {
     u8 pad_00[0x14];
     void *unk_14;
-    u32 *volatile unk_18[5];
-    u32 *volatile unk_2c;
-    u32 *volatile unk_30;
-    u32 *volatile unk_34;
+    u32 *unk_18[5];
+    u32 *unk_2c;
+    u32 *unk_30;
+    u32 *unk_34;
     u32 unk_38;
     u8 pad_3c[8];
     u8 unk_44;
@@ -167,14 +167,13 @@ s32 func_ov001_022161c4() {
     return 0xe;
 }
 
-static inline s32 Unk_ov001_02216474_Get(u32 *p, volatile u32 *x, volatile u32 *y) {
-    u32 t = *(volatile u32 *)p & 0x1ff0000;
-    *x = t >> 16;
-    *y = *(volatile u32 *)p & 0xff;
-    return t >> 16;
+// NitroSDK-style OAM position accessors (attr01: y in bits 0-7, x in bits 16-24)
+static inline void Unk_ov001_02216474_GetPos(const u32 *p, u32 *x, u32 *y) {
+    *x = (*p & 0x1ff0000) >> 16;
+    *y = (*p & 0xff) >> 0;
 }
 
-static inline void Unk_ov001_02216474_Set(u32 *p, s32 x, u32 y) {
+static inline void Unk_ov001_02216474_SetPos(u32 *p, s32 x, s32 y) {
     *p = (*p & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
 }
 
@@ -183,36 +182,34 @@ static inline void Unk_ov001_02216474_Hide(u32 *p) {
 }
 
 void func_ov001_02216474() {
-    volatile u32 x;
-    volatile u32 y;
-    s32 n = func_01ffc31c(data_ov001_0222de90, 0x1d);
-    s32 ip = 0x34 - func_01ffc2c4(data_ov001_0222de90, 0x1d);
+    s32 x, y;
+    s32 n;
+    s32 ip;
+    s32 yy;
     s32 i;
+    n = func_01ffc31c(data_ov001_0222de90, 0x1d);
+    ip = 0x34 - func_01ffc2c4(data_ov001_0222de90, 0x1d);
     if (data_ov001_0222de94->unk_34 != 0) {
         if (n == 0) x = 0x26;
         else x = 0x100;
-        u32 *p = data_ov001_0222de94->unk_34;
-        Unk_ov001_02216474_Set(p, x, ip);
+        Unk_ov001_02216474_SetPos(data_ov001_0222de94->unk_34, x, ip);
     }
-    s32 yy = ip;
+    yy = ip;
     for (i = 0; i < 5; i++) {
-        s32 t = Unk_ov001_02216474_Get(data_ov001_0222de94->unk_18[i], &x, &y);
-        Unk_ov001_02216474_Set(data_ov001_0222de94->unk_18[i], t, yy);
+        // the s32 locals are passed through a (u32 *) cast: that keeps them in memory
+        Unk_ov001_02216474_GetPos(data_ov001_0222de94->unk_18[i], (u32 *)&x, (u32 *)&y);
+        Unk_ov001_02216474_SetPos(data_ov001_0222de94->unk_18[i], x, yy);
         yy += 0x1d;
     }
     if (n <= 2) {
-        u32 *p = data_ov001_0222de94->unk_2c;
-        s32 t = Unk_ov001_02216474_Get(p, &x, &y);
-        p = data_ov001_0222de94->unk_2c;
-        Unk_ov001_02216474_Set(p, t, (2 - n) * 0x1d + ip);
+        Unk_ov001_02216474_GetPos(data_ov001_0222de94->unk_2c, (u32 *)&x, (u32 *)&y);
+        Unk_ov001_02216474_SetPos(data_ov001_0222de94->unk_2c, x, ip + (2 - n) * 0x1d);
     } else {
         Unk_ov001_02216474_Hide(data_ov001_0222de94->unk_2c);
     }
     if (n >= 2 && n <= 6) {
-        u32 *p = data_ov001_0222de94->unk_30;
-        s32 t = Unk_ov001_02216474_Get(p, &x, &y);
-        p = data_ov001_0222de94->unk_30;
-        Unk_ov001_02216474_Set(p, t, (6 - n) * 0x1d + ip);
+        Unk_ov001_02216474_GetPos(data_ov001_0222de94->unk_30, (u32 *)&x, (u32 *)&y);
+        Unk_ov001_02216474_SetPos(data_ov001_0222de94->unk_30, x, ip + (6 - n) * 0x1d);
     } else {
         Unk_ov001_02216474_Hide(data_ov001_0222de94->unk_30);
     }

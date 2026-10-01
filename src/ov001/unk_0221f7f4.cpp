@@ -193,7 +193,6 @@ void func_ov001_0221f944(void *arg0)
     Unk_ov001_0221f7f4_Entry *e;
     s32 j;
     Unk_ov001_0221f7f4_Arg *a = (Unk_ov001_0221f7f4_Arg *)arg0;
-    s32 k;
     Unk_ov001_0222df00_Rec *p;
     Unk_ov001_0222df00 *g;
     // DECL_END
@@ -217,10 +216,10 @@ void func_ov001_0221f944(void *arg0)
                     return;
                 }
             }
-            for (k = 0; k < 16; k++) {
-                if (func_02128930(g->unk_1300[k].name, data_ov001_0222a334, 6) == 0) {
-                    func_02116048(e->unk_04, g->unk_1300[k].name, 6);
-                    data_ov001_0222df00->unk_1300[k].flag = (e->unk_15 & 1) ? 1 : 0;
+            for (j = 0; j < 16; j++) {
+                if (func_02128930(g->unk_1300[j].name, data_ov001_0222a334, 6) == 0) {
+                    func_02116048(e->unk_04, g->unk_1300[j].name, 6);
+                    data_ov001_0222df00->unk_1300[j].flag = (e->unk_15 & 1) ? 1 : 0;
                     break;
                 }
             }

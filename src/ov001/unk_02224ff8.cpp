@@ -70,7 +70,7 @@ void func_ov001_02224670(void *, s32, u32, u32);
 void func_ov001_022244d8(void *, s32, s32);
 void func_02101de8(void *, u32, u32, s32, s32, s32, u32, s32);
 void func_021031c4(void *, s32, s32, s32, s32, s32, s32, s32);
-u32 func_02101c6c(void *);
+u32 func_02101c6c(void *, u32);
 void *func_02101c08(void *, u32);
 void func_02102388(s32, void *, s32, s32, s32, u16);
 void func_02103278(void *, s32, s32, s32, s32, s32);
@@ -170,7 +170,7 @@ void func_ov001_02225290(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx)
     }
     do {
         void *e = &data_ov001_0222df44->unk_000[idx * 0xc];
-        u32 t = func_02101c6c(e);
+        u32 t = func_02101c6c(e, *p);
         if (t == 0xffff) {
             t = ((u16 *)*(void **)e)[1];
         }

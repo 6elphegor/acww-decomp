@@ -39,7 +39,7 @@ extern u8 func_0211172c[];
 extern u8 func_02111ec8[];
 extern u8 func_02111a6c[];
 
-s32 func_ov001_02225238(void *a);
+s32 func_ov001_02225238(void *a, s32 b);
 s32 func_ov001_02225254(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 s32 func_ov001_0222516c(void *a);
 s32 func_ov001_02208244();
@@ -112,7 +112,7 @@ void func_ov001_0221381c() {
     v[1] = data_ov001_0222a058[0];
     v[2] = data_ov001_0222a05c[0];
     v[3] = data_ov001_0222a05c[1];
-    func_ov001_02225238(data_ov001_0222de78->unk_00);
+    func_ov001_02225238(data_ov001_0222de78->unk_00, 0);
     w[1] = 0;
     u8 hi = data_ov001_0222a058[1];
     i = 0; j = 0;

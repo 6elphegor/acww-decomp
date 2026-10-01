@@ -142,20 +142,7 @@ func_ov001_022059fc ov001_008/ov001_008.cpp  # UNMATCHED draft ~714 lines: netwo
 func_ov001_0220681c ov001_009/ov001_009.cpp  # -O4,p; ~245 lines regalloc/slots (orig name r6, zero r7, macp r5); frame 0x9c ok
 func_ov001_0220cd24 ov001_020/ov001_020.cpp  # -O4,p ARM; switch dispatch only: orig tree rooted at 26 + separate 0..20 jump table (cases 5,12,13,20/23,26/29,34); empty-label sets give one table or tree@29; maybe nested switches
 func_ov001_0220bfec ov001_018/ov001_018.cpp  # -O4,p ARM; prologue only: orig loads aa58[2],[3],[0],[1],ea4[0] before any strh (ours interleaves); all 180 stmt orders tried
-func_ov001_02215e1c ov001_034/ov001_034.cpp  # -O4,p ARM; 2nd branch (volatile u16 h[4]) regalloc/schedule: orig loads table entries up front into ip/r1/r3
-func_ov001_02214154 ov001_032/ov001_032.cpp  # -O4,p ARM; regalloc only (57 lines): orig g r0, base r4, i r2, off r1, zero lr, tbl r5, cursor r6, j r7, p r8
-func_ov001_0221381c ov001_031/ov001_031.cpp  # -O4,p ARM; prologue regs only (26 lines): orig zeroes v[4] via r0=sp+16 zero r1, first value r4; ~100 variants tried
-func_ov001_0221abb4 ov001_042/ov001_042.cpp  # -O4,p ARM; tail regalloc (~24 lines): last c5a8 result r2 vs r3, ldrsb q r3 vs lr; 24 arg-order perms tried
-func_ov001_02222228 ov001_055/ov001_055.cpp  # -O4,p ARM; regs only in v0+mem+v1+v2 sum (orig addr r1, v0 r0, mem r3); ~25 variants
-func_ov001_02224558 ov001_058/ov001_058.cpp  # -O4,p ARM; loop preamble regs (~18 lines): orig ldrb count first, dy r1, dx r2, i r3
-func_ov001_02224870 ov001_059/ov001_059.cpp  # -O4,p ARM; regalloc rotated ~2 regs (orig r4=node r5=n r6=flag r7=which*0x228 r8=irq r9=which); all 24 decl perms tried
-func_ov001_02222988 ov001_056/ov001_056.cpp  # -O4,p ARM; regs only: orig shift r2, const1 r1, switch ip, cb r3
-func_ov001_02216474 ov001_035/ov001_035.cpp  # -O4,p ARM; regs only: orig keeps 0x34-(x%0x1d) in ip (rsb ip); 48-compile perm search
-func_ov001_02225290 ov001_060/ov001_060.cpp  # -O4,p ARM; 12 lines: orig moves a1 (mov r9,r1) before a0; r0/r1 swapped; 24 decl perms tried
-func_ov001_0221af44 ov001_043/ov001_043.cpp  # -O4,p ARM; tail regalloc (~24 lines): 4x c5a8 results + 4 u16 table lookups; orig d r3, dv lr; 360 orders tried
-func_ov001_0221b318 ov001_043/ov001_043.cpp  # same tail as 0221af44
 func_ov003_02205e58 ov003_002/ov003_002.cpp  # -O4,s; value/address reg swap in 2-byte payload store (orig ldrb r1 then add r0,sp,#12)
-func_ov001_0221f944 ov001_051/ov001_051.cpp  # -O4,p ARM; 32 lines: same g/name-ptr r7/r8 swap
 func_ov003_02206a84 ov003_003/ov003_003.cpp  # -O4,s; k*k mul form: orig movs r0,r4; muls r4,r0; lsls r0,r4 (ours adds r0,r4,#0; muls r0,r4)
 func_ov003_02209fc8 ov003_009/ov003_009.cpp  # -O4,s; stack only: frame 4 bytes short, orig has 2 extra u16 temp slots (inline Eq temps at 0xc/0xe/0x10, unused 0xa)
 func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)

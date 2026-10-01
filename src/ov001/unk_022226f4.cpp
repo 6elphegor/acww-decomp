@@ -186,7 +186,7 @@ void func_ov001_02222988(u16 *p) {
     case 7: {
         s32 r;
         if (LOG) {
-            LOG(0x8000000, data_ov001_0222b7f0);
+            LOG(0x8000000, data_ov001_0222b7f0, sh);
         }
         if (G->unk_4c != 0 && (r = G->unk_4c(p)) == 0) {
             r = func_0211fbb4(0, p[8]);
@@ -202,7 +202,7 @@ void func_ov001_02222988(u16 *p) {
     }
     case 9:
         if (LOG) {
-            LOG(0x8000000, data_ov001_0222b81c);
+            LOG(0x8000000, data_ov001_0222b81c, sh);
         }
         G->unk_52 &= ~mask;
         return;

@@ -141,46 +141,34 @@ void func_ov001_022247e0(Unk_ov001_02224670 *p) {
     func_ov001_02224cfc(g[t].unk_224, p);
 }
 
-#define ELEM(off) ((Unk_ov001_0222df34 *)((u8 *)data_ov001_0222df34 + (off)))
 Unk_ov001_02224670 *func_ov001_02224870(s32 which, s32 n, s32 flag) {
-    s32 off = which * 0x228;
-    Unk_ov001_02224670 *r = func_ov001_02224ca0(ELEM(off)->unk_224);
-    s32 irq = func_01ff80e0(1);
+    Unk_ov001_02224670 *r;
     Unk_ov001_02224670 *node;
+    s32 irq;
+    r = func_ov001_02224ca0(data_ov001_0222df34[which].unk_224);
+    irq = func_01ff80e0(1);
     if (flag != 0) {
-        Unk_ov001_0222df34 *g = data_ov001_0222df34;
-        node = &g[which].unk_200;
-        if (node != &g[which].unk_210) {
-            Unk_ov001_02224670 *end0 = &((Unk_ov001_0222df34 *)((u8 *)g + off))->unk_210;
-            do {
-                Unk_ov001_02224670 *next = node->unk_04;
-                Unk_ov001_02224670_Entry *end = node->unk_08 + node->unk_0c;
-                if (end + n <= next->unk_08) {
-                    r->unk_08 = end;
-                    func_ov001_022266d0(next, r);
-                    break;
-                }
-                node = next;
-            } while (node != end0);
+        for (node = &data_ov001_0222df34[which].unk_200; node != &data_ov001_0222df34[which].unk_210; node = node->unk_04) {
+            Unk_ov001_02224670 *next = node->unk_04;
+            Unk_ov001_02224670_Entry *end = node->unk_08 + node->unk_0c;
+            if (end + n <= next->unk_08) {
+                r->unk_08 = end;
+                func_ov001_022266d0(next, r);
+                break;
+            }
         }
-        if (node == &ELEM(off)->unk_210) func_0206d49c();
+        if (node == &data_ov001_0222df34[which].unk_210) func_0206d49c();
     } else {
-        Unk_ov001_0222df34 *g = data_ov001_0222df34;
-        node = &g[which].unk_210;
-        if (node != &g[which].unk_200) {
-            Unk_ov001_02224670 *end0 = &((Unk_ov001_0222df34 *)((u8 *)g + off))->unk_200;
-            do {
-                Unk_ov001_02224670 *prev = node->unk_00;
-                Unk_ov001_02224670_Entry *start = node->unk_08 - n;
-                if (start >= prev->unk_08 + prev->unk_0c) {
-                    r->unk_08 = start;
-                    func_ov001_022266d0(node, r);
-                    break;
-                }
-                node = prev;
-            } while (node != end0);
+        for (node = &data_ov001_0222df34[which].unk_210; node != &data_ov001_0222df34[which].unk_200; node = node->unk_00) {
+            Unk_ov001_02224670 *prev = node->unk_00;
+            Unk_ov001_02224670_Entry *start = node->unk_08 - n;
+            if (start >= prev->unk_08 + prev->unk_0c) {
+                r->unk_08 = start;
+                func_ov001_022266d0(node, r);
+                break;
+            }
         }
-        if (node == &ELEM(off)->unk_200) func_0206d49c();
+        if (node == &data_ov001_0222df34[which].unk_200) func_0206d49c();
     }
     func_01ff8128(irq);
     r->unk_0c = n;

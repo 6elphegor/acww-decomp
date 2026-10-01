@@ -359,35 +359,35 @@ void func_ov001_022244d8(Unk_ov001_0222449c *self, s32 idx, s32 v) {
     }
 }
 
-#define W0(i) (p[i].w0)
+// NitroSDK-style OAM position accessors (attr01: y in bits 0-7, x in bits 16-24)
+static inline void Unk_ov001_02224558_GetPos(const Unk_ov001_0222449c_Ent *e, u32 *x, u32 *y) {
+    *x = (e->w0 & 0x1ff0000) >> 16;
+    *y = (e->w0 & 0xff) >> 0;
+}
+
+static inline void Unk_ov001_02224558_SetPos(Unk_ov001_0222449c_Ent *e, s32 x, s32 y) {
+    e->w0 = (e->w0 & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
+}
+
 void func_ov001_02224558(Unk_ov001_0222449c *self, s32 idx, s32 x, s32 y) {
-    volatile Unk_ov001_0222449c_Ent *p = self->unk_08;
-    volatile u32 ox, oy, ex, ey;
-    s32 i;
+    Unk_ov001_0222449c_Ent *p = self->unk_08;
     if (idx >= 0) {
-        u32 a = W0(idx);
-        a = a & 0xfe00ff00;
-        u32 b = (u8)y;
-        u32 c = x & 0x1ff;
-        W0(idx) = a | b | (c << 16);
+        Unk_ov001_02224558_SetPos(&p[idx], x, y);
     } else {
-        ox = (W0(0) & 0x1ff0000) >> 16;
-        oy = W0(0) & 0xff;
-        W0(0) = (W0(0) & 0xfe00ff00) | (u8)y | ((x & 0x1ff) << 16);
-        u32 lx = ox;
-        u32 ly = oy;
-        s32 dy = y - ly;
-        s32 dx = x - lx;
+        s32 ox, oy;
+        s32 i;
+        // s32 locals passed through a (u32 *) cast stay in memory (not promoted to registers)
+        Unk_ov001_02224558_GetPos(&p[0], (u32 *)&ox, (u32 *)&oy);
+        Unk_ov001_02224558_SetPos(&p[0], x, y);
+        s32 dx = x - ox;
+        s32 dy = y - oy;
         for (i = 1; i < self->unk_0c; i++) {
-            u32 t = W0(i) & 0x1ff0000;
-            ex = t >> 16;
-            u32 ty = W0(i) & 0xff;
-            ey = ty;
-            W0(i) = (W0(i) & 0xfe00ff00) | (u8)(ty + dy) | (((dx + (t >> 16)) & 0x1ff) << 16);
+            s32 ex, ey;
+            Unk_ov001_02224558_GetPos(&p[i], (u32 *)&ex, (u32 *)&ey);
+            Unk_ov001_02224558_SetPos(&p[i], ex + dx, ey + dy);
         }
     }
 }
-#undef W0
 
 #pragma thumb reset
 }
