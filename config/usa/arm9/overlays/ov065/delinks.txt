@@ -4,17 +4,30 @@
     .data       start:0x0228b3c0 end:0x0228e9a0 kind:data align:32
     .bss        start:0x0228e9a0 end:0x022918c0 kind:bss align:32
 
-src/ov065/unk_0225f1a0.cpp:
-    .text       start:0x0225f1a0 end:0x0225faf4
+src/ov065/unk_ov065_0225f1a0.cpp:
+    complete
+    .text       start:0x0225f1a0 end:0x0225f378
+    .bss        start:0x0228e9a0 end:0x0228e9e4
 
-src/ov065/unk_0225faf4.cpp:
-    .text       start:0x0225faf4 end:0x02260488
+src/ov065/unk_ov065_0225f378.cpp:
+    complete
+    .text       start:0x0225f378 end:0x0225f5c8
+    .bss        start:0x0228e9e4 end:0x0228ea08
 
-src/ov065/unk_02260488.cpp:
-    .text       start:0x02260488 end:0x02260de4
+src/ov065/unk_ov065_0225f5c8.cpp:
+    complete
+    .text       start:0x0225f5c8 end:0x0225fdf0
+    .data       start:0x0228b3c0 end:0x0228b3c4
+    .bss        start:0x0228ea08 end:0x0228ea10
+
+src/ov065/unk_ov065_0225fdf0.cpp:
+    complete
+    .text       start:0x0225fdf0 end:0x02261638
+    .data       start:0x0228b3c4 end:0x0228b418
+    .bss        start:0x0228ea10 end:0x0228eb88
 
 src/ov065/unk_02260de4.cpp:
-    .text       start:0x02260de4 end:0x02261718
+    .text       start:0x02261638 end:0x02261718
 
 src/ov065/unk_02261718.cpp:
     .text       start:0x02261718 end:0x02262240
