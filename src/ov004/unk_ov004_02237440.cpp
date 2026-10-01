@@ -35,7 +35,7 @@
 #define func_0205668c _ZN12Unk_020dbe7c13func_0205668cEihit
 #define func_020566bc _ZN12Unk_020dbe7c13func_020566bcEv
 #define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
-#define func_02088bb0 _ZN12Unk_020e0d1cD2Ev
+#define func_02088bb0 _ZN12Unk_020e0d1cD1Ev
 #define func_02088bc8 _ZN12Unk_020e0d1cC1Ev
 #define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
 #define func_02088d38 _ZN12Unk_020e0d0813func_02088d38Ej

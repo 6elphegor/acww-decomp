@@ -249,41 +249,14 @@ src/ov004/unk_ov004_0222bed0.cpp:
     .data       start:0x0224e584 end:0x0224e5f0
     .bss        start:0x022514a4 end:0x02251d60
 
-src/ov004/unk_0222c570.cpp:
-    .text       start:0x0222c9bc end:0x0222cf38
-
-src/ov004/unk_0222cf38.cpp:
-    .text       start:0x0222cf38 end:0x0222d874
-
-src/ov004/unk_0222d874.cpp:
-    .text       start:0x0222d874 end:0x0222e1d8
-
-src/ov004/unk_0222e1d8.cpp:
-    .text       start:0x0222e1d8 end:0x0222eb30
-
-src/ov004/unk_0222eb30.cpp:
-    .text       start:0x0222eb30 end:0x0222f440
-
-src/ov004/unk_0222f440.cpp:
-    .text       start:0x0222f440 end:0x0222fd7c
-
-src/ov004/unk_0222fd7c.cpp:
-    .text       start:0x0222fd7c end:0x022306cc
-
-src/ov004/unk_022306cc.cpp:
-    .text       start:0x022306cc end:0x02230fd0
-
-src/ov004/unk_02230fd0.cpp:
-    .text       start:0x02230fd0 end:0x022318dc
-
-src/ov004/unk_022318dc.cpp:
-    .text       start:0x022318dc end:0x022321e8
-
-src/ov004/unk_022321e8.cpp:
-    .text       start:0x022321e8 end:0x02232b1c
-
-src/ov004/unk_02232b1c.cpp:
-    .text       start:0x02232b1c end:0x02233074
+src/ov004/unk_ov004_0222c9bc.cpp:
+    complete
+    .text       start:0x0222c9bc end:0x02233074
+    .rodata     start:0x022402ec end:0x022406a4
+    .init       start:0x0224782c end:0x02247a30
+    .ctor       start:0x02248578 end:0x0224857c
+    .data       start:0x0224e5f0 end:0x0224e930
+    .bss        start:0x02251d60 end:0x02251f74
 
 src/ov004/unk_ov004_02233074.cpp:
     complete
