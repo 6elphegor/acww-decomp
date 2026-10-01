@@ -102,17 +102,48 @@ src/ov003/unk_ov003_02217814.cpp:
     .text       start:0x02217814 end:0x02217908
     .data       start:0x02232284 end:0x022323e4
 
-src/ov003/unk_02217714.cpp:
-    .text       start:0x02217908 end:0x02218034
+src/ov003/unk_ov003_02217908.cpp:
+    complete
+    .text       start:0x02217908 end:0x02217b10
+    .init       start:0x0222fda8 end:0x0222fe04
+    .ctor       start:0x02230938 end:0x0223093c
+    .bss        start:0x02235460 end:0x02235478
 
-src/ov003/unk_02218034.cpp:
-    .text       start:0x02218034 end:0x0221894c
+src/ov003/unk_ov003_02217b10.cpp:
+    complete
+    .text       start:0x02217b10 end:0x02217be8
+    .init       start:0x0222fe04 end:0x0222fe60
+    .ctor       start:0x0223093c end:0x02230940
+    .bss        start:0x02235478 end:0x02235490
 
-src/ov003/unk_0221894c.cpp:
-    .text       start:0x0221894c end:0x0221927c
+src/ov003/unk_ov003_02217be8.cpp:
+    complete
+    .text       start:0x02217be8 end:0x022187f8
+    .rodata     start:0x0222f010 end:0x0222f018
+    .init       start:0x0222fe60 end:0x0222febc
+    .ctor       start:0x02230940 end:0x02230944
+    .data       start:0x022323e4 end:0x02232498
+    .bss        start:0x02235490 end:0x022354b0
+
+src/ov003/unk_ov003_022187f8.cpp:
+    complete
+    .text       start:0x022187f8 end:0x022187fc
+    .init       start:0x0222febc end:0x022303f0
+    .ctor       start:0x02230944 end:0x02230948
+    .data       start:0x02232498 end:0x022324dc
+    .bss        start:0x022354b0 end:0x02235810
+
+src/ov003/unk_ov003_022187fc.cpp:
+    complete
+    .text       start:0x022187fc end:0x02219294
+    .rodata     start:0x0222f018 end:0x0222f01c
+    .init       start:0x022303f0 end:0x02230450
+    .ctor       start:0x02230948 end:0x0223094c
+    .data       start:0x022324dc end:0x02232630
+    .bss        start:0x02235810 end:0x02235930
 
 src/ov003/unk_0221927c.cpp:
-    .text       start:0x0221927c end:0x02219b84
+    .text       start:0x02219294 end:0x02219b84
 
 src/ov003/unk_02219b84.cpp:
     .text       start:0x02219b84 end:0x0221a4a0
