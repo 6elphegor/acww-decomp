@@ -6,4 +6,10 @@
     .bss        start:0x02271f80 end:0x02271fc0 kind:bss align:32
 
 src/ov087/unk_ov087_022713c0.cpp:
+    complete
     .text       start:0x022713c0 end:0x02271cc4
+    .rodata     start:0x02271cc4 end:0x02271d14
+    .init       start:0x02271d14 end:0x02271d70
+    .ctor       start:0x02271d70 end:0x02271d74
+    .data       start:0x02271d80 end:0x02271f80
+    .bss        start:0x02271f80 end:0x02271fc0
