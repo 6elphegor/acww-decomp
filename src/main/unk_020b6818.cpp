@@ -422,7 +422,9 @@ extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
 extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     Vec3 v28;
     s32 ang = func_0203ef38(&v28, r);
-    s32 y, z;
+    s32 sn, cs;
+    s32 z;
+    s32 y, y2, y3;
     Vec3 v34, v40, v4c;
     z = q->z;
     y = q->y;
@@ -434,23 +436,19 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     v40.y = py;
     v40.z = pz;
     v4c = v28;
-    s16 *tab = data_02135f44;
     u32 idx = ((u16)(s16)-ang) >> 4;
-    s32 i2 = idx * 2;
-    s16 sn = tab[i2];
-    s16 cs = tab[i2 + 1];
-    y = v34.y;
-    z = v34.z;
+    sn = data_02135f44[idx * 2];
+    cs = data_02135f44[idx * 2 + 1];
     v34.y = func_01ffcb0c(cs, y) - func_01ffcb0c(sn, z);
     v34.z = func_01ffcb0c(sn, y) + func_01ffcb0c(cs, z);
     z = v40.z;
-    y = v40.y;
-    v40.y = func_01ffcb0c(cs, y) - func_01ffcb0c(sn, z);
-    v40.z = func_01ffcb0c(sn, y) + func_01ffcb0c(cs, z);
+    y2 = v40.y;
+    v40.y = func_01ffcb0c(cs, y2) - func_01ffcb0c(sn, z);
+    v40.z = func_01ffcb0c(sn, y2) + func_01ffcb0c(cs, z);
     z = v4c.z;
-    y = v4c.y;
-    v4c.y = func_01ffcb0c(cs, y) - func_01ffcb0c(sn, z);
-    v4c.z = func_01ffcb0c(sn, y) + func_01ffcb0c(cs, z);
+    y3 = v4c.y;
+    v4c.y = func_01ffcb0c(cs, y3) - func_01ffcb0c(sn, z);
+    v4c.z = func_01ffcb0c(sn, y3) + func_01ffcb0c(cs, z);
     Unk_0202fdc4 o(&v4c, a, b);
     if (o.func_0202f968(&v40, &v34) || o.func_0202f7b8(&v40, &v34)) {
         func_020e944c(&v40, ang);
@@ -484,8 +482,8 @@ extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     v30.x = bx;
     v30.y = by;
     v30.z = bz;
-    s16 sn = data_02136f44[0];
-    s16 cs = data_02136f44[1];
+    s32 sn = data_02136f44[0];
+    s32 cs = data_02136f44[1];
     v24.x = func_01ffcb0c(cs, ax) - func_01ffcb0c(sn, ay);
     v24.y = func_01ffcb0c(sn, ax) + func_01ffcb0c(cs, ay);
     s32 y = v30.y;
@@ -493,10 +491,11 @@ extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     v30.x = func_01ffcb0c(cs, x) - func_01ffcb0c(sn, y);
     v30.y = func_01ffcb0c(sn, x) + func_01ffcb0c(cs, y);
     if (o.func_0202f7b8(&v30, &v24)) {
-        s16 sn2 = data_02138f44[0];
-        s16 cs2 = data_02138f44[1];
-        s32 y2 = v30.y;
-        s32 x2 = v30.x;
+        s32 y2, x2, sn2, cs2;
+        y2 = v30.y;
+        sn2 = data_02138f44[0];
+        x2 = v30.x;
+        cs2 = data_02138f44[1];
         v30.x = func_01ffcb0c(cs2, x2) - func_01ffcb0c(sn2, y2);
         v30.y = func_01ffcb0c(sn2, x2) + func_01ffcb0c(cs2, y2);
         *out = v30;

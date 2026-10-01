@@ -568,13 +568,13 @@ Unk_020bd1b0::Unk_020bd1b0() {
     func_020bd25c();
 }
 
-static inline void Unk_020bd718_Copy(u16 *dst, u16 *src) {
-    *dst = *src;
-}
-
+// The original computes the destination address BEFORE loading *p. An enum-typed local is not forwarded by mwcc,
+// so holding the element base in one keeps the address computation where it is written.
+enum Unk_020bd718_E { Unk_020bd718_E0 };
 void Unk_020bd718::func_020bd718(s32 idx, u16* p) {
     unk_08 |= 1 << idx;
-    Unk_020bd718_Copy(&unk_0a[idx], p);
+    Unk_020bd718_E o = (Unk_020bd718_E)((u32)this + (idx << 1));
+    *(u16 *)(o + 10) = *p; // unk_0a[idx] = *p
     func_020bd7c0((data_020d0e60[idx] >> 4) & 0xf);
 }
 

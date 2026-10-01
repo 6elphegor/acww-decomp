@@ -357,14 +357,16 @@ BOOL Unk_020e0d44::func_02089284() {
 
 s32 Unk_020e0d44::func_020892ac() { return unk_34; }
 
+enum Unk_020892b0_E { Unk_020892b0_E0 = 0 };
 void Unk_020e0d44::func_020892b0(s32 idx) {
-    u32 c, b, a;
-    b = 0;
-    a = data_020cf5c8[idx];
+    Unk_020892b0_E a;
+    Unk_020892b0_E b;
+    u32 c;
+    a = (Unk_020892b0_E)data_020cf5c8[idx];
     if (unk_40 != 0) {
-        a += 6;
+        a = (Unk_020892b0_E)(a + 6);
     }
-    b = a + 1;
+    b = (Unk_020892b0_E)(a + 1);
     c = data_020cf5b8[idx];
     unk_34 = idx;
     unk_0c.func_02089268((Unk_02089270_Tbl *)(data_020d5b0c + a * 8));
@@ -502,7 +504,6 @@ void Unk_020e0d98::func_020896dc() {
     u32 w0;
     u32 w1;
     u32 n;
-    u32 m;
     s32 hi;
     s32 lo;
     if (unk_b0 != NULL) {
@@ -511,7 +512,8 @@ void Unk_020e0d98::func_020896dc() {
         w0 = 0;
     }
     if (unk_b4 != NULL) {
-        w1 = unk_b4->func_0c();
+        u32 t1 = unk_b4->func_0c();
+        w1 = t1;
     } else {
         w1 = 0;
     }

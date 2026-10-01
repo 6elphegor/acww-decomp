@@ -16,7 +16,7 @@ void func_020639b8(Unk_020030d8 *p);
 void func_020639bc(Unk_020030d8 *p);
 void func_02063968(Unk_020030d8 *p, Unk_020030d8 *other);
 void func_0206397c(Unk_020030d8 *p, Unk_020030d8 *other);
-void func_020118d4();
+void func_020118d4(u32 a);
 void func_020118e4(u32 v);
 BOOL func_0206edb0();
 s32 func_0206edbc();
@@ -201,7 +201,7 @@ void Unk_020d5e0c::func_02003178() {
     if (unk_24 == 0) {
         s32 t = unk_38;
         if (t != 5 && t != unk_34) {
-            func_020118d4();
+            func_020118d4(t);
             unk_34 = unk_38;
             unk_38 = 5;
             BOOL b = FALSE;

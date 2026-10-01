@@ -109,14 +109,11 @@ extern u8 data_021f47e0[];
 
 extern "C" {
 s32 func_0204f178(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
-    s32 sum = 0;
-    s32 n;
-    Unk_0204f178_Row *row;
-    s32 off;
     s32 lim;
-    s32 i = 0;
-    Unk_0204f178_Row ***p;
+    s32 sum = 0;
     s32 res = -1;
+    s32 off;
+    s32 i;
     if (func_02072e44(data_020cbb18)) {
         off = 3;
         lim = func_02063b8c(0x60);
@@ -124,20 +121,16 @@ s32 func_0204f178(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
         off = 0;
         lim = func_02063b8c(0x64);
     }
-    i = 0;
-    p = &data_020db3f0[b - 1];
-    row = data_020db3f0[b - 1][c] + a;
-    n = row->unk_04 - off;
-    for (; i < n; i++) {
-        sum += (*p)[c][a].unk_00[i].unk_02;
+    for (i = 0; i < data_020db3f0[b - 1][c][a].unk_04 - off; i++) {
+        sum += data_020db3f0[b - 1][c][a].unk_00[i].unk_02;
         if (sum > lim) {
             res = i;
             break;
         }
     }
     if (res != -1) {
-        *out0 = row->unk_00[res].unk_00;
-        *out1 = (*p)[c][a].unk_00[res].unk_01;
+        *out0 = data_020db3f0[b - 1][c][a].unk_00[res].unk_00;
+        *out1 = data_020db3f0[b - 1][c][a].unk_00[res].unk_01;
         return 1;
     }
     return 0;

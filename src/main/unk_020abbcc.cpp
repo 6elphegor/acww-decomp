@@ -590,16 +590,46 @@ extern "C" void func_020ac724(void *a, void *b) {
     func_01ffc714((u8 *)a + 24, (u8 *)b + 24);
 }
 
+struct Unk_020ac500_DictHdr {
+    u16 sizeUnit;
+    u16 ofsName;
+    u8 data[4];
+};
+struct Unk_020ac500_Dict {
+    u8 rev;
+    u8 num;
+    u16 size;
+    u16 pad;
+    u16 ofsEntry;
+};
+struct Unk_020ac500_Tex {
+    u8 pad_00[8];
+    u32 texKey;
+    u8 pad_0c[0x20];
+    u32 plttKey;
+    u8 pad_30[4];
+    u16 ofsPlttDict;
+    u8 pad_36[6];
+    Unk_020ac500_Dict dict;
+};
+struct Unk_020ac500_Pltt {
+    u16 offset;
+    u16 flag;
+};
+static inline void *Unk_020ac500_Data(const Unk_020ac500_Dict *dict, u32 idx) {
+    Unk_020ac500_DictHdr *hdr = (Unk_020ac500_DictHdr *)((u8 *)dict + dict->ofsEntry);
+    return &hdr->data[hdr->sizeUnit * idx];
+}
+static inline u32 *Unk_020ac500_TexData(const Unk_020ac500_Tex *tex, u32 idx) {
+    return (u32 *)Unk_020ac500_Data(&tex->dict, idx);
+}
+static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *tex, u32 idx) {
+    return (Unk_020ac500_Pltt *)Unk_020ac500_Data((const Unk_020ac500_Dict *)((u8 *)tex + tex->ofsPlttDict), idx);
+}
+
 extern "C" void func_020ac500(void *arg) {
-    u8 *ent1;
+    u32 *texData;
     Unk_020d094c *ent;
-    u8 *mdl;
-    u32 idx1;
-    u32 idx2;
-    u8 *blk;
-    u32 v2c;
-    u32 ev;
-    u32 o6;
     s32 heap = data_021c620c;
     if (arg != 0) {
         data_021edf44 = 0;
@@ -607,7 +637,7 @@ extern "C" void func_020ac500(void *arg) {
         void *file = func_020641d8(data_020e2e10);
         u8 *res = func_0210629c(file);
         func_02055724(res, 0);
-        mdl = func_0205588c(res, heap);
+        res = func_0205588c(res, heap);
         func_020e8558(file);
         u32 i;
         for (i = 0; i < 3; i++) {
@@ -618,29 +648,26 @@ extern "C" void func_020ac500(void *arg) {
             e->unk_00 = 0;
             e->unk_04 = 0;
             e->unk_08 = 0;
-            e->unk_00 = mdl;
+            e->unk_00 = res;
             e->unk_14 = ent->unk_06;
-            idx1 = func_02057100(e->unk_00, name);
-            idx2 = func_02057078(e->unk_00, buf);
-            u8 *t1 = e->unk_00 + 0x3c;
-            u8 *ents = t1 + *(u16 *)(e->unk_00 + 0x42) + 4;
-            u32 size1 = *(u16 *)(t1 + *(u16 *)(e->unk_00 + 0x42)) * idx1;
-            ent1 = ents + size1;
-            u8 *h2 = e->unk_00 + *(u16 *)(e->unk_00 + 0x34);
-            o6 = *(u16 *)(h2 + 6);
-            blk = h2 + o6;
-            v2c = *(u16 *)(blk + *(u16 *)(h2 + o6) * idx2 + 4);
-            ev = *(u32 *)(ents + size1);
-            e->unk_04 = ev + (u16) * (u32 *)(e->unk_00 + 8);
-            e->unk_08 = v2c + (u16) * (u32 *)(e->unk_00 + 0x2c);
+            u32 idx1 = func_02057100(e->unk_00, name);
+            u32 idx2 = func_02057078(e->unk_00, buf);
+            Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->unk_00;
+            texData = Unk_020ac500_TexData(tex, idx1);
+            u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;
+            u32 plttKey = (u16)tex->plttKey;
+            u32 texParam = *texData;
+            u32 texKey = (u16)tex->texKey;
+            e->unk_04 = texParam + texKey;
+            e->unk_08 = plttOfs + plttKey;
             e->unk_04 |= ent->unk_04 << 18;
             e->unk_04 |= ent->unk_05 << 16;
-            e->unk_10 = (*(u32 *)(ents + size1) >> 26) & 7;
+            e->unk_10 = (*texData >> 26) & 7;
             if (e->unk_10 != 2) {
                 e->unk_08 >>= 1;
             }
-            e->unk_0c = 1 << (((*(u32 *)ent1 >> 20) & 7) + 3);
-            e->unk_0e = 1 << (((*(u32 *)ent1 >> 23) & 7) + 3);
+            e->unk_0c = 1 << (((*texData >> 20) & 7) + 3);
+            e->unk_0e = 1 << (((*texData >> 23) & 7) + 3);
             e++;
         }
         static Vec3Z2 v;
@@ -710,7 +737,7 @@ extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
             if (0xb000 < d) {
                 r4 = r4 >> 5;
             } else {
-                static s32 inv = ((s32 (*)(s32))func_01ffc5a4)(0xf80);
+                static s32 inv = func_01ffc5a4(0xf80, 0xb000);
                 r4 = r4 - (u8)(func_01ffcb0c(func_01ffcb0c(r4 << 12, inv), d) >> 12);
             }
         } else {

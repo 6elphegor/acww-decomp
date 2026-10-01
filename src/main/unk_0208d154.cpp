@@ -502,10 +502,14 @@ s32 Unk_020e1028::func_0208d9d0() {
     return unk_3c;
 }
 
+enum Unk_0208d9d4_E { Unk_0208d9d4_E0 = 0 };
 void Unk_020e1028::func_0208d9d4(s32 idx) {
-    s32 a = data_020cf6d8[idx];
-    s32 n = a + 1;
-    s32 f = data_020cf6c8[idx];
+    Unk_0208d9d4_E a;
+    Unk_0208d9d4_E n;
+    s32 f;
+    a = (Unk_0208d9d4_E)data_020cf6d8[idx];
+    n = (Unk_0208d9d4_E)(a + 1);
+    f = data_020cf6c8[idx];
     unk_3c = idx;
     unk_14.func_02089268(data_020d5b0c + a * 8);
     unk_14.func_02089264(f);

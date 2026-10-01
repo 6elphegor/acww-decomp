@@ -538,7 +538,12 @@ BOOL Unk_0201d2d0::func_0202bb84() {
     return FALSE;
 }
 
+struct Unk_0202bb88_Id {
+    u16 unk_00;
+    u8 unk_02[8];
+};
 s32 Unk_0201d2d0::func_0202bb88(s32 *out) {
+    Unk_0202bb88_Id *idb = (Unk_0202bb88_Id *)data_021d7352;
     BOOL f5;
     void *h;
     void *sc;
@@ -546,7 +551,12 @@ s32 Unk_0201d2d0::func_0202bb88(s32 *out) {
     u16 *a;
     u32 arr[2];
     Unk_0202b4ac_Rec *rec;
-    rec = func_0209750c() ? (Unk_0202b4ac_Rec *)func_0209888c(func_0209750c()) : NULL;
+    if (func_0209750c()) {
+        void *t0 = func_0209888c(func_0209750c());
+        rec = (Unk_0202b4ac_Rec *)t0;
+    } else {
+        rec = NULL;
+    }
     arr[0] = 0;
     arr[1] = 0;
     if (unk_128 == NULL) {
@@ -561,9 +571,9 @@ s32 Unk_0201d2d0::func_0202bb88(s32 *out) {
     }
     func_0209d498(arr);
     h = func_02080ec8(unk_128);
-    if ((u32)data_021d7352 != 0) {
+    if (idb != NULL) {
         b = func_02080e1c(unk_128);
-        if (*(volatile u16 *)data_021d7352 != b[0] || func_02128930((u16 *)((u8 *)data_021d7352 + 2), b + 1, 8) != 0) {
+        if (idb->unk_00 != b[0] || func_02128930(idb->unk_02, b + 1, 8) != 0) {
             return 5;
         }
     }
