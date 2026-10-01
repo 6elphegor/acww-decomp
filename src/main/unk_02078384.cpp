@@ -677,12 +677,11 @@ Unk_02078400 *func_020783f8() { return &data_021cc9e8; }
 
 BOOL func_02078948(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1) {
     Unk_02078948_Obj *o = func_0208168c();
-    volatile BOOL result;
     if (o != NULL && o->vfunc_a8()) {
         s32 *pos = &o->unk_5c;
+        BOOL result = FALSE;
         BOOL b = FALSE;
-        result = FALSE;
-        BOOL a = b;
+        BOOL a = FALSE;
         if (o->unk_5c > x0 && o->unk_5c < x1) {
             a = TRUE;
         }

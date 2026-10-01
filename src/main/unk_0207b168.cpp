@@ -26,9 +26,6 @@ struct Unk_0207b168 {
     /* 0x38ee */ u8 unk_38ee[0x20];
 };
 
-namespace Unk_0207b238_ns {
-extern "C" u8 data_021d7352[];
-}
 extern "C" {
 extern u8 data_021e7f8c[];
 extern u8 data_021d7352[];
@@ -42,7 +39,7 @@ void *func_0209a610(void *);
 void *func_0209b010(void *);
 s32 func_0209d3d0(void *, void *, s32);
 s32 func_0209d3a4(void *, void *);
-s32 func_0209d020();
+s32 func_0209d020(void *);
 void func_0209d498(void *);
 void func_0209cf88(void *);
 void func_02115fb4(void *, s32, u32);
@@ -143,6 +140,11 @@ s32 func_0207b208(Unk_0207b168 *self) {
     return -1;
 }
 
+struct Unk_0207b238_Id {
+    u16 id;
+    u8 name[8];
+};
+
 void func_0207b238(Unk_0207b168 *self, void *arg) {
     void *r7;
     s32 idx;
@@ -159,8 +161,9 @@ void func_0207b238(Unk_0207b168 *self, void *arg) {
         goto nomatch;
     }
     {
-        u16 *h = (u16 *)func_0207f19c(r7);
-        if (h[0] == *(u16 *)data_021d7352 && func_02128930(h + 1, (u8 *)((u32)Unk_0207b238_ns::data_021d7352 + 2), 8) == 0) {
+        Unk_0207b238_Id *g = (Unk_0207b238_Id *)data_021d7352;
+        Unk_0207b238_Id *h = (Unk_0207b238_Id *)func_0207f19c(r7);
+        if (h->id == g->id && func_02128930(h->name, g->name, 8) == 0) {
             if (r4 == 0) {
                 return;
             }
@@ -304,8 +307,7 @@ s32 func_0207b640(Unk_0207b168 *self) {
 s32 func_0207b68c(Unk_0207b168 *self, void *p) {
     if (func_0207bb7c(self) < 8) {
         if (*(s64 *)self->unk_38cc == 0) {
-            s64 *q = (s64 *)self->unk_38c4;
-            if (*q == 0 || func_0209d020() != 0) {
+            if (*(s64 *)self->unk_38c4 == 0 || func_0209d020(self->unk_38c4) != 0) {
                 return TRUE;
             }
             if (func_0209d3d0(p, self->unk_38c4, 0x3f) == 1) {
@@ -313,7 +315,6 @@ s32 func_0207b68c(Unk_0207b168 *self, void *p) {
                     return TRUE;
                 }
             }
-            return FALSE;
         } else {
             if (func_0209d3d0(p, self->unk_38cc, 0x3f) == 1) {
                 s32 n = func_0209d3a4(self->unk_38cc, p);
@@ -332,7 +333,6 @@ s32 func_0207b68c(Unk_0207b168 *self, void *p) {
                     return FALSE;
                 }
             }
-            return FALSE;
         }
     }
     return FALSE;

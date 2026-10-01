@@ -568,22 +568,35 @@ extern "C" void func_02097110(s32 n) {
             u32 v;
             func_020656dc(&e, &ch, data_020e1e10, data_020e1df8, data_020e1e0c, func_0209888c(s));
             v = 0xfff1;
+            if (id > 13) goto hi;
+            if (id >= 13) goto c13;
             switch (id) {
-            case 0: break;
-            case 2: break;
-            case 3: break;
-            case 5: break;
-            case 6: break;
-            case 8: break;
-            case 9: break;
-            case 1: v = 0x13fe; break;
-            case 4: v = 0x13ff; break;
-            case 7: v = 0x1400; break;
-            case 10: v = 0x1401; break;
-            case 13: v = 0x1402; break;
-            case 16: v = 0x1403; break;
-            case 20: v = 0x1404; break;
+            case 0: goto done;
+            case 1: goto c1;
+            case 4: goto c4;
+            case 7: goto c7;
+            case 10: goto c10;
             }
+            goto done;
+        hi:
+            if (id > 16) goto hi2;
+            switch (id) {
+            case 16: goto c16;
+            }
+            goto done;
+        hi2:
+            switch (id) {
+            case 20: goto c20;
+            }
+            goto done;
+        c1: v = 0x13fe; goto done;
+        c4: v = 0x13ff; goto done;
+        c7: v = 0x1400; goto done;
+        c10: v = 0x1401; goto done;
+        c13: v = 0x1402; goto done;
+        c16: v = 0x1403; goto done;
+        c20: v = 0x1404;
+        done:
             if (v != 0xfff1) {
                 e.func_02065588(v, 1);
             }

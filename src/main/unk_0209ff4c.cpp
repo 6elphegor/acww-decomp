@@ -65,7 +65,7 @@ extern u8 data_021e7f8c[];
 extern u8 data_021ecfa8[];
 extern u8 data_021ed32c[];
 extern u8 data_021c4890[];
-extern u32 data_020d0794[];
+extern const u32 data_020d0794[];
 extern u8 data_020e24ec;
 extern u8 data_020e252c[];
 
@@ -160,7 +160,7 @@ void func_0209ff8c(void *a) {
     for (i = 0; i < n; i++) {
         s32 k = i + 1;
         if (k >= n) k = j;
-        func_020a147c(a, list[i], list[k]);
+        func_020a147c(a, n ? list[i] : list[i], list[k]);
     }
 }
 
@@ -368,23 +368,18 @@ void func_020a042c() {
 
 BOOL func_020a049c() {
     u32 y, x;
-    u32 t;
     u32 a, b;
-    b = -(u32)data_021d7350;
-    a = (u32)data_021e7f8c + b;
-    b = (u32)data_021ecfa8 + b;
-    t = func_0208f1c4(data_021e7f8c);
-    t = func_0204fef4(data_021e7f8c, 0x84c, t);
-    func_0208f1d0(data_021e7f8c, t);
-    t = func_0208f060(data_021ecfa8);
-    t = func_0204fef4(data_021ecfa8, 0xf8, t);
-    func_0208f068(data_021ecfa8, t);
-    x = data_020d0794[0];
-    if (func_020500f0(data_021c4890, x + a, data_021e7f8c, 0x84c) == 1) return TRUE;
-    y = data_020d0794[1];
-    if (func_020500f0(data_021c4890, y + a, data_021e7f8c, 0x84c) == 1) return TRUE;
-    if (func_020500f0(data_021c4890, x + b, data_021ecfa8, 0xf8) == 1) return TRUE;
-    if (func_020500f0(data_021c4890, y + b, data_021ecfa8, 0xf8) == 1) return TRUE;
+    void *base = data_021d7350;
+    void *p = data_021e7f8c;
+    void *q = data_021ecfa8;
+    a = (u32)p - (u32)base;
+    b = (u32)q - (u32)base;
+    func_0208f1d0(p, func_0204fef4(p, 0x84c, func_0208f1c4(p)));
+    func_0208f068(q, func_0204fef4(q, 0xf8, func_0208f060(q)));
+    if (func_020500f0(data_021c4890, data_020d0794[0] + a, p, 0x84c) == 1) return TRUE;
+    if (func_020500f0(data_021c4890, data_020d0794[1] + a, p, 0x84c) == 1) return TRUE;
+    if (func_020500f0(data_021c4890, data_020d0794[0] + b, q, 0xf8) == 1) return TRUE;
+    if (func_020500f0(data_021c4890, data_020d0794[1] + b, q, 0xf8) == 1) return TRUE;
     return FALSE;
 }
 

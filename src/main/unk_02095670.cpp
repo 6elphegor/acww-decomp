@@ -187,7 +187,7 @@ BOOL func_02095670(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx) {
         if (e != NULL) {
             s32 *p = e->unk_5c;
             *outb = func_020b50e8();
-            *x = e->unk_5c[0];
+            *x = p[0];
             *y = p[2];
             return TRUE;
         }
@@ -232,6 +232,11 @@ BOOL Unk_020e1ce0::vfunc_0c() { return TRUE; }
 BOOL Unk_020e1ce0::vfunc_24() { return TRUE; }
 Unk_020e1ce0::~Unk_020e1ce0() {}
 Unk_020e1ce0::Unk_020e1ce0() {}
+static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
+    d[0] = a;
+    d[1] = b;
+    d[2] = c;
+}
 BOOL Unk_020e1c88::vfunc_18() {
     Unk_020cbb18 *g = data_020cbb18;
     s32 mode = g->unk_64;
@@ -244,6 +249,7 @@ BOOL Unk_020e1c88::vfunc_18() {
     Unk_0209579c_Pos p1, p2, p3;
     s32 ob;
     s32 i;
+    s32 j;
     if (func_020b50e8() == 0x2e) goto ret1;
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f || func_020b50e8() == 0xe) {
         if (func_020a03f0()) return TRUE;
@@ -293,9 +299,7 @@ BOOL Unk_020e1c88::vfunc_18() {
                 p2.x = lx1;
                 p2.y = 2;
                 p2.z = ly1;
-                lr2[0] = 0;
-                lr2[1] = lr1[0];
-                lr2[2] = 0;
+                Unk_0209579c_Set(lr2, 0, lc, 0);
                 func_0209524c(i, func_0209521c());
                 func_02094308(i, &p2, lr2, 0x800000);
             } else if (func_02095180(0x1b, ob)) {
@@ -306,9 +310,7 @@ BOOL Unk_020e1c88::vfunc_18() {
                     p3.x = pp[0];
                     p3.y = pp[1];
                     p3.z = pp[2];
-                    lr3[0] = 0;
-                    lr3[1] = *func_02095294(i);
-                    lr3[2] = 0;
+                    Unk_0209579c_Set(lr3, 0, *func_02095294(i), 0);
                     func_0209524c(i, func_0209521c());
                     func_02094308(i, &p3, lr3, (*ip << 22) & 0x3fc00000);
                 }
@@ -316,18 +318,16 @@ BOOL Unk_020e1c88::vfunc_18() {
         }
         i++;
     } while ((u32)i < 4);
-    i = 0;
+    j = 0;
     do {
-        if (!func_020729bc(g, i) && !func_02095180(0x1b, ob)) {
-            Unk_02095774_Ent *e = func_02095204(i);
+        if (!func_020729bc(g, j) && !func_02095180(0x1b, ob)) {
+            Unk_02095774_Ent *e = func_02095204(j);
             if (e) {
-                BOOL f = FALSE;
-                if (((Unk_0209579c_Rec *)e)->unk_0e == 2) f = TRUE;
-                if (!f) {
-                    if (func_02095574(&lv2, -1, i)) {
+                if (!Unk_0209579c_IsTwo(((Unk_0209579c_Rec *)e)->unk_0e)) {
+                    if (func_02095574(&lv2, -1, j)) {
                         if (lv2 >= 0x93) {
                             func_020ed188(e);
-                        } else if (func_02095670(&lb, &lx2, &ly2, -1, i)) {
+                        } else if (func_02095670(&lb, &lx2, &ly2, -1, j)) {
                             if (lb != func_020b50e8()) func_020ed188(e);
                         } else {
                             func_020ed188(e);
@@ -338,8 +338,8 @@ BOOL Unk_020e1c88::vfunc_18() {
                 }
             }
         }
-        i++;
-    } while ((u32)i < 4);
+        j++;
+    } while ((u32)j < 4);
 ret1:
     return TRUE;
 }
@@ -540,19 +540,19 @@ s32 func_02095dcc() {
     u16 *c;
     for (y = 0; y < g->unk_10; y++) {
         x = 0;
-        if (x < g->unk_0c) {
-            goto test0;
-        loop0:
-            hx = x >> 4;
-            hy = y >> 4;
-            c = (u16 *)func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
-            if (c) {
-                if (Unk_02095dcc_R(c, 0x1520, 0x1520)) return TRUE;
-            }
-            x++;
-        test0:
-            if (x < g->unk_0c) goto loop0;
+        goto test0;
+    loop0:
+        hx = x >> 4;
+        hy = y >> 4;
+        c = (u16 *)func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        if (c) {
+            if (Unk_02095dcc_R(c, 0x1520, 0x1520)) return TRUE;
         }
+        x++;
+        hy = y;
+        y = hy;
+    test0:
+        if (x < g->unk_0c) goto loop0;
     }
     return FALSE;
 }

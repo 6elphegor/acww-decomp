@@ -348,12 +348,12 @@ extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal,
         }
     }
     case 7: {
-        u8 v;
+        s32 v;
         u32 t = cal.s.b0;
         if (c < t) {
-            v = cal.s.b2 + (c - t + 7);
+            v = (u8)(cal.s.b2 + (c - t + 7));
         } else {
-            v = cal.s.b2 + (c - t);
+            v = (u8)(cal.s.b2 + (c - t));
         }
         if (cm != mon && v > x) {
             v -= x;

@@ -184,7 +184,7 @@ void func_020465a4(void *a) {
                     s32 r = func_02063b8c(4);
                     func_020466c0(a, p, r);
                 }
-                data_021c3ea4[0] = l.t;
+                *(a ? data_021c3ea4 : data_021c3ea4) = l.t;
             }
         }
     }
@@ -200,11 +200,12 @@ void func_02046650(void *a) {
                 Unk_0204674c_P *p = func_0204da0c();
                 u32 *o2 = &o->f5c;
                 s32 r = func_02063b8c(4);
-                if (!((s32)o->f5c >> 17 == r + 1 && (s32)o2[2] >> 17 == 4)) {
+                s32 x = (s32)o2[0] >> 17;
+                if (!((s32)o2[2] >> 17 == 4 && x == r + 1)) {
                     func_020466c0(a, p, r);
                 }
             }
-            data_021c3ea4[0] = t;
+            *(a ? data_021c3ea4 : data_021c3ea4) = t;
         }
     }
 }

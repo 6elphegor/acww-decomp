@@ -264,6 +264,7 @@ s32 func_02063d00(s32 x) { return func_0211a088(0, x); }
 s32 func_02063d0c(s32 x) { return func_020643d4(0, x); }
 
 
+enum Unk_02063d18_Type { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };
 void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off) {
     Unk_02063d18_Hdr hdr;
     u32 n, nblk, base;
@@ -297,10 +298,10 @@ void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off) {
                 len = tp[1] - t0;
                 func_02119848(f, base + t0, 0);
                 func_021198b4(f, data_021c7f40, len);
-                u32 sz = data_021c7f40[0];
-                u32 ty = sz & 0xf0;
-                sz >>= 8;
-                if (ty == 0) {
+                u32 w = data_021c7f40[0];
+                Unk_02063d18_Type ty = (Unk_02063d18_Type)(w & 0xf0);
+                u32 sz = w >> 8;
+                if (ty == Unk_02063d18_T0) {
                     func_02116048((u8 *)data_021c7f40 + 4, data_021c8f40, sz);
                 } else {
                     func_02116190(data_021c7f40, data_021c8f40);

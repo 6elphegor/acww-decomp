@@ -141,16 +141,17 @@ void func_0204d7fc(u16 *ret, void *m, s32 *pos, s32 *p4, s32 *p5, u16 a6, u16 a7
             for (; i < n; i++) {
                 Unk_0204d560_Vec v1, v2, v3;
                 if (func_020b2958(h, &v1, &v2, &v3, i)) {
-                    sx = sx + v1.x + v2.x + v3.x;
-                    sz = sz + v1.z + v2.z + v3.z;
+                    sx += v1.x; sx += v2.x; sx += v3.x;
+                    sz += v1.z; sz += v2.z; sz += v3.z;
                 }
             }
             d = (s32)func_020b29e4(h) * 3 << 12;
             ax = func_01ffc5a4(sx, d);
             az = func_01ffc5a4(sz, d);
             zz = v.z + az + 0x1000;
+            s32 yy = func_02030814(0);
             pos[0] = v.x + ax;
-            pos[1] = func_02030814(0);
+            pos[1] = yy;
             pos[2] = zz;
             if (p4) *p4 = a;
             if (p5) *p5 = b;
