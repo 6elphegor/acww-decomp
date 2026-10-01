@@ -482,9 +482,8 @@ void Unk_020718a4::func_02071460() {
             if (i < 4) goto loop1;
             t = func_020b50e8();
             if (t == 10) {
-                s32 o = (t == 10) ? 0xfafc : 0xfafc;
                 for (j = 0; j < 8; j++) {
-                    func_0203c6f8(b, func_02071b00((u8 *)&data_021d7350 + o, j));
+                    func_0203c6f8(b, func_02071b00((u8 *)&data_021d7350 + 0xfafc, j));
                     if (func_02055724(func_0203c6c8(b), 0)) {
                         data_021cbd18[j] = (u32)func_02055820(func_0203c6c8(b), 0x4e554c4c);
                     }

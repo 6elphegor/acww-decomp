@@ -5,6 +5,7 @@ struct Unk_021f1448 { u8 pad0[0x1c]; s32 f1c; u8 pad1[4]; s32 f24; s32 f28; u8 p
 struct Unk_020baa10_Time { u8 lo; u8 hi; };
 struct Unk_020baa10_Buf { u16 x; Unk_020baa10_Time t; u16 y; u16 z; };
 struct Unk_020bacc0_Vec { s32 x; s32 y; };
+struct Unk_020bacc0_P { s32 x; s32 y; };
 struct Unk_020bacc0_Entry {
     s32 f00; s32 f04; s32 f08; s32 f0c;
     u8 f10[0x14];
@@ -185,20 +186,26 @@ void func_020baa10(s32 a, s32 b) {
 void func_020baaa0(s32 a, s32 b, u32 c, u32 d) {
     u8 *out = data_021ef690;
     s32 i;
+    s32 ia2, ia, ib;
     if (data_021f1470 != data_021f146c) {
-        s32 ia = 0x1000 - a;
-        s32 ib = 0x1000 - b;
-        for (i = 0; i < 2; i++) {
-            s32 t1 = (u16)((ia * data_020e4d84[data_021f146c][i][c] + a * data_020e4d84[data_021f146c][i][d]) >> 12);
-            s32 t2 = (u16)((ia * data_020e4d84[data_021f1470][i][c] + a * data_020e4d84[data_021f1470][i][d]) >> 12);
-            *out = (t1 * ib + t2 * b) >> 12;
+        i = 0;
+        ia = 0x1000 - a;
+        ib = 0x1000 - b;
+        for (; i < 2; i++) {
+            u8 *p1 = data_020e4d84[data_021f146c][i];
+            s32 t1 = (u16)((ia * p1[c] + a * p1[d]) >> 12);
+            u8 *p2 = data_020e4d84[data_021f1470][i];
+            t1 = t1 * ib;
+            s32 t2 = (u16)((ia * p2[c] + a * p2[d]) >> 12);
+            *out = (t1 + t2 * b) >> 12;
             out++;
         }
     } else {
-        s32 ia = 0x1000 - a;
-        for (i = 0; i < 2; i++) {
+        i = 0;
+        ia2 = 0x1000 - a;
+        for (; i < 2; i++) {
             u8 *p = data_020e4d84[data_021f146c][i];
-            *out = (ia * p[c] + a * p[d]) >> 12;
+            *out = (ia2 * p[c] + a * p[d]) >> 12;
             out++;
         }
     }
@@ -208,9 +215,12 @@ void func_020bab7c(s32 a, s32 b, u32 c, u32 d) {
     s32 cur = data_021f1448.f24;
     s32 next = data_021f1448.f28;
     if (next != cur) {
-        u32 t1 = (u16)(((0x1000 - a) * data_020e4d5c[cur][c] + a * data_020e4d5c[cur][d]) >> 12);
-        u32 t2 = (u16)(((0x1000 - a) * data_020e4d5c[next][c] + a * data_020e4d5c[next][d]) >> 12);
-        func_020b53ec((u16)((t1 * (0x1000 - b) + t2 * b) >> 12));
+        u16 *pc = data_020e4d5c[cur];
+        u32 t1 = (u16)(((0x1000 - a) * pc[c] + a * pc[d]) >> 12);
+        u16 *pn = data_020e4d5c[next];
+        t1 = t1 * (0x1000 - b);
+        u32 t2 = (u16)(((0x1000 - a) * pn[c] + a * pn[d]) >> 12);
+        func_020b53ec((u16)((t1 + t2 * b) >> 12));
     } else {
         func_020b53ec((u16)(((0x1000 - a) * data_020e4d5c[cur][c] + a * data_020e4d5c[cur][d]) >> 12));
     }
@@ -220,20 +230,24 @@ void func_020bac14(s32 a, s32 b, u32 c, u32 d) {
     u16 *out = (u16 *)data_021ef688;
     u16 tmp[2];
     u16 **tbl;
+    u16 **row;
+    u16 *t;
     s32 i;
     if (data_021f1470 != data_021f146c) {
         for (i = 0; i < 4; i++) {
-            u16 *t = data_020e4d48[data_021f146c][i];
+            row = data_020e4d48[data_021f146c];
+            t = row[i];
             func_020ba6f4(&tmp[0], t + c, t + d, a);
-            t = data_020e4d48[data_021f1470][i];
+            row = data_020e4d48[data_021f1470];
+            t = row[i];
             func_020ba6f4(&tmp[1], t + c, t + d, a);
             func_020ba6f4(out, &tmp[0], &tmp[1], b);
             out++;
         }
     } else {
-        tbl = data_020e4d48[data_021f146c];
+        row = data_020e4d48[data_021f146c];
         for (i = 0; i < 4; i++) {
-            u16 *t = tbl[i];
+            t = row[i];
             func_020ba6f4(out, t + c, t + d, a);
             out++;
         }
@@ -248,19 +262,19 @@ void func_020bacc0(Unk_020bacc0_Obj *obj) {
     for (e = obj->e; e < end; e++) {
         void *sub;
         void *r;
-        s32 *pos;
+        Unk_020bacc0_P *pos;
         s32 a, b, x, y, py;
         if (e->f00 == 0xd) continue;
         if (e->f04 != 2) continue;
         if (e->f31 != 0) continue;
         sub = e->f10;
-        pos = &e->f34;
         r = func_02089248(sub);
         if (r == NULL) continue;
+        pos = (Unk_020bacc0_P *)&e->f34;
         a = func_02089228(sub, id);
         b = func_02089210(sub, id);
-        x = a + ((e->f34 + 0x800) >> 12);
-        py = b + ((pos[1] + 0x800) >> 12);
+        x = a + ((pos->x + 0x800) >> 12);
+        py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
         if (data_021eff48.f0 == 1) {
             u8 k = e->f5c;
@@ -271,7 +285,7 @@ void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)e->f56 & 0xff, (u32)e->f57 & 0xff);
+            func_02087e70(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
         } else if (py < 0xc0) {
             u8 k = e->f5c;
             BOOL hidden = FALSE;
@@ -285,16 +299,16 @@ void func_020bacc0(Unk_020bacc0_Obj *obj) {
         } else if (py > 0x100) {
             u8 k;
             BOOL hidden;
-            y -= 0x100;
+            s32 y2 = y - 0x100;
             k = e->f5c;
             hidden = FALSE;
             if (k != 0) {
-                s32 lo = y - k;
-                s32 hi = y + k;
+                s32 lo = y2 - k;
+                s32 hi = y2 + k;
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)e->f56 & 0xff, (u32)e->f57 & 0xff);
+            func_02087e70(0, r, x, y2, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
         }
     }
 }

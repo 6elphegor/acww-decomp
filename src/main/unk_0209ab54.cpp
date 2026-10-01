@@ -316,8 +316,8 @@ void Unk_0209b3bc::func_0209af0c(u8 idx, s32 delta) {
 
 BOOL Unk_0209b3bc::func_0209af4c(s16 *p) {
     BOOL r = FALSE;
-    volatile s32 z = r;
     s32 i = r;
+    volatile s32 z = r;
     for (; i < 8; p++, i++) {
         if (unk_11.func_0209b434((u8)i) < 0xff) {
             s32 t = func_02063b8c(10);

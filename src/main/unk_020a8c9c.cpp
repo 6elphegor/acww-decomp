@@ -892,7 +892,7 @@ void Unk_020e2c98::func_020ab47c(u32 start, u32 end) {
         u32 row;
         for (row = start; row <= end; row++) {
             s32 i;
-            *(u16 *)(row * 0x40 + (off1 + (u32)unk_04)) = *(u16 *)(unk_04 + row * 0x40 + 0x3c);
+            *(u16 *)(row * 0x40 + (off1 + (u32)unk_04)) = *(u16 *)((unk_04 ? unk_04 : unk_04) + row * 0x40 + 0x3c);
             *(u16 *)(row * 0x40 + (off2 + (u32)unk_04)) = *(u16 *)(unk_04 + row * 0x40 + 0x3e);
             for (i = n - 1; i >= 0; i--) {
                 func_020ab8a0(unk_04 + row * 0x40 + (31 - i) * 2, 2);
@@ -1345,7 +1345,7 @@ void Unk_020aa72c::func_020aa760(s32 v) { unk_64 = v; }
 
 void Unk_020aa72c::func_020aa72c() {
     char buf[0x40];
-    func_020639e8(buf, data_020e2d8c, data_020e2d88, unk_04);
+    func_020639e8(buf, data_020e2d8c, unk_04 ? data_020e2d88 : data_020e2d88, unk_04);
     unk_08.func_020aa840(buf, this, &unk_3c);
 }
 

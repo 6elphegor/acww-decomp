@@ -102,7 +102,7 @@ BOOL Unk_0205276c::func_0205276c(u32 x, u32 y, u32 val) {
                 unk_00[i].lo = (u8)x;
                 unk_00[i].hi = (u8)y;
                 unk_05[i >> 1] &= ~(0xf << sh);
-                unk_05[i >> 1] |= (val <<= sh);
+                { u32 t = *(volatile u8 *)&unk_05[i >> 1]; t |= (val <<= sh); unk_05[i >> 1] = t; }
                 unk_04[i >> 3] |= 1 << (i & 7);
                 return TRUE;
             }
@@ -113,7 +113,7 @@ BOOL Unk_0205276c::func_0205276c(u32 x, u32 y, u32 val) {
                 if (x == unk_00[i].lo && y == unk_00[i].hi) {
                     u32 sh = (i & 1) << 2;
                     unk_05[i >> 1] &= ~(0xf << sh);
-                    unk_05[i >> 1] |= (val <<= sh);
+                    { u32 t = *(volatile u8 *)&unk_05[i >> 1]; t |= (val <<= sh); unk_05[i >> 1] = t; }
                     return TRUE;
                 }
             }

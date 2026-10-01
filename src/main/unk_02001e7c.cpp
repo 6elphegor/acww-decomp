@@ -265,7 +265,7 @@ void func_02002398(u32 n, u32 v) {
 s32 func_02002438(u8 *dst, u32 n, s32 a, s32 b, s32 c) {
     u8 *p = dst + (b - a) * 32;
     s32 off, len;
-    len = (c - b + 1) * 32;
+    len = (*(volatile s32 *)&c - b + 1) * 32;
     off = b * 32;
     func_021145cc(p, len);
     switch (n) {
@@ -347,7 +347,8 @@ s32 func_02002654(u32 p0, u32 p1, u32 p2) {
 s32 func_02002688(u32 p0, u32 p1, u32 p2, s32 p3, u8 e) {
     s32 out;
     u8 *buf = (u8 *)func_020641ec(p0, p1, -4, &out);
-    u8 *q = buf + p3 * 32;
+    u8 *q = buf;
+    q += p3 * 32;
     s32 r = func_02002580(q, p2, e, e, e);
     func_020e85fc(p1, buf);
     return r;

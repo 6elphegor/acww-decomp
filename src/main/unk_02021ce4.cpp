@@ -203,7 +203,7 @@ BOOL Unk_0201d2d0::func_0202203c() {
         Unk_0201d2d0_Vec *v = &unk_fc->unk_5c;
         s32 px = v->x >> 17;
         s32 pz = v->z >> 17;
-        if (func_0204ec14(r5, px, pz, 8) != 0) {
+        if (func_0204ec14(r5 ? r5 : r5, px, pz, 8) != 0) {
             r4 = TRUE;
         }
     }

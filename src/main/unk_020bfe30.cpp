@@ -170,7 +170,8 @@ void Unk_020bfe30::func_020bfe38() {
     if (e) {
         s32 d = -(e->unk_5c - e->unk_68);
         s32 m = data_020d0e20[unk_68];
-        Unk_020bfe38_Add(&p->x, (d * m) >> 12);
+        d = (d * m) >> 12;
+        p->x += d;
     }
     if (p->y > (unk_60 << 12) + 0x100000) {
         unk_04 = 3;
