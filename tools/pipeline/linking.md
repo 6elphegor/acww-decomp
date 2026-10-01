@@ -164,3 +164,10 @@ If an overlay's .data/.bss are two size-sorted runs back to back, it was two sou
 two `complete` units in delinks.txt with explicit section ranges per unit (unit A: its .text/.rodata/.init/
 .ctor/.data/.bss halves; unit B: the rest). The link runner installs only single-unit overlays; two-unit
 ones are installed by hand.
+Installing a multi-unit overlay (done for ov147, ov002): `git rm` the old units, write each unit file, and
+list each unit in delinks.txt as `complete` with its own section sub-ranges. dsd requires every unit's
+section range to end exactly on a symbol boundary (a symbol's size is implied by the next symbol), so add
+an unreferenced `data_ovNNN_<addr> kind:data(any)` symbol at each unit boundary that falls inside a
+symbol's implied range. A relocation from another module into the middle of a unit's object (e.g. main
+pointing into a bss array) must target the object's start plus `add:<offset>` in relocs.txt.
+Different units may use different `// mwcc-version:` lines.
