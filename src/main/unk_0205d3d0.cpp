@@ -166,7 +166,6 @@ void func_0205d834(u8 *p, s32 j, void *v);
 void *func_0205d868(u8 *p);
 
 s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
-    volatile s32 rem;
     void *buf = func_0205d868(p);
     s32 sz = func_0205ddc0();
     s32 r4 = func_020641b4(func_0205df38(a), buf, sz);
@@ -178,8 +177,8 @@ s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
         func_0205d7d8(p, 1, b);
         if (b < 0x9e) {
             buf = (u8 *)buf + r4;
-            rem = sz - r4;
-            res = func_020641b4(func_0205df38(b), buf, rem);
+            sz -= r4;
+            res = func_020641b4(func_0205df38(b), buf, sz);
             if (res != 0) {
                 func_0205d834(p, 1, buf);
                 if (Unk_0205da08_InRange(c)) {

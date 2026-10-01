@@ -400,38 +400,37 @@ Unk_0202fdf0::Unk_0202fdf0() {
 extern "C" s32 func_02030d58(s32 a);
 extern "C" s32 func_01ffcb2c(s32 x, s32 y);
 
+struct Unk_0202fe84_Range { s32 lo, hi; };
+struct Unk_0202fe84_Pad { s32 v[6]; Unk_0202fe84_Pad() {} ~Unk_0202fe84_Pad() {} };
+
 extern "C" BOOL func_0202fe84(s32 *a, s32 *b, s32 *c, s32 *d) {
     if (func_02030d58(0)) {
-        struct { volatile s32 minx, maxx, miny, maxy, x0; u32 pad[6]; } l;
-        s32 y, t;
-        l.minx = 0x10;
-        l.maxx = 0;
-        l.miny = l.minx;
-        y = l.maxy = l.maxx;
-        l.x0 = y;
-        do {
-            s32 x = l.x0;
-            do {
+        struct { Unk_0202fe84_Range xr, yr; } l;
+        Unk_0202fe84_Pad pad;
+        s32 y, x;
+        l.xr.lo = 0x10;
+        l.xr.hi = 0;
+        l.yr = l.xr;
+        for (y = 0; y < 0x20; y++) {
+            for (x = 0; x < 0x20; x++) {
                 if (func_01ffcb2c(x, y) != 0x15) {
-                    if (x < l.minx) {
-                        l.minx = x;
-                    } else if (x > l.maxx) {
-                        l.maxx = x;
+                    if (x < l.xr.lo) {
+                        l.xr.lo = x;
+                    } else if (x > l.xr.hi) {
+                        l.xr.hi = x;
                     }
-                    if (y < l.miny) {
-                        l.miny = y;
-                    } else if (y > l.maxy) {
-                        l.maxy = y;
+                    if (y < l.yr.lo) {
+                        l.yr.lo = y;
+                    } else if (y > l.yr.hi) {
+                        l.yr.hi = y;
                     }
                 }
-                x++;
-            } while (x < 0x20);
-            y++;
-        } while (y < 0x20);
-        s32 e = (l.maxy << 13) + 0x1000;
-        *a = l.minx << 13;
-        *b = (l.maxx << 13) + 0x2000;
-        *c = l.miny << 13;
+            }
+        }
+        s32 e = (l.yr.hi << 13) + 0x1000;
+        *a = l.xr.lo << 13;
+        *b = (l.xr.hi << 13) + 0x2000;
+        *c = l.yr.lo << 13;
         if (d) {
             *d = e + 0x1000;
         }

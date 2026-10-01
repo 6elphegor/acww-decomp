@@ -1,4 +1,5 @@
 #include "types.h"
+#pragma opt_loop_invariants off
 
 struct Unk_02043e94_G { u8 pad_00[0x64]; s32 unk_64; s32 unk_68; };
 struct Unk_02043f04_Pos { s32 x, z; };
@@ -444,7 +445,7 @@ extern "C" void func_0204452c(Unk_02044490_E *e, s32 m)
         volatile s32 z = 0;
         s32 i;
         for (i = 0; i < 3; i++) {
-            u16 v = e->unk_06[i];
+            u16 v = ((u16 *)((s32)e + 6))[i];
             func_0204989c(m, v >> 8, v & 0xff, w, z);
         }
     }
@@ -482,7 +483,7 @@ extern "C" void func_020445a4(Unk_02044490_E *e)
     if (e->unk_00_0) {
         s32 i;
         for (i = 0; i < 3; i++) {
-            u16 v = e->unk_06[i];
+            u16 v = ((u16 *)((s32)e + 6))[i];
             s32 px = v >> 8;
             s32 pz = v & 0xff;
             volatile u16 vv = e->unk_06[i];
@@ -523,21 +524,28 @@ extern "C" void func_02044650(Unk_02044490_E *e)
         h = *(u16 *)func_0204ebd8(data_021c47c4, xh, zh, x - (xh << 4), z - (zh << 4), 0);
     }
     Unk_02043f04_Pos p1;
+    s32 f7 = e->unk_01_7;
+    s32 f5 = e->unk_01_5;
+    s32 f3 = e->unk_01_3;
+    s32 t3 = e->unk_00_3;
     p1.x = x;
     p1.z = z;
-    func_0204558c(e->unk_00_1, &p1, e->unk_04, h, e->unk_00_3, e->unk_01_3, e->unk_01_5, 4, e->unk_01_7, -1);
+    func_0204558c(e->unk_00_1, &p1, e->unk_04, h, t3, f3, f5, 4, f7, -1);
     if (e->unk_00_0) {
         u16 w = e->unk_0c;
         s32 zero = 0;
         s32 i;
         for (i = 0; i < 3; i++) {
-            u16 v = e->unk_06[i];
+            u16 v = ((u16 *)((s32)e + 6))[i];
+            s32 px = v >> 8;
+            s32 pz = v & 0xff;
             volatile u16 vv = e->unk_06[i];
             if (vv != 0xffff) {
                 Unk_02043f04_Pos p2;
-                p2.x = v >> 8;
-                p2.z = v & 0xff;
-                func_0204558c(e->unk_00_1, &p2, w, 0xfff1, zero, zero, zero, (u8)i, e->unk_01_7, -1);
+                s32 g7 = e->unk_01_7;
+                p2.x = px;
+                p2.z = pz;
+                func_0204558c(e->unk_00_1, &p2, w, 0xfff1, zero, zero, zero, (u8)i, g7, -1);
             }
         }
     }
@@ -560,14 +568,14 @@ s32 func_0204568c(u32 a, Unk_02043f04_Pos *p, s32 b, s32 c, s32 d, s32 e, s32 f,
 s32 func_020449e8(Unk_02044490_E *e, Unk_02044774_S *s, s32 t);
 void func_020728d4(void *g);
 void func_020728a4(void *g, Unk_02044490_E *e, s32 mask);
-void func_02072824(void *g, s32 a, s32 b);
+s32 func_02072824(void *g, s32 a, s32 b);
 }
 
-extern "C" void func_02044774(Unk_02044774_S *src, s32 flag0, s32 t)
+struct Unk_02044774_PP { u16 v; };
+
+extern "C" void func_02044774(Unk_02044774_S *src, u8 flag, s32 t)
 {
-    volatile s32 flag = flag0;
-    volatile s32 mask = 6;
-    volatile u32 w32;
+    s32 mask = 6;
     Unk_02044490_E e;
     s32 i;
     e.unk_00_0 = 0;
@@ -578,11 +586,11 @@ extern "C" void func_02044774(Unk_02044774_S *src, s32 flag0, s32 t)
     e.unk_01_5 = src->unk_01_5;
     e.unk_01_7 = src->unk_01_7;
     e.unk_01_3 = src->unk_00_4;
-    *(volatile u16 *)&w32 = src->unk_02;
-    e.unk_02 = *(volatile u16 *)&w32;
+    Unk_02044774_PP pp = *(Unk_02044774_PP *)&src->unk_02;
+    *(Unk_02044774_PP *)&e.unk_02 = pp;
     e.unk_04 = src->unk_06;
     for (i = 0; i < 3; i++) {
-        e.unk_06[i] = 0xffff;
+        ((u16 *)&e + i)[3] = 0xffff;
     }
     s32 x = e.unk_02 >> 8;
     s32 z = e.unk_02 & 0xff;
@@ -618,10 +626,11 @@ extern "C" void func_02044774(Unk_02044774_S *src, s32 flag0, s32 t)
             break;
         }
         default: {
+            u32 h = src->unk_04;
             Unk_02043f04_Pos p;
             p.x = x;
             p.z = z;
-            func_0204568c((u8)t, &p, e.unk_04, src->unk_04, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
+            func_0204568c((u8)t, &p, e.unk_04, h, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
             if (func_020449e8(&e, src, t)) {
                 e.unk_00_0 = 1;
                 mask = 14;
@@ -630,13 +639,15 @@ extern "C" void func_02044774(Unk_02044774_S *src, s32 flag0, s32 t)
         }
         }
         if (func_02043e94(t)) {
-            data_021c4350[src->unk_00_2].unk_08 = 2;
+            Unk_02044490_R *r = &data_021c4350[src->unk_00_2];
+            r->unk_08 = 2;
         } else {
             func_02042104(&e);
         }
     } else {
         if (func_02043e94(t)) {
-            data_021c4350[src->unk_00_2].unk_08 = 3;
+            Unk_02044490_R *r = &data_021c4350[src->unk_00_2];
+            r->unk_08 = 3;
         }
     }
     Unk_02043e94_G *g = data_020cbb18;

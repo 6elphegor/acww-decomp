@@ -518,13 +518,19 @@ static inline void Unk_0209cdf8_Norm(Unk_0209cdf8_T *p, u16 *out) {
 extern "C" {
 
 s32 func_0209cd00(u8 *a, u8 *b) {
-    s32 sign = 1;
-    u32 d0;
-    u32 m0;
-    u32 y0;
-    u32 d1;
-    u32 m1;
-    u32 y1;
+    s32 sign;
+    s32 rem;
+    s32 ex;
+    s32 dy;
+    s32 d0;
+    s32 m0;
+    s32 d1;
+    s32 m1;
+    s32 y0;
+    s32 y1;
+    s32 days;
+    u16 (*tbl)[13] = (u16 (*)[13])data_020d06d0;
+    sign = 1;
     if (func_0209cdc0(a, b)) {
         d0 = b[0];
         m0 = b[1];
@@ -541,18 +547,15 @@ s32 func_0209cd00(u8 *a, u8 *b) {
         y1 = b[2];
         sign = -1;
     }
-    s32 dy = y1 - y0;
-    s32 rem = dy & 3;
+    dy = y1 - y0;
+    rem = dy & 3;
     y0 &= 3;
-    s32 ex = ((4 - y0) & 3) < rem ? 1 : 0;
-    s32 days = (dy >> 2) * 0x5b5;
-    days += rem * 0x16d;
-    days = ex + days;
+    ex = ((4 - y0) & 3) < rem ? 1 : 0;
+    days = ex + ((dy >> 2) * 0x5b5 + rem * 0x16d);
     days += d1 - 1;
-    u32 leap1 = (y1 & 3) == 0 ? 1 : 0;
-    days += *(u16 *)((u8 *)data_020d06d0 + leap1 * 0x1a + (m1 - 1) * 2);
-    days = days - (d0 - 1);
-    days -= *(u16 *)((u8 *)data_020d06d0 + (y0 == 0 ? 1 : 0) * 0x1a + (m0 - 1) * 2);
+    days += tbl[(y1 & 3) == 0 ? 1 : 0][m1 - 1];
+    days -= d0 - 1;
+    days -= tbl[y0 == 0 ? 1 : 0][m0 - 1];
     return days * sign;
 }
 

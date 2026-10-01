@@ -201,17 +201,14 @@ BOOL func_02070fbc(s32 a, s32 b) {
     void *p = func_0207bf60(data_021dfd8c, a);
     if (p != NULL) {
         if (func_020030b4(func_020805c4(p)) != 0) {
-            u32 r6;
-            s32 mode;
-            r6 = *func_0207f968(p);
-            mode = func_0209b354(func_0209a610(func_0207e268(p)));
+            u32 val = *func_0207f968(p);
+            s32 mode = func_0209b354(func_0209a610(func_0207e268(p)));
             u32 rnd = func_02063b8c(100);
-            s32 fa = 0;
-            s32 fb = 0;
-            s32 fc = 0;
-            u32 i;
-            u32 j;
+            s32 fa, fb, fc;
             u16 bufw[2];
+            fb = 0;
+            fa = 0;
+            fc = 0;
             if (mode == 3) {
                 if (rnd < 15) {
                     fa = 1;
@@ -232,12 +229,12 @@ BOOL func_02070fbc(s32 a, s32 b) {
             if (fc) {
                 *(volatile u16 *)&bufw[0] = 0xfff1;
                 BOOL z = FALSE;
-                for (i = 0; i < 6; i++) {
+                for (s32 i = 0; (u32)i < 6; i++) {
                     func_020ad8e8(data_021ed2d4, i, &bufw[0]);
                     BOOL in1 = z;
                     u32 v = *(volatile u16 *)&bufw[0];
                     u32 w = *(volatile u16 *)&bufw[0];
-                    if (w >= 0x1380 && w <= 0x139f) {
+                    if (w >= 0x1380 && v <= 0x139f) {
                         in1 = TRUE;
                     }
                     if (in1) break;
@@ -247,7 +244,7 @@ BOOL func_02070fbc(s32 a, s32 b) {
                     BOOL in1 = FALSE;
                     u32 v = *(volatile u16 *)&bufw[0];
                     u32 w = *(volatile u16 *)&bufw[0];
-                    if (w >= 0x1380 && w <= 0x139f) {
+                    if (w >= 0x1380 && v <= 0x139f) {
                         in1 = TRUE;
                     }
                     if (in1 || (v >= 0x3e24 && v <= 0x3ea3)) {
@@ -256,42 +253,35 @@ BOOL func_02070fbc(s32 a, s32 b) {
                 }
             }
             if (fa) {
+                void *tbl = data_021e6e4c;
                 s32 cnt = 0;
-                j = 0;
-                do {
-                    s32 x = func_02071ee8(func_02071e04(func_02071b00(data_021e6e4c, (u8)j)));
+                for (u32 j = 0; j < 8; j++) {
+                    s32 x = func_02071ee8(func_02071e04(func_02071b00(tbl, (u8)j)));
                     if (fb) {
-                        if (x == r6) cnt++;
+                        if (x == val) cnt++;
                     } else {
-                        if (x != r6) cnt++;
+                        if (x != val) cnt++;
                     }
-                    j++;
-                } while (j < 8);
+                }
                 if (cnt > 0) {
                     s32 pick = func_02063b8c(cnt);
                     s32 k = 0;
-                    j = 0;
-                    goto test2;
-                loop2:
-                    {
-                        s32 x = func_02071ee8(func_02071e04(func_02071b00(data_021e6e4c, (u8)j)));
+                    s32 j;
+                    for (j = 0; (u32)j < 8; j++) {
+                        s32 x = func_02071ee8(func_02071e04(func_02071b00(tbl, (u8)j)));
                         if (fb) {
-                            if (x == r6) {
-                                if (pick == k) goto done;
+                            if (x == val) {
+                                if (pick == k) break;
                                 k++;
                             }
                         } else {
-                            if (x != r6) {
-                                if (pick == k) goto done;
+                            if (x != val) {
+                                if (pick == k) break;
                                 k++;
                             }
                         }
                     }
-                    j++;
-                test2:
-                    if (j < 8) goto loop2;
-                done:
-                    return func_02070e4c(4, j & 7, 6, (u8)a, b);
+                    return func_02070e4c(4, (u8)(j & 7), 6, (u8)a, b);
                 }
             }
         }

@@ -111,6 +111,7 @@ struct Unk_02086c04_Pair {
 };
 
 BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
+    s32 dir;
     Unk_02086c04_Map *map = (Unk_02086c04_Map *)data_021c47c4;
     if (map == 0) {
         func_02086e98();
@@ -119,13 +120,12 @@ BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
     s32 f1, f2, w, h;
     Unk_02086c04_Pair *sel = 0;
     s32 sx = 0, sy = 0;
-    s32 *dims = (s32 *)map + 3;
-    w = map->w;
+    s32 *dims = &map->w;
+    w = dims[0];
     h = dims[1];
     Unk_02086c04_Pair p1, p2;
     u16 buf1[4], buf2[4];
     Unk_02086ec4_Vec3 v;
-    s32 dir;
     s32 a, b, c, d;
     s32 y;
     p1.a = 0;
@@ -432,12 +432,12 @@ void Unk_02086f84::func_02086fc4(Unk_02086ec4_Vec3 *v) {
 }
 
 // ---- 0x0208709c: walkability test
-static inline BOOL Unk_0208709c_Chk(u16 *p, BOOL k) {
-    BOOL f9 = k;
-    BOOL f8 = f9, f7 = f9, f6 = f9, f5 = f9, f4 = f9, f3 = f9, f2 = f9;
+static inline BOOL Unk_0208709c_Chk(u16 *p) {
+    BOOL f9 = TRUE;
+    BOOL f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE;
     BOOL f1 = FALSE;
     u32 v = *p;
-    if (v >= 0x26 && v <= 0x2a) f1 = f9;
+    if (v >= 0x26 && v <= 0x2a) f1 = TRUE;
     if (f1 == 0) {
         if (!(v >= 0x5d && v <= 0x61)) f2 = FALSE;
     }
@@ -465,45 +465,38 @@ static inline BOOL Unk_0208709c_Chk(u16 *p, BOOL k) {
     return f9;
 }
 
+static inline u16 *Unk_0208709c_Cell(void *map, s32 x, s32 y) {
+    s32 hx = x >> 4;
+    s32 hy = y >> 4;
+    s32 lx = x - (hx << 4);
+    s32 ly = y - (hy << 4);
+    return func_0204ebd8(map, hx, hy, lx, ly, 0);
+}
+
+static inline BOOL Unk_0208709c_In(u16 *p) {
+    BOOL f = FALSE;
+    if (*p >= 0x5000 && *p <= 0x5021) f = TRUE;
+    return f;
+}
+
+#pragma opt_loop_invariants off
 extern "C" BOOL func_0208709c(s32 x, s32 y, void *map) {
-    volatile s32 k1, k2, k3;
-    s32 i;
-    s32 hx, lx;
     if (map == 0) goto fail;
     if (func_02077f68() == 0) goto fail;
-    k1 = 1;
-    k2 = 1;
-    k3 = 1;
-    i = 1;
-    goto test;
-loop:
-    {
+    for (s32 i = 1; i <= 2; i++) {
         s32 ty = y + i;
-        u16 *p;
-        BOOL f;
-        hx = x >> 4;
-        lx = x - (hx << 4);
-        p = func_0204ebd8(map, hx, ty >> 4, lx, ty - ((ty >> 4) << 4), 0);
-        if (p == 0) return FALSE;
-        f = FALSE;
-        if (*p >= 0x5000 && *p <= 0x5021) f = k1;
-        if (f != 0) return FALSE;
-        if (func_0204bd14(p) != 0) return FALSE;
-        if (func_0204b08c(p) == 0) {
-            if (Unk_0208709c_Chk(p, k2)) return FALSE;
+        s32 hx = x >> 4;
+        s32 hy = ty >> 4;
+        s32 lx = x - (hx << 4);
+        u16 *p = func_0204ebd8(map, hx, hy, lx, ty - (hy << 4), 0);
+        if (p == 0 || Unk_0208709c_In(p) || func_0204bd14(p) != 0 || (func_0204b08c(p) == 0 && Unk_0208709c_Chk(p))) {
+            return FALSE;
         }
-        {
-            s32 ny = y - i;
-            p = func_0204ebd8(map, hx, ny >> 4, lx, ny - ((ny >> 4) << 4), 0);
-            if (p == 0) return FALSE;
-            f = FALSE;
-            if (*p >= 0x5000 && *p <= 0x5021) f = k3;
-            if (f != 0) return FALSE;
+        p = Unk_0208709c_Cell(map, x, y - i);
+        if (p == 0 || Unk_0208709c_In(p)) {
+            return FALSE;
         }
-        i++;
     }
-test:
-    if (i <= 2) goto loop;
     return TRUE;
 fail:
     return FALSE;

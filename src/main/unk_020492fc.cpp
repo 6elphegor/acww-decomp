@@ -554,7 +554,7 @@ void func_02049790(void *a, u32 v, s32 x, s32 y) {
 void func_020497f8(void *a0, void *a1, s32 a2, s32 a3, s32 a4, s32 a5, u16 a6, s32 a7) {
     u16 t = 0xfff1;
     t = a6;
-    s32 l5 = a5, l4 = a4;
+    u32 l5 = a5, l4 = a4;
     func_0204eb5c(a1, &t, a2, a3, l4, l5, 0);
     if (a7) {
         func_0204e99c(a1, a2, a3, l4, l5);

@@ -41,7 +41,7 @@ void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void func_0204fcfc(void *);
 void func_0209c15c(void *);
 s32 func_0204fcb8(void);
-s32 func_020565e8(void *);
+s32 func_020565e8(void *, s32);
 void func_0204f674(Unk_020db984_Ent *, Unk_020db984_Vec3 *);
 void func_020547cc(void *, void *);
 extern void *data_020cbb18;
@@ -182,7 +182,7 @@ BOOL func_0204f364(s32 idx, s32 unused) {
         Unk_020db984_Ent *e = &data_021c488c->unk_50[idx];
         s32 t = e->unk_40;
         if (t < 0 || t >= 0x38) return FALSE;
-        if (func_020565e8((u8 *)e + 0x134)) r = TRUE;
+        if (func_020565e8((u8 *)e + 0x134, unused)) r = TRUE;
     }
     return r;
 }

@@ -217,10 +217,14 @@ extern "C" void func_0207a038(u8 *base) {
     if (r != -1) {
         res = (u8)r;
     } else {
-        u8 *p2 = base;
-        u8 m2 = 0;
-        s32 c2 = 0;
-        s32 j = 0;
+        u8 *p2;
+        u8 m2;
+        s32 c2;
+        s32 j;
+        m2 = 0;
+        c2 = 0;
+        p2 = base;
+        j = 0;
         for (; j < 8; j++) {
             if (((Unk_02002fc8 *)func_020805c4(p2))->func_020030b4()) {
                 if (func_0207e1f0(p2) == 3) {

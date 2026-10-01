@@ -433,32 +433,36 @@ static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
 extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
     s32 i1, i2, i3, i4;
     char buf[0x20];
+    BOOL res;
     if (Unk_0203c764_InRange(p, 0x12a8, 0x12af)) {
         if (*p >= 0x12a8 && *p <= 0x12af) i1 = *p - 0x12a8;
         else i1 = -1;
+        res = FALSE;
         if (i1 != -1) {
-            if (q == 0) func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i1));
-            else func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i1));
+            if (q == 0) res = func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i1));
+            else res = func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
         if (*p >= 0x1429 && *p <= 0x1430) i2 = *p - 0x1429;
         else i2 = -1;
+        res = FALSE;
         if (i2 != -1) {
-            if (q == 0) func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i2));
-            else func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i2));
+            if (q == 0) res = func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i2));
+            else res = func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
         if (*p >= 0x13a0 && *p <= 0x13a7) i3 = *p - 0x13a0;
         else i3 = -1;
+        res = FALSE;
         if (i3 != -1) {
-            if (q == 0) func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i3));
-            else func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i3));
+            if (q == 0) res = func_0203c6f8(self, func_02071b00(data_021e6e4c, (u8)i3));
+            else res = func_0203c6f8(self, func_02071c88(func_020986d4(q), (u8)i3));
         }
     } else {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
         else i4 = -1;
         if (i4 != -1) {
-            func_020639e8(buf, (const char *)data_020d9418, i4 >> 4);
+            func_020639e8(buf, (const char *)data_020d9418, i4 >> 4, i4);
             if (func_020641b4(buf, self, -1)) return TRUE;
             return FALSE;
         } else {
@@ -466,4 +470,5 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
             return func_0203c764(self, &def.unk_00, q);
         }
     }
+    return res;
 }
