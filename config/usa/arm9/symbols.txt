@@ -5903,7 +5903,9 @@ _ZN12Unk_020ddf4413func_0206cdccEtj kind:function(thumb,size=0x3c) addr:0x0206cd
 _ZN12Unk_020ddf448vfunc_08Ev kind:function(thumb,size=0x4) addr:0x0206ce08
 _ZN12Unk_020ddf44D0Ev kind:function(thumb,size=0x24) addr:0x0206ce0c
 _ZN12Unk_020ddf44D1Ev kind:function(thumb,size=0x20) addr:0x0206ce30
+_ZN12Unk_020ddf44D2Ev kind:label(thumb) addr:0x0206ce30
 _ZN12Unk_020ddf44C1Ev kind:function(thumb,size=0x40) addr:0x0206ce50
+_ZN12Unk_020ddf44C2Ev kind:label(thumb) addr:0x0206ce50
 _ZN12Unk_020ddf5c8vfunc_0cEv kind:function(thumb,size=0x4) addr:0x0206ce90
 _ZN12Unk_020ddf5c8vfunc_08Ev kind:function(thumb,size=0x4) addr:0x0206ce94
 _ZN12Unk_0206ce9813func_0206ce98Ev kind:function(thumb,size=0x38) addr:0x0206ce98
@@ -15342,8 +15344,8 @@ data_020dd334 kind:data(any) addr:0x020dd334
 data_020dd338 kind:data(any) addr:0x020dd338
 data_020dd344 kind:data(any) addr:0x020dd344
 data_020dd35c kind:data(any) addr:0x020dd35c
-data_020dd374 kind:data(any) addr:0x020dd374
-data_020dd38c kind:data(any) addr:0x020dd38c
+_ZTV12Unk_020dd374 kind:data(any) addr:0x020dd36c
+_ZTV12Unk_020dd38c kind:data(any) addr:0x020dd384
 data_020dd39c kind:data(any) addr:0x020dd39c
 data_020dd3b4 kind:data(any) addr:0x020dd3b4
 data_020dd3b8 kind:data(any) addr:0x020dd3b8
