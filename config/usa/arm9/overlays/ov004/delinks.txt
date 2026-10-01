@@ -95,13 +95,15 @@ src/ov004/unk_02213d18.cpp:
     .text       start:0x02213d18 end:0x0221465c
 
 src/ov004/unk_0221465c.cpp:
-    .text       start:0x0221465c end:0x02215098
+    .text       start:0x0221465c end:0x02214948
 
-src/ov004/unk_02215098.cpp:
-    .text       start:0x02215098 end:0x022159a4
-
-src/ov004/unk_022159a4.cpp:
-    .text       start:0x022159a4 end:0x02215f04
+src/ov004/unk_ov004_02214948.cpp:
+    complete
+    .text       start:0x02214948 end:0x02215f04
+    .data       start:0x0224be9c end:0x0224c100
+    .bss        start:0x022503bc end:0x0225057c
+    .init       start:0x02246be8 end:0x02246c44
+    .ctor       start:0x0224852c end:0x02248530
 
 src/ov004/unk_ov004_02215f04.cpp:
     complete
