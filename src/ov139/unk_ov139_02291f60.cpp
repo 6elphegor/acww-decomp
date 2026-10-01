@@ -58,7 +58,7 @@ public:
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    /* 0x0e */ u8 unk_0e[14];
+    /* 0x0e */ u8 unk_0e[10];
 };
 
 class Unk_020dd38c : public Unk_020e2a78 {
@@ -67,6 +67,8 @@ public:
     virtual ~Unk_020dd38c();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
+
+    /* 0x14 */ u32 unk_14;
 };
 
 // String buffer wrapping a text renderer at +0x3c (size 0x40)
@@ -136,13 +138,6 @@ public:
 
 extern "C" {
 extern u32 data_021f482c;
-extern u8 data_ov139_02292820[];
-extern u8 data_ov139_02292834[];
-extern u8 data_ov139_02292848[];
-extern u8 data_ov139_0229285c[];
-extern u8 data_ov139_0229286c[];
-extern u8 data_ov139_0229287c[];
-extern u32 data_ov139_02292680[];
 
 s32 func_0200261c(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
 s32 func_020026c4(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
@@ -154,7 +149,24 @@ BOOL func_020641b4(void *a, void *b, s32 c);
 void func_02115e48(void *dst, void *src, u32 n);
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
+extern "C" u32 data_ov139_022925c0[8];
+extern "C" u32 data_ov139_022925e0[8];
+extern "C" u32 data_ov139_02292600[8];
+extern "C" u32 data_ov139_02292620[8];
+extern "C" u32 data_ov139_02292640[8];
+extern "C" u32 data_ov139_02292660[8];
+extern "C" u32 data_ov139_022926a0[12];
+extern "C" u32 data_ov139_022926d0[84];
+
+
+extern "C" u32 data_ov139_02292680[8] = {(u32)data_ov139_022926d0, (u32)data_ov139_022926a0, (u32)data_ov139_022925c0, (u32)data_ov139_022925e0, (u32)data_ov139_02292620, (u32)data_ov139_02292640, (u32)data_ov139_02292600, (u32)data_ov139_02292660};
+extern "C" u32 data_ov139_022925c0[8] = {0x81bf4047, 0x00008893, 0x41df0047, 0x00008897, 0x81d50040, 0x00008882, 0x81b90040, 0xffff8880};
+extern "C" u32 data_ov139_022925e0[8] = {0x80114047, 0x0000888d, 0x40310047, 0x00008891, 0x80270040, 0x00008882, 0x800b0040, 0xffff8880};
+extern "C" u32 data_ov139_02292600[8] = {0x81e44048, 0x00008893, 0x40040048, 0x00008897, 0x81fa0041, 0x00008882, 0x81de0041, 0xffff8880};
+extern "C" u32 data_ov139_02292620[8] = {0x81e84023, 0x0000a08d, 0x40080023, 0x0000a091, 0x81fe001c, 0x0000a082, 0x81e2001c, 0xffffa080};
+extern "C" u32 data_ov139_02292640[8] = {0x81a34048, 0x00008899, 0x41c30048, 0x0000889d, 0x81b90041, 0x00008882, 0x819d0041, 0xffff8880};
+extern "C" u32 data_ov139_022926d0[84] = {0x81a800a8, 0x0000b17b, 0x41c880a8, 0x0000b17f, 0x41a840c8, 0x0000b1fb, 0x01c800c8, 0x0000b1ff, 0x4030403e, 0x000048e6, 0x4010403e, 0x000048e6, 0x41e8403e, 0x000048e6, 0x41c8403e, 0x000048e6, 0x41a8403e, 0x000048e6, 0x4030402e, 0x000048e6, 0x4010402e, 0x000048e6, 0x41e8402e, 0x000048e6, 0x41c8402e, 0x000048e6, 0x41a8402e, 0x000048e6, 0x4030401e, 0x000048e6, 0x4010401e, 0x000048e6, 0x41e8401e, 0x000048e6, 0x41c8401e, 0x000048e6, 0x41a8401e, 0x000048e6, 0x4030400e, 0x000048e6, 0x4010400e, 0x000048e6, 0x41e8400e, 0x000048e6, 0x41c8400e, 0x000048e6, 0x41a8400e, 0x000048e6, 0x403040fe, 0x000048e6, 0x401040fe, 0x000048e6, 0x41e840fe, 0x000048e6, 0x41c840fe, 0x000048e6, 0x41a840fe, 0x000048e6, 0x403040ee, 0x000048e6, 0x401040ee, 0x000048e6, 0x41e840ee, 0x000048e6, 0x41c840ee, 0x000048e6, 0x41a840ee, 0x000048e6, 0x41bc40d6, 0x000058cd, 0x01dc40d6, 0x000058d1, 0x401440d6, 0x000058ed, 0x003440d6, 0x000058f1, 0x902840d5, 0x00005888, 0x801040d5, 0x00005888, 0x91d040d5, 0x00005888, 0x81b840d5, 0xffff5888};
+extern "C" u32 data_ov139_022926a0[12] = {0x403040ee, 0x000058c6, 0x41a400df, 0x00005886, 0x401040ee, 0x000058c6, 0x41e840ee, 0x000058c6, 0x41c840ee, 0x000058c6, 0x41a840ee, 0xffff58c6};
 
 class Unk_ov139_02291f60 {
 public:
@@ -192,86 +204,76 @@ public:
     /* 0x623 */ u8 unk_623;
 };
 
-void Unk_ov139_02291f60::func_ov139_02291f60(u32 m) { unk_620 &= ~m; }
+Unk_ov139_02291f60::Unk_ov139_02291f60() {}
 
-void Unk_ov139_02291f60::func_ov139_02291f70(u32 m) { unk_620 |= m; }
+Unk_ov139_02291f60::~Unk_ov139_02291f60() {}
 
-BOOL Unk_ov139_02291f60::func_ov139_02291f80(u32 m) {
-    if (unk_620 & m) {
-        return TRUE;
-    }
-    return FALSE;
+void Unk_ov139_02291f60::func_ov139_02292510(u8 id, u8 v) {
+    unk_622 = id;
+    unk_620 = 0;
+    unk_00.func_ov002_022039d8();
+    unk_00.func_ov002_022039f8(v, 0x90, 0x18);
+    unk_00.func_02089ae8();
 }
 
-u32 Unk_ov139_02291f60::func_ov139_02291f98(s32 i) { return data_ov139_02292680[i]; }
-
-void Unk_ov139_02291f60::func_ov139_02291fa4(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = func_ov139_02292104();
-    if (str == NULL) {
-        t->func_020a7c3c();
-    } else {
-        func_0206f994(t, str, 8);
-    }
-    u32 a = i * 16 + 0x1d2;
-    u8 x = 0xf;
-    u8 y = 0xe;
-    if (pal != 0xff) {
-        x = pal;
-        y = 0xf;
-    }
-    t->func_0206fb9c(unk_622, a, 8, x, y, 0);
-    t->func_0206fab4(1, 0);
+void Unk_ov139_02291f60::func_ov139_022924f4() {
+    func_ov139_0229212c();
+    unk_5bc.func_020b87d0();
 }
 
-void Unk_ov139_02291f60::func_ov139_0229200c(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = func_ov139_02292104();
-    static Unk_020dd374 sA;
-    static Unk_020dd38c sB;
-    if (str == NULL) {
-        t->func_020a7c3c();
-    } else {
-        func_020a78a4(&sA, str, 8);
-        sB.func_020a7aa0(&sA, 0, 0);
-        func_020b3544(0, &sB);
-        func_0206f9fc(t, 0x66);
-    }
-    u32 a = i * 0x14 + 0x11e;
-    u8 x = 0xf;
-    u8 y = 0xe;
-    if (pal != 0xff) {
-        x = pal;
-        y = 0xf;
-    }
-    t->func_0206fb9c(unk_622, a, 0xa, x, y, 0);
-    t->func_0206fab4(1, 0);
+void Unk_ov139_02291f60::func_ov139_022924d8() {
+    func_ov139_0229212c();
+    unk_5bc.func_020b87d0();
 }
 
-Unk_020e0488 *Unk_ov139_02291f60::func_ov139_02292104() {
-    if (unk_623 >= 0x14) {
-        return &unk_bc[19];
+void Unk_ov139_02291f60::func_ov139_02292498() {
+    if (func_ov139_02291f80(1)) {
+        if (unk_5bc.func_020b8670((u32)unk_600, unk_622, 7)) {
+            func_ov139_02291f60(1);
+        }
     }
-    unk_623++;
-    return &unk_bc[unk_623 - 1];
 }
 
-void Unk_ov139_02291f60::func_ov139_0229212c() {
+void Unk_ov139_02291f60::func_ov139_02292480(s32 a, s32 b) {
+    unk_00.func_02089ad8(a, b);
+    unk_00.vfunc_08();
+}
+
+void Unk_ov139_02291f60::func_ov139_02292410() {
+    u32 h = data_021f482c;
+    func_0200261c((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
+    func_020026c4((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
+    func_020641b4((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
+    func_02115e48(unk_5e0, unk_600, 0x20);
+}
+
+void Unk_ov139_02291f60::func_ov139_022923dc() {
     s32 i;
-    unk_623 = 0;
-    for (i = 0; i < 0x14; i++) {
-        unk_bc[i].func_0206fc44();
+    for (i = 0; i < 6; i++) {
+        func_ov139_0229200c(i, NULL, 0xe);
+        func_ov139_02291fa4(i, NULL, 0xe);
     }
 }
 
-void Unk_ov139_02291f60::func_ov139_02292154(s32 i) {
-    u8 t = 0xe - i;
-    func_ov139_0229200c(i, NULL, t);
-    func_ov139_02291fa4(i, NULL, t);
+void Unk_ov139_02291f60::func_ov139_0229237c() {
+    u32 h = data_021f482c;
+    func_0200261c((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
+    func_0200261c((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
+    func_020026c4((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
-void Unk_ov139_02291f60::func_ov139_0229217c(s32 i, u8 *str) {
-    u8 t = 0xe - i;
-    func_ov139_0229200c(i, str, t);
-    func_ov139_02291fa4(i, str + 8, t);
+void Unk_ov139_02291f60::func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e) {
+    u16 c1 = unk_5e0[15];
+    u8 r = c1 & 0x1f;
+    u8 g = (c1 & 0x3e0) >> 5;
+    u8 b = (c1 & 0x7c00) >> 10;
+    s32 d = n - x;
+    u16 c2 = unk_5e0[e];
+    r = ((u8)(c2 & 0x1f) * x + r * d) / n;
+    g = ((u8)((c2 & 0x3e0) >> 5) * x + g * d) / n;
+    b = ((u8)((c2 & 0x7c00) >> 10) * x + b * d) / n;
+    unk_600[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
+    func_ov139_02291f70(1);
 }
 
 void Unk_ov139_02291f60::func_ov139_022921ac() {
@@ -298,74 +300,99 @@ void Unk_ov139_02291f60::func_ov139_022921ac() {
     t->func_0206fab4(1, 0);
 }
 
-void Unk_ov139_02291f60::func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e) {
-    u16 c1 = unk_5e0[15];
-    u8 r = c1 & 0x1f;
-    u8 g = (c1 & 0x3e0) >> 5;
-    u8 b = (c1 & 0x7c00) >> 10;
-    s32 d = n - x;
-    u16 c2 = unk_5e0[e];
-    r = ((u8)(c2 & 0x1f) * x + r * d) / n;
-    g = ((u8)((c2 & 0x3e0) >> 5) * x + g * d) / n;
-    b = ((u8)((c2 & 0x7c00) >> 10) * x + b * d) / n;
-    unk_600[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
-    func_ov139_02291f70(1);
+void Unk_ov139_02291f60::func_ov139_0229217c(s32 i, u8 *str) {
+    u8 t = 0xe - i;
+    func_ov139_0229200c(i, str, t);
+    func_ov139_02291fa4(i, str + 8, t);
 }
 
-void Unk_ov139_02291f60::func_ov139_0229237c() {
-    u32 h = data_021f482c;
-    func_0200261c((u32)data_ov139_02292820, h, 8, 0x80, 0x80, 0xff);
-    func_0200261c((u32)data_ov139_02292834, h, 8, 0x160, 0x160, 0x1ff);
-    func_020026c4((u32)data_ov139_02292848, h, 8, 4, 4, 0xd);
+void Unk_ov139_02291f60::func_ov139_02292154(s32 i) {
+    u8 t = 0xe - i;
+    func_ov139_0229200c(i, NULL, t);
+    func_ov139_02291fa4(i, NULL, t);
 }
 
-void Unk_ov139_02291f60::func_ov139_022923dc() {
+void Unk_ov139_02291f60::func_ov139_0229212c() {
     s32 i;
-    for (i = 0; i < 6; i++) {
-        func_ov139_0229200c(i, NULL, 0xe);
-        func_ov139_02291fa4(i, NULL, 0xe);
+    unk_623 = 0;
+    for (i = 0; i < 0x14; i++) {
+        unk_bc[i].func_0206fc44();
     }
 }
 
-void Unk_ov139_02291f60::func_ov139_02292410() {
-    u32 h = data_021f482c;
-    func_0200261c((u32)data_ov139_0229285c, h, unk_622, 0x11, 0x11, 0x36);
-    func_020026c4((u32)data_ov139_0229286c, h, unk_622, 1, 1, 8);
-    func_020641b4(data_ov139_0229287c, unk_5e0, 0x20);
-    func_02115e48(unk_5e0, unk_600, 0x20);
-}
-
-void Unk_ov139_02291f60::func_ov139_02292480(s32 a, s32 b) {
-    unk_00.func_02089ad8(a, b);
-    unk_00.vfunc_08();
-}
-
-void Unk_ov139_02291f60::func_ov139_02292498() {
-    if (func_ov139_02291f80(1)) {
-        if (unk_5bc.func_020b8670((u32)unk_600, unk_622, 7)) {
-            func_ov139_02291f60(1);
-        }
+Unk_020e0488 *Unk_ov139_02291f60::func_ov139_02292104() {
+    if (unk_623 >= 0x14) {
+        return &unk_bc[19];
     }
+    unk_623++;
+    return &unk_bc[unk_623 - 1];
 }
 
-void Unk_ov139_02291f60::func_ov139_022924d8() {
-    func_ov139_0229212c();
-    unk_5bc.func_020b87d0();
+
+
+
+void Unk_ov139_02291f60::func_ov139_0229200c(s32 i, u8 *str, u8 pal) {
+    Unk_020e0488 *t = func_ov139_02292104();
+    static Unk_020dd374 sA;
+    static Unk_020dd38c sB;
+    if (str == NULL) {
+        t->func_020a7c3c();
+    } else {
+        func_020a78a4(&sA, str, 8);
+        sB.func_020a7aa0(&sA, 0, 0);
+        func_020b3544(0, &sB);
+        func_0206f9fc(t, 0x66);
+    }
+    u32 a = i * 0x14 + 0x11e;
+    u8 x = 0xf;
+    u8 y = 0xe;
+    if (pal != 0xff) {
+        x = pal;
+        y = 0xf;
+    }
+    t->func_0206fb9c(unk_622, a, 0xa, x, y, 0);
+    t->func_0206fab4(1, 0);
 }
 
-void Unk_ov139_02291f60::func_ov139_022924f4() {
-    func_ov139_0229212c();
-    unk_5bc.func_020b87d0();
+
+
+extern "C" u32 data_ov139_02292660[8] = {0x80254048, 0x0000888d, 0x40450048, 0x00008891, 0x803b0041, 0x00008882, 0x801f0041, 0xffff8880};
+
+void Unk_ov139_02291f60::func_ov139_02291fa4(s32 i, u8 *str, u8 pal) {
+    Unk_020e0488 *t = func_ov139_02292104();
+    if (str == NULL) {
+        t->func_020a7c3c();
+    } else {
+        func_0206f994(t, str, 8);
+    }
+    u32 a = i * 16 + 0x1d2;
+    u8 x = 0xf;
+    u8 y = 0xe;
+    if (pal != 0xff) {
+        x = pal;
+        y = 0xf;
+    }
+    t->func_0206fb9c(unk_622, a, 8, x, y, 0);
+    t->func_0206fab4(1, 0);
 }
 
-void Unk_ov139_02291f60::func_ov139_02292510(u8 id, u8 v) {
-    unk_622 = id;
-    unk_620 = 0;
-    unk_00.func_ov002_022039d8();
-    unk_00.func_ov002_022039f8(v, 0x90, 0x18);
-    unk_00.func_02089ae8();
+u32 Unk_ov139_02291f60::func_ov139_02291f98(s32 i) { return data_ov139_02292680[i]; }
+
+BOOL Unk_ov139_02291f60::func_ov139_02291f80(u32 m) {
+    if (unk_620 & m) {
+        return TRUE;
+    }
+    return FALSE;
 }
 
-Unk_ov139_02291f60::~Unk_ov139_02291f60() {}
+void Unk_ov139_02291f60::func_ov139_02291f70(u32 m) { unk_620 |= m; }
 
-Unk_ov139_02291f60::Unk_ov139_02291f60() {}
+void Unk_ov139_02291f60::func_ov139_02291f60(u32 m) { unk_620 &= ~m; }
+
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+

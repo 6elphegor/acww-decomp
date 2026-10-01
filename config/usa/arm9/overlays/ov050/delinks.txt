@@ -6,25 +6,10 @@
     .bss        start:0x0225e860 end:0x0225e9e0 kind:bss align:32
 
 src/ov050/unk_ov050_02258de0.cpp:
-    .text       start:0x02258de0 end:0x02259718
-
-src/ov050/unk_0225d51c.cpp:
-    .text       start:0x0225d51c end:0x0225da28
-
-src/ov050/unk_0225afd4.cpp:
-    .text       start:0x0225afd4 end:0x0225b908
-
-src/ov050/unk_02259718.cpp:
-    .text       start:0x02259718 end:0x0225a1e8
-
-src/ov050/unk_0225cba0.cpp:
-    .text       start:0x0225cba0 end:0x0225d51c
-
-src/ov050/unk_0225b908.cpp:
-    .text       start:0x0225b908 end:0x0225c294
-
-src/ov050/unk_0225a1e8.cpp:
-    .text       start:0x0225a1e8 end:0x0225afd4
-
-src/ov050/unk_0225c294.cpp:
-    .text       start:0x0225c294 end:0x0225cba0
+    complete
+    .text       start:0x02258de0 end:0x0225da28
+    .rodata     start:0x0225da28 end:0x0225dba4
+    .init       start:0x0225dba4 end:0x0225ddcc
+    .ctor       start:0x0225ddcc end:0x0225ddd0
+    .data       start:0x0225dde0 end:0x0225e860
+    .bss        start:0x0225e860 end:0x0225e9e0
