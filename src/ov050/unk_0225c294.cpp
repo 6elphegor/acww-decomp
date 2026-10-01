@@ -10,14 +10,14 @@ struct Unk_ov050_0225c9dc_Vec {
 extern "C" {
 
 extern Unk_ov050_0225c9dc_Vec data_ov050_0225da34;
-extern u32 data_021ed29c;
+extern u8 data_021ed29c[];
 extern u32 data_0213a740[];
 BOOL func_0206ed18();
 u16 *func_0206eb9c();
 s32 func_0204be70(u16 *p);
 BOOL func_0209750c();
 BOOL func_0209cef4();
-s32 func_0208653c(u32 v);
+s32 func_0208653c(void *p);
 void func_02015958(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02067a84(void *owner, void *buf, char *name);
 extern char data_ov050_0225e1c4[];
@@ -623,11 +623,7 @@ void Unk_ov050_0225e4b4::func_ov050_0225c294() {
                 } else {
                     idx = neg;
                 }
-                if ((u32)idx < 0x14) {
-                    l.pick = 0x3934 + idx * 4;
-                } else {
-                    l.pick = 0x3934;
-                }
+                l.pick = ((u32)idx < 0x14) ? 0x3934 + idx * 4 : 0x3934;
                 unk_c0 += func_0204be70(&l.pick) / 4;
             } else if (func_0209750c()) {
                 BOOL r2 = zb;

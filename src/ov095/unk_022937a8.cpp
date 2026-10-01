@@ -201,7 +201,8 @@ void func_ov095_02293a78(Unk_ov095_02292360 *s, s32 x, s32 y)
 {
     s32 i;
     s32 t10, t14;
-    volatile s32 z0 = 0, z1 = 0, z2 = 0;
+    s32 z[3];
+    z[0] = 0; z[1] = 0; z[2] = 0;
     for (i = 0; i < s->unk_04; i++) {
         t10 = -1;
         t14 = y;
@@ -209,9 +210,9 @@ void func_ov095_02293a78(Unk_ov095_02292360 *s, s32 x, s32 y)
             t10 = 0xb;
             t14 = y + 2;
         }
-        func_02088730(1, &data_ov095_02295e48[i], x, t14, -1, 2, z0);
-        func_02088730(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, z1);
-        func_02088730(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, z2);
+        func_02088730(1, &data_ov095_02295e48[i], x, t14, -1, 2, z[0]);
+        func_02088730(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, z[1]);
+        func_02088730(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, z[2]);
     }
 }
 
@@ -408,7 +409,7 @@ BOOL func_ov095_02293f94(Unk_ov095_02292360 *s, u8 *buf, s32 c, s32 n)
     return TRUE;
 }
 
-void func_ov095_02293fb4(void *s, u8 *buf, s32 a, s32 b, s32 n)
+s32 func_ov095_02293fb4(void *s, u8 *buf, s32 a, s32 b, s32 n)
 {
     s32 lo, hi, j, t;
     if (a > b) {
@@ -427,6 +428,7 @@ void func_ov095_02293fb4(void *s, u8 *buf, s32 a, s32 b, s32 n)
     for (j = 1; j <= hi; j++) {
         buf[n - j] = t;
     }
+    return lo;
 }
 
 BOOL func_ov095_02293ff0(Unk_ov095_02292360 *s, void *p1, s32 p2, u8 *p3, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9)

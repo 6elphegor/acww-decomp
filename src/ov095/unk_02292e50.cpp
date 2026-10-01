@@ -62,9 +62,9 @@ void func_ov095_02292e50(Unk_ov095_02292360 *s, void *p)
         return;
     }
     if (v <= 0x8d) {
-        v -= 0x70;
-        r7 = v % 10;
-        v = v / 10;
+        s32 d = v - 0x70;
+        r7 = d % 10;
+        v = d / 10;
         if (func_ov002_0220128c(p) != 0) {
             if (v > 0) {
                 v--;

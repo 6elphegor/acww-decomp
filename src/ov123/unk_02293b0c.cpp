@@ -149,6 +149,7 @@ void func_ov123_02293bac(S *s)
 
 void func_ov123_02293bd0(S *s)
 {
+    u32 sh, lo, v;
     u32 *src = (u32 *)func_ov123_0229275c(s);
     u32 *dst = (u32 *)s->unk_e04;
     s32 j, i, k, m;
@@ -157,14 +158,14 @@ Li:
     {
         u32 *d2 = dst;
         for (j = 0; j < 4; j++) {
+            sh = 0;
             u32 *d3 = d2;
-            u32 sh = 0;
             for (k = 0; k < 4; k++) {
                 u32 w = *src;
-                u32 lo = (u8)((w >> sh) & 0xf);
+                lo = (u8)((w >> sh) & 0xf);
                 u32 hi = (u8)((w >> (sh + 4)) & 0xf);
                 sh += 8;
-                u32 v = lo | ((lo << 4) | ((lo << 8) | ((lo << 12) | ((hi << 16) | ((hi << 20) | ((hi << 28) | (hi << 24)))))));
+                v = lo | ((lo << 4) | ((lo << 8) | ((lo << 12) | ((hi << 16) | ((hi << 20) | ((hi << 28) | (hi << 24)))))));
                 u32 *p = d3;
                 for (m = 0; m < 4; m++) {
                     *p = v;
@@ -181,6 +182,7 @@ Li:
     if (i < 0x20) goto Li;
     func_02001f0c(s->unk_e04, s->unk_3004, 0x10, 0x10);
 }
+
 
 void func_ov123_02293cb0(S *s)
 {
