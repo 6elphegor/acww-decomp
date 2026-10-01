@@ -8,3 +8,7 @@ src/ov004/unk_ov004_02213b90.cpp:
 # TU26
 src/ov004/unk_ov004_02229660.cpp:
     extra src/ov004/unk_ov004_02229660_switch.cpp _ZN18Unk_ov004_0224e2b88vfunc_70Ejh
+
+# TU03 (0x02209f70-0x022136d0): thunks need 1.2/sp2, the two switch functions of Unk_ov004_0224b43c need 1.2/base
+src/ov004/unk_ov004_02209f70.cpp:
+    extra src/ov004/unk_ov004_02209f70_switch.cpp _ZN18Unk_ov004_0224b43c8vfunc_80Ev _ZN18Unk_ov004_0224b43c8vfunc_7cEv
