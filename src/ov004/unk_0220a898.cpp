@@ -56,7 +56,7 @@ extern char data_ov004_0224bb50[];
 
 s32 func_02051cc8(s32 a, s32 b, u8 c, u8 d);
 s32 func_02051da4(s32 a, s32 b, u8 c, u8 d);
-s32 func_02063b8c(s32 a);
+s32 func_02063b8c(s32 a, ...);
 s32 func_0204b248(s32 a, s32 b);
 BOOL func_0203c23c(u32 a, u16 *p);
 s32 func_0203c234(s32 a);
@@ -253,9 +253,9 @@ BOOL Unk_ov004_0224b43c::vfunc_7c() {
     unk_842 = 0;
     if (unk_768 != 1) {
         if (t == 0x3fc) {
-            unk_842 = func_02063b8c(0x3c);
+            unk_842 = func_02063b8c(0x3c, 0);
         } else if ((u16)(t + 0xfc07) <= 2) {
-            unk_842 = func_02063b8c(0xc8);
+            unk_842 = func_02063b8c(0xc8, 0);
         } else {
             unk_842 = func_02063b8c(unk_840 * func_ov004_02208ff0(this));
         }

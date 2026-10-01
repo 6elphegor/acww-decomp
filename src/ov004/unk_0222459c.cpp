@@ -144,7 +144,7 @@ void func_ov004_0222459c(Rec *r, V3 *v, u32 f);
 s32 func_ov004_022245ac(Obj *o, u32 a, u32 b, u32 c);
 void func_ov004_022245ec(u8 *p, u32 v);
 void func_ov004_022245f0(Obj *o);
-s32 func_ov004_02224628(Obj *o);
+void func_ov004_02224628(Obj *o);
 void func_ov004_022246bc(Obj *o, s32 a);
 void func_ov004_02224708(Obj *o, s32 a);
 void func_ov004_02224734(Obj *o, u8 *p, s32 c);
@@ -182,15 +182,13 @@ extern "C" void func_ov004_022245f0(Obj *o) {
     }
 }
 
-extern "C" s32 func_ov004_02224628(Obj *o) {
+extern "C" void func_ov004_02224628(Obj *o) {
     s32 r;
     if (!func_020b52d0()) {
         if (func_0200d640(o) > 0) {
             s32 t = func_0200d5e0(o);
-            u8 *p = &o->unk_8e6;
-            u32 n = t + 1;
-            if (*p != n) {
-                *p = n;
+            if (o->unk_8e6 != t + 1) {
+                o->unk_8e6 = t + 1;
                 switch (t) {
                 case 0:
                     r = func_ov004_02234ed8(&o->unk_5c, o->unk_8e);

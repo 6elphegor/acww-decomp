@@ -530,11 +530,11 @@ void Unk_ov004_0224c4e4::func_ov004_02217cf8() {
             s = data_ov004_022506c8;
             r4 = (u8)func_02063b8c(3);
             if (r6 == 0) {
-                func_0200301c(func_020805c4(unk_1a0->unk_82c), s, 0x28, data_ov004_0224c634);
+                func_0200301c(func_020805c4(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, data_ov004_0224c634);
                 func_0208a598();
                 unk_1a0->unk_a4c = 2;
             } else {
-                func_0200301c(func_020805c4(unk_1a0->unk_82c), s, 0x28, data_ov004_0224c640);
+                func_0200301c(func_020805c4(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, data_ov004_0224c640);
             }
             break;
         }

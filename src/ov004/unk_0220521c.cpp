@@ -168,7 +168,7 @@ public:
     BOOL func_ov004_022052f4();
     BOOL func_ov004_022053b8();
     BOOL func_ov004_022053bc();
-    BOOL func_ov004_022053c0();
+    void func_ov004_022053c0();
     BOOL func_ov004_0220552c();
     void func_ov004_022055ec();
     BOOL func_ov004_022056bc(s32 idx);
@@ -204,7 +204,7 @@ public:
     /* 0x154 */ s32 unk_154;
     /* 0x158 */ s32 unk_158;
     /* 0x15c */ u16 unk_15c;
-    /* 0x15e */ s16 unk_15e;
+    /* 0x15e */ u16 unk_15e;
     /* 0x160 */ s16 unk_160;
     /* 0x162 */ u8 pad_162[2];
     /* 0x164 */ s32 unk_164;
@@ -296,32 +296,33 @@ BOOL Unk_ov004_0224882c::func_ov004_022052f4() {
 BOOL Unk_ov004_0224882c::func_ov004_022053b8() {}
 BOOL Unk_ov004_0224882c::func_ov004_022053bc() { return TRUE; }
 
-BOOL Unk_ov004_0224882c::func_ov004_022053c0() {
+
+void Unk_ov004_0224882c::func_ov004_022053c0() {
     func_020e761c(&unk_158, 0x1000, 0x88);
-    u16 *p = &unk_15c;
-    if (*p < 0xf) {
-        *p = *p + 1;
+    if (unk_15c < 0xf) {
+        unk_15c = unk_15c + 1;
         unk_76c = 0;
-        if (*p == 0xc) func_020943dc(0x4c7);
+        if (unk_15c == 0xc) func_020943dc(0x4c7);
         if (unk_15c == 0xf) {
             Unk_ov004_053c0_Buf buf;
             func_ov004_022088c0((Unk_ov004_Vec3 *)&buf);
             func_ov004_02206fe0(&buf);
         }
-    } else if (*p < 0x11) {
-        *p = *p + 1;
+    } else if (unk_15c < 0x11) {
+        unk_15c = unk_15c + 1;
     } else {
-        s32 r6 = unk_15e;
+        s16 r6 = unk_15e;
+        u16 r4;
         u16 *q = (u16 *)&unk_15e;
         *q = *q + unk_160;
-        u16 r4 = *q;
-        s32 m = func_01ffcb0c(unk_164, data_02135f44[((u16)(s16)r4 >> 4) * 2]);
+        r4 = *q;
+        s32 m = func_01ffcb0c(unk_164, data_02135f44[((u16)(volatile s16)r4 >> 4) * 2]);
         s32 t = 0x1000;
         unk_150 = m + t;
         s32 *pp = &unk_14c;
         *pp = t - m;
         unk_154 = *pp;
-        s32 c = func_01ffcb0c(data_02135f44[((u16)r6 >> 4) * 2], data_02135f44[((s32)(u16)(s16)r4 >> 4) * 2]);
+        s32 c = func_01ffcb0c(data_02135f44[((u16)r6 >> 4) * 2], data_02135f44[((u16)(volatile s16)r4 >> 4) * 2]);
         if (c < 0) {
             unk_164 = func_01ffcb0c(unk_164, 0x4cd);
             unk_160 = unk_160 + 0x960;
@@ -373,7 +374,7 @@ BOOL Unk_ov004_0224882c::func_ov004_0220552c() {
 
 void Unk_ov004_0224882c::func_ov004_022055ec() {
     static Unk_ov004_0224882c_Fn tbl[9] = {
-        &Unk_ov004_0224882c::func_ov004_022053c0, &Unk_ov004_0224882c::func_ov004_022053b8,
+        (Unk_ov004_0224882c_Fn)&Unk_ov004_0224882c::func_ov004_022053c0, &Unk_ov004_0224882c::func_ov004_022053b8,
         &Unk_ov004_0224882c::func_ov004_0220521c, &Unk_ov004_0224882c::func_ov004_02205138,
         &Unk_ov004_0224882c::func_ov004_022050b8, &Unk_ov004_0224882c::func_ov004_0220500c,
         &Unk_ov004_0224882c::func_ov004_02204f90, &Unk_ov004_0224882c::func_ov004_022053b8,

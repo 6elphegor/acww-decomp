@@ -127,14 +127,7 @@ func_020a6214 r277/r277.cpp  # spilled constant 3 at sp+0 (volatile k): adds/ldr
 func_020a59c0 r276/r276.cpp  # r6/r7 swap: hoisted this+0xc vs i<<3
 func_020a4778 r275/r275.cpp  # original reloads ldr =data_021d7352 before the +2 (ours CSEs the address); 2 bytes short, rest likely matches
 func_020b60dc r279/r279.cpp  # 0x73c collision query (Unk_020b6960): else-branch regalloc (gx/gz/cx), ours 0x14 bytes longer; NOT in any unit yet (lives between existing units at 0x020b60dc)
-func_ov004_022053c0 ov004_001/ov004_001.cpp  # sin-table index CSE + ldrsh/ldrh store-reload of unk_15e; partially fixed with (s32) cast
 func_ov004_02209f38,func_ov004_02209f54 ov004_009/thunks_sp2.cpp  # _ZThn236 D0/D1 thunks of Unk_ov004_0224882c: match only under sp2, but func_ov004_0220a648 (same unit) matches only under base (switch-table encoding) — needs a split unit
-func_ov004_0220a898 ov004_010/ov004_010.cpp  # post-switch regalloc: zero in r1 vs address constants in r2 swapped (base compiler only)
-func_ov004_02217cf8 ov004_032/ov004_032.cpp  # r6/r7 swap (callee result vs data_ov004_022506c8 ptr); movs r1,r7 vs adds r1,r6,#0
-func_ov004_022203c8 ov004_047/ov004_047.cpp  # switch value in r0 vs r1 (jump-table temp shift); try permutation search
-func_ov004_02224628 ov004_054/ov004_054.cpp  # regalloc in flag=t+1 test/store block (orig r0=&unk_8e6,r1=t+1,r2=old; ours r3/r2/r1); ~20 variants tried
-func_ov004_0222a0bc ov004_063/ov004_063.cpp  # sp2; callee-saved regs for data_02240298[0..2]: orig a=r4,b=r6,c=r7, ours r7/r6/r4; all 6 decl orders tried
-func_ov004_0222ca24 ov004_067/ov004_067.cpp  # stack slots only: orig idx at sp+0x48 then o1/o2/o3; ours o1..o3 then idx; decl perms/scoping/volatile tried
 func_ov004_02236320 ov004_084/ov004_084.cpp  # regalloc: func_02095204(4) result in r6 & g in r1 (ours r1/r2); decl perms tried
 func_ov004_022364d0 ov004_084/ov004_084.cpp  # hoisted &unk_230[0] in r4, count in r6 (ours swapped); volatile t1 fixes frame but ext differs
 func_ov001_02202050 ov001_002/ov001_002.cpp  # UNMATCHED draft (~1000 diff lines, 0xaec bytes): UDP connect/handshake state loop; prologue copies data_0222a488 as 2 halfwords; locals struct L fixes frame

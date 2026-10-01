@@ -177,7 +177,7 @@ struct Unk_ov004_0224e2b8_Ent {
 
 
 extern "C" {
-extern s32 data_ov004_02240298[3];
+extern const s32 data_ov004_02240298[3];
 extern char data_ov004_0224e3ac[];
 extern char data_ov004_0224e3c8[];
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e298;
@@ -308,7 +308,7 @@ void Unk_ov004_0224e2b8::vfunc_68() {
 }
 
 void *Unk_ov004_0224e2b8::vfunc_50() {
-    return data_ov004_02240298;
+    return (void *)data_ov004_02240298;
 }
 
 void Unk_ov004_0224e2b8::vfunc_4c(u32 a, u8 b) {
@@ -326,7 +326,7 @@ void Unk_ov004_0224e2b8::vfunc_4c(u32 a, u8 b) {
 BOOL Unk_ov004_0224e2b8::vfunc_48(void *a) {
     Unk_020d9670 *o = (Unk_020d9670 *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, data_ov004_02240298) < 0x2333) {
+        if (func_020e9650(o->unk_5c, (s32 *)data_ov004_02240298) < 0x2333) {
             u32 d = (u16)(o->unk_8e - (unk_8e + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;
@@ -361,9 +361,8 @@ struct Unk_ov004_0222a0bc_V3 {
 };
 
 BOOL Unk_ov004_0224e2b8::vfunc_00() {
-    s32 c, b, a;
     data_ov004_02251288 = this;
-    a = data_ov004_02240298[0]; unk_5c[0] = a; b = data_ov004_02240298[1]; unk_5c[1] = b; c = data_ov004_02240298[2]; unk_5c[2] = c;
+    unk_5c[0] = data_ov004_02240298[0]; unk_5c[1] = data_ov004_02240298[1]; unk_5c[2] = data_ov004_02240298[2];
     func_0203e624(0);
     func_ov004_02224fc8(data_ov004_0224e3ac, data_ov004_0224e3c8);
     if (unk_1a4.func_ov004_02224d8c(0)) {
@@ -374,9 +373,9 @@ BOOL Unk_ov004_0224e2b8::vfunc_00() {
         }
     }
     Unk_ov004_0222a0bc_V3 v;
-    v.v[0] = a;
-    v.v[1] = b;
-    v.v[2] = c;
+    v.v[0] = data_ov004_02240298[0];
+    v.v[1] = data_ov004_02240298[1];
+    v.v[2] = data_ov004_02240298[2];
     func_020b50b4()->func_020b68ec(&unk_370, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
     u8 *const g = data_021d7350;
     if (func_020b50e8() == 6) {

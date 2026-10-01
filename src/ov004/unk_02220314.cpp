@@ -138,7 +138,7 @@ s32 func_0209c60c(void);
 s32 func_0209c614(s32 a);
 s32 func_0209c874(s32 p);
 s32 func_0209c86c(s32 p);
-V3 *func_0209c864(void);
+V3 *func_0209c864(s32 p);
 s32 func_0209c7a4(s32 a);
 s32 func_020b4934(void);
 void func_020b4bbc(s32 a, s32 b);
@@ -305,7 +305,7 @@ extern "C" void func_ov004_022203c8(Obj *o) {
             if (q != 0) {
                 if (q->unk_04 == 0) {
                     struct { u32 pad; V3 a; V3 b; } l;
-                    V3 *v = func_0209c864();
+                    V3 *v = func_0209c864(p);
                     l.a.x = v->x;
                     l.a.y = v->y;
                     l.a.z = v->z;

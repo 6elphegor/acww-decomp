@@ -341,39 +341,44 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
 }
 
 extern "C" void func_ov004_0222ca24(void *self, Unk_ov004_0222ca24_Ctx *ctx, s32 type) {
-    Unk_ov004_0222ca24_Obj *o = ctx->unk_00;
+    Unk_ov004_0222ca24_Obj *o;
+    Unk_ov004_0222ca24_Obj *o1;
+    Unk_ov004_0222ca24_Obj *o2;
+    Unk_ov004_0222ca24_Obj *o3;
     s32 w, len, base;
-    Unk_ov004_0222c570_Vec *v = &o->unk_1a8;
+    Unk_ov004_0222c570_Vec *v;
     Unk_ov004_0222c570_Vec *e;
     s32 bx0, bz0, bx1, bz1, ax0, az0, ax1, az1;
+    o1 = ctx->unk_00;
+    v = &o1->unk_1a8;
     Unk_ov004_0222c570_Vec *q;
     Unk_ov004_0222c570_Vec *ep;
     s32 off;
-    s32 c164 = o->unk_164;
+    s32 c164 = o1->unk_164;
     s32 idx = type;
     idx = idx * 17;
     w = (data_ov004_022402ef[idx] << 12) >> 7;
-    if (o->unk_1c7 == 0) {
+    if (o1->unk_1c7 == 0) {
         return;
     }
     s32 h = (data_ov004_022402ee[idx] << 12) >> 7;
     if (data_ov004_02251d60 == 0) {
-        func_02088c64(&o->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+        func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
     } else if (data_ov004_02251d60 == 1) {
         if (type == 0x24) {
             u8 *g = (u8 *)data_ov004_02251d74;
             if (g != NULL) {
-                func_02088c64(&o->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                func_02088c64(&o1->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x23) {
             u8 *g = (u8 *)data_ov004_02251d78;
             if (g != NULL) {
-                func_02088c64(&o->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                func_02088c64(&o1->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x26) {
-            func_02088c64(&o->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+            func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
         } else {
-            func_02088c64(&o->unk_04, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+            func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
         }
     }
     func_02089040(&ctx->unk_00->unk_04);
@@ -383,26 +388,25 @@ extern "C" void func_ov004_0222ca24(void *self, Unk_ov004_0222ca24_Ctx *ctx, s32
     k = 0;
 loop0:
     {
-        o = ctx->unk_00;
-        q = &o->unk_1a8;
+        o2 = ctx->unk_00;
+        q = &o2->unk_1a8;
         off = k * 12;
-        Unk_ov004_0222c570_Vec *arr = o->unk_1d0;
+        Unk_ov004_0222c570_Vec *arr = o2->unk_1d0;
         ep = (Unk_ov004_0222c570_Vec *)((u8 *)arr + off);
-        *(s32 *)((u8 *)arr + off) = o->unk_1a8.x;
+        *(s32 *)((u8 *)arr + off) = o2->unk_1a8.x;
         ep->y = q->y;
         ep->z = q->z;
         if (k == 0) {
-            Unk_ov004_0222ca24_Obj *o1, *o2;
             o1 = ctx->unk_00;
             *(s32 *)((u8 *)o1->unk_1d0 + off) += func_01ffcb0c(base, data_02135f44[(o1->unk_1c0 >> 4) * 2]);
             o2 = ctx->unk_00;
             ((Unk_ov004_0222c570_Vec *)((u8 *)o2->unk_1d0 + off))->z += func_01ffcb0c(base, data_02135f44[(o2->unk_1c0 >> 4) * 2 + 1]);
-            o = ctx->unk_00;
-            ep = (Unk_ov004_0222c570_Vec *)((u8 *)o->unk_1d0 + off);
-            bx0 = *(s32 *)((u8 *)o->unk_1d0 + off);
+            o3 = ctx->unk_00;
+            ep = (Unk_ov004_0222c570_Vec *)((u8 *)o3->unk_1d0 + off);
+            bx0 = *(s32 *)((u8 *)o3->unk_1d0 + off);
             bz0 = ep->z;
+            o = o3;
         } else {
-            Unk_ov004_0222ca24_Obj *o3;
             s32 t;
             o3 = ctx->unk_00;
             t = (u16)(s16)((s16)o3->unk_1c0 + 0x8000);
