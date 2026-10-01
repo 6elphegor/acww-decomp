@@ -155,7 +155,7 @@ for b in blocks:
         sys.exit(f"{uname} is complete and overlaps the TU's text range"
                  + (" (use --replace to remove complete units that lie inside the TU)" if inside else ""))
     if inside:
-        git_ops.append(["git", "rm", "-q", uname])
+        git_ops.append(["git", "rm", "-q", "-f", uname])
         removed_units.append(uname)
         print(f"removed {uname}" + (" (was complete)" if complete else ""))
         continue
