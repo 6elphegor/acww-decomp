@@ -23,3 +23,6 @@ src/main/unk_0202e9d4.cpp:
 
 # U132
 src/main/unk_020821c4.cpp:
+
+# U096
+src/main/unk_02060034.cpp:

@@ -799,14 +799,13 @@ src/main/unk_0205f284.cpp:
     .ctor       start:0x020d1e80 end:0x020d1e84
     .data       start:0x020dc4bc end:0x020dc520
 
-src/main/unk_0205f8d4.cpp:
-    .text       start:0x02060034 end:0x0206022c
-
-src/main/unk_0206022c.cpp:
-    .text       start:0x0206022c end:0x02060b30
+src/main/unk_02060034.cpp:
+    complete
+    .text       start:0x02060034 end:0x02060b7c
+    .rodata     start:0x020cb550 end:0x020cb5c4
 
 src/main/unk_02060b30.cpp:
-    .text       start:0x02060b30 end:0x02060b9c
+    .text       start:0x02060b7c end:0x02060b9c
 
 src/main/unk_02060b9c.cpp:
     complete
