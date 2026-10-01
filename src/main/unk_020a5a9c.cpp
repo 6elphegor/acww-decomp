@@ -476,16 +476,12 @@ fail:
 s32 func_020a6214(u32 a) {
     s32 r6 = 4;
     s32 i;
-    volatile s32 k;
     u8 v[3];
     i = 3;
     Unk_020cbb18 *o = data_020cbb18;
-    k = 3;
     for (; i >= 0; i--) {
         if (o->func_02072e88(i)) {
-            s32 off = i;
-            off *= k;
-            ((Unk_020a677c *)((u8 *)&data_021eda94 + off))->func_020a6760(&v[0], &v[1], &v[2]);
+            data_021eda94.unk_00[i].func_020a6760(&v[0], &v[1], &v[2]);
             if (v[0] == a && v[1] != 0 && v[2] == 0) {
                 r6 = i;
                 break;

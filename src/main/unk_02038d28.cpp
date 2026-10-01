@@ -187,9 +187,9 @@ static inline BOOL Unk_02038f10_Pos(s32 v) {
 extern "C" BOOL func_02038f10(void) {
     BOOL r = FALSE;
     s32 i = 0;
-    Unk_0203900c *p = data_021c3008->unk_04;
     for (; i < 4; i++) {
-        if ((p[i].unk_0c == 0 && p[i].unk_a0 != 0) || Unk_02038f10_Pos(p[i].unk_a8)) {
+        Unk_0203900c *p = &data_021c3008->unk_04[i];
+        if ((p->unk_0c == 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
             r = TRUE;
             break;
         }
@@ -200,9 +200,9 @@ extern "C" BOOL func_02038f10(void) {
 extern "C" BOOL func_02038f60(void) {
     BOOL r = FALSE;
     s32 i = 0;
-    Unk_0203900c *p = data_021c3008->unk_04;
     for (; i < 4; i++) {
-        if ((p[i].unk_0c != 0 && p[i].unk_a0 != 0) || Unk_02038f10_Pos(p[i].unk_a8)) {
+        Unk_0203900c *p = &data_021c3008->unk_04[i];
+        if ((p->unk_0c != 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
             r = TRUE;
             break;
         }

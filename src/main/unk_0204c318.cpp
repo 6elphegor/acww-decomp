@@ -170,16 +170,17 @@ static inline BOOL Unk_0204c6a4_Check(u16 *p) {
 extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
     s32 x;
     u16 *t;
+    u16 *t2;
     u16 val;
     Unk_0204da0c_Size *sz;
     s32 cx;
     s32 y;
     s32 w;
-    s32 y0;
     s32 h;
+    s32 x0;
+    s32 y0;
     s32 x1;
     s32 y1;
-    s32 x0;
     s32 cy;
     if (p == NULL) return;
     sz = &p->unk_04;
@@ -210,7 +211,10 @@ extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
     test:
         if (x <= x1) goto loop;
     }
-    for (y = y0; y <= y1; y++) {
+    y = y0;
+    goto test2;
+loop2:
+    {
         x = x0;
         func_0204e300(p, x, y);
             cx = x >> 4;
@@ -225,13 +229,16 @@ extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
         func_0204e300(p, x, y);
             cx = x >> 4;
             cy = y >> 4;
-            t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
-            if (t) {
-                if (Unk_0204c6a4_Check(t)) {
-                    if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+            t2 = func_0204ebd8(p, cx, cy, x - (cx << 4), y - ((u32)cy << 4), 0);
+            if (t2) {
+                if (Unk_0204c6a4_Check(t2)) {
+                    if (!func_0204b08c(t2)) func_0204eb30(p, &val, x, y, 0);
                 }
             }
     }
+    y++;
+test2:
+    if (y <= y1) goto loop2;
 }
 
 // ---- func_0204c3c0 ----

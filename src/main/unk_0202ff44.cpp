@@ -116,26 +116,32 @@ void func_0203002c(s32 x, s32 z) {
 BOOL func_0203006c(s32 x, s32 z, s32 mask) {
     Unk_01ffcb5c_Chunk *ch = func_01ffcb5c(x >> 4, z >> 4);
     if (ch) {
-        u8 *base = ch->unk_00;
-        u8 *cell;
-        s32 old, a, b, c, d;
-        u32 i;
+        s32 c;
+        s32 old;
+ u8 *base;
+        s32 a;
+        s32 b;
+        s32 i;
         s32 d0, d1, d2, d3;
+        s32 was;
+        u8 *cell;
+        base = ch->unk_00;
         x &= 0xf;
         z &= 0xf;
         cell = base + (x + (z << 4));
         old = *cell;
+        was = old;
         a = (mask & 1) ? 10 : old;
         b = ((mask >> 1) & 1) ? 10 : old;
         c = ((mask >> 2) & 1) ? 10 : old;
-        d = ((mask >> 3) & 1) ? 10 : old;
+        if ((mask >> 3) & 1) old = 10;
         d0 = d1 = d2 = d3 = 0;
-        for (i = 0; i < 0x7c; i++) {
-            if (a == TB(i, unk_0c, d0) && b == TB(i, unk_0d, d1) && c == TB(i, unk_0e, d2) && d == TB(i, unk_0f, d3)) goto found;
+        for (i = 0; (u32)i < 0x7c; i++) {
+            if (a == TB(i, unk_0c, d0) && b == TB(i, unk_0d, d1) && c == TB(i, unk_0e, d2) && old == TB(i, unk_0f, d3)) goto found;
         }
         i = 0;
     found:
-        if (old != 0) {
+        if (was != 0) {
             *cell = i;
             return TRUE;
         }
@@ -262,25 +268,23 @@ static inline BOOL Unk_020303d0_IsSet(Unk_020303d0_Cell *c) {
     return FALSE;
 }
 
+static inline u8 Unk_020303d0_All(s32 idx) {
+    s32 i, j;
+    for (i = data_021bfab8.unk_04[idx].unk_128 - 1; i >= 0; i--) {
+        for (j = data_021bfab8.unk_04[idx].unk_124 - 1; j >= 0; j--) {
+            Unk_020303d0_Cell *row = data_021bfab8.unk_04[idx].unk_00[i];
+            if (!Unk_020303d0_IsSet(&row[j])) return 0;
+        }
+    }
+    return 1;
+}
+
 BOOL func_020303d0(s32 x, s32 y, s32 val, s32 idx) {
     Unk_020303d0_Cell *c = Unk_0203030c_Get(&data_021bfab8.unk_04[idx], x, y);
     if (c) {
-        s32 i, j;
-        u8 flag;
-        Unk_020303d0_Cell *row;
         c->unk_00 = val;
         c->unk_04 = val + 0x100;
-        for (i = data_021bfab8.unk_04[idx].unk_128 - 1; i >= 0; i--) {
-            for (j = data_021bfab8.unk_04[idx].unk_124 - 1, row = data_021bfab8.unk_04[idx].unk_00[i]; j >= 0; j--) {
-                if (!Unk_020303d0_IsSet(&row[j])) {
-                    flag = 0;
-                    goto end;
-                }
-            }
-        }
-        flag = 1;
-    end:
-        data_021bfab8.unk_04[idx].unk_130 = flag;
+        data_021bfab8.unk_04[idx].unk_130 = Unk_020303d0_All(idx);
         return TRUE;
     }
     return FALSE;
@@ -442,13 +446,15 @@ void func_020339bc(Unk_0203081c_B *p, Unk_0202ff44_V3 *v, s32 a, s32 b);
 s32 func_02033914(Unk_0203081c_B *p, s32 a);
 void func_02033988(Unk_0203081c_B *p);
 
-s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags) {
+enum Unk_0203081c_Flags { Unk_0203081c_Flags_0 = 0, Unk_0203081c_Flags_2 = 2, Unk_0203081c_Flags_4 = 4, Unk_0203081c_Flags_All = 0x7fffffff };
+
+s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
     Unk_0203081c_A a;
     Unk_0202ff44_V3 v14, v20;
     Unk_0203081c_B b;
     s32 r;
     func_02032228(&a);
-    flags &= ~6;
+    Unk_0203081c_Flags flags = (Unk_0203081c_Flags)(flags0 & ~6);
     v14.x = p->x;
     v14.y = p->y;
     v14.z = p->z;

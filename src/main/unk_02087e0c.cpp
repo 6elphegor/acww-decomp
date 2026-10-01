@@ -75,22 +75,42 @@ s32 func_02087e60(s32 a, s32 b)
     return data_020cf588[b + (a << 2)];
 }
 
+enum Unk_02087e70_Mode_ { Unk_02087e70_Mode_0 = 0, Unk_02087e70_Mode_1 = 1, Unk_02087e70_Mode_2 = 2, Unk_02087e70_Mode_3 = 3 };
+
+static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32 priority, Unk_02087e70_Mode_ mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
+{
+    if (effect == 0x100 || effect == 0x300) {
+        if (mode == 3) {
+            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
+        } else {
+            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
+        }
+    } else {
+        if (mode == 3) {
+            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
+        } else {
+            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
+        }
+    }
+    oam->a2 = (cParam << 12) | (charName | (priority << 10));
+}
+
 void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
 {
     Unk_02087e70_Oam *oam;
     s32 priv;
     s32 palv;
+    s32 w;
     BOOL use;
     s32 *cnt;
     s32 y;
     s32 *aux;
     s32 h;
-    s32 size;
     s32 hw;
     s32 x;
-    s32 w;
-    s32 d;
     s32 hh;
+    s32 d;
+    Unk_02087e70_Mode_ size;
     s32 idx;
     s32 flags;
     u32 b13;
@@ -98,10 +118,6 @@ void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 p
     BOOL k3;
     BOOL k0;
     BOOL k1;
-    s16 *sinp;
-    s16 *cosp;
-    volatile s32 ri;
-    u32 m0;
     if (func_02087c8c(mode)) {
         oam = data_021cde38;
         cnt = &data_021cde2c;
@@ -118,9 +134,6 @@ void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 p
     } else {
         use = FALSE;
     }
-    sinp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2];
-    cosp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2 + 1];
-    ri = (rot >> 4) * 2;
 top:
     {
         if (*cnt >= 0x80) {
@@ -161,13 +174,13 @@ top:
                 y = func_01ffc5a4(y, sy);
             }
             if (rot != 0) {
-                s32 a = *sinp;
-                s32 b = *cosp;
-                s32 t, f;
-                t = func_01ffcb0c(b, x);
-                d = t - func_01ffcb0c(a, y);
-                f = func_01ffcb0c(b, y);
-                f += func_01ffcb0c(a, x);
+                s16 *sinp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2];
+                s16 *cosp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2 + 1];
+                s16 a = *sinp;
+                s16 b = *cosp;
+                s32 f;
+                d = func_01ffcb0c(b, x) - func_01ffcb0c(a, y);
+                f = func_01ffcb0c(b, y) + func_01ffcb0c(a, x);
                 x = ((d + (d > 0 ? 0x800 : -0x800)) >> 12) - hw;
                 y = ((f + (f > 0 ? 0x800 : -0x800)) >> 12) - hh;
             } else {
@@ -228,14 +241,15 @@ top:
             priv = pri;
         }
         if (sz > 0) {
-            size = sz;
+            size = (Unk_02087e70_Mode_)sz;
         } else {
-            size = (e->w0 << 20) >> 30;
+            size = (Unk_02087e70_Mode_)((e->w0 << 20) >> 30);
         }
         if (use) {
             s32 P, Q;
             s32 m[4];
             s32 cc, ss;
+            s32 ri = (rot >> 4) * 2;
             cc = data_02135f44[ri + 1];
             P = (cc * sx + 0x800) >> 12;
             m[0] = P;
@@ -277,45 +291,7 @@ top:
         }
         w1lo = e->w1lo;
         b13 = (e->w0 << 18) >> 31;
-        m0 = e->w0;
-        m0 &= 0xc000c000;
-        {
-            u32 b12 = (e->w0 << 19) >> 31;
-            if (flags == 0x100 || flags == 0x300) {
-                if (size == 3) {
-                    u32 xs = (x & 0x1ff) << 16;
-                    m0 |= (b12 << 12) | ((size << 10) | ((idx << 25) | (y & 0xff)));
-                    xs |= m0;
-                    oam->a01 = flags | xs;
-                } else {
-                    u32 xs = (x & 0x1ff) << 16;
-                    u32 bt = b12 << 12;
-                    bt |= (size << 10) | ((y & 0xff) | ((idx << 25) | (b13 << 13)));
-                    m0 |= bt;
-                    xs |= m0;
-                    oam->a01 = flags | xs;
-                }
-            } else {
-                if (size == 3) {
-                    u32 xs = (x & 0x1ff) << 16;
-                    u32 bt = (b12 << 12) | ((y & 0xff) | (size << 10));
-                    m0 |= bt;
-                    xs |= m0;
-                    oam->a01 = flags | xs;
-                } else {
-                    u32 xs = (x & 0x1ff) << 16;
-                    u32 bt = (b12 << 12) | ((size << 10) | ((b13 << 13) | (y & 0xff)));
-                    m0 |= bt;
-                    xs |= m0;
-                    oam->a01 = flags | xs;
-                }
-            }
-        }
-        {
-            u32 pl = palv << 12;
-            w1lo = w1lo | (priv << 10);
-            oam->a2 = pl | w1lo;
-        }
+        Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, palv, idx);
         oam++;
         *cnt = *cnt + 1;
         if (e->w1id == 0xffff) {
@@ -428,9 +404,11 @@ Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s
     if (scale != 0x1000 || rot != 0) {
         s32 m[4];
         s32 i = (rot >> 4) * 2;
-        s32 c = (data_02135f44[i + 1] * scale + 0x800) >> 12;
+        s32 cc = data_02135f44[i + 1];
+        s32 c = (cc * scale + 0x800) >> 12;
         m[0] = c;
-        s32 s = (data_02135f44[i] * scale + 0x800) >> 12;
+        s32 ss = data_02135f44[i];
+        s32 s = (ss * scale + 0x800) >> 12;
         m[1] = s;
         m[2] = -s;
         m[3] = c;
@@ -455,29 +433,9 @@ Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s
         idx = 0;
         flags = ((volatile Unk_02087e70_Ent *)e)->w0 & 0x30000000;
     }
-    {
-        w1lo = e->w1lo;
-        b13 = (e->w0 << 18) >> 31;
-        u32 m0 = e->w0 & 0xc000c000;
-        u32 b12 = (e->w0 << 19) >> 31;
-        u32 size = (e->w0 << 20) >> 30;
-        if (flags == 0x100 || flags == 0x300) {
-            if (size == 3) {
-                oam->a01 = flags | (((x & 0x1ff) << 16) | (m0 | ((b12 << 12) | ((size << 10) | ((idx << 25) | (y & 0xff))))));
-            } else {
-                oam->a01 = flags | (((x & 0x1ff) << 16) | (m0 | ((b12 << 12) | ((size << 10) | ((y & 0xff) | ((idx << 25) | (b13 << 13)))))));
-            }
-        } else {
-            if (size == 3) {
-                oam->a01 = flags | (((x & 0x1ff) << 16) | (m0 | ((b12 << 12) | ((y & 0xff) | (size << 10)))));
-            } else {
-                oam->a01 = flags | (((x & 0x1ff) << 16) | (m0 | ((b12 << 12) | ((size << 10) | ((b13 << 13) | (y & 0xff))))));
-            }
-        }
-        u32 pl = pal << 12;
-        w1lo = w1lo | (pri << 10);
-        oam->a2 = pl | w1lo;
-    }
+    w1lo = e->w1lo;
+    b13 = (e->w0 << 18) >> 31;
+    Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->w0 << 20) >> 30), (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, pal, idx);
     *cnt = *cnt + 1;
     return oam;
 }

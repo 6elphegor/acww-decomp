@@ -366,7 +366,7 @@ void func_020766ec(u8 *p, u32 n) {
         func_02116048(buf, &h.len, 2);
         func_02116048(buf + 2, &h.id, 1);
         u32 len = h.len;
-        u32 id = h.id;
+        u32 id = *(volatile u8 *)&h.id;
         data_020cbb24[id](p, len);
         p += len;
         n -= len;

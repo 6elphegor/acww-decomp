@@ -372,6 +372,26 @@ extern "C" void func_02088d58() {
     }
 }
 
+enum Unk_02088730_Mode { Unk_02088730_Mode_0 = 0, Unk_02088730_Mode_1 = 1, Unk_02088730_Mode_2 = 2, Unk_02088730_Mode_3 = 3 };
+
+static inline void Unk_02088730_SetAttr(Unk_02088730_Ent *oam, s32 x, s32 y, s32 priority, Unk_02088730_Mode mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
+{
+    if (effect == 0x100 || effect == 0x300) {
+        if (mode == 3) {
+            oam->a = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
+        } else {
+            oam->a = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
+        }
+    } else {
+        if (mode == 3) {
+            oam->a = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
+        } else {
+            oam->a = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
+        }
+    }
+    oam->b = (cParam << 12) | (charName | (priority << 10));
+}
+
 extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
     Unk_02088730_Ent *ent;
     s32 *cntp;
@@ -379,7 +399,7 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     s32 idx, c;
     u32 bit13, base;
     s32 x0, y0, w, h;
-    u32 w0, m, bit12, sz, attr, mode2;
+    s32 mode2;
     if (func_02087c8c(mode)) {
         cntp = &data_021cde2c;
         c = *cntp;
@@ -425,8 +445,7 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     }
     if (rect) {
         idx = func_02087cd8(ent - *cntp, othp, rect);
-        s32 neg1 = -1;
-        if (idx == neg1) {
+        if (idx == -1) {
             return -4;
         }
         if (((info[0] << 22) >> 30) == 1) {
@@ -436,30 +455,11 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
         }
     } else {
         idx = 0;
-        mode2 = info[0] & 0x30000000;
+        mode2 = *(volatile u32 *)&info[0] & 0x30000000;
     }
     base = (u32)(info[1] << 22) >> 22;
     bit13 = (info[0] << 18) >> 31;
-    w0 = info[0];
-    m = w0 & 0xc000c000;
-    bit12 = (w0 << 19) >> 31;
-    sz = (w0 << 20) >> 30;
-    if (mode2 == 0x100 || mode2 == 0x300) {
-        if (sz == 3) {
-            attr = mode2 | (((x0 & 0x1ff) << 16) | (m | ((bit12 << 12) | ((sz << 10) | (((u32)idx << 25) | (y0 & 0xff))))));
-        } else {
-            attr = mode2 | (((x0 & 0x1ff) << 16) | (m | ((bit12 << 12) | ((sz << 10) | (((u32)idx << 25) | ((bit13 << 13) | (y0 & 0xff)))))));
-        }
-    } else {
-        if (sz == 3) {
-            attr = mode2 | (((x0 & 0x1ff) << 16) | (m | ((bit12 << 12) | ((sz << 10) | (y0 & 0xff)))));
-        } else {
-            attr = mode2 | (((x0 & 0x1ff) << 16) | (m | ((bit12 << 12) | ((sz << 10) | ((bit13 << 13) | (y0 & 0xff))))));
-        }
-    }
-    ent->a = attr;
-    base |= pri << 10;
-    ent->b = (pal << 12) | base;
+    Unk_02088730_SetAttr(ent, x0, y0, pri, (Unk_02088730_Mode)((info[0] << 20) >> 30), (info[0] << 19) >> 31, mode2, info[0] & 0xc000c000, bit13, base, pal, idx);
     *cntp = *cntp + 1;
     return 1;
 }

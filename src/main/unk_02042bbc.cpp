@@ -345,23 +345,19 @@ extern "C" s32 func_020430d8(s32 a, Pos *p) {
 }
 
 extern "C" s32 func_020431a8(s32 a, Pos *p) {
-    volatile s32 r;
-    volatile s32 t0;
-    void *volatile map = data_021c47c4;
-    volatile s32 t1;
-    s32 z = 0;
-    r = ~z;
+    void *map = data_021c47c4;
+    s32 r = -1;
     if (map) {
         s32 x = p->x;
         s32 y = p->y;
         s32 xh = x >> 4;
         s32 yh = y >> 4;
-        u16 *m = (u16 *)func_0204ebd8(map, xh, yh, x - (xh << 4), y - (yh << 4), z);
+        u16 *m = (u16 *)func_0204ebd8(map, xh, yh, x - (xh << 4), y - (yh << 4), 0);
         if (m) {
             u16 c = *m;
             s32 v = 0;
             if (c == 0xfff1) {
-                r = ~v;
+                r = -1;
             } else {
                 if ((c >= 0x21 && c <= 0x24) || c == 0x1f) {
                     v = 5;
@@ -377,27 +373,27 @@ extern "C" s32 func_020431a8(s32 a, Pos *p) {
                 }
             }
             {
-                s32 t3 = 1;
-                s32 t2 = t3;
-                t1 = 1;
-                t0 = 0;
+                BOOL t3 = TRUE;
+                BOOL t2 = TRUE;
+                BOOL t1 = TRUE;
+                BOOL t0 = FALSE;
                 u16 c2 = *m;
                 if (c2 <= 5) {
-                    t0 = 1;
+                    t0 = TRUE;
                 }
                 if (t0 == 0) {
                     if (c2 < 6 || c2 > 0xb) {
-                        t1 = 0;
+                        t1 = FALSE;
                     }
                 }
                 if (t1 == 0) {
                     if (c2 < 0xc || c2 > 0x11) {
-                        t2 = 0;
+                        t2 = FALSE;
                     }
                 }
                 if (t2 == 0) {
                     if ((c2 < 0x12 || c2 > 0x19) && c2 != 0x1c) {
-                        t3 = 0;
+                        t3 = FALSE;
                     }
                 }
                 if (t3 != 0 || c == 0x1a || c == 0x1d || c == 0x1e) {

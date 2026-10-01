@@ -77,7 +77,7 @@ s32 func_020618f0(s32 v);
 s32 func_02061fe8(u16 *p);
 s32 func_01ffc5a4(s32 a, s32 b);
 void func_02115fb4(void *p, u32 v, u32 n);
-extern volatile u32 data_021c6064[];
+extern u32 data_021c6064[];
 extern u32 data_021c6164[];
 extern u32 data_021c5f3c[];
 extern u16 data_020cab80[];
@@ -143,7 +143,7 @@ void Unk_02059d1c::func_0205a3c0(void *grid)
                     else if (kind == 2) bit = 2;
                     else if (kind == 3) bit = 4;
                     else if (kind == 4) bit = 8;
-                    data_021c6064[idx] = bit | data_021c6064[idx];
+                    *(volatile u32 *)&data_021c6064[idx] = bit | *(volatile u32 *)&data_021c6064[idx];
                     data_021c6164[10] |= bit;
                 }
                 x++;
@@ -440,8 +440,15 @@ static inline u32 Unk_0205a930_Get(s32 i, u32 dflt)
     return dflt;
 }
 
+static inline void Unk_0205a930_Clear(void *dst, u32 n)
+{
+    volatile u32 z = 0;
+    func_02115ea8(z, dst, n);
+}
+
 extern "C" s32 func_0205a930(Unk_02059d1c *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, Unk_020dc0fc *ops, s32 count, s32 base, u8 flag)
 {
+    s32 total;
     s32 sel;
     s32 s10, s14, s18, s1c, s20, s24, s28, s2c, s30;
     s32 j;
@@ -449,17 +456,16 @@ extern "C" s32 func_0205a930(Unk_02059d1c *p, u16 *flags, s32 *pa, s32 *pb, s32 
     u32 i;
     s32 pick, n, pick2, n2, t, x, kind, idx;
     u32 zero, zero2;
-    s32 total;
     s32 r7;
-    volatile u32 zero32;
+    u8 f[2];
+    u32 k;
     *flags = 0;
     *pa = 0;
     *pb = 0;
     *pc = 0;
     func_02115fb4(data_021c5f3c, 0, 0x128);
-    zero32 = 0;
-    func_02115ea8(zero32, data_021c5e5c, 0xe0);
-    for (i = 0; i < 0x4a; i++) data_021c6064[i] = 0;
+    Unk_0205a930_Clear(data_021c5e5c, 0xe0);
+    for (k = 0; k < 0x4a; k++) data_021c6064[k] = 0;
     data_021c6164[10] = 0;
     total = 0;
     s10 = 0; s14 = 0; s18 = 0; s1c = 0; s20 = 0; s24 = 0; s28 = 0; s2c = 0; s30 = 0; j = 0;
@@ -468,12 +474,9 @@ loop0:
     {
         idx = base + j;
         void *m = ops->vfunc_00(idx);
-        Unk_0205a930_H h1 = ops->vfunc_04(idx);
-        p->unk_10 = h1.unk_00;
-        Unk_0205a930_H h2 = ops->vfunc_08(idx);
-        p->unk_12 = h2.unk_00;
+        p->unk_10 = ops->vfunc_04(idx).unk_00;
+        p->unk_12 = ops->vfunc_08(idx).unk_00;
         func_02059a30(p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
-        u8 f[2];
         Unk_0205b448 obj;
         obj.func_0205b2b4((s32)m);
         p->func_0205a6bc(m, 0);
@@ -495,7 +498,12 @@ loop0:
     j++;
 test0:
     if (j < count) goto loop0;
-    total = total + s10 + s14 + s18 + s1c + s20 + s24;
+    total += s10;
+    total += s14;
+    total += s18;
+    total += s1c;
+    total += s20;
+    total += s24;
     sel = 0; idxA = 0; cntA = 0; cntB = 0;
     for (i = 0; i < 0x4a; i++) {
         u32 v = Unk_0205a930_Get(i, sel);
@@ -505,7 +513,7 @@ test0:
                 cntA++;
                 break;
             case 1:
-                if (v > 0x7530) cntB++;
+                if (v > 0xbb8) cntB++;
                 break;
             case 2:
                 s28 += v;
@@ -584,11 +592,13 @@ test0:
         }
         {
             x = func_020604c4(data_021e58a8);
-            u16 b = 0;
-            s32 nb, q;
+            u16 b;
+            s32 nb;
+            u32 q;
             kind = 0;
+            b = 0;
             if (cntA != 0) {
-                u32 v = Unk_0205a930_Get(sel, b);
+                u32 v = Unk_0205a930_Get(sel, kind);
                 if (v == 0x7530) b |= 1;
                 else if (v == 0x61a8) b |= 2;
                 else b |= 4;
