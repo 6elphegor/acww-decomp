@@ -26,7 +26,7 @@ s32 func_0208d9a8(void *p);
 void func_0208d63c(void *p);
 void func_020e761c(void *p, s32 v, s32 n);
 s32 func_02098ffc();
-void func_0209909c(u16 *p);
+void func_0209909c(u16 *p, s32 a, s32 b);
 void func_02060044(u32 v);
 void func_0206ecf8(s32 v);
 void func_0206e720(u32 v);
@@ -533,7 +533,7 @@ BOOL Unk_ov144_02293db8::func_ov144_02292fb4() {
         return TRUE;
     }
     u16 v = unk_664[unk_ba];
-    func_0209909c(&v);
+    func_0209909c(&v, 0, t);
     if (unk_ba == unk_bc) {
         if (IsZero(data_020e416c) == 0) {
             func_ov004_02234cd8();

@@ -283,8 +283,9 @@ void Unk_ov128_022954e0::func_ov128_022942c4() {
         unk_2d16 = 0;
     } else {
         unk_2d16 = 1;
-        if (unk_2d08 != unk_2d0c) {
-            u8 *s = func_020b053c();
+        s32 u = unk_2d08;
+        if (u != unk_2d0c) {
+            u8 *s = ((u8 *(*)(s32))func_020b053c)(u);
             unk_2cb0.func_0206f994(s + 0x16, 0x10);
             unk_2d18 = (unk_2cb0.func_0206fa1c() + 7) >> 3;
             if (unk_2d18 < 2) {

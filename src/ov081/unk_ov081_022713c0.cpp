@@ -604,15 +604,16 @@ void Unk_ov081_022720ec::vfunc_78(Unk_ov081_0227186c_Out *out) {
             return;
         }
     }
+    u32 a = (u32)&l;
     {
-        u32 v = ((u8 *)&l.o)[2];
+        u32 v = *(u8 *)(a + 14);
         if (v < 0xc || v >= 0x12) {
             out->b = 2;
             return;
         }
     }
-    l.h[0] = 0x1374;
-    func_020947c0(&l.h[1], func_02094348(&l.h[0]));
+    *(u16 *)a = 0x1374;
+    func_020947c0(&l.h[1], func_02094348((u16 *)a));
     out->b = 3;
     if (func_0202e1cc(0x1b, 0) == 0) {
         l.h[3] = 0x1374;

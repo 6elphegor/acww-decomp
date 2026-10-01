@@ -288,7 +288,7 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
             s->unk_02 = s->unk_02 + 1;
             s->unk_00 = s->unk_00 + 1;
         } else {
-            func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
+            func_02291d3c(s->unk_08, s->unk_04, s ? (s->unk_00 & 0x1f) : (s->unk_00 & 0x1f));
             s->unk_00 = s->unk_00 + 1;
             s->unk_04 = s->unk_04 + 1;
             func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);

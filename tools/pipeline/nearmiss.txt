@@ -327,10 +327,8 @@ func_ov068_0226a1a0 ov068_018/ov068_018.cpp  # Thumb -O4,s; 6-instr hx/hz load o
 func_ov068_0226cbf8 ov068_022/ov068_022.cpp  # Thumb -O4,s C++; static-table init + loop head regalloc only
 func_ov068_0226ddac ov068_024/ov068_024.cpp  # Thumb -O4,s C++; 2 sites fold [r4,r0] vs orig materialised adds rN,this,K (4 bytes short)
 func_ov073_02271484 ov073_000/ov073_000.cpp  # Thumb -O4,s C++; vfunc_18 switch tree: orig table under cmp 0;bge with no upper check (goto_try.cpp gets closer)
-func_ov081_0227186c ov081_000/ov081_000.cpp  # Thumb -O4,s C++; extra add r0,sp,#0 before bl (orig reuses r0=sp+0), 2 bytes long
 func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
 func_ov094_02293fc4 ov094_003/ov094_003.cpp  # Thumb -O4,s C++; data base/halfword regs r1<->r2 + extra adds (2 bytes long)
-func_ov093_02291a3c ov093_000/ov093_000.cpp  # Thumb -O4,s C++; last else block arg evaluation order (r3 first via zero r0), 2 bytes long
 func_ov095_02293a78 ov095_002/ov095_002.cpp  # Thumb -O4,s C; mvns -1 scheduled after 3 zero stores (orig before)
 func_ov095_02293fb4 ov095_002/ov095_002.cpp  # Thumb -O4,s C; second loop counter/zero/temp regs rotated
 func_ov095_02292e50 ov095_001/ov095_001.cpp  # Thumb -O4,s C; r5/r6 swapped (p vs s->unk_14) throughout
@@ -340,12 +338,10 @@ func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stac
 func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend: eager rgb extraction/spill order differs, mwcc hoists 'x *= d' (~150 lines)
 func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
 func_ov123_02293bd0 ov123_003/ov123_003.cpp  # Thumb -O4,s C; 4bpp nibble expansion loop: register renaming (dst/src/sh/tmp) + i/j stack slots swapped; frame and insn sequence match (~50 decl perms tried)
-func_ov128_022942c4 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; 2nd compare unk_2d08 != unk_2d0c: r0/r1 swapped
 func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
 ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
 ov142_000 func_ov142_02292154 — known unsolved 5-5-5 colour blend (orig extracts y channels eagerly, frame 12 vs 4)
 ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match, remaining diff is double u16 load CSE'd + [sp+4] slot order
 ov145_000 func_ov145_022920b0 — known unsolved 5-5-5 colour blend (inlined; orig extracts arr[7] channels eagerly)
-ov144_001 func_ov144_02292fb4 — call result copied before cmp -1 (adds r2,r0,#0) + u16 local r3 vs r1
 ov146_000 func_ov146_022920b4 — known unsolved 5-5-5 colour blend (/20, inlined; eager channel extraction)
 ov146_001 func_ov146_02292970 — digit loop: orig hoists 0x10a into r7 and spills i*0x13; ours keeps i*0x13 in reg (~100 orderings tried)
