@@ -2599,7 +2599,9 @@ _ZN12Unk_0203761813func_02037674EiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij k
 _ZN12Unk_0203761813func_020376a8Ev kind:function(thumb,size=0x16) addr:0x020376a8
 func_020376c0 kind:function(thumb,size=0x34) addr:0x020376c0
 _ZN12Unk_020376f413func_020376f4Ev kind:function(thumb,size=0x26) addr:0x020376f4
+_ZN12Unk_020d905c13func_020376f4Ev kind:label(thumb) addr:0x020376f4
 _ZN12Unk_020376f413func_0203771cEv kind:function(thumb,size=0x16) addr:0x0203771c
+_ZN12Unk_020d905c13func_0203771cEv kind:label(thumb) addr:0x0203771c
 _ZN12Unk_020376f413func_02037734Ev kind:function(thumb,size=0x90) addr:0x02037734
 _ZN12Unk_020376f413func_020377c4Ev kind:function(thumb,size=0x2e) addr:0x020377c4
 _ZN12Unk_020376f413func_020377f4Ev kind:function(thumb,size=0x1c) addr:0x020377f4
