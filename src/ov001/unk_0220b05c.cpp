@@ -1,4 +1,4 @@
-// mwcc-flags: -O4,p
+// mwcc-flags: -O3,p
 #include "types.h"
 
 struct Unk_ov001_0220b05c_Reg {
@@ -87,24 +87,25 @@ void func_ov001_0220b148(s32 a, s32 b) {
     u8 x[5] = {3, 3, 3, 1, 0};
     u8 y[5] = {0, 0, 0, 2, 0};
     u8 z[5] = {0, 0, 0, 0, 2};
+    s32 k = a * 3;
     s32 i;
-    s32 base = a * 3;
-    s32 k = base;
     for (i = 0; i < x[a]; i++) {
         Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_10[k];
         r->w0 &= 0xc1fffcff;
+        u32 t = data_ov001_02229eec[k].x;
         r = data_ov001_0222dde0->unk_10[k];
-        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((data_ov001_02229eec[k].x & 0x1ff) << 16);
+        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
         k++;
     }
     if (a < 4) {
-        func_ov001_0222519c(data_ov001_0222dde0->unk_00[a], data_ov001_02229eec[base].x, b, data_ov001_0222dde0->unk_48[a], 2);
+        func_ov001_0222519c(data_ov001_0222dde0->unk_00[a], data_ov001_02229eec[a * 3].x, b, data_ov001_0222dde0->unk_48[a], 2);
     }
     for (i = 0; i < y[a]; i++) {
         Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_38[i];
         r->w0 &= 0xc1fffcff;
+        u32 t = data_ov001_02229eb4[i].x;
         r = data_ov001_0222dde0->unk_38[i];
-        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((data_ov001_02229eb4[i].x & 0x1ff) << 16);
+        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
     }
     for (i = 0; i < z[a]; i++) {
         func_ov001_02224704(data_ov001_0222dde0->unk_40[i], -1, 0, 0);

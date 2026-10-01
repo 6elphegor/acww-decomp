@@ -1,4 +1,4 @@
-// mwcc-flags: -O4,p
+// mwcc-flags: -O3,p
 #include "types.h"
 
 struct Unk_ov001_0220951c_Rec {
@@ -118,7 +118,6 @@ void func_ov001_02209698(s32 a, s32 b, u32 c) {
     Unk_ov001_02209698_Five z = *(Unk_ov001_02209698_Five *)data_ov001_0222a844;
     s32 idx = b * 12;
     s32 i;
-    s32 j;
     for (i = 0; i < x.b[b]; i++) {
         Unk_ov001_0220951c_Rec *r = data_ov001_0222dddc->unk_30[idx];
         r->unk_00 = r->unk_00 & 0xc1fffcff;
@@ -138,9 +137,9 @@ void func_ov001_02209698(s32 a, s32 b, u32 c) {
         r = data_ov001_0222dddc->unk_ec[n];
         r->unk_00 = ((data_ov001_02229c08[n][0] & 0x1ff) << 16) | ((r->unk_00 & 0xfe00ff00) | (u8)c);
     }
-    for (j = 0; j < z.b[b]; j++) {
-        func_ov001_02224704(data_ov001_0222dddc->unk_fc[j], -1, 0, 0);
-        func_ov001_02224558(data_ov001_0222dddc->unk_fc[j], -1, data_ov001_02229c00[j][0], c);
+    for (i = 0; i < z.b[b]; i++) {
+        func_ov001_02224704(data_ov001_0222dddc->unk_fc[i], -1, 0, 0);
+        func_ov001_02224558(data_ov001_0222dddc->unk_fc[i], -1, data_ov001_02229c00[i][0], c);
     }
 }
 

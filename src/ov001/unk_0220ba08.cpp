@@ -233,17 +233,15 @@ void func_ov001_0220bfac() {
     func_ov001_02226ffc(data_ov001_0222dde0->unk_5c, (void *)func_ov001_0220ae6c);
 }
 
+struct Unk_ov001_0220bfec_Pair { u16 a, b; };
+struct Unk_ov001_0220bfec_Rect { Unk_ov001_0220bfec_Pair p; Unk_ov001_0220bfec_Pair s; };
 void func_ov001_0220bfec() {
-    volatile u16 pos[4];
+    Unk_ov001_0220bfec_Rect pos;
     u32 t;
     u16 v[2];
     s32 i, j, k;
-    pos[2] = data_ov001_0222aa58[2];
-    pos[3] = data_ov001_0222aa58[3];
-    pos[0] = data_ov001_0222aa58[0];
-    pos[1] = data_ov001_0222aa58[1];
-    pos[2] = ((u16 *)data_ov001_02229ea4)[0];
-    pos[3] = ((u16 *)data_ov001_02229ea4)[1];
+    pos = *(Unk_ov001_0220bfec_Rect *)data_ov001_0222aa58;
+    pos.s = *(Unk_ov001_0220bfec_Pair *)data_ov001_02229ea4;
     data_ov001_0222dde0 = (Unk_ov001_0222dde0 *)func_ov001_02225db0(0x6c, 4);
     data_ov001_0222dde0->unk_60 = 0x1f;
     data_ov001_0222dde0->unk_63 = 0;
@@ -275,12 +273,12 @@ void func_ov001_0220bfec() {
     v[1] = i;
     for (; i < 4; i++) {
         data_ov001_0222dde0->unk_00[i] = func_ov001_02225748(0, bw, bh, 0, &t, 0);
-        pos[0] = 0;
+        pos.p.a = 0;
         s32 idx = n;
         s32 kk;
-        for (kk = 0; kk < 3; kk++, idx++, pos[0] += 0x20) {
+        for (kk = 0; kk < 3; kk++, idx++, pos.p.a += 0x20) {
             v[0] = data_ov001_02229ed0[idx];
-            func_ov001_02225254(data_ov001_0222dde0->unk_00[i], pos[0], pos[1], pos[2], pos[3], 2, 0x480, (void *)v);
+            func_ov001_02225254(data_ov001_0222dde0->unk_00[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
         }
         data_ov001_0222dde0->unk_48[i] = func_ov001_02224870(0, t, 0);
         n += 3;
@@ -291,6 +289,8 @@ void func_ov001_0220bfec() {
     data_ov001_0222dde0->unk_5c = func_ov001_02227094(0, (void *)func_ov001_0220be9c, 0, 0x78);
     func_ov001_0220b148(0, 0xc0);
 }
+
+
 
 #pragma thumb reset
 }

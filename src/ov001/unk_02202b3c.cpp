@@ -380,16 +380,23 @@ s32 func_ov001_02202e74(void **out) {
     return res;
 }
 
+enum Loop_02203004 { LOOP_02203004_0 = 0 };
+
 s32 func_ov001_02203004() {
+    Loop_02203004 loop;
     s32 res = -1;
     s32 msg;
     if (func_ov001_02203508()) {
-        s32 z = 0;
-        s32 loop = 1;
+        loop = LOOP_02203004_0;
         do {
             func_02114188(data_ov001_0222c6ac, &msg, 1);
-            switch (msg) { case 14: res = z; break; default: break; }
-            loop = z;
+            switch (msg) {
+            case 14:
+                res = loop;
+                break;
+            default:
+                break;
+            }
         } while (loop);
     }
     return res;

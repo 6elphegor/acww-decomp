@@ -1,4 +1,5 @@
 // mwcc-flags: -O4,p
+#pragma opt_dead_assignments off
 #include "types.h"
 
 extern "C" {
@@ -55,8 +56,8 @@ struct Unk_ov001_0220681c_Src {
     Unk_ov001_0220681c_Mac mac;
     u16 len;
     u8 name[0x20];
-    u8 pad[0xc0 - 0x2c - 2];
     u16 flags;
+    u8 pad[0xc0 - 0x2c - 2];
 };
 
 extern "C" {
@@ -67,7 +68,7 @@ s32 func_ov001_02207008();
 s32 func_ov001_0220744c(u8 *a, s32 b);
 void func_ov001_02203df4(u8 *p);
 void func_ov001_02203b1c();
-void func_ov001_02203d7c(u8 *p);
+void func_ov001_02203d7c(u8 *p, u8 *q);
 void func_ov001_02206fc0();
 void func_02115094(u8 *p);
 void func_021152e4(u8 *p);
@@ -188,10 +189,9 @@ s32 func_ov001_02206558(u8 *p, u32 id, u8 *data, u32 len) {
 }
 
 u8 *func_ov001_02206584(u8 *out, u32 id0, u8 *data, u32 len) {
-    u16 id = (u16)id0;
     u32 pad;
     out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
-    *(u16 *)out = Bswap(id);
+    *(u16 *)out = Bswap(id0);
     pad = ((len + 11) & ~7) - 4;
     *(u16 *)(out + 2) = Bswap((u16)len);
     out += 4;
@@ -200,6 +200,7 @@ u8 *func_ov001_02206584(u8 *out, u32 id0, u8 *data, u32 len) {
     out += pad;
     return out;
 }
+
 
 s32 func_ov001_022065ec(u8 *pkt, u32 type, u8 *hdr, u32 len, u8 *extra) {
     u8 *q = pkt;
@@ -357,149 +358,109 @@ BOOL func_ov001_02206b08(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s
     return ret;
 }
 
+
+extern "C" BOOL func_ov001_02206b08(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s32 *out);
 s32 func_ov001_0220681c() {
     s32 result = -1;
     s32 iter;
     s32 i;
-    volatile s32 j;
+    s32 j;
     u32 size;
-    u8 *buf1;
-    u8 *buf2;
-    u8 *p1c;
-    u8 *p20;
-    u8 *p24;
-    u32 z0;
-    u32 z1;
-    u32 z2;
-    u32 z3;
-    u32 z4;
-    u32 z5;
-    u32 z6;
-    u32 z7;
-    s32 idx;
+    Unk_ov001_02206b08_Tbl *buf1;
+    Unk_ov001_02206b08_Tbl *buf2 = 0;
+    Unk_ov001_0220681c_Src *src;
+    s32 idx = 0;
     u8 unkbuf[0x20];
     u8 name[0x30];
     s32 cont;
     s32 t;
     s32 sc;
-    u32 zr;
-    Unk_ov001_0220681c_Mac *macp;
 
-    idx = 0;
-    buf2 = 0;
-    size = data_ov001_0222c8c0;
-    size = size * 0x30;
-    size = size + 0x34;
-    buf1 = func_ov001_02203e08(1, size);
+    size = data_ov001_0222c8c0 * 0x30 + 0x34;
+    buf1 = (Unk_ov001_02206b08_Tbl *)func_ov001_02203e08(1, size);
     if (buf1 == 0) goto cleanup;
-    buf2 = func_ov001_02203e08(1, size);
+    buf2 = (Unk_ov001_02206b08_Tbl *)func_ov001_02203e08(1, size);
     if (buf2 == 0) goto cleanup;
-    iter = 0;
-    z7 = 0;
-    z5 = 0;
-    z4 = 0;
-    z3 = 0;
-    zr = 0;
-    z0 = 0;
-    z1 = 0;
-    z2 = 0;
-    z6 = 0;
-    goto test;
-body:
-    if (func_ov001_02203e34() >= data_ov001_0222a538) goto end2;
-    if (func_ov001_02207340(z0, z0, z0, 0x30bffe) == 0) {
-        result = -2;
-        goto cleanup;
-    }
-    func_021152e4(name);
-    func_0211512c(name, 0xffb10, z1, func_ov001_02206fc0, 0x13);
-    cont = 1;
-    result = z2;
-    do {
-        func_021132e0(10);
+    for (iter = 0; iter < 0x1e && data_ov001_0222c860 == 0; iter++) {
         if (func_ov001_02203e34() >= data_ov001_0222a538) break;
-        if (data_ov001_0222c860 != 0) break;
-        t = func_ov001_02207008();
-        while (t != 0) {
-            switch (t) {
-            case 0x13:
-                cont = zr;
-                break;
-            case 5:
-                sc = func_ov001_0220744c(data_ov001_0222c8ac, data_ov001_0222c8c0);
-                if (sc > result) {
-                    result = sc;
-                    func_02115094(name);
-                    func_0211512c(name, 0xffb10, z3, func_ov001_02206fc0, 0x13);
+        if (func_ov001_02207340(0, 0, 0, 0x30bffe) == 0) {
+            result = -2;
+            goto cleanup;
+        }
+        func_021152e4(name);
+        func_0211512c(name, 0xffb10, 0, func_ov001_02206fc0, 0x13);
+        cont = 1;
+        result = 0;
+        do {
+            func_021132e0(10);
+            if (func_ov001_02203e34() >= data_ov001_0222a538) break;
+            if (data_ov001_0222c860 != 0) break;
+            while ((t = func_ov001_02207008()) != 0) {
+                switch (t) {
+                case 0x13:
+                    cont = 0;
+                    break;
+                case 5:
+                    sc = func_ov001_0220744c(data_ov001_0222c8ac, data_ov001_0222c8c0);
+                    if (sc > result) {
+                        result = sc;
+                        func_02115094(name);
+                        func_0211512c(name, 0xffb10, 0, func_ov001_02206fc0, 0x13);
+                    }
+                    break;
+                case 10:
+                    cont = 0;
+                    break;
+                case 0: case 1: case 2: case 3: case 6: case 7: case 9:
+                case 11: case 12: case 13: case 14: case 15: case 16: case 17:
+                default:
+                    cont = 0;
+                    break;
+                case 4: case 8: case 0x12:
+                    break;
                 }
-                break;
-            case 10:
-                cont = z4;
-                break;
-            case 0: case 1: case 2: case 3: case 6: case 7: case 9:
-            case 11: case 12: case 13: case 14: case 15: case 16: case 17:
-            default:
-                cont = z5;
-                break;
-            case 4: case 8: case 0x12:
+            }
+        } while (cont != 0);
+        func_02115094(name);
+        while (func_ov001_02207008() != 0) {}
+        if (data_ov001_0222c860 != 0) break;
+        j = 0;
+        if (result >= data_ov001_0222c8c0) {
+            result = -6;
+            goto cleanup;
+        }
+        for (i = 0, src = (Unk_ov001_0220681c_Src *)data_ov001_0222c8ac; i < result; i++, src++) {
+            func_02128a00(buf1->e[j].name, src->name, 0x20);
+            buf1->e[j].len = src->len;
+            buf1->e[j].name[src->len] = 0;
+            buf1->e[j].unk_2e = (src->flags & 0x10) ? 1 : 0;
+            {
+                const u8 *ms = src->mac.b;
+                u8 *md = buf1->e[j].unk_28;
+                md[0] = ms[0]; md[1] = ms[1]; md[2] = ms[2]; md[3] = ms[3]; md[4] = ms[4]; md[5] = ms[5];
+            }
+            j++;
+        }
+        buf1->count = result;
+        if (data_ov001_0222c888 != 1) {
+            if (func_ov001_02206b08(buf1, buf2, &idx) != 0) {
+                Unk_ov001_02206b08_Ent *e = &buf1->e[idx];
+                data_ov001_0222c868 = idx;
+                func_0212a360(data_ov001_0222c964, e->name);
+                {
+                    u8 *md = data_ov001_0222c8dc;
+                    const u8 *ms = e->unk_28;
+                    md[0] = ms[0]; md[1] = ms[1]; md[2] = ms[2]; md[3] = ms[3]; md[4] = ms[4]; md[5] = ms[5];
+                }
+                func_ov001_02203d7c(unkbuf, data_ov001_0222c8dc);
                 break;
             }
-            t = func_ov001_02207008();
         }
-    } while (cont != 0);
-    func_02115094(name);
-    while (func_ov001_02207008() != 0) {}
-    if (data_ov001_0222c860 != 0) goto end2;
-    if (result >= data_ov001_0222c8c0) {
-        result = -6;
-        goto cleanup;
+        func_02128a00(buf2, buf1, size);
+        data_ov001_0222c888 = 2;
+        func_ov001_02203b1c();
     }
-    p1c = data_ov001_0222c8ac;
-    if (result > 0) {
-        p20 = buf1 + 8;
-        p24 = buf1;
-        macp = (Unk_ov001_0220681c_Mac *)(buf1 + 0x2c);
-        i = z6;
-        j = z6;
-        do {
-            Unk_ov001_0220681c_Src *src = (Unk_ov001_0220681c_Src *)p1c;
-            func_02128a00(p20, src->name, 0x20);
-            *(u32 *)(p24 + 4) = src->len;
-            *(p24 + src->len + 8) = z7;
-            if ((src->flags & 0x10) != 0) sc = 1; else sc = z7;
-            *(u16 *)(p24 + 0x32) = sc;
-            *macp = src->mac;
-            p20 += 0x30;
-            p24 += 0x30;
-            macp = (Unk_ov001_0220681c_Mac *)((u8 *)macp + 0x30);
-            j++;
-            i++;
-            p1c += 0xc0;
-        } while (i < result);
-    }
-    *(u32 *)buf1 = result;
-    if (data_ov001_0222c888 != 1) {
-        if (func_ov001_02206b08((Unk_ov001_02206b08_Tbl *)buf1, (Unk_ov001_02206b08_Tbl *)buf2, &idx) != 0) {
-            Unk_ov001_02206b08_Ent *e = (Unk_ov001_02206b08_Ent *)(buf1 + 4) + idx;
-            data_ov001_0222c868 = idx;
-            func_0212a360(data_ov001_0222c964, (u8 *)e + 4);
-            *(Unk_ov001_0220681c_Mac *)data_ov001_0222c8dc = *(Unk_ov001_0220681c_Mac *)e->unk_28;
-            func_ov001_02203d7c(unkbuf);
-            goto end2;
-        }
-    }
-    func_02128a00(buf2, buf1, size);
-    data_ov001_0222c888 = 2;
-    func_ov001_02203b1c();
-    iter++;
-test:
-    if (iter >= 0x1e) goto end2;
-    if (data_ov001_0222c860 != 0) goto end2;
-    goto body;
-end2:
-    if (iter >= 0x1e) {
-        result = -3;
-    } else if (func_ov001_02203e34() > data_ov001_0222a538) {
+    if (iter >= 0x1e || func_ov001_02203e34() > data_ov001_0222a538) {
         result = -3;
     } else if (data_ov001_0222c860 != 0) {
         result = -8;
@@ -507,8 +468,8 @@ end2:
         result = 1;
     }
 cleanup:
-    if (buf1 != 0) func_ov001_02203df4(buf1);
-    if (buf2 != 0) func_ov001_02203df4(buf2);
+    if (buf1 != 0) func_ov001_02203df4((u8 *)buf1);
+    if (buf2 != 0) func_ov001_02203df4((u8 *)buf2);
     return result;
 }
 }
