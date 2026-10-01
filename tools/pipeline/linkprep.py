@@ -47,6 +47,7 @@ CONFIG = Path("config/usa/arm9")
 RENAMES = {}  # (module, address) -> new name, from a renames.txt next to the object being checked
 ALIASES = []  # (module, existing name, second name), from an aliases.txt next to the object being checked
 INTERIOR = {}  # (module, label address) -> object start, from `interior:` lines of the renames.txt
+SECTION_LABELS = {}  # (module, address) -> section, from `section:` lines of the renames.txt
 # symbols the linker script defines
 LCF_SYMBOL = r"OVERLAY_\d+_ID"
 
@@ -60,6 +61,8 @@ def load_renames(path):
             f = line.split("#", 1)[0].split()
             if len(f) == 3 and f[2].startswith("interior:"):
                 INTERIOR[(f[0], int(f[1], 16))] = int(f[2].split(":", 1)[1], 16)
+            elif len(f) == 3 and f[2].startswith("section:"):
+                SECTION_LABELS[(f[0], int(f[1], 16))] = f[2].split(":", 1)[1]
             elif len(f) == 3:
                 RENAMES[(f[0], int(f[1], 16))] = f[2]
         print(f"(applying {len(RENAMES)} renames from {p})")
@@ -79,13 +82,27 @@ def symbol_lines(p, mod):
             yield name, int(m.group(3), 16), line
 
 
+def lcf_symbols():
+    '''name -> (module, address) for the names the linker script defines (lcf_symbols.txt, tools/lcf_symbols.py)'''
+    out = {}
+    for p in CONFIG.rglob("lcf_symbols.txt"):
+        mod = p.parent.name if p.parent != CONFIG else "main"
+        for line in p.read_text().splitlines():
+            m = re.match(r"(\S+)\s+addr:(0x[0-9a-fA-F]+)\s+base:\S+", line.split("#", 1)[0].strip())
+            if m:
+                out[m.group(1)] = (mod, int(m.group(2), 16))
+    return out
+
+
 def load_symbols():
-    '''name -> (module, address) for every symbols.txt'''
+    '''name -> (module, address) for every symbols.txt, and for the names the linker script defines'''
     out = {}
     for p in CONFIG.rglob("symbols.txt"):
         mod = p.parent.name if p.parent != CONFIG else "main"
         for name, addr, _ in symbol_lines(p, mod):
             out.setdefault(name, (mod, addr))
+    for name, where in lcf_symbols().items():
+        out.setdefault(name, where)
     # a rename for an address without a symbol yet (a vtable named at its start, 8 bytes before dsd's label)
     for (mod, addr), name in RENAMES.items():
         out.setdefault(name, (mod, addr))

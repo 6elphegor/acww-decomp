@@ -12,6 +12,7 @@ from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
 import object_order
 import bss_units
 import aliases
+import lcf_symbols
 
 
 DEFAULT_WIBO_PATH = "./wibo"
@@ -239,6 +240,12 @@ def main():
         n.newline()
 
         n.rule(
+            name="lcf_symbols",
+            command=f"{PYTHON} tools/lcf_symbols.py $objects_file $lcf_file --config $config_path -o $out_lcf"
+        )
+        n.newline()
+
+        n.rule(
             name="force_active",
             command=f"{PYTHON} tools/force_active.py $in -o $out --symbols $symbols_files"
         )
@@ -457,6 +464,27 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
         )
         n.newline()
         objects_file = alias_objects_file
+
+    # Names for addresses inside linked units that other code still uses are defined in the linker script, see
+    # tools/lcf_symbols.py. The step only exists when a module has an lcf_symbols.txt with entries.
+    if lcf_symbols.has_labels(arm9_config):
+        labels_lcf_file = str(project.game_build / "arm9_lcf_symbols.lcf")
+        n.build(
+            inputs=[objects_file, lcf_file],
+            implicit=["tools/lcf_symbols.py", delink_file]
+                     + [str(path) for path in lcf_symbols.description_files(arm9_config)]
+                     + project.delinks_files + project.symbols_files + project.source_object_files(),
+            rule="lcf_symbols",
+            outputs=[labels_lcf_file],
+            variables={
+                "objects_file": objects_file,
+                "lcf_file": lcf_file,
+                "config_path": str(arm9_config),
+                "out_lcf": labels_lcf_file,
+            },
+        )
+        n.newline()
+        lcf_file = labels_lcf_file
 
     # Linker script with FORCE_ACTIVE for delinked code, see tools/force_active.py
     force_active_lcf_file = str(project.game_build / "arm9_force_active.lcf")

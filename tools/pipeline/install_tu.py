@@ -22,7 +22,12 @@ renames.txt next to the source (if present) is applied: `module hexaddr newname`
 address has no symbol but address+8 has a `data_` label is a vtable: the label is replaced by the name at the
 vtable's start and every relocation to the label becomes `to:<start> add:0x8` (tools/pipeline/vtable_rename.py).
 A line `module labeladdr interior:objectaddr` says that the label is an address inside the object at objectaddr:
-the label is removed and relocations to it become `to:<object> add:<offset>`.
+the label is removed from symbols.txt, relocations to it become `to:<object> add:<offset>`, and the label is recorded
+in the module's lcf_symbols.txt as `<label> addr:<address> base:<object>` so that the linker script defines it for
+compiled sources that still use it as an extern (tools/lcf_symbols.py).
+A line `module addr section:.ctor` says that the symbol at addr is used from outside the unit but cannot be defined
+by the object (the compiler's symbol there is local, e.g. the first word of the .ctor table): the symbol stays in
+symbols.txt, gets an identifier name if needed, and is recorded in lcf_symbols.txt relative to the section start.
 
 main only: a `.bss` line gives the unit's range in autoload_3 (main has no .bss of its own). It is written to
 config/usa/arm9/autoload_3/delinks.txt as the placeholder unit src/main/unk_<text start>.bss.cpp (see
@@ -224,6 +229,14 @@ if ren.exists():
                 print(f"interior label {mod} {int(addr, 16):#010x} removed, {n} relocations rewritten")
             except ValueError as e:
                 print(f"WARNING: renames.txt: {line.strip()}: {e}")
+            continue
+        if new.startswith("section:"):
+            try:
+                label = vtable_rename.section_label(mod, int(addr, 16), new.split(":", 1)[1], quiet=True)
+                print(f"linker script name {label} for {mod} {int(addr, 16):#010x} recorded in "
+                      f"{vtable_rename.module_dir(mod) / vtable_rename.LCF_SYMBOLS}")
+            except ValueError as e:
+                sys.exit(f"install_tu.py: renames.txt: {line.strip()}: {e}")
             continue
         sp = vtable_rename.module_dir(mod) / "symbols.txt"
         lines = sp.read_text().splitlines()

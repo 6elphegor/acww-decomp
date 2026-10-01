@@ -13,4 +13,4 @@ Files used to run parallel matching agents over ARM9 main. The originals lived i
 `linking.md` is the playbook. Overlays: `linkprep.py`, `install_tu.py`, `install_units.py`, `ovdump.py`, `link_candidates.py`.
 Main module (see "Linking the main module" in `linking.md`): `install_tu.py main`, `linkprep.py ... main` (`mainprep.py`),
 `realnames.py`, `maindis.py`, `vtable_rename.py`, `mainbatch.sh`; build steps `tools/bss_units.py`, `tools/aliases.py`,
-`tools/object_order.py`. `maincheck.py` is the older per-function check; `linkprep.py check <o> main <spec>` replaces it.
+`tools/object_order.py`, `tools/lcf_symbols.py` (names for addresses inside linked units, from `lcf_symbols.txt`). `maincheck.py` is the older per-function check; `linkprep.py check <o> main <spec>` replaces it.

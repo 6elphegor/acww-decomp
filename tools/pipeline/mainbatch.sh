@@ -19,7 +19,7 @@ pgrep -x ninja >/dev/null && { echo "BUSY: a build is running"; exit 2; }
 revert() {
   git reset -q HEAD -- src/main config
   git checkout -q HEAD -- src/main config
-  git clean -qfd src/main
+  git clean -qfd src/main config
   python3 tools/configure.py usa >/dev/null
 }
 NAMES=""
@@ -49,7 +49,7 @@ if [ "$(tail -1 "$T/build.log")" = "acww_usa.nds: OK" ]; then
 Full build: acww_usa.nds: OK" && git log --oneline -1
   fi
 else
-  grep -E "rror|Undefined|undefined|FAILED|Multiply|^(bss_units|object_order|aliases)\.py:" "$T/build.log" | head -12
+  grep -E "rror|Undefined|undefined|FAILED|Multiply|^(bss_units|object_order|aliases|lcf_symbols)\.py:" "$T/build.log" | head -12
   python3 tools/pipeline/romdiff.py 2>&1 | head -5
   python3 tools/pipeline/linkprep.py diff main 2>&1 | head -30
   revert

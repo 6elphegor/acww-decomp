@@ -15,6 +15,8 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
         FOREIGN  the object defines a symbols.txt function that lives outside the unit's .text range
         MISSING  a symbols.txt function of the range is not defined; or a name other code refers to
                  (relocs.txt of any module, from outside the unit) is not defined by the object at that address
+                 and is not a name the linker script defines (lcf_symbols.txt; `interior:`/`section:` lines of
+                 renames.txt, which are checked too)
         ALIAS    a second symbols.txt name (label) of one of the unit's functions (information; aliases.py /
                  the build defines it unless the object does)
         NORANGE  the object emits a section kind the spec has no range for
@@ -439,6 +441,27 @@ def cmd_check(lp, objpath, unit):
     for name in defined_funcs:
         defined_at.setdefault(syms[name][1], set()).add(name)
     missing = 0
+    # names the linker script defines (tools/lcf_symbols.py): recorded ones, and the ones install_tu.py will record
+    # from this unit's renames.txt. They satisfy references from outside the unit.
+    linker_defined = {a for m, a in lp.lcf_symbols().values() if m in ("main", BSS_MODULE)}
+    for (mod, addr), section in sorted(lp.SECTION_LABELS.items()):
+        rng = secs.get(section)
+        if mod != "main" or rng is None or not (rng[0] <= addr < rng[1]) or addr not in by_addr:
+            say(f"MISSING renames.txt `{mod} {addr:08x} section:{section}`: the address must be a symbols.txt symbol "
+                f"of main inside the unit's {section} range")
+            missing += 1
+            continue
+        linker_defined.add(addr)
+    for (mod, addr), start in sorted(lp.INTERIOR.items()):
+        if mod not in ("main", BSS_MODULE) or not in_unit(start) or addr not in by_addr:
+            continue  # without a symbols.txt name only the relocations are rewritten
+        base = [n for n, r, m in by_addr.get(start, []) if not r.startswith("kind:label")]
+        if not in_unit(addr) or not any(n in defined_at.get(start, ()) for n in base):
+            say(f"MISSING renames.txt `{mod} {addr:08x} interior:{start:08x}`: the object must define the symbols.txt "
+                f"object at {start:#010x} ({', '.join(base) or 'no symbol'}) as a global, and the label must lie in "
+                f"the unit: the linker script defines {by_addr[addr][0][0]} as that object + {addr - start:#x} "
+                f"(tools/lcf_symbols.py)")
+            missing += 1
     ext = external_refs(ranges, in_unit)
     for to in sorted(ext):
         users = ext[to]
@@ -447,6 +470,8 @@ def cmd_check(lp, objpath, unit):
         eg = ", ".join(f"{m}:{f:#010x}" for m, f in users[:3])
         if any(k[1] == to for k in lp.INTERIOR):
             continue  # renames.txt: install_tu.py retargets these relocations to the object's start
+        if to in linker_defined:
+            continue  # the linker script defines the name there (lcf_symbols.txt, or a `section:` line)
         if to in vt:
             start, vname = vt[to]
             if vname not in defined_at.get(start, ()):

@@ -263,7 +263,8 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   callers — the only uses so far — but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of
   caller appears, or give callers the name the source defines.
 * Data labels of `symbols.txt` get no aliases: if another unit references `data_ovNNN_XXXXXXXX` by name, the
-  source must define the object under that name. A pointer from another module into the middle of one of the
+  source must define the object under that name (or, for a label inside an object, record it in the overlay's
+  `lcf_symbols.txt`, see "Names the linker script defines"). A pointer from another module into the middle of one of the
   unit's objects is handled as for any linked unit: name the object's start in `symbols.txt` and give the
   relocation `add:<offset>` (ov003 TU08: main's word at 0x020cdf4c points to 0x02231707, inside a vtable; it is
   now `to:0x0223160c add:0xfb` with `_ZTV18Unk_ov003_02231614` at 0x0223160c). mwld does **not** report the
@@ -308,8 +309,8 @@ dsd splits autoload_3's gap object at the range and writes `unk_0209c37c.bss.o(.
 to `unk_0209c37c.o(.bss)` and drops the placeholder from the object list. The unit's `.bss` sections then land in
 autoload_3 exactly like an overlay unit's in its overlay. `install_tu.py` writes both entries from one spec.
 
-Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` -> `force_active.py` -> mwld. Each
-of the three middle steps exists only when needed (`tools/configure.py` decides), so **rerun
+Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` -> `lcf_symbols.py` ->
+`force_active.py` -> mwld. Each of the four middle steps exists only when needed (`tools/configure.py` decides), so **rerun
 `python3 tools/configure.py usa` after every install** (the helper script does).
 
 ## The spec and `install_tu.py main`
@@ -343,6 +344,8 @@ of the three middle steps exists only when needed (`tools/configure.py` decides)
     main 02050e84 _ZN20Unk_02050288_FontObjC1Ev     a symbol of the unit gets the name the object defines
     main 020dd36c _ZTV12Unk_020dd374                vtable: named at its start, see below
     autoload_3 021bdd80 interior:021bdb80           label inside an object, see "Interior labels"
+    main 020d1dd8 section:.ctor                     name the linker script must define, see "Names the linker
+                                                    script defines"
 
 `aliases.txt`: `<module> <existing name> <second name>` adds a label with `tools/pipeline/alias.py`, e.g.
 `autoload_2 _ll_sdiv _ll_udiv` (0x02132ef8 is the unsigned 64-bit division; linked overlay units call it
@@ -370,10 +373,67 @@ section that should be one size-sorted run has "runs" of objects that only `__si
 files declare such labels `extern`; **the unit must define the whole object once and use members or indices**
 (`data_021bdb80.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
 address with the original word, so it confirms the object + offset. If code *outside* the unit refers to the
-label (`check`: `MISSING ... interior`), add `<module> <label> interior:<object>` to `renames.txt`: the label is
-removed and the relocations become `to:<object> add:<offset>`. Never reference an interior label of your own
-object through an extern: the label is not defined once the unit is complete, and mwld links the word as 0
-without an error.
+label (`check`: `MISSING ... interior`; or other sources under `src/` declare it `extern`), add
+`<module> <label> interior:<object>` to `renames.txt`. At install the label is removed from `symbols.txt`, the
+relocations of delinked code become `to:<object> add:<offset>`, and the label is recorded in the module's
+`lcf_symbols.txt`, from which the build defines it in the linker script for the compiled sources that use it (next
+section). Inside the unit itself use the member, not an extern of the label.
+
+## Names the linker script defines: `tools/lcf_symbols.py`
+
+Once a range belongs to a compiled unit, only the global symbols of its object exist there. Two kinds of names
+that other code uses are then defined by nobody:
+
+* an **interior label** that compiled sources of other units declare `extern` (`data_021d7352` =
+  `data_021d7350 + 2`; 106 linked files use the 49 labels inside the save object). The link stops with
+  `Undefined: "data_021d7352"`;
+* a name for a place the compiler gives only a **local symbol**: the first word of main's `.ctor` table is
+  `.p__sinit_<file>` in the object, and the runtime in autoload_2 has a relocation to it (0x02135344). A delinked
+  object's references are weak: no message, the word is 0, `autoload_2.bin` differs.
+
+Both are recorded in `lcf_symbols.txt` next to the module's `symbols.txt` (main: `config/usa/arm9/`, main's bss:
+`config/usa/arm9/autoload_3/`, overlays likewise):
+
+    data_021d7352      addr:0x021d7352  base:data_021d7350
+    p__sinit_020c2cd0  addr:0x020d1dd8  base:ARM9_CTOR_START
+
+`base` is a data/bss symbol of the same `symbols.txt` that a complete unit defines as a global object, or a
+section start of the module as dsd's script names it (`ARM9_CTOR_START`, `OV004_DATA_START`). The build step
+(after `aliases.py`, before `force_active.py`; only present when such a file has entries, so rerun
+`tools/configure.py`) appends `data_021d7352 = data_021d7350 + 0x2;` to the end of `SECTIONS`.
+
+What mwld does (tested with a miniature link of real mwcc objects, 1.2/base mwldarm):
+
+* an assignment satisfies the undefined reference of a compiled object and the weak reference of a delinked one,
+  for `.data`, for bss in a region without an output file (also `OBJECT()`-selected), and relative to a section
+  start symbol for `.ctor`;
+* a base that is not linked (misspelt, or dead-stripped because nothing keeps it) evaluates as **0 without a
+  message**; the name is then `0 + offset`. A linker script reference does not keep an object alive;
+* when an object also defines the name, there is no "multiply defined": for data the assignment silently wins;
+* a name must be an identifier: `.p__sinit_020c2cd0 = ...` is a syntax error, quoted or not. dsd accepts any name
+  for the symbol, so the `symbols.txt` name loses its dot.
+
+So the tool refuses, with file and line: a base that is not in `symbols.txt` (`force_active.py` keeps what is
+there) or that no linked compiled object defines as a global; a name that any linked object defines; an address
+outside the complete unit's range that the base is in (a delinked range means the name belongs in `symbols.txt`);
+a name that `symbols.txt` has at another address; duplicates; non-identifiers. `-v` lists every name and the
+objects that use it. Every recorded name is defined, used or not.
+
+**Which references it is for.** Compiled sources that use a label as an extern object: always this (the literal
+`data_021d7352` and `data_021d7350 + 2` are the same bytes, and no source changes). Relocations of delinked code
+(`to:<label>` in a `relocs.txt`): rewrite them as `to:<object start> add:<offset>` whenever the object start has
+a global symbol, which is what `interior:` does: it needs no linker symbol, dsd resolves it against the real
+object, and it stays right when the label is forgotten. Use a linker script name for a delinked relocation only
+when there is nothing to rewrite it to, because the compiler's symbol at the object start is local (`.ctor`
+words, `static` objects): renames.txt `main 020d1dd8 section:.ctor` keeps the symbol in `symbols.txt` (dsd needs
+it for the relocation and as the unit boundary), renames it to an identifier and records it relative to the
+section start. Function names never go here (`aliases.py`).
+
+`linkprep.py check` and `undef` read `lcf_symbols.txt` like `symbols.txt` (a later unit that uses
+`data_021d7352` as an extern resolves, and its TARGET test has the address); a `MISSING ... used from outside`
+line is satisfied by a recorded name or by an `interior:`/`section:` line of the unit's `renames.txt`, which
+`check` validates (the object must define the base as a global there). Standalone:
+`vtable_rename.py [-n] --interior <module> <label> <object>` and `--section <module> <address> [.ctor]`.
 
 This is also why the plan's unit boundaries of class `r` are often not real: when one object spans the bss of
 several consecutive units (TU014-TU017), or a class's vtable/key function, an `__arraydtor`, or a `__sinit`'s
@@ -423,7 +483,7 @@ global that symbols.txt names, or is referenced from a kept one; `.ctor` is alwa
 | `DATA` | an object's bytes at its simulated address differ (wrong initialiser or wrong order) |
 | `PLACE` | a named object is not on its symbols.txt address (order) |
 | `TARGET` | a relocation resolves to another address than the original word (calls: than relocs.txt), or to a symbol of the wrong module |
-| `MISSING` (data) | a name that relocations *from outside the unit* use is not defined by the object at that address: vtable label (rename), interior label, `static` object, wrong name |
+| `MISSING` (data) | a name that relocations *from outside the unit* use is not defined by the object at that address, nor by the linker script: vtable label (rename), interior label (`interior:`), `static` object, wrong name, a place with a local symbol only (`section:`); or an `interior:`/`section:` line that cannot work |
 | `ALIAS`, `BOUND`, `unused` | information: alias handling, boundary without symbol, dead-stripped sections |
 
 It must end with `0 layout problems, 0 wrong targets, 0 unresolved symbols`. `OVERLAY_<n>_ID` are linker script
@@ -491,6 +551,12 @@ prints the linker errors, `romdiff.py`, `linkprep.py diff main` and reverts `src
   listing an object for it). It stops with a message if the line is missing.
 * A leftover reference to a label inside a complete unit links as 0 without a linker error. `check`'s
   `MISSING` lines are the guard; the ROM checksum is the proof.
+* `lcf_symbols.py`: mwld checks nothing about a script assignment (missing base = 0, clash with an object =
+  silent), so the tool's own checks are the only guard besides the ROM checksum. It relies on the base being kept
+  by `force_active.py` (a `symbols.txt` name) and on dsd's `<MODULE>_<SECTION>_START = .;` lines. A label recorded
+  for an object whose layout later changes (another member order) still links, at the old offset. Labels removed
+  by `interior:` before this step existed were not recorded: add them with `vtable_rename.py`-style lines by hand
+  (`<label> addr:.. base:..`) when a compiled source needs one (`Undefined` at link).
 * `aliases.py` links a rewritten copy of the object (`build/usa/aliases/...`). Tools that read the unit's object
   from `build/usa/src/main` see the unpatched one.
 * Unit names follow the text start. Installing a unit renames the old file that started there; anything that
