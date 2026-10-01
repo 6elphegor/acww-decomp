@@ -123,7 +123,7 @@ void func_02232a08(void *p);
 void func_02232930(void *p);
 void func_022328b4(void *p);
 void func_02232d8c(void *p);
-BOOL func_ov004_0222d5a8(Unk_ov004_0222d874_Obj *self, Unk_ov004_0222d874_Ent **p, s32 i);
+BOOL func_ov004_0222d5a8(Unk_ov004_0222d874_Obj *self, Unk_ov004_0222d874_Ent **p, s32 i, s32 n);
 BOOL func_ov004_0222d874(Unk_ov004_0222d874_Obj *self);
 void func_ov004_0222dd3c(Unk_ov004_0222d874_Obj *self, s32 i);
 void func_ov004_0222cf38(Unk_ov004_0222d874_Obj *self);
@@ -269,7 +269,7 @@ extern "C" BOOL func_ov004_0222d874(Obj *self)
         if (e == NULL) return FALSE;
         u32 t = data_ov004_022402ec[i].b[1];
         if (t == 3) e->unk_1c6 = 1;
-        if (!func_ov004_0222d5a8(self, p, i)) {
+        if (!func_ov004_0222d5a8(self, p, i, t)) {
             func_ov004_0222dd3c(self, i);
             (*p)->unk_1c6 = 0;
             return FALSE;
@@ -370,10 +370,9 @@ extern "C" void func_ov004_0222dfbc(Obj *self)
 extern "C" void func_ov004_0222e060(Obj *self)
 {
     s32 t0 = self->unk_15c;
-    u8 *cp = &self->unk_1e8;
-    s32 c0 = *cp;
+    s32 c0 = self->unk_1e8;
     if (c0 != t0) {
-        if ((self->unk_1f4[c0 >> 5] & (1 << (c0 & 31))) == 0) *cp = t0;
+        if ((self->unk_1f4[c0 >> 5] & (1 << (c0 & 31))) == 0) self->unk_1e8 = t0;
         u8 *p2 = &self->unk_1e9;
         s32 c1 = *p2;
         if ((self->unk_1f4[c1 >> 5] & (1 << (c1 & 31))) == 0) {

@@ -292,11 +292,14 @@ void func_ov004_0223c7cc(Obj *o)
     o->unk_20 = 0;
 }
 
+static inline s32 Abs_c8d4(s32 x) { if (x < 0) return -x; return x; }
+struct V3z_c8d4 { s32 x, y, z; V3z_c8d4() {} ~V3z_c8d4() {} };
 s32 func_ov004_0223c8d4(Obj *o)
 {
+    V3z_c8d4 a, b;
     V3 *p;
     s32 r5, r4, r3, r2, s0, s4;
-    s32 px, pz, d1, d2, t;
+    s32 d1, d2;
     p = &o->unk_2c8;
     switch (o->unk_196) {
     case 0x15:
@@ -324,27 +327,21 @@ s32 func_ov004_0223c8d4(Obj *o)
         r2 = 0xda00;
         break;
     }
-    px = p->x;
-    t = px - r5;
-    if (t < 0) t = -t;
-    pz = p->z;
-    d1 = pz - r4;
-    if (d1 < 0) d1 = -d1;
-    d1 = t + d1;
-    t = px - r3;
-    if (t < 0) t = -t;
-    d2 = pz - r2;
-    if (d2 < 0) d2 = -d2;
-    d2 = t + d2;
+    d1 = Abs_c8d4(p->x - r5) + Abs_c8d4(p->z - r4);
+    d2 = Abs_c8d4(p->x - r3) + Abs_c8d4(p->z - r2);
     if (d1 < d2) {
-        o->unk_40.x = r5;
-        o->unk_40.y = s0;
-        o->unk_40.z = r4;
+        V3 *q = &o->unk_40;
+        q->x = r5;
+        q->y = s0;
+        q->z = r4;
         return d1;
     }
-    o->unk_40.x = r3;
-    o->unk_40.y = s4;
-    o->unk_40.z = r2;
+    {
+        V3 *q = &o->unk_40;
+        q->x = r3;
+        q->y = s4;
+        q->z = r2;
+    }
     return d2;
 }
 

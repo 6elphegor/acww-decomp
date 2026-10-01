@@ -362,9 +362,8 @@ void Unk_ov004_0224ec80::func_ov004_02237ad8() {
         n = 2;
     }
     for (i = 0; i < n; i++) {
-        u8 *obj;
-        func_02088c64(obj = unk_50[i], &pos[i], sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
-        func_02089040(obj);
+        func_02088c64(unk_50[i], &pos[i], sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
+        func_02089040(unk_50[i]);
     }
 }
 

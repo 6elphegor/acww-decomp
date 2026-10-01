@@ -180,7 +180,7 @@ void *func_0204b25c(void *p);
 BOOL func_0204b2d4();
 BOOL func_0204e474(void *g, s32 x, s32 y);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void func_0204ed8c(void *p);
+void func_0204ed8c(void *p, s32 x, s32 y);
 u32 func_02063b8c(u32 n);
 void *func_02095204(u32 a);
 s32 func_020e9650(void *a, void *b);
@@ -330,6 +330,8 @@ Unk_ov004_0224ebec::Unk_ov004_0224ebec() {
 
 #pragma opt_loop_invariants off
 extern "C" BOOL func_ov004_02236fe0(void *owner) {
+    s32 x2;
+    s32 y2;
     u8 cnt = 0;
     Unk_ov004_0223717c_Grid *g = data_021c47c4;
     u32 rows[32];
@@ -344,8 +346,6 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
     Unk_ov004_0223717c_Vec loc;
     u32 *row2;
     u8 k;
-    s32 x2;
-    s32 y2;
     u32 t;
     s32 w;
     u32 b;
@@ -401,7 +401,7 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         if (b) k = (u8)(k - 1);
         if (k == 0) {
             *row2 -= 1 << x2;
-            func_0204ed8c(&loc);
+            func_0204ed8c(&loc, x2, y2);
             loc.unk_04 = 0x200;
             y2 = g->unk_10;
             goto yn1;

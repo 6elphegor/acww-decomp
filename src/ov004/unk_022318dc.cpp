@@ -304,9 +304,11 @@ BOOL func_ov004_02231d54(s32 *p, s32 v)
 {
     BOOL r = FALSE;
     s32 sgn = 2;
-    volatile s32 k = sgn, b, a;
+    s32 k[1];
+    volatile s32 b, a;
     Unk_ov004_02231bb8_V3 q;
     s32 i;
+    k[0] = sgn;
     if (v < 0) {
         sgn *= -1;
     }
@@ -314,10 +316,7 @@ BOOL func_ov004_02231d54(s32 *p, s32 v)
         v = -v;
     }
     if (v > 0x4000) {
-        s32 kk;
-        kk = -1;
-        kk = kk * k;
-        k = kk;
+        k[0] *= -1;
     }
     for (i = 0; i < 0x32; i++) {
         a = p[2];
@@ -329,7 +328,7 @@ BOOL func_ov004_02231d54(s32 *p, s32 v)
             r = TRUE;
             break;
         }
-        s32 z = p[2] + ((k * i) << 12) / 10;
+        s32 z = p[2] + ((k[0] * i) << 12) / 10;
         s32 y = p[1];
         s32 x = p[0];
         q.x = x;
