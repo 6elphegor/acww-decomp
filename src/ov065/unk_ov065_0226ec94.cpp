@@ -1,18 +1,24 @@
-// mwcc-flags: -O4,p
+// mwcc-flags: -O4,p -str reuse
 #include "types.h"
 
-// ov065_026: HTTP-ish connect/redirect task (0x0226ecd0..0x0226f7c8)
+typedef unsigned long long u64;
+typedef long long s64;
+
+typedef void *(*Unk_ov065_0226ecfc_Alloc)(const void *tag, u32 size);
+typedef void (*Unk_ov065_0226ecfc_Free)(const void *tag, void *p, u32 z);
 
 struct Unk_ov065_0226ecfc_Glob {
     s32 unk_00;
     s32 unk_04;
     u8 unk_08[0x100];
-    void *(*unk_108)(const void *tag, u32 size);
-    void (*unk_10c)(const void *tag, void *p, u32 z);
+    Unk_ov065_0226ecfc_Alloc unk_108;
+    Unk_ov065_0226ecfc_Free unk_10c;
     u32 pad110;
     char *unk_114;
     char *unk_118;
-    u8 pad11c[0x1dc - 0x11c];
+    u8 unk_11c[0x6c];
+    u32 unk_188;
+    u8 pad18c[0x1dc - 0x18c];
     u8 unk_1dc[4];
 };
 
@@ -47,64 +53,15 @@ struct Unk_ov065_0226ecfc_Out {
     void (*unk_28)(const void *tag, void *p, u32 z);
 };
 
-extern Unk_ov065_0226ecfc_Ctx *data_ov065_0229061c;
-extern Unk_ov065_0226ecfc_Glob *data_ov065_02290620;
-extern Unk_ov065_0226ecfc_Req data_ov065_02290624;
-extern Unk_ov065_0226ecfc_Out data_ov065_02290644;
-extern char *data_ov065_0228babc;
-extern char *data_ov065_0228b778;
-extern s32 data_0220064c;
+struct Unk_ov065_0226f924_Blob {
+    s32 v[3];
+};
 
-extern char data_ov065_0228bae4[];
-extern char data_ov065_0228bafc[];
-extern char data_ov065_0228bb00[];
-extern char data_ov065_0228bb08[];
-extern char data_ov065_0228bb10[];
-extern char data_ov065_0228bb2c[];
-extern char data_ov065_0228bb38[];
-extern char data_ov065_0228bb58[];
-extern char data_ov065_0228bb5c[];
-extern char data_ov065_0228bb64[];
-extern char data_ov065_0228bb6c[];
-extern char data_ov065_0228bb74[];
-extern char data_ov065_0228bb84[];
-extern char data_ov065_0228bb90[];
-extern char data_ov065_0228bb98[];
-extern char data_ov065_0228bba0[];
-
-extern "C" {
-void func_02114480(void *p);
-void func_02114410(void *p);
-void func_02113788(void *p);
-void func_021132e0(s32 t);
-s32 func_01ffa2ec(void);
-void func_01ffa3d4(s32 v);
-void func_020ff0bc(u64 *out);
-s32 func_0212b770(const char *s);
-s32 func_0212a438(const char *s);
-s32 func_0212a190(const char *a, const char *b);
-void func_0212a2ec(char *dst, const char *src, u32 n);
-void func_02115fb4(void *p, s32 v, u32 n);
-void func_02116048(const void *src, void *dst, u32 n);
-
-s32 func_ov065_0226e4dc(Unk_ov065_0226ecfc_Ctx *c);
-s32 func_ov065_0226ebe4(Unk_ov065_0226ecfc_Ctx *c, Unk_ov065_0226ecfc_Req *r);
-s32 func_ov065_0226eb6c(Unk_ov065_0226ecfc_Ctx *c);
-s32 func_ov065_0226eacc(Unk_ov065_0226ecfc_Ctx *c);
-s32 func_ov065_0226eca0(s32 v);
-s32 func_ov065_0226ded4(void *tbl, s32 n, s32 a, s32 b);
-char *func_ov065_0226de90(void *tbl, s32 n, const char *name);
-s32 func_ov065_0226de4c(void *tbl, s32 n, const char *name, char *out, s32 cap);
-s32 func_ov065_0226d158(Unk_ov065_0226ecfc_Ctx *c, const char *a, const char *b, void *tbl, s32 n, s32 k);
-s32 func_ov065_0226e2e4(Unk_ov065_0226ecfc_Ctx *c, const char *a, const char *b, s32 n);
-s32 func_ov065_0226e274(Unk_ov065_0226ecfc_Ctx *c, char *p);
-s32 func_ov065_0226dd2c(Unk_ov065_0226ecfc_Out *o, Unk_ov065_0226ecfc_Ctx *c);
-s32 func_ov065_0226dbd0(void);
-s32 func_ov065_0226db98(void);
-s32 func_ov065_0226dbfc(void);
-s32 func_ov065_0226db28(s32 *out);
-u8 *func_ov065_0226ab5c(u16 *out);
-}
+struct Unk_ov065_0226f924_Cfg {
+    void *(*unk_00)(const void *, u32);
+    void (*unk_04)(const void *, void *, u32);
+    u32 unk_08;
+};
 
 struct Unk_ov065_0226ecfc_Tk {
     u64 tick;
@@ -133,16 +90,146 @@ struct Unk_ov065_0226ecfc_Pad {
     ~Unk_ov065_0226ecfc_Pad() {}
 };
 
-extern "C" s32 func_ov065_0226ecd0(void) {
-    Unk_ov065_0226ecfc_Glob *g;
-    s32 r;
-    func_02114480(data_ov065_02290620->unk_1dc);
-    r = data_ov065_02290620->unk_00;
-    func_02114410(data_ov065_02290620->unk_1dc);
-    return r;
+// the same symbol is called with and without its argument
+namespace Unk_ov065_0226e4dc_A {
+extern "C" void func_ov065_0226e4dc();
+}
+namespace Unk_ov065_0226e4dc_B {
+extern "C" s32 func_ov065_0226e4dc(Unk_ov065_0226ecfc_Ctx *c);
+}
+using Unk_ov065_0226e4dc_B::func_ov065_0226e4dc;
+
+extern "C" {
+extern s32 data_0220064c;
+extern char *data_ov065_0228b778;
+
+void func_02114480(void *p);
+void func_02114410(void *p);
+void func_02113788(void *p);
+void func_021132e0(s32 t);
+s32 func_01ffa2ec(void);
+void func_01ffa3d4(s32 v);
+void func_020ff0bc(u64 *out);
+s32 func_0212b770(const char *s);
+s32 func_0212a438(const char *s);
+s32 func_0212a190(const char *a, const char *b);
+void func_0212a2ec(char *dst, const char *src, u32 n);
+void func_02115fb4(void *p, u32 v, u32 n);
+void func_02116048(const void *src, void *dst, u32 n);
+s32 func_02113774(void *);
+void func_02113a70(void *, void (*)(), void *, void *, u32, u32);
+void func_0211366c(void *);
+void func_0211450c(void *);
+
+void func_ov065_0226ea84();
+void func_ov065_0226dc40();
+s32 func_ov065_0226ebe4(Unk_ov065_0226ecfc_Ctx *c, Unk_ov065_0226ecfc_Req *r);
+s32 func_ov065_0226eb6c(Unk_ov065_0226ecfc_Ctx *c);
+s32 func_ov065_0226eacc(Unk_ov065_0226ecfc_Ctx *c);
+s32 func_ov065_0226ded4(void *tbl, s32 n, s32 a, s32 b);
+char *func_ov065_0226de90(void *tbl, s32 n, const char *name);
+s32 func_ov065_0226de4c(void *tbl, s32 n, const char *name, char *out, s32 cap);
+s32 func_ov065_0226d158(Unk_ov065_0226ecfc_Ctx *c, const char *a, const char *b, void *tbl, s32 n, s32 k);
+s32 func_ov065_0226e2e4(Unk_ov065_0226ecfc_Ctx *c, const char *a, const char *b, s32 n);
+s32 func_ov065_0226e274(Unk_ov065_0226ecfc_Ctx *c, char *p);
+s32 func_ov065_0226dd2c(Unk_ov065_0226ecfc_Out *o, Unk_ov065_0226ecfc_Ctx *c);
+s32 func_ov065_0226dbd0(void);
+s32 func_ov065_0226db98(void);
+s32 func_ov065_0226dbfc(void);
+s32 func_ov065_0226db28(s32 *out);
+u8 *func_ov065_0226ab5c(u16 *out);
+
 }
 
-extern "C" void func_ov065_0226ecfc(void) {
+extern "C" {
+extern char data_ov065_0228bac0[0x24];
+char *data_ov065_0228babc = data_ov065_0228bac0;
+Unk_ov065_0226ecfc_Ctx *data_ov065_0229061c;
+char data_ov065_0228bac0[0x24] = "http://conntest.nintendowifi.net/";
+Unk_ov065_0226ecfc_Glob *data_ov065_02290620;
+Unk_ov065_0226ecfc_Req data_ov065_02290624;
+Unk_ov065_0226ecfc_Out data_ov065_02290644;
+
+s32 func_ov065_0226ec94(void);
+void func_ov065_0226eca0(s32 v);
+s32 func_ov065_0226ecd0(void);
+void func_ov065_0226ecfc(void);
+void func_ov065_0226f7c8();
+void func_ov065_0226f818();
+void func_ov065_0226f878();
+s32 func_ov065_0226f924(Unk_ov065_0226f924_Cfg *cfg);
+
+s32 func_ov065_0226f924(Unk_ov065_0226f924_Cfg *cfg) {
+    if (data_ov065_02290620 != 0) {
+        return 4;
+    }
+    data_ov065_02290620 = (Unk_ov065_0226ecfc_Glob *)cfg->unk_00("DWCnetcheck", 0x1200);
+    if (data_ov065_02290620 == 0) {
+        return 4;
+    }
+    func_02115fb4(data_ov065_02290620, 0, 0x1200);
+    data_ov065_02290620->unk_04 = -0x1869f;
+    *(Unk_ov065_0226f924_Blob *)&data_ov065_02290620->unk_108 = *(Unk_ov065_0226f924_Blob *)cfg;
+    if (data_ov065_0229061c != 0) {
+        return 4;
+    }
+    data_ov065_0229061c = (Unk_ov065_0226ecfc_Ctx *)data_ov065_02290620->unk_108("DWChttp", 0x1a60);
+    if (data_ov065_0229061c == 0) {
+        return 4;
+    }
+    func_0211450c(data_ov065_02290620->unk_1dc);
+    func_ov065_0226f818();
+    return 0;
+}
+
+void func_ov065_0226f878() {
+    Unk_ov065_0226ecfc_Glob *g;
+    if (data_ov065_0229061c != 0) {
+        Unk_ov065_0226e4dc_A::func_ov065_0226e4dc();
+        data_ov065_02290620->unk_10c("DWChttp", data_ov065_0229061c, 0);
+        data_ov065_0229061c = 0;
+    }
+    func_ov065_0226dbfc();
+    g = data_ov065_02290620;
+    if (g != 0) {
+        if (g->unk_114 != 0) {
+            g->unk_10c("DWCnetcheck->body_302", g->unk_114, 0);
+            data_ov065_02290620->unk_114 = 0;
+        }
+        g = data_ov065_02290620;
+        if (g->unk_118 != 0) {
+            g->unk_10c("DWCnetcheck->body_wayport", g->unk_118, 0);
+            data_ov065_02290620->unk_118 = 0;
+        }
+        data_ov065_02290620->unk_10c("DWCnetcheck", data_ov065_02290620, 0);
+        data_ov065_02290620 = 0;
+    }
+}
+
+void func_ov065_0226f818() {
+    Unk_ov065_0226ecfc_Glob *g = data_ov065_02290620;
+    if (g->unk_188 == 0 || func_02113774(g->unk_11c) != 0) {
+        g = data_ov065_02290620;
+        func_02113a70(g->unk_11c, func_ov065_0226ecfc, g, (u8 *)g + 0x1200, 0x1000, 0x10);
+        g = data_ov065_02290620;
+        func_0211366c(g->unk_11c);
+    }
+}
+
+void func_ov065_0226f7c8() {
+    if (data_ov065_02290620 != 0) {
+        if (data_ov065_0229061c != 0) {
+            func_ov065_0226ea84();
+        }
+        func_ov065_0226dc40();
+        if (data_ov065_02290620->unk_188 != 0) {
+            func_02113788(data_ov065_02290620->unk_11c);
+        }
+        data_ov065_02290620->unk_04 = -7;
+    }
+}
+
+void func_ov065_0226ecfc(void) {
     char *a = 0;
     s32 n1;
     char *b = 0;
@@ -202,7 +289,7 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(2);
             goto end;
         }
-        v = func_0212b770(func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb2c));
+        v = func_0212b770(func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             func_ov065_0226eca0(2);
             goto end;
@@ -219,7 +306,7 @@ extern "C" void func_ov065_0226ecfc(void) {
             data_ov065_02290624.unk_10 = data_ov065_02290620->unk_108;
             data_ov065_02290624.unk_14 = data_ov065_02290620->unk_10c;
             data_ov065_02290624.unk_1c = 0x4e20;
-            if (func_0212a190(data_ov065_02290624.unk_00, data_ov065_0228bb38)) {
+            if (func_0212a190(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
                 data_ov065_02290624.unk_18 = 1;
             }
             if (func_ov065_0226ebe4(data_ov065_0229061c, &data_ov065_02290624)) {
@@ -227,13 +314,13 @@ extern "C" void func_ov065_0226ecfc(void) {
                 func_ov065_0226eca0(1);
                 goto end;
             }
-            if (func_ov065_0226d158(data_ov065_0229061c, data_ov065_0228bb58, data_ov065_0228bb58,
+            if (func_ov065_0226d158(data_ov065_0229061c, "", "",
                                     data_ov065_02290620->unk_08, 0x20, 1)) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(8);
                 goto end;
             }
-            if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb5c, data_ov065_0228bb64, 7)) {
+            if (func_ov065_0226e2e4(data_ov065_0229061c, "action", "message", 7)) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(8);
                 goto end;
@@ -245,18 +332,18 @@ extern "C" void func_ov065_0226ecfc(void) {
                 func_02116048(func_ov065_0226ab5c(0), bb.buf, pn.port);
                 func_01ffa3d4(ie);
             }
-            if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb6c, bb.buf, func_0212a438(bb.buf))) {
+            if (func_ov065_0226e2e4(data_ov065_0229061c, "ssid", bb.buf, func_0212a438(bb.buf))) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(8);
                 goto end;
             }
             p = data_ov065_02290620->unk_118;
-            if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb74, p, func_0212a438(p))) {
+            if (func_ov065_0226e2e4(data_ov065_0229061c, "HotSpotResponse", p, func_0212a438(p))) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(8);
                 goto end;
             }
-            data_ov065_02290620->unk_10c(data_ov065_0228bb10, data_ov065_02290620->unk_118, 0);
+            data_ov065_02290620->unk_10c("DWCnetcheck->body_wayport", data_ov065_02290620->unk_118, 0);
             data_ov065_02290620->unk_118 = 0;
             if (func_ov065_0226eb6c(data_ov065_0229061c)) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
@@ -280,14 +367,14 @@ extern "C" void func_ov065_0226ecfc(void) {
                 goto end;
             }
         } else {
-            loc1 = func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb84);
+            loc1 = func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, "httpbody");
             if (loc1 == 0) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(2);
                 goto end;
             }
             data_ov065_02290620->unk_114 =
-                (char *)data_ov065_02290620->unk_108(data_ov065_0228bae4, func_0212a438(loc1) + 1);
+                (char *)data_ov065_02290620->unk_108("DWCnetcheck->body_302", func_0212a438(loc1) + 1);
             p1 = data_ov065_02290620->unk_114;
             if (p1 == 0) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
@@ -340,7 +427,7 @@ extern "C" void func_ov065_0226ecfc(void) {
         data_ov065_02290624.unk_10 = data_ov065_02290620->unk_108;
         data_ov065_02290624.unk_14 = data_ov065_02290620->unk_10c;
         data_ov065_02290624.unk_1c = 0x9c40;
-        if (func_0212a190(data_ov065_02290624.unk_00, data_ov065_0228bb38)) {
+        if (func_0212a190(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
             data_ov065_02290624.unk_18 = 1;
         }
         if (func_ov065_0226ebe4(data_ov065_0229061c, &data_ov065_02290624)) {
@@ -348,13 +435,13 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(1);
             goto end;
         }
-        if (func_ov065_0226d158(data_ov065_0229061c, data_ov065_0228bb58, data_ov065_0228bb58,
+        if (func_ov065_0226d158(data_ov065_0229061c, "", "",
                                 data_ov065_02290620->unk_08, 0x20, 1)) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(8);
             goto end;
         }
-        if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb5c, data_ov065_0228bb90, 5)) {
+        if (func_ov065_0226e2e4(data_ov065_0229061c, "action", "parse", 5)) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(8);
             goto end;
@@ -366,18 +453,18 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_02116048(func_ov065_0226ab5c(0), bb.buf, pn.port);
             func_01ffa3d4(ie);
         }
-        if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb6c, bb.buf, func_0212a438(bb.buf))) {
+        if (func_ov065_0226e2e4(data_ov065_0229061c, "ssid", bb.buf, func_0212a438(bb.buf))) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(8);
             goto end;
         }
         p = data_ov065_02290620->unk_114;
-        if (func_ov065_0226e2e4(data_ov065_0229061c, data_ov065_0228bb98, p, func_0212a438(p))) {
+        if (func_ov065_0226e2e4(data_ov065_0229061c, "HTML", p, func_0212a438(p))) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(8);
             goto end;
         }
-        data_ov065_02290620->unk_10c(data_ov065_0228bae4, data_ov065_02290620->unk_114, 0);
+        data_ov065_02290620->unk_10c("DWCnetcheck->body_302", data_ov065_02290620->unk_114, 0);
         data_ov065_02290620->unk_114 = 0;
         if (func_ov065_0226eb6c(data_ov065_0229061c)) {
             func_ov065_0226e4dc(data_ov065_0229061c);
@@ -404,7 +491,7 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(2);
             goto end;
         }
-        v = func_0212b770(func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb2c));
+        v = func_0212b770(func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(2);
@@ -415,7 +502,7 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(2);
             goto end;
         }
-        if (func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bba0, pn.num, 4) <= 0) {
+        if (func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "returncd", pn.num, 4) <= 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(9);
             goto end;
@@ -431,47 +518,47 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(6);
             goto end;
         }
-        n1 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bafc, 0, 0);
+        n1 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "url", 0, 0);
         if (n1 <= 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(9);
             goto end;
         }
-        n2 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb00, 0, 0);
+        n2 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "data", 0, 0);
         if (n2 <= 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(9);
             goto end;
         }
-        n3 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb08, 0, 0);
-        a = (char *)data_ov065_02290620->unk_108(data_ov065_0228bafc, n1 + 1);
+        n3 = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "wait", 0, 0);
+        a = (char *)data_ov065_02290620->unk_108("url", n1 + 1);
         if (a == 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(4);
             goto end;
         }
-        b = (char *)data_ov065_02290620->unk_108(data_ov065_0228bb00, n2 + 1);
+        b = (char *)data_ov065_02290620->unk_108("data", n2 + 1);
         if (b == 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(4);
             goto end;
         }
         if (n3 > 0) {
-            c = (char *)data_ov065_02290620->unk_108(data_ov065_0228bb08, n3 + 1);
+            c = (char *)data_ov065_02290620->unk_108("wait", n3 + 1);
             if (c == 0) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(4);
                 goto end;
             }
         }
-        n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bafc, a, n1 + 1);
+        n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "url", a, n1 + 1);
         if (n < 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(9);
             goto end;
         }
         a[n] = 0;
-        n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb00, b, n2 + 1);
+        n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "data", b, n2 + 1);
         if (n < 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(9);
@@ -480,7 +567,7 @@ extern "C" void func_ov065_0226ecfc(void) {
         b[n] = 0;
         t = 0;
         if (n3 > 0) {
-            n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb08, c, n3 + 1);
+            n = func_ov065_0226de4c(data_ov065_02290620->unk_08, 0x20, "wait", c, n3 + 1);
             if (n < 0) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
                 func_ov065_0226eca0(9);
@@ -542,14 +629,14 @@ extern "C" void func_ov065_0226ecfc(void) {
             func_ov065_0226eca0(2);
             goto end;
         }
-        loc2 = func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, data_ov065_0228bb84);
+        loc2 = func_ov065_0226de90(data_ov065_02290620->unk_08, 0x20, "httpbody");
         if (loc2 == 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
             func_ov065_0226eca0(2);
             goto end;
         }
         data_ov065_02290620->unk_118 =
-            (char *)data_ov065_02290620->unk_108(data_ov065_0228bb10, func_0212a438(loc2) + 1);
+            (char *)data_ov065_02290620->unk_108("DWCnetcheck->body_wayport", func_0212a438(loc2) + 1);
         p2 = data_ov065_02290620->unk_118;
         if (p2 == 0) {
             func_ov065_0226e4dc(data_ov065_0229061c);
@@ -562,12 +649,43 @@ extern "C" void func_ov065_0226ecfc(void) {
     }
 end:
     if (a) {
-        data_ov065_02290620->unk_10c(data_ov065_0228bafc, a, 0);
+        data_ov065_02290620->unk_10c("url", a, 0);
     }
     if (b) {
-        data_ov065_02290620->unk_10c(data_ov065_0228bb00, b, 0);
+        data_ov065_02290620->unk_10c("data", b, 0);
     }
     if (c) {
-        data_ov065_02290620->unk_10c(data_ov065_0228bb08, c, 0);
+        data_ov065_02290620->unk_10c("wait", c, 0);
     }
+}
+
+s32 func_ov065_0226ecd0(void) {
+    Unk_ov065_0226ecfc_Glob *g;
+    s32 r;
+    func_02114480(data_ov065_02290620->unk_1dc);
+    r = data_ov065_02290620->unk_00;
+    func_02114410(data_ov065_02290620->unk_1dc);
+    return r;
+}
+
+void func_ov065_0226eca0(s32 v) {
+    func_02114480(data_ov065_02290620->unk_1dc);
+    data_ov065_02290620->unk_00 = v;
+    func_02114410(data_ov065_02290620->unk_1dc);
+}
+
+s32 func_ov065_0226ec94(void) {
+    return data_ov065_02290620->unk_04;
+}
+
+// Not in the original binary (unreferenced, not in symbols.txt: dead-stripped by the link). Defined last so that it is compiled
+// first: it creates the five buffer tags in the order the original literal pool has them (the original pool starts with them).
+__declspec(weak) void Unk_ov065_0226ecfc_pool_order(void) {
+    func_0212a438("DWCnetcheck->body_302");
+    func_0212a438("url");
+    func_0212a438("data");
+    func_0212a438("wait");
+    func_0212a438("DWCnetcheck->body_wayport");
+}
+
 }

@@ -30,7 +30,9 @@ for line in spec.read_text().splitlines():
         secs.append((p[0], int(p[1], 16), int(p[2], 16)))
 if src is None or not src.is_file():
     sys.exit(f"missing unit source: {src}")
-t0, t1 = next((a, b) for s, a, b in secs if s == ".text")
+# a data-only unit has no .text: nothing can overlap it, and it is named and ordered by its first section
+t0, t1 = next(((a, b) for s, a, b in secs if s == ".text"), (0, 0))
+first = t0 if t1 else secs[0][1]
 
 cfg = Path(f"config/usa/arm9/overlays/{ov}")
 head, _, rest = (cfg / "delinks.txt").read_text().partition("\n\n")
@@ -61,7 +63,7 @@ for b in blocks:
     out_blocks.append("\n".join(new))
     print(f"trimmed {name} to {na:#010x}..{ne:#010x}")
 
-name = f"src/{ov}/unk_{ov}_{t0:08x}.cpp"
+name = f"src/{ov}/unk_{ov}_{first:08x}.cpp"
 Path(name).parent.mkdir(parents=True, exist_ok=True)
 Path(name).write_text(src.read_text())
 tu = name + ":\n    complete\n" + "".join(f"    {s:<11} start:{a:#010x} end:{b:#010x}\n" for s, a, b in secs)
@@ -69,7 +71,7 @@ out_blocks.append(tu.rstrip("\n"))
 
 
 def text_start(b):
-    m = re.search(r"\.text\s+start:(0x[0-9a-f]+)", b)
+    m = re.search(r"\.text\s+start:(0x[0-9a-f]+)", b) or re.search(r"start:(0x[0-9a-f]+)", b)
     return int(m.group(1), 16) if m else 0
 
 
