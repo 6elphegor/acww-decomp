@@ -73,7 +73,9 @@ _ZN18Unk_ov009_0225e29c19func_ov009_0225c818Ev kind:function(thumb,size=0x164) a
 _ZN18Unk_ov009_0225e29c19func_ov009_0225c97cEv kind:function(thumb,size=0xd4) addr:0x0225c97c
 _ZN18Unk_ov009_0225e29c19func_ov009_0225ca50Ev kind:function(thumb,size=0x48) addr:0x0225ca50
 _ZN18Unk_ov009_0225e29c19func_ov009_0225ca98Ev kind:function(thumb,size=0xb4) addr:0x0225ca98
+_ZN18Unk_ov009_0225e29c8vfunc_74Ev kind:label(thumb) addr:0x0225ca98
 _ZN18Unk_ov009_0225e29c8vfunc_6cEi kind:function(thumb,size=0xd8) addr:0x0225cb4c
+_ZN18Unk_ov009_0225e29c8vfunc_6cEj kind:label(thumb) addr:0x0225cb4c
 _ZN18Unk_ov009_0225e28019func_ov009_0225cc24EP23Unk_ov009_0225b880_Vec3iP22Unk_ov009_0225cc24_Obj kind:function(thumb,size=0xc4) addr:0x0225cc24
 _ZN18Unk_ov009_0225e2808vfunc_10EP23Unk_ov009_0225b880_Vec3P22Unk_ov009_0225cc24_Obji kind:function(thumb,size=0x48) addr:0x0225cce8
 _ZN18Unk_ov009_0225e280C1Ev kind:function(thumb,size=0x18) addr:0x0225cd30

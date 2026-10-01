@@ -158,6 +158,7 @@ _ZN12Unk_020d5d8413func_02002d28EPvS0_ kind:function(thumb,size=0x14) addr:0x020
 _ZN12Unk_020d5d8413func_02002d3cEjPS_ kind:function(thumb,size=0x38) addr:0x02002d3c
 _ZN12Unk_020d5d8413func_02002d74Ej kind:function(thumb,size=0x20) addr:0x02002d74
 _ZN12Unk_020d5d848vfunc_2cEv kind:function(thumb,size=0x8) addr:0x02002d94
+_ZN12Unk_020d5d848vfunc_2cEi kind:label(thumb) addr:0x02002d94
 _ZN12Unk_020d5d848vfunc_28Ev kind:function(thumb,size=0x32) addr:0x02002d9c
 _ZN12Unk_020d5d848vfunc_20Ev kind:function(thumb,size=0x8) addr:0x02002dd0
 _ZN12Unk_020d5d848vfunc_1cEv kind:function(thumb,size=0xe8) addr:0x02002dd8

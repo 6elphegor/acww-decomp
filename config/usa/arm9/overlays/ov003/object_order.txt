@@ -1,0 +1,10 @@
+# Units built from more than one object, see tools/object_order.py and tools/pipeline/linking.md.
+# Their thunks need mwcc 1.2/sp2 and their switch functions need 1.2/base.
+
+# TU05
+src/ov003/unk_ov003_02214494.cpp:
+    extra src/ov003/unk_ov003_02214494_switch.cpp _ZN18Unk_ov003_02230ff08vfunc_4cEjh
+
+# TU08
+src/ov003/unk_ov003_022150ec.cpp:
+    extra src/ov003/unk_ov003_022150ec_switch.cpp func_ov003_022150f0 _ZN18Unk_ov003_022314d08vfunc_70Ev

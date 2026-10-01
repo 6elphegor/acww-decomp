@@ -1,17 +1,51 @@
+// mwcc-version: 1.2/sp2
+// mwcc-flags: -O4,s
 #include "types.h"
-#define vfunc_2c() vfunc_2c(s32 a)
-#include "Unk_020d8c7c.h"
-#undef vfunc_2c
+class Unk_020d8c7c_Base {
+public:
+    static void *operator new(unsigned long size);
+    static void operator delete(void *ptr);
+
+    Unk_020d8c7c_Base();
+    virtual BOOL vfunc_00();
+    virtual BOOL vfunc_04();
+    virtual void func_0203e678(s32 v);
+    virtual BOOL vfunc_0c();
+    virtual BOOL vfunc_10();
+    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_18();
+    virtual BOOL vfunc_1c();
+    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_24();
+    virtual BOOL vfunc_28();
+    virtual BOOL vfunc_2c(s32 a);
+    virtual BOOL vfunc_30();
+    virtual BOOL vfunc_34();
+    virtual BOOL vfunc_38();
+    virtual BOOL vfunc_3c();
+    virtual ~Unk_020d8c7c_Base();
+};
+
+class Unk_020d8c7c : public Unk_020d8c7c_Base {
+public:
+    Unk_020d8c7c() {}
+    virtual ~Unk_020d8c7c() {}
+
+    /* 0x04 */ u8 unk_04[0x4c];
+};
+
+struct Unk_ov003_Vec {
+    s32 x, y, z;
+};
 
 class Unk_020d5d84 : public Unk_020d8c7c {
 public:
     Unk_020d5d84();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
     virtual BOOL vfunc_10();
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
+    virtual void vfunc_20(u32 a);
     virtual BOOL vfunc_28();
     virtual BOOL vfunc_2c(s32 a);
     virtual ~Unk_020d5d84();
@@ -27,12 +61,13 @@ class Unk_020d9670 : public Unk_020d5d84 {
 public:
     Unk_020d9670();
     virtual ~Unk_020d9670();
+    virtual void func_0203e678(s32 v);
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_10();
     virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48(void *a);
+    virtual BOOL vfunc_48(Unk_020d9670 *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *vfunc_50();
+    virtual Unk_ov003_Vec *vfunc_50();
     virtual BOOL vfunc_54(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
@@ -43,28 +78,149 @@ public:
     /* 0xd4 */ u8 unk_d4[0x10];
     /* 0xe4 */ s32 unk_e4;
     /* 0xe8 */ u16 unk_e8;
-    /* 0xea */ u16 pad_ea;
+    /* 0xea */ u8 unk_ea;
+    /* 0xeb */ u8 pad_eb;
 };
 
-class Unk_020ddcf0 {
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
+class Unk_020e2a30 {
+public:
+    Unk_020e2a30();
+    virtual ~Unk_020e2a30();
+    virtual void vfunc_s08();
+
+    void func_020a710c(const char *src);
+
+    /* 0x04 */ char unk_04[0x1a];
+    /* 0x1e */ u8 unk_1e;
+};
+
+struct Unk_020660f8 {
+    u8 pad_00[0x14];
+    s32 unk_14;
+};
+
+class Unk_020ddcf0 : public Unk_020e2a30 {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    virtual void vfunc_s14();
+    virtual void vfunc_88();
     virtual void vfunc_s18();
     virtual void vfunc_s1c();
+    virtual void vfunc_s20();
+    virtual void vfunc_s24();
+    virtual void vfunc_s28();
+    virtual void vfunc_s2c();
+    virtual void vfunc_s30();
+    virtual void vfunc_s34();
+    virtual void vfunc_s38(u32 a);
+    virtual void vfunc_s3c();
+    virtual void vfunc_s40();
+    virtual void vfunc_s44();
+    virtual void vfunc_s48();
+    virtual void vfunc_s4c();
+    virtual void vfunc_s50();
+    virtual void vfunc_s54();
+    virtual void vfunc_s58();
+    virtual void vfunc_s5c();
+    virtual void vfunc_s60();
+    virtual void vfunc_s64();
+    virtual void vfunc_s68();
+    virtual void vfunc_s6c();
+    virtual void vfunc_s70();
+    virtual void vfunc_s74();
 
-    void func_020a710c(const char *src);
-    void func_02065f90(s32 a, s32 b);
+    void func_02065f90(u8 *a, u32 b);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ void *unk_3c;
-    /* 0x40 */ u8 pad_40[4];
+    u8 pad_20[0x1c];
+    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x40 */ u8 unk_40;
+    u8 pad_41[3];
+};
+
+struct Unk_ov003_Blk {
+    s64 v[6];
+};
+
+struct Unk_ov003_Flags {
+    u8 f0 : 1;
+    u8 f1 : 1;
+    u8 rest : 6;
+};
+
+class Unk_020b1ddc;
+
+// ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
+class Unk_ov009_0225e29c : public Unk_020d9670, public Unk_020ddcf0 {
+public:
+    Unk_ov009_0225e29c();
+    virtual ~Unk_ov009_0225e29c();
+    virtual BOOL vfunc_00();
+    virtual BOOL vfunc_10();
+    virtual BOOL vfunc_1c();
+    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_28();
+    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual Unk_ov003_Vec *vfunc_50();
+    virtual void vfunc_60(u32 a, void *p);
+    virtual s32 vfunc_64();
+    virtual s32 vfunc_68();
+    virtual BOOL vfunc_6c(u32 a);
+    virtual BOOL vfunc_70();
+    virtual void vfunc_74();
+    virtual void vfunc_78();
+    virtual void vfunc_7c();
+    virtual void vfunc_80();
+    virtual void vfunc_84();
+    virtual void vfunc_88();
+    virtual BOOL vfunc_8c();
+    virtual BOOL vfunc_90();
+    virtual BOOL vfunc_94();
+    virtual BOOL vfunc_98();
+    virtual BOOL vfunc_9c();
+    virtual s32 vfunc_a0();
+    virtual void vfunc_a4();
+    virtual void vfunc_a8();
+    virtual void vfunc_ac();
+    virtual BOOL vfunc_b0();
+    virtual void vfunc_b4();
+    virtual BOOL vfunc_b8();
+
+    s32 func_ov009_0225d6b8(u32 a);
+    void func_ov009_0225d244();
+    void func_ov009_0225bc88();
+
+    /* 0x130 */ u8 unk_130;
+    /* 0x131 */ u8 pad_131;
+    /* 0x132 */ u16 unk_132;
+    /* 0x134 */ u8 pad_134[4];
+    /* 0x138 */ u8 unk_138[0x194 - 0x138];
+    /* 0x194 */ s32 unk_194;
+    /* 0x198 */ u8 pad_198[4];
+    /* 0x19c */ Unk_ov003_Blk unk_19c;
+    /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
+    /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
+    /* 0x228 */ u32 unk_228;
+    /* 0x22c */ u32 unk_22c;
+    /* 0x230 */ u8 unk_230;
+    /* 0x231 */ u8 unk_231;
+    /* 0x232 */ Unk_ov003_Flags unk_232;
+    /* 0x233 */ u8 unk_233;
+    /* 0x234 */ u8 pad_234[0x278 - 0x234];
+    /* 0x278 */ u32 unk_278;
+    /* 0x27c */ u8 unk_27c;
+    /* 0x27d */ u8 pad_27d;
+    /* 0x27e */ u16 unk_27e;
+    /* 0x280 */ u8 pad_280[0x288 - 0x280];
+    /* 0x288 */ void *unk_288;
+    /* 0x28c */ u8 unk_28c;
+    /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
+    /* 0x2a4 */ Unk_ov003_Vec unk_2a4;
+    /* 0x2b0 */
 };
 
 struct Unk_0209d498_Time {
@@ -72,9 +228,9 @@ struct Unk_0209d498_Time {
 };
 
 // 0x20-byte member object (ctor func_02055c88, dtor func_02055c70)
-struct Unk_ov003_022154fc_Mem {
-    Unk_ov003_022154fc_Mem();
-    ~Unk_ov003_022154fc_Mem();
+struct Unk_020dbe4c {
+    Unk_020dbe4c();
+    ~Unk_020dbe4c();
     u8 pad_00[8];
     /* 0x08 */ s32 unk_08;
     u8 pad_0c[0xc];
@@ -88,73 +244,43 @@ struct Unk_ov003_02215748_Ent {
     u8 unk_2d4;
 };
 
-// ov009 base class (vtable 0x0225e29c, size 0x2b0)
-class Unk_ov009_0225e29c : public Unk_020d9670, public Unk_020ddcf0 {
-public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual BOOL vfunc_6c(u32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void vfunc_88();
-    virtual BOOL vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4();
-    virtual void vfunc_a8();
-    virtual void vfunc_ac();
-    virtual void vfunc_b0();
-    virtual void vfunc_b4();
-    virtual void vfunc_b8();
-
-    s32 func_ov009_0225d6b8(s32 a);
-    void func_ov009_0225d244();
-
-    /* 0x130 */ u8 unk_130;
-    /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
-    /* 0x134 */ u8 pad_134[4];
-    /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ s32 unk_194;
-    /* 0x198 */ u8 pad_198[0x231 - 0x198];
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ u8 pad_232[0x2b0 - 0x232];
-};
-
+struct Unk_ov003_SceneEntry {void *(*factory)(); u16 id,size; u32 zero,a,b,c;};
+class Unk_ov003_022314d0; class Unk_ov003_02231614;
+extern "C" Unk_ov003_022314d0 *func_ov003_02215a30();
+extern "C" Unk_ov003_02231614 *func_ov003_02215a4c();
+extern "C" Unk_ov003_SceneEntry data_ov003_02231498 = {(void *(*)())func_ov003_02215a30, 0x26, 0x2c, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry data_ov003_022314b0 = {(void *(*)())func_ov003_02215a4c, 0x25, 0x2b, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" u8 data_ov003_02235270;
+extern "C" u32 data_ov003_02235278;
+extern "C" u32 data_ov003_0223527c;
+extern "C" u32 data_ov003_02235280;
+u8 data_ov003_02235270;
+u32 data_ov003_02235278, data_ov003_0223527c, data_ov003_02235280;
+extern "C" const s32 data_ov003_0222efd8[6] = {-0x1900,-0x1100,-0x500,0x300,0xf00,0x1700};
 extern "C" {
 extern u8 data_ov003_02235270;
 extern u32 data_ov003_02235278;
 extern u32 data_ov003_0223527c;
 extern u32 data_ov003_02235280;
-extern s32 data_ov003_0222efd8[6];
+extern const s32 data_ov003_0222efd8[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
 extern u32 data_021c6204;
 
 void func_ov003_022150f0(void *p);
 void func_ov003_02215a04(void *p);
-s32 func_020554c0(void *p);
-void func_02055b00(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
-BOOL func_02055bcc(void *m, s32 a, s32 b);
-void func_02055b38(void *m, s32 a, s32 b, s32 c, s32 d);
-void func_02055a9c(void *m, s32 a);
+s32 _ZN12Unk_020dbe3413func_020554c0Ev(void *p);
+void _ZN12Unk_020dbe4c13func_02055b00Eiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
+BOOL _ZN12Unk_020dbe4c13func_02055bccEjPv(void *m, s32 a, s32 b);
+void _ZN12Unk_020dbe4c13func_02055b38Eiiit(void *m, s32 a, s32 b, s32 c, s32 d);
+void _ZN12Unk_020dbe4c13func_02055a9cEj(void *m, s32 a);
 void func_0209d498(void *p);
-s32 func_02002cf8(u32 a, u32 b, void *c, u32 d, u32 e);
-void func_02055488(void *m, void (*fn)(void *), void *self);
-s32 func_02057110(s32 a, const char *s);
+s32 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
+void _ZN12Unk_020dbe3413func_02055488Eii(void *m, void (*fn)(void *), void *self);
+s32 _ZN12Unk_02056fd813func_02057110Ei(s32 a, const char *s);
 void func_0200402c(u32 a);
-void func_020566bc(void *m);
-void func_ov009_0225bc88(void *p);
+void _ZN12Unk_020dbe7c13func_020566bcEv(void *m);
+void _ZN18Unk_ov009_0225e29c19func_ov009_0225bc88Ev(void *p);
 BOOL func_020b1d3c(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
@@ -174,6 +300,7 @@ public:
 // ---------------------------------------------------------------- X
 class Unk_ov003_022314d0 : public Unk_ov009_0225e29c {
 public:
+    virtual BOOL vfunc_b0();
     Unk_ov003_022314d0();
     virtual ~Unk_ov003_022314d0();
     virtual BOOL vfunc_18();
@@ -185,7 +312,7 @@ public:
     /* 0x2b1 */ u8 unk_2b1;
     /* 0x2b2 */ u8 unk_2b2;
     /* 0x2b3 */ u8 pad_2b3;
-    /* 0x2b4 */ Unk_ov003_022154fc_Mem unk_2b4;
+    /* 0x2b4 */ Unk_020dbe4c unk_2b4;
     /* 0x2d4 */ u8 unk_2d4;
     /* 0x2d5 */ u8 unk_2d5;
     /* 0x2d6 */ u8 pad_2d6[2];
@@ -215,7 +342,7 @@ public:
     void func_ov003_0221558c();
     BOOL func_ov003_022155dc();
 
-    /* 0x2b0 */ Unk_ov003_022154fc_Mem unk_2b0;
+    /* 0x2b0 */ Unk_020dbe4c unk_2b0;
     /* 0x2d0 */ s8 unk_2d0;
     /* 0x2d1 */ u8 unk_2d1;
     /* 0x2d2 */ u8 pad_2d2[2];
@@ -257,56 +384,9 @@ struct Unk_ov003_02215a04_Obj {
 // ================================================================
 BOOL Unk_ov003_022314d0::vfunc_18() {
     func_ov003_022150f0(this);
-    s32 r4 = func_020554c0(unk_138);
+    s32 r4 = _ZN12Unk_020dbe3413func_020554c0Ev(unk_138);
     s32 r2 = func_ov009_0225d6b8(0);
-    func_02055b00(&unk_2b4, r4, r2, 1, 0x1000, unk_2b1);
-    return TRUE;
-}
-
-BOOL Unk_ov003_022314d0::vfunc_70() {
-    unk_2b0 = data_ov003_02235270;
-    unk_2b1 = 0;
-    func_0203e624(unk_2b0);
-    if (func_02055bcc(&unk_2b4, unk_194, data_021c6204)) {
-        s32 r1 = func_ov009_0225d6b8(0);
-        func_02055b38(&unk_2b4, r1, 1, 0x1000, 0);
-        func_02055a9c(&unk_2b4, func_020554c0(unk_138));
-    }
-    unk_2d4 = 1;
-    unk_2b2 = 0xff;
-    u32 tm[2];
-    tm[0] = 0;
-    tm[1] = 0;
-    func_0209d498(tm);
-    if (((u8 *)tm)[4] != 1) {
-        switch (unk_2b0) {
-        case 0:
-            unk_2b1 = unk_2b2 = (data_ov003_02235278 / 10) & 1;
-            unk_2d5 = 0;
-            break;
-        case 1:
-            unk_2b1 = unk_2b2 = data_ov003_02235278 % 10;
-            unk_2d5 = 0;
-            break;
-        case 2:
-            unk_2b1 = unk_2b2 = data_ov003_02235280 / 10;
-            unk_2d5 = 0;
-            break;
-        case 3:
-            unk_2b1 = unk_2b2 = data_ov003_02235280 % 10;
-            unk_2d5 = 0;
-            break;
-        case 4:
-            unk_2b1 = unk_2b2 = data_ov003_0223527c / 10;
-            unk_2d5 = 1;
-            break;
-        case 5:
-            unk_2b1 = unk_2b2 = data_ov003_0223527c % 10;
-            unk_2d5 = 1;
-            break;
-        }
-    }
-    func_ov003_022150f0(this);
+    _ZN12Unk_020dbe4c13func_02055b00Eiiiit(&unk_2b4, r4, r2, 1, 0x1000, unk_2b1);
     return TRUE;
 }
 
@@ -323,19 +403,19 @@ void Unk_ov003_022314d0::operator delete(void *p) {}
 
 // ---------------------------------------------------------------- Y methods
 void Unk_ov003_02231614::func_ov003_0221552c() {
-    func_020566bc(&unk_2b0);
+    _ZN12Unk_020dbe7c13func_020566bcEv(&unk_2b0);
     *unk_2b0.unk_18 = unk_2b0.unk_08;
 }
 
 BOOL Unk_ov003_02231614::func_ov003_02215554() {
     s32 r1 = func_ov009_0225d6b8(1);
-    func_02055b38(&unk_2b0, r1, 0, 0x1000, 0);
+    _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_2b0, r1, 0, 0x1000, 0);
     unk_2d1 = 1;
     return TRUE;
 }
 
 void Unk_ov003_02231614::func_ov003_0221558c() {
-    func_020566bc(&unk_2b0);
+    _ZN12Unk_020dbe7c13func_020566bcEv(&unk_2b0);
     *unk_2b0.unk_18 = unk_2b0.unk_08;
     u32 tm[2];
     tm[0] = 0;
@@ -349,7 +429,7 @@ void Unk_ov003_02231614::func_ov003_0221558c() {
 
 BOOL Unk_ov003_02231614::func_ov003_022155dc() {
     s32 r1 = func_ov009_0225d6b8(0);
-    func_02055b38(&unk_2b0, r1, 0, 0x1000, 0);
+    _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_2b0, r1, 0, 0x1000, 0);
     unk_2d1 = 0x1f;
     return TRUE;
 }
@@ -392,7 +472,7 @@ BOOL Unk_ov003_02231614::vfunc_2c(s32 a) {
                 Unk_ov003_02215748_Ent *p = unk_2d4[i];
                 if (p) {
                     if (p->unk_2d4) {
-                        func_ov009_0225bc88(p);
+                        ::_ZN18Unk_ov009_0225e29c19func_ov009_0225bc88Ev(p);
                     }
                 }
             }
@@ -431,15 +511,15 @@ BOOL Unk_ov003_02231614::vfunc_70() {
         v[1] = b;
         v[2] = c;
         data_ov003_02235270 = i;
-        unk_2d4[i] = (Unk_ov003_02215748_Ent *)func_02002cf8(0x26, 0x501f, v, z, z);
+        unk_2d4[i] = (Unk_ov003_02215748_Ent *)_ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
         i++;
     } while (i < 6);
-    func_02055488(unk_138, func_ov003_02215a04, this);
-    unk_2d0 = func_02057110(unk_194, data_ov003_02231750);
-    if (func_02055bcc(&unk_2b0, unk_194, data_021c6204)) {
+    _ZN12Unk_020dbe3413func_02055488Eii(unk_138, func_ov003_02215a04, this);
+    unk_2d0 = _ZN12Unk_02056fd813func_02057110Ei(unk_194, "m_cbs_Adt");
+    if (_ZN12Unk_020dbe4c13func_02055bccEjPv(&unk_2b0, unk_194, data_021c6204)) {
         s32 r1 = func_ov009_0225d6b8(0);
-        func_02055b38(&unk_2b0, r1, 0, 0x1000, 0);
-        func_02055a9c(&unk_2b0, func_020554c0(unk_138));
+        _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_2b0, r1, 0, 0x1000, 0);
+        _ZN12Unk_020dbe4c13func_02055a9cEj(&unk_2b0, _ZN12Unk_020dbe3413func_020554c0Ev(unk_138));
     }
     u32 tm[2];
     tm[0] = 0;
@@ -457,38 +537,6 @@ Unk_ov003_02231614::Unk_ov003_02231614() {
     unk_2d0 = -1;
 }
 Unk_ov003_02231614::~Unk_ov003_02231614() {}
-
-// ---------------------------------------------------------------- Z methods
-void Unk_ov003_0223177c::vfunc_78() {
-    func_020a710c(data_ov003_022318b8);
-    if (vfunc_8c() == 0) {
-        unk_1e = 0xf;
-    } else {
-        unk_1e = 0x12;
-    }
-    u32 buf[7];
-    u16 v[2];
-    func_02094030(buf);
-    v[1] = 0xd00a;
-    func_020814ec(buf, &v[1]);
-    func_02065f90(((Unk_ov003_02215ad8_Str *)buf)->vfunc_0c(), 1);
-    func_02094018(buf);
-}
-
-BOOL Unk_ov003_0223177c::vfunc_8c() {
-    Unk_0209d498_Time t;
-    ((u32 *)&t)[0] = 0;
-    ((u32 *)&t)[1] = 0;
-    func_0209d498(&t);
-    BOOL r;
-    if (t.b2 >= 6) {
-        if (unk_2b0 < 6) r = FALSE;
-        else r = TRUE;
-    } else {
-        r = FALSE;
-    }
-    return r;
-}
 
 // ---------------------------------------------------------------- free functions
 extern "C" {
@@ -522,4 +570,10 @@ void func_ov003_022159c8(Unk_ov003_02231614 *self, s32 a, Unk_ov003_02215a04_Obj
         o->unk_b0->unk_0c |= (u32)self->unk_2d1 << 16;
     }
 }
+}
+
+
+
+BOOL Unk_ov003_022314d0::vfunc_b0() {
+    return FALSE;
 }
