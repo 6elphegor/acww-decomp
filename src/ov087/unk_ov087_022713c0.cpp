@@ -364,11 +364,7 @@ static inline BOOL Unk_ov087_02271478_Chk(u16 *c, u16 *slot, u16 val) {
     BOOL r;
     if (func_0204b2d4(c)) {
         *slot = val;
-        if (func_0204b25c(c) == func_0204b25c(slot)) {
-            r = TRUE;
-        } else {
-            r = FALSE;
-        }
+        r = (func_0204b25c(c) == func_0204b25c(slot)) ? TRUE : FALSE;
     } else {
         if (*c == val) {
             r = TRUE;
@@ -386,33 +382,33 @@ struct Unk_ov087_02271478_Buf {
     u16 s[4];
 };
 
+// 001
 #pragma opt_loop_invariants off
 void Unk_ov087_02271e1c::vfunc_18() {
     Unk_ov087_02271478_Buf buf;
     func_02015a5c();
     s32 t5 = func_020aa514();
     void *g8 = func_0209750c();
-    u32 k = 0xff;
+    s32 k = 0xff;
     switch (unk_1e) {
     case 5:
         if (t5 == 0) {
             void *g = func_0209868c(g8);
             s32 cntB;
-            s32 i;
             s32 cntA;
             buf.s[0] = 0xfff1;
-            i = 0;
-            cntA = 0;
+            k = 0;
             cntB = 0;
-            for (; i < 15; i++) {
-                buf.s[0] = func_02099048(i);
+            cntA = 0;
+            for (; k < 15; k++) {
+                buf.s[0] = func_02099048(k);
                 if (Unk_ov087_02271478_Rng(&buf.s[0], 0x1542, 0x1546)) {
                     if (Unk_ov087_02271478_Chk(&buf.s[0], &buf.s[2], 0x1546)) {
                         cntA++;
                     } else {
                         cntB++;
                     }
-                    func_02099064(i);
+                    func_02099064(k);
                 }
             }
             buf.s[0] = 0x1542;

@@ -541,37 +541,39 @@ static inline u16 Unk_ov096_022969bc_Ch(s32 n) {
 s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
     u16 loc[3];
     u32 a4, b4, lim;
-    u32 x1, y1;
+    BOOL ok;
+    BOOL ok2;
+    s32 d0;
     if (f != 0 || g != 0) {
         return 1;
     }
     loc[0] = *a;
     loc[1] = *b;
-    BOOL ok = FALSE;
+    ok = FALSE;
     u32 x0 = *(volatile u16 *)&loc[0];
     u32 y0 = *(volatile u16 *)&loc[0];
     if (y0 >= 0x1531 && x0 <= 0x153a) {
         ok = TRUE;
     }
     if (ok) {
-        BOOL ok2 = FALSE;
-        x1 = *(volatile u16 *)&loc[1];
-        y1 = *(volatile u16 *)&loc[1];
+        ok2 = FALSE;
+        u32 x1 = *(volatile u16 *)&loc[1];
+        u32 y1 = *(volatile u16 *)&loc[1];
         if (y1 >= 0x1531 && x1 <= 0x153a) {
             ok2 = TRUE;
         }
         if (ok2) {
-            s32 d0, d1, sum, rem;
             d0 = Unk_ov096_022969bc_Idx(x0) + 1;
-            d1 = Unk_ov096_022969bc_Idx(x1) + 1;
-            sum = d0 + d1;
-            if (sum > 10) {
-                rem = sum - 10;
-                sum = 10;
+            s32 d1 = Unk_ov096_022969bc_Idx(x1) + 1;
+            d0 += d1;
+            s32 rem;
+            if (d0 > 10) {
+                rem = d0 - 10;
+                d0 = 10;
             } else {
                 rem = 0;
             }
-            s32 n1 = sum - 1;
+            s32 n1 = d0 - 1;
             *a = Unk_ov096_022969bc_Ch(n1);
             if (rem > 0) {
                 s32 n2 = rem - 1;

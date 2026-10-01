@@ -559,11 +559,7 @@ void Unk_ov055_02259904::func_ov055_02259128() {
 }
 
 static inline BOOL Unk_ov055_0225915c_Both() {
-    BOOL r = TRUE;
-    if (!(data_021f4770 != 0 && data_021f4774 != 0)) {
-        r = FALSE;
-    }
-    return r;
+    return (data_021f4770 != 0 && data_021f4774 != 0) ? TRUE : FALSE;
 }
 
 void Unk_ov055_02259904::func_ov055_0225915c() {
