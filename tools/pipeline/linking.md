@@ -255,7 +255,8 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
 
 ### Limits
 
-* Overlays only (the script section and region names are derived from the overlay's directory name).
+* Overlays and the main module (the script section and region names are derived from the overlay's directory
+  name; for main see "Linking the main module", "Units placed object by object").
 * The whole bss of the overlay moves to the file-less region as soon as one of its units is object-ordered;
   this is harmless for the other units.
 * An alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and Thumb
@@ -276,3 +277,220 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   `_ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
   placed, and the first copy keeps being used.
 * Tools that compare `src/ovNNN/*.cpp` with `delinks.txt` see the extra file as an unlisted source.
+
+# Linking the main module
+
+The ARM9 main module (0x02000000-0x020e7500, `src/main`, `config/usa/arm9/{delinks,symbols,relocs}.txt`) is linked
+one original translation unit at a time: `install_tu.py main <spec>` makes one unit `complete` and leaves the rest
+delinked. The unit table is `pipeline_wip/scratch/link_main/plan.md` (TU000-TU238, `tu/TUnnn.txt` per unit).
+Everything in sections 1-5 above applies (real names, function order, data definitions, `__sinit`); this section
+is what is different. All of it was checked with full ROM builds (TU014-017, TU048, TU068, TU102, TU113, TU138,
+TU139, TU183, TU185, TU198, TU210).
+
+## What a main unit owns
+
+| Section | Where | In the spec |
+|---|---|---|
+| `.text`, `.init`, `.rodata`, `.ctor`, `.data` | main, `config/usa/arm9/delinks.txt` | `.text a b` ... |
+| `.bss` | **autoload_3** (0x0213c6c0-0x021f4768 are the game files' bss in file order) | `.bss a b` |
+
+Main has no `.bss` of its own and dsd refuses one source file in two modules (`dsd lcf`: "Delink file name ...
+already used"). So a main unit's bss range is listed in `config/usa/arm9/autoload_3/delinks.txt` as a
+**placeholder unit** named like the unit with `.bss` before the extension, without a source file:
+
+    config/usa/arm9/delinks.txt                  config/usa/arm9/autoload_3/delinks.txt
+        src/main/unk_0209c37c.cpp:                   src/main/unk_0209c37c.bss.cpp:
+            complete                                     complete
+            .text  start:0x0209c37c end:0x0209c390       .bss   start:0x021d7168 end:0x021d726c
+
+dsd splits autoload_3's gap object at the range and writes `unk_0209c37c.bss.o(.bss)` there in the linker script;
+`tools/bss_units.py` (a build step right after `dsd lcf`, present when a placeholder exists) renames the selector
+to `unk_0209c37c.o(.bss)` and drops the placeholder from the object list. The unit's `.bss` sections then land in
+autoload_3 exactly like an overlay unit's in its overlay. `install_tu.py` writes both entries from one spec.
+
+Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` -> `force_active.py` -> mwld. Each
+of the three middle steps exists only when needed (`tools/configure.py` decides), so **rerun
+`python3 tools/configure.py usa` after every install** (the helper script does).
+
+## The spec and `install_tu.py main`
+
+    unit unit.cpp                       (relative to the spec, or absolute)
+    .text   0x020116e0 0x020119cc
+    .init   0x020c2d4c 0x020c2d74       only if the unit has a __sinit: up to the next __sinit
+    .rodata 0x020c6c88 0x020c6cbc
+    .ctor   0x020d1de4 0x020d1de8       the one word that points to the __sinit
+    .data   ...
+    .bss    0x021bdb74 0x021bddd8       addresses in autoload_3
+
+`python3 tools/pipeline/install_tu.py [--replace] main spec.txt`:
+
+* writes `src/main/unk_<text start>.cpp`, lists it `complete` with the main ranges, and the `.bss` range as the
+  placeholder in autoload_3;
+* removes old non-complete files that lie inside the `.text` range (`git rm`), trims the ones that straddle it
+  (a file covering both sides keeps the lower part). A trimmed file that has the name the unit needs is renamed
+  to `unk_<its new start>.cpp` (`git mv`). So **file names in `plan.md`/`tu/TUnnn.txt` go stale as units are
+  installed**: prepare units from a frozen copy of `src/main`, and take function addresses, not file names, as
+  the reference;
+* `--replace`: complete units inside the range are removed too. This is how the early code-only units are
+  replaced by their real file (TU068 replaced four);
+* checks every range boundary: `.text`/`.init` boundaries must be function symbols; for a data or bss boundary
+  without a symbol it adds `data_<addr>` (dsd wants every unit range to start and end on a symbol) and prints a
+  NOTE. A boundary that is the start of a vtable should be named in `renames.txt` instead (next section);
+* applies `aliases.txt`, then `renames.txt`, next to the source.
+
+`renames.txt` (one per line, `#` comments):
+
+    main 02050e84 _ZN20Unk_02050288_FontObjC1Ev     a symbol of the unit gets the name the object defines
+    main 020dd36c _ZTV12Unk_020dd374                vtable: named at its start, see below
+    autoload_3 021bdd80 interior:021bdb80           label inside an object, see "Interior labels"
+
+`aliases.txt`: `<module> <existing name> <second name>` adds a label with `tools/pipeline/alias.py`, e.g.
+`autoload_2 _ll_sdiv _ll_udiv` (0x02132ef8 is the unsigned 64-bit division; linked overlay units call it
+`_ll_sdiv`, compiled code of a `u64 / x` calls `_ll_udiv`).
+
+### Vtables
+
+dsd labelled 230 vtables of main 8 bytes into the object (`data_020dd374` = first slot of the vtable at
+0x020dd36c). The compiled unit emits `_ZTV12Unk_020dd374` at the start, so the label must become that symbol and
+every relocation to it `to:<start> add:0x8`. A `renames.txt` line `main <start> _ZTV<n><class>` does both
+(`tools/pipeline/vtable_rename.py`; standalone: `vtable_rename.py [-n] main <start or label> <class or _ZTV name>`).
+Do the same for the vtable that starts where the unit's `.data` range ends, even though it belongs to the next
+unit: the range must end on a symbol, and the vtable symbol is the right one (TU102: `main 020dd384
+_ZTV12Unk_020dd38c`). `check` prints a `BOUND` line for every boundary that still lacks a symbol.
+
+### Interior labels
+
+Thumb code reaches a member at a large offset through a literal `object + 0x200` plus a small displacement, and
+dsd made a symbol of every such literal. So many `data_` labels, in `.data` and above all in bss, are **addresses
+inside an object**, not objects: `data_021bdd80` and `data_021bddc0` are `data_021bdb80 + 0x200` and `+ 0x240`
+(one 0x258-byte object, members `unk_250` and `unk_254`); `data_020dbbc8/bc08/bc48` are parts of the 0x1c0-byte
+table `data_020dbac8`. The signs: a matched function reads `data_X[0x50 / 4]` next to `p->unk_250` of the
+neighbouring object; a table is indexed beyond its "size"; a class is larger than the gap to the next symbol; a
+section that should be one size-sorted run has "runs" of objects that only `__sinit` references. The current
+files declare such labels `extern`; **the unit must define the whole object once and use members or indices**
+(`data_021bdb80.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
+address with the original word, so it confirms the object + offset. If code *outside* the unit refers to the
+label (`check`: `MISSING ... interior`), add `<module> <label> interior:<object>` to `renames.txt`: the label is
+removed and the relocations become `to:<object> add:<offset>`. Never reference an interior label of your own
+object through an extern: the label is not defined once the unit is complete, and mwld links the word as 0
+without an error.
+
+This is also why the plan's unit boundaries of class `r` are often not real: when one object spans the bss of
+several consecutive units (TU014-TU017), or a class's vtable/key function, an `__arraydtor`, or a `__sinit`'s
+objects sit in the neighbour (TU021/TU022, TU207-TU209), the units are one file and must be merged.
+
+## Second names of functions: `tools/aliases.py`
+
+symbols.txt has 59+ `kind:label` aliases in main, mostly a C1 next to a C2 constructor, because linked overlay
+units call one address by both names. For a delinked address dsd defines every name. A compiled unit would
+* define both C1 and C2 as two functions, and the build keeps every global that symbols.txt names
+  (`force_active.py`): both bodies would be linked and the unit would grow;
+* leave undefined a name it does not use (another class's name for the same function).
+A linker script assignment (`alias = name + 1;`, what `object_order.py` writes for overlays) does not solve the
+first case: mwld prefers the object's own definition (tested). So `tools/aliases.py` (build step, present when
+main has complete units) rewrites the symbol table of each compiled main unit that has such names into a copy
+under `build/usa/aliases/`, and that copy is linked: an alias the object defines with **identical code** is
+redirected to the primary name's section (the duplicate, now nameless, is dead-stripped); names the object does
+not define are added to it as real function symbols (correct for ARM callers too). Different code under two
+names is an error. Nothing to do in the source; `check` prints `ALIAS` lines saying what will happen.
+When a unit calls a constructor by the name symbols.txt does not have (`_ZN12Unk_020ddf44C2Ev` for a base class
+whose symbol is `...C1Ev`), add the missing one in `aliases.txt`; never rename (see "One constructor, two names").
+
+## Preparing and checking a unit
+
+    python3 tools/pipeline/linkprep.py dump main spec.txt            the unit's data words, targets, labels, bss
+    python3 tools/pipeline/linkprep.py compile unit.cpp unit.o
+    python3 tools/pipeline/realnames.py unit.cpp unit.o               func_XXXXXXXX -> its symbols.txt name
+    python3 tools/pipeline/linkprep.py reverse unit.cpp main          sort definitions by descending address
+    python3 tools/pipeline/linkprep.py check unit.o main spec.txt
+    python3 tools/pipeline/linkprep.py data unit.cpp unit.o main spec.txt [--apply] [--seed N]
+
+`renames.txt`/`aliases.txt` are read from the directory of `unit.o`. After installation the unit's delinks name
+(`src/main/unk_XXXXXXXX.cpp`) can be given instead of the spec.
+
+`check` simulates the link at the unit's ranges, with the build's dead-stripping (a section is kept if it has a
+global that symbols.txt names, or is referenced from a kept one; `.ctor` is always kept) and alias folding:
+
+| Line | Meaning |
+|---|---|
+| `ORDER`, `BYTES`, `SIZE` (.text) | function not on its address / bytes differ / code does not fill the range |
+| `EXTRA` | a function symbols.txt does not have is referenced and therefore linked (it shifts the unit) |
+| `FOREIGN` | the object defines a symbols.txt function of another unit: Multiply-defined at link |
+| `MISSING` (function) | a function of the range is not defined |
+| `NORANGE` | the object emits `.data`/`.rodata`/`.bss`/`.init` objects but the spec has no such range |
+| `SIZE` (data) | the kept objects of a section do not end exactly at the range end |
+| `DATA` | an object's bytes at its simulated address differ (wrong initialiser or wrong order) |
+| `PLACE` | a named object is not on its symbols.txt address (order) |
+| `TARGET` | a relocation resolves to another address than the original word (calls: than relocs.txt), or to a symbol of the wrong module |
+| `MISSING` (data) | a name that relocations *from outside the unit* use is not defined by the object at that address: vtable label (rename), interior label, `static` object, wrong name |
+| `ALIAS`, `BOUND`, `unused` | information: alias handling, boundary without symbol, dead-stripped sections |
+
+It must end with `0 layout problems, 0 wrong targets, 0 unresolved symbols`. `OVERLAY_<n>_ID` are linker script
+symbols and count as resolved.
+
+`data` is the size-sort search of section 4 with the unit's ranges; for main it also knows that
+* a file-scope definition without initialiser (`u8 buf[0x400];`, `Font fontA;`) is a movable bss object;
+* the registration record of a global with a destructor (`@N`, 0xc bytes of bss, passed to
+  `__register_global_object`) is created **immediately before** its object;
+* objects that `__sinit` initialises must keep the order the original `__sinit` handles them in (taken from
+  relocs.txt), and a constant that `__sinit` reads must be defined **after** the object initialised from it
+  (defined before, mwcc folds the value and emits no code);
+* vtables are created last, in reverse declaration order of their classes.
+Definitions must be top-level statements (not inside an `extern "C" { }` block) for `data --apply` and
+`reverse` to move them: write `extern "C" void f() {...}` per function, and plain `u8 data_x[4];` /
+`const T data_y = ...;` with an `extern` declaration above (data names are not mangled). With these rules
+`data --apply` reproduced TU068's 33 objects from a naive order (try a few `--seed`s).
+
+`python3 tools/pipeline/linkprep.py diff main` (after a failed build) lists the differing ranges of `arm9.bin`
+with the symbol and the unit that own them, and compares the autoloads. A wrong bss order shows up as different
+address words in the code that uses the objects.
+
+## Things that are different in main sources
+
+* **Names.** Overlays call into main about 19,700 times and other main code more: every function and every
+  object that anything outside the unit uses must be defined under exactly its symbols.txt name (objects:
+  non-`static`; `const` objects need an `extern const` declaration first). Callees of other units are called by
+  their symbols.txt names (`realnames.py` rewrites `func_XXXXXXXX` to the mangled name; the declaration stays an
+  `extern "C"` function taking the object first). Rename only the unit's own symbols, and only when nothing
+  compiled references the old name (`rename_impact.py`).
+* **A callee whose address exists in several overlays** (`relocs.txt`: `module:overlays(113,123,...)`): name the
+  symbol of the first overlay in the list (TU210: `_ZN18Unk_ov113_02293640D1Ev`). The link resolves it to the
+  shared address; `check` verifies address and module.
+* **Empty `__sinit`** (2 bytes, `bx lr`; nos. 23, 28, 50, 59): mwcc emits one for a file-scope object of a class
+  whose constructor is inline and empty (`struct A { A() {} ... }; A obj;`), also through an empty base
+  constructor. The unit that owns such an object owns the `.init`/`.ctor` slot.
+* **Assembly routines of the original** (`func_0206d470`: pushes all registers and CPSR) cannot be written in
+  C++ and are not linked: cut the unit around them (TU113 is two complete units with the routine delinked in
+  between).
+* `extern const` objects defined in the *next* file look like part of this one by their users
+  (`data_020ca638`, used only by TU068's `func_02050cb4`, is the first `.rodata` object of the following file):
+  an object that sits after the unit's size-sorted run and is loaded from memory although its value is a
+  constant belongs to the neighbour. Shorten the range and keep it `extern`.
+
+## Units placed object by object (`config/usa/arm9/object_order.txt`)
+
+`tools/object_order.py` accepts main units: same file format as for overlays, in `config/usa/arm9/`. The
+`.text`/`.rodata`/`.data` selectors are replaced in `.arm9`, the bss selectors in autoload_3 (the unit's
+placeholder range); autoload_3's bss then moves to the file-less region `UNINITIALIZED_AUTOLOAD_3` and the first
+overlays start after it (`build/autoload_3.bin` stays empty). Alias names are left to `aliases.py`. Use it for
+TU010 (1.2/sp2 thunks plus thirteen 1.2/base functions) and for units whose data order cannot be reproduced.
+Verified with a full build on the unit at 0x020116e0, alone and with one function moved to an extra
+`// mwcc-version: 1.2/sp2` file.
+
+## Installing: `mainbatch.sh`
+
+`tools/pipeline/mainbatch.sh [--commit] <unit dir>...`: compiles and `check`s each unit,
+installs it, reruns configure, builds, and keeps the batch if the last line is `acww_usa.nds: OK`; otherwise it
+prints the linker errors, `romdiff.py`, `linkprep.py diff main` and reverts `src/main` and `config`.
+`REPLACE=1` passes `--replace`.
+
+## Fragile points
+
+* `bss_units.py` depends on dsd 0.12.1 writing `<stem>.bss.o(.bss)` for a unit named `<stem>.bss.cpp` (and
+  listing an object for it). It stops with a message if the line is missing.
+* A leftover reference to a label inside a complete unit links as 0 without a linker error. `check`'s
+  `MISSING` lines are the guard; the ROM checksum is the proof.
+* `aliases.py` links a rewritten copy of the object (`build/usa/aliases/...`). Tools that read the unit's object
+  from `build/usa/src/main` see the unpatched one.
+* Unit names follow the text start. Installing a unit renames the old file that started there; anything that
+  refers to `src/main` file names (plans, `merge_notes.txt`, objdiff history) must use addresses.
