@@ -141,7 +141,7 @@ void func_ov065_02279a00();
 void func_ov065_02279a04();
 void func_ov065_02277ac8(void *);
 s32 func_ov065_02278684(void *);
-Unk_ov065_0227a4e8_Slot *func_ov065_0227866c(void *);
+Unk_ov065_0227a4e8_Slot *func_ov065_0227866c(void *, s32);
 s32 func_ov065_022791c0(Unk_ov065_02279c7c *);
 void func_ov065_0227924c(void *);
 s32 func_ov065_02279654(Unk_ov065_02279c7c *, const void *, s32);
@@ -439,7 +439,7 @@ s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c) {
         }
     }
     for (; l->unk_04 < cnt; l->unk_04++) {
-        Unk_ov065_0227a4e8_Slot *s = func_ov065_0227866c(l->unk_00);
+        Unk_ov065_0227a4e8_Slot *s = func_ov065_0227866c(l->unk_00, l->unk_04);
         s32 r = func_ov065_0227a4e8(s, c, l->unk_04 == 0 ? 1 : 0);
         if (r == 0) {
             return 0;

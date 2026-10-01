@@ -648,6 +648,7 @@ struct Unk_ov065_02280d70_Sa {
 };
 
 s32 func_ov065_02280d70(void *h, Unk_ov065_02280854_Node *n) {
+    Unk_ov065_02280d70_Sa sa;
     Unk_ov065_02280d70_P1 *p;
     s32 e;
     if (func_ov065_022818bc(h, n->unk_0c, &p) == 0) {
@@ -666,11 +667,13 @@ s32 func_ov065_02280d70(void *h, Unk_ov065_02280854_Node *n) {
         return 3;
     }
     func_ov065_02281000(n->unk_08);
-    Unk_ov065_02280d70_Sa sa = {0, 0};
+    u32 ad = (u32)&sa;
+    ((Unk_ov065_02280d70_Sa *)ad)->unk_00 = 0;
+    ((Unk_ov065_02280d70_Sa *)ad)->unk_04 = 0;
     ((u8 *)&sa)[1] = 2;
     sa.unk_04 = p->unk_08->unk_10;
     *(u16 *)((u8 *)&sa + 2) = p->unk_08->unk_14;
-    if (func_ov065_02278d34(n->unk_08, &sa, 8) == -1) {
+    if (func_ov065_02278d34(n->unk_08, (Unk_ov065_02280d70_Sa *)ad, 8) == -1) {
         e = func_ov065_02278be8(n->unk_08);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             func_ov065_02283470(h, 5, data_ov065_0228d9a0);

@@ -117,7 +117,7 @@ s32 func_021130d0(char *buf, const char *fmt, ...);
 s32 func_ov065_02278be8(s32);
 s32 func_ov065_02278bf4(char *);
 s32 func_ov065_02278d34(s32 a, void *src, u32 len);
-s32 func_ov065_02278dd4(s32 a, s32 b);
+s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
 s32 func_ov065_02278f0c(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 func_ov065_0227905c(s32 sock, s32 val);
 s32 func_ov065_0227908c(s32 sock, s32 flag);
@@ -467,7 +467,7 @@ void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self) {
     s32 r;
     s32 w[2];
     if (self->unk_48 == -1) {
-        self->unk_48 = func_ov065_02278dd4(2, 1);
+        self->unk_48 = func_ov065_02278dd4(2, 1, 0);
         if (self->unk_48 == -1) {
             self->unk_fc = 1;
             self->unk_38 = 5;

@@ -252,17 +252,16 @@ s32 func_ov065_022818f4(Ctx0228 **h, s32 a) {
     if (func_ov065_022818bc(h, a, &out) != 0) {
         return (s32)out;
     }
-    Elem0228 tmpa[1];
-    Elem0228 *p = tmpa;
-    Elem0228 &tmp = *p;
-    Unk_ov065_022818f4_Zero(p);
+    Elem0228 tmp;
+    u32 ad = (u32)&tmp;
+    Unk_ov065_022818f4_Zero((Elem0228 *)ad);
     tmp.unk_00 = a;
     tmp.unk_04 = 0;
     tmp.unk_0c = 0;
     tmp.unk_10 = 0;
     tmp.unk_18 = 0;
     tmp.unk_14 = 0;
-    func_ov065_0227885c(*t, p);
+    func_ov065_0227885c(*t, (Elem0228 *)ad);
     ((s32 *)t)[1]++;
     if (func_ov065_022818bc(h, a, &out) != 0) {
         return (s32)out;

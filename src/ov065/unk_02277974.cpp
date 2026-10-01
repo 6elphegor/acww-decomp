@@ -88,7 +88,7 @@ s32 func_ov065_02279eec();
 void func_ov065_02279ef4();
 void func_ov065_0227a1f8();
 void func_ov065_0227a244();
-s32 func_ov065_02278ee8();
+s32 func_ov065_02278ee8(s32 fd);
 s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
 void func_ov065_02278dbc(s32);
 u32 func_ov065_02279144();
@@ -510,13 +510,11 @@ s32 func_ov065_022780e0() {
     u32 flags;
     u8 buf[0x40];
     len = 8;
-    s32 t = data_ov065_02291024.unk_00;
-    s32 m1 = -1;
-    if (t == m1) {
+    if (data_ov065_02291024.unk_00 == -1) {
         data_ov065_02290fa0 = 1;
         return 1;
     }
-    if (func_ov065_02278ee8() != 0) {
+    if (func_ov065_02278ee8(data_ov065_02291024.unk_00) != 0) {
         s32 n = func_ov065_02278cb8(data_ov065_02291024.unk_00, buf, 0x40, 0, addr, &len);
         if (func_ov065_022781b0((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
             func_ov065_02278dbc(data_ov065_02291024.unk_00);

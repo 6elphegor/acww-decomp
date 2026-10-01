@@ -112,7 +112,7 @@ s32 func_ov065_02278bc0(s32);
 s32 func_ov065_02278cf8(s32, s32, s32);
 s32 func_ov065_02278da4(s32, s32);
 s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8();
+s32 func_ov065_02278ee8(s32 fd);
 s32 func_ov065_02278fcc(s32);
 s32 func_ov065_02278ffc(s32);
 s32 func_ov065_0227902c(s32, s32);
@@ -204,7 +204,7 @@ s32 func_ov065_02280f5c(Ctx0228 **h) {
     Ctx0228 *c = *h;
     Node0228 *n;
     s32 s;
-    if (c->unk_204 != -1 && func_ov065_02278ee8() != 0) {
+    if (c->unk_204 != -1 && func_ov065_02278ee8(c->unk_204) != 0) {
         s = func_ov065_02278cf8(c->unk_204, 0, 0);
         if (s != -1) {
             n = func_ov065_02280eb8(h, -1, 0);

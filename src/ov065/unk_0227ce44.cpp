@@ -118,7 +118,7 @@ extern char data_ov065_0228d090[];
 
 s32 func_ov065_022818bc(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
 void func_ov065_02283460(Ctx0227 **, const char *);
-s32 func_ov065_0227d8e0(Ctx0227 **);
+s32 func_ov065_0227d8e0(Ctx0227 **, Unk_ov065_0227c538_Node *);
 void func_ov065_02277ac8(void *);
 s32 func_ov065_0228176c(Unk_ov065_0227c538_Node *);
 void func_ov065_02281880(Ctx0227 **, Unk_ov065_0227c538_Node *);
@@ -158,7 +158,7 @@ s32 func_ov065_0227ce44(Ctx0227 **h, s32 id) {
         func_ov065_02283460(h, data_ov065_0228cfbc);
         return 2;
     }
-    r = func_ov065_0227d8e0(h);
+    r = func_ov065_0227d8e0(h, n);
     if (r != 0) {
         return r;
     }

@@ -129,7 +129,7 @@ s32 func_ov065_022809a4(void *, s32, void *, void *, s32, s32, s32);
 s32 func_ov065_0227c6f0(void *, s32);
 void *func_ov065_02277af0(u32);
 s32 func_ov065_02278dd4(s32, s32, s32);
-s32 func_ov065_0227908c(void);
+s32 func_ov065_0227908c(s32, s32);
 Unk_ov065_022831c0_Host *func_ov065_02261408(const char *);
 s32 func_ov065_02278d34(s32, void *, s32);
 s32 func_ov065_02278be8(s32);
@@ -290,12 +290,12 @@ s32 func_ov065_022831c0(void *h0, void *o0) {
         return 1;
     }
     s->unk_04 = func_ov065_02278dd4(2, 1, 0);
-    if (-1 == s->unk_04) {
+    if (s->unk_04 == -1) {
         func_ov065_02283470(h, 5, data_ov065_0228dd98);
         func_ov065_0227e160(h, 3, 1);
         return 3;
     }
-    if (func_ov065_0227908c() == 0) {
+    if (func_ov065_0227908c(s->unk_04, 0) == 0) {
         func_ov065_02283470(h, 5, data_ov065_0228ddc0);
         func_ov065_0227e160(h, 3, 1);
         return 3;

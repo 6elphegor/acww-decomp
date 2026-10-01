@@ -151,7 +151,7 @@ s32 func_ov065_02278d1c(s32, s32);
 s32 func_ov065_02278c14(s32, void *, s32 *);
 s32 func_ov065_02278d34(s32, void *, s32);
 s32 func_ov065_02278be8(s32);
-s32 func_ov065_0227908c(void);
+s32 func_ov065_0227908c(s32, s32);
 Unk_ov065_0227f00c_Host *func_ov065_02261408(char *);
 s32 func_ov065_022818bc(Ctx0227 **, s32, Node0227 **);
 void func_ov065_022804b8(s32, void *);
@@ -256,7 +256,7 @@ s32 func_ov065_0227f00c(Ctx0227 **h, Node0227 *n) {
     if (ctx->unk_10c == 0) {
         ctx->unk_204 = func_ov065_02278dd4(2, 1, 0);
         if (-1 == ctx->unk_204) GP_FAIL(data_ov065_0228d450)
-        if (func_ov065_0227908c() == 0) GP_FAIL(data_ov065_0228d478)
+        if (func_ov065_0227908c(ctx->unk_204, 0) == 0) GP_FAIL(data_ov065_0228d478)
         w = (u32 *)&sa;
         w[0] = 0;
         w[1] = 0;
@@ -274,7 +274,7 @@ s32 func_ov065_0227f00c(Ctx0227 **h, Node0227 *n) {
         ctx->unk_1d4 = func_ov065_02278dd4(2, 1, 0);
         if (-1 == ctx->unk_1d4) GP_FAIL(data_ov065_0228d450)
     }
-    if (func_ov065_0227908c() == 0) GP_FAIL(data_ov065_0228d478)
+    if (func_ov065_0227908c(ctx->unk_1d4, 0) == 0) GP_FAIL(data_ov065_0228d478)
     host = func_ov065_02261408(data_ov065_0228d1a4);
     if (host == 0) GP_FAIL(data_ov065_0228d530)
     w = (u32 *)&sa;

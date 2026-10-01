@@ -222,6 +222,7 @@ s32 func_ov065_02278e64() {
     data_ov065_022910a8.unk_00 = (u32 *)&data_ov065_02291094;
     data_ov065_02291084.unk_0a = 4;
     data_ov065_022910a8.unk_04 = 0;
+    return (s32)&data_ov065_02291084;
 }
 
 s32 func_ov065_02278ec4(s32 a) {

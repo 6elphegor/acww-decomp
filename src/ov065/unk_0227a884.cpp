@@ -453,6 +453,7 @@ void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self) {
 }
 
 void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
+    char *x;
     char *volatile digits;
     s32 len;
     u8 buf[0x1000];
@@ -463,7 +464,6 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
     u8 *rest;
     s32 rem;
     s32 st;
-    char *x;
     char *e;
     len = 0x1000;
     r4 = func_ov065_02279714(self, buf, &len);
@@ -576,7 +576,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
         char *t;
         Unk_ov065_0227ae94_Blk hb = *(Unk_ov065_0227ae94_Blk *)data_ov065_0228cc58;
         char *hdr = hb.b;
-        t = x;
+        t = *(char *volatile *)&x;
         digits = t;
         t += 0x10;
         digits = t;

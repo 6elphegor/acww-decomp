@@ -167,7 +167,7 @@ s32 func_ov065_0227dc48(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
 s32 func_ov065_0227da7c(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
 s32 func_ov065_0227dfd8(Unk_H *, Unk_N *);
 s32 func_ov065_0227e0e8(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
-s32 func_ov065_0227e160(Unk_H *, s32, s32);
+void func_ov065_0227e160(Unk_H *, s32, s32);
 
 s32 func_ov065_0227d8e0(Unk_H *h, Unk_ov065_0227d8e0_Arg *a) {
     Unk_C *c = h->unk_00;
@@ -649,7 +649,7 @@ s32 func_ov065_0227e0e8(Unk_H *h, Unk_ov065_0227e0e8_Wrap p, Unk_N *m, Unk_ov065
     return 0;
 }
 
-s32 func_ov065_0227e160(Unk_H *h, s32 a, s32 b) {
+void func_ov065_0227e160(Unk_H *h, s32 a, s32 b) {
     Unk_C *ctx = h->unk_00;
     Unk_ov065_0227e0e8_Wrap p;
     Unk_ov065_0227e160_Cb *m;
