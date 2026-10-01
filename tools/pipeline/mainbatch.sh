@@ -6,11 +6,12 @@
 # main_unit_instructions.md describes it: spec.txt, unit.cpp, optionally renames.txt and aliases.txt.
 #   --commit   commit the linked units (one commit for the batch) when the ROM matches
 #   REPLACE=1  pass --replace to install_tu.py (the unit replaces complete code-only units inside its range)
+#   NOCHECK=1  install even if `linkprep.py check` reports problems (to see what the real link does)
 # The tree must be clean in src/main and config (the revert discards every uncommitted change there).
 # Logs go to ${LOGDIR:-/tmp/mainbatch}. One build at a time: the script refuses to start while ninja is running.
 COMMIT=0
 if [ "$1" = "--commit" ]; then COMMIT=1; shift; fi
-[ $# -ge 1 ] || { sed -n 2,10p "$0"; exit 2; }
+[ $# -ge 1 ] || { sed -n 2,11p "$0"; exit 2; }
 [ -f build.ninja ] && [ -f tools/pipeline/install_tu.py ] || { echo "run from the repository root"; exit 2; }
 T="${LOGDIR:-/tmp/mainbatch}"; mkdir -p "$T"
 pgrep -x ninja >/dev/null && { echo "BUSY: a build is running"; exit 2; }
@@ -30,7 +31,7 @@ for D in "$@"; do
   python3 tools/pipeline/linkprep.py compile "$D/unit.cpp" "$D/unit.o" > "$T/check_$N.log" 2>&1 \
     || { revert; echo "COMPILE FAILED $N"; tail -5 "$T/check_$N.log"; exit 1; }
   python3 tools/pipeline/linkprep.py check "$D/unit.o" main "$D/spec.txt" >> "$T/check_$N.log" 2>&1 \
-    || { revert; echo "CHECK FAILED $N"
+    || [ -n "$NOCHECK" ] || { revert; echo "CHECK FAILED $N"
          grep -E "^(ORDER|BYTES|EXTRA|FOREIGN|MISSING|NORANGE|SIZE|DATA|PLACE|TARGET)" "$T/check_$N.log" | head -15
          tail -1 "$T/check_$N.log"; exit 1; }
   python3 tools/pipeline/install_tu.py ${REPLACE:+--replace} main "$D/spec.txt" > "$T/install_$N.log" 2>&1 \
