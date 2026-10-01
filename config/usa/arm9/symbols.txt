@@ -27,6 +27,8 @@ BuildInfo kind:data(any) addr:0x02000b48
 func_02000b7c kind:function(thumb,size=0x8) addr:0x02000b7c
 main kind:function(thumb,size=0x60) addr:0x02000c2c
 _ZN12Unk_02000c8cD1Ev kind:function(thumb,size=0x2) addr:0x02000c8c
+_ZN6Vec3Z2D1Ev kind:label(thumb) addr:0x02000c8c
+_ZN5Vec3ZD1Ev kind:label(thumb) addr:0x02000c8c
 _ZN18Unk_ov003_02258f18D1Ev kind:label(thumb) addr:0x02000c8c
 func_02000c90 kind:function(thumb,size=0x8) addr:0x02000c90
 func_02000c98 kind:function(thumb,size=0x2) addr:0x02000c98
@@ -9648,6 +9650,7 @@ _ZN12Unk_020e244c13func_0209e51cEP12Unk_020e23fc kind:function(thumb,size=0x4) a
 _ZN12Unk_020e244cD0Ev kind:function(thumb,size=0x20) addr:0x0209e520
 _ZN12Unk_020e244cD1Ev kind:function(thumb,size=0x18) addr:0x0209e540
 _ZN12Unk_020e244cC2Ev kind:function(thumb,size=0x18) addr:0x0209e558
+_ZN12Unk_020e244cC1Ev kind:label(thumb) addr:0x0209e558
 _ZN12Unk_020e23fc13func_0209e570Ev kind:function(thumb,size=0x7c) addr:0x0209e570
 _ZN12Unk_020e23fc13func_0209e5ecEv kind:function(thumb,size=0x10) addr:0x0209e5ec
 _ZN12Unk_020e23fc13func_0209e5fcEv kind:function(thumb,size=0x7c) addr:0x0209e5fc
