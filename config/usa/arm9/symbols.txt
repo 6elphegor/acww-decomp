@@ -10603,7 +10603,9 @@ _ZN12Unk_020abea813func_020abea8Ei kind:function(thumb,size=0x2c) addr:0x020abea
 _ZN12Unk_020abea813func_020abed4EP4Vec3 kind:function(thumb,size=0x1f0) addr:0x020abed4
 _ZN12Unk_020abea813func_020ac0c4EP4Vec3iiiiii kind:function(thumb,size=0x118) addr:0x020ac0c4
 func_020ac1dc kind:function(thumb,size=0x2) addr:0x020ac1dc
+_ZN12Unk_020abea8D1Ev kind:label(thumb) addr:0x020ac1dc
 _ZN12Unk_020abea813func_020ac1e0Ev kind:function(thumb,size=0x18) addr:0x020ac1e0
+_ZN12Unk_020abea8C1Ev kind:label(thumb) addr:0x020ac1e0
 func_020ac1f8 kind:function(thumb,size=0x34) addr:0x020ac1f8
 func_020ac22c kind:function(thumb,size=0x10) addr:0x020ac22c
 func_020ac23c kind:function(thumb,size=0x8c) addr:0x020ac23c
