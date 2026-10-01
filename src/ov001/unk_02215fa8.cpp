@@ -271,7 +271,8 @@ void func_ov001_022168a0(s32 a, s32 b, s32 c) {
     if (f != 0) {
         func_ov001_02224b9c(0, f, *q);
         u32 *p = *q;
-        *p = (*p & 0xfe00ff00) | ((v[a] & 0x1ff) << 16);
+        u32 t = (v[a] & 0x1ff) << 16;
+        *p = t | (*p & 0xfe00ff00);
         u16 *h = (u16 *)*q;
         h[2] = (h[2] & ~0xc00) | 0xc00;
     } else {

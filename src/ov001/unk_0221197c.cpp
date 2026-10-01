@@ -307,7 +307,7 @@ void func_ov001_02212260(s32 a, s32 b) {
     u32 r4 = a * 0x2a;
     s32 n = func_ov001_02226c24(data_ov001_0222de74->unk_00 + r4, 0x20);
     u32 r5 = b * 0x1c;
-    s32 i, j;
+    s32 i;
     if (a >= data_ov001_0222de74->unk_51) return;
     if (n <= 0x10) r5 += 6;
     func_02115fb4(buf, 0, 0x22);
@@ -316,8 +316,8 @@ void func_ov001_02212260(s32 a, s32 b) {
     func_ov001_02225290(data_ov001_0222de74->unk_0c, 0xa, r5, 2, 0xa, buf, 1);
     if (n > 0x10) {
         func_02115fb4(buf, 0, 0x22);
-        n = n - 0x10;
-        for (i = 0; i < n; i++) buf[i] = (data_ov001_0222de74->unk_00 + r4)[i + 0x10];
+        cnt = n - 0x10;
+        for (i = 0; i < cnt; i++) buf[i] = (data_ov001_0222de74->unk_00 + r4)[i + 0x10];
         func_ov001_02225290(data_ov001_0222de74->unk_0c, 0xa, r5 + 0xc, 2, 0xa, buf, 1);
     }
 }

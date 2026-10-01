@@ -54,7 +54,7 @@ void *func_ov001_02227094(s32, void *, s32, s32);
 void func_ov001_02225924(void *, void *, void *);
 s32 func_ov001_022260ac(void *);
 s32 func_ov001_022261cc(s32);
-s32 func_ov001_022200b4();
+s32 func_ov001_022200b4(s32);
 void func_ov001_02220064(s32);
 void *func_ov001_02224b14(s32, s32, s32);
 void *func_ov001_02225db0(s32, s32);
@@ -167,7 +167,7 @@ void func_ov001_02220444(s32 r)
     g = data_ov001_0222df04;
     for (i = 0; i < data_ov001_0222a398[*(volatile u8 *)&g->unk_1c]; i++) {
         if (i == g->unk_1b) {
-            func_ov001_022200b4();
+            func_ov001_022200b4(i);
             return;
         }
     }

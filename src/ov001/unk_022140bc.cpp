@@ -130,9 +130,13 @@ s32 func_ov001_02214154() {
 }
 
 void func_ov001_022142c8() {
-    s32 off = 0, i = off, j;
+    u8 *p;
+    s32 i;
+    s32 j;
+    s32 off;
+    i = 0; off = i;
     for (; i < 4; i++, off += 3) {
-        u8 *p = data_ov001_0222de7c->name + off;
+        p = data_ov001_0222de7c->name + off;
         for (j = 0; j < 3; j++) {
             u32 c = p[j];
             if (c == 0x30 || c == 0x20 || c == 0) {
@@ -180,7 +184,7 @@ void func_ov001_02214488() {
     if (idx > 3) idx = 3;
     u32 t = data_ov001_0222a074[idx * 3 + 2];
     u32 *reg = data_ov001_0222de7c->unk_04;
-    *reg = (*reg & 0xfe00ff00) | 0x28 | ((t & 0x1ff) << 16);
+    *reg = ((t & 0x1ff) << 16) | ((*reg & 0xfe00ff00) | 0x28);
 }
 
 void func_ov001_022144e8() {

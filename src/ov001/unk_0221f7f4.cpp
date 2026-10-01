@@ -149,6 +149,7 @@ void func_ov001_0221f7f4(void *arg0)
     s32 i;
     s32 j;
     s32 n;
+    Unk_ov001_0222df00_Rec *p;
     Unk_ov001_0222df00 *h;
     // DECL_END
     if (g->unk_1b81 != 0) {
@@ -167,8 +168,8 @@ void func_ov001_0221f7f4(void *arg0)
     do {
         e = a->items[i];
         if (func_02128930(e->unk_0c, data_ov001_0222a33c, 8) == 0 && (e->unk_15 & 1) != 0) {
-            for (j = 0; j < 16; j++) {
-                if (func_02128930(e->unk_04, h->unk_1300[j].name, 6) == 0) {
+            for (j = 0, p = h->unk_1300; j < 16; j++, p++) {
+                if (func_02128930(e->unk_04, p->name, 6) == 0) {
                     if (h->unk_1300[j].flag != 0) {
                         break;
                     }
@@ -193,6 +194,7 @@ void func_ov001_0221f944(void *arg0)
     s32 j;
     Unk_ov001_0221f7f4_Arg *a = (Unk_ov001_0221f7f4_Arg *)arg0;
     s32 k;
+    Unk_ov001_0222df00_Rec *p;
     Unk_ov001_0222df00 *g;
     // DECL_END
     for (i = 0; i < a->count; i++) {
@@ -200,8 +202,8 @@ void func_ov001_0221f944(void *arg0)
         func_02114594(e, 0xc0);
         if (func_02128930(e->unk_0c, data_ov001_0222a33c, 8) == 0) {
             g = data_ov001_0222df00;
-            for (j = 0; j < 16; j++) {
-                if (func_02128930(e->unk_04, g->unk_1300[j].name, 6) == 0) {
+            for (j = 0, p = g->unk_1300; j < 16; p++, j++) {
+                if (func_02128930(e->unk_04, p->name, 6) == 0) {
                     if (g->unk_1300[j].flag != 0) {
                         goto next;
                     }

@@ -253,7 +253,7 @@ void func_ov001_0221a848() {
 }
 
 void func_ov001_0221a8a8() {
-    volatile u32 z[2];
+    u32 z[2];
     u32 a;
     s32 i;
     z[0] = 0;

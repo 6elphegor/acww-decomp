@@ -128,7 +128,7 @@ s32 func_ov001_02206d44(void) {
     func_021152e4(alarm);
     func_0211512c(alarm, 0x3fec42, 0, (void *)func_ov001_02206fc0, 0x12);
     s32 z = 0;
-    volatile s32 k = -8;
+    s32 k = -8;
     do {
         if ((u32)func_ov001_02203e34() >= data_ov001_0222a538) {
             res = -3;

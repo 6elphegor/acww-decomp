@@ -250,7 +250,7 @@ void func_ov001_02222bdc(u16 *p) {
 s32 func_ov001_02222c30() {
     s32 r;
     Unk_ov001_02222db8_Ns::func_ov001_02222db8(3);
-    r = G->unk_13ac(G->unk_13c0);
+    r = G->unk_13ac(G->unk_13c0, G);
     r = func_02121b8c((void *)func_ov001_02222bdc, r, G->unk_13c0);
     if (r == 2) {
         return TRUE;

@@ -56,7 +56,7 @@ void *func_021008e0(void *buf, u32 size, u32 b);
 void func_02115fb4(void *p, u32 v, u32 size);
 void func_0206d49c();
 u32 func_0211ba58();
-void func_0211b6b8(Unk_ov001_02225924_Pt *p);
+void func_0211b6b8(Unk_ov001_02225924_Pt *p, void *e);
 u32 func_01ffc2c4(u32 a, u32 b);
 void func_ov001_02225970(u32 a, u32 b, Unk_ov001_02225924_Pt *out);
 void *func_ov001_02225dd8(u32 size, u32 b);
@@ -346,7 +346,7 @@ void func_ov001_02226214() {
         if (e->unk_04 == 1 && e->unk_06 == 0) {
             Unk_ov001_02225924_Pt pt;
             found = TRUE;
-            func_0211b6b8(&pt);
+            func_0211b6b8(&pt, e);
             func_ov001_02225970(pt.x, pt.y, &data_ov001_0222df54->pos0);
             break;
         }
