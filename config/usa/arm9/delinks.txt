@@ -386,11 +386,12 @@ src/main/unk_020376c0.cpp:
     .text       start:0x020376c0 end:0x02037734
     .data       start:0x020d9004 end:0x020d9010
 
-src/main/unk_02037ab4.cpp:
-    .text       start:0x02037ab4 end:0x020383cc
-
-src/main/unk_020383cc.cpp:
-    .text       start:0x020383cc end:0x02038474
+src/main/unk_02037734.cpp:
+    complete
+    .text       start:0x02037734 end:0x02038474
+    .init       start:0x020c3800 end:0x020c3878
+    .ctor       start:0x020d1e08 end:0x020d1e0c
+    .data       start:0x020d9010 end:0x020d90d4
 
 src/main/unk_02038474.cpp:
     complete
