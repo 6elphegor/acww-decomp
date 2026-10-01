@@ -8,9 +8,17 @@ src/main/unk_020501d4.bss.cpp:
     complete
     .bss        start:0x021c489c end:0x021c4d4c
 
+src/main/unk_0209b5d4.bss.cpp:
+    complete
+    .bss        start:0x021d7128 end:0x021d712c
+
 src/main/unk_0209c37c.bss.cpp:
     complete
     .bss        start:0x021d7168 end:0x021d726c
+
+src/main/unk_0209c390.bss.cpp:
+    complete
+    .bss        start:0x021d726c end:0x021d7274
 
 src/main/unk_0209c3e0.bss.cpp:
     complete

@@ -872,7 +872,16 @@ src/main/unk_0209ab54.cpp:
     .text       start:0x0209ab54 end:0x0209b494
 
 src/main/unk_0209b494.cpp:
-    .text       start:0x0209b494 end:0x0209be24
+    .text       start:0x0209b494 end:0x0209b598
+
+src/main/unk_0209b598.cpp:
+    complete
+    .text       start:0x0209b598 end:0x0209b5d4
+    .data       start:0x020e22cc end:0x020e22d0
+
+src/main/unk_0209b5d4.cpp:
+    complete
+    .text       start:0x0209b5d4 end:0x0209b63c
 
 src/main/unk_0209be24.cpp:
     .text       start:0x0209be24 end:0x0209c37c
@@ -880,6 +889,10 @@ src/main/unk_0209be24.cpp:
 src/main/unk_0209c37c.cpp:
     complete
     .text       start:0x0209c37c end:0x0209c390
+
+src/main/unk_0209c390.cpp:
+    complete
+    .text       start:0x0209c390 end:0x0209c3e0
 
 src/main/unk_0209c3e0.cpp:
     complete
