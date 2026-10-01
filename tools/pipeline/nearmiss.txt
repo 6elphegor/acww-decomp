@@ -133,7 +133,6 @@ func_ov001_0220607c ov001_008/ov001_008.cpp  # UNMATCHED draft ~336 lines: stmia
 func_ov001_02206248 ov001_008/ov001_008.cpp  # UNMATCHED draft ~208 lines: unrolled 6/4-byte struct copies, frame m0@sp0 m1@sp6
 func_ov001_022059fc ov001_008/ov001_008.cpp  # UNMATCHED draft ~714 lines: network handshake state machine, frame 0x64 (ours 0x5c)
 func_ov001_0220cd24 ov001_020/ov001_020.cpp  # -O4,p ARM; switch dispatch only: orig tree rooted at 26 + separate 0..20 jump table (cases 5,12,13,20/23,26/29,34); empty-label sets give one table or tree@29; maybe nested switches
-func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)
 func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
 func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
 func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb r6 order swapped
