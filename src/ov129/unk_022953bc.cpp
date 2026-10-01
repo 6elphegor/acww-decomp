@@ -285,13 +285,13 @@ void func_ov129_0229570c(S *s) {
         } else {
             s32 ox = s->unk_94;
             s32 oy = s->unk_98;
-            j = data_021f47d8[0];
+            j = *(volatile u16 *)&data_021f47d8[0];
             if (j & 0x20) {
                 s->unk_94 = s->unk_94 - 4;
             } else if (j & 0x10) {
                 s->unk_94 = s->unk_94 + 4;
             }
-            j = data_021f47d8[0];
+            j = *(volatile u16 *)&data_021f47d8[0];
             if (j & 0x40) {
                 s->unk_98 = s->unk_98 - 4;
             } else if (j & 0x80) {

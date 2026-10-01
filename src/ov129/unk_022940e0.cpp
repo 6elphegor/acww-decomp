@@ -287,8 +287,9 @@ s32 Unk_ov129_022965f8::func_ov129_02294398() {
 
 s32 Unk_ov129_022965f8::func_ov129_022943ec() {
     volatile u8 *q;
-    s32 n;
+    u8 *pi;
     u16 *slot;
+    s32 n;
     s32 idx = func_ov129_022946b0(unk_aa);
     if (idx == -1) {
         return 0;
@@ -321,7 +322,8 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
     while (more != 0) {
         more = 0;
         for (i = 0; i < 16; i++) {
-            if (st[i] == 1) {
+            pi = &st[i];
+            if (*pi == 1) {
                 q = func_ov127_0229207c(unk_2f00[i]);
                 s32 j;
                 for (j = 0; j < 2; j++) {
@@ -337,7 +339,7 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
                         }
                     }
                 }
-                st[i] = 2;
+                *pi = 2;
             }
         }
         for (i = 0; i < 16; i++) {
@@ -575,10 +577,9 @@ void Unk_ov129_022965f8::func_ov129_0229497c() {
         unk_b3 = func_ov127_0229207c(first)[0];
         u32 x = func_ov127_02292098(unk_b3) << 3;
         u32 y = func_ov127_02292088(unk_b3) << 3;
-        u32 ax = (x + 4) & 0xfffc;
-        u32 ay = (y + 4) & 0xfffc;
-        void *sub = &unk_6b8;
-        func_ov127_02292454(sub, ax, ay);
+        x = (x + 4) & 0xfffc;
+        y = (y + 4) & 0xfffc;
+        func_ov127_02292454(&unk_6b8, x, y);
         for (i = 0; i < 16; i++) {
             unk_2ef0[i] = t->unk_16[i];
         }

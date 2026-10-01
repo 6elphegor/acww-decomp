@@ -342,9 +342,6 @@ func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stac
 func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend: eager rgb extraction/spill order differs, mwcc hoists 'x *= d' (~150 lines)
 func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
 func_ov123_02293bd0 ov123_003/ov123_003.cpp  # Thumb -O4,s C; 4bpp nibble expansion loop: register renaming (dst/src/sh/tmp) + i/j stack slots swapped; frame and insn sequence match (~50 decl perms tried)
-func_ov129_0229570c ov129_002/ov129_002.cpp  # Thumb -O4,s C; final else: pad word ldrh into r5 (orig) vs r0, constant reg swapped; 2 bytes short (120 decl perms tried)
-func_ov129_022943ec ov129_000/ov129_000.cpp  # Thumb -O4,s C++; 3 stack spill slots ordered differently (&st[k] temp / n); code identical (24 decl orders + hill-climb)
-func_ov129_0229497c ov129_000/ov129_000.cpp  # Thumb -O4,s C++; scheduling: orig computes masked x/y args before this+0x6b8, ours pointer first (mask in r3 vs r0)
 func_ov128_022942c4 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; 2nd compare unk_2d08 != unk_2d0c: r0/r1 swapped
 func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
 ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
