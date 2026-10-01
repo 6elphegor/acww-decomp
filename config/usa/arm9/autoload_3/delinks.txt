@@ -24,6 +24,14 @@ src/main/unk_0203c638.bss.cpp:
     complete
     .bss        start:0x021c3250 end:0x021c3264
 
+src/main/unk_0203eb78.bss.cpp:
+    complete
+    .bss        start:0x021c39f0 end:0x021c3b94
+
+src/main/unk_0203ecec.bss.cpp:
+    complete
+    .bss        start:0x021c3b94 end:0x021c3bbc
+
 src/main/unk_02040050.bss.cpp:
     complete
     .bss        start:0x021c3c88 end:0x021c3c8c

@@ -402,7 +402,19 @@ src/main/unk_0203eb60.cpp:
     .data       start:0x020d96d4 end:0x020d96ec
 
 src/main/unk_0203eb78.cpp:
-    .text       start:0x0203eb78 end:0x0203f484
+    complete
+    .text       start:0x0203eb78 end:0x0203ecec
+    .init       start:0x020c3bfc end:0x020c3c20
+    .ctor       start:0x020d1e20 end:0x020d1e24
+
+src/main/unk_0203ecec.cpp:
+    complete
+    .text       start:0x0203ecec end:0x0203f104
+    .init       start:0x020c3c20 end:0x020c3c58
+    .ctor       start:0x020d1e24 end:0x020d1e28
+
+src/main/unk_0203f104.cpp:
+    .text       start:0x0203f104 end:0x0203f484
 
 src/main/unk_0203f484.cpp:
     .text       start:0x0203f484 end:0x0203fe18
