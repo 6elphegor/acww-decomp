@@ -87,6 +87,8 @@ if ren.exists():
         sp = Path("config/usa/arm9") / sub / "symbols.txt"
         lines = sp.read_text().splitlines()
         a = int(addr, 16)
+        if any(l.split(" ", 1)[0] == new for l in lines):
+            continue  # the name already exists (e.g. as an alias added with alias.py)
         for i, l in enumerate(lines):
             if f"addr:{a:#010x}" in l and ("kind:function" in l or "kind:data" in l or "kind:label" in l):
                 lines[i] = new + " " + l.split(" ", 1)[1]
