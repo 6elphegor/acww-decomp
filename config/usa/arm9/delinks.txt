@@ -83,10 +83,23 @@ src/main/unk_020102ec.cpp:
     .text       start:0x020102ec end:0x02010c74
 
 src/main/unk_02010c74.cpp:
-    .text       start:0x02010c74 end:0x02011580
+    .text       start:0x02010c74 end:0x0201106c
 
-src/main/unk_02011580.cpp:
-    .text       start:0x02011580 end:0x020116e0
+src/main/unk_0201106c.cpp:
+    complete
+    .text       start:0x0201106c end:0x02011410
+    .rodata     start:0x020c6c68 end:0x020c6c88
+    .data       start:0x020d6f68 end:0x020d6f7c
+
+src/main/unk_02011410.cpp:
+    complete
+    .text       start:0x02011410 end:0x02011690
+    .data       start:0x020d6f7c end:0x020d6ff8
+
+src/main/unk_02011690.cpp:
+    complete
+    .text       start:0x02011690 end:0x020116e0
+    .data       start:0x020d6ff8 end:0x020d7074
 
 src/main/unk_020116e0.cpp:
     complete
