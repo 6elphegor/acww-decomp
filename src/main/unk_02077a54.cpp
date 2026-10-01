@@ -435,15 +435,15 @@ BOOL func_02077eb0(s32 x, s32 y, s32 h, s32 *px, s32 *py)
     s32 i;
     void *grid = data_021c47c4;
     if (grid != 0 && h >= 0) {
-        i = 0;
-        goto test0;
-    loop0:
-        {
-            s32 hx, hy;
+        for (i = 0; i <= h; i++) {
+            s32 hx, hy, yy;
+            long xx; /* a copy into a different same-size type is not propagated: xx >> 4 stays in the loop */
             u16 *c;
-            hx = x >> 4;
-            hy = (y - (i + 1)) >> 4;
-            c = (u16 *)func_0204ebd8(grid, hx, hy, x - (hx << 4), (y - (i + 1)) - (hy << 4), 0);
+            yy = y - (i + 1);
+            xx = x;
+            hx = xx >> 4;
+            hy = yy >> 4;
+            c = (u16 *)func_0204ebd8(grid, hx, hy, xx - (hx << 4), yy - (hy << 4), 0);
             if (c != 0) {
                 BOOL r = FALSE;
                 u32 v = *c;
@@ -453,15 +453,13 @@ BOOL func_02077eb0(s32 x, s32 y, s32 h, s32 *px, s32 *py)
                 if (r) {
                     if (px != 0 && py != 0) {
                         *px = x;
-                        *py = y - (i + 1);
+                        y -= i + 1; /* redefining y stops CSE with the earlier y - (i + 1) */
+                        *py = y;
                     }
                     return TRUE;
                 }
             }
         }
-        i++;
-    test0:
-        if (i <= h) goto loop0;
     }
     return FALSE;
 }

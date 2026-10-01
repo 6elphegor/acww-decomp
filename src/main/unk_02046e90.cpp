@@ -403,19 +403,20 @@ extern "C" void func_020475f8(void *a, Unk_020475f8_Map *b, s32 c) {
 extern "C" void func_02047714(void *a, void *b) {
     void *m = func_0204da0c(a);
     if (m != 0) {
-        s32 bx = 0, bz = 0;
-        s32 tx, tz;
-        func_0204ee10(&bx, &bz, b);
-        tx = bx >> 4;
-        tz = bz >> 4;
-        u16 *p = func_0204ebd8(m, tx, tz, bx - (tx << 4), bz - (tz << 4), 0);
+        Unk_020470b8_Pos v;
+        v.x = 0;
+        v.z = 0;
+        func_0204ee10(&v.x, &v.z, b);
+        long x = v.x, z = v.z;
+        s32 tx = x >> 4, tz = z >> 4;
+        u16 *p = func_0204ebd8(m, tx, tz, x - (tx << 4), z - (tz << 4), 0);
         if (p != 0) {
             if (Unk_020470b8_R(p, 0xfc, 0xfd)) {
                 Unk_020470b8_Pos pos;
-                pos.x = bx;
-                pos.z = bz;
+                pos.x = v.x;
+                pos.z = v.z;
                 if (func_020453e8(&pos, 0) < 0) {
-                    func_02049854(m, bx, bz, 0xfff1, 0);
+                    func_02049854(m, v.x, v.z, 0xfff1, 0);
                 }
             }
         }

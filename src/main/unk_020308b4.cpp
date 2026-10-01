@@ -272,52 +272,42 @@ BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
     return TRUE;
 }
 
+static inline BOOL Unk_02030be4_A(Unk_02033b94 *T)
+{
+    BOOL g = FALSE, f = FALSE, e = FALSE;
+    if (T->unk_10[0] == 0x14 && T->unk_10[1] == 0x14) e = TRUE;
+    if (e && T->unk_10[2] == 0x14) f = TRUE;
+    if (f && T->unk_10[3] == 0x14) g = TRUE;
+    return g;
+}
+static inline BOOL Unk_02030be4_B(Unk_02033b94 *T)
+{
+    if (T->unk_10[0] == 0x14 && T->unk_10[1] == 0x14 && T->unk_10[2] == 0x14 && T->unk_10[3] == 0x14) return TRUE;
+    return FALSE;
+}
 s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
 {
-    volatile s32 bx, bz, j, g, zz, z14, z18, z1c, z20, z24;
+    s32 bx, bz, j, i;
     Unk_02033b94 X, Y, Z;
-    Unk_02033b94 *py;
-    s32 i;
     if (func_01ffcb5c(c, d) == 0) return 4;
     bx = c << 4;
     bz = d << 4;
-    j = 0;
-    z14 = 0;
-    z18 = 0;
-    py = &Y;
-    z1c = 0;
-    z20 = 0;
-    z24 = 0;
-    for (; j < 16; j++) {
-        i = z14;
-        zz = bz + j;
-        for (; i < 16; i++) {
-            BOOL f, e;
+    for (j = 0; j < 16; j++) {
+        for (i = 0; i < 16; i++) {
             *a = bx + i;
-            *b = zz;
-            func_02033b94(&X, *a, *b, z18);
-            func_02033b94(py, *a + 1, *b, z1c);
-            s32 t = z20;
-            g = t; e = t; f = t;
-            if (X.unk_10[0] == 0x14 && X.unk_10[1] == 0x14) e = TRUE;
-            if (e && X.unk_10[2] == 0x14) f = TRUE;
-            if (f && X.unk_10[3] == 0x14) g = TRUE;
-            if (g) {
-                BOOL h;
-                if (py->unk_10[0] == 0x14 && py->unk_10[1] == 0x14 && py->unk_10[2] == 0x14 && py->unk_10[3] == 0x14) h = TRUE;
-                else h = z24;
-                if (h) {
-                    BOOL k;
+            *b = bz + j;
+            func_02033b94(&X, *a, *b, 0);
+            func_02033b94(&Y, *a + 1, *b, 0);
+            if (Unk_02030be4_A(&X)) {
+                if (Unk_02030be4_B(&Y)) {
                     func_02033b94(&Z, *a + 2, *b, 0);
-                    if (Z.unk_10[0] == 0x14 && Z.unk_10[1] == 0x14 && Z.unk_10[2] == 0x14 && Z.unk_10[3] == 0x14) k = TRUE;
-                    else k = FALSE;
-                    if (k) return 1;
+                    if (Unk_02030be4_B(&Z)) return 1;
                     return 0;
                 }
             }
             if (X.unk_10[0] != 0x14 && X.unk_10[1] != 0x14 && X.unk_10[2] == 0x14 && X.unk_10[3] == 0x14
-                && py->unk_10[0] != 0x14 && py->unk_10[1] == 0x14 && py->unk_10[2] == 0x14 && py->unk_10[3] != 0x14) {
-                s32 idx = py->unk_10[3];
+                && Y.unk_10[0] != 0x14 && Y.unk_10[1] == 0x14 && Y.unk_10[2] == 0x14 && Y.unk_10[3] != 0x14) {
+                s32 idx = Y.unk_10[3];
                 s32 v;
                 if (idx < 0x7c) v = data_020c7c60[idx * 30];
                 else v = 0;

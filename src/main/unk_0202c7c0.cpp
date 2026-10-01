@@ -255,9 +255,9 @@ s32 func_0202ca00(u16 *a, s32 *b, s32 c, u8 *p, s32 n, s32 *arr, s32 cnt) {
     s32 q;
     u16 t;
     if (n > 0 && p != NULL) {
-        k = func_0202caac(c, p, n, arr, cnt);
-        if (k > 0) {
-            k = func_02063b8c(k);
+        i = func_0202caac(c, p, n, arr, cnt);
+        if (i > 0) {
+            k = func_02063b8c(i);
             prev = 0;
             for (i = 0; i < n; i++) {
                 d = p[1] - prev;
@@ -555,115 +555,92 @@ void func_0202d048(u8 *self, s32 *pa, s32 *pb, s32 c, s32 d) {
     }
 }
 
+static inline BOOL Unk_0202cb34_R(u16 *p, u32 lo, u32 hi) {
+    BOOL r = FALSE;
+    if (*p >= lo && *p <= hi) r = TRUE;
+    return r;
+}
+
+static inline BOOL Unk_0202cb34_Check(u16 *p) {
+    BOOL f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
+    u32 v = *p;
+    if (v <= 5) f1 = TRUE;
+    if (!f1) {
+        if (v < 6 || v > 0xb) f2 = FALSE;
+    }
+    if (!f2) {
+        if (v < 0xc || v > 0x11) f3 = FALSE;
+    }
+    if (!f3) {
+        if ((v < 0x12 || v > 0x19) && v != 0x1c) f4 = FALSE;
+    }
+    if (!f4) {
+        if ((v < 0x8a || v > 0x8f) && (v < 0x90 || v > 0x95) && (v < 0x96 || v > 0x9b) && (v < 0x9c || v > 0xa3) && v != 0xa5) f5 = FALSE;
+    }
+    if (!f5) {
+        if (v != 0x1a) f6 = FALSE;
+    }
+    if (!f6) {
+        if (v != 0xa4) f7 = FALSE;
+    }
+    if (!f7) {
+        if (v != 0x1d) f8 = FALSE;
+    }
+    return f8;
+}
+
+static inline u8 *Unk_0202cb34_Cell(Unk_0202cb34_Grid *g, s32 x, s32 y) {
+    if ((u32)x < (u32)g->unk_04.x && (u32)y < (u32)g->unk_04.y && g->unk_00 != NULL) {
+        return g->unk_00 + (y * g->unk_04.x + x) * 0x28;
+    }
+    return NULL;
+}
+
+static inline void Unk_0202cb34_GetSize(Unk_0202cb34_Grid *g, Unk_0202cb34_Size *out) {
+    Unk_0202cb34_Size *ps = &g->unk_04;
+    out->x = ps->x;
+    out->y = ps->y;
+}
+
 extern "C" {
 void func_0202cb34(s32 *out, s32 *cnt) {
     Unk_0202cb34_Grid *g;
     u8 flags;
-    s32 i, j, x;
-    u16 * volatile v;
-    s32 z;
-    u16 val;
-    s32 w, h;
+    s32 j, i;
+    u16 *v;
     g = func_0204da0c();
     flags = 0;
     *cnt = 0;
     if (g != NULL) {
-        volatile Unk_0202cb34_Size sz;
-        Unk_0202cb34_Size *ps = &g->unk_04;
-        sz.x = ps->x;
-        sz.y = ps->y;
-        volatile s32 y = 1;
-        volatile s32 x0 = 1;
-        volatile s32 nul = 0;
-        volatile s32 zero = 0;
-        volatile s32 i0 = 0;
-        volatile s32 j0 = 0;
-        volatile s32 f0 = 0;
-        volatile s32 t1 = 1;
-        volatile s32 t2 = 1;
-        volatile s32 F1 = 0, F2 = 0, F3 = 0, F4 = 0, F5 = 0, F6 = 0, F7 = 0, F8 = 0;
-        for (; y < sz.y - 1; y++) {
-            for (x = x0; x < sz.x - 1; x++) {
-                u8 *cell;
-                if ((u32)x < (u32)g->unk_04.x && (u32)y < (u32)g->unk_04.y && g->unk_00 != NULL) {
-                    cell = g->unk_00 + (y * g->unk_04.x + x) * 0x28;
-                } else {
-                    cell = (u8 *)nul;
-                }
-                if (cell == NULL) {
-                    continue;
-                }
-                z = zero;
-                v = func_02037558(cell, z, z, z);
-                if (v == NULL) {
-                    continue;
-                }
-                for (i = i0; i < 16; i++) {
-                    for (j = j0; j < 16; j++) {
-                        s32 a, b8, b7, b6, b5, b4, b3, b2, b1;
-                        val = *v;
-                        a = f0;
-                        if (val >= 0xc8 && val <= 0xcf) {
-                            a = t1;
-                        }
-                        if (a == 1) {
-                            if ((flags & 2) != 0) {
-                                flags |= 2;
-                            }
-                        } else {
-                            b8 = b7 = b6 = b5 = b4 = b3 = b2 = t2;
-                            b1 = F1;
-                            if (val <= 5) {
-                                b1 = t2;
-                            }
-                            if (b1 == 0) {
-                                if (val < 6 || val > 0xb) {
-                                    b2 = F2;
+        Unk_0202cb34_Size sz;
+        Unk_0202cb34_GetSize(g, &sz);
+        Unk_0202cb34_Size pos;
+        for (pos.y = 1; pos.y < sz.y - 1; pos.y++) {
+            for (pos.x = 1; pos.x < sz.x - 1; pos.x++) {
+                u8 *cell = Unk_0202cb34_Cell(g, pos.x, pos.y);
+                if (cell != NULL) {
+                    v = func_02037558(cell, 0, 0, 0);
+                    if (v != NULL) {
+                        for (i = 0; i < 16; i++) {
+                            for (j = 0; j < 16; j++) {
+                                if (Unk_0202cb34_R(v, 0xc8, 0xcf) == 1) {
+                                    if ((flags & 2) != 0) {
+                                        flags |= 2;
+                                    }
+                                } else if (Unk_0202cb34_Check(v) == 1) {
+                                    if ((flags & 4) != 0) {
+                                        flags |= 4;
+                                    }
                                 }
-                            }
-                            if (b2 == 0) {
-                                if (val < 0xc || val > 0x11) {
-                                    b3 = F3;
+                                if (flags == 6) {
+                                    break;
                                 }
+                                v++;
                             }
-                            if (b3 == 0) {
-                                if ((val < 0x12 || val > 0x19) && val != 0x1c) {
-                                    b4 = F4;
-                                }
-                            }
-                            if (b4 == 0) {
-                                if ((val < 0x8a || val > 0x8f) && (val < 0x90 || val > 0x95) && (val < 0x96 || val > 0x9b) && (val < 0x9c || val > 0xa3) && val != 0xa5) {
-                                    b5 = F5;
-                                }
-                            }
-                            if (b5 == 0) {
-                                if (val != 0x1a) {
-                                    b6 = F6;
-                                }
-                            }
-                            if (b6 == 0) {
-                                if (val != 0xa4) {
-                                    b7 = F7;
-                                }
-                            }
-                            if (b7 == 0) {
-                                if (val != 0x1d) {
-                                    b8 = F8;
-                                }
-                            }
-                            if (b8 == 1) {
-                                if ((flags & 4) != 0) {
-                                    flags |= 4;
-                                }
+                            if (flags == 6) {
+                                break;
                             }
                         }
-                        if (flags == 6) {
-                            break;
-                        }
-                        v++;
-                    }
-                    if (flags == 6) {
-                        break;
                     }
                 }
                 if (flags == 6) {

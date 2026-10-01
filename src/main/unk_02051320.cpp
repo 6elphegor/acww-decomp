@@ -248,16 +248,22 @@ void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     }
 }
 
-static inline u32 Unk_02051a50_Mask(s32 &v) {
-    v &= 0xf;
-    return v & 0xf;
-}
+struct Unk_02051a50_Bits {
+    u32 x : 4;
+    u32 y : 4;
+    u32 g : 4;
+    u32 d : 1;
+    u32 e : 1;
+    u32 f : 1;
+    u32 item : 16;
+    u32 pad : 1;
+};
 
 void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i) {
     void *o;
     u16 loc[3];
     Unk_02051a50_Pack pk;
-    u32 bits;
+    Unk_02051a50_Bits bits;
     s32 x, y;
     s32 off;
     u32 idx;
@@ -294,13 +300,13 @@ void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i
     }
     if (func_02072e44(data_020cbb18) != 0 && i != 0) {
         void *t;
-        bits = (bits & ~0xf) | (b & 0xf);
-        bits = (bits & ~0xf0) | ((c & 0xf) << 4);
-        bits = (bits & 0xfffff0ff) | (Unk_02051a50_Mask(g) << 8);
-        bits = (bits & 0xffffefff) | ((d & 1) << 12);
-        bits = (bits & 0xffffdfff) | ((e & 1) << 13);
-        bits = (bits & 0xffffbfff) | ((f & 1) << 14);
-        bits = (bits & 0x80007fff) | ((loc[0] & 0xffff) << 15);
+        bits.x = b;
+        bits.y = c;
+        bits.g = g & 0xf;
+        bits.d = d;
+        bits.e = e;
+        bits.f = f;
+        bits.item = loc[0];
         t = data_020cbb18;
         func_020728d4(t);
         func_020728a4(t, &bits, 4);
@@ -310,14 +316,13 @@ void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i
 }
 
 void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h) {
-    volatile s32 idx, x, y;
-    volatile BOOL k;
-    volatile s32 v20, v24, off;
     void *o;
+    u32 idx;
+    s32 x, y;
+    BOOL k;
     u16 loc[3];
     Unk_02051a50_Pack pk;
     u32 bits;
-    BOOL r;
     loc[0] = *f;
     if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
         o = data_021c47c4;
@@ -332,23 +337,17 @@ void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h) {
     if (*f >= 0x45dc && *f <= 0x47d7) {
         k = TRUE;
     }
-    idx = 0;
-    v20 = 0;
-    v24 = 0;
-    off = 0;
-    for (; (u32)idx < func_0205248c(&pk); idx++) {
-        x = b + *(s16 *)((u8 *)func_0205242c(&pk, idx) + off);
+    for (idx = 0; idx < func_0205248c(&pk); idx++) {
+        x = b + func_0205242c(&pk, idx)[0];
         y = c + func_0205242c(&pk, idx)[1];
         loc[1] = 0xfff1;
-        r = func_0204eb30(o, &loc[1], x, y, d) == 0 ? TRUE : v20;
-        if (r) {
+        if (func_0204eb30(o, &loc[1], x, y, d) == 0 ? TRUE : FALSE) {
             func_020524a4(&pk);
             return;
         }
         if (g != 0 && d == 0) {
             loc[2] = 0xfff1;
-            r = func_0204eb30(o, &loc[2], x, y, 1) == 0 ? TRUE : v24;
-            if (r) {
+            if (func_0204eb30(o, &loc[2], x, y, 1) == 0 ? TRUE : FALSE) {
                 func_020524a4(&pk);
                 return;
             }

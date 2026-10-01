@@ -1,3 +1,4 @@
+// mwcc-version: 1.2/sp2
 #include "types.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
@@ -427,13 +428,14 @@ extern "C" void *func_020549ac(Unk_02054970_Table *t, void *name)
 extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
 {
     u32 size;
+    void *fileHeap;
     void *res;
     void *hdr;
     u32 i;
     if (heap == 0) {
         heap = data_021c6214;
     }
-    void *fileHeap = data_021f482c;
+    fileHeap = data_021f482c;
     res = func_020641ec(file, fileHeap, -4, 0);
     if (res == 0) {
         return FALSE;
@@ -453,7 +455,7 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
     }
     hdr = func_0210629c(res);
     func_02055724(hdr, 0);
-    void *tmp = func_0205588c(hdr, heap);
+    hdr = func_0205588c(hdr, heap);
     for (i = 0; i < t->unk_04; i++) {
         u8 *h = (u8 *)func_021062dc(res);
         u8 *p = h + 8;
@@ -461,7 +463,7 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
         u32 st = *(u16 *)(p + off);
         u8 *q = h + *(s32 *)(p + off + st * i + 4);
         void *r = func_02055928(q, heap);
-        func_02055600(&t->unk_08[i], r, tmp);
+        func_02055600(&t->unk_08[i], r, hdr);
     }
     func_020e85fc(fileHeap, res);
     return TRUE;

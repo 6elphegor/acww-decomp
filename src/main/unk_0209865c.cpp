@@ -443,15 +443,17 @@ extern "C" s32 func_02098eb0(u16 *a) {
     Unk_0209865c *o = func_0209750c();
     u16 *p = func_02097f6c(o->func_02098750(), 0);
     s32 i;
-    BOOL z1 = FALSE, z2 = FALSE;
     for (i = 0; i < 15; i++) {
         if (func_02097e98(o->func_02098750(), i)) {
-            u16 *e = p + i;
+            s32 off = i << 1;
+            u16 *e = (u16 *)((u32)p + off);
             BOOL r;
             if (func_0204b2d4(e)) {
-                if (func_0204b25c(e) == func_0204b25c(a)) r = TRUE; else r = z1;
+                r = (func_0204b25c(e) == func_0204b25c(a)) ? TRUE : FALSE;
             } else {
-                if (p[i] == *a) r = TRUE; else r = z2;
+                u32 x = *(u16 *)((u8 *)p + off);
+                u32 y = *a;
+                r = (x == y) ? TRUE : FALSE;
             }
             if (r) return i;
         }

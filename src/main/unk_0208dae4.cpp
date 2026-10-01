@@ -179,14 +179,15 @@ Unk_020e1028::Unk_020e1028(u32 flag) : unk_0c(0), unk_10(0) {
 // free function
 
 extern "C" BOOL func_0208dd48() {
-    BOOL a = data_021c5384 == 0 ? TRUE : FALSE;
-    BOOL b = func_0203e2f4() == 0 ? TRUE : FALSE;
-    BOOL c = func_020b50e8() == 6 ? TRUE : FALSE;
-    s32 v = func_02095134(4);
-    BOOL d;
-    BOOL e;
-    if ((u32)(v - 8) <= 7) d = TRUE; else d = FALSE;
-    if ((u32)(v - 0x24) <= 8) e = TRUE; else e = FALSE;
+    BOOL a, b, c;
+    long d, e;
+    s32 v;
+    a = data_021c5384 == 0 ? TRUE : FALSE;
+    b = func_0203e2f4() == 0 ? TRUE : FALSE;
+    c = func_020b50e8() == 6 ? TRUE : FALSE;
+    v = func_02095134(4);
+    d = (u32)(v - 8) <= 7 ? TRUE : FALSE;
+    e = (u32)(v - 0x24) <= 8 ? TRUE : FALSE;
     if (a && b && !c && !d && !e) {
         return TRUE;
     }
@@ -312,14 +313,13 @@ s32 Unk_020e1098::func_0208e138() { return unk_44; }
 
 void Unk_020e1098::func_0208e13c(s32 v) {
     s32 i = data_020cf6e8[unk_18] + data_020cf708[v];
-    s32 j = i;
-    j++;
+    s32 j = i + 1;
     s32 k = data_020cf6f8[v];
     unk_44 = v;
     unk_1c.func_02089268(&data_020d5b0c[i]);
     unk_1c.func_02089264(k);
     unk_1c.func_020891bc();
-    unk_30.func_02089268(&data_020d5b0c[j]);
+    unk_30.func_02089268(&data_020d5b0c[v ? j : j]);
     unk_30.func_02089264(k);
     unk_30.func_020891bc();
     if (v == 1) {

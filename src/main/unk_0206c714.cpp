@@ -236,14 +236,12 @@ extern "C" BOOL func_0206c7c8(u8 *p, s32 n) {
         if (func_0206c768(p, n, off)) {
             s32 w = k >> 2;
             s32 sh, m, v;
-            s32 old;
             k &= 3;
             sh = k * 2;
             m = 3 << sh;
-            old = data_021ca9fc[w];
-            v = (old & m) >> sh;
+            v = (data_021ca9fc[w] & m) >> sh;
             if (v >= 2) return FALSE;
-            data_021ca9fc[w] = old & ~m;
+            data_021ca9fc[w] &= ~m;
             data_021ca9fc[w] |= (v + 1) << sh;
             return TRUE;
         }

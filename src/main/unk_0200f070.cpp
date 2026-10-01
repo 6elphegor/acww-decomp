@@ -134,9 +134,12 @@ extern "C" void func_0200f070(Unk_0200f070_V3 *dst, Unk_02006d14 *o, s32 *p)
     v.z = 0;
     func_01ffb898(&v, &m2, &out);
     Unk_0200f070_V3 r;
-    r.x = tx + out.x;
-    r.y = ty + out.y;
-    r.z = tz + out.z;
+    tx += out.x;
+    ty += out.y;
+    tz += out.z;
+    r.x = tx;
+    r.y = ty;
+    r.z = tz;
     func_0203ee38(dst, &r);
 }
 
@@ -369,8 +372,16 @@ BOOL Unk_02006d14::func_0200f6d4(s32 a, s32 b)
     return FALSE;
 }
 
+namespace Unk_0200f7a0_NS {
+extern "C" s32 func_020433ec(void *o, Unk_0200f6d4_V2 *v, s32 a, s32 b, s32 c);
+}
+
 s32 Unk_02006d14::func_0200f7a0(Unk_0200f6d4_V2 *p, s32 a, s32 b)
 {
+    struct {
+        s32 pad;
+        Unk_0200f6d4_V2 v;
+    } l;
     s32 result;
     if (unk_808 == -1) {
         s32 x = p->x, y = p->y;
@@ -381,7 +392,9 @@ s32 Unk_02006d14::func_0200f7a0(Unk_0200f6d4_V2 *p, s32 a, s32 b)
             result = 2;
         } else {
             unk_81c = unk_81e = *(u16 *)r;
-            unk_808 = func_020433ec((void *)unk_7fc, *p, a, b, 0xfff1);
+            l.v.x = p->x;
+            l.v.y = p->y;
+            unk_808 = Unk_0200f7a0_NS::func_020433ec((void *)unk_7fc, &l.v, a, b, 0xfff1);
             if (unk_808 == -1) {
                 result = 0;
             } else {
