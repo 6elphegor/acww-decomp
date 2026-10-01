@@ -610,15 +610,12 @@ src/main/unk_0206269c.cpp:
     .text       start:0x0206269c end:0x02062fd4
 
 src/main/unk_02062fd4.cpp:
-    .text       start:0x02062fd4 end:0x020637f8
+    .text       start:0x02062fd4 end:0x020637e4
 
-src/main/unk_020637f8.cpp:
+src/main/unk_020637e4.cpp:
     complete
-    .text       start:0x020637f8 end:0x02063850
-    .data       start:0x020dd36c end:0x020dd384
-
-src/main/unk_020638d0.cpp:
-    .text       start:0x020638d0 end:0x02063904
+    .text       start:0x020637e4 end:0x02063904
+    .data       start:0x020dd36c end:0x020dd39c
 
 src/main/unk_02063904.cpp:
     .text       start:0x02063904 end:0x02063f3c
