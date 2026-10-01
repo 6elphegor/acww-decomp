@@ -214,24 +214,22 @@ extern "C" void func_02011f74(Unk_02011f74_Pair *out, void *self, Unk_02011f74_V
     if (world) {
         Unk_02011f74_Pair *size = &world->size;
         Unk_02011f74_Pair szcopy;
-        volatile s32 count;
-        volatile s32 total;
-        volatile s32 sz;
+        s32 count;
+        s32 total;
+        s32 sz;
         szcopy = *size;
         sz = szcopy.a;
         count = 0;
         total = 0;
         if (size->b > 4 && sz <= 8) {
-            volatile s32 px = v->x >> 17;
-            volatile s32 pz = v->z >> 17;
-            s32 i = 1;
-            Unk_02011f74_Cell *volatile nullc = NULL;
-            volatile s32 one = 1;
-            for (; i < sz - 1; i++) {
+            s32 px = v->x >> 17;
+            s32 pz = v->z >> 17;
+            s32 i;
+            for (i = 1; i < sz - 1; i++) {
                 if (i != px || pz != 4) {
-                    Unk_02011f74_Cell *c = GetCellD(world, i, 4, &nullc);
+                    Unk_02011f74_Cell *c = GetCell(world, i, 4);
                     if (c && func_020374b0(c, 8)) {
-                        mask |= one << (i - 1);
+                        mask |= 1 << (i - 1);
                         count++;
                     }
                 }

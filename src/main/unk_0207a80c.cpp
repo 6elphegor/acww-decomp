@@ -327,10 +327,9 @@ void func_0207ac60(u8 *self) {
         }
         for (xy[1] = 0; xy[1] < h; xy[1]++) {
             for (xy[0] = 0; xy[0] < w; xy[0]++) {
-                s32 cx = xy[0], cy = xy[1];
-                s32 hx = cx >> 4;
-                s32 hy = cy >> 4;
-                u16 *t = func_0204ebd8(g, hx, hy, cx - (hx << 4), cy - (hy << 4), 0);
+                struct Q { s32 x, y; };
+                struct L { static inline u16 *Cell(void *g, const Q &q) { s32 x = q.x; s32 y = q.y; s32 hx = x >> 4, hy = y >> 4; return func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0); } };
+                u16 *t = L::Cell(g, *(Q *)xy);
                 if (t != NULL && *t == 0x500a) {
                     func_02081018(&arr[n], xy);
                     n++;

@@ -155,12 +155,12 @@ BOOL func_0204cd00(Unk_0204cf2c_Ent *t, u16 *dst, s32 i, s32 j, void *heap) {
                 s32 k;
                 for (k = 0; k < cnt; p++, k++) {
                     if (Unk_0204cd00_R(p)) {
-                        dst[p->y * 16 + p->x] = p->v;
+                        dst[(p->y << 4) + p->x] = p->v;
                     }
                 }
-                func_020e85fc(heap, buf);
-                result = TRUE;
             }
+            func_020e85fc(heap, buf);
+            result = TRUE;
         }
     }
     return result;
@@ -377,8 +377,8 @@ BOOL func_0204d0f4(Unk_0204d0a4 *p, u32 a, void *heap) {
 
 BOOL func_0204d1dc(u16 *dst, u32 b, void *heap) {
     s32 x, y;
-    BOOL r;
     u32 h;
+    BOOL r;
     x = 2;
     y = 0;
     r = FALSE;

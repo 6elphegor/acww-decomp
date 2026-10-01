@@ -147,19 +147,16 @@ extern "C" void func_020739f8() {
 }
 
 extern "C" void func_02073a0c() {
-    Unk_020cbb18 *o;
-    u32 *r5;
-    u32 r4;
     if (data_020cbb18->unk_74 != 0) {
-        r5 = data_021c6218;
-        r4 = func_020e86fc(r5, 0x8000);
+        u32 *const r5 = data_021c6218;
+        u32 r4 = func_020e86fc(r5, 0x8000);
         func_020e86fc(r5, r4 | 0x2000);
         func_020720f8();
         if (func_020eb1d8() == 0) {
             func_020b7870();
         }
         func_020e86fc(r5, r4);
-        o = data_020cbb18;
+        Unk_020cbb18 *o = data_020cbb18;
         func_02072fb4(o);
         o->unk_74 = 0;
     }

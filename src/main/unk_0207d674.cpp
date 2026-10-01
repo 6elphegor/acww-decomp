@@ -1,3 +1,4 @@
+#pragma opt_loop_invariants off
 #include "types.h"
 
 static inline BOOL Unk_0207d774_R(u16 *p, u32 lo, u32 hi) {
@@ -72,7 +73,7 @@ s32 func_020030b4(void *a);
 s32 func_02002fc8(void *a, u32 b);
 s32 func_02098778(u32 a, u32 b, u32 c);
 void *func_020947f0(u32 n);
-void func_0204ee10(s32 *x, s32 *y);
+void func_0204ee10(s32 *x, s32 *y, void *pos);
 void *func_0204ebd8(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c[];
@@ -397,21 +398,21 @@ s32 func_0207dd24(void) {
     if (Unk_0207dd24_IsZero(*data_020e416c) && tb) {
         void *m = data_021c47c4;
         if (m) {
-            s32 xy[3];
+            s32 cnt = 0;
+            s32 xy[2];
             xy[0] = 0;
             xy[1] = 0;
-            xy[2] = 0;
-            func_0204ee10(&xy[1], &xy[2]);
-            s32 y, x, hx, hy;
-            for (y = xy[2] - 1; y <= xy[2] + 1; y++) {
-                for (x = xy[1] - 1; x <= xy[1] + 1; x++) {
+            func_0204ee10(&xy[0], &xy[1], tb);
+            s32 x, y, hx, hy;
+            for (y = xy[1] - 1; y <= xy[1] + 1; y++) {
+                for (x = xy[0] - 1; x <= xy[0] + 1; x++) {
                     hx = x >> 4;
                     hy = y >> 4;
                     u16 *c = (u16 *)func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                     if (c) {
                         if (Unk_0207dd24_Check(c)) {
-                            xy[0]++;
-                            if (xy[0] >= 2) return 1;
+                            cnt++;
+                            if (cnt >= 2) return 1;
                         }
                     }
                 }
@@ -430,8 +431,8 @@ s32 func_0207de6c(void) {
             s32 xy[2];
             xy[0] = 0;
             xy[1] = 0;
-            func_0204ee10(&xy[0], &xy[1]);
-            s32 y, x;
+            func_0204ee10(&xy[0], &xy[1], tb);
+            s32 x, y;
             for (y = xy[1] - 1; y <= xy[1] + 1; y++) {
                 for (x = xy[0] - 1; x <= xy[0] + 1; x++) {
                     u16 *c = Unk_0207de6c_Cell(m, x, y);

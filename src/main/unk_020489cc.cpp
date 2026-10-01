@@ -156,12 +156,11 @@ extern "C" void func_02048ddc(u32 a, void *m, u16 *cell, Pos size, s32 x, s32 y)
 
 extern "C" void func_02048e10(u32 a, void *m, u16 *cell, Pos size, s32 x, s32 y)
 {
-    s32 px = x;
-    volatile s32 vy = y;
-    if (func_0204e378(m, px, vy) != 1) {
+    const Pos p(x, y);
+    if (func_0204e378(m, p.x, p.y) != 1) {
         func_02049790(m, *cell, x, y);
     } else {
-        if (!func_02048e70(a, m, size, Pos(px, vy))) {
+        if (!func_02048e70(a, m, size, p)) {
             func_02049790(m, *cell, x, y);
         }
     }
@@ -229,6 +228,7 @@ extern "C" void func_02048fc4(u32 a, void *m, s32 c)
     u32 t;
     s32 h;
     s32 w;
+    s32 hx, hy;
     sz = &((Unk_0204da0c_Map *)m)->unk_04;
     w = sz->w << 4;
     h = sz->h << 4;
@@ -240,7 +240,8 @@ extern "C" void func_02048fc4(u32 a, void *m, s32 c)
             goto L_test;
         L_loop:
             {
-            cell = Cell(m, x, y, 0);
+            hx = x >> 4; hy = y >> 4;
+            cell = func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 id = 0xffff;
                 BOOL f = FALSE;
@@ -292,9 +293,10 @@ extern "C" void func_020490c8(u32 a, void *m)
     u32 t;
     u32 id;
     BOOL g;
-    s32 h;
-    s32 w;
     u16 *cell;
+    s32 w;
+    s32 h;
+    s32 hx, hy;
     s32 x;
     Unk_0204da0c_Size *sz;
     sz = &((Unk_0204da0c_Map *)m)->unk_04;
@@ -305,7 +307,8 @@ extern "C" void func_020490c8(u32 a, void *m)
         if (x < w) {
             goto test;
         loop:
-            cell = Cell(m, x, y, 0);
+            hx = x >> 4; hy = y >> 4;
+            cell = func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 id = 0xffff;
                 f = FALSE;
@@ -402,19 +405,20 @@ static inline BOOL Unk_020489cc_Check(u16 *p) {
 }
 extern "C" void func_020489cc(u32 a, void *m, Pos size)
 {
-    s32 x, y, i, count;
+s32 x, y; u8 *p; s32 count, i; u16 *cell; s32 hx, hy;
     for (y = 0; y < size.y; y++) {
         x = 0;
         if (x < size.x) {
             goto L_test;
         L_loop:
             {
-            u16 *cell = Cell(m, x, y, 0);
+
+            hx = x >> 4; hy = y >> 4;
+            cell = func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 if (Unk_020489cc_Check(cell)) {
                     if (func_0204b08c(cell)) {
-                        u8 *p = data_020c9850;
-                        count = 0;
+count = 0; p = data_020c9850;
                         for (i = 0; i < 0x30; p++, i++) {
                             u8 b = *p;
                             s32 nx = x - ((b >> 4) - 8);
@@ -422,7 +426,7 @@ extern "C" void func_020489cc(u32 a, void *m, Pos size)
                             if (nx >= 0 && nx < size.x && ny >= 0 && ny < size.y) {
                                 u16 *c2 = Cell(m, nx, ny, 0);
                                 if (c2) {
-                                    if (Match(c2, 0, 0, 0, 0, 0, 0, 0, 0, 0)) {
+                                    if (Unk_020489cc_Check(c2)) {
                                         count++;
                                     }
                                 }

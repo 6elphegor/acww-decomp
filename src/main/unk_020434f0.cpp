@@ -424,12 +424,8 @@ static inline BOOL Unk_02043400_K(u32 c) {
 }
 
 s32 func_020439f8(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
-    volatile BOOL k1 = FALSE;
     s32 result = -1;
-    BOOL k9 = TRUE;
-    BOOL k8 = TRUE, k7 = TRUE, k6 = TRUE, k5 = TRUE, k4 = TRUE;
-    BOOL k2 = TRUE;
-    BOOL k3 = TRUE;
+    BOOL k9 = TRUE, k8 = TRUE, k7 = TRUE, k6 = TRUE, k5 = TRUE, k4 = TRUE, k3 = TRUE, k2 = TRUE, k1 = FALSE;
     u16 code;
     u32 cc = *id;
     if (cc >= 0x26 && cc <= 0x2a) k1 = TRUE;

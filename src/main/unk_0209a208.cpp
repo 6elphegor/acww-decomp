@@ -426,24 +426,19 @@ void func_0209a774(u16 *out, s32 a, s32 b) {
 }
 
 u8 func_0209a7d0(u16 *p, s32 n) {
-    volatile s32 z1;
-    volatile s32 z2;
     u8 f[10];
     s32 cnt = 10;
     s32 i;
     s32 j;
     s32 k;
-    s32 in;
     func_02115fb4(f, 0, cnt);
-    z1 = 0;
-    z2 = 0;
     for (i = 0; i < n; i++, p++) {
-        in = z1;
+        BOOL in = FALSE;
         if (*p >= 0x450c && *p <= 0x45db) {
-            in = 1;
+            in = TRUE;
         }
         if (in) {
-            for (j = z2; j < 10; j++) {
+            for (j = 0; j < 10; j++) {
                 if (data_020d05d4[j] == func_02052c54(p)) {
                     if (f[j] == 0) {
                         f[j] = 1;

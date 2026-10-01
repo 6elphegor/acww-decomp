@@ -415,8 +415,7 @@ struct Unk_0204c290_V {
 void func_0204c290() {
     Unk_0204c290_W *w;
     s32 wd, ht, x, y;
-    volatile s32 cy;
-    Unk_0204c290_V vs;
+    s32 cx, cy;
     w = func_0204da0c();
     if (w) {
         s32 *q = &w->unk_04;
@@ -424,18 +423,22 @@ void func_0204c290() {
         ht = q[1] << 4;
         for (y = 0x30; y < ht; y++) {
             x = 0;
-            if (wd > 0) {
-                cy = y >> 4;
-                for (; x < wd; x++) {
-                    s32 cx = x >> 4;
+            if (x < wd) {
+                goto test;
+            loop:
+                {
+                    cx = x >> 4; cy = y >> 4;
                     u16 *it = func_0204ebd8(w, cx, cy, x - (cx << 4), y - (cy << 4), 0);
                     if (it) {
                         if (Unk_0204b9c0_R(it, 0x5d, 0x61)) {
-                            vs.v = 0x2a;
-                            func_0204eb30(w, &vs.v, x, y, 0);
+                            u16 v = 0x2a;
+                            func_0204eb30(w, &v, x, y, 0);
                         }
                     }
                 }
+                x++;
+            test:
+                if (x < wd) goto loop;
             }
         }
     }
