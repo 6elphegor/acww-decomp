@@ -302,7 +302,6 @@ extern "C" void func_02039d78(u16 *p) {
 }
 
 extern "C" void func_02039c08(u16 *arr, s32 n) {
-    volatile s32 k, a, b, c, d;
     s32 tbl[3] = {1, 0, 2};
     u32 out;
     Unk_02039cf4_Obj o1;
@@ -313,16 +312,11 @@ extern "C" void func_02039c08(u16 *arr, s32 n) {
             cnt++;
         }
     }
-    k = 0;
-    b = 0;
-    a = 0;
-    c = 0;
-    d = 0;
-    for (; k < n; k++) {
+    for (s32 k = 0; k < n; k++) {
         if (cnt >= 10) {
             break;
         }
-        for (s32 j = a; j < 15; j++) {
+        for (s32 j = 0; j < 15; j++) {
             u16 *e = &arr[j];
             if (*e == 0xfff1) {
                 s32 r = func_02063b8c(100);
@@ -332,15 +326,15 @@ extern "C" void func_02039c08(u16 *arr, s32 n) {
                     *e = 0x1566;
                     cnt++;
                 } else if (r >= 20 && r < 30) {
-                    idx = b;
+                    idx = 0;
                 } else if (r >= 10 && r < 20) {
                     idx = 1;
                 } else if (r >= 0 && r < 10) {
                     idx = 2;
                 }
                 if (idx != 0xff) {
-                    func_0206338c(&o1, tbl[idx], c);
-                    func_02062f94((u16 *)&out, &o1, d, d, 1, 1, d);
+                    func_0206338c(&o1, tbl[idx], 0);
+                    func_02062f94((u16 *)&out, &o1, 0, 0, 1, 1, 0);
                     func_02063388(&o1);
                     *e = *(u16 *)&out;
                     cnt++;
@@ -352,14 +346,12 @@ extern "C" void func_02039c08(u16 *arr, s32 n) {
 }
 
 extern "C" void func_02039cf4(u16 *p) {
-    s32 z = 0;
-    volatile s32 v = 0;
     for (s32 i = 0; i < 3; i++) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
         Unk_02039cf4_Obj o1;
-        func_0206338c(&o1, tbl[func_02063b8c(3)], z);
-        func_02062f94(out, &o1, v, v, 1, 1, v);
+        func_0206338c(&o1, tbl[func_02063b8c(3)], 0);
+        func_02062f94(out, &o1, 0, 0, 1, 1, 0);
         func_02063388(&o1);
         p[i] = out[0];
     }

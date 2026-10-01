@@ -202,19 +202,13 @@ extern "C" s32 func_02048324(void *a, void *b, s32 n, Unk_020481b8_Pos *arr, u16
 }
 
 extern "C" s32 func_020483b0(void *a, Unk_020481b8_Pos *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32)) {
-    s32 j;
-    s32 n;
-    s32 i;
-    i = 0;
+    s32 j, n, i;
     n = 0;
-    volatile s32 ee = e;
-    volatile s32 kx, kl;
-    kl = 0;
-    kx = 0;
+    i = 0;
+    u32 ee = e;
     for (; i < 16; i++) {
-        j = kx;
-        do {
-            u16 *t = func_0204ebd8(c, d, ee, j, i, kl);
+        for (j = 0; j < 16; j++) {
+            u16 *t = func_0204ebd8(c, d, ee, j, i, 0);
             if (t != NULL && *t == 0xfff1) {
                 s32 px, py;
                 func_0204edf8(&px, &py, d, ee, j, i);
@@ -225,8 +219,7 @@ extern "C" s32 func_020483b0(void *a, Unk_020481b8_Pos *arr, void *c, s32 d, s32
                     n++;
                 }
             }
-            j++;
-        } while (j < 16);
+        }
     }
     return n;
 }

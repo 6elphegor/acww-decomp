@@ -73,6 +73,12 @@ static inline BOOL Unk_020449e8_R(volatile u16 *p, u32 &c, u32 lo, u32 hi)
     return r;
 }
 
+static inline void Unk_02044dd8_Set(u8 *pp, s32 y, s32 x)
+{
+    pp[1] = x;
+    pp[0] = y;
+}
+
 static inline BOOL Unk_02044aa8_R(volatile u16 *p, u32 c, u32 lo, u32 hi)
 {
     BOOL r = FALSE;
@@ -232,17 +238,13 @@ void func_02044bf4(Unk_020449e8_Out *o, u32 x, u32 code)
     pos.x = 0;
     pos.y = 0;
     u32 owner;
+    u32 val;
+    s32 n;
     owner = func_0204da0c();
     if (owner != 0) {
-        u32 val;
-        s32 n;
         volatile u16 vx, vy, vp;
         s32 i;
-        if (code == 0xcc) {
-            n = 2;
-        } else {
-            n = 3;
-        }
+        switch (code) { case 0xcc: n = 2; break; default: n = 3; break; }
         val = func_02044cd8(o, code);
         for (i = 0; i < n; i++) {
             s32 d;
@@ -294,7 +296,7 @@ BOOL func_02044d18(Unk_020449e8_Out *a, Unk_020449e8_Pos *p, u32 idx, void *obj)
     s32 i, z0, z1;
     u32 *base;
     u32 *e;
-    u32 off = idx * 32; base = (u32 *)(off + (u32)data_020ca018);
+    base = (u32 *)(idx * 32); base = (u32 *)((u32)data_020ca018 + (u32)base);
     e = base;
     i = 0;
     z1 = 0;
@@ -383,8 +385,8 @@ void func_02044dd8(u8 idx, u32 arg)
             if (!func_0204568c(0, &p2, s.unk_06, s.code, s.kind, s.c, s.e, 4, s.f, sb)) {
                 e->unk_08 = 3;
             } else {
-                s32 px = e->unk_14;
-                s32 py = e->unk_18;
+                s32 px = *(volatile s32 *)&e->unk_14;
+                s32 py = *(volatile s32 *)&e->unk_18;
                 u8 *pp = (u8 *)&out.pos;
                 pp[1] = px;
                 pp[0] = py;

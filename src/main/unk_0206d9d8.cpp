@@ -197,13 +197,10 @@ void func_0206dbcc(u16 *src, u16 *dst) {
         u16 r = v & 0x1f;
         u16 g = (v & 0x3e0) >> 5;
         u16 b = (v & 0x7c00) >> 10;
-        u16 r2 = (r + 0x1f) >> 1;
-        u16 g2 = (g + 0x1f) >> 1;
-        u16 b2 = (b + 0x1f) >> 1;
-        u16 o = r2;
-        o |= g2 << 5;
-        o |= b2 << 10;
-        dst[i] = o;
+        r = (r + 0x1f) >> 1;
+        g = (g + 0x1f) >> 1;
+        b = (b + 0x1f) >> 1;
+        dst[i] = r | (g << 5) | (b << 10);
     }
 }
 
@@ -410,6 +407,7 @@ BOOL func_0206e084(u32 arg) {
     if (data_021cb464 != 4) {
         return func_0206e184(arg);
     }
+    BOOL ok;
     void *heap = *(void **)data_021f482c;
     s32 r = func_0209750c();
     u16 tmp = *func_020983cc();
@@ -430,14 +428,14 @@ BOOL func_0206e084(u32 arg) {
     }
     func_0203c764(c, &tmp, r);
     func_0206dbcc((u16 *)func_0203c6d0(c), (u16 *)b);
-    r = func_02002580(b, arg, 0, 0, 0);
+    ok = func_02002580(b, arg, 0, 0, 0);
     func_0200203c(func_0203c6e4(c), a, 4, 4);
-    r &= func_02002438(a, arg, 0, 0, 0xf);
+    ok &= func_02002438(a, arg, 0, 0, 0xf);
     func_020e85fc(heap, a);
     func_020e85fc(heap, b);
     func_020e85fc(heap, c);
-    r &= func_02002654(data_020ddfc4, heap, arg);
-    return r;
+    ok &= func_02002654(data_020ddfc4, heap, arg);
+    return ok;
 }
 
 BOOL func_0206e184(u32 arg) {

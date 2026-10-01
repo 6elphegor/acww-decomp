@@ -22,10 +22,6 @@ struct Unk_020973ec_G {
     s32 unk_08;
 };
 
-struct Unk_020975f0_Buf {
-    u16 hdr;
-    u16 v[3];
-};
 
 struct Unk_020973e4_Pl {
     u8 pad[0x64];
@@ -181,25 +177,26 @@ u8 *func_020975f0(u8 *base, s32 a1, s32 a2, u32 idx) {
     u8 *r = 0;
     if (func_020978fc(idx) == 1) {
         static Unk_02004b60 tbl[4] = {Unk_02004b60(0x3884), Unk_02004b60(0x3888), Unk_02004b60(0x388c), Unk_02004b60(0x3890)};
-        Unk_020975f0_Buf buf;
-        u16 cnt = 0;
+        u16 hdr;
+        u16 v[3];
         s32 i;
         r = base + idx * 0x228c;
-        func_02115fb4(buf.v, 0, 6);
+        u16 cnt = 0;
+        func_02115fb4(v, 0, 6);
         for (i = 0; i < 4; i++) {
             if (i != idx) {
                 u8 *q = base + i * 0x228c;
                 if (func_02094218(func_0209888c(q)) == 1) {
-                    buf.v[cnt] = func_0209412c(func_0209888c(q));
+                    v[cnt] = func_0209412c(func_0209888c(q));
                     cnt++;
                 }
             }
         }
         func_02098a58(r);
-        buf.hdr = 0xfff1;
+        hdr = 0xfff1;
         {
-            u32 s = func_02094154(buf.v, cnt);
-            func_02098898(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &buf.hdr);
+            u32 s = func_02094154(v, cnt);
+            func_02098898(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
         }
         idx &= 3;
         func_020986d8(r, &tbl[idx]);

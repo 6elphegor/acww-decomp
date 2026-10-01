@@ -129,6 +129,7 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL vfunc_18();
     virtual BOOL vfunc_24();
+    virtual ~Unk_020e141c(); // defined in unk_0208ee00.cpp (0x0208f268 / 0x0208f2a4)
 
     s32 func_02090168();
     s32 func_0209018c();
@@ -169,7 +170,7 @@ void func_020e8c94(void *);
 void *func_020e8e7c(u32, s32);
 void *func_020e8574(u32);
 void func_020e8558(void *);
-void *func_020f8c44(void *);
+void *func_020f8c44(void *, s32, s32);
 void *func_020f8bb0(void *, u32, u32);
 void func_020f8b44(void *, void *, s32);
 void func_020f8cb8(void *, void *, void *);
@@ -409,7 +410,7 @@ s32 func_0208faa0(Unk_0208f8fc_Entry *e, s32 id, s32 a2, s32 a3, Unk_0208f8fc_Cb
     c = tag.unk_02;
     d = tag.unk_03;
     r = 0;
-    e->unk_0c = (Unk_0208f8fc_Obj *)func_020f8c44(data_021d049c->unk_50);
+    e->unk_0c = (Unk_0208f8fc_Obj *)func_020f8c44(data_021d049c->unk_50, id, a2);
     if (e->unk_0c != NULL) {
         e->unk_00 = id;
         e->unk_08 = 1;
@@ -511,10 +512,15 @@ static inline void Unk_0208fb20_SetTag(Unk_0208f8fc_Entry *e, Unk_0208f8fc_Tag t
     e->unk_04 = t;
 }
 
+static inline void Unk_0208fb20_Fill(void *p, s32 v, u32 n)
+{
+    volatile s32 d = v;
+    func_02115e64(d, p, n);
+}
+
 static inline void Unk_0208fb20_Clear(void *p, u32 n)
 {
-    volatile s32 d = 0;
-    func_02115e64(d, p, n);
+    Unk_0208fb20_Fill(p, 0, n);
 }
 
 s32 func_0208fb20(s32 idx, s32 p1, s16 *p2, Unk_0208f8fc_Cb *p3)

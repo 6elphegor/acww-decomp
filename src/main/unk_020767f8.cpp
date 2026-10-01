@@ -35,7 +35,7 @@ void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *), void *(*)(void *));
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *));
 s32 func_020e9d7c(void);
 u64 func_020ea34c(u32 a);
-BOOL func_020ea358(u32 ctx, void *out);
+BOOL func_020ea358(u32 ctx, void *out, u64 key);
 void func_02115fb4(void *p, u32 v, u32 n);
 s32 func_020e9d88(void *p, void *q);
 void func_02077230(void *p);
@@ -437,7 +437,7 @@ extern "C" BOOL func_02076e88(void *out, u8 *data, u32 ctx) {
         acc = m + (u32)data[i];
         i++;
     } while (i < 12);
-    if (!func_020ea358(ctx, tmp)) {
+    if (!func_020ea358(ctx, tmp, acc)) {
         return FALSE;
     }
     func_02116048(tmp, out, 12);

@@ -66,7 +66,7 @@ s32 func_020991e4(void);
 s32 func_02098ffc(void);
 s32 func_020b50e8(void);
 u32 func_020a6018(s32);
-void func_02044dd8(u8);
+void func_02044dd8(u8, u32);
 void func_02047714(void *, void *);
 s32 func_02043ec0(void *);
 s32 func_02042c08(s32, void *);
@@ -264,7 +264,7 @@ s32 func_02042588(Unk_02042578_Entry *e, u32 a1, s32 type, Unk_020422c0_Pos *pos
             e->unk_1d = a7;
             e->unk_20 = a9;
             e->unk_1e = a10;
-            func_02044dd8(i);
+            func_02044dd8(i, a9);
             res = i;
             break;
         }
