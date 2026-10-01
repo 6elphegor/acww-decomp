@@ -3,35 +3,8 @@
     .data       start:0x0229ab60 end:0x0229af20 kind:data align:32
     .bss        start:0x0229af20 end:0x0229b280 kind:bss align:32
 
-src/ov096/unk_0229567c.cpp:
-    .text       start:0x0229567c end:0x02295f94
-
 src/ov096/unk_02294c40.cpp:
-    .text       start:0x02294c40 end:0x0229567c
-
-src/ov096/unk_022971dc.cpp:
-    .text       start:0x022971dc end:0x02297b14
-
-src/ov096/unk_02297b14.cpp:
-    .text       start:0x02297b14 end:0x02298430
-
-src/ov096/unk_022996e8.cpp:
-    .text       start:0x022996e8 end:0x0229a000
-
-src/ov096/unk_02295f94.cpp:
-    .text       start:0x02295f94 end:0x022968bc
-
-src/ov096/unk_0229a94c.cpp:
-    .text       start:0x0229a94c end:0x0229ab44
-
-src/ov096/unk_02298dac.cpp:
-    .text       start:0x02298dac end:0x022996e8
-
-src/ov096/unk_02298430.cpp:
-    .text       start:0x02298430 end:0x02298dac
-
-src/ov096/unk_0229a000.cpp:
-    .text       start:0x0229a000 end:0x0229a94c
-
-src/ov096/unk_022968bc.cpp:
-    .text       start:0x022968bc end:0x022971dc
+    complete
+    .text       start:0x02294c40 end:0x0229ab44
+    .data       start:0x0229ab60 end:0x0229af20
+    .bss        start:0x0229af20 end:0x0229b280
