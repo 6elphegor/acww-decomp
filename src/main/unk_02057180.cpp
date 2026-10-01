@@ -1,0 +1,28 @@
+#include "types.h"
+
+extern "C" u32 func_020571c8(u32 v);
+
+u16 data_020dbe94[8] = {0x0008, 0x0010, 0x0020, 0x0040, 0x0080, 0x0100, 0x0200, 0x0400};
+
+extern "C" u32 func_020571c8(u32 v) {
+    return data_020dbe94[(v & 0x700000) >> 20] * data_020dbe94[(v & 0x3800000) >> 23];
+}
+
+extern "C" u32 func_02057180(u32 v) {
+    u32 r = func_020571c8(v);
+    switch ((v & 0x1c000000) >> 26) {
+    case 2:
+        r >>= 2;
+        break;
+    case 3:
+        r >>= 1;
+        break;
+    case 5:
+        r >>= 2;
+        break;
+    case 7:
+        r <<= 1;
+        break;
+    }
+    return r;
+}
