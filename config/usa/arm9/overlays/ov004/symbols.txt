@@ -4513,7 +4513,6 @@ data_ov004_0224ffcc kind:bss addr:0x0224ffcc
 data_ov004_0225002c kind:bss addr:0x0225002c
 data_ov004_0225008c kind:bss addr:0x0225008c
 data_ov004_022500fc kind:bss addr:0x022500fc
-data_ov004_02250125 kind:bss addr:0x02250125 ambiguous
 data_ov004_0225016c kind:bss addr:0x0225016c
 data_ov004_02250170 kind:bss addr:0x02250170
 data_ov004_02250174 kind:bss addr:0x02250174
