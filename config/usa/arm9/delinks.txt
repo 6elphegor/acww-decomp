@@ -1299,7 +1299,12 @@ src/main/unk_020b5e5c.cpp:
     .data       start:0x020e4470 end:0x020e44cc
 
 src/main/unk_020b6818.cpp:
-    .text       start:0x020b6818 end:0x020b705c
+    .text       start:0x020b6818 end:0x020b6b44
+
+src/main/unk_020b6b44.cpp:
+    complete
+    .text       start:0x020b6b44 end:0x020b705c
+    .data       start:0x020e44cc end:0x020e44e4
 
 src/main/unk_020b705c.cpp:
     complete
