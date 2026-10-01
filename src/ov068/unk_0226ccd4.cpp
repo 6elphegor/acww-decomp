@@ -330,8 +330,10 @@ void Unk_ov068_02270780::func_ov068_0226cd18(s32 a) {
     s32 i = 0;
     u8 *pc = &unk_1e;
     for (; (u32)i < 3; i++) {
-        Unk_ov068_0226cd18_Ent *e = &tbl[i];
-        if (e->id == *pc) {
+        u32 off = i * 12;
+        u32 id = tbl[i].id;
+        if (id == *pc) {
+            Unk_ov068_0226cd18_Ent *e = (Unk_ov068_0226cd18_Ent *)((u32)tbl + off);
             (this->*e->fn)();
         }
     }

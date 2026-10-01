@@ -139,7 +139,7 @@ void Unk_ov068_02261900::func_ov068_0226196c(Unk_ov068_Owner *o) {
         unk_1c = 2;
         func_ov068_022656a8(this, o, 0);
     } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
-        func_ov068_0225f838((u8 *)o + 0x9f0);
+        func_ov068_0225f838((u8 *)o + 0x9f0, 0);
         func_ov068_022656a8(this, o, 0x15);
     } else if (func_ov068_02264aa0(this, o) != 0) {
         func_ov068_0225f838((u8 *)o + 0x9f0, 0);

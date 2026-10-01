@@ -80,16 +80,17 @@ void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n) {
     }
 }
 
-void func_ov066_02264574(s32 n) {
+void *func_ov066_02264574(s32 n) {
     u32 sz = (data_ov066_022647ac->unk_1a + 0x43) & ~0x1f;
     u32 tot = sz * n;
     Unk_ov066_02264574_Node *p = (Unk_ov066_02264574_Node *)func_ov066_0225f2c8(tot, 0x20);
     u16 i;
+    Unk_ov066_02264574_Node *q;
+    Unk_ov066_02264574_Node *head;
     func_02115fb4(p, 0, tot);
+    head = p;
     s32 last = n - 1;
-    Unk_ov066_02264574_Node *head = p;
     for (i = 0; (s32)i < last; ) {
-        Unk_ov066_02264574_Node *q;
         i++;
         p->unk_20 = 0;
         q = p;
@@ -100,6 +101,7 @@ void func_ov066_02264574(s32 n) {
     p->unk_20 = last;
     p->unk_04 = head;
     head->unk_00 = p;
+    return head;
 }
 
 void func_ov066_0226460c(Unk_ov066_0226460c_In *in) {

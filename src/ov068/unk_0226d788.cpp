@@ -10,6 +10,7 @@ class Unk_ov068_022708fc;
 class Unk_ov068_02270afc;
 
 extern "C" {
+void _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(void *self, void *v);
 void func_02135558(void *obj, void (*dtor)(void *), void *dso);
 extern u16 data_020c6cc8;
 extern s32 data_020c8cbc;
@@ -45,7 +46,6 @@ struct Unk_02019dd8 { Unk_02019dd8(); u32 pad[0x88 / 4]; };
 struct Unk_02016350 { Unk_02016350(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc {
     Unk_0201accc();
-    void func_0201a9ec();
     u32 pad[0x58 / 4];
 };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
@@ -722,14 +722,14 @@ void Unk_ov068_02270afc::func_ov068_0226ddac() {
             unk_a5c = tmp.x;
             unk_a60 = tmp.y;
             unk_a64 = tmp.z;
-            unk_350.func_0201a9ec();
+            _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(&unk_350, &unk_a5c);
             break;
         default:
             if (func_020e96ec(&unk_a5c, &unk_a68) != 0) {
                 unk_a5c = unk_a68;
                 unk_a60 = unk_a6c;
                 unk_a64 = unk_a70;
-                unk_350.func_0201a9ec();
+                _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(&unk_350, &unk_a68);
             } else if (func_020e9650(&unk_a68, &unk_5c) < 0x200) {
                 unk_564.func_02019614(1, data_020c6cc8);
                 func_ov068_0226ee18();

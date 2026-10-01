@@ -135,6 +135,7 @@ public:
 };
 
 extern "C" {
+void _ZN12Unk_0201a8c413func_0201a99cEs(void *self, s32 a);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern s32 data_020c8cb4;
@@ -164,7 +165,6 @@ void func_020785e8(void *, s32);
 void func_0205b120(void *);
 Unk_020d89c8 *func_02095204(s32);
 s32 func_020e9650(void *, void *);
-void func_0201a99c(void *);
 }
 
 BOOL Unk_ov068_02270afc::func_ov068_0226e0cc() {
@@ -313,7 +313,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e4dc() {
     Unk_ov068_02270afc_Pair &q = unk_92;
     q.b = -0x8000;
     unk_8e = q.b;
-    func_0201a99c(&unk_350);
+    _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, -0x8000);
     unk_a3c = data_0213a740;
     unk_510 = 0;
     return TRUE;

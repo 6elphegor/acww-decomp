@@ -281,7 +281,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
 }
 
 BOOL Unk_ov068_02268214::func_ov068_02269a28() {
-    s32 a = unk_23a;
+    s16 a = unk_23a;
     s32 b = (s16)(unk_232 - 1);
     if (b < 0) {
         return TRUE;
@@ -296,9 +296,9 @@ BOOL Unk_ov068_02268214::func_ov068_02269a28() {
         }
     }
     if (unk_24c != 0) {
-        a = (s16)(a + 0x222);
+        a += 0x222;
     } else {
-        a = (s16)(a - 0x222);
+        a -= 0x222;
     }
     unk_23a = a;
     unk_232 = b;
@@ -326,12 +326,13 @@ BOOL Unk_ov068_02268214::func_ov068_02269aa4() {
     return FALSE;
 }
 
+namespace B20 { extern "C" s16 func_02002bdc(void *, void *); }
 void Unk_ov068_02268214::func_ov068_02269b20() {
     u8 *a = (u8 *)func_ov003_0222eb10(unk_21c);
     s32 *pos = unk_204;
     s32 w2[3];
     s32 w[3];
-    volatile s32 ang;
+    s16 ang;
     u8 *volatile q;
     volatile s32 c;
     volatile s32 tmp;
@@ -340,9 +341,8 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         q = a;
         q = a + 0x5c;
         r6 = func_ov003_022135e4(a);
-        s32 r0v = func_02002bdc(q, pos);
-        rot = r0v;
-        ang = r0v;
+        ang = B20::func_02002bdc(q, pos);
+        rot = ang;
         w[0] = *(s32 *)(a + 0x5c);
         w[1] = *(s32 *)(q + 4);
         w[2] = *(s32 *)(q + 8);
@@ -350,12 +350,11 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         r6 -= func_01ffcb0c(0x4cd, func_01ffc5a4(r6 - func_ov003_02213fbc(), base));
         if (unk_24f % 0x14 == 0) {
             s32 t = (s32)(func_ov003_0222c620(6, 1) << 17) >> 16;
-            ang = (s16)(ang + t);
+            ang += t;
             unk_232 = t;
         } else {
             s32 u = *(volatile s16 *)&unk_232;
-            s32 g = ang;
-            ang = (s16)(g + u);
+            ang += u;
         }
         s32 cv = unk_24f;
         c = cv;

@@ -174,7 +174,7 @@ void func_020566bc(void *p);
 s32 func_ov045_02258e34();
 s32 func_ov051_02258e50();
 void func_ov068_0226b9a8(void *self, u8 k, void *a, void *b, s32 s0, s32 s1, s32 s2, s32 s3);
-s32 func_ov068_0226b9ec(void *p, u32 b);
+s32 func_ov068_0226b9ec(void *p, u32 b, void *c);
 void func_02106054(u32 p, s32 a, u8 b);
 void func_02055488(void *m, void (*fn)(Unk_ov068_0226c298_Arg *), void *self);
 s32 func_02057110(u32 a, const char *s);
@@ -426,7 +426,7 @@ extern "C" void func_ov068_0226c298(Unk_ov068_0226c298_Arg *p) {
 extern "C" void func_ov068_0226c2a8(Unk_ov068_0226c2a8_Arg *p) {
     void *o = p->unk_04->unk_2c;
     if (o) {
-        func_ov068_0226b9ec(o, p->unk_00->unk_01);
+        func_ov068_0226b9ec(o, p->unk_00->unk_01, p);
     }
 }
 

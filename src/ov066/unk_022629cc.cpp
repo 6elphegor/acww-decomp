@@ -95,7 +95,7 @@ void func_ov066_0225f22c(u32 v);
 void func_ov066_0225f284(void *p);
 void *func_ov066_0225f2c8(u32 a, u32 b);
 void func_ov066_0225f5b4(void);
-s32 func_ov066_0226292c(void);
+s32 func_ov066_0226292c(u32 a);
 s32 func_ov066_02260d74(void *, void *);
 void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r);
 void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m);
@@ -113,7 +113,7 @@ void func_ov066_022629cc(void) {
     data_ov066_022647c0 = 0;
     data_ov066_022647c4 = 0x65;
     data_ov066_022647b4->unk_8d = 0;
-    func_ov066_0226292c();
+    func_ov066_0226292c(0);
 }
 
 void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
@@ -128,7 +128,7 @@ void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
             data_ov066_022647c0 = data_ov066_022647c0 | (1 << (b - 1));
             data_ov066_022647bc = data_ov066_022647bc + 1;
         }
-        if (func_ov066_0226292c() != 0) {
+        if (func_ov066_0226292c(b) != 0) {
             data_ov066_022647ac->unk_04 = 4;
             if (data_ov066_022647ac->unk_08 == 0xfe) {
                 data_ov066_022647b4->unk_c0 &= ~0x80;

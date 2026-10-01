@@ -335,7 +335,7 @@ public:
     void func_ov068_0226cb54(s32 a);
     void func_ov068_0226cba4(s32 a);
     void func_ov068_0226cbe4(s32 a);
-    s32 func_ov068_0226cbf8(s32 a);
+    void func_ov068_0226cbf8(s32 a);
     void func_ov068_0226d078(s32 a);
 
     /* 0x7c */ u8 pad_7c[0xb0 - 0x7c];
@@ -661,7 +661,7 @@ void Unk_ov068_02270780::func_ov068_0226cbe4(s32 a) {
     }
 }
 
-s32 Unk_ov068_02270780::func_ov068_0226cbf8(s32 a) {
+void Unk_ov068_02270780::func_ov068_0226cbf8(s32 a) {
     static Unk_ov068_02270780_Stat tbl[5] = {
         {1, &Unk_ov068_02270780::func_ov068_0226cbe4},
         {2, &Unk_ov068_02270780::func_ov068_0226cbe4},

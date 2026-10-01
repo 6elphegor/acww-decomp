@@ -264,10 +264,11 @@ void func_ov068_0226a1a0(Obj_t *o) {
     d = func_020e9650(pos, v1e0);
     cnt = 0;
     func_0204ee10(&x, &z, v1e0);
-    wx = x;
-    hz = z >> 4;
+    wx = *(volatile s32 *)&x;
+    s32 bz = *(volatile s32 *)&z;
     hx = wx >> 4;
-    cell = func_0204ebd8(grid, hx, hz, wx - (hx << 4), z - (hz << 4), 0);
+    hz = bz >> 4;
+    cell = func_0204ebd8(grid, hx, hz, wx - (hx << 4), bz - (hz << 4), 0);
     if (cell != 0) {
         u32 v = *cell;
         if (v == 0x500a) {

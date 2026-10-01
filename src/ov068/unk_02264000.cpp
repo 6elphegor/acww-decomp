@@ -207,16 +207,31 @@ void Unk_ov068_0225fd54::func_ov068_02264188(Unk_ov068_Owner *o) {
     func_020e761c((u8 *)o + 0x5c, v.x, 0x400);
     func_020e761c((u8 *)o + 0x64, v.z, 0x400);
     if (func_02015e48((u8 *)o + 0x334, 0) == 0x3b) {
-        switch ((s32)((*(u32 *)((u8 *)o + 0x190) << 4) >> 16)) {
+        // switch {8,12,22,27,34}: mwcc's own lowering gives a different compare tree, so it is hand-written
+        s32 k = (s32)((*(u32 *)((u8 *)o + 0x190) << 4) >> 16);
+        if (k > 22) goto hi;
+        if (k >= 22) goto hit;
+        if (k > 12) goto end;
+        if (k < 8) goto end;
+        switch (k) {
         case 8:
         case 12:
-        case 22:
-        case 27:
-        case 34:
-            func_02013568((u8 *)o + 0x558, o);
-            break;
+            goto hit;
         }
+        goto end;
+    hi:
+        if (k > 27) goto hi2;
+        switch (k) {
+        case 27:
+            goto hit;
+        }
+        goto end;
+    hi2:
+        if (k != 34) goto end;
+    hit:
+        func_02013568((u8 *)o + 0x558, o);
     }
+end:;
 }
 
 void Unk_ov068_0225fd54::func_ov068_0226424c(Unk_ov068_Owner *o) {

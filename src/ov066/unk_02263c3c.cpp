@@ -126,7 +126,7 @@ void func_ov066_02263878(void);
 void func_ov066_022637dc(void);
 void func_ov066_022638c4(void);
 void func_ov066_022638fc(void);
-void func_ov066_0226460c(void);
+void func_ov066_0226460c(u8 *in);
 void *func_ov066_02264574(u32);
 u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec);
 void func_ov066_0226416c(void);
@@ -144,12 +144,8 @@ void func_ov066_02263c3c(u32 idx, u8 *msg) {
     Unk_ov066_02263c3c_Ent *e = data_ov066_022647c8->unk_30 + idx;
     u8 *p;
     u32 t = ((Unk_ov066_02263c3c_Rec *)msg)->a;
-    if (t != 0) {
-        if (t == 1) {
-            p = msg + 2;
-            len = msg[1];
-        }
-    } else {
+    switch (t) {
+    case 0:
         p = msg + 8;
         if ((*(u16 *)(msg + 2) & (1 << func_ov066_0226238c())) != 0) {
             data_ov066_022647c8->unk_1c |= 1 << idx;
@@ -160,6 +156,11 @@ void func_ov066_02263c3c(u32 idx, u8 *msg) {
                 len = data_ov066_022647c8->unk_00 - 8;
             }
         }
+        break;
+    case 1:
+        p = msg + 2;
+        len = msg[1];
+        break;
     }
     if ((data_ov066_022647c8->unk_1c & (1 << idx)) == 0) {
         return;
@@ -367,7 +368,7 @@ void func_ov066_02264378(u8 *msg) {
     if (data_ov066_022647c8 != NULL) {
         return;
     }
-    func_ov066_0226460c();
+    func_ov066_0226460c(msg);
     func_ov066_02262548();
     data_ov066_022647b4->unk_9c = (void *)func_ov066_02263320;
     data_ov066_022647b4->unk_a0 = (void *)func_ov066_022638fc;

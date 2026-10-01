@@ -300,28 +300,13 @@ func_ov065_0228ad34 ov065_070/ov065_070.cpp  # -O4,p; ctx init store block: r1/r
 func_ov065_0228758c ov065_064/ov065_064.cpp  # -O4,p; QR packet handler case 6: which sp-address is CSE'd (x base vs out.len)
 func_ov065_02287828 ov065_064/ov065_064.cpp  # -O4,p; 4 IP-byte copy addressing (add r1,sp,#8 base vs strb [r1,#8])
 func_ov065_02287aa4 ov065_064/ov065_064.cpp  # -O4,p; movs r1,r3 vs adds r1,r3,#0 (1 instr encoding)
-func_ov066_02264574 ov066_009/ov066_009.cpp  # ARM -O4,p; node-pool list build: regalloc only (n-1/head/prev/zero)
 func_ov065_0228a7f0 ov065_069/ov065_069.cpp  # -O4,p; final u16 len copy: d/s pointer materialization + r1 reuse
 func_ov065_0228aa34 ov065_069/ov065_069.cpp  # -O4,p; random key gen w/ parity: a in r4 vs r0, t sequence reloads (86 lines)
-func_ov066_02263c3c ov066_008/ov066_008.cpp  # ARM -O4,p; 2 conditional instrs order (ldrbeq before addeq)
-func_ov066_02264378 ov066_008/ov066_008.cpp  # ARM -O4,p; first null-test temp r0 vs orig r1
 func_ov065_02289a00 ov065_068/ov065_068.cpp  # -O4,p; msg dispatcher: two same-address sp regs (r6/r7) merged by mwcc (~78 lines)
 func_ov065_02289f28 ov065_068/ov065_068.cpp  # -O4,p; b = a + (p[a-1]^0xea): r2/r3 swap
-func_ov068_0226196c ov068_004/ov068_004.cpp  # Thumb -O4,s C++; ldrsh global compare: r0/r1 swapped
 func_ov065_022818f4 ov065_056/ov065_056.cpp  # -O4,p; 7-word Elem zeroing via materialised sp+4 ptr vs ours sp-relative
 func_ov065_02281bf4 ov065_056/ov065_056.cpp  # -O4,p; 0x139c ghttp request builder/parser: r4-r7 class permutation only (allocator near-tie)
-func_ov068_02264188 ov068_008/ov068_008.cpp  # Thumb -O4,s C++; switch {8,12,22,27,34} compare-tree split differs
 func_ov068_022645dc ov068_008/ov068_008.cpp  # Thumb -O4,s C++; missing adds r0,r0,#0 before cmp #1 (2 bytes)
-func_ov066_022629cc ov066_006/ov066_006.cpp  # ARM -O4,p; 5 global-address loads + mov r2,#5 scheduled differently (26 lines)
-func_ov066_02262a34 ov066_006/ov066_006.cpp  # ARM -O4,p; push {lr};sub sp vs orig push {r4,lr} (one fewer live reg)
-func_ov068_0226c2a8 ov068_021/ov068_021.cpp  # Thumb -O4,s C++; incoming p copied to r2 (adds r2,r0,#0) vs ours r1
-func_ov068_02269a28 ov068_017/ov068_017.cpp  # Thumb -O4,s C++; asrs dest r3 vs orig r2 (offset reg swapped)
-func_ov068_02269b20 ov068_017/ov068_017.cpp  # Thumb -O4,s C++; ang spill order (str before copy); uses volatile-local hack for slots
-func_ov068_0226e4dc ov068_025/ov068_025.cpp  # Thumb -O4,s C++; 4-instr halfword copy: r0/r1/r2 roles rotated
-func_ov068_0226cd18 ov068_023/ov068_023.cpp  # Thumb -O4,s C++; table-search loop idx*12 regalloc (16 lines)
-func_ov068_0226a1a0 ov068_018/ov068_018.cpp  # Thumb -O4,s; 6-instr hx/hz load order (orig reloads spilled x after z)
-func_ov068_0226cbf8 ov068_022/ov068_022.cpp  # Thumb -O4,s C++; static-table init + loop head regalloc only
-func_ov068_0226ddac ov068_024/ov068_024.cpp  # Thumb -O4,s C++; 2 sites fold [r4,r0] vs orig materialised adds rN,this,K (4 bytes short)
 func_ov073_02271484 ov073_000/ov073_000.cpp  # Thumb -O4,s C++; vfunc_18 switch tree: orig table under cmp 0;bge with no upper check (goto_try.cpp gets closer)
 func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
