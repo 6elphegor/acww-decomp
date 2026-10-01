@@ -2021,6 +2021,7 @@ _ZN12Unk_020d8c7cD0Ev kind:function(thumb,size=0x20) addr:0x0202e858
 func_0202e878 kind:function(thumb,size=0x8) addr:0x0202e878
 func_0202e880 kind:function(thumb,size=0xe) addr:0x0202e880
 _ZN12Unk_020d8c7c8vfunc_08Ev kind:function(thumb,size=0x20) addr:0x0202e890
+_ZN12Unk_020d8c7c8vfunc_08Ei kind:label(thumb) addr:0x0202e890
 func_0202e8b0 kind:function(thumb,size=0x18) addr:0x0202e8b0
 func_0202e8c8 kind:function(thumb,size=0xc) addr:0x0202e8c8
 func_0202e8d4 kind:function(thumb,size=0x44) addr:0x0202e8d4
