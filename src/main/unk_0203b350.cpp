@@ -259,31 +259,29 @@ void Unk_0203b350::func_0203b910(u8 *o, V3 *v)
 
 BOOL Unk_0203b350::func_0203b93c(s32 *p)
 {
-    BOOL r = FALSE;
     s32 lo = M(s32, 0x178);
     s32 hi = M(s32, 0x17c);
-    s32 d = hi - lo;
-    if (d <= 0xa000) {
+    BOOL r = FALSE;
+    if (hi - lo <= 0xa000) {
         p[0] = (hi + lo) >> 1;
         r = TRUE;
-    } else if (lo + 0x5000 > p[0]) {
+    } else if (p[0] < lo + 0x5000) {
         p[0] = lo + 0x5000;
         r = TRUE;
     } else if (p[0] > hi - 0x5000) {
         p[0] = hi - 0x5000;
         r = TRUE;
     }
-    lo = M(s32, 0x180);
-    hi = M(s32, 0x184);
-    d = hi - lo;
-    if (d <= 0x7000) {
-        p[2] = (hi + lo) >> 1;
+    s32 lo2 = M(s32, 0x180);
+    s32 hi2 = M(s32, 0x184);
+    if (hi2 - lo2 <= 0x7000) {
+        p[2] = (hi2 + lo2) >> 1;
         r = TRUE;
-    } else if (lo + 0x2000 > p[2]) {
-        p[2] = lo + 0x2000;
+    } else if (p[2] < lo2 + 0x2000) {
+        p[2] = lo2 + 0x2000;
         r = TRUE;
-    } else if (p[2] > hi - 0x5000) {
-        p[2] = hi - 0x5000;
+    } else if (p[2] > hi2 - 0x5000) {
+        p[2] = hi2 - 0x5000;
         r = TRUE;
     }
     return r;

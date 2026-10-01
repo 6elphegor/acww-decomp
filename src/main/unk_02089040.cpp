@@ -359,6 +359,7 @@ s32 Unk_020e0d44::func_020892ac() { return unk_34; }
 
 void Unk_020e0d44::func_020892b0(s32 idx) {
     u32 c, b, a;
+    b = 0;
     a = data_020cf5c8[idx];
     if (unk_40 != 0) {
         a += 6;
@@ -498,8 +499,12 @@ void Unk_020e0d98::func_02089588() {
 }
 
 void Unk_020e0d98::func_020896dc() {
-    u32 w0, w1, n, m;
-    s32 hi, lo;
+    u32 w0;
+    u32 w1;
+    u32 n;
+    u32 m;
+    s32 hi;
+    s32 lo;
     if (unk_b0 != NULL) {
         w0 = unk_b0->func_0c();
     } else {
@@ -511,10 +516,7 @@ void Unk_020e0d98::func_020896dc() {
         w1 = 0;
     }
     n = (w0 + 7) >> 3;
-    m = (w1 + 7) >> 3;
-    if (n <= m) {
-        n = m;
-    }
+    n = n > ((w1 + 7) >> 3) ? n : ((w1 + 7) >> 3);
     hi = unk_0c.func_02089240()->unk_04 - 1;
     lo = n - 1;
     if (lo < 0) {

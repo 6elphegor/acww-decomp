@@ -179,7 +179,14 @@ void Unk_020b60d8::func_020b69c0(u8 a) {
     unk_1a = a;
 }
 
+struct Unk_020b69e0_Pad {
+    s32 v[4];
+    Unk_020b69e0_Pad() {}
+    ~Unk_020b69e0_Pad() {}
+};
+
 BOOL Unk_020b6a0c::func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+    Unk_020b69e0_Pad pad;
     unk_14 = d;
     unk_18 = e;
     func_0202fd8c(a, b, c);
@@ -456,12 +463,19 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     return FALSE;
 }
 
+struct Unk_020b7074_Pad {
+    s32 v[3];
+    Unk_020b7074_Pad() {}
+    ~Unk_020b7074_Pad() {}
+};
+
 extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     Vec3 zero, v24, v30;
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
     Unk_0202fdc4 o(&zero, c, d);
+    Unk_020b7074_Pad pad;
     s32 az = a->z, ay = a->y, ax = a->x;
     v24.x = ax;
     v24.y = ay;
@@ -479,12 +493,12 @@ extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     v30.x = func_01ffcb0c(cs, x) - func_01ffcb0c(sn, y);
     v30.y = func_01ffcb0c(sn, x) + func_01ffcb0c(cs, y);
     if (o.func_0202f7b8(&v30, &v24)) {
-        sn = data_02138f44[0];
-        cs = data_02138f44[1];
-        y = v30.y;
-        x = v30.x;
-        v30.x = func_01ffcb0c(cs, x) - func_01ffcb0c(sn, y);
-        v30.y = func_01ffcb0c(sn, x) + func_01ffcb0c(cs, y);
+        s16 sn2 = data_02138f44[0];
+        s16 cs2 = data_02138f44[1];
+        s32 y2 = v30.y;
+        s32 x2 = v30.x;
+        v30.x = func_01ffcb0c(cs2, x2) - func_01ffcb0c(sn2, y2);
+        v30.y = func_01ffcb0c(sn2, x2) + func_01ffcb0c(cs2, y2);
         *out = v30;
         return TRUE;
     }

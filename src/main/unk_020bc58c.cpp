@@ -217,19 +217,20 @@ void Unk_020bc58c::func_020bcdd8() {
 }
 
 s32 Unk_020bc58c::func_020bccc8(s32 t) {
-    s32 c0, c1, c2, c3, c4;
-    s32 grp = data_020d16f0[t * 4];
-    BOOL ok = FALSE;
+    s32 grp;
+    BOOL ok;
+    grp = data_020d16f0[t * 4];
+    ok = FALSE;
     if (grp == 6) {
         ok = TRUE;
     } else if (t == unk_1b30[grp].unk_00) {
         ok = TRUE;
     } else {
-        c0 = unk_1b30[0].unk_04 > 0 ? 1 : ok;
-        c1 = unk_1b30[1].unk_04 > 0 ? 1 : 0;
-        c2 = unk_1b30[2].unk_04 > 0 ? 1 : 0;
-        c3 = unk_1b30[3].unk_04 > 0 ? 1 : 0;
-        c4 = unk_1b30[4].unk_04 > 0 ? 1 : 0;
+        BOOL c0 = unk_1b30[0].unk_04 > 0 ? 1 : ok;
+        BOOL c1 = unk_1b30[1].unk_04 > 0 ? 1 : 0;
+        BOOL c2 = unk_1b30[2].unk_04 > 0 ? 1 : 0;
+        BOOL c3 = unk_1b30[3].unk_04 > 0 ? 1 : 0;
+        BOOL c4 = unk_1b30[4].unk_04 > 0 ? 1 : 0;
         if (grp == 0) {
             if (c0 == 0 && c3 == 0) ok = TRUE; else ok = FALSE;
         } else if (grp == 1) {

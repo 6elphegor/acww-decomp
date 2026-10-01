@@ -510,14 +510,12 @@ void Unk_020a512c::func_020a5908() {
 }
 
 void Unk_020a512c::func_020a59c0() {
-    s32 i = 3;
-    u8 *self = (u8 *)this;
-    u8 *r7 = (u8 *)unk_0c;
-    for (; i >= 0; i--) {
+    s32 i;
+    for (i = 3; i >= 0; i--) {
         func_020a6754(&unk_00[i * 3]);
-        func_020a6720(r7 + i * 8);
-        func_020a66f8(self + 0x2c + i * 4);
-        func_020a6790(self + 0x3c + i * 8);
+        func_020a6720(&unk_0c[i]);
+        func_020a66f8(&unk_2c[i]);
+        func_020a6790(unk_3c[i]);
     }
     func_020a4c28();
     func_020a4c10();

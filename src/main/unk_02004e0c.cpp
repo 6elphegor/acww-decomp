@@ -699,7 +699,10 @@ void Unk_020d6df4::func_02005294() {
             func_02003df4(unk_87c, &unk_8c0);
         }
     }
-    if (unk_7f0 != unk_7ec) {
-        unk_7f0 = unk_7ec;
+    volatile s32 *pp = &unk_7f0;
+    s32 prev = *pp;
+    s32 cur = unk_7ec;
+    if (prev != cur) {
+        *pp = cur;
     }
 }

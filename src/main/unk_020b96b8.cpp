@@ -463,11 +463,9 @@ u32 func_020b9cd8(u32 unused, u8 *d)
 
 u16 func_020b9d18(u32 unused, void *unused2)
 {
-    u32 d[2];
-    d[0] = 0;
-    d[1] = 0;
-    d[0] = 0x1000000;
-    d[1] = 1;
-    return (u16)((func_0209d3a4(d) % 0x40) << 3);
+    u64 d = 0;
+    u64 t = 0x100000000ULL | 0x1000000;
+    d = t;
+    return (u16)((func_0209d3a4(&d) % 0x40) << 3);
 }
 }

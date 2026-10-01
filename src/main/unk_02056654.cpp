@@ -202,6 +202,7 @@ BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
     u8 *r6;
     u8 *r5;
     u8 *r4;
+    u16 stride2;
     u8 *r7;
     u32 r3;
     u32 r2;
@@ -210,9 +211,8 @@ BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
     u32 sum;
     u8 *e;
     u32 v5;
-    u32 v1;
     u8 *lst2;
-    u16 stride2;
+    u32 v1;
     if (func_02056b60()) {
         r4 = NULL;
         if (idx2 != -1) {
@@ -246,20 +246,19 @@ BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
                     v1 = (u32)(v1 << 15) >> 16;
                 }
                 lst2 = r6 + *(u16 *)r4;
-                sum = v5 + v1;
-                r2 = 0;
+                u32 n = 0;
                 goto test;
             body:
                 {
                     u8 *b4 = r6 + 4;
                     u8 *t = b4 + *(u16 *)(r6 + 0xa);
                     u16 st = *(u16 *)(b4 + *(u16 *)(r6 + 0xa));
-                    u8 *ent = r6 + *(s32 *)(t + st * lst2[r2] + 4);
-                    *(u16 *)(ent + 0x1c) = sum;
+                    u8 *ent = r6 + *(s32 *)(t + st * lst2[n] + 4);
+                    *(u16 *)(ent + 0x1c) = v5 + v1;
                 }
-                r2++;
+                n++;
             test:
-                if (r2 < r4[2]) {
+                if (n < r4[2]) {
                     goto body;
                 }
                 r4[3] |= 1;
@@ -284,11 +283,12 @@ BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
     u32 r3;
     u32 r7;
     u32 v;
-    u32 hi;
+    u8 *lst;
     u8 *tb2;
     u16 stride2;
     u8 *e;
     u8 *lst2;
+    u32 hi;
     u32 e4;
     u32 lo;
     u8 *q;
@@ -305,7 +305,7 @@ BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
                 u8 *tb = r4 + *(u16 *)(r4 + 6) + 4;
                 u16 stride = *(u16 *)(r4 + *(u16 *)(r4 + 6));
                 u8 *it = tb + stride * r3;
-                u8 *lst = r6 + *(u16 *)(tb + stride * r3);
+                lst = r6 + *(u16 *)(tb + stride * r3);
                 u32 j;
                 for (j = 0; j < it[2]; j++) {
                     if (unk_04 == lst[j]) {
@@ -524,20 +524,32 @@ BOOL Unk_02056e38::func_02056e38(u8 *hdr, const char *n1, const char *n2, u8 *x,
 static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
     u16 off = *(u16 *)(d + 6);
     u8 *t = d + off + 4;
-    return t + *(u16 *)(d + off) * idx;
+    u16 stride = *(u16 *)(d + off);
+    return t + stride * idx;
 }
 
-BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b) {
-    u8 *p1 = Unk_02056e88_Ent(hdr + 0x3c, i1);
-    u8 *e2 = Unk_02056e88_Ent(hdr + *(u16 *)(hdr + 0x34), i2);
-    u8 *r7 = NULL;
+BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a, volatile s32 b) {
+    u8 *p1;
+    u8 *e2;
+    u8 *r7;
     u8 *e3;
-    if (a != -1) {
-        r7 = Unk_02056e88_Ent(x + 0x3c, a);
+    p1 = Unk_02056e88_Ent(hdr + 0x3c, i1);
+    {
+        u8 *g = hdr + *(u16 *)(hdr + 0x34);
+        u16 off = *(u16 *)(g + 6);
+        u8 *tb = g + off + 4;
+        u16 stride = *(u16 *)(g + off);
+        e2 = tb + stride * i2;
     }
+    s32 ta = a;
+    r7 = NULL;
+    if (ta != -1) {
+        r7 = Unk_02056e88_Ent(x + 0x3c, ta);
+    }
+    s32 tb = b;
     e3 = NULL;
-    if (b != -1) {
-        e3 = Unk_02056e88_Ent(x + *(u16 *)(x + 0x34), b);
+    if (tb != -1) {
+        e3 = Unk_02056e88_Ent(x + *(u16 *)(x + 0x34), tb);
     }
     if (p1 != NULL) {
         func_02057180(*(u32 *)p1);
@@ -550,8 +562,9 @@ BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b) {
             }
         }
         if (e2 != NULL && e3 != NULL) {
-            u8 *t = func_02057048(x, b);
-            s32 r3 = func_02056fd8(x, b);
+            s32 bb = b;
+            u8 *t = func_02057048(x, bb);
+            s32 r3 = func_02056fd8(x, bb);
             if (!func_020b8a34((u8 *)unk_00 + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
                 func_020b89c8(this);
                 return FALSE;

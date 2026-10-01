@@ -134,7 +134,7 @@ public:
     void func_020a777c(u8 *p);
 
     void eq(s32 x, s32 y, u8 *f) {
-        if (x == unk_00 && y == unk_04) *f = 1;
+        if (unk_00 == x && unk_04 == y) *f = 1;
     }
 
     /* 0x00 */ s32 unk_00;
@@ -616,7 +616,14 @@ BOOL Unk_020e2a18::func_020a8950(u8 *arg1) {
     return ok;
 }
 
+struct Unk_020a88fc_Pad {
+    s32 v[2];
+    Unk_020a88fc_Pad() {}
+    ~Unk_020a88fc_Pad() {}
+};
+
 void Unk_020e2a18::func_020a88fc() {
+    Unk_020a88fc_Pad pad;
     unk_8d = 0;
     func_02115fb4(unk_90, 0, 12);
     unk_9c = 0;
@@ -1072,8 +1079,8 @@ void Unk_020e2a90::func_020a7e6c(u8 *p) {
     if (unk_7c == 1) {
         Unk_020a72b0 s;
         s.func_020a777c(p);
-        u32 a = s.unk_00;
-        u32 b = s.unk_04;
+        u32 a = *(volatile u32 *)&s.unk_00;
+        u32 b = *(volatile u32 *)&s.unk_04;
         if (a == 0xff) {
             if (b == 0) {
                 unk_38 = func_020682a8(s.func_020a72b0());
@@ -2015,7 +2022,7 @@ void Unk_020e2b28::func_020a69d4() {
 }
 
 void Unk_020e2b28::func_020a69bc() {
-    unk_28.eq(unk_40, unk_44, &unk_58);
+    unk_28.eq(*(volatile s32 *)&unk_40, *(volatile s32 *)&unk_44, &unk_58);
 }
 
 extern "C" {

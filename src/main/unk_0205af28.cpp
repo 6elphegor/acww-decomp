@@ -281,7 +281,7 @@ void Unk_0205b448::func_0205b2b4(s32 m) {
     unk_02 = func_0205b320(m, v1 - 1, v1, v2, v3, 2);
 }
 
-u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind) {
+u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
     u32 cnt = 0;
     u8 layer = 0;
     s32 f;
@@ -290,8 +290,10 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind) 
     s32 nx;
     Unk_0205b320_Buf buf;
     s32 y, x;
+    s32 ya = y0;
+    s32 yb = y1;
     do {
-        for (y = y0; (u32)y <= (u32)y1; y++) {
+        for (y = ya; (u32)y <= (u32)yb; y++) {
             x = x0;
             if ((u32)x <= (u32)x1) {
                 goto L_test;

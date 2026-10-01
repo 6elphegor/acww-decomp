@@ -495,7 +495,8 @@ void Unk_0208c478::func_0208c6cc() {
 void Unk_0208c478::func_0208c714() {
     if (unk_30 != 0 && unk_4a != 0) {
         unk_4a = 0;
-        u16 *e = &data_020cf5f0[unk_64];
+        s32 i = *(volatile s32 *)&unk_64;
+        u16 *e = &data_020cf5f0[i];
         unk_30->unk_10 = (u32)e;
         unk_30->func_02050c44();
         unk_30->func_02050c90();
