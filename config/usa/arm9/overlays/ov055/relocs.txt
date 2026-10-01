@@ -45,7 +45,7 @@ from:0x02259070 kind:thumb_call to:0x02259028 module:overlay(55)
 from:0x02259082 kind:thumb_call_arm to:0x02116048 module:autoload(2)
 from:0x02259088 kind:thumb_call to:0x0208f174 module:main
 from:0x02259090 kind:thumb_call to:0x0208f1a8 module:main
-from:0x022590a4 kind:load to:0x021ecfa8 module:autoload(3)
+from:0x022590a4 kind:load to:0x021d7350 add:0x15c58 module:autoload(3)
 from:0x022590c6 kind:thumb_call to:0x02072144 module:main
 from:0x022590ca kind:thumb_call_arm to:0x020e9a08 module:autoload(2)
 from:0x022590d4 kind:thumb_call to:0x0200402c module:main

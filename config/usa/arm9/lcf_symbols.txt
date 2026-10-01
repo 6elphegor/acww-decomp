@@ -1,0 +1,3 @@
+# Names that the linker script defines, see tools/lcf_symbols.py and tools/pipeline/linking.md ("Names the linker
+# script defines"). <name> addr:<address> base:<object of this module's symbols.txt, or <MODULE>_<SECTION>_START>
+p__sinit_020c2cd0 addr:0x020d1dd8 base:ARM9_CTOR_START

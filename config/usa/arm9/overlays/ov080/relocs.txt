@@ -58,7 +58,7 @@ from:0x02271786 kind:thumb_call_arm to:0x02063b8c module:main
 from:0x02271798 kind:load to:0x02271d68 module:overlay(80)
 from:0x022717a0 kind:load to:0x02271d58 module:overlay(80)
 from:0x022717a4 kind:load to:0x02271d7c module:overlay(80)
-from:0x022717a8 kind:load to:0x021d735c module:autoload(3)
+from:0x022717a8 kind:load to:0x021d7350 add:0xc module:autoload(3)
 from:0x022717d8 kind:thumb_call to:0x0202e26c module:main
 from:0x022717de kind:thumb_call_arm to:0x020ec854 module:autoload(2)
 from:0x022717ec kind:load to:0x02271c1c module:overlay(80)

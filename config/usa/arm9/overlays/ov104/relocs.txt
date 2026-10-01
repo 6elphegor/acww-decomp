@@ -91,7 +91,7 @@ from:0x0229523e kind:thumb_call to:0x02067a3c module:main
 from:0x0229524a kind:thumb_call to:0x02067a3c module:main
 from:0x02295256 kind:thumb_call to:0x02067a3c module:main
 from:0x0229526c kind:thumb_call to:0x02094018 module:main
-from:0x02295280 kind:load to:0x021d735c module:autoload(3)
+from:0x02295280 kind:load to:0x021d7350 add:0xc module:autoload(3)
 from:0x0229528c kind:load to:0x02096a51 module:main
 from:0x0229529e kind:thumb_call to:0x02096914 module:main
 from:0x022952b2 kind:thumb_call to:0x02065578 module:main

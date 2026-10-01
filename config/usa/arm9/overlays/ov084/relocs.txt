@@ -107,7 +107,7 @@ from:0x02271b18 kind:thumb_call to:0x0201610c module:main
 from:0x02271b24 kind:thumb_call to:0x02053848 module:main
 from:0x02271b36 kind:thumb_call to:0x0209cf88 module:main
 from:0x02271b42 kind:thumb_call_arm to:0x02133150 module:autoload(2)
-from:0x02271b5c kind:load to:0x021ed24c module:autoload(3)
+from:0x02271b5c kind:load to:0x021d7350 add:0x15efc module:autoload(3)
 from:0x02271b78 kind:thumb_call to:0x0202e514 module:main
 from:0x02271b8a kind:thumb_call to:0x0201bc28 module:main
 from:0x02271b94 kind:thumb_call to:0x02271920 module:overlay(84)

@@ -13083,7 +13083,7 @@ data_020d1a2c kind:data(any) addr:0x020d1a2c
 data_020d1c8c kind:data(any) addr:0x020d1c8c
 data_020d1c98 kind:data(any) addr:0x020d1c98
 data_020d1ca0 kind:data(any) addr:0x020d1ca0
-.p__sinit_020c2cd0 kind:data(word) addr:0x020d1dd8
+p__sinit_020c2cd0 kind:data(word) addr:0x020d1dd8
 .p__sinit_020c2cf8 kind:data(word) addr:0x020d1ddc
 .p__sinit_020c2d08 kind:data(word) addr:0x020d1de0
 .p__sinit_020c2d4c kind:data(word) addr:0x020d1de4
