@@ -258,6 +258,16 @@ static inline BOOL inRange2(const u16 &a, const u16 &b) {
     return r;
 }
 
+static inline BOOL inRange2v(volatile u16 *p) {
+    BOOL r = FALSE;
+    u16 a = *p;
+    u16 b = *p;
+    if (b >= 0x151d && a <= 0x151e) {
+        r = TRUE;
+    }
+    return r;
+}
+
 static inline BOOL cmp16(u16 *a, u16 *b) {
     if (func_0204b2d4(a)) {
         return func_0204b25c(a) == func_0204b25c(b);
@@ -432,7 +442,7 @@ extern "C" void func_020aca4c(u32 a, u32 b, u32 c, u32 d) {
         v[1] = 0xfff1;
         for (i = 0; i < 0x25; i++) {
             func_020ae844(data_021ed104, i, &v[1]);
-            if (inRange2(v[1], v[1])) {
+            if (inRange2v(&v[1])) {
                 break;
             }
         }
@@ -682,24 +692,33 @@ extern "C" void func_020ac3a4() {
     data_021ee044.func_020abea8(heap);
 }
 
+struct Unk_020ac2e8_V : Vec3 {
+    Unk_020ac2e8_V() {}
+    ~Unk_020ac2e8_V() {}
+};
+
 extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
     if (data_021c3070 != 0) {
-        Vec3 v;
-        v = data_021c309c;
-        if (v.z > p->z) {
-            s32 d = v.z - p->z;
-            if (d > 0xb000) {
+        Unk_020ac2e8_V v;
+        v.x = data_021c309c.x;
+        v.y = data_021c309c.y;
+        v.z = data_021c309c.z;
+        s32 d, e;
+        s32 pz = p->z;
+        if (v.z > pz) {
+            d = v.z - pz;
+            if (0xb000 < d) {
                 r4 = r4 >> 5;
             } else {
                 static s32 inv = ((s32 (*)(s32))func_01ffc5a4)(0xf80);
                 r4 = r4 - (u8)(func_01ffcb0c(func_01ffcb0c(r4 << 12, inv), d) >> 12);
             }
         } else {
-            s32 d = p->z - v.z;
+            d = pz - v.z;
             if (d > q + 0xc000) {
                 return 0;
             }
-            s32 e = p->x - v.x;
+            e = p->x - v.x;
             if (e < 0) {
                 e = -e;
             }

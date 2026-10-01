@@ -359,7 +359,14 @@ void Unk_020e100c::func_0208d538(s32 idx) {
 void Unk_020e100c::func_0208d580(s32 idx) {
     s32 a = data_020cf67c[idx];
     s32 n = a + 1;
-    BOOL f = data_020cf668[idx] != 0 ? FALSE : TRUE;
+    BOOL f;
+    switch (data_020cf668[idx]) {
+    default:
+        f = FALSE;
+        break;
+    case 0:
+        f = TRUE;
+    }
     unk_40 = idx;
     unk_0c.func_02089268(data_020d5b0c + a * 8);
     unk_0c.func_02089264(f);
@@ -405,8 +412,10 @@ void Unk_020e100c::vfunc_0c() {
 }
 
 void Unk_020e100c::vfunc_08() {
+    void *h0;
+    s32 x, y, y0, x0;
     if (unk_40 != 0) {
-        void *h0 = unk_0c.func_02089248();
+        h0 = unk_0c.func_02089248();
         void *h1;
         if (unk_49 != 0) {
             h1 = unk_2c.func_02089248();
@@ -417,9 +426,8 @@ void Unk_020e100c::vfunc_08() {
         s32 ay = unk_0c.func_02089210(-1);
         s32 bx = unk_2c.func_02089228(-1);
         s32 by = unk_2c.func_02089210(-1);
-        s32 x = unk_20 + func_02089f68();
-        s32 y = unk_24 + func_02089f64();
-        s32 y0, x0;
+        x = (s32)((u8 *)0 + (unk_20 + func_02089f68()));
+        y = (s32)((u8 *)0 + (unk_24 + func_02089f64()));
         x0 = x + ax;
         y0 = y + ay;
         x += bx;

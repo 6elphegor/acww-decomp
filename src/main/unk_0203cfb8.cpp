@@ -245,26 +245,28 @@ extern "C" BOOL func_0203cfb8(u32 a, u32 b, u32 c, u32 d, const u8 *e, const cha
     return result;
 }
 
+struct Unk_0203d134_Pad {
+    s32 v[1];
+    Unk_0203d134_Pad() {}
+    ~Unk_0203d134_Pad() {}
+};
+
 void Unk_020d94e8::func_0203d134() {
+    Unk_0203d134_Pad pad;
     s32 sel = unk_28.unk_04;
+    s32 n;
     if (sel == 1) {
         func_0203d12c();
-        return;
-    }
-    if (sel == 2) {
+    } else if (sel == 2) {
         func_0203d124();
-        return;
-    }
-    if (sel == 3) {
+    } else if (sel == 3) {
         func_0203d11c();
-        return;
-    }
-    if (sel == 4) {
+    } else if (sel == 4) {
         func_0203d0d0();
-        return;
-    }
-    if (sel >= 5 && sel <= 15) {
-        func_0203d078(&unk_24->unk_504[sel - 5]);
+    } else if (sel >= 5 && sel <= 15) {
+        n = sel - 5;
+        Unk_020d94e8_Owner *o = unk_24;
+        func_0203d078(&o->unk_504[n]);
     }
 }
 

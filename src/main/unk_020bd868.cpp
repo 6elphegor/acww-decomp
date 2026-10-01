@@ -340,7 +340,7 @@ extern s32 data_020c8cb8;
 extern s32 data_020c8cbc;
 extern s32 data_021c3070;
 extern s32 data_021ef674;
-struct Unk_020bdef0_Vec { s32 unk_00[3]; Unk_020bdef0_Vec() {} };
+struct Unk_020bdef0_Vec { s32 unk_00[3]; Unk_020bdef0_Vec() {} ~Unk_020bdef0_Vec() {} };
 extern Unk_020bdef0_Vec data_021c309c;
 extern s16 data_02135f44[][2];
 s32 func_0203a4b0();
@@ -359,14 +359,14 @@ void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     loc.unk_00[0] = data_021c309c.unk_00[0];
     loc.unk_00[1] = data_021c309c.unk_00[1];
     loc.unk_00[2] = data_021c309c.unk_00[2];
-    s32 r6, r4, r7, t, x, y, z, idx, inv;
+    s32 inv, idx, z, y, t, r7, r4, r6;
     r4 = loc.unk_00[2] - q->unk_08;
     r6 = func_01ffc5a4(q->unk_00 - loc.unk_00[0], data_020c8cbc);
     r4 = func_01ffc5a4(r4, data_020c8cb8 << 2);
     t = func_01ffcb0c(-0x1000, r4 - 0x1000);
     r7 = func_01ffcb0c(r4, t + 0x1000);
-    x = func_01ffcb0c(-0x666, r7);
-    y = func_01ffcb0c(r6, x + 0xe66);
+    s32 w = func_01ffcb0c(-0x666, r7) + 0xe66;
+    y = func_01ffcb0c(r6, w);
     z = func_01ffcb0c(y + 0x800, 0x1000);
     r4 = z << 8;
     r6 = func_01ffcb0c(0x50000, r7) + 0x50000;
@@ -444,7 +444,8 @@ s32 func_020891bc(void*);
 
 static inline Unk_021f3010* Unk_020be0bc_Get(s32 i) { return &data_020e6544[i]; }
 void func_020be0bc(Unk_020be0bc* p) {
-    Unk_021f3010* row = Unk_020be0bc_Get(p->unk_0c);
+    s32 o = p->unk_0c * 12;
+    Unk_021f3010* row = (Unk_021f3010*)((u8*)data_020e6544 + o);
     func_02089268(p->unk_10, row);
     func_02089264(p->unk_10, row->unk_08);
     func_020891bc(p->unk_10);

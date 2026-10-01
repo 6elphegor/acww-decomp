@@ -336,10 +336,10 @@ void func_020bfa90(Unk_020bf4b4 *this_) {
     k = ((u16)ang >> 4) * 2;
     sn = data_02135f44[k];
     cs = data_02135f44[k + 1];
-    nx = x - cs * 0x23;
-    ny = y - sn * 0x23;
-    this_->unk_34 = nx;
-    this_->unk_38 = ny;
+    x -= cs * 0x23;
+    y -= sn * 0x23;
+    this_->unk_34 = x;
+    this_->unk_38 = y;
     this_->unk_3c = 0;
     this_->unk_40 = func_01ffcb0c(cs, 0x7800);
     this_->unk_44 = func_01ffcb0c(sn, 0x7800);
@@ -400,17 +400,26 @@ void func_020bfbf8(Unk_020bf4b4 *this_, s32 arg) {
     }
 }
 
+static inline s32 Unk_020bfc48_K(s32 a) { return ((u16)a >> 4) * 2; }
+
+struct Unk_020bfc48_Pad {
+    s32 v[4];
+    Unk_020bfc48_Pad() {}
+    ~Unk_020bfc48_Pad() {}
+};
+
 BOOL func_020bfc48(Unk_020bf4b4 *this_) {
+    Unk_020bfc48_Pad pad;
+    Unk_020bf4b4_Vec *pos;
     Unk_020bf4b4 *p = &data_021f14e0[func_020bcbd8(data_021f14e0, 3)];
     BOOL result = FALSE;
     if (p != NULL && p->unk_04 == 2) {
-        Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&p->unk_34;
-        s32 ang = p->unk_54;
-        s32 k = ((u16)ang >> 4) * 2;
+        pos = (Unk_020bf4b4_Vec *)&p->unk_34;
+        s32 k = Unk_020bfc48_K(p->unk_54);
         s32 d = func_01ffc5a4(0x10000, p->unk_50);
         s32 y = pos->y + func_01ffcb0c(data_02135f44[k + 1], d);
-        Unk_020bf4b4_Vec *out = (Unk_020bf4b4_Vec *)&this_->unk_34;
         this_->unk_34 = p->unk_34 - func_01ffcb0c(data_02135f44[k], d);
+        Unk_020bf4b4_Vec *out = (Unk_020bf4b4_Vec *)&this_->unk_34;
         out->y = y;
         out->z = 0;
         result = TRUE;
@@ -428,10 +437,9 @@ void func_020bfcd0(Unk_020bf4b4 *this_) {
     o = (Unk_020bfcd0_Obj *)func_02095204(4);
     if (o != NULL) {
         s32 dv = -(o->unk_5c - o->unk_68);
-        s32 cur;
         dv = (dv * data_020d0e44[this_->unk_68]) >> 12;
-        cur = this_->unk_6c;
-        this_->unk_6c = dv + cur;
+        dv += this_->unk_6c;
+        this_->unk_6c = dv;
     }
     base = this_->unk_6c;
     ang = (s16)((s16)this_->unk_64 + this_->unk_60);

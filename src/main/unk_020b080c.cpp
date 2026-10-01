@@ -577,8 +577,16 @@ inline u32 lookup(Id16 id) {
 u32 func_020b0fb0(u32 a) {
     void *p = data_020cbb18;
     if (!func_02072e44(p) || func_020729cc(p, 0)) {
-        Id16 id = ((Id16 *)data_020d0a14)[a];
-        return lookup(id);
+        volatile u16 id = ((u16 *)data_020d0a14)[a];
+        BOOL ok = FALSE;
+        u16 v = id;
+        if (v < 0x5000 || v > 0x5021) {
+        } else {
+            ok = TRUE;
+        }
+        if (ok) {
+            return data_021ee330n[func_020b2bac(v)].lo;
+        }
     }
     return 0;
 }

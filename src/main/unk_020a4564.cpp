@@ -412,8 +412,9 @@ void Unk_020a4738::func_020a4778() {
         if (func_020a4c00() == 0) {
             s32 x = func_020974a0(func_020a4c18() + 3);
             u16 *p;
-            if (x != 0 && func_020986a4(x)->func_02087314() && (p = func_020986a4(x)->func_02087364(), p[0] == data_021d7352.unk_00) &&
-                func_02128930(p + 1, (u8 *)((u32)&data_021d7352 + 2), 8) == 0) {
+            u8 *idb = (u8 *)&data_021d7352;
+            if (x != 0 && func_020986a4(x)->func_02087314() && (p = func_020986a4(x)->func_02087364(), p[0] == *(u16 *)idb) &&
+                func_02128930(p + 1, idb + 2, 8) == 0) {
                 func_020b4f58(func_020b4934(), 0x2f, 2, 2);
             } else {
                 static Unk_020a4778_Static s;

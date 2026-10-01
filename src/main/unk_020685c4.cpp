@@ -352,9 +352,8 @@ void Unk_020ddca8::func_02068874() {
 void Unk_020ddca8::vfunc_14(u8 *p) {
     SUB2C->func_020a777c();
     if (unk_28 == 0) {
-        s32 b, a;
-        a = unk_2c;
-        b = unk_30;
+        s32 a = *(volatile s32 *)&unk_2c;
+        s32 b = *(volatile s32 *)&unk_30;
         if (a == 10 && b == 0) {
             func_02068848();
         }

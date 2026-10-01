@@ -344,7 +344,7 @@ void Unk_0208b908::func_0208b9f0() {
             ((u32 *)a)[0] = 0;
             ((u32 *)a)[1] = 0;
         } else {
-            BOOL k;
+            u32 k;
             func_02116048(b, c, 8);
             func_0209d064(a, c);
             k = x;

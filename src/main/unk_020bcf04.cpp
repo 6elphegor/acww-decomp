@@ -568,10 +568,13 @@ Unk_020bd1b0::Unk_020bd1b0() {
     func_020bd25c();
 }
 
+static inline void Unk_020bd718_Copy(u16 *dst, u16 *src) {
+    *dst = *src;
+}
+
 void Unk_020bd718::func_020bd718(s32 idx, u16* p) {
     unk_08 |= 1 << idx;
-    u16* d = &unk_0a[idx];
-    *d = *p;
+    Unk_020bd718_Copy(&unk_0a[idx], p);
     func_020bd7c0((data_020d0e60[idx] >> 4) & 0xf);
 }
 

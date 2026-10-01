@@ -388,7 +388,7 @@ void Unk_020d6df4::func_0200d64c() {
                         unk_140 = 1;
                         if (func_0200f5b0() != 1) {
                             {
-                                s32 tx = p68.x;
+                                s32 tx = *(volatile s32 *)&p68.x;
                                 Xyz *q = (Xyz *)&unk_148;
                                 q->x = tx;
                                 unk_14c = p68.y;
@@ -396,15 +396,20 @@ void Unk_020d6df4::func_0200d64c() {
                                 r5c = *q;
                             }
                         } else {
-                            u16 h = *func_0204eba0(data_021c47c4, &p68, 0);
-                            BOOL is = (h >= 0xfc && h <= 0xfd);
+                            u16 *hp = func_0204eba0(data_021c47c4, &p68, 0);
+                            BOOL is = FALSE;
+                            u16 h = *hp;
+                            if (h < 0xfc || h > 0xfd) {
+                            } else {
+                                is = TRUE;
+                            }
                             if (is) {
                                 ax = 0; ay = 0; bx = 0; by = 0;
                                 func_0204ee10(&ax, &ay, &unk_5c);
                                 func_0204ee10(&bx, &by, &p50);
                                 if (ax != bx || ay != by) {
                                     {
-                                        s32 tx = p50.x;
+                                        s32 tx = *(volatile s32 *)&p50.x;
                                         Xyz *q = (Xyz *)&unk_148;
                                         q->x = tx;
                                         unk_14c = p50.y;
@@ -413,7 +418,7 @@ void Unk_020d6df4::func_0200d64c() {
                                     }
                                 } else {
                                     {
-                                        s32 tx = p68.x;
+                                        s32 tx = *(volatile s32 *)&p68.x;
                                         Xyz *q = (Xyz *)&unk_148;
                                         q->x = tx;
                                         unk_14c = p68.y;
@@ -423,7 +428,7 @@ void Unk_020d6df4::func_0200d64c() {
                                 }
                             } else {
                                 {
-                                    s32 tx = p68.x;
+                                    s32 tx = *(volatile s32 *)&p68.x;
                                     Xyz *q = (Xyz *)&unk_148;
                                     q->x = tx;
                                     unk_14c = p68.y;
@@ -438,7 +443,7 @@ void Unk_020d6df4::func_0200d64c() {
                     if (Unk_0200d64c_Both()) {
                         unk_140 = 2;
                         {
-                            s32 tx = p68.x;
+                            s32 tx = *(volatile s32 *)&p68.x;
                             Xyz *q = (Xyz *)&unk_148;
                             q->x = tx;
                             unk_14c = p68.y;
@@ -552,8 +557,9 @@ void Unk_020d6df4::func_0200d64c() {
             } else {
                 flag = 0;
             }
+            u32 kb = *(volatile u16 *)&data_021f47d8.b;
             v4 = 1;
-            if (!(data_021f47d8.b & 1)) {
+            if (!(kb & 1)) {
                 v4 = 0;
             }
             unk_13c = v4;
