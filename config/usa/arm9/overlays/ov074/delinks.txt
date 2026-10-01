@@ -5,7 +5,9 @@
     .bss        start:0x022726e0 end:0x022727a0 kind:bss align:32
 
 src/ov074/unk_ov074_022713c0.cpp:
-    .text       start:0x022713c0 end:0x02271e30
-
-src/ov074/unk_02271e30.cpp:
-    .text       start:0x02271e30 end:0x02272390
+    complete
+    .text       start:0x022713c0 end:0x02272390
+    .init       start:0x02272390 end:0x022724d4
+    .ctor       start:0x022724d4 end:0x022724d8
+    .data       start:0x022724e0 end:0x022726e0
+    .bss        start:0x022726e0 end:0x022727a0
