@@ -1,5 +1,9 @@
     .bss        start:0x0213c6c0 end:0x02200680 kind:bss align:32
 
+src/main/unk_0200137c.bss.cpp:
+    complete
+    .bss        start:0x0213c6ec end:0x0213c7a8
+
 src/main/unk_020027b4.bss.cpp:
     complete
     .bss        start:0x0213c7a8 end:0x0213c810
@@ -15,6 +19,10 @@ src/main/unk_020039ec.bss.cpp:
 src/main/unk_020116e0.bss.cpp:
     complete
     .bss        start:0x021bdb74 end:0x021bddd8
+
+src/main/unk_02034010.bss.cpp:
+    complete
+    .bss        start:0x021c1a04 end:0x021c1a44
 
 src/main/unk_02034048.bss.cpp:
     complete
@@ -120,6 +128,10 @@ src/main/unk_0206c768.bss.cpp:
     complete
     .bss        start:0x021ca9c8 end:0x021cb3b8
 
+src/main/unk_0206d4a4.bss.cpp:
+    complete
+    .bss        start:0x021cb3b8 end:0x021cb400
+
 src/main/unk_0206d988.bss.cpp:
     complete
     .bss        start:0x021cb400 end:0x021cb460
@@ -167,6 +179,10 @@ src/main/unk_0208eeac.bss.cpp:
 src/main/unk_0208f0b0.bss.cpp:
     complete
     .bss        start:0x021cebac end:0x021d049c
+
+src/main/unk_02097444.bss.cpp:
+    complete
+    .bss        start:0x021d08c8 end:0x021d70b4
 
 src/main/unk_0209b5d4.bss.cpp:
     complete
@@ -227,6 +243,10 @@ src/main/unk_020b7d84.bss.cpp:
 src/main/unk_020b7f7c.bss.cpp:
     complete
     .bss        start:0x021ef608 end:0x021ef630
+
+src/main/unk_020b8340.bss.cpp:
+    complete
+    .bss        start:0x021ef630 end:0x021ef640
 
 src/main/unk_020b8cf8.bss.cpp:
     complete

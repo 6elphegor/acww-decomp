@@ -2,3 +2,18 @@
 
 # U079
 src/main/unk_02055c38.cpp:
+
+# U002
+src/main/unk_0200137c.cpp:
+
+# U174
+src/main/unk_02097444.cpp:
+
+# U026
+src/main/unk_02034010.cpp:
+
+# U114
+src/main/unk_0206d4a4.cpp:
+
+# U230
+src/main/unk_020b8340.cpp:

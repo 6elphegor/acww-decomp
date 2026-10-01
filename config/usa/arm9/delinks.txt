@@ -8,13 +8,11 @@
     .bss        start:0x020e7500 end:0x020e7500 kind:bss align:32
 
 src/main/unk_02000c8c.cpp:
-    .text       start:0x02000c8c end:0x0200153c
+    .text       start:0x02000c8c end:0x0200137c
 
-src/main/unk_0200153c.cpp:
-    .text       start:0x0200153c end:0x02001e7c
-
-src/main/unk_02001e7c.cpp:
-    .text       start:0x02001e7c end:0x020027b4
+src/main/unk_0200137c.cpp:
+    complete
+    .text       start:0x0200137c end:0x020027b4
 
 src/main/unk_020027b4.cpp:
     complete
@@ -313,6 +311,12 @@ src/main/unk_02033fa4.cpp:
     complete
     .text       start:0x02033fa4 end:0x02034010
     .rodata     start:0x020c8ad4 end:0x020c8ae4
+
+src/main/unk_02034010.cpp:
+    complete
+    .text       start:0x02034010 end:0x02034048
+    .init       start:0x020c36e0 end:0x020c3760
+    .ctor       start:0x020d1dfc end:0x020d1e00
 
 src/main/unk_02034048.cpp:
     complete
@@ -862,6 +866,12 @@ src/main/unk_0206d49c.cpp:
     complete
     .text       start:0x0206d49c end:0x0206d4a4
 
+src/main/unk_0206d4a4.cpp:
+    complete
+    .text       start:0x0206d4a4 end:0x0206d5b8
+    .init       start:0x020c4770 end:0x020c47f4
+    .ctor       start:0x020d1e94 end:0x020d1e98
+
 src/main/unk_0206d5b8.cpp:
     complete
     .text       start:0x0206d5b8 end:0x0206d988
@@ -1245,8 +1255,11 @@ src/main/unk_02097110.cpp:
     .text       start:0x02097110 end:0x02097444
     .data       start:0x020e1df8 end:0x020e1e20
 
-src/main/unk_020973e4.cpp:
+src/main/unk_02097444.cpp:
+    complete
     .text       start:0x02097444 end:0x02097d1c
+    .init       start:0x020c4f64 end:0x020c4f8c
+    .ctor       start:0x020d1ee0 end:0x020d1ee4
 
 src/main/unk_02097d1c.cpp:
     complete
@@ -1539,8 +1552,11 @@ src/main/unk_020b7f7c.cpp:
     complete
     .text       start:0x020b7f7c end:0x020b8340
 
-src/main/unk_020b8464.cpp:
-    .text       start:0x020b8464 end:0x020b8594
+src/main/unk_020b8340.cpp:
+    complete
+    .text       start:0x020b8340 end:0x020b8594
+    .init       start:0x020c5b2c end:0x020c5b44
+    .ctor       start:0x020d1f2c end:0x020d1f30
 
 src/main/unk_020b8594.cpp:
     complete
