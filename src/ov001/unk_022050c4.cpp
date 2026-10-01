@@ -188,7 +188,7 @@ s32 func_ov001_022055bc(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 key
         return 0;
     }
     nr = func_ov001_022050c4(rk, key, keylen << 3);
-    a = *(const Unk_ov001_022055bc_Blk *)in;
+    *(ok ? &a : &a) = *(const Unk_ov001_022055bc_Blk *)in;
     in += 8;
     func_02128a00(out, in, inlen - 1);
     for (j = 5; j >= 0; j--) {
@@ -229,11 +229,10 @@ s32 func_ov001_022057b0(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 key
     }
     nr = func_ov001_02205288(rk, key, keylen << 3);
     func_02128a00(out + 8, in, inlen);
-    a = iv;
+    *(n ? &a : &a) = iv;
     for (j = 0; j < 6; j++) {
         for (i = 1; i <= n; i++) {
-            u8 *p = out + ((u32)i << 3);
-            b = *(Unk_ov001_022055bc_Blk *)p;
+            b = *(Unk_ov001_022055bc_Blk *)(out + ((u32)i << 3));
             func_ov001_02204ca4(rk, nr, a.b, a.b);
             t = (u64)n * j + i;
             tb = ((t & 0x00000000000000ffULL) << 56) | ((t & 0x000000000000ff00ULL) << 40) |
@@ -241,7 +240,7 @@ s32 func_ov001_022057b0(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 key
                  ((t & 0x000000ff00000000ULL) >> 8) | ((t & 0x0000ff0000000000ULL) >> 24) |
                  ((t & 0x00ff000000000000ULL) >> 40) | ((t & 0xff00000000000000ULL) >> 56);
             func_ov001_02205570(a.b, (u8 *)&tb, a.b);
-            *(Unk_ov001_022055bc_Blk *)p = b;
+            *(Unk_ov001_022055bc_Blk *)(out + ((u32)i << 3)) = b;
         }
     }
     *(Unk_ov001_022055bc_Blk *)out = a;

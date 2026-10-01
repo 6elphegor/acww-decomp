@@ -106,7 +106,7 @@ void func_ov001_02203214(void *, void *, s32);
 s32 func_ov001_02201ff8();
 s32 func_ov001_02201c14(s32);
 s32 func_ov001_02202050(void *);
-s32 func_ov001_022007c4();
+void func_ov001_022007c4(s32);
 s32 func_ov001_0220358c(s32, void *, s32, s32);
 s32 func_ov001_022036a0(void *, s32);
 s32 func_ov001_022036ec();
@@ -159,9 +159,8 @@ s32 func_ov001_02202b3c(Unk_ov001_02202b3c_Cfg *a) {
     func_ov001_02202c44(data_ov001_0222b8d4);
     func_ov001_02201ff8();
     s32 t = data_ov001_0222a484;
-    s32 m = -1;
-    if (t != m) {
-        func_ov001_022007c4();
+    if (t != -1) {
+        func_ov001_022007c4(t);
     }
     return res;
 }
@@ -375,7 +374,7 @@ s32 func_ov001_02202e74(void **out) {
     done:
         func_02115094(thr);
         do {
-        } while (func_02114188(data_ov001_0222c6ac, &msg, r6) == 1);
+        } while (func_02114188(data_ov001_0222c6ac, &msg, 0) == 1);
     }
     data_ov001_0222c698(buf);
     return res;

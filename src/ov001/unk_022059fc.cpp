@@ -134,11 +134,11 @@ s32 func_ov001_02205e18()
     }
     case 2:
         data_ov001_0222ca48.unk_20 = 4;
-        Unk_ov001_02205e18_Cp(&data_ov001_0222caf0, &data_ov001_0222cd2c);
+        *(ret ? &data_ov001_0222caf0 : &data_ov001_0222caf0) = data_ov001_0222cd2c;
         break;
     case 3:
         data_ov001_0222ca48.unk_20 = 5;
-        Unk_ov001_02205e18_Cp(&data_ov001_0222caf0, &data_ov001_0222cd2c);
+        *(ret ? &data_ov001_0222caf0 : &data_ov001_0222caf0) = data_ov001_0222cd2c;
         break;
     default:
         ret = -7;

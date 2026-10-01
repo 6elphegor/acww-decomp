@@ -197,7 +197,8 @@ u8 *func_ov001_02206584(u8 *out, u32 id0, u8 *data, u32 len) {
     out += 4;
     func_0212899c(out, 0, pad);
     func_02128a00(out, data, len);
-    return out + pad;
+    out += pad;
+    return out;
 }
 
 s32 func_ov001_022065ec(u8 *pkt, u32 type, u8 *hdr, u32 len, u8 *extra) {
@@ -280,13 +281,7 @@ BOOL func_ov001_02206b08(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s
     u32 i = found;
     if ((u8 *)a->count > (u8 *)0) {
         do {
-            u8 buf[0x22];
-            u8 *bp = buf;
-            u8 *k = (u8 *)0x22;
-            do {
-                *bp++ = 0;
-                k--;
-            } while (k != 0);
+            u8 buf[0x22] = {0};
             func_02128a00(buf, e1->name, 0x20);
             buf[e1->len] = 0;
             u32 j = 0;
@@ -316,13 +311,7 @@ BOOL func_ov001_02206b08(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s
         } while (i < a->count);
     }
     if (found == 0) {
-        u8 buf2[0x22];
-        u8 *bp = buf2;
-        u8 *k = (u8 *)0x22;
-        do {
-            *bp++ = 0;
-            k--;
-        } while (k != 0);
+        u8 buf2[0x22] = {0};
         flagB = flagA = FALSE;
         e1 = a->e;
         e2 = b->e;
@@ -376,8 +365,17 @@ s32 func_ov001_0220681c() {
     u32 size;
     u8 *buf1;
     u8 *buf2;
-    u8 *p1c, *p20, *p24;
-    u32 z0, z1, z2, z3, z4, z5, z6, z7;
+    u8 *p1c;
+    u8 *p20;
+    u8 *p24;
+    u32 z0;
+    u32 z1;
+    u32 z2;
+    u32 z3;
+    u32 z4;
+    u32 z5;
+    u32 z6;
+    u32 z7;
     s32 idx;
     u8 unkbuf[0x20];
     u8 name[0x30];
