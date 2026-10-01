@@ -39,34 +39,42 @@ src/ov068/unk_02265324.cpp:
     .text       start:0x02265324 end:0x02265d34
 
 src/ov068/unk_02265d34.cpp:
-    .text       start:0x02265d34 end:0x02266680
+    .text       start:0x02265d34 end:0x0226647c
 
-src/ov068/unk_02266680.cpp:
-    .text       start:0x02266680 end:0x02266f94
+src/ov068/unk_ov068_0226647c.cpp:
+    complete
+    .text       start:0x0226647c end:0x02266b44
+    .rodata     start:0x0226f18c end:0x0226f1a8
+    .init       start:0x0226f498 end:0x0226f4f4
+    .ctor       start:0x0226f7d0 end:0x0226f7d4
+    .data       start:0x0226fc40 end:0x0226fcfc
+    .bss        start:0x02270fc4 end:0x02270fdc
 
-src/ov068/unk_02266f94.cpp:
-    .text       start:0x02266f94 end:0x022678c4
+src/ov068/unk_ov068_02266b44.cpp:
+    complete
+    .text       start:0x02266b44 end:0x02267584
+    .init       start:0x0226f4f4 end:0x0226f5c8
+    .ctor       start:0x0226f7d4 end:0x0226f7d8
+    .data       start:0x0226fcfc end:0x0226ffe0
+    .bss        start:0x02270fdc end:0x02271078
 
-src/ov068/unk_022678c4.cpp:
-    .text       start:0x022678c4 end:0x02268214
+src/ov068/unk_ov068_02267584.cpp:
+    complete
+    .text       start:0x02267584 end:0x022687c0
+    .bss        start:0x02271078 end:0x02271080
 
-src/ov068/unk_02268214.cpp:
-    .text       start:0x02268214 end:0x02268b70
+src/ov068/unk_ov068_022687c0.cpp:
+    complete
+    .text       start:0x022687c0 end:0x0226a794
+    .bss        start:0x02271080 end:0x02271088
 
-src/ov068/unk_02268b70.cpp:
-    .text       start:0x02268b70 end:0x022694c0
-
-src/ov068/unk_022694c0.cpp:
-    .text       start:0x022694c0 end:0x02269e54
-
-src/ov068/unk_02269e54.cpp:
-    .text       start:0x02269e54 end:0x0226a794
-
-src/ov068/unk_0226a794.cpp:
-    .text       start:0x0226a794 end:0x0226b12c
-
-src/ov068/unk_0226b12c.cpp:
-    .text       start:0x0226b12c end:0x0226b9a8
+src/ov068/unk_ov068_0226a794.cpp:
+    complete
+    .text       start:0x0226a794 end:0x0226b9a8
+    .init       start:0x0226f5c8 end:0x0226f624
+    .ctor       start:0x0226f7d8 end:0x0226f7dc
+    .data       start:0x0226ffe0 end:0x02270264
+    .bss        start:0x02271088 end:0x022711bc
 
 src/ov068/unk_ov068_0226b9a8.cpp:
     complete
