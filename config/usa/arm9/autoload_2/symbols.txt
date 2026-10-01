@@ -2318,8 +2318,10 @@ data_0213b84c kind:data(any) addr:0x0213b84c
 data_0213b880 kind:data(any) addr:0x0213b880
 data_0213b8b4 kind:data(any) addr:0x0213b8b4
 data_0213b8e8 kind:data(any) addr:0x0213b8e8
+_ZTV12Unk_0213b91c kind:data(any) addr:0x0213b914
 data_0213b91c kind:data(any) addr:0x0213b91c
 data_0213b938 kind:data(any) addr:0x0213b938
+_ZTV12Unk_0213b954 kind:data(any) addr:0x0213b94c
 data_0213b954 kind:data(any) addr:0x0213b954
 data_0213b970 kind:data(any) addr:0x0213b970
 data_0213b98c kind:data(any) addr:0x0213b98c
