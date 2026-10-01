@@ -2882,7 +2882,9 @@ func_0203c6e4 kind:function(thumb,size=0x14) addr:0x0203c6e4
 func_0203c6f8 kind:function(thumb,size=0x6c) addr:0x0203c6f8
 func_0203c764 kind:function(thumb,size=0x1c0) addr:0x0203c764
 func_0203c924 kind:function(thumb,size=0x2) addr:0x0203c924
+_ZN22Unk_ov004_02250f6c_ObjD1Ev kind:label(thumb) addr:0x0203c924
 func_0203c928 kind:function(thumb,size=0x2) addr:0x0203c928
+_ZN22Unk_ov004_02250f6c_ObjC1Ev kind:label(thumb) addr:0x0203c928
 _ZN12Unk_0203c92c13func_0203c92cEv kind:function(thumb,size=0xa) addr:0x0203c92c
 _ZN12Unk_0203c92c13func_0203c938Ev kind:function(thumb,size=0xa) addr:0x0203c938
 _ZN12Unk_0203c92c13func_0203c944Ev kind:function(thumb,size=0xc) addr:0x0203c944
