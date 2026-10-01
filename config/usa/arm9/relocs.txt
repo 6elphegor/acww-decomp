@@ -9694,11 +9694,11 @@ from:0x0202f582 kind:thumb_call_arm to:0x01ffcb0c module:itcm
 from:0x0202f590 kind:thumb_call_arm to:0x01ffcb0c module:itcm
 from:0x0202f59e kind:thumb_call_arm to:0x01ffcb0c module:itcm
 from:0x0202f60e kind:thumb_call to:0x0202f364 module:main
-from:0x0202f61c kind:load to:0x020d8ccc module:main
-from:0x0202f628 kind:load to:0x020d8ccc module:main
-from:0x0202f634 kind:load to:0x020d8ccc module:main
-from:0x0202f648 kind:load to:0x020d8ccc module:main
-from:0x0202f65c kind:load to:0x020d8ccc module:main
+from:0x0202f61c kind:load to:0x020d8cc4 add:0x8 module:main
+from:0x0202f628 kind:load to:0x020d8cc4 add:0x8 module:main
+from:0x0202f634 kind:load to:0x020d8cc4 add:0x8 module:main
+from:0x0202f648 kind:load to:0x020d8cc4 add:0x8 module:main
+from:0x0202f65c kind:load to:0x020d8cc4 add:0x8 module:main
 from:0x0202f66c kind:thumb_call_arm to:0x01ffca14 module:itcm
 from:0x0202f678 kind:thumb_call_arm to:0x01ffca14 module:itcm
 from:0x0202f686 kind:thumb_call_arm to:0x01ffca14 module:itcm
