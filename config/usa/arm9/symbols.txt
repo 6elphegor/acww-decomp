@@ -8039,6 +8039,7 @@ _ZN12Unk_020e0d98D2Ev kind:function(thumb,size=0x40) addr:0x02089d9c
 _ZN12Unk_020e0d98D0Ev kind:function(thumb,size=0x44) addr:0x02089ddc
 _ZN12Unk_020e0d98D1Ev kind:function(thumb,size=0x40) addr:0x02089e20
 _ZN12Unk_020e0d98C1Ei kind:function(thumb,size=0xa8) addr:0x02089e60
+_ZN12Unk_020e0d98C2Ei kind:label(thumb) addr:0x02089e60
 _ZN12Unk_020e0d808vfunc_0cEv kind:function(thumb,size=0x4) addr:0x02089f08
 _ZN12Unk_020e0d808vfunc_08Ev kind:function(thumb,size=0x4) addr:0x02089f0c
 _ZN12Unk_020e0d80D0Ev kind:function(thumb,size=0x20) addr:0x02089f10
