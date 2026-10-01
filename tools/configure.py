@@ -11,6 +11,7 @@ from get_platform import get_platform
 from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
 import object_order
 import bss_units
+import aliases
 
 
 DEFAULT_WIBO_PATH = "./wibo"
@@ -224,6 +225,13 @@ def main():
         n.newline()
 
         n.rule(
+            name="aliases",
+            command=f"{PYTHON} tools/aliases.py $objects_file --config $config_path --build $build_path "
+                    "--objects-out $out_objects"
+        )
+        n.newline()
+
+        n.rule(
             name="bss_units",
             command=f"{PYTHON} tools/bss_units.py $objects_file $lcf_file --config $config_path "
                     "-o $out_lcf --objects-out $out_objects"
@@ -418,6 +426,31 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
         n.newline()
         lcf_file = order_lcf_file
         objects_file = order_objects_file
+
+    # Compiled main units get the second names (symbols.txt labels) of their functions, see tools/aliases.py. The
+    # step only exists when main has complete units.
+    arm9_config = project.game_config / "arm9"
+    if aliases.has_complete_units(arm9_config):
+        alias_objects_file = str(project.game_build / "objects_aliases.txt")
+        alias_units = [
+            str(project.game_build / Path(source).with_suffix(".o"))
+            for source in aliases.main_complete_units(arm9_config)
+        ]
+        n.build(
+            inputs=[objects_file],
+            implicit=["tools/aliases.py", str(arm9_config / "delinks.txt"), str(arm9_config / "symbols.txt")]
+                     + alias_units,
+            rule="aliases",
+            outputs=[alias_objects_file],
+            variables={
+                "objects_file": objects_file,
+                "config_path": str(arm9_config),
+                "build_path": str(project.game_build),
+                "out_objects": alias_objects_file,
+            },
+        )
+        n.newline()
+        objects_file = alias_objects_file
 
     # Linker script with FORCE_ACTIVE for delinked code, see tools/force_active.py
     force_active_lcf_file = str(project.game_build / "arm9_force_active.lcf")

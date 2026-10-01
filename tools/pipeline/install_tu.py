@@ -22,7 +22,9 @@ vtable's start and every relocation to the label becomes `to:<start> add:0x8` (t
 main only: a `.bss` line gives the unit's range in autoload_3 (main has no .bss of its own). It is written to
 config/usa/arm9/autoload_3/delinks.txt as the placeholder unit src/main/unk_<text start>.bss.cpp (see
 tools/bss_units.py). Every range of the spec must start and end on a symbol of the module's symbols.txt (dsd
-requires it); a missing boundary symbol is reported before anything is changed.
+requires it). A .text/.init boundary without a symbol is an error (nothing is changed); for a data or bss boundary
+the symbol `data_<address>` is added to symbols.txt and reported (a vtable start should be named in renames.txt
+instead: `main <start> _ZTV<class>`, also when the vtable belongs to the neighbouring unit).
 
 Run from the repo root; then `python3 tools/configure.py usa`, build and check the ROM.
 """
@@ -105,6 +107,7 @@ if is_main:
             if len(p) == 3 and p[0] == "main" and p[2].startswith("_ZTV"):
                 pending_vtables.add(int(p[1], 16))
     bad = []
+    add_bounds = []
     for s, a, b in secs:
         if s == ".bss":
             if not (bss_range[0] <= a < b <= bss_range[1]):
@@ -118,8 +121,10 @@ if is_main:
             addrs, lim = main_addrs | pending_vtables, module_secs[s]
         for x in (a, b):
             if x not in addrs and x not in lim:
-                bad.append(f"{s}: no symbol at the range boundary {x:#010x} (add `data_{x:08x} kind:data(any)` / "
-                           f"`kind:bss` to symbols.txt, or correct the range)")
+                if s in (".text", ".init"):
+                    bad.append(f"{s}: no function symbol at the range boundary {x:#010x}")
+                else:
+                    add_bounds.append((s, x))
     if bad:
         sys.exit("install_tu.py: nothing installed:\n  " + "\n  ".join(bad))
 
@@ -219,4 +224,20 @@ if ren.exists():
                 print(f"WARNING: renames.txt: {line.strip()}: {e}")
         else:
             print(f"WARNING: renames.txt: no symbol at {mod} {a:#010x} for {new}")
+if is_main:
+    for s, x in add_bounds:
+        sp = (BSS_CFG if s == ".bss" else cfg) / "symbols.txt"
+        lines = sp.read_text().splitlines()
+        if any(f"addr:{x:#010x}" in l for l in lines):
+            continue  # a rename put a symbol there
+        kind = "bss" if s == ".bss" else "data(any)"
+        at = len(lines)
+        for i, l in enumerate(lines):
+            m = re.search(r" addr:(0x[0-9a-f]+)", l)
+            if m and int(m.group(1), 16) > x and ("kind:data" in l or "kind:bss" in l):
+                at = i
+                break
+        lines.insert(at, f"data_{x:08x} kind:{kind} addr:{x:#010x}")
+        sp.write_text("\n".join(lines) + "\n")
+        print(f"NOTE: added boundary symbol data_{x:08x} to {sp} ({s} range boundary without a symbol)")
 print(f"installed {name}")

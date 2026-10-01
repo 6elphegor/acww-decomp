@@ -18,6 +18,15 @@ Run from the repository root. See tools/pipeline/linking.md for the procedure.
   linkprep.py diff <ovNNN>
       Compare the built overlay (build/usa/build/arm9_ovNNN.bin) with the original and list differing ranges.
 
+The ARM9 main module is linked one translation unit at a time; there the module argument is `main` followed by
+the unit's spec.txt (or its name in config/usa/arm9/delinks.txt once installed). See mainprep.py for the details:
+
+  linkprep.py check <obj.o> main <spec.txt | unit>
+  linkprep.py data <src.cpp> <obj.o> main <spec.txt | unit> [--apply] [--seed N]
+  linkprep.py reverse <src.cpp> main
+  linkprep.py diff main
+  linkprep.py dump main <spec.txt | unit>
+
 Data ordering model (checked against compiler experiments and ov140): mwcc collects a file's data and bss objects
 in creation order, heapsorts the reversed list by size (ascending, unstable), and emits them in that order;
 string literals follow in a separate pool. Named objects are created at their definition; compiler objects
@@ -64,6 +73,9 @@ def load_symbols():
         mod = p.parent.name if p.parent != CONFIG else "main"
         for name, addr, _ in symbol_lines(p, mod):
             out.setdefault(name, (mod, addr))
+    # a rename for an address without a symbol yet (a vtable named at its start, 8 bytes before dsd's label)
+    for (mod, addr), name in RENAMES.items():
+        out.setdefault(name, (mod, addr))
     return out
 
 
@@ -104,12 +116,15 @@ class Obj:
                     name, value, size, info, _, shndx = struct.unpack_from("<IIIBBH", d, s[4] + i)
                     self.syms.append((self._str(strtab, name), value, size, info & 15, info >> 4, shndx))
         self.relocs = {}  # target section index -> [(offset, symbol name, addend, type)]
+        self.relsym = {}  # target section index -> [symbol index], parallel to self.relocs
         for s in self.sh:
             if s[1] == 4:  # SHT_RELA
                 lst = self.relocs.setdefault(s[7], [])
+                idx = self.relsym.setdefault(s[7], [])
                 for i in range(0, s[5], 12):
                     off, info, addend = struct.unpack_from("<IIi", d, s[4] + i)
                     lst.append((off, self.syms[info >> 8][0], addend, info & 0xff))
+                    idx.append(info >> 8)
 
     def _str(self, strsec, off):
         start = strsec[4] + off
@@ -231,8 +246,13 @@ def strip_comments(s):
 
 def overlay_function_addresses(ov):
     '''(class or "", name) -> address for the overlay's functions in symbols.txt'''
+    return function_addresses_of(CONFIG / "overlays" / ov / "symbols.txt", ov)
+
+
+def function_addresses_of(path, mod):
+    '''(class or "", name) -> address for the functions of one symbols.txt'''
     out = {}
-    for name, addr, line in symbol_lines(CONFIG / "overlays" / ov / "symbols.txt", ov):
+    for name, addr, line in symbol_lines(path, mod):
         if "kind:function" not in line:
             continue
         mm = re.match(r"_ZN(\d+)(\w+)", name)
@@ -264,9 +284,12 @@ def function_key(code, addrs):
 def cmd_reverse(src, ov=None):
     '''order function definitions by descending original address (mwcc emits a file's functions last to first)'''
     if ov is None:
-        m = re.search(r"src/(ov\d+)/", str(Path(src).resolve()))
+        m = re.search(r"src/(ov\d+|main)/", str(Path(src).resolve()))
         ov = m.group(1) if m else None
-    addrs = overlay_function_addresses(ov) if ov else {}
+    if ov == "main":
+        addrs = function_addresses_of(CONFIG / "symbols.txt", "main")
+    else:
+        addrs = overlay_function_addresses(ov) if ov else {}
     text = Path(src).read_text()
     chunks = top_level_chunks(text)
     parts = [text[a:b] for a, b in chunks]
@@ -350,15 +373,36 @@ def method_of(mangled):
     return mangled
 
 
-def cmd_data(src, objpath, ov, apply=False, seed=1):
+def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     text = Path(src).read_text()
     o = Obj(objpath)
     syms = load_symbols()
-    secs = overlay_sections(ov)
-    relocs = overlay_relocs(ov)
-    orig = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
-    base = secs[".text"][0]
+    is_main = ov == "main"
+    if is_main:
+        mainprep = main_module()
+        secs = mainprep.unit_ranges(unit)
+        relocs = {k: v[0] for k, v in mainprep.main_relocs().items()}
+        orig = mainprep.ORIG.read_bytes()
+        base = mainprep.BASE
+    else:
+        secs = overlay_sections(ov)
+        relocs = overlay_relocs(ov)
+        orig = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
+        base = secs[".text"][0]
     objs = o.objects()
+    if is_main:
+        # named objects: symbols.txt (main, or autoload_3 for bss) says where they are
+        for x in objs:
+            if syms.get(x["name"], ("", 0))[0] in ("main", "autoload_3"):
+                x["addr"] = syms[x["name"]][1]
+        # the static initialiser's pointers
+        for i, s in enumerate(o.sh):
+            if o.secname[i] == ".init" and s[5] and ".init" in secs:
+                for off, sname, addend, _ in o.relocs.get(i, []):
+                    for x in objs:
+                        if x["name"] == sname and "addr" not in x and secs[".init"][0] + off in relocs:
+                            x["addr"] = relocs[secs[".init"][0] + off] - addend
+                            x["refby"] = "__sinit"
     byname = {x["name"]: x for x in objs}
     funcs = o.functions()
 
@@ -377,6 +421,8 @@ def cmd_data(src, objpath, ov, apply=False, seed=1):
     for x in objs:
         if "addr" in x or x["kind"] == ".bss":
             continue
+        if is_main:
+            dstart, dend = secs.get(x["kind"], (0, 0))
         masked = {off for off, *_ in o.relocs.get(x["idx"], [])}
         cands = []
         for a in range(dstart, dend - x["size"] + 1, 4):
@@ -840,23 +886,39 @@ def cmd_diff(ov):
     return len(diffs)
 
 
+def main_module():
+    '''tools/pipeline/mainprep.py: the main module's variants of check, diff and dump'''
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(Path(__file__).parent))
+    import mainprep
+    return mainprep
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
     if not a:
         sys.exit(__doc__)
+    me = sys.modules[__name__]
     if a[0] in ("reverse", "undef", "check", "data") and len(a) > 1:
         load_renames(a[2] if a[0] == "data" else a[1])
-    if a[0] == "reverse":
+    if a[0] == "dump" and len(a) > 2 and a[1] == "main":
+        load_renames(a[2])
+        main_module().cmd_dump(me, a[2])
+    elif a[0] == "reverse":
         cmd_reverse(a[1], a[2] if len(a) > 2 else None)
+    elif a[0] == "check" and len(a) > 3 and a[2] == "main":
+        sys.exit(1 if main_module().cmd_check(me, a[1], a[3]) else 0)
     elif a[0] == "check":
         sys.exit(1 if cmd_check(a[1], a[2]) else 0)
     elif a[0] == "undef":
         sys.exit(1 if cmd_undef(a[1]) else 0)
     elif a[0] == "data":
         seed = int(a[a.index("--seed") + 1]) if "--seed" in a else 1
-        cmd_data(a[1], a[2], a[3], "--apply" in a, seed)
+        cmd_data(a[1], a[2], a[3], "--apply" in a, seed, a[4] if a[3] == "main" and len(a) > 4 else None)
     elif a[0] == "compile":
         sys.exit(cmd_compile(a[1], a[2]))
+    elif a[0] == "diff" and a[1] == "main":
+        sys.exit(1 if main_module().cmd_diff(me) else 0)
     elif a[0] == "diff":
         sys.exit(1 if cmd_diff(a[1]) else 0)
     else:
