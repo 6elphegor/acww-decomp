@@ -974,14 +974,12 @@ src/main/unk_0206db88.cpp:
     .text       start:0x0206db88 end:0x0206e54c
     .data       start:0x020ddf90 end:0x020de014
 
-src/main/unk_0206e2f4.cpp:
-    .text       start:0x0206e54c end:0x0206ebc0
-
-src/main/unk_0206ebc0.cpp:
-    .text       start:0x0206ebc0 end:0x0206ec04
-
-src/main/unk_0206ec04.cpp:
-    .text       start:0x0206ec04 end:0x0206f4f0
+src/main/unk_0206e54c.cpp:
+    complete
+    .text       start:0x0206e54c end:0x0206f4f0
+    .init       start:0x020c4810 end:0x020c4860
+    .ctor       start:0x020d1e9c end:0x020d1ea0
+    .data       start:0x020de014 end:0x020de390
 
 src/main/unk_0206f53c.cpp:
     .text       start:0x0206f53c end:0x0206f804
@@ -1629,14 +1627,13 @@ src/main/unk_020b478c.cpp:
     .text       start:0x020b478c end:0x020b4828
     .data       start:0x020e411c end:0x020e416c
 
-src/main/unk_020b493c.cpp:
-    .text       start:0x020b493c end:0x020b5284
-
-src/main/unk_020b5284.cpp:
-    .text       start:0x020b5284 end:0x020b5bbc
-
-src/main/unk_020b5bbc.cpp:
-    .text       start:0x020b5bbc end:0x020b5da0
+src/main/unk_020b4828.cpp:
+    complete
+    .text       start:0x020b4828 end:0x020b5da0
+    .init       start:0x020c5a08 end:0x020c5aa8
+    .rodata     start:0x020d0c0c end:0x020d0d90
+    .ctor       start:0x020d1f20 end:0x020d1f24
+    .data       start:0x020e416c end:0x020e4418
 
 src/main/unk_020b5da0.cpp:
     complete
