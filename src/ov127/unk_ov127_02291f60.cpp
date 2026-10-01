@@ -99,12 +99,13 @@ s32 func_ov127_02292518(Unk_ov127_02291f60 *s, s32 a);
 void func_ov127_02292698(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b);
 }
 
-extern "C" void *func_ov127_02292aac(void *s) {
+// Unk_ov127_02292aac's constructor and destructor (ov129 constructs this class as a member)
+extern "C" void *_ZN18Unk_ov127_02292aacC1Ev(void *s) {
     _ZN12Unk_020e45f8C1Ev(s);
     return s;
 }
 
-extern "C" void func_ov127_02292aa8() {}
+extern "C" void _ZN18Unk_ov127_02292aacD1Ev() {}
 
 extern "C" void func_ov127_02292a7c(u8 *s) {
     *(u16 *)(s + 0x2830) = 0;

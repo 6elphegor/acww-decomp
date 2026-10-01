@@ -37,8 +37,8 @@ func_ov127_02292950 kind:function(thumb,size=0x44) addr:0x02292950
 func_ov127_02292994 kind:function(thumb,size=0x78) addr:0x02292994
 func_ov127_02292a0c kind:function(thumb,size=0x70) addr:0x02292a0c
 func_ov127_02292a7c kind:function(thumb,size=0x2c) addr:0x02292a7c
-func_ov127_02292aa8 kind:function(thumb,size=0x2) addr:0x02292aa8
-func_ov127_02292aac kind:function(thumb,size=0x10) addr:0x02292aac
+_ZN18Unk_ov127_02292aacD1Ev kind:function(thumb,size=0x2) addr:0x02292aa8
+_ZN18Unk_ov127_02292aacC1Ev kind:function(thumb,size=0x10) addr:0x02292aac
 data_ov127_02292abc kind:data(any) addr:0x02292abc
 data_ov127_02292ac4 kind:data(any) addr:0x02292ac4
 data_ov127_02292ae1 kind:data(any) addr:0x02292ae1 ambiguous
