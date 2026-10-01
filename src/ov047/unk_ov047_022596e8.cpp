@@ -1,5 +1,29 @@
 #include "types.h"
-#include "Unk_020d8c7c.h"
+// Library base class (as Unk_020d8c7c.h, but vfunc_14 is void: this overlay's override returns no value).
+class Unk_020d8c7c_Base {
+public:
+    static void *operator new(unsigned long size);
+    static void operator delete(void *ptr);
+
+    Unk_020d8c7c_Base();
+    virtual BOOL vfunc_00();
+    virtual BOOL vfunc_04();
+    virtual void vfunc_08();
+    virtual BOOL vfunc_0c();
+    virtual BOOL vfunc_10();
+    virtual void vfunc_14();
+    virtual BOOL vfunc_18();
+    virtual BOOL vfunc_1c();
+    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_24();
+    virtual BOOL vfunc_28();
+    virtual BOOL vfunc_2c();
+    virtual BOOL vfunc_30();
+    virtual BOOL vfunc_34();
+    virtual BOOL vfunc_38();
+    virtual BOOL vfunc_3c();
+    virtual ~Unk_020d8c7c_Base();
+};
 
 extern "C" {
 extern void *data_020cbb18;
@@ -63,7 +87,7 @@ public:
 
 class Unk_ov047_0225b5d4 : public Unk_020d9670 {
 public:
-    virtual BOOL vfunc_14();
+    virtual void vfunc_14();
 
     void func_ov047_0225955c();
     void func_ov047_02259580();
@@ -239,8 +263,8 @@ void Unk_ov047_0225b5d4::func_ov047_02259a64() {
     func_ov047_0225a944(this, 0);
 }
 
-BOOL Unk_ov047_0225b5d4::vfunc_14() {
-    void *volatile p;
+void Unk_ov047_0225b5d4::vfunc_14() {
+    void *p;
     volatile u8 hdr[4];
     volatile u16 tt[3];
     if (func_020a032c()) {
@@ -305,12 +329,12 @@ BOOL Unk_ov047_0225b5d4::vfunc_14() {
         {0x42, &Unk_ov047_0225b5d4::func_ov047_02259a28}, {0x43, &Unk_ov047_0225b5d4::func_ov047_02259a28},
         {0x6a, &Unk_ov047_0225b5d4::func_ov047_02259a14},
     };
+    u32 i = 0;
     u8 *pid = &unk_1e;
     Unk_ov047_02259a8c_Ent *tp = tbl;
-    u32 i = 0;
     goto test;
 loop:
-    u32 ida = tp[i].id;
+    u32 ida = *(u32 *)((u8 *)tp + i * 12);
     u32 idb = *pid;
     if (ida == idb) {
         (this->*tp[i].fn)();

@@ -4,8 +4,8 @@ extern "C" {
 s32 func_ov094_0229333c(void *o, u8 v);
 void *func_ov094_02292fa4(void *o, s32 i);
 void func_ov094_02292f58(void *o);
-void func_ov094_02292dcc(void *p);
-void func_ov094_02292dec(void *p);
+void func_ov094_02292dcc(void *bits, s32 i);
+void func_ov094_02292dec(void *bits, s32 i);
 void func_ov094_02292e0c(void *p);
 BOOL func_ov094_02292430(u32 v);
 BOOL func_ov094_02292450(u32 v);
@@ -264,9 +264,9 @@ void func_ov094_022937a0(Unk_ov094_02294a50 *o)
 void func_ov094_022937e4(Unk_ov094_02294a50 *o, s32 k, u16 *p, s32 a)
 {
     if (*p == 0xfff1) {
-        func_ov094_02292dcc(o->unk_a38);
+        func_ov094_02292dcc(o->unk_a38, k);
     } else {
-        func_ov094_02292dec(o->unk_a38);
+        func_ov094_02292dec(o->unk_a38, k);
         s32 r = func_ov094_02293730(o, p, a);
         Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)func_ov094_02292fa4(o, k);
         s32 c = (u32)(e->unk_04 << 22) >> 22;

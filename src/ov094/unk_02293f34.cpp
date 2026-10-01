@@ -120,17 +120,20 @@ void Unk_ov094_02294bd4::func_ov094_02293f94(s32 a, s32 b) {
     func_02088730(1, data_ov094_02294bec, a - 8, b - 8, -1, unk_20, 0);
 }
 
+static inline void Unk_ov094_SetPal(Unk_ov094_02294bb4_Bits *o, s32 pal) {
+    o->v = (u16)((o->v & 0xffff0fff) | ((pal & 0xf) << 12));
+}
+
+static inline void Unk_ov094_SetName(Unk_ov094_02294bb4_Bits *o, s32 name) {
+    o->v = (u16)((o->v & 0xfffffc00) | (name & 0x3ff));
+}
+
 void Unk_ov094_02294bd4::func_ov094_02293fc4(s32 a, s32 b, u32 c, void *e, void *f) {
     s32 idx = func_ov094_02293c68(e);
     s32 m1 = -1;
     if (idx != m1) {
-        Unk_ov094_02294bb4_Bits *g = (Unk_ov094_02294bb4_Bits *)data_ov094_02294bb4;
-        u32 t = g->v & 0xffff0fff;
-        t = t | (((u8)c & 0xf) << 12);
-        g->v = t;
-        t = g->v & 0xfffffc00;
-        t = t | (data_ov094_02294bf4[idx] & 0x3ff);
-        g->v = t;
+        Unk_ov094_SetPal((Unk_ov094_02294bb4_Bits *)data_ov094_02294bb4, (u8)c);
+        Unk_ov094_SetName((Unk_ov094_02294bb4_Bits *)data_ov094_02294bb4, data_ov094_02294bf4[idx]);
         func_02088730(1, data_ov094_02294bb4, a, b, m1, unk_20, f);
     }
 }

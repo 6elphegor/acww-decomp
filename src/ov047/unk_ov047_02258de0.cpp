@@ -38,7 +38,7 @@ BOOL func_02098044(u32 a, u32 b);
 BOOL func_0204b2d4(u16 *p);
 s32 func_0204b25c(u16 *p);
 s32 func_02067a84(void *self, void *buf, void *cb);
-void func_02015a5c();
+void func_02015a5c(void *self);
 u32 func_020aa514();
 BOOL func_020a032c();
 void func_0209865c();
@@ -468,7 +468,7 @@ struct Unk_ov047_022592b8_Ent {
 };
 
 void Unk_ov047_0225b664::func_ov047_022592b8(u32 a) {
-    func_02015a5c();
+    func_02015a5c(this);
     u32 arg = func_020aa514();
     unk_cc = 0xff;
     static Unk_ov047_022592b8_Ent tbl[17] = {
@@ -512,7 +512,7 @@ void Unk_ov047_0225b664::func_ov047_02259448(s32 a) {
     u8 buf[4];
     a = unk_1e;
     if (a <= 0x15) {
-        func_02015a5c();
+        func_02015a5c(this);
         u32 r = func_020aa514();
         unk_cc = 0xff;
         if (r != 0) {
