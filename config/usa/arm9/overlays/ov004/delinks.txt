@@ -344,11 +344,16 @@ src/ov004/unk_ov004_0223e9bc.cpp:
     .data       start:0x0224f254 end:0x0224f2cc
     .bss        start:0x022588c4 end:0x02258910
 
-src/ov004/unk_0223ea90.cpp:
-    .text       start:0x0223f2c8 end:0x0223f3a4
+src/ov004/unk_ov004_0223f2c8.cpp:
+    complete
+    .text       start:0x0223f2c8 end:0x0223f43c
+    .init       start:0x02248338 end:0x0224840c
+    .ctor       start:0x0224858c end:0x02248590
+    .data       start:0x0224f2cc end:0x0224f31c
+    .bss        start:0x02258910 end:0x02258990
 
 src/ov004/unk_0223f3a4.cpp:
-    .text       start:0x0223f3a4 end:0x0223fcb4
+    .text       start:0x0223f43c end:0x0223fcb4
 
 src/ov004/unk_0223fcb4.cpp:
     .text       start:0x0223fcb4 end:0x0223fffc
