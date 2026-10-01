@@ -2,8 +2,7 @@
     .ctor       start:0x02292cd4 end:0x02292cd4 kind:rodata align:4
     .bss        start:0x02292ce0 end:0x02292d00 kind:bss align:32
 
-src/ov117/unk_02292c88.cpp:
-    .text       start:0x02292c88 end:0x02292cd4
-
 src/ov117/unk_ov117_02292360.cpp:
-    .text       start:0x02292360 end:0x02292c88
+    complete
+    .text       start:0x02292360 end:0x02292cd4
+    .bss        start:0x02292ce0 end:0x02292d00
