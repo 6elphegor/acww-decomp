@@ -469,7 +469,7 @@ void func_ov002_02201f18(Self *self) {
         dst[0x10] = src[0x10];
         u8 *t = buf + (((self->unk_1c << 1) + 1) << 6);
         u8 *q = buf + 0x2c0;
-        func_02115e48(q, t, 0x40);
+        func_02115e48(q, t ? t : t, 0x40);
         n = self->unk_1c;
         volatile u16 tmp[1];
         tmp[0] = v;

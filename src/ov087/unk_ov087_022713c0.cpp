@@ -402,9 +402,9 @@ void Unk_ov087_02271e1c::vfunc_18() {
             s32 cntA;
             buf.s[0] = 0xfff1;
             i = 0;
-            cntB = 0;
             cntA = 0;
-            for (i = 0; i < 15; i++) {
+            cntB = 0;
+            for (; i < 15; i++) {
                 buf.s[0] = func_02099048(i);
                 if (Unk_ov087_02271478_Rng(&buf.s[0], 0x1542, 0x1546)) {
                     if (Unk_ov087_02271478_Chk(&buf.s[0], &buf.s[2], 0x1546)) {
@@ -450,7 +450,9 @@ void Unk_ov087_02271e1c::vfunc_18() {
                     ent = &data_ov087_02271cc4[i];
                     func_020b35f8(&o, &buf.a, data_ov087_02271cc4[i].name);
                     func_0203ce4c(ent->idx, &o);
-                    r6 = (n - 4) * 4 + func_02063b8c(4) + i * 16;
+                    r6 = (n - 4) * 4;
+                    r6 += func_02063b8c(4);
+                    r6 += i * 16;
                     i++;
                     if (i < 4) goto loop16;
                     buf.a = 2;
