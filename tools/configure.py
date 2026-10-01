@@ -10,6 +10,7 @@ import ninja_syntax
 from get_platform import get_platform
 from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
 import object_order
+import bss_units
 
 
 DEFAULT_WIBO_PATH = "./wibo"
@@ -223,6 +224,13 @@ def main():
         n.newline()
 
         n.rule(
+            name="bss_units",
+            command=f"{PYTHON} tools/bss_units.py $objects_file $lcf_file --config $config_path "
+                    "-o $out_lcf --objects-out $out_objects"
+        )
+        n.newline()
+
+        n.rule(
             name="force_active",
             command=f"{PYTHON} tools/force_active.py $in -o $out --symbols $symbols_files"
         )
@@ -355,6 +363,28 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
     objects_file = str(project.arm9_objects_txt())
     delink_file = str(project.arm9_delink_yaml())
     elf_file = str(project.arm9_o())
+
+    # Main units that own .bss in autoload_3 are listed there under a placeholder name, see tools/bss_units.py. The
+    # step only exists when a delinks.txt has such a placeholder.
+    if bss_units.placeholders(project.game_config / "arm9"):
+        bss_lcf_file = str(project.game_build / "arm9_bss_units.lcf")
+        bss_objects_file = str(project.game_build / "objects_bss_units.txt")
+        n.build(
+            inputs=[objects_file, lcf_file],
+            implicit=["tools/bss_units.py"] + project.delinks_files,
+            rule="bss_units",
+            outputs=[bss_lcf_file, bss_objects_file],
+            variables={
+                "objects_file": objects_file,
+                "lcf_file": lcf_file,
+                "config_path": str(project.game_config / "arm9"),
+                "out_lcf": bss_lcf_file,
+                "out_objects": bss_objects_file,
+            },
+        )
+        n.newline()
+        lcf_file = bss_lcf_file
+        objects_file = bss_objects_file
 
     # Units built from several objects are placed object by object, see tools/object_order.py. The step only exists
     # when a module has an object_order.txt.
