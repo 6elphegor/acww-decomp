@@ -144,3 +144,23 @@ both. Different linked units may call the same address by different names (e.g. 
 address and mwld aborts on two ("the sum of all symbol sizes exceed section size"), so add the second
 name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`.
 Never rename a constructor that a linked unit already calls; alias it instead (`rename_impact.py` tells you).
+
+## Creation-order rules the data model gets wrong (found on ov147, ov123, ov139, ov129)
+
+Verified with small equal-size test files (where the heapsort can be inverted exactly):
+- A guarded function-local static is created FIRST, its guard immediately after (the model puts the guard after).
+- A function-local static pointer-to-member table: its @N constants first, then the table, then its guard.
+- A file-scope ptmf table filled by `__sinit`: its @N constants first, then the table.
+- Vtables come last, in reverse declaration order of their classes.
+When `data` reports "compiled object's data order: MATCHES" but its own model says N/M in place, trust the
+compiled-order line. For hard orders, write a small script that inverts the heapsort with these rules
+(several agents did this; annealing over definition placement + local-static declaration order works).
+Objects only reachable through a pointer table in .rodata are "contents match nowhere" in `data`; verify
+them by hand (the ROM checksum catches any mismatch anyway).
+
+## Overlays that were two translation units
+
+If an overlay's .data/.bss are two size-sorted runs back to back, it was two source files (ov147). Split it into
+two `complete` units in delinks.txt with explicit section ranges per unit (unit A: its .text/.rodata/.init/
+.ctor/.data/.bss halves; unit B: the rest). The link runner installs only single-unit overlays; two-unit
+ones are installed by hand.
