@@ -41887,8 +41887,6 @@ from:0x020c51e2 kind:thumb_call to:0x020874d8 module:main
 from:0x020c51ea kind:thumb_call to:0x0209eb90 module:main
 from:0x020c51f4 kind:thumb_call_arm to:0x02135558 module:autoload(2)
 from:0x020c5200 kind:load to:0x021d7350 module:autoload(3)
-from:0x020c5204 kind:load to:0x021d7352 module:autoload(3)
-from:0x020c5208 kind:load to:0x021d735c module:autoload(3)
 from:0x020c522c kind:load to:0x020970cd module:main
 from:0x020c5238 kind:load to:0x020970e9 module:main
 from:0x020c5244 kind:load to:0x02039d8d module:main
