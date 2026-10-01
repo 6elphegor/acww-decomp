@@ -4304,6 +4304,7 @@ data_ov004_0224f26c kind:data(any) addr:0x0224f26c ambiguous
 data_ov004_0224f274 kind:data(any) addr:0x0224f274
 data_ov004_0224f284 kind:data(any) addr:0x0224f284
 data_ov004_0224f2cc kind:data(any) addr:0x0224f2cc ambiguous
+data_ov004_0224f2d0 kind:data(any) addr:0x0224f2d0
 data_ov004_0224f2d4 kind:data(any) addr:0x0224f2d4 ambiguous
 data_ov004_0224f2d8 kind:data(any) addr:0x0224f2d8 ambiguous
 data_ov004_0224f31c kind:data(any) addr:0x0224f31c
