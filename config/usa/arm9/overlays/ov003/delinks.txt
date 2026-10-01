@@ -203,58 +203,27 @@ src/ov003/unk_0222426c.cpp:
     .text       start:0x0222426c end:0x02224ba4
 
 src/ov003/unk_02224ba4.cpp:
-    .text       start:0x02224ba4 end:0x02225108
+    .text       start:0x02224ba4 end:0x02224e68
 
-src/ov003/unk_02225108.cpp:
+src/ov003/unk_ov003_02224e68.cpp:
+    complete
+    .text       start:0x02224e68 end:0x02225108
+
+src/ov003/unk_ov003_02225108.cpp:
+    complete
     .text       start:0x02225108 end:0x02225238
 
-src/ov003/unk_02225238.cpp:
+src/ov003/unk_ov003_02225238.cpp:
+    complete
     .text       start:0x02225238 end:0x02225800
 
-src/ov003/unk_02225800.cpp:
-    .text       start:0x02225800 end:0x0222612c
-
-src/ov003/unk_0222612c.cpp:
-    .text       start:0x0222612c end:0x02226a5c
-
-src/ov003/unk_02226a5c.cpp:
-    .text       start:0x02226a5c end:0x022273b4
-
-src/ov003/unk_022273b4.cpp:
-    .text       start:0x022273b4 end:0x02227cd0
-
-src/ov003/unk_02227cd0.cpp:
-    .text       start:0x02227cd0 end:0x02228710
-
-src/ov003/unk_02228710.cpp:
-    .text       start:0x02228710 end:0x02229050
-
-src/ov003/unk_02229050.cpp:
-    .text       start:0x02229050 end:0x02229a3c
-
-src/ov003/unk_02229a3c.cpp:
-    .text       start:0x02229a3c end:0x0222a36c
-
-src/ov003/unk_0222a36c.cpp:
-    .text       start:0x0222a36c end:0x0222adc4
-
-src/ov003/unk_0222adc4.cpp:
-    .text       start:0x0222adc4 end:0x0222b6e0
-
-src/ov003/unk_0222b6e0.cpp:
-    .text       start:0x0222b6e0 end:0x0222c024
-
-src/ov003/unk_0222c024.cpp:
-    .text       start:0x0222c024 end:0x0222c9e0
-
-src/ov003/unk_0222c9e0.cpp:
-    .text       start:0x0222c9e0 end:0x0222d334
-
-src/ov003/unk_0222d334.cpp:
-    .text       start:0x0222d334 end:0x0222dd54
-
-src/ov003/unk_0222dd54.cpp:
-    .text       start:0x0222dd54 end:0x0222e5e0
+src/ov003/unk_ov003_02225800.cpp:
+    complete
+    .text       start:0x02225800 end:0x0222e5e0
+    .data       start:0x02234a9c end:0x02234f00
+    .bss        start:0x02258ef4 end:0x0225b45c
+    .init       start:0x022307f4 end:0x02230894
+    .ctor       start:0x02230954 end:0x02230958
 
 src/ov003/unk_ov003_0222e5e0.cpp:
     complete
