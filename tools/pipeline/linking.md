@@ -171,3 +171,108 @@ an unreferenced `data_ovNNN_<addr> kind:data(any)` symbol at each unit boundary 
 symbol's implied range. A relocation from another module into the middle of a unit's object (e.g. main
 pointing into a bss array) must target the object's start plus `add:<offset>` in relocs.txt.
 Different units may use different `// mwcc-version:` lines.
+
+## Units built by two compilers (object order)
+
+Some original units cannot be reproduced by one compiler version: their `_ZThn236_...` thunks only come out right
+with mwcc 1.2/sp2, and one or two of their switch functions only with 1.2/base (ov009, ov003 TU05/TU08, ov004
+TU03/TU05/TU26). Such a unit is linked from two (or more) objects:
+
+* the **main file**, e.g. `src/ov009/unk_ov009_0225b880.cpp`, with `// mwcc-version: 1.2/sp2`: the whole merged
+  unit (sections 1 and 2 above) minus the base-only functions. It is the unit named in `delinks.txt`, marked
+  `complete`, with all its section ranges, exactly like any other linked unit;
+* an **extra file** next to it, e.g. `src/ov009/unk_ov009_0225b880_switch.cpp`, with `// mwcc-version: 1.2/base`:
+  the same declarations and only the base-only function(s). It is *not* listed in `delinks.txt`. It must emit
+  nothing else that the link needs (no vtable, no static table); string literals and constants local to its
+  functions are fine. No assembly: the function is ordinary C++ that the other compiler version happens to match.
+
+A file's functions cannot be interleaved with another file's by `file.o(.text)` selectors, and mwld `-partial`
+does not help (it concatenates same-name sections in input order). Instead the linker script places every
+function and data object of the unit individually with mwld's `OBJECT(symbol, file.o)` selector, in original
+address order. `tools/object_order.py` writes those selectors; it runs between `dsd lcf` and
+`tools/force_active.py` whenever a module has an `object_order.txt` (`tools/configure.py` adds the step and its
+dependencies on the unit's objects; without any such file the build is as before).
+
+### The description file
+
+`config/usa/arm9/overlays/ovNNN/object_order.txt`, next to the overlay's `delinks.txt`:
+
+    # comment
+    src/ov009/unk_ov009_0225b880.cpp:
+        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN18Unk_ov009_0225e29c8vfunc_4cEjh
+        place __arraydtor$303 0x0225e05c
+
+* `<main source>:` — a unit of this overlay's `delinks.txt` (one block per unit; the other units of the overlay
+  are not affected and keep their normal `file.o(.section)` selectors).
+* `extra <source> <symbol>...` — an extra source file and the symbols it provides. Only these symbols are taken
+  from the extra object (plus local objects its placed functions point to); any other global it happens to emit
+  is ignored in favour of the main object's. A unit may have several `extra` lines.
+* `place <symbol> <address>` — optional; the original address of an object that cannot be derived (see below;
+  the example line above is not needed in ov009).
+
+After adding or changing an `object_order.txt`, rerun `python3 tools/configure.py usa`.
+
+### What the tool does
+
+For each unit of an `object_order.txt` it reads the compiled objects (mwcc emits one section per function and
+per data object) and gives every section its original address:
+
+1. by name: a symbol of the overlay's `symbols.txt` inside the unit's range, defined by the object;
+2. by pointer: compiler-named objects (`@949` member-pointer constants, `tbl$904` local static tables and their
+   `_ZGVtbl$904` guards, vtables whose `symbols.txt` label sits 8 bytes later, `__arraydtor$303`, string
+   literals) are found from the `R_ARM_ABS32` relocations of sections that are already placed: `relocs.txt`
+   says where the original pointer at that address points (`kind:load`). The static initialiser (`.init`) is
+   used as a source of pointers too. This repeats until nothing new is found;
+3. by a `place` line.
+
+It then checks that the placed sections cover each of the unit's `.text`, `.rodata`, `.data` and `.bss` ranges
+exactly (4-byte alignment between objects; the last unit of a section may be padded to the section's alignment)
+and fails the build with the address of the first hole or overlap otherwise. Functions that are not placed
+(C2/D2 variants, link-once thunks owned by another unit, unused inlines) are left to dead-stripping, as before.
+`python3 tools/object_order.py ... -v` (copy the command from `ninja -v`) lists every object, its address and
+how the address was found, and every section that was not placed.
+
+In the linker script it:
+
+* replaces the unit's `file.o(.text)`, `file.o(.rodata)`, `file.o(.data)` and `file.o(.bss)` lines with
+  `OBJECT(symbol, file.o)` lines in address order (`.init`/`.ctor` keep their file selectors);
+* moves the overlay's bss part into its own output section `.ovNNN_bss` in a new MEMORY region
+  `UNINITIALIZED_OVNNN : ORIGIN = AFTER(OVNNN)` that has no output file, and replaces `OVNNN` by that region in
+  the `AFTER(...)` list of every module loaded after it. mwld writes OBJECT-selected bss into the overlay's
+  file as zero bytes otherwise. (The region name must not start with `OV`: dsd reads such regions as overlays.)
+  `OVNNN_BSS_START`/`_END` keep their values, and the other units' `file.o(.bss)` lines move along unchanged;
+* defines every other `symbols.txt` name of a placed function that no object of the unit defines as an alias at
+  the end of `SECTIONS`: `alias = defined_name + 1;` (`+ 1` for Thumb). This is how other linked units keep
+  using their own names for the unit's functions (see "One constructor, two names"): add the name the source
+  defines, or the name another unit uses, as a label with `tools/pipeline/alias.py` and the tool does the rest;
+* adds the extra objects to the object list right after the main object (`objects_object_order.txt`), so
+  `force_active.py` keeps their `symbols.txt` functions.
+
+Because every object is placed by address, the function order (section 3) and the data heapsort order
+(section 2, `linkprep.py data --apply`) of the source files **do not matter** for such a unit; only the
+contents of each function and object do. `linkprep.py check` still reports ORDER lines (and data TARGET lines
+that follow from the order) for it: ignore those, but not BYTES or MISSING lines.
+
+### Limits
+
+* Overlays only (the script section and region names are derived from the overlay's directory name).
+* The whole bss of the overlay moves to the file-less region as soon as one of its units is object-ordered;
+  this is harmless for the other units.
+* An alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and Thumb
+  callers — the only uses so far — but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of
+  caller appears, or give callers the name the source defines.
+* Data labels of `symbols.txt` get no aliases: if another unit references `data_ovNNN_XXXXXXXX` by name, the
+  source must define the object under that name. A pointer from another module into the middle of one of the
+  unit's objects is handled as for any linked unit: name the object's start in `symbols.txt` and give the
+  relocation `add:<offset>` (ov003 TU08: main's word at 0x020cdf4c points to 0x02231707, inside a vtable; it is
+  now `to:0x0223160c add:0xfb` with `_ZTV18Unk_ov003_02231614` at 0x0223160c). mwld does **not** report the
+  leftover undefined label: the word is linked as 0 and only the ROM checksum shows it
+  (`tools/pipeline/romdiff.py` then names `arm9.bin`).
+* An object is placed in the range of its own section kind: an object the original keeps in `.rodata` must be
+  `const` in the source (the tool reports the hole in `.rodata` otherwise).
+* An object that nothing placed points to, and that has no `symbols.txt` name, needs a `place` line.
+* Two sections of one object that share a local symbol name cannot be selected (the tool reports it).
+* A link-once function that another unit already provides at its own address (the shared thunk
+  `_ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
+  placed, and the first copy keeps being used.
+* Tools that compare `src/ovNNN/*.cpp` with `delinks.txt` see the extra file as an unlisted source.

@@ -9,6 +9,7 @@ import sys
 import ninja_syntax
 from get_platform import get_platform
 from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
+import object_order
 
 
 DEFAULT_WIBO_PATH = "./wibo"
@@ -139,6 +140,10 @@ class Project:
     def arm9_objects_txt(self) -> Path:
         return self.game_build / "objects.txt"
 
+    def object_order_files(self) -> list[Path]:
+        '''Paths to every object_order.txt file, see tools/object_order.py'''
+        return object_order.description_files(self.game_config / "arm9")
+
     def arm9_delink_yaml(self) -> Path:
         return self.game_build / "delinks" / "delink.yaml"
 
@@ -207,6 +212,13 @@ def main():
         n.rule(
             name="mwld",
             command=f'{WINE} "{LD}" {LD_FLAGS} @$objects_file $lcf_file -o $out'
+        )
+        n.newline()
+
+        n.rule(
+            name="object_order",
+            command=f"{PYTHON} tools/object_order.py $objects_file $lcf_file --config $config_path "
+                    "--build $build_path -o $out_lcf --objects-out $out_objects"
         )
         n.newline()
 
@@ -343,6 +355,40 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
     objects_file = str(project.arm9_objects_txt())
     delink_file = str(project.arm9_delink_yaml())
     elf_file = str(project.arm9_o())
+
+    # Units built from several objects are placed object by object, see tools/object_order.py. The step only exists
+    # when a module has an object_order.txt.
+    order_files = project.object_order_files()
+    if order_files:
+        order_objects = []
+        for order_file in order_files:
+            for unit in object_order.parse_description(order_file):
+                order_objects += [str(project.game_build / Path(source).with_suffix(".o")) for source in unit.sources()]
+        order_configs = [
+            str(order_file.parent / name)
+            for order_file in order_files
+            for name in [order_file.name, "delinks.txt", "symbols.txt", "relocs.txt"]
+        ]
+        order_lcf_file = str(project.game_build / "arm9_object_order.lcf")
+        order_objects_file = str(project.game_build / "objects_object_order.txt")
+        n.build(
+            inputs=[objects_file, lcf_file],
+            implicit=["tools/object_order.py"] + order_configs + order_objects,
+            rule="object_order",
+            outputs=[order_lcf_file, order_objects_file],
+            variables={
+                "objects_file": objects_file,
+                "lcf_file": lcf_file,
+                "config_path": str(project.game_config / "arm9"),
+                "build_path": str(project.game_build),
+                "out_lcf": order_lcf_file,
+                "out_objects": order_objects_file,
+            },
+        )
+        n.newline()
+        lcf_file = order_lcf_file
+        objects_file = order_objects_file
+
     # Linker script with FORCE_ACTIVE for delinked code, see tools/force_active.py
     force_active_lcf_file = str(project.game_build / "arm9_force_active.lcf")
     n.build(
