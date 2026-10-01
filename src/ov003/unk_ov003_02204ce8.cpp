@@ -3188,7 +3188,9 @@ typedef Unk_ov003_0220d114_Act Act;
 
 extern "C" {
 extern void *data_020cbb18;
-extern u8 data_ov003_022349e6[];
+// 0x022349e6 is byte 0x12 of the record table data_ov003_022349d4 (unit unk_ov003_0221ffb8)
+extern u8 data_ov003_022349d4[];
+#define data_ov003_022349e6 (data_ov003_022349d4 + 0x12)
 extern u8 data_ov003_02230ac4[];
 extern u8 data_ov003_02230ac8[];
 
