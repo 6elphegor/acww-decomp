@@ -4,8 +4,9 @@
     .data       start:0x022951e0 end:0x02295660 kind:data align:32
     .bss        start:0x02295660 end:0x022956e0 kind:bss align:32
 
-src/ov128/unk_02294a80.cpp:
-    .text       start:0x02294a80 end:0x022951c8
-
 src/ov128/unk_ov128_022940e0.cpp:
-    .text       start:0x022940e0 end:0x02294a80
+    complete
+    .text       start:0x022940e0 end:0x022951c8
+    .rodata     start:0x022951c8 end:0x022951d8
+    .data       start:0x022951e0 end:0x02295660
+    .bss        start:0x02295660 end:0x022956e0
