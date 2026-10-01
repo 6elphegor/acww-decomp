@@ -211,7 +211,7 @@ void func_02044aa8(Unk_020449e8_Out *o, Unk_020449e8_Src *s, u32 x)
         x2 = t2;
         pos.x = (x2 >> 8) + ((d >> 4) - 8);
         pos.y = (y2 & 0xff) + ((d & 0xf) - 8);
-        if (func_02044d18(o, &pos, 0, (void *)owner)) {
+        if (func_02044d18(o, &pos, idx, (void *)owner)) {
             q.x = pos.x;
             q.y = pos.y;
             func_0204568c(x, &q, code, 0xfff1, 0, 0, 0, 0, 0, -1);

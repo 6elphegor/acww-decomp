@@ -220,8 +220,8 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
     if (self->unk_16c == 2 && mode == 5) {
         func_0204ee10(&xy[0], &xy[1], &self->unk_154);
         s32 hx, hy, x, y;
-        x = xy[0];
-        y = xy[1];
+        x = *(volatile s32 *)&xy[0];
+        y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
         u16 *cell = (u16 *)func_0204ebd8(data_021c47c4, hx, hy, x - (hx << 4), y - (hy << 4), 0);

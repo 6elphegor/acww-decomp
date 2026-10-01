@@ -89,7 +89,7 @@ s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e);
 s32 func_ov003_0220c4ac(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0204ee10(s32 *a, s32 *b, V3 *c);
 s32 func_ov003_022095e8(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
-s32 func_0200f45c(V3 *v);
+s32 func_0200f45c(V3 *v, Obj *o);
 void func_0204ed8c(V3 *a, u32 b, u32 c);
 void func_02095180(s32 a, s32 b);
 }
@@ -365,7 +365,7 @@ extern "C" s32 func_ov003_02212680(V3 *a) {
         s32 st = o->unk_700;
         if ((st == 0x67 && t == 5) || (st == 0x44 && t == 8)) {
             V3D v;
-            func_0200f45c(&v);
+            func_0200f45c(&v, o);
             return func_ov003_022127e0(a, &v);
         }
     }

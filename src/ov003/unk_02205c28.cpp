@@ -159,7 +159,7 @@ void func_02010dbc(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_02094574(s32 a, s32 b, s32 c);
 void func_0203ee38(V3 *a, V3 *b);
 s32 func_02090330(s32 a, V3 *v, void *p, s32 b);
-void func_020902d4(s32 a, V3 *v, void *p);
+void func_020902d4(s32 a, V3 *v, void *p, s32 b);
 void func_020902f8(s32 a);
 s32 func_02097520(s32 a);
 void func_02098738(s32 a, u16 *p);
@@ -412,7 +412,7 @@ extern "C" void func_ov003_02206120(Obj *o) {
         if (o->unk_7d0 == -1) {
             *r4 = func_02090330(0x31, (V3 *)&v, &o->unk_8e, 0);
         } else {
-            func_020902d4(o->unk_7d0, (V3 *)&v, &o->unk_8e);
+            func_020902d4(o->unk_7d0, (V3 *)&v, &o->unk_8e, 0);
         }
     }
     if (func_020565e8(o->unk_2cc, 0x18)) {
@@ -523,7 +523,7 @@ extern "C" void func_ov003_02206378(Obj *o) {
             }
         }
     } else {
-        func_020902d4(o->unk_7d0, (V3 *)&v, &o->unk_8e);
+        func_020902d4(o->unk_7d0, (V3 *)&v, &o->unk_8e, 0);
     }
 }
 

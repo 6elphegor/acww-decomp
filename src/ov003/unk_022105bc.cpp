@@ -334,16 +334,31 @@ extern "C" void func_ov003_02210ad4(Obj *o) {
     } else {
         if (o->unk_700 == 0x34) {
             s32 m = o->unk_2d4.mid;
+            if (m > 0x1c) goto r_hi;
+            if (m >= 0x1c) goto hit;
+            if (m > 0x11) goto l23;
+            if (m < 0xd) goto done;
             switch (m) {
-            case 0xd:
-            case 0x11:
-            case 0x17:
-            case 0x1c:
-            case 0x25:
-            case 0x28:
-                func_0200f258(o);
-                break;
+            case 0xd: goto hit;
+            case 0x11: goto hit;
             }
+            goto done;
+        l23:
+            switch (m) {
+            case 0x17: goto hit;
+            }
+            goto done;
+        r_hi:
+            if (m > 0x25) goto r40;
+            switch (m) {
+            case 0x25: goto hit;
+            }
+            goto done;
+        r40:
+            if (m != 0x28) goto done;
+        hit:
+            func_0200f258(o);
+        done:;
         } else if (o->unk_700 == 0x35) {
             switch ((s32)o->unk_2d4.mid) {
             case 4:
@@ -476,15 +491,27 @@ extern "C" s32 func_ov003_02210e18(Obj *o) {
 extern "C" void func_ov003_02210e40(Obj *o) {
     func_02010914(o);
     if (o->unk_700 == 0x32) {
-        switch ((s32)o->unk_2d4.mid) {
-        case 8:
-        case 0xc:
-        case 0x16:
-        case 0x1b:
-        case 0x22:
-            func_0200f258(o);
-            break;
+        s32 m = o->unk_2d4.mid;
+        if (m > 0x16) goto r_hi;
+        if (m >= 0x16) goto hit;
+        if (m > 0xc) goto done;
+        if (m < 8) goto done;
+        switch (m) {
+        case 8: goto hit;
+        case 0xc: goto hit;
         }
+        goto done;
+    r_hi:
+        if (m > 0x1b) goto r34;
+        switch (m) {
+        case 0x1b: goto hit;
+        }
+        goto done;
+    r34:
+        if (m != 0x22) goto done;
+    hit:
+        func_0200f258(o);
+    done:;
     } else if (o->unk_700 == 0x33) {
         switch ((s32)o->unk_2d4.mid) {
         case 9:

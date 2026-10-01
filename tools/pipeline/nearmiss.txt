@@ -34,7 +34,6 @@ func_020489cc r120/final.cpp  # far off, shape probably wrong
 func_02048e10 r120/final.cpp  # register permutation only
 func_02048fc4 r120/final.cpp  # c % 7 div helper / tail-call form
 func_020490c8 r120/final.cpp  # w/h spill slot order
-func_02044aa8 r113/final_r113.cpp  # reg alloc: return of func_ov003_0221ba28 copied to r2 in original
 func_02044bf4 r113/final_r113.cpp  # stack slot order owner/val/n
 func_02044d18 r113/final_r113.cpp  # one adds with swapped operands (tbl + idx<<5)
 func_02044dd8 r113/final_r113.cpp  # load order in byte-pair store
@@ -191,24 +190,16 @@ func_ov001_0221af44 ov001_043/ov001_043.cpp  # -O4,p ARM; tail regalloc (~24 lin
 func_ov001_0221b318 ov001_043/ov001_043.cpp  # same tail as 0221af44
 func_ov001_02226214 ov001_061/ov001_061.cpp  # -O4,p ARM; loop regs: orig add r1,r1,r0,lsl#3; ldrh r2,[r1,#4] (ours r2/r1 swapped)
 func_ov003_02205e58 ov003_002/ov003_002.cpp  # -O4,s; value/address reg swap in 2-byte payload store (orig ldrb r1 then add r0,sp,#12)
-func_ov003_02206378 ov003_002/ov003_002.cpp  # -O4,s; -1 compare: orig movs r3,#0;mvns r1,r3 (ours movs r1,#0;mvns r1,r1)
 func_ov001_0221f7f4 ov001_051/ov001_051.cpp  # -O4,p ARM; 12 lines: h and +0x1300 name ptr swapped r7/r8; ~700 perms tried
 func_ov001_0221f944 ov001_051/ov001_051.cpp  # -O4,p ARM; 32 lines: same g/name-ptr r7/r8 swap
-func_ov003_02204f3c ov003_000b/ov003_000b.cpp  # -O4,s base; two address-taken locals loaded in swapped order (orig [sp,#0x1c] then [sp,#0x20]); ~130 orderings tried
 func_ov003_02206a84 ov003_003/ov003_003.cpp  # -O4,s; k*k mul form: orig movs r0,r4; muls r4,r0; lsls r0,r4 (ours adds r0,r4,#0; muls r0,r4)
 func_ov003_02209fc8 ov003_009/ov003_009.cpp  # -O4,s; stack only: frame 4 bytes short, orig has 2 extra u16 temp slots (inline Eq temps at 0xc/0xe/0x10, unused 0xa)
-func_ov003_0220a7fc ov003_010/ov003_010.cpp  # -O4,s; 2 reg diffs: orig loads x [sp+0x20] before y; zero reg r3 (ours r0) for ldrsh h-0x2000
 func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)
-func_ov003_02212680 ov003_023/ov003_023.cpp  # -O4,s; regalloc: orig moves func_02095774(4) result to r1 (adds r1,r0,#0), ours keeps it in r0
-func_ov003_02210ad4 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree shape only: orig pivots 0x1c then 0x11 w/ bounded leaf; ours pivots 0x17 (cases d,11,17,1c,25,28)
-func_ov003_02210e40 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree: orig bounded 2-case leaf for 8/0xc; ours individual (cases 8,c,16,1b,22)
-func_ov003_02215e08 ov003_029/ov003_029.cpp  # sp2; B::vfunc_78: unk_233 test orig uses r1 (ldr r1,=0x233; ldrb r1), ours r0
 func_ov003_022195b8 ov003_035/ov003_035.cpp  # -O4,s; regs: orig p in r6, i in r5 (ours swapped)
 func_ov003_02218794 ov003_033/ov003_033.cpp  # -O4,s; regs: orig ldr r0,[r0,#40]; ldr r1,=0xda2; adds r0,r0,r1 (ours r0/r1 swapped)
 func_ov003_022189b8 ov003_034/ov003_034.cpp  # sp2; one reg: spilled i<<2 temp in r0 (orig r1)
 func_ov003_02218c60 ov003_034/ov003_034.cpp  # sp2; 3x3 scan: orig recomputes y>>4 in inner loop + shared zero in r7; ours hoists
 func_ov003_0220bc84 ov003_012/ov003_012.cpp  # -O4,s; regalloc by ref count: orig spills b8 & keeps unk_7fc in r7 (ours reverse); last s16 result r5 vs r6
-func_ov003_022132b4 ov003_024/ov003_024.cpp  # -O4,s; 2 hunks ordering/regs: add r1,sp,#24 before ldr [sp,#100]; ldrsh base/zero regs swapped
 func_ov003_0221b248 ov003_038/ov003_038.cpp  # -O4,s; u16 w copy uses r0 (orig r3)
 func_ov003_0221b46c ov003_038/ov003_038.cpp  # -O4,s; zero/address regs swapped
 func_ov003_0221b7d4 ov003_038/ov003_038.cpp  # -O4,s; regalloc: orig cell=r5 a=r7 p=r6

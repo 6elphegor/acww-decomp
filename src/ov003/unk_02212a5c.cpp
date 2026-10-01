@@ -164,7 +164,7 @@ s32 func_020e780c(s32 a, s32 b);
 s32 func_020e9960(V3 *out, void *a, void *b);
 s32 func_020e7820(void *p, s32 a, s32 b, s32 c);
 s32 func_020e9688(V3 *v);
-s32 func_02003e60(void *p, u32 a, u32 b);
+s32 func_02003e60(void *p, u32 a, u32 b, u32 c);
 BOOL func_ov003_02212d28(Obj *o, s32 st);
 s32 func_ov003_02213290(Obj *o);
 s32 func_ov003_02213278(Obj *o);
@@ -493,7 +493,7 @@ struct Unk_ov003_022132b4_Tgt {
     s16 unk_8e;
 };
 
-extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s32 speed, volatile s32 ang) {
+extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s32 speed, s32 ang) {
     Unk_ov003_022132b4_Tgt *p;
     s32 v0c, v10, v14;
     s16 h[2];
@@ -570,7 +570,7 @@ extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal
     outPos->z = pv[1].z;
     o->unk_374.e = 1;
     o->unk_390 = h[0];
-    func_02003e60(o->unk_324, 0x820, 0x7f);
+    func_02003e60(o->unk_324, 0x820, 0x7f, 0);
     {
         s32 t = func_01ffc5a4(o->unk_268 - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;

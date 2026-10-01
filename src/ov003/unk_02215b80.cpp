@@ -224,7 +224,7 @@ BOOL func_02072e88(void *p, s32 i);
 void func_020a5e74(s32 i, u8 *a, u8 *b, u8 *c);
 s32 func_020b51e8(u32 a);
 void *func_020805c4(void *p);
-s32 func_02003098();
+s32 func_02003098(void *);
 void func_02002fc8(void *p, void *q);
 void func_02067a3c(void *p, s32 a, void *q);
 s32 func_020639e8(char *buf, const char *fmt, ...);
@@ -410,11 +410,11 @@ s32 Unk_ov003_022318e8::vfunc_78() {
     } else if (unk_232.f1) {
         func_020a710c(data_ov003_02231a34);
         unk_1e = 0;
-    } else if (func_020805c4(p)) {
+    } else if (void *q = func_020805c4(p)) {
         if (unk_233 == 0) {
-            unk_1e = data_ov003_0222eff8[func_02003098()];
+            unk_1e = data_ov003_0222eff8[func_02003098(q)];
         } else {
-            unk_1e = data_ov003_0222eff0[func_02003098()];
+            unk_1e = data_ov003_0222eff0[func_02003098(q)];
         }
     }
     struct {
