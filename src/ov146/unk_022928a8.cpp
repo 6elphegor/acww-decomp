@@ -273,25 +273,22 @@ void Unk_ov146_02294080::func_ov146_02292970() {
     s32 cnt = 0;
     for (i = 0; i < 0x20; i++) {
         s32 off = i * 0x13;
-        u8 *rec = tbl + 0x180 + off;
-        if (func_ov146_022928a8(rec)) {
-            if (unk_12a[off + 0x10] == 6) {
-                u32 b = unk_10a[i];
-                if (b < 0x14) {
-                    unk_10a[i] = b + 1;
+        if (func_ov146_022928a8(tbl + 0x180 + off)) {
+            if ((unk_12a + off)[0x10] == 6) {
+                if (unk_10a[i] < 0x14) {
+                    unk_10a[i]++;
                 }
             } else {
                 unk_10a[i] = 0;
-                func_02116048(rec, unk_12a + (u32)i * 0x13, 0x13);
+                func_02116048(tbl + 0x180 + off, unk_12a + (u32)i * 0x13, 0x13);
             }
             cnt++;
         } else {
-            if (unk_12a[off + 0x10] == 6) {
-                u32 b = unk_10a[i];
-                if (b != 0) {
-                    unk_10a[i] = b - 1;
+            if ((unk_12a + off)[0x10] == 6) {
+                if (unk_10a[i] != 0) {
+                    unk_10a[i]--;
                 } else {
-                    unk_12a[off + 0x10] = 0;
+                    (unk_12a + off)[0x10] = 0;
                 }
             }
         }

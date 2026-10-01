@@ -292,8 +292,9 @@ void Unk_ov142_02294da8::func_ov142_0229337c() {
     for (i = 0; i < 0x6e9; i++) {
         BOOL r;
         id = cur;
+        r = FALSE;
         u32 v = id;
-        r = (v >= 0x45dc && v <= 0x47d7) ? TRUE : FALSE;
+        if (*(volatile u16 *)&id >= 0x45dc && v <= 0x47d7) r = TRUE;
         if (r) goto next;
         r = (v >= 0x4384 && v <= 0x4463) ? TRUE : FALSE;
         if (r) goto next;
