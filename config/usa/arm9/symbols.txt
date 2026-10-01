@@ -8987,8 +8987,8 @@ func_020952f0 kind:function(thumb,size=0x10) addr:0x020952f0
 func_02095300 kind:function(thumb,size=0x14) addr:0x02095300
 func_02095314 kind:function(thumb,size=0x10) addr:0x02095314
 func_02095324 kind:function(thumb,size=0x14) addr:0x02095324
-func_02095338 kind:function(thumb,size=0x1c) addr:0x02095338
-func_02095354 kind:function(thumb,size=0xa0) addr:0x02095354
+_ZN12Unk_02095338D1Ev kind:function(thumb,size=0x1c) addr:0x02095338
+_ZN12Unk_02095338C1Ev kind:function(thumb,size=0xa0) addr:0x02095354
 func_020953f4 kind:function(thumb,size=0x3a) addr:0x020953f4
 func_02095430 kind:function(thumb,size=0xe) addr:0x02095430
 func_02095440 kind:function(thumb,size=0xc) addr:0x02095440
@@ -15085,7 +15085,7 @@ data_020db94c kind:data(any) addr:0x020db94c
 data_020db94d kind:data(any) addr:0x020db94d
 data_020db950 kind:data(any) addr:0x020db950
 data_020db954 kind:data(any) addr:0x020db954
-data_020db984 kind:data(any) addr:0x020db984
+_ZTV12Unk_020db984 kind:data(any) addr:0x020db97c
 data_020db9cc kind:data(any) addr:0x020db9cc
 data_020db9e4 kind:data(any) addr:0x020db9e4
 data_020db9fc kind:data(any) addr:0x020db9fc
