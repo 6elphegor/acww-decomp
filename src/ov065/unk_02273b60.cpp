@@ -85,7 +85,7 @@ s32 func_ov065_02273a70(s32);
 s32 func_ov065_022736fc(s32, s32);
 s32 func_ov065_022738b4(s32, s32);
 s32 func_ov065_02275984(void);
-s32 func_ov065_02271e8c(void);
+s32 func_ov065_02271e8c(...);
 s32 func_ov065_02275764(s32);
 s32 func_ov065_02272f0c(void);
 s32 func_ov065_02272f80(void);
@@ -170,7 +170,7 @@ void func_ov065_02273c30(void) {
         else r5 = FALSE;
         if (v == 0) r6 = TRUE;
         else r6 = FALSE;
-        g->unk_44c(0, 1, r6, r5, func_ov065_02271e8c(), c->unk_450);
+        g->unk_44c(0, 1, r6, r5, func_ov065_02271e8c(v), c->unk_450);
         g->unk_1a1 = 0;
     }
 }
@@ -416,6 +416,7 @@ s32 func_ov065_0227433c(void) {
 }
 
 s32 func_ov065_022743e0(s32 a, s32 b) {
+    s32 x;
     volatile s32 av = a;
     volatile s32 first;
     volatile s32 next;
@@ -441,7 +442,6 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
     Unk_ov065_02273b60_Ctx **const gp = &g;
     for (;;) {
         Unk_ov065_02273b60_Ctx *c;
-        s32 x;
         s32 i;
         s32 n;
         s32 e0, e1;
@@ -452,8 +452,8 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
         }
         if (started != 0 && (*gp)->unk_19d == next) {
             (*gp)->unk_1bc = 3000;
-            u64 t = func_01ffa6b4();
             c = *gp;
+            u64 t = func_01ffa6b4();
             c->unk_1c0 = (u32)t;
             c->unk_1c4 = (u32)(t >> 32);
             c->unk_1b0 = 0;

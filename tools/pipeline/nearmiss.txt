@@ -194,42 +194,20 @@ func_ov065_02262670 ov065_005/ov065_005.cpp  # -O4,p; unk_44 kept in r2 (orig) v
 func_ov065_02265b9c ov065_011/ov065_011.cpp  # sp2p3 -O4,p; sparse switch tree shape (right group split at 0x10 vs linear) + n reg r7 vs r6
 func_ov065_0226b27c ov065_019/ov065_019.cpp  # -O4,p; tail bitfield section regalloc (orig pushes r6, sub sp,#0x18)
 func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb r6 order swapped
-func_ov065_022702bc ov065_028/ov065_028.cpp  # -O4,p; linear byte search: n/i regs swapped (orig n r1, i r0); ~55 variants
 func_ov065_02268658 ov065_015/ov065_015.cpp  # -O4,p; bignum divmod: spill slots of cs/rp/off permuted only
 func_ov065_02268c64 ov065_015/ov065_015.cpp  # -O4,p; state callback case 8: r1/r3/r6 assignment rotated
 func_ov065_0227112c ov065_029/ov065_029.cpp  # -O4,p; LCG seed: pointer arg computed after u64 mul+add (orig before); ~2-4B shift
-func_ov065_02272734 ov065_032/ov065_032.cpp  # -O4,p; movs r2,#0 scheduled after ldr g pair (orig before)
-func_ov065_02272dd4 ov065_032/ov065_032.cpp  # -O4,p; error mapper default path: orig keeps movs r0,#6; cmp r0,#0; beq, ours folds it
 func_ov065_022778b0 ov065_039/ov065_039.cpp  # -O4,p; RNG: movs r1,#0 scheduled before cmp r4,#0 (orig after beq)
-func_ov065_022754f0 ov065_036/ov065_036.cpp  # -O4,p; final else: zero/G regs r1<->r2 swapped
-func_ov065_02276f4c ov065_038/ov065_038.cpp  # -O4,p; final store group: movs r0,#0 / ldr r1,=data order swapped
-func_ov065_0227330c ov065_033/ov065_033.cpp  # -O4,p; 0/-1 register choice per lookup site (28 lines)
-func_ov065_02273ad0 ov065_033/ov065_033.cpp  # -O4,p; regalloc: orig &G in r4, 0 in r1, 4 in r5 (106 lines)
 func_ov065_02278c64 ov065_042/ov065_042.cpp  # -O4,p; 8-byte sockaddr copy: src/dst pointer regs swapped
 func_ov065_0226f9e0 ov065_027/ov065_027.cpp  # -O4,p; base64 decode: loop regalloc + tmp base sp+4 vs sp+8 (volatile max)
-func_ov065_0226fee4 ov065_027/ov065_027.cpp  # -O4,p; entry 12-byte zeroing regs r1/r0 vs orig r4/r3
-func_ov065_02276374 ov065_037/ov065_037.cpp  # -O4,p; trailing block: q copy adds r1,r0 / &g in r0 (ours swapped)
-func_ov065_02276500 ov065_037/ov065_037.cpp  # -O4,p; same trailing-block q/&g register swap as 02276374
-func_ov065_02273c30 ov065_034/ov065_034.cpp  # -O4,p; unk_1f4/mode regs r0<->r1, r5/r6 flags reversed
 func_ov065_0227433c ov065_034/ov065_034.cpp  # -O4,p; shared movs r0,#0 hoisted after blx; orig rematerializes zeros
 func_ov065_022743e0 ov065_034/ov065_034.cpp  # -O4,p; record scan loop: r4/r5 (&g vs c/x) swapped
 func_ov065_0227acfc ov065_045/ov065_045.cpp  # -O4,p; 0x14 zero loop: counter r0/zero r1 vs orig r1/r0 (pointer-counter form)
 func_ov065_0227ae94 ov065_045/ov065_045.cpp  # -O4,p; HTTP header parse: digits/len-diff regs r1<->r2 around strcmp
-func_ov065_022856f8 ov065_061/ov065_061.cpp  # -O4,p; 3-instr scheduling before 4-byte magic copy (add r0,sp first in orig)
-func_ov065_022839e4 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built in r1 vs orig r0 (same -1 family)
-func_ov065_02283a88 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built in r1 vs orig r0 (same -1 family)
-func_ov065_02283af0 ov065_058/ov065_058.cpp  # -O4,p; i!=-1 after call: -1 built in r1 vs orig r0 (same -1 family)
 func_ov065_022749f8 ov065_035/ov065_035.cpp  # -O4,p; 20-case dispatcher: 4 small regalloc/frame-anchor spots, volatile ub/ps hack for frame
 func_ov065_02280a2c ov065_054/ov065_054.cpp  # -O4,p; 16-byte zero loop counter/zero regs swapped (pointer-counter form), shared-return +2
-func_ov065_02288b10 ov065_066/ov065_066.cpp  # -O4,p; mgr init: zero in r1 vs orig r2
 func_ov065_022871ac ov065_063/ov065_063.cpp  # -O4,p; r=*e: ldr r6,[r0] vs orig adds r6,r1,#0 (1 instr)
-func_ov065_022892c8 ov065_067/ov065_067.cpp  # -O4,p; r==-1 after call (same -1 family)
-func_ov065_0228ab8c ov065_070/ov065_070.cpp  # -O4,p; fd==-1 reload compare (same -1 family, 1 instr)
-func_ov065_0228ad34 ov065_070/ov065_070.cpp  # -O4,p; ctx init store block: r1/r2 pool loads + -1 reg swapped
 func_ov065_0228758c ov065_064/ov065_064.cpp  # -O4,p; QR packet handler case 6: which sp-address is CSE'd (x base vs out.len)
-func_ov065_02287828 ov065_064/ov065_064.cpp  # -O4,p; 4 IP-byte copy addressing (add r1,sp,#8 base vs strb [r1,#8])
-func_ov065_02287aa4 ov065_064/ov065_064.cpp  # -O4,p; movs r1,r3 vs adds r1,r3,#0 (1 instr encoding)
-func_ov065_0228a7f0 ov065_069/ov065_069.cpp  # -O4,p; final u16 len copy: d/s pointer materialization + r1 reuse
 func_ov065_0228aa34 ov065_069/ov065_069.cpp  # -O4,p; random key gen w/ parity: a in r4 vs r0, t sequence reloads (86 lines)
 func_ov065_02289a00 ov065_068/ov065_068.cpp  # -O4,p; msg dispatcher: two same-address sp regs (r6/r7) merged by mwcc (~78 lines)
 func_ov065_02289f28 ov065_068/ov065_068.cpp  # -O4,p; b = a + (p[a-1]^0xea): r2/r3 swap

@@ -119,7 +119,7 @@ s32 func_ov065_02272d5c(void);
 s32 func_ov065_022703ec(void);
 u32 *func_ov065_022703ac(s32);
 Unk_ov065_02270344_Rec *func_ov065_02270344(s32);
-s32 func_ov065_022849c0(u32);
+s32 func_ov065_022849c0(u32, void *);
 s32 func_ov065_02284b8c(u32, const char *, s32);
 s32 func_ov065_02284b94(u32, u32);
 
@@ -470,7 +470,7 @@ void func_ov065_02276374(u32 a, u32 b) {
         q->unk_02 = 0;
         q->unk_04 = 0;
         q->unk_01 = g->unk_2b8[g->unk_0d];
-        func_ov065_022849c0(a);
+        func_ov065_022849c0(a, q);
         if (g->unk_198 == 0xc) {
             func_ov065_02273d38(0);
             return;
@@ -529,7 +529,7 @@ ok:
     q->unk_01 = g->unk_2b8[g->unk_0d - 1];
     q->unk_02 = 0;
     q->unk_04 = 0;
-    func_ov065_022849c0(b);
+    func_ov065_022849c0(b, q);
     func_ov065_02273d38(2);
 }
 }

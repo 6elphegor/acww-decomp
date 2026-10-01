@@ -97,7 +97,7 @@ void func_ov065_02284b9c(u32 a, void (*b)());
 void func_ov065_022849c4(u32 a, void (*b)());
 s32 func_ov065_02275dd0(u8 **out);
 s32 func_ov065_02275d58(u8 **out);
-s32 func_ov065_02275e64(s32 a);
+s32 func_ov065_02275e64(s32 a, s32 b);
 s32 func_ov065_02275e3c();
 s32 func_ov065_02275e50();
 s32 func_ov065_02270e4c();
@@ -247,15 +247,21 @@ u32 func_ov065_022702bc(u32 c) {
     s32 n;
     u8 *q;
     n = func_ov065_02275dd0(&p);
-    for (i = 0, q = p; i < n; q++, i++) {
-        if (c == *q) {
-            break;
-        }
+    i = 0;
+    if (n > 0) {
+        q = p;
+        do {
+            if (c == *q) {
+                break;
+            }
+            q++;
+            i++;
+        } while (i < n);
     }
     if (i == n) {
         return 0;
     }
-    return func_ov065_02275e64(i);
+    return func_ov065_02275e64(i, n);
 }
 
 void func_ov065_022702fc(s32 s) {

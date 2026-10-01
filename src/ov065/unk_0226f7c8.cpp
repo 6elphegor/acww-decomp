@@ -102,7 +102,7 @@ u32 func_ov065_02271e8c(u32);
 void func_ov065_02287260();
 void func_ov065_02276254();
 s32 func_ov065_022702fc(s32);
-s32 func_ov065_02271f58();
+s32 func_ov065_02271f58(void *, u32 *, u32);
 void func_ov065_02276324(void *, u32, void *);
 s32 func_ov065_022701d0(s32);
 u32 func_ov065_02270298(u8 *, s32);
@@ -454,7 +454,7 @@ void func_ov065_0226fed4(s32 a, s32 b, s32 c, s32 d) {
     func_ov065_022775b8(a, b, c, d);
 }
 
-void func_ov065_0226fee4(void *a, u32 *b) {
+void func_ov065_0226fee4(void *a, u32 *b, u32 c) {
     u8 buf[12] = {0};
     char *s;
     char *e;
@@ -462,7 +462,7 @@ void func_ov065_0226fee4(void *a, u32 *b) {
     Unk_ov065_0226fc54_Ctx *g;
 
     s = (char *)b[2];
-    if (func_ov065_02271f58() == 0) {
+    if (func_ov065_02271f58(a, b, c) == 0) {
         if (func_02128930(s, data_ov065_0228c80c, func_021277d4(data_ov065_0228c80c)) == 0) {
             s += func_021277d4(data_ov065_0228c80c);
             e = func_0212a120(s, 0x76);

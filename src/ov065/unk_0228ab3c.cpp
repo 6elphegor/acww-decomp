@@ -85,7 +85,7 @@ void func_02128c60(u32 seed);
 
 s32 func_ov065_02278bf4(char *s);
 Unk_ov065_0228ab8c_Host *func_ov065_02261408(char *name);
-s32 func_ov065_02278dd4(s32 a, s32 b);
+s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
 s32 func_ov065_02278dbc(s32 fd);
 s32 func_ov065_02278d34(s32 fd, void *sa, s32 len);
 s32 func_ov065_0228a20c(Ctx070 *c, ...);
@@ -182,7 +182,7 @@ s32 func_ov065_0228ab8c(Ctx070 *c) {
         d[3] = s2[3];
     }
     if (c->unk_4b0 == -1) {
-        c->unk_4b0 = func_ov065_02278dd4(2, 1);
+        c->unk_4b0 = func_ov065_02278dd4(2, 1, 0);
         if (c->unk_4b0 == -1) {
             return 1;
         }
@@ -226,6 +226,8 @@ void func_ov065_0228aca8(Ctx070 *c) {
 
 void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
     if (f != 0 || data_ov065_02290fa0 == 1) {
+        char *dp = data_ov065_0228e970;
+        s32 neg = -1;
         c->unk_00 = 1;
         func_ov065_0228aeb0(c);
         func_ov065_022891e8(c);
@@ -235,17 +237,17 @@ void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, voi
         c->unk_488 = (void (*)(Ctx070 *, s32, u32, u32))g;
         c->unk_48c = 0;
         c->unk_494 = h;
-        c->unk_498 = data_ov065_0228e970;
+        c->unk_498 = dp;
         c->unk_4a0 = 0;
-        c->unk_4b0 = -1;
+        c->unk_4b0 = neg;
         c->unk_7c = 0;
         c->unk_80 = 0;
         c->unk_08 = 0;
-        c->unk_484 = -1;
+        c->unk_484 = neg;
         c->unk_480 = 0;
         c->unk_4a4 = 0;
         c->unk_4b8 = e;
-        func_ov065_0228a20c(c);
+        func_ov065_0228a20c(c, dp);
         c->unk_5cc = 0;
         func_02128c60(func_ov065_02279144());
         func_ov065_02279138();

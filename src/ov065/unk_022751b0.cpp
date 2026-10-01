@@ -328,6 +328,8 @@ s32 func_ov065_02275474(Unk_ov065_02275474_Arg *p) {
     return r;
 }
 
+enum Unk_ov065_022754f0_Z { Unk_ov065_022754f0_Z_0 = 0 };
+
 s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
     s32 flag;
     u8 idx = G->unk_14;
@@ -396,9 +398,10 @@ s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
     } else {
         Unk_ov065_02290814 *g = G;
         func_ov065_02272428(0, func_ov065_022849c8(g->unk_04->unk_00), 0, &g->unk_18c);
+        Unk_ov065_022754f0_Z z = Unk_ov065_022754f0_Z_0;
         g = G;
-        g->unk_184 = 0;
-        g->unk_188 = 0;
+        g->unk_184 = z;
+        g->unk_188 = z;
     }
     return ret;
 }

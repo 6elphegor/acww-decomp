@@ -140,13 +140,13 @@ BOOL func_ov065_022856f8(Cn *c, void *p, s32 n)
     if (c->unk_34 == 0) return TRUE;
     if (n != 8) return TRUE;
     if (func_02128930(p, data_ov065_0228e150, 4) != 0) return TRUE;
-    Unk_ov065_022856f8_B4 &d = t;
-    Unk_ov065_022856f8_B4 &q = *(Unk_ov065_022856f8_B4 *)((u8 *)p + 4);
-    d.a = q.a;
-    d.b = q.b;
-    d.c = q.c;
-    d.d = q.d;
-    now = func_ov065_02279144();
+    u32 a = (u32)&t;
+    Unk_ov065_022856f8_B4 *q = (Unk_ov065_022856f8_B4 *)((u8 *)p + 4);
+    ((Unk_ov065_022856f8_B4 *)a)->a = q->a;
+    ((Unk_ov065_022856f8_B4 *)a)->b = q->b;
+    ((Unk_ov065_022856f8_B4 *)a)->c = q->c;
+    ((Unk_ov065_022856f8_B4 *)a)->d = q->d;
+    now = ((s32 (*)(void *))func_ov065_02279144)((void *)a);
     if (func_ov065_02284360(c, now - *(s32 *)&t) != 0) return TRUE;
     return FALSE;
 }

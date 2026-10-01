@@ -396,7 +396,12 @@ void func_ov065_02287828(Qr *q, u8 *p, s32 n) {
     }
     if (ok) {
         Unk_ov065_02287390_Cba0 cb;
-        *(B4 *)&l = *(B4 *)(p + 6);
+        u32 a = (u32)&l;
+        B4 *s = (B4 *)(p + 6);
+        ((B4 *)a)->b[0] = s->b[0];
+        ((B4 *)a)->b[1] = s->b[1];
+        ((B4 *)a)->b[2] = s->b[2];
+        ((B4 *)a)->b[3] = s->b[3];
         cb = q->unk_a0;
         if (cb != NULL) {
             u32 v = l;
@@ -480,9 +485,9 @@ void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
 
 void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n) {
     u32 l1, l2, l3;
-    u8 *p2 = NULL;
-    u8 *p1 = p2;
-    u8 *p3 = p2;
+    u8 *p1 = NULL;
+    u8 *p2 = p1;
+    u8 *p3 = p1;
     if (n >= 3) {
         l1 = *p++;
         n--;

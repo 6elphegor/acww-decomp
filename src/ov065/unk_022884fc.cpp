@@ -85,7 +85,7 @@ s32 func_ov065_02278ee8(s32 s);
 s32 func_ov065_02278cb8(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
 s32 func_ov065_02278c64(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
 s32 func_ov065_02278dbc(s32 s);
-s32 func_ov065_02278dd4(s32 a, s32 b);
+s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
 void *func_ov065_02277af0(u32 n);
 void func_ov065_02277ac8(void *p);
 void *func_ov065_02278928(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
@@ -428,7 +428,7 @@ void func_ov065_02288b10(Mgr *m, s32 max, s32 mode, s32 force, Unk_ov065_02288b6
         m->cb = cb;
         m->user = user;
         m->unk_28 = 0;
-        m->sock = func_ov065_02278dd4(2, 2);
+        m->sock = func_ov065_02278dd4(2, 2, 0);
         func_ov065_02288c78(&m->pending);
         func_ov065_02288c78(&m->active);
     }

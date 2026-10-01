@@ -150,7 +150,7 @@ s32 func_ov065_022727c4(void);
 s32 func_ov065_02272734(void);
 s32 func_ov065_022726a0(void);
 s32 func_ov065_02273400(void);
-s32 func_ov065_02275984(void);
+s32 func_ov065_02275984(u32);
 s32 func_ov065_02276e44(u32 a);
 
 s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg) {
@@ -515,7 +515,9 @@ void func_ov065_02276f4c(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u3
     g->unk_45c = 0;
     g->unk_460 = 0;
     func_ov065_02273400();
-    { u8 *b = (u8 *)&data_ov065_02290810; s32 z = 0; b[0] = z; b[1] = z; *(u16 *)(b + 2) = z; }
-    func_ov065_02275984();
+    data_ov065_02290810.unk_00 = 0;
+    data_ov065_02290810.unk_01 = 0;
+    data_ov065_02290810.unk_02 = 0;
+    func_ov065_02275984(0);
 }
 }

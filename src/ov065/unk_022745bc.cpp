@@ -164,6 +164,8 @@ s32 func_ov065_022745bc(u32 a, s32 b) {
     return func_ov065_0227532c(k, a, j->unk_24[0], j->unk_a4[0], args, n);
 }
 
+enum Unk_ov065_022749f8_Z { Unk_ov065_022749f8_Z_0 = 0 };
+
 s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
     volatile u32 ub;
     s32 *volatile ps;
@@ -301,7 +303,7 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
                 Unk_ov065_022745bc_Ctx *q2 = data_ov065_02290814;
                 q2->unk_ec = t;
             } else if (((volatile Unk_ov065_022745bc_Ctx *)q)->unk_15 == 1) {
-                func_ov065_022743e0(1);
+                func_ov065_022743e0(1, 0);
             }
         }
         break;
@@ -350,10 +352,11 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
             func_ov065_02272428(0, func_ov065_022849c8(*q->unk_04), &sa, &q->unk_18c);
         }
+        Unk_ov065_022749f8_Z z6 = Unk_ov065_022749f8_Z_0;
         {
             Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
-            q->unk_184 = 0;
-            q->unk_188 = 0;
+            q->unk_184 = z6;
+            q->unk_188 = z6;
         }
         break;
     }

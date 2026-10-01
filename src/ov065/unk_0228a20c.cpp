@@ -530,11 +530,11 @@ s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const cha
         u16 l = (u16)*(volatile s32 *)&len;
         tmp = (u16)(((l >> 8) & 0xff) | ((l << 8) & 0xff00));
     }
-    d = buf;
+    u32 da = (u32)buf;
     sp = (u8 *)&tmp;
-    d[0] = sp[0];
-    d[1] = sp[1];
-    if (func_ov065_02278ca0(ctx->unk_4b0, d, len, 0) <= 0) {
+    *(u8 *)da = sp[0];
+    *(u8 *)(da + 1) = sp[1];
+    if (func_ov065_02278ca0(ctx->unk_4b0, (u8 *)da, len, 0) <= 0) {
         func_ov065_0228a718(ctx);
         return 3;
     }

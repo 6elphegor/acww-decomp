@@ -66,9 +66,9 @@ void *func_ov065_02277af0(s32);
 s32 func_ov065_02279144(u8 *);
 void func_ov065_02286564(Unk_ov065_0228412c_Obj *);
 
-s32 func_ov065_02283af0(char *, s32);
-s32 func_ov065_02283a88(char *, s32);
-s32 func_ov065_022839e4(char *, s32);
+void func_ov065_02283af0(char *, s32);
+void func_ov065_02283a88(char *, s32);
+void func_ov065_022839e4(char *, s32);
 s32 func_ov065_02283974(char *, s32);
 s32 func_ov065_02283b68(s32, s32, s32);
 char *func_ov065_02283c34(char *, char *);
@@ -105,7 +105,7 @@ s32 func_ov065_02283974(char *s, s32 len) {
     }
 }
 
-s32 func_ov065_022839e4(char *s, s32 len) {
+void func_ov065_022839e4(char *s, s32 len) {
     s32 a = func_0212b770(func_ov065_02283c34(s, "getpdr"));
     s32 b = func_0212b770(func_ov065_02283c34(s, "lid"));
     s32 c = func_0212b770(func_ov065_02283c34(s, "pid"));
@@ -125,7 +125,7 @@ s32 func_ov065_022839e4(char *s, s32 len) {
     }
 }
 
-s32 func_ov065_02283a88(char *s, s32 len) {
+void func_ov065_02283a88(char *s, s32 len) {
     s32 i;
     s32 a = func_0212b770(func_ov065_02283c34(s, "getpidr"));
     s32 b = func_0212b770(func_ov065_02283c34(s, "lid"));
@@ -137,7 +137,7 @@ s32 func_ov065_02283a88(char *s, s32 len) {
     }
 }
 
-s32 func_ov065_02283af0(char *s, s32 len) {
+void func_ov065_02283af0(char *s, s32 len) {
     s32 a = func_0212b770(func_ov065_02283c34(s, "pauthr"));
     s32 b = func_0212b770(func_ov065_02283c34(s, "lid"));
     char *m = func_ov065_02283c34(s, "errmsg");
