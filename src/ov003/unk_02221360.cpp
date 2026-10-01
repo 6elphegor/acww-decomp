@@ -214,8 +214,8 @@ void func_ov003_02221448() {
 void func_ov003_0222144c(void *a, s32 idx, u8 *b, void *c) {
     if (idx >= 0 && idx < 5) {
         *(s32 *)(b + 0x80) = idx;
-        s32 i = *(s32 *)(b + 0x80);
-        Unk_ov003_0222144c_Ent *e = data_ov003_02257b90 + i;
+        s32 i = *(volatile s32 *)(b + 0x80);
+        Unk_ov003_0222144c_Ent *e = &data_ov003_02257b90[i];
         if (e->enter) {
             (((Unk_ov003_0223498c *)a)->*(e->enter))(b, c);
         }

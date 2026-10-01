@@ -609,7 +609,8 @@ BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3)
         return FALSE;
     }
     p2 = p + 8;
-    off = data_020ca315[a3 * 6] * 4;
+    a3 = data_020ca315[a3 * 6] * 4;
+    off = a3;
     t = &data_ov003_022348c0[idx];
     val = (t->p[off] << 12) / 10;
     if (func_ov003_0222034c(self, p2, val, val, val)) {

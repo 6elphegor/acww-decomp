@@ -142,8 +142,8 @@ s32 func_02133150(s32 a, s32 b);
 s32 func_02045354(void *p, s32 a);
 Unk_ov003_0221b7d4_Ent *func_02045214(s32 i);
 s32 func_02045220(u8 a, s32 b);
-s32 func_02045570(void *p);
-s32 func_02045460(void *p);
+s32 func_02045570(void *p, s32 z);
+s32 func_02045460(void *p, s32 z);
 void *func_0204da0c();
 s32 func_02045510(const P2 &p, s32 a, s32 b);
 void func_020e85fc(void *heap, void *p);
@@ -166,7 +166,7 @@ void func_ov003_0221ac54(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q, s32 a);
 void func_ov003_0221ab14(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
 void func_ov003_0221aa6c(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
 void func_ov003_0221a918(Unk_ov003_0221aed4_Fx *self, P2 p, s16 a);
-void func_ov003_0221a840(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
+void func_ov003_0221a840(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q, u32 w);
 void func_ov003_0221a768(Unk_ov003_0221aed4_Fx *self, P2 p);
 void func_ov003_0221a704(Unk_ov003_0221aed4_Fx *self, P2 p);
 void func_ov003_0221a648(Unk_ov003_0221aed4_Fx *self, V3 q);
@@ -421,7 +421,7 @@ extern "C" void func_ov003_0221b248(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3
         func_ov003_0221a918(self, p, y);
         break;
     case 9:
-        func_ov003_0221a840(self, p, pos);
+        func_ov003_0221a840(self, p, pos, w);
         break;
     case 10:
         func_ov003_0221a768(self, p);
@@ -445,13 +445,13 @@ extern "C" void func_ov003_0221b46c(Unk_ov003_0221aed4_Fx *self)
         Unk_ov003_0221aed4_Raw2 t;
         t.x = self->unk_10;
         t.z = self->unk_14;
-        func_02045570(&t);
+        func_02045570(&t, 0);
     } else if (self->unk_a1 != 0) {
         self->unk_a1 = 0;
         Unk_ov003_0221aed4_Raw2 t;
         t.x = self->unk_10;
         t.z = self->unk_14;
-        func_02045460(&t);
+        func_02045460(&t, 0);
     }
 }
 
@@ -592,7 +592,7 @@ extern "C" void func_ov003_0221b7d4(u16 *cell, s32 a, P2 p)
 {
     s32 rec = func_02045220((u8)a, 0);
     if (rec >= 0) {
-        volatile s32 fl = 0;
+        s32 fl = 0;
         Unk_ov003_0221b7d4_Rec *tbl;
         BOOL f = FALSE;
         u32 t = *cell;

@@ -11,6 +11,7 @@ struct Unk_ov003_022359a4_P2 {
         x = o.x;
         y = o.y;
     }
+    bool operator==(const Unk_ov003_022359a4_P2 &o) const { return x == o.x && y == o.y; }
 };
 
 struct Unk_ov003_022359a4_V3 {
@@ -176,22 +177,13 @@ s32 func_ov003_02219ccc(s32 a, u32 b, P2 p, V3 v) {
     return func_ov003_02219dc0(&data_ov003_022359a4, a, p, v, 0, b, 0, 0);
 }
 
-struct Unk_ov003_02219d08_Loc {
-    s32 x;
-    volatile s32 y;
-};
-
 s32 func_ov003_02219d08(s32 idx, P2 *q) {
     s32 r = 0;
     s32 i;
-    Unk_ov003_02219d08_Loc l;
-    Unk_ov003_02219d08_Loc *lp;
     Ent *e = &data_ov003_022359a4.e[idx * 4];
-    for (i = 0, lp = &l; i < 4; e++, i++) {
+    for (i = 0; i < 4; e++, i++) {
         if (e->unk_04 != 0) {
-            l.x = e->unk_10.x;
-            l.y = e->unk_10.y;
-            if (l.x == q->x && lp->y == q->y) {
+            if (P2(e->unk_10) == *q) {
                 if (e->unk_a0 != 0) {
                     r = 1;
                 }

@@ -200,8 +200,7 @@ extern "C" void func_ov003_0222c0d0(Rec *o) {
 }
 
 extern "C" void func_ov003_0222c188(Rec *o) {
-    u8 *st = &o->unk_251;
-    switch (*st) {
+    switch (o->unk_251) {
     case 0:
         func_ov003_0222c0d0(o);
         break;
@@ -213,13 +212,12 @@ extern "C" void func_ov003_0222c188(Rec *o) {
         func_ov003_0222a36c(o, &o->unk_242);
         break;
     case 7:
-        *st = 0;
+        o->unk_251 = 0;
         o->unk_23a = o->unk_23a + o->unk_240;
         break;
     case 0x13: {
-        u8 z = 0;
-        o->unk_24a = z;
-        *st = z;
+        o->unk_24a = 0;
+        o->unk_251 = 0;
         s16 t = o->unk_23a;
         func_ov003_0222e1e0(o, t, func_ov003_0222da7c(o));
         V3 *s = &o->unk_204;

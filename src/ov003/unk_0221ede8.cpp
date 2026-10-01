@@ -344,21 +344,18 @@ extern "C" void func_ov003_0221f33c(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 
 
 extern "C" void func_ov003_0221f360(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 *e, u32 *f)
 {
-    u32 *pd = d;
-    u32 *pe = e;
-    u32 *pf = f;
     s32 i, j, k;
     for (i = 0; i < 3; i++) {
-        for (j = 0; j < 6; j++) {
-            *a++ = 0;
-            *b++ = 0;
+        for (j = 0; j < 6; a++, b++, j++) {
+            *a = 0;
+            *b = 0;
         }
     }
-    for (k = 0; k < 3; k++) {
-        *c++ = 0;
-        *pd++ = 0;
-        *pe++ = 0;
-        *pf++ = 0;
+    for (k = 0; k < 3; c++, d++, e++, f++, k++) {
+        *c = 0;
+        *d = 0;
+        *e = 0;
+        *f = 0;
     }
 }
 
