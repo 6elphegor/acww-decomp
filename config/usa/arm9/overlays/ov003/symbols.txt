@@ -2133,6 +2133,7 @@ data_ov003_02232bb8 kind:data(any) addr:0x02232bb8
 data_ov003_02232bc8 kind:data(any) addr:0x02232bc8
 data_ov003_02232bd8 kind:data(any) addr:0x02232bd8
 data_ov003_02232bec kind:data(any) addr:0x02232bec
+_ZTV18Unk_ov003_02232c08 kind:data(any) addr:0x02232c00
 data_ov003_02232c08 kind:data(any) addr:0x02232c08
 data_ov003_02232c14 kind:data(any) addr:0x02232c14
 data_ov003_02232c28 kind:data(any) addr:0x02232c28

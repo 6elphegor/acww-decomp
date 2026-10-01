@@ -2153,6 +2153,7 @@ _ZN12Unk_020d8d00C1Ev kind:function(thumb,size=0xc) addr:0x020315b4
 _ZN12Unk_020d8d00C2Ev kind:function(thumb,size=0xc) addr:0x020315c0
 _ZN12Unk_020d8d3c8vfunc_08Ev kind:function(thumb,size=0x4) addr:0x020315cc
 _ZN12Unk_020d8d3cC2Ev kind:function(thumb,size=0xc) addr:0x020315d0
+_ZN14Unk_020d8d3c_BD2Ev kind:label(thumb) addr:0x020315d0
 _ZN12Unk_020d8d3cD0Ev kind:function(thumb,size=0x18) addr:0x020315dc
 _ZN12Unk_020d8d3cD1Ev kind:function(thumb,size=0xc) addr:0x020315f4
 _ZN12Unk_020d8d3cC1Ev kind:function(thumb,size=0xc) addr:0x02031600
