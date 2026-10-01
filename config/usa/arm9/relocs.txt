@@ -9584,20 +9584,20 @@ from:0x0202ee02 kind:thumb_call to:0x0202f030 module:main
 from:0x0202ee0c kind:thumb_call to:0x0202f030 module:main
 from:0x0202ee16 kind:thumb_call to:0x0202f030 module:main
 from:0x0202ee1c kind:thumb_call to:0x0202edd4 module:main
-from:0x0202ee30 kind:load to:0x020d8ce4 module:main
-from:0x0202ee3c kind:load to:0x020d8ce4 module:main
+from:0x0202ee30 kind:load to:0x020d8cdc add:0x8 module:main
+from:0x0202ee3c kind:load to:0x020d8cdc add:0x8 module:main
 from:0x0202ee56 kind:thumb_call to:0x0202f048 module:main
 from:0x0202ee62 kind:thumb_call to:0x0202f048 module:main
 from:0x0202ee6e kind:thumb_call to:0x0202f048 module:main
 from:0x0202ee7a kind:thumb_call to:0x0202edf8 module:main
-from:0x0202ee88 kind:load to:0x020d8ce4 module:main
+from:0x0202ee88 kind:load to:0x020d8cdc add:0x8 module:main
 from:0x0202eea0 kind:thumb_call to:0x0202f048 module:main
 from:0x0202eeac kind:thumb_call to:0x0202f048 module:main
 from:0x0202eeb8 kind:thumb_call to:0x0202f048 module:main
 from:0x0202eec2 kind:thumb_call to:0x0202f048 module:main
 from:0x0202eecc kind:thumb_call to:0x0202eeec module:main
 from:0x0202eed8 kind:thumb_call to:0x0202edf8 module:main
-from:0x0202eee8 kind:load to:0x020d8ce4 module:main
+from:0x0202eee8 kind:load to:0x020d8cdc add:0x8 module:main
 from:0x0202eefa kind:thumb_call to:0x0202efe4 module:main
 from:0x0202ef0a kind:thumb_call to:0x0202ef40 module:main
 from:0x0202ef2c kind:thumb_call_arm to:0x020e93a0 module:autoload(2)
@@ -10254,7 +10254,7 @@ from:0x020330ba kind:thumb_call to:0x0202f048 module:main
 from:0x020330c6 kind:thumb_call to:0x0202f048 module:main
 from:0x020330ce kind:thumb_call to:0x020339f0 module:main
 from:0x020330ee kind:thumb_call to:0x02033010 module:main
-from:0x020330fc kind:load to:0x020d8ce4 module:main
+from:0x020330fc kind:load to:0x020d8cdc add:0x8 module:main
 from:0x02033100 kind:load to:0x020d8d50 module:main
 from:0x02033110 kind:thumb_call to:0x020339e0 module:main
 from:0x02033116 kind:thumb_call to:0x0202ee28 module:main
@@ -10263,7 +10263,7 @@ from:0x02033136 kind:thumb_call to:0x0202f048 module:main
 from:0x02033142 kind:thumb_call to:0x0202f048 module:main
 from:0x0203314e kind:thumb_call to:0x0202f048 module:main
 from:0x02033156 kind:thumb_call to:0x020339f0 module:main
-from:0x02033168 kind:load to:0x020d8ce4 module:main
+from:0x02033168 kind:load to:0x020d8cdc add:0x8 module:main
 from:0x0203316c kind:load to:0x020d8d50 module:main
 from:0x02033194 kind:thumb_call to:0x020333c4 module:main
 from:0x020331d4 kind:thumb_call to:0x02033a0c module:main

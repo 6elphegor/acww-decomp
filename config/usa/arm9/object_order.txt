@@ -17,3 +17,6 @@ src/main/unk_0206d4a4.cpp:
 
 # U230
 src/main/unk_020b8340.cpp:
+
+# U023
+src/main/unk_0202e9d4.cpp:

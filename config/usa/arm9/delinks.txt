@@ -296,14 +296,15 @@ src/main/unk_0202e840.cpp:
     .text       start:0x0202e840 end:0x0202e9d4
     .data       start:0x020d8c74 end:0x020d8cc4
 
-src/main/unk_0202e384.cpp:
-    .text       start:0x0202e9d4 end:0x0202ece8
-
-src/main/unk_0202ece8.cpp:
-    .text       start:0x0202ece8 end:0x0202f600
+src/main/unk_0202e9d4.cpp:
+    complete
+    .text       start:0x0202e9d4 end:0x0202fa70
+    .init       start:0x020c35c8 end:0x020c35f4
+    .ctor       start:0x020d1df4 end:0x020d1df8
+    .data       start:0x020d8cc4 end:0x020d8ce8
 
 src/main/unk_0202f600.cpp:
-    .text       start:0x0202f600 end:0x0202ff44
+    .text       start:0x0202fa70 end:0x0202ff44
 
 src/main/unk_0202ff44.cpp:
     .text       start:0x0202ff44 end:0x020308b4
