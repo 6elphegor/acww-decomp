@@ -168,8 +168,8 @@ extern "C" s32 func_ov003_0222b784(Rec *self) {
     s32 ret = 0;
     u32 c = self->unk_252;
     if (t != 0) {
+        s16 r;
         s32 m = self->unk_24d;
-        s32 r;
         if (m == 0x35) {
             r = self->unk_23c;
         } else {
@@ -177,15 +177,15 @@ extern "C" s32 func_ov003_0222b784(Rec *self) {
         }
         if (t == 3) {
             if (c == 1 || c == 10) {
-                r = (s16)(r - 0xaaa);
+                r -= 0xaaa;
             } else {
-                r = (s16)(r + 0xaaa);
+                r += 0xaaa;
             }
         } else if (t == 1 || c == 1) {
-            r = (s16)(r - 0x38e);
+            r -= 0x38e;
             c = 1;
         } else if (t == 2 || c == 2) {
-            r = (s16)(r + 0x38e);
+            r += 0x38e;
             c = 2;
         }
         if (m == 0x35) {

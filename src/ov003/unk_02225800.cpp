@@ -197,12 +197,12 @@ s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
     s32 rndD;
     s32 rnd33;
     s32 *q;
+    u32 n;
     void *obj = func_0204da0c();
     if (obj == 0) {
         return 0;
     }
     if (code == 0x3b) {
-        u32 n;
         s32 rnd;
         s32 k;
         rnd = func_02063b8c(16 - data_ov003_02258f08);
@@ -256,7 +256,7 @@ s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
         for (i = 0; i < 16; i++) {
             rnd33 = func_02063b8c(16 - i);
             s32 k;
-            u32 n = 0;
+            n = 0;
             for (k = n; k < 16; n++, k++) {
                 if (((mask >> k) & 1) == 0) {
                     if (rnd33-- == 0) {
@@ -292,7 +292,7 @@ s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
         for (i = 0; i < 16; i++) {
             rndD = func_02063b8c(16 - i);
             s32 k;
-            u32 n = 0;
+            n = 0;
             for (k = n; k < 16; n++, k++) {
                 if (((mask >> k) & 1) == 0) {
                     if (rndD-- == 0) {

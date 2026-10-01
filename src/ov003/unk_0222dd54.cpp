@@ -319,8 +319,8 @@ extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n) {
 }
 
 extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
-    V3 *dst = &o->unk_1d4;
-    V3 *src = &o->unk_204;
+    V3 *dst;
+    V3 *src;
     switch (o->unk_24d) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
     case 0x25:
@@ -336,8 +336,10 @@ extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
     default:
         break;
     }
+    dst = &o->unk_1d4;
+    src = &o->unk_204;
     s32 idx = ((u16)ang >> 4) * 2;
-    o->unk_1d4.x = o->unk_204.x + func_01ffcb0c(d, data_02135f44[idx]);
+    dst->x = src->x + func_01ffcb0c(d, data_02135f44[idx]);
     dst->z = src->z + func_01ffcb0c(d, data_02135f44[idx + 1]);
     return TRUE;
 }

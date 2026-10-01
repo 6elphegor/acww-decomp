@@ -214,21 +214,9 @@ func_ov003_0221b46c ov003_038/ov003_038.cpp  # -O4,s; zero/address regs swapped
 func_ov003_0221b7d4 ov003_038/ov003_038.cpp  # -O4,s; regalloc: orig cell=r5 a=r7 p=r6
 func_ov003_0221f360 ov003_044/ov003_044.cpp  # -O4,s; zero-init loops: spill choice a,c (orig) vs a,b (ours); ~250 variants tried
 func_ov003_0222144c ov003_048/ov003_048.cpp  # -O4,s; table literal load order + &e/mfp regs
-func_ov003_022216f8 ov003_048/ov003_048.cpp  # -O4,s; ptr/zero regs r0/r1 swapped
 func_ov003_02219d08 ov003_036/ov003_036.cpp  # -O4,s; regs: orig &p in r2, x in r3 (ours swapped); 120 decl perms tried
 func_ov003_02222f28 ov003_050/ov003_050.cpp  # -O4,s; scheduling: table addr computed before a3*6 lookup (orig after)
-func_ov003_02224148 ov003_052/ov003_052.cpp  # -O4,s; frame 12 vs 20, sin/cos table load order + missing hoisted spill of unk_142 lookup
-func_ov003_02224990 ov003_053/ov003_053.cpp  # -O4,s; ~270 diff lines: V3 local slot/spill layout (orig a at sp+0x18, b spilled 3x) and base-reg form
-func_ov003_022261ec ov003_056/ov003_056.cpp  # -O4,s; final !=-1 compare: field/-1 regs r0/r1 swapped
-func_ov003_02226428 ov003_056/ov003_056.cpp  # -O4,s; load order of two global addresses and constant
-func_ov003_022297c8 ov003_061/ov003_061.cpp  # -O4,s; 2 reg choices: unk_24d load r2 (ours r1), zero reg r2 (ours r0)
-func_ov003_02229dcc ov003_062/ov003_062.cpp  # -O4,s; orig loads x,y then both asrs (same as 02219908/0221fd44)
 func_ov003_0222c188 ov003_066/ov003_066.cpp  # -O4,s; case 0x13 zero/address regs (orig r3/r1)
-func_ov003_02225910 ov003_055/ov003_055.cpp  # -O4,s; 0x33/default branches: n/k/1 register assignment differs (64 lines)
-func_ov003_0222b784 ov003_065/ov003_065.cpp  # -O4,s; r2/r3 swap (result/angle vs unk_252); ~180 decl perms tried
-func_ov003_0222e1e0 ov003_069/ov003_069.cpp  # -O4,s; default-path pointer setup (o+0x1d4/o+0x204) hoisted to entry instead of after switch
-func_ov003_0222ef10 ov003_070/ov003_070.cpp  # -O4,s; 0x1000-q: orig adds r3,r0,#0; ldr r0,=0x1000; subs r1,r0,r3 (one extra instr)
-func_ov003_02224bc4 ov003_054/ov003_054.cpp  # -O4,s; table-index temp regs r3/r1/r2 vs ours r2/r0/r1
 func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
 func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
 func_ov065_02260a84 ov065_002/ov065_002.cpp  # -O4,p; n->unk_08=0 store: orig adds r1,r0,#0; movs r0,#0; str r0,[r1,#8]

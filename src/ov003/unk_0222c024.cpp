@@ -119,7 +119,7 @@ s32 func_ov003_0222d674(Rec *o);
 s32 func_ov003_0222d720(Rec *o);
 s32 func_ov003_0222d75c(Rec *o, s32 a, s32 b, s32 c);
 s32 func_ov003_0222d7d8(Rec *o, s16 *p, s32 a, s32 b, s32 c, s32 d);
-s32 func_ov003_0222da7c();
+s32 func_ov003_0222da7c(Rec *o);
 s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
 void func_ov003_0222de04(Rec *o);
 void func_ov003_0222e1e0(Rec *o, s32 a, s32 b);
@@ -221,7 +221,7 @@ extern "C" void func_ov003_0222c188(Rec *o) {
         o->unk_24a = z;
         *st = z;
         s16 t = o->unk_23a;
-        func_ov003_0222e1e0(o, t, func_ov003_0222da7c());
+        func_ov003_0222e1e0(o, t, func_ov003_0222da7c(o));
         V3 *s = &o->unk_204;
         V3 *d = &o->unk_1c8;
         d->x = s->x;

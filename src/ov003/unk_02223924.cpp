@@ -427,12 +427,14 @@ void func_ov003_02224148(Obj *self)
     pf = &self->unk_142;
     *pf = (s16)*pf + 0x2000;
     s142 = data_02135f44[(*pf >> 4) * 2];
-    s138 = data_02135f44[(self->unk_138 >> 4) * 2];
+    s138 = *(volatile s16 *)&data_02135f44[(self->unk_138 >> 4) * 2];
     sq = a >> 5;
     t = func_01ffcb0c(a, s138);
     x = t + func_01ffcb0c(sq, s142);
-    t = func_01ffcb0c(a, data_02135f44[((self->unk_138 >> 4) * 2) + 1]);
-    y = t + func_01ffcb0c(sq, data_02135f44[(self->unk_142 >> 4) * 2]);
+    s142 = data_02135f44[(self->unk_142 >> 4) * 2];
+    s138 = *(volatile s16 *)&data_02135f44[((self->unk_138 >> 4) * 2) + 1];
+    t = func_01ffcb0c(a, s138);
+    y = t + func_01ffcb0c(sq, s142);
     self->unk_120.x += x;
     self->unk_120.z += y;
     if (self->unk_7f) {

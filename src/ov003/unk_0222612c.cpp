@@ -92,7 +92,7 @@ void func_0203ee38(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
 void func_020547a4(void *p, s32 v);
-void func_020902f8(void);
+void func_020902f8(s32);
 s32 func_020b8fe8(void);
 s32 func_020a62a0(void);
 u8 func_02060b9c(u8 v);
@@ -206,7 +206,7 @@ extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, 
             s32 t = e->unk_22c;
             s32 m1 = -1;
             if (t != m1) {
-                func_020902f8();
+                func_020902f8(t);
                 e->unk_22c = -1;
             }
         }
@@ -215,8 +215,9 @@ extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, 
 }
 
 extern "C" void func_ov003_02226428(Vec3 *v) {
+    u32 d = (u32)&data_ov003_02259558;
     data_ov003_02259594[9] = 1;
-    data_ov003_02259558 = *v;
+    *(Vec3 *)d = *v;
     data_ov003_02259594[0x11] = 4;
 }
 

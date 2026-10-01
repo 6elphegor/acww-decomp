@@ -64,7 +64,7 @@ extern Unk_ov003_02257d1c data_ov003_02257d1c[4];
 extern V3 data_ov003_02257d50;
 extern Unk_020cbb18 *data_020cbb18;
 
-Unk_ov003_02224bc4_Actor *func_020951ec();
+Unk_ov003_02224bc4_Actor *func_020951ec(s32 n);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
@@ -132,7 +132,7 @@ s32 func_ov003_02224bc4(s32 i)
     if (e->unk_30 != 0) {
         return 1;
     }
-    p = func_020951ec();
+    p = func_020951ec(i);
     if (p == 0) {
         return 0;
     }

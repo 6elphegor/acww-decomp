@@ -282,8 +282,8 @@ extern "C" BOOL func_ov003_02229dcc(void *pp) {
         s32 xy[2];
         func_0204ee10(&xy[0], &xy[1], pp);
         s32 hy, hx, x, y;
-        y = xy[1];
-        x = xy[0];
+        x = *(volatile s32 *)&xy[0];
+        y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
         u16 *c = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);

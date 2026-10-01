@@ -377,8 +377,10 @@ void func_ov003_02224990(void *self, E *e)
 {
     V3 *pos = &e->unk_34;
     s32 *cnt = &e->unk_58;
-    V3d a(*(V3d *)&e->unk_40);
-    V3d b(*(V3d *)&e->unk_4c);
+    V3d *pa = (V3d *)&e->unk_40;
+    V3d a(*pa);
+    V3d *pb = (V3d *)&e->unk_4c;
+    V3d b(*pb);
     V3 c30(*pos);
     V3 c3c(*(V3 *)&a);
     V3 c48(*(V3 *)&b);

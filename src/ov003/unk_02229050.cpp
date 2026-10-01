@@ -91,9 +91,9 @@ void func_ov003_0222d530(Rec *self);
 s32 func_ov003_0222e500(Rec *self, s32 a, s32 b);
 void func_ov003_0222e328(Vec3 *out, s32 a);
 void func_ov003_0222d674(Rec *self);
-void func_ov003_0222dd54(Rec *self, s32 a);
+void func_ov003_0222dd54(Rec *self, s32 a, s32 b);
 s32 func_ov003_0222af48(Rec *self, s32 a);
-s32 func_ov003_0222b928();
+s32 func_ov003_0222b928(Rec *self, s16 *cnt);
 
 void func_ov003_02229050(Rec *self);
 void func_ov003_022290dc(Rec *self);
@@ -398,14 +398,14 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
             func_ov003_0222d674(self);
         }
         if (*pp == 0) {
-            func_ov003_0222dd54(self, 1);
+            func_ov003_0222dd54(self, 1, 0);
         }
         if (func_ov003_0222af48(self, 1)) {
             func_ov003_02229910(self);
         }
         func_01ffca8c(r6, &v, r6);
     } else {
-        func_ov003_0222b928();
+        func_ov003_0222b928(self, pp);
         u32 m = self->unk_f4.mid;
         if (m == 0) {
             func_020547a4((u8 *)self + 0x50, 1);

@@ -143,7 +143,7 @@ void *func_020947f0(u32);
 s32 func_0203a6fc(void *a, void *b, void *c, void *d, s32 *e);
 s32 func_0203a7b8(void *a, void *b, void *c, s32 *d);
 s32 func_01ffc5a4(s32 a, s32 b);
-s32 func_0203c0b0(void *self, s32 a, s32 b);
+s32 func_0203c0b0(void *self, s32 a, s32 b, s32 c);
 BOOL func_ov003_022132a0(void *p);
 BOOL func_ov003_022132b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
@@ -544,7 +544,7 @@ extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
     }
     u32 q = func_01ffc5a4(v - 0x4800, 0x6800);
     cam->unk_1e4 = 0x1000 - q;
-    func_0203c0b0(cam, 0xa, 0);
+    func_0203c0b0(cam, 0xa, 0, q);
 }
 
 // ---- class Unk_ov003_02234f10 ----

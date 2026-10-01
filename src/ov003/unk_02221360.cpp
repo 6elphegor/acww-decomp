@@ -129,7 +129,7 @@ u32 func_0204f4c8(u8 i);
 s32 func_0204f4a4(Unk_ov003_02221364_Vec *v, s32 *p, u8 i);
 void func_0204f4f8(u8 i, s32 a, s32 b, s32 c, s32 d);
 void func_020902f8(s32 v);
-void func_0205fbbc(void *p);
+void func_0205fbbc(void *p, s32 z);
 void func_020546ec(void *p);
 void func_02054b14(void *p);
 void func_0209c0b4(void *p);
@@ -314,7 +314,7 @@ void func_ov003_022216f8(void *a, s32 idx) {
         if (s->unk_22c != 0) {
             Unk_ov003_02221ab0_Ent *ent = data_ov003_02257e9c + s->unk_227;
             if (ent->unk_40 != 1) {
-                func_0205fbbc(s->unk_22c);
+                func_0205fbbc(s->unk_22c, 0);
                 s->unk_22c = 0;
                 s->unk_227 = -1;
                 s->unk_23c = 0;
