@@ -101,8 +101,11 @@ src/ov001/unk_ov001_0220cbd0.cpp:
     .text       start:0x0220cbd0 end:0x0220cd24
     .bss        start:0x0222de10 end:0x0222de14
 
-src/ov001/unk_0220ccc8.cpp:
+src/ov001/unk_ov001_0220cd24.cpp:
+    complete
     .text       start:0x0220cd24 end:0x0220d1d8
+    .data       start:0x0222aa60 end:0x0222aac0
+    .bss        start:0x0222de14 end:0x0222de18
 
 src/ov001/unk_ov001_0220d1d8.cpp:
     complete
