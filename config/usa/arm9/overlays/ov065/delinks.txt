@@ -157,29 +157,38 @@ src/ov065/unk_ov065_02277974.cpp:
     .data       start:0x0228c988 end:0x0228ca00
     .bss        start:0x02290f94 end:0x02291024
 
-src/ov065/unk_02277974.cpp:
-    .text       start:0x02277e70 end:0x022782f4
+src/ov065/unk_ov065_02277e70.cpp:
+    complete
+    .text       start:0x02277e70 end:0x02278328
+    .data       start:0x0228ca00 end:0x0228ca28
+    .bss        start:0x02291024 end:0x0229107c
 
-src/ov065/unk_022782f4.cpp:
-    .text       start:0x022782f4 end:0x02278c38
+src/ov065/unk_ov065_02278328.cpp:
+    complete
+    .text       start:0x02278328 end:0x022789fc
+    .data       start:0x0228ca28 end:0x0228ca30
 
-src/ov065/unk_02278c38.cpp:
-    .text       start:0x02278c38 end:0x02279588
+src/ov065/unk_ov065_022789fc.cpp:
+    complete
+    .text       start:0x022789fc end:0x0227931c
+    .rodata     start:0x0228b394 end:0x0228b3a0
+    .data       start:0x0228ca30 end:0x0228ca4c
+    .bss        start:0x0229107c end:0x022910c0
 
-src/ov065/unk_02279588.cpp:
-    .text       start:0x02279588 end:0x02279eb4
+src/ov065/unk_ov065_0227931c.cpp:
+    complete
+    .text       start:0x0227931c end:0x0227a284
+    .data       start:0x0228ca4c end:0x0228ca58
+    .bss        start:0x022910c0 end:0x022910dc
 
-src/ov065/unk_02279eb4.cpp:
-    .text       start:0x02279eb4 end:0x0227a884
-
-src/ov065/unk_0227a884.cpp:
-    .text       start:0x0227a884 end:0x0227b2a8
-
-src/ov065/unk_0227b2a8.cpp:
-    .text       start:0x0227b2a8 end:0x0227bbf4
+src/ov065/unk_ov065_0227a284.cpp:
+    complete
+    .text       start:0x0227a284 end:0x0227bd20
+    .data       start:0x0228ca58 end:0x0228cd80
+    .bss        start:0x022910dc end:0x022910ec
 
 src/ov065/unk_0227bbf4.cpp:
-    .text       start:0x0227bbf4 end:0x0227c538
+    .text       start:0x0227bd20 end:0x0227c538
 
 src/ov065/unk_0227c538.cpp:
     .text       start:0x0227c538 end:0x0227ce44
