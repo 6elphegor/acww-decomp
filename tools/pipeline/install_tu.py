@@ -21,6 +21,8 @@ already call by another name).
 renames.txt next to the source (if present) is applied: `module hexaddr newname` per line. A `_ZTV...` name whose
 address has no symbol but address+8 has a `data_` label is a vtable: the label is replaced by the name at the
 vtable's start and every relocation to the label becomes `to:<start> add:0x8` (tools/pipeline/vtable_rename.py).
+A line `module labeladdr interior:objectaddr` says that the label is an address inside the object at objectaddr:
+the label is removed and relocations to it become `to:<object> add:<offset>`.
 
 main only: a `.bss` line gives the unit's range in autoload_3 (main has no .bss of its own). It is written to
 config/usa/arm9/autoload_3/delinks.txt as the placeholder unit src/main/unk_<text start>.bss.cpp (see
@@ -216,6 +218,13 @@ if ren.exists():
         if len(p) != 3:
             continue
         mod, addr, new = p
+        if new.startswith("interior:"):
+            try:
+                n = vtable_rename.interior(mod, int(addr, 16), int(new.split(":", 1)[1], 16), quiet=True)
+                print(f"interior label {mod} {int(addr, 16):#010x} removed, {n} relocations rewritten")
+            except ValueError as e:
+                print(f"WARNING: renames.txt: {line.strip()}: {e}")
+            continue
         sp = vtable_rename.module_dir(mod) / "symbols.txt"
         lines = sp.read_text().splitlines()
         a = int(addr, 16)

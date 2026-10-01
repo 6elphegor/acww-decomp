@@ -445,6 +445,8 @@ def cmd_check(lp, objpath, unit):
         target = to if to in by_addr else to & ~1
         names = [(n, r) for n, r, _ in by_addr.get(target, [])]
         eg = ", ".join(f"{m}:{f:#010x}" for m, f in users[:3])
+        if any(k[1] == to for k in lp.INTERIOR):
+            continue  # renames.txt: install_tu.py retargets these relocations to the object's start
         if to in vt:
             start, vname = vt[to]
             if vname not in defined_at.get(start, ()):
@@ -454,7 +456,7 @@ def cmd_check(lp, objpath, unit):
             continue
         if not names:
             say(f"MISSING {to:#010x} is the target of {len(users)} relocations from outside the unit ({eg}) but has "
-                f"no symbols.txt name (interior address: give the relocations `to:<object start> add:<offset>`)")
+                f"no symbols.txt name (interior address: the relocations need `to:<object start> add:<offset>`)")
             missing += 1
             continue
         kinds = [r for n, r in names if not r.startswith("kind:label")] or [r for n, r in names]
@@ -469,7 +471,8 @@ def cmd_check(lp, objpath, unit):
             hint = (f": it is the label 8 bytes into {next(n for n in defined_at[zero] if n.startswith('_ZTV'))}; "
                     f"add `main {zero:08x} <that name>` to renames.txt (install_tu.py rewrites the relocations)")
         elif target not in defined_at:
-            hint = ": the address is inside one of the object's objects (interior label) or the object order differs"
+            hint = (": the address is inside one of the object's objects, or the object order differs. For an "
+                    "interior label add `<module> <label address> interior:<object start>` to renames.txt")
         else:
             hint = f": the object has {', '.join(sorted(defined_at[target]))} there (rename it, or list a rename)"
         say(f"MISSING {primary[0]} ({target:#010x}) is used from outside the unit by {len(users)} relocations ({eg}) "

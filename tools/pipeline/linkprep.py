@@ -46,6 +46,7 @@ CONFIG = Path("config/usa/arm9")
 # ---------------------------------------------------------------- symbols.txt
 RENAMES = {}  # (module, address) -> new name, from a renames.txt next to the object being checked
 ALIASES = []  # (module, existing name, second name), from an aliases.txt next to the object being checked
+INTERIOR = {}  # (module, label address) -> object start, from `interior:` lines of the renames.txt
 # symbols the linker script defines
 LCF_SYMBOL = r"OVERLAY_\d+_ID"
 
@@ -56,7 +57,10 @@ def load_renames(path):
     if p.exists():
         for line in p.read_text().splitlines():
             f = line.split()
-            if len(f) == 3:
+            f = line.split("#", 1)[0].split()
+            if len(f) == 3 and f[2].startswith("interior:"):
+                INTERIOR[(f[0], int(f[1], 16))] = int(f[2].split(":", 1)[1], 16)
+            elif len(f) == 3:
                 RENAMES[(f[0], int(f[1], 16))] = f[2]
         print(f"(applying {len(RENAMES)} renames from {p})")
     p = Path(path).parent / "aliases.txt"
@@ -341,12 +345,19 @@ def cmd_undef(objpath):
 
 
 # ---------------------------------------------------------------- data
-def definition_spans(text):
-    '''file-scope data definitions: name -> (start, end) including preceding comment lines'''
+def definition_spans(text, uninitialised=False):
+    '''file-scope data definitions: name -> (start, end) including preceding comment lines.
+    uninitialised: also definitions without an initialiser (bss objects, objects with a constructor)'''
     out = {}
     for a, b in top_level_chunks(text):
         code = text[a:b]
         s = strip_comments(code)
+        if uninitialised and s.endswith(";") and "=" not in s and "(" not in s and "{" not in s and not re.match(
+                r"(extern|typedef|class|struct|union|enum|using|friend|template|#)\b", s):
+            m = re.search(r"([A-Za-z_]\w*)\s*(\[[^\]]*\])*\s*;$", s)
+            if m and len(s.split()) >= 2:
+                out[m.group(1)] = (a, b)
+            continue
         if not s.endswith(";") or "=" not in s or is_function(s):
             continue
         head = s.split("=")[0]
@@ -413,7 +424,8 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
             if o.secname[i] == ".init" and s[5] and ".init" in secs:
                 for off, sname, addend, _ in o.relocs.get(i, []):
                     for x in objs:
-                        if x["name"] == sname and "addr" not in x and secs[".init"][0] + off in relocs:
+                        if x["name"] == sname and "addr" not in x and secs[".init"][0] + off in relocs \
+                                and not sname.startswith("@"):
                             x["addr"] = relocs[secs[".init"][0] + off] - addend
                             x["refby"] = "__sinit"
     byname = {x["name"]: x for x in objs}
@@ -483,17 +495,65 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     print(f"{len(sorted_objs)} sorted objects, {len(tail)} in the literal pool (order {'ok' if tail_ok else 'WRONG'})")
 
     # 4. creation order units: named file-scope definitions are movable; compiler objects belong to functions
-    defs = definition_spans(text)
+    defs = definition_spans(text, is_main)
     fpos = function_lines(text)
     size = {x["name"]: x["size"] for x in sorted_objs}
     named = [x["name"] for x in sorted_objs if x["name"] in defs]
+    # main: what __sinit touches. The registration record (@N, 0xc bytes of bss) of a global with a destructor is
+    # created right before the object; objects initialised by __sinit must keep their relative order (it is the
+    # order of the code in __sinit).
+    attached = {}  # named object -> [its registration record]
+    locked = []    # named objects in the order of the ORIGINAL __sinit
+    after = []     # (a, b): b must be defined after a (a constant that __sinit reads is not known yet when the
+    #                object initialised from it is defined; otherwise mwcc folds its value and emits no code)
+    if is_main and ".init" in secs:
+        for i, s in enumerate(o.sh):
+            if o.secname[i] != ".init" or not s[5]:
+                continue
+            last = None
+            for off, sname, addend, _ in sorted(o.relocs.get(i, [])):
+                if sname in defs and sname in byname:
+                    last = sname
+                elif sname.startswith("@") and sname in byname and byname[sname]["kind"] == ".bss" and last:
+                    attached.setdefault(last, []).append(sname)
+        at_addr = {x["addr"]: x["name"] for x in objs if "addr" in x and x["name"] in defs}
+        b0, b1 = secs.get(".bss", (0, 0))
+        last = None
+        pending = []
+        for frm, tgt in sorted((f, v) for f, v in relocs.items() if secs[".init"][0] <= f < secs[".init"][1]):
+            if tgt in at_addr:
+                last = at_addr[tgt]
+                if byname[last]["kind"] == ".rodata":
+                    pending.append(last)
+                    continue
+                after += [(last, c) for c in pending]
+                pending = []
+                if last not in locked:
+                    locked.append(last)
+            elif b0 <= tgt < b1 and last and attached.get(last):
+                # the record of `last`: the original says where it is
+                byname[attached[last][0]].setdefault("addr", tgt)
+        for kind in target:
+            target[kind] = [x["name"] for x in sorted(
+                [x for x in sorted_objs if x["kind"] == kind and "addr" in x], key=lambda x: x["addr"])]
+        now = [n for n in sorted(locked, key=lambda n: defs[n][0])]
+        if now != locked:
+            print("note: the objects that __sinit initialises are defined in another order than the original "
+                  "__sinit uses them: " + ", ".join(locked))
+    is_attached = {n for lst in attached.values() for n in lst}
     fixed = []  # (source offset, number, name)
     for x in sorted_objs:
-        if x["name"] in defs:
+        if x["name"] in defs or x["name"] in is_attached:
             continue
         m = re.search(r"\$?(\d+)$", x["name"])
         if x["name"].startswith("_ZTV"):
-            fixed.append((len(text) + 1, 0, x["name"]))
+            # vtables are created last, in reverse declaration order of their classes
+            cm = re.match(r"_ZTV(\d+)(\w+)", x["name"])
+            decl = -1
+            if cm and is_main:
+                cd = re.search(r"\b(?:class|struct)\s+" + re.escape(cm.group(2)[:int(cm.group(1))]) + r"\b[^;{]*\{", text)
+                decl = cd.start() if cd else -1
+            fixed.append((len(text) + 1, -decl, x["name"]))
             continue
         ref = x.get("refby")
         if ref is None:
@@ -518,7 +578,8 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
         gi = 0
         # named objects at their gap, keeping current relative order inside a gap
         for g in range(len(anchors) + 1):
-            seq += order_in[g] if g < len(order_in) else []
+            for nm in (order_in[g] if g < len(order_in) else []):
+                seq += attached.get(nm, []) + [nm]
             if g < len(anchors):
                 seq += [nm for p, _, nm in fixed if p == anchors[g]]
         return seq
@@ -526,6 +587,10 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     def score(seq):
         out = emitted(seq, size)
         s = 0
+        if locked:
+            at = [seq.index(n) for n in locked if n in seq]
+            s -= 10 * sum(1 for i in range(len(at)) for j in range(i + 1, len(at)) if at[i] > at[j])
+            s -= 10 * sum(1 for a, b in after if a in seq and b in seq and seq.index(a) > seq.index(b))
         for kind, tgt in target.items():
             got = [n for n in out if byname[n]["kind"] == kind and n in set(tgt)]
             s += sum(1 for a, b in zip(got, tgt) if a == b)
@@ -548,6 +613,10 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     print(f"current layout: {cur}/{full} objects in place")
     if cur == full:
         print("data order already matches")
+        return
+    if not named:
+        print("no file-scope data definition found to move (definitions must be top-level statements, not inside "
+              "an extern \"C\" { } block)")
         return
     rnd = random.Random(seed)
     # nothing can be created after the vtable (it is created last): drop that slot
@@ -698,12 +767,14 @@ def apply_placement(src, text, defs, anchors, order_in, pad=None):
     # extern declarations for every moved object, placed before the first function
     decl = []
     for n in moved:
-        d = strip_comments(pieces[n]).split("=")[0].strip()
+        d = strip_comments(pieces[n]).split("=")[0].strip().rstrip(";")
         d = d if d.startswith("extern") else "extern " + d
         decl.append(d + ";")
     first_fn = min([newpos(a) for a in anchors] or [len(t)])
     # put declarations before the first definition chunk that is a function or a moved object
-    head_end = min([first_fn] + [t.find(pieces[n]) for n in moved if t.find(pieces[n]) >= 0])
+    # (a definition without an initialiser is also a substring of its own extern declaration: match whole lines)
+    found = [re.search(r"^" + re.escape(pieces[n]), t, re.M) for n in moved]
+    head_end = min([first_fn] + [m.start() for m in found if m])
     t = t[:head_end] + "// Declarations for data defined further down (definition order sets the data layout)\n" + \
         "\n".join(decl) + "\n\n" + t[head_end:]
     Path(src).write_text(re.sub(r"\n{3,}", "\n\n", t))
