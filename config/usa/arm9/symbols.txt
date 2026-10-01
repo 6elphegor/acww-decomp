@@ -5147,11 +5147,13 @@ _ZN12Unk_020dd3748vfunc_08Ev kind:function(thumb,size=0x4) addr:0x020637f4
 _ZN12Unk_020dd374D0Ev kind:function(thumb,size=0x20) addr:0x020637f8
 _ZN12Unk_020dd374D1Ev kind:function(thumb,size=0x18) addr:0x02063818
 _ZN12Unk_020dd374C2Ev kind:function(thumb,size=0x18) addr:0x02063830
+_ZN12Unk_020dd374C1Ev kind:label(thumb) addr:0x02063830
 _ZN12Unk_020dd38c8vfunc_0cEv kind:function(thumb,size=0x4) addr:0x02063848
 _ZN12Unk_020dd38c8vfunc_08Ev kind:function(thumb,size=0x4) addr:0x0206384c
 _ZN12Unk_020dd38cD0Ev kind:function(thumb,size=0x20) addr:0x02063850
 _ZN12Unk_020dd38cD1Ev kind:function(thumb,size=0x18) addr:0x02063870
 _ZN12Unk_020dd38cC2Ev kind:function(thumb,size=0x18) addr:0x02063888
+_ZN12Unk_020dd38cC1Ev kind:label(thumb) addr:0x02063888
 func_020638a0 kind:function(thumb,size=0x2e) addr:0x020638a0
 func_020638d0 kind:function(thumb,size=0x32) addr:0x020638d0
 func_02063904 kind:function(thumb,size=0x26) addr:0x02063904
