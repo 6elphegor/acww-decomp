@@ -135,3 +135,12 @@ Put in the scratch directory:
 
 The link runner installs it as the overlay's only unit (`complete`, all sections), builds the ROM and commits if
 it matches; otherwise it saves `linkprep.py diff` output to `link_fail.txt` in the scratch directory.
+
+## One constructor, two names (C1/C2)
+
+mwcc emits a complete-object (C1) and a base-object (C2) constructor, but the game keeps one body for
+both. Different linked units may call the same address by different names (e.g. ov048/ov118/ov120 call
+`_ZN12Unk_020dd38cC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
+address and mwld aborts on two ("the sum of all symbol sizes exceed section size"), so add the second
+name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`.
+Never rename a constructor that a linked unit already calls; alias it instead (`rename_impact.py` tells you).
