@@ -32499,12 +32499,12 @@ from:0x0209e35c kind:load to:0x02039d8d module:main
 from:0x0209e370 kind:load to:0x020970cd module:main
 from:0x0209e3a0 kind:thumb_call to:0x0209e540 module:main
 from:0x0209e3aa kind:thumb_call_arm to:0x020ed344 module:autoload(2)
-from:0x0209e3b8 kind:load to:0x020e23fc module:main
+from:0x0209e3b8 kind:load to:0x020e23f4 add:0x8 module:main
 from:0x0209e3bc kind:load to:0x020d8c74 add:0x8 module:main
 from:0x0209e3cc kind:thumb_call to:0x0209e540 module:main
 from:0x0209e3d6 kind:thumb_call_arm to:0x020ed344 module:autoload(2)
 from:0x0209e3dc kind:thumb_call_arm to:0x020ecc6c module:autoload(2)
-from:0x0209e3e8 kind:load to:0x020e23fc module:main
+from:0x0209e3e8 kind:load to:0x020e23f4 add:0x8 module:main
 from:0x0209e3ec kind:load to:0x020d8c74 add:0x8 module:main
 from:0x0209e3fa kind:thumb_call to:0x020679b4 module:main
 from:0x0209e3fe kind:thumb_call to:0x020aa514 module:main
@@ -32529,11 +32529,11 @@ from:0x0209e50c kind:thumb_call to:0x020679c0 module:main
 from:0x0209e518 kind:load to:0x021edb5c module:autoload(3)
 from:0x0209e528 kind:thumb_call to:0x02065fd0 module:main
 from:0x0209e52e kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x0209e53c kind:load to:0x020e244c module:main
+from:0x0209e53c kind:load to:0x020e2444 add:0x8 module:main
 from:0x0209e548 kind:thumb_call to:0x02065fd0 module:main
-from:0x0209e554 kind:load to:0x020e244c module:main
+from:0x0209e554 kind:load to:0x020e2444 add:0x8 module:main
 from:0x0209e55c kind:thumb_call to:0x0206606c module:main
-from:0x0209e56c kind:load to:0x020e244c module:main
+from:0x0209e56c kind:load to:0x020e2444 add:0x8 module:main
 from:0x0209e57a kind:thumb_call to:0x02073204 module:main
 from:0x0209e588 kind:thumb_call to:0x02067990 module:main
 from:0x0209e58e kind:thumb_call to:0x02067a6c module:main
@@ -32637,7 +32637,7 @@ from:0x0209ea20 kind:thumb_call_arm to:0x020ecc88 module:autoload(2)
 from:0x0209ea2a kind:thumb_call_arm to:0x020ed378 module:autoload(2)
 from:0x0209ea3a kind:thumb_call to:0x0209e558 module:main
 from:0x0209ea48 kind:load to:0x020d8c74 add:0x8 module:main
-from:0x0209ea4c kind:load to:0x020e23fc module:main
+from:0x0209ea4c kind:load to:0x020e23f4 add:0x8 module:main
 from:0x0209ea66 kind:thumb_call to:0x0209ea50 module:main
 from:0x0209ea7a kind:thumb_call to:0x0209d498 module:main
 from:0x0209ea96 kind:thumb_call to:0x0209d3d0 module:main
