@@ -314,7 +314,10 @@ BOOL func_ov004_02231d54(s32 *p, s32 v)
         v = -v;
     }
     if (v > 0x4000) {
-        k = k * -1;
+        s32 kk;
+        kk = -1;
+        kk = kk * k;
+        k = kk;
     }
     for (i = 0; i < 0x32; i++) {
         a = p[2];

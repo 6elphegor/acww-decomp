@@ -67,6 +67,13 @@ public:
 
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
 
+struct Unk_ov004_02236320_O1 {
+    u32 a[4];
+    u8 f;
+    u8 pad[3];
+    u32 b[7];
+};
+
 class Unk_ov004_0224ebec : public Unk_020d5d84 {
 public:
     Unk_ov004_02236320_Ent *func_02236320();
@@ -409,40 +416,41 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
 
 u8 Unk_ov004_0224ebec::func_022364d0() {
     u8 r6 = 0;
-    Unk_ov004_02236320_V3 &r4r = unk_230[0];
-    u32 o1[12];
+    Unk_ov004_02236320_V3 *r4r = &unk_230[0];
+    Unk_ov004_02236320_O1 o1;
     u32 o2[16];
     u32 o3[16];
-    volatile s16 t1;
+    volatile s32 t1;
     s16 t2;
+    s16 t1v;
     s16 ang;
-    func_020323b0(o1);
-    func_020339bc(o2, &r4r, r6, r6);
+    func_020323b0(&o1);
+    func_020339bc(o2, r4r, r6, r6);
     ang = unk_8e;
     if (unk_248[0].x == 0 || unk_248[0].z == 0) {
         unk_248[0].x = unk_230[0].x;
         unk_248[0].y = unk_230[0].y;
         unk_248[0].z = unk_230[0].z;
     }
-    func_020309d4(o1, &r4r, &unk_248[0], ang, 0x19a, this, 0xf);
-    t1 = ((u8 *)o1)[0x10];
-    if (func_02033914(o2, 1) > 0x200 || unk_230[0].y > 0x1000 || t1 > 0) {
+    func_020309d4(&o1, r4r, &unk_248[0], ang, 0x19a, this, 0xf);
+    t1 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
+    if (func_02033914(o2, 1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
         r6++;
     }
-    func_020339bc(o3, &(&r4r)[1], 0, 0);
+    func_020339bc(o3, r4r + 1, 0, 0);
     if (unk_248[1].x == 0 || unk_248[1].z == 0) {
         unk_248[1].x = unk_230[1].x;
         unk_248[1].y = unk_230[1].y;
         unk_248[1].z = unk_230[1].z;
     }
-    func_020309d4(o1, &(&r4r)[1], &unk_248[1], ang, 0x19a, this, 0xf);
-    t2 = ((u8 *)o1)[0x10];
-    if (func_02033914(o3, 1) > 0x200 || unk_230[1].y > 0x1000 || t2 > 0) {
+    func_020309d4(&o1, r4r + 1, &unk_248[1], ang, 0x19a, this, 0xf);
+    t2 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
+    if (func_02033914(o3, 1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
         r6 += 2;
     }
     func_02033988(o3);
     func_02033988(o2);
-    func_0203239c(o1);
+    func_0203239c(&o1);
     return r6;
 }
 
@@ -475,14 +483,19 @@ void Unk_ov004_0224ebec::func_0223638c(s32 dist, s32 delta) {
 }
 
 Unk_ov004_02236320_Ent *Unk_ov004_0224ebec::func_02236320() {
-    Unk_ov004_02236320_Ent *p = (Unk_ov004_02236320_Ent *)func_02095204(4);
-    Unk_ov004_02236320_Ent *g = data_ov004_022523d4;
+    s32 d4, d3, d2, d1;
+    Unk_ov004_02236320_Ent *p;
+    Unk_ov004_02236320_Ent *g;
+    Unk_ov004_02236320_V3 *a;
+    Unk_ov004_02236320_V3 *b;
+    Unk_ov004_02236320_V3 *c;
+    p = (Unk_ov004_02236320_Ent *)func_02095204(4);
+    g = data_ov004_022523d4;
     if (g != NULL) {
         if (p != NULL) {
-            Unk_ov004_02236320_V3 *a = &unk_5c;
-            Unk_ov004_02236320_V3 *b = &p->unk_5c;
-            Unk_ov004_02236320_V3 *c = &g->unk_5c;
-            s32 d1, d2, d3, d4;
+            a = &unk_5c;
+            b = &p->unk_5c;
+            c = &g->unk_5c;
             d1 = unk_5c.x - p->unk_5c.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;

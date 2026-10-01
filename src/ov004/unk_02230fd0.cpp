@@ -322,17 +322,15 @@ void func_ov004_02231600(Obj *o, V3 *out) {
 void func_ov004_022316e0(Obj *o) {
     s32 t = o->unk_278 * o->unk_268;
     o->unk_258 = 0x1000 - t;
-    s32 *p = &o->unk_258;
-    s32 *q = &o->unk_27c;
-    if (*p < *q) {
-        *p = *q;
-        o->unk_25c = *q;
-        o->unk_260 = *q;
+    if (o->unk_258 < o->unk_27c) {
+        o->unk_258 = o->unk_27c;
+        o->unk_25c = o->unk_27c;
+        o->unk_260 = o->unk_27c;
         o->unk_264 = 0;
         o->unk_268 = 0;
     } else {
-        o->unk_25c = *p;
-        o->unk_260 = *p;
+        o->unk_25c = o->unk_258;
+        o->unk_260 = o->unk_258;
     }
 }
 

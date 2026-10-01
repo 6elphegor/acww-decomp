@@ -186,9 +186,9 @@ BOOL Unk_ov004_0224e594::vfunc_00() {
 }
 
 BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
-    void *d = data_ov004_0224e5dc;
     BOOL r = FALSE;
-    if (func_020549e4(&unk_174, d, r)) {
+    void *d = data_ov004_0224e5dc;
+    if (func_020549e4(&unk_174, d ? d : d, r)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
             unk_50[i] = func_020549ac(&unk_174, func_02061888(i, r));

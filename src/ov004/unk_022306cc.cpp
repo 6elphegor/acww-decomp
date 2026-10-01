@@ -99,7 +99,7 @@ s32 func_ov004_0222e7a4(Ent *);
 s32 func_ov004_0222ede0(Ent *);
 void func_ov004_0222ef04(void *);
 s32 func_ov004_022320c8(Ent *);
-s32 func_ov004_022321e8(Ent *);
+void func_ov004_022321e8(Ent *, s32);
 s32 func_ov004_02231dec(void *, void *, void *, s32);
 s32 func_ov004_02231e28(s32, s32);
 s32 func_ov004_02231eec(Ent *, s32);
@@ -133,7 +133,7 @@ extern "C" void func_ov004_022306f0(Ent *e) {
                 e->unk_256 = 1;
                 t = e->unk_210;
                 e->unk_210 = t << 1;
-                func_ov004_022321e8(e);
+                func_ov004_022321e8(e, 1);
                 e->unk_255 = 0;
             }
         }
@@ -143,7 +143,7 @@ extern "C" void func_ov004_022306f0(Ent *e) {
             e->unk_257 = func_ov004_02231e28(0x3c, 0x50);
             e->unk_258 = 0;
             e->unk_256 = 2;
-            func_ov004_022321e8(e);
+            func_ov004_022321e8(e, 2);
         }
         break;
     case 2: {
@@ -152,7 +152,7 @@ extern "C" void func_ov004_022306f0(Ent *e) {
             if (func_020565e8(&e->unk_100, v)) {
                 e->unk_256 = 3;
                 e->unk_210 = e->unk_210 >> 1;
-                func_ov004_022321e8(e);
+                func_ov004_022321e8(e, 3);
             }
         } else {
             e->unk_258 = b + 1;
@@ -162,7 +162,7 @@ extern "C" void func_ov004_022306f0(Ent *e) {
     case 3:
         if (func_020565e8(&e->unk_100, v)) {
             e->unk_256 = 0;
-            func_ov004_022321e8(e);
+            func_ov004_022321e8(e, 0);
         }
         break;
     }

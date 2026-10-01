@@ -121,24 +121,25 @@ void func_ov004_0223c4bc(Obj *o, s16 *p)
         r4 = (s16)(t + o->unk_ac);
         o->unk_172 = 4;
     } else {
-        u8 i;
         u8 n = (u8)func_02063b8c(5);
+        u8 i;
         for (i = 0; i < n; i++) {
             r4 = (s16)(r4 + 0xaaa);
         }
         if (func_02063b8c(100) > 50) {
             r4 = (s16)-r4;
         }
-        r4 = (s16)(r4 + t);
+        r4 += a;
         o->unk_172 = 4;
     }
     if (o->unk_172 == 4) {
         V3 v;
         o->unk_192 = r4;
         *p = func_02063b8c(8) + 8;
-        v.x = o->unk_2c8.x;
-        v.y = o->unk_2c8.y;
-        v.z = o->unk_2c8.z;
+        V3 *sp_ = &o->unk_2c8;
+        v.x = sp_->x;
+        v.y = sp_->y;
+        v.z = sp_->z;
         a = 0;
         func_0209028c(0x1f, &v, &a, 0);
     }
