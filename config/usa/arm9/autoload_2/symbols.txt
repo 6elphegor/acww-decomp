@@ -585,6 +585,7 @@ func_020f3c78 kind:function(arm,size=0xdc) addr:0x020f3c78
 func_020f3d54 kind:function(arm,size=0xc0) addr:0x020f3d54
 func_020f3e14 kind:function(arm,size=0x3c) addr:0x020f3e14
 func_020f3e50 kind:function(arm,size=0x2c) addr:0x020f3e50
+_ZN12Unk_0213b9c4C1Ev kind:label(arm) addr:0x020f3e50
 func_020f3e7c kind:function(arm,size=0x38) addr:0x020f3e7c
 func_020f3eb4 kind:function(arm,size=0x30) addr:0x020f3eb4
 func_020f3ee4 kind:function(arm,size=0x2c) addr:0x020f3ee4
@@ -600,6 +601,7 @@ func_020f41fc kind:function(arm,size=0x184) addr:0x020f41fc
 func_020f4380 kind:function(arm,size=0x14) addr:0x020f4380
 func_020f4394 kind:function(arm,size=0x34) addr:0x020f4394
 func_020f43c8 kind:function(arm,size=0x10) addr:0x020f43c8
+_ZN12Unk_020f43c8D2Ev kind:label(arm) addr:0x020f43c8
 func_020f43d8 kind:function(arm,size=0x24) addr:0x020f43d8
 func_020f43fc kind:function(arm,size=0x10) addr:0x020f43fc
 func_020f440c kind:function(arm,size=0x18) addr:0x020f440c

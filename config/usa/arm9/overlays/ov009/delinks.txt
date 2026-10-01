@@ -4,17 +4,10 @@
     .data       start:0x0225e160 end:0x0225e4e0 kind:data align:32
     .bss        start:0x0225e4e0 end:0x0225f120 kind:bss align:32
 
-src/ov009/unk_0225b880.cpp:
-    .text       start:0x0225b880 end:0x0225c1ac
-
-src/ov009/unk_0225c1ac.cpp:
-    .text       start:0x0225c1ac end:0x0225cb4c
-
-src/ov009/unk_0225ddbc.cpp:
-    .text       start:0x0225ddbc end:0x0225e0b4
-
-src/ov009/unk_0225cb4c.cpp:
-    .text       start:0x0225cb4c end:0x0225d498
-
-src/ov009/unk_0225d498.cpp:
-    .text       start:0x0225d498 end:0x0225ddbc
+src/ov009/unk_ov009_0225b880.cpp:
+    complete
+    .text       start:0x0225b880 end:0x0225e0b4
+    .init       start:0x0225e0b4 end:0x0225e148
+    .ctor       start:0x0225e148 end:0x0225e14c
+    .data       start:0x0225e160 end:0x0225e4e0
+    .bss        start:0x0225e4e0 end:0x0225f120
