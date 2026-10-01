@@ -84,7 +84,7 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14 (vfunc_88).
 class Unk_020e2a30 {
 public:
     Unk_020e2a30();
@@ -109,7 +109,10 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    virtual void vfunc_s14();
+    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
+    virtual void vfunc_88();
     virtual void vfunc_s18();
     virtual void vfunc_s1c();
     virtual void vfunc_s20();

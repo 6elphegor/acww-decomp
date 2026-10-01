@@ -52,7 +52,9 @@ public:
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
-    /* 0x68 */ u8 pad_68[0xd4 - 0x68];
+    /* 0x68 */ u8 pad_68[0x8e - 0x68];
+    /* 0x8e */ s16 unk_8e;
+    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
 class Unk_020d9670 : public Unk_020d5d84 {
@@ -70,6 +72,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
+    void func_0203e42c();
     void func_0203e624(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
@@ -79,7 +82,7 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14 (vfunc_88).
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
 class Unk_020e2a30 {
 public:
     Unk_020e2a30();
@@ -95,7 +98,6 @@ public:
 struct Unk_020660f8 {
     u8 pad_00[0x14];
     s32 unk_14;
-    void func_02067a3c(s32 a, void *q);
 };
 
 class Unk_020ddcf0 : public Unk_020e2a30 {
@@ -105,9 +107,6 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
-    // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
     virtual void vfunc_s1c();
@@ -133,6 +132,8 @@ public:
     virtual void vfunc_s6c();
     virtual void vfunc_s70();
     virtual void vfunc_s74();
+
+    void func_02065f90(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
     /* 0x3c */ Unk_020660f8 *unk_3c;
@@ -184,7 +185,7 @@ public:
     virtual s32 vfunc_a0();
     virtual char *vfunc_a4();
     virtual char *vfunc_a8();
-    virtual BOOL vfunc_ac();
+    virtual char *vfunc_ac();
     virtual BOOL vfunc_b0();
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
@@ -222,19 +223,15 @@ public:
     /* 0x2b0 */
 };
 
-struct Unk_ov003_022173a8_Glob {
-    u8 pad[0x58];
-    u32 unk_58;
+struct Unk_ov003_02230df4_Color {
+    u8 a, b, c, d;
+    Unk_ov003_02230df4_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
+        a = a_;
+        b = b_;
+        c = c_;
+        d = d_;
+    }
 };
-
-extern "C" {
-extern Unk_ov003_022173a8_Glob data_021ed150;
-
-void func_020ac1f8(void *p);
-s32 func_ov003_02218d9c();
-void _ZN12Unk_020dd324C1EPt(void *self, u16 *p);
-void _ZN12Unk_020dd324D1Ev(void *self);
-}
 
 struct Unk_ov003_SceneEntry {
     void *(*factory)();
@@ -244,60 +241,141 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-// ============================================================ class Unk_ov003_02231fa8
-class Unk_ov003_02231fa8 : public Unk_ov009_0225e29c {
+extern "C" {
+BOOL func_0206ec6c();
+BOOL func_0206eca4(u32 a);
+BOOL func_0203d67c(void *p);
+s32 func_020e780c(s32 a, s32 b);
+}
+
+class Unk_ov003_02230df4 : public Unk_ov009_0225e29c {
 public:
-    Unk_ov003_02231fa8();
-    virtual ~Unk_ov003_02231fa8();
-
+    Unk_ov003_02230df4();
+    virtual ~Unk_ov003_02230df4();
+    virtual BOOL vfunc_0c();
+    virtual BOOL vfunc_18();
     virtual BOOL vfunc_24();
+    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
 
-    /* 0x2b0 */ u16 unk_2b0;
-    /* 0x2b2 */ u16 pad_2b2;
+    void func_ov003_02214208();
+    BOOL func_ov003_02214284(s32 m);
+    void func_ov003_022141bc();
+    BOOL func_ov003_022141d4();
+    BOOL func_ov003_022141d8();
+    BOOL func_ov003_022141e4();
+    void func_ov003_02214200();
+    BOOL func_ov003_02214204();
+
+    /* 0x2b0 */ s32 unk_2b0;
 };
 
-extern "C" void func_ov003_022174bc() {
-    new Unk_ov003_02231fa8;
+extern "C" void func_ov003_02214424();
+
+typedef void (Unk_ov003_02230df4::*Unk_02214208_Fn)();
+typedef BOOL (Unk_ov003_02230df4::*Unk_02214284_Fn)();
+
+extern "C" Unk_ov003_02230df4_Color data_ov003_02235110(0x1f, 0x14, 0x14, 0x1f);
+extern "C" Unk_ov003_02230df4_Color data_ov003_02235100(0x14, 0x14, 0x1f, 0x1f);
+extern "C" Unk_ov003_02230df4_Color data_ov003_02235104(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" Unk_ov003_02230df4_Color data_ov003_022350fc(0x14, 0x1f, 0x14, 0x1f);
+extern "C" Unk_ov003_02230df4_Color data_ov003_022350f8(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" Unk_ov003_02230df4_Color data_ov003_022350f4(0x14, 0x18, 0x18, 0x1f);
+extern "C" Unk_ov003_SceneEntry data_ov003_02230dd4 = {(void *(*)())func_ov003_02214424, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
+
+extern "C" void func_ov003_02214424() {
+    new Unk_ov003_02230df4;
 }
 
-Unk_ov003_02231fa8::Unk_ov003_02231fa8() {
-}
+Unk_ov003_02230df4::Unk_ov003_02230df4() {}
 
-Unk_ov003_02231fa8::~Unk_ov003_02231fa8() {
-}
+Unk_ov003_02230df4::~Unk_ov003_02230df4() {}
 
-BOOL Unk_ov003_02231fa8::vfunc_70() {
-    unk_2b0 = func_ov003_02218d9c();
+BOOL Unk_ov003_02230df4::vfunc_70() {
+    func_ov003_02214284(0);
     return TRUE;
 }
 
-BOOL Unk_ov003_02231fa8::vfunc_24() {
-    func_020ac1f8(unk_5c);
+BOOL Unk_ov003_02230df4::vfunc_18() {
+    func_ov003_02214208();
     return TRUE;
 }
 
-void Unk_ov003_02231fa8::vfunc_78() {
-    u16 v[2];
-    u32 obj[9];
-    func_020a710c("obj_etc_board");
-    unk_1e = unk_2b0 % 14 + 1;
-    u16 w;
-    if (data_021ed150.unk_58 < 5) {
-        w = data_021ed150.unk_58 + 0x1518;
-    } else {
-        w = 0x1518;
+BOOL Unk_ov003_02230df4::vfunc_24() {
+    return TRUE;
+}
+
+BOOL Unk_ov003_02230df4::vfunc_0c() {
+    return TRUE;
+}
+
+BOOL Unk_ov003_02230df4::vfunc_48(Unk_020d9670 *a) {
+    if (unk_231 & 8) {
+        if (a) {
+            if (func_020e780c((s16)(unk_8e + 0x8000), a->unk_8e) < 0x1300) {
+                func_0203e42c();
+                return TRUE;
+            }
+        }
     }
-    v[1] = w;
-    _ZN12Unk_020dd324C1EPt(obj, &v[1]);
-    unk_3c->func_02067a3c(1, obj);
-    _ZN12Unk_020dd324D1Ev(obj);
-}
-
-BOOL Unk_ov003_02231fa8::vfunc_8c() {
     return FALSE;
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_02231f88 = {(void *(*)())func_ov003_022174bc, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};
+void Unk_ov003_02230df4::vfunc_4c(u32 a, u8 b) {
+    switch (a) {
+    case 0:
+    case 1:
+        func_ov003_02214284(1);
+        break;
+    case 8:
+        func_ov003_02214284(0);
+        break;
+    }
+}
+
+BOOL Unk_ov003_02230df4::func_ov003_02214284(s32 m) {
+    static Unk_02214284_Fn tbl[3] = { &Unk_ov003_02230df4::func_ov003_02214204, &Unk_ov003_02230df4::func_ov003_022141e4, &Unk_ov003_02230df4::func_ov003_022141d4 };
+    if (m < 3) {
+        if ((this->*tbl[m])()) {
+            unk_2b0 = m;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+void Unk_ov003_02230df4::func_ov003_02214208() {
+    static Unk_02214208_Fn tbl[3] = { (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_02214200, (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_022141d8, (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_022141bc };
+    if (unk_2b0 < 3) {
+        (this->*tbl[unk_2b0])();
+    }
+}
+
+BOOL Unk_ov003_02230df4::func_ov003_02214204() {
+    return TRUE;
+}
+
+void Unk_ov003_02230df4::func_ov003_02214200() {}
+
+BOOL Unk_ov003_02230df4::func_ov003_022141e4() {
+    if (func_0206eca4(0)) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+BOOL Unk_ov003_02230df4::func_ov003_022141d8() {
+    return func_ov003_02214284(2);
+}
+
+BOOL Unk_ov003_02230df4::func_ov003_022141d4() {
+    return TRUE;
+}
+
+void Unk_ov003_02230df4::func_ov003_022141bc() {
+    if (func_0206ec6c()) {
+        func_0203d67c(this);
+    }
+}
+

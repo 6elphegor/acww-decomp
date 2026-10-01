@@ -27,12 +27,10 @@
 //          cannot override them): _ZN12Unk_020ddcf09vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
 //          5c 60 64 68 6c 70 74 (existing name _ZN12Unk_020ddcf08vfunc_XXEv) and _ZN12Unk_020ddcf09vfunc_s38Ej (existing
 //          _ZN12Unk_020ddcf08vfunc_38Ej).
-//   ov003  _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev     -> _ZN12Unk_020ddcf09vfunc_s14Ev             (0x0221445c, TU04's thunk)
-//          Slot 0x14 of the secondary vtable is the thunk of ov009::vfunc_88, defined once in TU04.  Every other unit of the
-//          family only REFERENCES it: the unit names the slot vfunc_s14 (no override, so the compiler emits no local copy of the
-//          thunk) and the vtable relocation names _ZN12Unk_020ddcf09vfunc_s14Ev, which the alias above puts at 0x0221445c.
-//          TU04 itself (and TU05, whose class overrides vfunc_88) must instead name the slot `vfunc_88` as in the
-//          previous model, so that the compiler emits the thunk there.
+//   ov003  0x0221445c is _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
+//          vtable.  Every unit of the family names that slot vfunc_88, so each emits the thunk as a link-once function and
+//          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
+//          (No alias: the old label _ZN12Unk_020ddcf09vfunc_s14Ev is gone.)
 // Notes:
 //  * The ctor of a derived class calls Unk_ov009_0225e29c::Unk_ov009_0225e29c() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
@@ -115,7 +113,7 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14 (vfunc_88).
 class Unk_020e2a30 {
 public:
     Unk_020e2a30();
@@ -140,7 +138,10 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    virtual void vfunc_s14();
+    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
+    virtual void vfunc_88();
     virtual void vfunc_s18();
     virtual void vfunc_s1c();
     virtual void vfunc_s20();

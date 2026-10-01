@@ -26,8 +26,16 @@ src/ov003/unk_ov003_02212830.cpp:
     .data       start:0x02230b28 end:0x02230da4
     .bss        start:0x02234fd4 end:0x022350f4
 
+src/ov003/unk_ov003_022141bc.cpp:
+    complete
+    .text       start:0x022141bc end:0x02214494
+    .data       start:0x02230da4 end:0x02230f30
+    .bss        start:0x022350f4 end:0x02235144
+    .init       start:0x0222fc94 end:0x0222fcf0
+    .ctor       start:0x0223092c end:0x02230930
+
 src/ov003/unk_02213f70.cpp:
-    .text       start:0x022141bc end:0x02214890
+    .text       start:0x02214494 end:0x02214890
 
 src/ov003/unk_02214890.cpp:
     .text       start:0x02214890 end:0x02214af4

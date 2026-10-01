@@ -659,7 +659,6 @@ _ZN18Unk_ov003_02230df4C1Ev kind:function(thumb,size=0x24) addr:0x02214400
 func_ov003_02214424 kind:function(thumb,size=0x1c) addr:0x02214424
 _ZThn236_N18Unk_ov003_02230df4D0Ev kind:function(thumb,size=0x1c) addr:0x02214440
 _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev kind:function(thumb,size=0x1c) addr:0x0221445c
-_ZN12Unk_020ddcf09vfunc_s14Ev kind:label(thumb) addr:0x0221445c
 _ZThn236_N18Unk_ov003_02230df4D1Ev kind:function(thumb,size=0x1c) addr:0x02214478
 _ZN18Unk_ov003_02230ff019func_ov003_02214494Ev kind:function(thumb,size=0xd4) addr:0x02214494
 _ZN18Unk_ov003_02230ff019func_ov003_02214568Ev kind:function(thumb,size=0x10) addr:0x02214568
