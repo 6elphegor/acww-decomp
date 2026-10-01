@@ -195,13 +195,13 @@ void func_ov065_0226f818() {
 s32 func_ov065_0226f9e0(s8 *in, u32 len, u8 *out, u32 cap) {
     s32 bits;
     u32 i;
-    volatile s32 max;
-    u32 mt;
-    u8 *p;
-    s8 tmp[4];
-    s32 j;
+    s32 max;
     s8 *q;
     s8 c;
+    u8 *p;
+    s32 n;
+    s32 j;
+    s8 tmp[4];
 
     if ((len & 3) != 0) {
         return -1;
@@ -215,9 +215,8 @@ s32 func_ov065_0226f9e0(s8 *in, u32 len, u8 *out, u32 cap) {
     if (out == 0) {
         return bits / 8;
     }
-    mt = bits / 8;
-    max = mt;
-    if (cap < mt) {
+    max = bits / 8;
+    if (cap < (u32)max) {
         return -1;
     }
     if (len == 0) {
@@ -226,8 +225,7 @@ s32 func_ov065_0226f9e0(s8 *in, u32 len, u8 *out, u32 cap) {
     }
     p = out;
     do {
-        q = tmp;
-        for (j = 0; j < 4; j++) {
+        for (j = 0, q = tmp; j < 4; q++, j++) {
             c = in[j];
             if (c >= 0x41 && c <= 0x5a) {
                 *q = c - 0x41;
@@ -242,20 +240,23 @@ s32 func_ov065_0226f9e0(s8 *in, u32 len, u8 *out, u32 cap) {
             } else {
                 *q = 0;
             }
-            q++;
         }
         in += 4;
         p[0] = (tmp[0] << 2) | (tmp[1] >> 4);
-        if (p + 1 - out >= max) {
+        n = p + 1 - out;
+        if (n >= max) {
             break;
         }
         p[1] = (tmp[1] << 4) | (tmp[2] >> 2);
-        if (p + 2 - out >= max) {
+        n = p + 2 - out;
+        if (n >= max) {
             break;
         }
         p[2] = (tmp[2] << 6) | tmp[3];
         p += 3;
-    } while (p - out < max);
+        n = p - out;
+    } while (n < max);
+    return n;
 }
 
 s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {

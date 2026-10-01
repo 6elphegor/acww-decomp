@@ -132,23 +132,19 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
         } else {
             func_02116048(a, t1 + k, la * 2);
             u16 *bp;
-            s32 off;
             if (lb > 2) {
-                off = lb * 2;
                 bp = b + lb;
                 d = (u64)bp[-3] + (((u64)bp[-1] << 32) + ((u64)bp[-2] << 16));
             } else if (lb > 1) {
-                off = lb * 2;
                 bp = b + lb;
                 d = ((u64)bp[-1] << 32) + ((u64)bp[-2] << 16);
             } else {
-                off = lb * 2;
                 bp = b + lb;
                 d = (u64)bp[-1] << 32;
             }
             if (k < n) {
-                s32 cs = (n * 2 - 1) * 2;
-                u16 *rp = (u16 *)((u8 *)t2 + off);
+                u32 cs = (n * 2 - 1) * 2;
+                u16 *rp = t2 + lb;
                 do {
                     u32 qq;
                     func_021289b4(t1 + 1, t1, cs);
@@ -493,7 +489,6 @@ void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
             break;
         case 8: {
             u32 old;
-            u32 v;
             u32 w;
             u32 x;
             u32 y;
@@ -502,10 +497,10 @@ void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
             old = data_ov065_022905a8->unk_22f8;
             data_ov065_022905a8->unk_22f8 = 0;
             if (old == 0x12) {
-                v = data_ov065_022905a8->unk_2170;
-                if ((v & 0x24) != 0x24) {
+                Unk_ov065_022905a8 *g = data_ov065_022905a8;
+                if ((g->unk_2170 & 0x24) != 0x24) {
                     x = 0;
-                    data_ov065_022905a8->unk_2170 = v | 0x24;
+                    g->unk_2170 |= 0x24;
                     w = data_ov065_022905a8->unk_2264;
                     if ((w & 0xc0000) == 0xc0000) {
                         x = 1;

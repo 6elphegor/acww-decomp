@@ -41,8 +41,7 @@ struct Unk_ov065_02273b60_Ctx {
     u32 unk_1b0;
     u8 unk_1b4[8];
     u32 unk_1bc;
-    u32 unk_1c0;
-    u32 unk_1c4;
+    u64 unk_1c0;
     u32 unk_1c8;
     u32 unk_1cc;
     u8 unk_1d0[0x18];
@@ -399,8 +398,7 @@ s32 func_ov065_0227433c(void) {
     g->unk_19f = 0;
     c = g;
     t = func_01ffa6b4();
-    c->unk_1c0 = (u32)t;
-    c->unk_1c4 = (u32)(t >> 32);
+    c->unk_1c0 = t;
     if (c->unk_15 == 0) {
         c->unk_198 = 3;
         func_ov065_02275764(0);
@@ -454,8 +452,7 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
             (*gp)->unk_1bc = 3000;
             c = *gp;
             u64 t = func_01ffa6b4();
-            c->unk_1c0 = (u32)t;
-            c->unk_1c4 = (u32)(t >> 32);
+            c->unk_1c0 = t;
             c->unk_1b0 = 0;
             return 0;
         }

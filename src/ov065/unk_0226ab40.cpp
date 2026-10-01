@@ -96,7 +96,7 @@ void func_02115e64(u32, void *, u32);
 void func_02115e78(void *, void *, u32);
 s32 func_0212a15c(void *, void *, u32);
 s32 func_021208bc(void *, void *, void *, u32);
-void func_020ff154();
+void func_020ff154(void *);
 
 Unk_ov065_0226ab5c_Conn *func_ov065_02269bd0();
 s32 func_ov065_0226a510(void *, u32);
@@ -513,7 +513,7 @@ s32 func_ov065_0226b27c(Unk_ov065_0226b27c_Cfg *cfg) {
         b->lo = cfg->unk_0a;
         b->mid = cfg->unk_0b;
     }
-    func_020ff154();
+    func_020ff154(ec);
     r = func_ov065_0226a510(data_ov065_022905f0, 0x2300);
     if (r == 1 || r >= 4) {
         func_ov065_0226afdc();

@@ -361,9 +361,11 @@ void func_ov065_02262670(u32 a, Sess *s) {
         s->unk_44 = 0;
     } else {
         u8 *p = s->unk_40;
+        u8 *q = p + a;
         n -= a;
         s->unk_44 = n;
-        func_021289b4(p, p + a, n);
+        q = n ? q : q;
+        func_021289b4(p, q, n);
     }
     func_01ffa3d4(ints);
     if (s->state != 10 && s->state != 11 && s->unk_44 == 0) {

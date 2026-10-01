@@ -549,9 +549,9 @@ s32 func_ov065_02261638(s32 self) {
     s32 j;
     Unk_ov065_02261638_Rng *g = &data_ov065_0228ec04;
     g->unk_00 = func_02133100(g->unk_08, g->unk_00) + g->unk_10;
-    { u32 t = (u64)g->unk_00 >> 32; l.port[0] = (u64)t >> 16; }
+    l.port[0] = (u32)(((g->unk_00 >> 32) * 0x10000) >> 32);
     g->unk_00 = func_02133100(g->unk_08, g->unk_00) + g->unk_10;
-    { u32 t = (u64)g->unk_00 >> 32; l.port[1] = (u64)t >> 16; }
+    l.port[1] = (u32)(((g->unk_00 >> 32) * 0x10000) >> 32);
     if (func_ov065_02261758(self, &l.res)) {
         return l.res;
     }

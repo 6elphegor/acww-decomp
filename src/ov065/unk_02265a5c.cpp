@@ -176,36 +176,48 @@ void func_ov065_02265b9c(St *st, u8 *buf) {
             h = p[0];
             n = p[3] + ((p[1] << 16) + (p[2] << 8));
             p += 4;
-            switch (h) {
-            case 1:
-                if (st->unk_428 != 0 && st->unk_429 == 0) {
-                    func_ov065_02266744(st, p);
-                }
-                break;
-            case 2:
-                func_ov065_022668cc(st, p);
-                break;
-            case 0xb:
-                func_ov065_02266948(st, p);
-                break;
-            case 0xe:
-                st->unk_429 = 4;
-                break;
-            case 0x14:
-                func_ov065_02266110(st, p);
-                break;
-            case 0x10:
-                func_ov065_02266308(st, p);
-                break;
-            default:
-                st->unk_429 = 9;
-                break;
+            if (h > 0xb) goto hi;
+            if (h >= 0xb) goto c11;
+            if (h > 2) goto dflt;
+            if (h < 1) goto dflt;
+            if (h == 1) goto c1;
+            switch (h) { case 2: goto c2; }
+            goto dflt;
+        hi:
+            if (h > 0x14) goto dflt;
+            if (h < 0xe) goto dflt;
+            if (h == 0xe) goto c14;
+            if (h == 0x10) goto c16;
+            switch (h) { case 0x14: goto c20; }
+            goto dflt;
+        c1:
+            if (st->unk_428 != 0 && st->unk_429 == 0) {
+                func_ov065_02266744(st, p);
             }
+            goto join;
+        c16:
+            func_ov065_02266308(st, p);
+            goto join;
+        c2:
+            func_ov065_022668cc(st, p);
+            goto join;
+        c11:
+            func_ov065_02266948(st, p);
+            goto join;
+        c14:
+            st->unk_429 = 4;
+            goto join;
+        c20:
+            func_ov065_02266110(st, p);
+            goto join;
+        dflt:
+            st->unk_429 = 9;
+        join:
             n4 = n + 4;
             func_ov065_022679f8(st->unk_2c0, p - 4, n4);
             func_ov065_02267480(st->unk_378, p - 4, n4);
             p += n;
-            len -= n4;
+            len -= n + 4;
             if (len == 0) {
                 break;
             }
