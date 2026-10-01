@@ -7994,6 +7994,7 @@ _ZN12Unk_020e0cf4D2Ev kind:function(thumb,size=0x18) addr:0x02088cd0
 _ZN12Unk_020e0cf4D1Ev kind:function(thumb,size=0x18) addr:0x02088ce8
 _ZN12Unk_02088d00C1Ev kind:function(thumb,size=0x1c) addr:0x02088d00
 _ZN12Unk_020e0cf4C1Ev kind:function(thumb,size=0x1c) addr:0x02088d1c
+_ZN12Unk_020e0cf4C2Ev kind:label(thumb) addr:0x02088d1c
 _ZN12Unk_020e0d0813func_02088d38Ej kind:function(thumb,size=0x1e) addr:0x02088d38
 func_02088d58 kind:function(thumb,size=0x290) addr:0x02088d58
 _ZN12Unk_020e0d0813func_02088fe8EPS_ kind:function(thumb,size=0x56) addr:0x02088fe8
