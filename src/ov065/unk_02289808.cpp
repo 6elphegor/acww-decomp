@@ -73,7 +73,7 @@ s32 func_ov065_0228a76c(Unk_ov065_02289808_Ctx *);
 void *func_ov065_022786bc(s32, s32, s32);
 s32 func_ov065_02278658(void *, void *);
 s32 func_ov065_02278684(void *);
-s32 func_ov065_0228a678(Unk_ov065_02289808_Ctx *, u8 *);
+s32 func_ov065_0228a678(Unk_ov065_02289808_Ctx *, u8 *, s32);
 s32 func_ov065_0228a20c(Unk_ov065_02289808_Ctx *, u8 *);
 s32 func_ov065_0228a218(Unk_ov065_02289808_Ctx *, u8 *, s32);
 
@@ -207,23 +207,20 @@ s32 func_ov065_0228993c(Unk_ov065_02289808_Ctx *c) {
 }
 
 s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
-    s32 r = 0;
-    volatile s32 z;
-    u32 lw;
-    u8 *p;
     u8 *d;
-    u16 *lp;
-    if (c->unk_80 >= 3) {
-        z = r;
-        lp = (u16 *)&lw;
-        do {
-            Get16((u8 *)&lw, c->unk_7c);
-            *lp = HTONS(*lp);
-            if (*lp > 0x1000) {
+    s32 r = 0;
+    u16 ml;
+    u8 *p;
+    while (c->unk_80 >= 3) {
+        {
+            d = (u8 *)&ml;
+            Get16(d, c->unk_7c);
+            ml = HTONS(ml);
+            if (ml > 0x1000) {
                 r = 4;
                 break;
             }
-            if (c->unk_80 < *lp) {
+            if (c->unk_80 < ml) {
                 return 0;
             }
             p = c->unk_7c;
@@ -231,31 +228,32 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
             case 0:
                 break;
             case 1:
-                r = func_ov065_02289e88(c, p + 3, *lp - 3);
+                r = func_ov065_02289e88(c, p + 3, ml - 3);
                 break;
             case 2:
-                r = func_ov065_02289b28(c, p + 3, *lp - 3);
+                r = func_ov065_02289b28(c, p + 3, ml - 3);
                 break;
             case 3:
-                if (func_ov065_02278ca0(c->unk_4b0, p, *lp, z) <= 0) {
+                if (func_ov065_02278ca0(c->unk_4b0, p, ml, 0) <= 0) {
                     return 3;
                 }
                 break;
             case 4:
-                r = func_ov065_02289bdc(c, p + 3, *lp - 3);
+                r = func_ov065_02289bdc(c, p + 3, ml - 3);
                 break;
             case 5:
-                r = func_ov065_02289c34(c, p + 3, *lp - 3);
+                r = func_ov065_02289c34(c, p + 3, ml - 3);
                 break;
             case 6:
-                r = func_ov065_02289d44(c, p + 3, *lp - 3);
+                r = func_ov065_02289d44(c, p + 3, ml - 3);
                 break;
             }
-            c->unk_80 = c->unk_80 - *lp;
+            c->unk_80 = c->unk_80 - ml;
             if (c->unk_80 != 0 && c->unk_7c != 0) {
-                func_021289b4(c->unk_7c, c->unk_7c + *lp, c->unk_80);
+                func_021289b4(c->unk_7c, c->unk_7c + ml, c->unk_80);
             }
-        } while (r == 0 && c->unk_80 >= 3);
+        }
+        if (r != 0) break;
     }
     if (r != 0) {
         func_ov065_0228aca8(c);
@@ -496,9 +494,10 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         if (n < 1) goto end;
         a = (p[0] ^ 0xec) + 2;
         if (n < a) goto end;
-        b = a + (p[a - 1] ^ 0xea);
+        l = p[a - 1] ^ 0xea;
+        b = a + l;
         if (n < b) goto end;
-        func_ov065_0228a678(c, p + a);
+        func_ov065_0228a678(c, p + a, l);
         c->unk_5c8 = 1;
         p += b;
         n -= b;

@@ -135,7 +135,7 @@ void func_021289b4(void *, void *, s32);
 char *func_02129f1c(char *, char *);
 u32 func_0212a060(char *, char *);
 char *func_0212a120(char *, s32);
-s32 func_0212a15c(char *, char *);
+s32 func_0212a15c(char *, char *, s32);
 s32 func_0212b770(char *);
 s32 func_021130d0(char *, char *, ...);
 
@@ -387,19 +387,26 @@ s32 func_ov065_0227acf8(Unk_ov065_0227acfc_Task *t) {
     return t->unk_10;
 }
 
+// byte-sized unsigned enum: an enum-typed zero is not constant-folded/shared with later zeros
+#pragma enumsalwaysint off
+enum Unk_ov065_0227acfc_Z { Unk_ov065_0227acfc_Z_0 = 0, Unk_ov065_0227acfc_Z_FF = 0xff };
+#pragma enumsalwaysint reset
+
 Unk_ov065_0227acfc_Task *func_ov065_0227acfc(void) {
     Unk_ov065_0227acfc_Task *t = (Unk_ov065_0227acfc_Task *)func_ov065_02277af0(0x14);
     u8 *p;
     u32 i;
     u8 *q;
     u8 *k;
+    Unk_ov065_0227acfc_Z z;
     if (t == NULL) {
         return NULL;
     }
     q = (u8 *)t;
     k = (u8 *)0x14;
+    z = Unk_ov065_0227acfc_Z_0;
     do {
-        *q++ = 0;
+        *q++ = z;
         k--;
     } while (k != NULL);
     t->unk_10 = 1;
@@ -453,16 +460,15 @@ void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self) {
 }
 
 void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
-    char *x;
-    char *volatile digits;
     s32 len;
     u8 buf[0x1000];
     s32 r4;
     s32 off;
     u8 *p;
-    char *q;
     u8 *rest;
     s32 rem;
+    char *q;
+    char *digits;
     s32 st;
     char *e;
     len = 0x1000;
@@ -568,37 +574,34 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
             return;
         }
     }
-    x = func_02129f1c((char *)p, data_ov065_0228cc8c);
-    if (x != NULL) {
+    q = func_02129f1c((char *)p, data_ov065_0228cc8c);
+    if (q != NULL) {
         s32 n;
         char *d0;
         s32 dl;
         char *t;
         Unk_ov065_0227ae94_Blk hb = *(Unk_ov065_0227ae94_Blk *)data_ov065_0228cc58;
         char *hdr = hb.b;
-        t = *(char *volatile *)&x;
-        digits = t;
-        t += 0x10;
-        digits = t;
+        e = q + 0x10;
+        t = e;
         n = func_021277d4(hdr);
         while (t != NULL && *t != 0 && *t != 10 && *t != 13 && *t != 0x20) {
             t++;
         }
-        d0 = digits;
-        dl = t - d0;
+        dl = t - e;
         if (dl > n) {
             self->unk_fc = 1;
             self->unk_38 = 0x10;
             return;
         }
         if (n == dl) {
-            if (func_0212a15c(d0, hdr) >= 0) {
+            if (func_0212a15c(e, hdr, dl) >= 0) {
                 self->unk_fc = 1;
                 self->unk_38 = 0x10;
                 return;
             }
         }
-        self->unk_104 = func_0212b770(digits);
+        self->unk_104 = func_0212b770(e);
     }
     self->unk_110 = func_02129f1c((char *)p, data_ov065_0228cc9c) != NULL ? 1 : 0;
     if (self->unk_110 != 0) {
@@ -612,7 +615,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
         return;
     }
     self->unk_10 = 8;
-    if (x != NULL) {
+    if (q != NULL) {
         if (self->unk_104 == 0) {
             self->unk_fc = 1;
             return;

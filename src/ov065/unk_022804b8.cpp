@@ -444,6 +444,11 @@ s32 func_ov065_022809a4(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_0228085
     return 0;
 }
 
+// byte-sized unsigned enum: an enum-typed zero is not constant-folded/shared with later zeros
+#pragma enumsalwaysint off
+enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF = 0xff };
+#pragma enumsalwaysint reset
+
 s32 func_ov065_02280a2c(void *h, Unk_ov065_02280854_Node *n) {
     Unk_ov065_02280a2c_Ctx *c = *(Unk_ov065_02280a2c_Ctx **)h;
     Unk_ov065_02280a2c_Wrap w;
@@ -509,14 +514,16 @@ s32 func_ov065_02280a2c(void *h, Unk_ov065_02280854_Node *n) {
                 u8 *m = (u8 *)func_ov065_02277af0(0x10);
                 u8 *q;
                 u8 *k;
+                Unk_ov065_02280a2c_Z z;
                 if (m == 0) {
                     func_ov065_02283460(h, data_ov065_0228d8dc);
                     return 1;
                 }
                 q = m;
                 k = (u8 *)0x10;
+                z = Unk_ov065_02280a2c_Z_0;
                 do {
-                    *q++ = 0;
+                    *q++ = z;
                     k--;
                 } while (k != 0);
                 *(s32 *)m = n->unk_1c;

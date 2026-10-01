@@ -340,9 +340,9 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
                 return;
             }
             l.out.unk_000[0] = 7;
-            *(Unk_ov065_0228758c_B4 *)(l.out.unk_000 + l.out.unk_800) = *(Unk_ov065_0228758c_B4 *)body;
+            *(n ? (Unk_ov065_0228758c_B4 *)(l.out.unk_000 + l.out.unk_800) : (Unk_ov065_0228758c_B4 *)(l.out.unk_000 + l.out.unk_800)) = *(Unk_ov065_0228758c_B4 *)body;
             l.out.unk_800 = l.out.unk_800 + 4;
-            *(Unk_ov065_0228758c_B4 *)&l.x = *(Unk_ov065_0228758c_B4 *)body;
+            *(n ? (Unk_ov065_0228758c_B4 *)&l.x : (Unk_ov065_0228758c_B4 *)&l.x) = *(Unk_ov065_0228758c_B4 *)body;
             if (func_ov065_022877d4(q, l.x) == 0) {
                 func_ov065_02287828(q, (u8 *)body + 4, n - 4);
             }
@@ -352,6 +352,8 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
         case 5:
         case 7:
         case 8:
+            return;
+        default:
             return;
         }
         func_ov065_02278c64(q->unk_00, &l.out, l.out.unk_800, 0, addr, 8);

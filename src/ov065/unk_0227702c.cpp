@@ -500,13 +500,12 @@ u32 func_ov065_022778b0(u32 n) {
         data_ov065_02290f7c.unk_10 = 0x269ec3;
     }
     {
-        u64 v = data_ov065_02290f7c.unk_08 * data_ov065_02290f7c.unk_00 + data_ov065_02290f7c.unk_10;
-        data_ov065_02290f7c.unk_00 = v;
-        hi = (u32)(v >> 32);
-        if (nn != 0) {
-            hi = (u32)((hi * (u64)nn) >> 32);
+        data_ov065_02290f7c.unk_00 = data_ov065_02290f7c.unk_08 * data_ov065_02290f7c.unk_00 + data_ov065_02290f7c.unk_10;
+        if (nn == 0) {
+            return (u32)(data_ov065_02290f7c.unk_00 >> 32);
+        } else {
+            return (u32)(((data_ov065_02290f7c.unk_00 >> 32) * nn) >> 32);
         }
-        return hi;
     }
 }
 

@@ -582,44 +582,28 @@ s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
 void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
 {
-    volatile s32 o1, z1, o2, z2, m2, m1, m3, m4;
-    volatile s32 t;
+    // No volatiles: the eight stack slots are the loop's literal 0/1 constants, hoisted out of the
+    // loop and spilled (no free register); the ninth slot is the spilled temp of (i ^ a) & 1.
     s32 acc, i;
-    s32 a, b, ta, tb;
+    s32 b, a, ta, tb;
 
     ctx->unk_74[0] = (s8)(func_02128c70() % 0x5d + 0x21);
     acc = 0;
     i = 1;
-    z1 = 0;
-    o1 = 1;
-    z2 = 0;
-    o2 = 1;
-    m1 = 1;
-    m2 = 1;
-    m3 = 1;
-    m4 = 1;
     do {
-        s32 v;
         a = ctx->unk_74[i - 1];
         b = ctx->unk_74[0];
-        ta = a < b ? o1 : z1;
-        tb = b < 0x4f ? o2 : z2;
-        b = b & m1;
-        t = i;
-        t ^= a;
-        t &= m2;
-        acc = acc ^ t;
-        v = b ^ acc;
-        v = v ^ tb;
-        acc = v;
-        acc = acc ^ ta;
+        ta = a < b;
+        tb = b < 0x4f;
+        b &= 1;
+        acc ^= (i ^ a) & 1;
+        b ^= acc;
+        b ^= tb;
+        acc = b;
+        acc ^= ta;
         ctx->unk_74[i] = (s8)(func_02128c70() % 0x5d + 0x21);
-        if (acc != 0 && (ctx->unk_74[i] & m3) == 0) {
-            goto inc;
-        }
-        if (acc == 0 && (ctx->unk_74[i] & m4) == 1) {
-        inc:
-            ctx->unk_74[i] = (s8)(ctx->unk_74[i] + 1);
+        if ((acc != 0 && (ctx->unk_74[i] & 1) == 0) || (acc == 0 && (ctx->unk_74[i] & 1) == 1)) {
+            ctx->unk_74[i]++;
         }
         i++;
     } while (i < 8);

@@ -118,7 +118,7 @@ s32 func_ov065_02278c44(s32 a, s32 b, s32 c, void *val, s32 *len) {
 
 s32 func_ov065_02278c64(s32 a, s32 b, s32 c, u32 d, Unk_ov065_02278c64_Sa *addr, u32 len) {
     Unk_ov065_02278c64_Sa l;
-    l = *addr;
+    *(len ? &l : &l) = *addr;
     l.b[0] = len;
     return func_ov065_02278dec(func_ov065_0226149c(a, b, c, d, &l), -1);
 }

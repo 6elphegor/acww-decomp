@@ -551,22 +551,21 @@ extern "C" u32 func_ov065_022871ac() {
     if (list == NULL) {
         return r;
     }
-    u32 off = r;
-    u32 k = 0x100007f;
-    u32 *e;
-    for (;;) {
-        e = *(u32 **)(list->unk_0c + off);
+    // in_addr.s_addr is unsigned long, the result is unsigned int: the long->int copy is not propagated
+    s32 i;
+    unsigned long *e;
+    for (i = 0;; i++) {
+        e = ((unsigned long **)list->unk_0c)[i];
         if (e == NULL) {
-            goto done;
+            break;
         }
-        if (*e != k) {
-            r = *(s32 *)e;
-            if (func_ov065_02278dfc(e) != 0) {
-                return r;
-            }
+        if (*e == 0x100007f) {
+            continue;
         }
-        off += 4;
+        r = *e;
+        if (func_ov065_02278dfc(e) != 0) {
+            return r;
+        }
     }
-done:
     return r;
 }

@@ -137,17 +137,7 @@ func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig 
 func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
 func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
 func_ov065_022668cc ov065_012/ov065_012.cpp  # sp2p3 -O4,p; adds r4,#0x23 / ldrb r6 order swapped
-func_ov065_022778b0 ov065_039/ov065_039.cpp  # -O4,p; RNG: movs r1,#0 scheduled before cmp r4,#0 (orig after beq)
-func_ov065_02278c64 ov065_042/ov065_042.cpp  # -O4,p; 8-byte sockaddr copy: src/dst pointer regs swapped
-func_ov065_0227acfc ov065_045/ov065_045.cpp  # -O4,p; 0x14 zero loop: counter r0/zero r1 vs orig r1/r0 (pointer-counter form)
-func_ov065_0227ae94 ov065_045/ov065_045.cpp  # -O4,p; HTTP header parse: digits/len-diff regs r1<->r2 around strcmp
 func_ov065_022749f8 ov065_035/ov065_035.cpp  # -O4,p; 20-case dispatcher: 4 small regalloc/frame-anchor spots, volatile ub/ps hack for frame
-func_ov065_02280a2c ov065_054/ov065_054.cpp  # -O4,p; 16-byte zero loop counter/zero regs swapped (pointer-counter form), shared-return +2
-func_ov065_022871ac ov065_063/ov065_063.cpp  # -O4,p; r=*e: ldr r6,[r0] vs orig adds r6,r1,#0 (1 instr)
-func_ov065_0228758c ov065_064/ov065_064.cpp  # -O4,p; QR packet handler case 6: which sp-address is CSE'd (x base vs out.len)
-func_ov065_0228aa34 ov065_069/ov065_069.cpp  # -O4,p; random key gen w/ parity: a in r4 vs r0, t sequence reloads (86 lines)
-func_ov065_02289a00 ov065_068/ov065_068.cpp  # -O4,p; msg dispatcher: two same-address sp regs (r6/r7) merged by mwcc (~78 lines)
-func_ov065_02289f28 ov065_068/ov065_068.cpp  # -O4,p; b = a + (p[a-1]^0xea): r2/r3 swap
 func_ov065_02281bf4 ov065_056/ov065_056.cpp  # -O4,p; 0x139c ghttp request builder/parser: r4-r7 class permutation only (allocator near-tie)
 func_ov068_022645dc ov068_008/ov068_008.cpp  # Thumb -O4,s C++; missing adds r0,r0,#0 before cmp #1 (2 bytes)
 func_ov073_02271484 ov073_000/ov073_000.cpp  # Thumb -O4,s C++; vfunc_18 switch tree: orig table under cmp 0;bge with no upper check (goto_try.cpp gets closer)
