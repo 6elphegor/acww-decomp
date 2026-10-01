@@ -11119,7 +11119,9 @@ func_020b4f18 kind:function(thumb,size=0x40) addr:0x020b4f18
 func_020b4f58 kind:function(thumb,size=0x1e) addr:0x020b4f58
 func_020b4f78 kind:function(thumb,size=0x14) addr:0x020b4f78
 func_020b4f8c kind:function(thumb,size=0x34) addr:0x020b4f8c
+_ZN12Unk_020b4f8cC1Eh16Unk_020b4f8c_Vecjshhsh kind:label(thumb) addr:0x020b4f8c
 func_020b4fc0 kind:function(thumb,size=0x2) addr:0x020b4fc0
+_ZN12Unk_020b4f8cD1Ev kind:label(thumb) addr:0x020b4fc0
 func_020b4fc4 kind:function(thumb,size=0x20) addr:0x020b4fc4
 func_020b4fe4 kind:function(thumb,size=0xc) addr:0x020b4fe4
 func_020b4ff0 kind:function(thumb,size=0x6) addr:0x020b4ff0
