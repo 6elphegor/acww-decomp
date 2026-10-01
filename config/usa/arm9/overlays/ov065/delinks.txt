@@ -56,14 +56,16 @@ src/ov065/unk_02265a5c.cpp:
 src/ov065/unk_0226650c.cpp:
     .text       start:0x0226650c end:0x022671a0
 
-src/ov065/unk_022671a0.cpp:
-    .text       start:0x022671a0 end:0x02267ac0
+src/ov065/unk_ov065_022671a0.cpp:
+    complete
+    .text       start:0x022671a0 end:0x0226795c
+    .data       start:0x0228b4b0 end:0x0228b630
+    .bss        start:0x02290438 end:0x022905a8
 
-src/ov065/unk_02267ac0.cpp:
-    .text       start:0x02267ac0 end:0x02268470
-
-src/ov065/unk_02268470.cpp:
-    .text       start:0x02268470 end:0x02268c38
+src/ov065/unk_ov065_0226795c.cpp:
+    complete
+    .text       start:0x0226795c end:0x02268c38
+    .data       start:0x0228b630 end:0x0228b670
 
 src/ov065/unk_ov065_02268c38.cpp:
     complete
@@ -219,28 +221,33 @@ src/ov065/unk_02281790.cpp:
     .text       start:0x02281790 end:0x02282f90
 
 src/ov065/unk_02282f90.cpp:
-    .text       start:0x02282f90 end:0x022838c4
+    .text       start:0x02282f90 end:0x02283720
 
-src/ov065/unk_022838c4.cpp:
-    .text       start:0x022838c4 end:0x02284240
+src/ov065/unk_ov065_02283720.cpp:
+    complete
+    .text       start:0x02283720 end:0x02283f34
+    .data       start:0x0228df74 end:0x0228e14c
+    .bss        start:0x022910ec end:0x02291504
 
-src/ov065/unk_02284240.cpp:
-    .text       start:0x02284240 end:0x02284b8c
+src/ov065/unk_ov065_02283f34.cpp:
+    complete
+    .text       start:0x02283f34 end:0x02285778
+    .data       start:0x0228e14c end:0x0228e158
 
-src/ov065/unk_02284b8c.cpp:
-    .text       start:0x02284b8c end:0x02285630
+src/ov065/unk_ov065_02285778.cpp:
+    complete
+    .text       start:0x02285778 end:0x02286934
+    .data       start:0x0228e158 end:0x0228e16c
+    .bss        start:0x02291504 end:0x02291534
 
-src/ov065/unk_02285630.cpp:
-    .text       start:0x02285630 end:0x02285f3c
-
-src/ov065/unk_02285f3c.cpp:
-    .text       start:0x02285f3c end:0x022868b0
-
-src/ov065/unk_022868b0.cpp:
-    .text       start:0x022868b0 end:0x02287200
+src/ov065/unk_ov065_02286934.cpp:
+    complete
+    .text       start:0x02286934 end:0x02287390
+    .data       start:0x0228e16c end:0x0228e1b4
+    .bss        start:0x02291534 end:0x02291748
 
 src/ov065/unk_02287200.cpp:
-    .text       start:0x02287200 end:0x02287b18
+    .text       start:0x02287390 end:0x02287b18
 
 src/ov065/unk_02287b18.cpp:
     .text       start:0x02287b18 end:0x022884fc
