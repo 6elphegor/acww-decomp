@@ -45,6 +45,9 @@ CONFIG = Path("config/usa/arm9")
 
 # ---------------------------------------------------------------- symbols.txt
 RENAMES = {}  # (module, address) -> new name, from a renames.txt next to the object being checked
+ALIASES = []  # (module, existing name, second name), from an aliases.txt next to the object being checked
+# symbols the linker script defines
+LCF_SYMBOL = r"OVERLAY_\d+_ID"
 
 
 def load_renames(path):
@@ -56,6 +59,12 @@ def load_renames(path):
             if len(f) == 3:
                 RENAMES[(f[0], int(f[1], 16))] = f[2]
         print(f"(applying {len(RENAMES)} renames from {p})")
+    p = Path(path).parent / "aliases.txt"
+    if p.exists():
+        for line in p.read_text().splitlines():
+            f = line.split("#", 1)[0].split()
+            if len(f) == 3:
+                ALIASES.append(tuple(f))
 
 
 def symbol_lines(p, mod):
@@ -76,6 +85,9 @@ def load_symbols():
     # a rename for an address without a symbol yet (a vtable named at its start, 8 bytes before dsd's label)
     for (mod, addr), name in RENAMES.items():
         out.setdefault(name, (mod, addr))
+    for mod, existing, new in ALIASES:
+        if existing in out:
+            out.setdefault(new, out[existing])
     return out
 
 
@@ -320,7 +332,8 @@ def cmd_undef(objpath):
     o = Obj(objpath)
     syms = load_symbols()
     own = {y[0] for y in o.syms if y[5] != 0}
-    missing = sorted({y[0] for y in o.syms if y[5] == 0 and y[0] and y[0] not in own and y[0] not in syms})
+    missing = sorted({y[0] for y in o.syms if y[5] == 0 and y[0] and y[0] not in own and y[0] not in syms
+                      and not re.fullmatch(LCF_SYMBOL, y[0])})
     for m in missing:
         print("MISSING", m)
     print(f"{len(missing)} unresolved")

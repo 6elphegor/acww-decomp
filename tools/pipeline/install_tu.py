@@ -15,6 +15,9 @@ Existing units of the module are adjusted so nothing overlaps the TU's .text ran
   - complete units are never touched (overlap with one is an error), unless --replace is given: then a complete
     unit that lies entirely inside the TU's .text range is removed with all its sections (this is how the code-only
     pieces of main that were linked early are replaced by their real translation unit).
+aliases.txt next to the source (if present) is applied first: `module existingname secondname` per line adds the
+second name as a label of an existing function (tools/pipeline/alias.py; e.g. a runtime helper that linked units
+already call by another name).
 renames.txt next to the source (if present) is applied: `module hexaddr newname` per line. A `_ZTV...` name whose
 address has no symbol but address+8 has a `data_` label is a vtable: the label is replaced by the name at the
 vtable's start and every relocation to the label becomes `to:<start> add:0x8` (tools/pipeline/vtable_rename.py).
@@ -194,6 +197,17 @@ if is_main:
         print(f"bss {a:#010x}..{b:#010x} listed as {bss_name} in {BSS_CFG / 'delinks.txt'}")
     if kept != bblocks:
         write_delinks(BSS_CFG / "delinks.txt", bhead, kept)
+
+ali = src.parent / "aliases.txt"
+if ali.exists():
+    for line in ali.read_text().splitlines():
+        p = line.split("#", 1)[0].split()
+        if len(p) != 3:
+            continue
+        sp = vtable_rename.module_dir(p[0]) / "symbols.txt"
+        if any(l.split(" ", 1)[0] == p[2] for l in sp.read_text().splitlines()):
+            continue
+        subprocess.run([sys.executable, str(Path(__file__).parent / "alias.py"), str(sp), p[1], p[2]], check=True)
 
 ren = src.parent / "renames.txt"
 if ren.exists():
