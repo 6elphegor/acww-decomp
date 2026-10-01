@@ -8022,8 +8022,7 @@ _ZN12Unk_020e0cf48vfunc_00Ev kind:function(thumb,size=0x6) addr:0x02088cc8
 _ZN12Unk_020e0cf4D2Ev kind:function(thumb,size=0x18) addr:0x02088cd0
 _ZN12Unk_020e0cf4D1Ev kind:function(thumb,size=0x18) addr:0x02088ce8
 _ZN12Unk_02088d00C1Ev kind:function(thumb,size=0x1c) addr:0x02088d00
-_ZN12Unk_020e0cf4C1Ev kind:function(thumb,size=0x1c) addr:0x02088d1c
-_ZN12Unk_020e0cf4C2Ev kind:label(thumb) addr:0x02088d1c
+_ZN12Unk_020e0cf4C2Ev kind:function(thumb,size=0x1c) addr:0x02088d1c
 _ZN12Unk_020e0d0813func_02088d38Ej kind:function(thumb,size=0x1e) addr:0x02088d38
 func_02088d58 kind:function(thumb,size=0x290) addr:0x02088d58
 _ZN12Unk_020e0d0813func_02088fe8EPS_ kind:function(thumb,size=0x56) addr:0x02088fe8
@@ -12839,7 +12838,6 @@ data_020cfaa4 kind:data(any) addr:0x020cfaa4
 data_020cfac0 kind:data(any) addr:0x020cfac0
 data_020cfadc kind:data(any) addr:0x020cfadc
 data_020cfafc kind:data(any) addr:0x020cfafc
-data_020cffff kind:data(any) addr:0x020cffff
 data_020d021c kind:data(any) addr:0x020d021c
 data_020d0228 kind:data(any) addr:0x020d0228
 data_020d0234 kind:data(any) addr:0x020d0234

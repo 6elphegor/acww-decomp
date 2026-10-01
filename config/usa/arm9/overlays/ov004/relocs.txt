@@ -11976,8 +11976,6 @@ from:0x0224027c kind:load to:0x0224db78 module:overlay(4)
 from:0x02240280 kind:load to:0x0204a9ad module:main
 from:0x02240288 kind:load to:0x0224db5c module:overlay(4)
 from:0x0224028c kind:load to:0x0224db98 module:overlay(4)
-from:0x0224042c kind:load to:0x0218ad75 module:autoload(3)
-from:0x02240470 kind:load to:0x0218a06d module:autoload(3)
 from:0x022406bc kind:load to:0x022406f4 module:overlay(4)
 from:0x022406c4 kind:load to:0x02240784 module:overlay(4)
 from:0x022406cc kind:load to:0x022407d4 module:overlay(4)
