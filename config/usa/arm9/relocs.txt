@@ -13090,16 +13090,16 @@ from:0x02041064 kind:load to:0x021c3ca8 module:autoload(3)
 from:0x02041074 kind:thumb_call to:0x0206601c module:main
 from:0x0204107e kind:thumb_call_arm to:0x020ed344 module:autoload(2)
 from:0x02041084 kind:thumb_call_arm to:0x020ecc6c module:autoload(2)
-from:0x02041090 kind:load to:0x020da258 module:main
+from:0x02041090 kind:load to:0x020da250 add:0x8 module:main
 from:0x02041094 kind:load to:0x020d8c74 add:0x8 module:main
 from:0x020410a4 kind:thumb_call to:0x0206601c module:main
 from:0x020410ae kind:thumb_call_arm to:0x020ed344 module:autoload(2)
-from:0x020410bc kind:load to:0x020da258 module:main
+from:0x020410bc kind:load to:0x020da250 add:0x8 module:main
 from:0x020410c0 kind:load to:0x020d8c74 add:0x8 module:main
 from:0x020410c8 kind:thumb_call_arm to:0x020ed378 module:autoload(2)
 from:0x020410d8 kind:thumb_call to:0x02066040 module:main
 from:0x020410e4 kind:load to:0x020d8c74 add:0x8 module:main
-from:0x020410e8 kind:load to:0x020da258 module:main
+from:0x020410e8 kind:load to:0x020da250 add:0x8 module:main
 from:0x020410f2 kind:thumb_call_arm to:0x020ecc88 module:autoload(2)
 from:0x020410fa kind:thumb_call to:0x020410c4 module:main
 from:0x0204111e kind:thumb_call_arm to:0x021108e8 module:autoload(2)
@@ -18797,9 +18797,9 @@ from:0x020618aa kind:thumb_call to:0x02061888 module:main
 from:0x020618b4 kind:load to:0x020dd060 module:main
 from:0x020618c8 kind:load to:0x020cb5c4 module:main
 from:0x020618d8 kind:thumb_call to:0x0206d86c module:main
-from:0x020618ec kind:load to:0x021c7d1c module:autoload(3)
+from:0x020618ec kind:load to:0x021c7cc8 add:0x54 module:autoload(3)
 from:0x020618fc kind:thumb_call to:0x0206d86c module:main
-from:0x02061910 kind:load to:0x021c7d1c module:autoload(3)
+from:0x02061910 kind:load to:0x021c7cc8 add:0x54 module:autoload(3)
 from:0x02061926 kind:thumb_call to:0x0206d798 module:main
 from:0x0206192c kind:thumb_call to:0x0206d86c module:main
 from:0x0206194c kind:load to:0x021c7cc8 module:autoload(3)
@@ -38706,25 +38706,25 @@ from:0x020b77d0 kind:load to:0x021ef4c8 module:autoload(3)
 from:0x020b77d4 kind:load to:0x020b774d module:main
 from:0x020b77e4 kind:thumb_call to:0x020b7ca4 module:main
 from:0x020b77ea kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x020b77f8 kind:load to:0x020e450c module:main
+from:0x020b77f8 kind:load to:0x020e4504 add:0x8 module:main
 from:0x020b7808 kind:thumb_call to:0x020b7ca4 module:main
-from:0x020b7814 kind:load to:0x020e450c module:main
+from:0x020b7814 kind:load to:0x020e4504 add:0x8 module:main
 from:0x020b7828 kind:thumb_call to:0x020b7cc8 module:main
-from:0x020b7868 kind:load to:0x020e450c module:main
+from:0x020b7868 kind:load to:0x020e4504 add:0x8 module:main
 from:0x020b7874 kind:load to:0x02038451 module:main
 from:0x020b787c kind:thumb_call to:0x020b50e8 module:main
 from:0x020b78a4 kind:thumb_call to:0x020b73e0 module:main
-from:0x020b78b0 kind:load to:0x021ef548 module:autoload(3)
+from:0x020b78b0 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
 from:0x020b78b4 kind:load to:0x021ef4c8 module:autoload(3)
-from:0x020b78c0 kind:load to:0x021ef548 module:autoload(3)
-from:0x020b78d0 kind:load to:0x021ef548 module:autoload(3)
+from:0x020b78c0 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
+from:0x020b78d0 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
 from:0x020b78d4 kind:load to:0x021ef4c8 module:autoload(3)
 from:0x020b78d8 kind:load to:0x020b73c1 module:main
-from:0x020b78e8 kind:load to:0x021ef548 module:autoload(3)
+from:0x020b78e8 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
 from:0x020b78ec kind:load to:0x021ef4c8 module:autoload(3)
 from:0x020b78f0 kind:load to:0x020b73c1 module:main
 from:0x020b7904 kind:load to:0x020d0dc4 module:main
-from:0x020b7908 kind:load to:0x021ef548 module:autoload(3)
+from:0x020b7908 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
 from:0x020b790c kind:load to:0x021ef4c8 module:autoload(3)
 from:0x020b7910 kind:load to:0x020b73c1 module:main
 from:0x020b791c kind:thumb_call to:0x020b50e8 module:main
@@ -38738,7 +38738,7 @@ from:0x020b7996 kind:thumb_call to:0x0206f11c module:main
 from:0x020b799e kind:thumb_call to:0x0206e5ec module:main
 from:0x020b79c6 kind:thumb_call to:0x020b73c0 module:main
 from:0x020b79d4 kind:load to:0x020d0dc4 module:main
-from:0x020b79d8 kind:load to:0x021ef548 module:autoload(3)
+from:0x020b79d8 kind:load to:0x021ef4c8 add:0x80 module:autoload(3)
 from:0x020b79dc kind:load to:0x021ef4c8 module:autoload(3)
 from:0x020b79e4 kind:thumb_call to:0x0206ed8c module:main
 from:0x020b79f2 kind:thumb_call to:0x0206edb0 module:main
