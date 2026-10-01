@@ -47,7 +47,7 @@ s32 func_ov094_02293610(void *p, u32 a);
 s32 func_ov094_02293d9c(void *p, u32 a);
 s32 func_ov094_02293624(void *p, u32 a);
 s32 func_ov094_02293df8(void *p, u32 a);
-s32 func_ov094_02293928(void *p);
+s32 func_ov094_02293928(void *p, s32 x, s32 y);
 void func_ov094_02294318(void *p, u32 a, void *q);
 s32 func_ov094_02294610(void *p);
 s32 func_ov094_022942f4(void *p, u32 a);
@@ -251,7 +251,7 @@ s32 func_ov096_02297de0(S *s, s32 x, s32 y)
 
 BOOL func_ov096_02297e5c(S *s, s32 x, s32 y)
 {
-    if (func_ov094_02293928(s->unk_358)) {
+    if (func_ov094_02293928(s->unk_358, x, y)) {
         return TRUE;
     }
     return FALSE;

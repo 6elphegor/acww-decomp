@@ -331,10 +331,8 @@ func_ov081_0227186c ov081_000/ov081_000.cpp  # Thumb -O4,s C++; extra add r0,sp,
 func_ov092_02291a44 ov092_000/ov092_000.cpp  # Thumb -O4,s C++; first switch tree root 0x18 vs orig 0x23 w/ 0x1a..0x23 table (same unsolved no-upper-check table family as ov073_000)
 func_ov094_02293fc4 ov094_003/ov094_003.cpp  # Thumb -O4,s C++; data base/halfword regs r1<->r2 + extra adds (2 bytes long)
 func_ov093_02291a3c ov093_000/ov093_000.cpp  # Thumb -O4,s C++; last else block arg evaluation order (r3 first via zero r0), 2 bytes long
-func_ov096_02297e5c ov096_005/ov096_005.cpp  # Thumb -O4,s C; ldr r3,=0x358 vs ours r1
 func_ov095_02293a78 ov095_002/ov095_002.cpp  # Thumb -O4,s C; mvns -1 scheduled after 3 zero stores (orig before)
 func_ov095_02293fb4 ov095_002/ov095_002.cpp  # Thumb -O4,s C; second loop counter/zero/temp regs rotated
-func_ov096_0229619c ov096_002/ov096_002.cpp  # Thumb -O4,s C++; switch(unk_bb) cases 0x10/0x11: r1/r2 swapped for const 4/5 and unk_c0 addr
 func_ov095_02292e50 ov095_001/ov095_001.cpp  # Thumb -O4,s C; r5/r6 swapped (p vs s->unk_14) throughout
 func_ov094_022937e4 ov094_002/ov094_002.cpp  # Thumb -O4,s C; ldrh *p into r2 (orig) vs r1 (ours) before cmp 0xfff1
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
@@ -345,7 +343,6 @@ func_ov123_02293bd0 ov123_003/ov123_003.cpp  # Thumb -O4,s C; 4bpp nibble expans
 func_ov128_022942c4 ov128_000/ov128_000.cpp  # Thumb -O4,s C++; 2nd compare unk_2d08 != unk_2d0c: r0/r1 swapped
 func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
 ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
-ov123_002 func_ov123_02293784 — set-pixel: row/p register swap (r1/r2) only; 126 statement permutations + decl hill-climb tried
 ov142_000 func_ov142_02292154 — known unsolved 5-5-5 colour blend (orig extracts y channels eagerly, frame 12 vs 4)
 ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match, remaining diff is double u16 load CSE'd + [sp+4] slot order
 ov145_000 func_ov145_022920b0 — known unsolved 5-5-5 colour blend (inlined; orig extracts arr[7] channels eagerly)

@@ -205,7 +205,7 @@ public:
     s32 func_ov096_022968cc();
     s32 func_ov096_02296bb8(s32 a);
     s32 func_ov096_02296c18();
-    u32 func_ov096_02296f64();
+    u32 func_ov096_02296f64(s32 k);
     s32 func_ov096_0229713c();
     s32 func_ov096_02297160();
     s32 func_ov096_0229741c(u32 a);
@@ -359,14 +359,14 @@ void Unk_ov096_0229aea8::func_ov096_0229619c() {
         break;
     case 0x10:
         unk_c0 = 4;
-        v = func_ov096_02296f64();
+        v = func_ov096_02296f64(4);
         if (Unk_ov096_0229619c_Range(&v, 0x1429, 0x1430)) {
             ok = FALSE;
         }
         break;
     case 0x11:
         unk_c0 = 5;
-        v = func_ov096_02296f64();
+        v = func_ov096_02296f64(5);
         if (Unk_ov096_0229619c_Range(&v, 0x13a0, 0x13a7)) {
             ok = FALSE;
         }

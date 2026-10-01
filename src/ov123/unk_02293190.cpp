@@ -245,11 +245,13 @@ u32 Unk_ov123_022959c4::func_ov123_02293784(u8 x, u8 y, u32 c) {
     }
     u32 *g = func_ov123_0229275c();
     u32 sh = (x & 7) << 2;
-    u32 *row = g + y * 4;
+    u32 *row = g;
+    row += y * 4;
     u32 *p = &row[x >> 3];
     u32 mask = 0xf << sh;
     u32 w = row[x >> 3];
-    if ((u8)(((w & mask) >> sh) & 0xf) == c) {
+    u32 cur = (u8)(((w & mask) >> sh) & 0xf);
+    if (cur == c) {
         return 0;
     }
     *p = w & ~mask;

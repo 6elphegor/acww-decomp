@@ -151,8 +151,10 @@ void func_ov123_02293bd0(S *s)
 {
     u32 *src = (u32 *)func_ov123_0229275c(s);
     u32 *dst = (u32 *)s->unk_e04;
-    s32 i, j, k, m;
-    for (i = 0; i < 0x20; i++) {
+    s32 j, i, k, m;
+    i = 0;
+Li:
+    {
         u32 *d2 = dst;
         for (j = 0; j < 4; j++) {
             u32 *d3 = d2;
@@ -175,6 +177,8 @@ void func_ov123_02293bd0(S *s)
         }
         dst += 0x40;
     }
+    i++;
+    if (i < 0x20) goto Li;
     func_02001f0c(s->unk_e04, s->unk_3004, 0x10, 0x10);
 }
 

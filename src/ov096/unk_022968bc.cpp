@@ -541,6 +541,7 @@ static inline u16 Unk_ov096_022969bc_Ch(s32 n) {
 s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
     u16 loc[3];
     u32 a4, b4, lim;
+    u32 x1, y1;
     if (f != 0 || g != 0) {
         return 1;
     }
@@ -554,8 +555,8 @@ s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
     }
     if (ok) {
         BOOL ok2 = FALSE;
-        u32 x1 = *(volatile u16 *)&loc[1];
-        u32 y1 = *(volatile u16 *)&loc[1];
+        x1 = *(volatile u16 *)&loc[1];
+        y1 = *(volatile u16 *)&loc[1];
         if (y1 >= 0x1531 && x1 <= 0x153a) {
             ok2 = TRUE;
         }
@@ -570,9 +571,11 @@ s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
             } else {
                 rem = 0;
             }
-            *a = Unk_ov096_022969bc_Ch(sum - 1);
+            s32 n1 = sum - 1;
+            *a = Unk_ov096_022969bc_Ch(n1);
             if (rem > 0) {
-                *b = Unk_ov096_022969bc_Ch(rem - 1);
+                s32 n2 = rem - 1;
+                *b = Unk_ov096_022969bc_Ch(n2);
             } else {
                 *b = 0xfff1;
             }
