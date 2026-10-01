@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#pragma opt_strength_reduction off
 
 struct Unk_ov065_0226b488_Rec {
     u8 unk_00;
@@ -429,11 +430,14 @@ s32 func_ov065_0226cd84(u8 *in, u8 *out, u32 len, u32 max) {
             v |= func_ov065_0226ce78(in[full + j]) << ((3 - j) * 6);
             tmp |= v;
         }
+        k = 0;
         if (rem > 0) {
             s32 base = (full * 3) / 4;
-            for (k = 0; k < rem; k++) {
-                out[base + k] = ((u8 *)&tmp)[2 - k];
-            }
+            do {
+                out[base] = ((u8 *)&tmp)[2 - k];
+                base++;
+                k++;
+            } while (k < rem);
         }
     }
     return n;
@@ -480,8 +484,17 @@ void func_ov065_0226cec0(u8 *a, u8 *b) {
         b[j] ^= data_ov065_0228b68c[j];
     }
     func_02116048(b, tmp, 13);
-    for (i = 0; i < 13; i++) {
-        b[data_ov065_0228b374[i]] = tmp[i];
+    {
+        u8 *pt;
+        u8 *pk;
+        i = 0;
+        pt = tmp;
+        pk = (u8 *)data_ov065_0228b374;
+        for (; i < 13; i++) {
+            b[*pk] = *pt;
+            pt++;
+            pk++;
+        }
     }
     for (j = 0; j < 13; j++) {
         b[j] ^= data_ov065_0228b690[j];

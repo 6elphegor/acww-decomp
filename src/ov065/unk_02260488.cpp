@@ -102,7 +102,7 @@ Node *func_ov065_0225f4d4(void *, u32, s32);
 s32 func_ov065_0225f3f8(u32, Node *);
 void func_ov065_0225f4b8(void *);
 void func_ov065_0225f46c(void *, s32);
-void func_ov065_0225f458(void *);
+void func_ov065_0225f458(void *, void *);
 s32 func_ov065_0225f524();
 s32 func_ov065_02261638(void *);
 s32 func_ov065_02262a80();
@@ -481,7 +481,7 @@ s32 func_ov065_02260a84(File *self) {
     Node *n = func_ov065_0225f4d4((void *)func_ov065_02260a00, (u32)self, 1);
     s32 z = 0;
     n->unk_08 = z;
-    func_ov065_0225f458(self);
+    func_ov065_0225f458(self, n);
     return z;
 }
 

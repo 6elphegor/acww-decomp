@@ -26,7 +26,7 @@ struct Unk_ov065_0225faf4_Ctx {
     u16 limit;
     s8 lock;
     u8 pad_ff;
-    Unk_ov065_0225faf4_Node *tail;
+    Unk_ov065_0225faf4_Node *volatile tail;
     Unk_ov065_0225faf4_Node *head;
     u16 used;
     u16 cap;
@@ -133,7 +133,7 @@ void func_02114410(void *m);
 void func_02114480(void *m);
 void func_02116048(const void *src, void *dst, u32 n);
 
-s32 func_ov065_0225f404(Sess *s);
+s32 func_ov065_0225f404(Sess *s, void *m);
 u32 func_ov065_0225f4d4(void *fn, void *s, s32 idx);
 s32 func_ov065_02260f04(Sess *s);
 void func_ov065_022629d0(u16 a, u16 b, void *c);
@@ -212,7 +212,8 @@ s32 func_ov065_0225faf4(Job *j)
 
 s32 func_ov065_0225fb68(Sess *s)
 {
-    Job *j = (Job *)func_ov065_0225f4d4((void *)func_ov065_0225faf4, s, s->unk_72);
+    u32 r0 = func_ov065_0225f4d4((void *)func_ov065_0225faf4, s, s->unk_72);
+    Job *j = (Job *)r0;
     if (j == NULL) {
         return -0x21;
     }
@@ -220,7 +221,7 @@ s32 func_ov065_0225fb68(Sess *s)
     j->unk_12 = s->unk_76;
     j->unk_14 = (void *)s->unk_78;
     s->flags |= 2;
-    return func_ov065_0225f404(s);
+    return func_ov065_0225f404(s, j);
 }
 
 s32 func_ov065_0225fbbc(Sess *s, u16 a, u32 b)
@@ -295,10 +296,8 @@ s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
             }
             s->unk_18 = s->unk_1a;
             s->unk_1c = s->unk_20;
-            Node **pt = &c->tail;
-            Node *tt = *pt;
-            if (tt != NULL) {
-                (*(Node *volatile *)pt)->next = n;
+            if (c->tail != NULL) {
+                c->tail->next = n;
             }
             c->tail = n;
             if (c->head == NULL) {
@@ -385,11 +384,11 @@ s32 func_ov065_0225ff1c(Sess *s)
     if (c->pos < c->limit) {
         return 0;
     }
-    Job *j = (Job *)func_ov065_0225f4d4((void *)func_ov065_0225ff10, s, 0);
+    Job *j = AllocJob((void *)func_ov065_0225ff10, s, 0);
     if (j == NULL) {
         return -0x21;
     }
-    return func_ov065_0225f404(s);
+    return func_ov065_0225f404(s, j);
 }
 
 s32 func_ov065_0225ff64(RJob *j)
@@ -447,12 +446,12 @@ s32 func_ov065_0225ff64(RJob *j)
 
 s32 func_ov065_0226003c(Sess *s, u8 *a, s32 b, u16 *c, u32 *d)
 {
-    RJob *j = (RJob *)func_ov065_0225f4d4((void *)func_ov065_0225ff64, s, 1);
+    RJob *j = (RJob *)AllocJob((void *)func_ov065_0225ff64, s, 1);
     j->unk_10 = a;
     j->unk_14 = b;
     j->unk_18 = c;
     j->unk_1c = d;
-    return func_ov065_0225f404(s);
+    return func_ov065_0225f404(s, j);
 }
 
 u8 *func_ov065_02260070(Sess *s, s32 *outlen, u16 *a, u16 *b, u32 *c)

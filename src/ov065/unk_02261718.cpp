@@ -391,22 +391,21 @@ loop:
         if (len > 0xf0 && p[0] == 2) {
             u32 rx = (BS16(*(u16 *)(p + 4)) << 16) | BS16(*(u16 *)(p + 6));
             if (xid == rx && func_ov065_02264760(p + 0x1c, data_ov065_0228ebf4) == 0) {
-                u32 ip;
-                u8 *end;
                 u8 *o;
+                u8 *end;
+                u32 ip;
                 result = 3;
                 ip = ((u16)(p[0x10] << 8 | p[0x11]) << 16) | (u16)(p[0x12] << 8 | p[0x13]);
                 end = p + len;
-                if (p[0xec] == 0x63 && p[0xed] == 0x82 && p[0xee] == 0x53 && p[0xef] == 0x63) {
-                    o = p + 0xf0;
-                    while (o < end) {
-                        s32 c = *o++;
-                        if (c == 0xff) {
-                            break;
+                if (p[0xec] == 0x63 && p[0xed] == 0x82 && p[0xee] == 0x53 && ((o = p + 0xf0), p[0xef] == 0x63)) {
+                    s32 c;
+                    goto otest;
+                    {
+                    oloop:
+                        if (c == 0) {
+                            goto otest;
                         }
                         switch (c) {
-                        case 0:
-                            continue;
                         case 1:
                             data_ov065_0228eba4 = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
@@ -425,12 +424,15 @@ loop:
                             data_ov065_0228ebdc = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         case 0x35:
-                            if (o[1] == 2) {
+                            switch (o[1]) {
+                            case 2:
                                 data_ov065_0228ebe0 = ip;
                                 result = 1;
-                            } else if (o[1] == 5) {
+                                break;
+                            case 5:
                                 data_ov065_0228ebd8 = ip;
                                 result = 2;
+                                break;
                             }
                             break;
                         case 0x36:
@@ -438,6 +440,13 @@ loop:
                             break;
                         }
                         o += o[0] + 1;
+                    otest:
+                        if (o < end) {
+                            c = *o++;
+                            if (c != 0xff) {
+                                goto oloop;
+                            }
+                        }
                     }
                 }
             }

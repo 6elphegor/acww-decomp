@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#pragma opt_strength_reduction off
 
 // Big-number helpers (little-endian arrays of u16 digits).
 
@@ -180,9 +181,9 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
 void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
 {
     s32 l = func_ov065_02268c20(a, n);
-    s32 i, j, k;
-    u16 *pa;
     u16 *pi;
+    u16 *pa;
+    s32 i, j, k;
     if (l * 2 < n) {
         func_02115fb4(dst + l * 2, 0, (n - l * 2) * 2);
     }
@@ -283,15 +284,25 @@ void func_ov065_022689c0(u16 *a, u32 v, s32 i, s32 n)
 s32 func_ov065_022689e4(u16 *a, u16 *b, s32 n)
 {
     s32 i;
-    for (i = n - 1; i >= 0; i--) {
-        u32 y = b[i];
-        u32 x = a[i];
-        if (x > y) {
-            return 1;
-        }
-        if (x < y) {
-            return -1;
-        }
+    u16 *pb;
+    u16 *pa;
+    i = n - 1;
+    if (i >= 0) {
+        pb = b + i;
+        pa = a + i;
+        do {
+            u32 y = *pb;
+            u32 x = *pa;
+            if (x > y) {
+                return 1;
+            }
+            if (x < y) {
+                return -1;
+            }
+            pb--;
+            pa--;
+            i--;
+        } while (i >= 0);
     }
     return 0;
 }
@@ -318,8 +329,15 @@ void func_ov065_02268a24(u16 *dst, u16 *src, u32 v, s32 n)
     }
     if (dst != src) {
         i++;
-        for (; i < n; i++) {
-            dst[i] = src[i];
+        if (i < n) {
+            u16 *ps2 = src + i;
+            u16 *pd2 = dst + i;
+            do {
+                *pd2 = *ps2;
+                ps2++;
+                pd2++;
+                i++;
+            } while (i < n);
         }
     }
 }
@@ -391,8 +409,15 @@ void func_ov065_02268b28(u16 *dst, u16 *src, u32 c, s32 n)
     }
     if (dst != src) {
         i++;
-        for (; i < n; i++) {
-            dst[i] = src[i];
+        if (i < n) {
+            u16 *ps2 = src + i;
+            u16 *pd2 = dst + i;
+            do {
+                *pd2 = *ps2;
+                ps2++;
+                pd2++;
+                i++;
+            } while (i < n);
         }
     }
 }
