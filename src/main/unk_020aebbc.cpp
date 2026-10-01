@@ -171,7 +171,7 @@ void func_020aed14(const u16 *s) {
     func_02076fc8(func_02063b8c(2) + 4, data_020e2ea8);
 }
 
-void func_020aed48(u32 x) {
+void func_020aed48(s32 x) {
     Obj30 o;
     func_020b3270(&o, x % 12, 10, 0, 0, 0);
     func_0203ce4c(2, &o);

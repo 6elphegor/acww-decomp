@@ -152,9 +152,10 @@ void Unk_020b9fe4::func_020b9fe4() {
     s32 idx = unk_1578;
     s32 blk = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
     if (blk == idx) {
-        if (func_020024f0(unk_1584 + (blk << 5), 6, 32)) {
-            s32 cnt = unk_120c + 1;
+        if (func_020024f0((u8 *)((blk << 5) + (u32)unk_1584), 6, 32)) {
+            s32 cnt = unk_120c;
             idx = idx + 1;
+            cnt = cnt + 1;
             if (idx >= 32) {
                 idx = -1;
                 cnt = 32;
@@ -523,7 +524,9 @@ extern "C" BOOL func_020ba834() {
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 2; j++) {
             if (data_021eff48.unk_1544[i][j] == 0) {
-                if (!(data_021f148c[i][j] = func_020641ec(data_020e4ca4[i][j], (void *)data_021f482c, -4, &data_021f149c[i][j]))) {
+                u8 **dst = &data_021f148c[i][j];
+                *dst = func_020641ec(data_020e4ca4[i][j], (void *)data_021f482c, -4, &data_021f149c[i][j]);
+                if (!*dst) {
                     return FALSE;
                 }
             } else {

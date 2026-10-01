@@ -1,3 +1,4 @@
+// mwcc-version: 1.2/sp2
 #include "Unk_020d8c7c.h"
 
 extern "C" {
@@ -11,7 +12,7 @@ s32 func_0209433c(void);
 void func_0212899c(void *p, s32 v, unsigned long n);
 BOOL func_0200dde0(void *self);
 void func_02005294(void *self);
-void func_020902f8(void);
+void func_020902f8(s32 v);
 void func_02095314(s32 v);
 void func_0209523c(s32 v);
 void func_02034d84(s32 v);
@@ -250,8 +251,8 @@ void Unk_020d6df4::func_02004ce8() {
 }
 
 BOOL Unk_020d6df4::func_02004b64() {
-    if (unk_7ec == 0x6d && -1 != unk_7d0) {
-        func_020902f8();
+    if (unk_7ec == 0x6d && unk_7d0 != -1) {
+        func_020902f8(unk_7d0);
     }
     func_02095314(unk_7fc);
     void *r5 = data_020cbb18;
@@ -303,7 +304,8 @@ Unk_020d6df4::Unk_020d6df4()
     unk_768 = 0x16f;
     unk_76c = 0x16f;
     unk_80 = 2;
-    s32 m1 = -1;
+    enum Unk_020d6df4_M1 { Unk_020d6df4_M1_V = -1 };
+    Unk_020d6df4_M1 m1 = Unk_020d6df4_M1_V;
     unk_c7c = m1;
     unk_c88 = 2;
     unk_c90 = 2;

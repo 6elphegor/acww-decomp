@@ -294,7 +294,7 @@ void func_020b1260(Flags1 *p, s32 bit) {
         Flags1 pk;
         Info info;
         Info *src;
-        lo |= 1 << bit;
+        lo = lo | (1 << bit);
         after = func_020b2c14(lo);
         if (idx < 0x22) {
             src = &data_020d0a7c[idx];

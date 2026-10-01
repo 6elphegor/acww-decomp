@@ -635,12 +635,12 @@ void Unk_0208f6c0::func_0208f6c0() {
 }
 
 void Unk_0208f6c0::func_0208f6f0(Unk_0208f2e8 *src) {
+    s32 i = 0;
     volatile s32 a, b;
-    s32 i;
     u32 *tbl = data_020e13e4[src->unk_00];
     b = 0;
     a = 0;
-    for (i = 0; i < 3; i++) {
+    for (; i < 3; i++) {
         if (tbl[i] != 0) {
             unk_00[i] = func_020641ec(tbl[i], data_021d04a0, 4, a);
         } else {

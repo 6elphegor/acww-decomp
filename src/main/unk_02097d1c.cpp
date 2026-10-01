@@ -329,8 +329,7 @@ void Unk_02097ff4::func_02097ff4(u32 bit)
     if (idx < 2) {
         u32 *q = unk_21fc;
         u32 m = ~(1 << b);
-        u32 v = q[idx];
-        q[idx] = m & v;
+        *(volatile u32 *)&q[idx] = m & *(volatile u32 *)&q[idx];
     }
 }
 
@@ -341,8 +340,7 @@ void Unk_02097ff4::func_0209801c(u32 bit)
     if (idx < 2) {
         u32 *q = unk_21fc;
         u32 m = 1 << b;
-        u32 v = q[idx];
-        q[idx] = m | v;
+        *(volatile u32 *)&q[idx] = m | *(volatile u32 *)&q[idx];
     }
 }
 
@@ -612,7 +610,8 @@ struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){}
 void Unk_02097ff4::func_020984a8()
 {
     if (func_02098a48()) {
-        u16 v0, v1, v2, v3, v4, v5;
+        volatile u16 v0;
+        u16 v1, v2, v3, v4, v5;
         Unk_02097d1c *in;
         u16 *p;
         s32 i;
@@ -661,9 +660,9 @@ void Unk_02097ff4::func_020984a8()
                         func_02063388(&o64);
                     }
                 }
-                in->func_02097f30(&v0, i, z48);
+                in->func_02097f30((u16 *)&v0, i, z48);
                 if (v0 != 0xfff1) {
-                    func_0203c42c(func_020986c8(), &v0, z4c, k);
+                    func_0203c42c(func_020986c8(), (u16 *)&v0, z4c, k);
                 }
             }
         }
