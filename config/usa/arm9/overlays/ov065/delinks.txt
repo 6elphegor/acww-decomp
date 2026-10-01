@@ -75,16 +75,16 @@ src/ov065/unk_0226a144.cpp:
     .text       start:0x0226a144 end:0x0226ab40
 
 src/ov065/unk_0226ab40.cpp:
-    .text       start:0x0226ab40 end:0x0226b488
+    .text       start:0x0226ab40 end:0x0226b3c4
 
-src/ov065/unk_0226b488.cpp:
-    .text       start:0x0226b488 end:0x0226be44
-
-src/ov065/unk_0226be44.cpp:
-    .text       start:0x0226be44 end:0x0226c750
+src/ov065/unk_ov065_0226b3c4.cpp:
+    complete
+    .text       start:0x0226b3c4 end:0x0226cb18
+    .rodata     start:0x0228b2cc end:0x0228b374
+    .data       start:0x0228b670 end:0x0228b688
 
 src/ov065/unk_0226c750.cpp:
-    .text       start:0x0226c750 end:0x0226d080
+    .text       start:0x0226cb18 end:0x0226d080
 
 src/ov065/unk_0226d080.cpp:
     .text       start:0x0226d080 end:0x0226d128
