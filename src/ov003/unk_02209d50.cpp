@@ -263,17 +263,26 @@ extern "C" void func_ov003_02209f68(Obj *o, s32 a) {
     }
 }
 
+static inline BOOL Unk_ov003_02209fc8_IsNone(u16 *p) {
+    return Unk_ov003_02209fc8_Eq(p);
+}
+// An object with an (empty) inline constructor and destructor keeps its stack slot although no code touches it;
+// the original frame has such an unused u16 slot between loc and the first inline temporary.
+struct Unk_ov003_02209fc8_ItE { u16 v; Unk_ov003_02209fc8_ItE() {} ~Unk_ov003_02209fc8_ItE() {} };
+
 extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
     Pay *pl = &m->unk_0c;
     V3 v = pl->v;
     u16 loc = pl->a;
     u8 b = pl->b;
+    Unk_ov003_02209fc8_ItE dx;
+
     Rec *r = &o->unk_7d0;
     r->unk_0c = 0;
     r->unk_00 = v;
     r->unk_0d = b;
     s32 st = o->unk_700;
-    if (st == 0x49 || st == 0x4a || !Unk_ov003_02209fc8_Eq(&loc)) {
+    if (st == 0x49 || st == 0x4a || !Unk_ov003_02209fc8_IsNone(&loc)) {
         func_02010358(o, 0x4f, 3, 0);
     } else {
         func_02010358(o, 0x49, 3, 0);
@@ -298,12 +307,12 @@ extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
     pr.x = xy[0];
     pr.y = xy[1];
     func_ov003_0220a29c(o->unk_8ec, pr, t, b);
-    s32 px = xy[0];
-    s32 py = xy[1];
+    s32 px = *(volatile s32 *)&xy[0];
+    s32 py = *(volatile s32 *)&xy[1];
     s32 hx = px >> 4;
     s32 hy = py >> 4;
     u16 *cell = func_0204ebd8(data_021c47c4, hx, hy, px - (hx << 4), py - (hy << 4), 0);
-    if (!Unk_ov003_02209fc8_Eq(&loc)) {
+    if (!Unk_ov003_02209fc8_IsNone(&loc)) {
         o->unk_81c = o->unk_81e = loc;
         if (Unk_ov003_02209fc8_Rng(cell, 0xfc, 0xfd)) {
             *(u32 *)&o->unk_2d4 = (u32)((o->unk_2d0.mid - 1) << 16) >> 4;

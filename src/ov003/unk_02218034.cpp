@@ -100,7 +100,7 @@ void func_02055744(void *, s32);
 void *func_0205588c(void *, void *);
 void func_02055724(void *, s32);
 void *func_02064020(void *, s32, void *, s32);
-void func_01ffc5a4(u32);
+s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_020302cc();
 s32 func_0204c188(void *, s32);
 void *func_020641ec(void *, void *, s32, s32);
@@ -468,7 +468,7 @@ void func_ov003_02218794(Unk_ov003_02218794_Obj *o) {
         u8 b = o->unk_00->unk_01;
         if (r3 != 0) {
             if (*(s8 *)(r3 + 0xe8) == b) {
-                func_01ffc5a4(o->unk_b0->unk_28 + 0xda2);
+                func_01ffc5a4(o->unk_b0->unk_28 + 0xda2, 0xda2);
                 func_020302cc();
                 data_ov003_02235494 = 1;
             }

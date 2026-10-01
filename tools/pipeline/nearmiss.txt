@@ -142,15 +142,7 @@ func_ov001_022059fc ov001_008/ov001_008.cpp  # UNMATCHED draft ~714 lines: netwo
 func_ov001_0220681c ov001_009/ov001_009.cpp  # -O4,p; ~245 lines regalloc/slots (orig name r6, zero r7, macp r5); frame 0x9c ok
 func_ov001_0220cd24 ov001_020/ov001_020.cpp  # -O4,p ARM; switch dispatch only: orig tree rooted at 26 + separate 0..20 jump table (cases 5,12,13,20/23,26/29,34); empty-label sets give one table or tree@29; maybe nested switches
 func_ov001_0220bfec ov001_018/ov001_018.cpp  # -O4,p ARM; prologue only: orig loads aa58[2],[3],[0],[1],ea4[0] before any strh (ours interleaves); all 180 stmt orders tried
-func_ov003_02205e58 ov003_002/ov003_002.cpp  # -O4,s; value/address reg swap in 2-byte payload store (orig ldrb r1 then add r0,sp,#12)
-func_ov003_02206a84 ov003_003/ov003_003.cpp  # -O4,s; k*k mul form: orig movs r0,r4; muls r4,r0; lsls r0,r4 (ours adds r0,r4,#0; muls r0,r4)
-func_ov003_02209fc8 ov003_009/ov003_009.cpp  # -O4,s; stack only: frame 4 bytes short, orig has 2 extra u16 temp slots (inline Eq temps at 0xc/0xe/0x10, unused 0xa)
 func_ov003_022072b8 ov003_004/ov003_004.cpp  # -O4,s; payload byte stores: orig ldr r1; add r0,sp,#12; strb r1,[r0] (ours value/addr regs swapped)
-func_ov003_022195b8 ov003_035/ov003_035.cpp  # -O4,s; regs: orig p in r6, i in r5 (ours swapped)
-func_ov003_02218794 ov003_033/ov003_033.cpp  # -O4,s; regs: orig ldr r0,[r0,#40]; ldr r1,=0xda2; adds r0,r0,r1 (ours r0/r1 swapped)
-func_ov003_022189b8 ov003_034/ov003_034.cpp  # sp2; one reg: spilled i<<2 temp in r0 (orig r1)
-func_ov003_02218c60 ov003_034/ov003_034.cpp  # sp2; 3x3 scan: orig recomputes y>>4 in inner loop + shared zero in r7; ours hoists
-func_ov003_0220bc84 ov003_012/ov003_012.cpp  # -O4,s; regalloc by ref count: orig spills b8 & keeps unk_7fc in r7 (ours reverse); last s16 result r5 vs r6
 func_ov054_0225a3cc ov054_002/ov054_002.cpp  # -O4,s; final msg strb base: orig add r0,sp,#16;strb [r0] (ours sp,#12;[r0,#4]); cb spill needs volatile
 func_ov054_022595c4 ov054_000/ov054_000.cpp  # -O4,s; switch tree shape: orig table only over 0..9 with 0xc/0x10 as compares; all 64 empty-label subsets tried
 func_ov065_02261638 ov065_003/ov065_003.cpp  # -O4,p; (u16)(state>>48) reg order: orig movs r1,#0; lsrs r0,r3,#16

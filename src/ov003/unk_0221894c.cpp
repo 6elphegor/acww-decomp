@@ -65,7 +65,7 @@ s32 func_0204d5d8(s32 k, s32 *a, s32 *b, s32 *c);
 void *func_020b23a4(void *p);
 s32 func_020b2514(void *p, s32 i);
 void *func_02064020(void *heap, s32 a, const char *fmt, ...);
-void *func_0210629c();
+void *func_0210629c(void *s);
 s32 func_020557a0(void *p, s32 a);
 void *func_0205588c(void *p, void *heap);
 void func_020e8558(void *p);
@@ -169,8 +169,9 @@ void func_ov003_02218998(Unk_ov003_02218998_Obj *o) {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 4; i++) {
+        u32 *e = &o->unk_00[i];
         o->unk_00[i] = z;
-        o->unk_10[i] = z;
+        e[4] = z;
     }
     o->unk_24 = z;
     o->unk_20 = o->unk_24;
@@ -192,13 +193,13 @@ s32 func_ov003_022189b8(Unk_ov003_02218998_Obj *self) {
         str = func_02064020(h2, m3, data_ov003_022325b8, c, c, rem, a);
         u32 off = i << 2;
         u32 *e = &self->unk_00[i];
-        self->unk_00[i] = (u32)func_0210629c();
+        self->unk_00[i] = (u32)func_0210629c(str);
         if (func_020557a0((void *)self->unk_00[i], za)) {
             *e = (u32)func_0205588c((void *)*e, data_021c6204);
         }
         func_020e8558(str);
         str = func_02064020(data_021f482c, m3, data_ov003_022325dc, c, c, rem);
-        e[4] = (u32)func_0210629c();
+        e[4] = (u32)func_0210629c(str);
         if (func_02055724((void *)e[4], zb)) {
             e[4] = (u32)func_0205588c((void *)e[4], heap);
         }
@@ -302,20 +303,21 @@ s32 func_ov003_02218c34(void *p) {
     return 0;
 }
 
+// The pragma is sampled at the end of the TU, so it applies to the whole file (func_ov003_02218c60 needs it:
+// y >> 4 stays in the inner loop).
+#pragma opt_loop_invariants off
 void *func_ov003_02218c60(s32 a) {
     Unk_ov003_02218c60_Grid *g = data_021c47c4;
     s32 xy[2];
     if (g != 0) {
-        s32 x, y;
         func_0204ee10(&xy[0], &xy[1], a);
-        BOOL z = FALSE;
-        for (y = xy[1]; y >= xy[1] - 5; y--) {
-            for (x = xy[0] - 3; x <= xy[0] + 3; x++) {
+        for (s32 y = xy[1]; y >= xy[1] - 5; y--) {
+            for (s32 x = xy[0] - 3; x <= xy[0] + 3; x++) {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), z);
+                u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != 0) {
-                    BOOL f = z;
+                    BOOL f = FALSE;
                     u16 v = *cell;
                     if (v >= 0x5000 && v <= 0x5021) {
                         f = TRUE;

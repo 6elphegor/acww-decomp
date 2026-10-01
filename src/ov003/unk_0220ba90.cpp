@@ -168,7 +168,7 @@ void func_0203ee38(V3 *a, V3 *b);
 s32 func_02090330(s32 a, V3 *v, void *p, s32 b);
 void func_020902d4(s32 a, V3 *v, void *p, s32 b);
 void func_020902f8(s32 a);
-s32 func_020e7b98(s32 a, s32 b);
+s16 func_020e7b98(s32 a, s32 b);
 s32 func_020e9650(void *a, void *b);
 s32 func_02063b8c(s32 a);
 s32 func_0203d820();
@@ -323,12 +323,13 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
     V3 d;
     V3 w;
     V3 pos;
+    State *rec;
     u8 *sub;
     u32 mode;
     u8 *p7;
     u8 b8;
     void *g;
-    State *rec = &o->unk_7d0;
+    rec = &o->unk_7d0;
     sub = o->unk_8ec;
     mode = rec->unk_06;
     u8 *st = &rec->unk_09;
@@ -347,7 +348,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
                 func_ov003_02226fac(*p7);
             }
         }
-        u32 bt = rec->unk_08;
+        u32 bt = b8;
         if (bt == 0x18 || bt == 0x30 || (u8)(bt + 0xce) <= 1) {
             t = o->unk_694;
             func_ov003_02212034(&t, 0);
@@ -568,14 +569,14 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
             pos.y = pv->y;
             pos.z = pv->z;
             pos.y = pos.y + 0x1b33;
-            s32 yaw = func_020e7b98(q->x - pos.x, q->z - pos.z);
+            s16 yaw = func_020e7b98(q->x - pos.x, q->z - pos.z);
             s32 h = func_020e7b98(q->y - pos.y, func_020e9650(q, &pos));
             if (h >= 0x1800) {
                 h = 0x1800;
             }
-            s16 dy = yaw - o->unk_8e;
+            yaw -= o->unk_8e;
             func_02010dbc(&o->unk_458, h, 0x400, 0x1770000, 0xc0000);
-            func_02010dbc(&o->unk_45a, dy, 0x400, 0x1770000, 0xc0000);
+            func_02010dbc(&o->unk_45a, yaw, 0x400, 0x1770000, 0xc0000);
             return;
         }
     }

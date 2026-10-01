@@ -401,11 +401,9 @@ extern "C" void func_ov003_02206a68(Obj *o) {
 extern "C" s32 func_ov003_02206a84(Obj *o) {
     if (func_02056654(o->unk_2cc)) {
         o->unk_7f8 = func_02007c08(o, o->unk_7ec);
-        Unk_ov003_02206a84_Three e = Unk_ov003_02206a84_THREE;
-        u32 k = e;
+        u16 k = 3;
         if (func_0200f5b0(o) == 4) {
-            k = k * k;
-            k = (u16)k;
+            k *= (u32)k;
         }
         func_0200ce98(o, k, 1, -1);
     }

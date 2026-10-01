@@ -382,8 +382,9 @@ extern "C" void func_ov003_022072b0(u8 *p, u8 a, u8 b) {
 extern "C" s32 func_ov003_022072b8(Obj *o, s32 *p, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0x73, b, c);
+    s32 v0 = *(volatile s32 *)&p[0];
     Unk_ov003_022072b8_P &q = *(Unk_ov003_022072b8_P *)&m.unk_0c;
-    q.a = p[0];
+    q.a = v0;
     q.b = p[1];
     s32 r = func_0200e248(o, &m);
     return r;

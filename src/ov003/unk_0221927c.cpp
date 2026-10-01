@@ -166,7 +166,7 @@ extern "C" s32 func_ov003_022195b8(s32 *p)
     if (g == NULL) {
         return result;
     }
-    volatile s32 k10, k14;
+    s32 k10, k14;
     s32 i = 0;
     k14 = i;
     k10 = i;
