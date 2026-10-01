@@ -2054,6 +2054,7 @@ _ZN12Unk_0202f04813func_0202f000EPS_ kind:function(thumb,size=0x12) addr:0x0202f
 _ZN12Unk_0202f04813func_0202f014EPS_S0_ kind:function(thumb,size=0x1a) addr:0x0202f014
 _ZN12Unk_0202f04813func_0202f030EPS_ kind:function(thumb,size=0x16) addr:0x0202f030
 _ZN12Unk_0202f04813func_0202f048Eii kind:function(thumb,size=0x6) addr:0x0202f048
+_ZN12Unk_0202f048C1Eii kind:label(thumb) addr:0x0202f048
 _ZN12Unk_020d8ccc13func_0202f050EP15Unk_0202f2ac_V3S1_S1_ kind:function(thumb,size=0xcc) addr:0x0202f050
 _ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_ kind:function(thumb,size=0x40) addr:0x0202f11c
 _ZN12Unk_020d8ccc13func_0202f15cEP15Unk_0202f2ac_V3 kind:function(thumb,size=0x8c) addr:0x0202f15c
