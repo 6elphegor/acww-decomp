@@ -67,7 +67,7 @@ extern s32 data_021f4880[];
 extern u8 data_0213a740[];
 
 void *func_02087298(u8 *p);
-s32 func_0203c6b0(u32 h);
+s32 func_0203c6b0(u32 h, void *x);
 u32 func_0203c6a8(u32 h);
 u32 func_0203c6c0();
 u32 func_020e8608(u32 *a, u32 b);
@@ -100,7 +100,7 @@ s32 func_02128930(void *a, void *b, s32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 u32 func_0201bc4c(void *p, s32 n);
-u32 func_0201bcbc(void *p);
+u32 func_0201bcbc(void *p, u32 x);
 void func_0203d67c(void *p);
 void func_020e7518(void *p);
 s32 func_020e7fa8(u8 *p);
@@ -245,7 +245,7 @@ void Unk_ov074_02271450_Helper::func_02271450(void *e) {
     u32 h;
     t = func_02087298(data_021eca50);
     if (t != 0) {
-        if (func_0203c6b0(unk_00) != 0) {
+        if (func_0203c6b0(unk_00, t) != 0) {
             h = func_0227149c();
             if (h != 0) {
                 func_020b8840(unk_04, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
@@ -466,7 +466,7 @@ BOOL Unk_ov074_02272608::func_02271b0c() {
     u32 a = unk_658.func_02015aac();
     s32 b = unk_8e;
     if (a != 0) {
-        b = func_0201bcbc(this);
+        b = func_0201bcbc(this, a);
     }
     unk_618.func_020141b4(0, b, 0);
     return TRUE;

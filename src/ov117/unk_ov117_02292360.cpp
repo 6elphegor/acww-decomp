@@ -335,8 +335,8 @@ void func_ov117_02292690(Unk_ov117_02292c64 *s) {
         if (func_0204e9dc(g, &a, &b, &c, &d, &t[0], &t[1], 2, 0)) {
             func_0204edf8(&x, &z, a, b, c, d);
             u16 *cell;
-            s32 bx = x;
-            s32 bz = z;
+            s32 bx = *(volatile s32 *)&x;
+            s32 bz = *(volatile s32 *)&z;
             s32 hx = bx >> 4;
             s32 hz = bz >> 4;
             cell = func_0204ebd8(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);
@@ -366,8 +366,8 @@ void func_ov117_022929f4(Unk_ov117_02292c64 *s) {
         if (func_0204e9dc(g, &a, &b, &c, &d, &t[0], &t[1], 1, 0)) {
             func_0204edf8(&x, &z, a, b, c, d);
             u16 *cell;
-            s32 bx = x;
-            s32 bz = z;
+            s32 bx = *(volatile s32 *)&x;
+            s32 bz = *(volatile s32 *)&z;
             s32 hx = bx >> 4;
             s32 hz = bz >> 4;
             cell = func_0204ebd8(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);

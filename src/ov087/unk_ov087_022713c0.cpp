@@ -41,7 +41,7 @@ void func_020141b4(void *p, u32 a, u32 b, u32 c);
 void func_020196b4(void *p, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 void func_0201610c(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 void func_02053848(void *a, u32 b, u32 c);
-void func_020856a4(void *a);
+void func_020856a4(void *a, s32 v);
 BOOL func_ov087_022718c4(u16 *p, u32 m);
 extern u16 data_020c6cc8;
 extern u8 data_021ed24c[];
@@ -472,7 +472,6 @@ void Unk_ov087_02271e1c::vfunc_18() {
     }
 }
 
-#pragma opt_loop_invariants reset
 
 static inline BOOL Unk_ov087_02271670_Z(BOOL x) {
     if (x == 0) {
@@ -662,7 +661,7 @@ BOOL Unk_ov087_02271eac::vfunc_00() {
     func_0201610c(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     func_02053848(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
-    func_020856a4(data_021ed24c);
+    func_020856a4(data_021ed24c, 2);
     return TRUE;
 }
 

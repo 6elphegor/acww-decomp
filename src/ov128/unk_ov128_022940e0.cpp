@@ -511,14 +511,13 @@ void Unk_ov128_022954e0::func_ov128_02294930() {
             func_ov002_02200a58(4);
             func_ov128_022945ec();
         } else {
-            s32 *px = &unk_2cf0;
-            s32 ox = *px;
+            s32 ox = unk_2cf0;
             s32 oy = unk_2cf4;
             u32 k0 = data_021f47d8[0];
             if (k0 & 0x20) {
-                *px = ox - 4;
+                unk_2cf0 = ox - 4;
             } else if (k0 & 0x10) {
-                *px = ox + 4;
+                unk_2cf0 = ox + 4;
             }
             u32 k2 = *(volatile u16 *)&data_021f47d8[0];
             if (k2 & 0x40) {
@@ -539,14 +538,13 @@ void Unk_ov128_022954e0::func_ov128_02294930() {
                     func_ov127_02292518(&unk_478, 4);
                     func_ov128_02294498();
                 }
-                s32 *py = &unk_2cf4;
-                s32 ny = *py;
+                s32 ny = unk_2cf4;
                 if (ny < 0x20) {
-                    *py = 0x20;
+                    unk_2cf4 = 0x20;
                     func_ov127_0229247c(&unk_478, -4, 0);
                     func_ov128_02294498();
                 } else if (ny > 0xa0) {
-                    *py = 0xa0;
+                    unk_2cf4 = 0xa0;
                     func_ov127_0229247c(&unk_478, 4, 0);
                     func_ov128_02294498();
                 }

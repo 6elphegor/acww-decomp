@@ -483,12 +483,10 @@ BOOL Unk_ov050_0225e400::func_ov050_0225c9dc() {
     v0.z = pv->z;
     s32 a0 = 0, a1 = 0, a2 = 0, a3 = 0;
     Unk_ov050_0225c9dc_Vec v1;
-    s32 gx = data_ov050_0225da34.x;
-    v1.x = gx;
-    s32 gy = data_ov050_0225da34.y;
-    v1.y = gy;
-    s32 gz = data_ov050_0225da34.z;
-    v1.z = gz;
+    v1 = data_ov050_0225da34;
+    s32 gx = v1.x;
+    s32 gy = v1.y;
+    s32 gz = v1.z;
     func_0204ee10(&a2, &a3, &v1);
     func_0204ee10(&a0, &a1, &v0);
     switch (unk_651) {
