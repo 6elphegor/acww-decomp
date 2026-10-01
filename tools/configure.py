@@ -407,6 +407,12 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
             for order_file in order_files
             for name in [order_file.name, "delinks.txt", "symbols.txt", "relocs.txt"]
         ]
+        if any(order_file.parent == project.game_config / "arm9" for order_file in order_files):
+            # units of the main module: their bss is described by autoload_3
+            order_configs += [
+                str(project.game_config / "arm9" / object_order.MAIN_BSS_MODULE / name)
+                for name in ["delinks.txt", "symbols.txt"]
+            ]
         order_lcf_file = str(project.game_build / "arm9_object_order.lcf")
         order_objects_file = str(project.game_build / "objects_object_order.txt")
         n.build(

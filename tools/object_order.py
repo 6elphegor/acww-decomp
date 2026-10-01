@@ -27,6 +27,12 @@
 #   * adds the extra objects to the list of objects to link.
 # Without any object_order.txt the linker script and the object list are passed through unchanged.
 #
+# The ARM9 main module is supported too: its description file is config/<version>/arm9/object_order.txt. A main
+# unit's .text/.rodata/.data are placed in the `.arm9` section; its .bss range is the placeholder unit
+# `<name>.bss.cpp` of autoload_3 (see tools/bss_units.py, which runs before this tool), and the whole bss of
+# autoload_3 then moves to a region without an output file, like an overlay's. The second names of a main unit's
+# functions are not written as linker script aliases: tools/aliases.py adds them to the object.
+#
 # See tools/pipeline/linking.md, "Units built by two compilers".
 #
 # Usage:
@@ -41,6 +47,9 @@ import sys
 from pathlib import Path
 
 DESCRIPTION_FILE = "object_order.txt"
+MAIN_SECTION = "arm9"          # the main module's section in the linker script
+MAIN_BSS_MODULE = "autoload_3"  # the module that holds the main module's bss
+BSS_UNIT_SUFFIX = ".bss"
 
 SHT_SYMTAB = 2
 SHT_RELA = 4
@@ -299,8 +308,15 @@ class Placement:
             for name in provided:
                 if obj.section_named(name) is None:
                     raise OrderError(f"{obj.path} does not define {name}, which {DESCRIPTION_FILE} says it provides")
-        for name, address, _ in self.symbols:
+        # function and data symbols first: a label is a second name of a function, and an object that defines
+        # both names in two sections (C1/C2 constructors) keeps the one of the function symbol
+        named = set()
+        ordered = [s for s in self.symbols if not s[2].startswith("label")] + \
+                  [s for s in self.symbols if s[2].startswith("label")]
+        for name, address, kind in ordered:
             if self.kind_of(address) is None:
+                continue
+            if kind.startswith("label") and address in named:
                 continue
             obj = self.owner(name)
             if obj is None or (obj is not self.main and name not in provided_by_extra):
@@ -308,6 +324,7 @@ class Placement:
             section = obj.section_named(name)
             if section is not None and section.kind == self.kind_of(address):
                 self.assign(section, address, "symbols.txt", name)
+                named.add(address)
 
         # 2. Explicit addresses
         for name, address in self.unit.places.items():
@@ -471,29 +488,45 @@ def process(lcf: str, objects: list[str], config: Path, build: Path, verbose: bo
     aliases = []
     for description in description_files(config):
         module_dir = description.parent
-        module = module_dir.name
-        if module_dir.parent.name != "overlays":
-            raise OrderError(f"{description}: only overlays are supported")
+        is_main = module_dir == config
+        if not is_main and module_dir.parent.name != "overlays":
+            raise OrderError(f"{description}: only overlays and the main module are supported")
+        module = MAIN_SECTION if is_main else module_dir.name
+        bss_module = MAIN_BSS_MODULE if is_main else module
         module_sections, delink_units = parse_delinks(module_dir / "delinks.txt")
         symbols = parse_symbols(module_dir / "symbols.txt")
         relocs = parse_relocs(module_dir / "relocs.txt")
+        bss_units = {}
+        if is_main:
+            # main's bss is the first part of autoload_3; a unit's range there is its placeholder unit
+            bss_sections, bss_units = parse_delinks(config / MAIN_BSS_MODULE / "delinks.txt")
+            module_sections = {**module_sections, ".bss": bss_sections[".bss"]}
+            symbols = symbols + parse_symbols(config / MAIN_BSS_MODULE / "symbols.txt")
         has_bss = False
         for unit in parse_description(description):
             if unit.source not in delink_units:
                 raise OrderError(f"{description}: {unit.source} is not a unit of {module_dir / 'delinks.txt'}")
-            placement = Placement(module, unit, delink_units[unit.source], module_sections, symbols, relocs, build)
+            ranges = dict(delink_units[unit.source])
+            if is_main:
+                ranges.pop(".bss", None)
+                source = Path(unit.source)
+                placeholder = str(source.with_name(source.stem + BSS_UNIT_SUFFIX + source.suffix))
+                if placeholder in bss_units:
+                    ranges[".bss"] = bss_units[placeholder][".bss"]
+            placement = Placement(module, unit, ranges, module_sections, symbols, relocs, build)
             placement.resolve()
             placement.check()
 
-            block = module_block(lcf, module)
-            text = block[0]
             for kind in ORDERED_KINDS:
-                if kind in placement.ranges:
-                    text = replace_selector(text, placement.main.path.name, kind, placement.selectors(kind),
-                                            unit.source)
-            lcf = lcf[:block.start()] + text + lcf[block.end():]
+                if kind not in placement.ranges:
+                    continue
+                block = module_block(lcf, bss_module if kind == ".bss" else module)
+                text = replace_selector(block[0], placement.main.path.name, kind, placement.selectors(kind),
+                                        unit.source)
+                lcf = lcf[:block.start()] + text + lcf[block.end():]
             has_bss = has_bss or bool(placement.placed.get(".bss"))
-            aliases += placement.aliases()
+            unit_aliases = [] if is_main else placement.aliases()  # main: tools/aliases.py
+            aliases += unit_aliases
 
             main_line = f'"{placement.main.path.as_posix()}"'
             if main_line not in objects:
@@ -503,7 +536,7 @@ def process(lcf: str, objects: list[str], config: Path, build: Path, verbose: bo
 
             print(f"{unit.source}: " + ", ".join(
                 f"{len(placement.placed.get(kind, []))} {kind}" for kind in ORDERED_KINDS if kind in placement.ranges)
-                + f" objects placed, {len(placement.aliases())} aliases")
+                + f" objects placed, {len(unit_aliases)} aliases")
             if verbose:
                 for kind in ORDERED_KINDS:
                     for section in placement.placed.get(kind, []):
@@ -513,7 +546,7 @@ def process(lcf: str, objects: list[str], config: Path, build: Path, verbose: bo
                     names = ", ".join(name for name, _, _ in section.symbols) or f"section {section.index}"
                     print(f"  not placed: {section.obj.path.name} {section.kind} {names}")
         if has_bss:
-            lcf = split_bss(lcf, module)
+            lcf = split_bss(lcf, bss_module)
 
     if aliases:
         end = lcf.rindex("}")
