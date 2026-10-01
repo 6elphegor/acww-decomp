@@ -262,113 +262,98 @@ BOOL Unk_0204debc::func_0204e51c(u16 *a, s32 x, s32 y) {
     return r;
 }
 
-BOOL Unk_0204debc::func_0204e56c(u16 *a, u16 *b, u16 *c, s32 x, s32 y) {
-    s32 *PX = &x;
-    s32 *PY = &y;
-    volatile BOOL result;
-    volatile u32 cnt, cnt2;
-    volatile s32 f5, f4, f3, f2, f1;
-    volatile s32 qy, gx, gy;
-    void *volatile g;
-    volatile s32 py;
-    volatile u32 j;
-    volatile s32 z4c, z50, z54, z58, z5c, z60, z64, z68, z6c, z70, z74, z78, z7c, z80;
-    u16 *volatile cell2;
-    u16 *cell;
-    u16 t[3];
-    s32 dx, dy;
+BOOL Unk_0204debc::func_0204e56c(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile s32 y) {
+    BOOL result;
+    u32 cnt, cnt2;
+    BOOL f9, f8, f7, f6, f5, f4, f3, f2, f1;
+    s32 qy;
+    s32 gx, gy;
+    void *g;
+    s32 py;
+    u32 j;
     void *h;
+    u16 tile, empty, key;
+    s32 dx, dy;
     u32 i;
-    s32 px;
-    u16 *p;
+    s32 px, qx;
+    u16 *p, *cell, *cell2;
     s32 hx, hy, tx, ty;
-    result = FALSE;
+    BOOL ok;
+    u32 v;
     h = NULL;
-    hx = (*PX) >> 4;
-    hy = (*PY) >> 4;
-    p = (u16 *)func_0204ebd8(this, hx, hy, (*PX) - (hx << 4), (*PY) - (hy << 4), 0);
+    result = FALSE;
+    tx = x;
+    ty = y;
+    hx = tx >> 4;
+    hy = ty >> 4;
+    p = (u16 *)func_0204ebd8(this, hx, hy, tx - (hx << 4), ty - (hy << 4), 0);
     if (p) {
-        t[0] = *p;
-        if (func_0204b300(&t[0]) || func_0204b2d4(&t[0])) func_02039e6c(t[0]);
+        tile = *p;
+        if (func_0204b300(&tile) || func_0204b2d4(&tile)) func_02039e6c(tile);
     }
     if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = func_020b27a4(b);
-    if (!h) goto end;
-    cnt = func_020b2b0c(h);
-    gx = (*PX);
-    gy = (*PY);
-    g = data_020cbb18;
-    z4c = 0;
-    z50 = 0;
-    for (i = 0; i < cnt; i++) {
-        if (func_020b2a5c(h, &dx, &dy, i)) {
-            s32 ty2;
-            px = gx + dx;
-            ty2 = gy + dy;
-            py = ty2;
-            hx = px >> 4;
-            hy = ty2 >> 4;
-            cell = (u16 *)func_0204ebd8(this, hx, hy, px - (hx << 4), ty2 - (hy << 4), z4c);
-            if (cell) {
-                if (func_0204b2d4(cell) || func_0204b300(cell)) {
-                    if (!func_02072e44(g)) func_02039e6c(*cell);
-                } else if (func_0204b14c(cell)) {
-                    func_020af64c(data_021ed2e6, func_0204b124(cell));
+    if (h) {
+        cnt = func_020b2b0c(h);
+        i = 0;
+        gx = x;
+        gy = y;
+        g = data_020cbb18;
+        for (; i < cnt; i++) {
+            if (func_020b2a5c(h, &dx, &dy, i)) {
+                px = gx + dx;
+                py = gy + dy;
+                hx = px >> 4;
+                hy = py >> 4;
+                cell = (u16 *)func_0204ebd8(this, hx, hy, px - (hx << 4), py - (hy << 4), 0);
+                if (cell) {
+                    if (func_0204b2d4(cell) || func_0204b300(cell)) {
+                        if (!func_02072e44(g)) func_02039e6c(*cell);
+                    } else if (func_0204b14c(cell)) {
+                        func_020af64c(data_021ed2e6, func_0204b124(cell));
+                    }
                 }
+                func_0204eb30(this, c, px, py, 0);
+                func_0204e914(this, px, py);
             }
-            func_0204eb30(this, c, px, py, z50);
-            func_0204e914(this, px, py);
         }
-    }
-    func_0204eb30(this, a, (*PX), (*PY), 0);
-    {
-        BOOL ok;
+        func_0204eb30(this, a, x, y, 0);
         if (func_0204b2d4(c)) {
-            t[2] = 0xf030;
-            ok = func_0204b25c(c) == func_0204b25c(&t[2]);
+            key = 0xf030;
+            ok = func_0204b25c(c) == func_0204b25c(&key);
         } else {
-            ok = *c == 0xf030 ? TRUE : FALSE;
+            ok = *c == 0xf030;
         }
-        if (!ok) goto end;
-    }
-    cnt2 = func_020b2b80(h);
-    j = 0;
-    z58 = 0; z5c = 0; z60 = 0; z64 = 0; z68 = 0; z6c = 0; z70 = 0; z74 = 0; z78 = 0; z7c = 0;
-    z54 = 0;
-    z80 = 0;
-    for (; j < cnt2; j++) {
-        if (func_020b2aac(h, &dx, &dy, j)) {
-            s32 qx = gx + dx;
-            s32 ty3 = gy + dy;
-            u16 *tc;
-            qy = ty3;
-            hx = qx >> 4;
-            hy = ty3 >> 4;
-            tc = (u16 *)func_0204ebd8(this, hx, hy, qx - (hx << 4), ty3 - (hy << 4), z54);
-            cell2 = tc;
-            if (tc) {
-                s32 f6, f7, f8, f9;
-                u32 v = *tc;
-                f9 = f8 = f7 = f6 = 1;
-                f5 = f4 = f3 = f2 = 1;
-                f1 = z58;
-                if (v >= 0x26 && v <= 0x2a) f1 = 1;
-                if (!f1) { if (!(v >= 0x5d && v <= 0x61)) f2 = z5c; }
-                if (!f2) { if (!(v >= 0x2f && v <= 0x56)) f3 = z60; }
-                if (!f3) { if (!(v >= 0x57 && v <= 0x5b)) f4 = z64; }
-                if (!f4) { if (!(v >= 0x66 && v <= 0x68)) f5 = z68; }
-                if (!f5) { if (v != 0x69) f6 = z6c; }
-                if (!f6) { if (!(v >= 0x6a && v <= 0x6c)) f7 = z70; }
-                if (!f7) { if (v != 0x6d) f8 = z74; }
-                if (!f8) { if (!(v >= 0xc8 && v <= 0xcf)) f9 = z78; }
-                if ((f9 && !func_0204b08c(cell2)) || func_0204aba4(cell2) != ~z80) {
-                    t[1] = 0xfff1;
-                    func_0204eb30(this, &t[1], qx, qy, z7c);
+        if (ok) {
+            cnt2 = func_020b2b80(h);
+            for (j = 0; j < cnt2; j++) {
+                if (func_020b2aac(h, &dx, &dy, j)) {
+                    qx = gx + dx;
+                    qy = gy + dy;
+                    hx = qx >> 4;
+                    hy = qy >> 4;
+                    cell2 = (u16 *)func_0204ebd8(this, hx, hy, qx - (hx << 4), qy - (hy << 4), 0);
+                    if (cell2) {
+                        f9 = TRUE; f8 = TRUE; f7 = TRUE; f6 = TRUE; f5 = TRUE; f4 = TRUE; f3 = TRUE; f2 = TRUE; f1 = FALSE;
+                        v = *cell2;
+                        if (v >= 0x26 && v <= 0x2a) f1 = TRUE;
+                        if (!f1 && !(v >= 0x5d && v <= 0x61)) f2 = FALSE;
+                        if (!f2 && !(v >= 0x2f && v <= 0x56)) f3 = FALSE;
+                        if (!f3 && !(v >= 0x57 && v <= 0x5b)) f4 = FALSE;
+                        if (!f4 && !(v >= 0x66 && v <= 0x68)) f5 = FALSE;
+                        if (!f5 && !(v == 0x69)) f6 = FALSE;
+                        if (!f6 && !(v >= 0x6a && v <= 0x6c)) f7 = FALSE;
+                        if (!f7 && !(v == 0x6d)) f8 = FALSE;
+                        if (!f8 && !(v >= 0xc8 && v <= 0xcf)) f9 = FALSE;
+                        if ((f9 && !func_0204b08c(cell2)) || func_0204aba4(cell2) != -1) {
+                            empty = 0xfff1;
+                            func_0204eb30(this, &empty, qx, qy, 0);
+                        }
+                    }
                 }
             }
         }
+        result = TRUE;
     }
-    result = TRUE;
-end:
     return result;
 }
 

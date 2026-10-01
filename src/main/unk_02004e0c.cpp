@@ -61,6 +61,8 @@ extern void *data_020cbb18;
 extern Unk_021cb69c data_021cb69c;
 extern s16 data_02135f44[];
 
+enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
+
 class Unk_020d6df4 {
 public:
     BOOL func_0200ec44(u32 n);
@@ -269,8 +271,8 @@ public:
     /* 0x6fc */ s32 unk_6fc;
     /* 0x700 */ s32 unk_700;
     /* 0x704 */ u8 unk_704[0x7ec - 0x704];
-    /* 0x7ec */ s32 unk_7ec;
-    /* 0x7f0 */ s32 unk_7f0;
+    /* 0x7ec */ Unk_020d6df4_State unk_7ec;
+    /* 0x7f0 */ Unk_020d6df4_State unk_7f0;
     /* 0x7f4 */ u8 unk_7f4[0x7fc - 0x7f4];
     /* 0x7fc */ s32 unk_7fc;
     /* 0x800 */ u8 unk_800[0x814 - 0x800];
@@ -699,10 +701,7 @@ void Unk_020d6df4::func_02005294() {
             func_02003df4(unk_87c, &unk_8c0);
         }
     }
-    volatile s32 *pp = &unk_7f0;
-    s32 prev = *pp;
-    s32 cur = unk_7ec;
-    if (prev != cur) {
-        *pp = cur;
+    if (unk_7f0 != unk_7ec) {
+        unk_7f0 = unk_7ec;
     }
 }

@@ -105,7 +105,7 @@ void func_020ba8cc(Unk_020ba8cc_Obj *o);
 }
 
 extern "C" {
-BOOL func_020024f0(void *p, s32 a, s32 b);
+BOOL func_020024f0(void *p, s32 a, s32 b, s32 off);
 BOOL func_020025fc(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
 s32 func_02002580(u8 *a, s32 b, s32 c, s32 d, s32 e);
 u8 *func_020641ec(u32 res, void *heap, s32 a, void *b);
@@ -152,7 +152,7 @@ void Unk_020b9fe4::func_020b9fe4() {
     s32 idx = unk_1578;
     s32 blk = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
     if (blk == idx) {
-        if (func_020024f0((u8 *)((blk << 5) + (u32)unk_1584), 6, 32)) {
+        if (func_020024f0(unk_1584 + (blk << 5), 6, 32, blk << 5)) {
             s32 cnt = unk_120c;
             idx = idx + 1;
             cnt = cnt + 1;
@@ -471,6 +471,7 @@ extern "C" void func_020ba8cc(Unk_020ba8cc_Obj *o) {
     func_020e759c(&o->unk_0c, v, w);
 }
 
+enum Unk_020ba518_E { Unk_020ba518_E0 = 0 };
 extern "C" void func_020ba518() {
     u16 **pal = data_021f14ac;
     Unk_020ba518_Time t;
@@ -494,9 +495,15 @@ extern "C" void func_020ba518() {
         h2 -= 12;
         pm2 = 1;
     }
-    func_020ba6c4(pal[0], (u16 *)(data_021f148c[data_020d0ea0[data_021f146c]][pm] + h * 32), (u16 *)(data_021f148c[data_020d0ea0[data_021f146c]][pm2] + h2 * 32), a);
+    Unk_020ba518_E set = (Unk_020ba518_E)data_020d0ea0[data_021f146c];
+    u16 *s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
+    u16 *s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
+    func_020ba6c4(pal[0], s1, s2, a);
     if (data_021f1448.unk_28 != data_021f146c) {
-            func_020ba6c4(pal[1], (u16 *)(data_021f148c[data_020d0ea0[data_021f1448.unk_28]][pm] + h * 32), (u16 *)(data_021f148c[data_020d0ea0[data_021f1448.unk_28]][pm2] + h2 * 32), a);
+        set = (Unk_020ba518_E)data_020d0ea0[data_021f1448.unk_28];
+        s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
+        s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
+        func_020ba6c4(pal[1], s1, s2, a);
         func_020ba6c4(pal[2], pal[0], pal[1], b);
         func_020b9c90(data_021ef908, 0, pal[2][4], 0);
         func_020b9c90(data_021ef908, 1, pal[2][5], 0xc0);

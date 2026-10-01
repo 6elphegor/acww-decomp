@@ -400,8 +400,6 @@ void func_020bfbf8(Unk_020bf4b4 *this_, s32 arg) {
     }
 }
 
-static inline s32 Unk_020bfc48_K(s32 a) { return ((u16)a >> 4) * 2; }
-
 struct Unk_020bfc48_Pad {
     s32 v[4];
     Unk_020bfc48_Pad() {}
@@ -410,16 +408,16 @@ struct Unk_020bfc48_Pad {
 
 BOOL func_020bfc48(Unk_020bf4b4 *this_) {
     Unk_020bfc48_Pad pad;
-    Unk_020bf4b4_Vec *pos;
     Unk_020bf4b4 *p = &data_021f14e0[func_020bcbd8(data_021f14e0, 3)];
     BOOL result = FALSE;
     if (p != NULL && p->unk_04 == 2) {
-        pos = (Unk_020bf4b4_Vec *)&p->unk_34;
-        s32 k = Unk_020bfc48_K(p->unk_54);
+        Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&p->unk_34;
+        s32 k = ((s32)((u32)(p->unk_54 << 16) >> 16) >> 4) * 2;
         s32 d = func_01ffc5a4(0x10000, p->unk_50);
         s32 y = pos->y + func_01ffcb0c(data_02135f44[k + 1], d);
-        this_->unk_34 = p->unk_34 - func_01ffcb0c(data_02135f44[k], d);
+        s32 x = pos->x - func_01ffcb0c(data_02135f44[k], d);
         Unk_020bf4b4_Vec *out = (Unk_020bf4b4_Vec *)&this_->unk_34;
+        out->x = x;
         out->y = y;
         out->z = 0;
         result = TRUE;

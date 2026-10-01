@@ -65,7 +65,7 @@ void func_020b5c0c();
 void func_020b5d3c();
 void func_020b5d4c();
 void func_020b5c54();
-void func_020b5d00();
+void func_020b5d00(u8 *obj);
 void func_020b69a8();
 void func_020b6990();
 void func_02038158();
@@ -88,7 +88,7 @@ void func_020b7f80();
 void func_020014f4(u32);
 void func_020014bc(u32);
 void func_02110ea4(u32, u32, u32, u32);
-void func_02110e00();
+void func_02110e00(const void *);
 void func_01ff8ccc();
 void func_02034044();
 void func_02088d58();
@@ -301,7 +301,7 @@ void func_020b54b0(s32 unused) {
     u8* b = data_021ef3b4;
     func_02110ea4(b[0], 1, b[1], a->h22);
     reg_4000358 = a->h24 | (b[6] << 16);
-    func_02110e00();
+    func_02110e00(a);
 }
 
 void func_020b54ec(s32 a) {
@@ -560,7 +560,7 @@ BOOL Unk_020b5844::func_020b5af4(u32, u32) {
     data_021ef2ec = data_020e4170;
     func_020b5c54();
     data_021ef2f0 = data_020e4280[data_020e4170];
-    func_020b5d00();
+    func_020b5d00((u8 *)data_021ef2f0);
     return TRUE;
 }
 

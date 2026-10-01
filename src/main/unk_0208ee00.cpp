@@ -635,16 +635,13 @@ void Unk_0208f6c0::func_0208f6c0() {
 }
 
 void Unk_0208f6c0::func_0208f6f0(Unk_0208f2e8 *src) {
-    s32 i = 0;
-    volatile s32 a, b;
-    u32 *tbl = data_020e13e4[src->unk_00];
-    b = 0;
-    a = 0;
-    for (; i < 3; i++) {
-        if (tbl[i] != 0) {
-            unk_00[i] = func_020641ec(tbl[i], data_021d04a0, 4, a);
+    s32 idx = src->unk_00;
+    s32 i;
+    for (i = 0; i < 3; i++) {
+        if (data_020e13e4[idx][i] != 0) {
+            unk_00[i] = func_020641ec(data_020e13e4[idx][i], data_021d04a0, 4, 0);
         } else {
-            unk_00[i] = b;
+            unk_00[i] = 0;
         }
     }
 }

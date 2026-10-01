@@ -25,7 +25,7 @@ void func_0211220c(void);
 void func_021120a8(u32 a, u32 b, u32 c);
 void func_02112038(void);
 void func_0210629c();
-void func_020639e8(void *dst, const void *src);
+void func_020639e8(void *dst, const void *fmt, ...);
 BOOL func_020641b4(void *a, void *b, s32 c);
 extern u8 data_021ef638[];
 extern u8 data_020e461c[];
@@ -606,7 +606,7 @@ extern "C" BOOL func_020b8cf8(void *dst, Unk_020b8cf8_Default *p) {
     }
     if (idx != -1) {
         u8 buf[0x20];
-        func_020639e8(buf, data_020e461c);
+        func_020639e8(buf, data_020e461c, idx);
         if (func_020641b4(buf, dst, -1)) {
             return TRUE;
         }

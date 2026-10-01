@@ -207,21 +207,19 @@ public:
     Unk_020331a8_Cell *func_02033a0c(s32 x, s32 y);
 };
 
+static inline void Unk_020331a8_SetU(u32 *v, s32 a, s32 b, s32 c) { v[0] = a; v[1] = b; v[2] = c; }
 void Unk_02033170::func_020331a8(Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32 y1) {
     s32 y, x;
     for (y = y0; y <= y1; y++) {
-        x = x0;
-        s32 yc = (y << 13) + 0x1000;
-        for (; x <= x1; x++) {
+        for (x = x0; x <= x1; x++) {
             Unk_020331a8_Cell *cell = grid->func_02033a0c(x, y);
             if (cell == NULL) {
                 continue;
             }
             s32 xc = (x << 13) + 0x1000;
-            volatile Unk_0202f2ac_V3 ctr;
-            ctr.x = xc;
-            ctr.y = 0;
-            ctr.z = yc;
+            s32 yc = (y << 13) + 0x1000;
+            Unk_0202f2ac_V3 ctr;
+            Unk_020331a8_SetU((u32 *)&ctr, xc, 0, yc);
             s32 xr = xc + 0x1000;
             s32 xl = xc - 0x1000;
             s32 zr = yc + 0x1000;

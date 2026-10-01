@@ -225,10 +225,8 @@ void func_020add64(S *s, s32 *p) {
             if (m) cnt++;
         }
         if (cnt == 0) {
-            u32 r = func_02063b8c(2);
-            u16 *d = s->str;
-            u32 idx = start + r;
-            *(u16 *)((u32)d + (idx << 1)) = 3;
+            u16 *d = &s->str[start + func_02063b8c(2)];
+            *d = 3;
         }
     }
     S *base2;
