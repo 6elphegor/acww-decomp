@@ -397,8 +397,8 @@ BOOL func_ov003_0221fd44(void *self, s32 *a, s32 *b, s32 *c, s32 x, s32 z)
     void *g = data_021c47c4;
     BOOL ok = FALSE;
     if (g != NULL) {
-        s32 px = x;
-        s32 pz = z;
+        s32 px = *(volatile s32 *)&x;
+        s32 pz = *(volatile s32 *)&z;
         s32 hx = px >> 4;
         s32 hz = pz >> 4;
         u8 *cell = func_ov003_0221fda8((u8 *)func_0204ebd8(g, hx, hz, px - (hx << 4), pz - (hz << 4), 0));

@@ -316,7 +316,7 @@ extern "C" void func_ov004_022218f0(Obj *o, Obj *arg) {
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
-    s32 y = o->unk_5c.y;
+    s32 y = *(volatile s32 *)&o->unk_5c.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     func_ov004_02221984((Tgt *)&o->unk_7d0, x, z, h);
@@ -403,7 +403,7 @@ extern "C" void func_ov004_02221b38(Obj *o, Obj *arg) {
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
-    s32 y = o->unk_5c.y;
+    s32 y = *(volatile s32 *)&o->unk_5c.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     func_ov004_02221bcc((Tgt *)&o->unk_7d0, x, z, h);
@@ -490,7 +490,7 @@ extern "C" void func_ov004_02221d80(Obj *o, Obj *arg) {
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
-    s32 y = o->unk_5c.y;
+    s32 y = *(volatile s32 *)&o->unk_5c.y;
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     func_ov004_02221e14((Tgt *)&o->unk_7d0, x, z, h);

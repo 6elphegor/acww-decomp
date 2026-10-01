@@ -123,7 +123,7 @@ public:
     void func_ov004_0220878c();
     u32 func_ov004_022087a4();
     void func_ov004_02208de0(s32 a, s32 b, s32 c, s32 d);
-    void func_ov004_02208ff0(s32 a);
+    s32 func_ov004_02208ff0(s32 a);
     void func_ov004_022091e0();
     void func_ov004_02209198();
 
@@ -195,7 +195,7 @@ BOOL func_ov004_02205c7c(void *);
 void func_ov004_02235908(void *, u32, void *);
 void func_ov004_022358e0(void *, s32);
 BOOL func_020565e8(void *, s32);
-u32 func_02063b8c();
+u32 func_02063b8c(s32 n);
 void func_02051cc8(void *, u8, s32, s32);
 void func_ov004_02209aa8(void *);
 void func_ov004_022096b4(void *);
@@ -321,8 +321,8 @@ BOOL Unk_ov004_0224b8ec::vfunc_80() {
 
 BOOL Unk_ov004_0224b8ec::vfunc_7c() {
     if (unk_77c == 1) {
-        func_ov004_02208ff0(0);
-        u32 t = (unk_768 == 1) ? 0 : func_02063b8c();
+        s32 k = func_ov004_02208ff0(0);
+        u32 t = (unk_768 == 1) ? 0 : func_02063b8c(k);
         func_ov004_02208de0(0, 0, 0x1000, (u16)t);
         unk_844.func_ov004_02205a64(unk_590, 1);
     }

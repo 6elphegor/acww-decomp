@@ -297,8 +297,8 @@ extern "C" s32 func_ov003_02219908(s32 a, s32 b, s32 c)
     s32 p0 = 0;
     s32 p1 = 0;
     func_0204ee10(&p0, &p1, b);
-    s32 x = p0;
-    s32 z = p1;
+    s32 x = *(volatile s32 *)&p0;
+    s32 z = *(volatile s32 *)&p1;
     s32 hx = x >> 4;
     s32 hz = z >> 4;
     u16 *cell = (u16 *)func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);

@@ -382,9 +382,10 @@ s32 func_ov003_0221d320(u8 *self) {
 
 s32 func_ov003_0221cf58(void *o, P2 pos) {
     BOOL r = FALSE;
-    if (func_020452c8(o, pos, 0) >= 0) {
+    s32 idx = func_020452c8(o, pos, 0);
+    if (idx >= 0) {
         volatile u16 v = 0xfff1;
-        v = func_02045214()->unk_0a;
+        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))func_02045214)(idx)->unk_0a;
         BOOL f1 = TRUE, f2 = TRUE, f3 = TRUE, f0 = FALSE;
         u32 t = v;
         if (v >= 0x2b && t <= 0x2e) f0 = TRUE;

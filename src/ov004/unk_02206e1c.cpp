@@ -213,7 +213,7 @@ BOOL func_ov004_022057f0(void);
 s32 func_0202ffdc(void *v);
 BOOL func_ov004_02234f6c(void *v);
 u16 *func_ov004_0222aaa0(void);
-u32 func_02061950(void);
+u32 func_02061950(u16 *p);
 u32 func_02031060(u32 a);
 BOOL func_ov004_02207838(void);
 BOOL func_ov004_02205c7c(void *p);
@@ -494,8 +494,9 @@ BOOL Unk_ov004_0224882c::func_ov004_022075b0() {
 
 extern "C" s32 func_ov004_02207650(void) {
     if (Unk_ov004_02207650_IsOne(data_020e416c)) {
-        if (Unk_ov004_02207650_InRange(func_ov004_0222aaa0())) {
-            s32 q = func_02031060(func_02061950());
+        u16 *p = func_ov004_0222aaa0();
+        if (Unk_ov004_02207650_InRange(p)) {
+            s32 q = func_02031060(func_02061950(p));
             if (q != 0xffff) {
                 return q;
             }

@@ -248,7 +248,7 @@ void Unk_ov004_0224e2b8::func_ov004_02229e1c(Unk_ov004_0224e2b8_Str *p, s32 v) {
     if (v != m1) {
         o->func_020aa680(n, v);
     } else {
-        o->func_020aa680(n);
+        o->func_020aa680(n, m1);
     }
     s32 c0 = 0;
     for (i = 0; i < n; i++) {

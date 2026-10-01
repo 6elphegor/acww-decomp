@@ -128,21 +128,15 @@ func_020a6214 r277/r277.cpp  # spilled constant 3 at sp+0 (volatile k): adds/ldr
 func_020a59c0 r276/r276.cpp  # r6/r7 swap: hoisted this+0xc vs i<<3
 func_020a4778 r275/r275.cpp  # original reloads ldr =data_021d7352 before the +2 (ours CSEs the address); 2 bytes short, rest likely matches
 func_020b60dc r279/r279.cpp  # 0x73c collision query (Unk_020b6960): else-branch regalloc (gx/gz/cx), ours 0x14 bytes longer; NOT in any unit yet (lives between existing units at 0x020b60dc)
-func_ov004_02207650 ov004_004/ov004_004.cpp  # range-check regalloc (flag r3/halfword r2/pool r1)
 func_ov004_022053c0 ov004_001/ov004_001.cpp  # sin-table index CSE + ldrsh/ldrh store-reload of unk_15e; partially fixed with (s32) cast
 func_ov004_02209f38,func_ov004_02209f54 ov004_009/thunks_sp2.cpp  # _ZThn236 D0/D1 thunks of Unk_ov004_0224882c: match only under sp2, but func_ov004_0220a648 (same unit) matches only under base (switch-table encoding) — needs a split unit
 func_ov004_0220a898 ov004_010/ov004_010.cpp  # post-switch regalloc: zero in r1 vs address constants in r2 swapped (base compiler only)
-func_ov004_02212de4 ov004_024/ov004_024.cpp  # unk_768 loaded into r1 (orig) vs r0 before cmp #1
 func_ov004_02217cf8 ov004_032/ov004_032.cpp  # r6/r7 swap (callee result vs data_ov004_022506c8 ptr); movs r1,r7 vs adds r1,r6,#0
-func_ov004_022218f0 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
-func_ov004_02221b38 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
-func_ov004_02221d80 ov004_049/ov004_049.cpp  # load order z,y,x into stack V3 (x loaded first)
 func_ov004_022203c8 ov004_047/ov004_047.cpp  # switch value in r0 vs r1 (jump-table temp shift); try permutation search
 func_ov004_02224628 ov004_054/ov004_054.cpp  # regalloc in flag=t+1 test/store block (orig r0=&unk_8e6,r1=t+1,r2=old; ours r3/r2/r1); ~20 variants tried
 func_ov004_0222d874 ov004_069/ov004_069.cpp  # one reg: ldrb r3,[r0,#1];cmp r3,#3 (rec[1]==3) — ours uses r0; ~8 load variants tried
 func_ov004_0222e060 ov004_069/ov004_069.cpp  # regalloc: unk_15c in r3 (orig r2), &unk_1e8 in r2 (orig r4); all 120 decl-order perms tried
 func_ov004_022306f0 ov004_074/ov004_074.cpp  # unk_210 shift in switch cases 0/2 uses r1, orig r2 (ldr r2;lsls/asrs r2,#1;str r2); <<=,*=,temp,s32* tried
-func_ov004_02229e1c ov004_063/ov004_063.cpp  # sp2; v != -1 test: orig movs r1,#0;mvns r2,r1;cmp r4,r2, ours mvns r1,r1;cmp r4,r1
 func_ov004_0222a0bc ov004_063/ov004_063.cpp  # sp2; callee-saved regs for data_02240298[0..2]: orig a=r4,b=r6,c=r7, ours r7/r6/r4; all 6 decl orders tried
 func_ov004_022316e0 ov004_075/ov004_075.cpp  # reg rename only: orig &258=r4,&27c=r3,*p=r5; ours r5/r4/r3; ~12 variants tried
 func_ov004_02231d54 ov004_076/ov004_076.cpp  # k*=-1 on volatile stack k: orig movs r0,#0;mvns r1,r0;ldr r0,[sp];muls r0,r1 — ours loads k first into r1
@@ -210,14 +204,11 @@ func_ov003_02210ad4 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree shape 
 func_ov003_02210e40 ov003_020/ov003_020.cpp  # -O4,s; switch compare-tree: orig bounded 2-case leaf for 8/0xc; ours individual (cases 8,c,16,1b,22)
 func_ov003_02215e08 ov003_029/ov003_029.cpp  # sp2; B::vfunc_78: unk_233 test orig uses r1 (ldr r1,=0x233; ldrb r1), ours r0
 func_ov003_022195b8 ov003_035/ov003_035.cpp  # -O4,s; regs: orig p in r6, i in r5 (ours swapped)
-func_ov003_02219908 ov003_035/ov003_035.cpp  # -O4,s; orig loads p0,p1 then asrs each; ours interleaves
 func_ov003_02218794 ov003_033/ov003_033.cpp  # -O4,s; regs: orig ldr r0,[r0,#40]; ldr r1,=0xda2; adds r0,r0,r1 (ours r0/r1 swapped)
 func_ov003_022189b8 ov003_034/ov003_034.cpp  # sp2; one reg: spilled i<<2 temp in r0 (orig r1)
 func_ov003_02218c60 ov003_034/ov003_034.cpp  # sp2; 3x3 scan: orig recomputes y>>4 in inner loop + shared zero in r7; ours hoists
 func_ov003_0220bc84 ov003_012/ov003_012.cpp  # -O4,s; regalloc by ref count: orig spills b8 & keeps unk_7fc in r7 (ours reverse); last s16 result r5 vs r6
 func_ov003_022132b4 ov003_024/ov003_024.cpp  # -O4,s; 2 hunks ordering/regs: add r1,sp,#24 before ldr [sp,#100]; ldrsh base/zero regs swapped
-func_ov003_0221fd44 ov003_045/ov003_045.cpp  # -O4,s; orig loads both stack args then asrs each; ours interleaves (same as 02219908 in ov003_035)
-func_ov003_0221b160 ov003_038/ov003_038.cpp  # -O4,s; regalloc only (K/zero/-1 regs), range-check flag
 func_ov003_0221b248 ov003_038/ov003_038.cpp  # -O4,s; u16 w copy uses r0 (orig r3)
 func_ov003_0221b46c ov003_038/ov003_038.cpp  # -O4,s; zero/address regs swapped
 func_ov003_0221b7d4 ov003_038/ov003_038.cpp  # -O4,s; regalloc: orig cell=r5 a=r7 p=r6
@@ -226,7 +217,6 @@ func_ov003_0222144c ov003_048/ov003_048.cpp  # -O4,s; table literal load order +
 func_ov003_022216f8 ov003_048/ov003_048.cpp  # -O4,s; ptr/zero regs r0/r1 swapped
 func_ov003_02219d08 ov003_036/ov003_036.cpp  # -O4,s; regs: orig &p in r2, x in r3 (ours swapped); 120 decl perms tried
 func_ov003_02222f28 ov003_050/ov003_050.cpp  # -O4,s; scheduling: table addr computed before a3*6 lookup (orig after)
-func_ov003_0221cf58 ov003_041/ov003_041.cpp  # -O4,s; 0xfff1 strh: orig ldr r2; add r1,sp (ours r1/r0)
 func_ov003_02224148 ov003_052/ov003_052.cpp  # -O4,s; frame 12 vs 20, sin/cos table load order + missing hoisted spill of unk_142 lookup
 func_ov003_02224990 ov003_053/ov003_053.cpp  # -O4,s; ~270 diff lines: V3 local slot/spill layout (orig a at sp+0x18, b spilled 3x) and base-reg form
 func_ov003_022261ec ov003_056/ov003_056.cpp  # -O4,s; final !=-1 compare: field/-1 regs r0/r1 swapped

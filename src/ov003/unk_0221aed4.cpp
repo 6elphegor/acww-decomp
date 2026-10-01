@@ -172,7 +172,7 @@ void func_ov003_0221a704(Unk_ov003_0221aed4_Fx *self, P2 p);
 void func_ov003_0221a648(Unk_ov003_0221aed4_Fx *self, V3 q);
 void func_ov003_0221a42c(Unk_ov003_0221aed4_Fx *self, P2 p, s32 a);
 
-s32 func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
+void func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q);
 void func_ov003_0221aed4(Unk_ov003_0221aed4_Fx *self, P2 p, void *g);
 void func_ov003_0221af28(Unk_ov003_0221aed4_Fx *self, P2 p);
 void func_ov003_0221af8c(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, s32 flag);
@@ -305,7 +305,7 @@ extern "C" void func_ov003_0221b090(Unk_ov003_0221aed4_Fx *self)
     }
 }
 
-extern "C" s32 func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
+extern "C" void func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
 {
     Unk_ov003_0221aed4_Raw3 t;
     func_0204ed8c(&t, p.x, p.z);
@@ -317,11 +317,11 @@ extern "C" s32 func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
     self->unk_1c = q.y;
     self->unk_20 = q.z;
     BOOL f = FALSE;
-    s32 k = -1;
     self->unk_3c = 0;
     self->unk_40 = 0x1000;
     self->unk_44 = 0;
     volatile u16 w = 0xfff1;
+    s32 k = -1;
     w = self->unk_08;
     u32 a1 = w;
     u32 b1 = w;
@@ -609,20 +609,24 @@ extern "C" void func_ov003_0221b7d4(u16 *cell, s32 a, P2 p)
         s32 idx = func_ov003_0221ba28(a, &d);
         tbl = tbl + idx;
         Unk_ov003_0221b7d4_Ent *e = func_02045214(rec);
-        Unk_ov003_0221aed4_Raw3 pv[1];
-        Unk_ov003_0221aed4_Raw3 &pos = pv[0];
-        pos.x = d.x + tbl->x;
-        pos.y = d.y + tbl->y;
-        pos.z = d.z + tbl->z;
+        Unk_ov003_0221aed4_Raw3 pos;
+        s32 px = d.x + tbl->x;
+        *(volatile s32 *)&pos.x = px;
+        s32 py = d.y + tbl->y;
+        *(volatile s32 *)&pos.y = py;
+        s32 pz = d.z + tbl->z;
+        *(volatile s32 *)&pos.z = pz;
         volatile u16 tt[3];
         tt[2] = e->unk_08;
-        tt[0] = tt[1] = tt[2];
+        u16 vv = tt[2];
+        tt[1] = vv;
+        tt[0] = vv;
         s32 hi = tt[0] >> 8;
         s32 lo = tt[1] & 0xff;
         if (fl == 0) {
-            func_ov003_02219a9c(a, e->unk_0a, P2(hi, lo), V3(pos.x, pos.y, pos.z), 0, 0);
+            func_ov003_02219a9c(a, e->unk_0a, P2(hi, lo), V3(px, py, pz), 0, 0);
         } else {
-            func_ov003_02219a5c(a, e->unk_0a, P2(hi, lo), V3(pos.x, pos.y, pos.z), 0);
+            func_ov003_02219a5c(a, e->unk_0a, P2(hi, lo), V3(px, py, pz), 0);
         }
     }
 }
