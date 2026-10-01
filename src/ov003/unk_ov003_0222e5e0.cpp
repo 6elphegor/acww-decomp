@@ -31,9 +31,9 @@ void func_02116048(void *, void *, s32);
 
 Unk_ov003_0222e5e0_Rec data_ov003_0225b468[8];
 
-extern "C" void func_ov003_0222e708() {}
+extern "C" void _ZN18Unk_ov003_0222e708C2Ev() {}
 
-extern "C" void func_ov003_0222e704() {}
+extern "C" void _ZN18Unk_ov003_0222e708D2Ev() {}
 
 extern "C" BOOL func_ov003_0222e694(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
     if (func_020a62a0()) {
