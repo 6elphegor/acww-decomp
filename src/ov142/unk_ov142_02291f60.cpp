@@ -214,15 +214,14 @@ void Unk_ov142_02294da8::func_ov142_022920b0(u32 t) {
 }
 
 u16 Unk_ov142_02294da8::func_ov142_02292154(s32 x, s32 y, s32 t) {
-    u8 yr = (u8)(y & 0x1f);
-    u8 yg = (u8)((y & 0x3e0) >> 5);
-    u8 yb = (u8)((y & 0x7c00) >> 10);
+    u8 r = y & 0x1f;
+    u8 g = (y & 0x3e0) >> 5;
+    u8 b = (y & 0x7c00) >> 10;
     s32 n = 3 - t;
-    u32 res;
-    res = (u8)(((u8)(x & 0x1f) * t + yr * n) / 3);
-    res |= (u8)(((u8)((x & 0x3e0) >> 5) * t + yg * n) / 3) << 5;
-    res |= (u8)(((u8)((x & 0x7c00) >> 10) * t + yb * n) / 3) << 10;
-    return (u16)res;
+    r = ((u8)(x & 0x1f) * t + r * n) / 3;
+    g = ((u8)((x & 0x3e0) >> 5) * t + g * n) / 3;
+    b = ((u8)((x & 0x7c00) >> 10) * t + b * n) / 3;
+    return r | (g << 5) | (b << 10);
 }
 
 void Unk_ov142_02294da8::func_ov142_022921f0() {

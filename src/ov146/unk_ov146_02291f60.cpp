@@ -205,20 +205,17 @@ void Unk_ov146_02294080::func_ov146_02292044() {
     }
 }
 
-static inline u16 Unk_ov146_022920b4_Blend(s32 x, s32 y, s32 t) {
-    u8 yr = (u8)(y & 0x1f);
-    u8 yg = (u8)((y & 0x3e0) >> 5);
-    u8 yb = (u8)((y & 0x7c00) >> 10);
-    s32 n = 20 - t;
-    u32 res;
-    res = (u8)(((u8)(x & 0x1f) * t + yr * n) / 20);
-    res |= (u8)(((u8)((x & 0x3e0) >> 5) * t + yg * n) / 20) << 5;
-    res |= (u8)(((u8)((x & 0x7c00) >> 10) * t + yb * n) / 20) << 10;
-    return (u16)res;
-}
-
 void Unk_ov146_02294080::func_ov146_022920b4(s32 a, s32 t, s32 b) {
-    unk_13aa[(u8)(14 - a)] = Unk_ov146_022920b4_Blend(unk_138a[b], unk_138a[14], t);
+    u16 y = unk_138a[15];
+    u8 rr = y & 0x1f;
+    u8 rg = (y & 0x3e0) >> 5;
+    u8 rb = (y & 0x7c00) >> 10;
+    s32 n = 20 - t;
+    u16 x = unk_138a[b];
+    rr = ((u8)(x & 0x1f) * t + rr * n) / 20;
+    rg = ((u8)((x & 0x3e0) >> 5) * t + rg * n) / 20;
+    rb = ((u8)((x & 0x7c00) >> 10) * t + rb * n) / 20;
+    unk_13aa[(u8)(14 - a)] = rr | (rg << 5) | (rb << 10);
     func_ov146_02292020(8);
 }
 

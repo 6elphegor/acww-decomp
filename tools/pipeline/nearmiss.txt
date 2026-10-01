@@ -330,12 +330,5 @@ func_ov094_02293fc4 ov094_003/ov094_003.cpp  # Thumb -O4,s C++; data base/halfwo
 func_ov094_022937e4 ov094_002/ov094_002.cpp  # Thumb -O4,s C; ldrh *p into r2 (orig) vs r1 (ours) before cmp 0xfff1
 func_ov087_02271478 ov087_000/ov087_000.cpp  # Thumb -O4,s C++; g8=func_0209750c() kept in r6 vs orig spill [sp,#8]; shifts all spills (~96 lines)
 func_ov096_022969bc ov096_003/ov096_003.cpp  # Thumb -O4,s C++; first half: stack-addr temp r1 vs orig r2, x0=loc[0] r2 vs r1 (+1 pool word)
-func_ov114_022958d8 ov114_001/ov114_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend: eager rgb extraction/spill order differs, mwcc hoists 'x *= d' (~150 lines)
-func_ov119_02293924 ov119_001/ov119_001.cpp  # Thumb -O4,s C; 5-5-5 colour blend (same family as func_ov114_022958d8): orig extracts c2 channels early + spills, 0x14 frame
-func_ov134_02291f94 ov134_000/ov134_000.cpp  # Thumb -O4,s C++; 5-5-5 colour blend (same unsolved family as ov114_022958d8/ov119_02293924)
-ov139_000 func_ov139_022922a0 — known unsolved 5-5-5 colour blend (orig extracts c2 channels eagerly, frame 0x1c vs 0x14); same family as ov114_022958d8/ov119_02293924
-ov142_000 func_ov142_02292154 — known unsolved 5-5-5 colour blend (orig extracts y channels eagerly, frame 12 vs 4)
 ov142_002 func_ov142_0229337c — tab-0 nine-range scan: frame/zero spills match, remaining diff is double u16 load CSE'd + [sp+4] slot order
-ov145_000 func_ov145_022920b0 — known unsolved 5-5-5 colour blend (inlined; orig extracts arr[7] channels eagerly)
-ov146_000 func_ov146_022920b4 — known unsolved 5-5-5 colour blend (/20, inlined; eager channel extraction)
 ov146_001 func_ov146_02292970 — digit loop: orig hoists 0x10a into r7 and spills i*0x13; ours keeps i*0x13 in reg (~100 orderings tried)

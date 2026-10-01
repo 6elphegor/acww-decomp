@@ -287,20 +287,16 @@ void func_ov114_022958a4(S *s)
 
 void func_ov114_022958d8(S *s, s32 a, s32 b)
 {
-    u32 c1 = s->unk_9da;
-    u32 r1 = (u8)(c1 & 0x1f);
-    u32 g1 = (u8)((c1 & 0x3e0) >> 5);
-    u32 b1 = (u8)((s32)(c1 & 0x7c00) >> 10);
+    s32 c1 = s->unk_9da;
+    u8 r = c1 & 0x1f;
+    u8 g = (c1 & 0x3e0) >> 5;
+    u8 bl = (c1 & 0x7c00) >> 10;
     s32 d = b - a;
-    u32 c2 = s->unk_9d8;
-    u32 r;
-    u8 g, bl;
-    r = (u8)(((u8)(c2 & 0x1f) * a + r1 * d) / b);
-    g = (u8)(((u8)((c2 & 0x3e0) >> 5) * a + (g1 *= d)) / b);
-    c2 &= 0x7c00;
-    bl = (u8)(((u8)((s32)c2 >> 10) * a + (b1 *= d)) / b);
-    r |= g << 5;
-    s->unk_9f8 = (u16)((bl << 10) | r);
+    s32 c2 = s->unk_9d8;
+    r = ((u8)(c2 & 0x1f) * a + r * d) / b;
+    g = ((u8)((c2 & 0x3e0) >> 5) * a + g * d) / b;
+    bl = ((u8)((c2 & 0x7c00) >> 10) * a + bl * d) / b;
+    s->unk_9f8 = r | (g << 5) | (bl << 10);
     func_ov114_02294c50(s, 1);
 }
 
