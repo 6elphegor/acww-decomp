@@ -2,6 +2,13 @@
 # script defines"). <name> addr:<address> base:<object of this module's symbols.txt, or <MODULE>_<SECTION>_START>
 data_021c316c addr:0x021c316c base:data_021c30ec
 data_021c31ec addr:0x021c31ec base:data_021c30ec
+data_021c3ea8 addr:0x021c3ea8 base:data_021c3ea4
+data_021c3f8c addr:0x021c3f8c base:data_021c3f88
+data_021c40d0 addr:0x021c40d0 base:data_021c40cc
+data_021c40e4 addr:0x021c40e4 base:data_021c40cc
+data_021c40ec addr:0x021c40ec base:data_021c40cc
+data_021c4110 addr:0x021c4110 base:data_021c40cc
+data_021c43bc addr:0x021c43bc base:data_021c4350
 data_021c5b50 addr:0x021c5b50 base:data_021c5b48
 data_021c5bc8 addr:0x021c5bc8 base:data_021c5b48
 data_021c5c48 addr:0x021c5c48 base:data_021c5b48
