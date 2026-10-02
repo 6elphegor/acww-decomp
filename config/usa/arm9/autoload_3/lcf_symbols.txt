@@ -7,6 +7,7 @@ data_021c5bc8 addr:0x021c5bc8 base:data_021c5b48
 data_021c5c48 addr:0x021c5c48 base:data_021c5b48
 data_021c6164 addr:0x021c6164 base:data_021c6064
 data_021c7d1c addr:0x021c7d1c base:data_021c7cc8
+data_021d0830 addr:0x021d0830 base:data_021d04b0
 data_021d7352 addr:0x021d7352 base:data_021d7350
 data_021d735c addr:0x021d735c base:data_021d7350
 data_021dfd8c addr:0x021dfd8c base:data_021d7350

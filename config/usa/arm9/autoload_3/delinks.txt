@@ -344,6 +344,10 @@ src/main/unk_0208f268.bss.cpp:
     complete
     .bss        start:0x021d049c end:0x021d04b0
 
+src/main/unk_02090268.bss.cpp:
+    complete
+    .bss        start:0x021d04b0 end:0x021d0850
+
 src/main/unk_02094810.bss.cpp:
     complete
     .bss        start:0x021d0850 end:0x021d08c8

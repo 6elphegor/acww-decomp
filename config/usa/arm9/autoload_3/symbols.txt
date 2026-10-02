@@ -1064,7 +1064,6 @@ data_021d04a4 kind:bss addr:0x021d04a4
 data_021d04a8 kind:bss addr:0x021d04a8
 data_021d04ac kind:bss addr:0x021d04ac
 data_021d04b0 kind:bss addr:0x021d04b0
-data_021d0830 kind:bss addr:0x021d0830
 data_021d0850 kind:bss addr:0x021d0850
 data_021d085c kind:bss addr:0x021d085c
 data_021d0874 kind:bss addr:0x021d0874
