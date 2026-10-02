@@ -28,6 +28,7 @@ func_01ff8740 kind:function(arm,size=0x118) addr:0x01ff8740
 func_01ff8858 kind:function(arm,size=0x78) addr:0x01ff8858
 func_01ff88d0 kind:function(arm,size=0x194) addr:0x01ff88d0
 func_01ff8a64 kind:function(arm,size=0x50) addr:0x01ff8a64
+data_01ff8ab4 kind:data(any) addr:0x01ff8ab4
 func_01ff8ad4 kind:function(arm,size=0xfc) addr:0x01ff8ad4
 func_01ff8bd0 kind:function(arm,size=0xfc) addr:0x01ff8bd0
 func_01ff8ccc kind:function(arm,size=0x80) addr:0x01ff8ccc

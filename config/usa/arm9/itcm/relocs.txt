@@ -36,6 +36,14 @@ from:0x01ff8a58 kind:load to:0x0213bd34 module:autoload(2)
 from:0x01ff8a5c kind:load to:0x0213bd28 module:autoload(2)
 from:0x01ff8a60 kind:load to:0x0213bd40 module:autoload(2)
 from:0x01ff8ab0 kind:load to:0x0213be50 module:autoload(2)
+from:0x01ff8ab4 kind:load to:0x01ff8740 module:itcm
+from:0x01ff8ab8 kind:load to:0x01ff844c module:itcm
+from:0x01ff8abc kind:load to:0x01ff83cc module:itcm
+from:0x01ff8ac0 kind:load to:0x01ff8384 module:itcm
+from:0x01ff8ac4 kind:load to:0x01ff8654 module:itcm
+from:0x01ff8ac8 kind:load to:0x01ff8590 module:itcm
+from:0x01ff8acc kind:load to:0x01ff854c module:itcm
+from:0x01ff8ad0 kind:load to:0x01ff8528 module:itcm
 from:0x01ff8b04 kind:arm_call to:0x02115e64 module:autoload(2)
 from:0x01ff8b1c kind:arm_call to:0x02115e64 module:autoload(2)
 from:0x01ff8b34 kind:arm_call to:0x02115e64 module:autoload(2)
@@ -93,6 +101,7 @@ from:0x01ff9dc0 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9ddc kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9e00 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9f40 kind:arm_call to:0x01ff8bd0 module:itcm
+from:0x01ff9f58 kind:load to:0x01ff8ab4 module:itcm
 from:0x01ff9f68 kind:load to:0x0210a544 module:autoload(2)
 from:0x01ff9ff8 kind:arm_call to:0x01ffa0f0 module:itcm
 from:0x01ffa000 kind:arm_call to:0x01ffa080 module:itcm
