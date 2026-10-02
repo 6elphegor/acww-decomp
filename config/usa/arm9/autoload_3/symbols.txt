@@ -463,8 +463,6 @@ data_021c30b4 kind:bss addr:0x021c30b4
 data_021c30c0 kind:bss addr:0x021c30c0
 data_021c30cc kind:bss addr:0x021c30cc
 data_021c30ec kind:bss addr:0x021c30ec
-data_021c316c kind:bss addr:0x021c316c
-data_021c31ec kind:bss addr:0x021c31ec
 data_021c323c kind:bss addr:0x021c323c
 data_021c3240 kind:bss addr:0x021c3240
 data_021c3244 kind:bss addr:0x021c3244
@@ -663,7 +661,6 @@ data_021c5e54 kind:bss addr:0x021c5e54
 data_021c5e5c kind:bss addr:0x021c5e5c
 data_021c5f3c kind:bss addr:0x021c5f3c
 data_021c6064 kind:bss addr:0x021c6064
-data_021c6164 kind:bss addr:0x021c6164
 data_021c6190 kind:bss addr:0x021c6190
 data_021c6194 kind:bss addr:0x021c6194
 data_021c6198 kind:bss addr:0x021c6198

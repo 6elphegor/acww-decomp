@@ -41,3 +41,9 @@ src/main/unk_020b0e60.cpp:
 
 # U200
 src/main/unk_020a6974.cpp:
+
+# U041
+src/main/unk_0203a0cc.cpp:
+
+# U082
+src/main/unk_020594dc.cpp:
