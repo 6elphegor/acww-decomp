@@ -61,3 +61,6 @@ src/main/unk_02004558.cpp:
 # U195
 # U195 (0x020a427c-0x020a6388): compiler constant {4,4} (@657, 0x020e29d0) sits after the vtable
 src/main/unk_020a427c.cpp:
+
+# U108
+src/main/unk_02065e88.cpp:
