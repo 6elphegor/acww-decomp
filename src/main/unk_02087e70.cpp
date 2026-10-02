@@ -24,7 +24,7 @@ struct Unk_020b6a94 {
     u8 pad[0x1c];
 };
 
-extern "C" void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *p);
+extern "C" void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *p);
 extern "C" void _ZN12Unk_020b6a94D2Ev(Unk_020b6a94 *p);
 
 class Unk_020b6960 {
@@ -93,7 +93,7 @@ static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32
 }
 
 Unk_02088b20::Unk_02088b20() {
-    _ZN12Unk_020b6a94C1Ev(this);
+    _ZN12Unk_020b6a94C2Ev(this);
     unk_1c = 0;
     unk_20 = 0;
 }

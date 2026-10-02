@@ -260,7 +260,7 @@ public:
     void *func_020554c0();
 };
 
-// Member at +0x2d4: the original constructs it with the base-object constructor (C2), which a member declaration
+// Member at +0x2d4: the original constructs it with the base-object constructor (C1 here; the member is built with the complete-object ctor at 0x020b6a94), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names.
 struct Unk_020b6a94 {
     u8 pad[0x1c];
@@ -331,7 +331,7 @@ BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *self);
 BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *self, u32 a);
 u32 func_020b1d80(u32 a);
 void func_ov003_02217350();
-void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *self);
+void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020d967013func_0203e42cEv(void *self, void *a);
 }
@@ -408,7 +408,7 @@ extern "C" void func_ov003_02217350() {
 }
 
 Unk_ov003_02231e4c::Unk_ov003_02231e4c() {
-    _ZN12Unk_020b6a94C2Ev(&unk_2d4);
+    _ZN12Unk_020b6a94C1Ev(&unk_2d4);
 }
 
 Unk_ov003_02231e4c::~Unk_ov003_02231e4c() {

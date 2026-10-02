@@ -375,7 +375,7 @@ void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
-void _ZN12Unk_020b6a94C2Ev(void *self);
+void _ZN12Unk_020b6a94C1Ev(void *self);
 void _ZN12Unk_020b6a94D1Ev(void *self);
 s32 func_02054720(void *p, u32 a, u32 b, u32 c, u32 d, u32 e);
 void func_02054710(void *p);
@@ -1011,7 +1011,7 @@ Unk_ov004_0224e2b8::~Unk_ov004_0224e2b8() {
 Unk_ov004_0224e2b8::Unk_ov004_0224e2b8() {
     _ZN12Unk_020d8cf4C1Ev(unk_2d4);
     _ZN12Unk_020b6e10C2Ev(unk_370);
-    _ZN12Unk_020b6a94C2Ev(unk_618);
+    _ZN12Unk_020b6a94C1Ev(unk_618);
 }
 
 extern "C" Unk_ov004_0224e2b8 *func_ov004_0222a2c0() {

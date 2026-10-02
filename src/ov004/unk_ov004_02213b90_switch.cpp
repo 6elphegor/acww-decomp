@@ -109,7 +109,7 @@ public:
     u8 pad_41[3];
 };
 
-// Member at +0x134: the original constructs it with the base-object constructor (C2), which a member declaration
+// Member at +0x134: the original constructs it with the complete-object constructor (C1), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names (as in TU04).
 struct Unk_020b6a94 {
     u8 pad[0x1c];
@@ -184,7 +184,7 @@ extern s16 data_02135f44[];
 extern Unk_ov004_022146ec_Sing *data_020cbb18;
 extern Unk_020660f8 data_021ed0a0;
 
-void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *self);
+void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 s32 func_02002cf8(s32 a, s32 b, void *c, void *d, void *e);
 void func_0203e47c(void *self, Unk_020ddcf0 *sec);

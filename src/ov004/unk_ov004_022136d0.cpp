@@ -111,7 +111,7 @@ public:
 
 // ---------------------------------------------------------------- Unk_ov004_0224bc4c
 struct Vec3;
-// Unk_020b6a94 member: the original constructs it with the base-object constructor (C2), which a member
+// Unk_020b6a94 member: the original constructs it with the complete-object constructor (C1), which a member
 // declaration cannot do, so it is raw storage plus explicit calls through the real symbol names.
 struct Unk_020b6a94 {
     u8 pad[0x1c];
@@ -120,7 +120,7 @@ struct Unk_020b6a94 {
 class Unk_020b6960;
 
 extern "C" {
-void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *self);
+void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020d967013func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
 void _ZN12Unk_020d967013func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
@@ -216,7 +216,7 @@ extern "C" Unk_ov004_0224bc4c *func_ov004_02213b3c() {
 }
 
 Unk_ov004_0224bc4c::Unk_ov004_0224bc4c() {
-    _ZN12Unk_020b6a94C2Ev(&unk_134);
+    _ZN12Unk_020b6a94C1Ev(&unk_134);
 }
 
 Unk_ov004_0224bc4c::~Unk_ov004_0224bc4c() {

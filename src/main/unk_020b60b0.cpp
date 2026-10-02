@@ -66,6 +66,7 @@ struct Unk_0202e9c8 {
 };
 
 struct Unk_020b6a94 : Unk_0202e9c8 {
+    Unk_020b6a94();
     ~Unk_020b6a94();
     BOOL func_020b6a28(Vec3 *a, Vec3 *b, s32 c, u8 d);
     BOOL func_020b6a48(Vec3 *a, Vec3 *b, s32 c, u8 d);
@@ -168,26 +169,10 @@ BOOL Unk_020e44d4::func_020b6ac4(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     return FALSE;
 }
 
-// The two constructor copies of Unk_020b6a94 (identical code). The compiler emits C1 before C2, i.e. C1 at 0x020b6a94
-// and C2 at 0x020b6aac, which is what the callers show (overlays construct members with 0x020b6a94, the derived
-// class in unk_02087e70 calls 0x020b6aac). symbols.txt has the two names the other way round and linked units call
-// them by those names, so the copies are written as plain functions carrying the symbols.txt names.
-extern "C" void _ZN12Unk_0202e9c8C1Ev(Unk_0202e9c8 *self);
-
-extern "C" Unk_020b6a94 *_ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self) {
-    _ZN12Unk_0202e9c8C1Ev(self);
-    self->unk_14 = 0;
-    self->unk_10 = 0;
-    self->unk_18 = 0;
-    return self;
-}
-
-extern "C" Unk_020b6a94 *_ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *self) {
-    _ZN12Unk_0202e9c8C1Ev(self);
-    self->unk_14 = 0;
-    self->unk_10 = 0;
-    self->unk_18 = 0;
-    return self;
+Unk_020b6a94::Unk_020b6a94() {
+    unk_14 = 0;
+    unk_10 = 0;
+    unk_18 = 0;
 }
 
 Unk_020b6a94::~Unk_020b6a94() {

@@ -198,7 +198,7 @@ BOOL func_0203d67c(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
 Unk_020b6960 *func_020b50b4();
-void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *self);
+void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void func_ov003_02204b20();
 }
@@ -252,7 +252,7 @@ extern "C" Unk_ov003_022309d0 *func_ov003_02204c94() {
 }
 
 Unk_ov003_022309d0::Unk_ov003_022309d0() {
-    _ZN12Unk_020b6a94C2Ev(&unk_134);
+    _ZN12Unk_020b6a94C1Ev(&unk_134);
 }
 
 Unk_ov003_022309d0::~Unk_ov003_022309d0() {
