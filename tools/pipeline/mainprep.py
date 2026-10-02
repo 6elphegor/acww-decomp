@@ -23,7 +23,10 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
         SIZE     a section's objects do not fill the unit's range exactly
         DATA     an object's bytes at its simulated address differ from the original
         PLACE    a named object would not land on its symbols.txt address
-        TARGET   a relocation resolves to another address (or another module) than the original word
+        TARGET   a relocation resolves to another address (or another module) than the original word; or it uses
+                 an absolute symbol (config/usa/arm9/abs_symbols.txt) whose value is not the original word, or
+                 where the original has a relocation. An absolute symbol on a word without a relocation whose
+                 value (+addend) is the original word is right and listed as `abs`
       plus the unresolved symbols (`undef`). Sections the linker dead-strips (unreferenced, no symbols.txt name)
       are left out of the simulation, exactly as in the build; they are listed as `unused`.
   data <src.cpp> <obj.o> main <spec.txt | unit> [--apply] [--seed N]
@@ -448,6 +451,27 @@ def cmd_check(lp, objpath, unit):
                 continue  # unresolved: reported below
             rel = relocs.get(a + off)
             where = f"{lay.names[i]}+{off:#x}"
+            if mods == {lp.ABS_MODULE}:
+                # a number the linker script defines: the original word is that number and has no relocation
+                word, = struct.unpack_from("<I", image, a + off - BASE)
+                got = (have + addend) & 0xffffffff
+                text = f"{sname}{'%+#x' % addend if addend else ''}"
+                if rtype != 2:
+                    say(f"TARGET  {where} calls the absolute symbol {sname}")
+                    wrong += 1
+                elif rel is not None:
+                    names = " ".join(n for n, _ in lp.syms_by_addr(syms, rel[0] & ~1))
+                    say(f"TARGET  {where} uses the absolute symbol {text} ({got:#010x}); the original has a relocation "
+                        f"there, to {rel[0]:#010x} {names} [{rel[1]}]: use that symbol")
+                    wrong += 1
+                elif got != word:
+                    say(f"TARGET  {where} uses the absolute symbol {text} ({got:#010x}); the original word is "
+                        f"{word:#010x}")
+                    wrong += 1
+                else:
+                    say(f"abs     {where} {text} = {word:#010x} (no relocation in the original: a number of the "
+                        f"linker script)")
+                continue
             if rtype == 2:
                 word, = struct.unpack_from("<I", image, a + off - BASE)
                 got = have + addend

@@ -104,6 +104,23 @@ def lcf_symbols():
     return out
 
 
+ABS_MODULE = "abs"  # the "module" of an absolute symbol in load_symbols()
+
+
+def abs_symbols():
+    '''name -> value for the absolute symbols the linker script defines (config/usa/arm9/abs_symbols.txt,
+    tools/lcf_symbols.py): numbers that the original SDK took from its linker script, so the word that holds one has
+    no relocation in relocs.txt'''
+    out = {}
+    p = CONFIG / "abs_symbols.txt"
+    if p.is_file():
+        for line in p.read_text().splitlines():
+            m = re.fullmatch(r"(\S+)\s+abs:(0x[0-9a-fA-F]+)", line.split("#", 1)[0].strip())
+            if m:
+                out[m.group(1)] = int(m.group(2), 16)
+    return out
+
+
 def load_symbols():
     '''name -> (module, address) for every symbols.txt, and for the names the linker script defines'''
     out = {}
@@ -113,6 +130,8 @@ def load_symbols():
             out.setdefault(name, (mod, addr))
     for name, where in lcf_symbols().items():
         out.setdefault(name, where)
+    for name, value in abs_symbols().items():
+        out.setdefault(name, (ABS_MODULE, value))
     # a rename for an address without a symbol yet (a vtable named at its start, 8 bytes before dsd's label)
     for (mod, addr), name in RENAMES.items():
         out.setdefault(name, (mod, addr))
@@ -919,6 +938,16 @@ def cmd_check(objpath, ov):
         for off, sname, addend, rtype in lst:
             want = relocs.get(faddr + off)
             have = target_addr(sname)
+            if have is not None and sname not in local and syms[sname][0] == ABS_MODULE:
+                # an absolute symbol: right when the original word is that number and has no relocation
+                word, = struct.unpack_from("<I", orig, faddr + off - base)
+                if rtype != 2 or want is not None or (have + addend) & 0xffffffff != word:
+                    print(f"TARGET  {fname}+{off:#x} uses the absolute symbol {sname}{'+%#x' % addend if addend else ''}"
+                          f" ({(have + addend) & 0xffffffff:#010x}); the original "
+                          + (f"has a relocation to {want:#010x} there" if want is not None else
+                             f"word is {word:#010x}" if rtype == 2 else "has a call there"))
+                    wrong += 1
+                continue
             if want is None or have is None:
                 continue
             got = have + (addend if rtype == 2 else 0)

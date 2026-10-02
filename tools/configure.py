@@ -474,7 +474,7 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
         n.build(
             inputs=[objects_file, lcf_file],
             implicit=["tools/lcf_symbols.py", delink_file]
-                     + [str(path) for path in lcf_symbols.description_files(arm9_config)]
+                     + [str(path) for path in lcf_symbols.input_files(arm9_config)]
                      + project.delinks_files + project.symbols_files + project.source_object_files(),
             rule="lcf_symbols",
             outputs=[labels_lcf_file],

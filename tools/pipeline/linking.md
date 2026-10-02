@@ -309,7 +309,8 @@ dsd splits autoload_3's gap object at the range and writes `unk_0209c37c.bss.o(.
 to `unk_0209c37c.o(.bss)` and drops the placeholder from the object list. The unit's `.bss` sections then land in
 autoload_3 exactly like an overlay unit's in its overlay. `install_tu.py` writes both entries from one spec.
 
-Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` -> `lcf_symbols.py` ->
+Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` -> `lcf_symbols.py` (labels of
+`lcf_symbols.txt`, absolute symbols of `abs_symbols.txt`) ->
 `force_active.py` -> mwld. Each of the four middle steps exists only when needed (`tools/configure.py` decides), so **rerun
 `python3 tools/configure.py usa` after every install** (the helper script does).
 
@@ -434,6 +435,48 @@ section start. Function names never go here (`aliases.py`).
 line is satisfied by a recorded name or by an `interior:`/`section:` line of the unit's `renames.txt`, which
 `check` validates (the object must define the base as a global there). Standalone:
 `vtable_rename.py [-n] --interior <module> <label> <object>` and `--section <module> <address> [.ctor]`.
+
+### Absolute symbols: `config/usa/arm9/abs_symbols.txt`
+
+NitroSDK takes some numbers from its linker script: the stack sizes, the start of the DTCM arena (end of the DTCM
+bss), the start of the extended main-RAM arena. In the SDK source they are `extern` names, so the compiler cannot
+fold them, and in the linked ROM they are plain numbers, so the word has **no relocation in `relocs.txt`**. The
+tell-tale in the disassembly: a literal-pool word without a relocation that a number in the source would never
+produce (`ldr ip,=0x2000; cmp ip,#0` with both branches kept; `ldr r0,=0x02400000` where a number gives
+`mov r0,#0x2400000`; `ldr r0,=0x1000; sub r0,r1,r0`).
+
+They are listed in one file for the whole program, `config/usa/arm9/abs_symbols.txt`:
+
+    # name                        value
+    SDK_SYS_STACKSIZE             abs:0x00002000
+    SDK_IRQ_STACKSIZE             abs:0x00001000
+    SDK_SECTION_ARENA_DTCM_START  abs:0x027e0460
+    SDK_SECTION_ARENA_EX_START    abs:0x02400000
+
+and used in C as the SDK does: `extern u8 SDK_SYS_STACKSIZE[];` ... `(s32)SDK_SYS_STACKSIZE`,
+`(void *)SDK_SECTION_ARENA_EX_START`. Examples: `pipeline_wip/sdk_units/L001` (OS_InitThread), `L003`/`L004`
+(OS_GetInitArenaLo/Hi).
+
+* **Build.** `tools/lcf_symbols.py` (the same step as above; `tools/configure.py` adds it when either kind of file
+  has entries, so rerun `configure.py` after creating the file) appends `SDK_SYS_STACKSIZE = 0x2000;` to the end of
+  `SECTIONS` for every listed name that a linked object refers to; an unused name is not defined. This is the
+  syntax of dsd's own `OVERLAY_0_ID = 0;` lines. It refuses: a non-identifier, a duplicate, a name that is also
+  in a `symbols.txt` or an `lcf_symbols.txt` (a place inside a module has a relocation and belongs there), a
+  name that a linked object defines. `aliases.py`, `force_active.py` and `bss_units.py` do not see these names.
+* **`linkprep.py check` / `undef`.** The names resolve (module `abs`). A relocation against an absolute symbol
+  is right when the original word has no relocation and equals the symbol's value plus the addend; `check` lists
+  it as `abs     func+0x124 SDK_SYS_STACKSIZE = 0x00002000 (...)` (information, not a problem). It is a `TARGET`
+  problem when the value differs, when the original has a relocation on that word (then the word is a place in a
+  module: use the `symbols.txt` name, e.g. `data_027e0000` for the DTCM start), or when the symbol is called.
+  Without the line in `abs_symbols.txt` the name is `MISSING` (unresolved).
+* **Adding one.** Name it after the SDK's symbol when known, give the exact value of the original word, and say
+  in the unit's notes.txt which line the coordinator must add. Values are per program (this ROM), not per module.
+* **Not every unfolded number is a symbol.** A base address that is loaded and then indexed
+  (`ldr r3,=0x027ffc00; ldr r2,[r3,#0x388]`) comes out of a plain number held in a local pointer first:
+  `OSSystemWork *p = (OSSystemWork *)0x027ffc00; ... p->pxiHandleChecker[0]` (`sdk_units/L002`, PXI). Written as
+  `((OSSystemWork *)0x027ffc00)->member` the compiler folds the offset into the address. Try the local pointer
+  before asking for a symbol: a symbol's address load is scheduled differently from a number's (it moves to the
+  top of the block), so a symbol where the original had a number does not match either.
 
 This is also why the plan's unit boundaries of class `r` are often not real: when one object spans the bss of
 several consecutive units (TU014-TU017), or a class's vtable/key function, an `__arraydtor`, or a `__sinit`'s
@@ -612,6 +655,9 @@ accepts `lcf_symbols.txt` in the module directory (section starts `AUTOLOAD_2_DA
 `force_active.py` keeps the unit's `symbols.txt` globals. `python3 tools/configure.py usa` after every install.
 
 First unit: `pipeline_wip/sdk_units/T001` (GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154).
+
+SDK functions that use numbers of the SDK's linker script (stack sizes, arena starts) need the names of
+`config/usa/arm9/abs_symbols.txt`: see "Absolute symbols" under "Names the linker script defines".
 
 Not supported / open:
 

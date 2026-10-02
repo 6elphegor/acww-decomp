@@ -39,6 +39,21 @@
 #     way to write `.p__sinit_020c2cd0`, so such a symbol gets an identifier name in symbols.txt.
 # Every recorded name is defined, whether or not something refers to it at the moment; `-v` lists the users.
 #
+# Absolute symbols. NitroSDK code uses numbers that its linker script defines as symbols (stack sizes, the end of
+# the DTCM bss, the shared-memory block of main RAM). The compiler cannot fold a symbol, so such a function only
+# compiles to the original instructions when the source uses an `extern` name too, and the literal pool word has
+# no relocation in relocs.txt because the linked value is a plain number. They are listed in ONE file,
+# `abs_symbols.txt` in the config directory (config/usa/arm9/abs_symbols.txt), one per line:
+#
+#     # name               value
+#     SDK_SYS_STACKSIZE    abs:0x00002000
+#     HW_MAIN_MEM_SHARED   abs:0x027ffc00
+#
+# and this step appends `SDK_SYS_STACKSIZE = 0x2000;` for every name that a linked object refers to (an unused
+# name is not defined, so the list can be shared by sources that are not linked yet). Checks: the name is an
+# identifier, is listed once, is in no symbols.txt and no lcf_symbols.txt (a place in a module has a relocation and
+# belongs there), and no linked object defines it.
+#
 # Usage:
 #   python3 tools/lcf_symbols.py build/usa/objects.txt build/usa/arm9.lcf --config config/usa/arm9 \
 #       -o build/usa/arm9_lcf_symbols.lcf [-v]
@@ -51,6 +66,7 @@ import sys
 from pathlib import Path
 
 DESCRIPTION_FILE = "lcf_symbols.txt"
+ABSOLUTE_FILE = "abs_symbols.txt"
 IDENTIFIER = r"[A-Za-z_][A-Za-z0-9_]*"
 SHT_SYMTAB = 2
 STB_LOCAL = 0
@@ -92,10 +108,47 @@ def parse_description(path: Path) -> list[Label]:
     return labels
 
 
+class Absolute:
+    def __init__(self, name: str, value: int, where: str):
+        self.name = name
+        self.value = value
+        self.where = where
+
+
+def parse_absolute(config: Path) -> list[Absolute]:
+    '''The absolute symbols of <config>/abs_symbols.txt (`<name> abs:<0xvalue>`); no file, no symbols'''
+    path = config / ABSOLUTE_FILE
+    if not path.is_file():
+        return []
+    out = []
+    seen: dict[str, str] = {}
+    for number, line in enumerate(path.read_text().splitlines(), 1):
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        where = f"{path}:{number}"
+        match = re.fullmatch(r"(\S+)\s+abs:(0x[0-9a-fA-F]{1,8})", line)
+        if not match:
+            raise LabelError(f"{where}: expected `<name> abs:<0xvalue>` (a 32-bit value)")
+        if not re.fullmatch(IDENTIFIER, match[1]):
+            raise LabelError(f"{where}: {match[1]} is not an identifier; a linker script cannot define it")
+        if match[1] in seen:
+            raise LabelError(f"{where}: {match[1]} is already defined at {seen[match[1]]}")
+        seen[match[1]] = where
+        out.append(Absolute(match[1], int(match[2], 16), where))
+    return out
+
+
+def input_files(config: Path) -> list[Path]:
+    '''Every file this step reads besides the dsd config (the build's dependencies)'''
+    absolute = config / ABSOLUTE_FILE
+    return description_files(config) + ([absolute] if absolute.is_file() else [])
+
+
 def has_labels(config: Path) -> bool:
     '''Whether the build needs this step'''
     try:
-        return any(parse_description(path) for path in description_files(config))
+        return any(parse_description(path) for path in description_files(config)) or bool(parse_absolute(config))
     except LabelError as error:
         sys.exit(f"lcf_symbols.py: {error}")
 
@@ -233,9 +286,19 @@ def resolve(config: Path, lcf: str) -> list[Label]:
 
 def process(lcf: str, objects: list[str], config: Path, verbose: bool) -> str:
     labels = resolve(config, lcf)
-    if not labels:
+    absolutes = parse_absolute(config)
+    if not labels and not absolutes:
         return lcf
     names = {label.name: label for label in labels}
+    absolute = {symbol.name: symbol for symbol in absolutes}
+    for symbol in absolutes:
+        if symbol.name in names:
+            raise LabelError(f"{symbol.where}: {symbol.name} is also defined at {names[symbol.name].where}")
+    for path in sorted(config.rglob("symbols.txt")):
+        for name in absolute.keys() & parse_symbols(path).keys():
+            raise LabelError(f"{absolute[name].where}: {name} is a symbol of {path}: a place in a module is not an "
+                             f"absolute symbol (the word that uses it has a relocation)")
+    absolute_users: dict[str, list[str]] = {}
     bases = {label.base for label in labels if label.symbol_base}
     base_owner = {}
     users: dict[str, list[str]] = {}
@@ -252,6 +315,11 @@ def process(lcf: str, objects: list[str], config: Path, verbose: bool) -> str:
             base_owner[name] = path
         for name in undefined & names.keys():
             users.setdefault(name, []).append(path.name)
+        for name in defined & absolute.keys():
+            raise LabelError(f"{absolute[name].where}: {name} is defined by {path}. An object's definition and a "
+                             f"linker script assignment must not both exist: remove the line, or the definition")
+        for name in undefined & absolute.keys():
+            absolute_users.setdefault(name, []).append(path.name)
     for label in labels:
         if label.symbol_base and label.base not in base_owner:
             raise LabelError(f"{label.where}: no linked object defines the base {label.base} as a global symbol; "
@@ -261,14 +329,23 @@ def process(lcf: str, objects: list[str], config: Path, verbose: bool) -> str:
                              f"{base_owner[label.base]}, not by a compiled unit")
     lines = [f"    {label.name} = {label.base}" + (f" + {label.offset:#x}" if label.offset else "") + ";\n"
              for label in sorted(labels, key=lambda label: label.address)]
+    lines += [f"    {symbol.name} = {symbol.value:#x};\n" for symbol in absolutes if symbol.name in absolute_users]
     used = sum(1 for label in labels if label.name in users)
-    print(f"lcf_symbols.py: {len(labels)} names defined, {used} of them referenced by linked objects")
+    print(f"lcf_symbols.py: {len(labels)} names defined, {used} of them referenced by linked objects"
+          + (f"; {len(absolute_users)} of {len(absolutes)} absolute symbols defined" if absolutes else ""))
     if verbose:
         for label in sorted(labels, key=lambda label: label.address):
             who = users.get(label.name, [])
             print(f"  {label.address:#010x} {label.name} = {label.base} + {label.offset:#x}: "
                   + (f"{len(who)} objects ({', '.join(who[:4])}{' ...' if len(who) > 4 else ''})" if who
                      else "not referenced"))
+        for symbol in absolutes:
+            who = absolute_users.get(symbol.name, [])
+            print(f"  {symbol.name} = {symbol.value:#x} (absolute): "
+                  + (f"{len(who)} objects ({', '.join(who[:4])}{' ...' if len(who) > 4 else ''})" if who
+                     else "not referenced, not defined"))
+    if not lines:
+        return lcf
     end = lcf.rindex("}")
     return lcf[:end] + "\n" + "".join(lines) + lcf[end:]
 
