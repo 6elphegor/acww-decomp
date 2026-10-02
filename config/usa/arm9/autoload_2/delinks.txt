@@ -163,6 +163,22 @@ src/autoload_2/unk_02105d50.c:
     complete
     .text       start:0x02105d50 end:0x02106020
 
+src/autoload_2/unk_02106020.c:
+    complete
+    .text       start:0x02106020 end:0x02106300
+
+src/autoload_2/unk_021065dc.c:
+    complete
+    .text       start:0x021065dc end:0x02106d60
+
+src/autoload_2/unk_02106f90.c:
+    complete
+    .text       start:0x02106f90 end:0x02107564
+
+src/autoload_2/unk_02107634.c:
+    complete
+    .text       start:0x02107634 end:0x02107994
+
 src/autoload_2/unk_02107994.c:
     complete
     .text       start:0x02107994 end:0x02107ba0
