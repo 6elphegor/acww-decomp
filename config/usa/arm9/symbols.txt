@@ -7781,9 +7781,9 @@ func_020843c4 kind:function(thumb,size=0x40) addr:0x020843c4
 func_02084404 kind:function(thumb,size=0x2a) addr:0x02084404
 func_02084430 kind:function(thumb,size=0x34) addr:0x02084430
 func_02084464 kind:function(thumb,size=0x6c) addr:0x02084464
-func_020844d0 kind:function(thumb,size=0xd8) addr:0x020844d0
-func_020845a8 kind:function(thumb,size=0x64) addr:0x020845a8
-func_0208460c kind:function(thumb,size=0x1a4) addr:0x0208460c
+_ZN12Unk_020e09ac8vfunc_18Ev kind:function(thumb,size=0xd8) addr:0x020844d0
+_ZN12Unk_020e09ac8vfunc_0cEv kind:function(thumb,size=0x64) addr:0x020845a8
+_ZN12Unk_020e09ac8vfunc_00Ev kind:function(thumb,size=0x1a4) addr:0x0208460c
 func_020847b0 kind:function(thumb,size=0x1b0) addr:0x020847b0
 func_02084960 kind:function(thumb,size=0x184) addr:0x02084960
 func_02084ae4 kind:function(thumb,size=0x1b0) addr:0x02084ae4
@@ -7794,7 +7794,7 @@ func_02084e20 kind:function(thumb,size=0xaa) addr:0x02084e20
 func_02084ecc kind:function(thumb,size=0x7c) addr:0x02084ecc
 func_02084f48 kind:function(thumb,size=0x3c) addr:0x02084f48
 func_02084f84 kind:function(thumb,size=0x34) addr:0x02084f84
-func_02084fb8 kind:function(thumb,size=0x2) addr:0x02084fb8
+_ZN14Unk_02083c28_GD1Ev kind:function(thumb,size=0x2) addr:0x02084fb8
 func_02084fbc kind:function(thumb,size=0x40) addr:0x02084fbc
 func_02084ffc kind:function(thumb,size=0xe4) addr:0x02084ffc
 func_020850e0 kind:function(thumb,size=0x8) addr:0x020850e0
@@ -15853,7 +15853,6 @@ _ZTV12Unk_020e0840 kind:data(any) addr:0x020e0838
 _ZTV12Unk_020e085c kind:data(any) addr:0x020e0854
 data_020e0870 kind:data(any) addr:0x020e0870
 data_020e0874 kind:data(any) addr:0x020e0874
-data_020e0878 kind:data(any) addr:0x020e0878
 data_020e087c kind:data(any) addr:0x020e087c
 data_020e0884 kind:data(any) addr:0x020e0884
 data_020e088c kind:data(any) addr:0x020e088c
@@ -15890,8 +15889,7 @@ data_020e097c kind:data(any) addr:0x020e097c
 data_020e0984 kind:data(any) addr:0x020e0984
 data_020e098c kind:data(any) addr:0x020e098c
 data_020e0994 kind:data(any) addr:0x020e0994
-data_020e09a0 kind:data(any) addr:0x020e09a0
-data_020e09ac kind:data(any) addr:0x020e09ac
+_ZTV12Unk_020e09ac kind:data(any) addr:0x020e09a4
 data_020e09f4 kind:data(any) addr:0x020e09f4
 data_020e0a78 kind:data(any) addr:0x020e0a78
 data_020e0af8 kind:data(any) addr:0x020e0af8
