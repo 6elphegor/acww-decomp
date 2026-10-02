@@ -2103,9 +2103,11 @@ func_02130b98 kind:function(arm,size=0x318) addr:0x02130b98
 _dadd kind:label(arm) addr:0x02130b98
 _d2f kind:function(arm,size=0x104) addr:0x02130eb0
 func_02130fb4 kind:function(arm,size=0x58) addr:0x02130fb4
+_dfixu kind:label(arm) addr:0x02130fb4
 func_0213100c kind:function(arm,size=0x8c) addr:0x0213100c
 _ll_ufrom_d kind:label(arm) addr:0x0213100c
 func_02131098 kind:function(arm,size=0x3c) addr:0x02131098
+_dfltu kind:label(arm) addr:0x02131098
 func_021310d4 kind:function(arm,size=0x40) addr:0x021310d4
 func_02131114 kind:function(arm,size=0x364) addr:0x02131114
 _dmul kind:label(arm) addr:0x02131114
