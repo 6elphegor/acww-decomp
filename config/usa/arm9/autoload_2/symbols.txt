@@ -275,6 +275,7 @@ func_020ed188 kind:function(arm,size=0x5c) addr:0x020ed188
 func_020ed1e4 kind:function(arm,size=0x8) addr:0x020ed1e4
 _ZN17Unk_020d8c7c_Base8vfunc_30Ev kind:function(arm,size=0x4) addr:0x020ed1ec
 _ZN17Unk_020d8c7c_Base8vfunc_14Ev kind:function(arm,size=0x78) addr:0x020ed1f0
+_ZN17Unk_020d8c7c_Base8vfunc_14Ei kind:label(arm) addr:0x020ed1f0
 _ZN17Unk_020d8c7c_Base8vfunc_10Ev kind:function(arm,size=0x44) addr:0x020ed268
 _ZN17Unk_020d8c7c_Base8vfunc_0cEv kind:function(arm,size=0x8) addr:0x020ed2ac
 func_020ed2b4 kind:function(arm,size=0x80) addr:0x020ed2b4
