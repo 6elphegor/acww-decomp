@@ -25,7 +25,7 @@ func_02000a5c kind:function(arm,size=0xe8) addr:0x02000a5c
 func_02000b44 kind:function(arm,size=0x4) addr:0x02000b44
 BuildInfo kind:data(any) addr:0x02000b48
 func_02000b7c kind:function(thumb,size=0x8) addr:0x02000b7c
-main kind:function(thumb,size=0x60) addr:0x02000c2c
+NitroMain kind:function(thumb,size=0x60) addr:0x02000c2c
 _ZN12Unk_02000c8cD1Ev kind:function(thumb,size=0x2) addr:0x02000c8c
 _ZN6Vec3Z2D1Ev kind:label(thumb) addr:0x02000c8c
 _ZN5Vec3ZD1Ev kind:label(thumb) addr:0x02000c8c
@@ -13888,7 +13888,6 @@ data_020d05d4 kind:data(any) addr:0x020d05d4
 data_020d05e0 kind:data(any) addr:0x020d05e0
 data_020d05f0 kind:data(any) addr:0x020d05f0
 data_020d0604 kind:data(any) addr:0x020d0604
-data_020d0608 kind:data(any) addr:0x020d0608
 data_020d0634 kind:data(any) addr:0x020d0634
 data_020d064c kind:data(any) addr:0x020d064c
 data_020d0650 kind:data(any) addr:0x020d0650
@@ -17048,8 +17047,6 @@ data_020e21d8 kind:data(any) addr:0x020e21d8
 data_020e21e4 kind:data(any) addr:0x020e21e4
 data_020e21f0 kind:data(any) addr:0x020e21f0
 data_020e21fc kind:data(any) addr:0x020e21fc
-data_020e220c kind:data(any) addr:0x020e220c
-data_020e227c kind:data(any) addr:0x020e227c
 data_020e22c4 kind:data(any) addr:0x020e22c4
 data_020e22cc kind:data(any) addr:0x020e22cc
 data_020e22d0 kind:data(any) addr:0x020e22d0

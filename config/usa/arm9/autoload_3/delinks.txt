@@ -1,5 +1,9 @@
     .bss        start:0x0213c6c0 end:0x02200680 kind:bss align:32
 
+src/main/unk_02000c2c.bss.cpp:
+    complete
+    .bss        start:0x0213c6c0 end:0x0213c6ec
+
 src/main/unk_0200137c.bss.cpp:
     complete
     .bss        start:0x0213c6ec end:0x0213c7a8
@@ -383,6 +387,10 @@ src/main/unk_02094810.bss.cpp:
 src/main/unk_02097444.bss.cpp:
     complete
     .bss        start:0x021d08c8 end:0x021d70b4
+
+src/main/unk_02098e90.bss.cpp:
+    complete
+    .bss        start:0x021d70b4 end:0x021d7128
 
 src/main/unk_0209b5d4.bss.cpp:
     complete
