@@ -84,6 +84,7 @@ func_01ffb4e8 kind:function(arm,size=0x84) addr:0x01ffb4e8
 func_01ffb56c kind:function(arm,size=0x19c) addr:0x01ffb56c
 func_01ffb708 kind:function(arm,size=0xc4) addr:0x01ffb708
 func_01ffb7cc kind:function(arm,size=0x28) addr:0x01ffb7cc
+_ZN12Unk_01ffb7ccC2Ev kind:label(arm) addr:0x01ffb7cc
 func_01ffb7f4 kind:function(arm,size=0x34) addr:0x01ffb7f4
 func_01ffb828 kind:function(thumb,size=0x16) addr:0x01ffb828
 func_01ffb840 kind:function(thumb,size=0x1e) addr:0x01ffb840
