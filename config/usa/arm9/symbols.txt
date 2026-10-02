@@ -31,6 +31,7 @@ _ZN6Vec3Z2D1Ev kind:label(thumb) addr:0x02000c8c
 _ZN5Vec3ZD1Ev kind:label(thumb) addr:0x02000c8c
 _ZN18Unk_ov003_02258f18D1Ev kind:label(thumb) addr:0x02000c8c
 func_02000c90 kind:function(thumb,size=0x8) addr:0x02000c90
+_ZN12Unk_021c3ec8C1Ev kind:label(thumb) addr:0x02000c90
 func_02000c98 kind:function(thumb,size=0x2) addr:0x02000c98
 _ZN12Unk_02000c8cC1Ev kind:label(thumb) addr:0x02000c98
 func_02000c9c kind:function(thumb,size=0x38) addr:0x02000c9c
@@ -334,6 +335,7 @@ _ZN12Unk_020d6df4D1Ev kind:function(thumb,size=0x184) addr:0x02004760
 _ZN12Unk_020d6df4C1Ev kind:function(thumb,size=0x264) addr:0x020048e4
 _ZN12Unk_020d6f54D1Ev kind:function(thumb,size=0x18) addr:0x02004b48
 _ZN12Unk_0203442cD1Ev kind:function(thumb,size=0x2) addr:0x02004b60
+_ZN17Unk_0204b598_ElemD1Ev kind:label(thumb) addr:0x02004b60
 _ZN14Unk_020608b8_WD1Ev kind:label(thumb) addr:0x02004b60
 _ZN17Unk_020601cc_DfltD1Ev kind:label(thumb) addr:0x02004b60
 _ZN12Unk_020d6df413func_02004b64Ev kind:function(thumb,size=0x184) addr:0x02004b64
@@ -3655,6 +3657,7 @@ func_0204a97c kind:function(thumb,size=0x18) addr:0x0204a97c
 func_0204a994 kind:function(thumb,size=0x18) addr:0x0204a994
 func_0204a9ac kind:function(thumb,size=0x18) addr:0x0204a9ac
 func_0204a9c4 kind:function(thumb,size=0x4) addr:0x0204a9c4
+_ZN12Unk_0203442cC1Ej kind:label(thumb) addr:0x0204a9c4
 func_0204a9c8 kind:function(thumb,size=0x5c) addr:0x0204a9c8
 func_0204aa24 kind:function(thumb,size=0x4) addr:0x0204aa24
 func_0204aa28 kind:function(thumb,size=0x36) addr:0x0204aa28
@@ -5129,6 +5132,7 @@ func_02061060 kind:function(thumb,size=0xae) addr:0x02061060
 func_02061110 kind:function(thumb,size=0x58) addr:0x02061110
 func_02061168 kind:function(thumb,size=0x310) addr:0x02061168
 func_02061478 kind:function(thumb,size=0x2ec) addr:0x02061478
+_ZN12Unk_0203442cC1EPt kind:label(thumb) addr:0x02061478
 func_02061764 kind:function(thumb,size=0xc) addr:0x02061764
 func_02061770 kind:function(thumb,size=0xc) addr:0x02061770
 func_0206177c kind:function(thumb,size=0xc) addr:0x0206177c
