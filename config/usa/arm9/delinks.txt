@@ -1230,8 +1230,11 @@ src/main/unk_020b5e5c.cpp:
     .text       start:0x020b5e5c end:0x020b60b0
     .data       start:0x020e4470 end:0x020e44cc
 
-src/main/unk_020b6818.cpp:
-    .text       start:0x020b6818 end:0x020b6b44
+src/main/unk_020b60b0.cpp:
+    complete
+    .text       start:0x020b60b0 end:0x020b6b44
+    .init       start:0x020c5aa8 end:0x020c5b04
+    .ctor       start:0x020d1f24 end:0x020d1f28
 
 src/main/unk_020b6b44.cpp:
     complete
