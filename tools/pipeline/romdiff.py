@@ -8,9 +8,10 @@ pairs = [(b / "arm9.bin", e / "arm9/arm9.bin")]
 for p in sorted(b.glob("arm9_ov*.bin")):
     n = int(p.stem[len("arm9_ov"):])
     pairs.append((p, e / f"arm9_overlays/ov{n:03d}.bin"))
-for extra in ("itcm", "dtcm", "unk_autoload_2", "unk_autoload_3"):
-    for p in b.glob(f"*{extra}*.bin"):
-        pairs.append((p, e / f"arm9/{extra}.bin"))
+# built name, original name (dsd extracts the unnamed autoloads as unk_autoload_N.bin)
+for built_name, orig_name in (("itcm", "itcm"), ("dtcm", "dtcm"), ("autoload_2", "unk_autoload_2"),
+                              ("autoload_3", "unk_autoload_3")):
+    pairs.append((b / f"{built_name}.bin", e / f"arm9/{orig_name}.bin"))
 bad = 0
 for built, orig in pairs:
     if not built.exists() or not orig.exists():

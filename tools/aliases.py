@@ -23,6 +23,9 @@
 # The primary name is the `kind:function` symbol if the object defines it, else the first alias it defines.
 # Objects without such names are linked as they are. The step is part of the build when main has complete units.
 #
+# The library modules autoload_2 and itcm are treated like main (their units are compiled one translation unit at a
+# time too): each module's own symbols.txt gives the names of its complete units' functions.
+#
 # Usage:
 #   python3 tools/aliases.py build/usa/objects.txt --config config/usa/arm9 --build build/usa \
 #       --objects-out build/usa/objects_aliases.txt [-v]
@@ -40,12 +43,28 @@ STB_LOCAL = 0
 SHN_LORESERVE = 0xff00
 
 
+# Modules whose compiled units get alias names: main (the config directory itself) and the library autoloads
+UNIT_MODULES = ("", "autoload_2", "itcm")
+
+
+def module_dirs(config: Path) -> list[Path]:
+    return [config / name for name in UNIT_MODULES if (config / name / "delinks.txt").is_file()]
+
+
 def main_complete_units(config: Path) -> dict[str, tuple[int, int]]:
-    '''{source: .text range} of the complete units of main's delinks.txt'''
+    '''{source: .text range} of the complete units of main, autoload_2 and itcm'''
+    units = {}
+    for module_dir in module_dirs(config):
+        units.update(module_complete_units(module_dir))
+    return units
+
+
+def module_complete_units(module_dir: Path) -> dict[str, tuple[int, int]]:
+    '''{source: .text range} of the complete units of one module's delinks.txt'''
     units = {}
     current = None
     complete = False
-    for line in (config / "delinks.txt").read_text().splitlines():
+    for line in (module_dir / "delinks.txt").read_text().splitlines():
         if line and not line[0].isspace():
             current = line.rstrip().rstrip(":")
             complete = False
@@ -62,10 +81,10 @@ def has_complete_units(config: Path) -> bool:
     return bool(main_complete_units(config))
 
 
-def names_by_address(config: Path) -> dict[int, list[tuple[str, bool]]]:
-    '''address -> [(name, is function symbol)] for main addresses that have more than one global name'''
+def names_by_address(module_dir: Path) -> dict[int, list[tuple[str, bool]]]:
+    '''address -> [(name, is function symbol)] for a module's addresses that have more than one global name'''
     found: dict[int, list[tuple[str, bool]]] = {}
-    for line in (config / "symbols.txt").read_text().splitlines():
+    for line in (module_dir / "symbols.txt").read_text().splitlines():
         match = re.match(r"(\S+) kind:(function|label)\(\S+ addr:(0x[0-9a-fA-F]+)(.*)", line)
         if not match or "local" in match[4].split():
             continue
@@ -158,13 +177,15 @@ def process_object(elf: Elf, text: tuple[int, int], names, known_addresses, log)
 
 
 def process(objects: list[str], config: Path, build: Path, verbose: bool) -> list[str]:
-    units = main_complete_units(config)
-    names = names_by_address(config)
     out = []
-    by_object = {str(build / Path(source).with_suffix(".o")): text for source, text in units.items()}
+    by_object = {}  # object path -> (.text range, alias names of its module)
+    for module_dir in module_dirs(config):
+        names = names_by_address(module_dir)
+        for source, text in module_complete_units(module_dir).items():
+            by_object[str(build / Path(source).with_suffix(".o"))] = (text, names)
     for line in objects:
         path = line.strip().strip('"')
-        text = by_object.get(path)
+        text, names = by_object.get(path, (None, {}))
         if text is None or not any(text[0] <= a < text[1] for a in names) or not Path(path).exists():
             out.append(line)
             continue

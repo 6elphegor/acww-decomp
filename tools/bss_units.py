@@ -20,8 +20,9 @@
 # list of objects to link, so the .bss sections of the main unit's object land in autoload_3 at the placeholder's
 # range. Nothing else changes; without a placeholder unit the step is not part of the build.
 #
-# The same convention works for any module pair (the placeholder may be listed in any delinks.txt), but only
-# main/autoload_3 needs it.
+# The same convention works for any module pair (the placeholder may be listed in any delinks.txt). It is used for
+# main/autoload_3 and for the library modules autoload_2 and itcm, whose bss is in autoload_3 too; their units may
+# be C files (`src/autoload_2/unk_0210f0c4.bss.c` stands for the bss of `src/autoload_2/unk_0210f0c4.c`).
 #
 # Usage:
 #   python3 tools/bss_units.py build/usa/objects.txt build/usa/arm9.lcf --config config/usa/arm9 \

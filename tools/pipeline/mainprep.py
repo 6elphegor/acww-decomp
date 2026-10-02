@@ -35,6 +35,10 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
       are listed with the symbol and the delinks.txt unit that own them.
   dump main <spec.txt | unit>
       the unit's .rodata/.data/.ctor words with relocation targets and symbols.txt labels, and its bss symbols.
+
+The library modules autoload_2 and itcm (NitroSDK and runtime, C sources in ARM mode) are handled the same way:
+give `autoload_2` or `itcm` where `main` stands above. Their units are listed in config/usa/arm9/<module>/delinks.txt
+and their bss ranges, like main's, as placeholder units in autoload_3. linkprep.py calls set_module() first.
 """
 import re
 import struct
@@ -43,8 +47,32 @@ from pathlib import Path
 
 CONFIG = Path("config/usa/arm9")
 BSS_MODULE = "autoload_3"
-BASE = 0x02000000
-ORIG = Path("extract/usa/arm9/arm9.bin")
+# module -> (config directory, load address, original image, module field of relocs.txt, built image)
+MODULES = {
+    "main": (CONFIG, 0x02000000, Path("extract/usa/arm9/arm9.bin"), "main", "arm9.bin"),
+    "autoload_2": (CONFIG / "autoload_2", 0x020e7500, Path("extract/usa/arm9/unk_autoload_2.bin"), "autoload(2)",
+                   "autoload_2.bin"),
+    "itcm": (CONFIG / "itcm", 0x01ff8000, Path("extract/usa/arm9/itcm.bin"), "itcm", "itcm.bin"),
+}
+MOD = "main"
+MODCFG, BASE, ORIG, FIELD, BUILT = MODULES[MOD]
+
+
+def set_module(name):
+    '''select the module the unit belongs to: main (default), autoload_2 or itcm'''
+    global MOD, MODCFG, BASE, ORIG, FIELD, BUILT
+    if name not in MODULES:
+        sys.exit(f"{name}: not one of {', '.join(MODULES)}")
+    MOD = name
+    MODCFG, BASE, ORIG, FIELD, BUILT = MODULES[name]
+
+
+def bss_placeholder(unit):
+    '''name of a unit's bss placeholder in autoload_3: src/main/unk_x.cpp -> src/main/unk_x.bss.cpp'''
+    path = Path(unit)
+    return str(path.with_name(path.stem + ".bss" + path.suffix))
+
+
 KINDS = (".text", ".init", ".rodata", ".ctor", ".data", ".bss")
 MAX_LINES = 40
 
@@ -59,8 +87,8 @@ def unit_ranges(arg):
             if len(f) >= 3 and f[0].startswith("."):
                 secs[f[0]] = (int(f[1], 16), int(f[2], 16))
     else:
-        for delinks, want in ((CONFIG / "delinks.txt", str(arg)),
-                              (CONFIG / BSS_MODULE / "delinks.txt", str(Path(arg).with_suffix(".bss.cpp")))):
+        for delinks, want in ((MODCFG / "delinks.txt", str(arg)),
+                              (CONFIG / BSS_MODULE / "delinks.txt", bss_placeholder(arg))):
             cur = None
             for line in delinks.read_text().splitlines():
                 if line and not line[0].isspace():
@@ -69,13 +97,13 @@ def unit_ranges(arg):
                 if m and cur == want:
                     secs[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
     if not secs:
-        sys.exit(f"{arg}: neither a spec.txt with section lines nor a unit of {CONFIG / 'delinks.txt'}")
+        sys.exit(f"{arg}: neither a spec.txt with section lines nor a unit of {MODCFG / 'delinks.txt'}")
     return secs
 
 
 def module_sections():
     out = {}
-    for line in (CONFIG / "delinks.txt").read_text().split("\n\n")[0].splitlines():
+    for line in (MODCFG / "delinks.txt").read_text().split("\n\n")[0].splitlines():
         m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
         if m:
             out[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
@@ -83,9 +111,9 @@ def module_sections():
 
 
 def main_relocs():
-    '''from -> (target incl. add, module field) for main's relocations'''
+    '''from -> (target incl. add, module field) for the relocations of the selected module (main by default)'''
     out = {}
-    for line in (CONFIG / "relocs.txt").read_text().splitlines():
+    for line in (MODCFG / "relocs.txt").read_text().splitlines():
         m = re.match(r"from:(0x[0-9a-f]+) kind:(\S+) to:(0x[0-9a-f]+)(?: add:(-?0x[0-9a-f]+))? module:(\S+)", line)
         if m:
             out[int(m.group(1), 16)] = (int(m.group(3), 16) + (int(m.group(4), 16) if m.group(4) else 0),
@@ -107,7 +135,7 @@ def module_of_field(field):
 def own_symbols(lp):
     '''[(address, name, rest of line, module)] of main and autoload_3, renames applied'''
     out = []
-    for mod, p in (("main", CONFIG / "symbols.txt"), (BSS_MODULE, CONFIG / BSS_MODULE / "symbols.txt")):
+    for mod, p in ((MOD, MODCFG / "symbols.txt"), (BSS_MODULE, CONFIG / BSS_MODULE / "symbols.txt")):
         for name, addr, line in lp.symbol_lines(p, mod):
             out.append((addr, name, line.split(" ", 1)[1], mod))
     return out
@@ -118,7 +146,7 @@ def vtable_renames(lp, own):
     have = {a for a, *_ in own}
     out = {}
     for (mod, addr), name in lp.RENAMES.items():
-        if mod == "main" and name.startswith("_ZTV") and addr not in have and addr + 8 in have:
+        if mod == MOD and name.startswith("_ZTV") and addr not in have and addr + 8 in have:
             out[addr + 8] = (addr, name)
     return out
 
@@ -132,13 +160,13 @@ def external_refs(ranges, skip_from):
         mod = rp.parent.name if rp.parent != CONFIG else "main"
         for line in rp.read_text().splitlines():
             m = re.match(r"from:(0x[0-9a-f]+) kind:\S+ to:(0x[0-9a-f]+)(?: add:-?0x[0-9a-f]+)? module:(\S+)", line)
-            if not m or m.group(3) not in ("main", "autoload(3)"):
+            if not m or m.group(3) not in (FIELD, "autoload(3)"):
                 continue
             to = int(m.group(2), 16)
             if not inside(to) and not inside(to & ~1):
                 continue
             frm = int(m.group(1), 16)
-            if mod == "main" and skip_from(frm):
+            if mod == MOD and skip_from(frm):
                 continue
             out.setdefault(to, []).append((mod, frm))
     return out
@@ -228,7 +256,7 @@ def cmd_check(lp, objpath, unit):
     alias_notes = []
     gidx = {y[0]: i for i, y in enumerate(o.syms) if y[5] != 0 and y[4] != 0 and y[5] < len(o.sh)}
     for addr in sorted(by_addr):
-        group = [(n, r) for n, r, m in by_addr[addr] if m == "main" and (r.startswith("kind:function") or (
+        group = [(n, r) for n, r, m in by_addr[addr] if m == MOD and (r.startswith("kind:function") or (
             r.startswith("kind:label") and "local" not in r.split()))]
         if len(group) < 2 or not (t0 <= addr < t1):
             continue
@@ -256,6 +284,11 @@ def cmd_check(lp, objpath, unit):
                                    f"folds it into {primary} at link time")
             redirect[gidx[n]] = gidx[primary]
     lay = Layout(lp, o, secs, syms, redirect)
+    bss_mod = {}
+    for line in (CONFIG / BSS_MODULE / "delinks.txt").read_text().split("\n\n")[0].splitlines():
+        m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
+        if m:
+            bss_mod[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
 
     def say(line):
         out.append(line)
@@ -275,11 +308,22 @@ def cmd_check(lp, objpath, unit):
     vt_starts = {start for start, _ in vtable_renames(lp, own).values()}
     for kind, (start, end) in secs.items():
         lim = modsecs.get(kind, (0, 0)) if kind != ".bss" else (0, 0)
+        inside = bss_mod.get(".bss", (0, 0)) if kind == ".bss" else lim
+        if not (inside[0] <= start <= end <= inside[1]):
+            out.append(f"NORANGE {kind} {start:#010x}-{end:#010x} is not inside "
+                       f"{BSS_MODULE if kind == '.bss' else MOD}'s {kind} ({inside[0]:#010x}-{inside[1]:#010x})")
+            problems += 1
+            continue
         for x in (start, end):
             if x not in by_addr and x not in vt_starts and x not in lim:
                 say(f"BOUND   {kind} {start:#010x}-{end:#010x}: symbols.txt has no symbol at {x:#010x}. If a vtable "
-                    f"starts there, add `main {x:08x} _ZTV<class>` to renames.txt; otherwise install_tu.py adds a "
+                    f"starts there, add `{MOD} {x:08x} _ZTV<class>` to renames.txt; otherwise install_tu.py adds a "
                     f"boundary symbol `data_{x:08x}` (check that the range is right)")
+    if any(line.startswith("NORANGE") for line in out):
+        # a spec of another module (or a typo): nothing below can be compared
+        print("\n".join(out))
+        print(f"{problems} layout problems, 0 wrong targets, 0 unresolved symbols (ranges outside {MOD}: not checked)")
+        return problems
 
     # ---- .text
     defined_funcs = set()
@@ -293,7 +337,7 @@ def cmd_check(lp, objpath, unit):
                 f"and shifts the unit")
             problems += 1
             continue
-        if want[0] != "main" or not (t0 <= want[1] < t1):
+        if want[0] != MOD or not (t0 <= want[1] < t1):
             say(f"FOREIGN {name} is defined by this object but symbols.txt has it at {want[1]:#010x} ({want[0]}), "
                 f"outside the unit's .text: Multiply-defined at link (reference it instead of defining it)")
             problems += 1
@@ -324,7 +368,7 @@ def cmd_check(lp, objpath, unit):
             problems += 1
         defined_addrs = {syms[n][1] for n in defined_funcs}
         for addr, name, rest, mod in sorted(own):
-            if mod != "main" or not (t0 <= addr < t1):
+            if mod != MOD or not (t0 <= addr < t1):
                 continue
             if rest.startswith("kind:function") and addr not in defined_addrs:
                 say(f"MISSING {name} ({addr:#010x}) is inside the unit's .text range but the object does not define it")
@@ -374,7 +418,7 @@ def cmd_check(lp, objpath, unit):
         if idx not in lay.symaddr or bind == 0 or o.secname[shndx] in (".text", ".init", ".ctor"):
             continue
         want = syms.get(name)
-        if want and want[0] in ("main", BSS_MODULE) and want[1] != lay.symaddr[idx]:
+        if want and want[0] in (MOD, BSS_MODULE) and want[1] != lay.symaddr[idx]:
             say(f"PLACE   {name} would link at {lay.symaddr[idx]:#010x}, symbols.txt has it at {want[1]:#010x}")
             problems += 1
 
@@ -382,7 +426,7 @@ def cmd_check(lp, objpath, unit):
     def resolve(idx):
         name, value, size, typ, bind, shndx = o.syms[idx]
         if idx in lay.symaddr:
-            return lay.symaddr[idx], {"main", BSS_MODULE}
+            return lay.symaddr[idx], {MOD, BSS_MODULE}
         if shndx == 0 and name in syms:
             mods = {m for m, a in [syms[name]]}
             return syms[name][1], mods
@@ -443,17 +487,17 @@ def cmd_check(lp, objpath, unit):
     missing = 0
     # names the linker script defines (tools/lcf_symbols.py): recorded ones, and the ones install_tu.py will record
     # from this unit's renames.txt. They satisfy references from outside the unit.
-    linker_defined = {a for m, a in lp.lcf_symbols().values() if m in ("main", BSS_MODULE)}
+    linker_defined = {a for m, a in lp.lcf_symbols().values() if m in (MOD, BSS_MODULE)}
     for (mod, addr), section in sorted(lp.SECTION_LABELS.items()):
         rng = secs.get(section)
-        if mod != "main" or rng is None or not (rng[0] <= addr < rng[1]) or addr not in by_addr:
+        if mod != MOD or rng is None or not (rng[0] <= addr < rng[1]) or addr not in by_addr:
             say(f"MISSING renames.txt `{mod} {addr:08x} section:{section}`: the address must be a symbols.txt symbol "
-                f"of main inside the unit's {section} range")
+                f"of {MOD} inside the unit's {section} range")
             missing += 1
             continue
         linker_defined.add(addr)
     for (mod, addr), start in sorted(lp.INTERIOR.items()):
-        if mod not in ("main", BSS_MODULE) or not in_unit(start) or addr not in by_addr:
+        if mod not in (MOD, BSS_MODULE) or not in_unit(start) or addr not in by_addr:
             continue  # without a symbols.txt name only the relocations are rewritten
         base = [n for n, r, m in by_addr.get(start, []) if not r.startswith("kind:label")]
         if not in_unit(addr) or not any(n in defined_at.get(start, ()) for n in base):
@@ -494,7 +538,7 @@ def cmd_check(lp, objpath, unit):
         zero = target - 8
         if target - 8 in defined_at and any(n.startswith("_ZTV") for n in defined_at[target - 8]):
             hint = (f": it is the label 8 bytes into {next(n for n in defined_at[zero] if n.startswith('_ZTV'))}; "
-                    f"add `main {zero:08x} <that name>` to renames.txt (install_tu.py rewrites the relocations)")
+                    f"add `{MOD} {zero:08x} <that name>` to renames.txt (install_tu.py rewrites the relocations)")
         elif target not in defined_at:
             hint = (": the address is inside one of the object's objects, or the object order differs. For an "
                     "interior label add `<module> <label address> interior:<object start>` to renames.txt")
@@ -512,8 +556,8 @@ def cmd_check(lp, objpath, unit):
 
 
 def function_addresses(lp):
-    '''(class or "", name) -> address for main's functions'''
-    return lp.function_addresses_of(CONFIG / "symbols.txt", "main")
+    '''(class or "", name) -> address for the selected module's functions'''
+    return lp.function_addresses_of(MODCFG / "symbols.txt", MOD)
 
 
 def cmd_diff(lp):
@@ -523,7 +567,7 @@ def cmd_diff(lp):
     own = sorted((a, n) for a, n, r, m in own_symbols(lp) if not r.startswith("kind:label"))
     addrs = [a for a, _ in own]
     units = []
-    for delinks in (CONFIG / "delinks.txt", CONFIG / BSS_MODULE / "delinks.txt"):
+    for delinks in (MODCFG / "delinks.txt", CONFIG / BSS_MODULE / "delinks.txt"):
         cur = None
         for line in delinks.read_text().splitlines():
             if line and not line[0].isspace():
@@ -532,9 +576,9 @@ def cmd_diff(lp):
             if m and cur:
                 units.append((int(m.group(2), 16), int(m.group(3), 16), cur, m.group(1)))
     total = 0
-    orig = (e / "arm9.bin").read_bytes()
-    built = (b / "arm9.bin").read_bytes()
-    print(f"arm9.bin: orig {len(orig):#x} built {len(built):#x}")
+    orig = ORIG.read_bytes()
+    built = (b / BUILT).read_bytes()
+    print(f"{BUILT}: orig {len(orig):#x} built {len(built):#x}")
     diffs = [i for i in range(0, min(len(orig), len(built)), 4) if orig[i:i + 4] != built[i:i + 4]]
     print(f"{len(diffs)} differing words")
     total += len(diffs) + (len(orig) != len(built))
@@ -553,9 +597,9 @@ def cmd_diff(lp):
         print(f"  {BASE + a:#010x}-{BASE + z + 4:#010x}  in {owner}  [{unit}]  first word {w0:08x} -> {w1:08x}")
     if len(runs) > 40:
         print(f"  ... {len(runs) - 40} more ranges")
-    for built_name, orig_name in (("itcm.bin", "itcm.bin"), ("dtcm.bin", "dtcm.bin"),
+    for built_name, orig_name in (("arm9.bin", "arm9.bin"), ("itcm.bin", "itcm.bin"), ("dtcm.bin", "dtcm.bin"),
                                   ("autoload_2.bin", "unk_autoload_2.bin"), ("autoload_3.bin", "unk_autoload_3.bin")):
-        if not (b / built_name).exists() or not (e / orig_name).exists():
+        if built_name == BUILT or not (b / built_name).exists() or not (e / orig_name).exists():
             continue
         x, y = (b / built_name).read_bytes(), (e / orig_name).read_bytes()
         if x != y:
@@ -565,7 +609,7 @@ def cmd_diff(lp):
                      if built_name == "autoload_3.bin" else ""))
             total += 1
     if not total:
-        print("main and the autoloads match the original")
+        print("main and the autoloads match the original")  # arm9.bin, itcm, dtcm, autoload_2, autoload_3
     return total
 
 

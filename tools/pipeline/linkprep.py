@@ -27,6 +27,14 @@ the unit's spec.txt (or its name in config/usa/arm9/delinks.txt once installed).
   linkprep.py diff main
   linkprep.py dump main <spec.txt | unit>
 
+The library modules `autoload_2` and `itcm` (C sources, ARM code) take the place of `main` in all of these:
+
+  linkprep.py compile <src.c|src.cpp> <obj.o>      -lang by extension, `// mwcc-flags:` / `// mwcc-version:` lines
+  linkprep.py check <obj.o> autoload_2 <spec.txt | unit>
+  linkprep.py reverse <src.c> itcm
+  linkprep.py diff autoload_2
+  linkprep.py dump autoload_2 <spec.txt | unit>
+
 Data ordering model (checked against compiler experiments and ov140): mwcc collects a file's data and bss objects
 in creation order, heapsorts the reversed list by size (ascending, unstable), and emits them in that order;
 string literals follow in a separate pool. Named objects are created at their definition; compiler objects
@@ -41,6 +49,8 @@ import random
 from pathlib import Path
 
 CONFIG = Path("config/usa/arm9")
+# modules that are linked one translation unit at a time, with their bss in autoload_3 (mainprep.py)
+UNIT_MODULES = ("main", "autoload_2", "itcm")
 
 
 # ---------------------------------------------------------------- symbols.txt
@@ -317,10 +327,10 @@ def function_key(code, addrs):
 def cmd_reverse(src, ov=None):
     '''order function definitions by descending original address (mwcc emits a file's functions last to first)'''
     if ov is None:
-        m = re.search(r"src/(ov\d+|main)/", str(Path(src).resolve()))
+        m = re.search(r"src/(ov\d+|main|autoload_2|itcm)/", str(Path(src).resolve()))
         ov = m.group(1) if m else None
-    if ov == "main":
-        addrs = function_addresses_of(CONFIG / "symbols.txt", "main")
+    if ov in UNIT_MODULES:
+        addrs = function_addresses_of(CONFIG / "symbols.txt" if ov == "main" else CONFIG / ov / "symbols.txt", ov)
     else:
         addrs = overlay_function_addresses(ov) if ov else {}
     text = Path(src).read_text()
@@ -418,9 +428,9 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     text = Path(src).read_text()
     o = Obj(objpath)
     syms = load_symbols()
-    is_main = ov == "main"
+    is_main = ov in UNIT_MODULES
     if is_main:
-        mainprep = main_module()
+        mainprep = main_module(ov)
         secs = mainprep.unit_ranges(unit)
         relocs = {k: v[0] for k, v in mainprep.main_relocs().items()}
         orig = mainprep.ORIG.read_bytes()
@@ -434,7 +444,7 @@ def cmd_data(src, objpath, ov, apply=False, seed=1, unit=None):
     if is_main:
         # named objects: symbols.txt (main, or autoload_3 for bss) says where they are
         for x in objs:
-            if syms.get(x["name"], ("", 0))[0] in ("main", "autoload_3"):
+            if syms.get(x["name"], ("", 0))[0] in (ov, "autoload_3"):
                 x["addr"] = syms[x["name"]][1]
         # the static initialiser's pointers
         for i, s in enumerate(o.sh):
@@ -952,12 +962,15 @@ def cmd_compile(src, out):
     for line in Path(src).read_text(errors="replace").splitlines()[:10]:
         mv = re.match(r"\s*//\s*mwcc-version:\s*(\S+)", line)
         mf = re.match(r"\s*//\s*mwcc-flags:\s*(.+?)\s*$", line)
-        if mv:
+        if mv and version is None:  # the first line of each kind counts, as in tools/configure.py
             version = mv.group(1)
-        if mf:
+        if mf and not extra:
             extra = mf.group(1).split()
     cc = f"./tools/mwccarm/{version or '1.2/base'}/mwccarm.exe"
-    cmd = cmd.replace('"$cc"', f'"{cc}"').replace("$cc_flags", " ".join(["-lang=c++"] + extra))
+    # tools/configure.py (add_mwcc_builds): -lang by extension, then the file's own flags (later flags win, so
+    # `// mwcc-flags: -nothumb` gives ARM code although the common flags say -thumb)
+    lang = {".cpp": ["-lang=c++"], ".c": ["-lang=c"]}.get(Path(src).suffix, [])
+    cmd = cmd.replace('"$cc"', f'"{cc}"').replace("$cc_flags", " ".join(lang + extra))
     cmd = cmd.replace("$game_version", "usa").replace("-MD ", "").replace("$in", f'"{src}"')
     cmd = re.sub(r"-o \$basedir\S*", f'-o "{out}"', cmd)
     r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
@@ -987,11 +1000,12 @@ def cmd_diff(ov):
     return len(diffs)
 
 
-def main_module():
-    '''tools/pipeline/mainprep.py: the main module's variants of check, diff and dump'''
+def main_module(module="main"):
+    '''tools/pipeline/mainprep.py: the variants of check, diff and dump for main, autoload_2 and itcm'''
     sys.dont_write_bytecode = True
     sys.path.insert(0, str(Path(__file__).parent))
     import mainprep
+    mainprep.set_module(module)
     return mainprep
 
 
@@ -1002,24 +1016,26 @@ if __name__ == "__main__":
     me = sys.modules[__name__]
     if a[0] in ("reverse", "undef", "check", "data") and len(a) > 1:
         load_renames(a[2] if a[0] == "data" else a[1])
-    if a[0] == "dump" and len(a) > 2 and a[1] == "main":
+    if a[0] == "dump" and len(a) > 2 and a[1] in UNIT_MODULES:
         load_renames(a[2])
-        main_module().cmd_dump(me, a[2])
+        main_module(a[1]).cmd_dump(me, a[2])
     elif a[0] == "reverse":
         cmd_reverse(a[1], a[2] if len(a) > 2 else None)
-    elif a[0] == "check" and len(a) > 3 and a[2] == "main":
-        sys.exit(1 if main_module().cmd_check(me, a[1], a[3]) else 0)
+    elif a[0] == "check" and len(a) > 3 and a[2] in UNIT_MODULES:
+        sys.exit(1 if main_module(a[2]).cmd_check(me, a[1], a[3]) else 0)
+    elif a[0] == "check" and len(a) > 2 and a[2] in UNIT_MODULES:
+        sys.exit(f"usage: linkprep.py check <obj.o> {a[2]} <spec.txt | unit>")
     elif a[0] == "check":
         sys.exit(1 if cmd_check(a[1], a[2]) else 0)
     elif a[0] == "undef":
         sys.exit(1 if cmd_undef(a[1]) else 0)
     elif a[0] == "data":
         seed = int(a[a.index("--seed") + 1]) if "--seed" in a else 1
-        cmd_data(a[1], a[2], a[3], "--apply" in a, seed, a[4] if a[3] == "main" and len(a) > 4 else None)
+        cmd_data(a[1], a[2], a[3], "--apply" in a, seed, a[4] if a[3] in UNIT_MODULES and len(a) > 4 else None)
     elif a[0] == "compile":
         sys.exit(cmd_compile(a[1], a[2]))
-    elif a[0] == "diff" and a[1] == "main":
-        sys.exit(1 if main_module().cmd_diff(me) else 0)
+    elif a[0] == "diff" and a[1] in UNIT_MODULES:
+        sys.exit(1 if main_module(a[1]).cmd_diff(me) else 0)
     elif a[0] == "diff":
         sys.exit(1 if cmd_diff(a[1]) else 0)
     else:

@@ -14,3 +14,4 @@ Files used to run parallel matching agents over ARM9 main. The originals lived i
 Main module (see "Linking the main module" in `linking.md`): `install_tu.py main`, `linkprep.py ... main` (`mainprep.py`),
 `realnames.py`, `maindis.py`, `vtable_rename.py`, `mainbatch.sh`; build steps `tools/bss_units.py`, `tools/aliases.py`,
 `tools/object_order.py`, `tools/lcf_symbols.py` (names for addresses inside linked units, from `lcf_symbols.txt`). `maincheck.py` is the older per-function check; `linkprep.py check <o> main <spec>` replaces it.
+Library modules `autoload_2` and `itcm` (C sources, ARM code): the same tools with the module name in place of `main` (`linkprep.py check <o> autoload_2 <spec>`, `install_tu.py autoload_2 <spec>`, `mainbatch.sh --module autoload_2`, `maindis.py`); see "Library modules (autoload_2, itcm)" in `linking.md`.

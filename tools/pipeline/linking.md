@@ -561,3 +561,70 @@ prints the linker errors, `romdiff.py`, `linkprep.py diff main` and reverts `src
   from `build/usa/src/main` see the unpatched one.
 * Unit names follow the text start. Installing a unit renames the old file that started there; anything that
   refers to `src/main` file names (plans, `merge_notes.txt`, objdiff history) must use addresses.
+
+# Library modules (autoload_2, itcm)
+
+The NitroSDK/runtime code lives in two autoloads: `autoload_2` (0x020e7500-0x02135914 `.text`, 12 bytes of
+`.rodata`, `.data` up to 0x0213c6c0; `config/usa/arm9/autoload_2/`) and `itcm` (0x01ff8000-0x01ffdae0, code only;
+`config/usa/arm9/itcm/`). They are linked like main, one translation unit at a time, and everything in "Linking the
+main module" applies with the module name in place of `main`. What is different:
+
+* **Sources** are C (`.c`, compiled with `-lang=c`) or C++ (`.cpp`), almost all ARM code. The common flags say
+  `-thumb`; a first line `// mwcc-flags: -nothumb` comes after them on the command line and wins, so the file is
+  compiled as ARM (checked: `cc_flags = -lang=c -nothumb` in build.ninja, ARM code in the object). Thumb files of
+  the library (80 functions of autoload_2) need no line. `// mwcc-version:` works as everywhere.
+  `linkprep.py compile` takes the mwcc rule from build.ninja and adds the same `-lang` and header-line flags as
+  `tools/configure.py`, so both produce the same object.
+* **Function order**: mwcc 1.2 emits a C file's functions last to first as well. `linkprep.py reverse unit.c
+  autoload_2` sorts the definitions by descending address.
+* **Names**: C symbols are not mangled. A unit keeps the `func_XXXXXXXX`/`data_XXXXXXXX` names of `symbols.txt`
+  (compiled game sources call them through `extern "C"` declarations) unless a rename is agreed; the SDK name goes
+  in a comment. `static` functions and objects have local symbols: something that code outside the unit refers to
+  must not be `static` (`check`: `MISSING`).
+* **bss** is in `autoload_3`, behind main's files (from 0x021f4768). A `.bss` line of the spec becomes the
+  placeholder unit `src/<module>/unk_<text start>.bss.c` in `config/usa/arm9/autoload_3/delinks.txt`, exactly as
+  for main (`tools/bss_units.py`).
+* **Relocations** to the unit are `module:autoload(2)` / `module:itcm` in every `relocs.txt`; `check` reads the
+  module's own `relocs.txt` for the unit's calls and all of them for references from outside.
+
+Commands (`T001` = a unit directory with `unit.c`, `spec.txt`, optionally `renames.txt`/`aliases.txt`):
+
+    python3 tools/pipeline/maindis.py 0x0210f0c4 0x90                     ARM unless `thumb`; module from the address
+    python3 tools/pipeline/linkprep.py dump autoload_2 T001/spec.txt
+    python3 tools/pipeline/linkprep.py compile T001/unit.c T001/unit.o
+    python3 tools/pipeline/linkprep.py reverse T001/unit.c autoload_2
+    python3 tools/pipeline/linkprep.py check T001/unit.o autoload_2 T001/spec.txt
+    python3 tools/pipeline/linkprep.py data T001/unit.c T001/unit.o autoload_2 T001/spec.txt [--apply]
+    python3 tools/pipeline/install_tu.py [--replace] autoload_2 T001/spec.txt
+    tools/pipeline/mainbatch.sh [--commit] --module autoload_2 T001 ...    install, configure, build, keep or revert
+    python3 tools/pipeline/linkprep.py diff autoload_2                     after a failed build
+
+The spec is main's (`unit unit.c`, then `.text`/`.rodata`/`.data` ranges in the module and `.bss` in autoload_3).
+`install_tu.py` writes `src/<module>/unk_<text start>.c` (the extension of the spec's source), lists it `complete`
+in the module's `delinks.txt`, and handles boundary symbols, `renames.txt` (`autoload_2 <addr> <name>`,
+`interior:`) and `aliases.txt` as for main. `check` ends with the same `0 layout problems, 0 wrong targets, 0
+unresolved symbols`; a spec whose ranges are outside the module is refused with `NORANGE`.
+
+Build chain: `dsd lcf` writes `unk_XXXXXXXX.o(.text)` between the gap objects of `.autoload_2` / `.itcm`;
+`bss_units.py` handles the placeholder; `aliases.py` gives compiled units of autoload_2 and itcm their second
+names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. `_ll_udiv`); `lcf_symbols.py`
+accepts `lcf_symbols.txt` in the module directory (section starts `AUTOLOAD_2_DATA_START`, `ITCM_TEXT_START`);
+`force_active.py` keeps the unit's `symbols.txt` globals. `python3 tools/configure.py usa` after every install.
+
+First unit: `pipeline_wip/sdk_units/T001` (GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154).
+
+Not supported / open:
+
+* `tools/object_order.py` (units placed object by object, two compilers in one unit) refuses an
+  `object_order.txt` in these modules.
+* **Sections of one file in two modules.** `.exceptix` in *main* (0x020c2bb0-0x020c2cd0) has 24 entries that point
+  to autoload_2 functions (0x02133ae0...: the C++ runtime, built with exceptions). A compiled runtime file emits
+  its own `.exception`/`.exceptix` sections, which belong in main's ranges; a unit cannot own ranges in main and in
+  autoload_2 (only the bss placeholder mechanism exists). Until that is solved, leave those functions delinked.
+  The delinked tables refer to the functions by name, so linking *other* autoload_2 units does not disturb them.
+* autoload_2's `.rodata` is 12 bytes and dsd has no data symbol inside its `.text` range: constant tables of the
+  library are either in `.data` or seen as code. A unit whose object emits `.rodata` needs a `.rodata` range in
+  the module (`check`: `NORANGE`); if the constants sit inside the `.text` range the module's section table in
+  `delinks.txt` has to be split first.
+* Unit file names are `unk_<address>`; mwld selects objects by file name only, so two units with the same text
+  start in different modules cannot exist (the address ranges of main, autoload_2 and itcm do not overlap).

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Install ONE original translation unit of a module as a complete unit, leaving the rest of the module as it is.
 
-usage: install_tu.py [--replace] <ovNNN | main> <spec>
+usage: install_tu.py [--replace] <ovNNN | main | autoload_2 | itcm> <spec>
 
 <spec> is one block in install_units.py format: `unit <source.cpp>` then `<.section> <start> <end>` lines for
 the sections the TU owns. The TU is written to src/<ovNNN>/unk_<ovNNN>_<text start>.cpp (overlays) or
@@ -36,6 +36,12 @@ requires it). A .text/.init boundary without a symbol is an error (nothing is ch
 the symbol `data_<address>` is added to symbols.txt and reported (a vtable start should be named in renames.txt
 instead: `main <start> _ZTV<class>`, also when the vtable belongs to the neighbouring unit).
 
+autoload_2 and itcm (the library modules: NitroSDK and runtime, C or C++ sources compiled as ARM code with a
+`// mwcc-flags: -nothumb` line) are installed like main: the unit becomes src/<module>/unk_<text start>.c (the
+extension of the spec's source is kept), listed `complete` in config/usa/arm9/<module>/delinks.txt, and its `.bss`
+range, which lies in autoload_3 behind main's, becomes the placeholder unit src/<module>/unk_<text start>.bss.c
+there. Boundary symbols, renames.txt and aliases.txt work as for main (module names `autoload_2`, `itcm`).
+
 Run from the repo root; then `python3 tools/configure.py usa`, build and check the ROM.
 """
 import re
@@ -52,7 +58,9 @@ replace = "--replace" in sys.argv[1:]
 if len(args) != 2:
     sys.exit(__doc__)
 ov, spec = args[0], Path(args[1])
-is_main = ov == "main"
+UNIT_MODULES = ("main", "autoload_2", "itcm")
+# modules linked one translation unit at a time, with their bss in autoload_3 (called `is_main` below for all three)
+is_main = ov in UNIT_MODULES
 src = None
 secs = []
 for line in spec.read_text().splitlines():
@@ -72,10 +80,27 @@ t0, t1 = next(((a, b) for s, a, b in secs if s == ".text"), (0, 0))
 first = t0 if t1 else secs[0][1]
 
 ARM9 = Path("config/usa/arm9")
-cfg = ARM9 if is_main else ARM9 / "overlays" / ov
-BSS_CFG = ARM9 / "autoload_3"  # where main's bss lives
-name = f"src/main/unk_{first:08x}.cpp" if is_main else f"src/{ov}/unk_{ov}_{first:08x}.cpp"
-bss_name = str(Path(name).with_suffix(".bss.cpp"))
+cfg = ARM9 if ov == "main" else ARM9 / ov if is_main else ARM9 / "overlays" / ov
+if not (cfg / "delinks.txt").is_file():
+    sys.exit(f"{ov}: no module {cfg}")
+BSS_CFG = ARM9 / "autoload_3"  # where the bss of main, autoload_2 and itcm lives
+if ov == "main":
+    name = f"src/main/unk_{first:08x}.cpp"
+elif is_main:
+    if src.suffix not in (".c", ".cpp"):
+        sys.exit(f"{src}: a unit source is a .c or .cpp file")
+    name = f"src/{ov}/unk_{first:08x}{src.suffix}"
+else:
+    name = f"src/{ov}/unk_{ov}_{first:08x}.cpp"
+
+
+def bss_placeholder(unit):
+    '''src/main/unk_x.cpp -> src/main/unk_x.bss.cpp (tools/bss_units.py)'''
+    path = Path(unit)
+    return str(path.with_name(path.stem + ".bss" + path.suffix))
+
+
+bss_name = bss_placeholder(name)
 
 
 def split_delinks(path):
@@ -114,7 +139,7 @@ if is_main:
     if ren.exists():
         for line in ren.read_text().splitlines():
             p = line.split("#", 1)[0].split()
-            if len(p) == 3 and p[0] == "main" and p[2].startswith("_ZTV"):
+            if len(p) == 3 and p[0] == ov and p[2].startswith("_ZTV"):
                 pending_vtables.add(int(p[1], 16))
     bad = []
     add_bounds = []
@@ -126,7 +151,7 @@ if is_main:
             addrs, lim = bss_addrs, bss_range
         else:
             if s not in module_secs or not (module_secs[s][0] <= a < b <= module_secs[s][1]):
-                bad.append(f"{s} {a:#010x}-{b:#010x} is not inside main's {s}")
+                bad.append(f"{s} {a:#010x}-{b:#010x} is not inside {ov}'s {s}")
                 continue
             addrs, lim = main_addrs | pending_vtables, module_secs[s]
         for x in (a, b):
@@ -193,7 +218,7 @@ out_blocks.sort(key=text_start)
 
 if is_main:
     bhead, bblocks = split_delinks(BSS_CFG / "delinks.txt")
-    gone = {str(Path(u).with_suffix(".bss.cpp")) for u in removed_units}
+    gone = {bss_placeholder(u) for u in removed_units}
     kept = [b for b in bblocks if block_name(b) not in gone]
     for a, b in [(a, b) for s, a, b in secs if s == ".bss"]:
         for kb in kept:

@@ -440,8 +440,8 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
         lcf_file = order_lcf_file
         objects_file = order_objects_file
 
-    # Compiled main units get the second names (symbols.txt labels) of their functions, see tools/aliases.py. The
-    # step only exists when main has complete units.
+    # Compiled units of main and of the library modules (autoload_2, itcm) get the second names (symbols.txt labels)
+    # of their functions, see tools/aliases.py. The step only exists when one of these modules has complete units.
     arm9_config = project.game_config / "arm9"
     if aliases.has_complete_units(arm9_config):
         alias_objects_file = str(project.game_build / "objects_aliases.txt")
@@ -451,7 +451,9 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
         ]
         n.build(
             inputs=[objects_file],
-            implicit=["tools/aliases.py", str(arm9_config / "delinks.txt"), str(arm9_config / "symbols.txt")]
+            implicit=["tools/aliases.py"]
+                     + [str(module_dir / name) for module_dir in aliases.module_dirs(arm9_config)
+                        for name in ("delinks.txt", "symbols.txt")]
                      + alias_units,
             rule="aliases",
             outputs=[alias_objects_file],
