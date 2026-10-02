@@ -211,6 +211,14 @@ src/autoload_2/unk_021090c0.c:
     complete
     .text       start:0x021090c0 end:0x0210a9c4
 
+src/autoload_2/unk_0210da28.c:
+    complete
+    .text       start:0x0210da28 end:0x0210ea0c
+
+src/autoload_2/unk_0210ec0c.c:
+    complete
+    .text       start:0x0210ec0c end:0x0210f0c4
+
 src/autoload_2/unk_0210f0c4.c:
     complete
     .text       start:0x0210f0c4 end:0x0210f154
