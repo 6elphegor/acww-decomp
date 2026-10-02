@@ -587,7 +587,7 @@ extern "C" Unk_ov082_SceneEntry data_ov082_02272110 = {func_ov082_02271f2c, 0x58
 
 extern "C" u8 data_ov082_02272128[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" u32 ov082_order_pad[1] = {0};
+// Data order: this unit is placed object by object (see object_order.txt).
 
 extern "C" u8 data_ov082_022720f8[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 

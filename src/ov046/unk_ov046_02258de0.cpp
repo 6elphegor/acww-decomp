@@ -952,9 +952,7 @@ s32 Unk_ov046_0225aa0c::func_02259ac0() {
 }
 extern "C" u8 data_ov046_0225a9a8[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's', 't', 'r', 'o', 0};
 
-// Unreferenced: stands in for an object the original linker dead-stripped (it takes part in
-// mwcc's data ordering)
-extern "C" u32 ov046_order_pad[7] = {0};
+// Data order: this unit is placed object by object (see object_order.txt).
 
 void Unk_ov046_0225aa0c::vfunc_14() {
     if (func_020a032c() == 0) {

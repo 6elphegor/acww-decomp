@@ -85,15 +85,11 @@ s32 func_02036ce0(void *self);
 extern "C" {
 Unk_ov003_02235478_Col data_ov003_02235478(31, 20, 20, 31);
 Unk_ov003_02235478_Col data_ov003_0223547c(20, 20, 31, 31);
-// Unreferenced stand-ins for objects the original linker dead-stripped (they take part in mwcc's data ordering:
-// one created after the 2nd colour, two after the 6th); all three must be stripped by the linker
-u8 ov003_tu18_order_pad_a[8];
+// Data order: this unit is placed object by object (see object_order.txt).
 Unk_ov003_02235478_Col data_ov003_02235488(31, 31, 20, 31);
 Unk_ov003_02235478_Col data_ov003_02235484(20, 31, 20, 31);
 Unk_ov003_02235478_Col data_ov003_02235480(20, 31, 31, 31);
 Unk_ov003_02235478_Col data_ov003_0223548c(20, 24, 24, 31);
-u8 ov003_tu18_order_pad_b[8];
-u8 ov003_tu18_order_pad_c[8];
 }
 
 // ---- functions ----

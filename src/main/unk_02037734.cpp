@@ -762,4 +762,4 @@ void Unk_020d905c::func_02037734() {
     }
 }
 
-u32 data_order_pad[0x2b9];
+// Data order: this unit is placed object by object (see object_order.txt).

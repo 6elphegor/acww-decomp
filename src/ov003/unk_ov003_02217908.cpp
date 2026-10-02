@@ -116,10 +116,7 @@ Unk_ov003_02235460_Col data_ov003_02235470(31, 31, 20, 31);
 Unk_ov003_02235460_Col data_ov003_0223546c(20, 31, 20, 31);
 Unk_ov003_02235460_Col data_ov003_02235468(20, 31, 31, 31);
 Unk_ov003_02235460_Col data_ov003_02235464(20, 24, 24, 31);
-// Unreferenced stand-ins for objects the original linker dead-stripped (they take part in mwcc's data ordering,
-// created after the six colours); both must be stripped by the linker
-u8 ov003_tu17_order_pad_a[8];
-u8 ov003_tu17_order_pad_b[8];
+// Data order: this unit is placed object by object (see object_order.txt).
 }
 
 // ---- functions ----

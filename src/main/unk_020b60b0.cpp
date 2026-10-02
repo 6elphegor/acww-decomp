@@ -342,9 +342,7 @@ Unk_021ef474 data_021ef48c(20, 31, 20, 31);
 Unk_021ef474 data_021ef488(20, 31, 31, 31);
 Unk_021ef474 data_021ef484(20, 24, 24, 31);
 
-// The two U221_order_fill objects are unreferenced and have no name in symbols.txt, so the linker drops them: they
-// only steer the compiler's size sort so that the ten 4-byte bss objects come out in the original order.
-u8 U221_order_fill0[8];
+// Data order: this unit is placed object by object (see object_order.txt).
 
 namespace Unk_020b60dc_NS {
 
@@ -763,8 +761,6 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
 }
 
 }
-
-u8 U221_order_fill1[8];
 
 extern "C" void func_020b60d8(void) {}
 

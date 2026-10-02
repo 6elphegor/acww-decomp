@@ -67,3 +67,21 @@ src/main/unk_02065e88.cpp:
 
 # U018
 src/main/unk_020119cc.cpp:
+
+# unk_0202fa70.cpp: placed by object (replaces filler objects)
+src/main/unk_0202fa70.cpp:
+
+# unk_02037734.cpp: placed by object (replaces filler objects)
+src/main/unk_02037734.cpp:
+
+# unk_02034438.cpp: placed by object (replaces filler objects)
+src/main/unk_02034438.cpp:
+
+# unk_02038474.cpp: placed by object (replaces filler objects)
+src/main/unk_02038474.cpp:
+
+# unk_0209d70c.cpp: placed by object (replaces filler objects)
+src/main/unk_0209d70c.cpp:
+
+# unk_020b60b0.cpp: placed by object (replaces filler objects)
+src/main/unk_020b60b0.cpp:

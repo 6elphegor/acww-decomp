@@ -58,8 +58,7 @@ struct Unk_ov003_02234f00_Entry {
 };
 
 extern "C" {
-// Unreferenced stand-in for an object the original linker dead-stripped (it takes part in mwcc's data ordering)
-u8 ov003_tu28_order_pad[1];
+// Data order: this unit is placed object by object (see object_order.txt).
 Unk_ov003_02234f00_Entry data_ov003_02234f00 = {(void *)func_ov003_0222eef8, 0xf, 0x11};
 Unk_ov003_0225b738_Col data_ov003_0225b748(31, 20, 20, 31);
 Unk_ov003_0225b738_Col data_ov003_0225b744(20, 20, 31, 31);

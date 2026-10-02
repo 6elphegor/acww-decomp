@@ -923,11 +923,7 @@ extern "C" void func_02033078(Unk_0202f048 *out, Unk_020d8d50 *e);
 extern "C" void func_02033988(void *obj);
 
 // ---------------------------------------------------------------- objects
-// The order of these definitions (and of the ones after func_02032864) reproduces the original .rodata/.data/.bss
-// order: mwcc heapsorts all objects of the file by size, over the reverse of their creation order.
-// The five U024_order_fill objects are unreferenced and have no name in symbols.txt, so the linker drops them: they
-// exist only to steer that sort (the eight function-local statics of func_02032864, their guards and their
-// registration records are created as one block and no arrangement of the real objects alone reproduces the order).
+// Data order: this unit is placed object by object (see object_order.txt).
 Unk_020d8d74 *data_021bf9b0;
 const Unk_020c7c4c_Ent data_020c7c4c[0x7c] = {
     {0xffff, 0xffff, 0, 0, -1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1061,10 +1057,7 @@ Unk_020318cc_Node *data_021bf9b4;
 Unk_02000c8c data_021bfa70(0x1000, 0x1000, 0x1000);
 Unk_02033f70 *data_020d8ce8 = &data_021bfab8.unk_04[0];
 const Unk_020c7c3c_Fn data_020c7c3c[4] = {func_02031414, func_0203142c, func_02031444, func_0203145c};
-u8 U024_order_fill4[4];
 const u32 data_020c7c20[3] = {0x800, 0xc00, 0x1000};
-u8 U024_order_fill3[8];
-u8 U024_order_fill0[8];
 const s32 data_020c7c1c = -0x1000;
 const u8 data_020c7c18[4] = {0, 0, 0, 0};
 
@@ -1767,8 +1760,6 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
 }
 
 const Unk_020c7c3c_Fn data_020c7c2c[4] = {func_02031494, func_020314ac, func_020314c4, func_020314dc};
-u8 U024_order_fill2[4];
-u8 U024_order_fill1[4];
 Unk_02033edc data_021bfab8;
 
 Unk_02032808::Unk_02032808() {

@@ -8,3 +8,12 @@ src/ov003/unk_ov003_02214494.cpp:
 # TU08
 src/ov003/unk_ov003_022150ec.cpp:
     extra src/ov003/unk_ov003_022150ec_switch.cpp func_ov003_022150f0 _ZN18Unk_ov003_022314d08vfunc_70Ev
+
+# unk_ov003_0222ee6c.cpp: placed by object (replaces filler objects)
+src/ov003/unk_ov003_0222ee6c.cpp:
+
+# unk_ov003_02217908.cpp: placed by object (replaces filler objects)
+src/ov003/unk_ov003_02217908.cpp:
+
+# unk_ov003_02217b10.cpp: placed by object (replaces filler objects)
+src/ov003/unk_ov003_02217b10.cpp:

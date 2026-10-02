@@ -333,8 +333,7 @@ struct Unk_ov125_SceneEntry {
 extern "C" Unk_ov125_02298478 *func_ov125_02298364();
 extern "C" Unk_ov125_SceneEntry data_ov125_02298448 = {func_ov125_02298364, 0xaa, 0xae};
 u16 data_ov125_022983e8[4] = {0x00f0, 0x81f0, 0x40c0, 0xffff};
-// Unreferenced object (dead-stripped at link time) that reproduces the original's data-sort order.
-extern "C" u32 ov125_order_pad[4] = {0, 0, 0, 0};
+// Data order: this unit is placed object by object (see object_order.txt).
 
 static inline BOOL Unk_ov125_02297bd4_Both() {
     if (data_021f4770 != 0 && data_021f4774 != 0) {

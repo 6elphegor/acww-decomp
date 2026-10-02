@@ -506,12 +506,11 @@ extern "C" Unk_ov045_02259eb0 *func_ov045_02259a50() { return new Unk_ov045_0225
 
 u8 data_ov045_02259d9c[23] = "npc_sp/model/bpt.nsbmd";
 u8 data_ov045_02259dfc[27] = "npc_sp/model/bpt_tex.nsbtx";
-extern "C" const u32 ov045_order_pad0[1] = {0};
+// Data order: this unit is placed object by object (see object_order.txt).
 const Unk_ov045_02258ee4_Ent data_ov045_02259b68[17] = {
     {0x00, 0}, {0x01, 0}, {0x02, 0}, {0x03, 0}, {0x04, 0}, {0x05, 0}, {0x06, 0}, {0x07, 0}, {0x08, 0},
     {0x0a, 0}, {0x0b, 0}, {0x0e, 0}, {0x11, 0}, {0x12, 1}, {0x13, 0}, {0x14, 0}, {0x15, 0},
 };
-extern "C" const u32 ov045_order_pad1[1] = {0};
 void *data_ov045_02259d40 = data_ov045_02259d8c;
 u8 data_ov045_02259d8c[15] = "sp_npc_panther";
 Unk_ov045_02259e20_Ent data_ov045_02259f64[2] = {

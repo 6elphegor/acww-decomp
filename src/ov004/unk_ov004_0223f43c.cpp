@@ -567,12 +567,12 @@ void func_ov004_0223f43c(void) {
 Unk_ov004_0223f43c_B4 data_ov004_022589a4(31, 20, 20, 31);
 Unk_ov004_0223f43c_B4 data_ov004_02258994(20, 20, 31, 31);
 Unk_ov004_0223f43c_B4 data_ov004_02258990(31, 31, 20, 31);
+// Data order: this unit is placed object by object (see object_order.txt).
 const Unk_0223f44c_Vec data_ov004_02246838 = {0x10000, 0, 0x11000};
 Unk_ov004_0223f43c_B4 data_ov004_022589a0(20, 31, 20, 31);
 const Unk_0223f44c_Vec data_ov004_0224682c = {0x10000, 0, 0x11000};
 u32 data_ov004_0224f32c[4] = {0, 0x3c000, 0x5000, 0x5000};
 Unk_ov004_0223f43c_B4 data_ov004_02258998(20, 31, 31, 31);
-u32 ov004_order_pad_0223f43c[9] = {0};
 Unk_ov004_0223f43c_B4 data_ov004_0225899c(20, 24, 24, 31);
 Unk_0223f44c_Tbl data_ov004_0224f36c = {0, 0x1100, 0x14100, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x13600, 0x200, 0x17600)};
 u32 data_ov004_0224f31c[4] = {0, 0x438000, 0, 0x384000};

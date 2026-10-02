@@ -774,9 +774,9 @@ s32 func_020370f8(void *);
 extern Unk_021e5890_T data_021e5890;
 }
 
-// Declarations for data defined further down (definition order sets the data layout)
+// Declarations for data defined further down
+// Data order: this unit is placed object by object (see object_order.txt).
 extern const u16 data_020c8b28[0x3a];
-extern u32 U028_order_pad[1];
 extern u16 data_020d8d8c[2];
 extern u16 data_020d8d90[2];
 extern u16 data_020d8d88[2];
@@ -1746,9 +1746,6 @@ const u16 data_020c8b28[0x3a] = {
     0x1f, 0x5e, 0x6, 0x4b, 0x7, 0x4b, 0x8, 0x4b,
     0x30, 0x14,
 };
-
-//DEF U028_order_pad
-u32 U028_order_pad[1] = {1};
 
 //DEF data_020d8d8c
 u16 data_020d8d8c[2] = {0xc1f, 0};

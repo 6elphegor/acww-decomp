@@ -505,7 +505,6 @@ BOOL Unk_ov111_02298a48::vfunc_24() {
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" Unk_ov111_SceneEntry data_ov111_02298920;
-extern "C" u32 data_ov111_order_pad[2];
 extern "C" char data_ov111_022989c8[];
 extern "C" char data_ov111_022989e0[];
 extern "C" char data_ov111_022989f8[];
@@ -515,8 +514,7 @@ extern "C" u32 data_ov111_022989b8[4];
 // Scene registration entry read by main: factory, then two ids
 extern "C" Unk_ov111_SceneEntry data_ov111_02298920 = {func_ov111_0229885c, 0x9e, 0xa2};
 
-// Unreferenced object that only takes part in mwcc's data sort (dead-stripped by the linker)
-extern "C" u32 data_ov111_order_pad[2] = {0, 0};
+// Data order: this unit is placed object by object (see object_order.txt).
 
 BOOL Unk_ov111_02298a48::vfunc_4c() {
     static Unk_ov111_02298a48_Fn tbl[6] = {

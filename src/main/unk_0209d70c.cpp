@@ -160,11 +160,7 @@ Unk_0209da44 data_021d7350;
 
 typedef void (Unk_0209da44::*Unk_0209d70c_Fn)();
 
-// Order fillers: these two objects are unreferenced and have no name in symbols.txt, so the linker drops them. They
-// exist only to steer mwcc's size heapsort (equal sizes, unstable) so that the seven pointer-to-member constants of
-// func_0209d70c come out in the original order.
-u8 data_order_fill0[12];
-u8 data_order_fill1[12];
+// Data order: this unit is placed object by object (see object_order.txt).
 
 extern "C" void func_0209d7bc(u8 *p) {
     u32 a[2];
