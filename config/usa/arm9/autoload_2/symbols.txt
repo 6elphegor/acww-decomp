@@ -1718,6 +1718,7 @@ func_0211aeb4 kind:function(arm,size=0x18c) addr:0x0211aeb4
 func_0211b040 kind:function(arm,size=0x20c) addr:0x0211b040
 func_0211b24c kind:function(arm,size=0x15c) addr:0x0211b24c
 func_0211b3a8 kind:function(arm,size=0x50) addr:0x0211b3a8
+func_0211b3f8 kind:function(arm,size=0x14,unknown) addr:0x0211b3f8
 func_0211b40c kind:function(arm,size=0x280) addr:0x0211b40c
 func_0211b68c kind:function(arm,size=0x14) addr:0x0211b68c
 func_0211b6a0 kind:function(arm,size=0x18) addr:0x0211b6a0
