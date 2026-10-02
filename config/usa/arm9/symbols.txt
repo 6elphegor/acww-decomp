@@ -2619,6 +2619,7 @@ func_0202e8d4 kind:function(thumb,size=0x44) addr:0x0202e8d4
 _ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap kind:function(thumb,size=0x9a) addr:0x0202e918
 _ZN12Unk_0202e9c813func_0202e9b4EP17Unk_0202e918_Vec3i kind:function(thumb,size=0x10) addr:0x0202e9b4
 _ZN12Unk_0202e9c8D1Ev kind:function(thumb,size=0x2) addr:0x0202e9c4
+_ZN12Unk_0202e9c8D2Ev kind:label(thumb) addr:0x0202e9c4
 _ZN12Unk_0202e9c8C1Ev kind:function(thumb,size=0xc) addr:0x0202e9c8
 _ZN12Unk_020d8ce413func_0202e9d4EP12Unk_0202f048S1_i kind:function(thumb,size=0x68) addr:0x0202e9d4
 _ZN12Unk_0202f048D1Ev kind:function(thumb,size=0x2) addr:0x0202ea3c
@@ -12238,7 +12239,9 @@ func_020b6048 kind:function(thumb,size=0x36) addr:0x020b6048
 func_020b6080 kind:function(thumb,size=0x2e) addr:0x020b6080
 func_020b60b0 kind:function(thumb,size=0x24) addr:0x020b60b0
 func_020b60d4 kind:function(thumb,size=0x2) addr:0x020b60d4
+_ZN12Unk_020b60d8D2Ev kind:label(thumb) addr:0x020b60d4
 func_020b60d8 kind:function(thumb,size=0x2) addr:0x020b60d8
+_ZN12Unk_020b60d8C2Ev kind:label(thumb) addr:0x020b60d8
 func_020b60dc kind:function(thumb,size=0x73c) addr:0x020b60dc
 _ZN12Unk_020b696013func_020b6818EP12Unk_020e44d4P4Vec3S3_S3_ih kind:function(thumb,size=0x2e) addr:0x020b6818
 _ZN12Unk_020b696013func_020b6848EP12Unk_020e44d4 kind:function(thumb,size=0x18) addr:0x020b6848
