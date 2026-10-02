@@ -31,6 +31,22 @@ src/autoload_2/unk_020ec848.cpp:
     complete
     .text       start:0x020ec848 end:0x020ed4bc
 
+src/autoload_2/unk_020ed4bc.cpp:
+    complete
+    .text       start:0x020ed4bc end:0x020ed5c0
+
+src/autoload_2/unk_020ed64c.cpp:
+    complete
+    .text       start:0x020ed64c end:0x020ed81c
+
+src/autoload_2/unk_020ed8cc.cpp:
+    complete
+    .text       start:0x020ed8cc end:0x020edd58
+
+src/autoload_2/unk_020ede18.cpp:
+    complete
+    .text       start:0x020ede18 end:0x020ee98c
+
 src/autoload_2/unk_02100234.c:
     complete
     .text       start:0x02100234 end:0x02100708
