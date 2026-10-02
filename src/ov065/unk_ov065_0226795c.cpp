@@ -12,7 +12,6 @@ extern void (*data_ov065_0228ebd0)(void *);
 void func_02116048(const void *src, void *dst, u32 n);
 void *func_02115fb4(void *dst, s32 v, u32 n);
 void func_021289b4(void *dst, const void *src, u32 n);
-u64 _ll_sdiv(u64 a, u64 b);
 
 s32 func_ov065_02268be8(u16 *a, s32 n);
 s32 func_ov065_02268c20(u16 *a, s32 n);
@@ -358,7 +357,7 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
                 do {
                     u32 qq;
                     func_021289b4(t1 + 1, t1, cs);
-                    qq = _ll_sdiv((u64)rp[-3] + (((u64)rp[-2] << 16) + (((u64)rp[0] << 48) + ((u64)rp[-1] << 32))), d);
+                    qq = ((u64)rp[-3] + (((u64)rp[-2] << 16) + (((u64)rp[0] << 48) + ((u64)rp[-1] << 32)))) / d;
                     if (qq > 0xffff) {
                         qq = 0xffff;
                     }

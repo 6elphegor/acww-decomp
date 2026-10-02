@@ -354,13 +354,13 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
             }
             func_ov065_022622c0();
             u64 now = func_01ffa6b4();
-            u64 el = (u64)((s64)((now - start) << 6) / 0x82ea);
+            u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
                 c->unk_24 = 4;
                 goto fail;
             }
             if (c->unk_b0 == 1) {
-                el = (u64)((s64)((now - mark) << 6) / 0x82ea);
+                el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     func_021157f4(tmp);
                     func_ov065_02265950(tmp, 0x20);
@@ -449,14 +449,14 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 goto done8;
             }
             u64 now = func_01ffa6b4();
-            u64 el = (u64)((s64)((now - start) << 6) / 0x82ea);
+            u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
                 c->unk_24 = 6;
                 func_02114410(&c->unk_948);
                 goto fail;
             }
             if (c->unk_b0 == 1) {
-                el = (u64)((s64)((now - mark) << 6) / 0x82ea);
+                el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     func_021157f4(tmp);
                     func_ov065_02265950(tmp, 0x20);

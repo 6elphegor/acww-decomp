@@ -258,7 +258,6 @@ void func_02088d58();
 void func_02030518();
 void func_02089118();
 u64 func_01ffa6b4();
-u32 _ll_sdiv(u64, u64);
 void func_020739b8(s32);
 void func_020a5c30();
 void func_02045c68();
@@ -849,7 +848,7 @@ BOOL Unk_020e4238::vfunc_00() {
             if (data_021eda64 > 6) break;
             u64 now = func_01ffa6b4();
             u64 d = (now - start) << 6;
-            if (_ll_sdiv(d, 0x82ea) > 0x28) {
+            if ((u32)(d / 0x82ea) > 0x28) {
                 fail = 1;
                 break;
             }

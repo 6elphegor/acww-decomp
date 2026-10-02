@@ -315,7 +315,7 @@ void func_ov065_0227746c(void) {
                     if (data_ov065_02290f78->unk_608 != NULL && r->unk_2c != 0) {
                         u64 t = func_01ffa6b4();
                         u64 d = (t - *(u64 *)&r->unk_24) << 6;
-                        if ((u32)((s64)d / 0x82ea) > r->unk_2c) {
+                        if ((u32)(d / 0x82ea) > r->unk_2c) {
                             data_ov065_02290f78->unk_608(id);
                             *(u64 *)&r->unk_24 = t;
                         }

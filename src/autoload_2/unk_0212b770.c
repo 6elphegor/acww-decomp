@@ -9,7 +9,6 @@ extern u8 data_0213a490[];  // __upper_map
 extern int data_0220064c;   // errno
 int func_02128d34(void *arg, int ch, int action); // __StringRead
 u32 _u32_div_f(u32 a, u32 b);
-u64 _ll_udiv(u64 a, u64 b);
 
 #define isspace_(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[(c)] & 0x100))
 #define isdigit_(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[(c)] & 0x8))
@@ -116,7 +115,7 @@ u64 func_0212b8f0(int base, int max_width, int (*ReadProc)(void *, int, int), vo
         scan_state = failure;
     else
         c = fetch();
-    if (base) value_max = _ll_udiv(0xffffffffffffffffULL, base);
+    if (base) value_max = 0xffffffffffffffffULL / base;
     while (count <= max_width && c != -1 && !(scan_state & (finished | failure))) {
         switch (scan_state) {
         case start:
@@ -153,7 +152,7 @@ u64 func_0212b8f0(int base, int max_width, int (*ReadProc)(void *, int, int), vo
         case need_digit:
         case digit_loop:
             if (base == 0) base = 10;
-            if (!value_max) value_max = _ll_udiv(0xffffffffffffffffULL, base);
+            if (!value_max) value_max = 0xffffffffffffffffULL / base;
             if (isdigit_(c)) {
                 c -= '0';
                 if (c >= base) {

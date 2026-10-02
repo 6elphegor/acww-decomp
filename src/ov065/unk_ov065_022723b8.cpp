@@ -1618,7 +1618,7 @@ void func_ov065_0227674c(u32 a) {
                 break;
             case 4:
                 if (c->unk_1bc != 0) {
-                    u64 el = (u64)((s64)((func_01ffa6b4() - *(u64 *)c->unk_1c0) << 6) / 0x82ea);
+                    u64 el = ((func_01ffa6b4() - *(u64 *)c->unk_1c0) << 6) / 0x82ea;
                     if ((u64)c->unk_1bc < el) {
                         c->unk_1bc = 0;
                         c = g;
@@ -1644,7 +1644,7 @@ void func_ov065_0227674c(u32 a) {
                     break;
                 }
                 { u32 t = c->unk_0d * 3000; r5 = t + 3000; }
-                if ((u64)((s64)((func_01ffa6b4() - *(u64 *)c->unk_1b4) << 6) / 0x82ea) >= (u64)r5) {
+                if (((func_01ffa6b4() - *(u64 *)c->unk_1b4) << 6) / 0x82ea >= (u64)r5) {
                     func_ov065_022745bc(c->unk_f4[0], 0);
                     if (func_ov065_022746e4() != 0) {
                         return;
@@ -1664,7 +1664,7 @@ void func_ov065_0227674c(u32 a) {
                 } else {
                     r5 = 3000;
                 }
-                if ((u64)r5 < (u64)((s64)((func_01ffa6b4() - *(u64 *)c->unk_ec) << 6) / 0x82ea)) {
+                if ((u64)r5 < ((func_01ffa6b4() - *(u64 *)c->unk_ec) << 6) / 0x82ea) {
                     func_ov065_02275764(c->unk_1ec);
                     if (func_ov065_02272f0c() != 0) {
                         return;

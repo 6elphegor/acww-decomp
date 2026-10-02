@@ -618,7 +618,7 @@ s32 func_ov065_0226cbf0(Unk_ov065_0226b488_Ctx *c) {
     }
     s64 now = func_01ffa6b4();
     s64 d = now - *(s64 *)&c->unk_cb0;
-    u64 r = (u64)((s64)((u64)d << 6) / 0x1ff6210LL);
+    u64 r = ((u64)d << 6) / 0x1ff6210LL;
     if (r >= 10) {
         *((u8 *)c + c->unk_d13 * 4 + 0x444) = 1;
         return 0xb;

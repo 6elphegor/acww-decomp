@@ -2038,7 +2038,7 @@ void Unk_ov119_02295840::func_ov119_02292f98() {
             unk_a1[i] = 10;
         }
     } else {
-        s64 v = func_02076c94(func_02098680(p));
+        u64 v = func_02076c94(func_02098680(p));
         for (i = 11; i >= 0; i--) {
             unk_a1[i] = (u8)(v % 10);
             v = v / 10;

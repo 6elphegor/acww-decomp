@@ -348,6 +348,6 @@ s32 func_ov065_02277998(char *key, char *out, char *src, s32 sep) {
 }
 
 u64 func_ov065_02277974() {
-    return (u64)((s64)(func_01ffa6b4() << 6) / 0x82ea);
+    return (func_01ffa6b4() << 6) / 0x82ea;
 }
 

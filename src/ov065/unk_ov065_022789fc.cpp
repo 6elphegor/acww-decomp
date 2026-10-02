@@ -252,7 +252,7 @@ s32 func_ov065_02279168(Unk_ov065_0227931c_Buf *o, char *dst, s32 *len) {
 namespace FB {
 extern "C" {
 u32 func_ov065_02279144() {
-    return (u64)((s64)(func_01ffa6b4() << 6) / 0x82ea);
+    return (func_01ffa6b4() << 6) / 0x82ea;
 }
 }
 }
@@ -674,7 +674,7 @@ namespace FA {
 extern "C" {
 void func_ov065_02278bc0(u32 *out) {
     u64 t = func_01ffa6b4();
-    u64 v = (u64)((s64)(t << 6) / 0x1ff6210);
+    u64 v = (t << 6) / 0x1ff6210;
     if (out != NULL) {
         *out = (u32)v;
     }

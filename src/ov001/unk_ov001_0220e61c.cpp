@@ -135,7 +135,7 @@ extern "C" void func_ov001_0220eab0() {
 extern "C" void func_ov001_0220e8c8() {
     void *obj = func_ov001_0222558c(0, 0);
     u8 dt[8];
-    s64 tick;
+    u64 tick;
     Unk_ov001_0220e8c8_Pad pad;
     u32 d[4];
     char buf[0x2c];
@@ -143,7 +143,7 @@ extern "C" void func_ov001_0220e8c8() {
     func_0212c234(buf, 0x14, data_ov001_0222acd8, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
     func_ov001_02225254(obj, data_ov001_02229fb0[0], data_ov001_02229fb0[1], data_ov001_02229fb0[2], data_ov001_02229fb0[3], 2, 0x480, buf);
     func_020ff0bc(&tick);
-    s64 t = tick;
+    u64 t = tick;
     if (t != 0) {
         s32 i;
         d[3] = (u32)((t % 10) * 1000);

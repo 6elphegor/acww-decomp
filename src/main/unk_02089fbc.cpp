@@ -138,7 +138,6 @@ void func_0209d064(void *a, void *b);
 s32 func_020b50e8();
 void func_020b7878(s32 x);
 u64 func_01ffa6b4();
-u64 _ll_sdiv(u64 a, u64 b);
 s32 func_0206f11c();
 void func_0209d224(void *p, s32 v);
 void func_0209cfb8(void *p);
@@ -1612,7 +1611,7 @@ void Unk_0208b908::func_0208b9f0() {
                 } else if (b0 <= 10) {
                     u64 now = func_01ffa6b4();
                     u64 d = now - *(u64 *)&unk_cc;
-                    u64 q = _ll_sdiv(d << 6, 0x82ea);
+                    u64 q = (d << 6) / 0x82ea;
                     if (q <= 0x44c) {
                         if (func_020b50e8() != 0x2e) {
                             func_0200402c(0x64);

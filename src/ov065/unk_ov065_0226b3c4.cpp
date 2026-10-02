@@ -415,7 +415,6 @@ void func_02116048(const void *src, void *dst, u32 n);
 void func_02115e64(u32 v, void *dst, u32 n);
 s32 func_0212a15c(const void *a, const void *b, u32 n);
 s64 func_01ffa6b4(void);
-u64 _ll_sdiv(u64 a, u64 b);
 
 s32 func_ov065_0226be44(u8 *p);
 s32 func_ov065_0226be5c(void);
@@ -482,7 +481,7 @@ s32 func_ov065_0226c700(Unk_ov065_0226bf70_Ctx *ctx) {
 
 s32 func_ov065_0226c674(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = func_01ffa6b4() - ctx->unk_cb0;
-    if (_ll_sdiv(dt << 6, 0x82ea) >= 0x12c) {
+    if ((dt << 6) / 0x82ea >= 0x12c) {
         ctx->unk_d11 = ctx->unk_d11 + 2;
         if (ctx->unk_d11 >= 0xd) {
             return func_ov065_0226c3bc(ctx, 3);
@@ -503,7 +502,7 @@ s32 func_ov065_0226c628(Unk_ov065_0226bf70_Ctx *ctx) {
 
 s32 func_ov065_0226c54c(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = func_01ffa6b4() - ctx->unk_cb0;
-    if (_ll_sdiv(dt << 6, 0x82ea) >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
+    if ((dt << 6) / 0x82ea >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
         ctx->unk_300[ctx->unk_d0f].lo = 0;
         ctx->unk_d0f++;
         if (ctx->unk_d10 <= ctx->unk_d0f) {
@@ -518,7 +517,7 @@ s32 func_ov065_0226c54c(Unk_ov065_0226bf70_Ctx *ctx) {
 
 s32 func_ov065_0226c44c(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = func_01ffa6b4() - ctx->unk_cb0;
-    if (_ll_sdiv(dt << 6, 0x82ea) >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
+    if ((dt << 6) / 0x82ea >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
         ctx->unk_300[ctx->unk_d0f].lo = 0;
         ctx->unk_d0f++;
         if (ctx->unk_d10 == ctx->unk_d0f) {

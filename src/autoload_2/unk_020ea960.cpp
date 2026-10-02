@@ -9,7 +9,6 @@ void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
 void func_02116048(const void *src, void *dst, u32 n); // MI_CpuCopy8
 u64 func_01ffa6b4(void); // OS_GetTick
 BOOL func_02114050(void *p, void *q, u32 v);
-s64 _ll_sdiv(s64 a, s64 b);
 
 s32 func_ov066_0225ffcc(void);
 u32 func_ov066_022622f4(void);
@@ -73,7 +72,7 @@ extern u8 *data_021f48a4;
 }
 
 static inline BOOL timedout48ec(void) {
-    s64 ms = _ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+    s64 ms = (func_01ffa6b4() << 6) / 33514;
     u64 diff = ms - (s64)data_021f48ec;
     BOOL over = diff > (u64)data_0213b060;
     return over;
@@ -345,7 +344,7 @@ extern "C" void func_020ec370(u32 a, u32 b, u32 c) {
 extern "C" void func_020ec310(u32 a, u32 b) {
     if (a != 0) return;
     if (b != 0) return;
-    data_021f48cc = (u32)_ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+    data_021f48cc = (u32)((func_01ffa6b4() << 6) / 33514);
 }
 
 extern "C" void func_020ec30c(void) {
@@ -443,11 +442,11 @@ extern "C" void func_020ebe5c(u32 a, u32 i) {
 }
 
 extern "C" void func_020ebd54(void) {
-    s64 ms;
+    u64 ms;
     u8 v;
     if (data_021f4894 < 5) return;
-    ms = _ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
-    ms = _ll_sdiv(ms, 250);
+    ms = (func_01ffa6b4() << 6) / 33514;
+    ms = ms / 250;
     v = (u8)(ms % data_021f488c);
     if (data_0213b058 == v) return;
     data_0213b058 = v;
@@ -478,7 +477,7 @@ extern "C" void func_020ebc3c(void) {
     if (func_ov065_02277038() == 0) return;
     if (data_021f48cc == 0) return;
     {
-        s64 ms = _ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+        s64 ms = (func_01ffa6b4() << 6) / 33514;
         u64 diff = ms - (s64)data_021f48cc;
         BOOL over = diff > (u64)120000;
         if (!over) return;
@@ -498,7 +497,7 @@ extern "C" void func_020ebb6c(u32 a, u32 b, u32 c, u64 d, u8 e, AllocFn f, FreeF
     data_021f489c = a;
     data_021f48b8 = b;
     data_0213b05c = c;
-    data_0213b060 = (u32)_ll_sdiv((s64)(d << 6), 33514);
+    data_0213b060 = (u32)((d << 6) / 33514);
     data_021f488c = e;
     data_021f48a0 = f;
     data_021f48f0 = g;
@@ -627,9 +626,9 @@ extern "C" BOOL func_020eb650(void) {
 extern "C" BOOL func_020eb578(void) {
     u32 start;
     func_ov066_0225fc78(0, 0, 0);
-    start = (u32)_ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+    start = (u32)((func_01ffa6b4() << 6) / 33514);
     while (func_ov066_0225ffcc() != 2) {
-        s64 ms = _ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+        s64 ms = (func_01ffa6b4() << 6) / 33514;
         u64 diff = ms - (s64)start;
         BOOL over = diff > (u64)data_0213b060;
         if (over != 0) return FALSE;
@@ -643,7 +642,7 @@ extern "C" BOOL func_020eb578(void) {
 extern "C" BOOL func_020eb2dc(void) {
     switch (data_021f4898) {
     case 0:
-        data_021f48ec = (u32)_ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+        data_021f48ec = (u32)((func_01ffa6b4() << 6) / 33514);
         data_021f4898 = 1;
         break;
     case 1:
@@ -652,7 +651,7 @@ extern "C" BOOL func_020eb2dc(void) {
             if (func_ov065_0227067c() < 0) {
                 data_021f48ec = 0;
             } else {
-                data_021f48ec = (u32)_ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+                data_021f48ec = (u32)((func_01ffa6b4() << 6) / 33514);
             }
             data_021f4898 = 2;
         }
@@ -807,7 +806,7 @@ extern "C" BOOL func_020ead70(u32 a) {
     if (a != 0) {
         if (func_02114050(data_021f4930, &tmp, 0) != 0) {
             if (data_021f48b0 != 0) {
-                s64 ms = _ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+                s64 ms = (func_01ffa6b4() << 6) / 33514;
                 u64 diff = ms - (s64)data_021f48b0;
                 BOOL over = diff > (u64)data_0213b060;
                 if (over) {
@@ -815,7 +814,7 @@ extern "C" BOOL func_020ead70(u32 a) {
                     func_020ec70c();
                 }
             } else {
-                data_021f48b0 = (u32)_ll_sdiv((s64)(func_01ffa6b4() << 6), 33514);
+                data_021f48b0 = (u32)((func_01ffa6b4() << 6) / 33514);
             }
         } else {
             data_021f48b0 = 0;

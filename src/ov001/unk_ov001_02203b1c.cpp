@@ -52,7 +52,6 @@ void *memset(void *, int, unsigned long);
 u32 func_01ffa2ec(void);
 void func_01ffa3d4(u32 v);
 u64 func_01ffa6b4();
-u64 _ll_sdiv(u64 a, u64 b);
 void func_02115fb4(void *p, u32 v, u32 n);
 void func_02115e78(void *dst, void *src, u32 n);
 void func_02116048(void *dst, void *src, s32 n);
@@ -2623,7 +2622,7 @@ void func_ov001_02203e58(void *out, void *p, u32 n) {
 }
 
 u32 func_ov001_02203e34() {
-    return _ll_sdiv(func_01ffa6b4() << 6, 0x82ea);
+    return (func_01ffa6b4() << 6) / 0x82ea;
 }
 
 void *func_ov001_02203e08(u32 n, u32 m) {

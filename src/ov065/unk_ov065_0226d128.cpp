@@ -389,7 +389,7 @@ void func_ov065_0226d860(void) {
             }
         }
         t0 = func_01ffa6b4();
-        while ((u64)((s64)((func_01ffa6b4() - t0) * 64) / 0x82ea) < 0x1388) {
+        while ((u64)((func_01ffa6b4() - t0) * 64) / 0x82ea < 0x1388) {
             func_02114480(data_ov065_02290600->unk_3bc);
             if (data_ov065_02290600->unk_3d4 == 1) {
                 data_ov065_02290600->unk_08 = -0x4e84;

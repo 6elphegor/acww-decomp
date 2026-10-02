@@ -186,8 +186,8 @@ wchar_t *func_0212d524(s32 num, wchar_t *buff, print_format format) {
 
 // longlong2str (wide)
 wchar_t *func_0212d238(s64 num, wchar_t *buff, print_format format) {
-    s64 unsigned_num;
-    s64 base;
+    u64 unsigned_num;
+    u64 base;
     wchar_t *p;
     s32 n, digits;
     s32 minus = 0;

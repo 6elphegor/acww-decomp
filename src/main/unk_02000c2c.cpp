@@ -121,7 +121,6 @@ void func_0204eeb0(void);
 u8 *func_02114b10(void);
 void func_021127c0(const char *a, u32 b, const char *c, void *d);
 s32 func_0206d49c(void);
-u32 _ll_udiv(u64 a, u64 b);
 
 void func_02001338(const char *a, u32 b, const char *c, void *d) {
     func_01ffa2ec();
@@ -389,7 +388,7 @@ void func_02000c9c(void) {
     (void)*ime;
     *ime = 0;
     t = func_01ffa6b4();
-    data_0213c6d0 = _ll_udiv(t << 6, 0x82ea);
+    data_0213c6d0 = (u32)((t << 6) / 0x82ea);
     for (;;) {
         func_02000cd4();
     }
