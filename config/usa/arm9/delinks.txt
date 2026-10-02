@@ -676,14 +676,13 @@ src/main/unk_02057180.cpp:
     .text       start:0x02057180 end:0x020571f4
     .data       start:0x020dbe94 end:0x020dbea4
 
-src/main/unk_02057940.cpp:
-    .text       start:0x02057940 end:0x020582a0
-
-src/main/unk_020582a0.cpp:
-    .text       start:0x020582a0 end:0x02058c58
-
-src/main/unk_02058c58.cpp:
-    .text       start:0x02058c58 end:0x020594dc
+src/main/unk_020571f4.cpp:
+    complete
+    .text       start:0x020571f4 end:0x020594dc
+    .init       start:0x020c4000 end:0x020c4358
+    .rodata     start:0x020ca678 end:0x020cab74
+    .ctor       start:0x020d1e4c end:0x020d1e50
+    .data       start:0x020dbea4 end:0x020dc07c
 
 src/main/unk_020594dc.cpp:
     complete

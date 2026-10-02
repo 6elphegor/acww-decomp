@@ -614,9 +614,6 @@ data_021c5af8 kind:bss addr:0x021c5af8
 data_021c5b10 kind:bss addr:0x021c5b10
 data_021c5b28 kind:bss addr:0x021c5b28
 data_021c5b48 kind:bss addr:0x021c5b48
-data_021c5b50 kind:bss addr:0x021c5b50
-data_021c5bc8 kind:bss addr:0x021c5bc8
-data_021c5c48 kind:bss addr:0x021c5c48
 data_021c5cc8 kind:bss addr:0x021c5cc8
 data_021c5ccc kind:bss addr:0x021c5ccc
 data_021c5cd0 kind:bss addr:0x021c5cd0
