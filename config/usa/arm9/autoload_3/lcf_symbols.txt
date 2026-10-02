@@ -50,4 +50,17 @@ data_021ed30c addr:0x021ed30c base:data_021d7350
 data_021ed315 addr:0x021ed315 base:data_021d7350
 data_021ed31a addr:0x021ed31a base:data_021d7350
 data_021ed32c addr:0x021ed32c base:data_021d7350
+data_021edbac addr:0x021edbac base:data_021edba8
+data_021edbd0 addr:0x021edbd0 base:data_021edbcc
+data_021edbd4 addr:0x021edbd4 base:data_021edbcc
+data_021edbd6 addr:0x021edbd6 base:data_021edbcc
+data_021edbd8 addr:0x021edbd8 base:data_021edbcc
+data_021edbda addr:0x021edbda base:data_021edbcc
+data_021edbe4 addr:0x021edbe4 base:data_021edbe0
+data_021edbe8 addr:0x021edbe8 base:data_021edbe0
+data_021edbec addr:0x021edbec base:data_021edbe0
+data_021edbf0 addr:0x021edbf0 base:data_021edbe0
+data_021edbfc addr:0x021edbfc base:data_021edbe0
+data_021edcfc addr:0x021edcfc base:data_021edcbc
+data_021ee352 addr:0x021ee352 base:data_021ee330
 data_021ef548 addr:0x021ef548 base:data_021ef4c8

@@ -368,6 +368,14 @@ src/main/unk_020a6388.bss.cpp:
     complete
     .bss        start:0x021edac0 end:0x021edb5c
 
+src/main/unk_020a6974.bss.cpp:
+    complete
+    .bss        start:0x021edb5c end:0x021edd18
+
+src/main/unk_020a8c9c.bss.cpp:
+    complete
+    .bss        start:0x021edd18 end:0x021ede90
+
 src/main/unk_020abbcc.bss.cpp:
     complete
     .bss        start:0x021ede90 end:0x021edf3c
@@ -391,6 +399,10 @@ src/main/unk_020afeb4.bss.cpp:
 src/main/unk_020b0a80.bss.cpp:
     complete
     .bss        start:0x021ee284 end:0x021ee288
+
+src/main/unk_020b0e60.bss.cpp:
+    complete
+    .bss        start:0x021ee288 end:0x021ee3dc
 
 src/main/unk_020b2c50.bss.cpp:
     complete
