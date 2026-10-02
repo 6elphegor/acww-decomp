@@ -1013,9 +1013,6 @@ data_021eda70 kind:bss addr:0x021eda70
 data_021eda7c kind:bss addr:0x021eda7c
 data_021eda88 kind:bss addr:0x021eda88
 data_021eda94 kind:bss addr:0x021eda94
-data_021edaa0 kind:bss addr:0x021edaa0
-data_021edac0 kind:bss addr:0x021edac0
-data_021edad0 kind:bss addr:0x021edad0
 data_021edb5c kind:bss addr:0x021edb5c
 data_021edb60 kind:bss addr:0x021edb60
 data_021edb64 kind:bss addr:0x021edb64

@@ -213,6 +213,9 @@ data_021ed62c addr:0x021ed62c base:data_021ed624
 data_021ed6a4 addr:0x021ed6a4 base:data_021ed624
 data_021ed724 addr:0x021ed724 base:data_021ed624
 data_021ed7a4 addr:0x021ed7a4 base:data_021ed624
+data_021edaa0 addr:0x021edaa0 base:data_021eda94
+data_021edac0 addr:0x021edac0 base:data_021eda94
+data_021edad0 addr:0x021edad0 base:data_021eda94
 data_021edbac addr:0x021edbac base:data_021edba8
 data_021edbd0 addr:0x021edbd0 base:data_021edbcc
 data_021edbd4 addr:0x021edbd4 base:data_021edbcc

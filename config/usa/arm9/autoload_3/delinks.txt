@@ -424,9 +424,9 @@ src/main/unk_0209eb94.bss.cpp:
     complete
     .bss        start:0x021ed390 end:0x021eda50
 
-src/main/unk_020a6388.bss.cpp:
+src/main/unk_020a427c.bss.cpp:
     complete
-    .bss        start:0x021edac0 end:0x021edb5c
+    .bss        start:0x021eda50 end:0x021edb5c
 
 src/main/unk_020a6974.bss.cpp:
     complete

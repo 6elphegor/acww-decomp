@@ -42,8 +42,8 @@ struct Unk_020a6790 {
 
 extern Unk_020a6754 data_021eda94[];
 extern Unk_020a6720 data_021edaa0[];
-u8 data_021edac0[0x10];
-u8 data_021edad0[0x8c];
+extern u8 data_021edac0[];  // data_021eda94 + 0x2c (Unk_020a66f8[4] member of U195's singleton)
+extern u8 data_021edad0[];  // data_021eda94 + 0x3c (Unk_020a6790[4] member)
 
 extern "C" s32 func_020a6478() { return 0; }
 
