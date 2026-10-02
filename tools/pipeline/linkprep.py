@@ -59,7 +59,9 @@ ALIASES = []  # (module, existing name, second name), from an aliases.txt next t
 INTERIOR = {}  # (module, label address) -> object start, from `interior:` lines of the renames.txt
 SECTION_LABELS = {}  # (module, address) -> section, from `section:` lines of the renames.txt
 # symbols the linker script defines
-LCF_SYMBOL = r"OVERLAY_\d+_ID"
+# (dsd's lcf: overlay ids; the bounds of the exception index that mwld's EXCEPTION directive builds in main, which the
+# C++ runtime's __FindExceptionTable loads: relocs.txt `kind:link_time_const(__exception_table_start__)`)
+LCF_SYMBOL = r"OVERLAY_\d+_ID|__exception_table_(start|end)__"
 
 
 def load_renames(path):

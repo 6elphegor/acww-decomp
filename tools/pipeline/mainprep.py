@@ -23,6 +23,8 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
         SIZE     a section's objects do not fill the unit's range exactly
         DATA     an object's bytes at its simulated address differ from the original
         PLACE    a named object would not land on its symbols.txt address
+        EXCIDX   an exception index entry (.exceptix) differs from the original entry of its function, or that
+                 entry is outside the unit's .exceptix range (library units: the range is in main)
         TARGET   a relocation resolves to another address (or another module) than the original word; or it uses
                  an absolute symbol (config/usa/arm9/abs_symbols.txt) whose value is not the original word, or
                  where the original has a relocation. An absolute symbol on a word without a relocation whose
@@ -41,7 +43,9 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
 
 The library modules autoload_2 and itcm (NitroSDK and runtime, C sources in ARM mode) are handled the same way:
 give `autoload_2` or `itcm` where `main` stands above. Their units are listed in config/usa/arm9/<module>/delinks.txt
-and their bss ranges, like main's, as placeholder units in autoload_3. linkprep.py calls set_module() first.
+and their bss ranges, like main's, as placeholder units in autoload_3; their .init/.ctor/.exception/.exceptix ranges
+are in main (placeholder <unit>.main.<ext> in main's delinks.txt) and are compared with main's image and relocations.
+linkprep.py calls set_module() first.
 """
 import re
 import struct
@@ -70,13 +74,27 @@ def set_module(name):
     MODCFG, BASE, ORIG, FIELD, BUILT = MODULES[name]
 
 
-def bss_placeholder(unit):
-    '''name of a unit's bss placeholder in autoload_3: src/main/unk_x.cpp -> src/main/unk_x.bss.cpp'''
+def bss_placeholder(unit, suffix=".bss"):
+    '''name of a unit's bss placeholder in autoload_3: src/main/unk_x.cpp -> src/main/unk_x.bss.cpp
+    (suffix ".main": a library unit's placeholder in main's delinks.txt, tools/bss_units.py)'''
     path = Path(unit)
-    return str(path.with_name(path.stem + ".bss" + path.suffix))
+    return str(path.with_name(path.stem + suffix + path.suffix))
 
 
-KINDS = (".text", ".init", ".rodata", ".ctor", ".data", ".bss")
+# Sections of a library unit (autoload_2, itcm) that the original linker put into the MAIN module: a file's static
+# initialiser (`__sinit` in main's .init, its word in main's .ctor) and the C++ runtime's exception tables. A spec
+# gives their ranges in main; installed, they are the placeholder unit <unit>.main.<ext> in main's delinks.txt.
+HOME_KINDS = (".init", ".ctor", ".exception", ".exceptix")
+
+
+def in_home(kind):
+    '''True when the selected module's sections of this kind are in main (library modules only)'''
+    return MOD != "main" and kind in HOME_KINDS
+
+
+KINDS = (".text", ".exception", ".init", ".rodata", ".ctor", ".data", ".bss")
+# .exceptix (exception index entries) has no place of its own: mwld's EXCEPTION directive collects the entries of
+# every object and sorts them by function address (tested); cmd_check compares them entry by entry
 MAX_LINES = 40
 
 
@@ -90,8 +108,10 @@ def unit_ranges(arg):
             if len(f) >= 3 and f[0].startswith("."):
                 secs[f[0]] = (int(f[1], 16), int(f[2], 16))
     else:
-        for delinks, want in ((MODCFG / "delinks.txt", str(arg)),
-                              (CONFIG / BSS_MODULE / "delinks.txt", bss_placeholder(arg))):
+        sources = [(MODCFG / "delinks.txt", str(arg)), (CONFIG / BSS_MODULE / "delinks.txt", bss_placeholder(arg))]
+        if MOD != "main":
+            sources.append((CONFIG / "delinks.txt", bss_placeholder(arg, ".main")))
+        for delinks, want in sources:
             cur = None
             for line in delinks.read_text().splitlines():
                 if line and not line[0].isspace():
@@ -105,23 +125,55 @@ def unit_ranges(arg):
 
 
 def module_sections():
+    '''{section: (start, end)} of the selected module; for a library module plus main's HOME_KINDS sections'''
     out = {}
-    for line in (MODCFG / "delinks.txt").read_text().split("\n\n")[0].splitlines():
-        m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
-        if m:
-            out[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
+    tables = [(MODCFG, lambda kind: not in_home(kind))]
+    if MOD != "main":
+        tables.append((CONFIG, in_home))
+    for cfg, wanted in tables:
+        for line in (cfg / "delinks.txt").read_text().split("\n\n")[0].splitlines():
+            m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
+            if m and wanted(m.group(1)):
+                out[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
     return out
 
 
 def main_relocs():
-    '''from -> (target incl. add, module field) for the relocations of the selected module (main by default)'''
+    '''from -> (target incl. add, module field) for the relocations of the selected module (main by default); for a
+    library module main's too (its HOME_KINDS sections are there; the address ranges do not overlap)'''
     out = {}
-    for line in (MODCFG / "relocs.txt").read_text().splitlines():
-        m = re.match(r"from:(0x[0-9a-f]+) kind:(\S+) to:(0x[0-9a-f]+)(?: add:(-?0x[0-9a-f]+))? module:(\S+)", line)
-        if m:
-            out[int(m.group(1), 16)] = (int(m.group(3), 16) + (int(m.group(4), 16) if m.group(4) else 0),
-                                        m.group(5), m.group(2))
+    for cfg in (MODCFG,) if MOD == "main" else (CONFIG, MODCFG):
+        for line in (cfg / "relocs.txt").read_text().splitlines():
+            m = re.match(r"from:(0x[0-9a-f]+) kind:(\S+) to:(0x[0-9a-f]+)(?: add:(-?0x[0-9a-f]+))? module:(\S+)",
+                         line)
+            if m:
+                out[int(m.group(1), 16)] = (int(m.group(3), 16) + (int(m.group(4), 16) if m.group(4) else 0),
+                                            m.group(5), m.group(2))
     return out
+
+
+class Image:
+    '''the original bytes of the selected module, and of main for a library module's HOME_KINDS sections'''
+
+    def __init__(self):
+        self.parts = [(BASE, ORIG.read_bytes())]
+        if MOD != "main":
+            _, base, path, _, _ = MODULES["main"]
+            self.parts.append((base, path.read_bytes()))
+
+    def part(self, addr):
+        for base, data in self.parts:
+            if base <= addr < base + len(data):
+                return base, data
+        return self.parts[0]
+
+    def read(self, addr, n):
+        base, data = self.part(addr)
+        return data[addr - base:addr - base + n]
+
+    def word(self, addr):
+        base, data = self.part(addr)
+        return struct.unpack_from("<I", data, addr - base)[0]
 
 
 def module_of_field(field):
@@ -138,7 +190,10 @@ def module_of_field(field):
 def own_symbols(lp):
     '''[(address, name, rest of line, module)] of main and autoload_3, renames applied'''
     out = []
-    for mod, p in ((MOD, MODCFG / "symbols.txt"), (BSS_MODULE, CONFIG / BSS_MODULE / "symbols.txt")):
+    files = [(MOD, MODCFG / "symbols.txt"), (BSS_MODULE, CONFIG / BSS_MODULE / "symbols.txt")]
+    if MOD != "main":
+        files.append(("main", CONFIG / "symbols.txt"))  # the HOME_KINDS ranges of a library unit
+    for mod, p in files:
         for name, addr, line in lp.symbol_lines(p, mod):
             out.append((addr, name, line.split(" ", 1)[1], mod))
     return out
@@ -169,7 +224,7 @@ def external_refs(ranges, skip_from):
             if not inside(to) and not inside(to & ~1):
                 continue
             frm = int(m.group(1), 16)
-            if mod == MOD and skip_from(frm):
+            if (mod == MOD or (MOD != "main" and mod == "main")) and skip_from(frm):
                 continue
             out.setdefault(to, []).append((mod, frm))
     return out
@@ -198,15 +253,25 @@ class Layout:
             if bind != 0 and 0 < shndx < nsec and name in known and idx not in redirect:
                 todo.append(shndx)
         todo += [i for i in range(nsec) if o.secname[i] == ".ctor" and o.sh[i][5]]
-        while todo:
-            i = todo.pop()
-            if i in keep:
-                continue
-            keep.add(i)
-            for idx in o.relsym.get(i, []):
-                shndx = o.syms[redirect.get(idx, idx)][5]
-                if 0 < shndx < nsec and shndx not in keep:
-                    todo.append(shndx)
+        while True:
+            while todo:
+                i = todo.pop()
+                if i in keep:
+                    continue
+                keep.add(i)
+                for idx in o.relsym.get(i, []):
+                    shndx = o.syms[redirect.get(idx, idx)][5]
+                    if 0 < shndx < nsec and shndx not in keep:
+                        todo.append(shndx)
+            # an exception index entry (.exceptix, KEEP_SECTION) stays with its function and keeps its table
+            for i in range(nsec):
+                if o.secname[i] == ".exceptix" and o.sh[i][5] and i not in keep:
+                    first = [o.syms[redirect.get(idx, idx)][5]
+                             for (off, *_), idx in zip(o.relocs.get(i, []), o.relsym.get(i, [])) if off == 0]
+                    if first and first[0] in keep:
+                        todo.append(i)
+            if not todo:
+                break
         self.keep = keep
         self.addr = {}       # section index -> simulated address
         self.end = {}        # kind -> end of the simulated block
@@ -244,7 +309,7 @@ def cmd_check(lp, objpath, unit):
     syms = lp.load_symbols()
     secs = unit_ranges(unit)
     modsecs = module_sections()
-    image = ORIG.read_bytes()
+    image = Image()
     relocs = main_relocs()
     own = own_symbols(lp)
     by_addr = {}
@@ -297,7 +362,7 @@ def cmd_check(lp, objpath, unit):
         out.append(line)
 
     def orig_bytes(addr, n):
-        return image[addr - BASE:addr - BASE + n]
+        return image.read(addr, n)
 
     folded_sections = {o.syms[i][5] for i in redirect}
     for i in lay.unused:
@@ -314,11 +379,18 @@ def cmd_check(lp, objpath, unit):
         inside = bss_mod.get(".bss", (0, 0)) if kind == ".bss" else lim
         if not (inside[0] <= start <= end <= inside[1]):
             out.append(f"NORANGE {kind} {start:#010x}-{end:#010x} is not inside "
-                       f"{BSS_MODULE if kind == '.bss' else MOD}'s {kind} ({inside[0]:#010x}-{inside[1]:#010x})")
+                       f"{BSS_MODULE if kind == '.bss' else 'main' if in_home(kind) else MOD}'s {kind} "
+                       f"({inside[0]:#010x}-{inside[1]:#010x})")
             problems += 1
             continue
         for x in (start, end):
-            if x not in by_addr and x not in vt_starts and x not in lim:
+            if x not in by_addr and x not in vt_starts and x not in lim and kind in (".text", ".init"):
+                say(f"BOUND   {kind} {start:#010x}-{end:#010x}: symbols.txt has no symbol at {x:#010x}. "
+                    + ("install_tu.py adds a boundary symbol `data_{:08x}` if the unit's last function ends there and "
+                       "no function covers it (data of the delinked neighbour, e.g. an assembly routine's constant "
+                       "pool); otherwise the range is wrong".format(x) if x == end else
+                       "A code range must start with a function: the range is wrong"))
+            elif x not in by_addr and x not in vt_starts and x not in lim:
                 say(f"BOUND   {kind} {start:#010x}-{end:#010x}: symbols.txt has no symbol at {x:#010x}. If a vtable "
                     f"starts there, add `{MOD} {x:08x} _ZTV<class>` to renames.txt; otherwise install_tu.py adds a "
                     f"boundary symbol `data_{x:08x}` (check that the range is right)")
@@ -429,6 +501,8 @@ def cmd_check(lp, objpath, unit):
     def resolve(idx):
         name, value, size, typ, bind, shndx = o.syms[idx]
         if idx in lay.symaddr:
+            if 0 < shndx < len(o.sh) and in_home(o.secname[shndx]):
+                return lay.symaddr[idx], {"main"}  # a library unit's __sinit / .ctor word / exception table
             return lay.symaddr[idx], {MOD, BSS_MODULE}
         if shndx == 0 and name in syms:
             mods = {m for m, a in [syms[name]]}
@@ -453,7 +527,7 @@ def cmd_check(lp, objpath, unit):
             where = f"{lay.names[i]}+{off:#x}"
             if mods == {lp.ABS_MODULE}:
                 # a number the linker script defines: the original word is that number and has no relocation
-                word, = struct.unpack_from("<I", image, a + off - BASE)
+                word = image.word(a + off)
                 got = (have + addend) & 0xffffffff
                 text = f"{sname}{'%+#x' % addend if addend else ''}"
                 if rtype != 2:
@@ -473,7 +547,7 @@ def cmd_check(lp, objpath, unit):
                         f"linker script)")
                 continue
             if rtype == 2:
-                word, = struct.unpack_from("<I", image, a + off - BASE)
+                word = image.word(a + off)
                 got = have + addend
                 if (got & ~1) != (word & ~1):
                     names = " ".join(n for n, _ in lp.syms_by_addr(syms, word & ~1)) or \
@@ -494,6 +568,63 @@ def cmd_check(lp, objpath, unit):
                 say(f"TARGET  {where} uses {sname} of {'/'.join(sorted(mods))}; the original relocation is to "
                     f"module:{rel[1]}")
                 wrong += 1
+
+    # ---- exception index entries: one 12-byte entry {function, size/flags, table or inline data} per function with
+    # an exception table. mwld's EXCEPTION directive collects the .exceptix sections of all objects and sorts the
+    # entries by function address (tested with a miniature link: a delinked object's entries and a compiled one's
+    # interleave correctly), so an entry has no place to check, only contents: each is compared with the original
+    # entry of the same function in main's .exceptix, which must lie in the unit's .exceptix range, and every
+    # original entry of the range must be emitted.
+    exc = [i for i, s in enumerate(o.sh) if o.secname[i] == ".exceptix" and s[5] and i in lay.keep]
+    if exc and ".exceptix" not in secs:
+        say(f"NORANGE the object emits {len(exc)} exception index entr{'y' if len(exc) == 1 else 'ies'} (.exceptix) "
+            f"but the unit has no .exceptix range (main's .exceptix: the entries of its functions)")
+        problems += 1
+    elif ".exceptix" in secs:
+        x0, x1 = secs[".exceptix"]
+        m0, m1 = modsecs.get(".exceptix", (x0, x1))
+        orig_entry = {image.word(e): e for e in range(m0, m1, 12)}
+        seen = set()
+        for i in exc:
+            data = o.section_bytes(i)
+            rels = {off: (idx, addend) for (off, sname, addend, rtype), idx
+                    in zip(o.relocs.get(i, []), o.relsym.get(i, []))}
+            for k in range(0, len(data) - 11, 12):
+                if k not in rels:
+                    say(f"EXCIDX  {lay.names[i]}+{k:#x}: an exception index entry without a function relocation")
+                    problems += 1
+                    continue
+                fname = o.syms[rels[k][0]][0]
+                want = syms.get(fname)
+                func = want[1] if want else resolve(rels[k][0])[0]
+                e = orig_entry.get(func) if func is not None else None
+                if e is None:
+                    say(f"EXCIDX  {fname} ({func:#010x}) has an exception index entry; the original has none" if func
+                        is not None else f"EXCIDX  {fname}: unresolved function of an exception index entry")
+                    problems += 1
+                    continue
+                if not (x0 <= e < x1):
+                    say(f"EXCIDX  {fname}: its original entry ({e:#010x}) is outside the unit's .exceptix range "
+                        f"{x0:#010x}-{x1:#010x}")
+                    problems += 1
+                seen.add(e)
+                for w in (4, 8):
+                    if k + w in rels:
+                        have = resolve(rels[k + w][0])[0]
+                        got = None if have is None else (have + rels[k + w][1]) & 0xffffffff
+                    else:
+                        got, = struct.unpack_from("<I", data, k + w)
+                    if got != image.word(e + w):
+                        say(f"EXCIDX  {fname}: word +{w} of its exception index entry is "
+                            f"{'unresolved' if got is None else f'{got:#010x}'}, the original {image.word(e + w):#010x} "
+                            f"(at {e + w:#010x})")
+                        problems += 1
+        for e in range(x0, x1, 12):
+            if e not in seen:
+                names = " ".join(n for n, _ in lp.syms_by_addr(syms, image.word(e)))
+                say(f"MISSING the exception index entry at {e:#010x} ({image.word(e):#010x} {names}) is in the unit's "
+                    f".exceptix range but the object has no entry for that function")
+                problems += 1
 
     # ---- names that code outside the unit refers to
     ranges = list(secs.values())
