@@ -246,3 +246,11 @@ src/autoload_2/unk_02125c94.c:
 src/autoload_2/unk_0212703c.c:
     complete
     .text       start:0x0212703c end:0x02128030
+
+src/autoload_2/unk_0212a120.c:
+    complete
+    .text       start:0x0212a120 end:0x0212a454
+
+src/autoload_2/unk_0212b770.c:
+    complete
+    .text       start:0x0212b770 end:0x0212c11c
