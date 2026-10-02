@@ -1,0 +1,119 @@
+// mwcc-flags: -nothumb -O4,p
+// NitroSDK TP (touch panel) library, autoload_2 0x0211ba58-0x0211bcdc. ARM code, mwcc 1.2/base.
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef signed short s16;
+typedef signed int s32;
+typedef long long s64;
+
+typedef void (*TPCallback)(u32 command, u32 result, u32 arg);
+
+typedef struct {
+    u16 x, y, touch, validity;
+} TPData;
+
+typedef struct {
+    TPCallback callback;      // 0x00
+    u32 pad04;
+    u32 pad08;
+    u16 sampling;             // 0x0c
+    u16 range;                // 0x0e
+    TPData *buf;              // 0x10
+    u16 bufSize;              // 0x14
+    u8 pad16[0x30 - 0x16];
+    u16 calibrateOn;          // 0x30
+    u16 pad32;
+    volatile u16 state;       // 0x34
+    volatile u16 ack;         // 0x36
+} TPWork;
+
+typedef struct {
+    s16 x0, y0, xDotSize, yDotSize;
+} TPCalibrateParam;
+
+typedef struct {
+    s32 x0, pad04, xScale, y0, pad10, yScale;
+} TPCalibInternal;
+
+extern TPWork data_021feaf4;
+extern TPCalibInternal data_021feb0c;
+
+extern u32 func_01ffa2ec(void);               // OS_DisableInterrupts
+extern void func_01ffa3d4(u32 e);             // OS_RestoreInterrupts
+extern s32 func_02117dd8(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
+
+#define reg_DIVCNT (*(volatile u16 *)0x04000280)
+#define reg_DIV_NUMER (*(volatile u32 *)0x04000290)
+#define reg_DIV_DENOM (*(volatile u32 *)0x04000298)
+#define reg_DIV_DENOM_HI (*(volatile u32 *)0x0400029c)
+#define reg_DIV_RESULT (*(volatile s32 *)0x040002a0)
+
+void func_0211bbc8(u32 a, u32 b, TPData *buf, u32 n) {
+    u32 i;
+    TPWork *w = &data_021feaf4;
+    u32 e;
+    u32 ok;
+    w->buf = buf;
+    w->sampling = 0;
+    w->range = b;
+    w->bufSize = n;
+    for (i = 0; i < n; i++) {
+        w->buf[i].touch = 0;
+    }
+    e = func_01ffa2ec();
+    if (func_02117dd8(6, (b & 0xff) | 0x02000100, 0) < 0) {
+        ok = 0;
+    } else if (func_02117dd8(6, a | 0x01010000, 0) < 0) {
+        ok = 0;
+    } else {
+        ok = 1;
+    }
+    if (!(u8)ok) {
+        func_01ffa3d4(e);
+        data_021feaf4.state |= 2;
+        if (data_021feaf4.callback) {
+            data_021feaf4.callback(1, 4, 0);
+        }
+        return;
+    }
+    data_021feaf4.ack |= 2;
+    data_021feaf4.state &= ~2;
+    func_01ffa3d4(e);
+}
+
+void func_0211bb24(void) {
+    u32 e = func_01ffa2ec();
+    u32 ok = func_02117dd8(6, 0x03000200, 0) >= 0;
+    if (!ok) {
+        func_01ffa3d4(e);
+        data_021feaf4.state |= 4;
+        if (data_021feaf4.callback) {
+            data_021feaf4.callback(2, 4, 0);
+        }
+    } else {
+        data_021feaf4.ack |= 4;
+        data_021feaf4.state &= ~4;
+        func_01ffa3d4(e);
+    }
+}
+
+void func_0211ba68(u32 unused, u32 data) {
+    u32 e = func_01ffa2ec();
+    u32 ok = func_02117dd8(6, data | 0x03000300, 0) >= 0;
+    if (!ok) {
+        func_01ffa3d4(e);
+        data_021feaf4.state |= 8;
+        if (data_021feaf4.callback) {
+            data_021feaf4.callback(3, 4, 0);
+        }
+    } else {
+        data_021feaf4.ack |= 8;
+        data_021feaf4.state &= ~8;
+        func_01ffa3d4(e);
+    }
+}
+
+u16 func_0211ba58(void) {
+    return data_021feaf4.sampling;
+}
