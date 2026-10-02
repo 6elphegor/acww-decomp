@@ -2203,12 +2203,14 @@ __register_global_object kind:function(arm,size=0x20) addr:0x02135558
 func_02135578 kind:function(arm,size=0x24) addr:0x02135578
 func_0213559c kind:function(arm,size=0xc) addr:0x0213559c
 func_021355a8 kind:function(arm,size=0x48) addr:0x021355a8
+__cxa_vec_delete kind:label(arm) addr:0x021355a8
 __cxa_vec_cleanup kind:function(arm,size=0x5c) addr:0x021355f0
 func_0213564c kind:function(arm,size=0x1c) addr:0x0213564c
 func_02135668 kind:function(arm,size=0x5c) addr:0x02135668
 func_021356c4 kind:function(arm,size=0x50) addr:0x021356c4
 __cxa_vec_ctor kind:function(arm,size=0xcc) addr:0x02135714
 func_021357e0 kind:function(arm,size=0xc8) addr:0x021357e0
+__cxa_vec_new kind:label(arm) addr:0x021357e0
 func_021358a8 kind:function(arm,size=0x50) addr:0x021358a8
 func_021358f8 kind:function(arm,size=0x1c) addr:0x021358f8
 data_02135914 kind:data(any) addr:0x02135914
