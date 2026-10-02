@@ -17203,3 +17203,4 @@ data_020e738c kind:data(any) addr:0x020e738c
 _ZTV12Unk_020e73b0 kind:data(any) addr:0x020e73a8
 _ZTV12Unk_020e7440 kind:data(any) addr:0x020e7438
 data_020e74ec kind:data(any) addr:0x020e74ec
+data_020e74ec_end kind:data(any) addr:0x020e74ec

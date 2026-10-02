@@ -5370,7 +5370,6 @@ from:0x0211e528 kind:arm_call to:0x01ff8128 module:itcm
 from:0x0211e530 kind:arm_call to:0x01ffa3d4 module:itcm
 from:0x0211e534 kind:arm_call to:0x0211e630 module:autoload(2)
 from:0x0211e544 kind:load to:0x021fec00 module:autoload(3)
-from:0x0211e548 kind:load to:0x01ff8000 module:itcm
 from:0x0211e554 kind:load to:0x0211e558 module:autoload(2)
 from:0x0211e568 kind:arm_call to:0x021159a8 module:autoload(2)
 from:0x0211e59c kind:arm_call to:0x01ff80e0 module:itcm
