@@ -218,3 +218,15 @@ src/autoload_2/unk_02122114.c:
 src/autoload_2/unk_02122e24.c:
     complete
     .text       start:0x02122e24 end:0x02123444
+
+src/autoload_2/unk_02123444.c:
+    complete
+    .text       start:0x02123444 end:0x021239ec
+
+src/autoload_2/unk_02123e58.c:
+    complete
+    .text       start:0x02123e58 end:0x02124408
+
+src/autoload_2/unk_02124480.c:
+    complete
+    .text       start:0x02124480 end:0x02124830
