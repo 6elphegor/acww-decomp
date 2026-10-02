@@ -90,3 +90,7 @@ src/autoload_2/unk_02116224.c:
 src/autoload_2/unk_021163b0.c:
     complete
     .text       start:0x021163b0 end:0x02116c0c
+
+src/autoload_2/unk_02116c0c.c:
+    complete
+    .text       start:0x02116c0c end:0x02117e8c
