@@ -3024,7 +3024,7 @@ from:0x0226eb78 kind:load to:0x02270a3c module:overlay(68)
 from:0x0226eb7c kind:load to:0x02270c00 module:overlay(68)
 from:0x0226eb80 kind:load to:0x02270c10 module:overlay(68)
 from:0x0226eb88 kind:load to:0x021be7e0 module:autoload(3)
-from:0x0226eb8c kind:load to:0x021be810 module:autoload(3)
+from:0x0226eb8c kind:load to:0x021be7e0 add:0x30 module:autoload(3)
 from:0x0226eb9a kind:thumb_call to:0x0202d388 module:main
 from:0x0226ebb4 kind:thumb_call to:0x0209750c module:main
 from:0x0226ebb8 kind:thumb_call to:0x0209865c module:main

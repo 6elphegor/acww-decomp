@@ -13086,7 +13086,6 @@ data_020c7a68 kind:data(any) addr:0x020c7a68
 data_020c7a74 kind:data(any) addr:0x020c7a74
 data_020c7a84 kind:data(any) addr:0x020c7a84
 data_020c7a94 kind:data(any) addr:0x020c7a94
-data_020c7a98 kind:data(any) addr:0x020c7a98
 data_020c7aa4 kind:data(any) addr:0x020c7aa4
 data_020c7ab8 kind:data(any) addr:0x020c7ab8
 data_020c7acc kind:data(any) addr:0x020c7acc
@@ -15474,8 +15473,8 @@ data_020d88c0 kind:data(any) addr:0x020d88c0
 data_020d88dc kind:data(any) addr:0x020d88dc
 data_020d88f8 kind:data(any) addr:0x020d88f8
 data_020d8914 kind:data(any) addr:0x020d8914
-data_020d8938 kind:data(any) addr:0x020d8938
-data_020d89c8 kind:data(any) addr:0x020d89c8
+_ZTV12Unk_020d8938 kind:data(any) addr:0x020d8930
+_ZTV12Unk_020d89c8 kind:data(any) addr:0x020d89c0
 data_020d8a88 kind:data(any) addr:0x020d8a88
 data_020d8a9c kind:data(any) addr:0x020d8a9c
 data_020d8aa8 kind:data(any) addr:0x020d8aa8
