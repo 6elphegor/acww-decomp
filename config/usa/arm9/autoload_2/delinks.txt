@@ -3,6 +3,14 @@
     .data       start:0x02135920 end:0x0213c6c0 kind:data align:32
     .bss        start:0x0213c6c0 end:0x0213c6c0 kind:bss align:32
 
+src/autoload_2/unk_020e7500.cpp:
+    complete
+    .text       start:0x020e7500 end:0x020e8558
+
+src/autoload_2/unk_020e8558.cpp:
+    complete
+    .text       start:0x020e8558 end:0x020e8c48
+
 src/autoload_2/unk_0210f0c4.c:
     complete
     .text       start:0x0210f0c4 end:0x0210f154
