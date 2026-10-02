@@ -2094,19 +2094,21 @@ func_02130628 kind:function(arm,size=0xc4) addr:0x02130628
 func_021306ec kind:function(arm,size=0x1a8) addr:0x021306ec
 func_02130894 kind:function(arm,size=0xd0) addr:0x02130894
 func_02130964 kind:function(arm,size=0x64) addr:0x02130964
-func_021309c8 kind:function(arm,size=0x4c) addr:0x021309c8
-func_02130a14 kind:function(arm,size=0x4) addr:0x02130a14
+func_021309c8 kind:function(arm,size=0x50) addr:0x021309c8
 func_02130a18 kind:function(arm,size=0x70) addr:0x02130a18
 func_02130a88 kind:function(arm,size=0x7c) addr:0x02130a88
 func_02130b04 kind:function(arm,size=0xc) addr:0x02130b04
 func_02130b10 kind:function(arm,size=0x88) addr:0x02130b10
 func_02130b98 kind:function(arm,size=0x318) addr:0x02130b98
+_dadd kind:label(arm) addr:0x02130b98
 _d2f kind:function(arm,size=0x104) addr:0x02130eb0
 func_02130fb4 kind:function(arm,size=0x58) addr:0x02130fb4
 func_0213100c kind:function(arm,size=0x8c) addr:0x0213100c
+_ll_ufrom_d kind:label(arm) addr:0x0213100c
 func_02131098 kind:function(arm,size=0x3c) addr:0x02131098
 func_021310d4 kind:function(arm,size=0x40) addr:0x021310d4
 func_02131114 kind:function(arm,size=0x364) addr:0x02131114
+_dmul kind:label(arm) addr:0x02131114
 func_02131478 kind:function(arm,size=0x18c) addr:0x02131478
 _dsub kind:function(arm,size=0x3b4) addr:0x0213161c
 _fadd kind:function(arm,size=0x21c) addr:0x021319d0
@@ -2128,6 +2130,7 @@ func_02131ee4 kind:function(arm,size=0x90) addr:0x02131ee4
 func_02131f74 kind:function(arm,size=0x90) addr:0x02131f74
 func_02132004 kind:function(arm,size=0x88) addr:0x02132004
 func_0213208c kind:function(arm,size=0x88) addr:0x0213208c
+_deq kind:label(arm) addr:0x0213208c
 func_02132114 kind:function(arm,size=0x80) addr:0x02132114
 .L_02132128 kind:label(arm) addr:0x02132128 local
 func_02132194 kind:function(arm,size=0x4) addr:0x02132194
