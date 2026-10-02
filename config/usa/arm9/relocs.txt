@@ -23856,21 +23856,21 @@ from:0x020770ac kind:thumb_call to:0x0206f85c module:main
 from:0x020770b2 kind:thumb_call to:0x0206fca8 module:main
 from:0x020770d0 kind:thumb_call to:0x020a78ac module:main
 from:0x020770d6 kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x020770e4 kind:load to:0x020e055c module:main
+from:0x020770e4 kind:load to:0x020e0554 add:0x8 module:main
 from:0x020770f0 kind:thumb_call to:0x020a78ac module:main
-from:0x020770fc kind:load to:0x020e055c module:main
+from:0x020770fc kind:load to:0x020e0554 add:0x8 module:main
 from:0x02077104 kind:thumb_call to:0x020a791c module:main
-from:0x02077114 kind:load to:0x020e055c module:main
+from:0x02077114 kind:load to:0x020e0554 add:0x8 module:main
 from:0x02077128 kind:thumb_call to:0x0203ce60 module:main
 from:0x02077134 kind:load to:0x021edb68 module:autoload(3)
 from:0x02077148 kind:thumb_call to:0x020a7c58 module:main
 from:0x0207714e kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x0207715c kind:load to:0x020e0574 module:main
+from:0x0207715c kind:load to:0x020e056c add:0x8 module:main
 from:0x02077168 kind:thumb_call to:0x020a7c58 module:main
-from:0x02077174 kind:load to:0x020e0574 module:main
+from:0x02077174 kind:load to:0x020e056c add:0x8 module:main
 from:0x0207717c kind:thumb_call to:0x020a7ccc module:main
 from:0x02077186 kind:thumb_call to:0x020a7c3c module:main
-from:0x02077194 kind:load to:0x020e0574 module:main
+from:0x02077194 kind:load to:0x020e056c add:0x8 module:main
 from:0x020771b4 kind:thumb_call_arm to:0x02116048 module:autoload(2)
 from:0x02077210 kind:thumb_call to:0x02077198 module:main
 from:0x02077240 kind:thumb_call to:0x02077264 module:main
@@ -36504,12 +36504,12 @@ from:0x020ad720 kind:load to:0x021d7350 module:autoload(3)
 from:0x020ad72c kind:thumb_call to:0x020ad700 module:main
 from:0x020ad748 kind:thumb_call to:0x020a7c58 module:main
 from:0x020ad74e kind:thumb_call_arm to:0x020ec854 module:autoload(2)
-from:0x020ad75c kind:load to:0x020e2e54 module:main
+from:0x020ad75c kind:load to:0x020e2e4c add:0x8 module:main
 from:0x020ad768 kind:thumb_call to:0x020a7c58 module:main
-from:0x020ad774 kind:load to:0x020e2e54 module:main
+from:0x020ad774 kind:load to:0x020e2e4c add:0x8 module:main
 from:0x020ad77c kind:thumb_call to:0x020a7ccc module:main
 from:0x020ad786 kind:thumb_call to:0x020a7c3c module:main
-from:0x020ad794 kind:load to:0x020e2e54 module:main
+from:0x020ad794 kind:load to:0x020e2e4c add:0x8 module:main
 from:0x020ad7ae kind:thumb_call to:0x020af160 module:main
 from:0x020ad7c0 kind:thumb_call to:0x02061770 module:main
 from:0x020ad7c6 kind:thumb_call to:0x02061764 module:main
