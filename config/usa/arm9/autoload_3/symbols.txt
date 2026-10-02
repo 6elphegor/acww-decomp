@@ -1037,9 +1037,6 @@ data_021ce6e8 kind:bss addr:0x021ce6e8
 data_021ce708 kind:bss addr:0x021ce708
 data_021ce738 kind:bss addr:0x021ce738
 data_021ce770 kind:bss addr:0x021ce770
-data_021ce840 kind:bss addr:0x021ce840
-data_021cea14 kind:bss addr:0x021cea14
-data_021cea70 kind:bss addr:0x021cea70
 data_021cea88 kind:bss addr:0x021cea88
 data_021cea8c kind:bss addr:0x021cea8c
 data_021ceaac kind:bss addr:0x021ceaac
