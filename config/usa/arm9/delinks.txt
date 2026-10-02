@@ -348,20 +348,11 @@ src/main/unk_02034048.cpp:
     .init       start:0x020c3760 end:0x020c37d8
     .ctor       start:0x020d1e00 end:0x020d1e04
 
-src/main/unk_020341c0.cpp:
-    .text       start:0x02034438 end:0x02034ae8
-
-src/main/unk_02034ae8.cpp:
-    .text       start:0x02034ae8 end:0x020354d8
-
-src/main/unk_020354d8.cpp:
-    .text       start:0x020354d8 end:0x02035e2c
-
-src/main/unk_02035e2c.cpp:
-    .text       start:0x02035e2c end:0x020367e8
-
-src/main/unk_020367e8.cpp:
-    .text       start:0x020367e8 end:0x02036c58
+src/main/unk_02034438.cpp:
+    complete
+    .text       start:0x02034438 end:0x02036c58
+    .rodata     start:0x020c8ae4 end:0x020c8b9c
+    .data       start:0x020d8d88 end:0x020d8ebc
 
 src/main/unk_02036c58.cpp:
     complete
@@ -587,19 +578,10 @@ src/main/unk_0204c50c.cpp:
     .data       start:0x020da3cc end:0x020da41c
 
 src/main/unk_0204cc1c.cpp:
-    .text       start:0x0204cc1c end:0x0204cc48
-
-src/main/unk_0204cc48.cpp:
-    .text       start:0x0204cc48 end:0x0204d560
-
-src/main/unk_0204d560.cpp:
-    .text       start:0x0204d560 end:0x0204debc
-
-src/main/unk_0204debc.cpp:
-    .text       start:0x0204debc end:0x0204e858
-
-src/main/unk_0204e858.cpp:
-    .text       start:0x0204e858 end:0x0204eeb4
+    complete
+    .text       start:0x0204cc1c end:0x0204eeb4
+    .rodata     start:0x020ca2f4 end:0x020ca314
+    .data       start:0x020da41c end:0x020da4ac
 
 src/main/unk_0204eeb4.cpp:
     complete
@@ -1142,17 +1124,11 @@ src/main/unk_020850e0.cpp:
     .init       start:0x020c4d64 end:0x020c4e70
     .ctor       start:0x020d1ec0 end:0x020d1ec4
 
-src/main/unk_02085810.cpp:
-    .text       start:0x02085940 end:0x02086204
-
-src/main/unk_02086204.cpp:
-    .text       start:0x02086204 end:0x02086b7c
-
-src/main/unk_02086b7c.cpp:
-    .text       start:0x02086b7c end:0x020874d8
-
-src/main/unk_020874d8.cpp:
-    .text       start:0x020874d8 end:0x02087e0c
+src/main/unk_02085940.cpp:
+    complete
+    .text       start:0x02085940 end:0x02087e0c
+    .rodata     start:0x020cf268 end:0x020cf558
+    .data       start:0x020e0c44 end:0x020e0cec
 
 src/main/unk_02087e0c.cpp:
     complete
