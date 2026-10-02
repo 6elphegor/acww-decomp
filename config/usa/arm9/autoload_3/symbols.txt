@@ -1153,10 +1153,6 @@ data_021ed410 kind:bss addr:0x021ed410
 data_021ed448 kind:bss addr:0x021ed448
 data_021ed51c kind:bss addr:0x021ed51c
 data_021ed624 kind:bss addr:0x021ed624
-data_021ed62c kind:bss addr:0x021ed62c
-data_021ed6a4 kind:bss addr:0x021ed6a4
-data_021ed724 kind:bss addr:0x021ed724
-data_021ed7a4 kind:bss addr:0x021ed7a4
 data_021ed824 kind:bss addr:0x021ed824
 data_021eda50 kind:bss addr:0x021eda50
 data_021eda54 kind:bss addr:0x021eda54

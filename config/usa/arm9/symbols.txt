@@ -16324,8 +16324,8 @@ data_020e2770 kind:data(any) addr:0x020e2770
 data_020e277c kind:data(any) addr:0x020e277c
 data_020e2790 kind:data(any) addr:0x020e2790
 data_020e27a4 kind:data(any) addr:0x020e27a4
-data_020e27d4 kind:data(any) addr:0x020e27d4
-data_020e2824 kind:data(any) addr:0x020e2824
+_ZTV12Unk_020e27d4 kind:data(any) addr:0x020e27cc
+_ZTV12Unk_020e2824 kind:data(any) addr:0x020e281c
 data_020e289c kind:data(any) addr:0x020e289c
 data_020e28a4 kind:data(any) addr:0x020e28a4
 data_020e28e4 kind:data(any) addr:0x020e28e4
