@@ -355,6 +355,10 @@ src/autoload_2/unk_02110c98.c:
     complete
     .text       start:0x02110c98 end:0x02111404
 
+src/autoload_2/unk_02111404.c:
+    complete
+    .text       start:0x02111404 end:0x021115f4
+
 src/autoload_2/unk_021115f4.c:
     complete
     .text       start:0x021115f4 end:0x02111864
