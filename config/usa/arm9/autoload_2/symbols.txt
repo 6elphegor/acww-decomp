@@ -2135,6 +2135,7 @@ func_02132114 kind:function(arm,size=0x80) addr:0x02132114
 .L_02132128 kind:label(arm) addr:0x02132128 local
 func_02132194 kind:function(arm,size=0x4) addr:0x02132194
 func_02132198 kind:function(arm,size=0x88) addr:0x02132198
+_dls kind:label(arm) addr:0x02132198
 func_02132220 kind:function(arm,size=0x88) addr:0x02132220
 func_021322a8 kind:function(arm,size=0x94) addr:0x021322a8
 .L_021322bc kind:label(arm) addr:0x021322bc local
