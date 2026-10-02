@@ -349,8 +349,13 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
                                                     script defines"
 
 `aliases.txt`: `<module> <existing name> <second name>` adds a label with `tools/pipeline/alias.py`, e.g.
-`autoload_2 _ll_sdiv _ll_udiv` (0x02132ef8 is the unsigned 64-bit division; linked overlay units call it
-`_ll_sdiv`, compiled code of a `u64 / x` calls `_ll_udiv`).
+`autoload_2 func_02132198 _dls` (a compiler helper the symbol table named only by address).
+
+Never alias a signed and an unsigned helper onto one address: the code then links whatever signedness the source
+uses and hides a wrong source. The 64-bit runtime helpers are one routine with four entry points: 0x02132ef8
+`_ll_udiv`, 0x02132f04 `_ull_mod`, 0x02132f40 `_ll_mod`, 0x02132f50 `_ll_sdiv` (mwcc 1.2 emits `_ll_sdiv` for
+`s64 / s64`, `_ll_udiv` for `u64 / u64` and mixed operands, `_ll_mod` for `s64 % s64`, `_ull_mod` for `u64 % u64`).
+A 64-bit division of the wrong signedness now links to a different address and shows in the link diff.
 
 ### Vtables
 
