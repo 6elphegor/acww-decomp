@@ -163,6 +163,26 @@ src/autoload_2/unk_02105d50.c:
     complete
     .text       start:0x02105d50 end:0x02106020
 
+src/autoload_2/unk_02107994.c:
+    complete
+    .text       start:0x02107994 end:0x02107ba0
+
+src/autoload_2/unk_02107cac.c:
+    complete
+    .text       start:0x02107cac end:0x0210834c
+
+src/autoload_2/unk_02108584.c:
+    complete
+    .text       start:0x02108584 end:0x02108aac
+
+src/autoload_2/unk_02108b34.c:
+    complete
+    .text       start:0x02108b34 end:0x02108c2c
+
+src/autoload_2/unk_02108d44.c:
+    complete
+    .text       start:0x02108d44 end:0x021090c0
+
 src/autoload_2/unk_0210f0c4.c:
     complete
     .text       start:0x0210f0c4 end:0x0210f154
