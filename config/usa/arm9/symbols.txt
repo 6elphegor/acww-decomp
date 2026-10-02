@@ -13292,9 +13292,6 @@ data_020c8cd4 kind:data(any) addr:0x020c8cd4
 data_020c8ce4 kind:data(any) addr:0x020c8ce4
 data_020c8ce8 kind:data(any) addr:0x020c8ce8
 data_020c8d0c kind:data(any) addr:0x020c8d0c
-data_020c8d0e kind:data(any) addr:0x020c8d0e
-data_020c8d10 kind:data(any) addr:0x020c8d10
-data_020c8d14 kind:data(any) addr:0x020c8d14
 data_020c8d3c kind:data(any) addr:0x020c8d3c
 data_020c8d9c kind:data(any) addr:0x020c8d9c
 data_020c9030 kind:data(any) addr:0x020c9030

@@ -253,7 +253,7 @@ src/main/unk_0203a0cc.cpp:
     complete
     .text       start:0x0203a0cc end:0x0203c23c
     .init       start:0x020c3878 end:0x020c3b8c
-    .rodata     start:0x020c8d3c end:0x020c9030
+    .rodata     start:0x020c8ce4 end:0x020c9030
     .ctor       start:0x020d1e0c end:0x020d1e10
     .data       start:0x020d9250 end:0x020d9400
 
@@ -874,7 +874,7 @@ src/main/unk_02089fbc.cpp:
     complete
     .text       start:0x02089fbc end:0x0208d154
     .init       start:0x020c4e74 end:0x020c4e9c
-    .rodata     start:0x020cf5d8 end:0x020cf63c
+    .rodata     start:0x020cf5d8 end:0x020cf650
     .ctor       start:0x020d1ec8 end:0x020d1ecc
     .data       start:0x020e0dc8 end:0x020e0fc8
 

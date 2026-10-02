@@ -329,7 +329,7 @@ extern s32 data_020d9250;
 extern s16 data_02135f44[];
 extern Unk_0203a9b8_Vec data_021f4880;
 extern Unk_0203a9b8_Cfg *data_021ef2f0;
-extern Unk_0203a9b8_Row data_020c8ce8[];
+extern const Unk_0203a9b8_Row data_020c8ce8[3];
 extern s32 data_020c8cb8;
 extern Unk_021c47c4 *data_021c47c4;
 extern u8 data_021ef414[];
@@ -1803,6 +1803,25 @@ void *data_020d9398[2] = { (void *)func_ov004_0223fb34, 0 };
 void *data_020d93a0[2] = { (void *)func_ov004_0223fd30, 0 };
 void *data_020d93a8[2] = { (void *)func_ov004_0223f92c, 0 };
 
+// .rodata 0x020c8ce4-0x020c8d3c: the three objects before data_020c8d3c continue this file's ascending size run
+// (4, 0x24, 0x30, 0x60, 0x294). data_020c8ce4 is read by the unit at 0x02038474 (0x020388f8), data_020c8ce8 by this
+// file and ov004, data_020c8d0c (with the interior labels 0x020c8d0e/d10/d14) by ov068.
+extern const u8 data_020c8ce4[4];
+const u8 data_020c8ce4[4] = { 0, 0, 0, 0 };
+const Unk_0203a9b8_Row data_020c8ce8[3] = { { { 1, 2, 3 } }, { { 4, 5, 6 } }, { { 7, 8, 9 } } };
+struct Unk_020c8d0c_Row {
+    s16 a;
+    s16 b;
+    s32 c;
+    s32 d;
+};
+extern const Unk_020c8d0c_Row data_020c8d0c[4];
+const Unk_020c8d0c_Row data_020c8d0c[4] = {
+    { 0x0, 0x14, 0x0, 0x0 },
+    { 0xa, 0x1, 0x2000, 0x28 },
+    { 0xa, 0x1, 0x2000, 0x64 },
+    { 0xa, 0x1, 0x2000, 0x96 }
+};
 const u32 data_020c8d3c[6][4] = {
     { 0x0, 0x1e000, 0x5000, 0x5000 },
     { 0x0, 0xa000, 0x3000, 0x3000 },

@@ -24,6 +24,9 @@ data_020c7c65 addr:0x020c7c65 base:data_020c7c4c
 data_020c7c66 addr:0x020c7c66 base:data_020c7c4c
 data_020c7c67 addr:0x020c7c67 base:data_020c7c4c
 data_020c7c68 addr:0x020c7c68 base:data_020c7c4c
+data_020c8d0e addr:0x020c8d0e base:data_020c8d0c
+data_020c8d10 addr:0x020c8d10 base:data_020c8d0c
+data_020c8d14 addr:0x020c8d14 base:data_020c8d0c
 data_020c8d9e addr:0x020c8d9e base:data_020c8d9c
 data_020c8da0 addr:0x020c8da0 base:data_020c8d9c
 data_020c8da4 addr:0x020c8da4 base:data_020c8d9c

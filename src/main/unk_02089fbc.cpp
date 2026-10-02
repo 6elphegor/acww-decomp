@@ -2733,6 +2733,10 @@ const u8 data_020cf600[18] = {0x5b, 0x3c, 0x49, 0x2b, 0x5b, 0x2b, 0x6c, 0x2b, 0x
                               0x3c, 0x6c, 0x3c, 0x49, 0x4c, 0x5b, 0x4c, 0x6c, 0x4c};
 const s8 data_020cf614[18] = {0, 0, -1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
 const u8 data_020cf628[18] = {1, 1, 0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 2, 2};
+// 0x020cf63c: last .rodata object of this file (0x14 bytes, continues the ascending size run); read by the unit at
+// 0x0208d154 (0x0208d324)
+extern const s32 data_020cf63c[5];
+const s32 data_020cf63c[5] = {10, 11, 12, 13, 0x28};
 
 struct Unk_020e0e74_Rec {
     Unk_020e0f80 *(*unk_00)();
