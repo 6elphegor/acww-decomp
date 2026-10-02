@@ -814,3 +814,87 @@ src/autoload_2/unk_0212f300.c:
 src/autoload_2/unk_0212fa54.c:
     complete
     .text       start:0x0212fa54 end:0x02130b98
+
+src/autoload_2/unk_02130b98.c:
+    complete
+    .text       start:0x02130b98 end:0x02130eb0
+
+src/autoload_2/unk_02131098.c:
+    complete
+    .text       start:0x02131098 end:0x02131114
+
+src/autoload_2/unk_02131114.c:
+    complete
+    .text       start:0x02131114 end:0x02131478
+
+src/autoload_2/unk_02131478.c:
+    complete
+    .text       start:0x02131478 end:0x02131604
+
+src/autoload_2/unk_02131604.c:
+    complete
+    .text       start:0x02131604 end:0x021319d0
+
+src/autoload_2/unk_021319d0.c:
+    complete
+    .text       start:0x021319d0 end:0x02131bec
+
+src/autoload_2/unk_02131cf4.c:
+    complete
+    .text       start:0x02131cf4 end:0x02131d2c
+
+src/autoload_2/unk_02131da4.c:
+    complete
+    .text       start:0x02131da4 end:0x02131de8
+
+src/autoload_2/unk_02131e60.c:
+    complete
+    .text       start:0x02131e60 end:0x02131e9c
+
+src/autoload_2/unk_02132114.c:
+    complete
+    .text       start:0x02132114 end:0x02132198
+
+src/autoload_2/unk_021322a8.c:
+    complete
+    .text       start:0x021322a8 end:0x02132340
+
+src/autoload_2/unk_02132450.c:
+    complete
+    .text       start:0x02132450 end:0x021324e8
+
+src/autoload_2/unk_02132588.c:
+    complete
+    .text       start:0x02132588 end:0x0213294c
+
+src/autoload_2/unk_0213294c.c:
+    complete
+    .text       start:0x0213294c end:0x021329d0
+
+src/autoload_2/unk_02132a04.c:
+    complete
+    .text       start:0x02132a04 end:0x02132a94
+
+src/autoload_2/unk_02132a94.c:
+    complete
+    .text       start:0x02132a94 end:0x02132c74
+
+src/autoload_2/unk_02132c74.c:
+    complete
+    .text       start:0x02132c74 end:0x02132ef8
+
+src/autoload_2/unk_02132ef8.c:
+    complete
+    .text       start:0x02132ef8 end:0x02133100
+
+src/autoload_2/unk_02133150.c:
+    complete
+    .text       start:0x02133150 end:0x0213335c
+
+src/autoload_2/unk_0213335c.c:
+    complete
+    .text       start:0x0213335c end:0x02133540
+
+src/autoload_2/unk_02133570.c:
+    complete
+    .text       start:0x02133570 end:0x02133acc
