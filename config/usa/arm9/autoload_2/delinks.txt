@@ -11,6 +11,30 @@ src/autoload_2/unk_020e8558.cpp:
     complete
     .text       start:0x020e8558 end:0x020e8c48
 
+src/autoload_2/unk_02100234.c:
+    complete
+    .text       start:0x02100234 end:0x02100708
+
+src/autoload_2/unk_02100890.c:
+    complete
+    .text       start:0x02100890 end:0x0210092c
+
+src/autoload_2/unk_02100a24.c:
+    complete
+    .text       start:0x02100a24 end:0x02100bb0
+
+src/autoload_2/unk_02100d44.c:
+    complete
+    .text       start:0x02100d44 end:0x02101008
+
+src/autoload_2/unk_02101048.c:
+    complete
+    .text       start:0x02101048 end:0x02101508
+
+src/autoload_2/unk_0210169c.c:
+    complete
+    .text       start:0x0210169c end:0x02101818
+
 src/autoload_2/unk_0210f0c4.c:
     complete
     .text       start:0x0210f0c4 end:0x0210f154
