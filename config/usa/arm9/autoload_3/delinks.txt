@@ -198,7 +198,7 @@ src/main/unk_020594dc.bss.cpp:
 
 src/main/unk_0205b69c.bss.cpp:
     complete
-    .bss        start:0x021c6194 end:0x021c6198
+    .bss        start:0x021c6190 end:0x021c6198
 
 src/main/unk_0205b7b0.bss.cpp:
     complete

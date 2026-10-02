@@ -256,9 +256,8 @@ public:
 
 // Data
 extern const u8 data_020c8ce4;  // first .rodata object of the next unit
-u8 data_021c302c[0x29];
+extern u8 data_021c302c[0x29];
 extern const u32 data_020c8cd4[4];
-const u32 data_020c8cd4[4] = {7, 7, 8, 9};
 
 
 extern "C" {
@@ -411,9 +410,23 @@ void Unk_020d9194::vfunc_0c() {
     }
 }
 
+// Data creation order (it sets the layout: mwcc heapsorts the reversed creation list by size). With the record
+// data_020d90d4 in the unit, the original order needs the definitions in exactly this sequence after vfunc_0c, plus one
+// unreferenced 8-byte object (U037_order_fill0: no symbols.txt name, dead-stripped at link) between them.
+const u32 data_020c8cd4[4] = {7, 7, 8, 9};
+u8 data_021c302c[0x29];
+u32 U037_order_fill0[2];
 extern const u32 data_020c8cc4[4];
 const u32 data_020c8cc4[4] = {10, 11, 12, 13};
 s32 data_021c3000;
+// 0x020d90d4: scene registration record of func_020385d0 (referenced only from the table word 0x020e2158)
+extern "C" Unk_020d91b0 *func_020385d0();
+struct Unk_020d90d4_Rec {
+    Unk_020d91b0 *(*unk_00)();
+    s16 unk_04;
+    s16 unk_06;
+};
+Unk_020d90d4_Rec data_020d90d4 = {func_020385d0, 0xcb, 0x8d};
 Unk_020d9114 *data_021c3008;
 
 void Unk_020d9194::func_02039630() {

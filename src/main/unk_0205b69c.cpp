@@ -11,9 +11,8 @@ struct Unk_0205b6e4 {
     Unk_0205b6e4 *unk_18;
 };
 
-extern "C" {
-extern Unk_0205b6e4 *data_021c6190;
-}
+// 0x021c6190: list head; this file's first .bss object (all five main users are functions of this file, plus itcm 0x01ffcc5c)
+Unk_0205b6e4 *data_021c6190;
 
 Unk_0205b6e4 *data_021c6194;
 

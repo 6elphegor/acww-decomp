@@ -388,6 +388,10 @@ extern "C" {
 extern Unk_020e6924 *data_021f4578;
 }
 
+// 0x020d1a28: first .rodata object of this file; read by the previous unit (0x020be9e4, src/main/unk_020b8d9c.cpp)
+extern const u32 data_020d1a28;
+const u32 data_020d1a28 = 0x20000000;
+
 extern const u8 data_020d1a2c[0x260];
 
 const u8 data_020d1a2c[0x260] = {

@@ -122,23 +122,23 @@ char *func_0205c60c(u32);
 void func_0205c2dc(u8 *, s32, s32, s32);
 }
 
-extern const u8 data_020cab90[4];
-const u8 data_020cab90[4] = {12, 14, 0, 0};
-
-void *data_021c61b0;
-void *data_021c6198;
-void *data_021c61ac;
-u8 data_020dc108[4] = {1, 1, 2, 1};
-
-extern const u8 data_020cab8c[4];
-const u8 data_020cab8c[4] = {9, 11, 0, 0};
-
 extern const u8 data_020cab88[4];
 const u8 data_020cab88[4] = {17, 17, 0, 0};
-
+void *data_021c61a8;
+extern const u8 data_020cab94[4];
+const u8 data_020cab94[4] = {9, 11, 12, 14};
+void *data_021c61a4;
+extern const u8 data_020cab90[4];
+const u8 data_020cab90[4] = {12, 14, 0, 0};
+extern const u16 data_020cab84[2];
+const u16 data_020cab84[2] = {0x800, 0};
+extern const u16 data_020cab80[2];  // 0x020cab80, 0x020cab84: start of this file's .rodata; read by the unit at 0x020594dc (0x0205a900, 0x0205a90c)
+const u16 data_020cab80[2] = {0x400, 0};
 void *data_021c621c;
 void *data_021c6218;
 void *data_021c6214;
+void *data_021c6210;
+void *data_021c620c;
 extern const u16 data_020caf64[0x144];
 const u16 data_020caf64[0x144] = {
     367, 367, 367, 367, 367, 187, 188, 189, 189, 190, 190, 191, 367, 192, 191, 367,
@@ -163,12 +163,11 @@ const u16 data_020caf64[0x144] = {
     364, 367, 365, 366, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367,
     367, 367, 367, 367,
 };
-
-void *data_021c620c;
-void *data_021c6208;
 void *data_021c6204;
 void *data_021c6200;
 void *data_021c61fc;
+void *data_021c61f8;
+void *data_021c61f4;
 extern const u16 data_020cacdc[0x144];
 const u16 data_020cacdc[0x144] = {
     367, 367, 367, 367, 367, 1, 2, 3, 3, 4, 4, 5, 6, 7, 5, 6,
@@ -193,25 +192,23 @@ const u16 data_020cacdc[0x144] = {
     183, 367, 184, 185, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367, 367,
     367, 367, 367, 367,
 };
-
-void *data_021c61f4;
-void *data_021c61f0;
 void *data_021c61ec;
 void *data_021c61e8;
-char data_021c622c[0x14];
+void *data_021c61e4;
 void *data_021c61e0;
-u8 *data_020dc10c[4] = {(u8 *)data_020cab90, (u8 *)data_020cab8c, (u8 *)data_020cab94, (u8 *)data_020cab88};
-
+char data_021c622c[0x14];
 void *data_021c61d8;
-void *data_021c61d4;
+u8 *data_020dc10c[4] = {(u8 *)data_020cab90, (u8 *)data_020cab8c, (u8 *)data_020cab94, (u8 *)data_020cab88};
 void *data_021c61d0;
 void *data_021c61cc;
 void *data_021c61c8;
-void *data_021c6210;
+void *data_021c61c4;
 void *data_021c61c0;
-void *data_021c61bc;
-void *data_021c61f8;
+void *data_021c6208;
+void *data_021c61b8;
 void *data_021c61b4;
+void *data_021c61f0;
+void *data_021c61ac;
 extern const u8 data_020cab98[0x144];
 const u8 data_020cab98[0x144] = {
     0, 0, 0, 2, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -236,16 +233,14 @@ const u8 data_020cab98[0x144] = {
     0, 3, 3, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3,
 };
-
-void *data_021c61dc;
-void *data_021c61a8;
-void *data_021c61a4;
-void *data_021c61c4;
+void *data_021c61d4;
+void *data_021c61a0;
+void *data_021c619c;
+void *data_021c61bc;
 Unk_0205c3b0 data_021c6240;
-void *data_021c61e4;
-extern const u8 data_020cab94[4];
-const u8 data_020cab94[4] = {9, 11, 12, 14};
-
+void *data_021c61dc;
+extern const u8 data_020cab8c[4];
+const u8 data_020cab8c[4] = {9, 11, 0, 0};
 u16 data_020dc11c[0x144] = {
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -269,10 +264,9 @@ u16 data_020dc11c[0x144] = {
     4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 3,
 };
-
-void *data_021c61b8;
-void *data_021c61a0;
-void *data_021c619c;
+void *data_021c61b0;
+void *data_021c6198;
+u8 data_020dc108[4] = {1, 1, 2, 1};
 
 enum Unk_0205b7cc_Zero { UNK_0205B7CC_ZERO = 0 };
 

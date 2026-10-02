@@ -141,3 +141,6 @@ extern const u8 data_020cf668[0x14] = {1,1,0,0, 0,0,0,1, 0,0,0,0, 0,1,0,0, 1,0,0
 extern const u8 data_020cf654[0x14] = {1,1,1,1, 1,1,0,1, 1,1,1,1, 0,0,0,0, 0,0,0,0};
 
 extern const s32 data_020cf67c[0x13] = {1,1,3,5,7,9,11,12,14,16,18,20,22,23,25,27,29,31,33};
+
+// 0x020cf650: first .rodata object of this file (bytes 7b 6f 00 00); read by the unit at 0x0208d154 (0x0208d2d0)
+extern const u8 data_020cf650[4] = {0x7b, 0x6f, 0x00, 0x00};
