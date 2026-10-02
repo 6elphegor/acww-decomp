@@ -51,6 +51,10 @@ src/autoload_2/unk_020ef150.cpp:
     complete
     .text       start:0x020ef150 end:0x020f0dec
 
+src/autoload_2/unk_020f0dec.cpp:
+    complete
+    .text       start:0x020f0dec end:0x020f0fb4
+
 src/autoload_2/unk_020f0fb4.cpp:
     complete
     .text       start:0x020f0fb4 end:0x020f24c0
