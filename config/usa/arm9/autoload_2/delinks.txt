@@ -74,3 +74,19 @@ src/autoload_2/unk_02115664.c:
 src/autoload_2/unk_021157c0.c:
     complete
     .text       start:0x021157c0 end:0x021157f4
+
+src/autoload_2/unk_021158e4.c:
+    complete
+    .text       start:0x021158e4 end:0x02115ad4
+
+src/autoload_2/unk_02115bac.c:
+    complete
+    .text       start:0x02115bac end:0x02115e30
+
+src/autoload_2/unk_02116224.c:
+    complete
+    .text       start:0x02116224 end:0x021162b0
+
+src/autoload_2/unk_021163b0.c:
+    complete
+    .text       start:0x021163b0 end:0x02116c0c
