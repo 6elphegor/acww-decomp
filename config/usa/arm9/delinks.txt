@@ -590,8 +590,11 @@ src/main/unk_02060034.cpp:
     .text       start:0x02060034 end:0x02060b7c
     .rodata     start:0x020cb550 end:0x020cb5c4
 
-src/main/unk_02060b30.cpp:
+src/main/unk_02060b7c.cpp:
+    complete
     .text       start:0x02060b7c end:0x02060b9c
+    .init       start:0x020c4648 end:0x020c4670
+    .ctor       start:0x020d1e84 end:0x020d1e88
 
 src/main/unk_02060b9c.cpp:
     complete
@@ -1200,6 +1203,7 @@ src/main/unk_020a65fc.cpp:
     .rodata     start:0x020d07b0 end:0x020d07b8
 
 src/main/unk_020a6914.cpp:
+    complete
     .text       start:0x020a6914 end:0x020a6974
 
 src/main/unk_020a6974.cpp:
