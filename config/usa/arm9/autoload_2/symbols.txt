@@ -2037,8 +2037,7 @@ func_0212899c kind:function(arm,size=0x18) addr:0x0212899c
 func_021289b4 kind:function(arm,size=0x4c) addr:0x021289b4
 func_02128a00 kind:function(arm,size=0x20) addr:0x02128a00
 func_02128a20 kind:function(arm,size=0xac) addr:0x02128a20
-func_02128acc kind:function(arm,size=0x188) addr:0x02128acc
-func_02128c54 kind:function(arm,size=0xc) addr:0x02128c54
+func_02128acc kind:function(arm,size=0x194) addr:0x02128acc
 func_02128c60 kind:function(arm,size=0x10) addr:0x02128c60
 func_02128c70 kind:function(arm,size=0x34) addr:0x02128c70
 func_02128ca4 kind:function(arm,size=0x30) addr:0x02128ca4
@@ -2110,6 +2109,7 @@ _ll_ufrom_d kind:label(arm) addr:0x0213100c
 func_02131098 kind:function(arm,size=0x3c) addr:0x02131098
 _dfltu kind:label(arm) addr:0x02131098
 func_021310d4 kind:function(arm,size=0x40) addr:0x021310d4
+_dflt kind:label(arm) addr:0x021310d4
 func_02131114 kind:function(arm,size=0x364) addr:0x02131114
 _dmul kind:label(arm) addr:0x02131114
 func_02131478 kind:function(arm,size=0x18c) addr:0x02131478
@@ -2152,6 +2152,7 @@ func_021324e8 kind:function(arm,size=0x50) addr:0x021324e8
 func_02132538 kind:function(arm,size=0x50) addr:0x02132538
 _fdiv kind:function(arm,size=0x3b8) addr:0x02132594
 func_0213294c kind:function(arm,size=0x84) addr:0x0213294c
+_f2d kind:label(arm) addr:0x0213294c
 _ffix kind:function(arm,size=0x34) addr:0x021329d0
 func_02132a04 kind:function(arm,size=0x48) addr:0x02132a04
 _fflt kind:function(arm,size=0x48) addr:0x02132a4c
@@ -2170,6 +2171,7 @@ _u32_div_f kind:function(arm,size=0x1e4) addr:0x0213335c
 .L_02133364 kind:label(arm) addr:0x02133364
 func_02133540 kind:function(arm,size=0x30) addr:0x02133540
 func_02133588 kind:function(arm,size=0x544) addr:0x02133588
+_ddiv kind:label(arm) addr:0x02133588
 func_02133acc kind:function(arm,size=0x4) addr:0x02133acc
 func_02133ad0 kind:function(arm,size=0x8) addr:0x02133ad0
 func_02133ad8 kind:function(arm,size=0x8) addr:0x02133ad8

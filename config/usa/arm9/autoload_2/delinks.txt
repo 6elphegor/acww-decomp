@@ -19,6 +19,10 @@ src/autoload_2/unk_020e91cc.cpp:
     complete
     .text       start:0x020e91cc end:0x020ea0b4
 
+src/autoload_2/unk_020ea0b4.cpp:
+    complete
+    .text       start:0x020ea0b4 end:0x020ea34c
+
 src/autoload_2/unk_020ea34c.cpp:
     complete
     .text       start:0x020ea34c end:0x020ea960
@@ -35,13 +39,25 @@ src/autoload_2/unk_020ed4bc.cpp:
     complete
     .text       start:0x020ed4bc end:0x020ed5c0
 
+src/autoload_2/unk_020ed5c0.cpp:
+    complete
+    .text       start:0x020ed5c0 end:0x020ed64c
+
 src/autoload_2/unk_020ed64c.cpp:
     complete
     .text       start:0x020ed64c end:0x020ed81c
 
+src/autoload_2/unk_020ed81c.cpp:
+    complete
+    .text       start:0x020ed81c end:0x020ed8cc
+
 src/autoload_2/unk_020ed8cc.cpp:
     complete
     .text       start:0x020ed8cc end:0x020edd58
+
+src/autoload_2/unk_020edd58.cpp:
+    complete
+    .text       start:0x020edd58 end:0x020ede18
 
 src/autoload_2/unk_020ede18.cpp:
     complete
@@ -79,6 +95,10 @@ src/autoload_2/unk_020f7a5c.cpp:
     complete
     .text       start:0x020f7a5c end:0x020f8604
 
+src/autoload_2/unk_020f8604.cpp:
+    complete
+    .text       start:0x020f8604 end:0x020f86c0
+
 src/autoload_2/unk_020f86c0.cpp:
     complete
     .text       start:0x020f86c0 end:0x020f92d4
@@ -87,9 +107,17 @@ src/autoload_2/unk_020f92d4.cpp:
     complete
     .text       start:0x020f92d4 end:0x020fa0f4
 
+src/autoload_2/unk_020fa0f4.cpp:
+    complete
+    .text       start:0x020fa0f4 end:0x020fa398
+
 src/autoload_2/unk_020fa398.cpp:
     complete
     .text       start:0x020fa398 end:0x020fa39c
+
+src/autoload_2/unk_020fa39c.cpp:
+    complete
+    .text       start:0x020fa39c end:0x020fa488
 
 src/autoload_2/unk_020fa488.cpp:
     complete
@@ -743,9 +771,21 @@ src/autoload_2/unk_02128030.c:
     complete
     .text       start:0x02128030 end:0x02128a20
 
+src/autoload_2/unk_02128a20.c:
+    complete
+    .text       start:0x02128a20 end:0x02128acc
+
+src/autoload_2/unk_02128acc.c:
+    complete
+    .text       start:0x02128acc end:0x02128c60
+
 src/autoload_2/unk_02128c60.c:
     complete
     .text       start:0x02128c60 end:0x0212a060
+
+src/autoload_2/unk_0212a060.c:
+    complete
+    .text       start:0x0212a060 end:0x0212a120
 
 src/autoload_2/unk_0212a120.c:
     complete
@@ -766,6 +806,10 @@ src/autoload_2/unk_0212dc60.c:
 src/autoload_2/unk_0212ef04.c:
     complete
     .text       start:0x0212ef04 end:0x0212f300
+
+src/autoload_2/unk_0212f300.c:
+    complete
+    .text       start:0x0212f300 end:0x0212fa54
 
 src/autoload_2/unk_0212fa54.c:
     complete
