@@ -8955,10 +8955,13 @@ _ZN12Unk_020940a013func_02094218Ev kind:function(thumb,size=0x1e) addr:0x0209421
 _ZN12Unk_020940a013func_02094238EPS_ kind:function(thumb,size=0x2c) addr:0x02094238
 _ZN12Unk_020940a013func_02094264EPS_ kind:function(thumb,size=0x30) addr:0x02094264
 _ZN12Unk_020940a013func_02094294Ev kind:function(thumb,size=0x22) addr:0x02094294
+_ZN16Unk_0207f804_Str13func_02094294Ev kind:label(thumb) addr:0x02094294
 _ZN12Unk_020940a013func_020942b8EPv kind:function(thumb,size=0x10) addr:0x020942b8
 _ZN12Unk_020940a0C1Ev kind:function(thumb,size=0x10) addr:0x020942c8
+_ZN16Unk_0207f804_StrD1Ev kind:label(thumb) addr:0x020942c8
 _ZN12Unk_020940a0C1ERKS_ kind:function(thumb,size=0x1e) addr:0x020942d8
 _ZN12Unk_020940a0C1EPv kind:function(thumb,size=0x10) addr:0x020942f8
+_ZN16Unk_0207f804_StrC1Ev kind:label(thumb) addr:0x020942f8
 func_02094308 kind:function(thumb,size=0x34) addr:0x02094308
 func_0209433c kind:function(thumb,size=0x4) addr:0x0209433c
 func_02094340 kind:function(thumb,size=0x8) addr:0x02094340
