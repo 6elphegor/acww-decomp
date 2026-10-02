@@ -1,5 +1,18 @@
 # Names that the linker script defines, see tools/lcf_symbols.py and tools/pipeline/linking.md ("Names the linker
 # script defines"). <name> addr:<address> base:<object of this module's symbols.txt, or <MODULE>_<SECTION>_START>
+data_021bdfbc addr:0x021bdfbc base:data_021bdfb0
+data_021bdfec addr:0x021bdfec base:data_021bdfe0
+data_021be02c addr:0x021be02c base:data_021be028
+data_021be030 addr:0x021be030 base:data_021be028
+data_021be038 addr:0x021be038 base:data_021be028
+data_021be040 addr:0x021be040 base:data_021be028
+data_021be290 addr:0x021be290 base:data_021be210
+data_021be310 addr:0x021be310 base:data_021be210
+data_021be390 addr:0x021be390 base:data_021be210
+data_021be450 addr:0x021be450 base:data_021be3d0
+data_021be4d0 addr:0x021be4d0 base:data_021be3d0
+data_021be550 addr:0x021be550 base:data_021be3d0
+data_021be5d0 addr:0x021be5d0 base:data_021be3d0
 data_021be810 addr:0x021be810 base:data_021be7e0
 data_021be8d8 addr:0x021be8d8 base:data_021be8c0
 data_021be8f0 addr:0x021be8f0 base:data_021be8c0
