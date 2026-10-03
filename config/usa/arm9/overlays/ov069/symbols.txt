@@ -245,6 +245,7 @@ data_ov069_02260ca0 kind:data(any) addr:0x02260ca0
 data_ov069_02260ca8 kind:data(any) addr:0x02260ca8
 data_ov069_02260cb0 kind:data(any) addr:0x02260cb0
 data_ov069_02260cb8 kind:data(any) addr:0x02260cb8
+data_ov069_02260cc0 kind:bss addr:0x02260cc0
 data_ov069_02260cc4 kind:bss addr:0x02260cc4
 data_ov069_02260cdc kind:bss addr:0x02260cdc
 data_ov069_02260cf4 kind:bss addr:0x02260cf4

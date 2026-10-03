@@ -3,7 +3,6 @@ __sinit_ov005_0225b760 kind:function(thumb,size=0x14) addr:0x0225b760
 data_ov005_0225b780 kind:data(any) addr:0x0225b780
 data_ov005_0225b788 kind:data(any) addr:0x0225b788
 data_ov005_0225b790 kind:data(any) addr:0x0225b790
-data_ov005_0225b79c kind:data(any) addr:0x0225b79c ambiguous
 data_ov005_0225b7a0 kind:data(any) addr:0x0225b7a0
 data_ov005_0225b7a8 kind:data(any) addr:0x0225b7a8 ambiguous
 data_ov005_0225b7b4 kind:data(any) addr:0x0225b7b4 ambiguous
