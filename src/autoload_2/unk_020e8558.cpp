@@ -1,5 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
-// RC_020e8558: the in-house HEAP source file as REAL C++ classes (pipeline_wip/realclass_work/PLAN.md #5). mwcc 1.2/base, C++, ARM, -O4,p.
+// RC_020e8558: the in-house HEAP source file as REAL C++ classes. mwcc 1.2/base, C++, ARM, -O4,p.
 // autoload_2 .text 0x020e8558-0x020e92f4 (83 functions), .data 0x0213af4c-0x0213b058 (data_0213af4c + 3 vtables), autoload_3 .bss
 // 0x021f4810-0x021f4874. Supersedes G001b (unk_020e8558.cpp), G002a (unk_020e8c48.cpp), unk_020e914c.cpp and the first four functions
 // of G002b (unk_020e91cc.cpp). Every function lands on its original address with the original bytes; every old symbols.txt name stays

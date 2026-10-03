@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f30fc: autoload_2 0x020f30fc-0x020f44f0 (52 functions) + .data 0x0213b914-0x0213b9d8 (7 vtables) + bss 0x021f5bf8 (autoload_3).
 // mwcc 1.2/base, C++, ARM, -O4,p.
-// REAL-CLASS shape (pipeline_wip/realclass_work/PLAN.md). ONE source file: the sound-channel classes (G008a part 2) and the sound-effect
+// REAL-CLASS shape. ONE source file: the sound-channel classes (G008a part 2) and the sound-effect
 // channel objects (RC_020f3e50) are the same file, which this unit supersedes. Evidence: the seven 0x1c-byte vtables 0x0213b914-0x0213b9d8
 // are one size run, and the compiler's data order (named objects at their definition, vtables last in reverse declaration order, the
 // whole list heapsorted by size; realclass2_work/inv2.py, inv3.py) reproduces the original with all seven in one file, declared in the

@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020ed4bc: autoload_2 0x020ed4bc-0x020ed7e4 (10 functions) + .rodata 0x02135964-0x0213597c + .data 0x0213b1a4-0x0213b200
 // + bss 0x021f5994-0x021f59e4 (autoload_3) + main .init 0x020c5fa4-0x020c6080 / .ctor 0x020d1f4c-0x020d1f50 (its __sinit).
-// mwcc 1.2/base, C++, ARM, -O4,p. REAL-CLASS shape (pipeline_wip/realclass_work/PLAN.md #7): the task manager ("LoopProc").
+// mwcc 1.2/base, C++, ARM, -O4,p. REAL-CLASS shape: the task manager ("LoopProc").
 // Five task lists, one per phase (CONNECT, CREATE, EXECUTE, DRAW, DELETE), each holding a pointer to a member function of the
 // library base class Unk_020d8c7c_Base that the phase runner calls on every object of the list. The lists are file-scope objects
 // with a constructor taking the member pointer: mwcc builds them in the __sinit (main .init 0x020c5fa4) from the member-pointer

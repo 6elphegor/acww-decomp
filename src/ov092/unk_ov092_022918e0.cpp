@@ -213,7 +213,7 @@ void Unk_ov092_02291ec8::func_ov092_02291c5c() {
 void Unk_ov092_02291ec8::func_ov092_02291c58() {}
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
-// (see pipeline_wip/link_blocked.txt). The assembly below is the original code; the C version under
+// (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (78 bytes differ: its first switch tree is rooted at 0x18 with a
 // bounds-checked 0x1a..0x27 jump table; the original is rooted at 0x23 with a 0x1a..0x23 table that has only a
 // lower-bound check).

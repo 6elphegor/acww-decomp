@@ -4,7 +4,7 @@
 // Every function lands on its original address with the original bytes; every old symbols.txt name stays (aliases.txt adds the
 // compiler's names as labels; only the vtables are renamed to _ZTV.. at their starts).
 // EXTENT (from the data order): G010a's 13 equal-size vtables are TWO files. With mwcc's data order (vtables created last, in reverse
-// class-declaration order, all objects heapsorted by size; pipeline_wip/realclass3_work/inv_split.py, inv_g010.py) the 13 vtables as one
+// class-declaration order, all objects heapsorted by size) the 13 vtables as one
 // file need the base class Unk_0213bac4 declared 9th, after eight of its own derived classes: impossible. Split after the 8th vtable,
 // this file's 8 vtables come out in the original order with the classes declared in the natural order (base, then 9e4, a04, ..., aa4 =
 // vtable order = the order of their methods in the text), and its text ends exactly where the base's methods end (0x020f6850); the other

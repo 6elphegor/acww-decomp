@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f0dec: autoload_2 0x020f0dec-0x020f0fb4 (8 functions) + bss 0x021f5b80-0x021f5bf8 (autoload_3) + main .init
 // 0x020c6080-0x020c6094 / .ctor 0x020d1f50-0x020d1f54 (its __sinit). mwcc 1.2/base, C++, ARM, -O4,p.
-// REAL-CLASS shape (pipeline_wip/realclass_work/PLAN.md #3): the sound/BGM manager SndMgr and its one object data_021f5b80, a
+// REAL-CLASS shape: the sound/BGM manager SndMgr and its one object data_021f5b80, a
 // file-scope object with an out-of-line constructor, which mwcc builds in the file's __sinit (main .init 0x020c6080: a tail call of
 // the C1 constructor 0x020f0f70; the C2 is unreferenced and dead-stripped). Every member keeps its symbols.txt name (aliases.txt).
 // Extent: the text and the 0x78-byte object are certain; the 4-byte bss words before it (0x021f5b48-0x021f5b7c, used only by

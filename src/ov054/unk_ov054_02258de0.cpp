@@ -2069,7 +2069,7 @@ void Unk_ov054_0225b9c4::vfunc_18(s32 a) {
 }
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
-// (see pipeline_wip/link_blocked.txt). The assembly below is the original code; the C version under
+// (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (246 bytes differ: it gets a 17-entry jump table for cases 0..16 under a
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
 #ifdef NONMATCHING

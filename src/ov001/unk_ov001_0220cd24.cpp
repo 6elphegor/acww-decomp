@@ -92,7 +92,7 @@ u8 *func_ov001_0220d024() {
 }
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
-// (see pipeline_wip/link_blocked.txt). The assembly below is the original code; the C version under
+// (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (2 bytes differ: the jump-table guard comes out as
 // `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge`).
 #ifdef NONMATCHING

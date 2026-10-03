@@ -907,7 +907,7 @@ void Unk_ov073_02272430::vfunc_14() {
 }
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
-// (see pipeline_wip/link_blocked.txt). The assembly below is the original code; the C version under
+// (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (54 bytes differ: the original dispatches cases 0..12 through a jump
 // table guarded only by `cmp #0; bge` (no upper bound); mwcc emits `cmp #12; bls` plus zero-extension shifts and
 // a different table layout).
