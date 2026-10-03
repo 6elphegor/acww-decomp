@@ -34,7 +34,7 @@ public:
     /* 0x08 */ MsgStringAttr unk_08;
 };
 
-// 0xc-byte record, see unk_020a6914.cpp (whose ctor BmgMsgAttr_Init and dtor func_020a728c are still C functions there)
+// 0xc-byte record, see unk_020a6914.cpp (whose ctor BmgMsgAttr_Init and dtor BmgMsgAttr_Fini are still C functions there)
 struct BmgMsgAttr {
     BmgMsgAttr();
     ~BmgMsgAttr();
@@ -670,7 +670,7 @@ void Oam_DrawCell(s32 a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i,
 }
 
 extern "C" {
-s32 func_0209c38c(s32 a, s32 b);
+s32 DebugVar_GetStub(s32 a, s32 b);
 }
 
 extern "C" {
@@ -748,7 +748,7 @@ BOOL Input_IsTouchTrig(void);
 }
 
 extern "C" {
-BmgMsgAttr *func_020a7254(BmgMsgAttr *p);
+BmgMsgAttr *BmgMsgAttr_Get(BmgMsgAttr *p);
 }
 
 extern "C" {
@@ -841,15 +841,15 @@ void ChoiceWindow_BlankTiles(void *p, u32 n);
 }
 
 extern "C" {
-extern const u8 data_020d092c[4];
+extern const u8 sChoiceLabelTilesMode2[4];
 }
 
 extern "C" {
-extern const u8 data_020d0930[4];
+extern const u8 sChoiceLabelTilesMode3[4];
 }
 
 extern "C" {
-extern const u8 data_020d0934[4];
+extern const u8 sChoiceLabelTilesMode4[4];
 }
 
 extern "C" {
@@ -865,7 +865,7 @@ extern u32 *data_020d467c;
 }
 
 extern "C" {
-extern u8 data_021edb68;
+extern u8 gU8None;
 }
 
 extern "C" {
@@ -881,9 +881,9 @@ extern void *gCurrentHeap;
 }
 
 // ---- data ----
-const u8 data_020d092c[4] = {0, 4, 0, 0};
-const u8 data_020d0930[4] = {0, 3, 4, 0};
-const u8 data_020d0934[4] = {0, 2, 3, 4};
+const u8 sChoiceLabelTilesMode2[4] = {0, 4, 0, 0};
+const u8 sChoiceLabelTilesMode3[4] = {0, 3, 4, 0};
+const u8 sChoiceLabelTilesMode4[4] = {0, 2, 3, 4};
 const void *const kChoiceBmgNames[2] = {"select", "select2"};
 const u16 kChoiceBlinkColors[6] = {0x7d5f, 0x7d5f, 0x7d5f, 0x7d5f, 0x7d5f, 0};
 BufferBmgReader sChoiceBmgReader;
@@ -1126,8 +1126,8 @@ void ChoiceWindow::hideLayer() {
 }
 
 void ChoiceWindow::setScroll(s32 a, s32 b) {
-    s32 x = func_0209c38c(0x66, 2);
-    s32 y = func_0209c38c(0x66, 3) - 8;
+    s32 x = DebugVar_GetStub(0x66, 2);
+    s32 y = DebugVar_GetStub(0x66, 3) - 8;
     s32 n = 13 - unk_14;
     if (n < 0) {
         n = 0;
@@ -1162,11 +1162,11 @@ s32 ChoiceWindow_GetLabelTile(s32 a, s32 mode) {
     s32 r = 0;
     if (mode == 1) {
     } else if (mode == 2) {
-        r = data_020d092c[a];
+        r = sChoiceLabelTilesMode2[a];
     } else if (mode == 3) {
-        r = data_020d0930[a];
+        r = sChoiceLabelTilesMode3[a];
     } else if (mode == 4) {
-        r = data_020d0934[a];
+        r = sChoiceLabelTilesMode4[a];
     } else if (mode == 5) {
         r = a;
     }
@@ -1514,18 +1514,18 @@ BOOL ChoiceString::loadFromBmg(const char *path, void *entry, BmgMsgAttr *out) {
     return r;
 }
 
-ChoiceEntry::ChoiceEntry() : unk_00(data_021edb68), unk_48(data_021edb68) {
+ChoiceEntry::ChoiceEntry() : unk_00(gU8None), unk_48(gU8None) {
     clear();
 }
 
 ChoiceEntry::~ChoiceEntry() {}
 
 void ChoiceEntry::clear() {
-    unk_00 = data_021edb68;
+    unk_00 = gU8None;
     unk_04 = NULL;
     unk_08.clear();
     BmgMsgAttr_Clear(&unk_3c);
-    unk_48 = data_021edb68;
+    unk_48 = gU8None;
     MI_CpuFill8(unk_49, 0, 0x1a);
     unk_63 = 0;
     unk_64 = 0;
@@ -1562,7 +1562,7 @@ void ChoiceEntry::loadText() {
     unk_08.loadFromBmg(buf, this, &unk_3c);
 }
 
-ChoiceList::ChoiceList() : unk_214(data_021edb68) {
+ChoiceList::ChoiceList() : unk_214(gU8None) {
     clear();
 }
 
@@ -1599,7 +1599,7 @@ void ChoiceList::clear() {
 
 void ChoiceList::clearResult() {
     unk_210 = -1;
-    unk_214 = data_021edb68;
+    unk_214 = gU8None;
     MI_CpuFill8(unk_215, 0, 0x1a);
     unk_230.clear();
     BmgMsgAttr_Clear(&unk_264);
@@ -1649,7 +1649,7 @@ void ChoiceList::pick(s32 idx) {
     char *src = e->getName();
     unk_215[0x19] = 0;
     func_0212a2ec(unk_215, src, 0x19);
-    BmgMsgAttr_Copy(&unk_264, func_020a7254(e->getAttr()));
+    BmgMsgAttr_Copy(&unk_264, BmgMsgAttr_Get(e->getAttr()));
 }
 
 void ChoiceList::pickBySliderPos(s32 arg) {
@@ -1673,7 +1673,7 @@ void ChoiceList::pickBySliderPos(s32 arg) {
     e = &unk_00[sel];
     unk_210 = sel;
     unk_214 = *e->getValuePtr();
-    BmgMsgAttr_Copy(&unk_264, func_020a7254(e->getAttr()));
+    BmgMsgAttr_Copy(&unk_264, BmgMsgAttr_Get(e->getAttr()));
     unk_270 = v;
 }
 
@@ -2419,21 +2419,21 @@ void ChoiceListDialog::enterOpening() {
     unk_0c.uploadBg();
     unk_0c.showLayer();
     unk_0c.freeBg();
-    unk_bc = func_0209c38c(100, 2) + 3;
-    unk_b4 = func_0209c38c(100, 4) + 5;
-    unk_b8 = func_0209c38c(100, 5) - 5;
+    unk_bc = DebugVar_GetStub(100, 2) + 3;
+    unk_b4 = DebugVar_GetStub(100, 4) + 5;
+    unk_b8 = DebugVar_GetStub(100, 5) - 5;
     unk_0c.setScroll(unk_b4, unk_b8);
     unk_0c.setAllRowColors();
 }
 
 void ChoiceListDialog::updateOpening() {
     BOOL done;
-    if (unk_bc > func_0209c38c(0x64, 3) + 2) {
-        unk_b4 += func_0209c38c(0x64, 6) - 6;
-        unk_b8 += func_0209c38c(0x64, 7) + 6;
+    if (unk_bc > DebugVar_GetStub(0x64, 3) + 2) {
+        unk_b4 += DebugVar_GetStub(0x64, 6) - 6;
+        unk_b8 += DebugVar_GetStub(0x64, 7) + 6;
     } else {
-        unk_b4 += func_0209c38c(0x64, 8) + 1;
-        unk_b8 += func_0209c38c(0x64, 9) - 1;
+        unk_b4 += DebugVar_GetStub(0x64, 8) + 1;
+        unk_b8 += DebugVar_GetStub(0x64, 9) - 1;
     }
     done = --unk_bc <= 0;
     if (done) {
@@ -2476,14 +2476,14 @@ void ChoiceListDialog::updateSelecting() {
 void ChoiceListDialog::enterClosing() {
     unk_08 = 3;
     unk_c0 = 1;
-    unk_bc = func_0209c38c(0x65, 2) + 2;
+    unk_bc = DebugVar_GetStub(0x65, 2) + 2;
     Snd_PlaySe(0x14);
 }
 
 void ChoiceListDialog::updateClosing() {
     BOOL done;
-    unk_b4 += func_0209c38c(0x65, 3) + 0x11;
-    unk_b8 += func_0209c38c(0x65, 4) - 0x11;
+    unk_b4 += DebugVar_GetStub(0x65, 3) + 0x11;
+    unk_b8 += DebugVar_GetStub(0x65, 4) - 0x11;
     done = --unk_bc <= 0;
     unk_0c.setScroll(unk_b4, unk_b8);
     unk_c0 = 0;
@@ -2568,9 +2568,9 @@ void ChoiceSliderDialog::enterOpening() {
     unk_0c.uploadBg();
     unk_0c.showLayer();
     unk_0c.freeBg();
-    unk_18c = func_0209c38c(0x64, 2) + 3;
-    unk_184 = func_0209c38c(0x64, 4) + 5;
-    unk_188 = func_0209c38c(0x64, 5) - 5;
+    unk_18c = DebugVar_GetStub(0x64, 2) + 3;
+    unk_184 = DebugVar_GetStub(0x64, 4) + 5;
+    unk_188 = DebugVar_GetStub(0x64, 5) - 5;
     unk_0c.setScroll(unk_184, unk_188 + 4);
     unk_0c.setAllRowColors();
     Snd_PlaySe(0x13);
@@ -2578,12 +2578,12 @@ void ChoiceSliderDialog::enterOpening() {
 
 void ChoiceSliderDialog::updateOpening() {
     BOOL done;
-    if (unk_18c > func_0209c38c(0x64, 3) + 2) {
-        unk_184 += func_0209c38c(0x64, 6) - 6;
-        unk_188 += func_0209c38c(0x64, 7) + 6;
+    if (unk_18c > DebugVar_GetStub(0x64, 3) + 2) {
+        unk_184 += DebugVar_GetStub(0x64, 6) - 6;
+        unk_188 += DebugVar_GetStub(0x64, 7) + 6;
     } else {
-        unk_184 += func_0209c38c(0x64, 8) + 2;
-        unk_188 += func_0209c38c(0x64, 9) - 2;
+        unk_184 += DebugVar_GetStub(0x64, 8) + 2;
+        unk_188 += DebugVar_GetStub(0x64, 9) - 2;
     }
     done = --unk_18c <= 0;
     if (done) {
@@ -2637,15 +2637,15 @@ void ChoiceSliderDialog::updateSelecting() {
 void ChoiceSliderDialog::enterClosing() {
     unk_08 = 3;
     unk_190 = 1;
-    unk_18c = func_0209c38c(0x65, 2) + 2;
+    unk_18c = DebugVar_GetStub(0x65, 2) + 2;
     Snd_PlaySe(0x14);
 }
 
 void ChoiceSliderDialog::updateClosing() {
     BOOL done;
     unk_190 = 0;
-    unk_184 += func_0209c38c(0x65, 3) + 0xb;
-    unk_188 += func_0209c38c(0x65, 4) - 0xb;
+    unk_184 += DebugVar_GetStub(0x65, 3) + 0xb;
+    unk_188 += DebugVar_GetStub(0x65, 4) - 0xb;
     done = --unk_18c <= 0;
     unk_0c.setScroll(unk_184, unk_188);
     if (done) {

@@ -112,8 +112,8 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 s32 _ZN8PlayerId7isValidEv(void *);
 s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
-s32 func_0203c338();
-s32 func_0203c31c();
+s32 Catalog_HasAllFish();
+s32 Catalog_HasAllInsects();
 void Clock_GetDateTime(void *);
 s32 Event_GetState(s32, void *, s32);
 void _ZN12Unk_02086f8416clearClosingTimeEv(void *);
@@ -149,8 +149,8 @@ s32 ContestRecord_ScorePlayerGarden(void *self, void *grid);
 s32 func_02063b74(s32);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 func_0204b978(u16 *);
-s32 func_0204b900(u16 *);
+s32 Item_GetFishBaseSize(u16 *);
+s32 Item_GetInsectBaseSize(u16 *);
 void Clock_GetDate(void *);
 s32 Date_DaysBetween(void *, void *);
 s32 Event_GetDaysSinceStart(s32);
@@ -284,12 +284,12 @@ extern "C" s32 Contest_GetCatchSize(u16 *p)
         in = TRUE;
     }
     if (in) {
-        r = FX_Div(func_01ffcb0c(func_0204b978(p) << 12, base), 0x28a4);
+        r = FX_Div(func_01ffcb0c(Item_GetFishBaseSize(p) << 12, base), 0x28a4);
         if (r < 0x119a) {
             r = 0x119a;
         }
     } else if (v >= 0x12b0 && v <= 0x12e7) {
-        r = func_01ffcb0c(func_0204b900(p) << 12, base);
+        r = func_01ffcb0c(Item_GetInsectBaseSize(p) << 12, base);
     }
     return r;
 }
@@ -574,8 +574,8 @@ extern "C" void TownSessionState_CheckTortimerReward(void *self)
     if (r5 != NULL) {
         if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
             if (_ZN12Unk_02097ff48testFlagEj(r5, 1) == 0) {
-                if ((_ZN12Unk_02097ff48testFlagEj(r5, 0x21) == 0 && func_0203c338() != 0) ||
-                    (_ZN12Unk_02097ff48testFlagEj(r5, 0x22) == 0 && func_0203c31c() != 0)) {
+                if ((_ZN12Unk_02097ff48testFlagEj(r5, 0x21) == 0 && Catalog_HasAllFish() != 0) ||
+                    (_ZN12Unk_02097ff48testFlagEj(r5, 0x22) == 0 && Catalog_HasAllInsects() != 0)) {
                     s32 a[2];
                     s32 b[2];
                     a[0] = 0;

@@ -53,10 +53,10 @@ u32 _ZN10LetterView10setPresentEtj(void *, u32, u32);
 void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void func_0211ea4c(s32 (*f)());
-s32 func_02097438();
-void func_02097410(Unk_020973e4 *p, u32 v);
-u32 func_02097414(Unk_020973e4 *p);
-u32 func_020973e8(Unk_020973e4 *p);
+s32 Startup_OnCardPulledOut();
+void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v);
+u32 PlayerBank_GetBalance(Unk_020973e4 *p);
+u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p);
 }
 
 s32 data_020e1e08 = 6;
@@ -66,43 +66,43 @@ s32 data_020e1dfc = 0x1c;
 s32 data_020e1df8 = 0x10;
 s32 data_020e1e0c = 0x1c;
 
-extern "C" s32 func_02097438() {
+extern "C" s32 Startup_OnCardPulledOut() {
     sFatalEntered = 1;
     return 1;
 }
 
-extern "C" void func_02097428() { func_0211ea4c(func_02097438); }
+extern "C" void Startup_SetCardPulledOutCallback() { func_0211ea4c(Startup_OnCardPulledOut); }
 
-extern "C" void func_02097424() {}
+extern "C" void PlayerBank_Construct() {}
 
-extern "C" void func_02097420() {}
+extern "C" void PlayerBank_Destruct() {}
 
-extern "C" void func_02097418(Unk_020973e4 *p) {
+extern "C" void PlayerBank_Clear(Unk_020973e4 *p) {
     p->unk_00 = 0;
     p->unk_04 = 0;
 }
 
-extern "C" u32 func_02097414(Unk_020973e4 *p) { return p->unk_00; }
+extern "C" u32 PlayerBank_GetBalance(Unk_020973e4 *p) { return p->unk_00; }
 
-extern "C" void func_02097410(Unk_020973e4 *p, u32 v) { p->unk_00 = v; }
+extern "C" void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v) { p->unk_00 = v; }
 
-extern "C" s32 func_02097404() { return data_021e9350.unk_08; }
+extern "C" s32 Donation_GetTotal() { return data_021e9350.unk_08; }
 
-extern "C" void func_020973ec(s32 v) {
+extern "C" void Donation_SetTotal(s32 v) {
     if (v > 999999999) v = 999999999;
     data_021e9350.unk_08 = v;
 }
 
-extern "C" u32 func_020973e8(Unk_020973e4 *p) { return p->unk_04; }
+extern "C" u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p) { return p->unk_04; }
 
-extern "C" void func_020973e4(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
+extern "C" void PlayerBank_SetDonationLevel(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
 
-extern "C" void func_02097318(s32 n) {
+extern "C" void PlayerBank_PayInterest(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
-            s32 m = func_02097414((Unk_020973e4 *)o);
+            s32 m = PlayerBank_GetBalance((Unk_020973e4 *)o);
             s32 q = _s32_div_f(m, 2000);
             n = q * n * 10;
             if (n > 99999) {
@@ -114,7 +114,7 @@ extern "C" void func_02097318(s32 n) {
                     if (t > 999999999) {
                         t = 999999999;
                     }
-                    func_02097410((Unk_020973e4 *)o, t);
+                    PlayerBank_SetBalance((Unk_020973e4 *)o, t);
                     Letter e;
                     u8 ch;
                     u32 buf[11];
@@ -131,11 +131,11 @@ extern "C" void func_02097318(s32 n) {
     }
 }
 
-extern "C" void func_02097214(s32 n) {
+extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
-        s32 m = func_02097414((Unk_020973e4 *)o);
+        s32 m = PlayerBank_GetBalance((Unk_020973e4 *)o);
         if (m >= 1000000) {
             u32 col = 0x37dc;
             s32 k = 0;
@@ -177,12 +177,12 @@ extern "C" void func_02097214(s32 n) {
 
 
 
-extern "C" void func_02097110(s32 n) {
+extern "C" void PlayerBank_SendDonationLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
         if (_ZN12Unk_02097ff48testFlagEj(s, 0x16)) {
-            s32 id = func_020973e8((Unk_020973e4 *)o);
+            s32 id = PlayerBank_GetDonationLevel((Unk_020973e4 *)o);
             Letter e;
             u8 ch;
             ch = id;

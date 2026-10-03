@@ -52,10 +52,10 @@ struct Unk_021c4350 {
     u8 unk_6c[0x400];
 };
 
-// element of sLitCedars (24 x 8 bytes); the constructor is func_02000c90 of another unit
-struct Unk_021c3ec8 {
+// element of sLitCedars (24 x 8 bytes); the constructor is LitCedarPos_Construct of another unit
+struct LitCedarPos {
     u32 unk_00[2];
-    Unk_021c3ec8();
+    LitCedarPos();
 };
 
 // sPendingUnits (0x144 bytes; data_021c3f8c is its offset 4: 20 entries of 0x10 bytes)
@@ -108,10 +108,10 @@ struct Unk_02041ac0_Glob {
 extern Unk_02041ac0_Glob gTownUpdater;
 extern u32 gCurrentHeap;
 extern u32 data_021fcc2c[];
-s32 func_02041908();
-s32 func_020419b4(Unk_020419b4 *p);
-void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
-void func_02041aec(Unk_020419b4 *p);
+s32 TownUpdateThread_Destroy();
+s32 TownUpdateThread_StartCtx(Unk_020419b4 *p);
+void TownUpdateThread_SetArgs(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
+void TownUpdateThread_Init(Unk_020419b4 *p);
 void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void Heap_SetThreadHeap(u32 a, u32 b);
@@ -119,22 +119,22 @@ void OS_WakeupThreadDirect(void *th);
 u32 DC_FlushAll();
 void OS_ExitThread();
 void MI_CpuFill8(void *p, u32 v, u32 n);
-void func_02041b1c(u8 *arg);
+void TownUpdateThread_Main(u8 *arg);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 extern u8 gSaveData[];
 extern u8 data_021ed20c[];
-extern u8 data_021c3e70[];
+extern u8 sTownBbsUpdateCtx[];
 void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(Unk_02042104_Date *d);
 void DateTime_SubHours(Unk_02042104_Date *d, u32 n);
 void DateTime_SubDays(Unk_02042104_Date *d, s32 n);
 u32 Date_GetWeekday(u32 a, u32 b, u32 c);
-s32 func_02041d98(void *o, u8 *a, Unk_02042104_Date *d);
-void func_02041d40(void *o, u8 *base, Unk_02042104_Date *d);
-void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag);
-void func_02041cec(void *o, u8 *base, Unk_02042104_Date *d);
-s32 func_020978a4(void *p);
-s32 func_0203f14c();
+s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d);
+void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date *d);
+void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag);
+void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d);
+s32 PlayerDataArray_CountUsed(void *p);
+s32 Game_IsIntroPeriod();
 s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
 void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
@@ -283,7 +283,7 @@ void FieldPos_ToUnit(void *, void *, void *);
 s32 PendingUnit_IndexAt(void *, s32);
 s32 Field_IsUnitClearOfOthers(void *, s32);
 s32 Scene_InTown(void);
-s32 func_020513b0(s32, s32);
+s32 Room_CanDropOnFurnitureAt(s32, s32);
 s32 Ground_IsNeighbourReachable(s32, s32, s32, s32, s32);
 s32 _ZN8BlockMap12getPlantFlagEii(void *, s32, s32);
 u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Unk_020422c0_Pos *);
@@ -888,7 +888,7 @@ struct Unk_020452ec_Pos {
     s32 y;
 };
 extern u32 sPendingUnits;
-extern u8 data_021c3e74[];
+extern u8 gTownJunkInsectFlags[];
 Unk_021c3f8c *PendingUnit_Get(s32 i);
 s32 PendingUnit_FindActiveOfAid(u32 kind);
 s32 PendingUnit_FindFree();
@@ -1027,7 +1027,7 @@ static inline void Unk_02045f6c_Fill(Unk_02046a0_Ts *t, Unk_02045f6c_Rgb *src, s
     ((u8 *)t)[0xa] = 6;
 }
 extern u8 sFieldActions[];
-extern u8 data_021c3e74[];
+extern u8 gTownJunkInsectFlags[];
 extern u8 sPendingUnits[];
 extern u8 gTownUpdater[];
 extern u8 sFieldActionFxSlots[];
@@ -1037,7 +1037,7 @@ extern Unk_02045d98_Src gTownEval;
 extern Unk_02045f6c_Rgb gSaveTownState;
 extern u8 sLitCedars[];
 s32 FieldActions_Update(void *);
-s32 func_02041880(void *);
+s32 TownJunkInsects_Apply(void *);
 s32 FieldActions_Init(void *);
 s32 PendingUnits_ClearAll(void *);
 s32 Town_MarkEventApplied(void *, void *);
@@ -1048,7 +1048,7 @@ s32 _s32_div_f(s32, s32);
 void *TownBlockMap_Get();
 s32 FieldPos_FromBlockUnit(void *, s32, s32, s32, s32);
 s32 TownEval_Evaluate(void *, void *);
-s32 func_020418d4(void *);
+s32 TownJunkInsects_InitFromEval(void *);
 s32 PendingUnits_Enable();
 Unk_02045d40_Ent *LitCedarList_Get();
 s32 TownEval_EvaluateAndClean(void *, void *, s32, s32);
@@ -1077,7 +1077,7 @@ s32 MenuCtrl_IsClockMovedBack();
 extern u8 gSaveRecycleBin[];
 extern u8 gSavePlayers[];
 void *HouseRoomMaps_Get(s32);
-s32 func_020978c8(void *, s32);
+s32 PlayerDataArray_IsUsed(void *, s32);
 void *PlayerData_GetResident(void *, s32);
 void *_ZN10PlayerData12getInventoryEv(void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
@@ -1091,8 +1091,8 @@ s32 BlockMap_SetItemAtUnit(void *, void *, s32, s32, s32);
 void BlockMap_SpoilTurnips(void *, Unk_02045e34_Map *);
 s32 Scene_InTown();
 s32 Scene_InTownUnk31();
-s32 func_020402e8();
-s32 func_02041b68();
+s32 EventWeekSlots_Update();
+s32 TownBbs_UpdateDaily();
 s32 Weather_GetPrevDayRain();
 s32 _ZN11SaveRecord410expireDateEv(void *);
 s32 DateTime_SubHours(void *, s32);
@@ -1106,7 +1106,7 @@ extern u8 gSaveData[];
 extern u8 data_021ed29c[];
 s32 TownState_SetSeasonPeriod(u32);
 s32 DateTime_GetSeasonPeriod(void *);
-s32 func_02041a54(void *, void *, s32, s32);
+s32 TownUpdateThread_Request(void *, void *, s32, s32);
 s32 Town_AdvanceDays(void *, void *, void *, s32, s32, s32);
 void Players_SpoilTurnips();
 void Town_SpoilTurnips(void *);
@@ -1217,7 +1217,7 @@ s32 Town_RefreshEvents(void *, s32);
 void Clock_GetDateTime(void *);
 void TownEval_Evaluate(void *, void *);
 void Town_UpdateEvents(void *, void *, s32, s32, void *, s32);
-s32 func_0203f14c();
+s32 Game_IsIntroPeriod();
 s32 PlayerData_GetCurrent();
 void Clock_GetDateTimeCleared(void *);
 void DateTime_SubHours(void *, s32);
@@ -1270,8 +1270,8 @@ void _ZN9HouseData16applyPendingWorkEv(void *);
 void NookShop_ApplyRenovation();
 void _ZN9HouseData17addRoachesForDaysEi(void *, s32);
 void Save_ConvertFakePaintings();
-void func_02039c08(void *, s32);
-void func_02039b6c(void *, void *, s32);
+void LostAndFound_AddDailyItems(void *, s32);
+void RecycleBin_AdvanceDays(void *, void *, s32);
 void RoomScoreEvaluator_Construct(void *);
 void HappyRoom_EvaluateHouse(void *);
 void RoomScoreEvaluator_Destruct(void *);
@@ -1493,7 +1493,7 @@ s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 s32 Event_GetState(s32 a, void *b, s32 c);
 s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
-s32 func_0203fc10(void *a, s32 b);
+s32 Villager_IsSettledExcept(void *a, s32 b);
 s32 Villager_GetPlan(void *p);
 s32 VillagerPlanBlock_GetPlan();
 s32 _ZN12VillagerPlan8getStateEv();
@@ -2813,7 +2813,7 @@ const s32 data_020c97cc[6] = {
 const u32 data_020c96e0[5] = {
     0x001b2233, 0x033f5bdf, 0x021f61ff, 0x280a7cb9, 0x7fff7e43,
 };
-Unk_021c3ec8 sLitCedars[24];
+LitCedarPos sLitCedars[24];
 const u32 data_020c976c[6] = {
     0x00000023, 0x00000012, 0x00000023, 0x00000013, 0x0000001e, 0x00000015,
 };
@@ -4569,7 +4569,7 @@ extern "C" void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d) {
     s32 i;
     for (i = 0; i < 8; i++) {
         p = SaveVillagers_Get(gSaveVillagers, i);
-        if (func_0203fc10(p, r)) {
+        if (Villager_IsSettledExcept(p, r)) {
             if (c == 0) {
                 Villager_GetPlan(p);
                 VillagerPlanBlock_GetPlan();
@@ -5306,7 +5306,7 @@ extern "C" void Town_RemoveVisitorStructures(void *a, s32 b) {
 
 namespace nI {
 extern "C" void Town_UpdateEvents(void *a, void *p, s32 x, s32 y, void *c, s32 f) {
-    if (!func_0203f14c() || (f && !PlayerData_GetCurrent())) {
+    if (!Game_IsIntroPeriod() || (f && !PlayerData_GetCurrent())) {
         Unk_02046c80_T s;
         u8 *q;
         s.a = 0;
@@ -5502,8 +5502,8 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         NookShop_ApplyRenovation();
         _ZN9HouseData17addRoachesForDaysEi(g, n);
         Save_ConvertFakePaintings();
-        func_02039c08(gSaveLostAndFound, n);
-        func_02039b6c(gSaveRecycleBin, c, n);
+        LostAndFound_AddDailyItems(gSaveLostAndFound, n);
+        RecycleBin_AdvanceDays(gSaveRecycleBin, c, n);
         RoomScoreEvaluator_Construct(&obj);
         HappyRoom_EvaluateHouse(&obj);
         _ZN7TownMap18updateGroundSeasonEv(gSaveTownMap);
@@ -5700,7 +5700,7 @@ extern "C" void Players_SpoilTurnips() {
     s32 z = 0;
     s32 z2 = 0;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(gSavePlayers, i) != 0) {
+        if (PlayerDataArray_IsUsed(gSavePlayers, i) != 0) {
             void *q = PlayerData_GetResident(gSavePlayers, i);
             for (j = z; j < 15; j++) {
                 void *r = _ZN10PlayerData12getInventoryEv(q);
@@ -5783,7 +5783,7 @@ namespace nH {
 extern "C" void Town_ApplyElapsedDays(void *a, void *b, s32 c, s32 d, s32 e) {
     s32 t = ((Unk_0204625c_Obj *)gTownUpdater)->unk_20;
     if (t != 0) {
-        func_02041a54(a, b, c, d);
+        TownUpdateThread_Request(a, b, c, d);
     } else {
         Town_AdvanceDays(gTownUpdater, a, b, c, d, e);
     }
@@ -5828,10 +5828,10 @@ extern "C" void Town_UpdateDay(s32 flag) {
     TownState_UpdateSeasonPeriod();
     if (days >= 1 && flag == 0) {
         if (Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
-            func_020402e8();
+            EventWeekSlots_Update();
         }
     }
-    func_02041b68();
+    TownBbs_UpdateDaily();
     if (days >= 1) {
         dt = Weather_GetPrevDayRain();
         if (flag == 0) {
@@ -6014,7 +6014,7 @@ extern "C" void Town_InitNew() {
 namespace nH {
 extern "C" void Field_OnEnter() {
     Town_GetEnvironmentRank();
-    func_020418d4(data_021c3e74);
+    TownJunkInsects_InitFromEval(gTownJunkInsectFlags);
     Town_RefreshDailyObjects();
     PendingUnits_Enable();
 }
@@ -6138,7 +6138,7 @@ extern "C" void Field_ResetActions() {
 namespace nH {
 extern "C" void Field_UpdateActions() {
     FieldActions_Update(sFieldActions);
-    func_02041880(data_021c3e74);
+    TownJunkInsects_Apply(gTownJunkInsectFlags);
 }
 }
 
@@ -6188,9 +6188,9 @@ extern "C" void PendingUnit_NoteJunk(Unk_021c3f8c *e) {
     Unk_02045af8_Pad pad;
     u16 v = e->unk_0a;
     if (v >= 0x154a && v <= 0x1553) {
-        data_021c3e74[1] = 1;
+        gTownJunkInsectFlags[1] = 1;
     } else if (v >= 0x1320 && v <= 0x1322) {
-        data_021c3e74[0] = 1;
+        gTownJunkInsectFlags[0] = 1;
     }
 }
 }
@@ -8555,7 +8555,7 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out
                 }
             }
             if (Scene_InTown() == 0) {
-                if (func_020513b0(x, y)) {
+                if (Room_CanDropOnFurnitureAt(x, y)) {
                     p->x = x;
                     p->y = y;
                     if (out != NULL) {

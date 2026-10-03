@@ -283,15 +283,15 @@ struct NpcActor : Character {
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct() = 0;
     virtual const char *getTexturePath() = 0;
     virtual const char *getModelPath() = 0;
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -314,8 +314,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
@@ -356,12 +356,12 @@ public:
     BOOL mainAct08();
     BOOL setupAct08();
     BOOL mainAct07();
-    BOOL func_020c1a40();
-    BOOL func_020c1a64();
-    BOOL func_020c1b64(Unk_020c17f8_Vec *out, s32 *data);
+    BOOL tryAvoidObstacle();
+    BOOL avoidObstacle();
+    BOOL findSidestepPos(Unk_020c17f8_Vec *out, s32 *data);
     BOOL findRandomWalkTarget(s32 *px, s32 *pz);
-    BOOL func_020c1c30();
-    BOOL func_020c1c68(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b);
+    BOOL isInCameraView();
+    BOOL isInViewBox(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b);
     BOOL setupAct07();
     BOOL mainAct06();
     BOOL setupAct06();
@@ -411,14 +411,14 @@ extern Unk_020c2194_Entry sSpNpcMissing2ActTable[10];
 extern SpNpcMissing2 *sSpNpcMissing2Instance;
 extern FxVec3 data_021f4658[2];
 extern char sSpNpcMissing2Key[16];
-extern char data_020e6a84[23];
-extern char data_020e6ab4[27];
+extern char sSpNpcMissing2ModelPath[23];
+extern char sSpNpcMissing2TexPath[27];
 extern const char *sSpNpcMissing2MsgKey;
-extern "C" SpNpcMissing2 *func_020c2454();
+extern "C" SpNpcMissing2 *SpNpcMissing2_Create();
 void SpNpcMissing2_ChangeAct06();
 void SpNpcMissing2_ChangeAct04();
 
-extern "C" SpNpcMissing2 *func_020c2454() {
+extern "C" SpNpcMissing2 *SpNpcMissing2_Create() {
     return new SpNpcMissing2();
 }
 
@@ -480,11 +480,11 @@ void SpNpcMissing2_ChangeAct06() {
 }
 
 const char *SpNpcMissing2::getTexturePath() {
-    return data_020e6ab4;
+    return sSpNpcMissing2TexPath;
 }
 
 const char *SpNpcMissing2::getModelPath() {
-    return data_020e6a84;
+    return sSpNpcMissing2ModelPath;
 }
 
 BOOL SpNpcMissing2::updateAct() {
@@ -713,7 +713,7 @@ BOOL SpNpcMissing2::setupAct07() {
     return TRUE;
 }
 
-BOOL SpNpcMissing2::func_020c1c68(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b) {
+BOOL SpNpcMissing2::isInViewBox(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b) {
     BOOL r = FALSE, c = FALSE, d = FALSE;
     s32 x = a->x;
     s32 bx = b->x;
@@ -733,7 +733,7 @@ BOOL SpNpcMissing2::func_020c1c68(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b) {
     return r;
 }
 
-BOOL SpNpcMissing2::func_020c1c30() {
+BOOL SpNpcMissing2::isInCameraView() {
     Unk_020c17f8_Vec *pos = (Unk_020c17f8_Vec *)&unk_5c;
     s32 r = 0;
     if (gCamera != 0) {
@@ -741,7 +741,7 @@ BOOL SpNpcMissing2::func_020c1c30() {
         v.x = gCameraLookAt[0];
         v.y = gCameraLookAt[1];
         v.z = gCameraLookAt[2];
-        r = func_020c1c68(&v, pos);
+        r = isInViewBox(&v, pos);
     }
     return r;
 }
@@ -772,7 +772,7 @@ BOOL SpNpcMissing2::findRandomWalkTarget(s32 *px, s32 *pz) {
     return result;
 }
 
-BOOL SpNpcMissing2::func_020c1b64(Unk_020c17f8_Vec *out, s32 *data) {
+BOOL SpNpcMissing2::findSidestepPos(Unk_020c17f8_Vec *out, s32 *data) {
     BOOL result = FALSE;
     Unk_020c17f8_Vec v;
     Npc_RotateOffsetXZ(&v, &unk_5c, data, unk_94);
@@ -785,7 +785,7 @@ BOOL SpNpcMissing2::func_020c1b64(Unk_020c17f8_Vec *out, s32 *data) {
     return result;
 }
 
-BOOL SpNpcMissing2::func_020c1a64() {
+BOOL SpNpcMissing2::avoidObstacle() {
     void *p564 = &unk_564;
     void *p350 = &unk_350;
     s32 st = _ZN9NpcLookAt15getObstacleBitsEv(&unk_3a8);
@@ -798,7 +798,7 @@ BOOL SpNpcMissing2::func_020c1a64() {
             result = TRUE;
             break;
         case 1:
-            if (func_020c1b64(&v, &data_021f4658[1].x)) {
+            if (findSidestepPos(&v, &data_021f4658[1].x)) {
                 _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -806,7 +806,7 @@ BOOL SpNpcMissing2::func_020c1a64() {
             result = TRUE;
             break;
         case 2:
-            if (func_020c1b64(&v, &data_021f4658[0].x)) {
+            if (findSidestepPos(&v, &data_021f4658[0].x)) {
                 _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -822,9 +822,9 @@ BOOL SpNpcMissing2::func_020c1a64() {
     return result;
 }
 
-BOOL SpNpcMissing2::func_020c1a40() {
+BOOL SpNpcMissing2::tryAvoidObstacle() {
     if (unk_98 != 0) {
-        if (func_020c1a64()) {
+        if (avoidObstacle()) {
             return TRUE;
         }
     }
@@ -833,10 +833,10 @@ BOOL SpNpcMissing2::func_020c1a40() {
 
 BOOL SpNpcMissing2::mainAct07() {
     void *p564 = &unk_564;
-    BOOL a = func_020c1c30();
+    BOOL a = isInCameraView();
     func_020e7518(&unk_651);
     if (a) {
-        if (!func_020c1a40()) {
+        if (!tryAvoidObstacle()) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {
                 if (_ZN12Unk_0201acf813func_0201acfcEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -904,7 +904,7 @@ BOOL SpNpcMissing2::setupAct08() {
 }
 
 BOOL SpNpcMissing2::mainAct08() {
-    if (func_020c1c30()) {
+    if (isInCameraView()) {
         changeAct(7);
     }
     return TRUE;
@@ -932,10 +932,10 @@ FxVec3 data_021f4658[2] = { FxVec3(0x800, 0, 0x1000), FxVec3(0xfffff800, 0, 0x10
 SpNpcMissing2 *sSpNpcMissing2Instance;
 char sSpNpcMissing2Key[] = "sp_npc_missing2";
 const char *sSpNpcMissing2MsgKey = sSpNpcMissing2Key;
-char data_020e6a84[] = "npc_sp/model/mum.nsbmd";
-char data_020e6ab4[] = "npc_sp/model/mum_tex.nsbtx";
+char sSpNpcMissing2ModelPath[] = "npc_sp/model/mum.nsbmd";
+char sSpNpcMissing2TexPath[] = "npc_sp/model/mum_tex.nsbtx";
 struct Unk_020e6a9c_Rec {
     SpNpcMissing2 *(*fn)();
     u32 w[5];
 };
-Unk_020e6a9c_Rec sSpNpcMissing2Profile = { func_020c2454, { 0x0083007f, 2, 0x5000, 0x5000, 0x3e800 } };
+Unk_020e6a9c_Rec sSpNpcMissing2Profile = { SpNpcMissing2_Create, { 0x0083007f, 2, 0x5000, 0x5000, 0x3e800 } };

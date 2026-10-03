@@ -176,7 +176,7 @@ BOOL Catalog_HasItem(void *a, void *b);
 }
 
 extern "C" {
-void func_020af488(u32 a);
+void Snowman_SendLetter(u32 a);
 }
 
 extern "C" {
@@ -240,27 +240,27 @@ u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 
 extern "C" {
-BOOL func_020af278(s32 m);
+BOOL LidSleep_TestFlag(s32 m);
 }
 
 extern "C" {
-void func_020af258(s32 m);
+void LidSleep_ClearFlag(s32 m);
 }
 
 extern "C" {
-void func_020af268(s32 m);
+void LidSleep_SetFlag(s32 m);
 }
 
 extern "C" {
-void func_020af2fc();
+void LidSleep_BacklightOff();
 }
 
 extern "C" {
-void func_020af2c4();
+void LidSleep_BacklightRestore();
 }
 
 extern "C" {
-void func_020af290();
+void LidSleep_WakeLcd();
 }
 
 extern "C" {
@@ -304,19 +304,19 @@ extern u8 sShopRandom[];
 }
 
 extern "C" {
-u8 data_021ee240;
+u8 sLidSleepFlags;
 }
 
 extern "C" {
-u8 data_021ee244;
+u8 sLidSleepState;
 }
 
 extern "C" {
-u32 data_021ee248;
+u32 sLidSleepBacklightBottom;
 }
 
 extern "C" {
-u32 data_021ee24c;
+u32 sLidSleepBacklightTop;
 }
 
 extern "C" {
@@ -332,7 +332,7 @@ extern Unk_021c47c4 *gSceneBlockMap;
 }
 
 extern "C" {
-extern u16 data_020d09cc[];
+extern u16 sSnowmanPrizeItems[];
 }
 
 extern "C" {
@@ -363,85 +363,85 @@ extern "C" {
 static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
 // prototypes
-extern "C" s32 func_020af3bc(s32 a, s32 b, s32 c, s32 d, s16 e);
-extern "C" void func_020af3a8();
-extern "C" void func_020af33c();
-extern "C" void func_020af330();
-extern "C" void func_020af2fc();
-extern "C" void func_020af2c4();
-extern "C" void func_020af290();
-extern "C" BOOL func_020af278(s32 m);
-extern "C" void func_020af268(s32 m);
-extern "C" void func_020af258(s32 m);
+extern "C" s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e);
+extern "C" void LidSleep_Init();
+extern "C" void LidSleep_Update();
+extern "C" void LidSleep_KeepSoundOff();
+extern "C" void LidSleep_BacklightOff();
+extern "C" void LidSleep_BacklightRestore();
+extern "C" void LidSleep_WakeLcd();
+extern "C" BOOL LidSleep_TestFlag(s32 m);
+extern "C" void LidSleep_SetFlag(s32 m);
+extern "C" void LidSleep_ClearFlag(s32 m);
 
 
-extern "C" s32 func_020af3bc(s32 a, s32 b, s32 c, s32 d, s16 e) {
+extern "C" s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e) {
     BOOL z = gFieldSceneKind == 0;
     if (z && d > 0) return Snowball_TryPushAny(a, b, c, d, e);
     return 0;
 }
 
-extern "C" void func_020af3a8() {
-    data_021ee240 = 0;
-    data_021ee244 = 0;
+extern "C" void LidSleep_Init() {
+    sLidSleepFlags = 0;
+    sLidSleepState = 0;
 }
 
-extern "C" void func_020af33c() {
-    switch (data_021ee244) {
+extern "C" void LidSleep_Update() {
+    switch (sLidSleepState) {
     case 0:
         if ((*(vu16 *)0x27fffa8 & 0x8000) >> 15) {
-            data_021ee244 = 1;
-            func_020af2fc();
+            sLidSleepState = 1;
+            LidSleep_BacklightOff();
             PM_SetLCDPower(0);
             Snd_VolumeOff();
         }
         break;
     case 1:
         if (!((*(vu16 *)0x27fffa8 & 0x8000) >> 15)) {
-            data_021ee244 = 2;
-            func_020af2c4();
-            func_020af290();
+            sLidSleepState = 2;
+            LidSleep_BacklightRestore();
+            LidSleep_WakeLcd();
         }
         break;
     case 2:
-        func_020af290();
+        LidSleep_WakeLcd();
         break;
     }
 }
 
-extern "C" void func_020af330() { func_020af268(2); }
+extern "C" void LidSleep_KeepSoundOff() { LidSleep_SetFlag(2); }
 
-extern "C" void func_020af2fc() {
-    if (!func_020af278(1)) {
-        PM_GetBackLight(&data_021ee24c, &data_021ee248);
+extern "C" void LidSleep_BacklightOff() {
+    if (!LidSleep_TestFlag(1)) {
+        PM_GetBackLight(&sLidSleepBacklightTop, &sLidSleepBacklightBottom);
         PM_SetBackLight(2, 0);
-        func_020af268(1);
+        LidSleep_SetFlag(1);
     }
 }
 
-extern "C" void func_020af2c4() {
-    if (func_020af278(1)) {
-        PM_SetBackLight(0, data_021ee24c);
-        PM_SetBackLight(1, data_021ee248);
-        func_020af258(1);
+extern "C" void LidSleep_BacklightRestore() {
+    if (LidSleep_TestFlag(1)) {
+        PM_SetBackLight(0, sLidSleepBacklightTop);
+        PM_SetBackLight(1, sLidSleepBacklightBottom);
+        LidSleep_ClearFlag(1);
     }
 }
 
-extern "C" void func_020af290() {
+extern "C" void LidSleep_WakeLcd() {
     if (PM_GetLCDPower() == 1 || PM_SetLCDPower(1)) {
-        if (!func_020af278(2)) Snd_VolumeOn();
-        data_021ee244 = 0;
+        if (!LidSleep_TestFlag(2)) Snd_VolumeOn();
+        sLidSleepState = 0;
     }
 }
 
-extern "C" BOOL func_020af278(s32 m) {
-    if (data_021ee240 & m) return TRUE;
+extern "C" BOOL LidSleep_TestFlag(s32 m) {
+    if (sLidSleepFlags & m) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_020af268(s32 m) { data_021ee240 |= m; }
+extern "C" void LidSleep_SetFlag(s32 m) { sLidSleepFlags |= m; }
 
-extern "C" void func_020af258(s32 m) { data_021ee240 &= ~m; }
+extern "C" void LidSleep_ClearFlag(s32 m) { sLidSleepFlags &= ~m; }
 
 extern "C" {
 struct Loc488 { u8 a; u8 pad; u16 b; };

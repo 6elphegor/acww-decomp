@@ -104,14 +104,14 @@ void String_Load2d(MsgString33 *buf, u8 *str, s32 n);
 void _ZN8ItemNameC1EPt(void *a, void *b);
 void _ZN8ItemNameD1Ev(void *p);
 Mat *Camera_GetViewMatrix(void);
-Vec *func_020947f0(s32 a);
+Vec *PlayerActor_GetBodyPos(s32 a);
 void WorldCurve_Apply(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
 u32 _ZN12Unk_0203b3509getFovTanEv(u32 a);
 s32 FX_Div(s32 a, s32 b);
 void func_020e9888(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
-u16 *func_02094440(void);
+u16 *PlayerActor_GetItemInFront(void);
 u32 Scene_GetCurrent(void);
 BOOL TalkRequest_IsTalking(void);
 BOOL TalkRequest_IsSaveMenuRunning(void);
@@ -367,7 +367,7 @@ void FieldInfoBalloon::draw() { unk_08.draw(); }
 
 void FieldInfoBalloon::updateFacingItem() {
     u16 *p = 0;
-    if (PlayerActor_IsInAction(2, 4)) p = func_02094440();
+    if (PlayerActor_IsInAction(2, 4)) p = PlayerActor_GetItemInFront();
     if (p) {
         s32 t = (*p & 0xf000) >> 12;
         BOOL b = gFieldSceneKind == 0;
@@ -384,7 +384,7 @@ void FieldInfoBalloon::updateFacingItem() {
 
 void FieldInfoBalloon::placeOverPlayer() {
     data_021f47e0 = *Camera_GetViewMatrix();
-    Vec *p = func_020947f0(4);
+    Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         Vec v;
         v.x = p->x;

@@ -2,15 +2,15 @@
 
 struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 unk_6c; };
 
-struct Unk_0205eebc {
+struct PlayerBodyWorkPool {
     u32 unk_00[4];
-    Unk_0205eebc();
-    ~Unk_0205eebc();
+    PlayerBodyWorkPool();
+    ~PlayerBodyWorkPool();
 };
 
-struct Unk_0205ee34 {
+struct PlayerBodyWorkRef {
     u8 unk_00;
-    Unk_0205ee34();
+    PlayerBodyWorkRef();
 };
 
 extern "C" {
@@ -21,43 +21,43 @@ extern s32 PlayerBodyAnimHeap_Destroy(void);
 extern void func_020e885c(void *p);
 extern void func_020e877c(void *p);
 extern void *FrameHeap_Create(u32 size, void *heap);
-u32 func_0205eec0(void);
-u32 func_0205ee3c(u32 *base, u32 idx);
-void func_0205ee44(u32 *tbl);
-void func_0205ee7c(u32 *tbl);
+u32 PlayerBodyWork_GetHeapSize(void);
+u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx);
+void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl);
+void PlayerBodyWorkPool_CreateHeaps(u32 *tbl);
 }
 
-Unk_0205eebc data_021c73b8;
+PlayerBodyWorkPool sPlayerBodyWorkPool;
 
-extern "C" void func_0205eee0(void) {
+extern "C" void PlayerBodyWorkPool_Create(void) {
     PlayerBodyAnimHeap_Create();
-    func_0205ee7c(data_021c73b8.unk_00);
+    PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.unk_00);
     if (gPlayerBodyAnimHeap) {
         func_020e877c(gPlayerBodyAnimHeap);
     }
 }
 
-extern "C" void func_0205eec8(void) {
-    func_0205ee44(data_021c73b8.unk_00);
+extern "C" void PlayerBodyWorkPool_Destroy(void) {
+    PlayerBodyWorkPool_DestroyHeaps(sPlayerBodyWorkPool.unk_00);
     PlayerBodyAnimHeap_Destroy();
 }
 
-extern "C" u32 func_0205eec0(void) { return 0x768; }
+extern "C" u32 PlayerBodyWork_GetHeapSize(void) { return 0x768; }
 
-Unk_0205eebc::Unk_0205eebc() {}
+PlayerBodyWorkPool::PlayerBodyWorkPool() {}
 
-Unk_0205eebc::~Unk_0205eebc() {}
+PlayerBodyWorkPool::~PlayerBodyWorkPool() {}
 
-extern "C" void func_0205ee7c(u32 *tbl) {
+extern "C" void PlayerBodyWorkPool_CreateHeaps(u32 *tbl) {
     void *heap = gPlayerBodyAnimHeap;
     u32 n = gCommManager->unk_6c;
     u32 i;
     for (i = 0; i < n; i++) {
-        tbl[i] = (u32)FrameHeap_Create(func_0205eec0(), heap);
+        tbl[i] = (u32)FrameHeap_Create(PlayerBodyWork_GetHeapSize(), heap);
     }
 }
 
-extern "C" void func_0205ee44(u32 *tbl) {
+extern "C" void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (tbl[i]) {
@@ -70,19 +70,19 @@ extern "C" void func_0205ee44(u32 *tbl) {
     }
 }
 
-extern "C" u32 func_0205ee3c(u32 *base, u32 idx) {
+extern "C" u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx) {
     return base[idx];
 }
 
-Unk_0205ee34::Unk_0205ee34() { unk_00 = 4; }
+PlayerBodyWorkRef::PlayerBodyWorkRef() { unk_00 = 4; }
 
-extern "C" void func_0205ee30(void) {}
+extern "C" void PlayerBodyWorkRef_Destruct(void) {}
 
-extern "C" void func_0205ee10(u8 *p, u8 v) {
-    func_020e885c((void *)func_0205ee3c(data_021c73b8.unk_00, v));
+extern "C" void PlayerBodyWorkRef_Assign(u8 *p, u8 v) {
+    func_020e885c((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.unk_00, v));
     *p = v;
 }
 
-extern "C" u32 func_0205edfc(u8 *p) {
-    return func_0205ee3c(data_021c73b8.unk_00, *p);
+extern "C" u32 PlayerBodyWorkRef_GetHeap(u8 *p) {
+    return PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.unk_00, *p);
 }

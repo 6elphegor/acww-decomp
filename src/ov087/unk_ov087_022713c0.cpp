@@ -284,15 +284,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -336,8 +336,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -392,7 +392,7 @@ void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
 void *_ZN10PlayerData10getCatalogEv(void *p);
-void func_0203c41c(void *p, u16 *q, s32 a);
+void Catalog_AddItem(void *p, u16 *q, s32 a);
 u32 Pocket_GetItem(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -778,7 +778,7 @@ void SpNpcCornimerTalk::vfunc_18() {
                                   _ZN10PlayerData11getPlayerIdEv(g8));
                     if (g8 != NULL) {
                         buf.s[1] = Item_MakePaper(0x1d, 4);
-                        func_0203c41c(_ZN10PlayerData10getCatalogEv(g8), &buf.s[1], 0);
+                        Catalog_AddItem(_ZN10PlayerData10getCatalogEv(g8), &buf.s[1], 0);
                     }
                     Talk_CheckAndSetPlayerFlag(0x1a, 1);
                 }

@@ -3,7 +3,7 @@
 extern "C" {
 void _ZdlPv(void *);
 void MI_CpuCopy8(void *, void *, u32);
-BOOL func_020a78a4(void *, const void *, s32);
+BOOL EncodedString_SetRaw(void *, const void *, s32);
 }
 
 class MsgString;
@@ -49,7 +49,7 @@ public:
 
 extern "C" void func_020638d0(void *src, MsgString *dst) {
     Unk_020dd374 buf;
-    func_020a78a4(&buf, (u8 *)src + 2, 8);
+    EncodedString_SetRaw(&buf, (u8 *)src + 2, 8);
     dst->fromEncoded(&buf, 0, 0);
 }
 

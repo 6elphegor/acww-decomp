@@ -235,9 +235,9 @@ extern "C" {
 extern void *gBgHeap;
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_0209c3e0(u32 v);
-s32 func_0209c3f4(u32 v);
-s32 func_0209c41c(void *o, u32 v);
+s32 RoomObjSync_SetState(u32 v);
+s32 RoomObjSync_GetState(u32 v);
+s32 RoomObjSync_ChangeState(void *o, u32 v);
 void func_02002dd0(void *o, u32 v);
 void func_020555ec(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
@@ -442,7 +442,7 @@ void WindowLight::updateState01() {
         if (unk_370 == 0) {
             vfunc_60(2);
         } else {
-            func_0209c41c(this, 2);
+            RoomObjSync_ChangeState(this, 2);
         }
     } else {
         unk_ec.stepAnim();
@@ -462,7 +462,7 @@ void WindowLight::updateState02() {
         if (unk_370 == 0) {
             vfunc_60(3);
         } else {
-            func_0209c41c(this, 3);
+            RoomObjSync_ChangeState(this, 3);
         }
     } else {
         unk_ec.stepAnim();
@@ -499,7 +499,7 @@ void WindowLight::removeCollision() {
 
 // @2225290
 extern "C" void BarberMachine_Start() {
-    if (func_0209c41c(sBarberMachine, 1) != 0) {
+    if (RoomObjSync_ChangeState(sBarberMachine, 1) != 0) {
         sBarberMachine->unk_370 = 1;
     }
 }

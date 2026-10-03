@@ -10,9 +10,9 @@ BOOL _ZN10LetterView8getStateEv(void *p);
 void Letter_Clear(void *p);
 void LetterDefaults_Init(void *p);
 s32 Date_DaysBetween(void *a, void *b);
-void func_02097318(s32 v);
-void func_02097214(s32 v);
-void func_02097110(s32 v);
+void PlayerBank_PayInterest(s32 v);
+void PlayerBank_SendMilestoneLetter(s32 v);
+void PlayerBank_SendDonationLetter(s32 v);
 void _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(void *p);
 void PlayerSpNpcRecord_SendMissingLetter(void *p);
 void _ZN20PlayerDailyTalkFlags8clearAllEv(void *p);
@@ -33,11 +33,11 @@ s32 TopicWord_PickRandom(s32 *p, s32 i);
 void String_LoadResolveAltText(void *a, u8 *b, s32 c);
 void func_020638d0(void *a, void *b);
 s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
-s32 func_020977d0(void *a, void *b);
+s32 PlayerDataArray_GetRandomOther(void *a, void *b);
 void *PlayerErrands_GetSlot(void *a, s32 b);
 void PlayerErrandSlot_Clear(void *p);
 void HouseVisitInvite_Clear(void *p);
-void func_0203c42c(void *a, void *b, s32 c, s32 d);
+void Catalog_SetItem(void *a, void *b, s32 c, s32 d);
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
 void ParcelErrand_Clear(void *p);
 BOOL Item_IsFurniture(void *p);
@@ -58,7 +58,7 @@ void PlayerWifiData_Create(void *);
 void FriendList_Clear(void *);
 void func_02087c80(void *);
 void func_020877cc(void *);
-void func_02097418(void *);
+void PlayerBank_Clear(void *);
 void EmotionSlots_Clear(void *);
 void MI_CpuFill8(void *, s32, u32);
 void Catalog_Clear(void *);
@@ -70,20 +70,20 @@ void func_020877d8(void *);
 void PlayerSpNpcRecord_Destruct(void *);
 void NookPoints_Destroy(void *);
 void PlayerDailyTalkFlags_Destruct(void *);
-void func_02097420(void *);
+void PlayerBank_Destruct(void *);
 void FriendList_Destruct(void *);
 void PlayerWifiData_Destruct(void *);
 void _ZN13PlayerErrandsD1Ev(void *);
 void FutureLetter_Destruct(void *);
-void func_0203ca88(void *);
+void PlayerOptions_DestructInPlayer(void *);
 void Catalog_Destruct(void *);
 void Catalog_Construct(void *);
-void func_0203ca8c(void *);
+void PlayerOptions_ConstructInPlayer(void *);
 void FutureLetter_Construct(void *);
 void _ZN13PlayerErrandsC1Ev(void *);
 void PlayerWifiData_Construct(void *);
 void FriendList_Construct(void *);
-void func_02097424(void *);
+void PlayerBank_Construct(void *);
 void PlayerDailyTalkFlags_Construct(void *);
 void NookPoints_Create(void *);
 void PlayerSpNpcRecord_Construct(void *);
@@ -109,16 +109,16 @@ void func_020639bc(void *);
 s32 func_02063b8c(s32);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 void func_02063388(void *);
-extern u32 data_020d0538[];
-void _ZN12Unk_02098d20C1Ev(void *);
-void _ZN12Unk_02098d20D1Ev(void *);
+extern u32 sForeignLetterPresentKinds[];
+void _ZN21ForeignVillagerRecordC1Ev(void *);
+void _ZN21ForeignVillagerRecordD1Ev(void *);
 void *PlayerData_GetCurrent();
-void func_02097ac4(void *p, s32 a, s32 b);
+void PlayerInventory_SetWallet(void *p, s32 a, s32 b);
 void *_ZN11MsgString9BC1Ev(void *p);
 void _ZN11MsgString9BD1Ev(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
-BOOL _ZN12Unk_02098d2013func_02098e0cEv(void *p);
-void _ZN12Unk_02098d2013func_02098e30Ev(void *p);
+BOOL _ZN21ForeignVillagerRecord5isSetEv(void *p);
+void _ZN21ForeignVillagerRecord5clearEv(void *p);
 s32 PlayerId_FindResidentIndex(...);
 BOOL _ZN8PlayerId7isValidEv(...);
 void *Clock_GetDate(...);
@@ -332,12 +332,12 @@ struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){}
 
 PlayerData::PlayerData() {
     Catalog_Construct(&unk_1b48);
-    func_0203ca8c(&unk_1c6b);
+    PlayerOptions_ConstructInPlayer(&unk_1c6b);
     FutureLetter_Construct(&unk_1c6c);
     _ZN13PlayerErrandsC1Ev(&unk_1d64);
     PlayerWifiData_Construct(&unk_1e10);
     FriendList_Construct(&unk_1e60);
-    func_02097424(&unk_21e4);
+    PlayerBank_Construct(&unk_21e4);
     PlayerDailyTalkFlags_Construct(&unk_21f0);
     NookPoints_Create(&unk_2208);
     unk_220a = 0xfff1;
@@ -350,25 +350,25 @@ PlayerData::PlayerData() {
     func_020877dc(&unk_222b);
     LostChildRecord_Construct(&unk_2230);
     func_02096e24(&unk_223e);
-    _ZN12Unk_02098d20C1Ev(&unk_225c);
+    _ZN21ForeignVillagerRecordC1Ev(&unk_225c);
     _ZN8PlayerIdC1EPv(&unk_2276);
 }
 
 PlayerData::~PlayerData() {
     _ZN8PlayerIdC1Ev(&unk_2276);
-    _ZN12Unk_02098d20D1Ev(&unk_225c);
+    _ZN21ForeignVillagerRecordD1Ev(&unk_225c);
     func_02096e20(&unk_223e);
     LostChildRecord_Destruct(&unk_2230);
     func_020877d8(&unk_222b);
     PlayerSpNpcRecord_Destruct(&unk_221a);
     NookPoints_Destroy(&unk_2208);
     PlayerDailyTalkFlags_Destruct(&unk_21f0);
-    func_02097420(&unk_21e4);
+    PlayerBank_Destruct(&unk_21e4);
     FriendList_Destruct(&unk_1e60);
     PlayerWifiData_Destruct(&unk_1e10);
     _ZN13PlayerErrandsD1Ev(&unk_1d64);
     FutureLetter_Destruct(&unk_1c6c);
-    func_0203ca88(&unk_1c6b);
+    PlayerOptions_DestructInPlayer(&unk_1c6b);
     Catalog_Destruct(&unk_1b48);
 }
 
@@ -385,7 +385,7 @@ void PlayerData::reset() {
     unk_2212 = 0xfff1;
     unk_2253 = 0xff;
     MI_CpuFill8(&unk_2254, 0xff, 8);
-    _ZN12Unk_02098d2013func_02098e30Ev(&unk_225c);
+    _ZN21ForeignVillagerRecord5clearEv(&unk_225c);
 }
 
 BOOL PlayerData::isUsed() { _ZN8PlayerId7isValidEv(&unk_2276); }
@@ -400,7 +400,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     setFortune(0);
     PlayerData_SetStungFace(this, s5);
     ((PlayerInventory *)&unk_1148)->clear();
-    func_02097ac4(&unk_1148, s6, 1);
+    PlayerInventory_SetWallet(&unk_1148, s6, 1);
     unk_220a = *s7;
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &unk_2276);
     NookPoints_Init(&unk_2208);
@@ -421,7 +421,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     unk_220e = 0xfff1;
     unk_2214 = 0x11fa;
     func_020877cc(&unk_222b);
-    func_02097418(&unk_21e4);
+    PlayerBank_Clear(&unk_21e4);
     EmotionSlots_Clear(&unk_21ec);
     ((Unk_02097ff4 *)this)->getDayUpdateDate();
     Clock_GetDate();
@@ -565,7 +565,7 @@ void Unk_02097ff4::func_020984a8()
                 }
                 in->setPocket((u16 *)&v0, i, z48);
                 if (v0 != 0xfff1) {
-                    func_0203c42c(((PlayerData *)this)->getCatalog(), (u16 *)&v0, z4c, k);
+                    Catalog_SetItem(((PlayerData *)this)->getCatalog(), (u16 *)&v0, z4c, k);
                 }
             }
         }
@@ -590,7 +590,7 @@ void Unk_02097ff4::resetForNewTown()
                 if (c >= 0x11a8 && c <= 0x12a7) ok = TRUE;
                 if (ok) {
                     r7->setPocket(r5, i, 1);
-                    func_0203c42c(((PlayerData *)this)->getCatalog(), r5, z, 1);
+                    Catalog_SetItem(((PlayerData *)this)->getCatalog(), r5, z, 1);
                 }
             }
         }
@@ -616,7 +616,7 @@ void Unk_02097ff4::func_020983c0(u16 *p)
 
 s32 Unk_02097ff4::pickOtherResident()
 {
-    return func_020977d0(gSavePlayers, ((PlayerData *)this)->getPlayerId());
+    return PlayerDataArray_GetRandomOther(gSavePlayers, ((PlayerData *)this)->getPlayerId());
 }
 
 BOOL Unk_02097ff4::getOtherResidentName(void *q)
@@ -698,9 +698,9 @@ extern "C" void PlayerData_UpdateDay()
         u8 *q = p->getDayUpdateDate();
         s32 r4 = Date_DaysBetween(&loc, q);
         s32 t = (loc.b - q[1]) + (loc.c - q[2]) * 12;
-        func_02097318(t);
-        func_02097214(r4);
-        func_02097110(r4);
+        PlayerBank_PayInterest(t);
+        PlayerBank_SendMilestoneLetter(r4);
+        PlayerBank_SendDonationLetter(r4);
         _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(((PlayerData *)p)->getSpNpcRecord());
         PlayerSpNpcRecord_SendMissingLetter(((PlayerData *)p)->getSpNpcRecord());
         if (r4) {
@@ -773,7 +773,7 @@ void Unk_02097ff4::sendForeignVillagerLetter()
 {
     void *r8 = ((PlayerData *)this)->getPlayerId();
     if (_ZN8PlayerId7isValidEv()) {
-        if (_ZN12Unk_02098d2013func_02098e0cEv(unk_225c)) {
+        if (_ZN21ForeignVillagerRecord5isSetEv(unk_225c)) {
             u8 *r7 = unk_2266;
             s32 a;
             u8 *l10 = (u8 *)&unk_2272;
@@ -808,7 +808,7 @@ void Unk_02097ff4::sendForeignVillagerLetter()
             func_020638d0(unk_225c, o3c);
             MailText_SetSlot(8, o3c);
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
-                _ZN12Unk_02098d2013func_02098e30Ev(unk_225c);
+                _ZN21ForeignVillagerRecord5clearEv(unk_225c);
             }
             _ZN11MsgString33D1Ev(o58);
             _ZN12Unk_020dd38cD1Ev(o3c);
@@ -865,7 +865,7 @@ void PlayerInventory::clear()
     for (i = 0; i < 15; i++) {
         unk_9da[i] = 0xfff1;
     }
-    func_02097ac4(this, 0, 1);
+    PlayerInventory_SetWallet(this, 0, 1);
 }
 
 extern "C" BOOL Pocket_IsValidIndex(s32 i)

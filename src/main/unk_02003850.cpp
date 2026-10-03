@@ -31,8 +31,8 @@ extern u32 data_0213bb44[];
 extern u32 data_0213baa4[];
 
 extern u32 data_020c6190[];
-extern const u32 data_020c6160[];
-const u32 data_020c6160[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
+extern const u32 sTvSoundSizes[];
+const u32 sTvSoundSizes[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
 
 #define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)Heap_Alloc(heap, sz); if (o) { o->unk_00 = data_0213bac4; o->unk_00 = vt; } return (TvSound *)o; }
 
@@ -56,7 +56,7 @@ extern "C" TvSound *TvSound_Create(u32 heap, s32 type) {
 
 extern "C" u32 TvSound_GetMaxSize() {
     u32 m = 0;
-    for (const u32 *p = data_020c6160; p < (const u32 *)data_020c6190; p++) {
+    for (const u32 *p = sTvSoundSizes; p < (const u32 *)data_020c6190; p++) {
         if (*p > m) {
             m = *p;
         }

@@ -151,8 +151,8 @@ void *MI_CpuFill8(void *dst, u32 v, u32 n);
 void *MI_CpuCopy8(const void *src, void *dst, u32 n);
 void Mem_Copy(const void *src, void *dst, u32 n);
 void Mem_Clear(void *p, s32 n);
-s32 func_02051320(void *p, s32 n, s32 z);
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLineEnd(void *p, s32 n, s32 z);
+s32 Text_GetLength(void *p, s32 n);
 s32 MailText_LoadLetter(void *a, void *b, void *c, void *d, void *e, void *f);
 s32 MailText_LoadLetterZ(void *a, void *b, void *c, void *d, void *e1, void *e2, void *e3, void *e4, void *name);
 void MailText_SetSlot(s32 i, void *x);
@@ -600,21 +600,21 @@ extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) 
     _ZN15EncodedString41C1Ev(&out);
     String_Load2d(src, code, NULL);
     _ZN13EncodedString13fromMsgStringEP9MsgString(&out, src);
-    n = func_02051320(out.unk_0e, 0x29, 0);
+    n = Text_GetLineEnd(out.unk_0e, 0x29, 0);
     *lenOut = n;
     if (n != 0) {
         Mem_Copy(out.unk_0e, dst, n);
     }
     m = n;
     if (extra != NULL) {
-        s32 t = func_020512e0(extra, 8);
+        s32 t = Text_GetLength(extra, 8);
         Mem_Copy(extra, dst + n, t);
         m = n + t;
     }
     if (out.unk_0e[n] == 0x86) {
         s32 off = n + 1;
         u8 *p = out.unk_0e + off;
-        s32 k = func_02051320(p, 0x29 - off, 0);
+        s32 k = Text_GetLineEnd(p, 0x29 - off, 0);
         if (k != 0) {
             Mem_Copy(p, dst + m, k);
         }

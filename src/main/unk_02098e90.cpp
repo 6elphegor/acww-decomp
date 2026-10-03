@@ -2203,7 +2203,7 @@ BOOL Pocket_IsValidIndex(s32);
 void _ZN15PlayerInventory9setPocketEPtij(void *, u16 *, s32, s32);
 s32 Item_GetKind(u16 *);
 void Item_FromPlacedForm(u16 *, u16 *);
-void func_0203c42c(void *, u16 *, s32, s32);
+void Catalog_SetItem(void *, u16 *, s32, s32);
 void *_ZN10PlayerData10getCatalogEv(void *);
 void _ZN12ItemPickSpec3setEii(void *, u32, u32);
 void func_02063388(void *);
@@ -2619,12 +2619,12 @@ extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c) {
     void *r6 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         if (*a != 0xfff1 && b == 0) {
-            func_0203c42c(_ZN10PlayerData10getCatalogEv(r6), a, 0, 1);
+            Catalog_SetItem(_ZN10PlayerData10getCatalogEv(r6), a, 0, 1);
         }
         if (b == 0) {
             if (Unk_02099124_R(a, 0x151f, 0x151f)) {
                 u16 t = 0x1033;
-                func_0203c42c(_ZN10PlayerData10getCatalogEv(r6), &t, 0, 1);
+                Catalog_SetItem(_ZN10PlayerData10getCatalogEv(r6), &t, 0, 1);
             }
         }
         _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(r6), a, c, b);

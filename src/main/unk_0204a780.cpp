@@ -230,10 +230,10 @@ u16 Item_MakeMoneyBag(u32 x);
 BOOL Item_GetShirtUnkGroup(u16 *p);
 BOOL Item_TestInfoFlag4(u32 x);
 BOOL Item_TestInfoFlag3(u32 x);
-u16 func_0204b900(u16 *p);
+u16 Item_GetInsectBaseSize(u16 *p);
 s32 Item_GetInsectIndex(u16 *p);
 BOOL Item_IsInsect(u16 *p);
-s32 func_0204b978(u16 *p);
+s32 Item_GetFishBaseSize(u16 *p);
 s32 Item_GetFishIndex(u16 *p);
 BOOL Item_IsFish(u16 *p);
 BOOL Item_IsTreeStage0(u16 *p);
@@ -292,10 +292,10 @@ u16 Item_MakeMoneyBag(u32 x);
 BOOL Item_GetShirtUnkGroup(u16 *p);
 BOOL Item_TestInfoFlag4(u32 x);
 BOOL Item_TestInfoFlag3(u32 x);
-u16 func_0204b900(u16 *p);
+u16 Item_GetInsectBaseSize(u16 *p);
 s32 Item_GetInsectIndex(u16 *p);
 BOOL Item_IsInsect(u16 *p);
-s32 func_0204b978(u16 *p);
+s32 Item_GetFishBaseSize(u16 *p);
 s32 Item_GetFishIndex(u16 *p);
 }
 }
@@ -344,7 +344,7 @@ BOOL Item_IsFurniture(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
 s32 Item_GetIdClass(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-u32 func_0204f060(s32 x);
+u32 Fish_GetWaterKind(s32 x);
 void Item_Copy(u16 *dst, u16 *src);
 s32 ItemInfo_IsHoldable(u16 *p);
 s32 ItemInfo_GetKind(u16 *p);
@@ -385,12 +385,12 @@ s32 Item_GetMemberPrice(u16 *p);
 s32 Item_GetPrice(u16 *p);
 s32 Item_GetInfoUnk07(u16 *p);
 BOOL Item_IsInvalid(u16 *p);
-u8 *func_0204bdb8();
+u8 *Item_GetSaveData();
 BOOL Item_IsFruit(u16 *p);
-s32 func_0204c058(u8 *p);
+s32 TownState_GetNativeFruit(u8 *p);
 u16 Item_MakeFruit(s32 n);
 BOOL Item_Equals(u16 *a, u16 *b);
-s32 func_0204be64(u16 *p);
+s32 NookPoints_GetRankOf(u16 *p);
 s32 TownState_FindEvent(s32 x, u32 id);
 Unk_0204c1fc_Entry *TownState_GetEvent(s32 i);
 Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
@@ -400,7 +400,7 @@ static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 BOOL Item_IsFish(u16 *p);
-s32 func_0204b9e8(u16 *p);
+s32 Item_GetFishWaterClass(u16 *p);
 BOOL Item_GetIfNotCreature(u16 *a, u16 *out);
 void Item_Copy(u16 *dst, u16 *src);
 BOOL func_0204bab8(u16 *p);
@@ -431,11 +431,11 @@ BOOL Item_IsInvalid(u16 *p);
 s32 Item_GetShopPrice(u16 *p);
 BOOL Item_IsMoneyBag(u16 *p);
 s32 Item_GetMemberPrice(u16 *p);
-s32 func_0204be64(u16 *p);
+s32 NookPoints_GetRankOf(u16 *p);
 s32 Item_GetPrice(u16 *p);
 BOOL Item_Equals(u16 *a, u16 *b);
 u16 Item_MakeFruit(s32 n);
-s32 func_0204c058(u8 *p);
+s32 TownState_GetNativeFruit(u8 *p);
 BOOL Item_IsFruit(u16 *p);
 void TownState_SetSeasonPeriod(u32 n);
 u32 TownState_GetSeasonPeriod();
@@ -457,7 +457,7 @@ struct Unk_0204c290_V {
     u16 pad;
 };
 void Town_ReplaceSouthCedars();
-u8 *func_0204bdb8();
+u8 *Item_GetSaveData();
 }
 }
 
@@ -637,7 +637,7 @@ extern "C" BOOL Item_IsFruit(u16 *p) { if (Unk_0204b9c0_R(p, 0x1518, 0x151c)) re
 }
 
 namespace nC {
-extern "C" s32 func_0204c058(u8 *p) { return *(s32 *)(p + 4); }
+extern "C" s32 TownState_GetNativeFruit(u8 *p) { return *(s32 *)(p + 4); }
 }
 
 namespace nC {
@@ -663,7 +663,7 @@ extern "C" s32 Item_GetPrice(u16 *p) {
         if (Item_IsMoneyBag(&a.v)) {
             return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v))) * 10;
         } else if (Item_IsFruit(&a.v)) {
-            ItemId c(Item_MakeFruit(func_0204c058(func_0204bdb8() + 0x15e54)));
+            ItemId c(Item_MakeFruit(TownState_GetNativeFruit(Item_GetSaveData() + 0x15e54)));
             if (Item_Equals(&a.v, &c.v)) {
                 return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v))) / 5;
             }
@@ -685,7 +685,7 @@ extern "C" s32 Item_GetPrice(u16 *p) {
 
 #pragma dont_inline on
 namespace nC {
-extern "C" s32 func_0204be64(u16 *p) { return NookPoints_GetRank(*p); }
+extern "C" s32 NookPoints_GetRankOf(u16 *p) { return NookPoints_GetRank(*p); }
 }
 #pragma dont_inline reset
 
@@ -695,7 +695,7 @@ extern "C" s32 Item_GetMemberPrice(u16 *p) {
     if (Item_IsMoneyBag(p)) return a;
     void *g = PlayerData_GetCurrent();
     if (g) {
-        s32 c = func_0204be64(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(g)));
+        s32 c = NookPoints_GetRankOf(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(g)));
         s32 k = 0;
         switch (c) {
         case 2: k = 5; break;
@@ -717,7 +717,7 @@ extern "C" BOOL Item_IsMoneyBag(u16 *p) { if (Unk_0204b9c0_R(p, 0x1492, 0x14fd))
 
 #pragma dont_inline on
 namespace nC {
-extern "C" u8 *func_0204bdb8() { return gSaveData; }
+extern "C" u8 *Item_GetSaveData() { return gSaveData; }
 }
 #pragma dont_inline reset
 
@@ -725,7 +725,7 @@ namespace nC {
 extern "C" s32 Item_GetShopPrice(u16 *p) {
     s32 a = Item_GetMemberPrice(p);
     if (Item_IsMoneyBag(p)) return a;
-    a >>= NookShop_IsSaleTime(func_0204bdb8() + 0x15db4);
+    a >>= NookShop_IsSaleTime(Item_GetSaveData() + 0x15db4);
     return a;
 }
 }
@@ -845,9 +845,9 @@ extern "C" BOOL Item_GetIfNotCreature(u16 *a, u16 *out) {
 }
 
 namespace nC {
-extern "C" s32 func_0204b9e8(u16 *p) {
+extern "C" s32 Item_GetFishWaterClass(u16 *p) {
     if (Item_IsFish(p)) {
-        switch (func_0204f060(Item_GetFishIndex(p))) {
+        switch (Fish_GetWaterKind(Item_GetFishIndex(p))) {
         case 1: return 0;
         case 3: return 1;
         case 2: return 2;
@@ -867,7 +867,7 @@ extern "C" s32 Item_GetFishIndex(u16 *p) { if (Item_IsFish(p)) return Item_GetId
 }
 
 namespace nB {
-extern "C" s32 func_0204b978(u16 *p) {
+extern "C" s32 Item_GetFishBaseSize(u16 *p) {
     if (Item_IsFish(p)) return Fish_GetBaseSize(Item_GetFishIndex(p));
     return 10;
 }
@@ -882,7 +882,7 @@ extern "C" s32 Item_GetInsectIndex(u16 *p) { if (Item_IsInsect(p)) return Item_G
 }
 
 namespace nB {
-extern "C" u16 func_0204b900(u16 *p) {
+extern "C" u16 Item_GetInsectBaseSize(u16 *p) {
     if (Item_IsInsect(p)) return func_02060c70((u8)Item_GetInsectIndex(p));
     return 0;
 }

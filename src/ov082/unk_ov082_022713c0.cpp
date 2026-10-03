@@ -82,7 +82,7 @@ void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void func_020947c0(u16 *out, void *p);
+void PlayerActor_GetSlotHeldItem(u16 *out, void *p);
 void *PlayerActor_GetLocalSessionSlot();
 void Clock_GetDateTime(void *p);
 s32 Pocket_FindItem(u16 *p);
@@ -329,15 +329,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -381,8 +381,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -685,7 +685,7 @@ void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
         *((u8 *)out + 4) = 2;
     } else {
         *((u8 *)out + 4) = 3;
-        func_020947c0(&x[0], PlayerActor_GetLocalSessionSlot());
+        PlayerActor_GetSlotHeldItem(&x[0], PlayerActor_GetLocalSessionSlot());
         if (!Talk_CheckAndSetPlayerFlag(0x1c, 0)) {
             x[2] = 0x1376;
             if (Unk_ov082_Neg(Pocket_FindItem(&x[2]))) {

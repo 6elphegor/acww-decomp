@@ -116,7 +116,7 @@ extern const s32 sResidentCursorOffsets[];
 Unk_ov004_0224e2b8_Stub *RoomTelephone_GetInstance();
 void Snd_PlaySe(s32 a);
 
-s32 func_020978c8(void *, s32);
+s32 PlayerDataArray_IsUsed(void *, s32);
 u8 *PlayerActor_GetCharacter(u32 id);
 void *PlayerData_GetResident(void *a, s32 i);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
@@ -126,7 +126,7 @@ void _ZN8PlayerId13getNameStringEP9MsgString(void *self, void *o);
 void Camera_ProjectCurvedToScreen(s32 *a, s32 *b, void *c);
 void func_02094018(void *p);
 void func_02094030(void *);
-s32 *func_020947f0(u32);
+s32 *PlayerActor_GetBodyPos(u32);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
 BOOL SaveManager_IsIdleForRoom(void);
@@ -137,7 +137,7 @@ BOOL InputMode_IsButtons();
 void InputMode_SetTouch(void);
 void InputMode_SetButtons(void);
 u8 *Scene_GetTouchPicker();
-s32 func_020b6080(u8 *obj, void *out, s32 *a, u8 *b);
+s32 TouchPickResult_GetTarget(u8 *obj, void *out, s32 *a, u8 *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Clock_GetDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
@@ -366,7 +366,7 @@ void ResidentSelect::updateTouchSelect() {
         return;
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
-        if (func_020b6080(Scene_GetTouchPicker(), out, &a, &c) && a == 1) {
+        if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), out, &a, &c) && a == 1) {
             gCommManager->unk_68 = c;
             unk_31c = c;
             changeState(3);
@@ -557,7 +557,7 @@ void ResidentSelect::updateSave() {
 
 void ResidentSelect::enterLeave() {
     s32 v[3];
-    s32 *p = func_020947f0(4);
+    s32 *p = PlayerActor_GetBodyPos(4);
     v[0] = p[0];
     v[1] = p[1];
     v[2] = p[2];
@@ -571,7 +571,7 @@ void ResidentSelect::updateLeave() {
 void ResidentSelect::updateNameLabels() {
     u8 i;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(gSavePlayers, i) != 0) {
+        if (PlayerDataArray_IsUsed(gSavePlayers, i) != 0) {
             u8 *a = PlayerActor_GetCharacter(i);
             if (a != 0) {
                 s32 x, y;

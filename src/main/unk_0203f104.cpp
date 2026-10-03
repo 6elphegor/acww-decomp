@@ -111,11 +111,11 @@ extern u32 gCommManager;
 extern "C" {
 s32 _ZN11CommManager8isOnlineEv(u32 v);
 s32 Backup_GetStatus(void *p);
-s32 func_02040264(s32 v);
+s32 EventWeekSlots_UpdateToday(s32 v);
 s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff48testFlagEj(s32 p, s32 v);
-s32 func_020400b0(...);
+s32 EventWeekSlots_IsSeenToday(...);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
 void Clock_GetDateTime(void *);
@@ -125,9 +125,9 @@ s32 Date_GetWeekday(u32, u32, u32);
 s32 Date_GetDaysInMonth(u32, u32);
 s32 Clock_GetWeekday(void);
 s32 PlayerData_GetCurrentIndex(void);
-s32 func_02040234(Unk_0203ff50_Slot *, u32);
-s32 func_02040188(Unk_0203f554_Cal);
-s32 func_020400f8(Unk_0203f554_Cal);
+s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *, u32);
+s32 EventWeek_IsInLyleWeek(Unk_0203f554_Cal);
+s32 EventWeek_IsInUnkWeek(Unk_0203f554_Cal);
 s32 LostChild_IsKatieDue();
 s32 LostChild_IsKaitlinDue();
 s32 _ZN16BlancaFaceRecord11isBlancaDueEv(void *);
@@ -159,7 +159,7 @@ void Event_RefreshIfDateChanged();
 s32 Event_GetStateAt(s32 a, u8 *b, s32 c);
 s32 EventDayList_GetState(s32 a, u8 *b, Unk_0203f408_Entry *c);
 Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
-s32 func_0203f14c(void);
+s32 Game_IsIntroPeriod(void);
 Unk_0203ff20_Entry *EventWeekSlots_Get(Unk_0203ff50_Slot *, s32);
 s32 EventWeekSlots_IsUnavailable(u32, s32);
 void EventWeekSlot_Clear(Unk_0203ff20_Entry *);
@@ -299,7 +299,7 @@ extern "C" Unk_0203ff20_Entry *EventWeekSlots_GetToday(Unk_0203ff50_Slot *unused
 
 extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
     Unk_0203ff50_Slot *s = (Unk_0203ff50_Slot *)gSaveEventWeekSlots;
-    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, func_02040234(s, id));
+    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, EventWeekSlots_FindId(s, id));
     if (e) {
         if (id == 0x44) {
             e->unk_05 = 0xff;
@@ -500,7 +500,7 @@ extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_Ca
     }
 }
 
-extern "C" BOOL func_0203fc10(void *a, s32 b) {
+extern "C" BOOL Villager_IsSettledExcept(void *a, s32 b) {
     BOOL r = FALSE;
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
         if (Villager_GetResidentStatus(a) == 3) {
@@ -518,7 +518,7 @@ extern "C" void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_
     out->w = 0;
     if (n < 0 || n > 7) n -= 0x4b;
     void *r6 = SaveVillagers_Get(base + 0x8a3c, n);
-    if (func_0203fc10(r6, SaveVillagers_GetUnk3830Index(base + 0x8a3c))) {
+    if (Villager_IsSettledExcept(r6, SaveVillagers_GetUnk3830Index(base + 0x8a3c))) {
         u8 *p = Villager_GetBirthday(r6);
         if (p) {
             out->s.b3 = p[0];
@@ -745,7 +745,7 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
     kind = t->kind;
     if (kind == 5) return 0;
     if (x == 0) {
-        if (func_020400b0(e->id)) return 1;
+        if (EventWeekSlots_IsSeenToday(e->id)) return 1;
     }
     if (kind == 4) {
         if (y != 0) {
@@ -773,9 +773,9 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
     }
     switch (e->id) {
     case 0x3c:
-        return func_02040188(cal);
+        return EventWeek_IsInLyleWeek(cal);
     case 0x3d:
-        return func_020400f8(cal);
+        return EventWeek_IsInUnkWeek(cal);
     default:
         return 0;
     }
@@ -947,7 +947,7 @@ extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
     u8 d3[8];
     u8 tbl[0x58];
     if (p[5] == gTodayEvents.unk_00[2] && p[4] == gTodayEvents.unk_00[1] && p[3] == gTodayEvents.unk_00[0]) {
-        if (c != 0 || func_0203f14c() == 0) {
+        if (c != 0 || Game_IsIntroPeriod() == 0) {
             MI_CpuCopy8(p, d1, 8);
             r = EventDayList_GetState(a, d1, gTodayEvents.unk_04);
         }
@@ -963,7 +963,7 @@ extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
 extern "C" s32 Event_GetState(s32 a, void *b, s32 c) {
     s32 r = 0;
     u8 buf[8];
-    if (func_020400b0() == 0) {
+    if (EventWeekSlots_IsSeenToday() == 0) {
         MI_CpuCopy8(b, buf, 8);
         r = Event_GetStateAt(a, buf, c);
         if (r == 1) {
@@ -1046,7 +1046,7 @@ BOOL EventCalendarModule::vfunc_00() {
 
 BOOL EventCalendarModule::onExecute() {
     if (Backup_GetStatus(gBackup) != 3) {
-        func_02040264(((s32 (*)(void *))Event_RefreshIfDateChanged)(this));
+        EventWeekSlots_UpdateToday(((s32 (*)(void *))Event_RefreshIfDateChanged)(this));
     }
     return TRUE;
 }
@@ -1055,7 +1055,7 @@ BOOL EventCalendarModule::onDraw() { return TRUE; }
 
 BOOL EventCalendarModule::vfunc_0c() { return TRUE; }
 
-extern "C" BOOL func_0203f14c(void) {
+extern "C" BOOL Game_IsIntroPeriod(void) {
     BOOL r = FALSE;
     if (GameStart_IsActive()) {
         r = TRUE;

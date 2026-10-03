@@ -289,15 +289,15 @@ public:
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(s32 v);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u32 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -340,8 +340,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u32 getSpecies();
     virtual s32 vfunc_a8();
 

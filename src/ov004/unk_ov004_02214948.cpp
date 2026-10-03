@@ -54,15 +54,15 @@ public:
     virtual BOOL onExecute();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -96,8 +96,8 @@ public:
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void addMood(u32 a, s32 b);
@@ -259,8 +259,8 @@ public:
     virtual void vfunc_4c(s32 a, u32 b);
     virtual BOOL vfunc_58();
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     BOOL drawModel();
     void func_ov004_02215b9c();
@@ -374,7 +374,7 @@ struct Unk_ov004_02214ab4_Vec {
     s32 x, y, z;
 };
 extern "C" {
-Unk_ov004_02214ab4_Vec *func_020947f0(u32);
+Unk_ov004_02214ab4_Vec *PlayerActor_GetBodyPos(u32);
 s32 NpcActor_getDistanceToPlayer(void *, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -1234,7 +1234,7 @@ BOOL BirthdayHostVillager::setupAct08() {
 void BirthdayHostVillager::mainAct08() {
     Unk_ov004_02214ab4_Vec a, b;
     s32 v, r4, r0;
-    Unk_ov004_02214ab4_Vec *p = func_020947f0(4);
+    Unk_ov004_02214ab4_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -1306,11 +1306,11 @@ void BirthdayHostVillager::mainAct0D() {
     changeAct(6);
 }
 
-void BirthdayHostVillager::vfunc_80() {
+void BirthdayHostVillager::onTalkMelodyPlayed() {
     unk_898 = 1;
 }
 
-BOOL BirthdayHostVillager::vfunc_7c() {
+BOOL BirthdayHostVillager::canPlayTalkMelody() {
     if (unk_898 == 0) {
         return TRUE;
     }

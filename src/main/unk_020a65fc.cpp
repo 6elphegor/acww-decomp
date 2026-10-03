@@ -29,59 +29,59 @@ void CommRecord_UnpackSource(u8 *src, u8 *a, u8 *b);
 }
 
 extern "C" {
-void func_020a6914(u8 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void NetStatusMsgBase_Pack(u8 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void func_020a6958(void *p);
+void NetStatusMsgBase_Fini(void *p);
 }
 
 extern "C" {
-void func_020a695c(void *p);
+void NetStatusMsgBase_Init(void *p);
 }
 
 extern CommManager *gCommManager;
 
-struct Unk_020a66f8 {
+struct NetMoveReady {
     u32 unk_00;
-    Unk_020a66f8();
-    ~Unk_020a66f8();
-    void func_020a66f8();
-    void func_020a6700(u32 *out);
-    void func_020a6708(u32 v);
+    NetMoveReady();
+    ~NetMoveReady();
+    void reset();
+    void get(u32 *out);
+    void set(u32 v);
 };
 
-struct Unk_020a6720 {
+struct NetMoveRequest {
     u32 unk_00;
     u8 unk_04;
-    Unk_020a6720();
-    ~Unk_020a6720();
-    void func_020a6720();
-    void func_020a672c(s32 *a, u8 *b);
-    void func_020a6738(u32 a, u8 b);
+    NetMoveRequest();
+    ~NetMoveRequest();
+    void reset();
+    void get(s32 *a, u8 *b);
+    void set(u32 a, u8 b);
 };
 
-struct Unk_020a6754 {
+struct NetSlotStatus {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
-    Unk_020a6754();
-    ~Unk_020a6754();
-    void func_020a6754();
-    void func_020a6760(u8 *a, u8 *b, u8 *c);
-    void func_020a6774(u8 a, u8 b, u8 c);
+    NetSlotStatus();
+    ~NetSlotStatus();
+    void reset();
+    void get(u8 *a, u8 *b, u8 *c);
+    void set(u8 a, u8 b, u8 c);
 };
 
-struct Unk_020a6790 {
+struct NetPendingStatus {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
     u32 unk_04;
-    Unk_020a6790();
-    ~Unk_020a6790();
-    void func_020a6790();
-    void func_020a67a0(u8 *a, u8 *b, u8 *c, u32 *d);
-    void func_020a67bc(u8 a, u8 b, u8 c, u32 mask);
+    NetPendingStatus();
+    ~NetPendingStatus();
+    void reset();
+    void get(u8 *a, u8 *b, u8 *c, u32 *d);
+    void setMasked(u8 a, u8 b, u8 c, u32 mask);
 };
 
 extern "C" {
@@ -93,19 +93,19 @@ struct Unk_020a647c_Buf {
 }
 
 extern "C" {
-void func_020a6804(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
+void NetStatusMsg_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
 }
 
 extern "C" {
-void func_020a68b8(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
+void NetStatusMsgBase_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e);
 }
-extern "C" void func_020a66a8();
-extern "C" void func_020a6688();
+extern "C" void NetArea_WriteStateAPart0();
+extern "C" void NetArea_WriteStateANpcTalk();
 
-extern void (*const data_020d07b0[2])(s32);
-void (*const data_020d07b0[2])(s32) = {(void (*)(s32))func_020a66a8, (void (*)(s32))func_020a6688};
+extern void (*const sNetStateAWriters[2])(s32);
+void (*const sNetStateAWriters[2])(s32) = {(void (*)(s32))NetArea_WriteStateAPart0, (void (*)(s32))NetArea_WriteStateANpcTalk};
 
-extern "C" void func_020a68b8(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) {
+extern "C" void NetStatusMsgBase_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) {
     u8 loc;
     CommRecord_UnpackSource(p, b, &loc);
     if (loc & 1) {
@@ -122,42 +122,42 @@ extern "C" void func_020a68b8(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) {
     *a = ((u32)p[1] >> 6) & 3;
 }
 
-extern "C" void *func_020a68a8(void *p) {
-    func_020a695c(p);
+extern "C" void *NetStatusUpdateMsg_Init(void *p) {
+    NetStatusMsgBase_Init(p);
     return p;
 }
 
-extern "C" void *func_020a6898(void *p) {
-    func_020a6958(p);
+extern "C" void *NetStatusUpdateMsg_Fini(void *p) {
+    NetStatusMsgBase_Fini(p);
     return p;
 }
 
-extern "C" void func_020a6878(u8 *p, s32 b, s32 c, s32 d, s32 e) { func_020a6914(p, 0, b, c, d, e); }
+extern "C" void NetStatusUpdateMsg_Pack(u8 *p, s32 b, s32 c, s32 d, s32 e) { NetStatusMsgBase_Pack(p, 0, b, c, d, e); }
 
-extern "C" void func_020a6858(u8 *p, u8 *b, u8 *c, u8 *d, s32 *e) {
+extern "C" void NetStatusUpdateMsg_Unpack(u8 *p, u8 *b, u8 *c, u8 *d, s32 *e) {
     s32 x;
-    func_020a68b8(p, &x, b, c, d, e);
+    NetStatusMsgBase_Unpack(p, &x, b, c, d, e);
 }
 
-extern "C" void *func_020a6848(void *p) {
-    func_020a695c(p);
+extern "C" void *NetStatusMsg_Init(void *p) {
+    NetStatusMsgBase_Init(p);
     return p;
 }
 
-extern "C" void *func_020a6838(void *p) {
-    func_020a6958(p);
+extern "C" void *NetStatusMsg_Fini(void *p) {
+    NetStatusMsgBase_Fini(p);
     return p;
 }
 
-extern "C" void func_020a681c(u8 *p, s32 a, s32 b, s32 c, u8 d, s32 e) { func_020a6914(p, a, b, c, d, e); }
+extern "C" void NetStatusMsg_Pack(u8 *p, s32 a, s32 b, s32 c, u8 d, s32 e) { NetStatusMsgBase_Pack(p, a, b, c, d, e); }
 
-extern "C" void func_020a6804(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) { func_020a68b8(p, a, b, c, d, e); }
+extern "C" void NetStatusMsg_Unpack(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) { NetStatusMsgBase_Unpack(p, a, b, c, d, e); }
 
-Unk_020a6790::Unk_020a6790() { func_020a6790(); }
+NetPendingStatus::NetPendingStatus() { reset(); }
 
-Unk_020a6790::~Unk_020a6790() {}
+NetPendingStatus::~NetPendingStatus() {}
 
-void Unk_020a6790::func_020a67bc(u8 a, u8 b, u8 c, u32 mask) {
+void NetPendingStatus::setMasked(u8 a, u8 b, u8 c, u32 mask) {
     if (mask & 1) {
         unk_00 = a;
     }
@@ -170,93 +170,93 @@ void Unk_020a6790::func_020a67bc(u8 a, u8 b, u8 c, u32 mask) {
     unk_04 |= mask;
 }
 
-void Unk_020a6790::func_020a67a0(u8 *a, u8 *b, u8 *c, u32 *d) {
+void NetPendingStatus::get(u8 *a, u8 *b, u8 *c, u32 *d) {
     *a = unk_00;
     *b = unk_01;
     *c = unk_02;
     *d = unk_04;
 }
 
-void Unk_020a6790::func_020a6790() {
+void NetPendingStatus::reset() {
     unk_00 = 0x3f;
     unk_01 = 0;
     unk_02 = 0;
     unk_04 = 0;
 }
 
-Unk_020a6754::Unk_020a6754() { func_020a6754(); }
+NetSlotStatus::NetSlotStatus() { reset(); }
 
-Unk_020a6754::~Unk_020a6754() {}
+NetSlotStatus::~NetSlotStatus() {}
 
-void Unk_020a6754::func_020a6774(u8 a, u8 b, u8 c) {
+void NetSlotStatus::set(u8 a, u8 b, u8 c) {
     unk_00 = a;
     unk_01 = b;
     unk_02 = c;
 }
 
-void Unk_020a6754::func_020a6760(u8 *a, u8 *b, u8 *c) {
+void NetSlotStatus::get(u8 *a, u8 *b, u8 *c) {
     *a = unk_00;
     *b = unk_01;
     *c = unk_02;
 }
 
-void Unk_020a6754::func_020a6754() {
+void NetSlotStatus::reset() {
     unk_00 = 0x3f;
     unk_01 = 0;
     unk_02 = 0;
 }
 
-Unk_020a6720::Unk_020a6720() { func_020a6720(); }
+NetMoveRequest::NetMoveRequest() { reset(); }
 
-Unk_020a6720::~Unk_020a6720() {}
+NetMoveRequest::~NetMoveRequest() {}
 
-void Unk_020a6720::func_020a6738(u32 a, u8 b) {
+void NetMoveRequest::set(u32 a, u8 b) {
     unk_00 = a;
     unk_04 = b;
 }
 
-void Unk_020a6720::func_020a672c(s32 *a, u8 *b) {
+void NetMoveRequest::get(s32 *a, u8 *b) {
     *a = unk_00;
     *b = unk_04;
 }
 
-void Unk_020a6720::func_020a6720() {
+void NetMoveRequest::reset() {
     unk_00 = 4;
     unk_04 = 0x3f;
 }
 
-Unk_020a66f8::Unk_020a66f8() { func_020a66f8(); }
+NetMoveReady::NetMoveReady() { reset(); }
 
-Unk_020a66f8::~Unk_020a66f8() {}
+NetMoveReady::~NetMoveReady() {}
 
-void Unk_020a66f8::func_020a6708(u32 v) { unk_00 = v; }
+void NetMoveReady::set(u32 v) { unk_00 = v; }
 
-void Unk_020a66f8::func_020a6700(u32 *out) { *out = unk_00; }
+void NetMoveReady::get(u32 *out) { *out = unk_00; }
 
-void Unk_020a66f8::func_020a66f8() { unk_00 = 0; }
+void NetMoveReady::reset() { unk_00 = 0; }
 
-extern "C" void func_020a66f4() {}
+extern "C" void NetSyncMsg_Init() {}
 
-extern "C" void func_020a66f0() {}
+extern "C" void NetSyncMsg_Fini() {}
 
-extern "C" void func_020a66d4(u8 *p, s32 a, s32 b, s32 c) {
+extern "C" void NetSyncMsg_Pack(u8 *p, s32 a, s32 b, s32 c) {
     *p = (a & 7) | (((b << 5) & 0xe0) | (c << 3));
 }
 
-extern "C" void func_020a66ac(u8 *p, s32 *a, s32 *b, s32 *c) {
+extern "C" void NetSyncMsg_Unpack(u8 *p, s32 *a, s32 *b, s32 *c) {
     *a = *p & 7;
     *b = (*p >> 5) & 7;
     *c = (*p >> 3) & 3;
 }
 
-extern "C" void func_020a66a8() {}
+extern "C" void NetArea_WriteStateAPart0() {}
 
-extern "C" void func_020a6688() {
+extern "C" void NetArea_WriteStateANpcTalk() {
     u8 v = 1;
     gCommManager->appendAuxB(&v, 1);
 }
 
-extern "C" void func_020a65fc() {
+extern "C" void NetArea_BuildStateA() {
     CommManager *g = gCommManager;
     g->clearAuxLenA();
     u8 *base = (u8 *)g->getAuxBufA();
@@ -267,7 +267,7 @@ extern "C" void func_020a65fc() {
     for (i = 0; i < 2; i++) {
         g->unk_104 = p + 4;
         u8 *start = g->unk_104;
-        data_020d07b0[i](m);
+        sNetStateAWriters[i](m);
         u8 *cur = g->unk_104;
         s32 diff = cur - start;
         if (diff != 0) {

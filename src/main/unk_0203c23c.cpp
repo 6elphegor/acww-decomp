@@ -165,7 +165,7 @@ void WorldCurve_Update(void *a, void *b);
 }
 
 extern "C" {
-CameraPose *func_020947f0(s32 id);
+CameraPose *PlayerActor_GetBodyPos(s32 id);
 }
 
 extern "C" {
@@ -221,11 +221,11 @@ void *_ZN10PlayerData10getCatalogEv(void *s);
 }
 
 extern "C" {
-BOOL func_0203c41c(void *a, u16 *p, s32 c);
+BOOL Catalog_AddItem(void *a, u16 *p, s32 c);
 }
 
 extern "C" {
-BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set);
+BOOL Catalog_SetItem(u8 *base, u16 *p, s32 skip, s32 set);
 }
 
 extern "C" {
@@ -237,23 +237,23 @@ u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p);
 }
 
 extern "C" {
-s32 func_0203c354(u16 base, u32 n);
+s32 Catalog_CountRange(u16 base, u32 n);
 }
 
 extern "C" {
-s32 func_0203c2f4();
+s32 Catalog_CountInsects();
 }
 
 extern "C" {
-s32 func_0203c304();
+s32 Catalog_CountFish();
 }
 
 extern "C" {
-s32 func_0203c314();
+s32 Catalog_GetInsectTotal();
 }
 
 extern "C" {
-s32 func_0203c318();
+s32 Catalog_GetFishTotal();
 }
 
 extern "C" {
@@ -402,7 +402,7 @@ extern "C" BOOL Catalog_HasItem(u8 *base, u16 *p) {
     return FALSE;
 }
 
-extern "C" BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set) {
+extern "C" BOOL Catalog_SetItem(u8 *base, u16 *p, s32 skip, s32 set) {
     u8 mask;
     u8 *b;
     if (skip == 0) {
@@ -422,11 +422,11 @@ extern "C" BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set) {
     return FALSE;
 }
 
-extern "C" BOOL func_0203c41c(void *a, u16 *p, s32 c) {
-    return func_0203c42c((u8 *)a, p, c, 1);
+extern "C" BOOL Catalog_AddItem(void *a, u16 *p, s32 c) {
+    return Catalog_SetItem((u8 *)a, p, c, 1);
 }
 
-extern "C" s32 func_0203c354(u16 base, u32 n) {
+extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
     void *s = PlayerData_GetCurrent();
     s32 count = 0;
     u16 v[6];
@@ -460,42 +460,42 @@ extern "C" s32 func_0203c354(u16 base, u32 n) {
     return count;
 }
 
-extern "C" BOOL func_0203c338() {
-    if (func_0203c304() == func_0203c318()) return TRUE;
+extern "C" BOOL Catalog_HasAllFish() {
+    if (Catalog_CountFish() == Catalog_GetFishTotal()) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_0203c31c() {
-    if (func_0203c2f4() == func_0203c314()) return TRUE;
+extern "C" BOOL Catalog_HasAllInsects() {
+    if (Catalog_CountInsects() == Catalog_GetInsectTotal()) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 func_0203c318() {
+extern "C" s32 Catalog_GetFishTotal() {
     return 0x38;
 }
 
-extern "C" s32 func_0203c314() {
+extern "C" s32 Catalog_GetInsectTotal() {
     return 0x38;
 }
 
-extern "C" s32 func_0203c304() {
-    return func_0203c354(0x12e8, 0x38);
+extern "C" s32 Catalog_CountFish() {
+    return Catalog_CountRange(0x12e8, 0x38);
 }
 
-extern "C" s32 func_0203c2f4() {
-    return func_0203c354(0x12b0, 0x38);
+extern "C" s32 Catalog_CountInsects() {
+    return Catalog_CountRange(0x12b0, 0x38);
 }
 
-extern "C" BOOL func_0203c2d0(u16 *p) {
+extern "C" BOOL Catalog_AddCreature(u16 *p) {
     void *s = PlayerData_GetCurrent();
-    if (s) return func_0203c41c(_ZN10PlayerData10getCatalogEv(s), p, 1);
+    if (s) return Catalog_AddItem(_ZN10PlayerData10getCatalogEv(s), p, 1);
     return FALSE;
 }
 
-extern "C" void func_0203c2cc() {
+extern "C" void CarpetTex_Init() {
 }
 
-extern "C" BOOL func_0203c23c(u32 a, u16 *p) {
+extern "C" BOOL CarpetTex_Load(u32 a, u16 *p) {
     u16 c = *p;
     BOOL ok = Unk_0203c23c_InRange(c, 0x1144, 0x1187);
     s32 idx;
@@ -506,5 +506,5 @@ extern "C" BOOL func_0203c23c(u32 a, u16 *p) {
         return FALSE;
     }
     static ItemId s(0x1144);
-    return func_0203c23c(a, &s.v);
+    return CarpetTex_Load(a, &s.v);
 }

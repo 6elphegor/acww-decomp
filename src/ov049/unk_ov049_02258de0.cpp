@@ -134,7 +134,7 @@ extern u8 gTouchPrevHeld[];
 extern u8 gTouchPrevChanged[];
 extern u16 gPad[];
 extern s16 data_02135f44[];
-extern u8 data_021edb68[];
+extern u8 gU8None[];
 extern u8 gSaveData[];
 extern Unk_ov049_0225aba8_Vec gVec3Zero;
 extern s32 data_020c6d1c;
@@ -143,8 +143,8 @@ extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
 
 BOOL CommManager_isOnline(void *g);
-s16 *func_0209c37c(s32 a, s32 b);
-Unk_ov049_0225aba8_Vec *func_020947f0(s32 a);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
+Unk_ov049_0225aba8_Vec *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *PlayerActor_GetActor(s32 a);
@@ -155,7 +155,7 @@ void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
 void *Scene_GetTouchPicker();
-void *func_020b6048(void *a, s32 b, s32 c);
+void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
 u16 *ShopStock_GetItemAtTile(s32 a, s32 b);
 BOOL Item_IsFurniture(void *p);
@@ -531,15 +531,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -591,11 +591,11 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
-    void func_0202e548(s32 a, s32 b);
+    void setColliderSize(s32 a, s32 b);
 
     Unk_020e06dc unk_640;
     s32 unk_648;
@@ -969,7 +969,7 @@ BOOL SpNpcMabel::vfunc_04() {
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner((s32)this);
-    func_0202e548(0x119a, 0x2000);
+    setColliderSize(0x119a, 0x2000);
     setCollisionRadius(0xf00);
     unk_962 = data_020c6cc8;
     NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x333, 0xcc, 0x133);
@@ -981,7 +981,7 @@ BOOL SpNpcMabel::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
             unk_4cc.unk_1c |= 2;
             unk_5c = 0xd000;
@@ -1059,7 +1059,7 @@ BOOL SpNpcMabel::setupAct01() {
 }
 
 BOOL SpNpcMabel::mainAct01() {
-    Unk_ov049_0225aba8_Vec *pv = func_020947f0(4);
+    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
     Unk_ov049_0225aba8_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1101,7 +1101,7 @@ BOOL SpNpcMabel::mainAct02() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    Unk_ov049_0225aba8_Vec *pv = func_020947f0(4);
+    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
     Unk_ov049_0225aba8_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1138,7 +1138,7 @@ BOOL SpNpcMabel::mainAct03() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    Unk_ov049_0225aba8_Vec *pv = func_020947f0(4);
+    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
     Unk_ov049_0225aba8_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1324,7 +1324,7 @@ BOOL SpNpcMabel::setupAct0D() {
 }
 
 BOOL SpNpcMabel::mainAct0D() {
-    Unk_ov049_0225aba8_Vec *pv = func_020947f0(4);
+    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
     Unk_ov049_0225aba8_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1728,7 +1728,7 @@ test0:
 void SpNpcMabelTalk::onMenuChoice(u32 a) {
     u8 buf[2];
     void *g = gCommManager;
-    if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (a == 2) {
             buf[0] = 0x1c;
             TalkWindowState_setNextMessage(unk_3c, &buf[0], sSpNpcMabelMsgKeys[0]);
@@ -1737,7 +1737,7 @@ void SpNpcMabelTalk::onMenuChoice(u32 a) {
             TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcMabelMsgKeys[0]);
         }
     }
-    if (CommManager_isOnline(g) == 0 && *func_0209c37c(0, 0x4a) == 0) {
+    if (CommManager_isOnline(g) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
         s32 r = NpcRegistry_FindSpNpc(5);
         if (r != 0) {
             ActorTalkRequest_setPartnerActor(this, r);
@@ -1954,7 +1954,7 @@ void SpNpcMabelTalk::onDramaMenuChoice() {
         }
     }
     if (!CommManager_isOnline(gCommManager)) {
-        if (*func_0209c37c(0, 0x4a) == 0) {
+        if (*DebugVar_GetPtr(0, 0x4a) == 0) {
             s32 r = NpcRegistry_FindSpNpc(5);
             if (r) {
                 ActorTalkRequest_setPartnerActor(this, r);
@@ -2111,7 +2111,7 @@ void SpNpcMabelTalk::onSellItemsChosen() {
     unk_b8 = 0;
     unk_bc = 0;
     ctx = unk_3c;
-    msg = data_021edb68[0];
+    msg = gU8None[0];
     if (MenuCtrl_IsResultOk()) {
         u16 *tbl = MenuCtrl_GetChosenItems();
         v[0] = 0xfff1;
@@ -2260,7 +2260,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
                 unk_658.vfunc_08();
                 func_02015ab0(&unk_658, getPlayerActor(4));
                 changeAct(5);
-            } else if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+            } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 unk_658.vfunc_08();
                 func_02015ab0(&unk_658, getPlayerActor(4));
                 changeAct(4);
@@ -2287,7 +2287,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
             if (NetArea_IsLocalOwner()) {
                 g = gCommManager;
                 netSetSlotsIfOwner(1, g->unk_64, 4);
-                if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+                if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0xa);
                 } else if (unk_658.getTopic() != 3) {
                     changeAct(1);
@@ -2350,7 +2350,7 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     if (f) {
         void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
@@ -2405,10 +2405,10 @@ BOOL SpNpcMabel::tryStartShopItemTalk() {
 // ---- owner / dialog (unit 02258de0)
 
 BOOL SpNpcMabel::tryStartFarewellTalk() {
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
-    Unk_ov049_02258ee0_Vec *src = (Unk_ov049_02258ee0_Vec *)func_020947f0(4);
+    Unk_ov049_02258ee0_Vec *src = (Unk_ov049_02258ee0_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov049_02258ee0_Vec v;
     v.x = src->x;
     v.y = src->y;

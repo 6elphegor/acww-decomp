@@ -28,15 +28,15 @@ extern u8 data_02135934[];
 }
 
 extern "C" {
-extern u32 data_020d5d44[];
+extern u32 sAbAllObjCharPath[];
 }
 
 extern "C" {
-extern u32 data_020d5d60[];
+extern u32 sAbAllObjPalettePath[];
 }
 
 extern "C" {
-extern u32 data_020d5dfc[];
+extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {

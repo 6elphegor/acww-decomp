@@ -249,8 +249,8 @@ extern s32 data_020c8cbc;
 extern u8 data_021f47e0[];
 
 s32 G3dResAccess_findMatIdx(void *self, s32 a);
-s32 func_020ac40c();
-s32 func_020abe28();
+s32 ObjShadow_Update();
+s32 CharaShadow_UpdateColor();
 void *BgModelCache_Get();
 s32 BgModelCache_getGroundTex(void *self);
 s32 BgModelCache_getRiverPatTex(void *self);
@@ -264,9 +264,9 @@ s32 MapBlockAcre_getAcreId(void *self);
 s32 Acre_GetAttr(s32 a);
 s32 Unk_020d93b8_getEyeCurveAngle(void *self);
 void Camera_GetLookAtBlock(void *, s32 *, s32 *);
-s32 func_0203efec(s32);
+s32 WorldCurve_AngleToDistance(s32);
 s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
-s32 func_0203edc8();
+s32 WorldCurve_GetAngleScale();
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
 void FieldPos_FromBlockUnitCenter(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
@@ -449,8 +449,8 @@ BOOL FieldGround::onDraw() {
     s32 x, y, idx;
     void *cam;
     data_ov003_02235494 = 0;
-    func_020ac40c();
-    func_020abe28();
+    ObjShadow_Update();
+    CharaShadow_UpdateColor();
     a = 0;
     cx = 0;
     cy = 0;
@@ -460,7 +460,7 @@ BOOL FieldGround::onDraw() {
     if (cam != 0) {
         cam_r = Unk_020d93b8_getEyeCurveAngle(cam);
         Camera_GetLookAtBlock(cam, &cx, &cy);
-        a = func_0203efec(cam_r);
+        a = WorldCurve_AngleToDistance(cam_r);
     }
     found = 0;
     for (y = 0; y < unk_14c; y++) {
@@ -710,7 +710,7 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
         unk_a8[1].addToRenderObj(((Model *)&unk_04)->getRenderObj());
     }
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
-    s16 ang = b * func_0203edc8();
+    s16 ang = b * WorldCurve_GetAngleScale();
     func_020e8434(data_021f47e0, ang);
     unk_04.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
     if (Acre_GetAttr(unk_00) & 8) {

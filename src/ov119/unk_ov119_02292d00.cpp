@@ -32,7 +32,7 @@
 #define func_02094030 _ZN11MsgString9BC1Ev
 #define func_02094018 _ZN11MsgString9BD1Ev
 extern "C" {
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -66,7 +66,7 @@ void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void String_Load2dMenu(void *p, s32 a);
 void String_FromEncodedBytes(void *p, void *s, s32 n);
 void MenuCtrl_SetIndex(u32 v);
-void func_020a78a4(void *dst, void *src, s32 n);
+void EncodedString_SetRaw(void *dst, void *src, s32 n);
 void String_SetSlot(s32 a, void *p);
 void String_Load2d(void *p, void *q, s32 a);
 void *Msg_SkipLines(void *p, s32 i);
@@ -1171,7 +1171,7 @@ void FriendRosterTab::resumeInput() {
 
 void FriendRosterTab::showError(u8 v) {
     volatile u8 buf[1];
-    buf[0] = data_021edb68;
+    buf[0] = gU8None;
     buf[0] = v;
     unk_1ac4.open((u8 *)buf, 1, 0);
     setMainState(0xd);
@@ -1879,7 +1879,7 @@ void FriendRosterTab::drawOwnCodePage() {
 }
 
 void FriendRosterTab::drawFriendCodeHelp() {
-    u8 ch = data_021edb68;
+    u8 ch = gU8None;
     void *p = PlayerData_GetCurrent();
     s32 i;
     if (PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) == 0) {
@@ -1943,7 +1943,7 @@ void FriendRosterTab::drawRosterPage() {
             rec = 0;
         }
         if (rec != 0 && DwcFriendData_IsValid(FriendEntry_GetFriendData(rec))) {
-            func_020a78a4(&LightLevel, (void *)FriendEntry_GetTownName(rec), 8);
+            EncodedString_SetRaw(&LightLevel, (void *)FriendEntry_GetTownName(rec), 8);
             MsgString_fromEncoded(&LampLights, &LightLevel, 0, 0);
             String_SetSlot(0, &LampLights);
             String_Load2dMenu(a, 0x66);

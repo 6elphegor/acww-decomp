@@ -55,15 +55,15 @@ public:
     virtual BOOL onExecute();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -100,8 +100,8 @@ public:
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void addMood(u32 a, s32 b);
@@ -256,8 +256,8 @@ public:
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     void mainAct06();
     void mainAct05();
@@ -1005,11 +1005,11 @@ void BirthdayGuestVillager::mainAct06() {
     }
 }
 
-void BirthdayGuestVillager::vfunc_80() {
+void BirthdayGuestVillager::onTalkMelodyPlayed() {
     *((u8 *)this + 0x893) = 1;
 }
 
-BOOL BirthdayGuestVillager::vfunc_7c() {
+BOOL BirthdayGuestVillager::canPlayTalkMelody() {
     if (*((u8 *)this + 0x893) == 0) {
         return TRUE;
     }

@@ -233,7 +233,7 @@ public:
     /* 0x08 */ MsgStringAttr unk_08;
 };
 
-extern "C" BOOL func_020a78a4(void *, const void *, s32);
+extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
 // 8-byte destination buffer at +0xe
 class EncodedString8 : public EncodedString {
@@ -316,7 +316,7 @@ extern u8 gSavePlayers[];
 }
 
 extern "C" {
-s32 func_02097740(void *, void *);
+s32 PlayerDataArray_FindById(void *, void *);
 }
 
 extern "C" {
@@ -497,7 +497,7 @@ u8 *PlayerId::getName() { return unk_0c; }
 void PlayerId::getNameString(MsgString *x)
 {
     EncodedString8 buf;
-    func_020a78a4(&buf, unk_0c, 8);
+    EncodedString_SetRaw(&buf, unk_0c, 8);
     x->fromEncoded(&buf, 0, 0);
 }
 
@@ -528,7 +528,7 @@ s32 TownId::getTownRelation()
 
 extern "C" s32 PlayerId_FindResidentIndex(void *x)
 {
-    return func_02097740(gSavePlayers, x);
+    return PlayerDataArray_FindById(gSavePlayers, x);
 }
 
 MsgString9B::MsgString9B() {}

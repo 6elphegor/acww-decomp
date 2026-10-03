@@ -179,7 +179,7 @@ BOOL Scene_InTown();
 BOOL _ZN11CommManager11isLocalSlotEj(void *, ...);
 void _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 PlayerSession_GetDataIndex(u32);
-BOOL func_020978c8(void *, s32);
+BOOL PlayerDataArray_IsUsed(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(u32, u32);
 void PlayerActor_Spawn(u32, Vec3 *, Vec3s *, u32);
@@ -219,7 +219,7 @@ public:
 BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
-        if (idx < 4 && func_020978c8(gSavePlayers, PlayerSession_GetDataIndex(i))) {
+        if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
             if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {

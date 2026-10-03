@@ -9,9 +9,9 @@ void LostChildRecord_Destruct(void *p);
 void LostChildRecord_Construct(void *p);
 void VillagerTransfer_DestructVillager(void *p);
 void VillagerTransfer_ConstructVillager(void *p);
-void func_020b0a30(void *p);
-void _ZN12Unk_020b0a60D1Ev(void *p);
-void _ZN12Unk_020b0a60C1Ev(void *p);
+void ConstellationRecord_Clear(void *p);
+void _ZN19ConstellationRecordD1Ev(void *p);
+void _ZN19ConstellationRecordC1Ev(void *p);
 void MI_CpuFill8(void *p, s32 v, u32 n);
 }
 
@@ -62,7 +62,7 @@ extern "C" void *func_0208f0e8(s32 i);
 
 Unk_0208f238::Unk_0208f238() {
     _ZN6LetterC1Ev(this);
-    _ZN12Unk_020b0a60C1Ev((u8 *)this + 0xf4);
+    _ZN19ConstellationRecordC1Ev((u8 *)this + 0xf4);
     VillagerTransfer_ConstructVillager((u8 *)this + 0x13c);
     LostChildRecord_Construct((u8 *)this + 0x83e);
 }
@@ -70,7 +70,7 @@ Unk_0208f238::Unk_0208f238() {
 Unk_0208f238::~Unk_0208f238() {
     LostChildRecord_Destruct((u8 *)this + 0x83e);
     VillagerTransfer_DestructVillager((u8 *)this + 0x13c);
-    _ZN12Unk_020b0a60D1Ev((u8 *)this + 0xf4);
+    _ZN19ConstellationRecordD1Ev((u8 *)this + 0xf4);
     _ZN6LetterD1Ev(this);
 }
 
@@ -79,7 +79,7 @@ extern "C" void func_0208f200() {}
 extern "C" void func_0208f1dc(void *p) {
     MI_CpuFill8(p, 0, 0x84c);
     Letter_Clear(p);
-    func_020b0a30((u8 *)p + 0xf4);
+    ConstellationRecord_Clear((u8 *)p + 0xf4);
 }
 
 void Unk_0208f238::setChecksum(u32 v) { unk_84a = v; }

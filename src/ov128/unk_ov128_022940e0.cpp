@@ -56,9 +56,9 @@ s32 StarSky_GetScrollY(void *p);
 void StarSky_ScrollX(void *p, s32 a);
 void StarSky_ScrollY(void *p, s32 a, s32 b);
 
-void func_020b0780(void *p);
-void func_020b0788(void *p, s32 a);
-void func_020b080c(void *p);
+void StarTwinkle_Stop(void *p);
+void StarTwinkle_Init(void *p, s32 a);
+void StarTwinkle_Update(void *p);
 u8 *Constellation_GetRecord();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void PlayerActor_LocalRequestAct12();
@@ -163,10 +163,10 @@ public:
 };
 
 // 0x330-byte sub-object at +0x148, ctor func_020b08b8, dtor func_020b08b4
-class Unk_020b08b4 {
+class StarTwinkle {
 public:
-    Unk_020b08b4();
-    ~Unk_020b08b4();
+    StarTwinkle();
+    ~StarTwinkle();
     u32 unk_00[0x330 / 4];
 };
 
@@ -338,7 +338,7 @@ public:
     /* 0x0091 */ u8 unk_91[3];
     /* 0x0094 */ MenuTextButton unk_94;
     /* 0x00e4 */ MenuCursorBuf0 unk_e4;
-    /* 0x0148 */ Unk_020b08b4 unk_148;
+    /* 0x0148 */ StarTwinkle unk_148;
     /* 0x0478 */ StarSkyView unk_478;
     /* 0x2cb0 */ LabelString unk_2cb0;
     /* 0x2cf0 */ s32 unk_2cf0;
@@ -541,7 +541,7 @@ void StargazingMenu::initMembers() {
 }
 
 void StargazingMenu::releaseResources() {
-    func_020b0780(&unk_148);
+    StarTwinkle_Stop(&unk_148);
     StarSky_CancelUpload(&unk_478);
     unk_94.freeText();
     unk_2cb0.destroyLabel();
@@ -559,7 +559,7 @@ void StargazingMenu::postInputUpdate() {
 
 void StargazingMenu::preStateUpdate() {
     unk_2cb0.destroyLabel();
-    func_020b080c(&unk_148);
+    StarTwinkle_Update(&unk_148);
     unk_94.freeText();
 }
 
@@ -579,7 +579,7 @@ extern "C" void StargazingMenu_SetupBgLayers() {
 void StargazingMenu::setupSkyView() {
     StarSky_LoadSkyBg(&unk_478, 3);
     StarSky_LoadScopeBg(&unk_478, 6, 0);
-    func_020b0788(&unk_148, 3);
+    StarTwinkle_Init(&unk_148, 3);
     StarSky_LoadObjGraphics(&unk_478);
     unk_94.setup((Unk_ov002_02203c5c_Rec *)data_ov128_02295458, 6, 2);
     unk_94.setLabelWithShadow(0x69);

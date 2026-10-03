@@ -23,18 +23,18 @@ extern "C" void _ZN12Unk_0208f238C1Ev(void *);
 extern "C" void _ZN12LetterOutboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxD1Ev(void *);
-extern "C" void _ZN11SaveRecord413func_0209eb90Ev(void *);
+extern "C" void _ZN11SaveRecord49constructEv(void *);
 extern "C" void _ZN14SnowmanRecordsC1Ev(void *);
-extern "C" void _ZN12Unk_020b09f0C2Ev(void *);
+extern "C" void _ZN18ConstellationStoreC2Ev(void *);
 extern "C" void _ZN15TownStyleRecordD2Ev(void *);
 extern "C" void _ZN8ReddShopC1Ev(void *);
 extern "C" void _ZN8NookShopC1Ev(void *);
-extern "C" void func_02039c04(void *);
-extern "C" void func_02039d70(void *);
-extern "C" void func_02039d8c(void *);
-extern "C" void func_02039d90(void *);
+extern "C" void RecycleBin_Construct(void *);
+extern "C" void LostAndFound_Construct(void *);
+extern "C" void ChestStorage_Destruct(void *);
+extern "C" void ChestStorage_Construct(void *);
 extern "C" void EventWeekSlots_Construct(void *);
-extern "C" void func_0204c508(void *);
+extern "C" void TownState_Construct(void *);
 extern "C" void HappyRoomDate_Construct(void *);
 extern "C" void func_020639bc(void *);
 extern "C" void SaveVillagers_Construct(void *);
@@ -44,7 +44,7 @@ extern "C" void func_020868c8(void *);
 extern "C" void LostChildRecord_Construct(void *);
 extern "C" void BottleLetterRecord_Construct(void *);
 extern "C" void PlayerDataArray_Construct(void *);
-extern "C" void func_0209eb08(void *);
+extern "C" void SaveData_ConstructDateRecord(void *);
 extern "C" void AbleShop_Construct(void *);
 extern "C" void Weather_Construct(void *);
 extern "C" void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
@@ -70,8 +70,8 @@ public:
         _ZN8BbsBoardC1Ev(p + 0x11488);
         __cxa_vec_ctor(p + 0x1200c, 4, 0x98c, (void *)_ZN13PlayerMailboxC1Ev, (void *)_ZN13PlayerMailboxD1Ev);
         _ZN12LetterOutboxC1Ev(p + 0x1463c);
-        _ZN12Unk_020b09f0C2Ev(p + 0x14fcc);
-        __cxa_vec_ctor(p + 0x15430, 4, 0xb4, (void *)func_02039d90, (void *)func_02039d8c);
+        _ZN18ConstellationStoreC2Ev(p + 0x14fcc);
+        __cxa_vec_ctor(p + 0x15430, 4, 0xb4, (void *)ChestStorage_Construct, (void *)ChestStorage_Destruct);
         _ZN16BlancaFaceRecord9constructEv(p + 0x15700);
         _ZN15TownStyleRecordD2Ev(p + 0x1592c);
         BottleLetterRecord_Construct(p + 0x15b5c);
@@ -79,9 +79,9 @@ public:
         _ZN10MuseumData13func_02070550Ev(p + 0x15d50);
         _ZN8NookShopC1Ev(p + 0x15db4);
         EventWeekSlots_Construct(p + 0x15e18);
-        func_0204c508(p + 0x15e54);
-        func_02039d70(p + 0x15ec0);
-        func_02039c04(p + 0x15ede);
+        TownState_Construct(p + 0x15e54);
+        LostAndFound_Construct(p + 0x15ec0);
+        RecycleBin_Construct(p + 0x15ede);
         _ZN13ContestRecord9constructEv(p + 0x15efc);
         _ZN12ReddLastSaleC1Ev(p + 0x15f34);
         func_020868c8(p + 0x15f4c);
@@ -91,15 +91,15 @@ public:
         _ZN14SnowmanRecordsC1Ev(p + 0x15f96);
         HappyRoomDate_Construct(p + 0x15fb0);
         _ZN12Unk_02063578C2Ev(p + 0x15fbc);
-        func_0209eb08(p + 0x15fc5);
+        SaveData_ConstructDateRecord(p + 0x15fc5);
         LostChildRecord_Construct(p + 0x15fca);
-        _ZN11SaveRecord413func_0209eb90Ev(p + 0x15fdc);
+        _ZN11SaveRecord49constructEv(p + 0x15fdc);
     }
     ~SaveData();
-    void func_0209da44();
-    void func_0209dae8();
-    void func_0209db94();
-    void func_0209dc0c();
+    void setupMode06();
+    void setupMode05();
+    void setupLoaded();
+    void setupNoSave();
     void setupContinue();
     void setupNewResident();
     void setupNewTown();
@@ -181,9 +181,9 @@ extern "C" void SaveData_SyncClockOffset(u8 *p) {
 
 extern "C" void SaveData_Setup(SaveData *p, u32 idx) {
     static Unk_0209d70c_Fn tbl[7] = {&SaveData::setupNewTown, &SaveData::setupNewResident,
-                                     &SaveData::setupContinue, &SaveData::func_0209dc0c,
-                                     &SaveData::func_0209db94, &SaveData::func_0209dae8,
-                                     &SaveData::func_0209da44};
+                                     &SaveData::setupContinue, &SaveData::setupNoSave,
+                                     &SaveData::setupLoaded, &SaveData::setupMode05,
+                                     &SaveData::setupMode06};
     (p->*tbl[idx])();
 }
 

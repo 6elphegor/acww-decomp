@@ -194,17 +194,17 @@ public:
 };
 
 // the three file-scope objects of __sinit (constructors and destructors are functions of other units)
-class Unk_0203ecdc {
+class AxMail {
 public:
-    Unk_0203ecdc();
-    ~Unk_0203ecdc();
+    AxMail();
+    ~AxMail();
     u32 unk_00[0x42];
 };
 
-class Unk_0203ec54 {
+class AxBbsNotice {
 public:
-    Unk_0203ec54();
-    ~Unk_0203ec54();
+    AxBbsNotice();
+    ~AxBbsNotice();
     u8 unk_00[0xd2];
 };
 
@@ -222,8 +222,8 @@ struct Unk_020a4238_Entry {
 };
 
 // the 4-byte record class of the previous file (constructor 0x0209eb90, destructor 0x0209eb8c)
-extern "C" void _ZN11SaveRecord413func_0209eb90Ev(void *p);
-extern "C" void _ZN11SaveRecord413func_0209eb8cEv(void *p);
+extern "C" void _ZN11SaveRecord49constructEv(void *p);
+extern "C" void _ZN11SaveRecord48destructEv(void *p);
 
 // ---- unk_0209e394.cpp
 
@@ -233,14 +233,14 @@ extern u8 sRecentJoinAids[];
 extern u8 sAxBbsReceived;
 extern u8 sAxBbsBuf[];
 void MI_CpuCopy8(void *src, void *dst, s32 n);
-void func_0203ec54(void *p);
-void *func_0203ec4c(void *p);
+void AxBbsNotice_Construct(void *p);
+void *AxBbsNotice_GetDigest(void *p);
 void func_0211a748(void *a, void *b, s32 c, s32 d, s32 e);
 void MI_CpuFill8(void *p, s32 v, s32 n);
-s32 func_02000b7c();
+s32 AxMail_GetDigestKey();
 s32 func_02063a04(void *a, void *b, s32 n);
-void func_0203ec18(void *p);
-void func_0203ec50(void *p);
+void AxBbsNotice_Post(void *p);
+void AxBbsNotice_Destruct(void *p);
 }
 }
 
@@ -310,11 +310,11 @@ extern u8 gSaveFooter[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_65_ID[];
 extern u32 OVERLAY_66_ID[];
-void *func_0203ecdc(void *p);
-u8 *func_0203ecc8(u8 *p);
-void *func_0203eccc(void *p);
-BOOL func_0203ec58(u8 *p);
-s32 func_02000b7c(void);
+void *AxMail_Construct(void *p);
+u8 *AxMail_GetDigest(u8 *p);
+void *AxMail_Destruct(void *p);
+BOOL AxMail_Deliver(u8 *p);
+s32 AxMail_GetDigestKey(void);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_0211a748(void *a, void *b, u32 c, s32 d, u32 e);
@@ -462,7 +462,7 @@ void *_ZN10PlayerData11getPlayerIdEv(void *a);
 void *_ZN10PlayerData18getLostChildRecordEv(void *a);
 void *PlayerData_GetCurrent();
 void *PlayerData_GetBySessionSlot(s32 i);
-void *func_0209c37c(s32 a, s32 b);
+void *DebugVar_GetPtr(s32 a, s32 b);
 BOOL func_02063b8c(s32 a);
 void *_ZN10PlayerData15getWifiUserDataEv(void *a);
 void *_ZN10PlayerData13getFriendListEv(void *a);
@@ -520,8 +520,8 @@ struct Unk_021ed3b0 {
 class SaveRecord4 {
 public:
     u32 v;
-    SaveRecord4() { _ZN11SaveRecord413func_0209eb90Ev(this); }
-    ~SaveRecord4() { _ZN11SaveRecord413func_0209eb8cEv(this); }
+    SaveRecord4() { _ZN11SaveRecord49constructEv(this); }
+    ~SaveRecord4() { _ZN11SaveRecord48destructEv(this); }
     u32 getStamp();
 };
 
@@ -581,8 +581,8 @@ u16 *PlayerSession_GetLastPlayDate();
 void Clock_GetDateTime(void *);
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32, Unk_020a0088_Date);
 void _ZN8SaveData5resetEv(void *);
-s32 func_020977a0(void *);
-void func_020975f0(void *, void *, s32, s32);
+s32 PlayerDataArray_FindUnused(void *);
+void PlayerDataArray_CreateResident(void *, void *, s32, s32);
 s32 _ZN12Unk_0208f23811getChecksumEv(void *);
 u32 Save_CalcChecksum(void *, u32, u32);
 void _ZN12Unk_0208f23811setChecksumEj(void *, u32);
@@ -679,8 +679,8 @@ s32 Save_SlotStampsMatch(void);
 void Save_ReadSlotFooter(s32 a, void *p);
 u16 Save_CalcChecksum(void *p, u32 n, u32 m);
 void _ZN11SaveRecord48newStampEv(void *p);
-void _ZN11SaveRecord413func_0209eb90Ev(void *p);
-void _ZN11SaveRecord413func_0209eb8cEv(void *p);
+void _ZN11SaveRecord49constructEv(void *p);
+void _ZN11SaveRecord48destructEv(void *p);
 u32 _ZN11SaveRecord48getStampEv(void *p);
 void _ZN11SaveRecord48setStampEh(void *p, u32 v);
 u32 _ZN12SaveChecksum3getEv(void *p);
@@ -764,7 +764,7 @@ u32 Wifi_EndSession(void *p);
 void NetOverlay_Restore(void);
 void SaveManager_RunSessionEnd(void *self, u8 *st, u32 a, u32 b, u32 c, u32 d);
 void Comm_PrepareJoin(void);
-void func_0203ca94(void);
+void PlayerOptions_Commit(void);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 }
@@ -838,7 +838,7 @@ void *func_02063964(void *p);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void _Z25NetOverlay_AssertWirelessv();
 void func_020ea720(void *p, u32 n);
-u8 func_020977a0(void *p);
+u8 PlayerDataArray_FindUnused(void *p);
 void NetOverlay_LoadWireless();
 BOOL Comm_IsConnectionLost(s32 a);
 void Comm_SetLostFlag();
@@ -944,7 +944,7 @@ void NetOverlay_Restore();
 void *PlayerData_GetCurrent();
 void _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
 void NetSession_SetLastSyncSlot(s32 v);
-void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
+void NetArea_SetSlotStatus(u32 a, s32 b, u32 c, u32 d, u32 e);
 void Comm_ResetPeerState(u32 v);
 BOOL CommSend_PlayerData(u8 *p, u32 v);
 BOOL NetSession_GetCtrl07Received();
@@ -964,7 +964,7 @@ void Constellation_PrepareExchange();
 void JoinHistory_Clear();
 BOOL CommCtrl_SendAct07();
 BOOL CommSend_VillagerTransfer(u8 *p);
-BOOL func_02097444(s32 v);
+BOOL PlayerData_IsUsedByIndex(s32 v);
 BOOL func_020a03f0();
 void *PlayerActor_GetActor(u32 v);
 void ProcBase_RequestDelete();
@@ -1072,7 +1072,7 @@ void GameStart_SetupSave();
 s32 Scene_Request(s32 a, s32 b, s32 c, s32 d);
 s32 Save_LoadSync();
 void _ZN8SaveData5resetEv(void *p);
-void func_02097564();
+void GuestPlayers_ResetAll();
 void VillagerStates_Init();
 void SaveData_Setup(void *p, s32 n);
 void SaveData_Apply(void *p);
@@ -1083,9 +1083,9 @@ s32 PlayerData_GetCurrent(void *p);
 void _ZN12Unk_02097ff49clearFlagEj(s32 a, s32 b);
 void Clock_Init();
 void SaveVillagers_DailyUpdate(void *p, s32 n);
-s32 func_0204198c();
-s32 func_02041960();
-void func_02041ac0();
+s32 TownUpdateThread_Start();
+s32 TownUpdateThread_PollDone();
+void TownUpdateThread_Create();
 s32 PlayerData_GetResident(void *p, u32 n);
 void _ZN11MsgString9BC1Ev(void *p);
 void _ZN11MsgString9BD1Ev(void *p);
@@ -1093,7 +1093,7 @@ s32 _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *p);
 void _ZN10PlayerData5resetEv(s32 a);
 void _ZN8SaveData11resetPlayerEi(void *p, u32 n);
-s32 func_020978a4(void *p);
+s32 PlayerDataArray_CountUsed(void *p);
 }
 }
 
@@ -1118,7 +1118,7 @@ extern u8 gSaveTownState[];
 extern Unk_020e27d4_Ent sSaveManagerStates[];
 s32 Scene_GetCurrent(void);
 void _ZN12Unk_020a09909startTalkEPKch(void *p, char *name, s32 id);
-s32 func_0203ca94(void);
+s32 PlayerOptions_Commit(void);
 s32 _ZN11SaveManager13func_020a15c8Ej(void *p, s32 v);
 s32 Comm_ResetNetSession(void);
 BOOL Wifi_EndSession(void *p);
@@ -1567,7 +1567,7 @@ void SaveManager::execAct02() {
 
 void SaveManager::enterAct03() {
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_etc_sequence1", 0x28);
-    NJ::func_0203ca94();
+    NJ::PlayerOptions_Commit();
     unk_9d = 0;
 }
 
@@ -1588,7 +1588,7 @@ void Unk_020a3238::execAct03() {
         unk_9d = unk_9d + 1;
         break;
     case 3:
-        NI::func_02041ac0();
+        NI::TownUpdateThread_Create();
         unk_9d = unk_9d + 1;
         break;
     case 4:
@@ -1611,14 +1611,14 @@ void Unk_020a3238::execAct04() {
         unk_9d = 1;
         break;
     case 1:
-        if (NI::func_0204198c() != 0) {
+        if (NI::TownUpdateThread_Start() != 0) {
             unk_9d = 2;
         } else {
             unk_9d = 3;
         }
         break;
     case 2:
-        if (NI::func_02041960() != 0) {
+        if (NI::TownUpdateThread_PollDone() != 0) {
             unk_9d = 3;
         }
         break;
@@ -1734,7 +1734,7 @@ void Unk_020a3238::enterAct06() {
     NI::_ZN10PlayerData5resetEv(h);
     NI::_ZN8SaveData11resetPlayerEi(d, NI::sEraseResidentSlot);
     NI::_ZN12Unk_020a09909startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 7);
-    if (NI::func_020978a4(NI::gSavePlayers) == 0) {
+    if (NI::PlayerDataArray_CountUsed(NI::gSavePlayers) == 0) {
         *(u8 *)(d + 0x15e76) = 0;
     }
     unk_9d = 0;
@@ -1910,7 +1910,7 @@ void Unk_020a3238::execAct0C() {
         s32 r = NI::Save_LoadSync();
         if (r == 4 || r == 1) {
             NI::_ZN8SaveData5resetEv(NI::gSaveData);
-            NI::func_02097564();
+            NI::GuestPlayers_ResetAll();
             NI::VillagerStates_Init();
             NI::SaveData_Setup(NI::gSaveData, 3);
         } else {
@@ -2117,7 +2117,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
                 if (r5 != 0) {
                     u32 m = (u16)(1 << r5);
                     if (m == (m & p->unk_d0)) {
-                        if (NH::func_02097444(r5 + 3) == 0) {
+                        if (NH::PlayerData_IsUsedByIndex(r5 + 3) == 0) {
                             r6 = FALSE;
                             break;
                         }
@@ -2170,7 +2170,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
                 }
             }
             r5->setMemberCount(cnt);
-            NH::func_020a63bc(r7, 0xc, 1, 0, 7);
+            NH::NetArea_SetSlotStatus(r7, 0xc, 1, 0, 7);
             NH::PlayerSession_SetDataIndex(0, p->unk_d3);
             NH::PlayerSession_SetDataIndex(r7, r7 + 3);
             NH::MI_CpuCopy8(NH::gTownTransferBuf, NH::gSaveData, 0x15fe0);
@@ -2258,7 +2258,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         } else {
             NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->unk_9d, 1, 0xd, 0x2f);
             if (p->unk_9d > 2) {
-                NH::func_020a63bc(NH::sJoiningAid, 0xc, 1, 0, 7);
+                NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
                 CommManager *g = NH::gCommManager;
                 g->setMemberCount((u8)(g->unk_6c + 1));
                 g->setSlotActive(NH::sJoiningAid, 1);
@@ -2352,7 +2352,7 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::gCommManager->getMode() == 1) {
-            NH::func_020a63bc(NH::sJoiningAid, 0xc, 1, 0, 7);
+            NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
             CommManager *g = NH::gCommManager;
             g->setMemberCount((u8)(g->unk_6c + 1));
             g->setSlotActive(NH::sJoiningAid, 1);
@@ -3086,7 +3086,7 @@ void Unk_020a1c88::enterAct1D() {
     }
     NG::_Z25NetOverlay_AssertWirelessv();
     NG::func_020ea720(buf, 10);
-    unk_fe = NG::func_020977a0(NG::gSavePlayers);
+    unk_fe = NG::PlayerDataArray_FindUnused(NG::gSavePlayers);
 }
 
 void Unk_020a1c88::execAct1D() {
@@ -3168,7 +3168,7 @@ void SaveManager::execAct1E() {
             } else {
                 NF::_ZN8SaveData7setFlagEj(NF::gSaveData, 0x12);
             }
-            NF::func_0203ca94();
+            NF::PlayerOptions_Commit();
             unk_9d = 3;
         }
         break;
@@ -3533,9 +3533,9 @@ void SaveManager::setTransferReceived(u32 i, u8 v) {
     unk_103[i] = v;
 }
 
-Unk_0203ecdc sAxMailBuf;
+AxMail sAxMailBuf;
 
-Unk_0203ec54 sAxBbsBuf;
+AxBbsNotice sAxBbsBuf;
 
 BlancaFaceRecord sGameStatsBuf;
 
@@ -3851,10 +3851,10 @@ s32 SaveSlotWriter::stepChecksum(s32 mode) {
             NE::_ZN11SaveRecord48newStampEv(buf + 0x15fdc);
         } else if (s == 0) {
             u32 local;
-            NE::_ZN11SaveRecord413func_0209eb90Ev(&local);
+            NE::_ZN11SaveRecord49constructEv(&local);
             NE::Save_ReadSlotFooter(0, &local);
             NE::_ZN11SaveRecord48setStampEh(buf + 0x15fdc, NE::_ZN11SaveRecord48getStampEv(&local));
-            NE::_ZN11SaveRecord413func_0209eb8cEv(&local);
+            NE::_ZN11SaveRecord48destructEv(&local);
         }
         u8 *p = buf + 0x10c3c;
         NE::_ZN12Unk_0208f23811setChecksumEj(p, NE::Save_CalcChecksum(p, 0x84c, NE::_ZN12Unk_0208f23811getChecksumEv(p)));
@@ -4281,11 +4281,11 @@ extern "C" void GameStart_SetupSave() {
             ND::PlayerSession_SetDataIndex(g->unk_68, 0);
         } else {
             void *p = ND::gSavePlayers;
-            s32 t = ND::func_020977a0(p);
+            s32 t = ND::PlayerDataArray_FindUnused(p);
             Unk_020cbb18_ff4c *g = ND::gCommManager;
             g->unk_68 = 0;
             ND::PlayerSession_SetDataIndex(g->unk_68, t);
-            ND::func_020975f0(p, ND::data_020e252c, 0, t);
+            ND::PlayerDataArray_CreateResident(p, ND::data_020e252c, 0, t);
         }
     }
 }
@@ -4592,7 +4592,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
         NC::_ZN12Unk_020dd38cD1Ev(sa);
         return;
     }
-    s16 *pp = (s16 *)NC::func_0209c37c(0, 0x49);
+    s16 *pp = (s16 *)NC::DebugVar_GetPtr(0, 0x49);
     if (*pp == 0 && NC::func_02063b8c(0x10)) {
         NC::_ZN12Unk_020dd38cD1Ev(sb);
         NC::_ZN12Unk_020dd38cD1Ev(sa);
@@ -5380,15 +5380,15 @@ extern "C" void AxMail_ApplyMail(void) {
         u32 buf[4];
         u32 obj[0x42];
         NB::sAxMailReceived = 0;
-        NB::func_0203ecdc(obj);
+        NB::AxMail_Construct(obj);
         NB::MI_CpuCopy8(NB::sAxMailBuf, obj, 0x108);
-        NB::MI_CpuFill8(NB::func_0203ecc8((u8 *)obj), 0, 0x10);
-        NB::func_0211a748(buf, obj, 0x108, NB::func_02000b7c(), 0x10);
-        if (NB::func_02063a04(NB::func_0203ecc8(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
-            NB::func_0203ec58(NB::sAxMailBuf);
+        NB::MI_CpuFill8(NB::AxMail_GetDigest((u8 *)obj), 0, 0x10);
+        NB::func_0211a748(buf, obj, 0x108, NB::AxMail_GetDigestKey(), 0x10);
+        if (NB::func_02063a04(NB::AxMail_GetDigest(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
+            NB::AxMail_Deliver(NB::sAxMailBuf);
         }
         NB::MI_CpuFill8(NB::sAxMailBuf, 0, 0x108);
-        NB::func_0203eccc(obj);
+        NB::AxMail_Destruct(obj);
     }
 }
 
@@ -5397,15 +5397,15 @@ extern "C" void AxMail_ApplyBbs() {
     u8 b[0xd2];
     if (NA::sAxBbsReceived != 0) {
         NA::sAxBbsReceived = 0;
-        NA::func_0203ec54(b);
+        NA::AxBbsNotice_Construct(b);
         NA::MI_CpuCopy8(NA::sAxBbsBuf, b, 0xd2);
-        NA::MI_CpuFill8(NA::func_0203ec4c(b), 0, 0x10);
-        NA::func_0211a748(a, b, 0xd2, NA::func_02000b7c(), 0x10);
-        if (NA::func_02063a04(NA::func_0203ec4c(NA::sAxBbsBuf), a, 0x10) == 0) {
-            NA::func_0203ec18(NA::sAxBbsBuf);
+        NA::MI_CpuFill8(NA::AxBbsNotice_GetDigest(b), 0, 0x10);
+        NA::func_0211a748(a, b, 0xd2, NA::AxMail_GetDigestKey(), 0x10);
+        if (NA::func_02063a04(NA::AxBbsNotice_GetDigest(NA::sAxBbsBuf), a, 0x10) == 0) {
+            NA::AxBbsNotice_Post(NA::sAxBbsBuf);
         }
         NA::MI_CpuFill8(NA::sAxBbsBuf, 0, 0xd2);
-        NA::func_0203ec50(b);
+        NA::AxBbsNotice_Destruct(b);
     }
 }
 

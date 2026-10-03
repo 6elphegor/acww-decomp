@@ -360,7 +360,7 @@ void func_020e9888(void *v, s32 s);
 void Snd_PlaySe(s32 a);
 void Camera_GetLookAtPoint(void *out, void *o);
 void Camera_SetSwayPattern(void *o, s32 a);
-V3 *func_020947f0(s32 a);
+V3 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent();
 void func_020e9960(void *out, void *a, void *b);
 void func_01ffd070(void *out, void *a, void *b);
@@ -384,7 +384,7 @@ void Camera_UpdateRoomFocus(void *self, s32 a);
 void FieldCamera_UpdateFocusZoom(void *self);
 BOOL func_020e94f8(void *v);
 void func_020e92f4(void *v, s32 a);
-s32 func_0203edd0(void *p);
+s32 WorldCurve_GetHorizonAngle(void *p);
 s32 func_02063a9c(s32, s32, s32, s32, s32);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
@@ -405,15 +405,15 @@ s32 NNS_G3dGetTex();
 void func_02135558(void *a, void *b, void *c);
 BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
 void *func_020986c8(void *s);
-BOOL func_0203c41c(void *a, u16 *p, s32 c);
-BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set);
+BOOL Catalog_AddItem(void *a, u16 *p, s32 c);
+BOOL Catalog_SetItem(u8 *base, u16 *p, s32 skip, s32 set);
 BOOL Catalog_HasItem(u8 *base, u16 *p);
 u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p);
-s32 func_0203c354(u16 base, u32 n);
-s32 func_0203c2f4();
-s32 func_0203c304();
-s32 func_0203c314();
-s32 func_0203c318();
+s32 Catalog_CountRange(u16 base, u32 n);
+s32 Catalog_CountInsects();
+s32 Catalog_CountFish();
+s32 Catalog_GetInsectTotal();
+s32 Catalog_GetFishTotal();
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 BOOL Item_IsNormalItem(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
@@ -600,7 +600,7 @@ BOOL Unk_020d93b8::vfunc_00() {
     unk_1e8 = 0;
     unk_1f8 = unk_1fc = 0;
     if (setMode(0)) {
-        CameraPose *p = (CameraPose *)func_020947f0(4);
+        CameraPose *p = (CameraPose *)PlayerActor_GetBodyPos(4);
         if (p) {
             unk_110.x = ((s32 *)p)[0];
             unk_110.y = ((s32 *)p)[1];
@@ -811,7 +811,7 @@ void Unk_020d93b8::setFovy(s32 a)
 
 void Unk_020d93b8::updateEyeCurveAngle()
 {
-    M(s16, 0x1ac) = func_0203edd0(&M(u8, 0x194));
+    M(s16, 0x1ac) = WorldCurve_GetHorizonAngle(&M(u8, 0x194));
 }
 
 extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
@@ -1098,7 +1098,7 @@ void Unk_020d93b8::updateModeDefault() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = func_020947f0(4);
+    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1198,7 +1198,7 @@ void Unk_020d93b8::updateMode1() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = func_020947f0(4);
+    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1282,7 +1282,7 @@ void Unk_020d93b8::updateMode3() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = func_020947f0(4);
+    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1312,7 +1312,7 @@ void Unk_020d93b8::updateMode4() {
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = func_020947f0(4);
+    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1335,7 +1335,7 @@ BOOL Unk_020d93b8::initModeTrackPair() {
 void Unk_020d93b8::updateModeTrackPair() {
     Unk_0203a9b8_Vec d;
     d = gVec3Zero;
-    Unk_0203a9b8_Vec *p = func_020947f0(4);
+    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
     void *q = PlayerActor_GetTrackTarget(4);
     if (p && q) {
         Unk_0203a9b8_Vec t;
@@ -1512,7 +1512,7 @@ extern "C" BOOL Camera_FocusOnPoint(Unk_0203a148_Vec *a) {
     if (Scene_GetCurrent() == 0xc) {
         return FALSE;
     }
-    s32 r = Camera_CalcPointSpan(func_020947f0(4), a, NULL, NULL);
+    s32 r = Camera_CalcPointSpan(PlayerActor_GetBodyPos(4), a, NULL, NULL);
     if (r >= 0xb000) {
         return Camera_SetModeDefault();
     }
@@ -1522,7 +1522,7 @@ extern "C" BOOL Camera_FocusOnPoint(Unk_0203a148_Vec *a) {
 }
 
 extern "C" void Camera_FocusOnPair(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b) {
-    s32 r = Camera_CalcTriangleSpan(func_020947f0(4), a, b, NULL, NULL);
+    s32 r = Camera_CalcTriangleSpan(PlayerActor_GetBodyPos(4), a, b, NULL, NULL);
     if (r >= 0xb000) {
         Camera_SetModeDefault();
     } else {

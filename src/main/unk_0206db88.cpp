@@ -40,7 +40,7 @@ BOOL Camera_RestorePrevMode();
 void Gfx2d_SetLayerPriority(u32, u32);
 void MenuCtrl_ClearTransitionActive();
 void Gfx2d_ShowLayer(u32);
-void func_02011940();
+void HudObjGfx_LoadForSceneSub();
 void Sky_SetEngine(u32);
 void MenuCtrl_ClearMenuOnTop();
 void func_0203d4c4(u32);
@@ -470,7 +470,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
             Gfx2d_HideMainPlanes(0xe);
             Gfx2d_ShowLayer(1);
             Gfx2d_ResetLayer(5);
-            func_02011940();
+            HudObjGfx_LoadForSceneSub();
             if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
                 Sky_SetEngine(0);
             }

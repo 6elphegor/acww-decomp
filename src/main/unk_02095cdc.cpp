@@ -187,7 +187,7 @@ extern const u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
-extern u8 data_021edb68[];
+extern u8 gU8None[];
 extern Unk_02095f38_G data_021ed150;
 extern u8 sMotherMonthLetterCount[];
 extern u8 sMotherMonthLetterFirst[];
@@ -214,7 +214,7 @@ Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
 void VillagerId_Destruct(void *);
 void VillagerId_Construct(void *);
 void VillagerId_CopyFrom(void *, void *);
-void func_0203c42c(void *a, u16 *b, s32 c, s32 d);
+void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 void MailText_SetSlot(s32, void *);
 void Town_GetUpdater();
 s32 Town_WashUpBottle();
@@ -357,16 +357,16 @@ void func_02097078(u32 v);
 u32 func_02097084();
 void func_02097090();
 Letter *func_020970b8(s32 i);
-u32 func_020973e8(s32);
-s32 func_02097410(s32, s32);
-s32 func_02097414(s32);
+u32 PlayerBank_GetDonationLevel(s32);
+s32 PlayerBank_SetBalance(s32, s32);
+s32 PlayerBank_GetBalance(s32);
 void *PlayerData_GetCurrent();
-s32 func_02097740(void *, void *);
+s32 PlayerDataArray_FindById(void *, void *);
 u8 *PlayerData_GetResident(void *, s32);
-s32 func_020978c8(void *, s32);
-s32 func_020978fc(s32);
-void *func_02097a30(void *);
-void *func_02097a3c(void *);
+s32 PlayerDataArray_IsUsed(void *, s32);
+s32 PlayerData_IsResidentIndex(s32);
+void *PlayerData_GetMotherLetterState(void *);
+void *PlayerData_GetFutureLetter(void *);
 s32 func_02097ff4(s32, s32);
 s32 func_0209801c(s32, s32);
 s32 func_02098044(s32, s32);
@@ -523,8 +523,8 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
     if (r4 == 0) return -1;
     _ZN8PlayerIdC1EPv(tmp);
     _ZN8PlayerId8copyFromEPS_(tmp, r4);
-    res = func_02097740(gSavePlayers, tmp);
-    if (func_020978fc(res)) {
+    res = PlayerDataArray_FindById(gSavePlayers, tmp);
+    if (PlayerData_IsResidentIndex(res)) {
         _ZN8PlayerIdC1Ev(tmp);
         return res;
     }
@@ -578,7 +578,7 @@ extern "C" void func_020968e0(void) {}
 
 extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
-    if (FutureLetter_GetLetter(func_02097a3c(p))->getState() != 0) return 1;
+    if (FutureLetter_GetLetter(PlayerData_GetFutureLetter(p))->getState() != 0) return 1;
     return 0;
 }
 
@@ -635,10 +635,10 @@ extern "C" void LetterDelivery_Update(void) {
     }
     z2 = 0; z1 = 0; z0 = 0;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(gSavePlayers, i)) {
+        if (PlayerDataArray_IsUsed(gSavePlayers, i)) {
             s0 = PlayerData_GetResident(gSavePlayers, i);
-            r6 = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(s0));
-            s4 = FutureLetter_GetLetter(func_02097a3c(s0));
+            r6 = _ZN12FutureLetter15getDeliveryDateEv(PlayerData_GetFutureLetter(s0));
+            s4 = FutureLetter_GetLetter(PlayerData_GetFutureLetter(s0));
             if (((LetterView *)s4)->getState()) {
                 Y.a = z0; Y.b = z0;
                 Y.d5 = r6[2];
@@ -646,7 +646,7 @@ extern "C" void LetterDelivery_Update(void) {
                 Y.d3 = r6[0];
                 Y.d2 = 9;
                 if (DateTime_Compare(&LampLights, &Y, 0x3c) != ~z2) {
-                    if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12FutureLetter17clearFutureLetterEv(func_02097a3c(s0));
+                    if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12FutureLetter17clearFutureLetterEv(PlayerData_GetFutureLetter(s0));
                 }
             }
         }
@@ -696,7 +696,7 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
     if (LetterDelivery_HasFreeOutgoingSlot() == 0) {
         if (LetterDelivery_IsMailboxFull(-1) == 1) return;
     }
-    r4 = func_02097a30(r6);
+    r4 = PlayerData_GetMotherLetterState(r6);
     MotherLetter_ResetOtherMonths((u8)p->unk_04);
     if (_ZN17MotherLetterState13checkLastDateEPi(r4, p) != 0) return;
     if (MotherLetter_TrySendBirthday(p) != 0) {
@@ -719,7 +719,7 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
 
 extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r5 = PlayerData_GetCurrent();
-    void *r6 = func_02097a30(r5);
+    void *r6 = PlayerData_GetMotherLetterState(r5);
     u8 *q = _ZN12Unk_02097ff411getBirthdayEv(r5);
     if (*(u16 *)q == 0) return 0;
     if (p->unk_00 == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
@@ -797,7 +797,7 @@ extern "C" void MotherLetter_ResetOtherMonths(s32 x) {
 }
 
 extern "C" s32 MotherLetter_CountUnsent(s32 a, s32 n) {
-    void *g = func_02097a30(PlayerData_GetCurrent());
+    void *g = PlayerData_GetMotherLetterState(PlayerData_GetCurrent());
     s32 cnt = 0, i = cnt;
     for (; i < n; a++, i++) {
         if (_ZN17MotherLetterState6isSentEi(g, a) == 0) cnt++;
@@ -806,7 +806,7 @@ extern "C" s32 MotherLetter_CountUnsent(s32 a, s32 n) {
 }
 
 extern "C" s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k) {
-    void *g = func_02097a30(PlayerData_GetCurrent());
+    void *g = PlayerData_GetMotherLetterState(PlayerData_GetCurrent());
     s32 cnt = 0, idx = a, i = cnt;
     for (; i < n; idx++, i++) {
         if (_ZN17MotherLetterState6isSentEi(g, idx) == 0) {
@@ -818,7 +818,7 @@ extern "C" s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k) {
 }
 
 extern "C" void MotherLetter_ClearSent(s32 a, s32 n) {
-    void *g = func_02097a30(PlayerData_GetCurrent());
+    void *g = PlayerData_GetMotherLetterState(PlayerData_GetCurrent());
     s32 i;
     for (i = 0; i < n; a++, i++) _ZN17MotherLetterState9clearSentEi(g, a);
 }
@@ -827,7 +827,7 @@ extern "C" s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d) {
     void *g;
     s32 v8, vc;
     s32 r7;
-    g = func_02097a30(PlayerData_GetCurrent());
+    g = PlayerData_GetMotherLetterState(PlayerData_GetCurrent());
     r7 = MotherLetter_CountUnsent(a, b);
     if (r7 == 0) {
         if (d == 0) return 0;
@@ -851,7 +851,7 @@ extern "C" s32 MotherLetter_Send(s32 a, s32 b) {
     _ZN6LetterC1Ev(buf);
     Letter_Clear(buf);
     r4 = (s32)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
-    rec[0] = data_021edb68[0];
+    rec[0] = gU8None[0];
     rec[0] = MotherLetter_GetMsgIndex(a);
     rec[1] = 1;
     if (a == 0x1a) rec[1] = 0x12;
@@ -955,7 +955,7 @@ extern "C" s32 BottleLetter_Open() {
     }
     void *t = PlayerData_GetCurrent();
     u16 buf = 0x1033;
-    func_0203c42c(_ZN10PlayerData10getCatalogEv(t), &buf, 0, 1);
+    Catalog_SetItem(_ZN10PlayerData10getCatalogEv(t), &buf, 0, 1);
     Letter_Copy(r5, o);
     Letter_Clear(o);
     CommManager *g = gCommManager;
@@ -1006,7 +1006,7 @@ extern "C" void BottleLetter_OnNewDay(s32 a) {
             if (_ZN10LetterView8getStateEv(BottleLetterRecord_GetLetter(o))) {
                 BottleLetter_PlaceBottle();
             } else if (func_02063b8c(10) == 7) {
-                u8 v = data_021edb68[0];
+                u8 v = gU8None[0];
                 s32 r = _ZN18BottleLetterRecord17pickUnusedMessageEv(o);
                 v = r;
                 if (BottleLetter_CreateGameLetter(&v)) _ZN18BottleLetterRecord14setMessageUsedEi(o, r);

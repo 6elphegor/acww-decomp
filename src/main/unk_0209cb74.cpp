@@ -99,10 +99,10 @@ void SaveVillagers_ResetMoods(void *);
 void TownSessionState_Get(void);
 void TownSessionState_Reset(void);
 void RoomFtrState_ResetAll(void);
-void func_0209c408(void);
+void RoomObjSync_Reset(void);
 void BuildingStates_Reset(void);
 void BuildingOccupancy_Reset(void);
-void func_02034164(void);
+void RoomWallFloor_ClearScenes(void);
 void EventWeekSlots_OnLoad(void *);
 void Weather_Apply(void *);
 void Town_OnLoad(void);
@@ -117,7 +117,7 @@ void TownSessionState_GetVisitorPos(void);
 void _ZN10VisitorPos13pickRandomPosEv(void);
 s32 Hud_GetCountdown(void);
 void _ZN12HudCountdown5startEii(s32, s32, s32);
-void func_0202e8b0(void);
+void LowBattery_Reset(void);
 void SaveVillagers_PickGreeter(void *);
 void MenuCtrl_InitKeyboardState(void);
 void HouseVisitor_ClearPresent(void);
@@ -172,10 +172,10 @@ extern "C" void SaveData_Apply(u8 *p) {
     TownSessionState_Get();
     TownSessionState_Reset();
     RoomFtrState_ResetAll();
-    func_0209c408();
+    RoomObjSync_Reset();
     BuildingStates_Reset();
     BuildingOccupancy_Reset();
-    func_02034164();
+    RoomWallFloor_ClearScenes();
     EventWeekSlots_OnLoad(p + 0x15e18);
     Weather_Apply(p + 0x15f66);
     Town_OnLoad();
@@ -193,7 +193,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     TownSessionState_GetVisitorPos();
     _ZN10VisitorPos13pickRandomPosEv();
     _ZN12HudCountdown5startEii(Hud_GetCountdown(), 0, 1);
-    func_0202e8b0();
+    LowBattery_Reset();
     SaveVillagers_PickGreeter(p + 0x8a3c);
     MenuCtrl_InitKeyboardState();
     HouseVisitor_ClearPresent();
@@ -646,7 +646,7 @@ extern "C" s32 Date_GetDaysInMonth(u32 y, u32 m) {
     return sDaysInMonth[m - 1];
 }
 
-extern "C" void func_0209cdf8(Unk_0209cdf8_T a, Unk_0209cdf8_T b, u16 *out) {
+extern "C" void Time_AddHourMinute(Unk_0209cdf8_T a, Unk_0209cdf8_T b, u16 *out) {
     Unk_0209cdf8_T t = a;
     t.unk_00 += b.unk_00;
     t.unk_01 += b.unk_01;

@@ -3,8 +3,8 @@
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
-u8 *func_02050204(void);
-u8 *func_02050208(void);
+u8 *Text_GetSpecialCharStr10(void);
+u8 *Text_GetSpecialCharStr9(void);
 u8 *Text_GetSpecialCharStr5(void);
 u32 Msg_GetCharFromEnd(u32 a, u32 b);
 u32 Msg_GetCharAt(u32 a, u32 b);
@@ -84,7 +84,7 @@ public:
     MsgTag();
     s32 getSlotIndex();
     BOOL isSlotTag();
-    void func_020a72c4(u32 *a, char **b, char **c);
+    void getAltTextArgs(u32 *a, char **b, char **c);
     void getArgs3(u8 *a, u8 *b, u8 *c);
     void parse(u8 *p);
 
@@ -160,7 +160,7 @@ public:
 
     void setCapitalizeNext();
     BOOL differsFromName();
-    BOOL func_020b38dc();
+    BOOL canCheckName();
     BOOL differsFromLast(s32 c);
     void setAttr();
     void insertSlot();
@@ -202,7 +202,7 @@ public:
     s32 readChar();
     void copyChar();
     void censorChars(s32 n);
-    void func_020b37dc();
+    void restartScan();
     void setDest(MsgString *p);
     void setSource(MsgString *p);
     void resetWriter();
@@ -392,7 +392,7 @@ u8 StringExpander::expand(u8 a, u8 b) {
     begin((u8 *)unk_24->unk_04c.getBuffer());
     run(FALSE);
     if (unk_45 && unk_47) {
-        if (!func_020b38dc() || !differsFromName()) {
+        if (!canCheckName() || !differsFromName()) {
             unk_45 = 0;
         }
     }
@@ -486,7 +486,7 @@ void StringExpander::appendRawTag() {
 void StringExpander::appendTagTail() {
     u32 a;
     char *b, *c;
-    unk_28.func_020a72c4(&a, &b, &c);
+    unk_28.getAltTextArgs(&a, &b, &c);
     u32 n = unk_28.unk_08 - 1;
     BOOL ok = 0x400 - unk_40 > n;
     skip(a * 2);
@@ -582,11 +582,11 @@ void StringExpander::insertGlyphTag6() {
 }
 
 void StringExpander::insertGlyphTag9() {
-    pushText(func_02050208());
+    pushText(Text_GetSpecialCharStr9());
 }
 
 void StringExpander::insertGlyphTag10() {
-    pushText(func_02050204());
+    pushText(Text_GetSpecialCharStr10());
 }
 
 void StringExpander::handleTagFF02() {
@@ -634,7 +634,7 @@ BOOL StringExpander::differsFromLast(s32 c) {
     return r;
 }
 
-BOOL StringExpander::func_020b38dc() {
+BOOL StringExpander::canCheckName() {
     return TRUE;
 }
 
@@ -675,7 +675,7 @@ void TabooCensorWriter::setDest(MsgString *p) {
     unk_2c = p;
 }
 
-void TabooCensorWriter::func_020b37dc() {
+void TabooCensorWriter::restartScan() {
     reset();
     begin(unk_30);
 }
@@ -1152,7 +1152,7 @@ BOOL StringBank::beginTabooCheck(MsgString *buf) {
 
 BOOL StringBank::censorTaboo() {
     BOOL result = FALSE;
-    unk_b3c.func_020b37dc();
+    unk_b3c.restartScan();
     u8 *start = unk_4fc;
     while (unk_b3c.unk_34 == 0) {
         char *s = (char *)start;
@@ -1164,7 +1164,7 @@ BOOL StringBank::censorTaboo() {
                 break;
             }
         }
-        unk_b3c.func_020b37dc();
+        unk_b3c.restartScan();
         if (n > 0) {
             unk_b3c.censorChars(n);
             result = TRUE;
@@ -1177,7 +1177,7 @@ BOOL StringBank::censorTaboo() {
 
 s32 StringBank::matchTabooWord() {
     s32 count = 0;
-    unk_b3c.func_020b37dc();
+    unk_b3c.restartScan();
     unk_b7c.reset();
     unk_b7c.begin((u8 *)unk_b7c.unk_24);
     for (;;) {

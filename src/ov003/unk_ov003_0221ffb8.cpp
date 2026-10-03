@@ -948,8 +948,8 @@ BOOL CommManager_isOnline(void *g);
 void Effect_SetPosition(s32 h, void *v, s32 a, s32 b);
 void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *v, s32 b, s32 c);
-void func_020947c0(u16 *out, s32 a);
-void *func_020947f0(s32 a);
+void PlayerActor_GetSlotHeldItem(u16 *out, s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 void *PlayerActor_GetCharacter(s32 n);
 void *PlayerActor_GetActor(s32 n);
 void ModelSlotPool_release(void *p, void *q);
@@ -979,7 +979,7 @@ s32 FieldAction_FindDropUnit(s32 a, s32 *p, s32 c);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-BOOL func_0204f134(s32 *a, s32 *b, s32 c);
+BOOL FishTable_PickNow(s32 *a, s32 *b, s32 c);
 BOOL FishDisplay_HasPassedFrame(void *o, s32 a);
 void FishDisplay_Release(s32 h);
 void FishDisplay_SetEntry(s32 h, s32 a, V3_f5 *p, V3_f5 *q, s32 r, s32 s, s32 t, s32 u, s32 v, s32 w);
@@ -1013,7 +1013,7 @@ BOOL Fishing_StepArc(V3_f5 *a, s32 b, s32 *c, s32 *d, s32 e);
 void Fishing_CalcArcSpeed(V3_f5 *a, V3_f5 *b, s32 *c, s32 *d, s32 e);
 void FishBobber_nudge(void *);
 void NetBuf_PackPair20(void *, s32, s32);
-void func_020944f8(T48_f5 *out, u32 a);
+void PlayerActor_GetHandMtx(T48_f5 *out, u32 a);
 void *PooledModel_getModel(void *a);
 void PooledModel_unload(void *p);
 void PooledModel_reset(void *p);
@@ -2210,7 +2210,7 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
         u16 out[2];
         BOOL ok;
         u16 a, b;
-        func_020947c0(out, self->unk_227);
+        PlayerActor_GetSlotHeldItem(out, self->unk_227);
         ok = FALSE;
         {
             volatile u16 *pv = &out[0];
@@ -2333,7 +2333,7 @@ extern "C" BOOL FishShadow_BiteHooked(Obj_f7 *o) {
     o->unk_120.x = v.x;
     o->unk_120.z = v.z;
     ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&o->unk_120, sc, ang);
-    void *m = func_020947f0(4);
+    void *m = PlayerActor_GetBodyPos(4);
     if (m != NULL) {
         s32 a2 = Math_AngleXZ(m, &v);
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&o->unk_120, 0xa00, a2);
@@ -2405,7 +2405,7 @@ extern "C" BOOL FishShadow_TryHook(Obj_f7 *o) {
     switch (o->unk_224) {
     case 4: {
         u16 buf[1];
-        func_020947c0(buf, o->unk_227);
+        PlayerActor_GetSlotHeldItem(buf, o->unk_227);
         u32 k = 0;
         u32 a = *(volatile u16 *)buf;
         u32 b = *(volatile u16 *)buf;
@@ -2705,7 +2705,7 @@ extern "C" BOOL FishShadow_FleeFromPlayer(Obj_f7 *self) {
     if (self == NULL) {
         return r;
     }
-    void *p = func_020947f0(4);
+    void *p = PlayerActor_GetBodyPos(4);
     if (p == NULL) {
         return r;
     }
@@ -2800,7 +2800,7 @@ extern "C" BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3)
     if (p == 0) {
         return FALSE;
     }
-    func_020947c0((u16 *)&vw, a2);
+    PlayerActor_GetSlotHeldItem((u16 *)&vw, a2);
     k = FALSE;
     pp = (volatile u16 *)&vw;
     a = *pp;
@@ -3161,7 +3161,7 @@ extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
     if (s->b2 != 0) {
         s->b2 = s->b2 - 1;
     }
-    t = ((s32 (*)(s32))func_020947f0)(0);
+    t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
         if (((s32 (*)(s32, void *))func_020e9650)(t, &o->unk_120) < 0x8000) {
             s->b3 = 1;
@@ -3177,7 +3177,7 @@ extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
     if (s->b2 != 0) {
         s->b2 = s->b2 - 1;
     }
-    t = ((s32 (*)(s32))func_020947f0)(0);
+    t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
         if (((s32 (*)(s32, void *))func_020e9650)(t, &o->unk_120) >= 0x8000) {
             s->b3 = 0;
@@ -3339,7 +3339,7 @@ extern "C" BOOL FishCatch_SetupLine(Self_f5 *self, u32 a) {
         self->unk_40 = 4;
         return FALSE;
     }
-    func_020944f8(&l.blk, a);
+    PlayerActor_GetHandMtx(&l.blk, a);
     l.t = l.blk;
     l.d.x = 0x800;
     l.d.y = 0;
@@ -3479,7 +3479,7 @@ extern "C" BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a) {
         }
     } else {
         ((void (*)(Self_f5 *, u32))FishCatch_IsDisplayReady)(self, a);
-        func_020944f8(&l.blk, a);
+        PlayerActor_GetHandMtx(&l.blk, a);
         l.tt = l.blk;
         PlayerActor_ApplyHoldOffset(&l.tt, 0);
         l.w.x = ((V3_f5 *)((u8 *)&l.tt + 0x24))->x;
@@ -4446,7 +4446,7 @@ extern "C" void FishShadow_UpdateFade(O_f3 *o, E_f3 *e, s32 idx) {
 extern "C" BOOL FishShadow_CheckPlayerScare(s32 a, E_f3 *e) {
     BOOL r = FALSE;
     if (FieldFish_IsPlayerApproaching(a, 4, e) != 0) {
-        s32 t = ((s32 (*)(s32))func_020947f0)(4);
+        s32 t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(4);
         if (t == 0) {
             return r;
         }
@@ -4621,7 +4621,7 @@ extern "C" BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 f
         fl = 1;
         break;
     }
-    if (func_0204f134(&x, &y, fl)) {
+    if (FishTable_PickNow(&x, &y, fl)) {
         if (FieldFish_PickSpawnUnit(self, &a, &b, &cd.a, &cd.b, y, flag, e)) {
             if (FishShadow_CanSpawnFish(self, e, x)) {
                 FieldPos_FromUnitCenter(&v, a, b);

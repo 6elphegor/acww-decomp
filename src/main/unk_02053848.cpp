@@ -579,7 +579,7 @@ void AnimModel::detachAnim()
     }
 }
 
-extern "C" void func_02054628(Unk_02054628_Obj *o, s32 x)
+extern "C" void JointCb_UseRestTranslation(Unk_02054628_Obj *o, s32 x)
 {
     u32 idx = o->unk_00[1];
     if (idx >= 2) {
@@ -607,7 +607,7 @@ extern "C" void func_02054628(Unk_02054628_Obj *o, s32 x)
     }
 }
 
-extern "C" void func_02054594(void *unused, Unk_02054628_Obj *o, void *p)
+extern "C" void JointCb_CalcCpuMatrix(void *unused, Unk_02054628_Obj *o, void *p)
 {
     u32 t = *o->unk_00 & 0xe0;
     if (t == 0x40) {

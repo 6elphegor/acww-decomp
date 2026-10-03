@@ -243,7 +243,7 @@ void WVR_StartUpAsync(u32 a, void (*cb)(u32, u32), u32 c);
 }
 
 extern "C" {
-void func_02097428(void);
+void Startup_SetCardPulledOutCallback(void);
 }
 
 extern "C" {
@@ -379,7 +379,7 @@ void Main_InitNop(void);
 }
 
 extern "C" {
-void func_0209cb0c(void);
+void GameRoot_Boot(void);
 }
 
 extern "C" {
@@ -599,7 +599,7 @@ extern "C" void Main_Init(void) {
     *(vu32 *)0x40004c0 = 0x7fff;
     *(vu32 *)0x40004c4 = 0;
     Main_InitNop();
-    func_0209cb0c();
+    GameRoot_Boot();
     OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
 }
 
@@ -650,7 +650,7 @@ extern "C" void NitroStartUp(void) {
     *ime;
     *ime = old;
     Startup_SetupMainArena();
-    func_02097428();
+    Startup_SetCardPulledOutCallback();
     FS_Init(2);
     Startup_FillOverlayArea();
     OverlayMgr_Init();

@@ -1,8 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-struct Unk_0203eb78_Entry {
-    Unk_0203eb78_Entry();
+struct TalkRequestEntry {
+    TalkRequestEntry();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -15,7 +15,7 @@ struct Unk_0203eb78_Entry {
 };
 
 struct Unk_0203ebdc_List {
-    /* 0x00 */ Unk_0203eb78_Entry *head;
+    /* 0x00 */ TalkRequestEntry *head;
 };
 
 struct WorldCurve {
@@ -68,7 +68,7 @@ extern Unk_0203f218_Slot sEventSchedule[99];
 }
 
 extern "C" {
-extern s32 (*data_020d96d4[])(u8 *, s32);
+extern s32 (*sCharInteractSyncRecvFns[])(u8 *, s32);
 }
 
 extern "C" {
@@ -84,7 +84,7 @@ extern Unk_0203ecec_Global *gCurSceneInfo;
 }
 
 extern "C" {
-extern s32 data_021c3b94;
+extern s32 sWorldCurveZScale;
 }
 
 extern "C" {
@@ -152,7 +152,7 @@ s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
-s32 func_02097980(s32 p);
+s32 PlayerData_GetLastWifiMailId(s32 p);
 }
 
 extern "C" {
@@ -164,7 +164,7 @@ s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_02097954(s32 p, s32 v);
+s32 PlayerData_SetLastWifiMailId(s32 p, s32 v);
 }
 
 extern "C" {
@@ -200,7 +200,7 @@ s32 func_020e7b98(s32 a, s32 b);
 }
 
 extern "C" {
-u32 func_0203efec(u32 x);
+u32 WorldCurve_AngleToDistance(u32 x);
 }
 
 extern "C" {
@@ -244,15 +244,15 @@ s32 Event_RefreshIfDateChanged(void *p);
 }
 
 extern "C" {
-s32 func_02040264(s32 v);
+s32 EventWeekSlots_UpdateToday(s32 v);
 }
 
 extern "C" {
-s32 func_020400b0(void);
+s32 EventWeekSlots_IsSeenToday(void);
 }
 
 extern "C" {
-s32 func_0203f14c(void);
+s32 Game_IsIntroPeriod(void);
 }
 
 extern "C" {
@@ -305,31 +305,31 @@ Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
 
 static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
-Unk_0203eb78_Entry data_021c39f0[15];
+TalkRequestEntry sTalkRequestPool[15];
 
-extern "C" void *func_0203ecdc(void *p) {
+extern "C" void *AxMail_Construct(void *p) {
     _ZN6LetterC1Ev(p);
     return p;
 }
 
-extern "C" void *func_0203eccc(void *p) {
+extern "C" void *AxMail_Destruct(void *p) {
     _ZN6LetterD1Ev(p);
     return p;
 }
 
-extern "C" u8 *func_0203ecc8(u8 *p) { return p + 0xf6; }
+extern "C" u8 *AxMail_GetDigest(u8 *p) { return p + 0xf6; }
 
-extern "C" BOOL func_0203ec58(u8 *p) {
+extern "C" BOOL AxMail_Deliver(u8 *p) {
     u8 l[0xf8];
     _ZN6LetterC1Ev(l);
     s32 h = PlayerData_GetCurrent();
-    if (*(u16 *)(p + 0xf4) != func_02097980(h)) {
+    if (*(u16 *)(p + 0xf4) != PlayerData_GetLastWifiMailId(h)) {
         Letter_Copy(l, p);
         s32 q = _ZN10PlayerData8getIndexEv(h);
         Letter_SetRecipientResident(l, q);
         Letter_MarkReceived(l);
         if (LetterDelivery_PutInMailbox(l, q, 0)) {
-            func_02097954(h, *(u16 *)(p + 0xf4));
+            PlayerData_SetLastWifiMailId(h, *(u16 *)(p + 0xf4));
             _ZN6LetterD1Ev(l);
             return TRUE;
         }
@@ -338,13 +338,13 @@ extern "C" BOOL func_0203ec58(u8 *p) {
     return FALSE;
 }
 
-extern "C" void func_0203ec54(void) {}
+extern "C" void AxBbsNotice_Construct(void) {}
 
-extern "C" void func_0203ec50(void) {}
+extern "C" void AxBbsNotice_Destruct(void) {}
 
-extern "C" u8 *func_0203ec4c(u8 *p) { return p + 0xc2; }
+extern "C" u8 *AxBbsNotice_GetDigest(u8 *p) { return p + 0xc2; }
 
-extern "C" BOOL func_0203ec18(u8 *p) {
+extern "C" BOOL AxBbsNotice_Post(u8 *p) {
     u8 *g = data_021e87d8;
     u32 v = *(u16 *)(p + 0xc0);
     if (v != _ZN8BbsBoard11getNoticeIdEv(g)) {
@@ -355,38 +355,38 @@ extern "C" BOOL func_0203ec18(u8 *p) {
     return FALSE;
 }
 
-Unk_0203eb78_Entry::Unk_0203eb78_Entry() {
+TalkRequestEntry::TalkRequestEntry() {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0xff;
 }
 
-extern "C" void func_0203ec00(Unk_0203eb78_Entry *e) {
+extern "C" void TalkRequestEntry_Free(TalkRequestEntry *e) {
     e->unk_14 = 0;
     e->unk_0c = 0;
     e->unk_10 = 0;
 }
 
-extern "C" void func_0203ebdc(Unk_0203ebdc_List *l) {
-    Unk_0203eb78_Entry *p = l->head;
+extern "C" void TalkRequestList_FreeAll(Unk_0203ebdc_List *l) {
+    TalkRequestEntry *p = l->head;
     while (p) {
-        Unk_0203eb78_Entry *next = *(Unk_0203eb78_Entry **)((u8 *)p + 4);
+        TalkRequestEntry *next = *(TalkRequestEntry **)((u8 *)p + 4);
         func_020e79a0(l, p);
-        func_0203ec00(p);
+        TalkRequestEntry_Free(p);
         p = next;
     }
 }
 
-extern "C" void func_0203ebb0(void) {
+extern "C" void TalkRequestPool_Reset(void) {
     for (s32 i = 0; i < 15; i++) {
-        func_0203ec00(&data_021c39f0[i]);
+        TalkRequestEntry_Free(&sTalkRequestPool[i]);
     }
-    MI_CpuFill8(data_021c39f0, 0, 15);
+    MI_CpuFill8(sTalkRequestPool, 0, 15);
 }
 
-extern "C" Unk_0203eb78_Entry *func_0203eb78(void) {
+extern "C" TalkRequestEntry *TalkRequestPool_Alloc(void) {
     for (s32 i = 0; i < 15; i++) {
-        Unk_0203eb78_Entry *e = &data_021c39f0[i];
+        TalkRequestEntry *e = &sTalkRequestPool[i];
         if (IsZero(e->unk_14)) {
             return e;
         }

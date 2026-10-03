@@ -1101,10 +1101,10 @@ public:
 };
 
 // 0x330-byte object of another unit's class (constructor 0x020b08b8, destructor 0x020b08b4)
-class Unk_020b08b4 {
+class StarTwinkle {
 public:
-    Unk_020b08b4();
-    ~Unk_020b08b4();
+    StarTwinkle();
+    ~StarTwinkle();
     u8 unk_000[0x330];
 };
 struct U234_Record {
@@ -1504,7 +1504,7 @@ extern u32 sSkyLight[3];
 extern u32 sMoonColors[3];
 extern u32 sSkyHBlankTask[7];
 extern u32 sSkyGradient[196];
-extern Unk_020b08b4 data_021efc18;
+extern StarTwinkle data_021efc18;
 extern WeatherManager gWeatherManager;
 extern SkySprites gSkySprites;
 }
@@ -1751,7 +1751,7 @@ extern "C" {
 extern u8 gScreenTransition;
 }
 extern "C" {
-extern Unk_020bfe30_Vec data_020d1c8c;
+extern Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
 }
 extern "C" {
 extern u16 data_020c6cc8;
@@ -2583,13 +2583,13 @@ extern "C" {
 void _ZN15SkyShotSequence8onUfoHitEv(void *p);
 }
 extern "C" {
-void func_02040208(s32 a);
+void EventWeekSlots_MarkTodaySeen(s32 a);
 }
 extern "C" {
 s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 func_020947f0();
+s32 PlayerActor_GetBodyPos();
 }
 extern "C" {
 void Town_PlaceGulliverShip(s32 a, BOOL b);
@@ -2739,9 +2739,9 @@ void Unk_020be018::updateUfo()
         unk_68 = 0;
     } else if (unk_60 == 4) {
         if (unk_34.y > 0xd0000) {
-            func_02040208(0x44);
+            EventWeekSlots_MarkTodaySeen(0x44);
             PlayerActor_GetLocalSessionSlot();
-            s32 obj = func_020947f0();
+            s32 obj = PlayerActor_GetBodyPos();
             Town_PlaceGulliverShip(obj, unk_2e == 0 ? 1 : 0);
             _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
             unk_04 = 3;
@@ -2851,7 +2851,7 @@ void Unk_020be018::updatePete()
     }
     if ((s32)unk_60 >= 6 && unk_34.y > 0xd0000) {
         _ZN15SkyShotSequence10onPeteFellEv(data_021f4488);
-        func_02040208(0x45);
+        EventWeekSlots_MarkTodaySeen(0x45);
         unk_04 = 3;
     }
     if ((s32)unk_60 >= 1) {
@@ -4356,10 +4356,10 @@ extern "C" {
 void func_020e7530(s16* p, s32 target, s32 step);
 }
 extern "C" {
-void func_02094574(s32 a, s32 b, s32 c);
+void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* func_020947f0(s32 a);
+void* PlayerActor_GetBodyPos(s32 a);
 }
 extern "C" {
 void Sky_ProjectToScreenX(s32* out, void* p);
@@ -4694,7 +4694,7 @@ u8 sSkyLineTablesReady;
 void *data_020e49e4[2] = {(void *)SkySprite_EndSnowFlake, 0};
 void *data_020e47dc[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct09Ev, 0};
 const u8 data_020d0e04[5] = {0xf, 0xe, 0xd, 0xe, 0xd};
-Unk_020b08b4 data_021efc18;
+StarTwinkle data_021efc18;
 u32 data_020e47b4[2] = {0x41fb80f0, 0xffff9097};
 const u32 data_020d1028[12] = {0x50a550a5, 0x50a550a5, 0x4cc650a5, 0x4d4a4ce7, 0x4d8c4d8c, 0x4d6b4d6b,
     0x494a4d4a, 0x494a494a, 0x4929494a, 0x4ca54ce7, 0x50a550a5, 0x50a550a5};
@@ -4860,7 +4860,7 @@ void SkyShotSequence::actPeteFallen() {
     relaxHead(0x190, 0x190);
     unk_08--;
     if (unk_08 <= 0) {
-        void* p = func_020947f0(unk_04);
+        void* p = PlayerActor_GetBodyPos(unk_04);
         if (p) {
             TownSessionState_Get();
             _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, unk_18);
@@ -4894,7 +4894,7 @@ namespace n08 {
 }
 void SkyShotSequence::lookAtTarget() {
     using namespace n08;
-    void* p = func_020947f0(4);
+    void* p = PlayerActor_GetBodyPos(4);
     s32 x = 0x80000;
     if (p) {
         Sky_ProjectToScreenX(&x, p);
@@ -4906,7 +4906,7 @@ void SkyShotSequence::lookAtTarget() {
         t = 5000;
     }
     s16 v = t;
-    func_02094574(4000, v, 4);
+    PlayerActor_SetHeadTilt(4000, v, 4);
     unk_1a = 4000;
     unk_1c = v;
 }
@@ -4917,7 +4917,7 @@ void SkyShotSequence::relaxHead(s32 a, s32 b) {
     using namespace n08;
     func_020e7530(&unk_1a, 0, a);
     func_020e7530(&unk_1c, 0, b);
-    func_02094574(unk_1a, unk_1c, 4);
+    PlayerActor_SetHeadTilt(unk_1a, unk_1c, 4);
 }
 namespace n08 {
 
@@ -5144,10 +5144,10 @@ extern "C" {
 s32 SkySprites_GetMoonPhaseGfx();
 }
 extern "C" {
-s32 func_020947f0(s32 i);
+s32 PlayerActor_GetBodyPos(s32 i);
 }
 extern "C" {
-void func_020947c0(void *p, s32 i);
+void PlayerActor_GetSlotHeldItem(void *p, s32 i);
 }
 extern "C" {
 void _ZN8SaveData9clearFlagEj(void *p, u32 n);
@@ -5410,10 +5410,10 @@ void Unk_020bc58c::onSlingshotFired(s32 i) {
     using namespace n07;
     s32 j = 0;
     if (i < 4) j = i;
-    s32 v = func_020947f0(i);
+    s32 v = PlayerActor_GetBodyPos(i);
     if (v != 0) {
         u16 buf[4];
-        func_020947c0(buf, i);
+        PlayerActor_GetSlotHeldItem(buf, i);
         s32 flag = 0;
         if (buf[0] >= 0x137b && buf[0] <= 0x137b) flag = 1;
         _ZN14SkyShotRequest3setEiPih(getShotRequest(j), i, v, flag);
@@ -9049,10 +9049,10 @@ extern "C" {
 BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020b0788(void *p, u32 x);
+void StarTwinkle_Init(void *p, u32 x);
 }
 extern "C" {
-void func_020b0780(void *p);
+void StarTwinkle_Stop(void *p);
 }
 extern "C" {
 BOOL _ZN14WeatherManager14loadCloudCharsEii(void *p, u32 a, u32 b);
@@ -9082,7 +9082,7 @@ extern "C" {
 BOOL MenuCtrl_IsMenuOnTop(void);
 }
 extern "C" {
-void func_020b080c(void *p);
+void StarTwinkle_Update(void *p);
 }
 extern "C" {
 void SkySprites_Update(void *p);
@@ -9249,7 +9249,7 @@ BOOL SkyProc::onExecute() {
     using namespace n01;
     if (sSkyOutdoors != 0) {
         if (!MenuCtrl_IsMenuOnTop()) {
-            func_020b080c(data_021efc18);
+            StarTwinkle_Update(data_021efc18);
         }
         SkySprites_Update(gSkySprites);
     } else {
@@ -9315,7 +9315,7 @@ BOOL SkyProc::vfunc_0c() {
     if (sSkyOutdoors != 0) {
         SkySprites_Stop(gSkySprites);
     }
-    func_020b0780(data_021efc18);
+    StarTwinkle_Stop(data_021efc18);
     RainSe_Release((u8 *)this + 0x50);
     return saved;
 }
@@ -9425,7 +9425,7 @@ extern "C" BOOL Sky_LoadStarBg(u32 idx) {
         return FALSE;
     }
     Heap_Free(heap, buf);
-    func_020b0788(data_021efc18, v6);
+    StarTwinkle_Init(data_021efc18, v6);
     return TRUE;
 }
 

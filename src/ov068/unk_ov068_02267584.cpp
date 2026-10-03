@@ -131,7 +131,7 @@ void Bgm_Release(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Camera_SetModeDefault();
 BOOL PlayerActor_IsScriptedWalking(s32 a);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
 void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void GameStart_Clear();
@@ -150,7 +150,7 @@ extern const char *sNookTexPaths[];
 extern u8 *gSceneBlockMap;
 extern s16 data_02135f44[];
 void *Snowball_FindOtherInBallState(void *self);
-u8 *func_020af3f4();
+u8 *LooseSnowballs_Get();
 void FieldPos_SnapToUnitCenter(void *, void *);
 void func_02003e70(void *, s32, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
@@ -189,7 +189,7 @@ s32 func_020e780c(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 SnowmanRecords_add(void *tbl, s32 a, s32 b, s32 c);
-void func_020af3fc();
+void Snowman_SendPrizeLetter();
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
@@ -199,7 +199,7 @@ void _ZN18Unk_ov068_0226821419applySnowballMotionEv(void *);
 s32 Snowball_GetSizeRatioRank(s32 v);
 }
 
-class Unk_ov068_02267584 {
+class SnowballStateView1 {
 public:
     void execSnowballCrumble2();
     BOOL enterSnowballCrumble2();
@@ -236,7 +236,7 @@ public:
     u8 unk_395;
 };
 
-class Unk_ov068_022678c4 {
+class SnowballStateView2 {
 public:
     /* 0x00 */ u8 pad_00[8];
     /* 0x08 */ u32 unk_08;
@@ -424,7 +424,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
                         Snowball_ChangeState(this, 8);
                         Snowball_ChangeState(o, 7);
                         if (lv == 0) {
-                            func_020af3fc();
+                            Snowman_SendPrizeLetter();
                         }
                         return;
                     }
@@ -499,12 +499,12 @@ void Unk_ov068_02268214::execSnowballRoll() {
     GroundInfo_Destruct(objA);
 }
 
-s32 Unk_ov068_022678c4::enterSnowballFall() {
+s32 SnowballStateView2::enterSnowballFall() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     unk_26c = 0;
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -535,7 +535,7 @@ s32 Unk_ov068_022678c4::enterSnowballFall() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballFall() {
+void SnowballStateView2::execSnowballFall() {
     u32 buf[17];
     s32 lim;
     s32 t = unk_268;
@@ -563,12 +563,12 @@ void Unk_ov068_022678c4::execSnowballFall() {
     }
 }
 
-s32 Unk_ov068_022678c4::enterSnowballSink() {
+s32 SnowballStateView2::enterSnowballSink() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     unk_392 = 0;
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -581,7 +581,7 @@ s32 Unk_ov068_022678c4::enterSnowballSink() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballSink() {
+void SnowballStateView2::execSnowballSink() {
     u32 buf[16];
     s32 t = unk_268;
     t = t + (t >> 1);
@@ -602,11 +602,11 @@ void Unk_ov068_022678c4::execSnowballSink() {
     GroundInfo_Destruct(buf);
 }
 
-s32 Unk_ov068_022678c4::enterSnowballBreak() {
+s32 SnowballStateView2::enterSnowballBreak() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -615,17 +615,17 @@ s32 Unk_ov068_022678c4::enterSnowballBreak() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballBreak() {
+void SnowballStateView2::execSnowballBreak() {
     unk_26c = unk_268;
     ProcBase_RequestDelete(this);
 }
 
-s32 Unk_ov068_022678c4::enterSnowballHole() {
+s32 SnowballStateView2::enterSnowballHole() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     FieldPos_SnapToUnitCenter(unk_384, &unk_5c);
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -633,7 +633,7 @@ s32 Unk_ov068_022678c4::enterSnowballHole() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballHole() {
+void SnowballStateView2::execSnowballHole() {
     unk_26c = unk_268;
     s32 v[3];
     func_020e9960(v, unk_384, &unk_5c);
@@ -655,11 +655,11 @@ void Unk_ov068_022678c4::execSnowballHole() {
     }
 }
 
-s32 Unk_ov068_022678c4::enterSnowball05() {
+s32 SnowballStateView2::enterSnowball05() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -670,7 +670,7 @@ s32 Unk_ov068_022678c4::enterSnowball05() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowball05() {
+void SnowballStateView2::execSnowball05() {
     unk_2f0 += FX_Div(0, 0x3e8000) + 0x158;
     unk_5c += unk_2ec;
     unk_64 += unk_2f0;
@@ -685,11 +685,11 @@ void Unk_ov068_022678c4::execSnowball05() {
     }
 }
 
-s32 Unk_ov068_022678c4::enterSnowballSplash() {
+s32 SnowballStateView2::enterSnowballSplash() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -700,7 +700,7 @@ s32 Unk_ov068_022678c4::enterSnowballSplash() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballSplash() {
+void SnowballStateView2::execSnowballSplash() {
     u32 buf[16];
     GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
     s32 *p = (s32 *)&buf[9];
@@ -721,12 +721,12 @@ void Unk_ov068_022678c4::execSnowballSplash() {
     GroundInfo_Destruct(buf);
 }
 
-s32 Unk_ov068_022678c4::enterSnowballToSnowman() {
+s32 SnowballStateView2::enterSnowballToSnowman() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     FieldPos_SnapToUnitCenter(&unk_378, &unk_5c);
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -737,7 +737,7 @@ s32 Unk_ov068_022678c4::enterSnowballToSnowman() {
     return 1;
 }
 
-void Unk_ov068_022678c4::execSnowballToSnowman() {
+void SnowballStateView2::execSnowballToSnowman() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_60 = 0;
@@ -766,7 +766,7 @@ void Unk_ov068_022678c4::execSnowballToSnowman() {
     }
 }
 
-s32 Unk_ov068_022678c4::enterSnowballStack() {
+s32 SnowballStateView2::enterSnowballStack() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)Snowball_FindOtherInBallState(this);
@@ -774,7 +774,7 @@ s32 Unk_ov068_022678c4::enterSnowballStack() {
     unk_37c += ((o->unk_268 * 2 - (o->unk_268 >> 3)) - (unk_268 >> 3)) - 0x400;
     unk_a8 = -(FX_Div(0, 0x3e8000) + 0x8f2);
     u32 ei = unk_08 & 1;
-    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
+    Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
@@ -786,7 +786,7 @@ s32 Unk_ov068_022678c4::enterSnowballStack() {
     return 1;
 }
 
-void Unk_ov068_02267584::execSnowballStack() {
+void SnowballStateView1::execSnowballStack() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_64 += unk_314;
@@ -805,7 +805,7 @@ void Unk_ov068_02267584::execSnowballStack() {
     }
 }
 
-BOOL Unk_ov068_02267584::enterSnowballSettle() {
+BOOL SnowballStateView1::enterSnowballSettle() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     unk_392 = 0;
@@ -813,7 +813,7 @@ BOOL Unk_ov068_02267584::enterSnowballSettle() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::execSnowballSettle() {
+void SnowballStateView1::execSnowballSettle() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_64 += unk_314;
@@ -827,7 +827,7 @@ void Unk_ov068_02267584::execSnowballSettle() {
     }
 }
 
-BOOL Unk_ov068_02267584::enterSnowballCrumble() {
+BOOL SnowballStateView1::enterSnowballCrumble() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     Snowball_ClearItemAt(&unk_5c);
@@ -839,7 +839,7 @@ BOOL Unk_ov068_02267584::enterSnowballCrumble() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::execSnowballCrumble() {
+void SnowballStateView1::execSnowballCrumble() {
     s32 a;
     unk_26c = unk_268;
     a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];
@@ -855,7 +855,7 @@ void Unk_ov068_02267584::execSnowballCrumble() {
     }
 }
 
-BOOL Unk_ov068_02267584::enterSnowballCrumble2() {
+BOOL SnowballStateView1::enterSnowballCrumble2() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     unk_304 = gVec3Zero[0];
@@ -866,7 +866,7 @@ BOOL Unk_ov068_02267584::enterSnowballCrumble2() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::execSnowballCrumble2() {
+void SnowballStateView1::execSnowballCrumble2() {
     s32 a;
     unk_26c = unk_268;
     a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];

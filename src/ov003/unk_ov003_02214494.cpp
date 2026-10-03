@@ -270,8 +270,8 @@ BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_OpenLauncher(u32 a);
 BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL PlayerActor_IsStowFinished();
 BOOL PlayerActor_IsEnteringDoor();
 void PlayerActor_RequestStowThenAct10(u32 a);
@@ -531,7 +531,7 @@ void ReddTent::execTentCheck() {
 
 BOOL ReddTent::enterTentTalkOpen() {
     Unk_ov003_0221475c_Pad pad;
-    _ZN9Character13func_0203e488Ei(this, this);
+    _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("sp_npc_fox");
     if (vfunc_8c() == 0) {
         unk_1e = 0x34;
@@ -572,7 +572,7 @@ void ReddTent::execTentTalk() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
         if (t->unk_04 == 0) {
-            _ZN9Character13func_0203e47cEi(this, this);
+            _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -642,7 +642,7 @@ BOOL ReddTent::enterTentEntry07() {
 void ReddTent::execTentEntry07() {
     if (PlayerActor_IsStowFinished()) {
         if (setTentState(8)) {
-            _ZN9Character13func_0203e47cEi(this, this);
+            _ZN9Character17detachTalkRequestEi(this, this);
         }
     }
 }

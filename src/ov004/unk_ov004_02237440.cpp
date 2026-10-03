@@ -976,7 +976,7 @@ void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_020548d0(void *p);
 void func_02000c8c();
-void func_02000c98();
+void FxVec3_Construct();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02063b8c(s32 n);
@@ -1005,7 +1005,7 @@ void *PooledModel_getModel(void *p);
 u32 func_02106020(u32 a, u32 b);
 void AnimModel_drawAnimated(void *obj, void *arg);
 void AnimModel_stepAnim(void *obj);
-void func_020abdd0(void *p, s32 a, u32 b, u8 c);
+void CharaShadow_DrawFaded(void *p, s32 a, u32 b, u8 c);
 s32 MuseumData_isDonated(void *tbl, void *v);
 void func_02031c48(void *p);
 void func_02031c10(void *p);
@@ -5138,7 +5138,7 @@ BOOL MuseumInsectRoom::onDraw() {
             }
             if (hasShadow(e)) {
                 u32 r = func_02106020((u32)PooledModel_getModel(e->unk_288), z1);
-                func_020abdd0(&e->unk_2c8, sMuseumInsectParams[id].unk_02, 0x9000, (u8)r);
+                CharaShadow_DrawFaded(&e->unk_2c8, sMuseumInsectParams[id].unk_02, 0x9000, (u8)r);
             }
         }
     }
@@ -5247,7 +5247,7 @@ MuseumInsect::MuseumInsect() {
     unk_24 = data_0213b954;
     func_020323b0(unk_68);
     func_020548d0(unk_b0);
-    func_02135714(unk_178, 2, 0xc, (void *)func_02000c98, (void *)func_02000c8c);
+    func_02135714(unk_178, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
     func_02088bc8(&unk_19c);
     func_02054e3c(unk_1e8);
     ModelSlotHandle_Init(unk_284);

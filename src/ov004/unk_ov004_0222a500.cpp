@@ -67,21 +67,21 @@ struct ItemId {
 };
 
 extern "C" {
-void func_0203c2cc(void *o);
-void func_020b8d98(void *o);
+void CarpetTex_Init(void *o);
+void WallpaperTexBuf_Init(void *o);
 }
 
 struct Unk_0203c2cc {
     u8 pad[0x20f0 - 0x2c];
     Unk_0203c2cc() {
-        func_0203c2cc(this);
+        CarpetTex_Init(this);
     }
 };
 
 struct Unk_020b8d98 {
     u8 pad[0x10f0 - 0x2c];
     Unk_020b8d98() {
-        func_020b8d98(this);
+        WallpaperTexBuf_Init(this);
     }
 };
 
@@ -371,9 +371,9 @@ u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
 u32 PatternTexCache_Get(void);
 u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
-void func_0203411c(u32 a, u16 *p);
-void func_0203414c(u32 a, u16 *p);
-BOOL func_0203c23c(void *o, u16 *p);
+void RoomWallFloor_SetSceneCarpet(u32 a, u16 *p);
+void RoomWallFloor_SetSceneWallpaper(u32 a, u16 *p);
+BOOL CarpetTex_Load(void *o, u16 *p);
 void *func_0203c234(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
 void *Wallpaper_GetTex(void *o);
@@ -406,8 +406,8 @@ u16 *HouseRoom_getCarpet(void *self, s32 *i);
 void *SaveVillagers_Get(void *self, s32 i);
 u32 Villager_GetWallpaper(void *self);
 u32 Villager_GetCarpet(void *self);
-u16 *func_02034134(s32 r);
-u16 *func_02034104(s32 r);
+u16 *RoomWallFloor_GetSceneWallpaper(s32 r);
+u16 *RoomWallFloor_GetSceneCarpet(s32 r);
 void *GroundInfo_initAtUnit(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 GroundInfoBase_getHeight(void *self, s32 a);
 void GroundInfo_Destruct(void *self);
@@ -420,8 +420,8 @@ s32 SceneId_GetNookShop(s32 r);
 void Model_clearResource(void *self);
 void Unk_02003c30_callRelease(void *self);
 void AnimModel_drawAnimated(void *self, s32 a);
-void func_020ac40c();
-void func_020abe28();
+void ObjShadow_Update();
+void CharaShadow_UpdateColor();
 void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 s32 BlendAnimModel_getAnmObj(void *self);
 void AnimModel_stepAnim(void *self);
@@ -539,8 +539,8 @@ BOOL RoomShell::onExecute() {
 }
 
 BOOL RoomShell::onDraw() {
-    func_020ac40c();
-    func_020abe28();
+    ObjShadow_Update();
+    CharaShadow_UpdateColor();
     if (unk_3540 != -1) {
         Unk_ov004_0222b954_Pair t;
         t.a = RoomShell_CalcWdColor(this);
@@ -617,7 +617,7 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
         }
     } else if (SceneId_IsNookShop(r)) {
         s32 i = SceneId_GetNookShop(r);
-        u16 *p = func_02034134(r);
+        u16 *p = RoomWallFloor_GetSceneWallpaper(r);
         if (Unk_ov004_0222b610_InA(p)) {
             *a = *p;
         } else {
@@ -627,7 +627,7 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
             };
             *a = t[i].v;
         }
-        p = func_02034104(r);
+        p = RoomWallFloor_GetSceneCarpet(r);
         if (Unk_ov004_0222b610_InB(p)) {
             *c = *p;
         } else {
@@ -798,7 +798,7 @@ BOOL Unk_ov004_0222b15c::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
             unk_00 = unk_02;
             unk_02 = *q;
             RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-            func_0203414c(Scene_GetCurrent(), &unk_02);
+            RoomWallFloor_SetSceneWallpaper(Scene_GetCurrent(), &unk_02);
             return TRUE;
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
@@ -810,7 +810,7 @@ BOOL Unk_ov004_0222b15c::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
             unk_02 = *q;
             unk_10f0 = key;
             RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-            func_0203414c(Scene_GetCurrent(), &unk_02);
+            RoomWallFloor_SetSceneWallpaper(Scene_GetCurrent(), &unk_02);
             return TRUE;
         }
     }
@@ -821,7 +821,7 @@ done:
     unk_02 = *q;
     unk_10f0 = key;
     RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-    func_0203414c(Scene_GetCurrent(), &unk_02);
+    RoomWallFloor_SetSceneWallpaper(Scene_GetCurrent(), &unk_02);
     return TRUE;
 }
 
@@ -895,7 +895,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
         u16 v = *q;
         if (v >= 0x1144 && v <= 0x1187) in = TRUE;
         if (in != FALSE) {
-            if (func_0203c23c(&unk_2c, q) == 0) goto fail;
+            if (CarpetTex_Load(&unk_2c, q) == 0) goto fail;
             if (Scene_InNookShop() == 0) {
                 MatTexBinder_bindByName(&unk_20f4, unk_20fc, "dummy_floor", "dummy_floor_pl");
             }
@@ -904,7 +904,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
             unk_00 = unk_02;
             unk_02 = *q;
             saveToHouseRoom(&unk_02, key);
-            func_0203411c(Scene_GetCurrent(), &unk_02);
+            RoomWallFloor_SetSceneCarpet(Scene_GetCurrent(), &unk_02);
             return TRUE;
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
@@ -916,7 +916,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
             unk_02 = *q;
             unk_20f0 = key;
             saveToHouseRoom(&unk_02, key);
-            func_0203411c(Scene_GetCurrent(), &unk_02);
+            RoomWallFloor_SetSceneCarpet(Scene_GetCurrent(), &unk_02);
             return TRUE;
         }
     }
@@ -927,7 +927,7 @@ done:
     unk_02 = *q;
     unk_20f0 = key;
     saveToHouseRoom(&unk_02, key);
-    func_0203411c(Scene_GetCurrent(), &unk_02);
+    RoomWallFloor_SetSceneCarpet(Scene_GetCurrent(), &unk_02);
     return TRUE;
 }
 

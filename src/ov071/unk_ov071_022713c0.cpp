@@ -106,7 +106,7 @@ void Hud_Show();
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
-void func_02040144(s32 a, s32 b);
+void EventWeek_SetLyleWeek(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 u32 Pocket_GetItem();
@@ -389,15 +389,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -442,8 +442,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -1399,9 +1399,9 @@ blkC:
         MI_CpuFill8((u8 *)unk_b0 + 0x720, 0, 5);
         unk_b4 = 0;
         if (t == 4) {
-            func_02040144(0, 1);
+            EventWeek_SetLyleWeek(0, 1);
         } else {
-            func_02040144(0, 0);
+            EventWeek_SetLyleWeek(0, 0);
         }
         break;
     }

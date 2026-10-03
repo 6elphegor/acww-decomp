@@ -309,15 +309,15 @@ s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
-s32 func_020512e0(const u8 *str, s32 len);
+s32 Text_GetLength(const u8 *str, s32 len);
 }
 
 extern "C" {
-s32 func_020512f8(const u8 *str, s32 len);
+s32 Text_GetTrimmedLength(const u8 *str, s32 len);
 }
 
 extern "C" {
-BOOL func_020a78a4(EncodedString41 *buf, const void *src, s32 len);
+BOOL EncodedString_SetRaw(EncodedString41 *buf, const void *src, s32 len);
 }
 
 extern "C" {

@@ -80,7 +80,7 @@ extern "C" void Gfx_ResetScene()
     Gfx3d_InitEngine();
 }
 
-extern "C" void func_0205377c()
+extern "C" void GfxFrameHooks_PreTaskStub()
 {
 }
 
@@ -94,7 +94,7 @@ extern "C" void Gfx_PreTaskUpdate()
     Gfx2d_BeginFrame();
 }
 
-extern "C" void func_02053750()
+extern "C" void GfxFrameHooks_PostTaskStub()
 {
 }
 

@@ -22,13 +22,13 @@ void *Constellation_GetRecord(s32 i);
 void MenuCtrl_SetResult(u32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-void func_020b0a30(void *p);
+void ConstellationRecord_Clear(void *p);
 void Constellation_SetCreator(void *p);
 void Constellation_Store(void *p, s32 a, s32 b);
 void Constellation_CalcCentre(void *p, s32 *a, s32 *b);
-void func_020b0780(void *a);
-void func_020b0788(void *a, s32 b);
-void func_020b080c(void *a);
+void StarTwinkle_Stop(void *a);
+void StarTwinkle_Init(void *a, s32 b);
+void StarTwinkle_Update(void *a);
 void Gfx2d_SetSubBgModeState(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
@@ -232,10 +232,10 @@ public:
 };
 
 // sub-object at +0x388 (ctor func_020b08b8, dtor func_020b08b4)
-class Unk_020b08b4 {
+class StarTwinkle {
 public:
-    Unk_020b08b4();
-    ~Unk_020b08b4();
+    StarTwinkle();
+    ~StarTwinkle();
     u32 unk_00[0x330 / 4];
 };
 
@@ -304,10 +304,10 @@ struct Unk_ov129_0229497c_Save {
 };
 
 // static object type at data_ov129_02296698 (ctor func_020b0a70, dtor func_020b0a60)
-class Unk_020b0a60 {
+class ConstellationRecord {
 public:
-    Unk_020b0a60();
-    ~Unk_020b0a60();
+    ConstellationRecord();
+    ~ConstellationRecord();
     u8 unk_00[0x16];
     u8 unk_16[0x10];
     u16 unk_26[0x10];
@@ -447,7 +447,7 @@ public:
     /* 0x0b8 */ MenuErrorMessage unk_b8;
     /* 0x1c0 */ MenuBottomButtons unk_1c0;
     /* 0x324 */ MenuCursorBuf0 unk_324;
-    /* 0x388 */ Unk_020b08b4 unk_388;
+    /* 0x388 */ StarTwinkle unk_388;
     /* 0x6b8 */ StarSkyView unk_6b8;
     /* 0x2ef0 */ u8 unk_2ef0[16];
     /* 0x2f00 */ u16 unk_2f00[16];
@@ -791,7 +791,7 @@ void ConstellationEditorMenu::initMembers() {
 }
 
 void ConstellationEditorMenu::releaseResources() {
-    func_020b0780(&unk_388);
+    StarTwinkle_Stop(&unk_388);
     StarSky_CancelUpload(&unk_6b8);
     unk_1c0.freeTexts();
     PlayerActor_RequestAct10();
@@ -809,7 +809,7 @@ void ConstellationEditorMenu::postInputUpdate() {
 }
 
 void ConstellationEditorMenu::preStateUpdate() {
-    func_020b080c(&unk_388);
+    StarTwinkle_Update(&unk_388);
     unk_1c0.freeTexts();
     clearFlags(0x40);
 }
@@ -838,7 +838,7 @@ void ConstellationEditorMenu::setupBgLayers() {
 void ConstellationEditorMenu::setupSkyView() {
     StarSky_LoadSkyBg(&unk_6b8, 3);
     StarSky_LoadScopeBg(&unk_6b8, 6, 1);
-    func_020b0788(&unk_388, 3);
+    StarTwinkle_Init(&unk_388, 3);
     StarSky_LoadObjGraphics(&unk_6b8);
     MenuButtons_LoadTextColors(&unk_1c0);
     unk_1c0.setLayoutConfirmQuit04();
@@ -1233,8 +1233,8 @@ void ConstellationEditorMenu::acceptConfirmation() {
     } else {
         MenuCtrl_SetResult(1);
         s32 n = MenuCtrl_GetIndex();
-        static Unk_020b0a60 obj;
-        func_020b0a30(&obj);
+        static ConstellationRecord obj;
+        ConstellationRecord_Clear(&obj);
         Constellation_SetCreator(&obj);
         s32 i;
         for (i = 0; i < 16; i++) {

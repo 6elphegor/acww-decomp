@@ -97,7 +97,7 @@ BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
 s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
-Unk_ov003_0222ed20_St *func_020af3f4();
+Unk_ov003_0222ed20_St *LooseSnowballs_Get();
 void LooseSnowballs_reset();
 s32 GroundSeason_IsSnow();
 s32 Scene_InTown();
@@ -128,7 +128,7 @@ Unk_ov003_0222eb10_Obj *sSnowballs[8];
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || GroundSeason_IsSnow() == 0) {
-        func_020af3f4();
+        LooseSnowballs_Get();
         LooseSnowballs_reset();
         return;
     }
@@ -147,7 +147,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
         }
         if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
             if (f.l.k[0] == ((u8 *)&f.l)[9] && f.l.k[1] == ((u8 *)&f.l)[8] && f.l.k[2] == ((u8 *)&f.l)[7]) {
-                func_020af3f4();
+                LooseSnowballs_Get();
                 LooseSnowballs_reset();
                 return;
             }
@@ -155,16 +155,16 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     }
     if (Scene_InTown() != 0) {
         if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
-            if (func_020af3f4()->a.x != 0) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+            if (LooseSnowballs_Get()->a.x != 0) {
+                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
                 f.LampLights.x = s->a.x;
                 f.LampLights.y = s->a.y;
                 f.LampLights.z = s->a.z;
             } else {
                 Snowball_FindSpawnPos(self, &f.LampLights, 0, 1);
             }
-            if (func_020af3f4()->b.x != 0) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+            if (LooseSnowballs_Get()->b.x != 0) {
+                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
                 Unk_ov003_0222ed20_V3 *pv = &s->b;
                 f.LightLevel.x = pv->x;
                 f.LightLevel.y = pv->y;
@@ -173,13 +173,13 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
                 Snowball_FindSpawnPos(self, &f.LightLevel, (s32)&f.LampLights, 1);
             }
             if (Actor_spawn(0xbd, 0, &f.LampLights, 0, self)) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
                 s->a.x = f.LampLights.x;
                 s->a.y = f.LampLights.y;
                 s->a.z = f.LampLights.z;
             }
             if (Actor_spawn(0xbd, 1, &f.LightLevel, 0, self)) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
                 s->b.x = f.LightLevel.x;
                 s->b.y = f.LightLevel.y;
                 s->b.z = f.LightLevel.z;

@@ -1,18 +1,18 @@
 #include "types.h"
 
-struct Unk_0205d238 {
+struct CharaFaceAnimWorkPool {
     void *ptr[9];
-    Unk_0205d238();
-    ~Unk_0205d238();
-    void *func_0205d238(u32 idx);
-    void func_0205d240();
-    void func_0205d278();
+    CharaFaceAnimWorkPool();
+    ~CharaFaceAnimWorkPool();
+    void *getHeap(u32 idx);
+    void destroyHeaps();
+    void createHeaps();
 };
 
 extern "C" {
 extern void *gCharaFaceAnimWorkHeap;
 extern u8 *gCommManager;
-extern Unk_0205d238 data_021c64dc;
+extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
 
 void CharaFaceAnimWorkHeap_Destroy();
 void CharaFaceAnimWorkHeap_Create();
@@ -23,52 +23,52 @@ u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
 u32 NpcSpawn_GetSpNpcSlotCount();
-u32 func_0205d2fc();
+u32 CharaFaceAnimWork_GetHeapSize();
 }
 
-struct Unk_0205d1f8 {
+struct CharaFaceAnimWorkRef {
     u8 v;
-    Unk_0205d1f8();
-    ~Unk_0205d1f8();
-    void *func_0205d1f8();
-    void func_0205d20c(u32 x);
+    CharaFaceAnimWorkRef();
+    ~CharaFaceAnimWorkRef();
+    void *getHeap();
+    void assign(u32 x);
 };
 
-extern "C" void func_0205d318() {
+extern "C" void CharaFaceAnimWorkPool_Create() {
     CharaFaceAnimWorkHeap_Create();
-    data_021c64dc.func_0205d278();
+    sCharaFaceAnimWorkPool.createHeaps();
     if (gCharaFaceAnimWorkHeap) func_020e877c(gCharaFaceAnimWorkHeap);
 }
 
-extern "C" void func_0205d300() {
-    data_021c64dc.func_0205d240();
+extern "C" void CharaFaceAnimWorkPool_Destroy() {
+    sCharaFaceAnimWorkPool.destroyHeaps();
     CharaFaceAnimWorkHeap_Destroy();
 }
 
-extern "C" u32 func_0205d2fc() { return 0x50; }
+extern "C" u32 CharaFaceAnimWork_GetHeapSize() { return 0x50; }
 
-Unk_0205d238::Unk_0205d238() {}
+CharaFaceAnimWorkPool::CharaFaceAnimWorkPool() {}
 
-Unk_0205d238::~Unk_0205d238() {}
+CharaFaceAnimWorkPool::~CharaFaceAnimWorkPool() {}
 
-void Unk_0205d238::func_0205d278() {
+void CharaFaceAnimWorkPool::createHeaps() {
     void *heap = gCharaFaceAnimWorkHeap;
     u32 n, i, m;
     n = gCommManager[0x6c];
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = FrameHeap_Create(func_0205d2fc(), heap);
+        ptr[i] = FrameHeap_Create(CharaFaceAnimWork_GetHeapSize(), heap);
     }
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
     m = (q + NpcSpawn_GetSpNpcSlotCount()) - m;
     for (i = 4; i < m + 4; i++) {
-        ptr[i] = FrameHeap_Create(func_0205d2fc(), heap);
+        ptr[i] = FrameHeap_Create(CharaFaceAnimWork_GetHeapSize(), heap);
     }
 }
 
-void Unk_0205d238::func_0205d240() {
+void CharaFaceAnimWorkPool::destroyHeaps() {
     for (s32 i = 0; i < 9; i++) {
         void **p = &ptr[i];
         if (ptr[i]) {
@@ -79,17 +79,17 @@ void Unk_0205d238::func_0205d240() {
     if (gCharaFaceAnimWorkHeap) func_020e885c(gCharaFaceAnimWorkHeap);
 }
 
-void *Unk_0205d238::func_0205d238(u32 idx) { return ptr[idx]; }
+void *CharaFaceAnimWorkPool::getHeap(u32 idx) { return ptr[idx]; }
 
-Unk_0205d1f8::Unk_0205d1f8() { v = 9; }
+CharaFaceAnimWorkRef::CharaFaceAnimWorkRef() { v = 9; }
 
-Unk_0205d1f8::~Unk_0205d1f8() {}
+CharaFaceAnimWorkRef::~CharaFaceAnimWorkRef() {}
 
-void Unk_0205d1f8::func_0205d20c(u32 x) {
-    func_020e885c(data_021c64dc.func_0205d238(x));
+void CharaFaceAnimWorkRef::assign(u32 x) {
+    func_020e885c(sCharaFaceAnimWorkPool.getHeap(x));
     v = x;
 }
 
-void *Unk_0205d1f8::func_0205d1f8() { return data_021c64dc.func_0205d238(v); }
+void *CharaFaceAnimWorkRef::getHeap() { return sCharaFaceAnimWorkPool.getHeap(v); }
 
-Unk_0205d238 data_021c64dc;
+CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;

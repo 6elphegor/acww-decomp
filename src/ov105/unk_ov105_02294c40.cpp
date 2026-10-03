@@ -443,7 +443,7 @@ BOOL Cell_HitTest(void *r, s32 x, s32 y, s32 w, s32 h);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
 void func_02088730(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
-void * func_02097a04(void *p);
+void * PlayerData_GetLetterStorage(void *p);
 void LetterGrid_SetLetters0A(void *p, void *q);
 }
 
@@ -856,7 +856,7 @@ BOOL LetterStorageMenu::execClosed() {
         MenuCtrl_SetResult(0);
     } else {
         MenuCtrl_SetResult(1);
-        void *h = func_02097a04((void *)PlayerData_GetCurrent());
+        void *h = PlayerData_GetLetterStorage((void *)PlayerData_GetCurrent());
         if (h != 0) {
             s32 i;
             Letter *p = (Letter *)((LetterStorage *)h)->getPage(0);
@@ -1121,7 +1121,7 @@ void LetterStorageMenu::initParts() {
     for (; i < 0x4b; i++) {
         Letter_Clear(&unk_2b10[i]);
     }
-    void *q = func_02097a04((void *)PlayerData_GetCurrent());
+    void *q = PlayerData_GetLetterStorage((void *)PlayerData_GetCurrent());
     if (q) {
         u8 *p = (u8 *)((LetterStorage *)q)->getPage(0);
         for (i = 0; i < 0x4b; i++) {

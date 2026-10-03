@@ -12,7 +12,7 @@ typedef Unk_ov109_02295570 S;
 struct PopupChoiceIdList;
 
 extern "C" {
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchHeld;
@@ -947,7 +947,7 @@ void SongPickMenu_BeginTouchSlot(S *s, u32 a) {
 }
 
 void SongPickMenu_ShowError(S *s, u32 a) {
-    volatile u8 b = data_021edb68;
+    volatile u8 b = gU8None;
     b = a;
     ((MenuErrorMessage *)s->unk_2570)->open((u8 *)&b, 1, 0);
     M(s)->setMainState(0xe);

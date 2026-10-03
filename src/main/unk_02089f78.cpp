@@ -87,23 +87,23 @@ BOOL InputMode_IsTouch();
 }
 
 extern "C" {
-void func_0201190c(u32 a, u32 b, u32 c);
+void HudObjGfx_LoadCameraButton(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_0201192c(u32 a, u32 b);
+void HudObjGfx_LoadKind(u32 a, u32 b);
 }
 
 extern "C" {
-void func_02011900(u32 a);
+void HudObjGfx_SetCountdownVariant(u32 a);
 }
 
 extern "C" {
-s32 func_0201188c();
+s32 Hud_GetSceneHudKind();
 }
 
 extern "C" {
-BOOL func_020118f4();
+BOOL HudObjGfx_GetCountdownVariant();
 }
 
 extern "C" {

@@ -20,7 +20,7 @@ void Gfx_DisableAllBanks(void);
 void Gfx_ResetScene(void);
 void VillagerStates_Init(void);
 void VillagerStates_Destroy(void);
-void func_02097564(void);
+void GuestPlayers_ResetAll(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
 void _ZN8SaveData5resetEv(void *p);
@@ -71,8 +71,8 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
 
-    void func_020b41cc();
-    void func_020b4248();
+    void applyLoadedSave();
+    void chooseSaveSlot();
     void setupGraphics();
 
     /* 0x50 */ u8 unk_50;
@@ -87,7 +87,7 @@ public:
     /* 0x68 */ void *unk_68;
 };
 
-extern "C" BootLogoScene *func_020b459c(void) { return new BootLogoScene; }
+extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene; }
 
 BOOL BootLogoScene::vfunc_00() {
     gVBlanksPerFrame = 3;
@@ -148,8 +148,8 @@ BOOL BootLogoScene::onExecute() {
         u64 now = OS_GetTick();
         if (unk_5f < 5) {
             if (unk_5f < 3) break;
-            func_020b4248();
-            func_020b41cc();
+            chooseSaveSlot();
+            applyLoadedSave();
             unk_5f = 5;
         }
         if (now - unk_54 < 0x7fd88) break;
@@ -198,7 +198,7 @@ void BootLogoScene::setupGraphics() {
     Gfx2d_ShowLayer(2);
 }
 
-void BootLogoScene::func_020b4248() {
+void BootLogoScene::chooseSaveSlot() {
     if (unk_5c == 1 || unk_5d == 1) {
         unk_5e = 1;
     } else if (unk_5c != 0 && unk_5d != 0) {
@@ -221,7 +221,7 @@ void BootLogoScene::func_020b4248() {
     }
 }
 
-void BootLogoScene::func_020b41cc() {
+void BootLogoScene::applyLoadedSave() {
     BgHeap_Create(0x5000, 0);
     if (unk_5e == 4 || unk_5e == 1) {
         if (unk_5e == 4) {
@@ -229,7 +229,7 @@ void BootLogoScene::func_020b41cc() {
         }
         if (unk_5e == 4) Save_InvalidateLetterStorage();
         _ZN8SaveData5resetEv(&gSaveData);
-        func_02097564();
+        GuestPlayers_ResetAll();
         VillagerStates_Init();
         SaveData_Setup(&gSaveData, 3);
     } else {

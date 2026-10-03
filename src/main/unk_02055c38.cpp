@@ -255,12 +255,12 @@ class G3dResAccess {
 public:
     u32 func_02056fcc(s32 a);
     u32 getPlttSize(s32 idx);
-    void func_02057030(void);
+    void findPlttData(void);
     void *getPlttData(s32 idx);
     s32 findPlttIdx(s32 a);
     u32 getTexSize(s32 idx);
     void *getTexData(s32 idx);
-    void *func_020570e0(void);
+    void *findTexData(void);
     s32 findTexIdx(s32 a);
     u32 getTexImageOffset(void);
     s32 findMatIdx(s32 a);
@@ -329,7 +329,7 @@ s32 G3dResAccess::findTexIdx(s32 a) {
     return G3dRes_FindDictIdx((u8 *)this + 0x3c, a);
 }
 
-void *G3dResAccess::func_020570e0(void) {
+void *G3dResAccess::findTexData(void) {
     s32 u;
     s32 idx = findTexIdx(u);
     void *r = 0;
@@ -378,7 +378,7 @@ void *G3dResAccess::getPlttData(s32 idx) {
     return data + (*(u16 *)(ent + 4) << 3);
 }
 
-void G3dResAccess::func_02057030(void) {
+void G3dResAccess::findPlttData(void) {
     s32 u;
     getPlttData(findPlttIdx(u));
 }

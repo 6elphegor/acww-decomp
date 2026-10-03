@@ -159,8 +159,8 @@ class TouchPicker;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define func_0203e47c _ZN9Character13func_0203e47cEi
-#define func_0203e488 _ZN9Character13func_0203e488Ei
+#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
+#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define Character_setCharId _ZN9Character9setCharIdEj
 #define TouchPicker_addSphere _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
@@ -187,8 +187,8 @@ extern TalkWindowState data_021ed0a0;
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
 void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 s32 Actor_spawn(s32 a, s32 b, void *c, void *d, void *e);
-void func_0203e47c(void *self, TalkMsgRequest *sec);
-void func_0203e488(void *self, TalkMsgRequest *sec);
+void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
+void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void Character_setCharId(void *self, u32 a);
 s32 TouchPicker_addSphere(TouchPicker *self, TouchPickSphere *o, void *a, u32 b, u32 c, u32 d);
 s32 MuseumData_isDonated(void *self, u16 *p);

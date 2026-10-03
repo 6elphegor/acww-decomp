@@ -3,10 +3,10 @@
 
 extern u32 *gCurrentHeap;
 
-extern const u16 data_020d0650[8];
-const u16 data_020d0650[8] = { 0xd7, 0xce, 0xcf, 0xcb, 8, 0xa, 0xcc, 0 };
+extern const u16 sGameRootChildProfiles[8];
+const u16 sGameRootChildProfiles[8] = { 0xd7, 0xce, 0xcf, 0xcb, 8, 0xa, 0xcc, 0 };
 
-u32 data_021d72e8;
+u32 gGameRoot;
 
 extern "C" {
 void Scene_CreateRequested();
@@ -40,7 +40,7 @@ s32 GameProc_CreateRoot(s32, s32, s32);
 void GameProc_CreateChild(u32, s32, s32, s32);
 }
 
-class Unk_020e2304 : public GameProc {
+class GameRoot : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -48,28 +48,28 @@ public:
     virtual BOOL onDraw();
 };
 
-extern "C" Unk_020e2304 *func_0209cb48() {
-    return new Unk_020e2304();
+extern "C" GameRoot *GameRoot_Create() {
+    return new GameRoot();
 }
 
-extern "C" void func_0209cb0c() {
+extern "C" void GameRoot_Boot() {
     s32 r;
     s32 i;
     Scene_RequestBoot();
     r = GameProc_CreateRoot(0, 0, 1);
     for (i = 0; i < 7; i++) {
-        GameProc_CreateChild(data_020d0650[i], r, 0, 0);
+        GameProc_CreateChild(sGameRootChildProfiles[i], r, 0, 0);
     }
 }
 
-extern "C" void func_0209caf4() {
+extern "C" void SoftReset_ClearSystems() {
     ChatBalloon_ClearAll();
     Bgm_ResetAll();
     Text_ResetLabels();
 }
 
-BOOL Unk_020e2304::vfunc_00() {
-    data_021d72e8 = (u32)this;
+BOOL GameRoot::vfunc_00() {
+    gGameRoot = (u32)this;
     StrBSize_Load();
     AcreAttr_Load();
     FtrInfo_Init();
@@ -85,7 +85,7 @@ BOOL Unk_020e2304::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020e2304::vfunc_0c() {
+BOOL GameRoot::vfunc_0c() {
     StrBSize_Unload();
     AcreAttr_Unload();
     FtrInfo_Exit();
@@ -100,12 +100,12 @@ BOOL Unk_020e2304::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_020e2304::onExecute() {
+BOOL GameRoot::onExecute() {
     Scene_CreateRequested();
     return TRUE;
 }
 
-BOOL Unk_020e2304::onDraw() {
+BOOL GameRoot::onDraw() {
     return TRUE;
 }
 

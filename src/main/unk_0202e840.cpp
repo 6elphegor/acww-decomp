@@ -69,35 +69,35 @@ struct Unk_0202e918_Cap {
     s32 unk_18, unk_1c, unk_20;
 };
 
-struct Unk_0202e9c8 {
+struct HitSphere {
     s32 unk_00, unk_04, unk_08, unk_0c;
-    Unk_0202e9c8();
-    ~Unk_0202e9c8();
-    BOOL func_0202e918(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap);
-    void func_0202e9b4(Unk_0202e918_Vec3 *p, s32 r);
+    HitSphere();
+    ~HitSphere();
+    BOOL intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap);
+    void set(Unk_0202e918_Vec3 *p, s32 r);
 };
 
 
-u8 data_021bf980;
-s32 data_021bf984;
+u8 sLowBatteryWarned;
+s32 sLowBatteryPollTimer;
 
-Unk_0202e9c8::Unk_0202e9c8() {
+HitSphere::HitSphere() {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
     unk_0c = 0;
 }
 
-Unk_0202e9c8::~Unk_0202e9c8() {}
+HitSphere::~HitSphere() {}
 
-void Unk_0202e9c8::func_0202e9b4(Unk_0202e918_Vec3 *p, s32 r) {
+void HitSphere::set(Unk_0202e918_Vec3 *p, s32 r) {
     unk_00 = p->x;
     unk_04 = p->y;
     unk_08 = p->z;
     unk_0c = r;
 }
 
-BOOL Unk_0202e9c8::func_0202e918(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) {
+BOOL HitSphere::intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) {
     s32 z;
     s32 r = unk_0c;
     if (_ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(cap, this) <= r) {
@@ -122,12 +122,12 @@ BOOL Unk_0202e9c8::func_0202e918(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) 
     return FALSE;
 }
 
-extern "C" BOOL func_0202e8d4() {
+extern "C" BOOL LowBattery_Poll() {
     BOOL r = FALSE;
-    if (data_021bf980 == 0) {
-        if (--data_021bf984 <= 0) {
+    if (sLowBatteryWarned == 0) {
+        if (--sLowBatteryPollTimer <= 0) {
             s32 v;
-            data_021bf984 = 0x14;
+            sLowBatteryPollTimer = 0x14;
             if (func_0211c618(&v) == 0 && v == 1) {
                 r = TRUE;
             }
@@ -136,11 +136,11 @@ extern "C" BOOL func_0202e8d4() {
     return r;
 }
 
-extern "C" void func_0202e8c8() { data_021bf980 = 1; }
+extern "C" void LowBattery_SetWarned() { sLowBatteryWarned = 1; }
 
-extern "C" void func_0202e8b0() {
-    data_021bf980 = 0;
-    data_021bf984 = 0x14;
+extern "C" void LowBattery_Reset() {
+    sLowBatteryWarned = 0;
+    sLowBatteryPollTimer = 0x14;
 }
 
 void GameProc::postCreate(int a) {

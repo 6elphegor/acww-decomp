@@ -361,7 +361,7 @@ extern "C" {
 s32 NpcRegistry_FindAt(s32, s32);
 }
 extern "C" {
-void *func_020947f0(s32);
+void *PlayerActor_GetBodyPos(s32);
 }
 extern "C" {
 s32 PlayerActor_GetCharacter(s32);
@@ -1393,7 +1393,7 @@ extern "C" {
 extern u8 data_021e87d8[];
 }
 extern "C" {
-extern u8 data_021edb68[];
+extern u8 gU8None[];
 }
 
 
@@ -1414,7 +1414,7 @@ struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN15EncodedString
 
 
 extern "C" void Bbs_LoadMsg(void *a, u32 b, u32 c) {
-    volatile u8 v = *data_021edb68;
+    volatile u8 v = *gU8None;
     v = (u8)b;
     MailText_LoadBbs(a, (void *)&v, c);
 }}
@@ -1938,7 +1938,7 @@ extern "C" {
 void Shop_OnPurchaseRecord(void *p, u32 a);
 }
 extern "C" {
-void func_0209c3cc(void *p);
+void RoomObjSync_OnRecv(void *p);
 }
 extern "C" {
 void BuildingOccupancy_OnLeaveRecord(void *p, u32 a);
@@ -1977,7 +1977,7 @@ extern "C" {
 void FtrSync_OnStateRecord(void *p);
 }
 extern "C" {
-void func_0203eb60(void *p, u32 a);
+void CharInteractSync_Dispatch(void *p, u32 a);
 }
 extern "C" {
 void *Heap_AllocTail(void *g, u32 a);
@@ -1992,7 +1992,7 @@ extern "C" {
 void PatternSrc_ApplyNetMove(void *p);
 }
 extern "C" {
-void func_02034048(void *p);
+void RoomWallFloor_ApplyRecv(void *p);
 }
 extern "C" {
 void *NetHeap_Alloc(u32 a, u32 b);
@@ -2246,7 +2246,7 @@ extern "C" void CommSyncVar_Init() {
 extern "C" void CommRecv_RoomWallFloor(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_02034048(buf);
+    RoomWallFloor_ApplyRecv(buf);
 }
 extern "C" void CommRecv_PatternMove(u32 a) {
     u8 buf[4];
@@ -2263,7 +2263,7 @@ extern "C" void CommRecv_SubCommand(u32 a, u32 b, u32 c, u32 d) {
 extern "C" void CommRecv_CharInteract(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_0203eb60(buf, d);
+    CharInteractSync_Dispatch(buf, d);
 }
 extern "C" void CommRecv_FurnitureState(u32 a) {
     u8 buf[4];
@@ -2321,7 +2321,7 @@ extern "C" void CommRecv_BuildingLeave(u32 a, u32 b, u32 c, u32 d) {
 extern "C" void CommRecv_Act25(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_0209c3cc(buf);
+    RoomObjSync_OnRecv(buf);
 }
 extern "C" void CommRecv_ShopPurchase(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
@@ -2517,10 +2517,10 @@ extern "C" {
 s32 FieldAction_OnNetResult(void *, s32);
 }
 extern "C" {
-s32 func_020945b4(u32, s32);
+s32 PlayerActor_SetTan(u32, s32);
 }
 extern "C" {
-s32 func_020945d4(u32, s32);
+s32 PlayerActor_SetSwollenFace(u32, s32);
 }
 extern "C" {
 s32 PlayerActor_UnpackHair(u8 *, u8 *, u8 *);
@@ -2556,7 +2556,7 @@ extern "C" {
 u16 ItemInfo_GetHoldableIndex(u16 *);
 }
 extern "C" {
-s32 func_020946f0(s32, void *);
+s32 PlayerActor_SetHoldableItem(s32, void *);
 }
 extern "C" {
 void HeldInsect_Remove(u32, s32);
@@ -2660,7 +2660,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
         if (!same) {
             u16 r = ItemInfo_GetHoldableIndex(&v);
             _ZN10PlayerData11setHeldItemEPt(r7, &v);
-            func_020946f0(r + 1, d);
+            PlayerActor_SetHoldableItem(r + 1, d);
         }
         break;
     }
@@ -2679,13 +2679,13 @@ extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d) {
 extern "C" void CommRecv_FaceChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
-    func_020945d4(buf[0], d);
+    PlayerActor_SetSwollenFace(buf[0], d);
 }
 
 extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
-    func_020945b4(buf[0], d);
+    PlayerActor_SetTan(buf[0], d);
 }
 
 extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
@@ -3119,10 +3119,10 @@ extern "C" {
 void NetArea_SetMemberAck(u32, u32);
 }
 extern "C" {
-void func_020a66f4(void *);
+void NetSyncMsg_Init(void *);
 }
 extern "C" {
-void func_020a66ac(void *, void *, void *, void *);
+void NetSyncMsg_Unpack(void *, void *, void *, void *);
 }
 extern "C" {
 void NetSession_SetMemberSyncReply(u32, u32);
@@ -3134,46 +3134,46 @@ extern "C" {
 void NetSession_SetSyncRequester();
 }
 extern "C" {
-void func_020a66f0(void *);
+void NetSyncMsg_Fini(void *);
 }
 extern "C" {
-void func_020a68a8(void *);
+void NetStatusUpdateMsg_Init(void *);
 }
 extern "C" {
-void func_020a6858(void *, void *, void *, void *, void *);
+void NetStatusUpdateMsg_Unpack(void *, void *, void *, void *, void *);
 }
 extern "C" {
-void func_020a6388(u32, u32, u32, u32, u32);
+void NetArea_SetPendingStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-void func_020a6898(void *);
+void NetStatusUpdateMsg_Fini(void *);
 }
 extern "C" {
-void func_020a63a8(u32, u32);
+void NetArea_SetMoveReady(u32, u32);
 }
 extern "C" {
-void func_020a6848(void *);
+void NetStatusMsg_Init(void *);
 }
 extern "C" {
-void func_020a6804(void *, void *, void *, void *, void *, void *);
+void NetStatusMsg_Unpack(void *, void *, void *, void *, void *, void *);
 }
 extern "C" {
-void func_020a63bc(u32, u32, u32, u32, u32);
+void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-void func_020a6838(void *);
+void NetStatusMsg_Fini(void *);
 }
 extern "C" {
-void func_020a6970(void *);
+void NetSceneMsg_Init(void *);
 }
 extern "C" {
-void func_020a6960(void *, void *);
+void NetSceneMsg_Get(void *, void *);
 }
 extern "C" {
-void func_020a6430(u32, u32);
+void NetArea_QueueMoveRequest(u32, u32);
 }
 extern "C" {
-void func_020a696c(void *);
+void NetSceneMsg_Fini(void *);
 }
 extern "C" {
 s32 Scene_GetCurrent();
@@ -3216,44 +3216,44 @@ extern "C" void CommRecv_Act07() {
 }
 extern "C" void CommRecv_Act08(u32 a, u32 b, u32 c, u32 d) {
     u8 t[2];
-    func_020a6970(t);
+    NetSceneMsg_Init(t);
     _ZN11CommManager10readRecordEPhj(gCommManager, t, 1);
-    func_020a6960(t, t + 1);
-    func_020a6430(d, t[1]);
-    func_020a696c(t);
+    NetSceneMsg_Get(t, t + 1);
+    NetArea_QueueMoveRequest(d, t[1]);
+    NetSceneMsg_Fini(t);
 }
 extern "C" void CommRecv_SlotStatus() {
     struct { u8 t[4]; u32 pad; u32 w1; u32 w2; } l;
-    func_020a6848(l.t + 3);
+    NetStatusMsg_Init(l.t + 3);
     _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
-    func_020a6804(l.t + 3, &l.w1, l.t, l.t + 1, l.t + 2, &l.w2);
-    func_020a63bc(l.w1, l.t[0], l.t[1], l.t[2], l.w2);
-    func_020a6838(l.t + 3);
+    NetStatusMsg_Unpack(l.t + 3, &l.w1, l.t, l.t + 1, l.t + 2, &l.w2);
+    NetArea_SetSlotStatus(l.w1, l.t[0], l.t[1], l.t[2], l.w2);
+    NetStatusMsg_Fini(l.t + 3);
 }
 extern "C" void CommRecv_Act0A(u32 a, u32 b, u32 c, u32 d) {
     u8 t[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, t, 1);
-    func_020a63a8(d, t[0]);
+    NetArea_SetMoveReady(d, t[0]);
 }
 extern "C" void CommRecv_Act0B(u32 a, u32 b, u32 c, u32 d) {
     struct { u8 t[4]; u32 pad; u32 w; } l;
-    func_020a68a8(l.t + 3);
+    NetStatusUpdateMsg_Init(l.t + 3);
     _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
-    func_020a6858(l.t + 3, l.t, l.t + 1, l.t + 2, &l.w);
-    func_020a6388(d, l.t[0], l.t[1], l.t[2], l.w);
-    func_020a6898(l.t + 3);
+    NetStatusUpdateMsg_Unpack(l.t + 3, l.t, l.t + 1, l.t + 2, &l.w);
+    NetArea_SetPendingStatus(d, l.t[0], l.t[1], l.t[2], l.w);
+    NetStatusUpdateMsg_Fini(l.t + 3);
 }
 extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     s32 v[5];
-    func_020a66f4(v);
+    NetSyncMsg_Init(v);
     Unk_02074c4c_G *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, v, 1);
-    func_020a66ac(v, v + 1, v + 2, v + 3);
+    NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
     if (d == 0) NetSession_SetMemberSyncReply(g->unk_64, v[1]);
     else NetSession_SetMemberSyncReply(d, v[1]);
     if (v[2] < 4) NetSession_SetSyncKind();
     if (v[3] < 4) NetSession_SetSyncRequester();
-    func_020a66f0(v);
+    NetSyncMsg_Fini(v);
 }
 extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { NetArea_SetMemberAck(d, 1); }
 extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { NetArea_SetStateRequester(d); }
@@ -3539,7 +3539,7 @@ extern "C" {
 s32 PlayerData_GetCurrent();
 }
 extern "C" {
-s32 func_02097a04(s32);
+s32 PlayerData_GetLetterStorage(s32);
 }
 extern "C" {
 s32 _ZN15SaveManagerTalk13func_020a148cEv(s32);
@@ -3548,19 +3548,19 @@ extern "C" {
 s32 PlayerSession_SetDataIndex(s32, s32);
 }
 extern "C" {
-void func_020a68a8(void *);
+void NetStatusUpdateMsg_Init(void *);
 }
 extern "C" {
-void func_020a6898(void *);
+void NetStatusUpdateMsg_Fini(void *);
 }
 extern "C" {
-void func_020a6858(void *, u8 *, u8 *, u8 *, u32 *);
+void NetStatusUpdateMsg_Unpack(void *, u8 *, u8 *, u8 *, u32 *);
 }
 extern "C" {
-void func_020a6878(void *, u32, u32, u32, u32);
+void NetStatusUpdateMsg_Pack(void *, u32, u32, u32, u32);
 }
 extern "C" {
-s32 func_020a63bc(u32, u32, u32, u32, u32);
+s32 NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
 u32 Net_GetMyAid();
@@ -3708,12 +3708,12 @@ extern "C" s32 CommSend_SlotStatusAll(s32 a) {
                 u8 col[2];
             } l;
             NetArea_GetSlotStatus(j, &l.r, &l.g, &l.b);
-            func_020a68a8(l.col);
-            func_020a6878(l.col, l.r, l.g, l.b, 7);
+            NetStatusUpdateMsg_Init(l.col);
+            NetStatusUpdateMsg_Pack(l.col, l.r, l.g, l.b, 7);
             MI_CpuCopy8(l.col, p, 2);
             p += 2;
             len += 2;
-            func_020a6898(l.col);
+            NetStatusUpdateMsg_Fini(l.col);
         }
         CommManager *g = gCommManager;
         return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), len, m, 0, 0, 0, 0, 0, 0);
@@ -3774,7 +3774,7 @@ extern "C" s32 CommSend_PlayerDataToHost(void *a) {
     return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
 }
 extern "C" s32 CommSend_LetterStorageToHost(void *a) {
-    s32 r = func_02097a04(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)));
+    s32 r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)));
     return CommSend_Chunked(a, r, 0x477c, 0x16, 1);
 }
 extern "C" s32 CommCtrl_SendAct17() {
@@ -3919,12 +3919,12 @@ extern "C" void CommCtrl_RecvSlotStatusAll(u8 *a) {
     u32 out;
     u32 i;
     for (i = 0; i < 4; i++) {
-        func_020a68a8(l.col);
+        NetStatusUpdateMsg_Init(l.col);
         MI_CpuCopy8(a, l.col, 2);
-        func_020a6858(l.col, &l.r, &l.g, &l.b, &out);
-        func_020a63bc(i, l.r, l.g, l.b, out);
+        NetStatusUpdateMsg_Unpack(l.col, &l.r, &l.g, &l.b, &out);
+        NetArea_SetSlotStatus(i, l.r, l.g, l.b, out);
         a += 2;
-        func_020a6898(l.col);
+        NetStatusUpdateMsg_Fini(l.col);
     }
 }
 extern "C" void CommCtrl_Act10(void *a, s32 b, s32 c) {
@@ -3975,7 +3975,7 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
 extern "C" void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
-    s32 q = func_02097a04(PlayerData_GetCurrent());
+    s32 q = PlayerData_GetLetterStorage(PlayerData_GetCurrent());
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
 extern "C" void CommCtrl_Act17() {

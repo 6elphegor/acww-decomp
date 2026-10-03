@@ -71,27 +71,27 @@ extern "C" u32 Villager_PersonalityToVoiceType(u32 t) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern char data_020d5dd0[];
-extern char data_020d5de0[];
+extern char sPersonalityPrefixSnooty[];
+extern char sPersonalityPrefixJock[];
 extern const u32 sPersonalityVoiceTypes[6];
-extern char data_020d5dd8[];
-extern char data_020d5dd4[];
-extern char data_020d5ddc[];
+extern char sPersonalityPrefixNormal[];
+extern char sPersonalityPrefixPeppy[];
+extern char sPersonalityPrefixCranky[];
 extern char *sPersonalityPrefixes[6];
-extern char data_020d5dcc[];
+extern char sPersonalityPrefixLazy[];
 
-char data_020d5dd0[] = "ta_";
+char sPersonalityPrefixSnooty[] = "ta_";
 
-char data_020d5de0[] = "ha_";
+char sPersonalityPrefixJock[] = "ha_";
 
 const u32 sPersonalityVoiceTypes[6] = {0, 0, 2, 1, 1, 1};
 
-char data_020d5dd8[] = "fu_";
+char sPersonalityPrefixNormal[] = "fu_";
 
-char data_020d5dd4[] = "ge_";
+char sPersonalityPrefixPeppy[] = "ge_";
 
-char data_020d5ddc[] = "ko_";
+char sPersonalityPrefixCranky[] = "ko_";
 
-char *sPersonalityPrefixes[6] = {data_020d5dcc, data_020d5de0, data_020d5ddc, data_020d5dd8, data_020d5dd4, data_020d5dd0};
+char *sPersonalityPrefixes[6] = {sPersonalityPrefixLazy, sPersonalityPrefixJock, sPersonalityPrefixCranky, sPersonalityPrefixNormal, sPersonalityPrefixPeppy, sPersonalityPrefixSnooty};
 
-char data_020d5dcc[] = "bo_";
+char sPersonalityPrefixLazy[] = "bo_";

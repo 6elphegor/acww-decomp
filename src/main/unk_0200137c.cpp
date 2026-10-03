@@ -123,9 +123,9 @@ extern char data_02135f44[];
 }
 
 extern "C" {
-extern char data_020d1f60[], data_020d1f68[], data_020d1f78[], data_020d1f90[], data_020d1f9c[], data_020d1fa8[],
-    data_020d1fb4[], data_020d1fc0[], data_020d1fcc[], data_020d1fd4[], data_020d1fe4[], data_020d1ff0[],
-    data_020d1ffc[], data_020d200c[], data_020d2018[], data_020d2020[], gBuildTime[], sCrashRegNames[];
+extern char sCrashFmtTimeMs[], sCrashFmtLoopProc[], sCrashFmtProfStep[], sCrashFmtRegister[], sCrashFmtSpsr[], sCrashFmtCp15[],
+    sCrashFmtSp[], sCrashFmtPc4[], sCrashFmtPanicPos[], sCrashFmtThread[], sCrashFmtStackRange[], sCrashFmtIrqStackErr[],
+    sCrashFmtStackErr[], sCrashFmtStackPtr[], sCrashFmtWord[], sCrashEmptyStr[], gBuildTime[], sCrashRegNames[];
 }
 
 extern "C" {
@@ -185,7 +185,7 @@ void OS_DisableInterrupts(void);
 }
 
 extern "C" {
-void func_020535e0(void);
+void Gfx_ResetDisplayRegs(void);
 }
 
 extern "C" {

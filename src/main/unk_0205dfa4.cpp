@@ -259,9 +259,9 @@ void _ZN10FishBobber8setStateEi(void *p, u32 k);
 void _ZN10FishBobber6detachEv(void *p);
 void _ZN9AnimModel15detachJointAnimEv(void *slot);
 void _ZN14BlendAnimModel15onJointCalcPostEPS_(void *slot, void *o);
-u32 func_0205cdbc(void);
-void _ZN12Unk_0205ca9413func_0205ca94EPtiii(u32 a, u16 *code, u32 b, u32 c, u32 d);
-u32 func_0205c91c(u32 a);
+u32 CharaClothTexPool_GetOwnRef(void);
+void _ZN16CharaClothTexRef8loadItemEPtiii(u32 a, u16 *code, u32 b, u32 c, u32 d);
+u32 CharaClothTexRef_GetBuffer(u32 a);
 void HeldItemModel_GetJointMtx(Unk_0205dfb8_Out *out, Unk_0205dfb8_Obj *o, u32 a);
 void func_02063a5c(u32 a, u32 b, char *c, char *d);
 void func_02063a1c(u32 a, u32 b, char *c, char *d);
@@ -664,9 +664,9 @@ extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *cod
         s = (u32)HeldItemModels_GetModelBuffer(&sHeldItemModelBank, id);
         if (flag == 0) {
             if (Unk_0205ddc8_In(code, 0x13a0, 0x13a7)) {
-                u32 f = func_0205cdbc();
-                _ZN12Unk_0205ca9413func_0205ca94EPtiii(f, code, a5, 0, 0);
-                u32 h = (u32)NNS_G3dGetTex((void *)func_0205c91c(f));
+                u32 f = CharaClothTexPool_GetOwnRef();
+                _ZN16CharaClothTexRef8loadItemEPtiii(f, code, a5, 0, 0);
+                u32 h = (u32)NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(f));
                 u32 h2 = (u32)NNS_G3dGetTex((void *)s);
                 func_02063a5c(h, h2, (char *)"cloth", (char *)"myD");
                 func_02063a1c(h, h2, (char *)"cloth", (char *)"myD");

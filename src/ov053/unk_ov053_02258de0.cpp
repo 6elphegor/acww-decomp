@@ -243,15 +243,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -300,8 +300,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -451,7 +451,7 @@ void Camera_SetModeDefault();
 BOOL _ZN11CommManager8isOnlineEv(void *g);
 void Ground_LockExit(s32 a);
 s32 Scene_GetPrevious();
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 BOOL TalkRequest_IsTalking(void);
 s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
@@ -906,7 +906,7 @@ BOOL SpNpcHarriet::setupAct09() {
 BOOL SpNpcHarriet::mainAct09() {
     PlayerData_GetCurrent();
     Unk_ov053_02258e7c_Loc v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
+    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     s32 bx1 = 0, by1 = 0, bx2 = 0, by2 = 0;
     Unk_ov053_02258e7c_Loc w;
@@ -1207,7 +1207,7 @@ BOOL SpNpcHarriet::tryChairTalk() {
     }
     PlayerData_GetCurrent();
     Unk_ov053_02258e7c_Loc v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
+    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     s32 bx = 0, by = 0;
     FieldPos_ToUnit(&bx, &by, &v);
@@ -1236,7 +1236,7 @@ BOOL SpNpcHarriet::tryLeavePaidTalk() {
         return FALSE;
     }
     Unk_ov053_02258e7c_Loc v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
+    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     if (v.z > sSpNpcHarrietExitLine.z) {
         unk_658.setTopic(8);
@@ -1248,7 +1248,7 @@ BOOL SpNpcHarriet::tryLeavePaidTalk() {
 
 BOOL SpNpcHarriet::tryFarewellTalk() {
     Unk_ov053_02258e7c_Loc v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
+    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
         unk_658.setTopic(10);

@@ -22,8 +22,8 @@ public:
     void markInterrupted();
     void clearState();
     void setStateValid();
-    void func_0209eb8c();
-    void func_0209eb90();
+    void destruct();
+    void construct();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
@@ -38,9 +38,9 @@ public:
     u16 unk_00;
 };
 
-void SaveRecord4::func_0209eb90() {}
+void SaveRecord4::construct() {}
 
-void SaveRecord4::func_0209eb8c() {}
+void SaveRecord4::destruct() {}
 
 void SaveRecord4::setStateValid() {
     unk_02 = 2;

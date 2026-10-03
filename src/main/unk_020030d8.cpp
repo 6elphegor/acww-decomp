@@ -16,8 +16,8 @@ void func_020639b8(Unk_020030d8 *p);
 void func_020639bc(Unk_020030d8 *p);
 void func_02063968(Unk_020030d8 *p, Unk_020030d8 *other);
 void func_0206397c(Unk_020030d8 *p, Unk_020030d8 *other);
-void func_020118d4(u32 a);
-void func_020118e4(u32 v);
+void HudObjGfx_LoadSlideIcon(u32 a);
+void HudObjGfx_LoadLinkIcon(u32 v);
 BOOL MenuCtrl_IsTransitionActive();
 s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 Net_GetMode();
@@ -298,7 +298,7 @@ void HudLinkIcon::updateSlide() {
     }
     if (a && !b && unk_08 == 0) {
         unk_15 = unk_15 == 0 ? 1 : 0;
-        func_020118e4(unk_15);
+        HudObjGfx_LoadLinkIcon(unk_15);
     }
 }
 
@@ -469,7 +469,7 @@ void HudUnkSlideIcon::applyVariantRequest() {
     if (unk_24 == 0) {
         s32 t = unk_38;
         if (t != 5 && t != unk_34) {
-            func_020118d4(t);
+            HudObjGfx_LoadSlideIcon(t);
             unk_34 = unk_38;
             unk_38 = 5;
             BOOL b = FALSE;

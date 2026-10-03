@@ -229,7 +229,7 @@ s32 func_020e94f8(Unk_02064674_Vec *v);
 s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Clock_GetMinuteHour(Unk_02064870_Time *t);
-void func_0209cdf8(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
+void Time_AddHourMinute(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
 s32 Scene_InTown();
 s32 Scene_InTownUnk31();
 void Snd_PlaySe(u32 a);
@@ -788,7 +788,7 @@ s16 SceneLight::getTimeAngle()
     Unk_02064870_Time res, tm, now;
     tm.v = unk_08;
     Clock_GetMinuteHour(&now);
-    func_0209cdf8(now, tm, &res);
+    Time_AddHourMinute(now, tm, &res);
     u8 *p = (u8 *)&res;
     return -(((p[0] + p[1] * 60) << 15) / 0x5a0 - 0x4000);
 }

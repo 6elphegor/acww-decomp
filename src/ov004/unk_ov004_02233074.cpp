@@ -591,7 +591,7 @@ s32 Ground_GetExitAtPos(void *);
 s32 Ground_CanPlaceItem(s32 x, s32 y);
 void func_0203442c();
 void *MapBlock_GetItemPtr(void *, u32, u32, u8);
-void *func_0203c2cc(void *);
+void *CarpetTex_Init(void *);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *);
@@ -642,7 +642,7 @@ s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, 
 s32 func_02089040(void *a);
 FtrActor *PlayerActor_GetActor(s32 a);
 s32 PlayerData_GetCurrent(void);
-s32 func_02097740(void *a, s32 b);
+s32 PlayerDataArray_FindById(void *a, s32 b);
 s32 PlayerData_getPlayerId(...);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 s32 Date_GetWeatherPeriod(void *);
@@ -657,7 +657,7 @@ s32 Scene_InNookShop();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InUnk6To8();
 BOOL Scene_InHouseRoom();
-void *func_020b8d98(void *);
+void *WallpaperTexBuf_Init(void *);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
 void func_020e8388(s32 *m, s32 x, s32 y, s32 z);
@@ -1059,7 +1059,7 @@ void FtrPreviewer::allocBuffers() {
             p[5] = (u32)Heap_Alloc(g, 0x10c4);
             u32 t5 = *(volatile u32 *)&p[5];
             if (t5) {
-                t5 = (u32)func_020b8d98((void *)t5);
+                t5 = (u32)WallpaperTexBuf_Init((void *)t5);
             }
             p[5] = t5;
         }
@@ -1067,7 +1067,7 @@ void FtrPreviewer::allocBuffers() {
             p[7] = (u32)Heap_Alloc(g, 0x20c4);
             u32 t7 = *(volatile u32 *)&p[7];
             if (t7) {
-                t7 = (u32)func_0203c2cc((void *)t7);
+                t7 = (u32)CarpetTex_Init((void *)t7);
             }
             p[7] = t7;
         }
@@ -4432,7 +4432,7 @@ extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
 // @0x2233ee0 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_GetCurPlayerIndex() {
     if (PlayerData_GetCurrent() != 0) {
-        return func_02097740(gSavePlayers, PlayerData_getPlayerId());
+        return PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId());
     }
     return -1;
 }

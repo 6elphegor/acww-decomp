@@ -19,7 +19,7 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u16 gPad[];
 
 void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
@@ -901,7 +901,7 @@ void FriendCodeMenu::resumeInput() {
 void FriendCodeMenu::showMessage(u8 v, s32 b) {
     u8 l;
     u8 *p = &l;
-    *p = data_021edb68;
+    *p = gU8None;
     *p = v;
     unk_1300.open(p, b, 0);
     setMainState(0xb);

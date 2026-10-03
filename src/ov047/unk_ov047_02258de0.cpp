@@ -112,7 +112,7 @@ void Pocket_RemoveItem(s32 a);
 void Pocket_SetItem(u16 *p, s32 a, s32 b);
 BOOL ParcelErrand_IsFor(u32 a, u16 *p);
 u32 ParcelErrand_GetRecord(u32 a);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Clock_GetTimeOfDay();
 BOOL GameStart_IsActive();
 BOOL NetArea_IsLocalOwner();
@@ -384,15 +384,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -443,8 +443,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -821,7 +821,7 @@ BOOL SpNpcBlathers::vfunc_00() {
     unk_72a = 0xff;
     unk_4cc.unk_1c |= 2;
     unk_734 = 0;
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         unk_4cc.unk_1c |= 2;
         if (NetArea_IsLocalOwner()) {
             unk_5c = 0xf000;
@@ -899,7 +899,7 @@ BOOL SpNpcBlathers::mainAct00() {
         }
         return TRUE;
     }
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
@@ -1251,7 +1251,7 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
     u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
     void *g = gCommManager;
     Unk_ov047_0225a074_Buf l;
-    if (!CommManager_isOnline(g) && *func_0209c37c(0, 0x4a) == 0) {
+    if (!CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
         l.unk_02 = 0xd00c;
         if (ParcelErrand_IsFor(r7, &l.unk_02)) {
             if (unk_b0->unk_732 == 0) {
@@ -1262,7 +1262,7 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
             return;
         }
     }
-    if (unk_b0->unk_728 == 0 && unk_ac != 1 && !CommManager_isOnline(g) && *func_0209c37c(0, 0x4a) == 0) {
+    if (unk_b0->unk_728 == 0 && unk_ac != 1 && !CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
         if (Talk_IsDramaPending(unk_b0, &l, 1)) {
             out->unk_00 = sSpNpcBlathersDramaKey;
             out->unk_04 = (sSpNpcBlathersDramaMsgTable + l.b * 6)[l.c];
@@ -1554,7 +1554,7 @@ void SpNpcBlathersTalk::appraiseFossil() {
 
 void SpNpcBlathersTalk::afterFossilIdentified() {
     if (unk_c8 == 0) {
-        if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0 && Talk_IsInOwnTown() != 0 &&
+        if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0 && Talk_IsInOwnTown() != 0 &&
             MuseumData_isDonated(data_021ed0a0, &unk_ca) == 0) {
             unk_cc = 0x69;
         } else {
@@ -1566,7 +1566,7 @@ void SpNpcBlathersTalk::afterFossilIdentified() {
 }
 
 void SpNpcBlathersTalk::offerFossilDonation() {
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         Unk_02014420_requestReturnItem(this);
         unk_cc = 0x20;
     } else if (Talk_IsInOwnTown() != 0 && MuseumData_isDonated(data_021ed0a0, &unk_ca) == 0) {
@@ -1856,7 +1856,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
     case 0:
         unk_c8 = 0;
         if (Talk_IsInOwnTown()) {
-            if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+            if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 unk_cc = 0x41;
             } else {
                 unk_cc = 0x14;
@@ -1880,7 +1880,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
         break;
     }
     case 2:
-        if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
             unk_cc = 0x4a;
         } else {
             unk_cc = 0xd;
@@ -1956,7 +1956,7 @@ void SpNpcBlathersTalk::onAppraiseDonatedFossilChoice(u32 a) {
 void SpNpcBlathersTalk::onAnythingElseChoice(u32 a) {
     if (a == 0) {
         if (Talk_IsInOwnTown()) {
-            if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+            if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 unk_cc = 0x41;
             } else {
                 unk_cc = 0x14;
@@ -2030,7 +2030,7 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
             if (NetArea_IsLocalOwner()) {
                 Unk_ov047_02258e34_Global *gl = gCommManager;
                 netSetSlotsIfOwner(1, gl->unk_64, 4);
-                if (CommManager_isOnline(gl) || *func_0209c37c(0, 0x4a) != 0) {
+                if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0);
                 } else {
                     changeAct(1);

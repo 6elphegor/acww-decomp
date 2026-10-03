@@ -142,7 +142,7 @@ s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 u32 Item_FindMoneyBagForAmount(void *, u32, u32);
 s32 func_02063b8c(s32);
-void *func_020947f0(s32);
+void *PlayerActor_GetBodyPos(s32);
 s32 Ground_IsOnLockedExit(void *);
 void Ground_UnlockExit();
 void Ground_LockExit(s32);
@@ -165,7 +165,7 @@ void *PlayerData_getInventory(void *);
 void *PlayerData_getPlayerId(void *);
 s32 NpcActor_CheckPayoutFits(void *, void *, s32);
 void NpcActor_PayPlayer(void *, void *);
-s32 func_02097a90(void *, void *, s32, s32);
+s32 PlayerInventory_CanAddBells(void *, void *, s32, s32);
 void TalkWindowState_setNextMessage(void *, void *, const void *);
 void Hud_Show();
 void Villager_SetFleaMarketVisited(void *, void *);
@@ -320,15 +320,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -509,8 +509,8 @@ public:
     virtual void vfunc_4c(s32 a, u32 b);
     virtual BOOL vfunc_58();
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     void setViewDistance(void *arg);
     void pushViewedFurniture(u32 v);
@@ -1027,7 +1027,7 @@ BOOL FleaMarketBuyerVillager::setupAct07() {
 
 BOOL FleaMarketBuyerVillager::mainAct07() {
     Unk_ov004_0221946c_Vec v;
-    s32 *q = (s32 *)func_020947f0(4);
+    s32 *q = (s32 *)PlayerActor_GetBodyPos(4);
     v.x = q[0];
     v.y = q[1];
     v.z = q[2];
@@ -1246,14 +1246,14 @@ void FleaMarketBuyerVillagerTalk::vfunc_78(void *arg) {
     }
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_7c() {
+BOOL FleaMarketBuyerVillager::canPlayTalkMelody() {
     if (Unk_ov004_022191cc_Is1(gFieldSceneKind) == 0 || unk_ad6 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FleaMarketBuyerVillager::vfunc_80() {
+void FleaMarketBuyerVillager::onTalkMelodyPlayed() {
     unk_ad6 = 1;
 }
 
@@ -1361,7 +1361,7 @@ void FleaMarketBuyerVillagerTalk::vfunc_18() {
                 if (tmp == 0xfff1) {
                     tmp = 0x1492;
                 }
-                if (func_02097a90(r7, (void *)unk_1a4, 1, 0) == 0) {
+                if (PlayerInventory_CanAddBells(r7, (void *)unk_1a4, 1, 0) == 0) {
                     sel = (u8)(func_02063b8c(2) + 0x12);
                 } else {
                     switch (st) {
@@ -1435,7 +1435,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
     case 8:
         if (unk_ac0 == 6) {
             Unk_ov004_02218cdc_Rec rec;
-            Unk_ov004_02218cdc_Rec *src = (Unk_ov004_02218cdc_Rec *)func_020947f0(4);
+            Unk_ov004_02218cdc_Rec *src = (Unk_ov004_02218cdc_Rec *)PlayerActor_GetBodyPos(4);
             rec.a = src->a;
             rec.b = src->b;
             rec.c = src->c;
@@ -1452,7 +1452,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
 BOOL FleaMarketBuyerVillager::checkLeave() {
     Unk_ov004_02218cdc_Rec rec;
     u32 z[2];
-    Unk_ov004_02218cdc_Rec *src = (Unk_ov004_02218cdc_Rec *)func_020947f0(4);
+    Unk_ov004_02218cdc_Rec *src = (Unk_ov004_02218cdc_Rec *)PlayerActor_GetBodyPos(4);
     rec.a = src->a;
     rec.b = src->b;
     rec.c = src->c;

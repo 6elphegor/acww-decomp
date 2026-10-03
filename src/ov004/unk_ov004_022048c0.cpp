@@ -163,13 +163,13 @@ public:
     /* 0x40 */ u8 unk_40;
 };
 
-struct Unk_020b6e10 {
+struct TouchPickBox {
     u8 pad[0x2a8];
 };
 
 struct TouchPicker {
-    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL pushBox(Unk_020b6e10 *box);
+    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(TouchPickBox *box);
 };
 
 class MsgString25 {
@@ -190,19 +190,19 @@ BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 BOOL BoxCollider_Unregister(void *self);
 void BoxCollider_Register(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void *_ZN10PlayerData13getNookPointsEv(void *self);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
-void _ZN12Unk_020b6e10C2Ev(void *self);
-void _ZN12Unk_020b6e10D2Ev(void *self);
+void _ZN12TouchPickBoxC2Ev(void *self);
+void _ZN12TouchPickBoxD2Ev(void *self);
 extern char *sAtmMsgFilePtr;
 extern char *sAtmStringBankPtr;
 }
 
-#define func_0203e47c _ZN9Character13func_0203e47cEi
-#define func_0203e488 _ZN9Character13func_0203e488Ei
+#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
+#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define PlayerData_getNookPoints _ZN10PlayerData13getNookPointsEv
 
 // ---------------------------------------------------------------- Atm
@@ -234,7 +234,7 @@ public:
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ u8 unk_134[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
-    /* 0x1d0 */ Unk_020b6e10 unk_1d0; // (ctor C2 / dtor D2 called by hand)
+    /* 0x1d0 */ TouchPickBox unk_1d0; // (ctor C2 / dtor D2 called by hand)
 };
 
 typedef void (Atm::*Unk_02204a88_Fn)();
@@ -266,12 +266,12 @@ struct Unk_ov004_Scene_Entry {
 
 Atm::Atm() {
     _ZN11BoxColliderC1Ev(unk_134);
-    _ZN12Unk_020b6e10C2Ev(&unk_1d0);
+    _ZN12TouchPickBoxC2Ev(&unk_1d0);
     sAtmInstance = 0;
 }
 
 Atm::~Atm() {
-    _ZN12Unk_020b6e10D2Ev(&unk_1d0);
+    _ZN12TouchPickBoxD2Ev(&unk_1d0);
     _ZN11BoxColliderD2Ev(unk_134);
 }
 
@@ -394,7 +394,7 @@ void Atm::execTalkAct00() {}
 
 BOOL Atm::enterTalkAct01() {
     Unk_02204a38_Pad pad;
-    func_0203e488(this, this);
+    Character_attachTalkRequest(this, this);
     setFileName(sAtmMsgFilePtr);
     unk_1e = 0;
     setPointTexts();
@@ -417,7 +417,7 @@ BOOL Atm::enterTalkAct02() {
 void Atm::execTalkAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
-            func_0203e47c(this, this);
+            Character_detachTalkRequest(this, this);
             TalkRequest_SetTargetDone(this);
         }
     }

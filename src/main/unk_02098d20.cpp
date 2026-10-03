@@ -12,8 +12,8 @@ extern "C" void func_020639bc(void *);
 extern "C" s32 func_02063b8c(s32);
 extern "C" void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 
-extern const u32 data_020d0538[];
-const u32 data_020d0538[] = {0, 4, 3};
+extern const u32 sForeignLetterPresentKinds[];
+const u32 sForeignLetterPresentKinds[] = {0, 4, 3};
 
 class VillagerId {
 public:
@@ -28,71 +28,71 @@ struct ItemPickSpec {
     void set(s32 a, s32 b);
 };
 
-class Unk_02098d20 {
+class ForeignVillagerRecord {
 public:
-    Unk_02098d20();
-    ~Unk_02098d20();
+    ForeignVillagerRecord();
+    ~ForeignVillagerRecord();
     u8 unk_00[0xa];
     u8 unk_0a[0xc];
     u16 unk_16;
     s8 unk_18;
 
-    BOOL func_02098d20(void *a1, s32 a2, void *a3);
-    void func_02098de4(void *a1, s32 a2, void *a3, u16 *p);
-    BOOL func_02098e0c();
-    void func_02098e30();
+    BOOL offer(void *a1, s32 a2, void *a3);
+    void set(void *a1, s32 a2, void *a3, u16 *p);
+    BOOL isSet();
+    void clear();
 };
 
-extern "C" void func_02098e8c() {}
+extern "C" void Comm_OnFriendDeletedNop() {}
 
-Unk_02098d20::Unk_02098d20() {
+ForeignVillagerRecord::ForeignVillagerRecord() {
     func_020639bc(this);
     VillagerId_Construct(&unk_0a);
     unk_16 = 0xfff1;
 }
 
-Unk_02098d20::~Unk_02098d20() {
+ForeignVillagerRecord::~ForeignVillagerRecord() {
     VillagerId_Destruct(&unk_0a);
     func_020639b8(this);
 }
 
-void Unk_02098d20::func_02098e30() {
+void ForeignVillagerRecord::clear() {
     func_020639a0(this);
     VillagerId_Clear(&unk_0a);
     unk_16 = 0xfff1;
     unk_18 = -0x80;
 }
 
-BOOL Unk_02098d20::func_02098e0c() {
+BOOL ForeignVillagerRecord::isSet() {
     if (func_02063954(this) && ((VillagerId *)&unk_0a)->isValid()) return TRUE;
     return FALSE;
 }
 
-void Unk_02098d20::func_02098de4(void *a1, s32 a2, void *a3, u16 *p) {
+void ForeignVillagerRecord::set(void *a1, s32 a2, void *a3, u16 *p) {
     func_02063990(this, a3);
     VillagerId_Copy(&unk_0a, a1);
     unk_16 = *p;
     unk_18 = a2;
 }
 
-BOOL Unk_02098d20::func_02098d20(void *a1, s32 a2, void *a3) {
+BOOL ForeignVillagerRecord::offer(void *a1, s32 a2, void *a3) {
     if (((VillagerId *)a1)->isValid() && func_02063954(a3)) {
         u16 local = 0xfff1;
         u16 out;
         if (func_02063b8c(4) == 0) {
             ItemPickSpec t1;
-            t1.set(data_020d0538[func_02063b8c(3)], 0);
+            t1.set(sForeignLetterPresentKinds[func_02063b8c(3)], 0);
             ItemPickSpec t2(t1);
             ItemPick_One(&out, &t2, 0, 0, 1, 1, 0);
             local = out;
         }
-        if (func_02098e0c()) {
+        if (isSet()) {
             if (a2 >= unk_18) {
-                func_02098de4(a1, a2, a3, &local);
+                set(a1, a2, a3, &local);
                 return TRUE;
             }
         } else {
-            func_02098de4(a1, a2, a3, &local);
+            set(a1, a2, a3, &local);
             return TRUE;
         }
     }

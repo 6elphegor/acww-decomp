@@ -58,14 +58,14 @@ struct TouchPickCylinder : CollisionCylinderX {
     /* 0x1c */ TouchPickCylinder *unk_1c;
 };
 
-struct Unk_0202e9c8 {
-    Unk_0202e9c8();
-    ~Unk_0202e9c8();
-    void func_0202e9b4(Unk_0202e918_Vec3 *a, s32 b);
+struct HitSphere {
+    HitSphere();
+    ~HitSphere();
+    void set(Unk_0202e918_Vec3 *a, s32 b);
     u8 pad[0x10];
 };
 
-struct TouchPickSphere : Unk_0202e9c8 {
+struct TouchPickSphere : HitSphere {
     TouchPickSphere();
     ~TouchPickSphere();
     BOOL setupCurved(Vec3 *a, Vec3 *b, s32 c, u8 d);
@@ -90,10 +90,10 @@ struct TouchPickResult {
     /* 0x1a */ u8 unk_1a;
 };
 
-struct Unk_020b6e10 {
-    Unk_020b6e10();
-    ~Unk_020b6e10();
-    BOOL func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
+struct TouchPickBox {
+    TouchPickBox();
+    ~TouchPickBox();
+    BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
     /* 0x00 */ TouchPickTriangle unk_00[10];
 };
 
@@ -107,8 +107,8 @@ struct TouchPicker : TouchPickResult {
     BOOL pushCylinder(TouchPickCylinder *o);
     BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
     BOOL pushSphere(TouchPickSphere *o);
-    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL pushBox(Unk_020b6e10 *box);
+    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(TouchPickBox *box);
     /* 0x1c */ TouchPickTriangle *unk_1c;
     /* 0x20 */ TouchPickSphere *unk_20;
     /* 0x24 */ TouchPickCylinder *unk_24;
@@ -187,7 +187,7 @@ BOOL TouchPickSphere::setup(Vec3 *a, Vec3 *b, s32 c, u8 d) {
 BOOL TouchPickSphere::setupCurved(Vec3 *a, Vec3 *b, s32 c, u8 d) {
     unk_14 = c;
     unk_10 = d;
-    func_0202e9b4((Unk_0202e918_Vec3 *)a, (s32)b);
+    set((Unk_0202e918_Vec3 *)a, (s32)b);
     return TRUE;
 }
 
@@ -245,7 +245,7 @@ TouchPicker::TouchPicker() {
     unk_24 = 0;
 }
 
-BOOL TouchPicker::pushBox(Unk_020b6e10 *box) {
+BOOL TouchPicker::pushBox(TouchPickBox *box) {
     BOOL ok = TRUE;
     TouchPickTriangle *p = box->unk_00;
     for (u32 i = 0; i < 10; i++) {
@@ -256,8 +256,8 @@ BOOL TouchPicker::pushBox(Unk_020b6e10 *box) {
     return ok;
 }
 
-BOOL TouchPicker::addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f) {
-    box->func_020b6b84(pos, w, h, d, angle, e, f);
+BOOL TouchPicker::addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f) {
+    box->build(pos, w, h, d, angle, e, f);
     return pushBox(box);
 }
 
@@ -384,11 +384,11 @@ void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 s32 _ZN14GroundInfoBase9getHeightEi(Unk_020b60dc_Cell *x, s32 k);
 void _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
 void _ZN16CollisionSegmentD1Ev(Unk_020b60dc_Line *l);
-BOOL _ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(void *n, Vec3 *out, Unk_020b60dc_Line *l);
-void func_020b6e38(Basis *out, s32 a, s32 b);
-BOOL func_020b6f10(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
-BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
-BOOL func_020b705c(u8 v);
+BOOL _ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(void *n, Vec3 *out, Unk_020b60dc_Line *l);
+void TouchPick_CalcRay(Basis *out, s32 a, s32 b);
+BOOL TouchPick_HitCylinder(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
+BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
+BOOL TouchPickKind_HasTarget(u8 v);
 BOOL TouchPick_GetGroundPos(void *obj, Vec3 *out);
 void WorldCurve_FromCurved(Vec3 *out, Vec3 *in);
 s32 WorldCurve_GetRadius(void);
@@ -428,7 +428,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
         self->unk_1c = 0;
         return;
     }
-    func_020b6e38((Basis *)t, sx, sy);
+    TouchPick_CalcRay((Basis *)t, sx, sy);
     p0 = t[0];
     Vec3 *pb = &t[1];
     p1 = *pb;
@@ -436,7 +436,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
         static s32 k1 = data_020c8cbc * 6;
         static s32 k2 = data_020c7c1c + WorldCurve_GetRadius();
         s32 kk = k1;
-        if (func_020b7074(&r, &p0, &p1, k2, kk)) {
+        if (TouchPick_HitWorldDrum(&r, &p0, &p1, k2, kk)) {
             WorldCurve_FromCurved(&v, &r);
             Unk_020b60dc_Cell x;
             _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&x, &v, 0, 0);
@@ -450,7 +450,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
             GroundInfo_Destruct(&x);
         }
         if (!TouchPick_GetGroundPos(self, 0)) {
-            if (func_020b7074(&r, &p0, &p1, WorldCurve_GetRadius(), kk)) {
+            if (TouchPick_HitWorldDrum(&r, &p0, &p1, WorldCurve_GetRadius(), kk)) {
                 p1 = r;
                 Vec3 w;
                 WorldCurve_FromCurved(&w, &r);
@@ -625,7 +625,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     }
 
     for (Unk_020b60dc_Rec *n = (Unk_020b60dc_Rec *)self->unk_24; n != 0; n = n->unk_1c) {
-        if (func_020b6f10(&p1, &p0, n, n->unk_0c, n->unk_10)) {
+        if (TouchPick_HitCylinder(&p1, &p0, n, n->unk_0c, n->unk_10)) {
             self->unk_0c = n->unk_00.x;
             self->unk_10 = n->unk_00.y;
             self->unk_14 = n->unk_00.z;
@@ -634,8 +634,8 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
         }
     }
     for (Unk_020b60dc_Node *n = data_021ce638; n != 0; n = n->unk_38) {
-        if (func_020b705c(n->unk_0c)) {
-            if (func_020b6f10(&p1, &p0, n->vfunc_00(), n->unk_04, n->unk_08)) {
+        if (TouchPickKind_HasTarget(n->unk_0c)) {
+            if (TouchPick_HitCylinder(&p1, &p0, n->vfunc_00(), n->unk_04, n->unk_08)) {
                 Vec3 *vp = n->vfunc_00();
                 self->unk_0c = vp->x;
                 self->unk_10 = vp->y;
@@ -680,7 +680,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                 f.x = (gx << 13) + 0x1000;
                 f.y = 0;
                 f.z = (gz << 13) + 0x1000;
-                if (func_020b6f10(&p1, &p0, &f, ta, tb)) {
+                if (TouchPick_HitCylinder(&p1, &p0, &f, ta, tb)) {
                     self->unk_0c = f.x;
                     self->unk_10 = f.y;
                     self->unk_14 = f.z;
@@ -728,7 +728,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     while (n != 0) {
         Unk_020b60dc_Line l;
         _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
-        if (_ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(n, &ip, &l)) {
+        if (_ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(n, &ip, &l)) {
             Vec3 m2;
             WorldCurve_FromCurved(&m2, (Vec3 *)n);
             self->unk_0c = m2.x;

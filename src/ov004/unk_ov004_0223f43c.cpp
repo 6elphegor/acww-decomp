@@ -100,7 +100,7 @@ extern const Unk_0223f44c_Vec data_ov004_02246838;
 extern const Unk_0223f44c_Vec data_ov004_0224682c;
 // linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
 
-Unk_0223f44c_Vec *func_020947f0(s32 a);
+Unk_0223f44c_Vec *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent(void);
 s32 func_02063b8c(s32 a);
 s32 Math_AngleXZ(void *a, void *b);
@@ -173,7 +173,7 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     if (a == 0) {
         a = (Unk_ov004_0223fe00_Sub *)&self->unk_fc;
     }
-    p = func_020947f0(4);
+    p = PlayerActor_GetBodyPos(4);
     t = Camera_CalcPointSpan(p, &self->unk_1cc, &self->unk_110, &dy);
     if (t < 0x4800) {
         t = 0x4800;
@@ -239,7 +239,7 @@ BOOL Camera_InitMode10(Unk_021c3070 *self) {
 BOOL Camera_StartBlendToPlayer(Unk_021c3070 *self) {
     Unk_020d93b8_loadPose(self, sCameraPoseGrid[1][1], 0);
     Unk_020d93b8_setBlendPreset(self, 0);
-    Unk_0223f44c_Vec *p = func_020947f0(4);
+    Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
     self->unk_110 = p->x;
     self->unk_114 = p->y;
     self->unk_118 = p->z;
@@ -337,7 +337,7 @@ BOOL Camera_SetMode16At(Unk_0223f44c_Vec *v) {
 }
 
 BOOL Camera_InitMode16(Unk_021c3070 *o) {
-    func_020947f0(4);
+    PlayerActor_GetBodyPos(4);
     Unk_020d93b8_loadPose(o, 0x1e, 0);
     Unk_020d93b8_setBlendPreset(o, 0);
     Camera_StartBlend();
@@ -346,7 +346,7 @@ BOOL Camera_InitMode16(Unk_021c3070 *o) {
 }
 
 void Camera_UpdateMode16(Unk_021c3070 *o) {
-    Unk_0223f44c_Vec *p = func_020947f0(4);
+    Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
     Unk_0223f44c_Vec a, b;
     s32 d;
     func_01ffd070(&a, p, &o->unk_1cc);

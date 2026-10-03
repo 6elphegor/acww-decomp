@@ -49,7 +49,7 @@ struct Unk_ov095_02294dc0_Entry {
 };
 
 extern "C" {
-extern volatile u16 data_020ca488;
+extern volatile u16 sCharSortKeyZero;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
@@ -66,10 +66,10 @@ s32 Emotion_GetSlot(s32 i);
 s32 Emotion_CountLearned(void);
 s32 Text_GetCharSortKey(s32 a);
 s32 Mem_Copy(void *src, void *dst, s32 n);
-s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
-s32 func_020512e0(u8 *s, s32 n);
-s32 func_02051348(u8 *s, s32 n);
-s32 func_02051370(u32 c);
+s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
+s32 Text_GetLength(u8 *s, s32 n);
+s32 Text_MeasureWidth(u8 *s, s32 n);
+s32 Text_GetCharWidth(u32 c);
 s32 File_LoadToBuffer(void *name, void *buf, s32 size);
 s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
@@ -1406,7 +1406,7 @@ BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e)
         }
         return FALSE;
     }
-    n = func_020512e0(a, d);
+    n = Text_GetLength(a, d);
     if (n == d && a[n - 1] != 0x85) {
         if (Keyboard_TestFlags(s, 0x100) == 0) {
             Keyboard_SetFlags(s, 0x40);
@@ -1416,8 +1416,8 @@ BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e)
     if (e < 0) {
         return TRUE;
     }
-    d = func_02051348(a, d);
-    if (d + func_02051370((u32)b) > e) {
+    d = Text_MeasureWidth(a, d);
+    if (d + Text_GetCharWidth((u32)b) > e) {
         if (Keyboard_TestFlags(s, 0x100) == 0) {
             Keyboard_SetFlags(s, 0x80);
         }
@@ -1548,13 +1548,13 @@ s32 Keyboard_ModifyCharKey105(Keyboard *s, s32 a)
 u8 Keyboard_HitTestText(void *s, u8 *str, s32 a, s32 b, u8 limit0, u8 *out)
 {
     s32 count;
-    func_02051270(str, a, b, &count, 0);
+    Text_FitToWidth(str, a, b, &count, 0);
     s32 i, w;
     w = 0;
     i = w;
     s32 limit = limit0;
     for (; i < count; i++) {
-        s32 c = func_02051370(str[i]);
+        s32 c = Text_GetCharWidth(str[i]);
         if (w + (c >> 1) > limit) {
             if (out) {
                 *out = i;
@@ -3091,9 +3091,9 @@ void Keyboard_PlayCharSe(Keyboard *s, s32 a)
         case 0x29:
         case 0x2a:
         case 0x2b:
-            r = data_020ca488;
+            r = sCharSortKeyZero;
         }
-        if (r != data_020ca488) {
+        if (r != sCharSortKeyZero) {
             Snd_PlayKeySe(r);
         } else {
             Snd_PlayKeySe(0x2c);

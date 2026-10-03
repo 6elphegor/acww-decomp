@@ -22,8 +22,8 @@ extern u16 gSaveLostAndFound[15];
 extern u16 gSaveRecycleBin[15];
 extern s16 data_02135f44[];
 
-extern "C" BOOL func_02039d94(u32 i, u16 v);
-extern "C" u16 func_02039dd4(u32 i);
+extern "C" BOOL RecycleBin_Set(u32 i, u16 v);
+extern "C" u16 RecycleBin_Get(u32 i);
 
 class ViewFrustum {
 public:
@@ -114,7 +114,7 @@ s32 ViewFrustum::testSphere(void *m, void *v, s32 r, s32 *out) {
     return -out[2];
 }
 
-extern "C" void func_02039e6c(u16 v) {
+extern "C" void LostAndFound_Add(u16 v) {
     u16 *p = gSaveLostAndFound;
     s32 idx = 15;
     for (s32 i = 0; i < 15; i++) {
@@ -132,7 +132,7 @@ extern "C" void func_02039e6c(u16 v) {
     p[idx] = v;
 }
 
-extern "C" BOOL func_02039e44() {
+extern "C" BOOL LostAndFound_HasAny() {
     s32 i;
     u16 *p = gSaveLostAndFound;
     for (i = 0; i < 15; i++) {
@@ -143,7 +143,7 @@ extern "C" BOOL func_02039e44() {
     return FALSE;
 }
 
-extern "C" s32 func_02039e1c() {
+extern "C" s32 LostAndFound_Count() {
     s32 n = 0;
     u16 *p = gSaveLostAndFound;
     for (s32 i = 0; i < 15; i++) {
@@ -154,23 +154,23 @@ extern "C" s32 func_02039e1c() {
     return n;
 }
 
-extern "C" BOOL func_02039dec(u16 v) {
+extern "C" BOOL RecycleBin_Add(u16 v) {
     for (u32 i = 0; i < 15; i++) {
-        if (func_02039dd4(i) == 0xfff1) {
-            return func_02039d94(i, v);
+        if (RecycleBin_Get(i) == 0xfff1) {
+            return RecycleBin_Set(i, v);
         }
     }
     return FALSE;
 }
 
-extern "C" u16 func_02039dd4(u32 i) {
+extern "C" u16 RecycleBin_Get(u32 i) {
     if (i < 15) {
         return gSaveRecycleBin[i];
     }
     return 0xfff1;
 }
 
-extern "C" BOOL func_02039d94(u32 i, u16 v) {
+extern "C" BOOL RecycleBin_Set(u32 i, u16 v) {
     if (i < 15) {
         u16 t[2];
         t[0] = v;
@@ -183,29 +183,29 @@ extern "C" BOOL func_02039d94(u32 i, u16 v) {
     return FALSE;
 }
 
-extern "C" void func_02039d90() {}
+extern "C" void ChestStorage_Construct() {}
 
-extern "C" void func_02039d8c() {}
+extern "C" void ChestStorage_Destruct() {}
 
-extern "C" void func_02039d78(u16 *p) {
+extern "C" void ChestStorage_Clear(u16 *p) {
     for (s32 i = 0; i < 90; i++) {
         p[i] = 0xfff1;
     }
 }
 
-extern "C" void func_02039d74() {}
+extern "C" void ChestStorage_GetItems() {}
 
-extern "C" void func_02039d70() {}
+extern "C" void LostAndFound_Construct() {}
 
-extern "C" void func_02039d6c() {}
+extern "C" void LostAndFound_Destruct() {}
 
-extern "C" void func_02039d58(u16 *p) {
+extern "C" void LostAndFound_Clear(u16 *p) {
     for (s32 i = 0; i < 15; i++) {
         p[i] = 0xfff1;
     }
 }
 
-extern "C" void func_02039cf4(u16 *p) {
+extern "C" void LostAndFound_InitRandom(u16 *p) {
     for (s32 i = 0; i < 3; i++) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
@@ -217,7 +217,7 @@ extern "C" void func_02039cf4(u16 *p) {
     }
 }
 
-extern "C" void func_02039c08(u16 *arr, s32 n) {
+extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
     s32 tbl[3] = {1, 0, 2};
     u32 out;
     Unk_02039cf4_Obj o1;

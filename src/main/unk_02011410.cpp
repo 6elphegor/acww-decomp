@@ -12,10 +12,10 @@ BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
-s32 func_0201188c(void);
+s32 Hud_GetSceneHudKind(void);
 }
 
-struct Unk_02011580 {
+struct HudObjGfx {
     u8 unk_00[0x48];
     s32 unk_48;
     s32 unk_4c;
@@ -24,21 +24,21 @@ struct Unk_02011580 {
     u8 unk_254;
     u8 unk_255;
 
-    Unk_02011580();
-    ~Unk_02011580();
-    BOOL func_02011580();
-    BOOL func_020115e0(s32 mode);
-    const char *func_02011640(s32 mode);
-    const char *func_02011690(s32 mode);
+    HudObjGfx();
+    ~HudObjGfx();
+    BOOL loadChars();
+    BOOL loadPalette(s32 mode);
+    const char *getCharPath(s32 mode);
+    const char *getPalettePath(s32 mode);
 };
 
-class Unk_0201106c {
+class HudObjGfxIo {
 public:
-    BOOL func_02011410(s32 k);
-    void func_020114b0(s32 which);
-    void func_020114f0(s32 which);
-    void func_02011550();
-    void func_02011568();
+    BOOL loadKindChars(s32 k);
+    void uploadChars(s32 which);
+    void uploadPalette(s32 which);
+    void freeChars();
+    void freePalette();
 
     u8 unk_00[0x48];
     u8 *unk_48;
@@ -46,8 +46,8 @@ public:
     u8 unk_50[0x200];
 };
 
-const char *Unk_02011580::func_02011640(s32 mode) {
-    if (mode >= 4) mode = func_0201188c();
+const char *HudObjGfx::getCharPath(s32 mode) {
+    if (mode >= 4) mode = Hud_GetSceneHudKind();
     const char *b = "/a_mes/a_mes_ten0_obj_ncg.bin";
     const char *a = "/a_mes/a_mes_ten1_obj_ncg.bin";
     const char *c = "/a_mes/a_mes_ten3_obj_ncg.bin";
@@ -58,8 +58,8 @@ const char *Unk_02011580::func_02011640(s32 mode) {
     return r;
 }
 
-BOOL Unk_02011580::func_020115e0(s32 mode) {
-    void *r6 = (void *)FS_OpenFile(this, func_02011690(mode));
+BOOL HudObjGfx::loadPalette(s32 mode) {
+    void *r6 = (void *)FS_OpenFile(this, getPalettePath(mode));
     BOOL ok;
     unk_48 = (s32)Mem_AllocTail(0x180);
     if (unk_48 != 0) {
@@ -72,8 +72,8 @@ BOOL Unk_02011580::func_020115e0(s32 mode) {
     return FALSE;
 }
 
-BOOL Unk_02011580::func_02011580() {
-    void *r6 = (void *)FS_OpenFile(this, func_02011640(4));
+BOOL HudObjGfx::loadChars() {
+    void *r6 = (void *)FS_OpenFile(this, getCharPath(4));
     BOOL ok;
     unk_4c = (s32)Mem_AllocTail(0x3000);
     if (unk_4c != 0) {
@@ -86,21 +86,21 @@ BOOL Unk_02011580::func_02011580() {
     return FALSE;
 }
 
-void Unk_0201106c::func_02011568() {
+void HudObjGfxIo::freePalette() {
     if (unk_48 != NULL) {
         Mem_Free(unk_48);
         unk_48 = NULL;
     }
 }
 
-void Unk_0201106c::func_02011550() {
+void HudObjGfxIo::freeChars() {
     if (unk_4c != NULL) {
         Mem_Free(unk_4c);
         unk_4c = NULL;
     }
 }
 
-void Unk_0201106c::func_020114f0(s32 which) {
+void HudObjGfxIo::uploadPalette(s32 which) {
     u8 *base;
     u8 *p2;
     DC_FlushRange(unk_48, 0x180);
@@ -116,7 +116,7 @@ void Unk_0201106c::func_020114f0(s32 which) {
     }
 }
 
-void Unk_0201106c::func_020114b0(s32 which) {
+void HudObjGfxIo::uploadChars(s32 which) {
     DC_FlushRange(unk_4c, 0x3000);
     if ((u32)which <= 1) {
         GX_LoadOBJ(unk_4c, 0x1000, 0x3000);
@@ -126,8 +126,8 @@ void Unk_0201106c::func_020114b0(s32 which) {
     }
 }
 
-BOOL Unk_0201106c::func_02011410(s32 k) {
-    BOOL a = FS_OpenFile(this, ((Unk_02011580 *)this)->func_02011640(k));
+BOOL HudObjGfxIo::loadKindChars(s32 k) {
+    BOOL a = FS_OpenFile(this, ((HudObjGfx *)this)->getCharPath(k));
     BOOL ok;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0;
     u32 src;

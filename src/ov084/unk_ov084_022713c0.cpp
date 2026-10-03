@@ -287,15 +287,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -339,8 +339,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -398,12 +398,12 @@ void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
 void *_ZN10PlayerData10getCatalogEv(void *p);
-void func_0203c41c(void *p, u16 *q, s32 a);
+void Catalog_AddItem(void *p, u16 *q, s32 a);
 u32 _ZN17PlayerSpNpcRecord17getFireworksGivenEv(void *p);
 void _ZN17PlayerSpNpcRecord17addFireworksGivenEv(void *p);
 s32 _ZN8PlayerId9getGenderEv(void *p);
 u32 Net_GetJoiningAid();
-void func_020947c0(u16 *out, u32 v);
+void PlayerActor_GetSlotHeldItem(u16 *out, u32 v);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
 BOOL func_0202e3a4(void *p);
 BOOL func_0202e514(void *p);
@@ -561,7 +561,7 @@ void SpNpcTortimerFireworksTalk::vfunc_78(TalkStartMsg *out) {
         }
     }
     if (Talk_CheckAndSetPlayerFlag(0x1e, 1)) {
-        func_020947c0(&h[0], Net_GetJoiningAid());
+        PlayerActor_GetSlotHeldItem(&h[0], Net_GetJoiningAid());
         h[2] = 0x137e;
         s32 t1 = Pocket_FindItem(&h[2]);
         BOOL f1 = FALSE;
@@ -753,7 +753,7 @@ void SpNpcTortimerFireworksTalk::vfunc_18() {
                                   _ZN10PlayerData11getPlayerIdEv(g));
                     if (g != NULL) {
                         h[1] = Item_MakePaper(0x1d, 4);
-                        func_0203c41c(_ZN10PlayerData10getCatalogEv(g), &h[1], 0);
+                        Catalog_AddItem(_ZN10PlayerData10getCatalogEv(g), &h[1], 0);
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 3);
                 }

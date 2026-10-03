@@ -262,15 +262,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -323,11 +323,11 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
-    void func_0202e548(s32 a, s32 b);
+    void setColliderSize(s32 a, s32 b);
 
     Unk_020e06dc unk_640;
     s32 unk_648;
@@ -547,9 +547,9 @@ BOOL Talk_IsInOwnTown(...);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
 void *Unk_02097ff4_getBankAccount(void *g);
-s32 func_02097404(void *h);
-s32 func_020973e8(void *h);
-void func_020973e4(void *h, u8 i);
+s32 Donation_GetTotal(void *h);
+s32 PlayerBank_GetDonationLevel(void *h);
+void PlayerBank_SetDonationLevel(void *h, u8 i);
 void Unk_02097ff4_setFlag(void *g, s32 v);
 s32 Unk_02097ff4_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
@@ -561,8 +561,8 @@ void Unk_020d7710_setPocketFilter(void *self, void *cb, s32 a, s32 b);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
 s32 ActorTalkRequest_getChoiceList(void *self);
 s32 ChoiceList_getResult(s32 v);
-void func_0203cb80(s32 v);
-s32 func_0203ca94();
+void PlayerOptions_SetHiragana(s32 v);
+s32 PlayerOptions_Commit();
 s32 Talk_IsDramaPending(void *o, void *b, s32 c);
 void Talk_AdvanceDrama(void *o, void *b);
 void TalkWindowState_openChoices(void *o, s32 v);
@@ -580,14 +580,14 @@ BOOL GameStart_IsNewTown();
 BOOL SaveManager_HasAct1FFailed();
 BOOL SaveManager_IsIdleAfterAct1F();
 void SaveManager_RequestAct1F();
-u32 func_020978a4(void *g);
-u32 func_02097a3c(void *h);
+u32 PlayerDataArray_CountUsed(void *g);
+u32 PlayerData_GetFutureLetter(void *h);
 u8 *FutureLetter_getDeliveryDate(u32 h);
-u32 func_020978c8(void *g, u32 i);
+u32 PlayerDataArray_IsUsed(void *g, u32 i);
 u32 PlayerData_GetCurrentIndex();
 u32 PlayerData_GetResident(void *g, u32 i);
 u32 PlayerData_getPlayerId(u32 h);
-s32 func_02097414(void *p);
+s32 PlayerBank_GetBalance(void *p);
 u32 Pocket_AddItem(u16 *p, s32 a);
 BOOL TownState_IsPerfectStreak15();
 s32 Town_GetEnvironmentRank();
@@ -613,7 +613,7 @@ void func_02063888(void *p);
 void func_02063830(void *p);
 void func_02063818(void *p);
 void func_02063870(void *p);
-BOOL func_020a78a4(void *dst, const void *src, s32 n);
+BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
 void MsgString_fromEncoded(void *dst, void *src, s32 a, s32 b);
 void Unk_020d7710_requestGiveItem(void *self, u16 *p, s32 a, s32 b, s32 c);
 void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
@@ -642,7 +642,7 @@ void TownSessionState_SetFlag(void *p, s32 a);
 void SaveData_clearFlag(void *p, s32 a);
 void MenuCtrl_GetDateTime(void *p);
 s32 MenuCtrl_GetAmount();
-void func_020973ec(s32 a);
+void Donation_SetTotal(s32 a);
 s32 MenuCtrl_GetPostOfficeOutcome();
 BOOL LetterDelivery_HasFutureLetter(s32 a);
 BOOL MenuCtrl_PostOfficeLettersSent();
@@ -658,7 +658,7 @@ s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
 s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-Unk_ov054_Vec *func_020947f0(s32 a);
+Unk_ov054_Vec *PlayerActor_GetBodyPos(s32 a);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
@@ -1057,7 +1057,7 @@ BOOL SpNpcPellyPhyllis::updateWindow() {
     s32 c, d;
     Unk_ov054_0225ba54_Vec v;
     Unk_ov054_0225ba54_Vec w;
-    Unk_ov054_0225ba54_Vec *p = func_020947f0(4);
+    Unk_ov054_0225ba54_Vec *p = PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -1207,7 +1207,7 @@ BOOL SpNpcPellyPhyllis::setupAct07() {
 BOOL SpNpcPellyPhyllis::mainAct07() {
     Unk_ov054_0225ab00_Vec v;
     isOnline();
-    Unk_ov054_0225ba54_Vec *p = func_020947f0(4);
+    Unk_ov054_0225ba54_Vec *p = PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -1480,8 +1480,8 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
         v[1] = 0x149b;
         Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
-        unk_c0 = func_02097404(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
-        func_020973ec(unk_c0 + r4);
+        unk_c0 = Donation_GetTotal(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
+        Donation_SetTotal(unk_c0 + r4);
     } else {
         r6 = 0x1c;
         Unk_020d7710_requestReopenWindow(this);
@@ -1572,7 +1572,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
     s32 r4;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        s32 r6 = func_02097414(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
+        s32 r6 = PlayerBank_GetBalance(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
         ActorTalkRequest_setNumberSlot(this, r6, 5, 10, 1, 0);
         ActorTalkRequest_setNumberSlot(this, func_02133150(r6, 200), 6, 10, 1, 0);
         r4 = 0x17;
@@ -1712,7 +1712,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                     if (buf[12] == 1) {
                         u32 m = 0x38;
                         if (buf[11] == 0) {
-                            func_020a78a4(LightLevel, &buf[3], 8);
+                            EncodedString_SetRaw(LightLevel, &buf[3], 8);
                             MsgString_fromEncoded(LampLights, LightLevel, 0, 0);
                             TalkWindowState_setSlot(ctx, 8, LampLights);
                             m = 0x39;
@@ -1781,7 +1781,7 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
 
 void SpNpcPellyPhyllisTalk::vfunc_10() {
     if (unk_1e == 0xf) {
-        u8 *p = FutureLetter_getDeliveryDate(func_02097a3c(PlayerData_GetCurrent()));
+        u8 *p = FutureLetter_getDeliveryDate(PlayerData_GetFutureLetter(PlayerData_GetCurrent()));
         u32 b1 = p[1];
         u32 b0 = p[0];
         ActorTalkRequest_setNumberSlot(this, (s32)(p[2] + 0x7d0), 1, 4, 0, 0);
@@ -1797,7 +1797,7 @@ void SpNpcPellyPhyllisTalk::vfunc_10() {
         s32 i = cnt;
         u8 *g = gSavePlayers;
         do {
-            if (func_020978c8(g, i)) {
+            if (PlayerDataArray_IsUsed(g, i)) {
                 if (i != (s32)PlayerData_GetCurrentIndex()) {
                     ActorTalkRequest_setPlayerNameSlot(this, PlayerData_getPlayerId(PlayerData_GetResident(g, i)), cnt + 2);
                     cnt++;
@@ -1891,7 +1891,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         setScript(6);
         break;
     case 0x16:
-        unk_bc = func_02097414(hd);
+        unk_bc = PlayerBank_GetBalance(hd);
         Unk_020d7710_setSubSceneKind(this, 0x3b, 1);
         Unk_020d7710_openSubScene(this, 2);
         setScript(7);
@@ -2035,7 +2035,7 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
         Unk_020d7710_openSubScene(this, 2);
         break;
     case 0x13:
-        r4 = func_020978a4(gSavePlayers);
+        r4 = PlayerDataArray_CountUsed(gSavePlayers);
         if (GameStart_IsNewTown()) {
             r4 = 2;
         } else {
@@ -2394,13 +2394,13 @@ void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
     if (unk_1e == 0x12) {
         switch (r) {
         case 0:
-            func_0203cb80(0);
+            PlayerOptions_SetHiragana(0);
             break;
         case 1:
-            func_0203cb80(1);
+            PlayerOptions_SetHiragana(1);
             break;
         }
-        func_0203ca94();
+        PlayerOptions_Commit();
     }
 }
 
@@ -2478,13 +2478,13 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     name = (void *)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     g = PlayerData_GetCurrent();
     h = Unk_02097ff4_getBankAccount(g);
-    s32 pos = func_02097404(h);
-    u8 v = func_020973e8(h) + 0x1f;
+    s32 pos = Donation_GetTotal(h);
+    u8 v = PlayerBank_GetDonationLevel(h) + 0x1f;
     s32 i;
     for (i = 1; i < 0x15; i++) {
         s32 t = sSpNpcPellyPhyllisDonationLevels[i];
         if (pos >= t && pos < sSpNpcPellyPhyllisDonationLevels[i + 1]) {
-            func_020973e4(h, i);
+            PlayerBank_SetDonationLevel(h, i);
             if (unk_c0 < t) {
                 Unk_02097ff4_setFlag(g, 0x16);
                 v = i + 0x1f;

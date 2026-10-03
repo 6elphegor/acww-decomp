@@ -64,13 +64,13 @@ struct Unk_021ede90 {
     u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
 };
 
-class Unk_020abea8 {
+class ObjShadowStrip {
 public:
-    void func_020abea8(s32 heap);
-    void func_020abed4(Vec3 *pos);
-    BOOL func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
-    Unk_020abea8();
-    ~Unk_020abea8();
+    void release(s32 heap);
+    void draw(Vec3 *pos);
+    BOOL build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
+    ObjShadowStrip();
+    ~ObjShadowStrip();
 
     /* 0x00 */ Vec3 unk_00;
     /* 0x0c */ s32 unk_0c;
@@ -132,31 +132,31 @@ u32 _ZN12G3dResAccess11findPlttIdxEi(u8 *base, char *name);
 extern s32 gCamera;
 extern Vec3 gCameraLookAt;
 extern u8 gViewMtx[];
-void func_020ac724(void *a, void *b);
-u8 func_020ac2e8(Vec3 *p, s32 q, u8 c);
-u8 func_020ac2c8(Vec3 *p, s32 q);
-u8 func_020ac2d8(Vec3 *p, s32 q);
+void ObjShadow_NormalizeAxes(void *a, void *b);
+u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 c);
+u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q);
+u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q);
 }
 
 #define REG(a) (*(volatile u32 *)(a))
 
-extern const s32 data_020d0964;
-extern const Unk_020d094c data_020d094c[];
-extern char data_020e2dec[];
-extern char data_020e2df8[];
-extern char data_020e2e04[];
-extern u8 data_020e2de4;
-extern u8 data_020e2de8;
+extern const s32 sObjShadowCoordShift;
+extern const Unk_020d094c sObjShadowTexDefs[];
+extern char sObjShadowTexNameFc[];
+extern char sObjShadowTexNameTr[];
+extern char sObjShadowTexNameGr[];
+extern u8 sCharaShadowAlpha;
+extern u8 sObjShadowAlpha;
 
-extern s32 data_021edf44;
-extern u8 data_021edfbc[];
-extern u8 data_021edfe0[];
-extern Unk_020ac0c4_Entry data_021ee114[];
-extern Unk_020abea8 data_021ee078;
-extern Unk_020abea8 data_021ee0ac;
-extern Unk_020abea8 data_021ee0e0;
-extern Unk_020abea8 data_021ee010;
-extern Unk_020abea8 data_021ee044;
+extern s32 sObjShadowSkew;
+extern u8 sObjShadowNormMtx[];
+extern u8 sObjShadowViewMtx[];
+extern Unk_020ac0c4_Entry sObjShadowTextures[];
+extern ObjShadowStrip sTreeShadowStage2;
+extern ObjShadowStrip sTreeShadowStage3;
+extern ObjShadowStrip sTreeShadowStage4;
+extern ObjShadowStrip sRockShadow;
+extern ObjShadowStrip sSignShadow;
 
 struct Unk_020ac500_DictHdr {
     u16 sizeUnit;
@@ -200,18 +200,18 @@ struct Unk_020ac2e8_V : Vec3 {
     ~Unk_020ac2e8_V() {}
 };
 
-extern "C" void func_020ac724(void *a, void *b) {
+extern "C" void ObjShadow_NormalizeAxes(void *a, void *b) {
     VEC_Normalize(a, b);
     VEC_Normalize((u8 *)a + 12, (u8 *)b + 12);
     VEC_Normalize((u8 *)a + 24, (u8 *)b + 24);
 }
 
-extern "C" void func_020ac500(void *arg) {
+extern "C" void ObjShadow_Init(void *arg) {
     u32 *texData;
     s32 heap = gBgHeap;
     if (arg != 0) {
-        data_021edf44 = 0;
-        Unk_020ac0c4_Entry *e = data_021ee114;
+        sObjShadowSkew = 0;
+        Unk_020ac0c4_Entry *e = sObjShadowTextures;
         void *file = File_Load((void *)"/shadow/tex_shadow.nsbtx");
         u8 *res = NNS_G3dGetTex(file);
         Gfx3d_LoadTexAndPltt(res, 0);
@@ -219,14 +219,14 @@ extern "C" void func_020ac500(void *arg) {
         Mem_Free(file);
         u32 i;
         for (i = 0; i < 3; i++) {
-            char *name = data_020d094c[i].unk_00;
+            char *name = sObjShadowTexDefs[i].unk_00;
             char buf[36];
             func_020639e8(buf, "%s_pl", name);
             e->unk_00 = 0;
             e->unk_04 = 0;
             e->unk_08 = 0;
             e->unk_00 = res;
-            e->unk_14 = data_020d094c[i].unk_06;
+            e->unk_14 = sObjShadowTexDefs[i].unk_06;
             u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->unk_00, name);
             u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->unk_00, buf);
             Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->unk_00;
@@ -237,8 +237,8 @@ extern "C" void func_020ac500(void *arg) {
             u32 texKey = (u16)tex->texKey;
             e->unk_04 = texParam + texKey;
             e->unk_08 = plttOfs + plttKey;
-            e->unk_04 |= data_020d094c[i].unk_04 << 18;
-            e->unk_04 |= data_020d094c[i].unk_05 << 16;
+            e->unk_04 |= sObjShadowTexDefs[i].unk_04 << 18;
+            e->unk_04 |= sObjShadowTexDefs[i].unk_05 << 16;
             e->unk_10 = (*texData >> 26) & 7;
             if (e->unk_10 != 2) {
                 e->unk_08 >>= 1;
@@ -248,35 +248,35 @@ extern "C" void func_020ac500(void *arg) {
             e++;
         }
         static Vec3Z2 v;
-        data_021ee078.func_020ac0c4((Vec3 *)&v, 0x119a, 0x119a, 2, 0x2000, 0, heap);
-        data_021ee0ac.func_020ac0c4((Vec3 *)&v, 0x1666, 0x1666, 2, 0x2000, 0, heap);
-        data_021ee0e0.func_020ac0c4((Vec3 *)&v, 0x2000, 0x2000, 2, 0x2000, 0, heap);
-        data_021ee010.func_020ac0c4((Vec3 *)&v, 0x1ccc, 0x1ccc, 0, 0, 0, heap);
-        data_021ee044.func_020ac0c4((Vec3 *)&v, 0x555, 0x1000, 0, 0, 0, heap);
+        sTreeShadowStage2.build((Vec3 *)&v, 0x119a, 0x119a, 2, 0x2000, 0, heap);
+        sTreeShadowStage3.build((Vec3 *)&v, 0x1666, 0x1666, 2, 0x2000, 0, heap);
+        sTreeShadowStage4.build((Vec3 *)&v, 0x2000, 0x2000, 2, 0x2000, 0, heap);
+        sRockShadow.build((Vec3 *)&v, 0x1ccc, 0x1ccc, 0, 0, 0, heap);
+        sSignShadow.build((Vec3 *)&v, 0x555, 0x1000, 0, 0, 0, heap);
     }
 }
 
-char data_020e2dec[] = "obj_sdw_fc";
-Unk_020abea8 data_021ee078;
-Unk_020ac0c4_Entry data_021ee114[3];
-u8 data_020e2de8 = 0xe;
-Unk_020abea8 data_021ee0ac;
-Unk_020abea8 data_021ee0e0;
-Unk_020abea8 data_021ee010;
-Unk_020abea8 data_021ee044;
+char sObjShadowTexNameFc[] = "obj_sdw_fc";
+ObjShadowStrip sTreeShadowStage2;
+Unk_020ac0c4_Entry sObjShadowTextures[3];
+u8 sObjShadowAlpha = 0xe;
+ObjShadowStrip sTreeShadowStage3;
+ObjShadowStrip sTreeShadowStage4;
+ObjShadowStrip sRockShadow;
+ObjShadowStrip sSignShadow;
 
-extern "C" void func_020ac40c() {
+extern "C" void ObjShadow_Update() {
     struct {
         u8 a, b;
     } t;
     Clock_GetMinuteHour(&t);
     s32 x = (t.a + ((t.b + 6) % 12) * 60) << 12;
     x = FX_Div(x, 0x2d0000);
-    data_021edf44 = func_01ffcb0c((x - 0x800) << 1, 0x1000);
+    sObjShadowSkew = func_01ffcb0c((x - 0x800) << 1, 0x1000);
     func_020e8388(data_021f47e0, 0, 0, 0);
     func_020e84f8(data_021f47e0, 0x20000, 0x20000, 0x20000);
-    MTX_Concat43(data_021f47e0, gViewMtx, data_021edfe0);
-    func_020ac724(data_021edfe0, data_021edfbc);
+    MTX_Concat43(data_021f47e0, gViewMtx, sObjShadowViewMtx);
+    ObjShadow_NormalizeAxes(sObjShadowViewMtx, sObjShadowNormMtx);
     RGB c1 = SceneLights_GetFlashColor();
     u8 s = c1.b + (c1.r + c1.g);
     u8 r4 = func_01ffcb0c(0x10000, FX_Div(s << 12, 0x5d000)) >> 12;
@@ -285,27 +285,27 @@ extern "C" void func_020ac40c() {
     if (v > 0x1f) {
         v = 0x1f;
     }
-    data_020e2de8 = v;
-    data_020e2de4 = v;
+    sObjShadowAlpha = v;
+    sCharaShadowAlpha = v;
 }
 
-extern "C" void func_020ac3a4() {
-    data_021edf44 = 0;
-    Unk_020ac0c4_Entry *e = data_021ee114;
+extern "C" void ObjShadow_Exit() {
+    sObjShadowSkew = 0;
+    Unk_020ac0c4_Entry *e = sObjShadowTextures;
     u32 i;
     for (i = 0; i < 3; i++) {
         e->unk_00 = 0;
         e++;
     }
     s32 heap = gBgHeap;
-    data_021ee078.func_020abea8(heap);
-    data_021ee0ac.func_020abea8(heap);
-    data_021ee0e0.func_020abea8(heap);
-    data_021ee010.func_020abea8(heap);
-    data_021ee044.func_020abea8(heap);
+    sTreeShadowStage2.release(heap);
+    sTreeShadowStage3.release(heap);
+    sTreeShadowStage4.release(heap);
+    sRockShadow.release(heap);
+    sSignShadow.release(heap);
 }
 
-extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
+extern "C" u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 r4) {
     if (gCamera != 0) {
         Unk_020ac2e8_V v;
         v.x = gCameraLookAt.x;
@@ -338,56 +338,56 @@ extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
     return r4;
 }
 
-char data_020e2df8[] = "obj_sdw_tr";
-const Unk_020d094c data_020d094c[3] = {
-    {data_020e2e04, 0, 1, 0x3d, 0},
-    {data_020e2dec, 0, 1, 0x3a, 0},
-    {data_020e2df8, 1, 1, 0x3a, 0},
+char sObjShadowTexNameTr[] = "obj_sdw_tr";
+const Unk_020d094c sObjShadowTexDefs[3] = {
+    {sObjShadowTexNameGr, 0, 1, 0x3d, 0},
+    {sObjShadowTexNameFc, 0, 1, 0x3a, 0},
+    {sObjShadowTexNameTr, 1, 1, 0x3a, 0},
 };
-char data_020e2e04[] = "obj_sdw_gr";
-s32 data_021edf44;
-u8 data_020e2de4 = 0x12;
-u8 data_021edfbc[0x24];
-u8 data_021edfe0[0x30];
+char sObjShadowTexNameGr[] = "obj_sdw_gr";
+s32 sObjShadowSkew;
+u8 sCharaShadowAlpha = 0x12;
+u8 sObjShadowNormMtx[0x24];
+u8 sObjShadowViewMtx[0x30];
 
-extern "C" u8 func_020ac2d8(Vec3 *p, s32 q) {
-    return func_020ac2e8(p, q, data_020e2de8);
+extern "C" u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q) {
+    return ObjShadow_CalcAlpha(p, q, sObjShadowAlpha);
 }
 
-extern "C" u8 func_020ac2c8(Vec3 *p, s32 q) {
-    return func_020ac2e8(p, q, data_020e2de4);
+extern "C" u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q) {
+    return ObjShadow_CalcAlpha(p, q, sCharaShadowAlpha);
 }
 
-extern "C" void func_020ac23c(Vec3 *p, u32 n) {
+extern "C" void ObjShadow_DrawTree(Vec3 *p, u32 n) {
     if (n >= 2) {
         static Vec3Z v;
         Vec3 out;
         func_01ffd070(&out, p, (Vec3 *)&v);
         if (n == 2) {
-            data_021ee078.func_020abed4(&out);
+            sTreeShadowStage2.draw(&out);
         } else if (n == 3) {
-            data_021ee0ac.func_020abed4(&out);
+            sTreeShadowStage3.draw(&out);
         } else if (n == 4) {
-            data_021ee0e0.func_020abed4(&out);
+            sTreeShadowStage4.draw(&out);
         }
     }
 }
 
-extern "C" void func_020ac22c(Vec3 *p) {
-    data_021ee010.func_020abed4(p);
+extern "C" void ObjShadow_DrawRock(Vec3 *p) {
+    sRockShadow.draw(p);
 }
 
-extern "C" void func_020ac1f8(Vec3 *p) {
+extern "C" void ObjShadow_DrawSign(Vec3 *p) {
     Vec3 local;
     Vec3 out;
     local.x = 0x166;
     local.y = 0;
     local.z = 0xc80;
     func_01ffd070(&out, p, &local);
-    data_021ee044.func_020abed4(&out);
+    sSignShadow.draw(&out);
 }
 
-Unk_020abea8::Unk_020abea8() {
+ObjShadowStrip::ObjShadowStrip() {
     unk_00.x = 0;
     unk_00.y = 0;
     unk_00.z = 0;
@@ -400,14 +400,14 @@ Unk_020abea8::Unk_020abea8() {
     unk_30 = 0;
 }
 
-Unk_020abea8::~Unk_020abea8() {}
+ObjShadowStrip::~ObjShadowStrip() {}
 
-BOOL Unk_020abea8::func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
+BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
     u32 i;
     if (heap == 0) {
         heap = gCurrentHeap;
     }
-    unk_30 = &data_021ee114[idx];
+    unk_30 = &sObjShadowTextures[idx];
     unk_00 = *pos;
     unk_0c = size >> 1;
     s32 v = unk_0c;
@@ -444,17 +444,17 @@ BOOL Unk_020abea8::func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a,
     return TRUE;
 }
 
-void Unk_020abea8::func_020abed4(Vec3 *pos) {
+void ObjShadowStrip::draw(Vec3 *pos) {
     Vec3 tmp;
     Col c0, c1;
     if (unk_30 != 0 && unk_30->unk_00 != 0) {
-        u8 lvl = func_020ac2d8(pos, unk_10);
+        u8 lvl = ObjShadow_GetObjAlpha(pos, unk_10);
         if (lvl > 1) {
             NNS_G3dGeFlushBuffer();
             REG(0x40004a8) = unk_30->unk_04;
             REG(0x40004ac) = unk_30->unk_08;
             REG(0x4000440) = 1;
-            G3_LoadMtx43(data_021edfe0);
+            G3_LoadMtx43(sObjShadowViewMtx);
             REG(0x40004a4) = (lvl << 16) | ((unk_30->unk_14 << 24) | 0x8080);
             s32 *p7 = unk_1c;
             s32 *p28 = unk_28;
@@ -463,7 +463,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
             s32 e1 = unk_1c[1];
             u32 i = 0;
             s32 lo, hi, neg;
-            s32 shift = data_020d0964;
+            s32 shift = sObjShadowCoordShift;
             s32 z1 = i;
             s32 z2 = i;
             for (; i < unk_14; i++) {
@@ -473,7 +473,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
                 } else {
                     v = *p7;
                 }
-                s32 t = func_01ffcb0c(data_021edf44, v);
+                s32 t = func_01ffcb0c(sObjShadowSkew, v);
                 lo = t + (pos->x - unk_0c);
                 hi = t + (pos->x + unk_0c);
                 if (pos->z != unk_18) {
@@ -509,7 +509,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
     }
 }
 
-void Unk_020abea8::func_020abea8(s32 heap) {
+void ObjShadowStrip::release(s32 heap) {
     if (heap == 0) {
         heap = gCurrentHeap;
     }

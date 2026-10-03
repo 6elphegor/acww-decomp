@@ -89,7 +89,7 @@ void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z);
 }
 
 extern "C" {
-BOOL func_0204f0f4(u8 v);
+BOOL FishTable_IsLateMonth(u8 v);
 }
 
 extern "C" {
@@ -177,15 +177,15 @@ void Clock_GetMinuteHour(void *p);
 }
 
 extern "C" {
-u8 func_0204f084(u8 r);
+u8 FishTable_GetPeriod(u8 r);
 }
 
 extern "C" {
-u32 func_0204f100(u32 r);
+u32 FishTable_GetHourSlot(u32 r);
 }
 
 extern "C" {
-void func_0204f178(void *a, void *b, s32 c, u32 d, u32 e);
+void FishTable_Pick(void *a, void *b, s32 c, u32 d, u32 e);
 }
 
 extern "C" {
@@ -204,10 +204,10 @@ extern "C" {
 void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
 }
 // prototypes
-extern "C" u32 func_0204f100(u32 r);
-extern "C" BOOL func_0204f0f4(u8 v);
-extern "C" u8 func_0204f084(u8 x);
-extern "C" s32 func_0204f060(s32 r);
+extern "C" u32 FishTable_GetHourSlot(u32 r);
+extern "C" BOOL FishTable_IsLateMonth(u8 v);
+extern "C" u8 FishTable_GetPeriod(u8 x);
+extern "C" s32 Fish_GetWaterKind(s32 r);
 extern "C" void OverlayMgr_GetInfo(void *p, u32 id);
 extern "C" void OverlayMgr_LoadOverlay(u32 id);
 extern "C" void OverlayMgr_UnloadOverlay(u32 id);
@@ -218,7 +218,7 @@ extern "C" void OverlayMgr_Release(u32 id);
 extern "C" void OverlayMgr_Init();
 
 
-extern "C" u32 func_0204f100(u32 r) {
+extern "C" u32 FishTable_GetHourSlot(u32 r) {
     u32 v = 0;
     if ((r >= 4 && r < 9) || (r >= 16 && r < 21)) {
         v = 0;
@@ -231,28 +231,28 @@ extern "C" u32 func_0204f100(u32 r) {
     return v;
 }
 
-extern "C" BOOL func_0204f0f4(u8 v) {
+extern "C" BOOL FishTable_IsLateMonth(u8 v) {
     if (v > 15) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u8 func_0204f084(u8 x) {
+extern "C" u8 FishTable_GetPeriod(u8 x) {
     u8 t[4];
     if (x >= 1 && x <= 7) {
         return x;
     }
     if (x == 8) {
         Clock_GetDayMonth(&t[0]);
-        if (func_0204f0f4(t[0]) != 0) {
+        if (FishTable_IsLateMonth(t[0]) != 0) {
             x = x + 1;
         }
         return x;
     }
     if (x == 9) {
         Clock_GetDayMonth(&t[2]);
-        if (func_0204f0f4(t[2]) == 0) {
+        if (FishTable_IsLateMonth(t[2]) == 0) {
             return x + 1;
         }
         return x + 2;
@@ -263,7 +263,7 @@ extern "C" u8 func_0204f084(u8 x) {
     return 1;
 }
 
-extern "C" s32 func_0204f060(s32 r) {
+extern "C" s32 Fish_GetWaterKind(s32 r) {
     if (r < 0 || r >= 0x38) {
         return 0;
     }

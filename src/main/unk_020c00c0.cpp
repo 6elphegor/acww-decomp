@@ -333,7 +333,7 @@ extern u8 gScreenTransition;
 }
 
 extern "C" {
-extern Unk_020bfe30_Vec data_020d1c8c;
+extern Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
 }
 
 extern "C" {

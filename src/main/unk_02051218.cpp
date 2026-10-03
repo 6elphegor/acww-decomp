@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-extern u8 data_021c4d4c[0xe0];
+extern u8 sTextCharWidths[0xe0];
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 gFieldSceneKind;
@@ -35,7 +35,7 @@ void func_02060244(void *p, s32 a, s32 b);
 void *BlockMap_GetForArea(s32 a);
 s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 
-u32 func_02051370(u32 c);
+u32 Text_GetCharWidth(u32 c);
 u32 SpotSync_GetReserveResult();
 void SpotSync_RequestReserve(s32 *p);
 void SpotSync_Release(void *p);
@@ -45,21 +45,21 @@ void FtrSync_ApplyRoomLight(s32 a, s32 b);
 
 }
 
-extern "C" void func_0205149c(s32 *p) { SpotSync_RequestReserve(p); }
+extern "C" void BedSpot_RequestApproach(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051494() { return SpotSync_GetReserveResult(); }
+extern "C" u32 BedSpot_GetApproachResult() { return SpotSync_GetReserveResult(); }
 
-extern "C" void func_0205148c(s32 *p) { SpotSync_RequestReserve(p); }
+extern "C" void BedSpot_RequestGetOut(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051484() { return SpotSync_GetReserveResult(); }
+extern "C" u32 BedSpot_GetGetOutResult() { return SpotSync_GetReserveResult(); }
 
-extern "C" void func_02051478() { SpotSync_Release(0); }
+extern "C" void BedSpot_Release() { SpotSync_Release(0); }
 
-extern "C" void func_02051470(s32 *p) { SpotSync_RequestReserve(p); }
+extern "C" void BedSpot_RequestRoll(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051468() { return SpotSync_GetReserveResult(); }
+extern "C" u32 BedSpot_GetRollResult() { return SpotSync_GetReserveResult(); }
 
-extern "C" BOOL func_020513b0(s32 x, s32 y) {
+extern "C" BOOL Room_CanDropOnFurnitureAt(s32 x, s32 y) {
     BOOL r;
     if (gFieldSceneKind == 1 ? TRUE : FALSE) {
         void *p = gSceneBlockMap;
@@ -86,29 +86,29 @@ extern "C" BOOL func_020513b0(s32 x, s32 y) {
     return FALSE;
 }
 
-extern "C" void func_0205137c() {
+extern "C" void Text_BuildCharWidthTable() {
     s32 i;
     u8 buf[12];
     for (i = 0; (u32)i < 0xe0; i++) {
         buf[Msg_DecodeGameChar(buf, (u8)i)] = 0;
-        data_021c4d4c[i] = Msg_MeasureWidth(buf);
+        sTextCharWidths[i] = Msg_MeasureWidth(buf);
     }
 }
 
-extern "C" u32 func_02051370(u32 c) {
-    return data_021c4d4c[c];
+extern "C" u32 Text_GetCharWidth(u32 c) {
+    return sTextCharWidths[c];
 }
 
-extern "C" s32 func_02051348(const u8 *p, s32 n) {
+extern "C" s32 Text_MeasureWidth(const u8 *p, s32 n) {
     s32 sum = 0;
     s32 i;
     for (i = 0; i < n; i++) {
-        sum += func_02051370(p[i]);
+        sum += Text_GetCharWidth(p[i]);
     }
     return sum;
 }
 
-extern "C" s32 func_02051320(const u8 *p, s32 n, s32 k) {
+extern "C" s32 Text_GetLineEnd(const u8 *p, s32 n, s32 k) {
     s32 i;
     for (i = 0; i < n; i++) {
         u8 c = p[i];
@@ -122,7 +122,7 @@ extern "C" s32 func_02051320(const u8 *p, s32 n, s32 k) {
     return i;
 }
 
-extern "C" s32 func_020512f8(const u8 *str, s32 len) {
+extern "C" s32 Text_GetTrimmedLength(const u8 *str, s32 len) {
     s32 i;
     s32 last = 0;
     for (i = 0; i < len; i++) {
@@ -137,7 +137,7 @@ extern "C" s32 func_020512f8(const u8 *str, s32 len) {
     return last;
 }
 
-extern "C" s32 func_020512e0(const u8 *str, s32 len) {
+extern "C" s32 Text_GetLength(const u8 *str, s32 len) {
     s32 i;
     for (i = 0; i < len; i++) {
         if (str[i] == 0) {
@@ -147,12 +147,12 @@ extern "C" s32 func_020512e0(const u8 *str, s32 len) {
     return i;
 }
 
-extern "C" s32 func_02051270(const u8 *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4) {
+extern "C" s32 Text_FitToWidth(const u8 *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4) {
     s32 width = 0;
     s32 i;
-    s32 n = func_02051320(str, maxLen, arg4);
+    s32 n = Text_GetLineEnd(str, maxLen, arg4);
     for (i = 0; i < n; i++) {
-        width += func_02051370(str[i]);
+        width += Text_GetCharWidth(str[i]);
         if (width > maxWidth) {
             *outLen = i;
             return 1;
@@ -182,10 +182,10 @@ extern "C" void Mem_Clear(void *dst, u32 size) {
     MI_CpuFill8(dst, 0, size);
 }
 
-extern "C" BOOL func_02051218(const u8 *a, const u8 *b, s32 len) {
-    s32 n = func_020512f8(a, len);
+extern "C" BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len) {
+    s32 n = Text_GetTrimmedLength(a, len);
     s32 i;
-    if (n != func_020512f8(b, len)) {
+    if (n != Text_GetTrimmedLength(b, len)) {
         return FALSE;
     }
     for (i = 0; i < n; i++) {
@@ -196,4 +196,4 @@ extern "C" BOOL func_02051218(const u8 *a, const u8 *b, s32 len) {
     return TRUE;
 }
 
-u8 data_021c4d4c[0xe0];
+u8 sTextCharWidths[0xe0];

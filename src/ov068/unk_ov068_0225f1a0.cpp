@@ -11,12 +11,12 @@
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
-#define X_func_ov068_0225f6b0 _ZN17FieldVillagerLook19func_ov068_0225f6b0Ev
+#define X_func_ov068_0225f6b0 _ZN17FieldVillagerLook9constructEv
 #define X_func_ov068_0225f838 _ZN20FieldVillagerFxTimer12setHoldCountEj
 #define X_func_ov068_0225f83c _ZN20FieldVillagerFxTimer12getHoldCountEv
 #define X_func_ov068_0225f840 _ZN20FieldVillagerFxTimer4stopEP13FieldVillager
 #define X_func_ov068_0225f8f0 _ZN20FieldVillagerFxTimer5clearEv
-#define X_func_ov068_0225f900 _ZN20FieldVillagerFxTimer19func_ov068_0225f900Ev
+#define X_func_ov068_0225f900 _ZN20FieldVillagerFxTimer9constructEv
 #define X_func_ov068_0226581c _ZN15FieldVillagerAi6initAiEv
 #define X_func_ov068_02265dc8 _ZN13FieldVillager14chooseActivityEv
 #define X_func_ov068_02265e6c _ZN13FieldVillager16updateStareTimerEv
@@ -116,7 +116,7 @@
 #define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define Character_clearTalkStartMode _ZN9Character18clearTalkStartModeEv
-#define func_0203e450 _ZN9Character13func_0203e450Ev
+#define Character_setTalkStartMode0 _ZN9Character17setTalkStartMode0Ev
 #define Character_isInFacingArcOf _ZN9Character15isInFacingArcOfEPS_ss
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -142,9 +142,9 @@
 #define MsgString_equals _ZN9MsgString6equalsEPS_
 class FieldVillager;
 class Unk_ov068_Owner;
-class Unk_ov068_02263a40;
+class FieldVillagerAiLeaveHouse;
 class FieldVillagerAi;
-typedef void (Unk_ov068_02263a40::*Unk_ov068_02263b90_Fn)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiLeaveHouse::*Unk_ov068_02263b90_Fn)(Unk_ov068_Owner *);
 typedef void (FieldVillagerAi::*Unk_ov068_0225f1a0_Fn)(FieldVillager *);
 typedef BOOL (FieldVillager::*Unk_ov068_0226fb80_Fn)();
 class ProcBase {
@@ -209,23 +209,23 @@ struct Unk_ov068_0225f1a0_Ent {
 class FieldVillagerLook {
 public:
     void update(FieldVillager *o);
-    void func_ov068_0225f328(FieldVillager *o);
-    void func_ov068_0225f384(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
-    BOOL func_ov068_0225f3c0(s32 a, s32 b);
-    s32 func_ov068_0225f3e4(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
-    BOOL func_ov068_0225f430(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
-    void func_ov068_0225f460(FieldVillager *o);
-    void func_ov068_0225f4c4(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
-    BOOL func_ov068_0225f4fc(u32 a, s32 b);
-    s32 func_ov068_0225f52c(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
-    s32 func_ov068_0225f56c(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    void trackFish(FieldVillager *o);
+    void startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
+    BOOL isSameFish(s32 a, s32 b);
+    s32 findFishNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    BOOL getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    void trackInsect(FieldVillager *o);
+    void startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
+    BOOL isSameInsect(u32 a, s32 b);
+    s32 findInsectNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    s32 getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
     void setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e);
     void tickLookTime();
     void setLookModeLocked(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e);
     void resetLook(FieldVillager *o);
     void init(FieldVillager *o);
     ~FieldVillagerLook();
-    void func_ov068_0225f6b0();
+    void construct();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -247,7 +247,7 @@ public:
     void update(FieldVillager *o);
     void clear();
     ~FieldVillagerFxTimer();
-    void func_ov068_0225f900();
+    void construct();
 
     /* 0x00 */ s8 unk_00;
     /* 0x01 */ u8 pad_01;
@@ -381,15 +381,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual BOOL vfunc_60(u16 *p);
+    virtual BOOL onToolHit(u16 *p);
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -413,8 +413,8 @@ public:
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void addMood(u32 a, s32 b);
@@ -460,10 +460,10 @@ public:
 class FieldVillager : public VillagerActor {
 public:
     inline FieldVillager() {
-        unk_894.func_ov068_0225f6b0();
+        unk_894.construct();
         unk_8b4.initAi();
         HeldToolModel_init(&unk_9b0);
-        unk_9f0.func_ov068_0225f900();
+        unk_9f0.construct();
     }
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -472,7 +472,7 @@ public:
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual void acceptsInteractionOutOfRange(void *p);
-    virtual BOOL vfunc_60(u16 *p);
+    virtual BOOL onToolHit(u16 *p);
     virtual BOOL updateAct();
     virtual void onJoinTalk();
     virtual void onLeaveTalk();
@@ -559,7 +559,7 @@ public:
     virtual s32 vfunc_bc();
 };
 
-class Unk_ov068_0225fd54 {
+class FieldVillagerAiStates {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
@@ -585,47 +585,47 @@ public:
     /* 0xf4 */ u32 unk_f4;
     /* 0xf8 */ u32 unk_f8;
 
-    s32 func_ov068_0225fd54(Unk_ov068_Owner *o);
-    void func_ov068_0225fdc0(Unk_ov068_Owner *o);
-    void func_ov068_0225fe28(Unk_ov068_Owner *o);
-    BOOL func_ov068_0225fe70(Unk_ov068_Owner *o);
-    s32 func_ov068_0225ff18(Unk_ov068_Owner *o);
-    void func_ov068_0225ff84(Unk_ov068_Owner *o);
-    void func_ov068_0225ff88(Unk_ov068_Owner *o);
-    BOOL func_ov068_0225fff4(Unk_ov068_Owner *o);
-    s32 func_ov068_02260068(Unk_ov068_Owner *o);
-    void func_ov068_022600e4(Unk_ov068_Owner *o);
-    void func_ov068_022600e8(Unk_ov068_Owner *o);
-    void func_ov068_02260160(Unk_ov068_Owner *o);
-    BOOL func_ov068_022601f0(Unk_ov068_Owner *o);
-    s32 func_ov068_02260290(Unk_ov068_Owner *o);
-    void func_ov068_022602fc(Unk_ov068_Owner *o);
-    void func_ov068_02260324(Unk_ov068_Owner *o);
-    BOOL func_ov068_02260374(Unk_ov068_Owner *o);
-    s32 func_ov068_02260450(Unk_ov068_Owner *o);
-    void func_ov068_022604cc(Unk_ov068_Owner *o);
-    void func_ov068_022604fc(Unk_ov068_Owner *o);
-    void func_ov068_0226054c(Unk_ov068_Owner *o);
-    BOOL func_ov068_022605f4(Unk_ov068_Owner *o);
-    s32 func_ov068_0226071c(Unk_ov068_Owner *o);
-    BOOL func_ov068_02260780(Unk_ov068_Owner *o);
-    s32 func_ov068_02260944(Unk_ov068_Owner *o);
-    void func_ov068_022609e0(Unk_ov068_Owner *o);
-    void func_ov068_02260a64(Unk_ov068_Owner *o);
-    void func_ov068_02260c14(Unk_ov068_Owner *o);
-    void func_ov068_02260cdc(Unk_ov068_Owner *o);
-    void func_ov068_02260dcc(Unk_ov068_Owner *o);
-    BOOL func_ov068_02260ed4(Unk_ov068_Owner *o);
-    BOOL func_ov068_02264008(Unk_ov068_Owner *o);
-    s32 func_ov068_0226410c(Unk_ov068_Owner *o);
-    void func_ov068_02264188(Unk_ov068_Owner *o);
-    void func_ov068_0226424c(Unk_ov068_Owner *o);
-    void func_ov068_022642c4(Unk_ov068_Owner *o);
-    BOOL func_ov068_0226433c(Unk_ov068_Owner *o);
-    BOOL func_ov068_022643d0(Unk_ov068_Owner *o);
-    BOOL func_ov068_022644fc(Unk_ov068_Owner *o);
-    BOOL func_ov068_022645dc(Unk_ov068_Owner *o);
-    BOOL func_ov068_022648bc(Unk_ov068_Owner *o);
+    s32 execAdmireCatch(Unk_ov068_Owner *o);
+    void admireCatchStep1(Unk_ov068_Owner *o);
+    void admireCatchStep0(Unk_ov068_Owner *o);
+    BOOL enterAdmireCatch(Unk_ov068_Owner *o);
+    s32 execPushTalk(Unk_ov068_Owner *o);
+    void pushTalkStep1(Unk_ov068_Owner *o);
+    void pushTalkStep0(Unk_ov068_Owner *o);
+    BOOL enterPushTalk(Unk_ov068_Owner *o);
+    s32 execHitTalk(Unk_ov068_Owner *o);
+    void hitTalkStep2(Unk_ov068_Owner *o);
+    void hitTalkStep1(Unk_ov068_Owner *o);
+    void hitTalkStep0(Unk_ov068_Owner *o);
+    BOOL enterHitTalk(Unk_ov068_Owner *o);
+    s32 execPushed(Unk_ov068_Owner *o);
+    void pushedStep1(Unk_ov068_Owner *o);
+    void pushedStep0(Unk_ov068_Owner *o);
+    BOOL enterPushed(Unk_ov068_Owner *o);
+    s32 execHitByNet(Unk_ov068_Owner *o);
+    void hitByNetStep2(Unk_ov068_Owner *o);
+    void hitByNetStep1(Unk_ov068_Owner *o);
+    void hitByNetStep0(Unk_ov068_Owner *o);
+    BOOL enterHitByNet(Unk_ov068_Owner *o);
+    s32 execPitfallClimbOut(Unk_ov068_Owner *o);
+    BOOL enterPitfallClimbOut(Unk_ov068_Owner *o);
+    s32 execPitfall(Unk_ov068_Owner *o);
+    void pitfallStep4(Unk_ov068_Owner *o);
+    void pitfallStep3(Unk_ov068_Owner *o);
+    void pitfallStep2(Unk_ov068_Owner *o);
+    void pitfallStep1(Unk_ov068_Owner *o);
+    void pitfallStep0(Unk_ov068_Owner *o);
+    BOOL enterPitfall(Unk_ov068_Owner *o);
+    BOOL enterInHouse(Unk_ov068_Owner *o);
+    s32 execGoInHouse(Unk_ov068_Owner *o);
+    void goInHouseStep2(Unk_ov068_Owner *o);
+    void goInHouseStep1(Unk_ov068_Owner *o);
+    void goInHouseStep0(Unk_ov068_Owner *o);
+    BOOL enterGoInHouse(Unk_ov068_Owner *o);
+    BOOL execOffscreen(Unk_ov068_Owner *o);
+    BOOL enterOffscreen(Unk_ov068_Owner *o);
+    BOOL execWander(Unk_ov068_Owner *o);
+    BOOL checkWanderEvents(Unk_ov068_Owner *o);
 };
 
 struct Unk_ov068_02260780_Vec {
@@ -657,48 +657,48 @@ struct Unk_ov068_02261644_V3 {
     }
 };
 
-class Unk_ov068_02260f90 {
+class FieldVillagerAiPutAway {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
     /* 0x1d */ u8 pad_1d[3];
     /* 0x20 */ s32 unk_20;
 
-    s32 func_ov068_02260f90(Unk_ov068_Owner *o);
-    void func_ov068_02260ffc(Unk_ov068_Owner *o);
-    void func_ov068_02261084(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261118(Unk_ov068_Owner *o);
+    s32 execPutAwayItem(Unk_ov068_Owner *o);
+    void putAwayItemStep1(Unk_ov068_Owner *o);
+    void putAwayItemStep0(Unk_ov068_Owner *o);
+    BOOL enterPutAwayItem(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02261290 {
+class FieldVillagerAiTakeOut {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
 
-    s32 func_ov068_02261290(Unk_ov068_Owner *o);
-    void func_ov068_022612fc(Unk_ov068_Owner *o);
-    void func_ov068_02261394(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261444(Unk_ov068_Owner *o);
+    s32 execTakeOutItem(Unk_ov068_Owner *o);
+    void takeOutItemStep1(Unk_ov068_Owner *o);
+    void takeOutItemStep0(Unk_ov068_Owner *o);
+    BOOL enterTakeOutItem(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02261574 {
+class FieldVillagerAiBirthdayInvite {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
     /* 0x1d */ u8 pad_1d[3];
     /* 0x20 */ s32 unk_20;
 
-    s32 func_ov068_02261574(Unk_ov068_Owner *o);
-    void func_ov068_022615f0(Unk_ov068_Owner *o);
-    void func_ov068_02261644(Unk_ov068_Owner *o);
-    void func_ov068_022616c4(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261714(Unk_ov068_Owner *o);
+    s32 execBirthdayInvite(Unk_ov068_Owner *o);
+    void birthdayInviteStep2(Unk_ov068_Owner *o);
+    void birthdayInviteStep1(Unk_ov068_Owner *o);
+    void birthdayInviteStep0(Unk_ov068_Owner *o);
+    BOOL enterBirthdayInvite(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_0226179c {
+class FieldVillagerAiBirthdayWait {
 public:
-    s32 func_ov068_0226179c(Unk_ov068_Owner *o);
-    BOOL func_ov068_022617b8(Unk_ov068_Owner *o);
+    s32 execBirthdayWait(Unk_ov068_Owner *o);
+    BOOL enterBirthdayWait(Unk_ov068_Owner *o);
 };
 
 struct Unk_ov068_02261cd4_Vec {
@@ -724,7 +724,7 @@ struct Unk_ov068_02262044_Vec {
     s32 x, y, z;
 };
 
-class Unk_ov068_02261900 {
+class FieldVillagerAiPlayerStates {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
@@ -737,38 +737,38 @@ public:
     /* 0xf0 */ s32 unk_f0;
     /* 0xf4 */ u32 unk_f4;
 
-    s32 func_ov068_02261900(Unk_ov068_Owner *o);
-    void func_ov068_0226196c(Unk_ov068_Owner *o);
-    void func_ov068_022619e8(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261a2c(Unk_ov068_Owner *o);
-    s32 func_ov068_02261ab4(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261ab8(Unk_ov068_Owner *o);
-    s32 func_ov068_02261ae8(Unk_ov068_Owner *o);
-    void func_ov068_02261b4c(Unk_ov068_Owner *o);
-    BOOL func_ov068_02261b90(Unk_ov068_Owner *o);
-    s32 func_ov068_02261c38(Unk_ov068_Owner *o);
-    void func_ov068_02261cd4(Unk_ov068_Owner *o);
-    void func_ov068_02261db0(Unk_ov068_Owner *o);
-    void func_ov068_02261e10(Unk_ov068_Owner *o);
-    void func_ov068_02261f08(Unk_ov068_Owner *o);
-    void func_ov068_02262044(Unk_ov068_Owner *o);
-    BOOL func_ov068_0226218c(Unk_ov068_Owner *o, s32 r);
-    BOOL func_ov068_022621d4(Unk_ov068_Owner *o);
-    BOOL func_ov068_022621fc(Unk_ov068_Owner *o);
+    s32 execFleaRemoved(Unk_ov068_Owner *o);
+    void fleaRemovedStep1(Unk_ov068_Owner *o);
+    void fleaRemovedStep0(Unk_ov068_Owner *o);
+    BOOL enterFleaRemoved(Unk_ov068_Owner *o);
+    s32 execJoinTalk(Unk_ov068_Owner *o);
+    BOOL enterJoinTalk(Unk_ov068_Owner *o);
+    s32 execFaceTalker(Unk_ov068_Owner *o);
+    void faceTalkerStep0(Unk_ov068_Owner *o);
+    BOOL enterFaceTalker(Unk_ov068_Owner *o);
+    s32 execApproach(Unk_ov068_Owner *o);
+    void approachStep4(Unk_ov068_Owner *o);
+    void approachStep3(Unk_ov068_Owner *o);
+    void approachStep2(Unk_ov068_Owner *o);
+    void approachStep1(Unk_ov068_Owner *o);
+    void approachStep0(Unk_ov068_Owner *o);
+    BOOL isTargetInFront(Unk_ov068_Owner *o, s32 r);
+    BOOL isNearApproachStart(Unk_ov068_Owner *o);
+    BOOL enterApproach(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02262294 {
+class FieldVillagerAiReaction {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
 
-    void func_ov068_02262300(Unk_ov068_Owner *o);
-    void func_ov068_02262304(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262338(Unk_ov068_Owner *o);
-    s32 func_ov068_02262294(Unk_ov068_Owner *o);
+    void reactionStep1(Unk_ov068_Owner *o);
+    void reactionStep0(Unk_ov068_Owner *o);
+    BOOL enterReaction(Unk_ov068_Owner *o);
+    s32 execReaction(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02262414 {
+class FieldVillagerAiChat {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
@@ -794,25 +794,25 @@ public:
     /* 0xf4 */ u32 unk_f4;
     /* 0xf8 */ u32 unk_f8;
 
-    s32 func_ov068_02262414(Unk_ov068_Owner *o);
-    void func_ov068_022624a4(Unk_ov068_Owner *o);
-    void func_ov068_022624f8(Unk_ov068_Owner *o);
-    void func_ov068_02262548(Unk_ov068_Owner *o);
-    void func_ov068_02262648(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262994(Unk_ov068_Owner *o, s32 v);
-    BOOL func_ov068_022629e0(Unk_ov068_Owner *o, s32 v);
-    s32 func_ov068_02262a58(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262a9c(Unk_ov068_Owner *o);
-    void func_ov068_02262ad4(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262b78(Unk_ov068_Owner *o);
+    s32 execChat(Unk_ov068_Owner *o);
+    void chatStep3(Unk_ov068_Owner *o);
+    void chatStep2(Unk_ov068_Owner *o);
+    void pickChatOutcome(Unk_ov068_Owner *o);
+    void chatStep1(Unk_ov068_Owner *o);
+    BOOL isEnemyPairWithPlayerNear(Unk_ov068_Owner *o, s32 v);
+    BOOL isStrangerPlayerNear(Unk_ov068_Owner *o, s32 v);
+    s32 getPlayerDistance(Unk_ov068_Owner *o);
+    BOOL isPartnerNear(Unk_ov068_Owner *o);
+    void chatStep0(Unk_ov068_Owner *o);
+    BOOL enterChat(Unk_ov068_Owner *o);
     // out-of-range
-    BOOL func_ov068_02262c20(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262da0(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262e5c(Unk_ov068_Owner *o);
-    BOOL func_ov068_02262fd8(Unk_ov068_Owner *o);
-    BOOL func_ov068_022632dc(Unk_ov068_Owner *o);
-    BOOL func_ov068_02263494(Unk_ov068_Owner *o);
-    BOOL func_ov068_02263518(Unk_ov068_Owner *o);
+    BOOL tryChatAdoptAblePattern(Unk_ov068_Owner *o);
+    BOOL tryChatRevertCatchphrase(Unk_ov068_Owner *o);
+    BOOL tryChatRevertClothes(Unk_ov068_Owner *o);
+    BOOL tryChatSpreadShirt(Unk_ov068_Owner *o);
+    BOOL tryChatSpreadCatchphrase(Unk_ov068_Owner *o);
+    BOOL tryChatNeutral(Unk_ov068_Owner *o);
+    BOOL tryChatMoodByRelation(Unk_ov068_Owner *o);
 };
 
 class EncodedString10 {
@@ -851,18 +851,18 @@ struct Unk_ov068_0226392c_V3 {
     s32 x, y, z;
 };
 
-class Unk_ov068_022638c0 {
+class FieldVillagerAiTalk {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
 
-    s32 func_ov068_022638c0(Unk_ov068_Owner *o);
-    void func_ov068_0226392c(Unk_ov068_Owner *o);
-    void func_ov068_02263930(Unk_ov068_Owner *o);
-    BOOL func_ov068_02263978(Unk_ov068_Owner *o);
+    s32 execTalk(Unk_ov068_Owner *o);
+    void talkStep1(Unk_ov068_Owner *o);
+    void talkStep0(Unk_ov068_Owner *o);
+    BOOL enterTalk(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02263a40 {
+class FieldVillagerAiLeaveHouse {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
@@ -871,24 +871,24 @@ public:
     /* 0x36 */ u8 pad_36[0xf8 - 0x36];
     /* 0xf8 */ s32 unk_f8;
 
-    s32 func_ov068_02263a40(Unk_ov068_Owner *o);
-    void func_ov068_02263aac(Unk_ov068_Owner *o);
-    void func_ov068_02263b90(Unk_ov068_Owner *o);
-    BOOL func_ov068_02263c20(Unk_ov068_Owner *o);
+    s32 execLeaveHouse(Unk_ov068_Owner *o);
+    void leaveHouseStep1(Unk_ov068_Owner *o);
+    void leaveHouseStep0(Unk_ov068_Owner *o);
+    BOOL enterLeaveHouse(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02263cf0 {
+class FieldVillagerAiAbsent {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
 
-    s32 func_ov068_02263cf0(Unk_ov068_Owner *o);
-    void func_ov068_02263d5c(Unk_ov068_Owner *o);
-    void func_ov068_02263d6c(Unk_ov068_Owner *o);
-    BOOL func_ov068_02263d74(Unk_ov068_Owner *o);
+    s32 execAbsent(Unk_ov068_Owner *o);
+    void absentStep1(Unk_ov068_Owner *o);
+    void absentStep0(Unk_ov068_Owner *o);
+    BOOL enterAbsent(Unk_ov068_Owner *o);
 };
 
-class Unk_ov068_02263e4c {
+class FieldVillagerAiInHouse {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 unk_1c;
@@ -914,9 +914,9 @@ public:
     /* 0xf4 */ u32 unk_f4;
     /* 0xf8 */ u32 unk_f8;
 
-    s32 func_ov068_02263e4c(Unk_ov068_Owner *o);
-    void func_ov068_02263eb8(Unk_ov068_Owner *o);
-    void func_ov068_02264000(Unk_ov068_Owner *o);
+    s32 execInHouse(Unk_ov068_Owner *o);
+    void inHouseStep1(Unk_ov068_Owner *o);
+    void inHouseStep0(Unk_ov068_Owner *o);
 };
 
 struct Unk_ov068_02264188_V3 {
@@ -1099,7 +1099,7 @@ s32 func_020e9650(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
-u32 func_ov068_0226594c(void *);
+u32 FieldVillager_GetMood(void *);
 s32 VillagerTalk_hasPartner(void *);
 s32 VillagerTalk_getEventKind(void *);
 void *VillagerTalk_getPartner(void *);
@@ -1112,8 +1112,8 @@ void FieldVillagerAi_StartCooldown(void *);
 void FieldVillagerAi_SaveResumeState(void *);
 s32 FieldVillagerAi_IsState(void *, s32);
 s32 FieldVillagerAi_IsFreeIdle(void *);
-s32 func_ov068_02265918(void *);
-void func_ov068_02265994(void *);
+s32 FieldVillager_GetTalkRepeat(void *);
+void FieldVillager_StopEmotion(void *);
 void *X_func_ov068_02265f58(void *);
 void *PlayerData_GetCurrent();
 s32 VillagerMemory_IsUsed(void *);
@@ -1132,7 +1132,7 @@ s32 VillagerStates_GetBirthdayHost();
 s32 Villager_GetIndex(void *);
 s32 TalkRepeat_StartWindow();
 void Villager_AddTalkUrge(void *, s32);
-s32 func_0203e450(void *);
+s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
@@ -1143,18 +1143,18 @@ void Effect_PlayById(s32, void *, s32, s32);
 
 namespace ns_0225fc60 {
 extern "C" {
-extern s16 data_ov068_02270c20;
+extern s16 sTalkFacingArc;
 extern s16 data_020c6cc0;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 func_ov068_0226594c(void *);
+s32 FieldVillager_GetMood(void *);
 s32 FieldVillagerAi_IsState(void *, s32);
-s32 func_ov068_02264a64(void *);
+s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
-s32 func_ov068_02263738(void *, void *, s32, s32, s32);
-void func_ov068_02265994(void *);
+s32 FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
+void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 VillagerActor_isFlag834(void *);
 void VillagerActor_clearFlag834(void *);
@@ -1179,7 +1179,7 @@ void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32,
 void VillagerMood_disableEffects(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
-void func_0203e450(void *);
+void Character_setTalkStartMode0(void *);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void Character_clearTalkStartMode(void *);
@@ -1188,39 +1188,39 @@ void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 }
 extern "C" BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(Unk_ov068_Owner *o, s32 x);
 extern "C" BOOL _ZN13FieldVillager8vfunc_48Ev(u8 *o);
-typedef void (Unk_ov068_0225fd54::*Fn_225fd54)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_225fd54)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_225fd54 data_ov068_02270d2c[2];
-extern u32 data_ov068_02270c48;
+extern Fn_225fd54 sAdmireCatchSteps[2];
+extern u32 sAdmireCatchStepsGuard;
 extern void *data_ov068_0226f938[2];
 extern void *data_ov068_0226f9f0[2];
 }
-typedef void (Unk_ov068_0225fd54::*Fn_225ff18)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_225ff18)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_225ff18 data_ov068_02270ccc[2];
-extern u32 data_ov068_02270c54;
+extern Fn_225ff18 sPushTalkSteps[2];
+extern u32 sPushTalkStepsGuard;
 extern void *data_ov068_0226fb30[2];
 extern void *data_ov068_0226f800[2];
 }
-typedef void (Unk_ov068_0225fd54::*Fn_2260068)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_2260068)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2260068 data_ov068_02270d84[3];
-extern u32 data_ov068_02270c60;
+extern Fn_2260068 sHitTalkSteps[3];
+extern u32 sHitTalkStepsGuard;
 extern void *data_ov068_0226f9b8[2];
 extern void *data_ov068_0226fa18[2];
 extern void *data_ov068_0226fa48[2];
 }
-typedef void (Unk_ov068_0225fd54::*Fn_2260290)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_2260290)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2260290 data_ov068_02270cfc[2];
-extern u32 data_ov068_02270c6c;
+extern Fn_2260290 sPushedSteps[2];
+extern u32 sPushedStepsGuard;
 extern void *data_ov068_0226f8a0[2];
 extern void *data_ov068_0226f908[2];
 }
-typedef void (Unk_ov068_0225fd54::*Fn_2260450)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_2260450)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2260450 data_ov068_02270d54[3];
-extern u32 data_ov068_02270c58;
+extern Fn_2260450 sHitByNetSteps[3];
+extern u32 sHitByNetStepsGuard;
 extern void *data_ov068_0226f810[2];
 extern void *data_ov068_0226f828[2];
 extern void *data_ov068_0226f850[2];
@@ -1233,7 +1233,7 @@ extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-void func_ov068_02265994(void *);
+void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldItemFx_StartPitfallClose(s32, void *);
@@ -1269,24 +1269,24 @@ void NpcAnimCtrl_playHoldItemPose(void *, void *, void *, s32, s32);
 s32 AnimFrameCtrl_isFinished(void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
 }
-extern "C" void func_ov068_02260e64(s32 *p, s32 target, s32 a, s32 spd, s32 min);
-typedef void (Unk_ov068_0225fd54::*Fn_226071c)(Unk_ov068_Owner *);
+extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
+typedef void (FieldVillagerAiStates::*Fn_226071c)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_226071c data_ov068_02270c84[1];
-extern u32 data_ov068_02270c38;
+extern Fn_226071c sPitfallClimbOutSteps[1];
+extern u32 sPitfallClimbOutStepsGuard;
 extern void *data_ov068_0226fa78[2];
 }
-typedef void (Unk_ov068_0225fd54::*Fn_2260944)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_2260944)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2260944 data_ov068_02270de4[5];
-extern u32 data_ov068_02270c2c;
+extern Fn_2260944 sPitfallSteps[5];
+extern u32 sPitfallStepsGuard;
 extern void *data_ov068_0226f9e0[2];
 extern void *data_ov068_0226fa10[2];
 extern void *data_ov068_0226fa30[2];
 extern void *data_ov068_0226fa40[2];
 extern void *data_ov068_0226fa58[2];
 }
-extern "C" void func_ov068_02260e64(s32 *p, s32 target, s32 a, s32 spd, s32 min);
+extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);
 }
 
 namespace ns_02260f90 {
@@ -1297,7 +1297,7 @@ extern u8 gVec3Zero[];
 extern void *gSceneBlockMap;
 s32 FieldVillagerAi_Resume(void *, void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-void func_ov068_02265994(void *);
+void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 Unk_02015b8c_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1344,24 +1344,24 @@ static inline BOOL Unk_ov068_02261118_InRange(volatile u16 *p) {
     }
     return r;
 }
-typedef void (Unk_ov068_02260f90::*Fn_2260f90)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiPutAway::*Fn_2260f90)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2260f90 data_ov068_02270d0c[2];
-extern u32 data_ov068_02270c64;
+extern Fn_2260f90 sPutAwayItemSteps[2];
+extern u32 sPutAwayItemStepsGuard;
 extern void *data_ov068_0226f978[2];
 extern void *data_ov068_0226f9a0[2];
 }
-typedef void (Unk_ov068_02261290::*Fn_2261290)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiTakeOut::*Fn_2261290)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2261290 data_ov068_02270cec[2];
-extern u32 data_ov068_02270c74;
+extern Fn_2261290 sTakeOutItemSteps[2];
+extern u32 sTakeOutItemStepsGuard;
 extern void *data_ov068_0226f8d8[2];
 extern void *data_ov068_0226f900[2];
 }
-typedef void (Unk_ov068_02261574::*Fn_2261574)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiBirthdayInvite::*Fn_2261574)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2261574 data_ov068_02270d6c[3];
-extern u32 data_ov068_02270c68;
+extern Fn_2261574 sBirthdayInviteSteps[3];
+extern u32 sBirthdayInviteStepsGuard;
 extern void *data_ov068_0226f860[2];
 extern void *data_ov068_0226f8d0[2];
 extern void *data_ov068_0226f880[2];
@@ -1370,17 +1370,17 @@ extern void *data_ov068_0226f880[2];
 
 namespace ns_02261900 {
 extern "C" {
-extern s16 data_ov068_0226f0e4;
-extern s16 data_ov068_02270c24;
+extern s16 sFieldVillagerPushLimit;
+extern s16 sSeePlayerArc;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern Unk_ov068_02262044_Ent data_ov068_0226f164[];
+extern Unk_ov068_02262044_Ent sApproachAnimFx[];
 s32 X_func_ov068_0225f83c(void *);
 void X_func_ov068_0225f838(...);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-s32 func_ov068_02264aa0(void *, void *);
-void func_ov068_02265994(void *);
+s32 FieldVillagerAi_WasHitByNet(void *, void *);
+void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1405,23 +1405,23 @@ void Villager_AddTalkUrge(s32, s32);
 void *PlayerActor_GetCharacter(s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 }
-typedef void (Unk_ov068_02261900::*Fn_2261900)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiPlayerStates::*Fn_2261900)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2261900 data_ov068_02270cbc[2];
-extern u32 data_ov068_02270c34;
+extern Fn_2261900 sFleaRemovedSteps[2];
+extern u32 sFleaRemovedStepsGuard;
 extern void *data_ov068_0226f920[2];
 extern void *data_ov068_0226f840[2];
 }
-typedef void (Unk_ov068_02261900::*Fn_2261ae8)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiPlayerStates::*Fn_2261ae8)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2261ae8 data_ov068_02270c7c[1];
-extern u32 data_ov068_02270c4c;
+extern Fn_2261ae8 sFaceTalkerSteps[1];
+extern u32 sFaceTalkerStepsGuard;
 extern void *data_ov068_0226f808[2];
 }
-typedef void (Unk_ov068_02261900::*Fn_2261c38)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiPlayerStates::*Fn_2261c38)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2261c38 data_ov068_02270dbc[5];
-extern u32 data_ov068_02270c40;
+extern Fn_2261c38 sApproachSteps[5];
+extern u32 sApproachStepsGuard;
 extern void *data_ov068_0226fa70[2];
 extern void *data_ov068_0226fa88[2];
 extern void *data_ov068_0226faa8[2];
@@ -1436,10 +1436,10 @@ extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 gSaveVillagers[];
-extern u8 data_ov068_0226f100[];
-extern u8 data_ov068_0226f154[];
-extern u8 data_ov068_0226f15c[];
-extern s32 data_ov068_0226f178[];
+extern u8 sChatNoPlayerMoods[];
+extern u8 sChatTopicWeights[];
+extern u8 sChatEmotions[];
+extern s32 sChatDurations[];
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
@@ -1449,7 +1449,7 @@ s32 VillagerMemory_getFriendship(void *);
 s32 VillagerData_getVillagerId(s32);
 s32 VillagerId_GetPersonality(s32);
 s32 NpcActor_getAngleTo(void *, void *);
-void func_ov068_02265994(void *);
+void FieldVillager_StopEmotion(void *);
 void PlayerActor_LocalRequestAct11();
 void NpcTalkCtrl_requestState4(void *, s32, s32, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
@@ -1467,15 +1467,15 @@ void VillagerActor_setFlag834(void *);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 VillagerActor_isFlag834(void *);
-s32 func_ov068_02264aa0(void *, void *);
+s32 FieldVillagerAi_WasHitByNet(void *, void *);
 s32 VillagerTalk_isInvitedByPartner(void *);
-s32 func_ov068_02263738(void *, void *, s32, s32, s32);
-s32 func_ov068_02263704(void *, void *, void *, s32, s32, s32);
+s32 FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
+s32 FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
 s32 PlayerData_GetCurrent();
 s32 func_02063b8c(s32);
 void NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-s32 func_ov068_02263840(void *, void *);
+s32 FieldVillagerAi_GetPartnerRelationLevel(void *, void *);
 s32 SaveVillagers_GetRelationLevelOf(void *, s32, s32);
 s32 PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(s32);
@@ -1486,26 +1486,26 @@ void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32,
 void VillagerMood_enableEffects(void *);
 void VillagerActor_clearFlag834(void *);
 }
-typedef void (Unk_ov068_02262294::*Fn_2262294)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiReaction::*Fn_2262294)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2262294 data_ov068_02270d1c[2];
-extern u32 data_ov068_02270c28;
+extern Fn_2262294 sReactionSteps[2];
+extern u32 sReactionStepsGuard;
 extern void *data_ov068_0226fa50[2];
 extern void *data_ov068_0226fa60[2];
 }
-typedef void (Unk_ov068_02262414::*Fn_2262414)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiChat::*Fn_2262414)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2262414 data_ov068_02270d9c[4];
-extern u32 data_ov068_02270c78;
+extern Fn_2262414 sChatSteps[4];
+extern u32 sChatStepsGuard;
 extern void *data_ov068_0226fa08[2];
 extern void *data_ov068_0226fa20[2];
 extern void *data_ov068_0226fa28[2];
 extern void *data_ov068_0226fa38[2];
 }
-typedef BOOL (Unk_ov068_02262414::*Fn_2262548)(Unk_ov068_Owner *);
+typedef BOOL (FieldVillagerAiChat::*Fn_2262548)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2262548 data_ov068_02270e0c[7];
-extern u32 data_ov068_02270c3c;
+extern Fn_2262548 sChatOutcomes[7];
+extern u32 sChatOutcomesGuard;
 extern void *data_ov068_0226f970[2];
 extern void *data_ov068_0226f980[2];
 extern void *data_ov068_0226f998[2];
@@ -1519,28 +1519,28 @@ extern void *data_ov068_0226f9d8[2];
 namespace ns_02262c20 {
 extern "C" {
 extern u32 gSaveVillagers[];
-extern u8 data_ov068_0226f0e8[];
-extern u8 data_ov068_0226f0f0[];
-extern u8 data_ov068_0226f0f8[];
-extern u8 data_ov068_0226f104[];
-extern u8 data_ov068_0226f10c[];
-extern u8 data_ov068_0226f114[];
-extern u8 data_ov068_0226f124[];
-extern u8 data_ov068_0226f12c[];
-extern u8 data_ov068_0226f144[];
-extern u8 data_ov068_0226f14c[];
+extern u8 sChatBadMoods[];
+extern u8 sChatClothesMoods[];
+extern u8 sChatCatchphraseMoods[];
+extern u8 sChatRevertClothesDeltas[];
+extern u8 sChatMoodByRelationDeltas[];
+extern u8 sChatSpreadShirtDeltas[];
+extern u8 sChatNeutralDeltas[];
+extern u8 sChatRevertCatchphraseDeltas[];
+extern u8 sChatAblePatternDeltas[];
+extern u8 sChatSpreadCatchphraseDeltas[];
 Unk_ov068_Owner *VillagerTalk_getPartner(void *);
-s32 func_ov068_02263668(void *, void *, void *, s32, s32);
+s32 FieldVillagerAi_OrderByFriendship(void *, void *, void *, s32, s32);
 u16 *VillagerDataProfileView_getShirt(void *);
 u8 *VillagerData_getPattern(void *);
 u8 *VillagerData_getVillagerId(void *);
-u8 *func_ov068_02263600(void *, void *);
+u8 *FieldVillagerAi_PickOtherAblePattern(void *, void *);
 void Villager_ShareTrendWith(void *, void *);
 void Villagers_ShareNickname(void *, void *, s32);
-void func_ov068_022637c0(void *, void *, void *);
-void func_ov068_02263738(void *, void *, s32, s32, s32);
-void func_ov068_02263704(void *, void *, void *, s32, s32, s32);
-void func_ov068_02263768(void *, void *, void *);
+void FieldVillagerAi_AddPartnerRelation(void *, void *, void *);
+void FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
+void FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
+void FieldVillagerAi_AddRandomPairRelation(void *, void *, void *);
 void VillagerDataProfileView_setShirt(void *, u16 *);
 void Unk_02016a44_requestAct14(void *, s32, u16 *);
 s32 VillagerId_GetSpecies(void *);
@@ -1611,7 +1611,7 @@ s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
-void func_ov068_02265994(void *);
+void FieldVillager_StopEmotion(void *);
 void Unk_020133cc_Player_resetLastTaughtEmotion(void *);
 s32 VillagerTalk_hasPartner(void *);
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
@@ -1647,50 +1647,50 @@ s32 NpcActor_isNear(void *, void *, s32);
 void VillagerRoute_reset(void *);
 void X_func_ov068_02265fb4(void *);
 void Villager_RaiseTalkUrge(void *, s32);
-void *func_ov068_02263600(void *unused, void *x);
-s32 func_ov068_02263668(void *unused, u32 *a, u32 *b, u32 c, u32 d);
-void func_ov068_02263704(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
-void func_ov068_02263738(void *a, void *o, s32 x, s32 y, u8 flag);
-void func_ov068_02263768(void *a, s32 unused, s8 *t);
-void func_ov068_022637c0(void *a, void *o, s8 *t);
-void func_ov068_02263808(void *a, void *r1, void *r2, s8 *t);
-s32 func_ov068_02263840(void *a, void *o);
-s32 func_ov068_02263880(void *a, void *b);
+void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
+s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
+void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
+void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
+void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t);
+void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t);
+void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t);
+s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
+s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
 }
-extern "C" void *func_ov068_02263600(void *unused, void *x);
-extern "C" s32 func_ov068_02263668(void *unused, u32 *a, u32 *b, u32 c, u32 d);
-extern "C" void func_ov068_02263704(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
-extern "C" void func_ov068_02263738(void *a, void *o, s32 x, s32 y, u8 flag);
-extern "C" void func_ov068_02263768(void *a, s32 unused, s8 *t);
-extern "C" void func_ov068_022637c0(void *a, void *o, s8 *t);
-extern "C" void func_ov068_02263808(void *a, void *r1, void *r2, s8 *t);
-extern "C" s32 func_ov068_02263840(void *a, void *o);
-extern "C" s32 func_ov068_02263880(void *a, void *b);
-typedef void (Unk_ov068_022638c0::*Fn_22638c0)(Unk_ov068_Owner *);
+extern "C" void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
+extern "C" s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
+extern "C" void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
+extern "C" void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
+extern "C" void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t);
+extern "C" void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t);
+extern "C" void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t);
+extern "C" s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
+extern "C" s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
+typedef void (FieldVillagerAiTalk::*Fn_22638c0)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_22638c0 data_ov068_02270cdc[2];
-extern u32 data_ov068_02270c5c;
+extern Fn_22638c0 sTalkSteps[2];
+extern u32 sTalkStepsGuard;
 extern void *data_ov068_0226f858[2];
 extern void *data_ov068_0226f8e0[2];
 }
-typedef void (Unk_ov068_02263a40::*Fn_2263a40)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiLeaveHouse::*Fn_2263a40)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2263a40 data_ov068_02270cac[2];
-extern u32 data_ov068_02270c50;
+extern Fn_2263a40 sLeaveHouseSteps[2];
+extern u32 sLeaveHouseStepsGuard;
 extern void *data_ov068_0226f838[2];
 extern void *data_ov068_0226f848[2];
 }
-typedef void (Unk_ov068_02263cf0::*Fn_2263cf0)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiAbsent::*Fn_2263cf0)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2263cf0 data_ov068_02270c9c[2];
-extern u32 data_ov068_02270c70;
+extern Fn_2263cf0 sAbsentSteps[2];
+extern u32 sAbsentStepsGuard;
 extern void *data_ov068_0226f930[2];
 extern void *data_ov068_0226f820[2];
 }
-typedef void (Unk_ov068_02263e4c::*Fn_2263e4c)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiInHouse::*Fn_2263e4c)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_2263e4c data_ov068_02270c8c[2];
-extern u32 data_ov068_02270c44;
+extern Fn_2263e4c sInHouseSteps[2];
+extern u32 sInHouseStepsGuard;
 extern void *data_ov068_0226f950[2];
 extern void *data_ov068_0226f948[2];
 }
@@ -1703,7 +1703,7 @@ extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 data_ov068_0226f13c[];
 extern u8 data_ov068_0226f0f4[];
-extern s16 data_ov068_0226f0e4[];
+extern s16 sFieldVillagerPushLimit[];
 extern u32 __ptmf_null[];
 extern u8 gRandom[];
 }
@@ -1711,7 +1711,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 s32 Unk_02097ff4_testFlag(void *, s32);
 void *Villager_GetState();
-void func_ov068_02265994(void *);
+void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 void X_func_ov068_0225f630(void *, void *);
 s32 X_func_ov068_0225f83c(void *);
@@ -1743,37 +1743,37 @@ s32 VillagerTalkTopics_updateCatchPlans(void *, void *, void *, s32);
 void FieldVillager_UpdateCatchSim(void *);
 void Villager_RaiseTalkUrge(void *, s32);
 s32 VillagerRoute_isActive(void *);
-void func_ov068_02265324(void *, s32, void *);
-s32 func_ov068_02265270(void *, void *);
-s32 func_ov068_022652d0(void *, void *);
+void FieldVillagerAi_StartRoute(void *, s32, void *);
+s32 FieldVillagerAi_IsAtHomeDoor(void *, void *);
+s32 FieldVillagerAi_ShouldGoHome(void *, void *);
 s32 Unk_02012810_getStage(void *);
 void VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 Unk_02012810_runStep(void *, void *);
 void VillagerRoute_setStepMode(void *, s32);
 s32 func_0201acfc(void *);
 s32 Random_Next(void *);
-s32 func_ov068_0226506c(void *, void *, void *);
-s32 func_ov068_02265114(void *, void *, s32);
-s32 func_ov068_0226517c(void *, void *, void *);
+s32 FieldVillagerAi_GetRouteTarget(void *, void *, void *);
+s32 FieldVillagerAi_IsNearPlayerTalkSpot(void *, void *, s32);
+s32 FieldVillagerAi_PathCrossesPlayerTalk(void *, void *, void *);
 s16 Math_AngleXZ(void *, void *);
 s32 NpcActor_IsFrontAngle(s32);
-s32 func_ov068_0226594c(void *);
+s32 FieldVillager_GetMood(void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
-s32 func_ov068_0226519c(void *, void *);
+s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *, void *);
 void *NpcMoveCtrl_getDestination(void *);
 void Npc_GetStateHeldItem(void *, void *);
-s32 func_ov068_02264ab4(void *, void *);
-s32 func_ov068_02264aa0(void *, void *);
+s32 FieldVillagerAi_TryFallInPitfall(void *, void *);
+s32 FieldVillagerAi_WasHitByNet(void *, void *);
 s32 FieldVillagerAi_CanSeePlayer(void *, void *);
-s32 func_ov068_02264ee0(void *, void *);
-s32 func_ov068_02264b9c(void *, void *);
-s32 func_ov068_022649f4(void *, void *);
-s32 func_ov068_02264ffc(void *, void *);
+s32 FieldVillagerAi_TryStartChat(void *, void *);
+s32 FieldVillagerAi_CheckHeldItemChange(void *, void *);
+s32 FieldVillagerAi_ShouldAdmireCatch(void *, void *);
+s32 FieldVillagerAi_HandleBlockedMove(void *, void *);
 }
-typedef void (Unk_ov068_0225fd54::*Fn_226410c)(Unk_ov068_Owner *);
+typedef void (FieldVillagerAiStates::*Fn_226410c)(Unk_ov068_Owner *);
 extern "C" {
-extern Fn_226410c data_ov068_02270d3c[3];
-extern u32 data_ov068_02270c30;
+extern Fn_226410c sGoInHouseSteps[3];
+extern u32 sGoInHouseStepsGuard;
 extern void *data_ov068_0226fae0[2];
 extern void *data_ov068_0226fb10[2];
 extern void *data_ov068_0226fb20[2];
@@ -1786,7 +1786,7 @@ extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
 extern u8 gVec3Zero[];
-u32 func_ov068_0226594c(void *);
+u32 FieldVillager_GetMood(void *);
 u32 PlayerActor_GetLocalShownItem();
 s32 NpcActor_getDistanceToPlayer(void *, s32);
 s32 NpcLookAt_canSeeTarget(void *, void *);
@@ -1820,7 +1820,7 @@ void NpcMoveCtrl_resetDestination(void *);
 s32 Unk_02012810_getStage(void *);
 void *Villager_GetState(void *);
 s32 VillagerRoute_isActive(void *);
-void func_ov068_02265324(void *, s32, void *);
+void FieldVillagerAi_StartRoute(void *, s32, void *);
 s32 Unk_02012810_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
 void *PlayerActor_GetCharacter(s32);
@@ -1836,11 +1836,11 @@ void FieldPos_FromUnitCenter(void *, u32, u32);
 void *PlayerData_GetCurrent();
 s32 Unk_02097ff4_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
-s32 func_ov068_022651e0(void *, void *, Unk_ov068_022649f4_Vec *);
-s32 func_ov068_02264a64(void *);
-s32 func_ov068_02264aa0(void *, Unk_ov068_Owner_649 *);
-s32 func_ov068_02264b30(void *, Unk_ov068_02264ab4_P2 *);
-void *func_ov068_02264f4c(void *, Unk_ov068_Owner_649 *);
+s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, Unk_ov068_022649f4_Vec *);
+s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
+s32 FieldVillagerAi_WasHitByNet(void *, Unk_ov068_Owner_649 *);
+s32 FieldVillagerAi_IsBuriedPitfallAt(void *, Unk_ov068_02264ab4_P2 *);
+void *FieldVillagerAi_FindChatPartner(void *, Unk_ov068_Owner_649 *);
 void X_func_ov068_02265dc8(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1891,22 +1891,22 @@ static inline BOOL Unk_ov068_022652d0_B(BOOL v) {
     }
     return FALSE;
 }
-extern "C" BOOL func_ov068_022649f4(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o);
-extern "C" s32 func_ov068_02264a64(void *self);
-extern "C" s32 func_ov068_02264aa0(void *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_02264b30(void *self, Unk_ov068_02264ab4_P2 *v);
-extern "C" BOOL func_ov068_02264b9c(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_02264ee0(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o);
-extern "C" void *func_ov068_02264f4c(void *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_02264ffc(void *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_0226506c(Unk_ov068_0225fd54 *self, Unk_ov068_022649f4_Vec *out, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_02265114(void *self, void *v, s32 lim);
-extern "C" s32 func_ov068_0226517c(void *self, void *a, void *b);
-extern "C" s32 func_ov068_0226519c(void *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_022651e0(void *self, void *a, Unk_ov068_022649f4_Vec *b);
-extern "C" BOOL func_ov068_02265270(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o);
-extern "C" BOOL func_ov068_022652d0(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o);
+extern "C" s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
+extern "C" s32 FieldVillagerAi_WasHitByNet(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_TryFallInPitfall(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Unk_ov068_02264ab4_P2 *v);
+extern "C" BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o);
+extern "C" void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_HandleBlockedMove(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_022649f4_Vec *out, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
+extern "C" s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b);
+extern "C" s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f4_Vec *b);
+extern "C" BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o);
+extern "C" BOOL FieldVillagerAi_ShouldGoHome(void *self, Unk_ov068_Owner_649 *o);
 }
 
 namespace ns_02265324 {
@@ -1945,22 +1945,22 @@ s32 VillagerStates_GetBirthdayHost();
 s32 Villager_GetIndex(void *);
 s32 TalkRepeat_StartWindow();
 void Villager_AddTalkUrge(void *, s32);
-s32 func_0203e450(void *);
+s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
 s32 func_02063b8c(s32);
 void Effect_PlayById(s32, void *, s32, s32);
-extern s32 data_ov068_0226f16c[];
+extern s32 sRandomRouteTypes[];
 extern u32 gCamera;
 extern Unk_ov068_02265434_Vec gCameraLookAt;
 extern Unk_ov068_0226fa68_Pair data_ov068_0226fa68;
 extern u16 data_020c6cc8;
-extern s32 data_ov068_0226f0fc;
-extern s16 data_ov068_02270c24;
+extern s32 sFieldVillagerAiCooldown;
+extern s16 sSeePlayerArc;
 extern Unk_ov068_0225f1a0_Ent sFieldVillagerAiTable[];
-extern u8 data_ov068_0226f11c[];
-extern u8 data_ov068_0226f134[];
+extern u8 sSimCatchClassWeights[];
+extern u8 sSimCatchClassWeightsPlanned[];
 extern u8 gContestRecord[];
 extern u32 gSceneBlockMap;
 void *Villager_GetState(void *);
@@ -1988,7 +1988,7 @@ s32 Villager_IsTalkUrgeFull(void *, s32);
 s32 Scene_InTownUnk31();
 s32 NpcActor_getDistanceTo(void *, void *);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
-s32 func_ov068_02264a64(void *, u32);
+s32 FieldVillagerAi_IsPlayerShowingCatch(void *, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRepeat_Tick(void *, s32);
 void X_func_ov068_02265e6c(void *);
@@ -2022,9 +2022,9 @@ s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 void Villager_GetUmbrella(void *, void *);
 void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
-void *func_ov068_02265918(FieldVillager *o);
-void func_ov068_02265994(FieldVillager *o);
-s32 func_ov068_022653ec(FieldVillagerAi *self);
+void *FieldVillager_GetTalkRepeat(FieldVillager *o);
+void FieldVillager_StopEmotion(FieldVillager *o);
+s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
 s32 FieldVillager_IsInRect(Unk_ov068_0226546c_Rect *r, Unk_ov068_02265434_Vec *a, Unk_ov068_02265434_Vec *b);
 void FieldVillagerAi_ClearResumeState(FieldVillagerAi *self);
 void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
@@ -2050,11 +2050,11 @@ static inline BOOL Unk_ov068_02265c24_R(u16 *p, u32 lo, u32 hi) {
     }
     return r;
 }
-extern "C" void func_ov068_02265324(FieldVillagerAi *self, s32 a, FieldVillager *o);
-extern "C" s32 func_ov068_022653ec(FieldVillagerAi *self);
+extern "C" void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o);
+extern "C" s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
 extern "C" s32 FieldVillager_IsNearCameraFocus(Unk_ov068_0226546c_Rect *r, FieldVillager *o);
 extern "C" s32 FieldVillager_IsInRect(Unk_ov068_0226546c_Rect *r, Unk_ov068_02265434_Vec *a, Unk_ov068_02265434_Vec *b);
-extern "C" s32 func_ov068_022654c0(FieldVillagerAi *self, FieldVillager *o);
+extern "C" s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o);
 extern "C" void FieldVillagerAi_InitTimers(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_StartCooldown(FieldVillagerAi *self);
 extern "C" s32 FieldVillagerAi_IsFreeIdle(FieldVillagerAi *self);
@@ -2066,9 +2066,9 @@ extern "C" void FieldVillagerAi_SaveResumeState(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
 extern "C" void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
 extern "C" void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void *func_ov068_02265918(FieldVillager *o);
-extern "C" u32 func_ov068_0226594c(FieldVillager *o);
-extern "C" void func_ov068_02265994(FieldVillager *o);
+extern "C" void *FieldVillager_GetTalkRepeat(FieldVillager *o);
+extern "C" u32 FieldVillager_GetMood(FieldVillager *o);
+extern "C" void FieldVillager_StopEmotion(FieldVillager *o);
 extern "C" void FieldVillager_UpdateCatchSim(FieldVillager *o);
 extern "C" void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b);
 extern "C" void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b);
@@ -2079,7 +2079,7 @@ extern "C" void FieldVillager_UpdateUmbrella(FieldVillager *o);
 namespace ns_02265d34 {
 extern "C" {
 extern Unk_ov068_0226fb80_Fn data_ov068_0226f870;
-extern u16 data_ov068_0226f0ec;
+extern u16 sFleaRemovedHoldFrames;
 extern u16 data_020c6cc8;
 extern Unk_ov068_022661c8_Blk data_021cb69c;
 extern Unk_ov068_0226647c_Row kCameraSwayPatterns[];
@@ -2153,109 +2153,109 @@ namespace nsD {
 extern "C" {
 extern s16 data_020c6cc0;
 extern s16 data_020c905c;
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225fd54EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225fdc0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225fe28EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225fe70EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225ff18EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225ff84EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225ff88EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0225fff4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260068EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022600e4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022600e8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260160EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022601f0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260290EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022602fcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260324EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260374EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260450EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022604ccEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022604fcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0226054cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022605f4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0226071cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260780EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260944EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022609e0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260a64EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260c14EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260cdcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260dccEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02260ed4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02264008EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0226410cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_02264188EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0226424cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022642c4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_0226433cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022643d0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022644fcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0225fd5419func_ov068_022645dcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02260f9019func_ov068_02260f90EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02260f9019func_ov068_02260ffcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02260f9019func_ov068_02261084EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02260f9019func_ov068_02261118EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226129019func_ov068_02261290EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226129019func_ov068_022612fcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226129019func_ov068_02261394EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226129019func_ov068_02261444EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226157419func_ov068_02261574EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226157419func_ov068_022615f0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226157419func_ov068_02261644EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226157419func_ov068_022616c4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226157419func_ov068_02261714EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226179c19func_ov068_0226179cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226179c19func_ov068_022617b8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261900EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_0226196cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_022619e8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261a2cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261ab4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261ab8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261ae8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261b4cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261b90EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261c38EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261cd4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261db0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261e10EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02261f08EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_02262044EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226190019func_ov068_022621fcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226229419func_ov068_02262294EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226229419func_ov068_02262300EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226229419func_ov068_02262304EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226229419func_ov068_02262338EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262414EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_022624a4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_022624f8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262648EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262ad4EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262b78EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262c20EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262da0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262e5cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02262fd8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_022632dcEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02263494EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_0226241419func_ov068_02263518EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_022638c019func_ov068_022638c0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_022638c019func_ov068_0226392cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_022638c019func_ov068_02263930EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_022638c019func_ov068_02263978EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263a4019func_ov068_02263a40EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263a4019func_ov068_02263aacEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263a4019func_ov068_02263b90EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263a4019func_ov068_02263c20EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263cf019func_ov068_02263cf0EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263cf019func_ov068_02263d5cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263cf019func_ov068_02263d6cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263cf019func_ov068_02263d74EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263e4c19func_ov068_02263e4cEP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263e4c19func_ov068_02263eb8EP15Unk_ov068_Owner();
-void _ZN18Unk_ov068_02263e4c19func_ov068_02264000EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates15execAdmireCatchEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates16admireCatchStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates16admireCatchStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates16enterAdmireCatchEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12execPushTalkEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13pushTalkStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13pushTalkStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13enterPushTalkEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates11execHitTalkEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12hitTalkStep2EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12hitTalkStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12hitTalkStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12enterHitTalkEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates10execPushedEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates11pushedStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates11pushedStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates11enterPushedEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12execHitByNetEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13hitByNetStep2EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13hitByNetStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13hitByNetStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13enterHitByNetEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates19execPitfallClimbOutEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates20enterPitfallClimbOutEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates11execPitfallEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12pitfallStep4EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12pitfallStep3EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12pitfallStep2EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12pitfallStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12pitfallStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12enterPitfallEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates12enterInHouseEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13execGoInHouseEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates14goInHouseStep2EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates14goInHouseStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates14goInHouseStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates14enterGoInHouseEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates13execOffscreenEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates14enterOffscreenEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiStates10execWanderEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiPutAway15execPutAwayItemEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiPutAway16putAwayItemStep1EP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiPutAway16putAwayItemStep0EP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiPutAway16enterPutAwayItemEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiTakeOut15execTakeOutItemEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiTakeOut16takeOutItemStep1EP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiTakeOut16takeOutItemStep0EP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiTakeOut16enterTakeOutItemEP15Unk_ov068_Owner();
+void _ZN29FieldVillagerAiBirthdayInvite18execBirthdayInviteEP15Unk_ov068_Owner();
+void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep2EP15Unk_ov068_Owner();
+void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep1EP15Unk_ov068_Owner();
+void _ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep0EP15Unk_ov068_Owner();
+void _ZN29FieldVillagerAiBirthdayInvite19enterBirthdayInviteEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiBirthdayWait16execBirthdayWaitEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiBirthdayWait17enterBirthdayWaitEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates15execFleaRemovedEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates16fleaRemovedStep1EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates16fleaRemovedStep0EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates16enterFleaRemovedEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates12execJoinTalkEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13enterJoinTalkEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates14execFaceTalkerEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates15faceTalkerStep0EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates15enterFaceTalkerEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates12execApproachEP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13approachStep4EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13approachStep3EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13approachStep2EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13approachStep1EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13approachStep0EP15Unk_ov068_Owner();
+void _ZN27FieldVillagerAiPlayerStates13enterApproachEP15Unk_ov068_Owner();
+void _ZN23FieldVillagerAiReaction12execReactionEP15Unk_ov068_Owner();
+void _ZN23FieldVillagerAiReaction13reactionStep1EP15Unk_ov068_Owner();
+void _ZN23FieldVillagerAiReaction13reactionStep0EP15Unk_ov068_Owner();
+void _ZN23FieldVillagerAiReaction13enterReactionEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat8execChatEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat9chatStep3EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat9chatStep2EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat9chatStep1EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat9chatStep0EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat9enterChatEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat23tryChatAdoptAblePatternEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat24tryChatRevertCatchphraseEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat20tryChatRevertClothesEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat18tryChatSpreadShirtEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat24tryChatSpreadCatchphraseEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat14tryChatNeutralEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiChat21tryChatMoodByRelationEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiTalk8execTalkEP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiTalk9talkStep1EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiTalk9talkStep0EP15Unk_ov068_Owner();
+void _ZN19FieldVillagerAiTalk9enterTalkEP15Unk_ov068_Owner();
+void _ZN25FieldVillagerAiLeaveHouse14execLeaveHouseEP15Unk_ov068_Owner();
+void _ZN25FieldVillagerAiLeaveHouse15leaveHouseStep1EP15Unk_ov068_Owner();
+void _ZN25FieldVillagerAiLeaveHouse15leaveHouseStep0EP15Unk_ov068_Owner();
+void _ZN25FieldVillagerAiLeaveHouse15enterLeaveHouseEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiAbsent10execAbsentEP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiAbsent11absentStep1EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiAbsent11absentStep0EP15Unk_ov068_Owner();
+void _ZN21FieldVillagerAiAbsent11enterAbsentEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiInHouse11execInHouseEP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiInHouse12inHouseStep1EP15Unk_ov068_Owner();
+void _ZN22FieldVillagerAiInHouse12inHouseStep0EP15Unk_ov068_Owner();
 void _ZN13FieldVillager11drawDefaultEv();
 extern void *data_ov068_0226f800[2];
 extern void *data_ov068_0226f808[2];
@@ -2369,57 +2369,57 @@ extern void *data_ov068_0226fb58[2];
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa10[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260cdcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa10[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c28;
+u32 sReactionStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f958[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261900EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f958[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15execFleaRemovedEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f104[8] = {0xc8, 0xbc, 0xd8, 0xec, 0x00, 0x00, 0x00, 0x00};
+extern const u8 sChatRevertClothesDeltas[8] = {0xc8, 0xbc, 0xd8, 0xec, 0x00, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f980[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02263494EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f980[2] = {(void *)_ZN19FieldVillagerAiChat14tryChatNeutralEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f100[4] = {0x02, 0x03, 0x01, 0x00};
+extern const u8 sChatNoPlayerMoods[4] = {0x02, 0x03, 0x01, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f938[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225fe28EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f938[2] = {(void *)_ZN21FieldVillagerAiStates16admireCatchStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f900[2] = {(void *)_ZN18Unk_ov068_0226129019func_ov068_022612fcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f900[2] = {(void *)_ZN22FieldVillagerAiTakeOut16takeOutItemStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f970[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02263518EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f970[2] = {(void *)_ZN19FieldVillagerAiChat21tryChatMoodByRelationEP15Unk_ov068_Owner, 0};
 }
 }
 namespace ns_02265324 {
 extern "C" {
-void *data_ov068_0226f878[2] = {(void *)func_ov068_022654c0, 0};
+void *data_ov068_0226f878[2] = {(void *)FieldVillagerAi_EnterWander, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f850[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022604ccEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f850[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
@@ -2429,57 +2429,57 @@ void *data_ov068_0226f910[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0e4[4] = {0x64, 0x00, 0x00, 0x00};
+extern const u8 sFieldVillagerPushLimit[4] = {0x64, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d6c[6];
+u32 sBirthdayInviteSteps[6];
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270ccc[4];
+u32 sPushTalkSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f134[8] = {0x0a, 0x0a, 0x05, 0x05, 0x46, 0x00, 0x00, 0x00};
+extern const u8 sSimCatchClassWeightsPlanned[8] = {0x0a, 0x0a, 0x05, 0x05, 0x46, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c60;
+u32 sHitTalkStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb58[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261ae8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb58[2] = {(void *)_ZN27FieldVillagerAiPlayerStates14execFaceTalkerEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f12c[8] = {0xf6, 0xee, 0xe4, 0xf2, 0xfe, 0x00, 0x00, 0x00};
+extern const u8 sChatRevertCatchphraseDeltas[8] = {0xf6, 0xee, 0xe4, 0xf2, 0xfe, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f920[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_022619e8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f920[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16fleaRemovedStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d9c[8];
+u32 sChatSteps[8];
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270cdc[4];
+u32 sTalkSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f830[2] = {(void *)_ZN18Unk_ov068_022638c019func_ov068_022638c0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f830[2] = {(void *)_ZN19FieldVillagerAiTalk8execTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
@@ -2497,52 +2497,52 @@ Unk_ov068_0225f1a0_Ent sFieldVillagerAiTable[8] = {
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f10c[8] = {0x02, 0x08, 0x10, 0x0a, 0x06, 0x00, 0x00, 0x00};
+extern const u8 sChatMoodByRelationDeltas[8] = {0x02, 0x08, 0x10, 0x0a, 0x06, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f960[2] = {(void *)_ZN18Unk_ov068_02263cf019func_ov068_02263d74EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f960[2] = {(void *)_ZN21FieldVillagerAiAbsent11enterAbsentEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c78;
+u32 sChatStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb48[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262414EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb48[2] = {(void *)_ZN19FieldVillagerAiChat8execChatEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9e0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260dccEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9e0[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb38[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261ab4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb38[2] = {(void *)_ZN27FieldVillagerAiPlayerStates12execJoinTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb30[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225ff88EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb30[2] = {(void *)_ZN21FieldVillagerAiStates13pushTalkStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0f8[4] = {0x01, 0x03, 0x02, 0x00};
+extern const u8 sChatCatchphraseMoods[4] = {0x01, 0x03, 0x02, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb20[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02264188EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb20[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-Unk_ov068_0225f1a0_Ent data_ov068_02270ec4[8] = {
+Unk_ov068_0225f1a0_Ent sFieldVillagerAiTable2[8] = {
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226f8f8, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fb58},
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226f918, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fb48},
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226f928, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fb38},
@@ -2555,32 +2555,32 @@ Unk_ov068_0225f1a0_Ent data_ov068_02270ec4[8] = {
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c84[2];
+u32 sPitfallClimbOutSteps[2];
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0fc[4] = {0xb0, 0x04, 0x00, 0x00};
+extern const u8 sFieldVillagerAiCooldown[4] = {0xb0, 0x04, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d0c[4];
+u32 sPutAwayItemSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb00[2] = {(void *)_ZN18Unk_ov068_0226157419func_ov068_02261714EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb00[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19enterBirthdayInviteEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faf8[2] = {(void *)_ZN18Unk_ov068_0226157419func_ov068_02261574EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226faf8[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite18execBirthdayInviteEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faf0[2] = {(void *)_ZN18Unk_ov068_0226129019func_ov068_02261444EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226faf0[2] = {(void *)_ZN22FieldVillagerAiTakeOut16enterTakeOutItemEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
@@ -2590,17 +2590,17 @@ void *data_ov068_0226fa68[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fae0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022642c4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fae0[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c5c;
+u32 sTalkStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-Unk_ov068_0225f1a0_Ent data_ov068_02270f44[8] = {
+Unk_ov068_0225f1a0_Ent sFieldVillagerAiTable3[8] = {
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226f990, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fad8},
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fad0, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fac8},
     {*(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fac0, *(Unk_ov068_0225f1a0_Fn *)data_ov068_0226fab8},
@@ -2613,142 +2613,142 @@ Unk_ov068_0225f1a0_Ent data_ov068_02270f44[8] = {
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d1c[4];
+u32 sReactionSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faa8[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261e10EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226faa8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fab0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022605f4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fab0[2] = {(void *)_ZN21FieldVillagerAiStates13enterHitByNetEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fac0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260780EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fac0[2] = {(void *)_ZN21FieldVillagerAiStates20enterPitfallClimbOutEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fac8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260944EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fac8[2] = {(void *)_ZN21FieldVillagerAiStates11execPitfallEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c40;
+u32 sApproachStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb08[2] = {(void *)_ZN18Unk_ov068_0226179c19func_ov068_0226179cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb08[2] = {(void *)_ZN27FieldVillagerAiBirthdayWait16execBirthdayWaitEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb28[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261cd4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb28[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep4EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb40[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0226410cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb40[2] = {(void *)_ZN21FieldVillagerAiStates13execGoInHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa90[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260290EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa90[2] = {(void *)_ZN21FieldVillagerAiStates10execPushedEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa88[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261f08EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa88[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa80[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225ff18EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa80[2] = {(void *)_ZN21FieldVillagerAiStates12execPushTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f15c[8] = {0x14, 0x15, 0x16, 0x19, 0x1b, 0x04, 0x0b, 0x1d};
+extern const u8 sChatEmotions[8] = {0x14, 0x15, 0x16, 0x19, 0x1b, 0x04, 0x0b, 0x1d};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa78[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022609e0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa78[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep4EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c4c;
+u32 sFaceTalkerStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8b8[2] = {(void *)_ZN18Unk_ov068_02263a4019func_ov068_02263c20EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8b8[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15enterLeaveHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f808[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261b4cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f808[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15faceTalkerStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa58[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022609e0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa58[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep4EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c74;
+u32 sTakeOutItemStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa50[2] = {(void *)_ZN18Unk_ov068_0226229419func_ov068_02262304EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa50[2] = {(void *)_ZN23FieldVillagerAiReaction13reactionStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa48[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022600e4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa48[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c70;
+u32 sAbsentStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa38[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_022624a4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa38[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep3EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c44;
+u32 sInHouseStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f898[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0226433cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f898[2] = {(void *)_ZN21FieldVillagerAiStates14enterGoInHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f14c[8] = {0x02, 0x0e, 0x1c, 0x12, 0x0a, 0x00, 0x00, 0x00};
+extern const u8 sChatSpreadCatchphraseDeltas[8] = {0x02, 0x0e, 0x1c, 0x12, 0x0a, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c9c[4];
+u32 sAbsentSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f890[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022644fcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f890[2] = {(void *)_ZN21FieldVillagerAiStates14enterOffscreenEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
@@ -2758,77 +2758,77 @@ extern const u8 data_ov068_0226f0f4[4] = {0x07, 0x0e, 0x24, 0x2b};
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0e8[4] = {0x02, 0x03, 0x00, 0x00};
+extern const u8 sChatBadMoods[4] = {0x02, 0x03, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270dbc[10];
+u32 sApproachSteps[10];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f840[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_0226196cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f840[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16fleaRemovedStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-s16 data_ov068_02270c24 = data_020c6cc0;
+s16 sSeePlayerArc = data_020c6cc0;
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f144[8] = {0x01, 0x02, 0x06, 0x04, 0x02, 0x00, 0x00, 0x00};
+extern const u8 sChatAblePatternDeltas[8] = {0x01, 0x02, 0x06, 0x04, 0x02, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f114[8] = {0x01, 0x02, 0x0c, 0x04, 0x02, 0x00, 0x00, 0x00};
+extern const u8 sChatSpreadShirtDeltas[8] = {0x01, 0x02, 0x0c, 0x04, 0x02, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d3c[6];
+u32 sGoInHouseSteps[6];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9d8[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262c20EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9d8[2] = {(void *)_ZN19FieldVillagerAiChat23tryChatAdoptAblePatternEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9d0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022601f0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9d0[2] = {(void *)_ZN21FieldVillagerAiStates12enterHitTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9c8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260450EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9c8[2] = {(void *)_ZN21FieldVillagerAiStates12execHitByNetEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d54[6];
+u32 sHitByNetSteps[6];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9b8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260160EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9b8[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9b0[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262e5cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9b0[2] = {(void *)_ZN19FieldVillagerAiChat20tryChatRevertClothesEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9a8[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262fd8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9a8[2] = {(void *)_ZN19FieldVillagerAiChat18tryChatSpreadShirtEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9a0[2] = {(void *)_ZN18Unk_ov068_02260f9019func_ov068_02260ffcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9a0[2] = {(void *)_ZN22FieldVillagerAiPutAway16putAwayItemStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
@@ -2838,212 +2838,212 @@ extern const u8 data_ov068_0226f13c[8] = {0x00, 0x14, 0x46, 0x14, 0x1e, 0x00, 0x
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f998[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_022632dcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f998[2] = {(void *)_ZN19FieldVillagerAiChat24tryChatSpreadCatchphraseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f990[2] = {(void *)_ZN18Unk_ov068_02260f9019func_ov068_02261118EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f990[2] = {(void *)_ZN22FieldVillagerAiPutAway16enterPutAwayItemEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f988[2] = {(void *)_ZN18Unk_ov068_0226129019func_ov068_02261290EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f988[2] = {(void *)_ZN22FieldVillagerAiTakeOut15execTakeOutItemEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8f0[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261c38EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8f0[2] = {(void *)_ZN27FieldVillagerAiPlayerStates12execApproachEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f978[2] = {(void *)_ZN18Unk_ov068_02260f9019func_ov068_02261084EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f978[2] = {(void *)_ZN22FieldVillagerAiPutAway16putAwayItemStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c64;
+u32 sPutAwayItemStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f968[2] = {(void *)_ZN18Unk_ov068_0226179c19func_ov068_022617b8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f968[2] = {(void *)_ZN27FieldVillagerAiBirthdayWait17enterBirthdayWaitEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f124[8] = {0xfa, 0xf6, 0xf0, 0xf8, 0xfe, 0x00, 0x00, 0x00};
+extern const u8 sChatNeutralDeltas[8] = {0xfa, 0xf6, 0xf0, 0xf8, 0xfe, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f154[8] = {0x0f, 0x0a, 0x0f, 0x14, 0x0a, 0x0f, 0x0f, 0x00};
+extern const u8 sChatTopicWeights[8] = {0x0f, 0x0a, 0x0f, 0x14, 0x0a, 0x0f, 0x0f, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f918[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262b78EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f918[2] = {(void *)_ZN19FieldVillagerAiChat9enterChatEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c30;
+u32 sGoInHouseStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f928[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261ab8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f928[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13enterJoinTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f858[2] = {(void *)_ZN18Unk_ov068_022638c019func_ov068_02263930EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f858[2] = {(void *)_ZN19FieldVillagerAiTalk9talkStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f860[2] = {(void *)_ZN18Unk_ov068_0226157419func_ov068_022616c4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f860[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c3c;
+u32 sChatOutcomesGuard;
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270cec[4];
+u32 sTakeOutItemSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9f8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225fe70EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9f8[2] = {(void *)_ZN21FieldVillagerAiStates16enterAdmireCatchEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270cfc[4];
+u32 sPushedSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb18[2] = {(void *)_ZN18Unk_ov068_02263cf019func_ov068_02263cf0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb18[2] = {(void *)_ZN21FieldVillagerAiAbsent10execAbsentEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa28[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_022624f8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa28[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa60[2] = {(void *)_ZN18Unk_ov068_0226229419func_ov068_02262300EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa60[2] = {(void *)_ZN23FieldVillagerAiReaction13reactionStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c48;
+u32 sAdmireCatchStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa98[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260374EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa98[2] = {(void *)_ZN21FieldVillagerAiStates11enterPushedEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fad0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260ed4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fad0[2] = {(void *)_ZN21FieldVillagerAiStates12enterPitfallEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fab8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0226071cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fab8[2] = {(void *)_ZN21FieldVillagerAiStates19execPitfallClimbOutEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fad8[2] = {(void *)_ZN18Unk_ov068_02260f9019func_ov068_02260f90EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fad8[2] = {(void *)_ZN22FieldVillagerAiPutAway15execPutAwayItemEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb10[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0226424cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb10[2] = {(void *)_ZN21FieldVillagerAiStates14goInHouseStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c34;
+u32 sFleaRemovedStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8d0[2] = {(void *)_ZN18Unk_ov068_0226157419func_ov068_02261644EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8d0[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8c8[2] = {(void *)_ZN18Unk_ov068_0226229419func_ov068_02262338EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8c8[2] = {(void *)_ZN23FieldVillagerAiReaction13enterReactionEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8c0[2] = {(void *)_ZN18Unk_ov068_022638c019func_ov068_02263978EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8c0[2] = {(void *)_ZN19FieldVillagerAiTalk9enterTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c58;
+u32 sHitByNetStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270e0c[14];
+u32 sChatOutcomes[14];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8a8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02264008EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8a8[2] = {(void *)_ZN21FieldVillagerAiStates12enterInHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8a0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260324EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8a0[2] = {(void *)_ZN21FieldVillagerAiStates11pushedStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f820[2] = {(void *)_ZN18Unk_ov068_02263cf019func_ov068_02263d5cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f820[2] = {(void *)_ZN21FieldVillagerAiAbsent11absentStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa20[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262648EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa20[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f838[2] = {(void *)_ZN18Unk_ov068_02263a4019func_ov068_02263b90EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f838[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15leaveHouseStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270cac[4];
+u32 sLeaveHouseSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f848[2] = {(void *)_ZN18Unk_ov068_02263a4019func_ov068_02263aacEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f848[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15leaveHouseStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c68;
+u32 sBirthdayInviteStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f16c[12] = {0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
+extern const u8 sRandomRouteTypes[12] = {0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
@@ -3058,232 +3058,232 @@ Unk_ov068_Scene_Entry sFieldVillagerProfile = {(void *(*)())FieldVillager_Create
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f880[2] = {(void *)_ZN18Unk_ov068_0226157419func_ov068_022615f0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f880[2] = {(void *)_ZN29FieldVillagerAiBirthdayInvite19birthdayInviteStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8d8[2] = {(void *)_ZN18Unk_ov068_0226129019func_ov068_02261394EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8d8[2] = {(void *)_ZN22FieldVillagerAiTakeOut16takeOutItemStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8e8[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_022621fcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8e8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13enterApproachEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f178[20] = {0xf0, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00};
+extern const u8 sChatDurations[20] = {0xf0, 0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f908[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022602fcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f908[2] = {(void *)_ZN21FieldVillagerAiStates11pushedStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c50;
+u32 sLeaveHouseStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d84[6];
+u32 sHitTalkSteps[6];
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270de4[10];
+u32 sPitfallSteps[10];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f948[2] = {(void *)_ZN18Unk_ov068_02263e4c19func_ov068_02263eb8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f948[2] = {(void *)_ZN22FieldVillagerAiInHouse12inHouseStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9e8[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225fff4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9e8[2] = {(void *)_ZN21FieldVillagerAiStates13enterPushTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa08[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262ad4EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa08[2] = {(void *)_ZN19FieldVillagerAiChat9chatStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa18[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022600e8EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa18[2] = {(void *)_ZN21FieldVillagerAiStates12hitTalkStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa70[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02262044EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa70[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f164[8] = {0x45, 0x00, 0x04, 0x00, 0x4f, 0x00, 0x1d, 0x00};
+extern const u8 sApproachAnimFx[8] = {0x45, 0x00, 0x04, 0x00, 0x4f, 0x00, 0x1d, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fae8[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261db0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fae8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approachStep3EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270d2c[4];
+u32 sAdmireCatchSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f800[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225ff84EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f800[2] = {(void *)_ZN21FieldVillagerAiStates13pushTalkStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c38;
+u32 sPitfallClimbOutStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8b0[2] = {(void *)_ZN18Unk_ov068_02263e4c19func_ov068_02263e4cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8b0[2] = {(void *)_ZN22FieldVillagerAiInHouse11execInHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c8c[4];
+u32 sInHouseSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f11c[8] = {0x0a, 0x05, 0x05, 0x00, 0x50, 0x00, 0x00, 0x00};
+extern const u8 sSimCatchClassWeights[8] = {0x0a, 0x05, 0x05, 0x00, 0x50, 0x00, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa00[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225fd54EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa00[2] = {(void *)_ZN21FieldVillagerAiStates15execAdmireCatchEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270cbc[4];
+u32 sFleaRemovedSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9c0[2] = {(void *)_ZN18Unk_ov068_0226241419func_ov068_02262da0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9c0[2] = {(void *)_ZN19FieldVillagerAiChat24tryChatRevertCatchphraseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8e0[2] = {(void *)_ZN18Unk_ov068_022638c019func_ov068_0226392cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8e0[2] = {(void *)_ZN19FieldVillagerAiTalk9talkStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f8f8[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261b90EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f8f8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15enterFaceTalkerEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c54;
+u32 sPushTalkStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f930[2] = {(void *)_ZN18Unk_ov068_02263cf019func_ov068_02263d6cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f930[2] = {(void *)_ZN21FieldVillagerAiAbsent11absentStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f940[2] = {(void *)_ZN18Unk_ov068_0226190019func_ov068_02261a2cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f940[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16enterFleaRemovedEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa30[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260c14EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa30[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep2EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226faa0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260068EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226faa0[2] = {(void *)_ZN21FieldVillagerAiStates11execHitTalkEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0f0[4] = {0x01, 0x03, 0x02, 0x00};
+extern const u8 sChatClothesMoods[4] = {0x01, 0x03, 0x02, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f810[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0226054cEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f810[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f818[2] = {(void *)_ZN18Unk_ov068_0226229419func_ov068_02262294EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f818[2] = {(void *)_ZN23FieldVillagerAiReaction12execReactionEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f888[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022643d0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f888[2] = {(void *)_ZN21FieldVillagerAiStates13execOffscreenEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f868[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022645dcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f868[2] = {(void *)_ZN21FieldVillagerAiStates10execWanderEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c2c;
+u32 sPitfallStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c6c;
+u32 sPushedStepsGuard;
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa40[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_02260a64EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fa40[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep3EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 data_ov068_02270c7c[2];
+u32 sFaceTalkerSteps[2];
 }
 }
 namespace nsD {
 extern "C" {
-s16 data_ov068_02270c20 = data_020c905c;
+s16 sTalkFacingArc = data_020c905c;
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 data_ov068_0226f0ec[4] = {0x58, 0x02, 0x00, 0x00};
+extern const u8 sFleaRemovedHoldFrames[4] = {0x58, 0x02, 0x00, 0x00};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f950[2] = {(void *)_ZN18Unk_ov068_02263e4c19func_ov068_02264000EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f950[2] = {(void *)_ZN22FieldVillagerAiInHouse12inHouseStep0EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fb50[2] = {(void *)_ZN18Unk_ov068_02263a4019func_ov068_02263a40EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226fb50[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse14execLeaveHouseEP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f828[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_022604fcEP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f828[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f9f0[2] = {(void *)_ZN18Unk_ov068_0225fd5419func_ov068_0225fdc0EP15Unk_ov068_Owner, 0};
+void *data_ov068_0226f9f0[2] = {(void *)_ZN21FieldVillagerAiStates16admireCatchStep1EP15Unk_ov068_Owner, 0};
 }
 }
 namespace ns_02265d34 {
@@ -3422,7 +3422,7 @@ BOOL FieldVillager::vfunc_0c() {
     return TRUE;
 }
 
-BOOL FieldVillager::vfunc_60(u16 *p) {
+BOOL FieldVillager::onToolHit(u16 *p) {
     using namespace ns_02265d34;
     BOOL result = FALSE;
     BOOL r = FALSE;
@@ -3436,7 +3436,7 @@ BOOL FieldVillager::vfunc_60(u16 *p) {
         }
         if (Villager_HasFlea(unk_82c) != 0) {
             X_func_ov068_0225f840((&unk_9f0), this);
-            X_func_ov068_0225f838((&unk_9f0), data_ov068_0226f0ec);
+            X_func_ov068_0225f838((&unk_9f0), sFleaRemovedHoldFrames);
             result = TRUE;
         } else if (getPlayerMemory() != 0) {
             unk_a01 = 1;
@@ -3651,10 +3651,10 @@ s32 FieldVillager_CanSimulateCatch(FieldVillager *o) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
-    u8 *t = data_ov068_0226f11c;
+    u8 *t = sSimCatchClassWeights;
     u8 *g = gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->vfunc_64()))) == 0) {
-        t = data_ov068_0226f134;
+        t = sSimCatchClassWeightsPlanned;
     }
     s32 idx = Talk_PickWeightedIndex(t, 5);
     if ((u32)idx < 4) {
@@ -3684,10 +3684,10 @@ void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b) {
-    u8 *t = data_ov068_0226f11c;
+    u8 *t = sSimCatchClassWeights;
     u8 *g = gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->vfunc_64()))) == 1) {
-        t = data_ov068_0226f134;
+        t = sSimCatchClassWeightsPlanned;
     }
     s32 idx = Talk_PickWeightedIndex(t, 5);
     if ((u32)idx < 4) {
@@ -3743,7 +3743,7 @@ void FieldVillager_UpdateCatchSim(FieldVillager *o) {
 
 namespace ns_02265324 {
 extern "C" {
-void func_ov068_02265994(FieldVillager *o) {
+void FieldVillager_StopEmotion(FieldVillager *o) {
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8) {
         if (NpcActionCtrl_getEmotionId((u8 *)o + 0x564) != 0) {
             s32 r = Emotion_GetEntry(0);
@@ -3759,7 +3759,7 @@ void func_ov068_02265994(FieldVillager *o) {
 
 namespace ns_02265324 {
 extern "C" {
-u32 func_ov068_0226594c(FieldVillager *o) {
+u32 FieldVillager_GetMood(FieldVillager *o) {
     void *p;
     void *q;
     s32 r;
@@ -3780,7 +3780,7 @@ u32 func_ov068_0226594c(FieldVillager *o) {
 
 namespace ns_02265324 {
 extern "C" {
-void *func_ov068_02265918(FieldVillager *o) {
+void *FieldVillager_GetTalkRepeat(FieldVillager *o) {
     void *p = o->vfunc_64();
     void *q;
     void *r;
@@ -3797,7 +3797,7 @@ void *func_ov068_02265918(FieldVillager *o) {
 BOOL FieldVillager::updateAct() {
     using namespace ns_02265324;
     updateStareTimer();
-    void *p = func_ov068_02265918(this);
+    void *p = FieldVillager_GetTalkRepeat(this);
     if (p != 0) {
         TalkRepeat_Tick(p, NpcTalkCtrl_isBusy((u8 *)this + 0x618));
     }
@@ -3846,7 +3846,7 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o) {
     if (self->unk_e0 != 0) {
-        if (func_ov068_02264a64(self, self->unk_e0) == 0) {
+        if (FieldVillagerAi_IsPlayerShowingCatch(self, self->unk_e0) == 0) {
             self->unk_e0 = 0;
         }
     }
@@ -3970,7 +3970,7 @@ s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o) {
         if (self->unk_f4 <= 0 && k != 0 && p != 0) {
             if (NpcActor_getDistanceTo(o, p) <= 0x7000) {
                 s32 d = NpcActor_getRelativeAngleTo(o, p);
-                s32 lim = data_ov068_02270c24;
+                s32 lim = sSeePlayerArc;
                 if (d >= -lim && d <= lim) {
                     res = 1;
                 }
@@ -3996,7 +3996,7 @@ s32 FieldVillagerAi_IsFreeIdle(FieldVillagerAi *self) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_StartCooldown(FieldVillagerAi *self) {
-    self->unk_24 = data_ov068_0226f0fc;
+    self->unk_24 = sFieldVillagerAiCooldown;
 }
 }
 }
@@ -4023,8 +4023,8 @@ void FieldVillagerAi_InitTimers(FieldVillagerAi *self) {
 
 namespace ns_02265324 {
 extern "C" {
-s32 func_ov068_022654c0(FieldVillagerAi *self, FieldVillager *o) {
-    func_ov068_02265994(o);
+s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
+    FieldVillager_StopEmotion(o);
     *(Unk_ov068_0226fa68_Nest *)((u8 *)o + 0x8ac) = *(Unk_ov068_0226fa68_Nest *)&data_ov068_0226fa68;
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
     Unk_02013474_enableFootsteps((u8 *)o + 0x558);
@@ -4032,7 +4032,7 @@ s32 func_ov068_022654c0(FieldVillagerAi *self, FieldVillager *o) {
     if (VillagerRoute_isActive(self->unk_3c) != 0) {
         VillagerRoute_setStepMode(self->unk_3c, 0);
     } else {
-        func_ov068_02265324(self, 0, o);
+        FieldVillagerAi_StartRoute(self, 0, o);
         self->unk_d8 = -1;
         self->unk_da = 0;
     }
@@ -4092,7 +4092,7 @@ s32 FieldVillager_IsNearCameraFocus(Unk_ov068_0226546c_Rect *r, FieldVillager *o
 
 namespace ns_02265324 {
 extern "C" {
-s32 func_ov068_022653ec(FieldVillagerAi *self) {
+s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self) {
     s32 k;
     if (VillagerRoute_isActive(self->unk_3c) != 0) {
         k = 2;
@@ -4100,13 +4100,13 @@ s32 func_ov068_022653ec(FieldVillagerAi *self) {
         k = 3;
     }
     s32 i = func_02063b8c(k);
-    s32 r5 = data_ov068_0226f16c[i];
+    s32 r5 = sRandomRouteTypes[i];
     if (r5 == Unk_02012810_getStage(self->unk_3c)) {
         s32 n = i + 1;
         if (n >= 3) {
             n = 0;
         }
-        r5 = data_ov068_0226f16c[n];
+        r5 = sRandomRouteTypes[n];
     }
     return r5;
 }
@@ -4115,7 +4115,7 @@ s32 func_ov068_022653ec(FieldVillagerAi *self) {
 
 namespace ns_02265324 {
 extern "C" {
-void func_ov068_02265324(FieldVillagerAi *self, s32 a, FieldVillager *o) {
+void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o) {
     void *x = o->vfunc_64();
     s32 r4 = 7;
     if (x != 0) {
@@ -4153,7 +4153,7 @@ void func_ov068_02265324(FieldVillagerAi *self, s32 a, FieldVillager *o) {
     }
 done:
     if (r4 == 7) {
-        r4 = func_ov068_022653ec(self);
+        r4 = FieldVillagerAi_PickRandomRouteType(self);
     }
     VillagerRoute_start(self->unk_3c, &o->unk_5c, r4, a, o);
 }
@@ -4162,7 +4162,7 @@ done:
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_022652d0(void *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_ShouldGoHome(void *self, Unk_ov068_Owner_649 *o) {
     void *a = PlayerData_GetCurrent();
     s32 t;
     if (a != 0) {
@@ -4184,7 +4184,7 @@ BOOL func_ov068_022652d0(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02265270(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
     if (VillagerRoute_isActive(self->unk_3c) != 0 && Unk_02012810_getStage(self->unk_3c) == 3) {
         u8 *p = (u8 *)VillagerDataItemView_getHousePos(o->vfunc_64());
@@ -4205,7 +4205,7 @@ BOOL func_ov068_02265270(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_022651e0(void *self, void *a, Unk_ov068_022649f4_Vec *b) {
+BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f4_Vec *b) {
     if (TalkRequest_IsTalking() != 0) {
         if (func_020e96ec(b, gVec3Zero) != 0) {
             u8 *p = (u8 *)PlayerActor_GetCharacter(4);
@@ -4232,14 +4232,14 @@ BOOL func_ov068_022651e0(void *self, void *a, Unk_ov068_022649f4_Vec *b) {
 
 namespace ns_022649f4 {
 extern "C" {
-s32 func_ov068_0226519c(void *self, Unk_ov068_Owner_649 *o) {
+s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, Unk_ov068_Owner_649 *o) {
     if (o->unk_98 != 0) {
         Unk_ov068_022649f4_Vec t;
         t.x = 0;
         t.y = 0;
         t.z = 0x1000;
         func_020e93a0(&t, o->unk_94);
-        return func_ov068_022651e0(self, &o->unk_5c, &t);
+        return FieldVillagerAi_DirCrossesPlayerTalk(self, &o->unk_5c, &t);
     }
     return 0;
 }
@@ -4248,17 +4248,17 @@ s32 func_ov068_0226519c(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-s32 func_ov068_0226517c(void *self, void *a, void *b) {
+s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b) {
     Unk_ov068_022649f4_Vec t;
     func_020e9960(&t, a, b);
-    return func_ov068_022651e0(self, b, &t);
+    return FieldVillagerAi_DirCrossesPlayerTalk(self, b, &t);
 }
 }
 }
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02265114(void *self, void *v, s32 lim) {
+BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
     if (TalkRequest_IsTalking() != 0) {
         u8 *a = (u8 *)PlayerActor_GetCharacter(4);
         u8 *b = (u8 *)TalkRequest_GetTalkTarget();
@@ -4284,7 +4284,7 @@ BOOL func_ov068_02265114(void *self, void *v, s32 lim) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_0226506c(Unk_ov068_0225fd54 *self, Unk_ov068_022649f4_Vec *out, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_022649f4_Vec *out, Unk_ov068_Owner_649 *o) {
     if (o->vfunc_64() != 0) {
         Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(o->vfunc_64()) + 0x1d);
         if (fl->f1 != 0) {
@@ -4294,7 +4294,7 @@ BOOL func_ov068_0226506c(Unk_ov068_0225fd54 *self, Unk_ov068_022649f4_Vec *out, 
         }
     }
     if (VillagerRoute_isActive(self->unk_3c) == 0 || self->unk_d8 == 0) {
-        func_ov068_02265324(self, 0, o);
+        FieldVillagerAi_StartRoute(self, 0, o);
         self->unk_d8 = -1;
         self->unk_da = 0;
     }
@@ -4314,7 +4314,7 @@ BOOL func_ov068_0226506c(Unk_ov068_0225fd54 *self, Unk_ov068_022649f4_Vec *out, 
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02264ffc(void *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_HandleBlockedMove(void *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
     u8 *r7 = o->unk_564;
     u8 *r6 = o->unk_350;
@@ -4342,7 +4342,7 @@ BOOL func_ov068_02264ffc(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-void *func_ov068_02264f4c(void *self, Unk_ov068_Owner_649 *o) {
+void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o) {
     Unk_ov068_Owner_649 *s = o;
     void *pos = o;
     s16 lim = data_020c6cc0;
@@ -4381,10 +4381,10 @@ void *func_ov068_02264f4c(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02264ee0(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     if (func_02063b8c(5) == 0) {
         if (o->vfunc_b4() != 0) {
-            Unk_ov068_Owner_649 *t = (Unk_ov068_Owner_649 *)func_ov068_02264f4c(self, o);
+            Unk_ov068_Owner_649 *t = (Unk_ov068_Owner_649 *)FieldVillagerAi_FindChatPartner(self, o);
             if (t != 0) {
                 if (t->vfunc_b8(o) != 0) {
                     VillagerTalk_setPartner(o, t);
@@ -4403,7 +4403,7 @@ BOOL func_ov068_02264ee0(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02264b9c(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     struct {
         u16 h[13];
         s32 z[2];
@@ -4548,7 +4548,7 @@ fail:
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02264b30(void *self, Unk_ov068_02264ab4_P2 *v) {
+BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Unk_ov068_02264ab4_P2 *v) {
     void *g = gSceneBlockMap;
     if (g != 0) {
         s32 x = v->x;
@@ -4573,7 +4573,7 @@ BOOL func_ov068_02264b30(void *self, Unk_ov068_02264ab4_P2 *v) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o) {
+BOOL FieldVillagerAi_TryFallInPitfall(void *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
     Unk_ov068_022649f4_Vec *p = &o->unk_5c;
     s32 a, b;
@@ -4583,7 +4583,7 @@ BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o) {
     a = r;
     b = r;
     FieldPos_ToUnit(&a, &b, p);
-    if (func_ov068_02264b30(self, (Unk_ov068_02264ab4_P2 *)&a) != 0) {
+    if (FieldVillagerAi_IsBuriedPitfallAt(self, (Unk_ov068_02264ab4_P2 *)&a) != 0) {
         FieldPos_SnapToUnitCenter(&t, p);
         if (func_020e9650(&t, p) <= 0xb00) {
             q.x = a;
@@ -4604,7 +4604,7 @@ BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-s32 func_ov068_02264aa0(void *self, Unk_ov068_Owner_649 *o) {
+s32 FieldVillagerAi_WasHitByNet(void *self, Unk_ov068_Owner_649 *o) {
     if (o->unk_a01 != 0) {
         return TRUE;
     }
@@ -4615,7 +4615,7 @@ s32 func_ov068_02264aa0(void *self, Unk_ov068_Owner_649 *o) {
 
 namespace ns_022649f4 {
 extern "C" {
-s32 func_ov068_02264a64(void *self) {
+s32 FieldVillagerAi_IsPlayerShowingCatch(void *self) {
     u32 v = PlayerActor_GetLocalShownItem();
     if ((v >= 0x12e8 && v <= 0x131f) || (v >= 0x12b0 && v <= 0x12e7)) {
         return TRUE;
@@ -4627,13 +4627,13 @@ s32 func_ov068_02264a64(void *self) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL func_ov068_022649f4(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
-    u32 r = func_ov068_0226594c(o);
+BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
+    u32 r = FieldVillager_GetMood(o);
     if (self->unk_e0 == 0) {
         switch (r) {
         case 0:
         case 1:
-            if (func_ov068_02264a64(self) != 0) {
+            if (FieldVillagerAi_IsPlayerShowingCatch(self) != 0) {
                 if (o->unk_3b0[0] == 1) {
                     if (NpcActor_getDistanceToPlayer(o, 4) <= 0x6000) {
                         if (NpcLookAt_canSeeTarget(o->unk_3b0, o) != 0) {
@@ -4651,10 +4651,10 @@ BOOL func_ov068_022649f4(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
 }
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022648bc(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::checkWanderEvents(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     BOOL r = FALSE;
-    if (func_ov068_02265270(this, o) != 0) {
+    if (FieldVillagerAi_IsAtHomeDoor(this, o) != 0) {
         u16 v;
         Npc_GetStateHeldItem(&v, o);
         if (v != 0xfff1) {
@@ -4664,42 +4664,42 @@ BOOL Unk_ov068_0225fd54::func_ov068_022648bc(Unk_ov068_Owner *o) {
             FieldVillagerAi_ChangeState(this, o, 2);
         }
         r = TRUE;
-    } else if (func_ov068_02264ab4(this, o) != 0) {
+    } else if (FieldVillagerAi_TryFallInPitfall(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x11);
         r = TRUE;
-    } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4[r]) {
+    } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit[r]) {
         FieldVillagerAi_ChangeState(this, o, 0x15);
         r = TRUE;
-    } else if (func_ov068_02264aa0(this, o) != 0) {
+    } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x13);
         r = TRUE;
     } else if (FieldVillagerAi_CanSeePlayer(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 7);
         r = TRUE;
-    } else if (func_ov068_02264ee0(this, o) != 0) {
+    } else if (FieldVillagerAi_TryStartChat(this, o) != 0) {
         r = TRUE;
     } else if (X_func_ov068_0225f83c((u8 *)o + 0x9f0) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0xb);
         r = TRUE;
-    } else if (func_ov068_02264b9c(this, o) != 0) {
+    } else if (FieldVillagerAi_CheckHeldItemChange(this, o) != 0) {
         r = TRUE;
-    } else if (func_ov068_022649f4(this, o) != 0) {
+    } else if (FieldVillagerAi_ShouldAdmireCatch(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x17);
         r = TRUE;
     } else if (*(u32 *)((u8 *)o + 0x98) != 0) {
-        if (func_ov068_02264ffc(this, o) != 0) {
+        if (FieldVillagerAi_HandleBlockedMove(this, o) != 0) {
             r = TRUE;
         }
     }
     return r;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022645dc(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     u8 *r6 = (u8 *)o + 0x564;
     Unk_ov068_02264188_V3 va, vb;
     if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
-    if (func_ov068_022648bc(o) != 0) {
+    if (checkWanderEvents(o) != 0) {
         goto end;
     }
     if (NpcActionCtrl_isActionDone(r6) != 0) {
@@ -4742,16 +4742,16 @@ BOOL Unk_ov068_0225fd54::func_ov068_022645dc(Unk_ov068_Owner *o) {
             va.x = *(s32 *)gVec3Zero;
             va.y = *(s32 *)(gVec3Zero + 4);
             va.z = *(s32 *)(gVec3Zero + 8);
-            if (func_ov068_0226506c(this, &va, o) != 0) {
-                if (func_ov068_02265114(this, r7, 0xc000) != 0) {
-                    if (func_ov068_0226517c(this, &va, r7) != 0) {
+            if (FieldVillagerAi_GetRouteTarget(this, &va, o) != 0) {
+                if (FieldVillagerAi_IsNearPlayerTalkSpot(this, r7, 0xc000) != 0) {
+                    if (FieldVillagerAi_PathCrossesPlayerTalk(this, &va, r7) != 0) {
                         goto fail;
                     }
                 }
                 s32 d = Math_AngleXZ(r7, &va);
                 if (NpcActor_IsFrontAngle((s16)(d - *(s16 *)((u8 *)o + 0x8e))) != 0) {
                     s32 m = 1;
-                    if (func_02063b8c(4) == 0 && func_ov068_0226594c(o) == 0) {
+                    if (func_02063b8c(4) == 0 && FieldVillager_GetMood(o) == 0) {
                         m = 2;
                     }
                     NpcActionCtrl_requestAction(r6, m, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -4783,7 +4783,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022645dc(Unk_ov068_Owner *o) {
                 unk_de = 0x4b0;
                 goto end;
             }
-            if (func_ov068_02265114(this, (u8 *)o + 0x5c, 0x8000) != 0 && func_ov068_0226519c(this, o) != 0) {
+            if (FieldVillagerAi_IsNearPlayerTalkSpot(this, (u8 *)o + 0x5c, 0x8000) != 0 && FieldVillagerAi_HeadingCrossesPlayerTalk(this, o) != 0) {
                 NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
                 goto end;
             }
@@ -4804,9 +4804,9 @@ end:
     return FALSE;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022644fc(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterOffscreen(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
     unk_20 = 0;
@@ -4817,7 +4817,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022644fc(Unk_ov068_Owner *o) {
     if (VillagerRoute_isActive((u8 *)this + 0x3c) != 0) {
         VillagerRoute_setStepMode((u8 *)this + 0x3c, 1);
     } else {
-        func_ov068_02265324(this, 1, o);
+        FieldVillagerAi_StartRoute(this, 1, o);
         unk_d8 = -1;
         unk_da = 0;
     }
@@ -4826,7 +4826,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022644fc(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022643d0(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::execOffscreen(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0);
@@ -4840,15 +4840,15 @@ BOOL Unk_ov068_0225fd54::func_ov068_022643d0(Unk_ov068_Owner *o) {
             unk_f8 = 0x384;
         }
         if (VillagerRoute_isActive((u8 *)this + 0x3c) == 0 || unk_d8 == 0) {
-            func_ov068_02265324(this, 1, o);
+            FieldVillagerAi_StartRoute(this, 1, o);
             unk_d8 = -1;
             unk_da = 0;
         }
         if (VillagerRoute_isActive((u8 *)this + 0x3c) != 0) {
-            if (func_ov068_02265270(this, o) != 0) {
+            if (FieldVillagerAi_IsAtHomeDoor(this, o) != 0) {
                 FieldVillagerAi_ChangeState(this, o, 3);
             } else {
-                if (Unk_02012810_getStage((u8 *)this + 0x3c) != 3 && func_ov068_022652d0(this, o) != 0) {
+                if (Unk_02012810_getStage((u8 *)this + 0x3c) != 3 && FieldVillagerAi_ShouldGoHome(this, o) != 0) {
                     VillagerRoute_start((u8 *)this + 0x3c, (u8 *)o + 0x5c, 3, 1, o);
                     unk_da = 0;
                 }
@@ -4864,9 +4864,9 @@ BOOL Unk_ov068_0225fd54::func_ov068_022643d0(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_0226433c(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterGoInHouse(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 2, 0, 0, 0, 0xffff8000, 0, 0, data_020c6cc8, 0);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
@@ -4875,7 +4875,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_0226433c(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_022642c4(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::goInHouseStep0(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -4889,7 +4889,7 @@ void Unk_ov068_0225fd54::func_ov068_022642c4(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_0226424c(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::goInHouseStep1(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 1) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -4903,7 +4903,7 @@ void Unk_ov068_0225fd54::func_ov068_0226424c(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_02264188(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::goInHouseStep2(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     Unk_ov068_02264188_V3 v;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
@@ -4944,22 +4944,22 @@ void Unk_ov068_0225fd54::func_ov068_02264188(Unk_ov068_Owner *o) {
 end:;
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_0226410c(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execGoInHouse(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
-    u32 gv_ = data_ov068_02270c30;
+    u32 gv_ = sGoInHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d3c[0] = *(Fn_226410c *)data_ov068_0226fae0;
-        data_ov068_02270d3c[1] = *(Fn_226410c *)data_ov068_0226fb10;
-        data_ov068_02270d3c[2] = *(Fn_226410c *)data_ov068_0226fb20;
-        data_ov068_02270c30 = gv_ | 1;
+        sGoInHouseSteps[0] = *(Fn_226410c *)data_ov068_0226fae0;
+        sGoInHouseSteps[1] = *(Fn_226410c *)data_ov068_0226fb10;
+        sGoInHouseSteps[2] = *(Fn_226410c *)data_ov068_0226fb20;
+        sGoInHouseStepsGuard = gv_ | 1;
     }
     if (unk_1c < 3) {
-        (this->*data_ov068_02270d3c[unk_1c])(o);
+        (this->*sGoInHouseSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_02264008(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterInHouse(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     void *p = PlayerData_GetCurrent();
     s32 r7;
@@ -4970,7 +4970,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02264008(Unk_ov068_Owner *o) {
     }
     void *a = (void *)o->vfunc_64();
     u8 *r4 = (u8 *)Villager_GetState();
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
     VillagerState_SetRole(r4, 0);
@@ -4996,12 +4996,12 @@ BOOL Unk_ov068_0225fd54::func_ov068_02264008(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02263e4c::func_ov068_02264000(Unk_ov068_Owner *o) {
+void FieldVillagerAiInHouse::inHouseStep0(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     unk_1c = 1;
 }
 
-void Unk_ov068_02263e4c::func_ov068_02263eb8(Unk_ov068_Owner *o) {
+void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     void *ow = o->vfunc_64();
     BOOL r = FALSE;
@@ -5048,21 +5048,21 @@ void Unk_ov068_02263e4c::func_ov068_02263eb8(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02263e4c::func_ov068_02263e4c(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiInHouse::execInHouse(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    u32 gv_ = data_ov068_02270c44;
+    u32 gv_ = sInHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270c8c[0] = *(Fn_2263e4c *)data_ov068_0226f950;
-        data_ov068_02270c8c[1] = *(Fn_2263e4c *)data_ov068_0226f948;
-        data_ov068_02270c44 = gv_ | 1;
+        sInHouseSteps[0] = *(Fn_2263e4c *)data_ov068_0226f950;
+        sInHouseSteps[1] = *(Fn_2263e4c *)data_ov068_0226f948;
+        sInHouseStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270c8c[unk_1c])(o);
+        (this->*sInHouseSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02263cf0::func_ov068_02263d74(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiAbsent::enterAbsent(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     void *ow = o->vfunc_64();
     u8 *r4 = (u8 *)Villager_GetState(ow);
@@ -5085,35 +5085,35 @@ BOOL Unk_ov068_02263cf0::func_ov068_02263d74(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02263cf0::func_ov068_02263d6c(Unk_ov068_Owner *o) {
+void FieldVillagerAiAbsent::absentStep0(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     unk_1c = 1;
 }
 
-void Unk_ov068_02263cf0::func_ov068_02263d5c(Unk_ov068_Owner *o) {
+void FieldVillagerAiAbsent::absentStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     *((u8 *)o + 0x561) = 0;
     unk_1c = 2;
 }
 
-s32 Unk_ov068_02263cf0::func_ov068_02263cf0(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiAbsent::execAbsent(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    u32 gv_ = data_ov068_02270c70;
+    u32 gv_ = sAbsentStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270c9c[0] = *(Fn_2263cf0 *)data_ov068_0226f930;
-        data_ov068_02270c9c[1] = *(Fn_2263cf0 *)data_ov068_0226f820;
-        data_ov068_02270c70 = gv_ | 1;
+        sAbsentSteps[0] = *(Fn_2263cf0 *)data_ov068_0226f930;
+        sAbsentSteps[1] = *(Fn_2263cf0 *)data_ov068_0226f820;
+        sAbsentStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270c9c[unk_1c])(o);
+        (this->*sAbsentSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02263a40::func_ov068_02263c20(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiLeaveHouse::enterLeaveHouse(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     u8 *t = (u8 *)VillagerDataItemView_getHousePos(o->vfunc_64());
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     FieldPos_FromUnitCenter((u8 *)o + 0x5c, t[0], t[1] + 1);
     *(u16 *)((u8 *)o + 0x8e) = 0;
@@ -5131,7 +5131,7 @@ BOOL Unk_ov068_02263a40::func_ov068_02263c20(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02263a40::func_ov068_02263b90(Unk_ov068_Owner *o) {
+void FieldVillagerAiLeaveHouse::leaveHouseStep0(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     void *ow = o->vfunc_64();
     void *r6 = Villager_GetState(ow);
@@ -5148,7 +5148,7 @@ void Unk_ov068_02263a40::func_ov068_02263b90(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02263a40::func_ov068_02263aac(Unk_ov068_Owner *o) {
+void FieldVillagerAiLeaveHouse::leaveHouseStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3d) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -5188,23 +5188,23 @@ void Unk_ov068_02263a40::func_ov068_02263aac(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02263a40::func_ov068_02263a40(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiLeaveHouse::execLeaveHouse(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    u32 gv_ = data_ov068_02270c50;
+    u32 gv_ = sLeaveHouseStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270cac[0] = *(Fn_2263a40 *)data_ov068_0226f838;
-        data_ov068_02270cac[1] = *(Fn_2263a40 *)data_ov068_0226f848;
-        data_ov068_02270c50 = gv_ | 1;
+        sLeaveHouseSteps[0] = *(Fn_2263a40 *)data_ov068_0226f838;
+        sLeaveHouseSteps[1] = *(Fn_2263a40 *)data_ov068_0226f848;
+        sLeaveHouseStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270cac[unk_1c])(o);
+        (this->*sLeaveHouseSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_022638c0::func_ov068_02263978(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiTalk::enterTalk(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     Unk_020133cc_Player_resetLastTaughtEmotion(o);
     if (VillagerTalk_hasPartner(o) != 0) {
         NpcTalkCtrl_requestTalk((u8 *)o + 0x618, 1, 0);
@@ -5223,7 +5223,7 @@ BOOL Unk_ov068_022638c0::func_ov068_02263978(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_022638c0::func_ov068_02263930(Unk_ov068_Owner *o) {
+void FieldVillagerAiTalk::talkStep0(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         VillagerMood_requestApply((u8 *)o + 0x838);
@@ -5234,26 +5234,26 @@ void Unk_ov068_022638c0::func_ov068_02263930(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_022638c0::func_ov068_0226392c(Unk_ov068_Owner *o) {
+void FieldVillagerAiTalk::talkStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;}
 
-s32 Unk_ov068_022638c0::func_ov068_022638c0(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiTalk::execTalk(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    u32 gv_ = data_ov068_02270c5c;
+    u32 gv_ = sTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270cdc[0] = *(Fn_22638c0 *)data_ov068_0226f858;
-        data_ov068_02270cdc[1] = *(Fn_22638c0 *)data_ov068_0226f8e0;
-        data_ov068_02270c5c = gv_ | 1;
+        sTalkSteps[0] = *(Fn_22638c0 *)data_ov068_0226f858;
+        sTalkSteps[1] = *(Fn_22638c0 *)data_ov068_0226f8e0;
+        sTalkStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270cdc[unk_1c])(o);
+        (this->*sTalkSteps[unk_1c])(o);
     }
     return 0;
 }
 
 namespace ns_02263600 {
 extern "C" {
-s32 func_ov068_02263880(void *a, void *b) {
+s32 FieldVillagerAi_GetRelationLevel(void *a, void *b) {
     void *g = gSaveVillagers;
     s32 res = 2;
     if (g != 0) {
@@ -5271,23 +5271,23 @@ s32 func_ov068_02263880(void *a, void *b) {
 
 namespace ns_02263600 {
 extern "C" {
-s32 func_ov068_02263840(void *a, void *o) {
+s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o) {
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     void *x = ((Unk_ov068_Owner *)o)->vfunc_64();
     void *y = p->vfunc_64();
     void *a1 = (void *)VillagerData_getVillagerId(x);
     void *a2 = (void *)VillagerData_getVillagerId(y);
-    return func_ov068_02263880(a1, a2);
+    return FieldVillagerAi_GetRelationLevel(a1, a2);
 }
 }
 }
 
 namespace ns_02263600 {
 extern "C" {
-void func_ov068_02263808(void *a, void *r1, void *r2, s8 *t) {
+void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t) {
     void *g = gSaveVillagers;
     if (g != 0) {
-        s32 k = func_ov068_02263880(r1, r2);
+        s32 k = FieldVillagerAi_GetRelationLevel(r1, r2);
         if (k < 5) {
             SaveVillagers_AddRelation(g, (s32)r1, (s32)r2, t[k]);
         }
@@ -5298,20 +5298,20 @@ void func_ov068_02263808(void *a, void *r1, void *r2, s8 *t) {
 
 namespace ns_02263600 {
 extern "C" {
-void func_ov068_022637c0(void *a, void *o, s8 *t) {
+void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t) {
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     void *x = ((Unk_ov068_Owner *)o)->vfunc_64();
     void *y = p->vfunc_64();
     s32 a1 = VillagerData_getVillagerId(x);
     s32 a2 = VillagerData_getVillagerId(y);
-    func_ov068_02263808(a, (void *)a1, (void *)a2, t);
+    FieldVillagerAi_AddRelationByLevel(a, (void *)a1, (void *)a2, t);
 }
 }
 }
 
 namespace ns_02263600 {
 extern "C" {
-void func_ov068_02263768(void *a, s32 unused, s8 *t) {
+void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t) {
     void *g = gSaveVillagers;
     if (g != 0) {
         void *q = SaveVillagers_PickRandomExcept(g, 0, 0);
@@ -5322,7 +5322,7 @@ void func_ov068_02263768(void *a, s32 unused, s8 *t) {
             buf = (u32)r4;
             void *q2 = SaveVillagers_PickRandomExcept(g, &buf, 1);
             if (q2 != 0) {
-                func_ov068_02263808(a, r4, (void *)VillagerData_getVillagerId(q2), t);
+                FieldVillagerAi_AddRelationByLevel(a, r4, (void *)VillagerData_getVillagerId(q2), t);
             }
         }
     }
@@ -5332,7 +5332,7 @@ void func_ov068_02263768(void *a, s32 unused, s8 *t) {
 
 namespace ns_02263600 {
 extern "C" {
-void func_ov068_02263738(void *a, void *o, s32 x, s32 y, u8 flag) {
+void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag) {
     VillagerMood_addMood((u8 *)o + 0x838, x, y);
     if (flag != 0) {
         VillagerMood_requestApply((u8 *)o + 0x838);
@@ -5343,19 +5343,19 @@ void func_ov068_02263738(void *a, void *o, s32 x, s32 y, u8 flag) {
 
 namespace ns_02263600 {
 extern "C" {
-void func_ov068_02263704(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6) {
+void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6) {
     u8 v = tbl[func_02063b8c(n)];
     if (v == 0) {
         p5 = 0;
     }
-    func_ov068_02263738(a, b, v, p5, p6);
+    FieldVillagerAi_AddMood(a, b, v, p5, p6);
 }
 }
 }
 
 namespace ns_02263600 {
 extern "C" {
-s32 func_ov068_02263668(void *unused, u32 *a, u32 *b, u32 c, u32 d) {
+s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d) {
     void *g;
     if (PlayerData_GetCurrent() != 0) {
         g = PlayerData_getPlayerId(PlayerData_GetCurrent());
@@ -5391,7 +5391,7 @@ s32 func_ov068_02263668(void *unused, u32 *a, u32 *b, u32 c, u32 d) {
 
 namespace ns_02263600 {
 extern "C" {
-void *func_ov068_02263600(void *unused, void *x) {
+void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x) {
     if ((u32)gSaveAbleSistersPatterns != 0) {
         u32 i; u16 mask; u32 cnt; mask = 0; cnt = 0; i = 0;
         goto test0;
@@ -5413,7 +5413,7 @@ void *func_ov068_02263600(void *unused, void *x) {
 }
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02263518(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatMoodByRelation(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     void *a;
     void *b;
@@ -5424,29 +5424,29 @@ BOOL Unk_ov068_02262414::func_ov068_02263518(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    func_ov068_02263668(this, &a, &b, x, y);
+    FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    func_ov068_02263768(this, o, data_ov068_0226f10c);
+    FieldVillagerAi_AddRandomPairRelation(this, o, sChatMoodByRelationDeltas);
     switch (SaveVillagers_GetRelationLevelOf(gSaveVillagers, vx, vy)) {
     case 0:
     case 1:
-        func_ov068_02263738(this, o, 1, 2, 1);
-        func_ov068_02263738(this, other, 1, 2, 1);
+        FieldVillagerAi_AddMood(this, o, 1, 2, 1);
+        FieldVillagerAi_AddMood(this, other, 1, 2, 1);
         break;
     case 2:
         break;
     case 3:
     case 4:
-        func_ov068_02263704(this, o, data_ov068_0226f0e8, 2, 2, 1);
-        func_ov068_02263704(this, other, data_ov068_0226f0e8, 2, 2, 1);
+        FieldVillagerAi_AddRandomMood(this, o, sChatBadMoods, 2, 2, 1);
+        FieldVillagerAi_AddRandomMood(this, other, sChatBadMoods, 2, 2, 1);
         break;
     }
     unk_1c = 3;
     return TRUE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02263494(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatNeutral(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     void *a;
     void *b;
@@ -5455,17 +5455,17 @@ BOOL Unk_ov068_02262414::func_ov068_02263494(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    func_ov068_02263668(this, &a, &b, x, y);
+    FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    func_ov068_02263768(this, o, data_ov068_0226f124);
-    func_ov068_02263738(this, o, 0, 0, 1);
-    func_ov068_02263738(this, other, 0, 0, 1);
+    FieldVillagerAi_AddRandomPairRelation(this, o, sChatNeutralDeltas);
+    FieldVillagerAi_AddMood(this, o, 0, 0, 1);
+    FieldVillagerAi_AddMood(this, other, 0, 0, 1);
     unk_1c = 3;
     return TRUE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_022632dc(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     void *a;
     void *b;
@@ -5474,7 +5474,7 @@ BOOL Unk_ov068_02262414::func_ov068_022632dc(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    func_ov068_02263668(this, &a, &b, x, y);
+    FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     MsgString11 s1;
     MsgString11 s2;
     VillagerDataProfileView_getCatchphrase(a, &s1, 0);
@@ -5529,14 +5529,14 @@ BOOL Unk_ov068_02262414::func_ov068_022632dc(Unk_ov068_Owner *o) {
     if (b != 0) {
         Villager_SetCatchphraseFromMsg(b, &s1);
     }
-    func_ov068_02263768(this, o, data_ov068_0226f14c);
-    func_ov068_02263738(this, o, 1, 2, 1);
-    func_ov068_02263738(this, other, 1, 2, 1);
+    FieldVillagerAi_AddRandomPairRelation(this, o, sChatSpreadCatchphraseDeltas);
+    FieldVillagerAi_AddMood(this, o, 1, 2, 1);
+    FieldVillagerAi_AddMood(this, other, 1, 2, 1);
     unk_1c = 3;
     return TRUE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatSpreadShirt(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     u16 h0, h1;
     void *a;
@@ -5546,7 +5546,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    if (func_ov068_02263668(this, &a, &b, x, y) == 0) {
+    if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
         unk_28 = (u8 *)other;
     } else {
         unk_28 = (u8 *)o;
@@ -5618,16 +5618,16 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
         h0 = 0x12a8;
         VillagerDataProfileView_setShirt(b, &h0);
     }
-    func_ov068_022637c0(this, o, data_ov068_0226f114);
+    FieldVillagerAi_AddPartnerRelation(this, o, sChatSpreadShirtDeltas);
     if (ok && b != 0) {
-        func_ov068_02263738(this, o, 1, 2, 0);
-        func_ov068_02263738(this, other, 1, 2, 0);
+        FieldVillagerAi_AddMood(this, o, 1, 2, 0);
+        FieldVillagerAi_AddMood(this, other, 1, 2, 0);
         h1 = 0x12a8;
         Unk_02016a44_requestAct14(unk_28 + 0x564, 1, &h1);
         unk_1c = 2;
     } else {
-        func_ov068_02263738(this, o, 1, 2, 1);
-        func_ov068_02263738(this, other, 1, 2, 1);
+        FieldVillagerAi_AddMood(this, o, 1, 2, 1);
+        FieldVillagerAi_AddMood(this, other, 1, 2, 1);
         unk_1c = 3;
     }
     return TRUE;
@@ -5635,7 +5635,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
     return FALSE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262e5c(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatRevertClothes(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     u16 v0 = 0xfff1;
     u16 v1, v2;
@@ -5644,7 +5644,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262e5c(Unk_ov068_Owner *o) {
     Unk_ov068_Owner *other = VillagerTalk_getPartner(o);
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    s32 r = func_ov068_02263668(this, &a, &b, x, y);
+    s32 r = FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (r == 0) {
@@ -5652,7 +5652,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262e5c(Unk_ov068_Owner *o) {
     } else {
         unk_28 = (u8 *)other;
     }
-    func_ov068_02263768(this, o, data_ov068_0226f104);
+    FieldVillagerAi_AddRandomPairRelation(this, o, sChatRevertClothesDeltas);
     if (Unk_ov068_02262e5c_InRange(VillagerState_GetHeldItem(Villager_GetState(a))) == 0) {
         Villager_GetDefaultUmbrella(&v1, a);
         v0 = v1;
@@ -5676,20 +5676,20 @@ BOOL Unk_ov068_02262414::func_ov068_02262e5c(Unk_ov068_Owner *o) {
         }
     }
     if (same == 0) {
-        func_ov068_02263704(this, o, data_ov068_0226f0f0, 4, 2, 0);
-        func_ov068_02263704(this, other, data_ov068_0226f0f0, 4, 2, 0);
+        FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 0);
+        FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 0);
         VillagerDataProfileView_setShirt(a, &v0);
         Unk_02016a44_requestAct14(unk_28 + 0x564, 1, &v0);
         unk_1c = 2;
     } else {
-        func_ov068_02263704(this, o, data_ov068_0226f0f0, 4, 2, 1);
-        func_ov068_02263704(this, other, data_ov068_0226f0f0, 4, 2, 1);
+        FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 1);
+        FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 1);
         unk_1c = 3;
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262da0(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatRevertCatchphrase(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     void *a;
     void *b;
@@ -5698,21 +5698,21 @@ BOOL Unk_ov068_02262414::func_ov068_02262da0(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    func_ov068_02263668(this, &a, &b, x, y);
+    FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    func_ov068_02263768(this, o, data_ov068_0226f12c);
+    FieldVillagerAi_AddRandomPairRelation(this, o, sChatRevertCatchphraseDeltas);
     EncodedString10 obj;
     if (Villager_GetDefaultCatchphraseEncoded(&obj, VillagerId_GetSpecies(VillagerData_getVillagerId(b))) != 0) {
         Villager_SetCatchphraseEncoded(b, &obj);
     }
-    func_ov068_02263704(this, o, data_ov068_0226f0f8, 4, 2, 1);
-    func_ov068_02263704(this, other, data_ov068_0226f0f8, 4, 2, 1);
+    FieldVillagerAi_AddRandomMood(this, o, sChatCatchphraseMoods, 4, 2, 1);
+    FieldVillagerAi_AddRandomMood(this, other, sChatCatchphraseMoods, 4, 2, 1);
     unk_1c = 3;
     return TRUE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262c20(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(Unk_ov068_Owner *o) {
     using namespace ns_02262c20;
     u16 h0, h1;
     void *a;
@@ -5722,7 +5722,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262c20(Unk_ov068_Owner *o) {
     b = 0;
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
-    if (func_ov068_02263668(this, &a, &b, x, y) == 0) {
+    if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
         unk_28 = (u8 *)o;
     } else {
         unk_28 = (u8 *)other;
@@ -5731,12 +5731,12 @@ BOOL Unk_ov068_02262414::func_ov068_02262c20(Unk_ov068_Owner *o) {
     if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(a))) {
         rec = VillagerData_getPattern(a);
     }
-    rec = func_ov068_02263600(this, rec);
+    rec = FieldVillagerAi_PickOtherAblePattern(this, rec);
     if (rec != 0) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    func_ov068_022637c0(this, o, data_ov068_0226f144);
-    func_ov068_02263738(this, unk_28, 1, 2, 0);
+    FieldVillagerAi_AddPartnerRelation(this, o, sChatAblePatternDeltas);
+    FieldVillagerAi_AddMood(this, unk_28, 1, 2, 0);
     u8 *dst = VillagerData_getPattern(a);
     *(Unk_ov068_02262c20_Blk *)dst = *(Unk_ov068_02262c20_Blk *)rec;
     *(u16 *)(dst + 0x200) = *(u16 *)(rec + 0x200);
@@ -5757,32 +5757,32 @@ BOOL Unk_ov068_02262414::func_ov068_02262c20(Unk_ov068_Owner *o) {
     return FALSE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262b78(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::enterChat(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 v = NpcActor_getAngleTo(o, p);
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 2, 0, (s32)p, gVec3Zero, 4, data_020c6d1c, 1);
     unk_1c = 0;
     VillagerActor_clearFlag834(o);
-    func_ov068_02263738(this, o, 0, 0, 1);
+    FieldVillagerAi_AddMood(this, o, 0, 0, 1);
     VillagerMood_enableEffects((u8 *)o + 0x838);
     return TRUE;
 }
 
-void Unk_ov068_02262414::func_ov068_02262ad4(Unk_ov068_Owner *o) {
+void FieldVillagerAiChat::chatStep0(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         unk_1c = 1;
-        s32 t = func_ov068_02263840(this, o);
+        s32 t = FieldVillagerAi_GetPartnerRelationLevel(this, o);
         if (t < 5) {
-            unk_20 = data_ov068_0226f178[t];
+            unk_20 = sChatDurations[t];
         } else {
             unk_20 = 100;
         }
-    } else if (func_ov068_02264aa0(this, o) != 0) {
+    } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
         if (p != 0 && p->vfunc_bc() != 0) {
             VillagerTalk_setPartner(o, 0);
@@ -5793,7 +5793,7 @@ void Unk_ov068_02262414::func_ov068_02262ad4(Unk_ov068_Owner *o) {
     }
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262a9c(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiChat::isPartnerNear(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 d = 0;
@@ -5806,7 +5806,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262a9c(Unk_ov068_Owner *o) {
     return FALSE;
 }
 
-s32 Unk_ov068_02262414::func_ov068_02262a58(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiChat::getPlayerDistance(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     s32 r = 0;
     void *a = PlayerActor_GetCharacter(4);
@@ -5821,7 +5821,7 @@ s32 Unk_ov068_02262414::func_ov068_02262a58(Unk_ov068_Owner *o) {
     return r;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_022629e0(Unk_ov068_Owner *o, s32 v) {
+BOOL FieldVillagerAiChat::isStrangerPlayerNear(Unk_ov068_Owner *o, s32 v) {
     using namespace ns_02262294;
     s32 h;
     if (PlayerData_GetCurrent() != 0) {
@@ -5843,7 +5843,7 @@ BOOL Unk_ov068_02262414::func_ov068_022629e0(Unk_ov068_Owner *o, s32 v) {
     return FALSE;
 }
 
-BOOL Unk_ov068_02262414::func_ov068_02262994(Unk_ov068_Owner *o, s32 v) {
+BOOL FieldVillagerAiChat::isEnemyPairWithPlayerNear(Unk_ov068_Owner *o, s32 v) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 a = (s32)o->vfunc_64();
@@ -5857,13 +5857,13 @@ BOOL Unk_ov068_02262414::func_ov068_02262994(Unk_ov068_Owner *o, s32 v) {
     return FALSE;
 }
 
-void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
+void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 a;
     s32 b;
     s32 t;
-    if (func_ov068_02264aa0(this, o) != 0 && VillagerActor_isFlag834(o) == 0 && p != 0 && p->vfunc_bc() != 0) {
+    if (FieldVillagerAi_WasHitByNet(this, o) != 0 && VillagerActor_isFlag834(o) == 0 && p != 0 && p->vfunc_bc() != 0) {
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
         FieldVillagerAi_ChangeState(this, o, 0x13);
@@ -5871,8 +5871,8 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
         return;
     }
     if (VillagerTalk_isInvitedByPartner(o) == 0) {
-        t = func_ov068_02262a58(o);
-        if (func_ov068_022629e0(o, t) != 0) {
+        t = getPlayerDistance(o);
+        if (isStrangerPlayerNear(o, t) != 0) {
             VillagerActor_setFlag834(o);
             if (p != 0) {
                 VillagerActor_setFlag834(p);
@@ -5880,19 +5880,19 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
             unk_1c = 3;
             return;
         }
-        if (func_ov068_02262994(o, t) != 0) {
+        if (isEnemyPairWithPlayerNear(o, t) != 0) {
             VillagerActor_setFlag834(o);
             if (p != 0) {
                 VillagerActor_setFlag834(p);
             }
             unk_1c = 3;
-            func_ov068_02263738(this, o, 2, 1, 1);
+            FieldVillagerAi_AddMood(this, o, 2, 1, 1);
             if (p != 0) {
-                func_ov068_02263738(this, p, 2, 1, 1);
+                FieldVillagerAi_AddMood(this, p, 2, 1, 1);
             }
             return;
         }
-        if (func_ov068_02262a9c(o) == 0) {
+        if (isPartnerNear(o) == 0) {
             VillagerActor_setFlag834(o);
             if (p != 0) {
                 VillagerActor_setFlag834(p);
@@ -5919,12 +5919,12 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
                 }
                 if (PlayerData_GetCurrent() == 0) {
                     if (func_02063b8c(2) == 0) {
-                        func_ov068_02263704(this, o, data_ov068_0226f100, 4, 2, 1);
-                        func_ov068_02263704(this, p, data_ov068_0226f100, 4, 2, 1);
+                        FieldVillagerAi_AddRandomMood(this, o, sChatNoPlayerMoods, 4, 2, 1);
+                        FieldVillagerAi_AddRandomMood(this, p, sChatNoPlayerMoods, 4, 2, 1);
                     }
                     unk_1c = 3;
                 } else {
-                    func_ov068_02262548(o);
+                    pickChatOutcome(o);
                 }
             } else {
                 if (NpcActionCtrl_getAction((u8 *)o + 0x564) != 8) {
@@ -5947,7 +5947,7 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
         } else {
             if (a != 0) {
                 if (unk_20 >= 0x14 && func_02063b8c(0x20) == 0) {
-                    NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, data_ov068_0226f15c[func_02063b8c(8)], data_020c6cc8);
+                    NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, sChatEmotions[func_02063b8c(8)], data_020c6cc8);
                 }
             } else {
                 if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8 && NpcActionCtrl_getEmotionId((u8 *)o + 0x564) != 0) {
@@ -5965,7 +5965,7 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
                 }
             }
             if (b != 0 && unk_20 >= 0x14 && func_02063b8c(0x20) == 0) {
-                NpcActionCtrl_requestEmotion((u8 *)p + 0x564, 1, data_ov068_0226f15c[func_02063b8c(8)], data_020c6cc8);
+                NpcActionCtrl_requestEmotion((u8 *)p + 0x564, 1, sChatEmotions[func_02063b8c(8)], data_020c6cc8);
             }
         }
     } else {
@@ -5984,30 +5984,30 @@ void Unk_ov068_02262414::func_ov068_02262648(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02262414::func_ov068_02262548(Unk_ov068_Owner *o) {
+void FieldVillagerAiChat::pickChatOutcome(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
-    u32 gv_ = data_ov068_02270c3c;
+    u32 gv_ = sChatOutcomesGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270e0c[0] = *(Fn_2262548 *)data_ov068_0226f970;
-        data_ov068_02270e0c[1] = *(Fn_2262548 *)data_ov068_0226f980;
-        data_ov068_02270e0c[2] = *(Fn_2262548 *)data_ov068_0226f998;
-        data_ov068_02270e0c[3] = *(Fn_2262548 *)data_ov068_0226f9a8;
-        data_ov068_02270e0c[4] = *(Fn_2262548 *)data_ov068_0226f9b0;
-        data_ov068_02270e0c[5] = *(Fn_2262548 *)data_ov068_0226f9c0;
-        data_ov068_02270e0c[6] = *(Fn_2262548 *)data_ov068_0226f9d8;
-        data_ov068_02270c3c = gv_ | 1;
+        sChatOutcomes[0] = *(Fn_2262548 *)data_ov068_0226f970;
+        sChatOutcomes[1] = *(Fn_2262548 *)data_ov068_0226f980;
+        sChatOutcomes[2] = *(Fn_2262548 *)data_ov068_0226f998;
+        sChatOutcomes[3] = *(Fn_2262548 *)data_ov068_0226f9a8;
+        sChatOutcomes[4] = *(Fn_2262548 *)data_ov068_0226f9b0;
+        sChatOutcomes[5] = *(Fn_2262548 *)data_ov068_0226f9c0;
+        sChatOutcomes[6] = *(Fn_2262548 *)data_ov068_0226f9d8;
+        sChatOutcomesGuard = gv_ | 1;
     }
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     VillagerActor_setFlag834(o);
     VillagerActor_setFlag834(p);
     u8 buf[7];
-    MI_CpuCopy8(data_ov068_0226f154, buf, 7);
+    MI_CpuCopy8(sChatTopicWeights, buf, 7);
     s32 z = 0;
     s32 i;
     for (i = 0; i < 7; i++) {
         u32 k = Talk_PickWeightedIndex(buf, 7);
         if (k < 7) {
-            if ((this->*data_ov068_02270e0c[k])(o) != 0) {
+            if ((this->*sChatOutcomes[k])(o) != 0) {
                 break;
             }
             buf[k] = z;
@@ -6018,7 +6018,7 @@ void Unk_ov068_02262414::func_ov068_02262548(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02262414::func_ov068_022624f8(Unk_ov068_Owner *o) {
+void FieldVillagerAiChat::chatStep2(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     if (NpcActionCtrl_getAction(unk_28 + 0x564) == 0x14 && NpcActionCtrl_isActionDone(unk_28 + 0x564) != 0) {
         VillagerMood_requestApply((u8 *)o + 0x838);
@@ -6027,7 +6027,7 @@ void Unk_ov068_02262414::func_ov068_022624f8(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02262414::func_ov068_022624a4(Unk_ov068_Owner *o) {
+void FieldVillagerAiChat::chatStep3(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     if (p != 0) {
@@ -6042,23 +6042,23 @@ void Unk_ov068_02262414::func_ov068_022624a4(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02262414::func_ov068_02262414(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiChat::execChat(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
-    u32 gv_ = data_ov068_02270c78;
+    u32 gv_ = sChatStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d9c[0] = *(Fn_2262414 *)data_ov068_0226fa08;
-        data_ov068_02270d9c[1] = *(Fn_2262414 *)data_ov068_0226fa20;
-        data_ov068_02270d9c[2] = *(Fn_2262414 *)data_ov068_0226fa28;
-        data_ov068_02270d9c[3] = *(Fn_2262414 *)data_ov068_0226fa38;
-        data_ov068_02270c78 = gv_ | 1;
+        sChatSteps[0] = *(Fn_2262414 *)data_ov068_0226fa08;
+        sChatSteps[1] = *(Fn_2262414 *)data_ov068_0226fa20;
+        sChatSteps[2] = *(Fn_2262414 *)data_ov068_0226fa28;
+        sChatSteps[3] = *(Fn_2262414 *)data_ov068_0226fa38;
+        sChatStepsGuard = gv_ | 1;
     }
     if (unk_1c < 4) {
-        (this->*data_ov068_02270d9c[unk_1c])(o);
+        (this->*sChatSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02262294::func_ov068_02262338(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiReaction::enterReaction(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     void *p = PlayerActor_GetCharacter(4);
     s32 v = 0;
@@ -6096,14 +6096,14 @@ BOOL Unk_ov068_02262294::func_ov068_02262338(Unk_ov068_Owner *o) {
     if (p != 0) {
         v = NpcActor_getAngleTo(o, p);
     }
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     PlayerActor_LocalRequestAct11();
     NpcTalkCtrl_requestState4((u8 *)o + 0x618, st, 0, v, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-void Unk_ov068_02262294::func_ov068_02262304(Unk_ov068_Owner *o) {
+void FieldVillagerAiReaction::reactionStep0(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         TalkRequest_SetTargetDone(o);
@@ -6112,26 +6112,26 @@ void Unk_ov068_02262294::func_ov068_02262304(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02262294::func_ov068_02262300(Unk_ov068_Owner *o) {
+void FieldVillagerAiReaction::reactionStep1(Unk_ov068_Owner *o) {
     using namespace ns_02262294;}
 
-s32 Unk_ov068_02262294::func_ov068_02262294(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiReaction::execReaction(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
-    u32 gv_ = data_ov068_02270c28;
+    u32 gv_ = sReactionStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d1c[0] = *(Fn_2262294 *)data_ov068_0226fa50;
-        data_ov068_02270d1c[1] = *(Fn_2262294 *)data_ov068_0226fa60;
-        data_ov068_02270c28 = gv_ | 1;
+        sReactionSteps[0] = *(Fn_2262294 *)data_ov068_0226fa50;
+        sReactionSteps[1] = *(Fn_2262294 *)data_ov068_0226fa60;
+        sReactionStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270d1c[unk_1c])(o);
+        (this->*sReactionSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_022621fc(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPlayerStates::enterApproach(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     unk_e4 = (Unk_ov068_02261cd4_Tgt *)PlayerActor_GetCharacter(4);
     Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)o + 0x5c);
     unk_e8 = *(s32 *)((u8 *)o + 0x5c);
@@ -6144,7 +6144,7 @@ BOOL Unk_ov068_02261900::func_ov068_022621fc(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_022621d4(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPlayerStates::isNearApproachStart(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (func_020e96a4((u8 *)o + 0x5c, &unk_e8) <= 0xc000) {
         return TRUE;
@@ -6152,12 +6152,12 @@ BOOL Unk_ov068_02261900::func_ov068_022621d4(Unk_ov068_Owner *o) {
     return FALSE;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_0226218c(Unk_ov068_Owner *o, s32 r) {
+BOOL FieldVillagerAiPlayerStates::isTargetInFront(Unk_ov068_Owner *o, s32 r) {
     using namespace ns_02261900;
     BOOL res = FALSE;
     if (NpcActor_getDistanceTo(o, unk_e4) <= r) {
         s32 v = NpcActor_getRelativeAngleTo(o, unk_e4);
-        s32 lim = data_ov068_02270c24;
+        s32 lim = sSeePlayerArc;
         if (v >= -lim && v <= lim) {
             res = TRUE;
         }
@@ -6165,11 +6165,11 @@ BOOL Unk_ov068_02261900::func_ov068_0226218c(Unk_ov068_Owner *o, s32 r) {
     return res;
 }
 
-void Unk_ov068_02261900::func_ov068_02262044(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (unk_e4 != 0) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            if (func_ov068_0226218c(o, 0x3000) != 0) {
+            if (isTargetInFront(o, 0x3000) != 0) {
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 unk_1c = 2;
                 unk_20 = 0xc8;
@@ -6187,7 +6187,7 @@ void Unk_ov068_02261900::func_ov068_02262044(Unk_ov068_Owner *o) {
             v.y = *(s32 *)((u8 *)o + 0x47c);
             v.z = *(s32 *)((u8 *)o + 0x480);
             h = *(s16 *)((u8 *)o + 0x8e);
-            Unk_ov068_02262044_Ent *e = &data_ov068_0226f164[func_02063b8c(2)];
+            Unk_ov068_02262044_Ent *e = &sApproachAnimFx[func_02063b8c(2)];
             Effect_Create(e->a, &v, &h, 0);
             func_02003ddc((u8 *)o + 0x514, e->b + 0x84, 0x7f, 0);
         }
@@ -6200,17 +6200,17 @@ void Unk_ov068_02261900::func_ov068_02262044(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261900::func_ov068_02261f08(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::approachStep1(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     void *q = (u8 *)o + 0x350;
     if (unk_e4 != 0) {
-        if (func_ov068_0226218c(o, 0x3000) != 0) {
+        if (isTargetInFront(o, 0x3000) != 0) {
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_1c = 2;
             unk_20 = 0xc8;
-        } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
+        } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
             FieldVillagerAi_ChangeState(this, o, 0x15);
-        } else if (func_ov068_02264aa0(this, o) != 0) {
+        } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
             FieldVillagerAi_ChangeState(this, o, 0x13);
         } else if (unk_20 == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
@@ -6218,7 +6218,7 @@ void Unk_ov068_02261900::func_ov068_02261f08(Unk_ov068_Owner *o) {
             if ((s32)o->vfunc_64() != 0) {
                 Villager_HalveTalkUrge((s32)o->vfunc_64());
             }
-        } else if (func_ov068_022621d4(o) != 0) {
+        } else if (isNearApproachStart(o) != 0) {
             NpcMoveCtrl_setWaypoint(q, (u8 *)unk_e4 + 0x5c);
         } else {
             FieldVillagerAi_ChangeState(this, o, 0);
@@ -6236,16 +6236,16 @@ void Unk_ov068_02261900::func_ov068_02261f08(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261900::func_ov068_02261e10(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::approachStep2(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (unk_e4 != 0) {
-        if (func_ov068_0226218c(o, 0x5000) == 0) {
+        if (isTargetInFront(o, 0x5000) == 0) {
             s32 t = NpcActor_getAngleTo(o, unk_e4);
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
             unk_1c = 3;
-        } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
+        } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
             FieldVillagerAi_ChangeState(this, o, 0x15);
-        } else if (func_ov068_02264aa0(this, o) != 0) {
+        } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
             FieldVillagerAi_ChangeState(this, o, 0x13);
         } else if (unk_20 == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
@@ -6263,25 +6263,25 @@ void Unk_ov068_02261900::func_ov068_02261e10(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261900::func_ov068_02261db0(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::approachStep3(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         unk_1c = 4;
         unk_20 = 10;
-    } else if (func_ov068_02264aa0(this, o) != 0) {
+    } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x13);
     }
 }
 
-void Unk_ov068_02261900::func_ov068_02261cd4(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::approachStep4(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
+    if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
         FieldVillagerAi_ChangeState(this, o, 0x15);
-    } else if (func_ov068_02264aa0(this, o) != 0) {
+    } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x13);
     } else if (unk_20 == 0) {
-        if (func_ov068_0226218c(o, 0x3000) != 0) {
+        if (isTargetInFront(o, 0x3000) != 0) {
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_1c = 2;
             unk_20 = 0xc8;
@@ -6295,26 +6295,26 @@ void Unk_ov068_02261900::func_ov068_02261cd4(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02261900::func_ov068_02261c38(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiPlayerStates::execApproach(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    u32 gv_ = data_ov068_02270c40;
+    u32 gv_ = sApproachStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270dbc[0] = *(Fn_2261c38 *)data_ov068_0226fa70;
-        data_ov068_02270dbc[1] = *(Fn_2261c38 *)data_ov068_0226fa88;
-        data_ov068_02270dbc[2] = *(Fn_2261c38 *)data_ov068_0226faa8;
-        data_ov068_02270dbc[3] = *(Fn_2261c38 *)data_ov068_0226fae8;
-        data_ov068_02270dbc[4] = *(Fn_2261c38 *)data_ov068_0226fb28;
-        data_ov068_02270c40 = gv_ | 1;
+        sApproachSteps[0] = *(Fn_2261c38 *)data_ov068_0226fa70;
+        sApproachSteps[1] = *(Fn_2261c38 *)data_ov068_0226fa88;
+        sApproachSteps[2] = *(Fn_2261c38 *)data_ov068_0226faa8;
+        sApproachSteps[3] = *(Fn_2261c38 *)data_ov068_0226fae8;
+        sApproachSteps[4] = *(Fn_2261c38 *)data_ov068_0226fb28;
+        sApproachStepsGuard = gv_ | 1;
     }
     if (unk_1c < 5) {
-        (this->*data_ov068_02270dbc[unk_1c])(o);
+        (this->*sApproachSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_02261b90(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPlayerStates::enterFaceTalker(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     if (VillagerTalk_hasPartner(o) != 0 || *(s32 *)((u8 *)o + 0xa08) != 3 || *(u8 *)((u8 *)o + 0xa00) != 0) {
         unk_1c = 1;
     } else {
@@ -6326,7 +6326,7 @@ BOOL Unk_ov068_02261900::func_ov068_02261b90(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02261900::func_ov068_02261b4c(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::faceTalkerStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 2, data_020c6cc8);
@@ -6334,36 +6334,36 @@ void Unk_ov068_02261900::func_ov068_02261b4c(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02261900::func_ov068_02261ae8(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiPlayerStates::execFaceTalker(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    u32 gv_ = data_ov068_02270c4c;
+    u32 gv_ = sFaceTalkerStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270c7c[0] = *(Fn_2261ae8 *)data_ov068_0226f808;
-        data_ov068_02270c4c = gv_ | 1;
+        sFaceTalkerSteps[0] = *(Fn_2261ae8 *)data_ov068_0226f808;
+        sFaceTalkerStepsGuard = gv_ | 1;
     }
     if (unk_1c < 1) {
-        (this->*data_ov068_02270c7c[unk_1c])(o);
+        (this->*sFaceTalkerSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_02261ab8(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPlayerStates::enterJoinTalk(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 2, data_020c6cc8);
     VillagerActor_setFlag834(o);
     return TRUE;
 }
 
-s32 Unk_ov068_02261900::func_ov068_02261ab4(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiPlayerStates::execJoinTalk(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     return 0;
 }
 
-BOOL Unk_ov068_02261900::func_ov068_02261a2c(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPlayerStates::enterFleaRemoved(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     s32 t = NpcActor_getAngleToPlayer(o, 4);
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
@@ -6371,7 +6371,7 @@ BOOL Unk_ov068_02261900::func_ov068_02261a2c(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02261900::func_ov068_022619e8(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::fleaRemovedStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
@@ -6379,35 +6379,35 @@ void Unk_ov068_02261900::func_ov068_022619e8(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261900::func_ov068_0226196c(Unk_ov068_Owner *o) {
+void FieldVillagerAiPlayerStates::fleaRemovedStep1(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (X_func_ov068_0225f83c((u8 *)o + 0x9f0) == 0) {
         unk_1c = 2;
         FieldVillagerAi_ChangeState(this, o, 0);
-    } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
+    } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
         X_func_ov068_0225f838((u8 *)o + 0x9f0, 0);
         FieldVillagerAi_ChangeState(this, o, 0x15);
-    } else if (func_ov068_02264aa0(this, o) != 0) {
+    } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         X_func_ov068_0225f838((u8 *)o + 0x9f0, 0);
         FieldVillagerAi_ChangeState(this, o, 0x13);
     }
 }
 
-s32 Unk_ov068_02261900::func_ov068_02261900(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiPlayerStates::execFleaRemoved(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    u32 gv_ = data_ov068_02270c34;
+    u32 gv_ = sFleaRemovedStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270cbc[0] = *(Fn_2261900 *)data_ov068_0226f920;
-        data_ov068_02270cbc[1] = *(Fn_2261900 *)data_ov068_0226f840;
-        data_ov068_02270c34 = gv_ | 1;
+        sFleaRemovedSteps[0] = *(Fn_2261900 *)data_ov068_0226f920;
+        sFleaRemovedSteps[1] = *(Fn_2261900 *)data_ov068_0226f840;
+        sFleaRemovedStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270cbc[unk_1c])(o);
+        (this->*sFleaRemovedSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0226179c::func_ov068_022617b8(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiBirthdayWait::enterBirthdayWait(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     void *g = gSceneBlockMap;
     u16 s[2];
@@ -6446,14 +6446,14 @@ BOOL Unk_ov068_0226179c::func_ov068_022617b8(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-s32 Unk_ov068_0226179c::func_ov068_0226179c(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiBirthdayWait::execBirthdayWait(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     TalkRequest_AddPlayerTalk6(o, 0);
     PlayerActor_SetSlotFlag(0x1d, 4);
     return 0;
 }
 
-BOOL Unk_ov068_02261574::func_ov068_02261714(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiBirthdayInvite::enterBirthdayInvite(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     void *p = func_02015aac((u8 *)o + 0x680);
     s32 v = 0;
@@ -6468,7 +6468,7 @@ BOOL Unk_ov068_02261574::func_ov068_02261714(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02261574::func_ov068_022616c4(Unk_ov068_Owner *o) {
+void FieldVillagerAiBirthdayInvite::birthdayInviteStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         Camera_SetModeDefault();
@@ -6477,7 +6477,7 @@ void Unk_ov068_02261574::func_ov068_022616c4(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261574::func_ov068_02261644(Unk_ov068_Owner *o) {
+void FieldVillagerAiBirthdayInvite::birthdayInviteStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         Unk_ov068_02261644_V3 *pv = (Unk_ov068_02261644_V3 *)((u8 *)o + 0x5c);
@@ -6490,7 +6490,7 @@ void Unk_ov068_02261574::func_ov068_02261644(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261574::func_ov068_022615f0(Unk_ov068_Owner *o) {
+void FieldVillagerAiBirthdayInvite::birthdayInviteStep2(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if ((NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) || unk_20 == 0) {
         TalkRequest_SetTargetDone(o);
@@ -6500,26 +6500,26 @@ void Unk_ov068_02261574::func_ov068_022615f0(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02261574::func_ov068_02261574(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiBirthdayInvite::execBirthdayInvite(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    u32 gv_ = data_ov068_02270c68;
+    u32 gv_ = sBirthdayInviteStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d6c[0] = *(Fn_2261574 *)data_ov068_0226f860;
-        data_ov068_02270d6c[1] = *(Fn_2261574 *)data_ov068_0226f8d0;
-        data_ov068_02270d6c[2] = *(Fn_2261574 *)data_ov068_0226f880;
-        data_ov068_02270c68 = gv_ | 1;
+        sBirthdayInviteSteps[0] = *(Fn_2261574 *)data_ov068_0226f860;
+        sBirthdayInviteSteps[1] = *(Fn_2261574 *)data_ov068_0226f8d0;
+        sBirthdayInviteSteps[2] = *(Fn_2261574 *)data_ov068_0226f880;
+        sBirthdayInviteStepsGuard = gv_ | 1;
     }
     if (unk_1c < 3) {
-        (this->*data_ov068_02270d6c[unk_1c])(o);
+        (this->*sBirthdayInviteSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02261290::func_ov068_02261444(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiTakeOut::enterTakeOutItem(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     u16 pos[2];
     Npc_GetStateHeldItem(pos);
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     if (Unk_ov068_02261118_InRange(&pos[0])) {
         u16 w = data_020c6cc8;
@@ -6543,7 +6543,7 @@ BOOL Unk_ov068_02261290::func_ov068_02261444(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02261290::func_ov068_02261394(Unk_ov068_Owner *o) {
+void FieldVillagerAiTakeOut::takeOutItemStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6567,7 +6567,7 @@ void Unk_ov068_02261290::func_ov068_02261394(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02261290::func_ov068_022612fc(Unk_ov068_Owner *o) {
+void FieldVillagerAiTakeOut::takeOutItemStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6583,25 +6583,25 @@ void Unk_ov068_02261290::func_ov068_022612fc(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02261290::func_ov068_02261290(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiTakeOut::execTakeOutItem(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    u32 gv_ = data_ov068_02270c74;
+    u32 gv_ = sTakeOutItemStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270cec[0] = *(Fn_2261290 *)data_ov068_0226f8d8;
-        data_ov068_02270cec[1] = *(Fn_2261290 *)data_ov068_0226f900;
-        data_ov068_02270c74 = gv_ | 1;
+        sTakeOutItemSteps[0] = *(Fn_2261290 *)data_ov068_0226f8d8;
+        sTakeOutItemSteps[1] = *(Fn_2261290 *)data_ov068_0226f900;
+        sTakeOutItemStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270cec[unk_1c])(o);
+        (this->*sTakeOutItemSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_02260f90::func_ov068_02261118(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiPutAway::enterPutAwayItem(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     u16 pos[2];
     Npc_GetStateHeldItem(pos);
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     if (Unk_ov068_02261118_InRange(&pos[0])) {
         u16 w = data_020c6cc8;
@@ -6632,7 +6632,7 @@ BOOL Unk_ov068_02260f90::func_ov068_02261118(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_02260f90::func_ov068_02261084(Unk_ov068_Owner *o) {
+void FieldVillagerAiPutAway::putAwayItemStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6656,7 +6656,7 @@ void Unk_ov068_02260f90::func_ov068_02261084(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_02260f90::func_ov068_02260ffc(Unk_ov068_Owner *o) {
+void FieldVillagerAiPutAway::putAwayItemStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6673,23 +6673,23 @@ void Unk_ov068_02260f90::func_ov068_02260ffc(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_02260f90::func_ov068_02260f90(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiPutAway::execPutAwayItem(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    u32 gv_ = data_ov068_02270c64;
+    u32 gv_ = sPutAwayItemStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d0c[0] = *(Fn_2260f90 *)data_ov068_0226f978;
-        data_ov068_02270d0c[1] = *(Fn_2260f90 *)data_ov068_0226f9a0;
-        data_ov068_02270c64 = gv_ | 1;
+        sPutAwayItemSteps[0] = *(Fn_2260f90 *)data_ov068_0226f978;
+        sPutAwayItemSteps[1] = *(Fn_2260f90 *)data_ov068_0226f9a0;
+        sPutAwayItemStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270d0c[unk_1c])(o);
+        (this->*sPutAwayItemSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_02260ed4(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterPitfall(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     u32 t = data_020c6cc8;
     NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x127, 0, t, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
@@ -6704,7 +6704,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260ed4(Unk_ov068_Owner *o) {
 
 namespace ns_022605f4 {
 extern "C" {
-extern "C" void func_ov068_02260e64(s32 *p, s32 target, s32 a, s32 spd, s32 min) {
+extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min) {
     s32 cur = *p;
     if (cur != target) {
         s32 d = target - cur;
@@ -6745,18 +6745,18 @@ extern "C" void func_ov068_02260e64(s32 *p, s32 target, s32 a, s32 spd, s32 min)
 }
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260dcc(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pitfallStep0(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
         Unk_ov068_02260780_Vec *pp = &((Unk_ov068_02260780_Own *)o)->unk_5c;
         Unk_ov068_02260780_Vec loc;
         FieldPos_SnapToUnitCenter(&loc, pp);
-        func_ov068_02260e64(&pp->x, loc.x, 0xe66, 0x1ec, 0x31);
-        func_ov068_02260e64(&pp->z, loc.z, 0xe66, 0x1ec, 0x31);
+        FieldVillager_StepToward(&pp->x, loc.x, 0xe66, 0x1ec, 0x31);
+        FieldVillager_StepToward(&pp->z, loc.z, 0xe66, 0x1ec, 0x31);
         *(u8 *)((u8 *)o + 0x19c) = 1;
         if (pp->x == loc.x && pp->z == loc.z) {
             if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
-                func_ov068_02260cdc(o);
+                pitfallStep1(o);
             } else {
                 unk_1c = 1;
             }
@@ -6764,7 +6764,7 @@ void Unk_ov068_0225fd54::func_ov068_02260dcc(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260cdc(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
         if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
@@ -6798,7 +6798,7 @@ void Unk_ov068_0225fd54::func_ov068_02260cdc(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260c14(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pitfallStep2(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x128) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6824,7 +6824,7 @@ void Unk_ov068_0225fd54::func_ov068_02260c14(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260a64(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x129) {
         if (unk_2c == 0) {
@@ -6881,7 +6881,7 @@ void Unk_ov068_0225fd54::func_ov068_02260a64(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022609e0(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pitfallStep4(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12b || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12a) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -6893,26 +6893,26 @@ void Unk_ov068_0225fd54::func_ov068_022609e0(Unk_ov068_Owner *o) {
     }
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_02260944(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execPitfall(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    u32 gv_ = data_ov068_02270c2c;
+    u32 gv_ = sPitfallStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270de4[0] = *(Fn_2260944 *)data_ov068_0226f9e0;
-        data_ov068_02270de4[1] = *(Fn_2260944 *)data_ov068_0226fa10;
-        data_ov068_02270de4[2] = *(Fn_2260944 *)data_ov068_0226fa30;
-        data_ov068_02270de4[3] = *(Fn_2260944 *)data_ov068_0226fa40;
-        data_ov068_02270de4[4] = *(Fn_2260944 *)data_ov068_0226fa58;
-        data_ov068_02270c2c = gv_ | 1;
+        sPitfallSteps[0] = *(Fn_2260944 *)data_ov068_0226f9e0;
+        sPitfallSteps[1] = *(Fn_2260944 *)data_ov068_0226fa10;
+        sPitfallSteps[2] = *(Fn_2260944 *)data_ov068_0226fa30;
+        sPitfallSteps[3] = *(Fn_2260944 *)data_ov068_0226fa40;
+        sPitfallSteps[4] = *(Fn_2260944 *)data_ov068_0226fa58;
+        sPitfallStepsGuard = gv_ | 1;
     }
     if (unk_1c < 5) {
-        (this->*data_ov068_02270de4[unk_1c])(o);
+        (this->*sPitfallSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_02260780(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterPitfallClimbOut(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
@@ -6963,22 +6963,22 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260780(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_0226071c(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execPitfallClimbOut(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    u32 gv_ = data_ov068_02270c38;
+    u32 gv_ = sPitfallClimbOutStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270c84[0] = *(Fn_226071c *)data_ov068_0226fa78;
-        data_ov068_02270c38 = gv_ | 1;
+        sPitfallClimbOutSteps[0] = *(Fn_226071c *)data_ov068_0226fa78;
+        sPitfallClimbOutStepsGuard = gv_ | 1;
     }
     if (unk_1c < 1) {
-        (this->*data_ov068_02270c84[unk_1c])(o);
+        (this->*sPitfallClimbOutSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022605f4(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterHitByNet(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
@@ -7020,7 +7020,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022605f4(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_0226054c(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitByNetStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xeb || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xec) {
         if (unk_38 >= 3) {
@@ -7032,7 +7032,7 @@ void Unk_ov068_0225fd54::func_ov068_0226054c(Unk_ov068_Owner *o) {
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
                 unk_1c = 1;
             } else {
-                func_0203e450(o);
+                Character_setTalkStartMode0(o);
                 FieldVillagerAi_ChangeState(this, o, 0);
                 unk_3a = 0x4b0;
             }
@@ -7040,7 +7040,7 @@ void Unk_ov068_0225fd54::func_ov068_0226054c(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022604fc(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitByNetStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     TalkRequest_AddPlayerTalk6(o, 0);
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -7050,35 +7050,35 @@ void Unk_ov068_0225fd54::func_ov068_022604fc(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022604cc(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitByNetStep2(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (unk_20 == 0) {
         unk_3a = 0x4b0;
         FieldVillagerAi_ChangeState(this, o, 0);
-        func_0203e450(o);
+        Character_setTalkStartMode0(o);
     } else {
         TalkRequest_AddPlayerTalk6(o, 0);
     }
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_02260450(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execHitByNet(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    u32 gv_ = data_ov068_02270c58;
+    u32 gv_ = sHitByNetStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d54[0] = *(Fn_2260450 *)data_ov068_0226f810;
-        data_ov068_02270d54[1] = *(Fn_2260450 *)data_ov068_0226f828;
-        data_ov068_02270d54[2] = *(Fn_2260450 *)data_ov068_0226f850;
-        data_ov068_02270c58 = gv_ | 1;
+        sHitByNetSteps[0] = *(Fn_2260450 *)data_ov068_0226f810;
+        sHitByNetSteps[1] = *(Fn_2260450 *)data_ov068_0226f828;
+        sHitByNetSteps[2] = *(Fn_2260450 *)data_ov068_0226f850;
+        sHitByNetStepsGuard = gv_ | 1;
     }
     if (unk_1c < 3) {
-        (this->*data_ov068_02270d54[unk_1c])(o);
+        (this->*sHitByNetSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_02260374(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterPushed(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
@@ -7097,7 +7097,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260374(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260324(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pushedStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     TalkRequest_AddPlayerTalk6(o, 0);
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -7107,31 +7107,31 @@ void Unk_ov068_0225fd54::func_ov068_02260324(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022602fc(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pushedStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (unk_20 == 0) {
         FieldVillagerAi_ChangeState(this, o, 0);
-        func_0203e450(o);
+        Character_setTalkStartMode0(o);
     } else {
         TalkRequest_AddPlayerTalk6(o, 0);
     }
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_02260290(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execPushed(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    u32 gv_ = data_ov068_02270c6c;
+    u32 gv_ = sPushedStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270cfc[0] = *(Fn_2260290 *)data_ov068_0226f8a0;
-        data_ov068_02270cfc[1] = *(Fn_2260290 *)data_ov068_0226f908;
-        data_ov068_02270c6c = gv_ | 1;
+        sPushedSteps[0] = *(Fn_2260290 *)data_ov068_0226f8a0;
+        sPushedSteps[1] = *(Fn_2260290 *)data_ov068_0226f908;
+        sPushedStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270cfc[unk_1c])(o);
+        (this->*sPushedSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_022601f0(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterHitTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     Unk_020133cc_Player_resetLastTaughtEmotion(o);
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
@@ -7149,7 +7149,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022601f0(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_02260160(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitTalkStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         void *p = func_02015aac((u8 *)o + 0x680);
@@ -7163,11 +7163,11 @@ void Unk_ov068_0225fd54::func_ov068_02260160(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022600e8(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitTalkStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
-        func_ov068_02263738(this, o, 4, 1, 1);
-        func_0203e450(o);
+        FieldVillagerAi_AddMood(this, o, 4, 1, 1);
+        Character_setTalkStartMode0(o);
         TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
@@ -7180,25 +7180,25 @@ void Unk_ov068_0225fd54::func_ov068_022600e8(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_022600e4(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::hitTalkStep2(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;}
 
-s32 Unk_ov068_0225fd54::func_ov068_02260068(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execHitTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    u32 gv_ = data_ov068_02270c60;
+    u32 gv_ = sHitTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d84[0] = *(Fn_2260068 *)data_ov068_0226f9b8;
-        data_ov068_02270d84[1] = *(Fn_2260068 *)data_ov068_0226fa18;
-        data_ov068_02270d84[2] = *(Fn_2260068 *)data_ov068_0226fa48;
-        data_ov068_02270c60 = gv_ | 1;
+        sHitTalkSteps[0] = *(Fn_2260068 *)data_ov068_0226f9b8;
+        sHitTalkSteps[1] = *(Fn_2260068 *)data_ov068_0226fa18;
+        sHitTalkSteps[2] = *(Fn_2260068 *)data_ov068_0226fa48;
+        sHitTalkStepsGuard = gv_ | 1;
     }
     if (unk_1c < 3) {
-        (this->*data_ov068_02270d84[unk_1c])(o);
+        (this->*sHitTalkSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_0225fff4(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterPushTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     void *p = func_02015aac((u8 *)o + 0x680);
     s32 v = 0;
@@ -7211,11 +7211,11 @@ BOOL Unk_ov068_0225fd54::func_ov068_0225fff4(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_0225ff88(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pushTalkStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
-        func_ov068_02263738(this, o, 4, 1, 1);
-        func_0203e450(o);
+        FieldVillagerAi_AddMood(this, o, 4, 1, 1);
+        Character_setTalkStartMode0(o);
         TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         FieldVillagerAi_SetResumeState(this, 0);
@@ -7226,26 +7226,26 @@ void Unk_ov068_0225fd54::func_ov068_0225ff88(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_0225ff84(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::pushTalkStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;}
 
-s32 Unk_ov068_0225fd54::func_ov068_0225ff18(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execPushTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    u32 gv_ = data_ov068_02270c54;
+    u32 gv_ = sPushTalkStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270ccc[0] = *(Fn_225ff18 *)data_ov068_0226fb30;
-        data_ov068_02270ccc[1] = *(Fn_225ff18 *)data_ov068_0226f800;
-        data_ov068_02270c54 = gv_ | 1;
+        sPushTalkSteps[0] = *(Fn_225ff18 *)data_ov068_0226fb30;
+        sPushTalkSteps[1] = *(Fn_225ff18 *)data_ov068_0226f800;
+        sPushTalkStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270ccc[unk_1c])(o);
+        (this->*sPushTalkSteps[unk_1c])(o);
     }
     return 0;
 }
 
-BOOL Unk_ov068_0225fd54::func_ov068_0225fe70(Unk_ov068_Owner *o) {
+BOOL FieldVillagerAiStates::enterAdmireCatch(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    func_ov068_02265994(o);
+    FieldVillager_StopEmotion(o);
     Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
@@ -7258,7 +7258,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_0225fe70(Unk_ov068_Owner *o) {
     return TRUE;
 }
 
-void Unk_ov068_0225fd54::func_ov068_0225fe28(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::admireCatchStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, 0x1a, data_020c6cc8);
@@ -7267,25 +7267,25 @@ void Unk_ov068_0225fd54::func_ov068_0225fe28(Unk_ov068_Owner *o) {
     }
 }
 
-void Unk_ov068_0225fd54::func_ov068_0225fdc0(Unk_ov068_Owner *o) {
+void FieldVillagerAiStates::admireCatchStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8 && NpcActionCtrl_getEmotionId((u8 *)o + 0x564) == 0x1a && unk_20 == 0 &&
-        func_ov068_02264a64(this) == 0 && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 0) {
+        FieldVillagerAi_IsPlayerShowingCatch(this) == 0 && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         FieldVillagerAi_ChangeState(this, o, 0);
     }
 }
 
-s32 Unk_ov068_0225fd54::func_ov068_0225fd54(Unk_ov068_Owner *o) {
+s32 FieldVillagerAiStates::execAdmireCatch(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    u32 gv_ = data_ov068_02270c48;
+    u32 gv_ = sAdmireCatchStepsGuard;
     if ((gv_ & 1) == 0) {
-        data_ov068_02270d2c[0] = *(Fn_225fd54 *)data_ov068_0226f938;
-        data_ov068_02270d2c[1] = *(Fn_225fd54 *)data_ov068_0226f9f0;
-        data_ov068_02270c48 = gv_ | 1;
+        sAdmireCatchSteps[0] = *(Fn_225fd54 *)data_ov068_0226f938;
+        sAdmireCatchSteps[1] = *(Fn_225fd54 *)data_ov068_0226f9f0;
+        sAdmireCatchStepsGuard = gv_ | 1;
     }
     if (unk_1c < 2) {
-        (this->*data_ov068_02270d2c[unk_1c])(o);
+        (this->*sAdmireCatchSteps[unk_1c])(o);
     }
     return 0;
 }
@@ -7316,8 +7316,8 @@ BOOL _ZN13FieldVillager8vfunc_48Ev(u8 *o) {
 namespace ns_0225fc60 {
 extern "C" {
 BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(Unk_ov068_Owner *o, s32 x) {
-    s16 k = data_ov068_02270c20;
-    u32 v = func_ov068_0226594c(o);
+    s16 k = sTalkFacingArc;
+    u32 v = FieldVillager_GetMood(o);
     BOOL r = FALSE;
     if (o->vfunc_48(x) != 0 && VillagerActor_isFlag834(o) == 0 && FieldVillagerAi_IsState((u8 *)o + 0x8b4, r) != 0 && v <= 1 &&
         NpcActor_isNear(o, x, 0x5000) == 0 && NpcActor_isNear(o, x, 0xe000) != 0 && Character_isInFacingArcOf(o, x, (s16)-k, k) != 0) {
@@ -7377,7 +7377,7 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
             }
         }
         if (unk_9f8 == 0) {
-            if (func_ov068_02265918(this)) {
+            if (FieldVillager_GetTalkRepeat(this)) {
                 TalkRepeat_Count();
             }
         }
@@ -7450,11 +7450,11 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
             if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
                 FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
             }
-            if (func_ov068_02265918(this)) {
+            if (FieldVillager_GetTalkRepeat(this)) {
                 TalkRepeat_StartWindow();
             }
         }
-        func_0203e450(this);
+        Character_setTalkStartMode0(this);
         if (vfunc_64()) {
             Villager_AddTalkUrge(vfunc_64(), -3);
         }
@@ -7473,7 +7473,7 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
     func_0201b08c(this, idx, v);
 }
 
-void FieldVillagerFxTimer::func_ov068_0225f900() {
+void FieldVillagerFxTimer::construct() {
     using namespace ns_0225f1a0;
 }
 
@@ -7564,7 +7564,7 @@ BOOL FieldVillager::vfunc_b8(u32 idx) {
 BOOL FieldVillager::vfunc_bc() {
     using namespace ns_0225f1a0;
     if (VillagerTalk_hasPartner(this)) {
-        func_ov068_02265994(this);
+        FieldVillager_StopEmotion(this);
         if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
             FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
         }
@@ -7592,7 +7592,7 @@ void FieldVillager::onLeaveTalk() {
     FieldVillagerAi_StartCooldown(&unk_8b4);
 }
 
-void FieldVillagerLook::func_ov068_0225f6b0() {
+void FieldVillagerLook::construct() {
     using namespace ns_0225f1a0;
 }
 
@@ -7642,7 +7642,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, voi
     unk_08 = idx;
 }
 
-s32 FieldVillagerLook::func_ov068_0225f56c(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 t = FieldInsect_GetPosAndKind(v, i);
     if (t != -1 && func_020e9650(p, v) < lim) {
@@ -7651,12 +7651,12 @@ s32 FieldVillagerLook::func_ov068_0225f56c(Unk_ov068_0225f23c_Vec *v, s32 i, Unk
     return -1;
 }
 
-s32 FieldVillagerLook::func_ov068_0225f52c(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::findInsectNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 i;
     s32 t;
     for (i = 0; i < 8; i++) {
-        t = func_ov068_0225f56c(v, i, p, lim);
+        t = getInsectIfNear(v, i, p, lim);
         if (t != -1) {
             *out = i;
             return t;
@@ -7665,7 +7665,7 @@ s32 FieldVillagerLook::func_ov068_0225f52c(Unk_ov068_0225f23c_Vec *v, s32 *out, 
     return -1;
 }
 
-BOOL FieldVillagerLook::func_ov068_0225f4fc(u32 a, s32 b) {
+BOOL FieldVillagerLook::isSameInsect(u32 a, s32 b) {
     using namespace ns_0225f1a0;
     u8 buf[1];
     if (b != -1) {
@@ -7679,7 +7679,7 @@ BOOL FieldVillagerLook::func_ov068_0225f4fc(u32 a, s32 b) {
     return FALSE;
 }
 
-void FieldVillagerLook::func_ov068_0225f4c4(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
+void FieldVillagerLook::startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
     using namespace ns_0225f1a0;
     unk_0c = a;
     unk_10 = b;
@@ -7688,11 +7688,11 @@ void FieldVillagerLook::func_ov068_0225f4c4(FieldVillager *o, s32 a, s32 b, Unk_
     unk_14 = 0;
 }
 
-void FieldVillagerLook::func_ov068_0225f460(FieldVillager *o) {
+void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
-    if (func_ov068_0225f4fc(unk_0c, unk_10)) {
-        s32 r = func_ov068_0225f56c(&buf, unk_0c, &o->unk_5c, o->unk_40c);
+    if (isSameInsect(unk_0c, unk_10)) {
+        s32 r = getInsectIfNear(&buf, unk_0c, &o->unk_5c, o->unk_40c);
         if (r != -1 && r == unk_10) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
@@ -7703,7 +7703,7 @@ void FieldVillagerLook::func_ov068_0225f460(FieldVillager *o) {
     }
 }
 
-BOOL FieldVillagerLook::func_ov068_0225f430(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+BOOL FieldVillagerLook::getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
     if (FishShadow_GetPos(v, i) && func_020e9650(p, v) < lim) {
         return TRUE;
@@ -7711,14 +7711,14 @@ BOOL FieldVillagerLook::func_ov068_0225f430(Unk_ov068_0225f23c_Vec *v, s32 i, Un
     return FALSE;
 }
 
-s32 FieldVillagerLook::func_ov068_0225f3e4(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::findFishNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 i;
     s32 t;
     for (i = 0; i < 6; i++) {
         t = FishShadow_GetFishId(i);
         if (t != -1) {
-            if (func_ov068_0225f430(v, i, p, lim)) {
+            if (getFishPosIfNear(v, i, p, lim)) {
                 *out = i;
                 return t;
             }
@@ -7727,7 +7727,7 @@ s32 FieldVillagerLook::func_ov068_0225f3e4(Unk_ov068_0225f23c_Vec *v, s32 *out, 
     return -1;
 }
 
-BOOL FieldVillagerLook::func_ov068_0225f3c0(s32 a, s32 b) {
+BOOL FieldVillagerLook::isSameFish(s32 a, s32 b) {
     using namespace ns_0225f1a0;
     s32 t = FishShadow_GetFishId(a);
     if (t != -1 && b == t) {
@@ -7736,7 +7736,7 @@ BOOL FieldVillagerLook::func_ov068_0225f3c0(s32 a, s32 b) {
     return FALSE;
 }
 
-void FieldVillagerLook::func_ov068_0225f384(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
+void FieldVillagerLook::startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
     using namespace ns_0225f1a0;
     unk_0c = a;
     unk_10 = b;
@@ -7745,11 +7745,11 @@ void FieldVillagerLook::func_ov068_0225f384(FieldVillager *o, s32 a, s32 b, Unk_
     unk_14 = 0;
 }
 
-void FieldVillagerLook::func_ov068_0225f328(FieldVillager *o) {
+void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
-    if (func_ov068_0225f3c0(unk_0c, unk_10)) {
-        if (func_ov068_0225f430(&buf, unk_0c, &o->unk_5c, o->unk_40c)) {
+    if (isSameFish(unk_0c, unk_10)) {
+        if (getFishPosIfNear(&buf, unk_0c, &o->unk_5c, o->unk_40c)) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
             resetLook(o);
@@ -7769,18 +7769,18 @@ void FieldVillagerLook::update(FieldVillager *o) {
         if (a == b) {
             switch (a) {
             case 1:
-                if (func_ov068_0226594c(o) <= 1) {
+                if (FieldVillager_GetMood(o) <= 1) {
                     if (NpcLookAt_canSeeTarget(o->unk_3b0, o) == 0) {
                         s32 r;
                         idx = -1;
-                        r = func_ov068_0225f52c(&buf, &idx, &o->unk_5c, 0x5000);
+                        r = findInsectNear(&buf, &idx, &o->unk_5c, 0x5000);
                         if (r != -1) {
-                            func_ov068_0225f4c4(o, idx, r, &buf);
+                            startLookAtInsect(o, idx, r, &buf);
                         } else {
                             idx = -1;
-                            r = func_ov068_0225f3e4(&buf, &idx, &o->unk_5c, 0x5000);
+                            r = findFishNear(&buf, &idx, &o->unk_5c, 0x5000);
                             if (r != -1) {
-                                func_ov068_0225f384(o, idx, r, &buf);
+                                startLookAtFish(o, idx, r, &buf);
                             }
                         }
                     }
@@ -7792,10 +7792,10 @@ void FieldVillagerLook::update(FieldVillager *o) {
                 }
                 switch (unk_04) {
                 case 0:
-                    func_ov068_0225f460(o);
+                    trackInsect(o);
                     break;
                 case 1:
-                    func_ov068_0225f328(o);
+                    trackFish(o);
                     break;
                 default:
                     resetLook(o);

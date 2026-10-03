@@ -143,7 +143,7 @@ s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
 s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
 void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
 void String_Load2dMenu(void *a, u8 v);
-BOOL func_020a78a4(void *, const void *, s32);
+BOOL EncodedString_SetRaw(void *, const void *, s32);
 u8 String_SetSlot(u32 idx, MsgString *other);
 BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
@@ -338,7 +338,7 @@ void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
     if (str == NULL) {
         t->clear();
     } else {
-        func_020a78a4(&sA, str, 8);
+        EncodedString_SetRaw(&sA, str, 8);
         sB.fromEncoded(&sA, 0, 0);
         String_SetSlot(0, &sB);
         String_Load2dMenu(t, 0x66);

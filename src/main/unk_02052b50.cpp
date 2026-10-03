@@ -124,7 +124,7 @@ void Gfx_DisableAllBanks()
     GX_DisableBankForSubOBJExtPltt();
 }
 
-void func_020535e0()
+void Gfx_ResetDisplayRegs()
 {
     volatile u16 *r = (volatile u16 *)0x4000000;
     u8 *b = (u8 *)r;

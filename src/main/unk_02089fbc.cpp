@@ -93,11 +93,11 @@ void HudUnkSlideIcon_Reset();
 void HudUnkIcon_Reset();
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
-void func_0201190c(u32 a, u32 b, u32 c);
-void func_0201192c(u32 a, u32 b);
-void func_02011900(u32 a);
-s32 func_0201188c();
-BOOL func_020118f4();
+void HudObjGfx_LoadCameraButton(u32 a, u32 b, u32 c);
+void HudObjGfx_LoadKind(u32 a, u32 b);
+void HudObjGfx_SetCountdownVariant(u32 a);
+s32 Hud_GetSceneHudKind();
+BOOL HudObjGfx_GetCountdownVariant();
 s32 MenuCtrl_IsTransitionActive();
 s32 ChatBalloon_IsRemoteBusy();
 s32 MenuCtrl_GetTransitionProgressOrFull();
@@ -2558,8 +2558,8 @@ void HudController::updateClock() {
 
 void HudController::enterCountdown() {
     unk_04 = 2;
-    func_02011900(1);
-    func_0201192c(1, 1);
+    HudObjGfx_SetCountdownVariant(1);
+    HudObjGfx_LoadKind(1, 1);
 }
 
 void HudControllerStates::updateCountdown() {
@@ -2576,8 +2576,8 @@ void HudControllerStates::updateCountdown() {
             if (r5) {
                 enterHidden();
             } else {
-                func_02011900(0);
-                func_0201192c(4, 1);
+                HudObjGfx_SetCountdownVariant(0);
+                HudObjGfx_LoadKind(4, 1);
                 _ZN13HudController10enterClockEv(this);
             }
         }
@@ -2608,7 +2608,7 @@ void HudControllerStates::updateWallet() {
 }
 
 void HudControllerStates::enterHidden() {
-    func_0201192c(3, 1);
+    HudObjGfx_LoadKind(3, 1);
     unk_04 = 5;
 }
 
@@ -2618,7 +2618,7 @@ void HudControllerStates::updateHidden() {
     } else {
         _ZN9HudWallet4hideEv(&unk_2a4);
         if (_ZN9HudWallet8isHiddenEv(&unk_2a4)) {
-            func_0201192c(4, 1);
+            HudObjGfx_LoadKind(4, 1);
             enterModeForRoom();
         }
     }
@@ -2626,7 +2626,7 @@ void HudControllerStates::updateHidden() {
 }
 
 void HudControllerStates::updateSharedPanels() {
-    if (func_0201188c() != 0) {
+    if (Hud_GetSceneHudKind() != 0) {
         if (Unk_0208a150_IsOne(gFieldSceneKind)) {
             if (_ZN12HudCountdown10isFinishedEv(&unk_d0)) {
                 _ZN12HudCountdown4hideEv(&unk_d0);
@@ -2644,9 +2644,9 @@ void HudControllerStates::updateSharedPanels() {
 }
 
 void HudControllerStates::enterModeForRoom() {
-    s32 r = func_0201188c();
+    s32 r = Hud_GetSceneHudKind();
     if (r == 1) {
-        if (func_020118f4()) {
+        if (HudObjGfx_GetCountdownVariant()) {
             _ZN13HudController14enterCountdownEv(this);
         } else {
             _ZN13HudController10enterClockEv(this);
@@ -2674,7 +2674,7 @@ void HudControllerStates::updateInputLayout() {
     if (r) {
         unk_316 = unk_316 == 0 ? 1 : 0;
         if (unk_04 == 3) {
-            func_0201190c(unk_316, 1, 1);
+            HudObjGfx_LoadCameraButton(unk_316, 1, 1);
         }
     }
 }

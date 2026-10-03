@@ -233,15 +233,15 @@ struct NpcActor : Character {
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct() = 0;
     virtual const char *getTexturePath() = 0;
     virtual const char *getModelPath() = 0;
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -264,8 +264,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
@@ -314,209 +314,209 @@ extern const u8 sSpNpcTestMsgKey[8];
 extern const char *const sSpNpcModelPaths[];
 }
 
-extern "C" SpNpcTest *func_020c29ec();
+extern "C" SpNpcTest *SpNpcTest_Create();
 extern Unk_020c28b0_Entry sSpNpcTestActTable[4];
-extern char data_020e6c5c[23];
-extern char data_020e6c74[23];
-extern char data_020e6c8c[23];
-extern char data_020e6ca4[23];
-extern char data_020e6cbc[23];
-extern char data_020e6cd4[23];
-extern char data_020e6cec[23];
-extern char data_020e6d04[23];
-extern char data_020e6d1c[23];
-extern char data_020e6d34[23];
-extern char data_020e6d4c[23];
-extern char data_020e6d64[23];
-extern char data_020e6d7c[23];
-extern char data_020e6d94[23];
-extern char data_020e6dac[23];
-extern char data_020e6dc4[23];
-extern char data_020e6ddc[23];
-extern char data_020e6df4[23];
-extern char data_020e6e0c[23];
-extern char data_020e6e24[23];
-extern char data_020e6e3c[23];
-extern char data_020e6e54[23];
-extern char data_020e6e6c[23];
-extern char data_020e6e84[23];
-extern char data_020e6e9c[23];
-extern char data_020e6eb4[23];
-extern char data_020e6ecc[23];
-extern char data_020e6ee4[23];
-extern char data_020e6efc[23];
-extern char data_020e6f14[23];
-extern char data_020e6f2c[23];
-extern char data_020e6f44[23];
-extern char data_020e6f5c[23];
-extern char data_020e6f74[23];
-extern char data_020e6f8c[23];
-extern char data_020e6fa4[23];
-extern char data_020e6fd4[27];
-extern char data_020e6ff0[27];
-extern char data_020e700c[27];
-extern char data_020e7028[27];
-extern char data_020e7044[27];
-extern char data_020e7060[27];
-extern char data_020e707c[27];
-extern char data_020e7098[27];
-extern char data_020e70b4[27];
-extern char data_020e70d0[27];
-extern char data_020e70ec[27];
-extern char data_020e7108[27];
-extern char data_020e7124[27];
-extern char data_020e7140[27];
-extern char data_020e715c[27];
-extern char data_020e7178[27];
-extern char data_020e7194[27];
-extern char data_020e71b0[27];
-extern char data_020e71cc[27];
-extern char data_020e71e8[27];
-extern char data_020e7204[27];
-extern char data_020e7220[27];
-extern char data_020e723c[27];
-extern char data_020e7258[27];
-extern char data_020e7274[27];
-extern char data_020e7290[27];
-extern char data_020e72ac[27];
-extern char data_020e72c8[27];
-extern char data_020e72e4[27];
-extern char data_020e7300[27];
-extern char data_020e731c[27];
-extern char data_020e7338[27];
-extern char data_020e7354[27];
-extern char data_020e7370[27];
-extern char data_020e738c[27];
+extern char sSpNpcModelLos[23];
+extern char sSpNpcModelWrl[23];
+extern char sSpNpcModelMum[23];
+extern char sSpNpcModelXct[23];
+extern char sSpNpcModelPoo[23];
+extern char sSpNpcModelTti[23];
+extern char sSpNpcModelOtt[23];
+extern char sSpNpcModelSeo[23];
+extern char sSpNpcModelSeg[23];
+extern char sSpNpcModelWip[23];
+extern char sSpNpcModelLrc[23];
+extern char sSpNpcModelMol[23];
+extern char sSpNpcModelPge[23];
+extern char sSpNpcModelTtl[23];
+extern char sSpNpcModelDnk[23];
+extern char sSpNpcModelBoa[23];
+extern char sSpNpcModelEnd[23];
+extern char sSpNpcModelPlc[23];
+extern char sSpNpcModelPgb[23];
+extern char sSpNpcModelRcn[23];
+extern char sSpNpcModelHgh[23];
+extern char sSpNpcModelHgs[23];
+extern char sSpNpcModelOws[23];
+extern char sSpNpcModelCml[23];
+extern char sSpNpcModelPlb[23];
+extern char sSpNpcModelBpt[23];
+extern char sSpNpcModelRcs[23];
+extern char sSpNpcModelRcd[23];
+extern char sSpNpcModelGrf[23];
+extern char sSpNpcModelRcc[23];
+extern char sSpNpcModelOwl[23];
+extern char sSpNpcModelPla[23];
+extern char sSpNpcModelMka[23];
+extern char sSpNpcModelFox[23];
+extern char sSpNpcModelUpa[23];
+extern char sSpNpcModelPga[23];
+extern char sSpNpcTexUpa[27];
+extern char sSpNpcTexMol[27];
+extern char sSpNpcTexTtl[27];
+extern char sSpNpcTexLos[27];
+extern char sSpNpcTexWrl[27];
+extern char sSpNpcTexWip[27];
+extern char sSpNpcTexLrc[27];
+extern char sSpNpcTexMum[27];
+extern char sSpNpcTexSeg[27];
+extern char sSpNpcTexSeo[27];
+extern char sSpNpcTexXct[27];
+extern char sSpNpcTexPoo[27];
+extern char sSpNpcTexOws[27];
+extern char sSpNpcTexTti[27];
+extern char sSpNpcTexPla[27];
+extern char sSpNpcTexBoa[27];
+extern char sSpNpcTexRcc[27];
+extern char sSpNpcTexCml[27];
+extern char sSpNpcTexHgh[27];
+extern char sSpNpcTexRcs[27];
+extern char sSpNpcTexHgs[27];
+extern char sSpNpcTexPga[27];
+extern char sSpNpcTexRcd[27];
+extern char sSpNpcTexPgb[27];
+extern char sSpNpcTexPlb[27];
+extern char sSpNpcTexEnd[27];
+extern char sSpNpcTexRcn[27];
+extern char sSpNpcTexBpt[27];
+extern char sSpNpcTexDnk[27];
+extern char sSpNpcTexGrf[27];
+extern char sSpNpcTexOwl[27];
+extern char sSpNpcTexPge[27];
+extern char sSpNpcTexOtt[27];
+extern char sSpNpcTexFox[27];
+extern char sSpNpcTexPlc[27];
 
-char data_020e7124[] = "npc_sp/model/ows_tex.nsbtx";
-char data_020e6cbc[] = "npc_sp/model/poo.nsbmd";
-char data_020e7140[] = "npc_sp/model/tti_tex.nsbtx";
-char data_020e6f14[] = "npc_sp/model/rcc.nsbmd";
-char data_020e6f44[] = "npc_sp/model/pla.nsbmd";
-char data_020e6ecc[] = "npc_sp/model/rcs.nsbmd";
-char data_020e7338[] = "npc_sp/model/pge_tex.nsbtx";
-char data_020e6efc[] = "npc_sp/model/grf.nsbmd";
-char data_020e6f5c[] = "npc_sp/model/mka.nsbmd";
-char data_020e71b0[] = "npc_sp/model/cml_tex.nsbtx";
-char data_020e6e24[] = "npc_sp/model/rcn.nsbmd";
-char data_020e6e3c[] = "npc_sp/model/hgh.nsbmd";
-char data_020e6e6c[] = "npc_sp/model/ows.nsbmd";
-char data_020e7204[] = "npc_sp/model/hgs_tex.nsbtx";
-char data_020e7220[] = "npc_sp/model/pga_tex.nsbtx";
-char data_020e7258[] = "npc_sp/model/pgb_tex.nsbtx";
-char data_020e7274[] = "npc_sp/model/plb_tex.nsbtx";
+char sSpNpcTexOws[] = "npc_sp/model/ows_tex.nsbtx";
+char sSpNpcModelPoo[] = "npc_sp/model/poo.nsbmd";
+char sSpNpcTexTti[] = "npc_sp/model/tti_tex.nsbtx";
+char sSpNpcModelRcc[] = "npc_sp/model/rcc.nsbmd";
+char sSpNpcModelPla[] = "npc_sp/model/pla.nsbmd";
+char sSpNpcModelRcs[] = "npc_sp/model/rcs.nsbmd";
+char sSpNpcTexPge[] = "npc_sp/model/pge_tex.nsbtx";
+char sSpNpcModelGrf[] = "npc_sp/model/grf.nsbmd";
+char sSpNpcModelMka[] = "npc_sp/model/mka.nsbmd";
+char sSpNpcTexCml[] = "npc_sp/model/cml_tex.nsbtx";
+char sSpNpcModelRcn[] = "npc_sp/model/rcn.nsbmd";
+char sSpNpcModelHgh[] = "npc_sp/model/hgh.nsbmd";
+char sSpNpcModelOws[] = "npc_sp/model/ows.nsbmd";
+char sSpNpcTexHgs[] = "npc_sp/model/hgs_tex.nsbtx";
+char sSpNpcTexPga[] = "npc_sp/model/pga_tex.nsbtx";
+char sSpNpcTexPgb[] = "npc_sp/model/pgb_tex.nsbtx";
+char sSpNpcTexPlb[] = "npc_sp/model/plb_tex.nsbtx";
 struct Unk_020e6fbc_Rec {
     SpNpcTest *(*fn)();
     u32 w[5];
 };
-Unk_020e6fbc_Rec sSpNpcTestProfile = { func_020c29ec, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
-char data_020e7290[] = "npc_sp/model/end_tex.nsbtx";
-char data_020e6dac[] = "npc_sp/model/dnk.nsbmd";
-char data_020e6eb4[] = "npc_sp/model/bpt.nsbmd";
-char data_020e72c8[] = "npc_sp/model/bpt_tex.nsbtx";
-char data_020e72e4[] = "npc_sp/model/dnk_tex.nsbtx";
-char data_020e7300[] = "npc_sp/model/grf_tex.nsbtx";
-char data_020e6d04[] = "npc_sp/model/seo.nsbmd";
-char data_020e731c[] = "npc_sp/model/owl_tex.nsbtx";
-char data_020e7354[] = "npc_sp/model/ott_tex.nsbtx";
-char data_020e6fd4[] = "npc_sp/model/upa_tex.nsbtx";
-char data_020e6cd4[] = "npc_sp/model/tti.nsbmd";
-char data_020e6ff0[] = "npc_sp/model/mol_tex.nsbtx";
-char data_020e6ca4[] = "npc_sp/model/xct.nsbmd";
-char data_020e700c[] = "npc_sp/model/ttl_tex.nsbtx";
-char data_020e6d94[] = "npc_sp/model/ttl.nsbmd";
-char data_020e6c8c[] = "npc_sp/model/mum.nsbmd";
-char data_020e7028[] = "npc_sp/model/los_tex.nsbtx";
+Unk_020e6fbc_Rec sSpNpcTestProfile = { SpNpcTest_Create, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
+char sSpNpcTexEnd[] = "npc_sp/model/end_tex.nsbtx";
+char sSpNpcModelDnk[] = "npc_sp/model/dnk.nsbmd";
+char sSpNpcModelBpt[] = "npc_sp/model/bpt.nsbmd";
+char sSpNpcTexBpt[] = "npc_sp/model/bpt_tex.nsbtx";
+char sSpNpcTexDnk[] = "npc_sp/model/dnk_tex.nsbtx";
+char sSpNpcTexGrf[] = "npc_sp/model/grf_tex.nsbtx";
+char sSpNpcModelSeo[] = "npc_sp/model/seo.nsbmd";
+char sSpNpcTexOwl[] = "npc_sp/model/owl_tex.nsbtx";
+char sSpNpcTexOtt[] = "npc_sp/model/ott_tex.nsbtx";
+char sSpNpcTexUpa[] = "npc_sp/model/upa_tex.nsbtx";
+char sSpNpcModelTti[] = "npc_sp/model/tti.nsbmd";
+char sSpNpcTexMol[] = "npc_sp/model/mol_tex.nsbtx";
+char sSpNpcModelXct[] = "npc_sp/model/xct.nsbmd";
+char sSpNpcTexTtl[] = "npc_sp/model/ttl_tex.nsbtx";
+char sSpNpcModelTtl[] = "npc_sp/model/ttl.nsbmd";
+char sSpNpcModelMum[] = "npc_sp/model/mum.nsbmd";
+char sSpNpcTexLos[] = "npc_sp/model/los_tex.nsbtx";
 const u8 sSpNpcTestMsgKey[8] = { 't', 'e', 's', 't' };
-char data_020e7060[] = "npc_sp/model/wip_tex.nsbtx";
-char data_020e6cec[] = "npc_sp/model/ott.nsbmd";
+char sSpNpcTexWip[] = "npc_sp/model/wip_tex.nsbtx";
+char sSpNpcModelOtt[] = "npc_sp/model/ott.nsbmd";
 const char *const sSpNpcModelPaths[78] = {
-    data_020e6df4,
-    data_020e738c,
-    data_020e6f44,
-    data_020e715c,
-    data_020e6dc4,
-    data_020e7178,
-    data_020e6e84,
-    data_020e71b0,
-    data_020e6e3c,
-    data_020e71cc,
-    data_020e6e54,
-    data_020e7204,
-    data_020e6fa4,
-    data_020e7220,
-    data_020e6e0c,
-    data_020e7258,
-    data_020e6e9c,
-    data_020e7274,
-    data_020e6e24,
-    data_020e72ac,
-    data_020e6eb4,
-    data_020e72c8,
-    data_020e6efc,
-    data_020e7300,
-    data_020e6f2c,
-    data_020e731c,
-    data_020e6cec,
-    data_020e7354,
-    data_020e6f74,
-    data_020e7370,
-    data_020e6d4c,
-    data_020e707c,
-    data_020e6d4c,
-    data_020e707c,
-    data_020e6d64,
-    data_020e6ff0,
-    data_020e6d94,
-    data_020e700c,
-    data_020e6c74,
-    data_020e7044,
-    data_020e6d34,
-    data_020e7060,
-    data_020e6d1c,
-    data_020e70b4,
-    data_020e6d04,
-    data_020e70d0,
-    data_020e6cbc,
-    data_020e7108,
-    data_020e6e6c,
-    data_020e7124,
-    data_020e6e24,
-    data_020e72ac,
-    data_020e6f14,
-    data_020e7194,
-    data_020e6ecc,
-    data_020e71e8,
-    data_020e6ee4,
-    data_020e723c,
-    data_020e6ddc,
-    data_020e7290,
-    data_020e6dac,
-    data_020e72e4,
-    data_020e6d7c,
-    data_020e7338,
-    data_020e6f5c,
+    sSpNpcModelPlc,
+    sSpNpcTexPlc,
+    sSpNpcModelPla,
+    sSpNpcTexPla,
+    sSpNpcModelBoa,
+    sSpNpcTexBoa,
+    sSpNpcModelCml,
+    sSpNpcTexCml,
+    sSpNpcModelHgh,
+    sSpNpcTexHgh,
+    sSpNpcModelHgs,
+    sSpNpcTexHgs,
+    sSpNpcModelPga,
+    sSpNpcTexPga,
+    sSpNpcModelPgb,
+    sSpNpcTexPgb,
+    sSpNpcModelPlb,
+    sSpNpcTexPlb,
+    sSpNpcModelRcn,
+    sSpNpcTexRcn,
+    sSpNpcModelBpt,
+    sSpNpcTexBpt,
+    sSpNpcModelGrf,
+    sSpNpcTexGrf,
+    sSpNpcModelOwl,
+    sSpNpcTexOwl,
+    sSpNpcModelOtt,
+    sSpNpcTexOtt,
+    sSpNpcModelFox,
+    sSpNpcTexFox,
+    sSpNpcModelLrc,
+    sSpNpcTexLrc,
+    sSpNpcModelLrc,
+    sSpNpcTexLrc,
+    sSpNpcModelMol,
+    sSpNpcTexMol,
+    sSpNpcModelTtl,
+    sSpNpcTexTtl,
+    sSpNpcModelWrl,
+    sSpNpcTexWrl,
+    sSpNpcModelWip,
+    sSpNpcTexWip,
+    sSpNpcModelSeg,
+    sSpNpcTexSeg,
+    sSpNpcModelSeo,
+    sSpNpcTexSeo,
+    sSpNpcModelPoo,
+    sSpNpcTexPoo,
+    sSpNpcModelOws,
+    sSpNpcTexOws,
+    sSpNpcModelRcn,
+    sSpNpcTexRcn,
+    sSpNpcModelRcc,
+    sSpNpcTexRcc,
+    sSpNpcModelRcs,
+    sSpNpcTexRcs,
+    sSpNpcModelRcd,
+    sSpNpcTexRcd,
+    sSpNpcModelEnd,
+    sSpNpcTexEnd,
+    sSpNpcModelDnk,
+    sSpNpcTexDnk,
+    sSpNpcModelPge,
+    sSpNpcTexPge,
+    sSpNpcModelMka,
     0,
-    data_020e6f8c,
-    data_020e6fd4,
-    data_020e6c5c,
-    data_020e7028,
-    data_020e6c8c,
-    data_020e7098,
-    data_020e6ca4,
-    data_020e70ec,
-    data_020e6cd4,
-    data_020e7140,
+    sSpNpcModelUpa,
+    sSpNpcTexUpa,
+    sSpNpcModelLos,
+    sSpNpcTexLos,
+    sSpNpcModelMum,
+    sSpNpcTexMum,
+    sSpNpcModelXct,
+    sSpNpcTexXct,
+    sSpNpcModelTti,
+    sSpNpcTexTti,
     0,
     0,
 };
-char data_020e6fa4[] = "npc_sp/model/pga.nsbmd";
-char data_020e6d34[] = "npc_sp/model/wip.nsbmd";
-char data_020e6f74[] = "npc_sp/model/fox.nsbmd";
-char data_020e70b4[] = "npc_sp/model/seg_tex.nsbtx";
-char data_020e70ec[] = "npc_sp/model/xct_tex.nsbtx";
+char sSpNpcModelPga[] = "npc_sp/model/pga.nsbmd";
+char sSpNpcModelWip[] = "npc_sp/model/wip.nsbmd";
+char sSpNpcModelFox[] = "npc_sp/model/fox.nsbmd";
+char sSpNpcTexSeg[] = "npc_sp/model/seg_tex.nsbtx";
+char sSpNpcTexXct[] = "npc_sp/model/xct_tex.nsbtx";
 
-extern "C" SpNpcTest *func_020c29ec() {
+extern "C" SpNpcTest *SpNpcTest_Create() {
     return new SpNpcTest();
 }
 
@@ -655,13 +655,13 @@ void SpNpcTestTalk::vfunc_78(Unk_020c270c_Out *out) {
 
 void SpNpcTestTalk::onMessageEndPhase00(void *a) {}
 
-char data_020e6ee4[] = "npc_sp/model/rcd.nsbmd";
-char data_020e7178[] = "npc_sp/model/boa_tex.nsbtx";
-char data_020e6dc4[] = "npc_sp/model/boa.nsbmd";
-char data_020e6e54[] = "npc_sp/model/hgs.nsbmd";
-char data_020e6e84[] = "npc_sp/model/cml.nsbmd";
-char data_020e6e0c[] = "npc_sp/model/pgb.nsbmd";
-char data_020e6e9c[] = "npc_sp/model/plb.nsbmd";
+char sSpNpcModelRcd[] = "npc_sp/model/rcd.nsbmd";
+char sSpNpcTexBoa[] = "npc_sp/model/boa_tex.nsbtx";
+char sSpNpcModelBoa[] = "npc_sp/model/boa.nsbmd";
+char sSpNpcModelHgs[] = "npc_sp/model/hgs.nsbmd";
+char sSpNpcModelCml[] = "npc_sp/model/cml.nsbmd";
+char sSpNpcModelPgb[] = "npc_sp/model/pgb.nsbmd";
+char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
 void SpNpcTestTalk::vfunc_14(void *a) {
     static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
@@ -699,26 +699,26 @@ Unk_020c28b0_Entry sSpNpcTestActTable[4] = {
     { 0, &SpNpcTest::mainAct02 },
     { &SpNpcTest::setupAct03, &SpNpcTest::mainAct03 },
 };
-char data_020e7098[] = "npc_sp/model/mum_tex.nsbtx";
-char data_020e6d1c[] = "npc_sp/model/seg.nsbmd";
-char data_020e7108[] = "npc_sp/model/poo_tex.nsbtx";
-char data_020e715c[] = "npc_sp/model/pla_tex.nsbtx";
-char data_020e7194[] = "npc_sp/model/rcc_tex.nsbtx";
-char data_020e6ddc[] = "npc_sp/model/end.nsbmd";
-char data_020e723c[] = "npc_sp/model/rcd_tex.nsbtx";
-char data_020e6df4[] = "npc_sp/model/plc.nsbmd";
-char data_020e6d64[] = "npc_sp/model/mol.nsbmd";
-char data_020e6f2c[] = "npc_sp/model/owl.nsbmd";
-char data_020e6c5c[] = "npc_sp/model/los.nsbmd";
-char data_020e7044[] = "npc_sp/model/wrl_tex.nsbtx";
-char data_020e707c[] = "npc_sp/model/lrc_tex.nsbtx";
-char data_020e70d0[] = "npc_sp/model/seo_tex.nsbtx";
-char data_020e6d7c[] = "npc_sp/model/pge.nsbmd";
-char data_020e71cc[] = "npc_sp/model/hgh_tex.nsbtx";
-char data_020e72ac[] = "npc_sp/model/rcn_tex.nsbtx";
-char data_020e7370[] = "npc_sp/model/fox_tex.nsbtx";
-char data_020e6c74[] = "npc_sp/model/wrl.nsbmd";
-char data_020e6f8c[] = "npc_sp/model/upa.nsbmd";
-char data_020e71e8[] = "npc_sp/model/rcs_tex.nsbtx";
-char data_020e738c[] = "npc_sp/model/plc_tex.nsbtx";
-char data_020e6d4c[] = "npc_sp/model/lrc.nsbmd";
+char sSpNpcTexMum[] = "npc_sp/model/mum_tex.nsbtx";
+char sSpNpcModelSeg[] = "npc_sp/model/seg.nsbmd";
+char sSpNpcTexPoo[] = "npc_sp/model/poo_tex.nsbtx";
+char sSpNpcTexPla[] = "npc_sp/model/pla_tex.nsbtx";
+char sSpNpcTexRcc[] = "npc_sp/model/rcc_tex.nsbtx";
+char sSpNpcModelEnd[] = "npc_sp/model/end.nsbmd";
+char sSpNpcTexRcd[] = "npc_sp/model/rcd_tex.nsbtx";
+char sSpNpcModelPlc[] = "npc_sp/model/plc.nsbmd";
+char sSpNpcModelMol[] = "npc_sp/model/mol.nsbmd";
+char sSpNpcModelOwl[] = "npc_sp/model/owl.nsbmd";
+char sSpNpcModelLos[] = "npc_sp/model/los.nsbmd";
+char sSpNpcTexWrl[] = "npc_sp/model/wrl_tex.nsbtx";
+char sSpNpcTexLrc[] = "npc_sp/model/lrc_tex.nsbtx";
+char sSpNpcTexSeo[] = "npc_sp/model/seo_tex.nsbtx";
+char sSpNpcModelPge[] = "npc_sp/model/pge.nsbmd";
+char sSpNpcTexHgh[] = "npc_sp/model/hgh_tex.nsbtx";
+char sSpNpcTexRcn[] = "npc_sp/model/rcn_tex.nsbtx";
+char sSpNpcTexFox[] = "npc_sp/model/fox_tex.nsbtx";
+char sSpNpcModelWrl[] = "npc_sp/model/wrl.nsbmd";
+char sSpNpcModelUpa[] = "npc_sp/model/upa.nsbmd";
+char sSpNpcTexRcs[] = "npc_sp/model/rcs_tex.nsbtx";
+char sSpNpcTexPlc[] = "npc_sp/model/plc_tex.nsbtx";
+char sSpNpcModelLrc[] = "npc_sp/model/lrc.nsbmd";

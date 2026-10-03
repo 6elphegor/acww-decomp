@@ -272,7 +272,7 @@ extern const s8 sHexDigits[];
 extern char data_ov003_02235358[];
 
 s32 PlayerData_GetCurrentIndex();
-s32 func_020978fc();
+s32 PlayerData_IsResidentIndex();
 void *File_LoadAlloc(char *a, u32 b, s32 c, s32 *out);
 void *NNS_G3dGetTex(void *p);
 BOOL Gfx3d_LoadTex(void *p, u32 a);
@@ -387,7 +387,7 @@ void PlayerHouse::bindHouseTex() {
 
 BOOL PlayerHouse::vfunc_90() {
     PlayerData_GetCurrentIndex();
-    if (func_020978fc() == 0) {
+    if (PlayerData_IsResidentIndex() == 0) {
         return TRUE;
     }
     return FALSE;

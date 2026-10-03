@@ -30,19 +30,19 @@ struct Unk_020a647c_Buf {
 typedef void (*Unk_020a6564_Fn)(u8 *, u32);
 
 extern "C" {
-void func_020a65c8(u8 *p);
-void func_020a65f8();
-extern const Unk_020a6564_Fn data_020d07a8[2];
+void NetArea_ReadStateANpcTalk(u8 *p);
+void NetArea_ReadStateAPart0();
+extern const Unk_020a6564_Fn sNetStateAReaders[2];
 }
 
-extern "C" const Unk_020a6564_Fn data_020d07a8[2] = {
-    (Unk_020a6564_Fn)func_020a65f8,
-    (Unk_020a6564_Fn)func_020a65c8,
+extern "C" const Unk_020a6564_Fn sNetStateAReaders[2] = {
+    (Unk_020a6564_Fn)NetArea_ReadStateAPart0,
+    (Unk_020a6564_Fn)NetArea_ReadStateANpcTalk,
 };
 
-extern "C" void func_020a65f8() {}
+extern "C" void NetArea_ReadStateAPart0() {}
 
-extern "C" void func_020a65c8(u8 *p) {
+extern "C" void NetArea_ReadStateANpcTalk(u8 *p) {
     u8 v = 0;
     Scene_GetCurrent();
     MI_CpuCopy8(p, &v, 1);
@@ -51,7 +51,7 @@ extern "C" void func_020a65c8(u8 *p) {
     }
 }
 
-extern "C" void func_020a6564() {
+extern "C" void NetArea_ParseStateA() {
     CommManager *g = gCommManager;
     CommManager *sg = g;
     u8 *p = (u8 *)g->getAuxBufA();
@@ -68,7 +68,7 @@ extern "C" void func_020a6564() {
         n += 4;
         u32 len = b.len;
         u32 id = *(volatile u8 *)&b.id;
-        data_020d07a8[id](p, len);
+        sNetStateAReaders[id](p, len);
         p += len;
         n += len;
     }

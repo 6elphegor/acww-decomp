@@ -47,7 +47,7 @@ extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
 extern u32 gCurrentHeap;
-extern s32 *func_020947f0(s32 v);
+extern s32 *PlayerActor_GetBodyPos(s32 v);
 extern void Scene_GetWarpRequest();
 extern s32 *ScenePos_GetPos(void *p);
 void Gfx2d_LoadPaletteFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
@@ -117,8 +117,8 @@ void MsgString_clear(void *p);
 void LabelString_destroyLabel(void *p);
 void *PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
-s32 func_02097740(void *a, s32 b);
-BOOL func_020978c8(void *a, s32 b);
+s32 PlayerDataArray_FindById(void *a, s32 b);
+BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void MIi_CpuCopy16(void *src, void *dst, u32 n);
@@ -679,7 +679,7 @@ void MapViewerMenu::initMapViewer() {
     selectEntry(0);
     buildEntryLists();
     if (IsZero(gFieldSceneKind)) {
-        s32 *p = func_020947f0(4);
+        s32 *p = PlayerActor_GetBodyPos(4);
         v.x = p[0];
         v.y = p[1];
         v.z = p[2];
@@ -997,7 +997,7 @@ void *MapViewerMenu::allocTextLabel() {
 void MapViewerMenu::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = func_02097740(gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+    m = PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (m != -1) {
         unk_24e4[0] = 1;
         n++;
@@ -1006,7 +1006,7 @@ void MapViewerMenu::buildEntryLists() {
         if (i == m) {
             continue;
         }
-        if (!func_020978c8(gSavePlayers, i)) {
+        if (!PlayerDataArray_IsUsed(gSavePlayers, i)) {
             continue;
         }
         unk_24e4[n] = i + 2;

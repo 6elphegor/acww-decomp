@@ -3,7 +3,7 @@
 
 // TU068: 0x020501d4-0x02051218, the text system (fonts, text objects drawn into a tile buffer, string buffers and
 // the scene object that loads the fonts). One original file: __sinit constructs the five fonts and fills the
-// entries of the character table that hold data_020ca488.
+// entries of the character table that hold sCharSortKeyZero.
 
 typedef void (*Unk_02050288_LoadFunc)(void *src, u32 offset, u32 size);
 
@@ -80,14 +80,14 @@ struct Unk_020dba58_Entry {
 extern "C" {
 TextSystemModule *TextSystemModule_Create(void);
 
-extern const u16 data_020ca480;
-extern const u16 data_020ca484;
-extern const u16 data_020ca488;
-extern const u16 data_020ca48c;
-extern const u16 data_020ca490;
-extern const u16 data_020ca494;
-extern const u16 data_020ca498;
-extern const u16 data_020ca49c;
+extern const u16 sSpecialCharStr6;
+extern const u16 sSpecialCharStr2;
+extern const u16 sCharSortKeyZero;
+extern const u16 sSpecialCharStr4;
+extern const u16 sSpecialCharStr5;
+extern const u16 sSpecialCharStr1;
+extern const u16 sSpecialCharStr3;
+extern const u16 sSpecialCharStr7;
 extern const char *const sGameFontFileParts[3];
 extern const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6];
 extern const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6];
@@ -95,10 +95,10 @@ extern const u8 sToUpperPairs[0x7a];
 extern const u8 sGameCharToAsciiTable[0xe0];
 // the first object of the next file's .rodata (0x80000000: "glyph of the secondary font")
 extern const u32 data_020ca638;
-extern char data_020dba44[];
-extern char data_020dba48[];
-extern char data_020dba50[];
-extern Unk_020dba58_Entry data_020dba58;
+extern char sGameFontPartImg[];
+extern char sGameFontPartHead[];
+extern char sGameFontPartAttr[];
+extern Unk_020dba58_Entry sTextSystemModuleProfile;
 extern u16 sCharSortKeyTable[0xe0];
 extern void *gTextHeap;
 extern u8 gTextLabelList[0xc];
@@ -112,7 +112,7 @@ extern GameFont gFontC;
 
 // ---- data. The definition order is what makes mwcc emit the objects in the original order (it sorts a
 // file's objects by size with a heapsort over the reversed creation order); do not reorder.
-char data_020dba50[] = "attr";
+char sGameFontPartAttr[] = "attr";
 
 const u8 sGameCharToAsciiTable[0xe0] = {
     0x00, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
@@ -132,7 +132,7 @@ const u8 sGameCharToAsciiTable[0xe0] = {
 };
 
 u16 sCharSortKeyTable[0xe0] = {
-    data_020ca488, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11,
+    sCharSortKeyZero, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11,
     0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
     0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21,
     0x22, 0x23, 0x24, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
@@ -149,17 +149,17 @@ u16 sCharSortKeyTable[0xe0] = {
     0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25,
     0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25,
     0x25, 0x25, 0x25, 0x25, 0x25, 0x2a, 0x2b, 0x29,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, 0x25, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, 0x25, data_020ca488, 0x25, 0x26, 0x25, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, 0x28, 0x25, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, 0x25, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, 0x25, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488, data_020ca488,
-    data_020ca488, data_020ca488, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, 0x25, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, 0x25, sCharSortKeyZero, 0x25, 0x26, 0x25, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, 0x28, 0x25, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, 0x25, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, 0x25, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero, sCharSortKeyZero,
+    sCharSortKeyZero, sCharSortKeyZero, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25,
 };
 
 GameFont gFontASub;
@@ -168,33 +168,33 @@ u8 gTextTileBuffer[0x400];
 
 GameFont gFontA;
 
-const char *const sGameFontFileParts[3] = {data_020dba48, data_020dba50, data_020dba44};
+const char *const sGameFontFileParts[3] = {sGameFontPartHead, sGameFontPartAttr, sGameFontPartImg};
 
-const u16 data_020ca488 = 0;
+const u16 sCharSortKeyZero = 0;
 
 GameFont gFontB;
 
-const u16 data_020ca48c = 4;
+const u16 sSpecialCharStr4 = 4;
 
 GameFont gFontC;
 
-char data_020dba48[] = "head";
+char sGameFontPartHead[] = "head";
 
-const u16 data_020ca49c = 7;
+const u16 sSpecialCharStr7 = 7;
 
-const u16 data_020ca494 = 1;
+const u16 sSpecialCharStr1 = 1;
 
 u8 gTextLabelList[0xc];
 
 void *gTextHeap;
 
-const u16 data_020ca484 = 2;
+const u16 sSpecialCharStr2 = 2;
 
-Unk_020dba58_Entry data_020dba58 = {TextSystemModule_Create, 0xce, 0xca};
+Unk_020dba58_Entry sTextSystemModuleProfile = {TextSystemModule_Create, 0xce, 0xca};
 
-char data_020dba44[] = "img";
+char sGameFontPartImg[] = "img";
 
-const u16 data_020ca498 = 3;
+const u16 sSpecialCharStr3 = 3;
 
 const u8 sToUpperPairs[0x7a] = {
     0x61, 0x41, 0x62, 0x42, 0x63, 0x43, 0x64, 0x44, 0x65, 0x45, 0x66, 0x46, 0x67, 0x47,
@@ -214,9 +214,9 @@ const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6] = {
     GXS_LoadBG0Char, GXS_LoadBG1Char, GXS_LoadBG2Char, GXS_LoadBG3Char, GXS_LoadOBJ, NULL,
 };
 
-const u16 data_020ca490 = 5;
+const u16 sSpecialCharStr5 = 5;
 
-const u16 data_020ca480 = 6;
+const u16 sSpecialCharStr6 = 6;
 
 const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6] = {
     GX_LoadBG0Char, GX_LoadBG1Char, GX_LoadBG2Char, GX_LoadBG3Char, GX_LoadOBJ, NULL,
@@ -1051,15 +1051,15 @@ BOOL Text_AsciiToGameChar(u8 *out, u32 c) {
     }
 }
 
-const u8 *Text_GetSpecialCharStr1(void) { return (const u8 *)&data_020ca494; }
-const u8 *Text_GetSpecialCharStr4(void) { return (const u8 *)&data_020ca48c; }
-const u8 *Text_GetSpecialCharStr6(void) { return (const u8 *)&data_020ca480; }
-const u8 *Text_GetSpecialCharStr7(void) { return (const u8 *)&data_020ca49c; }
-const u8 *Text_GetSpecialCharStr5(void) { return (const u8 *)&data_020ca490; }
-const u8 *Text_GetSpecialCharStr2(void) { return (const u8 *)&data_020ca484; }
-const u8 *Text_GetSpecialCharStr3(void) { return (const u8 *)&data_020ca498; }
-int func_02050208(void) { return 0; }
-int func_02050204(void) { return 0; }
+const u8 *Text_GetSpecialCharStr1(void) { return (const u8 *)&sSpecialCharStr1; }
+const u8 *Text_GetSpecialCharStr4(void) { return (const u8 *)&sSpecialCharStr4; }
+const u8 *Text_GetSpecialCharStr6(void) { return (const u8 *)&sSpecialCharStr6; }
+const u8 *Text_GetSpecialCharStr7(void) { return (const u8 *)&sSpecialCharStr7; }
+const u8 *Text_GetSpecialCharStr5(void) { return (const u8 *)&sSpecialCharStr5; }
+const u8 *Text_GetSpecialCharStr2(void) { return (const u8 *)&sSpecialCharStr2; }
+const u8 *Text_GetSpecialCharStr3(void) { return (const u8 *)&sSpecialCharStr3; }
+int Text_GetSpecialCharStr9(void) { return 0; }
+int Text_GetSpecialCharStr10(void) { return 0; }
 
 u32 Text_ToUpper(u32 key) {
     const u8 *entry = sToUpperPairs;

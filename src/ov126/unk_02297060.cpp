@@ -80,7 +80,7 @@ extern u16 gPad[];
 extern u8 gSaveGameStats[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gTouchCurY;
@@ -109,7 +109,7 @@ void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-void func_020a78a4(void *a, void *b, s32 c);
+void EncodedString_SetRaw(void *a, void *b, s32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 s32 String_CensorTaboo(void *a);
 void EncodedString_fromMsgString(void *a, void *b);
@@ -117,11 +117,11 @@ void StrBuf_GetBytes(void *a, void *b, s32 c);
 void *FriendEntry_GetPlayerName(void *a);
 void *FriendEntry_GetTownName(void *a);
 void Mem_Copy(void *a, void *b, s32 c);
-s32 func_02051218(void *a, void *b, s32 c);
+s32 Text_EqualsTrimmed(void *a, void *b, s32 c);
 void Mem_Clear(void *p, s32 v);
-s32 func_020512e0(void *p, s32 v);
-u32 func_02051348(void *p, u32 a);
-BOOL func_020512f8(void *p, u32 a);
+s32 Text_GetLength(void *p, s32 v);
+u32 Text_MeasureWidth(void *p, u32 a);
+BOOL Text_GetTrimmedLength(void *p, u32 a);
 void *BlancaFaceRecord_getPattern(void *a);
 void *Pattern_getInfo(void *a);
 void PatternInfo_setTitleRaw(void *a, void *b);
@@ -132,8 +132,8 @@ void Constellation_CopyName(void *a, s32 b);
 s32 func_02063904(void *a, void *b);
 s32 PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
-s32 func_02097740(void *a, s32 b);
-BOOL func_020978c8(void *a, s32 b);
+s32 PlayerDataArray_FindById(void *a, s32 b);
+BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 s32 PlayerData_GetResident(void *a, s32 b);
 s32 PlayerId_getName(s32 a);
 void PlayerId_setName(s32 a, void *b);
@@ -979,7 +979,7 @@ void NameEntryMenu::init() {
     Mem_Clear(unk_4088, 0x20);
     Mem_Clear(unk_40a8, 0x20);
     loadInitialText();
-    if (func_020512f8(unk_4088, unk_a6) == 0) {
+    if (Text_GetTrimmedLength(unk_4088, unk_a6) == 0) {
         Mem_Clear(unk_4088, 0x20);
     }
     if (r5 == 0x10 || r5 == 0x18 || r5 == 0x19 || r5 == 0x12) {
@@ -1325,7 +1325,7 @@ void NameEntryMenu::resumeInput() {
 
 void NameEntryMenu::showMessage(u32 v, u32 w) {
     u8 buf[1];
-    buf[0] = data_021edb68;
+    buf[0] = gU8None;
     buf[0] = v;
     MenuErrorMessage_open(&unk_3f80, buf, w, 0);
     setMainState(0x10);
@@ -1411,7 +1411,7 @@ BOOL NameEntryMenu::onBackspaceEmpty() {
 
 void NameEntryMenu::refreshKeys() {
     if (unk_ad == 0 || unk_ad == 2) {
-        if (func_020512f8(unk_4088, unk_a6) == 0) {
+        if (Text_GetTrimmedLength(unk_4088, unk_a6) == 0) {
             MenuBottomButtonsBody_disableButton(&unk_3d00, 6);
         } else {
             MenuBottomButtonsBody_enableButton(&unk_3d00, 6);
@@ -1461,7 +1461,7 @@ u32 NameEntryMenu::getCharBeforeCursor() {
 void NameEntryMenu::updateCaretX() {
     unk_98 = unk_ab;
     unk_9c = 0x28;
-    unk_98 = unk_98 + (u8)func_02051348(unk_4088, unk_a8);
+    unk_98 = unk_98 + (u8)Text_MeasureWidth(unk_4088, unk_a8);
 }
 
 void NameEntryMenu::setCursorFromTouchX(s32 v) {
@@ -1500,7 +1500,7 @@ s32 NameEntryMenu::navigateText(s32 a) {
         return 3;
     }
     if (MenuKeys_HasRight(p) != 0) {
-        s32 n = func_020512e0(unk_4088, unk_a6);
+        s32 n = Text_GetLength(unk_4088, unk_a6);
         s32 t = r4 + 1;
         if (t <= n) {
             setCursorIndex((u8)t);
@@ -1583,7 +1583,7 @@ void NameEntryMenu::paste() {
         Keyboard_BeginPaste(&unk_144);
         Keyboard_ResetTypedRun(&unk_144);
         if (hasSelection() != 0) deleteSelection();
-        s32 n = func_020512e0(unk_40a8, 0x20);
+        s32 n = Text_GetLength(unk_40a8, 0x20);
         u8 v;
         v = unk_a8;
         s32 i;
@@ -1742,7 +1742,7 @@ BOOL NameEntryMenu::insertChar(u32 x) {
 void NameEntryMenu::redrawText() {
     GeneralMenuHeader_setTitleText(&unk_b0, unk_4088, unk_a6);
     if (testFlags(0x100) != 0) {
-        s32 t = func_02051348(unk_4088, unk_a6);
+        s32 t = Text_MeasureWidth(unk_4088, unk_a6);
         unk_a0 = -(unk_af - t - 2);
     }
     GeneralMenuHeader_placeTitleText(&unk_b0);
@@ -2027,11 +2027,11 @@ void NameEntryMenu::storePlayerName() {
     s32 t = PlayerData_GetCurrent();
     PlayerData_getPlayerId();
     s32 u = PlayerData_getPlayerId(t);
-    s32 n = func_02097740(gSavePlayers, u);
+    s32 n = PlayerDataArray_FindById(gSavePlayers, u);
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (i != n && func_020978c8(gSavePlayers, i)) {
-            if (func_02051218((void *)PlayerId_getName(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
+        if (i != n && PlayerDataArray_IsUsed(gSavePlayers, i)) {
+            if (Text_EqualsTrimmed((void *)PlayerId_getName(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
                 MenuCtrl_SetResult(2);
                 return;
             }
@@ -2096,7 +2096,7 @@ void NameEntryMenu::commitEntry() {
 void NameEntryMenu::censorText() {
     u8 *buf = unk_4088;
     u32 n = unk_a6;
-    func_020a78a4(&unk_3f48, buf, n);
+    EncodedString_SetRaw(&unk_3f48, buf, n);
     MsgString_fromEncoded(&unk_3f08, &unk_3f48, 0, 0);
     if (String_CensorTaboo(&unk_3f08)) {
         EncodedString_fromMsgString(&unk_3f48, &unk_3f08);

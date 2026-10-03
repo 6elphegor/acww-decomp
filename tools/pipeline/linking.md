@@ -402,13 +402,13 @@ _ZTV12Unk_020dd38c`). `check` prints a `BOUND` line for every boundary that stil
 
 Thumb code reaches a member at a large offset through a literal `object + 0x200` plus a small displacement, and
 dsd made a symbol of every such literal. So many `data_` labels, in `.data` and above all in bss, are **addresses
-inside an object**, not objects: `data_021bdd80` and `data_021bddc0` are `data_021bdb80 + 0x200` and `+ 0x240`
+inside an object**, not objects: `data_021bdd80` and `data_021bddc0` are `sHudObjGfx + 0x200` and `+ 0x240`
 (one 0x258-byte object, members `unk_250` and `unk_254`); `data_020dbbc8/bc08/bc48` are parts of the 0x1c0-byte
 table `sCharSortKeyTable`. The signs: a matched function reads `data_X[0x50 / 4]` next to `p->unk_250` of the
 neighbouring object; a table is indexed beyond its "size"; a class is larger than the gap to the next symbol; a
 section that should be one size-sorted run has "runs" of objects that only `__sinit` references. The current
 files declare such labels `extern`; **the unit must define the whole object once and use members or indices**
-(`data_021bdb80.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
+(`sHudObjGfx.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
 address with the original word, so it confirms the object + offset. If code *outside* the unit refers to the
 label (`check`: `MISSING ... interior`; or other sources under `src/` declare it `extern`), add
 `<module> <label> interior:<object>` to `renames.txt`. At install the label is removed from `symbols.txt`, the

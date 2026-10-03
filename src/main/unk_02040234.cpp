@@ -30,11 +30,11 @@ extern u8 gSaveData[];
 }
 
 extern "C" {
-extern u16 data_021c3c88;
+extern u16 sEventWeekSeenMask;
 }
 
 extern "C" {
-u32 data_021c3c8c;
+u32 sEventWeekLastHour;
 }
 
 extern "C" {
@@ -54,11 +54,11 @@ extern ReddShop data_021ed2c0;
 }
 
 extern "C" {
-extern u32 data_020c9060[];
+extern u32 sWeekVisitorWeights[];
 }
 
 extern "C" {
-extern u32 data_020c907c[];
+extern u32 sWeekVisitorIds[];
 }
 
 extern "C" {
@@ -94,7 +94,7 @@ void MI_CpuCopy8(const void*, void*, u32);
 }
 
 extern "C" {
-s32 func_0203f14c(void);
+s32 Game_IsIntroPeriod(void);
 }
 
 extern "C" {
@@ -118,15 +118,15 @@ s32 func_02063b8c(s32);
 }
 
 extern "C" {
-s32 func_02040754(void*, void*, s32);
+s32 WeekVisitors_ListContains(void*, void*, s32);
 }
 
 extern "C" {
-s32 func_02040778(void*, void*, s32);
+s32 WeekVisitors_PickFreeDay(void*, void*, s32);
 }
 
 extern "C" {
-s32 func_020407a8(void*, void*, void*);
+s32 WeekVisitors_FindFreeDays(void*, void*, void*);
 }
 
 extern "C" {
@@ -134,7 +134,7 @@ Unk_0203ff20_Entry* EventWeekSlots_Get(Unk_0203ff50_Slot*, s32);
 }
 
 extern "C" {
-s32 func_02040234(Unk_0203ff50_Slot*, u32);
+s32 EventWeekSlots_FindId(Unk_0203ff50_Slot*, u32);
 }
 
 extern "C" {
@@ -142,11 +142,11 @@ Unk_0203ff20_Entry* EventWeekSlots_GetToday(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-void func_02040050(Unk_0203ff50_Slot*);
+void EventWeekSlots_RefreshSeenMask(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-void func_02040078(Unk_0203ff50_Slot*);
+void EventWeekSlots_SyncToday(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
@@ -162,55 +162,55 @@ void EventWeekSlot_Set(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void func_02040684(Unk_0203ff50_Slot*);
+void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-s32 func_020406c4(Unk_0203ff50_Slot*, u8*);
+s32 WeekVisitors_PickRandom(Unk_0203ff50_Slot*, u8*);
 }
 
 extern "C" {
-void func_02040410(Unk_0203ff50_Slot*);
+void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-void func_020404ac(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void func_0204056c(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlacePete(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void func_020405f4(Unk_0203ff50_Slot*, s32*, s32*, u8*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot*, s32*, s32*, u8*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void func_020402f8(Unk_0203ff50_Slot*, s32);
+void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot*, s32);
 }
 
 extern "C" {
-void func_020401d4(Unk_0203fe18_Date*, s32);
+void Date_GetWeekBoundary(Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-BOOL func_020400f8(Unk_0203fe18_B4);
+BOOL EventWeek_IsInUnkWeek(Unk_0203fe18_B4);
 }
 
 #define SLOT ((Unk_0203ff50_Slot *)(gSaveData + 0x15e18))
 
 // prototypes
-extern "C" void func_02040684(Unk_0203ff50_Slot *s);
-extern "C" void func_020405f4(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd);
-extern "C" void func_0204056c(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
-extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
-extern "C" void func_02040410(Unk_0203ff50_Slot *s);
-extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag);
-extern "C" void func_020402e8(void);
-extern "C" void func_02040264(void);
-extern "C" s32 func_02040234(Unk_0203ff50_Slot *s, u32 id);
+extern "C" void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot *s);
+extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s);
+extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag);
+extern "C" void EventWeekSlots_Update(void);
+extern "C" void EventWeekSlots_UpdateToday(void);
+extern "C" s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *s, u32 id);
 
-extern "C" void func_02040684(Unk_0203ff50_Slot *s) {
+extern "C" void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot *s) {
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) EventWeekSlot_Clear(e);
@@ -221,17 +221,17 @@ extern "C" void func_02040684(Unk_0203ff50_Slot *s) {
     }
 }
 
-extern "C" void func_020405f4(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
     for (i = 0; i < 2; i++) {
         s32 v = 0x63;
         if (*cnt > 0) {
-            s32 r6 = func_02040778(s, arr, *cnt);
+            s32 r6 = WeekVisitors_PickFreeDay(s, arr, *cnt);
             Unk_0203ff20_Entry *e;
             if (r6 >= 0) {
-                v = func_020406c4(s, a);
+                v = WeekVisitors_PickRandom(s, a);
                 arr[r6] = z1;
                 (*cnt)--;
             }
@@ -250,14 +250,14 @@ extern "C" void func_020405f4(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, U
     }
 }
 
-extern "C" void func_0204056c(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
     for (i = 0; i < 2; i++) {
         s32 v = 0x63;
         if (*cnt > 0) {
-            s32 r6 = func_02040778(s, arr, *cnt);
+            s32 r6 = WeekVisitors_PickFreeDay(s, arr, *cnt);
             Unk_0203ff20_Entry *e;
             if (r6 >= 0) {
                 v = 0x45;
@@ -278,7 +278,7 @@ extern "C" void func_0204056c(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
     }
 }
 
-extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
     Unk_0203fe18_B4 x;
     Unk_0203fe18_Date c, d, z, cp;
     if (*cnt > 0) {
@@ -299,7 +299,7 @@ extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
             else DateTime_SubDays(&c, -t);
             x.b.b3 = c.b4;
             x.b.b2 = c.b3;
-            if (!func_020400f8(x)) {
+            if (!EventWeek_IsInUnkWeek(x)) {
                 Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, r4);
                 if (e) {
                     ((s32*)&z)[0] = 0;
@@ -316,7 +316,7 @@ extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
     }
 }
 
-extern "C" void func_02040410(Unk_0203ff50_Slot *s) {
+extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s) {
     volatile s32 z;
     Unk_0203fe18_Date d, c1, c2;
     u8 arr[84];
@@ -325,7 +325,7 @@ extern "C" void func_02040410(Unk_0203ff50_Slot *s) {
     ((s32*)&d)[1] = 0;
     i = Clock_GetWeekday();
     Clock_GetDateTime(&d);
-    func_02040078(s);
+    EventWeekSlots_SyncToday(s);
     MI_CpuCopy8(&d, &c1, 8);
     EventSchedule_CollectDayAll(arr, &c1);
     Clock_GetDateTime(&d);
@@ -349,7 +349,7 @@ extern "C" void func_02040410(Unk_0203ff50_Slot *s) {
     }
 }
 
-extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
+extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
     Unk_0203fe18_Date d;
     long long t;
     u8 a[6];
@@ -362,25 +362,25 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
     t = 0;
     Clock_GetDateTime(&d);
     r6 = Clock_GetWeekday();
-    data_021c3c8c = d.b2;
+    sEventWeekLastHour = d.b2;
     DateTime_GetWeekStart(&d, &t);
     if (s->unk_34 == 0 || s->unk_34 != t || flag != 0) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
         for (i = 0; i < 5; e++, i++) a[i] = e->unk_02;
         a[5] = 0x63;
-        func_02040684(s);
+        EventWeekSlots_ClearWeek(s);
         MI_CpuCopy8(&t, &c1, 8);
-        cnt = func_020407a8(s, arr, &c1);
+        cnt = WeekVisitors_FindFreeDays(s, arr, &c1);
         MI_CpuCopy8(&t, &c2, 8);
-        func_020404ac(s, arr, &cnt, &c2);
+        EventWeekSlots_PlaceRedd(s, arr, &cnt, &c2);
         MI_CpuCopy8(&t, &c3, 8);
-        func_020405f4(s, arr, &cnt, a, &c3);
+        EventWeekSlots_PlaceVisitors(s, arr, &cnt, a, &c3);
         MI_CpuCopy8(&t, &c4, 8);
-        func_0204056c(s, arr, &cnt, &c4);
+        EventWeekSlots_PlacePete(s, arr, &cnt, &c4);
         MI_CpuCopy8(&t, &s->unk_34, 8);
     }
-    func_02040410(s);
-    idx = func_02040234(s, 0x3d);
+    EventWeekSlots_MarkPastDays(s);
+    idx = EventWeekSlots_FindId(s, 0x3d);
     if ((u32)(idx - r6) <= 1) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, idx);
         if (e) {
@@ -392,12 +392,12 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
     }
 }
 
-extern "C" void func_020402e8(void) {
-    func_020402f8((Unk_0203ff50_Slot *)gSaveEventWeekSlots, 0);
+extern "C" void EventWeekSlots_Update(void) {
+    EventWeekSlots_UpdateWeek((Unk_0203ff50_Slot *)gSaveEventWeekSlots, 0);
 }
 
-extern "C" void func_02040264(void) {
-    if (func_0203f14c() != 1) {
+extern "C" void EventWeekSlots_UpdateToday(void) {
+    if (Game_IsIntroPeriod() != 1) {
         u8 *g = gSaveData;
         Unk_0203fe18_Date d, c;
         Unk_0203ff20_Entry *e;
@@ -406,8 +406,8 @@ extern "C" void func_02040264(void) {
         ((s32*)&d)[1] = 0;
         Clock_GetDateTime(&d);
         t = d.b2;
-        if (data_021c3c8c != t) {
-            data_021c3c8c = t;
+        if (sEventWeekLastHour != t) {
+            sEventWeekLastHour = t;
             e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)(g + 0x15e18));
             if (e) {
                 u32 id = e->unk_02;
@@ -429,7 +429,7 @@ extern "C" void func_02040264(void) {
     }
 }
 
-extern "C" s32 func_02040234(Unk_0203ff50_Slot *s, u32 id) {
+extern "C" s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *s, u32 id) {
     s32 r = 0;
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;

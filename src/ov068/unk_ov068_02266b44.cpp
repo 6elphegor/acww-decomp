@@ -107,13 +107,13 @@ void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Camera_SetModeDefault();
 void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
 BOOL PlayerActor_IsScriptedWalking(s32 a);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
 void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void GameStart_Clear();
 BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
-s32 func_020978a4(void *self);
+s32 PlayerDataArray_CountUsed(void *self);
 void Unk_02097ff4_clearFlag(void *self, s32 a);
 void *HouseData_getDebt(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
@@ -132,11 +132,11 @@ void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTalkMsgIndexEnd[];
 extern u8 gSaveHouse[];
 extern u8 gSavePlayers[];
-extern void *data_ov068_0226fcfc;
+extern void *sNookIntroMsgFilePtr;
 extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
 }
@@ -200,15 +200,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual const char *getTexturePath();
     virtual const char *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -249,8 +249,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
     Unk_020e06dc unk_640;
@@ -406,7 +406,7 @@ public:
 };
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create();
-#define data_ov068_0226fe1c ((Unk_ov068_0226fea4_Flag *)((u8 *)data_ov068_0226fe14 + 8))
+#define data_ov068_0226fe1c ((Unk_ov068_0226fea4_Flag *)((u8 *)sNookIntroTalkScripts + 8))
 #define PMA(x) (*(Unk_ov068_0226fea4_Fn *)(x))
 #define PMB(x) (*(Unk_ov068_02267238_Fn *)(x))
 extern "C" {
@@ -437,21 +437,21 @@ extern void *data_ov068_0226fd50[2];
 extern void *data_ov068_0226fd58[2];
 extern void *data_ov068_0226fd60[2];
 extern char sNookIntroMsgFile[0x14];
-extern char data_ov068_0226fd9c[0x18];
-extern char data_ov068_0226fdb4[0x18];
-extern char data_ov068_0226fdcc[0x18];
-extern char data_ov068_0226fde4[0x18];
-extern char data_ov068_0226fe2c[0x1c];
-extern char data_ov068_0226fe48[0x1c];
-extern char data_ov068_0226fe64[0x1c];
-extern char data_ov068_0226fe80[0x1c];
-extern Unk_ov068_0226fea4_Ent data_ov068_0226fe14[2];
+extern char sNookModelRcn[0x18];
+extern char sNookModelRcc[0x18];
+extern char sNookModelRcs[0x18];
+extern char sNookModelRcd[0x18];
+extern char sNookTexRcn[0x1c];
+extern char sNookTexRcc[0x1c];
+extern char sNookTexRcs[0x1c];
+extern char sNookTexRcd[0x1c];
+extern Unk_ov068_0226fea4_Ent sNookIntroTalkScripts[2];
 extern Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6];
 }
 
 // data definitions before the function with the local static table (creation order)
-extern "C" char data_ov068_0226fe80[0x1c] = "npc_sp/model/rcd_tex.nsbtx";
-extern "C" Unk_ov068_0226fea4_Ent data_ov068_0226fe14[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
+extern "C" char sNookTexRcd[0x1c] = "npc_sp/model/rcd_tex.nsbtx";
+extern "C" Unk_ov068_0226fea4_Ent sNookIntroTalkScripts[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
 extern "C" void *data_ov068_0226fd30[2] = {(void *)_ZN18SpNpcNookIntroTalk13runWalkScriptEv, 0};
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
@@ -474,9 +474,9 @@ BOOL SpNpcNookIntro::vfunc_04() {
 }
 
 // data definitions after the function with the local static table
-extern "C" const char *sNookModelPaths[4] = {data_ov068_0226fd9c, data_ov068_0226fdb4, data_ov068_0226fdcc,
-                                                 data_ov068_0226fde4};
-extern "C" char data_ov068_0226fd9c[0x18] = "npc_sp/model/rcn.nsbmd";
+extern "C" const char *sNookModelPaths[4] = {sNookModelRcn, sNookModelRcc, sNookModelRcs,
+                                                 sNookModelRcd};
+extern "C" char sNookModelRcn[0x18] = "npc_sp/model/rcn.nsbmd";
 extern "C" void *data_ov068_0226fd40[2] = {(void *)_ZN14SpNpcNookIntro10setupAct05Ev, 0};
 extern "C" void *data_ov068_0226fd00[2] = {(void *)_ZN14SpNpcNookIntro10setupAct03Ev, 0};
 extern "C" Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6] = {
@@ -486,25 +486,25 @@ extern "C" Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6] = {
     {PMB(data_ov068_0226fd00), PMB(data_ov068_0226fd28)},
     {PMB(data_ov068_0226fd20), PMB(data_ov068_0226fd38)},
     {PMB(data_ov068_0226fd40), PMB(data_ov068_0226fd50)}};
-extern "C" char data_ov068_0226fdb4[0x18] = "npc_sp/model/rcc.nsbmd";
+extern "C" char sNookModelRcc[0x18] = "npc_sp/model/rcc.nsbmd";
 extern "C" void *data_ov068_0226fd08[2] = {(void *)_ZN14SpNpcNookIntro9mainAct01Ev, 0};
 extern "C" void *data_ov068_0226fd50[2] = {(void *)_ZN14SpNpcNookIntro9mainAct05Ev, 0};
 extern "C" void *data_ov068_0226fd18[2] = {(void *)_ZN14SpNpcNookIntro9mainAct00Ev, 0};
-extern "C" char data_ov068_0226fde4[0x18] = "npc_sp/model/rcd.nsbmd";
+extern "C" char sNookModelRcd[0x18] = "npc_sp/model/rcd.nsbmd";
 extern "C" void *data_ov068_0226fd58[2] = {(void *)_ZN14SpNpcNookIntro10setupAct01Ev, 0};
 extern "C" void *data_ov068_0226fd48[2] = {(void *)_ZN14SpNpcNookIntro9mainAct02Ev, 0};
-extern "C" char data_ov068_0226fe2c[0x1c] = "npc_sp/model/rcn_tex.nsbtx";
-extern "C" char data_ov068_0226fe48[0x1c] = "npc_sp/model/rcc_tex.nsbtx";
+extern "C" char sNookTexRcn[0x1c] = "npc_sp/model/rcn_tex.nsbtx";
+extern "C" char sNookTexRcc[0x1c] = "npc_sp/model/rcc_tex.nsbtx";
 extern "C" char sNookIntroMsgFile[0x14] = "sp_etc_sequence4";
 extern "C" void *data_ov068_0226fd10[2] = {(void *)_ZN14SpNpcNookIntro10setupAct00Ev, 0};
 extern "C" void *data_ov068_0226fd38[2] = {(void *)_ZN14SpNpcNookIntro9mainAct04Ev, 0};
-extern "C" char data_ov068_0226fdcc[0x18] = "npc_sp/model/rcs.nsbmd";
-extern "C" const char *sNookTexPaths[4] = {data_ov068_0226fe2c, data_ov068_0226fe48, data_ov068_0226fe64,
-                                                 data_ov068_0226fe80};
+extern "C" char sNookModelRcs[0x18] = "npc_sp/model/rcs.nsbmd";
+extern "C" const char *sNookTexPaths[4] = {sNookTexRcn, sNookTexRcc, sNookTexRcs,
+                                                 sNookTexRcd};
 extern "C" void *data_ov068_0226fd60[2] = {(void *)_ZN14SpNpcNookIntro10setupAct02Ev, 0};
 extern "C" void *data_ov068_0226fd28[2] = {(void *)_ZN14SpNpcNookIntro9mainAct03Ev, 0};
-extern "C" void *data_ov068_0226fcfc = sNookIntroMsgFile;
-extern "C" char data_ov068_0226fe64[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
+extern "C" void *sNookIntroMsgFilePtr = sNookIntroMsgFile;
+extern "C" char sNookTexRcs[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
 extern "C" Unk_ov068_SceneEntry sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
@@ -587,7 +587,7 @@ BOOL SpNpcNookIntro::mainAct01() {
 
 BOOL SpNpcNookIntro::setupAct02() {
     Unk_ov068_0226fd68_Vec v;
-    Unk_ov068_0226fd68_Vec *p = (Unk_ov068_0226fd68_Vec *)func_020947f0(4);
+    Unk_ov068_0226fd68_Vec *p = (Unk_ov068_0226fd68_Vec *)PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -669,13 +669,13 @@ void SpNpcNookIntroTalk::vfunc_78(Unk_ov068_02266f30_Out *out) {
     if (p != 0) {
         Unk_02097ff4_clearFlag(p, 0x23);
     }
-    out->unk_00 = data_ov068_0226fcfc;
+    out->unk_00 = sNookIntroMsgFilePtr;
     out->unk_04 = 0x22;
 }
 
 void SpNpcNookIntroTalk::vfunc_14() {
     Unk_ov068_02266bd0_Scene *sc = unk_3c;
-    volatile u8 buf = data_021edb68;
+    volatile u8 buf = gU8None;
     buf = 0;
     switch (unk_1e) {
     case 0x22:
@@ -692,7 +692,7 @@ void SpNpcNookIntroTalk::vfunc_14() {
             ActorTalkRequest_setNumberSlot(this, p, 1, 0xa, 1, 0);
             if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
-            } else if (func_020978a4(gSavePlayers) <= 1) {
+            } else if (PlayerDataArray_CountUsed(gSavePlayers) <= 1) {
                 buf = 0x27;
             } else {
                 buf = 0xb;
@@ -718,7 +718,7 @@ void SpNpcNookIntroTalk::vfunc_14() {
         break;
     }
     if (buf != 0) {
-        TalkWindowState_setNextMessage(sc, (u8 *)&buf, data_ov068_0226fcfc);
+        TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
     }
 }
 
@@ -727,16 +727,16 @@ void SpNpcNookIntroTalk::vfunc_18() {
 
 void SpNpcNookIntroTalk::vfunc_80() {
     if (data_ov068_0226fe1c[unk_ac].flag != 0) {
-        if (data_ov068_0226fe14[unk_ac].fn) {
-            (this->*data_ov068_0226fe14[unk_ac].fn)();
+        if (sNookIntroTalkScripts[unk_ac].fn) {
+            (this->*sNookIntroTalkScripts[unk_ac].fn)();
         }
     }
 }
 
 void SpNpcNookIntroTalk::vfunc_84() {
     if (data_ov068_0226fe1c[unk_ac].flag == 0) {
-        if (data_ov068_0226fe14[unk_ac].fn) {
-            (this->*data_ov068_0226fe14[unk_ac].fn)();
+        if (sNookIntroTalkScripts[unk_ac].fn) {
+            (this->*sNookIntroTalkScripts[unk_ac].fn)();
             setScript(0);
         }
     }
@@ -785,13 +785,13 @@ void SpNpcNookIntroTalk::runWalkScript() {
             o = (Unk_ov068_02266bd0_Owner *)unk_b4;
             if (NpcActionCtrl_getAction(o->unk_564) == 0) {
                 Unk_ov068_02266bd0_Scene *sc = unk_3c;
-                volatile u8 buf = data_021edb68;
+                volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
                     buf = 0xd;
                 } else {
                     buf = 0xa;
                 }
-                TalkWindowState_setNextMessage(sc, (u8 *)&buf, data_ov068_0226fcfc);
+                TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
                 sc->unk_08 = 1;
                 o = (Unk_ov068_02266bd0_Owner *)unk_b4;
                 Unk_ov068_02266680_Vec t;

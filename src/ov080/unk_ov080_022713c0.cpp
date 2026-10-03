@@ -23,8 +23,8 @@ void *PlayerData_GetCurrent();
 u32 func_02063b8c(u32 n);
 BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequestFlags_SetEventWarpBlock();
-BOOL func_0203c338();
-BOOL func_0203c31c();
+BOOL Catalog_HasAllFish();
+BOOL Catalog_HasAllInsects();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Unk_02014420_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
@@ -252,15 +252,15 @@ public:
     BOOL onDraw();
     BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -305,8 +305,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -496,7 +496,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
             }
         }
         out->a = (u8 *)"sp_npc_turtle7";
-        if (Unk_02097ff4_testFlag(g, 0x21) == 0 && func_0203c338()) {
+        if (Unk_02097ff4_testFlag(g, 0x21) == 0 && Catalog_HasAllFish()) {
             out->b = 0;
             if (Pocket_FindEmpty() < 0) {
                 out->b = 9;
@@ -510,7 +510,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
                     }
                 }
             }
-        } else if (Unk_02097ff4_testFlag(g, 0x22) == 0 && func_0203c31c()) {
+        } else if (Unk_02097ff4_testFlag(g, 0x22) == 0 && Catalog_HasAllInsects()) {
             out->b = 3;
             if (Pocket_FindEmpty() < 0) {
                 out->b = 0xa;

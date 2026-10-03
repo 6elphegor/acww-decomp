@@ -235,15 +235,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -360,8 +360,8 @@ public:
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     BOOL drawModel();
 
@@ -442,14 +442,14 @@ BOOL HouseOwnerVillager::onDraw() {
     return r;
 }
 
-BOOL HouseOwnerVillager::vfunc_7c() {
+BOOL HouseOwnerVillager::canPlayTalkMelody() {
     if (unk_8d0 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void HouseOwnerVillager::vfunc_80() { unk_8d0 = 1; }
+void HouseOwnerVillager::onTalkMelodyPlayed() { unk_8d0 = 1; }
 
 BOOL HouseOwnerVillager::updateAct() {
     unk_89c.update(this);

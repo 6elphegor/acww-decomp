@@ -670,7 +670,7 @@ public:
     /* 0x280 */ u32 unk_280;
     /* 0x284 */ u8 unk_284;
     /* 0x285 */ u8 pad_285[3];
-    /* 0x288 */ u8 unk_288[0x2a8];  // Unk_020b6e10
+    /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
     /* 0x530 */ s32 unk_530;
     /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
     /* 0x590 */ u32 unk_590;
@@ -917,12 +917,12 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define Math_LerpFx _Z11Math_LerpFxiii   // main
 #define LightLevel_update _ZN10LightLevel6updateEv   // main
 #define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih   // main
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih   // main
-#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10   // main
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP4Vec3iiisih   // main
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox   // main
 #define func_020b69fc _ZN17TouchPickCylinderD2Ev   // main
 #define func_020b6a0c _ZN17TouchPickCylinderC2Ev   // main
-#define func_020b6df4 _ZN12Unk_020b6e10D2Ev   // main
-#define func_020b6e10 _ZN12Unk_020b6e10C2Ev   // main
+#define func_020b6df4 _ZN12TouchPickBoxD2Ev   // main
+#define func_020b6e10 _ZN12TouchPickBoxC2Ev   // main
 #define Atm_execTalkAct02 _ZN3Atm13execTalkAct02Ev   // ov004
 #define Atm_enterTalkAct02 _ZN3Atm14enterTalkAct02Ev   // ov004
 #define Atm_execTalkAct01 _ZN3Atm13execTalkAct01Ev   // ov004
@@ -985,7 +985,7 @@ s32 FtrInfo_GetDmaUnk05Fx();
 s32 FX_Div(s32 a, s32 b);
 s32 func_020e761c(s32 *p, s32 target, s32 step);
 void FtrMgr_SetRemovePos(void *p);
-void func_020943dc(u32 a);
+void PlayerActor_PlayLocalSe(u32 a);
 s32 func_020e9960(void *out, void *a, void *b);
 void *FurnitureManager_GetMoveAnim();
 BOOL FtrMoveAnim_StartPull(void *o, void *a, s32 *b, s32 c);
@@ -1074,7 +1074,7 @@ s32 FtrMgr_CountSwitchedOn(void *fn);
 void LightSwitch_SetOff(u32 a, u32 b);
 s32 FtrSync_SetRoomLight(u32 a, u32 b);
 void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
-void *func_020947f0(u32 id);
+void *PlayerActor_GetBodyPos(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
 u32 Scene_InUnk6To8(void);
 void Unk_020b1ddc_rotateHourHand(void *p);
@@ -3078,7 +3078,7 @@ extern "C" void FtrActor_SpawnActorC0(void *a, u32 x) {
 
 // @02207038
 void FtrActor::spawnActorC0AtTile(s32 a) {
-    void *cam = func_020947f0(4);
+    void *cam = PlayerActor_GetBodyPos(4);
     if (cam) {
         Unk_ov004_02207854_List c;
         Unk_0203e4f0_Vec v1;
@@ -3119,7 +3119,7 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
 
 // @02207004
 void FtrActor::spawnActorC0AtCenter() {
-    void *cam = func_020947f0(4);
+    void *cam = PlayerActor_GetBodyPos(4);
     if (cam) {
         Unk_0203e4f0_Vec v;
         FtrActor_GetCenter(this, (Vec3 *)&v);
@@ -4262,7 +4262,7 @@ BOOL FtrActor::startRotate(s32 a) {
     if (_ZN8FtrActor11canRotateByEi(this)) {
         unk_168 = unk_8e + a;
         setAct(2);
-        func_020943dc(0x4c4);
+        PlayerActor_PlayLocalSe(0x4c4);
         return TRUE;
     }
     return FALSE;
@@ -4285,7 +4285,7 @@ BOOL FtrActor::startPush(s16 a) {
         setAct(3);
         if (!Unk_ov004_02205820_Is3d(*(u16 *)((u8 *)this + 0xc))) {
             u32 t = ((s32 (*)(void *))FtrActor_GetDragSe)(this);
-            if (t != 0xffff) func_020943dc(t);
+            if (t != 0xffff) PlayerActor_PlayLocalSe(t);
         }
         return TRUE;
     }
@@ -4309,7 +4309,7 @@ BOOL FtrActor::startPull(s16 a) {
         setAct(4);
         if (!Unk_ov004_02205820_Is3d(*(u16 *)((u8 *)this + 0xc))) {
             u32 t = ((s32 (*)(void *))FtrActor_GetDragSe)(this);
-            if (t != 0xffff) func_020943dc(t);
+            if (t != 0xffff) PlayerActor_PlayLocalSe(t);
         }
         return TRUE;
     }
@@ -4431,7 +4431,7 @@ void FtrActor::execAppear() {
     if (unk_15c < 0xf) {
         unk_15c = unk_15c + 1;
         unk_76c = 0;
-        if (unk_15c == 0xc) func_020943dc(0x4c7);
+        if (unk_15c == 0xc) PlayerActor_PlayLocalSe(0x4c7);
         if (unk_15c == 0xf) {
             Unk_ov004_053c0_Buf buf;
             FtrActor_GetCenter(this, (Vec3 *)&buf);
@@ -4590,7 +4590,7 @@ BOOL FtrActor::enterRemove() {
     unk_76c = 0;
     FtrActor_GetCenter(this, (Vec3 *)&buf);
     FtrMgr_SetRemovePos(&buf);
-    func_020943dc(0x4c8);
+    PlayerActor_PlayLocalSe(0x4c8);
     return TRUE;
 }
 

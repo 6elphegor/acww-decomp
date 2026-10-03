@@ -27,11 +27,11 @@ void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
 s32 MenuCtrl_IsButtons();
 void MenuCtrl_SetAmount();
-void func_02097410(void *p, s32 v);
-s32 func_02097414(void *p);
-void func_02097a48(void *p, s32 v, s32 w);
+void PlayerBank_SetBalance(void *p, s32 v);
+s32 PlayerBank_GetBalance(void *p);
+void PlayerInventory_AddBells(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
-s32 func_02097ce4(void *p, s32 v, s32 w);
+s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
 
@@ -628,7 +628,7 @@ void AmountEntryMenu::setupAmounts() {
         hi = 99;
         break;
     case 0x36:
-        hi = func_02097414(q);
+        hi = PlayerBank_GetBalance(q);
         break;
     default:
         hi = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
@@ -641,7 +641,7 @@ void AmountEntryMenu::setupAmounts() {
         lo = _ZN9HouseData7getDebtEv(g);
         break;
     case 0x35:
-        lo = func_02097414(q);
+        lo = PlayerBank_GetBalance(q);
         break;
     case 0x36:
         lo = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
@@ -662,7 +662,7 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     case 0x36: {
-        s32 t = func_02097ce4(_ZN10PlayerData12getInventoryEv(p), 1, 0);
+        s32 t = PlayerInventory_GetBellsRoom(_ZN10PlayerData12getInventoryEv(p), 1, 0);
         if (t < hi) {
             mx = t;
         }
@@ -681,11 +681,11 @@ void AmountEntryMenu::commitAmount() {
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
-        func_02097410(q, b - a);
+        PlayerBank_SetBalance(q, b - a);
         break;
     case 0x37:
     default:
-        func_02097a48(_ZN10PlayerData12getInventoryEv(p), -a, 1);
+        PlayerInventory_AddBells(_ZN10PlayerData12getInventoryEv(p), -a, 1);
         break;
     case 0x38:
     case 0x39:
@@ -697,10 +697,10 @@ void AmountEntryMenu::commitAmount() {
         _ZN9HouseData7setDebtEi(gSaveHouse, c - a);
         break;
     case 0x35:
-        func_02097410(q, c + a);
+        PlayerBank_SetBalance(q, c + a);
         break;
     case 0x36:
-        func_02097a48(_ZN10PlayerData12getInventoryEv(p), a, 1);
+        PlayerInventory_AddBells(_ZN10PlayerData12getInventoryEv(p), a, 1);
         break;
     }
 }

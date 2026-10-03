@@ -20,8 +20,8 @@ public:
 };
 
 // Vtable 0x020e4124
-class Unk_020e4124 : public SceneBase {
+class DummyScene4 : public SceneBase {
 public:
 };
 
-extern "C" Unk_020e4124 *func_020b478c(void) { return new Unk_020e4124; }
+extern "C" DummyScene4 *DummyScene4_Create(void) { return new DummyScene4; }

@@ -254,7 +254,7 @@ void func_020323b0(void *p);
 void func_020548d0(void *p);
 void func_02088c4c(void *p);
 void func_02000c8c();
-void func_02000c98();
+void FxVec3_Construct();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void *NpcRegistry_FindVillager(u32 i);
@@ -288,7 +288,7 @@ void Model_setAlpha(void *p, u32 v);
 void AnimModel_drawAnimated(void *p, u32 v);
 void AnimModel_stepAnim(void *p);
 void AnimModel_setFrame(void *p);
-void func_020abc10(void *p, s32 a, s32 b, s32 c);
+void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
 BOOL func_02088d38(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
 void Effect_PlayById(u32 a, void *v, s32 b, s32 c);
@@ -534,8 +534,8 @@ HouseRoach::HouseRoach() {
     *p = (u32)data_0213b954;
     func_020548d0(unk_120);
     func_02088c4c(unk_1d8);
-    func_02135714(unk_230, 2, 12, (void *)func_02000c98, (void *)func_02000c8c);
-    func_02135714(unk_248, 2, 12, (void *)func_02000c98, (void *)func_02000c8c);
+    func_02135714(unk_230, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
+    func_02135714(unk_248, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
     unk_110 = 1;
     unk_260 = 0;
     unk_262 = 0;
@@ -819,7 +819,7 @@ BOOL HouseRoach::draw() {
         Model_setAlpha(unk_120, (u8)F08(this));
         AnimModel_drawAnimated(unk_120, 0);
         if (F08(this) >= 0x1f && unk_110 == 1) {
-            func_020abc10(pv, 0x400, 0x4000, 0x1000);
+            CharaShadow_Draw(pv, 0x400, 0x4000, 0x1000);
         }
     }
     return TRUE;

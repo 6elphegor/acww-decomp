@@ -159,7 +159,7 @@ void _ZN10PocketMenu12selectTargetEj(S *s, u32 a);
 void _ZN10PocketMenu14clearSelectionEv(S *s);
 extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchHoldFrames;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
@@ -242,7 +242,7 @@ s32 PlayerActor_IsChangingHeldItem();
 s32 PlayerActor_IsChangingClothes();
 s32 PlayerActor_IsInAct05();
 void *PlayerData_GetCurrent();
-s32 func_02097ac4(void *p, s32 a, s32 b);
+s32 PlayerInventory_SetWallet(void *p, s32 a, s32 b);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 a);
 void _ZN12Unk_02097ff47setFlagEj(void *p, u32 a);
 u16 *_ZN12Unk_02097ff413func_020983ccEv(void *p);
@@ -2339,7 +2339,7 @@ extern "C" void PocketMenu_ShowMessage(S *s, u32 a, u32 b, u32 c)
     } else {
         s->unk_ba = b;
     }
-    m.a = data_021edb68;
+    m.a = gU8None;
     m.a = a;
     _ZN16MenuErrorMessage4openEPhij((u8 *)s + 0x27fc, &m, (u32)c, 0);
     _ZN8MenuProc12setMainStateEh(s, 0x20);
@@ -3361,7 +3361,7 @@ s32 PocketMenu::getWalletBells() {
 }
 
 void PocketMenu::setWalletBells(s32 v) {
-    func_02097ac4(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), v, 0);
+    PlayerInventory_SetWallet(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), v, 0);
     InventoryBg_StartBellRoll(unk_de0 + 0, 0);
 }
 

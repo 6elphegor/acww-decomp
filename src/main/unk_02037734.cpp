@@ -105,7 +105,7 @@ public:
 
 extern "C" {
 void _ZN5Model10drawScaledEPi(void *self, void *p);
-void func_020af330();
+void LidSleep_KeepSoundOff();
 s32 Snd_VolumeOff();
 void Gfx2d_SetMainPlanes(u32 v);
 void Gfx2d_SetSubPlanes(u32 v);
@@ -116,7 +116,7 @@ u32 Gfx2d_GetSubPlanes();
 u32 Gfx2d_GetMainWindows();
 u32 Gfx2d_GetSubWindows();
 char *Msg_SkipLines(char *p, u32 n);
-u32 func_020a7f94(MsgString *obj);
+u32 TextLabel_MeasureMsgWidth(MsgString *obj);
 u8 *CommCaution_FormatErrorCode();
 void func_020b4154(void *);
 void func_020b413c(void *);
@@ -194,8 +194,8 @@ public:
     void release();
     void init();
 
-    void func_020376f4();
-    void func_0203771c();
+    void execReset();
+    void enterReset();
     void execEnded();
     void enterEnded();
     void execShutdown();
@@ -435,7 +435,7 @@ void CommCautionWindow::update(u8 a) {
     static void (CommCautionWindow::*tbl[8])() = {
         &CommCautionWindow::execIdle, &CommCautionWindow::execWatch, &CommCautionWindow::execDelay,
         &CommCautionWindow::execPrepare, &CommCautionWindow::execCountdown, &CommCautionWindow::execShutdown,
-        &CommCautionWindow::execEnded, &CommCautionWindow::func_020376f4,
+        &CommCautionWindow::execEnded, &CommCautionWindow::execReset,
     };
     (this->*tbl[unk_bc])();
 }
@@ -529,7 +529,7 @@ void CommCautionWindow::renderLine() {
 void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     MsgString25 t;
     String_FormatNumber(&t, unk_e4, 2, 0, 0, 0);
-    u32 w = func_020a7f94(&t);
+    u32 w = TextLabel_MeasureMsgWidth(&t);
     u32 off;
     if (w < 0x10) {
         off = (0x10 - w) >> 1;
@@ -561,7 +561,7 @@ void CommCautionWindow::buildLine(u32 a, u32 b) {
     if (r != NULL) {
         unk_250.setLine(r);
         if (unk_e4 >= 0 && a == 3) {
-            unk_e0 = func_020a7f94(&unk_250);
+            unk_e0 = TextLabel_MeasureMsgWidth(&unk_250);
             Unk_02037b90_S s = *(Unk_02037b90_S *)sCommCautionNumberGap;
             unk_250.append((u8 *)&s);
             unk_250.appendString(&unk_1fc);
@@ -607,7 +607,7 @@ void CommCautionWindow::restorePlanes() {
 }
 
 void CommCautionWindow::muteSound() {
-    func_020af330();
+    LidSleep_KeepSoundOff();
     Snd_VolumeOff();
 }
 
@@ -757,7 +757,7 @@ void CommCautionWindow::execEnded() {
         }
         b = (gPad[1] & 1) ? TRUE : FALSE;
         if (a != 0 || b != 0) {
-            func_0203771c();
+            enterReset();
         }
     }
 }

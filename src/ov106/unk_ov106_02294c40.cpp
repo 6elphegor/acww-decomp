@@ -25,7 +25,7 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchPressY;
 extern u8 gTouchPressX;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern s32 gCurrentHeap;
 extern u16 gPad[];
 
@@ -37,7 +37,7 @@ void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Snd_PlaySe(s32 a);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
-void func_0203c42c(void *a, void *p, s32 skip, s32 set);
+void Catalog_SetItem(void *a, void *p, s32 skip, s32 set);
 u16 Item_MakePaper(void *p, s32 a);
 void Letter_MarkRead(void *a);
 void * Letter_GetPaper(void *p);
@@ -50,7 +50,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void LetterList_Compact(void *a, s32 b);
 void * PlayerData_GetCurrent();
-s32 func_020979d8();
+s32 PlayerData_GetMailbox();
 s32 Inventory_FindEmptyLetter();
 void * ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *a);
@@ -770,7 +770,7 @@ BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
     LetterList_Compact(unk_2924, 10);
     PlayerData_GetCurrent();
-    u8 *p = ((PlayerMailbox *)func_020979d8())->getLetter(0);
+    u8 *p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     s32 i = 0;
     u8 *q = (u8 *)unk_2924;
     for (; i < 10; i++) {
@@ -949,7 +949,7 @@ void MailboxMenu::initParts() {
         Letter_Clear((u8 *)unk_2924 + i * 0xf4);
     }
     PlayerData_GetCurrent();
-    p = ((PlayerMailbox *)func_020979d8())->getLetter(0);
+    p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     for (i = 0; i < 10; i++) {
         Letter_Copy((u8 *)unk_2924 + i * 0xf4, p);
         p += 0xf4;
@@ -1776,7 +1776,7 @@ u32 MailboxMenu::findFirstMailboxLetter() {
 
 void MailboxMenu::showMessage(u32 v) {
     volatile u8 buf[2];
-    buf[0] = data_021edb68;
+    buf[0] = gU8None;
     buf[0] = v;
     ((MenuErrorMessage *)&unk_259c)->startTalk((u8 *)buf, 1);
     setMainState(0x1a);
@@ -1874,7 +1874,7 @@ void MailboxMenu::registerLetterPaper(void *p) {
         void *r4 = PlayerData_GetCurrent();
         u16 v = 0xfff1;
         v = Item_MakePaper(Letter_GetPaper(p), 4);
-        func_0203c42c(((PlayerData *)r4)->getCatalog(), &v, 0, 1);
+        Catalog_SetItem(((PlayerData *)r4)->getCatalog(), &v, 0, 1);
     }
 }
 

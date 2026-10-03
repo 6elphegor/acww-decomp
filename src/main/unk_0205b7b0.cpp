@@ -95,15 +95,15 @@ u32 func_02077e28(void);
 u32 func_02077e20(void);
 u32 FishBobber_GetModelSize(void);
 u32 HeldItem_GetAnimHeapSize(void);
-u32 func_0205eec0(void);
-u32 func_0205d2fc(void);
+u32 PlayerBodyWork_GetHeapSize(void);
+u32 CharaFaceAnimWork_GetHeapSize(void);
 u32 HeldItem_GetModelBufferSize(void);
-u32 func_0205d770(void);
+u32 PlayerGlassesModel_GetBufferSize(void);
 u32 PlayerPalette_GetSlotSize(void);
 u32 PlayerHead_GetBufferSize(void);
-u32 func_0205c8c8(void);
-u32 func_0205d178(void);
-u32 func_0205d418(void);
+u32 PlayerBodyModel_GetBufferSize(void);
+u32 CharaFaceAnim_GetSlotSize(void);
+u32 PlayerFaceTex_GetBufferSize(void);
 u32 ClothTex_GetBufferSize(void);
 u32 CharaAnim_GetBodySlotSize(void);
 u32 CharaAnim_GetPartSlotSize(void);
@@ -577,7 +577,7 @@ extern "C" void CharaClothTexHeap_Destroy(void) {
 extern "C" void PlayerFaceTexHeap_Create(void *parent) {
     u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205d418());
+    s += ALIGN4(PlayerFaceTex_GetBufferSize());
     t += s * n;
     gPlayerFaceTexHeap = FrameHeap_Create(t, parent);
 }
@@ -589,7 +589,7 @@ extern "C" void PlayerFaceTexHeap_Destroy(void) {
 
 extern "C" void CharaFaceAnimHeap_Create(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205d178());
+    s += ALIGN4(CharaFaceAnim_GetSlotSize());
     s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = NpcSpawn_GetSpNpcSlotCount();
     t += s * (c + d);
@@ -604,7 +604,7 @@ extern "C" void CharaFaceAnimHeap_Destroy(void) {
 extern "C" void PlayerBodyModelHeap_Create(void *parent) {
     u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205c8c8());
+    s += ALIGN4(PlayerBodyModel_GetBufferSize());
     t += s * n;
     gPlayerBodyModelHeap = FrameHeap_Create(t, parent);
 }
@@ -643,7 +643,7 @@ extern "C" void PlayerPaletteHeap_Destroy(void) {
 extern "C" void PlayerGlassesModelHeap_Create(void *parent) {
     u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205d770());
+    s += ALIGN4(PlayerGlassesModel_GetBufferSize());
     t += s * n;
     gPlayerGlassesModelHeap = FrameHeap_Create(t, parent);
 }
@@ -669,7 +669,7 @@ extern "C" void HeldItemModelHeap_Destroy(void) {
 
 extern "C" void CharaFaceAnimWorkHeap_Create(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205d2fc());
+    s += ALIGN4(CharaFaceAnimWork_GetHeapSize());
     s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 e = c + NpcSpawn_GetSpNpcSlotCount();
     t += ALIGN4(s + 0x48) * e;
@@ -684,7 +684,7 @@ extern "C" void CharaFaceAnimWorkHeap_Destroy(void) {
 extern "C" void PlayerBodyAnimHeap_Create(void *parent) {
     u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205eec0());
+    s += ALIGN4(PlayerBodyWork_GetHeapSize());
     t += ALIGN4(s + 0x48) * n;
     gPlayerBodyAnimHeap = FrameHeap_Create(t, parent);
 }

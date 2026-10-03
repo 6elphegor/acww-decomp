@@ -271,7 +271,7 @@ BOOL _ZN11CommManager8isOnlineEv(CommManager *p);
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 i);
 u8 *_ZN11CommManager10getSyncVarEj(CommManager *p, s32 i);
 BOOL TalkRequest_IsActive();
-BOOL func_02011880();
+BOOL HudObjGfx_IsMsgUiActive();
 s32 Scene_GetCurrent();
 void String_Load2d(ChatBalloonText *buf, u8 *c, s32 z);
 void Snd_PlaySe(u32 a);
@@ -291,7 +291,7 @@ void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x);
 void ChatBalloon_Post(s32 idx, StrBuf *a, MsgString *b);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
-s32 func_0209c38c(s32 a, s32 b);
+s32 DebugVar_GetStub(s32 a, s32 b);
 void func_020e761c(void *p, s32 a, s32 b);
 s32 *_ZN10SpriteAnim6getSeqEv(void *p);
 void _ZN10SpriteAnim8setFrameEii(void *p, s32 a, s32 b);
@@ -513,14 +513,14 @@ void ChatBalloon::enterOpen() {
     unk_a0 = 1;
     unk_b0 = 1;
     if (unk_0c == 0) {
-        a = func_0209c38c(0x136, 2) + 3;
+        a = DebugVar_GetStub(0x136, 2) + 3;
     } else {
-        a = func_0209c38c(0x12c, 2) + 3;
+        a = DebugVar_GetStub(0x12c, 2) + 3;
     }
     if (unk_0c == 0) {
-        b = func_0209c38c(0x136, 3) + 5;
+        b = DebugVar_GetStub(0x136, 3) + 5;
     } else {
-        b = func_0209c38c(0x12c, 3) - 5;
+        b = DebugVar_GetStub(0x12c, 3) - 5;
     }
     unk_a4 = a;
     unk_4c = b;
@@ -532,19 +532,19 @@ void ChatBalloon::enterOpen() {
 void ChatBalloon::execOpen() {
     s32 a, b, c;
     if (unk_0c == 0) {
-        a = func_0209c38c(0x136, 4) + 2;
+        a = DebugVar_GetStub(0x136, 4) + 2;
     } else {
-        a = func_0209c38c(0x12c, 4) + 2;
+        a = DebugVar_GetStub(0x12c, 4) + 2;
     }
     if (unk_0c == 0) {
-        b = func_0209c38c(0x136, 5) - 6;
+        b = DebugVar_GetStub(0x136, 5) - 6;
     } else {
-        b = func_0209c38c(0x12c, 5) + 6;
+        b = DebugVar_GetStub(0x12c, 5) + 6;
     }
     if (unk_0c == 0) {
-        c = func_0209c38c(0x136, 6) + 2;
+        c = DebugVar_GetStub(0x136, 6) + 2;
     } else {
-        c = func_0209c38c(0x12c, 6) - 2;
+        c = DebugVar_GetStub(0x12c, 6) - 2;
     }
     if (unk_a4 > a) {
         unk_4c += b;
@@ -563,9 +563,9 @@ void ChatBalloon::enterShow() {
     unk_a0 = 2;
     unk_b0 = 1;
     if (unk_0c == 0) {
-        t = func_0209c38c(0x137, 2) + 0x258;
+        t = DebugVar_GetStub(0x137, 2) + 0x258;
     } else {
-        t = func_0209c38c(0x12d, 2) + 0x258;
+        t = DebugVar_GetStub(0x12d, 2) + 0x258;
     }
     unk_a4 = t;
 }
@@ -573,9 +573,9 @@ void ChatBalloon::enterShow() {
 void ChatBalloon::execShow() {
     s32 t;
     if (unk_0c == 0) {
-        t = func_0209c38c(0x137, 3) + 6;
+        t = DebugVar_GetStub(0x137, 3) + 6;
     } else {
-        t = func_0209c38c(0x12d, 3) + 6;
+        t = DebugVar_GetStub(0x12d, 3) + 6;
     }
     func_020e761c(&unk_48, unk_44, t);
     unk_a4--;
@@ -592,9 +592,9 @@ void ChatBalloon::enterClose() {
     unk_a0 = 3;
     unk_b0 = 1;
     if (unk_0c == 0) {
-        t = func_0209c38c(0x138, 2) + 2;
+        t = DebugVar_GetStub(0x138, 2) + 2;
     } else {
-        t = func_0209c38c(0x12e, 2) + 2;
+        t = DebugVar_GetStub(0x12e, 2) + 2;
     }
     unk_a4 = t;
 }
@@ -602,9 +602,9 @@ void ChatBalloon::enterClose() {
 void ChatBalloon::execClose() {
     s32 t;
     if (unk_0c == 0) {
-        t = func_0209c38c(0x138, 3) + 0xb;
+        t = DebugVar_GetStub(0x138, 3) + 0xb;
     } else {
-        t = func_0209c38c(0x12e, 3) - 0xb;
+        t = DebugVar_GetStub(0x12e, 3) - 0xb;
     }
     unk_4c += t;
     unk_a4--;
@@ -613,9 +613,9 @@ void ChatBalloon::execClose() {
         destroyTextLabel();
         enterHidden();
         if (unk_0c == 0) {
-            t = func_0209c38c(0x138, 4);
+            t = DebugVar_GetStub(0x138, 4);
         } else {
-            t = func_0209c38c(0x12e, 4) + 0xa;
+            t = DebugVar_GetStub(0x12e, 4) + 0xa;
         }
         unk_a8 = t;
     }
@@ -1180,7 +1180,7 @@ BOOL ChatBalloonProc::vfunc_00() {
 
 BOOL ChatBalloonProc::onExecute() {
     unk_50.update();
-    if (func_02011880()) {
+    if (HudObjGfx_IsMsgUiActive()) {
         unk_54.update();
     }
     unk_348.update();
@@ -1188,7 +1188,7 @@ BOOL ChatBalloonProc::onExecute() {
 }
 
 BOOL ChatBalloonProc::onDraw() {
-    if (func_02011880()) {
+    if (HudObjGfx_IsMsgUiActive()) {
         unk_54.draw();
     }
     return TRUE;

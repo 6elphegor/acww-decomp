@@ -236,15 +236,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -288,8 +288,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -362,7 +362,7 @@ struct Unk_ov004_0224d0a0_Ent {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
-#define func_0202e548 _ZN10SpNpcActor13func_0202e548Eii
+#define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
 #define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define PlayerSpNpcRecord_getCafeVisits _ZN17PlayerSpNpcRecord13getCafeVisitsEv
@@ -423,7 +423,7 @@ void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, 
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 s32 NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void func_0202e548(void *self, s32 a, s32 b);
+void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
 void TalkWindowState_setNextMessage(void *self, void *p, u32 d);
 void *PlayerData_GetCurrent(void);
 void *PlayerData_getSpNpcRecord(void *p);
@@ -445,7 +445,7 @@ s32 GameStart_IsActive(void);
 s32 NetArea_IsLocalOwner(void);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 void *Actor_findByProfile(s32 a, s32 b);
 void Actor_spawn(s32 a, s32 b, const void *c, const void *d, s32 e);
 s32 SpNpcRoostGuest_getGuest(void *p);
@@ -577,7 +577,7 @@ BOOL SpNpcBrewster::vfunc_00() {
     sSpNpcBrewster = this;
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner() != 0) {
             changeAct(0);
         } else {
@@ -674,7 +674,7 @@ BOOL SpNpcBrewster::mainAct00() {
             unk_774 = 1;
         }
     }
-    if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
         if (PlayerActor_IsInAction(0x27, 4) != 0) {
             TalkRequest_AddPlayerTalk7(this, 0);
         }
@@ -699,7 +699,7 @@ BOOL SpNpcBrewster::setupAct01() {
 
 BOOL SpNpcBrewster::mainAct01() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
+        if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
             if (PlayerActor_IsInAction(0x28, 4) != 0) {
                 PlayerActor_LocalRequestStandUp(2);
             }
@@ -818,7 +818,7 @@ void SpNpcBrewsterTalk::vfunc_78(void *arg) {
     } else {
         out->unk_00 = sSpNpcBrewsterMsgFiles[0];
         void *o = Actor_findByProfile(0x66, 0);
-        if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             out->unk_04 = func_02063b8c(3) + 0x55;
         } else if (Talk_CheckAndSetPlayerFlag(0x17) != 0) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
@@ -1231,7 +1231,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
             ActorTalkRequest *p = &unk_658;
             p->vfunc_08();
             func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
-            if (CommManager_isOnline(gl) || *func_0209c37c(0, 0x4a) != 0) {
+            if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 changeAct(1);
             } else {
                 changeAct(4);

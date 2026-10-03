@@ -68,8 +68,8 @@ extern "C" {
 void _ZN16ActorTalkRequest17setFixedPointSlotEiji(void *p, s32 a, s32 b, s32 c, s32 d);
 void _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(void *p, s32 a);
 s32 FishPick_PickAnyHour(void *a, void *b, void *c, u32 d, u32 e);
-u32 func_0204f0f4(u32 a);
-u32 func_0204f234(u32 a, u32 b);
+u32 FishTable_IsLateMonth(u32 a);
+u32 FishTable_GetForDate(u32 a, u32 b);
 void _ZN12Unk_0201442015requestKeepItemEv(void *p);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
@@ -102,7 +102,7 @@ void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void func_020947c0(u16 *out, s32 v);
+void PlayerActor_GetSlotHeldItem(u16 *out, s32 v);
 s32 PlayerActor_GetLocalSessionSlot(u16 *p);
 void Clock_GetDateTime(void *p);
 s32 Pocket_FindItem(u16 *p);
@@ -349,15 +349,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -401,8 +401,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -527,7 +527,7 @@ BOOL SpNpcTortimerFishingTourney::vfunc_00() {
         Clock_GetDateTime(&l.z);
         u32 b4 = ((u8 *)&l.w)[0];
         u32 b3 = ((u8 *)&l.z)[3];
-        u32 t = func_0204f234(b4, func_0204f0f4(b3));
+        u32 t = FishTable_GetForDate(b4, FishTable_IsLateMonth(b3));
         if (t != 0) {
             if (FishPick_PickAnyHour(&l, &l.x, &l.y, r6, t) == 0) {
                 FishPick_PickAnyHour(&l, &l.x, &l.y, (r6 + 1) & 1, t);
@@ -734,7 +734,7 @@ void SpNpcTortimerFishingTourneyTalk::vfunc_78(TalkStartMsg *out) {
         }
     }
     *(u16 *)a = 0x1374;
-    func_020947c0(&l.h[1], PlayerActor_GetLocalSessionSlot((u16 *)a));
+    PlayerActor_GetSlotHeldItem(&l.h[1], PlayerActor_GetLocalSessionSlot((u16 *)a));
     out->b = 3;
     if (Talk_CheckAndSetPlayerFlag(0x1b, 0) == 0) {
         l.h[3] = 0x1374;

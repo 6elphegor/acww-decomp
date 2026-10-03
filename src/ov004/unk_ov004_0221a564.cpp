@@ -323,15 +323,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -503,8 +503,8 @@ public:
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     BOOL changeAct(s32 s);
     void execAct();
@@ -1135,9 +1135,9 @@ void SickVillager::mainAct07() {
     changeAct(4);
 }
 
-void SickVillager::vfunc_80() { unk_896 = 1; }
+void SickVillager::onTalkMelodyPlayed() { unk_896 = 1; }
 
-BOOL SickVillager::vfunc_7c() {
+BOOL SickVillager::canPlayTalkMelody() {
     if (unk_896 == 0) {
         return TRUE;
     }

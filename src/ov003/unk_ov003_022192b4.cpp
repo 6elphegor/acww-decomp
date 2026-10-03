@@ -1350,8 +1350,8 @@ extern u16 sTreeFruitIcons[];
 void Model_drawShapesDirect(M *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void func_02105fd8(u32 a, u32 b);
-s32 func_020ac22c(s32 a);
-void func_020ac23c(V3 *v, u8 n);
+s32 ObjShadow_DrawRock(s32 a);
+void ObjShadow_DrawTree(V3 *v, u8 n);
 s32 Flower_GetSpecies(u16 *p);
 s32 Flower_GetColor(u16 *p);
 s32 Item_GetTreeStage(u16 *p);
@@ -4743,7 +4743,7 @@ namespace ns_0221db54 {
 extern "C" void FieldObj_DrawTreeAt(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
 {
     FieldObj_DrawTree(o, t, a, b, v, m);
-    func_020ac23c(&v, Item_GetTreeStage(t));
+    ObjShadow_DrawTree(&v, Item_GetTreeStage(t));
 }
 }
 
@@ -4873,7 +4873,7 @@ namespace ns_0221db54 {
 extern "C" s32 FieldObj_DrawRockAt(O *o, u16 *t, s32 r, Blk m)
 {
     FieldObj_DrawRock(o, t, m);
-    return func_020ac22c(r);
+    return ObjShadow_DrawRock(r);
 }
 }
 

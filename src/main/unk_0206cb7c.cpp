@@ -26,15 +26,15 @@ s32 Mem_Copy(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_02051320(void *p, s32 n, s32 z);
+s32 Text_GetLineEnd(void *p, s32 n, s32 z);
 }
 
 extern "C" {
-s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
+s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 }
 
 extern "C" {

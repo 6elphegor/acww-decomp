@@ -22,11 +22,11 @@ const char *Text_GetSpecialCharStr2(void);
 }
 
 extern "C" {
-u8 *func_02050204(void);
+u8 *Text_GetSpecialCharStr10(void);
 }
 
 extern "C" {
-u8 *func_02050208(void);
+u8 *Text_GetSpecialCharStr9(void);
 }
 
 extern "C" {
@@ -70,15 +70,15 @@ void Gfx2d_ShowMainPlanes(u32 arg);
 }
 
 extern "C" {
-void func_02011868(void);
+void HudObjGfx_ClearMsgUiActive(void);
 }
 
 extern "C" {
-void func_02011874(void);
+void HudObjGfx_SetMsgUiActive(void);
 }
 
 extern "C" {
-void func_0201195c(void);
+void HudObjGfx_LoadForScene(void);
 }
 
 extern "C" {
@@ -288,11 +288,11 @@ u32 Bmg_ReadMagic(void *p);
 }
 
 extern "C" {
-void func_020a8b88(void);
+void MsgUiProc_HideObjPlane(void);
 }
 
 extern "C" {
-void func_020a8b94(void);
+void MsgUiProc_ShowObjPlane(void);
 }
 
 extern "C" {
@@ -304,15 +304,15 @@ extern u8 gTextLabelList[];
 }
 
 extern "C" {
-extern u32 data_020d0800[];
+extern u32 sBmgMsgAttrTableA[];
 }
 
 extern "C" {
-extern u32 data_020d0864[];
+extern u32 sBmgMsgAttrTableB[];
 }
 
 extern "C" {
-extern u32 data_020d08c8[];
+extern u32 sBmgMsgAttrTableC[];
 }
 
 extern "C" {
@@ -352,7 +352,7 @@ extern u8 sInputButtonMode;
 }
 
 extern "C" {
-extern u8 data_021edb68;
+extern u8 gU8None;
 }
 
 extern "C" {
@@ -370,7 +370,7 @@ class MsgTag {
 public:
     MsgTag();
     u8 getArgU8();
-    void func_020a72c4(u32 *a, char **b, char **c);
+    void getAltTextArgs(u32 *a, char **b, char **c);
     void getStrings3(char **a, char **b, char **c);
     void getStrings2(char **a, char **b);
     s32 getSlotIndex();
@@ -467,7 +467,7 @@ public:
     virtual ~MsgString33();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
-    void func_020a7188();
+    void initEmpty();
 };
 
 // Buffer defined in another file (ctor func_020aa8e0, dtor func_020aa8c8), 0x34 bytes
@@ -668,14 +668,14 @@ public:
     /* 0xa0 */ u32 unk_a0;
 };
 
-class Unk_020e2b70 : public GameProc {
+class MsgUiProc : public GameProc {
 public:
-    Unk_020e2b70();
+    MsgUiProc();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e2b70();
+    virtual ~MsgUiProc();
 };
 
 struct BmgInfEntryAttr {
@@ -730,49 +730,49 @@ extern MsgCopyProcessor gMsgCopyProcessor;
 extern MsgQuery gMsgQuery;
 extern Flag18 data_021edcfc;
 // prototypes (test harness)
-extern "C" Unk_020e2b70 *func_020a8c84(void);
+extern "C" MsgUiProc *MsgUiProc_Create(void);
 
 
 // mwcc 1.2 emits functions in reverse order, so they are defined here from highest to lowest address
 
-// ---- Unk_020e2b70
-extern "C" Unk_020e2b70 *func_020a8c84(void) {
-    return new Unk_020e2b70;
+// ---- MsgUiProc
+extern "C" MsgUiProc *MsgUiProc_Create(void) {
+    return new MsgUiProc;
 }
 
-Unk_020e2b70::Unk_020e2b70() {}
+MsgUiProc::MsgUiProc() {}
 
-Unk_020e2b70::~Unk_020e2b70() {}
+MsgUiProc::~MsgUiProc() {}
 
-BOOL Unk_020e2b70::vfunc_00() {
+BOOL MsgUiProc::vfunc_00() {
     func_0208f000();
     Input_ResetMode();
     AbAllObjGfx_Upload();
-    func_0201195c();
-    func_02011874();
+    HudObjGfx_LoadForScene();
+    HudObjGfx_SetMsgUiActive();
     TalkWindow_CreateAll();
     FieldInfoBalloon_Init();
-    func_020a8b94();
+    MsgUiProc_ShowObjPlane();
     return TRUE;
 }
 
-BOOL Unk_020e2b70::vfunc_0c() {
-    func_020a8b88();
+BOOL MsgUiProc::vfunc_0c() {
+    MsgUiProc_HideObjPlane();
     FieldInfoBalloon_Release();
     TalkWindow_DestroyAll();
-    func_02011868();
+    HudObjGfx_ClearMsgUiActive();
     func_0208eff0();
     return TRUE;
 }
 
-BOOL Unk_020e2b70::onExecute() {
+BOOL MsgUiProc::onExecute() {
     func_0208efe0();
     TalkWindow_UpdateAll();
     FieldInfoBalloon_Update();
     return TRUE;
 }
 
-BOOL Unk_020e2b70::onDraw() {
+BOOL MsgUiProc::onDraw() {
     FieldInfoBalloon_Draw();
     TalkWindow_DrawAll();
     func_0208efd0();

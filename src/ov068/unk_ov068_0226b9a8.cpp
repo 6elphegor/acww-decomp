@@ -334,7 +334,7 @@ void AnimFrameCtrl_step(void *p);
 s32 SpNpcKappn_GetAnimState();
 s32 SpNpcKappn_GetAnimFrame();
 void TaxiInterior_SetPartAnim(void *self, u8 k, void *a, void *b, u8 s0, u32 s1, u16 s2, u16 s3);
-void func_ov068_0226b9ec(void *p, u32 b, void *c);
+void TaxiInterior_OnModelNode(void *p, u32 b, void *c);
 void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
 void Model_setInitCallback(void *m, void (*fn)(Unk_ov068_0226c298_Arg *), void *self);
 s32 G3dResAccess_findMatIdx(u32 a, const char *s);
@@ -400,7 +400,7 @@ extern "C" TaxiInterior *TaxiInterior_Create() {
 extern "C" void TaxiInterior_ModelCallback(Unk_ov068_0226c2a8_Arg *p) {
     void *o = p->unk_04->unk_2c;
     if (o) {
-        func_ov068_0226b9ec(o, p->unk_00->unk_01, p);
+        TaxiInterior_OnModelNode(o, p->unk_00->unk_01, p);
     }
 }
 
@@ -617,7 +617,7 @@ extern "C" BOOL TaxiInterior_StartDriverAnim() {
     return FALSE;
 }
 
-extern "C" void func_ov068_0226b9ec(void *p, u32 b, void *c) {
+extern "C" void TaxiInterior_OnModelNode(void *p, u32 b, void *c) {
 }
 
 extern "C" void TaxiInterior_SetPartAnim(void *self, u8 k, void *sub, void *obj, u8 s0, u32 s1, u16 s2, u16 s3) {

@@ -1,8 +1,8 @@
 #include "types.h"
 
-class Unk_0209c038 {
+class TownAcreIndex {
 public:
-    s32 func_0209c038(s32 y);
+    s32 calcIndex(s32 y);
 };
 
 class TownAcreCell {
@@ -19,9 +19,9 @@ public:
 
 extern "C" {
 s32 func_02063b8c(s32);
-s32 func_02037260(s32);
+s32 AcreType_CountRiverBits(s32);
 s32 AcreType_GetAttr(s32);
-s32 func_02037338(s32);
+s32 AcreType_FindByAttr(s32);
 }
 
 class TownAcreGrid {
@@ -30,7 +30,7 @@ public:
     u32 unk_120[8];
 
     BOOL setBorder();
-    BOOL func_0209b830();
+    BOOL placeRiverVariant();
     BOOL placeFacilities(u32 mode);
     BOOL placeNextTo(s32 a, s32 b);
     BOOL placeOnRandomGrass(s32 val);
@@ -45,7 +45,7 @@ static inline BOOL Unk_0209b830_Bit(s32 t, s32 m)
 static inline BOOL Unk_0209b830_Chk(s32 v)
 {
     s32 t = AcreType_GetAttr(v);
-    if (!Unk_0209b830_Bit(t, 8) && !Unk_0209b830_Bit(t, 4) && !Unk_0209b830_Bit(t, 0x80000) && func_02037260(v) == 1) return TRUE;
+    if (!Unk_0209b830_Bit(t, 8) && !Unk_0209b830_Bit(t, 4) && !Unk_0209b830_Bit(t, 0x80000) && AcreType_CountRiverBits(v) == 1) return TRUE;
     return FALSE;
 }
 
@@ -54,21 +54,21 @@ struct Unk_0209ba90_Dir {
     Unk_0209ba90_Dir(s16 a, s16 b) { x = a; y = b; }
 };
 
-extern "C" s32 func_0209bc34(s32 v);
+extern "C" s32 AcreType_GetRiverVariant(s32 v);
 
 
 TownAcreCell *TownAcreGrid::getCell(s32 x, s32 y)
 {
-    s32 idx = ((Unk_0209c038 *)x)->func_0209c038(y);
+    s32 idx = ((TownAcreIndex *)x)->calcIndex(y);
     if ((u32)idx < 0x24) return &cells[idx];
     static TownAcreCell dflt;
     return &dflt;
 }
 
-extern "C" s32 func_0209bc34(s32 v)
+extern "C" s32 AcreType_GetRiverVariant(s32 v)
 {
     s32 t = AcreType_GetAttr(v);
-    t = func_02037338(t | 0x100);
+    t = AcreType_FindByAttr(t | 0x100);
     if (t == 0x36) t = v;
     return t;
 }
@@ -166,7 +166,7 @@ BOOL TownAcreGrid::placeFacilities(u32 mode)
     return FALSE;
 }
 
-BOOL TownAcreGrid::func_0209b830()
+BOOL TownAcreGrid::placeRiverVariant()
 {
     s32 k, v, r;
     s32 cnt = 0;
@@ -185,7 +185,7 @@ BOOL TownAcreGrid::func_0209b830()
                 v = getCell(x, y)->getType();
                 if (Unk_0209b830_Chk(v)) {
                     if (r == k) {
-                        s32 n = func_0209bc34(getCell(x, y)->getType());
+                        s32 n = AcreType_GetRiverVariant(getCell(x, y)->getType());
                         if (n != getCell(x, y)->getType()) {
                             getCell(x, y)->setType(n);
                             return TRUE;
@@ -230,12 +230,12 @@ BOOL TownAcreGrid::setBorder()
     s32 cnt = 0;
     u32 j;
     for (j = 2; j <= 3; j++) {
-        if (func_02037260(getCell(j, 1)->getType()) == 0) cnt++;
+        if (AcreType_CountRiverBits(getCell(j, 1)->getType()) == 0) cnt++;
     }
     s32 r = func_02063b8c(cnt);
     s32 k = 0;
     for (j = 2; j <= 3; j++) {
-        if (func_02037260(getCell(j, 1)->getType()) == 0) {
+        if (AcreType_CountRiverBits(getCell(j, 1)->getType()) == 0) {
             if (k == r) {
                 getCell(j, 0)->setType(1);
                 getCell(j, 1)->setType(10);

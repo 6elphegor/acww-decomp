@@ -2,10 +2,10 @@
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);
-void func_0209d81c(void *);
+void SaveData_RefreshTownBlockMap(void *);
 void SaveData_InitNew(u8 *p);
-void func_0209d994(u8 *p);
-void func_02039cf4(void *);
+void SaveData_InitCurrentPlayer(u8 *p);
+void LostAndFound_InitRandom(void *);
 void EventWeekSlots_InitNew(void *);
 void TownState_InitNew(void *);
 void Town_ClearBorderTrees(void *);
@@ -71,7 +71,7 @@ void _ZN11SaveRecord413setStateValidEv(void *);
 void _ZN8ReddShop5resetEv(void *);
 void AbleShop_InitNew(void *);
 void NookShop_InitNew(void *);
-void func_020af3f4();
+void LooseSnowballs_Get();
 void _ZN14LooseSnowballs5resetEv();
 void TownStyleRecord_InitNew(void *);
 void func_020b8e90();
@@ -82,7 +82,7 @@ extern u8 gSaveData[];
 extern u32 sSndOutputModeTable[];
 }
 
-u8 data_020e2384[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
+u8 sFallbackTownName[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 
 struct Unk_0209da44_E98c { u8 b[0x98c]; };
 struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
@@ -129,10 +129,10 @@ struct SaveData {
     u32 f_15fd8[1];
     u8 f_15fdc[0x4];
 
-    void func_0209da44();
-    void func_0209dae8();
-    void func_0209db94();
-    void func_0209dc0c();
+    void setupMode06();
+    void setupMode05();
+    void setupLoaded();
+    void setupNoSave();
 };
 
 struct Unk_0209d994_Buf {
@@ -140,14 +140,14 @@ struct Unk_0209d994_Buf {
     u8 b[8];
 };
 
-void SaveData::func_0209dc0c() {
+void SaveData::setupNoSave() {
     ClockOffset_Clear(&f_15fb4);
     Clock_Init();
     TownMap_Generate(&f_c330, gCurrentHeap);
-    func_0209d81c(this);
-    func_02063904(&f_2, data_020e2384);
+    SaveData_RefreshTownBlockMap(this);
+    func_02063904(&f_2, sFallbackTownName);
     SaveData_InitNew((u8 *)this);
-    func_020af3f4();
+    LooseSnowballs_Get();
     _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     VillagerStates_SetBirthdayVisitor(-1);
@@ -158,8 +158,8 @@ void SaveData::func_0209dc0c() {
     _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
 }
 
-void SaveData::func_0209db94() {
-    func_0209d81c(this);
+void SaveData::setupLoaded() {
+    SaveData_RefreshTownBlockMap(this);
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
     Clock_Init();
@@ -181,13 +181,13 @@ void SaveData::func_0209db94() {
     }
 }
 
-void SaveData::func_0209dae8() {
+void SaveData::setupMode05() {
     void *a = PlayerData_GetCurrent();
-    func_0209d81c(this);
+    SaveData_RefreshTownBlockMap(this);
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
     Clock_Init();
-    func_0209d994((u8 *)this);
+    SaveData_InitCurrentPlayer((u8 *)this);
     _ZN12Unk_02097ff47setFlagEj(a, 1);
     _ZN12Unk_02097ff47setFlagEj(a, 0x23);
     _ZN12Unk_02097ff49clearFlagEj(a, 9);
@@ -195,7 +195,7 @@ void SaveData::func_0209dae8() {
     SaveVillagers_PlaceMissingHouses(&f_8a3c);
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&f_8a3c);
-    func_020af3f4();
+    LooseSnowballs_Get();
     _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     RoomEntry_Reset();
@@ -207,15 +207,15 @@ void SaveData::func_0209dae8() {
     SaveVillagers_UpdateAllRoomInfo(&f_8a3c);
 }
 
-void SaveData::func_0209da44() {
+void SaveData::setupMode06() {
     void *a = PlayerData_GetCurrent();
     SaveData_SyncClockOffset(this);
     TownMap_Generate(&f_c330, gCurrentHeap);
-    func_0209d81c(this);
+    SaveData_RefreshTownBlockMap(this);
     _ZN11SaveRecord412setDateTodayEPv(&f_15fc5, 0);
-    func_0209d994((u8 *)this);
+    SaveData_InitCurrentPlayer((u8 *)this);
     SaveData_InitNew((u8 *)this);
-    func_020af3f4();
+    LooseSnowballs_Get();
     _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     RoomEntry_Reset();
@@ -229,7 +229,7 @@ void SaveData::func_0209da44() {
     SaveVillagers_UpdateAllRoomInfo(&f_8a3c);
 }
 
-void func_0209d994(u8 *p) {
+void SaveData_InitCurrentPlayer(u8 *p) {
     void *r4 = PlayerData_GetCurrent();
     Unk_0209d994_Buf l;
     _ZN10PlayerData11getPlayerIdEv(r4);
@@ -279,12 +279,12 @@ void SaveData_InitNew(u8 *p) {
     _ZN13ContestRecord10resetTodayEv(p + 0x15efc);
     HappyRoomDate_Reset(p + 0x15fb0);
     Melody_ResetToDefault(p + 0x15fa8);
-    func_02039cf4(p + 0x15ec0);
+    LostAndFound_InitRandom(p + 0x15ec0);
     RoostGuestRoll_Init(p + 0xe557);
     func_0208f200(p + 0x10c3c);
 }
 
-void func_0209d81c(void *) {
+void SaveData_RefreshTownBlockMap(void *) {
     if (TownBlockMap_Get()) {
         _ZN12TownBlockMap13updateAcreIdsEv(TownBlockMap_Get());
         _ZN12TownBlockMap6bindBgEv(TownBlockMap_Get());

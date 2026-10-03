@@ -274,15 +274,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -325,8 +325,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -374,20 +374,20 @@ public:
     virtual void vfunc_80();
     virtual void vfunc_84();
 
-    void func_ov068_0226c4d8();
-    void func_ov068_0226c530();
-    void func_ov068_0226c63c();
-    void func_ov068_0226c870();
-    void func_ov068_0226c9b0();
+    void scriptRestoreLook();
+    void scriptEndPerformance();
+    void scriptPerform();
+    void scriptStartPerformance();
+    void scriptReadSongRequest();
     void setScript(s32 state);
-    void func_ov068_0226cb54(s32 a);
-    void func_ov068_0226cba4(s32 a);
-    void func_ov068_0226cbe4(s32 a);
-    void func_ov068_0226cbf8(s32 a);
-    void func_ov068_0226ccd4();
-    void func_ov068_0226ccf4();
-    void func_ov068_0226cd18(s32 a);
-    void func_ov068_0226cdcc(s32 a);
+    void onKkChoiceRequest(s32 a);
+    void onKkChoiceTradeGuitar(s32 a);
+    void onKkChoiceListen(s32 a);
+    void dispatchKkChoice(s32 a);
+    void onKkStartShow();
+    void onKkAskSongRequest();
+    void dispatchKkMessageEnd(s32 a);
+    void fillKkSongName(s32 a);
     s32 getTalkMode();
     void setTalkMode(s32 v);
     void attachOwner(Unk_ov068_0226ccd4_Owner *o);
@@ -491,26 +491,26 @@ struct Unk_ov068_Scene_Entry {
     s32 unk_08[4];
 };
 extern "C" {
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226c870Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226cb54Ei();
+void _ZN19SpNpcRoostGuestTalk22scriptStartPerformanceEv();
+void _ZN19SpNpcRoostGuestTalk17onKkChoiceRequestEi();
 void _ZN15SpNpcRoostGuest9mainAct01Ev();
 void _ZN15SpNpcRoostGuest10setupAct02Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226cba4Ei();
+void _ZN19SpNpcRoostGuestTalk21onKkChoiceTradeGuitarEi();
 void _ZN15SpNpcRoostGuest10setupAct01Ev();
 void _ZN15SpNpcRoostGuest10setupAct04Ev();
 void _ZN15SpNpcRoostGuest9mainAct03Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226ccf4Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226ccd4Ev();
+void _ZN19SpNpcRoostGuestTalk18onKkAskSongRequestEv();
+void _ZN19SpNpcRoostGuestTalk13onKkStartShowEv();
 void _ZN15SpNpcRoostGuest10setupAct03Ev();
 void _ZN15SpNpcRoostGuest9mainAct02Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226cbe4Ei();
+void _ZN19SpNpcRoostGuestTalk16onKkChoiceListenEi();
 void _ZN15SpNpcRoostGuest9mainAct00Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226c63cEv();
+void _ZN19SpNpcRoostGuestTalk13scriptPerformEv();
 void _ZN15SpNpcRoostGuest10setupAct00Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226c9b0Ev();
+void _ZN19SpNpcRoostGuestTalk21scriptReadSongRequestEv();
 void _ZN15SpNpcRoostGuest9mainAct04Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226c530Ev();
-void _ZN19SpNpcRoostGuestTalk19func_ov068_0226c4d8Ev();
+void _ZN19SpNpcRoostGuestTalk20scriptEndPerformanceEv();
+void _ZN19SpNpcRoostGuestTalk17scriptRestoreLookEv();
 extern void *data_ov068_0227037c[2];
 extern void *data_ov068_02270384[2];
 extern void *data_ov068_0227038c[2];
@@ -534,46 +534,46 @@ extern void *data_ov068_02270414[2];
 extern void *data_ov068_0227041c[2];
 extern void *data_ov068_02270424[2];
 extern void *data_ov068_0227042c[2];
-extern char data_ov068_02270364[4];
-extern char data_ov068_02270368[4];
-extern char data_ov068_0227036c[4];
-extern char data_ov068_02270370[4];
-extern char data_ov068_02270374[4];
-extern char data_ov068_02270378[4];
-extern char data_ov068_02270434[11];
-extern char data_ov068_02270440[11];
-extern char data_ov068_0227044c[11];
-extern char data_ov068_02270458[11];
-extern char data_ov068_02270464[11];
-extern char data_ov068_02270470[11];
-extern char data_ov068_0227047c[11];
-extern char data_ov068_02270488[11];
-extern char data_ov068_02270494[23];
-extern char data_ov068_02270584[27];
-extern char data_ov068_022704ac[23];
-extern char data_ov068_022705a0[27];
-extern char data_ov068_022704c4[23];
-extern char data_ov068_022705bc[27];
-extern char data_ov068_022704dc[23];
-extern char data_ov068_022705d8[27];
-extern char data_ov068_022704f4[23];
-extern char data_ov068_022705f4[27];
-extern char data_ov068_0227050c[23];
-extern char data_ov068_02270610[27];
-extern char data_ov068_02270524[23];
-extern char data_ov068_0227062c[27];
-extern char data_ov068_0227053c[23];
-extern char data_ov068_02270648[27];
+extern char sKkMouthM2[4];
+extern char sKkMouthM0[4];
+extern char sKkMouthM4[4];
+extern char sKkMouthM1[4];
+extern char sKkMouthM5[4];
+extern char sKkMouthM3[4];
+extern char sRoostMsgDog[11];
+extern char sRoostMsgCf6[11];
+extern char sRoostMsgCf1[11];
+extern char sRoostMsgCf5[11];
+extern char sRoostMsgCf7[11];
+extern char sRoostMsgCf2[11];
+extern char sRoostMsgCf3[11];
+extern char sRoostMsgCf4[11];
+extern char sRoostModelPga[23];
+extern char sRoostTexPga[27];
+extern char sRoostModelPgb[23];
+extern char sRoostTexPgb[27];
+extern char sRoostModelPoo[23];
+extern char sRoostTexPoo[27];
+extern char sRoostModelOtt[23];
+extern char sRoostTexOtt[27];
+extern char sRoostModelWip[23];
+extern char sRoostTexWip[27];
+extern char sRoostModelXct[23];
+extern char sRoostTexXct[27];
+extern char sRoostModelMof[23];
+extern char sRoostTexMof[27];
+extern char sRoostModelEnd[23];
+extern char sRoostTexEnd[27];
 extern Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile;
 SpNpcRoostGuest *SpNpcRoostGuest_Create();
-extern char *data_ov068_02270554[6];
+extern char *sKkMouthTextures[6];
 extern const char *sRoostGuestMsgFiles[9];
 extern const char *sRoostGuestModelPaths[9];
 extern const char *sRoostGuestTexPaths[9];
-extern const u8 data_ov068_0226f1a8[4];
+extern const u8 sKkTalkModeMessages[4];
 extern const u16 sRoostGuestNpcHandles[10];
 extern Unk_ov068_0226d39c_Entry sSpNpcRoostGuestActTable[5];
-extern Unk_ov068_02270780_Ent data_ov068_02270730[6];
+extern Unk_ov068_02270780_Ent sKkShowScripts[6];
 }
 
 namespace sA {
@@ -581,7 +581,7 @@ extern "C" {
 extern u16 data_020c6cc8;
 
 void PlayerData_GetCurrent();
-Unk_ov068_0226c3b4_Vec *func_020947f0(s32 a);
+Unk_ov068_0226c3b4_Vec *PlayerActor_GetBodyPos(s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, Unk_ov068_0226c3b4_Vec *v);
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
@@ -602,10 +602,10 @@ void ThreeLayerAnimModel_updateLayers3(void *self);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 *TalkWindow_Get(s32 a);
 s32 func_02063b8c(s32 a);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void *MenuCtrl_GetText();
-void func_020a78a4(void *a, void *b, u32 c);
+void EncodedString_SetRaw(void *a, void *b, u32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
 BOOL MenuCtrl_IsResultOk();
@@ -677,7 +677,7 @@ void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
 void Unk_020d7710_openSubScene(void *self, u32 a);
 void func_0201578c(void *self, u16 *p, s32 a, s32 b);
 void TalkWindowState_setNamedSlot(void *self, s32 a, void *p, s32 b);
-void func_020a78a4(void *dst, void *src, s32 n);
+void EncodedString_SetRaw(void *dst, void *src, s32 n);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 extern u16 data_020c6cc8;
 extern s16 data_020c6cc4;
@@ -708,20 +708,20 @@ static inline BOOL Unk_ov068_0226c340_R(volatile u16 *p) {
 extern "C" u16 RoostGuest_PickKKSong(void *self);
 
 extern "C" void *data_ov068_022703d4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct02Ev, 0};
-extern "C" char data_ov068_0227062c[27] = "npc_sp/model/mof_tex.nsbtx";
-extern "C" char data_ov068_02270648[27] = "npc_sp/model/end_tex.nsbtx";
-extern "C" void *data_ov068_0227037c[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226c870Ev, 0};
-extern "C" char data_ov068_0227047c[11] = "sp_npc_cf3";
-extern "C" char data_ov068_02270584[27] = "npc_sp/model/pga_tex.nsbtx";
-extern "C" void *data_ov068_0227039c[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226cba4Ei, 0};
-extern "C" char data_ov068_02270494[23] = "npc_sp/model/pga.nsbmd";
-extern "C" char data_ov068_02270374[4] = "m.5";
+extern "C" char sRoostTexMof[27] = "npc_sp/model/mof_tex.nsbtx";
+extern "C" char sRoostTexEnd[27] = "npc_sp/model/end_tex.nsbtx";
+extern "C" void *data_ov068_0227037c[2] = {(void *)_ZN19SpNpcRoostGuestTalk22scriptStartPerformanceEv, 0};
+extern "C" char sRoostMsgCf3[11] = "sp_npc_cf3";
+extern "C" char sRoostTexPga[27] = "npc_sp/model/pga_tex.nsbtx";
+extern "C" void *data_ov068_0227039c[2] = {(void *)_ZN19SpNpcRoostGuestTalk21onKkChoiceTradeGuitarEi, 0};
+extern "C" char sRoostModelPga[23] = "npc_sp/model/pga.nsbmd";
+extern "C" char sKkMouthM5[4] = "m.5";
 extern "C" void *data_ov068_02270414[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct04Ev, 0};
-extern "C" void *data_ov068_02270424[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226c4d8Ev, 0};
+extern "C" void *data_ov068_02270424[2] = {(void *)_ZN19SpNpcRoostGuestTalk17scriptRestoreLookEv, 0};
 extern "C" void *data_ov068_02270394[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct02Ev, 0};
-extern "C" char data_ov068_0227036c[4] = "m.4";
-extern "C" char data_ov068_022705a0[27] = "npc_sp/model/pgb_tex.nsbtx";
-extern "C" char data_ov068_022704ac[23] = "npc_sp/model/pgb.nsbmd";
+extern "C" char sKkMouthM4[4] = "m.4";
+extern "C" char sRoostTexPgb[27] = "npc_sp/model/pgb_tex.nsbtx";
+extern "C" char sRoostModelPgb[23] = "npc_sp/model/pgb.nsbmd";
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1065,7 +1065,7 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
             if (getTalkMode() == 1) {
                 ItemName a;
                 EncodedString16Buf b;
-                func_020a78a4(&b, unk_b0->unk_730, 0x10);
+                EncodedString_SetRaw(&b, unk_b0->unk_730, 0x10);
                 MsgString_fromEncoded(&a, &b, 0, 0);
                 TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
             } else if (getTalkMode() == 2) {
@@ -1074,7 +1074,7 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
                 h6 = unk_b0->unk_652;
                 setItemNameSlot((u32)&h6, 2, 7);
             }
-            out->unk_04 = data_ov068_0226f1a8[unk_ac];
+            out->unk_04 = sKkTalkModeMessages[unk_ac];
             out->unk_00 = sRoostGuestMsgFiles[unk_b0->unk_72c];
         }
     } else {
@@ -1089,11 +1089,11 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
 void SpNpcRoostGuestTalk::vfunc_10(s32 a) {
     using namespace sB;
     if (unk_b0->unk_72c == 7) {
-        func_ov068_0226cdcc(a);
+        fillKkSongName(a);
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226cdcc(s32 a) {
+void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
     using namespace sB;
     switch (unk_1e) {
     case 12:
@@ -1105,7 +1105,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226cdcc(s32 a) {
     case 11: {
         ItemName a;
         EncodedString16Buf b;
-        func_020a78a4(&b, unk_b0->unk_730, 0x10);
+        EncodedString_SetRaw(&b, unk_b0->unk_730, 0x10);
         MsgString_fromEncoded(&a, &b, 0, 0);
         TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
         break;
@@ -1116,11 +1116,11 @@ void SpNpcRoostGuestTalk::func_ov068_0226cdcc(s32 a) {
 void SpNpcRoostGuestTalk::vfunc_14(s32 a) {
     using namespace sB;
     if (unk_b0->unk_72c == 7) {
-        func_ov068_0226cd18(a);
+        dispatchKkMessageEnd(a);
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226cd18(s32 a) {
+void SpNpcRoostGuestTalk::dispatchKkMessageEnd(s32 a) {
     using namespace sB;
     static Unk_ov068_0226cd18_Ent tbl[3] = {
         {7, *(Unk_ov068_0226cd18_Fn *)data_ov068_022703bc},
@@ -1139,29 +1139,29 @@ void SpNpcRoostGuestTalk::func_ov068_0226cd18(s32 a) {
     }
 }
 
-extern "C" const char *sRoostGuestTexPaths[9] = {data_ov068_02270584, data_ov068_022705a0, data_ov068_022705bc, data_ov068_022705d8, data_ov068_022705f4, data_ov068_02270610, data_ov068_0227062c, data_ov068_02270648, data_ov068_02270648};
-extern "C" void *data_ov068_022703bc[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226ccf4Ev, 0};
-extern "C" void *data_ov068_022703c4[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226ccd4Ev, 0};
+extern "C" const char *sRoostGuestTexPaths[9] = {sRoostTexPga, sRoostTexPgb, sRoostTexPoo, sRoostTexOtt, sRoostTexWip, sRoostTexXct, sRoostTexMof, sRoostTexEnd, sRoostTexEnd};
+extern "C" void *data_ov068_022703bc[2] = {(void *)_ZN19SpNpcRoostGuestTalk18onKkAskSongRequestEv, 0};
+extern "C" void *data_ov068_022703c4[2] = {(void *)_ZN19SpNpcRoostGuestTalk13onKkStartShowEv, 0};
 extern const u16 sRoostGuestNpcHandles[10] = {0xd006, 0xd007, 0xd017, 0xd00d, 0xd014, 0xd024, 0xd011, 0xd01d, 0xd01d, 0x0000};
-extern "C" char data_ov068_02270488[11] = "sp_npc_cf4";
-extern "C" void *data_ov068_02270384[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226cb54Ei, 0};
+extern "C" char sRoostMsgCf4[11] = "sp_npc_cf4";
+extern "C" void *data_ov068_02270384[2] = {(void *)_ZN19SpNpcRoostGuestTalk17onKkChoiceRequestEi, 0};
 extern "C" void *data_ov068_022703a4[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct01Ev, 0};
 extern "C" void *data_ov068_022703b4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct03Ev, 0};
-extern "C" char data_ov068_022704f4[23] = "npc_sp/model/wip.nsbmd";
+extern "C" char sRoostModelWip[23] = "npc_sp/model/wip.nsbmd";
 extern "C" Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile = {(void *(*)())SpNpcRoostGuest_Create, 0x66, 0x6c, {0, 0x5000, 0x5000, 0x3e800}};
-extern const u8 data_ov068_0226f1a8[4] = {0x00, 0x09, 0x06, 0x00};
-extern "C" void *data_ov068_0227042c[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226ccd4Ev, 0};
-extern "C" char data_ov068_02270470[11] = "sp_npc_cf2";
+extern const u8 sKkTalkModeMessages[4] = {0x00, 0x09, 0x06, 0x00};
+extern "C" void *data_ov068_0227042c[2] = {(void *)_ZN19SpNpcRoostGuestTalk13onKkStartShowEv, 0};
+extern "C" char sRoostMsgCf2[11] = "sp_npc_cf2";
 
 
-void SpNpcRoostGuestTalk::func_ov068_0226ccf4() {
+void SpNpcRoostGuestTalk::onKkAskSongRequest() {
     using namespace sB;
     Unk_020d7710_setSubSceneKind(this, 0xd, 0);
     Unk_020d7710_openSubScene(this, 2);
     setScript(1);
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226ccd4() {
+void SpNpcRoostGuestTalk::onKkStartShow() {
     using namespace sB;
     unk_3c->unk_14 = 0;
     unk_b0->unk_740 = 0x2d;
@@ -1171,11 +1171,11 @@ void SpNpcRoostGuestTalk::func_ov068_0226ccd4() {
 void SpNpcRoostGuestTalk::vfunc_18(s32 a) {
     using namespace sA;
     if (unk_b0->unk_72c == 7) {
-        func_ov068_0226cbf8(a);
+        dispatchKkChoice(a);
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226cbf8(s32 a) {
+void SpNpcRoostGuestTalk::dispatchKkChoice(s32 a) {
     using namespace sA;
     static Unk_ov068_02270780_Stat tbl[5] = {
         {1, *(Unk_ov068_02270780_Fn1 *)data_ov068_022703dc},
@@ -1200,50 +1200,50 @@ test:
     if (i < 5) goto loop;
 }
 
-extern "C" void *data_ov068_022703dc[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226cbe4Ei, 0};
-extern "C" char data_ov068_022705f4[27] = "npc_sp/model/wip_tex.nsbtx";
+extern "C" void *data_ov068_022703dc[2] = {(void *)_ZN19SpNpcRoostGuestTalk16onKkChoiceListenEi, 0};
+extern "C" char sRoostTexWip[27] = "npc_sp/model/wip_tex.nsbtx";
 extern "C" void *data_ov068_022703f4[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct00Ev, 0};
-extern "C" char data_ov068_0227053c[23] = "npc_sp/model/end.nsbmd";
-extern "C" char data_ov068_02270364[4] = "m.2";
-extern "C" const char *sRoostGuestMsgFiles[9] = {data_ov068_0227044c, data_ov068_02270470, data_ov068_0227047c, data_ov068_02270488, data_ov068_02270458, data_ov068_02270440, data_ov068_02270464, data_ov068_02270434, data_ov068_02270464};
+extern "C" char sRoostModelEnd[23] = "npc_sp/model/end.nsbmd";
+extern "C" char sKkMouthM2[4] = "m.2";
+extern "C" const char *sRoostGuestMsgFiles[9] = {sRoostMsgCf1, sRoostMsgCf2, sRoostMsgCf3, sRoostMsgCf4, sRoostMsgCf5, sRoostMsgCf6, sRoostMsgCf7, sRoostMsgDog, sRoostMsgCf7};
 extern "C" void *data_ov068_0227038c[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct01Ev, 0};
-extern "C" const char *sRoostGuestModelPaths[9] = {data_ov068_02270494, data_ov068_022704ac, data_ov068_022704c4, data_ov068_022704dc, data_ov068_022704f4, data_ov068_0227050c, data_ov068_02270524, data_ov068_0227053c, data_ov068_0227053c};
-extern "C" char data_ov068_02270370[4] = "m.1";
-extern "C" char data_ov068_02270524[23] = "npc_sp/model/mof.nsbmd";
-extern "C" char data_ov068_02270434[11] = "sp_npc_dog";
-extern "C" char data_ov068_022704dc[23] = "npc_sp/model/ott.nsbmd";
+extern "C" const char *sRoostGuestModelPaths[9] = {sRoostModelPga, sRoostModelPgb, sRoostModelPoo, sRoostModelOtt, sRoostModelWip, sRoostModelXct, sRoostModelMof, sRoostModelEnd, sRoostModelEnd};
+extern "C" char sKkMouthM1[4] = "m.1";
+extern "C" char sRoostModelMof[23] = "npc_sp/model/mof.nsbmd";
+extern "C" char sRoostMsgDog[11] = "sp_npc_dog";
+extern "C" char sRoostModelOtt[23] = "npc_sp/model/ott.nsbmd";
 extern "C" void *data_ov068_022703cc[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct03Ev, 0};
-extern "C" char data_ov068_022705bc[27] = "npc_sp/model/poo_tex.nsbtx";
-extern "C" char data_ov068_022705d8[27] = "npc_sp/model/ott_tex.nsbtx";
-extern "C" Unk_ov068_02270780_Ent data_ov068_02270730[6] = {{NULL, 0}, {*(Unk_ov068_02270780_Fn *)data_ov068_022703fc, 0}, {*(Unk_ov068_02270780_Fn *)data_ov068_0227037c, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_022703ec, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_0227041c, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_02270424, 1}};
-extern "C" char data_ov068_02270464[11] = "sp_npc_cf7";
-extern "C" char data_ov068_02270378[4] = "m.3";
+extern "C" char sRoostTexPoo[27] = "npc_sp/model/poo_tex.nsbtx";
+extern "C" char sRoostTexOtt[27] = "npc_sp/model/ott_tex.nsbtx";
+extern "C" Unk_ov068_02270780_Ent sKkShowScripts[6] = {{NULL, 0}, {*(Unk_ov068_02270780_Fn *)data_ov068_022703fc, 0}, {*(Unk_ov068_02270780_Fn *)data_ov068_0227037c, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_022703ec, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_0227041c, 1}, {*(Unk_ov068_02270780_Fn *)data_ov068_02270424, 1}};
+extern "C" char sRoostMsgCf7[11] = "sp_npc_cf7";
+extern "C" char sKkMouthM3[4] = "m.3";
 extern "C" void *data_ov068_022703e4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct00Ev, 0};
-extern "C" char data_ov068_02270610[27] = "npc_sp/model/xct_tex.nsbtx";
-extern "C" char data_ov068_0227044c[11] = "sp_npc_cf1";
-extern "C" void *data_ov068_0227041c[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226c530Ev, 0};
-extern "C" char *data_ov068_02270554[6] = {data_ov068_02270368, data_ov068_02270370, data_ov068_02270364, data_ov068_02270378, data_ov068_0227036c, data_ov068_02270374};
-extern "C" char data_ov068_02270440[11] = "sp_npc_cf6";
-extern "C" void *data_ov068_022703fc[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226c9b0Ev, 0};
-extern "C" char data_ov068_02270458[11] = "sp_npc_cf5";
-extern "C" char data_ov068_0227050c[23] = "npc_sp/model/xct.nsbmd";
-extern "C" char data_ov068_02270368[4] = "m.0";
-extern "C" void *data_ov068_02270404[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226cbe4Ei, 0};
-extern "C" void *data_ov068_0227040c[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226cbe4Ei, 0};
-extern "C" void *data_ov068_022703ec[2] = {(void *)_ZN19SpNpcRoostGuestTalk19func_ov068_0226c63cEv, 0};
+extern "C" char sRoostTexXct[27] = "npc_sp/model/xct_tex.nsbtx";
+extern "C" char sRoostMsgCf1[11] = "sp_npc_cf1";
+extern "C" void *data_ov068_0227041c[2] = {(void *)_ZN19SpNpcRoostGuestTalk20scriptEndPerformanceEv, 0};
+extern "C" char *sKkMouthTextures[6] = {sKkMouthM0, sKkMouthM1, sKkMouthM2, sKkMouthM3, sKkMouthM4, sKkMouthM5};
+extern "C" char sRoostMsgCf6[11] = "sp_npc_cf6";
+extern "C" void *data_ov068_022703fc[2] = {(void *)_ZN19SpNpcRoostGuestTalk21scriptReadSongRequestEv, 0};
+extern "C" char sRoostMsgCf5[11] = "sp_npc_cf5";
+extern "C" char sRoostModelXct[23] = "npc_sp/model/xct.nsbmd";
+extern "C" char sKkMouthM0[4] = "m.0";
+extern "C" void *data_ov068_02270404[2] = {(void *)_ZN19SpNpcRoostGuestTalk16onKkChoiceListenEi, 0};
+extern "C" void *data_ov068_0227040c[2] = {(void *)_ZN19SpNpcRoostGuestTalk16onKkChoiceListenEi, 0};
+extern "C" void *data_ov068_022703ec[2] = {(void *)_ZN19SpNpcRoostGuestTalk13scriptPerformEv, 0};
 extern "C" void *data_ov068_022703ac[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct04Ev, 0};
 extern "C" Unk_ov068_0226d39c_Entry sSpNpcRoostGuestActTable[5] = {{*(Unk_ov068_0226d39c_Fn *)data_ov068_022703f4, *(Unk_ov068_0226d39c_Fn *)data_ov068_022703e4}, {*(Unk_ov068_0226d39c_Fn *)data_ov068_022703a4, *(Unk_ov068_0226d39c_Fn *)data_ov068_0227038c}, {*(Unk_ov068_0226d39c_Fn *)data_ov068_02270394, *(Unk_ov068_0226d39c_Fn *)data_ov068_022703d4}, {*(Unk_ov068_0226d39c_Fn *)data_ov068_022703cc, *(Unk_ov068_0226d39c_Fn *)data_ov068_022703b4}, {*(Unk_ov068_0226d39c_Fn *)data_ov068_022703ac, *(Unk_ov068_0226d39c_Fn *)data_ov068_02270414}};
-extern "C" char data_ov068_022704c4[23] = "npc_sp/model/poo.nsbmd";
+extern "C" char sRoostModelPoo[23] = "npc_sp/model/poo.nsbmd";
 
 
-void SpNpcRoostGuestTalk::func_ov068_0226cbe4(s32 a) {
+void SpNpcRoostGuestTalk::onKkChoiceListen(s32 a) {
     using namespace sA;
     if (a == 0) {
         unk_b0->unk_742 = 1;
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226cba4(s32 a) {
+void SpNpcRoostGuestTalk::onKkChoiceTradeGuitar(s32 a) {
     using namespace sA;
     u16 h0;
     u16 h1;
@@ -1257,7 +1257,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226cba4(s32 a) {
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226cb54(s32 a) {
+void SpNpcRoostGuestTalk::onKkChoiceRequest(s32 a) {
     using namespace sA;
     if (a == 0) {
         unk_b0->unk_744 = 1;
@@ -1271,8 +1271,8 @@ void SpNpcRoostGuestTalk::func_ov068_0226cb54(s32 a) {
 void SpNpcRoostGuestTalk::vfunc_80() {
     using namespace sA;
     s32 i = unk_b4;
-    if (((u8 *)&data_ov068_02270730[0].flag)[i * 12] != 0) {
-        Unk_ov068_02270780_Ent *e = &data_ov068_02270730[i];
+    if (((u8 *)&sKkShowScripts[0].flag)[i * 12] != 0) {
+        Unk_ov068_02270780_Ent *e = &sKkShowScripts[i];
         if (e->fn != 0) {
             (this->*e->fn)();
         }
@@ -1282,8 +1282,8 @@ void SpNpcRoostGuestTalk::vfunc_80() {
 void SpNpcRoostGuestTalk::vfunc_84() {
     using namespace sA;
     s32 i = unk_b4;
-    if (((u8 *)&data_ov068_02270730[0].flag)[i * 12] == 0) {
-        Unk_ov068_02270780_Ent *e = &data_ov068_02270730[i];
+    if (((u8 *)&sKkShowScripts[0].flag)[i * 12] == 0) {
+        Unk_ov068_02270780_Ent *e = &sKkShowScripts[i];
         if (e->fn != 0) {
             (this->*e->fn)();
             setScript(0);
@@ -1296,14 +1296,14 @@ void SpNpcRoostGuestTalk::setScript(s32 state) {
     unk_b4 = state;
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226c9b0() {
+void SpNpcRoostGuestTalk::scriptReadSongRequest() {
     using namespace sA;
     u8 cmd;
     u16 tmp;
     MI_CpuCopy8(MenuCtrl_GetText(), unk_b0->unk_730, 0x10);
     ItemName objA;
     EncodedString16Buf objB;
-    func_020a78a4(&objB, unk_b0->unk_730, 0x10);
+    EncodedString_SetRaw(&objB, unk_b0->unk_730, 0x10);
     MsgString_fromEncoded(&objA, &objB, 0, 0);
     TalkWindowState_setNamedSlot(unk_3c, 0, &objA, 7);
     if (MenuCtrl_IsResultOk()) {
@@ -1327,7 +1327,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c9b0() {
     TalkWindowState_setNextMessage(unk_3c, &cmd, sRoostGuestMsgFiles[unk_b0->unk_72c]);
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226c870() {
+void SpNpcRoostGuestTalk::scriptStartPerformance() {
     using namespace sA;
     Unk_ov068_0226c870_Pad pad;
     s32 *q = TalkWindow_Get(0);
@@ -1342,9 +1342,9 @@ void SpNpcRoostGuestTalk::func_ov068_0226c870() {
             unk_b0->unk_654 = 0;
             if (unk_b0->unk_743 != 0) {
                 unk_b0->unk_654 = func_02063b8c(3) + 0xa9;
-                s16 *r = func_0209c37c(0, 0x4e);
+                s16 *r = DebugVar_GetPtr(0, 0x4e);
                 if (*r != 0) {
-                    r = func_0209c37c(0, 0x4e);
+                    r = DebugVar_GetPtr(0, 0x4e);
                     s32 t = *r - 1;
                     if (t < 0) {
                         t = 0;
@@ -1371,7 +1371,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c870() {
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
+void SpNpcRoostGuestTalk::scriptPerform() {
     using namespace sA;
     Unk_ov068_0226c63c_Msg *p = Snd_GetBeatState();
     KkShowFx_Update();
@@ -1391,9 +1391,9 @@ void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
         s32 t1 = p->unk_01;
         if (t1 != unk_b8.unk_01) {
             if (t1 == -1) {
-                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)data_ov068_02270368);
+                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthM0);
             } else {
-                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)data_ov068_02270554[t1]);
+                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthTextures[t1]);
             }
         }
         s32 t2 = p->unk_02;
@@ -1430,7 +1430,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
                     KkShowFx_CallUnk1f70();
                 }
                 if (p->unk_03 == 1) {
-                    NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)data_ov068_02270368);
+                    NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthM0);
                     NpcFaceAnim_resumeMouthMaterial(&unk_b0->unk_2ac);
                     NpcActionCtrl_requestStand(&unk_b0->unk_564, 2, 0x28);
                 }
@@ -1446,7 +1446,7 @@ end:
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226c530() {
+void SpNpcRoostGuestTalk::scriptEndPerformance() {
     using namespace sA;
     u8 c0, c1, c2;
     u16 h;
@@ -1475,7 +1475,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c530() {
     }
 }
 
-void SpNpcRoostGuestTalk::func_ov068_0226c4d8() {
+void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
     if (func_020e7500(&unk_b0->unk_740) == 0) {
         NpcLookAt_setManualAngles(&unk_b0->unk_3b0, 0, 0, 0x1000, 0x276, 0x276);
@@ -1527,7 +1527,7 @@ BOOL SpNpcRoostGuest::checkPlayerSeated() {
     }
     PlayerData_GetCurrent();
     Unk_ov068_0226c3b4_Vec v;
-    v = *func_020947f0(4);
+    v = *PlayerActor_GetBodyPos(4);
     s32 a = 0;
     s32 b = 0;
     FieldPos_ToUnit(&a, &b, &v);

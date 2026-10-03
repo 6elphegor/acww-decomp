@@ -114,7 +114,7 @@ void _ZN14EncodedString8D1Ev(void *);
 void _ZN11MsgString9BD1Ev(void *);
 void _ZN12Unk_020dd374D1Ev(void *);
 void _ZN12Unk_020dd38cD1Ev(void *);
-BOOL func_020a78a4(void *, const void *, s32);
+BOOL EncodedString_SetRaw(void *, const void *, s32);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *, void *, s32, s32);
 BOOL func_020e7500(void *);
 s32 func_020e77cc(s32, s32, s32);
@@ -259,7 +259,7 @@ s32 Comm_BeginHostSession();
 void * func_02063964(void *);
 void * _ZN8PlayerId7getNameEv(void *);
 void func_020ea720(void *, s32);
-Unk_ov048_Vec * func_020947f0(s32);
+Unk_ov048_Vec * PlayerActor_GetBodyPos(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
 s32 _ZN10SpNpcActor8vfunc_0cEv();
 s32 Scene_GetCurrent();
@@ -599,15 +599,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -656,8 +656,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -681,7 +681,7 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual BOOL vfunc_7c();
+    virtual BOOL canPlayTalkMelody();
 
     BOOL canStartSave();
     BOOL checkPlayerAtGate();
@@ -906,10 +906,10 @@ extern "C" {
 void _ZN15SpNpcCopperTalk17setFriendCodeArgsEx(void *, s32, s32);
 void _ZN16BlancaFaceRecord8destructEv(void *);
 void _ZN16BlancaFaceRecord9constructEv(void *);
-void func_0203ec50(void *);
-void func_0203ec54(void *);
-void func_0203eccc(void *);
-void func_0203ecdc(void *);
+void AxBbsNotice_Destruct(void *);
+void AxBbsNotice_Construct(void *);
+void AxMail_Destruct(void *);
+void AxMail_Construct(void *);
 void _ZN7PatternD1Ev(void *);
 void _ZN7PatternC1Ev(void *);
 }
@@ -1097,7 +1097,7 @@ BOOL SpNpcCopper::mainAct05() {
     Unk_ov048_Vec_Loc a;
     Unk_ov048_Vec_Loc b;
     PlayerData_GetCurrent();
-    Unk_ov048_Vec *p = func_020947f0(4);
+    Unk_ov048_Vec *p = PlayerActor_GetBodyPos(4);
     *(Unk_ov048_Vec *)&a = *p;
     switch (unk_658.unk_7e9) {
     case 0:
@@ -2226,15 +2226,15 @@ BOOL SpNpcCopper::mainAct10() {
 
 SpNpcCopperTalk::SpNpcCopperTalk() {
     _ZN7PatternC1Ev(&unk_b8);
-    func_0203ecdc(&unk_3d8);
-    func_0203ec54(&unk_4e0);
+    AxMail_Construct(&unk_3d8);
+    AxBbsNotice_Construct(&unk_4e0);
     _ZN16BlancaFaceRecord9constructEv(&unk_5b4);
 }
 
 SpNpcCopperTalk::~SpNpcCopperTalk() {
     _ZN16BlancaFaceRecord8destructEv(&unk_5b4);
-    func_0203ec50(&unk_4e0);
-    func_0203eccc(&unk_3d8);
+    AxBbsNotice_Destruct(&unk_4e0);
+    AxMail_Destruct(&unk_3d8);
     _ZN7PatternD1Ev(&unk_b8);
 }
 
@@ -3043,9 +3043,9 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                     MI_CpuCopy8(func_020ea6f4(p), &buf[1], t);
                     if (buf[0x11] == 0) {
                         MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
-                        func_020a78a4(LightLevel, &buf[1], 8);
+                        EncodedString_SetRaw(LightLevel, &buf[1], 8);
                         _ZN9MsgString11fromEncodedEP13EncodedStringii(LampLights, LightLevel, 0, 0);
-                        func_020a78a4(WindowLight, &buf[9], 8);
+                        EncodedString_SetRaw(WindowLight, &buf[9], 8);
                         _ZN9MsgString11fromEncodedEP13EncodedStringii(C, WindowLight, 0, 0);
                         _ZN15TalkWindowState7setSlotEiPv(r7, 3, LampLights);
                         _ZN15TalkWindowState7setSlotEiPv(r7, 4, C);
@@ -3597,7 +3597,7 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
         return FALSE;
     }
-    Unk_ov048_Vec *p = func_020947f0(4);
+    Unk_ov048_Vec *p = PlayerActor_GetBodyPos(4);
     *(Unk_ov048_Vec *)&v = *p;
     if (v.unk_08 <= sCopperGateCheckPos.unk_08) {
         PlayerData_GetCurrent();
@@ -3612,11 +3612,11 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
     return FALSE;
 }
 
-BOOL SpNpcCopper::vfunc_7c() {
+BOOL SpNpcCopper::canPlayTalkMelody() {
     if (Scene_GetCurrent() == 0xc) {
         return FALSE;
     }
-    return SpNpcActor::vfunc_7c();
+    return SpNpcActor::canPlayTalkMelody();
 }
 
 // ---- 8de0

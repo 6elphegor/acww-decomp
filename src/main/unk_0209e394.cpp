@@ -121,10 +121,10 @@ extern "C" SaveMenu *SaveMenu_Create();
 extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
 extern "C" void _ZN15TalkWindowState12showBusyIconEv(TalkWindowState *o, s32 v);
 
-Unk_0209ea1c_Entry data_020e2394 = {(void *)SaveMenu_Create, 0xd5, 0xd0};
+Unk_0209ea1c_Entry sSaveMenuProfile = {(void *)SaveMenu_Create, 0xd5, 0xd0};
 
-extern const s32 data_020d070c[22];
-const s32 data_020d070c[22] = {0, 10000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 3200000, 6400000, 9999999};
+extern const s32 sSaveMenuDebugDonationLevels[22];
+const s32 sSaveMenuDebugDonationLevels[22] = {0, 10000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 3200000, 6400000, 9999999};
 
 Unk_0209e840_Ent sSaveMenuStates[6] = {
     {&SaveMenu::enterIdle, &SaveMenu::updateIdle},
@@ -264,7 +264,7 @@ s32 TalkRequest_AddSaveMenu();
 }
 
 extern "C" {
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 }
 
 extern "C" {
@@ -276,15 +276,15 @@ s32 _ZN12Unk_02097ff414getBankAccountEv();
 }
 
 extern "C" {
-void func_02097410(s32 a, s32 b);
+void PlayerBank_SetBalance(s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_02097404();
+s32 Donation_GetTotal();
 }
 
 extern "C" {
-void func_020973ec(s32 v);
+void Donation_SetTotal(s32 v);
 }
 
 extern "C" {
@@ -296,7 +296,7 @@ s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 }
 
 extern "C" {
-void func_02097ac4(s32 a, s32 b, s32 c);
+void PlayerInventory_SetWallet(s32 a, s32 b, s32 c);
 }
 
 extern "C" {
@@ -324,11 +324,11 @@ u32 func_02063b8c(s32 n);
 }
 
 extern "C" {
-void func_0203ec54(void *p);
+void AxBbsNotice_Construct(void *p);
 }
 
 extern "C" {
-void *func_0203ec4c(void *p);
+void *AxBbsNotice_GetDigest(void *p);
 }
 
 extern "C" {
@@ -340,7 +340,7 @@ void MI_CpuFill8(void *p, s32 v, s32 n);
 }
 
 extern "C" {
-s32 func_02000b7c();
+s32 AxMail_GetDigestKey();
 }
 
 extern "C" {
@@ -348,11 +348,11 @@ s32 func_02063a04(void *a, void *b, s32 n);
 }
 
 extern "C" {
-void func_0203ec18(void *p);
+void AxBbsNotice_Post(void *p);
 }
 
 extern "C" {
-void func_0203ec50(void *p);
+void AxBbsNotice_Destruct(void *p);
 }
 
 static inline BOOL Unk_0209e7b4_Is2(u8 v) {
@@ -379,8 +379,8 @@ public:
     void markInterrupted();
     void clearState();
     void setStateValid();
-    void func_0209eb8c();
-    void func_0209eb90();
+    void destruct();
+    void construct();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
@@ -388,9 +388,9 @@ public:
     /* 0x03 */ u8 unk_03;
 };
 
-extern "C" void func_0209eb08() {}
+extern "C" void SaveData_ConstructDateRecord() {}
 
-extern "C" void func_0209eb04() {}
+extern "C" void SaveData_DestructDateRecord() {}
 
 void SaveRecord4::resetDate() {
     unk_00 = 1;
@@ -460,59 +460,59 @@ BOOL SaveMenu::onExecute() {
     s32 r6;
     s32 r4;
 
-    if (*func_0209c37c(0, 0x4b) != 0) {
+    if (*DebugVar_GetPtr(0, 0x4b) != 0) {
         if (PlayerData_GetCurrent() != 0) {
             r4 = _ZN12Unk_02097ff414getBankAccountEv();
-            switch (*func_0209c37c(0, 0x4b)) {
+            switch (*DebugVar_GetPtr(0, 0x4b)) {
             case 0:
                 break;
             case 1:
-                func_02097410(r4, 1000000);
+                PlayerBank_SetBalance(r4, 1000000);
                 break;
             case 2:
-                func_02097410(r4, 10000000);
+                PlayerBank_SetBalance(r4, 10000000);
                 break;
             case 3:
-                func_02097410(r4, 100000000);
+                PlayerBank_SetBalance(r4, 100000000);
                 break;
             case 4:
-                func_02097410(r4, 500000000);
+                PlayerBank_SetBalance(r4, 500000000);
                 break;
             case 5:
-                func_02097410(r4, 999999999);
+                PlayerBank_SetBalance(r4, 999999999);
                 break;
             }
         }
     }
-    if (*func_0209c37c(0, 0x4c) != 0) {
+    if (*DebugVar_GetPtr(0, 0x4c) != 0) {
         if (PlayerData_GetCurrent() != 0) {
             _ZN12Unk_02097ff414getBankAccountEv();
-            if (*func_0209c37c(0, 0x4c) != 0) {
-                t = *func_0209c37c(0, 0x4c);
+            if (*DebugVar_GetPtr(0, 0x4c) != 0) {
+                t = *DebugVar_GetPtr(0, 0x4c);
                 if (t < 1) {
                     t = 1;
                 } else if (t > 0x15) {
                     t = 0x15;
                 }
-                s32 c = func_02097404();
-                s32 v = data_020d070c[t];
+                s32 c = Donation_GetTotal();
+                s32 v = sSaveMenuDebugDonationLevels[t];
                 if (v > c) {
-                    func_020973ec(v - 100);
+                    Donation_SetTotal(v - 100);
                 }
             }
         }
     }
-    if (*func_0209c37c(0, 0x48) != 0) {
+    if (*DebugVar_GetPtr(0, 0x48) != 0) {
         r6 = PlayerData_GetCurrent();
         r4 = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(r6), 1);
-        r4 += *func_0209c37c(0, 0x48);
+        r4 += *DebugVar_GetPtr(0, 0x48);
         if (r4 < 0) {
             r4 = 0;
         } else if (r4 > 0x1869f) {
             r4 = 0x1869f;
         }
-        func_02097ac4(_ZN10PlayerData12getInventoryEv(r6), r4, 1);
-        *func_0209c37c(0, 0x48) = 0;
+        PlayerInventory_SetWallet(_ZN10PlayerData12getInventoryEv(r6), r4, 1);
+        *DebugVar_GetPtr(0, 0x48) = 0;
     }
     if (sSaveMenuStates[unk_50].update != 0) {
         (this->*sSaveMenuStates[unk_50].update)();

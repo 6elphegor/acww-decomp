@@ -3,7 +3,7 @@
 extern "C" {
 extern void *gPlayerFaceTexHeap;
 extern u8 *gCommManager;
-extern char data_021c651c[0x14];
+extern char sPlayerFaceTexPathBuf[0x14];
 
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void func_020e885c(void *p);
@@ -12,84 +12,84 @@ s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *buf, s32 size);
 s32 PlayerFaceTexHeap_Destroy();
 s32 PlayerFaceTexHeap_Create();
-s32 func_0205d418();
-void *func_0205d420(u32 x);
-void func_0205d3d0(u32 *arr);
+s32 PlayerFaceTex_GetBufferSize();
+void *PlayerFaceTex_GetPath(u32 x);
+void PlayerFaceTexPool_AllocBuffers(u32 *arr);
 }
 
-struct Unk_0205d3a0 {
+struct PlayerFaceTexPool {
     u32 ptr[4];
-    Unk_0205d3a0();
-    ~Unk_0205d3a0();
-    void *func_0205d3a0(u32 idx);
-    void func_0205d3a8();
+    PlayerFaceTexPool();
+    ~PlayerFaceTexPool();
+    void *getBuffer(u32 idx);
+    void freeBuffers();
 };
 
-struct Unk_0205d340 {
+struct PlayerFaceTexRef {
     u8 v;
-    Unk_0205d340();
-    ~Unk_0205d340();
-    void *func_0205d340();
-    s32 func_0205d354(u32 idx);
-    void func_0205d388(u32 x);
-    void func_0205d38c(u32 x);
+    PlayerFaceTexRef();
+    ~PlayerFaceTexRef();
+    void *getBuffer();
+    s32 load(u32 idx);
+    void setSlot(u32 x);
+    void assign(u32 x);
 };
 
-char data_021c651c[0x14];
-Unk_0205d3a0 data_021c650c;
+char sPlayerFaceTexPathBuf[0x14];
+PlayerFaceTexPool sPlayerFaceTexPool;
 
-extern "C" void func_0205d458() {
+extern "C" void PlayerFaceTexPool_Create() {
     PlayerFaceTexHeap_Create();
-    func_0205d3d0(data_021c650c.ptr);
+    PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
         func_020e877c(gPlayerFaceTexHeap);
     }
 }
 
-extern "C" void func_0205d440() {
-    data_021c650c.func_0205d3a8();
+extern "C" void PlayerFaceTexPool_Destroy() {
+    sPlayerFaceTexPool.freeBuffers();
     PlayerFaceTexHeap_Destroy();
 }
 
-extern "C" void *func_0205d420(u32 x) {
-    func_020639e8(data_021c651c, "/PFcTx/%d/%d.nsbtx", x >> 5, x);
-    return data_021c651c;
+extern "C" void *PlayerFaceTex_GetPath(u32 x) {
+    func_020639e8(sPlayerFaceTexPathBuf, "/PFcTx/%d/%d.nsbtx", x >> 5, x);
+    return sPlayerFaceTexPathBuf;
 }
 
-extern "C" s32 func_0205d418() { return 0x2e30; }
+extern "C" s32 PlayerFaceTex_GetBufferSize() { return 0x2e30; }
 
-Unk_0205d3a0::Unk_0205d3a0() {}
+PlayerFaceTexPool::PlayerFaceTexPool() {}
 
-Unk_0205d3a0::~Unk_0205d3a0() {}
+PlayerFaceTexPool::~PlayerFaceTexPool() {}
 
-extern "C" void func_0205d3d0(u32 *arr) {
+extern "C" void PlayerFaceTexPool_AllocBuffers(u32 *arr) {
     void *heap = gPlayerFaceTexHeap;
     u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
-        arr[i] = (u32)Heap_AllocAligned(heap, func_0205d418(), 4);
+        arr[i] = (u32)Heap_AllocAligned(heap, PlayerFaceTex_GetBufferSize(), 4);
     }
 }
 
-void Unk_0205d3a0::func_0205d3a8() {
+void PlayerFaceTexPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) ptr[i] = 0;
     if (gPlayerFaceTexHeap) func_020e885c(gPlayerFaceTexHeap);
 }
 
-void *Unk_0205d3a0::func_0205d3a0(u32 idx) { return (void *)ptr[idx]; }
+void *PlayerFaceTexPool::getBuffer(u32 idx) { return (void *)ptr[idx]; }
 
-Unk_0205d340::Unk_0205d340() { v = 4; }
+PlayerFaceTexRef::PlayerFaceTexRef() { v = 4; }
 
-Unk_0205d340::~Unk_0205d340() {}
+PlayerFaceTexRef::~PlayerFaceTexRef() {}
 
-void Unk_0205d340::func_0205d38c(u32 x) { func_0205d388(x); }
+void PlayerFaceTexRef::assign(u32 x) { setSlot(x); }
 
-void Unk_0205d340::func_0205d388(u32 x) { v = x; }
+void PlayerFaceTexRef::setSlot(u32 x) { v = x; }
 
-s32 Unk_0205d340::func_0205d354(u32 idx) {
-    void *p = data_021c650c.func_0205d3a0(v);
-    void *name = func_0205d420(idx);
-    return File_LoadToBuffer(name, p, func_0205d418());
+s32 PlayerFaceTexRef::load(u32 idx) {
+    void *p = sPlayerFaceTexPool.getBuffer(v);
+    void *name = PlayerFaceTex_GetPath(idx);
+    return File_LoadToBuffer(name, p, PlayerFaceTex_GetBufferSize());
 }
 
-void *Unk_0205d340::func_0205d340() { return data_021c650c.func_0205d3a0(v); }
+void *PlayerFaceTexRef::getBuffer() { return sPlayerFaceTexPool.getBuffer(v); }

@@ -119,11 +119,11 @@ struct Unk_021ede90 {
     u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
 };
 
-class Unk_020abea8 {
+class ObjShadowStrip {
 public:
-    void func_020abea8(s32 heap);
-    void func_020abed4(Vec3 *pos);
-    BOOL func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
+    void release(s32 heap);
+    void draw(Vec3 *pos);
+    BOOL build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
     void func_020ac1e0();
 
     /* 0x00 */ Vec3 unk_00;
@@ -334,7 +334,7 @@ struct Unk_020aec74_Out {
 struct Unk_021c47c4 {
     u32 unk_00, unk_04, unk_08;
 };
-extern const s32 data_020d0964;
+extern const s32 sObjShadowCoordShift;
 extern const u8 kNookCarpetCounts[4];
 extern const u8 kNookPaintCounts[4];
 extern const u8 kNookWallpaperCounts[4];
@@ -451,7 +451,7 @@ extern "C" {
 BOOL Catalog_HasItem(void *a, void *b);
 }
 extern "C" {
-void func_020af488(u32 a);
+void Snowman_SendLetter(u32 a);
 }
 extern "C" {
 void *FtrActorGrid_GetInstance();
@@ -499,22 +499,22 @@ extern "C" {
 u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 extern "C" {
-BOOL func_020af278(s32 m);
+BOOL LidSleep_TestFlag(s32 m);
 }
 extern "C" {
-void func_020af258(s32 m);
+void LidSleep_ClearFlag(s32 m);
 }
 extern "C" {
-void func_020af268(s32 m);
+void LidSleep_SetFlag(s32 m);
 }
 extern "C" {
-void func_020af2fc();
+void LidSleep_BacklightOff();
 }
 extern "C" {
-void func_020af2c4();
+void LidSleep_BacklightRestore();
 }
 extern "C" {
-void func_020af290();
+void LidSleep_WakeLcd();
 }
 extern "C" {
 void ShopAckCounter_Clear(Counter *p);
@@ -547,16 +547,16 @@ extern "C" {
 extern u8 sShopRandom[];
 }
 extern "C" {
-extern u8 data_021ee240;
+extern u8 sLidSleepFlags;
 }
 extern "C" {
-extern u8 data_021ee244;
+extern u8 sLidSleepState;
 }
 extern "C" {
-extern u32 data_021ee248;
+extern u32 sLidSleepBacklightBottom;
 }
 extern "C" {
-extern u32 data_021ee24c;
+extern u32 sLidSleepBacklightTop;
 }
 extern "C" {
 extern u8 gLooseSnowballs[];
@@ -568,7 +568,7 @@ extern "C" {
 extern Unk_021c47c4 *gSceneBlockMap;
 }
 extern "C" {
-extern u16 data_020d09cc[];
+extern u16 sSnowmanPrizeItems[];
 }
 extern "C" {
 extern u8 data_020e2ebc[], data_020e2ec0[], data_020e2eb8[];
@@ -859,7 +859,7 @@ extern "C" {
 void NookPoints_SendMemberLetters();
 }
 extern "C" {
-int func_020978a4(void*);
+int PlayerDataArray_CountUsed(void*);
 }
 extern "C" {
 void* PlayerData_GetResident(void*, int);
@@ -1284,7 +1284,7 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     NookShop_SetStockDate(self, &d);
     NookShop_Restock(self, d.f, d.e, d.d);
     ok = 1;
-    int cnt = func_020978a4(gSavePlayers);
+    int cnt = PlayerDataArray_CountUsed(gSavePlayers);
     if (cnt != 0 && cnt != 1) {
         for (i = 0; i < 4; i++) {
             p = PlayerData_GetResident(gSavePlayers, i);
@@ -1714,7 +1714,7 @@ const u8 kNookBottleCounts[4] = {1, 1, 1, 1};
 const u16 kNookFlowerBagItems[12] = {0x14fe, 0x14ff, 0x1500, 0x1504, 0x1505, 0x1506, 0x150a, 0x150b, 0x150c, 0x1510, 0x1511, 0x1512};
 const u8 kNookPaintCounts[4] = {0, 0, 0, 1};
 s32 sNookShopVisitState;
-const s32 data_020d0964 = 5;
+const s32 sObjShadowCoordShift = 5;
 namespace n3 {
 extern "C" void NookShop_StockTools(S *s, s32 *p) {
     static ItemId tbl[7] = {ItemId(0x1369), ItemId(0x1378), ItemId(0x1376), ItemId(0x1374), ItemId(0x156c), ItemId(0x136b), ItemId(0x137a)};
@@ -1978,7 +1978,7 @@ extern "C" {
 u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
 }
 extern "C" {
-u32 func_02097740(void *p, void *q);
+u32 PlayerDataArray_FindById(void *p, void *q);
 }
 extern "C" {
 void Letter_ComposeFromMail(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
@@ -2443,7 +2443,7 @@ extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
         if (_ZN6TownId15getTownRelationEv(q) == 1) {
             return ReddPassword_VisitorKnows();
         }
-        u8 v = func_02097740(gSavePlayers, q) & 3;
+        u8 v = PlayerDataArray_FindById(gSavePlayers, q) & 3;
         return data_021ed2c0.getPassword()->residentKnows(v);
     }
     return FALSE;
@@ -2456,7 +2456,7 @@ extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
         if (_ZN6TownId15getTownRelationEv(q) == 1) {
             return data_021ed2c0.getPassword()->setVisitorKnows();
         }
-        u8 v = func_02097740(gSavePlayers, q) & 3;
+        u8 v = PlayerDataArray_FindById(gSavePlayers, q) & 3;
         data_021ed2c0.getPassword()->setResidentKnows(v);
         return TRUE;
     }
@@ -2688,16 +2688,16 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-extern u32 data_020e2dc4;
+extern u32 sCharaShadowPolyId;
 }
 extern "C" {
-extern u8 data_020e2de4;
+extern u8 sCharaShadowAlpha;
 }
 extern "C" {
-extern u8 data_020e2de8;
+extern u8 sObjShadowAlpha;
 }
 extern "C" {
-extern u32 data_020e2dc8;
+extern u32 sCharaShadowModelPath;
 }
 extern "C" {
 extern s32 gCurrentHeap;
@@ -2712,34 +2712,34 @@ extern "C" {
 extern u8 data_021edf04[];
 }
 extern "C" {
-extern Unk_021ede90 *data_021ede90;
+extern Unk_021ede90 *sCharaShadowMatData;
 }
 extern "C" {
-extern u8 data_021edea0[];
+extern u8 sCharaShadowModel[];
 }
 extern "C" {
-extern s32 data_021edf44;
+extern s32 sObjShadowSkew;
 }
 extern "C" {
-extern s32 data_020d0964;
+extern s32 sObjShadowCoordShift;
 }
 extern "C" {
-extern Unk_020ac0c4_Entry data_021ee114[];
+extern Unk_020ac0c4_Entry sObjShadowTextures[];
 }
 extern "C" {
-extern Unk_020abea8 data_021ee010, data_021ee044, data_021ee078, data_021ee0ac, data_021ee0e0;
+extern ObjShadowStrip sRockShadow, sSignShadow, sTreeShadowStage2, sTreeShadowStage3, sTreeShadowStage4;
 }
 extern "C" {
 extern u32 data_021edf3c;
 }
 extern "C" {
-extern Unk_020d094c data_020d094c[];
+extern Unk_020d094c sObjShadowTexDefs[];
 }
 extern "C" {
-extern u8 data_020e2e10[];
+extern u8 sObjShadowTexPath[];
 }
 extern "C" {
-extern u8 data_020e2e2c[];
+extern u8 sObjShadowPlttNameFmt[];
 }
 extern "C" {
 void *File_Load(void *p);
@@ -2778,10 +2778,10 @@ extern "C" {
 extern Vec3 gCameraLookAt;
 }
 extern "C" {
-extern u8 data_021edfe0[];
+extern u8 sObjShadowViewMtx[];
 }
 extern "C" {
-extern u8 data_021edfbc[];
+extern u8 sObjShadowNormMtx[];
 }
 extern "C" {
 extern u8 gViewMtx[];
@@ -3021,19 +3021,19 @@ extern "C" {
 extern u8 data_020e2e74[];
 }
 extern "C" {
-void func_020ac724(void *a, void *b);
+void ObjShadow_NormalizeAxes(void *a, void *b);
 }
 extern "C" {
-u8 func_020ac2e8(Vec3 *p, s32 q, u8 c);
+u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 c);
 }
 extern "C" {
-u8 func_020ac2c8(Vec3 *p, s32 q);
+u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q);
 }
 extern "C" {
-u8 func_020ac2d8(Vec3 *p, s32 q);
+u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q);
 }
 extern "C" {
-void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c);
+void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c);
 }
 
 static inline BOOL inRange2(const u16 &a, const u16 &b) {

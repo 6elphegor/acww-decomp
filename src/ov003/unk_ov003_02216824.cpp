@@ -318,7 +318,7 @@ BOOL PlayerActor_LocalRequestAct6A(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8528(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
-PlayerMailbox *func_020979d8(void *p);
+PlayerMailbox *PlayerData_GetMailbox(void *p);
 BOOL _ZN10LetterView8getStateEv();
 s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
@@ -490,7 +490,7 @@ void Mailbox::vfunc_4c(u32 a, u8 b) {
 
 s32 Mailbox::countLetters() {
     if (isUsable()) {
-        PlayerMailbox *p = func_020979d8(PlayerData_GetCurrent());
+        PlayerMailbox *p = PlayerData_GetMailbox(PlayerData_GetCurrent());
         if (p) {
             s32 n = 0;
             u32 i;

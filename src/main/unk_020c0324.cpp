@@ -47,7 +47,7 @@ void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void *PlayerData_GetCurrent(void);
 void *TownSessionState_Get(void);
 void *TownSessionState_GetKatieState(void *a);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 void *TownBlockMap_Get(void);
 void Town_FindGateHouse(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
@@ -339,15 +339,15 @@ struct NpcActor : Character {
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct() = 0;
     virtual void *getTexturePath() = 0;
     virtual void *getModelPath() = 0;
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -370,8 +370,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
@@ -435,13 +435,13 @@ public:
 extern Unk_020c11b8_Ent sSpNpcMissing1ActTable[9];
 extern SpNpcMissing1 *sSpNpcMissing1Instance;
 extern char sSpNpcMissing1Key[16];
-extern char data_020e6840[23];
-extern char data_020e6870[27];
+extern char sSpNpcMissing1ModelPath[23];
+extern char sSpNpcMissing1TexPath[27];
 extern char *sSpNpcMissing1MsgKey;
-extern const Unk_020bfe30_Vec data_020d1c8c;
-extern "C" SpNpcMissing1 *func_020c1620(void);
+extern const Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
+extern "C" SpNpcMissing1 *SpNpcMissing1_Create(void);
 
-extern "C" SpNpcMissing1 *func_020c1620(void) {
+extern "C" SpNpcMissing1 *SpNpcMissing1_Create(void) {
     return new SpNpcMissing1();
 }
 
@@ -541,11 +541,11 @@ BOOL SpNpcMissing1::vfunc_0c() {
 }
 
 void *SpNpcMissing1::getTexturePath() {
-    return data_020e6870;
+    return sSpNpcMissing1TexPath;
 }
 
 void *SpNpcMissing1::getModelPath() {
-    return data_020e6840;
+    return sSpNpcMissing1ModelPath;
 }
 
 BOOL SpNpcMissing1::updateAct() {
@@ -736,7 +736,7 @@ BOOL SpNpcMissing1::mainAct05() {
             unk_4cc.unk_44 = 1;
         }
     }
-    q = func_020947f0(4);
+    q = PlayerActor_GetBodyPos(4);
     if (q == NULL) {
         return TRUE;
     }
@@ -827,7 +827,7 @@ BOOL SpNpcMissing1::mainAct08() {
         }
         break;
     case 1:
-        vec30 = data_020d1c8c;
+        vec30 = sSpNpcMissing1ReunionWalkPos;
         PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
         unk_724 = 2;
@@ -1073,7 +1073,7 @@ Unk_021f458c_Color data_021f4584(31, 31, 20, 31);
 Unk_021f458c_Color data_021f457c(20, 31, 20, 31);
 Unk_021f458c_Color data_021f4590(20, 31, 31, 31);
 Unk_021f458c_Color data_021f4588(20, 24, 24, 31);
-const Unk_020bfe30_Vec data_020d1c8c = { 0x10000, 0, 0x11800 };
+const Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos = { 0x10000, 0, 0x11800 };
 Unk_020c11b8_Ent sSpNpcMissing1ActTable[9] = {
     { &SpNpcMissing1::setupAct00, &SpNpcMissing1::mainAct00 },
     { &SpNpcMissing1::setupAct01, &SpNpcMissing1::mainAct01 },
@@ -1088,10 +1088,10 @@ Unk_020c11b8_Ent sSpNpcMissing1ActTable[9] = {
 SpNpcMissing1 *sSpNpcMissing1Instance;
 char sSpNpcMissing1Key[] = "sp_npc_missing1";
 char *sSpNpcMissing1MsgKey = sSpNpcMissing1Key;
-char data_020e6870[] = "npc_sp/model/los_tex.nsbtx";
-char data_020e6840[] = "npc_sp/model/los.nsbmd";
+char sSpNpcMissing1TexPath[] = "npc_sp/model/los_tex.nsbtx";
+char sSpNpcMissing1ModelPath[] = "npc_sp/model/los.nsbmd";
 struct Unk_020e6858_Rec {
     SpNpcMissing1 *(*fn)();
     u32 w[5];
 };
-Unk_020e6858_Rec sSpNpcMissing1Profile = { func_020c1620, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };
+Unk_020e6858_Rec sSpNpcMissing1Profile = { SpNpcMissing1_Create, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };

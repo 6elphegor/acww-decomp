@@ -78,7 +78,7 @@ extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchPressY;
 extern u8 gTouchPressX;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
@@ -122,8 +122,8 @@ s32 Pocket_AddItem(u16 *p, u32 v);
 void Snd_PlaySe(s32 id);
 s32 StrBuf_GameToAscii(void *p, void *q);
 s32 FieldAction_RequestDrop(u32 p, u32 a);
-s32 func_020342a4(u32 a, u32 b, u32 c, u32 d);
-s32 func_02034228(u32 a, u32 b, u32 c, u32 d);
+s32 RoomWallFloor_SetWallpaperDesign(u32 a, u32 b, u32 c, u32 d);
+s32 RoomWallFloor_SetCarpetDesign(u32 a, u32 b, u32 c, u32 d);
 s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
 void MI_CpuCopy8(const void *a, void *b, u32 n);
 s32 Camera_IsViewPushed();
@@ -1213,7 +1213,7 @@ void DesignTab::resumeInput() {
 
 void DesignTab::openMessageWindow(u32 a, u32 b) {
     u8 buf[1];
-    buf[0] = data_021edb68;
+    buf[0] = gU8None;
     buf[0] = a;
     MenuErrorMessage_open(&unk_3fc, buf, b, 0);
     setMainState(0x13);
@@ -1445,7 +1445,7 @@ void DesignTab::applyRoomDesignA(u32 m) {
         return;
     }
     restoreCamera();
-    func_02034228(getSlotPattern(unk_ae), m, 1, 1);
+    RoomWallFloor_SetCarpetDesign(getSlotPattern(unk_ae), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }
@@ -1466,7 +1466,7 @@ void DesignTab::applyRoomDesignB(u32 m) {
         return;
     }
     restoreCamera();
-    func_020342a4(getSlotPattern(unk_ae), m, 1, 1);
+    RoomWallFloor_SetWallpaperDesign(getSlotPattern(unk_ae), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }

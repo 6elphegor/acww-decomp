@@ -52,7 +52,7 @@ s32 memcmp();
 }
 
 extern "C" {
-void *_ZN12G3dResAccess13func_02057030Ev(void *a, s32 b);
+void *_ZN12G3dResAccess12findPlttDataEv(void *a, s32 b);
 }
 
 extern "C" {
@@ -68,7 +68,7 @@ u32 _ZN12G3dResAccess11getPlttSizeEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12G3dResAccess13func_020570e0Ev(void *a, s32 b);
+void *_ZN12G3dResAccess11findTexDataEv(void *a, s32 b);
 }
 
 extern "C" {
@@ -470,7 +470,7 @@ extern "C" s32 func_02063a9c(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
 }
 
 extern "C" void func_02063a5c(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12G3dResAccess13func_020570e0Ev(a, c);
+    void *p = _ZN12G3dResAccess11findTexDataEv(a, c);
     s32 i = _ZN12G3dResAccess10findTexIdxEi(b, d);
     void *q = _ZN12G3dResAccess10getTexDataEi(b, i);
     u32 n = _ZN12G3dResAccess10getTexSizeEi(b, i);
@@ -478,7 +478,7 @@ extern "C" void func_02063a5c(void *a, void *b, s32 c, s32 d) {
 }
 
 extern "C" void func_02063a1c(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12G3dResAccess13func_02057030Ev(a, c);
+    void *p = _ZN12G3dResAccess12findPlttDataEv(a, c);
     s32 i = _ZN12G3dResAccess11findPlttIdxEi(b, d);
     void *q = _ZN12G3dResAccess11getPlttDataEi(b, i);
     u32 n = _ZN12G3dResAccess11getPlttSizeEi(b, i);

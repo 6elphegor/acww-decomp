@@ -2,13 +2,13 @@
 #include "text/Unk_02050288.h"
 
 extern "C" {
-s32 func_020512e0(void *p, s32 n);
-s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
+s32 Text_GetLength(void *p, s32 n);
+s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 BOOL Gfx2d_IsMainScreenLayer(u32 x);
 s32 Gfx2d_GetLayerBgIndex(u32 n);
-s32 func_020a78a4(void *buf, const void *src, s32 len);
+s32 EncodedString_SetRaw(void *buf, const void *src, s32 len);
 void Gfx2d_HideLayer(void *p);
 void Gfx2d_SetLayerPriority(void *p, s32 v);
 void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
@@ -17,7 +17,7 @@ void *Letter_GetPaper(void *p);
 void Menu_LoadPaperBg(void *a, void *b);
 void Mem_Clear(void *p, s32 n);
 void Letter_GetRecipientNameBytes(void *dst, void *src);
-s32 func_02051348(void *p, s32 n);
+s32 Text_MeasureWidth(void *p, s32 n);
 }
 
 class EncodedStringBase {
@@ -201,8 +201,8 @@ s32 LetterRenderer::func_0206d2d4() {
 void LetterRenderer::func_0206d288(void *src) {
     Mem_Clear(unk_1c8, 0x28);
     Letter_GetRecipientNameBytes(src, unk_1c8);
-    unk_208 = func_020512e0(unk_1c8, 0x28);
-    unk_20c = func_02051348(unk_1c8, 0x28);
+    unk_208 = Text_GetLength(unk_1c8, 0x28);
+    unk_20c = Text_MeasureWidth(unk_1c8, 0x28);
 }
 
 void LetterRenderer::func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out) {
@@ -239,7 +239,7 @@ void LetterRenderer::func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out) {
         ((Unk_020ddf44 *)this)->func_0206cc14(src->cnt, unk_208);
     }
     Unk_020ddf5c buf;
-    func_020a78a4(&buf, out, 0x28);
+    EncodedString_SetRaw(&buf, out, 0x28);
     ((Unk_020ddf44 *)this)->func_0206cc84(&buf);
 }
 
@@ -257,14 +257,14 @@ void LetterRenderer::func_0206d0fc(u8 *src, BOOL flag) {
         Unk_020ddf44 *cell = (Unk_020ddf44 *)unk_098[i];
         cell->func_0206cc38();
         if (diff != 0) {
-            func_020a78a4(&buf, src + unk_1f0[i], diff);
+            EncodedString_SetRaw(&buf, src + unk_1f0[i], diff);
             if (flag) {
                 cell->func_0206cc6c(&buf, i == unk_204 ? 1 : zero);
             } else {
                 cell->func_0206cc84(&buf);
             }
         } else if (flag && i == unk_204) {
-            func_020a78a4(&buf, z, 1);
+            EncodedString_SetRaw(&buf, z, 1);
             cell->func_0206cc6c(&buf, 1);
         } else {
             cell->func_0206cc38();
@@ -275,7 +275,7 @@ void LetterRenderer::func_0206d0fc(u8 *src, BOOL flag) {
 void LetterRenderer::func_0206d0b8(u8 *data) {
     Unk_020ddf5c buf;
     ((Unk_020ddf44 *)unk_000 + 1)->func_0206cc38();
-    func_020a78a4(&buf, data, 0x20);
+    EncodedString_SetRaw(&buf, data, 0x20);
     ((Unk_020ddf44 *)unk_000 + 1)->func_0206cc84(&buf);
 }
 
@@ -328,7 +328,7 @@ extern "C" s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, 
         s32 rem = len - pos;
         s32 r;
         if (w > rem) w = rem;
-        r = func_02051270(str + pos, w, pxw, &outLen, 1);
+        r = Text_FitToWidth(str + pos, w, pxw, &outLen, 1);
         starts[i] = pos;
         pos += outLen;
         if (r != 0) {

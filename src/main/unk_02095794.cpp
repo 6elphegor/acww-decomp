@@ -65,7 +65,7 @@ extern u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
-extern u8 data_021edb68[];
+extern u8 gU8None[];
 extern u8 data_020e1d68[];
 struct Unk_02095f38_G {
     u8 pad_00[0x58];
@@ -302,7 +302,7 @@ void *func_020986c8(void *a);
 }
 
 extern "C" {
-void func_0203c42c(void *a, u16 *b, s32 c, s32 d);
+void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 }
 
 extern "C" {

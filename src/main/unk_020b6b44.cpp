@@ -41,10 +41,10 @@ struct TouchPickTriangle : CollisionTriangle {
     /* 0x40 */ u8 unk_40;
 };
 
-struct Unk_020b6e10 {
-    Unk_020b6e10();
-    ~Unk_020b6e10();
-    BOOL func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
+struct TouchPickBox {
+    TouchPickBox();
+    ~TouchPickBox();
+    BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
     /* 0x00 */ TouchPickTriangle unk_00[10];
 };
 
@@ -83,7 +83,7 @@ struct Pair {
     Vec3 p, q;
 };
 
-extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
+extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     Vec3 v28;
     s32 ang = WorldCurve_ToCurved(&v28, r);
     s32 sn, cs;
@@ -128,7 +128,7 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     return FALSE;
 }
 
-extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
+extern "C" void TouchPick_CalcRay(Basis *out, s32 x, s32 z) {
     Vec3 zero;
     Pair t;
     Vec3 c, d, e;
@@ -156,13 +156,13 @@ extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
     func_020e94f8(&out->c);
 }
 
-Unk_020b6e10::Unk_020b6e10() {
+TouchPickBox::TouchPickBox() {
 }
 
-Unk_020b6e10::~Unk_020b6e10() {
+TouchPickBox::~TouchPickBox() {
 }
 
-BOOL Unk_020b6e10::func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f) {
+BOOL TouchPickBox::build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f) {
     Vec3 c[8];
     s32 hw = w >> 1;
     c[0].x = c[4].x = c[1].x = c[5].x = -hw;

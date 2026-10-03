@@ -84,7 +84,7 @@ void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 v);
 void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, void *v);
 void _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, void *v);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_UnlockExit();
 void Ground_LockExit(s32 a);
@@ -95,7 +95,7 @@ void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
 void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void *Scene_GetTouchPicker();
-void *func_020b6048(void *a, s32 b, s32 c);
+void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
 u16 *ShopStock_GetItemAt(s32 a, s32 b);
 s32 Item_IsFurniture(u16 *p);
@@ -346,15 +346,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -401,8 +401,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -618,7 +618,7 @@ BOOL SpNpcRedd::setupAct01() {
 }
 
 BOOL SpNpcRedd::mainAct01() {
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -658,7 +658,7 @@ BOOL SpNpcRedd::mainAct02() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -698,7 +698,7 @@ BOOL SpNpcRedd::mainAct03() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -737,7 +737,7 @@ BOOL SpNpcRedd::mainAct04() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -794,7 +794,7 @@ BOOL SpNpcRedd::setupAct06() {
 }
 
 BOOL SpNpcRedd::mainAct06() {
-    Unk_ov052_02259d6c_Vec *pv = (Unk_ov052_02259d6c_Vec *)func_020947f0(4);
+    Unk_ov052_02259d6c_Vec *pv = (Unk_ov052_02259d6c_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_02259d6c_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -821,7 +821,7 @@ BOOL SpNpcRedd::setupAct09() {
 }
 
 BOOL SpNpcRedd::mainAct09() {
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1185,7 +1185,7 @@ void SpNpcRedd::vfunc_4c(u32 cmd, u32 arg) {
     case 8:
         if (unk_658.getTopic() == 1 || unk_658.getTopic() == 2) {
             Unk_ov052_Vec v;
-            Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
+            Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
             v = *src;
             if (Ground_IsOnLockedExit(&v)) {
                 Ground_UnlockExit();
@@ -1230,7 +1230,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
     if (f) {
         void *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
@@ -1264,7 +1264,7 @@ BOOL SpNpcRedd::tryItemTalk() {
 
 BOOL SpNpcRedd::tryFarewellTalk() {
     Unk_ov052_02258eac_Loc v;
-    Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
+    Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov052_Vec *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
         if (unk_72e == 0) {

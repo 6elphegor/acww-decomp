@@ -124,8 +124,8 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e47c(s32 a);
-    void func_0203e488(s32 a);
+    void detachTalkRequest(s32 a);
+    void attachTalkRequest(s32 a);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
     /* 0xe4 */ s32 unk_e4;
@@ -618,7 +618,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x280 */ u32 unk_280;
     /* 0x284 */ u8 unk_284;
     /* 0x285 */ u8 pad_285[3];
-    /* 0x288 */ u8 unk_288[0x2a8];  // Unk_020b6e10
+    /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
     /* 0x530 */ s32 unk_530;
     /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
     /* 0x590 */ u32 unk_590;
@@ -1036,7 +1036,7 @@ public:
             /* 0x280 */ u32 unk_280;
             /* 0x284 */ u8 unk_284;
             /* 0x285 */ u8 pad_285[3];
-            /* 0x288 */ u8 unk_288[0x2a8];  // Unk_020b6e10
+            /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
             /* 0x530 */ s32 unk_530;
             /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
             /* 0x590 */ u32 unk_590;
@@ -1585,7 +1585,7 @@ s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 func_02063b8c(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
-BOOL func_0203c23c(u32 a, u16 *p);
+BOOL CarpetTex_Load(u32 a, u16 *p);
 s32 func_0203c234(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 

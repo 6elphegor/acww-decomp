@@ -68,9 +68,9 @@ struct Unk_0203e5d0_List {
 };
 
 extern Unk_0203e5d0_List gCharacterList;
-extern u32 data_021c39dc;
-extern u32 data_021c39e0[4];
-extern u8 data_020d96d0;
+extern u32 sCharInteractReservedId;
+extern u32 sCharInteractLockIds[4];
+extern u8 sCharInteractSyncResult;
 
 struct Unk_0203e938_Net {
     /* 0x00 */ u8 pad_00[0x64];
@@ -114,7 +114,7 @@ void PrioList_Init(void *);
 }
 
 extern "C" {
-void func_0203ebb0(void);
+void TalkRequestPool_Reset(void);
 }
 
 extern "C" {
@@ -158,7 +158,7 @@ s32 Field_GetExitedBuildingKey(void);
 }
 
 extern "C" {
-Unk_0203e22c_State *func_0203eb78(void);
+Unk_0203e22c_State *TalkRequestPool_Alloc(void);
 }
 
 extern "C" {
@@ -198,23 +198,23 @@ void _ZN5Actor10postCreateEv(void *, s32);
 }
 
 extern "C" {
-void func_0203eb04(u8 a, u32 aid, ...);
+void CharInteractSync_SendReply(u8 a, u32 aid, ...);
 }
 
 extern "C" {
-void func_0203eab8(u32 idx);
+void CharInteractSync_ClearLock(u32 idx);
 }
 
 extern "C" {
-u32 func_0203eac8(u32 idx, u32 id);
+u32 CharInteractSync_IsFree(u32 idx, u32 id);
 }
 
 extern "C" {
-void func_0203ea08(u32);
+void CharInteractSync_RequestLock(u32);
 }
 
 extern "C" {
-s32 func_0203ea74(u32);
+s32 CharInteractSync_Check(u32);
 }
 
 extern "C" {
@@ -246,7 +246,7 @@ BOOL NetArea_IsLocalOwner(void);
 }
 
 extern "C" {
-void func_0203e938(u32 id, u8 x, u8 mode);
+void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode);
 }
 
 extern "C" {
@@ -254,7 +254,7 @@ void TalkRequestQueue_Reset(void);
 }
 
 extern "C" {
-void func_0203eb38(void);
+void CharInteractSync_Reset(void);
 }
 
 extern "C" {
@@ -301,11 +301,11 @@ public:
     void setAreaSynced();
     s32 getTalkStartMode();
     void clearTalkStartMode();
-    void func_0203e438();
-    void func_0203e450();
+    void setTalkStartMode1();
+    void setTalkStartMode0();
     void setInteractionRange(s32 v);
-    void func_0203e47c(s32 a);
-    void func_0203e488(s32 a);
+    void detachTalkRequest(s32 a);
+    void attachTalkRequest(s32 a);
     BOOL checkInteraction(Character *other);
     BOOL isInInteractionRange(Character *other);
     BOOL isInFacingArcOf(Character *other, s16 lo, s16 hi);
@@ -347,7 +347,7 @@ BOOL Character::vfunc_04() {
     unk_d4.unk_0c = this;
     setInteractionRange(0x3000);
     unk_e8 = 0;
-    func_0203e438();
+    setTalkStartMode1();
     return TRUE;
 }
 
@@ -447,18 +447,18 @@ BOOL Character::vfunc_58(void *a) { return FALSE; }
 
 BOOL Character::vfunc_5c() { return FALSE; }
 
-void Character::func_0203e488(s32 a) { Talk_AttachRequestToWindow0(a); }
+void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 
-void Character::func_0203e47c(s32 a) { Talk_DetachRequest(a); }
+void Character::detachTalkRequest(s32 a) { Talk_DetachRequest(a); }
 
 void Character::setInteractionRange(s32 v) { unk_e4 = func_01ffcb0c(v); }
 
-void Character::func_0203e450() {
+void Character::setTalkStartMode0() {
     clearCharFlags(3);
     setCharFlags(1);
 }
 
-void Character::func_0203e438() {
+void Character::setTalkStartMode1() {
     clearCharFlags(3);
     setCharFlags(2);
 }

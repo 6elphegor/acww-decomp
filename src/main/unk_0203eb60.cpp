@@ -5,16 +5,16 @@
 typedef s32 (*Unk_0203eb60_Fn)(u8 *, s32);
 
 extern "C" {
-s32 func_0203e7d0(u8 *p, s32 x);
-s32 func_0203e8d4(u8 *p, s32 x);
-s32 func_0203e8e0(u8 *p, s32 x);
-s32 func_0203e8ec(u8 *p, s32 x);
+s32 CharInteractSync_OnCharMsg(u8 *p, s32 x);
+s32 CharInteractSync_OnRelease(u8 *p, s32 x);
+s32 CharInteractSync_OnReply(u8 *p, s32 x);
+s32 CharInteractSync_OnLockRequest(u8 *p, s32 x);
 }
 
-extern "C" Unk_0203eb60_Fn data_020d96d4[6] = {
-    func_0203e8ec, func_0203e8e0, func_0203e8e0, func_0203e8d4, func_0203e7d0, func_0203e7d0,
+extern "C" Unk_0203eb60_Fn sCharInteractSyncRecvFns[6] = {
+    CharInteractSync_OnLockRequest, CharInteractSync_OnReply, CharInteractSync_OnReply, CharInteractSync_OnRelease, CharInteractSync_OnCharMsg, CharInteractSync_OnCharMsg,
 };
 
-extern "C" s32 func_0203eb60(u8 *p, s32 x) {
-    data_020d96d4[*p](p, x);
+extern "C" s32 CharInteractSync_Dispatch(u8 *p, s32 x) {
+    sCharInteractSyncRecvFns[*p](p, x);
 }

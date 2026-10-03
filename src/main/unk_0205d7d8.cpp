@@ -16,9 +16,9 @@ s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
 void func_02063a1c(void *, void *, void *, void *);
 void func_02063a5c(void *, void *, void *, void *);
-void _ZN12Unk_0205ca9413func_0205ca94EPtiii(void *, void *, s32, s32, s32);
-void *func_0205cdbc();
-s32 func_0205c91c(void *);
+void _ZN16CharaClothTexRef8loadItemEPtiii(void *, void *, s32, s32, s32);
+void *CharaClothTexPool_GetOwnRef();
+s32 CharaClothTexRef_GetBuffer(void *);
 s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
@@ -390,9 +390,9 @@ extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
             if (res != 0) {
                 PlayerHead_SetModelFile(p, 1, buf);
                 if (Unk_0205da08_InRange(c)) {
-                    void *x = func_0205cdbc();
-                    _ZN12Unk_0205ca9413func_0205ca94EPtiii(x, c, d, 0, 0);
-                    void *m = NNS_G3dGetTex((void *)func_0205c91c(x));
+                    void *x = CharaClothTexPool_GetOwnRef();
+                    _ZN16CharaClothTexRef8loadItemEPtiii(x, c, d, 0, 0);
+                    void *m = NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(x));
                     void *n = NNS_G3dGetTex(buf);
                     func_02063a5c(m, n, (void *)"cloth", (void *)"myD");
                     func_02063a1c(m, n, (void *)"cloth", (void *)"myD");

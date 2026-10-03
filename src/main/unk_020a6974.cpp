@@ -22,11 +22,11 @@ const char *Text_GetSpecialCharStr2(void);
 }
 
 extern "C" {
-u8 *func_02050204(void);
+u8 *Text_GetSpecialCharStr10(void);
 }
 
 extern "C" {
-u8 *func_02050208(void);
+u8 *Text_GetSpecialCharStr9(void);
 }
 
 extern "C" {
@@ -70,15 +70,15 @@ void Gfx2d_ShowMainPlanes(u32 arg);
 }
 
 extern "C" {
-void func_02011868(void);
+void HudObjGfx_ClearMsgUiActive(void);
 }
 
 extern "C" {
-void func_02011874(void);
+void HudObjGfx_SetMsgUiActive(void);
 }
 
 extern "C" {
-void func_0201195c(void);
+void HudObjGfx_LoadForScene(void);
 }
 
 extern "C" {
@@ -288,11 +288,11 @@ u32 Bmg_ReadMagic(void *p);
 }
 
 extern "C" {
-void func_020a8b88(void);
+void MsgUiProc_HideObjPlane(void);
 }
 
 extern "C" {
-void func_020a8b94(void);
+void MsgUiProc_ShowObjPlane(void);
 }
 
 extern "C" {
@@ -355,14 +355,14 @@ struct Unk_020e29e0_Rec {
     s16 unk_06;
 };
 
-extern Unk_02008040 data_021edb68;
+extern Unk_02008040 gU8None;
 extern Unk_02008040 gTalkMsgIndexNone;
 extern Unk_02008040 gTalkMsgIndexEnd;
 extern const u8 sColorTags[10][7];
-extern const u32 data_020d0800[25];
-extern const u32 data_020d0864[25];
-extern const u32 data_020d08c8[25];
-extern Unk_020e29e0_Rec data_020e29e0;
+extern const u32 sBmgMsgAttrTableA[25];
+extern const u32 sBmgMsgAttrTableB[25];
+extern const u32 sBmgMsgAttrTableC[25];
+extern Unk_020e29e0_Rec sMsgUiProcProfile;
 
 class MsgString;
 
@@ -371,7 +371,7 @@ class MsgTag {
 public:
     MsgTag();
     u8 getArgU8();
-    void func_020a72c4(u32 *a, char **b, char **c);
+    void getAltTextArgs(u32 *a, char **b, char **c);
     void getStrings3(char **a, char **b, char **c);
     void getStrings2(char **a, char **b);
     s32 getSlotIndex();
@@ -627,7 +627,7 @@ public:
     virtual ~MsgString33();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
-    void func_020a7188();
+    void initEmpty();
 };
 
 class MsgCopyProcessor : public MsgProcessor {
@@ -711,14 +711,14 @@ public:
     /* 0x08 */ u8 *unk_08;
 };
 
-class Unk_020e2b70 : public GameProc {
+class MsgUiProc : public GameProc {
 public:
-    Unk_020e2b70();
+    MsgUiProc();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e2b70();
+    virtual ~MsgUiProc();
 };
 
 struct BmgInfEntryAttr {
@@ -797,29 +797,29 @@ extern "C" {
 u32 Msg_CountChars(u32 a);
 }
 // prototypes (test harness)
-extern "C" void func_020a8b94();
-extern "C" void func_020a8b88();
+extern "C" void MsgUiProc_ShowObjPlane();
+extern "C" void MsgUiProc_HideObjPlane();
 extern "C" u32 Bmg_ReadMagic(void *p);
 extern "C" u32 Bmg_ReadU32(void *p);
 extern "C" u16 Bmg_ReadU16(void *p);
 extern "C" u8 Bmg_ReadU8(void *p);
 extern "C" u8 *Bmg_GetMsgAttr(u8 *p);
-extern "C" void func_020a8538(void);
+extern "C" void MsgRunner_DtorStub(void);
 extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(s32 a, s32 b, s32 c);
 extern "C" void MsgTextLabel_Destroy(MsgTextLabel *obj);
 extern "C" u32 Msg_MeasureWidth(u32 arg);
-extern "C" u32 func_020a7f94(TextLabel *obj);
-extern "C" BOOL func_020a78a4(StrBuf *buf, const void *src, s32 len);
+extern "C" u32 TextLabel_MeasureMsgWidth(TextLabel *obj);
+extern "C" BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len);
 extern "C" u8 Msg_ReadU8(u8 *p, u32 i);
 extern "C" u16 Msg_ReadU16(u8 *p, u32 i);
-extern "C" void func_020a7768();
+extern "C" void MsgTag_DtorStub();
 extern "C" u8 *Msg_GetColorTag(s32 i);
 extern "C" BmgMsgAttr *BmgMsgAttr_Init(BmgMsgAttr *s);
-extern "C" void func_020a728c();
+extern "C" void BmgMsgAttr_Fini();
 extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s);
 extern "C" void BmgMsgAttr_Clear(BmgMsgAttr *s);
-extern "C" void func_020a7254();
+extern "C" void BmgMsgAttr_Get();
 extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s);
 extern "C" u8 BmgMsgAttr_GetByte05(BmgMsgAttr *s);
 extern "C" u8 BmgMsgAttr_GetByte06(BmgMsgAttr *s);
@@ -863,21 +863,21 @@ extern "C" BOOL Msg_DecodeGameChar(char *out, u8 c);
 extern "C" BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
 
 
-extern "C" void func_020a8c84(void);
-const u32 data_020d08c8[25] = {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1};
-Unk_02008040 data_021edb68(0xff);
+extern "C" void MsgUiProc_Create(void);
+const u32 sBmgMsgAttrTableC[25] = {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1};
+Unk_02008040 gU8None(0xff);
 u8 sInputLocked;
 BmgFileHeader sBmgFileHeader;
 
-extern "C" void func_020a8b94() { Gfx2d_ShowMainPlanes(0x10); }
+extern "C" void MsgUiProc_ShowObjPlane() { Gfx2d_ShowMainPlanes(0x10); }
 
-extern "C" void func_020a8b88() { Gfx2d_HideMainPlanes(0x10); }
+extern "C" void MsgUiProc_HideObjPlane() { Gfx2d_HideMainPlanes(0x10); }
 
 // ---- MsgStringAttr
 MsgStringAttr::MsgStringAttr() {
     unk_04 = -1;
-    unk_08 = data_021edb68.v;
-    unk_09 = data_021edb68.v;
+    unk_08 = gU8None.v;
+    unk_09 = gU8None.v;
 }
 
 MsgStringAttr::~MsgStringAttr() {}
@@ -890,8 +890,8 @@ void MsgStringAttr::copyFrom(MsgStringAttr *other) {
 
 void MsgStringAttr::reset() {
     unk_04 = -1;
-    unk_08 = data_021edb68.v;
-    unk_09 = data_021edb68.v;
+    unk_08 = gU8None.v;
+    unk_09 = gU8None.v;
 }
 
 extern "C" u32 Bmg_ReadMagic(void *p) {
@@ -917,7 +917,7 @@ extern "C" u8 Bmg_ReadU8(void *p) { return *(u8 *)p; }
 BmgReader::BmgReader(u8 arg1) {
     unk_04 = arg1;
     unk_8c = 0;
-    unk_8d = data_021edb68.v;
+    unk_8d = gU8None.v;
     unk_9c = 0;
     unk_a0 = 0;
     FS_InitFile(unk_44);
@@ -938,7 +938,7 @@ void BmgReader::close() {
     if (unk_8c != 0) {
         FS_CloseFile(unk_44);
         unk_8c = 0;
-        unk_8d = data_021edb68.v;
+        unk_8d = gU8None.v;
     }
 }
 
@@ -1105,7 +1105,7 @@ MsgRunner::MsgRunner(MsgWalker *obj) {
     unk_08 = NULL;
 }
 
-extern "C" void func_020a8538(void) {}
+extern "C" void MsgRunner_DtorStub(void) {}
 
 void MsgRunner::reset() {
     unk_00->reset();
@@ -1311,7 +1311,7 @@ void MsgRenderProcessor::onTag(u8 *p) {
         if (b == 2) {
             u32 x;
             char *y, *z;
-            s.func_020a72c4(&x, &y, &z);
+            s.getAltTextArgs(&x, &y, &z);
             if (!Talk_IsAltTextEnabled()) {
                 skip(x * 2);
                 pushText((u8 *)z);
@@ -1331,9 +1331,9 @@ void MsgRenderProcessor::onTag(u8 *p) {
         } else if (b == 8) {
             r = Text_GetSpecialCharStr1();
         } else if (b == 9) {
-            r = func_02050208();
+            r = Text_GetSpecialCharStr9();
         } else if (b == 10) {
-            r = func_02050204();
+            r = Text_GetSpecialCharStr10();
         }
         if (r != NULL) {
             pushText(r);
@@ -1392,7 +1392,7 @@ extern "C" u32 Msg_MeasureWidth(u32 arg) {
     return r;
 }
 
-extern "C" u32 func_020a7f94(TextLabel *obj) {
+extern "C" u32 TextLabel_MeasureMsgWidth(TextLabel *obj) {
     return Msg_MeasureWidth(obj->measureWidth());
 }
 
@@ -1687,7 +1687,7 @@ EncodedString::EncodedString() {}
 
 EncodedString::~EncodedString() {}
 
-extern "C" BOOL func_020a78a4(StrBuf *buf, const void *src, s32 len) {
+extern "C" BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len) {
     return StrBuf_SetBytes(buf, src, len);
 }
 
@@ -1760,7 +1760,7 @@ MsgTag::MsgTag() {
     unk_0c = NULL;
 }
 
-extern "C" void func_020a7768() {}
+extern "C" void MsgTag_DtorStub() {}
 
 void MsgTag::getArgs1(u8 *a) {
     *a = Msg_ReadU8((u8 *)unk_0c, 0);
@@ -1981,7 +1981,7 @@ void MsgTag::getStrings3(char **a, char **b, char **c) {
     if ((u32)(q - unk_0c) < unk_08) *c = q;
 }
 
-void MsgTag::func_020a72c4(u32 *a, char **b, char **c) {
+void MsgTag::getAltTextArgs(u32 *a, char **b, char **c) {
     *a = Msg_ReadU8((u8 *)unk_0c, 0);
     *b = unk_0c + unk_08;
     *c = unk_0c + 1;
@@ -2002,7 +2002,7 @@ extern "C" BmgMsgAttr *BmgMsgAttr_Init(BmgMsgAttr *s) {
     return s;
 }
 
-extern "C" void func_020a728c() {}
+extern "C" void BmgMsgAttr_Fini() {}
 
 extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s) {
     d->unk_00 = s->unk_00;
@@ -2018,7 +2018,7 @@ extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s) {
 
 extern "C" void BmgMsgAttr_Clear(BmgMsgAttr *s) { MI_CpuFill8(s, 0, 0xc); }
 
-extern "C" void func_020a7254() {}
+extern "C" void BmgMsgAttr_Get() {}
 
 extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s) { return s->unk_04; }
 
@@ -2032,14 +2032,14 @@ extern "C" u8 BmgMsgAttr_GetByte09(BmgMsgAttr *s) { return s->unk_09; }
 
 extern "C" void BmgMsgAttr_GetByte08(u8 *out, BmgMsgAttr *s) { *out = s->unk_08; }
 
-extern "C" u32 BmgMsgAttr_LookupUnkA(BmgMsgAttr *s) { return data_020d0800[BmgMsgAttr_GetByte04(s)]; }
+extern "C" u32 BmgMsgAttr_LookupUnkA(BmgMsgAttr *s) { return sBmgMsgAttrTableA[BmgMsgAttr_GetByte04(s)]; }
 
-extern "C" u32 BmgMsgAttr_LookupUnkB(BmgMsgAttr *s) { return data_020d0864[BmgMsgAttr_GetByte04(s)]; }
+extern "C" u32 BmgMsgAttr_LookupUnkB(BmgMsgAttr *s) { return sBmgMsgAttrTableB[BmgMsgAttr_GetByte04(s)]; }
 
-extern "C" u32 BmgMsgAttr_LookupUnkC(BmgMsgAttr *s) { return data_020d08c8[BmgMsgAttr_GetByte04(s)]; }
+extern "C" u32 BmgMsgAttr_LookupUnkC(BmgMsgAttr *s) { return sBmgMsgAttrTableC[BmgMsgAttr_GetByte04(s)]; }
 
 // ---- MsgString33
-MsgString33::MsgString33() { func_020a7188(); }
+MsgString33::MsgString33() { initEmpty(); }
 
 MsgString33::~MsgString33() {}
 
@@ -2047,18 +2047,18 @@ u32 MsgString33::vfunc_08() { return 0x21; }
 
 u8 *MsgString33::vfunc_0c() { return (u8 *)this + 0x12; }
 
-void MsgString33::func_020a7188() { clear(); }
+void MsgString33::initEmpty() { clear(); }
 
 // ---- MsgRequest
 MsgRequest::MsgRequest() {
-    unk_1e = data_021edb68.v;
+    unk_1e = gU8None.v;
     MI_CpuFill8(unk_04, 0, 0x1a);
 }
 
 MsgRequest::~MsgRequest() {}
 
 void MsgRequest::vfunc_08() {
-    unk_1e = data_021edb68.v;
+    unk_1e = gU8None.v;
     MI_CpuFill8(unk_04, 0, 0x1a);
 }
 
@@ -2349,10 +2349,10 @@ const u8 sColorTags[10][7] = {
     {26, 6, 255, 0, 0, 9, 0}};
 u8 sInputButtonMode;
 Unk_02008040 gTalkMsgIndexNone(0xff);
-const u32 data_020d0800[25] = {0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6};
-const u32 data_020d0864[25] = {0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1};
+const u32 sBmgMsgAttrTableA[25] = {0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6};
+const u32 sBmgMsgAttrTableB[25] = {0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1};
 Unk_02008040 gTalkMsgIndexEnd(0xfe);
-Unk_020e29e0_Rec data_020e29e0 = {(void *)func_020a8c84, 0xc9, 0xc7};
+Unk_020e29e0_Rec sMsgUiProcProfile = {(void *)MsgUiProc_Create, 0xc9, 0xc7};
 BmgDatHeader sBmgDatHeader;
 
 void MsgQuery::onTag(u8 *cmd) {

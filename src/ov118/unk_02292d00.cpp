@@ -55,8 +55,8 @@ void InventoryBg_ClearDirty(void *a, void *b);
 s16 *TownMapMarkers_Get(void *p, s32 i);
 u32 TownMapMarkers_GetKind(void *p, s32 i);
 void *PlayerData_GetCurrent();
-s32 func_02097740(void *a, s32 b);
-BOOL func_020978c8(void *a, s32 b);
+s32 PlayerDataArray_FindById(void *a, s32 b);
+BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 void PopupChoice_CopyPlayerIdName(void *p, s32 a);
 void PopupChoice_CopyResidentName(void *p, s32 a);
@@ -70,7 +70,7 @@ void File_LoadToBuffer(const char *a, void *b, u32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void func_020e761c(void *p, s32 a, s32 b);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
 void func_020638d0(void *a, void *b);
@@ -800,7 +800,7 @@ void MapTab::initMapTab() {
     selectEntry(0);
     buildEntryLists();
     if (Unk_ov118_02294a58_IsZero(gFieldSceneKind)) {
-        p = (Unk_ov118_02294a58_Vec *)func_020947f0(4);
+        p = (Unk_ov118_02294a58_Vec *)PlayerActor_GetBodyPos(4);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
@@ -1210,7 +1210,7 @@ LabelString *MapTab::allocTextLabel() {
 void MapTab::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = func_02097740(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+    m = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     if (m != -1) {
         unk_454e[0] = 1;
         n++;
@@ -1219,7 +1219,7 @@ void MapTab::buildEntryLists() {
         if (i == m) {
             continue;
         }
-        if (!func_020978c8(gSavePlayers, i)) {
+        if (!PlayerDataArray_IsUsed(gSavePlayers, i)) {
             continue;
         }
         unk_454e[n] = i + 2;

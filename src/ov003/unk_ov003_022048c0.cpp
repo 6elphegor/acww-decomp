@@ -191,8 +191,8 @@ extern "C" {
 extern u8 gSaveVillagers[];
 u8 *SaveVillagers_Get(u8 *p, s32 i);
 VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
@@ -348,7 +348,7 @@ void VillagerBoard::mainIdle() {}
 
 BOOL VillagerBoard::setupRead() {
     Unk_02204930_Pad pad;
-    _ZN9Character13func_0203e488Ei(this, this);
+    _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     unk_1e = 0;
     ((TalkWindowState *)unk_3c)->unk_08 = 1;
@@ -373,7 +373,7 @@ BOOL VillagerBoard::setupReadEnd() {
 void VillagerBoard::mainReadEnd() {
     if (unk_3c) {
         if (((TalkWindowState *)unk_3c)->unk_04 == 0) {
-            _ZN9Character13func_0203e47cEi(this, this);
+            _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }
     }

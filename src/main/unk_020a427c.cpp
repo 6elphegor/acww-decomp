@@ -80,77 +80,77 @@ struct Unk_020a4778_Id {
 };
 
 // Pieces of the singleton at gNetSessionState
-struct Unk_020a6754 {
+struct NetSlotStatus {
     u8 unk_00[3];
-    Unk_020a6754();
-    ~Unk_020a6754();
-    void func_020a6754();
-    void func_020a6760(u8 *a, u8 *b, u8 *c);
+    NetSlotStatus();
+    ~NetSlotStatus();
+    void reset();
+    void get(u8 *a, u8 *b, u8 *c);
 };
 
-struct Unk_020a6720 {
+struct NetMoveRequest {
     u32 unk_00[2];
-    Unk_020a6720();
-    ~Unk_020a6720();
-    void func_020a6720();
-    void func_020a672c(s32 *a, u8 *b);
+    NetMoveRequest();
+    ~NetMoveRequest();
+    void reset();
+    void get(s32 *a, u8 *b);
 };
 
-struct Unk_020a66f8 {
+struct NetMoveReady {
     u32 unk_00;
-    Unk_020a66f8();
-    ~Unk_020a66f8();
-    void func_020a66f8();
-    void func_020a6700(u32 *a);
+    NetMoveReady();
+    ~NetMoveReady();
+    void reset();
+    void get(u32 *a);
 };
 
-struct Unk_020a6790 {
+struct NetPendingStatus {
     u32 unk_00[2];
-    Unk_020a6790();
-    ~Unk_020a6790();
-    void func_020a6790();
-    void func_020a67a0(u8 *a, u8 *b, u8 *c, u32 *d);
+    NetPendingStatus();
+    ~NetPendingStatus();
+    void reset();
+    void get(u8 *a, u8 *b, u8 *c, u32 *d);
 };
 
 // stack objects with plain-function constructors and destructors
 extern "C" {
-void *func_020a68a8(void *);
-void *func_020a6898(void *);
-void func_020a6878(void *, u32, u32, u32, u32);
-void *func_020a6970(void *);
-void *func_020a696c(void *);
-void func_020a6968(void *, u32);
-void *func_020a6848(void *);
-void *func_020a6838(void *);
+void *NetStatusUpdateMsg_Init(void *);
+void *NetStatusUpdateMsg_Fini(void *);
+void NetStatusUpdateMsg_Pack(void *, u32, u32, u32, u32);
+void *NetSceneMsg_Init(void *);
+void *NetSceneMsg_Fini(void *);
+void NetSceneMsg_Set(void *, u32);
+void *NetStatusMsg_Init(void *);
+void *NetStatusMsg_Fini(void *);
 }
 
 struct Unk_020a67bc {
     u32 unk_00[2];
-    Unk_020a67bc() { func_020a68a8(this); }
-    ~Unk_020a67bc() { func_020a6898(this); }
-    void func_020a6878(u32 a, u32 b, u32 c, u32 d) { ::func_020a6878(this, a, b, c, d); }
+    Unk_020a67bc() { NetStatusUpdateMsg_Init(this); }
+    ~Unk_020a67bc() { NetStatusUpdateMsg_Fini(this); }
+    void NetStatusUpdateMsg_Pack(u32 a, u32 b, u32 c, u32 d) { ::NetStatusUpdateMsg_Pack(this, a, b, c, d); }
 };
 
 struct Unk_020a6968 {
     u32 unk_00[2];
-    Unk_020a6968() { func_020a6970(this); }
-    ~Unk_020a6968() { func_020a696c(this); }
-    void func_020a6968(u32 a) { ::func_020a6968(this, a); }
+    Unk_020a6968() { NetSceneMsg_Init(this); }
+    ~Unk_020a6968() { NetSceneMsg_Fini(this); }
+    void NetSceneMsg_Set(u32 a) { ::NetSceneMsg_Set(this, a); }
 };
 
 struct Unk_020a56c4_Buf {
     u8 v[5];
-    Unk_020a56c4_Buf() { func_020a6848(this); }
-    ~Unk_020a56c4_Buf() { func_020a6838(this); }
+    Unk_020a56c4_Buf() { NetStatusMsg_Init(this); }
+    ~Unk_020a56c4_Buf() { NetStatusMsg_Fini(this); }
 };
 
 // The singleton, composite view (constructor and destructor live here)
 class NetSessionState {
 public:
-    /* 0x00 */ Unk_020a6754 unk_00[4];
-    /* 0x0c */ Unk_020a6720 unk_0c[4];
-    /* 0x2c */ Unk_020a66f8 unk_2c[4];
-    /* 0x3c */ Unk_020a6790 unk_3c[4];
+    /* 0x00 */ NetSlotStatus unk_00[4];
+    /* 0x0c */ NetMoveRequest unk_0c[4];
+    /* 0x2c */ NetMoveReady unk_2c[4];
+    /* 0x3c */ NetPendingStatus unk_3c[4];
     /* 0x5c */ u8 pad_5c[0x84 - 0x5c];
     /* 0x84 */ s32 unk_84[4];
     /* 0x94 */ s32 unk_94;
@@ -282,8 +282,8 @@ extern "C" {
 extern CommManager *gCommManager;
 extern u8 gScreenTransition;
 extern u8 data_021c3cb8;
-extern u8 data_021d726c;
-extern u32 data_021d72e8;
+extern u8 gSoftResetRequested;
+extern u32 gGameRoot;
 extern Unk_020a4778_Id gSaveTownId;
 }
 
@@ -301,12 +301,12 @@ void func_0203d4c0(void);
 void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
-s32 func_0203eb38(void);
+s32 CharInteractSync_Reset(void);
 void ScreenTransition_ShowCover(void);
 s32 ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c);
 s32 ScreenTransition_StartFadeOut(u32 a, u32 b);
 void Field_UpdateActions(void);
-void func_020535e0(void);
+void Gfx_ResetDisplayRegs(void);
 void MenuCtrl_ResetForceClose(void);
 u32 _ZN11CommManager10getAuxLenBEv(void *);
 void _ZN11CommManager12clearAuxLenBEv(void *);
@@ -317,10 +317,10 @@ u32 _ZN11CommManager10getAuxBufAEv(void *);
 s32 Comm_GetMemberMask(void);
 void Comm_ProcessReceived(s32 a);
 void TransitionCommIcon_Suspend(void);
-s32 func_02097444(s32 a);
+s32 PlayerData_IsUsedByIndex(s32 a);
 s32 PlayerData_Get(s32 a);
 LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
-void func_0209caf4(void);
+void SoftReset_ClearSystems(void);
 void func_0209f230(s32 a);
 void Net_SetJoiningAid(s32 a);
 void SaveManager_RequestAct1B(void);
@@ -328,29 +328,29 @@ void SaveManager_RequestAct19(void);
 void SaveManager_RequestAct18(void);
 void SaveManager_RequestAct16(void);
 void SaveManager_RequestAct15(void);
-void func_020a6388(u32 idx, u32 a, u32 b, u32 c, u32 d);
-void func_020a63a8(s32, s32);
-void func_020a63bc(s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020a6430(s32 a, s32 b);
-void func_020a6470(void);
-BOOL func_020a6474();
-BOOL func_020a6478();
-void func_020a647c();
-void func_020a64e4(s32 a);
-void func_020a6564();
-void func_020a65fc(s32 a);
-void func_020a66d4(void *p, u32 a, u32 b, u32 c);
-void func_020a66f0(void *p);
-void func_020a66f4(void *p);
-void _ZN12Unk_020a66f813func_020a66f8Ev(void *);
-void _ZN12Unk_020a66f813func_020a6700EPj(void *, s32 *);
-void _ZN12Unk_020a672013func_020a6720Ev(void *);
-void _ZN12Unk_020a672013func_020a672cEPiPh(void *, s32 *, u8 *);
-void _ZN12Unk_020a675413func_020a6754Ev(void *);
-void _ZN12Unk_020a675413func_020a6760EPhS0_S0_(void *, u8 *, u8 *, u8 *);
-void _ZN12Unk_020a679013func_020a6790Ev(void *);
-void _ZN12Unk_020a679013func_020a67a0EPhS0_S0_Pj(void *, u8 *, u8 *, u8 *, u32 *);
-void func_020a681c(void *, s32, u32, u32, u32, u32);
+void NetArea_SetPendingStatus(u32 idx, u32 a, u32 b, u32 c, u32 d);
+void NetArea_SetMoveReady(s32, s32);
+void NetArea_SetSlotStatus(s32 a, s32 b, s32 c, s32 d, s32 e);
+void NetArea_QueueMoveRequest(s32 a, s32 b);
+void NetArea_OnSceneCreateNop(void);
+BOOL NetArea_IsBusyStubA();
+BOOL NetArea_IsBusyStubB();
+void NetArea_ParseStateB();
+void NetArea_BuildStateB(s32 a);
+void NetArea_ParseStateA();
+void NetArea_BuildStateA(s32 a);
+void NetSyncMsg_Pack(void *p, u32 a, u32 b, u32 c);
+void NetSyncMsg_Fini(void *p);
+void NetSyncMsg_Init(void *p);
+void _ZN12NetMoveReady5resetEv(void *);
+void _ZN12NetMoveReady3getEPj(void *, s32 *);
+void _ZN14NetMoveRequest5resetEv(void *);
+void _ZN14NetMoveRequest3getEPiPh(void *, s32 *, u8 *);
+void _ZN13NetSlotStatus5resetEv(void *);
+void _ZN13NetSlotStatus3getEPhS0_S0_(void *, u8 *, u8 *, u8 *);
+void _ZN16NetPendingStatus5resetEv(void *);
+void _ZN16NetPendingStatus3getEPhS0_S0_Pj(void *, u8 *, u8 *, u8 *, u32 *);
+void NetStatusMsg_Pack(void *, s32, u32, u32, u32, u32);
 s32 Scene_GetWarpRequest(void);
 u32 Scene_GetRequestedScene(void);
 s32 SceneWarp_GetScene(s32 a);
@@ -459,7 +459,7 @@ void Scene_CheckExit(void *p);
 extern "C" s32 NetArea_GetSlotScene(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].func_020a6760(&v[0], &v[1], &v[2]);
+        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
         return v[0];
     }
     return 0x3f;
@@ -468,7 +468,7 @@ extern "C" s32 NetArea_GetSlotScene(s32 a) {
 extern "C" s32 NetArea_IsSlotOwner(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].func_020a6760(&v[0], &v[1], &v[2]);
+        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
         return v[1];
     }
     return 1;
@@ -477,7 +477,7 @@ extern "C" s32 NetArea_IsSlotOwner(s32 a) {
 extern "C" s32 NetArea_IsSlotMoving(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].func_020a6760(&v[0], &v[1], &v[2]);
+        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
         return v[2];
     }
     return 0;
@@ -489,7 +489,7 @@ extern "C" s32 NetArea_IsLocalOwner() {
     if (r2 >= 4) {
         return 1;
     }
-    gNetSessionState.unk_00[r2].func_020a6760(&v[0], &v[1], &v[2]);
+    gNetSessionState.unk_00[r2].get(&v[0], &v[1], &v[2]);
     if (v[2] == 0) {
         return v[1];
     }
@@ -515,7 +515,7 @@ extern "C" s32 NetArea_FindOwner(u32 a) {
     CommManager *o = gCommManager;
     for (; i >= 0; i--) {
         if (o->isSlotActive(i)) {
-            gNetSessionState.unk_00[i].func_020a6760(&v[0], &v[1], &v[2]);
+            gNetSessionState.unk_00[i].get(&v[0], &v[1], &v[2]);
             if (v[0] == a && v[1] != 0 && v[2] == 0) {
                 r6 = i;
                 break;
@@ -556,13 +556,13 @@ extern "C" s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d) {
             if (t != a) goto fail;
             return a;
         }
-        gNetSessionState.unk_00[a].func_020a6760(&v[0], &v[1], &v[2]);
+        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
         if (v[0] == c && v[1] != 0 && v[2] != 0) {
             *d = 1;
         }
         goto fail;
     } else if (b == 7) {
-        gNetSessionState.unk_00[a].func_020a6760(&v[3], &v[4], &v[5]);
+        gNetSessionState.unk_00[a].get(&v[3], &v[4], &v[5]);
         if (v[3] == c) {
             if (v[4] != 0) goto fail;
             if (v[5] != 0) goto fail;
@@ -581,7 +581,7 @@ fail:
 }
 
 extern "C" s32 NetArea_SendStateA(s32 a) {
-    func_020a65fc(a);
+    NetArea_BuildStateA(a);
     CommManager *o = gCommManager;
     o->beginRecord();
     u32 r6 = _ZN11CommManager10getAuxBufAEv(o);
@@ -592,7 +592,7 @@ extern "C" s32 NetArea_SendStateA(s32 a) {
 }
 
 extern "C" s32 NetArea_SendStateB(s32 a) {
-    func_020a64e4(a);
+    NetArea_BuildStateB(a);
     CommManager *o = gCommManager;
     o->beginRecord();
     u32 r6 = _ZN11CommManager10getAuxBufBEv(o);
@@ -605,10 +605,10 @@ extern "C" s32 NetArea_SendStateB(s32 a) {
 extern "C" s32 NetArea_FindSlotInScene(u32 a) {
     s32 r5 = 4, r4 = 4;
     u8 v[3];
-    Unk_020a6754 *p = gNetSessionState.unk_00;
+    NetSlotStatus *p = gNetSessionState.unk_00;
     u32 i;
     for (i = 0; i < 4; p++, i++) {
-        p->func_020a6760(&v[0], &v[1], &v[2]);
+        p->get(&v[0], &v[1], &v[2]);
         if (v[0] == a && v[1] != 0) {
             if (v[2] != 0) {
                 r5 = i;
@@ -633,10 +633,10 @@ extern "C" void NetArea_SendMoveTarget() {
     CommManager *o = gCommManager;
     if (o->isMyAid(0)) {
         s32 r4 = o->unk_64;
-        func_020a6430(r4, Scene_GetRequestedScene());
+        NetArea_QueueMoveRequest(r4, Scene_GetRequestedScene());
     } else {
         Unk_020a6968 tmp;
-        tmp.func_020a6968(Scene_GetRequestedScene());
+        tmp.NetSceneMsg_Set(Scene_GetRequestedScene());
         o = gCommManager;
         o->beginRecord();
         o->writeRecord((u8 *)&tmp, 1);
@@ -714,7 +714,7 @@ extern "C" void NetArea_SetOwnerAck(s32 a) {
 
 extern "C" void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c) {
     if (idx < 4) {
-        gNetSessionState.unk_00[idx].func_020a6760(a, b, c);
+        gNetSessionState.unk_00[idx].get(a, b, c);
     }
 }
 
@@ -723,18 +723,18 @@ extern "C" void NetArea_OnStateAReceived() {
     s32 r5 = o->unk_64;
     if (o->isSlotActive(r5)) {
         if (_ZN11CommManager10getAuxLenAEv(o)) {
-            func_020a6564();
-            func_020a63bc(r5, 0x3f, 1, 0, 2);
+            NetArea_ParseStateA();
+            NetArea_SetSlotStatus(r5, 0x3f, 1, 0, 2);
             if (o->isOnline()) {
                 if (r5 != 0) {
                     Unk_020a67bc tmp;
-                    tmp.func_020a6878(0x3f, 1, 0, 2);
+                    tmp.NetStatusUpdateMsg_Pack(0x3f, 1, 0, 2);
                     o = gCommManager;
                     o->beginRecord();
                     o->writeRecord((u8 *)&tmp, 2);
                     o->endRecord(0xb, 0);
                 } else {
-                    func_020a6388(r5, 0x3f, 1, 0, 2);
+                    NetArea_SetPendingStatus(r5, 0x3f, 1, 0, 2);
                 }
             }
         }
@@ -745,7 +745,7 @@ extern "C" void NetArea_ApplyStateB() {
     CommManager *o = gCommManager;
     if (o->isSlotActive(*(s32 *)((u8 *)o + 0x64))) {
         if (_ZN11CommManager10getAuxLenBEv(o)) {
-            func_020a647c();
+            NetArea_ParseStateB();
         }
     }
 }
@@ -843,10 +843,10 @@ NetSessionState::~NetSessionState() {
 }
 
 void NetSessionState::resetSlot(s32 idx) {
-    unk_00[idx].func_020a6754();
-    unk_0c[idx].func_020a6720();
-    unk_2c[idx].func_020a66f8();
-    unk_3c[idx].func_020a6790();
+    unk_00[idx].reset();
+    unk_0c[idx].reset();
+    unk_2c[idx].reset();
+    unk_3c[idx].reset();
     resetMemberSyncReply(idx);
     ((NetSessionAreaView *)this)->setMemberAck(idx, 0);
     if (idx != 0) {
@@ -875,10 +875,10 @@ void NetSessionState::resetSlot(s32 idx) {
 void NetSessionAreaView::reset() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        _ZN12Unk_020a675413func_020a6754Ev(&unk_00[i * 3]);
-        _ZN12Unk_020a672013func_020a6720Ev(&unk_0c[i]);
-        _ZN12Unk_020a66f813func_020a66f8Ev(&unk_2c[i]);
-        _ZN12Unk_020a679013func_020a6790Ev(unk_3c[i]);
+        _ZN13NetSlotStatus5resetEv(&unk_00[i * 3]);
+        _ZN14NetMoveRequest5resetEv(&unk_0c[i]);
+        _ZN12NetMoveReady5resetEv(&unk_2c[i]);
+        _ZN16NetPendingStatus5resetEv(unk_3c[i]);
     }
     ((NetSessionState *)this)->resetSyncPhase();
     ((NetSessionState *)this)->resetSyncRequester();
@@ -923,13 +923,13 @@ void NetSessionAreaView::updateMoveQueue() {
         u32 off = i << 2;
         s32 r7 = *(u32 *)((u8 *)idx + off);
         if (r7 < 4) {
-            _ZN12Unk_020a675413func_020a6760EPhS0_S0_(&unk_00[r7 * 3], &l.b0, &l.b1, &l.b2);
-            func_020a6848(l.buf);
-            func_020a681c(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
+            _ZN13NetSlotStatus3getEPhS0_S0_(&unk_00[r7 * 3], &l.b0, &l.b1, &l.b2);
+            NetStatusMsg_Init(l.buf);
+            NetStatusMsg_Pack(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
             o->beginRecord();
             o->writeRecord(l.buf, 2);
             o->endRecord(9, 4);
-            func_020a6838(l.buf);
+            NetStatusMsg_Fini(l.buf);
         }
     }
 }
@@ -946,7 +946,7 @@ void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
     if (r5 >= 4) {
         s32 r4 = peekMoveRequest();
         if (r4 < 4) {
-            func_020a63bc(r4, 0x3f, 0, 1, 4);
+            NetArea_SetSlotStatus(r4, 0x3f, 0, 1, 4);
             *a = r4;
             *b = 4;
         }
@@ -956,7 +956,7 @@ void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
 s32 NetSessionAreaView::peekMoveRequest() {
     s32 v;
     u8 byte;
-    _ZN12Unk_020a672013func_020a672cEPiPh(unk_0c, &v, &byte);
+    _ZN14NetMoveRequest3getEPiPh(unk_0c, &v, &byte);
     return v;
 }
 
@@ -968,12 +968,12 @@ void NetSessionAreaView::popMoveRequest() {
             u8 *q = p + 8;
             s32 v;
             u8 byte;
-            _ZN12Unk_020a672013func_020a672cEPiPh(q, &v, &byte);
+            _ZN14NetMoveRequest3getEPiPh(q, &v, &byte);
             if (v >= 4) break;
             MI_CpuCopy8(q, p, 8);
             p += 8;
         }
-        _ZN12Unk_020a672013func_020a6720Ev(p);
+        _ZN14NetMoveRequest5resetEv(p);
     }
 }
 
@@ -981,14 +981,14 @@ void NetSessionAreaView::sendMoveReady() {
     s32 idx = ((volatile CommManager *)gCommManager)->unk_64;
     u32 *p = &unk_2c[idx];
     s32 v;
-    _ZN12Unk_020a66f813func_020a6700EPj(p, &v);
+    _ZN12NetMoveReady3getEPj(p, &v);
     if (v != 0) {
         u8 b = v;
         CommManager *o = gCommManager;
         o->beginRecord();
         o->writeRecord(&b, 1);
         o->endRecord(10, 0);
-        _ZN12Unk_020a66f813func_020a66f8Ev(p);
+        _ZN12NetMoveReady5resetEv(p);
     }
 }
 
@@ -998,12 +998,12 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
     if (r5 < 4) {
         u32 *p = &unk_2c[r5];
         s32 v;
-        _ZN12Unk_020a66f813func_020a6700EPj(p, &v);
+        _ZN12NetMoveReady3getEPj(p, &v);
         if (v == 1) {
             s32 r7 = 1;
             s32 tmp;
             u8 byte;
-            _ZN12Unk_020a672013func_020a672cEPiPh(unk_0c, &tmp, &byte);
+            _ZN14NetMoveRequest3getEPiPh(unk_0c, &tmp, &byte);
             s32 i;
             i = 3;
             o = gCommManager;
@@ -1013,8 +1013,8 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
                     break;
                 }
             }
-            func_020a63bc(r5, byte, r7, 0, 7);
-            _ZN12Unk_020a66f813func_020a66f8Ev(p);
+            NetArea_SetSlotStatus(r5, byte, r7, 0, 7);
+            _ZN12NetMoveReady5resetEv(p);
             popMoveRequest();
             *a = r5;
             *b = 7;
@@ -1030,16 +1030,16 @@ void NetSessionAreaView::flushStatusUpdates() {
         u8 buf[5];
         u32 out;
         u8 *p = unk_3c[i];
-        _ZN12Unk_020a679013func_020a67a0EPhS0_S0_Pj(p, &b0, &b1, &b2, &out);
+        _ZN16NetPendingStatus3getEPhS0_S0_Pj(p, &b0, &b1, &b2, &out);
         if (out != 0) {
-            func_020a63bc(i, b0, b1, b2, out);
-            func_020a6848(buf);
-            func_020a681c(buf, i, b0, b1, b2, out);
+            NetArea_SetSlotStatus(i, b0, b1, b2, out);
+            NetStatusMsg_Init(buf);
+            NetStatusMsg_Pack(buf, i, b0, b1, b2, out);
             o->beginRecord();
             o->writeRecord(buf, 2);
             o->endRecord(9, 4);
-            _ZN12Unk_020a679013func_020a6790Ev(p);
-            func_020a6838(buf);
+            _ZN16NetPendingStatus5resetEv(p);
+            NetStatusMsg_Fini(buf);
         }
     }
 }
@@ -1074,8 +1074,8 @@ void NetSessionAreaView::updateMove() {
         }
         break;
     case 1:
-        if (func_020a6478() != 0) break;
-        if (func_020a6474() != 0) break;
+        if (NetArea_IsBusyStubB() != 0) break;
+        if (NetArea_IsBusyStubA() != 0) break;
         NetArea_GetSlotStatus(r7, &b0, &b1, &b2);
         if (b1 != 0) {
             best = 4;
@@ -1114,7 +1114,7 @@ void NetSessionAreaView::updateMove() {
             if (o->getDeferredLen() != 0) break;
             if (o->getHeldLen() != 0) break;
             if (o->getLoopbackLen() != 0) break;
-            if (func_020a6474() != 0) break;
+            if (NetArea_IsBusyStubA() != 0) break;
             clearMemberAcks();
             o->clearAuxLenA();
             setMoveState(3);
@@ -1172,7 +1172,7 @@ void NetSessionAreaView::updateMove() {
     case 13:
         break;
     case 14:
-        func_020a63a8(((CommManager *)o)->unk_64, 1);
+        NetArea_SetMoveReady(((CommManager *)o)->unk_64, 1);
         setMoveState(15);
         break;
     case 15:
@@ -1386,14 +1386,14 @@ void NetSessionState::updateSyncHost() {
                 if (k == 0) {
                     setMemberSyncReply(0, 0);
                 } else {
-                    func_020a66f4(&m[0]);
+                    NetSyncMsg_Init(&m[0]);
                     mode = getSyncKind();
-                    func_020a66d4(&m[0], 0, mode, getSyncRequester());
+                    NetSyncMsg_Pack(&m[0], 0, mode, getSyncRequester());
                     g->beginRecord();
                     g->writeRecord(&m[0], 1);
                     g->endRecord(0xc, k);
                     setMemberSyncReply(k, 1);
-                    func_020a66f0(&m[0]);
+                    NetSyncMsg_Fini(&m[0]);
                 }
             }
         }
@@ -1427,13 +1427,13 @@ void NetSessionState::updateSyncHost() {
                         if (k == 0) {
                             setMemberSyncReply(0, 5);
                         } else {
-                            func_020a66f4(&m[1]);
-                            func_020a66d4(&m[1], 5, 4, getSyncRequester());
+                            NetSyncMsg_Init(&m[1]);
+                            NetSyncMsg_Pack(&m[1], 5, 4, getSyncRequester());
                             g->beginRecord();
                             g->writeRecord(&m[1], 1);
                             g->endRecord(0xc, k);
                             setMemberSyncReply(k, 5);
-                            func_020a66f0(&m[1]);
+                            NetSyncMsg_Fini(&m[1]);
                         }
                     }
                 }
@@ -1459,13 +1459,13 @@ void NetSessionState::updateSyncHost() {
                             if (k == 0) {
                                 setMemberSyncReply(0, 4);
                             } else {
-                                func_020a66f4(&m[3]);
-                                func_020a66d4(&m[3], 4, 4, getSyncRequester());
+                                NetSyncMsg_Init(&m[3]);
+                                NetSyncMsg_Pack(&m[3], 4, 4, getSyncRequester());
                                 g->beginRecord();
                                 g->writeRecord(&m[3], 1);
                                 g->endRecord(0xc, k);
                                 setMemberSyncReply(k, 4);
-                                func_020a66f0(&m[3]);
+                                NetSyncMsg_Fini(&m[3]);
                             }
                         } else {
                             setMemberSyncReply(k, 6);
@@ -1591,13 +1591,13 @@ void NetSessionState::updateSyncClient() {
             setGoDelay(0x28);
             setReplyTimer(0);
             if (st != 0) {
-                func_020a66f4(&m[0]);
-                func_020a66d4(&m[0], 2, 4, getSyncRequester());
+                NetSyncMsg_Init(&m[0]);
+                NetSyncMsg_Pack(&m[0], 2, 4, getSyncRequester());
                 CommManager *g2 = gCommManager;
                 g2->beginRecord();
                 g2->writeRecord(&m[0], 1);
                 g2->endRecord(0xc, 0);
-                func_020a66f0(&m[0]);
+                NetSyncMsg_Fini(&m[0]);
             }
             FieldInfoBalloon_ShowSyncKindMsg(mode);
             setMemberSyncReply(st, 2);
@@ -1608,14 +1608,14 @@ void NetSessionState::updateSyncClient() {
                 if (st == 0) {
                     setMemberSyncReply(0, 3);
                 } else {
-                    func_020a66f4(&m[1]);
-                    func_020a66d4(&m[1], 3, 4, getSyncRequester());
+                    NetSyncMsg_Init(&m[1]);
+                    NetSyncMsg_Pack(&m[1], 3, 4, getSyncRequester());
                     CommManager *g2 = gCommManager;
                     g2->beginRecord();
                     g2->writeRecord(&m[1], 1);
                     g2->endRecord(0xc, 0);
                     setMemberSyncReply(st, 6);
-                    func_020a66f0(&m[1]);
+                    NetSyncMsg_Fini(&m[1]);
                 }
                 MenuCtrl_ResetForceClose();
                 setReplyTimer(0);
@@ -1635,13 +1635,13 @@ void NetSessionState::updateSyncClient() {
         FieldInfoBalloon_ShowCancelled();
         setGoDelay(0);
         if (st2 != 0) {
-            func_020a66f4(&m[2]);
-            func_020a66d4(&m[2], 6, 4, getSyncRequester());
+            NetSyncMsg_Init(&m[2]);
+            NetSyncMsg_Pack(&m[2], 6, 4, getSyncRequester());
             CommManager *g3 = gCommManager;
             g3->beginRecord();
             g3->writeRecord(&m[2], 1);
             g3->endRecord(0xc, 0);
-            func_020a66f0(&m[2]);
+            NetSyncMsg_Fini(&m[2]);
         }
         setMemberSyncReply(st2, 6);
     } else if (v == 5) {
@@ -1660,7 +1660,7 @@ void NetSessionState::updateSyncClient() {
         if (!r7) {
             if (md == 0) {
                 sl = getSyncRequester();
-                if (func_02097444(sl + 3) == 0) {
+                if (PlayerData_IsUsedByIndex(sl + 3) == 0) {
                     r7 = TRUE;
                     if (st2 == 0) {
                         u32 irq = Net_GetConnectedMask();
@@ -1717,13 +1717,13 @@ void NetSessionState::updateSyncClient() {
             }
         }
         if (st2 != 0) {
-            func_020a66f4(&m[3]);
-            func_020a66d4(&m[3], 6, 4, getSyncRequester());
+            NetSyncMsg_Init(&m[3]);
+            NetSyncMsg_Pack(&m[3], 6, 4, getSyncRequester());
             CommManager *g3 = gCommManager;
             g3->beginRecord();
             g3->writeRecord(&m[3], 1);
             g3->endRecord(0xc, 0);
-            func_020a66f0(&m[3]);
+            NetSyncMsg_Fini(&m[3]);
         }
         setMemberSyncReply(st2, 6);
     }
@@ -1752,7 +1752,7 @@ extern "C" SceneBase *SceneBase_Create(void) {
 }
 
 extern "C" void SceneBase_SetupGraphics(void) {
-    func_020535e0();
+    Gfx_ResetDisplayRegs();
     G3X_Init();
     GX_SetBankForBG(0x20);
     GX_SetBankForOBJ(1);
@@ -1777,7 +1777,7 @@ BOOL SceneBase::vfunc_04() {
     TransitionCommIcon_Suspend();
     gActorDefaultParent = this;
     sSceneFadeInDelay = 4;
-    func_020a6470();
+    NetArea_OnSceneCreateNop();
     NetArea_ApplyStateB();
     gSceneCreating++;
     if (gCommManager->isSlotActive(gCommManager->unk_64)) {
@@ -1821,8 +1821,8 @@ BOOL SceneBase::preDelete() {
 BOOL SceneBase::vfunc_14(s32 a) {
     if (a == 2) {
         sSceneExists = 0;
-        if (data_021d726c != 0) {
-            func_0209caf4();
+        if (gSoftResetRequested != 0) {
+            SoftReset_ClearSystems();
         }
         gActorDefaultParent = 0;
         Snd_DestroyScene();
@@ -1837,7 +1837,7 @@ BOOL SceneBase::preExecute() {
     if (ProcBase::preExecute() == 0) {
         return FALSE;
     }
-    if (data_021d726c != 0) {
+    if (gSoftResetRequested != 0) {
         if (Unk_020a42c4_IsTwo(gScreenTransition) != 0) {
             sSceneFadeOutType = 2;
             sSceneFadeInType = 0;
@@ -1903,7 +1903,7 @@ extern "C" BOOL Scene_CreateRequested(void) {
     if (gNextSceneProfile == 2) {
         OS_ResetSystem(1);
     }
-    s32 r = GameProc_CreateChild(gNextSceneProfile, data_021d72e8, 0, 2);
+    s32 r = GameProc_CreateChild(gNextSceneProfile, gGameRoot, 0, 2);
     if (r != 0) {
         gNextSceneProfile = 0xd8;
         sSceneExists = 1;
@@ -1913,14 +1913,14 @@ extern "C" BOOL Scene_CreateRequested(void) {
 }
 
 extern "C" void Scene_CheckExit(void *p) {
-    if (data_021d726c != 0) {
+    if (gSoftResetRequested != 0) {
         u8 m = gScreenTransition;
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (Unk_020a42c4_IsZero(m) != 0) {
                 Scene_Request(0xd4, 0, 0, 0);
                 ProcBase_RequestDelete(p);
                 TalkRequestQueue_Reset();
-                func_0203eb38();
+                CharInteractSync_Reset();
             }
         }
     } else if (gNextSceneProfile != 0xd8) {

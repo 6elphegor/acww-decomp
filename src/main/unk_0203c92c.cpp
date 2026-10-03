@@ -15,178 +15,178 @@ struct Unk_0203c92c_Bits1 {
     u8 b1 : 1;
     u8 b2 : 1;
 };
-class Unk_0203c92c {
+class PlayerOptions {
 public:
-    Unk_0203c92c();
-    ~Unk_0203c92c();
-    void func_0203c92c();
-    void func_0203c938();
-    void func_0203c944();
-    BOOL func_0203c950();
-    BOOL func_0203c964();
-    BOOL func_0203c978();
-    void func_0203c98c();
-    void func_0203c9d4(u32 v);
-    u32 func_0203c9ec();
-    void func_0203c9f4();
-    void func_0203ca00();
-    BOOL func_0203ca0c();
-    void func_0203ca20();
-    void func_0203ca2c();
-    BOOL func_0203ca38();
-    void func_0203ca68();
+    PlayerOptions();
+    ~PlayerOptions();
+    void markTalkVoiceChanged();
+    void markStereoChanged();
+    void markHiraganaChanged();
+    BOOL isTalkVoiceChanged();
+    BOOL isStereoChanged();
+    BOOL isHiraganaChanged();
+    void reset();
+    void setTalkVoice(u32 v);
+    u32 getTalkVoice();
+    void clearStereo();
+    void setStereo();
+    BOOL isStereo();
+    void clearHiragana();
+    void setHiragana();
+    BOOL isHiragana();
+    void resetValues();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
 };
 
-Unk_0203c92c data_021c3264;
-extern "C" void func_0203ca5c(void *src, void *dst);
-extern "C" void func_0203ca4c(void *dst, void *src);
-extern "C" void func_0203ca84();
-extern "C" void func_0203ca90();
+PlayerOptions sPlayerOptions;
+extern "C" void PlayerOptions_CopyOut(void *src, void *dst);
+extern "C" void PlayerOptions_CopyIn(void *dst, void *src);
+extern "C" void PlayerOptions_OnDestruct();
+extern "C" void PlayerOptions_OnConstruct();
 
 extern "C" {
 void PlayerData_GetCurrent();
 }
 
 extern "C" {
-Unk_0203c92c *_ZN10PlayerData13func_02098668Ev();
+PlayerOptions *_ZN10PlayerData13func_02098668Ev();
 }
 
 extern "C" {
-Unk_0203c92c *func_0203cbb8();
+PlayerOptions *PlayerOptions_Get();
 }
 
 extern "C" {
-s32 func_0203cba8();
+s32 PlayerOptions_IsHiragana();
 }
 
 extern "C" {
-s32 func_0203cb70();
+s32 PlayerOptions_IsStereo();
 }
 
 extern "C" {
-u32 func_0203cb38();
+u32 PlayerOptions_GetTalkVoice();
 }
-extern "C" Unk_0203c92c *func_0203cbb8() { return &data_021c3264; }
+extern "C" PlayerOptions *PlayerOptions_Get() { return &sPlayerOptions; }
 
-extern "C" BOOL func_0203cba8() { return data_021c3264.func_0203ca38(); }
+extern "C" BOOL PlayerOptions_IsHiragana() { return sPlayerOptions.isHiragana(); }
 
-extern "C" void func_0203cb80(s32 x) {
-    if (x == 1) data_021c3264.func_0203ca2c();
-    else data_021c3264.func_0203ca20();
-    data_021c3264.func_0203c944();
-}
-
-extern "C" BOOL func_0203cb70() { return data_021c3264.func_0203ca0c(); }
-
-extern "C" void func_0203cb48(s32 x) {
-    if (x == 1) data_021c3264.func_0203ca00();
-    else data_021c3264.func_0203c9f4();
-    data_021c3264.func_0203c938();
+extern "C" void PlayerOptions_SetHiragana(s32 x) {
+    if (x == 1) sPlayerOptions.setHiragana();
+    else sPlayerOptions.clearHiragana();
+    sPlayerOptions.markHiraganaChanged();
 }
 
-extern "C" u32 func_0203cb38() { return data_021c3264.func_0203c9ec(); }
+extern "C" BOOL PlayerOptions_IsStereo() { return sPlayerOptions.isStereo(); }
 
-extern "C" void func_0203cb1c(u32 v) {
-    data_021c3264.func_0203c9d4(v);
-    data_021c3264.func_0203c92c();
+extern "C" void PlayerOptions_SetStereo(s32 x) {
+    if (x == 1) sPlayerOptions.setStereo();
+    else sPlayerOptions.clearStereo();
+    sPlayerOptions.markStereoChanged();
 }
 
-extern "C" void func_0203ca94() {
-    Unk_0203c92c *r5, *r4;
+extern "C" u32 PlayerOptions_GetTalkVoice() { return sPlayerOptions.getTalkVoice(); }
+
+extern "C" void PlayerOptions_SetTalkVoice(u32 v) {
+    sPlayerOptions.setTalkVoice(v);
+    sPlayerOptions.markTalkVoiceChanged();
+}
+
+extern "C" void PlayerOptions_Commit() {
+    PlayerOptions *r5, *r4;
     u8 l;
     PlayerData_GetCurrent();
     r5 = _ZN10PlayerData13func_02098668Ev();
-    r4 = func_0203cbb8();
-    if (r4->func_0203c978()) {
-        if (func_0203cba8() == 1) r5->func_0203ca2c();
-        else r5->func_0203ca20();
+    r4 = PlayerOptions_Get();
+    if (r4->isHiraganaChanged()) {
+        if (PlayerOptions_IsHiragana() == 1) r5->setHiragana();
+        else r5->clearHiragana();
     }
-    if (r4->func_0203c964()) {
-        if (func_0203cb70() == 1) r5->func_0203ca00();
-        else r5->func_0203c9f4();
+    if (r4->isStereoChanged()) {
+        if (PlayerOptions_IsStereo() == 1) r5->setStereo();
+        else r5->clearStereo();
     }
-    if (r4->func_0203c950()) {
-        r5->func_0203c9d4(func_0203cb38());
+    if (r4->isTalkVoiceChanged()) {
+        r5->setTalkVoice(PlayerOptions_GetTalkVoice());
     }
-    func_0203ca5c(r5, &l);
-    r4->func_0203c98c();
-    func_0203ca4c(r4, &l);
+    PlayerOptions_CopyOut(r5, &l);
+    r4->reset();
+    PlayerOptions_CopyIn(r4, &l);
 }
 
-extern "C" void func_0203ca90() {}
+extern "C" void PlayerOptions_OnConstruct() {}
 
-extern "C" void func_0203ca8c() {}
+extern "C" void PlayerOptions_ConstructInPlayer() {}
 
-extern "C" void func_0203ca88() {}
+extern "C" void PlayerOptions_DestructInPlayer() {}
 
-extern "C" void func_0203ca84() {}
+extern "C" void PlayerOptions_OnDestruct() {}
 
-void Unk_0203c92c::func_0203ca68() {
-    func_0203ca20();
-    func_0203c9f4();
-    func_0203c9d4(0);
+void PlayerOptions::resetValues() {
+    clearHiragana();
+    clearStereo();
+    setTalkVoice(0);
 }
 
-extern "C" void func_0203ca5c(void *src, void *dst) { MI_CpuCopy8(src, dst, 1); }
+extern "C" void PlayerOptions_CopyOut(void *src, void *dst) { MI_CpuCopy8(src, dst, 1); }
 
-extern "C" void func_0203ca4c(void *dst, void *src) { MI_CpuCopy8(src, dst, 1); }
+extern "C" void PlayerOptions_CopyIn(void *dst, void *src) { MI_CpuCopy8(src, dst, 1); }
 
-BOOL Unk_0203c92c::func_0203ca38() {
+BOOL PlayerOptions::isHiragana() {
     if (((Unk_0203c92c_Bits0 *)&unk_00)->b0) return TRUE;
     return FALSE;
 }
 
-void Unk_0203c92c::func_0203ca2c() { unk_00 = (unk_00 & ~1) | 1; }
+void PlayerOptions::setHiragana() { unk_00 = (unk_00 & ~1) | 1; }
 
-void Unk_0203c92c::func_0203ca20() { unk_00 &= ~1; }
+void PlayerOptions::clearHiragana() { unk_00 &= ~1; }
 
-BOOL Unk_0203c92c::func_0203ca0c() {
+BOOL PlayerOptions::isStereo() {
     if (((Unk_0203c92c_Bits0 *)&unk_00)->b1) return TRUE;
     return FALSE;
 }
 
-void Unk_0203c92c::func_0203ca00() { unk_00 |= 2; }
+void PlayerOptions::setStereo() { unk_00 |= 2; }
 
-void Unk_0203c92c::func_0203c9f4() { unk_00 &= ~2; }
+void PlayerOptions::clearStereo() { unk_00 &= ~2; }
 
-u32 Unk_0203c92c::func_0203c9ec() { return ((Unk_0203c92c_Bits0 *)&unk_00)->b23; }
+u32 PlayerOptions::getTalkVoice() { return ((Unk_0203c92c_Bits0 *)&unk_00)->b23; }
 
-void Unk_0203c92c::func_0203c9d4(u32 v) {
+void PlayerOptions::setTalkVoice(u32 v) {
     unk_00 = (unk_00 & ~0xc) | (((u8)v & 3) << 2);
 }
 
-Unk_0203c92c::Unk_0203c92c() { func_0203ca90(); }
+PlayerOptions::PlayerOptions() { PlayerOptions_OnConstruct(); }
 
-Unk_0203c92c::~Unk_0203c92c() { func_0203ca84(); }
+PlayerOptions::~PlayerOptions() { PlayerOptions_OnDestruct(); }
 
-void Unk_0203c92c::func_0203c98c() {
-    func_0203ca68();
+void PlayerOptions::reset() {
+    resetValues();
     unk_01 &= ~1;
     unk_01 &= ~2;
     unk_01 &= ~4;
 }
 
-BOOL Unk_0203c92c::func_0203c978() {
+BOOL PlayerOptions::isHiraganaChanged() {
     if (((Unk_0203c92c_Bits1 *)&unk_01)->b0) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_0203c92c::func_0203c964() {
+BOOL PlayerOptions::isStereoChanged() {
     if (((Unk_0203c92c_Bits1 *)&unk_01)->b1) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_0203c92c::func_0203c950() {
+BOOL PlayerOptions::isTalkVoiceChanged() {
     if (((Unk_0203c92c_Bits1 *)&unk_01)->b2) return TRUE;
     return FALSE;
 }
 
-void Unk_0203c92c::func_0203c944() { unk_01 = (unk_01 & ~1) | 1; }
+void PlayerOptions::markHiraganaChanged() { unk_01 = (unk_01 & ~1) | 1; }
 
-void Unk_0203c92c::func_0203c938() { unk_01 |= 2; }
+void PlayerOptions::markStereoChanged() { unk_01 |= 2; }
 
-void Unk_0203c92c::func_0203c92c() { unk_01 |= 4; }
+void PlayerOptions::markTalkVoiceChanged() { unk_01 |= 4; }
 

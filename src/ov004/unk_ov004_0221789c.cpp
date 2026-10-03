@@ -111,7 +111,7 @@ extern Unk_ov004_022187b8_Ent sFleaMarketSellerActTable[8];
 extern u8 data_ov004_022506c8[0x28];
 extern u8 data_ov004_022506f0[0x28];
 
-Unk_ov004_0221823c_Vec *func_020947f0(u32);
+Unk_ov004_0221823c_Vec *PlayerActor_GetBodyPos(u32);
 void NpcActor_FindFreeUnitNear(void *, void *, void *);
 s32 NpcActor_getDistanceToPlayer(void *, u32);
 s32 NpcActor_getAngleToPlayer(void *, u32);
@@ -168,7 +168,7 @@ u16 Item_MakeFurniture(void *p, u32 a);
 void FtrActor_findOwnTile(void *o, s32 *x, s32 *y, u32 a, u32 b);
 void *Scene_GetTouchPicker();
 void TouchPick_GetGroundPos(void *a, void *b);
-void *func_020b6048(void *a, u32 b, u32 c);
+void *TouchPick_GetTargetObject(void *a, u32 b, u32 c);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
 u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
@@ -280,15 +280,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void onJoinTalk();
@@ -460,8 +460,8 @@ public:
     virtual void vfunc_4c(s32 a);
     virtual BOOL vfunc_58();
     virtual BOOL updateAct();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     BOOL checkPlayerLeaving();
     BOOL requestTradeTalk();
@@ -636,7 +636,7 @@ BOOL FleaMarketSellerVillager::setupAct04() {
 BOOL FleaMarketSellerVillager::mainAct04() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4, r6;
-    Unk_ov004_0221823c_Vec *p = func_020947f0(4);
+    Unk_ov004_0221823c_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -671,7 +671,7 @@ BOOL FleaMarketSellerVillager::mainAct05() {
     if (requestTradeTalk()) {
         return TRUE;
     }
-    Unk_ov004_0221823c_Vec *p = func_020947f0(4);
+    Unk_ov004_0221823c_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -705,7 +705,7 @@ BOOL FleaMarketSellerVillager::mainAct06() {
     if (requestTradeTalk()) {
         return TRUE;
     }
-    Unk_ov004_0221823c_Vec *p = func_020947f0(4);
+    Unk_ov004_0221823c_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -739,7 +739,7 @@ BOOL FleaMarketSellerVillager::setupAct03() {
 
 BOOL FleaMarketSellerVillager::mainAct03() {
     Unk_ov004_0221841c_Vec a;
-    Unk_ov004_0221823c_Vec *p = func_020947f0(4);
+    Unk_ov004_0221823c_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -787,7 +787,7 @@ BOOL FleaMarketSellerVillager::setupAct07() {
 BOOL FleaMarketSellerVillager::mainAct07() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4;
-    Unk_ov004_0221823c_Vec *p = func_020947f0(4);
+    Unk_ov004_0221823c_Vec *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
@@ -940,7 +940,7 @@ void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
     }
 }
 
-BOOL FleaMarketSellerVillager::vfunc_7c() {
+BOOL FleaMarketSellerVillager::canPlayTalkMelody() {
     BOOL f = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (!f || unk_a4e == 0) {
         return TRUE;
@@ -948,7 +948,7 @@ BOOL FleaMarketSellerVillager::vfunc_7c() {
     return FALSE;
 }
 
-void FleaMarketSellerVillager::vfunc_80() { unk_a4e = 1; }
+void FleaMarketSellerVillager::onTalkMelodyPlayed() { unk_a4e = 1; }
 
 // ---------------------------------------------------------------------------------------------------------------------
 void FleaMarketSellerVillagerTalk::vfunc_14() {}
@@ -1068,7 +1068,7 @@ BOOL FleaMarketSellerVillager::checkFurnitureTap() {
         }
         void *c = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), hx, hy, 0);
         if (c != NULL) {
-            if (c != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
+            if (c != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
@@ -1146,7 +1146,7 @@ BOOL FleaMarketSellerVillager::requestTradeTalk() {
 
 BOOL FleaMarketSellerVillager::checkPlayerLeaving() {
     struct V { s32 x, y, z; } v;
-    s32 *s = (s32 *)func_020947f0(4);
+    s32 *s = (s32 *)PlayerActor_GetBodyPos(4);
     v.x = s[0];
     v.y = s[1];
     v.z = s[2];

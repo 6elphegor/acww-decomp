@@ -83,7 +83,7 @@ void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
-void func_020947c0(u16 *out, void *p);
+void PlayerActor_GetSlotHeldItem(u16 *out, void *p);
 void *PlayerActor_GetLocalSessionSlot();
 void Clock_GetDateTime(void *p);
 s32 Pocket_FindItem(u16 *p);
@@ -330,15 +330,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -382,8 +382,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -492,7 +492,7 @@ void PlayerActor_RequestChangeHeldItem(u16 *p);
 void PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 func_0204b9e8(u16 *p);
+s32 Item_GetFishWaterClass(u16 *p);
 void _ZN8ItemNameC1Ev(void *p);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN12Unk_0201347416disableFootstepsEv(void *p);
@@ -1049,11 +1049,11 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
                 r4 = 8;
             } else if (v >= 0x1531 && v <= 0x153a) {
                 r4 = 0xa;
-            } else if (func_0204b9e8(&unk_c0) == 0) {
+            } else if (Item_GetFishWaterClass(&unk_c0) == 0) {
                 r4 = (u8)func_02063b8c(8);
-            } else if (func_0204b9e8(&unk_c0) == 1) {
+            } else if (Item_GetFishWaterClass(&unk_c0) == 1) {
                 r4 = (u8)(func_02063b8c(9) + 0xc);
-            } else if (func_0204b9e8(&unk_c0) == 2) {
+            } else if (Item_GetFishWaterClass(&unk_c0) == 2) {
                 r4 = 0x1c;
             } else if (Unk_ov079_Rng(&unk_c0, 0x1518, 0x151c)) {
                 r4 = 9;

@@ -42,7 +42,7 @@ public:
 };
 
 extern "C" {
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchHeld;
@@ -64,8 +64,8 @@ void ChatBalloon_Dismiss(s32 a);
 void ChatBalloon_Post(s32 a, void *p, void *q);
 void Mem_Clear(void *p, s32 n);
 s32 Mem_Copy(void *src, void *dst, s32 n);
-s32 func_020512e0(void *p, s32 n);
-s32 func_02051348(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
+s32 Text_MeasureWidth(void *p, s32 n);
 s32 File_LoadAlloc(u32 id, u32 g, s32 a, s32 b);
 void MenuCtrl_ClearChatDraft();
 void MenuCtrl_SetChatDraft(void *p);
@@ -75,8 +75,8 @@ void MenuCtrl_TickForceClose();
 void BgScreen_ReplaceRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_020943f8();
-void func_020943fc();
+void PlayerActor_OnChatCloseNop();
+void PlayerActor_OnChatOpenNop();
 void PlayerActor_RequestEmotion(void *p);
 void PlayerActor_RequestAct13();
 PlayerData *PlayerData_GetCurrent();
@@ -982,7 +982,7 @@ void ChatMenu_PlayEmotion(S *s) {
 }
 
 void ChatMenu_ShowMessage(S *s, u32 v, Unk_ov111_022970cc_Status w) {
-    volatile u8 b = data_021edb68;
+    volatile u8 b = gU8None;
     b = v;
     s->unk_3d30.open((u8 *)&b, w, 0);
     s->setMainState(0xf);
@@ -1062,7 +1062,7 @@ void ChatMenu_Init(S *s) {
     s->unk_a8 = NULL;
     Keyboard_Init(&s->unk_ac);
     Mem_Copy((void *)MenuCtrl_GetChatDraft(), s->unk_3c9c.unk_0e, 0x20);
-    func_020943fc();
+    PlayerActor_OnChatOpenNop();
     if (((MenuTabBar *)ProcBase_GetParent(s))->isJustOpened()) {
         s->setFlags(0x20);
     }
@@ -1072,7 +1072,7 @@ void ChatMenu_Exit(S *s) {
     ChatMenu_DestroyTextLabel(s);
     Keyboard_Shutdown(&s->unk_ac);
     if (!s->testFlags(0x10)) {
-        func_020943f8();
+        PlayerActor_OnChatCloseNop();
     }
 }
 
@@ -1167,7 +1167,7 @@ void ChatMenu_RedrawText(S *s) {
         TextLabel *t = s->unk_a8;
         t->unk_10 = ((TextLabel *)&s->unk_3c68)->measureWidth();
         s->unk_a8->requestRedraw();
-        s->unk_94 = func_020512e0(s->unk_3c9c.unk_0e, 0x20) * 0x1f / 0x20;
+        s->unk_94 = Text_GetLength(s->unk_3c9c.unk_0e, 0x20) * 0x1f / 0x20;
         if (s->unk_94 > 0x1f) {
             s->unk_94 = 0x1f;
         }
@@ -1336,7 +1336,7 @@ void ChatMenu_Paste(S *s) {
             s->clearFlags(1);
         }
         Keyboard_ResetTypedRun(&s->unk_ac);
-        n = func_020512e0(s->unk_3e38, 0x20);
+        n = Text_GetLength(s->unk_3e38, 0x20);
         i = 0;
         z = i;
         for (; i < n; i++) {
@@ -1461,7 +1461,7 @@ BOOL ChatMenu::startSend() {
     if (unk_9b != 0) {
         return FALSE;
     }
-    if (func_020512e0(unk_3c9c.unk_0e, 0x20) == 0) {
+    if (Text_GetLength(unk_3c9c.unk_0e, 0x20) == 0) {
         ChatMenu_PlayErrorSe(this);
     } else {
         PlayerActor_RequestAct13();
@@ -1520,7 +1520,7 @@ void ChatMenu::snapCaretToText() {
 }
 
 void ChatMenu::updateCaretX() {
-    unk_a1 = func_02051348(unk_3c9c.unk_0e, unk_9e);
+    unk_a1 = Text_MeasureWidth(unk_3c9c.unk_0e, unk_9e);
     unk_9c = 0x10;
     refreshKeys();
 }
@@ -1555,7 +1555,7 @@ s32 ChatMenu::navigateText(void *pad) {
             return 1;
         }
     } else if (MenuKeys_HasRight(pad)) {
-        if (*(volatile u8 *)&unk_9e + 1 <= func_020512e0(unk_3c9c.unk_0e, 0x20)) {
+        if (*(volatile u8 *)&unk_9e + 1 <= Text_GetLength(unk_3c9c.unk_0e, 0x20)) {
             unk_9e = *(volatile u8 *)&unk_9e + 1;
             return 1;
         }

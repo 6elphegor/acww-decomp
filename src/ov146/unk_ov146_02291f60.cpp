@@ -141,7 +141,7 @@ void BgVramTask_cancel(void *p);
 BOOL BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
 BOOL BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
 void String_SetSlot(s32 a, void *buf);
-BOOL func_020a78a4(void *dst, const void *src, s32 n);
+BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(u32 a);
 s32 func_02133150(s32 a, s32 b);
@@ -1089,7 +1089,7 @@ void WfcFriendListMenu::renderRows() {
                 unk_bc[col] = e;
                 w1 = allocText();
                 off = e * 0x13;
-                func_020a78a4(&sa, unk_12a + 8 + off, 8);
+                EncodedString_SetRaw(&sa, unk_12a + 8 + off, 8);
                 sb.fromEncoded(&sa, 0, 0);
                 String_SetSlot(0, &sb);
                 String_Load2dMenu(w1, 0x66);

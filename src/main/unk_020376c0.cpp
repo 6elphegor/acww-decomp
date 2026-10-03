@@ -10,10 +10,10 @@ void OS_ResetSystem(s32);
 
 u8 gBuildTime[0x20];
 
-class Unk_020376f4 {
+class CommCautionWindowView {
 public:
-    void func_020376f4();
-    void func_0203771c();
+    void execReset();
+    void enterReset();
 
     u8 pad_00[0xbc];
     s32 unk_bc;
@@ -22,13 +22,13 @@ public:
     u8 unk_c8;
 };
 
-void Unk_020376f4::func_0203771c() {
+void CommCautionWindowView::enterReset() {
     unk_bc = 7;
     unk_c0 = 1;
     unk_c8 = 1;
 }
 
-void Unk_020376f4::func_020376f4() {
+void CommCautionWindowView::execReset() {
     unk_c0 = unk_c0 - 1;
     if (unk_c0 <= 0) {
         OS_ResetSystem(0);

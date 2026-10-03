@@ -27,11 +27,11 @@ void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
 s32 MenuCtrl_IsButtons();
 void MenuCtrl_SetAmount();
-void func_02097410(void *p, s32 v);
-s32 func_02097414(void *p);
-void func_02097a48(void *p, s32 v, s32 w);
+void PlayerBank_SetBalance(void *p, s32 v);
+s32 PlayerBank_GetBalance(void *p);
+void PlayerInventory_AddBells(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
-s32 func_02097ce4(void *p, s32 v, s32 w);
+s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
 void *ProcBase_GetParent();
 void String_Load2dMenu(void *self, s32 v);
 s32 File_LoadToBuffer(const char *a, void *b, s32 c);
@@ -615,7 +615,7 @@ void BankMenu::startSelect() {
 }
 
 void BankMenu::selectDeposit() {
-    if (func_02097414(_ZN12Unk_02097ff414getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
+    if (PlayerBank_GetBalance(_ZN12Unk_02097ff414getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
         unk_1431 = 0x35;
@@ -626,7 +626,7 @@ void BankMenu::selectDeposit() {
 }
 
 void BankMenu::selectWithdraw() {
-    if (func_02097ce4(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1, 0) == 0) {
+    if (PlayerInventory_GetBellsRoom(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1, 0) == 0) {
         showMessage(0xf);
     } else {
         unk_1431 = 0x36;

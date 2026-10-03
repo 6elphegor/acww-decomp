@@ -74,9 +74,9 @@ s32 Date_DaysBetween(void *, void *);
 void EventAnnounce_Restart(void);
 void EventWeekSlots_InitNew(u8 *);
 void EventAnnounce_SetState(s32);
-void func_020402f8(void *, s32);
+void EventWeekSlots_UpdateWeek(void *, s32);
 void Event_RefreshToday(s32);
-void func_02040684(void *);
+void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
 s32 _ZN11CommManager8isOnlineEv(void *);
 s32 TownSessionState_Get(void);
@@ -661,8 +661,8 @@ extern "C" void EventWeekSlots_InitNew(u8 *p)
     p[17] = 99;
     *(s32 *)(p + 0x34) = 0;
     *(s32 *)(p + 0x38) = 0;
-    func_02040684(p);
-    func_020402f8(p, 1);
+    EventWeekSlots_ClearWeek(p);
+    EventWeekSlots_UpdateWeek(p, 1);
 }
 
 extern "C" void EventWeekSlots_Reset(u8 *p)
@@ -688,7 +688,7 @@ extern "C" void EventWeekSlots_OnLoad(u8 *p)
         p[14] = 0;
         p[15] = 0;
     }
-    func_020402f8(p, 0);
+    EventWeekSlots_UpdateWeek(p, 0);
     Event_RefreshToday(1);
     EventAnnounce_Restart();
 }

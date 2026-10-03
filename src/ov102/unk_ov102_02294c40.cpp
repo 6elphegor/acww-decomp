@@ -97,8 +97,8 @@ s32 func_02087e14(void *p);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 void PlayerData_GetCurrent();
-void func_020979b0();
-s32 func_02039d74();
+void PlayerData_GetDresser();
+s32 ChestStorage_GetItems();
 s32 func_020639e8(char *buf, char *fmt, ...);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_02088730(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
@@ -745,8 +745,8 @@ void ChestMenu::initMembers() {
     unk_24d1 = 0;
     unk_24d4 = 0;
     PlayerData_GetCurrent();
-    func_020979b0();
-    MI_CpuCopy8((void *)func_02039d74(), unk_2414, 0xb4);
+    PlayerData_GetDresser();
+    MI_CpuCopy8((void *)ChestStorage_GetItems(), unk_2414, 0xb4);
     MenuCtrl_BackupPockets();
     unk_24d6 = 0;
 }
@@ -1919,8 +1919,8 @@ void ChestMenu::confirm(s32 v) {
     setOkLabel(1);
     MenuCtrl_SetResult(1);
     PlayerData_GetCurrent();
-    func_020979b0();
-    MI_CpuCopy8(unk_2414, (u8 *)func_02039d74(), 0xb4);
+    PlayerData_GetDresser();
+    MI_CpuCopy8(unk_2414, (u8 *)ChestStorage_GetItems(), 0xb4);
 }
 
 void ChestMenu::drawPageTabs() {

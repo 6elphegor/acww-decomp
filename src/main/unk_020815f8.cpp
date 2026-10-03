@@ -26,15 +26,15 @@ struct NpcActor {
     virtual void vfunc_54();
     virtual void vfunc_58();
     virtual void vfunc_5c();
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual void vfunc_68();
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
     virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void vfunc_84();
     virtual void vfunc_88();
     virtual void vfunc_8c();

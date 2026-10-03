@@ -185,9 +185,9 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u16 gPad[];
 void Snd_PlaySe(u32 v);
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
 void StrBuf_GetBytes(void *p, void *q, u32 n);
-void func_020a78a4(void *p);
+void EncodedString_SetRaw(void *p);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *p, void *q, s32 a, s32 b);
 s32 String_CensorTaboo(void *p);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
@@ -218,8 +218,8 @@ void Keyboard_ResetCursor(void *s);
 s32 Keyboard_GetCursorX(void *s);
 s32 Keyboard_GetCursorY(void *s);
 s32 Keyboard_ClearHighlight(void *s);
-extern u8 data_021edb68;
-s32 func_02051348(void *p, s32 v);
+extern u8 gU8None;
+s32 Text_MeasureWidth(void *p, s32 v);
 s32 _ZN12Unk_0206ce9813func_0206cefcEi(void *p, s32 v);
 s32 *_ZN12Unk_0206ce9813func_0206cf40Ev(void *p);
 s32 _ZN14LetterRenderer13func_0206d2d4Ev(void *p);
@@ -1109,7 +1109,7 @@ void LetterWriteMenu::preStateUpdate() { _ZN17MenuBottomButtons9freeTextsEv(&unk
 void LetterWriteMenu::postStateUpdate() {
     if (testFlags(0x1000)) {
         u32 n = getFieldCapacity();
-        unk_a4 = func_020512e0(getFieldBuffer(), n) * 0x1f / (s32)n;
+        unk_a4 = Text_GetLength(getFieldBuffer(), n) * 0x1f / (s32)n;
         if (unk_a4 > 0x1f) {
             unk_a4 = 0x1f;
         }
@@ -1537,7 +1537,7 @@ void C::paste() {
         }
         Keyboard_ResetTypedRun(&unk_c0);
         Keyboard_BeginPaste(&unk_c0);
-        s32 n = func_020512e0(unk_3fcc.unk_b8, 0x80);
+        s32 n = Text_GetLength(unk_3fcc.unk_b8, 0x80);
         s32 i;
         for (i = 0; i < n; i++) {
             if (!insertCharRaw(*((u8 *)this + i + 0x4084), 0)) {
@@ -2128,7 +2128,7 @@ void C::resumeInput() {
 
 void C::showMessage(u8 a, s32 b) {
     volatile u8 buf[1];
-    buf[0] = data_021edb68;
+    buf[0] = gU8None;
     buf[0] = a;
     _ZN16MenuErrorMessage8openHighEPhij(&unk_455c, (void *)buf, b, 0);
     setMainState(0x1a);
@@ -2238,7 +2238,7 @@ void C::moveCaretToSignature() {
 
 u8 C::hitTestSignature(u32 *p) {
     u8 v = (u8)(*p - 0x30);
-    s32 r4 = 0xa0 - func_02051348(unk_bc + 0xcc, 0x20);
+    s32 r4 = 0xa0 - Text_MeasureWidth(unk_bc + 0xcc, 0x20);
     u8 out;
     if (r4 > v) {
         out = 0;
@@ -2329,7 +2329,7 @@ void C::updateCaretPosGreeting() {
         s32 t = _ZN14LetterRenderer13func_0206d2d4Ev(&unk_3c7c);
         v += unk_bc[0xec] + t;
     }
-    unk_9c = (u8)(func_02051348(unk_3fcc.unk_90, v) + 0x30);
+    unk_9c = (u8)(Text_MeasureWidth(unk_3fcc.unk_90, v) + 0x30);
     unk_a0 = 0x28;
 }
 
@@ -2337,13 +2337,13 @@ void C::updateCaretPosBody() {
     s32 t = _ZN12Unk_0206ce9813func_0206cefcEi(&unk_3c7c, unk_ac);
     unk_a0 = t * 16 + 0x40;
     s32 o = _ZN12Unk_0206ce9813func_0206cf40Ev(&unk_3c7c)[t];
-    unk_9c = (u8)(func_02051348(unk_bc + 0x4c + o, unk_ac - o) + 0x30);
+    unk_9c = (u8)(Text_MeasureWidth(unk_bc + 0x4c + o, unk_ac - o) + 0x30);
 }
 
 void C::updateCaretPosSignature() {
-    u8 t = (u8)(func_02051348(unk_bc + 0xcc, unk_ac) + 0x30);
+    u8 t = (u8)(Text_MeasureWidth(unk_bc + 0xcc, unk_ac) + 0x30);
     unk_9c = t;
-    unk_9c = unk_9c + (0xa0 - func_02051348(unk_bc + 0xcc, 0x20));
+    unk_9c = unk_9c + (0xa0 - Text_MeasureWidth(unk_bc + 0xcc, 0x20));
     unk_a0 = 0x88;
 }
 
@@ -2485,13 +2485,13 @@ BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
             n = unk_bc[0xec];
             break;
         case 1:
-            n = func_020512e0(unk_bc + 0x34, 0x18) - unk_bc[0xec];
+            n = Text_GetLength(unk_bc + 0x34, 0x18) - unk_bc[0xec];
             break;
         case 2:
-            n = func_020512e0(unk_bc + 0x4c, 0x80);
+            n = Text_GetLength(unk_bc + 0x4c, 0x80);
             break;
         case 3:
-            n = func_020512e0(unk_bc + 0xcc, 0x20);
+            n = Text_GetLength(unk_bc + 0xcc, 0x20);
             break;
         }
         if (idx + 1 <= n) {
@@ -2758,7 +2758,7 @@ void LetterWriteMenu::storeLetterDefaults() {
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {
-    func_020a78a4(&unk_3fcc);
+    EncodedString_SetRaw(&unk_3fcc);
     _ZN9MsgString11fromEncodedEP13EncodedStringii(&unk_3f38, &unk_3fcc, 0, 0);
     if (String_CensorTaboo(&unk_3f38)) {
         _ZN13EncodedString13fromMsgStringEP9MsgString(&unk_3fcc, &unk_3f38);

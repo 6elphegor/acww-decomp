@@ -35,7 +35,7 @@ extern const s32 data_020c6cf0;
 extern u8 gFieldSceneKind;
 }
 
-s32 data_021bf97c = data_020c6cf0 - 0x8000;
+s32 sSpNpcWalkAnimSpeedScale = data_020c6cf0 - 0x8000;
 
 extern "C" {
 void Proc_CreateRoot();
@@ -144,15 +144,15 @@ struct NpcActor : Character {
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual void updateAct();
     virtual void getTexturePath() = 0;
     virtual void getModelPath() = 0;
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -203,13 +203,13 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
     BOOL loadAnimSet();
-    void func_0202e548(s32 a, s32 b);
+    void setColliderSize(s32 a, s32 b);
 
     Unk_020e06dc unk_640;
     s32 unk_648;
@@ -230,7 +230,7 @@ BOOL SpNpcActor::loadAnimSet() {
     return FALSE;
 }
 
-void SpNpcActor::func_0202e548(s32 a, s32 b) {
+void SpNpcActor::setColliderSize(s32 a, s32 b) {
     unk_648 = a;
     unk_64c = b;
 }
@@ -239,7 +239,7 @@ BOOL SpNpcActor::vfunc_04() {
     if (!NpcActor::vfunc_04()) {
         return FALSE;
     }
-    func_0202e548(0x1000, 0x2000);
+    setColliderSize(0x1000, 0x2000);
     unk_650 = 0;
     return TRUE;
 }
@@ -307,14 +307,14 @@ void SpNpcActor::getName(u32 a) { Npc_GetName(a, &unk_ea); }
 
 u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
 
-BOOL SpNpcActor::vfunc_7c() {
+BOOL SpNpcActor::canPlayTalkMelody() {
     if (!Unk_0202e318_IsOne(gFieldSceneKind) || unk_650 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void SpNpcActor::vfunc_80() { unk_650 = 1; }
+void SpNpcActor::onTalkMelodyPlayed() { unk_650 = 1; }
 
 u16 SpNpcActor::getSpecies() {
     u16 v = unk_ea;
@@ -324,5 +324,5 @@ u16 SpNpcActor::getSpecies() {
     return 0xffff;
 }
 
-BOOL SpNpcActor::vfunc_a8() { return data_021bf97c; }
+BOOL SpNpcActor::vfunc_a8() { return sSpNpcWalkAnimSpeedScale; }
 

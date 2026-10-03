@@ -41,7 +41,7 @@ public:
 #define Unk_020d93b8_lerpPoses _ZN12Unk_020d93b89lerpPosesEiii
 
 extern "C" {
-void *func_020947f0(u32);
+void *PlayerActor_GetBodyPos(u32);
 s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
 s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
@@ -71,7 +71,7 @@ Unk_ov003_0225b738_Col data_ov003_0225b74c(20, 24, 24, 31);
 // ---- functions ----
 
 extern "C" void FieldCamera_UpdateFocusZoom(Unk_ov003_0222ef10_Cam *cam) {
-    void *c = func_020947f0(4);
+    void *c = PlayerActor_GetBodyPos(4);
     s32 t;
     s32 v;
     if (cam->unk_1ca != 0) {

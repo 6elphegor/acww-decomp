@@ -40,7 +40,7 @@ public:
     TownAcreCell *getCell(s32 x, s32 y);
     void loadCandidate(s32 seed);
     BOOL setBorder();
-    BOOL func_0209b830();
+    BOOL placeRiverVariant();
     BOOL placeFacilities(u32 mode);
     BOOL hasPond();
     BOOL assignAcreIds();
@@ -65,9 +65,9 @@ public:
 };
 
 // ---- row helper
-class Unk_0209c038 {
+class TownAcreIndex {
 public:
-    u8 *func_0209c038(s32 i);
+    u8 *calcIndex(s32 i);
 };
 
 extern "C" BOOL Acre_HasPond(u32 v) {
@@ -106,7 +106,7 @@ BOOL TownAcreCell::setType(s32 v) {
     return FALSE;
 }
 
-u8 *Unk_0209c038::func_0209c038(s32 i) {
+u8 *TownAcreIndex::calcIndex(s32 i) {
     return (u8 *)this + i * 6;
 }
 
@@ -135,7 +135,7 @@ BOOL TownAcreGenerator::generate(s32 v) {
     while (!ok) {
         g->loadCandidate(m1);
         ok = (g->setBorder() & 1) ? TRUE : FALSE;
-        ok = (ok & g->func_0209b830()) ? TRUE : FALSE;
+        ok = (ok & g->placeRiverVariant()) ? TRUE : FALSE;
         ok = (ok & g->placeFacilities(v)) ? TRUE : FALSE;
         if (ok) {
             again = FALSE;

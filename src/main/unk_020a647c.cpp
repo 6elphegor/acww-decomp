@@ -14,17 +14,17 @@ struct CommManager {
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
-void func_020a64e0();
-void func_020a6560();
+void NetArea_ReadStateBPart0();
+void NetArea_WriteStateBPart0();
 }
 
 extern CommManager *gCommManager;
 
-extern void (*const data_020d07a0[1])(s32);
-extern void (*const data_020d07a4[1])(u8 *, u32);
+extern void (*const sNetStateBWriters[1])(s32);
+extern void (*const sNetStateBReaders[1])(u8 *, u32);
 
-void (*const data_020d07a0[1])(s32) = {(void (*)(s32))func_020a6560};
-void (*const data_020d07a4[1])(u8 *, u32) = {(void (*)(u8 *, u32))func_020a64e0};
+void (*const sNetStateBWriters[1])(s32) = {(void (*)(s32))NetArea_WriteStateBPart0};
+void (*const sNetStateBReaders[1])(u8 *, u32) = {(void (*)(u8 *, u32))NetArea_ReadStateBPart0};
 
 struct Unk_020a647c_Buf {
     u16 total;
@@ -32,9 +32,9 @@ struct Unk_020a647c_Buf {
     u8 id;
 };
 
-extern "C" void func_020a6560() {}
+extern "C" void NetArea_WriteStateBPart0() {}
 
-extern "C" void func_020a64e4() {
+extern "C" void NetArea_BuildStateB() {
     CommManager *g = gCommManager;
     g->clearAuxLenB();
     u8 *base = (u8 *)g->getAuxBufB();
@@ -42,7 +42,7 @@ extern "C" void func_020a64e4() {
     s32 m = Scene_GetCurrent();
     g->unk_110 = p + 4;
     u8 *start = g->unk_110;
-    data_020d07a0[0](m);
+    sNetStateBWriters[0](m);
     u8 *cur = g->unk_110;
     Unk_020a647c_Buf b;
     s32 diff = cur - start;
@@ -58,9 +58,9 @@ extern "C" void func_020a64e4() {
     g->setAuxLenB(tot);
 }
 
-extern "C" void func_020a64e0() {}
+extern "C" void NetArea_ReadStateBPart0() {}
 
-extern "C" void func_020a647c() {
+extern "C" void NetArea_ParseStateB() {
     CommManager *g = gCommManager;
     CommManager *sg = g;
     u8 *p = (u8 *)g->getAuxBufB();
@@ -77,7 +77,7 @@ extern "C" void func_020a647c() {
         n += 4;
         u32 len = b.len;
         u32 id = *(volatile u8 *)&b.id;
-        data_020d07a4[id](p, len);
+        sNetStateBReaders[id](p, len);
         p += len;
         n += len;
     }

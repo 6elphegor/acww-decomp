@@ -72,9 +72,9 @@ static inline BOOL Unk_0204c318_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" void func_0204c508() {}
+extern "C" void TownState_Construct() {}
 
-extern "C" void func_0204c504() {}
+extern "C" void TownState_Destruct() {}
 
 extern "C" void Town_SetNativeFruitTrees(TownState *p);
 

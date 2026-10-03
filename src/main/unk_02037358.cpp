@@ -221,9 +221,9 @@ extern "C" void Unit_SplitIndex(s32 *a, s32 *b, s32 v) {
     *b = (v >> 4) & 0xf;
 }
 
-extern "C" void func_0203745c() {}
+extern "C" void BuriedMask_Construct() {}
 
-extern "C" void func_02037458() {}
+extern "C" void BuriedMask_Destruct() {}
 
 extern "C" void BuriedMask_Reset(void *p) {
     MI_CpuFill8(p, 0, 0x20);

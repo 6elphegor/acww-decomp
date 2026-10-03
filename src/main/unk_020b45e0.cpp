@@ -40,38 +40,38 @@ public:
     virtual ~SceneBase() {}
 };
 
-class Unk_020e40cc : public SceneBase {
+class FieldEntryScene : public SceneBase {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e40cc() {}
+    virtual ~FieldEntryScene() {}
 
-    void func_020b4704();
-    void func_020b4708();
-    void func_020b4728();
+    void idle();
+    void requestField();
+    void waitAreaMove();
 
     /* 0x50 */ s32 unk_50;
 };
 
-extern "C" Unk_020e40cc *func_020b4748(void) { return new Unk_020e40cc; }
+extern "C" FieldEntryScene *FieldEntryScene_Create(void) { return new FieldEntryScene; }
 
-void Unk_020e40cc::func_020b4728() {
+void FieldEntryScene::waitAreaMove() {
     if (NetArea_GetMoveState() == 0xb) {
         NetArea_SetMoveState(0xc);
-        func_020b4708();
+        requestField();
     }
 }
 
-void Unk_020e40cc::func_020b4708() {
+void FieldEntryScene::requestField() {
     Scene_Request(6, 3, Scene_GetSavedFadeIn(), 1);
     unk_50 = 2;
 }
 
-void Unk_020e40cc::func_020b4704() {}
+void FieldEntryScene::idle() {}
 
-BOOL Unk_020e40cc::vfunc_00() {
+BOOL FieldEntryScene::vfunc_00() {
     if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         unk_50 = 0;
     } else {
@@ -84,18 +84,18 @@ BOOL Unk_020e40cc::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_0c() {
+BOOL FieldEntryScene::vfunc_0c() {
     gGfxFrameHooks = 0;
     Scene_ShutdownGraphics();
     return TRUE;
 }
 
-BOOL Unk_020e40cc::onExecute() {
-    typedef void (Unk_020e40cc::*Fn)();
-    Fn dead = &Unk_020e40cc::func_020b4728;
-    static Fn table[3] = {&Unk_020e40cc::func_020b4728, &Unk_020e40cc::func_020b4708, &Unk_020e40cc::func_020b4704};
+BOOL FieldEntryScene::onExecute() {
+    typedef void (FieldEntryScene::*Fn)();
+    Fn dead = &FieldEntryScene::waitAreaMove;
+    static Fn table[3] = {&FieldEntryScene::waitAreaMove, &FieldEntryScene::requestField, &FieldEntryScene::idle};
     (this->*table[unk_50])();
     return TRUE;
 }
 
-BOOL Unk_020e40cc::onDraw() { return TRUE; }
+BOOL FieldEntryScene::onDraw() { return TRUE; }

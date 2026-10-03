@@ -130,7 +130,7 @@ void func_020a791c(void *p);
 }
 
 extern "C" {
-s32 func_020a78a4(void *buf, const void *src, s32 len);
+s32 EncodedString_SetRaw(void *buf, const void *src, s32 len);
 }
 
 extern "C" {
@@ -166,11 +166,11 @@ void Letter_GetRecipientNameBytes(void *dst, void *src);
 }
 
 extern "C" {
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_02051348(void *p, s32 n);
+s32 Text_MeasureWidth(void *p, s32 n);
 }
 
 extern "C" {
@@ -254,7 +254,7 @@ void GX_DispOn(void);
 }
 
 extern "C" {
-void func_020af3a8(void);
+void LidSleep_Init(void);
 }
 
 extern "C" {
@@ -326,7 +326,7 @@ void TextLabel_FlushGroup0(void);
 }
 
 extern "C" {
-void func_020118a4(void);
+void HudObjGfx_FlushCameraButton(void);
 }
 
 extern "C" {
@@ -366,7 +366,7 @@ void Gfx_PostTaskUpdate(void);
 }
 
 extern "C" {
-void func_020af33c(void);
+void LidSleep_Update(void);
 }
 
 extern "C" {
@@ -386,7 +386,7 @@ void Pad_Update(void);
 }
 
 extern "C" {
-void func_0209c390(void);
+void SoftReset_Update(void);
 }
 
 extern "C" {
@@ -690,14 +690,14 @@ extern "C" void Main_WaitFrame(void) {
 }
 
 extern "C" void Main_PreTaskUpdate(u32 r) {
-    func_020af33c();
+    LidSleep_Update();
     Gfx_PreTaskUpdate();
     if (r != 0) {
         Comm_ProcessReceived(r);
     }
     Touch_Update();
     Pad_Update();
-    func_0209c390();
+    SoftReset_Update();
     Clock_Update(r);
 }
 
@@ -719,7 +719,7 @@ extern "C" void Main_PostFrameUpdate(void) {
 
 extern "C" void Main_LateUpdate(u32 r) {
     TextLabel_FlushGroup0();
-    func_020118a4();
+    HudObjGfx_FlushCameraButton();
     Sky_SwapBuffers();
     HBlank_RunFrame();
     Snd_Update(r != 0 ? 1 : 0);
@@ -738,7 +738,7 @@ extern "C" void Main_Loop(void) {
     s32 b;
     GX_DispOn();
     *(volatile u32 *)0x4001000 |= 0x10000;
-    func_020af3a8();
+    LidSleep_Init();
     u32 v = gCommManager;
     u16 *flag = &gMainWaitingFrame;
     for (;;) {

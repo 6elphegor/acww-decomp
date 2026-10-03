@@ -22,31 +22,31 @@ public:
     virtual ~SceneBase() {}
 };
 
-class Unk_020e4428 : public SceneBase {
+class DummyScene3 : public SceneBase {
 public:
-    Unk_020e4428() {}
+    DummyScene3() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual ~Unk_020e4428() {}
+    virtual ~DummyScene3() {}
 };
 
-extern "C" Unk_020e4428 *func_020b5e18(void) {
-    return new Unk_020e4428();
+extern "C" DummyScene3 *DummyScene3_Create(void) {
+    return new DummyScene3();
 }
 
-BOOL Unk_020e4428::vfunc_00() {
+BOOL DummyScene3::vfunc_00() {
     Snd_CreateScene();
     return TRUE;
 }
 
-BOOL Unk_020e4428::vfunc_0c() { return TRUE; }
+BOOL DummyScene3::vfunc_0c() { return TRUE; }
 
-BOOL Unk_020e4428::onExecute() { return TRUE; }
+BOOL DummyScene3::onExecute() { return TRUE; }
 
-BOOL Unk_020e4428::onDraw() { return TRUE; }
+BOOL DummyScene3::onDraw() { return TRUE; }
 
-BOOL Unk_020e4428::vfunc_30() {}
+BOOL DummyScene3::vfunc_30() {}
 

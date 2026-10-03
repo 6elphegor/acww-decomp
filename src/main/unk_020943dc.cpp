@@ -74,7 +74,7 @@ extern u8 sEmotionHoldFrames[];
 }
 
 extern "C" {
-extern u32 data_020e1c74;
+extern u32 sPlayerFrontItemDist;
 }
 
 extern "C" {
@@ -122,7 +122,7 @@ void _ZN10PlayerData11setHeldItemEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN12Unk_0205d34013func_0205d354Ej(u8 *p, u8 *v);
+void _ZN16PlayerFaceTexRef4loadEj(u8 *p, u8 *v);
 }
 
 extern "C" {
@@ -221,15 +221,15 @@ s32 PlayerActor_GetHairStyle(Unk_02006d14 *o);
 s32 PlayerActor_GetHairColor(Unk_02006d14 *o);
 }
 
-u32 data_020e1c74 = 0xccd;
+u32 sPlayerFrontItemDist = 0xccd;
 
-extern "C" u8 *func_020947f0(u32 idx) {
+extern "C" u8 *PlayerActor_GetBodyPos(u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) return o->unk_6f0;
     return 0;
 }
 
-extern "C" void func_020947c0(u16 *out, u32 idx) {
+extern "C" void PlayerActor_GetSlotHeldItem(u16 *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     u16 v[4];
     *out = 0xfff1;
@@ -239,7 +239,7 @@ extern "C" void func_020947c0(u16 *out, u32 idx) {
     }
 }
 
-extern "C" BOOL func_020946f0(u32 a, u32 idx) {
+extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     u16 v[8];
     if (!o) return FALSE;
@@ -308,7 +308,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
     return TRUE;
 }
 
-extern "C" BOOL func_020945d4(s32 a, u32 idx) {
+extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     void *p = PlayerData_GetBySessionSlot(idx);
     if (!p) return FALSE;
     PlayerData_SetStungFace(p, a);
@@ -321,18 +321,18 @@ extern "C" BOOL func_020945d4(s32 a, u32 idx) {
     } else {
         v = _ZN10PlayerData11getFaceTypeEv(p);
     }
-    _ZN12Unk_0205d34013func_0205d354Ej(&o->unk_709[0], v);
+    _ZN16PlayerFaceTexRef4loadEj(&o->unk_709[0], v);
     return TRUE;
 }
 
-extern "C" BOOL func_020945b4(u32 x, u32 idx) {
+extern "C" BOOL PlayerActor_SetTan(u32 x, u32 idx) {
     void *p = PlayerData_GetBySessionSlot(idx);
     if (!p) return FALSE;
     _ZN10PlayerData6setTanEh(p, x);
     return TRUE;
 }
 
-extern "C" BOOL func_02094574(u32 a, u32 b, u32 idx) {
+extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
         if (!o->testActionFlag(0x15)) {
@@ -345,7 +345,7 @@ extern "C" BOOL func_02094574(u32 a, u32 b, u32 idx) {
     return FALSE;
 }
 
-extern "C" BOOL func_0209451c(Unk_02006d14_Vec *out, u32 idx) {
+extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
         s32 a = o->unk_44c;
@@ -359,19 +359,19 @@ extern "C" BOOL func_0209451c(Unk_02006d14_Vec *out, u32 idx) {
     return FALSE;
 }
 
-extern "C" void func_020944f8(Unk_02006d14_Blk *out, u32 idx) {
+extern "C" void PlayerActor_GetHandMtx(Unk_02006d14_Blk *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     *out = o->unk_694;
 }
 
-extern "C" u16 *func_02094440() {
+extern "C" u16 *PlayerActor_GetItemInFront() {
     Unk_02006d14 *o = PlayerActor_Get(4);
     u16 *r = 0;
     u32 buf[3];
     s32 a, b;
     if (!o) return 0;
     if (o->unk_7ec != 2) return 0;
-    PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &data_020e1c74);
+    PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &sPlayerFrontItemDist);
     BOOL t = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (t) {
         if (Scene_InHouseRoom()) {
@@ -389,25 +389,25 @@ extern "C" u16 *func_02094440() {
     return r;
 }
 
-extern "C" void func_02094420(s32 *p) {
+extern "C" void PlayerActor_SetLocalExitId(s32 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         o->unk_800 = *p;
     }
 }
 
-extern "C" void func_02094400(s32 *p) {
+extern "C" void PlayerActor_SetLocalExitKind(s32 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         o->unk_804 = *p;
     }
 }
 
-extern "C" void func_020943fc() {}
+extern "C" void PlayerActor_OnChatOpenNop() {}
 
-extern "C" void func_020943f8() {}
+extern "C" void PlayerActor_OnChatCloseNop() {}
 
-extern "C" void func_020943dc(u32 x) {
+extern "C" void PlayerActor_PlayLocalSe(u32 x) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         o->playSe(x);

@@ -249,7 +249,7 @@ void _ZN8ItemNameD1Ev(void *o);
 void _ZN11MsgString33C1Ev(void *o);
 void _ZN11MsgString33D1Ev(void *o);
 void String_LoadResolveAltText(void *o, u8 *b, const void *fmt);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -263,8 +263,8 @@ s32 Ftr_GetFlagPairB(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 _ZN9HouseData8getLevelEv(void *p);
-void func_02034038(s32 v);
-void func_0203402c(u32 v);
+void Debug_SetHappyRoomScore(s32 v);
+void Debug_SetHappyRoomBonusFlags(u32 v);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 s32 FtrInfo_GetClass(s32 v);
 s32 FtrClass_GetBasePoints(s32 v);
@@ -298,7 +298,7 @@ void DateTime_AddDays(Unk_0205b524_T *t, s32 v);
 s32 DateTime_Compare(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
 Unk_020594dc_H ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
 Unk_020594dc_H ItemPick_OneSimple(ItemPickSpec o);
-s32 func_0209788c(void *p, s32 q);
+s32 PlayerDataArray_GetById(void *p, s32 q);
 }
 
 // ---- own functions ----
@@ -812,7 +812,7 @@ test0:
     }
     if (flag != 0) {
         if (HappyRoomDate_IsNewWeek(gSaveHappyRoomDate) == 0) {
-            if (*func_0209c37c(0, 0x22) == 0) goto end;
+            if (*DebugVar_GetPtr(0, 0x22) == 0) goto end;
         }
         {
             x = _ZN9HouseData8getLevelEv(gSaveHouse);
@@ -841,8 +841,8 @@ test0:
             for (q = 0; q < 13; q++) {
                 if (b & (1 << q)) nb++;
             }
-            func_02034038(total);
-            func_0203402c(b);
+            Debug_SetHappyRoomScore(total);
+            Debug_SetHappyRoomBonusFlags(b);
             {
                 BOOL ok;
                 if (nb != 0) {
@@ -1457,7 +1457,7 @@ extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(gSavePlayers, i);
             if (p && _ZN10PlayerData6isUsedEv(p)) {
-                if (func_0209c37c(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
+                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
                     _ZN6LetterC1Ev(objD);
                     by[0] = a;
                     Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
@@ -1633,7 +1633,7 @@ extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
     }
     case 0:
     default: {
-        s32 r6 = func_0209788c(gSavePlayers, b);
+        s32 r6 = PlayerDataArray_GetById(gSavePlayers, b);
         u32 r4 = sHouseVisitGiftKinds[func_02063b8c(3)];
         ItemPickSpec o(r4, 0);
         s32 x;

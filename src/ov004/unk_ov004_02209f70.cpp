@@ -127,8 +127,8 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e47c(s32 a);
-    void func_0203e488(s32 a);
+    void detachTalkRequest(s32 a);
+    void attachTalkRequest(s32 a);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
     /* 0xe4 */ s32 unk_e4;
@@ -621,7 +621,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x280 */ u32 unk_280;
     /* 0x284 */ u8 unk_284;
     /* 0x285 */ u8 pad_285[3];
-    /* 0x288 */ u8 unk_288[0x2a8];  // Unk_020b6e10
+    /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
     /* 0x530 */ s32 unk_530;
     /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
     /* 0x590 */ u32 unk_590;
@@ -1039,7 +1039,7 @@ public:
             /* 0x280 */ u32 unk_280;
             /* 0x284 */ u8 unk_284;
             /* 0x285 */ u8 pad_285[3];
-            /* 0x288 */ u8 unk_288[0x2a8];  // Unk_020b6e10
+            /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
             /* 0x530 */ s32 unk_530;
             /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
             /* 0x590 */ u32 unk_590;
@@ -1468,7 +1468,7 @@ BOOL FtrPhone::enterTalkAct04() {
 void FtrPhone::execTalkAct03() {
     if (unk_3c != 0) {
         if (unk_3c->unk_04 == 0) {
-            func_0203e47c((s32)(TalkMsgRequest *)this);
+            detachTalkRequest((s32)(TalkMsgRequest *)this);
             setTalkAct(4);
         }
     }
@@ -1492,7 +1492,7 @@ struct Unk_ov004_0220a0e4_Pad {
 
 BOOL FtrPhone::enterTalkAct02() {
     Unk_ov004_0220a0e4_Pad pad;
-    func_0203e488((s32)(TalkMsgRequest *)this);
+    attachTalkRequest((s32)(TalkMsgRequest *)this);
     unk_3c->unk_08 = 1;
     TalkMsgRequest &s = *this;
     s.setFileName(p10::data_ov004_0224bb44);
@@ -1696,7 +1696,7 @@ s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 func_02063b8c(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
-BOOL func_0203c23c(u32 a, u16 *p);
+BOOL CarpetTex_Load(u32 a, u16 *p);
 s32 func_0203c234(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
@@ -2066,7 +2066,7 @@ BOOL FtrCarpetSample::initModel() {
         w = 0x1144;
     }
     u16 v = w;
-    p11::func_0203c23c(p11::_ZN12FtrPreviewer14getFloorBufferEv(p11::FtrPreviewer_GetInstance()), &v);
+    p11::CarpetTex_Load(p11::_ZN12FtrPreviewer14getFloorBufferEv(p11::FtrPreviewer_GetInstance()), &v);
     s32 h = b11_unk_590;
     s32 r = p11::func_0203c234(p11::_ZN12FtrPreviewer14getFloorBufferEv(p11::FtrPreviewer_GetInstance()));
     if (p11::_ZN14MatTexVramTask7requestEPvjS0_jj(&unk_844, h, p11::data_ov004_0224bb50, r, 0, 0)) {
@@ -2126,7 +2126,7 @@ s32 FtrSync_RequestAct(void *o, s32 a, u8 c, u8 d);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData12getInventoryEv(void *o);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *o, s32 a);
-void func_02097ac4(void *o, s32 a, s32 b);
+void PlayerInventory_SetWallet(void *o, s32 a, s32 b);
 }
 }
 
@@ -2443,7 +2443,7 @@ BOOL FtrPiggyBank::enterFtrAct01() {
         if (r5 != 0) {
             if (p12::_ZN15PlayerInventory13getTotalBellsEi(p12::_ZN10PlayerData12getInventoryEv(r5), 0) > 0) {
                 void *r4 = p12::_ZN10PlayerData12getInventoryEv(r5);
-                p12::func_02097ac4(r4, p12::_ZN15PlayerInventory13getTotalBellsEi(p12::_ZN10PlayerData12getInventoryEv(r5), 0) - 1, 0);
+                p12::PlayerInventory_SetWallet(r4, p12::_ZN15PlayerInventory13getTotalBellsEi(p12::_ZN10PlayerData12getInventoryEv(r5), 0) - 1, 0);
             }
         }
     }
@@ -2521,8 +2521,8 @@ void Snd_MelodyBeatStop(void *p);
 void Snd_MelodyBeatUpdate(void *p, void *v);
 void Snd_MelodyBeatInit(void *p);
 void FtrSync_RequestAct(void *p, s32 a, s32 b, s32 c);
-void _ZN9Character13func_0203e47cEi(void *p, TalkMsgRequest *q);
-void _ZN9Character13func_0203e488Ei(void *p, TalkMsgRequest *q);
+void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
+void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 FX_Div(s32 a, s32 b);
@@ -2678,7 +2678,7 @@ typedef void (FtrVillagerPic::*Unk_ov004_0220bec8_Fn)();
 void FtrVillagerPic::execTalkAct03() {
     if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
         if (((Unk_ov004_0220bdbc_P *)unk_3c)->unk_04 == 0) {
-            p13::_ZN9Character13func_0203e47cEi(this, this);
+            p13::_ZN9Character17detachTalkRequestEi(this, this);
             p13::TalkRequest_SetTargetDone(this);
         }
     }
@@ -2712,7 +2712,7 @@ struct Unk_ov004_0220be14_Chk {
 BOOL FtrVillagerPic::enterTalkAct02() {
     volatile u16 va[2];
     s32 idx;
-    p13::_ZN9Character13func_0203e488Ei(this, this);
+    p13::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220bdbc_P *)unk_3c)->unk_08 = 1;
     va[1] = p13::Item_MakeFurniture(p13::FtrActor_GetFtrIndex(this), 0);
     BOOL r = FALSE;
@@ -3766,7 +3766,7 @@ s32 _ZN14BlendAnimModel14onJointCalcPreEPS_(void *, void *);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 s32 _ZN11CachedModel16allocJointRecordEPv(void *, s32);
 s32 _ZN11CommManager8isOnlineEv(void *);
-s32 func_020943dc(void);
+s32 PlayerActor_PlayLocalSe(void);
 s32 _ZN9ModelSlot7getHeapEv(void);
 s32 Scene_GetCurrent(void);
 s32 Scene_InVillagerHouse(void);
@@ -4511,8 +4511,8 @@ extern u8 data_ov004_02240028[];
 extern u16 sStereoSong;
 extern u8 gSaveVillagers[];
 extern u8 data_ov004_0224bbb0[];
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 s32 PlayerActor_KeepAnimForNextAction();
@@ -4636,7 +4636,7 @@ u8 FtrStereo::getActSwitchState(u32 a) {
 void FtrStereo::execTalkAct05() {
     if (((Unk_ov004_0220ebd8_Ptr *)unk_3c) != NULL) {
         if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->unk_04 == 0) {
-            p18::_ZN9Character13func_0203e47cEi(this, this);
+            p18::_ZN9Character17detachTalkRequestEi(this, this);
             p18::TalkRequest_SetTargetDone(this);
         }
     }
@@ -4655,7 +4655,7 @@ BOOL FtrStereo::execTalkAct04() {
 }
 
 BOOL FtrStereo::enterTalkAct04() {
-    p18::_ZN9Character13func_0203e488Ei(this, this);
+    p18::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220ebd8_Ptr *)unk_3c)->unk_08 = 1;
     {
         TalkMsgRequest &sec = *this;
@@ -4977,8 +4977,8 @@ void *_ZN10FtrContact22getClampedContactPointEv(void *);
 BOOL PlayerActor_LocalRequestStorageClose(s32 *);
 BOOL PlayerActor_TestLocalFlag02(s32);
 BOOL PlayerActor_LocalRequestStorageOpen(s32 *, void *, void *, u16 *);
-void _ZN9Character13func_0203e47cEi(void *, TalkMsgRequest *);
-void _ZN9Character13func_0203e488Ei(void *, TalkMsgRequest *);
+void _ZN9Character17detachTalkRequestEi(void *, TalkMsgRequest *);
+void _ZN9Character17attachTalkRequestEi(void *, TalkMsgRequest *);
 void TalkRequest_SetTargetDone(void *);
 void _ZN10MsgRequest11setFileNameEPKc(TalkMsgRequest &, void *);
 BOOL FtrSync_ChangeAct(void *, s32, s32, s32);
@@ -5222,7 +5222,7 @@ void _ZN10ChoiceList5resetEii(u32, s32, s32);
 void _ZN10ChoiceList8setEntryEiPKhiS1_PKci(u32, s32, void *, s32, void *, s32, s32);
 void _ZN10ChoiceList9loadTextsEv(u32);
 void _ZN15TalkWindowState11openChoicesEi(u32, s32);
-void _ZN9Character13func_0203e47cEi(void *, void *);
+void _ZN9Character17detachTalkRequestEi(void *, void *);
 void TalkRequest_SetTargetDone(void *);
 void ProcBase_RequestDelete(void *);
 u32 FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
@@ -5504,8 +5504,8 @@ s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(void *, s32));
 s32 MenuCtrl_OpenPocketSelect(s32 a, s32 b);
 BOOL Item_IsFurniture(void);
 s32 Ftr_GetUnk06(void *p);
-void _ZN9Character13func_0203e47cEi(void *p, TalkMsgRequest *q);
-void _ZN9Character13func_0203e488Ei(void *p, TalkMsgRequest *q);
+void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
+void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 Scene_GetWarpRequest(void);
@@ -5687,7 +5687,7 @@ BOOL FtrBed::enterFtrAct0A() {
 void FtrBed::execFtrAct09() {
     if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
         if (((Unk_ov004_0220bdbc_P *)unk_3c)->unk_04 == 0) {
-            p21::_ZN9Character13func_0203e47cEi(this, this);
+            p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
         }
     }
@@ -5702,7 +5702,7 @@ void FtrBed::execFtrAct08() {
 
 BOOL FtrBed::enterFtrAct08() {
     Unk_ov004_022105d8_Pad pad;
-    p21::_ZN9Character13func_0203e488Ei(this, this);
+    p21::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220bdbc_P *)unk_3c)->unk_08 = 1;
     MsgRequest::setFileName(p21::data_ov004_0224bbb0);
     unk_1e = 4;
@@ -5720,7 +5720,7 @@ BOOL FtrBed::enterFtrAct07() {
 void FtrBed::execFtrAct06() {
     if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
         if (((Unk_ov004_0220bdbc_P *)unk_3c)->unk_04 == 0) {
-            p21::_ZN9Character13func_0203e47cEi(this, this);
+            p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
             p21::SceneWarp_RequestFade(p21::Scene_GetWarpRequest(), 0x2e, 2, 0);
             p21::SaveManager_RequestAct01();
@@ -5736,7 +5736,7 @@ void FtrBed::execFtrAct05() {
     if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
         if (((Unk_ov004_0220bdbc_P *)unk_3c)->unk_04 == 0) {
             p21::PlayerActor_LocalRequestGetOutOfBed(unk_842, 0);
-            p21::_ZN9Character13func_0203e47cEi(this, this);
+            p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
         }
     }
@@ -5751,7 +5751,7 @@ void FtrBed::execFtrAct04() {
 
 BOOL FtrBed::enterFtrAct04() {
     Unk_ov004_022105d8_Pad pad;
-    p21::_ZN9Character13func_0203e488Ei(this, this);
+    p21::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220bdbc_P *)unk_3c)->unk_08 = 1;
     if (p21::GameStart_IsNewTown() || p21::GameStart_IsNewResident()) {
         MsgRequest::setFileName(p21::data_ov004_0224bbd0);
@@ -7497,7 +7497,7 @@ extern "C" void _ZN7FtrCart11onMoveStartEv(FtrCart *self, BOOL b) {
     }
     if (c == 0) {
         if (p16::FtrActor_GetDragSe(self) != 0xffff) {
-            p16::func_020943dc();
+            p16::PlayerActor_PlayLocalSe();
         }
     }
 }
@@ -7521,7 +7521,7 @@ void FtrClock::vfunc_6c(s32 a, void *b) {
 void FtrStorage::execTalkAct0B() {
     u32 f = unk_85c;
     if (f == 0) {
-        p19::_ZN9Character13func_0203e47cEi(this, this);
+        p19::_ZN9Character17detachTalkRequestEi(this, this);
         p19::TalkRequest_SetTargetDone(this);
     }
 }
@@ -7555,7 +7555,7 @@ BOOL FtrStorage::execTalkAct09() {
 
 BOOL FtrStorage::enterTalkAct09() {
     s32 y, x;
-    p19::_ZN9Character13func_0203e488Ei(this, this);
+    p19::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220f6e0_Rec *)unk_3c)->unk_08 = 1;
     p19::_ZN10MsgRequest11setFileNameEPKc(*this, p19::data_ov004_0224bbc0);
     u32 t = p19::FtrActor_GetFtrIndex(this);
@@ -7818,7 +7818,7 @@ void FtrBed::execFtrAct0D() {
         unk_848++;
     }
     if (unk_848 == 0x16) {
-        p20::_ZN9Character13func_0203e47cEi(this, static_cast<TalkMsgRequest *>(this));
+        p20::_ZN9Character17detachTalkRequestEi(this, static_cast<TalkMsgRequest *>(this));
         p20::TalkRequest_SetTargetDone(this);
         p20::ProcBase_RequestDelete(this);
     }
@@ -7861,7 +7861,7 @@ BOOL FtrBed::enterFtrAct0C() {
 void FtrBed::execFtrAct0B() {
     if (p20::MenuCtrl_IsFinished()) {
         if (p20::MenuCtrl_IsResultOk() == 0) {
-            p20::_ZN9Character13func_0203e47cEi(this, static_cast<TalkMsgRequest *>(this));
+            p20::_ZN9Character17detachTalkRequestEi(this, static_cast<TalkMsgRequest *>(this));
             p20::TalkRequest_SetTargetDone(this);
         } else {
             u32 r4 = p20::MenuCtrl_GetIndex();

@@ -13,29 +13,29 @@ BOOL FS_CloseFile(void *self);
 }
 
 // Defined in the neighbouring unit (U012).
-class Unk_02011580 {
+class HudObjGfx {
 public:
-    const void *func_02011640(s32 k);
+    const void *getCharPath(s32 k);
 };
 
 // The class's other methods (0x02011410, 0x02011550, 0x02011568, ...) are defined in other units.
-class Unk_0201106c {
+class HudObjGfxIo {
 public:
-    void func_0201106c();
-    void func_02011074();
-    BOOL func_020110bc(s32 alt);
-    void func_02011158();
-    void func_02011160();
-    BOOL func_020111b0(s32 alt);
-    void func_02011258(s32 which);
-    BOOL func_020112dc(s32 alt);
-    void func_0201137c(s32 which);
-    void func_02011408();
-    BOOL func_02011410(s32 k);
-    void func_020114b0(s32 which);
-    void func_020114f0(s32 which);
-    void func_02011550();
-    void func_02011568();
+    void releaseSlideIconChars();
+    void uploadSlideIconChars();
+    BOOL loadSlideIconChars(s32 alt);
+    void releaseLinkIconChars();
+    void uploadLinkIconChars();
+    BOOL loadLinkIconChars(s32 alt);
+    void uploadCameraButtonChars(s32 which);
+    BOOL loadCameraButtonChars(s32 alt);
+    void uploadKindChars(s32 which);
+    void releaseKindChars();
+    BOOL loadKindChars(s32 k);
+    void uploadChars(s32 which);
+    void uploadPalette(s32 which);
+    void freeChars();
+    void freePalette();
 
     u8 unk_00[0x48];
     u8 *unk_48;
@@ -43,16 +43,16 @@ public:
     u8 unk_50[0x200];
 };
 
-extern const char data_020c6c68[];
-const char data_020c6c68[] = "/a_mes/a_mes_ten2_obj_ncg.bin";
+extern const char sHudObjCharPathTen2[];
+const char sHudObjCharPathTen2[] = "/a_mes/a_mes_ten2_obj_ncg.bin";
 
-u32 data_020d6f68[5] = {0x28c0, 0x100, 0x140, 0x180, 0x1c0};
+u32 sSlideIconCharOffsets[5] = {0x28c0, 0x100, 0x140, 0x180, 0x1c0};
 
-void Unk_0201106c::func_02011408() {
-    func_02011550();
+void HudObjGfxIo::releaseKindChars() {
+    freeChars();
 }
 
-void Unk_0201106c::func_0201137c(s32 which) {
+void HudObjGfxIo::uploadKindChars(s32 which) {
     BOOL w, f1, f2;
     u32 src;
     s32 i;
@@ -68,8 +68,8 @@ void Unk_0201106c::func_0201137c(s32 which) {
     }
 }
 
-BOOL Unk_0201106c::func_020112dc(s32 alt) {
-    BOOL a = FS_OpenFile(this, alt != 0 ? data_020c6c68 : ((Unk_02011580 *)this)->func_02011640(2));
+BOOL HudObjGfxIo::loadCameraButtonChars(s32 alt) {
+    BOOL a = FS_OpenFile(this, alt != 0 ? sHudObjCharPathTen2 : ((HudObjGfx *)this)->getCharPath(2));
     BOOL ok;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
@@ -89,7 +89,7 @@ BOOL Unk_0201106c::func_020112dc(s32 alt) {
     return FALSE;
 }
 
-void Unk_0201106c::func_02011258(s32 which) {
+void HudObjGfxIo::uploadCameraButtonChars(s32 which) {
     BOOL w, f1, f2;
     u32 src;
     s32 i;
@@ -105,8 +105,8 @@ void Unk_0201106c::func_02011258(s32 which) {
     }
 }
 
-BOOL Unk_0201106c::func_020111b0(s32 alt) {
-    BOOL a = FS_OpenFile(this, alt != 0 ? data_020c6c68 : ((Unk_02011580 *)this)->func_02011640(4));
+BOOL HudObjGfxIo::loadLinkIconChars(s32 alt) {
+    BOOL a = FS_OpenFile(this, alt != 0 ? sHudObjCharPathTen2 : ((HudObjGfx *)this)->getCharPath(4));
     BOOL ok;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
@@ -127,7 +127,7 @@ BOOL Unk_0201106c::func_020111b0(s32 alt) {
     return FALSE;
 }
 
-void Unk_0201106c::func_02011160() {
+void HudObjGfxIo::uploadLinkIconChars() {
     u32 src;
     s32 i;
     DC_FlushRange(unk_4c, 0x200);
@@ -139,19 +139,19 @@ void Unk_0201106c::func_02011160() {
     }
 }
 
-void Unk_0201106c::func_02011158() {
-    func_02011550();
+void HudObjGfxIo::releaseLinkIconChars() {
+    freeChars();
 }
 
-BOOL Unk_0201106c::func_020110bc(s32 alt) {
-    BOOL a = FS_OpenFile(this, alt == 0 ? ((Unk_02011580 *)this)->func_02011640(1) : data_020c6c68);
+BOOL HudObjGfxIo::loadSlideIconChars(s32 alt) {
+    BOOL a = FS_OpenFile(this, alt == 0 ? ((HudObjGfx *)this)->getCharPath(1) : sHudObjCharPathTen2);
     BOOL ok;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
     s32 i;
     unk_4c = (u8 *)Mem_AllocTail(0x80);
     ok = TRUE;
-    src = data_020d6f68[alt];
+    src = sSlideIconCharOffsets[alt];
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
         if (FS_ReadFile(this, unk_4c + i * 0x40, 0x40) == ~z4) ok = z3;
@@ -161,7 +161,7 @@ BOOL Unk_0201106c::func_020110bc(s32 alt) {
     return FALSE;
 }
 
-void Unk_0201106c::func_02011074() {
+void HudObjGfxIo::uploadSlideIconChars() {
     u32 src;
     s32 i;
     DC_FlushRange(unk_4c, 0x80);
@@ -173,6 +173,6 @@ void Unk_0201106c::func_02011074() {
     }
 }
 
-void Unk_0201106c::func_0201106c() {
-    func_02011550();
+void HudObjGfxIo::releaseSlideIconChars() {
+    freeChars();
 }

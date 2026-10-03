@@ -132,19 +132,19 @@ void *_ZN10PlayerData10getCatalogEv(void *p);
 }
 
 extern "C" {
-void func_0203c41c(void *p, u16 *v, s32 z);
+void Catalog_AddItem(void *p, u16 *v, s32 z);
 }
 
 extern "C" {
-u16 func_02039dd4(s32 i);
+u16 RecycleBin_Get(s32 i);
 }
 
 extern "C" {
-void func_02039d94(s32 i, u16 v);
+void RecycleBin_Set(s32 i, u16 v);
 }
 
 extern "C" {
-u16 *func_02039d74(void *p);
+u16 *ChestStorage_GetItems(void *p);
 }
 
 extern "C" {
@@ -386,16 +386,16 @@ extern "C" void Save_ConvertFakePaintings() {
                 u16 *pb = &t[0];
                 if (!Unk_02060e3c_Eq(&t[1], pb) && s == 0) {
                     _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(m), &t[1], j, 0);
-                    func_0203c41c(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
+                    Catalog_AddItem(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
                 }
             }
         }
     }
     for (k = 0; k < 15; k++) {
-        t[2] = func_02039dd4(k);
+        t[2] = RecycleBin_Get(k);
         Item_ConvertFakePainting(&t[3], &t[2]);
         if (!Unk_02060e3c_Eq(&t[2], &t[3])) {
-            func_02039d94(k, t[3]);
+            RecycleBin_Set(k, t[3]);
         }
     }
     for (k = 0; k < 15; k++) {
@@ -408,7 +408,7 @@ extern "C" void Save_ConvertFakePaintings() {
         }
     }
     for (k = 0; k < 4; k++) {
-        q = func_02039d74(gSaveDressers + k * 0xb4);
+        q = ChestStorage_GetItems(gSaveDressers + k * 0xb4);
         for (n = 0; n < 90; q++, n++) {
             t[6] = *q;
             Item_ConvertFakePainting(&t[7], &t[6]);

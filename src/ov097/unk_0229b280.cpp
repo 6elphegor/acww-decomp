@@ -10,8 +10,8 @@ s32 Snd_PlaySe(s32 a);
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 s32 Item_IsFurniture(u16 *p);
 s32 FieldAction_RequestDrop(s32 a, s32 b);
-u16 *func_020342cc(void *a, s32 b, s32 c, s32 d);
-u16 *func_02034250(void *a, s32 b, s32 c, s32 d);
+u16 *RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
+u16 *RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
 u32 Room_CountOccupants();
 s32 FtrMgr_FindPlacementForPlayer(void *out, void *in, s32 n);
 s32 FtrMgr_SpawnFromArg(s32 p);
@@ -119,7 +119,7 @@ extern "C" void _ZN10PocketMenu15actionUseCarpetEv(PocketMenu *self) {
     u32 k = self->unk_b6;
     v0 = PocketMenu_GetItem(self, k);
     self->requestCameraPop();
-    v1 = *func_02034250(&v0, 0, 1, 1);
+    v1 = *RoomWallFloor_SetCarpet(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
     u32 y = v1;
@@ -145,7 +145,7 @@ extern "C" void _ZN10PocketMenu18actionUseWallpaperEv(PocketMenu *self) {
     u32 k = self->unk_b6;
     v0 = PocketMenu_GetItem(self, k);
     self->requestCameraPop();
-    v1 = *func_020342cc(&v0, 0, 1, 1);
+    v1 = *RoomWallFloor_SetWallpaper(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
     u32 y = v1;

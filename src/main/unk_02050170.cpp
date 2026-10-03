@@ -20,8 +20,8 @@ extern "C" void OS_ReleaseLockID(u16 v);
 extern "C" void Backup_Init(Backup *g, s32 n, const char *name);
 extern "C" void Backup_InitDefault(void);
 
-extern const char data_020ca478[];
-const char data_020ca478[] = "forest";
+extern const char sBackupGameName[];
+const char sBackupGameName[] = "forest";
 
 extern "C" void Backup_Init(Backup *g, s32 n, const char *name) {
     s32 t;
@@ -38,5 +38,5 @@ extern "C" void Backup_Init(Backup *g, s32 n, const char *name) {
 }
 
 extern "C" void Backup_InitDefault(void) {
-    Backup_Init(&gBackup, 0x1202, data_020ca478);
+    Backup_Init(&gBackup, 0x1202, sBackupGameName);
 }

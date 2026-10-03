@@ -424,7 +424,7 @@ public:
 extern "C" {
 extern u16 gPad[];
 extern u32 gCurrentHeap;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchHeld;
@@ -444,7 +444,7 @@ void Keyboard_SetTextFieldPos(void *p, s32 a, s32 b);
 void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
 void func_020e76f8(void *p, u32 v, u32 n);
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
 void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
 void func_0206cf4c(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 BOOL MenuCtrl_IsTouch();
@@ -511,7 +511,7 @@ void Gfx2d_ShowLayer(s32 a);
 void Keyboard_Shutdown(void *p);
 void Keyboard_Init(void *p, s32 a);
 void Keyboard_RestoreLastPage(void *p, s32 a);
-s32 func_02051348(void *p, s32 n);
+s32 Text_MeasureWidth(void *p, s32 n);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_0206f874(void *p);
@@ -538,7 +538,7 @@ void Gfx2d_EnableSubWindows(s32 a);
 void Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
 void Clock_GetDate(void *p);
 void String_FromEncodedBytes(void *p, void *s, s32 n);
-void func_020a78a4(void *dst, void *src, s32 n);
+void EncodedString_SetRaw(void *dst, void *src, s32 n);
 s32 String_CensorTaboo(void *p);
 void StrBuf_GetBytes(void *p, void *buf, s32 n);
 BOOL MenuKeys_HasDown(s32 p);
@@ -960,11 +960,11 @@ void BbsWriteMenu::init() {
     String_Load2dMenu(&a, 0x89);
     EncodedString41 c;
     ((EncodedString *)(&c))->fromMsgString(&a);
-    s32 n = func_020512e0(c.text, 0x28);
+    s32 n = Text_GetLength(c.text, 0x28);
     Mem_Copy(c.text, unk_c3, n);
     unk_c3[n] = 0x86;
     n++;
-    if (func_02051348(unk_c3, n) > 0x96) {
+    if (Text_MeasureWidth(unk_c3, n) > 0x96) {
         n--;
         unk_c3[n] = 0;
     }
@@ -1722,7 +1722,7 @@ extern "C" void BbsWriteMenu_Paste(S *s) {
         }
         Keyboard_ResetTypedRun(s->unk_370);
         Keyboard_BeginPaste(s->unk_370);
-        n = func_020512e0(s->unk_183, 0xc0);
+        n = Text_GetLength(s->unk_183, 0xc0);
         for (i = 0; i < n; i++) {
             if (!BbsWriteMenu_InsertCharRaw(s, s->unk_183[i], 0)) {
                 if (i == 0) {
@@ -1815,7 +1815,7 @@ extern "C" void BbsWriteMenu_ResumeInput(S *s) {
 
 extern "C" void BbsWriteMenu_ShowMessage(S *s, u32 a, u32 b) {
     volatile u8 v;
-    v = data_021edb68;
+    v = gU8None;
     v = a;
     ((MenuErrorMessage *)(s->unk_244))->open((u8 *)&v, b, 0);
     ((MenuProc *)s)->setMainState(0x16);
@@ -1891,7 +1891,7 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
     BbsWriteMenu_HighlightSelection(s);
     BbsWriteMenu_SetFlags(s, 4);
     ((BbsWriteMenu *)s)->refreshKeys();
-    s->unk_0b0 = (func_020512e0(s->unk_0c3, 0xc0) * 0x1f) / 0xc0;
+    s->unk_0b0 = (Text_GetLength(s->unk_0c3, 0xc0) * 0x1f) / 0xc0;
     if (s->unk_0b0 > 0x1f) s->unk_0b0 = 0x1f;
 }
 
@@ -2182,7 +2182,7 @@ void BbsWriteMenu::updateCaretPos() {
     s32 k = getLineOfIndex(unk_bd);
     unk_9c = k * 16 + 0x28;
     s32 b = unk_6a60[k];
-    unk_98 = (u8)(func_02051348(&unk_c3[b], unk_bd - b) + 0x30);
+    unk_98 = (u8)(Text_MeasureWidth(&unk_c3[b], unk_bd - b) + 0x30);
     BbsWriteMenu_ScrollToCaret((S *)this);
 }
 
@@ -2227,7 +2227,7 @@ BOOL BbsWriteMenu::navigateText(void *pad) {
             cur = cur - 1;
         }
     } else if (MenuKeys_HasRight((s32)pad)) {
-        s32 n = func_020512e0(unk_c3, 0xc0);
+        s32 n = Text_GetLength(unk_c3, 0xc0);
         s32 nx = cur + 1;
         if (nx <= n) {
             cur = nx;
@@ -2335,7 +2335,7 @@ void BbsWriteMenu::refreshCursor() {
 
 void BbsWriteMenu::censorText() {
     u8 *c3 = unk_c3;
-    func_020a78a4(&unk_4390, c3, 0xc0);
+    EncodedString_SetRaw(&unk_4390, c3, 0xc0);
     unk_42bc.fromEncoded(&unk_4390, 0, 0);
     if (String_CensorTaboo(&unk_42bc)) {
         unk_4390.fromMsgString(&unk_42bc);

@@ -27,12 +27,12 @@ struct Unk_020b7074_Pad {
     ~Unk_020b7074_Pad() {}
 };
 
-extern const u8 data_020d0d90[];
-const u8 data_020d0d90[0x18] = {
+extern const u8 sTouchPickKindHasTarget[];
+const u8 sTouchPickKindHasTarget[0x18] = {
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0,
 };
 
-extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
+extern "C" BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     Vec3 zero, v24, v30;
     zero.x = 0;
     zero.y = 0;
@@ -71,9 +71,9 @@ extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     return FALSE;
 }
 
-extern "C" s32 func_020b705c(s32 i) {
+extern "C" s32 TouchPickKind_HasTarget(s32 i) {
     if (i >= 0 && i < 0x17) {
-        return data_020d0d90[i];
+        return sTouchPickKindHasTarget[i];
     }
     return 0;
 }

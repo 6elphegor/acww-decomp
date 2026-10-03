@@ -213,8 +213,8 @@ public:
 extern "C" {
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_0209c3e0(u32 v);
-s32 func_0209c3f4(u32 v);
+s32 RoomObjSync_SetState(u32 v);
+s32 RoomObjSync_GetState(u32 v);
 void _ZN5Actor8vfunc_20Ev(void *o, u32 v);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
@@ -368,14 +368,14 @@ void RoomObjActor::setSyncSlot(u32 v) {
 
 s32 RoomObjActor::getSyncState() {
     if (unk_ea != 0xff) {
-        return func_0209c3f4(unk_ea);
+        return RoomObjSync_GetState(unk_ea);
     }
     return 0;
 }
 
 s32 RoomObjActor::storeSyncState() {
     if (unk_ea != 0xff) {
-        return func_0209c3e0(unk_ea);
+        return RoomObjSync_SetState(unk_ea);
     }
     return 0;
 }
@@ -1126,17 +1126,17 @@ u32 PlayerActor_GetPlayerData(Obj *o);
 u32 PlayerActor_GetTan(Obj *o);
 u32 _ZN10PlayerData15getLastPlayDateEv(void);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
-u16 *func_0209c37c(s32 a, s32 b);
+u16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Ground_GetDefaultY(u32 a);
 void _ZN12Unk_020102ec24updateCollidersAtDrawPosEPj(Obj *o, V3 *v);
 void _ZN12Unk_020102ec14setSubColliderEjjj(Obj *o, V3 *v, s32 a, s32 b);
 void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_02051468(void);
-void func_02051470(V3 *v);
-void func_02051478(void);
-s32 func_02051484(void);
-void func_0205148c(V3 *v);
+s32 BedSpot_GetRollResult(void);
+void BedSpot_RequestRoll(V3 *v);
+void BedSpot_Release(void);
+s32 BedSpot_GetGetOutResult(void);
+void BedSpot_RequestGetOut(V3 *v);
 
 void FtrMgr_PlaySeatSound2At(V3 *p);
 s32 PlayerActor_RequestLieInBed(Obj *o, u32 a, s32 b, s32 c);
@@ -1224,7 +1224,7 @@ extern "C" void PlayerActor_SetupGetOutOfBedCheck(Obj *o, Msg *m) {
     w.z = v.z;
     PlayerActor_GetOutOfBedCheckSetWork(r, &w, c);
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->unk_7fc)) {
-        func_0205148c(&v);
+        BedSpot_RequestGetOut(&v);
     }
 }
 
@@ -1242,7 +1242,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckTurn(Obj *o) {
 }
 
 extern "C" void PlayerActor_GetOutOfBedCheckResult(Obj *o) {
-    switch (func_02051484()) {
+    switch (BedSpot_GetGetOutResult()) {
     case 0:
         return;
     case 1:
@@ -1353,7 +1353,7 @@ extern "C" void PlayerActor_GetOutOfBedUpdateAnim(Obj *o) {
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x15)) {
         _ZN12Unk_02006d146playSeEj(o, 0x4c6);
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->unk_7fc)) {
-            func_02051478();
+            BedSpot_Release();
         }
     }
 }
@@ -1379,7 +1379,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckEnd(Obj *o) {
             t[1] = t[0];
             *(u16 *)PlayerSession_GetLastPlayDate() = t[1];
             s32 r5 = PlayerActor_CompareLastPlayDateNow(o);
-            u16 *r7 = func_0209c37c(0, 0x50);
+            u16 *r7 = DebugVar_GetPtr(0, 0x50);
             u32 r4 = PlayerActor_GetTan(o);
             Bits16 *r6 = PlayerSession_GetLastPlayDate();
             *r7 = r4 + r6->mid * 1000 + PlayerSession_GetLastPlayDate()->hi * 10;
@@ -1451,7 +1451,7 @@ extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
         w.x = v.x;
         w.y = v.y;
         w.z = v.z;
-        func_02051470(&w);
+        BedSpot_RequestRoll(&w);
         _ZN12Unk_020102ec9startAnimEijt(o, k, 3, 0);
     } else {
         _ZN12Unk_020102ec9startAnimEijt(o, k, 3, 0);
@@ -1470,7 +1470,7 @@ extern "C" void PlayerActor_BedRollCheckResult(Obj *o) {
         if (p[0] < 3) {
             p[0] = p[0] + 1;
         }
-        switch (func_02051468()) {
+        switch (BedSpot_GetRollResult()) {
         case 0:
             break;
         case 1:
@@ -1760,8 +1760,8 @@ void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 s32 Camera_SnapToFocus(V3 *v);
 s32 func_02063c18(s16 a);
-s32 func_02051494(void);
-void func_0205149c(V3 *v);
+s32 BedSpot_GetApproachResult(void);
+void BedSpot_RequestApproach(V3 *v);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 NetBuf_ReadS16B(void *a);
@@ -1875,7 +1875,7 @@ extern "C" void PlayerActor_SetupBedApproach(Obj *o, Msg *m) {
     PlayerActor_BedApproachSetWork(r7, v.x, v.z, h, r6, pl->f);
     PlayerActor_BedApproachSetNetData(o->unk_8ec, v.x, v.z, h, r6);
     if (_ZN11CommManager11isLocalSlotEj(g, o->unk_7fc)) {
-        func_0205149c(&v);
+        BedSpot_RequestApproach(&v);
     }
     _ZN12Unk_020102ec9startAnimEijt(o, 0x1a, 3, 0);
 }
@@ -1904,7 +1904,7 @@ extern "C" void PlayerActor_BedApproachCheckArrive(Obj *o) {
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->unk_7fc) == 0) {
         o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
     } else {
-        switch (func_02051494()) {
+        switch (BedSpot_GetApproachResult()) {
         case 0:
             break;
         case 2:
@@ -2350,8 +2350,8 @@ s32 Room_CountOccupants(void);
 s32 Scene_InHouseRoom(void);
 s32 TalkRequest_AddPlayerMessage(void);
 void TalkRequest_FinishPlayerMessage(void);
-void _ZN9Character13func_0203e47cEi(void *o, Sec *s);
-void _ZN9Character13func_0203e488Ei(void *o, Sec *s);
+void _ZN9Character17detachTalkRequestEi(void *o, Sec *s);
+void _ZN9Character17attachTalkRequestEi(void *o, Sec *s);
 void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, s32 a);
 void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, s32 a);
 void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *d);
@@ -2472,7 +2472,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                         HeldItemModel_PlayAnim(o->unk_59c, 0x13, 3, 0);
                     }
                     *p = 1;
-                    _ZN9Character13func_0203e488Ei(o, o);
+                    _ZN9Character17attachTalkRequestEi(o, o);
                     _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
                     {
                         Sec &s = *o;
@@ -2515,7 +2515,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                         o->unk_2dc = 0x1000;
                         if (MenuCtrl_IsResultOk() != 0) {
                             *p = 5;
-                            _ZN9Character13func_0203e47cEi(o, o);
+                            _ZN9Character17detachTalkRequestEi(o, o);
                             _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                             TalkRequest_FinishPlayerMessage();
                         } else {
@@ -2537,7 +2537,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 4:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN9Character17detachTalkRequestEi(o, o);
                 _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 TalkRequest_FinishPlayerMessage();
                 *p = 5;
@@ -2554,7 +2554,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 6:
         if (TalkRequest_AddPlayerMessage() != 0) {
             *p = 7;
-            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN9Character17attachTalkRequestEi(o, o);
             _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
@@ -2574,7 +2574,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 8:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN9Character17detachTalkRequestEi(o, o);
                 _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 TalkRequest_FinishPlayerMessage();
                 *p = 9;
@@ -2589,7 +2589,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 10:
         if (TalkRequest_AddPlayerMessage() != 0) {
             *p = 0xb;
-            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN9Character17attachTalkRequestEi(o, o);
             _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
@@ -2609,7 +2609,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 12:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN9Character17detachTalkRequestEi(o, o);
                 _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 TalkRequest_FinishPlayerMessage();
                 o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
@@ -2826,7 +2826,7 @@ extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
     case 1:
         if (TalkRequest_AddPlayerMessage() != 0) {
             (*q)++;
-            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN9Character17attachTalkRequestEi(o, o);
             _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
@@ -2846,7 +2846,7 @@ extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
     case 3:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN9Character17detachTalkRequestEi(o, o);
                 _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 TalkRequest_FinishPlayerMessage();
                 *q = 0;
@@ -4751,8 +4751,8 @@ void _ZN12Unk_020102ec18updateBodyColliderEv(Obj *o);
 void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
 void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, u32 a);
 void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
-void _ZN9Character13func_0203e488Ei(Obj *o, Sec *s);
-void _ZN9Character13func_0203e47cEi(Obj *o, Sec *s);
+void _ZN9Character17attachTalkRequestEi(Obj *o, Sec *s);
+void _ZN9Character17detachTalkRequestEi(Obj *o, Sec *s);
 void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *n);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN12Unk_0200769416keepsBgCheckWorkEj(Obj *o, s32 a);
@@ -5144,7 +5144,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
             case 1: {
                 Sec *s = (Sec *)o;
                 if (o) s = (Sec *)((u8 *)o + 0xec);
-                _ZN9Character13func_0203e488Ei(o, s);
+                _ZN9Character17attachTalkRequestEi(o, s);
                 _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
                 _ZN10MsgRequest11setFileNameEPKc((Sec *)((u8 *)o + 0xec), sRoomErrorMsgFile);
                 o->unk_10a = 0x15;
@@ -5175,7 +5175,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                     l.a.z = v->z;
                     Sec *s = (Sec *)o;
                     if (o) s = (Sec *)((u8 *)o + 0xec);
-                    _ZN9Character13func_0203e47cEi(o, s);
+                    _ZN9Character17detachTalkRequestEi(o, s);
                     _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                     o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
                     l.b.x = l.a.x;

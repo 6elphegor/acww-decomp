@@ -73,8 +73,8 @@ void String_Load2d(void *buf, u8 *c, s32 z);
 void String_FromEncodedBytes(void *dst, const void *s, s32 len);
 void String_Load2dMenu(void *a, s32 v);
 void *PlayerData_GetCurrent();
-s32 func_02097740(void *a, s32 b);
-s32 func_020978c8(void *a, s32 b);
+s32 PlayerDataArray_FindById(void *a, s32 b);
+s32 PlayerDataArray_IsUsed(void *a, s32 b);
 void *PlayerData_GetResident(void *a, s32 b);
 s32 SaveVillagers_IsOccupied(void *a, s32 b);
 void *SaveVillagers_Get(void *a, s32 b);
@@ -1519,13 +1519,13 @@ void PopupChoiceMenuBody::buildAddresseeList()
         unk_2d8[i] = 0;
     }
     g = PlayerData_getPlayerId(PlayerData_GetCurrent());
-    t = func_02097740(gSavePlayers, g);
+    t = PlayerDataArray_FindById(gSavePlayers, g);
     n = 0;
     k = 1;
     j = n;
     do {
         if (t != j) {
-            if (func_020978c8(gSavePlayers, j)) {
+            if (PlayerDataArray_IsUsed(gSavePlayers, j)) {
                 unk_2d8[n] = k;
                 n++;
             }

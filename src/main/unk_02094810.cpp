@@ -136,7 +136,7 @@ void PlayerActor_OffsetByAngle(Unk_02006d14_V3 *out, Unk_02006d14 *o, Unk_02006d
 void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
 void _ZN6FxVec3D1Ev(void *p);
-void func_02000c98(void *p);
+void FxVec3_Construct(void *p);
 u16 NetBuf_ReadU16(u8 *p);
 void NetBuf_WriteU16(u8 *p, u16 h);
 void NetBuf_WriteS16(u8 *p, s32 v);
@@ -391,7 +391,7 @@ extern "C" u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p)
 PlayerSessionTable::PlayerSessionTable()
 {
     u32 i;
-    __cxa_vec_ctor(unk_34, 4, 12, (void *)func_02000c98, (void *)_ZN6FxVec3D1Ev);
+    __cxa_vec_ctor(unk_34, 4, 12, (void *)FxVec3_Construct, (void *)_ZN6FxVec3D1Ev);
     for (i = 0; i < 4; i++) {
         PlayerSessionTable_ClearDataIndex(&gPlayerSessionTable, i);
         PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);

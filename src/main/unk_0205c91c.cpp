@@ -13,7 +13,7 @@ struct ItemId {
     ~ItemId();
 };
 
-struct Unk_0205cbe8;
+struct CharaClothTexPool;
 
 extern "C" {
 extern void *gCharaClothTexHeap;
@@ -36,56 +36,56 @@ u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
 
-struct Unk_0205ca94 {
+struct CharaClothTexRef {
     u8 v;
-    Unk_0205ca94();
-    ~Unk_0205ca94();
-    void func_0205ca94(u16 *s, s32 a, s32 b, s32 c);
-    void func_0205cba4(u32 x);
-    void func_0205cba8();
-    void func_0205cbb0(u32 x);
+    CharaClothTexRef();
+    ~CharaClothTexRef();
+    void loadItem(u16 *s, s32 a, s32 b, s32 c);
+    void setSlot(u32 x);
+    void release();
+    void assign(u32 x);
 };
 
-struct Unk_0205cbe8 {
+struct CharaClothTexPool {
     u32 ptr[10];
     ItemId id[10];
-    Unk_0205ca94 sub;
-    Unk_0205cbe8();
-    ~Unk_0205cbe8();
-    s32 func_0205cbe8(u16 *s);
-    void func_0205cc4c(u32 idx, u16 *s);
-    Unk_0205ca94 *func_0205cc64();
-    u32 func_0205cc68(u32 idx);
-    void func_0205cc70();
-    void func_0205ccb0();
+    CharaClothTexRef sub;
+    CharaClothTexPool();
+    ~CharaClothTexPool();
+    s32 findItem(u16 *s);
+    void setItem(u32 idx, u16 *s);
+    CharaClothTexRef *getOwnRef();
+    u32 getBuffer(u32 idx);
+    void freeBuffers();
+    void allocBuffers();
 };
 
 extern "C" {
-extern Unk_0205cbe8 data_021c6404;
-void func_0205cc58(u16 *out, Unk_0205cbe8 *t, u32 idx);
-void func_0205c930(void *p, s32 x);
+extern CharaClothTexPool sCharaClothTexPool;
+void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx);
+void CharaClothTexRef_CopyFromSlot(void *p, s32 x);
 }
 
-extern "C" void func_0205cde4() {
+extern "C" void CharaClothTexPool_Create() {
     CharaClothTexHeap_Create();
-    data_021c6404.func_0205ccb0();
+    sCharaClothTexPool.allocBuffers();
     if (gCharaClothTexHeap) func_020e877c(gCharaClothTexHeap);
 }
 
-extern "C" void func_0205cdcc() {
-    data_021c6404.func_0205cc70();
+extern "C" void CharaClothTexPool_Destroy() {
+    sCharaClothTexPool.freeBuffers();
     CharaClothTexHeap_Destroy();
 }
 
-extern "C" void func_0205cdbc() { data_021c6404.func_0205cc64(); }
+extern "C" void CharaClothTexPool_GetOwnRef() { sCharaClothTexPool.getOwnRef(); }
 
-Unk_0205cbe8::Unk_0205cbe8() {
+CharaClothTexPool::CharaClothTexPool() {
     for (s32 i = 0; i < 10; i++) id[i].v = 0xfff1;
 }
 
-Unk_0205cbe8::~Unk_0205cbe8() {}
+CharaClothTexPool::~CharaClothTexPool() {}
 
-void Unk_0205cbe8::func_0205ccb0() {
+void CharaClothTexPool::allocBuffers() {
     void *heap = gCharaClothTexHeap;
     u32 n = gCommManager[0x6c];
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
@@ -101,12 +101,12 @@ void Unk_0205cbe8::func_0205ccb0() {
     for (i = 5; i < m + 5; i++) {
         ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
-    sub.func_0205cbb0(4);
+    sub.assign(4);
 }
 
-void Unk_0205cbe8::func_0205cc70() {
+void CharaClothTexPool::freeBuffers() {
     Unk_0205cc70_Pad pad;
-    sub.func_0205cba8();
+    sub.release();
     for (s32 i = 0; i < 10; i++) {
         ptr[i] = 0;
         id[i].v = 0xfff1;
@@ -114,15 +114,15 @@ void Unk_0205cbe8::func_0205cc70() {
     if (gCharaClothTexHeap) func_020e885c(gCharaClothTexHeap);
 }
 
-u32 Unk_0205cbe8::func_0205cc68(u32 idx) { return ptr[idx]; }
+u32 CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }
 
-Unk_0205ca94 *Unk_0205cbe8::func_0205cc64() { return &sub; }
+CharaClothTexRef *CharaClothTexPool::getOwnRef() { return &sub; }
 
-extern "C" void func_0205cc58(u16 *out, Unk_0205cbe8 *t, u32 idx) { *out = t->id[idx].v; }
+extern "C" void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx) { *out = t->id[idx].v; }
 
-void Unk_0205cbe8::func_0205cc4c(u32 idx, u16 *s) { id[idx].v = *s; }
+void CharaClothTexPool::setItem(u32 idx, u16 *s) { id[idx].v = *s; }
 
-s32 Unk_0205cbe8::func_0205cbe8(u16 *s) {
+s32 CharaClothTexPool::findItem(u16 *s) {
     u16 *p;
     BOOL z1 = FALSE, z2 = FALSE;
     for (s32 i = 0; i < 10; i++) {
@@ -139,24 +139,24 @@ s32 Unk_0205cbe8::func_0205cbe8(u16 *s) {
     return 10;
 }
 
-Unk_0205ca94::Unk_0205ca94() { v = 10; }
+CharaClothTexRef::CharaClothTexRef() { v = 10; }
 
-Unk_0205ca94::~Unk_0205ca94() {}
+CharaClothTexRef::~CharaClothTexRef() {}
 
-void Unk_0205ca94::func_0205cbb0(u32 x) {
-    func_0205cba4(x);
+void CharaClothTexRef::assign(u32 x) {
+    setSlot(x);
     u16 s = 0xfff1;
-    func_0205ca94(&s, 0, 0, 0);
+    loadItem(&s, 0, 0, 0);
 }
 
-void Unk_0205ca94::func_0205cba8() { v = 10; }
-void Unk_0205ca94::func_0205cba4(u32 x) { v = x; }
+void CharaClothTexRef::release() { v = 10; }
+void CharaClothTexRef::setSlot(u32 x) { v = x; }
 
-void Unk_0205ca94::func_0205ca94(u16 *s, s32 a, s32 b, s32 c) {
+void CharaClothTexRef::loadItem(u16 *s, s32 a, s32 b, s32 c) {
     u32 st = v;
     BOOL r4, r2, r1;
     if (*s == 0xfff1) {
-        data_021c6404.func_0205cc4c(st, s);
+        sCharaClothTexPool.setItem(st, s);
     }
     r4 = TRUE;
     r2 = TRUE;
@@ -172,7 +172,7 @@ void Unk_0205ca94::func_0205ca94(u16 *s, s32 a, s32 b, s32 c) {
     if (c == 0 && !r4) {
         u16 tmp;
         BOOL eq;
-        func_0205cc58(&tmp, &data_021c6404, st);
+        CharaClothTexPool_GetItem(&tmp, &sCharaClothTexPool, st);
         if (Item_IsFurniture(s)) {
             s32 t = Item_GetFurnitureIndex(s);
             if (t == Item_GetFurnitureIndex(&tmp)) eq = TRUE; else eq = FALSE;
@@ -182,32 +182,32 @@ void Unk_0205ca94::func_0205ca94(u16 *s, s32 a, s32 b, s32 c) {
         if (eq) return;
     }
     if (b != 0 && !r4) {
-        s32 idx = data_021c6404.func_0205cbe8(s);
+        s32 idx = sCharaClothTexPool.findItem(s);
         if (idx != 10) {
-            func_0205c930(this, idx);
+            CharaClothTexRef_CopyFromSlot(this, idx);
             return;
         }
     }
-    if (ClothTex_LoadItemThunk(data_021c6404.func_0205cc68(st), s, a)) {
-        data_021c6404.func_0205cc4c(st, s);
+    if (ClothTex_LoadItemThunk(sCharaClothTexPool.getBuffer(st), s, a)) {
+        sCharaClothTexPool.setItem(st, s);
     }
 }
 
-extern "C" void func_0205ca2c(u8 *p, void *q) {
+extern "C" void CharaClothTexRef_LoadPattern(u8 *p, void *q) {
     u32 cur = *p;
-    if (ClothTex_LoadPatternThunk((void *)data_021c6404.func_0205cc68(cur), q)) {
+    if (ClothTex_LoadPatternThunk((void *)sCharaClothTexPool.getBuffer(cur), q)) {
         static ItemId dflt(0xffff);
-        data_021c6404.func_0205cc4c(cur, &dflt.v);
+        sCharaClothTexPool.setItem(cur, &dflt.v);
     }
 }
 
-extern "C" void func_0205c930(void *pp, s32 x) {
+extern "C" void CharaClothTexRef_CopyFromSlot(void *pp, s32 x) {
     u8 *p = (u8 *)pp;
     u32 cur = *p;
     if (x != cur) {
         u16 v[2];
-        func_0205cc58(&v[0], &data_021c6404, x);
-        func_0205cc58(&v[1], &data_021c6404, cur);
+        CharaClothTexPool_GetItem(&v[0], &sCharaClothTexPool, x);
+        CharaClothTexPool_GetItem(&v[1], &sCharaClothTexPool, cur);
         BOOL ok = FALSE;
         volatile u16 *pv = v;
         u16 a = *pv;
@@ -233,15 +233,15 @@ extern "C" void func_0205c930(void *pp, s32 x) {
             if (eq) return;
         }
     copy:
-        void *pa = (void *)data_021c6404.func_0205cc68(x);
-        void *pb = (void *)data_021c6404.func_0205cc68(cur);
+        void *pa = (void *)sCharaClothTexPool.getBuffer(x);
+        void *pb = (void *)sCharaClothTexPool.getBuffer(cur);
         if (pa != 0 && pb != 0) {
             MI_CpuCopy8(pa, pb, ClothTex_GetBufferSize());
-            data_021c6404.func_0205cc4c(cur, v);
+            sCharaClothTexPool.setItem(cur, v);
         }
     }
 }
 
-extern "C" void func_0205c91c(u8 *p) { data_021c6404.func_0205cc68(*p); }
+extern "C" void CharaClothTexRef_GetBuffer(u8 *p) { sCharaClothTexPool.getBuffer(*p); }
 
-Unk_0205cbe8 data_021c6404;
+CharaClothTexPool sCharaClothTexPool;

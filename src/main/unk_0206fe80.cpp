@@ -35,7 +35,7 @@ void *PlayerData_GetResident(void *a, s32 i);
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, s32 b);
 s32 PlayerData_GetCurrentIndex();
-s32 func_020978fc(s32 t);
+s32 PlayerData_IsResidentIndex(s32 t);
 void Clock_GetDateTime(void *p);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
@@ -185,7 +185,7 @@ u32 MuseumData::getDonationState(u16 *id) {
     if (v == 0) return 3;
     if (v == 5) return 2;
     s32 t = PlayerData_GetCurrentIndex();
-    if (func_020978fc(t) == 1 && v == t + 1) return 0;
+    if (PlayerData_IsResidentIndex(t) == 1 && v == t + 1) return 0;
     return 1;
 }
 

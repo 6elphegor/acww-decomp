@@ -298,15 +298,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -350,8 +350,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -415,7 +415,7 @@ void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *a, void *b)
 void _ZN13ContestRecord16setVotedVillagerEP16Unk_02085810_Rec(void *a, void *b);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *a);
 void *_ZN13ContestRecord16getVotedVillagerEv(void *a);
-void *func_0204bdb8();
+void *Item_GetSaveData();
 s32 _ZN10PlayerData11getPlayerIdEv(...);
 void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
 void MailText_SetSlot(s32 a, MsgString9B *o);
@@ -661,7 +661,7 @@ void SpNpcTortimerBrightNightsTalk::vfunc_14() {
             void *r = _ZN13ContestRecord17getHolderVillagerEv(gContestRecord);
             MsgString9B o;
             if (_ZN10VillagerId7isValidEv(r) == 0) {
-                void *b = func_0204bdb8();
+                void *b = Item_GetSaveData();
                 PlayerData_GetCurrent();
                 void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, _ZN10PlayerData11getPlayerIdEv());
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(q))) {

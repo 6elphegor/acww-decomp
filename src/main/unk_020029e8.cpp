@@ -28,7 +28,7 @@ extern u8 data_02135934[];
 }
 
 extern "C" {
-extern u32 data_020d5dfc[];
+extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {

@@ -43,13 +43,13 @@ const Unk_02041104_Ent sTransitionTypeTable[4] = {
     { { CutTransition_Begin, CutTransition_End, CutTransition_Update, CutTransition_VBlank } },
 };
 
-u8 data_021c3cb4;
+u8 sIrisWipeFlags;
 u8 data_021c3cb8;
-u16 *data_021c3cbc;
+u16 *sIrisWipeActiveTable;
 Unk_021c3cc0 gScreenTransition;
 u8 sIrisWipeHBlankTask[0x1c];
-u16 data_021c3cf0[0x60];
-u16 data_021c3db0[0x60];
+u16 sIrisWipeTableA[0x60];
+u16 sIrisWipeTableB[0x60];
 
 extern u32 data_021c1b3c;
 extern volatile u32 gTownEval[];
@@ -134,7 +134,7 @@ extern "C" void IrisWipe_HBlank() {
     u32 line = r[3];
     if ((s32)line < 0xc0) {
         if ((s32)line >= 0x60) line = 0xbf - line;
-        u16 v = data_021c3cbc[line];
+        u16 v = sIrisWipeActiveTable[line];
         if (*(volatile u16 *)0x4000004 & 2) {
             *(volatile u16 *)((u8 *)r + 0x40) = v;
             *(volatile u16 *)((u8 *)r + 0x1040) = v;
@@ -143,8 +143,8 @@ extern "C" void IrisWipe_HBlank() {
 }
 
 extern "C" void IrisWipe_VBlankRegs() {
-    *(volatile u16 *)0x4000040 = *data_021c3cbc;
-    *(volatile u16 *)0x4001040 = *data_021c3cbc;
+    *(volatile u16 *)0x4000040 = *sIrisWipeActiveTable;
+    *(volatile u16 *)0x4001040 = *sIrisWipeActiveTable;
     *(volatile u16 *)0x4000044 = 0xc0;
     *(volatile u16 *)0x4001044 = 0xc0;
 }
@@ -183,11 +183,11 @@ extern "C" void IrisWipe_SetupLayers() {
 
 extern "C" void IrisWipe_Begin() {
     volatile u16 z = 0;
-    MIi_CpuClear16(z, (u32)data_021c3cf0, 0x180);
-    data_021c3cbc = data_021c3cf0;
+    MIi_CpuClear16(z, (u32)sIrisWipeTableA, 0x180);
+    sIrisWipeActiveTable = sIrisWipeTableA;
     IrisWipe_SetupLayers();
     if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
-        data_021c3cb4 |= 1;
+        sIrisWipeFlags |= 1;
     }
     if (gScreenTransition.unk_04 == 0x1000) Gfx2d_SetBrightness(0);
 }
@@ -195,9 +195,9 @@ extern "C" void IrisWipe_Begin() {
 extern "C" void IrisWipe_End() {
     Gfx2d_DisableMainWindows(1);
     Gfx2d_DisableSubWindows(1);
-    if (data_021c3cb4 & 1) {
+    if (sIrisWipeFlags & 1) {
         HBlank_Remove(sIrisWipeHBlankTask);
-        data_021c3cb4 &= ~1;
+        sIrisWipeFlags &= ~1;
     }
     Gfx2d_HideMainPlanes(4);
     Gfx2d_HideSubPlanes(4);
@@ -208,14 +208,14 @@ extern "C" void IrisWipe_Update() {
     u16 *p;
     u16 t;
     Unk_021c3cc0 *s = &gScreenTransition;
-    if (data_021c3cb4 & 2) p = data_021c3cf0; else p = data_021c3db0;
+    if (sIrisWipeFlags & 2) p = sIrisWipeTableA; else p = sIrisWipeTableB;
     s32 v = s->unk_04;
     if (v == 0) {
         volatile u16 c = 0xff;
         MIi_CpuClear16(c, (u32)p, 0xc0);
     } else if (v == 0x1000) {
         volatile u16 c = 0x8080;
-        MIi_CpuClear16(c, (u32)data_021c3cf0, 0x180);
+        MIi_CpuClear16(c, (u32)sIrisWipeTableA, 0x180);
     } else {
         s32 h = ((0x1000 - v) * 160) >> 12;
         s32 h2 = (h * h) << 12;
@@ -237,15 +237,15 @@ extern "C" void IrisWipe_Update() {
 }
 
 extern "C" void IrisWipe_SwapTables() {
-    u32 v = data_021c3cb4;
+    u32 v = sIrisWipeFlags;
     if (v & 2) {
-        data_021c3cbc = data_021c3cf0;
+        sIrisWipeActiveTable = sIrisWipeTableA;
         v &= ~2;
-        data_021c3cb4 = v;
+        sIrisWipeFlags = v;
     } else {
-        data_021c3cbc = data_021c3db0;
+        sIrisWipeActiveTable = sIrisWipeTableB;
         v |= 2;
-        data_021c3cb4 = v;
+        sIrisWipeFlags = v;
     }
 }
 
@@ -265,8 +265,8 @@ extern "C" void ScreenTransition_Init() {
     gScreenTransition.unk_0c = -16;
     gScreenTransition.unk_04 = 0x1000;
     gScreenTransition.unk_08 = 0;
-    data_021c3cbc = 0;
-    data_021c3cb4 = 0;
+    sIrisWipeActiveTable = 0;
+    sIrisWipeFlags = 0;
 }
 
 extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {

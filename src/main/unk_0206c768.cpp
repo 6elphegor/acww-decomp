@@ -6,15 +6,15 @@ s32 Mem_Copy(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-s32 func_020512e0(void *p, s32 n);
+s32 Text_GetLength(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_02051320(void *p, s32 n, s32 z);
+s32 Text_GetLineEnd(void *p, s32 n, s32 z);
 }
 
 extern "C" {
-s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
+s32 Text_FitToWidth(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 }
 
 extern "C" {
@@ -255,7 +255,7 @@ extern "C" void func_0206c92c() {
         dst.fromMsgString(&src);
         p = dst.unk_0e;
         while (*p != 0) {
-            n = func_02051320(p, 3, z0);
+            n = Text_GetLineEnd(p, 3, z0);
             if (n != 0) {
                 if (cnt < 0x2fe) {
                     for (j = z1; j < n; j++) {
@@ -280,7 +280,7 @@ extern "C" s32 func_0206c884(u8 *self) {
     Mem_Copy(self + 0x4c, buf, 0x80);
     cnt = 0;
     matched = 0;
-    n = func_020512e0(buf, 0x80);
+    n = Text_GetLength(buf, 0x80);
     for (i = 0; i < 0xc0; i++) data_021ca9fc[i] = 0;
     for (i = 0; i < n; i++) {
         if (buf[i] >= 1 && buf[i] <= 0x1a) buf[i] += 0x1a;
@@ -303,7 +303,7 @@ extern "C" s32 func_0206c884(u8 *self) {
 }
 
 extern "C" s32 func_0206c878(u8 *self) {
-    return func_020512e0(self + 0x4c, 0x80);
+    return Text_GetLength(self + 0x4c, 0x80);
 }
 
 extern "C" BOOL func_0206c858(u32 c) {

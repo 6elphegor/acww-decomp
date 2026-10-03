@@ -207,7 +207,7 @@ struct Unk_ov107_Comm {
 
 extern "C" {
 extern Unk_ov107_Comm *gCommManager;
-extern u8 data_021edb68;
+extern u8 gU8None;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchHeld;
@@ -243,7 +243,7 @@ void Item_FromPlacedForm(void *a, void *b);
 u32 Item_PickRandomPresent();
 void PlayerData_GetCurrent();
 s32 PlayerData_getCatalog();
-void func_0203c42c(s32 a, void *b, s32 c, s32 d);
+void Catalog_SetItem(s32 a, void *b, s32 c, s32 d);
 void MenuCtrl_SetPocketsFullItem();
 void MenuCtrl_SetIndex(u32 a);
 void MenuCtrl_SetResult(s32 a);
@@ -1042,7 +1042,7 @@ void PocketsFullMenu::showMessage(s32 a, u32 b) {
     } else {
         unk_bb = b;
     }
-    v[0] = data_021edb68;
+    v[0] = gU8None;
     v[0] = a;
     MenuErrorMessage_open(&unk_25b0, (void *)v, 1, 0);
     setMainState(0xe);
@@ -1361,7 +1361,7 @@ void PocketsFullMenu::storeNewItem() {
         r4 = 1;
     }
     PlayerData_GetCurrent();
-    func_0203c42c(PlayerData_getCatalog(), &b, 0, 1);
+    Catalog_SetItem(PlayerData_getCatalog(), &b, 0, 1);
     getSlotItem(unk_b9);
     MenuCtrl_SetPocketsFullItem();
     putItemInSlot(unk_b9, r6, r4);

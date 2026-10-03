@@ -6,20 +6,20 @@ void DateTime_SubHours(void *p, u32 n);
 u32 Date_GetWeekday(u32 a, u32 b, u32 c);
 }
 
-extern "C" void func_02039c04() {}
+extern "C" void RecycleBin_Construct() {}
 
-extern "C" void func_02039c00() {}
+extern "C" void RecycleBin_Destruct() {}
 
-extern "C" void func_02039bec(u16 *p) {
+extern "C" void RecycleBin_Clear(u16 *p) {
     for (s32 i = 0; i < 15; i++) {
         p[i] = 0xfff1;
     }
 }
 
-extern "C" void func_02039b6c(u16 *arr, void *src, s32 n) {
+extern "C" void RecycleBin_AdvanceDays(u16 *arr, void *src, s32 n) {
     if (n != 0) {
         if (n >= 4) {
-            func_02039bec(arr);
+            RecycleBin_Clear(arr);
         } else {
             u32 b[2];
             b[0] = 0;
@@ -31,18 +31,18 @@ extern "C" void func_02039b6c(u16 *arr, void *src, s32 n) {
                 break;
             case 1:
             case 4:
-                func_02039bec(arr);
+                RecycleBin_Clear(arr);
                 break;
             case 2:
             case 5:
                 if (n >= 2) {
-                    func_02039bec(arr);
+                    RecycleBin_Clear(arr);
                 }
                 break;
             case 3:
             case 6:
                 if (n >= 3) {
-                    func_02039bec(arr);
+                    RecycleBin_Clear(arr);
                 }
                 break;
             }

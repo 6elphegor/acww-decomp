@@ -232,15 +232,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -284,8 +284,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -324,7 +324,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
 #define func_0201b08c _ZN8NpcActor8vfunc_4cEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
-#define func_0202e548 _ZN10SpNpcActor13func_0202e548Eii
+#define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
@@ -364,7 +364,7 @@ s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void func_0201b08c(void *self, u32 a, u32 b);
 void Character_setInteractionRange(void *self, s32 v);
-void func_0202e548(void *self, s32 a, s32 b);
+void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
 void func_02015ab0(void *self, u32 v);
 NpcActor *func_02015aac(void *self);
 void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
@@ -387,7 +387,7 @@ BOOL NetArea_IsLocalOwner();
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
 void Talk_AdvanceDrama(void *self, void *p);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 GameStart_IsActive();
 s32 Clock_GetWeekday();
 void *NpcRegistry_FindSpNpc(s32 n);
@@ -476,7 +476,7 @@ BOOL SpNpcSable::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((Unk_ov004_0221b6d4_Owner *)this);
-    func_0202e548(this, 0x119a, 0x2000);
+    SpNpcActor_setColliderSize(this, 0x119a, 0x2000);
     NpcActor_setCollisionRadius(this, 0);
     Character_setInteractionRange(this, 0x3000);
     return TRUE;
@@ -489,7 +489,7 @@ BOOL SpNpcSable::vfunc_00() {
     }
     unk_708 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
             changeAct(0);
         } else {
@@ -684,7 +684,7 @@ void SpNpcSableTalk::attachOwner(Unk_ov004_0221b6d4_Owner *o) {
 void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
     u32 idx = SpNpcSable_GetTalkCount(unk_ac);
     void *g = gCommManager;
-    if (CommManager_isOnline(g) != 0 || *(s16 *)func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(g) != 0 || *(s16 *)DebugVar_GetPtr(0, 0x4a) != 0) {
         idx = 0;
         out->unk_04 = 0x57;
     } else if (GameStart_IsActive() != 0) {
@@ -722,7 +722,7 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
         }
     }
     out->unk_00 = sSpNpcSableMsgFiles[idx];
-    if (CommManager_isOnline(g) == 0 && *(s16 *)func_0209c37c(0, 0x4a) == 0 && idx == 0) {
+    if (CommManager_isOnline(g) == 0 && *(s16 *)DebugVar_GetPtr(0, 0x4a) == 0 && idx == 0) {
         switch (out->unk_04) {
         case 2:
         case 5:

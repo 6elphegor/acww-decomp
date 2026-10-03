@@ -2,9 +2,9 @@
 
 extern "C" u32 AcreAttr_GetType(u32 i);
 
-extern const u32 data_020c8bd8[0x37];
+extern const u32 sAcreTypeAttrs[0x37];
 
-const u32 data_020c8bd8[0x37] = {
+const u32 sAcreTypeAttrs[0x37] = {
     0x20,    0x20,    0x1020,  0x40,    0x48,    0x80,    0x88,    0x60,    0xa0,    0,       0x400,   1,
     0x800,   0x200,   2,       0x9000,  0x12000, 0x44000, 0x28000, 0x21000, 0x81000, 0x1000,  0x2000,  0x4000,
     0x8000,  0x10000, 0x20000, 0x40000, 0x1004,  0x2004,  0x4004,  0x8004,  0x10004, 0x20004, 0x40004, 0x1100,
@@ -12,8 +12,8 @@ const u32 data_020c8bd8[0x37] = {
     0x100c,  0x800c,  0x1000c, 0x2000c, 0x4000c, 0x10,    0,
 };
 
-extern "C" u32 func_02037338(u32 v) {
-    const u32 *p = data_020c8bd8;
+extern "C" u32 AcreType_FindByAttr(u32 v) {
+    const u32 *p = sAcreTypeAttrs;
     u32 i;
     for (i = 0; i < 0x37; i++) {
         if (v == *p++) {
@@ -32,12 +32,12 @@ extern "C" u32 Acre_GetAttr(u32 x) {
 
 extern "C" u32 AcreType_GetAttr(s32 i) {
     if (i < 0x37) {
-        return data_020c8bd8[i];
+        return sAcreTypeAttrs[i];
     }
     return 0;
 }
 
-extern "C" u8 func_02037260(u32 x) {
+extern "C" u8 AcreType_CountRiverBits(u32 x) {
     u32 m = AcreType_GetAttr(x);
     if (m & 0x7f000) {
         u8 n = 0;

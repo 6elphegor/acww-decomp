@@ -230,7 +230,7 @@ struct Unk_ov003_022173a8_Glob {
 extern "C" {
 extern Unk_ov003_022173a8_Glob data_021ed150;
 
-void func_020ac1f8(void *p);
+void ObjShadow_DrawSign(void *p);
 s32 Field_GetSpawnedKind1Count();
 void _ZN8ItemNameC1EPt(void *self, u16 *p);
 void _ZN8ItemNameD1Ev(void *self);
@@ -275,7 +275,7 @@ BOOL TownSign::vfunc_70() {
 }
 
 BOOL TownSign::onDraw() {
-    func_020ac1f8(unk_5c);
+    ObjShadow_DrawSign(unk_5c);
     return TRUE;
 }
 

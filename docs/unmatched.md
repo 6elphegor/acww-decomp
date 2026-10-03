@@ -72,7 +72,7 @@ Most library units were linked with their code only, so most library data is sti
 | Range | Size | Contents |
 |---|--:|---|
 | `.text` 0x02000b48-0x02000b6c | 0x24 | `BuildInfo` (`_start_ModuleParams`, the SDK's module parameter block right after crt0) |
-| `.text` 0x02000b6c-0x02000b7c | 0x10 | LampLights 16-byte key; `func_02000b7c` (built from source) returns its address |
+| `.text` 0x02000b6c-0x02000b7c | 0x10 | LampLights 16-byte key; `AxMail_GetDigestKey` (built from source) returns its address |
 | `.text` 0x02000b84-0x02000c2c | 0xa8 | The `.version` block: the middleware tag strings `[SDK+...]` (DWC, BACKUP, Wi-Fi, CPS, SSL) that `OSi_ReferSymbol` callers pass to keep them linked |
 | `.init` 0x020c5f68-0x020c5fa4, 0x020c6094-0x020c6108; `.ctor` 0x020d1f40-0x020d1f4c, 0x020d1f54-0x020d1f58 | 0xb0 + 0x10 | Four ARM static initialisers of library-area files whose owners are not settled: `0x020c5f68` (empty), `0x020c5f6c` (constructs a global vector at bss 0x021f4880 and registers its destructor), `0x020c5fa0` (empty), `0x020c6094` (calls `SndVolumeCurve_Clear` and `FX_Div` three times; bss 0x021f5c00-0x021f5c0c) |
 | `.exception` 0x020c2b2c-0x020c2b34, `.exceptix` 0x020c2c40-0x020c2c4c | 0x14 | Exception-table entries of `__NextAction` (above) |

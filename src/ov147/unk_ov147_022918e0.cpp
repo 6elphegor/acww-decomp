@@ -111,8 +111,8 @@ void MI_CpuFill8(void *a, s32 b, u32 n);
 void Snd_PlaySe(s32 a);
 u32 Clock_GetTimeOfDay();
 void *func_0208f158(void *p);
-BOOL func_020978c8(void *t, s32 i);
-s32 func_020978a4(void *t);
+BOOL PlayerDataArray_IsUsed(void *t, s32 i);
+s32 PlayerDataArray_CountUsed(void *t);
 void *PlayerData_GetResident(void *t, s32 i);
 void SaveManager_SetEraseResidentSlot(s32 i);
 void GameStart_SetNewTown();
@@ -279,8 +279,8 @@ void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void TalkRequestFlags_ClearSceneHold();
 void GameStart_SetupSave();
-void func_0203cbb8();
-void _ZN12Unk_0203c92c13func_0203c98cEv();
+void PlayerOptions_Get();
+void _ZN13PlayerOptions5resetEv();
 void TalkRequestFlags_SetSceneHold();
 s32 Main_TakeDwcInitResult();
 s32 Save_CheckBackupError();
@@ -402,8 +402,8 @@ TitleScreen::~TitleScreen() {}
 
 BOOL TitleScreen::vfunc_00() {
     unk_54.setOwner(this);
-    func_0203cbb8();
-    _ZN12Unk_0203c92c13func_0203c98cEv();
+    PlayerOptions_Get();
+    _ZN13PlayerOptions5resetEv();
     TalkRequestFlags_SetSceneHold();
     if (Main_TakeDwcInitResult() == 3) {
         unk_f0 = 1;
@@ -701,7 +701,7 @@ void TitleTalk::vfunc_14() {
         { s244, s240, 2 },
     };
     TalkWindowState *r5 = TalkWindow_Get(0);
-    s32 r6 = func_020978a4(gSavePlayers);
+    s32 r6 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 r0 = gSaveData.isValid();
     TitleScreen *r2 = unk_44;
     if (r2->unk_9e != 0) {
@@ -814,7 +814,7 @@ void TitleTalk::openResidentChoices() {
     s32 r4 = 0;
     u8 buf[3];
     for (r4 = 0; r4 < 4; r4++) {
-        if (func_020978c8(gSavePlayers, r4)) {
+        if (PlayerDataArray_IsUsed(gSavePlayers, r4)) {
             MsgString9B o;
             ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->getNameString((MsgString *)&o);
             ChoiceEntry *r7 = r6->getEntry(r5);
@@ -846,7 +846,7 @@ void TitleTalk::vfunc_18() {
     typedef void (TitleTalk::*Fn)();
     TalkWindowState *sp0 = TalkWindow_Get(0);
     s32 r5 = sp0->getChoiceList()->getResult();
-    s32 sp4 = func_020978a4(gSavePlayers);
+    s32 sp4 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 sp8 = gSaveData.isValid();
     static Fn t0[4] = { 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
     static Fn t1[4] = { &TitleTalk::chooseNewGame, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
@@ -921,7 +921,7 @@ void TitleTalk::chooseResident() {
     s32 r5 = 0;
     s32 r4;
     for (r4 = 0; r4 < 4; r4++) {
-        if (func_020978c8(gSavePlayers, r4)) {
+        if (PlayerDataArray_IsUsed(gSavePlayers, r4)) {
             if (a == r5) {
                 SaveManager_SetEraseResidentSlot(r4);
                 MsgString9B o;

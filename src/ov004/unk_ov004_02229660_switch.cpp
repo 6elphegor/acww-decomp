@@ -340,8 +340,8 @@ class ChoiceList;
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define func_0203e47c _ZN9Character13func_0203e47cEi
-#define func_0203e488 _ZN9Character13func_0203e488Ei
+#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
+#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define TalkWindowState_detachRequest _ZN15TalkWindowState13detachRequestEv
 #define TalkWindowState_attachRequest _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
@@ -359,8 +359,8 @@ class ChoiceList;
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
 #define ChoiceList_setEntry _ZN10ChoiceList8setEntryEiPKhiS1_PKci
 #define ChoiceList_reset _ZN10ChoiceList5resetEii
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih
-#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP4Vec3iiisih
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox
 
 extern "C" {
 extern u8 gScreenTransition;
@@ -373,8 +373,8 @@ extern s32 gBgHeap;
 
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
-void _ZN12Unk_020b6e10C2Ev(void *self);
-void _ZN12Unk_020b6e10D2Ev(void *self);
+void _ZN12TouchPickBoxC2Ev(void *self);
+void _ZN12TouchPickBoxD2Ev(void *self);
 void _ZN15TouchPickSphereC1Ev(void *self);
 void _ZN15TouchPickSphereD1Ev(void *self);
 s32 BlendAnimModel_initAnim(void *p, u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -383,8 +383,8 @@ void AnimModel_drawAnimated(void *p, s32 a);
 void AnimModel_stepAnim(void *p);
 BOOL AnimModel_allocAnmObj(void *p, s32 v);
 BOOL AnimFrameCtrl_isFinished(void *p);
-void func_0203e47c(void *self, TalkMsgRequest *sec);
-void func_0203e488(void *self, TalkMsgRequest *sec);
+void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
+void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void TalkWindowState_detachRequest(TalkWindowState *p);
 void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
 ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);
@@ -410,19 +410,19 @@ s32 MenuCtrl_IsResultOk();
 BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 Scene_GetCurrent();
 TouchPicker *Scene_GetTouchPicker();
-BOOL func_020b6080(TouchPicker *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
-s32 func_020b6014(TouchPicker *o, u32 a, u32 b);
+BOOL TouchPickResult_GetTarget(TouchPicker *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
+s32 TouchPick_GetTappedObject(TouchPicker *o, u32 a, u32 b);
 void *PlayerActor_GetActor(u32 x);
 void *PlayerActor_GetCharacter(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 BOOL InputMode_IsTouch();
-void func_0203cb80(u32 a);
-void func_0203cb48(u32 a);
-void func_0203cb1c(u32 a);
-u32 func_0203cb38();
+void PlayerOptions_SetHiragana(u32 a);
+void PlayerOptions_SetStereo(u32 a);
+void PlayerOptions_SetTalkVoice(u32 a);
+u32 PlayerOptions_GetTalkVoice();
 void Snd_SetOutputMode(u32 a);
-void func_0203ca94();
+void PlayerOptions_Commit();
 s32 func_020e9650(s32 *a, s32 *b);
 void PlayerActor_LocalRequestPhoneHangUp(void *p);
 void PlayerActor_LocalRequestPhonePickUp(void *p);
@@ -478,7 +478,7 @@ public:
     void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
-    /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
+    /* 0x370 */ u32 unk_370[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
     /* 0x618 */ u32 unk_618[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
     /* 0x634 */ s32 unk_634;
     /* 0x638 */ u8 unk_638;
@@ -562,10 +562,10 @@ void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
     case 0x14:
         switch (t) {
         case 0:
-            func_0203cb80(r);
+            PlayerOptions_SetHiragana(r);
             break;
         case 1:
-            func_0203cb80(1);
+            PlayerOptions_SetHiragana(1);
             break;
         }
         break;
@@ -592,28 +592,28 @@ void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
     case 0x1b:
         switch (t) {
         case 0:
-            func_0203cb48(1);
+            PlayerOptions_SetStereo(1);
             Snd_SetOutputMode(r);
             r = 0x1c;
             break;
         case 1:
-            func_0203cb48(r);
+            PlayerOptions_SetStereo(r);
             Snd_SetOutputMode(1);
             r = 0x1e;
             break;
         }
         break;
     case 0x11:
-        unk_63c = func_0203cb38();
+        unk_63c = PlayerOptions_GetTalkVoice();
         switch (t) {
         case 0:
-            func_0203cb1c(r);
+            PlayerOptions_SetTalkVoice(r);
             break;
         case 1:
-            func_0203cb1c(1);
+            PlayerOptions_SetTalkVoice(1);
             break;
         case 2:
-            func_0203cb1c(2);
+            PlayerOptions_SetTalkVoice(2);
             break;
         }
         break;
@@ -621,12 +621,12 @@ void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
     case 0x2b:
     case 0x2c:
         if (t == 1) {
-            func_0203cb1c(unk_63c);
+            PlayerOptions_SetTalkVoice(unk_63c);
         }
         break;
     }
     if (Scene_GetCurrent() != 6) {
-        func_0203ca94();
+        PlayerOptions_Commit();
     }
     if (r) {
         u8 b = r;

@@ -80,7 +80,7 @@ extern u16 sMenuChosenItems[16];
 extern u8 sChatDraft[32];
 
 // data of other units
-extern u8 data_021d726c;
+extern u8 gSoftResetRequested;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gTouchCurY;
@@ -95,14 +95,14 @@ void *Inventory_GetEmptyLetter(void);
 void Letter_Copy(void *, void *);
 void Letter_MarkSent(void *);
 u32 PlayerData_GetCurrent(void);
-void *func_02097a3c(u32);
+void *PlayerData_GetFutureLetter(u32);
 void *FutureLetter_GetLetter(void *);
 u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
 void *_ZN10PlayerData12getInventoryEv(u32);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
 void Pocket_SetItem(u16 *, u32, u32);
-void func_0205137c();
+void Text_BuildCharWidthTable();
 s32 InputMode_IsButtons();
 s32 InputMode_SetTouch();
 s32 InputMode_SetButtons();
@@ -115,7 +115,7 @@ void MenuScreen_Update();
 BOOL func_0203d4d4();
 s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
-s32 func_0201188c();
+s32 Hud_GetSceneHudKind();
 void TalkRequest_AddMenu(u32);
 void MenuScreen_Reset();
 void MenuHeap_Destroy();
@@ -450,7 +450,7 @@ BOOL MenuManager::vfunc_00() {
     MenuCtrl_ResetFlags();
     MenuScreen_ClearState();
     sMenuArg = 0;
-    func_0205137c();
+    Text_BuildCharWidthTable();
     sMenuHandBells = 0;
     return TRUE;
 }
@@ -478,7 +478,7 @@ BOOL MenuManager::onExecute() {
     MenuScreen_Update();
     if (func_0203d4d4()) return TRUE;
     if (Scene_GetCurrent() == 6) return TRUE;
-    if (data_021d726c) return TRUE;
+    if (gSoftResetRequested) return TRUE;
     if (TalkRequest_IsActive()) return TRUE;
     if (MenuCtrl_IsIdle()) {
         if (gTouchHeld && gTouchChanged) r = TRUE;
@@ -502,7 +502,7 @@ BOOL MenuManager::onExecute() {
             MenuCtrl_SetButtons();
             return TRUE;
         }
-        if (func_0201188c() != 2 && (gPad[1] & 0x400)) {
+        if (Hud_GetSceneHudKind() != 2 && (gPad[1] & 0x400)) {
             TalkRequest_AddMenu(0);
             sMenuMode = 5;
             MenuCtrl_SetButtons();
@@ -883,11 +883,11 @@ extern "C" void MenuCtrl_SetFutureLetter(void *a) {
 
 extern "C" void MenuCtrl_StoreFutureLetter(void) {
     u32 a = PlayerData_GetCurrent();
-    void *p = FutureLetter_GetLetter(func_02097a3c(a));
+    void *p = FutureLetter_GetLetter(PlayerData_GetFutureLetter(a));
     u8 *q;
     Letter_Copy(p, &sFutureLetter);
     Letter_MarkSent(p);
-    q = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(a));
+    q = _ZN12FutureLetter15getDeliveryDateEv(PlayerData_GetFutureLetter(a));
     q[0] = 1;
     q[1] = 1;
     q[2] = 0;

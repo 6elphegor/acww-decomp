@@ -233,15 +233,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -285,8 +285,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -422,8 +422,8 @@ void *JoinHistory_GetLatest(void);
 s32 PlayerData_GetBySessionSlot(void *p);
 void *PlayerData_getPlayerId(s32 v);
 void Visitor_GetTodaysNpc(u16 *p);
-s32 func_02039e44(void);
-s32 func_02039e1c(void);
+s32 LostAndFound_HasAny(void);
+s32 LostAndFound_Count(void);
 s32 Talk_IsInOwnTown(void);
 s32 GameStart_IsActive(void);
 s32 func_02063b8c(s32 n);
@@ -781,8 +781,8 @@ void SpNpcBookerTalk::vfunc_18() {
                 }
             }
         } else if (t == 1) {
-            if (func_02039e44() != 0) {
-                ActorTalkRequest_setNumberSlot(this, func_02039e1c(), 0, 2, 0, 0);
+            if (LostAndFound_HasAny() != 0) {
+                ActorTalkRequest_setNumberSlot(this, LostAndFound_Count(), 0, 2, 0, 0);
                 r = 0x1a;
             } else {
                 r = 0x1b;

@@ -14,7 +14,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
 
-u8 data_021d7274[3];
+u8 sRoomObjSyncStates[3];
 }
 
 class Unk_0209c41c_Actor {
@@ -51,7 +51,7 @@ struct Unk_0209c41c_Pack {
     u8 hi : 4;
 };
 
-extern "C" BOOL func_0209c41c(Unk_0209c41c_Actor *self, u8 v) {
+extern "C" BOOL RoomObjSync_ChangeState(Unk_0209c41c_Actor *self, u8 v) {
     BOOL is1;
     if (gFieldSceneKind == 1) is1 = TRUE;
     else is1 = FALSE;
@@ -75,20 +75,20 @@ extern "C" BOOL func_0209c41c(Unk_0209c41c_Actor *self, u8 v) {
     return FALSE;
 }
 
-extern "C" void func_0209c408() {
+extern "C" void RoomObjSync_Reset() {
     u32 i = 0;
     u8 z = i;
-    for (; i < 3; i++) data_021d7274[i] = z;
+    for (; i < 3; i++) sRoomObjSyncStates[i] = z;
 }
 
-extern "C" u32 func_0209c3f4(u32 idx) {
-    if (idx < 3) return data_021d7274[idx];
+extern "C" u32 RoomObjSync_GetState(u32 idx) {
+    if (idx < 3) return sRoomObjSyncStates[idx];
     return 0;
 }
 
-extern "C" BOOL func_0209c3e0(u32 idx, u8 v) {
+extern "C" BOOL RoomObjSync_SetState(u32 idx, u8 v) {
     if (idx < 3) {
-        data_021d7274[idx] = v;
+        sRoomObjSyncStates[idx] = v;
         return TRUE;
     }
     return FALSE;

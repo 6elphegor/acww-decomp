@@ -42,11 +42,11 @@ void func_021355f0(void *p, s32 n, s32 size, void *dtor);
 }
 
 extern "C" {
-extern const char data_020e22d0[];
+extern const char sAcreArchivePathFmt[];
 }
 
 extern "C" {
-extern const char data_020e22e4[];
+extern const char sTownAcreCandidatesPath[];
 }
 
 extern "C" {
@@ -54,15 +54,15 @@ extern u32 sPondAcreIds[6];
 }
 
 extern "C" {
-extern u16 data_021d7168[];
+extern u16 sDebugVarTable[];
 }
 
 extern "C" {
-extern u8 data_021d726c;
+extern u8 gSoftResetRequested;
 }
 
 extern "C" {
-extern u8 data_021d7270;
+extern u8 sSoftResetHeld;
 }
 
 extern "C" {
@@ -70,7 +70,7 @@ extern u8 data_021f47d0;
 }
 
 extern "C" {
-extern u8 data_021d7274[3];
+extern u8 sRoomObjSyncStates[3];
 }
 
 extern "C" {
@@ -251,9 +251,9 @@ public:
 };
 
 // ---- row helper
-class Unk_0209c038 {
+class TownAcreIndex {
 public:
-    u8 *func_0209c038(s32 i);
+    u8 *calcIndex(s32 i);
 };
 
 // ---- model resource helpers
@@ -583,7 +583,7 @@ struct Unk_0209c3cc_Nib {
     u8 hi : 4;
 };
 
-extern "C" BOOL func_0209c3e0(u32 idx, u8 v);
+extern "C" BOOL RoomObjSync_SetState(u32 idx, u8 v);
 
 class Unk_0209c41c_Actor {
 public:

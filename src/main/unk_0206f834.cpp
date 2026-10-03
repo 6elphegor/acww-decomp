@@ -309,15 +309,15 @@ s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
-s32 func_020512e0(const u8 *str, s32 len);
+s32 Text_GetLength(const u8 *str, s32 len);
 }
 
 extern "C" {
-s32 func_020512f8(const u8 *str, s32 len);
+s32 Text_GetTrimmedLength(const u8 *str, s32 len);
 }
 
 extern "C" {
-BOOL func_020a78a4(EncodedString41 *buf, const void *src, s32 len);
+BOOL EncodedString_SetRaw(EncodedString41 *buf, const void *src, s32 len);
 }
 
 extern "C" {
@@ -645,7 +645,7 @@ void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e) { Str
 
 void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len) {
     EncodedString41 l;
-    func_020a78a4(&l, s, len);
+    EncodedString_SetRaw(&l, s, len);
     dst->fromEncoded(&l, 0, 0);
 }
 
@@ -660,7 +660,7 @@ void String_FromEncodedBytesEx(MsgString *dst, const void *s, s32 len, BOOL a, u
         b = 0;
     }
     EncodedString41 l;
-    func_020a78a4(&l, s, len);
+    EncodedString_SetRaw(&l, s, len);
     dst->fromEncoded(&l, a, b);
 }
 
@@ -673,8 +673,8 @@ void LabelString::setHighlight(u8 a, u8 b, u32 c, u32 d) {
 BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len) {
     EncodedString41 l;
     l.fromMsgString(a);
-    s32 n = func_020512f8(b, len);
-    if (n != func_020512f8(l.unk_0e, len)) {
+    s32 n = Text_GetTrimmedLength(b, len);
+    if (n != Text_GetTrimmedLength(l.unk_0e, len)) {
         return FALSE;
     }
     s32 i = 0;

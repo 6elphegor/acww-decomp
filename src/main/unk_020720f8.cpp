@@ -503,7 +503,7 @@ extern "C" {
 void Net_StartLocal(u32, void *);
 }
 extern "C" {
-void func_02098e8c();
+void Comm_OnFriendDeletedNop();
 }
 extern "C" {
 void Comm_OnReceive(u32, u8 *, u32);
@@ -521,7 +521,7 @@ extern "C" {
 void func_020ebc38();
 }
 extern "C" {
-void func_020a63bc(u32, u32, u32, u32, u32);
+void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
 void _ZN11CommManager13setSlotActiveEij(CommManager *, u32, u32);
@@ -638,13 +638,13 @@ extern "C" {
 void RoomFtrState_ResetAll();
 }
 extern "C" {
-void func_0209c408();
+void RoomObjSync_Reset();
 }
 extern "C" {
 void BuildingStates_Reset();
 }
 extern "C" {
-void func_0203eb38();
+void CharInteractSync_Reset();
 }
 extern "C" {
 void func_0206f81c();
@@ -680,9 +680,9 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
         TownSessionState_Reset();
     }
     RoomFtrState_ResetAll();
-    func_0209c408();
+    RoomObjSync_Reset();
     BuildingStates_Reset();
-    func_0203eb38();
+    CharInteractSync_Reset();
     func_0206f81c();
     if (r4 < 0) {
         CommManager *o = gCommManager;
@@ -870,13 +870,13 @@ extern "C" void Comm_RemoveMember(s32 a) {
     for (; i >= 0; i--) {
         if (_ZN11CommManager12isSlotActiveEi(o, i)) {
             if (i == 0) {
-                func_020a63bc(0, 0x3f, 1, 0, 2);
+                NetArea_SetSlotStatus(0, 0x3f, 1, 0, 2);
             } else {
-                func_020a63bc(i, 0x3f, 0, 0, 2);
+                NetArea_SetSlotStatus(i, 0x3f, 0, 0, 2);
             }
         }
     }
-    func_020a63bc(a, 0x3f, 0, 0, 7);
+    NetArea_SetSlotStatus(a, 0x3f, 0, 0, 7);
     o = gCommManager;
     _ZN11CommManager13setSlotActiveEij(o, a, 0);
     _ZN11CommManager14setMemberCountEj(o, (u8)(o->unk_6c - 1));
@@ -934,7 +934,7 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         _ZN10PlayerData15getWifiUserDataEv(l18);
         MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);
         _Z21NetOverlay_AssertWifiv();
-        Net_StartWifi(a, (void *)Comm_OnReceive, (void *)func_02098e8c, r6, r5);
+        Net_StartWifi(a, (void *)Comm_OnReceive, (void *)Comm_OnFriendDeletedNop, r6, r5);
     }
     _ZN11CommManager12setErrorModeEj(o, c);
 }
@@ -1395,7 +1395,7 @@ extern "C" {
 void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
+void NetArea_SetSlotStatus(u32 a, s32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
 s32 Scene_GetCurrent();
@@ -1476,7 +1476,7 @@ extern "C" void Comm_BeginHostSession() {
     o->setSlotActive(o->unk_64, 1);
     Comm_SetRecvBuffers(0);
     NetSession_OnBeginHost();
-    func_020a63bc(0, Scene_GetCurrent(), 1, 0, 7);
+    NetArea_SetSlotStatus(0, Scene_GetCurrent(), 1, 0, 7);
 }
 extern "C" void Comm_PrepareJoin(u32 a) {
     gCommManager->setMode(0);

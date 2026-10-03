@@ -303,13 +303,13 @@ struct Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_020b6e10 {
+struct TouchPickBox {
     u8 pad[0x2a8];
 };
 
 struct TouchPicker {
-    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL pushBox(Unk_020b6e10 *box);
+    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(TouchPickBox *box);
 };
 
 struct Unk_ov004_Scene_Entry {
@@ -372,7 +372,7 @@ public:
     void updateState();
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
-    /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
+    /* 0x370 */ u32 unk_370[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
     /* 0x618 */ s32 unk_618;
 };
 
@@ -389,7 +389,7 @@ s32 BoxCollider_Unregister(void *);
 s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 TalkRequest_SetTargetDone(void *);
-s32 func_0209c41c(void *, u32);
+s32 RoomObjSync_ChangeState(void *, u32);
 s32 MenuCtrl_IsFinished(void);
 s32 MenuCtrl_OpenLauncher(u32);
 s32 func_020e9650(s32 *a, s32 *b);
@@ -404,10 +404,10 @@ s32 RoomObjRes_GetBca(void *, u32);
 void RoomObj_PlaySe(void *, s32);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
-void _ZN12Unk_020b6e10C2Ev(void *self);
-void _ZN12Unk_020b6e10D2Ev(void *self);
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN12TouchPickBoxC2Ev(void *self);
+void _ZN12TouchPickBoxD2Ev(void *self);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, s32 a);
 RecycleBox *RecycleBox_Create();
 RecycleBox *RecycleBox_GetInstance();
@@ -455,11 +455,11 @@ extern "C" RecycleBox *RecycleBox_GetInstance() {
 
 RecycleBox::RecycleBox() {
     _ZN11BoxColliderC1Ev(unk_2d4);
-    _ZN12Unk_020b6e10C2Ev(unk_370);
+    _ZN12TouchPickBoxC2Ev(unk_370);
 }
 
 RecycleBox::~RecycleBox() {
-    _ZN12Unk_020b6e10D2Ev(unk_370);
+    _ZN12TouchPickBoxD2Ev(unk_370);
     _ZN11BoxColliderD2Ev(unk_2d4);
 }
 
@@ -482,7 +482,7 @@ BOOL RecycleBox::vfunc_00() {
 BOOL RecycleBox::onExecute() {
     updateState();
     execAct();
-    Scene_GetTouchPicker()->pushBox((Unk_020b6e10 *)unk_370);
+    Scene_GetTouchPicker()->pushBox((TouchPickBox *)unk_370);
     return TRUE;
 }
 
@@ -634,7 +634,7 @@ void RecycleBox::execAct00() {}
 
 BOOL RecycleBox::enterAct01() {
     Unk_ov004_02227fb8_Pad pad;
-    _ZN9Character13func_0203e488Ei(this, (TalkMsgRequest *)this);
+    _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::unk_1e = 0;
     TalkMsgRequest::unk_3c->unk_08 = 1;
@@ -656,14 +656,14 @@ BOOL RecycleBox::enterAct02() {
 void RecycleBox::execAct02() {
     if (TalkMsgRequest::unk_3c != 0) {
         if (TalkMsgRequest::unk_3c->unk_04 == 0) {
-            _ZN9Character13func_0203e47cEi(this, (TalkMsgRequest *)this);
+            _ZN9Character17detachTalkRequestEi(this, (TalkMsgRequest *)this);
             changeAct(3);
         }
     }
 }
 
 void RecycleBox::enterAct03() {
-    func_0209c41c(this, 1);
+    RoomObjSync_ChangeState(this, 1);
 }
 
 void RecycleBox::execAct03() {
@@ -688,7 +688,7 @@ void RecycleBox::execAct04() {
 }
 
 void RecycleBox::enterAct05() {
-    func_0209c41c(this, 3);
+    RoomObjSync_ChangeState(this, 3);
 }
 
 void RecycleBox::execAct05() {
@@ -707,7 +707,7 @@ void RecycleBox::func_ov004_02227ea8(u32 a, u8 b) {}
 
 void RecycleBox::initCollision() {
     BoxCollider_Register(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    Scene_GetTouchPicker()->addBox((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {

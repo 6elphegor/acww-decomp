@@ -310,15 +310,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -362,8 +362,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -450,7 +450,7 @@ s32 String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void MailText_SetSlot(s32 i, void *x);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
-void func_0203c41c(void *a, u16 *p, s32 c);
+void Catalog_AddItem(void *a, u16 *p, s32 c);
 void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 s32 func_020626cc(u16 *p, s32 mode);
 u32 func_02063b8c(u32 a);
@@ -1032,7 +1032,7 @@ void SpNpcGracieTalk::vfunc_14() {
                 Letter_ComposeFromMail(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
                 if (r7 != NULL) {
                     s.unk_04 = Item_MakePaper(0x10, 4);
-                    func_0203c41c(r7->getCatalog(), &s.unk_04, 0);
+                    Catalog_AddItem(r7->getCatalog(), &s.unk_04, 0);
                 }
                 if (lvl <= 2) {
                     _ZN10LetterView10setPresentEtj(obj, 0x12a7, 1);

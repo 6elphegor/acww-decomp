@@ -44,10 +44,10 @@
 #define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
 #define func_0209c2dc _ZN13ModelSlotPoolC1Ev
 #define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih
-#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10
-#define func_020b6df4 _ZN12Unk_020b6e10D2Ev
-#define func_020b6e10 _ZN12Unk_020b6e10C2Ev
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP4Vec3iiisih
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox
+#define func_020b6df4 _ZN12TouchPickBoxD2Ev
+#define func_020b6e10 _ZN12TouchPickBoxC2Ev
 #define func_02133150 _s32_div_f
 
 typedef GameProc Unk_ov004_Base;
@@ -643,7 +643,7 @@ extern V3 sRoomHasuPos;
 void MTX_MultVec43(V3 *, void *, V3 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void *func_02000c98(void *);
+void *FxVec3_Construct(void *);
 void func_02000c8c(void *);
 s32 Math_AngleXZ(void *, void *);
 void Unk_02003c30_callRelease(void *);
@@ -680,7 +680,7 @@ s32 File_LoadAlloc(char *, s32, s32, s32);
 s32 MuseumData_isDonated(void *, u16 *);
 void func_02088c64(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
 void func_02089040(void *a);
-P *func_020947f0(s32 n);
+P *PlayerActor_GetBodyPos(s32 n);
 P *PlayerActor_GetActor(s32 n);
 s32 PooledModel_getModel(void *);
 void PooledModel_unload(void *p);
@@ -698,7 +698,7 @@ s32 ModelSlot_getHeap(s32);
 void ModelSlotHandle_Destroy(u16 *);
 void ModelSlotHandle_Init(u16 *);
 void *Scene_GetTouchPicker(void);
-s32 func_020b6080(void *, void *, void *, void *);
+s32 TouchPickResult_GetTarget(void *, void *, void *, void *);
 void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 s32 TouchPicker_pushBox(void *, void *);
 void func_020b6df4(void *p);
@@ -1045,7 +1045,7 @@ AquariumFish::AquariumFish() {
     func_02054514(unk_64);
     ModelSlotHandle_Init((u16 *)unk_166);
     func_0209c140(unk_168);
-    __cxa_vec_ctor(unk_1d0, 2, 0xc, func_02000c98, func_02000c8c);
+    __cxa_vec_ctor(unk_1d0, 2, 0xc, FxVec3_Construct, func_02000c8c);
     unk_15c = -1;
     unk_160 = 0;
     PooledModel_reset(unk_168);
@@ -2391,7 +2391,7 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
 }
 
 extern "C" void AquariumPiranha_StateBite(E75c *o) {
-    P *p = func_020947f0(4);
+    P *p = PlayerActor_GetBodyPos(4);
     if (p == 0) {
         o->unk_255 = 0;
         return;
@@ -3096,7 +3096,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     u8 b;
     s32 t;
     V3 v;
-    if (func_020b6080(Scene_GetTouchPicker(), &v, &t, &b)) {
+    if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {

@@ -16,7 +16,7 @@ extern "C" s32 BuildingList_GetAt(s32 a);
 extern "C" s32 NpcRegistry_FindSpNpc(void);
 extern "C" s32 NpcRegistry_FindVillager(void);
 extern "C" s32 PlayerActor_GetCharacter(void);
-extern "C" BOOL func_020b705c(u8 v);
+extern "C" BOOL TouchPickKind_HasTarget(u8 v);
 
 class FtrActorTable {
 public:
@@ -31,39 +31,39 @@ inline BOOL IsMode0() { return gFieldSceneKind == 0; }
 inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
 inline BOOL IsMode1() { return gFieldSceneKind == 1; }
 
-extern "C" BOOL func_020b6080(u8 *obj, Vec3 *out, s32 *a, u8 *b);
-extern "C" s32 func_020b6048(s32 a, s32 *pa, u8 *pb);
-extern "C" s32 func_020b6014(s32 a, s32 *pa, u8 *pb);
-extern "C" s32 func_020b6010(void);
-extern "C" s32 func_020b6008(void);
-extern "C" s32 func_020b6000(void);
-extern "C" s32 func_020b5ff8(void);
-extern "C" s32 func_020b5fd0(s32 a);
-extern "C" s32 func_020b5fc8(s32 a);
-extern "C" s32 func_020b5f98(s32 a);
-extern "C" s32 func_020b5f70(s32 a);
-extern "C" s32 func_020b5f48(void);
-extern "C" s32 func_020b5f20(s32 a);
-extern "C" s32 func_020b5ef8(void);
-extern "C" s32 func_020b5ed0(void);
-extern "C" s32 func_020b5ea8(s32 a);
-extern "C" s32 func_020b5e80(s32 a);
-extern "C" s32 func_020b5e5c(s32 idx, s32 arg);
+extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, Vec3 *out, s32 *a, u8 *b);
+extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb);
+extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb);
+extern "C" s32 TouchTarget_ResolveNone(void);
+extern "C" s32 TouchTarget_ResolvePlayer(void);
+extern "C" s32 TouchTarget_ResolveVillager(void);
+extern "C" s32 TouchTarget_ResolveSpNpc(void);
+extern "C" s32 TouchTarget_ResolveBuilding(s32 a);
+extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a);
+extern "C" s32 TouchTarget_ResolveFurniture(s32 a);
+extern "C" s32 TouchTarget_ResolveVillagerBoard(s32 a);
+extern "C" s32 TouchTarget_ResolveAtm(void);
+extern "C" s32 TouchTarget_ResolveMuseumInfo(s32 a);
+extern "C" s32 TouchTarget_ResolveRecycleBox(void);
+extern "C" s32 TouchTarget_ResolvePhone(void);
+extern "C" s32 TouchTarget_ResolveBoardSign(s32 a);
+extern "C" s32 TouchTarget_ResolveSnowball(s32 a);
+extern "C" s32 TouchTarget_Resolve(s32 idx, s32 arg);
 
 typedef s32 (*Unk_020e4470_Fn)(s32);
 #define FN(f) ((Unk_020e4470_Fn)(f))
 
-extern "C" Unk_020e4470_Fn data_020e4470[23];
-extern "C" Unk_020e4470_Fn data_020e4470[23] = {
-    FN(func_020b6010), FN(func_020b6008), FN(func_020b6000), FN(func_020b5ff8),
-    FN(func_020b6010), FN(func_020b6010), FN(func_020b5fc8), FN(func_020b5fd0),
-    FN(func_020b5f98), FN(func_020b5f70), FN(func_020b6010), FN(func_020b5f48),
-    FN(func_020b5ef8), FN(func_020b5ed0), FN(func_020b5f20), FN(func_020b5f98),
-    FN(func_020b5ea8), FN(func_020b5e80), FN(func_020b5e80), FN(func_020b6010),
-    FN(func_020b6010), FN(func_020b6010), FN(func_020b6010),
+extern "C" Unk_020e4470_Fn sTouchTargetResolvers[23];
+extern "C" Unk_020e4470_Fn sTouchTargetResolvers[23] = {
+    FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolvePlayer), FN(TouchTarget_ResolveVillager), FN(TouchTarget_ResolveSpNpc),
+    FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveBuildingAlt), FN(TouchTarget_ResolveBuilding),
+    FN(TouchTarget_ResolveFurniture), FN(TouchTarget_ResolveVillagerBoard), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveAtm),
+    FN(TouchTarget_ResolveRecycleBox), FN(TouchTarget_ResolvePhone), FN(TouchTarget_ResolveMuseumInfo), FN(TouchTarget_ResolveFurniture),
+    FN(TouchTarget_ResolveBoardSign), FN(TouchTarget_ResolveSnowball), FN(TouchTarget_ResolveSnowball), FN(TouchTarget_ResolveNone),
+    FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone),
 };
 
-extern "C" BOOL func_020b6080(u8 *obj, Vec3 *out, s32 *a, u8 *b) {
+extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, Vec3 *out, s32 *a, u8 *b) {
     if (out) {
         out->x = *(s32 *)(obj + 0xc);
         out->y = *(s32 *)(obj + 0x10);
@@ -75,10 +75,10 @@ extern "C" BOOL func_020b6080(u8 *obj, Vec3 *out, s32 *a, u8 *b) {
     if (b) {
         *b = obj[0x19];
     }
-    return func_020b705c(obj[0x18]);
+    return TouchPickKind_HasTarget(obj[0x18]);
 }
 
-extern "C" s32 func_020b6048(s32 a, s32 *pa, u8 *pb) {
+extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb) {
     u8 tb;
     s32 ta;
     Vec3 v;
@@ -88,95 +88,95 @@ extern "C" s32 func_020b6048(s32 a, s32 *pa, u8 *pb) {
     if (pb == NULL) {
         pb = &tb;
     }
-    if (func_020b6080((u8 *)a, &v, pa, pb)) {
-        return func_020b5e5c(*pa, *pb);
+    if (TouchPickResult_GetTarget((u8 *)a, &v, pa, pb)) {
+        return TouchTarget_Resolve(*pa, *pb);
     }
     return 0;
 }
 
-extern "C" s32 func_020b6014(s32 a, s32 *pa, u8 *pb) {
+extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb) {
     if (IsBoth()) {
-        return func_020b6048(a, pa, pb);
+        return TouchPick_GetTargetObject(a, pa, pb);
     }
     return 0;
 }
 
-extern "C" s32 func_020b6010(void) { return 0; }
+extern "C" s32 TouchTarget_ResolveNone(void) { return 0; }
 
-extern "C" s32 func_020b6008(void) { return PlayerActor_GetCharacter(); }
+extern "C" s32 TouchTarget_ResolvePlayer(void) { return PlayerActor_GetCharacter(); }
 
-extern "C" s32 func_020b6000(void) { return NpcRegistry_FindVillager(); }
+extern "C" s32 TouchTarget_ResolveVillager(void) { return NpcRegistry_FindVillager(); }
 
-extern "C" s32 func_020b5ff8(void) { return NpcRegistry_FindSpNpc(); }
+extern "C" s32 TouchTarget_ResolveSpNpc(void) { return NpcRegistry_FindSpNpc(); }
 
-extern "C" s32 func_020b5fd0(s32 a) {
+extern "C" s32 TouchTarget_ResolveBuilding(s32 a) {
     if (IsMode0()) {
         return BuildingList_GetAt(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5fc8(s32 a) { return func_020b5fd0(a); }
+extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a) { return TouchTarget_ResolveBuilding(a); }
 
-extern "C" s32 func_020b5f98(s32 a) {
+extern "C" s32 TouchTarget_ResolveFurniture(s32 a) {
     if (IsMode1()) {
         return ((FtrActorTable *)FtrActorTable_GetInstance())->get(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5f70(s32 a) {
+extern "C" s32 TouchTarget_ResolveVillagerBoard(s32 a) {
     if (IsMode0()) {
         return VillagerBoard_Get(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5f48(void) {
+extern "C" s32 TouchTarget_ResolveAtm(void) {
     if (IsMode1()) {
         return Atm_GetInstance();
     }
     return 0;
 }
 
-extern "C" s32 func_020b5f20(s32 a) {
+extern "C" s32 TouchTarget_ResolveMuseumInfo(s32 a) {
     if (IsMode1()) {
         return MuseumExhibitInfo_GetByIndex(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5ef8(void) {
+extern "C" s32 TouchTarget_ResolveRecycleBox(void) {
     if (IsMode1()) {
         return RecycleBox_GetInstance();
     }
     return 0;
 }
 
-extern "C" s32 func_020b5ed0(void) {
+extern "C" s32 TouchTarget_ResolvePhone(void) {
     if (IsMode1()) {
         return RoomTelephone_GetInstance();
     }
     return 0;
 }
 
-extern "C" s32 func_020b5ea8(s32 a) {
+extern "C" s32 TouchTarget_ResolveBoardSign(s32 a) {
     if (IsMode1()) {
         return RoomBoardSign_GetByIndex(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5e80(s32 a) {
+extern "C" s32 TouchTarget_ResolveSnowball(s32 a) {
     if (IsMode0()) {
         return Snowball_FindByParam(a);
     }
     return 0;
 }
 
-extern "C" s32 func_020b5e5c(s32 idx, s32 arg) {
+extern "C" s32 TouchTarget_Resolve(s32 idx, s32 arg) {
     if (idx < 0x17) {
-        return data_020e4470[idx](arg);
+        return sTouchTargetResolvers[idx](arg);
     }
     return 0;
 }

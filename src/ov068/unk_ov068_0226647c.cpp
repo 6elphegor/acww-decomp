@@ -65,9 +65,9 @@ extern s32 data_ov068_0226fc48;
 extern s32 data_ov068_0226fc40;
 extern s32 data_ov068_0226fc44;
 extern u16 sTownTourBuildings[];
-extern const u32 data_ov068_0226f18c[];
+extern const u32 sTownTourBuildingAttrs[];
 extern void *sTownTourOffsets[];
-Unk_ov068_02266680_Vec *func_020947f0(s32 id);
+Unk_ov068_02266680_Vec *PlayerActor_GetBodyPos(s32 id);
 void Camera_StartBlend();
 void Camera_FinishBlend();
 void Camera_GetLookAtPoint(Unk_ov068_02266680_Vec *out, CameraEventModes *self);
@@ -124,32 +124,32 @@ void _ZN12Unk_020d93b88loadPoseEiP10CameraPose(void *self, s32 a, s32 b);
     _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(this, &V, a, b, _ZN12Unk_0203b35011getDistanceEv(this));
 
 // Definition order below reproduces the original data order (heapsort model); colours = sinit store order.
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc64;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fccc[4];
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc88;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc4c;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc58;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc70;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc7c;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetPlayerHouse;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetsNookShop[4];
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetMuseum;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetAbleSisters;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetTownHall;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetGateHouse;
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetVillagerHouse;
 extern "C" s32 data_ov068_0226fc48 = 0x100;
-extern "C" void *sTownTourOffsets[7] = {&data_ov068_0226fc64, data_ov068_0226fccc, &data_ov068_0226fc7c,
-                                           &data_ov068_0226fc88, &data_ov068_0226fc4c, &data_ov068_0226fc58,
-                                           &data_ov068_0226fc70};
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc7c = {-0xc00, 0, 0x1c00};
+extern "C" void *sTownTourOffsets[7] = {&sTownTourOffsetPlayerHouse, sTownTourOffsetsNookShop, &sTownTourOffsetVillagerHouse,
+                                           &sTownTourOffsetMuseum, &sTownTourOffsetAbleSisters, &sTownTourOffsetTownHall,
+                                           &sTownTourOffsetGateHouse};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetVillagerHouse = {-0xc00, 0, 0x1c00};
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fd4(0x1f, 0x14, 0x14, 0x1f);
-extern "C" const u32 data_ov068_0226f18c[7] = {1, 2, 0, 0x800, 2, 0x200, 0x400};
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fccc[4] = {{-0xc00, 0, 0x2400}, {-0xc00, 0, 0x1400},
+extern "C" const u32 sTownTourBuildingAttrs[7] = {1, 2, 0, 0x800, 2, 0x200, 0x400};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetsNookShop[4] = {{-0xc00, 0, 0x2400}, {-0xc00, 0, 0x1400},
                                                             {-0x2000, 0, 0x2400}, {-0x2c00, 0, 0x2400}};
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fd0(0x14, 0x14, 0x1f, 0x1f);
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fc4(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fc8(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc58 = {0, 0, 0x1c00};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetTownHall = {0, 0, 0x1c00};
 extern "C" s32 data_ov068_0226fc44 = 0x80;
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc88 = {0, 0, 0xc00};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetMuseum = {0, 0, 0xc00};
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fd8(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc4c = {-0xc00, 0, 0x2400};
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc64 = {0, 0, 0x1c00};
-extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc70 = {0x1000, 0, 0x1000};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetAbleSisters = {-0xc00, 0, 0x2400};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetPlayerHouse = {0, 0, 0x1c00};
+extern "C" Unk_ov068_02266680_Vec sTownTourOffsetGateHouse = {0x1000, 0, 0x1000};
 extern "C" u16 sTownTourBuildings[14] = {0x5014, 0x501a, 0x500d, 0x500d, 0x5001, 0x5001, 0x5011,
                                           0x5011, 0x500c, 0x500c, 0x5000, 0x5000, 0x500b, 0x500b};
 extern "C" s32 data_ov068_0226fc40 = 1;
@@ -264,7 +264,7 @@ void CameraEventModes::updateModeTownTour() {
                     }
                     out.a = tbl[s->unk_02].lo;
                     out.b = tbl[s->unk_02].hi;
-                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, data_ov068_0226f18c[s->unk_02], 0) == 0);
+                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, sTownTourBuildingAttrs[s->unk_02], 0) == 0);
                 Unk_ov068_02266680_Vec pos;
                 FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
                 s->unk_04 = pos.x;
@@ -290,7 +290,7 @@ BOOL CameraEventModes::initMode13() {
 void CameraEventModes::updateMode13() {
     Unk_ov068_02266680_Vec d;
     d = gVec3Zero;
-    Unk_ov068_02266680_Vec *p = func_020947f0(4);
+    Unk_ov068_02266680_Vec *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d = *p;
     }

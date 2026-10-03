@@ -11,7 +11,7 @@ public:
 
 extern "C" {
 extern u8 data_020de390;
-s32 func_020512e0(const u8 *str, s32 len);
+s32 Text_GetLength(const u8 *str, s32 len);
 
 void func_0206f4d8(u8 *p, u32 x);
 void CommSub_StartCountdown(u8 *p, u32 x);
@@ -36,7 +36,7 @@ Unk_0206f804_Fn data_020de3a8[24] = {
     CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
 };
 
-s32 EncodedString41::func_0206f828() { return func_020512e0(unk_0e, 0x29); }
+s32 EncodedString41::func_0206f828() { return Text_GetLength(unk_0e, 0x29); }
 
 extern "C" void func_0206f81c() { data_020de390 = 0x18; }
 

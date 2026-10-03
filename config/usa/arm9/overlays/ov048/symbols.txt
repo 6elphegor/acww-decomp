@@ -1,7 +1,7 @@
 _ZN11SpNpcCopperD1Ev kind:function(thumb,size=0x28) addr:0x02258de0
 _ZN11SpNpcCopperD0Ev kind:function(thumb,size=0x2c) addr:0x02258e08
 _ZN11SpNpcCopper12canStartSaveEv kind:function(thumb,size=0x38) addr:0x02258e34
-_ZN11SpNpcCopper8vfunc_7cEv kind:function(thumb,size=0x1c) addr:0x02258e6c
+_ZN11SpNpcCopper17canPlayTalkMelodyEv kind:function(thumb,size=0x1c) addr:0x02258e6c
 _ZN11SpNpcCopper17checkPlayerAtGateEv kind:function(thumb,size=0xa4) addr:0x02258e88
 _ZN11SpNpcCopper8vfunc_4cEjj kind:function(thumb,size=0x1a8) addr:0x02258f2c
 _ZN11SpNpcCopper8vfunc_58Ev kind:function(thumb,size=0x3c) addr:0x022590d4

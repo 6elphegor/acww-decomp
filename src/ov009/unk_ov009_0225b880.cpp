@@ -233,11 +233,11 @@ struct StrBSizeData {
     u32 getTriangleCount();
 };
 
-class Unk_020abea8 {
+class ObjShadowStrip {
 public:
-    void func_020abed4(Vec3 *pos);
-    BOOL func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
-    Unk_020abea8 *func_020ac1e0();
+    void draw(Vec3 *pos);
+    BOOL build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
+    ObjShadowStrip *func_020ac1e0();
 
     u8 pad[0x34];
 };
@@ -511,7 +511,7 @@ public:
     /* 0x27c */ u8 unk_27c;
     /* 0x27d */ u8 pad_27d;
     /* 0x27e */ u16 unk_27e;
-    /* 0x280 */ Unk_020abea8 *unk_280;
+    /* 0x280 */ ObjShadowStrip *unk_280;
     /* 0x284 */ TouchPickTriangle *unk_284;
     /* 0x288 */ BuildingCollider *unk_288;
     /* 0x28c */ u8 unk_28c;
@@ -585,8 +585,8 @@ extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
-void _ZN9Character13func_0203e47cEi(void *self, MsgRequest *a);
-void _ZN9Character13func_0203e488Ei(void *self, MsgRequest *a);
+void _ZN9Character17detachTalkRequestEi(void *self, MsgRequest *a);
+void _ZN9Character17attachTalkRequestEi(void *self, MsgRequest *a);
 void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
@@ -623,7 +623,7 @@ void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
 s32 func_020e780c(s32, s32);
 s32 func_020e9650(void *, void *);
-s32 *func_020947f0(u32);
+s32 *PlayerActor_GetBodyPos(u32);
 BOOL PlayerActor_LocalRequestDoorEnter(u32, s32 *, s32 *, s32);
 BOOL PlayerActor_IsStowFinished();
 void PlayerActor_RequestStowThenAct10(u32);
@@ -649,7 +649,7 @@ s32 PlayerActor_TestSlotFlag(s32, s32);
 BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
-s32 func_020b6014(void *, s32 *, u8 *);
+s32 TouchPick_GetTappedObject(void *, s32 *, u8 *);
 void *PlayerActor_GetActor(u32);
 BOOL BuildingState_Set(u32, u32);
 
@@ -698,7 +698,7 @@ void BuildingLights_setLit(void *, s32, s32, s32);
 void BuildingLights_updateLights(void *, void *);
 void BuildingLights_bind(void *, void *, s32);
 void func_020b200c(void *);
-void func_0203e9d8();
+void CharInteractSync_ReleaseLock();
 void NookShop_SetVisitState(u32);
 BOOL func_02002d9c(void *);
 s32 func_02002dd0(void *, u32);
@@ -992,7 +992,7 @@ BOOL BuildingActor::preDelete() {
     Model_clearResource(unk_138);
     BuildingList_Remove(this);
     if (unk_232.f0) {
-        func_0203e9d8();
+        CharInteractSync_ReleaseLock();
         if (Item_IsNookShop(&unk_132)) {
             NookShop_SetVisitState(1);
         }
@@ -1376,8 +1376,8 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
         if (e->unk_1c != NULL) {
             void *heap = gFieldStructureHeap;
             u32 n = e->unk_1c->getCount();
-            unk_280 = (Unk_020abea8 *)Heap_Alloc(heap, n * 0x34);
-            Unk_020abea8 *p = unk_280;
+            unk_280 = (ObjShadowStrip *)Heap_Alloc(heap, n * 0x34);
+            ObjShadowStrip *p = unk_280;
             u32 i;
             s32 zero;
             i = 0;
@@ -1390,7 +1390,7 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
                 Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
                 Unk_ov009_0225b880_Vec3 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
-                p->func_020ac0c4((Vec3 *)&out, it->unk_0c, it->unk_10, it->unk_00, it->unk_14, it->unk_18, (s32)heap);
+                p->build((Vec3 *)&out, it->unk_0c, it->unk_10, it->unk_00, it->unk_14, it->unk_18, (s32)heap);
             }
         }
     }
@@ -1399,7 +1399,7 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
 void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
-        Unk_020abea8 *p = unk_280;
+        ObjShadowStrip *p = unk_280;
         if (p != NULL) {
             s32 i = 0;
             s32 zero = i;
@@ -1408,7 +1408,7 @@ void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
                 Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
                 Unk_ov009_0225b880_Vec3 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
-                p->func_020abed4((Vec3 *)&out);
+                p->draw((Vec3 *)&out);
             }
         }
     }
@@ -1614,7 +1614,7 @@ void BuildingActor::execDoorIdle() {
             }
         }
         if ((unk_231 & 2) != 0 && f == 0) {
-            s32 a = func_020b6014(Scene_GetTouchPicker(), 0, 0);
+            s32 a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
             s32 b = (s32)PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
                 if (vfunc_8c() == 0) {
@@ -1917,7 +1917,7 @@ BOOL BuildingActor::execEntryCheck() {
 }
 
 BOOL BuildingActor::enterEntryTalkOpen() {
-    _ZN9Character13func_0203e488Ei(this, this);
+    _ZN9Character17attachTalkRequestEi(this, this);
     unk_3c->unk_08 = 1;
     vfunc_78();
     return TRUE;
@@ -1935,7 +1935,7 @@ BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 void BuildingActor::execEntryTalk() {
     if (unk_3c != NULL && unk_3c->unk_04 == 0) {
         vfunc_84();
-        _ZN9Character13func_0203e47cEi(this, this);
+        _ZN9Character17detachTalkRequestEi(this, this);
         TalkRequest_SetTargetDone(this);
     } else {
         vfunc_80();
@@ -1960,7 +1960,7 @@ BOOL BuildingActor::enterEntry05() {
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (vfunc_94() == 0) {
-            s32 *q = func_020947f0(4);
+            s32 *q = PlayerActor_GetBodyPos(4);
             if (q != NULL) {
                 p4 = *q;
             }
@@ -2045,7 +2045,7 @@ void BuildingActor::execEntry08() {
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (vfunc_94() == 0) {
-            s32 *q = func_020947f0(4);
+            s32 *q = PlayerActor_GetBodyPos(4);
             if (q != NULL) {
                 p4 = *q;
             }

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-struct Unk_0203eb78_Entry {
+struct TalkRequestEntry {
     /* 0x00 */ u8 unk_00[0x0c];
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -10,7 +10,7 @@ struct Unk_0203eb78_Entry {
 };
 
 struct Unk_0203ebdc_List {
-    /* 0x00 */ Unk_0203eb78_Entry *head;
+    /* 0x00 */ TalkRequestEntry *head;
 };
 
 struct Unk_0203ec0c {
@@ -64,11 +64,11 @@ extern Unk_0203f218_Slot sEventSchedule[99];
 }
 
 extern "C" {
-extern s32 (*data_020d96d4[])(u8 *, s32);
+extern s32 (*sCharInteractSyncRecvFns[])(u8 *, s32);
 }
 
 extern "C" {
-extern Unk_0203eb78_Entry data_021c39f0[15];
+extern TalkRequestEntry sTalkRequestPool[15];
 }
 
 extern "C" {
@@ -87,7 +87,7 @@ extern "C" {
 extern s32 data_020c8cb8;
 }
 
-s32 data_021c3b94 = data_020c8cb8;
+s32 sWorldCurveZScale = data_020c8cb8;
 WorldCurve gWorldCurve;
 
 extern "C" {
@@ -151,7 +151,7 @@ s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
-s32 func_02097980(s32 p);
+s32 PlayerData_GetLastWifiMailId(s32 p);
 }
 
 extern "C" {
@@ -163,7 +163,7 @@ s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_02097954(s32 p, s32 v);
+s32 PlayerData_SetLastWifiMailId(s32 p, s32 v);
 }
 
 extern "C" {
@@ -199,7 +199,7 @@ s32 func_020e7b98(s32 a, s32 b);
 }
 
 extern "C" {
-u32 func_0203efec(u32 x);
+u32 WorldCurve_AngleToDistance(u32 x);
 }
 
 extern "C" {
@@ -243,15 +243,15 @@ s32 Event_RefreshIfDateChanged(void *p);
 }
 
 extern "C" {
-s32 func_02040264(s32 v);
+s32 EventWeekSlots_UpdateToday(s32 v);
 }
 
 extern "C" {
-s32 func_020400b0(void);
+s32 EventWeekSlots_IsSeenToday(void);
 }
 
 extern "C" {
-s32 func_0203f14c(void);
+s32 Game_IsIntroPeriod(void);
 }
 
 extern "C" {
@@ -314,12 +314,12 @@ extern "C" s32 Emotion_FindFreeSlot(void);
 extern "C" void Emotion_SetSlot(s32 i, s32 v);
 extern "C" s32 Emotion_GetSlot(s32 i);
 extern "C" s32 Emotion_FindSlot(u32 id);
-extern "C" u32 func_0203efec(u32 x);
+extern "C" u32 WorldCurve_AngleToDistance(u32 x);
 extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in);
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in);
 extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in);
-extern "C" s16 func_0203edd0(WorldCurve *o);
-extern "C" s32 func_0203edc8(void);
+extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o);
+extern "C" s32 WorldCurve_GetAngleScale(void);
 extern "C" s32 WorldCurve_GetRadius(void);
 extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 
@@ -362,7 +362,7 @@ extern "C" s32 Emotion_FindSlot(u32 id) {
 }
 
 #pragma thumb off
-extern "C" u32 func_0203efec(u32 x) {
+extern "C" u32 WorldCurve_AngleToDistance(u32 x) {
     s32 v = FX_Div((x & 0xffff) << 12, 0x10000000);
     return (s32)(((s64)v * 0xc4ec6 + 0x800) >> 12);
 }
@@ -378,7 +378,7 @@ extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
             }
             base -= func_01ffcb0c(gWorldCurve.unk_14, t);
         }
-        s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
+        s32 ang = (FX_Div(in->unk_08, sWorldCurveZScale) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
         s32 idx = (u16)ang >> 4;
         out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
@@ -394,7 +394,7 @@ extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
     if (IsOne(gCurSceneInfo->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
-        s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
+        s32 ang = (FX_Div(in->unk_08, sWorldCurveZScale) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
         s32 idx = (u16)ang >> 4;
         out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
@@ -414,7 +414,7 @@ extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
         s32 a = func_01ffcb0c(in->unk_08, in->unk_08);
         s32 b = func_01ffcb0c(in->unk_04, in->unk_04);
         out->unk_04 = FX_Sqrt(b + a) - 0x1f576;
-        out->unk_08 = func_0203efec(ang);
+        out->unk_08 = WorldCurve_AngleToDistance(ang);
         return ang;
     }
     out->unk_00 = in->unk_00;
@@ -423,7 +423,7 @@ extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
     return 0;
 }
 
-extern "C" s16 func_0203edd0(WorldCurve *o) {
+extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o) {
     if (IsOne(gCurSceneInfo->unk_04)) {
         s32 a = func_01ffcb0c(o->unk_08, o->unk_08);
         s32 b = func_01ffcb0c(o->unk_04, o->unk_04);
@@ -436,7 +436,7 @@ extern "C" s16 func_0203edd0(WorldCurve *o) {
     return 0;
 }
 
-extern "C" s32 func_0203edc8(void) { return 0x2999; }
+extern "C" s32 WorldCurve_GetAngleScale(void) { return 0x2999; }
 
 extern "C" s32 WorldCurve_GetRadius(void) { return 0x1f576; }
 
@@ -465,7 +465,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
         o->unk_10 = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
     }
     if (IsOne(gCurSceneInfo->unk_04)) {
-        o->unk_0c = (FX_Div(o->unk_08, data_021c3b94) * 0x2999) >> 12;
+        o->unk_0c = (FX_Div(o->unk_08, sWorldCurveZScale) * 0x2999) >> 12;
     } else {
         o->unk_0c = 0;
     }

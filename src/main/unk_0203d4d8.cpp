@@ -128,16 +128,16 @@ extern Unk_0203dbb8_Fn sTalkRequestEndFns[];
 
 extern "C" {
 extern u8 gScreenTransition;
-extern u8 data_020d96d0;
+extern u8 sCharInteractSyncResult;
 extern s32 gActorDefaultParent;
 extern s32 gCommManager;
 
 Unk_0203e604_Obj *PlayerActor_GetActor(s32 id);
 u32 _ZN9Character9getCharIdEv(Unk_0203e604_Obj *o);
 Unk_0203e604_Obj *Character_FindByCharId(u32 id);
-Unk_0203dad4_Task *func_0203eb78();
+Unk_0203dad4_Task *TalkRequestPool_Alloc();
 void PrioList_Insert(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
-void func_0203ebdc(Unk_0203dc50_List *l);
+void TalkRequestList_FreeAll(Unk_0203dc50_List *l);
 void func_020e79a0(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
@@ -145,14 +145,14 @@ void Scene_CheckExit();
 void _ZN8ProcBase8vfunc_20Ev(void *a, u32 b);
 BOOL TalkRequest_IsActive();
 BOOL _ZN9Character12isAreaSyncedEv();
-s32 func_0203e9ac();
-void func_0203e994(u32 id, u32 v);
-void func_0203e9a0(u32 id, u32 v);
+s32 CharInteractSync_CheckArea();
+void CharInteractSync_SendEvent(u32 id, u32 v);
+void CharInteractSync_SendQuery(u32 id, u32 v);
 void TalkRequest_SetTalkTarget(u32 v);
 void TalkRequest_FinishCurrent();
-void func_0203e9d8();
-s32 func_0203ea74(u32 id);
-void func_0203ea08(u32 id);
+void CharInteractSync_ReleaseLock();
+s32 CharInteractSync_Check(u32 id);
+void CharInteractSync_RequestLock(u32 id);
 BOOL PlayerActor_IsStowFinished();
 BOOL PlayerActor_SetEventLock(u32 v);
 BOOL PlayerActor_CanAcceptTalk();
@@ -176,7 +176,7 @@ void TalkRequestFlags_Set(u32 mask);
 BOOL TalkRequestFlags_Test(u32 mask);
 BOOL TalkRequest_AddPlayerExclusive(u32 x);
 void MenuCtrl_RequestForceClose(void);
-void func_0203ec00(void *p);
+void TalkRequestEntry_Free(void *p);
 s32 _ZN15TalkWindowState13detachRequestEv(u32 x);
 u32 TalkWindow_Get(u32 x);
 s32 _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(u32 a, u32 b);
@@ -188,8 +188,8 @@ void MenuCtrl_RequestOpen(u32 v);
 void TalkRequestQueue_Reset(void);
 s32 Field_GetExitedBuildingKey(void);
 void PrioList_Init(void *p);
-void func_0203ebb0(void);
-void func_0203eb38(void);
+void TalkRequestPool_Reset(void);
+void CharInteractSync_Reset(void);
 BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e);
 BOOL TalkRequest_IsCurrentKind(u32 x);
 BOOL TalkRequestFlags_IsEventWarpBlock();
@@ -253,7 +253,7 @@ extern "C" TalkRequestQueue *TalkRequestQueue_Create(void) {
 
 extern "C" void TalkRequestQueue_Reset(void) {
     PrioList_Init(&sTalkRequestList);
-    func_0203ebb0();
+    TalkRequestPool_Reset();
     gTalkRequestCurrent = 0;
     sTalkTargetId = 0;
     TalkRequestFlags_Clear(6);
@@ -261,7 +261,7 @@ extern "C" void TalkRequestQueue_Reset(void) {
 
 extern "C" void TalkRequestQueue_StartInitial(void) {
     TalkRequestQueue_Reset();
-    Unk_0203dad4_Task *s = func_0203eb78();
+    Unk_0203dad4_Task *s = TalkRequestPool_Alloc();
     s32 r = Field_GetExitedBuildingKey();
     if (r != 0) {
         s->unk_0c = (u32)r;
@@ -290,7 +290,7 @@ extern "C" BOOL TalkRequest_IsActive(void) {
 
 BOOL TalkRequestQueue::vfunc_00() {
     TalkRequestQueue_Reset();
-    func_0203eb38();
+    CharInteractSync_Reset();
     sTalkRequestFlags = 0;
     return TRUE;
 }
@@ -323,7 +323,7 @@ extern "C" BOOL TalkRequest_EndMenu(void) {
 }
 
 extern "C" BOOL TalkRequest_AcquireHostLock(Unk_0203dad4_Task *s) {
-    switch (func_0203ea74(s->unk_10)) {
+    switch (CharInteractSync_Check(s->unk_10)) {
     case 2:
         s->unk_16 = 2;
         break;
@@ -337,12 +337,12 @@ extern "C" BOOL TalkRequest_AcquireHostLock(Unk_0203dad4_Task *s) {
         return FALSE;
     }
     TalkRequest_SetTalkTarget(s->unk_10);
-    func_0203ea08(s->unk_10);
+    CharInteractSync_RequestLock(s->unk_10);
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_AcquireAreaTarget(Unk_0203dad4_Task *t) {
-    s32 r = func_0203e9ac();
+    s32 r = CharInteractSync_CheckArea();
     switch (r) {
     case 2:
         if (_ZN11CommManager8isOnlineEv(gCommManager)) {
@@ -370,7 +370,7 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(Unk_0203dad4_Task *t) {
     }
     TalkRequest_SetTalkTarget(t->unk_10);
     if (r == 1) {
-        func_0203e9a0(t->unk_10, t->unk_17);
+        CharInteractSync_SendQuery(t->unk_10, t->unk_17);
     }
     return TRUE;
 }
@@ -391,8 +391,8 @@ extern "C" BOOL TalkRequest_AcquireTarget(Unk_0203dad4_Task *t) {
 
 extern "C" void TalkRequest_NotifyTarget(Unk_0203e604_Obj *o, u32 v) {
     if (_ZN9Character12isAreaSyncedEv()) {
-        if (func_0203e9ac() == 1) {
-            func_0203e994(_ZN9Character9getCharIdEv(o), v);
+        if (CharInteractSync_CheckArea() == 1) {
+            CharInteractSync_SendEvent(_ZN9Character9getCharIdEv(o), v);
         }
     }
     o->vfunc_4c(v, 4);
@@ -402,8 +402,8 @@ extern "C" void TalkRequest_ReleaseTarget(Unk_0203dad4_Task *t, u32 v) {
     Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
     if (o != NULL) {
         if (_ZN9Character12isAreaSyncedEv()) {
-            if (func_0203e9ac() == 1) {
-                func_0203e994(t->unk_10, v);
+            if (CharInteractSync_CheckArea() == 1) {
+                CharInteractSync_SendEvent(t->unk_10, v);
             }
         }
         o->vfunc_4c(v, 4);
@@ -446,7 +446,7 @@ extern "C" BOOL TalkRequest_BeginTalk(Unk_0203dad4_Task *t) {
     switch (t->unk_16) {
     case 0:
     case 1:
-        switch (data_020d96d0) {
+        switch (sCharInteractSyncResult) {
         case 1:
             if (t->unk_15 == 7) {
                 t->unk_16 = 8;
@@ -529,7 +529,7 @@ extern "C" BOOL TalkRequest_RunTalk(Unk_0203dad4_Task *t) {
 extern "C" BOOL TalkRequest_EndTalk(Unk_0203dad4_Task *t) {
     if (PlayerActor_RequestReturnToWait()) {
         TalkRequest_ReleaseTarget(t, 8);
-        func_0203e9d8();
+        CharInteractSync_ReleaseLock();
         return TRUE;
     }
     return FALSE;
@@ -587,23 +587,23 @@ extern "C" BOOL TalkRequest_BeginSceneEntryChar(Unk_0203dad4_Task *t) {
         return FALSE;
     }
     if (t->unk_16 == 7) {
-        switch (func_0203ea74(t->unk_0c)) {
+        switch (CharInteractSync_Check(t->unk_0c)) {
         case 2:
             t->unk_16 = 2;
             break;
         case 1:
             t->unk_16 = 1;
-            func_0203ea08(t->unk_0c);
+            CharInteractSync_RequestLock(t->unk_0c);
             break;
         }
     }
     if (t->unk_16 == 1) {
-        switch (data_020d96d0) {
+        switch (sCharInteractSyncResult) {
         case 1:
             t->unk_16 = 2;
             break;
         case 2:
-            func_0203ea08(t->unk_0c);
+            CharInteractSync_RequestLock(t->unk_0c);
             break;
         }
     }
@@ -616,7 +616,7 @@ extern "C" BOOL TalkRequest_BeginSceneEntryChar(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL TalkRequest_EndSceneEntryChar(Unk_0203dad4_Task *) {
-    func_0203e9d8();
+    CharInteractSync_ReleaseLock();
     return TRUE;
 }
 
@@ -754,7 +754,7 @@ BOOL TalkRequestQueue::onExecute() {
     if (TalkRequest_IsActive()) {
         TalkRequestQueue_StepBegin((Unk_0203dad4_Task *)this);
     }
-    func_0203ebdc(&sTalkRequestList);
+    TalkRequestList_FreeAll(&sTalkRequestList);
     return TRUE;
 }
 
@@ -782,7 +782,7 @@ extern "C" BOOL TalkRequest_IsCurrentKind(u32 x) {
 }
 
 extern "C" BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    Unk_0203dad4_Task *t = func_0203eb78();
+    Unk_0203dad4_Task *t = TalkRequestPool_Alloc();
     if (t == NULL) {
         return FALSE;
     }
@@ -1021,7 +1021,7 @@ extern "C" s32 Talk_DetachRequest(Unk_0203d5e4_Arg *p) {
 }
 
 extern "C" void TalkRequest_FinishCurrent(void) {
-    func_0203ec00(gTalkRequestCurrent);
+    TalkRequestEntry_Free(gTalkRequestCurrent);
     gTalkRequestCurrent = 0;
 }
 
@@ -1037,7 +1037,7 @@ extern "C" BOOL TalkRequest_BeginNetSyncHold(void) {
         return FALSE;
     }
     PlayerActor_SetEventLock(1);
-    Unk_0203dad4_Task *p = func_0203eb78();
+    Unk_0203dad4_Task *p = TalkRequestPool_Alloc();
     p->unk_0c = 0;
     p->unk_10 = 0;
     p->unk_15 = 0xd;

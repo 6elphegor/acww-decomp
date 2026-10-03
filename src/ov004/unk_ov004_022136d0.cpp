@@ -122,8 +122,8 @@ class TouchPicker;
 extern "C" {
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
 void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
-void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
@@ -339,7 +339,7 @@ void RoomBoardSign::mainAct00() {}
 
 BOOL RoomBoardSign::setupAct01() {
     Unk_02213774_Pad pad;
-    _ZN9Character13func_0203e488Ei(this, this);
+    _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     unk_1e = unk_152;
     unk_3c->unk_08 = 1;
@@ -361,7 +361,7 @@ BOOL RoomBoardSign::setupAct02() {
 void RoomBoardSign::mainAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
-            _ZN9Character13func_0203e47cEi(this, this);
+            _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }
     }

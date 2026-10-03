@@ -157,57 +157,57 @@ struct Unk_0203c92c_Bits1 {
     u8 b1 : 1;
     u8 b2 : 1;
 };
-class Unk_0203c92c {
+class PlayerOptions {
 public:
-    void func_0203c92c();
-    void func_0203c938();
-    void func_0203c944();
-    BOOL func_0203c950();
-    BOOL func_0203c964();
-    BOOL func_0203c978();
-    void func_0203c98c();
-    void func_0203c9d4(u32 v);
-    u32 func_0203c9ec();
-    void func_0203c9f4();
-    void func_0203ca00();
-    BOOL func_0203ca0c();
-    void func_0203ca20();
-    void func_0203ca2c();
-    BOOL func_0203ca38();
-    void func_0203ca68();
+    void markTalkVoiceChanged();
+    void markStereoChanged();
+    void markHiraganaChanged();
+    BOOL isTalkVoiceChanged();
+    BOOL isStereoChanged();
+    BOOL isHiraganaChanged();
+    void reset();
+    void setTalkVoice(u32 v);
+    u32 getTalkVoice();
+    void clearStereo();
+    void setStereo();
+    BOOL isStereo();
+    void clearHiragana();
+    void setHiragana();
+    BOOL isHiragana();
+    void resetValues();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
 };
 
-extern "C" Unk_0203c92c data_021c3264;
-extern "C" Unk_0203c92c *func_0203c9b4(Unk_0203c92c *p);
-extern "C" Unk_0203c92c *func_0203c9c4(Unk_0203c92c *p);
-extern "C" void func_0203ca84();
-extern "C" void func_0203ca90();
+extern "C" PlayerOptions sPlayerOptions;
+extern "C" PlayerOptions *func_0203c9b4(PlayerOptions *p);
+extern "C" PlayerOptions *func_0203c9c4(PlayerOptions *p);
+extern "C" void PlayerOptions_OnDestruct();
+extern "C" void PlayerOptions_OnConstruct();
 
 extern "C" {
 void PlayerData_GetCurrent();
 }
 
 extern "C" {
-Unk_0203c92c *func_02098668();
+PlayerOptions *func_02098668();
 }
 
 extern "C" {
-Unk_0203c92c *func_0203cbb8();
+PlayerOptions *PlayerOptions_Get();
 }
 
 extern "C" {
-s32 func_0203cba8();
+s32 PlayerOptions_IsHiragana();
 }
 
 extern "C" {
-s32 func_0203cb70();
+s32 PlayerOptions_IsStereo();
 }
 
 extern "C" {
-u32 func_0203cb38();
+u32 PlayerOptions_GetTalkVoice();
 }
 
 // ---- 0x0203c638 .. 0x0203c924

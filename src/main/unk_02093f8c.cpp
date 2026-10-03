@@ -233,7 +233,7 @@ public:
     /* 0x08 */ MsgStringAttr unk_08;
 };
 
-extern "C" BOOL func_020a78a4(void *, const void *, s32);
+extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
 // 8-byte destination buffer at +0xe
 class EncodedString8 : public EncodedString {
@@ -315,7 +315,7 @@ extern u8 gSavePlayers[];
 }
 
 extern "C" {
-s32 func_02097740(void *, void *);
+s32 PlayerDataArray_FindById(void *, void *);
 }
 
 extern "C" {

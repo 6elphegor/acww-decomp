@@ -100,7 +100,7 @@ void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 u64 OS_GetTick(void);
 u32 OS_GetProcMode(void);
 void OS_DisableInterrupts(void);
-void func_020535e0(void);
+void Gfx_ResetDisplayRegs(void);
 void GX_SetBankForBG(u32 a);
 void GX_SetBankForSubBG(u32 a);
 void GX_LoadBG1Char(void *a, u32 b, u32 c);
@@ -274,7 +274,7 @@ void CrashScreen_Clear(void) {
 }
 
 void CrashScreen_InitDisplay(void) {
-    func_020535e0();
+    Gfx_ResetDisplayRegs();
     *(vu16 *)0x4000304 |= 1;
     *(vu16 *)0x4000050 = 0;
     *(vu16 *)0x4001050 = 0;
@@ -396,9 +396,9 @@ void CrashScreen_Run(void) {
 
 
 
-void func_02000c98(void) {}
+void FxVec3_Construct(void) {}
 
-void func_02000c90(u32 *p) {
+void LitCedarPos_Construct(u32 *p) {
     p[0] = 0;
     p[1] = 0;
 }

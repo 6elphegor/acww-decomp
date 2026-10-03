@@ -401,7 +401,7 @@ u32 GroundSeason_CalcPhase();
 void _ZN14SnowmanRecords11updateDailyEv(const char *s);
 void BuriedMask_Reset(void *p);
 BOOL Item_IsNormalItem(u16 *p);
-void func_02039e6c(u16 v);
+void LostAndFound_Add(u16 v);
 s32 FieldStructureMgr_Get();
 BOOL FieldStructureMgr_SpawnBuilding(s32 a, void *b, s32 x, s32 y, s32 f);
 u32 _ZN12StrBSizeData21getFootprintUnitCountEv(void *h);
@@ -415,7 +415,7 @@ s32 Item_GetStumpSize(u16 *p);
 void _ZN14SnowmanRecords6removeEj(void *obj, s32 v);
 extern char data_021ed2e6[];
 extern void *gCommManager;
-BOOL func_0204f0f4(u8 v);
+BOOL FishTable_IsLateMonth(u8 v);
 void Fatal_Trap();
 void OverlayMgr_UnloadSlot(OverlaySlot *e);
 void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
@@ -436,9 +436,9 @@ s32 MapBlock_GetItemPtr(Unk_0204e858_Cell *c, s32 a, s32 b, u8 d);
 void *MapBlock_SetItem(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, u8 e);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
-u8 func_0204f084(u8 r);
-u32 func_0204f100(u32 r);
-void func_0204f178(void *a, void *b, s32 c, u32 d, u32 e);
+u8 FishTable_GetPeriod(u8 r);
+u32 FishTable_GetHourSlot(u32 r);
+void FishTable_Pick(void *a, void *b, s32 c, u32 d, u32 e);
 }
 
 // own functions
@@ -986,7 +986,7 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
     p = (u16 *)Ns_0204debc::BlockMap_GetItemPtr(this, hx, hy, tx - (hx << 4), ty - (hy << 4), 0);
     if (p) {
         tile = *p;
-        if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) func_02039e6c(tile);
+        if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) LostAndFound_Add(tile);
     }
     if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = StrBSize_Get(b);
     if (h) {
@@ -1004,7 +1004,7 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
                 cell = (u16 *)Ns_0204debc::BlockMap_GetItemPtr(this, hx, hy, px - (hx << 4), py - (hy << 4), 0);
                 if (cell) {
                     if (Item_IsFurniture(cell) || Item_IsNormalItem(cell)) {
-                        if (!_ZN11CommManager8isOnlineEv(g)) func_02039e6c(*cell);
+                        if (!_ZN11CommManager8isOnlineEv(g)) LostAndFound_Add(*cell);
                     } else if (Item_IsSnowman(cell)) {
                         _ZN14SnowmanRecords6removeEj(data_021ed2e6, Item_GetSnowmanIndex(cell));
                     }
@@ -1260,7 +1260,7 @@ BOOL TownMap::placeStructure(u16 *a, s32 x, s32 y, u8 flag) {
         return FieldStructureMgr_SpawnBuilding(FieldStructureMgr_Get(), a, x, y, 1);
     }
     if (putStructure(a, x, y)) {
-        if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) func_02039e6c(tile);
+        if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) LostAndFound_Add(tile);
         return TRUE;
     }
     return FALSE;

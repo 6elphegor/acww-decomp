@@ -28,12 +28,12 @@ void *PlayerData_GetCurrent();
 u32 func_02063b8c(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void *func_020947f0(s32);
+void *PlayerActor_GetBodyPos(s32);
 s32 Clock_GetDateTime(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetText();
-void func_020a78a4(void *, s32, s32);
+void EncodedString_SetRaw(void *, s32, s32);
 s32 ChoiceList_getResult();
 s32 NpcActor_CanPlayerPay(void *, s32);
 void NpcActor_ChargePlayer(void *, s32);
@@ -336,15 +336,15 @@ public:
     BOOL onDraw();
     BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -390,8 +390,8 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual void getGender();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
@@ -931,7 +931,7 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
         unk_b0->unk_750 = MenuCtrl_GetText();
         KatrinaMsgString17 src;
         KatrinaEncodedString16 dst;
-        func_020a78a4(&dst, unk_b0->unk_750, 0x10);
+        EncodedString_SetRaw(&dst, unk_b0->unk_750, 0x10);
         src.fromEncoded(&dst, 0, 0);
         unk_3c->setSlot(0, &src);
         msg = 0xa;
@@ -941,7 +941,7 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
 
 BOOL SpNpcKatrina::vfunc_48() {
     BOOL r = FALSE;
-    Unk_ov045_02259070_Rec *src = (Unk_ov045_02259070_Rec *)func_020947f0(4);
+    Unk_ov045_02259070_Rec *src = (Unk_ov045_02259070_Rec *)PlayerActor_GetBodyPos(4);
     Unk_ov045_02259070_Rec rec;
     s32 bx, by;
     rec.a = src->a;

@@ -349,15 +349,15 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
+    virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual void setShirt();
     virtual void onJoinTalk();
@@ -409,11 +409,11 @@ public:
     virtual BOOL preDelete();
     virtual void getName(u32 v);
     virtual void getGender();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
     virtual s32 vfunc_a8();
-    void func_0202e548(s32 a, s32 b);
+    void setColliderSize(s32 a, s32 b);
 
     Unk_020e06dc unk_640;
     s32 unk_648;
@@ -526,8 +526,8 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
     s32 getRunDistance();
     s32 getFollowDistance();
@@ -692,10 +692,10 @@ s32 Talk_IsDramaPending(void *a, void *b, s32 c);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_LockExit(s32 a);
-void func_020341c0(s32 a);
-void func_020341f4(s32 a);
-void func_02034250(void *a, s32 b, s32 c, s32 d);
-void func_020342cc(void *a, s32 b, s32 c, s32 d);
+void RoomWallFloor_RestoreCarpet(s32 a);
+void RoomWallFloor_RestoreWallpaper(s32 a);
+void RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
+void RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
 void RoomBgm_forceClosingMusic(void *p);
 void Camera_RestorePrevMode();
 void Camera_SetModeDefault();
@@ -744,13 +744,13 @@ s32 PlayerSpNpcRecord_stampArbeitDate(void *p);
 u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-void *func_020947f0(s32 a);
+void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_IsScriptedWalking(s32 a);
 void *PlayerActor_GetActor(s32 a);
 void *PlayerData_GetCurrent();
-void func_02097740(void *a, s32 b);
+void PlayerDataArray_FindById(void *a, s32 b);
 void Unk_02097ff4_clearFlag(void *p, s32 v);
 void Unk_02097ff4_setFlag(void *h, u32 a);
 s32 Unk_02097ff4_testFlag(void *h, s32 a);
@@ -789,7 +789,7 @@ void ErrandRecord_setStep(void *p, s32 v);
 u32 ErrandRecord_getStep(void *p);
 u32 ErrandRecord_getKind(void *p);
 BOOL ErrandRecord_isActive(void *p);
-s16 *func_0209c37c(s32 a, s32 b);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Date_DaysBetween(void *o, void *p);
 s32 Clock_GetWeekday();
 void Clock_GetDate(void *o);
@@ -816,7 +816,7 @@ void SceneWarp_RequestExit(s32 a, s32 b);
 void *Scene_GetTouchPicker();
 s32 Scene_GetPrevious();
 void *Scene_GetCurrent();
-void *func_020b6048(void *a, s32 b, s32 c);
+void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
 s32 func_020e7500(void *p);
 s32 func_020e7518(void *p);
@@ -1072,12 +1072,12 @@ BOOL SpNpcNookShop::vfunc_04() {
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner((Unk_ov050_0225b908_Owner *)this);
     if (isTwin()) {
-        func_0202e548(0xccd, 0x2000);
+        setColliderSize(0xccd, 0x2000);
         setCollisionRadius(0xb00);
     }
     unk_72c = data_020c6cc8;
     NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x400, 0x133, 0x199);
-    if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         switch (unk_08) {
         case 0xd00f:
             unk_5c = 0xf000;
@@ -1119,7 +1119,7 @@ BOOL SpNpcNookShop::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         unk_4cc.unk_1c |= 2;
         if (NetArea_IsLocalOwner()) {
             func_02086f80(TownSessionState_GetClosingTime(TownSessionState_Get()));
@@ -1275,7 +1275,7 @@ BOOL SpNpcNookShop::setupAct01() {
 }
 
 BOOL SpNpcNookShop::mainAct01() {
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
+    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov050_0225cd90_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1330,7 +1330,7 @@ BOOL SpNpcNookShop::mainAct02() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
+    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov050_0225cd90_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1381,7 +1381,7 @@ BOOL SpNpcNookShop::mainAct03() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
+    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov050_0225cd90_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1535,7 +1535,7 @@ BOOL SpNpcNookShop::setupAct11() {
 
 BOOL SpNpcNookShop::mainAct11() {
     PlayerData_GetCurrent();
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)func_020947f0(4);
+    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov050_0225c9dc_Vec v0;
     v0.x = pv->x;
     v0.y = pv->y;
@@ -1694,7 +1694,7 @@ BOOL SpNpcNookShop::setupAct10() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 BOOL SpNpcNookShop::mainAct10() {
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)func_020947f0(4);
+    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)PlayerActor_GetBodyPos(4);
     Unk_ov050_0225c9dc_Vec v;
     v.x = pv->x;
     v.y = pv->y;
@@ -2681,7 +2681,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg12(Unk_ov050_0225b7f4_Out *out) {
     }
 }
 
-BOOL SpNpcNookShop::vfunc_7c() {
+BOOL SpNpcNookShop::canPlayTalkMelody() {
     if (isTimmy()) {
         return FALSE;
     }
@@ -2691,7 +2691,7 @@ BOOL SpNpcNookShop::vfunc_7c() {
     return FALSE;
 }
 
-void SpNpcNookShop::vfunc_80() {
+void SpNpcNookShop::onTalkMelodyPlayed() {
     unk_73b = 1;
 }
 extern "C" void *data_ov050_0225dde0[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
@@ -3079,7 +3079,7 @@ void SpNpcNookShopTalk::vfunc_78(Unk_ov050_0225a888_Out *out) {
         }
         return;
     }
-    if (unk_b0->isNook() && unk_ac == 5 && !CommManager_isOnline(gCommManager) && *func_0209c37c(0, 0x4a) == 0) {
+    if (unk_b0->isNook() && unk_ac == 5 && !CommManager_isOnline(gCommManager) && *DebugVar_GetPtr(0, 0x4a) == 0) {
         if (unk_c8 == -1) {
             w0 = 0x36fc;
             unk_c8 = Pocket_FindItem(&w0);
@@ -3746,9 +3746,9 @@ void SpNpcNookShopTalk::onBuyAfterPreviewChoice(s32 p) {
             r = TRUE;
         }
         if (r) {
-            func_020341f4(1);
+            RoomWallFloor_RestoreWallpaper(1);
         } else {
-            func_020341c0(1);
+            RoomWallFloor_RestoreCarpet(1);
         }
         Camera_RestorePrevMode();
     }
@@ -3776,10 +3776,10 @@ void SpNpcNookShopTalk::onBuyOrShowChoice(s32 p) {
             }
             if (r) {
                 Camera_SetMode11();
-                func_020342cc(&unk_b0->unk_72e, 0, 1, 1);
+                RoomWallFloor_SetWallpaper(&unk_b0->unk_72e, 0, 1, 1);
             } else {
                 Camera_SetMode12();
-                func_02034250(&unk_b0->unk_72e, 0, 1, 1);
+                RoomWallFloor_SetCarpet(&unk_b0->unk_72e, 0, 1, 1);
             }
         }
     }
@@ -3795,7 +3795,7 @@ void SpNpcNookShopTalk::onBuyPaintChoice(s32 p) {
             unk_b0->unk_738 = 1;
             NpcActor_ChargePlayer(unk_b0, (s32)unk_c0);
             PlayerData_GetCurrent();
-            func_02097740(&gSavePlayers, PlayerData_getPlayerId());
+            PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
             o = unk_b0;
             NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, Scene_GetCurrent());
         }
@@ -3992,7 +3992,7 @@ s32 SpNpcNookShopTalk::buySelectedItem() {
     NpcActor_ChargePlayer(unk_b0, (s32)unk_c0);
     Pocket_AddItem(&unk_b0->unk_72e, 0);
     PlayerData_GetCurrent();
-    func_02097740(&gSavePlayers, PlayerData_getPlayerId());
+    PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
     o = unk_b0;
     NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, Scene_GetCurrent());
     VillagerTrend_OnFurnitureBought();
@@ -4048,7 +4048,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
             } else if (unk_658.getTopic() == 1 || unk_658.getTopic() == 0x12 ||
                        unk_658.getTopic() == 6 || unk_658.getTopic() == 0x1d) {
                 changeAct(5);
-            } else if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+            } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 unk_658.vfunc_08();
                 func_02015ab0(&unk_658, getPlayerActor(4));
                 changeAct(4);
@@ -4081,7 +4081,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
                 netSetSlotsIfOwner(1, g->unk_64, 4);
                 if (unk_658.getTopic() == 1 || unk_658.getTopic() == 0x12 ||
                     unk_658.getTopic() == 6 || unk_658.getTopic() == 0x1d) {
-                } else if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+                } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0xd);
                 } else {
                     changeAct(1);
@@ -4112,7 +4112,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
 BOOL SpNpcNookShop::isPlayerCloserThanOtherTwin() {
     if (isTwin()) {
         Unk_ov050_022590f8_Vec a;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
+        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
         *(Unk_ov050_022590f8_Vec *)&a = *src;
         u8 *o = (u8 *)Actor_findByProfile(getOtherTwinProfile(), 0);
         if (o != 0) {
@@ -4149,7 +4149,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (isTommy()) {
             return FALSE;
         }
@@ -4173,7 +4173,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (f) {
         void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
@@ -4239,7 +4239,7 @@ BOOL SpNpcNookShop::tryStairsBlockTalk() {
     PlayerData_getErrands(p);
     if (Unk_02097ff4_testFlag(p, 1)) {
         Unk_ov050_02258f80_Loc v;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
+        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
         *(Unk_ov050_022590f8_Vec *)&v = *src;
         if (v.z < sSpNpcNookShopArbeitStairsBound.z && v.x > sSpNpcNookShopArbeitStairsBound.x) {
             unk_658.setTopic(0x1e);
@@ -4252,7 +4252,7 @@ BOOL SpNpcNookShop::tryStairsBlockTalk() {
 
 BOOL SpNpcNookShop::tryFarewellTalk() {
     Unk_ov050_02258f80_Loc v;
-    Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
+    Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov050_022590f8_Vec *)&v = *src;
     if (unk_658.getTopic() != 1 && unk_658.getTopic() != 0x12) {
         if (isTwin() && isPlayerCloserThanOtherTwin() == 0) {
@@ -4261,7 +4261,7 @@ BOOL SpNpcNookShop::tryFarewellTalk() {
             }
             return FALSE;
         }
-        if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             return FALSE;
         }
         void *p = PlayerData_GetCurrent();
@@ -4287,7 +4287,7 @@ BOOL SpNpcNookShop::tryClosingTimeTalk() {
     if (TalkRequest_IsActive()) {
         return FALSE;
     }
-    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
     if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1)) {

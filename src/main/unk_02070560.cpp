@@ -7,7 +7,7 @@ class EncodedString16Buf;
 class Unk_020942c8;
 
 namespace U125_calls {
-extern "C" void func_020a78a4(EncodedString16Buf *o, u8 *src, s32 n);
+extern "C" void EncodedString_SetRaw(EncodedString16Buf *o, u8 *src, s32 n);
 extern "C" BOOL _ZN8PlayerId6equalsEPS_(Unk_020942c8 *self, Unk_020942c8 *o);
 }
 
@@ -468,7 +468,7 @@ namespace n4 {
 }
 void PatternInfo::getTitleEncoded(EncodedString16Buf *o) {
     using namespace n4;
-    U125_calls::func_020a78a4(o, unk_16.b, 16);
+    U125_calls::EncodedString_SetRaw(o, unk_16.b, 16);
 }
 namespace n4 {
 }
@@ -1954,7 +1954,7 @@ extern "C" {
 s32 PlayerData_GetCurrentIndex();
 }
 extern "C" {
-s32 func_020978fc(s32 t);
+s32 PlayerData_IsResidentIndex(s32 t);
 }
 extern "C" {
 void Clock_GetDateTime(void *p);
