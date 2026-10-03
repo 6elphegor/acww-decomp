@@ -11,6 +11,7 @@ Plain lines (`#` starts a comment):
     func   <old> <new>                  function, data symbol, label (alias), linker-script or source-only name
     class  <OldClass> <NewClass>        C++ class, in every mangled name and in sources/docs
     member <Class>::<old> <new>         non-virtual method
+    field  <Class> <offset> <new>       struct field `unk_<offset>` (also `member <Class> <offset> <type> <new>`)
     vfunc  <Class> <old> <new>          virtual method, for the whole hierarchy of the class that introduces it
     vfunc  <Class> slot:0x10 <new>      the same, by vtable offset (0x00/0x04 = destructor)
 
@@ -20,7 +21,7 @@ Batch lines (pipeline_wip/phase1/survey/plan.md "Batch deliverable"), `|`-separa
     class <Old> <New>            | ...
     method <Class> <old> <new>   | ...        (= member)
     vfunc <Class> <slot|old> <new> | ...
-    member <Struct> <offset> <type> <name> | ...   struct field: reported only
+    member <Struct> <offset> <type> <name> | ...   struct field `unk_<offset>` of that class (type: documentation)
     unit <src path> <new path>   | ...                reported only
 
 Old names may be qualified with a module (`ov065:func_ov065_02268c38`, `main:`, `autoload_2:`, `itcm:`, `*:`).
@@ -48,6 +49,7 @@ protected public register reinterpret_cast return short signed sizeof static sta
 template this thread_local throw true try typedef typeid typename union unsigned using virtual void volatile wchar_t
 while xor xor_eq restrict _Bool _Complex _Imaginary NULL
 """.split())
+ANON = "__anonymous__"  # type of a field declared with an anonymous struct/union type
 TYPE_WORDS = {"const", "volatile", "struct", "class", "union", "unsigned", "signed", "static", "mutable", "enum",
               "inline", "extern"}
 
@@ -507,6 +509,8 @@ class Rename:
         q = f"{self.qual}:" if self.qual else ""
         if self.kind == "member":
             return f"member {'::'.join(self.path)}::{self.old} -> {self.new}"
+        if self.kind == "field":
+            return f"field {'::'.join(self.path)} {self.offset:#04x} -> {self.new}"
         if self.kind == "vfunc":
             what = self.old if self.slot is None else f"slot:{self.slot:#04x}"
             return f"vfunc {self.path[-1]} {what} -> {self.new}"
@@ -560,9 +564,17 @@ def parse_list(path):
         if kind == "unit" and len(f) == 3:
             reports.append(Report("unit", f[1:], where, s, batch, confidence, evidence))
             continue
-        if kind == "member" and len(f) >= 4 and "::" not in f[1]:
-            reports.append(Report("field", [f[1], f[2], " ".join(f[3:-1]), f[-1]], where, s, batch, confidence,
-                                  evidence))
+        if (kind == "member" and len(f) >= 4 and f[2].startswith("0x")) or (kind == "field" and len(f) == 4):
+            # struct field: `member <Class> <offset> <type> <name>` (batch format) or `field <Class> <offset> <name>`
+            off = parse_slot(f[2]) if f[2].startswith(("0x", "slot:")) else None
+            if off is None or not all(IDENT.fullmatch(x) for x in f[1].split("::")):
+                bad("expected `member <Class> <0xoffset> <type> <name>` (or `<namespace>::<Class>`)")
+                continue
+            name, dims = re.fullmatch(r"([^\[]*)(.*)", f[-1]).groups()  # `script[2]`: the array belongs to the type
+            r = Rename("field", None, None, name, where, s, batch, confidence, evidence)
+            r.path, r.offset = tuple(f[1].split("::")), off  # `ns_0220b0f0::Obj`: the copies in that namespace
+            r.ftype = (" ".join(f[3:-1]) + dims) if kind == "member" else None
+            renames.append(r)
             continue
         if kind in ("func", "data", "class") and len(f) == 3:
             old, qual = f[1], None
@@ -607,7 +619,7 @@ def parse_list(path):
                 continue
             renames.append(r)
             continue
-        bad("unknown record (func|data|class|method|member|vfunc|unit)")
+        bad("unknown record (func|data|class|method|member|field|vfunc|unit)")
     return renames, reports
 
 
@@ -708,6 +720,8 @@ def parse_body(m, o, c, braces, classname):
                 # an anonymous union/struct: its members are members of the class
                 anonymous.extend(x for x in parse_body(m, k, close, braces, classname) if x[0] == "field")
                 acc = []
+            elif re.fullmatch(r"\s*(?:union|struct)\s*", prefix):
+                acc = [ANON + " "]  # `struct { ... } unk_248;`: a field of an anonymous struct type
             elif "(" in "".join(acc):  # inline function body: the declaration ends here
                 members.append("".join(acc))
                 acc = []
@@ -722,7 +736,9 @@ def parse_body(m, o, c, braces, classname):
 class FileModel:
     def __init__(self, path, text, module):
         self.path, self.module = path, module
+        self.text = text
         self.asm = path.suffix == ".s"
+        self._fields = None
         parts = []
         for a, b, k in code_segments(text, self.asm):
             parts.append(text[a:b] if k == "code" else re.sub(r"[^\n]", " ", text[a:b]))
@@ -802,6 +818,7 @@ class FileModel:
                 continue
             opaque.append((o, braces[o]))
         starts = [o for o, _ in opaque]
+        self.top_blocks, self.top_starts = opaque, starts
         for mo in re.finditer(r"\b([A-Za-z_]\w*)\s*\(", m):
             name, at = mo[1], mo.start()
             if name in KEYWORDS or name in self.free_funcs:
@@ -824,8 +841,32 @@ class FileModel:
             self.free_funcs[name] = at
         self.includes = re.findall(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"', text, re.M)
         self.typedefs = {}
+        self.typedef_at = {}  # name -> [(position, target)]: merged unit files typedef one name per namespace
         for mo in re.finditer(r"\btypedef\s+(?:const\s+)?(?:struct\s+|class\s+)?([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*;", m):
             self.typedefs[mo[2]] = mo[1]
+            self.typedef_at.setdefault(mo[2], []).append((mo.start(), mo[1]))
+        # `typedef struct { ... } Name;` is the class Name; `typedef struct Tag { ... } Name;` a typedef of Tag
+        for mo in re.finditer(r"\btypedef\s+(?:struct|union)\s*([A-Za-z_]\w*)?\s*\{", m):
+            o = mo.end() - 1
+            c = braces.get(o)
+            semi = m.find(";", c) if c is not None else -1
+            if semi < 0:
+                continue
+            names = [IDENT.fullmatch(x.strip()) for x in m[c + 1:semi].split(",")]
+            names = [x[0] for x in names if x]
+            if not names:
+                continue
+            if mo[1] is None:
+                self.classes.append((o, c, names[0], [], parse_body(m, o, c, braces, names[0])))
+                self.class_ns.append(self.namespace_at(o))
+                for n in names[1:]:
+                    self.typedefs[n] = names[0]
+                    self.typedef_at.setdefault(n, []).append((o, names[0]))
+            else:
+                for n in names:
+                    if n != mo[1]:
+                        self.typedefs[n] = mo[1]
+                        self.typedef_at.setdefault(n, []).append((o, mo[1]))
         # object-like macros whose body is a cast, `#define M ((Unk_020e2a18 *)unk_a1c)`: M has that type
         self.cast_macros = {}
         for mo in re.finditer(r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)[ \t]+\(\s*\(\s*(?:const\s+)?"
@@ -842,6 +883,151 @@ class FileModel:
             while end != -1 and m[:end].rstrip(" \t\r").endswith("\\"):
                 end = m.find("\n", end + 1)
             self.define_spans.append((mo.start(), mo.end(), len(m) if end == -1 else end, mo[1]))
+
+    # struct fields ---------------------------------------------------------------------------------------------
+    def fields(self):
+        """per class of the file, its field declarations and inline function bodies (computed on first use):
+        self.field_decls[class index] = [Field], self.bodies = [(open, close, class name)] (inline member function
+        bodies and out-of-class definitions), self.inits = [(start, end, class name)] (constructor init lists)"""
+        if self._fields is not None:
+            return self._fields
+        m = self.masked
+        braces = bracket_pairs(m, "{", "}")
+        self.field_decls = []
+        self.bodies = [(o, c, name, head) for o, c, name, head in self.defs]
+        self.inits = [(head, o, name) for o, c, name, head in self.defs]
+        for o, c, name, *_ in self.classes:
+            self.field_decls.append(self._scan_class(m, o, c, braces, name))
+        self._fields = self.field_decls
+        return self._fields
+
+    def _scan_class(self, m, o, c, braces, classname, union=None, out=None):
+        out = [] if out is None else out
+        i = seg = o + 1
+        while i < c:
+            hit = re.compile(r"[;{]").search(m, i, c)
+            if not hit:
+                break
+            k = hit.start()
+            if m[k] == ";":
+                self._field_stmt(m, seg, k, out, union, None)
+                i = seg = k + 1
+                continue
+            close = braces.get(k, c)
+            prefix = ACCESS.sub("", m[seg:k])
+            after = back_ws_forward(m, close + 1)
+            kind = re.fullmatch(r"\s*(union|struct)\s*", prefix)
+            if kind and after < len(m) and m[after] == ";":
+                # an anonymous member union/struct: its members are members of the class (a union: one group)
+                self._scan_class(m, k, close, braces, classname, (k if kind[1] == "union" else union), out)
+                i = seg = after + 1
+            elif kind or re.fullmatch(r"\s*(?:struct|union|class|enum)\s+([A-Za-z_]\w*)[^;]*", prefix):
+                # `struct { ... } a, b;` / `struct Tag { ... } a;`: fields after the body
+                tag = re.match(r"\s*(?:struct|union|class|enum)\s+([A-Za-z_]\w*)", prefix)
+                semi = m.find(";", close)
+                semi = c if semi < 0 or semi > c else semi
+                self._field_stmt(m, close + 1, semi, out, union, tag[1] if tag and not kind else ANON)
+                i = seg = semi + 1
+            elif "(" in prefix:
+                self.bodies.append((k, close, classname, seg))  # an inline member function body
+                if re.search(r"\)\s*(?:const\s*)?:(?!:)", prefix):
+                    self.inits.append((seg, k, classname))
+                i = seg = close + 1
+            else:
+                i = seg = close + 1
+        return out
+
+    def _field_stmt(self, m, a, b, out, union, given_type):
+        stmt = m[a:b]
+        lead = ACCESS.match(stmt)
+        if lead:
+            a += lead.end()
+            stmt = m[a:b]
+        if not stmt.strip() or re.match(r"\s*(typedef|friend|using|template|static|enum)\b", stmt):
+            return
+        if "(" in stmt:
+            fp = re.search(r"\(\s*\*\s*([A-Za-z_]\w*)\s*\)", stmt)
+            if fp and not re.search(r"\boperator\b", stmt):
+                out.append(Field(fp[1], a + fp.start(1), stmt[:fp.start()].strip() + " (*)()", union, self))
+            return
+        level, start, parts = 0, 0, []
+        for j, ch in enumerate(stmt):
+            if ch in "[(<":
+                level += 1
+            elif ch in "])>":
+                level -= 1
+            elif ch == "," and level == 0:
+                parts.append((start, j))
+                start = j + 1
+        parts.append((start, len(stmt)))
+        ftype = given_type
+        for n, (ps, pe) in enumerate(parts):
+            part = stmt[ps:pe]
+            cut = len(part)
+            for ch in "[=:":
+                x = part.find(ch)
+                if x >= 0 and not (ch == ":" and part[x:x + 2] == "::"):
+                    cut = min(cut, x)
+            ids = list(IDENT.finditer(part, 0, cut))
+            if not ids or ids[-1][0] in KEYWORDS:
+                continue
+            name = ids[-1]
+            if n == 0 and ftype is None:
+                if len(ids) < 2:
+                    return  # no type: not a field declaration
+                ftype = re.sub(r"\s+", " ", part[:name.start()]).strip()
+            arr = re.sub(r"\s+", "", re.match(r"(?:\s*\[[^\]]*\])*", part[name.end():])[0])
+            if n == 0:
+                t = ftype
+            else:
+                t = re.sub(r"[*&\s]+$", "", ftype) + " " + re.sub(r"[^*&]", "", part[:name.start()])
+            out.append(Field(name[0], a + ps + name.start(), t.strip() + arr, union, self))
+
+    def body_at(self, pos):
+        """the innermost member function body (open, close, class, head) that contains pos, or None"""
+        self.fields()
+        best = None
+        for o, c, name, head in self.bodies:
+            if o < pos < c and (best is None or o > best[0]):
+                best = (o, c, name, head)
+        return best
+
+    def declared_locally(self, tok, start, pos):
+        """a declaration of a local or parameter named tok between start and pos (`T *tok;`, `(T tok,`)"""
+        pat = re.compile(r"(?:^|[;{}(,])\s*(?:(?:const|static|struct|class|union|unsigned|signed|volatile|register)\s+)*"
+                         r"([A-Za-z_]\w*)\s*(?:<[^<>;{}]*>)?\s*[*&\s]\s*" + re.escape(tok) + r"\s*(?=[;=,\[)])")
+        return any(mo[1] not in KEYWORDS for mo in pat.finditer(self.masked, start, pos))
+
+    def init_at(self, pos):
+        """(class, start) of the constructor head / init list that contains pos, or None"""
+        self.fields()
+        for a, b, name in self.inits:
+            if a <= pos < b:
+                return name, a
+        return None
+
+    def free_head(self, pos):
+        """start of the head (return type, parameters) of the file-scope function whose body contains pos, or None"""
+        if self.asm:
+            return None
+        i = bisect.bisect_right(self.top_starts, pos) - 1
+        if i < 0 or pos >= self.top_blocks[i][1]:
+            return None
+        o = self.top_blocks[i][0]
+        j = back_ws(self.masked, o - 1)
+        if j < 0 or self.masked[j] != ")":
+            return None
+        return max(self.masked.rfind(ch, 0, j) for ch in ";}{") + 1
+
+    def macro_active(self, name, pos):
+        """a #define of name (any body) is in effect at pos, or pos is in its #define / #undef line"""
+        ls = self.masked.rfind("\n", 0, pos) + 1
+        if re.match(r"[ \t]*#[ \t]*(?:define|undef)[ \t]+" + re.escape(name) + r"\b", self.masked[ls:]):
+            return True
+        for start, body, end, n in self.define_spans:
+            if n == name and start < pos and not any(start < u < pos for u in self.undefs.get(name, ())):
+                return True
+        return False
 
     def define_body_at(self, pos):
         """(macro name, end of the definition) if pos is in the body of a #define, else None"""
@@ -904,6 +1090,32 @@ class FileModel:
         return self.masked.count("\n", 0, pos) + 1
 
 
+class Field:
+    """a field declaration in a class body"""
+    def __init__(self, name, pos, ftype, union, fm):
+        self.name, self.pos, self.type, self.union = name, pos, ftype, union
+        text = fm.text
+        ls = text.rfind("\n", 0, pos) + 1
+        le = text.find("\n", pos)
+        le = len(text) if le < 0 else le
+        self.offset = None
+        before = re.findall(r"/\*\s*\+?(0x[0-9a-fA-F]+)\s*\*/", text[ls:pos])
+        first = not re.search(r"[;,]\s*[^\s]", fm.masked[ls:pos].split("{")[-1].rstrip()) and \
+            not re.search(r",", fm.masked[ls:pos].split("{")[-1])
+        if before and first:
+            self.offset = int(before[-1], 16)
+        else:
+            after = re.match(r"[^\n]*?;\s*//\s*\+?(0x[0-9a-fA-F]+)\b", text[pos:le])
+            if after and first:
+                self.offset = int(after[1], 16)
+
+
+def unk_offset(name):
+    """the offset a placeholder field name `unk_<hex>` stands for, or None"""
+    mo = re.fullmatch(r"unk_([0-9a-fA-F]+)", name)
+    return int(mo[1], 16) if mo else None
+
+
 class ClassInfo:
     def __init__(self, name):
         self.name = name
@@ -912,10 +1124,12 @@ class ClassInfo:
         self.all_methods = set()
         self.fields = {}
         self.files = set()
+        self.keys = set()
         self.all_bases = set()
 
-    def add(self, bases, members, path):
+    def add(self, bases, members, path, key=None):
         self.files.add(path)
+        self.keys.add(key)  # (path, body open) of each declaration merged here
         self.all_bases.update(bases)
         methods = [x for x in members if x[0] == "method"]
         if bases and (not self.bases or len(methods) > len(self.methods)):
@@ -990,7 +1204,7 @@ class Index:
                     if tok.startswith("_Z"):
                         self.add_mangled(tok, {module}, False)
             for o, c, name, bases, members in fm.classes:
-                self.classes.setdefault(name, ClassInfo(name)).add(bases, members, p)
+                self.classes.setdefault(name, ClassInfo(name)).add(bases, members, p, (p, o))
                 for x in members:
                     if x[0] == "field":
                         self.field_names.update(n for n, _ in x[1])
@@ -1067,7 +1281,7 @@ class Index:
                 own = {}
                 for (o, c, name, bases, members), ns in zip(fm.classes, fm.class_ns):
                     if ns == wanted:
-                        own.setdefault(name, ClassInfo(name)).add(bases, members, file)
+                        own.setdefault(name, ClassInfo(name)).add(bases, members, file, (file, o))
                 v.update(own)
             self._views[path] = v
             return v
@@ -1081,7 +1295,7 @@ class Index:
                         v.setdefault(k, ci)
             own = {}
             for o, c, name, bases, members in fm.classes:
-                own.setdefault(name, ClassInfo(name)).add(bases, members, path)
+                own.setdefault(name, ClassInfo(name)).add(bases, members, path, (path, o))
             v.update(own)
         self._views[path] = v
         return v
@@ -1113,6 +1327,59 @@ class Index:
                 return c
             info = self.info(c, path)
             if info:
+                todo += info.bases
+        return None
+
+    def copies(self, cls):
+        """every declaration of class cls: [(path, FileModel, class tuple, [Field])]"""
+        if not hasattr(self, "_copies"):
+            self._copies = defaultdict(list)
+            for p, fm in self.files.items():
+                if fm.asm:
+                    continue
+                for k, fl in zip(fm.classes, fm.fields()):
+                    self._copies[k[2]].append((p, fm, k, fl))
+        return self._copies.get(cls, [])
+
+    def primary_ancestors(self, cls):
+        """the first bases of cls in any of its declarations, transitively"""
+        out, todo = [], [cls]
+        while todo:
+            c = todo.pop()
+            for _, _, k, _ in self.copies(c):
+                if k[3] and k[3][0] not in out and k[3][0] != cls:
+                    out.append(k[3][0])
+                    todo.append(k[3][0])
+        return out
+
+    def primary_descendants(self, cls):
+        """classes that derive from cls through first bases (cls at offset 0), in any declaration"""
+        if not hasattr(self, "_pchildren"):
+            self._pchildren = defaultdict(set)
+            for p, fm in self.files.items():
+                for k in fm.classes:
+                    if k[3]:
+                        self._pchildren[k[3][0]].add(k[2])
+        out, todo = set(), [cls]
+        while todo:
+            for d in self._pchildren.get(todo.pop(), ()):
+                if d not in out and d != cls:
+                    out.add(d)
+                    todo.append(d)
+        return out
+
+    def field_owner(self, cls, field, path=None):
+        """the class that declares field for an object of class cls (cls, then its bases), in a file's view"""
+        seen, todo = set(), [cls]
+        while todo:
+            c = todo.pop(0)
+            if c in seen:
+                continue
+            seen.add(c)
+            info = self.info(c, path)
+            if info:
+                if field in info.fields:
+                    return c
                 todo += info.bases
         return None
 
@@ -1255,15 +1522,21 @@ def expression_type(fm, idx, j, pos, depth):
         if k is None:
             return None
         inner = m[k + 1:j]
-        cast = re.match(r"\s*\(\s*(?:const\s+)?(?:struct\s+|class\s+)?([A-Za-z_]\w*)\s*\*\s*\)", inner)
+        cast = re.match(r"\s*\(\s*(?:const\s+)?(?:struct\s+|class\s+)?(?:[A-Za-z_]\w*\s*::\s*)*([A-Za-z_]\w*)\s*\*\s*\)",
+                        inner)
         if cast:
             return resolve_type(fm, cast[1], idx, pos)
+        deref = re.match(r"\s*\*\s*\(\s*(?:const\s+)?(?:struct\s+|class\s+)?(?:[A-Za-z_]\w*\s*::\s*)*([A-Za-z_]\w*)\s*\*\s*\*\s*\)",
+                         inner)
+        if deref:  # `(*(T **)&x)`
+            return resolve_type(fm, deref[1], idx, pos)
         before = back_ws(m, k - 1)
         if before >= 0 and (m[before].isalnum() or m[before] == "_"):
             f = k - 1
             while f > 0 and (m[f - 1].isalnum() or m[f - 1] == "_"):
                 f -= 1
-            return return_type(fm, idx, m[f:before + 1], pos)  # a call: its declared return type
+            q = re.search(r"(?<![\w:])([A-Za-z_]\w*)\s*::\s*$", m[max(0, f - 80):f])
+            return return_type(fm, idx, m[f:before + 1], pos, q[1] if q else None)  # a call: its declared return type
         if not inner.strip():
             return None
         # a parenthesised expression `(expr)` / `(*p)`: the type of what it ends with
@@ -1286,7 +1559,8 @@ def expression_type(fm, idx, j, pos, depth):
         if alias and alias != name and not alias.startswith("_Z"):
             name = alias  # a field renamed by a macro: `#define unk_13b0 unk_13b0_v16`
         return idx.field_type(owner, name, fm.vkey)
-    return variable_type(fm, idx, name, pos)
+    q = re.search(r"(?<![\w:])([A-Za-z_]\w*)\s*::\s*$", m[max(0, k - 80):k])
+    return variable_type(fm, idx, name, pos, q[1] if q else None)
 
 
 def resolve_type(fm, name, idx=None, pos=None):
@@ -1302,16 +1576,41 @@ def resolve_type(fm, name, idx=None, pos=None):
     seen = set()
     while name in fm.typedefs and name not in seen:
         seen.add(name)
-        name = fm.typedefs[name]
+        name = typedef_target(fm, name, pos)
     return name
 
 
-def return_type(fm, idx, func, pos):
+def typedef_target(fm, name, pos):
+    """the typedef of name that is in scope at pos: one in an enclosing / used namespace, else the nearest file-scope
+    one before pos, else the last one"""
+    entries = getattr(fm, "typedef_at", {}).get(name, [])
+    if pos is not None and len({t for _, t in entries}) > 1:
+        spaces = fm.namespaces_at(pos)
+        for ns in spaces:
+            inns = [t for at, t in entries if fm.namespace_at(at) == ns]
+            if inns:
+                return inns[-1]
+        top = [t for at, t in entries if at < pos and fm.namespace_at(at) == ""]
+        if top:
+            return top[-1]
+    return fm.typedefs[name]
+
+
+def return_type(fm, idx, func, pos, ns=None):
     """the class a function or method named func returns (pointer or reference): its nearest declaration before
     pos in the file, or its only one"""
     pat = re.compile(r"\b([A-Za-z_]\w*)\s*[*&]\s*(?:[A-Za-z_]\w*\s*::\s*)?" + re.escape(func) + r"\s*\(")
     found = [(mo.start(), resolve_type(fm, mo[1], idx, mo.start())) for mo in pat.finditer(fm.masked)]
     found = [(at, t) for at, t in found if t in idx.classes or t in idx.sym_components]
+    if ns is not None:  # `NS::func(...)`
+        inns = [t for at, t in found if fm.namespace_at(at) == ns]
+        if inns:
+            return inns[-1]
+    if fm.namespaces:
+        spaces = set(fm.namespaces_at(pos)) | {""}
+        scoped = [t for at, t in found if at < pos and fm.namespace_at(at) in spaces]
+        if scoped:
+            return scoped[-1]
     before = [t for at, t in found if at < pos]
     if before:
         return before[-1]
@@ -1319,27 +1618,55 @@ def return_type(fm, idx, func, pos):
     return types.pop() if len(types) == 1 else None
 
 
-def variable_type(fm, idx, name, pos):
+def variable_type(fm, idx, name, pos, ns=None):
     cast = fm.macro("cast", name, pos)
     if cast:
         return resolve_type(fm, cast, idx, pos)
     value = fm.macro("define", name, pos)
     if value and not value.startswith("_Z"):
         name = value  # `#define OWNER unk_13b0`
-    t = variable_type_raw(fm, idx, name, pos)
+    t = variable_type_raw(fm, idx, name, pos, ns)
     return resolve_type(fm, t, idx, pos) if t else None
 
 
-def variable_type_raw(fm, idx, name, pos):
+def _declarations(fm, idx, name):
+    """[(position, class)] of the declarations `T *name` / `T name` / `T a, name` of the file"""
     m = fm.masked
+    if not re.search(r"\b" + re.escape(name) + r"\b", m):
+        return []
     pat = re.compile(r"\b([A-Za-z_]\w*)\s*(?:\*+\s*(?:const\s+)?|&\s*|\s)\s*\b" + re.escape(name) + r"\b\s*(?=[;,)=\[])")
     found = [(mo.start(), resolve_type(fm, mo[1], idx, mo.start())) for mo in pat.finditer(m)]
-    found = [(at, t) for at, t in found if t in idx.classes or t in idx.sym_components]
+    # the later names of a declaration list: `Unk_02010b08_Time a, b;`
+    multi = re.compile(r"(?:^|[;{}])\s*(?:const\s+|struct\s+|class\s+)?([A-Za-z_]\w*)\s+[^;(){}=]*?,\s*[*&]?\s*\b"
+                       + re.escape(name) + r"\b\s*(?=[;,=\[])")
+    for mo in re.finditer(r"\b" + re.escape(name) + r"\b", m):
+        st = max(m.rfind(";", 0, mo.start()), m.rfind("{", 0, mo.start()), m.rfind("}", 0, mo.start()))
+        mm = multi.match(m, max(st, 0), mo.end() + 40) if st >= 0 else None
+        if mm and mm.end(0) >= mo.end() and mm.start(0) <= mo.start():
+            found.append((mm.start(1), resolve_type(fm, mm[1], idx, mm.start(1))))
+    return sorted((at, t) for at, t in found if t in idx.classes or t in idx.sym_components)
+
+
+def variable_type_raw(fm, idx, name, pos, ns=None):
+    m = fm.masked
+    cache = fm.__dict__.setdefault("_decl_cache", {})
+    if name in cache:
+        found = cache[name]
+    else:
+        found = _declarations(fm, idx, name)
+        cache[name] = found
+    if ns is not None:
+        # `NS::name`: a declaration in namespace NS
+        inns = [t for at, t in found if fm.namespace_at(at) == ns and fm.free_head(at) is None]
+        if len(set(inns)) == 1:
+            return inns[-1]
     head = fm.enclosing_def(pos)
     if head is None:
         for o, c, cname, *_ in fm.classes:
             if o < pos < c:
                 head = o
+    if head is None:
+        head = fm.free_head(pos)  # a free function: its parameters and locals
     if head is not None:
         local = [(at, t) for at, t in found if head <= at < pos]
         # a local constructed with arguments: `TalkTagScannerView loc(this);`
@@ -1358,6 +1685,13 @@ def variable_type_raw(fm, idx, name, pos):
         if ft:
             return ft
     types = {t for _, t in found}
+    if len(types) > 1:
+        # several declarations (merged unit files redeclare globals per unit): the nearest one before pos that is
+        # not inside a function or class body
+        spaces = set(fm.namespaces_at(pos)) | {""}
+        before = [t for at, t in found if at < pos and fm.free_head(at) is None and not fm.in_class(at)
+                  and fm.namespace_at(at) in spaces]
+        return before[-1] if before else None
     return types.pop() if len(types) == 1 else None
 
 
@@ -1373,6 +1707,9 @@ class Renamer:
         self.global_pairs = defaultdict(dict)       # member renames: the same in every file
         self.file_pairs = defaultdict(lambda: defaultdict(dict))  # vfunc renames: path -> old -> {class: rename}
         self.mangled_members = defaultdict(list)    # old method -> [(class path, rename)]
+        self.field_pairs = defaultdict(dict)        # old field name -> {class: [renames]}
+        self.field_decls = defaultdict(dict)        # path -> {position of a declared field name: rename}
+        self.leave_unresolved_fields = False
         for r in renames:
             if r.kind == "func":
                 self.funcs[r.old] = r
@@ -1383,6 +1720,12 @@ class Renamer:
                         self.mangled_members[old].append((path, m))
             elif r.kind == "class":
                 self.classes[r.old] = r
+            elif r.kind == "field":
+                for tok, classes in r.field_olds.items():
+                    for c in classes:
+                        self.field_pairs[tok].setdefault(c, []).append(r)
+                for path, pos, _ in r.decls:
+                    self.field_decls[path][pos] = r
             else:
                 for path, old in r.pairs:
                     self.any_pairs[old][path[-1]] = r
@@ -1395,7 +1738,7 @@ class Renamer:
                         self.any_pairs[old].setdefault(cls, r)
         self.mangled_needed = bool(self.classes or self.mangled_members)
         self.produced_candidates = [r for r in renames if r.kind != "func"]
-        subs = set(self.funcs) | set(self.classes) | set(self.any_pairs)
+        subs = set(self.funcs) | set(self.classes) | set(self.any_pairs) | set(self.field_pairs)
         self.prefilter = re.compile("|".join(re.escape(s) for s in sorted(subs, key=len, reverse=True))) \
             if subs else None
         self.define_cache = {}
@@ -1403,7 +1746,7 @@ class Renamer:
         self.free = {r.ident: r for r in renames if r.kind == "free"}
         self.mangled_needed = self.mangled_needed or bool(self.free)
         self.call_macros = self.find_call_macros(idx)
-        subs |= set(self.free) | {name for _, name, _ in self.call_macros}
+        subs |= set(self.free) | {name for _, name, _ in self.call_macros} | set(self.field_pairs)
         self.prefilter = re.compile("|".join(re.escape(s) for s in sorted(subs, key=len, reverse=True))) \
             if subs else None
 
@@ -1576,6 +1919,90 @@ class Renamer:
             r.unresolved.append(f"{where}: `{tok}` ({'receiver ' + cls if cls else 'receiver unknown'})")
         return None
 
+    def decide_field(self, tok, pos, fm, path):
+        """new name for a field identifier at pos (code of a source file), or None to keep it"""
+        idx = self.idx
+        r = self.field_decls[fm.path].get(pos)
+        if r is not None:
+            return self.hit(r, "src (declaration)", path)
+        spaces = fm.namespaces_at(pos) if fm.namespaces else ()
+        fm.vkey = (fm.path, spaces) if spaces else fm.path
+        pairs = self.field_pairs[tok]
+        recs = list({id(x): x for xs in pairs.values() for x in xs}.values())
+        view = idx.view(fm.vkey)
+        if not any(c in view for c in pairs):
+            return None  # no class whose field is renamed is declared in this file
+        where = f"{fm.path.relative_to(self.repo.root)}:{fm.line(pos)}"
+        m = fm.masked
+
+        def owned(cls, how, strict=True):
+            owner = idx.field_owner(cls, tok, fm.vkey)
+            if owner is None:
+                if cls == ANON or not strict:
+                    return None
+                related = {cls} | set(idx.primary_ancestors(cls)) | idx.ancestors(cls, fm.vkey)
+                if related & set(pairs):
+                    for x in recs:
+                        self.field_unresolved(x, f"{where}: `{tok}` (receiver {cls} has no such field here)")
+                return None
+            info = idx.info(owner, fm.vkey)
+            # a namespace-qualified record applies only where the declaration in scope is one of its copies
+            x = next((x for x in pairs.get(owner, ()) if x.copy_keys is None or
+                      (info is not None and info.keys & x.copy_keys)), None)
+            if x is None:
+                return None
+            if info is not None and info.keys & x.blob_files.get(owner, set()):
+                x.counts["left (through a byte-array declaration)"] += 1
+                x.notes.append(f"left: {where} `{tok}` (through {owner}'s byte-array declaration)")
+                return None
+            return self.hit(x, how, path)
+
+        if re.search(r"::\s*$", m[max(0, pos - 200):pos]):
+            q = re.search(r"([A-Za-z_]\w*)\s*::\s*$", m[max(0, pos - 200):pos])
+            return owned(resolve_type(fm, q[1], idx, pos), "src (qualified)") if q else None
+        if fm.macro_active(tok, pos):
+            for x in recs:
+                self.field_unresolved(x, f"{where}: `{tok}` is (also) a macro name in this file")
+            return None
+        cls, access = receiver_type(fm, idx, pos)
+        if access:
+            if cls is not None:
+                return owned(cls, "src")
+            declared = {c for c, ci in view.items() if tok in ci.fields}
+            if declared and declared <= set(pairs) and len(recs) == 1 and not any(
+                    idx.info(c, fm.vkey).keys & recs[0].blob_files.get(c, set()) for c in declared) and (
+                    recs[0].copy_keys is None or all(idx.info(c, fm.vkey).keys <= recs[0].copy_keys for c in declared)):
+                return self.hit(recs[0], "src (by elimination)", path)
+            for x in recs:
+                self.field_unresolved(x, f"{where}: `{tok}` (receiver unknown)")
+            return None
+        body = fm.body_at(pos)
+        if body is not None:
+            encl, head = body[2], body[3]
+        else:
+            encl, head = fm.init_at(pos) or (None, None)
+        if encl is None:
+            in_macro = fm.define_body_at(pos)
+            if in_macro and fm.enclosing_class(pos) is None:
+                for x in recs:
+                    self.field_unresolved(x, f"{where}: `{tok}` in the body of macro {in_macro[0]}")
+            return None  # a declaration in a class body, or a file-scope / free-function name
+        if fm.declared_locally(tok, head, pos):
+            for x in recs:
+                x.counts["left (local of the same name)"] += 1
+            return None
+        return owned(resolve_type(fm, encl, idx, pos), "src (implicit this)", strict=False)
+
+    def field_unresolved(self, r, msg):
+        """an occurrence of the old field name that the model cannot attribute: refuses the record, or with
+        --leave-unresolved-fields leaves it unchanged (a missed access of the renamed field is then a compile error,
+        never a silent change: the old name no longer exists in the class)"""
+        if self.leave_unresolved_fields:
+            r.counts["left (unresolved, see notes)"] += 1
+            r.notes.append(f"left unchanged: {msg}")
+        else:
+            r.unresolved.append(msg)
+
     def free_in_scope(self, fm, tok, pos):
         """a file-scope free function named tok is declared in the file before pos, or in a header it includes"""
         if fm.free_funcs.get(tok, pos) < pos:
@@ -1662,6 +2089,12 @@ class Renamer:
                     if category.startswith("config"):
                         self.produced[r.new].add(r)
                     return self.hit(r, category, path)
+                if tok in self.field_pairs:
+                    if fm is None or not code or fm.asm:
+                        for r in {id(x): x for xs in self.field_pairs[tok].values() for x in xs}.values():
+                            r.counts["left (comment/docs)"] += 1
+                        return tok
+                    return self.decide_field(tok, a + m.start(), fm, path) or tok
                 if tok in self.any_pairs:
                     new = self.decide_method(tok, text, a + m.start(), fm, code, path)
                     return new or tok
@@ -2013,6 +2446,196 @@ def check_member(r, idx, allow_existing):
         r.notes.append(f"qualifier {r.qual} ignored: methods are renamed everywhere")
     r.pairs = [(r.path, old)]
     r.file_pairs = None
+    return errors
+
+
+TYPE_SIZES = {"u8": 1, "s8": 1, "char": 1, "BOOL8": 1, "bool": 1, "u16": 2, "s16": 2, "fx16": 2, "short": 2,
+              "u32": 4, "s32": 4, "fx32": 4, "int": 4, "BOOL": 4, "long": 4, "float": 4, "f32": 4, "u64": 8,
+              "s64": 8, "fx64": 8, "double": 8, "Vec3": 12, "VecFx32": 12, "VecFx16": 6, "Vec3s": 6}
+
+
+def type_size(t, idx=None):
+    """byte size of a declared type text (`u8[0x5c-0x0c]`, `void *`, `Vec3`), or None if unknown"""
+    if not t:
+        return None
+    t = norm_type(t)
+    mo = re.fullmatch(r"([A-Za-z_]\w*)?([*&]*)((?:\[[^\]]*\])*)", t)
+    if not mo:
+        return None
+    size = 4 if mo[2] else TYPE_SIZES.get(mo[1])
+    for dim in re.findall(r"\[([^\]]*)\]", mo[3]):
+        if size is None or not re.fullmatch(r"[0-9a-fA-FxX+\-*() ]+", dim):
+            return None
+        try:
+            size *= int(eval(dim, {"__builtins__": {}}))
+        except Exception:
+            return None
+    return size
+
+
+def blob_declaration(decl_type, record_type):
+    """a copy's declaration that is not a field compatible with the record: an array (typically `u8 unk_0c[0x3f]`
+    standing for the rest of the class) where the record names a non-array type, unless the array is no bigger than
+    the record's type (`u8 unk_84[0xc]` for a Vec3)"""
+    d = norm_type(decl_type)
+    if "[" not in d or (record_type and "[" in norm_type(record_type)):
+        return False
+    ds, rs = type_size(d), type_size(record_type)
+    return not (ds is not None and rs is not None and ds <= rs)
+
+
+def norm_type(t):
+    t = re.sub(r"\b(?:struct|class|union|const)\b", "", t or "")
+    return re.sub(r"\s+", "", t)
+
+
+def check_field(r, idx, allow_existing):
+    """`member <Class> <offset> <type> <name>`: the field `unk_<offset>` of every declaration of the class (and of
+    classes derived from it through first bases that declare it themselves, offsets being absolute)"""
+    cls, off, root = r.path[-1], r.offset, idx.repo.root
+    where = lambda p, pos=None: f"{p.relative_to(root)}" + (f":{idx.files[p].line(pos)}" if pos is not None else "")
+    ns = r.path[-2] if len(r.path) > 1 else None
+    if ns is not None:
+        # `ns_0220b0f0::Obj` where the namespace typedefs Obj to a class (`typedef Unk_ov003_0220b0f0_Obj Obj;`)
+        targets = {t for fm in idx.files.values() for at, t in getattr(fm, "typedef_at", {}).get(cls, ())
+                   if fm.namespace_at(at) == ns}
+        inside = [x for x in idx.copies(cls) if x[1].namespace_at(x[2][0]) == ns]
+        if len(targets) == 1 and not inside:
+            (target,) = targets
+            r.notes.append(f"{'::'.join(r.path)} is a typedef of {target}: renamed as `{target}`")
+            r.path, cls, ns = (target,), target, None
+    if ns is None:
+        copies_of = idx.copies
+    else:
+        # `<namespace>::<Class>`: only the declarations in that namespace (merged unit files declare a different `Obj`
+        # per namespace); derived classes are not followed
+        def copies_of(c):
+            return [x for x in idx.copies(c) if c == cls and x[1].namespace_at(x[2][0]) == ns]
+    copies = copies_of(cls)
+    if ns is not None and not copies and idx.copies(cls):
+        return [f"{r.where}: no declaration of {cls} inside a namespace {ns}"]
+    if not copies:
+        tds = sorted({fm.typedefs[cls] for fm in idx.files.values() if cls in getattr(fm, "typedefs", {})})
+        if tds:
+            return [f"{r.where}: {cls} is a typedef of {', '.join(tds)}; name the class itself"]
+        return [f"{r.where}: no class/struct {cls} is declared in the sources (a field of an anonymous struct or of a "
+                f"byte array has no class to name): not applicable"]
+    errors = []
+    olds = defaultdict(set)     # old field name -> classes
+    decls = []                  # (path, position, class)
+    elsewhere = []              # other names declared at that offset (offset comments)
+    types = defaultdict(list)   # declared type -> files
+    blobs = []                  # copies that declare a byte array (the rest of the class) at that offset
+    descendants = idx.primary_descendants(cls) if ns is None else set()
+    for c in [cls] + sorted(descendants):
+        for p, fm, k, fl in copies_of(c):
+            hits = [f for f in fl if unk_offset(f.name) == off]
+            for f in fl:
+                if f.offset == off and unk_offset(f.name) != off and not f.name.startswith(("pad", "_pad")) and \
+                        f.name != r.new:
+                    elsewhere.append(f"{c}::{f.name} ({where(p, f.pos)})")
+            if len({f.name for f in hits}) < len(hits):
+                errors.append(f"{r.where}: {c} declares {hits[0].name} twice in {where(p, k[0])} (ambiguous)")
+            for f in hits:
+                olds[f.name].add(c)
+                if blob_declaration(f.type, r.ftype):
+                    blobs.append((p, f, c, k[0]))
+                    continue
+                decls.append((p, f.pos, c))
+                types[f.type].append(where(p, f.pos))
+                if f.type == ANON:
+                    r.notes.append(f"{where(p, f.pos)}: {f.name} has an anonymous struct type (its own fields cannot "
+                                   f"be named by a `member` record)")
+    if blobs and not decls:
+        return errors + [f"{r.where}: every declaration of unk_{off:02x} in {cls} is an array that is not a field of "
+                         f"type `{r.ftype}`: " + ", ".join(f"`{f.type}` ({where(p, f.pos)})" for p, f, c, o in blobs[:4])]
+    if not decls:
+        msg = f"{r.where}: no field unk_{off:02x} in any of the {len(copies)} declarations of {cls}"
+        if elsewhere:
+            msg += f"; declared at {off:#x} under another name: {', '.join(sorted(set(elsewhere))[:4])}"
+        for a in (idx.primary_ancestors(cls) if ns is None else ()):
+            hit = next((p for p, fm, k, fl in idx.copies(a) if any(unk_offset(f.name) == off for f in fl)), None)
+            if hit:
+                msg += f"; base class {a} declares unk_{off:02x} ({where(hit)}): name it there"
+                break
+        return errors + [msg]
+    # the same field name in a base class (any declaration): which class's field is meant is ambiguous
+    bases = idx.primary_ancestors(cls) if ns is None else list(dict.fromkeys(
+        b for _, _, k, _ in copies for b in k[3][:1]))
+    for a in bases:
+        for p, fm, k, fl in idx.copies(a):
+            f = next((f for f in fl if f.name in olds), None)
+            if f:
+                errors.append(f"{r.where}: {f.name} is also declared by {a}, a base class of {cls} ({where(p, f.pos)}): "
+                              f"ambiguous field, name it in {a} (or fix the declarations first)")
+                break
+    if errors:
+        return errors
+    for c in sorted({d[2] for d in decls} - {cls}):
+        r.notes.append(f"derived class {c} declares the field itself in some files ({len([d for d in decls if d[2] == c])} "
+                       f"declarations): renamed too")
+    if elsewhere:
+        r.notes.append(f"declared at {off:#x} under another name (not renamed): {', '.join(sorted(set(elsewhere))[:6])}"
+                       + (" ..." if len(set(elsewhere)) > 6 else ""))
+    if r.ftype:
+        differ = {t: fs for t, fs in types.items() if norm_type(t) != norm_type(r.ftype)}
+        if differ:
+            r.notes.append(f"declared type differs from the record's `{r.ftype}` (type left unchanged): " + "; ".join(
+                f"`{t}` in {', '.join(fs[:3])}{' ...' if len(fs) > 3 else ''}" for t, fs in sorted(differ.items())))
+    # the new name must not be a member of a class of the chain
+    chain = (set(idx.primary_ancestors(cls)) | hierarchy(idx, cls) | descendants) if ns is None else {cls} | set(bases)
+    for c in sorted(chain):
+        for p, fm, k, fl in (copies_of(c) if c == cls else idx.copies(c)):
+            f = next((f for f in fl if f.name == r.new), None)
+            if f:
+                errors.append(f"{r.where}: {c} already has a field {r.new} ({where(p, f.pos)}); {c} is "
+                              f"{'the class' if c == cls else 'a base or derived class'} of {cls}")
+                break
+        if r.new in (class_methods(idx, c) if ns is None or c != cls else
+                     {x[1] for _, _, k, _ in copies for x in k[4] if x[0] == "method"}):
+            errors.append(f"{r.where}: {c} has a method {r.new}; {c} is "
+                          f"{'the class' if c == cls else 'a base or derived class'} of {cls}")
+        if errors:
+            return errors
+    if r.new in idx.classes and not allow_existing:
+        errors.append(f"{r.where}: {r.new} is a class name; --allow-existing to accept")
+    macros = [p for p, fm in idx.files.items() if any(d[3] == r.new for d in getattr(fm, "define_spans", ()))]
+    if macros:
+        errors.append(f"{r.where}: {r.new} is a macro in {where(macros[0])}")
+    # a bare use of the new name in a member function of the class or a derived class (a local, a parameter, a global
+    # or a free function) would be captured by the field, or would capture its renamed implicit-this uses
+    members = hierarchy(idx, cls) if ns is None else {cls}
+    pat = re.compile(r"(?<![A-Za-z0-9_$])" + re.escape(r.new) + r"(?![A-Za-z0-9_$])")
+    for p, fm in idx.files.items():
+        if fm.asm or r.new not in fm.masked:
+            continue
+        fm.fields()
+        for o, c, name, head in fm.bodies:
+            if resolve_type(fm, name, idx, o) not in members or (ns is not None and ns not in fm.namespaces_at(o)):
+                continue
+            for mo in pat.finditer(fm.masked, head, c):
+                j = back_ws(fm.masked, mo.start() - 1)
+                if j >= 0 and (fm.masked[j] == "." or fm.masked[j - 1:j + 1] in ("->", "::")):
+                    continue
+                if fm.declared_locally(r.new, head, c) and not any(
+                        re.search(r"(?<![\w.>:])\s*" + re.escape(t) + r"\b", fm.masked[head:c]) for t in olds):
+                    continue  # a local of a function that does not use the field implicitly
+                errors.append(f"{r.where}: {r.new} is already used unqualified in a member function of {name} "
+                              f"({where(p, mo.start())}); it would bind to the renamed field or capture it")
+                break
+            if errors:
+                return errors
+    r.field_olds = dict(olds)
+    r.decls = decls
+    r.copy_keys = {(p, k[0]) for p, fm, k, fl in copies} if ns is not None else None
+    r.blob_files = defaultdict(set)
+    for p, f, c, o in blobs:
+        r.blob_files[c].add((p, o))
+        r.notes.append(f"{where(p, f.pos)}: {c} declares `{f.type} {f.name}` (a byte array, not a field of type "
+                       f"`{r.ftype}`): left as it is, and accesses through that declaration keep {f.name}")
+    r.pairs, r.file_pairs = [], None
+    if r.qual:
+        r.notes.append(f"qualifier {r.qual} ignored: fields are renamed everywhere")
     return errors
 
 
@@ -2472,7 +3095,7 @@ def validate(renames, idx, allow_existing, allow_common=False):
                 errs[r] += e
                 continue
         check = {"func": check_func, "class": check_class, "member": check_member, "vfunc": check_vfunc,
-                 "free": check_free}[r.kind]
+                 "free": check_free, "field": check_field}[r.kind]
         errs[r] += check(r, idx, allow_existing)
     errs = defaultdict(list, {r: e for r, e in errs.items() if e})
     check_hierarchy_names(renames, idx, errs)
@@ -2492,10 +3115,24 @@ def validate(renames, idx, allow_existing, allow_common=False):
             for f, prs in (r.file_pairs or {}).items():
                 for cls, old in prs:
                     owners[("file", f, cls, old)].append(r)
+    fields = [r for r in renames if r.kind == "field" and not errs[r]]
+    for r in fields:
+        for tok, classes in r.field_olds.items():
+            for c in classes:
+                owners[("field", "::".join(r.path[:-1] + (c,)), tok)].append(r)
+    for i, r in enumerate(fields):
+        rel = set(idx.primary_ancestors(r.path[-1])) | hierarchy(idx, r.path[-1])
+        for r2 in fields[i + 1:]:
+            if r2.new == r.new and r2.path[-1] in rel and (len(r.path) == 1 or len(r2.path) == 1 or
+                                                           r.path[:-1] == r2.path[:-1]):
+                errs[r].append(f"{r.where}: conflict: {r2.where} names a field of the related class {r2.path[-1]} "
+                               f"{r.new} too")
+                errs[r2].append(f"{r2.where}: conflict: {r.where} names a field of the related class {r.path[-1]} "
+                                f"{r.new} too")
     for key, group in list(olds.items()) + list(owners.items()):
         group = list(dict.fromkeys(group))
         if len(group) > 1:
-            what = f"{key[-2]}::{key[-1]}" if key[0] in ("mangled", "file") else key[-1]
+            what = f"{key[-2]}::{key[-1]}" if key[0] in ("mangled", "file", "field") else key[-1]
             where = f" in {key[1].relative_to(idx.repo.root)}" if key[0] == "file" else ""
             for r in group:
                 errs[r].append(f"{r.where}: conflict: {what}{where} is renamed by "
@@ -2555,7 +3192,7 @@ def post_check(renames, changed, produced=None):
         if total == 0:
             errs[r].append(f"{r.where}: {r.label()}: nothing to rename")
         if r.unresolved:
-            errs[r].append(f"{r.where}: {r.label()}: cannot tell which class's method {len(r.unresolved)} "
+            errs[r].append(f"{r.where}: {r.label()}: cannot tell which class's {'field' if r.kind == 'field' else 'method'} {len(r.unresolved)} "
                            f"occurrence(s) mean: " + "; ".join(r.unresolved[:5])
                            + (" ..." if len(r.unresolved) > 5 else ""))
     by_new = defaultdict(list)
@@ -2633,6 +3270,8 @@ def main():
     ap.add_argument("--allow-existing", action="store_true", help="accept new names that already occur")
     ap.add_argument("--allow-common-names", action="store_true", help="accept func/class records whose old name is "
                     "not a placeholder and is very short or also a field/method/class/symbol name")
+    ap.add_argument("--leave-unresolved-fields", action="store_true", help="field records: leave occurrences "
+                    "whose class cannot be worked out unchanged (listed as notes) instead of refusing the record")
     ap.add_argument("--partial", action="store_true", help="drop refused records and apply the rest")
     ap.add_argument("--min-confidence", choices=list(CONFIDENCE), help="skip batch records below this confidence")
     ap.add_argument("--report", type=Path, help="write a markdown report (default for batch files: "
@@ -2700,6 +3339,7 @@ def main():
         for r in active:
             r.reset()
         renamer = Renamer(repo, idx, active)
+        renamer.leave_unresolved_fields = args.leave_unresolved_fields
         changed = renamer.run()
         errs = post_check(active, changed, renamer.produced)
         if not errs:
