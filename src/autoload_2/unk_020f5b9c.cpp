@@ -1,71 +1,93 @@
 // mwcc-flags: -nothumb -O4,p
-// G010a: autoload_2 0x020f5b9c-0x020f7a5c (36 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: whole class file of one
-// family of small objects (13 vtables of 6 slots at 0x0213b9e4-0x0213bb7c; vtables stay extern, classes only DECLARE virtuals).
-// Common layout: [0] vptr, [4] and [8] two sub-objects (voice/sound slots, passed by address), [0xc] u8, [0xd] state, ...
-// Base methods: func_020f6678 (report an event code to a slot), func_020f66d0 (volume/pan update), func_020f6800 (reset, calls vfunc_14).
-// Vtable slots: 0 reset (f6800 or own), 1 f67c8, 2 event handler (self, id, arg), 3 f678c, 4 f6764, 5 own init.
+// RC_020f5b9c: the first sound-emitter source file (G010a part 1) as REAL C++ classes. mwcc 1.2/base, C++, ARM, -O4,p.
+// autoload_2 .text 0x020f5b9c-0x020f6850 (22 functions), .data 0x0213b9dc-0x0213badc (8 vtables of 6 slots). No bss / rodata / __sinit.
+// Every function lands on its original address with the original bytes; every old symbols.txt name stays (aliases.txt adds the
+// compiler's names as labels; only the vtables are renamed to _ZTV.. at their starts).
+// EXTENT (from the data order): G010a's 13 equal-size vtables are TWO files. With mwcc's data order (vtables created last, in reverse
+// class-declaration order, all objects heapsorted by size; pipeline_wip/realclass3_work/inv_split.py, inv_g010.py) the 13 vtables as one
+// file need the base class Unk_0213bac4 declared 9th, after eight of its own derived classes: impossible. Split after the 8th vtable,
+// this file's 8 vtables come out in the original order with the classes declared in the natural order (base, then 9e4, a04, ..., aa4 =
+// vtable order = the order of their methods in the text), and its text ends exactly where the base's methods end (0x020f6850); the other
+// five classes (0x0213bae4..bb64, text 0x020f6850-0x020f7a5c) are the next file, RC_020f6850. The 1-byte data_0213b9d8 in front is not
+// this file's (with it the declaration order would be scrambled; its only user is G012b's func_020f4f74).
+// Classes (vtable start / dsd label at +8; slots: 0 reset, 1 release, 2 event handler, 3 set flag, 4 mute, 5 init):
+//   Unk_0213bac4   base (vtable 0x0213babc): f6800 / f67c8 / f67b8 / f678c / f6764 / f5b9c, helpers report f6678 and update f66d0.
+//                  main constructs all of them (func_02003878, inline constructors) and declares the class in unk_020030d8.cpp.
+//   Unk_0213b9e4 / ba04 / ba24 / ba44 / ba64 / ba84 / baa4 : Unk_0213bac4 (vtables 0x0213b9dc .. 0x0213ba9c); derived members sit in the
+//                  base's tail padding (+0xd).
+// The class DECLARATION order sets the vtable order: keep it.
 #include "types.h"
 
-class Item {
+// Base of the sound-emitter objects that main's func_02003878 creates (inline constructors there store this vtable, then the
+// derived one). main's unk_020030d8.cpp declares the same class (non-virtual helpers func_020037b0.. are defined in main).
+class Unk_0213bac4 {
+public:
+    virtual void vfunc_00(); // reset
+    virtual void vfunc_04(); // release both voices
+    virtual void vfunc_08(s32 id, void *arg); // event handler
+    virtual void vfunc_0c(s32 v);
+    virtual void vfunc_10();
+    virtual void vfunc_14(); // init
+
+    void report(s32 code, u32 *slot);
+    void update(void *arg);
+
+    /* 0x04 */ u32 a; // sound handles
+    /* 0x08 */ u32 b;
+    /* 0x0c */ u8 c12;
+};
+
+class Unk_0213b9e4 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_14();
+};
+
+class Unk_0213ba04 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_14();
+};
+
+class Unk_0213ba24 : public Unk_0213bac4 {
 public:
     virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
+    virtual void vfunc_08(s32 id, void *arg);
     virtual void vfunc_14();
-    u32 a;
-    u32 b;
-    u8 c12;
+
+    /* 0x0d */ s8 d13;
 };
 
-struct Bp {
-    u32 *vptr;
-    u32 a;
-    u32 b;
-    u8 c12;
-    u8 c13;
-    u8 c14;
-    u8 c15;
+class Unk_0213ba44 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_08(s32 id, void *arg);
+    virtual void vfunc_14();
+
+    /* 0x0d */ s8 d13;
 };
 
-struct Sp {
-    u32 *vptr;
-    u32 a;
-    u32 b;
-    u8 c12;
-    s8 d13;
-    u16 e14;
-    u16 g16;
-    u16 h18;
-    u16 i20;
+class Unk_0213ba64 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_08(s32 id, void *arg);
+    virtual void vfunc_14();
+
+    /* 0x0d */ s8 d13;
 };
 
-struct Up {
-    u32 *vptr;
-    u32 a;
-    u32 b;
-    u8 c12;
-    u8 d13;
-    u16 e14;
-    u16 g16;
-    u16 h18;
-    u16 i20;
+class Unk_0213ba84 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_08(s32 id, void *arg);
+    virtual void vfunc_14();
 };
 
-struct Wp {
-    u32 *vptr;
-    u32 a;
-    u32 b;
-    u8 c12;
-    u8 pad13;
-    s16 e14;
-    s32 w16;
-};
+class Unk_0213baa4 : public Unk_0213bac4 {
+public:
+    virtual void vfunc_08(s32 id, void *arg);
+    virtual void vfunc_14();
 
-struct Pair {
-    u32 a;
-    u32 b;
+    void nextFrame();
+
+    /* 0x0d */ u8 c13;
+    /* 0x0e */ u8 c14;
+    /* 0x0f */ u8 c15;
 };
 
 extern "C" {
@@ -73,748 +95,321 @@ extern u8 data_021f5b80[];
 void func_0206d49c(void);
 u32 func_020f07f0(void *g, u32 n);
 void func_0210cf78(void *slot, u32 a, s32 b);
-void func_020f6678(void *self, s32 code, void *slot);
-void func_020f66d0(void *self, u32 arg);
-void func_020f6800(void *self);
-void func_020f5ccc(Bp *self);
 void func_0210d010(void *p, u32 v);
 void func_02109fd0(void *p, u32 a, u32 b);
 void func_0210a26c(void *p, s32 v);
 void func_0210a27c(void *p);
 void func_0210a294(void *p);
 void func_020eda30(void *p, u32 v);
-void func_020edad0(u32 code, u32 a, void *p);
 void func_0210a148(void *p, u32 a, u32 b);
 void func_0210a0e8(void *p, u32 a, u32 b);
-void func_0210a188(void *p, u32 a, u32 b);
 void func_0210a214(void *p, u32 a, u32 b);
 void func_0210a378(void *p, u32 a);
-void func_0210a024(void *p, u32 a, void *out);
-void func_020f4904(u32 a, u32 b);
+void func_020f4904(void *a, u32 b);
 u32 func_020f48d8(void);
-u32 func_020f4718(u32 a, u32 b);
-s32 func_020f7920(Wp *self);
+u32 func_020f4718(void *a, u32 b);
 }
 
 static inline BOOL nz(u32 v) { return v != 0; }
 
-extern "C" void func_020f7a30(Wp *self) {
-    func_0210d010(&self->b, 0xf6);
-    self->e14 = -1;
-    self->w16 = 0;
+void Unk_0213bac4::vfunc_00() {
+    func_0210a294(&a);
+    func_0210a294(&b);
+    c12 = 0;
+    vfunc_14();
+    func_0210a26c(&a, 0);
+    func_0210a26c(&b, 0);
 }
 
-extern "C" void func_020f7960(Wp *self, s32 id, u32 arg) {
-    s32 base = self->w16 << 2;
-    switch ((u32)func_020f7920(self)) {
-    case 1:
-        func_020f6678(self, base + 0x507, &self->a);
-        break;
-    case 2:
-        func_020f6678(self, base + 0x508, &self->a);
-        break;
-    case 3:
-        func_020f6678(self, base + 0x509, &self->a);
-        break;
-    case 4:
-        func_020f6678(self, base + 0x50a, &self->a);
-        self->w16 = (self->w16 + 1) % 2;
-        break;
-    }
-    func_020f66d0(self, arg);
+void Unk_0213bac4::vfunc_04() {
+    func_020eda30(&a, 0);
+    func_020eda30(&b, 0);
+    func_0210a27c(&a);
+    func_0210a27c(&b);
 }
 
-extern "C" s32 func_020f7920(Wp *self) {
-    s16 v;
-    s32 r;
-    func_0210a024(&self->b, 0, &v);
-    r = (v != self->e14) ? v : -1;
-    self->e14 = v;
-    return r;
+void Unk_0213bac4::vfunc_08(s32 id, void *arg) {
+    return update(arg);
 }
 
-extern "C" void func_020f7670(Up *self, s32 id, u32 arg) {
-    if (id == 0) {
-        func_0210a148(&self->b, 1, 70);
-        func_0210a148(&self->b, 2, 80);
-        func_0210a148(&self->b, 12, 120);
-        func_0210a148(&self->b, 16, 110);
-        if (self->d13 != 0) {
-            func_020eda30(&self->a, 0);
-            func_020edad0(0x128, 1, &self->a);
-        }
-    } else if (id == 90) {
-        func_0210a148(&self->b, 1, 75);
-        func_0210a148(&self->b, 14, 110);
-        func_0210a148(&self->b, 16, 110);
-        if (self->d13 != 0) {
-            func_020eda30(&self->a, 0);
-            func_020edad0(0x129, 1, &self->a);
-        }
-    } else if (id == 160) {
-        func_0210a148(&self->b, 1, 80);
-        func_0210a148(&self->b, 14, 110);
-        func_0210a148(&self->b, 16, 110);
-        if (self->d13 != 0) {
-            func_020eda30(&self->a, 0);
-            func_020edad0(0x12a, 1, &self->a);
-        }
-    } else if (id == 260) {
-        func_0210a148(&self->b, 1, 80);
-        func_0210a148(&self->b, 14, 110);
-        func_0210a148(&self->b, 16, 100);
-        if (self->d13 != 0) {
-            func_020eda30(&self->a, 0);
-            func_020edad0(0x12b, 1, &self->a);
-        }
-    } else if (id == 371) {
-        func_0210a148(&self->b, 1, 75);
-        func_0210a148(&self->b, 2, 0);
-        func_0210a148(&self->b, 12, 90);
-        func_0210a148(&self->b, 16, 75);
-        if (self->d13 != 0) {
-            func_020eda30(&self->a, 0);
-            func_020edad0(0x12c, 1, &self->a);
-        }
-    } else if (id == 451) {
-        func_0210a148(&self->b, 1, 85);
-        func_0210a148(&self->b, 14, 0);
-        func_0210a148(&self->b, 16, 70);
-        self->d13 = ((self->d13 + 1) % 2) != 0;
-    }
-    func_020f66d0(self, arg);
+void Unk_0213bac4::vfunc_0c(s32 v) {
+    c12 = v;
+    func_0210a26c(&a, 127);
+    func_0210a26c(&b, 127);
 }
 
-extern "C" void func_020f7638(Up *self) {
-    func_020f6678(self, 0x50f, &self->b);
-    func_020f6678(self, 0x510, &self->a);
-    self->d13 = 1;
+void Unk_0213bac4::vfunc_10() {
+    func_0210a26c(&a, 0);
+    func_0210a26c(&b, 0);
 }
 
-extern "C" void func_020f72e8(Sp *self, s32 id, u32 arg) {
-    if (self->c12 == 1) {
-        self->c12 = 0;
-        func_020eda30(&self->a, 0);
-        func_020edad0(0x136, 1, &self->a);
-        self->g16 = 0;
-    } else if (id == 0) {
-        if (func_020f07f0(data_021f5b80, 100) < 70) func_02109fd0(&self->a, 0, 1);
-        func_020eda30(&self->b, 0);
-        func_020edad0(0x139, 1, &self->b);
-    } else if (id == 90) {
-        if (func_020f07f0(data_021f5b80, 100) < 60) {
-            func_02109fd0(&self->a, 1, 1);
-            self->e14 = 1;
-        }
-        u32 r = func_020f07f0(data_021f5b80, 100);
-        func_020eda30(&self->b, 0);
-        if (r < 33) func_020edad0(0x13a, 1, &self->b);
-        else if (r < 66) func_020edad0(0x13b, 1, &self->b);
-        else func_020edad0(0x13c, 1, &self->b);
-    } else if (id == 145) {
-        u32 r = func_020f07f0(data_021f5b80, 100);
-        func_020eda30(&self->b, 0);
-        if (r < 33) func_020edad0(0x13a, 1, &self->b);
-        else if (r < 66) func_020edad0(0x13b, 1, &self->b);
-        else func_020edad0(0x13c, 1, &self->b);
-    } else if (id == 180) {
-        if (func_020f07f0(data_021f5b80, 100) < 70 && self->e14 != 1) {
-            func_02109fd0(&self->a, 1, 1);
-            self->e14 = 2;
-        }
-        if (func_020f07f0(data_021f5b80, 100) < 60 && self->e14 != 1) {
-            func_02109fd0(&self->a, 0, 1);
-            self->e14 = 2;
-        }
-    } else if (id == 250) {
-        u32 r = func_020f07f0(data_021f5b80, 100);
-        if (self->e14 != 2) {
-            if (r < 70) {
-                func_02109fd0(&self->a, 2, 1);
-                self->e14 = 3;
-            } else {
-                func_02109fd0(&self->a, 0, 1);
-                self->e14 = 4;
-            }
-        }
-        func_020eda30(&self->b, 0);
-        func_020edad0(0x13d, 1, &self->b);
-    } else if (self->g16 == 103) {
-        func_020eda30(&self->a, 0);
-        func_020edad0(0x137, 1, &self->a);
-    } else if (self->g16 == 700) {
-        func_020eda30(&self->a, 0);
-        func_020edad0(0x138, 1, &self->a);
-    } else if (self->g16 == 900) {
-        func_020eda30(&self->a, 0);
-        func_020edad0(0x136, 1, &self->a);
-        self->g16 = 0;
-    }
-    self->g16 = self->g16 + 1;
-    func_020f66d0(self, arg);
-}
-
-extern "C" void func_020f72cc(Sp *self) {
-    func_020f6800(self);
-    self->g16 = 0;
-}
-
-extern "C" void func_020f72a4(Sp *self) {
-    func_020f6678(self, 0x51f, &self->a);
-    self->e14 = 0;
-}
-
-extern "C" void func_020f6f48(Sp *self, s32 id, u32 arg) {
-    if (self->c12 == 1) {
-        self->c12 = 0;
-        func_020eda30(&self->b, 0);
-        func_020edad0(0x12d, 1, &self->b);
-        func_020eda30(&self->a, 0);
-        func_020edad0(0x132, 1, &self->a);
-        self->i20 = 0;
-        self->h18 = 0;
-        self->e14 = 0;
-        self->g16 = 0;
-    } else if (id == 0) {
-        func_020eda30(&self->b, 0);
-        func_020eda30(&self->a, 0);
-        if (func_020f07f0(data_021f5b80, 100) < 40) {
-            func_020edad0(0x12e, 1, &self->b);
-            func_020edad0(0x132, 1, &self->a);
-            self->i20 = 1;
-        } else {
-            func_020edad0(0x130, 1, &self->b);
-            func_020edad0(0x133, 1, &self->a);
-            self->i20 = 2;
-        }
-    } else if (id == 90 && self->i20 != 0) {
-        u32 r = func_020f07f0(data_021f5b80, 3);
-        func_020eda30(&self->b, 0);
-        func_020eda30(&self->a, 0);
-        if (r == 0) {
-            func_020edad0(0x12f, 1, &self->b);
-            func_020edad0(0x134, 1, &self->a);
-            self->i20 = 3;
-        } else if (r == 1) {
-            func_020edad0(0x12f, 1, &self->b);
-            func_020edad0(0x135, 1, &self->a);
-            self->i20 = 4;
-        } else {
-            func_020edad0(0x131, 1, &self->b);
-            func_020edad0(0x134, 1, &self->a);
-            self->i20 = 5;
-        }
-    } else if (id == 120 && self->i20 == 0) {
-        u32 r = func_020f07f0(data_021f5b80, 2);
-        func_020eda30(&self->b, 0);
-        func_020eda30(&self->a, 0);
-        if (r == 0) {
-            func_020edad0(0x12f, 1, &self->b);
-            func_020edad0(0x134, 1, &self->a);
-            self->i20 = 3;
-        } else {
-            func_020edad0(0x12f, 1, &self->b);
-            func_020edad0(0x135, 1, &self->a);
-            self->i20 = 4;
-        }
-    }
-    if (self->h18 != self->i20) {
-        if (self->g16 == 0) {
-            self->g16 = self->g16 + 1;
-        } else if (self->g16 == 1) {
-            if (func_020f07f0(data_021f5b80, 2) == 0) {
-                self->g16 = self->g16 + 1;
-            } else {
-                self->g16 = 0;
-                self->e14 = (self->e14 + 1) % 2;
-            }
-        } else if (self->g16 >= 2) {
-            self->g16 = 0;
-            self->e14 = (self->e14 + 1) % 2;
-        }
-        if (self->e14 % 2 == 1) func_0210a188(&self->b, 0x3f, 1);
-        self->h18 = self->i20;
-    }
-    func_020f66d0(self, arg);
-}
-
-extern "C" void func_020f6f28(Sp *self) {
-    func_020f6800(self);
-    self->e14 = 0;
-    self->g16 = 0;
-}
-
-extern "C" void func_020f6ef8(Sp *self) {
-    func_020f6678(self, 0x517, &self->b);
-    self->i20 = 3;
-    self->h18 = self->i20;
-}
-
-extern "C" void func_020f68a4(Up *self, s32 id, u32 arg) {
-    s32 t1, t2, t5, t4, t3, t6;
-    self->h18++;
-    s32 st = self->e14;
-    if (st == 15 && self->h18 >= 140) {
-        self->d13 = 1;
-        t1 = 50;
-        t2 = 75;
-        t3 = t1;
-        t4 = t2;
-        self->h18 = 0;
-        t5 = 25;
-        t6 = 88;
-    } else if (st == 16 && self->h18 >= 100) {
-        self->d13 = 1;
-        t1 = 50;
-        t2 = 75;
-        t3 = t1;
-        t4 = t2;
-        self->h18 = 0;
-        t5 = 25;
-        t6 = 88;
-    } else {
-        s32 m = st % 5;
-        if (m <= 2 && self->h18 >= 120) {
-            self->d13 = 1;
-            self->h18 = 0;
-            u32 q = self->e14 / 5;
-            if (q == 0) {
-                t1 = 50;
-                t2 = 75;
-                t3 = t1;
-                t4 = t2;
-                t5 = 25;
-                t6 = 88;
-            } else if (q == 1) {
-                t1 = 40;
-                t2 = 80;
-                t5 = 25;
-                t3 = 50;
-                t4 = 75;
-                t6 = 88;
-            } else {
-                t1 = 40;
-                t2 = 60;
-                t5 = 25;
-                t3 = 50;
-                t4 = 75;
-                t6 = 88;
-            }
-        } else if (m >= 3 && self->h18 >= 70) {
-            self->d13 = 1;
-            self->h18 = 0;
-            u32 q = self->e14 / 5;
-            if (q == 0) {
-                t4 = 100;
-                t6 = t4;
-                t1 = 50;
-                t2 = 75;
-                t5 = 35;
-                t3 = 70;
-            } else if (q == 1) {
-                t4 = 100;
-                t6 = t4;
-                t1 = 40;
-                t2 = 80;
-                t5 = 35;
-                t3 = 70;
-            } else {
-                t4 = 100;
-                t6 = t4;
-                t1 = 40;
-                t2 = 60;
-                t5 = 35;
-                t3 = 70;
-            }
-        }
-    }
-    if (self->d13 == 1) {
-        s32 r;
-        func_020eda30(&self->b, 0);
-        self->g16 = self->e14;
-        r = (s16)func_020f07f0(data_021f5b80, 100);
-        if (r <= t1) t2 = 0;
-        else if (r <= t2) t2 = 5;
-        else t2 = 10;
-        r = (s16)func_020f07f0(data_021f5b80, 100);
-        if (r <= t5) {
-            self->e14 = t2;
-            if (self->g16 % 5 != self->e14 % 5) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x13e, 1, &self->a);
-            }
-        } else if (r <= t3) {
-            self->e14 = t2 + 1;
-            if (self->g16 % 5 != self->e14 % 5) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x13f, 1, &self->a);
-            }
-        } else if (r <= t4) {
-            self->e14 = t2 + 2;
-            if (self->g16 % 5 != self->e14 % 5) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x140, 1, &self->a);
-            }
-        } else if (r <= t6) {
-            self->e14 = t2 + 3;
-            if (self->g16 % 5 != self->e14 % 5) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x141, 1, &self->a);
-            }
-        } else {
-            self->e14 = t2 + 4;
-            if (self->g16 % 5 != self->e14 % 5) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x142, 1, &self->a);
-            }
-        }
-        s32 q2 = t2 / 5;
-        if (q2 == 0) {
-            func_0210a148(&self->a, 3, 100);
-            if (func_020f07f0(data_021f5b80, 100) < 40 && id > 90) {
-                func_020edad0(0x146, 1, &self->b);
-                func_0210a148(&self->b, 3, 100);
-            }
-        } else if (q2 == 1) {
-            func_0210a148(&self->a, 3, 75);
-            func_020edad0(0x145, 1, &self->b);
-        } else {
-            func_0210a148(&self->a, 3, 127);
-            if (func_020f07f0(data_021f5b80, 100) < 40 && id > 90 && self->e14 <= 13) {
-                func_020edad0(0x146, 1, &self->b);
-                func_0210a148(&self->b, 3, 80);
-            }
-        }
-        if (self->g16 == 11 || self->g16 == 13) {
-            r = (s16)func_020f07f0(data_021f5b80, 100);
-            if (r <= 20) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x143, 1, &self->a);
-                self->e14 = 15;
-            } else if (r <= 40) {
-                func_020eda30(&self->a, 0);
-                func_020edad0(0x144, 1, &self->a);
-                self->e14 = 16;
-            }
-        }
-        self->d13 = 0;
-    }
-    func_020f66d0(self, arg);
-}
-
-extern "C" void func_020f6880(Sp *self) {
-    func_020f6800(self);
-    self->e14 = 0;
-    self->g16 = 0;
-    self->h18 = 0;
-}
-
-extern "C" void func_020f6850(Sp *self) {
-    func_020f6678(self, 0x526, &self->a);
-    self->g16 = 0;
-    self->e14 = self->g16;
-}
-
-extern "C" void func_020f6800(void *p) {
-    Item *self = (Item *)p;
-    func_0210a294(&self->a);
-    func_0210a294(&self->b);
-    self->c12 = 0;
-    self->vfunc_14();
-    func_0210a26c(&self->a, 0);
-    func_0210a26c(&self->b, 0);
-}
-
-extern "C" void func_020f67c8(Item *self) {
-    func_020eda30(&self->a, 0);
-    func_020eda30(&self->b, 0);
-    func_0210a27c(&self->a);
-    func_0210a27c(&self->b);
-}
-
-extern "C" void func_020f67b8(void *self, s32 id, u32 arg) {
-    return func_020f66d0(self, arg);
-}
-
-extern "C" void func_020f678c(Item *self, u8 v) {
-    self->c12 = v;
-    func_0210a26c(&self->a, 127);
-    func_0210a26c(&self->b, 127);
-}
-
-extern "C" void func_020f6764(Item *self) {
-    func_0210a26c(&self->a, 0);
-    func_0210a26c(&self->b, 0);
-}
-
-extern "C" void func_020f66d0(void *p, u32 x) {
-    Item *self = (Item *)p;
+void Unk_0213bac4::update(void *x) {
     u32 r5;
     u32 r4;
     if (x == 0) {
-        func_0210a26c(&self->a, 0);
-        func_0210a26c(&self->b, 0);
+        func_0210a26c(&a, 0);
+        func_0210a26c(&b, 0);
         return;
     }
     func_020f4904(x, 0);
     r5 = func_020f48d8();
     r4 = func_020f4718(x, 0);
-    func_0210a26c(&self->a, r5);
-    func_0210a26c(&self->b, r5);
-    func_0210a0e8(&self->a, 15, r4);
-    func_0210a0e8(&self->b, 15, r4);
+    func_0210a26c(&a, r5);
+    func_0210a26c(&b, r5);
+    func_0210a0e8(&a, 15, r4);
+    func_0210a0e8(&b, 15, r4);
 }
 
-extern "C" void func_020f6678(void *self, s32 code, void *slot) {
+void Unk_0213bac4::report(s32 code, u32 *slot) {
     if (slot == 0) func_0206d49c();
     func_0210cf78(slot, 1, code % 1000);
 }
 
-extern "C" void func_020f6664(Sp *self) {
-    return func_020f6678(self, 0x4f0, &self->a);
+void Unk_0213b9e4::vfunc_14() {
+    return report(0x4f0, &a);
 }
 
-extern "C" void func_020f664c(Sp *self) {
-    return func_020f6678(self, 0x4f1, &self->a);
+void Unk_0213ba04::vfunc_14() {
+    return report(0x4f1, &a);
 }
 
-extern "C" void func_020f6630(Sp *self) {
-    func_020f6800(self);
-    self->d13 = -1;
+void Unk_0213ba24::vfunc_00() {
+    Unk_0213bac4::vfunc_00();
+    d13 = -1;
 }
 
-extern "C" void func_020f6618(Sp *self) {
-    return func_020f6678(self, 0x4f2, &self->b);
+void Unk_0213ba24::vfunc_14() {
+    return report(0x4f2, &b);
 }
 
-extern "C" void func_020f639c(Sp *self, s32 id, u32 arg) {
+void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (!nz(self->b)) func_020f6678(self, 0x4f2, &self->b);
-        self->d13++;
-        if (self->d13 == 3) self->d13 = 0;
-        switch (self->d13) {
+        if (!nz(b)) report(0x4f2, &b);
+        d13++;
+        if (d13 == 3) d13 = 0;
+        switch (d13) {
         case 0:
-            func_020f6678(self, 0x4f6, &self->a);
+            report(0x4f6, &a);
             break;
         case 1:
-            func_0210d010(&self->a, 247);
+            func_0210d010(&a, 247);
             break;
         case 2:
-            func_0210a214(&self->a, 40, 15);
+            func_0210a214(&a, 40, 15);
             break;
         }
         break;
     case 40:
-        func_02109fd0(&self->a, 1, 1);
+        func_02109fd0(&a, 1, 1);
         break;
     case 50:
-        func_02109fd0(&self->a, 0, 2);
+        func_02109fd0(&a, 0, 2);
         break;
     case 150:
-        func_020f6678(self, 0x4f3, &self->b);
-        func_02109fd0(&self->a, 0, 0);
+        report(0x4f3, &b);
+        func_02109fd0(&a, 0, 0);
         break;
     case 200:
-        func_020f6678(self, 0x4f4, &self->b);
-        func_02109fd0(&self->a, 1, 2);
+        report(0x4f4, &b);
+        func_02109fd0(&a, 1, 2);
         break;
     case 300:
-        func_02109fd0(&self->a, 0, 3);
+        func_02109fd0(&a, 0, 3);
         break;
     case 375:
-        func_020f6678(self, 0x4f5, &self->b);
+        report(0x4f5, &b);
         break;
     case 385:
-        if (self->d13 == 2) func_0210a378(&self->a, 15);
+        if (d13 == 2) func_0210a378(&a, 15);
         break;
     }
-    switch (self->d13) {
+    switch (d13) {
     case 0:
-        func_0210a148(&self->a, 0xfff, 127);
-        func_0210a148(&self->b, 0xfff, 127);
+        func_0210a148(&a, 0xfff, 127);
+        func_0210a148(&b, 0xfff, 127);
         break;
     case 1:
-        func_0210a148(&self->a, 0xfff, 100);
-        func_0210a148(&self->b, 0xfff, 0);
+        func_0210a148(&a, 0xfff, 100);
+        func_0210a148(&b, 0xfff, 0);
         break;
     case 2:
-        func_0210a148(&self->b, 0xfff, 100);
+        func_0210a148(&b, 0xfff, 100);
         break;
     }
-    func_020f66d0(self, arg);
+    update(arg);
 }
 
-extern "C" void func_020f6378(Sp *self) {
-    func_0210d010(&self->a, 0xac);
-    self->d13 = 0;
+void Unk_0213ba44::vfunc_14() {
+    func_0210d010(&a, 0xac);
+    d13 = 0;
 }
 
-extern "C" void func_020f6234(Sp *self, s32 id, u32 arg) {
+void Unk_0213ba44::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (self->d13 == 0) func_020f6678(self, 0x4f7, &self->b);
+        if (d13 == 0) report(0x4f7, &b);
         break;
     case 120:
-        if (self->d13 == 1) func_020f6678(self, 0x4f8, &self->b);
+        if (d13 == 1) report(0x4f8, &b);
         break;
     case 190:
-        if (self->d13 == 0) func_020f6678(self, 0x4f9, &self->b);
+        if (d13 == 0) report(0x4f9, &b);
         break;
     case 210:
-        if (self->d13 == 1) func_020f6678(self, 0x4fb, &self->b);
+        if (d13 == 1) report(0x4fb, &b);
         break;
     case 300:
-        if (self->d13 == 0) func_020f6678(self, 0x4fa, &self->b);
+        if (d13 == 0) report(0x4fa, &b);
         break;
     case 349:
-        self->d13++;
-        if (self->d13 == 2) self->d13 = 0;
+        d13++;
+        if (d13 == 2) d13 = 0;
         break;
     }
-    func_020f66d0(self, arg);
+    update(arg);
 }
 
-extern "C" void func_020f6228(Sp *self) {
-    self->d13 = 0;
+void Unk_0213ba64::vfunc_14() {
+    d13 = 0;
 }
 
-extern "C" void func_020f5f20(Sp *self, s32 id, u32 arg) {
+void Unk_0213ba64::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (self->d13 == 0) func_020f6678(self, 0x4fc, &self->a);
-        else func_020f6678(self, 0x4fd, &self->a);
-        if (!nz(self->b)) func_020f6678(self, 0x500, &self->b);
+        if (d13 == 0) report(0x4fc, &a);
+        else report(0x4fd, &a);
+        if (!nz(b)) report(0x500, &b);
         break;
     case 70:
-        func_02109fd0(&self->b, 1, 1);
+        func_02109fd0(&b, 1, 1);
         break;
     case 210:
-        func_02109fd0(&self->b, 2, 1);
+        func_02109fd0(&b, 2, 1);
         break;
     case 220:
-        func_02109fd0(&self->b, 1, 0);
+        func_02109fd0(&b, 1, 0);
         break;
     case 230:
-        if (self->d13 == 0) func_020f6678(self, 0x4fe, &self->a);
-        else func_020f6678(self, 0x4ff, &self->a);
+        if (d13 == 0) report(0x4fe, &a);
+        else report(0x4ff, &a);
         break;
     case 253:
-        if (self->d13 == 1) func_02109fd0(&self->b, 2, 2);
+        if (d13 == 1) func_02109fd0(&b, 2, 2);
         break;
     case 258:
-        if (self->d13 == 0) func_02109fd0(&self->b, 2, 2);
+        if (d13 == 0) func_02109fd0(&b, 2, 2);
         break;
     case 280:
-        func_02109fd0(&self->b, 1, 1);
+        func_02109fd0(&b, 1, 1);
         break;
     case 370:
-        func_02109fd0(&self->b, 1, 0);
-        func_02109fd0(&self->b, 2, 1);
+        func_02109fd0(&b, 1, 0);
+        func_02109fd0(&b, 2, 1);
         break;
     case 383:
-        if (self->d13 == 1) func_02109fd0(&self->a, 0, 2);
+        if (d13 == 1) func_02109fd0(&a, 0, 2);
         break;
     case 390:
-        if (self->d13 == 0) func_02109fd0(&self->a, 0, 2);
+        if (d13 == 0) func_02109fd0(&a, 0, 2);
         break;
     case 405:
-        if (self->d13 == 1) func_02109fd0(&self->b, 2, 3);
+        if (d13 == 1) func_02109fd0(&b, 2, 3);
         break;
     case 425:
-        if (self->d13 == 0) func_02109fd0(&self->b, 2, 3);
+        if (d13 == 0) func_02109fd0(&b, 2, 3);
         break;
     case 479:
-        self->d13++;
-        if (self->d13 == 2) self->d13 = 0;
+        d13++;
+        if (d13 == 2) d13 = 0;
         break;
     }
-    func_020f66d0(self, arg);
+    update(arg);
 }
 
-extern "C" void func_020f5eec(Sp *self) {
-    func_020f6678(self, 0x501, &self->a);
-    func_020f6678(self, 0x502, &self->b);
+void Unk_0213ba84::vfunc_14() {
+    report(0x501, &a);
+    report(0x502, &b);
 }
 
-extern "C" void func_020f5d6c(Sp *self, s32 id, u32 arg) {
+void Unk_0213ba84::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
-        if (!nz(self->a)) func_020f6678(self, 0x501, &self->a);
-        if (!nz(self->b)) func_020f6678(self, 0x502, &self->b);
-        func_02109fd0(&self->a, 0, 1);
-        func_02109fd0(&self->b, 0, 1);
+        if (!nz(a)) report(0x501, &a);
+        if (!nz(b)) report(0x502, &b);
+        func_02109fd0(&a, 0, 1);
+        func_02109fd0(&b, 0, 1);
         break;
     case 90:
-        func_02109fd0(&self->a, 0, 2);
-        func_02109fd0(&self->b, 0, 2);
+        func_02109fd0(&a, 0, 2);
+        func_02109fd0(&b, 0, 2);
         break;
     case 140:
-        func_02109fd0(&self->a, 0, 3);
+        func_02109fd0(&a, 0, 3);
         break;
     case 225:
-        func_02109fd0(&self->a, 0, 4);
+        func_02109fd0(&a, 0, 4);
         break;
     case 235:
-        func_02109fd0(&self->a, 0, 5);
+        func_02109fd0(&a, 0, 5);
         break;
     case 245:
-        func_02109fd0(&self->b, 0, 3);
+        func_02109fd0(&b, 0, 3);
         break;
     }
-    func_020f66d0(self, arg);
+    update(arg);
 }
 
-extern "C" void func_020f5d20(Bp *self) {
-    self->c13 = 0;
-    self->c14 = func_020f07f0(data_021f5b80, 3);
-    self->c15 = 0;
-    func_0210d010(&self->a, (u16)(self->c14 + 0xad));
+void Unk_0213baa4::vfunc_14() {
+    c13 = 0;
+    c14 = func_020f07f0(data_021f5b80, 3);
+    c15 = 0;
+    func_0210d010(&a, (u16)(c14 + 0xad));
 }
 
-extern "C" void func_020f5ccc(Bp *self) {
+void Unk_0213baa4::nextFrame() {
     u8 v;
     do {
         v = func_020f07f0(data_021f5b80, 3);
-    } while (v == self->c14);
-    self->c14 = v;
-    func_0210d010(&self->a, (u16)(self->c14 + 0xad));
+    } while (v == c14);
+    c14 = v;
+    func_0210d010(&a, (u16)(c14 + 0xad));
 }
 
-extern "C" void func_020f5ba0(Bp *self, s32 id, u32 arg) {
+void Unk_0213baa4::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 10:
-        switch (self->c15) {
+        switch (c15) {
         case 0:
-            func_020f6678(self, 0x503, &self->b);
+            report(0x503, &b);
             break;
         case 1:
-            func_020f6678(self, 0x505, &self->b);
+            report(0x505, &b);
             break;
         }
         break;
     case 130:
-        if (self->c15 == 0) func_020f6678(self, 0x504, &self->b);
+        if (c15 == 0) report(0x504, &b);
         break;
     case 150:
-        if (self->c15 == 1) func_020f6678(self, 0x506, &self->b);
+        if (c15 == 1) report(0x506, &b);
         break;
     case 399:
-        self->c13++;
-        if (self->c13 == 7) {
-            self->c13 = 0;
-            func_020f5ccc(self);
+        c13++;
+        if (c13 == 7) {
+            c13 = 0;
+            nextFrame();
         }
-        self->c15++;
-        if (self->c15 == 3) self->c15 = 0;
+        c15++;
+        if (c15 == 3) c15 = 0;
         break;
     }
-    func_020f66d0(self, arg);
+    update(arg);
 }
 
-extern "C" void func_020f5b9c(void *self) {
+void Unk_0213bac4::vfunc_14() {
 }
