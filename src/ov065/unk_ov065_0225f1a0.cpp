@@ -59,7 +59,7 @@ extern Unk_ov065_0225f634_Params data_ov065_0228b3f4;
 
 // main module
 void func_02000b44(u32);
-void *func_02115fb4(void *, s32, u32);
+void *MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 
 s32 func_ov065_0226abb0(void);
@@ -114,7 +114,7 @@ void func_ov065_0225f210(void)
     Unk_ov065_0225f1cc_Cfg *c = data_ov065_0228e9a0;
     s32 a;
     s32 b;
-    func_02115fb4(g, 0, 0x30);
+    MI_CpuFill8(g, 0, 0x30);
     g->unk_04 = (void *)c->unk_18;
     g->unk_08 = (void *)c->unk_1c;
     g->unk_10 = (void *)func_ov065_0225f1a0;

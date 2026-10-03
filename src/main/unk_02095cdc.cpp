@@ -390,7 +390,7 @@ void func_020b4154(void *);
 s32 func_020b50e8();
 s32 func_020b50f4(void);
 void func_020ed188(void *p);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
 }
 
@@ -611,7 +611,7 @@ extern "C" void func_020966f8(void) {
         Y.d5 = r5[2];
         Y.d4 = r5[1];
         Y.d3 = r5[0];
-        func_02116048(&Y, &Z, 8);
+        MI_CpuCopy8(&Y, &Z, 8);
         if (r5[3] < 9) {
             r5[3] = 9;
             Z.d2 = 0x11;
@@ -733,7 +733,7 @@ extern "C" s32 func_02096484(Unk_02096354_Arg *p) {
     B.d4 = p->unk_04;
     B.d3 = p->unk_08;
     Unk_02096484_Base C;
-    func_02116048(&A, &C, 8);
+    MI_CpuCopy8(&A, &C, 8);
     func_0209d2c0(&C, 7);
     r = 0;
     if (C.d5 != A.d5) {

@@ -74,7 +74,7 @@ struct Unk_ov065_0227c400_Buf {
 typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 extern "C" {
 s32 func_0212a190(const char *, const char *);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_02129fa0(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
@@ -240,7 +240,7 @@ char *func_02129f1c(const char *, const char *);
 void func_02128a00(void *, const void *, s32);
 void func_021289b4(void *, void *, u32);
 s32 func_0212b770(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
 void func_02128c60();
 

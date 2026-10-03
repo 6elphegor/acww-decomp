@@ -66,7 +66,7 @@ typedef Unk_ov065_02285630_Item It;
 
 extern "C" {
 extern u8 data_ov065_0228e150[];
-s32 func_02128930(void *, const void *, u32);
+s32 memcmp(void *, const void *, u32);
 s32 func_ov065_02277ac8(void *);
 s32 func_ov065_0227866c(void *, s32);
 s32 func_ov065_02278684(void *);
@@ -268,7 +268,7 @@ void func_0212899c(void *p, s32 v, u32 n);
 void func_02128a00(void *d, void *s, u32 n);
 char *func_0212a120(char *s, s32 c);
 s32 func_0212b770(char *s);
-u32 func_021277d4(char *s);
+u32 STD_GetStringLength(char *s);
 }
 
 extern "C" {
@@ -435,10 +435,10 @@ extern u32 data_ov065_02291540;
 extern void *data_ov065_02291544;
 extern u8 data_ov065_02291548[];
 
-s32 func_021130d0(char *buf, const char *fmt, ...);
-s32 func_02113088(char *buf, s32 n, const char *fmt, ...);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
+s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 char *func_02127838(char *dst, const char *src);
-u32 func_021277d4(const char *s);
+u32 STD_GetStringLength(const char *s);
 
 char *func_ov065_022610f0(Unk_ov065_022868b0_InAddr a);
 Unk_ov065_02286f04_Hostent *func_ov065_02261408(const char *name);
@@ -505,12 +505,12 @@ extern "C" char *func_ov065_022868b0(u32 ip, const char *port, char *buf) {
     if (ip != 0) {
         a.addr = ip;
         if (port != NULL) {
-            func_021130d0(buf, "%s:%d", func_ov065_022610f0(a), port);
+            OS_SPrintf(buf, "%s:%d", func_ov065_022610f0(a), port);
         } else {
-            func_021130d0(buf, "%s", func_ov065_022610f0(a));
+            OS_SPrintf(buf, "%s", func_ov065_022610f0(a));
         }
     } else if (port != NULL) {
-        func_021130d0(buf, ":%d", port);
+        OS_SPrintf(buf, ":%d", port);
     } else {
         buf[0] = 0;
     }
@@ -594,7 +594,7 @@ void func_ov065_02286788(char **s, s32 *len) {
         *s = "";
         *len = 0;
     } else if (*len == -1) {
-        *len = func_021277d4(p) + 1;
+        *len = STD_GetStringLength(p) + 1;
     }
 }
 } }

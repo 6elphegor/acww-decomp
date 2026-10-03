@@ -673,7 +673,7 @@ void *func_02106654();
 void *func_02106670(void *p, s32 a);
 void *func_02106690();
 void *func_021066ac(void *p, s32 a);
-void *func_0210629c(void *p);
+void *NNS_G3dGetTex(void *p);
 void func_020e8558(void *p);
 BOOL func_020557a0(void *p, u32 a);
 BOOL func_02055724(void *p, u32 a);
@@ -715,8 +715,8 @@ void func_020b2034(void *);
 void func_0209c370(void *);
 void *func_021065dc();
 u32 func_021065f8(void *, u32);
-void *func_021062dc();
-void func_01ffb898(s32, s32, Unk_ov009_0225b880_Vec3 *);
+void *NNS_G3dGetMdlSet();
+void MTX_MultVec43(s32, s32, Unk_ov009_0225b880_Vec3 *);
 void func_0203ee38(void *, Unk_ov009_0225b880_Vec3 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(Unk_ov009_0225d244_Entry *));
 
@@ -799,7 +799,7 @@ extern "C" void func_ov009_0225e040() {
 
 extern "C" void func_ov009_0225e020(void *p, s32 a, s32 b) {
     Unk_ov009_0225b880_Vec3 v;
-    func_01ffb898(a, b, &v);
+    MTX_MultVec43(a, b, &v);
     func_0203ee38(p, &v);
 }
 
@@ -859,7 +859,7 @@ extern "C" void func_ov009_0225df84(Unk_ov009_0225df84_Obj *o) {
 }
 
 extern "C" void *func_ov009_0225df6c(void *unused) {
-    u8 *p = (u8 *)func_021062dc();
+    u8 *p = (u8 *)NNS_G3dGetMdlSet();
     return p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
 }
 
@@ -1275,7 +1275,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
         if (func_02063f18(b)) {
             void *r5 = func_020641ec(b, data_021f482c, -4, 0);
             if (r5 != NULL) {
-                e->unk_14 = (s32)func_0210629c(r5);
+                e->unk_14 = (s32)NNS_G3dGetTex(r5);
                 if (func_020557a0((void *)e->unk_14, 0)) {
                     e->unk_14 = (s32)func_0205588c((void *)e->unk_14, data_021c6204);
                 }
@@ -1287,7 +1287,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
         if (func_02063f18(c)) {
             void *r5 = func_020641ec(c, data_021f482c, -4, 0);
             if (r5 != NULL) {
-                e->unk_18 = (s32)func_0210629c(r5);
+                e->unk_18 = (s32)NNS_G3dGetTex(r5);
                 if (func_02055724((void *)e->unk_18, 0)) {
                     e->unk_18 = (s32)func_0205588c((void *)e->unk_18, data_021c6204);
                 }

@@ -1037,7 +1037,7 @@ void func_020f440c(void *p);
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
-s32 func_02116048(const void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void func_ov003_02212034(T48_f5 *t, V3_f5 *d);
 s32 func_ov003_02212824(s32 a);
@@ -2921,7 +2921,7 @@ extern "C" BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k)
     buf[0] = 0;
     buf[1] = h;
     func_02076a6c(tmp, self->unk_120.x, self->unk_120.z);
-    func_02116048(tmp, &buf[2], 5);
+    MI_CpuCopy8(tmp, &buf[2], 5);
     s = data_020cbb18;
     func_020728d4(s);
     func_020728a4(s, buf, 7);

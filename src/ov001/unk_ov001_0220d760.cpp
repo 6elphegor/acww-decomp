@@ -46,7 +46,7 @@ void func_ov001_0220f304();
 void func_ov001_0220e5ec();
 void func_ov001_0221aae4();
 void func_0211172c();
-void func_02111ec8();
+void GX_LoadBGPltt();
 void func_02111a6c();
 
 s32 func_ov001_0220d760();
@@ -78,7 +78,7 @@ extern "C" void func_ov001_0220dd94() {
 extern "C" void func_ov001_0220dc9c() {
     char l[22] = "char/ybBgStep11.ncl.l";
     func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)func_02111ec8);
+    func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)GX_LoadBGPltt);
     func_ov001_02208594((void *)"char/jb2Menu.nsc.l", (void *)func_02111a6c);
     data_ov001_0222de24 = func_ov001_02224074(func_ov001_022085e0(l), 0, 4);
     *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;

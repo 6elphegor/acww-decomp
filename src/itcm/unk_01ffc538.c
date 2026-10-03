@@ -127,26 +127,26 @@ static inline u32 CP_GetSqrtResult32(void) {
     return reg_CP_SQRT_RESULT;
 }
 
-extern fx32 func_01ffc3ac(void); // FX_GetSqrtResult (I003d)
-extern void func_01ffc374(fx32 numer, fx32 denom); // FX_DivAsync (I003d)
-extern void func_01ffc428(fx32 x); // FX_InvAsync (I003d)
-extern fx32 func_01ffc464(void); // FX_GetDivResult (I003d)
+extern fx32 FX_GetSqrtResult(void); // FX_GetSqrtResult (I003d)
+extern void FX_DivAsync(fx32 numer, fx32 denom); // FX_DivAsync (I003d)
+extern void FX_InvAsync(fx32 x); // FX_InvAsync (I003d)
+extern fx32 FX_GetDivResult(void); // FX_GetDivResult (I003d)
 /* PROTOS */
 void func_01ffcb28(void);
 fx32 func_01ffcb0c(fx32 v1, fx32 v2);
-fx32 func_01ffcac0(fx32 x, fx32 *iPtr);
-void func_01ffca8c(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
-void func_01ffca58(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
-fx32 func_01ffca14(const VecFx32 *a, const VecFx32 *b);
-fx32 func_01ffc9c4(const VecFx16 *a, const VecFx16 *b);
-void func_01ffc928(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb);
-void func_01ffc8bc(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb);
-fx32 func_01ffc854(const VecFx32 *pSrc);
-void func_01ffc714(const VecFx32 *pSrc, VecFx32 *pDst);
-void func_01ffc5c0(const VecFx16 *pSrc, VecFx16 *pDst);
+fx32 FX_Modf(fx32 x, fx32 *iPtr);
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
+fx32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);
+fx32 VEC_Fx16DotProduct(const VecFx16 *a, const VecFx16 *b);
+void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb);
+void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb);
+fx32 VEC_Mag(const VecFx32 *pSrc);
+void VEC_Normalize(const VecFx32 *pSrc, VecFx32 *pDst);
+void VEC_Fx16Normalize(const VecFx16 *pSrc, VecFx16 *pDst);
 fx32 func_01ffc5a4(fx32 numer, fx32 denom);
 fx32 func_01ffc588(fx32 x);
-fx32 func_01ffc538(fx32 x);
+fx32 FX_Sqrt(fx32 x);
 
 /* END PROTOS */
 
@@ -160,7 +160,7 @@ fx32 func_01ffcb0c(fx32 v1, fx32 v2) {
 }
 
 // FX_Modf
-fx32 func_01ffcac0(fx32 x, fx32 *iPtr) {
+fx32 FX_Modf(fx32 x, fx32 *iPtr) {
     if (x >= 0) {
         *iPtr = x & 0x7ffff000;
         return x & 0x00000fff;
@@ -172,26 +172,26 @@ fx32 func_01ffcac0(fx32 x, fx32 *iPtr) {
 }
 
 // VEC_Add
-void func_01ffca8c(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab) {
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab) {
     ab->x = a->x + b->x;
     ab->y = a->y + b->y;
     ab->z = a->z + b->z;
 }
 
 // VEC_Subtract
-void func_01ffca58(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab) {
+void VEC_Subtract(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab) {
     ab->x = a->x - b->x;
     ab->y = a->y - b->y;
     ab->z = a->z - b->z;
 }
 
 // VEC_DotProduct
-fx32 func_01ffca14(const VecFx32 *a, const VecFx32 *b) {
+fx32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b) {
     return (fx32)(((fx64)a->x * b->x + (fx64)a->y * b->y + (fx64)a->z * b->z + 0x800) >> FX32_SHIFT);
 }
 
 // VEC_Fx16DotProduct
-fx32 func_01ffc9c4(const VecFx16 *a, const VecFx16 *b) {
+fx32 VEC_Fx16DotProduct(const VecFx16 *a, const VecFx16 *b) {
     fx64 d;
     d = a->x * b->x + a->y * b->y;
     d += a->z * b->z + 0x800;
@@ -199,7 +199,7 @@ fx32 func_01ffc9c4(const VecFx16 *a, const VecFx16 *b) {
 }
 
 // VEC_CrossProduct
-void func_01ffc928(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
+void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
     fx32 x = (fx32)(((fx64)a->y * b->z - (fx64)a->z * b->y + 0x800) >> FX32_SHIFT);
     fx32 y = (fx32)(((fx64)a->z * b->x - (fx64)a->x * b->z + 0x800) >> FX32_SHIFT);
     fx32 z = (fx32)(((fx64)a->x * b->y - (fx64)a->y * b->x + 0x800) >> FX32_SHIFT);
@@ -209,7 +209,7 @@ void func_01ffc928(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
 }
 
 // VEC_Fx16CrossProduct
-void func_01ffc8bc(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb) {
+void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb) {
     fx32 x = (a->y * b->z - a->z * b->y + 0x800) >> FX32_SHIFT;
     fx32 y = (a->z * b->x - a->x * b->z + 0x800) >> FX32_SHIFT;
     fx32 z = (a->x * b->y - a->y * b->x + 0x800) >> FX32_SHIFT;
@@ -219,7 +219,7 @@ void func_01ffc8bc(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb) {
 }
 
 // VEC_Mag
-fx32 func_01ffc854(const VecFx32 *pSrc) {
+fx32 VEC_Mag(const VecFx32 *pSrc) {
     fx64 d;
     d = (fx64)pSrc->x * pSrc->x;
     d += (fx64)pSrc->y * pSrc->y;
@@ -229,7 +229,7 @@ fx32 func_01ffc854(const VecFx32 *pSrc) {
 }
 
 // VEC_Normalize
-void func_01ffc714(const VecFx32 *pSrc, VecFx32 *pDst) {
+void VEC_Normalize(const VecFx32 *pSrc, VecFx32 *pDst) {
     fx64 d;
     fx64 inv;
     s32 sq;
@@ -247,7 +247,7 @@ void func_01ffc714(const VecFx32 *pSrc, VecFx32 *pDst) {
 }
 
 // VEC_Fx16Normalize
-void func_01ffc5c0(const VecFx16 *pSrc, VecFx16 *pDst) {
+void VEC_Fx16Normalize(const VecFx16 *pSrc, VecFx16 *pDst) {
     fx64 d;
     fx64 inv;
     s32 sq;
@@ -266,21 +266,21 @@ void func_01ffc5c0(const VecFx16 *pSrc, VecFx16 *pDst) {
 
 // FX_Div
 fx32 func_01ffc5a4(fx32 numer, fx32 denom) {
-    func_01ffc374(numer, denom);
-    return func_01ffc464();
+    FX_DivAsync(numer, denom);
+    return FX_GetDivResult();
 }
 
 // FX_Inv
 fx32 func_01ffc588(fx32 x) {
-    func_01ffc428(x);
-    return func_01ffc464();
+    FX_InvAsync(x);
+    return FX_GetDivResult();
 }
 
 // FX_Sqrt
-fx32 func_01ffc538(fx32 x) {
+fx32 FX_Sqrt(fx32 x) {
     if (x > 0) {
         CP_SetSqrt64((u64)x << 32);
-        return func_01ffc3ac();
+        return FX_GetSqrtResult();
     }
     return 0;
 }

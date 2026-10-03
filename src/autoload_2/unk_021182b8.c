@@ -106,23 +106,23 @@ struct FSArc {
     u32 pad5c[2];
 };
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02113720(OSThreadQueue *);
-extern void func_021136a0(OSThreadQueue *);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern void func_02119d78(FSFile *);
-extern BOOL func_02119af4(FSFile *, FSArc *, u32, u32, int);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SleepThread(OSThreadQueue *);
+extern void OS_WakeupThread(OSThreadQueue *);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern void FS_InitFile(FSFile *);
+extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
 extern s32 func_021198b4(FSFile *, void *, s32);
-extern void func_021199e0(FSFile *);
-extern u32 func_02119790(const char *, int);
-extern FSFile *func_02119520(FSArc *);
-extern void func_0211947c(FSFile *);
-extern int func_02119434(FSFile *);
-extern int func_02119718(FSArc *, void *, u32, u32);
-extern int func_02119768(FSArc *, void *, u32, u32);
-extern int func_0211973c(FSArc *, void *, u32, u32);
+extern void FS_CloseFile(FSFile *);
+extern u32 FSi_GetPackedName(const char *, int);
+extern FSFile *FSi_NextCommand(FSArc *);
+extern void FSi_ExecuteAsyncCommand(FSFile *);
+extern int FSi_ExecuteSyncCommand(FSFile *);
+extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
+extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
+extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
 extern int (*data_0213a388[])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
@@ -172,34 +172,34 @@ static inline u32 FSi_NameLen2(u32 name) {
     return 3;
 }
 
-int func_0211802c(FSFile *file, u32 cmd);
-void func_021181a8(FSFile *file, u32 result);
+int FSi_TranslateCommand(FSFile *file, u32 cmd);
+void FSi_ReleaseCommand(FSFile *file, u32 result);
 int func_0211820c(void);
-int func_02118214(FSFile *file);
+int FSi_OpenFileDirectCommand(FSFile *file);
 int func_0211823c(FSFile *file);
-int func_021182b8(FSFile *file);
-int func_02118678(FSFile *file);
+int FSi_GetPathCommand(FSFile *file);
+int FSi_FindPathCommand(FSFile *file);
 int func_02118894(FSFile *file);
 int func_021189a4(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a74(FSFile *file);
-int func_02118aac(FSFile *file, u32 id);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_ReadFileCommand(FSFile *file);
+int FSi_SeekDirDirect(FSFile *file, u32 id);
 void func_02118ae0(FSStream *s, void *dst, u32 len);
-int func_02118b84(const char *a, const char *b, u32 n);
-void func_02118be8(FSArc *arc, u32 result);
-void func_02118c68(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-BOOL func_02118c88(FSArc *arc);
-BOOL func_02118d04();
-void *func_02118d94(FSArc *arc);
-u32 func_02118e2c(FSArc *arc, void *mem, u32 mem_max);
-BOOL func_02118f58(FSArc *arc);
-BOOL func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
-void func_02119098(FSArc *arc);
-BOOL func_02119130(FSArc *arc, const char *name, int len);
-FSArc *func_021191f0(const char *name, int len);
-void func_02119240(FSArc *arc);
-BOOL func_02119278(FSFile *file, u32 cmd);
+int FSi_StrNICmp(const char *a, const char *b, u32 n);
+void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+BOOL FS_ResumeArchive(FSArc *arc);
+BOOL FS_SuspendArchive();
+void *FS_UnloadArchiveTables(FSArc *arc);
+u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
+BOOL FS_UnloadArchive(FSArc *arc);
+BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+void FS_ReleaseArchiveName(FSArc *arc);
+BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+FSArc *FS_FindArchive(const char *name, int len);
+void FS_InitArchive(FSArc *arc);
+BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
 typedef struct {
     FSArc *arc;
@@ -214,10 +214,10 @@ typedef struct {
     u32 name_len;
     char name[128];
 } FSDirEntry2;
-int func_02118678(FSFile *file) {
+int FSi_FindPathCommand(FSFile *file) {
     const u8 *path = (const u8 *)file->w3c;
     const BOOL find_directory = file->w40;
-    func_0211802c(file, 2);
+    FSi_TranslateCommand(file, 2);
     for (; *path; path += (*path ? 1 : 0)) {
         u32 is_directory;
         int name_len = 0;
@@ -235,7 +235,7 @@ int func_02118678(FSFile *file) {
                 continue;
             } else if ((name_len == 2) & (path[1] == '.')) {
                 if (file->p.pos.u.d.own_id != 0) {
-                    func_02118aac(file, file->parent);
+                    FSi_SeekDirDirect(file, file->parent);
                 }
                 path += 2;
                 continue;
@@ -248,12 +248,12 @@ int func_02118678(FSFile *file) {
             file->a.rdent.ent = (FSEntry *)&etr;
             file->a.rdent.skip = 0;
             for (;;) {
-                if (func_0211802c(file, 3) != 0) return 1;
-                if ((is_directory != etr.is_dir) || (name_len != etr.name_len) || func_02118b84((const char *)path, etr.name, (u32)name_len)) continue;
+                if (FSi_TranslateCommand(file, 3) != 0) return 1;
+                if ((is_directory != etr.is_dir) || (name_len != etr.name_len) || FSi_StrNICmp((const char *)path, etr.name, (u32)name_len)) continue;
                 if (is_directory) {
                     path += name_len;
                     file->a.pos = etr.u.dir_id;
-                    func_0211802c(file, 2);
+                    FSi_TranslateCommand(file, 2);
                     break;
                 } else {
                     if (find_directory) return 1;
@@ -268,7 +268,7 @@ int func_02118678(FSFile *file) {
     return 0;
 }
 
-int func_021182b8(FSFile *file) {
+int FSi_GetPathCommand(FSFile *file) {
     FSEntry ent;
     FSFile tmp;
     FSArc *arc = file->arc;
@@ -285,7 +285,7 @@ int func_021182b8(FSFile *file) {
     u32 n;
     u32 i;
     u32 cnt;
-    func_02119d78(&tmp);
+    FS_InitFile(&tmp);
     tmp.arc = file->arc;
     if (FSi_IsDirOnly(file) != 0) {
         dir = file->p.pos.u.d.own_id;
@@ -299,17 +299,17 @@ int func_021182b8(FSFile *file) {
             cnt = 0;
             dir = 0x10000;
             do {
-                func_02118aac(&tmp, i);
+                FSi_SeekDirDirect(&tmp, i);
                 if (i == 0) cnt = tmp.parent;
                 tmp.a.rdent.ent = &ent;
                 tmp.a.rdent.skip = 1;
-                if (func_0211802c(&tmp, 3) == 0) {
+                if (FSi_TranslateCommand(&tmp, 3) == 0) {
                     for (;;) {
                         if (ent.is_dir == 0 && ent.pos.u.file_id == target) {
                             dir = tmp.p.pos.u.d.own_id;
                             break;
                         }
-                        if (func_0211802c(&tmp, 3) != 0) break;
+                        if (FSi_TranslateCommand(&tmp, 3) != 0) break;
                     }
                 }
                 if (dir != 0x10000) break;
@@ -334,18 +334,18 @@ int func_021182b8(FSFile *file) {
         if (target != 0x10000) cnt += ent.name_len;
         i = dir;
         if (i != 0) {
-            func_02118aac(&tmp, dir);
+            FSi_SeekDirDirect(&tmp, dir);
             do {
-                func_02118aac(&tmp, tmp.parent);
+                FSi_SeekDirDirect(&tmp, tmp.parent);
                 tmp.a.rdent.ent = &ent;
                 tmp.a.rdent.skip = 1;
-                if (func_0211802c(&tmp, 3) == 0) {
+                if (FSi_TranslateCommand(&tmp, 3) == 0) {
                     for (;;) {
                         if (ent.is_dir != 0 && ent.pos.u.d.own_id == i) {
                             cnt += ent.name_len + 1;
                             break;
                         }
-                        if (func_0211802c(&tmp, 3) != 0) break;
+                        if (FSi_TranslateCommand(&tmp, 3) != 0) break;
                     }
                 }
                 i = tmp.p.pos.u.d.own_id;
@@ -361,23 +361,23 @@ int func_021182b8(FSFile *file) {
     {
     u32 pos = 0;
     u32 n = FSi_NameLen2(arc->name);
-    func_02116048(arc, buf + pos, n);
+    MI_CpuCopy8(arc, buf + pos, n);
     pos += n;
-    func_02116048(data_0213bff4, buf + pos, 2);
+    MI_CpuCopy8(data_0213bff4, buf + pos, 2);
     pos += 2;
     }
-    func_02118aac(&tmp, dir);
+    FSi_SeekDirDirect(&tmp, dir);
     if (target != 0x10000) {
         tmp.a.rdent.ent = &ent;
         tmp.a.rdent.skip = 0;
-        if (func_0211802c(&tmp, 3) == 0) {
+        if (FSi_TranslateCommand(&tmp, 3) == 0) {
             for (;;) {
                 if (ent.is_dir == 0 && ent.pos.u.file_id == target) break;
-                if (func_0211802c(&tmp, 3) != 0) break;
+                if (FSi_TranslateCommand(&tmp, 3) != 0) break;
             }
         }
         target = ent.name_len + 1;
-        func_02116048(ent.name, buf + len - target, target);
+        MI_CpuCopy8(ent.name, buf + len - target, target);
         len -= target;
     } else {
         *(buf + len - 1) = 0;
@@ -385,20 +385,20 @@ int func_021182b8(FSFile *file) {
     }
     if (dir != 0) {
         do {
-            func_02118aac(&tmp, tmp.parent);
+            FSi_SeekDirDirect(&tmp, tmp.parent);
             tmp.a.rdent.ent = &ent;
             tmp.a.rdent.skip = 0;
             *(buf + len - 1) = '/';
             len -= 1;
-            if (func_0211802c(&tmp, 3) == 0) {
+            if (FSi_TranslateCommand(&tmp, 3) == 0) {
                 for (;;) {
                     if (ent.is_dir != 0 && ent.pos.u.d.own_id == dir) {
                         n = ent.name_len;
-                        func_02116048(ent.name, buf + len - n, n);
+                        MI_CpuCopy8(ent.name, buf + len - n, n);
                         len -= n;
                         break;
                     }
-                    if (func_0211802c(&tmp, 3) != 0) break;
+                    if (FSi_TranslateCommand(&tmp, 3) != 0) break;
                 }
             }
             dir = tmp.p.pos.u.d.own_id;

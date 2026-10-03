@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void func_02111df8(void *a, u32 b, u32 c);
+void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 extern const s32 data_020cf63c[];
@@ -165,7 +165,7 @@ BOOL Unk_020e0ff0::func_0208d2d8() {
 }
 
 void Unk_020e0ff0::func_0208d2c4() {
-    func_02111df8(data_020cf650, 0xbc, 2);
+    GX_LoadOBJPltt(data_020cf650, 0xbc, 2);
 }
 
 void Unk_020e0ff0::func_0208d2b8() {

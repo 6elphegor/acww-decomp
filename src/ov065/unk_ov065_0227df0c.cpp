@@ -112,12 +112,12 @@ typedef Unk_ov065_0227d8e0_Buf Unk_B;
 typedef Unk_ov065_0227d8e0_Node Unk_N;
 extern "C" {
 char *func_0212a120(const char *, s32);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_021289b4(void *, void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02283630(const char *, const char *, char *, s32);
 void func_ov065_02283460(void *, const char *);
 void func_ov065_02283470(void *, s32, const char *);

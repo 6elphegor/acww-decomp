@@ -223,7 +223,7 @@ extern Unk_0205f6f8_Cfg *data_020cbb18;
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_020641b4(void *path, void *dst, u32 size);
-void *func_0210629c(void *p);
+void *NNS_G3dGetTex(void *p);
 void *func_02106654(void);
 void *func_02106670(void *p, s32 a);
 void *func_021065dc(void);
@@ -598,7 +598,7 @@ extern "C" void func_0205e754(Unk_0205ec30 *self, u32 idx, u32 x) {
 }
 
 extern "C" void func_0205e730(Unk_0205ec30 *self, u32 idx) {
-    void *r = func_0210629c(func_0205e9b0(self, idx));
+    void *r = NNS_G3dGetTex(func_0205e9b0(self, idx));
     func_0205e810(self, idx)->func_02055210(r);
 }
 
@@ -609,7 +609,7 @@ extern "C" s32 func_0205e6e4(Unk_0205ec30 *self, u32 idx) {
         return 1;
     }
     if (!Unk_0205e6e4_Is(s, 1)) {
-        e->func_020b89f0((u32 *)func_0210629c(func_0205e9b0(self, idx)), 1);
+        e->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205e9b0(self, idx)), 1);
     }
     return 0;
 }
@@ -666,8 +666,8 @@ extern "C" void func_0205e310(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *code, u32
             if (Unk_0205ddc8_In(code, 0x13a0, 0x13a7)) {
                 u32 f = func_0205cdbc();
                 _ZN12Unk_0205ca9413func_0205ca94EPtiii(f, code, a5, 0, 0);
-                u32 h = (u32)func_0210629c((void *)func_0205c91c(f));
-                u32 h2 = (u32)func_0210629c((void *)s);
+                u32 h = (u32)NNS_G3dGetTex((void *)func_0205c91c(f));
+                u32 h2 = (u32)NNS_G3dGetTex((void *)s);
                 func_02063a5c(h, h2, (char *)"cloth", (char *)"myD");
                 func_02063a1c(h, h2, (char *)"cloth", (char *)"myD");
             }

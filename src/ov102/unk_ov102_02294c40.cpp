@@ -29,7 +29,7 @@ s32 func_02098ffc();
 BOOL func_0209cef4();
 void *func_020ed174(...);
 void func_020ed188(void *p);
-void func_02116048(void *a, void *b, u32 c);
+void MI_CpuCopy8(void *a, void *b, u32 c);
 void func_ov094_02292380();
 void func_ov094_0229238c();
 void func_ov094_02292398(...);
@@ -746,7 +746,7 @@ void Unk_ov102_02297520::func_ov102_02296bf0() {
     unk_24d4 = 0;
     func_0209750c();
     func_020979b0();
-    func_02116048((void *)func_02039d74(), unk_2414, 0xb4);
+    MI_CpuCopy8((void *)func_02039d74(), unk_2414, 0xb4);
     func_0206ec04();
     unk_24d6 = 0;
 }
@@ -1920,7 +1920,7 @@ void Unk_ov102_02297520::func_ov102_02294f20(s32 v) {
     func_0206ecf8(1);
     func_0209750c();
     func_020979b0();
-    func_02116048(unk_2414, (u8 *)func_02039d74(), 0xb4);
+    MI_CpuCopy8(unk_2414, (u8 *)func_02039d74(), 0xb4);
 }
 
 void Unk_ov102_02297520::func_ov102_02294e7c() {

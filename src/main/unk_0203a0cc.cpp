@@ -353,7 +353,7 @@ extern s32 data_021c3068;
 
 extern "C" {
 s32 func_0203eeac(void *p, void *q);
-void func_01ffb898(void *in, void *m, void *out);
+void MTX_MultVec43(void *in, void *m, void *out);
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_020e9888(void *v, s32 s);
@@ -365,9 +365,9 @@ s32 func_020b50e8();
 void func_020e9960(void *out, void *a, void *b);
 void func_01ffd070(void *out, void *a, void *b);
 void func_020e9790(void *out, void *in, s32 s);
-s32 func_01ffc854(void *v);
-void func_01ffb4e8(void *a, void *b, void *c);
-void func_01ffca8c(void *a, void *b, void *c);
+s32 VEC_Mag(void *v);
+void MTX_MultVec33(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 void func_020e769c(s16 *p, s32 a, s32 b);
 void func_020e7870(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void *func_ov003_022120ac(s32 id);
@@ -390,10 +390,10 @@ s32 func_01ffc588(s32);
 s32 func_0202fe84(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12Unk_020375d013func_020375d0Ev(u32);
 void _ZN12Unk_020d924813func_0203a058Eitii(void *, s32, s32, s32, s32);
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 void func_020e98f4(void *out, void *a, s32 n);
-void func_02111404(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
-void func_0211126c(void *a, void *b, void *c, s32 d, void *e);
+void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 void func_0203ecec(void *a, void *b);
 s32 func_02081640(s32 a);
 Unk_0203be94_Obj *func_0208175c(s32 i);
@@ -401,7 +401,7 @@ void *func_0209750c();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *s, s32 a);
 void *func_020b50dc();
 s32 func_020b530c(void *a);
-s32 func_0210629c();
+s32 NNS_G3dGetTex();
 void func_02135558(void *a, void *b, void *c);
 BOOL func_02063fcc(u32 a, s32 b, void *s, s32 idx);
 void *func_020986c8(void *s);
@@ -539,7 +539,7 @@ void _ZN12Unk_020d93b813func_0203c09cEi(Unk_021c3070 *o, s32 a);
 }
 
 extern "C" s32 func_0203c234() {
-    return func_0210629c();
+    return NNS_G3dGetTex();
 }
 
 Unk_0203c230::~Unk_0203c230() {}
@@ -573,7 +573,7 @@ void Unk_020d93b8::func_0203c0b0(s32 a, s32 b, s32 n) {
     s16 h0 = data_020c8d9c[a].h0;
     unk_fc.h0 = h0;
     func_020e98f4(&q, &d, n);
-    func_01ffca8c(&unk_fc.x, &q, &unk_fc.x);
+    VEC_Add(&unk_fc.x, &q, &unk_fc.x);
     unk_fc.w0 += func_01ffcb0c(data_020c8d9c[b].w0 - w, n);
     unk_fc.h1 = unk_fc.h1 + (s16)func_01ffcb0c((s16)(data_020c8d9c[b].h1 - h1), n);
     unk_fc.h0 = unk_fc.h0 + (s16)func_01ffcb0c((s16)(data_020c8d9c[b].h0 - h0), n);
@@ -691,12 +691,12 @@ BOOL Unk_020d93b8::vfunc_18() {
 BOOL Unk_020d93b8::vfunc_24() {
     s32 i = unk_1c8 >> 5;
     s32 k = i * 2;
-    func_02111404(data_02135f44[k], data_02135f44[k + 1], unk_1b0, unk_1b4, unk_1b8, 0x1000, 1, 0);
-    func_0211126c(&unk_194, &unk_1a0, &unk_188, 1, (u8 *)this + 0x50);
-    func_01ffbb6c((u8 *)this + 0x50, (u8 *)this + 0xcc);
+    G3i_PerspectiveW_(data_02135f44[k], data_02135f44[k + 1], unk_1b0, unk_1b4, unk_1b8, 0x1000, 1, 0);
+    G3i_LookAt_(&unk_194, &unk_1a0, &unk_188, 1, (u8 *)this + 0x50);
+    MTX_Inverse43((u8 *)this + 0x50, (u8 *)this + 0xcc);
     s32 j = (s16)(unk_1c8 + unk_98) >> 5;
     s32 m = j * 2;
-    func_02111404(data_02135f44[m], data_02135f44[m + 1], unk_1b0, unk_1b4 + unk_90, unk_1b8 + unk_94, 0x1000, 0,
+    G3i_PerspectiveW_(data_02135f44[m], data_02135f44[m + 1], unk_1b0, unk_1b4 + unk_90, unk_1b8 + unk_94, 0x1000, 0,
                   (u32)data_027e00d0);
     data_027e0148[0x7c / 4] &= ~0x50;
     data_027e02c8.a = unk_194;
@@ -708,7 +708,7 @@ BOOL Unk_020d93b8::vfunc_24() {
     data_027e02c8.g = unk_188;
     data_027e02c8.h = unk_18c;
     data_027e02c8.i = unk_190;
-    func_0211126c(&unk_194, &unk_1a0, &unk_188, 0, data_027e0114);
+    G3i_LookAt_(&unk_194, &unk_1a0, &unk_188, 0, data_027e0114);
     data_027e0148[0x7c / 4] &= ~0xe8;
     return Unk_020e4590::vfunc_24();
 }
@@ -1045,7 +1045,7 @@ void Unk_020d93b8::func_0203b3c4(V3 *a, V3 *b)
     data_021c3084.y = b->y;
     data_021c3084.z = b->z;
     func_020e9960(&d, a, b);
-    data_021c3068 = func_01ffc854(&d);
+    data_021c3068 = VEC_Mag(&d);
 }
 
 void Unk_020d93b8::func_0203b350(V3 *p)
@@ -1391,10 +1391,10 @@ extern "C" void func_0203a8d4(Unk_021c3070 *o) {
     v.x = 0;
     v.y = 0x1000;
     v.z = 0;
-    func_01ffb4e8(&v, &o->unk_cc, &v);
+    MTX_MultVec33(&v, &o->unk_cc, &v);
     func_020e9888(&v, sc);
-    func_01ffca8c(&o->unk_194, &v, &o->unk_194);
-    func_01ffca8c(&o->unk_188, &v, &o->unk_188);
+    VEC_Add(&o->unk_194, &v, &o->unk_194);
+    VEC_Add(&o->unk_188, &v, &o->unk_188);
 }
 
 extern "C" BOOL func_0203a8b4(Unk_021c3070 *o) {
@@ -1436,7 +1436,7 @@ extern "C" s32 func_0203a7b8(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a
     v2.y = sub.y;
     v2.z = sub.z;
     v2.z = func_01ffcb0c(*(volatile s32 *)&sub.z, data_020d9254);
-    len = func_01ffc854(&v2);
+    len = VEC_Mag(&v2);
     if (c != NULL) {
         func_01ffd070(&t1, a, b);
         func_020e9790(&t2, &t1, 1);
@@ -1702,7 +1702,7 @@ extern "C" BOOL func_0203a148(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
         Unk_0203a148_Mtx *src = func_0203a220();
         l.m = *src;
         data_021f47e0 = l.m;
-        func_01ffb898(p, &data_021f47e0, &l.v);
+        MTX_MultVec43(p, &data_021f47e0, &l.v);
         s32 t = func_01ffc5a4(0x60000, _ZN12Unk_020d93b813func_0203bc3cEv(data_021c3070));
         t = func_01ffc5a4(-t, l.v.z);
         func_020e9888(&l.v, t);

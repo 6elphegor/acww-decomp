@@ -20,8 +20,8 @@ extern "C" const u8 data_ov001_02229b34[4] = {0x0e, 0x04, 0x05, 0x00};
 extern "C" Unk_ov001_02207904_S1 *data_ov001_0222dd84 = 0;
 
 extern "C" {
-s32 func_01ffc2c4(s32, s32);
-s32 func_01ffc31c(s32, s32);
+s32 FX_ModS32(s32, s32);
+s32 FX_DivS32(s32, s32);
 void *func_ov001_02225db0(u32, u32);
 void func_ov001_02224b9c(u32, u32, void *);
 void *func_ov001_02224b60(u32, u32);
@@ -56,8 +56,8 @@ extern "C" void func_ov001_022079fc(u32 task) {
 }
 
 extern "C" void func_ov001_02207904(u32 task) {
-    data_ov001_0222dd84->unk_09 = func_01ffc2c4(data_ov001_0222dd84->unk_09 + 1, 0x28);
-    s32 id = func_01ffc31c(data_ov001_0222dd84->unk_09, 5) + 0x47;
+    data_ov001_0222dd84->unk_09 = FX_ModS32(data_ov001_0222dd84->unk_09 + 1, 0x28);
+    s32 id = FX_DivS32(data_ov001_0222dd84->unk_09, 5) + 0x47;
     func_ov001_02224b9c(0, id, data_ov001_0222dd84->unk_04);
     data_ov001_0222dd84->unk_04->h4 = (data_ov001_0222dd84->unk_04->h4 & ~0xc00) | 0x400;
     Unk_ov001_02207904_S1 *d = data_ov001_0222dd84;

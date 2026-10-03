@@ -19,13 +19,13 @@ typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
 extern "C" {
-u32 func_01ff80e0(u32 a);
-void func_01ff8128(u32 a);
+u32 OS_DisableIrqMask(u32 a);
+void OS_EnableIrqMask(u32 a);
 void func_021006c8(void *heap, void *p);
-void *func_02100890(void *heap, u32 size, u32 b);
+void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, u32 b);
 void func_021008d4(void *heap);
-void *func_021008e0(void *buf, u32 size, u32 b);
-void func_02115fb4(void *p, u32 v, u32 size);
+void *NNS_FndCreateExpHeapEx(void *buf, u32 size, u32 b);
+void MI_CpuFill8(void *p, u32 v, u32 size);
 void func_0206d49c();
 
 void func_ov001_02225924(Unk_ov001_02225924_Pt *a, Unk_ov001_02225924_Pt *b, Unk_ov001_02225924_Rect *out);
@@ -61,8 +61,8 @@ static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, Unk_ov001_02225924_Rec
 }
 
 void func_ov001_02225e58(void *buf) {
-    func_02115fb4(buf, 0, 0x40000);
-    data_ov001_0222df48 = func_021008e0(buf, 0x40000, 0);
+    MI_CpuFill8(buf, 0, 0x40000);
+    data_ov001_0222df48 = NNS_FndCreateExpHeapEx(buf, 0x40000, 0);
     if (data_ov001_0222df48 == 0) func_0206d49c();
 }
 
@@ -73,32 +73,32 @@ void func_ov001_02225e28() {
 
 void *func_ov001_02225dd8(u32 size, u32 b) {
     void *p;
-    u32 irq = func_01ff80e0(1);
-    p = func_02100890(data_ov001_0222df48, size, b);
+    u32 irq = OS_DisableIrqMask(1);
+    p = NNS_FndAllocFromExpHeapEx(data_ov001_0222df48, size, b);
     if (p == 0) func_0206d49c();
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     return p;
 }
 
 void *func_ov001_02225db0(u32 size, u32 b) {
     void *p = func_ov001_02225dd8(size, b);
-    func_02115fb4(p, 0, size);
+    MI_CpuFill8(p, 0, size);
     return p;
 }
 
 void func_ov001_02225d58(void **pp) {
-    u32 irq = func_01ff80e0(1);
+    u32 irq = OS_DisableIrqMask(1);
     if (*pp == 0) return;
     func_021006c8(data_ov001_0222df48, *pp);
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     *pp = 0;
 }
 
 void func_ov001_02225d08(void *p) {
-    u32 irq = func_01ff80e0(1);
+    u32 irq = OS_DisableIrqMask(1);
     if (p == 0) return;
     func_021006c8(data_ov001_0222df48, p);
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
 }
 
 void func_ov001_02225cb4(u32 eng, u32 m) {

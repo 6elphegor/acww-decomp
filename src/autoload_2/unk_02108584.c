@@ -13,8 +13,8 @@ typedef struct GeBuf4 {
 } GeBuf4;
 
 extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
-extern void func_01ffc374(s32 num, s32 den);
-extern s32 func_01ffc464(void);
+extern void FX_DivAsync(s32 num, s32 den);
+extern s32 FX_GetDivResult(void);
 extern void (*data_0213bed0[8])(s32 *, u32 *);
 
 
@@ -43,7 +43,7 @@ void func_02108960(s32 *o, u8 *s)
     s32 den = h << 12;
     s32 cs, sn, sx, sy, p, q, u, v, A, B, t12, t13;
     long long pA;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     cs = *(s16 *)(s + 34);
     sx = *(s32 *)(s + 24);
     sn = *(s16 *)(s + 32);
@@ -54,8 +54,8 @@ void func_02108960(s32 *o, u8 *s)
     v = FxMul(sy, sn);
     o[0] = p;
     o[5] = u;
-    o[1] = v * func_01ffc464() >> 12;
-    func_01ffc374(num, den);
+    o[1] = v * FX_GetDivResult() >> 12;
+    FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
     B = -(s32)h << 11;
@@ -65,7 +65,7 @@ void func_02108960(s32 *o, u8 *s)
     t12 = (s32)((pA - (long long)q * B) >> 8);
     o[12] = t12 + (w << 15);
     o[13] = t13 + (*(u16 *)(s + 46) << 15);
-    o[4] = (-q * func_01ffc464()) >> 12;
+    o[4] = (-q * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT: 2D matrix, rotation only
@@ -76,18 +76,18 @@ void func_0210887c(s32 *o, u8 *s)
     s32 num = w << 12;
     s32 den = h << 12;
     s32 A, B;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     o[0] = *(s16 *)(s + 34);
     o[5] = *(s16 *)(s + 34);
-    o[1] = (*(s16 *)(s + 32) * func_01ffc464()) >> 12;
-    func_01ffc374(num, den);
+    o[1] = (*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
+    FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
     A = -(s32)w << 11;
     B = -(s32)h << 11;
     o[12] = (s32)(((long long)*(s16 *)(s + 34) * A - (long long)*(s16 *)(s + 32) * B) >> 8) + (w << 15);
     o[13] = (s32)(((long long)*(s16 *)(s + 32) * A + (long long)*(s16 *)(s + 34) * B) >> 8) + (*(u16 *)(s + 46) << 15);
-    o[4] = (-*(s16 *)(s + 32) * func_01ffc464()) >> 12;
+    o[4] = (-*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT: 2D matrix, scale only

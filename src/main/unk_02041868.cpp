@@ -60,12 +60,12 @@ s32 func_020b5184();
 s32 func_020b5164();
 void func_ov003_0222675c();
 void func_020e85fc(u32, u32);
-s32 func_02113774();
-void func_021138a0(u32, u32);
+s32 OS_IsThreadTerminated();
+void OS_KillThread(u32, u32);
 s32 func_02041938(Unk_02041938 *p);
 void func_02041908();
 void func_020418d4(Unk_02041880_Pair *p);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void func_0209d498(Unk_02042104_Date *d);
 void func_0209d124(Unk_02042104_Date *d, u32 n);
 void func_0209d164(Unk_02042104_Date *d, s32 n);
@@ -84,17 +84,17 @@ void func_02041f50(void *o, u8 *base, Unk_02042104_Date *d);
 s32 func_0203f508(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041b1c(u8 *arg);
-void func_02113a44();
-u32 func_02114560();
+void OS_ExitThread();
+u32 DC_FlushAll();
 void func_020e9244(u32 a, u32 b);
 void func_0204674c(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
 void func_02041aec(Unk_020419b4 *p);
 void *func_020e8608(u32 heap, u32 size);
 void func_02113a70(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
-void func_0211366c(void *th);
+void OS_WakeupThreadDirect(void *th);
 }
 
 extern "C" s32 func_02041d98(void *o, u8 *a, Unk_02042104_Date *d) {
@@ -151,10 +151,10 @@ extern "C" void func_02041cec(void *o, u8 *base, Unk_02042104_Date *d) {
     Unk_02041e00_Ent z[7];
     *(u32 *)&x = 0;
     *((u32 *)&x + 1) = 0;
-    func_02116048(d, &x, 8);
-    func_02116048(&x, &y, 8);
+    MI_CpuCopy8(d, &x, 8);
+    MI_CpuCopy8(&x, &y, 8);
     if (func_0203f508(z, &y) > 0) {
-        func_02116048(&x, &w, 8);
+        MI_CpuCopy8(&x, &w, 8);
         func_02041e00(o, z, &w);
     }
     base[0x15e76] = 1;
@@ -168,7 +168,7 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
     *(u32 *)&b = 0;
     *((u32 *)&b + 1) = 0;
     u8 *p = base + 0x15e5c;
-    func_02116048(d, &b, 8);
+    MI_CpuCopy8(d, &b, 8);
     s32 flag = flag0;
     if (base[0x15e76] != 0 || func_020978a4(base + 0xc) > 1 || func_0203f14c() == 0) {
         f4 = 1;
@@ -180,12 +180,12 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
         a.c4 = p[1];
         a.c3 = p[0];
         if (func_0209d3a4(&b, &a) == 0) {
-            func_02116048(&a, &c, 8);
+            MI_CpuCopy8(&a, &c, 8);
             func_02041ee4(o, base, &c);
             func_0204c22c(base + 0x15e54, p);
         }
         if (flag == 1) {
-            func_02116048(&b, &e, 8);
+            MI_CpuCopy8(&b, &e, 8);
             func_02041f50(o, base, &e);
         }
         if (f4 != 0) {
@@ -222,19 +222,19 @@ extern "C" void func_02041b68() {
 }
 
 extern "C" void func_02041b1c(u8 *arg) {
-    func_02114560();
+    DC_FlushAll();
     Unk_020419b4 *g = data_021c3ea4.unk_20;
     func_0204674c(&data_021c3ea4, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
     func_020e9244(g->unk_c0, g->unk_c4);
     g->unk_10e9 = 1;
-    func_02113a44();
+    OS_ExitThread();
 }
 
 extern "C" void func_02041aec(Unk_020419b4 *p) {
     p->unk_10e8 = 0;
     p->unk_10e9 = 0;
     p->unk_10ea = 0;
-    func_02115fb4(p, 0, 0xc0);
+    MI_CpuFill8(p, 0, 0xc0);
     p->unk_64 = 2;
 }
 
@@ -246,8 +246,8 @@ extern "C" void func_02041ac0() {
 }
 
 extern "C" void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d) {
-    func_02116048(a, p->unk_c8, 8);
-    func_02116048(b, p->unk_d0, 8);
+    MI_CpuCopy8(a, p->unk_c8, 8);
+    MI_CpuCopy8(b, p->unk_d0, 8);
     p->unk_d8 = c;
     p->unk_dc = d;
     p->unk_10e8 = 1;
@@ -272,7 +272,7 @@ extern "C" s32 func_020419b4(Unk_020419b4 *p) {
     p->unk_c4 = data_021f482c;
     func_020e9244(p->unk_c0, 0);
     func_020e9244((u32)p, p->unk_c4);
-    func_0211366c(p);
+    OS_WakeupThreadDirect(p);
     return 1;
 }
 
@@ -301,7 +301,7 @@ extern "C" BOOL func_02041960() {
 
 extern "C" s32 func_02041938(Unk_02041938 *p) {
     if (p->unk_10ea != 0) {
-        if (func_02113774() == 0) func_021138a0((u32)p, 0);
+        if (OS_IsThreadTerminated() == 0) OS_KillThread((u32)p, 0);
     }
 }
 

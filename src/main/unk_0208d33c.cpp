@@ -5,7 +5,7 @@ void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3,
 }
 
 extern "C" {
-void func_02111df8(void *a, u32 b, u32 c);
+void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {

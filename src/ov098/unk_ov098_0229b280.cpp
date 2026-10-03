@@ -25,7 +25,7 @@ void func_02076a6c(void *out, s32 a, s32 b);
 u32 func_02063b8c(u32 a);
 void *func_020e8618(void *heap, u32 size);
 void func_020e85fc(void *heap, void *p);
-void func_02116048(void *src, void *dst, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
 void *func_0208f158(void *p);
 void func_02065e70(void *a, void *b);
 
@@ -356,7 +356,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b978(u8 a, u8 b) {
         pkt[0] = b;
         pkt[1] = a;
         func_02076a6c(&pkt[7], unk_2b84, unk_2b8c);
-        func_02116048(&pkt[7], &pkt[2], 5);
+        MI_CpuCopy8(&pkt[7], &pkt[2], 5);
         Unk_020cbb18 *g = data_020cbb18;
         g->func_020728d4();
         g->func_020728a4(pkt, 7);
@@ -564,7 +564,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
         void *heap = data_021c6210;
         u8 *buf = (u8 *)func_020e8618(heap, 0xf5);
         buf[0] = 6;
-        func_02116048((void *)p, buf + 1, 0xf4);
+        MI_CpuCopy8((void *)p, buf + 1, 0xf4);
         Unk_020cbb18 *g2 = data_020cbb18;
         g2->func_020728d4();
         g2->func_020728a4(buf, 0xf5);

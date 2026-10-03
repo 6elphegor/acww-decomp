@@ -599,7 +599,7 @@ void func_020199d0(void *self);
 void func_020195c8(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 void func_02019614(void *self, u32 a, u16 b);
 void func_020539a0(void *self);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 *func_02067918(s32 a);
 s32 func_02063b8c(s32 a);
 s16 *func_0209c37c(s32 a, s32 b);
@@ -1300,7 +1300,7 @@ void Unk_ov068_02270780::func_ov068_0226c9b0() {
     using namespace sA;
     u8 cmd;
     u16 tmp;
-    func_02116048(func_0206ecf0(), unk_b0->unk_730, 0x10);
+    MI_CpuCopy8(func_0206ecf0(), unk_b0->unk_730, 0x10);
     Unk_020dd324 objA;
     Unk_020dd30c objB;
     func_020a78a4(&objB, unk_b0->unk_730, 0x10);
@@ -1439,7 +1439,7 @@ void Unk_ov068_02270780::func_ov068_0226c63c() {
     }
 end:
     func_ov004_0223f3a4();
-    func_02116048(p, &unk_b8, 0x14);
+    MI_CpuCopy8(p, &unk_b8, 0x14);
     if (func_ov004_0223f2c8()) {
         unk_b0->unk_740 = 0x14;
         func_ov068_0226cab8(4);

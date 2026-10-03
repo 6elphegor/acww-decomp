@@ -34,12 +34,12 @@ void func_020b4968(u32 a, u32 b);
 u8 *func_020b4934(void);
 void func_020b83e0(void);
 void func_020b8494(void);
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 void func_0210f900(u32 x);
-void func_021101f4(u32 x);
+void GX_SetBankForBG(u32 x);
 void *func_020e8608(void *heap, u32 size);
 void func_020e85fc(void *heap, void *ptr);
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 extern u32 data_020dc520;
 extern void *data_021f482c;
@@ -141,11 +141,11 @@ BOOL Unk_020e3fe4::vfunc_18() {
             func_0200145c(-unk_51);
         } else {
             unk_50 = 2;
-            unk_54 = func_01ffa6b4();
+            unk_54 = OS_GetTick();
         }
         break;
     case 2: {
-        u64 now = func_01ffa6b4();
+        u64 now = OS_GetTick();
         if (unk_5f < 5) {
             if (unk_5f < 3) break;
             func_020b4248();
@@ -178,7 +178,7 @@ void Unk_020e3fe4::func_020b42b8() {
     func_020b83e0();
     func_020b8494();
     func_0205369c();
-    func_021101f4(0x20);
+    GX_SetBankForBG(0x20);
     func_0210f900(0x80);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
     *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
@@ -213,9 +213,9 @@ void Unk_020e3fe4::func_020b4248() {
             r = func_020a071c();
         }
         if (r == 0) {
-            func_02116048(unk_64, &data_021d7350, 0x15fe0);
+            MI_CpuCopy8(unk_64, &data_021d7350, 0x15fe0);
         } else {
-            func_02116048(unk_68, &data_021d7350, 0x15fe0);
+            MI_CpuCopy8(unk_68, &data_021d7350, 0x15fe0);
         }
         unk_5e = 0;
     }

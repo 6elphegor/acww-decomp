@@ -357,10 +357,10 @@ extern "C" {
 void _ZN12Unk_0206395413func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 }
 extern "C" {
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
 s32 func_02076c0c(s32 i);
@@ -395,7 +395,7 @@ void _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(void *dst, Unk_020dd30c 
 BOOL Unk_02071ed0::func_02072084(Unk_02071ed0 *o) {
     using namespace n4;
     if (unk_26.lo == o->unk_26.lo && unk_26.hi == o->unk_26.hi && unk_00 == o->unk_00 &&
-        func_02128930(&unk_02, &o->unk_02, 8) == 0 && U125_calls::_ZN12Unk_020940a013func_020941e8EPS_(this, o) != 0) {
+        memcmp(&unk_02, &o->unk_02, 8) == 0 && U125_calls::_ZN12Unk_020940a013func_020941e8EPS_(this, o) != 0) {
         for (u32 i = 0; i < 16; i++) {
             if (unk_16.b[i] != o->unk_16.b[i]) return FALSE;
         }
@@ -541,7 +541,7 @@ namespace n4 {
 }
 void Unk_02071e04::func_02071e3c(void *dst) {
     using namespace n4;
-    func_02116048(dst, func_02071e58(), 0x200);
+    MI_CpuCopy8(dst, func_02071e58(), 0x200);
 }
 namespace n4 {
 }
@@ -594,7 +594,7 @@ void Unk_02071c5c::func_02071c98(Unk_020942c8 *a, Unk_020942c8 *b) {
         Unk_020942c8 *base = s->func_02071fa0();
         Unk_020942c8 *p = func_0209409c(base);
         if (p->unk_00 == b->unk_00) {
-            if (func_02128930(&p->unk_02, &b->unk_02, 8) == 0) {
+            if (memcmp(&p->unk_02, &b->unk_02, 8) == 0) {
                 if (U125_calls::_ZN12Unk_020940a013func_020941e8EPS_(base, a)) {
                     _ZN12Unk_0206395413func_02094094EPS_(s->func_02071fa0(), func_0209409c(a));
                 }

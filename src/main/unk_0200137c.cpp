@@ -173,7 +173,7 @@ void func_02001338(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 }
 
 extern "C" {
@@ -181,7 +181,7 @@ u32 func_01ffa3b4(void);
 }
 
 extern "C" {
-void func_01ffa2ec(void);
+void OS_DisableInterrupts(void);
 }
 
 extern "C" {
@@ -189,7 +189,7 @@ void func_020535e0(void);
 }
 
 extern "C" {
-void func_021101f4(u32 a);
+void GX_SetBankForBG(u32 a);
 }
 
 extern "C" {
@@ -205,27 +205,27 @@ void func_02111794(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111ec8(void *a, u32 b, u32 c);
+void GX_LoadBGPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111e60(void *a, u32 b, u32 c);
+void GXS_LoadBGPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-u32 func_02110994(void);
+u32 G2_GetBG1ScrPtr(void);
 }
 
 extern "C" {
-u32 func_02110974(void);
+u32 G2S_GetBG1ScrPtr(void);
 }
 
 extern "C" {
-void func_0210f154(void);
+void GX_DispOn(void);
 }
 
 extern "C" {
-void func_02115ea8(u32 a);
+void MIi_CpuClearFast(u32 a);
 }
 
 extern "C" {
@@ -257,15 +257,15 @@ void func_0204eeb0(void);
 }
 
 extern "C" {
-u8 *func_02114b10(void);
+u8 *OS_GetDTCMAddress(void);
 }
 
 extern "C" {
-void func_02110a64(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 }
 
 extern "C" {
-void func_021127c0(const char *a, u32 b, const char *c, void *d);
+void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
@@ -319,11 +319,11 @@ struct Unk_02001874 {
 };
 
 extern "C" {
-u32 func_0210f0c4(u32 a);
+u32 GXS_SetGraphicsMode(u32 a);
 }
 
 extern "C" {
-u32 func_0210f0e0(u32 a, u32 b, u32 c);
+u32 GX_SetGraphicsMode(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
@@ -331,31 +331,31 @@ void func_02110c98(u32 a);
 }
 
 extern "C" {
-void func_02110afc(u32 reg, void* mtx, s32 a, s32 b, s32 c, s32 d);
+void G2x_SetBGyAffine_(u32 reg, void* mtx, s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void func_02110a64(u32 reg, u32 a, u32 b, u32 c, u32 d, u32 e);
+void G2x_SetBlendBrightnessExt_(u32 reg, u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_02110ae0(u32 reg, u32 a, s32 b, u32 c, u32 d);
+void G2x_SetBlendAlpha_(u32 reg, u32 a, s32 b, u32 c, u32 d);
 }
 
 extern "C" {
-void func_02110abc(u32 reg, u32 a, s32 b);
+void G2x_SetBlendBrightness_(u32 reg, u32 a, s32 b);
 }
 
 extern "C" {
-void func_02111ec8(void *p, u32 a, u32 b);
+void GX_LoadBGPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111e60(void *p, u32 a, u32 b);
+void GXS_LoadBGPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
@@ -367,7 +367,7 @@ void func_020e85fc(u32 a, void *b);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 size);
+void DC_FlushRange(void *p, u32 size);
 }
 
 extern "C" {
@@ -391,11 +391,11 @@ void func_021115f4(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111c6c(void *a, u32 b, u32 c);
+void GX_LoadOBJ(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111c0c(void *a, u32 b, u32 c);
+void GXS_LoadOBJ(void *a, u32 b, u32 c);
 }
 
 extern "C" {
@@ -427,11 +427,11 @@ void func_02111934(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111df8(void *a, u32 b, u32 c);
+void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111d90(void *a, u32 b, u32 c);
+void GXS_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 u8 data_0213c6ec[4];
@@ -600,31 +600,31 @@ extern "C" s32 func_02002580(u8 *dst, u32 n, s32 a, s32 b, u8 c) {
     s32 off, len;
     len = (c - b + 1) * 32;
     off = b * 32;
-    func_021145cc(p, len);
+    DC_FlushRange(p, len);
     if (n == 7) {
-        func_02111df8(p, off, len);
+        GX_LoadOBJPltt(p, off, len);
     } else if (n == 8) {
-        func_02111d90(p, off, len);
+        GXS_LoadOBJPltt(p, off, len);
     } else if (n <= 2) {
         if (off == 0) {
             off = 2;
             len -= 2;
             p += 2;
         }
-        func_02111ec8(p, off, len);
+        GX_LoadBGPltt(p, off, len);
     } else if (n <= 6) {
         if (off == 0) {
             off = 2;
             len -= 2;
             p += 2;
         }
-        func_02111e60(p, off, len);
+        GXS_LoadBGPltt(p, off, len);
     }
     return 1;
 }
 
 extern "C" s32 func_020024f0(u8 *dst, u32 n, s32 size, s32 x) {
-    func_021145cc(dst, size);
+    DC_FlushRange(dst, size);
     switch (n) {
     case 0: func_02111b3c(dst, x, size); break;
     case 1: func_02111a6c(dst, x, size); break;
@@ -642,7 +642,7 @@ extern "C" s32 func_02002438(u8 *dst, u32 n, s32 a, s32 b, s32 c) {
     s32 off, len;
     len = (*(volatile s32 *)&c - b + 1) * 32;
     off = b * 32;
-    func_021145cc(p, len);
+    DC_FlushRange(p, len);
     switch (n) {
     case 0: func_021117fc(p, off, len); break;
     case 1: func_0211172c(p, off, len); break;
@@ -651,8 +651,8 @@ extern "C" s32 func_02002438(u8 *dst, u32 n, s32 a, s32 b, s32 c) {
     case 4: func_02111794(p, off, len); break;
     case 5: func_021116c4(p, off, len); break;
     case 6: func_021115f4(p, off, len); break;
-    case 7: func_02111c6c(p, off, len); break;
-    case 8: func_02111c0c(p, off, len); break;
+    case 7: GX_LoadOBJ(p, off, len); break;
+    case 8: GXS_LoadOBJ(p, off, len); break;
     }
     return 1;
 }
@@ -744,7 +744,7 @@ extern "C" void func_0200203c(u8 *src, u8 *dst, s32 w, s32 h) {
         for (col = 0; col < w; col++) {
             q = p;
             for (j = 0; j < 8; j++) {
-                func_02116048(src + q, dst + k, 4);
+                MI_CpuCopy8(src + q, dst + k, 4);
                 k += 4;
                 q += w * 4;
             }
@@ -829,8 +829,8 @@ extern "C" void func_02001ea0(u32 *src, u32 *dst, s32 w, s32 h) {
 }
 
 extern "C" void func_02001e7c(void) {
-    func_02111ec8(data_0213c6ec, 0, 2);
-    func_02111e60(data_0213c6ec, 0, 2);
+    GX_LoadBGPltt(data_0213c6ec, 0, 2);
+    GXS_LoadBGPltt(data_0213c6ec, 0, 2);
 }
 
 extern "C" void func_02001dbc() {
@@ -868,8 +868,8 @@ extern "C" void func_02001dbc() {
 extern "C" void func_02001db8() {}
 
 extern "C" void func_02001d04() {
-    func_0210f0e0(1, data_0213c770.unk_16, 1);
-    func_0210f0c4(data_0213c770.unk_17);
+    GX_SetGraphicsMode(1, data_0213c770.unk_16, 1);
+    GXS_SetGraphicsMode(data_0213c770.unk_17);
     *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffffe0ff) | (data_0213c770.unk_14 << 8);
     *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffffe0ff) | (data_0213c770.unk_15 << 8);
     *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffff1fff) | (data_0213c770.unk_18 << 13);
@@ -894,7 +894,7 @@ extern "C" void func_0200187c() {
         }
         if (data_0213c770.unk_11 & 4) {
             if (data_0213c770.unk_10 & 1) {
-                func_02110afc(0x4000020, (Unk_02001858 *)&data_0213c6f0.unk_08, data_0213c6f0.unk_18, data_0213c6f0.unk_1c,
+                G2x_SetBGyAffine_(0x4000020, (Unk_02001858 *)&data_0213c6f0.unk_08, data_0213c6f0.unk_18, data_0213c6f0.unk_1c,
                               data_0213c6f0.unk_20, data_0213c6f0.unk_24);
             } else {
                 *(volatile u32*)0x4000018 = (data_0213c6f0.unk_20 & 0x1ff) | ((data_0213c6f0.unk_24 << 16) & 0x1ff0000);
@@ -902,7 +902,7 @@ extern "C" void func_0200187c() {
         }
         if (data_0213c770.unk_11 & 8) {
             if (data_0213c770.unk_10 & 2) {
-                func_02110afc(0x4000030, (Unk_02001858 *)&data_0213c6f0.unk_28, data_0213c6f0.unk_38, data_0213c6f0.unk_3c,
+                G2x_SetBGyAffine_(0x4000030, (Unk_02001858 *)&data_0213c6f0.unk_28, data_0213c6f0.unk_38, data_0213c6f0.unk_3c,
                               data_0213c6f0.unk_40, data_0213c6f0.unk_44);
             } else {
                 *(volatile u32*)0x400001c = (data_0213c6f0.unk_40 & 0x1ff) | ((data_0213c6f0.unk_44 << 16) & 0x1ff0000);
@@ -916,7 +916,7 @@ extern "C" void func_0200187c() {
         }
         if (data_0213c770.unk_11 & 0x40) {
             if (data_0213c770.unk_10 & 4) {
-                func_02110afc(0x4001020, (Unk_02001858 *)&data_0213c6f0.unk_50, data_0213c6f0.unk_60, data_0213c6f0.unk_64,
+                G2x_SetBGyAffine_(0x4001020, (Unk_02001858 *)&data_0213c6f0.unk_50, data_0213c6f0.unk_60, data_0213c6f0.unk_64,
                               data_0213c6f0.unk_68, data_0213c6f0.unk_6c);
             } else {
                 *(volatile u32*)0x4001018 = (data_0213c6f0.unk_68 & 0x1ff) | ((data_0213c6f0.unk_6c << 16) & 0x1ff0000);
@@ -924,7 +924,7 @@ extern "C" void func_0200187c() {
         }
         if (data_0213c770.unk_11 & 0x80) {
             if (data_0213c770.unk_10 & 8) {
-                func_02110afc(0x4001030, (Unk_02001858 *)data_0213c760, data_0213c770.unk_00, data_0213c770.unk_04,
+                G2x_SetBGyAffine_(0x4001030, (Unk_02001858 *)data_0213c760, data_0213c770.unk_00, data_0213c770.unk_04,
                               data_0213c770.unk_08, data_0213c770.unk_0c);
             } else {
                 *(volatile u32*)0x400101c = (data_0213c770.unk_08 & 0x1ff) | ((data_0213c770.unk_0c << 16) & 0x1ff0000);
@@ -983,17 +983,17 @@ extern "C" void func_0200187c() {
     }
     u32 t = data_0213c790.unk_12;
     if (t & 0x20) {
-        func_02110a64(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
+        G2x_SetBlendBrightnessExt_(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
     } else if (t & 0x10) {
-        func_02110ae0(0x4000050, data_0213c790.unk_13, data_0213c790.unk_14, data_0213c790.unk_15,
+        G2x_SetBlendAlpha_(0x4000050, data_0213c790.unk_13, data_0213c790.unk_14, data_0213c790.unk_15,
                       0x10 - data_0213c790.unk_15);
     } else if (t & 0x2) {
-        func_02110a64(0x4001050, 0x1f, 0x20, 0x10, 0x10, 0);
+        G2x_SetBlendBrightnessExt_(0x4001050, 0x1f, 0x20, 0x10, 0x10, 0);
     } else if (t & 0x8) {
-        func_02110ae0(0x4001050, data_0213c790.unk_13, data_0213c790.unk_14, data_0213c790.unk_15,
+        G2x_SetBlendAlpha_(0x4001050, data_0213c790.unk_13, data_0213c790.unk_14, data_0213c790.unk_15,
                       0x10 - data_0213c790.unk_15);
     } else if (t != 0) {
-        func_02110abc(0x4001050, data_0213c790.unk_13, data_0213c790.unk_14);
+        G2x_SetBlendBrightness_(0x4001050, data_0213c790.unk_13, data_0213c790.unk_14);
     }
     data_0213c790.unk_12 = 0;
 }
@@ -1158,12 +1158,12 @@ extern "C" void func_020015b8(u32 a) {
 
 extern "C" void func_020015a0(u32 a) {
     func_020015e0(a);
-    func_0210f0e0(1, a, 1);
+    GX_SetGraphicsMode(1, a, 1);
 }
 
 extern "C" void func_0200158c(u32 a) {
     func_020015b8(a);
-    func_0210f0c4(a);
+    GXS_SetGraphicsMode(a);
 }
 
 extern "C" u32 func_02001580() { return data_0213c770.unk_18; }
@@ -1200,11 +1200,11 @@ extern "C" void func_020014ac(u8 a) { data_0213c770.unk_15 &= ~a; }
 
 extern "C" void func_0200145c(u32 a) {
     if (a != 0) {
-        func_02110abc(0x4000050, 0x3f, a);
-        func_02110abc(0x4001050, 0x3f, a);
+        G2x_SetBlendBrightness_(0x4000050, 0x3f, a);
+        G2x_SetBlendBrightness_(0x4001050, 0x3f, a);
     } else {
-        func_02110a64(0x4000050, 0x1f, 0x20, 0x10, 0x10, a);
-        func_02110a64(0x4001050, 0x1f, 0x20, 0x10, 0x10, a);
+        G2x_SetBlendBrightnessExt_(0x4000050, 0x1f, 0x20, 0x10, 0x10, a);
+        G2x_SetBlendBrightnessExt_(0x4001050, 0x1f, 0x20, 0x10, 0x10, a);
     }
 }
 

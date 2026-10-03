@@ -441,7 +441,7 @@ extern s32 data_ov003_0222f608[];
 
 void func_020339bc(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
 void func_02033988(Unk_ov003_0221a4a0_Buf *b);
-void func_01ffca8c(void *a, void *b, void *out);
+void VEC_Add(void *a, void *b, void *out);
 void func_01ffd070(Unk_ov003_0221a4a0_V3 *out, void *m, Unk_ov003_0221a4a0_V3 *v);
 s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
 void func_0208fb00(s32 a, void *fn);
@@ -641,7 +641,7 @@ extern Unk_ov003_0221b7d4_Rec *data_ov003_0223291c[];
 void func_0204ed8c(void *out, s32 x, s32 z);
 BOOL func_0204e3a0(void *g, s32 x, s32 z);
 s32 func_ov003_0221caf0(s32 a, s32 b, u32 c, s32 d);
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
 void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 func_0204e88c(void *g, s32 x, s32 z);
@@ -1771,7 +1771,7 @@ void func_020557a0(void *a, u32 b);
 u32 func_02061888(s32 a, s32 b);
 s32 func_0204c0ac();
 void *func_020641ec(void *a, void *b, s32 c, s32 d);
-void *func_0210629c();
+void *NNS_G3dGetTex();
 void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *func_0209c25c(void *a, void *b);
 BOOL func_0209c0d0(void *a, void *b, void *c);
@@ -3397,7 +3397,7 @@ BOOL func_ov003_0221fcd4(void *self, u32 *a, u32 *b, u32 *names, s32 n)
             if (*b == 0) {
                 return FALSE;
             }
-            *a = (u32)func_0210629c();
+            *a = (u32)NNS_G3dGetTex();
             func_020557a0((void *)*a, 0);
         } else {
             *a = 0;
@@ -3419,7 +3419,7 @@ BOOL func_ov003_0221fc70(void *self, u32 *a, u32 *b, u32 *names, s32 n)
         if (*b == 0) {
             return FALSE;
         }
-        *a = (u32)func_0210629c();
+        *a = (u32)NNS_G3dGetTex();
         func_02055744((void *)*a, 0);
     }
     return TRUE;
@@ -6754,7 +6754,7 @@ extern "C" void func_ov003_0221b090(Unk_ov003_0221aed4_Fx *self)
     }
     self->unk_44 = self->unk_3c;
     self->unk_34 = self->unk_34 - 0x400;
-    func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+    VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     if (self->unk_1c < 0) {
         self->unk_1c = 0;
         if (self->unk_4c == 0) {
@@ -6981,7 +6981,7 @@ extern "C" void func_ov003_0221ab94(Unk_ov003_0221a4a0 *self)
     Unk_ov003_0221a4a0_V3 v;
     volatile u16 tmp;
     self->unk_34 = self->unk_34 - 0x400;
-    func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+    VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     if (self->unk_1c < 0) {
         if (self->unk_4c == 0) {
             func_0204ed8c(&v, self->unk_10, self->unk_14);
@@ -7038,7 +7038,7 @@ extern "C" void func_ov003_0221ab14(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0
 namespace ns_0221a4a0 {
 extern "C" void func_ov003_0221aabc(Unk_ov003_0221a4a0 *self)
 {
-    func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+    VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     self->unk_4e = self->unk_4e + 0x888;
     self->unk_24 = data_02135f44[((u16)(s16)self->unk_4e >> 4) * 2] >> 1;
     if (self->unk_1c < 0) {
@@ -7075,7 +7075,7 @@ extern "C" void func_ov003_0221a978(Unk_ov003_0221a4a0 *self)
     switch (self->unk_4c) {
     case 0:
         self->unk_34 = self->unk_34 - 0x400;
-        func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+        VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
         if (self->unk_1c < 0) {
             s32 z = 0;
             self->unk_1c = z;
@@ -7087,7 +7087,7 @@ extern "C" void func_ov003_0221a978(Unk_ov003_0221a4a0 *self)
         break;
     case 1:
         self->unk_34 = self->unk_34 - 0x400;
-        func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+        VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
         if (self->unk_1c < 0) {
             self->unk_1c = 0;
             self->unk_30 = 0;
@@ -7141,7 +7141,7 @@ namespace ns_0221a4a0 {
 extern "C" void func_ov003_0221a8dc(Unk_ov003_0221a4a0 *self)
 {
     self->unk_34 = self->unk_34 - 0x400;
-    func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+    VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     if (self->unk_1c < 0) {
         self->unk_1c = 0;
         self->unk_30 = 0;
@@ -7191,7 +7191,7 @@ extern "C" void func_ov003_0221a798(Unk_ov003_0221a4a0 *self)
     }
     self->unk_44 = self->unk_3c;
     self->unk_34 = self->unk_34 - 0x400;
-    func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+    VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     if (self->unk_1c < 0) {
         self->unk_1c = 0;
         self->unk_30 = 0;
@@ -7306,7 +7306,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
     func_020339bc(&b, &self->unk_18, 0, 0);
     if (b.unk_30 != 0) {
         if (self->unk_4c == 0) {
-            func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+            VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
             s32 t = b.unk_3c;
             if (self->unk_1c < t) {
                 self->unk_34 = 0;
@@ -7333,7 +7333,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
         }
     } else {
         if (self->unk_4c == 0) {
-            func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+            VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
             if (self->unk_1c < 0) {
                 self->unk_1c = 0;
                 self->unk_50 = func_ov003_022195b8(&self->unk_10);
@@ -7347,7 +7347,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
             }
         } else {
             self->unk_34 = self->unk_34 - 0x400;
-            func_01ffca8c(&self->unk_18, &self->unk_30, &self->unk_18);
+            VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
             if (self->unk_1c < 0) {
                 self->unk_1c = 0;
                 self->unk_30 = 0;

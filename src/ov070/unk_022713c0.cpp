@@ -440,7 +440,7 @@ extern const Unk_ov070_022717f0_Ent data_ov070_022725a0[];
 extern u16 data_020c6cc8;
 
 Unk_0209865c *func_0209750c();
-void *func_02115fb4(void *, s32, u32);
+void *MI_CpuFill8(void *, s32, u32);
 BOOL func_0202e1cc(s32 a, s32 b);
 s32 func_020991fc();
 void *func_020991e4();
@@ -548,7 +548,7 @@ BOOL Unk_ov070_0227280c::vfunc_04() {
     }
     func_0201bc28((Unk_0201bc1c *)&unk_658);
     unk_658.func_ov070_02272014(this);
-    func_02115fb4(unk_658.unk_c8, 0, 0x14);
+    MI_CpuFill8(unk_658.unk_c8, 0, 0x14);
     return TRUE;
 }
 
@@ -1115,7 +1115,7 @@ void Unk_ov070_0227277c::vfunc_18() {
             }
             code = i + 0xf;
         } else {
-            func_02115fb4(unk_b0->unk_658.unk_c8, 0, 0x14);
+            MI_CpuFill8(unk_b0->unk_658.unk_c8, 0, 0x14);
             func_0202e1cc(8, 1);
             code = 0x23;
         }

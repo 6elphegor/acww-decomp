@@ -139,14 +139,14 @@ u32 data_020dc08c[1] = { 0x1f };
 u32 data_020dc090[1] = { 0x1f };
 
 extern "C" {
-void func_02115fb4(void *p, s32 v, s32 n);
-void func_02115ea8(u32 v, void *dst, u32 n);
+void MI_CpuFill8(void *p, s32 v, s32 n);
+void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 }
 
 class Unk_021c5f3c {
 public:
     u32 w[0x4a];
-    Unk_021c5f3c() { func_02115fb4(this, 0, 0x128); }
+    Unk_021c5f3c() { MI_CpuFill8(this, 0, 0x128); }
     ~Unk_021c5f3c();
 };
 
@@ -155,7 +155,7 @@ public:
     u8 b[0xe0];
     Unk_021c5e5c() {
         volatile u32 z = 0;
-        func_02115ea8(z, this, 0xe0);
+        MIi_CpuClearFast(z, this, 0xe0);
     }
     ~Unk_021c5e5c();
 };
@@ -209,7 +209,7 @@ static inline u32 Unk_0205a930_Get(s32 i, u32 dflt)
 static inline void Unk_0205a930_Clear(void *dst, u32 n)
 {
     volatile u32 z = 0;
-    func_02115ea8(z, dst, n);
+    MIi_CpuClearFast(z, dst, n);
 }
 
 
@@ -260,12 +260,12 @@ BOOL func_0204b300(u16 *p);
 s32 func_020531d4(u16 *p);
 s32 func_020530f0(u16 *p);
 s32 func_0205304c(u16 *p);
-void func_02115fb4(void *p, s32 v, s32 n);
+void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 _ZN12Unk_0206022c13func_020604c4Ev(void *p);
 void func_02034038(s32 v);
 void func_0203402c(u32 v);
-void func_02115ea8(u32 v, void *dst, u32 n);
+void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 s32 func_0205329c(s32 v);
 s32 func_020618b8(s32 v);
 s32 func_02053018(s32 v);
@@ -286,7 +286,7 @@ u16 *_ZN12Unk_02060a9013func_02060834EPi(void *h, s32 i);
 s32 func_0207bf60(void *p, s32 k);
 s32 func_0207e3a0();
 s32 func_0207e3ac();
-u32 func_0212741c(u32 v);
+u32 MATH_CountPopulation(u32 v);
 void func_020524a8(Unk_0205b320_Buf *b, void *cell);
 u32 func_0205248c(Unk_0205b320_Buf *b);
 s16 *func_0205242c(Unk_0205b320_Buf *b, u32 i);
@@ -577,7 +577,7 @@ extern "C" u32 func_0205b130(u32 *p) {
     u32 s = 0;
     u32 i;
     for (i = 0; i < 0xde; i += 4) {
-        s += func_0212741c(*(u32 *)((u8 *)p + i));
+        s += MATH_CountPopulation(*(u32 *)((u8 *)p + i));
     }
     return s * 0x1e61;
 }
@@ -602,7 +602,7 @@ extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
         s32 v8, vc, v0;
         for (i = 0; i < 0x4a; i++) data_021c6064.w[i] = 0;
         data_021c6064.extra = 0;
-        func_02115fb4(&data_021c5f3c, 0, 0x128);
+        MI_CpuFill8(&data_021c5f3c, 0, 0x128);
         func_02059a30((s32 *)p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
         p->unk_10 = 0x1100;
         p->unk_12 = 0x1144;
@@ -687,7 +687,7 @@ extern "C" s32 func_0205a930(Unk_02059d1c *p, u16 *flags, s32 *pa, s32 *pb, s32 
     *pa = 0;
     *pb = 0;
     *pc = 0;
-    func_02115fb4(&data_021c5f3c, 0, 0x128);
+    MI_CpuFill8(&data_021c5f3c, 0, 0x128);
     Unk_0205a930_Clear(&data_021c5e5c, 0xe0);
     for (k = 0; k < 0x4a; k++) data_021c6064.w[k] = 0;
     data_021c6064.extra = 0;
@@ -891,7 +891,7 @@ s32 Unk_02059d1c::func_0205a6bc(void *grid, u32 *out)
     u32 y, x;
     s32 i;
     u32 j;
-    func_02115fb4(acc, 0, 0x94);
+    MI_CpuFill8(acc, 0, 0x94);
     max = 0;
     for (layer = 0; layer < 2; layer++) {
         for (y = unk_04; y <= unk_0c; y++) {
@@ -969,7 +969,7 @@ s32 Unk_02059d1c::func_0205a580(void *grid)
     s32 res;
     s32 lo, hi;
     volatile u32 zeroA, zeroB;
-    func_02115fb4(acc, 0, 0x94);
+    MI_CpuFill8(acc, 0, 0x94);
     lo = func_02061fe8(&unk_10);
     hi = func_02061fe8(&unk_12);
     for (layer = 0; layer < 2; layer++) {
@@ -1035,7 +1035,7 @@ s32 Unk_02059d1c::func_0205a480(void *grid)
     u32 y, x;
     u32 i;
     s32 res;
-    func_02115fb4(acc, 0, 0x94);
+    MI_CpuFill8(acc, 0, 0x94);
     res = 0;
     for (layer = 0; layer < 2; layer++) {
         for (y = unk_04; y <= unk_0c; y++) {
@@ -1159,7 +1159,7 @@ s32 Unk_02059d1c::func_0205a1d0(void *grid)
     u8 counts[13];
     u16 ids[24];
     s32 cnt;
-    func_02115fb4(counts, 0, 13);
+    MI_CpuFill8(counts, 0, 13);
     for (i = 0; i < 24; i++) {
         ids[i] = 0xffff;
     }
@@ -1233,8 +1233,8 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
     u32 i;
     s32 v;
     u32 j;
-    func_02115fb4(a_, 0, 3);
-    func_02115fb4(b_, 0, 3);
+    MI_CpuFill8(a_, 0, 3);
+    MI_CpuFill8(b_, 0, 3);
     for (i = 0; i < 24; i++) arr_[i] = 0xffff;
     total = 0;
     for (i = 0; i < 24; i++) arr_[i] = 0xffff;
@@ -1330,7 +1330,7 @@ s32 Unk_02059d1c::func_02059e94(void *grid, s32 *out)
     u32 y, x;
     s32 total;
     u32 i;
-    func_02115fb4(counts, 0, 5);
+    MI_CpuFill8(counts, 0, 5);
     for (layer = 0; layer < 2; layer++) {
         for (y = unk_04; y <= unk_0c; y++) {
             x = unk_00;

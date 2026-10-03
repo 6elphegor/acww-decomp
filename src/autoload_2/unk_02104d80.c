@@ -55,12 +55,12 @@ extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
 extern void func_02105e5c(void *, void *);
 extern s8 data_02135d5c[];
-extern void func_02111110(void);
+extern void G3X_Init(void);
 extern void func_02104338(void);
 extern void func_01ff8ccc(void);
-extern BOOL func_02110e5c(void *);
-extern BOOL func_02110e14(void *);
-extern void func_01ffbf6c(void *, void *);
+extern BOOL G3X_GetClipMtx(void *);
+extern BOOL G3X_GetVectorMtx(void *);
+extern void MTX_Copy44To43_(void *, void *);
 extern void func_02106054(void *, u32, void *);
 extern void func_0210609c(void *, u32, void *);
 extern void func_021060e4(void *, u32, void *);
@@ -76,11 +76,11 @@ extern void (*data_0213bd40[])(void *);
 extern u8 *func_02104140(void);
 extern u8 *func_021040fc(void);
 extern u8 *func_021041e8(void);
-extern void func_01ffb7f4(void *, void *);
-extern void func_01ffbfa0(void *, void *, void *);
-extern s32 func_01ffc854(void *);
-extern void func_01ffc714(void *, void *);
-extern void func_02115e90(void *, void *, u32);
+extern void MTX_Copy43To44_(void *, void *);
+extern void MTX_Concat44(void *, void *, void *);
+extern s32 VEC_Mag(void *);
+extern void VEC_Normalize(void *, void *);
+extern void MIi_CpuSend32(void *, void *, u32);
 extern s32 data_0213be38[3];
 extern s32 data_0213be44[3];
 extern s32 data_0213be14[9];
@@ -90,10 +90,10 @@ extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
 typedef struct MtxEnt { s32 m[25]; } MtxEnt;
 extern MtxEnt data_021f70c4[];
 extern MtxEnt data_021f7104[];
-extern void func_02115ea8(u32, void *, u32);
-extern void func_02110bcc(void *);
-extern void func_02110bb0(void *);
-extern void func_02110be8(void *);
+extern void MIi_CpuClearFast(u32, void *, u32);
+extern void G3_MultMtx43(void *);
+extern void G3_MultMtx33(void *);
+extern void G3_LoadMtx43(void *);
 typedef struct RSBits { u8 pad[0xcc]; u32 bits[8]; } RSBits;
 static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx >> 5] & (1 << (idx & 31))); }
 static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 31); }
@@ -119,7 +119,7 @@ void func_02104d80(RS *rs)
     volatile u32 zero = 0;
     e = c + 3;
     pw = 0;
-    func_02115ea8(zero, pos, 0x54);
+    MIi_CpuClearFast(zero, pos, 0x54);
     func_01ff8ccc();
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x0400044c = 1;
@@ -134,7 +134,7 @@ void func_02104d80(RS *rs)
             BitVecSet(((RSBits *)rs)->bits, idx);
             *(volatile u32 *)0x04000450 = e[0];
             *(volatile u32 *)0x04000440 = 1;
-            func_02110bcc(inv + idx * 0x54);
+            G3_MultMtx43(inv + idx * 0x54);
         }
         if (i != 0) {
             ACC(nrm[0], pw, prev->m[0]);
@@ -148,10 +148,10 @@ void func_02104d80(RS *rs)
             ACC(nrm[8], pw, prev->m[8]);
         }
         if (had == 0) {
-            while (func_02110e5c(cur) != 0) {
+            while (G3X_GetClipMtx(cur) != 0) {
             }
             *(volatile u32 *)0x04000440 = 2;
-            func_02110bb0(inv + idx * 0x54 + 0x30);
+            G3_MultMtx33(inv + idx * 0x54 + 0x30);
         }
         prev = (MtxEnt *)((u8 *)data_021f7104 + off);
         w = e[2] << 4;
@@ -170,7 +170,7 @@ void func_02104d80(RS *rs)
         pw = w;
         e += 3;
         if (had == 0) {
-            while (func_02110e14(prev) != 0) {
+            while (G3X_GetVectorMtx(prev) != 0) {
             }
         }
     }
@@ -183,9 +183,9 @@ void func_02104d80(RS *rs)
     ACC(nrm[6], pw, prev->m[6]);
     ACC(nrm[7], pw, prev->m[7]);
     ACC(nrm[8], pw, prev->m[8]);
-    func_02110be8(nrm);
+    G3_LoadMtx43(nrm);
     *(volatile u32 *)0x04000440 = 1;
-    func_02110be8(pos);
+    G3_LoadMtx43(pos);
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x04000450 = 1;
     *(volatile u32 *)0x04000440 = 2;

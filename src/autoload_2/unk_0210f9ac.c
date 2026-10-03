@@ -10,13 +10,13 @@ typedef int BOOL;
 
 extern u16 data_021fcbd8[13];
 
-extern void func_021104ac(u32 mask);
+extern void GX_VRAMCNT_SetLCDC_(u32 mask);
 
 
-void func_0210f9ac(u32 bank);
+void GX_SetBankForLCDC(u32 bank);
 
 // GX_SetBankForLCDC
-void func_0210f9ac(u32 bank) {
+void GX_SetBankForLCDC(u32 bank) {
     data_021fcbd8[0] |= bank;
-    func_021104ac(bank);
+    GX_VRAMCNT_SetLCDC_(bank);
 }

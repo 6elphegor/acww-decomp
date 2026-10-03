@@ -182,8 +182,8 @@ s32 func_ov065_02261524(s32, s32, s32, s32, u8 *);
 s32 func_ov065_02261110();
 s32 func_ov065_02261118(void *);
 s32 func_ov001_02203004();
-void *func_02115fb4(void *, s32, u32);
-void *func_02116048(void *, void *, u32);
+void *MI_CpuFill8(void *, s32, u32);
+void *MI_CpuCopy8(void *, void *, u32);
 void func_021132e0(s32);
 void *func_ov001_02202c58(s32 n);
 void func_ov001_02202c44(void *p);
@@ -1784,11 +1784,11 @@ test:
 }
 
 extern "C" void func_ov001_02200870(void *dst, void *src, u32 n) {
-    func_02116048(src, dst, n);
+    MI_CpuCopy8(src, dst, n);
 }
 
 extern "C" void *func_ov001_02200864(void *p, u32 v, u32 n) {
-    return func_02115fb4(p, (u8)v, n);
+    return MI_CpuFill8(p, (u8)v, n);
 }
 
 extern "C" s32 func_ov001_02200848(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q) {

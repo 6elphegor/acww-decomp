@@ -242,8 +242,8 @@ extern u16 data_021f47d8;
 extern s32 data_021f482c;
 void func_020021b8(u32 a, u32 b, u32 c, u32 d, u32 e);
 void func_020021fc(u32 a, s32 b, s32 c);
-void func_02115e48(void *dst, void *src, u32 n);
-void func_02116048(void *dst, void *src, u32 n);
+void MIi_CpuCopy16(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
 void func_0206ee80(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0200402c(s32 a);
@@ -407,8 +407,8 @@ extern "C" void func_ov134_02294a34(S *s, u32 a, u32 b, u32 c, u8 d) {
         if (s->unk_a0 == 3) {
             func_0209d2c0(s->unk_b8.b, 1);
         }
-        func_02116048(s->unk_b8.b, s->unk_c8.b, 8);
-        func_02116048(s->unk_b8.b, s->unk_d0.b, 8);
+        MI_CpuCopy8(s->unk_b8.b, s->unk_c8.b, 8);
+        MI_CpuCopy8(s->unk_b8.b, s->unk_d0.b, 8);
         func_0209d28c(s->unk_d0.b, 0xc);
         s->unk_b2 = s->unk_c8.b[2];
         s->unk_b3 = s->unk_d0.b[2];
@@ -464,7 +464,7 @@ extern "C" void func_ov134_022948e4(S *s) {
 }
 
 extern "C" void func_ov134_022948d8(S *s, void *src) {
-    func_02116048(s->unk_b8.b, src, 8);
+    MI_CpuCopy8(s->unk_b8.b, src, 8);
 }
 
 extern "C" BOOL func_ov134_022948b8(S *s) {
@@ -857,7 +857,7 @@ extern "C" s32 func_ov134_02293b90(S *s, u32 a, u32 b) {
     }
     if (r4) {
         func_ov134_022932a0(s, 6);
-        func_02116048(s->unk_b8.b, (u8 *)s + 0xc0, 8);
+        MI_CpuCopy8(s->unk_b8.b, (u8 *)s + 0xc0, 8);
         s->func_ov134_02291f60(0x30);
         return TRUE;
     }
@@ -1007,7 +1007,7 @@ extern "C" void func_ov134_022936f4(Unk_ov134_02291f60 *self, s32 delta) {
         if (func_0209d3d0(self->unk_d0.b, self->unk_c0.b, 0x3f) == -1) {
             v = func_0209d374(self->unk_d0.b, self->unk_c0.b);
             r = FALSE;
-            func_02116048(self->unk_d0.b, self->unk_b8.b, 8);
+            MI_CpuCopy8(self->unk_d0.b, self->unk_b8.b, 8);
             self->func_ov134_02291f70(0x10);
             pc = self->unk_c0.b;
             while (v >= 0x2d0) {
@@ -1022,7 +1022,7 @@ extern "C" void func_ov134_022936f4(Unk_ov134_02291f60 *self, s32 delta) {
         if (func_0209d3d0(self->unk_c8.b, self->unk_c0.b, 0x3f) == 1) {
             v = func_0209d374(self->unk_c0.b, self->unk_c8.b);
             r = FALSE;
-            func_02116048(self->unk_c8.b, self->unk_b8.b, 8);
+            MI_CpuCopy8(self->unk_c8.b, self->unk_b8.b, 8);
             self->func_ov134_02291f70(0x20);
             pc = self->unk_c0.b;
             while (v >= 0x2d0) {
@@ -1034,7 +1034,7 @@ extern "C" void func_ov134_022936f4(Unk_ov134_02291f60 *self, s32 delta) {
         }
     }
     if (r) {
-        func_02116048(self->unk_c0.b, self->unk_b8.b, 8);
+        MI_CpuCopy8(self->unk_c0.b, self->unk_b8.b, 8);
         func_ov134_02293988(self);
     } else {
         func_ov134_0229399c(self, self->unk_c0.b[2], self->unk_c0.b[1]);
@@ -1281,7 +1281,7 @@ extern "C" void func_ov134_02293024(Unk_ov134_02291f60 *self, s32 idx) {
     func_0200212c(self->unk_a4);
     self->unk_a7 = func_ov134_022934e0(self, idx);
     self->unk_a8 = func_ov134_022934b0(self, idx);
-    func_02115e48(self->unk_d84, self->unk_1584, 0x800);
+    MIi_CpuCopy16(self->unk_d84, self->unk_1584, 0x800);
     h = func_ov134_022934a4(self, idx);
     lim = 8 - h;
     row = (u16 *)self->unk_1584;
@@ -1527,7 +1527,7 @@ extern "C" s32 func_ov134_02292990(Unk_ov134_02291f60 *self) {
     u16 *row;
     s32 dx, h, lim, off, i, j, k, t;
     u32 c, ac;
-    func_02115e48(self->unk_1584, self->unk_1d84, 0x800);
+    MIi_CpuCopy16(self->unk_1584, self->unk_1d84, 0x800);
     dx = self->unk_ab - self->unk_00;
     h = func_ov134_022934a4(self, self->unk_a5);
     lim = 8 - func_ov134_022934a4(self, self->unk_a5);
@@ -1696,13 +1696,13 @@ BOOL Unk_ov134_02291f60::func_ov134_022926d0() {
     }
     if (func_ov134_02291f80(0x80)) {
         if (func_0209d3d0(unk_c8.b, unk_b8.b, 0x3f) == 1) {
-            func_02116048(unk_c8.b, unk_b8.b, 8);
+            MI_CpuCopy8(unk_c8.b, unk_b8.b, 8);
             m = 0xffff;
         }
     }
     if (func_ov134_02291f80(0x40)) {
         if (func_0209d3d0(unk_d0.b, unk_b8.b, 0x3f) == -1) {
-            func_02116048(unk_d0.b, unk_b8.b, 8);
+            MI_CpuCopy8(unk_d0.b, unk_b8.b, 8);
             m = 0xffff;
         }
     }
@@ -2067,7 +2067,7 @@ void Unk_ov134_02291f60::func_ov134_02292074() {
 
 void Unk_ov134_02291f60::func_ov134_02291f94(s32 t) {
     u8 *p = (u8 *)this;
-    func_02115e48(p + 0x2584, p + 0x25a4, 0x20);
+    MIi_CpuCopy16(p + 0x2584, p + 0x25a4, 0x20);
     s32 c1 = *(u16 *)(p + 0x25a0);
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;

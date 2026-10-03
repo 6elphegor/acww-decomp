@@ -973,7 +973,7 @@ void func_02033988(void *p);
 s32 func_0200e248(Obj *o, Msg *m);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
-s32 func_01ffc854(V3 *v);
+s32 VEC_Mag(V3 *v);
 void func_020e9960(V3 *out, V3 *a, V3 *b);
 s32 func_ov003_0221950c(s32 a, V3 *v);
 s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -3852,7 +3852,7 @@ s32 func_02045570(P2 *p, s32 a);
 s32 func_0203ee38(V3 *a, V3 *b);
 s32 func_020902b0(s32 a, V3 *b, s32 c, s32 d);
 s32 func_02090330(s32 a, V3 *v, void *p, s32 b);
-void func_01ffb898(V3 *a, Mtx *m, V3 *out);
+void MTX_MultVec43(V3 *a, Mtx *m, V3 *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_0200f4c0(Obj *o, s32 a);
 s32 func_0200f660(Obj *o);
@@ -4602,7 +4602,7 @@ s32 func_0200ce98(Obj *o, s32 a, s32 b, s32 c);
 void func_0204ee10(s32 *a, s32 *b, V3 *c);
 s32 func_02090330(s32 a, V3 *b, s16 *c, s32 d);
 s32 func_0209028c(s32 a, V3 *b, s32 c, s32 d);
-void func_01ffca8c(V3 *a, V3 *b, V3 *c);
+void VEC_Add(V3 *a, V3 *b, V3 *c);
 s32 func_0204407c(u16 *a, Pair *b, s32 c, s32 d);
 void func_02045570(Pair *a, s32 b);
 void func_0204ed8c(V3 *a, u32 b, u32 c);
@@ -4770,7 +4770,7 @@ void func_0200c358(Obj *o, s32 a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
 s32 func_02132a4c(s32 a);
 float func_02132594(float a, float b);
-void func_01ffb898(V3 *a, Blk *b, V3 *c);
+void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_020947c0(u16 *p, u32 a);
 Obj *func_02095774(u32 a);
@@ -5412,7 +5412,7 @@ extern "C" void func_ov003_02212034(Blk *b, V3 *v) {
         vv.y = v->y;
         vv.z = v->z;
     }
-    func_01ffb898(&vv, &c, &out);
+    MTX_MultVec43(&vv, &c, &out);
     b->v[9] = out.x + r7;
     b->v[10] = out.y + s0;
     b->v[11] = out.z + s4;
@@ -5945,25 +5945,25 @@ extern "C" s32 func_ov003_022113a4(Obj *o) {
         break;
     case 0x21: {
         V3 t(0, 0, -0x800);
-        func_01ffca8c(&v, &t, &v);
+        VEC_Add(&v, &t, &v);
         func_02090330(0x2d, &v, &ang, 0);
         break;
     }
     case 0x22: {
         V3 t(-0x800, 0, 0);
-        func_01ffca8c(&v, &t, &v);
+        VEC_Add(&v, &t, &v);
         func_02090330(0x2d, &v, &ang, 0);
         break;
     }
     case 0x23: {
         V3 t(0x800, 0, 0xc00);
-        func_01ffca8c(&v, &t, &v);
+        VEC_Add(&v, &t, &v);
         func_02090330(0x2d, &v, &ang, 0);
         break;
     }
     case 0x24: {
         V3 t(-0x800, 0, 0);
-        func_01ffca8c(&v, &t, &v);
+        VEC_Add(&v, &t, &v);
         func_02090330(0x2d, &v, &ang, 0);
         break;
     }
@@ -7876,7 +7876,7 @@ extern "C" void func_ov003_0220eb98(Obj *o) {
             V3 out;
             v.x = v.y = 0;
             v.z = 0xab8;
-            func_01ffb898(&v, &t2, &out);
+            MTX_MultVec43(&v, &t2, &out);
             pos.x = pos.x + out.x;
             pos.y = pos.y + out.y;
             pos.z = pos.z + out.z;
@@ -13506,8 +13506,8 @@ extern "C" void func_ov003_02206c04(Obj *o) {
         c.x = d.x;
         c.y = d.y;
         c.z = d.z;
-        if (func_01ffc854(&c) >= 0x59a) {
-            r4 = func_01ffc5a4(func_01ffcb0c(func_01ffc854(&c), 0x6400), 0x59a);
+        if (VEC_Mag(&c) >= 0x59a) {
+            r4 = func_01ffc5a4(func_01ffcb0c(VEC_Mag(&c), 0x6400), 0x59a);
         }
         s32 t = 0;
         u32 k = data_021f47d8.b;

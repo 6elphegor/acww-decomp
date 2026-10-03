@@ -10,12 +10,12 @@ typedef int BOOL;
 typedef struct { s32 size; s32 count; s32 total; } WQCfg;
 extern u8 *data_02200044;
 extern WQCfg data_02200048;
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02115fb4(void *, u32, u32);
-extern void func_02116048(void *, void *, u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void MI_CpuFill8(void *, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
 extern s32 _s32_div_f(s32, s32);
-extern s32 func_02117dd8(s32, u32, u32);
+extern s32 PXI_SendWordByFifo(s32, u32, u32);
 extern void WaitByLoop(u32);
 extern void func_021123c4(u32);
 extern u32 func_02112468(u32);
@@ -50,13 +50,13 @@ typedef struct {
 
 extern WSys *data_02200040;
 extern u32 func_0211337c(void *);
-extern void func_02113384(void *, u32);
-extern void func_02113720(u32);
+extern void OS_SetThreadPriority(void *, u32);
+extern void OS_SleepThread(u32);
 extern void func_02113a70(void *, void *, void *, void *, u32, u32);
-extern void func_0211366c(void *);
-extern void func_02113a44(void);
+extern void OS_WakeupThreadDirect(void *);
+extern void OS_ExitThread(void);
 extern void func_0206d49c(void);
-extern u32 func_0211f800(void);
+extern u32 WM_GetAllowedChannel(void);
 
 typedef struct { u32 flag; u32 irq; } WLock;
 
@@ -89,23 +89,23 @@ extern u32 func_0211fb68(void *);
 extern u8 *data_0220001c;
 extern u32 data_0213c220;
 extern void func_01ffa494(u32);
-extern u32 func_02120164(void *, void *);
-extern u32 func_021219b4(void *, u32);
+extern u32 WM_SetParentParameter(void *, void *);
+extern u32 WM_SetBeaconIndication(void *, u32);
 extern u32 func_021200b8(void *, u32);
 extern u32 func_021206b4(void *, u32, u32, void *, u32, u32, u32, u32, u32, u32, u32);
-extern u32 func_0212026c(void *);
+extern u32 WM_End(void *);
 extern void func_0211fb0c(u32, u32, u32);
 typedef struct { u8 _0[0x131c]; u32 f131c; u32 f1320; u8 _1324[0x1340-0x1324]; u8 _1340[0x14e8-0x1340]; u32 state[15]; } WWork;
 typedef struct { u16 id; u16 res; u16 sub; u16 f6; u16 f8; u16 fa; u16 fc; u16 fe; u16 f10; } WMsg2;
 
 extern void func_02124830(u32, u32);
-extern u32 func_02121948(void *, u32, u32, u32, u32);
+extern u32 WM_SetLifeTime(void *, u32, u32, u32, u32);
 void func_02125d0c(WMsg2 *m);
 void func_02126568(void);
 
-void func_021269e4(void *p);
+void MBi_InitTaskInfo(void *p);
 BOOL func_021269f8(void);
-BOOL func_021269cc(WJob *job);
+BOOL MBi_IsTaskBusy(WJob *job);
 void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio);
 BOOL func_02126bb4(u32 n);
 u8 *func_02126c14(u8 *msg, u32 aid);
@@ -116,27 +116,27 @@ typedef struct { u8 pad[4]; u16 cur; } WRot;
 void func_02126fbc(u32 a, WLock *st) {
     u32 *const p = (u32 *)0x027fffe8;
     for (;;) {
-        st->irq = func_01ffa2ec();
+        st->irq = OS_DisableInterrupts();
         st->flag = func_02112468((u32)p) & 0x40;
         if (st->flag != 0) return;
         if (func_02112508(a) == 0) return;
-        func_01ffa3d4(st->irq);
+        OS_RestoreInterrupts(st->irq);
         WaitByLoop(1);
     }
 }
 
 // lock release helper (RestoreInterrupts of the saved state)
-void func_02126f94(u32 a, WLock *st) {
+void CTRDGi_UnlockByProcessor(u32 a, WLock *st) {
     if (st->flag == 0) func_021123c4(a);
-    func_01ffa3d4(st->irq);
+    OS_RestoreInterrupts(st->irq);
 }
 
-// spin until func_02117dd8(13, x, 0) returns 0 (WaitByLoop(1) between polls)
+// spin until PXI_SendWordByFifo(13, x, 0) returns 0 (WaitByLoop(1) between polls)
 void func_02126f30(u32 x) {
-    if (func_02117dd8(13, x, 0) == 0) return;
+    if (PXI_SendWordByFifo(13, x, 0) == 0) return;
     do {
         WaitByLoop(1);
-    } while (func_02117dd8(13, x, 0) != 0);
+    } while (PXI_SendWordByFifo(13, x, 0) != 0);
 }
 
 // chunk reassembly: configure chunk size n-2 and count 30/(n-2)
@@ -149,7 +149,7 @@ void func_02126ef4(s32 n) {
 // chunk reassembly: set work buffer and clear it (0x21c bytes)
 void func_02126ed4(void *p) {
     data_02200044 = p;
-    func_02115fb4(p, 0, 0x21c);
+    MI_CpuFill8(p, 0, 0x21c);
 }
 
 // chunk reassembly: clear entry n
@@ -157,7 +157,7 @@ void func_02126e88(u32 n) {
     u32 i;
     if (data_02200044 == 0) return;
     i = n - 1;
-    func_02115fb4(data_02200044 + i * 32, 0, 30);
+    MI_CpuFill8(data_02200044 + i * 32, 0, 30);
     *(u32 *)(data_02200044 + i * 4 + 0x1e0) = 0;
 }
 
@@ -193,7 +193,7 @@ u8 *func_02126cc4(u8 *src, u8 *dst, u32 aid) {
         if (func_02126bb4(aid) != 0) return data_02200044 + (aid - 1) * 32;
         dst[2] = src[1];
         if (dst[2] > data_02200048.count) return 0;
-        func_02116048(src + 2, dst + 3, data_02200048.size);
+        MI_CpuCopy8(src + 2, dst + 3, data_02200048.size);
         ret = func_02126c14(dst, aid);
         break;
     case 8:
@@ -205,7 +205,7 @@ u8 *func_02126cc4(u8 *src, u8 *dst, u32 aid) {
         ret = src + 3;
         *(u16 *)(dst + 2) = src[1] & 0xff;
         *(u16 *)(dst + 2) |= (src[2] << 8) & 0xff00;
-        func_02116048(ret, dst + 4, data_02200048.size);
+        MI_CpuCopy8(ret, dst + 4, data_02200048.size);
         ret += data_02200048.size;
         break;
     default:
@@ -223,7 +223,7 @@ u8 *func_02126c14(u8 *msg, u32 aid) {
     if (i > data_02200048.count) return 0;
     j = aid - 1;
     off = j << 5;
-    func_02116048(msg + 3, base + j * 32 + i * data_02200048.size, data_02200048.size);
+    MI_CpuCopy8(msg + 3, base + j * 32 + i * data_02200048.size, data_02200048.size);
     ((u32 *)(data_02200044 + 0x1e0))[j] |= 1 << i;
     if (func_02126bb4(aid) != 0) return data_02200044 + off;
     return 0;
@@ -252,17 +252,17 @@ void func_02126a9c(WSys *sys) {
     u32 cur;
     u32 np;
     for (;;) {
-        irq = func_01ffa2ec();
+        irq = OS_DisableInterrupts();
         while (HEAD(sys) == 0) {
-            func_02113384(sys, zero);
-            func_02113720(zero);
+            OS_SetThreadPriority(sys, zero);
+            OS_SleepThread(zero);
         }
         job = HEAD(sys);
         HEAD(sys) = HEAD(sys)->next;
-        func_02113384(sys, job->prio);
-        func_01ffa3d4(irq);
+        OS_SetThreadPriority(sys, job->prio);
+        OS_RestoreInterrupts(irq);
         if (job->pre != 0) job->pre(job);
-        irq2 = func_01ffa2ec();
+        irq2 = OS_DisableInterrupts();
         post = job->post;
         cur = func_0211337c(sys);
         if (HEAD(sys) == 0) {
@@ -272,29 +272,29 @@ void func_02126a9c(WSys *sys) {
         } else {
             np = cur;
         }
-        if (np != cur) func_02113384(sys, np);
+        if (np != cur) OS_SetThreadPriority(sys, np);
         job->next = 0;
         job->busy = 0;
         if (post != 0) post(job);
         if (job == &sys->sentinel) break;
-        func_01ffa3d4(irq2);
+        OS_RestoreInterrupts(irq2);
     }
-    func_02113a44();
+    OS_ExitThread();
 }
 
 // job-queue thread: init and create the worker thread
 void func_02126a14(WSys *sys, u32 size) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     if (data_02200040 == 0) {
         u32 ss;
         data_02200040 = sys;
-        func_021269e4(&sys->sentinel);
+        MBi_InitTaskInfo(&sys->sentinel);
         sys->head = 0;
         ss = (size - 0xe4) & ~3;
         func_02113a70(sys, (void *)func_02126a9c, sys, (u8 *)sys + 0xe4 + ss, ss, 0);
-        func_0211366c(sys);
+        OS_WakeupThreadDirect(sys);
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 // job-queue: is queue running (data_02200040 != 0)
@@ -303,12 +303,12 @@ BOOL func_021269f8(void) {
 }
 
 // job-queue: clear sentinel job (MI_CpuFill8 0, 0x20)
-void func_021269e4(void *p) {
-    func_02115fb4(p, 0, 0x20);
+void MBi_InitTaskInfo(void *p) {
+    MI_CpuFill8(p, 0, 0x20);
 }
 
 // job-queue: is job busy
-BOOL func_021269cc(WJob *job) {
+BOOL MBi_IsTaskBusy(WJob *job) {
     return job->busy ? 1 : 0;
 }
 
@@ -330,7 +330,7 @@ void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 pri
             prio = 31;
         }
     }
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     job->busy = 1;
     job->prio = prio;
     job->pre = pre;
@@ -338,7 +338,7 @@ void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 pri
     if (HEAD(sys) == 0) {
         if (job == &sys->sentinel) data_02200040 = 0;
         HEAD(sys) = job;
-        func_0211366c(sys);
+        OS_WakeupThreadDirect(sys);
     } else {
         WJob *t = HEAD(sys);
         if (job == &sys->sentinel) {
@@ -356,24 +356,24 @@ void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 pri
             t->next = job;
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 // job-queue thread: post the shutdown (sentinel) job
 void func_021267e8(void (*post)(WJob *)) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     if (func_021269f8() != 0) func_0212683c(&data_02200040->sentinel, 0, post, 0);
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 // slot table: clear (MI_CpuFill8 0, 0x70)
 void func_021267d4(void *p) {
-    func_02115fb4(p, 0, 0x70);
+    MI_CpuFill8(p, 0, 0x70);
 }
 
 // slot table: register a slot in the first free entry (Terminate if full)
 void func_02126760(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     WSlot *e = t->slot;
     WSlot *end = t->slot + 4;
     for (;;) {
@@ -387,33 +387,33 @@ void func_02126760(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) {
         }
         e++;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 // slot table: copy data out of the registered slot containing [addr, addr+len) (state >= 2)
 BOOL func_021266c0(WSlotTab *t, u32 addr, void *src, u32 len) {
     BOOL ok = 0;
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     WSlot *e = t->slot;
     WSlot *end = t->slot + 4;
     for (; e < end; e++) {
         if (e->state >= 2) {
             s32 off = addr - e->addr;
             if (off >= 0 && off + len <= e->size) {
-                func_02116048(e->ptr + off, src, len);
+                MI_CpuCopy8(e->ptr + off, src, len);
                 ok = 1;
                 t->f0 = ok;
                 break;
             }
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return ok;
 }
 
 // select next set bit of a 16-bit mask, rotating from p->cur
 BOOL func_02126644(WRot *p) {
-    u32 mask = func_0211f800();
+    u32 mask = WM_GetAllowedChannel();
     u16 lr;
     u16 n;
     u16 cur;
@@ -455,7 +455,7 @@ BOOL func_021265dc(void) {
 // wireless helper: start sequence (issues WM calls with func_02125d0c as callback)
 void func_02126568(void) {
     func_02124830(0x80, func_0211fb68((void *)func_02125d0c));
-    func_02124830(0x1d, func_02121948((void *)func_02125d0c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+    func_02124830(0x1d, WM_SetLifeTime((void *)func_02125d0c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
 }
 
 // wireless helper (WH-style) WM completion callback; switch on WM API id (0 INITIALIZE, 1 RESET, 2 END, 7, 8, 13, 14, 15, 25, 29, 0x80 INDICATION)
@@ -473,11 +473,11 @@ void func_02125d0c(WMsg2 *m) {
             data_02200018->cb(0x100, m);
             return;
         }
-        func_02124830(7, func_02120164((void *)func_02125d0c, data_02200018));
+        func_02124830(7, WM_SetParentParameter((void *)func_02125d0c, data_02200018));
         return;
     case 7:
         data_02200018->cb(21, m);
-        func_02124830(25, func_021219b4((void *)func_02125d0c, 1));
+        func_02124830(25, WM_SetBeaconIndication((void *)func_02125d0c, 1));
         return;
     case 25:
         if (m->res != 0) {
@@ -573,7 +573,7 @@ void func_02125d0c(WMsg2 *m) {
             }
             data_02200018->f52a = 0;
             data_02200018->f528 = 0;
-            func_02124830(2, func_0212026c((void *)func_02125d0c));
+            func_02124830(2, WM_End((void *)func_02125d0c));
             return;
         }
         func_0211fb0c(1, 0, 0);

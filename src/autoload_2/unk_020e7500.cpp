@@ -45,25 +45,25 @@ struct PadState {
 extern "C" {
 s32 func_02133150(s32, s32); // _s32_div_f (called by the compiler for the s16 division)
 s32 func_01ffc5a4(s32, s32); // FX_Div
-s32 func_01ffc854(const VecFx32 *v); // VEC_Mag
-void func_01ffca8c(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst); // VEC_Add
+s32 VEC_Mag(const VecFx32 *v); // VEC_Mag
+void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst); // VEC_Add
 void func_01ffb87c(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
-void func_01ffb860(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotY43_ (Thumb)
-void func_01ffb840(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
-void func_01ffb828(MtxFx43 *m, s32 x, s32 y, s32 z); // MTX_Scale43_ (Thumb)
-void func_01ffb94c(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab); // MTX_Concat43
+void MTX_RotY43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotY43_ (Thumb)
+void MTX_RotX43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
+void MTX_Scale43_(MtxFx43 *m, s32 x, s32 y, s32 z); // MTX_Scale43_ (Thumb)
+void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab); // MTX_Concat43
 void func_020e9960(VecFx32 *out, const VecFx32 *a, const VecFx32 *b); // out = a - b
 s32 func_020e9688(const VecFx32 *v); // length in the XZ plane
 void func_020e9888(VecFx32 *v, s32 s); // scale
 u16 func_0211ba58(void); // TP_GetLatestIndexInAuto
-void func_0211b6b8(TPData *dst, const TPData *src); // TP_GetCalibratedPoint
-void func_0211bed0(void); // TP_Init
-BOOL func_0211be24(TPCalibrateParam *p); // TP_GetUserInfo
-void func_0211bcdc(const TPCalibrateParam *p); // TP_SetCalibrateParam
+void TP_GetCalibratedPoint(TPData *dst, const TPData *src); // TP_GetCalibratedPoint
+void TP_Init(void); // TP_Init
+BOOL TP_GetUserInfo(TPCalibrateParam *p); // TP_GetUserInfo
+void TP_SetCalibrateParam(const TPCalibrateParam *p); // TP_SetCalibrateParam
 void func_0211ba68(u32, u32);
-void func_0211b6a0(u32); // TP_WaitBusy
-u32 func_0211b68c(u32); // TP_CheckError
-void func_0211bbc8(u32, u32, TPData *, u32); // TP_RequestAutoSamplingStartAsync
+void TP_WaitBusy(u32); // TP_WaitBusy
+u32 TP_CheckError(u32); // TP_CheckError
+void TP_RequestAutoSamplingStartAsync(u32, u32, TPData *, u32); // TP_RequestAutoSamplingStartAsync
 void func_0206d49c(void); // Thumb, in main: fatal stop
 
 extern u16 data_0213a748[]; // atan table (.data of autoload_2)
@@ -109,47 +109,47 @@ static inline BOOL PAD_DetectFold(void) {
 extern "C" void func_020e8528(MtxFx43 *m, s32 x, s32 y, s32 z) {
     MtxFx43 t;
     func_020e8388(&t, x, y, z);
-    func_01ffb94c(&t, m, m);
+    MTX_Concat43(&t, m, m);
 }
 
 extern "C" void func_020e84f8(MtxFx43 *m, s32 x, s32 y, s32 z) {
     MtxFx43 t;
-    func_01ffb828(&t, x, y, z);
-    func_01ffb94c(&t, m, m);
+    MTX_Scale43_(&t, x, y, z);
+    MTX_Concat43(&t, m, m);
 }
 
 extern "C" void func_020e8464(MtxFx43 *m, s32 z, s32 y, s32 x) {
     MtxFx43 t;
     if (x != 0) {
         func_020e82bc(&t, x);
-        func_01ffb94c(&t, m, m);
+        MTX_Concat43(&t, m, m);
     }
     if (y != 0) {
         func_020e8300(&t, y);
-        func_01ffb94c(&t, m, m);
+        MTX_Concat43(&t, m, m);
     }
     if (z != 0) {
         func_020e8344(&t, z);
-        func_01ffb94c(&t, m, m);
+        MTX_Concat43(&t, m, m);
     }
 }
 
 extern "C" void func_020e8434(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
     func_020e8344(&t, angle);
-    func_01ffb94c(&t, m, m);
+    MTX_Concat43(&t, m, m);
 }
 
 extern "C" void func_020e8404(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
     func_020e8300(&t, angle);
-    func_01ffb94c(&t, m, m);
+    MTX_Concat43(&t, m, m);
 }
 
 extern "C" void func_020e83d4(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
     func_020e82bc(&t, angle);
-    func_01ffb94c(&t, m, m);
+    MTX_Concat43(&t, m, m);
 }
 
 extern "C" void func_020e8388(MtxFx43 *m, s32 x, s32 y, s32 z) {
@@ -168,11 +168,11 @@ extern "C" void func_020e8388(MtxFx43 *m, s32 x, s32 y, s32 z) {
 }
 
 extern "C" void func_020e8344(MtxFx43 *m, s32 angle) {
-    func_01ffb840(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
+    MTX_RotX43_(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
 }
 
 extern "C" void func_020e8300(MtxFx43 *m, s32 angle) {
-    func_01ffb860(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
+    MTX_RotY43_(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
 }
 
 extern "C" void func_020e82bc(MtxFx43 *m, s32 angle) {
@@ -200,15 +200,15 @@ extern "C" void func_020e8208(void) {
 extern "C" void func_020e814c(void) {
     TPCalibrateParam calib;
 
-    func_0211bed0();
-    func_0211be24(&calib);
-    func_0211bcdc(&calib);
+    TP_Init();
+    TP_GetUserInfo(&calib);
+    TP_SetCalibrateParam(&calib);
     func_0211ba68(3, 30);
-    func_0211b6a0(8);
-    if (func_0211b68c(8) != 0) func_0206d49c();
-    func_0211bbc8(0, 4, data_021f4788, 9);
-    func_0211b6a0(2);
-    if (func_0211b68c(2) != 0) func_0206d49c();
+    TP_WaitBusy(8);
+    if (TP_CheckError(8) != 0) func_0206d49c();
+    TP_RequestAutoSamplingStartAsync(0, 4, data_021f4788, 9);
+    TP_WaitBusy(2);
+    if (TP_CheckError(2) != 0) func_0206d49c();
     data_021f4770 = 0;
     data_021f4774 = 0;
     data_021f4778 = 0xff;
@@ -234,9 +234,9 @@ extern "C" void func_020e7fd4(void) {
         }
     }
     if (buf[3].touch != 0 && buf[2].touch != 0 && buf[1].touch != 0) {
-        func_0211b6b8(&data_021f4780, &buf[2]);
+        TP_GetCalibratedPoint(&data_021f4780, &buf[2]);
     } else if (buf[0].touch != 0 && buf[1].touch != 0 && buf[2].touch != 0) {
-        func_0211b6b8(&data_021f4780, &buf[1]);
+        TP_GetCalibratedPoint(&data_021f4780, &buf[1]);
     } else if (!touched) {
         data_021f4780.touch = 0;
         data_021f4780.x = 0xff;
@@ -269,7 +269,7 @@ extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
 
     if (p->x == target->x && p->z == target->z) return 0;
     func_020e9960(&d, target, p);
-    len = func_01ffc854(&d);
+    len = VEC_Mag(&d);
     if (len < min) {
         *p = *target;
         return 0;
@@ -285,7 +285,7 @@ extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
         step = min;
     }
     func_020e9888(&d, func_01ffc5a4(step, len));
-    func_01ffca8c(p, &d, p);
+    VEC_Add(p, &d, p);
     return len - step;
 }
 

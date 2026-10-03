@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void *func_02115fb4(void *p, u32 v, u32 n);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020639e8(char *dst, const char *fmt, ...);
 s32 func_02063f3c(const char *s);
 s32 func_02063b8c(s32 n);
@@ -156,7 +156,7 @@ u32 Unk_0209be24::func_0209be58() {
     volatile s32 z;
     u32 total, y, x;
     Unk_0209b5d4 *g = (Unk_0209b5d4 *)this;
-    func_02115fb4(seen, 0, 0x86);
+    MI_CpuFill8(seen, 0, 0x86);
     total = 0;
     y = 0;
     z = 0;
@@ -187,7 +187,7 @@ void Unk_0209be24::func_0209be24(u8 *out) {
 BOOL Unk_0209b5d4::func_0209bcf8() {
     u8 used[0x86];
     BOOL result = TRUE;
-    func_02115fb4(used, 0, 0x86);
+    MI_CpuFill8(used, 0, 0x86);
     u32 y, x;
     for (y = 0; y < 6; y++) {
         for (x = 0; x < 6; x++) {

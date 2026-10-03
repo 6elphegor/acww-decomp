@@ -23,9 +23,9 @@ struct Unk_ov001_02224b9c_T {
 };
 
 extern "C" {
-void func_02115e48(void *, void *, u32);
+void MIi_CpuCopy16(void *, void *, u32);
 void func_02115e64(s32, void *, u32);
-void func_02115e78(void *, void *, u32);
+void MIi_CpuCopy32(void *, void *, u32);
 void func_ov001_02224038(void *);
 void *func_ov001_02224074(u32, void *, u32);
 Unk_ov001_02224670 *func_ov001_02224870(s32, s32, s32);
@@ -62,8 +62,8 @@ void func_ov001_02224b9c(s32 which, s32 idx, void *dst) {
     z = 0;
     func_02115e64(z, buf, 8);
     for (i = 0; i < (s32)cnt; i++) {
-        func_02115e48(src, buf, 6);
-        func_02115e78(buf, dst, 8);
+        MIi_CpuCopy16(src, buf, 6);
+        MIi_CpuCopy32(buf, dst, 8);
         src += 6;
         dst = (u8 *)dst + 8;
     }

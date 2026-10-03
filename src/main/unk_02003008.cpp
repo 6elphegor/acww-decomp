@@ -5,7 +5,7 @@ extern u32 data_021d7352;
 void func_02063990(void *p, void *s);
 u32 func_02063954(void *p);
 void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 func_02002fec(u32 id);
 }
 
@@ -56,7 +56,7 @@ u32 Unk_02002fc8::func_02003070() {
 }
 
 extern "C" void func_0200303c(void *buf, u32 size, u32 arg, u32 idx) {
-    func_02115fb4(buf, 0, size);
+    MI_CpuFill8(buf, 0, size);
     func_020639e8(buf, (void *)"%s%s", (u32)data_020d5de4[idx], arg);
 }
 

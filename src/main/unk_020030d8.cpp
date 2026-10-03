@@ -10,7 +10,7 @@ struct Unk_020030d8 {
 };
 
 extern "C" {
-void func_02116048(void *src, void *dst, u32 size);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
 void func_020639a0(Unk_020030d8 *p);
 void func_020639b8(Unk_020030d8 *p);
 void func_020639bc(Unk_020030d8 *p);
@@ -517,6 +517,6 @@ extern "C" void func_020030e8(Unk_020030d8 *p) {
 }
 
 extern "C" void func_020030d8(Unk_020030d8 *dst, Unk_020030d8 *src) {
-    func_02116048(src, dst, 0xc);
+    MI_CpuCopy8(src, dst, 0xc);
 }
 

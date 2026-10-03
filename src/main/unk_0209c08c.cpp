@@ -6,7 +6,7 @@ typedef void (*Unk_0209c15c_Fn)();
 typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {

@@ -45,7 +45,7 @@ u32 func_020b50e8();
 u32 func_020b4928(u32 a);
 u32 func_020b491c(u32 a);
 u32 func_02084fbc();
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_020641b4(void *name, void *buf, s32 size);
 void func_020639e8(void *buf, const char *fmt, u32 a, u32 b);
 
@@ -168,7 +168,7 @@ s32 Unk_0205ce0c::func_0205ce78(s32 a, s32 b, s32 c) {
             u32 src = data_021c6464.func_0205d038(k, j);
             u32 n = data_021c6464.func_0205cfc8(k, j);
             if (src != 0 && n != 0) {
-                func_02116048((void *)src, (void *)buf, n);
+                MI_CpuCopy8((void *)src, (void *)buf, n);
                 data_021c6464.func_0205d010(st, j, a);
                 data_021c6464.func_0205cfb4(st, j, n);
             }

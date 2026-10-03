@@ -68,7 +68,7 @@ void func_0206d49c(void);
 void func_0210a294(void *p);
 void func_0210a378(void *p, u32 x);
 void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0210a27c(void *p);
+void NNS_SndHandleReleaseSeq(void *p);
 BOOL func_020ee5d4(Ent *e);
 void func_020ee630(Ent *e, s32 a);
 BOOL func_020ee680(Ent *e, u32 a, u32 b);
@@ -81,16 +81,16 @@ void func_020ee58c(Group *g, s32 bit, s32 on);
 void func_020ee754(Ent *e);
 void func_020ee784(PlayCtx *c);
 InfoB *func_0210b8a0(u32 a, u32 b);
-void func_0210a26c(void *p, s32 v);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a1e8(void *p, s32 v);
 void func_0210a0e8(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
 void func_0210a118(void *p, u32 a, s32 b);
 extern Cfg4 data_021f59f4;
-void *func_02100234(void *list, void *obj);
-void *func_02100248(void *list, void *obj);
-void func_02100260(void *list, void *obj);
-void func_021003b0(void *list, void *obj);
+void *NNS_FndGetPrevListObject(void *list, void *obj);
+void *NNS_FndGetNextListObject(void *list, void *obj);
+void NNS_FndRemoveListObject(void *list, void *obj);
+void NNS_FndAppendListObject(void *list, void *obj);
 
 extern s32 (*data_021f5b3c)(PlayCtx *);
 extern s32 (*data_021f5b44)(PlayCtx *);
@@ -132,19 +132,19 @@ extern "C" void func_020ee968(void **p) {
 }
 
 extern "C" void func_020ee95c(void *list, void *obj) {
-    func_021003b0(list, obj);
+    NNS_FndAppendListObject(list, obj);
 }
 
 extern "C" void func_020ee950(void *list, void *obj) {
-    func_02100260(list, obj);
+    NNS_FndRemoveListObject(list, obj);
 }
 
 extern "C" void *func_020ee944(void *list, void *obj) {
-    return func_02100248(list, obj);
+    return NNS_FndGetNextListObject(list, obj);
 }
 
 extern "C" void *func_020ee938(void *list, void *obj) {
-    return func_02100234(list, obj);
+    return NNS_FndGetPrevListObject(list, obj);
 }
 
 extern "C" void *func_020ee930(void **p) {
@@ -382,7 +382,7 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
                     }
                 }
                 if (!inited) func_0206d49c();
-                func_0210a26c(e, ctx.unk_14);
+                NNS_SndPlayerSetVolume(e, ctx.unk_14);
                 func_0210a1e8(e, vol);
                 func_0210a0e8(e, data_0213b200, ctx.unk_18);
                 g->unk_30(g, i, vol);
@@ -458,7 +458,7 @@ extern "C" void func_020edf50(Group *g) {
     if ((s32)g->unk_36 <= 0) return;
     e = g->unk_08;
     do {
-        func_0210a27c(e);
+        NNS_SndHandleReleaseSeq(e);
         i++;
         e++;
     } while (i < g->unk_36);

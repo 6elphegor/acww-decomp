@@ -40,7 +40,7 @@ s32 func_ov001_02224b14(s32, s32, s32);
 void func_ov001_02224558(s32, s32, u32, u32);
 void func_ov001_022244d8(s32, s32, s32);
 s32 func_ov001_02227094(s32, void *, s32, s32);
-s32 func_01ffc31c(s32, s32);
+s32 FX_DivS32(s32, s32);
 
 void func_ov001_0221cfc0(u32 a);
 void func_ov001_0221d000(s32 a, u16 *out);
@@ -189,7 +189,7 @@ void func_ov001_0221d270(s32 a) {
     } else if (r4 >= 6) {
         r0 = 0x7f;
     } else {
-        r0 = func_01ffc31c(0x7f, 6 - r4);
+        r0 = FX_DivS32(0x7f, 6 - r4);
     }
     func_ov001_0221e980(r0);
     if (r4 < 2) {
@@ -197,7 +197,7 @@ void func_ov001_0221d270(s32 a) {
     } else if (r4 >= 6) {
         r1 = 0x100;
     } else {
-        r1 = func_01ffc31c(0x200, 6 - r4) - 0x100;
+        r1 = FX_DivS32(0x200, 6 - r4) - 0x100;
     }
     func_ov001_0221e95c(0xffff, r1);
 }

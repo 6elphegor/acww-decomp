@@ -77,7 +77,7 @@ void *func_0204da0c();
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_0204b1e4();
 s32 func_020312a8(s32 x, s32 y);
-void *func_02115fb4(void *p, s32 v, u32 n);
+void *MI_CpuFill8(void *p, s32 v, u32 n);
 extern u16 data_ov003_02259154[];
 extern u16 data_ov003_02258f54[];
 void func_ov003_02225108();
@@ -136,8 +136,8 @@ void func_ov003_02225108()
     u8 tx;
     g = func_0204da0c();
     if (g != 0) {
-        func_02115fb4(data_ov003_02259154, 0, 0x200);
-        func_02115fb4(data_ov003_02258f54, 0, 0x200);
+        MI_CpuFill8(data_ov003_02259154, 0, 0x200);
+        MI_CpuFill8(data_ov003_02258f54, 0, 0x200);
         o1 = 0;
     l1:
         xo = (u8)((o1 + 1) << 4);

@@ -103,23 +103,23 @@ extern "C" {
 extern s32 data_0220064c;
 extern char *data_ov065_0228b778;
 
-void func_02114480(void *p);
-void func_02114410(void *p);
-void func_02113788(void *p);
+void OS_LockMutex(void *p);
+void OS_UnlockMutex(void *p);
+void OS_JoinThread(void *p);
 void func_021132e0(s32 t);
-s32 func_01ffa2ec(void);
-void func_01ffa3d4(s32 v);
+s32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(s32 v);
 void func_020ff0bc(u64 *out);
 s32 func_0212b770(const char *s);
 s32 func_0212a438(const char *s);
 s32 func_0212a190(const char *a, const char *b);
 void func_0212a2ec(char *dst, const char *src, u32 n);
-void func_02115fb4(void *p, u32 v, u32 n);
-void func_02116048(const void *src, void *dst, u32 n);
-s32 func_02113774(void *);
+void MI_CpuFill8(void *p, u32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+s32 OS_IsThreadTerminated(void *);
 void func_02113a70(void *, void (*)(), void *, void *, u32, u32);
-void func_0211366c(void *);
-void func_0211450c(void *);
+void OS_WakeupThreadDirect(void *);
+void OS_InitMutex(void *);
 
 void func_ov065_0226ea84();
 void func_ov065_0226dc40();
@@ -167,7 +167,7 @@ s32 func_ov065_0226f924(Unk_ov065_0226f924_Cfg *cfg) {
     if (data_ov065_02290620 == 0) {
         return 4;
     }
-    func_02115fb4(data_ov065_02290620, 0, 0x1200);
+    MI_CpuFill8(data_ov065_02290620, 0, 0x1200);
     data_ov065_02290620->unk_04 = -0x1869f;
     *(Unk_ov065_0226f924_Blob *)&data_ov065_02290620->unk_108 = *(Unk_ov065_0226f924_Blob *)cfg;
     if (data_ov065_0229061c != 0) {
@@ -177,7 +177,7 @@ s32 func_ov065_0226f924(Unk_ov065_0226f924_Cfg *cfg) {
     if (data_ov065_0229061c == 0) {
         return 4;
     }
-    func_0211450c(data_ov065_02290620->unk_1dc);
+    OS_InitMutex(data_ov065_02290620->unk_1dc);
     func_ov065_0226f818();
     return 0;
 }
@@ -208,11 +208,11 @@ void func_ov065_0226f878() {
 
 void func_ov065_0226f818() {
     Unk_ov065_0226ecfc_Glob *g = data_ov065_02290620;
-    if (g->unk_188 == 0 || func_02113774(g->unk_11c) != 0) {
+    if (g->unk_188 == 0 || OS_IsThreadTerminated(g->unk_11c) != 0) {
         g = data_ov065_02290620;
         func_02113a70(g->unk_11c, func_ov065_0226ecfc, g, (u8 *)g + 0x1200, 0x1000, 0x10);
         g = data_ov065_02290620;
-        func_0211366c(g->unk_11c);
+        OS_WakeupThreadDirect(g->unk_11c);
     }
 }
 
@@ -223,7 +223,7 @@ void func_ov065_0226f7c8() {
         }
         func_ov065_0226dc40();
         if (data_ov065_02290620->unk_188 != 0) {
-            func_02113788(data_ov065_02290620->unk_11c);
+            OS_JoinThread(data_ov065_02290620->unk_11c);
         }
         data_ov065_02290620->unk_04 = -7;
     }
@@ -271,7 +271,7 @@ void func_ov065_0226ecfc(void) {
         }
         func_ov065_0226eacc(data_ov065_0229061c);
         if (data_ov065_0229061c->unk_9d4) {
-            func_02113788(data_ov065_0229061c->unk_968);
+            OS_JoinThread(data_ov065_0229061c->unk_968);
         }
         cx = data_ov065_0229061c;
         switch (cx->unk_24) {
@@ -326,11 +326,11 @@ void func_ov065_0226ecfc(void) {
                 goto end;
             }
             {
-                s32 ie = func_01ffa2ec();
-                func_02115fb4(bb.buf, 0, 0x21);
+                s32 ie = OS_DisableInterrupts();
+                MI_CpuFill8(bb.buf, 0, 0x21);
                 func_ov065_0226ab5c(&pn.port);
-                func_02116048(func_ov065_0226ab5c(0), bb.buf, pn.port);
-                func_01ffa3d4(ie);
+                MI_CpuCopy8(func_ov065_0226ab5c(0), bb.buf, pn.port);
+                OS_RestoreInterrupts(ie);
             }
             if (func_ov065_0226e2e4(data_ov065_0229061c, "ssid", bb.buf, func_0212a438(bb.buf))) {
                 func_ov065_0226e4dc(data_ov065_0229061c);
@@ -352,7 +352,7 @@ void func_ov065_0226ecfc(void) {
             }
             func_ov065_0226eacc(data_ov065_0229061c);
             if (data_ov065_0229061c->unk_9d4) {
-                func_02113788(data_ov065_0229061c->unk_968);
+                OS_JoinThread(data_ov065_0229061c->unk_968);
             }
             switch (data_ov065_0229061c->unk_24) {
             case 2:
@@ -447,11 +447,11 @@ void func_ov065_0226ecfc(void) {
             goto end;
         }
         {
-            s32 ie = func_01ffa2ec();
-            func_02115fb4(bb.buf, 0, 0x21);
+            s32 ie = OS_DisableInterrupts();
+            MI_CpuFill8(bb.buf, 0, 0x21);
             func_ov065_0226ab5c(&pn.port);
-            func_02116048(func_ov065_0226ab5c(0), bb.buf, pn.port);
-            func_01ffa3d4(ie);
+            MI_CpuCopy8(func_ov065_0226ab5c(0), bb.buf, pn.port);
+            OS_RestoreInterrupts(ie);
         }
         if (func_ov065_0226e2e4(data_ov065_0229061c, "ssid", bb.buf, func_0212a438(bb.buf))) {
             func_ov065_0226e4dc(data_ov065_0229061c);
@@ -473,7 +473,7 @@ void func_ov065_0226ecfc(void) {
         }
         func_ov065_0226eacc(data_ov065_0229061c);
         if (data_ov065_0229061c->unk_9d4) {
-            func_02113788(data_ov065_0229061c->unk_968);
+            OS_JoinThread(data_ov065_0229061c->unk_968);
         }
         cx = data_ov065_0229061c;
         switch (cx->unk_24) {
@@ -611,7 +611,7 @@ void func_ov065_0226ecfc(void) {
         }
         func_ov065_0226eacc(data_ov065_0229061c);
         if (data_ov065_0229061c->unk_9d4) {
-            func_02113788(data_ov065_0229061c->unk_968);
+            OS_JoinThread(data_ov065_0229061c->unk_968);
         }
         cx = data_ov065_0229061c;
         switch (cx->unk_24) {
@@ -662,16 +662,16 @@ end:
 s32 func_ov065_0226ecd0(void) {
     Unk_ov065_0226ecfc_Glob *g;
     s32 r;
-    func_02114480(data_ov065_02290620->unk_1dc);
+    OS_LockMutex(data_ov065_02290620->unk_1dc);
     r = data_ov065_02290620->unk_00;
-    func_02114410(data_ov065_02290620->unk_1dc);
+    OS_UnlockMutex(data_ov065_02290620->unk_1dc);
     return r;
 }
 
 void func_ov065_0226eca0(s32 v) {
-    func_02114480(data_ov065_02290620->unk_1dc);
+    OS_LockMutex(data_ov065_02290620->unk_1dc);
     data_ov065_02290620->unk_00 = v;
-    func_02114410(data_ov065_02290620->unk_1dc);
+    OS_UnlockMutex(data_ov065_02290620->unk_1dc);
 }
 
 s32 func_ov065_0226ec94(void) {

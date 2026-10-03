@@ -56,7 +56,7 @@ extern u8 data_021dfd8c[];
 
 void func_020e8558(void *p);
 void *func_020e8574(u32 n);
-void func_02116048(void *a, void *b, u32 n);
+void MI_CpuCopy8(void *a, void *b, u32 n);
 void func_02030598(s32 a);
 Unk_ov117_02292b54_Grid *func_0204da0c();
 s32 func_0204e9dc(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
@@ -458,7 +458,7 @@ extern "C" u8 *func_ov117_02292464(u8 *o, u32 x, u32 y) {
 }
 
 extern "C" void func_ov117_02292454(void *o, void *a) {
-    func_02116048(o, a, 0x2000);
+    MI_CpuCopy8(o, a, 0x2000);
 }
 
 extern "C" Unk_ov117_02292c88 *func_ov117_02292448(Unk_ov117_022924c8 *o) {

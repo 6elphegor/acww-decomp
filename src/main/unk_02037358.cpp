@@ -11,7 +11,7 @@ extern "C" {
 void *func_020641ec(const char *, void *, s32, void *);
 void func_020e8558(void *);
 void *func_020e8628(void *, s32, s32);
-void func_02115fb4(void *, s32, s32);
+void MI_CpuFill8(void *, s32, s32);
 s32 func_0209c06c(s32);
 s32 func_020303d0(s32, s32, s32, s32);
 u32 func_02037324(u32 x);
@@ -226,7 +226,7 @@ extern "C" void func_0203745c() {}
 extern "C" void func_02037458() {}
 
 extern "C" void func_0203744c(void *p) {
-    func_02115fb4(p, 0, 0x20);
+    MI_CpuFill8(p, 0, 0x20);
 }
 
 extern "C" BOOL func_0203742c(void *, u16 *p, s32 bit) {

@@ -62,9 +62,9 @@ extern s32 data_021d72ec[7];
 
 extern "C" {
 void func_0204605c();
-void func_0211d45c();
+void RTC_Init();
 void func_0211d20c(void *date, void *time);
-void func_02116048(void *src, void *dst, u32 size);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
 void func_0209d0a4(Unk_0209d0e4 *p, u32 n);
 void func_0209d0e4(Unk_0209d0e4 *p, s32 n);
 void func_0209d124(Unk_0209d0e4 *p, s32 n);
@@ -332,7 +332,7 @@ extern "C" void func_0209d338(Unk_0209d0e4 *p, Unk_0209d0e4 *q) {
     if (q) {
         s32 dow = func_0209ceac((u8)p->unk_05, (u8)p->unk_04, (u8)p->unk_03);
         if (q != p) {
-            func_02116048(p, q, 8);
+            MI_CpuCopy8(p, q, 8);
         }
         func_0209d164(q, dow);
         q->unk_02 = 0;
@@ -532,7 +532,7 @@ extern "C" void func_0209cffc(u8 *out, u8 *in, u8 a, u8 b, u8 c) {
 }
 
 extern "C" void func_0209cfe4() {
-    func_0211d45c();
+    RTC_Init();
     func_0209d4c0(data_021d72ec);
 }
 

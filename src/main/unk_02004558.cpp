@@ -763,9 +763,9 @@ void func_0203ee38(Unk_02005294_Vec3 *dst, Unk_02005294_Vec3 *src);
 s32 func_0203eeac(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
 s32 func_0203edc0();
 s32 func_0203ef38(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
-void func_01ffb498(s32 *out, s32 a, s32 b);
-void func_01ffb4b4(s32 *out, s32 a, s32 b);
-void func_01ffb56c(s32 *a, s32 *b, s32 *out);
+void MTX_RotX33_(s32 *out, s32 a, s32 b);
+void MTX_RotY33_(s32 *out, s32 a, s32 b);
+void MTX_Concat33(s32 *a, s32 *b, s32 *out);
 void _ZN12Unk_020dbe3413func_020553f8Ej(void *obj, u8 v);
 void _ZN12Unk_020dbda413func_02053f08Ej(void *obj, u32 v);
 void func_020553cc(void *obj, Unk_021cb69c *out, u32 idx);
@@ -1259,7 +1259,7 @@ s32 _ZN12Unk_020d6df413func_0200ce98Ejjj(void *p, s32 a, s32 b, s32 c);
 s32 func_02095574(s32 *out, s32 a, s32 b);
 u8 *func_02095720(s32 v);
 s32 func_0207697c(void *p);
-void func_02116048(void *dst, void *src, s32 n);
+void MI_CpuCopy8(void *dst, void *src, s32 n);
 void func_ov003_022084f4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_ov003_02211674(void *p, void *v, s32 a, s32 b);
 void func_ov003_0220eddc(void *p, s32 a, void *v, s32 b, s32 c);
@@ -1791,13 +1791,13 @@ struct Unk_02007c5c_Mtx {
     s32 m[12];
 };
 class Unk_02007694;
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 void _ZN12Unk_0203223813func_020323d8Ev(void *p);
 u16 func_0203ef38(void *a, void *b);
 void _ZN12Unk_020102ec13func_02010a50Et(Unk_02007694 *o, u32 a);
 void func_0203ee38(Unk_02007ebc_Vec *out, Unk_02007ebc_Vec *in);
 s32 func_01ffc5a4(s32 a, s32 b);
-void func_01ffb898(Unk_02007ebc_Vec *v, Unk_02007ebc_Mtx *m, Unk_02007ebc_Vec *out);
+void MTX_MultVec43(Unk_02007ebc_Vec *v, Unk_02007ebc_Mtx *m, Unk_02007ebc_Vec *out);
 void func_020e7870(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
 BOOL func_0206ec6c();
@@ -3226,7 +3226,7 @@ extern Unk_020d6df4_Data *data_020cbb18;
 extern u8 *data_021c1b3c;
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc538(s32 a);
+s32 FX_Sqrt(s32 a);
 s32 func_020e9650(void *a, void *b);
 s32 func_020af3bc(void *out, void *a, void *b, s32 c, s32 d);
 Unk_0205dfa4 &func_0205dfa4(void *p);
@@ -3456,7 +3456,7 @@ s32 func_020e9688(Unk_0200d64c_Xyz *v);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
-s32 func_01ffc538(s32 a);
+s32 FX_Sqrt(s32 a);
 struct Unk_0200d64c_Keys { u16 a; u16 b; s16 c; };
 extern Unk_0200d64c_Keys data_021f47d8;
 extern u16 data_021f4778;
@@ -3605,7 +3605,7 @@ s32 func_0205c694(void *);
 s32 func_0205c91c(void *);
 s32 func_0205ef74(void *);
 void func_0205c6f4(void *);
-s32 func_0210629c(s32 a);
+s32 NNS_G3dGetTex(s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_02095670(void *a, void *b, void *c, s32 d, s32 e);
@@ -3899,7 +3899,7 @@ extern void *data_021c47c4;
 extern u32 data_020c6210[];
 class Unk_02006d14;
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffb898(Unk_0200f070_V3 *v, Unk_0200f070_M *m, Unk_0200f070_V3 *out);
+void MTX_MultVec43(Unk_0200f070_V3 *v, Unk_0200f070_M *m, Unk_0200f070_V3 *out);
 void func_0203ee38(Unk_0200f070_V3 *dst, Unk_0200f070_V3 *src);
 BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *a, s32 b);
 BOOL _ZN12Unk_02006d1413func_0200ec44Ej(Unk_02006d14 *o, s32 id);
@@ -3914,7 +3914,7 @@ Unk_0200f17c_Date *func_020952d8();
 void func_02010d20(void *o);
 Unk_0200f17c_Date _ZN12Unk_0209865c13func_020987c4Ev();
 void func_0209d498(void *p);
-void func_02116048(void *a, void *b, s32 n);
+void MI_CpuCopy8(void *a, void *b, s32 n);
 void func_0209d3d0(void *a, void *b, s32 n);
 void func_02003dec(void *a, void *b, s32 c);
 Unk_0200f070_V3 *func_020b0cbc(Unk_0200f070_V3 *v);
@@ -4064,7 +4064,7 @@ BOOL func_0205d87c(void *);
 s32 func_0205ddc8(s32, u32, u16 *, s32 *, s32 *);
 void func_0205da08(void *, s32, s32, u16 *, s32);
 void *func_0205d854(void *, s32);
-s32 func_0210629c(void *);
+s32 NNS_G3dGetTex(void *);
 void *_ZN12Unk_0205d34013func_0205d340Ev(void *);
 void *func_0205ef74(void *);
 void *func_0205ef60(void *);
@@ -4351,17 +4351,17 @@ s32 func_02010dbc(s16 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 void func_02010e48(s32 *p, s32 target);
 void func_02010e68(s32 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 void func_02010ed8(s32 a);
-void func_021145cc(void *p, u32 size);
-void func_02111c6c(void *p, u32 src, u32 size);
-void func_02111c0c(void *p, u32 src, u32 size);
-void func_02111df8(void *p, u32 src, u32 size);
-void func_02111d90(void *p, u32 src, u32 size);
+void DC_FlushRange(void *p, u32 size);
+void GX_LoadOBJ(void *p, u32 src, u32 size);
+void GXS_LoadOBJ(void *p, u32 src, u32 size);
+void GX_LoadOBJPltt(void *p, u32 src, u32 size);
+void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
 void *func_020e8594(u32 size);
 void func_020e8558(void *p);
-BOOL func_02119a28(void *self, const void *path);
-BOOL func_02119848(void *self, u32 off, s32 z);
+BOOL FS_OpenFile(void *self, const void *path);
+BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 func_021198b4(void *self, void *dst, u32 size);
-BOOL func_021199e0(void *self);
+BOOL FS_CloseFile(void *self);
 extern u8 data_020c6c68[];
 extern u32 data_020d6f68[];
 void func_02010f88();
@@ -6579,18 +6579,18 @@ void Unk_02006d14::func_0200fb30() {
     a[1] = ((nR::Unk_02006d14 *)this)->unk_c94;
     func_0205da08(((nR::Unk_02006d14 *)this)->unk_424, y, x, &a[1], (s32)func_02010d20(this));
     func_02010078(((nR::Unk_02006d14 *)this)->unk_c97, (s32)_ZN12Unk_020102ec13func_02010b08Ej(this, 0));
-    r4 = func_0210629c(func_0205d854(((nR::Unk_02006d14 *)this)->unk_424, 0));
+    r4 = NNS_G3dGetTex(func_0205d854(((nR::Unk_02006d14 *)this)->unk_424, 0));
     r6 = 0;
     if (x < 0x9e) {
-        r6 = func_0210629c(func_0205d854(((nR::Unk_02006d14 *)this)->unk_424, 1));
+        r6 = NNS_G3dGetTex(func_0205d854(((nR::Unk_02006d14 *)this)->unk_424, 1));
     }
     if (((nR::Unk_02006d14 *)this)->unk_c98 != 0) {
-        r7 = func_0210629c(_ZN12Unk_0205d34013func_0205d340Ev(&((nR::Unk_02006d14 *)this)->unk_709));
+        r7 = NNS_G3dGetTex(_ZN12Unk_0205d34013func_0205d340Ev(&((nR::Unk_02006d14 *)this)->unk_709));
         func_0200faa0((void *)r7, (void *)r4, data_020d6f38, data_020d6f38);
         func_0200faa0((void *)r7, (void *)r4, data_020d6f3c, data_020d6f3c);
     }
-    r7 = func_0210629c(func_0205ef74(((nR::Unk_02006d14 *)this)->unk_79c));
-    t = func_0210629c(func_0205ef60(((nR::Unk_02006d14 *)this)->unk_79c));
+    r7 = NNS_G3dGetTex(func_0205ef74(((nR::Unk_02006d14 *)this)->unk_79c));
+    t = NNS_G3dGetTex(func_0205ef60(((nR::Unk_02006d14 *)this)->unk_79c));
     func_0200fa88((void *)r7, (void *)r4, data_020d6f30, data_020d6f30);
     func_0200fa88((void *)t, (void *)r4, data_020d6f40, data_020d6f40);
     if (r6 != 0) {
@@ -6975,7 +6975,7 @@ extern "C" void func_0200f1e4(void *o, void *a, u8 *b) {
     d1 = d0;
     d2 = d1;
     func_0209d498(a);
-    func_02116048(a, b, 8);
+    MI_CpuCopy8(a, b, 8);
     b[5] = d2.a;
     b[4] = d2.b;
     b[3] = d2.c;
@@ -7020,7 +7020,7 @@ extern "C" void func_0200f070(Unk_0200f070_V3 *dst, Unk_02006d14 *o, s32 *p) {
     v.x = func_01ffcb0c(0x800, *p);
     v.y = func_01ffcb0c(-0x400, *p);
     v.z = 0;
-    func_01ffb898(&v, &m2, &out);
+    MTX_MultVec43(&v, &m2, &out);
     Unk_0200f070_V3 r;
     tx += out.x;
     ty += out.y;
@@ -7483,12 +7483,12 @@ void Unk_020d6df4::func_0200e0b8() {
     _ZN12Unk_0205ca9413func_0205cbb0Ej(&((nO::Unk_020d6df4 *)this)->unk_770, data_020c61a0[func_0209522c(((nO::Unk_020d6df4 *)this)->unk_7fc)]);
     func_02010cd4(&v, ((nO::Unk_020d6df4 *)this));
     _ZN12Unk_02006d1413func_02010050EPv(this, &v);
-    r4 = func_0210629c(func_0205c694(&((nO::Unk_020d6df4 *)this)->unk_385));
-    r6 = func_0210629c(func_0205c91c(&((nO::Unk_020d6df4 *)this)->unk_770));
+    r4 = NNS_G3dGetTex(func_0205c694(&((nO::Unk_020d6df4 *)this)->unk_385));
+    r6 = NNS_G3dGetTex(func_0205c91c(&((nO::Unk_020d6df4 *)this)->unk_770));
     _ZN12Unk_02006d1413func_0200faa0EPvS0_S0_S0_(this, r6, r4, data_020d6f28, data_020d6f28);
     _ZN12Unk_02006d1413func_0200fa88EPvS0_S0_S0_(this, r6, r4, data_020d6f28, data_020d6f28);
-    r4 = func_0210629c(func_0205ef74(&((nO::Unk_020d6df4 *)this)->unk_79c));
-    _ZN12Unk_02006d1413func_0200fa88EPvS0_S0_S0_(this, r4, func_0210629c(func_0205c694(&((nO::Unk_020d6df4 *)this)->unk_385)), data_020d6f30, data_020d6f30);
+    r4 = NNS_G3dGetTex(func_0205ef74(&((nO::Unk_020d6df4 *)this)->unk_79c));
+    _ZN12Unk_02006d1413func_0200fa88EPvS0_S0_S0_(this, r4, NNS_G3dGetTex(func_0205c694(&((nO::Unk_020d6df4 *)this)->unk_385)), data_020d6f30, data_020d6f30);
     func_0205c6f4(&((nO::Unk_020d6df4 *)this)->unk_385);
 }
 
@@ -8075,7 +8075,7 @@ BOOL Unk_020d6df4::func_0200c900() {
     func_02010d98(&e, c);
     _ZN12Unk_020102ec13func_02010a58EPs(this, &e);
     v = ((nM::Unk_020d6df4 *)this)->unk_98;
-    s32 r6 = func_01ffc538(d2);
+    s32 r6 = FX_Sqrt(d2);
     s32 m = r6;
     if (r6 > 0x6e2) {
         m = 0x6e2;
@@ -10800,7 +10800,7 @@ extern "C" void func_02007ebc(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n) {
     } else {
         in.y = -((0xa000 - func_01ffc5a4(n * 0x5000, 0x15000)) >> 4);
     }
-    func_01ffb898(&in, &m2, &res);
+    MTX_MultVec43(&in, &m2, &res);
     tx += res.x;
     ty += res.y;
     tz += res.z;
@@ -11000,7 +11000,7 @@ void Unk_02007694::func_020076f0(u32 a) {
 
 void Unk_02007694::func_020076dc() {
     using namespace nE;
-    func_02115fb4(((nE::Unk_02007694 *)this)->unk_7d0 + 0, 0, 0x1c);
+    MI_CpuFill8(((nE::Unk_02007694 *)this)->unk_7d0 + 0, 0, 0x1c);
 }
 
 void Unk_02007694::func_020076b0(u32 a) {
@@ -11099,7 +11099,7 @@ void Unk_02005e7c::func_020063a0() {
     unk_8f4 = st;
     u8 *r = func_02095720(unk_7fc);
     if (r != NULL) {
-        func_02116048(r + 4, unk_8ec, 8);
+        MI_CpuCopy8(r + 4, unk_8ec, 8);
     }
     s32 a = _ZN12Unk_020d6df413func_0200e3c0Ej(this, unk_7ec);
     s32 b = _ZN12Unk_020d6df413func_0200e3c0Ej(this, st);
@@ -11351,11 +11351,11 @@ extern "C" void func_020050f0(Unk_020050e0 *p) {
         if (a != 0 || o->unk_45a != 0) {
             pm = p->unk_b4->unk_28;
             s32 i = (u16)a >> 4;
-            func_01ffb4b4(m1, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-            func_01ffb56c(pm, m1, pm);
+            MTX_RotY33_(m1, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+            MTX_Concat33(pm, m1, pm);
             i = (u16)o->unk_45a >> 4;
-            func_01ffb498(m2, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-            func_01ffb56c(pm, m2, pm);
+            MTX_RotX33_(m2, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+            MTX_Concat33(pm, m2, pm);
         }
     }
     r6 = p->unk_04->unk_2c;
@@ -11373,8 +11373,8 @@ extern "C" void func_020050f0(Unk_020050e0 *p) {
                 pv->y = v1.y - func_0203edc0();
                 if (ang != 0) {
                     s32 i = (u16)ang >> 4;
-                    func_01ffb498(m3, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-                    func_01ffb56c(pm, m3, pm);
+                    MTX_RotX33_(m3, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+                    MTX_Concat33(pm, m3, pm);
                 }
             }
             func_02054594(r6->unk_230, p, 0);

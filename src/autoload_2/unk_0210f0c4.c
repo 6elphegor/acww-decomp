@@ -11,11 +11,11 @@ extern u16 data_021fcbd4; // sDispMode
 #define reg_GX_DISPCNT (*(volatile u32 *)0x04000000)
 #define reg_GXS_DB_DISPCNT (*(volatile u32 *)0x04001000)
 
-void func_0210f0e0(u32 dispMode, u32 bgMode, u32 bg0_2d3d);
-void func_0210f0c4(u32 bgMode);
+void GX_SetGraphicsMode(u32 dispMode, u32 bgMode, u32 bg0_2d3d);
+void GXS_SetGraphicsMode(u32 bgMode);
 
 // GX_SetGraphicsMode
-void func_0210f0e0(u32 dispMode, u32 bgMode, u32 bg0_2d3d) {
+void GX_SetGraphicsMode(u32 dispMode, u32 bgMode, u32 bg0_2d3d) {
     u32 cnt = reg_GX_DISPCNT;
     data_021fcbd4 = (u16)dispMode;
     if (!data_0213bfe8) dispMode = 0;
@@ -25,6 +25,6 @@ void func_0210f0e0(u32 dispMode, u32 bgMode, u32 bg0_2d3d) {
 }
 
 // GXS_SetGraphicsMode
-void func_0210f0c4(u32 bgMode) {
+void GXS_SetGraphicsMode(u32 bgMode) {
     reg_GXS_DB_DISPCNT = (u32)((reg_GXS_DB_DISPCNT & ~0x7) | bgMode);
 }

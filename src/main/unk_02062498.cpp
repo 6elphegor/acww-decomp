@@ -265,7 +265,7 @@ void func_02050fd0(void *);
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {

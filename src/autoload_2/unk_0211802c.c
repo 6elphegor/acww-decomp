@@ -106,23 +106,23 @@ struct FSArc {
     u32 pad5c[2];
 };
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02113720(OSThreadQueue *);
-extern void func_021136a0(OSThreadQueue *);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern void func_02119d78(FSFile *);
-extern BOOL func_02119af4(FSFile *, FSArc *, u32, u32, int);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SleepThread(OSThreadQueue *);
+extern void OS_WakeupThread(OSThreadQueue *);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern void FS_InitFile(FSFile *);
+extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
 extern s32 func_021198b4(FSFile *, void *, s32);
-extern void func_021199e0(FSFile *);
-extern u32 func_02119790(const char *, int);
-extern FSFile *func_02119520(FSArc *);
-extern void func_0211947c(FSFile *);
-extern int func_02119434(FSFile *);
-extern int func_02119718(FSArc *, void *, u32, u32);
-extern int func_02119768(FSArc *, void *, u32, u32);
-extern int func_0211973c(FSArc *, void *, u32, u32);
+extern void FS_CloseFile(FSFile *);
+extern u32 FSi_GetPackedName(const char *, int);
+extern FSFile *FSi_NextCommand(FSArc *);
+extern void FSi_ExecuteAsyncCommand(FSFile *);
+extern int FSi_ExecuteSyncCommand(FSFile *);
+extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
+extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
+extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
 extern int (*data_0213a388[])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
@@ -172,34 +172,34 @@ static inline u32 FSi_NameLen2(u32 name) {
     return 3;
 }
 
-int func_0211802c(FSFile *file, u32 cmd);
-void func_021181a8(FSFile *file, u32 result);
+int FSi_TranslateCommand(FSFile *file, u32 cmd);
+void FSi_ReleaseCommand(FSFile *file, u32 result);
 int func_0211820c(void);
-int func_02118214(FSFile *file);
+int FSi_OpenFileDirectCommand(FSFile *file);
 int func_0211823c(FSFile *file);
-int func_021182b8(FSFile *file);
-int func_02118678(FSFile *file);
+int FSi_GetPathCommand(FSFile *file);
+int FSi_FindPathCommand(FSFile *file);
 int func_02118894(FSFile *file);
 int func_021189a4(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a74(FSFile *file);
-int func_02118aac(FSFile *file, u32 id);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_ReadFileCommand(FSFile *file);
+int FSi_SeekDirDirect(FSFile *file, u32 id);
 void func_02118ae0(FSStream *s, void *dst, u32 len);
-int func_02118b84(const char *a, const char *b, u32 n);
-void func_02118be8(FSArc *arc, u32 result);
-void func_02118c68(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-BOOL func_02118c88(FSArc *arc);
-BOOL func_02118d04();
-void *func_02118d94(FSArc *arc);
-u32 func_02118e2c(FSArc *arc, void *mem, u32 mem_max);
-BOOL func_02118f58(FSArc *arc);
-BOOL func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
-void func_02119098(FSArc *arc);
-BOOL func_02119130(FSArc *arc, const char *name, int len);
-FSArc *func_021191f0(const char *name, int len);
-void func_02119240(FSArc *arc);
-BOOL func_02119278(FSFile *file, u32 cmd);
+int FSi_StrNICmp(const char *a, const char *b, u32 n);
+void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+BOOL FS_ResumeArchive(FSArc *arc);
+BOOL FS_SuspendArchive();
+void *FS_UnloadArchiveTables(FSArc *arc);
+u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
+BOOL FS_UnloadArchive(FSArc *arc);
+BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+void FS_ReleaseArchiveName(FSArc *arc);
+BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+FSArc *FS_FindArchive(const char *name, int len);
+void FS_InitArchive(FSArc *arc);
+BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
 int func_0211823c(FSFile *file) {
     u32 out[2];
@@ -214,10 +214,10 @@ int func_0211823c(FSFile *file) {
     file->a.w.w30 = out[0];
     file->a.w.w34 = out[1];
     file->a.w.w38 = id;
-    return func_0211802c(file, 7);
+    return FSi_TranslateCommand(file, 7);
 }
 
-int func_02118214(FSFile *file) {
+int FSi_OpenFileDirectCommand(FSFile *file) {
     file->p.w.w24 = file->a.w.w30;
     file->parent = file->a.w.w30;
     file->p.w.w28 = file->a.w.w34;
@@ -229,8 +229,8 @@ int func_0211820c(void) {
     return 0;
 }
 
-void func_021181a8(FSFile *file, u32 result) {
-    u32 irq = func_01ffa2ec();
+void FSi_ReleaseCommand(FSFile *file, u32 result) {
+    u32 irq = OS_DisableInterrupts();
     FSFile *prev = file->prev;
     FSFile *next = file->next;
     if (prev) prev->next = next;
@@ -239,11 +239,11 @@ void func_021181a8(FSFile *file, u32 result) {
     file->next = file->prev;
     file->stat &= ~0x4f;
     file->error = result;
-    func_021136a0(&file->queue);
-    func_01ffa3d4(irq);
+    OS_WakeupThread(&file->queue);
+    OS_RestoreInterrupts(irq);
 }
 
-int func_0211802c(FSFile *file, u32 cmd) {
+int FSi_TranslateCommand(FSFile *file, u32 cmd) {
     int ret;
     u32 bit = 1 << cmd;
     FSArc *arc = file->arc;
@@ -273,17 +273,17 @@ int func_0211802c(FSFile *file, u32 cmd) {
     }
     if (ret == 6) {
         if (FSi_IsBlocking(file) != 0) {
-            u32 irq = func_01ffa2ec();
-            while (arc->flag & 0x200) func_02113720(&arc->queue);
+            u32 irq = OS_DisableInterrupts();
+            while (arc->flag & 0x200) OS_SleepThread(&arc->queue);
             ret = file->error;
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
         }
     } else if (FSi_IsBlocking(file) != 0) {
         arc->flag &= ~0x200;
         file->error = ret;
     } else {
         arc->flag &= ~0x100;
-        func_021181a8(file, ret);
+        FSi_ReleaseCommand(file, ret);
     }
     return ret;
 }

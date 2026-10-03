@@ -148,29 +148,29 @@ extern char data_ov065_0228b90c[];
 extern char data_ov065_0228b918[];
 extern char data_ov065_0228b924[];
 
-extern s32 func_02128930(const void *a, const void *b, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02115640(void *p);
-extern void func_021155c4(void *p);
+extern s32 memcmp(const void *a, const void *b, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void OS_GetMacAddress(void *p);
+extern void OS_GetOwnerInfo(void *p);
 extern s32 func_0211d3a0(void *p);
 extern s32 func_0211d2e0(void *p);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32 v);
-extern s32 func_021130d0(char *buf, const char *fmt, ...);
-extern s32 func_02113088(char *buf, u32 n, const char *fmt, ...);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32 v);
+extern s32 OS_SPrintf(char *buf, const char *fmt, ...);
+extern s32 OS_SNPrintf(char *buf, u32 n, const char *fmt, ...);
 extern s32 func_0212a438(const char *s);
 extern s32 func_0212dcb4(const void *s);
 extern void func_020ff0bc(void *p);
-extern void func_02114480(void *m);
-extern void func_02114410(void *m);
+extern void OS_LockMutex(void *m);
+extern void OS_UnlockMutex(void *m);
 extern s32 func_0212b770(void);
 extern s32 func_0212b784(const char *s, char **end, s32 base);
 extern s32 func_020ff6f4(void *p, u32 v);
 extern void func_020ff5cc(void *p);
 extern void func_020ff734(u32 v);
-extern void func_02113788(void *p);
-extern u64 func_01ffa6b4(void);
+extern void OS_JoinThread(void *p);
+extern u64 OS_GetTick(void);
 extern void func_021132e0(u32 ms);
 
 extern void func_ov065_0226cec0(void *p);
@@ -208,7 +208,7 @@ s32 func_ov065_0226d0fc(void *a);
 s32 func_ov065_0226d0fc(void *a) {
     u8 buf[0x1c];
     func_ov065_0226cfe4(a, buf);
-    if (func_02128930(buf, "NDWCSHAP", 8) == 0) {
+    if (memcmp(buf, "NDWCSHAP", 8) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -223,13 +223,13 @@ void func_ov065_0226d0e0(void *a, void *b) {
 void func_ov065_0226d0b0(void *a, void *dst) {
     u8 buf[0x18];
     func_ov065_0226cfe4(a, buf);
-    if (func_02128930(buf, "NDWCSHAP", 8) == 0) {
-        func_02116048(buf + 8, dst, 10);
+    if (memcmp(buf, "NDWCSHAP", 8) == 0) {
+        MI_CpuCopy8(buf + 8, dst, 10);
     }
 }
 
 s32 func_ov065_0226d08c(void *p) {
-    if (func_02128930(p, "NWCUSBAP", 8) == 0) {
+    if (memcmp(p, "NWCUSBAP", 8) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -337,11 +337,11 @@ u32 func_ov065_0226ec94(void);
 s32 func_ov065_0226f7c8(void);
 s32 func_ov065_0226f878(void);
 s32 func_ov065_0226f924(void);
-s64 func_01ffa6b4(void);
-void func_02116048(void *src, void *dst, u32 n);
-void func_0211ae74(void *ctx);
-void func_0211ad80(void *ctx, void *p, u32 n);
-void func_0211acbc(void *out, void *ctx);
+s64 OS_GetTick(void);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
+void DGT_Hash1Reset(void *ctx);
+void DGT_Hash1SetSource(void *ctx, void *p, u32 n);
+void DGT_Hash1GetDigest_R(void *out, void *ctx);
 
 s32 func_ov065_0226ce78(u32 c);
 u32 func_ov065_0226c9f4(s32 n);
@@ -423,10 +423,10 @@ void func_ov065_0226cfe4(u8 *a, u8 *b) {
 void func_ov065_0226cfb0(u8 *a, u8 *b) {
     u8 digest[0x14];
     u8 ctx[0x58];
-    func_0211ae74(ctx);
-    func_0211ad80(ctx, a, 0x18);
-    func_0211acbc(digest, ctx);
-    func_02116048(digest + 3, b, 13);
+    DGT_Hash1Reset(ctx);
+    DGT_Hash1SetSource(ctx, a, 0x18);
+    DGT_Hash1GetDigest_R(digest, ctx);
+    MI_CpuCopy8(digest + 3, b, 13);
 }
 
 void func_ov065_0226cec0(u8 *a, u8 *b) {
@@ -442,7 +442,7 @@ void func_ov065_0226cec0(u8 *a, u8 *b) {
     for (j = 0; j < 13; j++) {
         b[j] ^= data_ov065_0228b68c[j];
     }
-    func_02116048(b, tmp, 13);
+    MI_CpuCopy8(b, tmp, 13);
     {
         u8 *pt;
         u8 *pk;
@@ -616,7 +616,7 @@ s32 func_ov065_0226cbf0(Unk_ov065_0226b488_Ctx *c) {
         }
         return 0xd;
     }
-    s64 now = func_01ffa6b4();
+    s64 now = OS_GetTick();
     s64 d = now - *(s64 *)&c->unk_cb0;
     u64 r = ((u64)d << 6) / 0x1ff6210LL;
     if (r >= 10) {

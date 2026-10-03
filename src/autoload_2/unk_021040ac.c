@@ -25,14 +25,14 @@ typedef union Glb {
 extern Glb data_027e00c8;
 extern u8 data_027e0228[], data_027e01f8[], data_027e01c8[], data_027e0184[], data_027e0114[];
 extern u32 data_027e0170[], data_027e0148[];
-extern void func_01ffb94c(void *, void *, void *);
-extern void func_01ffbf00(void *, void *, s32, s32, s32);
-extern void func_01ffbb6c(void *, void *);
+extern void MTX_Concat43(void *, void *, void *);
+extern void MTX_ScaleApply43(void *, void *, s32, s32, s32);
+extern void MTX_Inverse43(void *, void *);
 extern void func_01ff8bd0(u32, void *, u32);
 
-extern void func_01ffb7cc(void *);
-extern void func_01ffbf40(void *);
-extern void func_01ffb448(void *);
+extern void MTX_Identity43_(void *);
+extern void MTX_Identity44_(void *);
+extern void MTX_Identity33_(void *);
 extern u8 data_027e00d0[];
 
 
@@ -59,7 +59,7 @@ BOOL func_02104588(void *p, Cb *n, u32 k)
     return ret;
 }
 
-void func_02104518(s32 *a, s32 *b, s32 c, BOOL flag)
+void blendScaleVec_(s32 *a, s32 *b, s32 c, BOOL flag)
 {
     if (flag) {
         a[0] += c;
@@ -97,8 +97,8 @@ void func_02104338(void)
     data_027e00c8.w[0x90 / 4] = 0x60293130;
     data_027e00c8.w[0xa4 / 4] = 0x33333333;
     data_027e00c8.w[0xb8 / 4] = 0x002a1b19;
-    func_01ffb7cc(data_027e0114);
-    func_01ffbf40(data_027e00d0);
+    MTX_Identity43_(data_027e0114);
+    MTX_Identity44_(data_027e00d0);
     data_027e00c8.w[0x80 / 4] = 0x2d8b62d8;
     data_027e00c8.w[0x84 / 4] = 0x40000200;
     data_027e00c8.w[0x88 / 4] = 0x800001ff;
@@ -114,7 +114,7 @@ void func_02104338(void)
     data_027e00c8.w[0xe0 / 4] = 0;
     data_027e00c8.w[0xe4 / 4] = 0;
     data_027e00c8.w[0xe8 / 4] = 0;
-    func_01ffb448(data_027e0184);
+    MTX_Identity33_(data_027e0184);
     data_027e00c8.w[0xec / 4] = 0x1000;
     data_027e00c8.w[0xf0 / 4] = 0x1000;
     data_027e00c8.w[0xf4 / 4] = 0x1000;
@@ -157,7 +157,7 @@ void func_02104270(u32 id, s32 a, s32 b, s32 c)
     data_027e0148[id] = ((a >> 3) & 0x3ff) | (((b >> 3) & 0x3ff) << 10) | (((c >> 3) & 0x3ff) << 20) | (id << 30);
 }
 
-void func_0210425c(u32 id, u32 v)
+void NNS_G3dGlbLightColor(u32 id, u32 v)
 {
     data_027e0170[id] = v | (id << 30);
 }
@@ -170,7 +170,7 @@ void func_02104238(u32 a, u32 b, BOOL c)
 u8 *func_021041e8(void)
 {
     if ((data_027e00c8.n.flag & 8) == 0) {
-        func_01ffbb6c(data_027e0114, data_027e01c8);
+        MTX_Inverse43(data_027e0114, data_027e01c8);
         data_027e00c8.n.flag |= 8;
     }
     return data_027e01c8;
@@ -178,9 +178,9 @@ u8 *func_021041e8(void)
 
 void func_02104184(void)
 {
-    func_01ffb94c(data_027e0184, data_027e0114, data_027e01f8);
-    func_01ffbf00(data_027e01f8, data_027e01f8, data_027e00c8.n.scale.x, data_027e00c8.n.scale.y, data_027e00c8.n.scale.z);
-    func_01ffbb6c(data_027e01f8, data_027e0228);
+    MTX_Concat43(data_027e0184, data_027e0114, data_027e01f8);
+    MTX_ScaleApply43(data_027e01f8, data_027e01f8, data_027e00c8.n.scale.x, data_027e00c8.n.scale.y, data_027e00c8.n.scale.z);
+    MTX_Inverse43(data_027e01f8, data_027e0228);
 }
 
 u8 *func_02104140(void)
@@ -201,7 +201,7 @@ u8 *func_021040fc(void)
     return data_027e0228;
 }
 
-u32 func_021040ac(u8 *a, u8 *b)
+u32 NNS_G3dAnmObjCalcSizeRequired(u8 *a, u8 *b)
 {
     switch (*a) {
     case 'M':

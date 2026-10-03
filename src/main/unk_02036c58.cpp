@@ -16,7 +16,7 @@ void func_020639e8(void *buf, const void *fmt, ...);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
 void *func_021012bc(const void *);
-void *func_021062dc(void *);
+void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
 void *func_02106618(void *);
@@ -25,12 +25,12 @@ void *func_02106654(void *);
 void *func_02106670(void *, s32);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
-void *func_0210629c(void *);
+void *NNS_G3dGetTex(void *);
 void func_02055724(void *, s32);
 void *func_0205588c(void *, void *);
 void func_020e8558(void *);
 void *func_020e8608(void *, u32);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 void *_ZN12Unk_0204debc13func_0204df64Ev(void *);
 extern u16 data_020d8d8c, data_020d8d88, data_020d8d90;
 extern u16 data_020c8af8[];
@@ -229,7 +229,7 @@ void Unk_02036cec::func_02037074()
     func_020639e8(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.unk_14 << 24) >> 26) + 0x61);
     p = func_020641ec(buf, data_021f482c, -4, 0);
     s32 *q = &unk_630;
-    *q = (s32)func_0210629c(p);
+    *q = (s32)NNS_G3dGetTex(p);
     func_02055724((void *)*q, 0);
     unk_630 = (s32)func_0205588c((void *)unk_630, data_021c620c);
     if (p) {
@@ -245,9 +245,9 @@ void Unk_02036cec::func_02036fa4()
         unk_634 = (s32)func_02106634(func_02106618(func_021012bc("BG:a/grd_set.nsbma")), 0);
         unk_638 = (s32)func_02106670(func_02106654(func_021012bc("BG:a/grd_set.nsbta")), 0);
         unk_63c = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/riv.nsbtp")), 0);
-        unk_640 = (s32)func_0210629c(func_021012bc("BG:a/riv_itp.nsbtx"));
+        unk_640 = (s32)NNS_G3dGetTex(func_021012bc("BG:a/riv_itp.nsbtx"));
         unk_644 = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/beB.nsbtp")), 0);
-        unk_648 = (s32)func_0210629c(func_021012bc("BG:a/beB_itp.nsbtx"));
+        unk_648 = (s32)NNS_G3dGetTex(func_021012bc("BG:a/beB_itp.nsbtx"));
         func_02101310(file);
     }
 }
@@ -264,7 +264,7 @@ void *func_02036f24(s32 id, void *heap)
         t = func_021012bc("BG:a/bcl/bcl0");
         func_02101310(file);
         r = func_020e8608(heap, 0x180);
-        func_02116048(t, r, 0x180);
+        MI_CpuCopy8(t, r, 0x180);
     }
     if (p) {
         func_020e8558(p);
@@ -316,7 +316,7 @@ Unk_02036cec_Entry *Unk_02036cec::func_02036d54(s32 id)
             func_020639e8(l.buf, "/bg/a%d/%04x.arc", hi, id);
             e->unk_04 = func_02037244(l.buf, e->unk_24);
             if (func_02101340(l.file, "BG", e->unk_04)) {
-                u8 *q = (u8 *)func_021062dc(func_021012bc("BG:a/bmd/bmd0"));
+                u8 *q = (u8 *)NNS_G3dGetMdlSet(func_021012bc("BG:a/bmd/bmd0"));
                 e->unk_08 = q + *(s32 *)(q + *(u16 *)(q + 0xe) + 0xc);
                 e->unk_0c = func_021012bc("BG:a/bcl/bcl0");
                 e->unk_10 = func_021012bc("BG:a/bsd/bsd0");
@@ -343,7 +343,7 @@ Unk_02036cec_Entry *Unk_02036cec::func_02036d54(s32 id)
                 func_020639e8(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);
                 p = func_020641ec(l.buf, data_021f482c, -4, 0);
                 if (p) {
-                    l.tmp = (s32)func_0210629c(p);
+                    l.tmp = (s32)NNS_G3dGetTex(p);
                     func_02055724((void *)l.tmp, 0);
                     e->unk_20 = func_0205588c((void *)l.tmp, heap);
                     if (p) {

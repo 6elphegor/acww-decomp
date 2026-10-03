@@ -72,11 +72,11 @@ extern void *data_0213c86c;
 }
 
 extern "C" {
-void func_02110db8(u16 a, u32 b, u32 c, u32 d, u32 e);
+void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 n);
+void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
@@ -84,19 +84,19 @@ void func_02110de8(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_02111088(void);
+void G3X_Reset(void);
 }
 
 extern "C" {
-void func_0210fcb8(u32 a);
+void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void func_0210fbc4(u32 a);
+void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
@@ -104,7 +104,7 @@ void func_02114b00(void);
 }
 
 extern "C" {
-void func_02111110(void);
+void G3X_Init(void);
 }
 
 extern "C" {
@@ -112,11 +112,11 @@ void func_02110d00(void);
 }
 
 extern "C" {
-void func_02110fa4(void);
+void G3X_InitMtxStack(void);
 }
 
 extern "C" {
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
@@ -124,19 +124,19 @@ void func_02105d98(void);
 }
 
 extern "C" {
-void func_02111c6c(void *p, u32 a, u32 b);
+void GX_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111c0c(void *p, u32 a, u32 b);
+void GXS_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 a, u32 b);
+void GX_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
@@ -148,7 +148,7 @@ void *func_020641d8(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 }
 
 extern "C" {
@@ -180,7 +180,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -204,7 +204,7 @@ void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
@@ -378,7 +378,7 @@ extern "C" void func_02002ab8(void) {
     p->func_02002a3c();
 }
 
-extern "C" void func_02002ab0(void *p) { func_02119d78(p); }
+extern "C" void func_02002ab0(void *p) { FS_InitFile(p); }
 
 BOOL Unk_020029e8::func_02002a8c() {
     unk_48 = func_020641d8((void *)"/ab_all/ab_all_obj_ncl.bin");
@@ -408,14 +408,14 @@ void Unk_020029e8::func_02002a3c() {
 }
 
 void Unk_020029e8::func_02002a14() {
-    func_021145cc(unk_48, 0x80);
-    func_02111df8(unk_48, 0, 0x80);
-    func_02111d90(unk_48, 0, 0x80);
+    DC_FlushRange(unk_48, 0x80);
+    GX_LoadOBJPltt(unk_48, 0, 0x80);
+    GXS_LoadOBJPltt(unk_48, 0, 0x80);
 }
 
 void Unk_020029e8::func_020029e8() {
-    func_021145cc(unk_4c, 0x1000);
-    func_02111c6c(unk_4c, 0, 0x1000);
-    func_02111c0c(unk_4c, 0, 0x1000);
+    DC_FlushRange(unk_4c, 0x1000);
+    GX_LoadOBJ(unk_4c, 0, 0x1000);
+    GXS_LoadOBJ(unk_4c, 0, 0x1000);
 }
 

@@ -10,16 +10,16 @@ extern u32 data_021fcf54;      // bit mask table state
 extern u16 data_021fcf58[9];   // owner table
 extern volatile u64 data_021fcf24; // OSi_TickCounter
 
-u32 func_01ffa2ec(void);       // OS_DisableInterrupts_IrqAndFiq
-void func_01ffa3d4(u32 state); // OS_RestoreInterrupts_IrqAndFiq
+u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq
+void OS_RestoreInterrupts(u32 state); // OS_RestoreInterrupts_IrqAndFiq
 u32 func_0211565c(u32 x);      // MATH_CountLeadingZeros (asm)
 u16 func_02114da0(void);       // OS_GetTickLo
 
 // OSi_Unlock
-void func_02115664(u32 mask, u16 data) {
+void OSi_UnlockVram(u32 mask, u16 data) {
     s32 i;
     u32 bits;
-    u32 enabled = func_01ffa2ec();
+    u32 enabled = OS_DisableInterrupts();
     bits = mask & data_021fcf54 & 0x1ff;
     for (;;) {
         i = 31 - func_0211565c(bits);
@@ -30,5 +30,5 @@ void func_02115664(u32 mask, u16 data) {
             data_021fcf54 &= ~(1 << i);
         }
     }
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
 }

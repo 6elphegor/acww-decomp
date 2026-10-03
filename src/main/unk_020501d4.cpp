@@ -9,16 +9,16 @@ typedef void (*Unk_02050288_LoadFunc)(void *src, u32 offset, u32 size);
 
 extern "C" {
 void *func_02133ef8(void *ptr, u32 size);
-void *func_02100248(void *list, void *prev);
-void func_02100260(void *list, void *obj);
-void func_02100444(void *list, u32 offset);
+void *NNS_FndGetNextListObject(void *list, void *prev);
+void NNS_FndRemoveListObject(void *list, void *obj);
+void NNS_FndInitList(void *list, u32 offset);
 void func_020e8558(void *ptr);
 void func_020e85fc(void *heap, void *ptr);
 void func_020e8c88(void *heap);
 void *func_020e8e7c(u32 size, void *parent);
-void func_021145cc(void *ptr, u32 size);
-void func_02115fb4(void *dst, u32 value, u32 size);
-void func_02116048(const void *src, void *dst, u32 size);
+void DC_FlushRange(void *ptr, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void *func_02063ffc(const char *fmt, ...);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
 void func_0206c92c(void);
@@ -28,12 +28,12 @@ void func_021118cc(void *src, u32 offset, u32 size);
 void func_021117fc(void *src, u32 offset, u32 size);
 void func_0211172c(void *src, u32 offset, u32 size);
 void func_0211165c(void *src, u32 offset, u32 size);
-void func_02111c6c(void *src, u32 offset, u32 size);
+void GX_LoadOBJ(void *src, u32 offset, u32 size);
 void func_02111864(void *src, u32 offset, u32 size);
 void func_02111794(void *src, u32 offset, u32 size);
 void func_021116c4(void *src, u32 offset, u32 size);
 void func_021115f4(void *src, u32 offset, u32 size);
-void func_02111c0c(void *src, u32 offset, u32 size);
+void GXS_LoadOBJ(void *src, u32 offset, u32 size);
 
 extern void *data_021f482c;
 
@@ -211,7 +211,7 @@ const u8 data_020ca4dc[0x7a] = {
 Unk_02050288_FontObj data_021c48fc;
 
 const Unk_02050288_LoadFunc data_020ca4c4[6] = {
-    func_02111864, func_02111794, func_021116c4, func_021115f4, func_02111c0c, NULL,
+    func_02111864, func_02111794, func_021116c4, func_021115f4, GXS_LoadOBJ, NULL,
 };
 
 const u16 data_020ca490 = 5;
@@ -219,7 +219,7 @@ const u16 data_020ca490 = 5;
 const u16 data_020ca480 = 6;
 
 const Unk_02050288_LoadFunc data_020ca4ac[6] = {
-    func_021118cc, func_021117fc, func_0211172c, func_0211165c, func_02111c6c, NULL,
+    func_021118cc, func_021117fc, func_0211172c, func_0211165c, GX_LoadOBJ, NULL,
 };
 
 // ---- functions, from the highest address to the lowest (mwcc emits a file's functions last to first)
@@ -252,7 +252,7 @@ extern "C" {
 
 void func_0205113c(StrBuf *buf) {
     u32 size = buf->size();
-    func_02115fb4(buf->data(), 0, size);
+    MI_CpuFill8(buf->data(), 0, size);
 }
 
 BOOL func_020510f4(StrBuf *buf, const char *src) {
@@ -321,7 +321,7 @@ BOOL func_02050ff8(StrBuf *out, StrBuf *in) {
 
 void func_02050fd0(StrBuf *buf) {
     u32 size = buf->size();
-    func_02115fb4(buf->data(), 0, size);
+    MI_CpuFill8(buf->data(), 0, size);
 }
 
 BOOL func_02050f7c(StrBuf *buf, const void *src, s32 len) {
@@ -332,9 +332,9 @@ BOOL func_02050f7c(StrBuf *buf, const void *src, s32 len) {
     if (!ok) {
         len = size;
     }
-    func_02116048(src, data, len);
+    MI_CpuCopy8(src, data, len);
     if (rest > 0) {
-        func_02115fb4(data + len, 0, rest);
+        MI_CpuFill8(data + len, 0, rest);
     }
     return ok;
 }
@@ -588,7 +588,7 @@ extern "C" void func_02050ac4(void) {
     heap = func_020e8e7c(0x1800, data_021f482c);
     data_021c489c = heap;
     if (heap != NULL) {
-        func_02100444(data_021c48c4, 8);
+        NNS_FndInitList(data_021c48c4, 8);
     }
 }
 
@@ -614,13 +614,13 @@ extern "C" void func_02050a54(void) {
 }
 
 void Unk_02050288::func_02050a34() {
-    func_02115fb4(data_021c494c, (u8)(unk_39 | (unk_39 << 4)), 0x400);
+    MI_CpuFill8(data_021c494c, (u8)(unk_39 | (unk_39 << 4)), 0x400);
 }
 
 extern "C" void func_020509dc(s32 arg0) {
     Unk_02050288 *obj = NULL;
     for (;;) {
-        obj = (Unk_02050288 *)func_02100248(data_021c48c4, obj);
+        obj = (Unk_02050288 *)NNS_FndGetNextListObject(data_021c48c4, obj);
         if (obj == NULL) {
             break;
         }
@@ -698,7 +698,7 @@ void Unk_02050288::func_020507d8() {
     if (size > 0x400) {
         size = 0x400;
     }
-    func_021145cc(data_021c494c, size);
+    DC_FlushRange(data_021c494c, size);
     if (unk_50 == 2 || unk_50 == 3) {
         data_020ca4ac[unk_2c](data_021c494c, unk_70, size);
     }
@@ -723,7 +723,7 @@ void Unk_02050288::func_020507d8() {
                 }
             }
         } else {
-            func_02116048(data_021c494c, (void *)(unk_1c + unk_70), size);
+            MI_CpuCopy8(data_021c494c, (void *)(unk_1c + unk_70), size);
         }
     }
 }
@@ -870,7 +870,7 @@ void Unk_02050288::func_02050510() {
     }
 
     for (i = 0; i < unk_24; i++) {
-        func_021145cc(data_021c494c, size);
+        DC_FlushRange(data_021c494c, size);
         if (unk_50 == 2 || unk_50 == 3) {
             data_020ca4ac[unk_2c](data_021c494c, offset, size);
         }
@@ -878,7 +878,7 @@ void Unk_02050288::func_02050510() {
             data_020ca4c4[unk_2c](data_021c494c, offset, size);
         }
         if (unk_50 == 0) {
-            func_02116048(data_021c494c, (void *)(unk_1c + offset), size);
+            MI_CpuCopy8(data_021c494c, (void *)(unk_1c + offset), size);
         }
         if (unk_55) {
             offset += 0x400;
@@ -931,11 +931,11 @@ extern "C" void func_0205046c(void) {
 extern "C" void func_02050428(void) {
     Unk_02050288 *obj;
     for (;;) {
-        obj = (Unk_02050288 *)func_02100248(data_021c48c4, NULL);
+        obj = (Unk_02050288 *)NNS_FndGetNextListObject(data_021c48c4, NULL);
         if (obj == NULL) {
             break;
         }
-        func_02100260(data_021c48c4, obj);
+        NNS_FndRemoveListObject(data_021c48c4, obj);
         obj->~Unk_02050288();
         func_020e85fc(data_021c489c, obj);
     }

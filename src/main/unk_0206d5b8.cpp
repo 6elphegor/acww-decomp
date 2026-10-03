@@ -186,7 +186,7 @@ void func_02114cd8(s32 a, s32 b);
 }
 
 extern "C" {
-u32 func_01ffa2ec(void);
+u32 OS_DisableInterrupts(void);
 }
 
 extern "C" {
@@ -194,15 +194,15 @@ void func_01ffa3c0(void);
 }
 
 extern "C" {
-void func_01ffa3d4(u32 v);
+void OS_RestoreInterrupts(u32 v);
 }
 
 extern "C" {
-void func_01ff80e0(s32 v);
+void OS_DisableIrqMask(s32 v);
 }
 
 extern "C" {
-void func_01ff81a8(s32 v);
+void OS_ResetRequestIrqMask(s32 v);
 }
 
 extern "C" {
@@ -242,7 +242,7 @@ u32 func_021001e0(void *p);
 }
 
 extern "C" {
-s32 func_02117dd8(s32 a, s32 b, s32 c);
+s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 }
 
 extern "C" {
@@ -250,7 +250,7 @@ void WaitByLoop(s32 n);
 }
 
 extern "C" {
-void func_0210f154(void);
+void GX_DispOn(void);
 }
 
 extern "C" {
@@ -394,7 +394,7 @@ void func_0209cfc8(u32 v);
 }
 
 extern "C" {
-void func_02113720(void *p);
+void OS_SleepThread(void *p);
 }
 
 extern "C" {
@@ -402,15 +402,15 @@ void func_0204ff6c(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *f);
+void FS_InitFile(void *f);
 }
 
 extern "C" {
-BOOL func_02119a78(void *f, Unk_0206d8b8_Pair p);
+BOOL FS_OpenFileFast(void *f, Unk_0206d8b8_Pair p);
 }
 
 extern "C" {
-void func_021199e0(void *f);
+void FS_CloseFile(void *f);
 }
 
 extern "C" {
@@ -418,7 +418,7 @@ void func_02063d18(void *f, void *dst, u32 sz, u32 off);
 }
 
 extern "C" {
-void func_02119b4c(void *p, void *q);
+void FS_ConvertPathToFileID(void *p, void *q);
 }
 
 extern "C" {
@@ -570,7 +570,7 @@ Unk_0206d8b8::~Unk_0206d8b8() {
 BOOL Unk_0206d8b8::func_0206d940(void *path, s32 size, s32 count) {
     unk_08 = size;
     unk_0c = count;
-    func_02119b4c(this, path);
+    FS_ConvertPathToFileID(this, path);
     unk_18 = (u8 *)func_020e8574(size << 3);
     return TRUE;
 }
@@ -627,11 +627,11 @@ void Unk_0206d8b8::func_0206d828(u32 idx) {
     u32 blk = idx >> 3;
     u8 file[0x4c];
     func_0204ff6c(data_021c4890);
-    func_02119d78(file);
-    if (func_02119a78(file, unk_00)) {
+    FS_InitFile(file);
+    if (FS_OpenFileFast(file, unk_00)) {
         u32 sz = unk_08 << 3;
         func_02063d18(file, unk_18, sz, blk * sz);
-        func_021199e0(file);
+        FS_CloseFile(file);
     }
 }
 
@@ -682,11 +682,11 @@ extern "C" void func_0206d774(void *arg, void *p) {
 extern "C" void func_0206d770(void) {}
 
 extern "C" void func_0206d760(void) {
-    func_02113720(data_021cb3e4);
+    OS_SleepThread(data_021cb3e4);
 }
 
 extern "C" void func_0206d750(void) {
-    func_02113720(data_021cb3ec);
+    OS_SleepThread(data_021cb3ec);
 }
 
 extern "C" void func_0206d720(u32 r) {
@@ -736,7 +736,7 @@ extern "C" void func_0206d69c(void) {
 extern "C" void func_0206d610(void) {
     u32 r;
     s32 b;
-    func_0210f154();
+    GX_DispOn();
     *(volatile u32 *)0x4001000 |= 0x10000;
     func_020af3a8();
     u32 v = data_020cbb18;

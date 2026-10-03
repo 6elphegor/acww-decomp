@@ -274,7 +274,7 @@ extern char data_ov003_02235358[];
 s32 func_020974f8();
 s32 func_020978fc();
 void *func_020641ec(char *a, u32 b, s32 c, s32 *out);
-void *func_0210629c(void *p);
+void *NNS_G3dGetTex(void *p);
 BOOL func_020557a0(void *p, u32 a);
 void *func_0205588c(void *p, void *a);
 void func_020e8558(void *p);
@@ -368,7 +368,7 @@ extern "C" char *func_ov003_022166a4() {
 
 void Unk_ov003_02231c14::func_ov003_02216648() {
     void *r4 = func_020641ec(func_ov003_022166a4(), data_021f482c, -4, 0);
-    unk_2b0 = func_0210629c(r4);
+    unk_2b0 = NNS_G3dGetTex(r4);
     if (func_020557a0(unk_2b0, 0)) {
         unk_2b0 = func_0205588c(unk_2b0, data_021c6204);
     }

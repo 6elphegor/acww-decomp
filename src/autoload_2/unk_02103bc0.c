@@ -33,16 +33,16 @@ typedef struct TexData {
     u32 texOfs;         // 0x38
 } TexData;
 
-extern void func_02111ff0(void);                // GX_BeginLoadTex
+extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
 extern void func_02111f7c(void *, u32, u32);    // GX_LoadTex
 extern void func_02111f24(void);                // GX_EndLoadTex
-extern void func_0211220c(void);                // GX_BeginLoadTexPltt
-extern void func_021120a8(void *, u32, u32);    // GX_LoadTexPltt
-extern void func_02112038(void);                // GX_EndLoadTexPltt
-BOOL func_02103dcc(Node **head, Node *n);
+extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
+extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
+extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
+BOOL removeLink_(Node **head, Node *n);
 
 // remove a node from a singly linked list
-BOOL func_02103dcc(Node **head, Node *n)
+BOOL removeLink_(Node **head, Node *n)
 {
     Node *c;
     Node *prev = *head;
@@ -66,7 +66,7 @@ BOOL func_02103dcc(Node **head, Node *n)
 // remove a node from any of the three lists
 void func_02103d64(u8 *o, Node *n)
 {
-    if (func_02103dcc((Node **)(o + 8), n) || func_02103dcc((Node **)(o + 16), n) || func_02103dcc((Node **)(o + 24), n)) {
+    if (removeLink_((Node **)(o + 8), n) || removeLink_((Node **)(o + 16), n) || removeLink_((Node **)(o + 24), n)) {
         *(u32 *)o |= 0x10;
     }
 }
@@ -86,7 +86,7 @@ u32 func_02103d3c(TexData *o) { return o->plttSize << 3; }
 // 4x4-compressed palette size in bytes
 u32 func_02103d30(TexData *o) { return o->pltt4Size << 3; }
 
-void func_02103d1c(TexData *o, u32 a, u32 b)
+void NNS_G3dTexSetTexKey(TexData *o, u32 a, u32 b)
 {
     if (a != 0) o->pltt08 = a;
     if (b != 0) o->pltt18 = b;
@@ -97,10 +97,10 @@ void func_02103c40(TexData *o, BOOL lock)
 {
     u32 size;
     u32 size4;
-    if (lock) func_0211220c();
+    if (lock) GX_BeginLoadTex();
     size = o->plttSize << 3;
     if (size != 0) {
-        func_021120a8((u8 *)o + o->plttOfs, (o->pltt08 & 0xffff) << 3, size);
+        GX_LoadTex((u8 *)o + o->plttOfs, (o->pltt08 & 0xffff) << 3, size);
         o->plttFlag |= 1;
     }
     size4 = o->pltt4Size << 3;
@@ -108,11 +108,11 @@ void func_02103c40(TexData *o, BOOL lock)
         u32 a = o->pltt18 & 0xffff;
         u32 b = a << 3;
         u8 *p = (u8 *)o + o->pltt4Ofs2;
-        func_021120a8((u8 *)o + o->pltt4Ofs, b, size4);
-        func_021120a8(p, (((a << 3) & 0x1ffff) >> 1) + 0x20000 + ((b & 0x40000) >> 2), size4 >> 1);
+        GX_LoadTex((u8 *)o + o->pltt4Ofs, b, size4);
+        GX_LoadTex(p, (((a << 3) & 0x1ffff) >> 1) + 0x20000 + ((b & 0x40000) >> 2), size4 >> 1);
         o->pltt4Flag |= 1;
     }
-    if (lock) func_02112038();
+    if (lock) GX_EndLoadTex();
 }
 
 // texture size in bytes
@@ -123,7 +123,7 @@ void func_02103c2c(TexData *o, u32 v) { o->tex2c = v; }
 // upload texture data to VRAM
 void func_02103bc0(TexData *o, BOOL lock)
 {
-    if (lock) func_02111ff0();
+    if (lock) GX_BeginLoadTexPltt();
     func_02111f7c((u8 *)o + o->texOfs, (o->tex2c & 0xffff) << 3, o->texSize << 3);
     o->texFlag |= 1;
     if (lock) func_02111f24();

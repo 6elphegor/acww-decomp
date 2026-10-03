@@ -268,15 +268,15 @@ extern int data_021f89cc;                 // use the fast GX DMA
 extern u32 data_0213bfec;                 // GXi_DmaId
 
 extern void func_02115e64(u32 data, void *dest, u32 size); // MIi_CpuClear32
-extern void func_02115ea8(u32 data, void *dest, u32 size); // MIi_CpuClearFast
-extern void func_02115ef4(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
-extern void func_02115e90(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
-extern void func_02115d70(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size); // MIi_CpuClearFast
+extern void MIi_CpuCopyFast(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
+extern void MIi_CpuSend32(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
+extern void MI_SendGXCommandAsyncFast(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
 extern void func_02105ac4(u32 *vec, AnmObj *anm);          // updateHintVec
-extern void func_01ff9f6c(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
-extern void func_01ffc374(fx32 numer, fx32 denom);         // FX_DivAsync
-extern fx32 func_01ffc464(void);                           // FX_GetDivResult
-extern void func_02116178(void *dst);                      // MI_Zero36B (Thumb)
+extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
+extern void FX_DivAsync(fx32 numer, fx32 denom);         // FX_DivAsync
+extern fx32 FX_GetDivResult(void);                           // FX_GetDivResult
+extern void MI_Zero36B(void *dst);                      // MI_Zero36B (Thumb)
 extern void func_0210a544(void *p, u32 n);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
@@ -359,22 +359,22 @@ static inline void MIi_CallCallback(void (*callback)(void *), void *arg) {
     }
 }
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
-extern void (*func_01ffa328(u32 intrBit))(void);           // OS_GetIrqFunction
-extern void func_01ffa404(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
-extern void func_01ffa4a0(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern void (*OS_GetIrqFunction(u32 intrBit))(void);           // OS_GetIrqFunction
+extern void OS_SetIrqFunction(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
+extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
 extern void func_0206d49c(void);                           // OS_Terminate (Thumb, main)
 
 /* PROTOS */
 void func_01ff8000(const CPContext *context);
 void func_01ff806c(CPContext *context);
-u32 func_01ff80e0(u32 intr);
-u32 func_01ff8128(u32 intr);
+u32 OS_DisableIrqMask(u32 intr);
+u32 OS_EnableIrqMask(u32 intr);
 void func_01ff8160(void);
-u32 func_01ff81a8(u32 intr);
-u32 func_01ff8228(u32 intr);
-void func_01ff825c(int index);
+u32 OS_ResetRequestIrqMask(u32 intr);
+u32 OS_SetIrqMask(u32 intr);
+void OSi_IrqCallback(int index);
 void func_01ff82f8(void);
 void func_01ff8308(void);
 void func_01ff8318(void);
@@ -384,11 +384,11 @@ void func_01ff8348(void);
 void func_01ff8358(void);
 void func_01ff8368(void);
 void func_01ff8378(void *arg);
-void func_01ff8384(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a);
 void func_01ff83cc(MtxFx44 *m, const MatAnm *a);
 void func_01ff844c(MtxFx44 *m, const MatAnm *a);
 void func_01ff8528(MtxFx44 *m, const MatAnm *a);
-void func_01ff854c(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a);
 void func_01ff8590(MtxFx44 *m, const MatAnm *a);
 void func_01ff8654(MtxFx44 *m, const MatAnm *a);
 void func_01ff8740(MtxFx44 *m, const MatAnm *a);
@@ -399,7 +399,7 @@ void func_01ff8ad4(RenderObj *obj);
 void func_01ff8bd0(u32 op, const u32 *args, u32 num);
 void func_01ff8ccc(void);
 void func_01ff8d4c(const void *src, u32 szByte);
-void func_01ff8e18(void);
+void NNS_G3dGeWaitSendDL(void);
 void func_01ff8e30(RS *rs, u32 opt);
 void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
 void func_01ff931c(RS *rs, u32 opt);
@@ -414,12 +414,12 @@ void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
 void func_01ff9d34(JntAnm *pResult);
 void func_01ff9e10(MatAnm *pResult);
 void func_01ff9f5c(void *p);
-void func_01ff9f6c(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
-void func_01ffa080(u32 dmaNo);
+void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
+void MI_WaitDma(u32 dmaNo);
 void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 dir);
-void func_01ffa160(void *arg);
-void func_01ffa1d4(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
-void func_01ffa224(void);
+void MIi_DMACallback(void *arg);
+void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
+void MIi_FIFOCallback(void);
 
 // NNS g3d: SBC interpreter loop
 void func_01ff8a64(RS *rs) {
@@ -433,7 +433,7 @@ void func_01ff8a64(RS *rs) {
 void func_01ff88d0(RS *rs, RenderObj *obj) {
     {
         volatile u32 zero = 0;
-        func_02115ea8(zero, rs, sizeof(RS));
+        MIi_CpuClearFast(zero, rs, sizeof(RS));
     }
     rs->isScaleCacheOne[0] = 1;
     rs->flag = 1;
@@ -484,18 +484,18 @@ void func_01ff8740(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
     fx32 ssCos, ssSin, stSin, stCos;
-    func_01ffc374(h, w);
+    FX_DivAsync(h, w);
     ssSin = (fx32)(((fx64)a->scaleS * a->sinR) >> 12);
     ssCos = (fx32)(((fx64)a->scaleS * a->cosR) >> 12);
     stSin = (fx32)(((fx64)a->scaleT * a->sinR) >> 12);
     stCos = (fx32)(((fx64)a->scaleT * a->cosR) >> 12);
     m->_00 = ssCos;
     m->_11 = stCos;
-    m->_01 = -stSin * func_01ffc464() >> 12;
-    func_01ffc374(w, h);
+    m->_01 = -stSin * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
     m->_30 = (a->origW * (a->scaleS - (ssSin + ssCos)) << 3) - a->origW * (fx32)(((fx64)a->scaleS * a->transS) >> 8);
     m->_31 = (a->origH * (stSin - stCos - a->scaleT + 0x2000) << 3) + a->origH * (fx32)(((fx64)a->scaleT * a->transT) >> 8);
-    m->_10 = ssSin * func_01ffc464() >> 12;
+    m->_10 = ssSin * FX_GetDivResult() >> 12;
 }
 
 // NNS g3d texture SRT: scale + rotation
@@ -503,36 +503,36 @@ void func_01ff8654(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
     fx32 ssCos, ssSin, stSin, stCos;
-    func_01ffc374(h, w);
+    FX_DivAsync(h, w);
     ssSin = (fx32)(((fx64)a->scaleS * a->sinR) >> 12);
     ssCos = (fx32)(((fx64)a->scaleS * a->cosR) >> 12);
     stSin = (fx32)(((fx64)a->scaleT * a->sinR) >> 12);
     stCos = (fx32)(((fx64)a->scaleT * a->cosR) >> 12);
     m->_00 = ssCos;
     m->_11 = stCos;
-    m->_01 = -stSin * func_01ffc464() >> 12;
-    func_01ffc374(w, h);
+    m->_01 = -stSin * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
     m->_30 = a->origW * (a->scaleS - (ssSin + ssCos)) << 3;
     m->_31 = a->origH * (stSin - stCos - a->scaleT + FX32_ONE * 2) << 3;
-    m->_10 = ssSin * func_01ffc464() >> 12;
+    m->_10 = ssSin * FX_GetDivResult() >> 12;
 }
 
 // NNS g3d texture SRT: rotation only
 void func_01ff8590(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
-    func_01ffc374(h, w);
+    FX_DivAsync(h, w);
     m->_00 = a->cosR;
     m->_11 = a->cosR;
-    m->_01 = -a->sinR * func_01ffc464() >> 12;
-    func_01ffc374(w, h);
+    m->_01 = -a->sinR * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
     m->_30 = a->origW * (-(a->sinR + a->cosR) + FX32_ONE) << 3;
     m->_31 = a->origH * (a->sinR - a->cosR + FX32_ONE) << 3;
-    m->_10 = a->sinR * func_01ffc464() >> 12;
+    m->_10 = a->sinR * FX_GetDivResult() >> 12;
 }
 
 // NNS g3d texture SRT: scale only
-void func_01ff854c(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a) {
     m->_00 = a->scaleS;
     m->_11 = a->scaleT;
     m->_01 = 0;
@@ -555,14 +555,14 @@ void func_01ff8528(MtxFx44 *m, const MatAnm *a) {
 void func_01ff844c(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
-    func_01ffc374(h, w);
+    FX_DivAsync(h, w);
     m->_00 = a->cosR;
     m->_11 = a->cosR;
-    m->_01 = -a->sinR * func_01ffc464() >> 12;
-    func_01ffc374(w, h);
+    m->_01 = -a->sinR * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
     m->_30 = (a->origW * (-(a->sinR + a->cosR) + FX32_ONE) << 3) - (a->transS * a->origW << 4);
     m->_31 = (a->origH * (a->sinR - a->cosR + FX32_ONE) << 3) + (a->transT * a->origH << 4);
-    m->_10 = a->sinR * func_01ffc464() >> 12;
+    m->_10 = a->sinR * FX_GetDivResult() >> 12;
 }
 
 // NNS g3d texture SRT (Maya): scale + translation
@@ -576,7 +576,7 @@ void func_01ff83cc(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT (Maya): translation only
-void func_01ff8384(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a) {
     m->_00 = 0x1000;
     m->_11 = 0x1000;
     m->_01 = 0;
@@ -592,46 +592,46 @@ void func_01ff8378(void *arg) {
 
 // OSi_IrqTimer3
 void func_01ff8368(void) {
-    func_01ff825c(7);
+    OSi_IrqCallback(7);
 }
 
 // OSi_IrqTimer2
 void func_01ff8358(void) {
-    func_01ff825c(6);
+    OSi_IrqCallback(6);
 }
 
 // OSi_IrqTimer1
 void func_01ff8348(void) {
-    func_01ff825c(5);
+    OSi_IrqCallback(5);
 }
 
 // OSi_IrqTimer0
 void func_01ff8338(void) {
-    func_01ff825c(4);
+    OSi_IrqCallback(4);
 }
 
 // OSi_IrqDma3
 void func_01ff8328(void) {
-    func_01ff825c(3);
+    OSi_IrqCallback(3);
 }
 
 // OSi_IrqDma2
 void func_01ff8318(void) {
-    func_01ff825c(2);
+    OSi_IrqCallback(2);
 }
 
 // OSi_IrqDma1
 void func_01ff8308(void) {
-    func_01ff825c(1);
+    OSi_IrqCallback(1);
 }
 
 // OSi_IrqDma0
 void func_01ff82f8(void) {
-    func_01ff825c(0);
+    OSi_IrqCallback(0);
 }
 
 // OSi_IrqCallback
-void func_01ff825c(int index) {
+void OSi_IrqCallback(int index) {
     u32 imask = (1UL << data_027e00b8[index]);
     void (*callback)(void *) = data_027e0058[index].func;
 
@@ -641,12 +641,12 @@ void func_01ff825c(int index) {
     }
     *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= imask;
     if (!data_027e0058[index].enable) {
-        (void)func_01ff80e0(imask);
+        (void)OS_DisableIrqMask(imask);
     }
 }
 
 // OS_SetIrqMask
-u32 func_01ff8228(u32 intr) {
+u32 OS_SetIrqMask(u32 intr) {
     BOOL ime = OS_DisableIrq();
     u32 prep = reg_OS_IE;
     reg_OS_IE = intr;

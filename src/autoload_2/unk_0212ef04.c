@@ -3,7 +3,7 @@ typedef unsigned int u32;
 typedef int s32;
 
 extern double func_0212dcd0(double, double);
-extern double func_0212ef04(double, double);
+extern double copysign(double, double);
 
 static inline int __fpclassifyd(double x) {
     switch (*(1 + (s32 *)&x) & 0x7ff00000) {
@@ -43,14 +43,14 @@ double func_0212f010(double x, int n) {
     }
     if (k == 0x7ff) return x + x;
     k = k + n;
-    if (k > 0x7fe) return huge * func_0212ef04(huge, x);
+    if (k > 0x7fe) return huge * copysign(huge, x);
     if (k > 0) {
         *(1 + (s32 *)&x) = (hx & 0x800fffff) | (k << 20);
         return x;
     }
     if (k <= -54) {
-        if (n > 50000) return huge * func_0212ef04(huge, x);
-        else return tiny * func_0212ef04(tiny, x);
+        if (n > 50000) return huge * copysign(huge, x);
+        else return tiny * copysign(tiny, x);
     }
     k += 54;
     *(1 + (s32 *)&x) = (hx & 0x800fffff) | (k << 20);
@@ -85,7 +85,7 @@ double func_0212ef2c(double x) {
 }
 
 // copysign
-double func_0212ef04(double x, double y) {
+double copysign(double x, double y) {
     *(1 + (s32 *)&x) = (*(1 + (s32 *)&x) & 0x7fffffff) | (*(1 + (s32 *)&y) & 0x80000000);
     return x;
 }

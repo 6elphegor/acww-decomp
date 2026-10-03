@@ -62,7 +62,7 @@ void func_020707ec(s32);
 void func_020ad314(u32);
 void *func_020a03ac();
 void _ZN12Unk_02096f6813func_02096f68Ev(void *);
-void func_02115fb4(void *, s32, u32);
+void MI_CpuFill8(void *, s32, u32);
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void func_02039d8c(void *);
 void _ZN12Unk_020970b8D1Ev(void *);
@@ -269,7 +269,7 @@ void Unk_0209da44::func_0209e120(u32 n) {
 }
 
 void Unk_0209da44::func_0209e110() {
-    func_02115fb4(this, 0, 0x15fe0);
+    MI_CpuFill8(this, 0, 0x15fe0);
 }
 
 void Unk_0209da44::func_0209df9c() {

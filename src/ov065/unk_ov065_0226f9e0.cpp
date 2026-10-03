@@ -5,8 +5,8 @@ extern "C" {
 char data_ov065_0228bbc4[0x44] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-";
 char *data_ov065_0228bbc0 = data_ov065_0228bbc4;
 
-void func_02115fb4(void *, u32, u32);
-void func_02116048(void *, void *, u32);
+void MI_CpuFill8(void *, u32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {
     u32 pad;
@@ -45,8 +45,8 @@ s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {
                 if (n >= 3) {
                     n = 3;
                 }
-                func_02115fb4(t, 0, 3);
-                func_02116048(in, t, n);
+                MI_CpuFill8(t, 0, 3);
+                MI_CpuCopy8(in, t, n);
                 o[0] = data_ov065_0228bbc0[t[0] >> 2];
                 if (cnt >= 2) {
                     o[1] = data_ov065_0228bbc0[((t[0] << 4) & 0x3f) | (t[1] >> 4)];

@@ -72,22 +72,22 @@ typedef struct {
     u16 f81c;
 } WMPool;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211ef94(void);
-extern u32 func_0211eeec(int n, ...);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 WMi_CheckIdle(void);
+extern u32 WMi_CheckStateEx(int n, ...);
 extern WMArm9Buf *func_0211f00c(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
-extern void func_0211f170(u32 idx, WMCallback cb);
+extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
-extern void func_02114594(void *, u32);
-extern void func_021145b0(void *, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115e48(void *, void *, u32);
-extern void func_02115ea8(u32, void *, u32);
-extern u32 func_0212741c(u32);
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_StoreRange(void *, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
+extern u32 MATH_CountPopulation(u32);
 extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 func_02120a64(void *base, u32 x, void *y, u32 n);
+extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void func_02120b0c(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
 extern u32 func_02122e24(u32, u32, u16 *);
@@ -157,7 +157,7 @@ extern u32 func_021221b0(u32);
 extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
 extern u32 func_02126e00(void *msg, void *dst);
 extern u32 func_021266c0(void *, u32, u32, u32);
-extern u32 func_021269cc(void *);
+extern u32 MBi_IsTaskBusy(void *);
 extern void func_0212683c(void *, void *, u32, u32);
 extern u32 func_02123f24(u32, u32, void *);
 extern void func_0206d49c(void);
@@ -171,7 +171,7 @@ u32 func_02121cc8(void) {
     u16 m[5];
     u16 i;
     u32 r;
-    func_02115e30(zero, m, 10);
+    MIi_CpuClear16(zero, m, 10);
     for (i = 1; i <= 15; i++) {
         switch (data_0220001c->state[i - 1]) {
         case 2:
@@ -226,13 +226,13 @@ void func_02121c60(u32 idx) {
 }
 
 // (unidentified: max(a, b) unsigned)
-u32 func_02121c50(u32 a, u32 b) {
+u32 MBi_calc_nextsendblock(u32 a, u32 b) {
     if (b <= a) b = a;
     return b;
 }
 
 // (unidentified: 1 <= x <= 15)
-BOOL func_02121c34(u32 x) {
+BOOL IsChildAidValid(u32 x) {
     if (x >= 1 && x <= 15) return 1;
     return 0;
 }
@@ -244,65 +244,65 @@ u32 func_02121c10(u32 a, u32 b) {
 }
 
 // WM_SetWEPKey (request 20)
-u32 func_02121b8c(WMCallback cb, u32 wepmode, void *key) {
-    u32 r = func_0211ef94();
+u32 WM_SetWEPKey(WMCallback cb, u32 wepmode, void *key) {
+    u32 r = WMi_CheckIdle();
     if (r != 0) return r;
     if (wepmode > 3) return 6;
     if (wepmode != 0) {
         if (key == 0) return 6;
-        func_021145b0(key, 0x50);
+        DC_StoreRange(key, 0x50);
     }
-    func_0211f170(20, cb);
+    WMi_SetCallbackTable(20, cb);
     r = func_0211f01c(20, 2, wepmode, key);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_SetWEPKeyEx (request 39)
-u32 func_02121aec(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key) {
-    u32 r = func_0211ef94();
+u32 WM_SetWEPKeyEx(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key) {
+    u32 r = WMi_CheckIdle();
     if (r != 0) return r;
     if (wepmode > 3) return 6;
     if (wepmode != 0) {
         if (key == 0) return 6;
-        func_021145b0(key, 0x50);
+        DC_StoreRange(key, 0x50);
     }
-    func_0211f170(39, cb);
+    WMi_SetCallbackTable(39, cb);
     r = func_0211f01c(39, 3, wepmode, key, wepkeyid);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_SetGameInfo (request 24)
-u32 func_02121a24(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr) {
-    u32 r = func_0211eeec(2, 7, 9);
+u32 WM_SetGameInfo(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr) {
+    u32 r = WMi_CheckStateEx(2, 7, 9);
     if (r != 0) return r;
     if (userGameInfo == 0) return 6;
     if (size > 0x70) return 6;
-    func_02115e48(userGameInfo, data_021fff00, size);
-    func_021145b0(data_021fff00, size);
-    func_0211f170(24, cb);
+    MIi_CpuCopy16(userGameInfo, data_021fff00, size);
+    DC_StoreRange(data_021fff00, size);
+    WMi_SetCallbackTable(24, cb);
     r = func_0211f01c(24, 5, data_021fff00, size, ggid, tgid, attr);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_SetBeaconIndication (request 25)
-u32 func_021219b4(WMCallback cb, u32 flag) {
-    u32 r = func_0211ef94();
+u32 WM_SetBeaconIndication(WMCallback cb, u32 flag) {
+    u32 r = WMi_CheckIdle();
     if (r != 0) return r;
     if (flag != 0 && flag != 1) return 6;
-    func_0211f170(25, cb);
+    WMi_SetCallbackTable(25, cb);
     r = func_0211f01c(25, 1, flag);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_MeasureChannel (request 29)
-u32 func_02121948(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 measureTime) {
-    u32 r = func_0211ef94();
+u32 WM_SetLifeTime(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 measureTime) {
+    u32 r = WMi_CheckIdle();
     if (r != 0) return r;
-    func_0211f170(29, cb);
+    WMi_SetCallbackTable(29, cb);
     r = func_0211f01c(29, 4, ccaMode, edThreshold, channel, measureTime);
     if (r == 0) r = 2;
     return r;
@@ -311,10 +311,10 @@ u32 func_02121948(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 
 // WM_SetLifeTime (request 30)
 u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval) {
     WMArm9Buf *w = func_0211f00c();
-    u32 r = func_0211eeec(1, 2);
+    u32 r = WMi_CheckStateEx(1, 2);
     u16 *req;
     if (r != 0) return r;
-    func_0211f170(30, cb);
+    WMi_SetCallbackTable(30, cb);
     req = (u16 *)w->req;
     req[0] = 30;
     req[1] = tableNumber;
@@ -327,17 +327,17 @@ u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInte
 }
 
 // WM_SetEntry (request 33; name inferred)
-u32 func_02121870(WMCallback cb, u32 arg) {
-    u32 r = func_0211eeec(2, 7, 9);
+u32 WM_SetEntry(WMCallback cb, u32 arg) {
+    u32 r = WMi_CheckStateEx(2, 7, 9);
     if (r != 0) return r;
-    func_0211f170(33, cb);
+    WMi_SetCallbackTable(33, cb);
     r = func_0211f01c(33, 1, arg);
     if (r == 0) r = 2;
     return r;
 }
 
 // WM_StartKeySharing
-u32 func_02121844(WMPool *ds, u32 port) {
+u32 WM_StartKeySharing(WMPool *ds, u32 port) {
     return func_02121570(ds, port, 0xffff, 2, 1);
 }
 
@@ -354,22 +354,22 @@ u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doub
     u16 mask;
     u32 r;
     st = func_0211f00c()->status;
-    r = func_0211eeec(2, 9, 10);
+    r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
-    func_02114594(&st->f0c, 4);
+    DC_InvalidateRange(&st->f0c, 4);
     if (st->f0c == 0) return 3;
     if (ds == 0) return 6;
     if (port >= 16) return 6;
     if (aidBitmap == 0) return 6;
-    func_02114594(&st->f184, 2);
+    DC_InvalidateRange(&st->f184, 2);
     aid = st->f184;
     if (aid == 0) {
-        func_02114594(&st->f86, 2);
+        DC_InvalidateRange(&st->f86, 2);
         ack = st->f86;
     }
     {
         volatile u32 zero = 0;
-        func_02115ea8(zero, ds, 0x820);
+        MIi_CpuClearFast(zero, ds, 0x820);
     }
     ds->f808 = 0;
     ds->f80a = 0;
@@ -380,7 +380,7 @@ u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doub
     ds->f818 = (doubleMode != 0);
     mask = aidBitmap | (1 << aid);
     ds->f80e = mask;
-    r = func_0212741c(mask);
+    r = MATH_CountPopulation(mask);
     ds->f812 = r;
     ds->f814 = dataLength * r;
     if (ds->f814 > 0x1fc) {
@@ -422,7 +422,7 @@ u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doub
 // WM_EndDataSharing
 u32 func_021214b4(WMPool *ds) {
     WMArm9Buf *w = func_0211f00c();
-    u32 r = func_0211eeec(2, 9, 10);
+    u32 r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
     if (ds == 0) return 6;
     if (ds->f80e == 0 || (w->portCb[ds->f816] != func_02120ed4 && w->portCb[ds->f816] != func_02120da4)) {
@@ -444,17 +444,17 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
     u32 r;
     u32 rr;
     st = func_0211f00c()->status;
-    r = func_0211eeec(2, 9, 10);
+    r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
-    func_02114594(&st->f0c, 4);
+    DC_InvalidateRange(&st->f0c, 4);
     if (st->f0c == 0) return 3;
     if (ds == 0) return 6;
     if (data == 0) return 6;
     if (out == 0) return 6;
-    func_02114594(&st->f184, 2);
+    DC_InvalidateRange(&st->f184, 2);
     aid = st->f184;
     if (aid == 0) {
-        func_02114594(&st->f86, 2);
+        DC_InvalidateRange(&st->f86, 2);
         ack = st->f86;
     }
     if (ds->f81c == 5) return 1;
@@ -480,7 +480,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
         }
         if (ds->f80c != ds->f80a) {
             ds->pkt[ds->f80c].hdr |= 1;
-            func_02115e48(&ds->pkt[ds->f80c], out, 512);
+            MIi_CpuCopy16(&ds->pkt[ds->f80c], out, 512);
             ready = 1;
             r = 0;
             ds->f81a = ds->slot[ds->f80c];
@@ -506,7 +506,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
             if ((ds->pkt[idx].hdr & 1) == 0) {
                 ds->pkt[idx].hdr |= 1;
             } else {
-                func_02115e48(&ds->pkt[idx], out, 512);
+                MIi_CpuCopy16(&ds->pkt[idx], out, 512);
                 ds->f81a = ds->slot[ds->f80c];
                 ds->f80c = (ds->f80c + 1) & 3;
                 ready = 1;
@@ -515,7 +515,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
         }
         if (ready != 0) {
             u8 *p = &ds->pkt[ds->f80a].data[28];
-            func_02115e48(data, p, ds->f810);
+            MIi_CpuCopy16(data, p, ds->f810);
             rr = func_0212052c(func_02120fe8, ds, p, ds->f810, ds->f80e, ds->f816, 1);
             ds->f80a = (ds->f80a + 1) & 3;
             if (rr != 2) {
@@ -539,7 +539,7 @@ void func_02120fe8(WMMsg *msg) {
     if (w->portCb[msg->f0a] != func_02120ed4 && w->portCb[msg->f0a] != func_02120da4) return;
     if (ds == 0) return;
     if (ds != (WMPool *)msg->f20) return;
-    func_02114594(&st->f184, 2);
+    DC_InvalidateRange(&st->f184, 2);
     err = msg->errcode;
     aid = st->f184;
     if (err == 0) {

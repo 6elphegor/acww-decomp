@@ -6,7 +6,7 @@ u32 func_0209cb9c(void *p, void *q);
 u16 func_0209cb74(void *p, void *q);
 void func_0209cfe4(void);
 void func_0206e8b8(void *);
-void func_02116048(void *src, void *dst, u32 size);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
 extern "C" void _ZN12Unk_0204debcC1Ev(void *);
@@ -170,9 +170,9 @@ extern "C" void func_0209d7bc(u8 *p) {
     a[0] = 0;
     a[1] = 0;
     func_0206e8b8(a);
-    func_02116048(a, b, 8);
+    MI_CpuCopy8(a, b, 8);
     u32 r4 = func_0209cb9c(p + 0x15fb4, b);
-    func_02116048(a, c, 8);
+    MI_CpuCopy8(a, c, 8);
     u16 r0 = func_0209cb74(p + 0x15fb4, c);
     *(u32 *)(p + 0x15fb4) = r4;
     *(u16 *)(p + 0x15fb8) = r0;

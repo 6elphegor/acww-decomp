@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK sound command layer (SND_Command*) + PXI send: autoload_2 0x02116c0c-0x02117e8c. ARM code, mwcc 1.2/base, -O4,p.
-// func_02117f20 (PXI_Init) is outside this unit; it is only called (tail call) from func_02117dcc.
+// PXI_InitFifo (PXI_Init) is outside this unit; it is only called (tail call) from func_02117dcc.
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -118,19 +118,19 @@ extern SndWork *data_021fea60;
 extern u8 data_0213a0b4[];
 extern SlotEnt data_027e032c[];
 
-extern u32 func_01ffa2ec(void);
+extern u32 OS_DisableInterrupts(void);
 extern u32 func_01ffa3cc(void);
-extern void func_01ffa3d4(u32);
+extern void OS_RestoreInterrupts(u32);
 extern void func_01ffa494(u32);
-extern void func_01ffa624(void);
-extern void func_02114410(void *);
-extern void func_02114480(void *);
-extern void func_0211450c(void *);
-extern void func_02114594(void *, u32);
-extern void func_021145b0(void *, u32);
-extern void func_021145cc(void *, u32);
-extern void func_02116714(u32, u32, u32, u32);
-extern void func_0211665c(u32, u32, u32, u32, u32);
+extern void PxiFifoCallback(void);
+extern void OS_UnlockMutex(void *);
+extern void OS_LockMutex(void *);
+extern void OS_InitMutex(void *);
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_StoreRange(void *, u32);
+extern void DC_FlushRange(void *, u32);
+extern void SNDi_SetPlayerParam(u32, u32, u32, u32);
+extern void PushCommand_impl(u32, u32, u32, u32, u32);
 
 typedef union PxiMsg {
     u32 raw;
@@ -145,31 +145,31 @@ typedef union PxiMsg {
 #define reg_IPCFIFOCNT (*(volatile u16 *)0x04000184)
 #define reg_IPCFIFOSEND (*(volatile u32 *)0x04000188)
 
-s32 func_02117dd8(u32 tag, u32 data, u32 err);
-void func_02116dc4(void);
-Cmd *func_02116d6c(void);
-u32 func_02116d24(void);
-u32 func_02116e64(void);
+s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
+void RequestCommandProc(void);
+Cmd *AllocCommand(void);
+u32 IsCommandAvailable(void);
+u32 SND_CountWaitingCommand(void);
 u32 func_02116e84(void);
 u32 func_02116ec4(void);
-u32 func_02116f04(u32 t);
-Cmd *func_021172cc(u32 flags);
-u32 func_02117028(u32 flags);
-void func_021171e8(Cmd *c);
-Cmd *func_02117230(u32 flags);
-void func_02117400(void);
-void func_02117568(void);
-void func_02117598(SndWork *w);
-u32 func_02117618(void);
+u32 SND_IsFinishedCommandTag(u32 t);
+Cmd *SND_RecvCommandReply(u32 flags);
+u32 SND_FlushCommand(u32 flags);
+void SND_PushCommand(Cmd *c);
+Cmd *SND_AllocCommand(u32 flags);
+void SND_CommandInit(void);
+void SND_AlarmInit(void);
+void SNDi_InitSharedWork(SndWork *w);
+u32 SNDi_GetFinishedCommandTag(void);
 void func_02116cb0(void);
 void func_02116cc4(void);
-void func_02116df8(void);
-extern void func_02117f20(void);
-extern void func_02117eb4(u32 tag, void (*cb)(void));
-extern u32 func_02117e8c(u32 tag, u32 proc);
+void InitPXI(void);
+extern void PXI_InitFifo(void);
+extern void PXI_SetFifoRecvCallback(u32 tag, void (*cb)(void));
+extern u32 PXI_IsCallbackReady(u32 tag, u32 proc);
 
 // PXI_SendWordByFifo
-s32 func_02117dd8(u32 tag, u32 data, u32 err) {
+s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err) {
     PxiMsg m;
     u32 e;
     m.b.tag = tag;
@@ -179,23 +179,23 @@ s32 func_02117dd8(u32 tag, u32 data, u32 err) {
         reg_IPCFIFOCNT |= 0xc000;
         return -1;
     }
-    e = func_01ffa2ec();
+    e = OS_DisableInterrupts();
     if (reg_IPCFIFOCNT & 2) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return -2;
     }
     reg_IPCFIFOSEND = m.raw;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return 0;
 }
 
-// tail call to PXI_Init (func_02117f20)
+// tail call to PXI_Init (PXI_InitFifo)
 void func_02117dcc(void) {
-    func_02117f20();
+    PXI_InitFifo();
 }
 
 // SND_... slot attach
-void func_02117cf0(Obj *p, s32 i, Obj *item) {
+void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
     Obj *old;
     func_02116cc4();
     old = p->s[i].a;
@@ -208,7 +208,7 @@ void func_02117cf0(Obj *p, s32 i, Obj *item) {
         q = old->s[0].a;
         if (&p->s[i] == q) {
             old->s[0].a = p->s[i].next;
-            func_021145b0(p->s[i].a, 0x3c);
+            DC_StoreRange(p->s[i].a, 0x3c);
         } else {
             if (q != 0) {
                 Slot *n;
@@ -221,7 +221,7 @@ void func_02117cf0(Obj *p, s32 i, Obj *item) {
                 } while (n != 0);
             }
             q->next = p->s[i].next;
-            func_021145b0(q, 8);
+            DC_StoreRange(q, 8);
         }
     }
     {
@@ -231,12 +231,12 @@ void func_02117cf0(Obj *p, s32 i, Obj *item) {
         p->s[i].a = item;
     }
     func_02116cb0();
-    func_021145b0(p, 0x3c);
-    func_021145b0(item, 0x3c);
+    DC_StoreRange(p, 0x3c);
+    DC_StoreRange(item, 0x3c);
 }
 
 // SND_... slot detach all
-void func_02117c50(Obj *p) {
+void SND_DestroyBank(Obj *p) {
     s32 i;
     func_02116cc4();
     for (i = 0; i < 4; i++) {
@@ -245,7 +245,7 @@ void func_02117c50(Obj *p) {
             Slot *q = o->s[0].a;
             if (&p->s[i] == q) {
                 o->s[0].a = p->s[i].next;
-                func_021145b0(o, 0x3c);
+                DC_StoreRange(o, 0x3c);
             } else {
                 if (q != 0) {
                     Slot *n;
@@ -258,14 +258,14 @@ void func_02117c50(Obj *p) {
                     } while (n != 0);
                 }
                 q->next = p->s[i].next;
-                func_021145b0(q, 8);
+                DC_StoreRange(q, 8);
             }
         }
     }
     func_02116cb0();
 }
 
-void func_02117c04(Obj *p) {
+void SND_DestroyWaveArc(Obj *p) {
     Slot *n;
     func_02116cc4();
     n = p->s[0].a;
@@ -274,21 +274,21 @@ void func_02117c04(Obj *p) {
             Slot *nx = n->next;
             n->a = 0;
             n->next = 0;
-            func_021145b0(n, 8);
+            DC_StoreRange(n, 8);
             n = nx;
         } while (n != 0);
     }
     func_02116cb0();
 }
 
-void func_02117be4(Pair *p) {
+void SND_GetFirstInstDataPos(Pair *p) {
     Pair t;
     t.a = 0;
     t.b = 0;
     *p = t;
 }
 
-u32 func_02117a0c(Bank *b, InstOut *out, u32 *idx) {
+u32 SND_GetNextInstData(Bank *b, InstOut *out, u32 *idx) {
     while (idx[0] < b->count) {
         u32 e;
         e = b->ent[idx[0]];
@@ -340,14 +340,14 @@ u32 func_02117a04(Bank *b) {
     return b->count;
 }
 
-void func_021179cc(u8 *base, s32 i, u32 v) {
+void SND_SetWaveDataAddress(u8 *base, s32 i, u32 v) {
     func_02116cc4();
     *(u32 *)(base + i * 4 + 0x3c) = v;
-    func_021145b0(base + 0x3c + i * 4, 4);
+    DC_StoreRange(base + 0x3c + i * 4, 4);
     func_02116cb0();
 }
 
-void *func_02117984(u8 *base, s32 i) {
+void *SND_GetWaveDataAddress(u8 *base, s32 i) {
     u32 off;
     u8 *r;
     func_02116cc4();
@@ -364,7 +364,7 @@ void *func_02117984(u8 *base, s32 i) {
     return r;
 }
 
-u16 func_02117910(s32 x) {
+u16 SND_CalcChannelVolume(s32 x) {
     u32 r;
     u32 v;
     if (x < -723) {
@@ -385,18 +385,18 @@ u16 func_02117910(s32 x) {
     return v | (r << 8);
 }
 
-u32 func_021178d8(void) {
-    func_02114594((u8 *)data_021fea60 + 4, 4);
+u32 SND_GetPlayerStatus(void) {
+    DC_InvalidateRange((u8 *)data_021fea60 + 4, 4);
     return data_021fea60->f4;
 }
 
 s32 func_02117884(s32 a, s32 b) {
-    func_02114594(&data_021fea60->t[a].v[b], 2);
+    DC_InvalidateRange(&data_021fea60->t[a].v[b], 2);
     return data_021fea60->t[a].v[b];
 }
 
 s32 func_02117844(s32 idx) {
-    func_02114594(&data_021fea60->u[idx], 2);
+    DC_InvalidateRange(&data_021fea60->u[idx], 2);
     return data_021fea60->u[idx];
 }
 
@@ -458,12 +458,12 @@ u32 func_0211764c(u8 *w, s32 a, s32 b, TrackOut *o) {
     return 1;
 }
 
-u32 func_02117618(void) {
-    func_02114594(data_021fea60, 4);
+u32 SNDi_GetFinishedCommandTag(void) {
+    DC_InvalidateRange(data_021fea60, 4);
     return data_021fea60->f0;
 }
 
-void func_02117598(SndWork *w) {
+void SNDi_InitSharedWork(SndWork *w) {
     s32 i;
     s32 j;
     w->f4 = 0;
@@ -479,10 +479,10 @@ void func_02117598(SndWork *w) {
     for (j = 0; j < 16; j++) {
         w->u[j] = -1;
     }
-    func_021145cc(w, 0x280);
+    DC_FlushRange(w, 0x280);
 }
 
-void func_02117568(void) {
+void SND_AlarmInit(void) {
     s32 i;
     for (i = 0; i < 8; i++) {
         data_027e032c[i].a = 0;
@@ -491,12 +491,12 @@ void func_02117568(void) {
     }
 }
 
-void func_02117548(s32 idx) {
+void SNDi_IncAlarmId(s32 idx) {
     SlotEnt *e = &data_027e032c[idx];
     e->cnt++;
 }
 
-u32 func_02117518(s32 idx, u32 a, u32 b) {
+u32 SNDi_SetAlarmHandler(s32 idx, u32 a, u32 b) {
     SlotEnt *e = &data_027e032c[idx];
     e->a = a;
     e->b = b;
@@ -505,10 +505,10 @@ u32 func_02117518(s32 idx, u32 a, u32 b) {
 }
 
 // SND_CommandInit (probable)
-void func_02117400(void) {
+void SND_CommandInit(void) {
     s32 i;
     Cmd *p;
-    func_02116df8();
+    InitPXI();
     p = data_021fd260;
     data_021fcf88 = p;
     for (i = 0; i < 255; i++) {
@@ -525,34 +525,34 @@ void func_02117400(void) {
     data_021fcfa8 = 1;
     data_021fcf8c = 0;
     data_021fea60 = &data_021fcfe0;
-    func_02117598(&data_021fcfe0);
+    SNDi_InitSharedWork(&data_021fcfe0);
     {
-        Cmd *c = func_02117230(1);
+        Cmd *c = SND_AllocCommand(1);
         if (c == 0) {
             return;
         }
         c->id = 29;
         c->arg[0] = (u32)data_021fea60;
-        func_021171e8(c);
-        func_02117028(1);
+        SND_PushCommand(c);
+        SND_FlushCommand(1);
     }
 }
 
 // SND_RecvCommandReply (probable)
-Cmd *func_021172cc(u32 flags) {
-    u32 e = func_01ffa2ec();
+Cmd *SND_RecvCommandReply(u32 flags) {
+    u32 e = OS_DisableInterrupts();
     Cmd *c;
     Cmd *last;
     s32 idx;
     if (flags & 1) {
-        while (data_021fcf8c == func_02117618()) {
-            func_01ffa3d4(e);
+        while (data_021fcf8c == SNDi_GetFinishedCommandTag()) {
+            OS_RestoreInterrupts(e);
             func_01ffa494(100);
-            e = func_01ffa2ec();
+            e = OS_DisableInterrupts();
         }
     } else {
-        if (data_021fcf8c == func_02117618()) {
-            func_01ffa3d4(e);
+        if (data_021fcf8c == SNDi_GetFinishedCommandTag()) {
+            OS_RestoreInterrupts(e);
             return 0;
         }
     }
@@ -576,44 +576,44 @@ Cmd *func_021172cc(u32 flags) {
     data_021fcf98 = last;
     data_021fcfa4 = data_021fcfa4 - 1;
     data_021fcf8c = data_021fcf8c + 1;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return c;
 }
 
 // SND_AllocCommand (probable)
-Cmd *func_02117230(u32 flags) {
+Cmd *SND_AllocCommand(u32 flags) {
     Cmd *c;
-    if (!func_02116d24()) {
+    if (!IsCommandAvailable()) {
         return 0;
     }
-    c = func_02116d6c();
+    c = AllocCommand();
     if (c != 0) {
         return c;
     }
     if (!(flags & 1)) {
         return 0;
     }
-    if ((s32)func_02116e64() > 0) {
-        while (func_021172cc(0) != 0) {
+    if ((s32)SND_CountWaitingCommand() > 0) {
+        while (SND_RecvCommandReply(0) != 0) {
         }
-        c = func_02116d6c();
+        c = AllocCommand();
         if (c != 0) {
             return c;
         }
     } else {
-        func_02117028(1);
+        SND_FlushCommand(1);
     }
-    func_02116dc4();
+    RequestCommandProc();
     do {
-        func_021172cc(1);
-        c = func_02116d6c();
+        SND_RecvCommandReply(1);
+        c = AllocCommand();
     } while (c == 0);
     return c;
 }
 
 // SND_PushCommand (probable)
-void func_021171e8(Cmd *c) {
-    u32 e = func_01ffa2ec();
+void SND_PushCommand(Cmd *c) {
+    u32 e = OS_DisableInterrupts();
     if (data_021fcf94 == 0) {
         data_021fcf94 = c;
         data_021fcf90 = c;
@@ -622,39 +622,39 @@ void func_021171e8(Cmd *c) {
         data_021fcf94 = c;
     }
     c->next = 0;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
 }
 
 // SND_FlushCommand (probable)
-u32 func_02117028(u32 flags) {
-    u32 e = func_01ffa2ec();
+u32 SND_FlushCommand(u32 flags) {
+    u32 e = OS_DisableInterrupts();
     if (data_021fcf90 == 0) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return 1;
     }
     if (data_021fcfa4 >= 8) {
         if (!(flags & 1)) {
-            func_01ffa3d4(e);
+            OS_RestoreInterrupts(e);
             return 0;
         }
         do {
-            func_021172cc(1);
+            SND_RecvCommandReply(1);
         } while (data_021fcfa4 >= 8);
     }
-    func_021145cc(data_021fd260, 0x1800);
-    if (func_02117dd8(7, (u32)data_021fcf90, 0) < 0) {
+    DC_FlushRange(data_021fd260, 0x1800);
+    if (PXI_SendWordByFifo(7, (u32)data_021fcf90, 0) < 0) {
         if (!(flags & 1)) {
-            func_01ffa3d4(e);
+            OS_RestoreInterrupts(e);
             return 0;
         }
-        while (func_02117dd8(7, (u32)data_021fcf90, 0) < 0) {
-            func_01ffa3d4(e);
+        while (PXI_SendWordByFifo(7, (u32)data_021fcf90, 0) < 0) {
+            OS_RestoreInterrupts(e);
             func_01ffa494(100);
-            e = func_01ffa2ec();
+            e = OS_DisableInterrupts();
         }
     }
     if (flags & 2) {
-        func_02116dc4();
+        RequestCommandProc();
     }
     {
         s32 c4;
@@ -671,24 +671,24 @@ u32 func_02117028(u32 flags) {
         data_021fcfa4 = c4 + 1;
         data_021fcfa8 = c8 + 1;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return 1;
 }
 
 // SND_WaitForCommandProc (probable)
-u32 func_02116f98(u32 t) {
-    u32 r = func_02116f04(t);
+u32 SND_WaitForCommandProc(u32 t) {
+    u32 r = SND_IsFinishedCommandTag(t);
     if (r == 0) {
-        while (func_021172cc(0) != 0) {
+        while (SND_RecvCommandReply(0) != 0) {
         }
-        r = func_02116f04(t);
+        r = SND_IsFinishedCommandTag(t);
         if (r == 0) {
-            func_02116dc4();
-            r = func_02116f04(t);
+            RequestCommandProc();
+            r = SND_IsFinishedCommandTag(t);
             if (r == 0) {
                 do {
-                    func_021172cc(1);
-                    r = func_02116f04(t);
+                    SND_RecvCommandReply(1);
+                    r = SND_IsFinishedCommandTag(t);
                 } while (r == 0);
             }
         }
@@ -696,20 +696,20 @@ u32 func_02116f98(u32 t) {
     return r;
 }
 
-u32 func_02116f58(void) {
-    u32 e = func_01ffa2ec();
+u32 SND_GetCurrentCommandTag(void) {
+    u32 e = OS_DisableInterrupts();
     u32 r;
     if (data_021fcf90 == 0) {
         r = data_021fcf8c;
     } else {
         r = data_021fcfa8;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return r;
 }
 
-u32 func_02116f04(u32 t) {
-    u32 e = func_01ffa2ec();
+u32 SND_IsFinishedCommandTag(u32 t) {
+    u32 e = OS_DisableInterrupts();
     u32 r;
     u32 cur = data_021fcf8c;
     if (t > cur) {
@@ -721,118 +721,118 @@ u32 func_02116f04(u32 t) {
     } else {
         r = (cur - t) < 0x80000000;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return r;
 }
 
 u32 func_02116ec4(void) {
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     u32 n = 0;
     Cmd *c = data_021fcf88;
     while (c != 0) {
         c = c->next;
         n++;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return n;
 }
 
 u32 func_02116e84(void) {
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     u32 n = 0;
     Cmd *c = data_021fcf90;
     while (c != 0) {
         c = c->next;
         n++;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return n;
 }
 
-u32 func_02116e64(void) {
+u32 SND_CountWaitingCommand(void) {
     u32 a = func_02116ec4();
     return 256 - a - func_02116e84();
 }
 
-void func_02116df8(void) {
-    func_02117eb4(7, func_01ffa624);
-    if (!func_02116d24()) {
+void InitPXI(void) {
+    PXI_SetFifoRecvCallback(7, PxiFifoCallback);
+    if (!IsCommandAvailable()) {
         return;
     }
-    if (func_02117e8c(7, 1) != 0) {
+    if (PXI_IsCallbackReady(7, 1) != 0) {
         return;
     }
     do {
         func_01ffa494(100);
-    } while (func_02117e8c(7, 1) == 0);
+    } while (PXI_IsCallbackReady(7, 1) == 0);
 }
 
-void func_02116dc4(void) {
-    while (func_02117dd8(7, 0, 0) < 0) {
+void RequestCommandProc(void) {
+    while (PXI_SendWordByFifo(7, 0, 0) < 0) {
     }
 }
 
-Cmd *func_02116d6c(void) {
-    u32 e = func_01ffa2ec();
+Cmd *AllocCommand(void) {
+    u32 e = OS_DisableInterrupts();
     Cmd *c = data_021fcf88;
     if (c == 0) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return 0;
     }
     data_021fcf88 = c->next;
     if (data_021fcf88 == 0) {
         data_021fcf98 = 0;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return c;
 }
 
-u32 func_02116d24(void) {
+u32 IsCommandAvailable(void) {
     u32 r;
     u32 e;
     if (func_01ffa3cc() == 0) {
         return 1;
     }
-    e = func_01ffa2ec();
+    e = OS_DisableInterrupts();
     *(volatile u32 *)0x04fff200 = 16;
     r = *(volatile u32 *)0x04fff200;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return r != 0;
 }
 
 // SND_Init
-void func_02116cd8(void) {
+void SND_Init(void) {
     if (data_021fcf6c != 0) {
         return;
     }
     data_021fcf6c = 1;
-    func_0211450c(&data_021fcf70);
-    func_02117400();
-    func_02117568();
+    OS_InitMutex(&data_021fcf70);
+    SND_CommandInit();
+    SND_AlarmInit();
 }
 
 // SND lock
 void func_02116cc4(void) {
-    func_02114480(&data_021fcf70);
+    OS_LockMutex(&data_021fcf70);
 }
 
 // SND unlock
 void func_02116cb0(void) {
-    func_02114410(&data_021fcf70);
+    OS_UnlockMutex(&data_021fcf70);
 }
 
-void func_02116c84(u32 a) {
-    func_0211665c(1, a, 0, 0, 0);
+void SND_StopSeq(u32 a) {
+    PushCommand_impl(1, a, 0, 0, 0);
 }
 
-void func_02116c50(u32 a, u32 b, u32 c, u32 d) {
-    func_0211665c(2, a, b, c, d);
+void SND_PrepareSeq(u32 a, u32 b, u32 c, u32 d) {
+    PushCommand_impl(2, a, b, c, d);
 }
 
-void func_02116c24(u32 a) {
-    func_0211665c(3, a, 0, 0, 0);
+void SND_StartPreparedSeq(u32 a) {
+    PushCommand_impl(3, a, 0, 0, 0);
 }
 
-void func_02116c0c(u32 a, u32 b) {
-    func_02116714(a, 26, b, 2);
+void SND_SetPlayerTempoRatio(u32 a, u32 b) {
+    SNDi_SetPlayerParam(a, 26, b, 2);
 }

@@ -103,7 +103,7 @@ s32 func_0204d5d8(s32 k, s32 *a, s32 *b, s32 *c);
 void *func_020b23a4(void *p);
 s32 func_020b2514(void *p, s32 i);
 void *func_02064020(void *heap, s32 a, const char *fmt, ...);
-void *func_0210629c(...);
+void *NNS_G3dGetTex(...);
 s32 func_020557a0(void *p, s32 a);
 void *func_0205588c(void *p, void *heap);
 void func_020e8558(void *p);
@@ -144,7 +144,7 @@ s32 func_0204c188(void *, s32);
 s32 func_02101340(char *, const char *, void *);
 void func_020639e8(char *, const char *, ...);
 void *func_021012bc(const char *);
-void *func_021062dc(void *);
+void *NNS_G3dGetMdlSet(void *);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
 void func_02101310(char *);
@@ -607,13 +607,13 @@ s32 func_ov003_022189b8(Unk_ov003_02218adc *self) {
         str = func_02064020(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
         u32 off = i << 2;
         u32 *e = &self->unk_00[i];
-        self->unk_00[i] = (u32)func_0210629c(str);
+        self->unk_00[i] = (u32)NNS_G3dGetTex(str);
         if (func_020557a0((void *)self->unk_00[i], za)) {
             *e = (u32)func_0205588c((void *)*e, data_021c6204);
         }
         func_020e8558(str);
         str = func_02064020(data_021f482c, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
-        e[4] = (u32)func_0210629c(str);
+        e[4] = (u32)NNS_G3dGetTex(str);
         if (func_02055724((void *)e[4], zb)) {
             e[4] = (u32)func_0205588c((void *)e[4], heap);
         }
@@ -682,10 +682,10 @@ s32 func_ov003_0221888c(Unk_ov003_02218968 *r) {
     if (func_02101340((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
             func_020639e8(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
-            u8 *p = (u8 *)func_021062dc(func_021012bc(data_ov003_02235888));
+            u8 *p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov003_02235888));
             r->unk_04[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }
-        r->unk_00 = (s32)func_0210629c(func_021012bc("STR:a/obj_x_house0.nsbtx"));
+        r->unk_00 = (s32)NNS_G3dGetTex(func_021012bc("STR:a/obj_x_house0.nsbtx"));
         func_02055724((void *)r->unk_00, 0);
         r->unk_18 = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
         r->unk_1c = 1;
@@ -732,7 +732,7 @@ s32 func_ov003_02218800(void **out) {
     s32 r3 = func_ov003_02218da8();
     void *t = func_02064020(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
-        *out = func_0210629c();
+        *out = NNS_G3dGetTex();
         func_02055744(*out, 0);
         *out = func_0205588c(*out, data_021c6204);
         func_020e8558(t);

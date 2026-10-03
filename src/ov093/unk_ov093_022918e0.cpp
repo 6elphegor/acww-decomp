@@ -51,8 +51,8 @@ void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_020641b4(const char *a, void *b, s32 c);
 void func_020b35f8(void *a, u8 *b, const char *c);
 s8 *func_020a6b9c(void *a, s32 b);
-void func_02115e48(void *a, void *b, s32 c);
-void func_02115e30(u32 a, void *b, s32 c);
+void MIi_CpuCopy16(void *a, void *b, s32 c);
+void MIi_CpuClear16(u32 a, void *b, s32 c);
 
 extern void *data_021f482c;
 extern char *data_ov093_02292240;
@@ -250,9 +250,9 @@ void Unk_ov093_022918e0::func_02291e6c(s32 a)
     unk_18.func_02291918();
     unk_820.func_02291918();
     t[0] = unk_1028[0];
-    func_02115e30(t[0], unk_18.unk_08, 0x800);
+    MIi_CpuClear16(t[0], unk_18.unk_08, 0x800);
     t[1] = unk_1028[0];
-    func_02115e30(t[1], unk_820.unk_08, 0x800);
+    MIi_CpuClear16(t[1], unk_820.unk_08, 0x800);
     unk_05 = 1;
 }
 
@@ -305,12 +305,12 @@ void Unk_ov093_022918e0::func_02291d80(s32 which, s32 y)
 void Unk_ov093_022918e0::func_02291d5c(u8 *dst, u32 row)
 {
     volatile u16 t = unk_1028[0];
-    func_02115e30(t, dst + row * 0x40, 0x40);
+    MIi_CpuClear16(t, dst + row * 0x40, 0x40);
 }
 
 void Unk_ov093_022918e0::func_02291d3c(u8 *src, u32 dstRow, u32 srcRow)
 {
-    func_02115e48((u8 *)unk_1028 + dstRow * 0x40, src + srcRow * 0x40, 0x40);
+    MIi_CpuCopy16((u8 *)unk_1028 + dstRow * 0x40, src + srcRow * 0x40, 0x40);
 }
 
 s8 *Unk_ov093_022918e0::func_02291cf8(s32 i)

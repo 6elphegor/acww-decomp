@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-extern "C" void func_02116048(const void *src, void *dst, u32 size);
+extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 struct Unk_0203f484_Date {
     u32 a;
@@ -11,7 +11,7 @@ struct Unk_0203f484_Date {
 struct Unk_0203f508_Date {
     u8 b[8];
     Unk_0203f508_Date() {}
-    Unk_0203f508_Date(const Unk_0203f508_Date &o) { func_02116048(&o, this, 8); }
+    Unk_0203f508_Date(const Unk_0203f508_Date &o) { MI_CpuCopy8(&o, this, 8); }
 };
 
 struct Unk_0203f554_CalB {
@@ -948,13 +948,13 @@ extern "C" s32 func_0203f31c(s32 a, u8 *p, s32 c) {
     u8 tbl[0x58];
     if (p[5] == data_021c3bd8.unk_00[2] && p[4] == data_021c3bd8.unk_00[1] && p[3] == data_021c3bd8.unk_00[0]) {
         if (c != 0 || func_0203f14c() == 0) {
-            func_02116048(p, d1, 8);
+            MI_CpuCopy8(p, d1, 8);
             r = func_0203f3a0(a, d1, data_021c3bd8.unk_04);
         }
     } else {
-        func_02116048(p, d2, 8);
+        MI_CpuCopy8(p, d2, 8);
         ((void (*)(void *, void *, s32))func_0203f52c)(tbl, d2, 0);
-        func_02116048(p, d3, 8);
+        MI_CpuCopy8(p, d3, 8);
         r = func_0203f3a0(a, d3, (Unk_0203f408_Entry *)tbl);
     }
     return r;
@@ -964,7 +964,7 @@ extern "C" s32 func_0203f2e0(s32 a, void *b, s32 c) {
     s32 r = 0;
     u8 buf[8];
     if (func_020400b0() == 0) {
-        func_02116048(b, buf, 8);
+        MI_CpuCopy8(b, buf, 8);
         r = func_0203f31c(a, buf, c);
         if (r == 1) {
             r = 0;

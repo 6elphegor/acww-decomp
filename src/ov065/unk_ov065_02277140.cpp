@@ -65,12 +65,12 @@ s32 func_ov065_022849d8(s32);
 s32 func_ov065_02284a24(s32);
 void func_ov065_02284a2c(s32, void *, s32, s32);
 void func_ov065_02276124(s32, s32, s32);
-u64 func_01ffa6b4(void);
-void func_02116048(void *, void *, s32);
-void func_02115fb4(void *, s32, s32);
-s32 func_02128930(void *, const void *, s32);
+u64 OS_GetTick(void);
+void MI_CpuCopy8(void *, void *, s32);
+void MI_CpuFill8(void *, s32, s32);
+s32 memcmp(void *, const void *, s32);
 void func_0212a2ec(void *, const void *, s32);
-void func_02115640(void *);
+void OS_GetMacAddress(void *);
 
 s32 func_ov065_02277140(s32 id);
 void func_ov065_02277160(s32 a, void *b, s32 c);
@@ -110,8 +110,8 @@ u32 func_ov065_022778b0(u32 n) {
     if (data_ov065_02290f7c.unk_00 == 0 && data_ov065_02290f7c.unk_08 == 0 && data_ov065_02290f7c.unk_10 == 0) {
         u64 s;
         u64 t;
-        func_02115640(&s);
-        t = func_01ffa6b4();
+        OS_GetMacAddress(&s);
+        t = OS_GetTick();
         s = ((s >> 24) & 0xffffff) | (t << 24);
         data_ov065_02290f7c.unk_00 = s;
         data_ov065_02290f7c.unk_08 = 0x5d588b656c078965ULL;
@@ -233,8 +233,8 @@ void func_ov065_02277660(void *p, u32 a, u32 b) {
 
 u32 func_ov065_0227762c(void *src) {
     Unk_ov065_0227762c_Hdr h;
-    func_02116048(src, &h, 8);
-    if (func_02128930(h.unk_06, "DT", 2) == 0) {
+    MI_CpuCopy8(src, &h, 8);
+    if (memcmp(h.unk_06, "DT", 2) == 0) {
         return h.unk_04;
     }
     return 0;
@@ -252,7 +252,7 @@ s32 func_ov065_02277618(s32 m) {
 
 void func_ov065_022775e8(void *p) {
     data_ov065_02290f78 = (Unk_ov065_02290f78 *)p;
-    func_02115fb4(p, 0, 0x614);
+    MI_CpuFill8(p, 0, 0x614);
     data_ov065_02290f78->unk_610 = 0x5b9;
 }
 
@@ -313,7 +313,7 @@ void func_ov065_0227746c(void) {
                 if (func_ov065_0227051c(id) != 0) {
                     r = func_ov065_02277418(id);
                     if (data_ov065_02290f78->unk_608 != NULL && r->unk_2c != 0) {
-                        u64 t = func_01ffa6b4();
+                        u64 t = OS_GetTick();
                         u64 d = (t - *(u64 *)&r->unk_24) << 6;
                         if ((u32)(d / 0x82ea) > r->unk_2c) {
                             data_ov065_02290f78->unk_608(id);
@@ -395,12 +395,12 @@ void func_ov065_022772b0(s32 a, void *buf, s32 n) {
     s32 id = func_ov065_02270418(a);
     Unk_ov065_02277418_Rec *r = &data_ov065_02290f78->unk_000[id];
     if (r->unk_04 != NULL && r->unk_08 >= n) {
-        func_02116048(buf, r->unk_04, n);
+        MI_CpuCopy8(buf, r->unk_04, n);
         if (data_ov065_02290f78->unk_604 != NULL) {
             data_ov065_02290f78->unk_604(id, r->unk_04, n);
         }
         if (data_ov065_02290f78->unk_608 != NULL && r->unk_2c != 0) {
-            u64 t = func_01ffa6b4();
+            u64 t = OS_GetTick();
             r->unk_24 = (u32)t;
             r->unk_28 = (u32)(t >> 32);
         }
@@ -420,7 +420,7 @@ void func_ov065_02277230(s32 id, void *buf, s32 n) {
         if (n != 8) {
             return;
         }
-        func_02116048(buf, &h, 8);
+        MI_CpuCopy8(buf, &h, 8);
         r->unk_18 = h.unk_00;
         r->unk_10 = 0;
         if (r->unk_04 != NULL && r->unk_08 >= r->unk_18) {
@@ -445,7 +445,7 @@ void func_ov065_02277190(s32 id, void *buf, s32 n) {
             func_ov065_02270e34(6, -0x17d54);
             return;
         }
-        func_02116048(buf, r->unk_04 + r->unk_10, n);
+        MI_CpuCopy8(buf, r->unk_04 + r->unk_10, n);
     }
     r->unk_10 = r->unk_10 + n;
     s32 sz = r->unk_18;
@@ -458,7 +458,7 @@ void func_ov065_02277190(s32 id, void *buf, s32 n) {
         }
     }
     if (data_ov065_02290f78->unk_608 != NULL && r->unk_2c != 0) {
-        u64 t = func_01ffa6b4();
+        u64 t = OS_GetTick();
         r->unk_24 = (u32)t;
         r->unk_28 = (u32)(t >> 32);
     }

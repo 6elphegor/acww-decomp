@@ -640,7 +640,7 @@ extern Mtx data_021f47e0;
 extern void *data_021f482c;
 extern V3 data_ov004_022513f0;
 
-void func_01ffb898(V3 *, void *, V3 *);
+void MTX_MultVec43(V3 *, void *, V3 *);
 s32 func_01ffc5a4(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void *func_02000c98(void *);
@@ -1826,8 +1826,8 @@ extern "C" void func_ov004_02231600(R *o, V3 *out) {
     l[1].y = 0;
     l[1].z = k2;
     data_021f47e0 = o->unk_c8;
-    func_01ffb898(&l[0], &data_021f47e0, &l[2]);
-    func_01ffb898(&l[1], &data_021f47e0, &l[3]);
+    MTX_MultVec43(&l[0], &data_021f47e0, &l[2]);
+    MTX_MultVec43(&l[1], &data_021f47e0, &l[3]);
     V3 *p = &o->unk_1a8;
     out->x = (p->x + l[2].x) >> 1;
     out->z = (p->z + l[2].z) >> 1;

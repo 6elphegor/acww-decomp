@@ -46,12 +46,12 @@ struct Unk_ov001_0222df2c {
 };
 
 extern "C" {
-void func_02115fb4(void *, s32, s32);
-void func_02116048(void *, void *, s32);
+void MI_CpuFill8(void *, s32, s32);
+void MI_CpuCopy8(void *, void *, s32);
 void func_02124c40();
 s32 func_02123008(s32);
 void func_0206d49c();
-u64 func_01ffa6b4();
+u64 OS_GetTick();
 u32 func_0211f410();
 void func_020fefb0(void *);
 
@@ -120,9 +120,9 @@ extern "C" void func_ov001_02223ecc(Unk_ov001_0222df2c *self, u32 *a) {
     data_ov001_0222df2c->unk_ac8 = a[5];
     data_ov001_0222df2c->unk_a92 = *(u8 *)&a[6];
     data_ov001_0222df2c->unk_acc = 2;
-    func_01ffa6b4();
+    OS_GetTick();
     func_020fefb0(data_ov001_0222df2c->unk_64c);
-    func_01ffa6b4();
+    OS_GetTick();
     data_ov001_0222df2c->unk_aa4 = func_ov001_0221e014();
 }
 
@@ -166,7 +166,7 @@ extern "C" void func_ov001_02223d10() {
     func_ov001_02222334(data_ov001_0222df2c->unk_ac8);
     data_ov001_0222df2c->unk_a90 = 1;
     data_ov001_0222df2c->unk_648 = func_0211f410();
-    func_02116048(data_ov001_0222df2c->unk_aa4, data_ov001_0222df2c->unk_a50, 0x40);
+    MI_CpuCopy8(data_ov001_0222df2c->unk_aa4, data_ov001_0222df2c->unk_a50, 0x40);
     data_ov001_0222df2c->unk_a93 = 0;
     data_ov001_0222df2c->unk_204 = 0;
     data_ov001_0222df2c->unk_648 = data_ov001_0222df2c->unk_648 + 1;
@@ -441,8 +441,8 @@ extern "C" s32 func_ov001_02223150(s32 a) {
 }
 
 extern "C" void func_ov001_02223100() {
-    func_02115fb4((u8 *)data_ov001_0222df2c + 0x100, 0, 0x100);
-    func_02115fb4(data_ov001_0222df2c, 0, 0x100);
+    MI_CpuFill8((u8 *)data_ov001_0222df2c + 0x100, 0, 0x100);
+    MI_CpuFill8(data_ov001_0222df2c, 0, 0x100);
     data_ov001_0222df2c->unk_ab0 = data_ov001_0222df2c;
 }
 
@@ -452,7 +452,7 @@ extern "C" void func_ov001_02222f94(u32 a, u32 b, void *src) {
     if (h->unk_a93 == 1) {
         *(u16 *)h->unk_ab0 = a;
         *((u16 *)H->unk_ab0 + 1) = b;
-        func_02116048(src, (u8 *)H->unk_ab0 + 4, 0x40);
+        MI_CpuCopy8(src, (u8 *)H->unk_ab0 + 4, 0x40);
     } else {
         h->unk_204 = h->unk_204 + 1;
         *(u16 *)H->unk_ab0 = 0xbc;
@@ -478,7 +478,7 @@ extern "C" void func_ov001_02222f94(u32 a, u32 b, void *src) {
     for (i = 0; i < 2; i++) {
         void *s = func_ov001_02221b74(i);
         if (s != 0) {
-            func_02116048(s, &H->unk_100[i], 0x44);
+            MI_CpuCopy8(s, &H->unk_100[i], 0x44);
             H->unk_208[i] = 1;
         } else {
             H->unk_208[i] = 0;

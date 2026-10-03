@@ -12,7 +12,7 @@ void func_020789bc(void *p);
 void func_020b0a30(void *p);
 void _ZN12Unk_020b0a60D1Ev(void *p);
 void _ZN12Unk_020b0a60C1Ev(void *p);
-void func_02115fb4(void *p, s32 v, u32 n);
+void MI_CpuFill8(void *p, s32 v, u32 n);
 }
 
 extern u8 data_021e7f8c[];
@@ -77,7 +77,7 @@ Unk_0208f238::~Unk_0208f238() {
 extern "C" void func_0208f200() {}
 
 extern "C" void func_0208f1dc(void *p) {
-    func_02115fb4(p, 0, 0x84c);
+    MI_CpuFill8(p, 0, 0x84c);
     func_02065c94(p);
     func_020b0a30((u8 *)p + 0xf4);
 }

@@ -120,33 +120,33 @@ extern char *data_ov065_0228b73c[7];
 extern char data_ov065_0228b758[0x20];
 extern Unk_ov065_0228b778 data_ov065_0228b778;
 
-extern s32 func_02128930(const void *a, const void *b, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02115640(void *p);
-extern void func_021155c4(void *p);
+extern s32 memcmp(const void *a, const void *b, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void OS_GetMacAddress(void *p);
+extern void OS_GetOwnerInfo(void *p);
 extern s32 func_0211d3a0(void *p);
 extern s32 func_0211d2e0(void *p);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32 v);
-extern s32 func_021130d0(char *buf, const char *fmt, ...);
-extern s32 func_02113088(char *buf, u32 n, const char *fmt, ...);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32 v);
+extern s32 OS_SPrintf(char *buf, const char *fmt, ...);
+extern s32 OS_SNPrintf(char *buf, u32 n, const char *fmt, ...);
 extern s32 func_0212a438(const char *s);
 extern s32 func_0212dcb4(const void *s);
 extern void func_020ff0bc(void *p);
-extern void func_02114480(void *m);
-extern void func_02114410(void *m);
-extern s32 func_0211450c(void *m);
+extern void OS_LockMutex(void *m);
+extern void OS_UnlockMutex(void *m);
+extern s32 OS_InitMutex(void *m);
 extern s32 func_0212b770(void);
 extern s32 func_0212b784(const char *s, char **end, s32 base);
 extern s32 func_020ff6f4(void *p, u32 v);
 extern void func_020ff5cc(void *p);
 extern void func_020ff734(u32 v);
-extern void func_02113788(void *p);
-extern s32 func_02113774(void *t);
-extern s32 func_0211366c(void *t);
+extern void OS_JoinThread(void *p);
+extern s32 OS_IsThreadTerminated(void *t);
+extern s32 OS_WakeupThreadDirect(void *t);
 extern s32 func_02113a70(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
-extern s64 func_01ffa6b4(void);
+extern s64 OS_GetTick(void);
 extern void func_021132e0(u32 ms);
 extern s32 func_0212a190(const char *a, const char *b);
 extern char *func_0212a360(char *dst, const char *src);
@@ -216,9 +216,9 @@ s32 func_ov065_0226dd2c(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
         return 2;
     }
     data_ov065_02290600 = (S *)p;
-    func_02115fb4(p, 0, 0x13e0);
+    MI_CpuFill8(p, 0, 0x13e0);
     data_ov065_02290600->unk_2f8 = (Unk_ov065_02290600_Obj *)a;
-    func_02115fb4(&data_ov065_02290600->unk_08, 0, 0x1c4);
+    MI_CpuFill8(&data_ov065_02290600->unk_08, 0, 0x1c4);
     data_ov065_02290600->unk_08 = -1;
     data_ov065_02290600->unk_1cc = *cfg;
     *((u8 *)data_ov065_02290600 + 0x1e0) = 0;
@@ -235,25 +235,25 @@ s32 func_ov065_0226dd2c(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
 }
 
 void func_ov065_0226dcac(void) {
-    func_0211450c(data_ov065_02290600->unk_3bc);
+    OS_InitMutex(data_ov065_02290600->unk_3bc);
     data_ov065_02290600->unk_3d4 = 0;
-    if (data_ov065_02290600->unk_368 == 0 || func_02113774(data_ov065_02290600->unk_2fc) != 0) {
+    if (data_ov065_02290600->unk_368 == 0 || OS_IsThreadTerminated(data_ov065_02290600->unk_2fc) != 0) {
         func_02113a70(data_ov065_02290600->unk_2fc, (s32 (*)(void *))func_ov065_0226d860, &data_ov065_02290600,
                       (u8 *)data_ov065_02290600 + 0x13e0, 0x1000, 0x10);
-        func_0211366c(data_ov065_02290600->unk_2fc);
+        OS_WakeupThreadDirect(data_ov065_02290600->unk_2fc);
     }
 }
 
 void func_ov065_0226dc40(void) {
     if (data_ov065_02290600 != NULL) {
-        func_02114480(data_ov065_02290600->unk_3bc);
+        OS_LockMutex(data_ov065_02290600->unk_3bc);
         data_ov065_02290600->unk_3d4 = 1;
-        func_02114410(data_ov065_02290600->unk_3bc);
+        OS_UnlockMutex(data_ov065_02290600->unk_3bc);
         if (data_ov065_02290600->unk_2f8) {
             func_ov065_0226ea84();
         }
         if (data_ov065_02290600->unk_368) {
-            func_02113788(data_ov065_02290600->unk_2fc);
+            OS_JoinThread(data_ov065_02290600->unk_2fc);
         }
     }
 }
@@ -270,7 +270,7 @@ void func_ov065_0226dbfc(void) {
 
 void func_ov065_0226dbd0(void) {
     if (data_ov065_02290600->unk_368) {
-        func_02113788(data_ov065_02290600->unk_2fc);
+        OS_JoinThread(data_ov065_02290600->unk_2fc);
     }
 }
 
@@ -279,17 +279,17 @@ s32 func_ov065_0226db98(void) {
     if (data_ov065_02290600 == NULL) {
         return 0x15;
     }
-    func_02114480(data_ov065_02290600->unk_3bc);
+    OS_LockMutex(data_ov065_02290600->unk_3bc);
     r = data_ov065_02290600->unk_04;
-    func_02114410(data_ov065_02290600->unk_3bc);
+    OS_UnlockMutex(data_ov065_02290600->unk_3bc);
     return r;
 }
 
 void func_ov065_0226db28(s32 *p) {
     if (data_ov065_02290600 == NULL) {
-        func_02115fb4(p, 0, 0x1c4);
+        MI_CpuFill8(p, 0, 0x1c4);
     }
-    func_02116048(&data_ov065_02290600->unk_08, p, 0x1c4);
+    MI_CpuCopy8(&data_ov065_02290600->unk_08, p, 0x1c4);
     s32 v = p[0];
     if (v >= 0) {
         if (v < 20000 || v >= 30000) {
@@ -338,7 +338,7 @@ void func_ov065_0226d860(void) {
     for (;;) {
         o = data_ov065_02290600->unk_2f8;
         if (o->unk_9d4 != 0) {
-            func_02113788(o->unk_968);
+            OS_JoinThread(o->unk_968);
         }
         g = data_ov065_02290600;
         if (g->unk_2f8->unk_24 != 8) {
@@ -388,27 +388,27 @@ void func_ov065_0226d860(void) {
                 break;
             }
         }
-        t0 = func_01ffa6b4();
-        while ((u64)((func_01ffa6b4() - t0) * 64) / 0x82ea < 0x1388) {
-            func_02114480(data_ov065_02290600->unk_3bc);
+        t0 = OS_GetTick();
+        while ((u64)((OS_GetTick() - t0) * 64) / 0x82ea < 0x1388) {
+            OS_LockMutex(data_ov065_02290600->unk_3bc);
             if (data_ov065_02290600->unk_3d4 == 1) {
                 data_ov065_02290600->unk_08 = -0x4e84;
-                func_02114410(data_ov065_02290600->unk_3bc);
+                OS_UnlockMutex(data_ov065_02290600->unk_3bc);
                 func_ov065_0226d128(0x13);
                 return;
             }
-            func_02114410(data_ov065_02290600->unk_3bc);
+            OS_UnlockMutex(data_ov065_02290600->unk_3bc);
             func_021132e0(0x1388);
         }
         Unk_ov065_0226e4dc_B::func_ov065_0226e4dc(data_ov065_02290600->unk_2f8);
-        func_02114480(data_ov065_02290600->unk_3bc);
+        OS_LockMutex(data_ov065_02290600->unk_3bc);
         data_ov065_02290600->unk_04 = func_ov065_0226da64(flag);
         if (data_ov065_02290600->unk_04 != 0) {
             data_ov065_02290600->unk_08 = -0x4e84;
-            func_02114410(data_ov065_02290600->unk_3bc);
+            OS_UnlockMutex(data_ov065_02290600->unk_3bc);
             return;
         }
-        func_02114410(data_ov065_02290600->unk_3bc);
+        OS_UnlockMutex(data_ov065_02290600->unk_3bc);
     }
 }
 
@@ -536,43 +536,43 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
     u32 irq;
     u8 *ptr;
 
-    func_02115640(mac);
-    func_021155c4(&owner);
+    OS_GetMacAddress(mac);
+    OS_GetOwnerInfo(&owner);
     if (func_0211d3a0(&date) != 0 || func_0211d2e0(&time) != 0) {
         return 5;
     }
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     ptr = func_ov065_0226abb0();
     if (ptr == 0) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 3;
     }
-    func_02116048(ptr, mac2, 6);
-    func_02115fb4(buf, 0, 0x21);
+    MI_CpuCopy8(ptr, mac2, 6);
+    MI_CpuFill8(buf, 0, 0x21);
     ptr = func_ov065_0226ab5c(&len);
     if (ptr == 0) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 3;
     }
-    func_02116048(ptr, buf, len);
-    func_01ffa3d4(irq);
-    func_02116048((void *)0x27ffe0c, code4, 4);
+    MI_CpuCopy8(ptr, buf, len);
+    OS_RestoreInterrupts(irq);
+    MI_CpuCopy8((void *)0x27ffe0c, code4, 4);
     code4[4] = 0;
-    func_02116048((void *)0x27ffe10, code2, 2);
+    MI_CpuCopy8((void *)0x27ffe10, code2, 2);
     code2[2] = 0;
     for (i = 0; i < 6; i++) {
-        func_021130d0(macstr + i * 2, "%02x", mac[i]);
+        OS_SPrintf(macstr + i * 2, "%02x", mac[i]);
     }
     macstr[12] = 0;
     if (owner.unk_00 > 6) {
         owner.unk_00 = 1;
     }
-    func_02113088(birth, 5, "%02x%02x", owner.unk_02, owner.unk_03);
-    func_02113088(devtime, 13, "%02d%02d%02d%02d%02d%02d", date.unk_00, date.unk_04, date.unk_08,
+    OS_SNPrintf(birth, 5, "%02x%02x", owner.unk_02, owner.unk_03);
+    OS_SNPrintf(devtime, 13, "%02d%02d%02d%02d%02d%02d", date.unk_00, date.unk_04, date.unk_08,
                   time.unk_00, time.unk_04, time.unk_08);
-    func_02116048(owner.unk_04, nick, 0x14);
+    MI_CpuCopy8(owner.unk_04, nick, 0x14);
     nick[0x14] = 0;
-    func_02115fb4(&form, 0, 0xc);
+    MI_CpuFill8(&form, 0, 0xc);
     form.unk_00 = a3;
     form.unk_04 = a4;
     if (a5 != 1) {
@@ -590,15 +590,15 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
     }
     func_ov065_0226e07c(&form, "sdkver", "001000");
     if (data_ov065_02290604.unk_00 != 0) {
-        func_02113088(userid, 14, "%013llu", data_ov065_02290604.unk_00);
+        OS_SNPrintf(userid, 14, "%013llu", data_ov065_02290604.unk_00);
     } else {
-        func_02113088(userid, 14, "%013llu", data_ov065_02290604.unk_08);
+        OS_SNPrintf(userid, 14, "%013llu", data_ov065_02290604.unk_08);
     }
     func_ov065_0226e07c(&form, "userid", userid);
-    func_02113088(pw, 4, "%03u", data_ov065_02290604.unk_10);
+    OS_SNPrintf(pw, 4, "%03u", data_ov065_02290604.unk_10);
     func_ov065_0226e07c(&form, "passwd", pw);
-    func_02113088(bssid, 13, "%02x%02x%02x%02x%02x%02x", mac2[0], mac2[1], mac2[2], mac2[3], mac2[4], mac2[5]);
-    func_02113088(apinfo, 14, "%02d:0000000-00", func_ov065_0226b148());
+    OS_SNPrintf(bssid, 13, "%02x%02x%02x%02x%02x%02x", mac2[0], mac2[1], mac2[2], mac2[3], mac2[4], mac2[5]);
+    OS_SNPrintf(apinfo, 14, "%02d:0000000-00", func_ov065_0226b148());
     func_ov065_0226d0b0(buf, apinfo + 3);
     func_ov065_0226e07c(&form, "gamecd", code4);
     func_ov065_0226e07c(&form, "makercd", code2);
@@ -634,9 +634,9 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
 }
 
 void func_ov065_0226d128(s32 v) {
-    func_02114480(data_ov065_02290600->unk_3bc);
+    OS_LockMutex(data_ov065_02290600->unk_3bc);
     data_ov065_02290600->unk_04 = v;
-    func_02114410(data_ov065_02290600->unk_3bc);
+    OS_UnlockMutex(data_ov065_02290600->unk_3bc);
 }
 
 }

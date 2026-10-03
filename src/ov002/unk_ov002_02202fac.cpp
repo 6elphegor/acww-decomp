@@ -91,15 +91,15 @@ void func_020020b8(s32 a);
 void func_02002398(s32 a, u32 b);
 void func_0200226c(s32 a, s32 b, s32 c, s32 d);
 u8 *func_020641ec(const char *path, void *heap, s32 a, s32 b);
-void func_02115e48(void *dst, void *src, s32 n);
-void func_02115e30(s32 v, void *dst, s32 n);
+void MIi_CpuCopy16(void *dst, void *src, s32 n);
+void MIi_CpuClear16(s32 v, void *dst, s32 n);
 void func_020024f0(void *buf, s32 a, s32 b, s32 c);
 void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_02002654(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_02111d90(const void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 func_0206e61c();
 
 extern void *data_021c6210;
@@ -1399,7 +1399,7 @@ Unk_ov002_022046cc::Unk_ov002_022046cc() { unk_160 = 0; }
 
 Unk_ov002_022046cc::~Unk_ov002_022046cc() {}
 
-extern "C" void func_ov002_02203920() { func_02111d90(data_ov002_02204430, 0x1c, 4); }
+extern "C" void func_ov002_02203920() { GXS_LoadOBJPltt(data_ov002_02204430, 0x1c, 4); }
 
 void Unk_ov002_022046cc::func_ov002_02203900() {
     for (s32 i = 0; i < 2; i++) {

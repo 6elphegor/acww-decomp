@@ -71,8 +71,8 @@ void func_ov001_02225254(void *, u32, u32, u32, u32, s32, void *, s32);
 void func_ov001_0222519c(void *, u32, u32, void *, s32);
 void func_ov001_0222597c(s32, s32, s32, s32);
 void *func_ov001_0220cbd0(void *, s32, s32, s32);
-void func_02110a1c(u32, s32);
-void func_02110abc(u32, s32, s32);
+void G2x_ChangeBlendBrightness_(u32, s32);
+void G2x_SetBlendBrightness_(u32, s32, s32);
 
 void func_ov001_0221feac(s32 a);
 void func_ov001_0221ff64(s32 a);
@@ -120,7 +120,7 @@ void func_ov001_02220778(s32 a, s32 b, s32 c, s32 d, s32 e)
     g->unk_1c = b;
     data_ov001_0222df04->unk_1b = -2;
     data_ov001_0222df04->unk_1e = c;
-    func_02110abc(0x4000050, 0x1f, 0);
+    G2x_SetBlendBrightness_(0x4000050, 0x1f, 0);
     data_ov001_0222df04->unk_00 = func_ov001_02224b14(0, data_ov001_0222a390[b], 0);
     func_ov001_02224558(data_ov001_0222df04->unk_00, -1, 0x100, 0);
     func_ov001_022244d8(data_ov001_0222df04->unk_00, -1, 0);
@@ -171,7 +171,7 @@ BOOL func_ov001_022206f8()
 void func_ov001_02220690(s32 r)
 {
     data_ov001_0222df04->unk_1a = data_ov001_0222df04->unk_1a - 1;
-    func_02110a1c(0x4000050, data_ov001_0222df04->unk_1a);
+    G2x_ChangeBlendBrightness_(0x4000050, data_ov001_0222df04->unk_1a);
     if (data_ov001_0222df04->unk_1a > -12) {
         return;
     }
@@ -335,7 +335,7 @@ void func_ov001_0221ffc8(s32 a)
 void func_ov001_0221ff64(s32 a)
 {
     data_ov001_0222df04->unk_1a++;
-    func_02110a1c(0x4000050, data_ov001_0222df04->unk_1a);
+    G2x_ChangeBlendBrightness_(0x4000050, data_ov001_0222df04->unk_1a);
     if (data_ov001_0222df04->unk_1a < 0) {
         return;
     }

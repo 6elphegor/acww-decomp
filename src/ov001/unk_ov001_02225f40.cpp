@@ -43,21 +43,21 @@ typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
 extern "C" {
-u32 func_01ff80e0(u32 a);
-void func_01ff8128(u32 a);
+u32 OS_DisableIrqMask(u32 a);
+void OS_EnableIrqMask(u32 a);
 void func_0206d49c();
 u32 func_0211ba58();
-void func_0211b6b8(Unk_ov001_02225924_Pt *p, void *e);
-u32 func_01ffc2c4(u32 a, u32 b);
+void TP_GetCalibratedPoint(Unk_ov001_02225924_Pt *p, void *e);
+u32 FX_ModS32(u32 a, u32 b);
 void func_ov001_02225970(u32 a, u32 b, Unk_ov001_02225924_Pt *out);
 void *func_ov001_02225db0(s32, s32);
 void func_ov001_02225d58(void *);
-void func_0211bb24();
-void func_0211b6a0(s32);
-s32 func_0211b68c(s32);
-s32 func_0211be24(void *);
-void func_0211bcdc(void *);
-void func_0211bbc8(s32, s32, void *, s32);
+void TP_RequestAutoSamplingStopAsync();
+void TP_WaitBusy(s32);
+s32 TP_CheckError(s32);
+s32 TP_GetUserInfo(void *);
+void TP_SetCalibrateParam(void *);
+void TP_RequestAutoSamplingStartAsync(s32, s32, void *, s32);
 BOOL func_ov001_022260ac(Unk_ov001_02225924_Rect *r);
 void func_ov001_02226214();
 BOOL func_ov001_02225f40(Unk_ov001_02225924_Pt *out);
@@ -90,20 +90,20 @@ void func_ov001_0222652c()
 {
     u32 buf[3];
     data_ov001_0222df54 = (Unk_ov001_0222df54_S *)func_ov001_02225db0(0x3a, 4);
-    if (func_0211be24(buf) == 0) func_0206d49c();
-    func_0211bcdc(buf);
-    func_0211bbc8(0, 4, data_ov001_0222df54, 5);
-    func_0211b6a0(2);
-    if (func_0211b68c(2) != 0) func_0206d49c();
+    if (TP_GetUserInfo(buf) == 0) func_0206d49c();
+    TP_SetCalibrateParam(buf);
+    TP_RequestAutoSamplingStartAsync(0, 4, data_ov001_0222df54, 5);
+    TP_WaitBusy(2);
+    if (TP_CheckError(2) != 0) func_0206d49c();
     func_ov001_022264d8();
 }
 
 void func_ov001_022264f4()
 {
     do {
-        func_0211bb24();
-        func_0211b6a0(4);
-    } while (func_0211b68c(4) != 0);
+        TP_RequestAutoSamplingStopAsync();
+        TP_WaitBusy(4);
+    } while (TP_CheckError(4) != 0);
     func_ov001_02225d58(&data_ov001_0222df54);
 }
 
@@ -158,12 +158,12 @@ void func_ov001_02226214() {
         if (e->unk_04 == 1 && e->unk_06 == 0) {
             Unk_ov001_02225924_Pt pt;
             found = TRUE;
-            func_0211b6b8(&pt, e);
+            TP_GetCalibratedPoint(&pt, e);
             func_ov001_02225970(pt.x, pt.y, &data_ov001_0222df54->pos0);
             break;
         }
         i++;
-        n = func_01ffc2c4(n + 4, 5);
+        n = FX_ModS32(n + 4, 5);
     } while (i < 4);
     u32 d = found ^ prev;
     u32 up = found & d;

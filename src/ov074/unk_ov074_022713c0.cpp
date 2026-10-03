@@ -160,7 +160,7 @@ BOOL func_02094218(Unk_ov074_02271564_B *b);
 BOOL func_020941e8(Unk_ov074_02271564_B *a, void *b);
 u32 func_0209409c(Unk_ov074_02271564_B *a);
 void func_020942c8(Unk_ov074_02271564_B *a);
-s32 func_02128930(void *a, void *b, s32 n);
+s32 memcmp(void *a, void *b, s32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 u32 func_0201bcbc(void *p, u32 x);
@@ -976,7 +976,7 @@ void Unk_ov074_02272578::vfunc_78(Unk_ov074_022717a4_Out *out) {
         if (func_02094218(&m) != 0) {
             Unk_0209865c *p = func_0209750c();
             u16 *q = (u16 *)p->func_0209888c();
-            if (m.a == q[0] && func_02128930(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+            if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
                 out->unk_04 = func_02063b8c(4) + 0x18;
                 goto next;
             }
@@ -1050,7 +1050,7 @@ void Unk_ov074_02272578::vfunc_18() {
             if (func_02094218(&m) != 0) {
                 Unk_0209865c *p = func_0209750c();
                 u16 *q = (u16 *)p->func_0209888c();
-                if (m.a == q[0] && func_02128930(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
                     t = 0xa;
                     break;
                 }
@@ -1060,7 +1060,7 @@ void Unk_ov074_02272578::vfunc_18() {
             if (func_02094218(&m) != 0) {
                 Unk_0209865c *p = func_0209750c();
                 u16 *q = (u16 *)p->func_0209888c();
-                if (m.a == q[0] && func_02128930(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
                     t = 0xc;
                     break;
                 }

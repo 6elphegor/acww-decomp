@@ -51,17 +51,17 @@ static inline u32 CP_GetSqrtResult32(void) {
 }
 
 void func_01ffc3d8(fx32 x);      // FX_SqrtAsync
-void func_01ffc428(fx32 x);      // FX_InvAsync
-fx64c func_01ffc4a0(void);       // FX_GetDivResultFx64c
+void FX_InvAsync(fx32 x);      // FX_InvAsync
+fx64c FX_GetDivResultFx64c(void);       // FX_GetDivResultFx64c
 
 // FX_InvSqrt (fx_cp.c)
 fx32 func_01ffc4c8(fx32 x) {
     if (x > 0) {
         fx64c inv;
         fx64c sqrt;
-        func_01ffc428(x);
+        FX_InvAsync(x);
         func_01ffc3d8(x);
-        inv = func_01ffc4a0();
+        inv = FX_GetDivResultFx64c();
         sqrt = CP_GetSqrtResult32();
         return (fx32)((inv * sqrt + (1LL << 41)) >> 42);
     }

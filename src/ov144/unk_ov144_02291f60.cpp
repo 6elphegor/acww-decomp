@@ -75,8 +75,8 @@ extern u8 data_021ef5f0;
 extern u32 data_021f482c;
 Unk_ov144_02293db8 *func_ov144_02293c3c();
 
-void func_02115e30(u16 v, void *dst, u32 n);
-void func_02115e48(void *dst, void *src, u32 n);
+void MIi_CpuClear16(u16 v, void *dst, u32 n);
+void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void func_0200402c(s32 a);
 void func_020021fc(u32 a, s32 b, s32 c);
 BOOL func_020b86c0(void *a, void *b, s32 c, s32 d, s32 e);
@@ -1220,11 +1220,11 @@ void Unk_ov144_02293db8::func_ov144_022927b4() {
     s32 j = n & 0xf;
     s32 k;
     volatile u16 fill = 0x10;
-    func_02115e30(fill, unk_f02, 0x800);
+    MIi_CpuClear16(fill, unk_f02, 0x800);
     s32 z = 0;
     k = z;
     do {
-        func_02115e48(unk_702 + i * 0x80, unk_f02 + j * 0x80, 0x80);
+        MIi_CpuCopy16(unk_702 + i * 0x80, unk_f02 + j * 0x80, 0x80);
         i++;
         if (i >= 9) {
             i = z;

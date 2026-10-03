@@ -5,7 +5,7 @@ extern "C" {
 void *func_020e8628(void *heap, s32 size, s32 align);
 void func_020e877c(void);
 void func_020e885c(void *p);
-void *func_0210629c(void *h);
+void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_020641b4(const char *path, void *buf, s32 size);
 s32 func_0205bd00(void);
@@ -392,8 +392,8 @@ extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
                 if (Unk_0205da08_InRange(c)) {
                     void *x = func_0205cdbc();
                     _ZN12Unk_0205ca9413func_0205ca94EPtiii(x, c, d, 0, 0);
-                    void *m = func_0210629c((void *)func_0205c91c(x));
-                    void *n = func_0210629c(buf);
+                    void *m = NNS_G3dGetTex((void *)func_0205c91c(x));
+                    void *n = NNS_G3dGetTex(buf);
                     func_02063a5c(m, n, (void *)"cloth", (void *)"myD");
                     func_02063a1c(m, n, (void *)"cloth", (void *)"myD");
                 }
@@ -406,7 +406,7 @@ extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
 }
 
 extern "C" void func_0205d934(u8 *p) {
-    void *q = func_0210629c(func_0205d854(p, 0));
+    void *q = NNS_G3dGetTex(func_0205d854(p, 0));
     Unk_020dbe24 *d0 = func_0205d820(p, 0);
     d0->func_02055210(q);
     if (func_0205d7f8(p, 1) < 0x9e) {
@@ -415,7 +415,7 @@ extern "C" void func_0205d934(u8 *p) {
             s32 a = func_02103d3c(q);
             s32 b = func_02103d30(q);
             s32 c = func_02103c34(q);
-            void *q2 = func_0210629c(src);
+            void *q2 = NNS_G3dGetTex(src);
             s32 e = func_02103d3c(q2);
             s32 f = func_02103d30(q2);
             s32 g = func_02103c34(q2);
@@ -436,7 +436,7 @@ extern "C" BOOL func_0205d87c(u8 *p) {
     if (Unk_0205d4e4_IsTwo(st)) {
         r6 = TRUE;
     } else if (!Unk_0205d4e4_IsOne(st)) {
-        o->func_020b89f0((u32 *)func_0210629c(func_0205d854(p, 0)), 1);
+        o->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205d854(p, 0)), 1);
     }
     if (func_0205d7f8(p, 1) < 0x9e) {
         void *d = func_0205d854(p, 1);
@@ -445,7 +445,7 @@ extern "C" BOOL func_0205d87c(u8 *p) {
         if (Unk_0205d4e4_IsTwo(st2)) {
             r4 = TRUE;
         } else if (!Unk_0205d4e4_IsOne(st2)) {
-            o2->func_020b89f0((u32 *)func_0210629c(d), 1);
+            o2->func_020b89f0((u32 *)NNS_G3dGetTex(d), 1);
         }
     } else {
         r4 = TRUE;

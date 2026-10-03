@@ -47,7 +47,7 @@ s32 func_02098ffc();
 BOOL func_0209cef4();
 s32 func_020ed174(...);
 void func_020ed188(void *p);
-void func_02116048(void *a, void *b, u32 c);
+void MI_CpuCopy8(void *a, void *b, u32 c);
 BOOL func_ov002_0220125c(void *pad);
 BOOL func_ov002_0220126c(void *pad);
 BOOL func_ov002_0220127c(void *pad);
@@ -890,13 +890,13 @@ extern "C" void func_ov110_02296e84(S *s) {
         func_ov110_02294d78(s, 0x200);
         break;
     case 0x1f:
-        func_02116048(data_021ed210, s->unk_b0, 0x1e);
+        MI_CpuCopy8(data_021ed210, s->unk_b0, 0x1e);
         break;
     case 0x20:
-        func_02116048(data_021ed22e, s->unk_b0, 0x1e);
+        MI_CpuCopy8(data_021ed22e, s->unk_b0, 0x1e);
         break;
     }
-    func_02116048(s->unk_b0, s->unk_ce, 0x1e);
+    MI_CpuCopy8(s->unk_b0, s->unk_ce, 0x1e);
     func_0206ec04();
 }
 
@@ -2133,13 +2133,13 @@ void Unk_ov110_02297778::func_ov110_02294e78(s32 flag) {
             func_0206ecf8(1);
             func_0206ed2c((u8)n);
             func_0206eba4(unk_ce);
-            func_02116048(unk_b0, data_021ed210, 0x1e);
+            MI_CpuCopy8(unk_b0, data_021ed210, 0x1e);
             func_ov110_02294de4(3);
         }
         break;
     }
     case 0x20:
-        func_02116048(unk_b0, data_021ed22e, 0x1e);
+        MI_CpuCopy8(unk_b0, data_021ed22e, 0x1e);
         func_ov110_02294de4(4);
         func_0206ecf8(1);
         break;
@@ -2167,7 +2167,7 @@ void Unk_ov110_02297778::func_ov110_02294de4(u8 v) {
     if (func_02072e44(data_020cbb18)) {
         func_ov110_02294d78(8);
         buf[0] = v;
-        func_02116048(unk_b0, &buf[1], 0x1e);
+        MI_CpuCopy8(unk_b0, &buf[1], 0x1e);
         void *g = data_020cbb18;
         func_020728d4(g);
         func_020728a4(g, buf, 0x1f);

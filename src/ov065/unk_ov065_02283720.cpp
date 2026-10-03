@@ -155,9 +155,9 @@ void *func_ov065_0227866c(void *, s32);
 void func_ov065_02278570(void *, s32);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
 char *func_02129f1c(const char *, const char *);
-s32 func_021277d4(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
-s32 func_021130d0(char *buf, const char *fmt, ...);
+s32 STD_GetStringLength(const char *);
+s32 strncmp(const char *, const char *, u32);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 func_02128ca4(const char *, const char *, ...);
 s32 func_0212b770(const char *);
 s32 func_0212899c(void *, s32, u32);
@@ -255,14 +255,14 @@ extern char *data_ov065_0228df78;
 
 
 
-s32 func_0212a15c(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 s32 func_0212b770(const char *);
 char *func_02129f1c(const char *, const char *);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
 void func_021289b4(void *, void *, u32);
 void func_02128a00(void *, const void *, s32);
-s32 func_02128c70();
+s32 rand();
 void func_02128c60(s32);
 s32 func_02127b40(s32);
 
@@ -329,13 +329,13 @@ char *func_ov065_02283e88(char *out, char *in) {
     s32 klen;
     s32 i;
     s32 j;
-    klen = func_021277d4("3b8dd8995f7c40a9a5c5b7dd5b481341");
+    klen = STD_GetStringLength("3b8dd8995f7c40a9a5c5b7dd5b481341");
     ok = func_ov065_02283fdc((u8 *)in);
     i = 0;
     j = 0;
     for (; i < 0x20; i++) {
         if (ok == 0 || i == 0 || i == 0xd) {
-            out[i] = func_02128c70() % 0x5d + 0x21;
+            out[i] = rand() % 0x5d + 0x21;
         } else {
             s8 c;
             s32 t;
@@ -463,7 +463,7 @@ char *func_ov065_02283c4c(char *s, char *key) {
     if (f == 0) {
         return 0;
     }
-    f += func_021277d4(buf);
+    f += STD_GetStringLength(buf);
     {
         char *r = data_ov065_02291304 + (data_ov065_022910fc << 8);
         d = r;
@@ -598,15 +598,15 @@ extern "C" { char data_ov065_02291304[0x200]; } //@
 namespace N022838c4 { extern "C" {
 void func_ov065_022838c4(char *s, s32 len) {
     s[len] = 0;
-    if (func_0212a15c(s, "\\pauthr\\", 8) == 0) {
+    if (strncmp(s, "\\pauthr\\", 8) == 0) {
         func_ov065_02283af0(s, len);
-    } else if (func_0212a15c(s, "\\getpidr\\", 9) == 0) {
+    } else if (strncmp(s, "\\getpidr\\", 9) == 0) {
         func_ov065_02283a88(s, len);
-    } else if (func_0212a15c(s, "\\getpidr\\", 9) == 0) {
+    } else if (strncmp(s, "\\getpidr\\", 9) == 0) {
         func_ov065_02283a88(s, len);
-    } else if (func_0212a15c(s, "\\getpdr\\", 8) == 0) {
+    } else if (strncmp(s, "\\getpdr\\", 8) == 0) {
         func_ov065_022839e4(s, len);
-    } else if (func_0212a15c(s, "\\setpdr\\", 8) == 0) {
+    } else if (strncmp(s, "\\setpdr\\", 8) == 0) {
         func_ov065_02283974(s, len);
     }
 }

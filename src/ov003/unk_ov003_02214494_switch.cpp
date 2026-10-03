@@ -278,7 +278,7 @@ void _ZN12Unk_020e2e54D1Ev(void *);
 Unk_020ad700 *_ZN12Unk_021ed2c013func_020ad3bcEv(void *);
 void _ZN12Unk_020660f813func_02067a3cEiPv(void *, s32, void *);
 void func_0209d498(void *);
-void func_02116048(void *, void *, s32);
+void MI_CpuCopy8(void *, void *, s32);
 s32 func_0203f2e0(u32, void *, u32);
 s32 func_020b50e8();
 void func_02083d84(void *, s32, void *);

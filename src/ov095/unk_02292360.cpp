@@ -101,7 +101,7 @@ void _ZN12Unk_020e048813func_0206fc44Ev(void *a);
 void _ZN12Unk_0209865c13func_0209888cEv(void);
 void _ZN12Unk_020e45f813func_020b8714Ejhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12Unk_020e45f813func_020b87d0Ev(void *a);
-void func_02116048(void *a, void *b, s32 c);
+void MI_CpuCopy8(void *a, void *b, s32 c);
 
 void func_ov095_02292380(Unk_ov095_02292360 *s, s32 a);
 void func_ov095_022923ec();
@@ -1143,7 +1143,7 @@ void func_ov095_02294648(Unk_ov095_02292360 *s, s32 mode, s32 a, s32 c)
         h = (s32)data_ov095_0229584c[mode];
     }
     h = func_020641ec(h, g, -4, 0);
-    func_02116048((void *)(h + 0x240), (u8 *)s + 0x25fc, 0x380);
+    MI_CpuCopy8((void *)(h + 0x240), (u8 *)s + 0x25fc, 0x380);
     func_ov095_0229434c(s);
     func_020e85fc(g, (void *)h);
     _ZN12Unk_020e45f813func_020b8714Ejhjjj((u8 *)s + 0x22f4, (u8 *)s + 0x34, a, 0x1ea, 0x1ea, 0x2ff);

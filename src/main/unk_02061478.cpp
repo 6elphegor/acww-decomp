@@ -112,7 +112,7 @@ s32 _ZN12Unk_0206d8b813func_0206d904Ev(void *);
 s32 _ZN12Unk_0206d8b813func_0206d940EPvii(void *, const char *, s32, s32);
 void func_0206d964(void *);
 void func_0206d974(void *);
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern const u16 data_020cb5c4[46];
@@ -400,7 +400,7 @@ static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
 
 BOOL Unk_020dd30c::func_02062464(u8 *out, s32 n) {
     if (n >= (s32)vfunc_08()) {
-        func_02116048(unk_0e, out, vfunc_08());
+        MI_CpuCopy8(unk_0e, out, vfunc_08());
         return TRUE;
     }
     return FALSE;

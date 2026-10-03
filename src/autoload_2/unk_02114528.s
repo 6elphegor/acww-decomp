@@ -17,10 +17,10 @@ func_02114528:
 	bx lr
 
 ; DC_StoreAll: clean every data-cache line by set/way (4 segments x 32 lines)
-	.global func_02114534
-	.type func_02114534, @function
-	.size func_02114534, 0x2c
-func_02114534:
+	.global DC_StoreAll
+	.type DC_StoreAll, @function
+	.size DC_StoreAll, 0x2c
+DC_StoreAll:
 	mov r1, #0
 L_02114538: ; outer
 	mov r0, #0
@@ -36,10 +36,10 @@ L_0211453c: ; inner
 	bx lr
 
 ; DC_FlushAll: drain the write buffer, then clean+invalidate every line by set/way
-	.global func_02114560
-	.type func_02114560, @function
-	.size func_02114560, 0x34
-func_02114560:
+	.global DC_FlushAll
+	.type DC_FlushAll, @function
+	.size DC_FlushAll, 0x34
+DC_FlushAll:
 	mov ip, #0
 	mov r1, #0
 L_02114568: ; outer
@@ -57,10 +57,10 @@ L_0211456c: ; inner
 	bx lr
 
 ; DC_InvalidateRange(startAddr, nBytes)
-	.global func_02114594
-	.type func_02114594, @function
-	.size func_02114594, 0x1c
-func_02114594:
+	.global DC_InvalidateRange
+	.type DC_InvalidateRange, @function
+	.size DC_InvalidateRange, 0x1c
+DC_InvalidateRange:
 	add r1, r1, r0
 	bic r0, r0, #31
 L_0211459c: ; loop
@@ -71,10 +71,10 @@ L_0211459c: ; loop
 	bx lr
 
 ; DC_StoreRange(startAddr, nBytes)
-	.global func_021145b0
-	.type func_021145b0, @function
-	.size func_021145b0, 0x1c
-func_021145b0:
+	.global DC_StoreRange
+	.type DC_StoreRange, @function
+	.size DC_StoreRange, 0x1c
+DC_StoreRange:
 	add r1, r1, r0
 	bic r0, r0, #31
 L_021145b8: ; loop
@@ -85,10 +85,10 @@ L_021145b8: ; loop
 	bx lr
 
 ; DC_FlushRange(startAddr, nBytes)
-	.global func_021145cc
-	.type func_021145cc, @function
-	.size func_021145cc, 0x24
-func_021145cc:
+	.global DC_FlushRange
+	.type DC_FlushRange, @function
+	.size DC_FlushRange, 0x24
+DC_FlushRange:
 	mov ip, #0
 	add r1, r1, r0
 	bic r0, r0, #31
@@ -119,10 +119,10 @@ func_021145fc:
 	bx lr
 
 ; IC_InvalidateRange(startAddr, nBytes)
-	.global func_02114608
-	.type func_02114608, @function
-	.size func_02114608, 0x1c
-func_02114608:
+	.global IC_InvalidateRange
+	.type IC_InvalidateRange, @function
+	.size IC_InvalidateRange, 0x1c
+IC_InvalidateRange:
 	add r1, r1, r0
 	bic r0, r0, #31
 L_02114610: ; loop

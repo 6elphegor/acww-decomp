@@ -70,7 +70,7 @@ void func_0210bd58(void *a, u32 b);
 void *func_0210bd4c(void *a);
 void func_0210cc14(s32 a, void *b);
 void func_0210a388(s32 a, void *b, u32 c);
-void func_0210a460(s32 a, s32 b);
+void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
 void func_0210a310(s32 a, s32 b);
 void func_020efab8(void);
 void func_020efa64(Glob *g);
@@ -389,7 +389,7 @@ Unk_0213b8e8::Unk_0213b8e8() {
     data_021f5b80.f30->f3c = 0;
     if (data_021f5b80.f30 != 0) func_020f5070(data_021f5b80.f30, 210);
     func_020efc84(&data_021f5b80, 127, 127);
-    func_0210a460(15, 100);
+    NNS_SndPlayerSetPlayerVolume(15, 100);
     id = -1;
     f5 = 0;
     f6 = 0;
@@ -637,8 +637,8 @@ void Unk_0213b338::vfunc_0c() {
     state = 1;
     data_021f5b80.f62 = 0;
     func_020f8290(sub, 1);
-    func_0210a460(18, 63);
-    func_0210a460(19, 63);
+    NNS_SndPlayerSetPlayerVolume(18, 63);
+    NNS_SndPlayerSetPlayerVolume(19, 63);
 }
 
 void Unk_0213b338::vfunc_10() {

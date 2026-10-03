@@ -112,7 +112,7 @@ void func_0203f094(s32 a, s32 b);
 u32 func_0203f07c(s32 i);
 s32 func_0203f0b4();
 s32 func_0203f0c0();
-void func_02115fb4(void *p, s32 v, u32 n);
+void MI_CpuFill8(void *p, s32 v, u32 n);
 void func_020b35f8(void *a, u8 *b, const char *c);
 void *func_020aa3ac(s32 v);
 BOOL func_0202e360();
@@ -1058,8 +1058,8 @@ void Unk_ov088_02272618::func_ov088_02271654(Unk_ov088_022726ac *owner) {
     vfunc_08();
     unk_b4 = owner;
     unk_b4->unk_735 = 0;
-    func_02115fb4(&unk_b9[0], 0, 0x1e);
-    func_02115fb4(&unk_d7[0], 0xff, 5);
+    MI_CpuFill8(&unk_b9[0], 0, 0x1e);
+    MI_CpuFill8(&unk_d7[0], 0xff, 5);
 }
 
 void Unk_ov088_02272618::vfunc_78(Unk_ov088_022717d8_Out *out) {

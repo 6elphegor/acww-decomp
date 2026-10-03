@@ -98,7 +98,7 @@ void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL func_0204bd14(void *p);
 BOOL func_0204b08c(void *p);
-void func_02115fb4(void *dst, s32 v, s32 n);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
 BOOL _ZN12Unk_020d77a413func_0201bcbcEPS_(void *p, void *q);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
@@ -758,7 +758,7 @@ extern "C" void func_ov072_02271a58() {
         v[3] = total;
         v[4] = total;
         cnt = arr;
-        func_02115fb4(cnt, total, 16);
+        MI_CpuFill8(cnt, total, 16);
         for (v[1] = 1; v[1] < 5; v[1]++) {
             for (v[0] = 1; v[0] < 5; cnt++, v[0]++) {
                 void *cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);

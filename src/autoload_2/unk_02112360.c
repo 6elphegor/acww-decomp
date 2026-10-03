@@ -5,7 +5,7 @@ typedef unsigned int u32;
 typedef int s32;
 
 typedef struct { u32 a, b, c; } T12;
-void func_01ff8128(u32 mask);                                   // OS_EnableIrqMask
+void OS_EnableIrqMask(u32 mask);                                   // OS_EnableIrqMask
 typedef struct { u32 func, enable, arg; } IrqCb;
 extern IrqCb data_027e0088[]; // OSi_IrqCallbackInfo
 
@@ -17,10 +17,10 @@ void func_021123ac(void) {
 }
 
 // OSi_EnterTimerCallback (arg 0 = timer index; OSi_IrqCallbackInfo[index] = {func, enable, arg})
-void func_02112360(u32 n, u32 func, u32 arg) {
+void OSi_EnterTimerCallback(u32 n, u32 func, u32 arg) {
     data_027e0088[n].func = func;
     data_027e0088[n].arg = arg;
-    func_01ff8128(1 << (n + 3));
+    OS_EnableIrqMask(1 << (n + 3));
     data_027e0088[n].enable = 1;
 }
 

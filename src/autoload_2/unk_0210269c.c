@@ -58,7 +58,7 @@ typedef struct CharCanvas {         // NNSG2dCharCanvas
     ClearAreaFunc clearArea;        // 0x1c
 } CharCanvas;
 
-extern void func_02115ea8(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
 extern u32 func_02103734(BitReader *r, u32 nbits);   // bit reader: get n bits
 
 void func_02102f38(u8 *base, u32 x, u32 y, u32 w, u32 h, u32 clr, s32 mode);
@@ -80,7 +80,7 @@ void func_0210287c(CharCanvas *cc, u32 clr) {
     data = clr;
     size = cc->areaWidth * cc->areaHeight;
     size = size * (cc->colorMode * 64 / 8);
-    func_02115ea8(data, cc->charBase, size);
+    MIi_CpuClearFast(data, cc->charBase, size);
 }
 
 // NNS_G2dCharCanvasClearArea (OBJ 1D char layout): clear a pixel rectangle tile by tile

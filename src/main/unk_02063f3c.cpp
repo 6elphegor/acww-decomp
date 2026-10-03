@@ -16,23 +16,23 @@ struct Unk_02063d18_File {
 };
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 n);
-s32 func_021127c0(char *buf, u32 n, const char *fmt, va_list va);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 void func_02001314(const char *fmt, ...);
-void func_02119d78(void *f);
-BOOL func_02119a28(void *f, const char *path);
-BOOL func_0211a0dc(void *f);
-BOOL func_021199e0(void *f);
-s32 func_02119848(void *f, s32 off, s32 z);
+void FS_InitFile(void *f);
+BOOL FS_OpenFile(void *f, const char *path);
+BOOL FS_LoadOverlay(void *f);
+BOOL FS_CloseFile(void *f);
+s32 FS_SeekFile(void *f, s32 off, s32 z);
 s32 func_021198b4(void *f, void *dst, u32 n);
-void func_02116190(const void *src, void *dst);
+void MI_UncompressLZ8(const void *src, void *dst);
 u32 func_020e86fc(void *h, u32 flags);
 void *func_020e8608(void *h, u32 size);
 u32 func_020e8a90(void *h);
 void func_020e85fc(void *h, void *p);
 void *func_020e8628(void *heap, u32 size, s32 align);
-void func_02114534();
-void func_02114560();
+void DC_StoreAll();
+void DC_FlushAll();
 void func_021163b0(void *st, void *dst, void *src);
 s32 func_021162b0(void *st, void *p, s32 n);
 s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va);
@@ -55,12 +55,12 @@ s32 func_020641b4(const char *buf, void *a, u32 b);
 }
 
 BOOL func_020643d4(void *file) {
-    return func_0211a0dc(file);
+    return FS_LoadOverlay(file);
 }
 
 BOOL func_020643b8(void *file, const char *path) {
-    func_02119d78(file);
-    return func_02119a28(file, path);
+    FS_InitFile(file);
+    return FS_OpenFile(file, path);
 }
 
 void func_02064398(void *file, const char *path) {
@@ -99,11 +99,11 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
                 func_020e86fc(h, flags & 0xffffbfff);
                 p = func_020e8608(h, size - 4);
                 if (p) {
-                    func_02116048(&hdr[1], p, 4);
-                    func_02114534();
-                    func_02114560();
+                    MI_CpuCopy8(&hdr[1], p, 4);
+                    DC_StoreAll();
+                    DC_FlushAll();
                     size -= 8;
-                    if (func_021198b4(&f, (u8 *)p + 4, size) != -1) func_02116190(p, ret);
+                    if (func_021198b4(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
                 } else {
                     size = func_020e8a90(h);
                     p = func_020e8608(h, size);
@@ -123,7 +123,7 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
         } else {
             ret = func_020e8628(heap, size, align);
             if (ret) {
-                func_02116048(hdr, ret, 8);
+                MI_CpuCopy8(hdr, ret, 8);
                 if (func_021198b4(&f, (u8 *)ret + 8, size - 8) == -1) {
                     func_020e85fc(heap, ret);
                     ret = 0;
@@ -136,7 +136,7 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
         func_020e85fc(heap, ret);
         ret = 0;
     }
-    func_021199e0(&f);
+    FS_CloseFile(&f);
     return ret;
 }
 
@@ -171,11 +171,11 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
             func_020e86fc(h, flags & 0xffffbfff);
             n = (u32)func_020e8608(h, size - 4);
             if (n) {
-                func_02116048(&hdr[1], (void *)n, 4);
-                func_02114534();
-                func_02114560();
+                MI_CpuCopy8(&hdr[1], (void *)n, 4);
+                DC_StoreAll();
+                DC_FlushAll();
                 size -= 8;
-                if (func_021198b4(f, (u8 *)n + 4, size) != -1) func_02116190((void *)n, dst);
+                if (func_021198b4(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
             } else {
                 size = func_020e8a90(h);
                 n = (u32)func_020e8608(h, size);
@@ -191,7 +191,7 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
             if (n) func_020e85fc(h, (void *)n);
             func_020e86fc(h, flags);
         } else if (size <= n) {
-            func_02116048(hdr, dst, 8);
+            MI_CpuCopy8(hdr, dst, 8);
             u8 *d8 = (u8 *)dst + 8;
             dst = d8;
             size -= 8;
@@ -201,7 +201,7 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
         }
     }
     if (f->unk_14 != 0) ret = 0;
-    func_021199e0(f);
+    FS_CloseFile(f);
     return ret;
 }
 
@@ -237,11 +237,11 @@ s32 func_02063f60(Unk_02063d18_File *f) {
     u32 size = f->unk_28 - f->unk_24;
     if (size >= 8) {
         u32 base = f->unk_2c - f->unk_24;
-        func_02119848(f, 0, 0);
+        FS_SeekFile(f, 0, 0);
         e = -1;
         if (func_021198b4(f, hdr, 8) == e) goto fail;
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) size = hdr[1] >> 8;
-        func_02119848(f, base, 0);
+        FS_SeekFile(f, base, 0);
     }
     if (f->unk_14 != 0) size = -1;
     return size;
@@ -253,7 +253,7 @@ s32 func_02063f3c(u32 a) {
     Unk_02063d18_File f;
     func_02064398(&f, (const char *)a);
     s32 r = func_02063f60(&f);
-    func_021199e0(&f);
+    FS_CloseFile(&f);
     return r;
 }
 

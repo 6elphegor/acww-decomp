@@ -74,7 +74,7 @@ s32 func_020e9688(Unk_ov127_02291f60_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
 void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 void func_ov127_02291fcc(Unk_ov127_02291fcc *p, u8 *out);
 u8 *func_ov127_0229207c(u16 i);
@@ -166,7 +166,7 @@ extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
         u16 *p2;
         s32 j;
         s32 i;
-        func_02116048(s->unk_24, s->unk_1024, 0x1000);
+        MI_CpuCopy8(s->unk_24, s->unk_1024, 0x1000);
         cnt = s->unk_282e;
         if (cnt > 0) {
             p1 = s->unk_1024;

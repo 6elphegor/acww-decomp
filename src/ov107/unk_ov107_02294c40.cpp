@@ -225,7 +225,7 @@ BOOL func_02072e88(void *p, s32 v);
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *buf, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
-void func_02116048(void *a, void *b, u32 n);
+void MI_CpuCopy8(void *a, void *b, u32 n);
 void func_0204ed8c(void *out, s32 a, s32 b);
 s32 func_02042d10(s32 v);
 s32 func_02042830(s32 v);
@@ -1610,7 +1610,7 @@ void Unk_ov107_02296e78::func_ov107_02294f48(u8 v) {
         buf[0] = 2;
         buf[1] = v;
         func_02076a6c(tmp, unk_c0, unk_c8);
-        func_02116048(tmp, &buf[2], 5);
+        MI_CpuCopy8(tmp, &buf[2], 5);
         void *g = data_020cbb18;
         func_020728d4(g);
         func_020728a4(g, buf, 7);

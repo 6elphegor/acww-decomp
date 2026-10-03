@@ -12,15 +12,15 @@ u32 _ZN12Unk_0205712013func_0205714cEv(void *p);
 u32 _ZN12Unk_02056fd813func_02056fd8Ei(void *p, u32 x);
 u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
 u32 _ZN12Unk_0205712013func_02057120Ev(void *p);
-void func_021145cc(void *p, u32 x);
+void DC_FlushRange(void *p, u32 x);
 void func_02103c40(void *p, u32 x);
 void func_02103bc0(void *p, u32 x);
-void func_02111ff0(void);
+void GX_BeginLoadTexPltt(void);
 void func_02111f7c(u32 a, u32 b, u32 c);
 void func_02111f24(void);
-void func_0211220c(void);
-void func_021120a8(u32 a, u32 b, u32 c);
-void func_02112038(void);
+void GX_BeginLoadTex(void);
+void GX_LoadTex(u32 a, u32 b, u32 c);
+void GX_EndLoadTex(void);
 }
 
 // Five-word command record (fields depend on the mode it was set up for).
@@ -165,22 +165,22 @@ void Unk_020b8c1c::func_020b8cac(u32 a, u32 b, u32 c) {
 }
 
 void Unk_020b8c1c::func_020b8c88(void) {
-    func_021145cc((void *)unk_04, unk_08);
-    func_0211220c();
-    func_021120a8(unk_04, unk_00, unk_08);
-    func_02112038();
+    DC_FlushRange((void *)unk_04, unk_08);
+    GX_BeginLoadTex();
+    GX_LoadTex(unk_04, unk_00, unk_08);
+    GX_EndLoadTex();
 }
 
 void Unk_020b8c1c::func_020b8c64(void) {
-    func_021145cc((void *)unk_04, unk_08);
-    func_02111ff0();
+    DC_FlushRange((void *)unk_04, unk_08);
+    GX_BeginLoadTexPltt();
     func_02111f7c(unk_04, unk_00, unk_08);
     func_02111f24();
 }
 
 void Unk_020b8c1c::func_020b8c40(void) {
     u32 *p = (u32 *)unk_04;
-    func_021145cc(p, p[1]);
+    DC_FlushRange(p, p[1]);
     func_02103c40(p, 1);
     func_02103bc0(p, 1);
 }

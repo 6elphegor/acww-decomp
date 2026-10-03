@@ -105,7 +105,7 @@ void func_0208a598();
 void func_0208a58c();
 s32 func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
-void func_02115fb4(void *dst, s32 v, s32 n);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
 void func_02040144(s32 a, s32 b);
 BOOL func_0206ed18();
 s32 func_0206ed38();
@@ -590,7 +590,7 @@ BOOL Unk_ov071_02272c38::vfunc_04() {
     func_0201bc28((Unk_0201bc1c *)&unk_658);
     unk_658.func_ov071_022718dc(this);
     _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 2, 0x200, 0x100, 0x100);
-    func_02115fb4(unk_720, 0, 5);
+    MI_CpuFill8(unk_720, 0, 5);
     return TRUE;
 }
 
@@ -1271,7 +1271,7 @@ void Unk_ov071_02272ba8::vfunc_14() {
                 func_0202e1cc(0x28, 1);
             }
             unk_b4 = 0;
-            func_02115fb4(unk_b0->unk_720, 0, 5);
+            MI_CpuFill8(unk_b0->unk_720, 0, 5);
         }
         break;
     }
@@ -1396,7 +1396,7 @@ blkC:
     case 3:
     case 4:
         r5 = 0xd;
-        func_02115fb4((u8 *)unk_b0 + 0x720, 0, 5);
+        MI_CpuFill8((u8 *)unk_b0 + 0x720, 0, 5);
         unk_b4 = 0;
         if (t == 4) {
             func_02040144(0, 1);

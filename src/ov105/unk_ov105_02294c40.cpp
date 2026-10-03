@@ -17,7 +17,7 @@ extern "C" u32 _ZN18Unk_ov094_02294bd419func_ov094_02294610Eii(void *self);
 
 extern "C" {
 void func_0200402c(s32 a);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *func_020e8618(void *heap, u32 n);
 void func_020e85fc(void *heap, void *p);
 void func_0206f638(s32 a);

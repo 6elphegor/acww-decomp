@@ -138,12 +138,12 @@ extern char data_ov065_0228d194[];
 
 extern "C" {
 char *func_0212a120(const char *, s32);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_021289b4(void *, void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02283630(const char *, const char *, char *, s32);
 void func_ov065_02283460(void *, const char *);
 void func_ov065_02283470(void *, s32, const char *);
@@ -268,12 +268,12 @@ typedef Unk_ov065_0227e438_Req Req0227;
 
 extern "C" {
 
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 char *func_02129f1c(const char *, const char *);
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_02128930(const void *, const void *, s32);
+s32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 memcmp(const void *, const void *, s32);
 void *func_0212899c(void *, s32, s32);
 void func_ov065_02277ac8(void *);
 void *func_ov065_02277af0(s32);
@@ -460,9 +460,9 @@ s32 func_ov065_0227fe88(Ctx0227 **, const char *, const char *);
 s32 func_ov065_0227faf8(Ctx0227 **, s32, s32);
 
 void *func_0212899c(void *, s32, u32);
-u32 func_02128c70(void);
+u32 rand(void);
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
+s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 
 s32 func_ov065_0227f4c8(Ctx0227 **, s32, s32);
@@ -497,7 +497,7 @@ extern "C" {
 void func_ov065_0227f270(char *buf, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
-        buf[i] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[func_02128c70() % 0x3e];
+        buf[i] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[rand() % 0x3e];
     }
     buf[i] = 0;
 }
@@ -641,17 +641,17 @@ s32 func_ov065_0227eb60(Ctx0227 **h, Req0227 *req) {
     } else {
         p = c->unk_177;
     }
-    func_ov065_0227899c(p, func_021277d4(p), req->unk_a1);
+    func_ov065_0227899c(p, STD_GetStringLength(p), req->unk_a1);
     if (req->unk_c2[0] != 0) {
         q = req->unk_c2;
     } else if (c->unk_12f[0] != 0) {
         q = c->unk_12f;
     } else {
-        func_021130d0(b3, "%s@%s", c->unk_110, c->unk_144);
+        OS_SPrintf(b3, "%s@%s", c->unk_110, c->unk_144);
         q = b3;
     }
-    func_021130d0(b2, "%s%s%s%s%s%s", req->unk_a1, "                                                ", q, req->unk_80, req, req->unk_a1);
-    func_ov065_0227899c(b2, func_021277d4(b2), b1);
+    OS_SPrintf(b2, "%s%s%s%s%s%s", req->unk_a1, "                                                ", q, req->unk_80, req, req->unk_a1);
+    func_ov065_0227899c(b2, STD_GetStringLength(b2), b1);
     if (c->unk_100 != 0) {
         func_ov065_02281814(h, c->unk_110, c->unk_144, &out);
         if (out != NULL) {
@@ -718,7 +718,7 @@ s32 func_ov065_0227e964(Ctx0227 **h, Req0227 *req) {
     volatile s32 z1;
     u32 len;
     u32 i;
-    len = func_021277d4(c->unk_177);
+    len = STD_GetStringLength(c->unk_177);
     func_ov065_02278b44(0x79707367);
     i = 0;
     if (i < len) {
@@ -747,7 +747,7 @@ s32 func_ov065_0227e964(Ctx0227 **h, Req0227 *req) {
     func_ov065_0227de10(h, c->unk_1f4, "\\uniquenick\\");
     func_ov065_0227de10(h, c->unk_1f4, c->unk_12f);
     if (req->unk_2c2[0] != 0) {
-        len = func_021277d4(req->unk_2c2);
+        len = STD_GetStringLength(req->unk_2c2);
         func_ov065_02278b44(0x79707367);
         i = 0;
         if (i < len) {
@@ -805,7 +805,7 @@ s32 func_ov065_0227e438(Ctx0227 **h, Node0227 *n, char *line) {
     req = (Req0227 *)n->unk_04;
     switch (n->unk_14) {
     case 1:
-        if (func_0212a15c(line, "\\lc\\1", 5) != 0) {
+        if (strncmp(line, "\\lc\\1", 5) != 0) {
             func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
             func_ov065_0227e160(h, 3, 1);
             return 3;
@@ -830,7 +830,7 @@ s32 func_ov065_0227e438(Ctx0227 **h, Node0227 *n, char *line) {
         }
         break;
     case 3:
-        if (func_0212a15c(line, "\\nur\\", 5) != 0) {
+        if (strncmp(line, "\\nur\\", 5) != 0) {
             func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
             func_ov065_0227e160(h, 3, 1);
             return 3;
@@ -854,7 +854,7 @@ s32 func_ov065_0227e438(Ctx0227 **h, Node0227 *n, char *line) {
         n->unk_14 = 2;
         break;
     case 2:
-        if (func_0212a15c(line, "\\lc\\2", 5) != 0) {
+        if (strncmp(line, "\\lc\\2", 5) != 0) {
             func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
             func_ov065_0227e160(h, 3, 1);
             return 3;
@@ -888,17 +888,17 @@ s32 func_ov065_0227e438(Ctx0227 **h, Node0227 *n, char *line) {
         } else if (c->unk_12f[0] != 0) {
             p = c->unk_12f;
         } else {
-            func_021130d0(b4, "%s@%s", c->unk_110, c->unk_144);
+            OS_SPrintf(b4, "%s@%s", c->unk_110, c->unk_144);
             p = b4;
         }
-        func_021130d0(b3, "%s%s%s%s%s%s", req->unk_a1, "                                                ", p, req, req->unk_80, req->unk_a1);
-        func_ov065_0227899c(b3, func_021277d4(b3), b1);
+        OS_SPrintf(b3, "%s%s%s%s%s%s", req->unk_a1, "                                                ", p, req, req->unk_80, req->unk_a1);
+        func_ov065_0227899c(b3, STD_GetStringLength(b3), b1);
         if (func_ov065_02283630(line, "\\proof\\", b3, 0x200) == 0) {
             func_ov065_02283470(h, 1, "Unexepected data was received from the server.");
             func_ov065_0227e160(h, 3, 1);
             return 3;
         }
-        if (func_02128930(b1, b3, 0x20) != 0) {
+        if (memcmp(b1, b3, 0x20) != 0) {
             func_ov065_02283470(h, 0x108, "Could not authenticate server.");
             func_ov065_0227e160(h, 3, 1);
             return 3;

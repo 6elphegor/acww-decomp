@@ -116,13 +116,13 @@ typedef u32 (*DrawCb)(Vec3 *, Vec3);
 extern u32 data_021f5c3c;
 extern s16 data_02135f44[];
 extern "C" {
-void func_01ffc928(Vec3 *a, Vec3 *b, Vec3 *c);
-void func_01ffc714(Vec3 *a, Vec3 *b);
-void func_02115f48(s32 *src, s32 *dst);
-void func_01ffb4e8(Vec3 *v, Vec3 *m, Vec3 *out);
-void func_01ffb898(Vec3 *v, s32 *m, Vec3 *out);
-void func_01ffb840(s32 *m, s32 s, s32 c);
-void func_02110bcc(s32 *m);
+void VEC_CrossProduct(Vec3 *a, Vec3 *b, Vec3 *c);
+void VEC_Normalize(Vec3 *a, Vec3 *b);
+void MI_Copy36B(s32 *src, s32 *dst);
+void MTX_MultVec33(Vec3 *v, Vec3 *m, Vec3 *out);
+void MTX_MultVec43(Vec3 *v, s32 *m, Vec3 *out);
+void MTX_RotX43_(s32 *m, s32 s, s32 c);
+void G3_MultMtx43(s32 *m);
 void *func_020fe35c(void *list);
 void func_020fe3a0(void *list, void *node);
 s32 func_01ffc5a4(s32 a, s32 b);
@@ -201,7 +201,7 @@ extern "C" void func_020fc6bc(Part *a, Emit *b, void *list) {
 }
 
 // Same quad in the XY plane.
-extern "C" void func_020fc600(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void drawXYPlane(s32 a, s32 b, s32 c, s32 d) {
     *(vu32 *)0x04000500 = 1;
     *(vu32 *)0x04000488 = 0;
     *(vu32 *)0x04000490 = vtxb(d + 0x1000, c - 0x1000);
@@ -216,7 +216,7 @@ extern "C" void func_020fc600(s32 a, s32 b, s32 c, s32 d) {
 
 // Emits one textured quad in the XZ plane: BEGIN_VTXS 1 (0x04000500), TEXCOORD (0x04000488), VTX_10 (0x04000490), END_VTXS (0x04000504).
 // (a, b) = texture size in 8.8, (c, d) = centre.
-extern "C" void func_020fc544(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void drawXZPlane(s32 a, s32 b, s32 c, s32 d) {
     *(vu32 *)0x04000500 = 1;
     *(vu32 *)0x04000488 = 0;
     *(vu32 *)0x04000490 = vtx(c - 0x1000, 0, d + 0x1000);
@@ -230,7 +230,7 @@ extern "C" void func_020fc544(s32 a, s32 b, s32 c, s32 d) {
 }
 
 // Builds a 3x4 hue-rotation colour matrix from (sin, 1 - cos style) factors: 1/3 and 1/sqrt(3) (0x555, 0x93d) terms.
-extern "C" void func_020fc498(s32 a, s32 b, s32 *m) {
+extern "C" void rotTypeXYZ(s32 a, s32 b, s32 *m) {
     s32 t = FX_Mul(0x1000 - b, 0x555);
     s32 p = FX_Mul(a, 0x93d);
     s32 q = t + p;
@@ -251,7 +251,7 @@ extern "C" void func_020fc498(s32 a, s32 b, s32 *m) {
 }
 
 // Builds a 3x4 matrix: rotation about Y from (sin, cos), translation zero.
-extern "C" void func_020fc458(s32 a, s32 b, s32 *m) {
+extern "C" void rotTypeY(s32 a, s32 b, s32 *m) {
     m[0] = b;
     m[3] = 0;
     m[6] = a;
@@ -302,7 +302,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
         ang = fp(&v, v);
-        func_01ffb898(&v, mtx, &v);
+        MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
         cs = data_02135f44[(p->h32 >> 4) * 2 + 1];
         m[0] = FX_Mul(cs, sx);
@@ -323,7 +323,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
         ang = fp(&v, v);
-        func_01ffb898(&v, mtx, &v);
+        MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
         cs = data_02135f44[(p->h32 >> 4) * 2 + 1];
         m[0] = FX_Mul(cs, sx);
@@ -343,14 +343,14 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
     }
     Trans(v.v[0], v.v[1], v.v[2]);
     if (self->cur->res->p0->c80 & 0x10) {
-        func_01ffb840(rot, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
-        func_02110bcc(rot);
+        MTX_RotX43_(rot, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
+        G3_MultMtx43(rot);
     }
-    func_02110bcc(m);
+    G3_MultMtx43(m);
     {
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    func_020fc600(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
+    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
 }
 
 // Particle draw: plain screen-facing billboard (rotation about the view axis by the particle angle h32, scaled).
@@ -389,7 +389,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
         ang = fp(&v, v);
-        func_01ffb898(&v, mtx, &v);
+        MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
         cs = data_02135f44[(p->h32 >> 4) * 2 + 1];
         m[0] = FX_Mul(cs, sx);
@@ -410,7 +410,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
         ang = fp(&v, v);
-        func_01ffb898(&v, mtx, &v);
+        MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
         cs = data_02135f44[(p->h32 >> 4) * 2 + 1];
         m[0] = FX_Mul(cs, sx);
@@ -430,16 +430,16 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
     }
     Trans(v.v[0], v.v[1], v.v[2]);
     if (self->cur->res->p0->c80 & 0x10) {
-        func_01ffb840(rot, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
-        func_02110bcc(rot);
+        MTX_RotX43_(rot, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
+        G3_MultMtx43(rot);
     }
-    func_02110bcc(m);
+    G3_MultMtx43(m);
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    func_020fc600(self->cur->h100, self->cur->h102, 0, 0);
+    drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }
 
 // Same as func_020fac28; only the final quad differs (texture coordinates / size taken from the emitter and the resource).
@@ -485,14 +485,14 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         cam.v[0] = mtx[2];
         cam.v[1] = mtx[5];
         cam.v[2] = mtx[8];
-        func_01ffc928(&d, &cam, &d);
+        VEC_CrossProduct(&d, &cam, &d);
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
-        func_01ffc714(&d, &d);
-        func_02115f48(mtx, mc);
-        func_01ffb4e8(&d, (Vec3 *)mc, &d);
-        func_01ffb898(&v, mtx, &v);
+        VEC_Normalize(&d, &d);
+        MI_Copy36B(mtx, mc);
+        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
-        func_01ffc714(&e, &e);
+        VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
         t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
@@ -510,7 +510,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         m[8] = 0x1000;
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
-        func_02110bcc(m);
+        G3_MultMtx43(m);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
@@ -520,14 +520,14 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         cam.v[0] = mtx[2];
         cam.v[1] = mtx[5];
         cam.v[2] = mtx[8];
-        func_01ffc928(&d, &cam, &d);
+        VEC_CrossProduct(&d, &cam, &d);
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
-        func_01ffc714(&d, &d);
-        func_02115f48(mtx, mc);
-        func_01ffb4e8(&d, (Vec3 *)mc, &d);
-        func_01ffb898(&v, mtx, &v);
+        VEC_Normalize(&d, &d);
+        MI_Copy36B(mtx, mc);
+        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
-        func_01ffc714(&e, &e);
+        VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
         t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
@@ -546,18 +546,18 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
         Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
-        func_02110bcc(m);
+        G3_MultMtx43(m);
     }
     if (self->cur->res->p0->c80 & 0x10) {
-        func_01ffb840(m, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
-        func_02110bcc(m);
+        MTX_RotX43_(m, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
+        G3_MultMtx43(m);
     }
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    func_020fc600(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
+    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
 }
 
 // Particle draw (SPL-style): camera-facing billboard whose long axis follows the particle velocity (cross product with the
@@ -606,14 +606,14 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         cam.v[0] = mtx[2];
         cam.v[1] = mtx[5];
         cam.v[2] = mtx[8];
-        func_01ffc928(&d, &cam, &d);
+        VEC_CrossProduct(&d, &cam, &d);
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
-        func_01ffc714(&d, &d);
-        func_02115f48(mtx, mc);
-        func_01ffb4e8(&d, (Vec3 *)mc, &d);
-        func_01ffb898(&v, mtx, &v);
+        VEC_Normalize(&d, &d);
+        MI_Copy36B(mtx, mc);
+        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
-        func_01ffc714(&e, &e);
+        VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
         t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
@@ -631,7 +631,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         m[8] = 0x1000;
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
-        func_02110bcc(m);
+        G3_MultMtx43(m);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
@@ -641,14 +641,14 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         cam.v[0] = mtx[2];
         cam.v[1] = mtx[5];
         cam.v[2] = mtx[8];
-        func_01ffc928(&d, &cam, &d);
+        VEC_CrossProduct(&d, &cam, &d);
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
-        func_01ffc714(&d, &d);
-        func_02115f48(mtx, mc);
-        func_01ffb4e8(&d, (Vec3 *)mc, &d);
-        func_01ffb898(&v, mtx, &v);
+        VEC_Normalize(&d, &d);
+        MI_Copy36B(mtx, mc);
+        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
-        func_01ffc714(&e, &e);
+        VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
         t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
@@ -667,17 +667,17 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
         Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
-        func_02110bcc(m);
+        G3_MultMtx43(m);
     }
     if (self->cur->res->p0->c80 & 0x10) {
-        func_01ffb840(m, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
-        func_02110bcc(m);
+        MTX_RotX43_(m, data_02135f44[(ang >> 4) * 2], data_02135f44[(ang >> 4) * 2 + 1]);
+        G3_MultMtx43(m);
     }
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    func_020fc600(self->cur->h100, self->cur->h102, 0, 0);
+    drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }
 

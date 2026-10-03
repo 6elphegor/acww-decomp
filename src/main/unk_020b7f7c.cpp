@@ -6,7 +6,7 @@ void func_0210197c(u32 a, u32 b);
 u32 func_0210f460(void);
 u32 func_0210f4cc(void);
 void func_0206d49c(void);
-void func_021127c0(char *buf, u32 size, const char *fmt, char *ap);
+void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
 }
 
 extern "C" {
@@ -49,7 +49,7 @@ extern "C" void func_020b830c(u16 *dst, u32 base, const char *s) {
 
 extern "C" void func_020b82e8(u16 *a, u32 b, const char *fmt, char *ap) {
     char buf[0x81];
-    func_021127c0(buf, 0x81, fmt, ap);
+    OS_VSNPrintf(buf, 0x81, fmt, ap);
     func_020b830c(a, b, buf);
 }
 

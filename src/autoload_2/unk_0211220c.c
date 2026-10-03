@@ -10,7 +10,7 @@ extern T6 data_02139f54[], data_02139f56[], data_02139f58[];
 s32 func_0210f720(void);
 
 // GX_BeginLoadTex
-void func_0211220c(void) {
+void GX_BeginLoadTex(void) {
     s32 i = func_0210f720();
     data_021fcc00 = i;
     data_021fcbf4 = (u32)data_02139f54[i].x << 12;

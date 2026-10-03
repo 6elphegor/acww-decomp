@@ -128,14 +128,14 @@ static inline u32 CP_GetSqrtResult32(void) {
 }
 
 /* PROTOS */
-void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z);
-void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab);
-void func_01ffb4e8(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst);
+void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z);
+void MTX_Concat33(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab);
+void MTX_MultVec33(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst);
 
 /* END PROTOS */
 
 // MTX_ScaleApply33
-void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
+void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
     pDst->_00 = (fx32)(((fx64)x * pSrc->_00) >> FX32_SHIFT);
     pDst->_01 = (fx32)(((fx64)x * pSrc->_01) >> FX32_SHIFT);
     pDst->_02 = (fx32)(((fx64)x * pSrc->_02) >> FX32_SHIFT);
@@ -148,7 +148,7 @@ void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
 }
 
 // MTX_Concat33
-void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
+void MTX_Concat33(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
     MtxFx33 tmp;
     MtxFx33 *p = ab;
     fx32 x, y, z;
@@ -176,7 +176,7 @@ void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
 }
 
 // MTX_MultVec33
-void func_01ffb4e8(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst) {
+void MTX_MultVec33(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst) {
     fx32 x = pSrc->x;
     fx32 y = pSrc->y;
     fx32 z = pSrc->z;

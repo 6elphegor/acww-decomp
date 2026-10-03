@@ -268,15 +268,15 @@ extern int data_021f89cc;                 // use the fast GX DMA
 extern u32 data_0213bfec;                 // GXi_DmaId
 
 extern void func_02115e64(u32 data, void *dest, u32 size); // MIi_CpuClear32
-extern void func_02115ea8(u32 data, void *dest, u32 size); // MIi_CpuClearFast
-extern void func_02115ef4(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
-extern void func_02115e90(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
-extern void func_02115d70(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size); // MIi_CpuClearFast
+extern void MIi_CpuCopyFast(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
+extern void MIi_CpuSend32(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
+extern void MI_SendGXCommandAsyncFast(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
 extern void func_02105ac4(u32 *vec, AnmObj *anm);          // updateHintVec
-extern void func_01ff9f6c(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
-extern void func_01ffc374(fx32 numer, fx32 denom);         // FX_DivAsync
-extern fx32 func_01ffc464(void);                           // FX_GetDivResult
-extern void func_02116178(void *dst);                      // MI_Zero36B (Thumb)
+extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
+extern void FX_DivAsync(fx32 numer, fx32 denom);         // FX_DivAsync
+extern fx32 FX_GetDivResult(void);                           // FX_GetDivResult
+extern void MI_Zero36B(void *dst);                      // MI_Zero36B (Thumb)
 extern void func_0210a544(void *p, u32 n);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
@@ -359,22 +359,22 @@ static inline void MIi_CallCallback(void (*callback)(void *), void *arg) {
     }
 }
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
-extern void (*func_01ffa328(u32 intrBit))(void);           // OS_GetIrqFunction
-extern void func_01ffa404(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
-extern void func_01ffa4a0(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern void (*OS_GetIrqFunction(u32 intrBit))(void);           // OS_GetIrqFunction
+extern void OS_SetIrqFunction(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
+extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
 extern void func_0206d49c(void);                           // OS_Terminate (Thumb, main)
 
 /* PROTOS */
 void func_01ff8000(const CPContext *context);
 void func_01ff806c(CPContext *context);
-u32 func_01ff80e0(u32 intr);
-u32 func_01ff8128(u32 intr);
+u32 OS_DisableIrqMask(u32 intr);
+u32 OS_EnableIrqMask(u32 intr);
 void func_01ff8160(void);
-u32 func_01ff81a8(u32 intr);
-u32 func_01ff8228(u32 intr);
-void func_01ff825c(int index);
+u32 OS_ResetRequestIrqMask(u32 intr);
+u32 OS_SetIrqMask(u32 intr);
+void OSi_IrqCallback(int index);
 void func_01ff82f8(void);
 void func_01ff8308(void);
 void func_01ff8318(void);
@@ -384,11 +384,11 @@ void func_01ff8348(void);
 void func_01ff8358(void);
 void func_01ff8368(void);
 void func_01ff8378(void *arg);
-void func_01ff8384(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a);
 void func_01ff83cc(MtxFx44 *m, const MatAnm *a);
 void func_01ff844c(MtxFx44 *m, const MatAnm *a);
 void func_01ff8528(MtxFx44 *m, const MatAnm *a);
-void func_01ff854c(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a);
 void func_01ff8590(MtxFx44 *m, const MatAnm *a);
 void func_01ff8654(MtxFx44 *m, const MatAnm *a);
 void func_01ff8740(MtxFx44 *m, const MatAnm *a);
@@ -399,7 +399,7 @@ void func_01ff8ad4(RenderObj *obj);
 void func_01ff8bd0(u32 op, const u32 *args, u32 num);
 void func_01ff8ccc(void);
 void func_01ff8d4c(const void *src, u32 szByte);
-void func_01ff8e18(void);
+void NNS_G3dGeWaitSendDL(void);
 void func_01ff8e30(RS *rs, u32 opt);
 void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
 void func_01ff931c(RS *rs, u32 opt);
@@ -414,15 +414,15 @@ void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
 void func_01ff9d34(JntAnm *pResult);
 void func_01ff9e10(MatAnm *pResult);
 void func_01ff9f5c(void *p);
-void func_01ff9f6c(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
-void func_01ffa080(u32 dmaNo);
+void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
+void MI_WaitDma(u32 dmaNo);
 void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 dir);
-void func_01ffa160(void *arg);
-void func_01ffa1d4(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
-void func_01ffa224(void);
+void MIi_DMACallback(void *arg);
+void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
+void MIi_FIFOCallback(void);
 
 // MIi_FIFOCallback
-void func_01ffa224(void) {
+void MIi_FIFOCallback(void) {
     u32 length;
     u32 src;
     if (data_027e0414.length == 0) {
@@ -433,30 +433,30 @@ void func_01ffa224(void) {
     data_027e0414.length -= length;
     data_027e0414.src = src + length;
     if (data_027e0414.length == 0) {
-        func_01ffa4a0(data_027e0414.dmaNo, func_01ffa160, NULL);
-        func_01ffa1d4(data_027e0414.dmaNo, src, 0x04000400, 0xc4400000 | (length >> 2));
-        (void)func_01ff81a8(0x200000);
+        OSi_EnterDmaCallback(data_027e0414.dmaNo, MIi_DMACallback, NULL);
+        MIi_DmaSetParams(data_027e0414.dmaNo, src, 0x04000400, 0xc4400000 | (length >> 2));
+        (void)OS_ResetRequestIrqMask(0x200000);
     } else {
-        func_01ffa1d4(data_027e0414.dmaNo, src, 0x04000400, 0x84400000 | (length >> 2));
-        (void)func_01ff81a8(0x200000);
+        MIi_DmaSetParams(data_027e0414.dmaNo, src, 0x04000400, 0x84400000 | (length >> 2));
+        (void)OS_ResetRequestIrqMask(0x200000);
     }
 }
 
 // MIi_DmaSetParams
-void func_01ffa1d4(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
-    u32 enabled = func_01ffa2ec();
+void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+    u32 enabled = OS_DisableInterrupts();
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
     *p = src;
     *(p + 1) = dest;
     *(p + 2) = ctrl;
-    (void)func_01ffa3d4(enabled);
+    (void)OS_RestoreInterrupts(enabled);
 }
 
 // MIi_DMACallback (end of a GX command DMA)
-void func_01ffa160(void *arg) {
-    (void)func_01ff80e0(0x200000);
+void MIi_DMACallback(void *arg) {
+    (void)OS_DisableIrqMask(0x200000);
     G3X_SetFifoIntrCond2(data_027e0414.fifoCond);
-    func_01ffa404(0x200000, data_027e0414.fifoFunc);
+    OS_SetIrqFunction(0x200000, data_027e0414.fifoFunc);
     data_027e0414.isBusy = FALSE;
     MIi_CallCallback(data_027e0414.callback, data_027e0414.arg);
 }
@@ -485,8 +485,8 @@ void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 dir) {
 }
 
 // MI_WaitDma
-void func_01ffa080(u32 dmaNo) {
-    u32 enabled = func_01ffa2ec();
+void MI_WaitDma(u32 dmaNo) {
+    u32 enabled = OS_DisableInterrupts();
     vu32 *dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
     while (*dmaCntp & 0x80000000) {
     }
@@ -496,11 +496,11 @@ void func_01ffa080(u32 dmaNo) {
         *(p + 1) = 0;
         *(p + 2) = 0x81400001;
     }
-    (void)func_01ffa3d4(enabled);
+    (void)OS_RestoreInterrupts(enabled);
 }
 
 // MI_SendGXCommandAsync
-void func_01ff9f6c(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg) {
+void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg) {
     if (commandLength == 0) {
         if (callback) {
             callback(arg);
@@ -518,16 +518,16 @@ void func_01ff9f6c(u32 dmaNo, const void *src, u32 commandLength, void (*callbac
     data_027e0414.callback = callback;
     data_027e0414.arg = arg;
     func_01ffa0f0(dmaNo, (u32)src, commandLength, 0);
-    func_01ffa080(dmaNo);
+    MI_WaitDma(dmaNo);
     {
-        u32 enabled = func_01ffa2ec();
+        u32 enabled = OS_DisableInterrupts();
         data_027e0414.fifoCond = (reg_G3X_GXSTAT & 0xc0000000) >> 30;
-        data_027e0414.fifoFunc = func_01ffa328(0x200000);
+        data_027e0414.fifoFunc = OS_GetIrqFunction(0x200000);
         reg_G3X_GXSTAT = (reg_G3X_GXSTAT & ~0xc0000000) | (1 << 30);
-        func_01ffa404(0x200000, func_01ffa224);
-        (void)func_01ff8128(0x200000);
-        func_01ffa224();
-        (void)func_01ffa3d4(enabled);
+        OS_SetIrqFunction(0x200000, MIi_FIFOCallback);
+        (void)OS_EnableIrqMask(0x200000);
+        MIi_FIFOCallback();
+        (void)OS_RestoreInterrupts(enabled);
     }
 }
 

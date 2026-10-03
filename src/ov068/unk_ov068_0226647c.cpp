@@ -71,7 +71,7 @@ Unk_ov068_02266680_Vec *func_020947f0(s32 id);
 void func_0203a458();
 void func_0203a468();
 void func_01ffcbb0(Unk_ov068_02266680_Vec *out, Unk_ov068_02266680 *self);
-void func_01ffca8c(Unk_ov068_02266680_Vec *a, void *b, Unk_ov068_02266680_Vec *c);
+void VEC_Add(Unk_ov068_02266680_Vec *a, void *b, Unk_ov068_02266680_Vec *c);
 void func_020e759c(void *a, s32 b, s32 c);
 s32 func_020e7d4c(void *a, Unk_ov068_02266680_Vec *v, s32 c, s32 d, s32 e);
 s32 func_020e769c(void *a, s32 b, s32 c);
@@ -217,7 +217,7 @@ void Unk_ov068_02266680::func_ov068_022667c4() {
     v.x = s->unk_04;
     v.y = s->unk_08;
     v.z = s->unk_0c;
-    func_01ffca8c(&v, s->unk_10, &v);
+    VEC_Add(&v, s->unk_10, &v);
     func_020e759c(&s->unk_14, data_ov068_0226fc48, data_ov068_0226fc40);
     if (func_020e7d4c(&unk_110, &v, data_ov068_0226fc44, s->unk_14, 8) == 0) {
         if (func_020e769c(s, 0, 1) != 0) {

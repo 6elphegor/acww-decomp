@@ -142,7 +142,7 @@ char *func_02129f1c(const char *, const char *);
 void func_02128a00(void *, const void *, s32);
 void func_021289b4(void *, void *, u32);
 s32 func_0212b770(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
 void func_02128c60();
 
@@ -347,12 +347,12 @@ s32 func_ov065_0227c7dc(Ctx0227 **h) {
                         return 4;
                     }
                     q = c->unk_1ec;
-                    if (func_0212a15c(q, "\\bm\\", 4) == 0) {
+                    if (strncmp(q, "\\bm\\", 4) == 0) {
                         r = func_ov065_0227d040(h, q);
                         if (r != 0) {
                             return r;
                         }
-                    } else if (func_0212a15c(q, "\\ka\\", 10) != 0) {
+                    } else if (strncmp(q, "\\ka\\", 10) != 0) {
                         func_ov065_02283720(h, "Received an unrecognized, unsolicited message.\n");
                     }
                 }

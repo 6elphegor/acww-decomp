@@ -80,7 +80,7 @@ extern Unk_ov065_02278e64_B data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 
 extern "C" {
-void func_02115fb4(void *p, s32 v, s32 n);
+void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 func_ov065_0226149c(s32 a, s32 b, s32 c, u32 d, void *sa);
 s32 func_ov065_0226150c(s32 a, s32 b, s32 c, u32 d);
 s32 func_ov065_02261524(s32 a, s32 b, s32 c, u32 d, u8 *sa);
@@ -98,17 +98,17 @@ u32 func_ov065_02260cb4();
 s32 func_ov065_02261034(u32 v, u32 *p);
 u32 func_ov065_02278be8(s32 s);
 s32 func_ov065_022796a8(Unk_ov065_0227931c_Owner *o, char *buf, s32 n);
-u32 func_021277d4(const char *s);
+u32 STD_GetStringLength(const char *s);
 char *func_02127838(char *d, const char *s);
 void *func_ov065_02277af0(u32 n);
 void *func_ov065_02277ad8(void *p, s32 n);
 void func_ov065_02277ac8(void *p);
 void func_021132e0(s32 ms);
-u64 func_01ffa6b4();
+u64 OS_GetTick();
 u64 func_02132ef8(u64 a, u32 b, u32 c);
 void func_02128a00(void *d, const void *s, u32 n);
 void func_0212899c(void *d, s32 v, u32 n);
-s32 func_021130d0(char *buf, const char *fmt, ...);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 func_ov065_02278dec(s32 a, s32 b);
 s32 func_ov065_02278c38(s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -422,8 +422,8 @@ BOOL func_ov065_02279494(Unk_ov065_02279c7c *, void *, void *, s32);
 BOOL func_ov065_022794d0(Unk_ov065_02279c7c *, void *, s32, s32);
 void func_ov065_02279280(void *, s32);
 BOOL func_ov065_0227931c(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_021277d4(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
 s32 func_0212a120(const char *, s32);
 s32 func_02128030(void *, s32, s32, u32);
 
@@ -1230,7 +1230,7 @@ s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
         return FALSE;
     }
     if (len == 0) {
-        len = func_021277d4(s);
+        len = STD_GetStringLength(s);
     }
     if (o->unk_20 == 1) {
         do {

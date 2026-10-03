@@ -25,7 +25,7 @@ s32 func_0200402c(u32 a);
 void *func_0208a578();
 s32 _ZN12Unk_020e0f1013func_0208c134Eii(void *a, u32 b, u32 c);
 BOOL _ZN12Unk_020e0f1013func_0208c1a4Ev(void *a);
-s32 func_02116048(void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 void func_0206db34(void *a, void *b);
 void func_0206dad8();
 void func_020795a8(void *a);
@@ -77,7 +77,7 @@ static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 extern "C" void func_0206f7d0(u8 *p) {
     void *heap = data_021f482c;
     void *buf = func_020e8618(heap, 0xc0);
-    func_02116048(p + 1, buf, 0xc0);
+    MI_CpuCopy8(p + 1, buf, 0xc0);
     func_02076f88(buf);
     func_020e85fc(heap, buf);
 }
@@ -106,7 +106,7 @@ extern "C" void func_0206f6fc(u8 *p, u32 id) {
     Unk_0206f6fc_Pos pos;
     if (Unk_0206f6fc_IsZero(data_020e416c)) {
         u8 id8 = id;
-        func_02116048(p + 2, buf, 5);
+        MI_CpuCopy8(p + 2, buf, 5);
         func_02076a2c(buf, &pos.x, &pos.z);
         pos.y = data_020c7c1c;
         if (p[0] == 2) {
@@ -126,13 +126,13 @@ extern "C" void func_0206f6fc(u8 *p, u32 id) {
 
 extern "C" void func_0206f6b8(u8 *p) {
     u8 tmp[0x1e];
-    func_02116048(p + 1, tmp, 0x1e);
+    MI_CpuCopy8(p + 1, tmp, 0x1e);
     switch (p[0]) {
     case 3:
-        func_02116048(tmp, data_021ed210, 0x1e);
+        MI_CpuCopy8(tmp, data_021ed210, 0x1e);
         break;
     case 4:
-        func_02116048(tmp, data_021ed22e, 0x1e);
+        MI_CpuCopy8(tmp, data_021ed22e, 0x1e);
         break;
     }
 }
@@ -140,7 +140,7 @@ extern "C" void func_0206f6b8(u8 *p) {
 extern "C" void func_0206f668(u8 *p) {
     void *heap = data_021f482c;
     void *buf = func_020e8618(heap, 0xf4);
-    func_02116048(p + 1, buf, 0xf4);
+    MI_CpuCopy8(p + 1, buf, 0xf4);
     u8 *const g = data_021e7f8c;
     void *t = func_0208f158(g);
     func_02065e70(t, buf);
@@ -169,7 +169,7 @@ extern "C" void func_0206f5ac(u8 *p, u32 code) {
     void *heap = data_021f482c;
     void *buf = func_020e8618(heap, 0xf4);
     s32 r = 0xb;
-    func_02116048(p + 1, buf, 0xf4);
+    MI_CpuCopy8(p + 1, buf, 0xf4);
     if (func_02096a50(buf, 1)) {
         if (func_02096880()) {
             r = 9;
@@ -184,7 +184,7 @@ extern "C" void func_0206f5ac(u8 *p, u32 code) {
 extern "C" void func_0206f5a0(u8 *p) { data_020de390 = *p; }
 
 extern "C" void func_0206f56c(u8 *p) {
-    func_02116048(p + 1, data_021cb410, 0x10);
+    MI_CpuCopy8(p + 1, data_021cb410, 0x10);
     func_0206db34(data_021ed2f8, data_021cb410);
     func_0206dad8();
     func_020795a8(data_021dfd8c);

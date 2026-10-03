@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void func_0210629c();
+void NNS_G3dGetTex();
 }
 
 class Unk_020b83b0 {
@@ -24,7 +24,7 @@ public:
 };
 
 extern "C" void func_020b8cf0() {
-    func_0210629c();
+    NNS_G3dGetTex();
 }
 
 Unk_020e4618::Unk_020e4618() {

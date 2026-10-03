@@ -122,12 +122,12 @@ typedef struct MBBig {
 
 extern MBBig *data_0220001c;
 extern u8 data_021fff80;
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32 irq);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32 irq);
 extern BOOL func_02124888(void);
 extern BOOL func_02123368(void *dst, void *seg);
 extern BOOL func_021269f8(void);
-extern void func_021269e4(void *p);
+extern void MBi_InitTaskInfo(void *p);
 extern void func_02126a14(void *p, u32 len);
 
 extern MBBeacon data_021fffa0;
@@ -138,26 +138,26 @@ extern void (*data_021fff88)(u32);
 extern u32 data_021fff84;
 extern u8 data_021fffb0[4][22];
 extern u32 func_02123edc(const u16 *p, int len);
-extern void func_02121a24(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
+extern void WM_SetGameInfo(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
 
-extern void func_02115e30(u32 value, void *dst, u32 size);
-extern void func_02115e48(const void *src, void *dst, u32 size);
-extern void func_02115ea8(u32 value, void *dst, u32 size);
-extern void func_02119d78(FSFile *file);
-extern BOOL func_02119a28(FSFile *file, const char *path);
+extern void MIi_CpuClear16(u32 value, void *dst, u32 size);
+extern void MIi_CpuCopy16(const void *src, void *dst, u32 size);
+extern void MIi_CpuClearFast(u32 value, void *dst, u32 size);
+extern void FS_InitFile(FSFile *file);
+extern BOOL FS_OpenFile(FSFile *file, const char *path);
 extern s32 func_021198b4(FSFile *file, void *dst, s32 len);
-extern BOOL func_02119848(FSFile *file, s32 pos, u32 origin);
-extern void func_021145cc(void *addr, u32 len);
+extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
+extern void DC_FlushRange(void *addr, u32 len);
 extern void func_021145f0(void);
-extern void func_02115fb4(void *dst, u32 value, u32 size);
-extern void func_02116048(const void *src, void *dst, u32 size);
+extern void MI_CpuFill8(void *dst, u32 value, u32 size);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void func_0206d49c(void);
 extern u32 data_0213a3ec[3];
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 extern void func_021267d4(void *ctx);
 extern void func_02126760(void *ctx, u32 addr, u32 len, void *data, u32 mode);
-extern void func_021145cc(void *addr, u32 len);
+extern void DC_FlushRange(void *addr, u32 len);
 typedef struct MBRegion {
     u32 start;
     u32 len;
@@ -165,11 +165,11 @@ typedef struct MBRegion {
 extern MBRegion *data_0213c204;
 extern char data_0213c208[];
 extern u8 AutoloadCallback[];
-extern void *func_021191f0(const char *name, int len);
-extern BOOL func_02119af4(FSFile *file, void *arc, u32 top, u32 bottom, int id);
+extern void *FS_FindArchive(const char *name, int len);
+extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
 extern void func_02124930(void *p, u32 a, u32 b);
-extern void func_021199e0(FSFile *file);
-extern u32 func_021245c4(const u16 *s);
+extern void FS_CloseFile(FSFile *file);
+extern u32 mystrlen(const u16 *s);
 extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
 
 extern void func_02124528(void);
@@ -183,7 +183,7 @@ extern void func_02123958(u32 *seg, u32 lo, u32 hi, int clear);
 extern void func_02124724(MBBuf *b, const u32 *info, const void *name);
 extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
 extern void func_021245ec(MBBuf *b, const void *src, u32 mask, u32 w);
-extern u32 func_021245c4(const u16 *s);
+extern u32 mystrlen(const u16 *s);
 extern void func_02124580(MBBuf *b);
 extern void func_0212454c(void);
 extern void func_02124528(void);

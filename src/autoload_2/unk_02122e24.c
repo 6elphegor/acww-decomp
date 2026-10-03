@@ -14,23 +14,23 @@ typedef int BOOL;
 extern u8 *data_0220001c;
 extern u8 data_0213c200;
 extern u32 data_0213a3ec[];
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02115fb4(void *, u32, u32);
-extern void func_02116048(void *, void *, u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void MI_CpuFill8(void *, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
 extern void func_0206d49c(void);
 extern void *func_02126e00(void *, void *);
-extern u32 func_02121c34(u32);
+extern u32 IsChildAidValid(u32);
 extern u32 func_02123f24(u32, u32, void *);
 extern u8 *func_0211f82c(void *, u32);
-extern void func_02119d78(void *);
-extern void *func_021191f0(void *, u32);
-extern u32 func_02119af4(void *, void *, u32, u32, int);
+extern void FS_InitFile(void *);
+extern void *FS_FindArchive(void *, u32);
+extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
 extern u32 func_021198b4(void *, u32, u32);
-extern void func_021199e0(void *);
+extern void FS_CloseFile(void *);
 extern u8 *func_02126cc4(void *, void *, u32);
-extern u32 func_02121c50(u32, u32);
+extern u32 MBi_calc_nextsendblock(u32, u32);
 extern void func_02126e88(u32);
 extern void func_02121cc8(void);
 extern void func_021245ec(void *, void *, u32, u32);
@@ -39,7 +39,7 @@ extern u32 func_02124908(void);
 extern u32 func_021248a8(void);
 extern void func_02124480(u32, u32, u32);
 extern void func_02121c10(u32, u32);
-extern void func_02115ea8(u32, void *, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
 typedef struct { u32 a[3]; u16 b[3]; u16 n; } WTab;
 typedef struct { u32 w0, w4, w8, wc; } WSeg;
 typedef struct { u8 pad[12]; WSeg seg[3]; } WSrc;
@@ -185,26 +185,26 @@ BOOL func_021230d0(u32 idx, u32 addr, u32 size) {
 }
 // (set callback at work+0x14e4 with interrupts disabled)
 void func_021230a4(void (*cb)()) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     W32(data_0220001c + 0x1000, 0x4e4) = (u32)cb;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 // (copy 22-byte per-aid record into the work scratch buffer, returns pointer to it)
 u8 *func_02123008(u32 n) {
-    u32 irq = func_01ffa2ec();
-    if (data_0220001c != 0 && func_02121c34(n) != 0) {
-        func_02116048(data_0220001c + 0x1340 + (n - 1) * 22, data_0220001c + 0x1772, 22);
-        func_01ffa3d4(irq);
+    u32 irq = OS_DisableInterrupts();
+    if (data_0220001c != 0 && IsChildAidValid(n) != 0) {
+        MI_CpuCopy8(data_0220001c + 0x1340 + (n - 1) * 22, data_0220001c + 0x1772, 22);
+        OS_RestoreInterrupts(irq);
         return data_0220001c + 0x1772;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return 0;
 }
 
 
 // (BOOL: aid valid and its state == 7)
 BOOL func_02122fac(u32 n) {
-    if (data_0220001c != 0 && func_02121c34(n) != 0) {
+    if (data_0220001c != 0 && IsChildAidValid(n) != 0) {
         if (W32(data_0220001c + (n - 1) * 4 + 0x1000, 0x4e8) == 7) return 1;
     }
     return 0;
@@ -213,32 +213,32 @@ BOOL func_02122fac(u32 n) {
 // (aid state check, set transition code, interrupts disabled)
 BOOL func_02122eb0(u32 n, u32 kind) {
     u32 b, a, irq;
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     switch (kind) {
     case 0: a = 10; b = 4; break;
     case 1: a = 10; b = 3; break;
     case 2: a = 14; b = 2; break;
     case 3: a = 7; b = 5; break;
     default:
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
-    if (data_0220001c != 0 && func_02121c34(n) != 0) {
+    if (data_0220001c != 0 && IsChildAidValid(n) != 0) {
         u32 i = n - 1;
         u8 *w = data_0220001c;
         if (a == W32(w + i * 4 + 0x1000, 0x4e8)) {
             W16(w + i * 2 + 0x1700, 0x54) = b;
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 1;
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return 0;
 }
 
 // (store aid state, then call state callback)
 void func_02122e60(u32 a, u32 b, void *c) {
-    if (func_02121c34(a) != 0) {
+    if (IsChildAidValid(a) != 0) {
         W32(data_0220001c + (a - 1) * 4 + 0x1000, 0x4e8) = b;
     }
     func_02122e24(a, b, c);

@@ -68,7 +68,7 @@ void func_0210e8bc(u32 a, void *b);
 void func_0210e6ac(void *p);
 void func_020ed9c8(u32 a);
 void func_020eda60(void *p);
-u32 func_01ffa6b4(void);
+u32 OS_GetTick(void);
 void func_020edb14(void);
 void func_020ef728(SndMgr *self);
 void func_020effd4(SndMgr *self);
@@ -79,7 +79,7 @@ void func_0210b31c(SndMgr *self);
 }
 
 SndMgr::SndMgr() {
-    unk_54 = func_01ffa6b4();
+    unk_54 = OS_GetTick();
     unk_58 = 0x5d588b65;
     unk_5c = 0x00269ec3;
     unk_4d = 0;

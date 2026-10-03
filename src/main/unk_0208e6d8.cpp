@@ -14,7 +14,7 @@ extern u32 data_020d5b0c[][2];
 extern u8 data_020d5d34[];
 extern u32 *data_020d5d0c[];
 }
-extern "C" u64 func_01ffa6b4(void);
+extern "C" u64 OS_GetTick(void);
 
 extern const u8 data_020cf718[4];
 extern const u8 data_020cf71c[4];
@@ -400,14 +400,14 @@ void Unk_020e10f8::func_0208e870() {
     unk_28 = 0;
     func_020016a4(0x10);
     func_02001564(4);
-    u64 t = func_01ffa6b4();
+    u64 t = OS_GetTick();
     unk_2c = 1;
     unk_30 = t + 0x1991b;
     unk_38 = 1;
 }
 
 void Unk_020e10f8::func_0208e7c0() {
-    u64 now = func_01ffa6b4();
+    u64 now = OS_GetTick();
     if (now >= unk_30) {
         if (unk_2c == 0) {
             unk_30 = now + 0x1991b;

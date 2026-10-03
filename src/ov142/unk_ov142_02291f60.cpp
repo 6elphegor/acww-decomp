@@ -112,8 +112,8 @@ s32 func_0204b858(u16 *p);
 s32 func_0204bde8(u16 *p);
 s32 func_0204b8ac(u16 *p);
 void func_020021fc(s32 a, s32 b, s32 c);
-void func_02115e30(u32 v, void *dst, s32 n);
-void func_02115e48(void *dst, void *src, s32 n);
+void MIi_CpuClear16(u32 v, void *dst, s32 n);
+void MIi_CpuCopy16(void *dst, void *src, s32 n);
 u32 func_0209750c();
 s32 func_0203c4cc(void *a, u16 *b);
 s32 _s32_div_f(s32 a, s32 b);
@@ -1557,10 +1557,10 @@ void Unk_ov142_02294da8::func_ov142_02292f8c() {
     s32 i = (a + 9) % 9;
     s32 j = a & 0xf;
     volatile u16 fill = 0x10;
-    func_02115e30(fill, unk_1d90, 0x800);
+    MIi_CpuClear16(fill, unk_1d90, 0x800);
     s32 z = 0;
     for (s32 n = 0; n < 9; n++) {
-        func_02115e48((u8 *)this + 0x1590 + i * 0x80, unk_1d90 + j * 0x80, 0x80);
+        MIi_CpuCopy16((u8 *)this + 0x1590 + i * 0x80, unk_1d90 + j * 0x80, 0x80);
         i++;
         if (i >= 9) {
             i = z;
@@ -2172,8 +2172,8 @@ u16 Unk_ov142_02294da8::func_ov142_02292154(s32 x, s32 y, s32 t) {
 }
 
 void Unk_ov142_02294da8::func_ov142_022920b0(u32 t) {
-    func_02115e48(unk_2d90, unk_2db0, 0x20);
-    func_02115e48(unk_2dd0, unk_2df0, 0x20);
+    MIi_CpuCopy16(unk_2d90, unk_2db0, 0x20);
+    MIi_CpuCopy16(unk_2dd0, unk_2df0, 0x20);
     unk_2db0[15] = func_ov142_02292154(unk_2d90[15], unk_2d90[8], t);
     unk_2df0[15] = func_ov142_02292154(unk_2dd0[15], unk_2dd0[8], t);
     unk_678[2].func_020b8670((u32)unk_2db0, 4, 3);

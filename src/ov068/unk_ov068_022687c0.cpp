@@ -252,8 +252,8 @@ u16 *func_0204eba0(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
 s32 func_ov003_0222d334(BObj *);
 s32 func_ov003_02229938(BObj *);
-s32 func_01ffca58(void *, void *, void *);
-s32 func_01ffca8c(void *, void *, void *);
+s32 VEC_Subtract(void *, void *, void *);
+s32 VEC_Add(void *, void *, void *);
 s32 func_ov003_0222ab68(void *, void *, s32);
 s32 func_02106020(s32, s32);
 s32 func_ov003_02212338(s32);
@@ -703,7 +703,7 @@ s32 func_ov068_02269f60(DObj *o, u16 *p, DVec *out) {
         out->z = t.z;
         out->y = 0;
         func_ov003_0222ab68(out, out, 2);
-        func_01ffca58(pos, out, pos);
+        VEC_Subtract(pos, out, pos);
         return 1;
     } else {
         o->unk_251 = 9;
@@ -1435,9 +1435,9 @@ s32 func_ov068_02268b70(BObj *o, s16 *p) {
                         o->unk_220 = o->unk_228;
                     }
                     *p = *p + a;
-                    func_01ffca58(&c, v, &c);
+                    VEC_Subtract(&c, v, &c);
                     func_ov003_0222ab68(&c, &c, 1);
-                    func_01ffca8c(v, &c, v);
+                    VEC_Add(v, &c, v);
                 }
             }
         } else {

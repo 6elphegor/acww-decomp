@@ -134,9 +134,9 @@ s32 func_ov065_0227fe88(Ctx0227 **, const char *, const char *);
 s32 func_ov065_0227faf8(Ctx0227 **, s32, s32);
 
 void *func_0212899c(void *, s32, u32);
-u32 func_02128c70(void);
+u32 rand(void);
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
+s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 
 s32 func_ov065_0227f4c8(Ctx0227 **, s32, s32);
@@ -252,9 +252,9 @@ struct Unk_ov065_0227ff90_Rec {
 
 extern "C" {
 
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 void func_ov065_02277ac8(void *);
 void *func_ov065_02277af0(s32);
 char *func_ov065_02279100(const char *);
@@ -437,8 +437,8 @@ void func_ov065_02277ac8(void *);
 void *func_ov065_02277af0(u32);
 s32 func_ov065_0227e0e8(void *, Unk_ov065_02280a2c_Pair, void *, void *, s32);
 s32 func_0212899c(void *, s32, u32);
-s32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_0227dc28(void *, void *, const char *);
 s32 func_ov065_0227dc48(void *, void *, const char *, s32);
 s32 func_ov065_0227dccc(void *, void *, s32);
@@ -639,7 +639,7 @@ s32 func_ov065_0227ff90(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (func_ov065_02283684(h, str, 1) != 0) {
         return 4;
     }
-    if (func_0212a15c(str, "\\pi\\", 4) != 0) {
+    if (strncmp(str, "\\pi\\", 4) != 0) {
         func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
         func_ov065_0227e160(h, 3, 1);
         return 3;
@@ -883,7 +883,7 @@ s32 func_ov065_0227faf8(void *h, s32 code, s32 val) {
             func_ov065_02283460(h, "Invalid zipcode.");
             return 2;
         }
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\zipcode\\", buf);
         if (r != 0) {
             return r;
@@ -915,56 +915,56 @@ s32 func_ov065_0227faf8(void *h, s32 code, s32 val) {
         }
         break;
     case 0x706:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\icquin\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70c:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227fe88(h, "\\cpubrandid\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70d:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227fe88(h, "\\cpuspeed\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70e:
-        func_021130d0(buf, "%d", val / 16);
+        OS_SPrintf(buf, "%d", val / 16);
         r = func_ov065_0227fe88(h, "\\memory\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x710:
-        func_021130d0(buf, "%d", val / 4);
+        OS_SPrintf(buf, "%d", val / 4);
         r = func_ov065_0227fe88(h, "\\videocard1ram\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x712:
-        func_021130d0(buf, "%d", val / 4);
+        OS_SPrintf(buf, "%d", val / 4);
         r = func_ov065_0227fe88(h, "\\videocard2ram\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x713:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227fe88(h, "\\connectionid\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x714:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227fe88(h, "\\connectionspeed\\", buf);
         if (r != 0) {
             return r;
@@ -974,56 +974,56 @@ s32 func_ov065_0227faf8(void *h, s32 code, s32 val) {
         if (val != 0) {
             val = 1;
         }
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227fe88(h, "\\hasnetwork\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x718:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\pic\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x719:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\occ\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71a:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\ind\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71b:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\inc\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71c:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\mar\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71d:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\chc\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71e:
-        func_021130d0(buf, "%d", val);
+        OS_SPrintf(buf, "%d", val);
         r = func_ov065_0227febc(h, "\\i1\\", buf);
         if (r != 0) {
             return r;
@@ -1101,7 +1101,7 @@ s32 func_ov065_0227f54c(Ctx0227 **h, s32 cmd, char *val) {
         if (r != 0) return r;
         break;
     case 0x709:
-        if (func_021277d4(val) != 2) {
+        if (STD_GetStringLength(val) != 2) {
             func_ov065_02283460(h, "Invalid countrycode.");
             return 2;
         }
@@ -1223,9 +1223,9 @@ extern "C" {
 // Not in the original binary: unreferenced weak function compiled right before func_ov065_0227f54c, so that the literals
 // "%d", "Invalid info.", "\\birthday\\" are pooled where the original has them; removed by the dead-stripping link (notes.txt).
 __declspec(weak) void Unk_ov065_0227f54c_pool_order(void) {
-    func_021277d4("%d");
-    func_021277d4("Invalid info.");
-    func_021277d4("\\birthday\\");
+    STD_GetStringLength("%d");
+    STD_GetStringLength("Invalid info.");
+    STD_GetStringLength("\\birthday\\");
 }
 }
 }

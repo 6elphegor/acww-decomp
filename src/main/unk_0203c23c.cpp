@@ -125,11 +125,11 @@ extern u32 data_027e0114[];
 }
 
 extern "C" {
-void func_01ffb7cc(void *p);
+void MTX_Identity43_(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
@@ -137,7 +137,7 @@ void func_01ffcbb0(void *out, void *self);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -149,11 +149,11 @@ void func_020e98f4(void *out, void *a, s32 n);
 }
 
 extern "C" {
-void func_02111404(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void func_0211126c(void *a, void *b, void *c, s32 d, void *e);
+void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 }
 
 extern "C" {
@@ -205,7 +205,7 @@ void func_0203a468();
 }
 
 extern "C" {
-s32 func_0210629c();
+s32 NNS_G3dGetTex();
 }
 
 extern "C" {

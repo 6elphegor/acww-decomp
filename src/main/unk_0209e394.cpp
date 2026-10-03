@@ -316,7 +316,7 @@ void func_0209cf88(void *p);
 }
 
 extern "C" {
-void func_02116048(void *src, void *dst, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
@@ -336,7 +336,7 @@ void func_0211a748(void *a, void *b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void func_02115fb4(void *p, s32 v, s32 n);
+void MI_CpuFill8(void *p, s32 v, s32 n);
 }
 
 extern "C" {
@@ -405,7 +405,7 @@ void Unk_0209ea50::func_0209eacc(void *src) {
         func_0209cf88(buf);
         src = buf;
     }
-    func_02116048(src, this, 4);
+    MI_CpuCopy8(src, this, 4);
     unk_03 = 1;
 }
 

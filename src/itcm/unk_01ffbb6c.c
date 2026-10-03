@@ -22,12 +22,12 @@ typedef struct MtxFx43 {
     fx32 _30, _31, _32;
 } MtxFx43;
 
-void func_02115f64(void *src, void *dst);   // MTX_Copy43 (autoload_2, 48-byte ldm/stm copy)
-void func_01ffc428(fx32 x);                 // FX_InvAsync
-fx32 func_01ffc464(void);                   // FX_GetDivResult
+void MI_Copy48B(void *src, void *dst);   // MTX_Copy43 (autoload_2, 48-byte ldm/stm copy)
+void FX_InvAsync(fx32 x);                 // FX_InvAsync
+fx32 FX_GetDivResult(void);                   // FX_GetDivResult
 
 // MTX_Inverse43 (NitroSDK fx_mtx43.c)
-int func_01ffbb6c(const MtxFx43 *pSrc, MtxFx43 *pDst) {
+int MTX_Inverse43(const MtxFx43 *pSrc, MtxFx43 *pDst) {
     MtxFx43 tmp;
     MtxFx43 *p;
     fx32 det0, det1, det2, det;
@@ -46,12 +46,12 @@ int func_01ffbb6c(const MtxFx43 *pSrc, MtxFx43 *pDst) {
     if (det == 0) {
         return -1; // not invertible
     }
-    func_01ffc428(det);
+    FX_InvAsync(det);
     var0 = (fx32)(((fx64)pSrc->_01 * pSrc->_22 - (fx64)pSrc->_21 * pSrc->_02) >> FX32_SHIFT);
     var1 = (fx32)(((fx64)pSrc->_01 * pSrc->_12 - (fx64)pSrc->_11 * pSrc->_02) >> FX32_SHIFT);
     var2 = (fx32)(((fx64)pSrc->_00 * pSrc->_22 - (fx64)pSrc->_20 * pSrc->_02) >> FX32_SHIFT);
     var3 = (fx32)(((fx64)pSrc->_00 * pSrc->_12 - (fx64)pSrc->_10 * pSrc->_02) >> FX32_SHIFT);
-    inv = func_01ffc464();
+    inv = FX_GetDivResult();
     p->_00 = (fx32)((inv * det0) >> FX32_SHIFT);
     p->_01 = -(fx32)((inv * var0) >> FX32_SHIFT);
     p->_02 = (fx32)((inv * var1) >> FX32_SHIFT);
@@ -66,7 +66,7 @@ int func_01ffbb6c(const MtxFx43 *pSrc, MtxFx43 *pDst) {
     p->_31 = -(fx32)(((fx64)p->_01 * pSrc->_30 + (fx64)p->_11 * pSrc->_31 + (fx64)p->_21 * pSrc->_32) >> FX32_SHIFT);
     p->_32 = -(fx32)(((fx64)p->_02 * pSrc->_30 + (fx64)p->_12 * pSrc->_31 + (fx64)p->_22 * pSrc->_32) >> FX32_SHIFT);
     if (p == &tmp) {
-        func_02115f64(&tmp, pDst);
+        MI_Copy48B(&tmp, pDst);
     }
     return 0;
 }

@@ -9,13 +9,13 @@ struct Unk_0204fe98_Global {
 extern "C" Unk_0204fe98_Global data_021c4890;
 
 extern "C" s32 func_0211d704(void);
-extern "C" void func_0211e0ac(void);
-extern "C" s32 func_021123d0(void);
+extern "C" void CARD_Init(void);
+extern "C" s32 OS_GetLockID(void);
 extern "C" void func_0211d690(u16 v);
 extern "C" void func_0211dc88(s32 v);
 extern "C" s32 func_0211ddd0(void);
 extern "C" void func_0211d680(u16 v);
-extern "C" void func_02112428(u16 v);
+extern "C" void OS_ReleaseLockID(u16 v);
 
 extern "C" void func_0205018c(Unk_0204fe98_Global *g, s32 n, const char *name);
 extern "C" void func_02050170(void);
@@ -26,14 +26,14 @@ const char data_020ca478[] = "forest";
 extern "C" void func_0205018c(Unk_0204fe98_Global *g, s32 n, const char *name) {
     s32 t;
     if (func_0211d704() == 0) {
-        func_0211e0ac();
+        CARD_Init();
     }
-    t = func_021123d0();
+    t = OS_GetLockID();
     func_0211d690((u16)t);
     func_0211dc88(n);
     g->unk_00 = func_0211ddd0();
     func_0211d680((u16)t);
-    func_02112428((u16)t);
+    OS_ReleaseLockID((u16)t);
     g->unk_08 = 4;
 }
 

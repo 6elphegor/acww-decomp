@@ -67,7 +67,7 @@ void func_ov001_02211ae4();
 void func_ov001_0221be7c();
 void func_ov001_0221197c();
 void func_0211172c();
-void func_02111ec8();
+void GX_LoadBGPltt();
 void func_02111a6c();
 
 void func_ov001_02211030();
@@ -192,8 +192,8 @@ s32 func_ov001_02208100();
 s32 func_ov001_022261cc(u32 a);
 s32 func_ov001_022080e0(u32 a);
 s32 func_ov001_022111a8();
-void func_02115e30(u32 a, void *b, u32 c);
-void func_02115e48(void *a, void *b, u32 c);
+void MIi_CpuClear16(u32 a, void *b, u32 c);
+void MIi_CpuCopy16(void *a, void *b, u32 c);
 
 void func_ov001_02210694();
 void func_ov001_0220f304();

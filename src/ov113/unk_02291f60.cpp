@@ -47,7 +47,7 @@ BOOL func_020024f0(void *p, u32 a, u32 b, u32 c);
 s32 func_0200261c(void *, void *, u32, u32, u32, u32);
 void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void func_02110a64(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 BOOL func_ov002_0220125c(void *pad);
 BOOL func_ov002_0220126c(void *pad);
 BOOL func_ov002_0220127c(void *pad);
@@ -288,7 +288,7 @@ static inline BOOL Unk_ov113_02292cc0_Both() {
 extern "C" Unk_ov113_02293640 *func_ov113_02293530() { return new Unk_ov113_02293640(); }
 
 BOOL Unk_ov113_02293640::vfunc_00() {
-    func_02110a64(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
+    G2x_SetBlendBrightnessExt_(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
     func_ov113_02292ec0();
     func_ov002_02200a50(0);
     func_ov002_02200a60(1);

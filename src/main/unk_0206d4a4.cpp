@@ -7,11 +7,11 @@ extern "C" {
 extern u8 data_021fccfc[];
 extern u8 data_021cc7d0[];
 extern u8 data_021cb3b8;
-u32 func_01ffa2ec(void);
+u32 OS_DisableInterrupts(void);
 void func_01ffa3c0(void);
-void func_01ffa3d4(u32 v);
-void func_01ff80e0(s32 v);
-void func_01ff81a8(s32 v);
+void OS_RestoreInterrupts(u32 v);
+void OS_DisableIrqMask(s32 v);
+void OS_ResetRequestIrqMask(s32 v);
 void func_02076c24(void *p, s32 v);
 void func_02076c50(void *p);
 void func_ov065_02277ba4(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
@@ -20,7 +20,7 @@ void func_0204eee4(u32 id);
 void *func_020e85b4(u32 size, u32 align);
 void func_020e8558(void *p);
 void func_ov001_0220cb30(void *p, s32 a, s32 b);
-s32 func_02117dd8(s32 a, s32 b, s32 c);
+s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 void WaitByLoop(s32 n);
 void func_0206d774(void *arg, void *p);
 void func_020e7fcc(void *st, u32 v);
@@ -55,12 +55,12 @@ extern "C" void func_0206d5a0(u32 a, void *p) {
 }
 
 extern "C" void func_0206d514(void) {
-    u32 ime = func_01ffa2ec();
+    u32 ime = OS_DisableInterrupts();
     volatile u16 *reg = (volatile u16 *)0x4000208;
     u16 old = *reg;
     *reg = 0;
-    func_01ff80e0(7);
-    func_01ff81a8(7);
+    OS_DisableIrqMask(7);
+    OS_ResetRequestIrqMask(7);
     func_02076c24(data_021cc7d0, (s32)OVERLAY_65_ID);
     func_ov065_02277ba4(func_0206d5ac, func_0206d5a0);
     func_0204ef2c((u32)OVERLAY_1_ID);
@@ -71,24 +71,24 @@ extern "C" void func_0206d514(void) {
     func_02076c50(data_021cc7d0);
     *reg;
     *reg = old;
-    func_01ffa3d4(ime);
+    OS_RestoreInterrupts(ime);
 }
 
 extern "C" void func_0206d4e8(s32 a, s32 b) {
-    while (func_02117dd8(0xe, a, 0) != 0) {
+    while (PXI_SendWordByFifo(0xe, a, 0) != 0) {
         WaitByLoop(b);
     }
 }
 
 extern "C" void func_0206d4a4(void *arg) {
-    func_01ffa2ec();
+    OS_DisableInterrupts();
     func_0206d4e8(1, 1);
     if (data_021cb3b8 == 0) {
         data_021cb3b8 = 1;
         func_0206d774(arg, data_021fccfc);
     }
     while (data_021cb3b8 != 0) {
-        func_01ffa2ec();
+        OS_DisableInterrupts();
         func_01ffa3c0();
     }
 }

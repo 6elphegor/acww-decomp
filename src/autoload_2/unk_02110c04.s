@@ -8,10 +8,10 @@
 
 ; GXi_NopClearFifo128_: writes 128 zero words to the geometry-FIFO register whose address arrives in r0
 ; (32 four-register stm WITHOUT writeback to the same address).
-	.global func_02110c04
-	.type func_02110c04, @function
-	.size func_02110c04, 0x94
-func_02110c04:
+	.global GXi_NopClearFifo128_
+	.type GXi_NopClearFifo128_, @function
+	.size GXi_NopClearFifo128_, 0x94
+GXi_NopClearFifo128_:
 	mov r1, #0
 	mov r2, #0
 	mov r3, #0

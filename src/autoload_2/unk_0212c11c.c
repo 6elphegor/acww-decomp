@@ -76,11 +76,11 @@ typedef struct {
 extern wchar_t data_0213c53c[]; /* L"(null)" */
 extern char data_0213c540[];    /* "(null)" */
 extern void *func_02128a00(void *, const void *, u32);
-extern void *func_02128970(const void *s, s32 c, u32 n);
+extern void *memchr(const void *s, s32 c, u32 n);
 extern s32 func_02128908(wchar_t *pwc, const char *s, u32 n);
 extern s32 func_02128824(wchar_t *dst, const char *src, u32 n);
 extern u32 func_0212a438(const char *s);
-extern wchar_t *func_0212dc60(const wchar_t *s, wchar_t c);
+extern wchar_t *wcschr(const wchar_t *s, wchar_t c);
 extern u32 func_0212dcb4(const wchar_t *s);
 extern wchar_t *func_0212d78c(wchar_t *format_string, va_list *arg, print_format *format);
 
@@ -109,7 +109,7 @@ extern void func_0212fa54(decform *form, double x, decimal *d); /* __num2dec */
 extern wchar_t *func_0212dc94(wchar_t *dst, const wchar_t *src); /* wcscpy */
 #define iswupper(c) (((c) >= 128) ? 0 : (data_0213a610[c] & 0x200))
 
-extern void *func_0212c190(const wchar_t *s, s32 c, u32 n);
+extern void *wmemchr(const wchar_t *s, s32 c, u32 n);
 extern void *func_0212c1b8(void *d, const void *s, u32 n);
 
 extern s32 func_0212c2b0(void *(*)(void *, const wchar_t *, u32), void *, const wchar_t *, va_list);
@@ -467,7 +467,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
     chars_written = 0;
 
     while (*format_ptr) {
-        if (!(curr_format = func_0212dc60(format_ptr, '%'))) {
+        if (!(curr_format = wcschr(format_ptr, '%'))) {
             num_chars = func_0212dcb4(format_ptr);
             chars_written += num_chars;
             if (num_chars && !WriteProc(WriteProcArg, format_ptr, num_chars)) return -1;
@@ -538,7 +538,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                     if (format.precision_specified && num_chars > format.precision) num_chars = format.precision;
                 } else if (format.precision_specified) {
                     num_chars = format.precision;
-                    if ((wcs_ptr = func_0212c190(buff_ptr, 0, num_chars)) != 0) num_chars = wcs_ptr - buff_ptr;
+                    if ((wcs_ptr = wmemchr(buff_ptr, 0, num_chars)) != 0) num_chars = wcs_ptr - buff_ptr;
                 } else {
                     num_chars = func_0212dcb4(buff_ptr);
                 }
@@ -550,7 +550,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                     if (format.precision_specified && n > format.precision) n = format.precision;
                 } else if (format.precision_specified) {
                     n = format.precision;
-                    if ((cp = func_02128970(s, 0, n)) != 0) n = cp - s;
+                    if ((cp = memchr(s, 0, n)) != 0) n = cp - s;
                 } else {
                     n = func_0212a438(s);
                 }
@@ -657,7 +657,7 @@ void *func_0212c1b8(void *d, const void *s, u32 n) {
 }
 
 // wmemchr
-void *func_0212c190(const wchar_t *s, s32 c, u32 n) {
+void *wmemchr(const wchar_t *s, s32 c, u32 n) {
     if (n) {
         do {
             if (*s == c) return (void *)s;

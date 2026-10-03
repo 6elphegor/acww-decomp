@@ -46,14 +46,14 @@ void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
 s32 func_02096aac(void *obj);
 void _ZN12Unk_020dd458C1Ev(void *p);
 void _ZN12Unk_020dd458D1Ev(void *p);
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN12Unk_020940a013func_020941e8EPS_(void *a, void *b);
 s32 func_0209cef4();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 func_020ae02c(void *p);
 void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
-void *func_02115fb4(void *d, s32 v, u32 n);
-void func_02116048(void *, void *, u32);
+void *MI_CpuFill8(void *d, s32 v, u32 n);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0209ceac(s32 a, s32 b, s32 c);
 s32 func_0206e844();
 s32 func_0206e850();
@@ -662,14 +662,14 @@ void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
 s32 func_02096aac(void *obj);
 void _ZN12Unk_020dd458C1Ev(void *p);
 void _ZN12Unk_020dd458D1Ev(void *p);
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN12Unk_020940a013func_020941e8EPS_(void *a, void *b);
 s32 func_0209cef4();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 func_020ae02c(void *p);
 void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
-void *func_02115fb4(void *d, s32 v, u32 n);
-void func_02116048(void *, void *, u32);
+void *MI_CpuFill8(void *d, s32 v, u32 n);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0209ceac(s32 a, s32 b, s32 c);
 s32 func_0206e844();
 s32 func_0206e850();
@@ -783,7 +783,7 @@ s32 func_02063b8c(s32 a);
 
 namespace Ns_02086b7c {
 extern "C" {
-void *func_02116048(void *dst, const void *src, u32 n);
+void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 s32 func_02063b8c(s32 n);
 void func_0204ed8c(Unk_02086ec4_Vec3 *out, s32 x, s32 y);
 s32 func_0204edf8(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
@@ -794,8 +794,8 @@ s32 func_020e77cc(s32 a, s32 b, s32 c);
 namespace Ns_020874d8 {
 extern "C" {
 void _ZN12Unk_02097ff413func_02097ff4Ej(void *, s32);
-void func_02116048(void *, void *, s32);
-void func_02115fb4(void *, s32, s32);
+void MI_CpuCopy8(void *, void *, s32);
+void MI_CpuFill8(void *, s32, s32);
 void func_0209cf88(void *);
 s32 func_02063b8c(s32);
 u32 _ZN12Unk_0209865c13func_0209888cEv(void *);
@@ -1117,7 +1117,7 @@ extern "C" void func_02087884() {}
 extern "C" void func_02087880() {}
 
 void Unk_020877e0::func_02087870() {
-    Ns_020874d8::func_02115fb4(unk_04, 0, 8);
+    Ns_020874d8::MI_CpuFill8(unk_04, 0, 8);
 }
 
 void Unk_020877e0::func_02087860(u8 *src) {
@@ -1165,16 +1165,16 @@ extern "C" void func_020877dc() {}
 extern "C" void func_020877d8() {}
 
 extern "C" void func_020877cc(void *a) {
-    Ns_020874d8::func_02115fb4(a, 0xff, 1);
+    Ns_020874d8::MI_CpuFill8(a, 0xff, 1);
 }
 
 extern "C" void func_020877c0(void *a, void *b) {
-    Ns_020874d8::func_02116048(a, b, 1);
+    Ns_020874d8::MI_CpuCopy8(a, b, 1);
 }
 
 extern "C" void func_020877a0(s32 a, void *b) {
     Ns_020874d8::func_0209cf88((void *)(a + 1));
-    Ns_020874d8::func_02116048(b, (void *)a, 1);
+    Ns_020874d8::MI_CpuCopy8(b, (void *)a, 1);
 }
 
 extern "C" u8 *func_0208779c(u8 *p) {
@@ -1356,7 +1356,7 @@ extern "C" BOOL func_0208740c() {
 extern "C" void func_020873e0() {
     u8 *const g = data_021d7350;
     if (func_0209750c() != 0 && g != 0) {
-        Ns_02086b7c::func_02116048(_ZN12Unk_0209865c13func_020986a4Ev(), g + 0x15fca, 12);
+        Ns_02086b7c::MI_CpuCopy8(_ZN12Unk_0209865c13func_020986a4Ev(), g + 0x15fca, 12);
     }
 }
 
@@ -1365,7 +1365,7 @@ extern "C" void func_02087390() {
     void *a = func_0209750c();
     if (a != 0 && g != 0) {
         void *b = _ZN12Unk_0209865c13func_020986a4Ev();
-        Ns_02086b7c::func_02116048(g + 0x15fca, b, 12);
+        Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
         if (Ns_02086b7c::func_020e77cc(((Unk_020872fc *)(g + 0x15fca))->func_02087354(), 1, 7) == 0) _ZN12Unk_02097ff413func_02097ff4Ej(a, 0x33);
     }
 }
@@ -1478,7 +1478,7 @@ void Unk_02086f84::func_02086fd0() {
         s32 bx = 0, by = 0;
         u32 *tbl = data_021cdda8;
         s32 x, y;
-        func_02115fb4(tbl, 0, 0x80);
+        MI_CpuFill8(tbl, 0, 0x80);
         Ns_02086b7c::func_0204edf8(&bx, &by, 2, 2, 0, 0);
         y = 0;
         do {
@@ -1608,7 +1608,7 @@ void Unk_02086c04::func_02086eec() {}
 
 void Unk_02086c04::func_02086ee8() {}
 
-void Unk_02086c04::func_02086edc() { func_02115fb4(this, 0, 12); }
+void Unk_02086c04::func_02086edc() { MI_CpuFill8(this, 0, 12); }
 
 void Unk_02086c04::func_02086ed0(Unk_02086ec4_Vec3 *v) {
     unk_00 = v->x;
@@ -1651,7 +1651,7 @@ extern "C" s32 func_02086d78(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s3
         cur = limit;
         limit = t;
     }
-    func_02115fb4(buf, 0, n * 2);
+    MI_CpuFill8(buf, 0, n * 2);
     k = cur;
     goto test1;
 loop1:
@@ -1773,7 +1773,7 @@ void Unk_02086b7c::func_02086c00() {}
 
 void Unk_02086b7c::func_02086bfc() {}
 
-void Unk_02086b7c::func_02086bf0() { func_02115fb4(this, 0, 1); }
+void Unk_02086b7c::func_02086bf0() { MI_CpuFill8(this, 0, 1); }
 
 void Unk_02086b7c::func_02086ba8() {
     unk_00_2 = Ns_02086b7c::func_02063b8c(3);
@@ -1815,7 +1815,7 @@ extern "C" void func_02086aec() {}
 extern "C" void func_02086ae8() {}
 
 extern "C" void func_02086adc(void *p) {
-    func_02115fb4(p, 0, 8);
+    MI_CpuFill8(p, 0, 8);
 }
 
 s32 Unk_020868cc::func_02086a80(s32 *pos, void *ctx) {
@@ -1838,7 +1838,7 @@ BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     s32 bx = 0, by = 0;
     u16 arr[16];
     s32 x, y;
-    func_02115fb4(arr, 0, 0x20);
+    MI_CpuFill8(arr, 0, 0x20);
     func_0204edf8(&bx, &by, pos[0], pos[1], 0, 0);
     for (y = 0; y < 16; y++) {
         u16 *pp;
@@ -1880,7 +1880,7 @@ BOOL Unk_020868cc::func_020868e4() {
         s32 *s = o->v;
         s32 w = s[0];
         s32 h = s[1];
-        func_02115fb4(buf, 0, 4);
+        MI_CpuFill8(buf, 0, 4);
         for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
             for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
                 if (func_02086a80(xy, o)) {
@@ -2017,7 +2017,7 @@ void Unk_02086340::func_02086578(s32 flag) {
         unk_18 = Ns_02086204::func_02063b8c(4);
     }
     unk_08 = 0;
-    func_02115fb4(&unk_0a[0], 0, 0xe);
+    MI_CpuFill8(&unk_0a[0], 0, 0xe);
     unk_0a[0] = Ns_02086204::func_02063b8c(0x15) + 0x5a;
     unk_0a[1] = unk_0a[0];
     switch (unk_18) {
@@ -2121,7 +2121,7 @@ void Unk_02086340::func_020863fc(void *src) {
     if (src == NULL) {
         func_0209d498(&t);
     } else {
-        func_02116048(src, &t, 8);
+        MI_CpuCopy8(src, &t, 8);
     }
     if (((u8 *)&t)[2] < 6) func_0209d164(&t, 1);
     unk_02 = ((u8 *)&t)[5];
@@ -2158,7 +2158,7 @@ void Unk_02086340::func_02086340(void *src) {
     if (src == NULL) {
         func_0209d498(&t);
     } else {
-        func_02116048(src, &t, 8);
+        MI_CpuCopy8(src, &t, 8);
     }
     if (((u8 *)&t)[2] < 6) func_0209d164(&t, 1);
     unk_06 = ((u8 *)&t)[5];
@@ -2208,7 +2208,7 @@ extern "C" void func_02086294() {}
 extern "C" void func_02086290() {}
 
 extern "C" void func_02086284(void *p) {
-    func_02115fb4(p, 0, 1);
+    MI_CpuFill8(p, 0, 1);
 }
 
 extern "C" void func_0208627c(void *p) {
@@ -2418,7 +2418,7 @@ void Unk_02085810::func_020859b4() {
             else ok = _ZN12Unk_02087ad813func_02087ba8Ev(r7);
         } else {
             u16 *p = _ZN12Unk_0209865c13func_0209888cEv(r4);
-            if ((unk_00.unk_00 == p[0] && func_02128930((u8 *)this + 2, p + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, p) != 0) || _ZN12Unk_02087ad813func_02087b30Ev(r7) != 0) {
+            if ((unk_00.unk_00 == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, p) != 0) || _ZN12Unk_02087ad813func_02087b30Ev(r7) != 0) {
                 l.unk_00 = func_02063b8c(3);
                 _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(_ZN12Unk_0209865c13func_0209888cEv(r4), &rec);
                 _ZN12Unk_02087ad813func_02087b18Ev(r7);
@@ -2429,7 +2429,7 @@ void Unk_02085810::func_020859b4() {
         if (ok == 0) continue;
         if ((u8)(unk_37 + 0xff) <= 1) {
             u16 *q = _ZN12Unk_0209865c13func_0209888cEv(r4);
-            if (unk_00.unk_00 == q[0] && func_02128930((u8 *)this + 2, q + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, q) != 0) {
+            if (unk_00.unk_00 == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, q) != 0) {
                 l.unk_00 = func_02063b8c(3);
             } else {
                 l.unk_00 = func_02063b8c(3) + 3;
@@ -2440,7 +2440,7 @@ void Unk_02085810::func_020859b4() {
         u16 *w = _ZN12Unk_0209865c13func_0209888cEv(r4);
         func_020656dc(&buf, &l, data_020e0cb8[unk_37], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN12Unk_0209865c13func_0209888cEv(r4);
-        if ((unk_00.unk_00 == x[0] && func_02128930((u8 *)this + 2, x + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, x) != 0) || unk_37 == 3) {
+        if ((unk_00.unk_00 == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, x) != 0) || unk_37 == 3) {
             l.unk_02 = 0x3878;
             if (unk_37 == 2) l.unk_02 = 0x387c;
             else if (unk_37 == 3) l.unk_02 = 0x3880;

@@ -1080,8 +1080,8 @@ void *func_ov004_0223a570(void *r);
 void func_ov004_02213b90();
 s32 func_020e7870(void *v, s32 a, s32 b, s32 c, s32 d);
 void func_020e98f4(void *out, void *in, s32 s);
-void func_01ffca58(void *a, void *b, void *c);
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Subtract(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
 extern u8 data_020e12cc[];
 void func_0208fc88(u32, void *, s32, void *);
@@ -1470,9 +1470,9 @@ extern "C" void func_ov004_0223d720(void *self_) {
                     self->unk_54 = self->unk_a8;
                 }
                 self->unk_192 = a + self->unk_192;
-                func_01ffca58(&c, r4, &c);
+                VEC_Subtract(&c, r4, &c);
                 func_ov004_0223a524(&c, &c, 1);
-                func_01ffca8c(r4, &c, r4);
+                VEC_Add(r4, &c, r4);
             }
         }
     } else {
@@ -3109,49 +3109,49 @@ extern "C" void func_ov004_0223af70(void *r_) {
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v2, 0x2000);
-            func_01ffca8c(rp, &w, rp);
+            VEC_Add(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v1, 0x2000);
-            func_01ffca58(op, &w, op);
+            VEC_Subtract(op, &w, op);
         }
     } else if (v4c < 0x3c && dist < 0xccd) {
         f2 = 0;
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v2, 0x2000);
-            func_01ffca58(rp, &w, rp);
+            VEC_Subtract(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v1, 0x2000);
-            func_01ffca8c(op, &w, op);
+            VEC_Add(op, &w, op);
         }
     } else if ((dist > 0x5800 || v4c < 0x50) && dist > 0x99a) {
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v2, 0xa000);
-            func_01ffca8c(rp, &w, rp);
+            VEC_Add(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
             func_020e98f4(&w, &v1, 0xa000);
-            func_01ffca8c(op, &w, op);
+            VEC_Add(op, &w, op);
         }
     } else if (dist < 0x5800) {
         if (v4c < 0x5a) {
             if (*pw <= 0) {
-                func_01ffca58(rp, &v2, rp);
+                VEC_Subtract(rp, &v2, rp);
             } else {
-                func_01ffca58(op, &v1, op);
+                VEC_Subtract(op, &v1, op);
             }
         } else if (v4c < 0x64) {
             if (*pw <= 0) {
                 Unk_ov004_0223a850_Vec w;
                 func_020e98f4(&w, &v2, 0x5000);
-                func_01ffca58(rp, &w, rp);
+                VEC_Subtract(rp, &w, rp);
             } else {
                 Unk_ov004_0223a850_Vec w;
                 func_020e98f4(&w, &v1, 0x5000);
-                func_01ffca58(op, &w, op);
+                VEC_Subtract(op, &w, op);
             }
         }
     }
@@ -3286,9 +3286,9 @@ extern "C" void func_ov004_0223abf0(void *r_) {
         func_ov004_0223d980(&v2, ang2);
         func_ov004_0223b464(r, ang2, *cnt);
         func_020e98f4(&w1, &v2, 0x4000);
-        func_01ffca58(a, &w1, a);
+        VEC_Subtract(a, &w1, a);
         func_020e98f4(&w2, &v1, 0x4000);
-        func_01ffca58(b, &w2, b);
+        VEC_Subtract(b, &w2, b);
         *cnt = *cnt + 1;
     } else if (func_ov004_0223d5e8(r) != 0) {
         r->unk_172 = 0x19;

@@ -725,7 +725,7 @@ void _ZN12Unk_0209ada413func_0209ada4Ev(void *p);
 void func_0209b550(void *p);
 void func_0209b55c(void *p);
 void func_0209b560(void *p);
-s32 func_02115fb4(void *d, s32 v, s32 n);
+s32 MI_CpuFill8(void *d, s32 v, s32 n);
 void *func_0207bf60(void *t, s32 i);
 void *_ZN12Unk_0208086013func_020805c4Ev(void *p);
 BOOL _ZN12Unk_02002fc813func_020030b4Ev(void *p);
@@ -899,8 +899,8 @@ s8 *func_020783f8();
 void func_0207857c(void *, s32);
 void func_020785e8(void *, s32);
 s32 func_0207c014(s32);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 void func_0209d498(void *);
 s32 _ZN12Unk_0208086013func_020805c4Ev(void *);
 s32 _ZN12Unk_02002fc813func_020030b4Ev(s32);
@@ -1008,7 +1008,7 @@ s32 _ZN12Unk_0208086013func_020804d0Ej(void *, void *);
 void *func_0207bf60(void *, s32);
 void *_ZN12Unk_0208086013func_020805c4Ev(void *);
 s32 func_0207f854(void *, void *);
-void func_02116048(void *src, void *dst, u32 size);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
 s32 func_0209cdc0(void *, void *);
 s32 func_0209cd00(void *, void *);
 void func_0207824c(s32);
@@ -1139,8 +1139,8 @@ void *_ZN12Unk_0208086013func_020805c4Ev(void *p);
 void func_0207c1c8(void *p);
 void func_0207c354(void *p, void *q);
 void func_0209d498(void *d);
-void func_02116048(void *src, void *dst, s32 n);
-void func_02115fb4(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
 s32 func_0203f508(void *buf, void *d);
 s32 func_0209d2c0(void *d, s32 n);
 s32 func_0203f2e0(u32 a, void *d, s32 z);
@@ -1264,7 +1264,7 @@ u8 *_ZN12Unk_0209865c13func_0209865cEv(u8 *p);
 u8 *func_02099db4(u8 *p, s32 i);
 void *func_0209a4f0(void *p);
 u16 *func_0209a4e4(void *p, s32 i);
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 void *_ZN12Unk_020994cc13func_0209978cEv(u8 *p);
 u16 *_ZN12Unk_020994cc13func_02099788Ev(u8 *p);
 s32 func_02099ed4(u8 *a, u16 *b);
@@ -1297,7 +1297,7 @@ s32 func_0209d3d0(Unk_0207ae28_Buf *a, u8 *b, u32 n);
 s32 func_0209d3a4(u8 *b, Unk_0207ae28_Buf *a);
 void func_0207e684(u8 *p);
 void func_0209cf88(u8 *p);
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_0207a550(u8 *self, Unk_0207ae28_Buf *b);
 void func_0207afe0(u8 *self, Unk_0207ae28_Buf *b);
 void func_0207b04c(u8 *self, u8 *x);
@@ -1396,9 +1396,9 @@ s32 func_0209d3a4(void *, void *);
 s32 func_0209d020(void *);
 void func_0209d498(void *);
 void func_0209cf88(void *);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *, const void *, u32);
-s32 func_02128930(const void *, const void *, u32);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 s32 func_02063b8c(s32);
 void func_02063990(void *, void *);
 s32 func_02063954(void *);
@@ -1493,7 +1493,7 @@ s32 _ZN12Unk_0208091c13func_02080dd8Ev();
 s32 func_02063b8c(s32);
 s32 func_0207a484(void *);
 BOOL func_0207e114(void *);
-void *func_02115fb4(void *, s32, s32);
+void *MI_CpuFill8(void *, s32, s32);
 void _ZN12Unk_020e2a7813func_020a7c3cEv(void *);
 void _ZN12Unk_02002fc813func_02002fc8Ej(void *, void *);
 void _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(void *, void *);
@@ -1518,7 +1518,7 @@ void _ZN12Unk_020994cc13func_02099828Ev(void *);
 void _ZN12Unk_02080860D1Ev(void *);
 void _ZN12Unk_02080860C1Ev(void *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(void *));
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 u8 *func_0207e310(void *);
 s32 func_02078510(void *);
 s32 func_0207856c(void *);
@@ -1621,7 +1621,7 @@ s32 func_0207bcfc(u32, s32, s32);
 s32 func_0207e1f0(void *);
 void *func_0207a4b8(void *);
 void *_ZN12Unk_020994cc13func_02099788Ev(void);
-s32 func_02128930(void *, void *, u32);
+s32 memcmp(void *, void *, u32);
 void *func_0207e268(void *);
 void *func_0209a60c(void *);
 void *func_0209a940(void);
@@ -1639,7 +1639,7 @@ s32 _ZN12Unk_0209b3bc13func_0209b354Ev(void *);
 s32 _ZN12Unk_0209b3bc13func_0209b0c4EPS_(void *, void *);
 s32 _ZN12Unk_0209b3bc13func_0209b044EPv(void *, void *);
 void func_0207e4b4(void *, s32, s32);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0207cbe8(void *, void *);
 s32 _ZN12Unk_0209b3bc13func_0209b12cEv(void *);
 void func_0207ca74(void *, void *);
@@ -1956,7 +1956,7 @@ void *func_02099db4(void *, s32);
 void *func_0209a4f0(void *);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
 void *func_0209a4e4(void *, s32);
-s32 func_02128930(void *, void *, s32);
+s32 memcmp(void *, void *, s32);
 s32 func_02099868(void *, void *);
 s32 func_02099ed4(void *, void *);
 void *func_0209750c();
@@ -2162,7 +2162,7 @@ s32 func_02080f94(void *);
 s32 func_02080de0(void *, void *);
 u16 *func_02080e1c(void *);
 u32 func_02080e18(void *);
-s32 func_02128930(void *, void *, u32);
+s32 memcmp(void *, void *, u32);
 void func_02080f4c(void *, void *, u32, u32);
 u16 *func_0209409c();
 s32 func_02097740(u32, u32);
@@ -2184,10 +2184,10 @@ s32 func_0207e1f0(u32);
 u32 _ZN12Unk_0209865c13func_0209865cEv(void *);
 s32 func_02099ed4(void *, u32);
 void func_0209d498(void *);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f508(void *, void *);
 void func_0209d2c0(void *, u32);
-void func_02115fb4(void *, u32, u32);
+void MI_CpuFill8(void *, u32, u32);
 void _ZN12Unk_020e062013func_020811ccEPvi(void *, void *, u32);
 void _ZN12Unk_020e0620C1Ev(void *);
 void func_02050fd0(void *);
@@ -2276,7 +2276,7 @@ s32 func_0207ce24(void *p);
 s32 func_02063b8c(s32 a);
 s32 func_020b35f8(void *a, void *b, void *c);
 s32 _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(void *a, void *b, s32 c, s32 d);
-s32 func_02115fb4(void *p, s32 v, s32 n);
+s32 MI_CpuFill8(void *p, s32 v, s32 n);
 void *_ZN12Unk_0208086013func_020805c4Ev(void *p);
 s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
 void *func_02002ff8(void *p);
@@ -2301,7 +2301,7 @@ s32 func_02059900(void *a, u32 b, void *c, void *d, void *e, s32 f);
 void *func_0209750c();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 a);
 s32 func_0209d498(void *p);
-s32 func_02116048(void *a, void *b, s32 n);
+s32 MI_CpuCopy8(void *a, void *b, s32 n);
 s32 func_0203f2e0(s32 a, void *b, s32 c);
 s32 _ZN12Unk_0208091c13func_02080dd8Ev();
 s32 _ZN12Unk_0208091c13func_0208098cEv(void *p);
@@ -2330,7 +2330,7 @@ s32 func_0207c3dc(void *a, s32 b, void *c, void *d, s32 e);
 s32 func_0207c47c(void *a, s32 b, s32 c, void *d, void *e, u16 *f);
 s32 _ZN12Unk_0208091c13func_02080da4Ei(void *a, s32 b);
 s32 _ZN12Unk_020940a013func_020941e8EPS_(void *a, void *b);
-s32 func_02128930(void *a, void *b, s32 n);
+s32 memcmp(void *a, void *b, s32 n);
 extern u8 data_021d735c[];
 extern u8 data_021d7352[];
 extern void *data_020cbfc0[];
@@ -2363,8 +2363,8 @@ extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 void *memset(void *, s32, u32);
-void func_02115fb4(void *dst, s32 v, u32 n);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuFill8(void *dst, s32 v, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 u32 func_02063b8c(u32 n);
 void _ZN12Unk_0203442cD1Ev();
 void _ZN12Unk_0203442cC1Ev();
@@ -2427,7 +2427,7 @@ void _ZN12Unk_020e1c4cC1Ev(void *);
 void _ZN12Unk_020e1c4cD1Ev(void *);
 void _ZN12Unk_020e1c4c13func_02093f90EPvj(void *, void *, s32);
 void _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(void *, void *);
-s32 func_02128930(void *, void *, u32);
+s32 memcmp(void *, void *, u32);
 s32 _ZN12Unk_020940a013func_020941e8EPS_(void *, void *);
 extern u8 data_021d7352[];
 struct Unk_020805d0_Rec {
@@ -2479,8 +2479,8 @@ void func_0209d498(void *p);
 s32 _ZN12Unk_020940a013func_02094218Ev(void *p);
 void _ZN12Unk_020940a013func_020942b8EPv(void *self, void *p);
 void func_02063990(void *src, void *dst);
-void func_02116048(const void *src, void *dst, u32 size);
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 void *_ZN12Unk_020940a013func_02094104Ev(void *p);
 void _ZN12Unk_020940a013func_02094294Ev(void *p);
 void func_020639b8(void *p);
@@ -3645,7 +3645,7 @@ u32 Unk_020e0620::vfunc_08() {
 void Unk_020e0620::func_020811cc(void *dst, s32 n) {
     using namespace nQ;
     if (n >= 10) n = 10;
-    func_02116048((u8 *)this + 0xe, dst, n);
+    MI_CpuCopy8((u8 *)this + 0xe, dst, n);
 }
 
 u8 *Unk_020e0620::vfunc_0c() {
@@ -3760,7 +3760,7 @@ extern "C" u8 *func_02080fd0(u8 *self) {
 
 namespace nQ {
 extern "C" void func_02080fa8(u8 *self) {
-    func_02115fb4(self, 0, 0x68);
+    MI_CpuFill8(self, 0, 0x68);
     _ZN12Unk_020940a013func_02094294Ev(self);
     *(s32 *)(self + 0x40) = 0;
     *(s32 *)(self + 0x44) = 0;
@@ -3780,7 +3780,7 @@ extern "C" BOOL func_02080f4c(u8 *self, void *a, u8 *b, u8 *c) {
     if (_ZN12Unk_020940a013func_02094218Ev(a)) {
         func_02080fa8(self);
         func_02080ecc((Unk_02080e20_Obj *)self, a, b, c);
-        func_02116048(_ZN12Unk_020940a013func_02094104Ev(a), self + 0x16, 8);
+        MI_CpuCopy8(_ZN12Unk_020940a013func_02094104Ev(a), self + 0x16, 8);
         r = TRUE;
     }
     return r;
@@ -3800,7 +3800,7 @@ extern "C" void func_02080ecc(Unk_02080e20_Obj *self, void *a, u8 *b, u8 *c) {
     }
     if (func_02080e40(self, c)) func_02080e20(self);
     func_02063990(func_02080e1c((u8 *)self), b);
-    func_02116048(c, func_02080ec8((u8 *)self), 8);
+    MI_CpuCopy8(c, func_02080ec8((u8 *)self), 8);
     _ZN12Unk_0208091c13func_02080b48EPx(self, data_021ed2f8);
 }
 }
@@ -3859,7 +3859,7 @@ extern "C" void *func_02080e18(void *p) {
 
 namespace nP {
 extern "C" BOOL func_02080de0(Unk_02080de0 *a, Unk_02080de0 *b) {
-    if (a->unk_00 == b->unk_00 && func_02128930(a->unk_02, b->unk_02, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(a, b) != 0) return TRUE;
+    if (a->unk_00 == b->unk_00 && memcmp(a->unk_02, b->unk_02, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(a, b) != 0) return TRUE;
     return FALSE;
 }
 }
@@ -3913,9 +3913,9 @@ void Unk_0208091c::func_02080cf8(void *out) {
 
 void Unk_0208091c::func_02080ccc(void *src, s32 n) {
     using namespace nP;
-    func_02115fb4(unk_16, 0, 8);
+    MI_CpuFill8(unk_16, 0, 8);
     if (n > 8) n = 8;
-    func_02116048(src, unk_16, n);
+    MI_CpuCopy8(src, unk_16, n);
 }
 
 BOOL Unk_0208091c::func_02080cb8() {
@@ -3939,9 +3939,9 @@ void Unk_0208091c::func_02080c58(void *out) {
 
 void Unk_0208091c::func_02080c20(void *src, s32 n) {
     using namespace nP;
-    func_02115fb4(unk_1e, 0, 0x10);
+    MI_CpuFill8(unk_1e, 0, 0x10);
     if (n > 0x10) n = 0x10;
-    func_02116048(src, unk_1e, n);
+    MI_CpuCopy8(src, unk_1e, n);
     unk_64.f1 = 1;
 }
 
@@ -3965,9 +3965,9 @@ void Unk_0208091c::func_02080bb8(void *out) {
 
 void Unk_0208091c::func_02080b80(void *src, s32 n) {
     using namespace nP;
-    func_02115fb4(unk_2e, 0, 0x10);
+    MI_CpuFill8(unk_2e, 0, 0x10);
     if (n > 0x10) n = 0x10;
-    func_02116048(src, unk_2e, n);
+    MI_CpuCopy8(src, unk_2e, n);
     unk_64.f3 = 1;
 }
 
@@ -4118,7 +4118,7 @@ Unk_02080860::~Unk_02080860() {
 
 void Unk_02080860::func_02080718() {
     using namespace nP;
-    func_02115fb4(this, 0, 0x700);
+    MI_CpuFill8(this, 0, 0x700);
     func_020030e8(unk_6c0);
     unk_6ec = 0x11a8;
     _ZN12Unk_0207fb8013func_0207fc08Ev(this);
@@ -4134,7 +4134,7 @@ void Unk_02080860::func_02080718() {
 }
 
 void Unk_02080860::func_02080704(void *src) {
-    using namespace nP; func_02116048(src, this, 0x700); }
+    using namespace nP; MI_CpuCopy8(src, this, 0x700); }
 
 void Unk_02080860::func_020805d0(u32 id, u32 a, u32 b, u8 c) {
     using namespace nP;
@@ -4223,7 +4223,7 @@ BOOL Unk_0207fb80::func_02080450(u16 *p) {
     void *r6 = func_02065634(unk_568);
     if (_ZN12Unk_020940a013func_02094218Ev(p) && r6) {
         _ZN12Unk_020940a0C1ERKS_(o, r6);
-        if (p[0] == o[0] && !func_02128930(p + 1, o + 1, 8) && _ZN12Unk_020940a013func_020941e8EPS_(p, o) && func_0207f854(this, p) && _ZN12Unk_0208091c13func_02080d90Ev()) {
+        if (p[0] == o[0] && !memcmp(p + 1, o + 1, 8) && _ZN12Unk_020940a013func_020941e8EPS_(p, o) && func_0207f854(this, p) && _ZN12Unk_0208091c13func_02080d90Ev()) {
             _ZN12Unk_020940a0C1Ev(o);
             return TRUE;
         }
@@ -4348,7 +4348,7 @@ extern "C" void func_020800b0(void *t, void *p, void *q) {
             if (q == 0) {
                 func_0209d498(buf);
             } else {
-                func_02116048(q, buf, 8);
+                MI_CpuCopy8(q, buf, 8);
             }
             if (r5[1] == ((u8 *)buf)[4] && r5[0] == ((u8 *)buf)[3] && ((u8 *)buf)[2] >= 6) {
                 ok = 1;
@@ -4413,9 +4413,9 @@ extern "C" void func_0207ff5c(void *t, void *p, void *q) {
             if (q == 0) {
                 func_0209d498(buf);
             } else {
-                func_02116048(q, buf, 8);
+                MI_CpuCopy8(q, buf, 8);
             }
-            func_02116048(buf, buf2, 8);
+            MI_CpuCopy8(buf, buf2, 8);
             if (Unk_0207ff5c_B(func_0203f2e0(0x13, buf2, 0))) {
                 if (((u8 *)buf)[2] >= 6) {
                     ok = 1;
@@ -4628,7 +4628,7 @@ void *Unk_0207fb80::func_0207fc1c() {
 
 void Unk_0207fb80::func_0207fc08() {
     using namespace nO;
-    func_02115fb4(unk_6de, 0x85, 10);
+    MI_CpuFill8(unk_6de, 0x85, 10);
 }
 
 void Unk_0207fb80::func_0207fba8(void *dst, void *flag) {
@@ -4672,11 +4672,11 @@ extern "C" void func_0207fb34(u32 a, void *b) {
 
 namespace nN {
 extern "C" void func_0207fb04(u32 a, void *b, s32 c) {
-    func_02115fb4((void *)(a + 0x6de), 0, 10);
+    MI_CpuFill8((void *)(a + 0x6de), 0, 10);
     if (c > 10) {
         c = 10;
     }
-    func_02116048(b, (void *)(a + 0x6de), c);
+    MI_CpuCopy8(b, (void *)(a + 0x6de), c);
 }
 }
 
@@ -4706,11 +4706,11 @@ extern "C" s32 func_0207fa50(u32 a, s32 b, u8 *c) {
         if (c == NULL) {
             func_0209d498(v);
         } else {
-            func_02116048(c, v, 8);
+            MI_CpuCopy8(c, v, 8);
         }
         for (i = 0; i <= b; i++) {
             Unk_0207fa50_Rec *e = recs;
-            func_02116048(v, w, 8);
+            MI_CpuCopy8(v, w, 8);
             n = func_0203f508(recs, w);
             for (j = 0; j < n; e++, j++) {
                 if (e->id == id) {
@@ -4977,7 +4977,7 @@ namespace nN {
 extern "C" s32 func_0207f61c(u32 a, u16 *p, u32 c) {
     BOOL r = FALSE;
     u16 *q = func_0209409c();
-    if (p[0] == q[0] && func_02128930(p + 1, q + 1, 8) == 0) {
+    if (p[0] == q[0] && memcmp(p + 1, q + 1, 8) == 0) {
         if (func_02097740(c, a) == ~r) {
             r = TRUE;
         }
@@ -4995,7 +4995,7 @@ extern "C" s32 func_0207f60c(Unk_0207f264_Entry *t) {
 namespace nN {
 extern "C" s32 func_0207f5e0(void *a, u16 *p, void *c) {
     u16 *q = func_0209409c();
-    if (p[0] != q[0] || func_02128930(p + 1, q + 1, 8) != 0) {
+    if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0) {
         return 1;
     }
     return 0;
@@ -5051,7 +5051,7 @@ extern "C" s32 func_0207f4a4(Unk_0207f264_Entry *t, Unk_0207f264_Entry **out, vo
                 switch (mode) {
                 case 0: {
                     u16 *p = func_02080e1c(e);
-                    if (p[0] == data_021d7352[0] && func_02128930(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) == 0) {
+                    if (p[0] == data_021d7352[0] && memcmp(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) == 0) {
                         out[n] = e;
                         n++;
                     }
@@ -5059,7 +5059,7 @@ extern "C" s32 func_0207f4a4(Unk_0207f264_Entry *t, Unk_0207f264_Entry **out, vo
                 }
                 case 1: {
                     u16 *p = func_02080e1c(e);
-                    if (p[0] != data_021d7352[0] || func_02128930(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) != 0) {
+                    if (p[0] != data_021d7352[0] || memcmp(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) != 0) {
                         out[n] = e;
                         n++;
                     }
@@ -6119,10 +6119,10 @@ extern "C" BOOL func_0207dff4(Unk_0207e268 *a, void *b) {
         Unk_02002fc8 *r5;
         s4 = (u8 *)b + 0x88;
         if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a4f0(r7)) != 0) {
-            if (((r5 = (Unk_02002fc8 *)(func_0209a4e4(r7, 0))), (r5->unk_00 == r4->unk_00 && func_02128930(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b)) || ((r5 = (Unk_02002fc8 *)(func_0209a4e4(r7, 1))), (r5->unk_00 == r4->unk_00 && func_02128930(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b))) return TRUE;
+            if (((r5 = (Unk_02002fc8 *)(func_0209a4e4(r7, 0))), (r5->unk_00 == r4->unk_00 && memcmp(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b)) || ((r5 = (Unk_02002fc8 *)(func_0209a4e4(r7, 1))), (r5->unk_00 == r4->unk_00 && memcmp(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b))) return TRUE;
         }
         if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a4f0(s0)) != 0) {
-            if (((r5 = (Unk_02002fc8 *)(func_0209a4e4(s0, 0))), (r5->unk_00 == r4->unk_00 && func_02128930(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b)) || ((r5 = (Unk_02002fc8 *)(func_0209a4e4(s0, 1))), (r5->unk_00 == r4->unk_00 && func_02128930(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b))) return TRUE;
+            if (((r5 = (Unk_02002fc8 *)(func_0209a4e4(s0, 0))), (r5->unk_00 == r4->unk_00 && memcmp(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b)) || ((r5 = (Unk_02002fc8 *)(func_0209a4e4(s0, 1))), (r5->unk_00 == r4->unk_00 && memcmp(r5->unk_02, r4->unk_02, 8) == 0 && r5->unk_0b == r4->unk_0b))) return TRUE;
         }
         if (func_02099868(b, r4) != 0) return TRUE;
         if (func_02099ed4(s4, r4) != 0) return TRUE;
@@ -7106,7 +7106,7 @@ extern "C" void func_0207ccd0(void *a, void *b) {
             r4->unk_21_0 = 1;
         }
         _ZN12Unk_0209b3bc13func_0209b350Ej(r4, 9);
-        func_02116048(b, func_0209b010(r4), 8);
+        MI_CpuCopy8(b, func_0209b010(r4), 8);
         func_0209ab18(func_0209a60c(func_0207e268(a)));
     }
 }
@@ -7117,7 +7117,7 @@ extern "C" void func_0207cc88(void *a, void *b) {
     if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(a))) {
         void *r6 = func_0209a610(func_0207e268(a));
         _ZN12Unk_0209b3bc13func_0209b350Ej(r6, 10);
-        func_02116048(b, func_0209b010(r6), 8);
+        MI_CpuCopy8(b, func_0209b010(r6), 8);
         func_0209ab18(func_0209a60c(func_0207e268(a)));
     }
 }
@@ -7134,7 +7134,7 @@ extern "C" s32 func_0207cbe8(void *a, void *b) {
             u32 tmpw[2];
             tmpw[0] = 0;
             tmpw[1] = 0;
-            func_02116048(r4, ((u8 *)tmpw), 8);
+            MI_CpuCopy8(r4, ((u8 *)tmpw), 8);
             ((u8 *)tmpw)[2] = r5b[2];
             ((u8 *)tmpw)[1] = r5b[3];
             if (r4[2] > r5b[2] || (r5b[2] == r4[2] && r5b[3] == r4[1])) func_0209d2c0(((u8 *)tmpw), 1);
@@ -7182,7 +7182,7 @@ extern "C" void func_0207ca74(void *a, void *b) {
                     tmp[0] = 0;
                     tmp[1] = 0;
                     r4 = cnt;
-                    func_02116048(func_0209b010(r5), tmp, 8);
+                    MI_CpuCopy8(func_0209b010(r5), tmp, 8);
                     d = func_0209d374(tmp, r6);
                     if (d < 0) d = -d;
                     if (d / 0x5a0 < 7) {
@@ -7209,7 +7209,7 @@ extern "C" void func_0207ca18(void *a, void *b) {
     void *r4 = func_0209a610(func_0207e268(a));
     if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(a)) && _ZN12Unk_0209b3bc13func_0209b394Ev(r4)) {
         r4 = func_0209b010(r4);
-        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) func_02116048(b, r4, 8);
+        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
 }
@@ -7219,7 +7219,7 @@ extern "C" void func_0207c9bc(void *a, void *b) {
     void *r4 = func_0209a610(func_0207e268(a));
     if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(a)) && _ZN12Unk_0209b3bc13func_0209b394Ev(r4)) {
         r4 = func_0209b00c(r4);
-        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) func_02116048(b, r4, 8);
+        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
 }
@@ -7270,8 +7270,8 @@ extern "C" s32 func_0207c828(void *a, void *b, void *c, void *d) {
             r4 = _ZN12Unk_0209b3bc13func_0209b0c4EPS_(r7, r5);
             if (r4 != 12) func_0207e4b4(r6, r4, t);
             if (r4 != 12) {
-                func_02116048(r5, b, 8);
-                if (*(long long *)c != 0) func_02116048(r5, c, 8);
+                MI_CpuCopy8(r5, b, 8);
+                if (*(long long *)c != 0) MI_CpuCopy8(r5, c, 8);
             }
             break;
         case 10:
@@ -7313,7 +7313,7 @@ extern "C" s32 func_0207c764(void *a) {
     if (_ZN12Unk_02002fc813func_020030b4Ev(r5) && func_0207e1f0(a) == 3) {
         func_0207a4b8(data_021dfd8c);
         u16 *r4 = (u16 *)_ZN12Unk_020994cc13func_02099788Ev();
-        if (r5[0] == r4[0] && func_02128930(r5 + 1, r4 + 1, 8) == 0 && ((u8 *)r5)[0xb] == ((u8 *)r4)[0xb]) {
+        if (r5[0] == r4[0] && memcmp(r5 + 1, r4 + 1, 8) == 0 && ((u8 *)r5)[0xb] == ((u8 *)r4)[0xb]) {
         } else {
             r = TRUE;
         }
@@ -7637,8 +7637,8 @@ extern "C" void func_0207c020(u8 *self) {
     *(s32 *)(self + 0x38d0) = 0;
     *(s8 *)(self + 0x38e9) = -1;
     *(s8 *)(self + 0x38e8) = -1;
-    func_02115fb4(self + 0x38ec, 0, 2);
-    func_02115fb4(self + 0x38d4, 0, 0x14);
+    MI_CpuFill8(self + 0x38ec, 0, 2);
+    MI_CpuFill8(self + 0x38d4, 0, 0x14);
 }
 }
 
@@ -7658,7 +7658,7 @@ extern "C" s32 func_0207bfb4(u8 *base, u16 *p) {
         s32 i;
         for (i = 0; i < 8; i++) {
             u16 *q = (u16 *)_ZN12Unk_0208086013func_020805c4Ev(base + i * 0x700);
-            if (p[0] == q[0] && func_02128930(p + 1, q + 1, 8) == 0 && ((u8 *)p)[0xb] == ((u8 *)q)[0xb]) {
+            if (p[0] == q[0] && memcmp(p + 1, q + 1, 8) == 0 && ((u8 *)p)[0xb] == ((u8 *)q)[0xb]) {
                 result = i;
                 break;
             }
@@ -7790,7 +7790,7 @@ extern "C" void *func_0207bd3c(u8 *base, void **arr, s32 n) {
     s32 i;
     s32 j;
     s32 idx;
-    func_02115fb4(flags, 0, 8);
+    MI_CpuFill8(flags, 0, 8);
     for (i = 0; i < 8; i++) {
         if (func_0207bf84(base, i)) {
             flags[i] = 1;
@@ -7981,7 +7981,7 @@ extern "C" void func_0207ba60(void *bits, Unk_0207b168 *p0) {
     Unk_0207b168_Slot *p = (Unk_0207b168_Slot *)p0;
     s32 i;
     if (func_0207bab0(bits) != 0) {
-        func_02115fb4(bits, 0, 0x14);
+        MI_CpuFill8(bits, 0, 0x14);
         for (i = 0; i < 8; p++, i++) {
             void *o = _ZN12Unk_0208086013func_020805c4Ev(p);
             if (((Unk_02002fc8 *)o)->func_020030b4() != 0) {
@@ -7998,7 +7998,7 @@ extern "C" s32 func_0207b970(Unk_0207b168 *self, u32 idx, s32 flag) {
     void *bits = self->unk_38d4;
     s32 i;
     Unk_0207b168_Slot *p;
-    func_02115fb4(data_021cc8d4, 0, 0x14);
+    MI_CpuFill8(data_021cc8d4, 0, 0x14);
     for (i = 0; i < 0x96; i++) {
         if (func_0207bb48(i, bits) == 0) {
             u8 *e = (u8 *)func_020815b4(i);
@@ -8055,7 +8055,7 @@ extern "C" u32 func_0207b8c0(Unk_0207b168 *self, s32 mask) {
     s32 i;
     s32 j;
     u32 r;
-    func_02115fb4(counts, 0, 6);
+    MI_CpuFill8(counts, 0, 6);
     for (i = 0; i < 8; p++, i++) {
         void *o = _ZN12Unk_0208086013func_020805c4Ev(p);
         if (((Unk_02002fc8 *)o)->func_020030b4() != 0) {
@@ -8221,9 +8221,9 @@ extern "C" void func_0207b590(Unk_0207b168 *self, void *out) {
                 func_0207b458(self, r7, x, data_021ccb58, 1, out);
             }
         }
-        func_02116048(out, self->unk_38c4, 8);
+        MI_CpuCopy8(out, self->unk_38c4, 8);
         if (*(s64 *)self->unk_38cc != 0) {
-            func_02116048(out, self->unk_38cc, 8);
+            MI_CpuCopy8(out, self->unk_38cc, 8);
         }
     }
 }
@@ -8271,9 +8271,9 @@ extern "C" void func_0207b458(Unk_0207b168 *self, void *a, s32 idx, void *b, u8 
     func_0207934c(self->unk_381c, idx);
     func_02078cd8(self->unk_3800, idx);
     func_0207bb1c(self->unk_38d4, func_02002ff8(_ZN12Unk_0208086013func_020805c4Ev(a)));
-    func_02116048(out, self->unk_38c4, 8);
+    MI_CpuCopy8(out, self->unk_38c4, 8);
     if (*(s64 *)self->unk_38cc != 0) {
-        func_02116048(out, self->unk_38cc, 8);
+        MI_CpuCopy8(out, self->unk_38cc, 8);
     }
     func_0207b540(self, (s8)idx);
 }
@@ -8291,7 +8291,7 @@ extern "C" void func_0207b3d8(Unk_0207b168 *self, void *a, void *b, s32 idx, voi
         _ZN12Unk_0208086013func_02080704EPv(a, b);
     }
     _ZN12Unk_0208086013func_02080718Ev(b);
-    func_02116048(out, self->unk_38cc, 8);
+    MI_CpuCopy8(out, self->unk_38cc, 8);
 }
 }
 
@@ -8314,7 +8314,7 @@ extern "C" void func_0207b238(Unk_0207b168 *self, void *arg) {
     {
         Unk_0207b238_Id *g = (Unk_0207b238_Id *)data_021d7352;
         Unk_0207b238_Id *h = (Unk_0207b238_Id *)_ZN12Unk_0207e94013func_0207f19cEv(r7);
-        if (h->id == g->id && func_02128930(h->name, g->name, 8) == 0) {
+        if (h->id == g->id && memcmp(h->name, g->name, 8) == 0) {
             if (r4 == 0) {
                 return;
             }
@@ -8533,10 +8533,10 @@ extern "C" void func_0207ae84(u8 *self, s32 flag) {
     b.v[1] = 0;
     func_0209d498(&b);
     if (func_0209d3d0(&b, self + 0x38c4, 0x3f) == -1) {
-        func_02116048(&b, self + 0x38c4, 8);
+        MI_CpuCopy8(&b, self + 0x38c4, 8);
         Unk_0207ae84_Mgr *m = (Unk_0207ae84_Mgr *)self;
         if (m->unk_38cc_64 != 0) {
-            func_02116048(&b, &m->unk_38cc, 8);
+            MI_CpuCopy8(&b, &m->unk_38cc, 8);
         }
     }
     func_0207a550(self, &b);
@@ -8778,21 +8778,21 @@ extern "C" s32 func_0207a914(u8 *self, u8 *p, u8 *r4) {
         u32 *r4u = (u32 *)(r4 + 0x88);
         if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a4f0(a))) {
             u16 *r7 = func_0209a4e4(a, 0);
-            if (r7[0] == r5[0] && func_02128930(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
+            if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
                 result = _ZN12Unk_0209ada413func_0209ac64Ev(func_0209a4f0(a));
                 goto end;
             }
         }
         if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a4f0(b))) {
             u16 *r7 = func_0209a4e4(b, 0);
-            if (r7[0] == r5[0] && func_02128930(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
+            if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
                 result = _ZN12Unk_0209ada413func_0209ac64Ev(func_0209a4f0(b));
                 goto end;
             }
         }
         if (_ZN12Unk_0209ada413func_0209ad68Ev(_ZN12Unk_020994cc13func_0209978cEv(self + 0x3830))) {
             u16 *r7 = _ZN12Unk_020994cc13func_02099788Ev(self + 0x3830);
-            if (r7[0] == r5[0] && func_02128930(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
+            if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
                 result = _ZN12Unk_0209ada413func_0209ac64Ev(_ZN12Unk_020994cc13func_0209978cEv(self + 0x3830));
                 goto end;
             }
@@ -8879,8 +8879,8 @@ extern "C" void func_0207a63c(void *bb) {
         u32 idx = 0;
         s32 self = func_0207a484(b);
         s32 i;
-        func_02115fb4(data_021cc8c0, 0, r5);
-        func_02115fb4(data_021cc854, 0, r4);
+        MI_CpuFill8(data_021cc8c0, 0, r5);
+        MI_CpuFill8(data_021cc854, 0, r4);
         for (i = 0; i < 13; i++) {
             if (func_0209acf8(&idx, data_020cbfd8[i])) {
                 data_021cc8c0[idx] = 1;
@@ -9175,7 +9175,7 @@ extern "C" void func_0207a104(u8 *b) {
                 }
             }
         } else {
-            func_02116048(&d, b + 0x38ba, 4);
+            MI_CpuCopy8(&d, b + 0x38ba, 4);
         }
     } else {
         if (func_0207a3a0(b)) {
@@ -9253,7 +9253,7 @@ extern "C" s32 func_02079fd8() {
     for (i = 0; i < 11; i++) {
         u32 v = *t;
         BOOL f;
-        func_02116048(&a, &b, 8);
+        MI_CpuCopy8(&a, &b, 8);
         if (func_0203f2e0(v, &b, 0)) f = TRUE; else f = FALSE;
         if (f) {
             if (v == func_02040c70()) return i;
@@ -9275,13 +9275,13 @@ extern "C" s32 func_02079f54(u32 n, void *src) {
     if (src == NULL) {
         func_0209d498(&a);
     } else {
-        func_02116048(src, &a, 8);
+        MI_CpuCopy8(src, &a, 8);
     }
     for (i = 0; i <= n; i++) {
         s32 cnt, k;
         Unk_0207a3b8_Item *e;
         e = buf;
-        func_02116048(&a, &b, 8);
+        MI_CpuCopy8(&a, &b, 8);
         cnt = func_0203f508(buf, &b);
         for (k = 0; k < cnt; k++) {
             s32 j;
@@ -9519,7 +9519,7 @@ extern "C" s32 func_02079ab0(void *self0, void *p0) {
     u8 out[0x54];
     void *r0 = func_0209750c();
     if (r0 != NULL && _ZN12Unk_02097ff413func_02098044Ej(r0, 1) == 0 && p[2] >= 6) {
-        func_02116048(p, &b, 8);
+        MI_CpuCopy8(p, &b, 8);
         s32 n = func_0203f508(out, &b);
         u32 i;
         for (i = 0; (s32)i < 8; self += 0x700, i++) {
@@ -9731,7 +9731,7 @@ extern "C" BOOL func_020796f8(Unk_020796d4_Obj *self, void *p) {
 
 namespace nD {
 extern "C" void func_020796d4(Unk_020796d4_Obj *self, void *p) {
-    func_02116048(p, self->unk_38c0, 4);
+    MI_CpuCopy8(p, self->unk_38c0, 4);
     self->unk_38c0[3] = 1;
 }
 }
@@ -9924,13 +9924,13 @@ extern "C" void func_020793c0(Unk_02078d6c_Self *self) {
 
 namespace nC {
 extern "C" void func_020793b0(void *a, void *b) {
-    func_02115fb4(b, 0xff, 8);
+    MI_CpuFill8(b, 0xff, 8);
 }
 }
 
 namespace nC {
 extern "C" void func_020793a4(void *a, void *b, void *c) {
-    func_02116048(c, b, 8);
+    MI_CpuCopy8(c, b, 8);
 }
 }
 
@@ -9983,7 +9983,7 @@ extern "C" void func_0207930c(s8 *p, s32 x) {
 
 namespace nC {
 extern "C" void func_020792fc(Unk_02078d6c_Self *self) {
-    func_02115fb4(self->unk_08, 0xff, 4);
+    MI_CpuFill8(self->unk_08, 0xff, 4);
 }
 }
 
@@ -10306,7 +10306,7 @@ extern "C" void func_02078d6c(Unk_02078d6c_Self *self, u8 *p, s32 keep) {
     if (func_020791c0(self, &t)) {
         func_02078e60(self, p);
         if (keep) {
-            func_02116048(&t, &self->unk_0c, 8);
+            MI_CpuCopy8(&t, &self->unk_0c, 8);
         }
     } else {
         func_02078de0(self, p);
@@ -10325,7 +10325,7 @@ extern "C" void func_02078d64() {}
 
 namespace nC {
 extern "C" void func_02078d58(void *p) {
-    func_02115fb4(p, 0, 0x1c);
+    MI_CpuFill8(p, 0, 0x1c);
 }
 }
 
@@ -10727,7 +10727,7 @@ extern "C" Unk_02078614 *_ZN17Unk_021cc9e8_ElemD1Ev(Unk_02078614 *e) {
 
 namespace nB {
 extern "C" void func_02078614(Unk_02078614 *e) {
-    func_02115fb4(e, 0, 0x2c);
+    MI_CpuFill8(e, 0, 0x2c);
     e->unk_00 = 0;
     e->unk_01 = 3;
     _ZN12Unk_0209ada413func_0209ad80Ev(e->unk_04);

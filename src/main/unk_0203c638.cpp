@@ -27,11 +27,11 @@ public:
 };
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 }
 
 extern "C" {
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 extern "C" {
@@ -230,7 +230,7 @@ void func_0203c640(Unk_0203c640 *p);
 }
 
 extern "C" {
-void *func_0210629c();
+void *NNS_G3dGetTex();
 }
 
 extern "C" {
@@ -339,10 +339,10 @@ extern "C" BOOL func_0203c6f8(void *a, void *b) {
     if (func_0203c764(a, &id, 0)) {
         if (b != 0) {
             void *dst = _ZN12Unk_02071e0413func_02071e58Ev(b);
-            func_02116048(dst, func_0203c6e4(a), 0x200);
+            MI_CpuCopy8(dst, func_0203c6e4(a), 0x200);
             _ZN12Unk_02071e0413func_02071e04Ev(b);
             void *dst2 = _ZN12Unk_02071ed013func_02072040Ev();
-            func_02116048(dst2, func_0203c6d0(a), 0x20);
+            MI_CpuCopy8(dst2, func_0203c6d0(a), 0x20);
             return TRUE;
         }
         return TRUE;
@@ -354,7 +354,7 @@ extern "C" void *func_0203c6e4(void *unused) { return _ZN12Unk_02056fd813func_02
 
 extern "C" void *func_0203c6d0(void *unused) { return _ZN12Unk_02056fd813func_02057048Ei(func_0203c6c8(), 0); }
 
-extern "C" void *func_0203c6c8() { return func_0210629c(); }
+extern "C" void *func_0203c6c8() { return NNS_G3dGetTex(); }
 
 extern "C" u32 func_0203c6c0() { return 0x2c4; }
 

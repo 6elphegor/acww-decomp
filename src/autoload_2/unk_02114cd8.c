@@ -14,27 +14,27 @@ extern s32 data_021fcf20;   // OSi_NeedResetTimer
 extern volatile u64 data_021fcf24;   // OSi_TickCounter
 
 u32 func_02113fd8(void);                               // OS_GetConsoleType
-void func_02112360(s32 n, void *callback, void *arg);  // OS_SetIrqFunction-like (OSi_Entry)
-void func_01ffa404(u32 mask, void *func);              // OS_SetIrqFunction
-void func_01ff8128(u32 mask);                          // OS_EnableIrqMask
-void func_02114b54(void);                              // OSi_ExceptionHandler (original asm, outside all units)
-void func_02114db0(void);
-void func_02114d84(s32 n);
+void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);  // OS_SetIrqFunction-like (OSi_Entry)
+void OS_SetIrqFunction(u32 mask, void *func);              // OS_SetIrqFunction
+void OS_EnableIrqMask(u32 mask);                          // OS_EnableIrqMask
+void OSi_ExceptionHandler(void);                              // OSi_ExceptionHandler (original asm, outside all units)
+void OSi_CountUpTick(void);
+void OSi_SetTimerReserved(s32 n);
 
 #define reg_OS_TM0CNT_L (*(volatile u16 *)0x04000100)
 #define reg_OS_TM0CNT_H (*(volatile u16 *)0x04000102)
 
 // OS_InitTick
-void func_02114e48(void) {
+void OS_InitTick(void) {
     if (data_021fcf1c) return;
     data_021fcf1c = 1;
-    func_02114d84(0);
+    OSi_SetTimerReserved(0);
     data_021fcf24 = 0;
     reg_OS_TM0CNT_H = 0;
     reg_OS_TM0CNT_L = 0;
     reg_OS_TM0CNT_H = 0xc1;
-    func_01ffa404(8, func_02114db0);
-    func_01ff8128(8);
+    OS_SetIrqFunction(8, OSi_CountUpTick);
+    OS_EnableIrqMask(8);
     data_021fcf20 = 0;
 }
 
@@ -44,7 +44,7 @@ u16 func_02114e38(void) {
 }
 
 // OSi_CountUpTick
-void func_02114db0(void) {
+void OSi_CountUpTick(void) {
     data_021fcf24++;
     if (data_021fcf20) {
         reg_OS_TM0CNT_H = 0;
@@ -52,7 +52,7 @@ void func_02114db0(void) {
         reg_OS_TM0CNT_H = 0xc1;
         data_021fcf20 = 0;
     }
-    func_02112360(0, func_02114db0, 0);
+    OSi_EnterTimerCallback(0, OSi_CountUpTick, 0);
 }
 
 // OS_GetTick (low 16 bits)
@@ -61,7 +61,7 @@ u16 func_02114da0(void) {
 }
 
 // OSi_SetTimerReserved
-void func_02114d84(s32 n) {
+void OSi_SetTimerReserved(s32 n) {
     data_021fcf18 |= 1 << n;
 }
 
@@ -75,8 +75,8 @@ void func_02114cf4(void) {
     }
     if (data_021fce94 == 0 || (func_02113fd8() & 0x40000000) == 0) {
         u32 *vec = (u32 *)0x027e3000;
-        *(void **)0x027ffd9c = (void *)func_02114b54;
-        vec[0xfdc / 4] = (u32)func_02114b54;
+        *(void **)0x027ffd9c = (void *)OSi_ExceptionHandler;
+        vec[0xfdc / 4] = (u32)OSi_ExceptionHandler;
     }
     data_021fce8c = 0;
 }

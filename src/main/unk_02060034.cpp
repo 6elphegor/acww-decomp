@@ -120,7 +120,7 @@ Unk_0204ee94 *func_0204ee64(s32 n, void *heap);
 BOOL func_0204e9dc(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
 void func_0204edf8(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void *func_0204eb30(void *g, u16 *a, s32 x, s32 z, u8 d);
-void func_021155c4(u8 *buf);
+void OS_GetOwnerInfo(u8 *buf);
 void func_02052554(s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 func_020602ac(u32 x);
 BOOL func_0206057c(s32 i);
@@ -293,7 +293,7 @@ void Unk_0206022c::func_020606d8() {
     }
     unk_15a0.a = 0;
     unk_1594.func_02060034();
-    func_021155c4(buf);
+    OS_GetOwnerInfo(buf);
     unk_15a0.d = buf[1];
     unk_15a0.c = unk_15a0.d;
     unk_15a0.e = 0;

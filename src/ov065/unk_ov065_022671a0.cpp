@@ -46,14 +46,14 @@ extern u32 data_021fcc2c[];
 
 extern "C" {
 
-u64 func_01ffa6b4(void);
-void func_02115fb4(void *dst, s32 v, s32 n);
-void func_02116048(const void *src, void *dst, s32 n);
+u64 OS_GetTick(void);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, s32 n);
 s32 func_0212a190(const void *a, const void *b);
-s32 func_02128930(const void *a, const void *b, u32 n);
+s32 memcmp(const void *a, const void *b, u32 n);
 void func_0211d3a0(void *);
 void func_0211d2e0(void *);
-u32 func_0211d558(void *, void *);
+u32 RTC_ConvertDateTimeToSecond(void *, void *);
 void func_ov065_0226795c(void *dst, const void *src, s32 n);
 void func_ov065_0226796c(void *dst, const void *src, s32 n);
 
@@ -123,7 +123,7 @@ void func_ov065_02267540(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
 
 void func_ov065_0226750c(Unk_ov065_02267480_Md5 *ctx)
 {
-    func_02115fb4(ctx, 0, 0x58);
+    MI_CpuFill8(ctx, 0, 0x58);
     ctx->st[0] = 0x67452301;
     ctx->st[1] = 0xefcdab89;
     ctx->st[2] = 0x98badcfe;
@@ -143,7 +143,7 @@ void func_ov065_02267480(Unk_ov065_02267480_Md5 *ctx, const u8 *data, u32 n)
     ctx->hi += n >> 29;
     part = 64 - idx;
     if (n >= part) {
-        func_02116048(data, ctx->buf + idx, part);
+        MI_CpuCopy8(data, ctx->buf + idx, part);
         idx = 0;
         func_ov065_02267540(ctx, ctx->buf);
         for (i = part; i + 63 < n; i += 64) {
@@ -152,7 +152,7 @@ void func_ov065_02267480(Unk_ov065_02267480_Md5 *ctx, const u8 *data, u32 n)
     } else {
         i = 0;
     }
-    func_02116048(data + i, ctx->buf + idx, n - i);
+    MI_CpuCopy8(data + i, ctx->buf + idx, n - i);
 }
 
 void func_ov065_0226742c(Unk_ov065_02267480_Md5 *ctx, void *out)
@@ -175,8 +175,8 @@ Unk_ov065_0226733c_Ent *func_ov065_022673dc(const void *p)
     s32 i = 0;
     Unk_ov065_0226733c_Ent *e = data_ov065_02290438;
     for (; i < 4; e++, i++) {
-        if (e->unk_5a != 0 && func_02128930(e, p, 0x20) == 0) {
-            e->unk_50 = (u32)(func_01ffa6b4() >> 16);
+        if (e->unk_5a != 0 && memcmp(e, p, 0x20) == 0) {
+            e->unk_50 = (u32)(OS_GetTick() >> 16);
             return e;
         }
     }
@@ -189,7 +189,7 @@ Unk_ov065_0226733c_Ent *func_ov065_02267394(u32 a, u32 b)
     Unk_ov065_0226733c_Ent *e = data_ov065_02290438;
     for (; i < 4; e++, i++) {
         if (e->unk_5a != 0 && e->unk_54 == a && e->unk_58 == b) {
-            e->unk_50 = (u32)(func_01ffa6b4() >> 16);
+            e->unk_50 = (u32)(OS_GetTick() >> 16);
             return e;
         }
     }
@@ -203,7 +203,7 @@ Unk_ov065_0226733c_Ent *func_ov065_0226733c(const void *src)
     s32 i;
     u32 best;
     Unk_ov065_0226733c_Ent *e;
-    tick = (u32)(func_01ffa6b4() >> 16);
+    tick = (u32)(OS_GetTick() >> 16);
     best = 0;
     pick = data_ov065_02290438;
     i = 0;
@@ -220,7 +220,7 @@ Unk_ov065_0226733c_Ent *func_ov065_0226733c(const void *src)
             pick = e;
         }
     }
-    func_02116048(src, pick, 0x20);
+    MI_CpuCopy8(src, pick, 0x20);
     pick->unk_50 = tick;
     pick->unk_5a = 1;
     return pick;
@@ -232,7 +232,7 @@ u32 func_ov065_02267314(void)
     u32 b[3];
     func_0211d3a0(a);
     func_0211d2e0(b);
-    return func_0211d558(a, b) + 0x386d4380;
+    return RTC_ConvertDateTimeToSecond(a, b) + 0x386d4380;
 }
 
 void func_ov065_022672ec(void *a, s32 b)

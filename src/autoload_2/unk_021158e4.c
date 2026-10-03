@@ -9,15 +9,15 @@ typedef volatile u32 vu32;
 typedef void (*MIDmaCallback)(void *arg);
 
 extern void func_0206d49c(void); // OS_Terminate
-extern u32 func_01ffa2ec(void); // OS_DisableInterrupts
-extern void func_01ffa3d4(u32 mode); // OS_RestoreInterrupts
+extern u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
+extern void OS_RestoreInterrupts(u32 mode); // OS_RestoreInterrupts
 extern void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress
-extern void func_01ffa080(u32 dmaNo); // MI_WaitDma
-extern void func_01ffa4a0(u32 dmaNo, MIDmaCallback cb, void *arg); // MIi_SetDmaCallback
-extern void func_01ffa1d4(u32 dmaNo, u32 src, u32 dest, u32 cnt); // MIi_DmaSetParams
-extern void func_01ffd9d4(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void func_01ffda34(u32 dmaNo, u32 src, u32 dest, u32 cnt);
-extern void func_01ffda6c(u32 dmaNo, u32 src, u32 dest, u32 cnt);
+extern void MI_WaitDma(u32 dmaNo); // MI_WaitDma
+extern void OSi_EnterDmaCallback(u32 dmaNo, MIDmaCallback cb, void *arg); // MIi_SetDmaCallback
+extern void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 cnt); // MIi_DmaSetParams
+extern void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
+extern void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 cnt);
+extern void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 cnt);
 
 typedef struct {
     u32 busy;
@@ -31,28 +31,28 @@ typedef struct {
 extern MIiGxDmaState data_027e0414;
 
 void func_021158f4(u32 dmaNo, u32 mode);
-void func_02115d30(void);
+void MIi_DMAFastCallback(void);
 
 // MI_DmaCopy32Async
-void func_02115a2c(u32 dmaNo, u32 src, u32 dest, u32 size, MIDmaCallback callback, void *arg) {
+void MI_DmaCopy32Async(u32 dmaNo, u32 src, u32 dest, u32 size, MIDmaCallback callback, void *arg) {
     func_01ffa0f0(dmaNo, src, size, 0);
     if (size == 0) {
         if (callback) callback(arg);
         return;
     }
-    func_01ffa080(dmaNo);
+    MI_WaitDma(dmaNo);
     if (callback) {
-        func_01ffa4a0(dmaNo, callback, arg);
-        func_01ffa1d4(dmaNo, src, dest, (size >> 2) | 0xc4000000);
+        OSi_EnterDmaCallback(dmaNo, callback, arg);
+        MIi_DmaSetParams(dmaNo, src, dest, (size >> 2) | 0xc4000000);
     } else {
-        func_01ffa1d4(dmaNo, src, dest, (size >> 2) | 0x84000000);
+        MIi_DmaSetParams(dmaNo, src, dest, (size >> 2) | 0x84000000);
     }
 }
 
 // MI_StopDma
-void func_021159a8(u32 dmaNo) {
+void MI_StopDma(u32 dmaNo) {
     vu16 *dmaCntp;
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     u32 tmp;
     dmaCntp = &((vu16 *)0x040000b0)[dmaNo * 6 + 5];
     *dmaCntp &= ~0x3a00;
@@ -66,7 +66,7 @@ void func_021159a8(u32 dmaNo) {
         p[1] = 0;
         p[2] = 0x81400001;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
 }
 
 // MIi_CheckAnotherAutoDMA
@@ -91,6 +91,6 @@ void func_021158f4(u32 dmaNo, u32 mode) {
 }
 
 // MI_SetWramBank (WRAMCNT, REG 0x04000247)
-void func_021158e4(u32 v) {
+void MI_SetWramBank(u32 v) {
     *(vu8 *)0x04000247 = (u8)v;
 }

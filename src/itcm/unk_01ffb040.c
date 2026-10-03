@@ -32,7 +32,7 @@ typedef struct ResJntAnm {
 } ResJntAnm;
 
 extern BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx);   // getRotDataByIdx_ (pivot/5-element rotation; returns TRUE when row 2 must be rebuilt)
-extern void func_01ffc714(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
+extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
 
 // NitroSystem g3d anm/nsbca.c: vecCross_ (static inline, 32-bit cross product) and getRotData_
 static inline void vecCross_(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
@@ -97,13 +97,13 @@ void func_01ffb040(MtxFx33 *pRot, fx32 Frame, const u32 *pData, const ResJntAnm 
                 pRot->a[3] = pRot->a[3] * 3 + r.a[3];
                 pRot->a[4] = pRot->a[4] * 3 + r.a[4];
                 pRot->a[5] = pRot->a[5] * 3 + r.a[5];
-                func_01ffc714((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
-                func_01ffc714((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
+                VEC_Normalize((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
+                VEC_Normalize((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
                 if (!doCross) {
                     pRot->a[6] = pRot->a[6] * 3 + r.a[6];
                     pRot->a[7] = pRot->a[7] * 3 + r.a[7];
                     pRot->a[8] = pRot->a[8] * 3 + r.a[8];
-                    func_01ffc714((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
+                    VEC_Normalize((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
                 } else {
                     vecCross_((const VecFx32 *)&pRot->a[0], (const VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[6]);
                 }
@@ -129,13 +129,13 @@ ROT_INTERP_1_1:
         pRot->a[3] += r.a[3];
         pRot->a[4] += r.a[4];
         pRot->a[5] += r.a[5];
-        func_01ffc714((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
-        func_01ffc714((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
+        VEC_Normalize((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
+        VEC_Normalize((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
         if (!doCross) {
             pRot->a[6] += r.a[6];
             pRot->a[7] += r.a[7];
             pRot->a[8] += r.a[8];
-            func_01ffc714((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
+            VEC_Normalize((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
         } else {
             vecCross_((const VecFx32 *)&pRot->a[0], (const VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[6]);
         }

@@ -33,7 +33,7 @@ u32 func_020b50e8();
 u32 func_020b4928(u32 a);
 u32 func_020b491c(u32 a);
 u32 func_02084fbc();
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
 
 struct Unk_0205ca94 {
@@ -236,7 +236,7 @@ extern "C" void func_0205c930(void *pp, s32 x) {
         void *pa = (void *)data_021c6404.func_0205cc68(x);
         void *pb = (void *)data_021c6404.func_0205cc68(cur);
         if (pa != 0 && pb != 0) {
-            func_02116048(pa, pb, func_0203c6c0());
+            MI_CpuCopy8(pa, pb, func_0203c6c0());
             data_021c6404.func_0205cc4c(cur, v);
         }
     }

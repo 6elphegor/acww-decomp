@@ -103,15 +103,15 @@ extern "C" {
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_01ff8ccc(void);
-void func_02110be8(void *p);
+void G3_LoadMtx43(void *p);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 u32 _s32_div_f(u32 a, u32 b);
 void *func_020e8608(s32 heap, u32 size);
 void func_020e85fc(s32 heap, void *p);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e84f8(void *m, s32 a, s32 b, s32 c);
-void func_01ffb94c(void *a, void *b, void *c);
-void func_01ffc714(void *a, void *b);
+void MTX_Concat43(void *a, void *b, void *c);
+void VEC_Normalize(void *a, void *b);
 s32 func_02030814(s32 a);
 void func_0203eeac(Vec3 *out, Vec3 *in);
 Col func_02064cc4(void);
@@ -122,7 +122,7 @@ extern s32 data_021f482c;
 extern s32 data_021c620c;
 extern u8 data_021f47e0[];
 void *func_020641d8(void *p);
-u8 *func_0210629c(void *p);
+u8 *NNS_G3dGetTex(void *p);
 void func_02055724(void *p, s32 a);
 u8 *func_0205588c(void *p, s32 heap);
 void func_020e8558(void *p);
@@ -201,9 +201,9 @@ struct Unk_020ac2e8_V : Vec3 {
 };
 
 extern "C" void func_020ac724(void *a, void *b) {
-    func_01ffc714(a, b);
-    func_01ffc714((u8 *)a + 12, (u8 *)b + 12);
-    func_01ffc714((u8 *)a + 24, (u8 *)b + 24);
+    VEC_Normalize(a, b);
+    VEC_Normalize((u8 *)a + 12, (u8 *)b + 12);
+    VEC_Normalize((u8 *)a + 24, (u8 *)b + 24);
 }
 
 extern "C" void func_020ac500(void *arg) {
@@ -213,7 +213,7 @@ extern "C" void func_020ac500(void *arg) {
         data_021edf44 = 0;
         Unk_020ac0c4_Entry *e = data_021ee114;
         void *file = func_020641d8((void *)"/shadow/tex_shadow.nsbtx");
-        u8 *res = func_0210629c(file);
+        u8 *res = NNS_G3dGetTex(file);
         func_02055724(res, 0);
         res = func_0205588c(res, heap);
         func_020e8558(file);
@@ -275,7 +275,7 @@ extern "C" void func_020ac40c() {
     data_021edf44 = func_01ffcb0c((x - 0x800) << 1, 0x1000);
     func_020e8388(data_021f47e0, 0, 0, 0);
     func_020e84f8(data_021f47e0, 0x20000, 0x20000, 0x20000);
-    func_01ffb94c(data_021f47e0, data_0213c7e0, data_021edfe0);
+    MTX_Concat43(data_021f47e0, data_0213c7e0, data_021edfe0);
     func_020ac724(data_021edfe0, data_021edfbc);
     RGB c1 = func_02064f2c();
     u8 s = c1.b + (c1.r + c1.g);
@@ -454,7 +454,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
             REG(0x40004a8) = unk_30->unk_04;
             REG(0x40004ac) = unk_30->unk_08;
             REG(0x4000440) = 1;
-            func_02110be8(data_021edfe0);
+            G3_LoadMtx43(data_021edfe0);
             REG(0x40004a4) = (lvl << 16) | ((unk_30->unk_14 << 24) | 0x8080);
             s32 *p7 = unk_1c;
             s32 *p28 = unk_28;

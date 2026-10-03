@@ -134,27 +134,27 @@ extern s32 data_0213bf28[];
 extern s16 data_02139fb4[];
 
 // externs: functions
-extern void *func_02100248(NNSFndList *, void *);
-extern void func_02100260(NNSFndList *, void *);
-extern void func_021003b0(NNSFndList *, void *);
-extern void func_02100444(NNSFndList *, u16);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02114480(void *);
-extern void func_02114410(void *);
-extern void func_0211450c(void *);
+extern void *NNS_FndGetNextListObject(NNSFndList *, void *);
+extern void NNS_FndRemoveListObject(NNSFndList *, void *);
+extern void NNS_FndAppendListObject(NNSFndList *, void *);
+extern void NNS_FndInitList(NNSFndList *, u16);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_LockMutex(void *);
+extern void OS_UnlockMutex(void *);
+extern void OS_InitMutex(void *);
 extern void func_02113a70(void *, void *, void *, void *, u32, u32);
-extern void func_0211366c(void *);
-extern void func_021136a0(void *);
-extern void func_02115fb4(u32, u32, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115ef4();
-extern void func_021145cc(void *, u32);
+extern void OS_WakeupThreadDirect(void *);
+extern void OS_WakeupThread(void *);
+extern void MI_CpuFill8(u32, u32, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopyFast();
+extern void DC_FlushRange(void *, u32);
 extern void func_021166b4(u32);
 extern void func_021198c4(void *);
-extern void func_021199e0(void *);
-extern void func_02119d78(void *);
-extern BOOL func_02119a78(void *, FSFileID);
+extern void FS_CloseFile(void *);
+extern void FS_InitFile(void *);
+extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void func_0210a6b0(Ctx *, s32, s32);
 extern void func_0210a6f4(Ctx *, s32);
 extern void func_0210a768(Ctx *);
@@ -187,7 +187,7 @@ void func_0210dfb4(Ctx *);
 void func_0210e024(Ctx *);
 void func_0210e0c4(Ctx *, s32);
 BOOL func_0210e128();
-void func_0210e400(Ctx *);
+void FreePlayer(Ctx *);
 Ctx *func_0210e43c(Ctx **, s32, s32);
 void func_0210e694(Ctx **);
 void func_0210e760(Ctx **);
@@ -199,11 +199,11 @@ void func_0210ec0c();
 void func_0210edb0(void);
 void func_0210edb4();
 void func_0210ee4c(s32);
-BOOL func_0210efdc(Fader *);
-void func_0210f078(Fader *);
+BOOL NNSi_SndFaderIsFinished(Fader *);
+void NNSi_SndFaderInit(Fader *);
 s32 func_0210f00c(Fader *);
 void func_0210f048(Fader *, s32, s32);
-void func_0210eff4(Fader *);
+void NNSi_SndFaderUpdate(Fader *);
 
 // NNSi_SndCaptureEffect mono-mix-like (capture effect 3: average of both channels)
 void func_0210e9c0(s16 *l, s16 *r, u32 len)
@@ -213,7 +213,7 @@ void func_0210e9c0(s16 *l, s16 *r, u32 len)
     for (i = 0; i < n; i++) {
         l[i] = (l[i] + r[i] + 1) >> 1;
     }
-    func_02115ef4(l, r, len);
+    MIi_CpuCopyFast(l, r, len);
 }
 
 // NNS_SndArcStrmInit-like (thread priority, heap)
@@ -226,16 +226,16 @@ void func_0210e8bc(u32 prio, void *heap)
         return;
     }
     data_021fbda8 = 1;
-    func_02100444(&data_021fbdb4, 0);
+    NNS_FndInitList(&data_021fbdb4, 0);
     for (i = 0; i < 8; i++) {
-        func_021003b0(&data_021fbdb4, &data_021fbdd8[i]);
+        NNS_FndAppendListObject(&data_021fbdb4, &data_021fbdd8[i]);
     }
-    func_0211450c(data_021fbdc0);
+    OS_InitMutex(data_021fbdc0);
     data_021fbdb0 = data_021fbf60;
     c = data_021fc650;
     for (i = 0; i < 4; i++, c++) {
         c->fl.a = 0;
-        func_02119d78(c->file);
+        FS_InitFile(c->file);
         func_0210aa58(c);
         c->v148 = i;
         c->nch = 0;
@@ -368,7 +368,7 @@ void func_0210e4e4(void)
             c->fl.c = 0;
         }
         if (c->fl.b == 0) continue;
-        func_0210eff4(&c->fader);
+        NNSi_SndFaderUpdate(&c->fader);
         a = data_02139fb4[c->v154];
         v = data_02139fb4[func_0210f00c(&c->fader) >> 8];
         v = v + a;
@@ -377,7 +377,7 @@ void func_0210e4e4(void)
             c->vol = v;
         }
         if (c->fl.d != 0) {
-            if (func_0210efdc(&c->fader) != 0) func_0210e024(c);
+            if (NNSi_SndFaderIsFinished(&c->fader) != 0) func_0210e024(c);
         }
     }
 }
@@ -401,7 +401,7 @@ Ctx *func_0210e43c(Ctx **h, s32 idx, s32 prio)
 }
 
 // NNSi_SndArcStrmReset-like (detach handle, clear flags)
-void func_0210e400(Ctx *c)
+void FreePlayer(Ctx *c)
 {
     Ctx **h = c->handle;
     if (h != 0) {
@@ -424,12 +424,12 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
     c = func_0210e43c(h, idx, prio);
     if (c == 0) return 0;
     if (func_0210b4ac(info->file, HDR(c), 0x40, 0) != 0x40) {
-        func_0210e400(c);
+        FreePlayer(c);
         return 0;
     }
     fid = func_0210b48c();
-    if (func_02119a78(c->file, fid) == 0) {
-        func_0210e400(c);
+    if (FS_OpenFileFast(c->file, fid) == 0) {
+        FreePlayer(c);
         return 0;
     }
     c->a4 = func_0210b558(info->file);
@@ -453,7 +453,7 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
     c->v144 = v144;
     c->vol = 0;
     c->v154 = info->b4;
-    func_0210f078(&c->fader);
+    NNSi_SndFaderInit(&c->fader);
     func_0210f048(&c->fader, 0x7f00, 1);
     switch (c->type) {
     case 0:
@@ -469,14 +469,14 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
     if (n > c->nch) n = c->nch;
     c->fl.g = (n == 1);
     if (func_0210df74(c, n, c->chIdx) == 0) {
-        func_021199e0(c->file);
-        func_0210e400(c);
+        FS_CloseFile(c->file);
+        FreePlayer(c);
         return 0;
     }
     if (func_0210a7f4(c, fmt, c->buf, (c->bufSize * n) / c->nch, c->c6, 4, func_0210db74, c) == 0) {
         func_0210df2c(c);
-        func_021199e0(c->file);
-        func_0210e400(c);
+        FS_CloseFile(c->file);
+        FreePlayer(c);
         return 0;
     }
     if (n == 2) {
@@ -505,13 +505,13 @@ void func_0210e0c4(Ctx *c, s32 frames)
 // NNS_SndArcStrmStop-like (immediate)
 void func_0210e024(Ctx *c)
 {
-    func_02114480(data_021fc62c);
-    if (data_021fbdac != 0) func_02114480(&data_021fbdac->mutex);
+    OS_LockMutex(data_021fc62c);
+    if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
     if (c->fl.b) func_0210a768(c);
     if (c->fl.a) func_021198c4(c->file);
     func_0210dfb4(c);
-    func_02114410(data_021fc62c);
-    if (data_021fbdac != 0) func_02114410(&data_021fbdac->mutex);
+    OS_UnlockMutex(data_021fc62c);
+    if (data_021fbdac != 0) OS_UnlockMutex(&data_021fbdac->mutex);
 }
 
 // NNSi_SndArcStrmClose-like
@@ -519,13 +519,13 @@ void func_0210dfb4(Ctx *c)
 {
     if (c->fl.a == 0) return;
     func_0210df2c(c);
-    func_021199e0(c->file);
+    FS_CloseFile(c->file);
     func_0210de44(&data_021fc644, c);
     {
         ThreadInfo *p = data_021fbdac;
         if (p != 0) func_0210de44(&p->list, c);
     }
-    func_0210e400(c);
+    FreePlayer(c);
 }
 
 // NNSi_SndArcStrmChannelAlloc-like
@@ -551,11 +551,11 @@ void func_0210df2c(Ctx *c)
 void func_0210deb8(ThreadInfo *t, u32 prio)
 {
     func_02113a70(t, func_0210d10c, t, (u8 *)t + 0x4c0, 0x400, prio);
-    func_02100444(&t->list, 0);
-    func_0211450c(&t->mutex);
+    NNS_FndInitList(&t->list, 0);
+    OS_InitMutex(&t->mutex);
     t->queue[1] = 0;
     t->queue[0] = t->queue[1];
-    func_0211366c(t);
+    OS_WakeupThreadDirect(t);
 }
 
 // NNSi_SndArcStrmJobCancel-like (drop all jobs of a stream)
@@ -564,15 +564,15 @@ void func_0210de44(NNSFndList *list, Ctx *c)
     u32 irq;
     Job *job;
     Job *next;
-    irq = func_01ffa2ec();
-    for (job = func_02100248(list, 0); job != 0; job = next) {
-        next = func_02100248(list, job);
+    irq = OS_DisableInterrupts();
+    for (job = NNS_FndGetNextListObject(list, 0); job != 0; job = next) {
+        next = NNS_FndGetNextListObject(list, job);
         if (job->owner == c) {
-            func_02100260(list, job);
+            NNS_FndRemoveListObject(list, job);
             func_0210dd6c(job);
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 // NNSi_SndArcStrmJobPop-like (first job of a thread list)
@@ -580,13 +580,13 @@ Job *func_0210ddf0(NNSFndList *list)
 {
     u32 irq;
     Job *job;
-    irq = func_01ffa2ec();
-    job = func_02100248(list, 0);
+    irq = OS_DisableInterrupts();
+    job = NNS_FndGetNextListObject(list, 0);
     if (job != 0) {
-        func_02100260(list, job);
+        NNS_FndRemoveListObject(list, job);
         job->owner->pending = job->owner->pending - 1;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return job;
 }
 
@@ -595,27 +595,27 @@ Job *func_0210dda4(void)
 {
     u32 irq;
     Job *job;
-    irq = func_01ffa2ec();
-    job = func_02100248(&data_021fbdb4, 0);
-    if (job != 0) func_02100260(&data_021fbdb4, job);
-    func_01ffa3d4(irq);
+    irq = OS_DisableInterrupts();
+    job = NNS_FndGetNextListObject(&data_021fbdb4, 0);
+    if (job != 0) NNS_FndRemoveListObject(&data_021fbdb4, job);
+    OS_RestoreInterrupts(irq);
     return job;
 }
 
 // NNSi_SndArcStrmJobFree-like (job back to the free list)
 void func_0210dd6c(Job *job)
 {
-    u32 irq = func_01ffa2ec();
-    func_021003b0(&data_021fbdb4, job);
-    func_01ffa3d4(irq);
+    u32 irq = OS_DisableInterrupts();
+    NNS_FndAppendListObject(&data_021fbdb4, job);
+    OS_RestoreInterrupts(irq);
 }
 
 // NNSi_SndArcStrmHeapDestroyCallback-like (snd heap block destroy callback)
 void func_0210dcc0(void *mem, u32 size, Ctx *c)
 {
     if (mem != c->buf) return;
-    func_02114480(data_021fc62c);
-    if (data_021fbdac != 0) func_02114480(&data_021fbdac->mutex);
+    OS_LockMutex(data_021fc62c);
+    if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
     func_0210e024(c);
     c->buf = 0;
     c->bufSize = 0;
@@ -624,8 +624,8 @@ void func_0210dcc0(void *mem, u32 size, Ctx *c)
         func_0210a9c4(c);
         c->users = 0;
     }
-    func_02114410(data_021fc62c);
-    if (data_021fbdac != 0) func_02114410(&data_021fbdac->mutex);
+    OS_UnlockMutex(data_021fc62c);
+    if (data_021fbdac != 0) OS_UnlockMutex(&data_021fbdac->mutex);
 }
 
 // NNSi_SndArcStrmCallback-like: NNSSndStrm block callback (queues a load job for the stream thread)
@@ -636,13 +636,13 @@ void func_0210db74(s32 ch, s32 n, u32 *bufs, u32 size, s32 unused, Ctx *c)
     s32 i;
 
     if (c->pending >= 2) {
-        for (job = func_02100248(&data_021fc644, 0); job != 0; job = func_02100248(&data_021fc644, job)) {
+        for (job = NNS_FndGetNextListObject(&data_021fc644, 0); job != 0; job = NNS_FndGetNextListObject(&data_021fc644, job)) {
             if (job->owner == c) break;
         }
         for (i = 0; i < job->n; i++) {
-            func_02115fb4(job->buf[i], 0, job->size);
+            MI_CpuFill8(job->buf[i], 0, job->size);
         }
-        func_02100260(&data_021fc644, job);
+        NNS_FndRemoveListObject(&data_021fc644, job);
         c->pending = c->pending - 1;
         func_0210dd6c(job);
     }
@@ -659,8 +659,8 @@ void func_0210db74(s32 ch, s32 n, u32 *bufs, u32 size, s32 unused, Ctx *c)
         if (data_021fbdac != 0) t = data_021fbdac;
     }
     c->pending = c->pending + 1;
-    func_021003b0(&t->list, job);
-    func_021136a0(&t->queue);
+    NNS_FndAppendListObject(&t->list, job);
+    OS_WakeupThread(&t->queue);
 }
 
 // NNSi_SndArcStrmLoadNext-like: stream thread helper, asks the user callback for the next stream and re-reads its header

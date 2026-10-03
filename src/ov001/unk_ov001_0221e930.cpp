@@ -7,7 +7,7 @@ extern "C" {
 s32 func_021095f8();
 s32 func_0210a378(void *, u32);
 s32 func_0210a118(void *, s32, s32);
-s32 func_0210a26c(void *, s32);
+s32 NNS_SndPlayerSetVolume(void *, s32);
 s32 func_0210cf78(void *, u32, s32);
 s32 func_0210962c();
 s32 func_0210b918(void *, s32);
@@ -50,7 +50,7 @@ void func_ov001_0221e9c4()
 
 void func_ov001_0221e9a0(s32 a) { func_0210cf78(data_ov001_0222def4 + 0x90, 0, a); }
 
-void func_ov001_0221e980(s32 a) { func_0210a26c(data_ov001_0222def4 + 0x90, a); }
+void func_ov001_0221e980(s32 a) { NNS_SndPlayerSetVolume(data_ov001_0222def4 + 0x90, a); }
 
 void func_ov001_0221e95c(s32 a, s32 b) { func_0210a118(data_ov001_0222def4 + 0x90, a, b); }
 

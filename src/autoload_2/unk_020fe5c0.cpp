@@ -194,28 +194,28 @@ extern u16 data_021f5c44;
 extern u32 data_021f5c48;
 extern void (*data_021f5c4c)(u32, u32);
 
-void func_01ffc8bc(const VecFx16 *a, const VecFx16 *b, VecFx16 *out);
-s32 func_01ffca14(const VecFx32 *a, const VecFx32 *b);
-void func_01ffc5c0(const VecFx16 *src, VecFx16 *dst);
-s32 func_01ffc9c4(const VecFx16 *a, const VecFx16 *b);
-void func_01ffc714(const VecFx32 *src, VecFx32 *dst);
-void func_01ffb498(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4b4(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4d0(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4e8(const VecFx32 *v, const MtxFx33 *m, VecFx32 *dst);
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32 old);
-void func_02115664(u32 a, u32 b);
-s32 func_021156ec(u32 a, u32 b);
+void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *out);
+s32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);
+void VEC_Fx16Normalize(const VecFx16 *src, VecFx16 *dst);
+s32 VEC_Fx16DotProduct(const VecFx16 *a, const VecFx16 *b);
+void VEC_Normalize(const VecFx32 *src, VecFx32 *dst);
+void MTX_RotX33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_RotY33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_RotZ33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_MultVec33(const VecFx32 *v, const MtxFx33 *m, VecFx32 *dst);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32 old);
+void OSi_UnlockVram(u32 a, u32 b);
+s32 OSi_TryLockVram(u32 a, u32 b);
 void func_02117dcc(void);
-s32 func_02117e8c(u32 a, u32 b);
-void func_02117eb4(u32 a, void *b);
-s32 func_02117dd8(u32 a, u32 b, u32 c);
-s32 func_021123d0(void);
+s32 PXI_IsCallbackReady(u32 a, u32 b);
+void PXI_SetFifoRecvCallback(u32 a, void *b);
+s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
+s32 OS_GetLockID(void);
 void func_020fe4b0(u32 a, u32 b);
 void func_020fe4b4(u32 a, u32 b);
-void func_020fe448(VecFx32 *v);
-void func_020fe3ec(VecFx32 *v);
+void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
+void spl_rndm_get_arb_vec_xy(VecFx32 *v);
 void func_020fe3a0(PList *l, P *n);
 P *func_020fe35c(PList *l);
 void func_020fd820(E *e);
@@ -231,45 +231,45 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 extern "C" s32 func_020fe5c0(u32 cmd, void (*cb)(u32, u32), u32 arg) {
     func_02117dcc();
-    if (func_02117e8c(15, 1) == 0) {
+    if (PXI_IsCallbackReady(15, 1) == 0) {
         return 2;
     }
     while (data_021f5c40 == 0) {
-        s32 id = func_021123d0();
+        s32 id = OS_GetLockID();
         if (id == -3) {
             return 7;
         }
         data_021f5c40 = id;
     }
-    u32 old = func_01ffa2ec();
+    u32 old = OS_DisableInterrupts();
     if (data_021f5c4c != 0) {
-        func_01ffa3d4(old);
+        OS_RestoreInterrupts(old);
         return 5;
     }
     if (data_021f5c44 != 0) {
-        func_01ffa3d4(old);
+        OS_RestoreInterrupts(old);
         return 5;
     }
     switch (cmd) {
     case 4:
-        if (func_021156ec(4, data_021f5c40) == 0) {
-            func_01ffa3d4(old);
+        if (OSi_TryLockVram(4, data_021f5c40) == 0) {
+            OS_RestoreInterrupts(old);
             return 6;
         }
         data_021f5c44 = 4;
         *(volatile u8 *)0x04000242 = 0x82;
         break;
     case 8:
-        if (func_021156ec(8, data_021f5c40) == 0) {
-            func_01ffa3d4(old);
+        if (OSi_TryLockVram(8, data_021f5c40) == 0) {
+            OS_RestoreInterrupts(old);
             return 6;
         }
         data_021f5c44 = 8;
         *(volatile u8 *)0x04000243 = 0x82;
         break;
     case 12:
-        if (func_021156ec(12, data_021f5c40) == 0) {
-            func_01ffa3d4(old);
+        if (OSi_TryLockVram(12, data_021f5c40) == 0) {
+            OS_RestoreInterrupts(old);
             return 6;
         }
         data_021f5c44 = 12;
@@ -277,11 +277,11 @@ extern "C" s32 func_020fe5c0(u32 cmd, void (*cb)(u32, u32), u32 arg) {
         *(volatile u8 *)0x04000243 = 0x8a;
         break;
     default:
-        func_01ffa3d4(old);
+        OS_RestoreInterrupts(old);
         return 3;
     }
-    if (func_02117e8c(15, 0) == 0) {
-        func_02117eb4(15, (void *)func_020fe4b4);
+    if (PXI_IsCallbackReady(15, 0) == 0) {
+        PXI_SetFifoRecvCallback(15, (void *)func_020fe4b4);
     }
     if (cb == 0) {
         data_021f5c4c = func_020fe4b0;
@@ -289,14 +289,14 @@ extern "C" s32 func_020fe5c0(u32 cmd, void (*cb)(u32, u32), u32 arg) {
         data_021f5c4c = cb;
     }
     data_021f5c48 = arg;
-    if (func_02117dd8(15, 0x10000, 0) < 0) {
-        func_02115664(data_021f5c44, data_021f5c40);
+    if (PXI_SendWordByFifo(15, 0x10000, 0) < 0) {
+        OSi_UnlockVram(data_021f5c44, data_021f5c40);
         data_021f5c44 = 0;
         data_021f5c4c = 0;
-        func_01ffa3d4(old);
+        OS_RestoreInterrupts(old);
         return 4;
     }
-    func_01ffa3d4(old);
+    OS_RestoreInterrupts(old);
     return 1;
 }
 

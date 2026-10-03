@@ -204,11 +204,11 @@ typedef struct OSIrqCallbackInfo {
 extern OSIrqCallbackInfo data_027e0058[]; // OSi_IrqCallbackInfo (DTCM)
 extern u8 data_027e0000[];                // DTCM start (OSi_IrqFunctionTable)
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
 extern u32 func_01ffa314(void);                            // OS_EnableInterrupts (assembly)
 extern void func_01ffa3c0(void);                           // OS_Halt (assembly)
-extern u32 func_01ff8128(u32 intr);                        // OS_EnableIrqMask
+extern u32 OS_EnableIrqMask(u32 intr);                        // OS_EnableIrqMask
 
 extern volatile u64 data_021fcf24;                         // OSi_TickCounter
 
@@ -227,17 +227,17 @@ typedef struct ScaleTmp { fx32 s; fx32 inv; } ScaleTmp;
 extern RS *data_021f5cc0;                 // NNS_G3dRS
 extern const u8 data_02135e5c[][4];       // pivot index tables
 
-extern void func_02115ea8(u32 data, void *dest, u32 size);     // MIi_CpuClearFast
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);     // MIi_CpuClearFast
 extern fx32 func_01ffc5a4(fx32 a, fx32 b);                     // FX_Div
-extern void func_01ffc714(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
-extern void func_01ffc928(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
-extern void func_02104518(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
+extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
+extern void VEC_CrossProduct(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
+extern void blendScaleVec_(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
 extern void func_02106f90(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void func_0210710c(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void func_0210685c(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void func_02106ba8(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void func_02106d60(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02107460(JntAnm *pResult);
+extern void getMdlTrans_(JntAnm *pResult);
 extern void func_02107298(JntAnm *pResult);
 extern void func_021073f8(JntAnm *pResult);
 extern void func_01ffb040(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
@@ -267,13 +267,13 @@ static inline int PXIi_RecvWordByFifo(PXIFifoMessage *data) {
         reg_PXI_FIFO_CNT |= 0xc000;
         return -3;
     }
-    enabled = func_01ffa2ec();
+    enabled = OS_DisableInterrupts();
     if (reg_PXI_FIFO_CNT & 0x100) {
-        func_01ffa3d4(enabled);
+        OS_RestoreInterrupts(enabled);
         return -4;
     }
     data->raw = reg_PXI_RECV_FIFO;
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return 0;
 }
 
@@ -283,13 +283,13 @@ static inline int PXIi_SendWordByFifo(u32 data) {
         reg_PXI_FIFO_CNT |= 0xc000;
         return -3;
     }
-    enabled = func_01ffa2ec();
+    enabled = OS_DisableInterrupts();
     if (reg_PXI_FIFO_CNT & 2) {
-        func_01ffa3d4(enabled);
+        OS_RestoreInterrupts(enabled);
         return -1;
     }
     reg_PXI_SEND_FIFO = data;
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return 0;
 }
 
@@ -405,7 +405,7 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 2) {
             pResult->flag |= 4;
         } else {
-            func_02107460(pResult);
+            getMdlTrans_(pResult);
         }
     }
     if (!(info & 0xc0)) {
@@ -530,7 +530,7 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
             fx32 ratio;
             {
                 volatile u32 zero = 0;
-                func_02115ea8(zero, pResult, sizeof(JntAnm));
+                MIi_CpuClearFast(zero, pResult, sizeof(JntAnm));
             }
             pResult->flag = 0xffffffff;
             do {
@@ -544,9 +544,9 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
                 } else {
                     ratio = func_01ffc5a4(pAnmObj->ratio, sumOfRatio);
                 }
-                func_02104518(&pResult->scale, &tmp.scale, ratio, tmp.flag & 1);
-                func_02104518(&pResult->scaleEx0, &tmp.scaleEx0, ratio, tmp.flag & 8);
-                func_02104518(&pResult->scaleEx1, &tmp.scaleEx1, ratio, tmp.flag & 16);
+                blendScaleVec_(&pResult->scale, &tmp.scale, ratio, tmp.flag & 1);
+                blendScaleVec_(&pResult->scaleEx0, &tmp.scaleEx0, ratio, tmp.flag & 8);
+                blendScaleVec_(&pResult->scaleEx1, &tmp.scaleEx1, ratio, tmp.flag & 16);
                 if (!(tmp.flag & 4)) {
                     pResult->trans.x += (fx32)(((s64)ratio * tmp.trans.x) >> 12);
                     pResult->trans.y += (fx32)(((s64)ratio * tmp.trans.y) >> 12);
@@ -565,28 +565,28 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
                 }
                 pResult->flag &= tmp.flag;
             } while ((pAnmObj = pAnmObj->next));
-            func_01ffc928((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3], (VecFx32 *)&pResult->rot.a[6]);
-            func_01ffc714((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[0]);
-            func_01ffc714((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[6]);
-            func_01ffc928((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3]);
+            VEC_CrossProduct((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3], (VecFx32 *)&pResult->rot.a[6]);
+            VEC_Normalize((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[0]);
+            VEC_Normalize((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[6]);
+            VEC_CrossProduct((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3]);
             return TRUE;
         }
     }
 }
 
 // OS_GetTick
-u64 func_01ffa6b4(void) {
-    u32 enabled = func_01ffa2ec();
+u64 OS_GetTick(void) {
+    u32 enabled = OS_DisableInterrupts();
     vu16 countL = *(vu16 *)0x04000100;
     vu64 countH = data_021fcf24 & 0x0000ffffffffffffULL;
     if ((reg_OS_IF & 8) && !(countL & 0x8000)) {
         countH++;
     }
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return (countH << 16) | countL;
 }
 
-void func_01ffa654(s32 msg) {
+void SNDi_CallAlarmHandler(s32 msg) {
     CbEntry *e = &data_027e032c[msg & 0xff];
     if (((msg >> 8) & 0xff) != e->tag) {
         return;
@@ -597,14 +597,14 @@ void func_01ffa654(s32 msg) {
     e->func(e->arg);
 }
 
-void func_01ffa624(u32 a, s32 msg) {
-    u32 enabled = func_01ffa2ec();
-    func_01ffa654(msg);
-    func_01ffa3d4(enabled);
+void PxiFifoCallback(u32 a, s32 msg) {
+    u32 enabled = OS_DisableInterrupts();
+    SNDi_CallAlarmHandler(msg);
+    OS_RestoreInterrupts(enabled);
 }
 
 // PXI receive FIFO not-empty IRQ handler
-void func_01ffa500(void) {
+void PXIi_HandlerRecvFifoNotEmpty(void) {
     PXIFifoMessage data;
     int error;
     u32 tag;
@@ -637,10 +637,10 @@ void func_01ffa4ec(void) {
 }
 
 // OSi_EnterDmaCallback
-void func_01ffa4a0(u32 dmaNo, void (*callback)(void *), void *arg) {
+void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg) {
     u32 mask;
     data_027e0058[dmaNo].func = callback;
     data_027e0058[dmaNo].arg = arg;
-    data_027e0058[dmaNo].enable = func_01ff8128(1 << (dmaNo + 8)) & (1 << (dmaNo + 8));
+    data_027e0058[dmaNo].enable = OS_EnableIrqMask(1 << (dmaNo + 8)) & (1 << (dmaNo + 8));
 }
 

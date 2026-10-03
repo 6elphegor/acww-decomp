@@ -11,7 +11,7 @@ typedef int BOOL;
 #define NULL 0
 
 extern u32 data_0213bcc8;
-extern void func_02115e30(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
+extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 extern s32 func_02106300(u8 *, u8 *);          // NNS_G3dGetResDictIdxByName (dict, name)
 
 typedef struct TexObj {
@@ -85,7 +85,7 @@ avg:
 }
 
 // packed u8 animation array reader (frame, const / 1:1 / 1:2 / 1:4 rate with interpolation)
-u16 func_021076f0(u8 *base, u32 info, u32 idx)
+u16 GetMatColAnmuAlphaValue_(u8 *base, u32 info, u32 idx)
 {
     u8 *d;
     u32 q;
@@ -139,7 +139,7 @@ void func_02107634(TexObj *o, u8 *names, u8 *res)
     o->cnt = res[0x18];
     {
         volatile u16 zero = 0;
-        func_02115e30(zero, o->tbl, o->cnt * 2);
+        MIi_CpuClear16(zero, o->tbl, o->cnt * 2);
     }
     for (i = 0; i < names[9]; i++) {
         u8 *blk = names + 8 + *(u16 *)(names + 14);

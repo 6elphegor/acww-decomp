@@ -6,7 +6,7 @@ typedef unsigned int u32;
 extern u32 data_02135cd8[][4];
 
 // table lookup: 16-byte rows indexed by p[1], word index p[0]
-u32 func_021030a0(const u8 *p)
+u32 OBJSizeToShape(const u8 *p)
 {
     return data_02135cd8[p[1]][p[0]];
 }

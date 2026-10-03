@@ -18,10 +18,10 @@
 	.arm
 
 ; OS_IrqHandler
-	.global func_01ffd50c
-	.type func_01ffd50c, @function
-	.size func_01ffd50c, 0x58
-func_01ffd50c:
+	.global OS_IrqHandler
+	.type OS_IrqHandler, @function
+	.size OS_IrqHandler, 0x58
+OS_IrqHandler:
 	stmfd sp!, {lr}
 	mov r12, #0x04000000
 	add r12, r12, #0x210 ; REG_IE

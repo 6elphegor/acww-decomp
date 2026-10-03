@@ -78,7 +78,7 @@ public:
 };
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 void *__cxa_vec_ctor(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 void _ZN12Unk_020e2a48D1Ev(void *);
@@ -261,7 +261,7 @@ Unk_020d94d0::Unk_020d94d0() : Unk_020e2a18(0) {}
 Unk_020d94d0::~Unk_020d94d0() {}
 
 void Unk_020d94d0::func_0203d458() {
-    func_02115fb4(unk_a4, 0, 0x200);
+    MI_CpuFill8(unk_a4, 0, 0x200);
 }
 
 u32 Unk_020d94d0::vfunc_08() {
@@ -532,7 +532,7 @@ Unk_0203cc64::Unk_0203cc64() {
     _ZN12Unk_020d94d0C1Ev(&unk_5c);
     unk_500 = -1;
     __cxa_vec_ctor(unk_504, 11, 0x34, (void *)_ZN12Unk_020e2a48C1Ev, (void *)_ZN12Unk_020e2a48D1Ev);
-    func_02115fb4(unk_300, 0, 0x200);
+    MI_CpuFill8(unk_300, 0, 0x200);
 }
 
 Unk_0203cc64::~Unk_0203cc64() {
@@ -543,7 +543,7 @@ Unk_0203cc64::~Unk_0203cc64() {
 
 void Unk_0203cc64::func_0203cd68() {
     ((Unk_020d94d0 *)unk_5c)->func_0203d458();
-    func_02115fb4(unk_300, 0, 0x200);
+    MI_CpuFill8(unk_300, 0, 0x200);
     unk_500 = -1;
 }
 

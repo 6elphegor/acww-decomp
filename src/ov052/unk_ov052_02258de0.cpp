@@ -121,8 +121,8 @@ s32 func_020e7518(void *p);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_020e96ec(void *a, void *b);
 s32 func_020e972c(void *a, void *b);
-void func_02115fb4(void *p, s32 v, s32 n);
-s32 func_02128930(void *a, void *b, s32 n);
+void MI_CpuFill8(void *p, s32 v, s32 n);
+s32 memcmp(void *a, void *b, s32 n);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *h, u32 v);
 void _ZN12Unk_02097ff413func_0209801cEj(void *h, u32 v);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
@@ -556,8 +556,8 @@ BOOL Unk_ov052_0225a900::vfunc_04() {
     func_0201bc28((Unk_0201bc1c *)&unk_658);
     unk_658.func_ov052_02259a98((s32)this);
     unk_718 = data_020c6cc8;
-    func_02115fb4(unk_72f, 0, 5);
-    func_02115fb4(unk_734, 0, 5);
+    MI_CpuFill8(unk_72f, 0, 5);
+    MI_CpuFill8(unk_734, 0, 5);
     _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 2, 0x400, 0x133, 0x199);
     return TRUE;
 }
@@ -956,7 +956,7 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
                         _ZN12Unk_020d771413func_0201578cEjjj(this, &c, 0, 7);
                         u16 *r6 = (u16 *)_ZN12Unk_0209865c13func_0209888cEv(func_0209750c());
                         u16 *r7 = (u16 *)func_020862f4(data_021ed284);
-                        if (!(r7[0] == r6[0] && func_02128930(r7 + 1, r6 + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(r7, r6) != 0)) {
+                        if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(r7, r6) != 0)) {
                             _ZN12Unk_020d771413func_020157e8Ejj(this, func_020862f4(data_021ed284), 1);
                             unk_ac = 8;
                         } else {
@@ -1007,7 +1007,7 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
                     *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
                 }
                 if (func_ov052_02259b50(unk_b0, unk_b0->unk_72f, 5) == 0) {
-                    func_02115fb4(unk_b0->unk_72f, 0, 5);
+                    MI_CpuFill8(unk_b0->unk_72f, 0, 5);
                     unk_b0->unk_72f[idx] = 1;
                     *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
                 }
@@ -1113,7 +1113,7 @@ void Unk_ov052_0225a870::vfunc_18() {
                     s32 idx = func_ov052_02259b1c(unk_b0, unk_b0->unk_734, 5);
                     unk_b0->unk_734[idx] = 1;
                     if (func_ov052_02259b50(unk_b0, unk_b0->unk_734, 5) == 0) {
-                        func_02115fb4(unk_b0->unk_734, 0, 5);
+                        MI_CpuFill8(unk_b0->unk_734, 0, 5);
                         unk_b0->unk_734[idx] = 1;
                     }
                     msg = (u8)(idx + 0x24);

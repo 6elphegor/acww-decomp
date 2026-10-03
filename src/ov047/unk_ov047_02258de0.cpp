@@ -117,7 +117,7 @@ s32 func_0209ccd0();
 BOOL func_020a032c();
 BOOL func_020a62a0();
 s32 func_020e7500(void *p);
-s32 func_0212a15c(const char *a, const char *b, u32 n);
+s32 strncmp(const char *a, const char *b, u32 n);
 u32 func_0212a438(const char *s);
 
 // methods of other modules, called as free functions with the object first (mangled-name trick)
@@ -1377,7 +1377,7 @@ void Unk_ov047_0225b5d4::vfunc_14() {
     if (func_020a032c()) {
         goto end;
     }
-    if (func_0212a15c((char *)&unk_04, data_ov047_0225b980, func_0212a438(data_ov047_0225b980)) != 0) {
+    if (strncmp((char *)&unk_04, data_ov047_0225b980, func_0212a438(data_ov047_0225b980)) != 0) {
         goto end;
     }
     if ((s32)unk_1e < 0xc) {

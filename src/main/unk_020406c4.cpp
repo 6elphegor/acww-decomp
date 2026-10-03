@@ -6,7 +6,7 @@ extern "C" {
 
 s32 func_02063b8c(s32);
 void func_0209d2c0(s32, s32);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f218(void *, s32, void *);
 
 BOOL func_02040754(void *, u8 *p, u32 v);
@@ -25,7 +25,7 @@ extern "C" s32 func_020407a8(void *, s32 *out, s32 x)
     u8 b[0x58];
     func_0209d2c0(x, 1);
     for (i = 0; i < 5; i++) {
-        func_02116048((void *)x, a, 8);
+        MI_CpuCopy8((void *)x, a, 8);
         if (func_0203f218(b, 7, a) <= 0) {
             *out = 1;
             cnt++;

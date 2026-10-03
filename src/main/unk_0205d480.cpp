@@ -4,7 +4,7 @@ extern "C" {
 void *func_020e8628(void *heap, s32 size, s32 align);
 void func_020e877c(void *p);
 void func_020e885c(void *p);
-void *func_0210629c(void *h);
+void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_020641b4(const char *path, void *buf, s32 size);
 s32 func_0205bc60();
@@ -242,7 +242,7 @@ extern "C" void func_0205d554(u8 *p, s32 idx) {
 }
 
 extern "C" void func_0205d530(u8 *p) {
-    void *q = func_0210629c(func_0205d4d0(p));
+    void *q = NNS_G3dGetTex(func_0205d4d0(p));
     func_0205d4bc(p)->func_02055210(q);
 }
 
@@ -253,7 +253,7 @@ extern "C" BOOL func_0205d4e4(u8 *p) {
         return TRUE;
     }
     if (!Unk_0205d4e4_IsOne(st)) {
-        o->func_020b89f0((u32 *)func_0210629c(func_0205d4d0(p)), 1);
+        o->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205d4d0(p)), 1);
     }
     return FALSE;
 }

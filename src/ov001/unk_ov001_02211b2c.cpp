@@ -62,7 +62,7 @@ extern u8 data_ov001_0222de6c;
 extern void *data_ov001_0222af04[];
 
 void func_0211199c();
-s32 func_01ffc31c(s32, s32);
+s32 FX_DivS32(s32, s32);
 void func_ov001_02212bc8();
 void func_ov001_022128d0();
 void func_ov001_02212780();
@@ -168,7 +168,7 @@ void func_ov001_02213124() {
         m = 2;
     }
     if (m != 0) {
-        r = func_01ffc31c(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40);
+        r = FX_DivS32(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40);
     }
     func_ov001_0221d660(m, 0x55, 0xec, 0x3f, r);
 }
@@ -279,8 +279,8 @@ extern u16 data_ov001_0222de70;
 extern u8 data_ov001_0222de6c;
 extern u8 data_ov001_0222a460[];
 
-s32 func_01ffc31c(s32, s32);
-s32 func_01ffc2c4(s32, s32);
+s32 FX_DivS32(s32, s32);
+s32 FX_ModS32(s32, s32);
 s32 func_ov001_02225238(void *, s32);
 s32 func_ov001_02212260(s32, s32);
 s32 func_ov001_022121cc(s32, s32);
@@ -442,17 +442,17 @@ void func_ov001_022128d0() {
     case 2:
         if (data_ov001_0222de74->unk_55 != 0) return;
         func_ov001_0220864c();
-        data_ov001_0222de70 = func_01ffc31c(data_ov001_0222de74->unk_40 * func_ov001_0221d608(), data_ov001_0222de74->unk_53);
+        data_ov001_0222de70 = FX_DivS32(data_ov001_0222de74->unk_40 * func_ov001_0221d608(), data_ov001_0222de74->unk_53);
         func_ov001_022123e4();
         data_ov001_0222de74->unk_55 = 4;
         break;
     case 3: {
         data_ov001_0222de74->unk_57 = 0;
         func_ov001_02208088();
-        data_ov001_0222de70 = func_01ffc31c(data_ov001_0222de74->unk_40 * func_ov001_0221d608(), data_ov001_0222de74->unk_53);
+        data_ov001_0222de70 = FX_DivS32(data_ov001_0222de74->unk_40 * func_ov001_0221d608(), data_ov001_0222de74->unk_53);
         func_ov001_0221e9a0(0x13);
         func_ov001_022123e4();
-        s32 r = func_01ffc2c4(data_ov001_0222de70, 0x1c);
+        s32 r = FX_ModS32(data_ov001_0222de70, 0x1c);
         if (r == 0) {
             func_ov001_02211ea0();
             return;
@@ -503,7 +503,7 @@ void func_ov001_02212780() {
             func_ov001_0221e9a0(6);
             func_ov001_02211ba8();
         } else {
-            s32 t = data_ov001_0222de6c + func_01ffc31c(data_ov001_0222de70, 0x1c);
+            s32 t = data_ov001_0222de6c + FX_DivS32(data_ov001_0222de70, 0x1c);
             if (data_ov001_0222de74->unk_00[t].unk_28 == 2) {
                 func_ov001_0221e9a0(9);
                 func_ov001_0221d5b8();
@@ -585,7 +585,7 @@ void func_ov001_0221249c() {
 }
 
 void func_ov001_022123e4() {
-    s32 base = func_01ffc31c(data_ov001_0222de70, 0x1c);
+    s32 base = FX_DivS32(data_ov001_0222de70, 0x1c);
     s32 n = data_ov001_0222de74->unk_51;
     func_ov001_02225238(data_ov001_0222de74->unk_0c, 0);
     if (n > 5) n = 5;
@@ -653,11 +653,11 @@ s32 func_ov001_0221d5e8(u32 a);
 s32 func_ov001_0221d5b8();
 s32 func_ov001_0220864c();
 void func_ov001_02208780(u32 a, u32 b, u32 c, u32 d);
-s32 func_01ffc2c4(s32, s32);
-s32 func_01ffc31c(s32, s32);
+s32 FX_ModS32(s32, s32);
+s32 FX_DivS32(s32, s32);
 s32 func_ov001_02226c24(void *a, u32 b);
 void func_ov001_02225290(void *a, u32 b, u32 c, u32 d, u32 e, void *f, u32 g);
-void *func_02115fb4(void *, s32, u32);
+void *MI_CpuFill8(void *, s32, u32);
 
 void func_ov001_022118f0();
 void func_ov001_022119c8();
@@ -696,12 +696,12 @@ void func_ov001_02212260(s32 a, s32 b) {
     s32 i;
     if (a >= data_ov001_0222de74->unk_51) return;
     if (n <= 0x10) r5 += 6;
-    func_02115fb4(buf, 0, 0x22);
+    MI_CpuFill8(buf, 0, 0x22);
     s32 cnt = n <= 0x10 ? n : 0x10;
     for (i = 0; i < cnt; i++) buf[i] = (data_ov001_0222de74->unk_00 + r4)[i];
     func_ov001_02225290(data_ov001_0222de74->unk_0c, 0xa, r5, 2, 0xa, buf, 1);
     if (n > 0x10) {
-        func_02115fb4(buf, 0, 0x22);
+        MI_CpuFill8(buf, 0, 0x22);
         cnt = n - 0x10;
         for (i = 0; i < cnt; i++) buf[i] = (data_ov001_0222de74->unk_00 + r4)[i + 0x10];
         func_ov001_02225290(data_ov001_0222de74->unk_0c, 0xa, r5 + 0xc, 2, 0xa, buf, 1);
@@ -721,7 +721,7 @@ void func_ov001_022121cc(s32 a, s32 b) {
 }
 
 void func_ov001_02212108() {
-    s32 n = func_01ffc2c4(data_ov001_0222de70, 0x1c);
+    s32 n = FX_ModS32(data_ov001_0222de70, 0x1c);
     s32 y = 0x36 - n;
     s32 cnt = data_ov001_0222de74->unk_51;
     s32 i;
@@ -741,7 +741,7 @@ void func_ov001_02212020(u32 a) {
     func_ov001_0220864c();
     if (data_ov001_0222de70 > 4) data_ov001_0222de70 = data_ov001_0222de70 - 4;
     else data_ov001_0222de70 = 0;
-    s32 n = func_01ffc2c4(data_ov001_0222de70, 0x1c);
+    s32 n = FX_ModS32(data_ov001_0222de70, 0x1c);
     if (n == 0x18) {
         func_ov001_022123e4();
         return;
@@ -752,7 +752,7 @@ void func_ov001_02212020(u32 a) {
     }
     func_ov001_02212108();
     if (n != 0) return;
-    func_ov001_0221d5e8(func_01ffc31c(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40));
+    func_ov001_0221d5e8(FX_DivS32(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40));
     func_ov001_0221d5d0();
     func_ov001_02211ea0();
     data_ov001_0222de74->unk_38 = 0;
@@ -763,14 +763,14 @@ void func_ov001_02211f78(u32 a) {
     func_ov001_0221d5b8();
     func_ov001_0220864c();
     data_ov001_0222de70 += 4;
-    s32 n = func_01ffc2c4(data_ov001_0222de70, 0x1c);
+    s32 n = FX_ModS32(data_ov001_0222de70, 0x1c);
     if (n >= 4) {
         func_ov001_02212108();
         return;
     }
     data_ov001_0222de70 = data_ov001_0222de70 - n;
     func_ov001_022123e4();
-    func_ov001_0221d5e8(func_01ffc31c(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40));
+    func_ov001_0221d5e8(FX_DivS32(data_ov001_0222de70 * data_ov001_0222de74->unk_53, data_ov001_0222de74->unk_40));
     func_ov001_0221d5d0();
     func_ov001_02211ea0();
     data_ov001_0222de74->unk_38 = 0;
@@ -779,7 +779,7 @@ void func_ov001_02211f78(u32 a) {
 
 void func_ov001_02211ef8() {
     if (data_ov001_0222de74->unk_56 == 0) return;
-    u32 v = func_01ffc2c4(data_ov001_0222de70, 0x1c) - 0x32;
+    u32 v = FX_ModS32(data_ov001_0222de70, 0x1c) - 0x32;
     v = (v << 16) & 0x1ff0000;
     *(volatile u32 *)0x4000010 = v;
     *(volatile u32 *)0x4000018 = v;

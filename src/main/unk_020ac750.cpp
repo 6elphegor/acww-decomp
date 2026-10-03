@@ -430,16 +430,16 @@ extern "C" {
 void func_02062f70(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
 }
 extern "C" {
-s32 func_0211c444();
+s32 PM_GetLCDPower();
 }
 extern "C" {
-s32 func_0211c460(s32 a);
+s32 PM_SetLCDPower(s32 a);
 }
 extern "C" {
 void func_0211c6c4(s32 a, s32 b);
 }
 extern "C" {
-void func_0211c5a0(void *a, void *b);
+void PM_GetBackLight(void *a, void *b);
 }
 extern "C" {
 void *func_0209750c();
@@ -820,7 +820,7 @@ extern u8 data_021ed2d4[], data_020cbb18[], data_021d735c[], data_021ee1f4[], da
     data_021ee20c[], data_021d7350[], data_021ed104[];
 }
 extern "C" {
-void func_02116048(void*, void*, int);
+void MI_CpuCopy8(void*, void*, int);
 }
 extern "C" {
 void func_020ad9c4(void*);
@@ -1192,7 +1192,7 @@ extern "C" void func_020ae778(Obj* self) {
     ((u32*)&d)[1] = 0;
     func_0209d498(&d);
     func_0209d2c0(&d, 2);
-    func_02116048(&d, &t, 8);
+    MI_CpuCopy8(&d, &t, 8);
     func_0209d164(&t, 1);
     if (func_020aeb38(self, &t) != 0) func_0209d2c0(&d, 1);
     func_020aeac4(self)->flag = 1;
@@ -1355,13 +1355,13 @@ extern "C" void func_020ae320(Obj* self, int a, int b, int c) {
 }
 extern "C" int func_020ae2d4(Obj* self, D* d) {
     D t;
-    func_02116048(d, &t, 8);
+    MI_CpuCopy8(d, &t, 8);
     if (self->date[2] != t.f || self->date[1] != t.e || self->date[0] != t.d || self->date[3] != 0) return TRUE;
     return FALSE;
 }
 extern "C" void func_020ae29c(Obj* self, D* d) {
     D t;
-    func_02116048(d, &t, 8);
+    MI_CpuCopy8(d, &t, 8);
     self->date[2] = t.f;
     self->date[1] = t.e;
     self->date[0] = t.d;
@@ -1406,7 +1406,7 @@ extern "C" {
 void __cxa_vec_ctor(void*, u32, u32, void (*)(void*), void (*)(void*));
 }
 extern "C" {
-void func_02116048(const void*, void*, u32);
+void MI_CpuCopy8(const void*, void*, u32);
 }
 extern "C" {
 u32 func_020af070(u32, u32, void*);
@@ -1611,7 +1611,7 @@ void func_020ae040(S *s, V8 *p) {
     u8 e4;
     u8 e3;
     s32 k, i, cnt1, cnt2, r, r5;
-    func_02116048(p, &A, 8);
+    MI_CpuCopy8(p, &A, 8);
     mode = _ZN12Unk_020dd3448vfunc_0cEj(data_021ee1f4, 2);
     if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 5)) {
         func_0209cf88(&B);
@@ -1623,13 +1623,13 @@ void func_020ae040(S *s, V8 *p) {
         }
     }
     if (!_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 5)) {
-        func_02116048(p, &C, 8);
+        MI_CpuCopy8(p, &C, 8);
         k = func_0209ceac(C.b5, C.b4, C.b3);
         if (k != 6 && k != 0) {
             r5 = 6 - k;
             if (r5 < 0) r5 = -r5;
-            func_02116048(&C, &D, 8);
-            func_02116048(&C, &E, 8);
+            MI_CpuCopy8(&C, &D, 8);
+            MI_CpuCopy8(&C, &E, 8);
             func_0209d2c0(&D, r5);
             func_0209d2c0(&E, r5 + 1);
             d4 = D.b4;
@@ -1638,9 +1638,9 @@ void func_020ae040(S *s, V8 *p) {
             e4 = E.b4;
             e3 = E.b3;
             e5 = E.b5;
-            func_02116048(&D, &H, 8);
+            MI_CpuCopy8(&D, &H, 8);
             n1 = func_0203f508(arr1, &H);
-            func_02116048(&E, &I, 8);
+            MI_CpuCopy8(&E, &I, 8);
             n2 = func_0203f508(arr2, &I);
             cnt1 = 0;
             cnt2 = 0;
@@ -1678,7 +1678,7 @@ void func_020ae040(S *s, V8 *p) {
         if (func_0209d3d0(&F, &A, 0x38) == -1) {
             _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 5);
         } else {
-            func_02116048(&F, &G, 8);
+            MI_CpuCopy8(&F, &G, 8);
             func_0209d164(&G, 4);
             if (func_0209d3d0(&G, &A, 0x38) == -1) {
                 if (func_0209d3d0(&A, &F, 0x38) == -1) {
@@ -1864,13 +1864,13 @@ extern "C" void func_020ad970(S1 *s, u32 a, u32 b, u32 c) {
 }
 extern "C" u32 func_020ad930(S1 *s, void *p) {
     V8 buf;
-    func_02116048(p, &buf, 8);
+    MI_CpuCopy8(p, &buf, 8);
     if (s->e != buf.b5 || s->d != buf.b4 || s->c != buf.b3 || s->f != 0) return 1;
     return 0;
 }
 extern "C" void func_020ad904(S1 *s, void *p) {
     V8 buf;
-    func_02116048(p, &buf, 8);
+    MI_CpuCopy8(p, &buf, 8);
     s->e = buf.b5;
     s->d = buf.b4;
     s->c = buf.b3;
@@ -2601,7 +2601,7 @@ extern "C" {
 void func_01ff8ccc(void);
 }
 extern "C" {
-void func_02110be8(void *p);
+void G3_LoadMtx43(void *p);
 }
 extern "C" {
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
@@ -2634,10 +2634,10 @@ extern "C" {
 void func_020e84f8(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void func_01ffb94c(void *a, void *b, void *c);
+void MTX_Concat43(void *a, void *b, void *c);
 }
 extern "C" {
-void func_01ffc714(void *a, void *b);
+void VEC_Normalize(void *a, void *b);
 }
 extern "C" {
 s32 func_02030814(s32 a);
@@ -2745,7 +2745,7 @@ extern "C" {
 void *func_020641d8(void *p);
 }
 extern "C" {
-u8 *func_0210629c(void *p);
+u8 *NNS_G3dGetTex(void *p);
 }
 extern "C" {
 void func_02055724(void *p, s32 a);

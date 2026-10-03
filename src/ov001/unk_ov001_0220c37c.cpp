@@ -39,9 +39,9 @@ extern void *func_ov001_02225dd8(s32, s32);
 extern void *func_ov001_02225db0(s32, s32);
 extern void func_ov001_02225d58(void *);
 extern void func_ov001_0221e024(void *);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02116048(const void *, void *);
-extern void func_02115640(void *);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MI_CpuCopy8(const void *, void *);
+extern void OS_GetMacAddress(void *);
 
 void func_ov001_0220c474() {
     volatile u16 z;
@@ -49,10 +49,10 @@ void func_ov001_0220c474() {
     data_ov001_0222dde8 = (Unk_ov001_0220c398_Obj *)func_ov001_02225db0(0x26c, 4);
     data_ov001_0222dde4 = 0;
     z = 0;
-    func_02115e30(z, &r, 0x104);
+    MIi_CpuClear16(z, &r, 0x104);
     *(u8 *)&r = 0x50;
     r.unk_00[1] = 0xc;
-    func_02116048(data_ov001_02229f84, &r.unk_00[2]);
+    MI_CpuCopy8(data_ov001_02229f84, &r.unk_00[2]);
     data_ov001_0222dde8->unk_000 = 3;
     data_ov001_0222dde8->unk_002 = r;
     data_ov001_0222dde8->unk_106 = 1;
@@ -60,7 +60,7 @@ void func_ov001_0220c474() {
     data_ov001_0222dde8->unk_10a = 1;
     data_ov001_0222dde8->unk_10c = -1;
     data_ov001_0222dde8->unk_10e = -1;
-    func_02115640(data_ov001_0222dde8->unk_110);
+    OS_GetMacAddress(data_ov001_0222dde8->unk_110);
     if (func_ov001_022030fc((void *)func_ov001_0220c388, (void *)func_ov001_0220c37c) != 0) {
         func_0206d49c();
     }

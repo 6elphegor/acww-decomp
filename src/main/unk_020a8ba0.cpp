@@ -166,31 +166,31 @@ void func_020e85fc(void *heap, void *ptr);
 }
 
 extern "C" {
-void func_02100260(void *list, void *obj);
+void NNS_FndRemoveListObject(void *list, void *obj);
 }
 
 extern "C" {
-void func_021003b0(void *list, void *obj);
+void NNS_FndAppendListObject(void *list, void *obj);
 }
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void func_021199e0(void *file);
+void FS_CloseFile(void *file);
 }
 
 extern "C" {
-void func_02119d78(void *file);
+void FS_InitFile(void *file);
 }
 
 extern "C" {
-BOOL func_02119a28(void *file, const char *path);
+BOOL FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {

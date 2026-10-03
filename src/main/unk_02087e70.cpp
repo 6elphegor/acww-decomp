@@ -57,11 +57,11 @@ s32 func_02087e50(u32 *p);
 s32 func_0203eeac(Vec3 *out, void *in);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 s64 func_01ffd028(void *v, void *p);
-void func_02115e78(void *a, void *b, u32 c);
-void func_02115ef4(void *a, void *b, u32 c);
-void func_021145cc(void *a, u32 b);
-void func_02111d34(void *a, u32 b, u32 c);
-void func_02111ccc(void *a, u32 b, u32 c);
+void MIi_CpuCopy32(void *a, void *b, u32 c);
+void MIi_CpuCopyFast(void *a, void *b, u32 c);
+void DC_FlushRange(void *a, u32 b);
+void GX_LoadOAM(void *a, u32 b, u32 c);
+void GXS_LoadOAM(void *a, u32 b, u32 c);
 Unk_020b6960 *func_020b50b4();
 }
 
@@ -152,21 +152,21 @@ extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
 }
 
 extern "C" void func_020889f4() {
-    func_02111d34(data_021cde38, 0, 0x400);
-    func_02111ccc(data_021ce238, 0, 0x400);
+    GX_LoadOAM(data_021cde38, 0, 0x400);
+    GXS_LoadOAM(data_021ce238, 0, 0x400);
 }
 
 extern "C" void func_020889cc() {
-    func_021145cc(data_021cde38, 0x400);
-    func_021145cc(data_021ce238, 0x400);
+    DC_FlushRange(data_021cde38, 0x400);
+    DC_FlushRange(data_021ce238, 0x400);
 }
 
 extern "C" void func_02088960() {
     data_021cde38[0].a01 = 0xc0;
     data_021cde38[0].a2 = 0;
-    func_02115e78(data_021cde38, &data_021cde38[1], 0x18);
-    func_02115ef4(data_021cde38, &data_021cde38[4], 0x3e0);
-    func_02115ef4(data_021cde38, data_021ce238, 0x400);
+    MIi_CpuCopy32(data_021cde38, &data_021cde38[1], 0x18);
+    MIi_CpuCopyFast(data_021cde38, &data_021cde38[4], 0x3e0);
+    MIi_CpuCopyFast(data_021cde38, data_021ce238, 0x400);
     data_021cde2c = 0;
     data_021cde28 = 0;
     data_021cde34 = 0;

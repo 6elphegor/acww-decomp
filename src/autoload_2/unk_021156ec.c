@@ -10,17 +10,17 @@ extern u32 data_021fcf54;      // bit mask table state
 extern u16 data_021fcf58[9];   // owner table
 extern volatile u64 data_021fcf24; // OSi_TickCounter
 
-u32 func_01ffa2ec(void);       // OS_DisableInterrupts_IrqAndFiq
-void func_01ffa3d4(u32 state); // OS_RestoreInterrupts_IrqAndFiq
+u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq
+void OS_RestoreInterrupts(u32 state); // OS_RestoreInterrupts_IrqAndFiq
 u32 func_0211565c(u32 x);      // MATH_CountLeadingZeros (asm)
 u16 func_02114da0(void);       // OS_GetTickLo
 
 typedef int BOOL;
 // OSi_TryLockVram (os_vramExclusive.c)
-BOOL func_021156ec(u16 bank, u16 lockId) {
+BOOL OSi_TryLockVram(u16 bank, u16 lockId) {
     u32 workMap;
     s32 zeroBits;
-    u32 enabled = func_01ffa2ec();
+    u32 enabled = OS_DisableInterrupts();
 
     workMap = (u32)(bank & data_021fcf54);
     while (1) {
@@ -30,7 +30,7 @@ BOOL func_021156ec(u16 bank, u16 lockId) {
         }
         workMap &= ~(0x00000001 << zeroBits);
         if (data_021fcf58[zeroBits] != lockId) {
-            (void)func_01ffa3d4(enabled);
+            (void)OS_RestoreInterrupts(enabled);
             return 0;
         }
     }
@@ -46,6 +46,6 @@ BOOL func_021156ec(u16 bank, u16 lockId) {
         data_021fcf54 |= (0x00000001 << zeroBits);
     }
 
-    (void)func_01ffa3d4(enabled);
+    (void)OS_RestoreInterrupts(enabled);
     return 1;
 }

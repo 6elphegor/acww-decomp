@@ -8,7 +8,7 @@
 extern "C" {
 void func_0211172c();
 s32 func_02111a6c(void *, s32, u32);
-void func_02111ec8();
+void GX_LoadBGPltt();
 s32 func_ov001_02208244();
 s32 func_ov001_02208594(void *, void *);
 s32 func_ov001_022088f8();
@@ -42,7 +42,7 @@ extern "C" void func_ov001_022182d4() {
 
 extern "C" void func_ov001_02218224() {
     func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)func_02111ec8);
+    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
     func_ov001_02208594((void *)"char/xb4None.nsc.l", (void *)func_02111a6c);
     BGCNT(0x4001008, 3);
     BGCNT(0x400100a, 3);

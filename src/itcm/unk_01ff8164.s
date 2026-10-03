@@ -12,10 +12,10 @@
 	.arm
 
 ; OS_LoadContext(context): does not return
-	.global func_01ff8164
-	.type func_01ff8164, @function
-	.size func_01ff8164, 0x44
-func_01ff8164:
+	.global OS_LoadContext
+	.type OS_LoadContext, @function
+	.size OS_LoadContext, 0x44
+OS_LoadContext:
 	stmfd sp!, {r0, lr}
 	add r0, r0, #0x48
 	ldr r1, L_01ff81a4

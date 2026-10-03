@@ -45,19 +45,19 @@ struct Unk_ov001_0221d744_List {
 };
 
 extern "C" {
-s32 func_02114594(void *, s32);
-s32 func_02128930(const void *, const void *, s32);
-s32 func_02116048(void *, void *, s32);
-s32 func_0211f488(void *, void *);
+s32 DC_InvalidateRange(void *, s32);
+s32 memcmp(const void *, const void *, s32);
+s32 MI_CpuCopy8(void *, void *, s32);
+s32 WM_GetOtherElements(void *, void *);
 s32 func_0206d49c(void *);
 s32 func_0211faa0(void *);
-s32 func_021202b4(void *);
-s32 func_0212026c(void *);
+s32 WM_Reset(void *);
+s32 WM_End(void *);
 s32 func_0211fdd4(void *, void *);
-s32 func_02115e30(s32, void *, s32);
-s32 func_021202f4(void *, void *, s32);
-s32 func_0211f5f4();
-u32 func_0211f800();
+s32 MIi_CpuClear16(s32, void *, s32);
+s32 WM_Initialize(void *, void *, s32);
+s32 WM_GetDispersionScanPeriod();
+u32 WM_GetAllowedChannel();
 void func_ov001_02225d58(void *);
 void *func_ov001_02225db0(s32, s32);
 
@@ -84,14 +84,14 @@ void func_ov001_0221dca4() {
 void func_ov001_0221dc60() {
     if (data_ov001_0222deec == 0) return;
     do {
-    } while (func_0211f800() != 0x8000);
+    } while (WM_GetAllowedChannel() != 0x8000);
     func_ov001_02225d58(&data_ov001_0222deec);
 }
 
 BOOL func_ov001_0221db6c() {
     volatile u16 z = 0;
-    func_02115e30(z, data_ov001_0222deec + 0x1300, 0x348);
-    if (func_021202f4(data_ov001_0222deec, (void *)func_ov001_0221d970, 3) != 2) return FALSE;
+    MIi_CpuClear16(z, data_ov001_0222deec + 0x1300, 0x348);
+    if (WM_Initialize(data_ov001_0222deec, (void *)func_ov001_0221d970, 3) != 2) return FALSE;
     u8 *g;
     do {
         func_0211faa0(data_ov001_0222deec + 0x168c);
@@ -99,7 +99,7 @@ BOOL func_ov001_0221db6c() {
     } while (*(u16 *)(g + 0x168c) != 2);
     *(Unk_ov001_0221db6c_Blob *)(g + 0x1648) = *(const Unk_ov001_0221db6c_Blob *)data_ov001_0222a2b8;
     *(u32 *)(g + 0x1648) = (u32)(g + 0xf00);
-    *(u16 *)(data_ov001_0222deec + 0x1650) = func_0211f5f4();
+    *(u16 *)(data_ov001_0222deec + 0x1650) = WM_GetDispersionScanPeriod();
     if (func_ov001_0221db28() != 0) return TRUE;
     return FALSE;
 }
@@ -113,12 +113,12 @@ BOOL func_ov001_0221da70() {
     data_ov001_0222deec[0x1e48] = 1;
     func_0211faa0(data_ov001_0222deec + 0x168c);
     if (*(u16 *)(data_ov001_0222deec + 0x168c) != 2) {
-        if (func_021202b4((void *)func_ov001_0221d970) != 2) return FALSE;
+        if (WM_Reset((void *)func_ov001_0221d970) != 2) return FALSE;
         do {
             func_0211faa0(data_ov001_0222deec + 0x168c);
         } while (*(u16 *)(data_ov001_0222deec + 0x168c) != 2);
     }
-    if (func_0212026c((void *)func_ov001_0221d970) != 2) return FALSE;
+    if (WM_End((void *)func_ov001_0221d970) != 2) return FALSE;
     return TRUE;
 }
 
@@ -128,7 +128,7 @@ s32 func_ov001_0221da0c(Unk_ov001_0221d744_Ent **out) {
     *out = (Unk_ov001_0221d744_Ent *)(data_ov001_0222deec + 0x1300);
     Unk_ov001_0221d744_Ent *e = *out;
     for (; i < 20; i++, e++) {
-        if (func_02128930(e->unk_20, data_ov001_0222a2b0, 6) != 0) cnt++;
+        if (memcmp(e->unk_20, data_ov001_0222a2b0, 6) != 0) cnt++;
     }
     return cnt;
 }
@@ -156,14 +156,14 @@ void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
     Unk_ov001_0221d744_Buf buf;
     s32 i;
     tbl = (Unk_ov001_0221d744_Ent *)(data_ov001_0222deec + 0x1300);
-    func_02114594(data_ov001_0222deec + 0xf00, 0x400);
+    DC_InvalidateRange(data_ov001_0222deec + 0xf00, 0x400);
     for (i = 0; i < p->unk_0e; i++) {
         Unk_ov001_0221d744_Node *n = p->unk_10[i];
         if (n->unk_0c != 0 && n->unk_3c == 0) {
             s32 j = 0;
             Unk_ov001_0221d744_Ent *e = tbl;
             do {
-                if (func_02128930(n->unk_04, e->unk_20, 6) == 0) break;
+                if (memcmp(n->unk_04, e->unk_20, 6) == 0) break;
                 e++;
                 j++;
             } while (j < 20);
@@ -171,21 +171,21 @@ void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
                 j = 0;
                 e = tbl;
                 do {
-                    if (func_02128930(e->unk_20, data_ov001_0222a2b0, 6) == 0) break;
+                    if (memcmp(e->unk_20, data_ov001_0222a2b0, 6) == 0) break;
                     e++;
                     j++;
                 } while (j < 20);
                 if (j == 20) return;
             }
             e = tbl + j;
-            func_02116048(n->unk_04, e->unk_20, 6);
-            func_02116048(&n->unk_0c, e, 0x20);
+            MI_CpuCopy8(n->unk_04, e->unk_20, 6);
+            MI_CpuCopy8(&n->unk_0c, e, 0x20);
             e->unk_26 = p->unk_50[i];
             if ((n->unk_2c & 0x10) == 0) {
                 e->unk_28 = 0;
             } else {
                 e->unk_28 = 1;
-                func_0211f488(&buf, n);
+                WM_GetOtherElements(&buf, n);
                 s32 k;
                 s32 cnt = buf.cnt;
                 for (k = 0; k < cnt; k++) {
@@ -193,7 +193,7 @@ void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
                         e->unk_28 = 2;
                         break;
                     }
-                    if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && func_02128930(buf.v[k].data, data_ov001_0222a2ac, 4) == 0) {
+                    if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && memcmp(buf.v[k].data, data_ov001_0222a2ac, 4) == 0) {
                         e->unk_28 = 2;
                         break;
                     }

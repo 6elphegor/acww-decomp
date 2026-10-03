@@ -187,17 +187,17 @@ extern Obj *data_ov065_0228e9b0;
 extern Unk_ov065_0225f634_Params data_ov065_0228b3dc;
 
 // main module
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32 v);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32 v);
 void func_02113a70(void *, void *, void *, void *, u32, u32);
-void func_0211366c(void *);
-void func_021136a0(void *q);
-s32 func_021142dc(void *, void *, s32);
-void func_02114410(void *m);
-void func_02114480(void *m);
-void func_0211450c(void *);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(const void *src, void *dst, u32 n);
+void OS_WakeupThreadDirect(void *);
+void OS_WakeupThread(void *q);
+s32 OS_InitMessageQueue(void *, void *, s32);
+void OS_UnlockMutex(void *m);
+void OS_LockMutex(void *m);
+void OS_InitMutex(void *);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 // other TUs of the overlay
 void func_ov065_0225f378(void *);
@@ -283,7 +283,7 @@ Unk_ov065_0225fd18_Counters data_ov065_0228ea08;
 s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
 {
     Ctx *c = s->ctx;
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
 
     if (c->cap >= c->used + len) {
         Node *n = data_ov065_0228e9a0->alloc(len + 12);
@@ -293,7 +293,7 @@ s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
             n->len = len;
             n->unk_06 = s->unk_18;
             n->unk_08 = s->unk_1c;
-            func_02116048(data, n->data, len);
+            MI_CpuCopy8(data, n->data, len);
             if (s->unk_74 == 0) {
                 s->unk_74 = s->unk_0a;
             }
@@ -312,8 +312,8 @@ s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
     } else {
         data_ov065_0228ea08.unk_04++;
     }
-    func_021136a0(c->queue);
-    func_01ffa3d4(irq);
+    OS_WakeupThread(c->queue);
+    OS_RestoreInterrupts(irq);
     return 1;
 }
 
@@ -391,13 +391,13 @@ s32 func_ov065_0225faf4(Job *j)
     s32 err = 0;
     c = s->ctx;
 
-    func_02114480(c->mutex);
+    OS_LockMutex(c->mutex);
     func_ov065_022629d0(j->unk_10, j->unk_12, j->unk_14);
     c->pos = err;
     if (j->unk_0c == 0 || j->unk_0c == 4) {
         err = func_ov065_02262874();
     }
-    func_02114410(c->mutex);
+    OS_UnlockMutex(c->mutex);
     if (err) {
         s->flags |= 0x40;
         return -0x4c;
@@ -496,7 +496,7 @@ s32 func_ov065_0225f880(Msg *m)
     u16 a;
     s32 b;
     s32 r;
-    func_02114480(s->unk_e0);
+    OS_LockMutex(s->unk_e0);
     func_ov065_022629d0(m->unk_10, 0, 0);
     func_ov065_02262924();
     s->unk_f8 = 0;
@@ -504,7 +504,7 @@ s32 func_ov065_0225f880(Msg *m)
     *(u16 *)m->unk_14 = a;
     *(s32 *)m->unk_18 = r;
     o->unk_70 = o->unk_70 | 4;
-    func_02114410(s->unk_e0);
+    OS_UnlockMutex(s->unk_e0);
     return 0;
 }
 
@@ -548,14 +548,14 @@ s32 func_ov065_0225f7ec(Msg *m)
 Obj *func_ov065_0225f7a0(Unk_ov065_0225f634_Params *p)
 {
     u32 size = func_ov065_0225f738(p);
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     Obj *o = (Obj *)data_ov065_0228e9a0->alloc(size);
     if (o != NULL) {
-        func_02115fb4(o, 0, size);
+        MI_CpuFill8(o, 0, size);
         func_ov065_0225f634(o, p);
         func_ov065_02260f94(o);
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return o;
 }
 
@@ -631,10 +631,10 @@ u8 *func_ov065_0225f618(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
 u32 func_ov065_0225f5c8(void *a, void *b, Unk_ov065_0225f5c8_T *c)
 {
     u32 r = (u32)a + func_ov065_0225f718(c);
-    func_021142dc(b, a, c->unk_03);
-    func_0211450c((u8 *)b + 0xe0);
+    OS_InitMessageQueue(b, a, c->unk_03);
+    OS_InitMutex((u8 *)b + 0xe0);
     func_02113a70((u8 *)b + 0x20, (void *)func_ov065_0225f378, b, (void *)r, c->unk_00, c->unk_02);
-    func_0211366c((u8 *)b + 0x20);
+    OS_WakeupThreadDirect((u8 *)b + 0x20);
     return r;
 }
 }

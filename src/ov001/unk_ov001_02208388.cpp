@@ -6,7 +6,7 @@ typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
 extern "C" {
 extern void *data_ov001_0222de1c;
 
-extern void func_021145cc(void *, u32);
+extern void DC_FlushRange(void *, u32);
 extern void *func_0212a2ec(void *, void *, u32);
 
 extern void *func_ov001_0222558c(s32, s32);
@@ -52,7 +52,7 @@ extern "C" u8 *func_ov001_022085e0(u8 *p) {
 extern "C" s32 func_ov001_02208594(void *a, Unk_ov001_02208594_Fn fn) {
     u32 sz;
     void *h = func_ov001_02224074(func_ov001_022085e0((u8 *)a), &sz, 4);
-    func_021145cc(h, sz);
+    DC_FlushRange(h, sz);
     fn(h, 0, sz);
     func_ov001_02224038(h);
 }

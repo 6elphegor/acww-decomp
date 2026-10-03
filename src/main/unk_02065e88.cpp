@@ -1549,12 +1549,12 @@ extern "C" { void *func_0209750c(); }
 extern "C" { void *_ZN12Unk_0209865c13func_0209888cEv(void *); }
 extern "C" { s32 _ZN12Unk_020940a013func_0209411cEv(void *); }
 typedef void (Unk_020ddc64::*Unk_020ddc64_Fn)();
-extern "C" void func_02115fb4(void *dst, u32 value, u32 size);
+extern "C" void MI_CpuFill8(void *dst, u32 value, u32 size);
 
 }
 void Unk_0206c74c::func_0206c700() {
     using namespace n17;
-    func_02115fb4(unk_a4, 0, 0x800);
+    MI_CpuFill8(unk_a4, 0, 0x800);
 }
 u8 *Unk_0206c74c::func_0206c6fc() {
     using namespace n17;
@@ -1717,7 +1717,7 @@ void Unk_020ddc64::func_0206be04() {
 #define Unk_020a71d0 Unk_020a71d0_v16
 #define Unk_0206b7dc_Arg Unk_0206c45c_Arg
 namespace n16 {
-extern "C" { void func_02115fb4(void *, s32, u32); }
+extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { u8 *func_0205021c(void); }
 extern "C" { u8 *func_02050224(void); }
 extern "C" { u8 *func_0205022c(void); }
@@ -1950,7 +1950,7 @@ void Unk_0206b754::func_0206b6d0(u32 v) {
     using namespace n16;
     s32 i;
     unk_400 = 0;
-    func_02115fb4(this, 0, 0x400);
+    MI_CpuFill8(this, 0, 0x400);
     for (i = 0; (u32)i < 3; i++) {
         unk_404[i] = 0;
         unk_438[i] = 0;
@@ -3342,9 +3342,9 @@ namespace n10 {
 extern "C" { extern u8 data_020cba24[]; }
 extern "C" { extern u8 data_021d7350[]; }
 extern "C" { void *func_020e8594(u32 size); }
-extern "C" { BOOL func_02119a28(void *self, const void *path); }
+extern "C" { BOOL FS_OpenFile(void *self, const void *path); }
 extern "C" { s32 func_021198b4(void *self, void *dst, u32 size); }
-extern "C" { BOOL func_021199e0(void *self); }
+extern "C" { BOOL FS_CloseFile(void *self); }
 extern "C" { void _ZN12Unk_020e0d44C1Eh(void *p, s32 v); }
 extern "C" { void _ZN12Unk_020e0d4413func_02089328Ev(void *p); }
 extern "C" { void _ZN12Unk_020e0d44D1Ev(void *p); }
@@ -3688,7 +3688,7 @@ void Unk_02068808::func_020687b8() {
 }
 BOOL Unk_02068808::func_02068748(void *file, BOOL alt) {
     using namespace n10;
-    BOOL a = func_02119a28(file, alt ? data_020dddec : data_020dde08);
+    BOOL a = FS_OpenFile(file, alt ? data_020dddec : data_020dde08);
     BOOL ok;
     unk_00 = (u16 *)func_020e8594(0x800);
     if (unk_00 != NULL) {
@@ -3698,13 +3698,13 @@ BOOL Unk_02068808::func_02068748(void *file, BOOL alt) {
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
+    BOOL r = FS_CloseFile(file);
     if (a && ok && r && unk_00) return TRUE;
     return FALSE;
 }
 BOOL Unk_02068808::func_020686e4(void *file) {
     using namespace n10;
-    BOOL a = func_02119a28(file, data_020dddd4);
+    BOOL a = FS_OpenFile(file, data_020dddd4);
     BOOL ok;
     unk_04 = func_020e8594(0x180);
     if (unk_04 != NULL) {
@@ -3714,13 +3714,13 @@ BOOL Unk_02068808::func_020686e4(void *file) {
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
+    BOOL r = FS_CloseFile(file);
     if (a && ok && r && unk_04) return TRUE;
     return FALSE;
 }
 BOOL Unk_02068808::func_02068680(void *file) {
     using namespace n10;
-    BOOL a = func_02119a28(file, data_020dddbc);
+    BOOL a = FS_OpenFile(file, data_020dddbc);
     BOOL ok;
     unk_08 = func_020e8594(0x2800);
     if (unk_08 != NULL) {
@@ -3730,7 +3730,7 @@ BOOL Unk_02068808::func_02068680(void *file) {
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
+    BOOL r = FS_CloseFile(file);
     if (a && ok && r && unk_08) return TRUE;
     return FALSE;
 }
@@ -3780,7 +3780,7 @@ void Unk_02068808::func_020685c4(s32 idx) {
 
 // ======== unk_02068558.cpp ========
 namespace n9 {
-extern "C" void func_02119d78(void *p);
+extern "C" void FS_InitFile(void *p);
 
 }
 BOOL Unk_02068808::func_02068558(s32 a, u32 b, s32 c, u8 d) {
@@ -3788,7 +3788,7 @@ BOOL Unk_02068808::func_02068558(s32 a, u32 b, s32 c, u8 d) {
     BOOL result = FALSE;
     BOOL alt = (b == 0 && a == 0) ? TRUE : FALSE;
     Unk_02068558_File file;
-    func_02119d78(&file);
+    FS_InitFile(&file);
     if (func_02068748(&file, alt)) {
         if (func_020686e4(&file)) {
             if (func_02068680(&file)) {
@@ -3839,11 +3839,11 @@ extern "C" { void func_020014f4(s32); }
 extern "C" { void func_02001564(s32); }
 extern "C" { void func_02001750(s32); }
 extern "C" { void func_020016cc(s32); }
-extern "C" { void func_021145cc(void *, u32); }
-extern "C" { void func_02111ec8(void *, s32, u32); }
+extern "C" { void DC_FlushRange(void *, u32); }
+extern "C" { void GX_LoadBGPltt(void *, s32, u32); }
 extern "C" { void func_0211172c(void *, s32, u32); }
 extern "C" { void func_02111a6c(void *, s32, u32); }
-extern "C" { void func_02115fb4(void *, s32, u32); }
+extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { void func_020e8558(void *); }
 
 extern "C" void func_02068524(Unk_02068490_Ptrs *p)
@@ -3864,11 +3864,11 @@ extern "C" void func_020684e4()
 extern "C" void func_02068490(Unk_02068490_Ptrs *p)
 {
     u16 *q = p->b;
-    func_021145cc(q + 1, 0x17e);
-    func_02111ec8(q + 1, 2, 0x17e);
-    func_021145cc(p->c, 0x2800);
+    DC_FlushRange(q + 1, 0x17e);
+    GX_LoadBGPltt(q + 1, 2, 0x17e);
+    DC_FlushRange(p->c, 0x2800);
     func_0211172c(p->c, 0, 0x2800);
-    func_021145cc(p->a, 0x800);
+    DC_FlushRange(p->a, 0x800);
     func_02111a6c(p->a, 0, 0x800);
 }
 extern "C" void func_02068478()
@@ -4152,7 +4152,7 @@ Unk_02067c70::Unk_02067c70()
       unk_1a12(0), unk_1a13(0), unk_1a14(0), unk_1a15(0), unk_1a16(0), unk_1a17(0), unk_1a18(0), unk_1a19(0), unk_1a1a(0)
 {
     using namespace n8;
-    func_02115fb4(unk_19f8, 0, 0x1a);
+    MI_CpuFill8(unk_19f8, 0, 0x1a);
 }
 
 // ======== unk_020671ec.cpp ========
@@ -4171,7 +4171,7 @@ extern "C" { s32 func_0209ccd0(); }
 extern "C" { s32 func_020e759c(void *p, s32 a, s32 b); }
 extern "C" { s32 func_01ffcb0c(s32 a, s32 b); }
 extern "C" { s32 _ZN12Unk_020682b813func_02068424Eii(void *p, s32 a, s32 b); }
-extern "C" { s32 func_021108e8(); }
+extern "C" { s32 G2_GetBG2ScrPtr(); }
 extern "C" { s32 _ZN12Unk_020668a013func_02066bf4Ev(void *p); }
 extern "C" { s32 _ZN12Unk_020668a013func_02066c14Ev(void *p); }
 extern "C" { s32 func_020b3270(void *p, s32 a, s32 b, s32 c, s32 d, s32 e); }
@@ -4196,7 +4196,7 @@ extern "C" { s32 _ZN12Unk_020a8cf813func_020a8d3cEv(void *p); }
 extern "C" { s32 _ZN12Unk_020e2a7813func_020a7bd8EPS_(void *p, void *q); }
 extern "C" { s32 func_020b35f8(void *p, s32 a, s32 b); }
 extern "C" { s32 func_0212a2ec(void *d, void *s, s32 n); }
-extern "C" { s32 func_02115fb4(void *d, s32 v, s32 n); }
+extern "C" { s32 MI_CpuFill8(void *d, s32 v, s32 n); }
 extern "C" { s32 func_020a706c(s32 a, s32 b, s32 c, s32 d); }
 extern "C" { s32 func_020a6e8c(); }
 extern "C" { s32 func_020a6f7c(); }
@@ -4284,7 +4284,7 @@ void Unk_020660f8::func_02067a84(u8 *src, void *s) {
     if (s) {
         func_0212a2ec(unk_19f8, s, 0x19);
     } else {
-        func_02115fb4(unk_19f8, 0, 0x1a);
+        MI_CpuFill8(unk_19f8, 0, 0x1a);
     }
 }
 void Unk_020660f8::func_02067a78() {
@@ -4487,7 +4487,7 @@ void Unk_020660f8::func_020674b8() {
         flag = FALSE;
     }
     mode = unk_13b0->func_02065f04();
-    base = (u16 *)func_021108e8();
+    base = (u16 *)G2_GetBG2ScrPtr();
     y = 13;
     c0 = data_020cbadc;
     c1 = data_020cbae0;
@@ -4667,7 +4667,7 @@ extern "C" { extern char data_021ca258[]; }
 extern "C" { extern s8 data_020cba2c[]; }
 extern "C" { extern u16 data_020cba10[]; }
 extern "C" { extern u8 data_021d7350[]; }
-extern "C" { s32 func_0212a15c(const char *a, const char *b, u32 n); }
+extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
 extern "C" { u32 func_0212a438(const char *s); }
 extern "C" { char *func_020639e8(char *buf, const char *fmt, ...); }
 extern "C" { void func_020638d0(void *dst, void *src); }
@@ -5051,7 +5051,7 @@ const char *Unk_020668a0::func_0206693c(const char *s) {
     const char *e;
     for (p = data_020cba50; (e = *p) != 0; p++) {
         u32 n = func_0212a438(e);
-        if (func_0212a15c(s, e, n) == 0 && s[n] == '_') {
+        if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }
     }
@@ -5063,7 +5063,7 @@ const char *Unk_020668a0::func_02066900(const char *s) {
     const char *e;
     for (p = data_020cba74; (e = *p) != 0; p++) {
         u32 n = func_0212a438(e);
-        if (func_0212a15c(s, e, n) == 0 && s[n] == '_') {
+        if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }
     }

@@ -166,31 +166,31 @@ void func_020e85fc(void *heap, void *ptr);
 }
 
 extern "C" {
-void func_02100260(void *list, void *obj);
+void NNS_FndRemoveListObject(void *list, void *obj);
 }
 
 extern "C" {
-void func_021003b0(void *list, void *obj);
+void NNS_FndAppendListObject(void *list, void *obj);
 }
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void func_021199e0(void *file);
+void FS_CloseFile(void *file);
 }
 
 extern "C" {
-void func_02119d78(void *file);
+void FS_InitFile(void *file);
 }
 
 extern "C" {
-BOOL func_02119a28(void *file, const char *path);
+BOOL FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
@@ -920,8 +920,8 @@ Unk_020e2a18::Unk_020e2a18(u8 arg1) {
     unk_8d = data_021edb68.v;
     unk_9c = 0;
     unk_a0 = 0;
-    func_02119d78(unk_44);
-    func_02115fb4(&unk_05, 0, 0x3f);
+    FS_InitFile(unk_44);
+    MI_CpuFill8(&unk_05, 0, 0x3f);
 }
 
 Unk_020e2a18::~Unk_020e2a18() {
@@ -930,13 +930,13 @@ Unk_020e2a18::~Unk_020e2a18() {
 
 u8 Unk_020e2a18::func_020a8a20(const char *path) {
     func_0212a2ec((char *)unk_05, path, 0x3e);
-    unk_8c = func_02119a28(unk_44, path) ? 1 : 0;
+    unk_8c = FS_OpenFile(unk_44, path) ? 1 : 0;
     return unk_8c;
 }
 
 void Unk_020e2a18::func_020a89f0() {
     if (unk_8c != 0) {
-        func_021199e0(unk_44);
+        FS_CloseFile(unk_44);
         unk_8c = 0;
         unk_8d = data_021edb68.v;
     }
@@ -978,12 +978,12 @@ BOOL Unk_020e2a18::func_020a8950(u8 *arg1) {
 void Unk_020e2a18::func_020a88fc() {
     Unk_020a88fc_Pad pad;
     unk_8d = 0;
-    func_02115fb4(unk_90, 0, 12);
+    MI_CpuFill8(unk_90, 0, 12);
     unk_9c = 0;
     unk_a0 = 0;
-    func_02115fb4(&data_021edbe0, 0, 0x20);
-    func_02115fb4(&data_021edbcc, 0, 0x14);
-    func_02115fb4(&data_021edba8, 0, 0xc);
+    MI_CpuFill8(&data_021edbe0, 0, 0x20);
+    MI_CpuFill8(&data_021edbcc, 0, 0x14);
+    MI_CpuFill8(&data_021edba8, 0, 0xc);
 }
 
 BOOL Unk_020e2a18::func_020a8844() {
@@ -1075,7 +1075,7 @@ BOOL Unk_020e2a18::func_020a85a4() {
     } else {
         unk_a0 = buf[1].unk_00 - unk_9c;
     }
-    func_02116048(buf, unk_90, 12);
+    MI_CpuCopy8(buf, unk_90, 12);
     return TRUE;
 }
 
@@ -1354,7 +1354,7 @@ extern "C" Unk_020e2a90 *func_020a8054(u32 a, s32 b, s32 c) {
         ok = TRUE;
     }
     if (ok) {
-        func_021003b0(data_021c48c4, obj);
+        NNS_FndAppendListObject(data_021c48c4, obj);
     }
     return obj;
 }
@@ -1368,14 +1368,14 @@ extern "C" Unk_020e2a90 *func_020a8008(s32 a, s32 b, s32 c) {
         ok = TRUE;
     }
     if (ok) {
-        func_021003b0(data_021c48c4, obj);
+        NNS_FndAppendListObject(data_021c48c4, obj);
     }
     return obj;
 }
 
 extern "C" void func_020a7fd8(Unk_020e2a90 *obj) {
     if (obj != NULL) {
-        func_02100260(data_021c48c4, obj);
+        NNS_FndRemoveListObject(data_021c48c4, obj);
         obj->~Unk_020e2a90();
         func_020e85fc(data_021c489c, obj);
     }
@@ -1658,7 +1658,7 @@ BOOL Unk_020e2a78::func_020a798c(u8 *start, u8 *end) {
     } else {
         unk_04 = cap - 1;
     }
-    func_02116048(start, buf, unk_04);
+    MI_CpuCopy8(start, buf, unk_04);
     return ok;
 }
 
@@ -1677,7 +1677,7 @@ BOOL Unk_020e2a78::func_020a7940(u8 *start, u8 *end) {
     if (!ok) {
         len = cap - 1;
     }
-    func_02116048(start, buf, len);
+    MI_CpuCopy8(start, buf, len);
     unk_04 += len;
     return ok;
 }
@@ -2016,7 +2016,7 @@ extern "C" void func_020a7264(Unk_020a7238 *d, Unk_020a7238 *s) {
     d->unk_0b = s->unk_0b;
 }
 
-extern "C" void func_020a7258(Unk_020a7238 *s) { func_02115fb4(s, 0, 0xc); }
+extern "C" void func_020a7258(Unk_020a7238 *s) { MI_CpuFill8(s, 0, 0xc); }
 
 extern "C" void func_020a7254() {}
 
@@ -2052,14 +2052,14 @@ void Unk_020e2a48::func_020a7188() { func_020a7c3c(); }
 // ---- Unk_020e2a30
 Unk_020e2a30::Unk_020e2a30() {
     unk_1e = data_021edb68.v;
-    func_02115fb4(unk_04, 0, 0x1a);
+    MI_CpuFill8(unk_04, 0, 0x1a);
 }
 
 Unk_020e2a30::~Unk_020e2a30() {}
 
 void Unk_020e2a30::vfunc_08() {
     unk_1e = data_021edb68.v;
-    func_02115fb4(unk_04, 0, 0x1a);
+    MI_CpuFill8(unk_04, 0, 0x1a);
 }
 
 void Unk_020e2a30::func_020a710c(const char *src) {

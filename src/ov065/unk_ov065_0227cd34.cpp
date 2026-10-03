@@ -143,7 +143,7 @@ char *func_02129f1c(const char *, const char *);
 void func_02128a00(void *, const void *, s32);
 void func_021289b4(void *, void *, u32);
 s32 func_0212b770(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
 void func_02128c60();
 
@@ -276,7 +276,7 @@ s32 func_ov065_0227e0e8(Ctx0227 **, Unk_ov065_0227c538_Pair, void *, s32, s32);
 Unk_ov065_0227c538_Node *func_ov065_022818f4(Ctx0227 **, s32);
 
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
+s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 char *func_02129f1c(const char *, const char *);
 
@@ -397,12 +397,12 @@ typedef Unk_ov065_0227d8e0_Buf Unk_B;
 typedef Unk_ov065_0227d8e0_Node Unk_N;
 extern "C" {
 char *func_0212a120(const char *, s32);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_021289b4(void *, void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02283630(const char *, const char *, char *, s32);
 void func_ov065_02283460(void *, const char *);
 void func_ov065_02283470(void *, s32, const char *);
@@ -515,7 +515,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        r5->unk_08 = (char *)func_ov065_02277af0(func_021277d4(buf) + 1);
+        r5->unk_08 = (char *)func_ov065_02277af0(STD_GetStringLength(buf) + 1);
         if (r5->unk_08 == NULL) {
             ERR1();
         }
@@ -545,7 +545,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
             ERR3();
         }
         *t = 0;
-        if (func_021277d4(t + 8) != 0x20) {
+        if (STD_GetStringLength(t + 8) != 0x20) {
             ERR3();
         }
         func_ov065_02277ac8(n->unk_10);

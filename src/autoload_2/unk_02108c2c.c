@@ -17,8 +17,8 @@ typedef struct MatAnmResult {
     u16 origWidth, origHeight;  // 0x2c
     s32 magW, magH;         // 0x30
 } MatAnmResult;
-extern void func_01ffc374(s32, s32);    // FX_DivAsync
-extern s32 func_01ffc464(void);         // FX_GetDivResult
+extern void FX_DivAsync(s32, s32);    // FX_DivAsync
+extern s32 FX_GetDivResult(void);         // FX_GetDivResult
 static inline s32 FxMul(s32 a, s32 b) { return (s32)(((s64)a * b) >> 12); }
 
 void func_02108c2c(s32 *m, const MatAnmResult *anm)
@@ -27,18 +27,18 @@ void func_02108c2c(s32 *m, const MatAnmResult *anm)
     s32 A, B;
     s32 tmpW = anm->origWidth << 12;
     s32 tmpH = anm->origHeight << 12;
-    func_01ffc374(tmpH, tmpW);
+    FX_DivAsync(tmpH, tmpW);
     ss_cos = FxMul(anm->scaleS, anm->cosR);
     ss_sin = FxMul(anm->scaleS, anm->sinR);
     st_cos = FxMul(anm->scaleT, anm->cosR);
     st_sin = FxMul(anm->scaleT, anm->sinR);
     m[0] = ss_cos;
     m[5] = st_cos;
-    m[1] = st_sin * func_01ffc464() >> 12;
-    func_01ffc374(tmpW, tmpH);
+    m[1] = st_sin * FX_GetDivResult() >> 12;
+    FX_DivAsync(tmpW, tmpH);
     A = (-(s32)anm->origWidth << 11) - anm->transS * anm->origWidth;
     B = anm->transT * anm->origHeight + (-(s32)anm->origHeight << 11);
     m[12] = (s32)(((s64)ss_cos * A - (s64)ss_sin * B) >> 8) + (anm->origWidth << 15);
     m[13] = (s32)(((s64)st_sin * A + (s64)st_cos * B) >> 8) + (anm->origHeight << 15);
-    m[4] = (-ss_sin * func_01ffc464()) >> 12;
+    m[4] = (-ss_sin * FX_GetDivResult()) >> 12;
 }

@@ -23,11 +23,11 @@ struct Unk_ov065_02291024 {
 
 extern "C" {
 
-s32 func_021277d4(const char *);
+s32 STD_GetStringLength(const char *);
 void func_02127838(void *, const void *);
-s32 func_02128930(const void *, const void *, s32);
+s32 memcmp(const void *, const void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 
 extern s32 data_ov065_02290fa0;
 extern char data_ov065_02290fa4[];
@@ -76,7 +76,7 @@ void func_ov065_02278250(char *url) {
     func_ov065_02279138();
     c = data_ov065_02290fa4[0];
     if (c == 0) {
-        func_021130d0(buf, "%s.available.gs.nintendowifi.net", url);
+        OS_SPrintf(buf, "%s.available.gs.nintendowifi.net", url);
     }
     if (func_ov065_02278328(c != 0 ? data_ov065_02290fa4 : buf, 0x6cfc, data_ov065_02291024.unk_04) != 0) {
         s32 s = func_ov065_02278dd4(2, 2, 0);
@@ -84,7 +84,7 @@ void func_ov065_02278250(char *url) {
         if (s != -1) {
             s32 n;
             data_ov065_02291024.unk_0c = 9;
-            n = func_021277d4(url);
+            n = STD_GetStringLength(url);
             func_02128a00(data_ov065_02291024.unk_11, url, n + 1);
             data_ov065_02291024.unk_4c = n + 6;
             func_ov065_022782f4();
@@ -97,13 +97,13 @@ s32 func_ov065_022781b0(s8 *b, s32 n, u8 *addr, u32 *out) {
     if (n < 7) {
         return 1;
     }
-    if (func_02128930(addr + 4, data_ov065_02291024.unk_08, 4) != 0) {
+    if (memcmp(addr + 4, data_ov065_02291024.unk_08, 4) != 0) {
         return 1;
     }
     if (*(u16 *)(addr + 2) != data_ov065_02291024.unk_06) {
         return 1;
     }
-    if (func_02128930(b, "\xfe\xfd\x09", 3) != 0) {
+    if (memcmp(b, "\xfe\xfd\x09", 3) != 0) {
         return 1;
     }
     u32 v = ((s32)b[3] << 24) & 0xff000000;

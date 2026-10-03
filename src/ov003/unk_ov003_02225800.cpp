@@ -509,7 +509,7 @@ s32 func_02063b8c(s32 n);
 BOOL func_ov003_02225238(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, s32 *v);
-void *func_02116048(void *dst, void *src, s32 n);
+void *MI_CpuCopy8(void *dst, void *src, s32 n);
 s32 func_020b8fe8();
 BOOL func_02045d98(void *buf);
 BOOL func_02072e88(void *p, u32 v);
@@ -792,7 +792,7 @@ s32 func_020e83d4(void *m, s32 a);
 s32 func_020e8434(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
-void func_01ffb898(V3 *a, Blk *b, V3 *c);
+void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
 s32 func_02090330(s32 a, V3 *v, s32 b, u16 *c);
 s32 func_020902d4(s32 h, V3 *v, s32 a, u16 *c);
 s32 func_020902f8(s32 h);
@@ -1470,7 +1470,7 @@ extern "C" {
 s32 func_02063b8c(s32 a);
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffca8c(void *a, void *b, void *out);
+void VEC_Add(void *a, void *b, void *out);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
 void func_020547a4(void *p, s32 v);
 void func_020339bc(Buf *b, void *pos, s32 a, s32 c);
@@ -1779,7 +1779,7 @@ extern "C" {
 extern s16 data_02135f44[];
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffca8c(V3 *dst, V3 *a, V3 *b);
+void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 func_02063b8c(s32 n);
 s32 func_02133150(s32 a, s32 b);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -2384,7 +2384,7 @@ BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffca8c(V3 *dst, V3 *a, V3 *b);
+void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 func_02002bdc(V3 *a, V3 *b);
 s32 func_02063b8c(s32 n);
 s32 func_02133150(s32 a, s32 b);
@@ -2508,8 +2508,8 @@ void *func_02095204(u32 a);
 s32 func_02002bdc(void *a, void *b);
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffca8c(void *a, void *b, void *out);
-void func_01ffca58(void *a, void *b, void *out);
+void VEC_Add(void *a, void *b, void *out);
+void VEC_Subtract(void *a, void *b, void *out);
 void func_020e9960(Vec3 *out, void *a, void *b);
 s32 func_020e9688(Vec3 *v);
 s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
@@ -2683,7 +2683,7 @@ u8 *func_02072970(void *g, s32 a);
 void func_02076a2c(void *p, s32 *a, s32 *b);
 void func_02076a6c(void *p, s32 a, s32 b);
 s32 func_020766e0(s32 a);
-void func_02116048(void *, void *, s32);
+void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
 s32 func_ov003_0222dbdc(s32 a);
 s32 func_ov003_02212758(s32 a, s32 b);
@@ -3428,9 +3428,9 @@ extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a) {
     r6 = &self->unk_204;
     func_020e7530(&ang, func_02002bdc(r6, p), a);
     self->unk_23a = ang;
-    func_01ffca58(&v, r6, &v);
+    VEC_Subtract(&v, r6, &v);
     func_ov003_0222ab68(&v, &v, 1);
-    func_01ffca8c(r6, &v, r6);
+    VEC_Add(r6, &v, r6);
 }
 }
 #undef func_020547a4
@@ -3883,7 +3883,7 @@ extern "C" void func_ov003_0222d350(Rec *self) {
                 func_020e9960(&w, r7, (u8 *)e + 0x5c);
                 v = w;
                 func_ov003_0222ab68(&v, &v, 3);
-                func_01ffca8c(r7, &v, r7);
+                VEC_Add(r7, &v, r7);
             }
         }
     } else {
@@ -3969,7 +3969,7 @@ extern "C" void func_ov003_0222d28c(Rec *self, s32 a) {
         v.z = func_01ffcb0c(v.z, 0x10000);
     }
     (*cnt)++;
-    func_01ffca8c(p, &v, p);
+    VEC_Add(p, &v, p);
 }
 }
 #undef func_020547a4
@@ -6608,7 +6608,7 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
         v.x = v.x << 4;
         v.z = v.z << 4;
     }
-    func_01ffca8c(pos, &v, pos);
+    VEC_Add(pos, &v, pos);
     (*cnt)++;
     if (mode == 0x14) {
         if (((*(u32 *)(s + 0xa0) << 4) >> 16) < 0x18) {
@@ -7113,7 +7113,7 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
         if (func_ov003_0222af48(self, 1)) {
             func_ov003_02229910(self);
         }
-        func_01ffca8c(r6, &v, r6);
+        VEC_Add(r6, &v, r6);
     } else {
         func_ov003_0222b928(self, pp);
         u32 m = self->unk_f4.mid;
@@ -10849,7 +10849,7 @@ extern "C" void func_ov003_02226a9c(void *a, Obj *o, s32 flag) {
         vin.y = 0;
         vin.x = 0;
         vin.z = func_01ffcb0c(o->unk_210, -0x333);
-        func_01ffb898(&vin, &m2, &vout);
+        MTX_MultVec43(&vin, &m2, &vout);
         pos.x += vout.x;
         pos.y += vout.y;
         pos.z += vout.z;
@@ -11953,10 +11953,10 @@ extern "C" s32 func_ov003_02225b6c(void *p, s32 t)
     case 0:
     case 5:
     case 6:
-        func_02116048(data_ov003_02259154, p, 0x200);
+        MI_CpuCopy8(data_ov003_02259154, p, 0x200);
         break;
     default:
-        func_02116048(data_ov003_02258f54, p, 0x200);
+        MI_CpuCopy8(data_ov003_02258f54, p, 0x200);
         break;
     }
 }

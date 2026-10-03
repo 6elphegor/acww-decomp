@@ -106,7 +106,7 @@ void _ZN12Unk_020dd324D1Ev(void *p);
 Mat *func_0203a220(void);
 Vec *func_020947f0(s32 a);
 void func_0203eeac(void *a, void *b);
-void func_01ffb898(void *a, void *b, void *c);
+void MTX_MultVec43(void *a, void *b, void *c);
 u32 _ZN12Unk_0203b35013func_0203bc3cEv(u32 a);
 s32 func_01ffc5a4(s32 a, s32 b);
 void func_020e9888(void *a, s32 b);
@@ -394,7 +394,7 @@ void Unk_020e450c::func_020b757c() {
         Vec x;
         v.y += 0x3c00;
         func_0203eeac(&w, &v);
-        func_01ffb898(&w, &data_021f47e0, &x);
+        MTX_MultVec43(&w, &data_021f47e0, &x);
         s32 d = _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070);
         s32 q = func_01ffc5a4(0x60000, d);
         s32 r = func_01ffc5a4(-q, x.z);

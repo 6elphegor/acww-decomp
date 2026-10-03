@@ -56,8 +56,8 @@ void func_ov065_0226ade0(void *, void *);
 void func_02128acc(void *, s32, s32, Unk_ov065_02278384_Cmp);
 void func_021289b4(void *, void *, s32);
 void func_02128a00(void *, void *, s32);
-s32 func_021130d0(char *, char *, s32);
-u64 func_01ffa6b4(void);
+s32 OS_SPrintf(char *, char *, s32);
+u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 
 s32 func_ov065_02278bf4(s32);
@@ -118,7 +118,7 @@ void func_ov065_022789d0(u8 *digest, char *out) {
     u32 i = 0;
     s32 off = 0;
     do {
-        func_021130d0(out + off, "%02x", digest[i]);
+        OS_SPrintf(out + off, "%02x", digest[i]);
         off += 2;
         i++;
     } while (i < 16);

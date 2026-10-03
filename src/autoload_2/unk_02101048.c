@@ -93,45 +93,45 @@ static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     }
 }
 
-void func_0210045c(HeapHead *heap);
-NNSFndList *func_02100508(HeapHead *heap);
-HeapHead *func_02100534(NNSFndList *list, HeapHead *mem);
-void func_02100444(NNSFndList *list, u16 offset);
-void func_02100260(NNSFndList *list, void *obj);
-void func_021003b0(NNSFndList *list, void *obj);
-void *func_02100248(NNSFndList *list, void *obj);
-MBlock *func_02100dc8(Region *r, u16 sig);
-MBlock *func_02100df8(void *list, MBlock *blk, MBlock *prev);
-MBlock *func_02100e28(void *list, MBlock *blk);
-void func_02100e50(Region *r, MBlock *blk);
-BOOL func_0210092c(ExpHead *e, Region *r);
+void NNSi_FndFinalizeHeap(HeapHead *heap);
+NNSFndList *FindListContainHeap(HeapHead *heap);
+HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem);
+void NNS_FndInitList(NNSFndList *list, u16 offset);
+void NNS_FndRemoveListObject(NNSFndList *list, void *obj);
+void NNS_FndAppendListObject(NNSFndList *list, void *obj);
+void *NNS_FndGetNextListObject(NNSFndList *list, void *obj);
+MBlock *InitMBlock(Region *r, u16 sig);
+MBlock *InsertMBlock(void *list, MBlock *blk, MBlock *prev);
+MBlock *RemoveMBlock(void *list, MBlock *blk);
+void GetRegionOfMBlock(Region *r, MBlock *blk);
+BOOL RecycleRegion(ExpHead *e, Region *r);
 void *func_02100bb0(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
-void *func_02100ae8(HeapHead *h, u32 size, s32 alignment);
-void *func_02100a24(HeapHead *h, u32 size, s32 alignment);
-HeapHead *func_02100d44(u32 start, u32 end, u16 opt);
-void func_02100478(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
-void func_02100418(NNSFndList *list, void *obj);
-void func_0210034c(NNSFndList *list, void *obj);
+void *AllocFromHead(HeapHead *h, u32 size, s32 alignment);
+void *AllocFromTail(HeapHead *h, u32 size, s32 alignment);
+HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
+void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
+void SetFirstObject(NNSFndList *list, void *obj);
+void NNS_FndPrependListObject(NNSFndList *list, void *obj);
 void *func_021011ec(FrmHead *f, u32 size, u32 alignment);
 void *func_02101170(FrmHead *f, u32 size, u32 alignment);
-void func_02101158(HeapHead *h);
-void func_02101128(HeapHead *h);
-void func_02101158(HeapHead *h);
-void func_02101128(HeapHead *h);
+void FreeHead(HeapHead *h);
+void FreeTail(HeapHead *h);
+void FreeHead(HeapHead *h);
+void FreeTail(HeapHead *h);
 HeapHead *func_0210126c(u32 start, u32 end, u16 opt);
 
 
 #define FRM(h) (&(h)->u.frm)
 
-extern void func_02119d78(void *file);                   // FS_InitFile
-extern BOOL func_02119a28(void *file, const char *path); // FS_OpenFile
-extern void func_021199e0(void *file);                   // FS_CloseFile
-extern BOOL func_02118f58(void *arc);
-extern void func_02119098(void *arc);                    // FS_ReleaseArchiveName
-extern void func_02119240(void *arc);                    // FS_InitArchive
+extern void FS_InitFile(void *file);                   // FS_InitFile
+extern BOOL FS_OpenFile(void *file, const char *path); // FS_OpenFile
+extern void FS_CloseFile(void *file);                   // FS_CloseFile
+extern BOOL FS_UnloadArchive(void *arc);
+extern void FS_ReleaseArchiveName(void *arc);                    // FS_ReleaseArchiveName
+extern void FS_InitArchive(void *arc);                    // FS_InitArchive
 extern u32 func_0212a438(const char *s);                 // strlen
-extern BOOL func_02119130(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
-extern BOOL func_02119020(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
+extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
+extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
 
 BOOL func_0210149c(u32 *narc);
 
@@ -160,49 +160,49 @@ u32 func_02101508(u32 szByte, BOOL is4x4, BOOL opt);
 s32 func_02101500();
 
 // prototypes
-void *func_02100234(NNSFndList *list, void *obj);
-void *func_02100248(NNSFndList *list, void *obj);
-void func_02100260(NNSFndList *list, void *obj);
-void func_021002cc(NNSFndList *list, void *target, void *obj);
-void func_0210034c(NNSFndList *list, void *obj);
-void func_021003b0(NNSFndList *list, void *obj);
-void func_02100418(NNSFndList *list, void *obj);
-void func_02100444(NNSFndList *list, u16 offset);
-void func_0210045c(HeapHead *heap);
-void func_02100478(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
-NNSFndList *func_02100508(HeapHead *heap);
-HeapHead *func_02100534(NNSFndList *list, HeapHead *mem);
+void *NNS_FndGetPrevListObject(NNSFndList *list, void *obj);
+void *NNS_FndGetNextListObject(NNSFndList *list, void *obj);
+void NNS_FndRemoveListObject(NNSFndList *list, void *obj);
+void NNS_FndInsertListObject(NNSFndList *list, void *target, void *obj);
+void NNS_FndPrependListObject(NNSFndList *list, void *obj);
+void NNS_FndAppendListObject(NNSFndList *list, void *obj);
+void SetFirstObject(NNSFndList *list, void *obj);
+void NNS_FndInitList(NNSFndList *list, u16 offset);
+void NNSi_FndFinalizeHeap(HeapHead *heap);
+void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
+NNSFndList *FindListContainHeap(HeapHead *heap);
+HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem);
 u32 func_021005a4(u32 memBlock);
 void func_021005ac(HeapHead *heap, void (*visitor)(void *, HeapHead *, u32), u32 param);
 u16 func_02100600(HeapHead *heap);
 u16 func_02100608(HeapHead *heap, u16 id);
 u32 func_02100618(HeapHead *heap, s32 alignment);
-u32 func_021006a0(HeapHead *heap);
+u32 NNS_FndGetTotalFreeSizeForExpHeap(HeapHead *heap);
 void func_021006c8(HeapHead *heap, u32 mem);
 u32 func_02100708(HeapHead *heap, u32 memBlock, u32 size);
-void *func_02100890(HeapHead *heap, u32 size, s32 alignment);
+void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment);
 void func_021008d4(HeapHead *heap);
-HeapHead *func_021008e0(u32 start, u32 size, u16 opt);
-BOOL func_0210092c(ExpHead *e, Region *rgn);
-void *func_02100a24(HeapHead *heap, u32 size, s32 alignment);
-void *func_02100ae8(HeapHead *heap, u32 size, s32 alignment);
+HeapHead *NNS_FndCreateExpHeapEx(u32 start, u32 size, u16 opt);
+BOOL RecycleRegion(ExpHead *e, Region *rgn);
+void *AllocFromTail(HeapHead *heap, u32 size, s32 alignment);
+void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment);
 void *func_02100bb0(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
-HeapHead *func_02100d44(u32 start, u32 end, u16 opt);
-MBlock *func_02100dc8(Region *rgn, u16 sig);
-MBlock *func_02100df8(void *listp, MBlock *blk, MBlock *prev);
-MBlock *func_02100e28(void *listp, MBlock *blk);
-void func_02100e50(Region *rgn, MBlock *blk);
+HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
+MBlock *InitMBlock(Region *rgn, u16 sig);
+MBlock *InsertMBlock(void *listp, MBlock *blk, MBlock *prev);
+MBlock *RemoveMBlock(void *listp, MBlock *blk);
+void GetRegionOfMBlock(Region *rgn, MBlock *blk);
 u32 func_02100e7c(HeapHead *heap, u32 mem, u32 size);
 u32 func_02100f20(HeapHead *heap);
-BOOL func_02100f54(HeapHead *heap, u32 tag);
+BOOL NNS_FndFreeByStateToFrmHeap(HeapHead *heap, u32 tag);
 BOOL func_02100fb0(HeapHead *heap, u32 tag);
 u32 func_02101008(HeapHead *heap, s32 alignment);
 void func_02101048(HeapHead *heap, u32 mode);
 void *func_02101088(HeapHead *heap, u32 size, s32 alignment);
 void func_021010d0(HeapHead *heap);
 HeapHead *func_021010dc(u32 start, u32 size, u16 opt);
-void func_02101128(HeapHead *heap);
-void func_02101158(HeapHead *heap);
+void FreeTail(HeapHead *heap);
+void FreeHead(HeapHead *heap);
 void *func_02101170(FrmHead *f, u32 size, u32 alignment);
 void *func_021011ec(FrmHead *f, u32 size, u32 alignment);
 HeapHead *func_0210126c(u32 start, u32 end, u16 opt);
@@ -259,21 +259,21 @@ BOOL func_02101340(u32 *arc, const char *name, u32 *narc) {
         }
         chunk = (u32 *)((u8 *)chunk + chunk[1]);
     }
-    func_02119240(arc);
+    FS_InitArchive(arc);
     arc[23] = (u32)narc;
     arc[24] = (u32)fat;
     base = (u32)img + 8;
     arc[25] = base;
-    if (func_02119130(arc, name, func_0212a438(name)) == 0) return 0;
-    if (func_02119020(arc, base, (u32)fat + 12 - base, ((u32 *)fat)[1] - 12, (u32)fnt + 8 - base, ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
-    func_02119098(arc);
+    if (FS_RegisterArchiveName(arc, name, func_0212a438(name)) == 0) return 0;
+    if (FS_LoadArchive(arc, base, (u32)fat + 12 - base, ((u32 *)fat)[1] - 12, (u32)fnt + 8 - base, ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
+    FS_ReleaseArchiveName(arc);
     return 0;
 }
 
 // NNS_FndUnmountArchive
 BOOL func_02101310(void *arc) {
-    if (func_02118f58(arc) == 0) return 0;
-    func_02119098(arc);
+    if (FS_UnloadArchive(arc) == 0) return 0;
+    FS_ReleaseArchiveName(arc);
     return 1;
 }
 
@@ -281,10 +281,10 @@ BOOL func_02101310(void *arc) {
 u32 func_021012bc(const char *path) {
     u32 file[19];
     u32 result = 0;
-    func_02119d78(file);
-    if (func_02119a28(file, path)) {
+    FS_InitFile(file);
+    if (FS_OpenFile(file, path)) {
         result = ((u32 *)file[2])[25] + file[9];
-        func_021199e0(file);
+        FS_CloseFile(file);
     }
     return result;
 }
@@ -293,7 +293,7 @@ u32 func_021012bc(const char *path) {
 HeapHead *func_0210126c(u32 start, u32 end, u16 opt) {
     HeapHead *heap = (HeapHead *)start;
     FrmHead *f = FRM(heap);
-    func_02100478(heap, 0x46524d48, (u32)(f + 1), end, opt);
+    NNSi_FndInitHeapHead(heap, 0x46524d48, (u32)(f + 1), end, opt);
     f->head = heap->start;
     f->tail = heap->end;
     f->state = 0;
@@ -328,14 +328,14 @@ void *func_02101170(FrmHead *f, u32 size, u32 alignment) {
 }
 
 // frmheap: free head side
-void func_02101158(HeapHead *heap) {
+void FreeHead(HeapHead *heap) {
     FrmHead *f = FRM(heap);
     f->head = heap->start;
     f->state = 0;
 }
 
 // frmheap: free tail side
-void func_02101128(HeapHead *heap) {
+void FreeTail(HeapHead *heap) {
     FrmState *st;
     FrmHead *f = FRM(heap);
     st = f->state;
@@ -353,7 +353,7 @@ HeapHead *func_021010dc(u32 start, u32 size, u16 opt) {
 
 // NNS_FndDestroyFrmHeap
 void func_021010d0(HeapHead *heap) {
-    func_0210045c(heap);
+    NNSi_FndFinalizeHeap(heap);
 }
 
 // NNS_FndAllocFromFrmHeapEx
@@ -367,6 +367,6 @@ void *func_02101088(HeapHead *heap, u32 size, s32 alignment) {
 
 // NNS_FndFreeToFrmHeap
 void func_02101048(HeapHead *heap, u32 mode) {
-    if (mode & 1) func_02101158(heap);
-    if (mode & 2) func_02101128(heap);
+    if (mode & 1) FreeHead(heap);
+    if (mode & 2) FreeTail(heap);
 }

@@ -32,11 +32,11 @@ struct Unk_02063d18_Hdr {
 };
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
@@ -44,11 +44,11 @@ u32 func_02063b8c(u32 n);
 }
 
 extern "C" {
-s32 func_021127c0(char *buf, u32 n, const char *fmt, va_list va);
+s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 func_02128930();
+s32 memcmp();
 }
 
 extern "C" {
@@ -100,7 +100,7 @@ u32 func_020e7fa8(void *state);
 }
 
 extern "C" {
-s32 func_0211a088(s32 a, s32 b);
+s32 FS_UnloadOverlay(s32 a, s32 b);
 }
 
 extern "C" {
@@ -140,19 +140,19 @@ s32 func_020639d0(char *buf, const char *fmt, va_list va);
 }
 
 extern "C" {
-void func_02119d78(void *f);
+void FS_InitFile(void *f);
 }
 
 extern "C" {
-BOOL func_02119a78(void *f, Unk_02063eac_FileId id);
+BOOL FS_OpenFileFast(void *f, Unk_02063eac_FileId id);
 }
 
 extern "C" {
-BOOL func_021199e0(void *f);
+BOOL FS_CloseFile(void *f);
 }
 
 extern "C" {
-s32 func_02119848(void *f, s32 off, s32 z);
+s32 FS_SeekFile(void *f, s32 off, s32 z);
 }
 
 extern "C" {
@@ -160,7 +160,7 @@ s32 func_021198b4(void *f, void *dst, u32 n);
 }
 
 extern "C" {
-void func_02116190(const void *src, void *dst);
+void MI_UncompressLZ8(const void *src, void *dst);
 }
 
 extern "C" {
@@ -208,11 +208,11 @@ void func_020e85fc(void *h, void *p);
 }
 
 extern "C" {
-void func_02114534();
+void DC_StoreAll();
 }
 
 extern "C" {
-void func_02114560();
+void DC_FlushAll();
 }
 
 extern "C" {
@@ -290,7 +290,7 @@ extern "C" void func_02063904(u16 *p, const void *src);
 extern "C" BOOL func_02063f18(u32 a) {
     Unk_02063d18_File f;
     BOOL r = func_020643b8(&f, a);
-    if (r) func_021199e0(&f);
+    if (r) FS_CloseFile(&f);
     return r;
 }
 
@@ -298,15 +298,15 @@ extern "C" void func_02063ee8(u32 a, void *dst, u32 size, u32 off) {
     Unk_02063d18_File f;
     func_02064398(&f, a);
     func_02063d18(&f, dst, size, off);
-    func_021199e0(&f);
+    FS_CloseFile(&f);
 }
 
 extern "C" void func_02063eac(Unk_02063eac_FileId id, s32 a, s32 b, s32 c) {
     Unk_02063d18_File f;
-    func_02119d78(&f);
-    if (func_02119a78(&f, id)) {
+    FS_InitFile(&f);
+    if (FS_OpenFileFast(&f, id)) {
         func_02063d18(&f, (void *)a, b, c);
-        func_021199e0(&f);
+        FS_CloseFile(&f);
     }
 }
 
@@ -318,7 +318,7 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
     u32 blk, i;
     s32 a, b;
 
-    func_02119848(f, 0, 0);
+    FS_SeekFile(f, 0, 0);
     if (func_021198b4(f, &hdr, 8) == -1) return;
     if (hdr.magic == 0x37375a4c || hdr.magic == 0x4c5a3737) {
         if ((hdr.w & 0xf0) != 0xf0) return;
@@ -341,15 +341,15 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
                 u16 *tp = data_021c7d40.tbl + i;
                 u32 t0 = tp[0];
                 len = tp[1] - t0;
-                func_02119848(f, base + t0, 0);
+                FS_SeekFile(f, base + t0, 0);
                 func_021198b4(f, data_021c7d40.raw, len);
                 u32 w = data_021c7d40.raw[0];
                 Unk_02063d18_Type ty = (Unk_02063d18_Type)(w & 0xf0);
                 u32 sz = w >> 8;
                 if (ty == Unk_02063d18_T0) {
-                    func_02116048((u8 *)data_021c7d40.raw + 4, data_021c7d40.out, sz);
+                    MI_CpuCopy8((u8 *)data_021c7d40.raw + 4, data_021c7d40.out, sz);
                 } else {
-                    func_02116190(data_021c7d40.raw, data_021c7d40.out);
+                    MI_UncompressLZ8(data_021c7d40.raw, data_021c7d40.out);
                 }
             }
             a = off - lo;
@@ -357,18 +357,18 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
             b = hi - end;
             if (b < 0) b = 0;
             c = blk - a - b;
-            func_02116048(data_021c7d40.out + a, dst, c);
+            MI_CpuCopy8(data_021c7d40.out + a, dst, c);
             dst = (u8 *)dst + c;
         }
     } else {
-        func_02119848(f, off, 0);
+        FS_SeekFile(f, off, 0);
         func_021198b4(f, dst, size);
     }
 }
 
 extern "C" s32 func_02063d0c(s32 x) { return func_020643d4(0, x); }
 
-extern "C" s32 func_02063d00(s32 x) { return func_0211a088(0, x); }
+extern "C" s32 func_02063d00(s32 x) { return FS_UnloadOverlay(0, x); }
 
 extern "C" void func_02063cfc() {}
 
@@ -474,7 +474,7 @@ extern "C" void func_02063a5c(void *a, void *b, s32 c, s32 d) {
     s32 i = _ZN12Unk_02056fd813func_02057100Ei(b, d);
     void *q = _ZN12Unk_02056fd813func_020570b0Ei(b, i);
     u32 n = _ZN12Unk_02056fd813func_02057084Ei(b, i);
-    func_02116048(p, q, n);
+    MI_CpuCopy8(p, q, n);
 }
 
 extern "C" void func_02063a1c(void *a, void *b, s32 c, s32 d) {
@@ -482,11 +482,11 @@ extern "C" void func_02063a1c(void *a, void *b, s32 c, s32 d) {
     s32 i = _ZN12Unk_02056fd813func_02057078Ei(b, d);
     void *q = _ZN12Unk_02056fd813func_02057048Ei(b, i);
     u32 n = _ZN12Unk_02056fd813func_02056fd8Ei(b, i);
-    func_02116048(p, q, n);
+    MI_CpuCopy8(p, q, n);
 }
 
 extern "C" BOOL func_02063a04() {
-    if (func_02128930()) return TRUE;
+    if (memcmp()) return TRUE;
     return FALSE;
 }
 
@@ -498,27 +498,27 @@ extern "C" s32 func_020639e8(char *buf, const char *fmt, ...) {
 
 extern "C" s32 func_020639d0(char *buf, const char *fmt, va_list va) { func_020639c0(buf, 0x7fffffff, fmt, va); }
 
-extern "C" s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va) { func_021127c0(buf, n, fmt, va); }
+extern "C" s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va) { OS_VSNPrintf(buf, n, fmt, va); }
 
 extern "C" void func_020639bc() {}
 
 extern "C" void func_020639b8() {}
 
 extern "C" void func_020639a0(u16 *p) {
-    func_02115fb4(p + 1, 0, 8);
+    MI_CpuFill8(p + 1, 0, 8);
     *p = 0;
 }
 
-extern "C" void func_02063990(void *dst, void *src) { func_02116048(src, dst, 10); }
+extern "C" void func_02063990(void *dst, void *src) { MI_CpuCopy8(src, dst, 10); }
 
 extern "C" void func_0206397c(u16 *dst, u16 *src) {
     *dst = *src;
-    func_02116048(src + 1, dst + 1, 8);
+    MI_CpuCopy8(src + 1, dst + 1, 8);
 }
 
 extern "C" void func_02063968(u16 *src, u16 *dst) {
     *dst = *src;
-    func_02116048(src + 1, dst + 1, 8);
+    MI_CpuCopy8(src + 1, dst + 1, 8);
 }
 
 extern "C" u16 *func_02063964(u16 *p) { return p + 1; }
@@ -539,7 +539,7 @@ extern "C" u16 func_0206392c(void *p) {
 
 extern "C" void func_02063904(u16 *p, const void *src) {
     func_020639a0(p);
-    func_02116048(src, p + 1, 8);
+    MI_CpuCopy8(src, p + 1, 8);
     *p = func_0206392c(p);
 }
 

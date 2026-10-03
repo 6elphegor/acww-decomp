@@ -131,13 +131,13 @@ u32 func_02095134(s32 a);
 void func_0203a1d0(u32 a, u32 b);
 BOOL func_020a706c(s32 x0, s32 x1, s32 y0, s32 y1);
 BOOL func_02038f10();
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void func_0209cf28(void *p);
 s32 func_0209d3d0(void *a, void *b, s32 n);
 void func_0209d064(void *a, void *b);
 s32 func_020b50e8();
 void func_020b7878(s32 x);
-u64 func_01ffa6b4();
+u64 OS_GetTick();
 s32 func_0206f11c();
 void func_0209d224(void *p, s32 v);
 void func_0209cfb8(void *p);
@@ -1562,7 +1562,7 @@ void Unk_0208b908::func_0208b9f0() {
         unk_b8 = unk_b8 - 1;
     }
     if (unk_a4 != 0) {
-        func_02116048(unk_a8, a, 8);
+        MI_CpuCopy8(unk_a8, a, 8);
         ((u32 *)b)[0] = 0;
         ((u32 *)b)[1] = 0;
         func_0209cf28(b);
@@ -1582,7 +1582,7 @@ void Unk_0208b908::func_0208b9f0() {
             ((u32 *)a)[1] = 0;
         } else {
             u32 k;
-            func_02116048(b, c, 8);
+            MI_CpuCopy8(b, c, 8);
             func_0209d064(a, c);
             k = x;
             t = func_0209d3d0(unk_b0, a, 1) ? TRUE : FALSE;
@@ -1597,7 +1597,7 @@ void Unk_0208b908::func_0208b9f0() {
         *p94 = Unk_0208b9f0_Or(unk_94, y);
         if (x != 0 || y != 0) {
             u32 b0, b1;
-            func_02116048(a, unk_b0, 8);
+            MI_CpuCopy8(a, unk_b0, 8);
             b0 = a[0];
             b1 = a[1];
             if (b1 == 0) {
@@ -1609,7 +1609,7 @@ void Unk_0208b908::func_0208b9f0() {
                     }
                     func_020b7878(3);
                 } else if (b0 <= 10) {
-                    u64 now = func_01ffa6b4();
+                    u64 now = OS_GetTick();
                     u64 d = now - *(u64 *)&unk_cc;
                     u64 q = (d << 6) / 0x82ea;
                     if (q <= 0x44c) {
@@ -1620,7 +1620,7 @@ void Unk_0208b908::func_0208b9f0() {
                     unk_cc = (u32)now;
                     unk_d0 = (u32)(now >> 32);
                 } else if (b0 >= 0xb) {
-                    u64 now = func_01ffa6b4();
+                    u64 now = OS_GetTick();
                     unk_cc = (u32)now;
                     unk_d0 = (u32)(now >> 32);
                 }

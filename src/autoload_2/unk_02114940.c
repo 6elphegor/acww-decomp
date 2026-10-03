@@ -13,64 +13,64 @@ void func_02114b4c(u32 v);
 void func_02117dcc(void);
 void func_021126d0(void);
 void func_021123ac(void);
-void func_0211232c(void);
+void OS_SetIrqStackChecker(void);
 void func_02114cf4(void);
-void func_02116638(void);
-void func_021153f8(void);
-void func_021157c0(void);
-void func_02113b6c(void);
-void func_0211555c(void);
+void MI_Init(void);
+void OS_InitVAlarm(void);
+void OSi_InitVramExclusive(void);
+void OS_InitThread(void);
+void OS_InitReset(void);
 void func_02127380(void);
-void func_0211e0ac(void);
+void CARD_Init(void);
 void func_0211ca48(void);
 
-void func_021146fc(s32 id, void *lo);
-void func_02114710(s32 id, void *hi);
-void *func_02114724(s32 id);
-void *func_02114810(s32 id);
-void *func_02114940(s32 id);
-void *func_02114954(s32 id);
-void func_021149e8(void);
-void func_02114968(void);
+void OS_SetArenaLo(s32 id, void *lo);
+void OS_SetArenaHi(s32 id, void *hi);
+void *OS_GetInitArenaLo(s32 id);
+void *OS_GetInitArenaHi(s32 id);
+void *OS_GetArenaLo(s32 id);
+void *OS_GetArenaHi(s32 id);
+void OS_InitArena(void);
+void OS_InitArenaEx(void);
 
 // OS_GetArenaLo / OS_GetArenaHi / OS_SetArenaLo / OS_SetArenaHi
 #define ARENA_LO(id) (((void **)0x027ffda0)[id])
 #define ARENA_HI(id) (((void **)0x027ffdc4)[id])
 
 // OS_InitArena
-void func_021149e8(void) {
+void OS_InitArena(void) {
     if (data_021fce84) return;
     data_021fce84 = 1;
-    func_02114710(0, func_02114810(0));
-    func_021146fc(0, func_02114724(0));
-    func_021146fc(2, 0);
-    func_02114710(2, 0);
-    func_02114710(3, func_02114810(3));
-    func_021146fc(3, func_02114724(3));
-    func_02114710(4, func_02114810(4));
-    func_021146fc(4, func_02114724(4));
-    func_02114710(5, func_02114810(5));
-    func_021146fc(5, func_02114724(5));
-    func_02114710(6, func_02114810(6));
-    func_021146fc(6, func_02114724(6));
+    OS_SetArenaHi(0, OS_GetInitArenaHi(0));
+    OS_SetArenaLo(0, OS_GetInitArenaLo(0));
+    OS_SetArenaLo(2, 0);
+    OS_SetArenaHi(2, 0);
+    OS_SetArenaHi(3, OS_GetInitArenaHi(3));
+    OS_SetArenaLo(3, OS_GetInitArenaLo(3));
+    OS_SetArenaHi(4, OS_GetInitArenaHi(4));
+    OS_SetArenaLo(4, OS_GetInitArenaLo(4));
+    OS_SetArenaHi(5, OS_GetInitArenaHi(5));
+    OS_SetArenaLo(5, OS_GetInitArenaLo(5));
+    OS_SetArenaHi(6, OS_GetInitArenaHi(6));
+    OS_SetArenaLo(6, OS_GetInitArenaLo(6));
 }
 
 // OS_InitArenaEx
-void func_02114968(void) {
-    func_02114710(2, func_02114810(2));
-    func_021146fc(2, func_02114724(2));
+void OS_InitArenaEx(void) {
+    OS_SetArenaHi(2, OS_GetInitArenaHi(2));
+    OS_SetArenaLo(2, OS_GetInitArenaLo(2));
     if (data_021fce88 != 0 && (func_02113fd8() & 3) != 1) return;
     func_02114b44(0x0200002b);
     func_02114b4c(0x023e0021);
 }
 
 // OS_GetArenaHi
-void *func_02114954(s32 id) {
+void *OS_GetArenaHi(s32 id) {
     return ARENA_HI(id);
 }
 
 // OS_GetArenaLo
-void *func_02114940(s32 id) {
+void *OS_GetArenaLo(s32 id) {
     return ARENA_LO(id);
 }
 

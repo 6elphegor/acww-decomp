@@ -8,10 +8,10 @@
 	.arm
 
 ; MI_UncompressLZ8(srcp, destp)
-	.global func_02116190
-	.type func_02116190, @function
-	.size func_02116190, 0x94
-func_02116190:
+	.global MI_UncompressLZ8
+	.type MI_UncompressLZ8, @function
+	.size MI_UncompressLZ8, 0x94
+MI_UncompressLZ8:
 	stmfd sp!, {r4, r5, r6, lr}
 	ldr r5, [r0], #4
 	mov r2, r5, lsr #8

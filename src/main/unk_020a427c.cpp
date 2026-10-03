@@ -365,15 +365,15 @@ void func_020e9b70(void);
 u32 func_020eaf28(void);
 s32 func_020eca8c(void *p);
 s32 func_020ed188(void *p);
-void func_0210fbc4(s32 a);
-void func_0210fcb8(s32 a);
-void func_0210ff74(s32 a);
-void func_02110088(s32 a);
-void func_021101f4(s32 a);
-void func_02111110(void);
+void GX_SetBankForTexPltt(s32 a);
+void GX_SetBankForTex(s32 a);
+void GX_SetBankForBGExtPltt(s32 a);
+void GX_SetBankForOBJ(s32 a);
+void GX_SetBankForBG(s32 a);
+void G3X_Init(void);
 s32 func_02115468(s32 v);
-void func_02116048(void *src, void *dst, u32 size);
-s32 func_02128930(const void *a, const void *b, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
+s32 memcmp(const void *a, const void *b, u32 n);
 void func_02133ef8(void *dst, u32 size);
 }
 
@@ -970,7 +970,7 @@ void Unk_020a512c::func_020a5854() {
             u8 byte;
             _ZN12Unk_020a672013func_020a672cEPiPh(q, &v, &byte);
             if (v >= 4) break;
-            func_02116048(q, p, 8);
+            MI_CpuCopy8(q, p, 8);
             p += 8;
         }
         _ZN12Unk_020a672013func_020a6720Ev(p);
@@ -1688,7 +1688,7 @@ void Unk_020a4738::func_020a4778() {
             u16 *p;
             u8 *idb = (u8 *)&data_021d7352;
             if (x != 0 && _ZN12Unk_0209865c13func_020986a4Ev(x)->func_02087314() && (p = _ZN12Unk_0209865c13func_020986a4Ev(x)->func_02087364(), p[0] == *(u16 *)idb) &&
-                func_02128930(p + 1, idb + 2, 8) == 0) {
+                memcmp(p + 1, idb + 2, 8) == 0) {
                 func_020b4f58(func_020b4934(), 0x2f, 2, 2);
             } else {
                 static Unk_02000c8c s;
@@ -1753,12 +1753,12 @@ extern "C" Unk_020e2988 *func_020a46fc(void) {
 
 extern "C" void func_020a4698(void) {
     func_020535e0();
-    func_02111110();
-    func_021101f4(0x20);
-    func_02110088(1);
-    func_0210ff74(0x40);
-    func_0210fcb8(6);
-    func_0210fbc4(0x10);
+    G3X_Init();
+    GX_SetBankForBG(0x20);
+    GX_SetBankForOBJ(1);
+    GX_SetBankForBGExtPltt(0x40);
+    GX_SetBankForTex(6);
+    GX_SetBankForTexPltt(0x10);
     *(volatile u32 *)0x40004c8 = 0x20000000;
     *(volatile u32 *)0x40004cc = 0x7fff;
     *(volatile u32 *)0x40004c0 = 0x7fff;

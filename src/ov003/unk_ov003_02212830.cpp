@@ -400,9 +400,9 @@ extern const s16 data_ov003_0222efb8[16];
 
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc854(void *v);
+s32 VEC_Mag(void *v);
 void func_01ffd070(void *out, void *a, void *b);
-void func_01ffb94c(void *a, void *b, void *out);
+void MTX_Concat43(void *a, void *b, void *out);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
@@ -711,7 +711,7 @@ extern "C" void func_ov003_02213a30(Obj *o, s32 a, s32 b)
     func_020e8388(&m, pv.x, pv.y, pv.z);
     func_020e8434(&m, ang);
     func_02099300(&o->unk_2f4, &m2);
-    func_01ffb94c(&m2, &m, &m);
+    MTX_Concat43(&m2, &m, &m);
     *(Blk *)((u8 *)o + 0x194) = m;
     *(Blk *)((u8 *)o + 0x230) = m;
 }
@@ -769,11 +769,11 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
     o->unk_2a0.func_02088c98(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->unk_2e8);
     o->unk_2a0.func_02089040();
     func_020e9960(&d, &o->unk_5c, &o->unk_68);
-    s32 len = func_01ffc854(&d);
+    s32 len = VEC_Mag(&d);
     s32 ang = (s16)((func_01ffc5a4(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
     yaw = func_020e7b98(d.x, d.z);
     if (func_ov003_022132a0(o)) {
-        s32 n = func_01ffc854(&d);
+        s32 n = VEC_Mag(&d);
         if (n == 0) {
             o->unk_2ec = 0;
             o->unk_2f0 = 0;

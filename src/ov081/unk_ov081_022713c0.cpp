@@ -114,7 +114,7 @@ BOOL func_0206ed18();
 s32 func_0206ed38();
 s32 func_02099048();
 s32 func_02085618(u16 *p);
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 u32 func_02063b8c(u32 n);
 void func_02085784(void *g, u32 a);
 u32 func_02060e24(u32 v);
@@ -801,7 +801,7 @@ s32 Unk_ov081_022720ec::func_ov081_02271768() {
                 _ZN12Unk_020d771413func_020157e8Ejj(this, _ZN12Unk_0208581013func_020858acEv(g), 1);
                 p4 = (u16 *)_ZN12Unk_0209865c13func_0209888cEv(func_0209750c());
                 p5 = (u16 *)_ZN12Unk_0208581013func_020858acEv(g);
-                if (p5[0] == p4[0] && func_02128930(p5 + 1, p4 + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(p5, p4) != 0) {
+                if (p5[0] == p4[0] && memcmp(p5 + 1, p4 + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(p5, p4) != 0) {
                     goto ret0;
                 }
                 return 1;

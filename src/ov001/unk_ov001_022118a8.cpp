@@ -65,11 +65,11 @@ s32 func_ov001_0221d5e8(u32 a);
 s32 func_ov001_0221d5b8();
 s32 func_ov001_0220864c();
 void func_ov001_02208780(u32 a, u32 b, u32 c, u32 d);
-s32 func_01ffc2c4(s32, s32);
-s32 func_01ffc31c(s32, s32);
+s32 FX_ModS32(s32, s32);
+s32 FX_DivS32(s32, s32);
 s32 func_ov001_02226c24(void *a, u32 b);
 void func_ov001_02225290(void *a, u32 b, u32 c, u32 d, u32 e, void *f, u32 g);
-void *func_02115fb4(void *, s32, u32);
+void *MI_CpuFill8(void *, s32, u32);
 
 void func_ov001_022118f0();
 void func_ov001_022119c8();
@@ -197,7 +197,7 @@ void func_ov001_02211ae4();
 void func_ov001_0221be7c();
 void func_ov001_0221197c();
 void func_0211172c();
-void func_02111ec8();
+void GX_LoadBGPltt();
 void func_02111a6c();
 
 void func_ov001_02211030();

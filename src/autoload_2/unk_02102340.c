@@ -60,16 +60,16 @@ typedef struct CharCanvas {         // NNSG2dCharCanvas
 
 extern u32 func_02101c6c(Font *font, u32 c);
 extern CharWidths *func_02101c08(Font *font, u32 idx);
-extern void func_02115ea8(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
 extern u32 func_02103734(BitReader *r, u32 nbits);   // bit reader: get n bits
 
 void func_02102b04(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, Glyph *glyph);
 void func_0210287c(CharCanvas *cc, u32 clr);
 void func_0210269c(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h);
-void func_02102448(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGlyphFunc dg, ClearFunc cl, ClearAreaFunc ca, u32 param);
+void InitCharCanvas(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGlyphFunc dg, ClearFunc cl, ClearAreaFunc ca, u32 param);
 
 // NNSi_G2dCharCanvasInitCommon (stores size, color mode, base and the draw/clear callbacks)
-void func_02102448(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGlyphFunc dg, ClearFunc cl, ClearAreaFunc ca, u32 param) {
+void InitCharCanvas(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGlyphFunc dg, ClearFunc cl, ClearAreaFunc ca, u32 param) {
     cc->areaWidth = w;
     cc->areaHeight = h;
     cc->colorMode = mode;
@@ -97,6 +97,6 @@ s32 func_02102388(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, u16 ch) {
 // NNS_G2dCharCanvasInitForOBJ1D (plugs the OBJ 1D mapping draw/clear functions into NNSi_G2dCharCanvasInitCommon;
 // the `param` is the area width in characters)
 void func_02102340(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode) {
-    func_02102448(cc, charBase, w, h, mode, (DrawGlyphFunc)func_02102b04, func_0210287c, func_0210269c, w);
+    InitCharCanvas(cc, charBase, w, h, mode, (DrawGlyphFunc)func_02102b04, func_0210287c, func_0210269c, w);
 }
 

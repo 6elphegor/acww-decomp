@@ -234,8 +234,8 @@ void func_02002398(s32 a, s32 b);
 void func_0200226c(s32 a, s32 b, s32 c, s32 d);
 void func_020024f0(void *a, s32 b, s32 c, s32 d);
 void func_ov002_02203920(void *p);
-void func_02115e48(void *dst, void *src, u32 n);
-void func_02115e30(u16 v, void *dst, u32 n);
+void MIi_CpuCopy16(void *dst, void *src, u32 n);
+void MIi_CpuClear16(u16 v, void *dst, u32 n);
 s32 func_020b86c0(void *a, void *b, s32 c, s32 d, s32 e);
 void func_020b8670(void *a, void *b, u32 c, u32 d);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -1097,9 +1097,9 @@ void Unk_ov145_022937c0::func_ov145_022924dc() {
     s32 r4 = cur & 0xf;
     volatile u16 fill = 0x10;
     s32 i;
-    func_02115e30(fill, unk_1146, 0x800);
+    MIi_CpuClear16(fill, unk_1146, 0x800);
     for (i = 0; i < 9; i++) {
-        func_02115e48(unk_946 + r6 * 0x80, unk_1146 + r4 * 0x80, 0x80);
+        MIi_CpuCopy16(unk_946 + r6 * 0x80, unk_1146 + r4 * 0x80, 0x80);
         r6++;
         if (r6 >= 9) {
             r6 = 0;
@@ -1252,7 +1252,7 @@ BOOL Unk_ov145_022937c0::func_ov145_02292190(u32 pad) {
 }
 
 void Unk_ov145_022937c0::func_ov145_022920b0(u32 t) {
-    func_02115e48(unk_2146, unk_2166, 0x20);
+    MIi_CpuCopy16(unk_2146, unk_2166, 0x20);
     s32 y = unk_2146[7];
     u8 r = y & 0x1f;
     u8 g = (y & 0x3e0) >> 5;

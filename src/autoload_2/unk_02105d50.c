@@ -35,12 +35,12 @@ struct RS {
 extern void func_01ff8bd0(u32, void *, u32);
 extern void func_02105e5c(void *, void *);
 extern s8 data_02135d5c[];
-extern void func_02111110(void);
+extern void G3X_Init(void);
 extern void func_02104338(void);
 extern void func_01ff8ccc(void);
-extern BOOL func_02110e5c(void *);
-extern BOOL func_02110e14(void *);
-extern void func_01ffbf6c(void *, void *);
+extern BOOL G3X_GetClipMtx(void *);
+extern BOOL G3X_GetVectorMtx(void *);
+extern void MTX_Copy44To43_(void *, void *);
 extern void func_02106054(void *, u32, void *);
 extern void func_0210609c(void *, u32, void *);
 extern void func_021060e4(void *, u32, void *);
@@ -90,12 +90,12 @@ void func_02105e5c(void *a, void *b)
     *(volatile u32 *)0x04000454 = 0;
     if (a != NULL) {
         p = buf;
-        while (func_02110e5c(p) != 0) {
+        while (G3X_GetClipMtx(p) != 0) {
         }
-        func_01ffbf6c(buf, a);
+        MTX_Copy44To43_(buf, a);
     }
     if (b != NULL) {
-        while (func_02110e14(b) != 0) {
+        while (G3X_GetVectorMtx(b) != 0) {
         }
     }
     *(volatile u32 *)0x04000448 = 1;
@@ -124,7 +124,7 @@ BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
 // NNS_G3dInit
 void func_02105d98(void)
 {
-    func_02111110();
+    G3X_Init();
     func_02104338();
     *(volatile u32 *)0x04000600 = (*(volatile u32 *)0x04000600 & ~0xc0000000) | 0x80000000;
 }

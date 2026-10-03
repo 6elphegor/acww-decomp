@@ -127,15 +127,15 @@ static inline u32 CP_GetSqrtResult32(void) {
     return reg_CP_SQRT_RESULT;
 }
 
-extern void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z); // MTX_ScaleApply33 (I003a)
+extern void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z); // MTX_ScaleApply33 (I003a)
 /* PROTOS */
-void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z);
+void MTX_ScaleApply43(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z);
 
 /* END PROTOS */
 
 // MTX_ScaleApply43
-void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z) {
-    func_01ffb708((const MtxFx33 *)pSrc, (MtxFx33 *)pDst, x, y, z);
+void MTX_ScaleApply43(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z) {
+    MTX_ScaleApply33((const MtxFx33 *)pSrc, (MtxFx33 *)pDst, x, y, z);
     pDst->_30 = pSrc->_30;
     pDst->_31 = pSrc->_31;
     pDst->_32 = pSrc->_32;

@@ -49,8 +49,8 @@ Unk_ov001_0222df34 *data_ov001_0222df34;
 }
 
 extern "C" {
-s32 func_01ff80e0(s32);
-void func_01ff8128(s32);
+s32 OS_DisableIrqMask(s32);
+void OS_EnableIrqMask(s32);
 void func_0206d49c();
 void func_ov001_02224cfc(Unk_ov001_02224ca0 *, void *);
 Unk_ov001_02224670 *func_ov001_02224ca0(Unk_ov001_02224ca0 *);
@@ -118,7 +118,7 @@ Unk_ov001_02224670 *func_ov001_02224870(s32 which, s32 n, s32 flag) {
     Unk_ov001_02224670 *node;
     s32 irq;
     r = func_ov001_02224ca0(data_ov001_0222df34[which].unk_224);
-    irq = func_01ff80e0(1);
+    irq = OS_DisableIrqMask(1);
     if (flag != 0) {
         for (node = &data_ov001_0222df34[which].unk_200; node != &data_ov001_0222df34[which].unk_210; node = node->unk_04) {
             Unk_ov001_02224670 *next = node->unk_04;
@@ -142,7 +142,7 @@ Unk_ov001_02224670 *func_ov001_02224870(s32 which, s32 n, s32 flag) {
         }
         if (node == &data_ov001_0222df34[which].unk_200) func_0206d49c();
     }
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     r->unk_0c = n;
     return r;
 }

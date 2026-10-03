@@ -31,12 +31,12 @@ struct Unk_ov001_02224ff8_Four {
 };
 
 extern "C" {
-s32 func_01ff80e0(s32);
-void func_01ff8128(s32);
-s32 func_01ffc2c4(s32, s32);
-s32 func_01ffc31c(s32, s32);
-void func_02110a1c(u32, s32);
-s32 func_02110abc(void *, s32, s32);
+s32 OS_DisableIrqMask(s32);
+void OS_EnableIrqMask(s32);
+s32 FX_ModS32(s32, s32);
+s32 FX_DivS32(s32, s32);
+void G2x_ChangeBlendBrightness_(u32, s32);
+s32 G2x_SetBlendBrightness_(void *, s32, s32);
 void func_0206d49c();
 void *func_ov001_02225db0(u32, u32);
 void *func_ov001_02225dd8(u32, u32);
@@ -66,8 +66,8 @@ extern "C" Unk_ov001_02224ff8_Four data_ov001_0222b888 = {{0xf0, 0x00, 0x10, 0x0
 
 void func_ov001_02225118() {
     data_ov001_0222df40 = (Unk_ov001_0222df40 *)func_ov001_02225db0(0x18, 4);
-    func_02110abc((void *)0x4000050, 0x3f, 0x10);
-    func_02110abc((void *)0x4001050, 0x3f, 0x10);
+    G2x_SetBlendBrightness_((void *)0x4000050, 0x3f, 0x10);
+    G2x_SetBlendBrightness_((void *)0x4001050, 0x3f, 0x10);
 }
 
 void func_ov001_02225104() {
@@ -91,9 +91,9 @@ u32 func_ov001_02224ff8(u32 idx, u32 mode, s32 val, u32 h) {
         return 0;
     }
     if (mode == 1) {
-        func_02110abc((void *)0x4001050, val, ((s8 *)arr.v)[idx]);
+        G2x_SetBlendBrightness_((void *)0x4001050, val, ((s8 *)arr.v)[idx]);
     } else {
-        func_02110abc((void *)0x4000050, val, ((s8 *)arr.v)[idx]);
+        G2x_SetBlendBrightness_((void *)0x4000050, val, ((s8 *)arr.v)[idx]);
     }
     p->unk_00 = func_ov001_02227094(1, (void *)func_ov001_02224eb8, p, 0xc8);
     p->unk_04 = 0;
@@ -115,15 +115,15 @@ void func_ov001_02224eb8(s32 a, Unk_ov001_0222df40 *st) {
     hi[2] = data_ov001_0222b880[2];
     hi[3] = data_ov001_0222b880[3];
     st->unk_04 = st->unk_04 + 1;
-    s32 r = func_01ffc31c(st->unk_04 << 4, st->unk_06);
+    s32 r = FX_DivS32(st->unk_04 << 4, st->unk_06);
     u32 f = ((u8 *)lo)[st->unk_08];
     if (f & 1) r = 0x10 - r;
     if (f & 0x10) r = -r;
-    if (st == data_ov001_0222df40) func_02110a1c(0x4001050, r);
-    else func_02110a1c(0x4000050, r);
+    if (st == data_ov001_0222df40) G2x_ChangeBlendBrightness_(0x4001050, r);
+    else G2x_ChangeBlendBrightness_(0x4000050, r);
     if (st->unk_04 < st->unk_06) return;
-    if (st == data_ov001_0222df40) func_02110a1c(0x4001050, hi[st->unk_08]);
-    else func_02110a1c(0x4000050, hi[st->unk_08]);
+    if (st == data_ov001_0222df40) G2x_ChangeBlendBrightness_(0x4001050, hi[st->unk_08]);
+    else G2x_ChangeBlendBrightness_(0x4000050, hi[st->unk_08]);
     st->unk_09 = 0;
     func_ov001_02226fdc(1, a);
 }
@@ -169,24 +169,24 @@ void func_ov001_02224d60(void *a, ...) {
 }
 
 void func_ov001_02224cfc(Unk_ov001_02224ca0 *r, void *v) {
-    s32 irq = func_01ff80e0(1);
-    u32 n = func_01ffc2c4(r->unk_03 + 1, r->unk_00);
+    s32 irq = OS_DisableIrqMask(1);
+    u32 n = FX_ModS32(r->unk_03 + 1, r->unk_00);
     if (n == r->unk_02) func_0206d49c();
     r->unk_04[r->unk_03] = v;
     r->unk_03 = n;
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
 }
 
 Unk_ov001_02224670 *func_ov001_02224ca0(Unk_ov001_02224ca0 *r) {
     Unk_ov001_02224670 *res = 0;
-    s32 irq = func_01ff80e0(1);
+    s32 irq = OS_DisableIrqMask(1);
     u32 t = r->unk_03;
     u32 h = r->unk_02;
     if (h != t) {
-        r->unk_03 = func_01ffc2c4(t + r->unk_00 - 1, r->unk_00);
+        r->unk_03 = FX_ModS32(t + r->unk_00 - 1, r->unk_00);
         res = (Unk_ov001_02224670 *)r->unk_04[r->unk_03];
     }
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     return res;
 }
 

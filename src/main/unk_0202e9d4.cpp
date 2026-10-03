@@ -14,10 +14,10 @@ struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
 extern "C" {
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc538(...);
+s32 FX_Sqrt(...);
 s32 func_01ffcb2c(s32 x, s32 y);
-s32 func_01ffca14(void *a, void *b);
-void func_01ffca8c(void *o, void *a, void *b);
+s32 VEC_DotProduct(void *a, void *b);
+void VEC_Add(void *o, void *a, void *b);
 void func_01ffd070(void *o, void *a, void *b);
 void func_020e93a0(void *v, s16 a);
 void func_020e9960(void *o, void *a, void *b);
@@ -201,7 +201,7 @@ BOOL Unk_0202f7b8::func_0202f7b8(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
         if (disc < 0) {
             return FALSE;
         }
-        s32 s = func_01ffc538(disc);
+        s32 s = FX_Sqrt(disc);
         if (s < 0) {
             s = -s;
         }
@@ -267,8 +267,8 @@ s32 Unk_0202f660::func_0202f708(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
 }
 
 void Unk_0202f660::func_0202f6b4(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
-    s32 a = func_01ffca14(&unk_18, pt);
-    s32 t = -(func_01ffca14(&unk_18, &unk_00) - a);
+    s32 a = VEC_DotProduct(&unk_18, pt);
+    s32 t = -(VEC_DotProduct(&unk_18, &unk_00) - a);
     s32 y, z;
     z = func_01ffcb0c(unk_18.z, t);
     z += unk_00.z;
@@ -281,10 +281,10 @@ void Unk_0202f660::func_0202f6b4(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
 }
 
 BOOL Unk_0202f660::func_0202f660(Unk_0202f660_V3 *pt) {
-    s32 a = func_01ffca14(&unk_18, &unk_00);
-    s32 b = func_01ffca14(&unk_18, pt);
-    s32 c = func_01ffca14(&unk_18, &unk_0c);
-    s32 d = func_01ffca14(&unk_18, pt);
+    s32 a = VEC_DotProduct(&unk_18, &unk_00);
+    s32 b = VEC_DotProduct(&unk_18, pt);
+    s32 c = VEC_DotProduct(&unk_18, &unk_0c);
+    s32 d = VEC_DotProduct(&unk_18, pt);
     if (func_01ffcb0c(b - a, d - c) > 0) {
         return FALSE;
     }
@@ -378,7 +378,7 @@ BOOL Unk_020d8ccc::vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
                 } else {
                     func_020e9888(&v, c - d);
                 }
-                func_01ffca8c(a, &v, a);
+                VEC_Add(a, &v, a);
                 result = TRUE;
                 break;
             }
@@ -540,7 +540,7 @@ s64 Unk_0202f048::func_0202ef84(Unk_0202f048 *p) {
 }
 
 BOOL Unk_0202f048::func_0202ef40() {
-    s32 r = func_01ffc538(func_0202ef84(&data_021bf988));
+    s32 r = FX_Sqrt(func_0202ef84(&data_021bf988));
     if (Unk_0202f2ac_Abs(r) < 4) {
         return FALSE;
     }
@@ -704,7 +704,7 @@ BOOL Unk_020d8ce4::func_0202ea40(Unk_0202f048 *a, Unk_0202f048 *b, s32 c) {
             Unk_0202f048 *dd = &arr[1];
             *dd = *q;
             for (Unk_0202f048 *p = arr; p < arr + 2; p++) {
-                s32 dist = func_01ffc538(p->func_0202ef84(a));
+                s32 dist = FX_Sqrt(p->func_0202ef84(a));
                 if (dist < c) {
                     Unk_0202f048 t;
                     t.func_0202efe4(a, p);

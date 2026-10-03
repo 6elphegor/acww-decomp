@@ -31,7 +31,7 @@ void *_ZN12Unk_02071ed013func_02072040Ev(void *o);
 void func_02001f74(void *a, void *b, u32 c, u32 d, u32 e);
 void func_02002438(void *a, u32 b, u32 c, u32 d, u32 e);
 void func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
-void func_02115e48(void *a, void *b, u32 n);
+void MIi_CpuCopy16(void *a, void *b, u32 n);
 void func_020021a0(u32 x);
 void func_020020b8(u32 x);
 void func_020015b8(u32 x);
@@ -559,7 +559,7 @@ extern "C" void func_ov125_02297d18() {
         void *t = _ZN12Unk_02071c5c13func_02071c68Ej(obj, k);
         t = _ZN12Unk_02071e0413func_02071e04Ev(t);
         t = _ZN12Unk_02071ed013func_02072040Ev(t);
-        func_02115e48(t, (u8 *)buf2 + off * 2, 0x20);
+        MIi_CpuCopy16(t, (u8 *)buf2 + off * 2, 0x20);
         off += 0x10;
         k++;
     } while (k < 8);

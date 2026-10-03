@@ -125,8 +125,8 @@ void func_0210a008(u32 sel, void *out);
 void func_0210d010(void *p, u32 v);
 void func_020eda30(void *p, u32 v);
 void func_020eda60(void *p);
-void func_0210a27c(void *p);
-void func_0210a26c(void *p, s32 v);
+void NNS_SndHandleReleaseSeq(void *p);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a0e8(void *p, u32 a, s32 b);
 void func_0210a0b8(void *p, s32 v);
 void func_02109fd0(void *p, u32 a, s32 b);
@@ -134,9 +134,9 @@ void func_02109fb4(u32 a, s32 b);
 s32 func_020f4904(u32 a, u32 b);
 s32 func_020f48d8(s32 d);
 s32 func_020f4718(u32 a, u32 b);
-u32 func_021172cc(u32 a);
+u32 SND_RecvCommandReply(u32 a);
 void func_021094f8(void);
-void func_02117028(u32 a);
+void SND_FlushCommand(u32 a);
 s32 func_02109f80(void *p, void *out);
 s32 func_02109f4c(void *p, u32 a, void *out);
 void func_020f86c0(Rb *r);
@@ -164,7 +164,7 @@ extern "C" void func_020f8b08(Rb *r, u16 v) {
 
 extern "C" void func_020f8ae8(Rb *r) {
     func_020eda30(r, 0);
-    func_0210a27c(r);
+    NNS_SndHandleReleaseSeq(r);
 }
 
 extern "C" void func_020f8a80(Rb *r, u32 mode) {
@@ -298,7 +298,7 @@ extern "C" void func_020f8604(Rb *r, void *arg) {
     if (arg == 0) return;
     a = func_020f48d8(func_020f4904((u32)arg, 0));
     b = func_020f4718((u32)arg, 0);
-    func_0210a26c(r, a);
+    NNS_SndPlayerSetVolume(r, a);
     func_0210a0e8(r, 15, b);
     if (data_021f5b80.q == 0) return;
     s32 x = func_01ffc5a4(data_021f5b80.q->s16v << 20, 0x78000) >> 12;
@@ -426,10 +426,10 @@ void Unk_0213bb90::vfunc_00() {
 void Unk_0213bb90::start() {
     Hr *const h = &data_021f5bbc;
     u16 buf[8];
-    while (func_021172cc(0) != 0)
+    while (SND_RecvCommandReply(0) != 0)
         ;
     func_021094f8();
-    func_02117028(0);
+    SND_FlushCommand(0);
     if (func_02109f80(h, buf) == 0) return;
     h14 = buf[3];
     w4 = func_01ffc5a4(0x258000, (s32)h14 << 12);

@@ -13,7 +13,7 @@ extern u8 data_027e0000[];
 extern u8 data_027e0434;
 extern u8 data_027e0438[];
 
-void func_021136a0(void *queue); // OS_WakeupThread
+void OS_WakeupThread(void *queue); // OS_WakeupThread
 void func_020b83f0(void);
 void func_0205b714(void);
 }
@@ -43,13 +43,13 @@ extern "C" void func_01ffcc60(void) {
     data_021cb3dc++;
     if (data_021cb3dc >= data_020dc520) {
         if (data_021cb3c0 != 0) {
-            func_021136a0(data_021cb3ec);
+            OS_WakeupThread(data_021cb3ec);
             data_021cb3dc = 0;
             func_020b83f0();
         }
     }
     func_0205b714();
-    func_021136a0(data_021cb3e4);
+    OS_WakeupThread(data_021cb3e4);
     *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= 1;
 }
 

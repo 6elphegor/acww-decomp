@@ -24,9 +24,9 @@ static inline void Unk_ov001_0221381c_Clr(volatile u16 *p) {
 
 #pragma thumb off
 extern "C" {
-extern u8 func_02111df8[];
+extern u8 GX_LoadOBJPltt[];
 extern u8 func_0211172c[];
-extern u8 func_02111ec8[];
+extern u8 GX_LoadBGPltt[];
 extern u8 func_02111a6c[];
 
 s32 func_ov001_02225238(void *a, s32 b);
@@ -128,9 +128,9 @@ void func_ov001_02213f84() {
 }
 
 void func_ov001_02213ea8() {
-    func_ov001_02208594("char/ybObjKb.ncl.l", func_02111df8);
+    func_ov001_02208594("char/ybObjKb.ncl.l", GX_LoadOBJPltt);
     func_ov001_02208594("char/jbBgStep3.ncg.l", func_0211172c);
-    func_ov001_02208594("char/ybBgStep3.ncl.l", func_02111ec8);
+    func_ov001_02208594("char/ybBgStep3.ncl.l", GX_LoadBGPltt);
     func_ov001_02208594("char/xb4Edit.nsc.l", func_02111a6c);
     *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
     *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
@@ -250,7 +250,7 @@ void func_ov001_02213930() {
     func_ov001_02208244();
     func_ov001_022267c8(data_ov001_0222de78->unk_04);
     func_ov001_022253d4(0);
-    func_ov001_02208594("char/ybObjMain.ncl.l", func_02111df8);
+    func_ov001_02208594("char/ybObjMain.ncl.l", GX_LoadOBJPltt);
     func_ov001_02225c58(1, 1);
     func_ov001_02225c58(0, 0x15);
     func_ov001_0220c5f0(&a, &b);

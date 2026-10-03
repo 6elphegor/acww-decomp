@@ -122,12 +122,12 @@ typedef struct MBBig {
 
 extern MBBig *data_0220001c;
 extern u8 data_021fff80;
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32 irq);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32 irq);
 extern BOOL func_02124888(void);
 extern BOOL func_02123368(void *dst, void *seg);
 extern BOOL func_021269f8(void);
-extern void func_021269e4(void *p);
+extern void MBi_InitTaskInfo(void *p);
 extern void func_02126a14(void *p, u32 len);
 
 extern MBBeacon data_021fffa0;
@@ -138,26 +138,26 @@ extern void (*data_021fff88)(u32);
 extern u32 data_021fff84;
 extern u8 data_021fffb0[4][22];
 extern u32 func_02123edc(const u16 *p, int len);
-extern void func_02121a24(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
+extern void WM_SetGameInfo(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
 
-extern void func_02115e30(u32 value, void *dst, u32 size);
-extern void func_02115e48(const void *src, void *dst, u32 size);
-extern void func_02115ea8(u32 value, void *dst, u32 size);
-extern void func_02119d78(FSFile *file);
-extern BOOL func_02119a28(FSFile *file, const char *path);
+extern void MIi_CpuClear16(u32 value, void *dst, u32 size);
+extern void MIi_CpuCopy16(const void *src, void *dst, u32 size);
+extern void MIi_CpuClearFast(u32 value, void *dst, u32 size);
+extern void FS_InitFile(FSFile *file);
+extern BOOL FS_OpenFile(FSFile *file, const char *path);
 extern s32 func_021198b4(FSFile *file, void *dst, s32 len);
-extern BOOL func_02119848(FSFile *file, s32 pos, u32 origin);
-extern void func_021145cc(void *addr, u32 len);
+extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
+extern void DC_FlushRange(void *addr, u32 len);
 extern void func_021145f0(void);
-extern void func_02115fb4(void *dst, u32 value, u32 size);
-extern void func_02116048(const void *src, void *dst, u32 size);
+extern void MI_CpuFill8(void *dst, u32 value, u32 size);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void func_0206d49c(void);
 extern u32 data_0213a3ec[3];
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 extern void func_021267d4(void *ctx);
 extern void func_02126760(void *ctx, u32 addr, u32 len, void *data, u32 mode);
-extern void func_021145cc(void *addr, u32 len);
+extern void DC_FlushRange(void *addr, u32 len);
 typedef struct MBRegion {
     u32 start;
     u32 len;
@@ -165,11 +165,11 @@ typedef struct MBRegion {
 extern MBRegion *data_0213c204;
 extern char data_0213c208[];
 extern u8 AutoloadCallback[];
-extern void *func_021191f0(const char *name, int len);
-extern BOOL func_02119af4(FSFile *file, void *arc, u32 top, u32 bottom, int id);
+extern void *FS_FindArchive(const char *name, int len);
+extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
 extern void func_02124930(void *p, u32 a, u32 b);
-extern void func_021199e0(FSFile *file);
-extern u32 func_021245c4(const u16 *s);
+extern void FS_CloseFile(FSFile *file);
+extern u32 mystrlen(const u16 *s);
 extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
 
 extern void func_02124528(void);
@@ -183,7 +183,7 @@ extern void func_02123958(u32 *seg, u32 lo, u32 hi, int clear);
 extern void func_02124724(MBBuf *b, const u32 *info, const void *name);
 extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
 extern void func_021245ec(MBBuf *b, const void *src, u32 mask, u32 w);
-extern u32 func_021245c4(const u16 *s);
+extern u32 mystrlen(const u16 *s);
 extern void func_02124580(MBBuf *b);
 extern void func_0212454c(void);
 extern void func_02124528(void);
@@ -212,9 +212,9 @@ void func_02123958(u32 *seg, u32 lo, u32 hi, int clear) {
     if (hi > base + len) hi = base + len;
     if (lo >= hi) return;
     if (clear) {
-        func_02115fb4((u8 *)seg[2] + lo, 0, hi - lo);
+        MI_CpuFill8((u8 *)seg[2] + lo, 0, hi - lo);
     } else {
-        func_02116048((u8 *)seg[1] + lo, (u8 *)seg[2] + lo, hi - lo);
+        MI_CpuCopy8((u8 *)seg[1] + lo, (u8 *)seg[2] + lo, hi - lo);
     }
 }
 
@@ -222,21 +222,21 @@ void func_02123958(u32 *seg, u32 lo, u32 hi, int clear) {
 BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
     MBEnt *e;
     u8 idx = 0xff;
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     u32 off;
     u8 i;
     u8 seq;
     if (func_02124888() == 0) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
     if (data_0220001c->count + 1 > 16) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
     for (i = 0; i < 16; i = (u8)(i + 1)) {
         if (data_0220001c->ent[i].key == key) {
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 0;
         }
         if (data_0220001c->ent[i].used == 0) {
@@ -245,16 +245,16 @@ BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
         }
     }
     if (i == 16) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
     off = idx * sizeof(MBEnt);
     data_0220001c->ent[idx].key = key;
     e = (MBEnt *)((u8 *)data_0220001c + 0x1788 + off);
     func_021235fc(&e->seg, info);
-    func_02116048(key + 0x1c, e->name, 0x20);
+    MI_CpuCopy8(key + 0x1c, e->name, 0x20);
     if (func_02123368((u8 *)data_0220001c + 0x1d2c + off, e) == 0) {
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
     func_02124724((MBBuf *)((u8 *)data_0220001c + 0x186c + off), (const u32 *)key, data_0220001c->f1300 - 0 + 0);
@@ -269,13 +269,13 @@ BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
     data_0220001c->ent[idx].p1 = (const u8 *)info + 0x258;
     if (((const u32 *)data_0220001c->ent[idx].p0)[0x6c / 4] != 0) {
         if (func_021269f8() == 0) {
-            func_021269e4((u8 *)data_0220001c + 0x7ce0);
+            MBi_InitTaskInfo((u8 *)data_0220001c + 0x7ce0);
             func_02126a14((u8 *)data_0220001c + 0x74e0, 0x800);
         }
     }
     data_0220001c->ent[idx].used = 1;
     data_0220001c->count++;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return 1;
 }
 
@@ -296,7 +296,7 @@ void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom) {
         o++;
         m++;
     }
-    func_02116048(src, dst->hdr, 0x88);
+    MI_CpuCopy8(src, dst->hdr, 0x88);
 }
 
 // MB parent: validate one segment of the ROM header

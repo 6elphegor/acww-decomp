@@ -133,10 +133,10 @@ extern u8 data_021ef5ec;
 extern u8 data_021ef5f0;
 extern void *data_021f482c;
 
-void func_02115e48(void *dst, void *src, u32 n);
-void func_02115e30(u32 v, void *dst, u32 n);
-void func_02115fb4(void *dst, s32 v, s32 n);
-void func_02116048(const void *src, void *dst, s32 n);
+void MIi_CpuCopy16(void *dst, void *src, u32 n);
+void MIi_CpuClear16(u32 v, void *dst, u32 n);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void func_020b87d0(void *p);
 BOOL func_020b86c0(void *a, void *b, u32 c, u32 d, u32 e);
 BOOL func_020b8670(void *a, void *b, u32 c, u32 d);
@@ -740,7 +740,7 @@ void Unk_ov146_02294080::func_ov146_0229352c() {
     func_0200261c("menu/wfc/bg.bch", p, 6, 0x11, 0x11, 0x5c);
     func_020026c4("menu/wfc/bg.bpl", p, 6, 1, 1, 8);
     func_020641b4("menu/wfc/bg7.bpl", unk_138a, 0x20);
-    func_02115e48(unk_138a, unk_13aa, 0x20);
+    MIi_CpuCopy16(unk_138a, unk_13aa, 0x20);
     func_02002654("menu/wfc/a_bg.bsc", p, 6);
     func_020641b4("menu/wfc/b_bg.bsc", unk_38a, 0x800);
     func_0206ee80(unk_38a, 5, 7, 0xe, 0x14, 7);
@@ -1149,14 +1149,14 @@ void Unk_ov146_02294080::func_ov146_02292aa0() {
     s32 i;
     u8 *tbl;
     s32 z;
-    func_02115fb4(unk_12a, 0, 0x260);
+    MI_CpuFill8(unk_12a, 0, 0x260);
     tbl = (u8 *)func_ov146_02292b1c();
     i = 0;
     z = 0;
     do {
         u8 *rec = tbl + 0x180 + i * 0x13;
         if (func_ov146_022928a8(rec)) {
-            func_02116048(rec, unk_12a + (u32)i * 0x13, 0x13);
+            MI_CpuCopy8(rec, unk_12a + (u32)i * 0x13, 0x13);
             unk_10a[i] = 0x14;
         } else {
             unk_10a[i] = z;
@@ -1178,7 +1178,7 @@ void Unk_ov146_02294080::func_ov146_02292970() {
                 }
             } else {
                 unk_10a[i] = 0;
-                func_02116048(tbl + 0x180 + off, unk_12a + (u32)i * 0x13, 0x13);
+                MI_CpuCopy8(tbl + 0x180 + off, unk_12a + (u32)i * 0x13, 0x13);
             }
             cnt++;
         } else {
@@ -1290,11 +1290,11 @@ void Unk_ov146_02294080::func_ov146_022927ac(s32 v) {
 
 void Unk_ov146_02294080::func_ov146_02292744() {
     volatile u16 z = 0x10;
-    func_02115e30(z, (u8 *)this + 0xb8a, 0x800);
+    MIi_CpuClear16(z, (u8 *)this + 0xb8a, 0x800);
     for (s32 i = 0; i < 7; i++) {
         s32 v = unk_ae + i;
         s32 m = v % 7;
-        func_02115e48((u8 *)this + 0x38a + ((m * 2 + 7) << 6), (u8 *)this + 0xb8a + ((v & 0xf) << 7), 0x80);
+        MIi_CpuCopy16((u8 *)this + 0x38a + ((m * 2 + 7) << 6), (u8 *)this + 0xb8a + ((v & 0xf) << 7), 0x80);
     }
     func_ov146_02292020(2);
 }

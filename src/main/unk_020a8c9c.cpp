@@ -788,19 +788,19 @@ void func_02111b3c(void *p, u32 a, u32 size);
 }
 
 extern "C" {
-void func_02111ec8(void *p, u32 a, u32 size);
+void GX_LoadBGPltt(void *p, u32 a, u32 size);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 size);
+void DC_FlushRange(void *p, u32 size);
 }
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
@@ -808,15 +808,15 @@ s32 func_021198b4(void *file, void *buf, u32 size);
 }
 
 extern "C" {
-s32 func_021199e0(void *file);
+s32 FS_CloseFile(void *file);
 }
 
 extern "C" {
-s32 func_02119a28(void *file, const char *path);
+s32 FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
-void func_02119d78(void *file);
+void FS_InitFile(void *file);
 }
 
 extern "C" {
@@ -962,7 +962,7 @@ Unk_020e2c98::~Unk_020e2c98() {
 }
 
 BOOL Unk_020e2c98::func_020ab8f4(void *file) {
-    s32 opened = func_02119a28(file, "/a_mes/a_mes1a_bg_nsc.bin");
+    s32 opened = FS_OpenFile(file, "/a_mes/a_mes1a_bg_nsc.bin");
     BOOL ok;
     unk_04 = (u8 *)func_020e8594(0x800);
     if (unk_04) {
@@ -970,7 +970,7 @@ BOOL Unk_020e2c98::func_020ab8f4(void *file) {
     } else {
         ok = FALSE;
     }
-    s32 closed = func_021199e0(file);
+    s32 closed = FS_CloseFile(file);
     if (opened && ok && closed && unk_04) {
         return TRUE;
     }
@@ -980,7 +980,7 @@ BOOL Unk_020e2c98::func_020ab8f4(void *file) {
 BOOL Unk_020e2c98::func_020ab8cc() {
     BOOL r = FALSE;
     u8 file[0x4c];
-    func_02119d78(file);
+    FS_InitFile(file);
     if (func_020ab8f4(file)) {
         r = TRUE;
     }
@@ -995,14 +995,14 @@ void Unk_020e2c98::func_020ab8ac() {
 }
 
 void func_020ab8a0(void *p, u32 n) {
-    func_02115fb4(p, 0x10, n);
+    MI_CpuFill8(p, 0x10, n);
 }
 
 void Unk_020e2c98::func_020ab720() {
-    func_02116048(unk_04 + 0x2a2, unk_04 + 0x3a2, 0x1a);
-    func_02116048(unk_04 + 0x2e2, unk_04 + 0x3e2, 0x1a);
-    func_02116048(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
-    func_02116048(unk_04 + 0x51e, unk_04 + 0x41e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x2a2, unk_04 + 0x3a2, 0x1a);
+    MI_CpuCopy8(unk_04 + 0x2e2, unk_04 + 0x3e2, 0x1a);
+    MI_CpuCopy8(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x51e, unk_04 + 0x41e, 0x22);
     *(u16 *)(unk_04 + 0x39e) = *(u16 *)(unk_04 + 0x29e);
     *(u16 *)(unk_04 + 0x3a0) = *(u16 *)(unk_04 + 0x2a0);
     *(u16 *)(unk_04 + 0x3be) = *(u16 *)(unk_04 + 0x2be);
@@ -1025,12 +1025,12 @@ void Unk_020e2c98::func_020ab720() {
 }
 
 void Unk_020e2c98::func_020ab628() {
-    func_02116048(unk_04 + 0x29e, unk_04 + 0x39e, 0x22);
-    func_02116048(unk_04 + 0x2de, unk_04 + 0x3de, 0x22);
-    func_02116048(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
-    func_02116048(unk_04 + 0x49e, unk_04 + 0x41e, 0x22);
-    func_02116048(unk_04 + 0x4de, unk_04 + 0x45e, 0x22);
-    func_02116048(unk_04 + 0x51e, unk_04 + 0x49e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x29e, unk_04 + 0x39e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x2de, unk_04 + 0x3de, 0x22);
+    MI_CpuCopy8(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x49e, unk_04 + 0x41e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x4de, unk_04 + 0x45e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x51e, unk_04 + 0x49e, 0x22);
     func_020ab8a0(unk_04 + 0x25e, 0x22);
     func_020ab8a0(unk_04 + 0x29e, 0x22);
     func_020ab8a0(unk_04 + 0x2de, 0x22);
@@ -1043,9 +1043,9 @@ void Unk_020e2c98::func_020ab628() {
 }
 
 void Unk_020e2c98::func_020ab58c() {
-    func_02116048(unk_04 + 0x29e, unk_04 + 0x39e, 0x22);
-    func_02116048(unk_04 + 0x2de, unk_04 + 0x3de, 0x22);
-    func_02116048(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x29e, unk_04 + 0x39e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x2de, unk_04 + 0x3de, 0x22);
+    MI_CpuCopy8(unk_04 + 0x25e, unk_04 + 0x35e, 0x22);
     func_020ab8a0(unk_04 + 0x25e, 0x22);
     func_020ab8a0(unk_04 + 0x29e, 0x22);
     func_020ab8a0(unk_04 + 0x2de, 0x22);
@@ -1056,9 +1056,9 @@ void Unk_020e2c98::func_020ab58c() {
 }
 
 void Unk_020e2c98::func_020ab510() {
-    func_02116048(unk_04 + 0x29e, unk_04 + 0x31e, 0x22);
-    func_02116048(unk_04 + 0x2de, unk_04 + 0x35e, 0x22);
-    func_02116048(unk_04 + 0x25e, unk_04 + 0x2de, 0x22);
+    MI_CpuCopy8(unk_04 + 0x29e, unk_04 + 0x31e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x2de, unk_04 + 0x35e, 0x22);
+    MI_CpuCopy8(unk_04 + 0x25e, unk_04 + 0x2de, 0x22);
     func_020ab8a0(unk_04 + 0x25e, 0x22);
     func_020ab8a0(unk_04 + 0x29e, 0x22);
     func_020ab47c(0xb, 0x14);
@@ -1105,14 +1105,14 @@ void Unk_020e2c98::func_020ab448() {
 }
 
 void Unk_020e2c98::func_020ab428() {
-    func_021145cc(unk_04, 0x800);
+    DC_FlushRange(unk_04, 0x800);
     func_02111b3c(unk_04, 0, 0x800);
 }
 
 void Unk_020e2c98::func_020ab3fc() {
     if (unk_12) {
-        func_021145cc(unk_08, 10);
-        func_02111ec8(unk_08, 0x82, 10);
+        DC_FlushRange(unk_08, 10);
+        GX_LoadBGPltt(unk_08, 0x82, 10);
         unk_12 = 0;
     }
 }
@@ -1526,7 +1526,7 @@ void Unk_020aa72c::func_020aa7a4() {
     unk_08.func_020a7c3c();
     func_020a7258(&unk_3c);
     unk_48 = data_021edb68;
-    func_02115fb4(unk_49, 0, 0x1a);
+    MI_CpuFill8(unk_49, 0, 0x1a);
     unk_63 = 0;
     unk_64 = 0;
 }
@@ -1600,7 +1600,7 @@ void Unk_020aa3b8::func_020aa5f4() {
 void Unk_020aa3b8::func_020aa59c() {
     unk_210 = -1;
     unk_214 = data_021edb68;
-    func_02115fb4(unk_215, 0, 0x1a);
+    MI_CpuFill8(unk_215, 0, 0x1a);
     unk_230.func_020a7c3c();
     func_020a7258(&unk_264);
     unk_270 = 0;

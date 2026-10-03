@@ -110,26 +110,26 @@ extern Unk_ov065_0226eacc_Tbl data_021fcc2c;
 
 s32 func_0212a438(const char *s);
 char *func_02129f1c(const char *hay, const char *needle);
-void func_02115fb4(void *dst, u32 v, u32 n);
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuFill8(void *dst, u32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_021289b4(void *dst, void *src, u32 n);
 s32 func_0212b770(const char *s);
-s32 func_02113088(char *buf, s32 size, const char *fmt, ...);
+s32 OS_SNPrintf(char *buf, s32 size, const char *fmt, ...);
 void func_021132e0(s32 ms);
-void func_021157f4(void *p);
+void OS_GetLowEntropyData(void *p);
 u32 func_0211337c(u32 v);
-s32 func_02114480(void *m);
-s32 func_02114410(void *m);
-s32 func_0211450c(void *m);
-s32 func_02113788(void *t);
-s32 func_02113774(void *t);
-s32 func_0211366c(void *t);
+s32 OS_LockMutex(void *m);
+s32 OS_UnlockMutex(void *m);
+s32 OS_InitMutex(void *m);
+s32 OS_JoinThread(void *t);
+s32 OS_IsThreadTerminated(void *t);
+s32 OS_WakeupThreadDirect(void *t);
 s32 func_02113a70(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 s32 func_0212a190(const char *a, const char *b);
 char *func_0212a360(char *dst, const char *src);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
-s32 func_0212a15c(const char *a, const char *b, u32 n);
+s32 strncmp(const char *a, const char *b, u32 n);
 
 // other TUs
 s32 func_ov065_0226f9e0(const char *s, s32 len, char *dst, u32 size);
@@ -182,7 +182,7 @@ void *data_ov065_0228b93c[11] = {data_ov065_0228c4a0, data_ov065_0228c374, data_
 s32 data_ov065_02290618;
 
 s32 func_ov065_0226ebe4(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
-    func_02115fb4(c, 0, 0x1a60);
+    MI_CpuFill8(c, 0, 0x1a60);
     c->unk_960 = -1;
     *(Unk_ov065_0226e3ac_Cfg *)&c->unk_04 = *cfg;
     c->unk_91c = c->unk_14("http->lowrecvbuf", 0xb68);
@@ -211,7 +211,7 @@ s32 func_ov065_0226eb6c(Unk_ov065_0226e3ac_Ctx *c) {
     }
     n = func_0212a438(func_02129f1c((char *)c->unk_928.unk_00, "\r\n\r\n") + 4);
     if (n != 0) {
-        func_02113088(buf, 7, "%d", n);
+        OS_SNPrintf(buf, 7, "%d", n);
         if (func_ov065_0226e3ac(c, "Content-Length", buf) != 0) {
             return 1;
         }
@@ -222,37 +222,37 @@ s32 func_ov065_0226eb6c(Unk_ov065_0226e3ac_Ctx *c) {
 void func_ov065_0226eacc(Unk_ov065_0226e3ac_Ctx *c) {
     u32 prio = func_0211337c(data_021fcc2c.unk_04);
     c->unk_a40 = 0;
-    func_0211450c(&c->unk_a28);
-    func_0211450c(&c->unk_948);
+    OS_InitMutex(&c->unk_a28);
+    OS_InitMutex(&c->unk_948);
     if (c->unk_1c == 1) {
         data_ov065_02290618 = 1;
     } else {
         data_ov065_02290618 = 0;
     }
-    if (c->unk_9d4 == 0 || func_02113774(&c->unk_968) != 0) {
+    if (c->unk_9d4 == 0 || OS_IsThreadTerminated(&c->unk_968) != 0) {
         func_02113a70(&c->unk_968, (s32 (*)(void *))func_ov065_0226e554, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
-        func_0211366c(&c->unk_968);
+        OS_WakeupThreadDirect(&c->unk_968);
     }
 }
 
 void func_ov065_0226ea84(Unk_ov065_0226e3ac_Ctx *c) {
     if (c->unk_00 == 0xff) {
-        func_02114480(&c->unk_a28);
+        OS_LockMutex(&c->unk_a28);
         c->unk_a40 = 1;
-        func_02114410(&c->unk_a28);
+        OS_UnlockMutex(&c->unk_a28);
         if (c->unk_9d4 != 0) {
-            func_02113788(&c->unk_968);
+            OS_JoinThread(&c->unk_968);
         }
     }
 }
 
 s32 func_ov065_0226ea40(Unk_ov065_0226e3ac_Ctx *c) {
-    func_02114480(&c->unk_a28);
+    OS_LockMutex(&c->unk_a28);
     if (c->unk_a40 == 1) {
-        func_02114410(&c->unk_a28);
+        OS_UnlockMutex(&c->unk_a28);
         return 0;
     }
-    func_02114410(&c->unk_a28);
+    OS_UnlockMutex(&c->unk_a28);
     func_021132e0(10);
     return 1;
 }
@@ -280,7 +280,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     if (timeout <= 0) {
         timeout = 0xea60;
     }
-    func_02115fb4(conn, 0, 0x64);
+    MI_CpuFill8(conn, 0, 0x64);
     conn->unk_3c = 0xb68;
     conn->unk_40 = c->unk_91c;
     conn->unk_48 = 0x5ea;
@@ -302,7 +302,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     func_ov065_022629b0();
     u32 port;
     if (c->unk_b0 == 1) {
-        func_02115fb4(ssl, 0, 0x804);
+        MI_CpuFill8(ssl, 0, 0x804);
         ssl->unk_7e4 = func_ov065_0226e25c;
         ssl->unk_7d4 = c->unk_a8;
         conn->unk_0c = ssl;
@@ -313,9 +313,9 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
         port = 0x50;
     }
     func_ov065_022629d0(0, (u16)port, host);
-    start = func_01ffa6b4();
+    start = OS_GetTick();
     if (c->unk_b0 == 1) {
-        func_021157f4(tmp);
+        OS_GetLowEntropyData(tmp);
         func_ov065_02265950(tmp, 0x20);
         mark = start;
     }
@@ -353,7 +353,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 goto fail;
             }
             func_ov065_022622c0();
-            u64 now = func_01ffa6b4();
+            u64 now = OS_GetTick();
             u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
                 c->unk_24 = 4;
@@ -362,7 +362,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
             if (c->unk_b0 == 1) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
-                    func_021157f4(tmp);
+                    OS_GetLowEntropyData(tmp);
                     func_ov065_02265950(tmp, 0x20);
                     mark = now;
                 }
@@ -375,11 +375,11 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
         } while (c->unk_928.unk_04 < c->unk_928.unk_08);
     }
     func_ov065_0226e1e8(c, &c->unk_928);
-    func_02114480(&c->unk_948);
+    OS_LockMutex(&c->unk_948);
     if (c->unk_0c == NULL) {
         if (func_ov065_0226e210(c, &c->unk_938, c->unk_10) == 0) {
             c->unk_24 = 1;
-            func_02114410(&c->unk_948);
+            OS_UnlockMutex(&c->unk_948);
             goto fail;
         }
     } else {
@@ -390,23 +390,23 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     }
     rb->unk_04 = rb->unk_00;
     rb->unk_08 = rb->unk_00 + rb->unk_0c;
-    func_02114410(&c->unk_948);
+    OS_UnlockMutex(&c->unk_948);
     {
         for (;;) {
             if (data_ov065_0228ebd8 == 0) {
                 c->unk_24 = 5;
                 goto fail;
             }
-            func_02114480(&c->unk_948);
+            OS_LockMutex(&c->unk_948);
             if (rb->unk_04 >= rb->unk_08 - 1) {
-                func_02114410(&c->unk_948);
+                OS_UnlockMutex(&c->unk_948);
                 goto done8;
             }
             len = func_ov065_022622ec();
             if (len > 0) {
                 data = func_ov065_022626b8((u32 *)&len);
                 if (data == NULL) {
-                    func_02114410(&c->unk_948);
+                    OS_UnlockMutex(&c->unk_948);
                     goto done8;
                 }
                 s32 room = rb->unk_08 - 1 - rb->unk_04;
@@ -414,7 +414,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 if (got >= room) {
                     got = room;
                 }
-                func_02116048(data, rb->unk_04, got);
+                MI_CpuCopy8(data, rb->unk_04, got);
                 rb->unk_04 = rb->unk_04 + got;
                 *rb->unk_04 = 0;
                 if (hdr != 1) {
@@ -435,35 +435,35 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 }
                 if ((u32)len > (u32)got) {
                     func_ov065_02262640(len);
-                    func_02114410(&c->unk_948);
+                    OS_UnlockMutex(&c->unk_948);
                     goto done8;
                 }
                 func_ov065_02262640(got);
             }
             if (len < 0) {
-                func_02114410(&c->unk_948);
+                OS_UnlockMutex(&c->unk_948);
                 goto done8;
             }
             if (c->unk_960 > 0 && len > 0 && (u8 *)c->unk_964 + c->unk_960 <= rb->unk_04) {
-                func_02114410(&c->unk_948);
+                OS_UnlockMutex(&c->unk_948);
                 goto done8;
             }
-            u64 now = func_01ffa6b4();
+            u64 now = OS_GetTick();
             u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
                 c->unk_24 = 6;
-                func_02114410(&c->unk_948);
+                OS_UnlockMutex(&c->unk_948);
                 goto fail;
             }
             if (c->unk_b0 == 1) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
-                    func_021157f4(tmp);
+                    OS_GetLowEntropyData(tmp);
                     func_ov065_02265950(tmp, 0x20);
                     mark = now;
                 }
             }
-            func_02114410(&c->unk_948);
+            OS_UnlockMutex(&c->unk_948);
             if (func_ov065_0226ea40(c) == 0) {
                 c->unk_24 = 7;
                 goto fail;
@@ -499,7 +499,7 @@ void func_ov065_0226e4dc(Unk_ov065_0226e3ac_Ctx *c) {
             c->unk_18("http->lowsendbuf", c->unk_920, 0);
             c->unk_920 = NULL;
         }
-        func_02115fb4(c, 0, 0x1a60);
+        MI_CpuFill8(c, 0, 0x1a60);
     }
 }
 
@@ -513,7 +513,7 @@ s32 func_ov065_0226e44c(Unk_ov065_0226e3ac_Ctx *c) {
     if (func_ov065_0226e210(c, &c->unk_928, sz) != 1) {
         return 1;
     }
-    r = func_02113088((char *)b->unk_04, b->unk_0c, fmt, c->unk_ac, c->unk_a8);
+    r = OS_SNPrintf((char *)b->unk_04, b->unk_0c, fmt, c->unk_ac, c->unk_a8);
     b->unk_04 = b->unk_04 + r;
     return 0;
 }
@@ -534,7 +534,7 @@ s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a
     p = func_02129f1c((char *)b->unk_00, "\r\n\r\n") + 2;
     saved = p[0];
     func_021289b4(p + n, p, func_0212a438(p) + 1);
-    s32 r = func_02113088(p, n + 1, "%s: %s\r\n", a1, a2);
+    s32 r = OS_SNPrintf(p, n + 1, "%s: %s\r\n", a1, a2);
     p[r] = saved;
     b->unk_04 = b->unk_04 + n;
     return 0;
@@ -555,7 +555,7 @@ s32 func_ov065_0226e2e4(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32
         }
         avail = b->unk_08 - b->unk_04;
     }
-    r = func_02113088((char *)b->unk_04, avail, fmt, a1);
+    r = OS_SNPrintf((char *)b->unk_04, avail, fmt, a1);
     b->unk_04 = b->unk_04 + r;
     if (func_ov065_0226fb08(a2, a3, b->unk_04, b->unk_08 - b->unk_04 - 1) < 0) {
         return 1;
@@ -576,7 +576,7 @@ s32 func_ov065_0226e274(Unk_ov065_0226e170_Ctx *c, const char *s) {
         }
         avail = b->unk_08 - b->unk_04;
     }
-    r = func_02113088((char *)b->unk_04, avail, "%s", s);
+    r = OS_SNPrintf((char *)b->unk_04, avail, "%s", s);
     if (r != n) {
         return 1;
     }
@@ -609,7 +609,7 @@ void func_ov065_0226e1e8(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b) {
     if (b->unk_00 != NULL) {
         c->unk_18("DWCHttpBuffer", b->unk_00, 0);
     }
-    func_02115fb4(b, 0, 0x10);
+    MI_CpuFill8(b, 0, 0x10);
 }
 
 s32 func_ov065_0226e170(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
@@ -621,7 +621,7 @@ s32 func_ov065_0226e170(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s3
     if (p == NULL) {
         return 0;
     }
-    func_02116048(b->unk_00, p, b->unk_0c);
+    MI_CpuCopy8(b->unk_00, p, b->unk_0c);
     c->unk_18(NULL, b->unk_00, 0);
     if (p == NULL) {
         return 0;
@@ -686,7 +686,7 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
     l.unk_00 = tbl;
     l.unk_04 = n;
     l.unk_08 = 0;
-    func_02115fb4(tbl, 0, n * 8);
+    MI_CpuFill8(tbl, 0, n * 8);
     p = func_02129f1c(text, "\r\n\r\n");
     if (p == NULL) {
         return 0;
@@ -701,7 +701,7 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
     if (func_ov065_0226e07c(&l, "httpresult", r) != 1) {
         return 0;
     }
-    if (flag == 1 || func_0212a15c(r, "200", 3) != 0) {
+    if (flag == 1 || strncmp(r, "200", 3) != 0) {
         if (func_ov065_0226e07c(&l, "httpbody", p + 4) != 1) {
             return 0;
         }

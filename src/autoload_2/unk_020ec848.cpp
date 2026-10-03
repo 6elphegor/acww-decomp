@@ -129,7 +129,7 @@ extern SceneDesc **data_021f59e4;
 
 void func_020e85fc(Unk_020e8b94 *heap, void *p);
 void *func_020e8608(Unk_020e8b94 *heap, u32 size);
-void func_02114e48(void);
+void OS_InitTick(void);
 void *func_020e8b94(Unk_020e8b94 *self, u32 size, s32 align);
 void func_020e8c94(Unk_020e8b94 *self);
 void func_020e8c88(Unk_020e8b94 *self);
@@ -146,7 +146,7 @@ TreeNode *func_020e7b80(TreeNode *n);
 void func_020ed5c0(QList *l, QNode *n);
 void func_020ed8cc(void *p);
 BOOL func_020ed7e4(void *p);
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 TreeNode *func_01ffcfc0(TreeNode *n);
 TreeNode *func_01ffcffc(TreeNode *n);
 u32 func_01ffd44c(void *p, P2 a, P2 b, P2 c);
@@ -449,7 +449,7 @@ extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_3cEv(Unk_020d8c7c_Base *self) {
 extern "C" void *_ZN17Unk_020d8c7c_BasenwEm(u32 size) {
     void *p = func_020e8b94(data_021f4818, size, -4);
     if (p == NULL) return NULL;
-    func_02115fb4(p, 0, size);
+    MI_CpuFill8(p, 0, size);
     return p;
 }
 
@@ -538,7 +538,7 @@ extern "C" Unk_020d8c7c_Base *func_020ec8bc(u32 a, u32 b, u32 c) {
 }
 
 extern "C" void func_020ec8b0(void) {
-    func_02114e48();
+    OS_InitTick();
 }
 
 extern "C" void *func_020ec894(u32 size) {

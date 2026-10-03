@@ -1,5 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSDK MATH MD5 block transform (func_0211a8d4), autoload_2 0x0211a8d4-0x0211acbc. ARM code, mwcc 1.2/base -O4,p.
+// NitroSDK MATH MD5 block transform (ProcessBlock), autoload_2 0x0211a8d4-0x0211acbc. ARM code, mwcc 1.2/base -O4,p.
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef unsigned long long u64;
@@ -28,17 +28,17 @@ extern const u8 data_0213c004[1];   // MD5 padding byte 0x80
 extern SHA1Compress data_0213c1c8;  // SHA1 block function pointer
 
 extern void func_02115e64(u32 data, void *dest, u32 size); // MI_CpuFill32
-extern void func_02115fb4(void *dest, u32 data, u32 size); // MI_CpuFill8
-extern void func_02116048(const void *src, void *dest, u32 size); // MI_CpuCopy8
+extern void MI_CpuFill8(void *dest, u32 data, u32 size); // MI_CpuFill8
+extern void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
 
-void func_0211b3a8(SHA1Context *ctx);
-void func_0211b24c(SHA1Context *ctx, const void *data, u32 len);
+void DGT_Hash2Reset(SHA1Context *ctx);
+void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len);
 void func_0211b040(SHA1Context *ctx, u8 *hash, ...);
 void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
-void func_0211ae74(MD5Context *ctx);
-void func_0211ad80(MD5Context *ctx, const void *data, u32 len);
-void func_0211acbc(u8 *out, MD5Context *ctx);
-void func_0211a8d4(MD5Context *ctx);
+void DGT_Hash1Reset(MD5Context *ctx);
+void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
+void DGT_Hash1GetDigest_R(u8 *out, MD5Context *ctx);
+void ProcessBlock(MD5Context *ctx);
 
 // MD5 round steps as static inline functions (FF/GG/HH/II), the a + f + x + t order; real argument-order rotation
 static inline u32 RotL(u32 x, int n) { return (x << n) | (x >> (32 - n)); }
@@ -47,7 +47,7 @@ static inline u32 GG(u32 a, u32 b, u32 c, u32 d, u32 x, u32 t, int s) { a = a + 
 static inline u32 HH(u32 a, u32 b, u32 c, u32 d, u32 x, u32 t, int s) { a = a + (b ^ c ^ d) + x + t; return b + RotL(a, s); }
 static inline u32 II(u32 a, u32 b, u32 c, u32 d, u32 x, u32 t, int s) { a = a + (c ^ (b | ~d)) + x + t; return b + RotL(a, s); }
 // MD5 block transform (MATH_MD5 ProcessBlock): round 1 reads the block through p, rounds 2-4 through the index table
-void func_0211a8d4(MD5Context *ctx) {
+void ProcessBlock(MD5Context *ctx) {
     const u32 *p;
     s32 i;
     const u32 *t;

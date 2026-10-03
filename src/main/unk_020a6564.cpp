@@ -14,7 +14,7 @@ struct Unk_020cbb18 {
 };
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 func_020b50e8();
 void func_02084040();
 }
@@ -45,7 +45,7 @@ extern "C" void func_020a65f8() {}
 extern "C" void func_020a65c8(u8 *p) {
     u8 v = 0;
     func_020b50e8();
-    func_02116048(p, &v, 1);
+    MI_CpuCopy8(p, &v, 1);
     if (v != 0) {
         func_02084040();
     }
@@ -57,13 +57,13 @@ extern "C" void func_020a6564() {
     u8 *p = (u8 *)g->func_020724d8();
     Unk_020a647c_Buf b;
     u32 n;
-    func_02116048(p, &b.total, 2);
+    MI_CpuCopy8(p, &b.total, 2);
     u32 total = b.total;
     n = 0;
     p += 2;
     n += 2;
     while (n < total) {
-        func_02116048(p, &b.len, 4);
+        MI_CpuCopy8(p, &b.len, 4);
         p += 4;
         n += 4;
         u32 len = b.len;

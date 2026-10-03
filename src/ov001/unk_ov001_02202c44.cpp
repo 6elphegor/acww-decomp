@@ -58,20 +58,20 @@ extern "C" u8 data_ov001_0222c740[0xc0] = {0};
 extern "C" u8 data_ov001_0222c6cc[0x74] = {0};
 
 extern "C" {
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
 s32 func_021132e0(s32, s32, s32);
-s32 func_02114188(void *, void *, s32);
-s32 func_02114234(void *, s32, s32);
-void func_021142dc(void *, void *, s32);
-void func_02115094(void *);
-void func_021152e4(void *);
+s32 OS_ReceiveMessage(void *, void *, s32);
+s32 OS_SendMessage(void *, s32, s32);
+void OS_InitMessageQueue(void *, void *, s32);
+void OS_CancelAlarm(void *);
+void OS_CreateAlarm(void *);
 void func_0211512c(void *, u32, s32, void *, s32);
-void func_02115e30(u16, void *, u32);
-void func_02115e48(void *, void *, u32);
-void func_02115e78(void *, void *, u32);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+void MIi_CpuClear16(u16, void *, u32);
+void MIi_CpuCopy16(void *, void *, u32);
+void MIi_CpuCopy32(void *, void *, u32);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 void func_ov001_02203224(void *, void *);
 s32 func_ov001_022032f8(void *, void *, u32);
@@ -103,9 +103,9 @@ enum Loop_02203004 { LOOP_02203004_0 = 0 };
 
 extern "C" void func_ov001_02203258(Unk_ov001_02203258_Src *a, Unk_ov001_02203258_Dst *b) {
     b->unk_00 = a->unk_0a;
-    func_02115e48(a->unk_0c, b->unk_04, 0x20);
+    MIi_CpuCopy16(a->unk_0c, b->unk_04, 0x20);
     b->unk_24 = a->unk_36;
-    func_02115e48(a->unk_04, b->unk_30, 6);
+    MIi_CpuCopy16(a->unk_04, b->unk_30, 6);
     s32 i;
     s32 n;
     n = 0;
@@ -134,9 +134,9 @@ extern "C" void func_ov001_02203258(Unk_ov001_02203258_Src *a, Unk_ov001_0220325
 
 extern "C" void func_ov001_02203224(void *a, void *b) {
     volatile u16 z = 0;
-    func_02115e30(z, (u8 *)b + 0xc, 0x20);
+    MIi_CpuClear16(z, (u8 *)b + 0xc, 0x20);
     *(u16 *)((u8 *)b + 0xa) = *(u32 *)a;
-    func_02116048((u8 *)a + 4, (u8 *)b + 0xc, *(u16 *)((u8 *)b + 0xa));
+    MI_CpuCopy8((u8 *)a + 4, (u8 *)b + 0xc, *(u16 *)((u8 *)b + 0xa));
 }
 
 extern "C" void func_ov001_02203214(void *a, void *b, s32 c) {
@@ -145,25 +145,25 @@ extern "C" void func_ov001_02203214(void *a, void *b, s32 c) {
 }
 
 extern "C" void func_ov001_02203200(s32 a) {
-    func_02114234(data_ov001_0222c6ac, a, 0);
+    OS_SendMessage(data_ov001_0222c6ac, a, 0);
 }
 
 extern "C" void func_ov001_022031ec(s32 a) {
-    func_02114234(data_ov001_0222c6ac, a, 0);
+    OS_SendMessage(data_ov001_0222c6ac, a, 0);
 }
 
 extern "C" s32 func_ov001_022030fc(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3c_Free b) {
     s32 ok = 1;
     s32 msg;
     void *p;
-    func_021142dc(data_ov001_0222c6ac, data_ov001_0222c69c, 4);
+    OS_InitMessageQueue(data_ov001_0222c6ac, data_ov001_0222c69c, 4);
     if (a == 0 || b == 0) {
         return -1;
     }
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     data_ov001_0222c68c = a;
     data_ov001_0222c698 = b;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     p = data_ov001_0222c68c(0x5890);
     data_ov001_0222c694 = p;
     if (p == 0) {
@@ -174,7 +174,7 @@ extern "C" s32 func_ov001_022030fc(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3
     }
     if (ok != 0) {
         do {
-            func_02114188(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
             switch (msg) {
             case 4:
             case 5:
@@ -215,7 +215,7 @@ extern "C" s32 func_ov001_02203040() {
         return -1;
     }
     do {
-        func_02114188(data_ov001_0222c6ac, &msg, 1);
+        OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
         switch (msg) {
         case 20:
             r4 = 0;
@@ -248,10 +248,10 @@ extern "C" s32 func_ov001_02203040() {
             break;
         }
     } while (r4 != 0);
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     data_ov001_0222c68c = 0;
     data_ov001_0222c698 = 0;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return res;
 }
 
@@ -262,7 +262,7 @@ extern "C" s32 func_ov001_02203004() {
     if (func_ov001_02203508()) {
         loop = LOOP_02203004_0;
         do {
-            func_02114188(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
             switch (msg) {
             case 14:
                 res = loop;
@@ -294,10 +294,10 @@ extern "C" s32 func_ov001_02202e74(void **out) {
     }
     buf = r4;
     if (func_ov001_0220358c(r6, (void *)r6, r6, 0x30bffe)) {
-        func_021152e4(thr);
+        OS_CreateAlarm(thr);
         func_0211512c(thr, 0x3fec42, r6, (void *)func_ov001_022031ec, 0x13);
         do {
-            func_02114188(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
             switch (msg) {
             case 19:
                 if (r6 == 0) {
@@ -376,9 +376,9 @@ extern "C" s32 func_ov001_02202e74(void **out) {
             }
         }
     done:
-        func_02115094(thr);
+        OS_CancelAlarm(thr);
         do {
-        } while (func_02114188(data_ov001_0222c6ac, &msg, 0) == 1);
+        } while (OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 0) == 1);
     }
     data_ov001_0222c698(buf);
     return res;
@@ -398,7 +398,7 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
     } else if (a->unk_24 == 1) {
         r6 = 0xc0000;
     }
-    func_02115fb4(data_ov001_0222c6cc, 0, 0x60);
+    MI_CpuFill8(data_ov001_0222c6cc, 0, 0x60);
     if (a->unk_28 == 5) {
         data_ov001_0222c6cc[0] = 1;
     } else if (a->unk_28 == 0xd) {
@@ -409,18 +409,18 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
         return -1;
     }
     data_ov001_0222c6cc[1] = 0;
-    func_02116048(a->unk_2c, data_ov001_0222c6ce, a->unk_28);
+    MI_CpuCopy8(a->unk_2c, data_ov001_0222c6ce, a->unk_28);
     func_ov065_0226a934();
     if (func_ov001_0220358c(0, a->unk_04, a->unk_00, 0x30bffe)) {
         s32 msg;
         u32 thr[12];
         cnt = 0;
-        func_021152e4(thr);
+        OS_CreateAlarm(thr);
         func_0211512c(thr, 0x3fec42, 0, (void *)func_ov001_022031ec, 0x12);
         r6 = r6 | 0x30000;
         s32 r5 = 0;
         do {
-            func_02114188(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
             switch (msg) {
             case 18:
                 if (got == 0) {
@@ -429,7 +429,7 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
                 break;
             case 5:
                 if (got == 0) {
-                    func_02115094(thr);
+                    OS_CancelAlarm(thr);
                     if (func_ov001_022036a0(data_ov001_0222c740, 1) != 1) {
                         r4 = r5;
                     } else {
@@ -471,9 +471,9 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
                 break;
             }
         } while (r4 != 0);
-        func_02115094(thr);
+        OS_CancelAlarm(thr);
         do {
-        } while (func_02114188(data_ov001_0222c6ac, &msg, r5) == 1);
+        } while (OS_ReceiveMessage(data_ov001_0222c6ac, &msg, r5) == 1);
     }
     func_ov001_02203214(b, data_ov001_0222c740, res == 0);
     return res;

@@ -9,8 +9,8 @@ extern "C" {
 extern void *(*data_ov065_0228ebc8)(u32);
 extern void (*data_ov065_0228ebd0)(void *);
 
-void func_02116048(const void *src, void *dst, u32 n);
-void *func_02115fb4(void *dst, s32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
+void *MI_CpuFill8(void *dst, s32 v, u32 n);
 void func_021289b4(void *dst, const void *src, u32 n);
 
 s32 func_ov065_02268be8(u16 *a, s32 n);
@@ -75,7 +75,7 @@ void func_ov065_02268b6c(u16 *dst, u16 *a, u16 *b, s32 n)
         } while (i < m);
     }
     if (dst != a && dst != b) {
-        func_02115fb4(dst + i, 0, (n - i) * 2);
+        MI_CpuFill8(dst + i, 0, (n - i) * 2);
     }
 }
 
@@ -155,7 +155,7 @@ void func_ov065_02268a7c(u16 *dst, u16 *a, u16 *b, s32 n)
         i++;
     }
     if (dst != a && dst != b) {
-        func_02115fb4(dst + i, 0, (n - i) * 2);
+        MI_CpuFill8(dst + i, 0, (n - i) * 2);
     }
 }
 
@@ -236,7 +236,7 @@ void func_ov065_02268950(u16 *dst, u16 *a, u16 *b, s32 n)
 {
     s32 la, lb, i, j;
     u16 *pa;
-    func_02115fb4(dst, 0, n * 2);
+    MI_CpuFill8(dst, 0, n * 2);
     la = func_ov065_02268c20(a, n);
     lb = func_ov065_02268c20(b, n);
     for (i = 0; i < lb; i++) {
@@ -270,7 +270,7 @@ void func_ov065_022688f0(u16 *dst, u16 *a, u32 m, s32 n)
     if (i < n) {
         dst[i++] = c;
     }
-    func_02115fb4(dst + i, 0, (n - i) * 2);
+    MI_CpuFill8(dst + i, 0, (n - i) * 2);
 }
 
 void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
@@ -280,7 +280,7 @@ void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
     u16 *pa;
     s32 i, j, k;
     if (l * 2 < n) {
-        func_02115fb4(dst + l * 2, 0, (n - l * 2) * 2);
+        MI_CpuFill8(dst + l * 2, 0, (n - l * 2) * 2);
     }
     s32 j1 = 0;
     if (l > 0) {
@@ -331,15 +331,15 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
     u16 *t2 = t1 + n;
     s32 la;
     s32 lb;
-    func_02115fb4(t1, 0, n * 4);
+    MI_CpuFill8(t1, 0, n * 4);
     la = func_ov065_02268c20(a, n);
     lb = func_ov065_02268c20(b, n);
     if (la > 0 && lb > 0) {
         k = lb + (n - la) - 1;
         if (k >= n) {
-            func_02116048(a, t2, n * 2);
+            MI_CpuCopy8(a, t2, n * 2);
         } else {
-            func_02116048(a, t1 + k, la * 2);
+            MI_CpuCopy8(a, t1 + k, la * 2);
             u16 *bp;
             if (lb > 2) {
                 bp = b + lb;
@@ -376,10 +376,10 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
         }
     }
     if (q != 0) {
-        func_02116048(t1, q, n * 2);
+        MI_CpuCopy8(t1, q, n * 2);
     }
     if (r != 0) {
-        func_02116048(t2, r, n * 2);
+        MI_CpuCopy8(t2, r, n * 2);
     }
 }
 
@@ -389,12 +389,12 @@ void func_ov065_02268540(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod)
     if (t0 != 0) {
         u16 *t1 = t0 + n;
         s32 i;
-        func_02115fb4(out + 1, 0, (n - 1) * 2);
+        MI_CpuFill8(out + 1, 0, (n - 1) * 2);
         out[0] = 1;
         i = (n - func_ov065_02268c20(exp, n)) * 16;
         while (i < (u32)(n * 16)) {
             if (((0x8000u >> (i & 15)) & exp[n - (i >> 4) - 1]) != 0) {
-                func_02116048(base, out, n * 2);
+                MI_CpuCopy8(base, out, n * 2);
                 i++;
                 break;
             }
@@ -402,13 +402,13 @@ void func_ov065_02268540(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod)
         }
         for (; i < (u32)(n * 16); i++) {
             func_ov065_02268808(t0, out, n);
-            func_02116048(t0, out, n * 2);
+            MI_CpuCopy8(t0, out, n * 2);
             if (mod != 0) {
                 func_ov065_02268658(0, out, mod, out, n, t1);
             }
             if (((0x8000u >> (i & 15)) & exp[n - (i >> 4) - 1]) != 0) {
                 func_ov065_02268950(t0, out, base, n);
-                func_02116048(t0, out, n * 2);
+                MI_CpuCopy8(t0, out, n * 2);
                 if (mod != 0) {
                     func_ov065_02268658(0, out, mod, out, n, t1);
                 }
@@ -427,17 +427,17 @@ void func_ov065_02268470(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
     u16 *b4 = b3 + n;
     u16 *b5 = b4 + n;
     u16 *b6 = b5 + n;
-    func_02116048(a, b0, n * 2);
-    func_02116048(b, b2, n * 2);
+    MI_CpuCopy8(a, b0, n * 2);
+    MI_CpuCopy8(b, b2, n * 2);
     b2[n] = 1;
     while (func_ov065_02268be8(b0, n) > 0) {
         func_ov065_02268658(b1, b2, b0, b5, n, b6);
-        func_02116048(b0, b2, n * 2);
-        func_02116048(b5, b0, n * 2);
+        MI_CpuCopy8(b0, b2, n * 2);
+        MI_CpuCopy8(b5, b0, n * 2);
         func_ov065_02268950(b5, b1, b3, n);
         func_ov065_02268a7c(b5, b4, b5, n);
-        func_02116048(b3, b4, n * 2);
-        func_02116048(b5, b3, n * 2);
+        MI_CpuCopy8(b3, b4, n * 2);
+        MI_CpuCopy8(b5, b3, n * 2);
     }
     func_ov065_02268b6c(b4, b4, b, n);
     func_ov065_02268658(0, b4, b, res, n, b6);
@@ -452,8 +452,8 @@ extern "C" {
 extern u8 *(*data_ov065_0228ebc8)(u32);
 extern void (*data_ov065_0228ebd0)(u8 *);
 
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *, s32, u32);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, s32, u32);
 void func_021289b4(void *, void *, u32);
 
 u32 func_ov065_02268c20(u16 *, u32);
@@ -482,21 +482,21 @@ void func_ov065_022680a4(u32 *dst, u8 *src, u32 n);
 u32 func_ov065_02268100(s32 i, u32 *w);
 
 void func_ov065_022683a8(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
-    func_02116048(a, (s32)b, n * 2);
+    MI_CpuCopy8(a, (s32)b, n * 2);
     if (mode == 1) {
         func_ov065_02268808(a, b, n);
     } else if (mode != 0) {
         func_ov065_02268950(a, b, (u16 *)mode, n);
     }
     func_ov065_02268950(t2, a, t1, k);
-    func_02115fb4(t2 + k, 0, (n - k) * 2);
+    MI_CpuFill8(t2 + k, 0, (n - k) * 2);
     func_ov065_02268950(t3, t2, m, n);
     func_ov065_02268b6c(a, a, t3, n);
     func_021289b4(a, a + k, (n - k) * 2);
-    func_02115fb4(a + n - k, 0, k * 2);
+    MI_CpuFill8(a + n - k, 0, k * 2);
     switch (func_ov065_022689e4(a, m, n)) {
     case 0:
-        func_02115fb4(a, 0, n * 2);
+        MI_CpuFill8(a, 0, n * 2);
         break;
     case 1:
         func_ov065_02268a7c(a, a, m, n);
@@ -512,7 +512,7 @@ void func_ov065_0226824c(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
     s32 i;
     s32 bound;
     if (buf == 0) return;
-    func_02115fb4(buf, 0, bytes);
+    MI_CpuFill8(buf, 0, bytes);
     p1 = buf + n;
     p2 = p1 + n;
     p3 = p2 + n;
@@ -541,7 +541,7 @@ void func_ov065_0226824c(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
 }
 
 void func_ov065_02268210(u16 *dst, u8 *src, s32 n, u32 m) {
-    func_02115fb4(dst, 0, m * 2);
+    MI_CpuFill8(dst, 0, m * 2);
     src += n - 1;
     while (n > 1) {
         *dst = src[0] + (src[-1] << 8);
@@ -724,8 +724,8 @@ struct Unk_ov065_022679f8_Sha1 {
 
 extern "C" {
 
-void func_02115fb4(void *dst, s32 v, s32 n);
-void func_02116048(const void *src, void *dst, s32 n);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void func_ov065_022680d4(void *dst, const void *src, s32 n);
 void func_ov065_02267ac0(Unk_ov065_022679f8_Sha1 *ctx, const u8 *block);
 void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n);
@@ -734,7 +734,7 @@ u8 data_ov065_0228b630[0x40] = {0x80};
 
 void func_ov065_02267a84(Unk_ov065_022679f8_Sha1 *ctx)
 {
-    func_02115fb4(ctx, 0, 0x5c);
+    MI_CpuFill8(ctx, 0, 0x5c);
     ctx->st[0] = 0x67452301;
     ctx->st[1] = 0xefcdab89;
     ctx->st[2] = 0x98badcfe;
@@ -755,7 +755,7 @@ void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
     ctx->hi += n >> 29;
     part = 64 - idx;
     if (n >= part) {
-        func_02116048(data, ctx->buf + idx, part);
+        MI_CpuCopy8(data, ctx->buf + idx, part);
         idx = 0;
         func_ov065_02267ac0(ctx, ctx->buf);
         for (i = part; i + 63 < n; i += 64) {
@@ -764,7 +764,7 @@ void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
     } else {
         i = 0;
     }
-    func_02116048(data + i, ctx->buf + idx, n - i);
+    MI_CpuCopy8(data + i, ctx->buf + idx, n - i);
 }
 
 void func_ov065_022679a4(Unk_ov065_022679f8_Sha1 *ctx, void *out)
@@ -790,12 +790,12 @@ void func_ov065_0226797c(Unk_ov065_022679f8_Sha1 *ctx, void *out)
 
 void func_ov065_0226796c(void *dst, const void *src, s32 n)
 {
-    func_02116048(src, dst, n);
+    MI_CpuCopy8(src, dst, n);
 }
 
 void func_ov065_0226795c(void *dst, const void *src, s32 n)
 {
-    func_02116048(src, dst, n);
+    MI_CpuCopy8(src, dst, n);
 }
 
 }

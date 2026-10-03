@@ -29,7 +29,7 @@ struct Unk_02011580 {
 // Methods of the same object under the class name of an earlier unit (0x0201106c-0x020116e0); called by
 // their symbols.txt names.
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 void *_ZN12Unk_0201106c13func_02011568Ev(void *p);
 void *_ZN12Unk_0201106c13func_02011550Ev(void *p);
 void _ZN12Unk_0201106c13func_0201106cEv(void *p);
@@ -48,7 +48,7 @@ void _ZN12Unk_0201106c13func_02011408Ev(void *p);
 s32 func_0208f010(void);
 s32 func_020b50e8(void);
 s32 func_02038f00(void);
-void func_02115fb4(void *dst, u32 v, u32 n);
+void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 func_0201188c(void);
 void func_020116e0(void *p);
 
@@ -68,7 +68,7 @@ Unk_02011580::Unk_02011580() {
     unk_250 = 3;
     unk_254 = 0;
     unk_255 = 0;
-    func_02115fb4(&unk_50, 0, 0x200);
+    MI_CpuFill8(&unk_50, 0, 0x200);
 }
 
 Unk_02011580::~Unk_02011580() {
@@ -163,4 +163,4 @@ void Unk_02011580::func_020116e8(u32 v) {
     _ZN12Unk_0201106c13func_0201106cEv(this);
 }
 
-extern "C" void func_020116e0(void *p) { func_02119d78(p); }
+extern "C" void func_020116e0(void *p) { FS_InitFile(p); }

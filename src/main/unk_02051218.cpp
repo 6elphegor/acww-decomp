@@ -2,8 +2,8 @@
 
 extern "C" {
 extern u8 data_021c4d4c[0xe0];
-void func_02115fb4(void *dst, u32 value, u32 size);
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 data_020e416c;
 extern void *data_021c47c4;
 extern u32 data_021c4e38;
@@ -175,11 +175,11 @@ extern "C" s32 func_02051270(const u8 *str, s32 maxLen, s32 maxWidth, s32 *outLe
 }
 
 extern "C" void func_02051268(const void *src, void *dst, u32 size) {
-    func_02116048(src, dst, size);
+    MI_CpuCopy8(src, dst, size);
 }
 
 extern "C" void func_0205125c(void *dst, u32 size) {
-    func_02115fb4(dst, 0, size);
+    MI_CpuFill8(dst, 0, size);
 }
 
 extern "C" BOOL func_02051218(const u8 *a, const u8 *b, s32 len) {

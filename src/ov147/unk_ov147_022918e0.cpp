@@ -106,8 +106,8 @@ void func_020026c4(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_020024f0(void *a, s32 b, s32 c, s32 d);
 void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
 void func_020641b4(void *a, void *b, u32 n);
-void func_02116048(void *a, void *b, u32 n);
-void func_02115fb4(void *a, s32 b, u32 n);
+void MI_CpuCopy8(void *a, void *b, u32 n);
+void MI_CpuFill8(void *a, s32 b, u32 n);
 void func_0200402c(s32 a);
 u32 func_0209ccd0();
 void *func_0208f158(void *p);
@@ -961,7 +961,7 @@ void Unk_ov147_022933e8::func_ov147_02291c08() {
     func_020641b4((void *)"menu/title/bg_us.bsc", data_ov147_02293c8c, 0x800);
     func_020024f0(data_ov147_02293c8c, 5, 0x800, 0);
     func_020641b4((void *)"menu/title/bg_us.bch", data_ov147_0229448c, 0x3800);
-    func_02115fb4(data_ov147_02297c8c, 0, 0x3800);
+    MI_CpuFill8(data_ov147_02297c8c, 0, 0x3800);
     func_020641b4((void *)"menu/title/mask0.bch", data_ov147_022937ec, 0xe0);
     func_020641b4((void *)"menu/title/mask1.bch", data_ov147_02293aac, 0x1e0);
     func_020641b4((void *)"menu/title/mask2.bch", data_ov147_022938cc, 0x1e0);
@@ -1034,7 +1034,7 @@ void Unk_ov147_022933e8::func_ov147_02291a9c() {
     unk_a6 = 1;
     unk_a0 = 0;
     unk_a4 = 0x4b0;
-    func_02115fb4(data_ov147_02297c8c, 0, 0x3800);
+    MI_CpuFill8(data_ov147_02297c8c, 0, 0x3800);
     func_020020b8(5);
 }
 
@@ -1062,7 +1062,7 @@ BOOL Unk_ov147_022933e8::func_ov147_022919d8() {
         unk_a0 = unk_a0 + 1;
         goto ret0;
     }
-    func_02116048(data_ov147_0229448c, data_ov147_02297c8c, 0x3800);
+    MI_CpuCopy8(data_ov147_0229448c, data_ov147_02297c8c, 0x3800);
     unk_cc.func_020b8714((u32)data_ov147_02297c8c, 5, 0x140, 0x140, 0x2ff);
     return TRUE;
 ret0:

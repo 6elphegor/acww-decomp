@@ -134,27 +134,27 @@ extern s32 data_0213bf28[];
 extern s16 data_02139fb4[];
 
 // externs: functions
-extern void *func_02100248(NNSFndList *, void *);
-extern void func_02100260(NNSFndList *, void *);
-extern void func_021003b0(NNSFndList *, void *);
-extern void func_02100444(NNSFndList *, u16);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02114480(void *);
-extern void func_02114410(void *);
-extern void func_0211450c(void *);
+extern void *NNS_FndGetNextListObject(NNSFndList *, void *);
+extern void NNS_FndRemoveListObject(NNSFndList *, void *);
+extern void NNS_FndAppendListObject(NNSFndList *, void *);
+extern void NNS_FndInitList(NNSFndList *, u16);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_LockMutex(void *);
+extern void OS_UnlockMutex(void *);
+extern void OS_InitMutex(void *);
 extern void func_02113a70(void *, void *, void *, void *, u32, u32);
-extern void func_0211366c(void *);
-extern void func_021136a0(void *);
-extern void func_02115fb4(u32, u32, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115ef4();
-extern void func_021145cc(void *, u32);
+extern void OS_WakeupThreadDirect(void *);
+extern void OS_WakeupThread(void *);
+extern void MI_CpuFill8(u32, u32, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopyFast();
+extern void DC_FlushRange(void *, u32);
 extern void func_021166b4(u32);
 extern void func_021198c4(void *);
-extern void func_021199e0(void *);
-extern void func_02119d78(void *);
-extern BOOL func_02119a78(void *, FSFileID);
+extern void FS_CloseFile(void *);
+extern void FS_InitFile(void *);
+extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void func_0210a6b0(Ctx *, s32, s32);
 extern void func_0210a6f4(Ctx *, s32);
 extern void func_0210a768(Ctx *);
@@ -187,7 +187,7 @@ void func_0210dfb4(Ctx *);
 void func_0210e024(Ctx *);
 void func_0210e0c4(Ctx *, s32);
 BOOL func_0210e128();
-void func_0210e400(Ctx *);
+void FreePlayer(Ctx *);
 Ctx *func_0210e43c(Ctx **, s32, s32);
 void func_0210e694(Ctx **);
 void func_0210e760(Ctx **);
@@ -199,14 +199,14 @@ void func_0210ec0c();
 void func_0210edb0(void);
 void func_0210edb4();
 void func_0210ee4c(s32);
-BOOL func_0210efdc(Fader *);
-void func_0210f078(Fader *);
+BOOL NNSi_SndFaderIsFinished(Fader *);
+void NNSi_SndFaderInit(Fader *);
 s32 func_0210f00c(Fader *);
 void func_0210f048(Fader *, s32, s32);
-void func_0210eff4(Fader *);
+void NNSi_SndFaderUpdate(Fader *);
 
 // NNSi sound value encoder-like (0 -> 0, positive -> v|0x4000, negative -> (-v)|0x8000)
-void func_0210f098(u16 *p, s32 v)
+void GXx_SetMasterBrightness_(u16 *p, s32 v)
 {
     if (v == 0) {
         *p = 0;
@@ -218,7 +218,7 @@ void func_0210f098(u16 *p, s32 v)
 }
 
 // NNSiSndFader_Init
-void func_0210f078(Fader *f)
+void NNSi_SndFaderInit(Fader *f)
 {
     f->end = 0;
     f->start = f->end;
@@ -245,19 +245,19 @@ s32 func_0210f00c(Fader *f)
 }
 
 // NNSiSndFader_Update
-void func_0210eff4(Fader *f)
+void NNSi_SndFaderUpdate(Fader *f)
 {
     if (f->cnt < f->frames) f->cnt++;
 }
 
 // NNSiSndFader_IsFinished
-BOOL func_0210efdc(Fader *f)
+BOOL NNSi_SndFaderIsFinished(Fader *f)
 {
     return f->cnt >= f->frames;
 }
 
 // NNSi_SndArc entry lookup-like (count at +0x1c, 12-byte entries from +0x20, first word -1 = unused)
-void *func_0210ef9c(ArcTbl *t, s32 i)
+void *NNSi_SndSeqArcGetSeqInfo(ArcTbl *t, s32 i)
 {
     if (i < 0) return 0;
     if ((u32)i >= t->count) return 0;
@@ -279,9 +279,9 @@ void func_0210ee4c(s32 effect)
     volatile u16 zero;
     if (effect == data_0213bf10.type) return;
     if (data_0213bf10.type == 1) func_021166b4(0);
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     zero = 0;
-    func_02115e30(zero, data_0213bf28, 0xc0);
+    MIi_CpuClear16(zero, data_0213bf28, 0xc0);
     data_0213bf10.type = effect;
     switch (effect) {
     case 1:
@@ -300,7 +300,7 @@ void func_0210ee4c(s32 effect)
         data_0213bf10.fn = func_0210edb0;
         break;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     if (effect != 1) return;
     func_021166b4(0x3000);
 }
@@ -311,8 +311,8 @@ void func_0210edb4(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
     if (c->pre != 0) c->pre(l, r, len, fmt, c->preArg);
     c->fn(l, r, len, c);
     if (c->post != 0) c->post(l, r, len, fmt, c->postArg);
-    func_021145cc(l, len);
-    func_021145cc(r, len);
+    DC_FlushRange(l, len);
+    DC_FlushRange(r, len);
 }
 
 // empty capture effect (effect 0)

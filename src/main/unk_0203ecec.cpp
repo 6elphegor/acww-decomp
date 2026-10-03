@@ -115,11 +115,11 @@ extern u8 data_021c3bd8[];
 }
 
 extern "C" {
-s32 func_02115fb4(void *dst, s32 v, s32 n);
+s32 MI_CpuFill8(void *dst, s32 v, s32 n);
 }
 
 extern "C" {
-void func_02116048(void *src, void *dst, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
@@ -191,7 +191,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_01ffc538(s32 a);
+s32 FX_Sqrt(s32 a);
 }
 
 extern "C" {
@@ -413,7 +413,7 @@ extern "C" s32 func_0203ee38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
         out->unk_00 = in->unk_00;
         s32 a = func_01ffcb0c(in->unk_08, in->unk_08);
         s32 b = func_01ffcb0c(in->unk_04, in->unk_04);
-        out->unk_04 = func_01ffc538(b + a) - 0x1f576;
+        out->unk_04 = FX_Sqrt(b + a) - 0x1f576;
         out->unk_08 = func_0203efec(ang);
         return ang;
     }
@@ -428,7 +428,7 @@ extern "C" s16 func_0203edd0(Unk_0203ed90 *o) {
         s32 a = func_01ffcb0c(o->unk_08, o->unk_08);
         s32 b = func_01ffcb0c(o->unk_04, o->unk_04);
         s32 c = func_01ffcb0c(0x1f576, 0x1f576);
-        s32 r = func_01ffc538(b + a - c);
+        s32 r = FX_Sqrt(b + a - c);
         s32 x = func_020e7b98(o->unk_08, o->unk_04);
         s32 y = func_020e7b98(r, 0x1f576);
         return x - y;

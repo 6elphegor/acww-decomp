@@ -27,7 +27,7 @@ s32 func_0206ed50();
 void func_0206e8cc(void *p);
 void func_0206e82c();
 void func_0206e820();
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_0209cb9c(void *p, void *q);
 u16 func_0209cb74(void *p, void *q);
 void func_0209cfe4();
@@ -736,10 +736,10 @@ void Unk_ov135_022964b0::func_ov135_0229581c() {
         func_0206e820();
     }
     u32 a[2];
-    func_02116048(v, a, 8);
+    MI_CpuCopy8(v, a, 8);
     s32 r4 = func_0209cb9c(g + 0x15fb4, a);
     u32 b[2];
-    func_02116048(v, b, 8);
+    MI_CpuCopy8(v, b, 8);
     u16 r = func_0209cb74(g + 0x15fb4, b);
     *(s32 *)(g + 0x15fb4) = r4;
     *(u16 *)(g + 0x15fb8) = r;

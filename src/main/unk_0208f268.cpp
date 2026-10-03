@@ -49,8 +49,8 @@ void func_020f9018(void *, s32);
 void func_021010d0(void *);
 void *func_021010dc(void *, void *, void *);
 void func_02115e64(s32, void *, s32);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *dst, void *src, u32 size);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 func_02064f18();
 u16 func_020b5b98();
 s32 func_0204c0ac();
@@ -912,7 +912,7 @@ extern "C" void *func_02090140(void *unused, Unk_02090140_Arg *p) {
     u32 size = p->unk_18;
     void *r = func_0209019c(size);
     if (r) {
-        func_02116048(p->unk_20, r, size);
+        MI_CpuCopy8(p->unk_20, r, size);
     }
     return r;
 }
@@ -959,7 +959,7 @@ BOOL Unk_020e141c::vfunc_00()
             data_021d04a8 = NULL;
         }
     } else {
-        func_02115fb4(unk_35c, 0, 0x14c0);
+        MI_CpuFill8(unk_35c, 0, 0x14c0);
         func_0208f8b4(unk_35c);
         _ZN12Unk_0208f32c13func_0208f398Ev(unk_181c);
     }

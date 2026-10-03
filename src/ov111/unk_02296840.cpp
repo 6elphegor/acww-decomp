@@ -86,7 +86,7 @@ void func_020b30bc(void *p);
 void func_020e85fc(u32 g, s32 a);
 void *func_020ed174(void *p);
 void func_020ed188(void *p);
-s32 func_02116048(void *src, void *dst, s32 n);
+s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 s32 func_ov090_02291a38(s32 v);
 s32 func_ov090_02291a58(s32 v);
 s32 func_ov090_02291aa0();
@@ -1088,7 +1088,7 @@ void func_ov111_022978f0(S *s, u32 a) {
     r = func_020641ec(name, g, -4, 0);
     {
         u8 *src = s->unk_2468;
-        func_02116048((void *)(r + 0x100), src + 0x100, 0x140);
+        MI_CpuCopy8((void *)(r + 0x100), src + 0x100, 0x140);
         if (a == 1) {
             func_0206ee0c(src, 0, 4, 0x1f, 9, 5, 6);
         }

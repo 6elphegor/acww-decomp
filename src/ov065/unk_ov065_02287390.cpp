@@ -104,9 +104,9 @@ extern char *data_ov065_0228e504[];
 extern s32 data_ov065_02291748;
 extern u32 data_ov065_0229174c[];
 
-s32 func_02128930(const void *, const void *, s32);
+s32 memcmp(const void *, const void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
 s32 func_ov065_02278dbc(s32);
 s32 func_ov065_02279144(void);
@@ -235,14 +235,14 @@ extern char data_ov065_02291760[];
 extern u8 data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 s32 func_02128ca4(const char *, const char *, ...);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212a190(const char *, const char *);
 void func_02128c60(u32);
-s32 func_02128c70();
+s32 rand();
 
 void *func_ov065_02277af0(s32);
 void func_ov065_02277ac8(void *);
@@ -329,7 +329,7 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
     q->unk_a8 = NULL;
     q->unk_b4 = i;
     for (; i < 4; i++) {
-        q->unk_84[i] = func_02128c70() % 0xff;
+        q->unk_84[i] = rand() % 0xff;
     }
     for (i = 0; i < 10; i++) {
         q->unk_d8[i] = -1;
@@ -341,7 +341,7 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
     if (a5 != 0) {
         char c = data_ov065_02291760[0];
         if (c == 0) {
-            func_021130d0(buf, "%s.master.gs.nintendowifi.net", name);
+            OS_SPrintf(buf, "%s.master.gs.nintendowifi.net", name);
         }
         ok = func_ov065_02287fcc(c != 0 ? data_ov065_02291760 : buf, 0x6cfc, &q->unk_cc, NULL);
     } else {
@@ -515,7 +515,7 @@ namespace F02287b18 {
 extern "C" {
 void func_ov065_022880d8(Unk_ov065_02288094_Buf *b, s32 v) {
     char t[0x18];
-    func_021130d0(t, "%d", v);
+    OS_SPrintf(t, "%d", v);
     func_ov065_02288094(b, t);
 }
 }
@@ -524,7 +524,7 @@ void func_ov065_022880d8(Unk_ov065_02288094_Buf *b, s32 v) {
 namespace F02287b18 {
 extern "C" {
 void func_ov065_02288094(Unk_ov065_02288094_Buf *b, const char *s) {
-    s32 n = func_021277d4(s) + 1;
+    s32 n = STD_GetStringLength(s) + 1;
     s32 len = b->unk_800;
     s32 avail = 0x800 - len;
     if (n > avail) {
@@ -722,9 +722,9 @@ void func_ov065_02287d90(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, co
     char tmp[0x44];
     if (n >= 1 && n <= 0x41 && s[n - 1] == 0) {
         func_02127838(tmp, s);
-        func_ov065_02287e18((u8 *)q->unk_44, func_021277d4(q->unk_44), (u8 *)tmp, n - 1);
+        func_ov065_02287e18((u8 *)q->unk_44, STD_GetStringLength(q->unk_44), (u8 *)tmp, n - 1);
         func_ov065_02287ef0((u8 *)tmp, n - 1, (u8 *)b + b->unk_800);
-        b->unk_800 += func_021277d4((char *)b + b->unk_800) + 1;
+        b->unk_800 += STD_GetStringLength((char *)b + b->unk_800) + 1;
     }
 }
 }
@@ -914,7 +914,7 @@ void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
             buf->unk_000[buf->unk_800 - 1] = 0x5c;
         } else {
             for (j = 0; j < cnt; j++) {
-                func_021130d0(tmp, "%s%d", name, j);
+                OS_SPrintf(tmp, "%s%d", name, j);
                 func_ov065_02288094(buf, tmp);
                 buf->unk_000[buf->unk_800 - 1] = 0x5c;
                 mark = buf->unk_800;
@@ -1155,7 +1155,7 @@ void func_ov065_02287390(Qr *q, s32 mode) {
     if (i < data_ov065_02291748) {
         p = data_ov065_0229174c;
         do {
-            func_021130d0(tmp, "localip%d", i);
+            OS_SPrintf(tmp, "localip%d", i);
             func_ov065_02288094(&buf, tmp);
             func_ov065_02288094(&buf, func_ov065_022610f0(*(Unk_ov065_02287390_W *)p));
             p++;

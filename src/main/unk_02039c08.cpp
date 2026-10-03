@@ -11,11 +11,11 @@ void _ZN12Unk_0206338013func_0206338cEii(Unk_02039cf4_Obj *o, s32 a, s32 b);
 void func_02063388(Unk_02039cf4_Obj *o);
 void func_02062f94(u16 *a, Unk_02039cf4_Obj *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL func_0204ba30(u16 *a, u16 *b);
-s32 func_01ffb898(void *v, void *m, void *out);
+s32 MTX_MultVec43(void *v, void *m, void *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
-void func_01ffc928(void *dst, void *a, void *b);
-void func_01ffc714(void *dst, void *src);
+void VEC_CrossProduct(void *dst, void *a, void *b);
+void VEC_Normalize(void *dst, void *src);
 }
 
 extern u16 data_021ed210[15];
@@ -60,18 +60,18 @@ void Unk_02039eb8::func_02039f9c() {
     v[9] = x;
     v[10] = -y;
     v[11] = -unk_50;
-    func_01ffc928(&v[3], &v[0], &unk_04[0]);
-    func_01ffc928(&v[6], &v[3], &unk_10[0]);
-    func_01ffc928(&v[9], &v[6], &unk_1c[0]);
-    func_01ffc928(&v[0], &v[9], &unk_28[0]);
-    func_01ffc714(&unk_04[0], &unk_04[0]);
-    func_01ffc714(&unk_10[0], &unk_10[0]);
-    func_01ffc714(&unk_1c[0], &unk_1c[0]);
-    func_01ffc714(&unk_28[0], &unk_28[0]);
+    VEC_CrossProduct(&v[3], &v[0], &unk_04[0]);
+    VEC_CrossProduct(&v[6], &v[3], &unk_10[0]);
+    VEC_CrossProduct(&v[9], &v[6], &unk_1c[0]);
+    VEC_CrossProduct(&v[0], &v[9], &unk_28[0]);
+    VEC_Normalize(&unk_04[0], &unk_04[0]);
+    VEC_Normalize(&unk_10[0], &unk_10[0]);
+    VEC_Normalize(&unk_1c[0], &unk_1c[0]);
+    VEC_Normalize(&unk_28[0], &unk_28[0]);
 }
 
 s32 Unk_02039eb8::func_02039eb8(void *m, void *v, s32 r, s32 *out) {
-    func_01ffb898(v, m, out);
+    MTX_MultVec43(v, m, out);
     s32 t = -out[2];
     if (t < unk_50 - r) {
         return 0x7fffffff;

@@ -33,7 +33,7 @@ void func_ov001_0220c654(s32, s32);
 void func_ov001_0220f304();
 void func_ov001_02208114();
 void *func_ov001_0222558c(s32, s32);
-void func_02115640(void *);
+void OS_GetMacAddress(void *);
 void func_0212c234(void *, s32, void *, ...);
 void func_ov001_02225254(void *, u32, u32, u32, u32, s32, u32, void *);
 void func_020ff0bc(u64 *);

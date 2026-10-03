@@ -4,17 +4,17 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
-extern void *func_02117230(u32 n);
-extern void func_021171e8(void *p);
-extern u32 func_02117518(u32 a, u32 b, u32 c);
-extern void func_02117548(u32 a);
+extern void *SND_AllocCommand(u32 n);
+extern void SND_PushCommand(void *p);
+extern u32 SNDi_SetAlarmHandler(u32 a, u32 b, u32 c);
+extern void SNDi_IncAlarmId(u32 a);
 
-extern void func_021158e4(u32 v);
-extern void func_021159a8(u32 dmaNo);
+extern void MI_SetWramBank(u32 v);
+extern void MI_StopDma(u32 dmaNo);
 
-void func_0211665c(u32 cmd, u32 a, u32 b, u32 c, u32 d);
-void func_02116714(u32 a, u32 b, u32 c, u32 d);
-void func_021166e0(u32 a, u32 b, u32 c, u32 d, u32 e);
+void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d);
+void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d);
+void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e);
 
 u32 func_021163e0(const u8 *startp, const u8 *nextp, u32 remainSize, u16 *offp);
 
@@ -30,88 +30,88 @@ typedef struct {
 } UncompContextLZ;
 
 // SND command wrapper: tail calls, highest address first
-void func_02116bf4(u32 a, u32 b) { func_02116714(a, 6, b, 2); }
+void SND_SetPlayerVolume(u32 a, u32 b) { SNDi_SetPlayerParam(a, 6, b, 2); }
 
-void func_02116bdc(u32 a, u32 b) { func_02116714(a, 4, b, 1); }
+void SND_SetPlayerChannelPriority(u32 a, u32 b) { SNDi_SetPlayerParam(a, 4, b, 1); }
 
-void func_02116ba8(u32 a, u32 b, u32 c) { func_0211665c(10, a, b, c, 0); }
+void func_02116ba8(u32 a, u32 b, u32 c) { PushCommand_impl(10, a, b, c, 0); }
 
-void func_02116b7c(u32 a, u32 b) { func_0211665c(11, a, b, 0, 0); }
+void func_02116b7c(u32 a, u32 b) { PushCommand_impl(11, a, b, 0, 0); }
 
-void func_02116b54(u32 a, u32 b, u32 c) { func_021166e0(a, b, 10, c, 2); }
+void func_02116b54(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 10, c, 2); }
 
-void func_02116b2c(u32 a, u32 b, u32 c) { func_021166e0(a, b, 12, c, 2); }
+void SND_SetTrackPitch(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 12, c, 2); }
 
-void func_02116b04(u32 a, u32 b, u32 c) { func_021166e0(a, b, 9, c, 1); }
+void SND_SetTrackPan(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 9, c, 1); }
 
-void func_02116ad0(u32 a, u32 b, u32 c) { func_0211665c(9, a, b, c, 0); }
+void SND_SetTrackAllocatableChannel(u32 a, u32 b, u32 c) { PushCommand_impl(9, a, b, c, 0); }
 
-void func_02116a9c(u32 a, u32 b, u32 c, u32 d) { func_0211665c(12, a, b, c, d); }
+void SND_StartTimer(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(12, a, b, c, d); }
 
-void func_02116a2c(u32 a, u32 b, u32 c, u32 d) {
+void SND_StopTimer(u32 a, u32 b, u32 c, u32 d) {
     int i;
     u32 m = c;
     for (i = 0; i < 8 && m != 0; i++, m >>= 1) {
-        if (m & 1) func_02117548(i);
+        if (m & 1) SNDi_IncAlarmId(i);
     }
-    func_0211665c(13, a, b, c, d);
+    PushCommand_impl(13, a, b, c, d);
 }
 
-void func_021169e0(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g) {
-    func_0211665c(17, c, d, (a << 31) | (b << 30) | (e << 29) | (f << 28) | (g << 27), 0);
+void SND_SetupCapture(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g) {
+    PushCommand_impl(17, c, d, (a << 31) | (b << 30) | (e << 29) | (f << 28) | (g << 27), 0);
 }
 
-void func_0211699c(u32 a, u32 b, u32 c, u32 d, u32 e) {
-    u32 x = func_02117518(a, d, e);
-    func_0211665c(18, a, b, c, x);
+void SND_SetupAlarm(u32 a, u32 b, u32 c, u32 d, u32 e) {
+    u32 x = SNDi_SetAlarmHandler(a, d, e);
+    PushCommand_impl(18, a, b, c, x);
 }
 
-void func_02116968(u32 a, u32 b, u32 c) { func_0211665c(8, a, b, c, 0); }
+void func_02116968(u32 a, u32 b, u32 c) { PushCommand_impl(8, a, b, c, 0); }
 
-void func_0211693c(u32 a, u32 b) { func_0211665c(26, a, b, 0, 0); }
+void SND_LockChannel(u32 a, u32 b) { PushCommand_impl(26, a, b, 0, 0); }
 
-void func_02116910(u32 a, u32 b) { func_0211665c(27, a, b, 0, 0); }
+void SND_UnlockChannel(u32 a, u32 b) { PushCommand_impl(27, a, b, 0, 0); }
 
-void func_021168dc(u32 a, u32 b, u32 c) { func_0211665c(20, a, b, c, 0); }
+void SND_SetChannelVolume(u32 a, u32 b, u32 c) { PushCommand_impl(20, a, b, c, 0); }
 
-void func_021168b0(u32 a, u32 b) { func_0211665c(21, a, b, 0, 0); }
+void SND_SetChannelPan(u32 a, u32 b) { PushCommand_impl(21, a, b, 0, 0); }
 
-void func_02116858(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9) {
-    func_0211665c(14, a0 | (a8 << 16), a2, a5 | ((a6 << 24) | (a7 << 22)), a4 | (((a3 << 26) | (a1 << 24)) | (a9 << 16)));
+void SND_SetupChannelPcm(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u32 a8, u32 a9) {
+    PushCommand_impl(14, a0 | (a8 << 16), a2, a5 | ((a6 << 24) | (a7 << 22)), a4 | (((a3 << 26) | (a1 << 24)) | (a9 << 16)));
 }
 
-void func_0211682c(u32 a, u32 b) { func_0211665c(30, a, b, 0, 0); }
+void SND_InvalidateSeqData(u32 a, u32 b) { PushCommand_impl(30, a, b, 0, 0); }
 
-void func_02116800(u32 a, u32 b) { func_0211665c(31, a, b, 0, 0); }
+void SND_InvalidateBankData(u32 a, u32 b) { PushCommand_impl(31, a, b, 0, 0); }
 
-void func_021167d4(u32 a, u32 b) { func_0211665c(32, a, b, 0, 0); }
+void SND_InvalidateWaveData(u32 a, u32 b) { PushCommand_impl(32, a, b, 0, 0); }
 
-void func_021167a8(u32 a) { func_0211665c(23, a, 0, 0, 0); }
+void func_021167a8(u32 a) { PushCommand_impl(23, a, 0, 0, 0); }
 
-void func_02116774(u32 a, u32 b, u32 c, u32 d) { func_0211665c(25, a, b, c, d); }
+void SND_SetOutputSelector(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(25, a, b, c, d); }
 
-void func_02116748(u32 a) { func_0211665c(33, a, 0, 0, 0); }
+void func_02116748(u32 a) { PushCommand_impl(33, a, 0, 0, 0); }
 
-void func_02116714(u32 a, u32 b, u32 c, u32 d) { func_0211665c(6, a, b, c, d); }
+void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(6, a, b, c, d); }
 
-void func_021166e0(u32 a, u32 b, u32 c, u32 d, u32 e) { func_0211665c(7, a | (e << 24), b, c, d); }
+void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e) { PushCommand_impl(7, a | (e << 24), b, c, d); }
 
-void func_021166b4(u32 a) { func_0211665c(22, a, 0, 0, 0); }
+void func_021166b4(u32 a) { PushCommand_impl(22, a, 0, 0, 0); }
 
-void func_0211665c(u32 cmd, u32 a, u32 b, u32 c, u32 d) {
-    u32 *p = (u32 *)func_02117230(1);
+void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d) {
+    u32 *p = (u32 *)SND_AllocCommand(1);
     if (p == 0) return;
     p[1] = cmd;
     p[2] = a;
     p[3] = b;
     p[4] = c;
     p[5] = d;
-    func_021171e8(p);
+    SND_PushCommand(p);
 }
 
-void func_02116638(void) {
-    func_021158e4(3);
-    func_021159a8(0);
+void MI_Init(void) {
+    MI_SetWramBank(3);
+    MI_StopDma(0);
 }
 
 // MI_CompressLZ

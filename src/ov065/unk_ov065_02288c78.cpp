@@ -240,8 +240,8 @@ extern s32 data_ov065_02290fa0;
 extern s32 data_ov065_022918a8;
 
 s32 func_0212a190(const char *, const char *);
-u32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
+u32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212b770(char *);
 s32 func_02130b04(char *, char *);
 
@@ -325,10 +325,10 @@ s32 func_ov065_02289384(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s
     if (n > 0) {
         do {
             u8 *pj = data + j;
-            if (i + (s32)func_021277d4(data_ov065_0228e504[*pj]) + 1 >= 0x100) {
+            if (i + (s32)STD_GetStringLength(data_ov065_0228e504[*pj]) + 1 >= 0x100) {
                 break;
             }
-            i += func_021130d0(buf + i, "\\%s", data_ov065_0228e504[*pj]);
+            i += OS_SPrintf(buf + i, "\\%s", data_ov065_0228e504[*pj]);
             func_ov065_02288758(o, *pj);
             j++;
         } while (j < n);
@@ -516,7 +516,7 @@ namespace F02288e2c {
 extern "C" {
 void func_ov065_0228914c(void *a, char *b) {
     char buf[0x14];
-    func_021130d0(buf, "%d");
+    OS_SPrintf(buf, "%d");
     func_ov065_02289174((Unk_ov065_02289174_Ctx *)a, b, buf);
 }
 }
@@ -782,11 +782,11 @@ void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
                 if (r < 0) {
                     return;
                 }
-                func_021130d0(buf, "%s%d", s, j);
+                OS_SPrintf(buf, "%s%d", s, j);
                 func_ov065_02289174(c, buf, p);
                 p += r;
                 len -= r;
-                s += func_021277d4(s) + 1;
+                s += STD_GetStringLength(s) + 1;
             }
         }
     }

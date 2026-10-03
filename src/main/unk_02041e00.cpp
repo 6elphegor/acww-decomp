@@ -115,12 +115,12 @@ void func_02041aec(Unk_020419b4 *p);
 void *func_020e8608(u32 heap, u32 size);
 void func_02113a70(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void func_020e9244(u32 a, u32 b);
-void func_0211366c(void *th);
-u32 func_02114560();
-void func_02113a44();
-void func_02115fb4(void *p, u32 v, u32 n);
+void OS_WakeupThreadDirect(void *th);
+u32 DC_FlushAll();
+void OS_ExitThread();
+void MI_CpuFill8(void *p, u32 v, u32 n);
 void func_02041b1c(u8 *arg);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 extern u8 data_021d7350[];
 extern u8 data_021ed20c[];
 extern u8 data_021c3e70[];
@@ -259,7 +259,7 @@ extern u8 data_020c9164[];
 extern Unk_02042578_Entry data_021c4350[];
 extern void *data_020cbb18;
 extern u8 data_021c3ea4[];
-void *func_02115fb4(void *, s32, s32);
+void *MI_CpuFill8(void *, s32, s32);
 u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 _ZN12Unk_0204e2f013func_0204e474Eii(void *m, s32 x, s32 y);
 void func_0204568c(s32, void *, u32, u32, s32, s32, s32, s32, s32, s32);
@@ -1225,7 +1225,7 @@ void func_02046ddc(void *, void *, s32, s32, void *);
 void func_02046f04(void *, void *, s32, s32, void *, s32, void *);
 void func_02046d28(void *, s32);
 void func_02046e90(void *, void *, s32);
-s32 func_02116048(void *, void *, s32);
+s32 MI_CpuCopy8(void *, void *, s32);
 s32 func_0203f2e0(s32, void *, s32);
 void func_020b1b6c();
 void func_020b1b4c();
@@ -1358,7 +1358,7 @@ extern u8 data_020c910c[];
 extern volatile u32 data_021c40cc[];
 s32 _ZN12Unk_0209ea5013func_0209ea50Ev(u32);
 void func_0209d498(void *);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f2e0(u32, void *, u32);
 void func_020b1b7c();
 void func_020b1b5c();
@@ -1489,7 +1489,7 @@ s32 func_020482b0(void *a, void *b, s32 x, s32 y, s32 id, void *fn, s32 f);
 s32 func_02048324(void *a, void *b, s32 cnt, Unk_02047830_Pos *arr, s32 id, s32 z);
 s32 func_02048f3c(void *a, Unk_02047830_Pos *from, Unk_02047830_Pos *to, void *fn);
 s32 func_02042564(void *p);
-s32 func_02116048(void *src, void *dst, s32 n);
+s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 s32 func_0203f2e0(s32 a, void *b, s32 c);
 s32 func_0207a484(void *p);
 void *func_0207bf60(void *p, s32 i);
@@ -4588,7 +4588,7 @@ extern "C" void func_02047e64(void *a, void *b, s32 c, s32 d) {
 namespace nK {
 extern "C" void func_02047e1c(void *a, void *b, void *c, s32 d) {
     u8 buf[8];
-    func_02116048(c, buf, 8);
+    MI_CpuCopy8(c, buf, 8);
     if (func_0203f2e0(14, buf, 0) != 2 ? TRUE : FALSE) {
         if (d > 7) d = 7;
         func_02047e64(a, b, 0, d);
@@ -5226,7 +5226,7 @@ extern "C" void func_02046e90(u32 a, u32 b, u32 c) {
         d.b = 0;
         func_0209d498(&d);
         for (s32 i = 0; i < 3; i++) {
-            func_02116048(&d, buf, 8);
+            MI_CpuCopy8(&d, buf, 8);
             s32 r = func_0203f2e0(data_020da2a0[i], buf, c);
             switch (r) {
             case 2:
@@ -5293,13 +5293,13 @@ extern "C" void func_02046d28(void *a, s32 b) {
     s.a = 0;
     s.b = 0;
     func_0209d498(&s);
-    func_02116048(&s, &t1, 8);
+    MI_CpuCopy8(&s, &t1, 8);
     if (Unk_02046d28_Z(func_0203f2e0(0x3d, &t1, b))) func_020b1b6c();
-    func_02116048(&s, &t2, 8);
+    MI_CpuCopy8(&s, &t2, 8);
     if (Unk_02046d28_Z(func_0203f2e0(0x3f, &t2, b))) func_020b1b4c();
-    func_02116048(&s, &t3, 8);
+    MI_CpuCopy8(&s, &t3, 8);
     if (Unk_02046d28_Z(func_0203f2e0(0x60, &t3, b))) func_020b1b2c();
-    func_02116048(&s, &t4, 8);
+    MI_CpuCopy8(&s, &t4, 8);
     if (Unk_02046d28_Z(func_0203f2e0(0x44, &t4, b))) func_020b16e4();
 }
 }
@@ -5426,7 +5426,7 @@ extern "C" void func_0204674c(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
 
         s1.a = 0;
         s1.b = 0;
-        func_02116048(c, &s1, 8);
+        MI_CpuCopy8(c, &s1, 8);
         lim2 = n;
         if (lim2 > 0x16d) lim2 = 0x16d;
         func_0209d164(&s1, lim2);
@@ -5449,7 +5449,7 @@ extern "C" void func_0204674c(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
 
         s2.a = 0;
         s2.b = 0;
-        func_02116048(c, &s2, 8);
+        MI_CpuCopy8(c, &s2, 8);
         lim3 = n;
         if (lim3 > 0x1e) lim3 = 0x1e;
         func_0209d164(&s2, lim3);
@@ -8968,7 +8968,7 @@ extern "C" void func_020422c0(Unk_020422c0_Map *m, Unk_020422c0_Pos *p, u32 v) {
 
 namespace nB {
 extern "C" void func_020422a8(void) {
-    func_02115fb4(nZ::data_021c4350.unk_6c, 0, 0x400);
+    MI_CpuFill8(nZ::data_021c4350.unk_6c, 0, 0x400);
 }
 }
 
@@ -9143,10 +9143,10 @@ extern "C" void func_02041f50(void *o, u8 *base, Unk_02042104_Date *d) {
     s32 n = func_02042070(o, buf, base + 0x15e6a, 0x54);
     if (n == 0) {
         n = 0x54;
-        func_02115fb4(buf, 0, n);
+        MI_CpuFill8(buf, 0, n);
     }
     n = func_02063b8c(n);
-    func_02116048(d, &tmp, 8);
+    MI_CpuCopy8(d, &tmp, 8);
     func_02041fbc(o, n, "bbs_slogan", buf, 0x54, &tmp);
     func_02042008(o, base + 0x15e6a, buf, 11);
 }
@@ -9159,10 +9159,10 @@ extern "C" void func_02041ee4(void *o, u8 *base, Unk_02042104_Date *d) {
     s32 n = func_02042070(o, buf, base + 0x15e60, 0x4c);
     if (n == 0) {
         n = 0x4c;
-        func_02115fb4(buf, 0, n);
+        MI_CpuFill8(buf, 0, n);
     }
     n = func_02063b8c(n);
-    func_02116048(d, &tmp, 8);
+    MI_CpuCopy8(d, &tmp, 8);
     func_02041fbc(o, n, "bbs_pelican", buf, 0x4c, &tmp);
     func_02042008(o, base + 0x15e60, buf, 10);
 }
@@ -9200,7 +9200,7 @@ extern "C" void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d
             break;
         default:
             if ((s32)ty >= 0x1c && (s32)ty < 0x3a) {
-                func_02116048(d, &tmp, 8);
+                MI_CpuCopy8(d, &tmp, 8);
                 s32 r = func_0203f31c(ty, &tmp, v10);
                 switch (r) {
                 case 2:

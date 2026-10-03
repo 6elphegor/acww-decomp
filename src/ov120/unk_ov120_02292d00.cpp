@@ -121,8 +121,8 @@ s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
 BOOL func_0207bf84(void *a, s32 b);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void func_02115e48(void *src, void *dst, u32 n);
-void func_02115e30(u32 v, void *dst, u32 n);
+void MIi_CpuCopy16(void *src, void *dst, u32 n);
+void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void func_ov002_022019a4(void *p, s32 a);
 void func_ov002_02201984(void *p, s32 a);
 void func_ov002_02201938(void *p, s32 a);
@@ -924,24 +924,24 @@ void Unk_ov120_02295010::func_ov120_02293fc4() {
 void Unk_ov120_02295010::func_ov120_02293f08() {
     volatile u16 v0, v1, v2, v3;
     s32 off, j, i, n;
-    func_02115e48(unk_14e4, unk_ce4, 0x800);
+    MIi_CpuCopy16(unk_14e4, unk_ce4, 0x800);
     n = unk_98 >> 4;
     unk_a3 = n;
     off = 0x13;
     for (i = 0; i < n; i++) {
         v0 = 0x10;
-        func_02115e30(v0, unk_ce4 + off, 0x14);
+        MIi_CpuClear16(v0, unk_ce4 + off, 0x14);
         v1 = 0x10;
-        func_02115e30(v1, unk_ce4 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v1, unk_ce4 + (off + 0x20), 0x14);
         off += 0x40;
     }
     j = n + 7;
     off = j * 0x40 + 0x13;
     for (; j < 13; j++) {
         v2 = 0x10;
-        func_02115e30(v2, unk_ce4 + off, 0x14);
+        MIi_CpuClear16(v2, unk_ce4 + off, 0x14);
         v3 = 0x10;
-        func_02115e30(v3, unk_ce4 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v3, unk_ce4 + (off + 0x20), 0x14);
         off += 0x40;
     }
     func_ov120_02292df8(2);
@@ -950,7 +950,7 @@ void Unk_ov120_02295010::func_ov120_02293f08() {
 void Unk_ov120_02295010::func_ov120_02293e70() {
     s32 i;
     u8 *tbl;
-    func_02115e48(unk_1ce4, unk_14e4, 0x800);
+    MIi_CpuCopy16(unk_1ce4, unk_14e4, 0x800);
     tbl = func_ov120_02293b48();
     for (i = 0; i < 13; i++) {
         s32 a = func_ov120_02293e1c(tbl[i], i) * 0x40 + 0x13;

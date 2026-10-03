@@ -90,7 +90,7 @@ extern Glob data_021f5b80;
 extern u8 data_021f5bc0[];
 
 u32 func_020f07f0(void *g, u32 n);
-void func_0210a26c(void *p, s32 v);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a2a0(s32 a, s32 b, u32 c);
 void func_020eda80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 func_020edfbc(SndHandle *h, u32 a, u32 b, s32 c, s16 d);
@@ -163,10 +163,10 @@ void func_020ee95c(void *list, void *obj);
 void func_020eda30(void *p, u32 a);
 void func_020eda60(void *p);
 void func_020edad0(u16 a, u16 b, void *out);
-void func_02100444(void *list, u16 offset);
+void NNS_FndInitList(void *list, u16 offset);
 void func_02109fd0(void *p, u32 a, s32 b);
 void func_0210a0e8(void *p, u32 a, s32 b);
-void func_0210a27c(void *p);
+void NNS_SndHandleReleaseSeq(void *p);
 SeqInfo *func_0210b8a0(u32 a, u32 b);
 s32 func_020f4904(Vec3 *p, s32 m);
 s32 func_020f48d8(s32 x);
@@ -296,7 +296,7 @@ BOOL Unk_020f43c8::play2(s32 id, s32 c, s16 d) {
     if (b3e == 99 && data_021f5b80.f60 != 0) {
         void *p = data_021f5bc0;
         func_020eda80(p, 10, -1, -1, id / 1000, id % 1000);
-        func_0210a26c(p, 100);
+        NNS_SndPlayerSetVolume(p, 100);
         return TRUE;
     }
     switch (id) {
@@ -350,7 +350,7 @@ void Unk_020d6f54::onVolume(SndHandle *h, s32 idx) {
     if (data_021f5b80.f60 == 0) return;
     void *slot = (u8 *)h + 8 + idx * 12;
     Unk_020f43c8 *o = static_cast<Unk_020f43c8 *>(h);
-    func_0210a26c(slot, o->b40 * 40 / 100);
+    NNS_SndPlayerSetVolume(slot, o->b40 * 40 / 100);
 }
 
 u16 Unk_020f43c8::nextId(u16 s) {
@@ -459,7 +459,7 @@ BOOL SndPosNode::isFinished() {
 void SndPosNode::updatePan() {
     s32 a = func_020f48d8(func_020f4904(&pos, 0));
     s32 b = func_020f4718(&pos, 0);
-    func_0210a26c(&h, a);
+    NNS_SndPlayerSetVolume(&h, a);
     func_0210a0e8(&h, 255, b);
 }
 
@@ -487,23 +487,23 @@ void SndPosNode::setBgmPan(Vec3 *p) {
     a = func_020f48d8(func_020f4904(p, 0));
     s32 b = func_020f4718(p, 0);
     if (a < 40) a = 40;
-    func_0210a26c(bh, a);
+    NNS_SndPlayerSetVolume(bh, a);
     func_0210a0e8(bh, data_0213b200, b);
 }
 
 void SndPosNode::release() {
     data_021f5bf8->remove(this);
     func_020eda30(&h, 5);
-    func_0210a27c(&h);
+    NNS_SndHandleReleaseSeq(&h);
 }
 
 SndPosList *SndPosList::release() {
-    func_0210a27c(&h);
+    NNS_SndHandleReleaseSeq(&h);
     return this;
 }
 
 void SndPosList::init() {
-    func_02100444(this, 0);
+    NNS_FndInitList(this, 0);
     func_020eda60(&h);
 }
 
@@ -564,7 +564,7 @@ void SndPosList::playAt(s32 v, Vec3 *p) {
     func_020edad0(v % 1000, 1, &h);
     s32 a = func_020f48d8(func_020f4904(p, 0));
     s32 b = func_020f4718(p, 0);
-    func_0210a26c(&h, a);
+    NNS_SndPlayerSetVolume(&h, a);
     func_0210a0e8(&h, 255, b);
 }
 
@@ -576,7 +576,7 @@ void Unk_0213b91c::vfunc_00() {
 
 void Unk_0213b91c::vfunc_04() {
     func_020eda30(&h, 5);
-    func_0210a27c(&h);
+    NNS_SndHandleReleaseSeq(&h);
 }
 
 void Unk_0213b91c::vfunc_08(u32 nv) {
@@ -719,7 +719,7 @@ void Unk_0213b91c::vfunc_10(Vec3 *pos) {
                 func_0210a148(&h, 3, a);
                 func_0210a148(&h, 12, b);
             } else {
-                func_0210a26c(&h, t);
+                NNS_SndPlayerSetVolume(&h, t);
                 func_0210a0e8(&h, data_0213b200, w);
             }
         }

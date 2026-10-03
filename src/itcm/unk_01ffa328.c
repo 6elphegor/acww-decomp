@@ -204,11 +204,11 @@ typedef struct OSIrqCallbackInfo {
 extern OSIrqCallbackInfo data_027e0058[]; // OSi_IrqCallbackInfo (DTCM)
 extern u8 data_027e0000[];                // DTCM start (OSi_IrqFunctionTable)
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
 extern u32 func_01ffa314(void);                            // OS_EnableInterrupts (assembly)
 extern void func_01ffa3c0(void);                           // OS_Halt (assembly)
-extern u32 func_01ff8128(u32 intr);                        // OS_EnableIrqMask
+extern u32 OS_EnableIrqMask(u32 intr);                        // OS_EnableIrqMask
 
 extern volatile u64 data_021fcf24;
 
@@ -218,7 +218,7 @@ extern volatile u64 data_021fcf24;
 /* END PROTOS */
 
 // OS_GetIrqFunction
-void (*func_01ffa328(u32 intrBit))(void) {
+void (*OS_GetIrqFunction(u32 intrBit))(void) {
     int n;
     void (**table)(void) = (void (**)(void))data_027e0000;
     for (n = 0; n < 22; n++, table++) {

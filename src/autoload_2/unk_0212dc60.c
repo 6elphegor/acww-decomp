@@ -24,7 +24,7 @@ wchar_t *func_0212dc94(wchar_t *dst, const wchar_t *src) {
 }
 
 // wcschr
-wchar_t *func_0212dc60(const wchar_t *s, wchar_t c) {
+wchar_t *wcschr(const wchar_t *s, wchar_t c) {
     wchar_t ch;
     while ((ch = *s++) != 0) {
         if (ch == c) return (wchar_t *)(s - 1);

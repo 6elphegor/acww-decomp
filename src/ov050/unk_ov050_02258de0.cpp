@@ -656,7 +656,7 @@ extern char *data_ov050_0225e1e8[5];
 extern char *data_ov050_0225e1fc[5];
 extern Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19];
 
-s32 func_01ffc854(void *v);
+s32 VEC_Mag(void *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *func_02002d3c(s32 a, s32 b);
 void func_02002fc8(void *p, void *buf);
@@ -824,7 +824,7 @@ s32 func_020e780c(s32 a, s32 b);
 s32 func_020e96ec(Unk_ov050_0225cd90_Vec *a, void *b);
 s32 func_020e972c(Unk_ov050_0225cd90_Vec *a, void *b);
 void func_020e9960(void *out, void *a, void *b);
-s32 func_0212a15c(const char *a, const char *b, s32 n);
+s32 strncmp(const char *a, const char *b, s32 n);
 s32 func_0212a438(const char *s);
 void *func_ov004_022355d8(void *self, s32 a, s32 b, s32 c);
 void *func_ov004_02235718();
@@ -3294,7 +3294,7 @@ void Unk_ov050_0225e4b4::vfunc_14() {
         return;
     }
     if (unk_b0->func_ov050_02258ed0()) {
-        if (func_0212a15c((char *)this + 4, data_ov050_0225e1c4, func_0212a438(data_ov050_0225e1c4)) != 0) {
+        if (strncmp((char *)this + 4, data_ov050_0225e1c4, func_0212a438(data_ov050_0225e1c4)) != 0) {
             return;
         }
     }
@@ -4123,9 +4123,9 @@ BOOL Unk_ov050_0225e400::func_ov050_022593b0() {
             b.z = pv->z;
             Unk_ov050_022590f8_Vec d1, d2;
             func_020e9960(&d1, &a, &b);
-            s32 l1 = func_01ffc854(&d1);
+            s32 l1 = VEC_Mag(&d1);
             func_020e9960(&d2, &a, &unk_5c);
-            if (func_01ffc854(&d2) < l1) {
+            if (VEC_Mag(&d2) < l1) {
                 return TRUE;
             }
         }

@@ -3,8 +3,8 @@
 
 extern "C" {
 extern u8 func_02111a6c[];
-void func_02115e30(u32 a, void *b, u32 c);
-void func_02115e48(void *a, void *b, u32 c);
+void MIi_CpuClear16(u32 a, void *b, u32 c);
+void MIi_CpuCopy16(void *a, void *b, u32 c);
 s32 func_ov001_022079fc();
 s32 func_ov001_02208070();
 s32 func_ov001_02208088();

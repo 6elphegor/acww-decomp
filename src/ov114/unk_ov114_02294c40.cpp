@@ -106,7 +106,7 @@ void func_0200261c(const char *buf, u32 *font, u32 a, s32 b, s32 c, s32 d);
 void func_02002688(const char *buf, u32 *font, u32 a, u8 b, s32 c);
 s32 func_0204bcb0(u32 v);
 void *func_02087e0c(void *p);
-void *func_02116048(void *dst, void *src, u32 n);
+void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN12Unk_020e460813func_020b851cEjjhjjjj(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void *_ZN18Unk_ov094_02294a4019func_ov094_02293b08Ei(S *s, s32 v);
 s32 func_ov094_02293abc(S *s, s32 v);
@@ -140,7 +140,7 @@ void func_020b8800(void *p);
 void func_020b85f8(void *p);
 void _ZN12Unk_020e102813func_0208dae8Eii(void *a, u32 b, u32 c);
 void func_020641b4(const void *src, void *dst, s32 n);
-void func_02115e48(void *, void *, u32);
+void MIi_CpuCopy16(void *, void *, u32);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_02135714(void *, s32, s32, void (*)(void *), void (*)(void *));
@@ -407,7 +407,7 @@ void Unk_ov114_02294c40::func_ov114_022961c0() {
     }
     func_020026c4(data_ov114_022967a4, h, unk_128d, 1, 1, 6);
     func_020641b4("menu/fish/bg4.bpl", unk_9b0.unk_24, 0x20);
-    func_02115e48(unk_9b0.unk_24, unk_9b0.unk_44, 0x20);
+    MIi_CpuCopy16(unk_9b0.unk_24, unk_9b0.unk_44, 0x20);
     func_02002654("menu/fish/a_bg.bsc", h, unk_128d);
     func_02002654("menu/fish/b_bg.bsc", h, unk_128e);
     func_02002654("menu/fish/c_bg.bsc", h, unk_128f);
@@ -972,7 +972,7 @@ void func_ov114_0229549c(S *s) {
     s32 i;
     for (i = 0; i < 9; i++) {
         Unk_ov114_02294c40_Entry *e = &s->unk_108c[i];
-        func_02116048(data_ov114_02296580, e, 8);
+        MI_CpuCopy8(data_ov114_02296580, e, 8);
         e->unk_04.idx = i * 2 + 0xc0;
         e->unk_08 = -1;
     }
@@ -990,8 +990,8 @@ void func_ov114_022953e4(S *s, u32 a, s32 idx) {
         s32 n = func_ov114_0229588c(s);
         u8 *src = s->unk_0a14 + n * 0x80;
         u8 *src2 = src + 0x40;
-        func_02116048(dst, src, 0x40);
-        func_02116048((u8 *)dst + 0x400, src2, 0x40);
+        MI_CpuCopy8(dst, src, 0x40);
+        MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
         _ZN12Unk_020e460813func_020b851cEjjhjjjj(s->unk_0e94 + n * 0x38, src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
         e->unk_04.pal = func_ov094_02293abc(s, key);
     }

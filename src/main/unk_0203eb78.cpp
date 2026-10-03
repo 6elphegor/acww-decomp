@@ -116,11 +116,11 @@ extern u8 data_021c3bd8[];
 }
 
 extern "C" {
-s32 func_02115fb4(void *dst, s32 v, s32 n);
+s32 MI_CpuFill8(void *dst, s32 v, s32 n);
 }
 
 extern "C" {
-void func_02116048(void *src, void *dst, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
@@ -192,7 +192,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_01ffc538(s32 a);
+s32 FX_Sqrt(s32 a);
 }
 
 extern "C" {
@@ -381,7 +381,7 @@ extern "C" void func_0203ebb0(void) {
     for (s32 i = 0; i < 15; i++) {
         func_0203ec00(&data_021c39f0[i]);
     }
-    func_02115fb4(data_021c39f0, 0, 15);
+    MI_CpuFill8(data_021c39f0, 0, 15);
 }
 
 extern "C" Unk_0203eb78_Entry *func_0203eb78(void) {

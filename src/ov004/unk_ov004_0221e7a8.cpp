@@ -498,7 +498,7 @@ s32 _ZN12Unk_02003c3013func_02003eccEv(s32 a);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 s32 func_020641ec(u32 id, void *g, s32 a, u32 b);
-void *func_0210629c(s32 a);
+void *NNS_G3dGetTex(s32 a);
 void func_02055724(void *p, u32 a);
 u32 func_0205588c(void *p, void *g);
 void func_020e8558(s32 a);
@@ -507,7 +507,7 @@ s32 func_020639e8(char *buf, char *fmt, ...);
 s32 func_02101340(void *buf, char *name, u32 data);
 void *func_021012bc(char *name);
 void func_02101310(void *buf);
-void *func_021062dc(void *p);
+void *NNS_G3dGetMdlSet(void *p);
 void *func_021065dc(void *p);
 u32 func_021065f8(void *p, u32 a);
 void *func_02106618(void *p);
@@ -563,7 +563,7 @@ extern "C" s32 func_ov004_02224dbc(Res *self, u32 id) {
                 u32 i, z;
                 void *h = func_021012bc("RMO:a/bmd/bmd0");
                 if (h) {
-                    u8 *r = (u8 *)func_021062dc(h);
+                    u8 *r = (u8 *)NNS_G3dGetMdlSet(h);
                     self->unk_04 = (u32)(r + *(u32 *)(r + *(u16 *)(r + 0xe) + 0xc));
                 }
                 for (i = 0, z = i; i < 13;) {
@@ -646,7 +646,7 @@ extern "C" void func_ov004_02224d5c(void) {
 extern "C" s32 func_ov004_02224d10(Res *self, u32 id) {
     s32 r4 = func_020641ec(id, data_021f482c, -4, 0);
     if (r4) {
-        void *r6 = func_0210629c(r4);
+        void *r6 = NNS_G3dGetTex(r4);
         func_02055724(r6, 0);
         self->unk_00 = func_0205588c(r6, data_021c620c);
         func_020e8558(r4);
@@ -6312,7 +6312,7 @@ s32 func_020e9688(V3 *v);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *a, void *b, void *c);
 void func_02010e68(s32 *p, s32 a, s32 b, s32 c, s32 d);
 s32 func_02010d50(s32 a, s32 b);
@@ -6538,7 +6538,7 @@ extern "C" void func_ov004_0221ece4(Obj *o, Obj *arg) {
         cur.y = pv->y;
         cur.z = pv->z;
         func_ov004_0221edfc(r7, cur.x, cur.z);
-        func_01ffca8c(&o->unk_5c, &w, &o->unk_5c);
+        VEC_Add(&o->unk_5c, &w, &o->unk_5c);
     } else {
         cur.x = r5->x;
         cur.y = r5->y;

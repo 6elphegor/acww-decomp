@@ -128,7 +128,7 @@ void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void _ZN12Unk_020dbd5413func_020547e4Ev(void *);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *, void *);
 void func_02003e70(void *, u32, u32, u32);
-s32 func_02116048(void *src, void *dst, s32 n);
+s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 void func_02076a2c(void *buf, s32 *a, s32 *b);
 }
 
@@ -195,7 +195,7 @@ extern "C" void func_0204fe44(s8 *p, u32 v) {
     s32 a, b;
     u8 buf[8];
     s32 c = p[1];
-    func_02116048(p + 2, buf, 5);
+    MI_CpuCopy8(p + 2, buf, 5);
     func_02076a2c(buf, &a, &b);
     func_0204f4f8((u8)v, 0, c, a, b);
 }

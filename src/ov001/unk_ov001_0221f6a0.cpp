@@ -72,17 +72,17 @@ extern "C" const u32 data_ov001_0222a348[17];
 extern "C" Unk_ov001_0222df00 *data_ov001_0222df00;
 
 extern "C" {
-void func_02114594(void *, s32);
-s32 func_02128930(const void *, const void *, s32);
-void func_02116048(const void *, const void *, s32);
+void DC_InvalidateRange(void *, s32);
+s32 memcmp(const void *, const void *, s32);
+void MI_CpuCopy8(const void *, const void *, s32);
 void func_0211faa0(void *);
-s32 func_021202b4(void *);
-s32 func_0212026c(void *);
-s32 func_021202f4(void *, void *, s32);
+s32 WM_Reset(void *);
+s32 WM_End(void *);
+s32 WM_Initialize(void *, void *, s32);
 s32 func_0211fdd4(void *, void *);
-u64 func_01ffa6b4();
-u32 func_0211f5f4();
-void func_021155c4(void *);
+u64 OS_GetTick();
+u32 WM_GetDispersionScanPeriod();
+void OS_GetOwnerInfo(void *);
 void func_0206d49c(void *);
 void func_ov001_02225d58(void *);
 void *func_ov001_02225db0(s32, s32);
@@ -107,20 +107,20 @@ s32 func_ov001_0221fd14(void (*cb)(s32))
     data_ov001_0222df00 = g;
     g->unk_1370 = cb;
     g = data_ov001_0222df00;
-    g->unk_1b74 = func_01ffa6b4();
-    if (func_021202f4(g, (void *)func_ov001_0221faf0, 3) == 2) {
+    g->unk_1b74 = OS_GetTick();
+    if (WM_Initialize(g, (void *)func_ov001_0221faf0, 3) == 2) {
         do {
             func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
             g = data_ov001_0222df00;
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)g + 0x13b8))->status != 2);
         *(Unk_ov001_0222a348_Blk *)g->unk_1374 = *(const Unk_ov001_0222a348_Blk *)data_ov001_0222a348;
         *(void **)g->unk_1374 = g->unk_0f00;
-        u16 v = func_0211f5f4();
+        u16 v = WM_GetDispersionScanPeriod();
         data_ov001_0222df00->unk_137c = v;
-        func_021155c4(&info);
-        func_02116048(data_ov001_0222a33c, data_ov001_0222df00->unk_1388, 8);
+        OS_GetOwnerInfo(&info);
+        MI_CpuCopy8(data_ov001_0222a33c, data_ov001_0222df00->unk_1388, 8);
         data_ov001_0222df00->unk_1391 = 1;
-        func_02116048(info.unk_04, data_ov001_0222df00->unk_1394, info.unk_18 * 2);
+        MI_CpuCopy8(info.unk_04, data_ov001_0222df00->unk_1394, info.unk_18 * 2);
         if (func_ov001_0221fcd0() != 0) {
             data_ov001_0222df00->unk_1b7c = func_ov001_02227094(0, (void *)func_ov001_0221f6a0, 0, 0x78);
             return 1;
@@ -141,14 +141,14 @@ s32 func_ov001_0221fbcc()
     g->unk_1b80 = 1;
     func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
     if (((Unk_ov001_0222df00_Buf *)((u8 *)data_ov001_0222df00 + 0x13b8))->status != 2) {
-        if (func_021202b4((void *)func_ov001_0221faf0) != 2) {
+        if (WM_Reset((void *)func_ov001_0221faf0) != 2) {
             return 0;
         }
         do {
             func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)data_ov001_0222df00 + 0x13b8))->status != 2);
     }
-    if (func_0212026c((void *)func_ov001_0221faf0) != 2) {
+    if (WM_End((void *)func_ov001_0221faf0) != 2) {
         return 0;
     }
     Unk_ov001_0222df00 *h = data_ov001_0222df00;
@@ -214,11 +214,11 @@ void func_ov001_0221f944(void *arg0)
     // DECL_END
     for (i = 0; i < a->count; i++) {
         e = a->items[i];
-        func_02114594(e, 0xc0);
-        if (func_02128930(e->unk_0c, data_ov001_0222a33c, 8) == 0) {
+        DC_InvalidateRange(e, 0xc0);
+        if (memcmp(e->unk_0c, data_ov001_0222a33c, 8) == 0) {
             g = data_ov001_0222df00;
             for (j = 0, p = g->unk_1300; j < 16; p++, j++) {
-                if (func_02128930(e->unk_04, p->name, 6) == 0) {
+                if (memcmp(e->unk_04, p->name, 6) == 0) {
                     if (g->unk_1300[j].flag != 0) {
                         goto next;
                     }
@@ -233,8 +233,8 @@ void func_ov001_0221f944(void *arg0)
                 }
             }
             for (j = 0; j < 16; j++) {
-                if (func_02128930(g->unk_1300[j].name, data_ov001_0222a334, 6) == 0) {
-                    func_02116048(e->unk_04, g->unk_1300[j].name, 6);
+                if (memcmp(g->unk_1300[j].name, data_ov001_0222a334, 6) == 0) {
+                    MI_CpuCopy8(e->unk_04, g->unk_1300[j].name, 6);
                     data_ov001_0222df00->unk_1300[j].flag = (e->unk_15 & 1) ? 1 : 0;
                     break;
                 }
@@ -262,7 +262,7 @@ void func_ov001_0221f7f4(void *arg0)
         }
         return;
     }
-    func_02114594(g->unk_0f00, 0x400);
+    DC_InvalidateRange(g->unk_0f00, 0x400);
     n = a->count;
     i = 0;
     if (n <= 0) {
@@ -271,9 +271,9 @@ void func_ov001_0221f7f4(void *arg0)
     h = data_ov001_0222df00;
     do {
         e = a->items[i];
-        if (func_02128930(e->unk_0c, data_ov001_0222a33c, 8) == 0 && (e->unk_15 & 1) != 0) {
+        if (memcmp(e->unk_0c, data_ov001_0222a33c, 8) == 0 && (e->unk_15 & 1) != 0) {
             for (j = 0, p = h->unk_1300; j < 16; j++, p++) {
-                if (func_02128930(e->unk_04, p->name, 6) == 0) {
+                if (memcmp(e->unk_04, p->name, 6) == 0) {
                     if (h->unk_1300[j].flag != 0) {
                         break;
                     }
@@ -294,13 +294,13 @@ void func_ov001_0221f6a0(s32 arg)
 {
     Unk_ov001_0222df00 *g;
     s32 i, b, a;
-    u64 now = func_01ffa6b4();
+    u64 now = OS_GetTick();
     g = data_ov001_0222df00;
     a = 0;
     if (now < g->unk_1b74 + 0x17f898) return;
     b = 0;
     for (i = 0; i < 16; i++) {
-        if (func_02128930(g->unk_1300[i].name, data_ov001_0222a334, 6)) {
+        if (memcmp(g->unk_1300[i].name, data_ov001_0222a334, 6)) {
             if (g->unk_1300[i].flag) b = 1;
             else a = 1;
         }

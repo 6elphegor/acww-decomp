@@ -129,7 +129,7 @@ bytecompare:
 }
 
 // strncmp
-int func_0212a15c(const char *a, const char *b, u32 n) {
+int strncmp(const char *a, const char *b, u32 n) {
     const u8 *p1 = (const u8 *)a, *p2 = (const u8 *)b;
     u32 c1, c2;
     if (n) {

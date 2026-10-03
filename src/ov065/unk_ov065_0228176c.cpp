@@ -95,12 +95,12 @@ extern char data_ov065_0228da68[];
 
 extern "C" {
 
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 char *func_02129f1c(const char *, const char *);
 s32 func_0212a190(const char *, const char *);
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
 void *func_0212899c(void *, s32, s32);
 
 void func_ov065_02277ac8(void *);
@@ -282,7 +282,7 @@ void func_ov065_0227e160(Ctx0228 **, s32, s32);
 s32 func_ov065_0227e0e8(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
 void func_ov065_0228090c(Ctx0228 **, Node0228 *);
 void func_ov065_0227f2a4(void *);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_0212a190(const char *, const char *);
 s32 func_0212b770(void *);
 
@@ -507,7 +507,7 @@ s32 func_ov065_02281974(Ctx0228 **h, Node0228 *n, char *s) {
     if (func_ov065_02283684(h, s, 1) != 0) {
         return 4;
     }
-    if (func_0212a15c(s, "\\npr\\", 5) != 0) {
+    if (strncmp(s, "\\npr\\", 5) != 0) {
         func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
         func_ov065_0227e160(h, 3, 1);
         return 3;

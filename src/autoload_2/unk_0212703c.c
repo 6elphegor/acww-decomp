@@ -32,28 +32,28 @@ extern void func_021352b8(void);
 extern void func_02129dcc(u32);
 extern void (*data_02200150[])(void);
 extern void (*data_02200140)(void);
-extern BOOL func_02114354(void *);
-extern void func_02114480(void *);
-extern void func_02114410(void *);
+extern BOOL OS_TryLockMutex(void *);
+extern void OS_LockMutex(void *);
+extern void OS_UnlockMutex(void *);
 extern void func_02133ae0(void);
 
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
 extern void func_0206d49c(void);
 extern void func_02117dcc(void);
-extern BOOL func_02117e8c(u32, u32);
-extern void func_02117eb4(u32, void *);
-extern u32 func_01ff8228(u32);
-extern u32 func_021123d0(void);
-extern void func_02114560(void);
-extern void func_02114594(void *, u32);
-extern void func_02115bac(u32, u32, void *, u32);
-extern void func_02115e78(u32, void *, u32);
+extern BOOL PXI_IsCallbackReady(u32, u32);
+extern void PXI_SetFifoRecvCallback(u32, void *);
+extern u32 OS_SetIrqMask(u32);
+extern u32 OS_GetLockID(void);
+extern void DC_FlushAll(void);
+extern void DC_InvalidateRange(void *, u32);
+extern void MI_DmaCopy16(u32, u32, void *, u32);
+extern void MIi_CpuCopy32(u32, void *, u32);
 extern void func_0211b040(void *, void *);
-extern void func_0211b24c(void *, const void *, u32);
-extern void func_0211b3a8(void *);
+extern void DGT_Hash2SetSource(void *, const void *, u32);
+extern void DGT_Hash2Reset(void *);
 extern void func_02126f30(u32);
-extern void func_02126f94(u32, void *);
+extern void CTRDGi_UnlockByProcessor(u32, void *);
 extern void func_02126fbc(u32, void *);
 
 #define REG300 (*(volatile u16 *)0x04000300)
@@ -119,32 +119,32 @@ s32 func_02127b4c(FILE *file, u32 *bytes_flushed);
 s32 func_02127b40(s32 x);
 s32 func_02127ad0(void);
 s32 func_02127a3c(void);
-void func_02127a24(void);
+void nan(void);
 void func_021279f4(void);
 void func_021279a0(s32 status);
 void func_0212786c(s32 status);
 void func_021277fc(char *dst, const char *src, s32 n);
-u32 func_021277d4(const char *s);
+u32 STD_GetStringLength(const char *s);
 u8 func_021276e0(const u8 *p, u32 len);
-void func_0212769c(u8 *table, u32 poly);
-void func_0212765c(const u8 *table, u8 *crc, const u8 *data, u32 len);
-void func_02127614(u16 *table, u32 poly);
-void func_021275cc(const u16 *table, u16 *crc, const u8 *data, u32 len);
-void func_02127588(u32 *table, u32 poly);
-void func_02127544(const u32 *table, u32 *crc, const u8 *data, u32 len);
-u8 func_02127510(const u8 *table, const void *data, u32 len);
-u16 func_021274dc(const u16 *table, const void *data, u32 len);
-u32 func_021274a4(const u32 *table, const void *data, u32 len);
-void func_02127460(void *digest, const void *data, u32 len);
-u32 func_0212741c(u32 x);
+void MATHi_CRC8InitTable(u8 *table, u32 poly);
+void MATHi_CRC8Update(const u8 *table, u8 *crc, const u8 *data, u32 len);
+void MATHi_CRC16InitTableRev(u16 *table, u32 poly);
+void MATHi_CRC16UpdateRev(const u16 *table, u16 *crc, const u8 *data, u32 len);
+void MATHi_CRC32InitTableRev(u32 *table, u32 poly);
+void MATHi_CRC32UpdateRev(const u32 *table, u32 *crc, const u8 *data, u32 len);
+u8 MATH_CalcCRC8(const u8 *table, const void *data, u32 len);
+u16 MATH_CalcCRC16(const u16 *table, const void *data, u32 len);
+u32 MATH_CalcCRC32(const u32 *table, const void *data, u32 len);
+void MATH_CalcSHA1(void *digest, const void *data, u32 len);
+u32 MATH_CountPopulation(u32 x);
 void func_02127380(void);
 void func_021271b4(void);
 void func_02127178(u32 tag, u32 data);
 void func_02127118(u32 tag, u32 data);
 void func_021270f8(void);
 void func_021270b8(void);
-void func_02127070(Cycle *p);
-void func_0212703c(Cycle *p);
+void CTRDGi_ChangeLatestAccessCycle(Cycle *p);
+void CTRDGi_RestoreAccessCycle(Cycle *p);
 
 // fread
 u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
@@ -339,7 +339,7 @@ s32 func_02127a3c(void) {
 }
 
 // tail call: func_0213294c(data_0213c320)
-void func_02127a24(void) {
+void nan(void) {
     func_0213294c(data_0213c320);
 }
 
@@ -364,13 +364,13 @@ void func_021279a0(s32 status) {
 
 // MSL __exit: recursive exit-mutex lock, run atexit table, termination hook, shut down C library
 void func_0212786c(s32 status) {
-    if (func_02114354(data_02200298) == 0) {
+    if (OS_TryLockMutex(data_02200298) == 0) {
         data_02200250 = data_021fcc2c.cur->id;
         data_02200274 = 1;
     } else if (data_02200250 == data_021fcc2c.cur->id) {
         data_02200274++;
     } else {
-        func_02114480(data_02200298);
+        OS_LockMutex(data_02200298);
         data_02200250 = data_021fcc2c.cur->id;
         data_02200274 = 1;
     }
@@ -378,7 +378,7 @@ void func_0212786c(s32 status) {
         data_02200150[--data_02200148]();
     }
     if (--data_02200274 == 0) {
-        func_02114410(data_02200298);
+        OS_UnlockMutex(data_02200298);
     }
     if (data_02200140 != NULL) {
         data_02200140();
@@ -413,7 +413,7 @@ void func_021277fc(char *dst, const char *src, s32 n) {
 }
 
 // strlen
-u32 func_021277d4(const char *s) {
+u32 STD_GetStringLength(const char *s) {
     u32 n = 0;
     while (s[n] != 0) {
         n++;
@@ -423,7 +423,7 @@ u32 func_021277d4(const char *s) {
 
 // STD_ConcatenateString-like (strcat)
 char *func_021277a4(char *dst, const char *src) {
-    func_02127838(dst + func_021277d4(dst), src);
+    func_02127838(dst + STD_GetStringLength(dst), src);
     return dst;
 }
 
@@ -474,7 +474,7 @@ u8 func_021276e0(const u8 *p, u32 len) {
 }
 
 // MATH_CRC8InitTable
-void func_0212769c(u8 *table, u32 poly) {
+void MATHi_CRC8InitTable(u8 *table, u32 poly) {
     u32 r, i, j;
     for (i = 0; i < 256; i++) {
         r = i;
@@ -487,7 +487,7 @@ void func_0212769c(u8 *table, u32 poly) {
 }
 
 // MATH_CRC8Update
-void func_0212765c(const u8 *table, u8 *crc, const u8 *data, u32 len) {
+void MATHi_CRC8Update(const u8 *table, u8 *crc, const u8 *data, u32 len) {
     u32 c = *crc;
     u32 i;
     for (i = 0; i < len; i++) {
@@ -498,7 +498,7 @@ void func_0212765c(const u8 *table, u8 *crc, const u8 *data, u32 len) {
 }
 
 // MATH_CRC16InitTable
-void func_02127614(u16 *table, u32 poly) {
+void MATHi_CRC16InitTableRev(u16 *table, u32 poly) {
     u32 r, i, j;
     for (i = 0; i < 256; i++) {
         r = i;
@@ -511,7 +511,7 @@ void func_02127614(u16 *table, u32 poly) {
 }
 
 // MATH_CRC16Update
-void func_021275cc(const u16 *table, u16 *crc, const u8 *data, u32 len) {
+void MATHi_CRC16UpdateRev(const u16 *table, u16 *crc, const u8 *data, u32 len) {
     u32 c = *crc;
     u32 i;
     for (i = 0; i < len; i++) {
@@ -522,7 +522,7 @@ void func_021275cc(const u16 *table, u16 *crc, const u8 *data, u32 len) {
 }
 
 // MATH_CRC32InitTable
-void func_02127588(u32 *table, u32 poly) {
+void MATHi_CRC32InitTableRev(u32 *table, u32 poly) {
     u32 r, i, j;
     for (i = 0; i < 256; i++) {
         r = i;
@@ -535,7 +535,7 @@ void func_02127588(u32 *table, u32 poly) {
 }
 
 // MATH_CRC32Update
-void func_02127544(const u32 *table, u32 *crc, const u8 *data, u32 len) {
+void MATHi_CRC32UpdateRev(const u32 *table, u32 *crc, const u8 *data, u32 len) {
     u32 c = *crc;
     u32 i;
     for (i = 0; i < len; i++) {
@@ -546,37 +546,37 @@ void func_02127544(const u32 *table, u32 *crc, const u8 *data, u32 len) {
 }
 
 // MATH_CalcCRC8 (table, data, len)
-u8 func_02127510(const u8 *table, const void *data, u32 len) {
+u8 MATH_CalcCRC8(const u8 *table, const void *data, u32 len) {
     u8 crc = 0;
-    func_0212765c(table, &crc, data, len);
+    MATHi_CRC8Update(table, &crc, data, len);
     return crc;
 }
 
 // MATH_CalcCRC16 (table, data, len)
-u16 func_021274dc(const u16 *table, const void *data, u32 len) {
+u16 MATH_CalcCRC16(const u16 *table, const void *data, u32 len) {
     u16 crc = 0;
-    func_021275cc(table, &crc, data, len);
+    MATHi_CRC16UpdateRev(table, &crc, data, len);
     return crc;
 }
 
 // MATH_CalcCRC32 (table, data, len)
-u32 func_021274a4(const u32 *table, const void *data, u32 len) {
+u32 MATH_CalcCRC32(const u32 *table, const void *data, u32 len) {
     u32 crc = 0xffffffff;
-    func_02127544(table, &crc, data, len);
+    MATHi_CRC32UpdateRev(table, &crc, data, len);
     return ~crc;
 }
 
 // MATH_CalcSHA1(digest, data, len)
-void func_02127460(void *digest, const void *data, u32 len) {
+void MATH_CalcSHA1(void *digest, const void *data, u32 len) {
     u8 ctx[0x68];
-    func_0211b3a8(ctx);
-    func_0211b24c(ctx, data, len);
+    DGT_Hash2Reset(ctx);
+    DGT_Hash2SetSource(ctx, data, len);
     func_0211b040(ctx, digest);
 }
 
 // MATH_CountPopulation
 // MATH_CountPopulation
-u32 func_0212741c(u32 x) {
+u32 MATH_CountPopulation(u32 x) {
     x = x - ((x >> 1) & 0x55555555);
     x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
     x = (x + (x >> 4)) & 0x0f0f0f0f;
@@ -591,12 +591,12 @@ void func_02127380(void) {
     data_0220005c = 1;
     func_021270b8();
     func_02117dcc();
-    while (func_02117e8c(13, 1) == 0) {
+    while (PXI_IsCallbackReady(13, 1) == 0) {
     }
-    func_02117eb4(13, func_02127178);
+    PXI_SetFifoRecvCallback(13, func_02127178);
     func_021271b4();
-    func_02117eb4(13, 0);
-    func_02117eb4(13, func_02127118);
+    PXI_SetFifoRecvCallback(13, 0);
+    PXI_SetFifoRecvCallback(13, func_02127118);
     data_02200060 = 0;
 }
 
@@ -613,18 +613,18 @@ void func_021271b4(void) {
     if (data_02200058) return;
     data_02200058 = 1;
     if ((REG300 & 1) == 0) return;
-    irq = func_01ff8228(0x40000);
+    irq = OS_SetIrqMask(0x40000);
     ime = REG208;
     REG208 = 1;
     func_02126fbc(data_02200054[1], saved);
     ex = (REG204 & 0x8000) >> 15;
-    func_02127070(&cyc);
+    CTRDGi_ChangeLatestAccessCycle(&cyc);
     REG204 = (u16)(REG204 & ~0x8000);
-    func_02114594((u8 *)&data_02200080 + 0x80, 0x40);
-    func_02115bac(1, 0x08000080, (u8 *)&data_02200080 + 0x80, 0x40);
+    DC_InvalidateRange((u8 *)&data_02200080 + 0x80, 0x40);
+    MI_DmaCopy16(1, 0x08000080, (u8 *)&data_02200080 + 0x80, 0x40);
     REG204 = (u16)((REG204 & ~0x8000) | (ex << 15));
-    func_0212703c(&cyc);
-    func_02126f94(data_02200054[1], saved);
+    CTRDGi_RestoreAccessCycle(&cyc);
+    CTRDGi_UnlockByProcessor(data_02200054[1], saved);
     b = &data_02200080;
     *(u16 *)0x027ffc30 = b->f_be;
     for (i = 0; i < 3; i++) {
@@ -633,15 +633,15 @@ void func_021271b4(void) {
     w = (Work *)0x027ffc30;
     w->c = b->f_b0;
     w->d = b->f_ac;
-    func_02115e78(0xffff0020, data_02200084, 0x9c);
-    func_02114560();
+    MIi_CpuCopy32(0xffff0020, data_02200084, 0x9c);
+    DC_FlushAll();
     func_02126f30(((((u32)&data_02200080 - 0x02000000) >> 5) << 6) | 1);
     while (data_02200054[0] != 1) {
         WaitByLoop(1);
     }
     (void)REG208;
     REG208 = (u16)ime;
-    func_01ff8228(irq);
+    OS_SetIrqMask(irq);
 }
 
 // PXI callback (tag 13): command 0x01 sets data_02200054[0] = 1
@@ -671,15 +671,15 @@ void func_021270f8(void) {
     func_0206d49c();
 }
 
-// clears the state at data_02200054 via CpuSet (fill) and stores func_021123d0() in its second halfword
+// clears the state at data_02200054 via CpuSet (fill) and stores OS_GetLockID() in its second halfword
 void func_021270b8(void) {
     u32 zero = 0;
     CpuSet(&zero, data_02200054, 0x05000001);
-    data_02200054[1] = (u16)func_021123d0();
+    data_02200054[1] = (u16)OS_GetLockID();
 }
 
 // CTRDG: read cartridge ROM access cycles (EXMEMCNT 0x04000204 bits 2-4) into *p, then reset them to the slowest setting
-void func_02127070(Cycle *p) {
+void CTRDGi_ChangeLatestAccessCycle(Cycle *p) {
     p->c1 = (REG204 & 0xc) >> 2;
     p->c2 = (REG204 & 0x10) >> 4;
     REG204 = (u16)((REG204 & ~0xc) | 0xc);
@@ -687,7 +687,7 @@ void func_02127070(Cycle *p) {
 }
 
 // CTRDG_SetROMCycle-like: EXMEMCNT (0x04000204) ROM access cycles
-void func_0212703c(Cycle *p) {
+void CTRDGi_RestoreAccessCycle(Cycle *p) {
     REG204 = (u16)((p->c1 << 2) | (REG204 & ~0xc));
     REG204 = (u16)((p->c2 << 4) | (REG204 & ~0x10));
 }

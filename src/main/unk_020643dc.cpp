@@ -219,14 +219,14 @@ extern const Unk_02065078_Rec data_020cb80c[];
 extern const Unk_0206513c_DefList *data_020dd3ec[];
 
 extern "C" {
-void func_02110bb0(void *m);
+void G3_MultMtx33(void *m);
 void func_02104270(s32 id, s32 x, s32 y, s32 z);
-void func_0210425c(s32 id, u32 c);
+void NNS_G3dGlbLightColor(s32 id, u32 c);
 u16 func_020baa04(s32 a);
 void func_020e944c(Unk_02064674_Vec *v, s32 a);
 void func_020e93a0(Unk_02064674_Vec *v, s32 a);
 s32 func_020e94f8(Unk_02064674_Vec *v);
-s32 func_01ffc854(Unk_02064674_Vec *v);
+s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_0209cf18(Unk_02064870_Time *t);
 void func_0209cdf8(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
@@ -235,7 +235,7 @@ s32 func_020b5164();
 void func_0200402c(u32 a);
 s32 func_020b50e8(void);
 s32 func_020b52f8(void);
-void func_01ffc714(void *a, void *b);
+void VEC_Normalize(void *a, void *b);
 void func_020e7968(void);
 void func_020e7a10(void *list, void *node, void *prev);
 
@@ -416,9 +416,9 @@ BOOL Unk_020dd408::vfunc_0c() {
 }
 
 extern "C" void func_02064fa8(void *a, void *b) {
-    func_01ffc714(a, b);
-    func_01ffc714((u8 *)a + 0xc, (u8 *)b + 0xc);
-    func_01ffc714((u8 *)a + 0x18, (u8 *)b + 0x18);
+    VEC_Normalize(a, b);
+    VEC_Normalize((u8 *)a + 0xc, (u8 *)b + 0xc);
+    VEC_Normalize((u8 *)a + 0x18, (u8 *)b + 0x18);
 }
 
 extern "C" s32 func_02064f84(void) {
@@ -638,11 +638,11 @@ void Unk_02064944::func_02064abc(void *m)
     if (unk_00 != 9) {
         *(volatile s32 *)0x4000440 = 2;
         *(volatile s32 *)0x4000454 = 0;
-        func_02110bb0(m);
+        G3_MultMtx33(m);
         func_02104270(2, (s16)unk_08.x, (s16)unk_08.y, (s16)unk_08.z);
-        func_0210425c(2, unk_04);
+        NNS_G3dGlbLightColor(2, unk_04);
     } else {
-        func_0210425c(2, 0);
+        NNS_G3dGlbLightColor(2, 0);
     }
 }
 
@@ -796,7 +796,7 @@ s16 Unk_0206444c::func_02064870()
 extern "C" void func_0206481c(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
 {
     if (func_020e94f8(in)) {
-        if (func_01ffc854(in) >= 0xff0) {
+        if (VEC_Mag(in) >= 0xff0) {
             in->x = func_01ffcb0c(in->x, 0xff0);
             in->y = func_01ffcb0c(in->y, 0xff0);
             in->z = func_01ffcb0c(in->z, 0xff0);
@@ -972,9 +972,9 @@ void Unk_0206444c::func_0206449c(void *m)
     s32 id = unk_04;
     *(volatile s32 *)0x4000440 = 2;
     *(volatile s32 *)0x4000454 = 0;
-    func_02110bb0(m);
+    G3_MultMtx33(m);
     func_02104270(id, (s16)unk_38.x, (s16)unk_38.y, (s16)unk_38.z);
-    func_0210425c(id, unk_34);
+    NNS_G3dGlbLightColor(id, unk_34);
 }
 
 extern "C" void func_02064478(s32 i, u32 a, u32 b)

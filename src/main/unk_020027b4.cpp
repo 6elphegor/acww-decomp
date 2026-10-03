@@ -71,11 +71,11 @@ extern void *data_0213c86c;
 }
 
 extern "C" {
-void func_02110db8(u16 a, u32 b, u32 c, u32 d, u32 e);
+void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 n);
+void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
@@ -83,19 +83,19 @@ void func_02110de8(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_02111088(void);
+void G3X_Reset(void);
 }
 
 extern "C" {
-void func_0210fcb8(u32 a);
+void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void func_0210fbc4(u32 a);
+void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
@@ -103,7 +103,7 @@ void func_02114b00(void);
 }
 
 extern "C" {
-void func_02111110(void);
+void G3X_Init(void);
 }
 
 extern "C" {
@@ -111,11 +111,11 @@ void func_02110d00(void);
 }
 
 extern "C" {
-void func_02110fa4(void);
+void G3X_InitMtxStack(void);
 }
 
 extern "C" {
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
@@ -123,19 +123,19 @@ void func_02105d98(void);
 }
 
 extern "C" {
-void func_02111c6c(void *p, u32 a, u32 b);
+void GX_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111c0c(void *p, u32 a, u32 b);
+void GXS_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 a, u32 b);
+void GX_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
@@ -147,7 +147,7 @@ void *func_020641d8(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 }
 
 extern "C" {
@@ -179,7 +179,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -203,7 +203,7 @@ void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
@@ -364,39 +364,39 @@ extern "C" void func_02002918(void);
 extern "C" void func_02002804(void);
 
 extern "C" void func_02002918(void) {
-    func_02111110();
+    G3X_Init();
     func_02110d00();
-    func_02110fa4();
+    G3X_InitMtxStack();
     *(vu16 *)0x4000060 &= 0xffffcffd;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 0x10;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
     *(vu16 *)0x4000060 &= 0xcfdf;
     *(vu32 *)0x4000580 = 0xbfff0000;
-    func_02111404(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
+    G3i_PerspectiveW_(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
     *(vu32 *)0x400044c = 0;
     *(vu32 *)0x4000540 = 3;
     func_02105d98();
     func_02002804();
-    func_02110db8(0, 0, 0x7fff, 0x3f, 1);
+    G3X_SetClearColor(0, 0, 0x7fff, 0x3f, 1);
     data_0213c7a8 = 0;
     data_0213c7ac = 0x7fff;
 }
 
 extern "C" void func_02002898(void) {
     func_02002918();
-    func_0210fcb8(6);
-    func_0210fbc4(0x10);
+    GX_SetBankForTex(6);
+    GX_SetBankForTexPltt(0x10);
     func_02114b00();
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 4;
     *(vu16 *)0x4000340 = 0;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
-    func_02110db8(0, 0, 0x7fff, 0, 1);
+    G3X_SetClearColor(0, 0, 0x7fff, 0, 1);
     data_0213c7e0 = *(Unk_02002848_Data *)data_02135934;
-    func_01ffbb6c(&data_0213c7e0, data_0213c7b0);
+    MTX_Inverse43(&data_0213c7e0, data_0213c7b0);
 }
 
 extern "C" void func_02002870(void) {
-    func_02111088();
+    G3X_Reset();
     *(vu32 *)0x4000440 = 3;
     *(vu32 *)0x4000454 = 0;
     *(vu32 *)0x4000440 = 2;
@@ -404,12 +404,12 @@ extern "C" void func_02002870(void) {
 
 extern "C" void func_02002848(Unk_02002848_Data *src) {
     data_0213c7e0 = *src;
-    func_01ffbb6c(&data_0213c7e0, data_0213c7b0);
+    MTX_Inverse43(&data_0213c7e0, data_0213c7b0);
 }
 
 extern "C" void func_02002804(void) {
     Unk_02002804_Buf buf = *(Unk_02002804_Buf *)data_020d47e4;
-    func_021145cc(&buf, 0x40);
+    DC_FlushRange(&buf, 0x40);
     vu16 *reg = (vu16 *)0x4000060;
     *reg = *reg & 0xffffcffd;
     func_02110de8(&buf);
@@ -420,7 +420,7 @@ extern "C" void func_020027f8(u32 v) { data_0213c7ac = v; }
 extern "C" void func_020027ec(u16 v) { data_0213c7a8 = v; }
 
 extern "C" void func_020027c4(void) {
-    func_02110db8(data_0213c7a8, 0, data_0213c7ac, 0x3f, 1);
+    G3X_SetClearColor(data_0213c7a8, 0, data_0213c7ac, 0x3f, 1);
 }
 
 // mwcc 1.2 emits functions in reverse order, but symbol lookup doesn't care

@@ -37,10 +37,10 @@ public:
 extern "C" {
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc538(...);
+s32 FX_Sqrt(...);
 s32 func_01ffcb2c(s32 x, s32 y);
-s32 func_01ffca14(void *a, void *b);
-void func_01ffca8c(void *o, void *a, void *b);
+s32 VEC_DotProduct(void *a, void *b);
+void VEC_Add(void *o, void *a, void *b);
 void func_01ffd070(void *o, void *a, void *b);
 s64 func_01ffd028(void *a, void *b);
 void func_020e93a0(void *v, s16 a);

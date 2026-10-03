@@ -211,7 +211,7 @@ void func_0210a008(u32 sel, void *out);
 void func_0210d010(void *p, u32 v);
 void func_020eda30(void *p, u32 v);
 void func_020eda60(void *p);
-void func_0210a27c(void *p);
+void NNS_SndHandleReleaseSeq(void *p);
 void func_02109fd0(void *p, u32 a, s32 b);
 void func_020f86c0(Rb *r);
 void func_020f87b4(Rb *r);
@@ -227,23 +227,23 @@ Entry *func_020fe2f0(void *list, Entry *e);
 void func_020f969c(Mgr *m, u32 a);
 void func_020f98ac(Mgr *m, Entry *e);
 extern u16 data_021f5c38;
-void func_020fe2bc(void);
-void func_020fe1f4(void);
-void func_020fe170(void);
+void spl_calc_gravity(void);
+void spl_calc_random(void);
+void spl_calc_magnet(void);
 void func_020fe098(void);
 void func_020fdf7c(void);
-void func_020fdee8(void);
-void func_02111ff0(void);
+void spl_calc_convergence(void);
+void GX_BeginLoadTexPltt(void);
 void func_02111f7c(void *dst, u32 a, u32 n);
 void func_02111f24(void);
-void func_0211220c(void);
-void func_021120a8(void *dst, u32 a, u32 n);
-void func_02112038(void);
+void GX_BeginLoadTex(void);
+void GX_LoadTex(void *dst, u32 a, u32 n);
+void GX_EndLoadTex(void);
 s32 func_020f8e98(Fp *self, Cb cb);
 u32 func_020f9620(u32 a, u32 b);
 s32 func_020f8f4c(Fp *self, Cb cb);
 u32 func_020f9658(u32 a, u32 b);
-void *func_02115fb4(void *p, u32 v, u32 n);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 static inline BOOL nz(u32 v) { return v != 0; }
@@ -252,7 +252,7 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
     s32 i;
     u32 off = 0;
     self->p1c = (u8 *)self->alloc(self->h24 << 5);
-    func_02115fb4(self->p1c, 0, self->h24 << 5);
+    MI_CpuFill8(self->p1c, 0, self->h24 << 5);
     for (i = 0; i < self->h24; i++) {
         Pool32 *p = (Pool32 *)(self->p1c + i * 32);
         HdrBits h;
@@ -296,19 +296,19 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
             it = p->p18;
             if (h.b24) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe2bc;
+                it->fn = (void *)spl_calc_gravity;
                 off += 8;
                 it++;
             }
             if (h.b25) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe1f4;
+                it->fn = (void *)spl_calc_random;
                 off += 8;
                 it++;
             }
             if (h.b26) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe170;
+                it->fn = (void *)spl_calc_magnet;
                 off += 16;
                 it++;
             }
@@ -326,7 +326,7 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
             }
             if (h.b29) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fdee8;
+                it->fn = (void *)spl_calc_convergence;
                 off += 16;
                 it++;
             }
@@ -338,7 +338,7 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
 
 extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
     s32 i;
-    func_0211220c();
+    GX_BeginLoadTex();
     for (i = 0; i < self->h26; i++) {
         Slot *s = &self->tab[i];
         SEnt *e = s->e;
@@ -346,17 +346,17 @@ extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
             s->w4 = self->tab[e->b.idx].w4;
         } else {
             u32 r = cb(e->w8, e->b.kind == 5 ? 1 : 0);
-            func_021120a8((u8 *)s->e + 32, r, e->w8);
+            GX_LoadTex((u8 *)s->e + 32, r, e->w8);
             s->w4 = r;
         }
     }
-    func_02112038();
+    GX_EndLoadTex();
     return 1;
 }
 
 extern "C" s32 func_020f8e98(Fp *self, Cb cb) {
     s32 i;
-    func_02111ff0();
+    GX_BeginLoadTexPltt();
     for (i = 0; i < self->h26; i++) {
         Slot *s = &self->tab[i];
         SEnt *e = s->e;

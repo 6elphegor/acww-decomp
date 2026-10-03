@@ -163,15 +163,15 @@ extern u8 data_021ee330[];
 }
 
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void func_02115fb4(void *dst, u32 value, u32 size);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
 }
 
 extern "C" {
-void func_02115ea8(u32 value, u32 dst, u32 size);
+void MIi_CpuClearFast(u32 value, u32 dst, u32 size);
 }
 
 extern "C" {
@@ -211,11 +211,11 @@ void func_020942f8(void *p);
 }
 
 extern "C" {
-void func_02114624(void);
+void OS_Init(void);
 }
 
 extern "C" {
-void func_02114e48(void);
+void OS_InitTick(void);
 }
 
 extern "C" {
@@ -223,7 +223,7 @@ void func_0210f248(void);
 }
 
 extern "C" {
-void func_0210f9ac(u32 a);
+void GX_SetBankForLCDC(u32 a);
 }
 
 extern "C" {
@@ -235,7 +235,7 @@ u32 func_01ffa314(void);
 }
 
 extern "C" {
-void func_01ffa3d4(u32 a);
+void OS_RestoreInterrupts(u32 a);
 }
 
 extern "C" {
@@ -247,7 +247,7 @@ void func_02097428(void);
 }
 
 extern "C" {
-void func_02119da8(u32 a);
+void FS_Init(u32 a);
 }
 
 extern "C" {
@@ -263,7 +263,7 @@ void func_0204f054(void *p, void *a);
 }
 
 extern "C" {
-void func_021145cc(u32 a, u32 b);
+void DC_FlushRange(u32 a, u32 b);
 }
 
 extern "C" {
@@ -271,7 +271,7 @@ void func_02114b4c(u32 a);
 }
 
 extern "C" {
-void func_02114710(u32 a, u32 b);
+void OS_SetArenaHi(u32 a, u32 b);
 }
 
 extern "C" {
@@ -291,7 +291,7 @@ void func_0205b794(void);
 }
 
 extern "C" {
-void func_01ffa404(u32 a, void (*cb)(void));
+void OS_SetIrqFunction(u32 a, void (*cb)(void));
 }
 
 extern "C" {
@@ -303,15 +303,15 @@ void func_01ffcc60(void);
 }
 
 extern "C" {
-void func_01ff8128(u32 a);
+void OS_EnableIrqMask(u32 a);
 }
 
 extern "C" {
-void func_0210f1e8(u32 a);
+void GX_VBlankIntr(u32 a);
 }
 
 extern "C" {
-void func_0210f218(u32 a);
+void GX_HBlankIntr(u32 a);
 }
 
 extern "C" {
@@ -559,7 +559,7 @@ extern "C" void func_020b0c84(void) {
     data_021cb3e4[0] = 0;
     data_021cb3ec[1] = 0;
     data_021cb3ec[0] = 0;
-    func_01ffa404(1, func_01ffcc60);
+    OS_SetIrqFunction(1, func_01ffcc60);
     data_021cb3bc = 1;
 }
 
@@ -571,13 +571,13 @@ extern "C" void func_020b0b90(void) {
     func_020e99a4();
     func_0205b794();
     func_020b0c84();
-    func_01ffa404(2, func_01ffcc30);
-    func_01ff8128(3);
+    OS_SetIrqFunction(2, func_01ffcc30);
+    OS_EnableIrqMask(3);
     *(vu16 *)0x4000208;
     *(vu16 *)0x4000208 = 1;
     func_01ffa314();
-    func_0210f1e8(1);
-    func_0210f218(1);
+    GX_VBlankIntr(1);
+    GX_HBlankIntr(1);
     func_02050170();
     func_020376c0();
     func_02076c24(data_021cc7d0, OVERLAY_69_ID);
@@ -612,7 +612,7 @@ extern "C" void func_020b0b74(u32 a, u32 b) {
 
 extern "C" void func_020b0b54(void) {
     func_02114b4c(0x23ff017);
-    func_02114710(0, 0x23ff000);
+    OS_SetArenaHi(0, 0x23ff000);
 }
 
 extern "C" void func_020b0b18(void) {
@@ -623,8 +623,8 @@ extern "C" void func_020b0b18(void) {
     start = info[1];
     fill = 0xe7fee7fe;
     size = 0x229bdc0 - start;
-    func_02115ea8(fill, start, size);
-    func_021145cc(start, size);
+    MIi_CpuClearFast(fill, start, size);
+    DC_FlushRange(start, size);
 }
 
 extern "C" void func_020b0a80(void) {
@@ -632,12 +632,12 @@ extern "C" void func_020b0a80(void) {
     volatile u32 zero;
     u32 r5;
     u16 old;
-    func_02114624();
-    func_02114e48();
+    OS_Init();
+    OS_InitTick();
     func_0210f248();
-    func_0210f9ac(8);
+    GX_SetBankForLCDC(8);
     zero = 0;
-    func_02115ea8(zero, 0x6800000, 0x20000);
+    MIi_CpuClearFast(zero, 0x6800000, 0x20000);
     func_0210f554();
     old = *ime;
     *ime = 1;
@@ -646,12 +646,12 @@ extern "C" void func_020b0a80(void) {
     func_020fe5c0(8, func_020b0b74, 0);
     while (data_021ee284 == 0) {
     }
-    func_01ffa3d4(r5);
+    OS_RestoreInterrupts(r5);
     *ime;
     *ime = old;
     func_020b0b54();
     func_02097428();
-    func_02119da8(2);
+    FS_Init(2);
     func_020b0b18();
     func_0204eeb4();
     *(u16 *)data_0213af4c = 1;

@@ -137,7 +137,7 @@ extern "C" {
 void func_02103d48(void *p, s32 a);
 void func_02103d50(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 func_01ff8ad4(void *p);
-void func_02115f48(void *p, void *q);
+void MI_Copy36B(void *p, void *q);
 extern u8 data_027e0184[];
 extern u32 data_027e0148[];
 void func_021042d0(void *p);
@@ -151,21 +151,21 @@ void func_02103830(void *p, u32 q);
 void func_02103f98(void *p, void *q);
 u32 func_02064f84(void);
 void func_0210622c(void *p, s32 a, s32 b);
-void func_01ffb7cc(void *p);
+void MTX_Identity43_(void *p);
 u32 func_02103c34(void *p);
 void func_02103c2c(void *p, u32 x);
-void func_021145cc(void *p, u32 a);
+void DC_FlushRange(void *p, u32 a);
 void func_02103bc0(void *p, s32 a);
 u32 func_02103d3c(void *p);
 u32 func_02103d30(void *p);
-void func_02103d1c(void *p, u32 y, u32 z);
+void NNS_G3dTexSetTexKey(void *p, u32 y, u32 z);
 void func_02103c40(void *p, s32 a);
 void func_02103d64(s32 a, u32 b);
 void func_02103e40(s32 a, u32 b);
 void func_02104000(void *p, void *q, u32 r, u32 s);
-u32 func_021040ac(const char *a, u32 b);
+u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
 void *func_020e8608(void *h, u32 n);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void func_0206d49c(void);
 u32 _ZN12Unk_02056fd813func_0205710cEv(void *p);
 s32 func_02057110(u32 p);
@@ -175,7 +175,7 @@ void _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 void func_02056714(void *p);
 s32 func_02105dcc(void *a, void *b, s32 c, s32 d);
 void *func_021041e8(void);
-void func_01ffb94c(void *a, void *b, void *c);
+void MTX_Concat43(void *a, void *b, void *c);
 extern void *data_021c6214;
 extern u8 data_020e416c;
 extern void *data_021f482c;
@@ -283,7 +283,7 @@ extern "C" void *func_02055928(u32 *a, void *heap) {
     if (p == NULL) {
         return NULL;
     }
-    func_02116048(a, p, *a);
+    MI_CpuCopy8(a, p, *a);
     return p;
 }
 
@@ -314,7 +314,7 @@ extern "C" void *func_0205588c(void *a, void *heap) {
     if (p == NULL) {
         return NULL;
     }
-    func_02116048(a, p, n);
+    MI_CpuCopy8(a, p, n);
     return p;
 }
 
@@ -340,8 +340,8 @@ extern "C" void *func_02055820(void *a, u32 key) {
 }
 
 extern "C" BOOL func_02055800(Unk_02055744_Obj *a, u32 y, u32 z) {
-    func_02103d1c(a, y, z);
-    func_021145cc(a, a->unk_04);
+    NNS_G3dTexSetTexKey(a, y, z);
+    DC_FlushRange(a, a->unk_04);
     func_02103c40(a, 1);
     return TRUE;
 }
@@ -361,7 +361,7 @@ extern "C" BOOL func_020557a0(Unk_02055744_Obj *a, u32 b) {
 
 extern "C" BOOL func_02055780(Unk_02055744_Obj *a, u32 x) {
     func_02103c2c(a, x);
-    func_021145cc(a, a->unk_04);
+    DC_FlushRange(a, a->unk_04);
     func_02103bc0(a, 1);
     return TRUE;
 }
@@ -392,7 +392,7 @@ void Unk_020dbe34::func_0205568c() {
     func_02103f98(unk_08, NULL);
     unk_5c = NULL;
     unk_60 = 0;
-    func_01ffb7cc(unk_64);
+    MTX_Identity43_(unk_64);
     unk_04 = 0;
     unk_94 = 0;
 }
@@ -482,7 +482,7 @@ void Unk_020dbe34::func_02055524() {
 
 void Unk_020dbe34::func_020554d0(s32 *p) {
     s32 v[3];
-    func_02115f48(unk_64, data_027e0184);
+    MI_Copy36B(unk_64, data_027e0184);
     data_027e0148[0x7c / 4] &= ~0xa4;
     func_021042d0(unk_88);
     if (p == NULL) {
@@ -548,7 +548,7 @@ extern "C" BOOL func_020553cc(u8 *p, void *a, s32 b) {
     if (!func_02105dcc(p + 8, a, 0, b)) {
         return FALSE;
     }
-    func_01ffb94c(a, func_021041e8(), a);
+    MTX_Concat43(a, func_021041e8(), a);
     return TRUE;
 }
 
@@ -618,7 +618,7 @@ void Unk_020dbe24::func_02055210(void *p) {
     s32 x = func_02055334(a);
     s32 y = func_02055328(b);
     s32 z = func_02055300(c);
-    func_02103d1c(p, x, y);
+    NNS_G3dTexSetTexKey(p, x, y);
     func_02103c2c(p, z);
     unk_10 = 1;
 }

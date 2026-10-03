@@ -24,9 +24,8 @@ extern void func_0212fd74(decimal *, const decimal *, const decimal *);
 extern void func_0212fb1c(decimal *, double);
 extern double func_0212f2f4(double, double);
 extern double func_0212f010(double, int);
-extern double func_0212ef04(double, double);
+extern double copysign(double, double);
 
-#define copysign func_0212ef04
 #define pow func_0212f2f4
 #define ldexp func_0212f010
 #define __str2dec func_02130628

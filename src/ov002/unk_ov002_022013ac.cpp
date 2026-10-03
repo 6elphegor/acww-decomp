@@ -91,15 +91,15 @@ void func_020020b8(s32 a);
 void func_02002398(s32 a, u32 b);
 void func_0200226c(s32 a, s32 b, s32 c, s32 d);
 u8 *func_020641ec(const char *path, void *heap, s32 a, s32 b);
-void func_02115e48(void *dst, void *src, s32 n);
-void func_02115e30(s32 v, void *dst, s32 n);
+void MIi_CpuCopy16(void *dst, void *src, s32 n);
+void MIi_CpuClear16(s32 v, void *dst, s32 n);
 void func_020024f0(void *buf, s32 a, s32 b, s32 c);
 void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_02002654(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_02111d90(const void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 func_0206e61c();
 
 extern void *data_021c6210;
@@ -1170,11 +1170,11 @@ void func_ov002_02201f18(Self *self) {
         dst[0x10] = src[0x10];
         u8 *t = buf + (((self->unk_1c << 1) + 1) << 6);
         u8 *q = buf + 0x2c0;
-        func_02115e48(q, t ? t : t, 0x40);
+        MIi_CpuCopy16(q, t ? t : t, 0x40);
         n = self->unk_1c;
         volatile u16 tmp[1];
         tmp[0] = v;
-        func_02115e30(tmp[0], buf + (((n << 1) + 2) << 6), (5 - n) << 7);
+        MIi_CpuClear16(tmp[0], buf + (((n << 1) + 2) << 6), (5 - n) << 7);
     }
     if (self->unk_1b != 0xd) {
         u8 *s;
@@ -1184,15 +1184,15 @@ void func_ov002_02201f18(Self *self) {
         d = buf + (self->unk_1b + 1) * 2;
         s = buf + 0x1c;
         k = self->unk_1c * 2 + 2;
-        func_02115e48(s, d, 0x1e);
+        MIi_CpuCopy16(s, d, 0x1e);
         d += 0x42;
         s += 0x42;
         for (i = 1; i < k - 1; i++) {
-            func_02115e48(s, d, 0x1e);
+            MIi_CpuCopy16(s, d, 0x1e);
             d += 0x40;
             s += 0x40;
         }
-        func_02115e48(s - 2, d - 2, 0x1e);
+        MIi_CpuCopy16(s - 2, d - 2, 0x1e);
     }
     func_020024f0(buf, self->unk_1a, 0x800, 0);
     func_020e85fc(heap, buf);

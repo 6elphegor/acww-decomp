@@ -66,10 +66,10 @@ extern "C" s32 func_02057180(u32 v);
 extern "C" void _ZN12Unk_020dbe7c13func_020566bcEv(void *p);
 extern "C" void func_02056714(void *p);
 extern "C" s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, void *c, void *d);
-extern "C" void *func_02106824(void *p, s32 x);
+extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
 extern "C" s32 func_02106300(void *a, void *b);
-extern "C" void *func_021066cc(void *a, s32 i);
-extern "C" void *func_0210629c(void *p);
+extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
+extern "C" void *NNS_G3dGetTex(void *p);
 extern "C" void *func_020e8608(void *heap, u32 size);
 extern "C" BOOL _ZN12Unk_020e45ec13func_020b8984EPvjj(void *a, void *b, u32 c, void *d);
 extern "C" void _ZN12Unk_020e45ec13func_020b89c8Ev(void *a);
@@ -77,13 +77,13 @@ extern "C" void _ZN12Unk_020e45ec13func_020b8b08Ev(void *a);
 extern "C" void _ZN12Unk_020e45ecC2Ev(void *a);
 extern "C" s32 _ZN12Unk_020e45ec13func_020b8a84Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
 extern "C" s32 _ZN12Unk_020e45ec13func_020b8a34Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
-extern "C" void func_01ffb448(void *m);
+extern "C" void MTX_Identity33_(void *m);
 extern "C" s32 func_01ffc5a4(s32 a, s32 b);
-extern "C" void func_02115fb4(void *dst, u32 v, u32 n);
-extern "C" void func_01ffc928(void *a, void *b, void *c);
+extern "C" void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern "C" void VEC_CrossProduct(void *a, void *b, void *c);
 extern "C" u8 *func_021066e8(u8 *p, s32 z, u32 v);
-extern "C" u8 *func_02106778(u8 *p, u32 v);
-extern "C" u8 *func_02106768(u8 *p, u32 v);
+extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
+extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 func_0212a438(const char *s);
 extern "C" void func_0212a360(void *p);
 extern "C" void operator delete(void *p);
@@ -578,8 +578,8 @@ void Unk_020dbe8c::func_02056b84(s32 *a, s32 *b) {
     *a = *b;
     u8 *r7 = func_021066e8(unk_7c, 0, (u32)(unk_08 << 4) >> 16);
     if (r7 != NULL) {
-        u8 *first = func_02106778(unk_7c, r7[2]);
-        r7 = func_02106768(unk_7c, r7[3]);
+        u8 *first = NNSi_G3dGetTexPatAnmTexNameByIdx(unk_7c, r7[2]);
+        r7 = NNSi_G3dGetTexPatAnmPlttNameByIdx(unk_7c, r7[3]);
         *a = first != NULL ? func_02106300(unk_78 + 0x3c, first) : -1;
         u8 *h = unk_78;
         u8 *tbl = h + *(u16 *)(h + 0x34);
@@ -930,7 +930,7 @@ no:
 }
 
 Unk_020dbe6c::Unk_020dbe6c() {
-    func_02115fb4(&unk_04, 0, 0x24);
+    MI_CpuFill8(&unk_04, 0, 0x24);
     unk_34 = 0;
     unk_38 = 0;
 }
@@ -993,8 +993,8 @@ extern "C" void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_0205
     out->m[5] = (s32)(((s64)t * a->m[5] + (s64)k * b->m[5]) >> 12);
     func_020563cc((Unk_020561d8_Vec *)&out->m[0]);
     func_020563cc((Unk_020561d8_Vec *)&out->m[3]);
-    func_01ffc928(&out->m[0], &out->m[3], &out->m[6]);
-    func_01ffc928(&out->m[6], &out->m[0], &out->m[3]);
+    VEC_CrossProduct(&out->m[0], &out->m[3], &out->m[6]);
+    VEC_CrossProduct(&out->m[6], &out->m[0], &out->m[3]);
 }
 
 extern "C" void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t) {
@@ -1018,7 +1018,7 @@ void Unk_020dbe6c::func_020561d8(Unk_02056160_Arg *x) {
         pv->z = v.z;
     }
     if (x->z->flags & 2) {
-        func_01ffb448(&x->z->mtx);
+        MTX_Identity33_(&x->z->mtx);
     }
     func_020562e0(&x->z->mtx, &unk_04, &m, unk_34);
     x->z->mtx = m;
@@ -1029,7 +1029,7 @@ void Unk_020dbe6c::func_02056160(Unk_02056160_Arg *x) {
     Unk_02056160_Rec *r = &x->tbl->recs[x->hdr->idx];
     if (r->mtx.m[0] == 0 && r->mtx.m[1] == 0 && r->mtx.m[2] == 0 && r->mtx.m[3] == 0 && r->mtx.m[4] == 0 &&
         r->mtx.m[5] == 0 && r->mtx.m[6] == 0 && r->mtx.m[7] == 0 && r->mtx.m[8] == 0) {
-        func_01ffb448(&unk_04);
+        MTX_Identity33_(&unk_04);
     } else {
         unk_04 = r->mtx;
     }
@@ -1117,7 +1117,7 @@ BOOL Unk_020dbe5c::func_02055f1c(void *r1, void *r2, u32 r3, void *heap) {
     if (heap == NULL) {
         heap = data_021f482c;
     }
-    unk_1c = func_0210629c(r2);
+    unk_1c = NNS_G3dGetTex(r2);
     unk_26 = r3;
     unk_28 = (Unk_0205614c *)func_020e8608(heap, unk_26 * 0x28);
     if (unk_28 == NULL) {
@@ -1145,7 +1145,7 @@ void Unk_020dbe5c::func_02055eec() {
 }
 
 void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
-    unk_20 = func_02106824(r1, 0);
+    unk_20 = NNS_G3dGetAnmByIdx(r1, 0);
     unk_24 = *(u16 *)((u8 *)unk_20 + 4);
     if (r3 == 0) {
         r3 = unk_24;
@@ -1158,7 +1158,7 @@ void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
         a = a + *(u16 *)(a + 6);
         u8 *b = a + *(u16 *)(a + 2);
         unk_28[i].unk_22 = func_02106300(base + 4, b + i * 16);
-        unk_28[i].unk_00 = func_021066cc(unk_20, i);
+        unk_28[i].unk_00 = NNSi_G3dGetTexPatAnmDataByIdx(unk_20, i);
         unk_28[i].unk_21 = 0xff;
         unk_28[i].unk_20 = 0xff;
         unk_28[i].unk_24 = 0xffff;

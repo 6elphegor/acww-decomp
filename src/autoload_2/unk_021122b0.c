@@ -14,7 +14,7 @@ extern u32 data_021fcc0c;       // OSi_IrqStackWarningOffset
 #define OSi_IRQ_STACK_TOP (OSi_IRQ_STACK_BOTTOM - (s32)SDK_IRQ_STACKSIZE)
 
 // OS_SetIrqStackChecker
-void func_0211232c(void) {
+void OS_SetIrqStackChecker(void) {
     *(u32 *)(HW_DTCM + 0x3f7c) = 0xfddb597d;
     *(u32 *)(OSi_IRQ_STACK_TOP) = 0x7bf9dd5b;
 }

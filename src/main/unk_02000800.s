@@ -14,7 +14,7 @@
 	.extern NitroMain
 	.extern SDK_IRQ_STACKSIZE
 	.extern data_027e0000
-	.extern func_01ffd50c
+	.extern OS_IrqHandler
 	.extern func_020b0a80
 	.extern func_02133acc
 	.extern func_02135310
@@ -103,7 +103,7 @@ L_0200090c:
 L_02000910:
 	.word 0x027fff9c
 L_02000914:
-	.word func_01ffd50c
+	.word OS_IrqHandler
 L_02000918:
 	.word NitroMain
 L_0200091c:

@@ -15,11 +15,11 @@ typedef struct View { u8 pad[26]; u16 anm[1]; } View;
 
 extern u32 data_0213bcb8;
 extern u32 data_0213bcc4;
-extern void func_02115e30(u16 data, void *dest, u32 size);
+extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
 extern s32 func_02106300(void *dict, void *name);
 extern u8 *func_021066e8(u8 *, u32, u32);
-extern u32 func_02106778(u8 *, u32);
-extern u32 func_02106768(u8 *);
+extern u32 NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *, u32);
+extern u32 NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *);
 extern u32 *func_02106460(void *);
 extern s32 func_01ffc5a4(s32, s32);
 extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
@@ -102,7 +102,7 @@ void func_02108100(u32 *r)
 }
 
 // NNS g3d scene-graph helper (SBC node state): copy/flag update
-void func_021080c4(u32 *obj, s32 *src, u8 *info, u32 flags)
+void NNSi_G3dGetJointScaleBasic(u32 *obj, s32 *src, u8 *info, u32 flags)
 {
     if (flags & 4) {
         obj[0] |= 1;
@@ -115,7 +115,7 @@ void func_021080c4(u32 *obj, s32 *src, u8 *info, u32 flags)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitVisAnm-like): bind a visibility animation block to the model
-void func_02108078(u8 *out, u32 res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBva(u8 *out, u32 res, u8 *blk)
 {
     u32 i = 0;
     *(u32 *)(out + 12) = data_0213bcb8;
@@ -145,7 +145,7 @@ void func_02107f74(u8 *obj, u8 *res, u8 *blk)
     obj[25] = blk[24];
     *(u8 **)(obj + 8) = res;
     zero = 0;
-    func_02115e30(zero, obj + 26, obj[25] * 2);
+    MIi_CpuClear16(zero, obj + 26, obj[25] * 2);
     for (i = 0; i < res[13]; i++) {
         u8 *d = res + 12 + *(u16 *)(res + 18);
         s32 r = func_02106300(dict + 4, d + *(u16 *)(d + 2) + i * 16);
@@ -209,15 +209,15 @@ u32 func_02107da8(u8 *obj, u32 *a, u32 frame)
 {
     u8 *res = (u8 *)a[2];
     u8 *e = func_021066e8(res, (u16)frame, (u16)(a[0] >> 12));
-    u32 r = func_02107e88((u8 *)a[5], func_02106778(res, e[2]), obj);
+    u32 r = func_02107e88((u8 *)a[5], NNSi_G3dGetTexPatAnmTexNameByIdx(res, e[2]), obj);
     if (e[3] == 0xff) {
         return r;
     }
-    return func_02107e30((u8 *)a[5], func_02106768(res), obj);
+    return func_02107e30((u8 *)a[5], NNSi_G3dGetTexPatAnmPlttNameByIdx(res), obj);
 }
 
 // NNS g3d animation key fetch for fx32 values (value stored as fx32 or fx16; constant / full / step-2 / step-4 interpolated)
-s32 func_02107cac(u8 *base, u32 info, u32 offs, u32 frame)
+s32 GetTexSRTAnmVectorVal_(u8 *base, u32 info, u32 offs, u32 frame)
 {
     s16 *d;
     u32 last;

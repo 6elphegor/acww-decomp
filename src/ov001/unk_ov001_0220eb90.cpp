@@ -37,7 +37,7 @@ s32 func_ov001_02208290(s32, s32, s32);
 void func_ov001_0220e8c8();
 void func_ov001_0220c668(void *);
 s32 func_ov001_0221ce08(void *, u32, u32);
-s32 func_01ffc2c4(s32, s32);
+s32 FX_ModS32(s32, s32);
 void func_ov001_0221e9a0(s32);
 s32 func_ov001_022080a0();
 void func_ov001_022267c8(void *);
@@ -65,9 +65,9 @@ s32 func_ov001_022261a8(s32);
 void func_ov001_02208088();
 void func_ov001_022084f8(s32);
 void *func_ov001_02224074(void *, s32, s32);
-void func_02116048(void *, void *, s32);
-void func_021145cc(void *, s32);
-void func_02111ec8(void *, s32, s32);
+void MI_CpuCopy8(void *, void *, s32);
+void DC_FlushRange(void *, s32);
+void GX_LoadBGPltt(void *, s32, s32);
 Unk_ov001_0220f164_Reg *func_ov001_02224b60(s32, s32);
 s32 func_ov001_0221eae4(s32);
 void func_ov001_0220e868();
@@ -118,13 +118,13 @@ extern "C" void func_ov001_0220f164() {
         d = e + 0xc0;
         s = e + 0x40;
         for (i = 0; i < 2; i++) {
-            func_02116048(d, s, 0x20);
+            MI_CpuCopy8(d, s, 0x20);
             d += 0x20;
             s += 0x20;
         }
     }
-    func_021145cc(e, 0x200);
-    func_02111ec8(e, 0, 0x200);
+    DC_FlushRange(e, 0x200);
+    GX_LoadBGPltt(e, 0, 0x200);
     func_ov001_02224038(e);
     BGCNT(0x4001008);
     BGCNT(0x400100a);
@@ -261,9 +261,9 @@ extern "C" void func_ov001_0220ec68() {
 
 extern "C" void func_ov001_0220ebc4(s32 a) {
     if (a == 1) {
-        data_ov001_0222de2c = func_01ffc2c4(data_ov001_0222de2c + 2, 3);
+        data_ov001_0222de2c = FX_ModS32(data_ov001_0222de2c + 2, 3);
     } else {
-        data_ov001_0222de2c = func_01ffc2c4(data_ov001_0222de2c + 1, 3);
+        data_ov001_0222de2c = FX_ModS32(data_ov001_0222de2c + 1, 3);
     }
     func_ov001_0221e9a0(8);
     func_ov001_02208690(*(const u16 *)(data_ov001_02229fe0 + (data_ov001_0222de2c << 3)), *(const u16 *)(data_ov001_02229fe4 + (data_ov001_0222de2c << 3)), *(const u16 *)(data_ov001_02229fe2 + (data_ov001_0222de2c << 3)), *(const u16 *)(data_ov001_02229fe6 + (data_ov001_0222de2c << 3)));

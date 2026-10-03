@@ -139,19 +139,19 @@ s32 func_020e94f8(void *);
 }
 
 extern "C" {
-void func_01ffca8c(void *, void *, void *);
+void VEC_Add(void *, void *, void *);
 }
 
 extern "C" {
-s32 func_02116048(const void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-s32 func_02115fb4(void *dst, u32 v, u32 n);
+s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 }
 
 extern "C" {
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
@@ -405,11 +405,11 @@ Unk_020940a0::Unk_020940a0(const Unk_020940a0 &o) { func_020639bc(this, (void *)
 
 Unk_020940a0::Unk_020940a0() { func_020639b8(this); }
 
-void Unk_020940a0::func_020942b8(void *src) { func_02116048(src, this, 0x16); }
+void Unk_020940a0::func_020942b8(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
 void Unk_020940a0::func_02094294()
 {
-    func_02115fb4(unk_0c, 0, 8);
+    MI_CpuFill8(unk_0c, 0, 8);
     unk_0a = 0;
     unk_14 = 2;
     func_020639a0(this);
@@ -417,7 +417,7 @@ void Unk_020940a0::func_02094294()
 
 void Unk_020940a0::func_02094264(Unk_020940a0 *o)
 {
-    func_02116048(o->unk_0c, unk_0c, 8);
+    MI_CpuCopy8(o->unk_0c, unk_0c, 8);
     unk_0a = o->unk_0a;
     unk_14 = o->unk_14;
     func_0206397c(this, o);
@@ -425,7 +425,7 @@ void Unk_020940a0::func_02094264(Unk_020940a0 *o)
 
 void Unk_020940a0::func_02094238(Unk_020940a0 *o)
 {
-    func_02116048(unk_0c, o->unk_0c, 8);
+    MI_CpuCopy8(unk_0c, o->unk_0c, 8);
     o->unk_0a = unk_0a;
     o->unk_14 = unk_14;
     func_02063968(this, o);
@@ -439,13 +439,13 @@ BOOL Unk_020940a0::func_02094218()
 
 BOOL Unk_020940a0::func_020941e8(Unk_020940a0 *o)
 {
-    if (unk_0a == o->unk_0a && unk_14 == o->unk_14 && func_02128930(unk_0c, o->unk_0c, 8) == 0) return TRUE;
+    if (unk_0a == o->unk_0a && unk_14 == o->unk_14 && memcmp(unk_0c, o->unk_0c, 8) == 0) return TRUE;
     return FALSE;
 }
 
 void Unk_020940a0::func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p)
 {
-    func_02116048(src, unk_0c, 8);
+    MI_CpuCopy8(src, unk_0c, 8);
     unk_0a = a;
     unk_14 = b;
     if (p == NULL) p = &data_021d7352;
@@ -490,7 +490,7 @@ void Unk_020940a0::func_02094124(u8 v) { unk_14 = v; }
 
 s8 Unk_020940a0::func_0209411c() { return unk_14; }
 
-void Unk_020940a0::func_02094108(void *src) { func_02116048(src, unk_0c, 8); }
+void Unk_020940a0::func_02094108(void *src) { MI_CpuCopy8(src, unk_0c, 8); }
 
 u8 *Unk_020940a0::func_02094104() { return unk_0c; }
 
@@ -517,7 +517,7 @@ s32 Unk_02063954::func_02094058()
     s32 r = 2;
     if (func_02063954(this) != 0) {
         Unk_02063954 *p = &data_021d7352;
-        if (unk_00 == p->unk_00 && func_02128930(unk_02, p->unk_02, 8) == 0) {
+        if (unk_00 == p->unk_00 && memcmp(unk_02, p->unk_02, 8) == 0) {
             r = 0;
         } else {
             r = 1;

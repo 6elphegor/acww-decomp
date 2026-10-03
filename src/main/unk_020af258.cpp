@@ -148,11 +148,11 @@ void func_02062f70(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, 
 }
 
 extern "C" {
-s32 func_0211c444();
+s32 PM_GetLCDPower();
 }
 
 extern "C" {
-s32 func_0211c460(s32 a);
+s32 PM_SetLCDPower(s32 a);
 }
 
 extern "C" {
@@ -160,7 +160,7 @@ void func_0211c6c4(s32 a, s32 b);
 }
 
 extern "C" {
-void func_0211c5a0(void *a, void *b);
+void PM_GetBackLight(void *a, void *b);
 }
 
 extern "C" {
@@ -392,7 +392,7 @@ extern "C" void func_020af33c() {
         if ((*(vu16 *)0x27fffa8 & 0x8000) >> 15) {
             data_021ee244 = 1;
             func_020af2fc();
-            func_0211c460(0);
+            PM_SetLCDPower(0);
             func_02004064();
         }
         break;
@@ -413,7 +413,7 @@ extern "C" void func_020af330() { func_020af268(2); }
 
 extern "C" void func_020af2fc() {
     if (!func_020af278(1)) {
-        func_0211c5a0(&data_021ee24c, &data_021ee248);
+        PM_GetBackLight(&data_021ee24c, &data_021ee248);
         func_0211c6c4(2, 0);
         func_020af268(1);
     }
@@ -428,7 +428,7 @@ extern "C" void func_020af2c4() {
 }
 
 extern "C" void func_020af290() {
-    if (func_0211c444() == 1 || func_0211c460(1)) {
+    if (PM_GetLCDPower() == 1 || PM_SetLCDPower(1)) {
         if (!func_020af278(2)) func_02004054();
         data_021ee244 = 0;
     }

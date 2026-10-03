@@ -69,7 +69,7 @@ void func_ov001_02211ae4();
 void func_ov001_0221be7c();
 void func_ov001_0221197c();
 void func_0211172c();
-void func_02111ec8();
+void GX_LoadBGPltt();
 void func_02111a6c();
 
 void func_ov001_02211030();
@@ -137,7 +137,7 @@ void func_ov001_0221181c() {
 
 void func_ov001_02211754() {
     func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)func_02111ec8);
+    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
     func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;

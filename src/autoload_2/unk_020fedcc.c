@@ -30,15 +30,15 @@ typedef struct { u64 a; u64 b; u16 f16; u16 f18; } S;
 typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
-extern void func_02115fb4(void *dst, u32 val, u32 len);
-extern u32 func_02127588(void *table, u32 poly);
-extern u32 func_021274a4(void *table, void *data, u32 len);
-extern u64 func_01ffa6b4(void);
+extern void MI_CpuFill8(void *dst, u32 val, u32 len);
+extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
+extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
+extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
-extern void func_0212769c(void *table, u32 poly);
-extern s32 func_02127510(void *table, void *data, u32 len);
+extern void MATHi_CRC8InitTable(void *table, u32 poly);
+extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
 extern void func_02000b44(void *p);
-extern s32 func_02113088(char *buf, u32 size, const char *fmt, ...);
+extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
 extern const u8 data_02135ca8[];
@@ -50,18 +50,18 @@ extern u16 data_021f5c50;
 extern u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
-extern s32 func_02128930(const void *a, const void *b, u32 n);
-extern s32 func_02117e8c(u32 tag, u32 x);
-extern void func_02117eb4(u32 tag, void *cb);
-extern void func_021145b0(void *p, u32 n);
-extern void func_02114594(void *p, u32 n);
-extern void func_02115e30(u16 v, void *dst, u32 n);
-extern u16 func_021274dc(void *table, void *data, u32 len);
-extern void func_02127614(void *table, u32 poly);
+extern s32 memcmp(const void *a, const void *b, u32 n);
+extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern void DC_StoreRange(void *p, u32 n);
+extern void DC_InvalidateRange(void *p, u32 n);
+extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
+extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
+extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
-extern s32 func_02117dd8(u32 tag, u32 data, s32 err);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
 extern void func_0206d49c(void);
-extern void func_02116048(const void *src, void *dst, u32 len);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];
 
@@ -106,11 +106,11 @@ u8 *func_020fe850(S *p);
 s32 func_020ff2e4(u8 *p);
 BOOL func_020ff734(u32 v);
 BOOL func_020ff6f4(S *p, u32 v);
-extern void func_0211d45c(void);
+extern void RTC_Init(void);
 extern s32 func_0211d3a0(Date *d);
 extern s32 func_0211d2e0(Time *t);
 extern s32 func_02114e38(void);
-extern void func_02115640(u8 *mac);
+extern void OS_GetMacAddress(u8 *mac);
 void func_020ff0bc(S *out);
 BOOL func_020ff014(S *p, u8 *buf);
 u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d);
@@ -324,8 +324,8 @@ u64 func_02100060(u32 lo, u32 key) {
     u64 r;
     data[0] = lo;
     data[1] = key;
-    func_0212769c(table, 7);
-    r = func_02127510(table, data, 8) & 0x7f;
+    MATHi_CRC8InitTable(table, 7);
+    r = MATH_CalcCRC8(table, data, 8) & 0x7f;
     r <<= 32;
     r |= lo;
     return r;
@@ -343,8 +343,8 @@ BOOL func_02100018(u64 v, u32 key) {
     s64 c;
     data[0] = (u32)v;
     data[1] = key;
-    func_0212769c(table, 7);
-    c = func_02127510(table, data, 8) & 0x7f;
+    MATHi_CRC8InitTable(table, 7);
+    c = MATH_CalcCRC8(table, data, 8) & 0x7f;
     return c == (v >> 32);
 }
 
@@ -378,27 +378,27 @@ void func_020fff48(FD *fd, u32 gamecode, char *out) {
     char s2[24];
     func_020fffac(func_021001a0(fd), 43, s1);
     func_020fffac(func_0210019c(fd), 32, &s2[1]);
-    func_02113088(out, 21, data_0213bbdc, s1, (u8)(gamecode >> 24), (u8)(gamecode >> 16), (u8)(gamecode >> 8),
+    OS_SNPrintf(out, 21, data_0213bbdc, s1, (u8)(gamecode >> 24), (u8)(gamecode >> 16), (u8)(gamecode >> 8),
                   (u8)gamecode, &s2[1]);
 }
 
 // create (zero and initialise) a 0x40 byte user data block with a game code (DWCUserData style)
 void func_020ffeec(UserData *p, u32 key) {
     u32 table[256];
-    func_02115fb4(p, 0, 0x40);
+    MI_CpuFill8(p, 0, 0x40);
     p->size = 0x40;
     p->v1c = 0;
     p->key = key;
     func_020ffe84(&p->id);
     func_021000b8(&p->fr, 0);
-    func_02127588(table, 0xedb88320);
-    p->crc = func_021274a4(table, p, 0x3c);
+    MATHi_CRC32InitTableRev(table, 0xedb88320);
+    p->crc = MATH_CalcCRC32(table, p, 0x3c);
     p->flags |= 1;
 }
 
 // create a new own id from OS_GetTick with an LCG (0x5d588b656c078965, 0x269ec3)
 void func_020ffe84(FD *p) {
-    u64 tick = func_01ffa6b4();
+    u64 tick = OS_GetTick();
     Rec t;
     func_020ff588(&t);
     if (t.valid != 0) {
@@ -479,8 +479,8 @@ void func_020ffd30(UserData *p, FD *src, u32 v) {
     u32 table[256];
     p->fr = *src;
     p->v1c = v;
-    func_02127588(table, 0xedb88320);
-    p->crc = func_021274a4(table, p, 0x3c);
+    MATHi_CRC32InitTableRev(table, 0xedb88320);
+    p->crc = MATH_CalcCRC32(table, p, 0x3c);
     p->flags |= 1;
 }
 
@@ -493,8 +493,8 @@ BOOL func_020ffd20(UserData *p) {
 void func_020ffce8(UserData *p) {
     u32 table[256];
     p->flags &= ~1;
-    func_02127588(table, 0xedb88320);
-    p->crc = func_021274a4(table, p, 0x3c);
+    MATHi_CRC32InitTableRev(table, 0xedb88320);
+    p->crc = MATH_CalcCRC32(table, p, 0x3c);
 }
 
 // friend record of type 2 -> 64 bit key, else 0
@@ -535,14 +535,14 @@ u64 func_020ffc40(UserData *p) {
 
 // make a type 2 friend record from a friend key
 void func_020ffc18(FD *fd, u32 a, u32 b) {
-    func_02115fb4(fd, 0, 12);
+    MI_CpuFill8(fd, 0, 12);
     func_02100158(fd, a, b);
     func_021000b8(fd, 2);
 }
 
 // get the user's own friend record from the user data
 void func_020ffbd0(UserData *p, FD *out) {
-    func_02115fb4(out, 0, 12);
+    MI_CpuFill8(out, 0, 12);
     if (func_020ffdfc(p)) {
         func_02100154(out, p->v1c);
         func_021000b8(out, 3);
@@ -553,7 +553,7 @@ void func_020ffbd0(UserData *p, FD *out) {
 
 // make a type 3 friend record from a profile id
 void func_020ffba8(FD *fd, u32 v) {
-    func_02115fb4(fd, 0, 12);
+    MI_CpuFill8(fd, 0, 12);
     func_02100154(fd, v);
     func_021000b8(fd, 3);
 }
@@ -646,7 +646,7 @@ u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d) {
     for (i = 0; i < 5; i++) {
         x.b[i] = (data_02135ca8[(x.b[i] >> 4) & 0xf] << 4) | data_02135ca8[x.b[i] & 0xf];
     }
-    func_02116048(x.b, tmp, 8);
+    MI_CpuCopy8(x.b, tmp, 8);
     for (i = 0; i < 5; i++) {
         x.b[data_02135ca0[i]] = tmp[i];
     }
@@ -673,7 +673,7 @@ BOOL func_020ff770(S *p) {
     s64 secs;
     u32 seed;
     func_020ff0bc(p);
-    func_0211d45c();
+    RTC_Init();
     if (func_0211d3a0(&date)) {
         return 0;
     }
@@ -686,9 +686,9 @@ BOOL func_020ff770(S *p) {
         return 0;
     }
     if (func_02114e38()) {
-        seed += (u32)func_01ffa6b4; // original bug: the address of OS_GetTick, not its result
+        seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
-    func_02115640(mac);
+    OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
     x4 = mac[5];
     x4 |= (mac[3] << 16) | (mac[4] << 8);
@@ -748,7 +748,7 @@ BOOL func_020ff5cc(S *p) {
     s64 secs;
     u32 seed;
     func_020ff0bc(p);
-    func_0211d45c();
+    RTC_Init();
     if (func_0211d3a0(&date)) {
         return 0;
     }
@@ -761,9 +761,9 @@ BOOL func_020ff5cc(S *p) {
         return 0;
     }
     if (func_02114e38()) {
-        seed += (u32)func_01ffa6b4; // original bug: the address of OS_GetTick, not its result
+        seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
-    func_02115640(mac);
+    OS_GetMacAddress(mac);
     x0 = (u8)(((mac[0] << 16) | (mac[1] << 8) | mac[2]) != 0x9bf);
     x4 = mac[5];
     x4 |= (mac[3] << 16) | (mac[4] << 8);
@@ -816,17 +816,17 @@ s32 func_020ff2e4(u8 *buf) {
     if (!func_020fefdc((u16 *)buf)) {
         return -10001;
     }
-    func_02127614(buf + 0x500, 0xa001);
+    MATHi_CRC16InitTableRev(buf + 0x500, 0xa001);
     if (!func_020fefb0(buf)) {
         return -10001;
     }
-    func_02115fb4(f, 0, 16);
+    MI_CpuFill8(f, 0, 16);
     i = 0;
     r4 = buf;
     r7 = buf;
     r6 = f;
     do {
-        crc = func_021274dc(buf + 0x500, r4, 0xfe);
+        crc = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
         if (crc == *(u16 *)(r4 + 0xfe)) {
             if (func_020ff210(r7)) {
                 *r6 = 1;
@@ -837,7 +837,7 @@ s32 func_020ff2e4(u8 *buf) {
         r6++;
         i++;
     } while (i < 3);
-    crc = func_021274dc(buf + 0x500, buf + 0x300, 0xfe);
+    crc = MATH_CalcCRC16(buf + 0x500, buf + 0x300, 0xfe);
     if (crc == *(u16 *)(buf + 0x3fe)) {
         f[3] = 1;
     }
@@ -868,11 +868,11 @@ s32 func_020ff2e4(u8 *buf) {
     }
     if (f[0] == 0) {
         func_020ff180(buf, 0);
-        func_02116048(buf + 0x1f0, buf + 0xf0, 13);
+        MI_CpuCopy8(buf + 0x1f0, buf + 0xf0, 13);
         buf[0xef] = buf[0x1ef];
     } else if (f[1] == 0) {
         func_020ff180(buf, 1);
-        func_02116048(buf + 0xf0, buf + 0x1f0, 13);
+        MI_CpuCopy8(buf + 0xf0, buf + 0x1f0, 13);
         buf[0x1ef] = buf[0xef];
     }
     func_020feeb4(buf + 0xf0);
@@ -881,7 +881,7 @@ s32 func_020ff2e4(u8 *buf) {
     }
     if (f[3] == 0) {
         volatile u16 zero = 0;
-        func_02115e30(zero, buf + 0x300, 0x100);
+        MIi_CpuClear16(zero, buf + 0x300, 0x100);
     }
     i = changed = 0;
     for (; i < 3; i++) {
@@ -913,7 +913,7 @@ BOOL func_020ff210(u8 *page) {
     if (!func_020fee44(page + 0x40)) {
         return 0;
     }
-    if (func_02128930(page + 0xc0, data_02135c9c, 4) != 0) {
+    if (memcmp(page + 0xc0, data_02135c9c, 4) != 0) {
         if (!func_020fedcc(page + 0xc4)) {
             return 0;
         }
@@ -925,7 +925,7 @@ BOOL func_020ff210(u8 *page) {
             return 0;
         }
     }
-    if (func_02128930(page + 0xc8, data_02135c9c, 4) != 0) {
+    if (memcmp(page + 0xc8, data_02135c9c, 4) != 0) {
         if (!func_020fedcc(page + 0xc8)) {
             if (!func_020fedcc(page + 0xcc)) {
                 return 0;
@@ -942,7 +942,7 @@ BOOL func_020ff1ac(u8 *buf) {
     u8 *r6;
     s32 i;
     u8 *q;
-    func_02115e30(zero, buf, 0x400);
+    MIi_CpuClear16(zero, buf, 0x400);
     i = 0;
     q = buf;
     for (; i < 3; i++) {
@@ -952,7 +952,7 @@ BOOL func_020ff1ac(u8 *buf) {
     func_020ff770(&t);
     r6 = func_020fe850(&t);
     for (i = 0; i < 2; i++) {
-        func_02116048(r6, buf + 0xf0, 14);
+        MI_CpuCopy8(r6, buf + 0xf0, 14);
         buf += 0x100;
     }
     return 0;
@@ -961,7 +961,7 @@ BOOL func_020ff1ac(u8 *buf) {
 // clear one settings page and mark it unused (+0xe7 = 0xff)
 void func_020ff180(u8 *buf, u32 idx) {
     volatile u16 zero = 0;
-    func_02115e30(zero, buf + (idx << 8), 0x100);
+    MIi_CpuClear16(zero, buf + (idx << 8), 0x100);
     (buf + (idx << 8))[0xe7] = 0xff;
 }
 
@@ -975,15 +975,15 @@ BOOL func_020ff154(u8 *dst) {
 
 // unpack the 14 byte NVRAM ID block into a WFC-ID record (S)
 void func_020ff0bc(S *p) {
-    func_02116048(data_021f5c5c, p, 6);
+    MI_CpuCopy8(data_021f5c5c, p, 6);
     p->a &= 0x7ffffffffffULL;
-    func_02116048(data_021f5c61, &p->b, 6);
+    MI_CpuCopy8(data_021f5c61, &p->b, 6);
     p->b >>= 3;
     p->b &= 0x7ffffffffffULL;
-    func_02116048(data_021f5c66, &p->f16, 2);
+    MI_CpuCopy8(data_021f5c66, &p->f16, 2);
     p->f16 >>= 6;
     p->f16 &= 0x3ff;
-    func_02116048(data_021f5c68, &p->f18, 2);
+    MI_CpuCopy8(data_021f5c68, &p->f18, 2);
 }
 
 // write the WFC-ID into the two ID pages, with CRC16, and verify
@@ -991,15 +991,15 @@ BOOL func_020ff014(S *p, u8 *buf) {
     u32 nv = data_021f5c58;
     s32 j;
     func_020fe850(p);
-    func_02127614(buf + 0x200, 0xa001);
+    MATHi_CRC16InitTableRev(buf + 0x200, 0xa001);
     j = 0;
     do {
         if (!func_020fe9d8(nv, 0x100, buf)) {
             func_0206d49c();
             return 0;
         }
-        func_02116048(data_021f5c5c, buf + 0xf0, 14);
-        *(u16 *)(buf + 0xfe) = func_021274dc(buf + 0x200, buf, 0xfe);
+        MI_CpuCopy8(data_021f5c5c, buf + 0xf0, 14);
+        *(u16 *)(buf + 0xfe) = MATH_CalcCRC16(buf + 0x200, buf, 0xfe);
         do {
             func_020fe984(nv, 0x100, buf);
         } while (!func_020fe948(buf, nv, 0x100, buf + 0x100));
@@ -1056,7 +1056,7 @@ BOOL func_020feec4(u8 *buf) {
     s32 i = 0;
     u8 *r4 = buf;
     do {
-        *(u16 *)(r4 + 0xfe) = func_021274dc(buf + 0x500, r4, 0xfe);
+        *(u16 *)(r4 + 0xfe) = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
         do {
             func_020fe984(nv, 0x100, r4);
         } while (!func_020fe948(r4, nv, 0x100, buf + 0x400));
@@ -1072,7 +1072,7 @@ BOOL func_020feec4(u8 *buf) {
 
 // copy a 14 byte WFC-ID block into data_021f5c5c
 void func_020feeb4(u8 *p) {
-    func_02116048(p, data_021f5c5c, 14);
+    MI_CpuCopy8(p, data_021f5c5c, 14);
 }
 
 // 4 byte netmask -> prefix length (popcount)
@@ -1121,8 +1121,8 @@ BOOL func_020fedec(u8 *a, u8 *b) {
     if (!func_020fedcc(a)) {
         return 0;
     }
-    func_02116048(a, &x, 4);
-    func_02116048(b, &y, 4);
+    MI_CpuCopy8(a, &x, 4);
+    MI_CpuCopy8(b, &y, 4);
     if ((x | y) == ~1u) {
         return 0;
     }

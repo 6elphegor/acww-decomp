@@ -2,7 +2,7 @@
 
 extern "C" {
 extern u32 data_0213bfec;
-void func_02115ca0(u32, void *, u32, u32);
+void MI_DmaFill32(u32, void *, u32, u32);
 void func_0210f554();
 void func_0210f614();
 void func_0210f600();
@@ -131,11 +131,11 @@ void func_020535e0()
     *(volatile u16 *)(b + 0x304) |= 0x820e;
     func_0205369c();
     *(volatile u32 *)b = *(volatile u32 *)b & 0xf000f;
-    func_02115ca0(data_0213bfec, b + 8, 0, 0x48);
-    func_02115ca0(data_0213bfec, b + 0x60, 0, 8);
+    MI_DmaFill32(data_0213bfec, b + 8, 0, 0x48);
+    MI_DmaFill32(data_0213bfec, b + 0x60, 0, 8);
     *(volatile u16 *)(b + 0x6c) = 0;
     *(volatile u32 *)(b + 0x1000) = *(volatile u32 *)(b + 0x1000) & 0x10000;
-    func_02115ca0(data_0213bfec, b + 0x1008, 0, 0x48);
+    MI_DmaFill32(data_0213bfec, b + 0x1008, 0, 0x48);
     *(volatile u16 *)(b + 0x106c) = 0;
     u16 v = 0x100;
     *(volatile u16 *)(b + 0x20) = v;

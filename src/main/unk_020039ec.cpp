@@ -123,7 +123,7 @@ void func_0209d498(void *);
 }
 
 extern "C" {
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 }
 
 extern "C" {
@@ -628,15 +628,15 @@ extern "C" void func_020040cc() {
                 t[0] = 0;
                 t[1] = 0;
                 func_0209d498(t);
-                func_02116048(t, b0, 8);
+                MI_CpuCopy8(t, b0, 8);
                 if (Unk_020040cc_check(0xf, b0)) {
                     NEW(8, func_020f2788);
                 } else {
-                    func_02116048(t, b1, 8);
+                    MI_CpuCopy8(t, b1, 8);
                     if (Unk_020040cc_check(0x12, b1)) {
                         NEW(8, func_020f2788);
                     } else {
-                        func_02116048(t, b2, 8);
+                        MI_CpuCopy8(t, b2, 8);
                         if (Unk_020040cc_check(0x13, b2)) {
                             if (((u8 *)t)[2] < 2) {
                                 NEW(8, func_020f2788);

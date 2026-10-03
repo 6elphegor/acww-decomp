@@ -209,7 +209,7 @@ s32 func_0208c134(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-s32 func_02116048(void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 extern "C" {
@@ -373,11 +373,11 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffb94c(void *a, void *b, void *c);
+void MTX_Concat43(void *a, void *b, void *c);
 }
 
 extern "C" {
-void func_01ffb7cc(void *p);
+void MTX_Identity43_(void *p);
 }
 
 extern "C" {
@@ -524,22 +524,22 @@ void func_0206fdb4(void *a, Unk_0206fd10_Vec *v) {
     m.x = v->x;
     m.y = v->y;
     m.z = v->z;
-    func_01ffb94c(&m, &data_021cb69c, &data_021cb69c);
+    MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void func_0206fd84(Unk_0206fd10_Vec *v) {
     Unk_0206fd10_Mtx m;
-    func_01ffb7cc(&m);
+    MTX_Identity43_(&m);
     m.x = v->x;
     m.y = v->y;
     m.z = v->z;
-    func_01ffb94c(&m, &data_021cb69c, &data_021cb69c);
+    MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void func_0206fd64(void *a) {
     Unk_0206fd10_Mtx m;
     func_01ffb46c(a, &m);
-    func_01ffb94c(&m, &data_021cb69c, &data_021cb69c);
+    MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void func_0206fd10(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w) {
@@ -554,7 +554,7 @@ void func_0206fd10(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w) {
         m.y = func_01ffcb0c(v->y, w->y);
         m.z = func_01ffcb0c(v->z, w->z);
     }
-    func_01ffb94c(&m, &data_021cb69c, &data_021cb69c);
+    MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 Unk_020e0488::Unk_020e0488() {

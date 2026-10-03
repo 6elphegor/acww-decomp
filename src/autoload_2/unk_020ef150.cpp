@@ -93,8 +93,8 @@ void func_020edb00(u16 a, u16 b);
 void func_0210a0e8(void *p, u32 a, u32 b);
 void func_0210a118(void *p, u32 a, u32 b);
 void func_0210a148(void *p, u32 a, u32 b);
-void func_0210a26c(void *p, u32 a);
-void func_0210a460(u32 a, u32 b);
+void NNS_SndPlayerSetVolume(void *p, u32 a);
+void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
 void func_0210a378(void *p);
 s32 func_0210d010(void *p, u32 a);
 u32 func_0210e648(void *p);
@@ -189,7 +189,7 @@ extern "C" void func_020f0a68(SndMgr *self, s32 id) {
 extern "C" void func_020f09d8(SndMgr *self, s32 a) {
     func_020edad0(a % 1000, a / 1000, &self->unk_38);
     if (a == 0x862) {
-        func_0210a26c(&self->unk_38, 0);
+        NNS_SndPlayerSetVolume(&self->unk_38, 0);
     }
     func_020efd80(self, 1);
 }
@@ -225,7 +225,7 @@ extern "C" void func_020f0858(SndMgr *self, s32 a, u8 x, s32 y) {
     }
     func_020edad0(a % 1000, a / 1000, &self->unk_48);
     if (isSet(self->unk_48)) {
-        func_0210a26c(&self->unk_48, x);
+        NNS_SndPlayerSetVolume(&self->unk_48, x);
         func_0210a118(&self->unk_48, 15, y);
     }
 }
@@ -483,7 +483,7 @@ extern "C" void func_020f0110(SndMgr *self, u32 st) {
 
 extern "C" void func_020f00e0(SndMgr *self, u32 a, u32 b) {
     func_0210d010(&self->unk_3c, a);
-    func_0210a26c(&self->unk_3c, b);
+    NNS_SndPlayerSetVolume(&self->unk_3c, b);
 }
 
 extern "C" void func_020f00d0(SndMgr *self) {
@@ -596,22 +596,22 @@ extern "C" void func_020efc84(SndMgr *self, s32 a, s32 b) {
         b = 0;
     }
     s32 h = a >> 1;
-    func_0210a460(4, a);
-    func_0210a460(7, a);
-    func_0210a460(13, a);
-    func_0210a460(9, a);
-    func_0210a460(8, b);
-    func_0210a460(11, b);
+    NNS_SndPlayerSetPlayerVolume(4, a);
+    NNS_SndPlayerSetPlayerVolume(7, a);
+    NNS_SndPlayerSetPlayerVolume(13, a);
+    NNS_SndPlayerSetPlayerVolume(9, a);
+    NNS_SndPlayerSetPlayerVolume(8, b);
+    NNS_SndPlayerSetPlayerVolume(11, b);
     if (self->unk_61 != 0) {
         return;
     }
-    func_0210a460(5, b);
-    func_0210a460(6, b);
-    func_0210a460(16, b);
-    func_0210a460(17, b);
-    func_0210a460(18, h);
-    func_0210a460(19, h);
-    func_0210a460(20, b);
+    NNS_SndPlayerSetPlayerVolume(5, b);
+    NNS_SndPlayerSetPlayerVolume(6, b);
+    NNS_SndPlayerSetPlayerVolume(16, b);
+    NNS_SndPlayerSetPlayerVolume(17, b);
+    NNS_SndPlayerSetPlayerVolume(18, h);
+    NNS_SndPlayerSetPlayerVolume(19, h);
+    NNS_SndPlayerSetPlayerVolume(20, b);
 }
 
 extern "C" void func_020efc0c(SndMgr *self, s32 v) {
@@ -620,13 +620,13 @@ extern "C" void func_020efc0c(SndMgr *self, s32 v) {
     } else if (v < 0) {
         v = 0;
     }
-    func_0210a460(5, v);
-    func_0210a460(6, v);
-    func_0210a460(16, v);
-    func_0210a460(17, v);
-    func_0210a460(18, v);
-    func_0210a460(19, v);
-    func_0210a460(20, v);
+    NNS_SndPlayerSetPlayerVolume(5, v);
+    NNS_SndPlayerSetPlayerVolume(6, v);
+    NNS_SndPlayerSetPlayerVolume(16, v);
+    NNS_SndPlayerSetPlayerVolume(17, v);
+    NNS_SndPlayerSetPlayerVolume(18, v);
+    NNS_SndPlayerSetPlayerVolume(19, v);
+    NNS_SndPlayerSetPlayerVolume(20, v);
 }
 
 extern "C" void func_020efbbc(SndMgr *self) {
@@ -741,8 +741,8 @@ extern "C" void func_020ef93c(SndMgr *self, s32 v) {
     if (b > 127) {
         b = 127;
     }
-    func_0210a26c(&self->unk_38, a);
-    func_0210a26c(&self->unk_40, b);
+    NNS_SndPlayerSetVolume(&self->unk_38, a);
+    NNS_SndPlayerSetVolume(&self->unk_40, b);
 }
 
 extern "C" void func_020ef908(SndMgr *self, u32 a) {

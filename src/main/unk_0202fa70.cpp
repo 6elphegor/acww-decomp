@@ -47,7 +47,7 @@ extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffcb2c(...);
 void func_01ffd070(void *out, void *a, void *b);
-void func_01ffca58(void *a, void *b, void *c);
+void VEC_Subtract(void *a, void *b, void *c);
 void func_020e9960(void *out, void *a, void *b);
 s32 func_020e94f8(void *v);
 void func_020e93a0(void *v, ...);
@@ -153,7 +153,7 @@ struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
     Unk_0202f7b8_V3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
 };
 extern "C" s32 func_01ffc5a4(s32 a, s32 b);
-extern "C" s32 func_01ffc538(s32 a);
+extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
 class Unk_0202fdf0 {
 public:
@@ -283,7 +283,7 @@ struct Unk_020309d4_Owner {
     u8 unk_0c[0x18];
     Unk_02030e48_Vec unk_24;
 };
-extern "C" void func_01ffca8c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *a, Unk_02030e48_Vec *b);
+extern "C" void VEC_Add(Unk_02030e48_Vec *out, Unk_02030e48_Vec *a, Unk_02030e48_Vec *b);
 extern "C" void _ZN12Unk_0203223813func_020323d8Ev(Unk_020309d4_Owner *o);
 extern "C" void _ZN12Unk_0203223813func_02032238Ei(Unk_020309d4_Owner *o, s32 v);
 extern "C" Unk_02033b94 *_ZN12Unk_02033b3c13func_02033b94Eiii(Unk_02033b94 *out, s32 x, s32 z, s32 flag);
@@ -332,7 +332,7 @@ extern "C" s32 func_020e96ec(void *a, void *b);
 extern "C" void func_020e8388(void *m, s32 x, s32 y, s32 z);
 extern "C" void func_020e8404(void *m, s32 ang);
 extern "C" void func_020e84f8(void *m, s32 x, s32 y, s32 z);
-extern "C" void func_01ffb898(Unk_0203182c_Vec *p, void *m, Unk_0203182c_Vec *out);
+extern "C" void MTX_MultVec43(Unk_0203182c_Vec *p, void *m, Unk_0203182c_Vec *out);
 extern "C" void _ZN12Unk_0202f04813func_0202ef18Es(Unk_02031960_P8 *o, s32 ang);
 extern "C" void _ZN12Unk_020d8d50C1EP12Unk_0202f048S1_S1_iijj(void *out, Unk_02031960_P8 *a, Unk_02031960_P8 *b, Unk_02031960_P8 *c, s32 d, s32 e, s32 f, Unk_02031618 *n);
 extern "C" void _ZN12Unk_02032d6013func_02032d98EP17Unk_02032d60_Elem(s32 a, void *o);
@@ -2383,7 +2383,7 @@ BOOL Unk_02031618::func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec 
         unk_2a = 2;
         for (i = 0; i < 4; p++, i++) {
             if ((i & 1) == k) {
-                func_01ffb898(p, data_021f47e0, pv);
+                MTX_MultVec43(p, data_021f47e0, pv);
                 if (i == k) {
                     hi.x = pv->x; hi.y = pv->y; hi.z = pv->z;
                     lo.x = pv->x; lo.y = pv->y; lo.z = pv->z;
@@ -2400,7 +2400,7 @@ BOOL Unk_02031618::func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec 
     } else {
         unk_2a = 4;
         for (i = 0; i < unk_2a; i++) {
-            func_01ffb898(p, data_021f47e0, pv);
+            MTX_MultVec43(p, data_021f47e0, pv);
             if (i == 0) {
                 hi.x = pv->x; hi.y = pv->y; hi.z = pv->z;
                 lo.x = pv->x; lo.y = pv->y; lo.z = pv->z;
@@ -2598,7 +2598,7 @@ extern "C" s32 func_020314f4(Unk_020314f4_Vec *p)
     w.x = (v.x & 0xffffe000) + 0x1000;
     w.y = 0;
     w.z = (v.z & 0xffffe000) + 0x1000;
-    func_01ffca58(&v, &w, &v);
+    VEC_Subtract(&v, &w, &v);
     d = v.z - v.x;
     s = v.x + v.z;
     if (s > 0) {
@@ -3006,8 +3006,8 @@ extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, U
     l.D = l.B;
     func_02031574((s32 *)(&l.C), (s32 *)(&l.A));
     func_02031554((s32 *)(&l.D), (s32 *)(&l.A));
-    func_01ffca8c(&l.C, &l.V1, &l.C);
-    func_01ffca58(&l.D, &l.V1, &l.D);
+    VEC_Add(&l.C, &l.V1, &l.C);
+    VEC_Subtract(&l.D, &l.V1, &l.D);
     Unk_020d8d28 o;
     o.unk_04 = (Unk_02032238 *)self;
     o.unk_08 = (Unk_020d8d28_Best *)&l.A;
@@ -3605,7 +3605,7 @@ BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
         if (disc < 0) {
             return FALSE;
         }
-        s32 s = func_01ffc538(disc);
+        s32 s = FX_Sqrt(disc);
         if (s < 0) {
             s = -s;
         }

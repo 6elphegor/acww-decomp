@@ -5,11 +5,11 @@ void *func_020641ec(void *a, void *heap, s32 b, s32 c);
 }
 
 extern "C" {
-void *func_021062dc(void *h);
+void *NNS_G3dGetMdlSet(void *h);
 }
 
 extern "C" {
-void *func_0210629c(void *h);
+void *NNS_G3dGetTex(void *h);
 }
 
 extern "C" {
@@ -150,7 +150,7 @@ u32 Unk_020dbe04::func_02055090(void *res, Unk_020dbe24 *b, void *tex, void *hea
     if (st == 0) {
         unk_04 = (u32)func_020641ec(res, heap, -4, 0);
         unk_08 = heap;
-        void *q = func_0210629c((void *)unk_04);
+        void *q = NNS_G3dGetTex((void *)unk_04);
         b->func_02055210(q);
         unk_14.func_020b89f0((u32 *)q, 1);
         unk_30 = 1;
@@ -163,9 +163,9 @@ u32 Unk_020dbe04::func_02055090(void *res, Unk_020dbe24 *b, void *tex, void *hea
         unk_30 = 2;
     }
     if (unk_30 == 2) {
-        u8 *p = Unk_02054b70_Off((u8 *)func_021062dc((void *)unk_04));
+        u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)unk_04));
         unk_0c = func_02055928(p, tex);
-        void *q = func_0210629c((void *)unk_04);
+        void *q = NNS_G3dGetTex((void *)unk_04);
         func_021039ec(unk_0c, q);
         func_02103830(unk_0c, q);
         func_020e85fc(unk_08, (void *)unk_04);

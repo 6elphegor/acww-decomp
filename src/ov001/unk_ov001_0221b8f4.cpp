@@ -12,7 +12,7 @@ u8 data_ov001_0222decc;
 extern "C" {
 
 s32 func_0211172c();
-s32 func_02111ec8();
+s32 GX_LoadBGPltt();
 s32 func_02111a6c();
 s32 func_ov001_02208594(void *, void *);
 s32 func_ov001_0220c5f0(s32, s32 *);

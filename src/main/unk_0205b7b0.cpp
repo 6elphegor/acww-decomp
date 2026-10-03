@@ -108,7 +108,7 @@ u32 func_0203c6c0(void);
 u32 func_0205c604(void);
 u32 func_0205c5fc(void);
 u32 func_0205c5f4(void);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_020641b4(char *, void *, u32);
 s32 func_020639e8(char *, const char *, ...);
 BOOL func_0204b2d4(u16 *);
@@ -418,7 +418,7 @@ extern "C" void func_0205c268(u8 *p, s32 v) {
                 u32 a = data_021c6240.func_0205c418(v);
                 u32 b = data_021c6240.func_0205c418(cur);
                 if (a != 0 && b != 0) {
-                    func_02116048((void *)a, (void *)b, sz);
+                    MI_CpuCopy8((void *)a, (void *)b, sz);
                     data_021c6240.func_0205c400(cur, x);
                     data_021c6240.func_0205c3b0(cur, sz);
                 }

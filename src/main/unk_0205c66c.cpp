@@ -47,7 +47,7 @@ void func_020e877c(void *);
 s32 func_020641b4(char *, void *, u32);
 s32 func_0205bd54();
 s32 func_0205bd70();
-s32 func_0210629c(void *);
+s32 NNS_G3dGetTex(void *);
 u32 func_0205c8c0();
 u32 func_0205c8bc();
 u32 func_0205c8b8();
@@ -125,7 +125,7 @@ extern "C" s32 func_0205c718(u8 *p, u32 idx) {
 }
 
 extern "C" void func_0205c6f4(u8 *p) {
-    s32 x = func_0210629c(func_0205c694(p));
+    s32 x = NNS_G3dGetTex(func_0205c694(p));
     ((Unk_020dbe24 *)func_0205c680(p))->func_02055210((void *)x);
 }
 
@@ -136,7 +136,7 @@ extern "C" s32 func_0205c6a8(u8 *p) {
     if (a) return TRUE;
     BOOL b = s == 1 ? TRUE : FALSE;
     if (!b) {
-        e->func_020b89f0((u32 *)func_0210629c(func_0205c694(p)), 1);
+        e->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205c694(p)), 1);
     }
     return FALSE;
 }

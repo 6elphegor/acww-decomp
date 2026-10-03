@@ -1,10 +1,10 @@
 #include "types.h"
 
 extern "C" {
-void func_02119d78(void *);
-s32 func_02119a28(void *, const char *);
+void FS_InitFile(void *);
+s32 FS_OpenFile(void *, const char *);
 void func_021198b4(void *, void *, s32);
-void func_021199e0(void *);
+void FS_CloseFile(void *);
 void func_02115468(s32);
 }
 
@@ -37,9 +37,9 @@ void Unk_020376f4::func_020376f4() {
 
 extern "C" void func_020376c0() {
     u8 buf[0x4c];
-    func_02119d78(buf);
-    if (func_02119a28(buf, "/BUILDTIME") == 1) {
+    FS_InitFile(buf);
+    if (FS_OpenFile(buf, "/BUILDTIME") == 1) {
         func_021198b4(buf, data_021c21e4, 0x20);
-        func_021199e0(buf);
+        FS_CloseFile(buf);
     }
 }

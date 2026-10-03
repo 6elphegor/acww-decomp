@@ -68,11 +68,11 @@ extern u8 data_021ef414[];
 }
 
 extern "C" {
-void func_02110db8(u16 a, u32 b, u32 c, u32 d, u32 e);
+void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 n);
+void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
@@ -80,19 +80,19 @@ void func_02110de8(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_02111088(void);
+void G3X_Reset(void);
 }
 
 extern "C" {
-void func_0210fcb8(u32 a);
+void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void func_0210fbc4(u32 a);
+void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
@@ -100,7 +100,7 @@ void func_02114b00(void);
 }
 
 extern "C" {
-void func_02111110(void);
+void G3X_Init(void);
 }
 
 extern "C" {
@@ -108,11 +108,11 @@ void func_02110d00(void);
 }
 
 extern "C" {
-void func_02110fa4(void);
+void G3X_InitMtxStack(void);
 }
 
 extern "C" {
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
@@ -120,19 +120,19 @@ void func_02105d98(void);
 }
 
 extern "C" {
-void func_02111c6c(void *p, u32 a, u32 b);
+void GX_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111c0c(void *p, u32 a, u32 b);
+void GXS_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 a, u32 b);
+void GX_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
@@ -144,7 +144,7 @@ void *func_020641d8(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 }
 
 extern "C" {
@@ -176,7 +176,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -200,7 +200,7 @@ void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
@@ -504,7 +504,7 @@ void Unk_020d5d84::func_02002ce0(s32 a, s32 b, s32 c) {
 }
 
 void Unk_020d5d84::func_02002cb0(Unk_02002cb0_Vec *v) {
-    func_01ffca8c(&unk_5c, &unk_a4, &unk_5c);
+    VEC_Add(&unk_5c, &unk_a4, &unk_5c);
     if (v) {
         unk_5c = unk_5c + v->unk_10;
         unk_64 = unk_64 + v->unk_18;

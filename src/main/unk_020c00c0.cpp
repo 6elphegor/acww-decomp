@@ -45,7 +45,7 @@ void func_020be094(void *p);
 }
 
 extern "C" {
-void func_01ffca8c(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
+void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
 }
 
 extern "C" {
@@ -65,7 +65,7 @@ void func_0203eeac(void *out, void *in);
 }
 
 extern "C" {
-void func_01ffb898(void *a, void *b, void *c);
+void MTX_MultVec43(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -101,7 +101,7 @@ s32 func_0209cc08(void *p);
 }
 
 extern "C" {
-void func_02116048(void *a, void *b, s32 n);
+void MI_CpuCopy8(void *a, void *b, s32 n);
 }
 
 extern "C" {
@@ -575,7 +575,7 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
     u8 b[8];
     ((u32 *)a)[0] = 0;
     ((u32 *)a)[1] = 0;
-    func_02116048(arg, a, 8);
+    MI_CpuCopy8(arg, a, 8);
     func_0209d124(a, 6);
     a[2] = 0;
     a[1] = 0;

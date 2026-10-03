@@ -35,23 +35,23 @@ extern "C" Unk_ov001_02220ad8_S *data_ov001_0222df08;
 extern "C" u16 *data_ov001_0222df0c[6];
 
 extern "C" {
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_02116048(void *, void *, u32);
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_02122eb0(s32, s32);
 s32 func_02122fac(s32);
 s32 func_02123008(s32);
 void func_02124a94(s32);
 void func_02124c40();
 void func_0206d49c();
-void func_02119d78(void *);
-s32 func_02119a28(void *, s32);
+void FS_InitFile(void *);
+s32 FS_OpenFile(void *, s32);
 s32 func_02123e58(void *);
 s32 func_021239ec(void *, void *, u32);
 s32 func_02123680(void *, void *);
-void func_021199e0(void *);
+void FS_CloseFile(void *);
 s32 func_02124d50(s32);
-void func_021155c4(void *);
+void OS_GetOwnerInfo(void *);
 s32 func_021251ac(void *, void *, s32, s32, s32);
 void func_02125098(u32, u32);
 void func_021230a4(void *);
@@ -87,10 +87,10 @@ void func_ov001_02221854(void *p) {
 void func_ov001_02221734(s32 a, s32 b) {
     Unk_ov001_02221734_D d;
     Unk_ov001_02221734_B buf;
-    func_021155c4(&buf);
+    OS_GetOwnerInfo(&buf);
     d.lo = buf.unk_01;
     d.b1 = buf.unk_18;
-    func_02116048(buf.unk_04, d.data, buf.unk_18 * 2);
+    MI_CpuCopy8(buf.unk_04, d.data, buf.unk_18 * 2);
     d.hi = 0;
     Unk_ov001_02221734_Z *zp = &d.z;
     zp->v[0] = 0;
@@ -125,8 +125,8 @@ s32 func_ov001_022215f4(s32 *p) {
     if (*p == 0) {
         q = 0;
     } else {
-        func_02119d78(buf);
-        if (func_02119a28(buf, *p) == 0) return r;
+        FS_InitFile(buf);
+        if (FS_OpenFile(buf, *p) == 0) return r;
         q = buf;
     }
     if (func_02123e58(q) != 0) {
@@ -138,42 +138,42 @@ s32 func_ov001_022215f4(s32 *p) {
             }
         }
     }
-    if (q == buf) func_021199e0(buf);
+    if (q == buf) FS_CloseFile(buf);
     return r;
 }
 
 void func_ov001_02221540(u32 n) {
     if (func_02122eb0(n, 1) != 0) return;
     u16 m = ~(1 << n);
-    s32 e = func_01ffa2ec();
+    s32 e = OS_DisableInterrupts();
     data_ov001_0222df08->m[0] &= m;
     data_ov001_0222df08->m[1] &= m;
     data_ov001_0222df08->m[2] &= m;
     data_ov001_0222df08->m[3] &= m;
     data_ov001_0222df08->m[4] &= m;
     data_ov001_0222df08->m[5] &= m;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     func_02124a94(n);
 }
 
 void func_ov001_02221454(u32 n) {
     if (func_02122eb0(n, 0) == 0) {
         u16 m = ~(1 << n);
-        s32 e = func_01ffa2ec();
+        s32 e = OS_DisableInterrupts();
         data_ov001_0222df08->m[0] &= m;
         data_ov001_0222df08->m[1] &= m;
         data_ov001_0222df08->m[2] &= m;
         data_ov001_0222df08->m[3] &= m;
         data_ov001_0222df08->m[4] &= m;
         data_ov001_0222df08->m[5] &= m;
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         func_02124a94(n);
     } else {
-        s32 e = func_01ffa2ec();
+        s32 e = OS_DisableInterrupts();
         u32 m = ~(1 << n);
         data_ov001_0222df08->m[1] &= m;
         data_ov001_0222df08->m[0] &= m;
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
     }
 }
 
@@ -181,23 +181,23 @@ void func_ov001_02221368(u32 id)
 {
     if (func_02122eb0(id, 2) == 0) {
         u16 k = ~(1 << id);
-        u32 r = func_01ffa2ec();
+        u32 r = OS_DisableInterrupts();
         data_ov001_0222df08->m[0] &= k;
         data_ov001_0222df08->m[1] &= k;
         data_ov001_0222df08->m[2] &= k;
         data_ov001_0222df08->m[3] &= k;
         data_ov001_0222df08->m[4] &= k;
         data_ov001_0222df08->m[5] &= k;
-        func_01ffa3d4(r);
+        OS_RestoreInterrupts(r);
         func_02124a94(id);
     } else {
-        u32 r = func_01ffa2ec();
+        u32 r = OS_DisableInterrupts();
         u32 one = 1;
         Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
         s->m[2] = s->m[2] & ~(one << id);
         s = data_ov001_0222df08;
         s->m[3] = s->m[3] | (one << id);
-        func_01ffa3d4(r);
+        OS_RestoreInterrupts(r);
     }
 }
 
@@ -211,14 +211,14 @@ void func_ov001_02221278()
             if (!(data_ov001_0222df08->m[1] & bit)) {
                 if (!(data_ov001_0222df08->m[2] & bit)) {
                     u16 k = ~bit;
-                    u32 r = func_01ffa2ec();
+                    u32 r = OS_DisableInterrupts();
                     data_ov001_0222df08->m[0] &= k;
                     data_ov001_0222df08->m[1] &= k;
                     data_ov001_0222df08->m[2] &= k;
                     data_ov001_0222df08->m[3] &= k;
                     data_ov001_0222df08->m[4] &= k;
                     data_ov001_0222df08->m[5] &= k;
-                    func_01ffa3d4(r);
+                    OS_RestoreInterrupts(r);
                     func_02124a94(i);
                 } else {
                     func_ov001_02221368(i);
@@ -251,14 +251,14 @@ void func_ov001_022210f0()
                 ok = ok | bit;
             } else {
                 u16 k = ~bit;
-                u32 r = func_01ffa2ec();
+                u32 r = OS_DisableInterrupts();
                 data_ov001_0222df08->m[0] &= k;
                 data_ov001_0222df08->m[1] &= k;
                 data_ov001_0222df08->m[2] &= k;
                 data_ov001_0222df08->m[3] &= k;
                 data_ov001_0222df08->m[4] &= k;
                 data_ov001_0222df08->m[5] &= k;
-                func_01ffa3d4(r);
+                OS_RestoreInterrupts(r);
                 func_02124a94(i);
             }
         }
@@ -289,9 +289,9 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
     case 2: {
         if (func_ov001_02220d18() != 2) return;
         Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-        u32 r = func_01ffa2ec();
+        u32 r = OS_DisableInterrupts();
         s->m[0] = s->m[0] | (1 << id);
-        func_01ffa3d4(r);
+        OS_RestoreInterrupts(r);
         u8 *e = (u8 *)data_ov001_0222df08 + 0x24 + (id - 1) * 0x1e;
         e[0] = data[0xa];
         e[1] = data[0xb];
@@ -305,14 +305,14 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
     case 3: {
         if (func_ov001_02220bd4(id) == 6) return;
         u16 k = ~(1 << id);
-        u32 r = func_01ffa2ec();
+        u32 r = OS_DisableInterrupts();
         data_ov001_0222df08->m[0] &= k;
         data_ov001_0222df08->m[1] &= k;
         data_ov001_0222df08->m[2] &= k;
         data_ov001_0222df08->m[3] &= k;
         data_ov001_0222df08->m[4] &= k;
         data_ov001_0222df08->m[5] &= k;
-        func_01ffa3d4(r);
+        OS_RestoreInterrupts(r);
         break;
     }
     case 10: {
@@ -325,7 +325,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         func_ov001_02221540(id);
         s32 r = func_02123008(id);
         if (r == 0) return;
-        func_02116048((void *)r, (u8 *)data_ov001_0222df08 + 0xe + (id - 1) * 0x1e, 0x16);
+        MI_CpuCopy8((void *)r, (u8 *)data_ov001_0222df08 + 0xe + (id - 1) * 0x1e, 0x16);
         break;
     }
     case 14: {
@@ -413,15 +413,15 @@ u32 func_ov001_02220cb8(u32 i)
 u32 func_ov001_02220bd4(u32 id)
 {
     u16 buf[7];
-    u32 r = func_01ffa2ec();
+    u32 r = OS_DisableInterrupts();
     u16 bit = 1 << id;
     Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
     if (!(s->m[0] & bit)) {
-        func_01ffa3d4(r);
+        OS_RestoreInterrupts(r);
         return 0;
     }
-    func_02116048(s, buf, 0xe);
-    func_01ffa3d4(r);
+    MI_CpuCopy8(s, buf, 0xe);
+    OS_RestoreInterrupts(r);
     if (buf[2] & bit) return 2;
     if (buf[3] & bit) return 3;
     if (buf[4] & bit) return 4;

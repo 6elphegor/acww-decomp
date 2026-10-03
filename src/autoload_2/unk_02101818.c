@@ -68,7 +68,7 @@ void func_02101818(void);
 u32 func_02101834(u32 key);
 u32 func_0210183c(u32 szByte, BOOL b4pltt, u32 opt);
 extern s32 func_021035d4(void *file, Font *font);
-extern u32 func_021037a0(const void **);
+extern u32 NNSi_G2dSplitCharUTF16(const void **);
 
 static inline BOOL AllocHead(u32 szByte, BOOL b4pltt, u32 *pAddr) {
     u32 total, pad, head;
@@ -140,11 +140,11 @@ u32 func_02101d10(FontCodeMap *m, u32 c) {
     return index;
 }
 
-// NNS_G2dFontInit* (font file init: width-table stride from the file, character splitter = func_021037a0)
+// NNS_G2dFontInit* (font file init: width-table stride from the file, character splitter = NNSi_G2dSplitCharUTF16)
 void func_02101ccc(Font *font, void *file) {
     font->hasLeft = (u16)(func_021035d4(file, font) - 1);
     font->stride = font->hasLeft != 0 ? 2 : 3;
-    font->getChar = func_021037a0;
+    font->getChar = NNSi_G2dSplitCharUTF16;
 }
 
 // NNS_G2dFontGetGlyphIndexFromCharCode

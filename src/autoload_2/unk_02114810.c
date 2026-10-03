@@ -20,7 +20,7 @@ extern u8 SDK_SECTION_ARENA_DTCM_START[]; // 0x027e0460
 u32 func_02113fd8(void); // OS_GetConsoleType
 
 // OS_GetInitArenaHi
-void *func_02114810(s32 id) {
+void *OS_GetInitArenaHi(s32 id) {
     switch (id) {
     case 0: return (void *)0x023e0000;
     case 2:

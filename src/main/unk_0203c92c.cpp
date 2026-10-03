@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 // ---- flag object at 0x021c3264
@@ -130,9 +130,9 @@ void Unk_0203c92c::func_0203ca68() {
     func_0203c9d4(0);
 }
 
-extern "C" void func_0203ca5c(void *src, void *dst) { func_02116048(src, dst, 1); }
+extern "C" void func_0203ca5c(void *src, void *dst) { MI_CpuCopy8(src, dst, 1); }
 
-extern "C" void func_0203ca4c(void *dst, void *src) { func_02116048(src, dst, 1); }
+extern "C" void func_0203ca4c(void *dst, void *src) { MI_CpuCopy8(src, dst, 1); }
 
 BOOL Unk_0203c92c::func_0203ca38() {
     if (((Unk_0203c92c_Bits0 *)&unk_00)->b0) return TRUE;

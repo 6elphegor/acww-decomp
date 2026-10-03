@@ -176,21 +176,21 @@ void func_ov065_02265b9c(void *, void *);
 s32 func_ov065_02265d5c(void *, u32, Unk_ov065_02264d80_Obj *);
 s32 func_ov065_02265a5c(Unk_ov065_02264d80_Obj *);
 
-u64 func_01ffa6b4(void);
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32);
+u64 OS_GetTick(void);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32);
 void func_02000b44(u32);
-void func_02113384(void *, u32);
-void func_02113788(void *);
+void OS_SetThreadPriority(void *, u32);
+void OS_JoinThread(void *);
 void func_021138d0(void *);
-s32 func_02113774(void *);
-void func_0211366c(void *);
-void func_02113498(void);
+s32 OS_IsThreadTerminated(void *);
+void OS_WakeupThreadDirect(void *);
+void OS_YieldThread(void);
 void func_021132e0(void);
 void func_02113a70(void *, void *, u32, void *, u32, u32);
-void func_02115640(void *);
-void *func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+void OS_GetMacAddress(void *);
+void *MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 u32 func_ov065_02264900(u8 *p, u32 len, u32 sum);
 s32 func_ov065_02264848(u32 a);
@@ -237,7 +237,7 @@ void func_ov065_02264c44(u32 a) {
     data_ov065_0228ebfc[1] = 0;
     data_ov065_0228ebb0 = 0;
     if (f) {
-        func_02115fb4(data_ov065_0228ec58, 0, 0x60);
+        MI_CpuFill8(data_ov065_0228ec58, 0, 0x60);
         {
             Unk_ov065_02264c44_Thr *t = data_021fcc2c.unk_08;
             if (t != 0) {
@@ -250,7 +250,7 @@ void func_ov065_02264c44(u32 a) {
                             }
                             if (s->unk_04 != 0) {
                                 s->unk_04 = 0;
-                                func_0211366c(s->unk_00);
+                                OS_WakeupThreadDirect(s->unk_00);
                             }
                         }
                     }
@@ -274,7 +274,7 @@ void func_ov065_02264c44(u32 a) {
 
 void func_ov065_02264c20(void) {
     if (data_ov065_0228ebb4 == 0) {
-        func_02113498();
+        OS_YieldThread();
     } else {
         func_021132e0();
     }
@@ -295,7 +295,7 @@ void func_ov065_02264a48(Unk_ov065_02264a48_Cfg *c) {
         data_ov065_0228ec04.unk_08 = 0x5d588b656c078965ULL;
         data_ov065_0228ec04.unk_10 = 0x269ec3;
     } else {
-        data_ov065_0228ec04.unk_00 = func_01ffa6b4();
+        data_ov065_0228ec04.unk_00 = OS_GetTick();
         data_ov065_0228ec04.unk_08 = 0x5d588b656c078965ULL;
         data_ov065_0228ec04.unk_10 = 0x269ec3;
     }
@@ -334,24 +334,24 @@ void func_ov065_02264a48(Unk_ov065_02264a48_Cfg *c) {
         u32 hi = (u32)(r->unk_00 >> 32);
         data_ov065_0228eb98 = ((u64)((s64)hi * (s64)0xf88) >> 32) + 0x400;
     }
-    func_02115640(data_ov065_0228ebf4);
+    OS_GetMacAddress(data_ov065_0228ebf4);
     data_ov065_0228eb8c = 0;
     func_02113a70(data_ov065_0228ee40, (void *)func_ov065_02262ae4, 0, data_ov065_0228fbc0 + 0x800, 0x800, data_ov065_0228b41c);
     func_02113a70(data_ov065_0228ed80, (void *)func_ov065_02261fd8, 0, data_ov065_0228f3c0 + 0x800, 0x800, data_ov065_0228b41c);
-    func_0211366c(data_ov065_0228ee40);
-    func_0211366c(data_ov065_0228ed80);
+    OS_WakeupThreadDirect(data_ov065_0228ee40);
+    OS_WakeupThreadDirect(data_ov065_0228ed80);
 }
 
 s32 func_ov065_02264a08(void) {
-    u32 s = func_01ffa2ec();
-    s32 r = func_02113774(data_ov065_0228ed80);
+    u32 s = OS_DisableInterrupts();
+    s32 r = OS_IsThreadTerminated(data_ov065_0228ed80);
     if (r == 0) {
         if (data_ov065_0228ebd4 == 0) {
             data_ov065_0228ebd4 = 1;
-            func_0211366c(data_ov065_0228ed80);
+            OS_WakeupThreadDirect(data_ov065_0228ed80);
         }
     }
-    func_01ffa3d4(s);
+    OS_RestoreInterrupts(s);
     return r;
 }
 
@@ -361,7 +361,7 @@ void func_ov065_022649fc(void (*f)(void)) {
 
 void func_ov065_022649b8(void) {
     func_ov065_02264a08();
-    func_02113788(data_ov065_0228ed80);
+    OS_JoinThread(data_ov065_0228ed80);
     func_021138d0(data_ov065_0228ee40);
     data_ov065_0228ebe4 = 0;
     func_ov065_02264c44(0);
@@ -371,8 +371,8 @@ void func_ov065_022649b8(void) {
 
 void func_ov065_0226498c(u32 a) {
     data_ov065_0228b41c = a;
-    func_02113384(data_ov065_0228ee40, a);
-    func_02113384(data_ov065_0228ed80, a);
+    OS_SetThreadPriority(data_ov065_0228ee40, a);
+    OS_SetThreadPriority(data_ov065_0228ed80, a);
 }
 
 u32 func_ov065_02264900(u8 *p, u32 len, u32 sum) {
@@ -493,15 +493,15 @@ extern u32 data_ov065_0228ebf0;
 extern u8 data_ov065_0228ebf4[];
 extern Unk_ov065_02264298_E data_ov065_0228ec58[8];
 
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-u64 func_01ffa6b4();
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+u64 OS_GetTick();
 void func_021132e0(s32);
-void func_02113720(void *);
-s32 func_02113774(void *);
-void func_0211366c(void *);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(const void *, void *, u32);
+void OS_SleepThread(void *);
+s32 OS_IsThreadTerminated(void *);
+void OS_WakeupThreadDirect(void *);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(const void *, void *, u32);
 
 s32 func_ov065_0226aa14(u8 *, u8 *, u32);
 u32 func_ov065_022648d4(u8 *, u32);
@@ -613,9 +613,9 @@ void func_ov065_02264718(u8 *hdr, u32 hlen, u8 *data, u32 n)
 {
     s32 r;
     if (hdr + hlen != data) {
-        func_02116048(data, hdr + hlen, n);
+        MI_CpuCopy8(data, hdr + hlen, n);
     }
-    func_02116048(data_ov065_0228b434, hdr + 6, 6);
+    MI_CpuCopy8(data_ov065_0228b434, hdr + 6, 6);
     r = func_ov065_0226aa14(hdr, hdr + 6, hlen + n - 6);
     data_ov065_0228eb88 = (r < 0) ? 1 : 0;
 }
@@ -688,11 +688,11 @@ void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
     data_ov065_0228ebe8[data_ov065_0228ebb8] = sz;
     u8 *pw2 = data_ov065_0228ebe8 + data_ov065_0228ebb8;
     pw2[1] = (s32)sz >> 8;
-    func_02116048(b, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 2, 6);
-    func_02116048(a, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8, 6);
-    func_02116048(c + 6, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 0xe, d - 6);
+    MI_CpuCopy8(b, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 2, 6);
+    MI_CpuCopy8(a, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8, 6);
+    MI_CpuCopy8(c + 6, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 0xe, d - 6);
     if (data != 0 && n != 0) {
-        func_02116048(data, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8 + d, n);
+        MI_CpuCopy8(data, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8 + d, n);
     }
     data_ov065_0228ebb8 = nw;
 }
@@ -701,8 +701,8 @@ void func_ov065_0226459c(u8 *a, u8 *b, u8 *c, u32 d)
 {
     func_ov065_022645d0(a, b, c, d, 0, 0);
     if (data_ov065_0228ebe4 != 0) {
-        if (func_02113774(data_ov065_0228ebe4) == 0) {
-            func_0211366c(data_ov065_0228ebe4);
+        if (OS_IsThreadTerminated(data_ov065_0228ebe4) == 0) {
+            OS_WakeupThreadDirect(data_ov065_0228ebe4);
         }
     }
 }
@@ -714,7 +714,7 @@ u8 *func_ov065_0226450c(u32 *out)
     u8 *buf;
     while (data_ov065_0228ebf0 == data_ov065_0228ebb8) {
         data_ov065_0228ebe4 = (void *)data_021fcc2c[1];
-        func_02113720(0);
+        OS_SleepThread(0);
         data_ov065_0228ebe4 = 0;
     }
     lim = data_ov065_0228ebec;
@@ -738,7 +738,7 @@ u8 *func_ov065_0226450c(u32 *out)
 
 void func_ov065_022644cc()
 {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     u32 o = data_ov065_0228ebf0;
     u8 *base = data_ov065_0228ebe8;
     u32 lo = base[o];
@@ -747,12 +747,12 @@ void func_ov065_022644cc()
     if (v >= data_ov065_0228ebec) {
         data_ov065_0228ebf0 = 0;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 u8 *func_ov065_02264440(u32 ip)
 {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     u8 *r = 0;
     if (ip == 0x7f000001 || ip == data_ov065_0228ebd8) {
         r = data_ov065_0228ebf4;
@@ -763,29 +763,29 @@ u8 *func_ov065_02264440(u32 ip)
         Unk_ov065_02264298_E *e;
         for (i = 0, e = data_ov065_0228ec58; (u32)i < 8; e++, i++) {
             if (ip == e->unk_00) {
-                u32 t = (u32)(func_01ffa6b4() >> 16);
+                u32 t = (u32)(OS_GetTick() >> 16);
                 data_ov065_0228ec58[i].unk_0a = t;
                 r = data_ov065_0228ec58[i].unk_04;
                 break;
             }
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return r;
 }
 
 void func_ov065_0226439c(u32 ip)
 {
     u8 b[0x30];
-    func_02115fb4(b, 0, 0x2a);
-    func_02115fb4(b, 0xff, 6);
-    func_02116048(data_ov065_0228ebf4, b + 6, 6);
+    MI_CpuFill8(b, 0, 0x2a);
+    MI_CpuFill8(b, 0xff, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, b + 6, 6);
     *(u16 *)(b + 0xc) = 0x608;
     b[0xf] = 1;
     b[0x10] = 8;
     *(u16 *)(b + 0x12) = 0x406;
     b[0x15] = 1;
-    func_02116048(data_ov065_0228ebf4, b + 0x16, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, b + 0x16, 6);
     *(u16 *)(b + 0x1c) = BS16((u16)(data_ov065_0228ebd8 >> 16));
     *(u16 *)(b + 0x1e) = BS16((u16)data_ov065_0228ebd8);
     *(u16 *)(b + 0x26) = BS16((u16)(ip >> 16));
@@ -828,13 +828,13 @@ void func_ov065_02264298(u8 *mac, u32 ip, u32 flag)
     if (func_ov065_022647e0(ip) != 0) {
         return;
     }
-    now = (u16)(func_01ffa6b4() >> 16);
+    now = (u16)(OS_GetTick() >> 16);
     {
         Unk_ov065_02264298_E *e;
         for (i = 0, e = data_ov065_0228ec58; (u32)i < 8; e++, i++) {
             if (ip == e->unk_00) {
                 data_ov065_0228ec58[i].unk_0a = now;
-                func_02116048(mac, data_ov065_0228ec58[i].unk_04, 6);
+                MI_CpuCopy8(mac, data_ov065_0228ec58[i].unk_04, 6);
                 return;
             }
         }
@@ -855,7 +855,7 @@ void func_ov065_02264298(u8 *mac, u32 ip, u32 flag)
             }
         }
         data_ov065_0228ec58[idx].unk_00 = ip;
-        func_02116048(mac, data_ov065_0228ec58[idx].unk_04, 6);
+        MI_CpuCopy8(mac, data_ov065_0228ec58[idx].unk_04, 6);
         data_ov065_0228ec58[idx].unk_0a = now;
     }
 }
@@ -876,7 +876,7 @@ void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w)
         if (r == 0) {
             return;
         }
-        func_02116048(r, p - 0xe, 6);
+        MI_CpuCopy8(r, p - 0xe, 6);
     } else {
         p[-0xe] = 1;
         p[-0xd] = 0;
@@ -885,7 +885,7 @@ void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w)
         p[-0xa] = x >> 8;
         p[-9] = x;
     }
-    func_02116048(data_ov065_0228ebf4, p - 8, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, p - 8, 6);
     func_ov065_02264718(p - 0xe, off + 0xe, data, n);
 }
 
@@ -900,10 +900,10 @@ void func_ov065_02264110(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w)
         func_ov065_022641ec(p - 0x14, off + 0x14, data, n, x, 0x800);
     }
     if (x == 0x7f000001 || x == data_ov065_0228ebd8 || func_ov065_022647e0(x) != 0) {
-        func_02116048(data_ov065_0228b434, p - 0x1c, 8);
-        u32 irq = func_01ffa2ec();
+        MI_CpuCopy8(data_ov065_0228b434, p - 0x1c, 8);
+        u32 irq = OS_DisableInterrupts();
         func_ov065_022645d0(data_ov065_0228ebf4, data_ov065_0228ebf4, p - 0x1c, off + 0x1c, data, n);
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
     }
 }
 
@@ -1036,10 +1036,10 @@ extern u16 data_ov065_0228eb94;
 #define data_ov065_0228ec3e (data_ov065_0228ec1c + 0x22)
 
 // main module
-u64 func_01ffa6b4();
-void func_02115fb4(void *, u32, u32);
-void func_02116048(void *, void *, u32);
-void func_0211366c(u32);
+u64 OS_GetTick();
+void MI_CpuFill8(void *, u32, u32);
+void MI_CpuCopy8(void *, void *, u32);
+void OS_WakeupThreadDirect(u32);
 
 // same overlay, out of range
 s32 func_ov065_0226439c(u32);
@@ -1172,12 +1172,12 @@ void func_ov065_02263c90(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
 
 void func_ov065_02263c14(u8 *a) {
     *(u16 *)(a + 6) = 0x200;
-    func_02116048(a + 8, a + 0x12, 10);
-    func_02116048(data_ov065_0228ebf4, a + 8, 6);
+    MI_CpuCopy8(a + 8, a + 0x12, 10);
+    MI_CpuCopy8(data_ov065_0228ebf4, a + 8, 6);
     *(u16 *)(a + 0xe) = BS16((u16)(data_ov065_0228ebd8 >> 16));
     *(u16 *)(a + 0x10) = BS16((u16)data_ov065_0228ebd8);
-    func_02116048(a + 0x12, a - 0xe, 6);
-    func_02116048(data_ov065_0228ebf4, a - 8, 6);
+    MI_CpuCopy8(a + 0x12, a - 0xe, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, a - 8, 6);
     func_ov065_02264718(a - 0xe, 0x2a, 0, 0);
 }
 
@@ -1250,10 +1250,10 @@ void func_ov065_022639e0(u8 *a, u8 *b, u32 c) {
             } else {
                 s->unk_44 = c;
             }
-            func_02116048(b + 8, s->unk_40, s->unk_44);
+            MI_CpuCopy8(b + 8, s->unk_40, s->unk_44);
             if (s->unk_04 == 3) {
                 s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+                OS_WakeupThreadDirect(s->unk_00);
             }
             return;
         }
@@ -1388,7 +1388,7 @@ void func_ov065_022636e8(Sess *s, u32 x) {
 
 void func_ov065_02263618(u8 *a, u8 *b, u32 c, u32 d) {
     Sess *g = &data_ov065_0228ed1c;
-    func_02115fb4(g, 0, 0x64);
+    MI_CpuFill8(g, 0, 0x64);
     g->unk_0a = BS16(*(u16 *)(b + 2));
     g->unk_18 = BS16(*(u16 *)b);
     g->unk_1c = Swap32(a + 0xc);
@@ -1407,7 +1407,7 @@ void func_ov065_02263618(u8 *a, u8 *b, u32 c, u32 d) {
 
 void func_ov065_02263578(u8 *a, u8 *b, Sess *s) {
     s->state = 3;
-    s->unk_10 = (u32)(func_01ffa6b4() >> 16);
+    s->unk_10 = (u32)(OS_GetTick() >> 16);
     s->unk_14 = Swap32(a + 0x10);
     s->unk_18 = BS16(*(u16 *)b);
     s->unk_1c = Swap32(a + 0xc);
@@ -1511,12 +1511,12 @@ extern u8 *(*data_ov065_0228ebc8)(u32);
 extern void (*data_ov065_0228ebd0)(u8 *);
 extern Unk_ov065_02262e64_Ctx data_021fcc2c;
 
-u64 func_01ffa6b4();
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_02113498();
-void func_0211366c(u32);
-void func_02116048(void *, void *, u32);
+u64 OS_GetTick();
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void OS_YieldThread();
+void OS_WakeupThreadDirect(u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 
 s32 func_ov065_02264884(Unk_ov065_02262e64_Tcp *, u32, Unk_ov065_02262c5c_Ip *, u32);
@@ -1573,7 +1573,7 @@ void func_ov065_0226347c(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
                 func_ov065_02263578(p, q, x);
                 return;
             }
-            func_02113498();
+            OS_YieldThread();
             x = func_ov065_0226389c(p, q);
             if (x != 0) func_ov065_02263578(p, q, x);
         }
@@ -1586,7 +1586,7 @@ void func_ov065_022633c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
         func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 5));
         return;
     }
-    func_02113498();
+    OS_YieldThread();
     s->unk_24 = (((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6)) + 1;
     s->unk_30 = ((u32)Unk_ov065_02262c5c_Bs(q->h8) << 16) | Unk_ov065_02262c5c_Bs(q->ha);
     s->unk_2c = Unk_ov065_02262c5c_Bs(q->he);
@@ -1595,7 +1595,7 @@ void func_ov065_022633c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
     s->unk_08 = 4;
     if (s->unk_04 == 1) {
         s->unk_04 = 0;
-        func_0211366c(s->unk_00);
+        OS_WakeupThreadDirect(s->unk_00);
     }
 }
 
@@ -1625,7 +1625,7 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
         s->unk_08 = 4;
         if (s->unk_04 == 1) {
             s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+            OS_WakeupThreadDirect(s->unk_00);
         }
         if (r == 0) break;
     case 4:
@@ -1640,14 +1640,14 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             }
         }
         if (r != 0) {
-            u32 sv = func_01ffa2ec();
-            func_02116048((u8 *)q + _s32_div_f(q->bc & 0xf0, 4), s->unk_40 + s->unk_44, r);
+            u32 sv = OS_DisableInterrupts();
+            MI_CpuCopy8((u8 *)q + _s32_div_f(q->bc & 0xf0, 4), s->unk_40 + s->unk_44, r);
             s->unk_44 += r;
             s->unk_24 += r;
-            func_01ffa3d4(sv);
+            OS_RestoreInterrupts(sv);
             if (s->unk_04 == 2) {
                 s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+                OS_WakeupThreadDirect(s->unk_00);
             }
         }
         if (last != 0 && (fl & 1) != 0) {
@@ -1656,7 +1656,7 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             func_ov065_022636e8(s, (u16)((p->b5 << 8) + 0xb));
             if (r == 0 && s->unk_04 == 2) {
                 s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+                OS_WakeupThreadDirect(s->unk_00);
             }
         } else if (r != 0) {
             func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0xc));
@@ -1670,7 +1670,7 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             s->unk_08 = 0;
             if (s->unk_04 == 2) {
                 s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+                OS_WakeupThreadDirect(s->unk_00);
             }
         } else {
             if (r != 0) {
@@ -1685,7 +1685,7 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
         s->unk_08 = 0;
         if (s->unk_04 == 2) {
             s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+            OS_WakeupThreadDirect(s->unk_00);
         }
         break;
     case 1:
@@ -1695,7 +1695,7 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
         func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0x12));
         break;
     }
-    func_02113498();
+    OS_YieldThread();
 }
 
 void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
@@ -1713,7 +1713,7 @@ void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             s->unk_08 = 0;
             if (s->unk_04 == 2) {
                 s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+                OS_WakeupThreadDirect(s->unk_00);
                 return;
             }
             return;
@@ -1732,11 +1732,11 @@ void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
 void func_ov065_02263098(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q) {
     Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
     if (s != 0) {
-        func_02113498();
+        OS_YieldThread();
         s->unk_08 = 0;
         if ((u32)(s->unk_04 - 1) <= 1) {
             s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+            OS_WakeupThreadDirect(s->unk_00);
         }
     }
 }
@@ -1790,10 +1790,10 @@ void func_ov065_02262e64(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             c -= 8;
             if (c > m) k->unk_44 = m;
             else k->unk_44 = c;
-            func_02116048((u8 *)q + 8, k->unk_40, k->unk_44);
+            MI_CpuCopy8((u8 *)q + 8, k->unk_40, k->unk_44);
             if (k->unk_04 == 3) {
                 k->unk_04 = 0;
-                func_0211366c(k->unk_00);
+                OS_WakeupThreadDirect(k->unk_00);
                 return;
             }
             if (k->unk_38 != 0) {
@@ -1834,10 +1834,10 @@ u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out) {
             e->key = key;
             e->id = id;
             e->total = 0;
-            u64 t = func_01ffa6b4();
+            u64 t = OS_GetTick();
             e->tick = (u32)(t >> 16);
             e->data = e->buf + 0xe + hl;
-            func_02116048(p, e->buf + 0xe, hl);
+            MI_CpuCopy8(p, e->buf + 0xe, hl);
         }
         if (e->cnt == 8 || end > 0x1000) {
             e->cnt = 0;
@@ -1853,7 +1853,7 @@ u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out) {
         e->start[e->cnt] = off;
         e->fin[e->cnt] = fin;
         e->cnt++;
-        func_02116048((u8 *)p + hl, e->data + o8, len);
+        MI_CpuCopy8((u8 *)p + hl, e->data + o8, len);
         u32 total = e->total;
         if (total == 0) return 0;
         u32 n, k, cur = 0;
@@ -1949,12 +1949,12 @@ extern u16 data_ov065_0228eb98;
 extern Unk_ov065_02262a54_Rng data_ov065_0228ec04;
 
 // main module
-u64 func_01ffa6b4();
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
+u64 OS_GetTick();
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
 void func_021132e0(s32);
-void func_02113498();
-void func_02113720(void *);
+void OS_YieldThread();
+void OS_SleepThread(void *);
 void func_021289b4(void *, void *, u32);
 s64 _ll_mul(s64, s64);
 
@@ -2211,7 +2211,7 @@ void func_ov065_02262968(Sess *s) {
     s->unk_28 = func_ov065_02262a54();
     s->state = 1;
     s->unk_04 = 1;
-    func_02113720(0);
+    OS_SleepThread(0);
 }
 
 void func_ov065_02262954(u32 v) {
@@ -2239,14 +2239,14 @@ s32 func_ov065_022628ac(Sess *s) {
     do {
         s->unk_28 = seed;
         s->state = 2;
-        s->unk_10 = (u32)(func_01ffa6b4() >> 16);
+        s->unk_10 = (u32)(OS_GetTick() >> 16);
         func_ov065_02263700(s, 2, 0x18);
-        u32 ints = func_01ffa2ec();
+        u32 ints = OS_DisableInterrupts();
         if (data_ov065_0228ebd8 != 0) {
             s->unk_04 = 1;
-            func_02113720(0);
+            OS_SleepThread(0);
         }
-        func_01ffa3d4(ints);
+        OS_RestoreInterrupts(ints);
         if (s->state == 4) {
             return 0;
         }
@@ -2284,7 +2284,7 @@ u32 func_ov065_02262840(u16 *a, u32 *b) {
 }
 
 void func_ov065_02262804(Sess *s) {
-    func_02113498();
+    OS_YieldThread();
     u8 st = s->state;
     if ((u8)(st + 0xfd) <= 1) {
         func_ov065_022636e8(s, 0x19);
@@ -2308,8 +2308,8 @@ void func_ov065_022627d4() {
 void func_ov065_02262788() {
     Sess *s = data_021fcc2c.cur->sess;
     if (s != 0) {
-        s32 t = (s32)(func_01ffa6b4() >> 16);
-        while (data_ov065_0228ebac() != 0 && s->state != 0 && (s32)(func_01ffa6b4() >> 16) - t < 0x27) {
+        s32 t = (s32)(OS_GetTick() >> 16);
+        while (data_ov065_0228ebac() != 0 && s->state != 0 && (s32)(OS_GetTick() >> 16) - t < 0x27) {
             func_ov065_02264c20();
         }
     }
@@ -2318,7 +2318,7 @@ void func_ov065_02262788() {
 u8 *func_ov065_0226275c(u32 *out, Sess *s) {
     while (s->unk_44 == 0) {
         s->unk_04 = 3;
-        func_02113720(0);
+        OS_SleepThread(0);
     }
     *out = s->unk_44;
     return s->unk_40;
@@ -2328,10 +2328,10 @@ u8 *func_ov065_02262708(u32 *out, Sess *s) {
     if (s->unk_44 == 0 && s->state == 4) {
         while (s->unk_44 == 0 && s->state == 4) {
             s->unk_04 = 2;
-            func_02113720(0);
+            OS_SleepThread(0);
         }
     } else {
-        func_02113498();
+        OS_YieldThread();
     }
     *out = s->unk_44;
     if (*out != 0) {
@@ -2356,7 +2356,7 @@ u8 *func_ov065_022626b8(u32 *out) {
 }
 
 void func_ov065_02262670(u32 a, Sess *s) {
-    u32 ints = func_01ffa2ec();
+    u32 ints = OS_DisableInterrupts();
     u32 n = s->unk_44;
     if (a >= n) {
         s->unk_44 = 0;
@@ -2368,7 +2368,7 @@ void func_ov065_02262670(u32 a, Sess *s) {
         q = n ? q : q;
         func_021289b4(p, q, n);
     }
-    func_01ffa3d4(ints);
+    OS_RestoreInterrupts(ints);
     if (s->state != 10 && s->state != 11 && s->unk_44 == 0) {
         func_ov065_022636f4(s, 0x1b);
     }
@@ -2412,7 +2412,7 @@ u32 func_ov065_022625ac(u8 *a, u32 b, Sess *s, u32 flag) {
         if (r4 == 0) break;
         win -= r4;
         func_ov065_02263c90(a, r4, s, 0x18, 0);
-        func_02113498();
+        OS_YieldThread();
         a += r4;
         b -= r4;
     }
@@ -2436,29 +2436,29 @@ u32 func_ov065_0226242c(u8 *a, u32 b, u8 *c, u32 d, Sess *s) {
     u32 flag;
     s->unk_34 = 0;
     flag = 0;
-    now = (s32)(func_01ffa6b4() >> 16);
-    while (data_ov065_0228ebac() != 0 && b != 0 && s->state == 4 && (s32)(func_01ffa6b4() >> 16) - now < 0x9f) {
+    now = (s32)(OS_GetTick() >> 16);
+    while (data_ov065_0228ebac() != 0 && b != 0 && s->state == 4 && (s32)(OS_GetTick() >> 16) - now < 0x9f) {
         prev = s->unk_28;
         func_ov065_02262580(a, b, c, d, s, flag);
-        t1 = (s32)(func_01ffa6b4() >> 16);
+        t1 = (s32)(OS_GetTick() >> 16);
         for (;;) {
             func_ov065_02264c20();
             if (data_ov065_0228ebac() == 0) break;
             if (s->state != 4) break;
             if (s->unk_28 == s->unk_30) break;
-            if ((s32)(func_01ffa6b4() >> 16) - t1 >= 0xf) break;
+            if ((s32)(OS_GetTick() >> 16) - t1 >= 0xf) break;
             if (flag != 0 && s->unk_2c != 0) break;
         }
         sent = s->unk_30 - prev;
         total += sent;
         if (sent != 0) {
-            now = (s32)(func_01ffa6b4() >> 16);
+            now = (s32)(OS_GetTick() >> 16);
         }
         s->unk_28 = s->unk_30;
         if (s->state == 4 && s->unk_2c == 0 && sent == 0) {
             if (flag == 0) {
-                t1 = (s32)(func_01ffa6b4() >> 16);
-                while (data_ov065_0228ebac() != 0 && (s32)(func_01ffa6b4() >> 16) - t1 < 0xf) {
+                t1 = (s32)(OS_GetTick() >> 16);
+                while (data_ov065_0228ebac() != 0 && (s32)(OS_GetTick() >> 16) - t1 < 0xf) {
                     func_ov065_02264c20();
                     if (s->unk_2c != 0) break;
                 }
@@ -2574,8 +2574,8 @@ void func_ov065_02262240() {
         func_ov065_0226439c(data_ov065_0228ebd8);
         func_021132e0(0x64);
         func_ov065_0226439c(data_ov065_0228ebd8);
-        start = (s32)(func_01ffa6b4() >> 16);
-        while (data_ov065_0228ebac() != 0 && (s32)(func_01ffa6b4() >> 16) - start < 0x17) {
+        start = (s32)(OS_GetTick() >> 16);
+        while (data_ov065_0228ebac() != 0 && (s32)(OS_GetTick() >> 16) - start < 0x17) {
             if (data_ov065_0228eb8c != 0) {
                 func_ov065_02264c44(4);
                 return;
@@ -2664,11 +2664,11 @@ extern Unk_ov065_02261fd8_Q data_ov065_0228f200[8];
 extern u8 data_ov065_0228b428[];
 extern Unk_ov065_02261fd8_H data_021fcc2c;
 
-u64 func_01ffa6b4(void);
-void func_02115fb4(void *dst, s32 v, s32 n);
-void func_02116048(const void *src, void *dst, s32 n);
+u64 OS_GetTick(void);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void func_021132e0(s32 ms);
-void func_0211366c(s32 a);
+void OS_WakeupThreadDirect(s32 a);
 u64 _ll_mul(u64 a, u64 b);
 
 void func_ov065_02262334(u8 *buf, u32 len);
@@ -2733,7 +2733,7 @@ void func_ov065_02261fd8(void) {
     Unk_ov065_02261fd8_Q *q;
 
     data_ov065_0228ebd4 = 0;
-    func_02115fb4(data_ov065_0228ecb8, 0, 0x64);
+    MI_CpuFill8(data_ov065_0228ecb8, 0, 0x64);
     data_ov065_0228ecb8[15] = 0x180;
     data_ov065_0228ecb8[16] = (u32)&data_ov065_0228f080;
     data_ov065_0228ecb8[18] = 0x180;
@@ -2748,7 +2748,7 @@ void func_ov065_02261fd8(void) {
         if (data_ov065_0228ebd4 != 0) {
             break;
         }
-        now = (u32)(func_01ffa6b4() >> 16);
+        now = (u32)(OS_GetTick() >> 16);
         if (data_ov065_0228ebac() != 0) {
             cnt--;
             if (cnt == 0) {
@@ -2816,7 +2816,7 @@ void func_ov065_02261fd8(void) {
                     if (b->unk_04 == 1) {
                         b->unk_08 = 0;
                         b->unk_04 = 0;
-                        func_0211366c(b->unk_00);
+                        OS_WakeupThreadDirect(b->unk_00);
                     }
                 }
             }
@@ -2843,7 +2843,7 @@ void func_ov065_02261fd8(void) {
 u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
     u64 m;
     u32 hi;
-    func_02115fb4(buf, 0, 0xec);
+    MI_CpuFill8(buf, 0, 0xec);
     *(u16 *)(buf + 0) = 0x101;
     buf[2] = 6;
     m = _ll_mul(data_ov065_0228ec04.unk_08, data_ov065_0228ec04.unk_00);
@@ -2857,7 +2857,7 @@ u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
     *(u16 *)(buf + 6) = BS16((u16)hi);
     *(u16 *)(buf + 0xc) = BS16((u16)(data_ov065_0228ebd8 >> 16));
     *(u16 *)(buf + 0xe) = BS16((u16)data_ov065_0228ebd8);
-    func_02116048(data_ov065_0228ebf4, buf + 0x1c, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, buf + 0x1c, 6);
     *(u16 *)(buf + 0xec) = 0x8263;
     *(u16 *)(buf + 0xee) = 0x6353;
     *(u16 *)(buf + 0xf0) = 0x135;
@@ -2865,10 +2865,10 @@ u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
     buf[0xf3] = 0x3d;
     buf[0xf4] = 7;
     buf[0xf5] = 1;
-    func_02116048(data_ov065_0228ebf4, buf + 0xf6, 6);
+    MI_CpuCopy8(data_ov065_0228ebf4, buf + 0xf6, 6);
     buf[0xfc] = 0xc;
     buf[0xfd] = 0xa;
-    func_02116048(data_ov065_0228b428, buf + 0xfe, 0xa);
+    MI_CpuCopy8(data_ov065_0228b428, buf + 0xfe, 0xa);
     buf[0x108] = 0x37;
     buf[0x109] = 3;
     buf[0x10a] = 1;
@@ -2880,7 +2880,7 @@ u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
 u8 *func_ov065_02261e74(u32 a, u32 size, u8 *dst, u32 used) {
     if (used < size) {
         u32 n = size - used;
-        func_02115fb4(dst, a, n);
+        MI_CpuFill8(dst, a, n);
         dst += n;
     }
     return dst;
@@ -2940,7 +2940,7 @@ s32 func_ov065_02261af8(u32 xid, s32 i) {
     u8 *p;
 
     timeout = (i + 1) * 15;
-    start = (u32)(func_01ffa6b4() >> 16);
+    start = (u32)(OS_GetTick() >> 16);
     result = 0;
     goto test;
 loop:
@@ -3017,7 +3017,7 @@ loop:
     }
 test:
     if (data_ov065_0228ebac() != 0 && result == 0) {
-        u32 now = (u32)(func_01ffa6b4() >> 16);
+        u32 now = (u32)(OS_GetTick() >> 16);
         if ((s32)(now - start) < timeout) {
             goto loop;
         }
@@ -3168,7 +3168,7 @@ s32 func_ov065_022617e4(const u8 *name, u32 type, s32 xid) {
     func_ov065_02262334((u8 *)&l.id, (w + 5) - (u8 *)&l.id);
 
     result = 0;
-    u32 start = (u32)(func_01ffa6b4() >> 16);
+    u32 start = (u32)(OS_GetTick() >> 16);
     goto test;
 loop:
     if (func_ov065_022622ec() == 0) {
@@ -3222,7 +3222,7 @@ loop:
     }
 test:
     if (data_ov065_0228ebac() != 0 && result == 0) {
-        u32 now = (u32)(func_01ffa6b4() >> 16);
+        u32 now = (u32)(OS_GetTick() >> 16);
         if ((s32)(now - start) < 15) {
             goto loop;
         }

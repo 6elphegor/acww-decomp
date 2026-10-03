@@ -36,13 +36,13 @@ typedef struct TexData {
 extern u32 data_0213bcd4, data_0213bcd0, data_0213bccc;
 extern void func_02115e64(u32, void *, u32);   // MIi_CpuClear32
 extern void func_01ff8858(void *);
-extern void func_02111ff0(void);                // GX_BeginLoadTex
+extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
 extern void func_02111f7c(void *, u32, u32);    // GX_LoadTex
 extern void func_02111f24(void);                // GX_EndLoadTex
-extern void func_0211220c(void);                // GX_BeginLoadTexPltt
-extern void func_021120a8(void *, u32, u32);    // GX_LoadTexPltt
-extern void func_02112038(void);                // GX_EndLoadTexPltt
-void func_02103edc(Node **head, Node *n);
+extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
+extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
+extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
+void addLink_(Node **head, Node *n);
 
 void func_02103f98(u32 *o, u32 x)
 {
@@ -55,7 +55,7 @@ void func_02103f98(u32 *o, u32 x)
 }
 
 // insert a node (chain) into a list sorted by priority
-void func_02103edc(Node **head, Node *n)
+void addLink_(Node **head, Node *n)
 {
     Node *h = *head;
     Node *c;

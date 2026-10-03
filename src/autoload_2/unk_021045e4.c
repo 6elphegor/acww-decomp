@@ -39,7 +39,7 @@ extern u8 data_027e01a8[], data_027e0184[];
 extern void func_01ff8bd0(u32, void *, u32);
 extern void func_01ff8ccc(void);
 extern void func_02105e5c(void *, u32);
-extern BOOL func_02110e5c(void *);
+extern BOOL G3X_GetClipMtx(void *);
 extern u8 *func_021041e8(void);
 extern u32 data_dummy_hw;
 
@@ -102,7 +102,7 @@ void func_021045e4(Rs *rs)
             *(volatile u32 *)0x04000444 = 0;
             *(volatile u32 *)0x04000454 = 0;
             do {
-            } while (func_02110e5c(m2) != 0);
+            } while (G3X_GetClipMtx(m2) != 0);
             *(volatile u32 *)0x04000448 = 1;
             *(volatile u32 *)0x04000440 = 3;
             func_01ff8bd0(22, m2, 16);

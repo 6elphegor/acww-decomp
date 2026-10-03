@@ -169,43 +169,43 @@ extern PMFlag data_021feb6c[4];
 extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211b7e8(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
 extern void func_02117dcc(void);
-extern BOOL func_02117e8c(u32 tag, u32 proc);
-extern void func_02117eb4(u32 tag, void *cb);
-extern s32 func_02117dd8(u32 tag, u32 data, u32 err);
+extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
 extern void func_0206d49c(void);
-extern void func_0211450c(void *p);
+extern void OS_InitMutex(void *p);
 extern BOOL func_0211d518(void);
 
-void func_0211c280(PMCbInfo **head, PMCbInfo *info);
-void func_0211c2cc(PMCbInfo **head, PMCbInfo *info);
-void func_0211c314(PMCbInfo **head, PMCbInfo *info);
-u32 func_0211c364(u32 *out, PMCallback cb, void *arg);
+void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
+void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
+void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
+u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
 void func_0211cb60(u32 result, void *arg);
 void func_0211cb68(void);
-BOOL func_0211cb80(void);
-void func_0211c570(u32 data);
-u32 func_0211c3f0(u32 a, PMCallback cb, void *arg);
+BOOL PMi_Lock(void);
+void PMi_SendPxiData(u32 data);
+u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
 u32 func_0211c790(u32 a);
-u32 func_0211c7cc(u32 a, PMCallback cb, void *arg);
+u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg);
 u32 func_0211c834(u32 type, u16 *out);
-u32 func_0211c870(u32 type, u16 *out, PMCallback cb, void *arg);
-u32 func_0211c8e8(u32 cmd, PMCallback cb, void *arg);
+u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg);
+u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg);
 u32 func_0211c6ac(PMCallback cb, void *arg);
-u32 func_0211c700(u32 a, u32 b, PMCallback cb, void *arg);
-void func_0211cb0c(u32 result);
-u32 func_0211cbf8(u32 bcd);
+u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg);
+void PMi_CallCallbackAndUnlock(u32 result);
+u32 RtcBCD2HEX(u32 bcd);
 void func_0211bf60(u32 tag, u32 data, u32 err);
 void func_0211c95c(u32 tag, u32 data, u32 err);
-u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync);
+u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
-// PMi_ReadRegister? (sync wrapper of func_0211c870)
+// PMi_ReadRegister? (sync wrapper of PMi_ReadRegisterAsync)
 u32 func_0211c834(u32 type, u16 *out) {
     u32 result;
-    u32 r = func_0211c870(type, out, func_0211cb60, &result);
+    u32 r = PMi_ReadRegisterAsync(type, out, func_0211cb60, &result);
     if (r != 0) {
         return r;
     }
@@ -214,7 +214,7 @@ u32 func_0211c834(u32 type, u16 *out) {
 }
 
 // PM utility command 1..3 (async)
-u32 func_0211c7cc(u32 a, PMCallback cb, void *arg) {
+u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg) {
     u32 cmd;
     switch (a) {
     case 1:
@@ -233,13 +233,13 @@ u32 func_0211c7cc(u32 a, PMCallback cb, void *arg) {
     if (cmd == 0) {
         return 0xffff;
     }
-    return func_0211c8e8(cmd, cb, arg);
+    return PM_SendUtilityCommandAsync(cmd, cb, arg);
 }
 
-// synchronous wrapper of func_0211c7cc
+// synchronous wrapper of PMi_SetLEDAsync
 u32 func_0211c790(u32 a) {
     u32 result;
-    u32 r = func_0211c7cc(a, func_0211cb60, &result);
+    u32 r = PMi_SetLEDAsync(a, func_0211cb60, &result);
     if (r != 0) {
         return r;
     }
@@ -248,7 +248,7 @@ u32 func_0211c790(u32 a) {
 }
 
 // PM_SetBackLightAsync? (target 0..2, sw 0/1 -> utility command 4..9)
-u32 func_0211c700(u32 a, u32 b, PMCallback cb, void *arg) {
+u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg) {
     u32 cmd = 0;
     if (a == 0) {
         if (b == 1) {
@@ -275,13 +275,13 @@ u32 func_0211c700(u32 a, u32 b, PMCallback cb, void *arg) {
     if (cmd == 0) {
         return 0xffff;
     }
-    return func_0211c8e8(cmd, cb, arg);
+    return PM_SendUtilityCommandAsync(cmd, cb, arg);
 }
 
-// PM_SetBackLight? (sync wrapper of func_0211c700)
+// PM_SetBackLight? (sync wrapper of PM_SetBackLightAsync)
 u32 func_0211c6c4(u32 a, u32 b) {
     u32 result;
-    u32 r = func_0211c700(a, b, func_0211cb60, &result);
+    u32 r = PM_SetBackLightAsync(a, b, func_0211cb60, &result);
     if (r != 0) {
         return r;
     }
@@ -291,7 +291,7 @@ u32 func_0211c6c4(u32 a, u32 b) {
 
 // PM utility command 14 (async)
 u32 func_0211c6ac(PMCallback cb, void *arg) {
-    return func_0211c8e8(14, cb, arg);
+    return PM_SendUtilityCommandAsync(14, cb, arg);
 }
 
 // synchronous wrapper of func_0211c6ac
@@ -319,7 +319,7 @@ u32 func_0211c618(u32 *p) {
 }
 
 // PM_GetBackLight? (PMIC register 0 via func_0211c834: bit 3 / bit 2)
-u32 func_0211c5a0(u32 *p1, u32 *p2) {
+u32 PM_GetBackLight(u32 *p1, u32 *p2) {
     u16 v;
     u32 r = func_0211c834(0, &v);
     if (r != 0) {
@@ -335,13 +335,13 @@ u32 func_0211c5a0(u32 *p1, u32 *p2) {
 }
 
 // PMi_SendWord?: PXI_SendWordByFifo(8 = PM tag, data, 0) until it is accepted
-void func_0211c570(u32 data) {
-    while (func_02117dd8(8, data, 0) != 0) {
+void PMi_SendPxiData(u32 data) {
+    while (PXI_SendWordByFifo(8, data, 0) != 0) {
     }
 }
 
 // PMi_SetLCDPower? toggles REG_POWCNT1 bit 0 (0x04000304); LCD on needs >= 8 vblanks (0x027ffc3c) after off
-u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync) {
+u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
     switch (mode) {
     case 1:
         if (noWait == 0) {
@@ -353,7 +353,7 @@ u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync) {
             if (sync != 0) {
                 func_0211c790(target);
             } else {
-                func_0211c7cc(target, 0, 0);
+                PMi_SetLEDAsync(target, 0, 0);
             }
         }
         *(volatile u16 *)0x04000304 |= 1;
@@ -365,7 +365,7 @@ u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync) {
             if (sync != 0) {
                 func_0211c790(target);
             } else {
-                func_0211c7cc(target, 0, 0);
+                PMi_SetLEDAsync(target, 0, 0);
             }
         }
         break;
@@ -374,33 +374,33 @@ u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync) {
 }
 
 // PM_SetLCDPower?
-u32 func_0211c460(u32 a) {
+u32 PM_SetLCDPower(u32 a) {
     if (a != 1) {
         a = 0;
     }
-    return func_0211c480(a, 0, 0, 1);
+    return PMi_SetLCDPower(a, 0, 0, 1);
 }
 
 // PM_GetLCDPower? (REG_POWCNT1 bit 0)
-BOOL func_0211c444(void) {
+BOOL PM_GetLCDPower(void) {
     return (*(volatile u16 *)0x04000304 & 1) != 0;
 }
 
 // PM command 0x66 | (u8)a (async)
-u32 func_0211c3f0(u32 a, PMCallback cb, void *arg) {
-    if (!func_0211cb80()) {
+u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg) {
+    if (!PMi_Lock()) {
         return 1;
     }
     data_021feb44.callback = cb;
     data_021feb44.arg = arg;
-    func_0211c570(0x03006600 | (u8)a);
+    PMi_SendPxiData(0x03006600 | (u8)a);
     return 0;
 }
 
-// synchronous wrapper of func_0211c3f0
+// synchronous wrapper of PMi_SendLEDPatternCommandAsync
 u32 func_0211c3b4(u32 a) {
     u32 result;
-    u32 r = func_0211c3f0(a, func_0211cb60, &result);
+    u32 r = PMi_SendLEDPatternCommandAsync(a, func_0211cb60, &result);
     if (r != 0) {
         return r;
     }
@@ -409,21 +409,21 @@ u32 func_0211c3b4(u32 a) {
 }
 
 // PM command 0x67 (async)
-u32 func_0211c364(u32 *out, PMCallback cb, void *arg) {
-    if (!func_0211cb80()) {
+u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg) {
+    if (!PMi_Lock()) {
         return 1;
     }
     data_021feb44.callback = cb;
     data_021feb44.arg = arg;
     data_021feb44.out = out;
-    func_0211c570(0x03006700);
+    PMi_SendPxiData(0x03006700);
     return 0;
 }
 
-// synchronous wrapper of func_0211c364 (PM command 0x67, result through out)
+// synchronous wrapper of PM_GetLEDPatternAsync (PM command 0x67, result through out)
 u32 func_0211c328(u32 *out) {
     u32 result;
-    u32 r = func_0211c364(out, func_0211cb60, &result);
+    u32 r = PM_GetLEDPatternAsync(out, func_0211cb60, &result);
     if (r != 0) {
         return r;
     }
@@ -432,7 +432,7 @@ u32 func_0211c328(u32 *out) {
 }
 
 // PMi_PrependList?
-void func_0211c314(PMCbInfo **head, PMCbInfo *info) {
+void PMi_PrependList(PMCbInfo **head, PMCbInfo *info) {
     if (head != 0) {
         info->next = *head;
         *head = info;
@@ -440,7 +440,7 @@ void func_0211c314(PMCbInfo **head, PMCbInfo *info) {
 }
 
 // PMi_AppendList?
-void func_0211c2cc(PMCbInfo **head, PMCbInfo *info) {
+void PMi_AppendList(PMCbInfo **head, PMCbInfo *info) {
     PMCbInfo *cur;
     if (head == 0) {
         return;
@@ -459,7 +459,7 @@ void func_0211c2cc(PMCbInfo **head, PMCbInfo *info) {
 }
 
 // PMi_DeleteList? (singly linked list, next at +8)
-void func_0211c280(PMCbInfo **head, PMCbInfo *info) {
+void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info) {
     PMCbInfo *cur;
     PMCbInfo *prev;
     if (head == 0) {
@@ -481,22 +481,22 @@ void func_0211c280(PMCbInfo **head, PMCbInfo *info) {
 
 // PM_PrependPostSleepCallback? (PM callback list data_021feb38)
 void func_0211c268(PMCbInfo *info) {
-    func_0211c314(&data_021feb38, info);
+    PMi_PrependList(&data_021feb38, info);
 }
 
 // PM_AppendPreSleepCallback? (PM callback list data_021feb40)
 void func_0211c250(PMCbInfo *info) {
-    func_0211c2cc(&data_021feb40, info);
+    PMi_AppendList(&data_021feb40, info);
 }
 
 // PM_DeletePostSleepCallback? (PM callback list data_021feb38)
 void func_0211c238(PMCbInfo *info) {
-    func_0211c280(&data_021feb38, info);
+    PMi_DeleteList(&data_021feb38, info);
 }
 
 // PM_DeletePreSleepCallback? (PM callback list data_021feb40)
 void func_0211c220(PMCbInfo *info) {
-    func_0211c280(&data_021feb40, info);
+    PMi_DeleteList(&data_021feb40, info);
 }
 
 // TPi_TpCallback (PXI tag 6 receive callback); sample data comes from 0x027fffaa/ac
@@ -581,7 +581,7 @@ void func_0211bf60(u32 tag, u32 data, u32 err) {
 }
 
 // TP_Init: registers the PXI callback for tag 6 (touch panel)
-void func_0211bed0(void) {
+void TP_Init(void) {
     if (data_021feaf0 != 0) {
         return;
     }
@@ -594,13 +594,13 @@ void func_0211bed0(void) {
     data_021feaf4.buf = 0;
     data_021feaf4.calibrated = 0;
     data_021feaf4.pending = 0;
-    while (!func_02117e8c(6, 1)) {
+    while (!PXI_IsCallbackReady(6, 1)) {
     }
-    func_02117eb4(6, func_0211bf60);
+    PXI_SetFifoRecvCallback(6, func_0211bf60);
 }
 
 // TP_GetUserInfo: reads the touch calibration from the NVRAM user info copy (0x027ffc80 + 0x58)
-BOOL func_0211be24(TPCalibrateParam *p) {
+BOOL TP_GetUserInfo(TPCalibrateParam *p) {
     // the declaration order of the locals decides the register allocation; the goto gives the second
     // `return 1` block the original has after the zeroing code
     u8 *nv = (u8 *)0x027ffc80;
@@ -621,7 +621,7 @@ BOOL func_0211be24(TPCalibrateParam *p) {
     dx2 = nv[0x62];
     dy2 = nv[0x63];
     if (x1 != 0 || x2 != 0 || y1 != 0 || y2 != 0) {
-        if (func_0211b7e8(p, x1, y1, dx1, dy1, x2, y2, dx2, dy2) == 0) {
+        if (TP_CalcCalibrateParam(p, x1, y1, dx1, dy1, x2, y2, dx2, dy2) == 0) {
             goto ret;
         }
     }
@@ -635,14 +635,14 @@ ret:
 }
 
 // TP_SetCalibrateParam: x/y scale = 0x1000 0000 / dotSize via the hardware divider (REG_DIVCNT 0x04000280)
-void func_0211bcdc(TPCalibrateParam *p) {
+void TP_SetCalibrateParam(TPCalibrateParam *p) {
     u32 e;
     s32 dot;
     if (p == 0) {
         data_021feaf4.calibrated = 0;
         return;
     }
-    e = func_01ffa2ec();
+    e = OS_DisableInterrupts();
     dot = p->xDotSize;
     if (dot != 0) {
         *(volatile u16 *)0x04000280 = 0;
@@ -673,6 +673,6 @@ void func_0211bcdc(TPCalibrateParam *p) {
         data_021feaf4.yDot = 0;
         data_021feaf4.yRatio = 0;
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     data_021feaf4.calibrated = 1;
 }

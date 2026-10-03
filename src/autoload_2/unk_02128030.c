@@ -53,9 +53,9 @@ extern struct { u32 a; u32 b; OSThread *cur; } data_021fcc2c; // OS thread info 
 extern int data_0220064c;       // errno
 extern struct { u32 a; u32 b; struct { int (*mbtowc)(u16 *, const char *, u32); } *ctype; } data_0213c350; // current locale
 
-int func_02114354(OSMutex *);
-void func_02114480(OSMutex *);
-void func_02114410(OSMutex *);
+int OS_TryLockMutex(OSMutex *);
+void OS_LockMutex(OSMutex *);
+void OS_UnlockMutex(OSMutex *);
 int func_02127cb8(const void *, u32, u32, FILE *);
 int func_02127ad0(void);
 int func_02127b4c(FILE *, int);
@@ -100,7 +100,7 @@ void *func_0212899c(void *dst, int val, u32 n) {
 }
 
 // memchr
-void *func_02128970(const void *src, int val, u32 n) {
+void *memchr(const void *src, int val, u32 n) {
     const u8 *p = (const u8 *)src;
     u32 v = (u8)val;
     for (n++; --n;) {
@@ -110,7 +110,7 @@ void *func_02128970(const void *src, int val, u32 n) {
 }
 
 // memcmp
-int func_02128930(const void *src1, const void *src2, u32 n) {
+int memcmp(const void *src1, const void *src2, u32 n) {
     const u8 *p1 = (const u8 *)src1;
     const u8 *p2 = (const u8 *)src2;
     for (n++; --n;) {
@@ -199,19 +199,19 @@ int func_02128650(FILE *file) {
     else if (file == &data_0213c2d0) idx = 4;
     else idx = 5;
     m = &data_02200298[idx];
-    if (func_02114354(m) == 0) {
+    if (OS_TryLockMutex(m) == 0) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     } else if (data_02200250[idx] == (t = data_021fcc2c.cur)->id) {
         data_02200274[idx]++;
     } else {
-        func_02114480(m);
+        OS_LockMutex(m);
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
     r = func_02128778(file);
     data_02200274[idx]--;
-    if (data_02200274[idx] == 0) func_02114410(m);
+    if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }
 
@@ -267,19 +267,19 @@ int func_02128318(FILE *file, int offset, int whence) {
     else if (file == &data_0213c2d0) idx = 4;
     else idx = 5;
     m = &data_02200298[idx];
-    if (func_02114354(m) == 0) {
+    if (OS_TryLockMutex(m) == 0) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     } else if (data_02200250[idx] == (t = data_021fcc2c.cur)->id) {
         data_02200274[idx]++;
     } else {
-        func_02114480(m);
+        OS_LockMutex(m);
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
     r = func_02128450(file, offset, whence);
     data_02200274[idx]--;
-    if (data_02200274[idx] == 0) func_02114410(m);
+    if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }
 
@@ -332,18 +332,18 @@ u32 func_02128030(const void *ptr, u32 size, u32 n, FILE *file) {
     OSThread *t;
     idx = (file == &data_0213c238) ? 2 : 5;
     m = &data_02200298[idx];
-    if (func_02114354(m) == 0) {
+    if (OS_TryLockMutex(m) == 0) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     } else if (data_02200250[idx] == (t = data_021fcc2c.cur)->id) {
         data_02200274[idx]++;
     } else {
-        func_02114480(m);
+        OS_LockMutex(m);
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
     r = func_02127cb8(ptr, size, n, file);
     data_02200274[idx]--;
-    if (data_02200274[idx] == 0) func_02114410(m);
+    if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }

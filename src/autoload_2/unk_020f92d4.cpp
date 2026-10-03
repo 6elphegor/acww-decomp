@@ -101,9 +101,9 @@ struct Mc {
 };
 
 extern "C" {
-void *func_02115fb4(void *p, u32 v, u32 n);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020fe3a0(void *list, void *e);
-void func_020fa39c(void *p);
+void spl_set_tex(void *p);
 void func_020fa398(void *p);
 void func_020fc984(void *e, void *l);
 void func_020f9714(Pm *m, u32 a);
@@ -273,11 +273,11 @@ extern "C" {
 extern s16 data_02135f44[];
 extern MkFn data_0213bb9c[];
 extern SetFn data_0213bb94[];
-void func_01ffb828(Mt *m, s32 x, s32 y, s32 z);
-void func_01ffb840(Mt *m, s32 s, s32 c);
-void func_01ffb94c(Mt *a, Mt *b, Mt *ab);
-void func_02110bcc(Mt *m);
-void func_02110be8(Mt *m);
+void MTX_Scale43_(Mt *m, s32 x, s32 y, s32 z);
+void MTX_RotX43_(Mt *m, s32 s, s32 c);
+void MTX_Concat43(Mt *a, Mt *b, Mt *ab);
+void G3_MultMtx43(Mt *m);
+void G3_LoadMtx43(Mt *m);
 }
 
 
@@ -482,12 +482,12 @@ struct FEnt {
 };
 
 extern "C" {
-void func_020fde58(Pt *, RU *, u32);
-void func_020fdc8c(Pt *, RU *, u32);
-void func_020fdbb0(Pt *, RU *, u32);
-void func_020fdb4c(Pt *, RU *, u32);
-void func_020fdb00(Pt *, RU *, u32);
-void func_020fdaa8(Pt *, RU *, u32);
+void spl_scl_in_out(Pt *, RU *, u32);
+void spl_clr_in_out(Pt *, RU *, u32);
+void spl_alp_in_out(Pt *, RU *, u32);
+void spl_tex_ptn_anm(Pt *, RU *, u32);
+void spl_chld_scl_out(Pt *, RU *, u32);
+void spl_chld_alp_out(Pt *, RU *, u32);
 void func_020fc6bc(Pt *, EU *, void *);
 void func_020fc984(void *, void *);
 u32 func_02133150x(void);
@@ -517,27 +517,27 @@ extern "C" void func_020f98ac(MU *m, EU *e) {
         if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) func_020fc984(e, (u8 *)m + 20);
     }
     if (h.b8) {
-        arr[n].fn = func_020fde58;
+        arr[n].fn = spl_scl_in_out;
         arr[n++].arg = res->p4->b0;
 
     }
     if (h.b9) {
         B8 *q = res->p8;
         if (q->b0 == 0) {
-            arr[n].fn = func_020fdc8c;
+            arr[n].fn = spl_clr_in_out;
             arr[n++].arg = q->b1;
 
         }
     }
     if (h.b10) {
-        arr[n].fn = func_020fdbb0;
+        arr[n].fn = spl_alp_in_out;
         arr[n++].arg = res->pc->b8;
 
     }
     if (h.b11) {
         B10 *q = res->p10;
         if (q->b16 == 0) {
-            arr[n].fn = func_020fdb4c;
+            arr[n].fn = spl_tex_ptn_anm;
             arr[n++].arg = q->b17;
 
         }
@@ -585,12 +585,12 @@ extern "C" void func_020f98ac(MU *m, EU *e) {
     if (h.b16) {
         n = 0;
         if (b14->b1) {
-            arr2[n].fn = func_020fdb00;
+            arr2[n].fn = spl_chld_scl_out;
             arr2[n].arg = n;
             n++;
         }
         if (b14->b2) {
-            arr2[n].fn = func_020fdaa8;
+            arr2[n].fn = spl_chld_alp_out;
             arr2[n].arg = 0;
             n++;
         }
@@ -640,7 +640,7 @@ extern "C" void func_020f97d0(Pm *mp, u32 a) {
     TexFn tf;
     Node *n;
     DrawFn fn = 0;
-    func_020fa39c((u8 *)m->tex + h->c43 * 20);
+    spl_set_tex((u8 *)m->tex + h->c43 * 20);
     switch (h->k4) {
         case 0:
             fn = func_020fbf94;
@@ -652,7 +652,7 @@ extern "C" void func_020f97d0(Pm *mp, u32 a) {
             fn = (DrawFn)func_020fa858;
             break;
     }
-    tf = h->b11 ? func_020fa39c : func_020fa398;
+    tf = h->b11 ? spl_set_tex : func_020fa398;
     n = cur->l8;
     if (n == 0) return;
     do {
@@ -669,7 +669,7 @@ extern "C" void func_020f9714(Pm *mp, u32 a) {
     DrawFn fn = 0;
     Node *n;
     if (!res->p0->b16) return;
-    func_020fa39c((u8 *)m->tex + res->p14->c15 * 20);
+    spl_set_tex((u8 *)m->tex + res->p14->c15 * 20);
     switch (res->p14->k7) {
         case 0:
             fn = func_020fbad0;
@@ -720,7 +720,7 @@ extern "C" PmNew *func_020f94a8(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16
     PmNew *m = (PmNew *)alloc(60);
     s32 i;
     u8 *p;
-    func_02115fb4(m, 0, 60);
+    MI_CpuFill8(m, 0, 60);
     m->h40 = n1;
     m->h42 = n2;
     m->b0 = a4;
@@ -737,13 +737,13 @@ extern "C" PmNew *func_020f94a8(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16
     m->w20 = 0;
     m->w48 = 0;
     p = (u8 *)alloc(n1 * 132);
-    func_02115fb4(p, 0, n1 * 132);
+    MI_CpuFill8(p, 0, n1 * 132);
     for (i = 0; i < n1; i++) {
         func_020fe3a0(&m->w12, p);
         p += 132;
     }
     p = (u8 *)alloc(n2 * 68);
-    func_02115fb4(p, 0, n2 * 68);
+    MI_CpuFill8(p, 0, n2 * 68);
     for (i = 0; i < n2; i++) {
         func_020fe3a0(&m->w20, p);
         p += 68;
@@ -781,7 +781,7 @@ extern "C" void func_020f92d4(Pm *self, u8 *base) {
         }
     }
     self->tex = (TexEnt *)self->alloc(self->h26 * 20);
-    func_02115fb4(self->tex, 0, self->h26 * 20);
+    MI_CpuFill8(self->tex, 0, self->h26 * 20);
     {
         for (i = 0; i < self->h26; i++) {
             TexEnt *t = &self->tex[i];

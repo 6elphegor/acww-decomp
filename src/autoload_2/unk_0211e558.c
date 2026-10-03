@@ -107,82 +107,82 @@ extern u8 data_021ff500[];
 extern u32 data_0213c1fc;
 
 extern void func_01ff8000(void);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_01ffa404(u32, void (*)(void));
-extern void func_01ff81a8(u32);
-extern void func_01ff8128(u32);
-extern void func_01ff80e0(u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SetIrqFunction(u32, void (*)(void));
+extern void OS_ResetRequestIrqMask(u32);
+extern void OS_EnableIrqMask(u32);
+extern void OS_DisableIrqMask(u32);
 extern void func_01ffa494(u32);
-extern void func_02114594(void *, u32);
-extern void func_021145b0(void *, u32);
-extern void func_021145cc(void *, u32);
-extern void func_02114608(void *, u32);
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_StoreRange(void *, u32);
+extern void DC_FlushRange(void *, u32);
+extern void IC_InvalidateRange(void *, u32);
 extern void func_021145f0(void);
-extern u32 func_02114b10(void);
-extern void func_021159a8(u32);
-extern void func_02116224(u32, u32, u32, u32);
-extern void func_02116048(void *, void *, u32);
-extern void func_021136a0(void *);
-extern void func_0211366c(void *);
-extern void func_02113720(u32);
-extern int func_02117e8c(u32, u32);
-extern int func_02117dd8(u32, u32, u32);
+extern u32 OS_GetDTCMAddress(void);
+extern void MI_StopDma(u32);
+extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
+extern void OS_WakeupThread(void *);
+extern void OS_WakeupThreadDirect(void *);
+extern void OS_SleepThread(u32);
+extern int PXI_IsCallbackReady(u32, u32);
+extern int PXI_SendWordByFifo(u32, u32, u32);
 extern void func_02117dcc(void);
-extern void func_02117eb4(u32, void *);
+extern void PXI_SetFifoRecvCallback(u32, void *);
 extern void WaitByLoop(u32);
 extern void func_0206d49c(void);
 extern void func_0211c670(void);
-extern int func_02114188(void *, void *, u32);
-extern void func_021140d4(void *, void *, u32);
-extern void func_02114234(void *, void *, u32);
-extern void func_021142dc(void *, void *, u32);
-extern void func_02115c24(u32, void *, void *, u32);
-extern void func_02115ca0(u32, void *, u32, u32);
-extern void func_02115e48(void *, void *, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115640(u8 *);
-extern void func_0211d45c(void);
+extern int OS_ReceiveMessage(void *, void *, u32);
+extern void OS_JamMessage(void *, void *, u32);
+extern void OS_SendMessage(void *, void *, u32);
+extern void OS_InitMessageQueue(void *, void *, u32);
+extern void MI_DmaCopy32(u32, void *, void *, u32);
+extern void MI_DmaFill32(u32, void *, u32, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void OS_GetMacAddress(u8 *);
+extern void RTC_Init(void);
 extern int func_0211d2e0(u32 *);
 extern void func_0211fb0c(u16, u32, u32);
 
 BOOL func_0211f7e4(void);
 u32 func_0211f73c(void);
-u32 func_0211f698(void);
-u32 func_0211f5f4(void);
-WMOtherElements func_0211f488(WMBssDesc *b);
+u32 WM_GetDispersionBeaconPeriod(void);
+u32 WM_GetDispersionScanPeriod(void);
+WMOtherElements WM_GetOtherElements(WMBssDesc *b);
 u32 func_0211f410(void);
-u32 func_0211f3dc(void *buf, u16 dmaNo);
+u32 WM_Init(void *buf, u16 dmaNo);
 u32 func_0211f1fc(void *buf, u16 dmaNo, u32 size);
 u32 func_0211f188(void);
-void func_0211f170(u32 idx, void (*cb)(WMMsg *));
+void WMi_SetCallbackTable(u32 idx, void (*cb)(WMMsg *));
 u32 func_0211f01c(u32 id, u16 paramNum, ...);
 WMArm9Buf *func_0211f00c(void);
-u32 func_0211eff0(void);
-u32 func_0211ef94(void);
-u32 func_0211eeec(int n, ...);
+u32 WMi_CheckInitialized(void);
+u32 WMi_CheckIdle(void);
+u32 WMi_CheckStateEx(int n, ...);
 void func_0211eb4c(u32 tag, WMMsg *m, BOOL err);
-void func_0211eb30(void);
-u32 func_0211eb00(void);
-void func_0211eac8(void);
+void WmClearFifoRecvFlag(void);
+u32 WMi_GetStatusAddress(void);
+void CARD_InitPulledOutCallback(void);
 void func_0211ea5c(u32 tag, u32 data, BOOL err);
 void func_0211ea4c(int (*cb)(void));
 void func_0211ea0c(void);
 void func_0211e9a8(u32 data, u32 n);
-void func_0211e958(u32 tag, u32 data, BOOL err);
-void func_0211e8fc(void);
+void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
+void CARDi_TaskThread(void);
 BOOL func_0211e7c0(CardCommon *c, u32 arg, int retry);
-BOOL func_0211e728(u8 *cache);
-void func_0211e688(u32 hi, u32 lo);
-void func_0211e630(void);
+BOOL CARDi_ReadFromCache(u8 *cache);
+void CARDi_SetRomOp(u32 hi, u32 lo);
+void CARDi_SetCardDma(void);
 void func_0211e558(void);
 BOOL func_0211e3fc(CardCommon *req);
 
 void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
     if (err != 0) return;
-    func_02114594(data_021ff46c->f10, 0x100);
-    if (data_021ff46c->f16 == 0) func_02114594(data_021ff46c->status, 0x800);
-    if (m != (WMMsg *)data_021ff46c->f10) func_02114594(m, 0x100);
+    DC_InvalidateRange(data_021ff46c->f10, 0x100);
+    if (data_021ff46c->f16 == 0) DC_InvalidateRange(data_021ff46c->status, 0x800);
+    if (m != (WMMsg *)data_021ff46c->f10) DC_InvalidateRange(m, 0x100);
     if (m->id >= 42) {
         if (m->id == 0x80) {
             if (m->f2 == 19) func_0206d49c();
@@ -190,7 +190,7 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
         } else if (m->id == 0x82) {
             if (data_021ff46c->reqCb[m->f6] != 0) {
                 m->f1c = data_021ff46c->reqArg[m->f6];
-                func_02114594((void *)m->f8, data_021ff46c->status->f46);
+                DC_InvalidateRange((void *)m->f8, data_021ff46c->status->f46);
                 data_021ff46c->reqCb[m->f6](m);
             }
         } else if (m->id == 0x81) {
@@ -205,7 +205,7 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
         u8 *r5;
         u8 *r4;
         if (m->id == 14 && (u16)(m->f4 + 0xfff5) <= 1 && m->f2 == 0)
-            func_02114594((void *)m->f8, data_021ff46c->status->f46);
+            DC_InvalidateRange((void *)m->f8, data_021ff46c->status->f46);
         if (m->id == 2 && m->f2 == 0) {
             cb = data_021ff46c->cb18[m->id];
             func_0211f188();
@@ -242,12 +242,12 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
                 data_021ff4b8.f12 = r7;
                 data_021ff4b8.f20 = r6;
                 data_021ff4b8.f1a = 0xffff;
-                func_02116048(r5, data_021ff4cc, 6);
+                MI_CpuCopy8(r5, data_021ff4cc, 6);
                 if (r4 != 0) {
-                    func_02115e48(r4, data_021ff4dc, 0x18);
+                    MIi_CpuCopy16(r4, data_021ff4dc, 0x18);
                 } else {
                     volatile u16 z = 0;
-                    func_02115e30(z, data_021ff4dc, 0x18);
+                    MIi_CpuClear16(z, data_021ff4dc, 0x18);
                 }
                 for (i = 0; i < 16; i++) {
                     data_021ff4b8.f6 = i;
@@ -259,26 +259,26 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
             }
         }
     }
-    func_02114594(data_021ff46c->f10, 0x100);
-    func_0211eb30();
+    DC_InvalidateRange(data_021ff46c->f10, 0x100);
+    WmClearFifoRecvFlag();
     if (m != (WMMsg *)data_021ff46c->f10) {
         m->id |= 0x8000;
-        func_021145b0(m, 0x100);
+        DC_StoreRange(m, 0x100);
     }
 }
 
-void func_0211eb30(void) {
+void WmClearFifoRecvFlag(void) {
     u16 *p = (u16 *)0x027fff96;
     if (*p & 1) *p &= ~1;
 }
 
-u32 func_0211eb00(void) {
-    return func_0211eff0() != 0 ? 0 : (u32)data_021ff46c->status;
+u32 WMi_GetStatusAddress(void) {
+    return WMi_CheckInitialized() != 0 ? 0 : (u32)data_021ff46c->status;
 }
 
-void func_0211eac8(void) {
+void CARD_InitPulledOutCallback(void) {
     func_02117dcc();
-    func_02117eb4(14, func_0211ea5c);
+    PXI_SetFifoRecvCallback(14, func_0211ea5c);
     data_021ff464 = 0;
 }
 
@@ -305,32 +305,32 @@ void func_0211ea0c(void) {
 }
 
 void func_0211e9a8(u32 data, u32 n) {
-    if (func_02117dd8(14, data, 0) == 0) return;
+    if (PXI_SendWordByFifo(14, data, 0) == 0) return;
     do {
         WaitByLoop(n);
-    } while (func_02117dd8(14, data, 0) != 0);
+    } while (PXI_SendWordByFifo(14, data, 0) != 0);
 }
 
-void func_0211e958(u32 tag, u32 data, BOOL err) {
+void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err) {
     if (tag != 11) return;
     if (err == 0) return;
     {
         CardCommon *const c = &data_021fec00;
         c->flag &= ~0x20;
-        func_0211366c(c->waiter);
+        OS_WakeupThreadDirect(c->waiter);
     }
 }
 
-void func_0211e8fc(void) {
+void CARDi_TaskThread(void) {
     CardCommon *const c = &data_021fec00;
     u32 irq;
     for (;;) {
-        irq = func_01ffa2ec();
+        irq = OS_DisableInterrupts();
         while ((c->flag & 8) == 0) {
             c->waiter = (u8 *)c + 0x44;
-            func_02113720(0);
+            OS_SleepThread(0);
         }
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         c->task(c);
     }
 }
@@ -339,42 +339,42 @@ BOOL func_0211e7c0(CardCommon *c, u32 arg, int retry) {
     u32 irq;
     if ((*(volatile u32 *)&c->flag & 2) == 0) {
         c->flag |= 2;
-        if (func_02117e8c(11, 1) == 0) {
+        if (PXI_IsCallbackReady(11, 1) == 0) {
             do {
                 func_01ffa494(100);
-            } while (func_02117e8c(11, 1) == 0);
+            } while (PXI_IsCallbackReady(11, 1) == 0);
         }
         func_0211e7c0(c, 0, 1);
     }
-    func_021145cc(c->result, 64);
+    DC_FlushRange(c->result, 64);
     func_021145f0();
     do {
         c->arg = arg;
         c->flag |= 0x20;
-        while (func_02117dd8(11, arg, 1) < 0) {}
+        while (PXI_SendWordByFifo(11, arg, 1) < 0) {}
         if (arg == 0) {
             u32 r = (u32)c->result;
-            while (func_02117dd8(11, r, 1) < 0) {}
+            while (PXI_SendWordByFifo(11, r, 1) < 0) {}
         }
-        irq = func_01ffa2ec();
+        irq = OS_DisableInterrupts();
         if ((c->flag & 0x20) != 0) {
             do {
-                func_02113720(0);
+                OS_SleepThread(0);
             } while ((c->flag & 0x20) != 0);
         }
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
     } while (*c->result == 4 && --retry > 0);
     return *c->result == 0;
 }
 
-BOOL func_0211e728(u8 *cache) {
+BOOL CARDi_ReadFromCache(u8 *cache) {
     CardCommon *c = &data_021fec00;
     u32 base = c->src & -512;
     if (base == *(u32 *)(cache + 8)) {
         u32 off = c->src - base;
         u32 n = 512 - off;
         if (n > c->len) n = c->len;
-        func_02116048(cache + 0x20 + off, (void *)c->dst, n);
+        MI_CpuCopy8(cache + 0x20 + off, (void *)c->dst, n);
         c->src += n;
         c->dst += n;
         c->len -= n;
@@ -382,7 +382,7 @@ BOOL func_0211e728(u8 *cache) {
     return c->len != 0;
 }
 
-void func_0211e688(u32 hi, u32 lo) {
+void CARDi_SetRomOp(u32 hi, u32 lo) {
     while (*(volatile u32 *)0x040001a4 & 0x80000000) {}
     *(volatile u8 *)0x040001a1 = 0xc0;
     *(volatile u8 *)0x040001a8 = hi >> 24;
@@ -395,23 +395,23 @@ void func_0211e688(u32 hi, u32 lo) {
     *(volatile u8 *)0x040001af = lo;
 }
 
-void func_0211e630(void) {
+void CARDi_SetCardDma(void) {
     CardCommon *const c = &data_021fec00;
     u32 dma = c->dma;
     u32 dst = c->dst;
-    func_02116224(dma, 0x04100010, dst, 512);
-    func_0211e688(0xb7000000 | (c->src >> 8), c->src << 24);
+    MIi_CardDmaCopy32(dma, 0x04100010, dst, 512);
+    CARDi_SetRomOp(0xb7000000 | (c->src >> 8), c->src << 24);
     *(volatile u32 *)0x040001a4 = data_021ff240[1];
 }
 
 void func_0211e558(void) {
-    func_021159a8(data_021fec00.dma);
+    MI_StopDma(data_021fec00.dma);
     data_021fec00.src += 0x200;
     data_021fec00.dst += 0x200;
     data_021fec00.len -= 0x200;
     if (data_021fec00.len == 0) {
-        func_01ff80e0(0x80000);
-        func_01ff81a8(0x80000);
+        OS_DisableIrqMask(0x80000);
+        OS_ResetRequestIrqMask(0x80000);
         {
             CardCommon *const c = &data_021fec00;
             void (*cb)(u32);
@@ -420,15 +420,15 @@ void func_0211e558(void) {
             *c->result = 0;
             cb = c->callback;
             arg = c->callbackArg;
-            irq = func_01ffa2ec();
+            irq = OS_DisableInterrupts();
             c->flag &= ~0x4c;
-            func_021136a0((u8 *)c + 0x10c);
-            if ((c->flag & 0x10) != 0) func_0211366c((u8 *)c + 0x44);
-            func_01ffa3d4(irq);
+            OS_WakeupThread((u8 *)c + 0x10c);
+            if ((c->flag & 0x10) != 0) OS_WakeupThreadDirect((u8 *)c + 0x44);
+            OS_RestoreInterrupts(irq);
             if (cb != 0) cb(arg);
         }
     } else {
-        func_0211e630();
+        CARDi_SetCardDma();
     }
 }
 

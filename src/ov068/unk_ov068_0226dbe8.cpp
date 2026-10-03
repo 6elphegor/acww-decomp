@@ -653,7 +653,7 @@ u8 *func_0209865c(void *);
 s32 func_0209abb4(void *, s32);
 s32 func_0209abc4(void *);
 s32 func_02063b8c(s32);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 void func_0209d258(void *, s32);
 void func_0209d498(void *);
 s32 func_0209d3d0(void *, void *, s32);
@@ -816,8 +816,8 @@ void Unk_ov068_02270afc::func_ov068_0226ee18() {
 extern "C" BOOL func_ov068_0226eda4(void *) {
     using namespace sC;
     Unk_ov068_0226eda4_V a, b, c;
-    func_02116048(func_0209865c(func_0209750c()) + 0xa0, &a, 8);
-    func_02116048(&a, &b, 8);
+    MI_CpuCopy8(func_0209865c(func_0209750c()) + 0xa0, &a, 8);
+    MI_CpuCopy8(&a, &b, 8);
     func_0209d258(&b, 0x1e);
     c.a = 0;
     c.b = 0;

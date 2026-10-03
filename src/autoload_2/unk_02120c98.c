@@ -72,22 +72,22 @@ typedef struct {
     u16 f81c;
 } WMPool;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211ef94(void);
-extern u32 func_0211eeec(int n, ...);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 WMi_CheckIdle(void);
+extern u32 WMi_CheckStateEx(int n, ...);
 extern WMArm9Buf *func_0211f00c(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
-extern void func_0211f170(u32 idx, WMCallback cb);
+extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
-extern void func_02114594(void *, u32);
-extern void func_021145b0(void *, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115e48(void *, void *, u32);
-extern void func_02115ea8(u32, void *, u32);
-extern u32 func_0212741c(u32);
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_StoreRange(void *, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
+extern u32 MATH_CountPopulation(u32);
 extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 func_02120a64(void *base, u32 x, void *y, u32 n);
+extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void func_02120b0c(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
 extern u32 func_02122e24(u32, u32, u16 *);
@@ -103,19 +103,19 @@ extern void func_02120ed4(WMMsg *msg);
 extern void func_02120fe8(WMMsg *msg);
 extern u32 func_021214b4(WMPool *ds);
 extern u32 func_02121838(WMPool *ds);
-extern u32 func_02121844(WMPool *ds, u32 port);
-extern u32 func_02121870(WMCallback cb, u32 arg);
+extern u32 WM_StartKeySharing(WMPool *ds, u32 port);
+extern u32 WM_SetEntry(WMCallback cb, u32 arg);
 extern u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval);
-extern u32 func_02121948(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 measureTime);
-extern u32 func_021219b4(WMCallback cb, u32 flag);
-extern u32 func_02121a24(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr);
-extern u32 func_02121aec(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key);
-extern u32 func_02121b8c(WMCallback cb, u32 wepmode, void *key);
+extern u32 WM_SetLifeTime(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 measureTime);
+extern u32 WM_SetBeaconIndication(WMCallback cb, u32 flag);
+extern u32 WM_SetGameInfo(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr);
+extern u32 WM_SetWEPKeyEx(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key);
+extern u32 WM_SetWEPKey(WMCallback cb, u32 wepmode, void *key);
 extern u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 extern u32 func_021210f0(WMPool *ds, u16 *data, u16 *out);
 extern u32 func_02121c10(u32 a, u32 b);
-extern BOOL func_02121c34(u32 x);
-extern u32 func_02121c50(u32 a, u32 b);
+extern BOOL IsChildAidValid(u32 x);
+extern u32 MBi_calc_nextsendblock(u32 a, u32 b);
 extern void func_02121c60(u32 idx);
 extern u32 func_02121cc8(void);
 extern u32 func_02121e5c(void);
@@ -138,14 +138,14 @@ void func_02120da4(WMMsg *msg) {
         p = msg->f0c;
         bitmap = *p;
         len = msg->f10;
-        func_02114594(&st->f184, 2);
+        DC_InvalidateRange(&st->f184, 2);
         aid = st->f184;
         if (len != ds->f814) {
             if (len > 512) len = 512;
         }
         if (len < 4) return;
         if ((bitmap & (1 << aid)) == 0) return;
-        func_02115e48(p, &ds->pkt[ds->f808], len);
+        MIi_CpuCopy16(p, &ds->pkt[ds->f808], len);
         ds->slot[ds->f808] = msg->f1a >> 1;
         ds->f808 = (ds->f808 + 1) & 3;
     } else {
@@ -168,17 +168,17 @@ void func_02120c98(WMPool *ds, u32 n, u16 *buf) {
         if ((mask & ds->pkt[idx].hdr) == 0) return;
     }
     x = ds->f80e;
-    addr = (void *)func_02120a64(ds, x, ds->pkt[idx].data, n);
+    addr = (void *)WmGetSharedDataAddress(ds, x, ds->pkt[idx].data, n);
     if (buf != 0) {
-        func_02115e48(buf, addr, ds->f810);
+        MIi_CpuCopy16(buf, addr, ds->f810);
     } else {
         volatile u16 zero = 0;
-        func_02115e30(zero, addr, ds->f810);
+        MIi_CpuClear16(zero, addr, ds->f810);
     }
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     ds->pkt[idx].hdr &= ~mask;
     ds->pkt[idx].recv |= mask;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
 typedef struct {
@@ -234,7 +234,7 @@ extern u32 func_021221b0(u32);
 extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
 extern u32 func_02126e00(void *msg, void *dst);
 extern u32 func_021266c0(void *, u32, u32, u32);
-extern u32 func_021269cc(void *);
+extern u32 MBi_IsTaskBusy(void *);
 extern void func_0212683c(void *, void *, u32, u32);
 extern u32 func_02123f24(u32, u32, void *);
 extern void func_0206d49c(void);

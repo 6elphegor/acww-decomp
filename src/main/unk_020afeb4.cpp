@@ -47,7 +47,7 @@ extern u8 data_021e7f8c[];
 
 // external
 void _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32 a, u32 b, Vec3 *v, void *c, u32 d);
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 BOOL func_02051218(const u8 *a, const u8 *b, s32 len);
 void func_0205125c(void *dst, u32 size);
 s32 func_02051268(const void *src, void *dst, u32 size);
@@ -77,7 +77,7 @@ u8 *_ZN12Unk_0209865c13func_0209888cEv(void *p);
 // 0x02291f60 exists in every overlay of the slot (relocs.txt: module:overlays(113,123,...)); the
 // call names the first one's symbol.
 s32 _ZN18Unk_ov113_02293640D1Ev(void *p);
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 u64 func_02132ef8(u64 a, u64 b);
 
 // this file
@@ -563,7 +563,7 @@ BOOL func_020afeb4(List *self, u8 *idxp, u64 start) {
             goto end;
         }
         if (idxp != NULL) {
-            if ((u32)(((func_01ffa6b4() - start) << 6) / 0x82ea) > 0x28) {
+            if ((u32)(((OS_GetTick() - start) << 6) / 0x82ea) > 0x28) {
                 result = FALSE;
                 goto end;
             }

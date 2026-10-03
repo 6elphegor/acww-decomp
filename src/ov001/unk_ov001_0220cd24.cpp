@@ -29,7 +29,7 @@ extern "C" {
 extern void *data_ov001_0222de1c;
 
 extern void func_0206d49c();
-extern void func_02115e48(void *, void *, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
 
 extern u32 func_ov001_0220c5e0();
 extern void *func_ov001_0220cc10(void *, s32);
@@ -148,7 +148,7 @@ b5:
         if (t[1] != 0) {
             u8 *d = data_ov001_0222de14->unk_1e280;
             void *q = func_ov001_0222375c();
-            func_02115e48(q, d, 0x16);
+            MIi_CpuCopy16(q, d, 0x16);
             Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
             if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
             else f(0);
@@ -281,7 +281,7 @@ b5:
     bl func_ov001_0222375c
     mov r1, r4
     mov r2, #22
-    bl func_02115e48
+    bl MIi_CpuCopy16
     ldr r0, =data_ov001_0222de14
     ldr r0, [r0]
     add r0, r0, #0x1e000

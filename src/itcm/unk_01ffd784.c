@@ -15,20 +15,20 @@ typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
 
-extern u32 func_01ffa2ec(void);       // OS_DisableInterrupts
-extern u32 func_01ffa3d4(u32 enabled); // OS_RestoreInterrupts
-extern void func_02114534(void);
+extern u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts
+extern u32 OS_RestoreInterrupts(u32 enabled); // OS_RestoreInterrupts
+extern void DC_StoreAll(void);
 extern void func_02114528(void);
 extern void func_021145fc(void);
 extern void func_021145f0(void);
 extern void func_01ffd6c0(void);      // OSi_DoBoot (assembly)
 extern vu16 data_021fcf50;
-void func_01ffd784(u32 src, void *dst, s32 len);
-void func_01ffd8b4(void);
+void OSi_ReadCardRom32(u32 src, void *dst, s32 len);
+void OSi_ReloadRomData(void);
 
 // MIi_DmaSetParams_wait
-void func_01ffda6c(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
-    u32 enabled = func_01ffa2ec();
+void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+    u32 enabled = OS_DisableInterrupts();
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
     *p = src;
     *(p + 1) = dest;
@@ -40,11 +40,11 @@ void func_01ffda6c(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
         *(p + 1) = 0;
         *(p + 2) = 0x81400001;
     }
-    (void)func_01ffa3d4(enabled);
+    (void)OS_RestoreInterrupts(enabled);
 }
 
 // MIi_DmaSetParams_noInt
-void func_01ffda34(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
     *p = src;
     *(p + 1) = dest;
@@ -52,7 +52,7 @@ void func_01ffda34(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
 }
 
 // MIi_DmaSetParams_wait_noInt
-void func_01ffd9d4(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
+void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
     *p = src;
     *(p + 1) = dest;
@@ -69,21 +69,21 @@ void func_01ffd9d4(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
 }
 
 // OSi_DoResetSystem
-void func_01ffd994(void) {
+void OSi_DoResetSystem(void) {
     while (data_021fcf50 == 0) {
     }
     *(vu16 *)0x04000208 = 0;
-    func_01ffd8b4();
+    OSi_ReloadRomData();
     func_01ffd6c0();
 }
 
 // OSi_ReloadRomData
-void func_01ffd8b4(void) {
+void OSi_ReloadRomData(void) {
     u32 base = *(u32 *)0x027ffc2c;
     u32 a, b, c, d, e, f;
     BOOL en;
     if (base >= 0x8000) {
-        func_01ffd784(base, (void *)0x027ffe00, 0x160);
+        OSi_ReadCardRom32(base, (void *)0x027ffe00, 0x160);
     }
     a = *(u32 *)0x027ffe20;
     b = *(u32 *)0x027ffe28;
@@ -91,10 +91,10 @@ void func_01ffd8b4(void) {
     d = *(u32 *)0x027ffe30;
     e = *(u32 *)0x027ffe38;
     f = *(u32 *)0x027ffe3c;
-    en = func_01ffa2ec();
-    func_02114534();
+    en = OS_DisableInterrupts();
+    DC_StoreAll();
     func_02114528();
-    func_01ffa3d4(en);
+    OS_RestoreInterrupts(en);
     func_021145fc();
     func_021145f0();
     a += base;
@@ -105,12 +105,12 @@ void func_01ffd8b4(void) {
         c -= diff;
         a = 0x8000;
     }
-    func_01ffd784(a, (void *)b, c);
-    func_01ffd784(d, (void *)e, f);
+    OSi_ReadCardRom32(a, (void *)b, c);
+    OSi_ReadCardRom32(d, (void *)e, f);
 }
 
 // OSi_ReadCardRom32
-void func_01ffd784(u32 src, void *dst, s32 len) {
+void OSi_ReadCardRom32(u32 src, void *dst, s32 len) {
     u32 ctrl = (*(vu32 *)0x027ffe60 & ~0x07000000) | 0xa1000000;
     s32 i = -(s32)(src & 0x1ff);
     while (*(vu32 *)0x040001a4 & 0x80000000) {

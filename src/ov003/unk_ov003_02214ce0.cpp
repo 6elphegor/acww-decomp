@@ -264,7 +264,7 @@ struct Unk_ov003_02214890_Buf {
 
 extern "C" {
 void func_0209d498(void *);
-void func_02116048(void *, void *, s32);
+void MI_CpuCopy8(void *, void *, s32);
 s32 func_0203f2e0(u32, void *, u32);
 s32 func_020b50e8();
 void func_02083d84(void *, s32, void *);
@@ -312,7 +312,7 @@ BOOL Unk_ov003_02231168::vfunc_70() {
     l.w0 = 0;
     l.w1 = 0;
     func_0209d498(&l);
-    func_02116048(&l, &m, 8);
+    MI_CpuCopy8(&l, &m, 8);
     if (Unk_ov003_02214ce0_Chk(&m)) {
         func_02083d84(&data_ov003_02231144, func_020b50e8(), &unk_5c);
     }

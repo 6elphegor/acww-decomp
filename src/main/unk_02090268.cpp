@@ -614,9 +614,9 @@ s32 func_020641d8(void *);
 
 void *func_02101088(u32 heap, u32 size, s32 align);
 
-void func_02116048(void *dst, void *src, u32 size);
+void MI_CpuCopy8(void *dst, void *src, u32 size);
 
-void func_02115fb4(void *dst, s32 v, u32 size);
+void MI_CpuFill8(void *dst, s32 v, u32 size);
 
 s32 func_020f8e84(u32 h);
 
@@ -664,7 +664,7 @@ s32 func_01ffc5a4(s32 a, s32 b);
 
 s32 func_01ffcb0c(s32 a, s32 b);
 
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 s32 func_02093c28(void *p, const char *a, const char *b);
 
@@ -730,7 +730,7 @@ s32 func_0208fb20(s32 a, s32 b, s32 c, const char *d);
 
 s32 _ZN12Unk_0209053813func_020904f0EijP16Unk_020904f0_VecPsS2_s(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 b, s32 c, s32 d);
 
@@ -862,7 +862,7 @@ s32 _s32_div_f(s32 a, s32 b);
 
 void func_020e93a0(Unk_02092388_Vec *v, s16 a);
 
-void func_01ffca8c(Unk_02092388_Vec *a, void *b, Unk_02092388_Vec *c);
+void VEC_Add(Unk_02092388_Vec *a, void *b, Unk_02092388_Vec *c);
 
 s32 func_020e7b98(s32 a, s32 b);
 
@@ -936,7 +936,7 @@ s32 func_020e94f8(void *);
 
 void func_0208fe0c(void *);
 
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 extern "C" s32 func_02092a14(void *p);
 
@@ -1016,7 +1016,7 @@ void func_020e944c(Unk_02093748_Vec *v, s32 a);
 
 void func_020e93a0(Unk_02093748_Vec *v, s32 a);
 
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 
 s32 func_0209389c(s32 kind, s32 a, void *b, void *c, s32 d, Unk_0209389c_Fn fn);
 
@@ -1061,13 +1061,13 @@ void func_020e93a0(void *, s32);
 
 s32 func_020e94f8(void *);
 
-void func_01ffca8c(void *, void *, void *);
+void VEC_Add(void *, void *, void *);
 
-s32 func_02116048(const void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 
-s32 func_02115fb4(void *dst, u32 v, u32 n);
+s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 
 s32 func_02093c28(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 
@@ -1172,7 +1172,7 @@ extern "C" void func_02093dc8(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02
         v1.y = a->y;
         v1.z = a->z;
         func_020e93a0(&v1, e->unk_0c);
-        func_01ffca8c(&pos, &v1, &pos);
+        VEC_Add(&pos, &v1, &pos);
     }
     o->unk_20 = pos.x + o->unk_18->unk_00->unk_04;
     o->unk_24 = pos.y + o->unk_18->unk_00->unk_08;
@@ -1244,7 +1244,7 @@ extern "C" s32 func_02093c94(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093
     Unk_02093c28_Handle h = o->unk_04;
     func_02093dc8(o->unk_0c, &g->e, a, b);
     func_0208fe0c(o->unk_0c);
-    func_02116048(g, &data_021d04b0[h.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[h.b[0]], 0x1c);
 }
 }
 
@@ -1496,7 +1496,7 @@ void Unk_020931a0::func_02093748()
     p = unk_0c;
     s32 tx = v.x;
     p->unk_3c.Set(tx, ty, tz);
-    func_02116048(g, &data_021d04b0[id.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[id.b[0]], 0x1c);
 }
 
 void Unk_020931a0::func_02093720()
@@ -1840,7 +1840,7 @@ extern "C" s32 func_02092f68(Unk_02092830 *p) {
             b2->unk_40 = vz;
         }
     }
-    func_02116048(g, data_021d04b0 + id.b[0], 0x1c);
+    MI_CpuCopy8(g, data_021d04b0 + id.b[0], 0x1c);
     func_02033988(&o);
 }
 }
@@ -2322,7 +2322,7 @@ extern "C" void func_02092388(Unk_02092388_Obj *o, Unk_02092388_Vec *v, s32 ang)
     t.y = v->y;
     t.z = v->z;
     func_020e93a0(&t, *(volatile s16 *)&d->ang);
-    func_01ffca8c(&t, &d->pos, &t);
+    VEC_Add(&t, &d->pos, &t);
     s32 idx = ((u16)a >> 4) * 2;
     o->unk_20 = t.x + o->unk_18->unk_00->unk_04;
     o->unk_24 = t.y + o->unk_18->unk_00->unk_08;
@@ -2965,7 +2965,7 @@ extern "C" s32 func_0209162c(Unk_02091404_Arg *p)
     o->unk_24 = v.y + (*o->unk_18)->unk_08;
     o->unk_28 = v.z + (*o->unk_18)->unk_0c;
     func_0208fe0c(p->unk_0c);
-    func_02116048(e, &data_021d04b0[i.b[0]], 0x1c);
+    MI_CpuCopy8(e, &data_021d04b0[i.b[0]], 0x1c);
 }
 }
 
@@ -3308,7 +3308,7 @@ extern "C" s32 func_02090d98(Unk_02090a80_Arg *p)
     Unk_02090a80_Rec *const g = &(*(Unk_02090a80_Rec *)&data_021d04b0[32]);
     Unk_02090a80_Idx i = p->idx;
     func_02093c94(p, data_020e183c[g->unk_10], 0);
-    func_02116048(g, &data_021d04b0[i.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[i.b[0]], 0x1c);
 }
 }
 
@@ -3318,7 +3318,7 @@ extern "C" s32 func_02090d44(Unk_02090a80_Arg *p)
     Unk_02090a80_Rec *const g = &(*(Unk_02090a80_Rec *)&data_021d04b0[32]);
     Unk_02090a80_Idx i = p->idx;
     func_02093c94(p, data_020e18a8[g->unk_10], 0);
-    func_02116048(g, &data_021d04b0[i.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[i.b[0]], 0x1c);
 }
 }
 
@@ -3386,7 +3386,7 @@ extern "C" void func_02090b2c(Unk_02090a80_Arg *p)
     Unk_02090a80_Rec *const g = &(*(Unk_02090a80_Rec *)&data_021d04b0[32]);
     Unk_02090a80_Idx i = p->idx;
     func_02093c94(p, g->unk_10 != 3 ? data_020d03b4 : data_020d03c0, data_020d0300);
-    func_02116048(g, &data_021d04b0[i.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[i.b[0]], 0x1c);
 }
 }
 
@@ -3396,7 +3396,7 @@ extern "C" void func_02090ad0(Unk_02090a80_Arg *p)
     Unk_02090a80_Rec *const g = &(*(Unk_02090a80_Rec *)&data_021d04b0[32]);
     Unk_02090a80_Idx i = p->idx;
     func_02093c94(p, g->unk_10 != 3 ? data_020d039c : data_020d03a8, data_020d02b8);
-    func_02116048(g, &data_021d04b0[i.b[0]], 0x1c);
+    MI_CpuCopy8(g, &data_021d04b0[i.b[0]], 0x1c);
 }
 }
 
@@ -3636,7 +3636,7 @@ extern "C" s32 func_02090560(s32 a, s32 b, s32 c, s32 d, s32 id) {
 }
 
 void Unk_02090538::func_02090538() { using namespace R1;
-    func_02115fb4(this, 0, 0x14);
+    MI_CpuFill8(this, 0, 0x14);
     unk_0e = -1;
     unk_10 = 0x1000;
     unk_14 = -1;

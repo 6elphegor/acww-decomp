@@ -12,7 +12,7 @@ extern void func_ov001_02225d58(void *);
 extern void *func_ov001_02225dd8(s32, s32);
 extern Unk_ov001_02208a24_Reg *func_ov001_02224b60(s32, s32);
 extern u32 func_ov001_02227094(s32, void *, s32, s32);
-extern u32 func_0211f800();
+extern u32 WM_GetAllowedChannel();
 extern u32 func_0211f73c();
 void func_ov001_02208a24();
 extern Unk_ov001_02208a24_Obj *data_ov001_0222ddd8;
@@ -50,7 +50,7 @@ extern "C" void func_ov001_02208a24() {
     u16 saved = *ime;
     u32 x = 0;
     *ime = 0;
-    if (func_0211f800() != 0x8000) x = func_0211f73c();
+    if (WM_GetAllowedChannel() != 0x8000) x = func_0211f73c();
     *ime;
     *ime = saved;
     const u8 *q = (const u8 *)data_ov001_02229bd0 + data_ov001_0222ddd8->unk_08 * 4;

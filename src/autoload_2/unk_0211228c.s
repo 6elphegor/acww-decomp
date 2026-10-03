@@ -9,10 +9,10 @@
 
 ; GX_SendFifo48B(src, fifo): sends 48 bytes to the FIFO register in r1, 12 bytes per ldm/stm; the stm has NO
 ; writeback (every burst goes to the same register address), a form the compiler never produces.
-	.global func_0211228c
-	.type func_0211228c, @function
-	.size func_0211228c, 0x24
-func_0211228c:
+	.global GX_SendFifo48B
+	.type GX_SendFifo48B, @function
+	.size GX_SendFifo48B, 0x24
+GX_SendFifo48B:
 	ldmia r0!, {r2, r3, ip}
 	stmia r1, {r2, r3, ip}
 	ldmia r0!, {r2, r3, ip}

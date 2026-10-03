@@ -210,7 +210,7 @@ void func_0204f3b4(s32 a);
 s32 func_020e9650(void *a, void *b);
 void func_020e761c(s32 *p, s32 target, s32 step);
 void func_020e93a0(Unk_020dc034_V *v, s32 angle);
-void func_01ffca8c(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
+void VEC_Add(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
 void func_0204edd8(Unk_020dc034_V *a, Unk_020dc034_V *b);
 s32 func_020b50e8();
 s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
@@ -610,7 +610,7 @@ void Unk_020dc034::func_02058cbc(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 id
     if (idx < 2) {
         if (unk_cc[idx] != NULL) {
             func_020e93a0(out, ((Unk_020dc034_Owner_Base *)unk_cc[idx])->unk_8e);
-            func_01ffca8c(out, &unk_cc[idx]->unk_5c, out);
+            VEC_Add(out, &unk_cc[idx]->unk_5c, out);
         }
     }
 }
@@ -647,10 +647,10 @@ void Unk_020dc034::func_02058b80()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        func_01ffca8c(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
-    func_01ffca8c(&pos, &off, &pos);
+    VEC_Add(&pos, &off, &pos);
     func_02058cbc(&unk_9c, &pos, 0);
     unk_a8.x = 0;
     unk_a8.y = 0;
@@ -737,10 +737,10 @@ void Unk_020dc034::func_0205881c()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5a84;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        func_01ffca8c(&pos, func_02059384((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, func_02059384((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
-    func_01ffca8c(&pos, &off, &pos);
+    VEC_Add(&pos, &off, &pos);
     func_02058cbc(&unk_9c, &pos, 0);
     unk_6c.x = unk_9c.x;
     unk_6c.y = cur.y + unk_9c.y;
@@ -781,10 +781,10 @@ void Unk_020dc034::func_020586bc()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        func_01ffca8c(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
-    func_01ffca8c(&pos, &off, &pos);
+    VEC_Add(&pos, &off, &pos);
     func_02058cbc(&unk_9c, &pos, 0);
     unk_6c.x = unk_9c.x;
     unk_6c.y = unk_9c.y;
@@ -819,7 +819,7 @@ void Unk_020dc034::func_02058614()
         }
     } else if (n == 9) {
         func_02058d3c(&unk_60);
-        func_01ffca8c(&unk_60, &unk_84, &unk_60);
+        VEC_Add(&unk_60, &unk_84, &unk_60);
     }
 }
 
@@ -838,7 +838,7 @@ void Unk_020dc034::func_020585cc()
 void Unk_020dc034::func_020585ac()
 {
     func_02058d3c(&unk_60);
-    func_01ffca8c(&unk_60, &unk_84, &unk_60);
+    VEC_Add(&unk_60, &unk_84, &unk_60);
 }
 
 void Unk_020dc034::func_020584cc()
@@ -895,7 +895,7 @@ void Unk_020dc034::func_020583ec()
             unk_78.z = unk_84.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
-        func_01ffca8c(&unk_60, &unk_78, &unk_60);
+        VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 8) {
             func_02058d34(0);
@@ -923,7 +923,7 @@ void Unk_020dc034::func_02058350()
 {
     if ((s32)unk_d6 < 9) {
         func_02058d3c(&unk_60);
-        func_01ffca8c(&unk_60, &unk_84, &unk_60);
+        VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 9) {
             func_02058d34(0);
@@ -968,7 +968,7 @@ void Unk_020dc034::func_0205821c()
 {
     if ((s32)unk_d6 < data_020ca67c[unk_d4]) {
         func_02058d3c(&unk_60);
-        func_01ffca8c(&unk_60, &unk_84, &unk_60);
+        VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= data_020ca67c[unk_d4]) {
             s32 a, b, c;
@@ -990,7 +990,7 @@ void Unk_020dc034::func_02058188()
         unk_a8.y = u;
         unk_a8.z = u;
         func_02058d3c(&unk_60);
-        func_01ffca8c(&unk_60, &unk_84, &unk_60);
+        VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= data_020ca67c[(*(volatile u8 *)&unk_d4)]) {
             (*(volatile u8 *)&unk_d4) = (*(volatile u8 *)&unk_d4) + 1;
@@ -1074,7 +1074,7 @@ void Unk_020dc034::func_02057e48()
             unk_78.z = unk_84.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
-        func_01ffca8c(&unk_60, &unk_78, &unk_60);
+        VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= n) {
             static Unk_02000c8c s(0x10000, 0, 0x17000);
@@ -1088,7 +1088,7 @@ void Unk_020dc034::func_02057e48()
                 unk_6c.z = s.z;
             } else {
                 func_020e93a0(&t2, unk_cc[0]->unk_8e);
-                func_01ffca8c(&t2, &unk_cc[0]->unk_5c, &t2);
+                VEC_Add(&t2, &unk_cc[0]->unk_5c, &t2);
                 func_0204edd8(&unk_6c, &t2);
             }
             unk_6c.y = unk_6c.y + 0x1000;
@@ -1156,7 +1156,7 @@ void Unk_020dc034::func_02057be8()
         unk_6c.z = s.z;
     } else {
         func_020e93a0(&t, unk_cc[0]->unk_8e);
-        func_01ffca8c(&t, &unk_cc[0]->unk_5c, &t);
+        VEC_Add(&t, &unk_cc[0]->unk_5c, &t);
         func_0204edd8(&unk_6c, &t);
     }
     unk_6c.y = unk_6c.y + 0x1000;
@@ -1196,7 +1196,7 @@ void Unk_020dc034::func_02057ad4()
         unk_78.z = data_021c5a78.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
-    func_01ffca8c(&unk_6c, &unk_78, &unk_6c);
+    VEC_Add(&unk_6c, &unk_78, &unk_6c);
     s32 a, b, c;
     c = (unk_6c.z - unk_60.z) / 2;
     if (c < 0) c = -c;
@@ -1240,7 +1240,7 @@ void Unk_020dc034::func_020579dc()
             unk_78.z = data_021c5a78.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
-        func_01ffca8c(&unk_60, &unk_78, &unk_60);
+        VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 10) {
             func_02058d34(0);
@@ -1295,7 +1295,7 @@ void Unk_020dc034::func_0205783c(void) {
         unk_78.z = unk_84.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
-    func_01ffca8c(&unk_60, &unk_78, &unk_60);
+    VEC_Add(&unk_60, &unk_78, &unk_60);
     unk_d6++;
     if ((s32)unk_d6 >= 8) {
         func_02058d34(0);
@@ -1332,7 +1332,7 @@ void Unk_020dc034::func_02057724(void) {
             unk_78.z = data_021c5a78.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
-        func_01ffca8c(&unk_6c, &unk_78, &unk_6c);
+        VEC_Add(&unk_6c, &unk_78, &unk_6c);
         u32 d = data_021c5a28[0];
         a = Unk_020574cc_Abs((unk_6c.z - unk_60.z) / (s32)d);
         b = Unk_020574cc_Abs((unk_6c.y - unk_60.y) / (s32)d);
@@ -1357,7 +1357,7 @@ void Unk_020dc034::func_020575f8(void) {
         unk_78.z = data_021c5a78.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
-    func_01ffca8c(&unk_6c, &unk_78, &unk_6c);
+    VEC_Add(&unk_6c, &unk_78, &unk_6c);
     func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
     func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
     func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
@@ -1404,7 +1404,7 @@ void Unk_020dc034::func_020574cc(void) {
         unk_78.z = unk_84.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
-    func_01ffca8c(&unk_60, &unk_78, &unk_60);
+    VEC_Add(&unk_60, &unk_78, &unk_60);
     unk_d6++;
     if (unk_d6 >= n) {
         unk_d4 = 3;

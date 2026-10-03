@@ -18,15 +18,15 @@ s32 func_02095134(s32 v);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 size);
+void DC_FlushRange(void *p, u32 size);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 src, u32 size);
+void GX_LoadOBJPltt(void *p, u32 src, u32 size);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 src, u32 size);
+void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
 }
 
 extern "C" {

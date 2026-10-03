@@ -19,7 +19,7 @@ typedef struct JntAnmResult {
 } JntAnmResult;
 extern RS *data_021f5cc0;               // NNS_G3dRS
 extern ScaleCache data_021f6ac4[];      // NNS_G3dRSOnGlb.scaleCache
-extern void func_02115e78(const void *, void *, u32);   // MI_CpuCopy32
+extern void MIi_CpuCopy32(const void *, void *, u32);   // MI_CpuCopy32
 static inline s32 FX_Mul(s32 a, s32 b) { return (s32)(((s64)a * b) >> 12); }
 static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx >> 5] & (1 << (idx & 31))); }
 static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 31); }
@@ -36,15 +36,15 @@ void func_0210834c(JntAnmResult *pResult, const s32 *p, const u8 *cmd, u32 srtfl
             BitVecSet(&data_021f5cc0->isScaleCacheOne[0], nodeID);
             pResult->flag |= 0x18;
         } else {
-            func_02115e78(&data_021f6ac4[parentID], &data_021f6ac4[nodeID], sizeof(ScaleCache));
-            func_02115e78(&data_021f6ac4[parentID], &pResult->scaleEx0, sizeof(ScaleCache));
+            MIi_CpuCopy32(&data_021f6ac4[parentID], &data_021f6ac4[nodeID], sizeof(ScaleCache));
+            MIi_CpuCopy32(&data_021f6ac4[parentID], &pResult->scaleEx0, sizeof(ScaleCache));
         }
     } else {
         pResult->scale.x = *(p + 0);
         pResult->scale.y = *(p + 1);
         pResult->scale.z = *(p + 2);
         if (BitVecCheck(&data_021f5cc0->isScaleCacheOne[0], parentID)) {
-            func_02115e78(p, &data_021f6ac4[nodeID], sizeof(ScaleCache));
+            MIi_CpuCopy32(p, &data_021f6ac4[nodeID], sizeof(ScaleCache));
             BitVecReset(&data_021f5cc0->isScaleCacheOne[0], nodeID);
             pResult->flag |= 0x18;
         } else {
@@ -55,7 +55,7 @@ void func_0210834c(JntAnmResult *pResult, const s32 *p, const u8 *cmd, u32 srtfl
             data_021f6ac4[nodeID].inv.x = FX_Mul(*(p + 3), data_021f6ac4[parentID].inv.x);
             data_021f6ac4[nodeID].inv.y = FX_Mul(*(p + 4), data_021f6ac4[parentID].inv.y);
             data_021f6ac4[nodeID].inv.z = FX_Mul(*(p + 5), data_021f6ac4[parentID].inv.z);
-            func_02115e78(&data_021f6ac4[parentID], &pResult->scaleEx0, sizeof(ScaleCache));
+            MIi_CpuCopy32(&data_021f6ac4[parentID], &pResult->scaleEx0, sizeof(ScaleCache));
         }
     }
 }

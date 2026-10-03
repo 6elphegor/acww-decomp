@@ -85,7 +85,7 @@ struct Grid {
 extern "C" {
 extern void *data_021eda68;
 void func_0202e880(u32, void *, u32, u32);
-u64 func_01ffa6b4();
+u64 OS_GetTick();
 }
 
 class Unk_020afadc {
@@ -312,7 +312,7 @@ BOOL Unk_020afbb8::func_020afbb8(u8 *idx, u64 start) {
             break;
         }
         if (idx != NULL) {
-            u32 ms = ((func_01ffa6b4() - start) * 64) / 0x82ea;
+            u32 ms = ((OS_GetTick() - start) * 64) / 0x82ea;
             if (ms > 0x28) {
                 ok = FALSE;
                 break;
@@ -348,7 +348,7 @@ BOOL Unk_020afafc::func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start) {
                 break;
             }
             if (entryIdx != NULL) {
-                u32 ms = ((func_01ffa6b4() - start) * 64) / 0x82ea;
+                u32 ms = ((OS_GetTick() - start) * 64) / 0x82ea;
                 if (ms > 0x28) {
                     result = FALSE;
                     break;

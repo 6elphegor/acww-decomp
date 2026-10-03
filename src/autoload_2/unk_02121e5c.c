@@ -72,22 +72,22 @@ typedef struct {
     u16 f81c;
 } WMPool;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211ef94(void);
-extern u32 func_0211eeec(int n, ...);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 WMi_CheckIdle(void);
+extern u32 WMi_CheckStateEx(int n, ...);
 extern WMArm9Buf *func_0211f00c(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
-extern void func_0211f170(u32 idx, WMCallback cb);
+extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
-extern void func_02114594(void *, u32);
-extern void func_021145b0(void *, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115e48(void *, void *, u32);
-extern void func_02115ea8(u32, void *, u32);
-extern u32 func_0212741c(u32);
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_StoreRange(void *, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
+extern u32 MATH_CountPopulation(u32);
 extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
-extern u32 func_02120a64(void *base, u32 x, void *y, u32 n);
+extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void func_02120b0c(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
 extern u32 func_02122e24(u32, u32, u16 *);
@@ -157,7 +157,7 @@ extern u32 func_021221b0(u32);
 extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
 extern u32 func_02126e00(void *msg, void *dst);
 extern u32 func_021266c0(void *, u32, u32, u32);
-extern u32 func_021269cc(void *);
+extern u32 MBi_IsTaskBusy(void *);
 extern void func_0212683c(void *, void *, u32, u32);
 extern u32 func_02123f24(u32, u32, void *);
 extern void func_0206d49c(void);
@@ -196,7 +196,7 @@ u32 func_02121e5c(void) {
         SlotBuf *buf = (SlotBuf *)ENT(data_0220001c, data_0220001c->cur)->f1d54;
         if (func_021266c0(buf, addr, r, out.w4) == 0) {
             void *job = (u8 *)data_0220001c + 0x7ce0;
-            if (func_021269cc(job) == 0 && buf->f0 != 0) {
+            if (MBi_IsTaskBusy(job) == 0 && buf->f0 != 0) {
                 Slot *slot = buf->slot;
                 Slot *best = 0;
                 int j;

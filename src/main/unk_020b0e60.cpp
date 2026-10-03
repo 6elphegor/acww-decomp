@@ -323,8 +323,8 @@ public:
 s32 func_020b22b0(s32 t, s32 lo, s32 hi);
 
 extern "C" {
-void func_01ffb4d0(void *m, s32 sn, s32 cs);
-void func_01ffb56c(void *a, void *b, void *out);
+void MTX_RotZ33_(void *m, s32 sn, s32 cs);
+void MTX_Concat33(void *a, void *b, void *out);
 s32 func_01ffc5a4(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 func_020374b0(u8 *cell, u32 mask);
@@ -1140,11 +1140,11 @@ void Unk_020b1ddc::func_020b1e74()
         data_020e3db4 = data_02135f44[idx * 2 + 1];
         data_021ee2ac = data_021f4768;
     }
-    func_01ffb4d0(&tmp, data_021ee2a4, data_020e3db4);
+    MTX_RotZ33_(&tmp, data_021ee2a4, data_020e3db4);
     if (unk_b4->flags & 2) {
         *m = tmp;
     } else {
-        func_01ffb56c(m, &tmp, m);
+        MTX_Concat33(m, &tmp, m);
     }
     unk_b4->flags &= ~2;
 }
@@ -1158,11 +1158,11 @@ void Unk_020b1ddc::func_020b1ddc()
     s32 rem = t[0] % 0x3c;
     s32 a = -(func_01ffc5a4(rem << 12, 0x3c000) * 0xffff >> 12);
     s32 idx = (u16)(s16)a >> 4;
-    func_01ffb4d0(&tmp, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
+    MTX_RotZ33_(&tmp, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
     if (unk_b4->flags & 2) {
         *m = tmp;
     } else {
-        func_01ffb56c(m, &tmp, m);
+        MTX_Concat33(m, &tmp, m);
     }
     unk_b4->flags &= ~2;
 }

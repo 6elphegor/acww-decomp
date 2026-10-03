@@ -18,7 +18,7 @@ extern "C" {
 extern u8 data_ov001_0222dec8;
 
 s32 func_0211172c();
-s32 func_02111ec8();
+s32 GX_LoadBGPltt();
 s32 func_02111a6c();
 s32 func_ov001_02208594(void *, void *);
 s32 func_ov001_0220c5f0(s32, s32 *);
@@ -98,7 +98,7 @@ void func_ov001_0221b85c() {
 
 void func_ov001_0221b794() {
     func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)func_02111ec8);
+    func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
     func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
@@ -159,7 +159,7 @@ extern void func_ov001_02208594(void *, void *);
 extern u8 *func_ov001_022085e0(void *);
 extern void *func_ov001_02224074(void *, s32, s32);
 extern void func_0211172c();
-extern void func_02111ec8();
+extern void GX_LoadBGPltt();
 extern void func_02111a6c();
 extern u8 *func_ov001_0221e8b4();
 extern u8 *func_ov001_0221e014();
@@ -179,7 +179,7 @@ extern void func_ov001_0221b5d0();
 extern void func_ov001_02226fdc(s32, s32);
 extern s32 func_ov065_0226b110();
 extern void *func_020fe848();
-extern void func_02116048(void *, void *, s32);
+extern void MI_CpuCopy8(void *, void *, s32);
 extern void func_ov001_022079fc();
 extern void func_ov001_022253d4(s32);
 extern void func_ov001_02225c58(s32, s32);
@@ -202,7 +202,7 @@ extern void func_ov001_0221b604();
 extern void func_ov001_0221b608();
 extern void func_ov001_0221b60c();
 extern void func_ov001_0220c5f0(s32, void *);
-extern void func_02115e78(void *, void *, s32);
+extern void MIi_CpuCopy32(void *, void *, s32);
 extern s32 func_ov065_0226b27c(void *);
 extern void func_0206d49c();
 extern void func_ov065_0226b0ec(s32, void *);
@@ -230,7 +230,7 @@ void func_ov001_0221b6f8() {
     u32 l;
     Unk_ov001_0221b6f8_A12 m;
     u8 *o = func_ov001_0221e8b4();
-    func_02115e78((void *)data_ov001_0222a298, &m, 12);
+    MIi_CpuCopy32((void *)data_ov001_0222a298, &m, 12);
     func_ov001_0220c5f0(0, &l);
     if (l == 2) m.b[10] = 4;
     else m.b[10] = o[0xf4] + 1;
@@ -285,8 +285,8 @@ void func_ov001_0221b598() {
 void func_ov001_0221b4f0() {
     u8 *o = func_ov001_0221e014();
     if (func_ov065_0226b110() == 0) return;
-    func_02116048(func_020fe848(), o + 0xf0, 0xe);
-    func_02116048(func_020fe848(), o + 0x1f0, 0xe);
+    MI_CpuCopy8(func_020fe848(), o + 0xf0, 0xe);
+    MI_CpuCopy8(func_020fe848(), o + 0x1f0, 0xe);
     func_ov001_022079fc();
     func_ov001_022253d4(0);
     func_ov001_02225c58(0, 0x15);

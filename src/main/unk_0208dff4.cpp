@@ -18,15 +18,15 @@ s32 func_02095134(s32 v);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 size);
+void DC_FlushRange(void *p, u32 size);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 src, u32 size);
+void GX_LoadOBJPltt(void *p, u32 src, u32 size);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 src, u32 size);
+void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
 }
 
 extern "C" {
@@ -264,9 +264,9 @@ void Unk_020e1098::func_0208dff4() {
     }
     if (unk_6d != 0) {
         u32 n = data_020cf6ec[unk_18] * 2;
-        func_021145cc(&unk_68, 2);
-        func_02111df8(&unk_68, n, 2);
-        func_02111d90(&unk_68, n, 2);
+        DC_FlushRange(&unk_68, 2);
+        GX_LoadOBJPltt(&unk_68, n, 2);
+        GXS_LoadOBJPltt(&unk_68, n, 2);
         data_021ceb00[unk_18] = unk_68;
         unk_6d = 0;
     }

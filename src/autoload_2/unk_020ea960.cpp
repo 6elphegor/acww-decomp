@@ -5,10 +5,10 @@
 #include "types.h"
 
 extern "C" {
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
-void func_02116048(const void *src, void *dst, u32 n); // MI_CpuCopy8
-u64 func_01ffa6b4(void); // OS_GetTick
-BOOL func_02114050(void *p, void *q, u32 v);
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+u64 OS_GetTick(void); // OS_GetTick
+BOOL OS_ReadMessage(void *p, void *q, u32 v);
 
 s32 func_ov066_0225ffcc(void);
 u32 func_ov066_022622f4(void);
@@ -72,7 +72,7 @@ extern u8 *data_021f48a4;
 }
 
 static inline BOOL timedout48ec(void) {
-    s64 ms = (func_01ffa6b4() << 6) / 33514;
+    s64 ms = (OS_GetTick() << 6) / 33514;
     u64 diff = ms - (s64)data_021f48ec;
     BOOL over = diff > (u64)data_0213b060;
     return over;
@@ -113,7 +113,7 @@ void func_ov066_0225fe4c(u32 a, void *b, void *c, u32 d);
 void func_ov066_0225f1a0(void *p);
 void func_ov066_02264378(void *p);
 void func_ov066_022609a8(void *p);
-void func_021142dc(void *a, void *b, u32 n);
+void OS_InitMessageQueue(void *a, void *b, u32 n);
 void func_020ebd04(void);
 void func_020ebd54(void);
 void func_020ebc3c(void);
@@ -169,9 +169,9 @@ u32 func_ov065_02272290(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 BOOL func_020ffde0(void *p);
 char *func_02127838(char *dst, const char *src);
 char *func_021277a4(char *dst, const char *src);
-u32 func_021277d4(const char *s);
-void *func_02127460(void *dst, const void *src, u32 n);
-void func_02113088(char *dst, u32 len, const char *fmt, ...);
+u32 STD_GetStringLength(const char *s);
+void *MATH_CalcSHA1(void *dst, const void *src, u32 n);
+void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...);
 s64 func_020ea3c4(void *p);
 void func_020ec038(void *a, void *b, u32 c, void *d);
 void func_020ec088(void *a, void *b, u32 c, u32 d);
@@ -195,8 +195,8 @@ struct NetSlot {
     NetCb d;
 };
 extern "C" {
-BOOL func_02114188(void *q, void *msg, u32 flags);
-BOOL func_02114234(void *q, u32 msg, u32 flags);
+BOOL OS_ReceiveMessage(void *q, void *msg, u32 flags);
+BOOL OS_SendMessage(void *q, u32 msg, u32 flags);
 s32 func_ov066_022622ac(u32 a, u32 b, u32 c, void *d);
 BOOL func_ov065_02277824(u32 a, u32 b, u32 c);
 void func_0206d760(void);
@@ -233,7 +233,7 @@ extern "C" BOOL func_020ec70c(void) {
     u32 msg;
     NetSlot *s;
     u32 st;
-    if (func_02114050(data_021f4930, &msg, 0) != 0) {
+    if (OS_ReadMessage(data_021f4930, &msg, 0) != 0) {
         s = &data_021f4ac0[msg];
         st = data_021f4890;
         if ((u8)(st + 255) <= 1) return func_ov066_022622ac(s->a, s->b, s->c, (void *)func_020ec668);
@@ -245,11 +245,11 @@ extern "C" BOOL func_020ec70c(void) {
 extern "C" void func_020ec668(u32 a) {
     u32 msg[2];
     NetSlot *s;
-    if (func_02114188(data_021f4930, msg, 0) == 0) return;
+    if (OS_ReceiveMessage(data_021f4930, msg, 0) == 0) return;
     s = &data_021f4ac0[msg[0]];
     if (s->d != NULL) s->d(a);
     s->a = 0;
-    while (func_02114050(data_021f4930, msg, 0) != 0 && func_020ec70c() == 0) {
+    while (OS_ReadMessage(data_021f4930, msg, 0) != 0 && func_020ec70c() == 0) {
         func_020ec82c();
     }
 }
@@ -257,7 +257,7 @@ extern "C" void func_020ec668(u32 a) {
 extern "C" void func_020ec60c(void) {
     u32 msg[2];
     u32 i;
-    while (func_02114188(data_021f4930, msg, 0) != 0) {
+    while (OS_ReceiveMessage(data_021f4930, msg, 0) != 0) {
     }
     for (i = 0; i < 16; i++) {
         data_021f4ac0[i].a = 0;
@@ -273,7 +273,7 @@ extern "C" BOOL func_020ec58c(u32 a, u32 b, u32 c, u32 d) {
             data_021f4ac0[i].b = b;
             data_021f4ac0[i].c = c;
             data_021f4ac0[i].d = (NetCb)d;
-            func_02114234(data_021f4930, i, 0);
+            OS_SendMessage(data_021f4930, i, 0);
             r = TRUE;
             break;
         }
@@ -344,7 +344,7 @@ extern "C" void func_020ec370(u32 a, u32 b, u32 c) {
 extern "C" void func_020ec310(u32 a, u32 b) {
     if (a != 0) return;
     if (b != 0) return;
-    data_021f48cc = (u32)((func_01ffa6b4() << 6) / 33514);
+    data_021f48cc = (u32)((OS_GetTick() << 6) / 33514);
 }
 
 extern "C" void func_020ec30c(void) {
@@ -377,9 +377,9 @@ extern "C" void func_020ec1e4(u32 a) {
 
 extern "C" void func_020ec158(u32 a) {
     u32 t;
-    func_02115fb4(data_021f48d4 + a * 12, 0, 12);
+    MI_CpuFill8(data_021f48d4 + a * 12, 0, 12);
     t = a * 19;
-    func_02115fb4(data_021f48d4 + 0x180 + t, 0, 19);
+    MI_CpuFill8(data_021f48d4 + 0x180 + t, 0, 19);
     (data_021f48d4 + t)[0x190] = 0;
     if (data_021f48c8 != NULL) data_021f48c8(a);
 }
@@ -403,7 +403,7 @@ extern "C" void func_020ec088(void *a, void *b, u32 c, u32 d) {
 
 extern "C" void func_020ec038(void *a, void *b, u32 c, void *d) {
     if (a != NULL && b != NULL && c == 0) {
-        func_02116048(a, d, data_021f48ac);
+        MI_CpuCopy8(a, d, data_021f48ac);
     }
     data_0213b068 = 1;
 }
@@ -413,7 +413,7 @@ extern "C" void func_020ebeac(const char *a, u32 b, u32 c, char *d) {
     if (a != NULL && b != 0 && c == 0) {
         func_02127838(d, (const char *)data_0213b0b0);
         func_021277a4(d, a);
-        func_02127460(data_021f48a4 + 20, d, b + func_021277d4((const char *)data_0213b0b0));
+        MATH_CalcSHA1(data_021f48a4 + 20, d, b + STD_GetStringLength((const char *)data_0213b0b0));
         HexTable hex = data_0213b070;
         u8 *src = data_021f48a4 + 20;
         for (i = 0; i < 20; i++) {
@@ -421,7 +421,7 @@ extern "C" void func_020ebeac(const char *a, u32 b, u32 c, char *d) {
             ((HexPair *)data_021f48a4)[i].lo = hex.c[src[i] & 15];
         }
         data_021f48a4[40] = 0;
-        func_02113088(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, func_020ea3c4(data_021f48d8 + 16), data_021f48a4, data_021f48a8);
+        OS_SNPrintf(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, func_020ea3c4(data_021f48d8 + 16), data_021f48a4, data_021f48a8);
         func_ov065_02277f70(data_021f48dc, (void *)func_020ec088, d);
     } else {
         data_0213b068 = 1;
@@ -445,7 +445,7 @@ extern "C" void func_020ebd54(void) {
     u64 ms;
     u8 v;
     if (data_021f4894 < 5) return;
-    ms = (func_01ffa6b4() << 6) / 33514;
+    ms = (OS_GetTick() << 6) / 33514;
     ms = ms / 250;
     v = (u8)(ms % data_021f488c);
     if (data_0213b058 == v) return;
@@ -477,7 +477,7 @@ extern "C" void func_020ebc3c(void) {
     if (func_ov065_02277038() == 0) return;
     if (data_021f48cc == 0) return;
     {
-        s64 ms = (func_01ffa6b4() << 6) / 33514;
+        s64 ms = (OS_GetTick() << 6) / 33514;
         u64 diff = ms - (s64)data_021f48cc;
         BOOL over = diff > (u64)120000;
         if (!over) return;
@@ -501,8 +501,8 @@ extern "C" void func_020ebb6c(u32 a, u32 b, u32 c, u64 d, u8 e, AllocFn f, FreeF
     data_021f488c = e;
     data_021f48a0 = f;
     data_021f48f0 = g;
-    func_021142dc(data_021f4930, data_021f4950, 16);
-    func_02115fb4(data_021f4ac0, 0, 256);
+    OS_InitMessageQueue(data_021f4930, data_021f4950, 16);
+    MI_CpuFill8(data_021f4ac0, 0, 256);
 }
 
 extern "C" void func_020ebb00(void) {
@@ -521,7 +521,7 @@ extern "C" void func_020eb9fc(u32 a, NetCb3 b) {
     NetInit init;
     data_021f48d0 = b;
     data_021f4890 = a;
-    func_02115fb4(data_021f4900, 0, 16);
+    MI_CpuFill8(data_021f4900, 0, 16);
     init.w = data_021f48b8;
     init.b4 = data_021f488c;
     init.b6 = 60;
@@ -558,7 +558,7 @@ extern "C" void func_020eb8c0(u32 a, NetCb3 b, NetCb c, u8 *d, u8 *e) {
     data_021f48a8 = 0;
     data_021f48a4 = NULL;
     data_021f48cc = 0;
-    func_02115fb4(data_021f4990, 0, 64);
+    MI_CpuFill8(data_021f4990, 0, 64);
     t = i = 0;
     for (; i < 32; i++) {
         (data_021f48d4 + t)[0x190] = 0;
@@ -626,9 +626,9 @@ extern "C" BOOL func_020eb650(void) {
 extern "C" BOOL func_020eb578(void) {
     u32 start;
     func_ov066_0225fc78(0, 0, 0);
-    start = (u32)((func_01ffa6b4() << 6) / 33514);
+    start = (u32)((OS_GetTick() << 6) / 33514);
     while (func_ov066_0225ffcc() != 2) {
-        s64 ms = (func_01ffa6b4() << 6) / 33514;
+        s64 ms = (OS_GetTick() << 6) / 33514;
         u64 diff = ms - (s64)start;
         BOOL over = diff > (u64)data_0213b060;
         if (over != 0) return FALSE;
@@ -642,7 +642,7 @@ extern "C" BOOL func_020eb578(void) {
 extern "C" BOOL func_020eb2dc(void) {
     switch (data_021f4898) {
     case 0:
-        data_021f48ec = (u32)((func_01ffa6b4() << 6) / 33514);
+        data_021f48ec = (u32)((OS_GetTick() << 6) / 33514);
         data_021f4898 = 1;
         break;
     case 1:
@@ -651,7 +651,7 @@ extern "C" BOOL func_020eb2dc(void) {
             if (func_ov065_0227067c() < 0) {
                 data_021f48ec = 0;
             } else {
-                data_021f48ec = (u32)((func_01ffa6b4() << 6) / 33514);
+                data_021f48ec = (u32)((OS_GetTick() << 6) / 33514);
             }
             data_021f4898 = 2;
         }
@@ -804,9 +804,9 @@ extern "C" s32 func_020eae78(void) {
 extern "C" BOOL func_020ead70(u32 a) {
     u32 tmp;
     if (a != 0) {
-        if (func_02114050(data_021f4930, &tmp, 0) != 0) {
+        if (OS_ReadMessage(data_021f4930, &tmp, 0) != 0) {
             if (data_021f48b0 != 0) {
-                s64 ms = (func_01ffa6b4() << 6) / 33514;
+                s64 ms = (OS_GetTick() << 6) / 33514;
                 u64 diff = ms - (s64)data_021f48b0;
                 BOOL over = diff > (u64)data_0213b060;
                 if (over) {
@@ -814,7 +814,7 @@ extern "C" BOOL func_020ead70(u32 a) {
                     func_020ec70c();
                 }
             } else {
-                data_021f48b0 = (u32)((func_01ffa6b4() << 6) / 33514);
+                data_021f48b0 = (u32)((OS_GetTick() << 6) / 33514);
             }
         } else {
             data_021f48b0 = 0;

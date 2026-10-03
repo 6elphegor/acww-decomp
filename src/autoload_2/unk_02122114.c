@@ -14,23 +14,23 @@ typedef int BOOL;
 extern u8 *data_0220001c;
 extern u8 data_0213c200;
 extern u32 data_0213a3ec[];
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02115fb4(void *, u32, u32);
-extern void func_02116048(void *, void *, u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void MI_CpuFill8(void *, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
 extern void func_0206d49c(void);
 extern void *func_02126e00(void *, void *);
-extern u32 func_02121c34(u32);
+extern u32 IsChildAidValid(u32);
 extern u32 func_02123f24(u32, u32, void *);
 extern u8 *func_0211f82c(void *, u32);
-extern void func_02119d78(void *);
-extern void *func_021191f0(void *, u32);
-extern u32 func_02119af4(void *, void *, u32, u32, int);
+extern void FS_InitFile(void *);
+extern void *FS_FindArchive(void *, u32);
+extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
 extern u32 func_021198b4(void *, u32, u32);
-extern void func_021199e0(void *);
+extern void FS_CloseFile(void *);
 extern u8 *func_02126cc4(void *, void *, u32);
-extern u32 func_02121c50(u32, u32);
+extern u32 MBi_calc_nextsendblock(u32, u32);
 extern void func_02126e88(u32);
 extern void func_02121cc8(void);
 extern void func_021245ec(void *, void *, u32, u32);
@@ -39,7 +39,7 @@ extern u32 func_02124908(void);
 extern u32 func_021248a8(void);
 extern void func_02124480(u32, u32, u32);
 extern void func_02121c10(u32, u32);
-extern void func_02115ea8(u32, void *, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
 typedef struct { u32 a[3]; u16 b[3]; u16 n; } WTab;
 typedef struct { u32 w0, w4, w8, wc; } WSeg;
 typedef struct { u8 pad[12]; WSeg seg[3]; } WSrc;
@@ -91,7 +91,7 @@ void func_021223a4(void *arg);
 static inline void wsave(u32 idx, u8 *buf, u32 aid) {
     WK2->f14a8[idx] = *(u32 *)(buf + 20);
     WK2->f148a[idx] = *(u16 *)(buf + 46);
-    func_02116048(buf + 24, &WK2->ent[idx], 22);
+    MI_CpuCopy8(buf + 24, &WK2->ent[idx], 22);
     WK2->ent[idx].aid = (u8)aid;
 }
 
@@ -117,7 +117,7 @@ void func_0212244c(u8 *msg, u32 aid) {
         if (state == 2) {
 
             if (p == 0) return;
-            func_02116048(p, buf + 20, 29);
+            MI_CpuCopy8(p, buf + 20, 29);
             wsave(aid - 1, buf, aid);
             func_02122e60(aid, 10, buf + 24);
         }
@@ -187,7 +187,7 @@ void func_0212244c(u8 *msg, u32 aid) {
             u32 off;
             if (x == 0xff) return;
             off = x * 0x5d4;
-            *(u16 *)(data_0220001c + off + 0x1d4a) = func_02121c50(*(u16 *)(data_0220001c + off + 0x1d4a), *(u16 *)(buf + 2));
+            *(u16 *)(data_0220001c + off + 0x1d4a) = MBi_calc_nextsendblock(*(u16 *)(data_0220001c + off + 0x1d4a), *(u16 *)(buf + 2));
         }
         return;
     case 10:
@@ -238,7 +238,7 @@ u32 func_021221b0(void) {
     u16 i;
     u8 j, k;
     void *ent;
-    func_02115fb4(cnt, 0, 16);
+    MI_CpuFill8(cnt, 0, 16);
     for (i = 1; i <= 15; i++) {
         if (W32(data_0220001c + (i - 1) * 4 + 0x1000, 0x4e8) == 5) {
             s8 idx = (s8)W8(data_0220001c + (i - 1) + 0x1500, 0x26);
@@ -263,7 +263,7 @@ u32 func_021221b0(void) {
     msg.id = 3;
     msg.aid = best;
     ent = func_02126e00(&msg, data_0220001c);
-    if (ent != 0) func_02116048(data_0220001c + 0x1788 + best * 0x5d4, ent, 0xe4);
+    if (ent != 0) MI_CpuCopy8(data_0220001c + 0x1788 + best * 0x5d4, ent, 0xe4);
     return func_02123f24(0xea, mask, data_0220001c);
 }
 // (job completion: run transfer step, job state = 2 on success, else OS_Terminate)
@@ -275,12 +275,12 @@ void func_02122114(WArg *arg) {
     void *rp;
     obj = arg->obj;
     job = arg->job;
-    func_02119d78(buf);
+    FS_InitFile(buf);
     base = job->f0;
-    rp = func_021191f0((u8 *)obj + 0x10, obj->f14);
-    if (func_02119af4(buf, rp, base, base + job->f4, -1) != 0) {
+    rp = FS_FindArchive((u8 *)obj + 0x10, obj->f14);
+    if (FS_OpenFileDirect(buf, rp, base, base + job->f4, -1) != 0) {
         if (job->f4 == func_021198b4(buf, job->f8, job->f4)) job->fc = 2;
-        func_021199e0(buf);
+        FS_CloseFile(buf);
     }
     if (job->fc == 2) return;
     func_0206d49c();

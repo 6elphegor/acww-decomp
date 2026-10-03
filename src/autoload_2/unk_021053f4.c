@@ -51,7 +51,7 @@ typedef union Glb {
 extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern void func_01ff8ccc(void);
-extern BOOL func_02110e5c(void *);
+extern BOOL G3X_GetClipMtx(void *);
 typedef struct Cb {
     u8 pad0[0x10];
     struct Cb *next;    // 0x10
@@ -62,11 +62,11 @@ typedef struct Cb {
 extern u8 *func_02104140(void);
 extern u8 *func_021040fc(void);
 extern u8 *func_021041e8(void);
-extern void func_01ffb7f4(void *, void *);
-extern void func_01ffbfa0(void *, void *, void *);
-extern s32 func_01ffc854(void *);
-extern void func_01ffc714(void *, void *);
-extern void func_02115e90(void *, void *, u32);
+extern void MTX_Copy43To44_(void *, void *);
+extern void MTX_Concat44(void *, void *, void *);
+extern s32 VEC_Mag(void *);
+extern void VEC_Normalize(void *, void *);
+extern void MIi_CpuSend32(void *, void *, u32);
 extern s32 data_0213be38[3];
 extern s32 data_0213be44[3];
 extern s32 data_0213be14[9];
@@ -130,35 +130,35 @@ void func_0210578c(RS *rs, u32 opt)
         *(volatile u32 *)0x04000400 = 0x00151110;
         *(volatile u32 *)0x04000400 = 0;
         *(volatile u32 *)0x04000400 = 0;
-        while (func_02110e5c(m) != 0) {
+        while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
-            func_01ffb7f4(func_02104140(), m2);
-            func_01ffbfa0(m, m2, m);
+            MTX_Copy43To44_(func_02104140(), m2);
+            MTX_Concat44(m, m2, m);
         } else if (data_027e00c8.n.flag & 2) {
-            func_01ffb7f4(data_027e0114, m3);
-            func_01ffbfa0(m, m3, m);
+            MTX_Copy43To44_(data_027e0114, m3);
+            MTX_Concat44(m, m3, m);
         }
         trans[0] = m[12];
         trans[1] = m[13];
         trans[2] = m[14];
-        scale[0] = func_01ffc854(&m[0]);
-        scale[1] = func_01ffc854(&m[4]);
-        scale[2] = func_01ffc854(&m[8]);
+        scale[0] = VEC_Mag(&m[0]);
+        scale[1] = VEC_Mag(&m[4]);
+        scale[2] = VEC_Mag(&m[8]);
         if (data_027e00c8.n.flag & 1) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213bdc4, (void *)0x04000400, 8);
-            func_02115e90(func_021040fc(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
+            MIi_CpuSend32(func_021040fc(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213bdcc, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213bdc4, (void *)0x04000400, 8);
-            func_02115e90(func_021041e8(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
+            MIi_CpuSend32(func_021041e8(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213bdcc, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else {
-            func_02115e90(data_0213bdc0, (void *)0x04000400, 0x48);
+            MIi_CpuSend32(data_0213bdc0, (void *)0x04000400, 0x48);
         }
     }
     if (timing == 3) {
@@ -218,44 +218,44 @@ void func_021053f4(RS *rs, u32 opt)
         *(volatile u32 *)0x04000400 = 0x00151110;
         *(volatile u32 *)0x04000400 = 0;
         *(volatile u32 *)0x04000400 = 0;
-        while (func_02110e5c(m) != 0) {
+        while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
-            func_01ffb7f4(func_02104140(), m2);
-            func_01ffbfa0(m, m2, m);
+            MTX_Copy43To44_(func_02104140(), m2);
+            MTX_Concat44(m, m2, m);
         } else if (data_027e00c8.n.flag & 2) {
-            func_01ffb7f4(data_027e0114, m3);
-            func_01ffbfa0(m, m3, m);
+            MTX_Copy43To44_(data_027e0114, m3);
+            MTX_Concat44(m, m3, m);
         }
         trans[0] = m[12];
         trans[1] = m[13];
         trans[2] = m[14];
-        scale[0] = func_01ffc854(&m[0]);
-        scale[1] = func_01ffc854(&m[4]);
-        scale[2] = func_01ffc854(&m[8]);
+        scale[0] = VEC_Mag(&m[0]);
+        scale[1] = VEC_Mag(&m[4]);
+        scale[2] = VEC_Mag(&m[8]);
         if (m[5] != 0 || m[6] != 0) {
-            func_01ffc714(&m[4], rot + 3);
+            VEC_Normalize(&m[4], rot + 3);
             rot[7] = -rot[5];
             rot[8] = rot[4];
         } else {
-            func_01ffc714(&m[8], rot + 6);
+            VEC_Normalize(&m[8], rot + 6);
             rot[5] = -rot[7];
             rot[4] = rot[8];
         }
         if (data_027e00c8.n.flag & 1) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213be0c, (void *)0x04000400, 8);
-            func_02115e90(func_021040fc(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
+            MIi_CpuSend32(func_021040fc(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213be14, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213be0c, (void *)0x04000400, 8);
-            func_02115e90(func_021041e8(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
+            MIi_CpuSend32(func_021041e8(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213be14, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else {
-            func_02115e90(data_0213be08, (void *)0x04000400, 0x48);
+            MIi_CpuSend32(data_0213be08, (void *)0x04000400, 0x48);
         }
     }
     if (timing == 3) {

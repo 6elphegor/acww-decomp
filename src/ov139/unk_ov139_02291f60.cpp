@@ -146,7 +146,7 @@ void func_0206f9fc(void *a, u8 v);
 BOOL func_020a78a4(void *, const void *, s32);
 u8 func_020b3544(u32 idx, Unk_020e2a78 *other);
 BOOL func_020641b4(void *a, void *b, s32 c);
-void func_02115e48(void *dst, void *src, u32 n);
+void MIi_CpuCopy16(void *dst, void *src, u32 n);
 }
 
 extern "C" u32 data_ov139_022925c0[8];
@@ -244,7 +244,7 @@ void Unk_ov139_02291f60::func_ov139_02292410() {
     func_0200261c((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
     func_020026c4((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
     func_020641b4((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
-    func_02115e48(unk_5e0, unk_600, 0x20);
+    MIi_CpuCopy16(unk_5e0, unk_600, 0x20);
 }
 
 void Unk_ov139_02291f60::func_ov139_022923dc() {

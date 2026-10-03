@@ -228,7 +228,7 @@ s32 func_02063b8c(s32 n);
 void func_02015170(void *self, u32 a, u32 b);
 BOOL func_020a032c();
 u32 func_0212a438(const char *s);
-s32 func_0212a15c(void *a, const char *b, u32 n);
+s32 strncmp(void *a, const char *b, u32 n);
 BOOL func_02099f98(void *a, void *b);
 void func_0201578c(void *self, void *a, s32 b, s32 c);
 void *func_02071b00(void *a, u32 b);
@@ -237,7 +237,7 @@ void func_020679ec(void *a, s32 b, void *c, s32 d);
 const Unk_ov049_0225a714_Pair *func_02071fa0(void *a);
 const Unk_ov049_0225a714_Pair *func_0209888c(...);
 const Unk_ov049_0225a714_P *func_0209409c(Unk_ov049_0225a714_Pair *a);
-s32 func_02128930(const void *a, const void *b, u32 n);
+s32 memcmp(const void *a, const void *b, u32 n);
 BOOL func_020941e8(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
 void func_020157e8(void *self, void *a, s32 n);
 void func_02015818(void *self, void *a, s32 n);
@@ -1453,11 +1453,11 @@ void Unk_ov049_0225be74::vfunc_78(Unk_ov049_0225a714_Out *out) {
         if (func_020a032c() != 0) {
             out->unk_00 = data_ov049_0225bc58[2];
             out->unk_04 = 0x1d;
-        } else if (c.id != d.id || func_02128930(&c.name, &d.name, 8) != 0) {
+        } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
             func_020157e8(this, &a, 2);
             func_02015818(this, &c, 3);
             out->unk_04 = 0x33;
-        } else if (a.id0 == b.id0 && func_02128930(&a.name0, &b.name0, 8) == 0 && func_020941e8(&a, &b) != 0) {
+        } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && func_020941e8(&a, &b) != 0) {
         } else {
             func_020157e8(this, &a, 2);
             out->unk_04 = 0x32;
@@ -1479,7 +1479,7 @@ void Unk_ov049_0225be74::vfunc_14(u32 a) {
         char *s = data_ov049_0225bc58[0];
         u32 n = func_0212a438(s);
         BOOL r;
-        if (func_0212a15c((u8 *)this + 4, s, n) != 0) {
+        if (strncmp((u8 *)this + 4, s, n) != 0) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -1655,7 +1655,7 @@ void Unk_ov049_0225be74::vfunc_18(u32 a) {
         char *s = data_ov049_0225bc58[0];
         u32 n = func_0212a438(s);
         BOOL r;
-        if (func_0212a15c((u8 *)this + 4, s, n) != 0) {
+        if (strncmp((u8 *)this + 4, s, n) != 0) {
             r = TRUE;
         } else {
             r = FALSE;

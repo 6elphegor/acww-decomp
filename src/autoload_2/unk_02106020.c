@@ -32,13 +32,13 @@ u8 *func_021062ec(u8 *p, u32 i)
 }
 
 // first data block of a resource file (NNS_G3dGetMdlSet)
-u8 *func_021062dc(u8 *p)
+u8 *NNS_G3dGetMdlSet(u8 *p)
 {
     return p + *(u32 *)(p + *(u16 *)(p + 12));
 }
 
 // NNS_G3dGetTex: TEX0 block of a BTX0 file / second block of a BMD0 file
-u8 *func_0210629c(u8 *p)
+u8 *NNS_G3dGetTex(u8 *p)
 {
     u8 *b = p + *(u16 *)(p + 12);
     if (*(u16 *)(p + 14) == 1) {

@@ -10,10 +10,10 @@
 	.arm
 
 ; MTX_Identity43_(pDst): 4x3 identity, FX32_ONE = 0x1000
-	.global func_01ffb7cc
-	.type func_01ffb7cc, @function
-	.size func_01ffb7cc, 0x28
-func_01ffb7cc:
+	.global MTX_Identity43_
+	.type MTX_Identity43_, @function
+	.size MTX_Identity43_, 0x28
+MTX_Identity43_:
 	mov r2, #0x1000
 	mov r3, #0
 	stmia r0!, {r2, r3}
@@ -26,10 +26,10 @@ func_01ffb7cc:
 	bx lr
 
 ; MTX_Copy43To44_(pSrc, pDst): each 4x3 row plus a 4th column 0, 0, 0, FX32_ONE
-	.global func_01ffb7f4
-	.type func_01ffb7f4, @function
-	.size func_01ffb7f4, 0x34
-func_01ffb7f4:
+	.global MTX_Copy43To44_
+	.type MTX_Copy43To44_, @function
+	.size MTX_Copy43To44_, 0x34
+MTX_Copy43To44_:
 	stmfd sp!, {r4}
 	mov r12, #0
 	ldmia r0!, {r2, r3, r4}

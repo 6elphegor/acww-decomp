@@ -4,8 +4,8 @@
 #include "types.h"
 
 extern "C" {
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
-void func_02116048(const void *src, void *dst, u32 n); // MI_CpuCopy8
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 
 s64 func_020ea3c4(void *p);
 s64 func_020ffc40(void *p);
@@ -136,7 +136,7 @@ extern "C" s32 func_020ea6c8(void *p) {
 extern "C" u32 *func_020ea65c(void) {
     u32 i;
     u32 n;
-    func_02115fb4(data_021f4910, 0, 32);
+    MI_CpuFill8(data_021f4910, 0, 32);
     if (func_ov066_0225ffcc() == 7) {
         n = i = 0;
         for (; i < 8; i++) {
@@ -149,7 +149,7 @@ extern "C" u32 *func_020ea65c(void) {
 
 extern "C" s32 func_020ea608(void *p) {
     if (func_ov066_0225ffcc() == 7 && p != NULL) {
-        func_02116048(p, data_021f49e0, 0xe0);
+        MI_CpuCopy8(p, data_021f49e0, 0xe0);
         return func_ov066_02260cac(data_021f49e0, 0, 0);
     }
     return 0;

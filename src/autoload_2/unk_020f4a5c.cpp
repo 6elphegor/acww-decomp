@@ -88,8 +88,8 @@ extern "C" {
 extern Glob data_021f5b80;
 
 u32 func_020f07f0(void *g, u32 n);
-void func_0210a26c(void *p, s32 v);
-void func_0210a27c(void *p);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
+void NNS_SndHandleReleaseSeq(void *p);
 void func_0210a148(void *p, u32 a, s32 b);
 void func_0210a0e8(void *p, u32 a, s32 b);
 void func_0210a0b8(void *p, s32 v);
@@ -144,9 +144,9 @@ static inline BOOL nz(void *p) {
     return p != 0;
 }
 
-// dtor D1 (alias _ZN12Unk_020f5b84D1Ev): func_0210a27c(this)
+// dtor D1 (alias _ZN12Unk_020f5b84D1Ev): NNS_SndHandleReleaseSeq(this)
 extern "C" Obj *func_020f5b84(Obj *self) {
-    func_0210a27c(self);
+    NNS_SndHandleReleaseSeq(self);
     return self;
 }
 
@@ -305,7 +305,7 @@ extern "C" void func_020f5654(Seq2 *self) {
         else if (p == t[11]) vol = 32;
         else if (p == t[12]) vol = 16;
         else vol = -1;
-        if (vol != -1) func_0210a26c(self, vol);
+        if (vol != -1) NNS_SndPlayerSetVolume(self, vol);
     }
     {
         Ctl2 *c = data_021f5b80.f30;
@@ -559,7 +559,7 @@ extern "C" void func_020f4fbc(Seq1 *self) {
 extern "C" void func_020f4f7c(Seq1 *self) {
     self->active = 0;
     if (nz(self->h)) func_020eda30(self, 0);
-    func_0210a27c(self);
+    NNS_SndHandleReleaseSeq(self);
 }
 
 // Seq1: start pattern/sound id (switches the stream pair 1 / 2 through data_0213b9d8)

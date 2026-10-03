@@ -9,8 +9,8 @@ u8 *func_0205021c(void);
 u32 func_020a6c1c(u32 a, u32 b);
 u32 func_020a6c40(u32 a, u32 b);
 int func_0212a190(const u8 *a, const u8 *b);
-void func_02115fb4(void *dst, u32 value, u32 size);
-s32 func_01ffcac0(s32 v, s32 *out);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
+s32 FX_Modf(s32 v, s32 *out);
 int func_020639e8(char *dst, const char *fmt, ...);
 char *func_020a6b9c(char *p, u32 n);
 void func_02133ef8(void *p, u32 n);
@@ -358,7 +358,7 @@ Unk_020e3ee4::Unk_020e3ee4() : Unk_020e2a18(0) {}
 Unk_020e3ee4::~Unk_020e3ee4() {}
 
 void Unk_020e3ee4::func_020b3fa0() {
-    func_02115fb4(unk_a4, 0, 0x400);
+    MI_CpuFill8(unk_a4, 0, 0x400);
 }
 
 u32 Unk_020e3ee4::vfunc_0c() {
@@ -945,7 +945,7 @@ extern "C" BOOL func_020b3324(Unk_020e2a78 *out, s32 val, s32 kind) {
 
 extern "C" BOOL func_020b3270(Unk_020e2a78 *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused) {
     char tmp[0xe];
-    func_02115fb4(tmp, 0, 0xe);
+    MI_CpuFill8(tmp, 0, 0xe);
     func_020b34d0(tmp, 0xe, val, width);
     switch (mode) {
     case 2:
@@ -992,7 +992,7 @@ extern "C" BOOL func_020b31a8(Unk_020e2a78 *out, s32 val, s32 digits) {
     s32 ip;
     BOOL res;
     s32 ipart;
-    frac = func_01ffcac0(val, &ip);
+    frac = FX_Modf(val, &ip);
     for (i = 0; i < digits; i++) {
         frac *= 10;
     }
@@ -1093,7 +1093,7 @@ extern "C" Unk_020e3e9c *func_020b3078(u8 *key) {
 void Unk_020b2d30::func_020b3048() {
     unk_04c.func_020b3fa0();
     unk_4f0.func_020a8b1c();
-    func_02115fb4(unk_4fc, 0, 0x400);
+    MI_CpuFill8(unk_4fc, 0, 0x400);
 }
 
 BOOL Unk_020b2d30::func_020b2f98(Unk_020e3ecc *req) {
@@ -1212,7 +1212,7 @@ extern "C" BOOL func_020b2dcc(u32 a, u32 b) {
 }
 
 Unk_020b2d30::Unk_020b2d30() : unk_000(this), unk_b38(0) {
-    func_02115fb4(unk_4fc, 0, 0x400);
+    MI_CpuFill8(unk_4fc, 0, 0x400);
 }
 
 Unk_020b2d30::~Unk_020b2d30() {}

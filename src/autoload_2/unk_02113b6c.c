@@ -74,11 +74,11 @@ extern u8 SDK_SECTION_ARENA_DTCM_START[]; // 0x027e0460
 #define OSi_IRQ_STACK_SIZE ((s32)SDK_IRQ_STACKSIZE)
 
 void func_01ffa4ec(void *);
-void *func_0211328c(void (*cb)(OSThread *, OSThread *));
+void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
 void func_02113a70(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
 
 // OS_InitThread
-void func_02113b6c(void) {
+void OS_InitThread(void) {
     void *stackLo;
     if (data_021fcc28) return;
     data_021fcc28 = 1;
@@ -102,7 +102,7 @@ void func_02113b6c(void) {
     data_021fcc2c.isNeedRescheduling = 0;
     data_021fcc2c.irqDepth = 0;
     data_027fffa0 = &data_021fcc2c;
-    func_0211328c(0);
+    OS_SetSwitchThreadCallback(0);
     func_02113a70(&data_021fcc3c, func_01ffa4ec, 0, &data_021fce84, 200, 31);
     data_021fcc3c.priority = 32;
     data_021fcc3c.state = 1;

@@ -36,8 +36,8 @@ void func_ov001_022266d0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node 
 void func_ov001_02226710(Unk_ov001_02226778_Node *node);
 Unk_ov001_02226778_Node *func_ov001_02226778();
 void func_0206d49c();
-s32 func_01ff80e0(s32);
-s32 func_01ff8128(s32);
+s32 OS_DisableIrqMask(s32);
+s32 OS_EnableIrqMask(s32);
 void func_ov001_02226994(Unk_ov001_02226778_Node *p);
 Unk_ov001_022269e0_Node *func_ov001_022269e0(s32 idx, s32 size, s32 flag, u32 *out);
 void func_ov001_02226b60();
@@ -78,7 +78,7 @@ Unk_ov001_022269e0_Node *func_ov001_022269e0(s32 idx, s32 size, s32 flag, u32 *o
     words = (size + 3) & ~3;
     words >>= 2;
     blk->unk_0a = words;
-    old = func_01ff80e0(1);
+    old = OS_DisableIrqMask(1);
     if (flag != 0) {
         base = data_ov001_0222df74;
         cur = &base->unk_00[idx].unk_180;
@@ -113,7 +113,7 @@ Unk_ov001_022269e0_Node *func_ov001_022269e0(s32 idx, s32 size, s32 flag, u32 *o
         if (cur == (Unk_ov001_022269e0_Node *)((u8 *)data_ov001_0222df74 + off + 0x180)) func_0206d49c();
     }
     *out = blk->unk_08;
-    func_01ff8128(old);
+    OS_EnableIrqMask(old);
     return blk;
 }
 

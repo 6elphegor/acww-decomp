@@ -169,38 +169,38 @@ extern u8 data_021feb54[];
 extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211b7e8(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
 extern void func_02117dcc(void);
-extern BOOL func_02117e8c(u32 tag, u32 proc);
-extern void func_02117eb4(u32 tag, void *cb);
-extern s32 func_02117dd8(u32 tag, u32 data, u32 err);
+extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
 extern void func_0206d49c(void);
-extern void func_0211450c(void *p);
+extern void OS_InitMutex(void *p);
 extern BOOL func_0211d518(void);
 
-void func_0211c280(PMCbInfo **head, PMCbInfo *info);
-void func_0211c2cc(PMCbInfo **head, PMCbInfo *info);
-void func_0211c314(PMCbInfo **head, PMCbInfo *info);
-u32 func_0211c364(u32 *out, PMCallback cb, void *arg);
+void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
+void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
+void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
+u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
 void func_0211cb60(u32 result, void *arg);
 void func_0211cb68(void);
-BOOL func_0211cb80(void);
-void func_0211c570(u32 data);
-u32 func_0211c3f0(u32 a, PMCallback cb, void *arg);
+BOOL PMi_Lock(void);
+void PMi_SendPxiData(u32 data);
+u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
 u32 func_0211c790(u32 a);
-u32 func_0211c7cc(u32 a, PMCallback cb, void *arg);
+u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg);
 u32 func_0211c834(u32 type, u16 *out);
-u32 func_0211c870(u32 type, u16 *out, PMCallback cb, void *arg);
-u32 func_0211c8e8(u32 cmd, PMCallback cb, void *arg);
+u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg);
+u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg);
 u32 func_0211c6ac(PMCallback cb, void *arg);
-u32 func_0211c700(u32 a, u32 b, PMCallback cb, void *arg);
-void func_0211cb0c(u32 result);
-u32 func_0211cbf8(u32 bcd);
+u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg);
+void PMi_CallCallbackAndUnlock(u32 result);
+u32 RtcBCD2HEX(u32 bcd);
 void func_0211bf60(u32 tag, u32 data, u32 err);
 void func_0211c95c(u32 tag, u32 data, u32 err);
-u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync);
+u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
 typedef struct {
     u16 flag;
@@ -208,14 +208,14 @@ typedef struct {
     u16 *ptr;
 } PMRegInfo;
 extern PMRegInfo data_021feb6c[4];
-u32 func_0211c870(u32 type, u16 *out, PMCallback cb, void *arg) {
-    if (!func_0211cb80()) {
+u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg) {
+    if (!PMi_Lock()) {
         return 1;
     }
     data_021feb6c[type].flag = 0;
     data_021feb44.callback = cb;
     data_021feb44.arg = arg;
     data_021feb6c[type].ptr = out;
-    func_0211c570(0x03006500 | (u8)type);
+    PMi_SendPxiData(0x03006500 | (u8)type);
     return 0;
 }

@@ -4,20 +4,20 @@
 extern "C" {
 extern s16 data_02135f44[];
 
-void func_02110ae0(u32 a, s32 b, s32 c, s32 d, s32 e);
+void G2x_SetBlendAlpha_(u32 a, s32 b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
 s32 func_020014e4(s32 a);
 u32 func_02001510(s32 a);
 void func_020014f4(s32 a);
 void func_020017e4(s32 a, s32 b);
-void func_021145cc(void *p, u32 size);
+void DC_FlushRange(void *p, u32 size);
 void func_0211199c(void *p, u32 a, u32 size);
-void func_02111ec8(void *p, u32 a, u32 size);
+void GX_LoadBGPltt(void *p, u32 a, u32 size);
 void func_0211165c(void *p, u32 a, u32 size);
-void func_02119a28();
+void FS_OpenFile();
 void func_021198b4(void *a, void *b, u32 size);
-void func_021199e0(void *a);
-void func_02119d78(void *a);
+void FS_CloseFile(void *a);
+void FS_InitFile(void *a);
 void *func_020e8594(u32 size);
 s32 func_020e8558(void *p);
 void func_ov147_02292d6c();
@@ -158,7 +158,7 @@ extern "C" void func_ov147_02292e74(s32 idx) {
     char ncl[28] = "/a_mes/a_mes_ttl_bg_ncl.bin";
     u32 file[19];
     void *m;
-    func_02119d78(file);
+    FS_InitFile(file);
     m = func_ov147_02292f4c(0x9e0);
     if (m) {
         func_ov147_02292e4c(file, ncg, m);
@@ -180,35 +180,35 @@ extern "C" void func_ov147_02292e74(s32 idx) {
 }
 
 extern "C" void func_ov147_02292e4c(void *a, void *b, void *c) {
-    func_02119a28();
+    FS_OpenFile();
     func_021198b4(a, c, 0x9e0);
-    func_021199e0(a);
+    FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292e28(void *a, void *b, void *c) {
-    func_02119a28();
+    FS_OpenFile();
     func_021198b4(a, c, 0x20);
-    func_021199e0(a);
+    FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292e00(void *a, void *b, void *c) {
-    func_02119a28();
+    FS_OpenFile();
     func_021198b4(a, c, 0x800);
-    func_021199e0(a);
+    FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292de0(void *p) {
-    func_021145cc(p, 0x9e0);
+    DC_FlushRange(p, 0x9e0);
     func_0211165c(p, 0, 0x9e0);
 }
 
 extern "C" void func_ov147_02292dc4(void *p) {
-    func_021145cc(p, 0x20);
-    func_02111ec8(p, 0x20, 0x20);
+    DC_FlushRange(p, 0x20);
+    GX_LoadBGPltt(p, 0x20, 0x20);
 }
 
 extern "C" void func_ov147_02292da4(void *p) {
-    func_021145cc(p, 0x800);
+    DC_FlushRange(p, 0x800);
     func_0211199c(p, 0, 0x800);
 }
 
@@ -239,10 +239,10 @@ void Unk_ov147_022935e8::func_ov147_02292cdc() {
     } else if (b > 16) {
         b = 16;
     }
-    func_02110ae0(0x4000050, 8, 0x21, b, 16 - b);
+    G2x_SetBlendAlpha_(0x4000050, 8, 0x21, b, 16 - b);
 }
 
-void Unk_ov147_022935e8::func_ov147_02292cc0() { func_02110ae0(0x4000050, 0, 0x20, 0x10, 0); }
+void Unk_ov147_022935e8::func_ov147_02292cc0() { G2x_SetBlendAlpha_(0x4000050, 0, 0x20, 0x10, 0); }
 
 void Unk_ov147_022935e8::func_ov147_02292cb4() {
     unk_04 = 0;

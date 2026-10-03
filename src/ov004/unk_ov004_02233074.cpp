@@ -567,8 +567,8 @@ extern u16 data_ov004_02251f7c;
 extern Unk_ov004_0224e9d8 *data_ov004_02251f80;
 extern s8 data_ov004_022523c4;
 extern u8 *data_ov004_022523d4;
-void func_01ffb898(void *v, void *m, void *out);
-void func_01ffca8c(void *, void *, void *);
+void MTX_MultVec43(void *v, void *m, void *out);
+void VEC_Add(void *, void *, void *);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffd028(void *, void *);
 s32 func_02002bdc(void *a, void *b);
@@ -678,8 +678,8 @@ void func_020f3a18(void *);
 void *func_021012bc(const char *name);
 void func_02101310(void *buf);
 BOOL func_02101340(void *buf, const char *name, void *data);
-void *func_0210629c(void *p);
-void *func_021062dc(void *p);
+void *NNS_G3dGetTex(void *p);
+void *NNS_G3dGetMdlSet(void *p);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 void *func_02106690(void *p);
@@ -4388,7 +4388,7 @@ loopE:
                 q3c = px + *(s16 *)((u8 *)func_0205242c(&buf, i) + z);
                 y3c = py + func_0205242c(&buf, i)[1];
                 func_0204ed8c((Unk_ov004_Vec3 *)&v7c, q3c, y3c);
-                func_01ffca8c(&v70, &v7c, &v70);
+                VEC_Add(&v70, &v7c, &v70);
             }
             func_020e97c8(&v70, m << 12);
             func_020e9960(&v88, pos, &v70);
@@ -4608,7 +4608,7 @@ extern "C" void func_ov004_02233b90(Unk_ov004_02233b90_Obj *o) {
         r = o->unk_04->unk_2c;
         if (r != 0) {
             *(Unk_ov004_02233b3c_Mat *)data_021f47e0 = *(Unk_ov004_02233b3c_Mat *)func_ov004_02233b00(r);
-            func_01ffb898(&v, data_021f47e0, &out);
+            MTX_MultVec43(&v, data_021f47e0, &out);
             func_ov004_02233af0(r, &out);
         }
     }
@@ -4794,7 +4794,7 @@ extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r) {
         if (func_02101340(&arc, "FTT", r->unk_24)) {
             BOOL ok = FALSE;
             u8 *p;
-            p = (u8 *)func_021062dc(func_021012bc(data_ov004_0224e930));
+            p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov004_0224e930));
             r->unk_28 = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
             if (func_02055600(r->unk_2c, (void *)r->unk_28, ok)) {
                 if (func_02054800(r->unk_2c, r->unk_10)) {
@@ -4881,7 +4881,7 @@ extern "C" BOOL func_ov004_02233660(Unk_ov004_02233790 *p, u32 id, s32 x) {
         func_020639e8(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
         r6 = x;
     }
-    p->unk_08 = (u32)func_0210629c(func_020641ec(buf1, p->unk_00, 4, 0));
+    p->unk_08 = (u32)NNS_G3dGetTex(func_020641ec(buf1, p->unk_00, 4, 0));
     p->unk_0c = (u32)func_021066ac(func_02106690(func_020641ec(buf2, p->unk_00, 4, 0)), 0);
     if (func_02056ca4(&p->unk_10, (void *)p->unk_04, "tv.0", "tv_pl", (void *)p->unk_08, (void *)p->unk_0c, 0)) {
         p->unk_a0 = id;
@@ -4973,7 +4973,7 @@ extern "C" void func_ov004_0223349c(Unk_ov004_02233560 *q) {
     q->unk_154 = 0;
     h = func_020641ec("/ftr/tv/tv.nsbtx", data_021f482c, 4, 0);
     if (h) {
-        void *r6 = func_0210629c(h);
+        void *r6 = NNS_G3dGetTex(h);
         func_02055724(r6, 0);
         q->unk_154 = (u32)func_0205588c(r6, data_021c620c);
         func_020e8558(h);

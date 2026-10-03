@@ -17,7 +17,7 @@ extern "C" u32 _ZN18Unk_ov094_02294bd419func_ov094_02294610Eii(void *self);
 
 extern "C" {
 void func_0200402c(s32 a);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *func_020e8618(void *heap, u32 n);
 void func_020e85fc(void *heap, void *p);
 void func_0206f638(s32 a);
@@ -2433,7 +2433,7 @@ BOOL Unk_ov104_02298170::func_ov104_02294e30(void *p) {
     void *heap = data_021c6210;
     u8 *buf = (u8 *)func_020e8618(heap, 0xf5);
     buf[0] = 8;
-    func_02116048(p, buf + 1, 0xf4);
+    MI_CpuCopy8(p, buf + 1, 0xf4);
     Unk_020cbb18 *g = data_020cbb18;
     g->func_020728d4();
     g->func_020728a4(buf, 0xf5);

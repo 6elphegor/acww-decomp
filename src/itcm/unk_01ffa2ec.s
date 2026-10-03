@@ -9,10 +9,10 @@
 	.arm
 
 ; OS_DisableInterrupts: returns the previous IRQ-disable bit
-	.global func_01ffa2ec
-	.type func_01ffa2ec, @function
-	.size func_01ffa2ec, 0x14
-func_01ffa2ec:
+	.global OS_DisableInterrupts
+	.type OS_DisableInterrupts, @function
+	.size OS_DisableInterrupts, 0x14
+OS_DisableInterrupts:
 	mrs r0, cpsr
 	orr r1, r0, #0x80
 	msr cpsr_c, r1
@@ -20,10 +20,10 @@ func_01ffa2ec:
 	bx lr
 
 ; OS_DisableInterrupts_IrqAndFiq
-	.global func_01ffa300
-	.type func_01ffa300, @function
-	.size func_01ffa300, 0x14
-func_01ffa300:
+	.global OS_DisableInterrupts_IrqAndFiq
+	.type OS_DisableInterrupts_IrqAndFiq, @function
+	.size OS_DisableInterrupts_IrqAndFiq, 0x14
+OS_DisableInterrupts_IrqAndFiq:
 	mrs r0, cpsr
 	orr r1, r0, #0xc0
 	msr cpsr_c, r1

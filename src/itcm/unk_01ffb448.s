@@ -9,10 +9,10 @@
 	.arm
 
 ; MTX_Identity33_(pDst): 3x3 identity, FX32_ONE = 0x1000
-	.global func_01ffb448
-	.type func_01ffb448, @function
-	.size func_01ffb448, 0x24
-func_01ffb448:
+	.global MTX_Identity33_
+	.type MTX_Identity33_, @function
+	.size MTX_Identity33_, 0x24
+MTX_Identity33_:
 	mov r2, #0x1000
 	str r2, [r0, #32]
 	mov r3, #0

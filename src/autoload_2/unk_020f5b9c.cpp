@@ -97,8 +97,8 @@ u32 func_020f07f0(void *g, u32 n);
 void func_0210cf78(void *slot, u32 a, s32 b);
 void func_0210d010(void *p, u32 v);
 void func_02109fd0(void *p, u32 a, u32 b);
-void func_0210a26c(void *p, s32 v);
-void func_0210a27c(void *p);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
+void NNS_SndHandleReleaseSeq(void *p);
 void func_0210a294(void *p);
 void func_020eda30(void *p, u32 v);
 void func_0210a148(void *p, u32 a, u32 b);
@@ -117,15 +117,15 @@ void Unk_0213bac4::vfunc_00() {
     func_0210a294(&b);
     c12 = 0;
     vfunc_14();
-    func_0210a26c(&a, 0);
-    func_0210a26c(&b, 0);
+    NNS_SndPlayerSetVolume(&a, 0);
+    NNS_SndPlayerSetVolume(&b, 0);
 }
 
 void Unk_0213bac4::vfunc_04() {
     func_020eda30(&a, 0);
     func_020eda30(&b, 0);
-    func_0210a27c(&a);
-    func_0210a27c(&b);
+    NNS_SndHandleReleaseSeq(&a);
+    NNS_SndHandleReleaseSeq(&b);
 }
 
 void Unk_0213bac4::vfunc_08(s32 id, void *arg) {
@@ -134,28 +134,28 @@ void Unk_0213bac4::vfunc_08(s32 id, void *arg) {
 
 void Unk_0213bac4::vfunc_0c(s32 v) {
     c12 = v;
-    func_0210a26c(&a, 127);
-    func_0210a26c(&b, 127);
+    NNS_SndPlayerSetVolume(&a, 127);
+    NNS_SndPlayerSetVolume(&b, 127);
 }
 
 void Unk_0213bac4::vfunc_10() {
-    func_0210a26c(&a, 0);
-    func_0210a26c(&b, 0);
+    NNS_SndPlayerSetVolume(&a, 0);
+    NNS_SndPlayerSetVolume(&b, 0);
 }
 
 void Unk_0213bac4::update(void *x) {
     u32 r5;
     u32 r4;
     if (x == 0) {
-        func_0210a26c(&a, 0);
-        func_0210a26c(&b, 0);
+        NNS_SndPlayerSetVolume(&a, 0);
+        NNS_SndPlayerSetVolume(&b, 0);
         return;
     }
     func_020f4904(x, 0);
     r5 = func_020f48d8();
     r4 = func_020f4718(x, 0);
-    func_0210a26c(&a, r5);
-    func_0210a26c(&b, r5);
+    NNS_SndPlayerSetVolume(&a, r5);
+    NNS_SndPlayerSetVolume(&b, r5);
     func_0210a0e8(&a, 15, r4);
     func_0210a0e8(&b, 15, r4);
 }

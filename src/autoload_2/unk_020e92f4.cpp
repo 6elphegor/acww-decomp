@@ -10,8 +10,8 @@ struct VecFx32 {
 };
 
 extern "C" {
-void func_01ffc714(VecFx32 *v); // VEC_Normalize
-void func_01ffc928(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
+void VEC_Normalize(VecFx32 *v); // VEC_Normalize
+void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
 s32 func_01ffc5a4(s32 a, s32 b); // FX_Div
 s32 func_020e99b8(u64 x);
 void func_020e99a4(void);
@@ -29,9 +29,9 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 extern "C" {
 void *func_020ec808(u32 size, u32 align); // alloc via hook data_021f48f4
 void func_020ec7e4(void *p); // free via hook data_021f48f0
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
-void func_02116048(const void *src, void *dst, u32 n); // MI_CpuCopy8
-void func_02113088(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
 
 s32 func_ov067_02261148(void);
 s32 func_ov067_022611fc(void *p);
@@ -110,7 +110,7 @@ extern "C" BOOL func_020e9eb8(u32 a, void *b, u32 c, u32 d) {
         data_021f48e4 = a;
         data_021f48ac = c;
         data_021f48a8 = d;
-        func_02113088((char *)data_021f48dc, 0x100, data_0213b098, data_021f48e4, func_020ea3c4(data_021f48d8 + 0x10), d);
+        OS_SNPrintf((char *)data_021f48dc, 0x100, data_0213b098, data_021f48e4, func_020ea3c4(data_021f48d8 + 0x10), d);
         func_ov065_02277f70((void *)data_021f48dc, (void *)func_020ebeac, b);
         return TRUE;
     }
@@ -160,9 +160,9 @@ extern "C" s32 func_020e9c78(u32 a, void *b) {
     s32 r;
     u32 t;
     if (func_ov065_022721cc() == 0 || data_021f4894 < 5 || data_0213b06c != 0) return 0;
-    func_02116048(b, data_021f48d4 + a * 12, 12);
+    MI_CpuCopy8(b, data_021f48d4 + a * 12, 12);
     t = a * 19;
-    func_02115fb4(data_021f48d4 + 0x180 + t, 0, 19);
+    MI_CpuFill8(data_021f48d4 + 0x180 + t, 0, 19);
     (data_021f48d4 + t)[0x190] = 0;
     data_0213b06c = 1;
     r = func_ov065_0227089c(0, (void *)func_020ec258, 0, (void *)func_020ec1e4, 0, (void *)func_020ec158, 0);
@@ -176,9 +176,9 @@ extern "C" BOOL func_020e9bb0(u32 a) {
     if (func_ov065_022721cc() == 0 || data_021f4894 < 5 || data_0213b06c != 0) return FALSE;
     u = a * 12;
     func_ov065_02272164(data_021f48d4 + u);
-    func_02115fb4(data_021f48d4 + u, 0, 12);
+    MI_CpuFill8(data_021f48d4 + u, 0, 12);
     t = a * 19;
-    func_02115fb4(data_021f48d4 + 0x180 + t, 0, 19);
+    MI_CpuFill8(data_021f48d4 + 0x180 + t, 0, 19);
     (data_021f48d4 + t)[0x190] = 0;
     return TRUE;
 }
@@ -195,7 +195,7 @@ extern "C" BOOL func_020e9b00(u8 *out) {
     u8 buf[24];
     if (data_021f4894 < 4) return FALSE;
     func_020fff48(data_021f48d8 + 0x20, data_021f489c, buf);
-    func_02116048(buf + 9, out, 12);
+    MI_CpuCopy8(buf + 9, out, 12);
     return TRUE;
 }
 
@@ -348,12 +348,12 @@ extern "C" s32 func_020e95cc(VecFx32 *a, VecFx32 *b) {
 }
 
 extern "C" void func_020e9588(VecFx32 *out, VecFx32 *in, VecFx32 *a, VecFx32 *b) {
-    func_01ffc928(a, b, in);
+    VEC_CrossProduct(a, b, in);
     *out = *in;
 }
 
 extern "C" void func_020e954c(VecFx32 *out, VecFx32 *in) {
-    func_01ffc714(in);
+    VEC_Normalize(in);
     *out = *in;
 }
 

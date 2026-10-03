@@ -49,14 +49,14 @@ extern char *data_ov065_0228df78;
 extern char data_ov065_0228e128[];
 extern char data_ov065_0228e108[];
 
-s32 func_0212a15c(const char *, const char *, u32);
+s32 strncmp(const char *, const char *, u32);
 s32 func_0212b770(const char *);
 char *func_02129f1c(const char *, const char *);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
 void func_021289b4(void *, void *, u32);
 void func_02128a00(void *, const void *, s32);
-s32 func_02128c70();
+s32 rand();
 void func_02128c60(s32);
 s32 func_02127b40(s32);
 
@@ -343,7 +343,7 @@ extern "C" {
 extern u8 data_ov065_0228e14c[];
 
 
-s32 func_02128930(const void *, const void *, s32);
+s32 memcmp(const void *, const void *, s32);
 
 s32 func_ov065_02284888(Conn *, s32, s32);
 s32 func_ov065_022848b8(Conn *, void *);
@@ -502,7 +502,7 @@ typedef Unk_ov065_02285630_Item It;
 
 extern "C" {
 
-s32 func_02128930(void *, const void *, u32);
+s32 memcmp(void *, const void *, u32);
 s32 func_ov065_02277ac8(void *);
 s32 func_ov065_0227866c(void *, s32);
 s32 func_ov065_02278684(void *);
@@ -581,7 +581,7 @@ BOOL func_ov065_022856f8(Cn *c, void *p, s32 n)
     s32 now;
     if (c->unk_34 == 0) return TRUE;
     if (n != 8) return TRUE;
-    if (func_02128930(p, (u8 *)"time", 4) != 0) return TRUE;
+    if (memcmp(p, (u8 *)"time", 4) != 0) return TRUE;
     u32 a = (u32)&t;
     Unk_ov065_022856f8_B4 *q = (Unk_ov065_022856f8_B4 *)((u8 *)p + 4);
     ((Unk_ov065_022856f8_B4 *)a)->a = q->a;
@@ -635,7 +635,7 @@ s32 func_ov065_02285440(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
             return 0;
         }
     }
-    if (n > 2 && func_02128930(data, data_ov065_0228e14c, 2) == 0) {
+    if (n > 2 && memcmp(data, data_ov065_0228e14c, 2) == 0) {
         flag = 1;
     } else {
         flag = 0;
@@ -678,7 +678,7 @@ s32 func_ov065_02285440(Sock *s, u8 *data, s32 n, s32 addr, s32 port) {
         }
         return 1;
     }
-    if (flag != 0 && n >= 4 && func_02128930(data + 2, data_ov065_0228e14c, 2) == 0) {
+    if (flag != 0 && n >= 4 && memcmp(data + 2, data_ov065_0228e14c, 2) == 0) {
         data += 2;
         n -= 2;
         flag = 0;
@@ -962,7 +962,7 @@ namespace N02284b8c { extern "C" {
 s32 func_ov065_02284de4(Conn *o, u8 *data, s32 n) {
     s32 t;
     s32 total;
-    if (n < 2 || func_02128930(data, data_ov065_0228e14c, 2) != 0) {
+    if (n < 2 || memcmp(data, data_ov065_0228e14c, 2) != 0) {
         if (func_ov065_02284854(o, data, n) == 0) {
             return 0;
         }
@@ -1836,7 +1836,7 @@ namespace N022838c4 { extern "C" {
 void func_ov065_02284090(Unk_ov065_02284100_Buf *b, char *s, s32 n) {
     if (s != 0 && n != 0) {
         if (n == -1) {
-            n = func_021277d4(s);
+            n = STD_GetStringLength(s);
         }
         func_02128a00(b->unk_00 + b->unk_08, s, n);
         b->unk_08 += n;
@@ -1916,7 +1916,7 @@ char *func_ov065_02283f34(u8 *out) {
     u32 v[9];
     u32 acc;
     func_02128c60(func_ov065_02279144(out));
-    out[0] = func_02128c70() % 0x5d + 0x21;
+    out[0] = rand() % 0x5d + 0x21;
     acc = 0;
     i = 1;
     v[1] = 0;
@@ -1950,7 +1950,7 @@ char *func_ov065_02283f34(u8 *out) {
         acc = c;
         acc ^= t1;
         p = out + i;
-        out[i] = func_02128c70() % 0x5d + 0x21;
+        out[i] = rand() % 0x5d + 0x21;
         if ((acc != 0 && (*p & v[6]) == 0) || (acc == 0 && (*p & v[7]) == 1)) {
             (*p)++;
         }

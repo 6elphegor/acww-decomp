@@ -23,10 +23,10 @@ L_021123cc:
 
 ; OS_GetLockID: finds a free lock ID with clz on the two 32-bit flag words; returns 0x40+n / 0x60+n or
 ; OS_LOCK_ID_ERROR (-3).
-	.global func_021123d0
-	.type func_021123d0, @function
-	.size func_021123d0, 0x58
-func_021123d0:
+	.global OS_GetLockID
+	.type OS_GetLockID, @function
+	.size OS_GetLockID, 0x58
+OS_GetLockID:
 	ldr r3, L_02112420
 	ldr r1, [r3, #0]
 	clz r2, r1
@@ -54,10 +54,10 @@ L_02112424:
 	.word 0xfffffffd
 
 ; OS_ReleaseLockID(lockID): sets the ID's bit again (pl/mi predication on the 0x60 compare).
-	.global func_02112428
-	.type func_02112428, @function
-	.size func_02112428, 0x30
-func_02112428:
+	.global OS_ReleaseLockID
+	.type OS_ReleaseLockID, @function
+	.size OS_ReleaseLockID, 0x30
+OS_ReleaseLockID:
 	ldr r3, L_02112454
 	cmp r0, #0x60
 	addpl r3, r3, #4

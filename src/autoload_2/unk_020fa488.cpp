@@ -101,9 +101,9 @@ struct Mc {
 };
 
 extern "C" {
-void *func_02115fb4(void *p, u32 v, u32 n);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020fe3a0(void *list, void *e);
-void func_020fa39c(void *p);
+void spl_set_tex(void *p);
 void func_020fa398(void *p);
 void func_020fc984(void *e, void *l);
 void func_020f9714(Pm *m, u32 a);
@@ -273,11 +273,11 @@ extern "C" {
 extern s16 data_02135f44[];
 extern MkFn data_0213bb9c[];
 extern SetFn data_0213bb94[];
-void func_01ffb828(Mt *m, s32 x, s32 y, s32 z);
-void func_01ffb840(Mt *m, s32 s, s32 c);
-void func_01ffb94c(Mt *a, Mt *b, Mt *ab);
-void func_02110bcc(Mt *m);
-void func_02110be8(Mt *m);
+void MTX_Scale43_(Mt *m, s32 x, s32 y, s32 z);
+void MTX_RotX43_(Mt *m, s32 s, s32 c);
+void MTX_Concat43(Mt *a, Mt *b, Mt *ab);
+void G3_MultMtx43(Mt *m);
+void G3_LoadMtx43(Mt *m);
 }
 
 
@@ -331,15 +331,15 @@ extern "C" void func_020fa858(Mg2 *m, Nd *p, PosCb cb) {
             y = FxMul(y, p->s52);
             break;
     }
-    func_01ffb828(&mC, x, y, y);
-    func_01ffb94c(&mC, &mB, &mA);
+    MTX_Scale43_(&mC, x, y, y);
+    MTX_Concat43(&mC, &mB, &mA);
     h = m->cur->res->p0;
     if (h->b23 == 0) {
         v.x = p->w8 + p->w56;
         v.y = p->w12 + p->w60;
         v.z = p->w16 + p->w64;
         r = cb(&v, v);
-        func_02110be8((Mt *)m->mt);
+        G3_LoadMtx43((Mt *)m->mt);
     } else {
         v.x = p->w8 + p->w56 - h->w4;
         v.y = p->w12 + p->w60 - m->cur->res->p0->w8;
@@ -347,15 +347,15 @@ extern "C" void func_020fa858(Mg2 *m, Nd *p, PosCb cb) {
         r = cb(&v, v);
         *(volatile u32 *)0x04000454 = 0;
         G3_Translate(m->cur->res->p0->w4, m->cur->res->p0->w8, m->cur->res->p0->w12);
-        func_02110bcc((Mt *)m->mt);
+        G3_MultMtx43((Mt *)m->mt);
     }
     G3_Translate(v.x, v.y, v.z);
     if (m->cur->res->p0->c80 & 0x10) {
         idx = r >> 4;
-        func_01ffb840(&mD, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
-        func_02110bcc(&mD);
+        MTX_RotX43_(&mD, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
+        G3_MultMtx43(&mD);
     }
-    func_02110bcc(&mA);
+    G3_MultMtx43(&mA);
     {
         s32 dd = m->cur->h90;
         s32 cc = p->h54;
@@ -394,15 +394,15 @@ extern "C" void func_020fa488(Mg2 *m, Nd *p, PosCb cb) {
             y = FxMul(y, p->s52);
             break;
     }
-    func_01ffb828(&mC, x, y, y);
-    func_01ffb94c(&mB, &mC, &mA);
+    MTX_Scale43_(&mC, x, y, y);
+    MTX_Concat43(&mB, &mC, &mA);
     h = m->cur->res->p0;
     if (h->b23 == 0) {
         v.x = p->w8 + p->w56;
         v.y = p->w12 + p->w60;
         v.z = p->w16 + p->w64;
         r = cb(&v, v);
-        func_02110be8((Mt *)m->mt);
+        G3_LoadMtx43((Mt *)m->mt);
     } else {
         v.x = p->w8 + p->w56 - h->w4;
         v.y = p->w12 + p->w60 - m->cur->res->p0->w8;
@@ -410,15 +410,15 @@ extern "C" void func_020fa488(Mg2 *m, Nd *p, PosCb cb) {
         r = cb(&v, v);
         *(volatile u32 *)0x04000454 = 0;
         G3_Translate(m->cur->res->p0->w4, m->cur->res->p0->w8, m->cur->res->p0->w12);
-        func_02110bcc((Mt *)m->mt);
+        G3_MultMtx43((Mt *)m->mt);
     }
     G3_Translate(v.x, v.y, v.z);
     if (m->cur->res->p0->c80 & 0x10) {
         idx = r >> 4;
-        func_01ffb840(&mD, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
-        func_02110bcc(&mD);
+        MTX_RotX43_(&mD, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
+        G3_MultMtx43(&mD);
     }
-    func_02110bcc(&mA);
+    G3_MultMtx43(&mA);
     {
         s32 dd = m->cur->h90;
         s32 cc = p->h54;

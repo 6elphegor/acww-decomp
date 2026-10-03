@@ -99,14 +99,14 @@ struct Unk_ov065_02266c90_Os {
 extern Unk_ov065_02266c90_Os data_021fcc2c;
 
 // main module
-void func_02116048(const void *, void *, u32);
-void func_02115fb4(void *, s32, u32);
+void MI_CpuCopy8(const void *, void *, u32);
+void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 u32 func_0212a438(const char *);
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 void func_0211d3a0(Unk_ov065_02266948_Date *);
 u32 func_0211337c(u32);
-void func_02113384(u32, u32);
+void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
 void func_ov065_02267a84(void *);
@@ -182,7 +182,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
                 switch (mode) {
                 case 0:
                     if (len <= 0x100) {
-                        func_02116048(p, c->unk_468, len);
+                        MI_CpuCopy8(p, c->unk_468, len);
                         c->unk_568 = len;
                     }
                     break;
@@ -201,7 +201,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
                 switch (mode) {
                 case 0:
                     if (len <= 8) {
-                        func_02116048(p, c->unk_56c, len);
+                        MI_CpuCopy8(p, c->unk_56c, len);
                         c->unk_574 = len;
                     }
                     break;
@@ -235,7 +235,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         op = p;
         do {
             oe = *tbl;
-            if (func_02128930(op, oe, func_0212a438(oe)) == 0) {
+            if (memcmp(op, oe, func_0212a438(oe)) == 0) {
                 switch (oi) {
                 case 0:
                     break;
@@ -273,7 +273,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
             if (c->unk_580 != 0) {
                 func_ov065_02267208(c->unk_684, p, len);
                 if (c->unk_582 == 5 && len <= 0x4f) {
-                    func_02116048(p, c->unk_784, len);
+                    MI_CpuCopy8(p, c->unk_784, len);
                     (c->unk_784)[len] = 0;
                 }
             } else {
@@ -360,9 +360,9 @@ s32 func_ov065_02266c90(Ctx *c, Key *k) {
     if (data_ov065_0228b440 < 0x20) {
         u32 th = data_021fcc2c.unk_04;
         u32 pr = func_0211337c(th);
-        func_02113384(th, data_ov065_0228b440);
+        OS_SetThreadPriority(th, data_ov065_0228b440);
         func_ov065_02268540(buf, b1, b2, n, b3);
-        func_02113384(th, pr);
+        OS_SetThreadPriority(th, pr);
     } else {
         func_ov065_02268540(buf, b1, b2, n, b3);
     }
@@ -383,7 +383,7 @@ s32 func_ov065_02266c90(Ctx *c, Key *k) {
             } while (i < len);
         }
         s32 j = i + 1;
-        if (j < len && q[i] == 0 && q[j] == 0x30 && func_02128930(c->unk_43c, q + len - c->unk_450, c->unk_450) == 0) {
+        if (j < len && q[i] == 0 && q[j] == 0x30 && memcmp(c->unk_43c, q + len - c->unk_450, c->unk_450) == 0) {
         } else {
             r = 2;
         }
@@ -531,11 +531,11 @@ void func_ov065_02266948(Ctx *c, u8 *p) {
 void func_ov065_022668cc(Ctx *c, u8 *p) {
     u8 n;
     u8 *old;
-    func_02116048(p + 2, c->unk_28, 0x20);
+    MI_CpuCopy8(p + 2, c->unk_28, 0x20);
     p += 0x22;
     n = *p++;
     old = c->unk_00;
-    if (old != 0 && n == 0x20 && func_02128930(old, p, 0x20) == 0) {
+    if (old != 0 && n == 0x20 && memcmp(old, p, 0x20) == 0) {
         c->unk_04 = 1;
     } else {
         if (old != 0) {
@@ -597,10 +597,10 @@ void func_ov065_022667b0(Ctx *c, u8 *p) {
             a += 8;
             u8 *q = p + (a + b);
             if (n >= 0x20) {
-                func_02116048(q, c->unk_08, 0x20);
+                MI_CpuCopy8(q, c->unk_08, 0x20);
             } else {
-                func_02115fb4(c->unk_08, 0, 0x20 - n);
-                func_02116048(q, c->unk_28 - n, n);
+                MI_CpuFill8(c->unk_08, 0, 0x20 - n);
+                MI_CpuCopy8(q, c->unk_28 - n, n);
             }
             c->unk_429 = 1;
         }
@@ -609,7 +609,7 @@ void func_ov065_022667b0(Ctx *c, u8 *p) {
 
 void func_ov065_02266744(Ctx *c, u8 *p) {
     if (func_ov065_02266844(p[0], p[1])) {
-        func_02116048(p + 2, c->unk_08, 0x20);
+        MI_CpuCopy8(p + 2, c->unk_08, 0x20);
         u32 n = p[0x22];
         u8 *q = p + 0x23;
         if (n != 0x20) {
@@ -686,7 +686,7 @@ void func_ov065_0226650c(Ctx *c) {
     func_ov065_02266550(buf, "A", c);
     func_ov065_02266550(buf + 0x10, "BB", c);
     func_ov065_02266550(buf + 0x20, "CCC", c);
-    func_02116048(buf, c->unk_00 + 0x20, 0x30);
+    MI_CpuCopy8(buf, c->unk_00 + 0x20, 0x30);
 }
 }
 
@@ -742,9 +742,9 @@ extern void *(*data_ov065_0228ebc8)(u32);
 extern void (*data_ov065_0228ebd0)(void *);
 
 // main module
-void *func_02115fb4(void *, s32, u32);
-void *func_02116048(const void *, void *, u32);
-s32 func_02128930(const void *, const void *, u32);
+void *MI_CpuFill8(void *, s32, u32);
+void *MI_CpuCopy8(const void *, void *, u32);
+s32 memcmp(const void *, const void *, u32);
 
 // same overlay, out of range
 u8 *func_ov065_02262708(u32 *, Sess *);
@@ -860,12 +860,12 @@ void func_ov065_02266264(St *st, u8 *out, u32 who) {
         func_ov065_02267480(ctx, "CLNT", 4);
     }
     func_ov065_02267480(ctx, st->unk_00 + 0x20, 0x30);
-    func_02115fb4(pad, 0x36, 0x30);
+    MI_CpuFill8(pad, 0x36, 0x30);
     func_ov065_02267480(ctx, pad, 0x30);
     func_ov065_0226742c(ctx, out);
     func_ov065_0226750c(ctx);
     func_ov065_02267480(ctx, st->unk_00 + 0x20, 0x30);
-    func_02115fb4(pad, 0x5c, 0x30);
+    MI_CpuFill8(pad, 0x5c, 0x30);
     func_ov065_02267480(ctx, pad, 0x30);
     func_ov065_02267480(ctx, out, 0x10);
     func_ov065_0226742c(ctx, out);
@@ -881,12 +881,12 @@ void func_ov065_022661c0(St *st, u8 *out, u32 who) {
         func_ov065_022679f8(ctx, "CLNT", 4);
     }
     func_ov065_022679f8(ctx, st->unk_00 + 0x20, 0x30);
-    func_02115fb4(pad, 0x36, 0x28);
+    MI_CpuFill8(pad, 0x36, 0x28);
     func_ov065_022679f8(ctx, pad, 0x28);
     func_ov065_022679a4(ctx, out);
     func_ov065_02267a84(ctx);
     func_ov065_022679f8(ctx, st->unk_00 + 0x20, 0x30);
-    func_02115fb4(pad, 0x5c, 0x28);
+    MI_CpuFill8(pad, 0x5c, 0x28);
     func_ov065_022679f8(ctx, pad, 0x28);
     func_ov065_022679f8(ctx, out, 0x14);
     func_ov065_022679a4(ctx, out);
@@ -895,17 +895,17 @@ void func_ov065_022661c0(St *st, u8 *out, u32 who) {
 void func_ov065_02266110(St *st, u8 *in) {
     u8 out[0x14];
 
-    func_02116048(st->unk_378, st->unk_3d0, 0x58);
+    MI_CpuCopy8(st->unk_378, st->unk_3d0, 0x58);
     func_ov065_02266264(st, out, 1);
-    func_02116048(st->unk_3d0, st->unk_378, 0x58);
-    if (func_02128930(in, out, 0x10) != 0) {
+    MI_CpuCopy8(st->unk_3d0, st->unk_378, 0x58);
+    if (memcmp(in, out, 0x10) != 0) {
         st->unk_429 = 9;
         return;
     }
-    func_02116048(st->unk_2c0, st->unk_31c, 0x5c);
+    MI_CpuCopy8(st->unk_2c0, st->unk_31c, 0x5c);
     func_ov065_022661c0(st, out, 1);
-    func_02116048(st->unk_31c, st->unk_2c0, 0x5c);
-    if (func_02128930(in + 0x10, out, 0x14) != 0) {
+    MI_CpuCopy8(st->unk_31c, st->unk_2c0, 0x5c);
+    if (memcmp(in + 0x10, out, 0x14) != 0) {
         st->unk_429 = 9;
         return;
     }
@@ -947,7 +947,7 @@ s32 func_ov065_02265f38(St *st, u8 *buf) {
         ctx = st->unk_3d0;
         func_ov065_0226750c(ctx);
         func_ov065_02267480(ctx, st->unk_1a8, 0x10);
-        func_02115fb4(pad, 0x36, 0x30);
+        MI_CpuFill8(pad, 0x36, 0x30);
         func_ov065_02267480(ctx, pad, 0x30);
         func_ov065_02267480(ctx, st->unk_2b8, 8);
         func_ov065_02267480(ctx, buf, 1);
@@ -956,7 +956,7 @@ s32 func_ov065_02265f38(St *st, u8 *buf) {
         func_ov065_0226742c(ctx, digest);
         func_ov065_0226750c(ctx);
         func_ov065_02267480(ctx, st->unk_1a8, 0x10);
-        func_02115fb4(pad, 0x5c, 0x30);
+        MI_CpuFill8(pad, 0x5c, 0x30);
         func_ov065_02267480(ctx, pad, 0x30);
         func_ov065_02267480(ctx, digest, 0x10);
         func_ov065_0226742c(ctx, digest);
@@ -969,7 +969,7 @@ s32 func_ov065_02265f38(St *st, u8 *buf) {
         ctx = st->unk_31c;
         func_ov065_02267a84(ctx);
         func_ov065_022679f8(ctx, st->unk_1a8, 0x14);
-        func_02115fb4(pad, 0x36, 0x28);
+        MI_CpuFill8(pad, 0x36, 0x28);
         func_ov065_022679f8(ctx, pad, 0x28);
         func_ov065_022679f8(ctx, st->unk_2b8, 8);
         func_ov065_022679f8(ctx, buf, 1);
@@ -978,14 +978,14 @@ s32 func_ov065_02265f38(St *st, u8 *buf) {
         func_ov065_022679a4(ctx, digest);
         func_ov065_02267a84(ctx);
         func_ov065_022679f8(ctx, st->unk_1a8, 0x14);
-        func_02115fb4(pad, 0x5c, 0x28);
+        MI_CpuFill8(pad, 0x5c, 0x28);
         func_ov065_022679f8(ctx, pad, 0x28);
         func_ov065_022679f8(ctx, digest, 0x14);
         func_ov065_022679a4(ctx, digest);
         n = 0x14;
         break;
     }
-    if (func_02128930(buf + 5 + len, digest, n) != 0) {
+    if (memcmp(buf + 5 + len, digest, n) != 0) {
         st->unk_429 = 9;
     }
     func_ov065_022660f4(st->unk_2b8 + 8);
@@ -1005,7 +1005,7 @@ s32 func_ov065_02265dac(St *st, u8 *buf) {
         ctx = st->unk_3d0;
         func_ov065_0226750c(ctx);
         func_ov065_02267480(ctx, st->unk_90, 0x10);
-        func_02115fb4(pad, 0x36, 0x30);
+        MI_CpuFill8(pad, 0x36, 0x30);
         func_ov065_02267480(ctx, pad, 0x30);
         func_ov065_02267480(ctx, st->unk_1a0, 8);
         func_ov065_02267480(ctx, buf, 1);
@@ -1014,7 +1014,7 @@ s32 func_ov065_02265dac(St *st, u8 *buf) {
         func_ov065_0226742c(ctx, mac);
         func_ov065_0226750c(ctx);
         func_ov065_02267480(ctx, st->unk_90, 0x10);
-        func_02115fb4(pad, 0x5c, 0x30);
+        MI_CpuFill8(pad, 0x5c, 0x30);
         func_ov065_02267480(ctx, pad, 0x30);
         func_ov065_02267480(ctx, mac, 0x10);
         func_ov065_0226742c(ctx, mac);
@@ -1024,7 +1024,7 @@ s32 func_ov065_02265dac(St *st, u8 *buf) {
         ctx = st->unk_31c;
         func_ov065_02267a84(ctx);
         func_ov065_022679f8(ctx, st->unk_90, 0x14);
-        func_02115fb4(pad, 0x36, 0x28);
+        MI_CpuFill8(pad, 0x36, 0x28);
         func_ov065_022679f8(ctx, pad, 0x28);
         func_ov065_022679f8(ctx, st->unk_1a0, 8);
         func_ov065_022679f8(ctx, buf, 1);
@@ -1033,7 +1033,7 @@ s32 func_ov065_02265dac(St *st, u8 *buf) {
         func_ov065_022679a4(ctx, mac);
         func_ov065_02267a84(ctx);
         func_ov065_022679f8(ctx, st->unk_90, 0x14);
-        func_02115fb4(pad, 0x5c, 0x28);
+        MI_CpuFill8(pad, 0x5c, 0x28);
         func_ov065_022679f8(ctx, pad, 0x28);
         func_ov065_022679f8(ctx, mac, 0x14);
         func_ov065_022679a4(ctx, mac);
@@ -1058,7 +1058,7 @@ s32 func_ov065_02265d5c(u8 *dst, s32 n, Sess *s) {
         if (len > (u32)n) {
             len = n;
         }
-        func_02116048(p, dst, len);
+        MI_CpuCopy8(p, dst, len);
         func_ov065_02262670(len, s);
         dst += len;
         n -= len;
@@ -1087,7 +1087,7 @@ void func_ov065_02265b9c(St *st, u8 *buf) {
     len -= 5;
     switch (type - 0x14) {
     case 0:
-        func_02115fb4(st->unk_2b8, 0, 8);
+        MI_CpuFill8(st->unk_2b8, 0, 8);
         st->unk_429 = 7;
         break;
     case 1:
@@ -1309,14 +1309,14 @@ extern u8 data_ov065_022903c0;
 extern Unk_ov065_02265334_Os data_021fcc2c;
 
 // main module
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 s64 _ll_mul(s64, s64);
 u32 func_0211337c(u32);
-void func_02113384(u32, u32);
+void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
 s32 func_ov065_022628ac(Sess *);
@@ -1377,7 +1377,7 @@ void func_ov065_0226599c(u8 *out, s32 n) {
             u8 *a;
             u32 v;
             func_ov065_02267a84(&h);
-            th = func_01ffa2ec();
+            th = OS_DisableInterrupts();
             func_ov065_022679f8(&h, data_ov065_022903c8, 0x14);
             func_ov065_0226797c(&h, buf);
             c = 1;
@@ -1392,7 +1392,7 @@ void func_ov065_0226599c(u8 *out, s32 n) {
                 a--;
             }
             seed = v;
-            func_01ffa3d4(th);
+            OS_RestoreInterrupts(th);
             j = 0;
         }
         if (buf[j] != 0) {
@@ -1407,11 +1407,11 @@ void func_ov065_02265950(u8 *p, u32 n) {
     Unk_ov065_02265130_Hash h;
     u32 th;
     func_ov065_02267a84(&h);
-    th = func_01ffa2ec();
+    th = OS_DisableInterrupts();
     func_ov065_022679f8(&h, data_ov065_022903c8, 0x14);
     func_ov065_022679f8(&h, p, n);
     func_ov065_022679a4(&h, data_ov065_022903c8);
-    func_01ffa3d4(th);
+    OS_RestoreInterrupts(th);
     data_ov065_022903c0 = 1;
 }
 
@@ -1446,10 +1446,10 @@ s32 func_ov065_02265794(Sess *s) {
     q[3] = 0x46;
     q[4] = 3;
     q[5] = 0;
-    func_02116048(ctx->unk_28, q + 6, 0x20);
+    MI_CpuCopy8(ctx->unk_28, q + 6, 0x20);
     q[0x26] = 0x20;
     if (ctx->unk_00) {
-        func_02116048(ctx->unk_00, q + 0x27, 0x20);
+        MI_CpuCopy8(ctx->unk_00, q + 0x27, 0x20);
         q += 0x47;
         ctx->unk_04 = 1;
     } else {
@@ -1481,7 +1481,7 @@ s32 func_ov065_02265794(Sess *s) {
             q[8] = cl >> 8;
             q += 9;
             *q++ = cl;
-            func_02116048(cert->unk_04, q, cl);
+            MI_CpuCopy8(cert->unk_04, q, cl);
             q += cl;
         }
         q[0] = 0xe;
@@ -1517,7 +1517,7 @@ void func_ov065_02265680(Sess *s) {
     b[3] = 0;
     b[4] = 1;
     b[5] = 1;
-    func_02115fb4(ctx->unk_1a0, 0, 8);
+    MI_CpuFill8(ctx->unk_1a0, 0, 8);
     b[6] = 0x16;
     b[7] = 3;
     b[8] = 0;
@@ -1527,12 +1527,12 @@ void func_ov065_02265680(Sess *s) {
     b[12] = 0;
     b[13] = 0;
     b[14] = 0x24;
-    func_02116048(ctx->unk_378, ctx->unk_3d0, 0x58);
+    MI_CpuCopy8(ctx->unk_378, ctx->unk_3d0, 0x58);
     func_ov065_02266264(ctx, b + 0xf, 0);
-    func_02116048(ctx->unk_3d0, ctx->unk_378, 0x58);
-    func_02116048(ctx->unk_2c0, ctx->unk_31c, 0x5c);
+    MI_CpuCopy8(ctx->unk_3d0, ctx->unk_378, 0x58);
+    MI_CpuCopy8(ctx->unk_2c0, ctx->unk_31c, 0x5c);
     func_ov065_022661c0(ctx, b + 0x1f, 0);
-    func_02116048(ctx->unk_31c, ctx->unk_2c0, 0x5c);
+    MI_CpuCopy8(ctx->unk_31c, ctx->unk_2c0, 0x5c);
     func_ov065_022679f8(ctx->unk_2c0, b + 0xb, 0x28);
     func_ov065_02267480(ctx->unk_378, b + 0xb, 0x28);
     func_ov065_0226242c(b, func_ov065_02265dac(ctx, b + 6) + 6, 0, 0, s);
@@ -1561,11 +1561,11 @@ void func_ov065_0226555c(Sess *s) {
     ctx->unk_08[2] = t >> 8;
     ctx->unk_08[3] = t;
     func_ov065_0226599c(&ctx->unk_08[4], 0x1c);
-    func_02116048(ctx->unk_08, q + 2, 0x20);
+    MI_CpuCopy8(ctx->unk_08, q + 2, 0x20);
     ctx->unk_00 = (Unk_ov065_02265130_Pms *)func_ov065_02267394(s->unk_1c, s->unk_18);
     if (ctx->unk_00) {
         q[0x22] = 0x20;
-        func_02116048(ctx->unk_00, q + 0x23, 0x20);
+        MI_CpuCopy8(ctx->unk_00, q + 0x23, 0x20);
         q += 0x43;
     } else {
         q += 0x22;
@@ -1624,7 +1624,7 @@ void func_ov065_02265334(Sess *s) {
     buf1[1] = 2;
     func_ov065_0226599c(buf1 + 2, n - 0x33);
     buf1[n - 0x31] = 0;
-    func_02116048(&ctx->unk_00->unk_20, buf1 + n - 0x30, 0x30);
+    MI_CpuCopy8(&ctx->unk_00->unk_20, buf1 + n - 0x30, 0x30);
     p0 = (u16 *)data_ov065_0228ebc8(cnt * 8);
     if (p0 == 0) {
         data_ov065_0228ebd0(buf1);
@@ -1640,9 +1640,9 @@ void func_ov065_02265334(Sess *s) {
     if (data_ov065_0228b440 < 0x20) {
         u32 th = data_021fcc2c.unk_04;
         u32 pr = func_0211337c(th);
-        func_02113384(th, data_ov065_0228b440);
+        OS_SetThreadPriority(th, data_ov065_0228b440);
         func_ov065_02268540(p0, p1, p2, cnt, p3);
-        func_02113384(th, pr);
+        OS_SetThreadPriority(th, pr);
     } else {
         func_ov065_02268540(p0, p1, p2, cnt, p3);
     }
@@ -1916,21 +1916,21 @@ void func_ov065_02265b9c(void *, void *);
 s32 func_ov065_02265d5c(void *, u32, Unk_ov065_02264d80_Obj *);
 s32 func_ov065_02265a5c(Unk_ov065_02264d80_Obj *);
 
-u64 func_01ffa6b4(void);
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32);
+u64 OS_GetTick(void);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32);
 void func_02000b44(u32);
-void func_02113384(void *, u32);
-void func_02113788(void *);
+void OS_SetThreadPriority(void *, u32);
+void OS_JoinThread(void *);
 void func_021138d0(void *);
-s32 func_02113774(void *);
-void func_0211366c(void *);
-void func_02113498(void);
+s32 OS_IsThreadTerminated(void *);
+void OS_WakeupThreadDirect(void *);
+void OS_YieldThread(void);
 void func_021132e0(void);
 void func_02113a70(void *, void *, u32, void *, u32, u32);
-void func_02115640(void *);
-void *func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+void OS_GetMacAddress(void *);
+void *MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
 u32 func_ov065_02264900(u8 *p, u32 len, u32 sum);
 s32 func_ov065_02264848(u32 a);
@@ -2022,7 +2022,7 @@ void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
             flag = FALSE;
         }
     }
-    func_02116048(src, c->unk_7f8 + c->unk_800, len);
+    MI_CpuCopy8(src, c->unk_7f8 + c->unk_800, len);
     func_ov065_02262670(len, o);
     if (flag) {
         func_ov065_02265b9c(c, c->unk_7f8);
@@ -2073,10 +2073,10 @@ u32 func_ov065_02264dd4(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *
         }
         c1 = n1 >= chunk ? chunk : n1;
         c2 = chunk - c1;
-        func_02116048(p1, rec + 5, c1);
+        MI_CpuCopy8(p1, rec + 5, c1);
         p1 += c1;
         n1 -= c1;
-        func_02116048(p2, rec + 5 + c1, c2);
+        MI_CpuCopy8(p2, rec + 5 + c1, c2);
         p2 += c2;
         rec[0] = 0x17;
         rec[1] = 3;
@@ -2139,7 +2139,7 @@ void func_ov065_02264d24(s32 now) {
 }
 
 void func_ov065_02264d0c(void) {
-    func_02115fb4(data_ov065_02290438, 0, 0x170);
+    MI_CpuFill8(data_ov065_02290438, 0, 0x170);
 }
 }
 

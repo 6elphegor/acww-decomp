@@ -20,13 +20,13 @@ void *func_ov001_02224d84(s32, void *, s32);
 void func_ov001_02224cfc(void *, void *);
 void func_ov001_02226fd0(s32, void *);
 void *func_ov001_02227094(s32, void *, s32, s32);
-s32 func_01ff80e0(s32);
-s32 func_01ff8128(s32);
-void func_021145cc(void *, u32);
-void func_02111d34(void *, s32, u32);
-void func_02111ccc(void *, s32, u32);
-void func_02115e78(void *, void *, u32);
-void func_02115ea8(u32, void *, u32);
+s32 OS_DisableIrqMask(s32);
+s32 OS_EnableIrqMask(s32);
+void DC_FlushRange(void *, u32);
+void GX_LoadOAM(void *, s32, u32);
+void GXS_LoadOAM(void *, s32, u32);
+void MIi_CpuCopy32(void *, void *, u32);
+void MIi_CpuClearFast(u32, void *, u32);
 void func_ov001_022266b0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node);
 void func_ov001_022266c0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node);
 void func_ov001_022266d0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node);
@@ -52,7 +52,7 @@ void func_ov001_022268e4()
     s32 i;
     data_ov001_0222df70 = b;
     v = 0x200;
-    func_02115ea8(v, b, 0x800);
+    MIi_CpuClearFast(v, b, 0x800);
     for (i = 0; i < 2; i++) {
         data_ov001_0222df70->unk_800[i] = func_ov001_02224d84(0x40, (u8 *)data_ov001_0222df70 + i * 0x400, 8);
     }
@@ -61,9 +61,9 @@ void func_ov001_022268e4()
 
 void func_ov001_02226890()
 {
-    func_021145cc(data_ov001_0222df70, 0x800);
-    func_02111d34(data_ov001_0222df70, 0, 0x400);
-    func_02111ccc((u8 *)data_ov001_0222df70 + 0x400, 0, 0x400);
+    DC_FlushRange(data_ov001_0222df70, 0x800);
+    GX_LoadOAM(data_ov001_0222df70, 0, 0x400);
+    GXS_LoadOAM((u8 *)data_ov001_0222df70 + 0x400, 0, 0x400);
 }
 
 void func_ov001_0222685c()
@@ -75,7 +75,7 @@ void func_ov001_0222685c()
 void *func_ov001_02226814(s32 idx, void *dst)
 {
     void *r = func_ov001_02224ca0(data_ov001_0222df70->unk_800[idx]);
-    func_02115e78(dst, r, 8);
+    MIi_CpuCopy32(dst, r, 8);
     return r;
 }
 
@@ -109,21 +109,21 @@ void func_ov001_02226754(void *a, ...)
 
 void func_ov001_02226710(Unk_ov001_02226778_Node *node)
 {
-    s32 old = func_01ff80e0(1);
+    s32 old = OS_DisableIrqMask(1);
     node->unk_00->unk_04 = node->unk_04;
     node->unk_04->unk_00 = node->unk_00;
     node->unk_00 = node->unk_04 = 0;
-    func_01ff8128(old);
+    OS_EnableIrqMask(old);
 }
 
 void func_ov001_022266d0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node)
 {
-    s32 old = func_01ff80e0(1);
+    s32 old = OS_DisableIrqMask(1);
     head->unk_00->unk_04 = node;
     node->unk_00 = head->unk_00;
     node->unk_04 = head;
     head->unk_00 = node;
-    func_01ff8128(old);
+    OS_EnableIrqMask(old);
 }
 
 void func_ov001_022266c0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node)

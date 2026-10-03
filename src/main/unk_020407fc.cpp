@@ -67,7 +67,7 @@ struct Unk_02040d80_Obj {
 extern "C" {
 s32 func_02063b8c(s32);
 void func_0209d2c0(s32, s32);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f218(void *, s32, void *);
 void func_0209cf88(void *);
 s32 func_0209cd00(void *, void *);
@@ -122,11 +122,11 @@ s32 func_020b5164(void);
 void func_02046c24(void);
 void func_020460dc(s32);
 s32 func_020b101c(void);
-void func_02115e30(u32 v, u32 dst, u32 size);
-u32 func_021108e8();
-u32 func_0211065c();
-u32 func_02110868();
-u32 func_02110614();
+void MIi_CpuClear16(u32 v, u32 dst, u32 size);
+u32 G2_GetBG2ScrPtr();
+u32 G2_GetBG2CharPtr();
+u32 G2S_GetBG2ScrPtr();
+u32 G2S_GetBG2CharPtr();
 void func_020014f4(u32);
 void func_020014bc(u32);
 void func_02041104();
@@ -162,7 +162,7 @@ Unk_02040974_State data_021c3ca8;
 
 static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     volatile u16 t = v;
-    func_02115e30(t, dst, size);
+    MIi_CpuClear16(t, dst, size);
 }
 
 extern "C" void func_02041104() {
@@ -170,15 +170,15 @@ extern "C" void func_02041104() {
     r = (volatile u16 *)0x400000c;
     *r &= ~3;
     *r = (*r & 0x43) | 0x600;
-    Unk_02041104_Fill(0, func_021108e8(), 0x800);
-    Unk_02041104_Fill(0x1111, func_0211065c(), 0x20);
+    Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
     func_020014f4(4);
     r = (volatile u16 *)0x400100c;
     *r &= ~3;
     *r = (*r & 0x43) | 0xe04;
-    Unk_02041104_Fill(0, func_02110868(), 0x800);
-    Unk_02041104_Fill(0x1111, func_02110614(), 0x20);
+    Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);
     func_020014bc(4);
 }
@@ -210,7 +210,7 @@ BOOL Unk_020da258::vfunc_00()
             func_0209d498(&t);
             func_02040e14();
             k = r5[0x15e29];
-            func_02116048(&t, buf, 8);
+            MI_CpuCopy8(&t, buf, 8);
             r = func_0203f2e0(k, buf, 0);
             if (r != 0 && r != 3) {
                 data_020da218 = k;
@@ -376,7 +376,7 @@ extern "C" void func_02040cac(void)
         for (i = 0; i < 11; i++) {
             u32 k;
             s32 r;
-            func_02116048(&t, buf, 8);
+            MI_CpuCopy8(&t, buf, 8);
             k = data_020c9098[i];
             r = func_0203f31c(k, buf, 0);
             switch (r) {
@@ -401,7 +401,7 @@ extern "C" void func_02040cac(void)
         }
     }
     if (data_020da21c != 99) {
-        func_02116048(&t, buf2, 8);
+        MI_CpuCopy8(&t, buf2, 8);
         if (func_0203f31c(data_020da21c, buf2, 0) == 0) {
             if (data_020da21c == 0x13) {
                 data_020da220 = 99;

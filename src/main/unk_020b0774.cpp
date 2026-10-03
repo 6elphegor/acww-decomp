@@ -5,7 +5,7 @@ extern char data_020e2ef0[0x14];
 
 extern "C" {
 u32 func_02063b8c(u32 n);
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void func_020641b4(u32 a, void *b, u32 c);
 s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
 void _ZN12Unk_020e45f813func_020b8618Ejhjh(void *p, void *q, u32 a, u32 b, u32 c);
@@ -115,7 +115,7 @@ u32 func_020b0a30(u8 *p) {
     return _ZN12Unk_020940a013func_02094294Ev(p);
 }
 void *func_020b0a18(void *p, const void *src) {
-    func_02116048(src, p, 0x46);
+    MI_CpuCopy8(src, p, 0x46);
     return p;
 }
 }
@@ -186,7 +186,7 @@ void func_020b080c(u8 *p) {
                 e[0x324] = func_02063b8c(30) + 10;
             }
             changed = TRUE;
-            func_02116048(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
+            MI_CpuCopy8(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
         }
     }
     if (changed) {
@@ -205,7 +205,7 @@ void func_020b0788(u8 *self, s32 arg) {
     for (j = 0; j < 5; j++) {
         func_020641b4((u32)data_020e2f04[j], self + 0xa4 + j * 0x80, 0x80);
     }
-    func_02116048(self + 0xa4, self + 0x24, 0x80);
+    MI_CpuCopy8(self + 0xa4, self + 0x24, 0x80);
     func_02002580(self + 0x24, arg, 4, 4, 7);
 }
 

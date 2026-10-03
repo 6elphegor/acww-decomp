@@ -239,25 +239,25 @@ void func_02053780();
 void func_020b83e0();
 void func_020b8494();
 void func_0205369c();
-void func_0210fcb8(u32);
-void func_0210fbc4(u32);
-void func_021101f4(u32);
-void func_02110088(u32);
+void GX_SetBankForTex(u32);
+void GX_SetBankForTexPltt(u32);
+void GX_SetBankForBG(u32);
+void GX_SetBankForOBJ(u32);
 void func_0210f900(u32);
-void func_0210f884(u32);
+void GX_SetBankForSubOBJ(u32);
 void func_020015a0(u32);
 void func_0200158c(u32);
 void func_020b7f80();
 void func_020014f4(u32);
 void func_020014bc(u32);
-void func_02110ea4(u32, u32, u32, u32);
+void G3X_SetFog(u32, u32, u32, u32);
 void func_02110e00(const void *);
 void func_01ff8ccc();
 void func_02034044();
 void func_02088d58();
 void func_02030518();
 void func_02089118();
-u64 func_01ffa6b4();
+u64 OS_GetTick();
 void func_020739b8(s32);
 void func_020a5c30();
 void func_02045c68();
@@ -838,7 +838,7 @@ BOOL Unk_020e4238::vfunc_00() {
         &Unk_020b5844::func_020b5af4, &Unk_020b5844::func_020b59f8, &Unk_020b5844::func_020b58f0,
         &Unk_020b5844::func_020b58d8, &Unk_020b5844::func_020b58b0, &Unk_020b5844::func_020b5844,
     };
-    u64 start = func_01ffa6b4();
+    u64 start = OS_GetTick();
     u32 fail = 0;
     for (;;) {
         u32 idx = data_021eda64 - 1;
@@ -846,7 +846,7 @@ BOOL Unk_020e4238::vfunc_00() {
         if ((self->*tbl[idx])((u32)start, (u32)(start >> 32))) {
             data_021eda64++;
             if (data_021eda64 > 6) break;
-            u64 now = func_01ffa6b4();
+            u64 now = OS_GetTick();
             u64 d = (now - start) << 6;
             if ((u32)(d / 0x82ea) > 0x28) {
                 fail = 1;
@@ -966,7 +966,7 @@ extern "C" void func_020b54ec(s32 a) {
 
 extern "C" void func_020b54b0(s32 unused) {
     S394* a = &data_021ef394;
-    func_02110ea4(a->m20, 1, a->m21, a->h22);
+    G3X_SetFog(a->m20, 1, a->m21, a->h22);
     reg_4000358 = a->h24 | (a->m26 << 16);
     func_02110e00(a);
 }
@@ -976,12 +976,12 @@ extern "C" void func_020b541c(void) {
     func_020b83e0();
     func_020b8494();
     func_0205369c();
-    func_0210fcb8(7);
-    func_0210fbc4(0x10);
-    func_021101f4(0x20);
-    func_02110088(0x40);
+    GX_SetBankForTex(7);
+    GX_SetBankForTexPltt(0x10);
+    GX_SetBankForBG(0x20);
+    GX_SetBankForOBJ(0x40);
     func_0210f900(0x80);
-    func_0210f884(0x100);
+    GX_SetBankForSubOBJ(0x100);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
     *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
     func_020015a0(0);

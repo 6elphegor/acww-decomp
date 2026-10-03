@@ -95,44 +95,44 @@ extern "C" {
 extern Unk_ov001_0222df08_S *data_ov001_0222df08;
 
 s32 func_02122eb0(s32, s32);
-s32 func_01ffa2ec();
-void func_01ffa3d4(s32);
+s32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(s32);
 void func_02124a94(s32);
-void func_02119d78(void *);
-s32 func_02119a28(void *, s32);
+void FS_InitFile(void *);
+s32 FS_OpenFile(void *, s32);
 s32 func_02123e58(void *);
 s32 func_021239ec(void *, void *, u32);
 s32 func_02123680(void *, void *);
-void func_021199e0(void *);
+void FS_CloseFile(void *);
 void func_ov001_02220d2c(u32);
 s32 func_02124d50(s32);
 void func_0206d49c();
-void func_021155c4(void *);
-void func_02116048(void *, void *, u32);
+void OS_GetOwnerInfo(void *);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_021251ac(void *, void *, s32, s32, s32);
 void func_02125098(u32, u32);
 void func_021230a4(void *);
 void func_ov001_02220d40();
-s32 func_0212026c(void *);
+s32 WM_End(void *);
 s32 func_021210f0(void *, s32, void *);
-void func_02120aa0(void *, void *, s32);
-u32 func_0211f698();
+void WM_GetSharedDataAddress(void *, void *, s32);
+u32 WM_GetDispersionBeaconPeriod();
 s32 func_0211fb68(void *);
-s32 func_021202f4(void *, void *, s32);
-s32 func_021202b4(void *);
+s32 WM_Initialize(void *, void *, s32);
+s32 WM_Reset(void *);
 s32 func_0211fbb4(void *, s32);
-s32 func_021204a0(void *);
+s32 WM_EndMP(void *);
 s32 func_02121838(void *);
-s32 func_02120060(void *);
+s32 WM_EndParent(void *);
 s32 func_021218d0(void *, s32, s32, s32, s32);
-s32 func_0211f800();
-void func_02115640(u16 *);
-s32 func_02121844(void *, s32);
+s32 WM_GetAllowedChannel();
+void OS_GetMacAddress(u16 *);
+s32 WM_StartKeySharing(void *, s32);
 s32 func_02121570(void *, s32, s32, s32, s32);
 s32 func_021206b4(void *, void *, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 s32 func_021200a8(void *);
-s32 func_02121b8c(void *, s32, void *);
-s32 func_02120164(void *, void *);
+s32 WM_SetWEPKey(void *, s32, void *);
+s32 WM_SetParentParameter(void *, void *);
 
 s32 func_ov001_022218a4();
 void func_ov001_02221908();
@@ -223,7 +223,7 @@ extern "C" void func_ov001_02222d98(u32 v) {
 extern "C" s32 func_ov001_02222d40() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_02120164((void *)func_ov001_02222ca8, G);
+    r = WM_SetParentParameter((void *)func_ov001_02222ca8, G);
     if (r == 2) {
         return TRUE;
     }
@@ -255,7 +255,7 @@ extern "C" s32 func_ov001_02222c30() {
     s32 r;
     func_ov001_02222db8(3);
     r = G->unk_13ac(G->unk_13c0, G);
-    r = func_02121b8c((void *)func_ov001_02222bdc, r, G->unk_13c0);
+    r = WM_SetWEPKey((void *)func_ov001_02222bdc, r, G->unk_13c0);
     if (r == 2) {
         return TRUE;
     }
@@ -406,7 +406,7 @@ extern "C" void func_ov001_02222744(u16 *p) {
 extern "C" s32 func_ov001_022226f4() {
     s32 r;
     func_ov001_02222db8(6);
-    r = func_02121844(G->unk_1e00, 0xd);
+    r = WM_StartKeySharing(G->unk_1e00, 0xd);
     if (r == 2) {
         return TRUE;
     }
@@ -425,7 +425,7 @@ extern "C" s32 func_ov001_022226b0() {
 extern "C" s32 func_ov001_0222266c() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_021204a0((void *)func_ov001_022225fc);
+    r = WM_EndMP((void *)func_ov001_022225fc);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -448,7 +448,7 @@ static void func_ov001_dead_unknown() {
 
 extern "C" s32 func_ov001_022225c0() {
     s32 r;
-    r = func_02120060((void *)func_ov001_02222588);
+    r = WM_EndParent((void *)func_ov001_02222588);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -475,7 +475,7 @@ extern "C" s32 func_ov001_0222251c() {
 extern "C" s32 func_ov001_022224d8() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_021204a0((void *)func_ov001_02222488);
+    r = WM_EndMP((void *)func_ov001_02222488);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -512,7 +512,7 @@ extern "C" void func_ov001_02222404(Unk_ov001_02222088_A *a) {
 extern "C" s32 func_ov001_022223c0() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_021202b4((void *)func_ov001_02222384);
+    r = WM_Reset((void *)func_ov001_02222384);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -550,7 +550,7 @@ extern "C" s32 func_ov001_0222230c() {
 extern "C" s32 func_ov001_02222228() {
     u16 v[3];
     u16 r;
-    func_02115640(v);
+    OS_GetMacAddress(v);
     u32 m = *(volatile u32 *)0x27ffc3c;
     u32 a = v[0] + m;
     u32 b = v[1] + a;
@@ -572,7 +572,7 @@ extern "C" s32 func_ov001_02222228() {
 }
 
 extern "C" u16 func_ov001_02222174(u16 x) {
-    s32 r = func_0211f800();
+    s32 r = WM_GetAllowedChannel();
     if (r == 0x8000) {
         func_ov001_02222d98(3);
         func_ov001_02222db8(9);
@@ -679,7 +679,7 @@ extern "C" void func_ov001_02221e14(Unk_ov001_02222088_A *a) {
 extern "C" s32 func_ov001_02221db4() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_021202f4((u8 *)data_ov001_0222df28 + 0x80, (void *)func_ov001_02221d48, 2);
+    r = WM_Initialize((u8 *)data_ov001_0222df28 + 0x80, (void *)func_ov001_02221d48, 2);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     func_ov001_02222db8(10);
@@ -711,7 +711,7 @@ extern "C" s32 func_ov001_02221bb4(s32 a, u32 b, u32 c) {
     func_ov001_02222db8(3);
     data_ov001_0222df28->unk_0c = b;
     data_ov001_0222df28->unk_32 = c;
-    data_ov001_0222df28->unk_18 = func_0211f698();
+    data_ov001_0222df28->unk_18 = WM_GetDispersionBeaconPeriod();
     data_ov001_0222df28->unk_34 = 0xd0;
     data_ov001_0222df28->unk_36 = 0x44;
     data_ov001_0222df28->unk_10 = 2;
@@ -730,7 +730,7 @@ extern "C" void func_ov001_02221ba0(s32 a) {
 
 extern "C" void func_ov001_02221b74(s32 a) {
     Unk_ov001_0222df28_S *g = data_ov001_0222df28;
-    func_02120aa0(g->unk_13e0, g->unk_1c00, a);
+    WM_GetSharedDataAddress(g->unk_13e0, g->unk_1c00, a);
 }
 
 extern "C" s32 func_ov001_02221ab4(s32 a) {
@@ -795,7 +795,7 @@ extern "C" void func_ov001_02221908() {
 extern "C" s32 func_ov001_022218a4() {
     if (data_ov001_0222df28->unk_40 != 1) func_0206d49c();
     func_ov001_02222db8(3);
-    if (func_0212026c((void *)func_ov001_02222348) == 2) return 1;
+    if (WM_End((void *)func_ov001_02222348) == 2) return 1;
     func_ov001_02222db8(9);
     return 0;
 }

@@ -117,36 +117,36 @@ struct DtorEntry {
     void *obj;
 };
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02113720(OSThreadQueue *);
-extern void func_021136a0(OSThreadQueue *);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern int func_0211802c(FSFile *file, u32 cmd);
-extern void func_021181a8(FSFile *file, u32 result);
-extern void func_02118be8(FSArc *arc, u32 result);
-extern void func_02118c68(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SleepThread(OSThreadQueue *);
+extern void OS_WakeupThread(OSThreadQueue *);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
+extern void FSi_ReleaseCommand(FSFile *file, u32 result);
+extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
-extern void func_02119130(FSArc *arc, const char *name, int len);
-extern FSArc *func_021191f0(const char *name, int len);
-extern void func_02119240(FSArc *arc);
-extern BOOL func_02119278(FSFile *file, u32 cmd);
-extern u32 func_021123d0(void);
-extern void func_0211d6a0(u32);
-extern void func_0211d6c0(u32);
-extern void func_0211e0ac(void);
-extern void func_0211e130(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc *), FSArc *arg, BOOL async);
-extern void func_021145cc(u32 addr, u32 len);
-extern void func_02114594(u32 addr, u32 len);
-extern void func_02114608(u32 addr, u32 len);
+extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+extern FSArc *FS_FindArchive(const char *name, int len);
+extern void FS_InitArchive(FSArc *arc);
+extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
+extern u32 OS_GetLockID(void);
+extern void CARD_UnlockRom(u32);
+extern void CARD_LockRom(u32);
+extern void CARD_Init(void);
+extern void CARDi_ReadRom(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc *), FSArc *arg, BOOL async);
+extern void DC_FlushRange(u32 addr, u32 len);
+extern void DC_InvalidateRange(u32 addr, u32 len);
+extern void IC_InvalidateRange(u32 addr, u32 len);
 extern void func_02000934(u32 addr);
 extern void func_0206d49c(void);
 extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
-extern void func_0211ae74(MD5Context *ctx);
-extern void func_0211ad80(MD5Context *ctx, const void *data, u32 len);
-extern void func_0211acbc(void *digest, MD5Context *ctx);
+extern void DGT_Hash1Reset(MD5Context *ctx);
+extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
+extern void DGT_Hash1GetDigest_R(void *digest, MD5Context *ctx);
 
 extern FSDirPos data_021fea6c;
 extern u32 data_021fea78;
@@ -206,37 +206,37 @@ static inline BOOL IsIdle(volatile FSFile *f) {
     return r;
 }
 
-int func_02119f94(FSFile *file, u32 cmd);
+int FSi_RomArchiveProc(FSFile *file, u32 cmd);
 u32 func_02119f8c(void);
 u32 func_02119f84(void);
 u32 func_0211a024(void);
 int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len);
 void func_0211a078(FSArc *arc);
-void func_02119d78(FSFile *file);
-void func_02119de4(u32 dma);
-BOOL func_02119a78(FSFile *file, FSFileID id);
-BOOL func_02119af4(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
-BOOL func_02119b4c(FSFileID *id, const char *path);
-BOOL func_02119c18(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
-s32 func_02119b90(FSFile *file, void *dst, s32 len, BOOL async);
+void FS_InitFile(FSFile *file);
+void FSi_InitRom(u32 dma);
+BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
+BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
+BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path);
+BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
+s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
 s32 func_021198b4(FSFile *file, void *dst, s32 len);
-BOOL func_021199e0(FSFile *file);
-BOOL func_02119910(FSFile *file);
-int func_02119434(FSFile *file);
-FSFile *func_02119520(volatile FSArc *arc);
-void func_0211947c(FSFile *file);
-BOOL func_0211a358(const u8 *expected, const void *data, u32 len);
+BOOL FS_CloseFile(FSFile *file);
+BOOL FS_WaitAsync(FSFile *file);
+int FSi_ExecuteSyncCommand(FSFile *file);
+FSFile *FSi_NextCommand(volatile FSArc *arc);
+void FSi_ExecuteAsyncCommand(FSFile *file);
+BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
 void func_0211a258(FSOverlayInfoHeader *h);
-BOOL func_0211a3fc(FSOverlayInfo *p);
-BOOL func_0211a49c(FSOverlayInfo *p, int target, u32 id);
-BOOL func_0211a138(FSOverlayInfo *p);
-void func_0211a154(FSOverlayInfo *p);
-FSFileID func_0211a6c0(const FSOverlayInfoHeader *h);
-void func_0211a6e8(FSOverlayInfoHeader *h);
-u32 func_0211a72c(const FSOverlayInfoHeader *h);
+BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
+BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
+BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
+void FS_EndOverlay(FSOverlayInfo *p);
+FSFileID FS_GetOverlayFileID(const FSOverlayInfoHeader *h);
+void FS_ClearOverlayImage(FSOverlayInfoHeader *h);
+u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
 // FSi_LoadOverlayInfoCore (ROM table read)
-BOOL func_0211a5b0(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u32 offset_arm9, u32 len_arm9, u32 offset_arm7, u32 len_arm7) {
+BOOL FSi_LoadOverlayInfoCore(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u32 offset_arm9, u32 len_arm9, u32 offset_arm7, u32 len_arm7) {
     FSROMTable pr[1];
     u32 pos;
     if (target == 0) {
@@ -250,18 +250,18 @@ BOOL func_0211a5b0(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u32 offset_
     if (pos >= pr->length) return 0;
     {
         FSFile file[1];
-        func_02119d78(file);
-        if (!func_02119af4(file, arc, pr->offset + pos, pr->offset + pr->length, -1)) return 0;
+        FS_InitFile(file);
+        if (!FS_OpenFileDirect(file, arc, pr->offset + pos, pr->offset + pr->length, -1)) return 0;
         if (func_021198b4(file, p, 32) != 32) {
-            func_021199e0(file);
+            FS_CloseFile(file);
             return 0;
         }
-        func_021199e0(file);
+        FS_CloseFile(file);
         p->target = target;
-        if (!func_02119a78(file, func_0211a6c0(&p->header))) return 0;
+        if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;
         p->start = file->start;
         p->length = file->end - file->start;
-        func_021199e0(file);
+        FS_CloseFile(file);
         return 1;
     }
 }
@@ -270,23 +270,23 @@ BOOL func_0211a5b0(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u32 offset_
 static inline const FSROMTable *GetOVT(int target) {
     return (target == 0) ? (const FSROMTable *)0x027ffe50 : (const FSROMTable *)0x027ffe58;
 }
-BOOL func_0211a49c(FSOverlayInfo *p, int target, u32 id) {
+BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id) {
     const FSOvtCache *t = (target == 0) ? &data_021fea84 : &data_021fea8c;
     if (t->ptr) {
         FSFile file[1];
         const u32 pos = id * 32;
         if (pos >= t->size) return 0;
-        func_02116048(t->ptr + pos, p, 32);
+        MI_CpuCopy8(t->ptr + pos, p, 32);
         p->target = target;
-        func_02119d78(file);
-        if (!func_02119a78(file, func_0211a6c0(&p->header))) return 0;
+        FS_InitFile(file);
+        if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;
         p->start = file->start;
         p->length = file->end - file->start;
-        func_021199e0(file);
+        FS_CloseFile(file);
         return 1;
     } else {
         const FSROMTable *const rom9 = GetOVT(0);
         const FSROMTable *const rom7 = GetOVT(1);
-        return func_0211a5b0(p, target, id, &data_021fea94, rom9->offset, rom9->length, rom7->offset, rom7->length);
+        return FSi_LoadOverlayInfoCore(p, target, id, &data_021fea94, rom9->offset, rom9->length, rom7->offset, rom7->length);
     }
 }

@@ -37,9 +37,9 @@ extern s32 data_02200274[];
 extern struct { u32 a; u32 b; OSThread *cur; } data_021fcc2c;
 extern u32 data_02200650[];               // signal handler table
 
-int func_02114354(OSMutex *);
-void func_02114480(OSMutex *);
-void func_02114410(OSMutex *);
+int OS_TryLockMutex(OSMutex *);
+void OS_LockMutex(OSMutex *);
+void OS_UnlockMutex(OSMutex *);
 void func_021279a0(int);
 const char *func_021298b8(const char *format_string, scan_format *format);
 u32 func_0212bd38(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
@@ -101,19 +101,19 @@ int func_02129dcc(int sig) {
     void (*handler)(int);
     OSThread *t;
     if (sig < 1 || sig > 7) return -1;
-    if (func_02114354(&data_02200324) == 0) {
+    if (OS_TryLockMutex(&data_02200324) == 0) {
         data_02200250[7] = data_021fcc2c.cur->id;
         data_02200274[7] = 1;
     } else if (data_02200250[7] == (t = data_021fcc2c.cur)->id) {
         data_02200274[7]++;
     } else {
-        func_02114480(&data_02200324);
+        OS_LockMutex(&data_02200324);
         data_02200250[7] = data_021fcc2c.cur->id;
         data_02200274[7] = 1;
     }
     handler = (void (*)(int))data_02200650[sig - 1];
     if ((u32)handler != 1) data_02200650[sig - 1] = 0;
-    if (--data_02200274[7] == 0) func_02114410(&data_02200324);
+    if (--data_02200274[7] == 0) OS_UnlockMutex(&data_02200324);
     if ((u32)handler == 1 || ((u32)handler == 0 && sig == 1)) return 0;
     if (handler == 0) func_021279a0(0);
     handler(sig);
@@ -623,7 +623,7 @@ int func_02128ca4(const char *s, const char *fmt, ...) {
 }
 
 // rand
-int func_02128c70(void) {
+int rand(void) {
     data_0213c4fc = data_0213c4fc * 0x41c64e6d + 0x3039;
     return (data_0213c4fc >> 16) & 0x7fff;
 }

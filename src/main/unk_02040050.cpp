@@ -90,7 +90,7 @@ s32 func_020974f8(void);
 }
 
 extern "C" {
-void func_02116048(const void*, void*, u32);
+void MI_CpuCopy8(const void*, void*, u32);
 }
 
 extern "C" {

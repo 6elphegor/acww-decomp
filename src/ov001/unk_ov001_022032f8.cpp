@@ -25,11 +25,11 @@ extern "C" Unk_ov001_022032f8_P *data_ov001_0222c808 = 0;
 extern "C" s32 data_ov001_0222c804 = 0;
 
 extern "C" {
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32 v);
-void func_02115fb4(void *p, u32 v, u32 n);
-void func_02115e78(void *src, void *dst, u32 n);
-void func_02116048(void *a, void *b, u32 n);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32 v);
+void MI_CpuFill8(void *p, u32 v, u32 n);
+void MIi_CpuCopy32(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *a, void *b, u32 n);
 
 s32 func_ov065_0226a284(void);
 s32 func_ov065_02269e50(void);
@@ -266,7 +266,7 @@ extern "C" s32 func_ov001_022036a0(u8 *dst, s32 max) {
             if (i >= max) {
                 break;
             }
-            func_02115e78(func_ov065_0226a828((u16)i), dst, 0xc0);
+            MIi_CpuCopy32(func_ov065_0226a828((u16)i), dst, 0xc0);
         }
     }
     func_ov065_0226a87c(0);
@@ -274,7 +274,7 @@ extern "C" s32 func_ov001_022036a0(u8 *dst, s32 max) {
 }
 
 extern "C" s32 func_ov001_0220358c(u8 *a, u8 *b, s32 n, s32 d) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     s32 i;
     data_ov001_0222c804 = d;
     if (a != NULL) {
@@ -284,7 +284,7 @@ extern "C" s32 func_ov001_0220358c(u8 *a, u8 *b, s32 n, s32 d) {
         }
         data_ov001_0222c810 = data_ov001_0222c828;
     } else {
-        func_02115fb4(data_ov001_0222c828, 0xff, 6);
+        MI_CpuFill8(data_ov001_0222c828, 0xff, 6);
         data_ov001_0222c810 = data_ov065_0228b2a4;
     }
     if (b != NULL && n > 0 && n <= 0x20) {
@@ -305,7 +305,7 @@ extern "C" s32 func_ov001_0220358c(u8 *a, u8 *b, s32 n, s32 d) {
         }
         data_ov001_0222c814 = data_ov001_0222c830;
     } else {
-        func_02115fb4(data_ov001_0222c830, 0xff, 0x20);
+        MI_CpuFill8(data_ov001_0222c830, 0xff, 0x20);
         data_ov001_0222c814 = data_ov065_0228b2ac;
     }
     if (data_ov001_0222c818 == 3) {
@@ -313,94 +313,94 @@ extern "C" s32 func_ov001_0220358c(u8 *a, u8 *b, s32 n, s32 d) {
             goto fail;
         }
         data_ov001_0222c818 = 6;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return TRUE;
     } else {
         if (func_ov001_022036ec() != 1) {
             goto fail;
         }
         data_ov001_0222c818 = 6;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return TRUE;
     }
 fail:
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return FALSE;
 }
 
 extern "C" s32 func_ov001_02203548(void) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     if (data_ov001_0222c818 == 5) {
         if (func_ov065_0226a264(0, 0, 0) == 3) {
             data_ov001_0222c818 = 4;
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return TRUE;
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return FALSE;
 }
 
 extern "C" s32 func_ov001_02203508(void) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     if (data_ov001_0222c818 == 7) {
         if (func_ov065_02269e50() == 3) {
             data_ov001_0222c818 = 4;
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return TRUE;
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return FALSE;
 }
 
 extern "C" s32 func_ov001_022034a0(void) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     if (data_ov001_0222c818 == 3) {
         if (func_ov065_0226a284() != 3) {
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return FALSE;
         }
         data_ov001_0222c818 = 2;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return TRUE;
     }
     if (func_ov001_022036ec() == 1) {
         data_ov001_0222c818 = 2;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return TRUE;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return FALSE;
 }
 
 extern "C" s32 func_ov001_022033f0(void *a, void *b, u32 c) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     data_ov001_0222c80c = c;
     if (b) {
-        func_02116048(b, data_ov001_0222c824, 0x50);
+        MI_CpuCopy8(b, data_ov001_0222c824, 0x50);
     } else {
-        func_02115fb4(data_ov001_0222c824, 0, 0x50);
+        MI_CpuFill8(data_ov001_0222c824, 0, 0x50);
     }
-    func_02115e78(a, data_ov001_0222c820, 0xc0);
+    MIi_CpuCopy32(a, data_ov001_0222c820, 0xc0);
     if (func_ov001_022036ec() == 1) {
         data_ov001_0222c818 = 8;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 1;
     }
     if (data_ov001_0222c818 == 3) {
         if (func_ov065_02269f24(data_ov001_0222c820, data_ov001_0222c824, data_ov001_0222c80c) == 3) {
             data_ov001_0222c818 = 8;
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 1;
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return 0;
 }
 
 extern "C" s32 func_ov001_022032f8(void *fn, void *buf, u32 size) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     data_ov001_0222c824 = (u8 *)buf;
     Unk_ov001_022032f8_P *p = (Unk_ov001_022032f8_P *)(((u32)buf + 0x53) & ~3);
     data_ov001_0222c808 = p;
@@ -415,21 +415,21 @@ extern "C" s32 func_ov001_022032f8(void *fn, void *buf, u32 size) {
     data_ov001_0222c81c = (Unk_ov001_022034a0_Cb)fn;
     if (data_ov001_0222c818 == 0) {
         if (func_ov065_0226a510(data_ov001_0222c800, 0x2300)) {
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 0;
         }
         data_ov001_0222c818 = 1;
     }
     if (data_ov001_0222c818 == 1) {
         if (func_ov065_0226a33c(data_ov001_0222c808, (void *)func_ov001_02203770) != 3) {
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 0;
         }
         data_ov001_0222c818 = 4;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         return 1;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return 0;
 }
 

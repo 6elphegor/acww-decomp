@@ -16,13 +16,13 @@ void func_02001dbc();
 void func_02002918();
 void func_020e82b8();
 void func_0204142c();
-void func_0210f9ac(s32);
+void GX_SetBankForLCDC(s32);
 void func_02002898();
 void func_02001e7c();
 void func_020b83e0();
 void func_020b8494();
 void func_0210f554();
-void func_02115ea8(u32, void *, u32);
+void MIi_CpuClearFast(u32, void *, u32);
 void func_02053780();
 }
 
@@ -58,14 +58,14 @@ extern "C" void func_020537a4()
     func_0204142c();
     u16 *p = (u16 *)0x4000304;
     *p = (*p & 0xfffffdf1) | 0x20e;
-    func_0210f9ac(0x1f7);
+    GX_SetBankForLCDC(0x1f7);
     a = 0;
-    func_02115ea8(a, (void *)0x6800000, 0x84000);
+    MIi_CpuClearFast(a, (void *)0x6800000, 0x84000);
     func_0210f554();
     b = 0xc0;
-    func_02115ea8(b, (void *)0x7000000, 0x400);
+    MIi_CpuClearFast(b, (void *)0x7000000, 0x400);
     c = 0;
-    func_02115ea8(c, (void *)0x5000000, 0x400);
+    MIi_CpuClearFast(c, (void *)0x5000000, 0x400);
     func_02002898();
     func_02001e7c();
     func_020b83e0();

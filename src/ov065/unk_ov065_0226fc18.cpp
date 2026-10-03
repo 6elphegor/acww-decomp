@@ -109,17 +109,17 @@ s32 func_ov065_02271f58(void *, u32 *, u32);
 void func_ov065_02276324(void *, u32, void *);
 s32 func_ov065_022701d0(s32);
 u32 func_ov065_02270298(u8 *, s32);
-void func_02113788(void *);
-s32 func_02113774(void *);
+void OS_JoinThread(void *);
+s32 OS_IsThreadTerminated(void *);
 void func_02113a70(void *, void (*)(), void *, void *, u32, u32);
-void func_0211366c(void *);
-void func_0211450c(void *);
-void func_02115fb4(void *, u32, u32);
-void func_02116048(void *, void *, u32);
+void OS_WakeupThreadDirect(void *);
+void OS_InitMutex(void *);
+void MI_CpuFill8(void *, u32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
 u32 func_0213335c(u32, u32);
-u32 func_021277d4(void *);
-s32 func_02128930(void *, void *, u32);
+u32 STD_GetStringLength(void *);
+s32 memcmp(void *, void *, u32);
 char *func_0212a120(void *, s32);
 void func_0212a2ec(void *, void *, u32);
 s32 func_0212b854(void *, u32, u32);
@@ -234,8 +234,8 @@ void func_ov065_02270e34(s32 a, s32 b);
 s32 func_ov065_02270b78();
 void func_ov065_02270b74();
 void func_02115e64(u32 v, void *dst, u32 size);
-s32 func_021277d4(char *s);
-void func_02116048(char *src, void *dst, s32 n);
+s32 STD_GetStringLength(char *s);
+void MI_CpuCopy8(char *src, void *dst, s32 n);
 void func_ov065_022702fc(s32 s);
 s32 func_ov065_02270158(s32 x);
 s32 func_ov065_022701d0(s32 x);
@@ -418,8 +418,8 @@ void func_ov065_02270114(void);
 void func_ov065_022720f8(void *, void *, void *, void *, void *);
 void func_ov065_02276f4c(void *, void *, void *, void *, void *, void *, void *, void *);
 void func_ov065_022775e8(void *);
-u32 func_021277d4(const char *);
-void func_02116048(const void *, void *, u32);
+u32 STD_GetStringLength(const char *);
+void MI_CpuCopy8(const void *, void *, u32);
 void func_020fff48(void *, u32, void *);
 s32 func_ov065_0227c3b0(void *, s32, void *);
 s32 func_ov065_0227c400(void *, u32, s32, s32, void *, s32);
@@ -433,8 +433,8 @@ void func_ov065_0226dbfc(void);
 void func_ov065_0226dc40(void);
 s32 func_ov065_0226dd2c(void *, void *);
 void func_02127838(char *, const char *);
-void func_02115fb4(void *, s32, u32);
-u64 func_01ffa6b4(void);
+void MI_CpuFill8(void *, s32, u32);
+u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
 s32 func_020ffdfc(void *);
@@ -526,20 +526,20 @@ void func_ov065_02270c94(Unk_ov065_02270ba4_G *g, Unk_ov065_02270eb0_P *a1, void
                         &data_ov065_02290670->unk_04, data_ov065_02291104, data_ov065_02291204, a7, a8);
     func_ov065_022775e8(&data_ov065_02290670->unk_7a0);
     u32 n;
-    if (func_021277d4(a3) < 0x100) {
-        n = func_021277d4(a3);
+    if (STD_GetStringLength(a3) < 0x100) {
+        n = STD_GetStringLength(a3);
     } else {
         n = 0xff;
     }
-    func_02116048(a3, data_ov065_02291104, n);
+    MI_CpuCopy8(a3, data_ov065_02291104, n);
     data_ov065_02291104[n] = 0;
     u32 m;
-    if (func_021277d4(a4) < 0x100) {
-        m = func_021277d4(a4);
+    if (STD_GetStringLength(a4) < 0x100) {
+        m = STD_GetStringLength(a4);
     } else {
         m = 0xff;
     }
-    func_02116048(a4, data_ov065_02291204, m);
+    MI_CpuCopy8(a4, data_ov065_02291204, m);
     data_ov065_02291204[m] = 0;
 }
 }
@@ -710,12 +710,12 @@ s32 func_ov065_0227089c(char *s, Unk_ov065_022700e4_Cb f1, s32 f2, s32 f3, s32 p
     if (s == 0 || *s == 0) {
         n = 0;
     } else {
-        if (func_021277d4(s) < 0x20) {
-            n = func_021277d4(s);
+        if (STD_GetStringLength(s) < 0x20) {
+            n = STD_GetStringLength(s);
         } else {
             n = 0x1f;
         }
-        func_02116048(s, G->unk_34, n);
+        MI_CpuCopy8(s, G->unk_34, n);
     }
     G->unk_34[n] = 0;
     G->unk_64 = f1;
@@ -1274,15 +1274,15 @@ void func_ov065_0226fee4(void *a, u32 *b, u32 c) {
 
     s = (char *)b[2];
     if (func_ov065_02271f58(a, b, c) == 0) {
-        if (func_02128930(s, (void *)"GPCM", func_021277d4((void *)"GPCM")) == 0) {
-            s += func_021277d4((void *)"GPCM");
+        if (memcmp(s, (void *)"GPCM", STD_GetStringLength((void *)"GPCM")) == 0) {
+            s += STD_GetStringLength((void *)"GPCM");
             e = func_0212a120(s, 0x76);
             n = e - s;
             func_0212a2ec(buf, s, n);
             if (n <= 10) {
                 if (func_0212b854(buf, 0, 10) == 3) {
                     s += n + 1;
-                    if (func_02128930(s, (void *)"MAT", func_021277d4((void *)"MAT")) == 0) {
+                    if (memcmp(s, (void *)"MAT", STD_GetStringLength((void *)"MAT")) == 0) {
                         g = data_ov065_02290670;
                         if (g->unk_24 != 5) {
                             if (g->unk_24 != 6) {
@@ -1292,7 +1292,7 @@ void func_ov065_0226fee4(void *a, u32 *b, u32 c) {
                                 goto fin;
                             }
                         }
-                        char *t = s + func_021277d4((void *)"MAT");
+                        char *t = s + STD_GetStringLength((void *)"MAT");
                         func_ov065_02276324(a, b[0], t);
                     }
                 }

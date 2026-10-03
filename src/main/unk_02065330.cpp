@@ -147,8 +147,8 @@ extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
 
 extern "C" {
-void *func_02115fb4(void *dst, u32 v, u32 n);
-void *func_02116048(const void *src, void *dst, u32 n);
+void *MI_CpuFill8(void *dst, u32 v, u32 n);
+void *MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_02051268(const void *src, void *dst, u32 n);
 void func_0205125c(void *p, s32 n);
 s32 func_02051320(void *p, s32 n, s32 z);
@@ -204,7 +204,7 @@ void func_02065dc8(Unk_020dd458 *self, void *out);
 }
 
 extern "C" Unk_02065554 *func_02065e70(Unk_02065554 *self, const Unk_02065554 *src) {
-    func_02116048(src, self, 0xf4);
+    MI_CpuCopy8(src, self, 0xf4);
     return self;
 }
 
@@ -296,7 +296,7 @@ Unk_020dd458::Unk_020dd458() {}
 Unk_020dd458::~Unk_020dd458() {}
 
 extern "C" void func_02065c94(Unk_02065554 *self) {
-    func_02115fb4(self, 0, 0xf4);
+    MI_CpuFill8(self, 0, 0xf4);
     self->unk_f0 = 0xfff1;
 }
 
@@ -625,7 +625,7 @@ extern "C" void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
 
 extern "C" void func_02065388(Unk_02065388_Obj *o) {
     u8 code[2];
-    func_02115fb4(o, 0, 0x52);
+    MI_CpuFill8(o, 0, 0x52);
     code[0] = 0x23;
     func_020653cc(&code[0], (u8 *)o, &o->unk_50, NULL);
     code[1] = 0x26;

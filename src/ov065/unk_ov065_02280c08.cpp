@@ -146,8 +146,8 @@ void func_ov065_02277ac8(void *);
 void *func_ov065_02277af0(u32);
 s32 func_ov065_0227e0e8(void *, Unk_ov065_02280a2c_Pair, void *, void *, s32);
 s32 func_0212899c(void *, s32, u32);
-s32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_0227dc28(void *, void *, const char *);
 s32 func_ov065_0227dc48(void *, void *, const char *, s32);
 s32 func_ov065_0227dccc(void *, void *, s32);
@@ -303,12 +303,12 @@ typedef Unk_ov065_02280e7c_Sub Sub0228;
 
 extern "C" {
 
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 char *func_02129f1c(const char *, const char *);
 s32 func_0212a190(const char *, const char *);
 s32 func_0212b770(const char *);
-s32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
 void *func_0212899c(void *, s32, s32);
 
 void func_ov065_02277ac8(void *);
@@ -465,7 +465,7 @@ s32 func_ov065_02281530(Ctx0228 **h, Node0228 *n) {
             char *q;
             *p = 0;
             q = n->unk_18;
-            if (func_0212a15c(q, "\\anack\\", 7) == 0) {
+            if (strncmp(q, "\\anack\\", 7) == 0) {
                 n->unk_14++;
                 if (n->unk_14 > 1) {
                     func_ov065_02283460(h, "Error getting buddy authorization.");
@@ -475,7 +475,7 @@ s32 func_ov065_02281530(Ctx0228 **h, Node0228 *n) {
                 if (r != 0) {
                     return r;
                 }
-            } else if (func_0212a15c(q, "\\aack\\", 6) != 0) {
+            } else if (strncmp(q, "\\aack\\", 6) != 0) {
                 func_ov065_02283460(h, "Error parsing buddy message.");
                 return 3;
             }
@@ -522,7 +522,7 @@ s32 func_ov065_022813ac(Ctx0228 **h, Node0228 *n) {
     if (p != NULL) {
         *p = 0;
         q = n->unk_18;
-        if (func_0212a15c(q, "\\auth\\", 6) == 0) {
+        if (strncmp(q, "\\auth\\", 6) == 0) {
             if (func_ov065_02283630(q, "\\pid\\", b1, 0x10) == 0) {
                 n->unk_00 = 0x6a;
                 return 0;
@@ -536,8 +536,8 @@ s32 func_ov065_022813ac(Ctx0228 **h, Node0228 *n) {
                 n->unk_00 = 0x6a;
                 return 0;
             }
-            func_021130d0(b4, "%s%d%d", c->unk_177, c->unk_1a0, x);
-            func_ov065_0227899c(b4, func_021277d4(b4), b5);
+            OS_SPrintf(b4, "%s%d%d", c->unk_177, c->unk_1a0, x);
+            func_ov065_0227899c(b4, STD_GetStringLength(b4), b5);
             if (func_0212a190(b3, b5) != 0) {
                 func_ov065_0227de10(h, &n->unk_28, "\\anack\\");
                 func_ov065_0227de10(h, &n->unk_28, "\\final\\");
@@ -678,8 +678,8 @@ extern "C" {
 // Not in the original binary: unreferenced weak function compiled right before func_ov065_02281180, so that the literal
 // "Out of memory." is pooled before "1" as in the original; removed by the dead-stripping link (see notes.txt).
 __declspec(weak) void Unk_ov065_02281180_pool_order(void) {
-    func_021277d4("PR");
-    func_021277d4("Out of memory.");
+    STD_GetStringLength("PR");
+    STD_GetStringLength("Out of memory.");
 }
 }
 }
@@ -919,7 +919,7 @@ s32 func_ov065_02280d70(void *h, Unk_ov065_02280854_Node *n) {
 namespace Na {
 extern "C" {
 s32 func_ov065_02280cb4(void *h, Unk_ov065_02280c08_Node *n, s32 a, const char *b) {
-    s32 len = func_021277d4(b);
+    s32 len = STD_GetStringLength(b);
     Unk_ov065_02280cb4_T t = {{0, 0, 0, 0, 0, 0}};
     s32 r;
     t.v[4] = a;
@@ -963,7 +963,7 @@ namespace Na {
 extern "C" {
 s32 func_ov065_02280c84(void *h, Unk_ov065_02280c08_Node *n, s32 a, Unk_ov065_02280c84_Src *s) {
     char buf[0x44];
-    func_021130d0(buf, "\\m\\%d\\xfer\\%d %u %u", a, s->unk_00, s->unk_04, s->unk_08);
+    OS_SPrintf(buf, "\\m\\%d\\xfer\\%d %u %u", a, s->unk_00, s->unk_04, s->unk_08);
     return func_ov065_0227dc28(h, n, buf);
 }
 }
@@ -978,9 +978,9 @@ s32 func_ov065_02280c08(void *h, Unk_ov065_02280c08_Node *n, char *str, s32 len)
         str = "";
     }
     if (len == -1) {
-        len = func_021277d4(str);
+        len = STD_GetStringLength(str);
     }
-    func_021130d0(buf, "\\len\\%d\\msg\\\n", len);
+    OS_SPrintf(buf, "\\len\\%d\\msg\\\n", len);
     r = func_ov065_0227dc28(h, n, buf);
     if (r != 0) {
         return r;

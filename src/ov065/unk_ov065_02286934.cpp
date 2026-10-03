@@ -124,10 +124,10 @@ extern u32 data_ov065_02291540;
 extern void *data_ov065_02291544;
 extern u8 data_ov065_02291548[];
 
-s32 func_021130d0(char *buf, const char *fmt, ...);
-s32 func_02113088(char *buf, s32 n, const char *fmt, ...);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
+s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 char *func_02127838(char *dst, const char *src);
-u32 func_021277d4(const char *s);
+u32 STD_GetStringLength(const char *s);
 
 char *func_ov065_022610f0(Unk_ov065_022868b0_InAddr a);
 Unk_ov065_02286f04_Hostent *func_ov065_02261408(const char *name);
@@ -288,9 +288,9 @@ extern Vec *data_ov065_02291544;
 extern s32 data_ov065_02291748;
 extern u32 data_ov065_0229174c[];
 
-s32 func_02128930(const void *, const void *, s32);
+s32 memcmp(const void *, const void *, s32);
 void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
 s32 func_ov065_02278dbc(s32);
 s32 func_ov065_02279144(void);
@@ -402,7 +402,7 @@ void func_ov065_02287260(void) {
 
 namespace N02287200 { extern "C" {
 BOOL func_ov065_0228723c(void *p) {
-    if (func_02128930(p, data_ov065_0228e16c, 6) == 0) {
+    if (memcmp(p, data_ov065_0228e16c, 6) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -490,7 +490,7 @@ extern "C" void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx) {
     pkt.unk_13 = 0;
     pkt.unk_14 = 0;
     func_02127838(pkt.name, data_ov065_02290fe4);
-    s32 len = func_021277d4(data_ov065_02290fe4) + 0x16;
+    s32 len = STD_GetStringLength(data_ov065_02290fe4) + 0x16;
     if (p[0xe] != 0 && ctx->unk_14[0] == 0) {
         p[0xc] = 0;
         func_ov065_02287200(ctx->unk_04, data_ov065_02291540, 0x6cfd, p, len);
@@ -563,7 +563,7 @@ namespace N022868b0 { extern "C" {
 extern "C" u32 func_ov065_02286ed8(const char *name, const char *s) {
     char buf[0x80];
     if (name == NULL) {
-        func_02113088(buf, 0x80, "%s.%s", data_ov065_02290fe4, s);
+        OS_SNPrintf(buf, 0x80, "%s.%s", data_ov065_02290fe4, s);
         name = buf;
     }
     return func_ov065_02286f04(name);

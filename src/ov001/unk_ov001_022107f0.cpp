@@ -3,8 +3,8 @@
 
 extern "C" {
 extern u8 func_02111a6c[];
-void func_02115e30(u32 a, void *b, u32 c);
-void func_02115e48(void *a, void *b, u32 c);
+void MIi_CpuClear16(u32 a, void *b, u32 c);
+void MIi_CpuCopy16(void *a, void *b, u32 c);
 s32 func_ov001_022079fc();
 s32 func_ov001_02208070();
 s32 func_ov001_022080a0();
@@ -82,8 +82,8 @@ void func_ov001_02210be4() {
     func_ov001_02210b44();
     volatile u16 v = 0;
     u16 buf[11];
-    func_02115e30(v, buf, 0x16);
-    func_02115e48(p + 2, buf, p[1] * 2);
+    MIi_CpuClear16(v, buf, 0x16);
+    MIi_CpuCopy16(p + 2, buf, p[1] * 2);
     const u16 *h = data_ov001_02229ff8;
     func_ov001_02225254(w, h[0], h[1], h[2] - h[0], h[3] - h[1], 2, 0x480, buf);
     func_ov001_0222516c(w);

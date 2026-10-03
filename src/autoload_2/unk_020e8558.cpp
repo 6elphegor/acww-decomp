@@ -135,8 +135,8 @@ typedef void (*HeapAllocHook)(Unk_020e8b94 *heap, void *p, u32 size, s32 align);
 typedef void (*ThreadHook)(void *, void *);
 
 extern "C" {
-u32 func_01ffa2ec(void); // OS_DisableInterrupts
-u32 func_01ffa3d4(u32); // OS_RestoreInterrupts
+u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
+u32 OS_RestoreInterrupts(u32); // OS_RestoreInterrupts
 u32 func_01ffa3b4(void); // OS_GetProcMode
 void func_0206d49c(void); // Thumb, in main: fatal stop
 void *func_02100f20(void *heap);
@@ -149,22 +149,22 @@ void func_021006c8(void *heap, void *p); // NNS_FndFreeToExpHeap
 void *func_02100e7c(void *heap);
 s32 func_02100708(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
 u32 func_02101008(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
-u32 func_021006a0(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
+u32 NNS_FndGetTotalFreeSizeForExpHeap(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
 u32 func_02100618(void *heap, s32 align); // NNS_FndGetAllocatableSizeForExpHeapEx
 void *func_02101088(void *heap, u32 size, s32 align); // NNS_FndAllocFromFrmHeapEx
-void *func_02100890(void *heap, u32 size, s32 align); // NNS_FndAllocFromExpHeapEx
+void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, s32 align); // NNS_FndAllocFromExpHeapEx
 void func_021010d0(void *heap);
 void func_021008d4(void *heap);
 void *func_021010dc(void *p, u32 size, u32 opt);
-void *func_021008e0(void *p, u32 size, u32 opt);
-BOOL func_02114354(void *p);
-void func_02114410(void *p);
-void func_02114480(void *p);
-void func_0211450c(void *p);
-u32 func_02114940(u32); // OS_GetArenaLo(id)
-u32 func_02114954(u32);
-void *func_02114674(u32, u32, u32);
-ThreadHook func_0211328c(ThreadHook);
+void *NNS_FndCreateExpHeapEx(void *p, u32 size, u32 opt);
+BOOL OS_TryLockMutex(void *p);
+void OS_UnlockMutex(void *p);
+void OS_LockMutex(void *p);
+void OS_InitMutex(void *p);
+u32 OS_GetArenaLo(u32); // OS_GetArenaLo(id)
+u32 OS_GetArenaHi(u32);
+void *OS_AllocFromArenaLo(u32, u32, u32);
+ThreadHook OS_SetSwitchThreadCallback(ThreadHook);
 void func_0211320c(void *thread, void *v);
 void *func_02113204(void *thread);
 
@@ -205,9 +205,9 @@ extern "C" Unk_020e8b94 *func_020e9244(void *thread, Unk_020e8b94 *heap) {
 }
 
 extern "C" void func_020e9210(void) {
-    u32 e = func_01ffa2ec();
-    data_021f4820 = func_0211328c(func_020e9284);
-    func_01ffa3d4(e);
+    u32 e = OS_DisableInterrupts();
+    data_021f4820 = OS_SetSwitchThreadCallback(func_020e9284);
+    OS_RestoreInterrupts(e);
 }
 
 extern "C" Unk_0213af58 *func_020e8f58(void *p, u32 n);
@@ -230,10 +230,10 @@ extern "C" void func_020e914c(void) {
     t = *(s32 *)&data_021f4828;
     size = data_021f4828;
     if (t == 0) {
-        size = func_02114940(0);
-        size = func_02114954(data_021f4830) - ((size + 31) & ~31);
+        size = OS_GetArenaLo(0);
+        size = OS_GetArenaHi(data_021f4830) - ((size + 31) & ~31);
     }
-    if (func_020e91cc(func_02114674(data_021f4830, size, 32), size) != NULL) func_020e9210();
+    if (func_020e91cc(OS_AllocFromArenaLo(data_021f4830, size, 32), size) != NULL) func_020e9210();
 }
 
 Unk_020e8b94::Unk_020e8b94(u32 a, u32 b, Unk_020e8b94 *parent) {
@@ -247,7 +247,7 @@ Unk_020e8b94::Unk_020e8b94(u32 a, u32 b, Unk_020e8b94 *parent) {
 Unk_0213af58::Unk_0213af58(void *block, u32 size, Unk_020e8b94 *parent, void *handle)
     : Unk_020e8b94((u32)block, size, parent) {
     unk_14 = handle;
-    func_0211450c(&mutex);
+    OS_InitMutex(&mutex);
 }
 
 Unk_0213afb0::Unk_0213afb0(void *block, u32 size, Unk_020e8b94 *parent, void *handle)
@@ -267,7 +267,7 @@ Unk_0213afb0::~Unk_0213afb0() {
 extern "C" Unk_0213af58 *func_020e8f58(void *p, u32 n) {
     u32 region = n - 0x30;
     void *q = (u8 *)p + 0x30;
-    void *h = func_021008e0(q, region, data_0213af4c);
+    void *h = NNS_FndCreateExpHeapEx(q, region, data_0213af4c);
     if (h != NULL) {
         new (p) Unk_0213af58(q, region, NULL, h);
         return (Unk_0213af58 *)p;
@@ -293,7 +293,7 @@ extern "C" Unk_0213af58 *func_020e8e7c(u32 size, Unk_020e8b94 *parent) {
     p = (Unk_0213af58 *)parent->alloc(total, 4);
     if (p != NULL) {
         q = (u8 *)p + 0x30;
-        h = func_021008e0(q, region, data_0213af4c);
+        h = NNS_FndCreateExpHeapEx(q, region, data_0213af4c);
         if (h == NULL) {
             parent->free(p);
             p = NULL;
@@ -353,15 +353,15 @@ BOOL Unk_020e8b94::vfunc_10() {
 }
 
 void Unk_0213af58::vfunc_08() {
-    func_02114480(&mutex);
+    OS_LockMutex(&mutex);
 }
 
 void Unk_0213af58::vfunc_0c() {
-    func_02114410(&mutex);
+    OS_UnlockMutex(&mutex);
 }
 
 BOOL Unk_0213af58::vfunc_10() {
-    return func_02114354(&mutex);
+    return OS_TryLockMutex(&mutex);
 }
 
 void Unk_020e8b94::destroy() {
@@ -402,7 +402,7 @@ void *Unk_020e8b94::alloc(u32 size, s32 align) {
 }
 
 void *Unk_0213af58::vfunc_18(u32 size, s32 align) {
-    return func_02100890(unk_14, size, align);
+    return NNS_FndAllocFromExpHeapEx(unk_14, size, align);
 }
 
 void *Unk_0213afb0::vfunc_18(u32 size, s32 align) {
@@ -478,7 +478,7 @@ u32 Unk_0213afb0::vfunc_3c(s32 align) {
 }
 
 u32 Unk_0213af58::vfunc_40() {
-    return func_021006a0(unk_14);
+    return NNS_FndGetTotalFreeSizeForExpHeap(unk_14);
 }
 
 u32 Unk_0213afb0::vfunc_40() {
@@ -586,18 +586,18 @@ void *Unk_0213afb0::vfunc_4c() {
 }
 
 u32 Unk_020e8b94::setFlags(u32 flags) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     u32 old = unk_10;
     if (!(flags & 0x8000)) unk_10 = flags;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return old;
 }
 
 extern "C" Unk_020e8b94 *func_020e86c8(Unk_020e8b94 *heap) {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     Unk_020e8b94 *old = data_021f482c;
     data_021f482c = heap;
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return old;
 }
 

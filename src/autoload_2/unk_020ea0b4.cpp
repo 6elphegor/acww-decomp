@@ -4,12 +4,12 @@
 extern "C" {
 void *func_020ec808(u32 size, u32 align); // alloc via hook data_021f48f4
 void func_020ec7e4(void *p); // free via hook data_021f48f0
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
-void func_02116048(const void *src, void *dst, u32 n); // MI_CpuCopy8
-void func_02113088(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
-u32 func_021277d4(const char *s); // strlen
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
+u32 STD_GetStringLength(const char *s); // strlen
 void func_02127838(char *dst, const char *src); // strcpy
-void func_02127460(void *dst, const void *src, u32 n); // memcpy
+void MATH_CalcSHA1(void *dst, const void *src, u32 n); // memcpy
 
 s32 func_ov067_02261148(void);
 s32 func_ov067_022611fc(void *p);
@@ -128,7 +128,7 @@ extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
     if (data_021f4894 < 4) return FALSE;
     if (data_0213b064 != 0) {
         enc = ((c + 2) / 3) * 4 + 1;
-        sz = func_021277d4(data_0213b0b0);
+        sz = STD_GetStringLength(data_0213b0b0);
         data_021f48b4 = (u32)func_020ec808(sz + enc, 4);
         if (data_021f48b4 == 0) return FALSE;
         data_021f48c4 = (char *)func_020ec808(0x29, 4);
@@ -139,7 +139,7 @@ extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
         }
         func_02127838((char *)data_021f48b4, data_0213b0b0);
         len = func_ov065_0226fb08(b, c, (char *)data_021f48b4 + sz, enc);
-        func_02127460(data_021f48c4 + 0x14, (void *)data_021f48b4, sz + len);
+        MATH_CalcSHA1(data_021f48c4 + 0x14, (void *)data_021f48b4, sz + len);
         hex = data_0213b084;
         dg = (u8 *)data_021f48c4 + 0x14;
         for (i = 0; i < 20; i++) {
@@ -148,8 +148,8 @@ extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
         }
         data_021f48c4[0x28] = 0;
         data_0213b064 = 0;
-        func_02115fb4(buf, 0, 16);
-        func_02113088(buf, 16, data_0213b0c8, func_020ea3c4(data_021f48d8 + 0x10));
+        MI_CpuFill8(buf, 0, 16);
+        OS_SNPrintf(buf, 16, data_0213b0c8, func_020ea3c4(data_021f48d8 + 0x10));
         func_ov065_02278060(&builder);
         func_ov065_02278054(&builder, data_0213b0d0, buf);
         func_ov065_02278054(&builder, data_0213b0d4, data_021f48c4);

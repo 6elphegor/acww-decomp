@@ -287,7 +287,7 @@ s32 func_020b8670(void *a, void *b, s32 c, s32 d);
 s32 func_020b86c0(void *a, void *b, s32 c, s32 d, s32 e);
 s32 func_020b8714(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_020b87d0(void *p);
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
 s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
 extern u32 data_021f482c;

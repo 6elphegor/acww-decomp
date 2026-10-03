@@ -37,8 +37,8 @@ typedef struct JOut {
 extern RS *data_021f5cc0;
 extern u32 data_0213bcbc;
 extern u8 data_02135e5c[][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4];
-extern void func_02116178(void *);
-extern void func_02115e30(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
+extern void MI_Zero36B(void *);
+extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 
 static inline u8 *JntEnt(RS *rs)
 {
@@ -60,7 +60,7 @@ void func_021074c8(TexObj *o, u8 *res, u8 *src)
     o->cnt = src[0x17];
     {
         volatile u16 zero = 0;
-        func_02115e30(zero, o->tbl, o->cnt * 2);
+        MIi_CpuClear16(zero, o->tbl, o->cnt * 2);
     }
     offs = (u16 *)(res + 20);
     for (i = 0; i < *(u16 *)(res + 6); i++) {
@@ -69,7 +69,7 @@ void func_021074c8(TexObj *o, u8 *res, u8 *src)
 }
 
 // joint translation from the render state node
-void func_02107460(JOut *out)
+void getMdlTrans_(JOut *out)
 {
     RS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
@@ -121,7 +121,7 @@ void func_02107298(JOut *out)
             s32 a = p[0];
             s32 b = p[1];
             s32 k = (s32)(flag & 0xf0) >> 4;
-            func_02116178(out->m);
+            MI_Zero36B(out->m);
             out->m[k] = (*(u16 *)ent & 0x100) ? -0x1000 : 0x1000;
             out->m[data_02135e5c[k][0]] = a;
             out->m[data_02135e5d[k][0]] = b;

@@ -158,7 +158,7 @@ void * func_020ea65c(s32);
 s32 func_020ea6c8(void *);
 void * func_020ea6f4(void *);
 void func_020ea608(void *);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
 BOOL func_0209eedc();
 s32 func_020eb650(...);
@@ -233,7 +233,7 @@ s32 func_02087444();
 void * _ZN12Unk_0209865c13func_020986a4Ev(void *);
 void * _ZN12Unk_020872fc13func_02087364Ev(void *);
 s32 func_02063954();
-s32 func_02128930(void *, void *, u32);
+s32 memcmp(void *, void *, u32);
 void _ZN12Unk_020872fc13func_020872fcEv(void *);
 BOOL _ZN12Unk_020872fc13func_02087314Ev(void *);
 u8 * _ZN12Unk_020d5d8413func_02002d3cEjPS_(s32, s32);
@@ -1158,8 +1158,8 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225bcc0() {
                 } else {
                     unk_658.func_ov048_0225afd8(1, 0);
                     h = func_0209750c();
-                    func_02116048(func_02063964(data_021d7352), buf, 8);
-                    func_02116048(_ZN12Unk_020940a013func_02094104Ev(_ZN12Unk_0209865c13func_0209888cEv(h)), buf + 8, 8);
+                    MI_CpuCopy8(func_02063964(data_021d7352), buf, 8);
+                    MI_CpuCopy8(_ZN12Unk_020940a013func_02094104Ev(_ZN12Unk_0209865c13func_0209888cEv(h)), buf + 8, 8);
                     buf[0x10] = 0;
                     func_0207217c();
                     func_020ea720(buf, 0x11);
@@ -1314,7 +1314,7 @@ extern "C" BOOL func_ov048_0225b8a8() {
             u16 *q = (u16 *)data_021d7352;
             u16 *p = (u16 *)_ZN12Unk_020872fc13func_02087364Ev(r4);
             if (p[0] == q[0]) {
-                if (func_02128930(p + 1, q + 1, 8) == 0) {
+                if (memcmp(p + 1, q + 1, 8) == 0) {
                     goto skip;
                 }
             }
@@ -2992,7 +2992,7 @@ void Unk_ov048_0225cbc8::func_ov048_02259d40() {
     } else {
         if (func_020ea3e8(r4 + 0x10)) {
             func_020ea3d0(r4 + 0x10, func_02076e1c(func_02076c7c(_ZN12Unk_0209865c13func_02098680Ev(r6))));
-            func_02116048(r4 + 0x10, func_02076c80(_ZN12Unk_0209865c13func_02098680Ev(r6)), 0x40);
+            MI_CpuCopy8(r4 + 0x10, func_02076c80(_ZN12Unk_0209865c13func_02098680Ev(r6)), 0x40);
             if (func_020a05e8() == 0) {
                 mv = 0x75;
             } else {
@@ -3040,9 +3040,9 @@ void Unk_ov048_0225cbc8::func_ov048_02259c1c() {
                 t = func_020ea6c8(p);
                 if (t == 0x11) {
                     func_0207217c();
-                    func_02116048(func_020ea6f4(p), &buf[1], t);
+                    MI_CpuCopy8(func_020ea6f4(p), &buf[1], t);
                     if (buf[0x11] == 0) {
-                        func_02116048(p, unk_b8.unk_2f4, 0xe0);
+                        MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
                         func_020a78a4(B, &buf[1], 8);
                         _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(A, B, 0, 0);
                         func_020a78a4(D, &buf[9], 8);
@@ -3272,7 +3272,7 @@ void Unk_ov048_0225cbc8::func_ov048_022596e8() {
                 t = func_020ea6c8(p);
                 if (t == 0x11) {
                     func_0207217c();
-                    func_02116048(func_020ea6f4(p), buf, t);
+                    MI_CpuCopy8(func_020ea6f4(p), buf, t);
                     if (buf[0x10] == 0) {
                         if (p[2] == unk_b8.unk_2f4[2] && p[3] == unk_b8.unk_2f4[3] && p[4] == unk_b8.unk_2f4[4] && p[5] == unk_b8.unk_2f4[5] &&
                             p[6] == unk_b8.unk_2f4[6] && p[7] == unk_b8.unk_2f4[7]) {

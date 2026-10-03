@@ -107,8 +107,8 @@ s32 func_02002bdc(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffc5a4(s32 a, s32 b);
 void func_01ffcbb0(void *out, Unk_021c3070 *o);
-void func_01ffca58(void *a, void *b, void *c);
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Subtract(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *out, void *a, void *b);
 void func_020e9790(void *out, void *in, s32 s);
 void func_020e93a0(void *v, s32 a);
@@ -468,7 +468,7 @@ void func_ov004_0223f6bc(Unk_021c3070 *o) {
         o->unk_110 = e->w0;
         o->unk_114 = e->w1;
         o->unk_118 = e->w2;
-        func_01ffca58(&o->unk_110, &o->unk_104, &o->unk_110);
+        VEC_Subtract(&o->unk_110, &o->unk_104, &o->unk_110);
         if (func_0203bc48(o) > 0x1400) {
             o->unk_100 = o->unk_100 + e->w6;
         }
@@ -476,9 +476,9 @@ void func_ov004_0223f6bc(Unk_021c3070 *o) {
         m->v0 = m->v0 + e->h20;
         {
             Unk_0223f6bc_V3 t(e->w3, 0, e->w4);
-            func_01ffca8c(&o->unk_110, &t, &o->unk_110);
+            VEC_Add(&o->unk_110, &t, &o->unk_110);
             func_020e93a0(&t, m->v0);
-            func_01ffca58(&o->unk_110, &t, &o->unk_110);
+            VEC_Subtract(&o->unk_110, &t, &o->unk_110);
         }
     }
     Unk_0223f44c_Finish(o);
@@ -530,7 +530,7 @@ void func_ov004_0223f534(Unk_021c3070 *o) {
     o->unk_118 = e->w2;
     {
         void *p = &o->unk_110;
-        func_01ffca58(p, &o->unk_104, p);
+        VEC_Subtract(p, &o->unk_104, p);
     }
     o->unk_fe = e->h1e;
     o->unk_fc = e->h1c;

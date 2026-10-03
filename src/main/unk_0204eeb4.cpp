@@ -129,11 +129,11 @@ void func_02063d0c(u32 id);
 }
 
 extern "C" {
-void *func_0211a49c(void *p, s32 v, u32 n);
+void *FS_LoadOverlayInfo(void *p, s32 v, u32 n);
 }
 
 extern "C" {
-void func_0211a6c0(void *a, void *b);
+void FS_GetOverlayFileID(void *a, void *b);
 }
 
 extern "C" {
@@ -277,7 +277,7 @@ extern "C" s32 func_0204f060(s32 r) {
 }
 
 extern "C" void func_0204f054(void *p, u32 id) {
-    func_0211a49c(p, 0, id);
+    FS_LoadOverlayInfo(p, 0, id);
 }
 
 extern "C" void func_0204f04c(u32 id) {
@@ -328,7 +328,7 @@ extern "C" void func_0204ef2c(u32 id) {
         }
     }
     func_0204f054(info, id);
-    func_0211a6c0(buf, info);
+    FS_GetOverlayFileID(buf, info);
     for (i = 0, lo = info[1], hi = lo + (info[2] + info[3]); (u32)i < 12; i++) {
         Unk_0204eeb4_Ent *e = &data_021c47fc[i];
         if (e->unk_00 != id && ((volatile Unk_0204eeb4_Ent *)e)->unk_00 != 0xff && e->unk_04 + e->unk_08 > lo && hi > e->unk_04) {

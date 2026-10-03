@@ -60,7 +60,7 @@ void func_02087c80(void *);
 void func_020877cc(void *);
 void func_02097418(void *);
 void func_0203f0ec(void *);
-void func_02115fb4(void *, s32, u32);
+void MI_CpuFill8(void *, s32, u32);
 void func_0203c640(void *);
 void func_02099dc8(void *);
 void func_020acf60(void *);
@@ -372,7 +372,7 @@ Unk_0209865c::~Unk_0209865c() {
     func_0203c6a0(&unk_1b48);
 }
 
-void Unk_0209865c::func_02098ae0() { func_02115fb4(this, 0, 0x228c); }
+void Unk_0209865c::func_02098ae0() { MI_CpuFill8(this, 0, 0x228c); }
 
 void Unk_0209865c::func_02098a58() {
     func_02098ae0();
@@ -384,7 +384,7 @@ void Unk_0209865c::func_02098a58() {
     func_020acf60(&unk_2208);
     unk_2212 = 0xfff1;
     unk_2253 = 0xff;
-    func_02115fb4(&unk_2254, 0xff, 8);
+    MI_CpuFill8(&unk_2254, 0xff, 8);
     _ZN12Unk_02098d2013func_02098e30Ev(&unk_225c);
 }
 
@@ -425,7 +425,7 @@ void Unk_0209865c::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u
     func_0203f0ec(&unk_21ec);
     ((Unk_02097ff4 *)this)->func_0209832c();
     func_0209cf88();
-    func_02115fb4(&unk_2254, 0xff, 8);
+    MI_CpuFill8(&unk_2254, 0xff, 8);
 }
 
 void *Unk_0209865c::func_0209888c() { return &unk_2276; }

@@ -133,9 +133,9 @@ void *func_ov065_0227866c(void *, s32);
 void func_ov065_02278570(void *, s32);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
 char *func_02129f1c(const char *, const char *);
-s32 func_021277d4(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
-s32 func_021130d0(char *buf, const char *fmt, ...);
+s32 STD_GetStringLength(const char *);
+s32 strncmp(const char *, const char *, u32);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 func_02128ca4(const char *, const char *, ...);
 s32 func_0212b770(const char *);
 s32 func_0212899c(void *, s32, u32);
@@ -204,7 +204,7 @@ extern "C" {
 s32 func_ov065_02283684(void *h, const char *str, s32 flag) {
     Unk_ov065_02282f90_Ctx *ctx = ((Unk_ov065_02282f90_Handle *)h)->unk_00;
     char buf[16];
-    if (func_0212a15c(str, "\\error\\", 7) == 0) {
+    if (strncmp(str, "\\error\\", 7) == 0) {
         if (func_ov065_02283630(str, "\\err\\", buf, 0x10) != 0) {
             ctx->unk_418 = func_0212b770(buf);
         }
@@ -232,7 +232,7 @@ s32 func_ov065_02283630(const char *hay, const char *needle, char *out, s32 n) {
     if (p == NULL) {
         return 0;
     }
-    p += func_021277d4(needle);
+    p += STD_GetStringLength(needle);
     i = 0;
     while (i < n - 1 && (ch = p[i]) != 0 && ch != c) {
         out[i] = ch;
@@ -356,7 +356,7 @@ s32 func_ov065_022833b4(void *h, Unk_ov065_022833b4_Src *s, char *str) {
     if (func_ov065_02283684(h, str, 1) != 0) {
         return 4;
     }
-    if (func_0212a15c(str, "\\rn\\", 4) != 0) {
+    if (strncmp(str, "\\rn\\", 4) != 0) {
         func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
         func_ov065_0227e160(h, 3, 1);
         return 3;
@@ -392,7 +392,7 @@ s32 func_ov065_02283350(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
     if (r != 0) {
         return r;
     }
-    func_021130d0(buf, "\\version\\%d\\result\\%d", 1, c);
+    OS_SPrintf(buf, "\\version\\%d\\result\\%d", 1, c);
     r = func_ov065_0227dc28(h, b, buf);
     if (r != 0) {
         return r;

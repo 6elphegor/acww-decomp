@@ -98,9 +98,9 @@ struct Mc {
 };
 
 extern "C" {
-void *func_02115fb4(void *p, u32 v, u32 n);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020fe3a0(void *list, void *e);
-void func_020fa39c(void *p);
+void spl_set_tex(void *p);
 void func_020fa398(void *p);
 void func_020fc984(void *e, void *l);
 void func_020f9714(Pm *m, u32 a);
@@ -270,11 +270,11 @@ extern "C" {
 extern s16 data_02135f44[];
 extern MkFn data_0213bb9c[];
 extern SetFn data_0213bb94[];
-void func_01ffb828(Mt *m, s32 x, s32 y, s32 z);
-void func_01ffb840(Mt *m, s32 s, s32 c);
-void func_01ffb94c(Mt *a, Mt *b, Mt *ab);
-void func_02110bcc(Mt *m);
-void func_02110be8(Mt *m);
+void MTX_Scale43_(Mt *m, s32 x, s32 y, s32 z);
+void MTX_RotX43_(Mt *m, s32 s, s32 c);
+void MTX_Concat43(Mt *a, Mt *b, Mt *ab);
+void G3_MultMtx43(Mt *m);
+void G3_LoadMtx43(Mt *m);
 }
 
 
@@ -519,12 +519,12 @@ struct FEnt {
 };
 
 extern "C" {
-void func_020fde58(Pt *, RU *, u32);
-void func_020fdc8c(Pt *, RU *, u32);
-void func_020fdbb0(Pt *, RU *, u32);
-void func_020fdb4c(Pt *, RU *, u32);
-void func_020fdb00(Pt *, RU *, u32);
-void func_020fdaa8(Pt *, RU *, u32);
+void spl_scl_in_out(Pt *, RU *, u32);
+void spl_clr_in_out(Pt *, RU *, u32);
+void spl_alp_in_out(Pt *, RU *, u32);
+void spl_tex_ptn_anm(Pt *, RU *, u32);
+void spl_chld_scl_out(Pt *, RU *, u32);
+void spl_chld_alp_out(Pt *, RU *, u32);
 void func_020fc6bc(Pt *, EU *, void *);
 void func_020fc984(void *, void *);
 u32 func_02133150x(void);

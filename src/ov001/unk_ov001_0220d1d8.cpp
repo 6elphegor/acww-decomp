@@ -28,13 +28,13 @@ Unk_ov001_0220d1f4_V3 *data_ov001_0222de18;
 extern void func_0206d49c();
 extern void func_021132e0(s32);
 extern void func_02111794();
-extern void func_02111e60();
-extern void func_02111c0c();
-extern void func_02111d90();
+extern void GXS_LoadBGPltt();
+extern void GXS_LoadOBJ();
+extern void GXS_LoadOBJPltt();
 extern void func_0211172c();
-extern void func_02111ec8();
-extern void func_02111c6c();
-extern void func_02111df8();
+extern void GX_LoadBGPltt();
+extern void GX_LoadOBJ();
+extern void GX_LoadOBJPltt();
 extern void func_02111ad4();
 
 extern s32 func_ov001_02203b38(void *);
@@ -96,13 +96,13 @@ void func_ov001_0220d570() {
     func_ov001_02224c6c(1, func_ov001_022085e0((u8 *)"char/jtMain.nce.l"));
     func_ov001_02224c6c(0, func_ov001_022085e0((u8 *)"char/jbMain.nce.l"));
     func_ov001_02208594((void *)"char/jtBgMain.ncg.l", (void *)func_02111794);
-    func_ov001_02208594((void *)"char/jtBgMain.ncl.l", (void *)func_02111e60);
-    func_ov001_02208594((void *)"char/jtObjMain.ncg.l", (void *)func_02111c0c);
-    func_ov001_02208594((void *)"char/xtObjMain.ncl.l", (void *)func_02111d90);
+    func_ov001_02208594((void *)"char/jtBgMain.ncl.l", (void *)GXS_LoadBGPltt);
+    func_ov001_02208594((void *)"char/jtObjMain.ncg.l", (void *)GXS_LoadOBJ);
+    func_ov001_02208594((void *)"char/xtObjMain.ncl.l", (void *)GXS_LoadOBJPltt);
     func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)func_02111ec8);
-    func_ov001_02208594((void *)"char/jbObjMain.ncg.l", (void *)func_02111c6c);
-    func_ov001_02208594((void *)"char/ybObjMain.ncl.l", (void *)func_02111df8);
+    func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)GX_LoadBGPltt);
+    func_ov001_02208594((void *)"char/jbObjMain.ncg.l", (void *)GX_LoadOBJ);
+    func_ov001_02208594((void *)"char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
     switch (func_ov001_0220c5c8()) {
     case 0:
         func_ov001_02208594((void *)"char/jtTop.nsc.l", (void *)func_02111ad4);

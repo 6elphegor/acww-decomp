@@ -29,8 +29,8 @@ struct Unk_ov001_02226f80_Slot {
 };
 
 extern "C" {
-s32 func_01ff80e0(s32);
-void func_01ff8128(s32);
+s32 OS_DisableIrqMask(s32);
+void OS_EnableIrqMask(s32);
 void func_ov001_02225d58(void *);
 void func_ov001_02226710(void *);
 void func_ov001_02224cfc(void *, void *);
@@ -122,7 +122,7 @@ void *func_ov001_02227004(u32 i, void *a, void *b, u32 c, u8 d) {
     n->unk_0c = b;
     n->unk_10 = c;
     n->unk_11 = d;
-    s32 irq = func_01ff80e0(1);
+    s32 irq = OS_DisableIrqMask(1);
     Unk_ov001_02226f80_Node *q = data_ov001_0222dfac[i].unk_10;
 loop:
     if (c >= q->unk_10) goto next;
@@ -132,7 +132,7 @@ next:
     q = q->unk_04;
     goto loop;
 done:
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     return n;
 }
 

@@ -74,8 +74,8 @@ void func_020638d0(void *a, void *b);
 void *func_02063964(void *a);
 void *func_0209409c(void *a);
 void func_02051268(void *a, void *b, s32 c);
-void func_02116048(void *src, void *dst, s32 n);
-void func_02115e48(void *src, void *dst, s32 n);
+void MI_CpuCopy8(void *src, void *dst, s32 n);
+void MIi_CpuCopy16(void *src, void *dst, s32 n);
 BOOL func_020e9d7c(void *p);
 BOOL func_020e9d88(void *p, void *q);
 s32 func_020e9d70(void *p);
@@ -1662,8 +1662,8 @@ void Unk_ov119_02295840::func_ov119_02293844(s32 x)
         v = 5;
     }
     func_ov119_02292dd0(0x20);
-    func_02115e48(unk_19d8, unk_1a18, 0x20);
-    func_02115e48(unk_19f8, unk_1a38, 0x20);
+    MIi_CpuCopy16(unk_19d8, unk_1a18, 0x20);
+    MIi_CpuCopy16(unk_19f8, unk_1a38, 0x20);
     for (i = 2; i <= 5; i++) {
         unk_1a38[i] = func_ov119_02293924(unk_19f8[i], unk_19f8[14], v, 5);
     }
@@ -1755,7 +1755,7 @@ s32 Unk_ov119_02295840::func_ov119_02293674()
     s32 result = 0;
     u32 tmp[3];
     for (i = 0; i < 0x20; i++) {
-        func_02116048(a + i * 12, tmp, 12);
+        MI_CpuCopy8(a + i * 12, tmp, 12);
         if (func_020e9d7c(tmp) == 0) {
             if (func_02076f04(func_02076cf0(b + i * 0x1c)) == 0) {
                 continue;
@@ -1768,7 +1768,7 @@ s32 Unk_ov119_02295840::func_ov119_02293674()
                 continue;
             }
         }
-        func_02116048(tmp, func_02076e1c(func_02076cf0(rec)), 12);
+        MI_CpuCopy8(tmp, func_02076e1c(func_02076cf0(rec)), 12);
         result = 1;
     }
     return result;

@@ -8,10 +8,10 @@
 	.thumb
 
 ; MI_Zero36B(dest): three stmia of three zero registers
-	.global func_02116178
-	.type func_02116178, @function
-	.size func_02116178, 0x10
-func_02116178:
+	.global MI_Zero36B
+	.type MI_Zero36B, @function
+	.size MI_Zero36B, 0x10
+MI_Zero36B:
 	mov r1, #0
 	mov r2, #0
 	mov r3, #0

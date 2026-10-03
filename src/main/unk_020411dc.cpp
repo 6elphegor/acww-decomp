@@ -55,17 +55,17 @@ extern u32 data_021c1b3c;
 extern volatile u32 data_021c40cc[];
 
 extern "C" {
-void func_02115e30(u32 v, u32 dst, u32 size);
+void MIi_CpuClear16(u32 v, u32 dst, u32 size);
 }
 static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     volatile u16 t = v;
-    func_02115e30(t, dst, size);
+    MIi_CpuClear16(t, dst, size);
 }
 extern "C" {
-u32 func_021108e8();
-u32 func_0211065c();
-u32 func_02110868();
-u32 func_02110614();
+u32 G2_GetBG2ScrPtr();
+u32 G2_GetBG2CharPtr();
+u32 G2S_GetBG2ScrPtr();
+u32 G2S_GetBG2CharPtr();
 void func_020014f4(u32);
 void func_020014bc(u32);
 void func_020014e4(u32);
@@ -81,7 +81,7 @@ s32 func_01ffc5a4(s32, s32);
 void func_0208e9d4(u32);
 void func_0208e9f4(u32);
 void func_0200403c();
-s32 func_01ffc538(s32);
+s32 FX_Sqrt(s32);
 void func_02001554(u32);
 void func_0200151c(u32);
 void func_0205b69c(void *);
@@ -168,22 +168,22 @@ extern "C" void func_02041648() {
     r = (volatile u16 *)0x400000c;
     *r &= ~3;
     *r = (*r & 0x43) | 0x600;
-    Unk_02041104_Fill(0, func_021108e8(), 0x800);
-    Unk_02041104_Fill(0x1111, func_0211065c(), 0x20);
+    Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
     func_020014f4(4);
     r = (volatile u16 *)0x400100c;
     *r &= ~3;
     *r = (*r & 0x43) | 0xe04;
-    Unk_02041104_Fill(0, func_02110868(), 0x800);
-    Unk_02041104_Fill(0x1111, func_02110614(), 0x20);
+    Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);
     func_020014bc(4);
 }
 
 extern "C" void func_020415d4() {
     volatile u16 z = 0;
-    func_02115e30(z, (u32)data_021c3cf0, 0x180);
+    MIi_CpuClear16(z, (u32)data_021c3cf0, 0x180);
     data_021c3cbc = data_021c3cf0;
     func_02041648();
     if (func_0205b6e4(data_021c3cd4, (void *)func_020417bc, (void *)func_02041788, 0) != 0) {
@@ -212,10 +212,10 @@ extern "C" void func_020414b0() {
     s32 v = s->unk_04;
     if (v == 0) {
         volatile u16 c = 0xff;
-        func_02115e30(c, (u32)p, 0xc0);
+        MIi_CpuClear16(c, (u32)p, 0xc0);
     } else if (v == 0x1000) {
         volatile u16 c = 0x8080;
-        func_02115e30(c, (u32)data_021c3cf0, 0x180);
+        MIi_CpuClear16(c, (u32)data_021c3cf0, 0x180);
     } else {
         s32 h = ((0x1000 - v) * 160) >> 12;
         s32 h2 = (h * h) << 12;
@@ -224,7 +224,7 @@ extern "C" void func_020414b0() {
             if (d > h) {
                 *p = 0x8080;
             } else {
-                s32 r = func_01ffc538(h2 - ((d * d) << 12));
+                s32 r = FX_Sqrt(h2 - ((d * d) << 12));
                 if (r < 0x80000) {
                     s32 x = (0x80 - (r >> 12)) & 0xffff;
                     *p = ((x << 8) & 0xff00) | ((0x100 - x) & 0xff);

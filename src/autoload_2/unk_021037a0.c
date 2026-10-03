@@ -59,7 +59,7 @@ BOOL func_021037b4(u8 *mdl, u8 *tex, u32 i, u32 j)
 }
 
 // read one u16 from a stream pointer and advance it
-u16 func_021037a0(const u16 **pp)
+u16 NNSi_G2dSplitCharUTF16(const u16 **pp)
 {
     const u16 *p = *pp;
     u16 v = *p++;

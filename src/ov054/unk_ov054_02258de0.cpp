@@ -574,7 +574,7 @@ s32 func_02014220(void *self);
 s32 func_0201b9e8(void *self, s32 *a, s32 *b);
 
 s32 func_0212a438(const char *s);
-s32 func_0212a15c(const void *a, const char *b, s32 n);
+s32 strncmp(const void *a, const char *b, s32 n);
 BOOL func_020a032c();
 BOOL func_020a0318();
 BOOL func_020a07e4();
@@ -608,7 +608,7 @@ void *func_020ea65c(s32 a);
 s32 func_020ea6c8(void *p);
 void *func_020ea6f4(void *p);
 BOOL func_020ea608(void *p);
-void func_02116048(void *dst, void *src, u32 n);
+void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_02063888(void *p);
 void func_02063830(void *p);
 void func_02063818(void *p);
@@ -1708,7 +1708,7 @@ void Unk_ov054_0225b9c4::func_ov054_02259ef8() {
                 v[3] = (void *)func_020ea6c8(v[1]);
                 if ((s32)v[3] == 10) {
                     func_0207217c();
-                    func_02116048(func_020ea6f4(v[1]), &buf[3], (s32)v[3]);
+                    MI_CpuCopy8(func_020ea6f4(v[1]), &buf[3], (s32)v[3]);
                     if (buf[12] == 1) {
                         u32 m = 0x38;
                         if (buf[11] == 0) {
@@ -1815,7 +1815,7 @@ void Unk_ov054_0225b9c4::vfunc_14(s32 a) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b790,
     };
     char *s = *(char **)((u8 *)data_ov054_0225b96c + unk_ac->unk_804 * 12);
-    s32 r = func_0212a15c((u8 *)this + 4, s, func_0212a438(s));
+    s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
     if (func_020a032c()) {
         i = 2;
@@ -2056,7 +2056,7 @@ void Unk_ov054_0225b9c4::vfunc_18(s32 a) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b768,
     };
     char *s = *(char **)((u8 *)data_ov054_0225b96c + unk_ac->unk_804 * 12);
-    s32 r = func_0212a15c((u8 *)this + 4, s, func_0212a438(s));
+    s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
     if (func_020a032c()) {
         i = 2;

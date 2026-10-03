@@ -164,8 +164,8 @@ void func_0210b918(void *a, u32 b);
 s32 func_0210d064(void *a);
 void func_0210962c(void);
 void func_0210ef44(u32 a, u32 b, u32 c);
-void func_02100444(void *list, u16 offset);
-void func_0210a27c(void *p);
+void NNS_FndInitList(void *list, u16 offset);
+void NNS_SndHandleReleaseSeq(void *p);
 s32 func_021095f8(void);
 BOOL func_020ee5d4(Ent *e);
 void func_020ee630(Ent *e, s32 a);
@@ -179,7 +179,7 @@ void func_020ee58c(Group *g, s32 bit, s32 on);
 void func_020ee754(Ent *e);
 void func_020ee784(PlayCtx *c);
 InfoB *func_0210b8a0(u32 a, u32 b);
-void func_0210a26c(void *p, s32 v);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a1e8(void *p, s32 v);
 void func_0210a0e8(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
@@ -188,7 +188,7 @@ struct BgmObj {
     u8 pad[0x44];
     s32 unk_44;
 };
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 u32 func_020ef150(u32 a, u32 b);
 u32 func_020ef6c8(BgmObj *o, u32 id); // BGM id -> sequence number for the object mode
 s32 func_020ef7a0(BgmObj *o, s32 v);
@@ -200,10 +200,10 @@ extern u8 data_021f5b6c, data_021f5b68, data_021f5b5c;
 extern u16 data_021f5b70, data_021f5b74, data_021f5b78;
 extern s32 data_021f5b7c;
 extern Cfg4 data_021f59f4;
-void *func_02100234(void *list, void *obj);
-void *func_02100248(void *list, void *obj);
-void func_02100260(void *list, void *obj);
-void func_021003b0(void *list, void *obj);
+void *NNS_FndGetPrevListObject(void *list, void *obj);
+void *NNS_FndGetNextListObject(void *list, void *obj);
+void NNS_FndRemoveListObject(void *list, void *obj);
+void NNS_FndAppendListObject(void *list, void *obj);
 
 extern s32 (*data_021f5b3c)(PlayCtx *);
 extern s32 (*data_021f5b44)(PlayCtx *);
@@ -327,7 +327,7 @@ extern "C" void func_020ee98c(BgmObj *o, s32 mode, u32 kind, u32 a, u32 b) {
             if (data_021f5b54 != 0) {
                 data_021f5b54 -= 1;
             } else {
-                data_021f5b54 = (u8)(((u8)func_01ffa6b4()) >> 6) + 10;
+                data_021f5b54 = (u8)(((u8)OS_GetTick()) >> 6) + 10;
             }
             switch (data_021f5b54) {
             case 0:
@@ -369,7 +369,7 @@ extern "C" void func_020ee98c(BgmObj *o, s32 mode, u32 kind, u32 a, u32 b) {
         case 2:
             r = data_021f5b54;
             if (r == 0) {
-                data_021f5b4c = (u8)(((u8)func_01ffa6b4()) >> 6) + 14;
+                data_021f5b4c = (u8)(((u8)OS_GetTick()) >> 6) + 14;
                 data_021f5b54 = 1;
             } else if (r == data_021f5b4c) {
                 data_021f5b54 = 0;
@@ -398,7 +398,7 @@ extern "C" void func_020ee98c(BgmObj *o, s32 mode, u32 kind, u32 a, u32 b) {
             if (data_021f5b54 != 0) {
                 data_021f5b54 -= 1;
             } else {
-                data_021f5b54 = (u8)(((u8)func_01ffa6b4()) >> 6) + 10;
+                data_021f5b54 = (u8)(((u8)OS_GetTick()) >> 6) + 10;
             }
             switch (data_021f5b54) {
             case 0:

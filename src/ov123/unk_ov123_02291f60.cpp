@@ -28,7 +28,7 @@ s32 func_0200212c(s32 a);
 s32 func_020020b8(s32 a);
 s32 func_020013b4(s32 a, s32 b, s32 c);
 s32 func_02003b6c(s32 a);
-s32 func_02115e78(void *a, void *b, u32 n);
+s32 MIi_CpuCopy32(void *a, void *b, u32 n);
 BOOL func_ov002_0220125c(void *pad);
 BOOL func_ov002_0220126c(void *pad);
 BOOL func_ov002_0220127c(void *pad);
@@ -1385,8 +1385,8 @@ void Unk_ov123_022959c4::func_ov123_02293eac()
 {
     void *b = _ZN12Unk_0209865c13func_020986d4Ev(func_0209750c());
     void *d = _ZN12Unk_02071c5c13func_02071c68Ej(b, func_0206ed38());
-    func_02115e78(_ZN12Unk_02071e0413func_02071e58Ev(d), unk_a04, 0x200);
-    func_02115e78(_ZN12Unk_02071e0413func_02071e58Ev(d), unk_c04, 0x200);
+    MIi_CpuCopy32(_ZN12Unk_02071e0413func_02071e58Ev(d), unk_a04, 0x200);
+    MIi_CpuCopy32(_ZN12Unk_02071e0413func_02071e58Ev(d), unk_c04, 0x200);
     u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN12Unk_02071e0413func_02071e04Ev(d));
     func_ov123_02293a98(r);
 }
@@ -1425,8 +1425,8 @@ void Unk_ov123_022959c4::func_ov123_02293dc0()
 void Unk_ov123_022959c4::func_ov123_02293d68()
 {
     void *o = _ZN12Unk_0208722413func_02087298Ev(&data_021eca50);
-    func_02115e78(_ZN12Unk_02071e0413func_02071e58Ev(o), unk_a04, 0x200);
-    func_02115e78(_ZN12Unk_02071e0413func_02071e58Ev(o), unk_c04, 0x200);
+    MIi_CpuCopy32(_ZN12Unk_02071e0413func_02071e58Ev(o), unk_a04, 0x200);
+    MIi_CpuCopy32(_ZN12Unk_02071e0413func_02071e58Ev(o), unk_c04, 0x200);
     u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN12Unk_02071e0413func_02071e04Ev(o));
     func_ov123_02293a98(r);
 }
@@ -2354,10 +2354,10 @@ void Unk_ov123_022959c4::func_ov123_02292844() {
 void Unk_ov123_022959c4::func_ov123_022927e8() {
     func_ov123_02291ff0(0x4000);
     if (func_ov123_02292010(0x80)) {
-        func_02115e78(unk_a04, unk_c04, 0x200);
+        MIi_CpuCopy32(unk_a04, unk_c04, 0x200);
         func_ov123_02291ff0(0x80);
     } else {
-        func_02115e78(unk_c04, unk_a04, 0x200);
+        MIi_CpuCopy32(unk_c04, unk_a04, 0x200);
         func_ov123_02292000(0x80);
     }
 }

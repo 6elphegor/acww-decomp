@@ -109,7 +109,7 @@ void func_ov003_02223498(void *p);
 void func_ov003_022234c4(void *p);
 BOOL func_ov003_022234fc(void *p);
 BOOL func_ov003_02223554(void *p);
-void *func_0210629c(void *p);
+void *NNS_G3dGetTex(void *p);
 void func_020641b4(char *name, void *p, u32 size);
 s32 func_020639e8(char *buf, char *fmt, ...);
 s32 func_020b50e8();
@@ -160,8 +160,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020902d4(s32 h, Unk_0205f8d4_Vec *v, void *a, s32 b);
 void func_020e9790(Unk_0205f8d4_Vec *out, Unk_0205f8d4_Vec *in, s32 n);
-void func_01ffca8c(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
-void func_01ffca58(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
+void VEC_Add(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
+void VEC_Subtract(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
 s32 func_020e9650(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void func_020e9768(Unk_0205f8d4_Vec *v, s32 n);
 void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
@@ -467,7 +467,7 @@ void Unk_0205fbc8::func_0205fc6c(s32 idx, u32 n)
 
 void Unk_0205fbc8::func_0205fc48(s32 idx)
 {
-    void *h = func_0210629c(func_0205fdbc(idx));
+    void *h = NNS_G3dGetTex(func_0205fdbc(idx));
     func_0205fdb0(idx)->func_02055210(h);
 }
 
@@ -479,7 +479,7 @@ BOOL Unk_0205fbc8::func_0205fbfc(s32 idx)
         return TRUE;
     }
     if (!Unk_0205fbfc_Is1(t)) {
-        p->func_020b89f0((u32 *)func_0210629c(func_0205fdbc(idx)), 1);
+        p->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205fdbc(idx)), 1);
     }
     return FALSE;
 }
@@ -726,10 +726,10 @@ extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
                     t.x = pv->x;
                     t.y = pv->y;
                     t.z = pv->z;
-                    func_01ffca58(&t, &v, &t);
+                    VEC_Subtract(&t, &v, &t);
                     func_020e9768(&t, 3);
                     t.y = 0;
-                    func_01ffca8c(&v, &t, &v);
+                    VEC_Add(&v, &t, &v);
                 }
             }
             func_0203ef38(&v, &v);
@@ -819,7 +819,7 @@ void Unk_0205f360::func_0205f52c()
     if (o.unk_30 != 0) {
                 func_020e9790(&w, (Unk_0205f8d4_Vec *)&o.unk_24, 5);
         ang = func_020e7b98(w.x, w.z);
-        func_01ffca8c(&unk_08, &w, &unk_08);
+        VEC_Add(&unk_08, &w, &unk_08);
         s32 y = o.unk_3c;
         s32 c = unk_08.y;
         if (c < y + 0x333) {

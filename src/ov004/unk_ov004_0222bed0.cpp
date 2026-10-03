@@ -156,7 +156,7 @@ void func_02003e50(void *p);
 void func_02003e80(void *p, void *v);
 void func_02003ecc(void *p);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 void func_0204edd8(void *a, void *b);
 u16 *func_0204eba0(void *g, void *v, s32 z);
 s32 func_ov004_02234f6c(void *p);
@@ -485,7 +485,7 @@ extern "C" void func_ov004_0222c204(Unk_ov004_Entry *e) {
     if (e->unk_3c.x >= 0x1000) e->unk_3c.x = 0x1000;
     e->unk_3c.z = e->unk_3c.x;
     e->unk_30.y = e->unk_30.y - 0x400;
-    func_01ffca8c(&e->unk_24, &e->unk_30, &e->unk_24);
+    VEC_Add(&e->unk_24, &e->unk_30, &e->unk_24);
     if (e->unk_30.y < 0 && e->unk_24.y < e->unk_18.y) {
         if (e->unk_8c < 2) {
             volatile u16 id = 0xfff1;

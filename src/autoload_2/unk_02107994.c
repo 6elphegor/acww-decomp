@@ -9,10 +9,10 @@ typedef int BOOL;
 
 
 extern u32 data_0213bcc0;
-extern void func_02115e30(u16 data, void *dest, u32 size);
+extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
 extern s32 func_02106300(void *dict, void *name);
-extern s32 func_02107cac(u8 *base, u32 info, u32 offs, u32 frame);
-extern u32 func_02107ba0(u8 *base, u32 info, u32 offs, u32 frame);
+extern s32 GetTexSRTAnmVectorVal_(u8 *base, u32 info, u32 offs, u32 frame);
+extern u32 GetTexSRTAnmSinCosVal_(u8 *base, u32 info, u32 offs, u32 frame);
 
 
 // NNS g3d (NNSi_G3dAnmCalcMatAnm-like): evaluate material SRT animation at a frame into the result (flag bits 1 scale==1, 2 rot==0, 4 trans==0)
@@ -25,8 +25,8 @@ void func_02107aa0(u8 *res, u32 idx, u32 frame, u32 *out)
     u32 flags = out[0];
     s32 a, b;
     u32 rot;
-    a = func_02107cac(res, p[6], p[7], frame);
-    b = func_02107cac(res, p[8], p[9], frame);
+    a = GetTexSRTAnmVectorVal_(res, p[6], p[7], frame);
+    b = GetTexSRTAnmVectorVal_(res, p[8], p[9], frame);
     if (a == 0 && b == 0) {
         flags |= 4;
     } else {
@@ -34,7 +34,7 @@ void func_02107aa0(u8 *res, u32 idx, u32 frame, u32 *out)
         out[10] = b;
         flags &= ~4;
     }
-    rot = func_02107ba0(res, p[4], p[5], frame);
+    rot = GetTexSRTAnmSinCosVal_(res, p[4], p[5], frame);
     if (rot == 0x10000000) {
         flags |= 2;
     } else {
@@ -42,8 +42,8 @@ void func_02107aa0(u8 *res, u32 idx, u32 frame, u32 *out)
         *(u16 *)((u8 *)out + 34) = rot >> 16;
         flags &= ~2;
     }
-    a = func_02107cac(res, p[0], p[1], frame);
-    b = func_02107cac(res, p[2], p[3], frame);
+    a = GetTexSRTAnmVectorVal_(res, p[0], p[1], frame);
+    b = GetTexSRTAnmVectorVal_(res, p[2], p[3], frame);
     if (a == 0x1000 && b == 0x1000) {
         flags |= 1;
     } else {
@@ -63,7 +63,7 @@ void func_021079e4(u8 *obj, u8 *res, u8 *blk)
     *(u32 *)(obj + 12) = data_0213bcc0;
     obj[25] = blk[24];
     zero = 0;
-    func_02115e30(zero, obj + 26, obj[25] * 2);
+    MIi_CpuClear16(zero, obj + 26, obj[25] * 2);
     for (i = 0; i < res[9]; i++) {
         u8 *d = res + 8 + *(u16 *)(res + 14);
         s32 r = func_02106300(dict + 4, d + *(u16 *)(d + 2) + i * 16);

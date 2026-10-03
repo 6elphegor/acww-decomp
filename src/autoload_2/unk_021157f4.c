@@ -37,7 +37,7 @@ static inline s32 GX_GetVCount(void) {
 }
 
 // OS_GetLowEntropyData
-void func_021157f4(u32 *buffer) {
+void OS_GetLowEntropyData(u32 *buffer) {
     const OSSystemWork *work = (const OSSystemWork *)0x027ffc00;
     const u8 *macAddress = (u8 *)((u32)(work->nvramUserInfo) + 0x74);
 

@@ -126,11 +126,11 @@ void func_020a7fd8(Unk_020e2a90 *obj);
 void *func_020e8594(u32 size);
 void func_020e8558(void *p);
 void func_02001ea0(void *src, void *dst, s32 w, s32 h);
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
 void func_020e8388(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
-void func_0211126c(void *a, void *b, void *c, s32 d, void *e);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
+void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
 void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
 void _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *p, u32 a, void *b);
@@ -349,7 +349,7 @@ u8 *func_020382c8() {
 Unk_020d905c::Unk_020d905c()
     : unk_bc(0), unk_c0(0), unk_c4(0), unk_c8(0), unk_c9(0), unk_ca(0), unk_cb(0), unk_cc(0), unk_ce(0), unk_d0(0),
       unk_d4(0), unk_d8(0), unk_dc(0), unk_e0(0), unk_e4(0) {
-    func_02115fb4(unk_2e4, 0x11, 0x800);
+    MI_CpuFill8(unk_2e4, 0x11, 0x800);
 }
 
 Unk_020d905c::~Unk_020d905c() {
@@ -442,7 +442,7 @@ void Unk_020d905c::func_02037f70(u8 a) {
 
 void Unk_020d905c::func_02037ea0() {
     if (unk_c8) {
-        func_02111404(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
+        G3i_PerspectiveW_(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
         data_027e0148[0x7c / 4] &= ~0x50;
         Unk_02037ea0_V a, b, c, d;
         a = data_021f4880;
@@ -455,7 +455,7 @@ void Unk_020d905c::func_02037ea0() {
         data_027e02c8.a = a;
         data_027e02c8.c = c;
         data_027e02c8.b = b;
-        func_0211126c(&a, &c, &b, 0, data_027e0114);
+        G3i_LookAt_(&a, &c, &b, 0, data_027e0114);
         data_027e0148[0x7c / 4] &= ~0xe8;
         s32 r = func_01ffcb0c(0xb7, 0xf6d);
         d.x = r;
@@ -494,7 +494,7 @@ void Unk_020d905c::func_02037dc8(s32 i) {
 }
 
 void Unk_020d905c::func_02037d94() {
-    func_02115fb4(unk_2e4, 0x11, 0x800);
+    MI_CpuFill8(unk_2e4, 0x11, 0x800);
     for (s32 i = 0; i < 4; i++) {
         func_02037dc8(i);
     }

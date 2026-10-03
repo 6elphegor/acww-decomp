@@ -520,13 +520,13 @@ void func_0206f9fc(void *o, u32 x);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void func_020b3544(s32 a, void *p);
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020021fc(u32 a, u32 b, u32 c);
 void func_02087e70(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void func_02088730(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
 BOOL func_0206ef00();
 s32 func_020740a0(s32 a);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *func_020e8618(void *heap, s32 n);
 void func_020e85fc(void *heap, void *p);
 void func_0200140c();
@@ -970,7 +970,7 @@ void Unk_ov112_02299b10::func_ov112_02298d4c() {
     }
     unk_c0 = n;
     unk_40ac.func_ov002_02202f0c();
-    func_02115fb4(unk_4c60, 0xdd, 0x1e00);
+    MI_CpuFill8(unk_4c60, 0xdd, 0x1e00);
     unk_b6 = 0;
     unk_b7 = 0;
     unk_b8 = 0;
@@ -2396,7 +2396,7 @@ void Unk_ov112_02299b10::func_ov112_02296988() {
         void *heap = data_021c6210;
         u8 *buf = (u8 *)func_020e8618(heap, 0xc1);
         buf[0] = 0;
-        func_02116048(unk_c3, &buf[1], 0xc0);
+        MI_CpuCopy8(unk_c3, &buf[1], 0xc0);
         void *g = data_020cbb18;
         ((Unk_020cbb18 *)(g))->func_020728d4();
         ((Unk_020cbb18 *)(g))->func_020728a4(buf, 0xc1);

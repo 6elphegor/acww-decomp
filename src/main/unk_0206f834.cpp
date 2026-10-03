@@ -209,7 +209,7 @@ s32 func_0208c134(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-s32 func_02116048(void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 extern "C" {
@@ -373,11 +373,11 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffb94c(void *a, void *b, void *c);
+void MTX_Concat43(void *a, void *b, void *c);
 }
 
 extern "C" {
-void func_01ffb7cc(void *p);
+void MTX_Identity43_(void *p);
 }
 
 extern "C" {

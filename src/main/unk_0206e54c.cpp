@@ -90,7 +90,7 @@ extern u16 data_021f47d8[];
 // functions of other units
 void func_0205125c(void *, s32);
 void func_02051268(u32, void *, s32);
-void func_02116048(void *, const void *, u32);
+void MI_CpuCopy8(void *, const void *, u32);
 void *func_020991e4(void);
 void func_02065e70(void *, void *);
 void func_02065b28(void *);
@@ -959,11 +959,11 @@ extern "C" u32 func_0206e8e8(void) { return data_021cb4cc; }
 extern "C" void func_0206e8dc(u32 v) { data_021cb4cc = v; }
 
 extern "C" void func_0206e8cc(void *a) {
-    func_02116048(a, &data_021cb4f0, 8);
+    MI_CpuCopy8(a, &data_021cb4f0, 8);
 }
 
 extern "C" void func_0206e8b8(void *a) {
-    func_02116048(&data_021cb4f0, a, 8);
+    MI_CpuCopy8(&data_021cb4f0, a, 8);
 }
 
 extern "C" BOOL func_0206e888(u32 a, u32 b) {

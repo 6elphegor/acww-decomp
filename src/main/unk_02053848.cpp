@@ -223,7 +223,7 @@ struct Unk_02054970_Table {
 };
 
 extern "C" {
-void func_01ffb448(void *p);
+void MTX_Identity33_(void *p);
 s32 func_01ffcc10(void);
 void _ZN12Unk_020dbe6c13func_02056520Ei(void *p, s32 v);
 s32 _ZN12Unk_020dbe6c13func_02056544Ev(void *p);
@@ -249,11 +249,11 @@ s32 func_0212a190(void *a, void *b);
 void *func_020641ec(void *a, void *b, s32 c, s32 d);
 extern void *data_021f482c;
 extern void *data_021c6214;
-void *func_021062dc(void *p);
-void *func_0210629c(void *p);
+void *NNS_G3dGetMdlSet(void *p);
+void *NNS_G3dGetTex(void *p);
 void *func_020e8608(void *heap, u32 size);
 void func_020e85fc(void *heap, void *p);
-void func_02116048(void *src, void *dst, u32 size);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
 void func_02055724(void *a, void *b);
 void *func_0205588c(void *a, void *heap);
 void *func_02055928(void *a, void *heap);
@@ -290,8 +290,8 @@ BOOL Unk_020dbd34::func_02054d58(void *res, void *name, u32 tag) {
     if (h == NULL) {
         return FALSE;
     }
-    u8 *p = Unk_02054b70_Off((u8 *)func_021062dc(h));
-    void *q = func_0210629c(h);
+    u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
+    void *q = NNS_G3dGetTex(h);
     if (name != NULL) {
         unk_5c = func_02055928(p, name);
     } else {
@@ -313,7 +313,7 @@ BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 
     if (h == NULL) {
         return FALSE;
     }
-    u8 *p = Unk_02054b70_Off((u8 *)func_021062dc(h));
+    u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     if (name != NULL) {
         unk_5c = func_02055928(p, name);
     } else {
@@ -322,7 +322,7 @@ BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 
     if (tex != NULL) {
         func_021039ec(unk_5c, tex);
     } else {
-        void *q = func_0210629c(h);
+        void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
             func_02055724(q, unk_94);
             func_021039ec(unk_5c, q);
@@ -363,7 +363,7 @@ BOOL Unk_020dbd34::func_02054bac(void *a, void *b, void *c) {
     if (h == NULL) {
         return FALSE;
     }
-    u8 *p = Unk_02054b70_Off((u8 *)func_021062dc(h));
+    u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     unk_5c = func_020558bc(p, 0x4e554c4c);
     void *r = _ZN12Unk_020718a413func_020716e8Eii(func_020716cc(), b, c);
     func_02103978(unk_5c, r, 0, 0);
@@ -374,8 +374,8 @@ BOOL Unk_020dbd34::func_02054bac(void *a, void *b, void *c) {
 }
 
 void Unk_020dbd34::func_02054b70(void *a) {
-    u8 *p = Unk_02054b70_Off((u8 *)func_021062dc(a));
-    void *q = func_0210629c(a);
+    u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(a));
+    void *q = NNS_G3dGetTex(a);
     unk_5c = p;
     func_021039ec(unk_5c, q);
     func_02103830(unk_5c, q);
@@ -422,24 +422,24 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
     if (res == 0) {
         return FALSE;
     }
-    u8 *hdr2 = (u8 *)func_021062dc(res);
+    u8 *hdr2 = (u8 *)NNS_G3dGetMdlSet(res);
     t->unk_04 = hdr2[9];
     size = t->unk_04 << 4;
     t->unk_0c = (u8 *)func_020e8608(heap, size);
     {
         u8 *p = hdr2 + 8;
         p = p + *(u16 *)(hdr2 + 0xe);
-        func_02116048(p + *(u16 *)(p + 2), t->unk_0c, size);
+        MI_CpuCopy8(p + *(u16 *)(p + 2), t->unk_0c, size);
     }
     t->unk_08 = (Unk_020dbd34 *)func_020e8608(heap, t->unk_04 * 0x9c);
     for (i = 0; i < t->unk_04; i++) {
         new (&t->unk_08[i]) Unk_020dbd34();
     }
-    hdr = func_0210629c(res);
+    hdr = NNS_G3dGetTex(res);
     func_02055724(hdr, 0);
     hdr = func_0205588c(hdr, heap);
     for (i = 0; i < t->unk_04; i++) {
-        u8 *h = (u8 *)func_021062dc(res);
+        u8 *h = (u8 *)NNS_G3dGetMdlSet(res);
         u8 *p = h + 8;
         u32 off = *(u16 *)(h + 0xe);
         u32 st = *(u16 *)(p + off);
@@ -676,7 +676,7 @@ void Unk_0205454c::func_020543d4(Unk_0205454c *x)
         d->unk_54 = 0;
     }
     if (d->unk_00 & 2) {
-        func_01ffb448(d->unk_28);
+        MTX_Identity33_(d->unk_28);
     }
     if (unk_f0 != 0) {
         Unk_020dbe6c &r = *this;

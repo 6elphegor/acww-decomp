@@ -2,7 +2,7 @@
 
 extern "C" {
 void _ZdlPv(void *);
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 BOOL func_020a78a4(void *, const void *, s32);
 }
 
@@ -73,7 +73,7 @@ Unk_020dd374::~Unk_020dd374() {}
 
 u32 Unk_020dd374::vfunc_08() { return 8; }
 
-void Unk_020dd374::func_020637e8(void *p, u32 n) { func_02116048(unk_0e, p, n); }
+void Unk_020dd374::func_020637e8(void *p, u32 n) { MI_CpuCopy8(unk_0e, p, n); }
 
 u8 *Unk_020dd374::vfunc_0c() { return unk_0e; }
 

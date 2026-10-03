@@ -196,28 +196,28 @@ extern u16 data_021f5c44;
 extern u32 data_021f5c48;
 extern void (*data_021f5c4c)(u32, u32);
 
-void func_01ffc8bc(const VecFx16 *a, const VecFx16 *b, VecFx16 *out);
-s32 func_01ffca14(const VecFx32 *a, const VecFx32 *b);
-void func_01ffc5c0(const VecFx16 *src, VecFx16 *dst);
-s32 func_01ffc9c4(const VecFx16 *a, const VecFx16 *b);
-void func_01ffc714(const VecFx32 *src, VecFx32 *dst);
-void func_01ffb498(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4b4(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4d0(MtxFx33 *m, s32 s, s32 c);
-void func_01ffb4e8(const VecFx32 *v, const MtxFx33 *m, VecFx32 *dst);
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32 old);
-void func_02115664(u32 a, u32 b);
-s32 func_021156ec(u32 a, u32 b);
+void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *out);
+s32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);
+void VEC_Fx16Normalize(const VecFx16 *src, VecFx16 *dst);
+s32 VEC_Fx16DotProduct(const VecFx16 *a, const VecFx16 *b);
+void VEC_Normalize(const VecFx32 *src, VecFx32 *dst);
+void MTX_RotX33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_RotY33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_RotZ33_(MtxFx33 *m, s32 s, s32 c);
+void MTX_MultVec33(const VecFx32 *v, const MtxFx33 *m, VecFx32 *dst);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32 old);
+void OSi_UnlockVram(u32 a, u32 b);
+s32 OSi_TryLockVram(u32 a, u32 b);
 void func_02117dcc(void);
-s32 func_02117e8c(u32 a, u32 b);
-void func_02117eb4(u32 a, void *b);
-s32 func_02117dd8(u32 a, u32 b, u32 c);
-s32 func_021123d0(void);
+s32 PXI_IsCallbackReady(u32 a, u32 b);
+void PXI_SetFifoRecvCallback(u32 a, void *b);
+s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
+s32 OS_GetLockID(void);
 void func_020fe4b0(u32 a, u32 b);
 void func_020fe4b4(u32 a, u32 b);
-void func_020fe448(VecFx32 *v);
-void func_020fe3ec(VecFx32 *v);
+void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
+void spl_rndm_get_arb_vec_xy(VecFx32 *v);
 void func_020fe3a0(PList *l, P *n);
 P *func_020fe35c(PList *l);
 void func_020fd820(E *e);
@@ -236,23 +236,23 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 extern "C" void func_020fe4b0(u32 a, u32 b) {
 }
 
-extern "C" void func_020fe448(VecFx32 *v) {
+extern "C" void spl_rndm_get_arb_vec_xyz(VecFx32 *v) {
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     v->x = (s32)data_021f5c3c >> 8;
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     v->y = (s32)data_021f5c3c >> 8;
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     v->z = (s32)data_021f5c3c >> 8;
-    func_01ffc714(v, v);
+    VEC_Normalize(v, v);
 }
 
-extern "C" void func_020fe3ec(VecFx32 *v) {
+extern "C" void spl_rndm_get_arb_vec_xy(VecFx32 *v) {
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     v->x = (s32)data_021f5c3c >> 8;
     data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173;
     v->y = (s32)data_021f5c3c >> 8;
     v->z = 0;
-    func_01ffc714(v, v);
+    VEC_Normalize(v, v);
 }
 
 extern "C" void func_020fe3a0(PList *l, P *n) {
@@ -303,13 +303,13 @@ extern "C" P *func_020fe2f0(PList *l, P *n) {
     return n;
 }
 
-extern "C" void func_020fe2bc(GravF *f, P *p, VecFx32 *acc) {
+extern "C" void spl_calc_gravity(GravF *f, P *p, VecFx32 *acc) {
     acc->x += f->x;
     acc->y += f->y;
     acc->z += f->z;
 }
 
-extern "C" void func_020fe1f4(RandF *f, P *p, VecFx32 *acc) {
+extern "C" void spl_calc_random(RandF *f, P *p, VecFx32 *acc) {
     if (p->age % f->intv != 0) {
         return;
     }
@@ -321,7 +321,7 @@ extern "C" void func_020fe1f4(RandF *f, P *p, VecFx32 *acc) {
     acc->z += (f->z * (s32)(data_021f5c3c >> 23) - (f->z << 8)) >> 8;
 }
 
-extern "C" void func_020fe170(MagF *f, P *p, VecFx32 *acc) {
+extern "C" void spl_calc_magnet(MagF *f, P *p, VecFx32 *acc) {
     acc->x += (f->force * (f->x - p->pos.x - p->vel.x)) >> 12;
     acc->y += (f->force * (f->y - p->pos.y - p->vel.y)) >> 12;
     acc->z += (f->force * (f->z - p->pos.z - p->vel.z)) >> 12;
@@ -331,16 +331,16 @@ extern "C" void func_020fe098(SpinF *f, P *p, VecFx32 *acc) {
     MtxFx33 m;
     switch (f->axis) {
     case 0:
-        func_01ffb498(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
+        MTX_RotX33_(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
         break;
     case 1:
-        func_01ffb4b4(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
+        MTX_RotY33_(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
         break;
     case 2:
-        func_01ffb4d0(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
+        MTX_RotZ33_(&m, SIN_IDX(f->angle), COS_IDX(f->angle));
         break;
     }
-    func_01ffb4e8(&p->pos, &m, &p->pos);
+    MTX_MultVec33(&p->pos, &m, &p->pos);
 }
 
 extern "C" void func_020fdf7c(CollF *f, P *p, VecFx32 *acc, E *e) {
@@ -387,13 +387,13 @@ extern "C" void func_020fdf7c(CollF *f, P *p, VecFx32 *acc, E *e) {
     }
 }
 
-extern "C" void func_020fdee8(ConvF *f, P *p, VecFx32 *acc) {
+extern "C" void spl_calc_convergence(ConvF *f, P *p, VecFx32 *acc) {
     p->pos.x += FX_Mul(f->coef, f->x - p->pos.x);
     p->pos.y += FX_Mul(f->coef, f->y - p->pos.y);
     p->pos.z += FX_Mul(f->coef, f->z - p->pos.z);
 }
 
-extern "C" void func_020fde58(P *p, Ctx *c, s32 t) {
+extern "C" void spl_scl_in_out(P *p, Ctx *c, s32 t) {
     AnimRec *r = c->rec4;
     s32 t1 = r->t1;
     s32 t2 = r->t2;
@@ -408,7 +408,7 @@ extern "C" void func_020fde58(P *p, Ctx *c, s32 t) {
     p->s34 = r->s4 + ((t - 255) * (r->s4 - r->s2)) / (255 - t2);
 }
 
-extern "C" void func_020fdc8c(P *p, Ctx *c, s32 t) {
+extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
     ColRec *r = c->rec8;
     Hdr *h = c->hdr;
     s32 t1 = r->b4;
@@ -457,7 +457,7 @@ extern "C" void func_020fdc8c(P *p, Ctx *c, s32 t) {
     p->col = r->c2;
 }
 
-extern "C" void func_020fdbb0(P *p, Ctx *c, s32 t) {
+extern "C" void spl_alp_in_out(P *p, Ctx *c, s32 t) {
     AlphaRec *r = c->recc;
     s32 t1 = r->t1;
     s32 t2 = r->t2;
@@ -473,7 +473,7 @@ extern "C" void func_020fdbb0(P *p, Ctx *c, s32 t) {
     p->fl.alpha = (u16)((v * (255 - ((r->b2 * (s32)(data_021f5c3c >> 24)) >> 8))) >> 8);
 }
 
-extern "C" void func_020fdb4c(P *p, Ctx *c, s32 t) {
+extern "C" void spl_tex_ptn_anm(P *p, Ctx *c, s32 t) {
     Tab *a = c->rec10;
     s32 i;
     for (i = 0; i < a->x.b.n; i++) {
@@ -484,12 +484,12 @@ extern "C" void func_020fdb4c(P *p, Ctx *c, s32 t) {
     }
 }
 
-extern "C" void func_020fdb00(P *p, Ctx *c, s32 t) {
+extern "C" void spl_chld_scl_out(P *p, Ctx *c, s32 t) {
     s32 s = c->rec14->sc;
     p->s34 = s + ((s - 0x1000) * (t - 255)) / 255;
 }
 
-extern "C" void func_020fdaa8(P *p, void *x, s32 t) {
+extern "C" void spl_chld_alp_out(P *p, void *x, s32 t) {
     p->fl.alpha = (u16)(((255 - t) * 31) / 255);
 }
 
@@ -513,10 +513,10 @@ extern "C" void func_020fd820(E *e) {
         b.z = 0x1000;
         break;
     default:
-        func_01ffc5c0(&e->dir, &b);
+        VEC_Fx16Normalize(&e->dir, &b);
         break;
     }
-    s32 d = func_01ffc9c4(&a, &b);
+    s32 d = VEC_Fx16DotProduct(&a, &b);
     if (d == 0x1000 || d == -0x1000) {
         a.x = 0x1000;
         a.y = 0;
@@ -528,14 +528,14 @@ extern "C" void func_020fd820(E *e) {
     e->ax2.x = FX_Mul(b.y, e->ax1.z) - FX_Mul(b.z, e->ax1.y);
     e->ax2.y = FX_Mul(b.z, e->ax1.x) - FX_Mul(b.x, e->ax1.z);
     e->ax2.z = FX_Mul(b.x, e->ax1.y) - FX_Mul(b.y, e->ax1.x);
-    func_01ffc5c0(&e->ax1, &e->ax1);
-    func_01ffc5c0(&e->ax2, &e->ax2);
+    VEC_Fx16Normalize(&e->ax1, &e->ax1);
+    VEC_Fx16Normalize(&e->ax2, &e->ax2);
 }
 
 extern "C" void func_020fd6c0(VecFx32 *out, const VecFx32 *in, E *e) {
     VecFx16 c;
-    func_01ffc8bc(&e->ax1, &e->ax2, &c);
-    func_01ffc5c0(&c, &c);
+    VEC_Fx16CrossProduct(&e->ax1, &e->ax2, &c);
+    VEC_Fx16Normalize(&c, &c);
     out->x = FX_Mul(in->z, c.x) + (FX_Mul(in->x, e->ax1.x) + FX_Mul(in->y, e->ax2.x));
     out->y = FX_Mul(in->z, c.y) + (FX_Mul(in->x, e->ax1.y) + FX_Mul(in->y, e->ax2.y));
     out->z = FX_Mul(in->z, c.z) + (FX_Mul(in->x, e->ax1.z) + FX_Mul(in->y, e->ax2.z));
@@ -569,14 +569,14 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             p->pos.x = p->pos.y = p->pos.z = 0;
             break;
         case 1:
-            func_020fe448(&p->pos);
+            spl_rndm_get_arb_vec_xyz(&p->pos);
             p->pos.x = FX_Mul(p->pos.x, e->radius);
             p->pos.y = FX_Mul(p->pos.y, e->radius);
             p->pos.z = FX_Mul(p->pos.z, e->radius);
             break;
         case 2: {
             VecFx32 v;
-            func_020fe3ec(&v);
+            spl_rndm_get_arb_vec_xy(&v);
             v.x = FX_Mul(v.x, e->radius);
             v.y = FX_Mul(v.y, e->radius);
             v.z = 0;
@@ -594,7 +594,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             break;
         }
         case 4: {
-            func_020fe448(&p->pos);
+            spl_rndm_get_arb_vec_xyz(&p->pos);
             LCG();
             p->pos.x = FX_Mul(FX_Mul(p->pos.x, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
             LCG();
@@ -605,7 +605,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
         }
         case 5: {
             VecFx32 v;
-            func_020fe3ec(&v);
+            spl_rndm_get_arb_vec_xy(&v);
             LCG();
             v.x = FX_Mul(FX_Mul(v.x, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
             LCG();
@@ -616,12 +616,12 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
         case 8: {
             VecFx16 c;
             VecFx32 w;
-            func_020fe448(&p->pos);
-            func_01ffc8bc(&e->ax1, &e->ax2, &c);
+            spl_rndm_get_arb_vec_xyz(&p->pos);
+            VEC_Fx16CrossProduct(&e->ax1, &e->ax2, &c);
             w.x = c.x;
             w.y = c.y;
             w.z = c.z;
-            if (func_01ffca14(&w, &p->pos) <= 0) {
+            if (VEC_DotProduct(&w, &p->pos) <= 0) {
                 p->pos.x = -p->pos.x;
                 p->pos.y = -p->pos.y;
                 p->pos.z = -p->pos.z;
@@ -634,12 +634,12 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
         case 9: {
             VecFx16 c;
             VecFx32 w;
-            func_020fe448(&p->pos);
-            func_01ffc8bc(&e->ax1, &e->ax2, &c);
+            spl_rndm_get_arb_vec_xyz(&p->pos);
+            VEC_Fx16CrossProduct(&e->ax1, &e->ax2, &c);
             w.x = c.x;
             w.y = c.y;
             w.z = c.z;
-            if (func_01ffca14(&w, &p->pos) < 0) {
+            if (VEC_DotProduct(&w, &p->pos) < 0) {
                 p->pos.x = -p->pos.x;
                 p->pos.y = -p->pos.y;
                 p->pos.z = -p->pos.z;
@@ -654,7 +654,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
         }
         case 6: {
             VecFx32 v;
-            func_020fe3ec(&p->vel);
+            spl_rndm_get_arb_vec_xy(&p->vel);
             v.x = FX_Mul(p->vel.x, e->radius);
             v.y = FX_Mul(p->vel.y, e->radius);
             LCG();
@@ -664,7 +664,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
         }
         case 7: {
             VecFx32 v;
-            func_020fe3ec(&p->vel);
+            spl_rndm_get_arb_vec_xy(&p->vel);
             LCG();
             v.x = FX_Mul(FX_Mul(p->vel.x, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
             LCG();
@@ -685,11 +685,11 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             w.x = FX_Mul(p->vel.x, e->ax1.x) + FX_Mul(p->vel.y, e->ax2.x);
             w.y = FX_Mul(p->vel.x, e->ax1.y) + FX_Mul(p->vel.y, e->ax2.y);
             w.z = FX_Mul(p->vel.x, e->ax1.z) + FX_Mul(p->vel.y, e->ax2.z);
-            func_01ffc714(&w, &dir);
+            VEC_Normalize(&w, &dir);
         } else if (p->pos.x == 0 && p->pos.y == 0 && p->pos.z == 0) {
-            func_020fe448(&dir);
+            spl_rndm_get_arb_vec_xyz(&dir);
         } else {
-            func_01ffc714(&p->pos, &dir);
+            VEC_Normalize(&p->pos, &dir);
         }
         V3Arr *src = (V3Arr *)&e->pos;
         V3Arr *dst = (V3Arr *)&p->epos;

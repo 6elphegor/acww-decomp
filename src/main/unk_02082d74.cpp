@@ -447,8 +447,8 @@ s32 func_0204263c(Unk_02083c28_Vec *v);
 s32 func_02083ba4(u16 *p);
 u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void func_0204ed8c(Unk_02083c28_Vec *out, s32 x, s32 y);
-void func_02115fb4(void *dst, u32 v, u32 n);
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuFill8(void *dst, u32 v, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 func_02076ae8(u8 *p, u8 *dst, s32 z);
 s32 func_02076280(u32 a, u8 *p, s32 b, s32 c);
 s32 func_020766e0(u32 id);
@@ -557,7 +557,7 @@ s32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
 s32 func_0207bfb4(void *p, void *q);
 s32 func_0207c014(s32 v);
 void func_02076a2c(void *a, void *b, void *c);
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 func_0207bf38(void *p, void *q);
 s32 func_0207e310();
 s32 func_020785a8();
@@ -616,7 +616,7 @@ extern u8 data_020e0994[];
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c;
 extern Unk_020cbb18_Data *data_020cbb18;
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 void *func_0207bf60(void *, s32);
 void *_ZN12Unk_0208086013func_020805c4Ev(void *);
 s32 _ZN12Unk_02002fc813func_020030b4Ev(void *);
@@ -703,8 +703,8 @@ extern "C" Unk_020e09ac *func_02084f84()
 extern "C" void func_02084f48()
 {
     F5::data_021cd640 = 0;
-    F5::func_02115fb4(F5::data_021cd654, 0, 0xf0);
-    F5::func_02115fb4(F5::data_021cd844, 0, 0x474);
+    F5::MI_CpuFill8(F5::data_021cd654, 0, 0xf0);
+    F5::MI_CpuFill8(F5::data_021cd844, 0, 0x474);
     F5::func_02083e60(F5::data_020e0994);
 }
 
@@ -713,7 +713,7 @@ extern "C" void func_02084ecc()
     u8 *p = F5::data_021cd654;
     s32 i;
     s32 z = 0;
-    F5::func_02115fb4(p, 0, 0xf0);
+    F5::MI_CpuFill8(p, 0, 0xf0);
     for (i = 0; i < 8; p += 0x1e, i++) {
         void *o = F5::func_0207bf60(F5::data_021dfd8c, i);
         if (o != NULL && F5::_ZN12Unk_02002fc813func_020030b4Ev(F5::_ZN12Unk_0208086013func_020805c4Ev(o)) != 0) {
@@ -774,7 +774,7 @@ extern "C" BOOL func_02084de0(s32 a, s32 *p)
         F4::func_0209d498(t);
         p = t;
     }
-    F4::func_02116048(p, buf, 8);
+    F4::MI_CpuCopy8(p, buf, 8);
     if (F4::func_0203f2e0(a, buf, 0)) {
         return TRUE;
     }
@@ -885,7 +885,7 @@ extern "C" void func_02084ae4(void *a)
             F4::func_02076ae8(e + 3, &w, 0);
             if (w.b == F4::func_020b50e8()) {
                 F4::func_02076a2c(e + 4, &v.x, &v.z);
-                F4::func_02116048(e + 9, &w.h[2], 2);
+                F4::MI_CpuCopy8(e + 9, &w.h[2], 2);
             } else {
                 u8 *p = (u8 *)F4::_ZN12Unk_0207e94013func_0207f170Ev(r7);
                 F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
@@ -943,7 +943,7 @@ extern "C" void func_02084960(u8 *a)
         h[3] = F4::func_02063b8c(4) << 14;
     } else if (e != 0 && e[0] != 0) {
         F4::func_02076a2c(e + 4, &v.x, &v.z);
-        F4::func_02116048(e + 9, &h[3], 2);
+        F4::MI_CpuCopy8(e + 9, &h[3], 2);
         r4 = 1;
     } else {
         r4 = F4::func_02084e20(a, &v);
@@ -1025,7 +1025,7 @@ extern "C" void func_020847b0(void *a)
                             u8 *e = F4::data_021cd654 + r5 * 30;
                             if (e[0] != 0) {
                                 F4::func_02076a2c(e + 4, &v.x, &v.z);
-                                F4::func_02116048(e + 9, &h[2], 2);
+                                F4::MI_CpuCopy8(e + 9, &h[2], 2);
                             }
                         }
                     } else {
@@ -1055,7 +1055,7 @@ extern "C" void func_020847b0(void *a)
                 u8 *e = F4::data_021cd654 + r4 * 30;
                 if (e[0] != 0) {
                     F4::func_02076a2c(e + 4, &v.x, &v.z);
-                    F4::func_02116048(e + 9, &h[2], 2);
+                    F4::MI_CpuCopy8(e + 9, &h[2], 2);
                 }
             }
             flag = TRUE;
@@ -1209,9 +1209,9 @@ extern "C" BOOL func_02084464(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, 
         r->unk_00 = 1;
         F3::func_02076b08((u8 *)r + 3, b, 0);
         F3::func_02076a6c((u8 *)r + 4, v->x, v->z);
-        F3::func_02116048(&c, (u8 *)r + 9, 2);
-        F3::func_02116048(d, (u8 *)r + 0xf, 0xf);
-        F3::func_02116048(e, (u8 *)r + 0xb, 4);
+        F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
+        F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
+        F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
         return TRUE;
     }
     return FALSE;
@@ -1244,7 +1244,7 @@ extern "C" void func_020843c4(void *dst, s32 id) {
     if (i < 8) {
         Unk_02083c28_Rec *r = &F3::data_021cd654[i];
         r->unk_00 = 1;
-        F3::func_02116048(r, dst, F3::func_020766e0(id));
+        F3::MI_CpuCopy8(r, dst, F3::func_020766e0(id));
         F3::data_021cd640 = 1;
     }
 }
@@ -1262,9 +1262,9 @@ extern "C" BOOL func_0208432c(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, 
         r->unk_00 = 1;
         F3::func_02076b08((u8 *)r + 3, b, 0);
         F3::func_02076a6c((u8 *)r + 4, v->x, v->z);
-        F3::func_02116048(&c, (u8 *)r + 9, 2);
-        F3::func_02116048(d, (u8 *)r + 0xf, 0xf);
-        F3::func_02116048(e, (u8 *)r + 0xb, 4);
+        F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
+        F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
+        F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
         return TRUE;
     }
     return FALSE;
@@ -1287,7 +1287,7 @@ extern "C" void func_020842c0(void *dst, s32 id) {
     if (i < 0x26) {
         Unk_02083c28_Rec *r = &F3::data_021cd844[i];
         r->unk_00 = 1;
-        F3::func_02116048(r, dst, F3::func_020766e0(id));
+        F3::MI_CpuCopy8(r, dst, F3::func_020766e0(id));
     }
 }
 
@@ -1403,7 +1403,7 @@ Unk_02084038::~Unk_02084038() {}
 extern "C" BOOL func_02083f44(u16 *out) {
     s32 y, x;
     u16 *grid = F3::data_021c47c4;
-    F3::func_02115fb4(out, 0, 0x20);
+    F3::MI_CpuFill8(out, 0, 0x20);
     if (grid) {
         u16 *p = F3::func_0204ebd8(grid, 0, 0, 0, 0, 0);
         if (p) {

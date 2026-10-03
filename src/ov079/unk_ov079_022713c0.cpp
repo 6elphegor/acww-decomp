@@ -93,7 +93,7 @@ BOOL func_0202e1cc(s32 a, s32 b);
 BOOL func_0206ed18();
 s32 func_0206ed38();
 s32 func_02085618(u16 *p);
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 u32 func_02063b8c(u32 n);
 void func_02085784(void *g, u32 a);
 u32 func_02060e24(u32 v);

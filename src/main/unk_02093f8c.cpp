@@ -139,19 +139,19 @@ s32 func_020e94f8(void *);
 }
 
 extern "C" {
-void func_01ffca8c(void *, void *, void *);
+void VEC_Add(void *, void *, void *);
 }
 
 extern "C" {
-s32 func_02116048(const void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-s32 func_02115fb4(void *dst, u32 v, u32 n);
+s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 }
 
 extern "C" {
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
@@ -360,7 +360,7 @@ Unk_020e1c4c::~Unk_020e1c4c() {}
 
 u32 Unk_020e1c4c::vfunc_08() { return 8; }
 
-void Unk_020e1c4c::func_02093f90(void *dst, u32 n) { func_02116048(unk_0e, dst, n); }
+void Unk_020e1c4c::func_02093f90(void *dst, u32 n) { MI_CpuCopy8(unk_0e, dst, n); }
 
 u8 *Unk_020e1c4c::vfunc_0c() { return unk_0e; }
 

@@ -239,7 +239,7 @@ extern u8 data_ov001_0222a84c[];
 extern u8 data_ov001_0222a854[];
 extern u8 *data_ov001_0222a85c[];
 
-s32 func_01ffc2c4(s32, s32);
+s32 FX_ModS32(s32, s32);
 void func_ov001_02224670(void *, s32, s32, u32);
 void func_ov001_02224704(void *, s32, s32, s32);
 void func_ov001_02224558(void *, s32, s32, s32);
@@ -1011,7 +1011,7 @@ void func_ov001_02209698(s32 a, s32 b, u32 c) {
         Unk_ov001_0220951c_Obj *g = data_ov001_0222dddc;
         func_ov001_0222519c(g->unk_00[a][b], data_ov001_02229c28[b * 12][0], c, g->unk_104[b], 2);
     }
-    s32 n = func_01ffc2c4(b + 3, 4);
+    s32 n = FX_ModS32(b + 3, 4);
     for (i = 0; i < y.b[b]; i++) {
         Unk_ov001_0220951c_Rec *r = data_ov001_0222dddc->unk_ec[n];
         r->unk_00 = r->unk_00 & 0xc1fffcff;

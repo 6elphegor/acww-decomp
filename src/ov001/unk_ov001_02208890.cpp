@@ -6,8 +6,8 @@ typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
 extern "C" {
 extern void func_02111b3c(void *, s32, u32);
 extern void func_021117fc(void *, s32, u32);
-extern void func_021145cc(void *, u32);
-extern void func_02115ef4(void *, void *, u32);
+extern void DC_FlushRange(void *, u32);
+extern void MIi_CpuCopyFast(void *, void *, u32);
 extern u32 func_ov001_0220c5c8();
 extern void *func_ov001_02224074(void *, void *, u32);
 extern void func_ov001_02224038(void *);
@@ -45,7 +45,7 @@ extern "C" void func_ov001_0220897c() {
 
 extern "C" s32 func_ov001_0220891c(s32 n) {
     void *h = func_ov001_02224074(func_ov001_022085e0((u8 *)data_ov001_0222a7e0[n]), 0, 4);
-    func_02115ef4(h, data_ov001_0222ddd4, 0xc0);
+    MIi_CpuCopyFast(h, data_ov001_0222ddd4, 0xc0);
     func_ov001_02224038(h);
     func_ov001_02227094(1, (void *)func_ov001_02208890, 0, 0x78);
 }
@@ -80,7 +80,7 @@ extern "C" char data_ov001_0222a624[];
 extern "C" char data_ov001_0222a7b0[];
 
 extern "C" void func_ov001_02208890(s32 a) {
-    func_021145cc(data_ov001_0222ddd4, 0xc0);
+    DC_FlushRange(data_ov001_0222ddd4, 0xc0);
     func_02111b3c(data_ov001_0222ddd4, 0, 0xc0);
     func_ov001_02226fdc(1, a);
 }

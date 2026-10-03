@@ -13,7 +13,7 @@ extern u8 SDK_SECTION_ARENA_EX_START[];
 u32 func_02113fd8(void); // OS_GetConsoleType
 
 // OS_GetInitArenaLo
-void *func_02114724(s32 id) {
+void *OS_GetInitArenaLo(s32 id) {
     switch (id) {
     case 0: return (void *)0x0229bdc0; // SDK_MAIN_ARENA_LO
     case 2:

@@ -150,8 +150,8 @@ BOOL func_ov065_02279494(Unk_ov065_02279c7c *, void *, void *, s32);
 BOOL func_ov065_022794d0(Unk_ov065_02279c7c *, void *, s32, s32);
 void func_ov065_02279280(void *, s32);
 BOOL func_ov065_0227931c(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_021277d4(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
 s32 func_0212a120(const char *, s32);
 s32 func_02128030(void *, s32, s32, u32);
 
@@ -283,7 +283,7 @@ void func_ov065_0227924c(void *);
 void func_ov065_022795d4(void *, u32, u32);
 s32 func_ov065_02278be8(s32);
 s32 func_ov065_0227b2a8(void *, u8 *, s32);
-u32 func_021277d4(const char *);
+u32 STD_GetStringLength(const char *);
 void func_02128250(s32);
 s32 func_02128318(s32, s32, s32);
 s32 func_02128650(s32);
@@ -292,9 +292,9 @@ void func_021289b4(void *, void *, s32);
 char *func_02129f1c(char *, char *);
 u32 func_0212a060(char *, char *);
 char *func_0212a120(char *, s32);
-s32 func_0212a15c(char *, char *, s32);
+s32 strncmp(char *, char *, s32);
 s32 func_0212b770(char *);
-s32 func_021130d0(char *, char *, ...);
+s32 OS_SPrintf(char *, char *, ...);
 
 s32 func_ov065_0227aa74(Unk_ov065_0227a884_Obj *self);
 void func_ov065_0227a9ec(Unk_ov065_0227a8ec_Item *it);
@@ -432,8 +432,8 @@ char *func_0212a120(const char *, s32);
 void func_02128a00(void *, const void *, s32);
 s32 func_02128ca4(const char *, const char *, ...);
 char *func_02129f1c(const char *hay, const char *needle);
-s32 func_0212a15c(const char *, const char *, u32);
-s32 func_021130d0(char *buf, const char *fmt, ...);
+s32 strncmp(const char *, const char *, u32);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 func_ov065_02278be8(s32);
 s32 func_ov065_02278bf4(char *);
@@ -569,7 +569,7 @@ typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 
 extern "C" {
 s32 func_0212a190(const char *, const char *);
-s32 func_0212a15c(const char *, const char *, s32);
+s32 strncmp(const char *, const char *, s32);
 s32 func_02129fa0(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
@@ -619,10 +619,10 @@ BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
     if (p == NULL) {
         return FALSE;
     }
-    if (func_0212a15c(p, "http://", 7) == 0) {
+    if (strncmp(p, "http://", 7) == 0) {
         https = FALSE;
         p += 7;
-    } else if (func_0212a15c(p, "https://", 8) == 0) {
+    } else if (strncmp(p, "https://", 8) == 0) {
         https = TRUE;
         p += 8;
     } else {
@@ -774,7 +774,7 @@ void func_ov065_0227b8e4(Unk_ov065_0227b2a8_Obj *self) {
     s32 len;
     char buf[0x400];
     if (self->unk_168 == 0) {
-        if (func_0212a15c(self->unk_14, "https://", 8) == 0) {
+        if (strncmp(self->unk_14, "https://", 8) == 0) {
             self->unk_fc = 1;
             self->unk_38 = 0x11;
             return;
@@ -848,7 +848,7 @@ void func_ov065_0227b72c(Unk_ov065_0227b2a8_Obj *self) {
             func_ov065_022792a4(b, "Connection", "close");
         }
         if (self->unk_13c != 0) {
-            func_021130d0(tmp, "%d", self->unk_14c);
+            OS_SPrintf(tmp, "%d", self->unk_14c);
             func_ov065_022792a4(b, "Content-Length", tmp);
             func_ov065_022792a4(b, "Content-Type", func_ov065_0227ac08(self));
         }
@@ -1206,14 +1206,14 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
         d2:
             *e = 0;
             if (*d == '/') {
-                s32 l = func_021277d4(self->unk_18);
-                s32 m = func_021277d4(d);
+                s32 l = STD_GetStringLength(self->unk_18);
+                s32 m = STD_GetStringLength(d);
                 self->unk_108 = (char *)func_ov065_02277af0(l + 0xe + m);
                 if (self->unk_108 == NULL) {
                     self->unk_fc = 1;
                     self->unk_38 = 1;
                 }
-                func_021130d0(self->unk_108, "http://%s:%d%s", self->unk_18, self->unk_20, d);
+                OS_SPrintf(self->unk_108, "http://%s:%d%s", self->unk_18, self->unk_20, d);
                 return;
             }
             self->unk_108 = func_ov065_02279100(d);
@@ -1235,7 +1235,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
         char *hdr = hb.b;
         e = q + 0x10;
         t = e;
-        n = func_021277d4(hdr);
+        n = STD_GetStringLength(hdr);
         while (t != NULL && *t != 0 && *t != 10 && *t != 13 && *t != 0x20) {
             t++;
         }
@@ -1246,7 +1246,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
             return;
         }
         if (n == dl) {
-            if (func_0212a15c(e, hdr, dl) >= 0) {
+            if (strncmp(e, hdr, dl) >= 0) {
                 self->unk_fc = 1;
                 self->unk_38 = 0x10;
                 return;
@@ -1291,7 +1291,7 @@ extern "C" {
 // Not in the original binary: unreferenced weak function compiled right after func_ov065_0227ae94, so that the literal
 // "2147483647" is pooled where the original has it; removed by the dead-stripping link (see notes.txt).
 __declspec(weak) void Unk_ov065_0227ae94_pool_order(void) {
-    func_021277d4("2147483647");
+    STD_GetStringLength("2147483647");
 }
 }
 }
@@ -1410,7 +1410,7 @@ s32 func_ov065_0227ac34(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
     item.unk_00 = 0;
     item.unk_04 = a;
     item.unk_08 = b;
-    len = func_021277d4(b);
+    len = STD_GetStringLength(b);
     item.unk_0c = len;
     item.unk_10 = 0;
     c = func_0212a060(b, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*");
@@ -1460,7 +1460,7 @@ s32 func_ov065_0227aba8(Unk_ov065_0227a884_Obj *self) {
     if (i < n) {
         do {
             Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)func_ov065_0227866c(t->unk_00, i);
-            s32 l = func_021277d4(r->unk_04);
+            s32 l = STD_GetStringLength(r->unk_04);
             s32 t = sum + l;
             s32 u = t + (s32)r->unk_0c;
             sum = u + (s32)r->unk_14 * 2 + 1;
@@ -1480,7 +1480,7 @@ s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
     s32 n;
     s32 i;
     if (data_ov065_022910e8 == 0) {
-        s32 l = func_021277d4("--Qr4G823s23d---<<><><<<>--7d118e0536");
+        s32 l = STD_GetStringLength("--Qr4G823s23d---<<><><<<>--7d118e0536");
         data_ov065_022910e8 = l;
         data_ov065_022910e4 = l + 0x2f;
         data_ov065_022910e0 = l + 0x4c;
@@ -1491,19 +1491,19 @@ s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
         Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)func_ov065_0227866c(t->unk_00, i);
         if (r->unk_00 == 0) {
             sum += data_ov065_022910e4;
-            sum += func_021277d4(r->unk_04);
+            sum += STD_GetStringLength(r->unk_04);
             sum += (s32)r->unk_0c;
         } else if (r->unk_00 == 1) {
             sum += data_ov065_022910e0;
-            sum += func_021277d4(r->unk_04);
-            sum += func_021277d4(r->unk_0c);
-            sum += func_021277d4(r->unk_10);
+            sum += STD_GetStringLength(r->unk_04);
+            sum += STD_GetStringLength(r->unk_0c);
+            sum += STD_GetStringLength(r->unk_10);
             sum += (s32)((Unk_ov065_0227a884_Rec *)func_ov065_0227866c(self->unk_140, i))->unk_0c;
         } else if (r->unk_00 == 2) {
             sum += data_ov065_022910e0;
-            sum += func_021277d4(r->unk_04);
-            sum += func_021277d4(r->unk_10);
-            sum += func_021277d4(r->unk_14);
+            sum += STD_GetStringLength(r->unk_04);
+            sum += STD_GetStringLength(r->unk_10);
+            sum += STD_GetStringLength(r->unk_14);
             sum += (s32)r->unk_0c;
         } else {
             return 0;
@@ -1763,14 +1763,14 @@ s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
         st->unk_04 = 0;
         if (c->unk_13c->unk_0c == 0) {
             if (first != 0) {
-                func_021130d0(buf, "%s=", st->unk_00->unk_04);
+                OS_SPrintf(buf, "%s=", st->unk_00->unk_04);
             } else {
-                func_021130d0(buf, "&%s=", st->unk_00->unk_04);
+                OS_SPrintf(buf, "&%s=", st->unk_00->unk_04);
             }
         } else {
             Unk_ov065_0227a4e8_Part *p = st->unk_00;
             if (p->unk_00 == 0) {
-                func_021130d0(buf, "%sContent-Disposition: form-data; name=\"%s\"\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->unk_04);
+                OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->unk_04);
             } else if (p->unk_00 == 1 || p->unk_00 == 2) {
                 s32 a, b;
                 if (p->unk_00 == 1) {
@@ -1780,10 +1780,10 @@ s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
                     a = p->unk_10;
                     b = p->unk_14;
                 }
-                func_021130d0(buf, "%sContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->unk_04, a, b);
+                OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->unk_04, a, b);
             }
         }
-        s32 r = func_ov065_02279654(c, buf, func_021277d4(buf));
+        s32 r = func_ov065_02279654(c, buf, STD_GetStringLength(buf));
         if (r == 0) {
             return 0;
         }
@@ -1830,7 +1830,7 @@ s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c) {
         }
     }
     if (c->unk_13c->unk_0c != 0) {
-        s32 n = func_021277d4("\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n");
+        s32 n = STD_GetStringLength("\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n");
         if (func_ov065_02279654(c, "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n", n) == 0) {
             return 0;
         }

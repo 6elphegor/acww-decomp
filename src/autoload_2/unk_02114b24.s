@@ -8,20 +8,20 @@
 	.arm
 
 ; OS_EnableProtectionUnit
-	.global func_02114b24
-	.type func_02114b24, @function
-	.size func_02114b24, 0x10
-func_02114b24:
+	.global OS_EnableProtectionUnit
+	.type OS_EnableProtectionUnit, @function
+	.size OS_EnableProtectionUnit, 0x10
+OS_EnableProtectionUnit:
 	mrc p15, 0, r0, c1, c0, 0
 	orr r0, r0, #1
 	mcr p15, 0, r0, c1, c0, 0
 	bx lr
 
 ; OS_DisableProtectionUnit
-	.global func_02114b34
-	.type func_02114b34, @function
-	.size func_02114b34, 0x10
-func_02114b34:
+	.global OS_DisableProtectionUnit
+	.type OS_DisableProtectionUnit, @function
+	.size OS_DisableProtectionUnit, 0x10
+OS_DisableProtectionUnit:
 	mrc p15, 0, r0, c1, c0, 0
 	bic r0, r0, #1
 	mcr p15, 0, r0, c1, c0, 0

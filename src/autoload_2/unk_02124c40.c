@@ -125,30 +125,30 @@ extern u16 data_0213c214;
 extern u16 data_0213c218;
 extern u16 *data_0213c21c;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
 extern void func_0206d49c(void);
-extern void func_02114594(void *, u32);
-extern void func_02115640(u8 *);
-extern void func_02115bac(u32, void *, void *, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115e48(void *, void *, u32);
+extern void DC_InvalidateRange(void *, u32);
+extern void OS_GetMacAddress(u8 *);
+extern void MI_DmaCopy16(u32, void *, void *, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopy16(void *, void *, u32);
 extern void func_02115e64(u32, void *, u32);
-extern void func_02115fb4(void *, u32, u32);
-extern void func_02116048(void *, void *, u32);
-extern u32 func_02117e8c(u32, u32);
+extern void MI_CpuFill8(void *, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
+extern u32 PXI_IsCallbackReady(u32, u32);
 extern u32 func_0211f410(void);
 extern u32 func_0211fb0c(u32, void *, u32);
 extern u32 func_0211fb68(WCb);
 extern u32 func_0211fbb4(WCb, u32);
 extern u32 func_0211fcbc(WCb, u32, u32, u32, u32);
 extern u32 func_0211ff5c(WCb, void *);
-extern u32 func_0212026c(WCb);
-extern u32 func_021202b4(WCb);
-extern u32 func_021202f4(void *, WCb, u32);
+extern u32 WM_End(WCb);
+extern u32 WM_Reset(WCb);
+extern u32 WM_Initialize(void *, WCb, u32);
 extern u32 func_0212052c(u32, u32, u32, u32, u32, u32, u32);
 extern u32 func_021206b4(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
-extern u32 func_02121948(WCb, u32, u32, u32, u32);
+extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern void func_021230a4(void *);
 extern void func_0212454c(void);
 extern u32 func_021265dc(void);
@@ -187,7 +187,7 @@ void func_0212541c(void *arg) {
             return;
         }
         g->cb51c(21, msg);
-        func_02124830(29, func_02121948(func_0212541c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+        func_02124830(29, WM_SetLifeTime(func_0212541c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
         return;
     case 29:
         if (msg->f2 != 0) {
@@ -225,8 +225,8 @@ void func_0212541c(void *arg) {
                         msg->mac[3] == s->mac[3] && msg->mac[4] == s->mac[4] && msg->mac[5] == s->mac[5]) {
                         base[i].f0f6 = msg->f36;
                         base[i].f0f8 = msg->f38;
-                        func_02114594(&g->scan[i], 0xc0);
-                        func_02115bac(data_02200010, g->scanbuf, &g->scan[i], 0xc0);
+                        DC_InvalidateRange(&g->scan[i], 0xc0);
+                        MI_DmaCopy16(data_02200010, g->scanbuf, &g->scan[i], 0xc0);
                         g->f5ec = i;
                         goto done;
                     }
@@ -236,9 +236,9 @@ void func_0212541c(void *arg) {
             }
             if (i < 16) {
                 g->f5e0 = i + 1;
-                func_02115e48(msg, (u8 *)&base[i] + 0xc0, 0xb8);
-                func_02114594(&g->scan[i], 0xc0);
-                func_02115bac(data_02200010, g->scanbuf, &g->scan[i], 0xc0);
+                MIi_CpuCopy16(msg, (u8 *)&base[i] + 0xc0, 0xb8);
+                DC_InvalidateRange(&g->scan[i], 0xc0);
+                MI_DmaCopy16(data_02200010, g->scanbuf, &g->scan[i], 0xc0);
                 g->f5ec = i;
             }
         done:
@@ -330,7 +330,7 @@ void func_0212541c(void *arg) {
         }
         g->f52a = 0;
         data_02200018->f528 = 0;
-        func_02124830(2, func_0212026c(func_0212541c));
+        func_02124830(2, WM_End(func_0212541c));
         return;
     case 2:
         if (msg->f2 != 0) {
@@ -368,7 +368,7 @@ u32 func_021253a4(void) {
     u8 mac[6];
     u32 sum;
     int i;
-    func_02115640(mac);
+    OS_GetMacAddress(mac);
     sum = i = 0;
     for (; i < 6; i++) sum += mac[i];
     return (sum + *(u32 *)0x027ffc3c) * 7 % 20;
@@ -391,14 +391,14 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     g = (WCtl *)(((u32)buf + 31) & ~31);
     w = (WWork *)(((u32)g + 0x1e1f) & ~31);
     if (b == 0x10000) b = func_0211f410();
-    e = func_01ffa2ec();
+    e = OS_DisableInterrupts();
     zero32 = 0;
     data_02200018 = g;
     data_0220001c = w;
     data_02200010 = dma;
     func_02115e64(zero32, g, 0x1e00);
     zero = 0;
-    func_02115e30(zero, w, 0x1340);
+    MIi_CpuClear16(zero, w, 0x1340);
     dst = g->f530;
     for (i = 0; i < list->n; i++) {
         *dst++ = ((u16 *)((u8 *)list + 2))[i];
@@ -408,7 +408,7 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
         if (*data_0213c21c == 0) break;
         *dst2++ = *data_0213c21c++;
     }
-    func_02116048(list, w->f1300, 22);
+    MI_CpuCopy8(list, w->f1300, 22);
     if (list->n < 10) *(u16 *)((u8 *)w + 0x1302 + list->n * 2) = 0;
     g->f500 = 0x100;
     g->f502 = 8;
@@ -428,7 +428,7 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     g->f50d = 0;
     w->f1316 = 1;
     w->f131c = 0;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return 0;
 }
 
@@ -443,23 +443,23 @@ BOOL func_0212513c(u32 a, u32 c, u32 d) {
 
 // set channel/buffer parameters if not initialised yet; validates with func_0212513c
 BOOL func_02125098(u32 a, u32 b) {
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     if (data_02200018->f50d != 0) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return 0;
     }
     if (func_0212513c(a, 8, b) == 0) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return 0;
     }
     data_02200018->f10 = b;
     data_02200018->f500 = a;
     data_02200018->f502 = 8;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return 1;
 }
 
-// WM_Initialize retry loop (func_021202f4 = WM_Initialize(buf, cb, dmaNo)) then WM_SetIndCallback-like func_0211fb68
+// WM_Initialize retry loop (WM_Initialize = WM_Initialize(buf, cb, dmaNo)) then WM_SetIndCallback-like func_0211fb68
 u32 func_02124f98(void) {
     data_02200018->f528 = 0;
     data_02200018->f52a = 0;
@@ -469,7 +469,7 @@ u32 func_02124f98(void) {
     if (data_0220001c->f1320 == 0) {
         u32 r;
         do {
-            r = func_021202f4(data_02200014, data_02200018->cb508, data_02200010);
+            r = WM_Initialize(data_02200014, data_02200018->cb508, data_02200010);
         } while (r == 4);
         if (r != 2) return 8;
         func_0211fb68(data_02200018->cb508);
@@ -491,12 +491,12 @@ u32 func_02124d74(u32 a) {
     volatile u16 zero1;
     volatile u16 zero2;
     int i;
-    e = func_01ffa2ec();
+    e = OS_DisableInterrupts();
     data_02200018->f32 = a;
     data_02200014 = (u8 *)(((u32)data_0220001c + 0x7d1f) & ~31);
     cb = data_0220001c->cb;
     zero1 = 0;
-    func_02115e30(zero1, data_0220001c->ent, 0x69c0);
+    MIi_CpuClear16(zero1, data_0220001c->ent, 0x69c0);
     func_021230a4((void *)cb);
     data_0220001c->f1318 = data_02200018->f500 - 6;
     func_02126ef4(data_02200018->f502);
@@ -507,8 +507,8 @@ u32 func_02124d74(u32 a) {
     }
     data_0220001c->f1524 = 0;
     zero2 = 0;
-    func_02115e30(zero2, data_0220001c->peers, 0x5d40);
-    func_02115fb4((u8 *)data_0220001c + 0x1754, 0, 30);
+    MIi_CpuClear16(zero2, data_0220001c->peers, 0x5d40);
+    MI_CpuFill8((u8 *)data_0220001c + 0x1754, 0, 30);
     data_02200018->f524 = 1;
     data_02200018->cb51c = func_02122944;
     data_02200018->cb508 = func_02125d0c;
@@ -518,8 +518,8 @@ u32 func_02124d74(u32 a) {
     data_02200018->f51a = (((data_02200018->f36 + 14) * 15 + 41) & ~31) << 1;
     func_0212454c();
     r = func_02124f98();
-    func_01ffa3d4(e);
-    *(u32 *)((u8 *)data_0220001c + 0x74c8) = func_02117e8c(15, 1);
+    OS_RestoreInterrupts(e);
+    *(u32 *)((u8 *)data_0220001c + 0x74c8) = PXI_IsCallbackReady(15, 1);
     return r;
 }
 
@@ -529,9 +529,9 @@ u32 func_02124d50(u32 a) {
     return func_02124d74(a);
 }
 
-// WM_End-like step: func_021202b4 (WM_End), report result
+// WM_End-like step: WM_Reset (WM_End), report result
 BOOL func_02124d14(void) {
-    u32 r = func_021202b4(data_02200018->cb508);
+    u32 r = WM_Reset(data_02200018->cb508);
     func_02124830(1, r);
     if (r == 2) r = 0;
     return r;
@@ -545,7 +545,7 @@ BOOL func_02124d08(void) {
 // begin shutdown/reset of the wireless layer (state 0x526)
 BOOL func_02124c80(void) {
     BOOL r = 1;
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     if (data_02200018->f526 == 0) {
         data_02200018->f5e4 = 0;
         data_02200018->f526 = r;
@@ -556,15 +556,15 @@ BOOL func_02124c80(void) {
             r = func_02124d14();
         }
     }
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return r;
 }
 
 // OS_DisableInterrupts / terminate-if-not-set check / func_02124c80 / OS_RestoreInterrupts
 void func_02124c40(void) {
-    u32 e = func_01ffa2ec();
+    u32 e = OS_DisableInterrupts();
     if (data_0220001c->f1320 == 0) func_0206d49c();
     func_02124c80();
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
 }
 

@@ -13,8 +13,8 @@ typedef struct GeBuf4 {
 } GeBuf4;
 
 extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
-extern void func_01ffc374(s32 num, s32 den);
-extern s32 func_01ffc464(void);
+extern void FX_DivAsync(s32 num, s32 den);
+extern s32 FX_GetDivResult(void);
 extern void (*data_0213bef0[8])(s32 *, u32 *);
 
 
@@ -31,7 +31,7 @@ void func_02108fe8(s32 *o, u8 *s)
     s32 num = w << 12;
     s32 den = h << 12;
     s32 sn, sy, r, t, cs, sx;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     cs = *(s16 *)(s + 34);
     sx = *(s32 *)(s + 24);
     sn = *(s16 *)(s + 32);
@@ -40,11 +40,11 @@ void func_02108fe8(s32 *o, u8 *s)
     t = FxMul(sy, cs);
     o[0] = FxMul(sx, cs);
     o[5] = t;
-    o[1] = FxMul(sy, sn) * func_01ffc464() >> 12;
-    func_01ffc374(num, den);
+    o[1] = FxMul(sy, sn) * FX_GetDivResult() >> 12;
+    FX_DivAsync(num, den);
     o[12] = (*(u16 *)(s + 44) * r) << 4;
     o[13] = (-(s32)*(u16 *)(s + 46) * (t - 0x1000)) << 4;
-    o[4] = (-r * func_01ffc464()) >> 12;
+    o[4] = (-r * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT (Maya-style): rotation only
@@ -54,14 +54,14 @@ void func_02108f38(s32 *o, u8 *s)
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     o[0] = *(s16 *)(s + 34);
     o[5] = *(s16 *)(s + 34);
-    o[1] = (*(s16 *)(s + 32) * func_01ffc464()) >> 12;
-    func_01ffc374(num, den);
+    o[1] = (*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
+    FX_DivAsync(num, den);
     o[12] = (*(u16 *)(s + 44) * *(s16 *)(s + 32)) << 4;
     o[13] = (-(s32)*(u16 *)(s + 46) * (*(s16 *)(s + 34) - 0x1000)) << 4;
-    o[4] = (-*(s16 *)(s + 32) * func_01ffc464()) >> 12;
+    o[4] = (-*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT (Maya-style): scale only

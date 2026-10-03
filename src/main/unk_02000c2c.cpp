@@ -74,9 +74,9 @@ u32 data_0213c6c4;
 u32 data_0213c6cc;
 u32 data_0213c6d8;
 
-void func_02114e48(void);
-void func_02115304(void);
-void func_02113b6c(void);
+void OS_InitTick(void);
+void OS_InitAlarm(void);
+void OS_InitThread(void);
 void func_02114cd8(void (*fn)(void), void *p);
 void func_0206d774(void);
 void func_01ffa314(void);
@@ -97,20 +97,20 @@ BOOL func_020012c0(u32 addr, u32 len);
 void func_02001264(u8 *dst, u32 src, u32 size);
 void func_02001338(const char *a, u32 b, const char *c, void *d);
 
-u64 func_01ffa6b4(void);
+u64 OS_GetTick(void);
 u32 func_01ffa3b4(void);
-void func_01ffa2ec(void);
+void OS_DisableInterrupts(void);
 void func_020535e0(void);
-void func_021101f4(u32 a);
+void GX_SetBankForBG(u32 a);
 void func_0210f900(u32 a);
 void func_021117fc(void *a, u32 b, u32 c);
 void func_02111794(void *a, u32 b, u32 c);
-void func_02111ec8(void *a, u32 b, u32 c);
-void func_02111e60(void *a, u32 b, u32 c);
-u32 func_02110994(void);
-u32 func_02110974(void);
-void func_0210f154(void);
-void func_02115ea8(u32 a);
+void GX_LoadBGPltt(void *a, u32 b, u32 c);
+void GXS_LoadBGPltt(void *a, u32 b, u32 c);
+u32 G2_GetBG1ScrPtr(void);
+u32 G2S_GetBG1ScrPtr(void);
+void GX_DispOn(void);
+void MIi_CpuClearFast(u32 a);
 void func_020b82b8(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
 void func_020b82d8(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
 u32 func_020ed754(u32 a);
@@ -118,16 +118,16 @@ u32 func_021122b0(void);
 u32 func_02113438(Unk_02000fc0_Node *a);
 void func_020e8b38(u32 a);
 void func_0204eeb0(void);
-u8 *func_02114b10(void);
-void func_021127c0(const char *a, u32 b, const char *c, void *d);
+u8 *OS_GetDTCMAddress(void);
+void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 s32 func_0206d49c(void);
 
 void func_02001338(const char *a, u32 b, const char *c, void *d) {
-    func_01ffa2ec();
+    OS_DisableInterrupts();
     data_0213c6e8 = (u32)a;
     data_0213c6e4 = b;
     data_0213c6e0 = data_02135f44;
-    func_021127c0(data_02135f44, 0x80, c, d);
+    OS_VSNPrintf(data_02135f44, 0x80, c, d);
     func_0206d49c();
 }
 
@@ -138,7 +138,7 @@ void func_02001314(const char *fmt, ...) {
 
 BOOL func_020012c0(u32 addr, u32 len) {
     u32 end = addr + len;
-    u8 *base = func_02114b10();
+    u8 *base = OS_GetDTCMAddress();
     u32 lim2 = (u32)base + 0x4000;
     u32 lim1 = data_021fce88 != 0 ? 0x27e0000 : 0x23ff000;
     if ((addr >= 0x2000000 && end <= lim1) || ((u32)base <= addr && end <= lim2)) {
@@ -264,7 +264,7 @@ void func_02000fc0(void) {
 
 void func_02000fac(u32 a, u32 b, u32 c) {
     volatile u32 v = a;
-    func_02115ea8(v);
+    MIi_CpuClearFast(v);
 }
 
 void func_02000f78(void) {
@@ -278,7 +278,7 @@ void func_02000e64(void) {
     *(vu16 *)0x4000304 |= 1;
     *(vu16 *)0x4000050 = 0;
     *(vu16 *)0x4001050 = 0;
-    func_021101f4(0x40);
+    GX_SetBankForBG(0x40);
     func_0210f900(0x80);
     *(vu32 *)0x4000000 = (*(vu32 *)0x4000000 & 0xffffe0ff) | 0x200;
     *(vu32 *)0x4001000 = (*(vu32 *)0x4001000 & 0xffffe0ff) | 0x200;
@@ -286,16 +286,16 @@ void func_02000e64(void) {
     *(vu16 *)0x400100a = (*(vu16 *)0x400100a & 0x43) | 0x400;
     func_021117fc(data_020de408, 0, 0x1000);
     func_02111794(data_020de408, 0, 0x1000);
-    func_02111ec8(data_020e0408, 0x1a0, 0x60);
-    func_02111e60(data_020e0408, 0x1a0, 0x60);
+    GX_LoadBGPltt(data_020e0408, 0x1a0, 0x60);
+    GXS_LoadBGPltt(data_020e0408, 0x1a0, 0x60);
     *(vu16 *)0x5000000 = 0x7c00;
     *(vu16 *)0x5000018 = 0x7c00;
     *(vu16 *)0x5000400 = 0x7c00;
     *(vu16 *)0x5000418 = 0x7c00;
-    data_0213c6cc = func_02110994();
-    data_0213c6d8 = func_02110974();
+    data_0213c6cc = G2_GetBG1ScrPtr();
+    data_0213c6d8 = G2S_GetBG1ScrPtr();
     func_02000f78();
-    func_0210f154();
+    GX_DispOn();
     *(vu32 *)0x4001000 |= 0x10000;
 }
 
@@ -387,7 +387,7 @@ void func_02000c9c(void) {
     u64 t;
     (void)*ime;
     *ime = 0;
-    t = func_01ffa6b4();
+    t = OS_GetTick();
     data_0213c6d0 = (u32)((t << 6) / 0x82ea);
     for (;;) {
         func_02000cd4();
@@ -409,9 +409,9 @@ void _ZN12Unk_02000c8cD1Ev(void *) {}
 // the game's entry point, called by crt0 (symbols.txt: `main`; see renames.txt)
 void NitroMain(void) {
     vu16 *ime;
-    func_02114e48();
-    func_02115304();
-    func_02113b6c();
+    OS_InitTick();
+    OS_InitAlarm();
+    OS_InitThread();
     func_02114cd8(func_0206d774, data_021fccfc);
     ime = (vu16 *)0x4000208;
     (void)*ime;
