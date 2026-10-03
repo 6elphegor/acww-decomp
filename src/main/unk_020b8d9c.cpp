@@ -1610,7 +1610,7 @@ extern "C" {
 void _ZN12Unk_020d8bc8D2Ev(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_02019dd813func_02019d8cEv(void *p);
+s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
 }
 extern "C" {
 s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
@@ -1628,31 +1628,31 @@ extern "C" {
 void func_02085178(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8413func_02086fa0Ev(void);
+void _ZN12Unk_02086f8412setFollowingEv(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8413func_02086f98Ev(void);
+void _ZN12Unk_02086f8414clearFollowingEv(void);
 }
 extern "C" {
 s32 _ZN10PlayerData13func_020986a4Ev(s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020872fc13func_02087364Ev(s32 a);
+s32 _ZN15LostChildRecord9getTownIdEv(s32 a);
 }
 extern "C" {
-s32 _ZN16ActorTalkRequest13func_02015818Ejj(void *p, s32 a, s32 b);
+s32 _ZN16ActorTalkRequest15setTownNameSlotEjj(void *p, s32 a, s32 b);
 }
 extern "C" {
 s32 _ZN12Unk_02097ff413func_0209801cEj(s32 a, s32 b);
 }
 extern "C" {
-void func_0202e1cc(s32 a, s32 b);
+void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 }
 extern "C" {
-s32 _ZN12Unk_0201ad2013func_0201ad34Ei(void *p, s32 a);
+s32 _ZN14NpcMoveAnimSet12setStandAnimEi(void *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_0201ad2013func_0201ad30Ei(void *p, s32 a);
+s32 _ZN14NpcMoveAnimSet11setWalkAnimEi(void *p, s32 a);
 }
 extern "C" {
 s32 _ZN16ActorTalkRequest8vfunc_38Ej(void *p, void *q);
@@ -1679,19 +1679,19 @@ extern "C" {
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 extern "C" {
 BOOL func_020951b8(s32 a);
 }
 extern "C" {
-BOOL _ZN12Unk_0201985813func_02019790Ev(void *p);
+BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
-void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
+void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
 }
 extern "C" {
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
@@ -1706,13 +1706,13 @@ extern "C" {
 s32 NpcRegistry_FindSpNpc(s32 a);
 }
 extern "C" {
-void _ZN16ActorTalkRequest13func_02015a80EP18Unk_02015b8c_Scene(void *p, s32 a);
+void _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(void *p, s32 a);
 }
 extern "C" {
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_02013b1013func_02014220Ev(void *p);
+s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
 }
 extern "C" {
 s32 Math_AngleXZ(void *a, void *b);
@@ -1733,13 +1733,13 @@ extern "C" {
 BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020872fc13func_0208733cEv(void);
+s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
 }
 extern "C" {
-void _ZN12Unk_020872fc13func_02087368Ev(s32 a);
+void _ZN15LostChildRecord5clearEv(s32 a);
 }
 extern "C" {
-void _ZN12Unk_0208721013func_02087210Ev(void);
+void _ZN15KatieVisitState5clearEv(void);
 }
 extern "C" {
 s32 func_020b4934(void);
@@ -4374,7 +4374,7 @@ extern "C" {
 s32 func_02085174();
 }
 extern "C" {
-void _ZN12Unk_02086c0413func_02086c04Eii(s32 a, void* p, u8 b);
+void _ZN12Unk_02086c0411pickFallPosEii(s32 a, void* p, u8 b);
 }
 extern "C" {
 void PlayerActor_LocalEndWatch();
@@ -4401,7 +4401,7 @@ extern "C" {
 void _ZN12Unk_020877e013func_020877e0Ej(void* p, s32 a);
 }
 extern "C" {
-void func_02086284(void* p);
+void GulliverQuest_Clear(void* p);
 }
 extern "C" {
 void func_02040974(s32 a, s32 b, s32 c);
@@ -4823,7 +4823,7 @@ void SkyShotSequence::actUfoCrashed() {
                 _ZN12Unk_020877e013func_020877e0Ej(_ZN10PlayerData13func_02098698Ev(p), 0x14);
             }
         }
-        func_02086284(data_021e58a6);
+        GulliverQuest_Clear(data_021e58a6);
         func_02040974(0x44, 0x63, 0);
         reset();
     }
@@ -4863,7 +4863,7 @@ void SkyShotSequence::actPeteFallen() {
         void* p = func_020947f0(unk_04);
         if (p) {
             func_020850e0();
-            _ZN12Unk_02086c0413func_02086c04Eii(func_02085174(), p, unk_18);
+            _ZN12Unk_02086c0411pickFallPosEii(func_02085174(), p, unk_18);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
@@ -5671,7 +5671,7 @@ extern "C" {
 BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
-BOOL _ZN12Unk_020d77a413func_0201b84cEv();
+BOOL _ZN12Unk_020d77a410isUpdatingEv();
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
@@ -5686,13 +5686,13 @@ extern "C" {
 void func_02085174();
 }
 extern "C" {
-s32 _ZN12Unk_02086c0413func_02086e84Ev();
+s32 _ZN12Unk_02086c0415isVisitorActiveEv();
 }
 extern "C" {
 void func_02085170();
 }
 extern "C" {
-s32 _ZN12Unk_02086b7c13func_02086b94Ev();
+s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv();
 }
 extern "C" {
 s32 _ZN8SaveData8testFlagEj(void *, s32);
@@ -6457,7 +6457,7 @@ void Unk_020bbc28::updateUfo() {
                 if (m == 2 || m == 7) {
                     func_020850e0();
                     func_02085170();
-                    if (!_ZN12Unk_02086b7c13func_02086b94Ev()) {
+                    if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
                         if (unk_1464 != 6) {
                             if (unk_2f25 == 0) {
                                 unk_2f25 = func_02063b8c(8) + 1;
@@ -6483,7 +6483,7 @@ void Unk_020bbc28::updatePete() {
     using namespace n06;
     if (unk_2f27 != 0) {
         if (NpcRegistry_FindSpNpc(8)) {
-            if (_ZN12Unk_020d77a413func_0201b84cEv()) {
+            if (_ZN12Unk_020d77a410isUpdatingEv()) {
                 unk_2f27 = 0;
             }
         }
@@ -6496,7 +6496,7 @@ void Unk_020bbc28::updatePete() {
                     if (unk_2f19 == 9 || unk_2f19 == 0x11) {
                         func_020850e0();
                         func_02085174();
-                        if (!_ZN12Unk_02086c0413func_02086e84Ev()) {
+                        if (!_ZN12Unk_02086c0415isVisitorActiveEv()) {
                             if (unk_1464 != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }

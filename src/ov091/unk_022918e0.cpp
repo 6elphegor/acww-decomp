@@ -36,10 +36,10 @@ public:
     u32 unk_00[0x210 / 4];
 };
 
-class Unk_02035758 {
+class BgmVolumeMixer {
 public:
-    void func_02035bb4();
-    void func_02035bbc(s32 v);
+    void endMenuDuck();
+    void setMenuDuck(s32 v);
 };
 
 class UiWidget {
@@ -263,7 +263,7 @@ BOOL LetterViewMenu::execClosed() {
 
 void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
-    ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(0);
+    ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
     Gfx2d_SetMainBgModeState(0);
     unk_94.func_0206d2e0((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
@@ -313,7 +313,7 @@ void LetterViewMenu::stateWaitButton() {
 
 void LetterViewMenu::stateSlideOut() {
     Snd_PlaySe(2);
-    ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bb4();
+    ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->endMenuDuck();
     beginMainSlideOut(0xa, 0, 0, 0x30);
     applySlideOffset(0, 0, 0);
     applySlideOffset(2, 0, 0);

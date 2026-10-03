@@ -25,8 +25,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 
     MsgStringAttr unk_04;
 };
@@ -36,8 +36,8 @@ class Unk_020ddf5c : public EncodedString {
 public:
     Unk_020ddf5c() {}
     virtual ~Unk_020ddf5c() {}
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 pad_10[0x28];
 };
 

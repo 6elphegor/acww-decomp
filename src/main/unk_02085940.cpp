@@ -18,7 +18,7 @@ void String_FormatFixedPoint(void *a, s32 b, s32 c);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void func_02076fc8(u32 a, u32 b);
+void Bbs_PostMsgToday(u32 a, u32 b);
 void MailText_SetSlot(s32 i, void *x);
 void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
@@ -51,7 +51,7 @@ s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
-void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
+void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
@@ -61,13 +61,13 @@ s32 func_02063b74(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
-void _ZN12Unk_02086b7c13func_02086ba8Ev(void *);
+void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
 void func_02063990(void *p);
 s32 func_020639a0(void *p);
 s32 func_020639b8(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 func_02077f68();
+s32 TownMap_IsUnitWalkable();
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
@@ -81,7 +81,7 @@ void *_ZN10PlayerData13func_020986a4Ev();
 s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 data_021cdda8[];
+extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *func_020639bc(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
@@ -128,7 +128,7 @@ struct Unk_02085810_Base {
 
 extern u8 gSaveData[];
 
-extern u32 data_020e0ca8[4];
+extern u32 sContestResultBbsFiles[4];
 
 struct Unk_02085df0_Rec {
     u32 unk_00[7];
@@ -154,7 +154,7 @@ extern u8 data_020e0c48[];
 
 extern u8 data_020e0c50[];
 
-extern void *data_020e0cb8[4];
+extern void *sContestResultMailFiles[4];
 
 struct Unk_020859b4_Pair {
     s32 unk_00;
@@ -189,12 +189,12 @@ public:
     void func_020858b0(Unk_02085810_Base *src);
     void func_02085900(u32 v);
     void func_02085908();
-    void func_02085940();
-    void func_02085df0();
-    void func_020859b4();
+    void clear();
+    void postResultNotice();
+    void sendResultLetters();
     void func_020858ac();
-    Unk_02085810 *func_0208596c();
-    Unk_02085810 *func_0208598c();
+    Unk_02085810 *destruct();
+    Unk_02085810 *construct();
 
     /* 0x00 */ Unk_02085810_Base unk_00;
     /* 0x16 */ Unk_02085810_Rec unk_16;
@@ -207,13 +207,13 @@ public:
     /* 0x37 */ u8 unk_37;
 };
 
-class Unk_02085f7c {
+class RoostGuestRoll {
 public:
-    BOOL func_02085f7c();
-    u32 func_02085f90();
-    u32 func_02085f98();
-    BOOL func_02085fa0();
-    void func_02085fb4();
+    BOOL hasLateGuest();
+    u32 getAfternoonGuest();
+    u32 getNoonGuest();
+    BOOL hasMorningGuest();
+    void roll();
     u8 unk_00_0 : 1;
     u8 unk_00_1 : 3;
     u8 unk_00_2 : 3;
@@ -244,23 +244,23 @@ struct Unk_0208620c {
     void func_0208620c();
 };
 
-struct Unk_02086238 {
+struct GulliverQuest {
     u8 cnt : 3;
     u8 flag : 1;
-    void func_02086238();
-    BOOL func_02086244();
-    void func_02086258();
-    s32 func_02086274();
+    void start();
+    BOOL isStarted();
+    void addPart();
+    s32 getPartCount();
 };
 
-extern "C" void func_02086284(void *p);
+extern "C" void GulliverQuest_Clear(void *p);
 
 // ---- 0x18-byte record ----
 struct Unk_02086328_B8 {
     u8 b[8];
 };
 
-struct Unk_02086328 {
+struct ReddLastSale {
     u16 unk_00;
     Unk_02086328_B8 unk_02;
     u16 unk_0a;
@@ -268,46 +268,46 @@ struct Unk_02086328 {
     s8 unk_14;
     u8 unk_15;
     u16 unk_16;
-    void func_02086298(const Unk_02086328 *o);
-    void func_020862a0(const Unk_02086328 *o);
-    void func_020862a8(const Unk_02086328 *o);
-    void func_02086300();
-    Unk_02086328();
-    ~Unk_02086328();
+    void copyItemFrom(const ReddLastSale *o);
+    void setItem(const ReddLastSale *o);
+    void setBuyer(const ReddLastSale *o);
+    void clear();
+    ReddLastSale();
+    ~ReddLastSale();
 };
 
 // ---- generator object ----
-struct Unk_02086340 {
+struct TurnipMarket {
     u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05, unk_06, unk_07;
     u16 unk_08;
     u8 unk_0a[14];
     u8 unk_18;
-    void func_02086340(void *src);
-    void func_02086388();
-    void func_020863fc(void *src);
-    void func_02086444(s32 d);
-    void func_020864f8();
-    u16 func_0208653c();
-    void func_02086578(s32 flag);
-    s32 func_02086740();
-    void func_02086768();
-    u8 func_020867e8();
-    u8 func_020867fc();
-    u8 func_02086810();
-    void func_02086824(s32 i, s32 n);
-    u8 func_02086854(s32 k, s32 z);
-    void func_02086878();
-    void func_020868a8();
+    void setPurchaseDate(void *src);
+    void checkTurnipExpiry();
+    void setWeekDate(void *src);
+    void updateDay(s32 d);
+    void spoilOnReset();
+    u16 getPrice();
+    void generateWeek(s32 flag);
+    s32 rollPeakPrice();
+    void generateSmallSpike();
+    u8 calcHighPrice();
+    u8 calcMidPrice();
+    u8 calcLowPrice();
+    void fillDecreasing(s32 i, s32 n);
+    u8 calcPrice(s32 k, s32 z);
+    void init();
+    void clear();
 };
 
 // ---- position pair ----
-struct Unk_020868cc {
+struct VisitorPos {
     s32 x, z;
-    void func_020868cc(Unk_020868cc_Vec3 *out) const;
-    void func_020868dc(s32 a, s32 b);
-    BOOL func_020868e4();
-    BOOL func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx);
-    s32 func_02086a80(s32 *pos, void *ctx);
+    void getPos(Unk_020868cc_Vec3 *out) const;
+    void setPos(s32 a, s32 b);
+    BOOL pickRandomPos();
+    BOOL pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx);
+    s32 countFreeInAcre(s32 *pos, void *ctx);
 };
 
 // ---- tail ----
@@ -317,18 +317,18 @@ struct Unk_02086af0 {
     u8 c : 2;
     u8 d : 2;
     u8 e : 2;
-    void func_02086af0(void *v, u16 *out, Unk_020868cc_Vec3 *p);
+    void getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p);
 };
 
 struct Unk_02086af0_Off {
     s32 x, z;
 };
 
-extern const Unk_02086af0_Off data_020cf270[];
+extern const Unk_02086af0_Off sGulliverSpotOffsets[];
 
-extern const s16 data_020cf268[];
+extern const s16 sGulliverRepairedAngles[];
 
-extern Unk_02086238 data_021e58a6;
+extern GulliverQuest data_021e58a6;
 
 struct Unk_02086ec4_Vec3 {
     s32 x, y, z;
@@ -338,13 +338,13 @@ struct Unk_02086ec4_Vec3 {
 class Unk_02086e60;
 
 // ---- 0x02086b7c: random-flags byte
-class Unk_02086b7c {
+class VisitorSpawnFlags {
 public:
-    void func_02086b7c();
-    void func_02086b88();
-    BOOL func_02086b94();
-    void func_02086ba8();
-    void func_02086bf0();
+    void setVisitorSpawned();
+    void clearVisitorSpawned();
+    BOOL isVisitorSpawned();
+    void rollGulliverSpot();
+    void clear();
     void func_02086bfc();
     void func_02086c00();
 
@@ -357,13 +357,13 @@ public:
 // ---- 0x02086c04: 12-byte position record with flag byte at +8
 class Unk_02086c04 {
 public:
-    BOOL func_02086c04(s32 px, s32 flip);
-    s16 func_02086e60();
-    void func_02086e6c();
-    void func_02086e78();
-    BOOL func_02086e84();
-    void func_02086e98();
-    void func_02086ea4();
+    BOOL pickFallPos(s32 px, s32 flip);
+    s16 getFacing();
+    void setVisitorActive();
+    void clearVisitorActive();
+    BOOL isVisitorActive();
+    void unmarkFallPos();
+    void markFallPos();
     BOOL func_02086eb0();
     void func_02086ec4(Unk_02086ec4_Vec3 *out);
     void func_02086ed0(Unk_02086ec4_Vec3 *v);
@@ -388,13 +388,13 @@ struct Unk_02086c04_Pair {
 };
 
 // ---- 0x02086ef0: s16 + byte
-class Unk_02086ef0 {
+class TownTravelState {
 public:
-    s16 func_02086ef0();
-    void func_02086ef8(s32 v);
-    u8 func_02086efc();
-    void func_02086f00(u32 v);
-    void func_02086f04();
+    s16 getAngle();
+    void setAngle(s32 v);
+    u8 getMode();
+    void setMode(u32 v);
+    void clearMode();
     void func_02086f0c();
     void func_02086f10();
 
@@ -410,8 +410,8 @@ public:
     void func_02086f28();
     void func_02086f30();
     void func_02086f34();
-    BOOL func_02086f38();
-    void func_02086f68();
+    BOOL isPastClosingTime();
+    void setClosingTimeToday();
 
     u8 unk_00;
     u8 unk_01;
@@ -426,15 +426,15 @@ struct Unk_02086f38_Buf {
 class Unk_02086f84 {
 public:
     void func_02086f80();
-    void func_02086f84();
+    void clearClosingTime();
     void func_02086f8c();
     void func_02086f90();
-    void func_02086f98();
-    void func_02086fa0();
-    BOOL func_02086fa8();
-    void func_02086fb8(Unk_02086ec4_Vec3 *out);
-    void func_02086fc4(Unk_02086ec4_Vec3 *v);
-    void func_02086fd0();
+    void clearFollowing();
+    void setFollowing();
+    BOOL isFollowing();
+    void getPos(Unk_02086ec4_Vec3 *out);
+    void setPos(Unk_02086ec4_Vec3 *v);
+    void pickKatiePos();
 
     s32 unk_00;
     s32 unk_04;
@@ -442,9 +442,9 @@ public:
 };
 
 // ---- 0x02087210
-class Unk_02087210 {
+class KatieVisitState {
 public:
-    void func_02087210();
+    void clear();
     void func_0208721c();
     void func_02087220();
 
@@ -454,21 +454,21 @@ public:
 };
 
 // ---- 0x02087224: big singleton (gSaveData)
-class Unk_02087224 {
+class BlancaFaceRecord {
 public:
     u16 func_02087224();
     void func_02087230(u32 v);
-    BOOL func_0208723c();
-    u8 func_02087268();
-    void func_02087274(u32 v);
-    u8 func_02087280();
-    void func_0208728c(u32 v);
-    void *func_02087298();
-    void func_0208729c();
-    void func_020872c0();
-    void func_020872c8();
-    Unk_02087224 *func_020872dc();
-    Unk_02087224 *func_020872ec();
+    BOOL isBlancaDue();
+    u8 getConcept();
+    void setConcept(u32 v);
+    u8 getState();
+    void setState(u32 v);
+    void *getPattern();
+    void resetPattern();
+    void init();
+    void reset();
+    BlancaFaceRecord *destruct();
+    BlancaFaceRecord *construct();
 
     u32 unk_00[0x228 / 4];
     u16 unk_228;
@@ -477,18 +477,18 @@ public:
 };
 
 // ---- 0x020872fc: flag byte at +0xa
-class Unk_020872fc {
+class LostChildRecord {
 public:
-    void func_020872fc();
-    void func_02087308();
-    BOOL func_02087314();
-    void func_02087328(u8 v);
-    BOOL func_0208733c();
-    void func_02087344(u8 v);
-    u32 func_02087354();
-    void func_0208735c();
-    void func_02087364();
-    void func_02087368();
+    void clearEscorting();
+    void setEscorting();
+    BOOL isEscorting();
+    void setKaitlinRole(u8 v);
+    BOOL isKaitlinRole();
+    void setDaysLeft(u8 v);
+    u32 getDaysLeft();
+    void setTownId();
+    void getTownId();
+    void clear();
 
     u32 unk_00[2];
     u16 unk_08;
@@ -605,7 +605,7 @@ struct Unk_02087a20_L {
     u8 pad;
 };
 
-extern "C" BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
+extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 
 // extern declarations
 extern "C" {
@@ -634,7 +634,7 @@ void String_FormatFixedPoint(void *a, s32 b, s32 c);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void func_02076fc8(u32 a, u32 b);
+void Bbs_PostMsgToday(u32 a, u32 b);
 void MailText_SetSlot(s32 i, void *x);
 void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
@@ -667,7 +667,7 @@ s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
-void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
+void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
@@ -678,13 +678,13 @@ void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 s32 FieldPos_FromUnitCenter(Unk_020868cc_Vec3 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
-void _ZN12Unk_02086b7c13func_02086ba8Ev(void *);
+void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
 void func_02063990(void *p);
 s32 func_020639a0(void *p);
 s32 func_020639b8(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 func_02077f68();
+s32 TownMap_IsUnitWalkable();
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
@@ -698,7 +698,7 @@ void *_ZN10PlayerData13func_020986a4Ev();
 s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 data_021cdda8[];
+extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *func_020639bc(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
@@ -728,48 +728,48 @@ extern s32 gGfxMainOnTop;
 
 // own functions
 extern "C" {
-void func_02086204(void *p);
+void RoostGuestRoll_Init(void *p);
 void func_02086230();
 void func_02086234();
 void func_02086290();
 void func_02086294();
-void func_020862f4();
+void ReddLastSale_GetBuyer();
 void func_020868c4();
 void func_020868c8();
 void func_02086ae8();
 void func_02086aec();
-void func_0208627c(void *p);
-void func_02086284(void *p);
-void func_02086adc(void *p);
-void func_020862f8(Unk_02086328 *p);
-s32 func_02086d78(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
-BOOL func_02086e48(s32 x, s32 y, void *map);
-BOOL func_02086e50(s32 x, s32 y, void *map);
-BOOL func_0208709c(s32 x, s32 y, void *map);
-void func_02087390();
-void func_020873e0();
-BOOL func_0208740c();
-BOOL func_02087444();
-void func_0208747c(s32 n);
-void *func_020874c8(void *p);
-void *func_020874d8(void *p);
+void GulliverQuest_Init(void *p);
+void GulliverQuest_Clear(void *p);
+void VisitorPos_Clear(void *p);
+void ReddLastSale_Clear(ReddLastSale *p);
+s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
+BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
+BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map);
+BOOL Field_IsClearSpot(s32 x, s32 y, void *map);
+void LostChild_LoadFromTown();
+void LostChild_SaveToTown();
+BOOL LostChild_IsKaitlinDue();
+BOOL LostChild_IsKatieDue();
+void LostChild_AdvanceDays(s32 n);
+void *LostChildRecord_Destruct(void *p);
+void *LostChildRecord_Construct(void *p);
 BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
 BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 void func_020877a0(s32 a, void *b);
 void func_020877cc(void *a);
 void func_020877d8();
 void func_020877dc();
-void func_02087880();
-void func_02087884();
+void PlayerDailyTalkFlags_Destruct();
+void PlayerDailyTalkFlags_Construct();
 void func_02087a20();
 void func_02087b14();
 void func_02087c80();
-void func_02087c84();
-void func_02087c88();
+void PlayerSpNpcRecord_Destruct();
+void PlayerSpNpcRecord_Construct();
 BOOL Oam_UseBufferA(s32 t);
 s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
-s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
-BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
+s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
+BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 u8 *func_0208779c(u8 *p);
 void func_020877c0(void *a, void *b);
 }
@@ -851,7 +851,7 @@ static inline BOOL Unk_0208709c_In(u16 *p) {
     return f;
 }
 
-extern "C" BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d) {
+extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d) {
     s32 r7 = func_02087e14(p) - c;
     if (r7 > a) return FALSE;
     if (r7 + (c * 2 + func_02087e50(p)) < a) return FALSE;
@@ -861,10 +861,10 @@ extern "C" BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d) {
     return FALSE;
 }
 
-extern "C" s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f) {
+extern "C" s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f) {
     s32 i;
     for (i = 0; i < n; p = (u8 *)p + 8, i++) {
-        if (func_02087dac(p, c, d, e, f)) {
+        if (Cell_HitTest(p, c, d, e, f)) {
             return i;
         }
     }
@@ -915,9 +915,9 @@ extern "C" BOOL Oam_UseBufferA(s32 t) {
     return FALSE;
 }
 
-extern "C" void func_02087c88() {}
+extern "C" void PlayerSpNpcRecord_Construct() {}
 
-extern "C" void func_02087c84() {}
+extern "C" void PlayerSpNpcRecord_Destruct() {}
 
 extern "C" void func_02087c80() {}
 
@@ -1112,9 +1112,9 @@ void Unk_02087ad8::func_02087888() {
     _ZN11MsgString25D1Ev(bufA);
 }
 
-extern "C" void func_02087884() {}
+extern "C" void PlayerDailyTalkFlags_Construct() {}
 
-extern "C" void func_02087880() {}
+extern "C" void PlayerDailyTalkFlags_Destruct() {}
 
 void Unk_020877e0::func_02087870() {
     Ns_020874d8::MI_CpuFill8(unk_04, 0, 8);
@@ -1309,149 +1309,149 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     return FALSE;
 }
 
-extern "C" void *func_020874d8(void *p) {
+extern "C" void *LostChildRecord_Construct(void *p) {
     func_020639bc(p);
     return p;
 }
 
-extern "C" void *func_020874c8(void *p) {
+extern "C" void *LostChildRecord_Destruct(void *p) {
     func_020639b8(p);
     return p;
 }
 
-extern "C" void func_0208747c(s32 n) {
+extern "C" void LostChild_AdvanceDays(s32 n) {
     if (n >= 1) {
         u8 *const g = gSaveData;
-        s32 v = ((Unk_020872fc *)data_021ed31a)->func_02087354() - n;
+        s32 v = ((LostChildRecord *)data_021ed31a)->getDaysLeft() - n;
         if (v < 0) v = 0;
         if (v <= 0) {
-            ((Unk_020872fc *)(g + 0x15fca))->func_02087368();
+            ((LostChildRecord *)(g + 0x15fca))->clear();
         } else {
-            ((Unk_020872fc *)(g + 0x15fca))->func_02087344((u8)v);
+            ((LostChildRecord *)(g + 0x15fca))->setDaysLeft((u8)v);
         }
-        func_02087390();
+        LostChild_LoadFromTown();
     }
 }
 
-extern "C" BOOL func_02087444() {
+extern "C" BOOL LostChild_IsKatieDue() {
     if (PlayerData_GetCurrent() != 0) {
-        Unk_020872fc *p = (Unk_020872fc *)_ZN10PlayerData13func_020986a4Ev();
-        if (p->func_0208733c() == 0) {
-            if (Ns_02086b7c::func_020e77cc(p->func_02087354(), 1, 7) != 0) return TRUE;
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData13func_020986a4Ev();
+        if (p->isKaitlinRole() == 0) {
+            if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0208740c() {
+extern "C" BOOL LostChild_IsKaitlinDue() {
     if (PlayerData_GetCurrent() != 0) {
-        Unk_020872fc *p = (Unk_020872fc *)_ZN10PlayerData13func_020986a4Ev();
-        if (p->func_0208733c() == 1) {
-            if (Ns_02086b7c::func_020e77cc(p->func_02087354(), 1, 7) != 0) return TRUE;
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData13func_020986a4Ev();
+        if (p->isKaitlinRole() == 1) {
+            if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" void func_020873e0() {
+extern "C" void LostChild_SaveToTown() {
     u8 *const g = gSaveData;
     if (PlayerData_GetCurrent() != 0 && g != 0) {
         Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData13func_020986a4Ev(), g + 0x15fca, 12);
     }
 }
 
-extern "C" void func_02087390() {
+extern "C" void LostChild_LoadFromTown() {
     u8 *const g = gSaveData;
     void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
         void *b = _ZN10PlayerData13func_020986a4Ev();
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::func_020e77cc(((Unk_020872fc *)(g + 0x15fca))->func_02087354(), 1, 7) == 0) _ZN12Unk_02097ff413func_02097ff4Ej(a, 0x33);
+        if (Ns_02086b7c::func_020e77cc(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN12Unk_02097ff413func_02097ff4Ej(a, 0x33);
     }
 }
 
-void Unk_020872fc::func_02087368() {
+void LostChildRecord::clear() {
     func_020639a0(this);
     unk_0a_0 = 0;
     unk_0a_4 = 0;
     unk_0a_5 = 0;
 }
 
-void Unk_020872fc::func_02087364() {}
+void LostChildRecord::getTownId() {}
 
-void Unk_020872fc::func_0208735c() { func_02063990(this); }
+void LostChildRecord::setTownId() { func_02063990(this); }
 
-u32 Unk_020872fc::func_02087354() { return unk_0a_0; }
+u32 LostChildRecord::getDaysLeft() { return unk_0a_0; }
 
-void Unk_020872fc::func_02087344(u8 v) { unk_0a_0 = v; }
+void LostChildRecord::setDaysLeft(u8 v) { unk_0a_0 = v; }
 
-BOOL Unk_020872fc::func_0208733c() { return unk_0a_4; }
+BOOL LostChildRecord::isKaitlinRole() { return unk_0a_4; }
 
-void Unk_020872fc::func_02087328(u8 v) { unk_0a_4 = v; }
+void LostChildRecord::setKaitlinRole(u8 v) { unk_0a_4 = v; }
 
-BOOL Unk_020872fc::func_02087314() {
+BOOL LostChildRecord::isEscorting() {
     if (unk_0a_5) return TRUE;
     return FALSE;
 }
 
-void Unk_020872fc::func_02087308() { unk_0a_5 = 1; }
+void LostChildRecord::setEscorting() { unk_0a_5 = 1; }
 
-void Unk_020872fc::func_020872fc() { unk_0a_5 = 0; }
+void LostChildRecord::clearEscorting() { unk_0a_5 = 0; }
 
-Unk_02087224 *Unk_02087224::func_020872ec() {
+BlancaFaceRecord *BlancaFaceRecord::construct() {
     _ZN7PatternC1Ev(this);
     return this;
 }
 
-Unk_02087224 *Unk_02087224::func_020872dc() {
+BlancaFaceRecord *BlancaFaceRecord::destruct() {
     _ZN7PatternD1Ev(this);
     return this;
 }
 
-void Unk_02087224::func_020872c8() {
+void BlancaFaceRecord::reset() {
     unk_22a = 0;
-    func_0208729c();
+    resetPattern();
 }
 
-void Unk_02087224::func_020872c0() { func_020872c8(); }
+void BlancaFaceRecord::init() { reset(); }
 
-void Unk_02087224::func_0208729c() {
-    _ZN7Pattern13func_02071e10Ej(func_02087298(), 0xf);
-    _ZN12Unk_02071ed013func_0207200cEj(_ZN7Pattern13func_02071e04Ev(func_02087298()), 0);
+void BlancaFaceRecord::resetPattern() {
+    _ZN7Pattern13func_02071e10Ej(getPattern(), 0xf);
+    _ZN12Unk_02071ed013func_0207200cEj(_ZN7Pattern13func_02071e04Ev(getPattern()), 0);
 }
 
-void *Unk_02087224::func_02087298() {}
+void *BlancaFaceRecord::getPattern() {}
 
-void Unk_02087224::func_0208728c(u32 v) { unk_22a = v; }
+void BlancaFaceRecord::setState(u32 v) { unk_22a = v; }
 
-u8 Unk_02087224::func_02087280() { return unk_22a; }
+u8 BlancaFaceRecord::getState() { return unk_22a; }
 
-void Unk_02087224::func_02087274(u32 v) { unk_22b = v; }
+void BlancaFaceRecord::setConcept(u32 v) { unk_22b = v; }
 
-u8 Unk_02087224::func_02087268() { return unk_22b; }
+u8 BlancaFaceRecord::getConcept() { return unk_22b; }
 
-BOOL Unk_02087224::func_0208723c() {
+BOOL BlancaFaceRecord::isBlancaDue() {
     if (_ZN8SaveData8testFlagEj(gSaveData, 0x13) == 0 && unk_22a == 2) return TRUE;
     return FALSE;
 }
 
-void Unk_02087224::func_02087230(u32 v) { unk_228 = v; }
+void BlancaFaceRecord::func_02087230(u32 v) { unk_228 = v; }
 
-u16 Unk_02087224::func_02087224() { return unk_228; }
+u16 BlancaFaceRecord::func_02087224() { return unk_228; }
 
-void Unk_02087210::func_02087220() {}
+void KatieVisitState::func_02087220() {}
 
-void Unk_02087210::func_0208721c() {}
+void KatieVisitState::func_0208721c() {}
 
-void Unk_02087210::func_02087210() {
+void KatieVisitState::clear() {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
 }
 
-extern "C" BOOL func_0208709c(s32 x, s32 y, void *map) {
+extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, void *map) {
     if (map == 0) goto fail;
-    if (func_02077f68() == 0) goto fail;
+    if (TownMap_IsUnitWalkable() == 0) goto fail;
     for (s32 i = 1; i <= 2; i++) {
         s32 ty = y + i;
         s32 hx = x >> 4;
@@ -1471,12 +1471,12 @@ fail:
     return FALSE;
 }
 
-void Unk_02086f84::func_02086fd0() {
+void Unk_02086f84::pickKatiePos() {
     void *map = TownBlockMap_Get();
     if (map != 0) {
         s32 cnt = 0;
         s32 bx = 0, by = 0;
-        u32 *tbl = data_021cdda8;
+        u32 *tbl = sKatieSpotRows;
         s32 x, y;
         MI_CpuFill8(tbl, 0, 0x80);
         Ns_02086b7c::FieldUnit_FromBlockUnit(&bx, &by, 2, 2, 0, 0);
@@ -1484,7 +1484,7 @@ void Unk_02086f84::func_02086fd0() {
         do {
             x = 0;
             do {
-                if (func_0208709c(bx + x, by + y, map) != 0) {
+                if (Field_IsClearSpot(bx + x, by + y, map) != 0) {
                     tbl[0] |= 1 << x;
                     cnt++;
                 }
@@ -1495,7 +1495,7 @@ void Unk_02086f84::func_02086fd0() {
         } while (y < 32);
         if (cnt > 0) {
             s32 x2, y2; s32 r = Ns_02086b7c::func_02063b8c(cnt);
-            tbl = data_021cdda8;
+            tbl = sKatieSpotRows;
             y2 = 0;
             goto testy2;
 loopy2:
@@ -1506,7 +1506,7 @@ loopx2:
                 if (r == 0) {
                     Unk_02086ec4_Vec3 v;
                     Ns_02086b7c::FieldPos_FromUnitCenter(&v, bx + x2, by + y2);
-                    func_02086fc4(&v);
+                    setPos(&v);
                     goto after;
                 }
                 r--;
@@ -1526,24 +1526,24 @@ end:
     unk_08 = 0;
 }
 
-void Unk_02086f84::func_02086fc4(Unk_02086ec4_Vec3 *v) {
+void Unk_02086f84::setPos(Unk_02086ec4_Vec3 *v) {
     unk_00 = v->x;
     unk_04 = v->z;
 }
 
-void Unk_02086f84::func_02086fb8(Unk_02086ec4_Vec3 *out) {
+void Unk_02086f84::getPos(Unk_02086ec4_Vec3 *out) {
     out->x = unk_00;
     out->z = unk_04;
 }
 
-BOOL Unk_02086f84::func_02086fa8() {
+BOOL Unk_02086f84::isFollowing() {
     if (unk_08 != 0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086f84::func_02086fa0() { unk_08 = 1; }
+void Unk_02086f84::setFollowing() { unk_08 = 1; }
 
-void Unk_02086f84::func_02086f98() { unk_08 = 0; }
+void Unk_02086f84::clearFollowing() { unk_08 = 0; }
 
 void Unk_02086f84::func_02086f90() {
     unk_00 = 0;
@@ -1552,21 +1552,21 @@ void Unk_02086f84::func_02086f90() {
 
 void Unk_02086f84::func_02086f8c() {}
 
-void Unk_02086f84::func_02086f84() {
+void Unk_02086f84::clearClosingTime() {
     unk_00 = 0;
     unk_04 = 0;
 }
 
 void Unk_02086f84::func_02086f80() {}
 
-void Unk_02086f14::func_02086f68() {
+void Unk_02086f14::setClosingTimeToday() {
     Clock_GetDateTime(this);
     unk_02 = 0x17;
     unk_01 = 0;
     unk_00 = 0;
 }
 
-BOOL Unk_02086f14::func_02086f38() {
+BOOL Unk_02086f14::isPastClosingTime() {
     Unk_02086f38_Buf buf;
     buf.a = 0;
     buf.b = 0;
@@ -1590,19 +1590,19 @@ BOOL Unk_02086f14::func_02086f18() {
 
 void Unk_02086f14::func_02086f14(u32 v) { unk_00 = v; }
 
-void Unk_02086ef0::func_02086f10() {}
+void TownTravelState::func_02086f10() {}
 
-void Unk_02086ef0::func_02086f0c() {}
+void TownTravelState::func_02086f0c() {}
 
-void Unk_02086ef0::func_02086f04() { unk_02 = 0; }
+void TownTravelState::clearMode() { unk_02 = 0; }
 
-void Unk_02086ef0::func_02086f00(u32 v) { unk_02 = v; }
+void TownTravelState::setMode(u32 v) { unk_02 = v; }
 
-u8 Unk_02086ef0::func_02086efc() { return unk_02; }
+u8 TownTravelState::getMode() { return unk_02; }
 
-void Unk_02086ef0::func_02086ef8(s32 v) { unk_00 = v; }
+void TownTravelState::setAngle(s32 v) { unk_00 = v; }
 
-s16 Unk_02086ef0::func_02086ef0() { return unk_00; }
+s16 TownTravelState::getAngle() { return unk_00; }
 
 void Unk_02086c04::func_02086eec() {}
 
@@ -1625,26 +1625,26 @@ BOOL Unk_02086c04::func_02086eb0() {
     return FALSE;
 }
 
-void Unk_02086c04::func_02086ea4() { unk_08_0 = 1; }
+void Unk_02086c04::markFallPos() { unk_08_0 = 1; }
 
-void Unk_02086c04::func_02086e98() { unk_08_0 = 0; }
+void Unk_02086c04::unmarkFallPos() { unk_08_0 = 0; }
 
-BOOL Unk_02086c04::func_02086e84() {
+BOOL Unk_02086c04::isVisitorActive() {
     if (unk_08_1) return TRUE;
     return FALSE;
 }
 
-void Unk_02086c04::func_02086e78() { unk_08_1 = 0; }
+void Unk_02086c04::clearVisitorActive() { unk_08_1 = 0; }
 
-void Unk_02086c04::func_02086e6c() { unk_08_1 = 1; }
+void Unk_02086c04::setVisitorActive() { unk_08_1 = 1; }
 
-s16 Unk_02086c04::func_02086e60() { return (s16)(unk_08_2 << 14); }
+s16 Unk_02086c04::getFacing() { return (s16)(unk_08_2 << 14); }
 
-extern "C" BOOL func_02086e50(s32 x, s32 y, void *map) { return func_0208709c(y, x, map); }
+extern "C" BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map) { return Field_IsClearSpot(y, x, map); }
 
-extern "C" BOOL func_02086e48(s32 x, s32 y, void *map) { return func_0208709c(x, y, map); }
+extern "C" BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map) { return Field_IsClearSpot(x, y, map); }
 
-extern "C" s32 func_02086d78(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n) {
+extern "C" s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n) {
     s32 r, bit = 0, i = 0, cnt = 0, bi, ii, k;
     if (cur > limit) {
         s32 t = cur;
@@ -1695,11 +1695,11 @@ fail:
     return 0;
 }
 
-BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
+BOOL Unk_02086c04::pickFallPos(s32 px, s32 flip) {
     s32 dir;
     Unk_02086c04_Map *map = (Unk_02086c04_Map *)gSceneBlockMap;
     if (map == 0) {
-        func_02086e98();
+        unmarkFallPos();
         return FALSE;
     }
     s32 f1, f2, w, h;
@@ -1730,13 +1730,13 @@ BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
 loop:
     if (y < h) {
         p1.b = y;
-        f1 = func_02086d78(&p1.a, func_02086e50, y, a, sx, map, buf1, 4);
+        f1 = Field_PickRandomInLine(&p1.a, Field_IsClearSpotYX, y, a, sx, map, buf1, 4);
         if (a > 0 && a < w - 1) a += dir;
         y++;
     }
     if (b >= 0 && b < w) {
         p2.a = b;
-        f2 = func_02086d78(&p2.b, func_02086e48, b, sy, c, map, buf2, 4);
+        f2 = Field_PickRandomInLine(&p2.b, Field_IsClearSpotXY, b, sy, c, map, buf2, 4);
         b += dir;
         if (c < h - 1) c++;
     }
@@ -1762,38 +1762,38 @@ done:
         Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->a, sel->b);
         func_02086ed0(&v);
         unk_08_2 = Ns_02086b7c::func_02063b8c(4);
-        func_02086ea4();
+        markFallPos();
         return TRUE;
     }
-    func_02086e98();
+    unmarkFallPos();
     return FALSE;
 }
 
-void Unk_02086b7c::func_02086c00() {}
+void VisitorSpawnFlags::func_02086c00() {}
 
-void Unk_02086b7c::func_02086bfc() {}
+void VisitorSpawnFlags::func_02086bfc() {}
 
-void Unk_02086b7c::func_02086bf0() { MI_CpuFill8(this, 0, 1); }
+void VisitorSpawnFlags::clear() { MI_CpuFill8(this, 0, 1); }
 
-void Unk_02086b7c::func_02086ba8() {
+void VisitorSpawnFlags::rollGulliverSpot() {
     unk_00_2 = Ns_02086b7c::func_02063b8c(3);
     unk_00_4 = Ns_02086b7c::func_02063b8c(4);
     unk_00_1 = 1;
 }
 
-BOOL Unk_02086b7c::func_02086b94() {
+BOOL VisitorSpawnFlags::isVisitorSpawned() {
     if (unk_00_0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086b7c::func_02086b88() { unk_00_0 = 0; }
+void VisitorSpawnFlags::clearVisitorSpawned() { unk_00_0 = 0; }
 
-void Unk_02086b7c::func_02086b7c() { unk_00_0 = 1; }
+void VisitorSpawnFlags::setVisitorSpawned() { unk_00_0 = 1; }
 
-void Unk_02086af0::func_02086af0(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
-    if (f1 == 0) _ZN12Unk_02086b7c13func_02086ba8Ev(this);
+void Unk_02086af0::getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
+    if (f1 == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
     Unk_020868cc_Vec3 t;
-    const Unk_02086af0_Off *tb = data_020cf270;
+    const Unk_02086af0_Off *tb = sGulliverSpotOffsets;
     const Unk_02086af0_Off *e = &tb[c];
     s32 z = p->z + e->z;
     s32 x = p->x + tb[c].x;
@@ -1801,9 +1801,9 @@ void Unk_02086af0::func_02086af0(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
     t.y = 0;
     t.z = z;
     FieldPos_SnapToUnitCenter(v, &t);
-    if (data_021e58a6.func_02086274() >= 5) {
-        *out = data_020cf268[c];
-    } else if (data_021e58a6.func_02086244()) {
+    if (data_021e58a6.getPartCount() >= 5) {
+        *out = sGulliverRepairedAngles[c];
+    } else if (data_021e58a6.isStarted()) {
         *out = 0;
     } else {
         *out = d << 14;
@@ -1814,11 +1814,11 @@ extern "C" void func_02086aec() {}
 
 extern "C" void func_02086ae8() {}
 
-extern "C" void func_02086adc(void *p) {
+extern "C" void VisitorPos_Clear(void *p) {
     MI_CpuFill8(p, 0, 8);
 }
 
-s32 Unk_020868cc::func_02086a80(s32 *pos, void *ctx) {
+s32 VisitorPos::countFreeInAcre(s32 *pos, void *ctx) {
     s32 bx = 0, by = 0;
     s32 n = 0;
     s32 x, y;
@@ -1827,13 +1827,13 @@ s32 Unk_020868cc::func_02086a80(s32 *pos, void *ctx) {
     s32 ye = by + 16;
     for (y = by; y < ye; y++) {
         for (x = bx; x < xe; x++) {
-            if (func_0208709c(x, y, ctx)) n++;
+            if (Field_IsClearSpot(x, y, ctx)) n++;
         }
     }
     return n;
 }
 
-BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
+BOOL VisitorPos::pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     s32 n = 0;
     s32 bx = 0, by = 0;
     u16 arr[16];
@@ -1843,7 +1843,7 @@ BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     for (y = 0; y < 16; y++) {
         u16 *pp;
         for (x = 0, pp = &arr[y]; x < 16; x++) {
-            if (func_0208709c(bx + x, by + y, ctx)) {
+            if (Field_IsClearSpot(bx + x, by + y, ctx)) {
                 *pp |= 1 << x;
                 n++;
             }
@@ -1867,7 +1867,7 @@ BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     return FALSE;
 }
 
-BOOL Unk_020868cc::func_020868e4() {
+BOOL VisitorPos::pickRandomPos() {
     u8 buf[4];
     s32 xy[2];
     Unk_020868cc_Vec3 out;
@@ -1883,7 +1883,7 @@ BOOL Unk_020868cc::func_020868e4() {
         MI_CpuFill8(buf, 0, 4);
         for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
             for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
-                if (func_02086a80(xy, o)) {
+                if (countFreeInAcre(xy, o)) {
                     buf[xy[1] - 1] |= 1 << (xy[0] - 1);
                     n++;
                 }
@@ -1895,8 +1895,8 @@ BOOL Unk_020868cc::func_020868e4() {
                 for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
                     if ((buf[xy[1] - 1] >> (xy[0] - 1)) & 1) {
                         if (r == 0) {
-                            func_020869c8(&out, xy, o);
-                            func_020868dc(out.x, out.z);
+                            pickFreeInAcre(&out, xy, o);
+                            setPos(out.x, out.z);
                             return TRUE;
                         }
                         r--;
@@ -1908,12 +1908,12 @@ BOOL Unk_020868cc::func_020868e4() {
     return FALSE;
 }
 
-void Unk_020868cc::func_020868dc(s32 a, s32 b) {
+void VisitorPos::setPos(s32 a, s32 b) {
     x = a;
     z = b;
 }
 
-void Unk_020868cc::func_020868cc(Unk_020868cc_Vec3 *out) const {
+void VisitorPos::getPos(Unk_020868cc_Vec3 *out) const {
     out->x = x;
     out->z = z;
     out->y = 0;
@@ -1923,7 +1923,7 @@ extern "C" void func_020868c8() {}
 
 extern "C" void func_020868c4() {}
 
-void Unk_02086340::func_020868a8() {
+void TurnipMarket::clear() {
     unk_18 = 0xff;
     unk_08 = 0;
     unk_00 = 1;
@@ -1936,58 +1936,58 @@ void Unk_02086340::func_020868a8() {
     unk_07 = 0;
 }
 
-void Unk_02086340::func_02086878() {
+void TurnipMarket::init() {
     Unk_02086340_T t;
-    func_02086578(0);
+    generateWeek(0);
     t.w0 = 0;
     t.w1 = 0;
     Clock_GetDateTime(&t);
-    func_020863fc(&t);
-    func_02086340(&t);
+    setWeekDate(&t);
+    setPurchaseDate(&t);
 }
 
-u8 Unk_02086340::func_02086854(s32 k, s32 z) {
+u8 TurnipMarket::calcPrice(s32 k, s32 z) {
     s32 t = func_02063b74(z);
     return (u8)((unk_0a[0] * (k + t)) >> 12);
 }
 
-void Unk_02086340::func_02086824(s32 i, s32 n) {
+void TurnipMarket::fillDecreasing(s32 i, s32 n) {
     s32 k = 0xca4;
     for (; i < n; k -= 0x66, i++) {
-        unk_0a[i] = func_02086854(k, 0x29);
+        unk_0a[i] = calcPrice(k, 0x29);
     }
 }
 
-u8 Unk_02086340::func_02086810() {
-    return func_02086854(0x666, 0x68f);
+u8 TurnipMarket::calcLowPrice() {
+    return calcPrice(0x666, 0x68f);
 }
 
-u8 Unk_02086340::func_020867fc() {
-    return func_02086854(0xccd, 0x9c3);
+u8 TurnipMarket::calcMidPrice() {
+    return calcPrice(0xccd, 0x9c3);
 }
 
-u8 Unk_02086340::func_020867e8() {
-    return func_02086854(0x1666, 0x9c3);
+u8 TurnipMarket::calcHighPrice() {
+    return calcPrice(0x1666, 0x9c3);
 }
 
-void Unk_02086340::func_02086768() {
+void TurnipMarket::generateSmallSpike() {
     s32 n = Ns_02086204::func_02063b8c(6) + 7;
-    func_02086824(2, n - 3);
-    unk_0a[n - 3] = func_020867fc();
-    unk_0a[n - 2] = func_020867fc();
-    unk_0a[n] = func_02086854(0x1b33, 0x4f6);
-    unk_0a[n - 1] = func_02086854(0x168f, 0x4a4);
-    unk_0a[n + 1] = func_02086854(0x168f, 0x4a4);
-    func_02086824(n + 2, 0xe);
+    fillDecreasing(2, n - 3);
+    unk_0a[n - 3] = calcMidPrice();
+    unk_0a[n - 2] = calcMidPrice();
+    unk_0a[n] = calcPrice(0x1b33, 0x4f6);
+    unk_0a[n - 1] = calcPrice(0x168f, 0x4a4);
+    unk_0a[n + 1] = calcPrice(0x168f, 0x4a4);
+    fillDecreasing(n + 2, 0xe);
 }
 
-s32 Unk_02086340::func_02086740() {
+s32 TurnipMarket::rollPeakPrice() {
     s32 t = func_02063b74(0x419a);
     unk_08 = (unk_0a[0] * (t + 0x2000)) >> 12;
     return 0;
 }
 
-void Unk_02086340::func_02086578(s32 flag) {
+void TurnipMarket::generateWeek(s32 flag) {
     if (unk_18 != 0xff) {
         s32 r = Ns_02086204::func_02063b8c(0x65);
         switch (unk_18) {
@@ -2022,40 +2022,40 @@ void Unk_02086340::func_02086578(s32 flag) {
     unk_0a[1] = unk_0a[0];
     switch (unk_18) {
     case 0:
-        unk_0a[2] = func_020867fc();
-        unk_0a[3] = func_02086810();
-        unk_0a[4] = func_02086810();
-        unk_0a[5] = func_02086810();
-        unk_0a[6] = func_020867fc();
-        unk_0a[7] = func_020867fc();
-        unk_0a[8] = func_020867fc();
-        unk_0a[9] = func_02086810();
-        unk_0a[10] = func_02086810();
-        unk_0a[11] = func_020867fc();
-        unk_0a[12] = func_020867fc();
-        unk_0a[13] = func_020867fc();
+        unk_0a[2] = calcMidPrice();
+        unk_0a[3] = calcLowPrice();
+        unk_0a[4] = calcLowPrice();
+        unk_0a[5] = calcLowPrice();
+        unk_0a[6] = calcMidPrice();
+        unk_0a[7] = calcMidPrice();
+        unk_0a[8] = calcMidPrice();
+        unk_0a[9] = calcLowPrice();
+        unk_0a[10] = calcLowPrice();
+        unk_0a[11] = calcMidPrice();
+        unk_0a[12] = calcMidPrice();
+        unk_0a[13] = calcMidPrice();
         break;
     case 1: {
         s32 n = Ns_02086204::func_02063b8c(4) + 8;
-        unk_0a[n] = func_02086740();
-        func_02086824(2, n - 2);
-        unk_0a[n - 1] = func_020867e8();
-        unk_0a[n + 1] = func_020867e8();
-        unk_0a[n - 2] = func_020867fc();
-        unk_0a[n + 2] = func_020867fc();
-        func_02086824(n + 3, 0xe);
+        unk_0a[n] = rollPeakPrice();
+        fillDecreasing(2, n - 2);
+        unk_0a[n - 1] = calcHighPrice();
+        unk_0a[n + 1] = calcHighPrice();
+        unk_0a[n - 2] = calcMidPrice();
+        unk_0a[n + 2] = calcMidPrice();
+        fillDecreasing(n + 3, 0xe);
         break;
     }
     case 2:
-        func_02086824(2, 0xe);
+        fillDecreasing(2, 0xe);
         break;
     case 3:
-        func_02086768();
+        generateSmallSpike();
         break;
     }
 }
 
-u16 Unk_02086340::func_0208653c() {
+u16 TurnipMarket::getPrice() {
     Unk_02086340_T t;
     s32 i = 0;
     t.w0 = 0;
@@ -2072,19 +2072,19 @@ u16 Unk_02086340::func_0208653c() {
     return r;
 }
 
-void Unk_02086340::func_020864f8() {
+void TurnipMarket::spoilOnReset() {
     Unk_02086340_T t;
     if (MenuCtrl_IsClockMovedForward() != 0 || MenuCtrl_IsClockMovedBack() != 0) {
         t.w0 = 0;
         t.w1 = 0;
         Clock_GetDateTime(&t);
-        func_02086578(1);
-        func_020863fc(&t);
-        func_02086340(&t);
+        generateWeek(1);
+        setWeekDate(&t);
+        setPurchaseDate(&t);
     }
 }
 
-void Unk_02086340::func_02086444(s32 d) {
+void TurnipMarket::updateDay(s32 d) {
     struct {
         Unk_02086340_T a, b;
     } l;
@@ -2099,22 +2099,22 @@ void Unk_02086340::func_02086444(s32 d) {
         LB(8) = 0;
     }
     s32 r = DateTime_Compare(&l.b, &l.a, 0x38);
-    func_02086388();
+    checkTurnipExpiry();
     if (r == 1) {
         s32 t = Date_GetWeekday(LB(5), LB(4), LB(3));
         s32 u = Date_GetWeekday(LB(0xd), LB(0xc), LB(0xb));
         if (u < t || DateTime_DiffDays(&l.a, &l.b) >= 7) {
-            func_02086578(0);
-            func_020863fc(&l.b);
+            generateWeek(0);
+            setWeekDate(&l.b);
         }
     } else if (d < 0) {
-        func_02086578(1);
-        func_020863fc(&l.b);
-        func_02086340(&l.b);
+        generateWeek(1);
+        setWeekDate(&l.b);
+        setPurchaseDate(&l.b);
     }
 }
 
-void Unk_02086340::func_020863fc(void *src) {
+void TurnipMarket::setWeekDate(void *src) {
     Unk_02086340_T t;
     t.w0 = 0;
     t.w1 = 0;
@@ -2129,7 +2129,7 @@ void Unk_02086340::func_020863fc(void *src) {
     unk_00 = ((u8 *)&t)[3];
 }
 
-void Unk_02086340::func_02086388() {
+void TurnipMarket::checkTurnipExpiry() {
     struct {
         Unk_02086340_T a, b;
     } l;
@@ -2146,12 +2146,12 @@ void Unk_02086340::func_02086388() {
     if (DateTime_Compare(&l.b, &l.a, 0x38) == 1) {
         if (DateTime_DiffDays(&l.a, &l.b) >= 7) {
             _ZN8SaveData9clearFlagEj(gSaveData, 4);
-            func_02086340(&l.b);
+            setPurchaseDate(&l.b);
         }
     }
 }
 
-void Unk_02086340::func_02086340(void *src) {
+void TurnipMarket::setPurchaseDate(void *src) {
     Unk_02086340_T t;
     t.w0 = 0;
     t.w1 = 0;
@@ -2166,27 +2166,27 @@ void Unk_02086340::func_02086340(void *src) {
     unk_04 = ((u8 *)&t)[3];
 }
 
-Unk_02086328::Unk_02086328() {
+ReddLastSale::ReddLastSale() {
     _ZN8PlayerIdC1EPv(this);
     unk_16 = 0xfff1;
 }
 
-Unk_02086328::~Unk_02086328() {
+ReddLastSale::~ReddLastSale() {
     _ZN8PlayerIdC1Ev(this);
 }
 
-void Unk_02086328::func_02086300() {
+void ReddLastSale::clear() {
     Ns_02086204::_ZN8PlayerId13func_02094294Ev(this);
     unk_16 = 0xfff1;
 }
 
-extern "C" void func_020862f8(Unk_02086328 *p) {
-    p->func_02086300();
+extern "C" void ReddLastSale_Clear(ReddLastSale *p) {
+    p->clear();
 }
 
-extern "C" void func_020862f4() {}
+extern "C" void ReddLastSale_GetBuyer() {}
 
-void Unk_02086328::func_020862a8(const Unk_02086328 *o) {
+void ReddLastSale::setBuyer(const ReddLastSale *o) {
     unk_00 = o->unk_00;
     unk_02 = o->unk_02;
     unk_0a = o->unk_0a;
@@ -2195,11 +2195,11 @@ void Unk_02086328::func_020862a8(const Unk_02086328 *o) {
     unk_15 = o->unk_15;
 }
 
-void Unk_02086328::func_020862a0(const Unk_02086328 *o) {
+void ReddLastSale::setItem(const ReddLastSale *o) {
     unk_16 = o->unk_00;
 }
 
-void Unk_02086328::func_02086298(const Unk_02086328 *o) {
+void ReddLastSale::copyItemFrom(const ReddLastSale *o) {
     unk_00 = o->unk_16;
 }
 
@@ -2207,28 +2207,28 @@ extern "C" void func_02086294() {}
 
 extern "C" void func_02086290() {}
 
-extern "C" void func_02086284(void *p) {
+extern "C" void GulliverQuest_Clear(void *p) {
     MI_CpuFill8(p, 0, 1);
 }
 
-extern "C" void func_0208627c(void *p) {
-    func_02086284(p);
+extern "C" void GulliverQuest_Init(void *p) {
+    GulliverQuest_Clear(p);
 }
 
-s32 Unk_02086238::func_02086274() {
+s32 GulliverQuest::getPartCount() {
     return cnt;
 }
 
-void Unk_02086238::func_02086258() {
+void GulliverQuest::addPart() {
     cnt = cnt + 1;
 }
 
-BOOL Unk_02086238::func_02086244() {
+BOOL GulliverQuest::isStarted() {
     if (flag == 1) return TRUE;
     return FALSE;
 }
 
-void Unk_02086238::func_02086238() {
+void GulliverQuest::start() {
     flag = 1;
 }
 
@@ -2243,11 +2243,11 @@ void Unk_0208620c::func_0208620c() {
     d = 0;
 }
 
-extern "C" void func_02086204(void *p) {
-    _ZN12Unk_02085f7c13func_02085fb4Ev(p);
+extern "C" void RoostGuestRoll_Init(void *p) {
+    _ZN14RoostGuestRoll4rollEv(p);
 }
 
-void Unk_02085f7c::func_02085fb4() {
+void RoostGuestRoll::roll() {
     u32 a, b, c;
     unk_00_0 = func_02063b8c(2);
     unk_00_3 = 1;
@@ -2287,15 +2287,15 @@ void Unk_02085f7c::func_02085fb4() {
     if (unk_00_1 == unk_00_2) unk_00_2 = 0;
 }
 
-BOOL Unk_02085f7c::func_02085fa0() { if (unk_00_0) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasMorningGuest() { if (unk_00_0) return TRUE; return FALSE; }
 
-u32 Unk_02085f7c::func_02085f98() { return unk_00_1; }
+u32 RoostGuestRoll::getNoonGuest() { return unk_00_1; }
 
-u32 Unk_02085f7c::func_02085f90() { return unk_00_2; }
+u32 RoostGuestRoll::getAfternoonGuest() { return unk_00_2; }
 
-BOOL Unk_02085f7c::func_02085f7c() { if (unk_00_3) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasLateGuest() { if (unk_00_3) return TRUE; return FALSE; }
 
-void Unk_02085810::func_02085df0() {
+void Unk_02085810::postResultNotice() {
     if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) {
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
@@ -2333,11 +2333,11 @@ void Unk_02085810::func_02085df0() {
     s32 k;
     if ((u8)(unk_37 + 0xff) <= 1) k = func_02063b8c(3);
     else k = func_02063b8c(2);
-    func_02076fc8(k, data_020e0ca8[unk_37]);
+    Bbs_PostMsgToday(k, sContestResultBbsFiles[unk_37]);
     _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
 }
 
-void Unk_02085810::func_020859b4() {
+void Unk_02085810::sendResultLetters() {
     if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
     if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
     Unk_020859b4_Loc l;
@@ -2359,7 +2359,7 @@ void Unk_02085810::func_020859b4() {
     if (r6 == 1 && DateTime_DiffDays(l.unk_0c, &l.unk_14) >= 10) goto reset;
     if (r6 == -1 && DateTime_DiffDays(&l.unk_14, l.unk_0c) >= 10) {
     reset:
-        func_02085940();
+        clear();
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
@@ -2375,8 +2375,8 @@ void Unk_02085810::func_020859b4() {
         if (r6 == 1 && DateTime_DiffDays(l.unk_0c, &l.unk_14) < 1) return;
     }
     if (unk_37 == 3 && _ZN8PlayerId13func_02094218Ev(this) == 0) {
-        func_02085df0();
-        func_02085940();
+        postResultNotice();
+        clear();
         return;
     }
     Unk_02085df0_Num n1;
@@ -2438,7 +2438,7 @@ void Unk_02085810::func_020859b4() {
             MailText_SetSlot(4, &rec);
         }
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
-        func_020656dc(&buf, &l, data_020e0cb8[unk_37], data_020e0c50, data_020e0c48, w);
+        func_020656dc(&buf, &l, sContestResultMailFiles[unk_37], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
         if ((unk_00.unk_00 == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(this, x) != 0) || unk_37 == 3) {
             l.unk_02 = 0x3878;
@@ -2448,11 +2448,11 @@ void Unk_02085810::func_020859b4() {
         }
         LetterDelivery_PutInAddresseeMailbox(&buf);
     }
-    func_02085df0();
-    func_02085940();
+    postResultNotice();
+    clear();
 }
 
-Unk_02085810 *Unk_02085810::func_0208598c() {
+Unk_02085810 *Unk_02085810::construct() {
     _ZN8PlayerIdC1EPv(this);
     func_02003130(&unk_16);
     func_02003130(&unk_22);
@@ -2460,14 +2460,14 @@ Unk_02085810 *Unk_02085810::func_0208598c() {
     return this;
 }
 
-Unk_02085810 *Unk_02085810::func_0208596c() {
+Unk_02085810 *Unk_02085810::destruct() {
     func_02003100(&unk_22);
     func_02003100(&unk_16);
     _ZN8PlayerIdC1Ev(this);
     return this;
 }
 
-void Unk_02085810::func_02085940() {
+void Unk_02085810::clear() {
     _ZN8PlayerId13func_02094294Ev(this);
     func_020030e8(&unk_16);
     func_020030e8(&unk_22);
@@ -2477,18 +2477,18 @@ void Unk_02085810::func_02085940() {
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern char data_020e0c88[];
-extern const s16 data_020cf268[4];
+extern const s16 sGulliverRepairedAngles[4];
 extern const u8 data_020cf288[0xa0];
 extern const u8 data_020cf328[0x230];
 extern char data_020e0c7c[];
 extern u8 data_020e0c4c[4];
-extern u32 data_021cdda8[0x20];
-extern const Unk_02086af0_Off data_020cf270[3];
+extern u32 sKatieSpotRows[0x20];
+extern const Unk_02086af0_Off sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
 extern char data_020e0c58[];
 extern char data_020e0c98[];
-extern u32 data_020e0ca8[4];
-extern void *data_020e0cb8[4];
+extern u32 sContestResultBbsFiles[4];
+extern void *sContestResultMailFiles[4];
 extern char data_020e0c70[];
 extern u8 data_020e0c48[4];
 extern char data_020e0c64[];
@@ -2497,7 +2497,7 @@ extern u8 data_020e0c44[4];
 
 char data_020e0c88[] = "ev_gardening";
 
-const s16 data_020cf268[4] = {(s16)0x8000, 0x4000, (s16)0xc000, 0};
+const s16 sGulliverRepairedAngles[4] = {(s16)0x8000, 0x4000, (s16)0xc000, 0};
 
 const u8 data_020cf288[0xa0] = {
     0x06, 0x02, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x06, 0x04, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
@@ -2554,9 +2554,9 @@ char data_020e0c7c[] = "bbs_fishing";
 
 u8 data_020e0c4c[4] = {0x7, 0, 0, 0};
 
-u32 data_021cdda8[0x20];
+u32 sKatieSpotRows[0x20];
 
-const Unk_02086af0_Off data_020cf270[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
+const Unk_02086af0_Off sGulliverSpotOffsets[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
 
 u8 data_020e0c50[4] = {0xf, 0, 0, 0};
 
@@ -2564,9 +2564,9 @@ char data_020e0c58[] = "ev_insect";
 
 char data_020e0c98[] = "bbs_gardening";
 
-u32 data_020e0ca8[4] = {(u32)data_020e0c7c, (u32)data_020e0c7c, (u32)data_020e0c64, (u32)data_020e0c98};
+u32 sContestResultBbsFiles[4] = {(u32)data_020e0c7c, (u32)data_020e0c7c, (u32)data_020e0c64, (u32)data_020e0c98};
 
-void *data_020e0cb8[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
+void *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
 
 char data_020e0c70[] = "ev_fishing";
 

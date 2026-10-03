@@ -2,44 +2,44 @@
 
 extern "C" {
 void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
-void _ZN12Unk_0201a8c413func_0201a8d0Eiiii(void *self, s32 a, s32 b, s32 c, s32 d);
-void _ZN12Unk_0201a8c413func_0201a8c4Eh(void *self, s32 a);
+void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
+void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
 s32 func_020b50e8(void);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
-void _ZN12Unk_0201347413func_020135bcEv(void *self);
-void _ZN12Unk_0201347413func_020135c4Ev(void *self);
-s32 _ZN12Unk_0201985813func_02019790Ev(void *self);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
+void _ZN12Unk_0201347416disableFootstepsEv(void *self);
+void _ZN12Unk_0201347415enableFootstepsEv(void *self);
+s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
-s32 _ZN12Unk_0201a33413func_0201a7e8Ev(void *self);
-s32 _ZN12Unk_0201a8c413func_0201a9a0EP18Unk_0201a334_Scenei(void *self, void *owner, s32 a);
-void _ZN12Unk_0201a8c413func_0201a97cEP17Unk_0201a334_Vec3(void *self, void *v);
-s32 _ZN12Unk_0201a8c413func_0201a968Ev(void *self);
-void _ZN12Unk_0201a8c413func_0201a8f0Ev(void *self);
-s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
-void *_ZN12Unk_0201a8c413func_0201a978Ev(void *self);
-void func_0201a900(void *out, void *pos, void *a, s32 b);
-s32 func_0201a834(void *v);
+s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
+s32 _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 a);
+void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
+s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
+void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
+s32 _ZN13NpcActionCtrl9getActionEv(void *self);
+void *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
+void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
+s32 Npc_IsPosBlocked(void *v);
 s32 Math_AngleXZ(void *pos, void *v);
 s32 NpcActor_IsFrontAngle(s16 a);
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void func_020e7518(void *p);
 u32 Random_Next(void *p);
 u32 func_02063b8c(u32 n);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
-s32 func_02077f40(void *v, s32 a);
-void _ZN16ActorTalkRequest13func_02015818Ejj(void *self, s32 a, s32 b);
+s32 TownMap_IsPosWalkable(void *v, s32 a);
+void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
 void *_ZN10PlayerData13func_020986a4Ev(void);
-s32 _ZN12Unk_020872fc13func_02087364Ev(void *p);
+s32 _ZN15LostChildRecord9getTownIdEv(void *p);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 a);
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 a);
-s32 func_0202e1cc(s32 a, s32 b);
+s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_EndTalkWith(void *p);
 u32 _ZN12Unk_020d77a414getPlayerActorEj(void *p, s32 n);
 u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, s32 a, s32 b, s32 c);
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 gVec3Zero[3];
@@ -181,8 +181,8 @@ public:
     }
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -193,7 +193,7 @@ struct Unk_0201a794 {
     u8 unk_00[0x418 - 0x3b0];
     Unk_0201a794();
 };
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_020e0cf4 {
@@ -203,14 +203,14 @@ struct Unk_020e0cf4 {
     Unk_020e0cf4();
 };
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
-struct Unk_02019858 {
-    Unk_02019858();
+struct NpcActionCtrl {
+    NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
 };
-struct Unk_02013b10 {
+struct NpcTalkCtrl {
     u8 unk_00[0x28];
 };
-struct Unk_02014254 : Unk_02013b10 {
+struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };
 struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
@@ -259,19 +259,19 @@ struct Unk_020d77a4 : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
@@ -294,12 +294,12 @@ struct Unk_020d77a4 : Character {
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual BOOL vfunc_a8();
 };
@@ -349,8 +349,8 @@ public:
     virtual BOOL updateAct();
     virtual const char *getTexturePath();
     virtual const char *getModelPath();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
     virtual BOOL vfunc_a8();
 
     BOOL mainAct08();
@@ -430,8 +430,8 @@ BOOL SpNpcMissing2::vfunc_04() {
     _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
     unk_658.attachOwner(this);
     if (func_020b50e8()) {
-        _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
-        _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 1, 0x280, 0xcc, 0x133);
+        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
+        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 1, 0x280, 0xcc, 0x133);
     }
     unk_558.unk_0b = 1;
     return TRUE;
@@ -452,7 +452,7 @@ BOOL SpNpcMissing2::vfunc_00() {
     changeAct(0);
     if (func_020b50e8() == 0x2f) {
         unk_4cc.unk_44 = 0;
-        _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         unk_5c = 0x10000;
         unk_64 = 0x16800;
     }
@@ -496,7 +496,7 @@ BOOL SpNpcMissing2::updateAct() {
 }
 
 BOOL SpNpcMissing2::vfunc_48() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -534,7 +534,7 @@ void SpNpcMissing2::changeAct(s32 state) {
 }
 
 BOOL SpNpcMissing2::setupAct00() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -550,7 +550,7 @@ BOOL SpNpcMissing2::setupAct01() {
 }
 
 BOOL SpNpcMissing2::mainAct01() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         changeAct(2);
     }
@@ -564,7 +564,7 @@ BOOL SpNpcMissing2::setupAct09() {
     if (p != NULL) {
         x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;
 }
 
@@ -580,12 +580,12 @@ BOOL SpNpcMissing2::mainAct02() {
     return TRUE;
 }
 
-void SpNpcMissing2::vfunc_8c() {
+void SpNpcMissing2::onJoinTalk() {
     changeAct(3);
 }
 
-void SpNpcMissing2::vfunc_90() {
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+void SpNpcMissing2::onLeaveTalk() {
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(0);
 }
 
@@ -598,43 +598,43 @@ BOOL SpNpcMissing2::mainAct03() {
 }
 
 BOOL SpNpcMissing2::setupAct04() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 2, 2, 0xf400, 0x14600, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 2, 2, 0xf400, 0x14600, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcMissing2::mainAct04() {
-    if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-        if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 2) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 2) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
 }
 
 BOOL SpNpcMissing2::setupAct05() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201a8c413func_0201a8c4Eh(&unk_350, 2);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN11NpcMoveCtrl11setTurnModeEh(&unk_350, 2);
     return TRUE;
 }
 
 BOOL SpNpcMissing2::mainAct05() {
-    if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-        if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 3) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
 }
 
 BOOL SpNpcMissing2::setupAct06() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 4, 2, 0x10000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 4, 2, 0x10000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcMissing2::mainAct06() {
-    if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-        if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 1) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 1) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -668,7 +668,7 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
             setTopic(1);
         }
     } else {
-        if (func_0202e1cc(0x2a, 0) == 0) {
+        if (Talk_CheckAndSetPlayerFlag(0x2a, 0) == 0) {
             setTopic(2);
         } else {
             setTopic(3);
@@ -685,7 +685,7 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
         break;
     case 2:
         out->unk_04 = func_02063b8c(3) + 4;
-        func_0202e1cc(0x2a, 1);
+        Talk_CheckAndSetPlayerFlag(0x2a, 1);
         break;
     case 3:
         out->unk_04 = func_02063b8c(3) + 7;
@@ -696,8 +696,8 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
 void SpNpcMissing2Talk::vfunc_10() {
     PlayerData_GetCurrent();
     void *r4 = _ZN10PlayerData13func_020986a4Ev();
-    _ZN16ActorTalkRequest13func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev(r4), 0);
-    _ZN16ActorTalkRequest13func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev(r4), 1);
+    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
+    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
 }
 
 void SpNpcMissing2Talk::vfunc_14() {}
@@ -706,10 +706,10 @@ void SpNpcMissing2Talk::vfunc_18() {}
 
 BOOL SpNpcMissing2::setupAct07() {
     unk_651 = 0;
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201347413func_020135c4Ev(&unk_558);
-    _ZN12Unk_0201347413func_020135c4Ev(&unk_558);
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
+    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -762,7 +762,7 @@ BOOL SpNpcMissing2::findRandomWalkTarget(s32 *px, s32 *pz) {
         m = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = m + unk_64;
         FieldPos_SnapToUnitCenter(&v, &v);
-        if (func_02077f40(&v, 0)) {
+        if (TownMap_IsPosWalkable(&v, 0)) {
             *ppx = v.x;
             *ppz = v.z;
             result = TRUE;
@@ -775,8 +775,8 @@ BOOL SpNpcMissing2::findRandomWalkTarget(s32 *px, s32 *pz) {
 BOOL SpNpcMissing2::func_020c1b64(Unk_020c17f8_Vec *out, s32 *data) {
     BOOL result = FALSE;
     Unk_020c17f8_Vec v;
-    func_0201a900(&v, &unk_5c, data, unk_94);
-    if (func_0201a834(&v) != 1) {
+    Npc_RotateOffsetXZ(&v, &unk_5c, data, unk_94);
+    if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
         out->y = v.y;
         out->z = v.z;
@@ -788,35 +788,35 @@ BOOL SpNpcMissing2::func_020c1b64(Unk_020c17f8_Vec *out, s32 *data) {
 BOOL SpNpcMissing2::func_020c1a64() {
     void *p564 = &unk_564;
     void *p350 = &unk_350;
-    s32 st = _ZN12Unk_0201a33413func_0201a7e8Ev(&unk_3a8);
+    s32 st = _ZN9NpcLookAt15getObstacleBitsEv(&unk_3a8);
     BOOL result = FALSE;
     Unk_020c17f8_Vec v;
-    if (_ZN12Unk_0201a8c413func_0201a9a0EP18Unk_0201a334_Scenei(p350, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(p350, this, 1) == 0) {
         switch (st) {
         case 3:
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             result = TRUE;
             break;
         case 1:
             if (func_020c1b64(&v, &data_021f4658[1].x)) {
-                _ZN12Unk_0201a8c413func_0201a97cEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
             } else {
-                _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             result = TRUE;
             break;
         case 2:
             if (func_020c1b64(&v, &data_021f4658[0].x)) {
-                _ZN12Unk_0201a8c413func_0201a97cEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
             } else {
-                _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             result = TRUE;
             break;
         }
     } else {
-        if (_ZN12Unk_0201a8c413func_0201a968Ev(p350)) {
-            _ZN12Unk_0201a8c413func_0201a8f0Ev(p350);
+        if (_ZN11NpcMoveCtrl10hasNextLegEv(p350)) {
+            _ZN11NpcMoveCtrl16resetDestinationEv(p350);
         }
     }
     return result;
@@ -837,9 +837,9 @@ BOOL SpNpcMissing2::mainAct07() {
     func_020e7518(&unk_651);
     if (a) {
         if (!func_020c1a40()) {
-            if (_ZN12Unk_0201985813func_02019790Ev(p564)) {
+            if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {
                 if (_ZN12Unk_0201acf813func_0201acfcEv(&unk_3aa) == 2) {
-                    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     Unk_020c17f8_Vec v1;
                     v1.x = gVec3Zero[0];
@@ -852,36 +852,36 @@ BOOL SpNpcMissing2::mainAct07() {
                             if (func_02063b8c(4) == 0) {
                                 k = 2;
                             }
-                            if (k != _ZN12Unk_0201985813func_020197a8Ev(&unk_564)) {
-                                _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, k, 1, v1.x, v1.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            if (k != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {
+                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, k, 1, v1.x, v1.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 unk_651 = 0x64;
                             }
                         } else {
-                            if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) != 4) {
-                                _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 4, 1, v1.x, v1.z, 0, ang, 0, 0, data_020c6cc8, 0);
+                            if (_ZN13NpcActionCtrl9getActionEv(&unk_564) != 4) {
+                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 4, 1, v1.x, v1.z, 0, ang, 0, 0, data_020c6cc8, 0);
                                 unk_651 = 0x50;
                             }
                         }
                     } else {
-                        _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     }
                 } else {
-                    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else {
                 if (unk_98 != 0) {
-                    if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 1 || _ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 2 || _ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 4) {
+                    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 1 || _ZN13NpcActionCtrl9getActionEv(&unk_564) == 2 || _ZN13NpcActionCtrl9getActionEv(&unk_564) == 4) {
                         if (unk_651 == 0) {
-                            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
-                            Unk_020c17f8_Vec *src = (Unk_020c17f8_Vec *)_ZN12Unk_0201a8c413func_0201a978Ev(&unk_350);
+                            Unk_020c17f8_Vec *src = (Unk_020c17f8_Vec *)_ZN11NpcMoveCtrl14getDestinationEv(&unk_350);
                             Unk_020c17f8_Vec v2;
                             v2.x = src->x;
                             v2.y = src->y;
                             v2.z = src->z;
                             s32 ang = Math_AngleXZ(&unk_5c, &v2);
                             if (!NpcActor_IsFrontAngle(ang - unk_8e)) {
-                                _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }
                     }
@@ -897,9 +897,9 @@ BOOL SpNpcMissing2::mainAct07() {
 }
 
 BOOL SpNpcMissing2::setupAct08() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_651 = 0;
-    _ZN12Unk_0201347413func_020135bcEv(&unk_558);
+    _ZN12Unk_0201347416disableFootstepsEv(&unk_558);
     return TRUE;
 }
 

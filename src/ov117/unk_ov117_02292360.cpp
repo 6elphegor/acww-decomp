@@ -67,7 +67,7 @@ u32 MapBlock_GetAttr(void *c);
 s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
 BOOL func_02031098(u8 *out, s32 a, s32 b);
 void *SaveVillagers_Get(void *, s32);
-BOOL func_02081038(void *p);
+BOOL HousePos_IsValid(void *p);
 u16 Item_MakeNeighborHouse(u32 x);
 
 void TownMapImage_FinishGlobal(void *a, TownMapMarkers *b);
@@ -196,7 +196,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
     s32 zero = 0;
     for (i = 0; i < 8; i++) {
         void *p = SaveVillagers_Get(data_021dfd8c, i);
-        if (func_02081038(((VillagerDataItemView *)p)->getHousePos())) {
+        if (HousePos_IsValid(((VillagerDataItemView *)p)->getHousePos())) {
             u16 t = Item_MakeNeighborHouse(i);
             s32 bx = ((VillagerDataItemView *)p)->getHousePos()[0];
             s32 by = ((VillagerDataItemView *)p)->getHousePos()[1];

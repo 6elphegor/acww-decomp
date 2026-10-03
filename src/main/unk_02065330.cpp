@@ -5,16 +5,16 @@ class EncodedString {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 };
 
 class Unk_020dd468 : public EncodedString {
 public:
     Unk_020dd468();
     virtual ~Unk_020dd468();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x04 */ u8 unk_04[0xa];
     /* 0x0e */ u8 text[0x82];
@@ -638,13 +638,13 @@ Unk_020dd468::Unk_020dd468() {
 Unk_020dd468::~Unk_020dd468() {
 }
 
-u32 Unk_020dd468::vfunc_08() {
+u32 Unk_020dd468::capacity() {
     return 0x80;
 }
 
 // ---- Unk_020dd468 (vtable owner)
 
-u8 *Unk_020dd468::vfunc_0c() {
+u8 *Unk_020dd468::data() {
     return (u8 *)this + 0xe;
 }
 

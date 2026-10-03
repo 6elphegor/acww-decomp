@@ -18,23 +18,23 @@ struct Unk_0209ada4 {
     ~Unk_0209ada4();
     void func_0209ab8c(u16 *p);
     u16 *func_0209ab94();
-    void func_0209ab98(u8 v);
-    u32 func_0209abac();
+    void setExtra(u8 v);
+    u32 getExtra();
     void func_0209abb4(u8 v);
     u32 func_0209abc4();
-    s32 func_0209abcc();
+    s32 getSubGroup();
     s32 func_0209ac10();
-    s32 func_0209ac48(s32 x);
+    s32 setTimeFromNow(s32 x);
     u32 func_0209ac64();
-    BOOL func_0209ac68(s32 *out);
-    s32 func_0209acac();
-    BOOL func_0209ace8(s32 *out);
-    s32 func_0209ad28();
+    BOOL getGroupIndex(s32 *out);
+    s32 getGroup();
+    BOOL getClassIndex(s32 *out);
+    s32 getClass();
     void func_0209ad54(u8 a, u16 *p, u8 b);
     BOOL func_0209ad68();
     void func_0209ad80();
     void func_0209ada0();
-    void func_0209ada4();
+    void init();
 };
 
 // ======== types of unk_02098f90.cpp ========
@@ -63,7 +63,7 @@ struct Unk_020994cc_Date {
     u32 v;
 };
 
-class Unk_020994cc {
+class SickVillagerRecord {
 public:
     u8 unk_00[0xc];
     Unk_020030d8_R256 unk_0c;
@@ -71,21 +71,21 @@ public:
     u8 unk_86[4];
     u8 unk_8a[4];
     u8 unk_8e;
-    Unk_020994cc_Ent *func_020994cc();
-    BOOL func_02099624(Unk_020994cc_Date *d);
-    BOOL func_02099668();
-    void func_02099678(Unk_020994cc_Ent *e);
-    BOOL func_02099690();
-    BOOL func_020996b0(Unk_020994cc_Ent *e);
-    Unk_020994cc_Ent *func_02099700();
-    Unk_020994cc_Ent *func_02099710(u32 i);
-    void func_02099724(Unk_020030d8_R256 *a, u8 *b);
-    Unk_020030d8_R256 *func_02099788();
-    Unk_020994cc *func_020997fc();
-    Unk_020994cc *func_02099828();
+    Unk_020994cc_Ent *getTopVisitor();
+    BOOL isRecentlyRecovered(Unk_020994cc_Date *d);
+    BOOL isRecovered();
+    void setTodaysVisitor(Unk_020994cc_Ent *e);
+    BOOL hasTodaysVisitor();
+    BOOL hasVisitor(Unk_020994cc_Ent *e);
+    Unk_020994cc_Ent *getTodaysVisitor();
+    Unk_020994cc_Ent *getVisitor(u32 i);
+    void startSickness(Unk_020030d8_R256 *a, u8 *b);
+    Unk_020030d8_R256 *getVillagerId();
+    SickVillagerRecord *destructRecord();
+    SickVillagerRecord *constructRecord();
     void func_0209978c();
-    void func_02099790();
-    u8 *func_02099864();
+    void resetRecord();
+    u8 *getParcelErrand();
 };
 // ======== types of unk_020998b8.cpp ========
 
@@ -103,10 +103,10 @@ public:
 };
 
 // Slot: Y record, two records, flag byte at +0x24 (0x28 bytes)
-class Unk_0209a5dc : public Unk_0209ada4 {
+class PlayerErrandSlot : public Unk_0209ada4 {
 public:
-    Unk_0209a5dc();
-    ~Unk_0209a5dc();
+    PlayerErrandSlot();
+    ~PlayerErrandSlot();
 
     /* 0x0c */ Unk_02003130 unk_0c[2];
     /* 0x24 */ u8 unk_24;
@@ -119,10 +119,10 @@ public:
     /* 0x0d */ u8 unk_0d;
 };
 
-class Unk_02099f5c : public Unk_02003130 {
+class HouseVisitInvite : public Unk_02003130 {
 public:
-    Unk_02099f5c();
-    ~Unk_02099f5c();
+    HouseVisitInvite();
+    ~HouseVisitInvite();
 
     /* 0x0c */ Unk_0209ada4 unk_0c;
     /* 0x18 */ u32 unk_18;
@@ -130,16 +130,16 @@ public:
     /* 0x20 */ u8 unk_20[8];
 };
 
-class Unk_02099e38 {
+class PlayerErrands {
 public:
-    Unk_02099e38();
-    ~Unk_02099e38();
+    PlayerErrands();
+    ~PlayerErrands();
 
-    /* 0x00 */ Unk_0209a5dc unk_00[2];
+    /* 0x00 */ PlayerErrandSlot unk_00[2];
     /* 0x50 */ Unk_02003130 unk_50[3];
     /* 0x74 */ u8 unk_74;
     /* 0x78 */ Unk_02099f98 unk_78;
-    /* 0x88 */ Unk_02099f5c unk_88;
+    /* 0x88 */ HouseVisitInvite unk_88;
 };
 // ======== types of unk_0209a208.cpp ========
 
@@ -160,18 +160,18 @@ struct Unk_0209abac_Bits { u8 lo : 5; u8 hi : 3; };
 
 // ---------------------------------------------------------------- class 2
 
-struct Unk_0209b434 {
+struct TrendScores {
     u8 unk_00[8];
 
-    Unk_0209b434();
-    ~Unk_0209b434();
-    u32 func_0209b434(u32 i);
-    void func_0209b450(u8 i, u32 v);
-    void func_0209b46c(u8 i, u32 v);
-    void func_0209b494(u32 i);
-    u8 func_0209b4cc();
-    void func_0209b540();
-    void func_0209b550();
+    TrendScores();
+    ~TrendScores();
+    u32 get(u32 i);
+    void set(u8 i, u32 v);
+    void add(u8 i, u32 v);
+    void resetAndHalve(u32 i);
+    u8 pickTop();
+    void copy();
+    void clear();
 };
 
 struct ItemId {
@@ -182,55 +182,55 @@ struct ItemId {
 
 struct Unk_0209b2e4_Bits { u8 f : 1; u8 x : 7; };
 
-struct Unk_0209b3bc {
+struct VillagerPlan {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
     u32 unk_0c;
     u8 unk_10;
-    Unk_0209b434 unk_11;
-    Unk_0209b434 unk_19;
+    TrendScores unk_11;
+    TrendScores unk_19;
     Unk_0209b2e4_Bits unk_21;
     u8 unk_22[2];
 
-    Unk_0209b3bc();
-    ~Unk_0209b3bc();
-    void func_0209aed4(Unk_0209b3bc *other, s16 *p);
-    void func_0209af0c(u8 idx, s32 delta);
-    BOOL func_0209af4c(s16 *p);
-    void func_0209afa4(s16 *p);
-    s32 func_0209b014(s32 x);
+    VillagerPlan();
+    ~VillagerPlan();
+    void addTrendOf(VillagerPlan *other, s16 *p);
+    void addPendingScore(u8 idx, s32 delta);
+    BOOL addRandomScores(s16 *p);
+    void applyPendingScores(s16 *p);
+    s32 getTrendName(s32 x);
     s32 func_0209b044(void *x);
-    s32 func_0209b0c4(Unk_0209b3bc *o);
+    s32 func_0209b0c4(VillagerPlan *o);
     s32 func_0209b12c();
     s32 func_0209b18c();
-    BOOL func_0209b1e4(void *o);
-    BOOL func_0209b1f0(void *o, u32 c);
+    BOOL isTrendOlderThanWeek(void *o);
+    BOOL isTrendOlderThan(void *o, u32 c);
     void func_0209b238();
     void func_0209b294();
     BOOL func_0209b2e4();
-    s32 func_0209b328();
-    void func_0209b350(u32 v);
-    u32 func_0209b354();
-    void func_0209b358(s32 a, s32 flag);
-    BOOL func_0209b394();
-    BOOL func_0209b3a4();
-    void func_0209b3bc();
-    void func_0209b494(u8 i);
-    u32 func_0209b4cc();
+    s32 getStateGroup();
+    void setState(u32 v);
+    u32 getState();
+    void rollTrend(s32 a, s32 flag);
+    BOOL isValidState();
+    BOOL hasTrend();
+    void clear();
+    void resetAndHalveScores(u8 i);
+    u32 pickTopScore();
 };
 // ======== types of unk_0209b494.cpp ========
 
 // ======== data ========
 extern "C" {
-BOOL func_0209a26c(void *p);
-BOOL func_0209a288(void *p);
-BOOL func_0209a2a4(void *p);
-BOOL func_0209a3c8(void *p);
-BOOL func_0209a3e4(void *p);
+BOOL ErrandSetup_WateringCan(void *p);
+BOOL ErrandSetup_Carpet(void *p);
+BOOL ErrandSetup_FurnitureParcel(void *p);
+BOOL ErrandSetup_LetterBundle(void *p);
+BOOL ErrandSetup_RandomShirt(void *p);
 }
 
-typedef BOOL (Unk_0209a5dc::*Unk_0209a4f4_Fn)();
+typedef BOOL (PlayerErrandSlot::*Unk_0209a4f4_Fn)();
 
 // Entry of the slot-kind table (0x14 bytes): setup handler, second handler (always null), limit byte
 struct Unk_0209a4f4_Rec {
@@ -240,16 +240,16 @@ struct Unk_0209a4f4_Rec {
 };
 
 
-// defined here, before func_0209adbc, for the data order
+// defined here, before Trend_GetToolItem, for the data order
 extern void *data_020e2190[2];
-extern const u8 data_020d05d4[10];
+extern const u8 sFossilGroups[10];
 extern void *data_020e21a0[2];
 extern char data_020e21c0[9];
 extern char data_020e218c[1];
 extern const char data_020d05bc[10];
-void *data_020e2190[2] = {(void *)func_0209a3e4, 0};
-const u8 data_020d05d4[10] = {0x16, 0x17, 0x0a, 0x0b, 0x0c, 0x0d, 0x0f, 0x10, 0x15, 0x14};
-void *data_020e21a0[2] = {(void *)func_0209a288, 0};
+void *data_020e2190[2] = {(void *)ErrandSetup_RandomShirt, 0};
+const u8 sFossilGroups[10] = {0x16, 0x17, 0x0a, 0x0b, 0x0c, 0x0d, 0x0f, 0x10, 0x15, 0x14};
+void *data_020e21a0[2] = {(void *)ErrandSetup_Carpet, 0};
 char data_020e21c0[9] = "st_sweet";
 #pragma explicit_zero_data on
 char data_020e218c[1] = {0};
@@ -262,46 +262,46 @@ extern "C" {
 s32 func_02063b8c(s32);
 void *MI_CpuCopy8(void *, void *, s32);
 void *MI_CpuFill8(void *, s32, s32);
-extern const Unk_0209b570_Ent data_020d0604[];
+extern const Unk_0209b570_Ent sTopicWordLists[];
 }
 
 extern "C" {
-u8 _ZN12Unk_0209b43413func_0209b434Ej(void *self, u8 i);
-void _ZN12Unk_0209b43413func_0209b450Ehj(void *self, u8 i, u32 v);
+u8 _ZN11TrendScores3getEj(void *self, u8 i);
+void _ZN11TrendScores3setEhj(void *self, u8 i, u32 v);
 }
 
-extern "C" void func_0209b540(void *p, void *q);
-extern "C" void func_0209b550(void *p);
-extern "C" void func_0209b55c();
-extern "C" void *func_0209b560(void *p);
-extern "C" u32 func_0209b570(u32 *out, s32 idx);
+extern "C" void TrendScores_Copy(void *p, void *q);
+extern "C" void TrendScores_Clear(void *p);
+extern "C" void TrendScores_Destruct();
+extern "C" void *TrendScores_Construct(void *p);
+extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx);
 
-extern "C" u32 func_0209b570(u32 *out, s32 idx)
+extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx)
 {
-    *out = func_02063b8c(data_020d0604[idx].unk_04);
-    return (u32)data_020d0604[idx].unk_00;
+    *out = func_02063b8c(sTopicWordLists[idx].unk_04);
+    return (u32)sTopicWordLists[idx].unk_00;
 }
 
-extern "C" void *func_0209b560(void *p)
+extern "C" void *TrendScores_Construct(void *p)
 {
-    func_0209b550(p);
+    TrendScores_Clear(p);
     return p;
 }
 
-extern "C" void func_0209b55c() {}
+extern "C" void TrendScores_Destruct() {}
 
-extern "C" void func_0209b550(void *p)
+extern "C" void TrendScores_Clear(void *p)
 {
     MI_CpuFill8(p, 0, 8);
 }
 
-extern "C" void func_0209b540(void *p, void *q)
+extern "C" void TrendScores_Copy(void *p, void *q)
 {
     MI_CpuCopy8(q, p, 8);
 }
 
 }
-u32 Unk_0209b3bc::func_0209b4cc()
+u32 VillagerPlan::pickTopScore()
 {
     using namespace n6;
     u8 res = 8;
@@ -338,13 +338,13 @@ u32 Unk_0209b3bc::func_0209b4cc()
 
 namespace n6 {
 }
-void Unk_0209b3bc::func_0209b494(u8 i)
+void VillagerPlan::resetAndHalveScores(u8 i)
 {
     using namespace n6;
-    _ZN12Unk_0209b43413func_0209b450Ehj(this, i, 0);
+    _ZN11TrendScores3setEhj(this, i, 0);
     for (s32 j = 0; j < 8; j++) {
-        u32 v = _ZN12Unk_0209b43413func_0209b434Ej(this, (u8)j);
-        _ZN12Unk_0209b43413func_0209b450Ehj(this, (u8)j, (v << 23) >> 24);
+        u32 v = _ZN11TrendScores3getEj(this, (u8)j);
+        _ZN11TrendScores3setEhj(this, (u8)j, (v << 23) >> 24);
     }
 }
 namespace n6 {
@@ -367,48 +367,48 @@ void MI_CpuFill8(void *a, s32 v, s32 n);
 s32 _s32_div_f(s32 a, s32 b);
 s32 String_Load(void *a, void *b, void *c);
 void func_02135558(void *obj, void *dtor, void *reg);
-extern u32 data_020d05e0[];
-extern u32 data_020d05b4[];
-extern u8 data_020d0594[];
-extern u8 data_020d05ac[];
-s32 func_0209abd8(u32 x);
+extern u32 sErrandGroupStarts[];
+extern u32 sErrandClassStarts[];
+extern u8 sPlanStateGroupStarts[];
+extern u8 sTrendWeights[];
+s32 Errand_GetSubGroup(u32 x);
 s32 func_0209ac1c(u32 x);
-BOOL func_0209ac78(s32 *out, s32 x);
-s32 func_0209acb8(u32 x);
-BOOL func_0209acdc(u32 x);
-BOOL func_0209acf8(s32 *out, s32 x);
-s32 func_0209ad34(u32 x);
-BOOL func_0209ad48(u32 x);
-BOOL func_0209ad74(u32 x);
+BOOL Errand_GetGroupIndex(s32 *out, s32 x);
+s32 Errand_GetGroup(u32 x);
+BOOL Errand_IsValidGroup(u32 x);
+BOOL Errand_GetClassIndex(s32 *out, s32 x);
+s32 Errand_GetClass(u32 x);
+BOOL Errand_IsValidClass(u32 x);
+BOOL Errand_IsValidKind(u32 x);
 }
 
 
-extern "C" BOOL func_0209b3b0(u32 x);
-extern "C" s32 func_0209b334(u32 x);
+extern "C" BOOL Trend_IsValid(u32 x);
+extern "C" s32 PlanState_GetGroup(u32 x);
 
-extern "C" void *func_0209ab54(Unk_0209ada4 *self);
-extern "C" void *func_0209ab6c(Unk_0209ada4 *self);
-extern "C" s32 func_0209abd8(u32 x);
+extern "C" void *PlanErrand_Destruct(Unk_0209ada4 *self);
+extern "C" void *PlanErrand_Construct(Unk_0209ada4 *self);
+extern "C" s32 Errand_GetSubGroup(u32 x);
 extern "C" s32 func_0209ac1c(u32 x);
-extern "C" void func_0209ac44();
-extern "C" BOOL func_0209ac78(s32 *out, s32 x);
-extern "C" s32 func_0209acb8(u32 x);
-extern "C" BOOL func_0209acdc(u32 x);
-extern "C" BOOL func_0209acf8(s32 *out, s32 x);
-extern "C" s32 func_0209ad34(u32 x);
-extern "C" BOOL func_0209ad48(u32 x);
-extern "C" BOOL func_0209ad74(u32 x);
-extern "C" void func_0209adbc(u16 *out, s32 idx);
-extern "C" void *func_0209b00c(void *p);
+extern "C" void ErrandRecord_GetTime();
+extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x);
+extern "C" s32 Errand_GetGroup(u32 x);
+extern "C" BOOL Errand_IsValidGroup(u32 x);
+extern "C" BOOL Errand_GetClassIndex(s32 *out, s32 x);
+extern "C" s32 Errand_GetClass(u32 x);
+extern "C" BOOL Errand_IsValidClass(u32 x);
+extern "C" BOOL Errand_IsValidKind(u32 x);
+extern "C" void Trend_GetToolItem(u16 *out, s32 idx);
+extern "C" void *VillagerPlan_GetStateDate(void *p);
 extern "C" void func_0209b010();
-extern "C" s32 func_0209b2f8(u8 *out, s32 x);
-extern "C" s32 func_0209b334(u32 x);
-extern "C" BOOL func_0209b3b0(u32 x);
+extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x);
+extern "C" s32 PlanState_GetGroup(u32 x);
+extern "C" BOOL Trend_IsValid(u32 x);
 
 }
-void Unk_0209b434::func_0209b46c(u8 i, u32 v) {
+void TrendScores::add(u8 i, u32 v) {
     using namespace n5;
-    if (func_0209b3b0(i)) {
+    if (Trend_IsValid(i)) {
         s32 t = unk_00[i];
         t += v;
         if (t >= 0xff) t = 0xff;
@@ -419,42 +419,42 @@ void Unk_0209b434::func_0209b46c(u8 i, u32 v) {
 
 namespace n5 {
 }
-void Unk_0209b434::func_0209b450(u8 i, u32 v) {
+void TrendScores::set(u8 i, u32 v) {
     using namespace n5;
-    if (func_0209b3b0(i)) unk_00[i] = v;
+    if (Trend_IsValid(i)) unk_00[i] = v;
 }
 
 
 namespace n5 {
 }
-u32 Unk_0209b434::func_0209b434(u32 i) {
+u32 TrendScores::get(u32 i) {
     using namespace n5;
     u32 r = 0;
-    if (func_0209b3b0(i)) r = unk_00[i];
+    if (Trend_IsValid(i)) r = unk_00[i];
     return r;
 }
 
 
 namespace n5 {
 }
-Unk_0209b3bc::Unk_0209b3bc() : unk_00(0), unk_04(0), unk_08(0), unk_0c(0) {
-    using namespace n5; func_0209b3bc(); }
+VillagerPlan::VillagerPlan() : unk_00(0), unk_04(0), unk_08(0), unk_0c(0) {
+    using namespace n5; clear(); }
 
 
 namespace n5 {
 }
-Unk_0209b3bc::~Unk_0209b3bc() {
+VillagerPlan::~VillagerPlan() {
     using namespace n5;}
 
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209b3bc() {
+void VillagerPlan::clear() {
     using namespace n5;
     MI_CpuFill8(this, 0, 0x24);
     unk_10 = 7;
-    unk_11.func_0209b550();
-    unk_19.func_0209b550();
+    unk_11.clear();
+    unk_19.clear();
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
@@ -463,19 +463,19 @@ void Unk_0209b3bc::func_0209b3bc() {
 
 
 namespace n5 {
-extern "C" BOOL func_0209b3b0(u32 x) {
+extern "C" BOOL Trend_IsValid(u32 x) {
     if (x < 8) return TRUE;
     return FALSE;
 }
 
 }
-BOOL Unk_0209b3bc::func_0209b3a4() {
-    using namespace n5; return func_0209b3b0(unk_10); }
+BOOL VillagerPlan::hasTrend() {
+    using namespace n5; return Trend_IsValid(unk_10); }
 
 
 namespace n5 {
 }
-BOOL Unk_0209b3bc::func_0209b394() {
+BOOL VillagerPlan::isValidState() {
     using namespace n5;
     if (unk_10 < 0xc) return TRUE;
     return FALSE;
@@ -484,12 +484,12 @@ BOOL Unk_0209b3bc::func_0209b394() {
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209b358(s32 a, s32 flag) {
+void VillagerPlan::rollTrend(s32 a, s32 flag) {
     using namespace n5;
-    unk_11.func_0209b540();
-    unk_10 = unk_11.func_0209b4cc();
+    unk_11.copy();
+    unk_10 = unk_11.pickTop();
     if (flag != 0) {
-        unk_11.func_0209b494(unk_10);
+        unk_11.resetAndHalve(unk_10);
     }
     Clock_GetDateTime(this);
     Clock_GetDateTime((u8 *)this + 8);
@@ -498,18 +498,18 @@ void Unk_0209b3bc::func_0209b358(s32 a, s32 flag) {
 
 namespace n5 {
 }
-u32 Unk_0209b3bc::func_0209b354() {
+u32 VillagerPlan::getState() {
     using namespace n5; return unk_10; }
 
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209b350(u32 v) {
+void VillagerPlan::setState(u32 v) {
     using namespace n5; unk_10 = v; }
 
 
 namespace n5 {
-extern "C" s32 func_0209b334(u32 x) {
+extern "C" s32 PlanState_GetGroup(u32 x) {
     s32 r = 3;
     if (x < 5) {
         r = 0;
@@ -522,19 +522,19 @@ extern "C" s32 func_0209b334(u32 x) {
 }
 
 }
-s32 Unk_0209b3bc::func_0209b328() {
-    using namespace n5; return func_0209b334(unk_10); }
+s32 VillagerPlan::getStateGroup() {
+    using namespace n5; return PlanState_GetGroup(unk_10); }
 
 
 namespace n5 {
-extern "C" s32 func_0209b2f8(u8 *out, s32 x) {
-    *out = func_0209b334(x);
-    if (*out < 3) return x - data_020d0594[*out];
+extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x) {
+    *out = PlanState_GetGroup(x);
+    if (*out < 3) return x - sPlanStateGroupStarts[*out];
     return -1;
 }
 
 }
-BOOL Unk_0209b3bc::func_0209b2e4() {
+BOOL VillagerPlan::func_0209b2e4() {
     using namespace n5;
     if (unk_21.f) return TRUE;
     return FALSE;
@@ -543,14 +543,14 @@ BOOL Unk_0209b3bc::func_0209b2e4() {
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209b294() {
+void VillagerPlan::func_0209b294() {
     using namespace n5;
-    if (func_0209b354() == 2) {
+    if (getState() == 2) {
         unk_21.f = 1;
     } else {
         unk_21.f = 0;
     }
-    func_0209b350(8);
+    setState(8);
     Clock_GetDateTime(this);
     MI_CpuCopy8(this, (u8 *)this + 8, 8);
 }
@@ -558,14 +558,14 @@ void Unk_0209b3bc::func_0209b294() {
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209b238() {
+void VillagerPlan::func_0209b238() {
     using namespace n5;
-    if (func_0209b354() == 2 || func_0209b2e4()) {
+    if (getState() == 2 || func_0209b2e4()) {
         unk_21.f = 1;
     } else {
         unk_21.f = 0;
     }
-    func_0209b350(0xb);
+    setState(0xb);
     Clock_GetDateTime(this);
     MI_CpuCopy8(this, (u8 *)this + 8, 8);
 }
@@ -573,9 +573,9 @@ void Unk_0209b3bc::func_0209b238() {
 
 namespace n5 {
 }
-BOOL Unk_0209b3bc::func_0209b1f0(void *o, u32 c) {
+BOOL VillagerPlan::isTrendOlderThan(void *o, u32 c) {
     using namespace n5;
-    if (DateTime_IsInvalid(this) == 0 && func_0209b3a4()) {
+    if (DateTime_IsInvalid(this) == 0 && hasTrend()) {
         s32 t = DateTime_DiffMinutes(this, o);
         if (t < 0) t = -t;
         if ((u32)_s32_div_f(t, 0x5a0) >= c) return TRUE;
@@ -587,20 +587,20 @@ BOOL Unk_0209b3bc::func_0209b1f0(void *o, u32 c) {
 
 namespace n5 {
 }
-BOOL Unk_0209b3bc::func_0209b1e4(void *o) {
-    using namespace n5; return func_0209b1f0(o, 7); }
+BOOL VillagerPlan::isTrendOlderThanWeek(void *o) {
+    using namespace n5; return isTrendOlderThan(o, 7); }
 
 
 namespace n5 {
 }
-s32 Unk_0209b3bc::func_0209b18c() {
+s32 VillagerPlan::func_0209b18c() {
     using namespace n5;
-    if (func_0209b3b0(unk_10)) {
-        u32 i = unk_11.func_0209b4cc();
-        if (func_0209b3b0(i)) {
-            if (unk_11.func_0209b434(i) == 0xff) {
+    if (Trend_IsValid(unk_10)) {
+        u32 i = unk_11.pickTop();
+        if (Trend_IsValid(i)) {
+            if (unk_11.get(i) == 0xff) {
                 if (unk_10 == i) {
-                    unk_11.func_0209b494(unk_10);
+                    unk_11.resetAndHalve(unk_10);
                     return unk_10;
                 } else {
                     func_0209b294();
@@ -615,13 +615,13 @@ s32 Unk_0209b3bc::func_0209b18c() {
 
 namespace n5 {
 }
-s32 Unk_0209b3bc::func_0209b12c() {
+s32 VillagerPlan::func_0209b12c() {
     using namespace n5;
     if (unk_10 == 8) {
-        u32 i = unk_11.func_0209b4cc();
-        if (func_0209b3b0(i)) {
-            func_0209b350(i);
-            unk_11.func_0209b494(i);
+        u32 i = unk_11.pickTop();
+        if (Trend_IsValid(i)) {
+            setState(i);
+            unk_11.resetAndHalve(i);
             unk_21.f = 0;
             Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
@@ -634,13 +634,13 @@ s32 Unk_0209b3bc::func_0209b12c() {
 
 namespace n5 {
 }
-s32 Unk_0209b3bc::func_0209b0c4(Unk_0209b3bc *o) {
+s32 VillagerPlan::func_0209b0c4(VillagerPlan *o) {
     using namespace n5;
     if (unk_10 == 0xb && *((u8 *)o + 3) != *((u8 *)this + 3)) {
-        u32 i = unk_11.func_0209b4cc();
-        if (func_0209b3b0(i)) {
-            func_0209b350(i);
-            unk_11.func_0209b494(i);
+        u32 i = unk_11.pickTop();
+        if (Trend_IsValid(i)) {
+            setState(i);
+            unk_11.resetAndHalve(i);
             unk_21.f = 0;
             Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
@@ -653,14 +653,14 @@ s32 Unk_0209b3bc::func_0209b0c4(Unk_0209b3bc *o) {
 
 namespace n5 {
 }
-s32 Unk_0209b3bc::func_0209b044(void *x) {
+s32 VillagerPlan::func_0209b044(void *x) {
     using namespace n5;
     if (unk_10 == 0xa) {
         if (x == 0 || (DateTime_Compare(x, this, 0x3f) == 1 && DateTime_DiffDays(this, x) >= 1)) {
-            u32 i = unk_11.func_0209b4cc();
-            if (func_0209b3b0(i)) {
-                func_0209b350(i);
-                unk_11.func_0209b494(i);
+            u32 i = unk_11.pickTop();
+            if (Trend_IsValid(i)) {
+                setState(i);
+                unk_11.resetAndHalve(i);
                 unk_21.f = 0;
                 Clock_GetDateTime(this);
                 MI_CpuCopy8(this, (u8 *)this + 8, 8);
@@ -674,9 +674,9 @@ s32 Unk_0209b3bc::func_0209b044(void *x) {
 
 namespace n5 {
 }
-s32 Unk_0209b3bc::func_0209b014(s32 x) {
+s32 VillagerPlan::getTrendName(s32 x) {
     using namespace n5;
-    if (!func_0209b3b0(x)) x = 7;
+    if (!Trend_IsValid(x)) x = 7;
     u8 buf = x;
     return String_Load(this, &buf, (void *)"st_boom");
 }
@@ -685,36 +685,36 @@ s32 Unk_0209b3bc::func_0209b014(s32 x) {
 namespace n5 {
 extern "C" void func_0209b010() {}
 
-extern "C" void *func_0209b00c(void *p) { return (u8 *)p + 8; }
+extern "C" void *VillagerPlan_GetStateDate(void *p) { return (u8 *)p + 8; }
 
 }
-void Unk_0209b3bc::func_0209afa4(s16 *p) {
+void VillagerPlan::applyPendingScores(s16 *p) {
     using namespace n5;
-    const u8 *w = data_020d05ac;
+    const u8 *w = sTrendWeights;
     s32 i;
     for (i = 0; i < 8; p++, w++, i++) {
-        s32 v = unk_19.func_0209b434((u8)i);
+        s32 v = unk_19.get((u8)i);
         s32 wt = *w;
         if (wt != 0 && v != 0) {
             s32 m = *p * wt;
-            unk_11.func_0209b46c((u8)i, (u8)((v * m) >> 12));
+            unk_11.add((u8)i, (u8)((v * m) >> 12));
         }
     }
-    unk_19.func_0209b550();
+    unk_19.clear();
 }
 
 
 namespace n5 {
 }
-BOOL Unk_0209b3bc::func_0209af4c(s16 *p) {
+BOOL VillagerPlan::addRandomScores(s16 *p) {
     using namespace n5;
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 8; p++, i++) {
-        if (unk_11.func_0209b434((u8)i) < 0xff) {
+        if (unk_11.get((u8)i) < 0xff) {
             s32 t = func_02063b8c(10);
             if (t > 0) {
-                unk_11.func_0209b46c((u8)i, (u8)((*p * t) >> 12));
+                unk_11.add((u8)i, (u8)((*p * t) >> 12));
             }
             r = TRUE;
         }
@@ -725,37 +725,37 @@ BOOL Unk_0209b3bc::func_0209af4c(s16 *p) {
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209af0c(u8 idx, s32 delta) {
+void VillagerPlan::addPendingScore(u8 idx, s32 delta) {
     using namespace n5;
-    if (func_0209b3b0(idx)) {
-        s32 t = delta + unk_19.func_0209b434(idx);
+    if (Trend_IsValid(idx)) {
+        s32 t = delta + unk_19.get(idx);
         if (t < 0) {
             t = 0;
         } else if (t > 10) {
             t = 10;
         }
-        unk_19.func_0209b450(idx, (u8)t);
+        unk_19.set(idx, (u8)t);
     }
 }
 
 
 namespace n5 {
 }
-void Unk_0209b3bc::func_0209aed4(Unk_0209b3bc *other, s16 *p) {
+void VillagerPlan::addTrendOf(VillagerPlan *other, s16 *p) {
     using namespace n5;
-    u8 i = other->unk_11.func_0209b4cc();
-    if (func_0209b3b0(i)) {
-        unk_11.func_0209b46c(i, (u8)((p[i] * 10) >> 12));
+    u8 i = other->unk_11.pickTop();
+    if (Trend_IsValid(i)) {
+        unk_11.add(i, (u8)((p[i] * 10) >> 12));
     }
 }
 
 
 namespace n5 {
-extern "C" void func_0209adbc(u16 *out, s32 idx) {
+extern "C" void Trend_GetToolItem(u16 *out, s32 idx) {
     static ItemId tbl[8] = {
         ItemId(0x1376), ItemId(0x1374), ItemId(0x1369), ItemId(0xfff1),
         ItemId(0xfff1), ItemId(0x1378), ItemId(0xfff1), ItemId(0xfff1)};
-    if (func_0209b3b0(idx)) {
+    if (Trend_IsValid(idx)) {
         *out = tbl[idx].v;
     } else {
         *out = 0xfff1;
@@ -763,7 +763,7 @@ extern "C" void func_0209adbc(u16 *out, s32 idx) {
 }
 
 }
-void Unk_0209ada4::func_0209ada4() {
+void Unk_0209ada4::init() {
     using namespace n5;
     unk_00 = 0;
     unk_04 = 0;
@@ -791,14 +791,14 @@ void Unk_0209ada4::func_0209ad80() {
 
 
 namespace n5 {
-extern "C" BOOL func_0209ad74(u32 x) {
+extern "C" BOOL Errand_IsValidKind(u32 x) {
     if (x < 0x16) return TRUE;
     return FALSE;
 }
 
 }
 BOOL Unk_0209ada4::func_0209ad68() {
-    using namespace n5; return func_0209ad74(unk_0a); }
+    using namespace n5; return Errand_IsValidKind(unk_0a); }
 
 
 namespace n5 {
@@ -812,12 +812,12 @@ void Unk_0209ada4::func_0209ad54(u8 a, u16 *p, u8 b) {
 
 
 namespace n5 {
-extern "C" BOOL func_0209ad48(u32 x) {
+extern "C" BOOL Errand_IsValidClass(u32 x) {
     if (x < 2) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 func_0209ad34(u32 x) {
+extern "C" s32 Errand_GetClass(u32 x) {
     s32 r = 2;
     if (x < 5) {
         r = 0;
@@ -828,32 +828,32 @@ extern "C" s32 func_0209ad34(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::func_0209ad28() {
-    using namespace n5; return func_0209ad34(unk_0a); }
+s32 Unk_0209ada4::getClass() {
+    using namespace n5; return Errand_GetClass(unk_0a); }
 
 
 namespace n5 {
-extern "C" BOOL func_0209acf8(s32 *out, s32 x) {
-    s32 k = func_0209ad34(x);
-    if (func_0209ad48(k)) {
-        *out = x - data_020d05b4[k];
+extern "C" BOOL Errand_GetClassIndex(s32 *out, s32 x) {
+    s32 k = Errand_GetClass(x);
+    if (Errand_IsValidClass(k)) {
+        *out = x - sErrandClassStarts[k];
         return TRUE;
     }
     return FALSE;
 }
 
 }
-BOOL Unk_0209ada4::func_0209ace8(s32 *out) {
-    using namespace n5; return func_0209acf8(out, unk_0a); }
+BOOL Unk_0209ada4::getClassIndex(s32 *out) {
+    using namespace n5; return Errand_GetClassIndex(out, unk_0a); }
 
 
 namespace n5 {
-extern "C" BOOL func_0209acdc(u32 x) {
+extern "C" BOOL Errand_IsValidGroup(u32 x) {
     if (x < 4) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 func_0209acb8(u32 x) {
+extern "C" s32 Errand_GetGroup(u32 x) {
     s32 r = 4;
     if (x < 0xa) {
         r = 0;
@@ -868,24 +868,24 @@ extern "C" s32 func_0209acb8(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::func_0209acac() {
-    using namespace n5; return func_0209acb8(unk_0a); }
+s32 Unk_0209ada4::getGroup() {
+    using namespace n5; return Errand_GetGroup(unk_0a); }
 
 
 namespace n5 {
-extern "C" BOOL func_0209ac78(s32 *out, s32 x) {
-    s32 k = func_0209acb8(x);
+extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x) {
+    s32 k = Errand_GetGroup(x);
     BOOL r = FALSE;
-    if (func_0209acdc(k)) {
-        *out = x - data_020d05e0[k];
+    if (Errand_IsValidGroup(k)) {
+        *out = x - sErrandGroupStarts[k];
         r = TRUE;
     }
     return r;
 }
 
 }
-BOOL Unk_0209ada4::func_0209ac68(s32 *out) {
-    using namespace n5; return func_0209ac78(out, unk_0a); }
+BOOL Unk_0209ada4::getGroupIndex(s32 *out) {
+    using namespace n5; return Errand_GetGroupIndex(out, unk_0a); }
 
 
 namespace n5 {
@@ -896,7 +896,7 @@ u32 Unk_0209ada4::func_0209ac64() {
 
 namespace n5 {
 }
-s32 Unk_0209ada4::func_0209ac48(s32 x) {
+s32 Unk_0209ada4::setTimeFromNow(s32 x) {
     using namespace n5;
     Clock_GetDateTime(this);
     return DateTime_AddMinutes(this, x);
@@ -904,11 +904,11 @@ s32 Unk_0209ada4::func_0209ac48(s32 x) {
 
 
 namespace n5 {
-extern "C" void func_0209ac44() {}
+extern "C" void ErrandRecord_GetTime() {}
 
 extern "C" s32 func_0209ac1c(u32 x) {
     s32 r = 2;
-    if (func_0209acb8(x) == 1) {
+    if (Errand_GetGroup(x) == 1) {
         if (x < 0x13) {
             r = 0;
         } else if (x < 0x14) {
@@ -924,9 +924,9 @@ s32 Unk_0209ada4::func_0209ac10() {
 
 
 namespace n5 {
-extern "C" s32 func_0209abd8(u32 x) {
+extern "C" s32 Errand_GetSubGroup(u32 x) {
     s32 r = 4;
-    if (func_0209acb8(x) == 1) {
+    if (Errand_GetGroup(x) == 1) {
         if (x < 0x13) {
             if (x < 0xb) {
                 r = 0;
@@ -943,8 +943,8 @@ extern "C" s32 func_0209abd8(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::func_0209abcc() {
-    using namespace n5; return func_0209abd8(unk_0a); }
+s32 Unk_0209ada4::getSubGroup() {
+    using namespace n5; return Errand_GetSubGroup(unk_0a); }
 
 
 namespace n5 {
@@ -961,13 +961,13 @@ void Unk_0209ada4::func_0209abb4(u8 v) {
 
 namespace n5 {
 }
-u32 Unk_0209ada4::func_0209abac() {
+u32 Unk_0209ada4::getExtra() {
     using namespace n5; return ((Unk_0209abac_Bits *)&unk_0b)->hi; }
 
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209ab98(u8 v) {
+void Unk_0209ada4::setExtra(u8 v) {
     using namespace n5; unk_0b = (unk_0b & ~0xe0) | ((v & 7) << 5); }
 
 
@@ -984,14 +984,14 @@ void Unk_0209ada4::func_0209ab8c(u16 *p) {
 
 
 namespace n5 {
-extern "C" void *func_0209ab6c(Unk_0209ada4 *self) {
-    self->func_0209ada4();
+extern "C" void *PlanErrand_Construct(Unk_0209ada4 *self) {
+    self->init();
     _ZN8PlayerIdC1EPv((u8 *)self + 0xc);
     *(u16 *)((u8 *)self + 0x24) = 0xfff1;
     return self;
 }
 
-extern "C" void *func_0209ab54(Unk_0209ada4 *self) {
+extern "C" void *PlanErrand_Destruct(Unk_0209ada4 *self) {
     _ZN8PlayerIdC1Ev((u8 *)self + 0xc);
     self->func_0209ada0();
     return self;
@@ -1002,36 +1002,36 @@ extern "C" void *func_0209ab54(Unk_0209ada4 *self) {
 // ======== unk_0209a208.cpp ========
 namespace n4 {
 struct Unk_0209a4f4_Ent;
-struct Unk_0209a5dc;
+struct PlayerErrandSlot;
 struct Unk_0209a4f4_Ent;
 
 typedef void (*Unk_0209a5b8_Fn)(void *);extern "C" {
 void *_ZN12Unk_0209ada413func_0209ad80Ev(void *p);
 void _ZN12Unk_0209ada413func_0209ada0Ev(void *p);
-void *_ZN12Unk_0209ada413func_0209ada4Ev(void *p);
+void *_ZN12Unk_0209ada44initEv(void *p);
 s32 _ZN12Unk_0209ada413func_0209ab8cEPt(void *p, u16 *v);
 s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *p);
-s32 _ZN12Unk_0209ada413func_0209ac68EPi(void *p, s32 *out);
-s32 func_0209ac78(s32 *out, s32 kind);
-s32 func_0209acb8(s32 kind);
-s32 func_0209acf8(u32 *out, s32 x);
-s32 _ZN12Unk_0209ada413func_0209ad28Ev(void *p);
-s32 func_0209ad34(s32 x);
+s32 _ZN12Unk_0209ada413getGroupIndexEPi(void *p, s32 *out);
+s32 Errand_GetGroupIndex(s32 *out, s32 kind);
+s32 Errand_GetGroup(s32 kind);
+s32 Errand_GetClassIndex(u32 *out, s32 x);
+s32 _ZN12Unk_0209ada48getClassEv(void *p);
+s32 Errand_GetClass(s32 x);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *p);
 s32 _ZN12Unk_0209ada413func_0209ad54EhPth(void *p, s32 a, u16 *b, s32 c);
 u32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
 void _ZN12Unk_0209ada413func_0209abb4Eh(void *p, s32 v);
-s32 _ZN12Unk_0209ada413func_0209ab98Eh(void *p, s32 v);
-s32 func_0209ac44(void *p);
-s32 _ZN12Unk_0209b3bc13func_0209b354Ev(void *p);
-s32 _ZN12Unk_0209b3bc13func_0209b358Eii(void *p);
-s32 _ZN12Unk_0209b3bc13func_0209b3bcEv(void *p);
-s32 _ZN12Unk_0209b3bcD1Ev(void *p);
-s32 _ZN12Unk_0209b3bcC1Ev(void *p);
-s32 func_0209ab54(void *p);
-s32 func_0209ab6c(void *p);
-s32 func_0209b334(void *p);
-s32 func_0209b570(u32 *a, s32 i);
+s32 _ZN12Unk_0209ada48setExtraEh(void *p, s32 v);
+s32 ErrandRecord_GetTime(void *p);
+s32 _ZN12VillagerPlan8getStateEv(void *p);
+s32 _ZN12VillagerPlan9rollTrendEii(void *p);
+s32 _ZN12VillagerPlan5clearEv(void *p);
+s32 _ZN12VillagerPlanD1Ev(void *p);
+s32 _ZN12VillagerPlanC1Ev(void *p);
+s32 PlanErrand_Destruct(void *p);
+s32 PlanErrand_Construct(void *p);
+s32 PlanState_GetGroup(void *p);
+s32 TopicWord_PickRandom(u32 *a, s32 i);
 s32 Clock_GetDateTime(s32 x);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void func_020030d8(void *p, s32 v);
@@ -1068,106 +1068,106 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)(void *));
 void __cxa_vec_ctor(void *p, u32 n, u32 sz, void (*c)(void *), void (*d)(void *));
 extern void *gCommManager;
-extern u8 data_020d05a4[];
-extern u8 data_020d05d4[];
-extern u32 data_020d05f0[];
+extern u8 sFurnitureGoalCounts[];
+extern u8 sFossilGroups[];
+extern u32 sPlanErrandStepCounts[];
 extern u8 data_020d05bc[];
 extern u8 data_020e218c[];
 }
 
 
-extern "C" Unk_0209a4f4_Ent data_020e21fc[];extern "C" {
-u8 func_0209a230(void *unused, s32 v);
-u8 func_0209a208(void *unused, s32 v);
-void *func_0209a940(void *p);
-u8 func_0209a938(void *p);
-void func_0209a930(void *p, u8 v);
-u8 func_0209a6dc(void *p);
-BOOL func_0209a670(void *p);
-u16 *func_0209a8e8(Unk_0209ab18 *p);
-void *func_0209a92c(Unk_0209ab18 *p);
-s32 func_0209a8f4(s32 x);
-void func_0209a8c8(Unk_0209ab18 *p, u32 v);
-s32 func_0209aaa0(void *p);
-void func_0209aae4(Unk_0209ab18 *p, s32 a, u16 *b);
-void func_0209ab08(void *p, s32 a, u16 *b);
-void func_0209ab18(void *p);
-void func_0209a894(Unk_0209ab18 *p);
+extern "C" Unk_0209a4f4_Ent sErrandKindSetups[];extern "C" {
+u8 ParcelErrand_CountPending(void *unused, s32 v);
+u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
+void *PlanErrand_GetRecord(void *p);
+u8 PlanErrand_GetStep(void *p);
+void PlanErrand_SetStep(void *p, u8 v);
+u8 PlanErrand_GetCount(void *p);
+BOOL PlanErrand_IsFurnitureGoalMet(void *p);
+u16 *PlanErrand_GetShownItem(Unk_0209ab18 *p);
+void *PlanErrand_GetPlayer(Unk_0209ab18 *p);
+s32 PlanErrand_GetStepCount(s32 x);
+void PlanErrand_SetFossilGroup(Unk_0209ab18 *p, u32 v);
+s32 PlanErrand_ResetProgress(void *p);
+void PlanErrand_Begin(Unk_0209ab18 *p, s32 a, u16 *b);
+void PlanErrand_SetKind(void *p, s32 a, u16 *b);
+void PlanErrand_Clear(void *p);
+void PlanErrand_ClearFlags(Unk_0209ab18 *p);
 }
 
 
 namespace Unk_0209a944 {
-extern "C" s32 func_0209a930(void *p, u8 v);
+extern "C" s32 PlanErrand_SetStep(void *p, u8 v);
 }
 
 
 struct Unk_0209a4f4_Ent;
 
-struct Unk_0209a5dc {
+struct PlayerErrandSlot {
     u8 unk_00[0xc];
     u8 unk_0c[2][0xc];
     u8 unk_24;
 };
 
 struct Unk_0209a4f4_Ent {
-    BOOL (Unk_0209a5dc::*unk_00)();
+    BOOL (PlayerErrandSlot::*unk_00)();
     u32 unk_08[2];
     u8 unk_10;
 };
-extern "C" u8 func_0209a208(void *unused, s32 v);
-extern "C" u8 func_0209a230(void *unused, s32 v);
-extern "C" void func_0209a254(u8 *p);
-extern "C" BOOL func_0209a26c(void *p);
-extern "C" BOOL func_0209a288(void *p);
-extern "C" BOOL func_0209a2a4(void *p);
-extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg);
-extern "C" BOOL func_0209a3c8(void *p);
-extern "C" BOOL func_0209a3e4(void *p);
+extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
+extern "C" u8 ParcelErrand_CountPending(void *unused, s32 v);
+extern "C" void ParcelErrand_Clear(u8 *p);
+extern "C" BOOL ErrandSetup_WateringCan(void *p);
+extern "C" BOOL ErrandSetup_Carpet(void *p);
+extern "C" BOOL ErrandSetup_FurnitureParcel(void *p);
+extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg);
+extern "C" BOOL ErrandSetup_LetterBundle(void *p);
+extern "C" BOOL ErrandSetup_RandomShirt(void *p);
 extern "C" u8 *func_0209a420(u8 *p);
 extern "C" void func_0209a424(u8 *p, u32 v);
-extern "C" s32 func_0209a42c(void *self);
-extern "C" s32 func_0209a444(void *self, s32 kind);
+extern "C" s32 PlayerErrandSlot_IsStepDone(void *self);
+extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind);
 extern "C" BOOL func_0209a49c(s32 a, void *b);
-extern "C" u8 *func_0209a4e4(Unk_0209a5dc *p, s32 i);
-extern "C" void func_0209a4f0(void);
-extern "C" BOOL func_0209a4f4(Unk_0209a5dc *self, s32 kind, s32 r6, s32 r3);
-extern "C" void func_0209a588(Unk_0209a5dc *self);
-extern "C" Unk_0209a5dc *func_0209a5b8(Unk_0209a5dc *self);
-extern "C" Unk_0209a5dc *func_0209a5dc(Unk_0209a5dc *self);
-extern "C" u8 *func_0209a60c(u8 *p);
-extern "C" void *func_0209a610(void *p);
-extern "C" s32 func_0209a614(void *p);
-extern "C" void func_0209a628(u8 *p);
-extern "C" u8 *func_0209a640(u8 *p);
-extern "C" u8 *func_0209a658(u8 *p);
-extern "C" BOOL func_0209a670(void *self);
-extern "C" u8 func_0209a6c0(Unk_0209ab18 *p, s32 n);
-extern "C" u8 func_0209a6dc(void *p);
-extern "C" s32 func_0209a6e4(void *self, u32 kind, s32 val);
-extern "C" void func_0209a774(u16 *out, s32 a, s32 b);
-extern "C" u8 func_0209a7d0(u16 *p, s32 n);
-extern "C" s32 func_0209a874(u32 v);
-extern "C" void func_0209a894(Unk_0209ab18 *p);
-extern "C" BOOL func_0209a89c(Unk_0209ab18 *p, u32 i);
-extern "C" void func_0209a8b4(Unk_0209ab18 *p, s32 i);
-extern "C" void func_0209a8c8(Unk_0209ab18 *p, u32 v);
-extern "C" u8 func_0209a8e0(Unk_0209ab18 *p);
-extern "C" u16 *func_0209a8e8(Unk_0209ab18 *p);
-extern "C" s32 func_0209a8ec(void *p);
-extern "C" s32 func_0209a8f4(s32 x);
-extern "C" void *func_0209a92c(Unk_0209ab18 *p);
-extern "C" void func_0209a930(void *p, u8 v);
-extern "C" u8 func_0209a938(void *p);
-extern "C" void *func_0209a940(void *p);
-extern "C" void func_0209a944(Unk_0209ab18 *self);
-extern "C" void func_0209a9bc(void *p);
-extern "C" void func_0209a9f0(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj, u8 flag);
-extern "C" s32 func_0209aaa0(void *pp);
-extern "C" void func_0209aae4(Unk_0209ab18 *self, s32 a, u16 *b);
-extern "C" void func_0209ab08(void *p, s32 a, u16 *b);
-extern "C" void func_0209ab18(void *pp);
+extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i);
+extern "C" void PlayerErrandSlot_GetRecord(void);
+extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3);
+extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self);
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self);
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self);
+extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p);
+extern "C" void *VillagerPlanBlock_GetPlan(void *p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p);
+extern "C" void VillagerPlanBlock_Clear(u8 *p);
+extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p);
+extern "C" u8 *VillagerPlanBlock_Construct(u8 *p);
+extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self);
+extern "C" u8 PlanErrand_AddCount(Unk_0209ab18 *p, s32 n);
+extern "C" u8 PlanErrand_GetCount(void *p);
+extern "C" s32 Furniture_ScoreAttribute(void *self, u32 kind, s32 val);
+extern "C" void FossilGroup_GetItem(u16 *out, s32 a, s32 b);
+extern "C" u8 FossilGroup_PickMissing(u16 *p, s32 n);
+extern "C" s32 FossilGroup_ToIndex(u32 v);
+extern "C" void PlanErrand_ClearFlags(Unk_0209ab18 *p);
+extern "C" BOOL PlanErrand_TestFlag(Unk_0209ab18 *p, u32 i);
+extern "C" void PlanErrand_SetFlag(Unk_0209ab18 *p, s32 i);
+extern "C" void PlanErrand_SetFossilGroup(Unk_0209ab18 *p, u32 v);
+extern "C" u8 PlanErrand_GetFossilGroup(Unk_0209ab18 *p);
+extern "C" u16 *PlanErrand_GetShownItem(Unk_0209ab18 *p);
+extern "C" s32 PlanErrand_GetTime(void *p);
+extern "C" s32 PlanErrand_GetStepCount(s32 x);
+extern "C" void *PlanErrand_GetPlayer(Unk_0209ab18 *p);
+extern "C" void PlanErrand_SetStep(void *p, u8 v);
+extern "C" u8 PlanErrand_GetStep(void *p);
+extern "C" void *PlanErrand_GetRecord(void *p);
+extern "C" void PlanErrand_AdvanceStep(Unk_0209ab18 *self);
+extern "C" void PlanErrand_MarkReady(void *p);
+extern "C" void PlanErrand_Assign(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj, u8 flag);
+extern "C" s32 PlanErrand_ResetProgress(void *pp);
+extern "C" void PlanErrand_Begin(Unk_0209ab18 *self, s32 a, u16 *b);
+extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b);
+extern "C" void PlanErrand_Clear(void *pp);
 
-extern "C" void func_0209ab18(void *pp) {
+extern "C" void PlanErrand_Clear(void *pp) {
     Unk_0209ab18 *self = (Unk_0209ab18 *)pp;
     _ZN12Unk_0209ada413func_0209ad80Ev(self);
     _ZN8PlayerId13func_02094294Ev(self->unk_0c);
@@ -1178,57 +1178,57 @@ extern "C" void func_0209ab18(void *pp) {
     self->unk_28 = 0;
 }
 
-extern "C" void func_0209ab08(void *p, s32 a, u16 *b) {
+extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b) {
     _ZN12Unk_0209ada413func_0209ad54EhPth(p, a, b, 0);
 }
 
-extern "C" void func_0209aae4(Unk_0209ab18 *self, s32 a, u16 *b) {
-    func_0209ab18(self);
-    func_0209ab08(self, a, b);
+extern "C" void PlanErrand_Begin(Unk_0209ab18 *self, s32 a, u16 *b) {
+    PlanErrand_Clear(self);
+    PlanErrand_SetKind(self, a, b);
     self->unk_22 = 0;
 }
 
-extern "C" s32 func_0209aaa0(void *pp) {
+extern "C" s32 PlanErrand_ResetProgress(void *pp) {
     Unk_0209ab18 *self = (Unk_0209ab18 *)pp;
     u16 v;
-    _ZN12Unk_0209ada413func_0209abb4Eh(func_0209a940(self), 0);
+    _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(self), 0);
     v = 0xfff1;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(func_0209a940(self), &v);
-    _ZN8PlayerId13func_02094294Ev(func_0209a92c(self));
-    *func_0209a8e8(self) = 0xfff1;
+    _ZN12Unk_0209ada413func_0209ab8cEPt(PlanErrand_GetRecord(self), &v);
+    _ZN8PlayerId13func_02094294Ev(PlanErrand_GetPlayer(self));
+    *PlanErrand_GetShownItem(self) = 0xfff1;
 }
 
-extern "C" void func_0209a9f0(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj, u8 flag) {
+extern "C" void PlanErrand_Assign(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj, u8 flag) {
     if (flag) {
-        func_0209aae4(self, a1, p);
+        PlanErrand_Begin(self, a1, p);
     } else {
-        _ZN12Unk_0209ada413func_0209abb4Eh(func_0209a940(self), 0);
-        _ZN12Unk_0209ada413func_0209ab8cEPt(func_0209a940(self), p);
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(func_0209a940(self)) == 2) {
-            if (func_0209a938(self) == 2) {
+        _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(self), 0);
+        _ZN12Unk_0209ada413func_0209ab8cEPt(PlanErrand_GetRecord(self), p);
+        if (_ZN12Unk_0209ada413func_0209ac64Ev(PlanErrand_GetRecord(self)) == 2) {
+            if (PlanErrand_GetStep(self) == 2) {
                 BOOL r = FALSE;
                 if (*p >= 0x450c && *p <= 0x45db) {
                     r = TRUE;
                 }
                 if (r) {
-                    func_0209a8c8(self, (u8)Item_GetFossilGroup(p));
+                    PlanErrand_SetFossilGroup(self, (u8)Item_GetFossilGroup(p));
                 }
             }
         }
     }
     if (obj) {
-        _ZN8PlayerId13func_020942b8EPv(func_0209a92c(self), (s32)obj);
-        Clock_GetDateTime(func_0209ac44(func_0209a940(self)));
-        _ZN12Unk_0209ada413func_0209ab98Eh(func_0209a940(self), 0);
+        _ZN8PlayerId13func_020942b8EPv(PlanErrand_GetPlayer(self), (s32)obj);
+        Clock_GetDateTime(ErrandRecord_GetTime(PlanErrand_GetRecord(self)));
+        _ZN12Unk_0209ada48setExtraEh(PlanErrand_GetRecord(self), 0);
     } else {
-        _ZN8PlayerId13func_02094294Ev(func_0209a92c(self));
+        _ZN8PlayerId13func_02094294Ev(PlanErrand_GetPlayer(self));
     }
 }
 
-extern "C" void func_0209a9bc(void *p) {
-    void *o = func_0209a940(p);
+extern "C" void PlanErrand_MarkReady(void *p) {
+    void *o = PlanErrand_GetRecord(p);
     if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
-        if (_ZN12Unk_0209ada413func_0209ad28Ev(o) == 0) {
+        if (_ZN12Unk_0209ada48getClassEv(o) == 0) {
             if (_ZN12Unk_0209ada413func_0209abc4Ev(o) == 1) {
                 _ZN12Unk_0209ada413func_0209abb4Eh(o, 2);
             }
@@ -1236,79 +1236,79 @@ extern "C" void func_0209a9bc(void *p) {
     }
 }
 
-extern "C" void func_0209a944(Unk_0209ab18 *self) {
-    void *o = func_0209a940(self);
+extern "C" void PlanErrand_AdvanceStep(Unk_0209ab18 *self) {
+    void *o = PlanErrand_GetRecord(self);
     s32 t;
     s32 a;
     s32 ok;
     if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
-        if (_ZN12Unk_0209ada413func_0209ad28Ev(o) == 0) {
-            t = func_0209a8f4(_ZN12Unk_0209ada413func_0209ac64Ev(o));
-            a = func_0209a938(self);
+        if (_ZN12Unk_0209ada48getClassEv(o) == 0) {
+            t = PlanErrand_GetStepCount(_ZN12Unk_0209ada413func_0209ac64Ev(o));
+            a = PlanErrand_GetStep(self);
             if (a < t - 1) {
                 if (_ZN12Unk_0209ada413func_0209ac64Ev(o) == 4) {
-                    ok = func_0209a670(self);
+                    ok = PlanErrand_IsFurnitureGoalMet(self);
                 } else {
                     ok = 1;
                 }
-                func_0209aaa0(self);
+                PlanErrand_ResetProgress(self);
                 if (ok ? TRUE : FALSE) {
-                    Unk_0209a944::func_0209a930(self, a + 1);
+                    Unk_0209a944::PlanErrand_SetStep(self, a + 1);
                 }
             }
         }
     }
 }
 
-extern "C" void *func_0209a940(void *p) {
+extern "C" void *PlanErrand_GetRecord(void *p) {
     return p;
 }
 
-extern "C" u8 func_0209a938(void *p) {
+extern "C" u8 PlanErrand_GetStep(void *p) {
     return ((u8 *)p)[0x22];
 }
 
-extern "C" void func_0209a930(void *p, u8 v) {
+extern "C" void PlanErrand_SetStep(void *p, u8 v) {
     ((u8 *)p)[0x22] = v;
 }
 
-extern "C" void *func_0209a92c(Unk_0209ab18 *p) {
+extern "C" void *PlanErrand_GetPlayer(Unk_0209ab18 *p) {
     return p->unk_0c;
 }
 
-extern "C" s32 func_0209a8f4(s32 x) {
+extern "C" s32 PlanErrand_GetStepCount(s32 x) {
     u32 idx;
-    if (func_0209ad34(x) == 0) {
+    if (Errand_GetClass(x) == 0) {
         idx = 0;
-        if (func_0209acf8(&idx, x)) {
-            return data_020d05f0[idx];
+        if (Errand_GetClassIndex(&idx, x)) {
+            return sPlanErrandStepCounts[idx];
         }
     }
     return 0;
 }
 
-extern "C" s32 func_0209a8ec(void *p) {
-    return func_0209ac44(p);
+extern "C" s32 PlanErrand_GetTime(void *p) {
+    return ErrandRecord_GetTime(p);
 }
 
-extern "C" u16 *func_0209a8e8(Unk_0209ab18 *p) {
+extern "C" u16 *PlanErrand_GetShownItem(Unk_0209ab18 *p) {
     return &p->unk_24;
 }
 
-extern "C" u8 func_0209a8e0(Unk_0209ab18 *p) {
+extern "C" u8 PlanErrand_GetFossilGroup(Unk_0209ab18 *p) {
     return p->unk_27;
 }
 
-extern "C" void func_0209a8c8(Unk_0209ab18 *p, u32 v) {
-    func_0209a894(p);
+extern "C" void PlanErrand_SetFossilGroup(Unk_0209ab18 *p, u32 v) {
+    PlanErrand_ClearFlags(p);
     p->unk_27 = v;
 }
 
-extern "C" void func_0209a8b4(Unk_0209ab18 *p, s32 i) {
+extern "C" void PlanErrand_SetFlag(Unk_0209ab18 *p, s32 i) {
     p->unk_28 |= (1 << i);
 }
 
-extern "C" BOOL func_0209a89c(Unk_0209ab18 *p, u32 i) {
+extern "C" BOOL PlanErrand_TestFlag(Unk_0209ab18 *p, u32 i) {
     if (i < 3) {
         if ((p->unk_28 >> i) & 1) {
             return TRUE;
@@ -1317,21 +1317,21 @@ extern "C" BOOL func_0209a89c(Unk_0209ab18 *p, u32 i) {
     return FALSE;
 }
 
-extern "C" void func_0209a894(Unk_0209ab18 *p) {
+extern "C" void PlanErrand_ClearFlags(Unk_0209ab18 *p) {
     p->unk_28 = 0;
 }
 
-extern "C" s32 func_0209a874(u32 v) {
+extern "C" s32 FossilGroup_ToIndex(u32 v) {
     s32 i;
     for (i = 0; i < 10; i++) {
-        if (v == data_020d05d4[i]) {
+        if (v == sFossilGroups[i]) {
             return i;
         }
     }
     return -1;
 }
 
-extern "C" u8 func_0209a7d0(u16 *p, s32 n) {
+extern "C" u8 FossilGroup_PickMissing(u16 *p, s32 n) {
     u8 f[10];
     s32 cnt = 10;
     s32 i;
@@ -1345,7 +1345,7 @@ extern "C" u8 func_0209a7d0(u16 *p, s32 n) {
         }
         if (in) {
             for (j = 0; j < 10; j++) {
-                if (data_020d05d4[j] == Item_GetFossilGroup(p)) {
+                if (sFossilGroups[j] == Item_GetFossilGroup(p)) {
                     if (f[j] == 0) {
                         f[j] = 1;
                         cnt--;
@@ -1366,10 +1366,10 @@ extern "C" u8 func_0209a7d0(u16 *p, s32 n) {
             j++;
         }
     }
-    return data_020d05d4[j];
+    return sFossilGroups[j];
 }
 
-extern "C" void func_0209a774(u16 *out, s32 a, s32 b) {
+extern "C" void FossilGroup_GetItem(u16 *out, s32 a, s32 b) {
     u16 tmp;
     u32 i;
     *out = 0xfff1;
@@ -1384,7 +1384,7 @@ extern "C" void func_0209a774(u16 *out, s32 a, s32 b) {
     }
 }
 
-extern "C" s32 func_0209a6e4(void *self, u32 kind, s32 val) {
+extern "C" s32 Furniture_ScoreAttribute(void *self, u32 kind, s32 val) {
     s32 r = 0;
     if (Item_IsFurniture(self)) {
         {
@@ -1412,11 +1412,11 @@ extern "C" s32 func_0209a6e4(void *self, u32 kind, s32 val) {
     return r;
 }
 
-extern "C" u8 func_0209a6dc(void *p) {
+extern "C" u8 PlanErrand_GetCount(void *p) {
     return ((u8 *)p)[0x26];
 }
 
-extern "C" u8 func_0209a6c0(Unk_0209ab18 *p, s32 n) {
+extern "C" u8 PlanErrand_AddCount(Unk_0209ab18 *p, s32 n) {
     s32 t = p->unk_26 + n;
     if (t > 14) {
         t = 14;
@@ -1425,14 +1425,14 @@ extern "C" u8 func_0209a6c0(Unk_0209ab18 *p, s32 n) {
     return p->unk_26;
 }
 
-extern "C" BOOL func_0209a670(void *self) {
-    void *o = func_0209a940(self);
+extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self) {
+    void *o = PlanErrand_GetRecord(self);
     s32 t;
     if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
         if (_ZN12Unk_0209ada413func_0209ac64Ev(o) == 4) {
-            t = func_0209a938(self);
+            t = PlanErrand_GetStep(self);
             if (t < 6) {
-                if (func_0209a6dc(self) >= data_020d05a4[t]) {
+                if (PlanErrand_GetCount(self) >= sFurnitureGoalCounts[t]) {
                     return TRUE;
                 }
                 return FALSE;
@@ -1442,49 +1442,49 @@ extern "C" BOOL func_0209a670(void *self) {
     return FALSE;
 }
 
-extern "C" u8 *func_0209a658(u8 *p) {
-    _ZN12Unk_0209b3bcC1Ev(p);
-    func_0209ab6c(p + 0x24);
+extern "C" u8 *VillagerPlanBlock_Construct(u8 *p) {
+    _ZN12VillagerPlanC1Ev(p);
+    PlanErrand_Construct(p + 0x24);
     return p;
 }
 
-extern "C" u8 *func_0209a640(u8 *p) {
-    func_0209ab54(p + 0x24);
-    _ZN12Unk_0209b3bcD1Ev(p);
+extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p) {
+    PlanErrand_Destruct(p + 0x24);
+    _ZN12VillagerPlanD1Ev(p);
     return p;
 }
 
-extern "C" void func_0209a628(u8 *p) {
-    _ZN12Unk_0209b3bc13func_0209b3bcEv(p);
-    func_0209ab18(p + 0x24);
+extern "C" void VillagerPlanBlock_Clear(u8 *p) {
+    _ZN12VillagerPlan5clearEv(p);
+    PlanErrand_Clear(p + 0x24);
 }
 
-extern "C" s32 func_0209a614(void *p) {
-    _ZN12Unk_0209b3bc13func_0209b358Eii(p);
-    return _ZN12Unk_0209b3bc13func_0209b354Ev(p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p) {
+    _ZN12VillagerPlan9rollTrendEii(p);
+    return _ZN12VillagerPlan8getStateEv(p);
 }
 
-extern "C" void *func_0209a610(void *p) {
+extern "C" void *VillagerPlanBlock_GetPlan(void *p) {
     return p;
 }
 
-extern "C" u8 *func_0209a60c(u8 *p) {
+extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p) {
     return p + 0x24;
 }
 
-extern "C" Unk_0209a5dc *func_0209a5dc(Unk_0209a5dc *self) {
-    _ZN12Unk_0209ada413func_0209ada4Ev(self);
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self) {
+    _ZN12Unk_0209ada44initEv(self);
     __cxa_vec_ctor(self->unk_0c, 2, 0xc, func_02003130, func_02003100);
     return self;
 }
 
-extern "C" Unk_0209a5dc *func_0209a5b8(Unk_0209a5dc *self) {
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self) {
     __cxa_vec_cleanup(self->unk_0c, 2, 0xc, func_02003100);
     _ZN12Unk_0209ada413func_0209ada0Ev(self);
     return self;
 }
 
-extern "C" void func_0209a588(Unk_0209a5dc *self) {
+extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self) {
     s32 i;
     _ZN12Unk_0209ada413func_0209ad80Ev(self);
     for (i = 0; i < 2; i++) {
@@ -1493,16 +1493,16 @@ extern "C" void func_0209a588(Unk_0209a5dc *self) {
     self->unk_24 = 0;
 }
 
-extern "C" BOOL func_0209a4f4(Unk_0209a5dc *self, s32 kind, s32 r6, s32 r3) {
+extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3) {
     BOOL r = FALSE;
     s32 idx = 0;
     u16 v;
-    if (func_0209acb8(kind) == 1) {
-        if (func_0209ac78(&idx, kind)) {
+    if (Errand_GetGroup(kind) == 1) {
+        if (Errand_GetGroupIndex(&idx, kind)) {
             v = 0xfff1;
             _ZN12Unk_0209ada413func_0209ad54EhPth(self, kind, &v, r);
             {
-                Unk_0209a4f4_Ent *e = &data_020e21fc[idx];
+                Unk_0209a4f4_Ent *e = &sErrandKindSetups[idx];
                 if (e->unk_00) {
                     (self->*(e->unk_00))();
                 }
@@ -1519,10 +1519,10 @@ extern "C" BOOL func_0209a4f4(Unk_0209a5dc *self, s32 kind, s32 r6, s32 r3) {
     return r;
 }
 
-extern "C" void func_0209a4f0(void) {
+extern "C" void PlayerErrandSlot_GetRecord(void) {
 }
 
-extern "C" u8 *func_0209a4e4(Unk_0209a5dc *p, s32 i) {
+extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i) {
     return p->unk_0c[i];
 }
 
@@ -1532,7 +1532,7 @@ extern "C" BOOL func_0209a49c(s32 a, void *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
-    t = func_0209b334(b);
+    t = PlanState_GetGroup(b);
     r = FALSE;
     switch (a) {
     case 10:
@@ -1545,14 +1545,14 @@ extern "C" BOOL func_0209a49c(s32 a, void *b) {
     return r;
 }
 
-extern "C" s32 func_0209a444(void *self, s32 kind) {
+extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
     BOOL r = FALSE;
     s32 idx;
     if (_ZN12Unk_0209ada413func_0209ad68Ev(self)) {
-        if (func_0209acb8(kind) == 1) {
+        if (Errand_GetGroup(kind) == 1) {
             if (kind == _ZN12Unk_0209ada413func_0209ac64Ev(self)) {
-                if (_ZN12Unk_0209ada413func_0209ac68EPi(self, &idx)) {
-                    if (_ZN12Unk_0209ada413func_0209abc4Ev(self) > data_020e21fc[idx].unk_10) {
+                if (_ZN12Unk_0209ada413getGroupIndexEPi(self, &idx)) {
+                    if (_ZN12Unk_0209ada413func_0209abc4Ev(self) > sErrandKindSetups[idx].unk_10) {
                         r = TRUE;
                     }
                 }
@@ -1562,8 +1562,8 @@ extern "C" s32 func_0209a444(void *self, s32 kind) {
     return r;
 }
 
-extern "C" s32 func_0209a42c(void *self) {
-    return func_0209a444(self, _ZN12Unk_0209ada413func_0209ac64Ev(self));
+extern "C" s32 PlayerErrandSlot_IsStepDone(void *self) {
+    return PlayerErrandSlot_IsPastStepLimit(self, _ZN12Unk_0209ada413func_0209ac64Ev(self));
 }
 
 extern "C" void func_0209a424(u8 *p, u32 v) {
@@ -1574,7 +1574,7 @@ extern "C" u8 *func_0209a420(u8 *p) {
     return p + 0x24;
 }
 
-extern "C" BOOL func_0209a3e4(void *p) {
+extern "C" BOOL ErrandSetup_RandomShirt(void *p) {
     u32 x[2];
     u16 out;
     _ZN12ItemPickSpec3setEii(x, 2, 0);
@@ -1584,13 +1584,13 @@ extern "C" BOOL func_0209a3e4(void *p) {
     return TRUE;
 }
 
-extern "C" BOOL func_0209a3c8(void *p) {
+extern "C" BOOL ErrandSetup_LetterBundle(void *p) {
     u16 v = 0x1565;
     _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
     return TRUE;
 }
 
-extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg) {
+extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg) {
     u8 b[5];
     u32 cnt;
     u8 buf[0x1e];
@@ -1608,7 +1608,7 @@ extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg) {
         _ZN10VillagerId7getNameEj(self->unk_0c[0], DoorLight);
         MailText_SetSlot(1, DoorLight);
         for (i = 0; i < 6; i++) {
-            r = func_0209b570(&cnt, i);
+            r = TopicWord_PickRandom(&cnt, i);
             _ZN9MsgString5clearEv(Y);
             b[0] = cnt;
             String_LoadResolveAltText(Y, b, r);
@@ -1625,31 +1625,31 @@ extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg) {
     }
 }
 
-extern "C" BOOL func_0209a2a4(void *p) {
+extern "C" BOOL ErrandSetup_FurnitureParcel(void *p) {
     u16 v = 0x1563;
     _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
     return TRUE;
 }
 
-extern "C" BOOL func_0209a288(void *p) {
+extern "C" BOOL ErrandSetup_Carpet(void *p) {
     u16 v = 0x1561;
     _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
     return TRUE;
 }
 
-extern "C" BOOL func_0209a26c(void *p) {
+extern "C" BOOL ErrandSetup_WateringCan(void *p) {
     u16 v = 0x1564;
     _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
     return TRUE;
 }
 
-extern "C" void func_0209a254(u8 *p) {
+extern "C" void ParcelErrand_Clear(u8 *p) {
     _ZN12Unk_0209ada413func_0209ad80Ev(p);
     p[0xc] = 5;
     p[0xd] = 0;
 }
 
-extern "C" u8 func_0209a230(void *unused, s32 v) {
+extern "C" u8 ParcelErrand_CountPending(void *unused, s32 v) {
     u8 n = 0;
     s32 i = 0;
     for (; i < 5; i++) {
@@ -1660,8 +1660,8 @@ extern "C" u8 func_0209a230(void *unused, s32 v) {
     return n;
 }
 
-extern "C" u8 func_0209a208(void *unused, s32 v) {
-    u8 n = func_0209a230(unused, v);
+extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v) {
+    u8 n = ParcelErrand_CountPending(unused, v);
     if ((v >> 2) & 1) {
         if ((v >> 3) & 1) {
             n = n - 1;
@@ -1676,32 +1676,32 @@ extern "C" u8 func_0209a208(void *unused, s32 v) {
 namespace n3 {
 extern "C" {
 extern u8 data_021dfd8c[];
-extern u16 data_020d05c8[];
-extern u16 data_020d059c[];
+extern u16 sParcelRecipients[];
+extern u16 sParcelItems[];
 extern u8 data_021ed104[];
-Unk_0209a5dc *func_02099db4(Unk_02099e38 *m, s32 i);
-BOOL func_02099c1c(Unk_02099e38 *m);
-void func_02099c48(Unk_02099e38 *m);
-void func_02099bd8(Unk_02099e38 *m);
-void func_02099f1c(Unk_02099f5c *x);
-void func_02099ab4(void *p);
-void func_0209a178(Unk_02099f98 *z, s32 i);
-s32 func_0209a19c(Unk_02099f98 *z, s32 mask);
-s32 func_0209a208(Unk_02099f98 *z, s32 v);
-s32 func_0209a230(Unk_02099f98 *z, u32 mask);
-void func_0209a254(Unk_02099f98 *z);
-s32 func_0209a588(Unk_0209a5dc *e);
-Unk_0209ada4 *func_0209a4f0(Unk_0209a5dc *e);
-Unk_02003130 *func_0209a4e4(Unk_0209a5dc *e, s32 i);
-void func_0209a4f4(Unk_0209a5dc *e, s32 a, s32 b, void *c);
+PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
+BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
+void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
+void Arbeit_ClearOnDuty(PlayerErrands *m);
+void HouseVisitInvite_Clear(HouseVisitInvite *x);
+void Arbeit_OnLetterWritten(void *p);
+void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i);
+s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 mask);
+s32 ParcelErrand_CountPendingRecipients(Unk_02099f98 *z, s32 v);
+s32 ParcelErrand_CountPending(Unk_02099f98 *z, u32 mask);
+void ParcelErrand_Clear(Unk_02099f98 *z);
+s32 PlayerErrandSlot_Clear(PlayerErrandSlot *e);
+Unk_0209ada4 *PlayerErrandSlot_GetRecord(PlayerErrandSlot *e);
+Unk_02003130 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *e, s32 i);
+void PlayerErrandSlot_Start(PlayerErrandSlot *e, s32 a, s32 b, void *c);
 void *func_0209a108(Unk_02099f98 *z);
 void *func_0209a0dc(Unk_02099f98 *z, s32 v);
 void _ZN12Unk_0209ada413func_0209ab8cEPt(Unk_02099f98 *z, u16 *v);
 u16 *_ZN12Unk_0209ada413func_0209ab94Ev(Unk_0209ada4 *y);
 void _ZN12Unk_0209ada413func_0209abb4Eh(Unk_0209ada4 *y, s32 v);
 u32 _ZN12Unk_0209ada413func_0209abc4Ev(Unk_0209ada4 *y);
-u32 _ZN12Unk_0209ada413func_0209abccEv(Unk_0209ada4 *y);
-void _ZN12Unk_0209ada413func_0209ac48Ei(Unk_0209ada4 *y, s32 v);
+u32 _ZN12Unk_0209ada411getSubGroupEv(Unk_0209ada4 *y);
+void _ZN12Unk_0209ada414setTimeFromNowEi(Unk_0209ada4 *y, s32 v);
 u32 _ZN12Unk_0209ada413func_0209ac64Ev(Unk_0209ada4 *y);
 void _ZN12Unk_0209ada413func_0209ad54EhPth(Unk_0209ada4 *y, s32 t, u16 *v, s32 k);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(Unk_0209ada4 *y);
@@ -1731,47 +1731,47 @@ s32 NookShop_IsClosedToday(void *p);
 }
 
 
-extern "C" BOOL func_02099868(Unk_02099e38 *m, Unk_02003130 *r);
-extern "C" void func_020998b8(Unk_02099e38 *m);
-extern "C" void func_020998d8(Unk_02099e38 *m);
-extern "C" void func_02099910(Unk_02099e38 *m);
-extern "C" void func_0209992c(Unk_02099e38 *m);
-extern "C" void func_02099948(Unk_02099e38 *m);
-extern "C" BOOL func_020999c0(Unk_02099e38 *m, void *p);
-extern "C" void func_02099a98();
-extern "C" void func_02099ab4(void *p);
-extern "C" void func_02099ae4(Unk_02099e38 *m);
-extern "C" void func_02099b4c(Unk_02099e38 *m);
-extern "C" void func_02099b90(Unk_02099e38 *m);
-extern "C" void func_02099bac(Unk_02099e38 *m);
-extern "C" BOOL func_02099bc8(Unk_02099e38 *m);
-extern "C" void func_02099bd8(Unk_02099e38 *m);
-extern "C" void func_02099be0(Unk_02099e38 *m);
-extern "C" void func_02099be8(Unk_02099e38 *m);
-extern "C" BOOL func_02099c1c(Unk_02099e38 *m);
-extern "C" void func_02099c48(Unk_02099e38 *m);
-extern "C" void *func_02099c68(Unk_02099e38 *m, s32 a, u16 *p);
-extern "C" Unk_0209a5dc *func_02099d44(Unk_0209a5dc *arr, Unk_02003130 *p, s32 idx);
-extern "C" Unk_0209a5dc *func_02099db4(Unk_02099e38 *m, s32 i);
-extern "C" void func_02099dc8(Unk_02099e38 *m);
-extern "C" void func_02099e88(Unk_02099f5c *x, Unk_02003130 *r, void *src);
-extern "C" BOOL func_02099ed4(Unk_02099f5c *x, Unk_02003130 *p);
-extern "C" void func_02099f1c(Unk_02099f5c *x);
-extern "C" BOOL func_02099f98(Unk_02099f98 *z, u16 *p);
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, Unk_02003130 *r);
+extern "C" void Arbeit_Finish(PlayerErrands *m);
+extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m);
+extern "C" void Arbeit_StartBbsTask(PlayerErrands *m);
+extern "C" void Arbeit_StartWateringCanDelivery(PlayerErrands *m);
+extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m);
+extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p);
+extern "C" void Arbeit_NotifyLetterWritten();
+extern "C" void Arbeit_OnLetterWritten(void *p);
+extern "C" void Arbeit_StartLetterTask(PlayerErrands *m);
+extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m);
+extern "C" void Arbeit_StartGreetings(PlayerErrands *m);
+extern "C" void Arbeit_StartPlanting(PlayerErrands *m);
+extern "C" BOOL Arbeit_IsOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_ClearOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_SetOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_Start(PlayerErrands *m);
+extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
+extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
+extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a, u16 *p);
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, Unk_02003130 *p, s32 idx);
+extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
+extern "C" void PlayerErrands_Clear(PlayerErrands *m);
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src);
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p);
+extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x);
+extern "C" BOOL ParcelErrand_IsFor(Unk_02099f98 *z, u16 *p);
 extern "C" BOOL func_0209a05c(Unk_02099f98 *z);
 extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v);
 extern "C" void *func_0209a108(Unk_02099f98 *z);
 extern "C" void func_0209a10c(Unk_02099f98 *z);
-extern "C" void func_0209a178(Unk_02099f98 *z, s32 i);
-extern "C" s32 func_0209a19c(Unk_02099f98 *z, s32 m);
+extern "C" void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i);
+extern "C" s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 m);
 
-extern "C" s32 func_0209a19c(Unk_02099f98 *z, s32 m) {
+extern "C" s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 m) {
     if (NookShop_IsOpenHour() == 0) {
         m = (u8)(m & ~3);
     } else if (NookShop_IsClosedToday(data_021ed104)) {
         m = (u8)(m & ~1);
     }
-    s32 n = func_0209a230(z, m);
+    s32 n = ParcelErrand_CountPending(z, m);
     if (n > 0) {
         s32 r = func_02063b8c(n);
         for (s32 i = 0; i < 5; i++) {
@@ -1786,7 +1786,7 @@ extern "C" s32 func_0209a19c(Unk_02099f98 *z, s32 m) {
     return -1;
 }
 
-extern "C" void func_0209a178(Unk_02099f98 *z, s32 i) {
+extern "C" void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i) {
     if ((u32)(i - 2) <= 1) {
         z->unk_0d &= ~4;
         z->unk_0d &= ~8;
@@ -1797,15 +1797,15 @@ extern "C" void func_0209a178(Unk_02099f98 *z, s32 i) {
 
 extern "C" void func_0209a10c(Unk_02099f98 *z) {
     u32 r = func_02063b8c(10) & 1;
-    func_0209a254(z);
-    u16 v = data_020d059c[r];
+    ParcelErrand_Clear(z);
+    u16 v = sParcelItems[r];
     _ZN12Unk_0209ada413func_0209ad54EhPth(z, 0x14, &v, 0);
     for (s32 i = 0; i < 5; i++) {
         z->unk_0d |= 1 << i;
     }
-    r = func_0209a19c(z, z->unk_0d);
+    r = ParcelErrand_PickRecipient(z, z->unk_0d);
     if (r < 5) {
-        func_0209a178(z, r);
+        ParcelErrand_RemoveRecipient(z, r);
         z->unk_0c = r;
     }
 }
@@ -1816,7 +1816,7 @@ extern "C" void *func_0209a108(Unk_02099f98 *z) {
 
 extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v) {
     if (z->unk_0c < 5) {
-        u16 t = data_020d05c8[z->unk_0c];
+        u16 t = sParcelRecipients[z->unk_0c];
         return (void *)Npc_GetName((void *)v, &t);
     }
     return 0;
@@ -1824,14 +1824,14 @@ extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v) {
 
 extern "C" BOOL func_0209a05c(Unk_02099f98 *z) {
     if (z->unk_0d) {
-        u32 r = func_0209a19c(z, z->unk_0d);
+        u32 r = ParcelErrand_PickRecipient(z, z->unk_0d);
         if (r < 5) {
-            func_0209a178(z, r);
+            ParcelErrand_RemoveRecipient(z, r);
             z->unk_0c = r;
             _ZN12Unk_0209ada413func_0209abb4Eh(z, 0);
-            u16 v = data_020d059c[func_02063b8c(10) & 1];
+            u16 v = sParcelItems[func_02063b8c(10) & 1];
             _ZN12Unk_0209ada413func_0209ab8cEPt(z, &v);
-            r = func_0209a208(z, z->unk_0d);
+            r = ParcelErrand_CountPendingRecipients(z, z->unk_0d);
             if ((r == 2 && (func_02063b8c(10) & 1)) || r == 1) {
                 z->unk_0d = 0;
             }
@@ -1843,7 +1843,7 @@ extern "C" BOOL func_0209a05c(Unk_02099f98 *z) {
     return FALSE;
 }
 
-extern "C" BOOL func_02099f98(Unk_02099f98 *z, u16 *p) {
+extern "C" BOOL ParcelErrand_IsFor(Unk_02099f98 *z, u16 *p) {
     if (z->unk_0c < 5 && PlayerData_GetCurrent() && !_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()))) {
         if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12Unk_0209ada413func_0209ad68Ev(z) && _ZN12Unk_0209ada413func_0209abc4Ev(z) == 0) {
             BOOL in = FALSE;
@@ -1855,7 +1855,7 @@ extern "C" BOOL func_02099f98(Unk_02099f98 *z, u16 *p) {
                     return TRUE;
                 }
             } else {
-                u16 v = data_020d05c8[z->unk_0c];
+                u16 v = sParcelRecipients[z->unk_0c];
                 BOOL same;
                 if (Item_IsFurniture(p)) {
                     u16 t = v;
@@ -1881,7 +1881,7 @@ extern "C" BOOL func_02099f98(Unk_02099f98 *z, u16 *p) {
 }
 
 }
-Unk_02099f5c::Unk_02099f5c() : unk_18(0), unk_1c(0) {
+HouseVisitInvite::HouseVisitInvite() : unk_18(0), unk_1c(0) {
     using namespace n3;
     func_020030e8(this);
     _ZN12Unk_0209ada413func_0209ad80Ev(&unk_0c);
@@ -1893,12 +1893,12 @@ Unk_02099f5c::Unk_02099f5c() : unk_18(0), unk_1c(0) {
 
 namespace n3 {
 }
-Unk_02099f5c::~Unk_02099f5c() {
+HouseVisitInvite::~HouseVisitInvite() {
     using namespace n3;}
 
 
 namespace n3 {
-extern "C" void func_02099f1c(Unk_02099f5c *x) {
+extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
     _ZN12Unk_0209ada413func_0209ad80Ev(&x->unk_0c);
     func_020030e8(x);
     x->unk_18 = 0;
@@ -1906,7 +1906,7 @@ extern "C" void func_02099f1c(Unk_02099f5c *x) {
     MI_CpuFill8(x->unk_20, 0, 1);
 }
 
-extern "C" BOOL func_02099ed4(Unk_02099f5c *x, Unk_02003130 *p) {
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p) {
     if (_ZN12Unk_0209ada413func_0209ad68Ev(&x->unk_0c) && _ZN10VillagerId7isValidEv(p) && p->unk_00 == x->unk_00 &&
         memcmp(p->unk_02, x->unk_02, 8) == 0 && p->unk_0b == x->unk_0b) {
         return TRUE;
@@ -1914,52 +1914,52 @@ extern "C" BOOL func_02099ed4(Unk_02099f5c *x, Unk_02003130 *p) {
     return FALSE;
 }
 
-extern "C" void func_02099e88(Unk_02099f5c *x, Unk_02003130 *r, void *src) {
-    func_02099f1c(x);
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src) {
+    HouseVisitInvite_Clear(x);
     u16 v = 0xfff1;
     _ZN12Unk_0209ada413func_0209ad54EhPth(&x->unk_0c, 0x15, &v, 0);
-    _ZN12Unk_0209ada413func_0209ac48Ei(&x->unk_0c, 0);
+    _ZN12Unk_0209ada414setTimeFromNowEi(&x->unk_0c, 0);
     func_020030d8(x, r);
     MI_CpuCopy8(src, &x->unk_18, 8);
 }
 
 }
-Unk_02099e38::Unk_02099e38() {
+PlayerErrands::PlayerErrands() {
     using namespace n3;}
 
 
 namespace n3 {
 }
-Unk_02099e38::~Unk_02099e38() {
+PlayerErrands::~PlayerErrands() {
     using namespace n3;}
 
 
 namespace n3 {
-extern "C" void func_02099dc8(Unk_02099e38 *m) {
+extern "C" void PlayerErrands_Clear(PlayerErrands *m) {
     for (s32 i = 0; i < 2; i++) {
-        func_0209a588(&m->unk_00[i]);
+        PlayerErrandSlot_Clear(&m->unk_00[i]);
     }
-    func_02099c48(m);
-    func_0209a254(&m->unk_78);
-    func_02099f1c(&m->unk_88);
+    PlayerErrands_ClearJobVillagers(m);
+    ParcelErrand_Clear(&m->unk_78);
+    HouseVisitInvite_Clear(&m->unk_88);
 }
 
-extern "C" Unk_0209a5dc *func_02099db4(Unk_02099e38 *m, s32 i) {
-    Unk_0209a5dc *r = 0;
+extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i) {
+    PlayerErrandSlot *r = 0;
     if (i >= 0 && i < 2) {
         r = &m->unk_00[i];
     }
     return r;
 }
 
-extern "C" Unk_0209a5dc *func_02099d44(Unk_0209a5dc *arr, Unk_02003130 *p, s32 idx) {
-    Unk_0209a5dc *ret = 0;
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, Unk_02003130 *p, s32 idx) {
+    PlayerErrandSlot *ret = 0;
     if (_ZN10VillagerId7isValidEv(p)) {
         s32 i;
         for (i = 0; i < 2; i++) {
-            Unk_0209a5dc *e = &arr[i];
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a4f0(e))) {
-                Unk_02003130 *q = func_0209a4e4(e, idx);
+            PlayerErrandSlot *e = &arr[i];
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlayerErrandSlot_GetRecord(e))) {
+                Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, idx);
                 if (q->unk_00 == p->unk_00 && memcmp(q->unk_02, p->unk_02, 8) == 0 && q->unk_0b == p->unk_0b) {
                     ret = e;
                     break;
@@ -1970,7 +1970,7 @@ extern "C" Unk_0209a5dc *func_02099d44(Unk_0209a5dc *arr, Unk_02003130 *p, s32 i
     return ret;
 }
 
-extern "C" void *func_02099c68(Unk_02099e38 *m, s32 a, u16 *p) {
+extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a, u16 *p) {
     void *ret = 0;
     BOOL in = FALSE;
     if (*p >= 0x155f && *p <= 0x1560) {
@@ -1991,9 +1991,9 @@ extern "C" void *func_02099c68(Unk_02099e38 *m, s32 a, u16 *p) {
         if (in2) {
             k = 0;
         }
-        Unk_0209a5dc *e = func_02099db4(m, k);
+        PlayerErrandSlot *e = PlayerErrands_GetSlot(m, k);
         if (e) {
-            Unk_0209ada4 *y = func_0209a4f0(e);
+            Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(e);
             if (_ZN12Unk_0209ada413func_0209ad68Ev(y)) {
                 u16 *q = _ZN12Unk_0209ada413func_0209ab94Ev(y);
                 BOOL same;
@@ -2011,7 +2011,7 @@ extern "C" void *func_02099c68(Unk_02099e38 *m, s32 a, u16 *p) {
                     }
                 }
                 if (same) {
-                    ret = (void *)_ZN10VillagerId7getNameEj(func_0209a4e4(e, 1), a);
+                    ret = (void *)_ZN10VillagerId7getNameEj(PlayerErrandSlot_GetVillager(e, 1), a);
                 }
             }
         }
@@ -2020,61 +2020,61 @@ end:
     return ret;
 }
 
-extern "C" void func_02099c48(Unk_02099e38 *m) {
+extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m) {
     for (s32 i = 0; i < 3; i++) {
         func_020030e8(&m->unk_50[i]);
     }
 }
 
-extern "C" BOOL func_02099c1c(Unk_02099e38 *m) {
-    Unk_0209ada4 *y = func_0209a4f0(func_02099db4(m, 0));
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(y) && _ZN12Unk_0209ada413func_0209abccEv(y) == 1) {
+extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m) {
+    Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
+    if (_ZN12Unk_0209ada413func_0209ad68Ev(y) && _ZN12Unk_0209ada411getSubGroupEv(y) == 1) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_02099be8(Unk_02099e38 *m) {
-    Unk_0209a5dc *e = func_02099db4(m, 0);
-    func_0209a588(e);
-    func_0209a4f4(e, 0xb, 0, 0);
-    func_02099c48(m);
-    func_02099bd8(m);
+extern "C" void Arbeit_Start(PlayerErrands *m) {
+    PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
+    PlayerErrandSlot_Clear(e);
+    PlayerErrandSlot_Start(e, 0xb, 0, 0);
+    PlayerErrands_ClearJobVillagers(m);
+    Arbeit_ClearOnDuty(m);
 }
 
-extern "C" void func_02099be0(Unk_02099e38 *m) {
+extern "C" void Arbeit_SetOnDuty(PlayerErrands *m) {
     m->unk_74 = 1;
 }
 
-extern "C" void func_02099bd8(Unk_02099e38 *m) {
+extern "C" void Arbeit_ClearOnDuty(PlayerErrands *m) {
     m->unk_74 = 0;
 }
 
-extern "C" BOOL func_02099bc8(Unk_02099e38 *m) {
+extern "C" BOOL Arbeit_IsOnDuty(PlayerErrands *m) {
     if (m->unk_74 == 1) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_02099bac(Unk_02099e38 *m) {
-    func_0209a4f4(func_02099db4(m, 0), 0xc, 0, 0);
+extern "C" void Arbeit_StartPlanting(PlayerErrands *m) {
+    PlayerErrandSlot_Start(PlayerErrands_GetSlot(m, 0), 0xc, 0, 0);
 }
 
-extern "C" void func_02099b90(Unk_02099e38 *m) {
-    func_0209a4f4(func_02099db4(m, 0), 0xd, 0, 0);
+extern "C" void Arbeit_StartGreetings(PlayerErrands *m) {
+    PlayerErrandSlot_Start(PlayerErrands_GetSlot(m, 0), 0xd, 0, 0);
 }
 
-extern "C" void func_02099b4c(Unk_02099e38 *m) {
-    Unk_0209a5dc *e = func_02099db4(m, 0);
+extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m) {
+    PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
     void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, 0, 0);
-    func_0209a4f4(e, 0xe, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    PlayerErrandSlot_Start(e, 0xe, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[0], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
-extern "C" void func_02099ae4(Unk_02099e38 *m) {
-    Unk_0209a5dc *e = func_02099db4(m, 0);
-    func_0209a4f0(e);
+extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
+    PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
+    PlayerErrandSlot_GetRecord(e);
     Unk_02003130 *a[1];
     func_02133ef8(a, 4);
     s32 n = 0;
@@ -2083,12 +2083,12 @@ extern "C" void func_02099ae4(Unk_02099e38 *m) {
         n = 1;
     }
     void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
-    func_0209a4f4(e, 0xf, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    PlayerErrandSlot_Start(e, 0xf, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[1], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
-extern "C" void func_02099ab4(void *p) {
-    Unk_0209ada4 *y = func_0209a4f0(func_02099db4((Unk_02099e38 *)p, 0));
+extern "C" void Arbeit_OnLetterWritten(void *p) {
+    Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)p, 0));
     if (_ZN12Unk_0209ada413func_0209ac64Ev(y) == 0xf) {
         if (_ZN12Unk_0209ada413func_0209abc4Ev(y) == 0) {
             _ZN12Unk_0209ada413func_0209abb4Eh(y, 1);
@@ -2096,23 +2096,23 @@ extern "C" void func_02099ab4(void *p) {
     }
 }
 
-extern "C" void func_02099a98() {
+extern "C" void Arbeit_NotifyLetterWritten() {
     void *r = (void *)PlayerData_GetCurrent();
     if (r) {
-        func_02099ab4(_ZN10PlayerData13func_0209865cEv(r));
+        Arbeit_OnLetterWritten(_ZN10PlayerData13func_0209865cEv(r));
     }
 }
 
-extern "C" BOOL func_020999c0(Unk_02099e38 *m, void *p) {
+extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p) {
     if (p && _ZN12Unk_0206555413func_02065578Ev(p)) {
-        Unk_0209a5dc *e = func_02099db4(m, 0);
-        Unk_0209ada4 *y = func_0209a4f0(e);
+        PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
+        Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(e);
         if (_ZN12Unk_0209ada413func_0209ac64Ev(y) == 0xf) {
             s32 v = func_0206561c(p);
             if (v) {
                 Unk_02003130 tmp(v);
                 if (_ZN10VillagerId7isValidEv(&tmp)) {
-                    Unk_02003130 *q = func_0209a4e4(e, 1);
+                    Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, 1);
                     if (q->unk_00 == tmp.unk_00 && memcmp(q->unk_02, tmp.unk_02, 8) == 0 && q->unk_0b == tmp.unk_0b) {
                         if (_ZN12Unk_0209ada413func_0209abc4Ev(y) < 2) {
                             _ZN12Unk_0209ada413func_0209abb4Eh(y, 2);
@@ -2137,8 +2137,8 @@ extern "C" BOOL func_020999c0(Unk_02099e38 *m, void *p) {
     return FALSE;
 }
 
-extern "C" void func_02099948(Unk_02099e38 *m) {
-    Unk_0209a5dc *e = func_02099db4(m, 0);
+extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m) {
+    PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
     Unk_02003130 *a[2];
     func_02133ef8(a, 8);
     s32 n = 0, i = n;
@@ -2150,20 +2150,20 @@ extern "C" void func_02099948(Unk_02099e38 *m) {
         }
     }
     void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
-    func_0209a4f4(e, 0x10, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    PlayerErrandSlot_Start(e, 0x10, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[2], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
-extern "C" void func_0209992c(Unk_02099e38 *m) {
-    func_0209a4f4(func_02099db4(m, 0), 0x11, 0, &m->unk_50[1]);
+extern "C" void Arbeit_StartWateringCanDelivery(PlayerErrands *m) {
+    PlayerErrandSlot_Start(PlayerErrands_GetSlot(m, 0), 0x11, 0, &m->unk_50[1]);
 }
 
-extern "C" void func_02099910(Unk_02099e38 *m) {
-    func_0209a4f4(func_02099db4(m, 0), 0x12, 0, 0);
+extern "C" void Arbeit_StartBbsTask(PlayerErrands *m) {
+    PlayerErrandSlot_Start(PlayerErrands_GetSlot(m, 0), 0x12, 0, 0);
 }
 
-extern "C" void func_020998d8(Unk_02099e38 *m) {
-    Unk_0209ada4 *r = func_0209a4f0(func_02099db4(m, 0));
+extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m) {
+    Unk_0209ada4 *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
     if (_ZN12Unk_0209ada413func_0209ad68Ev(r)) {
         if (_ZN12Unk_0209ada413func_0209ac64Ev(r) == 0x12) {
             if (_ZN12Unk_0209ada413func_0209abc4Ev(r) == 0) {
@@ -2173,14 +2173,14 @@ extern "C" void func_020998d8(Unk_02099e38 *m) {
     }
 }
 
-extern "C" void func_020998b8(Unk_02099e38 *m) {
-    if (func_02099c1c(m)) {
-        func_0209a588(func_02099db4(m, 0));
+extern "C" void Arbeit_Finish(PlayerErrands *m) {
+    if (PlayerErrands_IsJobActive(m)) {
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(m, 0));
     }
 }
 
-extern "C" BOOL func_02099868(Unk_02099e38 *m, Unk_02003130 *r) {
-    if (_ZN10VillagerId7isValidEv(r) && func_02099c1c(m) && r->unk_00 == m->unk_50[1].unk_00 &&
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, Unk_02003130 *r) {
+    if (_ZN10VillagerId7isValidEv(r) && PlayerErrands_IsJobActive(m) && r->unk_00 == m->unk_50[1].unk_00 &&
         memcmp(r->unk_02, m->unk_50[1].unk_02, 8) == 0 && r->unk_0b == m->unk_50[1].unk_0b) {
         return TRUE;
     }
@@ -2229,10 +2229,10 @@ void *func_02003130(void *);
 void _ZN12Unk_0209ada413func_0209ad54EhPth(void *, u32, u16 *, u32);
 void _ZN12Unk_0209ada413func_0209ad80Ev(void *);
 void *_ZN12Unk_0209ada413func_0209ada0Ev(void *);
-void *_ZN12Unk_0209ada413func_0209ada4Ev(void *);
+void *_ZN12Unk_0209ada44initEv(void *);
 void *__cxa_vec_ctor(void *, s32, s32, void *(*)(void *), void *(*)(void *));
 void __cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
-s32 func_020994ac(u32, u8 *, s32);
+s32 Threshold_FindIndex(u32, u8 *, s32);
 extern u8 data_020d0598[];
 extern u8 data_020d05a0[];
 }
@@ -2246,9 +2246,9 @@ static inline BOOL Unk_02099124_R(u16 *p, u32 lo, u32 hi) {
 void func_02098ff4(Unk_02098ff4 *p);
 s32 func_02098ffc();
 s32 func_0209909c(u16 *a, s32 b, s32 c);
-s32 func_02099160(u16 *a, s32 b);
-u16 func_020991b0();
-void func_02099318(s32 *a, s32 *m);
+s32 Pocket_SetFoundItem(u16 *a, s32 b);
+u16 Item_PickRandomPresent();
+void Quat_ToMtx33(s32 *a, s32 *m);
 }
 
 
@@ -2259,22 +2259,22 @@ extern "C" BOOL func_02099014(u16 *a, s32 b);
 extern "C" u16 func_02099048(s32 i);
 extern "C" void func_02099064(s32 c);
 extern "C" s32 func_0209909c(u16 *a, s32 b, s32 c);
-extern "C" BOOL func_02099124(u16 *a);
-extern "C" s32 func_02099160(u16 *a, s32 b);
-extern "C" u16 func_020991b0();
+extern "C" BOOL Pocket_AddFoundItem(u16 *a);
+extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b);
+extern "C" u16 Item_PickRandomPresent();
 extern "C" s32 func_020991e4();
 extern "C" s32 func_020991fc();
 extern "C" void func_02099214();
-extern "C" void func_02099218(s32 *a, s32 *b, s32 *out);
-extern "C" void func_02099300(s32 *a, s32 *b);
-extern "C" void func_02099318(s32 *a, s32 *m);
-extern "C" void func_020993dc(s32 *q);
+extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out);
+extern "C" void Quat_ToMtx43(s32 *a, s32 *b);
+extern "C" void Quat_ToMtx33(s32 *a, s32 *m);
+extern "C" void Quat_Normalize(s32 *q);
 extern "C" s32 func_0209948c(u32 v);
 extern "C" s32 func_0209949c(u32 v);
-extern "C" s32 func_020994ac(u32 v, u8 *tbl, s32 n);
+extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n);
 
 }
-u8 *Unk_020994cc::func_02099864() {
+u8 *SickVillagerRecord::getParcelErrand() {
     using namespace n2;
     return (u8 *)this + 0x78;
 }
@@ -2282,19 +2282,19 @@ u8 *Unk_020994cc::func_02099864() {
 
 namespace n2 {
 }
-Unk_020994cc *Unk_020994cc::func_02099828() {
+SickVillagerRecord *SickVillagerRecord::constructRecord() {
     using namespace n2;
-    _ZN12Unk_0209ada413func_0209ada4Ev(this);
+    _ZN12Unk_0209ada44initEv(this);
     func_02003130(&unk_0c);
     __cxa_vec_ctor(unk_18, 5, 0x16, _ZN8PlayerIdC1EPv, _ZN8PlayerIdC1Ev);
-    func_02099790();
+    resetRecord();
     return this;
 }
 
 
 namespace n2 {
 }
-Unk_020994cc *Unk_020994cc::func_020997fc() {
+SickVillagerRecord *SickVillagerRecord::destructRecord() {
     using namespace n2;
     __cxa_vec_cleanup(unk_18, 5, 0x16, _ZN8PlayerIdC1Ev);
     func_02003100(&unk_0c);
@@ -2305,7 +2305,7 @@ Unk_020994cc *Unk_020994cc::func_020997fc() {
 
 namespace n2 {
 }
-void Unk_020994cc::func_02099790() {
+void SickVillagerRecord::resetRecord() {
     using namespace n2;
     s32 i;
     _ZN12Unk_0209ada413func_0209ad80Ev(this);
@@ -2325,14 +2325,14 @@ void Unk_020994cc::func_02099790() {
 
 namespace n2 {
 }
-void Unk_020994cc::func_0209978c() {
+void SickVillagerRecord::func_0209978c() {
     using namespace n2;
 }
 
 
 namespace n2 {
 }
-Unk_020030d8_R256 *Unk_020994cc::func_02099788() {
+Unk_020030d8_R256 *SickVillagerRecord::getVillagerId() {
     using namespace n2;
     return &unk_0c;
 }
@@ -2340,10 +2340,10 @@ Unk_020030d8_R256 *Unk_020994cc::func_02099788() {
 
 namespace n2 {
 }
-void Unk_020994cc::func_02099724(Unk_020030d8_R256 *a, u8 *b) {
+void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
     using namespace n2;
     u16 v;
-    func_02099790();
+    resetRecord();
     func_020030d8(&unk_0c, a);
     v = 0x155e;
     _ZN12Unk_0209ada413func_0209ad54EhPth(this, 9, &v, 0);
@@ -2356,7 +2356,7 @@ void Unk_020994cc::func_02099724(Unk_020030d8_R256 *a, u8 *b) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *Unk_020994cc::func_02099710(u32 i) {
+Unk_020994cc_Ent *SickVillagerRecord::getVisitor(u32 i) {
     using namespace n2;
     if (i < 5) return &unk_18[i];
     return NULL;
@@ -2365,15 +2365,15 @@ Unk_020994cc_Ent *Unk_020994cc::func_02099710(u32 i) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *Unk_020994cc::func_02099700() {
+Unk_020994cc_Ent *SickVillagerRecord::getTodaysVisitor() {
     using namespace n2;
-    return func_02099710(unk_8e);
+    return getVisitor(unk_8e);
 }
 
 
 namespace n2 {
 }
-BOOL Unk_020994cc::func_020996b0(Unk_020994cc_Ent *e) {
+BOOL SickVillagerRecord::hasVisitor(Unk_020994cc_Ent *e) {
     using namespace n2;
     if (_ZN8PlayerId13func_02094218Ev(e)) {
         Unk_020994cc_Ent *p = unk_18;
@@ -2388,9 +2388,9 @@ BOOL Unk_020994cc::func_020996b0(Unk_020994cc_Ent *e) {
 
 namespace n2 {
 }
-BOOL Unk_020994cc::func_02099690() {
+BOOL SickVillagerRecord::hasTodaysVisitor() {
     using namespace n2;
-    Unk_020994cc_Ent *p = func_02099700();
+    Unk_020994cc_Ent *p = getTodaysVisitor();
     if (p && _ZN8PlayerId13func_02094218Ev(p)) return TRUE;
     return FALSE;
 }
@@ -2398,16 +2398,16 @@ BOOL Unk_020994cc::func_02099690() {
 
 namespace n2 {
 }
-void Unk_020994cc::func_02099678(Unk_020994cc_Ent *e) {
+void SickVillagerRecord::setTodaysVisitor(Unk_020994cc_Ent *e) {
     using namespace n2;
-    Unk_020994cc_Ent *p = func_02099700();
+    Unk_020994cc_Ent *p = getTodaysVisitor();
     if (p) _ZN8PlayerId13func_020942b8EPv(p, e);
 }
 
 
 namespace n2 {
 }
-BOOL Unk_020994cc::func_02099668() {
+BOOL SickVillagerRecord::isRecovered() {
     using namespace n2;
     if (unk_8e == 5) return TRUE;
     return FALSE;
@@ -2416,14 +2416,14 @@ BOOL Unk_020994cc::func_02099668() {
 
 namespace n2 {
 }
-BOOL Unk_020994cc::func_02099624(Unk_020994cc_Date *d) {
+BOOL SickVillagerRecord::isRecentlyRecovered(Unk_020994cc_Date *d) {
     using namespace n2;
     Unk_020994cc_Date local;
     if (d == NULL) {
         Clock_GetDate(&local);
         d = &local;
     }
-    if (func_02099668()) {
+    if (isRecovered()) {
         s32 r = Date_DaysBetween(d, unk_8a);
         if (r >= 0 && r < 3) return TRUE;
         return FALSE;
@@ -2434,7 +2434,7 @@ BOOL Unk_020994cc::func_02099624(Unk_020994cc_Date *d) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *Unk_020994cc::func_020994cc() {
+Unk_020994cc_Ent *SickVillagerRecord::getTopVisitor() {
     using namespace n2;
     u8 counts[5];
     s32 mask;
@@ -2443,7 +2443,7 @@ Unk_020994cc_Ent *Unk_020994cc::func_020994cc() {
     Unk_020994cc_Ent *pi, *e;
     u8 *cnt;
     s32 off;
-    if (!func_02099668()) goto ret0;
+    if (!isRecovered()) goto ret0;
     mask = 0;
     MI_CpuFill8(counts, 0, 5);
     for (i = 0; i < 5; i++) {
@@ -2501,7 +2501,7 @@ ret0:
 
 
 namespace n2 {
-extern "C" s32 func_020994ac(u32 v, u8 *tbl, s32 n) {
+extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (v >= *tbl) return i;
@@ -2511,15 +2511,15 @@ extern "C" s32 func_020994ac(u32 v, u8 *tbl, s32 n) {
 }
 
 extern "C" s32 func_0209949c(u32 v) {
-    return func_020994ac(v, data_020d05a0, 4);
+    return Threshold_FindIndex(v, data_020d05a0, 4);
 }
 
 extern "C" s32 func_0209948c(u32 v) {
-    return func_020994ac(v, data_020d0598, 4);
+    return Threshold_FindIndex(v, data_020d0598, 4);
 }
 
 #pragma thumb off
-extern "C" void func_020993dc(s32 *q) {
+extern "C" void Quat_Normalize(s32 *q) {
     s64 sum = (s64)q[0] * q[0];
     sum += (s64)q[1] * q[1];
     sum += (s64)q[2] * q[2];
@@ -2532,7 +2532,7 @@ extern "C" void func_020993dc(s32 *q) {
 }
 #pragma thumb reset
 
-extern "C" void func_02099318(s32 *a, s32 *m) {
+extern "C" void Quat_ToMtx33(s32 *a, s32 *m) {
     s32 xx = func_01ffcb0c(a[0], a[0]);
     s32 xy = func_01ffcb0c(a[0], a[1]);
     s32 xz = func_01ffcb0c(a[0], a[2]);
@@ -2553,14 +2553,14 @@ extern "C" void func_02099318(s32 *a, s32 *m) {
     m[8] = 0x1000 - 2 * (xx + yy);
 }
 
-extern "C" void func_02099300(s32 *a, s32 *b) {
-    func_02099318(a, b);
+extern "C" void Quat_ToMtx43(s32 *a, s32 *b) {
+    Quat_ToMtx33(a, b);
     b[9] = 0;
     b[10] = 0;
     b[11] = 0;
 }
 
-extern "C" void func_02099218(s32 *a, s32 *b, s32 *out) {
+extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out) {
     s32 o0, o1, o2, o3;
     o3 = func_01ffcb0c(a[3], b[3]) - func_01ffcb0c(a[0], b[0]) - func_01ffcb0c(a[1], b[1]) - func_01ffcb0c(a[2], b[2]);
     o0 = func_01ffcb0c(a[1], b[2]) + (func_01ffcb0c(a[3], b[0]) + func_01ffcb0c(a[0], b[3])) - func_01ffcb0c(a[2], b[1]);
@@ -2583,7 +2583,7 @@ extern "C" s32 func_020991e4() {
     return _ZN15PlayerInventory14getEmptyLetterEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
 }
 
-extern "C" u16 func_020991b0() {
+extern "C" u16 Item_PickRandomPresent() {
     u16 out[2];
     u8 obj[0xc];
     _ZN12ItemPickSpec3setEii(obj, 0, 3);
@@ -2592,12 +2592,12 @@ extern "C" u16 func_020991b0() {
     return out[0];
 }
 
-extern "C" s32 func_02099160(u16 *a, s32 b) {
+extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b) {
     u16 v[2];
     BOOL r = FALSE;
     v[0] = 0xfff1;
     if (*a == 0x156b) {
-        v[0] = func_020991b0();
+        v[0] = Item_PickRandomPresent();
         r = TRUE;
     } else {
         Item_FromPlacedForm(&v[1], a);
@@ -2606,12 +2606,12 @@ extern "C" s32 func_02099160(u16 *a, s32 b) {
     func_0209909c(v, r, b);
 }
 
-extern "C" BOOL func_02099124(u16 *a) {
+extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
     s32 r = func_02098ffc();
     if (r == -1) return FALSE;
     if (*a == 0xfff1) return TRUE;
     if (*a >= 0xa7 && *a <= 0xc6) return TRUE;
-    func_02099160(a, r);
+    Pocket_SetFoundItem(a, r);
     return TRUE;
 }
 
@@ -2694,7 +2694,7 @@ struct Unk_02098f30_Out {
 };
 extern "C" {
 PlayerData *PlayerData_GetCurrent();
-s32 func_02099c68(void *, void *, void *);
+s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, u32);
 s32 _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);
 s32 Item_IsFurniture(void *);
@@ -2740,56 +2740,56 @@ extern "C" s32 func_02098eb0(u16 *a) {
     return -1;
 }
 
-extern "C" s32 func_02098e90(void *a, void *b) {
+extern "C" s32 Player_GetDeliveryRecipientName(void *a, void *b) {
     PlayerData *o = PlayerData_GetCurrent();
-    func_02099c68(o->func_0209865c(), a, b);
+    PlayerErrands_GetDeliveryRecipientName(o->func_0209865c(), a, b);
 }
 }
 
 // ======== data (rest; this order gives the original layout) ========
-extern const u32 data_020d05f0[5];
+extern const u32 sPlanErrandStepCounts[5];
 extern void *data_020e21b8[2];
-extern const u32 data_020d05b4[2];
+extern const u32 sErrandClassStarts[2];
 extern char data_020e21f0[10];
 extern char data_020e21d8[9];
-extern const u32 data_020d05e0[4];
+extern const u32 sErrandGroupStarts[4];
 extern char data_020e21e4[10];
-extern const u8 data_020d05ac[8];
+extern const u8 sTrendWeights[8];
 extern char data_020e21b0[8];
-extern const u16 data_020d059c[2];
+extern const u16 sParcelItems[2];
 extern void *data_020e21a8[2];
-extern const u16 data_020d05c8[5];
+extern const u16 sParcelRecipients[5];
 extern char data_020e21cc[9];
-extern const u8 data_020d0594[3];
-extern const Unk_0209b570_Ent data_020d0604[6];
-extern const u8 data_020d05a4[6];
+extern const u8 sPlanStateGroupStarts[3];
+extern const Unk_0209b570_Ent sTopicWordLists[6];
+extern const u8 sFurnitureGoalCounts[6];
 extern const u8 data_020d05a0[4];
 extern void *data_020e2198[2];
 extern const u8 data_020d0598[4];
-extern Unk_0209a4f4_Rec data_020e21fc[10];
-const u32 data_020d05f0[5] = {5, 5, 5, 7, 7};
-void *data_020e21b8[2] = {(void *)func_0209a26c, 0};
-const u32 data_020d05b4[2] = {0, 5};
+extern Unk_0209a4f4_Rec sErrandKindSetups[10];
+const u32 sPlanErrandStepCounts[5] = {5, 5, 5, 7, 7};
+void *data_020e21b8[2] = {(void *)ErrandSetup_WateringCan, 0};
+const u32 sErrandClassStarts[2] = {0, 5};
 char data_020e21f0[10] = "st_object";
 char data_020e21d8[9] = "st_drink";
-const u32 data_020d05e0[4] = {0, 10, 0x14, 0x15};
+const u32 sErrandGroupStarts[4] = {0, 10, 0x14, 0x15};
 char data_020e21e4[10] = "st_sports";
-const u8 data_020d05ac[8] = {3, 3, 5, 5, 3, 3, 2, 1};
+const u8 sTrendWeights[8] = {3, 3, 5, 5, 3, 3, 2, 1};
 char data_020e21b0[8] = "st_food";
-const u16 data_020d059c[2] = {0x155f, 0x1560};
-void *data_020e21a8[2] = {(void *)func_0209a3c8, 0};
-const u16 data_020d05c8[5] = {0xd019, 0xd004, 0xd006, 0xd007, 0xd00c};
+const u16 sParcelItems[2] = {0x155f, 0x1560};
+void *data_020e21a8[2] = {(void *)ErrandSetup_LetterBundle, 0};
+const u16 sParcelRecipients[5] = {0xd019, 0xd004, 0xd006, 0xd007, 0xd00c};
 char data_020e21cc[9] = "st_music";
-const u8 data_020d0594[3] = {0, 5, 8};
-const Unk_0209b570_Ent data_020d0604[6] = {
+const u8 sPlanStateGroupStarts[3] = {0, 5, 8};
+const Unk_0209b570_Ent sTopicWordLists[6] = {
     {data_020e21cc, 0x20}, {data_020e21e4, 0x20}, {data_020e21c0, 0x24},
     {data_020e21d8, 0x18}, {data_020e21f0, 0x28}, {data_020e21b0, 0x20},
 };
-const u8 data_020d05a4[6] = {2, 4, 6, 8, 10, 13};
+const u8 sFurnitureGoalCounts[6] = {2, 4, 6, 8, 10, 13};
 const u8 data_020d05a0[4] = {0x0f, 0x0a, 6, 3};
-void *data_020e2198[2] = {(void *)func_0209a2a4, 0};
+void *data_020e2198[2] = {(void *)ErrandSetup_FurnitureParcel, 0};
 const u8 data_020d0598[4] = {0x11, 0x0b, 6, 3};
-Unk_0209a4f4_Rec data_020e21fc[10] = {
+Unk_0209a4f4_Rec sErrandKindSetups[10] = {
     {*(Unk_0209a4f4_Fn *)data_020e2190, 0, 0},
     {0, 0, 1},
     {0, 0, 1},

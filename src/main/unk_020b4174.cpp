@@ -18,8 +18,8 @@ void BgHeap_Destroy(void);
 void BgHeap_Create(u32 a, u32 b);
 void Gfx_DisableAllBanks(void);
 void Gfx_ResetScene(void);
-void func_02078370(void);
-void func_0207835c(void);
+void VillagerStates_Init(void);
+void VillagerStates_Destroy(void);
 void func_02097564(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
@@ -230,13 +230,13 @@ void BootLogoScene::func_020b41cc() {
         if (unk_5e == 4) Save_InvalidateLetterStorage();
         _ZN8SaveData5resetEv(&gSaveData);
         func_02097564();
-        func_02078370();
+        VillagerStates_Init();
         SaveData_Setup(&gSaveData, 3);
     } else {
         SaveData_Setup(&gSaveData, 4);
     }
     SaveData_Apply(&gSaveData);
-    func_0207835c();
+    VillagerStates_Destroy();
     BgHeap_Destroy();
 }
 

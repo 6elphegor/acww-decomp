@@ -3,10 +3,10 @@
 
 extern "C" {
 void func_02133ef8(void *, u32);
-void func_02034d70(u32);
-void func_02034dd0(u32, u32, u32);
-void func_02034e10(u32, u32, u32, u32);
-void func_02034d84(u32 a);
+void Bgm_ReleasePriority(u32);
+void Bgm_RequestSilence(u32, u32, u32);
+void Bgm_Request(u32, u32, u32, u32);
+void Bgm_Release(u32 a);
 s32 Clock_GetYear(void);
 void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
@@ -32,8 +32,8 @@ void Mem_Free(void *);
 void *Heap_Alloc(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
 void *_ZN7TownMap12getGrassTypeEv(void *);
-extern u16 data_020d8d8c, data_020d8d88, data_020d8d90;
-extern u16 data_020c8af8[];
+extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
+extern u16 sHourlyBgmIds[];
 extern void *gBgHeap;
 extern void *gCurrentHeap;
 struct Unk_021e5890_T { u8 pad[0x14]; u8 unk_14; };

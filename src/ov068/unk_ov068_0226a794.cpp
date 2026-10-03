@@ -458,9 +458,9 @@ void Npc_GetName(void *, void *);
 void func_02094018(void *);
 void func_02094f20();
 void PlayerActor_RequestTurnTo(s32, s32);
-void func_020902f8(s32);
-void func_020902d4(s32, void *, s32, s32);
-s32 func_02090330(s32, void *, s32, s32);
+void Effect_End(s32);
+void Effect_SetPosition(s32, void *, s32, s32);
+s32 Effect_Create(s32, void *, s32, s32);
 Unk_ov068_0226b12c_Vec3 *func_020947f0(s32);
 void func_020e9960(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *);
 void func_01ffd070(Unk_ov068_0226b12c_Vec3 *, void *, Unk_ov068_0226b12c_Vec3 *);
@@ -621,7 +621,7 @@ s32 KappnTaxi::getAngleToPlayer() {
 }
 
 void KappnTaxi::startEffect41() {
-    unk_2dc = func_02090330(0x41, &unk_2c8, 0, 0);
+    unk_2dc = Effect_Create(0x41, &unk_2c8, 0, 0);
 }
 
 void KappnTaxi::updateEffect41() {
@@ -630,7 +630,7 @@ void KappnTaxi::updateEffect41() {
         if (v == 0x2d) {
             startEffect41();
         }
-        func_020902d4(unk_2dc, &unk_2c8, 0, 0);
+        Effect_SetPosition(unk_2dc, &unk_2c8, 0, 0);
         if (v == 0x31) {
             stopEffect41();
         }
@@ -638,11 +638,11 @@ void KappnTaxi::updateEffect41() {
 }
 
 void KappnTaxi::stopEffect41() {
-    func_020902f8(unk_2dc);
+    Effect_End(unk_2dc);
 }
 
 void KappnTaxi::startEffect42() {
-    unk_2e0 = func_02090330(0x42, &unk_2c8, 0, 0);
+    unk_2e0 = Effect_Create(0x42, &unk_2c8, 0, 0);
 }
 
 void KappnTaxi::updateEffect42() {
@@ -651,7 +651,7 @@ void KappnTaxi::updateEffect42() {
         if (v == 0x25) {
             startEffect42();
         }
-        func_020902d4(unk_2e0, &unk_2c8, 0, 0);
+        Effect_SetPosition(unk_2e0, &unk_2c8, 0, 0);
         if (v == 0x32) {
             stopEffect42();
         }
@@ -659,7 +659,7 @@ void KappnTaxi::updateEffect42() {
 }
 
 void KappnTaxi::stopEffect42() {
-    func_020902f8(unk_2e0);
+    Effect_End(unk_2e0);
 }
 
 BOOL KappnTaxi::setTaxiState(s32 idx) {

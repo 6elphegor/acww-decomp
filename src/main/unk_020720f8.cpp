@@ -219,8 +219,8 @@ class EncodedString16Buf {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
+    virtual void capacity();
+    virtual void data();
     EncodedString16Buf();
     virtual ~EncodedString16Buf();
     void copyTo(u8 *dst, s32 n);
@@ -626,7 +626,7 @@ extern "C" {
 void DC_FlushAll(u32);
 }
 extern "C" {
-void func_02078348();
+void VillagerStates_ResetRuntime();
 }
 extern "C" {
 void func_020850e0();
@@ -675,7 +675,7 @@ extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b);
 
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
-        func_02078348();
+        VillagerStates_ResetRuntime();
         func_020850e0();
         func_020851e4();
     }

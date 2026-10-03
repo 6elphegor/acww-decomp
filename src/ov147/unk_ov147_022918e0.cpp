@@ -273,10 +273,10 @@ void func_0203d52c();
 void InputMode_SetButtons();
 void InputMode_SetTouch();
 BOOL func_020e7500(void *p);
-void func_02034d84(s32 a);
-void func_02034d70(s32 a);
-void func_02034dd0(s32 a, s32 b, s32 c);
-void func_02034e10(s32 a, s32 b, s32 c, s32 d);
+void Bgm_Release(s32 a);
+void Bgm_ReleasePriority(s32 a);
+void Bgm_RequestSilence(s32 a, s32 b, s32 c);
+void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void func_0203d984();
 void GameStart_SetupSave();
 void func_0203cbb8();
@@ -446,10 +446,10 @@ BOOL TitleScreen::onExecute() {
 void TitleScreen::startBgm(BOOL flag) {
     if (unk_9f == 0) {
         if (flag) {
-            func_02034dd0(1, 0xf, 0);
+            Bgm_RequestSilence(1, 0xf, 0);
             unk_9f = 2;
         } else {
-            func_02034e10(2, 0, 0x7f, 0);
+            Bgm_Request(2, 0, 0x7f, 0);
             unk_9f = 1;
         }
     }
@@ -459,11 +459,11 @@ void TitleScreen::stopBgm() {
     u32 t = unk_9f;
     if (t != 0) {
         if (t == 1) {
-            func_02034d84(0);
+            Bgm_Release(0);
         } else if (t == 2) {
-            func_02034d70(1);
+            Bgm_ReleasePriority(1);
         }
-        func_02034dd0(1, 0xf, 0xf);
+        Bgm_RequestSilence(1, 0xf, 0xf);
         unk_9f = 0;
     }
 }

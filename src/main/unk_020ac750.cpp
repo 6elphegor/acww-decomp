@@ -364,7 +364,7 @@ extern "C" {
 u8 *NookShop_GetLevel(void *p);
 }
 extern "C" {
-s32 func_02076fc8(u8 *a, const void *b);
+s32 Bbs_PostMsgToday(u8 *a, const void *b);
 }
 extern "C" {
 void MailText_SetSlotMonth(s32 a, s32 b);
@@ -750,7 +750,7 @@ extern "C" void Shop_RemoveSoldItem(u16 *p, u32 a, s32 b) {
 extern "C" void NookShop_PostPointSpecialNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(0, a);
     MailText_SetSlotDayOrdinal(1, b);
-    func_02076fc8(func_02063b8c(2), "bbs_shopinfo");
+    Bbs_PostMsgToday(func_02063b8c(2), "bbs_shopinfo");
 }
 extern "C" void NookShop_PostSaleNotice(s32 x) {
     MsgString25 o;
@@ -758,20 +758,20 @@ extern "C" void NookShop_PostSaleNotice(s32 x) {
     m = (u8)m;
     String_FormatNumber(&o, m, 10, 0, 0, 0);
     MailText_SetSlot(2, &o);
-    func_02076fc8(func_02063b8c(2) + 2, "bbs_shopinfo");
+    Bbs_PostMsgToday(func_02063b8c(2) + 2, "bbs_shopinfo");
 }
 extern "C" void NookShop_PostSpecialItemNotice(u16 *s) {
     ItemName str(s);
     MailText_SetSlot(3, &str);
-    func_02076fc8(func_02063b8c(2) + 4, "bbs_shopinfo");
+    Bbs_PostMsgToday(func_02063b8c(2) + 4, "bbs_shopinfo");
 }
 extern "C" void NookShop_PostRenovationNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(2, a);
     MailText_SetSlotDayOrdinal(3, b);
-    func_02076fc8(NookShop_GetLevel(data_021ed104), "bbs_raccoon");
+    Bbs_PostMsgToday(NookShop_GetLevel(data_021ed104), "bbs_raccoon");
 }
 extern "C" s32 NookShop_PostReopenNotice() {
-    return func_02076fc8(NookShop_GetLevel(data_021ed104) + 3, "bbs_raccoon");
+    return Bbs_PostMsgToday(NookShop_GetLevel(data_021ed104) + 3, "bbs_raccoon");
 }
 extern "C" BOOL NookShop_GetReopenDateTime(Unk_020aec74_Out *out) {
     u8 *h = data_021ed104;
@@ -1942,7 +1942,7 @@ extern "C" {
 void StockList_AddFromPickList(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g);
 }
 extern "C" {
-void func_020862f8(void *p);
+void ReddLastSale_Clear(void *p);
 }
 extern "C" {
 void _ZN8SaveData9clearFlagEj(void *p, u32 n);
@@ -2182,7 +2182,7 @@ BOOL ReddPassword::pickPassword() {
                     if (target == n) {
                         slot = i;
                         markUsed(i);
-                        func_020862f8(data_021ed284);
+                        ReddLastSale_Clear(data_021ed284);
                         data_021ed2c0.restock();
                         clearAllResidentKnows();
                         _ZN8SaveData9clearFlagEj(gSaveData, 8);

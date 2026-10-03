@@ -58,10 +58,10 @@ struct ChoiceList {
 };
 
 extern "C" {
-void _ZN12Unk_020d771013func_02015170Ejj(void *self, u32 a, u32 b);
-void _ZN12Unk_020d771013func_020151d0Ei(void *self, s32 a);
-void _ZN16ActorTalkRequest13func_02015958Eijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
-void _ZN12Unk_02015b8c13func_02015e48Ej(void *self, s32 a);
+void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
+void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
+void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
+void _ZN12Unk_02015b8c9getAnimIdEj(void *self, s32 a);
 u32 _ZN8PlayerId9getGenderEv(void *self);
 void _ZN8PlayerId13func_02094124Eh(void *self, s32 a);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
@@ -70,9 +70,9 @@ void _ZN10PlayerData12setHairColorEh(void *self, u32 a);
 void _ZN10PlayerData12setHairStyleEh(void *self, u32 a);
 void _ZN10PlayerData8setShirtEPt(void *self, u16 *p);
 void _ZN8SaveData9clearFlagEj(void *self, s32 a);
-void _ZN12Unk_02013b1013func_02014198Ehh(void *self, u32 a, u32 b);
-void _ZN12Unk_0201985813func_020195c8Eiijtt(void *self, s32 a, s32 b, s32 c, u32 d, s32 e);
-void _ZN12Unk_0201ad2013func_0201ad34Ei(void *self, s32 a);
+void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u32 a, u32 b);
+void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, s32 c, u32 d, s32 e);
+void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *p, void *q);
 void *PlayerData_GetCurrent();
 Unk_02067918 *TalkWindow_Get(s32 a);
@@ -199,8 +199,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -212,7 +212,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -230,9 +230,9 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -300,12 +300,12 @@ public:
     virtual void vfunc_80();
     virtual u32 getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual s32 vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -314,19 +314,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -567,7 +567,7 @@ BOOL SpNpcKappn::vfunc_04() {
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner(this);
-    _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_2a0, 0xfb);
+    _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0xfb);
     return TRUE;
 }
 
@@ -601,7 +601,7 @@ BOOL SpNpcKappn::updateAct() {
         r = (this->*sSpNpcKappnActTable[unk_654].exit)();
     }
     if (func_020e7518(&unk_716) == 1) {
-        _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x8f, 1, data_020c6cc8, 0);
+        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
 }
@@ -632,7 +632,7 @@ BOOL SpNpcKappn::mainAct00() {
 }
 
 BOOL SpNpcKappn::setupAct01() {
-    _ZN12Unk_02013b1013func_02014198Ehh(&unk_618, 1, 0);
+    _ZN11NpcTalkCtrl11requestTalkEhh(&unk_618, 1, 0);
     return TRUE;
 }
 
@@ -783,25 +783,25 @@ void SpNpcKappnTalk::vfunc_10() {
         if (t == 0) {
             t = 0xc;
         }
-        _ZN16ActorTalkRequest13func_02015958Eijiii(this, t, 1, 2, 0, 0);
+        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, t, 1, 2, 0, 0);
     }
 }
 
 void SpNpcKappnTalk::openClockSetting() {
-    _ZN12Unk_020d771013func_02015170Ejj(this, 0x30, 0);
-    _ZN12Unk_020d771013func_020151d0Ei(this, 2);
+    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0x30, 0);
+    _ZN12Unk_020d771012openSubSceneEi(this, 2);
     setResultHandler(2);
 }
 
 void SpNpcKappnTalk::openPlayerNameEntry() {
-    _ZN12Unk_020d771013func_02015170Ejj(this, 0xf, 0);
-    _ZN12Unk_020d771013func_020151d0Ei(this, 2);
+    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0xf, 0);
+    _ZN12Unk_020d771012openSubSceneEi(this, 2);
     setResultHandler(1);
 }
 
 void SpNpcKappnTalk::openTownNameEntry() {
-    _ZN12Unk_020d771013func_02015170Ejj(this, 0x10, 0);
-    _ZN12Unk_020d771013func_020151d0Ei(this, 2);
+    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0x10, 0);
+    _ZN12Unk_020d771012openSubSceneEi(this, 2);
     setResultHandler(0);
 }
 
@@ -1193,7 +1193,7 @@ extern "C" u32 SpNpcKappn_GetAnimFrame() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 extern "C" void SpNpcKappn_GetAnimState() {
-    _ZN12Unk_02015b8c13func_02015e48Ej(&sSpNpcKappnInstance->unk_334, 0);
+    _ZN12Unk_02015b8c9getAnimIdEj(&sSpNpcKappnInstance->unk_334, 0);
 }
 
 extern "C" void *data_ov051_02259f74[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};

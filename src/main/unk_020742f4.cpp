@@ -74,17 +74,17 @@ class EncodedString {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     u8 unk_04[10];
 };
 
-class Unk_020e055c : public EncodedString {
+class EncodedString192 : public EncodedString {
 public:
-    Unk_020e055c();
-    virtual ~Unk_020e055c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    EncodedString192();
+    virtual ~EncodedString192();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 unk_0e[0xb2];
 };
 // ======== types of unk_02077138.cpp ========
@@ -118,10 +118,10 @@ public:
 };
 
 // Source-side text buffer of 0xc1 bytes.
-class Unk_020e0574 : public MsgString {
+class MsgString193 : public MsgString {
 public:
-    Unk_020e0574();
-    virtual ~Unk_020e0574();
+    MsgString193();
+    virtual ~MsgString193();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -129,19 +129,19 @@ public:
 };
 
 // Record of 0xc0 data bytes plus a few state bytes.
-class Unk_020772cc {
+class BbsPost {
 public:
-    Unk_020772cc();
-    ~Unk_020772cc();
+    BbsPost();
+    ~BbsPost();
 
-    void func_020772cc();
-    BOOL func_020772dc();
-    void func_020772f0(s32 i);
-    BOOL func_02077310(s32 i);
-    u8 func_02077330();
-    u8 func_02077338();
-    u8 func_02077340();
-    void func_02077348(u8 *src);
+    void markFreeText();
+    BOOL isFreeText();
+    void setRead(s32 i);
+    BOOL isRead(s32 i);
+    u8 getYear();
+    u8 getMonth();
+    u8 getDay();
+    void init(u8 *src);
 
     /* 0x00 */ u8 unk_00[0xc0];
     /* 0xc0 */ u8 unk_c0;
@@ -150,22 +150,22 @@ public:
     /* 0xc3 */ u8 unk_c3;
 };
 
-class Unk_02077198 {
+class BbsBoard {
 public:
-    Unk_02077198();
-    ~Unk_02077198();
+    BbsBoard();
+    ~BbsBoard();
 
-    void func_02077198(s32 idx);
-    void func_020771d8(u16 v);
-    u16 func_020771e4();
-    Unk_020772cc *func_020771f0();
-    u8 func_02077230();
-    void func_0207723c();
-    void func_02077264();
-    Unk_020772cc *func_02077278(s32 idx);
-    Unk_020772cc *func_02077280(s32 idx);
+    void removePost(s32 idx);
+    void setNoticeId(u16 v);
+    u16 getNoticeId();
+    BbsPost *addPost();
+    u8 getPostCount();
+    void reset();
+    void clear();
+    BbsPost *getPost(s32 idx);
+    BbsPost *postAt(s32 idx);
 
-    /* 0x000 */ Unk_020772cc unk_000[15];
+    /* 0x000 */ BbsPost unk_000[15];
     /* 0xb7c */ u16 unk_b7c;
     /* 0xb7e */ u8 unk_b7e;
 };
@@ -205,13 +205,13 @@ typedef u32 Unk_02077a54_Fn;extern "C" {
 extern void *gCommManager;
 }
 extern "C" {
-extern void *data_021cc8b0[];
+extern void *sSpNpcAnimHeapPool[];
 }
 extern "C" {
-extern void *data_021cc914[];
+extern void *sVillagerAnimHeapPool[];
 }
 extern "C" {
-extern void *data_021cc8e8[];
+extern void *sNpcTexPatBufPool[];
 }
 extern "C" {
 extern void *data_021c61a4;
@@ -244,34 +244,34 @@ extern "C" {
 void _ZN11CommManager9endRecordEjj(void *, s32, s32);
 }
 extern "C" {
-void func_02077ab4(u8 *, s32, s32);
+void CommVillager_PackHeader(u8 *, s32, s32);
 }
 extern "C" {
-void *func_02077c0c(void **, s32);
+void *SpNpcAnimHeapPool_Get(void **, s32);
 }
 extern "C" {
-void *func_02077cd4(void **, s32);
+void *VillagerAnimHeapPool_Get(void **, s32);
 }
 extern "C" {
-void *func_02077dc4(void **, s32);
+void *NpcTexPatBufPool_Get(void **, s32);
 }
 extern "C" {
-void func_02077b98(void **);
+void SpNpcAnimHeapPool_Free(void **);
 }
 extern "C" {
-void func_02077bd4(void **);
+void SpNpcAnimHeapPool_Alloc(void **);
 }
 extern "C" {
-void func_02077c68(void **);
+void VillagerAnimHeapPool_Free(void **);
 }
 extern "C" {
-void func_02077ca4(void **);
+void VillagerAnimHeapPool_Alloc(void **);
 }
 extern "C" {
-void func_02077d30(void **);
+void NpcTexPatBufPool_Free(void **);
 }
 extern "C" {
-void func_02077d58(void **);
+void NpcTexPatBufPool_Alloc(void **);
 }
 extern "C" {
 void func_020e885c(void *);
@@ -316,7 +316,7 @@ extern "C" {
 s32 func_02084fbc();
 }
 extern "C" {
-s32 func_020812f4();
+s32 Town_GetMaxOutdoorVillagers();
 }
 extern "C" {
 s32 func_020b50e8();
@@ -340,16 +340,16 @@ extern "C" {
 BOOL Item_IsNormalItem(void *);
 }
 extern "C" {
-BOOL func_020780e4(s32, s32);
+BOOL Field_IsUnitOccupied(s32, s32);
 }
 extern "C" {
-s32 func_02078104(s32, s32);
+s32 Field_FindPlayerAtUnit(s32, s32);
 }
 extern "C" {
-BOOL func_02077eb0(s32, s32, s32, s32 *, s32 *);
+BOOL TownMap_FindBuildingAbove(s32, s32, s32, s32 *, s32 *);
 }
 extern "C" {
-BOOL func_02077f68(s32, s32, void *);
+BOOL TownMap_IsUnitWalkable(s32, s32, void *);
 }
 extern "C" {
 BOOL Item_IsFurniture(void *);
@@ -367,22 +367,22 @@ extern "C" {
 s32 func_020951ec(s32);
 }
 extern "C" {
-struct Unk_020781ec_Data *func_020783f8();
+struct Unk_020781ec_Data *VillagerStates_Get();
 }
 extern "C" {
-void *func_020784f4(void *);
+void *VillagerState_GetTalkRepeat(void *);
 }
 extern "C" {
-s32 func_020784e0(void *);
+s32 TalkRepeat_Reset(void *);
 }
 extern "C" {
-s32 func_02078384(void *);
+s32 VillagerStateTable_ResetRuntime(void *);
 }
 extern "C" {
-s32 func_020783d4(void *);
+s32 VillagerStateTable_Destroy(void *);
 }
 extern "C" {
-s32 func_02078400(void *);
+s32 VillagerStateTable_Init(void *);
 }
 extern "C" {
 void *func_020805c4(void *);
@@ -400,7 +400,7 @@ extern "C" {
 void *Villager_GetMemory(void *, s32);
 }
 extern "C" {
-BOOL func_02080f94(void *);
+BOOL VillagerMemory_IsUsed(void *);
 }
 extern "C" {
 void func_02080a88(void *);
@@ -430,49 +430,49 @@ extern "C" {
 void func_0207ff14(void *, s32);
 }
 extern "C" {
-void func_02077a54(s32 a, s32 b);
+void CommSend_VillagerMemoryInit(s32 a, s32 b);
 }
 extern "C" {
-void func_02077a9c(s32 *a, s32 *b, u8 *p);
+void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p);
 }
 extern "C" {
-void func_02077ab4(u8 *p, s32 a, s32 b);
+void CommVillager_PackHeader(u8 *p, s32 a, s32 b);
 }
 extern "C" {
-void *func_02077ac4(s32 *p);
+void *SpNpcAnimHeapRef_GetHeap(s32 *p);
 }
 extern "C" {
-void func_02077ad8(s32 *p, s32 x);
+void SpNpcAnimHeapRef_Assign(s32 *p, s32 x);
 }
 extern "C" {
-void func_02077af8();
+void SpNpcAnimHeapRef_Deinit();
 }
 extern "C" {
-void func_02077afc(s32 *p);
+void SpNpcAnimHeapRef_Init(s32 *p);
 }
 extern "C" {
-void *func_02077b04(s32 *p);
+void *VillagerAnimHeapRef_GetHeap(s32 *p);
 }
 extern "C" {
-void func_02077b18(s32 *p, s32 x);
+void VillagerAnimHeapRef_Assign(s32 *p, s32 x);
 }
 extern "C" {
-void func_02077b38();
+void VillagerAnimHeapRef_Deinit();
 }
 extern "C" {
-void func_02077b3c(s32 *p);
+void VillagerAnimHeapRef_Init(s32 *p);
 }
 extern "C" {
-void *func_02077b44(s32 *p);
+void *NpcTexPatBufRef_GetBuffer(s32 *p);
 }
 extern "C" {
-void func_02077b58(s32 *p, void *dst);
+void NpcTexPatBufRef_LoadFile(s32 *p, void *dst);
 }
 extern "C" {
-void func_02077b84(s32 *p, s32 v);
+void NpcTexPatBufRef_Assign(s32 *p, s32 v);
 }
 extern "C" {
-void func_02077b80(s32 *p, s32 v);
+void NpcTexPatBufRef_Set(s32 *p, s32 v);
 }
 
 
@@ -480,20 +480,20 @@ static inline BOOL Unk_02077d58_IsZero(u8 v)
 {
     return v == 0 ? TRUE : FALSE;
 }extern "C" {
-void func_02077c2c(void *);
+void SpNpcAnimHeaps_Create(void *);
 }
 extern "C" {
-void func_02077cdc();
+void VillagerAnimHeaps_Destroy();
 }
 extern "C" {
-void func_02077dcc();
+void NpcTexPatBufs_Destroy();
 }
 extern "C" {
 static inline s32 Unk_02077d58_Count()
 {
     s32 t;
     if (Unk_02077d58_IsZero(data_020e416c)) {
-        t = func_020812f4();
+        t = Town_GetMaxOutdoorVillagers();
     } else {
         t = func_020b491c(func_020b50e8());
         t -= func_020b4928(func_020b50e8());
@@ -502,13 +502,13 @@ static inline s32 Unk_02077d58_Count()
 }
 }
 extern "C" {
-void func_02077de4(void *);
+void NpcTexPatBufs_Create(void *);
 }
 extern "C" {
-void func_02077cf4(void *);
+void VillagerAnimHeaps_Create(void *);
 }
 extern "C" {
-void func_02077c2c(void *);
+void SpNpcAnimHeaps_Create(void *);
 }
 extern "C" {
 static inline BOOL Unk_02077f68_R(u16 *p, u32 lo, u32 hi)
@@ -564,20 +564,20 @@ static inline BOOL Unk_02077f68_C9(u16 *p)
 }
 
 
-extern "C" void func_02077ab4(u8 *p, s32 a, s32 b)
+extern "C" void CommVillager_PackHeader(u8 *p, s32 a, s32 b)
 {
     *p = ((a << 4) & 0xf0) | (b & 0xf);
 }
-extern "C" void func_02077a9c(s32 *a, s32 *b, u8 *p)
+extern "C" void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p)
 {
     *a = (*p >> 4) & 0xf;
     *b = *p & 0xf;
 }
-extern "C" void func_02077a54(s32 a, s32 b)
+extern "C" void CommSend_VillagerMemoryInit(s32 a, s32 b)
 {
     u8 buf;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        func_02077ab4(&buf, a, b);
+        CommVillager_PackHeader(&buf, a, b);
         void *t = gCommManager;
         _ZN11CommManager11beginRecordEv(t);
         _ZN11CommManager11writeRecordEPhj(t, &buf, 1);
@@ -595,7 +595,7 @@ extern "C" {
 void Mem_Clear(void *p, u32 n);
 }
 extern "C" {
-void func_02076fc8(u32 a, const char *s);
+void Bbs_PostMsgToday(u32 a, const char *s);
 }
 extern "C" {
 u16 NetBuf_ReadU16(void *p);
@@ -616,7 +616,7 @@ extern "C" {
 s32 _ZN11CommManager9endRecordEjj(void *g, s32 a, s32 b);
 }
 extern "C" {
-u32 func_0207e334(u32 a);
+u32 Villager_GetIndex(u32 a);
 }
 extern "C" {
 BOOL SaveVillagers_IsValidIndex(u32 a);
@@ -634,64 +634,64 @@ extern "C" {
 extern void *gCommManager;
 }
 extern "C" {
-extern char *data_020e0544;
+extern char *sBbsDefaultKey;
 }
 extern "C" {
-void func_02077a9c(u32 *o0, u32 *o1, u8 *src);
+void CommVillager_UnpackHeader(u32 *o0, u32 *o1, u8 *src);
 }
 extern "C" {
-void func_02077ab4(u8 *out, s32 a, s32 b);
+void CommVillager_PackHeader(u8 *out, s32 a, s32 b);
 }
 extern "C" {
-void func_02077404(s32 *out, u16 *dst, u8 *src);
+void CommVillager_UnpackItems(s32 *out, u16 *dst, u8 *src);
 }
 extern "C" {
-void func_02077428(u8 *out, s32 a, u16 *src);
+void CommVillager_PackItems(u8 *out, s32 a, u16 *src);
 }
 extern "C" {
-void func_02077488(u32 a, u16 *b);
+void CommSend_VillagerShirt(u32 a, u16 *b);
 }
 extern "C" {
-void func_02077508(u8 *out, s32 a, u16 *b);
+void CommVillager_PackItem(u8 *out, s32 a, u16 *b);
 }
 extern "C" {
-void func_02077558(u32 a, u16 *b);
+void CommSend_VillagerAct3F(u32 a, u16 *b);
 }
 extern "C" {
-void func_020775e8(u32 a, u32 b, u32 c, u32 d, u8 e);
+void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e);
 }
 extern "C" {
-void func_02077684(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e);
+void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e);
 }
 extern "C" {
-void func_020776fc(u32 a, u32 b, u32 c);
+void VillagerSync_Act3C(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_02077734(u32 a, u32 b, u32 c);
+void CommSend_VillagerAct3C(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020777a0(u8 *out, s32 a, s32 b, u32 c);
+void CommVillager_PackAct3C(u8 *out, s32 a, s32 b, u32 c);
 }
 extern "C" {
-void func_020777f0(u32 a, u32 b, u32 c);
+void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_0207785c(u8 *out, s32 a, s32 b, u16 *c);
+void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c);
 }
 extern "C" {
-void func_020778b4(u32 a, u32 b, u32 c);
+void CommSend_VillagerFriendship(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_02077944(u32 a, u32 b, u32 c);
+void CommSend_VillagerImpression(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020773b8(u32 a, u16 *b);
+void CommSend_VillagerItems(u32 a, u16 *b);
 }
 extern "C" {
-void func_020779d4(u32 a, u32 b);
+void CommSend_VillagerMemorySetPlayer(u32 a, u32 b);
 }
 extern "C" {
-void func_02077a54(u32 a, u32 b);
+void CommSend_VillagerMemoryInit(u32 a, u32 b);
 }
 
 
@@ -703,19 +703,19 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi) {
 
 
 
-extern "C" void func_02077a1c(u32 a, u32 b) {
+extern "C" void VillagerSync_MemoryInit(u32 a, u32 b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_02077a54(a, b);
+            CommSend_VillagerMemoryInit(a, b);
         }
     }
 }
 
-extern "C" void func_020779d4(u32 a, u32 b) {
+extern "C" void CommSend_VillagerMemorySetPlayer(u32 a, u32 b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
-        func_02077ab4(buf, a, b);
+        CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 1);
@@ -723,19 +723,19 @@ extern "C" void func_020779d4(u32 a, u32 b) {
     }
 }
 
-extern "C" void func_0207799c(u32 a, u32 b) {
+extern "C" void VillagerSync_MemorySetPlayer(u32 a, u32 b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_020779d4(a, b);
+            CommSend_VillagerMemorySetPlayer(a, b);
         }
     }
 }
 
-extern "C" void func_02077944(u32 a, u32 b, u32 c) {
+extern "C" void CommSend_VillagerImpression(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
-        func_02077ab4(buf, a, b);
+        CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 1);
@@ -744,19 +744,19 @@ extern "C" void func_02077944(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void func_0207790c(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Impression(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_02077944(a, b, c);
+            CommSend_VillagerImpression(a, b, c);
         }
     }
 }
 
-extern "C" void func_020778b4(u32 a, u32 b, u32 c) {
+extern "C" void CommSend_VillagerFriendship(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
-        func_02077ab4(buf, a, b);
+        CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 1);
@@ -765,29 +765,29 @@ extern "C" void func_020778b4(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void func_0207787c(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Friendship(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_020778b4(a, b, c);
+            CommSend_VillagerFriendship(a, b, c);
         }
     }
 }
 
-extern "C" void func_0207785c(u8 *out, s32 a, s32 b, u16 *c) {
-    func_02077ab4(out + 2, a, b);
+extern "C" void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c) {
+    CommVillager_PackHeader(out + 2, a, b);
     NetBuf_WriteU16(out, *c);
 }
 
-extern "C" void func_0207783c(u32 *o0, u32 *o1, u16 *o2, u8 *src) {
-    func_02077a9c(o0, o1, src + 2);
+extern "C" void CommVillager_UnpackReceivedItem(u32 *o0, u32 *o1, u16 *o2, u8 *src) {
+    CommVillager_UnpackHeader(o0, o1, src + 2);
     *o2 = NetBuf_ReadU16(src);
 }
 
-extern "C" void func_020777f0(u32 a, u32 b, u32 c) {
+extern "C" void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[3];
-        func_0207785c(buf, a, b, (u16 *)c);
+        CommVillager_PackReceivedItem(buf, a, b, (u16 *)c);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 3);
@@ -795,30 +795,30 @@ extern "C" void func_020777f0(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void func_020777b8(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_ReceivedItem(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_020777f0(a, b, c);
+            CommSend_VillagerReceivedItem(a, b, c);
         }
     }
 }
 
-extern "C" void func_020777a0(u8 *out, s32 a, s32 b, u32 c) {
+extern "C" void CommVillager_PackAct3C(u8 *out, s32 a, s32 b, u32 c) {
     out[0] = ((a << 4) & 0xf0) | (b & 0xf);
     out[1] = c;
 }
 
-extern "C" void func_02077780(s32 *o0, u8 *o1, u8 *o2, u8 *src) {
+extern "C" void CommVillager_UnpackAct3C(s32 *o0, u8 *o1, u8 *o2, u8 *src) {
     *o0 = (src[0] >> 4) & 0xf;
     *o1 = src[0] & 0xf;
     *o2 = src[1];
 }
 
-extern "C" void func_02077734(u32 a, u32 b, u32 c) {
+extern "C" void CommSend_VillagerAct3C(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[2];
-        func_020777a0(buf, a, c, b);
+        CommVillager_PackAct3C(buf, a, c, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 2);
@@ -826,29 +826,29 @@ extern "C" void func_02077734(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void func_020776fc(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Act3C(u32 a, u32 b, u32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_02077734(a, b, c);
+            CommSend_VillagerAct3C(a, b, c);
         }
     }
 }
-extern "C" void func_020776f0(u32 a, u32 b) { func_020776fc(a, b, 0); }
-extern "C" void func_020776e4(u32 a) { func_020776fc(a, 0, 1); }
-extern "C" void func_020776d8(u32 a) { func_020776fc(a, 1, 2); }
-extern "C" void func_020776cc(u32 a, u32 b) { func_020776fc(a, b, 3); }
-extern "C" void func_020776c0(u32 a, u32 b) { func_020776fc(a, b, 4); }
+extern "C" void VillagerSync_Act3C00(u32 a, u32 b) { VillagerSync_Act3C(a, b, 0); }
+extern "C" void VillagerSync_Act3C01(u32 a) { VillagerSync_Act3C(a, 0, 1); }
+extern "C" void VillagerSync_Act3C02(u32 a) { VillagerSync_Act3C(a, 1, 2); }
+extern "C" void VillagerSync_Act3C03(u32 a, u32 b) { VillagerSync_Act3C(a, b, 3); }
+extern "C" void VillagerSync_Act3C04(u32 a, u32 b) { VillagerSync_Act3C(a, b, 4); }
 
-extern "C" void func_020776b4(u32 a, u32 b) { func_020776fc(a, b, 5); }
+extern "C" void VillagerSync_Act3C05(u32 a, u32 b) { VillagerSync_Act3C(a, b, 5); }
 
-extern "C" void func_02077684(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e) {
+extern "C" void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e) {
     out[2] = (d & 7) | (((a << 4) & 0xf0) | ((e & 1) << 3));
     out[3] = b;
     NetBuf_WriteU16(out, *c);
 }
 
-extern "C" void func_0207764c(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src) {
+extern "C" void CommVillager_UnpackAct3D(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src) {
     *o0 = (src[2] >> 4) & 0xf;
     *o3 = src[2] & 7;
     *o4 = (src[2] >> 3) & 1;
@@ -856,10 +856,10 @@ extern "C" void func_0207764c(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src
     *o2 = NetBuf_ReadU16(src);
 }
 
-extern "C" void func_020775e8(u32 a, u32 b, u32 c, u32 d, u8 e) {
+extern "C" void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[4];
-        func_02077684(buf, a, b, (u16 *)c, d, e ? 1 : 0);
+        CommVillager_PackAct3D(buf, a, b, (u16 *)c, d, e ? 1 : 0);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 4);
@@ -867,19 +867,19 @@ extern "C" void func_020775e8(u32 a, u32 b, u32 c, u32 d, u8 e) {
     }
 }
 
-extern "C" void func_020775a0(u32 a, u32 b, u32 c, u32 d, u8 e) {
+extern "C" void VillagerSync_Act3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_020775e8(a, b, c, d, e);
+            CommSend_VillagerAct3D(a, b, c, d, e);
         }
     }
 }
 
-extern "C" void func_02077558(u32 a, u16 *b) {
+extern "C" void CommSend_VillagerAct3F(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[3];
-        func_02077508(buf, a, b);
+        CommVillager_PackItem(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 3);
@@ -887,30 +887,30 @@ extern "C" void func_02077558(u32 a, u16 *b) {
     }
 }
 
-extern "C" void func_02077520(u32 a, u16 *b) {
+extern "C" void VillagerSync_Act3F(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_02077558(a, b);
+            CommSend_VillagerAct3F(a, b);
         }
     }
 }
 
-extern "C" void func_02077508(u8 *out, s32 a, u16 *b) {
+extern "C" void CommVillager_PackItem(u8 *out, s32 a, u16 *b) {
     NetBuf_WriteU16(out, *b);
     out[2] = a;
 }
 
-extern "C" void func_020774f0(s32 *out, u16 *dst, u8 *src) {
+extern "C" void CommVillager_UnpackItem(s32 *out, u16 *dst, u8 *src) {
     *out = src[2];
     *dst = NetBuf_ReadU16(src);
 }
 
-extern "C" void func_02077488(u32 a, u16 *b) {
+extern "C" void CommSend_VillagerShirt(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (R1(b, 0x11a8, 0x12a7)) {
             u8 buf[3];
-            func_02077508(buf, a, b);
+            CommVillager_PackItem(buf, a, b);
             void *g = gCommManager;
             _ZN11CommManager11beginRecordEv(g);
             _ZN11CommManager11writeRecordEPhj(g, buf, 3);
@@ -919,16 +919,16 @@ extern "C" void func_02077488(u32 a, u16 *b) {
     }
 }
 
-extern "C" void func_02077450(u32 a, u16 *b) {
+extern "C" void VillagerSync_Shirt(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_02077488(a, b);
+            CommSend_VillagerShirt(a, b);
         }
     }
 }
 
-extern "C" void func_02077428(u8 *out, s32 a, u16 *src) {
+extern "C" void CommVillager_PackItems(u8 *out, s32 a, u16 *src) {
     s32 i;
     for (i = 0; i < 4; i++) {
         NetBuf_WriteU16(out + i * 2, *src);
@@ -937,7 +937,7 @@ extern "C" void func_02077428(u8 *out, s32 a, u16 *src) {
     out[8] = a;
 }
 
-extern "C" void func_02077404(s32 *out, u16 *dst, u8 *src) {
+extern "C" void CommVillager_UnpackItems(s32 *out, u16 *dst, u8 *src) {
     s32 i;
     *out = src[8];
     for (i = 0; i < 4; i++) {
@@ -946,10 +946,10 @@ extern "C" void func_02077404(s32 *out, u16 *dst, u8 *src) {
     }
 }
 
-extern "C" void func_020773b8(u32 a, u16 *b) {
+extern "C" void CommSend_VillagerItems(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager) && b) {
         u8 buf[9];
-        func_02077428(buf, a, b);
+        CommVillager_PackItems(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 9);
@@ -957,29 +957,29 @@ extern "C" void func_020773b8(u32 a, u16 *b) {
     }
 }
 
-extern "C" void func_02077380(u32 a, u16 *b) {
+extern "C" void VillagerSync_Items(u32 a, u16 *b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        a = func_0207e334(a);
+        a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
-            func_020773b8(a, b);
+            CommSend_VillagerItems(a, b);
         }
     }
 }}
 
-Unk_020772cc::Unk_020772cc() {
+BbsPost::BbsPost() {
     using namespace n6;}
 namespace n6 {
 }
 
-Unk_020772cc::~Unk_020772cc() {
+BbsPost::~BbsPost() {
     using namespace n6;}
 namespace n6 {
 
 
 // ---------------------------------------------------------------------------
-extern "C" u8 *func_02077374(u8 *p) { return p; }}
+extern "C" u8 *BbsPost_GetText(u8 *p) { return p; }}
 
-void Unk_020772cc::func_02077348(u8 *src) {
+void BbsPost::init(u8 *src) {
     using namespace n6;
     unk_c0 = src[0];
     unk_c1 = src[1];
@@ -990,22 +990,22 @@ void Unk_020772cc::func_02077348(u8 *src) {
 namespace n6 {
 }
 
-u8 Unk_020772cc::func_02077340() {
+u8 BbsPost::getDay() {
     using namespace n6; return unk_c0; }
 namespace n6 {
 }
 
-u8 Unk_020772cc::func_02077338() {
+u8 BbsPost::getMonth() {
     using namespace n6; return unk_c1; }
 namespace n6 {
 }
 
-u8 Unk_020772cc::func_02077330() {
+u8 BbsPost::getYear() {
     using namespace n6; return unk_c2; }
 namespace n6 {
 }
 
-BOOL Unk_020772cc::func_02077310(s32 i) {
+BOOL BbsPost::isRead(s32 i) {
     using namespace n6;
     if (i < 0 || i >= 4) return TRUE;
     if (unk_c3 & (1 << i)) return TRUE;
@@ -1014,7 +1014,7 @@ BOOL Unk_020772cc::func_02077310(s32 i) {
 namespace n6 {
 }
 
-void Unk_020772cc::func_020772f0(s32 i) {
+void BbsPost::setRead(s32 i) {
     using namespace n6;
     if (i >= 0 && i < 4) {
         unk_c3 |= (u8)(1 << i);
@@ -1023,7 +1023,7 @@ void Unk_020772cc::func_020772f0(s32 i) {
 namespace n6 {
 }
 
-BOOL Unk_020772cc::func_020772dc() {
+BOOL BbsPost::isFreeText() {
     using namespace n6;
     if (unk_c3 & 0x10) return TRUE;
     return FALSE;
@@ -1032,35 +1032,35 @@ namespace n6 {
 }
 
 
-void Unk_020772cc::func_020772cc() {
+void BbsPost::markFreeText() {
     using namespace n6; unk_c3 |= 0x10; }
 namespace n6 {
 }
 
-Unk_02077198::Unk_02077198() {
+BbsBoard::BbsBoard() {
     using namespace n6;}
 namespace n6 {
 }
 
 
-Unk_02077198::~Unk_02077198() {
+BbsBoard::~BbsBoard() {
     using namespace n6;}
 namespace n6 {
 }
 
-Unk_020772cc *Unk_02077198::func_02077280(s32 idx) {
+BbsPost *BbsBoard::postAt(s32 idx) {
     using namespace n6; return &unk_000[idx]; }
 namespace n6 {
 }
 
 
-Unk_020772cc *Unk_02077198::func_02077278(s32 idx) {
-    using namespace n6; return func_02077280(idx); }
+BbsPost *BbsBoard::getPost(s32 idx) {
+    using namespace n6; return postAt(idx); }
 namespace n6 {
 }
 
 
-void Unk_02077198::func_02077264() {
+void BbsBoard::clear() {
     using namespace n6;
     unk_b7e = 0;
     unk_b7c = 0;
@@ -1069,29 +1069,29 @@ namespace n6 {
 }
 
 
-void Unk_02077198::func_0207723c() {
+void BbsBoard::reset() {
     using namespace n6;
-    func_02077264();
-    func_02076fc8(0, data_020e0544);
-    func_02076fc8(1, data_020e0544);
+    clear();
+    Bbs_PostMsgToday(0, sBbsDefaultKey);
+    Bbs_PostMsgToday(1, sBbsDefaultKey);
 }
 namespace n6 {
 }
 
 
-u8 Unk_02077198::func_02077230() {
+u8 BbsBoard::getPostCount() {
     using namespace n6; return unk_b7e; }
 namespace n6 {
 }
 
 
-Unk_020772cc *Unk_02077198::func_020771f0() {
+BbsPost *BbsBoard::addPost() {
     using namespace n6;
     if (unk_b7e < 15) {
         unk_b7e++;
         return &unk_000[unk_b7e - 1];
     } else {
-        func_02077198(0);
+        removePost(0);
         unk_b7e = 15;
         return &unk_000[unk_b7e - 1];
     }
@@ -1099,19 +1099,19 @@ Unk_020772cc *Unk_02077198::func_020771f0() {
 namespace n6 {
 }
 
-u16 Unk_02077198::func_020771e4() {
+u16 BbsBoard::getNoticeId() {
     using namespace n6; return unk_b7c; }
 namespace n6 {
 }
 
 
-void Unk_02077198::func_020771d8(u16 v) {
+void BbsBoard::setNoticeId(u16 v) {
     using namespace n6; unk_b7c = v; }
 namespace n6 {
 }
 
 
-void Unk_02077198::func_02077198(s32 idx) {
+void BbsBoard::removePost(s32 idx) {
     using namespace n6;
     s32 i;
     for (i = idx; i < unk_b7e - 1; i++) {
@@ -1122,23 +1122,23 @@ void Unk_02077198::func_02077198(s32 idx) {
 namespace n6 {
 }
 
-Unk_020e0574::Unk_020e0574() {
+MsgString193::MsgString193() {
     using namespace n6; clear(); }
 namespace n6 {
 }
 
-Unk_020e0574::~Unk_020e0574() {
+MsgString193::~MsgString193() {
     using namespace n6;}
 namespace n6 {
 }
 
-u32 Unk_020e0574::vfunc_08() {
+u32 MsgString193::vfunc_08() {
     using namespace n6; return 0xc1; }
 namespace n6 {
 }
 
 
-u8 *Unk_020e0574::vfunc_0c() {
+u8 *MsgString193::vfunc_0c() {
     using namespace n6; return unk_12; }
 namespace n6 {
 }
@@ -1156,22 +1156,22 @@ extern "C" {
 void _ZN11CommManager13appendControlEPvj(void *ctx, const void *p, u32 n);
 }
 extern "C" {
-void *_ZN12Unk_0209ada413func_0209ada4Ev(void *);
+void *_ZN12Unk_0209ada44initEv(void *);
 }
 extern "C" {
 void _ZN12Unk_0209ada413func_0209ada0Ev(void *);
 }
 extern "C" {
-void *func_0207aa78(s32 i);
+void *VillagerStates_GetEntry(s32 i);
 }
 extern "C" {
-void func_0207857c(void *p, u32 v);
+void VillagerState_SetPresence(void *p, u32 v);
 }
 extern "C" {
-void *func_02078578(void *p);
+void *VillagerState_GetErrand(void *p);
 }
 extern "C" {
-u32 func_02078580(void *p);
+u32 VillagerState_GetPresence(void *p);
 }
 extern "C" {
 u32 _ZN12Unk_0209ada413func_0209ac64Ev(void *);
@@ -1261,28 +1261,28 @@ extern "C" {
 s32 func_020e9d88(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_0207719813func_02077230Ev(void *p);
+void _ZN8BbsBoard12getPostCountEv(void *p);
 }
 extern "C" {
-void *_ZN12Unk_0207719813func_020771f0Ev(void *p);
+void *_ZN8BbsBoard7addPostEv(void *p);
 }
 extern "C" {
 void Clock_GetDate(void *p);
 }
 extern "C" {
-void _ZN12Unk_020772cc13func_02077348EPh(void *p, void *q);
+void _ZN7BbsPost4initEPh(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_020772cc13func_020772ccEv(void *p);
+void _ZN7BbsPost12markFreeTextEv(void *p);
 }
 extern "C" {
-u8 *func_02077374(void *p);
+u8 *BbsPost_GetText(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0574C1Ev(void *p);
+void _ZN12MsgString193C1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0574D1Ev(void *p);
+void _ZN12MsgString193D1Ev(void *p);
 }
 extern "C" {
 void _ZN12Unk_020e0488C1Ev(void *p);
@@ -1327,7 +1327,7 @@ extern "C" {
 void _ZdlPv(void *);
 }
 extern "C" {
-void func_02076ff0(u32 a, u32 b, u32 c, u32 d, u8 e);
+void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e);
 }
 extern "C" {
 void _ZN13DwcFriendDataD1Ev(void *p);
@@ -1369,7 +1369,7 @@ extern "C" {
 void NetBuf_Pack20(u8 *p, s32 v, u8 hi);
 }
 extern "C" {
-BOOL func_02077040(void *self, void *p);
+BOOL BbsPost_SetTextFromMsg(void *self, void *p);
 }
 extern "C" {
 BOOL Comm_HasSendCredit(u32 mask);
@@ -1384,7 +1384,7 @@ extern "C" {
 u32 DwcFriendData_GetBytes(void *);
 }
 extern "C" {
-void func_02077118(void *a, u32 b, u32 c);
+void Bbs_LoadMsg(void *a, u32 b, u32 c);
 }
 extern "C" {
 s32 DwcFriendData_IsFriendKey(void);
@@ -1405,45 +1405,45 @@ struct Unk_02076f28_T {
 
 struct Unk_02076ff0_Obj {
     u32 pad[0xd8 / 4];
-    Unk_02076ff0_Obj() { _ZN12Unk_020e0574C1Ev(this); }
-    ~Unk_02076ff0_Obj() { _ZN12Unk_020e0574D1Ev(this); }
+    Unk_02076ff0_Obj() { _ZN12MsgString193C1Ev(this); }
+    ~Unk_02076ff0_Obj() { _ZN12MsgString193D1Ev(this); }
 };
 
 struct Unk_02077040_A { u32 pad[0x40 / 4]; Unk_02077040_A() { _ZN12Unk_020e0488C1Ev(this); } ~Unk_02077040_A() { _ZN12Unk_020e0488D1Ev(this); } };
 struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN12Unk_020e0470C1Ev(this); } ~Unk_02077040_B() { _ZN12Unk_020e0470D1Ev(this); } };
 
 
-extern "C" void func_02077118(void *a, u32 b, u32 c) {
+extern "C" void Bbs_LoadMsg(void *a, u32 b, u32 c) {
     volatile u8 v = *data_021edb68;
     v = (u8)b;
     MailText_LoadBbs(a, (void *)&v, c);
 }}
 
 
-Unk_020e055c::Unk_020e055c() {
+EncodedString192::EncodedString192() {
     using namespace n5;}
 namespace n5 {
 }
 
-Unk_020e055c::~Unk_020e055c() {
+EncodedString192::~EncodedString192() {
     using namespace n5;}
 namespace n5 {
 }
 
-u32 Unk_020e055c::vfunc_08() {
+u32 EncodedString192::capacity() {
     using namespace n5; return 0xc0; }
 namespace n5 {
 }
 
-u8 *Unk_020e055c::vfunc_0c() {
+u8 *EncodedString192::data() {
     using namespace n5; return unk_0e; }
 namespace n5 {
 
 
-extern "C" BOOL func_02077040(void *self, void *r1) {
+extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
     Unk_02077040_A o1;
     Unk_02077040_B o2;
-    u8 *buf = func_02077374(self);
+    u8 *buf = BbsPost_GetText(self);
     s32 n = 0;
     s32 i = n;
     for (; i < 6; i++) {
@@ -1464,34 +1464,34 @@ extern "C" BOOL func_02077040(void *self, void *r1) {
     return TRUE;
 }
 
-extern "C" void func_02076ff0(u32 a, u32 b, u32 c, u32 d, u8 e) {
+extern "C" void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e) {
     Unk_02076ff0_Obj o;
     u8 l[3];
-    func_02077118(&o, a, b);
-    void *r = _ZN12Unk_0207719813func_020771f0Ev(data_021e87d8);
+    Bbs_LoadMsg(&o, a, b);
+    void *r = _ZN8BbsBoard7addPostEv(data_021e87d8);
     l[2] = c;
     l[1] = d;
     l[0] = e;
-    _ZN12Unk_020772cc13func_02077348EPh(r, l);
-    func_02077040(r, &o);
+    _ZN7BbsPost4initEPh(r, l);
+    BbsPost_SetTextFromMsg(r, &o);
 }
 
-extern "C" void func_02076fc8(u32 a, u32 b) {
+extern "C" void Bbs_PostMsgToday(u32 a, u32 b) {
     Unk_02076fc8_D d;
     Clock_GetDate(&d);
-    func_02076ff0(a, b, d.c, d.b, d.a);
+    Bbs_PostMsgDated(a, b, d.c, d.b, d.a);
 }
 
-extern "C" void func_02076f88(void *dst) {
+extern "C" void Bbs_AddPost(void *dst) {
     u32 loc;
-    void *r = _ZN12Unk_0207719813func_020771f0Ev(data_021e87d8);
+    void *r = _ZN8BbsBoard7addPostEv(data_021e87d8);
     Clock_GetDate(&loc);
-    _ZN12Unk_020772cc13func_02077348EPh(r, &loc);
-    _ZN12Unk_020772cc13func_020772ccEv(r);
-    MI_CpuCopy8(dst, func_02077374(r), 0xc0);
+    _ZN7BbsPost4initEPh(r, &loc);
+    _ZN7BbsPost12markFreeTextEv(r);
+    MI_CpuCopy8(dst, BbsPost_GetText(r), 0xc0);
 }
 
-extern "C" void func_02076f78(void) { _ZN12Unk_0207719813func_02077230Ev(data_021e87d8); }
+extern "C" void Bbs_GetPostCount(void) { _ZN8BbsBoard12getPostCountEv(data_021e87d8); }
 
 extern "C" void _ZN13DwcFriendDataC1Ev(void *) {}
 extern "C" void _ZN13DwcFriendDataD1Ev(void *) {}
@@ -1624,9 +1624,9 @@ extern "C" void FriendEntry_Clear(void *pp) {
     Mem_Clear(p + 0x14, 8);
 }
 extern "C" void FriendEntry_GetFriendData(void *p) {}
-extern "C" u8 *func_02076cec(u8 *p) { return p + 0xc; }
+extern "C" u8 *FriendEntry_GetPlayerName(u8 *p) { return p + 0xc; }
 
-extern "C" u8 *func_02076ce8(u8 *p) { return p + 0x14; }
+extern "C" u8 *FriendEntry_GetTownName(u8 *p) { return p + 0x14; }
 
 extern "C" u8 *PlayerWifiData_Construct(u8 *p) {
     _ZN13DwcFriendDataC1Ev(p + 0x40);
@@ -1643,10 +1643,10 @@ extern "C" void PlayerWifiData_Create(u8 *p) {
     u32 r = DwcFriendData_GetBytes(p + 0x40);
     func_020ea3d0(p, r);
 }
-extern "C" void func_02076c94(void) { func_020ea3c4(); }
-extern "C" void func_02076c8c(void) { func_020ea3dc(); }
+extern "C" void PlayerWifiData_GetFriendCode(void) { func_020ea3c4(); }
+extern "C" void PlayerWifiData_HasUserId(void) { func_020ea3dc(); }
 
-extern "C" void func_02076c84(void) { func_020e9d94(); }
+extern "C" void PlayerWifiData_IsConfigValid(void) { func_020e9d94(); }
 
 extern "C" void PlayerWifiData_GetDwcUserData(void) {}
 
@@ -1818,14 +1818,14 @@ extern "C" void CommBlock_WriteAct01(void) {
     i = 0;
     ctx = gCommManager;
     for (; i < 8; i++) {
-        p = func_0207aa78(i);
+        p = VillagerStates_GetEntry(i);
         if (p != NULL) {
-            t.b = (u8)func_02078580(p);
+            t.b = (u8)VillagerState_GetPresence(p);
         } else {
             t.b = 3;
         }
         _ZN11CommManager13appendControlEPvj(ctx, &t.b, 1);
-        _ZN11CommManager13appendControlEPvj(ctx, func_02078578(p), 12);
+        _ZN11CommManager13appendControlEPvj(ctx, VillagerState_GetErrand(p), 12);
         v = *(u32 *)((u8 *)p + 0x20);
         _ZN11CommManager13appendControlEPvj(ctx, &v, 4);
         t.h = *(u16 *)((u8 *)p + 0x24);
@@ -1844,14 +1844,14 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
     Unk_020767f8_Tag *tp = &t;
     s32 i;
     t.b = 3;
-    _ZN12Unk_0209ada413func_0209ada4Ev(obj);
+    _ZN12Unk_0209ada44initEv(obj);
     for (i = 0; i < 8; i++) {
-        void *p = func_0207aa78(i);
+        void *p = VillagerStates_GetEntry(i);
         t.b = 3;
         MI_CpuCopy8(buf, &t.b, 1);
-        func_0207857c(p, t.b);
+        VillagerState_SetPresence(p, t.b);
         MI_CpuCopy8(buf + 1, obj, 12);
-        void *q = func_02078578(p);
+        void *q = VillagerState_GetErrand(p);
         u32 a = _ZN12Unk_0209ada413func_0209ac64Ev(obj);
         u32 b = _ZN12Unk_0209ada413func_0209ab94Ev(obj);
         _ZN12Unk_0209ada413func_0209ad54EhPth(q, a, b, z8);
@@ -2406,16 +2406,16 @@ extern "C" {
 void _ZN11CommManager10readRecordEPhj(void *, void *, s32);
 }
 extern "C" {
-void func_02077404(u32 *, u16 *, void *);
+void CommVillager_UnpackItems(u32 *, u16 *, void *);
 }
 extern "C" {
 void *SaveVillagers_Get(void *, u32);
 }
 extern "C" {
-void *func_0207d074(void *, s32);
+void *Villager_GetReceivedItem(void *, s32);
 }
 extern "C" {
-void func_020774f0(u32 *, u16 *, void *);
+void CommVillager_UnpackItem(u32 *, u16 *, void *);
 }
 extern "C" {
 s32 _ZN23VillagerDataProfileView8setShirtEPt(void *, u16 *);
@@ -2424,10 +2424,10 @@ extern "C" {
 void Villager_GetPlan();
 }
 extern "C" {
-void *func_0209a60c();
+void *VillagerPlanBlock_GetErrand();
 }
 extern "C" {
-void *func_0209a940(void *);
+void *PlanErrand_GetRecord(void *);
 }
 extern "C" {
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
@@ -2436,16 +2436,16 @@ extern "C" {
 s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *);
 }
 extern "C" {
-u16 *func_0209a8e8(void *);
+u16 *PlanErrand_GetShownItem(void *);
 }
 extern "C" {
-s32 func_0207764c(u32 *, u8 *, u16 *, s32 *, u8 *, u32 *);
+s32 CommVillager_UnpackAct3D(u32 *, u8 *, u16 *, s32 *, u8 *, u32 *);
 }
 extern "C" {
-void func_0207e310(void *);
+void Villager_GetState(void *);
 }
 extern "C" {
-void func_02078578();
+void VillagerState_GetErrand();
 }
 extern "C" {
 void _ZN12Unk_0209ada413func_0209ad80Ev();
@@ -2457,40 +2457,40 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 }
 extern "C" {
-s32 func_0209a9f0(void *, u32, u16 *, void *, s32);
+s32 PlanErrand_Assign(void *, u32, u16 *, void *, s32);
 }
 extern "C" {
-void func_02077780(u32 *, u8 *, u8 *, u16 *);
+void CommVillager_UnpackAct3C(u32 *, u8 *, u8 *, u16 *);
 }
 extern "C" {
 s32 _ZN12Unk_0209ada413func_0209abb4Eh(void *, u32);
 }
 extern "C" {
-s32 func_0209aaa0(void *);
+s32 PlanErrand_ResetProgress(void *);
 }
 extern "C" {
-s32 func_0209a944(void *);
+s32 PlanErrand_AdvanceStep(void *);
 }
 extern "C" {
-s32 func_0209a8c8(void *, u32);
+s32 PlanErrand_SetFossilGroup(void *, u32);
 }
 extern "C" {
-s32 func_0209a8b4(void *, u32);
+s32 PlanErrand_SetFlag(void *, u32);
 }
 extern "C" {
-void func_0207783c(u32 *, u32 *, u16 *, u8 *);
+void CommVillager_UnpackReceivedItem(u32 *, u32 *, u16 *, u8 *);
 }
 extern "C" {
 void *Villager_GetMemory(void *, u32);
 }
 extern "C" {
-s32 func_02080f94(void *);
+s32 VillagerMemory_IsUsed(void *);
 }
 extern "C" {
 s32 _ZN14VillagerMemory15setReceivedItemEPt(void *, u16 *);
 }
 extern "C" {
-void func_02077a9c(u32 *, u32 *, void *);
+void CommVillager_UnpackHeader(u32 *, u32 *, void *);
 }
 extern "C" {
 s32 _ZN14VillagerMemory13setFriendshipEa(void *, s32);
@@ -2499,7 +2499,7 @@ extern "C" {
 s32 _ZN14VillagerMemory13setImpressionEi(void *, u32);
 }
 extern "C" {
-s32 func_02080ecc(void *, void *, u8 *, s32);
+s32 VillagerMemory_RecordTalk(void *, void *, u8 *, s32);
 }
 extern "C" {
 s32 VillagerMemory_InitForPlayer(void *, void *, u8 *, s32);
@@ -2761,7 +2761,7 @@ extern "C" void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d) {
 extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
-    func_02077a9c(&id, &x, &buf);
+    CommVillager_UnpackHeader(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
@@ -2775,13 +2775,13 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
 extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
-    func_02077a9c(&id, &x, &buf);
+    CommVillager_UnpackHeader(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
             void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
-            func_02080ecc(r5, r1, data_021d7352, 0);
+            VillagerMemory_RecordTalk(r5, r1, data_021d7352, 0);
         }
     }
 }
@@ -2791,7 +2791,7 @@ extern "C" void CommRecv_VillagerImpression() {
     u32 id, x;
     void *r5 = gCommManager;
     _ZN11CommManager10readRecordEPhj(r5, b, 1);
-    func_02077a9c(&id, &x, b);
+    CommVillager_UnpackHeader(&id, &x, b);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
@@ -2807,7 +2807,7 @@ extern "C" void CommRecv_VillagerFriendship() {
     u32 id, x;
     void *r5 = gCommManager;
     _ZN11CommManager10readRecordEPhj(r5, b, 1);
-    func_02077a9c(&id, &x, b);
+    CommVillager_UnpackHeader(&id, &x, b);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
@@ -2824,12 +2824,12 @@ extern "C" void CommRecv_VillagerReceivedItem() {
     u32 k;
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
-    func_0207783c(&id, &k, &l.x, l.y);
+    CommVillager_UnpackReceivedItem(&id, &k, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, k);
         if (r4 != NULL) {
-            if (func_02080f94(r4) != 0) {
+            if (VillagerMemory_IsUsed(r4) != 0) {
                 _ZN14VillagerMemory15setReceivedItemEPt(r4, &l.x);
             }
         }
@@ -2842,36 +2842,36 @@ extern "C" void CommRecv_Act3C() {
     l.a = 6;
     l.b = 0;
     _ZN11CommManager10readRecordEPhj(gCommManager, &l.c, 2);
-    func_02077780(&id, &l.a, &l.b, &l.c);
+    CommVillager_UnpackAct3C(&id, &l.a, &l.b, &l.c);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         Villager_GetPlan();
-        u8 *r4 = (u8 *)func_0209a60c();
+        u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand();
         switch (l.a) {
         case 0:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a940(r4))) {
-                _ZN12Unk_0209ada413func_0209abb4Eh(func_0209a940(r4), l.b);
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+                _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(r4), l.b);
             }
             break;
         case 1:
-            func_0209aaa0(r4);
+            PlanErrand_ResetProgress(r4);
             break;
         case 2:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a940(r4))) {
-                func_0209a944(r4);
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+                PlanErrand_AdvanceStep(r4);
             }
             break;
         case 3:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a940(r4))) {
-                func_0209a8c8(r4, l.b);
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+                PlanErrand_SetFossilGroup(r4, l.b);
             }
             break;
         case 4:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a940(r4))) {
-                func_0209a8b4(r4, l.b);
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+                PlanErrand_SetFlag(r4, l.b);
             }
         case 5:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a940(r4))) {
+            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
                 *(r4 + 0x26) = l.b;
             }
             break;
@@ -2889,16 +2889,16 @@ extern "C" void CommRecv_Act3D() {
     n = 4;
     l.b = 0;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 4);
-    func_0207764c(&id, &l.a, &l.c, &n, &l.b, &buf);
+    CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, &buf);
     void *r6 = SaveVillagers_Get(data_021dfd8c, id);
     if (r6 != NULL) {
         Villager_GetPlan();
-        void *r7 = func_0209a60c();
+        void *r7 = VillagerPlanBlock_GetErrand();
         void *r4 = NULL;
         BOOL t = l.b ? TRUE : FALSE;
         BOOL r5 = t ? TRUE : FALSE;
-        func_0207e310(r6);
-        func_02078578();
+        Villager_GetState(r6);
+        VillagerState_GetErrand();
         _ZN12Unk_0209ada413func_0209ad80Ev();
         if (n < 4) {
             void *q = PlayerData_GetBySessionSlot((void *)n);
@@ -2906,7 +2906,7 @@ extern "C" void CommRecv_Act3D() {
                 r4 = _ZN10PlayerData11getPlayerIdEv(q);
             }
         }
-        func_0209a9f0(r7, l.a, &l.c, r4, r5);
+        PlanErrand_Assign(r7, l.a, &l.c, r4, r5);
     }
 }
 
@@ -2915,12 +2915,12 @@ extern "C" void CommRecv_Act3F() {
     u32 id;
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 4);
-    func_020774f0(&id, &l.x, l.y);
+    CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         Villager_GetPlan();
-        void *r5 = func_0209a60c();
-        void *r4 = func_0209a940(r5);
+        void *r5 = VillagerPlanBlock_GetErrand();
+        void *r4 = PlanErrand_GetRecord(r5);
         if (_ZN12Unk_0209ada413func_0209ad68Ev(r4)) {
             if (_ZN12Unk_0209ada413func_0209ac64Ev(r4) == 0) {
                 if (Unk_02075680_R(&l.x, 0x12b0, 0x12e7)) goto set;
@@ -2928,7 +2928,7 @@ extern "C" void CommRecv_Act3F() {
             if (_ZN12Unk_0209ada413func_0209ac64Ev(r4) == 1) {
                 if (Unk_02075680_R(&l.x, 0x12e8, 0x131f)) {
                 set:
-                    u16 *p = func_0209a8e8(r5);
+                    u16 *p = PlanErrand_GetShownItem(r5);
                     *p = l.x;
                 }
             }
@@ -2942,7 +2942,7 @@ extern "C" void CommRecv_VillagerShirt() {
     Unk_02075680_Pad pad;
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
-    func_020774f0(&id, &l.x, l.y);
+    CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         BOOL r4 = Unk_02075680_R(&l.x, 0x11a8, 0x12a7);
@@ -2961,11 +2961,11 @@ extern "C" void CommRecv_VillagerItems() {
     arr[2] = 0xfff1;
     arr[3] = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 9);
-    func_02077404(&id, arr, buf);
+    CommVillager_UnpackItems(&id, arr, buf);
     r5 = SaveVillagers_Get(data_021dfd8c, id);
     if (r5 != NULL) {
         for (i = 0; i < 4; i++) {
-            u16 *p = (u16 *)func_0207d074(r5, i);
+            u16 *p = (u16 *)Villager_GetReceivedItem(r5, i);
             if (p != NULL) {
                 *p = arr[i];
             }
@@ -4273,7 +4273,7 @@ const FPT_data_020cbd60 sCommSyncVarInitHandlers[70] = {
 }
 }
 extern char data_020e0548[];
-char *data_020e0544 = data_020e0548;
+char *sBbsDefaultKey = data_020e0548;
 char data_020e0548[] = "bbs_default";
 namespace n0 {
 extern "C" {

@@ -44,7 +44,7 @@ void func_020968e0();
 void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
-void func_02099a98();
+void Arbeit_NotifyLetterWritten();
 s32 func_020991fc();
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_ResetLayer(s32 a);
@@ -439,7 +439,7 @@ extern "C" {
 void Gfx2d_SetSubBrightness(s32 a);
 void Gfx2d_EndSubObjWinBrightness();
 void Gfx2d_BeginSubObjWinBrightness();
-BOOL func_02087dac(void *r, s32 x, s32 y, s32 w, s32 h);
+BOOL Cell_HitTest(void *r, s32 x, s32 y, s32 w, s32 h);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
 void func_02088730(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
@@ -2612,7 +2612,7 @@ BOOL LetterStorageMenu::hitPageTab(s32 x, s32 y) {
     yv = y - 0x60;
     for (i = 0, j = i; i < 3; i++, j += 3) {
         if (i != unk_2a8) {
-            if (func_02087dac(&data_ov105_02298544[j], xs, yv, 2, 2)) {
+            if (Cell_HitTest(&data_ov105_02298544[j], xs, yv, 2, 2)) {
                 unk_2a8 = i;
                 return TRUE;
             }

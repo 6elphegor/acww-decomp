@@ -193,7 +193,7 @@ s32 func_0209801c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_0202e1cc(s32 a, s32 b);
+void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 }
 
 extern "C" {

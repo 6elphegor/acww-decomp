@@ -12,8 +12,8 @@ class EncodedString {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ u8 unk_04[10];
@@ -40,8 +40,8 @@ class Unk_020dd374 : public EncodedString {
 public:
     Unk_020dd374();
     virtual ~Unk_020dd374();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     void func_020637e8(void *p, u32 n);
 
     /* 0x0e */ u8 unk_0e[14];
@@ -71,9 +71,9 @@ Unk_020dd374::Unk_020dd374() {}
 
 Unk_020dd374::~Unk_020dd374() {}
 
-u32 Unk_020dd374::vfunc_08() { return 8; }
+u32 Unk_020dd374::capacity() { return 8; }
 
 void Unk_020dd374::func_020637e8(void *p, u32 n) { MI_CpuCopy8(unk_0e, p, n); }
 
-u8 *Unk_020dd374::vfunc_0c() { return unk_0e; }
+u8 *Unk_020dd374::data() { return unk_0e; }
 

@@ -14,126 +14,126 @@ struct Unk_020254ec_Out;
 struct Unk_02027a34_Out;
 class VillagerTalkRequestItemTopics {
 public:
-    void func_020238b0();
-    void func_02023928(Unk_020238b0_Out *);
-    void func_020239c8(Unk_020238b0_Out *);
-    void func_02023ab4(Unk_020238b0_Out *);
-    void func_02023b50(Unk_020238b0_Out *);
-    void func_02023c80();
+    void openArbeitItemPicker();
+    void selectQComp(Unk_020238b0_Out *);
+    void selectQReturn(Unk_020238b0_Out *);
+    void selectQEnd(Unk_020238b0_Out *);
+    void selectQClear(Unk_020238b0_Out *);
+    void handOverQItemB();
     void selectQItemB(Unk_020238b0_Out *);
-    void func_020241a0();
+    void gotoQItemB();
 };
 class VillagerTalkRequestStartTopics : public VillagerTalkRequestItemTopics {
 public:
-    void func_020254ec();
-    void func_02025540(Unk_020254ec_Out *);
+    void gotoQ05Talk();
+    void selectQCon(Unk_020254ec_Out *);
     void selectQNo(Unk_020254ec_Out *);
     void selectQStart(Unk_020254ec_Out *);
-    void func_020257f0();
-    void func_0202585c();
+    void openRequestChoice();
+    void prepareRequestItem();
 };
 class VillagerTalkKaraokeTopics : public VillagerTalkRequestStartTopics {
 public:
-    void func_0201f7d0();
-    void func_0201f83c(Unk_0201f7d0_Out *);
-    void func_0201f89c(Unk_0201f7d0_Out *);
-    void func_0201f9c0();
-    void func_0201f9f8(Unk_0201f7d0_Out *);
-    void func_0201fa58(Unk_0201f7d0_Out *);
+    void openEvAdmireChoice();
+    void selectEvAdmireMsg7(Unk_0201f7d0_Out *);
+    void selectEvAdmireMsg2(Unk_0201f7d0_Out *);
+    void openEvAdmireWordEntry();
+    void selectEvAdmire(Unk_0201f7d0_Out *);
+    void selectEvAdmireTalk(Unk_0201f7d0_Out *);
     void selectEvFirework(Unk_0201f7d0_Out *);
-    void func_0201fc48();
+    void openSmallTalkChoice();
     void selectEvKaraokeMsg17(Unk_0201f7d0_Out *);
     void selectEvKaraokeMsg14(Unk_0201f7d0_Out *);
     void selectEvKaraokeMsg12(Unk_0201f7d0_Out *);
     void selectEvKaraokeMsg10(Unk_0201f7d0_Out *);
     void selectEvKaraokeMsg8(Unk_0201f7d0_Out *);
-    void func_0201fed0();
+    void openEvKaraokeMsg6Choice();
     void selectEvKaraokeMsg6(Unk_0201f7d0_Out *);
-    void func_02020010();
-    void func_02020030();
+    void startEvKaraokeAction();
+    void continueEvKaraokeMsg20();
     void selectEvKaraokeMsg20(Unk_0201f7d0_Out *);
 };
 class VillagerTalkAcornTopics : public VillagerTalkKaraokeTopics {
 public:
-    void func_0201e5a4(u32);
+    void selectEvSnowfesTalk(u32);
     void selectEvAcornMsg15(Unk_0201e5a4_Out *);
-    void func_0201e710();
+    void giveAcornReward();
     void selectEvAcornMsg19(Unk_0201e5a4_Out *);
-    void func_0201e87c();
+    void rollAcornReward();
     void selectEvAcornMsg17(Unk_0201e5a4_Out *);
-    void func_0201ea8c();
-    void func_0201eabc();
+    void openAcornPicker();
+    void openEvAcornGiveChoice();
     void selectEvAcornMsg13(Unk_0201e5a4_Out *);
-    void func_0201eb8c();
-    void func_0201eb94();
-    void func_0201eb9c();
+    void openSmallTalkChoiceAcorn();
+    void selectEtcConnectAcorn();
+    void continueEvAcornMsg7();
     void selectEvAcornMsg7(Unk_0201e5a4_Out *);
     void selectEvAcornMsg10(Unk_0201e5a4_Out *);
     void selectEvAcorn(Unk_0201e5a4_Out *);
-    void func_0201ed3c(u32);
-    void func_0201ee9c();
+    void selectEvAcornTalk(u32);
+    void openSmallTalkChoiceGardeniing();
 };
 class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {
 public:
-    void func_0201eea4();
-    void func_0201eeac();
+    void selectEtcConnectGardeniing();
+    void continueEvGardeniingMsg10();
     void selectEvGardeniingMsg10(Unk_0201ef00_Out *);
     void selectEvGardeniingMsg13(Unk_0201ef00_Out *);
     void selectEvGardeniing(Unk_0201ef00_Out *);
-    void func_0201f058(void *);
+    void selectEvGardeniingTalk(void *);
     void selectEvInsect(Unk_0201ef00_Out *);
     void selectEvFishing(Unk_0201ef00_Out *);
-    void func_0201f55c();
-    void func_0201f564();
-    void func_0201f56c();
+    void openSmallTalkChoiceAdmire();
+    void selectEtcConnectAdmire();
+    void continueEvAdmireMsg4();
     void selectEvAdmireMsg4(Unk_0201ef00_Out *);
     void selectEvAdmireMsg10(Unk_0201ef00_Out *);
     void selectEvAdmireMsg14(Unk_0201ef00_Out *);
-    void func_0201f738();
+    void openEvAdmireWordEntryB();
     void selectEvAdmireMsg12(Unk_0201ef00_Out *);
 };
 class VillagerTalkHolidayTopics : public VillagerTalkHobbyTopics {
 public:
-    void func_0201dd1c();
-    void func_0201dd3c(Unk_0201dc44_Ret *);
-    void func_0201ddd4(Unk_0201dc44_Ret *);
-    void func_0201de08(Unk_0201dc44_Ret *);
-    void func_0201de3c(Unk_0201dc44_Ret *);
-    void func_0201de70();
-    void func_0201de78();
-    void func_0201de80();
+    void continueEvBirthMsg0();
+    void selectEvBirthMsg0(Unk_0201dc44_Ret *);
+    void selectTsuFriendOnce(Unk_0201dc44_Ret *);
+    void selectTsuSpotOnce(Unk_0201dc44_Ret *);
+    void selectTsuAlwaysOnce(Unk_0201dc44_Ret *);
+    void openSmallTalkChoiceCountdown();
+    void selectEtcConnectCountdown();
+    void continueEvCountdownMsg18();
     void selectEvCountdownMsg18(Unk_0201dc44_Ret *);
     void selectEvCountdownMsg16(Unk_0201dc44_Ret *);
     void selectEvCountdownMsg14(Unk_0201dc44_Ret *);
     void selectEvCountdownB(Unk_0201dc44_Ret *);
     void selectEvCountdown(Unk_0201dc44_Ret *);
-    void func_0201e110();
-    void func_0201e18c();
-    void func_0201e194();
-    void func_0201e1e8();
-    void func_0201e1f0(Unk_0201dc44_Ret *);
-    void func_0201e334();
-    void func_0201e33c();
-    void func_0201e344();
+    void openEvCountdownChoice();
+    void selectEtcConnectCountdownB();
+    void continueGreetingCountdown();
+    void selectGreetingCountdown();
+    void selectEvCountdownTalk(Unk_0201dc44_Ret *);
+    void openSmallTalkChoiceSnowfes();
+    void selectEtcConnectSnowfes();
+    void continueEvSnowfesC();
     void selectEvSnowfesC(Unk_0201dc44_Ret *);
     void selectEvSnowfesB(Unk_0201dc44_Ret *);
     void selectEvSnowfes(Unk_0201dc44_Ret *);
 };
 class VillagerTalkRequestReplyTopics : public VillagerTalkHolidayTopics {
 public:
-    void func_02027a34(Unk_02027a34_Out *);
-    void func_02027b08();
-    void func_02027b1c();
-    void func_02027c6c(Unk_02027a34_Out *);
-    void func_02027cf8();
+    void selectDeliveryLate(Unk_02027a34_Out *);
+    void getRequestKind();
+    void acceptDeliveryRequest();
+    void selectDeliveryAccepted(Unk_02027a34_Out *);
+    void continueQFull();
     void selectQFull(Unk_02027a34_Out *);
     void selectQNoB(Unk_02027a34_Out *);
-    void func_02027dec();
+    void openDeliveryAcceptChoice();
     void selectQTime(Unk_02027a34_Out *);
-    void func_02027f34();
-    void func_02027f88();
-    void func_02027fd8(Unk_02027a34_Out *);
-    void func_020280c0();
+    void gotoDeliveryTime();
+    void pickDeliveryRecipient();
+    void selectDeliveryRequest(Unk_02027a34_Out *);
+    void openConnectMenu();
 };
 class VillagerTalkTopics : public VillagerTalkRequestReplyTopics {
 public:
@@ -142,28 +142,28 @@ public:
     void selectAiFall(Unk_0201d2d0_Out *);
     void selectEvBirthMsg4(Unk_0201d2d0_Out *);
     void selectEvBirthMsg3(Unk_0201d2d0_Out *);
-    void func_0201d568();
+    void openEvBirthChoice();
     void selectEvBirthMsg2(Unk_0201d2d0_Out *);
-    void func_0201d634();
+    void continueEvBirthMsg7();
     void selectEvBirthMsg7(Unk_0201d2d0_Out *);
-    void func_0201d6c8();
+    void continueEvBirthMsg6();
     void selectEvBirthMsg6(Unk_0201d2d0_Out *);
     void selectEvBirthMsg5(Unk_0201d2d0_Out *);
-    void func_0201d90c();
+    void continueEvBirthFriends();
     void selectEvBirthMsg1(Unk_0201d2d0_Out *);
-    void func_020200e4();
-    void func_02020150(Unk_0201d2d0_Out *);
-    void func_020201b0(Unk_0201d2d0_Out *);
-    void func_020204b4(Unk_0201d2d0_Out *);
+    void openEvKaraokeChoice();
+    void selectEvKaraokeMsg3(Unk_0201d2d0_Out *);
+    void selectEvKaraokeTalk(Unk_0201d2d0_Out *);
+    void selectTsuAlwaysEntry(Unk_0201d2d0_Out *);
     void selectTsuMove2(Unk_0201d2d0_Out *);
     void selectTsuMove1Part1(Unk_0201d2d0_Out *);
     void selectTsuMove1B(Unk_0201d2d0_Out *);
-    void func_02020654();
+    void openTsuMove1Choice();
     void selectTsuMove1(Unk_0201d2d0_Out *);
-    void func_0202071c();
-    void func_020207c8();
-    void func_0202081c();
-    void func_02020850(Unk_0201d2d0_Out *);
+    void openEtcConnectChoice();
+    void continueGreetingB();
+    void startGreetingB();
+    void selectTsuTopic(Unk_0201d2d0_Out *);
     void selectEtcCancel(Unk_0201d2d0_Out *);
     void selectQ10Leave(Unk_0201d2d0_Out *);
     void selectQ10Con(Unk_0201d2d0_Out *);
@@ -171,104 +171,104 @@ public:
     void selectQError3(Unk_0201d2d0_Out *);
     void selectQError2(Unk_0201d2d0_Out *);
     void selectQError1(Unk_0201d2d0_Out *);
-    void func_02022e8c();
+    void openReserveTimeEntry();
     void selectQ10Reserve(Unk_0201d2d0_Out *);
-    void func_02022f14();
+    void openQ10ReqChoice();
     void selectQ10Req(Unk_0201d2d0_Out *);
     void selectQ12FullPart2(Unk_0201d2d0_Out *);
-    void func_02023044();
+    void recheckPocketsForQItem();
     void selectQ12FullPart1(Unk_0201d2d0_Out *);
     void selectQ12Full(Unk_0201d2d0_Out *);
     void selectQ12End(Unk_0201d2d0_Out *);
-    void func_0202329c();
+    void putQItemInPocket();
     void selectQItem(Unk_0201d2d0_Out *);
-    void func_020233b8();
+    void checkPocketsForQItem();
     void selectQ12Thanks(Unk_0201d2d0_Out *);
     void selectQ12Report(Unk_0201d2d0_Out *);
     void selectQ12Other(Unk_0201d2d0_Out *);
-    void func_02023548(Unk_0201d2d0_Out *);
-    void func_02023614();
-    void func_0202368c(Unk_0201d2d0_Out *);
+    void selectEvArbeitEnd(Unk_0201d2d0_Out *);
+    void giveArbeitReward();
+    void selectEvArbeitReceive(Unk_0201d2d0_Out *);
     void selectQPreitemB(Unk_0201d2d0_Out *);
-    void func_020242d8();
-    void func_02024370(Unk_0201d2d0_Out *);
-    void func_02024418(Unk_0201d2d0_Out *);
-    void func_020244b8(Unk_0201d2d0_Out *);
-    void func_02024800();
-    void func_02024964(Unk_0201d2d0_Out *);
-    void func_020249ec();
-    void func_02024a90(Unk_0201d2d0_Out *);
-    void func_02024bbc();
-    void func_02024bd8(Unk_0201d2d0_Out *);
-    void func_02024c4c(Unk_0201d2d0_Out *);
-    void func_02024df4();
-    void func_02024f54(Unk_0201d2d0_Out *);
-    void func_02025008(Unk_0201d2d0_Out *);
-    void func_02025090(Unk_0201d2d0_Out *);
-    void func_020251c0();
-    void func_020251fc(Unk_0201d2d0_Out *);
-    void func_02025410();
-    void func_02025460(Unk_0201d2d0_Out *);
-    void func_02026000(Unk_0201d2d0_Out *);
-    void func_02026128(Unk_0201d2d0_Out *);
-    void func_020261c0();
-    void func_02026214();
-    void func_020262ac(Unk_0201d2d0_Out *);
-    void func_0202635c();
+    void takeRequestItem();
+    void selectQThanks(Unk_0201d2d0_Out *);
+    void selectQMissB(Unk_0201d2d0_Out *);
+    void selectQMiss(Unk_0201d2d0_Out *);
+    void openRequestItemPicker();
+    void selectQRevenge(Unk_0201d2d0_Out *);
+    void handOverRequestReward();
+    void selectQPay(Unk_0201d2d0_Out *);
+    void keepItemThenGotoQPay();
+    void selectQNlose(Unk_0201d2d0_Out *);
+    void selectQNwin(Unk_0201d2d0_Out *);
+    void checkVillagerCatch();
+    void selectQPdraw(Unk_0201d2d0_Out *);
+    void selectQPlose(Unk_0201d2d0_Out *);
+    void selectQPwin2(Unk_0201d2d0_Out *);
+    void takePlayerCatch();
+    void selectQPwin(Unk_0201d2d0_Out *);
+    void openCatchPicker();
+    void selectQ05Talk(Unk_0201d2d0_Out *);
+    void selectCollectRequest(Unk_0201d2d0_Out *);
+    void selectDeliveryEnd(Unk_0201d2d0_Out *);
+    void gotoDeliveryEnd();
+    void giveRewardItem();
+    void selectQItemC(Unk_0201d2d0_Out *);
+    void gotoRewardItem();
     void selectQPreitem(Unk_0201d2d0_Out *);
-    void func_02026410();
+    void gotoRewardOrEnd();
     void selectQ06Bad(Unk_0201d2d0_Out *);
     void selectQ06Normal(Unk_0201d2d0_Out *);
     void selectQ06Good(Unk_0201d2d0_Out *);
-    void func_02026834(void *);
-    void func_02026998(Unk_0201d2d0_Out *);
-    void func_02026a24(Unk_0201d2d0_Out *);
-    void func_02026ab0(Unk_0201d2d0_Out *);
-    void func_02026b98();
+    void continueDeliveryReport(void *);
+    void selectDeliveryReport(Unk_0201d2d0_Out *);
+    void selectDeliveryReminder(Unk_0201d2d0_Out *);
+    void selectDeliveryFin(Unk_0201d2d0_Out *);
+    void showLetter();
     void selectQ07Show(Unk_0201d2d0_Out *);
-    void func_02026c4c();
+    void continueLetterRead();
     void selectQ07Read(Unk_0201d2d0_Out *);
     void selectQ07Open2(Unk_0201d2d0_Out *);
-    void func_02026e64();
+    void continuePresentAccepted();
     void selectQ06Open2(Unk_0201d2d0_Out *);
     void selectQ06Open3(Unk_0201d2d0_Out *);
-    void func_02026fe0();
+    void continuePresentLiked();
     void selectQ06Open1(Unk_0201d2d0_Out *);
-    void func_020271c8();
-    void func_020272a4(Unk_0201d2d0_Out *);
+    void continueDeliveryReceived();
+    void selectDeliveryReceived(Unk_0201d2d0_Out *);
     void selectQIcancel(Unk_0201d2d0_Out *);
-    void func_02027490();
+    void openDeliveryItemPicker();
     void selectQTimeover(Unk_0201d2d0_Out *);
-    void func_0202760c(Unk_0201d2d0_Out *);
-    void func_020276e8();
-    void func_02027730(Unk_0201d2d0_Out *);
-    void func_020277b0();
-    void func_020277fc(Unk_0201d2d0_Out *);
-    void func_0202787c();
+    void selectDeliveryOpened(Unk_0201d2d0_Out *);
+    void finishLostDelivery();
+    void selectDeliveryLost(Unk_0201d2d0_Out *);
+    void finishLateDelivery();
+    void selectDeliveryLateReply(Unk_0201d2d0_Out *);
+    void continueDeliveryLate();
     void selectEtcConnect(Unk_0201d2d0_Out *);
-    void func_02029de4(Unk_0201d2d0_Out *);
-    void func_02029e38(Unk_0201d2d0_Out *);
-    void func_02029e8c();
-    void func_02029e98();
-    void func_02029f04(Unk_0201d2d0_Out *);
-    void func_0202a030(s32);
-    void func_0202a074(Unk_0201d2d0_Out *);
-    void func_0202a0c8();
-    void func_0202a18c();
-    void func_0202a2b8(Unk_0201d2d0_Out *);
-    void func_0202a30c();
-    void func_0202a378(Unk_0201d2d0_Out *);
+    void selectApNicknRefused(Unk_0201d2d0_Out *);
+    void selectApNicknAccepted(Unk_0201d2d0_Out *);
+    void retryNicknameInput();
+    void openNicknameConfirmChoice();
+    void selectApNicknConfirm(Unk_0201d2d0_Out *);
+    void openNicknameKeyboard(s32);
+    void selectApNicknDisliked(Unk_0201d2d0_Out *);
+    void openNicknameLikeChoice();
+    void makeNickname();
+    void selectApNicknProposal(Unk_0201d2d0_Out *);
+    void openNicknameAcceptChoice();
+    void selectApHabitDeclined(Unk_0201d2d0_Out *);
     void selectApHabitB(Unk_0201d2d0_Out *);
-    void func_0202a468();
-    void func_0202a4d4(Unk_0201d2d0_Out *);
-    void func_0202a540();
-    void func_0202a618(s32);
+    void openHabitConfirmChoice();
+    void selectApHabitConfirm(Unk_0201d2d0_Out *);
+    void retryHabitInput();
+    void openHabitKeyboard(s32);
     void selectApHabitPart1(Unk_0201d2d0_Out *);
-    void func_0202a6e0();
-    void func_0202a750(Unk_0201d2d0_Out *);
-    void func_0202b0b4(Unk_0201d2d0_Out *);
-    void func_0202b208();
-    void func_0202b410();
+    void openHabitAcceptChoice();
+    void selectApTopic(Unk_0201d2d0_Out *);
+    void select3pTalk(Unk_0201d2d0_Out *);
+    void continueAfterGreeting();
+    void ensureSpeakerMemory();
     void selectGreeting(Unk_0201d2d0_Out *);
 };
 class Unk_Menu : public VillagerTalkTopics {};
@@ -287,232 +287,232 @@ struct Unk_ov069_Ent {
 };
 extern "C" void memcpy(void *, const void *, s32);
 
-extern Unk_ov069_Ent data_021be7e0[3];
-extern Unk_ov069_Ent data_021bf10c[17];
-extern Unk_ov069_Ent data_021befd4[13];
-extern Unk_ov069_Ent data_021be650[1];
-extern Unk_ov069_Ent data_021be668[1];
-extern Unk_ov069_Ent data_021be730[2];
-extern Unk_ov069_Ent data_021bf2a4[26];
-extern Unk_ov069_Ent data_021bea78[6];
-extern Unk_ov069_Ent data_021bed30[9];
-extern Unk_ov069_Ent data_021bebb0[8];
-extern Unk_ov069_Ent data_021be8c0[4];
-extern Unk_ov069_Ent data_021bee08[9];
-extern Unk_ov069_Ent data_021be920[4];
-extern Unk_ov069_Ent data_021bec70[8];
-extern Unk_ov069_Ent data_021beb08[7];
+extern Unk_ov069_Ent sHouseVisitTsuTopicTable[3];
+extern Unk_ov069_Ent sTalkBeginTopics[17];
+extern Unk_ov069_Ent sApSubTopics[13];
+extern Unk_ov069_Ent sConnectTopic[1];
+extern Unk_ov069_Ent sEtcCancelTopicTable[1];
+extern Unk_ov069_Ent sSmallTalkTopicTable[2];
+extern Unk_ov069_Ent sRequestTopicsA[26];
+extern Unk_ov069_Ent sEtcConnectTopicTable[6];
+extern Unk_ov069_Ent sEvKaraokeTopicTable[9];
+extern Unk_ov069_Ent sEvAdmireTopicTable[8];
+extern Unk_ov069_Ent sEvGardeniingTopicTable[4];
+extern Unk_ov069_Ent sEvAcornTopicTable[9];
+extern Unk_ov069_Ent sEvSnowfesTopicTable[4];
+extern Unk_ov069_Ent sEvCountdownTopicTable[8];
+extern Unk_ov069_Ent sEvBirthTopicTable[7];
 
 Unk_ov069_Ent data_ov069_022613cc[17] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202b410, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202b208},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202b0b4, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202a750, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020201b0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::ensureSpeakerMemory, (Unk_ov069_Fn)&VillagerTalkTopics::continueAfterGreeting},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::select3pTalk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectApTopic, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvKaraokeTalk, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvFirework, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fa58, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireTalk, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvFishing, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvInsect, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f058, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ed3c, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e5a4, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e1f0, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202081c, (Unk_ov069_Fn)&VillagerTalkTopics::func_020207c8},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201dd3c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201dd1c},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingTalk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornTalk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvSnowfesTalk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownTalk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::startGreetingB, (Unk_ov069_Fn)&VillagerTalkTopics::continueGreetingB},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvBirthMsg0, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvBirthMsg0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectAiFall, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcHit, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcPush, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02261294[13] = {
-    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a6e0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitPart1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a618},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a540, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a4d4, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a468},
+    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitAcceptChoice},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitPart1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitKeyboard},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::retryHabitInput, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitConfirm, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitConfirmChoice},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitB, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a378, 0, 0},
-    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a30c},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a2b8, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a18c, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a0c8},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a074, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a030},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029f04, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_02029e98},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029e8c, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029e38, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029de4, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitDeclined, 0, 0},
+    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameAcceptChoice},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknProposal, (Unk_ov069_FnB)&VillagerTalkTopics::makeNickname, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameLikeChoice},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknDisliked, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameKeyboard},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknConfirm, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameConfirmChoice},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::retryNicknameInput, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknAccepted, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknRefused, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260cc4[1] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_020280c0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::openConnectMenu},
 };
 Unk_ov069_EntB data_ov069_02260cdc[1] = {
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcCancel, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02260cf4[2] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02020850, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuTopic, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02261564[73] = {
     {0, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027fd8, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027f88, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027f34},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQTime, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027dec},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryRequest, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::pickDeliveryRecipient, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::gotoDeliveryTime},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQTime, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::openDeliveryAcceptChoice},
     {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQNoB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQFull, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027cf8},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027c6c, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027b1c, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027b08},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027a34, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202787c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020277fc, (Unk_ov069_Fn)&VillagerTalkTopics::func_020277b0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02027730, (Unk_ov069_Fn)&VillagerTalkTopics::func_020276e8, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202760c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQFull, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::continueQFull},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryAccepted, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::acceptDeliveryRequest, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::getRequestKind},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryLate, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryLate},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryLateReply, (Unk_ov069_Fn)&VillagerTalkTopics::finishLateDelivery, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryLost, (Unk_ov069_Fn)&VillagerTalkTopics::finishLostDelivery, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryOpened, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQTimeover, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQIcancel, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020272a4, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020271c8},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02027490, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026fe0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReceived, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryReceived},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::openDeliveryItemPicker, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continuePresentLiked},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open3, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026e64},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continuePresentAccepted},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Open2, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Read, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026c4c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Show, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026b98},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026ab0, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026a24, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026998, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026834},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Good, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Normal, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Bad, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202635c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020262ac, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026214, (Unk_ov069_Fn)&VillagerTalkTopics::func_020261c0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026128, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026000, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_0202585c, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_020257f0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Read, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueLetterRead},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Show, 0, (Unk_ov069_Fn)&VillagerTalkTopics::showLetter},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryFin, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReminder, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReport, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryReport},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Good, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Normal, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Bad, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardItem},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItemC, (Unk_ov069_Fn)&VillagerTalkTopics::giveRewardItem, (Unk_ov069_Fn)&VillagerTalkTopics::gotoDeliveryEnd},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryEnd, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectCollectRequest, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::prepareRequestItem, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::openRequestChoice},
     {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQStart, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQNo, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_02025540, 0, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_020254ec},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025460, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025410, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020251fc, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020251c0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025090, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020249ec},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025008, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024f54, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024df4, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024c4c, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024bd8, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02024bbc},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024a90, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020249ec},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024964, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024800, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020244b8, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024418, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024370, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020242d8},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020241a0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQItemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023c80},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023b50, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023ab4, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020239c8, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023928, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020238b0, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202368c, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02023614},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02023548, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQCon, 0, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::gotoQ05Talk},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ05Talk, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::openCatchPicker, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPwin, 0, (Unk_ov069_Fn)&VillagerTalkTopics::takePlayerCatch},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPwin2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::handOverRequestReward},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPlose, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPdraw, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::checkVillagerCatch, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQNwin, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQNlose, 0, (Unk_ov069_Fn)&VillagerTalkTopics::keepItemThenGotoQPay},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPay, 0, (Unk_ov069_Fn)&VillagerTalkTopics::handOverRequestReward},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQRevenge, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::openRequestItemPicker, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQMiss, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQMissB, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQThanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::takeRequestItem},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::gotoQItemB},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQItemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::handOverQItemB},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQClear, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQEnd, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQReturn, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQComp, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::openArbeitItemPicker, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvArbeitReceive, 0, (Unk_ov069_Fn)&VillagerTalkTopics::giveArbeitReward},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvArbeitEnd, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Other, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Report, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Thanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020233b8},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202329c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Thanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::checkPocketsForQItem},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::putQItemInPocket},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12End, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Full, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02023044},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::recheckPocketsForQItem},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart2, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Req, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022f14},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserve, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Req, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openQ10ReqChoice},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserve, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserved, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Con, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Leave, 0, 0},
 };
 Unk_ov069_Ent data_ov069_022611bc[9] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02020150, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020200e4},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg20, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_02020030},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_02020010, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg6, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fed0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvKaraokeMsg3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openEvKaraokeChoice},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg20, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::continueEvKaraokeMsg20},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::startEvKaraokeAction, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg6, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvKaraokeMsg6Choice},
     {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg8, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg10, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg12, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg14, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg17, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fc48},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg17, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openSmallTalkChoice},
 };
 Unk_ov069_Ent data_ov069_02261024[8] = {
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f9f8, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f9c0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f89c, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f83c, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f7d0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg12, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f738},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmire, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvAdmireWordEntry},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg2, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg7, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvAdmireChoice},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg12, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::openEvAdmireWordEntryB},
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg14, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg10, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg4, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f56c},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f564, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f55c},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg4, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::continueEvAdmireMsg4},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEtcConnectAdmire, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::openSmallTalkChoiceAdmire},
 };
 Unk_ov069_Ent data_ov069_02260d6c[4] = {
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniing, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg13, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg10, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201eeac},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201eea4, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ee9c},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg10, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::continueEvGardeniingMsg10},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEtcConnectGardeniing, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openSmallTalkChoiceGardeniing},
 };
 Unk_ov069_Ent data_ov069_022610e4[9] = {
     {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcorn, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg10, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg7, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb9c},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb94, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb8c},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg13, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eabc},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ea8c, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg17, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e87c},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg19, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e710, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg7, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::continueEvAcornMsg7},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEtcConnectAcorn, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openSmallTalkChoiceAcorn},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg13, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openEvAcornGiveChoice},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::openAcornPicker, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg17, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::rollAcornReward},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg19, (Unk_ov069_Fn)&VillagerTalkAcornTopics::giveAcornReward, 0},
     {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg15, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260dcc[4] = {
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfes, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesC, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e344},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e33c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e334},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesC, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvSnowfesC},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectSnowfes, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openSmallTalkChoiceSnowfes},
 };
 Unk_ov069_Ent data_ov069_02260f64[8] = {
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e1e8, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e194},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e18c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e110},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectGreetingCountdown, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueGreetingCountdown},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectCountdownB, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openEvCountdownChoice},
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdown, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownB, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg14, 0, 0},
     {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg16, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg18, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de80},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de78, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de70},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg18, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvCountdownMsg18},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectCountdown, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openSmallTalkChoiceCountdown},
 };
 Unk_ov069_EntB data_ov069_02260e2c[6] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202071c},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_02020654},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openEtcConnectChoice},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openTsuMove1Choice},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1B, 0, 0},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1Part1, 0, 0},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove2, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::func_020204b4, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuAlwaysEntry, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260d24[3] = {
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de3c, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de08, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201ddd4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuAlwaysOnce, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuSpotOnce, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuFriendOnce, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02260ebc[7] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d90c},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg5, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d90c},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg6, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d6c8},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg7, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d634},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg2, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d568},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthFriends},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg5, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthFriends},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg6, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthMsg6},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg7, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthMsg7},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg2, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openEvBirthChoice},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg3, 0, 0},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg4, 0, 0},
 };
 extern "C" void func_ov069_0225f1a0() {
-    memcpy(data_021be7e0, data_ov069_02260d24, 72);
-    memcpy(data_021bf10c, data_ov069_022613cc, 408);
-    memcpy(data_021befd4, data_ov069_02261294, 312);
-    memcpy(data_021be650, data_ov069_02260cc4, 24);
-    memcpy(data_021be668, data_ov069_02260cdc, 24);
-    memcpy(data_021be730, data_ov069_02260cf4, 48);
-    memcpy(data_021bf2a4, data_ov069_02261564, 1752);
-    memcpy(data_021bea78, data_ov069_02260e2c, 144);
-    memcpy(data_021bed30, data_ov069_022611bc, 216);
-    memcpy(data_021bebb0, data_ov069_02261024, 192);
-    memcpy(data_021be8c0, data_ov069_02260d6c, 96);
-    memcpy(data_021bee08, data_ov069_022610e4, 216);
-    memcpy(data_021be920, data_ov069_02260dcc, 96);
-    memcpy(data_021bec70, data_ov069_02260f64, 192);
-    memcpy(data_021beb08, data_ov069_02260ebc, 168);
+    memcpy(sHouseVisitTsuTopicTable, data_ov069_02260d24, 72);
+    memcpy(sTalkBeginTopics, data_ov069_022613cc, 408);
+    memcpy(sApSubTopics, data_ov069_02261294, 312);
+    memcpy(sConnectTopic, data_ov069_02260cc4, 24);
+    memcpy(sEtcCancelTopicTable, data_ov069_02260cdc, 24);
+    memcpy(sSmallTalkTopicTable, data_ov069_02260cf4, 48);
+    memcpy(sRequestTopicsA, data_ov069_02261564, 1752);
+    memcpy(sEtcConnectTopicTable, data_ov069_02260e2c, 144);
+    memcpy(sEvKaraokeTopicTable, data_ov069_022611bc, 216);
+    memcpy(sEvAdmireTopicTable, data_ov069_02261024, 192);
+    memcpy(sEvGardeniingTopicTable, data_ov069_02260d6c, 96);
+    memcpy(sEvAcornTopicTable, data_ov069_022610e4, 216);
+    memcpy(sEvSnowfesTopicTable, data_ov069_02260dcc, 96);
+    memcpy(sEvCountdownTopicTable, data_ov069_02260f64, 192);
+    memcpy(sEvBirthTopicTable, data_ov069_02260ebc, 168);
 }
 
 // An empty object whose inline constructor runs the copy once all the tables are built (the call ends __sinit; the object

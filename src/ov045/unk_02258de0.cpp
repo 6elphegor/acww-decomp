@@ -12,12 +12,12 @@
 #define VillagerMemory_addFriendship _ZN14VillagerMemory13addFriendshipEi
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define unk_618_func_02014198 _ZN12Unk_02013b1013func_02014198Ehh
-#define unk_618_func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define unk_564_func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_020197a0 _ZN12Unk_0201985813func_020197a0Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
+#define unk_618_func_02014198 _ZN11NpcTalkCtrl11requestTalkEhh
+#define unk_618_func_02014220 _ZN11NpcTalkCtrl6isBusyEv
+#define unk_564_func_020196b4 _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_getEmotionId _ZN13NpcActionCtrl12getEmotionIdEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define base_vfunc_38 _ZN16ActorTalkRequest8vfunc_38Ej
 
 class SpNpcKatrina;
@@ -37,30 +37,30 @@ void func_020a78a4(void *, s32, s32);
 s32 ChoiceList_getResult();
 s32 NpcActor_CanPlayerPay(void *, s32);
 void NpcActor_ChargePlayer(void *, s32);
-s32 func_0202e1cc(...);
-void func_02034dd0(u32, s32, s32);
-void func_02034d70(u32);
+s32 Talk_CheckAndSetPlayerFlag(...);
+void Bgm_RequestSilence(u32, s32, s32);
+void Bgm_ReleasePriority(u32);
 void *PlayerData_getPlayerId(void *self);
 void PlayerData_setFortune(void *self, s32 kind);
-void func_02079d64(void *, void *);
-void func_02079e9c(void *);
+void SaveVillagers_ApplyGoodFortune(void *, void *);
+void SaveVillagers_ApplyBadFortune(void *);
 void *SaveVillagers_FindByName(void *, s32, s32, void *);
 void *Villager_FindMemoryIndex(void *, void *);
 void *Villager_GetMemory(void *, void *);
 void *VillagerData_getVillagerId(void *self);
 s32 VillagerId_isValid(void *self);
-void *func_0207e310(void *);
+void *Villager_GetState(void *);
 s32 CommManager_isSlotActive(void *self, s32 v);
-s32 func_0207856c(void *);
-void func_02078550(void *, s32);
-void func_0207854c(void *, s32);
-void func_02078568(void *, s32);
+s32 VillagerState_GetMood(void *);
+void VillagerState_AddMoodTimer(void *, s32);
+void VillagerState_SetMoodTimer(void *, s32);
+void VillagerState_SetMood(void *, s32);
 void VillagerMemory_addFriendship(void *self, s32 v);
 void *VillagerMemory_getFriendship(void *self);
-void func_0207787c(void *, void *, void *);
-s32 func_020197a0(void *self);
-s32 func_020197a8(void *self);
-BOOL func_02019790(void *self);
+void VillagerSync_Friendship(void *, void *, void *);
+s32 NpcActionCtrl_getEmotionId(void *self);
+s32 NpcActionCtrl_getAction(void *self);
+BOOL NpcActionCtrl_isActionDone(void *self);
 void TarotProps_StartAct01();
 void TarotProps_StartAct02();
 void TarotProps_StartAct03();
@@ -73,9 +73,9 @@ void *func_020b4934();
 s32 func_020b4bbc(void *, s32);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 func_020e7518(void *p);
-s32 func_02090330(u32 kind, void *a, s32 b, s32 c);
-void func_020902f8(s32 id);
-void func_020902d4(s32 id, void *pos, s32 a, s32 b);
+s32 Effect_Create(u32 kind, void *a, s32 b, s32 c);
+void Effect_End(s32 id);
+void Effect_SetPosition(s32 id, void *pos, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gSaveData[];
 extern u8 *gCommManager;
@@ -159,8 +159,8 @@ public:
     virtual void vfunc_5c();
     virtual void vfunc_60();
     virtual void vfunc_64_alt();
-    void func_02015170(u32 a, u32 b);
-    void func_020151d0(s32 a);
+    void setSubSceneKind(u32 a, u32 b);
+    void openSubScene(s32 a);
 };
 
 struct Unk_ov045_022590e4_Msg {
@@ -175,8 +175,8 @@ class EncodedString {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 
     u8 unk_04[10];
 };
@@ -208,8 +208,8 @@ class KatrinaEncodedString16 : public EncodedString {
 public:
     KatrinaEncodedString16();
     virtual ~KatrinaEncodedString16();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u8 unk_0e[0x24 - 0xe];
 };
@@ -254,13 +254,13 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -278,9 +278,9 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -347,36 +347,36 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     u32 getPlayerActor(u32 a);
     BOOL getAngleTo(Unk_020d77a4 *p);
-    void func_0201bd9c(s32 v);
+    void setCollisionRadius(s32 v);
 
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -536,7 +536,7 @@ BOOL SpNpcKatrina::vfunc_04() {
     }
     setTalkRequest((Unk_0201bc1c *)&unk_68c);
     unk_68c.attachOwner(this);
-    func_0201bd9c(0x100);
+    setCollisionRadius(0x100);
     setInteractionRange(0x5000);
     unk_654 = -1;
     unk_754 = 0;
@@ -577,21 +577,21 @@ u8 *SpNpcKatrina::getTexturePath() { return sSpNpcKatrinaTexturePath; }
 u8 *SpNpcKatrina::getModelPath() { return sSpNpcKatrinaModelPath; }
 
 BOOL SpNpcKatrina::updateAct() {
-    s32 t = func_020197a0(&unk_564);
+    s32 t = NpcActionCtrl_getEmotionId(&unk_564);
     if (t != 0x1e && t != 0x20) {
-    } else if (func_02019790(&unk_564)) {
+    } else if (NpcActionCtrl_isActionDone(&unk_564)) {
         unk_68c.vfunc_38(0);
     }
     if (unk_654 == -1) {
         if (t == 0x21 && ((((u32)unk_ec.unk_a4 << 4) >> 16)) >= 0x12) {
-            unk_654 = func_02090330(0x3d, (u8 *)this + 0x478, 0, 0);
+            unk_654 = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
             unk_754 = 0x16;
         }
     } else if (func_020e7518(&unk_754) == 0) {
-        func_020902f8(unk_654);
+        Effect_End(unk_654);
         unk_654 = -1;
     } else {
-        func_020902d4(unk_654, (u8 *)this + 0x478, 0, 0);
+        Effect_SetPosition(unk_654, (u8 *)this + 0x478, 0, 0);
     }
     BOOL r = FALSE;
     if (sSpNpcKatrinaActTable[unk_658].exit) {
@@ -658,13 +658,13 @@ SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
 void SpNpcKatrinaTalk::vfunc_38(s32 a) {
-    if (a != func_020197a0(&unk_b0->unk_564) || func_020197a8(&unk_b0->unk_564) != 8) {
+    if (a != NpcActionCtrl_getEmotionId(&unk_b0->unk_564) || NpcActionCtrl_getAction(&unk_b0->unk_564) != 8) {
         switch (a) {
         case 0x1e:
             TarotProps_StartAct01();
             break;
         case 0x1f:
-            func_02034d70(0x10);
+            Bgm_ReleasePriority(0x10);
             TarotProps_StartAct02();
             break;
         case 0x20:
@@ -683,9 +683,9 @@ void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
 void SpNpcKatrinaTalk::vfunc_78(void *arg) {
     Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
     out->unk_00 = (u32)sSpNpcKatrinaMsgKey;
-    s32 a = func_0202e1cc(4, 0);
-    s32 b = func_0202e1cc(5, 0);
-    s32 c = func_0202e1cc(6, 0);
+    s32 a = Talk_CheckAndSetPlayerFlag(4, 0);
+    s32 b = Talk_CheckAndSetPlayerFlag(5, 0);
+    s32 c = Talk_CheckAndSetPlayerFlag(6, 0);
     if (b == 0 || a == 0) {
         if (b == 0) {
             out->unk_04 = 1;
@@ -711,8 +711,8 @@ void SpNpcKatrinaTalk::vfunc_14() {
     switch (unk_1e) {
     case 9:
     case 11:
-        func_02015170(0x13, 0);
-        func_020151d0(2);
+        setSubSceneKind(0x13, 0);
+        openSubScene(2);
         setScript(1);
         break;
     case 14:
@@ -733,7 +733,7 @@ void SpNpcKatrinaTalk::vfunc_14() {
             NpcActor_ChargePlayer(unk_b0, 10000);
         }
         PlayerData_setFortune(h, 0);
-        func_0202e1cc(6, 1);
+        Talk_CheckAndSetPlayerFlag(6, 1);
         sel = 0x16;
         break;
     case 10:
@@ -764,9 +764,9 @@ void SpNpcKatrinaTalk::vfunc_14() {
             case 0:
                 PlayerData_setFortune(h, kind);
                 if (kind == 1) {
-                    func_02079d64((gp + 0x8a3c), arg);
+                    SaveVillagers_ApplyGoodFortune((gp + 0x8a3c), arg);
                 } else if (kind == 2) {
-                    func_02079e9c((gp + 0x8a3c));
+                    SaveVillagers_ApplyBadFortune((gp + 0x8a3c));
                 }
                 break;
             case 1:
@@ -775,7 +775,7 @@ void SpNpcKatrinaTalk::vfunc_14() {
                     q = Villager_FindMemoryIndex(p, arg);
                     w = Villager_GetMemory(p, q);
                     if (VillagerId_isValid(VillagerData_getVillagerId(p)) != 0) {
-                        r5 = func_0207e310(p);
+                        r5 = Villager_GetState(p);
                     } else {
                         r5 = 0;
                     }
@@ -784,29 +784,29 @@ void SpNpcKatrinaTalk::vfunc_14() {
                         case 1: {
                             u8 *g = gCommManager;
                             if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
-                                if (func_0207856c(r5) == 1) {
-                                    func_02078550(r5, 0xe10);
+                                if (VillagerState_GetMood(r5) == 1) {
+                                    VillagerState_AddMoodTimer(r5, 0xe10);
                                 } else {
-                                    func_0207854c(r5, 0xe10);
+                                    VillagerState_SetMoodTimer(r5, 0xe10);
                                 }
-                                func_02078568(r5, 1);
+                                VillagerState_SetMood(r5, 1);
                             }
                             VillagerMemory_addFriendship(w, 10);
-                            func_0207787c(p, q, VillagerMemory_getFriendship(w));
+                            VillagerSync_Friendship(p, q, VillagerMemory_getFriendship(w));
                             break;
                         }
                         case 2: {
                             u8 *g = gCommManager;
                             if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
-                                if (func_0207856c(r5) == 4) {
-                                    func_02078550(r5, 0x4b0);
+                                if (VillagerState_GetMood(r5) == 4) {
+                                    VillagerState_AddMoodTimer(r5, 0x4b0);
                                 } else {
-                                    func_0207854c(r5, 0x4b0);
+                                    VillagerState_SetMoodTimer(r5, 0x4b0);
                                 }
-                                func_02078568(r5, 4);
+                                VillagerState_SetMood(r5, 4);
                             }
                             VillagerMemory_addFriendship(w, -3);
-                            func_0207787c(p, q, VillagerMemory_getFriendship(w));
+                            VillagerSync_Friendship(p, q, VillagerMemory_getFriendship(w));
                             break;
                         }
                         }
@@ -829,7 +829,7 @@ void SpNpcKatrinaTalk::vfunc_14() {
 
 void SpNpcKatrinaTalk::vfunc_10() {
     if (unk_1e == 0xe || unk_1e == 0x17) {
-        func_02034dd0(0x10, 0, 0);
+        Bgm_RequestSilence(0x10, 0, 0);
     }
 }
 
@@ -857,15 +857,15 @@ void SpNpcKatrinaTalk::vfunc_18() {
     case 7:
     case 8:
         if (st == 0) {
-            if (func_0202e1cc(5, 0)) {
+            if (Talk_CheckAndSetPlayerFlag(5, 0)) {
                 sel = 8;
             } else {
                 sel = 0xd;
                 unk_b0->unk_744 = 0;
-                func_0202e1cc(5, 1);
+                Talk_CheckAndSetPlayerFlag(5, 1);
             }
         } else if (st == 1) {
-            if (func_0202e1cc(4, 0)) {
+            if (Talk_CheckAndSetPlayerFlag(4, 0)) {
                 sel = 8;
             } else {
                 sel = 9;
@@ -876,7 +876,7 @@ void SpNpcKatrinaTalk::vfunc_18() {
         if (st == 0) {
             sel = 0xc;
             unk_b0->unk_744 = 1;
-            func_0202e1cc(4, 1);
+            Talk_CheckAndSetPlayerFlag(4, 1);
         } else {
             sel = 0xb;
         }
@@ -1042,7 +1042,7 @@ KatrinaEncodedString16::KatrinaEncodedString16() {}
 
 KatrinaEncodedString16::~KatrinaEncodedString16() {}
 
-u32 KatrinaEncodedString16::vfunc_08() { return 0x10; }
+u32 KatrinaEncodedString16::capacity() { return 0x10; }
 
-u8 *KatrinaEncodedString16::vfunc_0c() { return (u8 *)this + 0xe; }
+u8 *KatrinaEncodedString16::data() { return (u8 *)this + 0xe; }
 

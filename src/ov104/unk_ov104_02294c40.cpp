@@ -44,7 +44,7 @@ void func_020968e0();
 void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
-void func_02099a98();
+void Arbeit_NotifyLetterWritten();
 s32 func_020991fc();
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_ResetLayer(s32 a);
@@ -786,7 +786,7 @@ BOOL PostOfficeMenu::execClosed() {
         returnUnsentLetters(0);
         MenuCtrl_SetPostOfficeResult(r4);
         if (MenuCtrl_GetPostOfficeOutcome() == 1 || MenuCtrl_PostOfficeLettersSent() != 0) {
-            func_02099a98();
+            Arbeit_NotifyLetterWritten();
         }
     }
     func_020968e0();

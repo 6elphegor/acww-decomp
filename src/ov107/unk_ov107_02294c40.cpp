@@ -240,7 +240,7 @@ s32 func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 u32 func_02063b8c(s32 a);
 u16 MenuCtrl_GetPocketsFullItem();
 void Item_FromPlacedForm(void *a, void *b);
-u32 func_020991b0();
+u32 Item_PickRandomPresent();
 void PlayerData_GetCurrent();
 s32 PlayerData_getCatalog();
 void func_0203c42c(s32 a, void *b, s32 c, s32 d);
@@ -1357,7 +1357,7 @@ void PocketsFullMenu::storeNewItem() {
     r6 = b;
     r4 = 0;
     if (r6 == 0x156b) {
-        r6 = func_020991b0();
+        r6 = Item_PickRandomPresent();
         r4 = 1;
     }
     PlayerData_GetCurrent();

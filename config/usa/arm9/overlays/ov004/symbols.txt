@@ -1290,7 +1290,7 @@ _ZN14SpNpcSableTalk11attachOwnerEP24Unk_ov004_0221b6d4_Owner kind:function(thumb
 _ZN14SpNpcSableTalkD0Ev kind:function(thumb,size=0x20) addr:0x0221b8a4
 _ZN14SpNpcSableTalkD1Ev kind:function(thumb,size=0x18) addr:0x0221b8c4
 _ZN14SpNpcSableTalkC1Ev kind:function(thumb,size=0x18) addr:0x0221b8dc
-_ZN10SpNpcSable8vfunc_90Ev kind:function(thumb,size=0x38) addr:0x0221b8f4
+_ZN10SpNpcSable11onLeaveTalkEv kind:function(thumb,size=0x38) addr:0x0221b8f4
 _ZN10SpNpcSable9mainAct06Ev kind:function(thumb,size=0x4) addr:0x0221b92c
 _ZN10SpNpcSable10setupAct06Ev kind:function(thumb,size=0x24) addr:0x0221b930
 _ZN10SpNpcSable9mainAct05Ev kind:function(thumb,size=0x58) addr:0x0221b954

@@ -137,8 +137,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -150,7 +150,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -170,10 +170,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    void func_020196b4(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -243,12 +243,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -258,19 +258,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -312,15 +312,15 @@ struct Unk_ov004_0221e56c_Ent {
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define func_0201ad34 _ZN12Unk_0201ad2013func_0201ad34Ei
-#define func_0201622c _ZN12Unk_0201635013func_0201622cEiPv
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020195c8 _ZN12Unk_0201985813func_020195c8Eiijtt
+#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
+#define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 
 extern "C" {
 extern s32 data_020c6d1c;
@@ -332,11 +332,11 @@ extern SpNpcTortimer2 *volatile sSpNpcTortimer2;
 extern u8 sSpNpcTortimer2ModelPath[];
 extern u8 sSpNpcTortimer2TexturePath[];
 
-void func_0201ad34(void *self, s32 a);
-s32 func_0201622c(void *self, s32 a, void *b);
-s32 func_02019790(void *self);
-void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void func_020195c8(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
+void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
+s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
+s32 NpcActionCtrl_isActionDone(void *self);
+void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
+void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 s32 func_020e7518(void *self);
 s32 SaveManager_IsIdle();
 }
@@ -373,7 +373,7 @@ BOOL SpNpcTortimer2::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
-    func_0201ad34(&unk_2a0, 0xff);
+    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xff);
     return TRUE;
 }
 
@@ -419,7 +419,7 @@ void SpNpcTortimer2::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer2::setupAct00() {
-    func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_658 = 0xa;
     return TRUE;
 }
@@ -434,15 +434,15 @@ BOOL SpNpcTortimer2::mainAct00() {
 }
 
 BOOL SpNpcTortimer2::setupAct01() {
-    func_020195c8(&unk_564, 1, 0x100, 1, data_020c6cc8, 0);
+    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x100, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct01() {
-    if (func_0201622c(&unk_334, 0x100, &unk_2a0) && func_02019790(&unk_564)) {
-        func_020195c8(&unk_564, 1, 0x101, 1, data_020c6cc8, 0);
+    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0x100, &unk_2a0) && NpcActionCtrl_isActionDone(&unk_564)) {
+        NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x101, 1, data_020c6cc8, 0);
     }
-    if (func_0201622c(&unk_334, 0x101, &unk_2a0) && func_02019790(&unk_564)) {
+    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0x101, &unk_2a0) && NpcActionCtrl_isActionDone(&unk_564)) {
         changeAct(0);
     }
     return TRUE;
@@ -454,7 +454,7 @@ BOOL SpNpcTortimer2::mainAct01() {
 extern "C" BOOL SpNpcTortimer2_IsIdle() {
     SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (func_0201622c(&y->unk_334, 0xff, &y->unk_2a0) && sSpNpcTortimer2->unk_654 == 0) {
+        if (NpcAnimCtrl_isPlayingAnim(&y->unk_334, 0xff, &y->unk_2a0) && sSpNpcTortimer2->unk_654 == 0) {
             return TRUE;
         }
         return FALSE;

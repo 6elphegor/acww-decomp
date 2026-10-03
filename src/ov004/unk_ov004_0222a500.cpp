@@ -404,8 +404,8 @@ s32 ModelAnim_addToRenderObj(void *self, u32 a);
 u16 *func_02060850(void *self, s32 *i);
 u16 *func_02060834(void *self, s32 *i);
 void *SaveVillagers_Get(void *self, s32 i);
-u32 func_0207e3ac(void *self);
-u32 func_0207e3a0(void *self);
+u32 Villager_GetWallpaper(void *self);
+u32 Villager_GetCarpet(void *self);
 u16 *func_02034134(s32 r);
 u16 *func_02034104(s32 r);
 void *func_0203398c(void *self, s32 a, s32 b, s32 c, s32 d);
@@ -610,9 +610,9 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
     } else if (func_020b51b8(r)) {
         void *o = SaveVillagers_Get(data_021dfd8c, func_020b51e8(r));
         if (o != NULL) {
-            u32 t = func_0207e3ac(o);
+            u32 t = Villager_GetWallpaper(o);
             *a = t < 0x44 ? (u16)(t + 0x1100) : 0x1100;
-            t = func_0207e3a0(o);
+            t = Villager_GetCarpet(o);
             *c = t < 0x44 ? (u16)(t + 0x1144) : 0x1144;
         }
     } else if (func_020b5268(r)) {

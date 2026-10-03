@@ -130,8 +130,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -143,7 +143,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -161,7 +161,7 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-MEMBER(Unk_02019858, 0x618 - 0x564);
+MEMBER(NpcActionCtrl, 0x618 - 0x564);
 struct Unk_02014254 {
     Unk_02014254();
     ~Unk_02014254();
@@ -232,17 +232,17 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
-    BOOL func_0201b9bc();
+    BOOL netIsTalkLocked();
     s32 getPlayerActor(u32 v);
     s32 getAngleToPlayer(u32 v);
     s32 getDistanceToPlayer(u32 v);
@@ -250,19 +250,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -310,7 +310,7 @@ extern u8 sSpNpcRoverModelPath[];
 extern u8 sSpNpcRoverTexturePath[];
 extern SpNpcRover *sSpNpcRoverInstance;
 
-s32 _ZN12Unk_02013b1013func_02014220Ev(void *self);
+s32 _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
 Unk_0208f238 *func_0208f0b0(s32 i);
@@ -337,8 +337,8 @@ void func_0203d984();
 void func_0203d990();
 void *func_020b4934();
 s32 func_020b4f58(void *a, s32 b, s32 c, s32 d);
-void _ZN12Unk_02013b1013func_02014198Ehh(void *self, u8 a, u8 b);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
+void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u8 a, u8 b);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
@@ -557,7 +557,7 @@ void SpNpcRover::changeAct(s32 state) {
 }
 
 BOOL SpNpcRover::setupAct00() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -569,12 +569,12 @@ BOOL SpNpcRover::mainAct00() {
 }
 
 BOOL SpNpcRover::setupAct01() {
-    _ZN12Unk_02013b1013func_02014198Ehh(&unk_618, 0, 1);
+    _ZN11NpcTalkCtrl11requestTalkEhh(&unk_618, 0, 1);
     return TRUE;
 }
 
 BOOL SpNpcRover::mainAct01() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         func_020b4f58(func_020b4934(), 0x2c, 2, 2);
         changeAct(2);
     }
@@ -736,14 +736,14 @@ void SpNpcRover::restoreOwnTransfer() {
 }
 
 BOOL SpNpcRover::vfunc_48() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcRover::vfunc_58() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;

@@ -1,26 +1,26 @@
 #include "types.h"
 
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02014ce4 _ZN12Unk_0201442013func_02014ce4EPtjjj
-#define func_02015170 _ZN12Unk_020d771013func_02015170Ejj
-#define func_0201517c _ZN12Unk_020d771013func_0201517cEjjj
-#define func_020151d0 _ZN12Unk_020d771013func_020151d0Ei
-#define func_0201578c _ZN16ActorTalkRequest13func_0201578cEjjj
-#define func_020157e8 _ZN16ActorTalkRequest13func_020157e8Ejj
-#define func_02015818 _ZN16ActorTalkRequest13func_02015818Ejj
-#define func_02015958 _ZN16ActorTalkRequest13func_02015958Eijiii
-#define func_02015a80 _ZN16ActorTalkRequest13func_02015a80EP18Unk_02015b8c_Scene
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
+#define Unk_020d7710_setPocketFilter _ZN12Unk_020d771015setPocketFilterEjjj
+#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
+#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
+#define ActorTalkRequest_setTownNameSlot _ZN16ActorTalkRequest15setTownNameSlotEjj
+#define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
+#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
-#define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
-#define func_0201a99c _ZN12Unk_0201a8c413func_0201a99cEs
-#define func_0201a9ec _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3
+#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
+#define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define func_0204e328 _ZN8BlockMap13func_0204e328EPv
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
@@ -47,7 +47,7 @@
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_02099864 _ZN12Unk_020994cc13func_02099864Ev
+#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
 #define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
@@ -149,7 +149,7 @@ s32 func_0202ff64(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *func_02095204(s32 a);
 s32 TalkRequest_IsActive();
-BOOL func_02014220(void *self);
+BOOL NpcTalkCtrl_isBusy(void *self);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
@@ -164,7 +164,7 @@ void Item_FromPlacedForm(u16 *a, u16 *b);
 void NpcActor_ChargePlayer(void *owner, s32 v);
 void func_02099014(void *p, s32 v);
 void AbleShop_BuyAt(s32 a, s32 b, s32 c);
-s32 func_020787d4();
+s32 VillagerTrend_OnClothesBought();
 void func_02015ab0(void *self, s32 v);
 void *PlayerData_GetCurrent();
 s32 MenuCtrl_GetIndex();
@@ -180,11 +180,11 @@ void ChoiceList_loadTexts(void *h);
 s32 TalkWindowState_setNextMessage(void *self, void *buf, void *cb);
 BOOL MenuCtrl_IsResultOk();
 void *func_0209865c(...);
-void *func_02099864(void *p);
-s32 func_0202e148();
+void *SickVillagerRecord_getParcelErrand(void *p);
+s32 Talk_IsInOwnTown();
 s32 func_02099048();
 void func_02099064(s32 a);
-void func_02014ce4(void *self, u16 *p, u32 a, u32 b, u32 c);
+void Unk_02014420_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *func_0209a108(void *p);
 void func_0209abb4(void *p, s32 a);
 s32 PlayerActor_TestLocalFlag0F();
@@ -196,7 +196,7 @@ u16 *MenuCtrl_GetChosenItems();
 s32 Item_GetPrice(void *p);
 s32 func_02133150(s32 a, s32 b);
 BOOL NetArea_IsLocalOwner();
-void func_02015958(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
+void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *func_02071c5c();
 s32 func_02071c1c(void *, s32);
 BOOL func_02070b68(u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -209,12 +209,12 @@ void PlayerActor_RequestWearHatAlt(u16 *);
 void PlayerActor_RequestWearFaceItemAlt(u16 *);
 void TalkWindowState_lockAdvance(void *);
 u32 ChoiceList_getResult(void *p);
-BOOL func_0202e18c(void *owner, void *buf, s32 n);
-void func_0202e174(void *, void *);
+BOOL Talk_IsDramaPending(void *owner, void *buf, s32 n);
+void Talk_AdvanceDrama(void *, void *);
 s32 NpcRegistry_FindSpNpc(s32 n);
-void func_02015a80(void *self, s32 v);
-void func_0201517c(void *, void *, u32, u32);
-void func_020151d0(void *self, s32 a);
+void ActorTalkRequest_setPartnerActor(void *self, s32 v);
+void Unk_020d7710_setPocketFilter(void *, void *, u32, u32);
+void Unk_020d7710_openSubScene(void *self, s32 a);
 void func_02094f48(s32, s32);
 void Camera_RestorePrevMode();
 void Camera_SetMode4();
@@ -225,12 +225,12 @@ void NpcActor_PayPlayer(void *owner, s32 v);
 BOOL func_0204bab8(u16 *);
 void MenuCtrl_ReturnChosenItems(s32);
 s32 func_02063b8c(s32 n);
-void func_02015170(void *self, u32 a, u32 b);
+void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
 BOOL GameStart_IsActive();
 u32 func_0212a438(const char *s);
 s32 strncmp(void *a, const char *b, u32 n);
-BOOL func_02099f98(void *a, void *b);
-void func_0201578c(void *self, void *a, s32 b, s32 c);
+BOOL ParcelErrand_IsFor(void *a, void *b);
+void ActorTalkRequest_setItemNameSlot(void *self, void *a, s32 b, s32 c);
 void *func_02071b00(void *a, u32 b);
 void func_02071f70(void *a, void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
@@ -239,23 +239,23 @@ const Unk_ov049_0225a714_Pair *PlayerData_getPlayerId(...);
 const Unk_ov049_0225a714_P *func_0209409c(Unk_ov049_0225a714_Pair *a);
 s32 memcmp(const void *a, const void *b, u32 n);
 BOOL func_020941e8(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
-void func_020157e8(void *self, void *a, s32 n);
-void func_02015818(void *self, void *a, s32 n);
+void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
+void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
 void func_020639b8(Unk_ov049_0225a714_P *p);
 void func_020942c8(Unk_ov049_0225a714_Pair *p);
 void func_0206267c(Unk_ov049_0225a714_Q *p);
 void func_0206260c(Unk_ov049_0225a714_Q *p);
-void func_0201a6c0(void *self, u8 a, s32 b, s32 c, Unk_ov049_0225aba8_Vec *v, s32 d, s32 e, u8 f);
-s32 func_020197a8(void *self);
-BOOL func_02019790(void *self);
-void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
-void func_02019614(void *self, s32 a, u32 b);
-void func_020141b4(void *self, s32 a, s32 b, s32 c);
+void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov049_0225aba8_Vec *v, s32 d, s32 e, u8 f);
+s32 NpcActionCtrl_getAction(void *self);
+BOOL NpcActionCtrl_isActionDone(void *self);
+void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
+void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
+void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 Unk_020d77a4 *func_02015aac(void *self);
 void TalkRequest_EndTalkWith(void *self);
-void func_0201ae00(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
-void func_0201a99c(void *self, s32 v);
-void func_0201a9ec(void *self, Unk_ov049_0225aba8_Vec *v);
+void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
+void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
+void NpcMoveCtrl_setWaypoint(void *self, Unk_ov049_0225aba8_Vec *v);
 void func_0204e328(void *g, void *v);
 s32 func_020e972c(Unk_ov049_0225aba8_Vec *a, void *b);
 s32 func_020e96ec(Unk_ov049_0225aba8_Vec *a, void *b);
@@ -267,8 +267,8 @@ void func_020b4bbc(s32 a, s32 b);
 BOOL AbleShop_IsPurchaseSynced();
 BOOL func_020b50dc();
 void func_0202ffb0(s32 a);
-BOOL func_0202e1cc(s32 a, s32 b);
-void func_0201a8d0(void *self, s32 a, s32 b, s32 c, s32 d);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void func_02071e74(void *self);
 }
 
@@ -451,13 +451,13 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -475,7 +475,7 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-MEMBER(Unk_02019858, 0x618 - 0x564);
+MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
 struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
 
@@ -542,42 +542,42 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
-    BOOL func_0201b9bc();
-    BOOL func_0201ba88();
-    void func_0201b9fc(u32 a, u32 b, u32 c, ...);
+    BOOL netIsTalkLocked();
+    BOOL isNetOwner();
+    void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
 
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 v);
     s32 getAngleToPlayer(u32 v);
     s32 getAngleTo(Unk_020d77a4 *other);
     s32 getDistanceToPlayer(u32 v);
-    void func_0201bd9c(s32 v);
+    void setCollisionRadius(s32 v);
 
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -616,8 +616,8 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
 
     BOOL tryStartFarewellTalk();
     BOOL tryStartShopItemTalk();
@@ -970,9 +970,9 @@ BOOL SpNpcMabel::vfunc_04() {
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner((s32)this);
     func_0202e548(0x119a, 0x2000);
-    func_0201bd9c(0xf00);
+    setCollisionRadius(0xf00);
     unk_962 = data_020c6cc8;
-    func_0201a8d0(&unk_350, 2, 0x333, 0xcc, 0x133);
+    NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x333, 0xcc, 0x133);
     return TRUE;
 }
 
@@ -1000,7 +1000,7 @@ BOOL SpNpcMabel::vfunc_00() {
             changeAct(1);
         }
         func_0202ffb0(0);
-        if (func_0202e18c(this, &v, 2)) {
+        if (Talk_IsDramaPending(this, &v, 2)) {
             unk_965 = 1;
         }
     }
@@ -1030,7 +1030,7 @@ void SpNpcMabel::changeAct(s32 state) {
 }
 
 BOOL SpNpcMabel::setupAct00() {
-    if (func_0202e1cc(0xf, 1)) {
+    if (Talk_CheckAndSetPlayerFlag(0xf, 1)) {
         unk_658.setTopic(1);
     } else {
         unk_658.setTopic(0);
@@ -1047,10 +1047,10 @@ BOOL SpNpcMabel::mainAct00() {
 
 BOOL SpNpcMabel::setupAct01() {
     s32 v;
-    func_02019614(&unk_564, 1, unk_962);
+    NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
     unk_962 = data_020c6cc8;
     unk_960 = func_02063b8c(5) * 20 + 100;
-    if (func_0202e18c(this, &v, 2)) {
+    if (Talk_IsDramaPending(this, &v, 2)) {
         unk_965 = 1;
     } else {
         unk_965 = 0;
@@ -1065,7 +1065,7 @@ BOOL SpNpcMabel::mainAct01() {
     v.y = pv->y;
     v.z = pv->z;
     Unk_ov049_0225aba8_Vec out;
-    func_0201ae00(&out, this, &v);
+    NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
     s32 r4 = func_020e780c(unk_8e, t);
@@ -1090,7 +1090,7 @@ BOOL SpNpcMabel::mainAct01() {
 }
 
 BOOL SpNpcMabel::setupAct02() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1107,7 +1107,7 @@ BOOL SpNpcMabel::mainAct02() {
     v.y = pv->y;
     v.z = pv->z;
     Unk_ov049_0225aba8_Vec out;
-    func_0201ae00(&out, this, &v);
+    NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
     func_020e780c(unk_8e, r4);
@@ -1117,9 +1117,9 @@ BOOL SpNpcMabel::mainAct02() {
             changeAct(3);
         }
     }
-    func_0201a99c(&unk_350, r4);
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
+    NpcMoveCtrl_setTargetAngle(&unk_350, r4);
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             changeAct(1);
         }
     }
@@ -1127,7 +1127,7 @@ BOOL SpNpcMabel::mainAct02() {
 }
 
 BOOL SpNpcMabel::setupAct03() {
-    func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1144,19 +1144,19 @@ BOOL SpNpcMabel::mainAct03() {
     v.y = pv->y;
     v.z = pv->z;
     Unk_ov049_0225aba8_Vec out;
-    func_0201ae00(&out, this, &v);
+    NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     func_0204e328(gSceneBlockMap, &unk_5c);
     if (t > 0x6000) {
-        if (func_020197a8(&unk_564) == 1) {
-            func_020196b4(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&unk_564) == 1) {
+            NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (func_020197a8(&unk_564) == 2) {
-            func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&unk_564) == 2) {
+            NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    func_0201a9ec(&unk_350, &out);
+    NpcMoveCtrl_setWaypoint(&unk_350, &out);
     if (t <= 0x5000 || func_020e972c(&out, &unk_5c) != 0) {
         changeAct(1);
     }
@@ -1169,12 +1169,12 @@ BOOL SpNpcMabel::setupAct04() {
     if (p) {
         r = getAngleTo(p);
     }
-    func_020141b4(&unk_618, 0, r, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct04() {
-    if (func_02014220(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&unk_618)) {
         return TRUE;
     }
     if (unk_964 != 0 && AbleShop_IsPurchaseSynced() == 0) {
@@ -1191,12 +1191,12 @@ BOOL SpNpcMabel::setupAct05() {
     if (p) {
         r = getAngleTo(p);
     }
-    func_020141b4(&unk_618, 0, r, 1);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 1);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct05() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         func_020b4bbc(func_020b4934(), 0);
         changeAct(6);
     }
@@ -1208,7 +1208,7 @@ BOOL SpNpcMabel::setupAct06() { return TRUE; }
 BOOL SpNpcMabel::mainAct06() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct07() {
-    func_020196b4(&unk_564, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1219,8 +1219,8 @@ BOOL SpNpcMabel::mainAct07() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    if (func_020197a8(&unk_564) == 0xa) {
-        if (func_02019790(&unk_564)) {
+    if (NpcActionCtrl_getAction(&unk_564) == 0xa) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             unk_962 = 0x18;
             changeAct(1);
         }
@@ -1231,12 +1231,12 @@ BOOL SpNpcMabel::mainAct07() {
 BOOL SpNpcMabel::setupAct08() { return TRUE; }
 
 BOOL SpNpcMabel::mainAct08() {
-    if (func_0201ba88()) {
+    if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
         if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
-            func_0201b9fc(1, t, t);
+            netSetSlotsIfOwner(1, t, t);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
             BOOL r;
@@ -1260,7 +1260,7 @@ BOOL SpNpcMabel::mainAct08() {
             }
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
-            func_0201b9fc(1, gCommManager->unk_64, 4);
+            netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
             changeAct(0xa);
         }
     } else {
@@ -1272,11 +1272,11 @@ BOOL SpNpcMabel::mainAct08() {
 BOOL SpNpcMabel::setupAct09() { return TRUE; }
 
 BOOL SpNpcMabel::mainAct09() {
-    if (func_0201ba88()) {
+    if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
         if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            func_0201b9fc(1, gCommManager->unk_64, 4);
+            netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
             changeAct(0xa);
         }
     }
@@ -1284,7 +1284,7 @@ BOOL SpNpcMabel::mainAct09() {
 }
 
 BOOL SpNpcMabel::setupAct0A() {
-    func_02019614(&unk_564, 1, unk_962);
+    NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
     return TRUE;
 }
 
@@ -1300,13 +1300,13 @@ BOOL SpNpcMabel::mainAct0A() {
 
 BOOL SpNpcMabel::setupAct0B() {
     s32 f = getAngleToPlayer(4);
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct0B() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             changeAct(0xa);
         }
     }
@@ -1319,7 +1319,7 @@ BOOL SpNpcMabel::mainAct0C() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0D() {
     unk_967 = 0x32;
-    func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1330,19 +1330,19 @@ BOOL SpNpcMabel::mainAct0D() {
     v.y = pv->y;
     v.z = pv->z;
     Unk_ov049_0225aba8_Vec out;
-    func_0201ae00(&out, this, &v);
+    NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     func_0204e328(gSceneBlockMap, &unk_5c);
     if (t > 0x6000) {
-        if (func_020197a8(&unk_564) == 1) {
-            func_020196b4(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&unk_564) == 1) {
+            NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (func_020197a8(&unk_564) == 2) {
-            func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&unk_564) == 2) {
+            NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    func_0201a9ec(&unk_350, &out);
+    NpcMoveCtrl_setWaypoint(&unk_350, &out);
     if (t <= 0x5000 || func_020e972c(&out, &unk_5c) != 0 || func_020e7518(&unk_967) == 0) {
         unk_658.vfunc_08();
         func_02015ab0(&unk_658, getPlayerActor(4));
@@ -1351,10 +1351,10 @@ BOOL SpNpcMabel::mainAct0D() {
     return TRUE;
 }
 
-void SpNpcMabel::vfunc_8c() { changeAct(0xe); }
+void SpNpcMabel::onJoinTalk() { changeAct(0xe); }
 
-void SpNpcMabel::vfunc_90() {
-    func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+void SpNpcMabel::onLeaveTalk() {
+    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(1);
 }
 
@@ -1363,19 +1363,19 @@ BOOL SpNpcMabel::setupAct0E() { return setupAct01(); }
 BOOL SpNpcMabel::mainAct0E() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0F() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 // ---- owner states and dialog base (unit 0225aa48)
 
 BOOL SpNpcMabel::mainAct0F() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
-            func_02019614(&unk_564, 1, unk_962);
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
+            NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
         }
     }
-    func_0201a99c(&unk_350, getAngleToPlayer(4));
+    NpcMoveCtrl_setTargetAngle(&unk_350, getAngleToPlayer(4));
     TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
@@ -1398,19 +1398,19 @@ s32 SpNpcMabelTalk::getTopic() { return unk_b0; }
 
 void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
-    void *r6 = func_02099864(func_0209865c());
+    void *r6 = SickVillagerRecord_getParcelErrand(func_0209865c());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->unk_00 = sSpNpcMabelMsgKeys[2];
         out->unk_04 = 6;
         return;
     }
-    if (getTopic() == 2 && func_02099f98(r6, &unk_ac->unk_ea) != 0) {
+    if (getTopic() == 2 && ParcelErrand_IsFor(r6, &unk_ac->unk_ea) != 0) {
         out->unk_04 = 0x2e;
         out->unk_00 = sSpNpcMabelMsgKeys[0];
         return;
     }
-    if (getTopic() == 2 && func_0202e18c(unk_ac, buf, 2) != 0) {
+    if (getTopic() == 2 && Talk_IsDramaPending(unk_ac, buf, 2) != 0) {
         unk_ac->unk_965 = 1;
         Unk_ov049_0225a714_Bits *b = (Unk_ov049_0225a714_Bits *)buf;
         out->unk_04 = *(sSpNpcMabelDramaMsgTable + b->mid * 7 + b->hi);
@@ -1421,8 +1421,8 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_00 = sSpNpcMabelMsgKeys[0];
     if (getTopic() == 4) {
         unk_b8 = (s32)Item_GetPrice(&unk_ac->unk_734);
-        func_02015958(this, unk_b8, 0, 0xa, 1, 0);
-        func_0201578c(this, &unk_ac->unk_734, 0, 7);
+        ActorTalkRequest_setNumberSlot(this, unk_b8, 0, 0xa, 1, 0);
+        ActorTalkRequest_setItemNameSlot(this, &unk_ac->unk_734, 0, 7);
         if (GameStart_IsActive() != 0) {
             out->unk_00 = sSpNpcMabelMsgKeys[2];
             out->unk_04 = 0x1e;
@@ -1454,12 +1454,12 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
             out->unk_00 = sSpNpcMabelMsgKeys[2];
             out->unk_04 = 0x1d;
         } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
-            func_020157e8(this, &a, 2);
-            func_02015818(this, &c, 3);
+            ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
+            ActorTalkRequest_setTownNameSlot(this, &c, 3);
             out->unk_04 = 0x33;
         } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && func_020941e8(&a, &b) != 0) {
         } else {
-            func_020157e8(this, &a, 2);
+            ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
             out->unk_04 = 0x32;
         }
         func_020639b8(&d);
@@ -1552,14 +1552,14 @@ test0:
 }
 
 void SpNpcMabelTalk::startDesignEditor() {
-    func_02015170(this, 4, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 4, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(1);
 }
 
 void SpNpcMabelTalk::startDesignNameEntry() {
-    func_02015170(this, 0xb, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 0xb, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(2);
 }
 
@@ -1568,8 +1568,8 @@ void SpNpcMabelTalk::chargeDesignFee() {
 }
 
 void SpNpcMabelTalk::startSellItemSelect() {
-    func_02015170(this, 0x1e, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 0x1e, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(6);
 }
 
@@ -1592,20 +1592,20 @@ void SpNpcMabelTalk::openItemChoices() {
 }
 
 void SpNpcMabelTalk::startDisplayPatternSelect() {
-    func_02015170(this, 5, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 5, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(3);
 }
 
 void SpNpcMabelTalk::startTakePatternSelect() {
-    func_02015170(this, 7, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 7, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(4);
 }
 
 void SpNpcMabelTalk::startTradePatternSelect() {
-    func_02015170(this, 8, 0);
-    func_020151d0(this, 2);
+    Unk_020d7710_setSubSceneKind(this, 8, 0);
+    Unk_020d7710_openSubScene(this, 2);
     setScript(5);
 }
 
@@ -1740,7 +1740,7 @@ void SpNpcMabelTalk::onMenuChoice(u32 a) {
     if (CommManager_isOnline(g) == 0 && *func_0209c37c(0, 0x4a) == 0) {
         s32 r = NpcRegistry_FindSpNpc(5);
         if (r != 0) {
-            func_02015a80(this, r);
+            ActorTalkRequest_setPartnerActor(this, r);
         }
     }
 }
@@ -1934,8 +1934,8 @@ extern "C" BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v) {
 
 void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
     if (v == 0) {
-        func_0201517c(this, (void *)SpNpcMabel_IsDeliveryItem, 0xd, 0);
-        func_020151d0(this, 0);
+        Unk_020d7710_setPocketFilter(this, (void *)SpNpcMabel_IsDeliveryItem, 0xd, 0);
+        Unk_020d7710_openSubScene(this, 0);
         setScript(9);
     }
 }
@@ -1948,8 +1948,8 @@ void SpNpcMabelTalk::onDramaMenuChoice() {
             m[1] = sSpNpcMabelDramaMenuMsgs[t];
             TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
         } else {
-            if (func_0202e18c(unk_ac, m, 2)) {
-                func_0202e174(unk_ac, m);
+            if (Talk_IsDramaPending(unk_ac, m, 2)) {
+                Talk_AdvanceDrama(unk_ac, m);
             }
         }
     }
@@ -1957,7 +1957,7 @@ void SpNpcMabelTalk::onDramaMenuChoice() {
         if (*func_0209c37c(0, 0x4a) == 0) {
             s32 r = NpcRegistry_FindSpNpc(5);
             if (r) {
-                func_02015a80(this, r);
+                ActorTalkRequest_setPartnerActor(this, r);
             }
         }
     }
@@ -2125,7 +2125,7 @@ void SpNpcMabelTalk::onSellItemsChosen() {
         if (unk_b8 == 0) {
             msg = 0x17;
         } else {
-            func_02015958(this, unk_b8, 1, 10, 1, 0);
+            ActorTalkRequest_setNumberSlot(this, unk_b8, 1, 10, 1, 0);
             msg = 0x1b;
         }
     } else {
@@ -2162,15 +2162,15 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     u16 v[3];
     void *hh;
     if (MenuCtrl_IsResultOk()) {
-        hh = func_02099864(func_0209865c(PlayerData_GetCurrent()));
-        if (func_0202e148()) {
+        hh = SickVillagerRecord_getParcelErrand(func_0209865c(PlayerData_GetCurrent()));
+        if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
             v[1] = func_02099048();
             if (n >= 0) {
                 func_02099064(n);
             }
             if (!Unk_ov049_02258ee0_Eq(&v[1], &v[2])) {
-                func_02014ce4(this, &v[1], 2, 5, 0);
+                Unk_02014420_requestTakeItem(this, &v[1], 2, 5, 0);
                 msg = 0x2f;
                 func_0209abb4(func_0209a108(hh), 1);
             }
@@ -2212,18 +2212,18 @@ void SpNpcMabelTalk::sellItemToPlayer() {
     NpcActor_ChargePlayer(unk_ac, unk_b8);
     func_02099014(&unk_ac->unk_734, 0);
     AbleShop_BuyAt(unk_ac->unk_724, unk_ac->unk_728, 10);
-    func_020787d4();
+    VillagerTrend_OnClothesBought();
 }
 
 BOOL SpNpcMabel::vfunc_48() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0 || tryStartShopItemTalk() != 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcMabel::vfunc_58() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -2236,22 +2236,22 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
     case 3:
         *(u8 *)&unk_558.unk_08 = arg;
         if (arg != 4) {
-            func_0201b9fc(1, gCommManager->unk_64, arg);
+            netSetSlotsIfOwner(1, gCommManager->unk_64, arg);
             changeAct(0xc);
-        } else if (func_0201ba88()) {
+        } else if (isNetOwner()) {
             u32 t = gCommManager->unk_64;
-            func_0201b9fc(1, t, t);
+            netSetSlotsIfOwner(1, t, t);
             changeAct(0xc);
         }
         break;
     case 1:
         unk_558.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
-            func_0201b9fc(1, arg, arg);
+            netSetSlotsIfOwner(1, arg, arg);
             changeAct(9);
-        } else if (func_0201ba88()) {
+        } else if (isNetOwner()) {
             g = gCommManager;
-            func_0201b9fc(1, g->unk_64, g->unk_64);
+            netSetSlotsIfOwner(1, g->unk_64, g->unk_64);
             if (unk_658.getTopic() == 1 || unk_658.getTopic() == 0) {
                 unk_658.vfunc_08();
                 func_02015ab0(&unk_658, getPlayerActor(4));
@@ -2272,10 +2272,10 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
     case 0:
         unk_558.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
-            func_0201b9fc(1, arg, arg);
+            netSetSlotsIfOwner(1, arg, arg);
             changeAct(9);
-        } else if (func_0201ba88()) {
-            func_0201b9fc(1, gCommManager->unk_64, gCommManager->unk_64);
+        } else if (isNetOwner()) {
+            netSetSlotsIfOwner(1, gCommManager->unk_64, gCommManager->unk_64);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
             unk_658.setTopic(2);
@@ -2286,21 +2286,21 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
                 g = gCommManager;
-                func_0201b9fc(1, g->unk_64, 4);
+                netSetSlotsIfOwner(1, g->unk_64, 4);
                 if (CommManager_isOnline(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
                     changeAct(0xa);
                 } else if (unk_658.getTopic() != 3) {
                     changeAct(1);
                 }
             } else {
-                func_0201b9fc(1, 4, gCommManager->unk_64);
+                netSetSlotsIfOwner(1, 4, gCommManager->unk_64);
                 changeAct(8);
             }
         }
         break;
     case 4:
-        if (func_0201b9bc()) {
-            if (func_0201ba88()) {
+        if (netIsTalkLocked()) {
+            if (isNetOwner()) {
                 a = 4;
                 b = 4;
                 if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b)) {
@@ -2309,7 +2309,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
                 x4:
                     if (arg != 4) break;
                 y4:
-                    func_0201b9fc(1, gCommManager->unk_64, 4);
+                    netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                     changeAct(0xa);
                 }
             }
@@ -2332,7 +2332,7 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     Unk_ov049_02258ee0_Vec v;
     Character *p = (Character *)func_02095204(4);
     BOOL f = Unk_ov049_02258ee0_Flags() ? TRUE : FALSE;
-    if (p == 0 || TalkRequest_IsActive() != 0 || func_02014220(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
+    if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
     unk_734 = 0xfff1;

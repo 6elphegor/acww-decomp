@@ -428,17 +428,17 @@ s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 Camera_RestorePrevMode(void);
 s32 Camera_MuteSe(void);
 s32 Camera_SetMode4(void);
-s32 func_020902f8(void *);
-s32 func_02090268(u32 a, void *b, void *c, u32 d);
+s32 Effect_End(void *);
+s32 Effect_CreateById(u32 a, void *b, void *c, u32 d);
 u32 SpNpcBrewster_GetAnimFrame(void);
 u32 SpNpcBrewster_GetAnimState(void);
 void *SpNpcBrewster_GetJointMtxB(void);
 void *SpNpcBrewster_GetJointMtxE(void);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
-void *func_02034d2c(void);
+void *Bgm_GetCurrent(void);
 s32 func_020e77cc(void *p, u32 a, u32 b);
 Unk_ov004_022275fc_Sess *Snd_GetBeatState(void);
-s32 func_020902d4(s32 a, void *b, u32 c, u32 d);
+s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
 void *Heap_Alloc(void *heap, u32 size);
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
@@ -677,7 +677,7 @@ BOOL CafeCoffeeSet::vfunc_00() {
 BOOL CafeCoffeeSet::onExecute() {
     ObjB *o = (ObjB *)this;
     u8 i;
-    if (func_020e77cc(func_02034d2c(), 0x63, 0xab)) {
+    if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab)) {
         Unk_ov004_022275fc_Sess *t = Snd_GetBeatState();
         if (t != NULL) {
             if (t->unk_03 != 1) {
@@ -698,16 +698,16 @@ BOOL CafeCoffeeSet::onExecute() {
     }
     CafeCoffeeSet_UpdateState(o);
     if (o->unk_f38 != -1) {
-        func_020902d4(o->unk_f38, (u8 *)o + 0xf10, 0, 0);
+        Effect_SetPosition(o->unk_f38, (u8 *)o + 0xf10, 0, 0);
     }
     if (o->unk_ef4 != 0) {
         if (o->unk_f3c == -1) {
-            o->unk_f3c = func_02090268(0x6b, (u8 *)o + 0xf1c, (u8 *)o + 0xf34, 0);
+            o->unk_f3c = Effect_CreateById(0x6b, (u8 *)o + 0xf1c, (u8 *)o + 0xf34, 0);
         }
     }
     if (o->unk_ef6 != 0) {
         if (o->unk_f40 == -1) {
-            o->unk_f40 = func_02090268(0x6b, (u8 *)o + 0xf28, (u8 *)o + 0xf36, 0);
+            o->unk_f40 = Effect_CreateById(0x6b, (u8 *)o + 0xf28, (u8 *)o + 0xf36, 0);
         }
     }
     return TRUE;
@@ -985,7 +985,7 @@ void CafeCoffeeSet_UpdateState05(ObjA *o) {
         UP(6, M1, R1, 1, 0);
         UP(4, M2, R2, 1, 0);
         if (t == 0x3b) {
-            o->unk_f38 = func_02090268(0x6b, (u8 *)o + 0xf10, (u8 *)o + 0x8e, 0);
+            o->unk_f38 = Effect_CreateById(0x6b, (u8 *)o + 0xf10, (u8 *)o + 0x8e, 0);
         }
     }
 }
@@ -1006,7 +1006,7 @@ void CafeCoffeeSet_UpdateState06(ObjA *o) {
 
 // @2226a68
 BOOL CafeCoffeeSet_EnterState08(ObjA *o) {
-    func_020902f8((void *)o->unk_f38);
+    Effect_End((void *)o->unk_f38);
     return TRUE;
 }
 

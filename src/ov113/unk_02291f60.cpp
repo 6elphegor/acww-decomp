@@ -18,7 +18,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 data_ov113_022936a0[];
 s32 Snd_PlaySe(s32 a);
-u32 func_02076f78();
+u32 Bbs_GetPostCount();
 void *ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
@@ -38,7 +38,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 s32 PlayerData_GetCurrentIndex();
-u8 *func_02077374(void *p);
+u8 *BbsPost_GetText(void *p);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 void String_SetSlot(s32 a, void *buf);
 s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
@@ -61,19 +61,19 @@ public:
     void setNextRequest(s32 a, s32 b);
 };
 
-class Unk_02077198 {
+class BbsBoard {
 public:
-    static void *func_02077278(s32 p);
+    static void *getPost(s32 p);
 };
 
-class Unk_020772cc {
+class BbsPost {
 public:
-    BOOL func_020772dc();
-    void func_020772f0(s32 i);
-    BOOL func_02077310(s32 i);
-    u8 func_02077330();
-    u8 func_02077338();
-    u8 func_02077340();
+    BOOL isFreeText();
+    void setRead(s32 i);
+    BOOL isRead(s32 i);
+    u8 getYear();
+    u8 getMonth();
+    u8 getDay();
 };
 
 // Text window, 0x40 bytes
@@ -660,19 +660,19 @@ void BbsReadMenu::startButtonInput() {
 }
 
 void BbsReadMenu::showPostText(void *unused) {
-    void *p = Unk_02077198::func_02077278((s32)data_021e87d8);
+    void *p = BbsBoard::getPost((s32)data_021e87d8);
     s32 starts[7];
     s32 cnt;
     s32 i;
     s32 z1 = 0;
     s32 z2 = 0;
-    func_0206cf4c(func_02077374(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
+    func_0206cf4c(BbsPost_GetText(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
     for (i = 0; i < 6; i++) {
         s32 len = starts[i + 1] - starts[i];
         Unk_020e0488 *o = &unk_27e8[i];
         ((MsgString *)o)->clear();
         if (len != 0) {
-            func_0206f920(o, func_02077374(p) + starts[i], len, z1, z1);
+            func_0206f920(o, BbsPost_GetText(p) + starts[i], len, z1, z1);
         }
     }
     for (i = 0; i < 6; i++) {
@@ -684,19 +684,19 @@ void BbsReadMenu::showPostText(void *unused) {
 }
 
 void BbsReadMenu::showPostDate(void *unused) {
-    Unk_020772cc *p = (Unk_020772cc *)Unk_02077198::func_02077278((s32)data_021e87d8);
+    BbsPost *p = (BbsPost *)BbsBoard::getPost((s32)data_021e87d8);
     u8 buf[8];
     buf[0] = 0x37;
     buf[1] = 0x35;
-    buf[2] = p->func_02077330() / 10 + 0x35;
-    buf[3] = p->func_02077330() % 10 + 0x35;
+    buf[2] = p->getYear() / 10 + 0x35;
+    buf[3] = p->getYear() % 10 + 0x35;
     buf[4] = 0;
     func_0206f994(&unk_26e8[0], buf, 5);
     placeLabel(0, 0x111, 4, 0, 1);
-    buf[0] = p->func_02077338() / 10 + 0x35;
-    buf[1] = p->func_02077338() % 10 + 0x35;
-    buf[2] = p->func_02077340() / 10 + 0x35;
-    buf[3] = p->func_02077340() % 10 + 0x35;
+    buf[0] = p->getMonth() / 10 + 0x35;
+    buf[1] = p->getMonth() % 10 + 0x35;
+    buf[2] = p->getDay() / 10 + 0x35;
+    buf[3] = p->getDay() % 10 + 0x35;
     func_0206f994(&unk_26e8[1], buf, 5);
     placeLabel(1, 0x116, 4, 0, 1);
 }
@@ -719,23 +719,23 @@ void BbsReadMenu::showPostNumber(s32 i) {
 }
 
 void BbsReadMenu::markPostRead(void *unused) {
-    Unk_020772cc *p = (Unk_020772cc *)Unk_02077198::func_02077278((s32)data_021e87d8);
+    BbsPost *p = (BbsPost *)BbsBoard::getPost((s32)data_021e87d8);
     s32 n = PlayerData_GetCurrentIndex();
     s32 m;
-    if (p->func_02077310(n)) {
+    if (p->isRead(n)) {
         m = 8;
     } else {
         m = 0xa;
     }
     BgScreen_SetRectPalette(unk_a0, 0x10, 0, 0x12, 3, m);
-    if (p->func_020772dc()) {
+    if (p->isFreeText()) {
         m = 0xa;
     } else {
         m = 8;
     }
     BgScreen_SetRectPalette(unk_a0, 6, 5, 0x19, 6, m);
     setFlags(1);
-    p->func_020772f0(n);
+    p->setRead(n);
 }
 
 void BbsReadMenu::showPost(void *pad) {
@@ -934,7 +934,7 @@ BOOL BbsReadMenu::activateFocus() {
 }
 
 void BbsReadMenu::updatePostCount() {
-    unk_9d = func_02076f78();
+    unk_9d = Bbs_GetPostCount();
     unk_9e = (0xf - unk_9d) * 4;
 }
 

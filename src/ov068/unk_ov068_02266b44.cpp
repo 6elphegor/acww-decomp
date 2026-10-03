@@ -31,15 +31,15 @@ class FieldVillager;
 class SpNpcNookIntro;
 class SpNpcNookIntroTalk;
 
-#define func_02015958 _ZN16ActorTalkRequest13func_02015958Eijiii
+#define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
@@ -100,10 +100,10 @@ void TalkRequest_EndTalkWith(void *p);
 u32 NookShop_GetLevel(void *p);
 u32 func_020e7518(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_02034d70(u32 a);
-void func_02034d84(u32 a);
-void func_02034dd0(u32 a, u32 b, u32 c);
-void func_02034e10(s32 a, s32 b, s32 c, s32 d);
+void Bgm_ReleasePriority(u32 a);
+void Bgm_Release(u32 a);
+void Bgm_RequestSilence(u32 a, u32 b, u32 c);
+void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Camera_SetModeDefault();
 void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
 BOOL func_020951b8(s32 a);
@@ -117,19 +117,19 @@ s32 func_020978a4(void *self);
 void func_02097ff4(void *self, s32 a);
 void *func_02060388(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
-void func_02015958(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
+void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void func_02015ab0(void *self, s32 a);
 void *func_02015aac(void *self);
 s32 Unk_020d77a4_getPlayerActor(void *self, s32 a);
 u32 Unk_020d77a4_getAngleTo(void *self, void *q);
 void Unk_020d77a4_setTalkRequest(void *self, void *q);
 void Unk_020d77a4_setNpcHandle(void *self, u16 *q);
-s32 func_02019790(void *self);
-s32 func_020197a8(void *self);
-void func_020196b4(void *self, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 func_02014220(void *self);
-void func_020141b4(void *self, s32 a, s32 b, s32 c);
-void func_0201a8d0(void *self, s32 a, s32 b, s32 c, s32 d);
+s32 NpcActionCtrl_isActionDone(void *self);
+s32 NpcActionCtrl_getAction(void *self);
+void NpcActionCtrl_requestAction(void *self, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 NpcTalkCtrl_isBusy(void *self);
+void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
+void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
 extern u8 data_021edb68;
@@ -144,19 +144,19 @@ extern const char *sNookTexPaths[];
 // Member object types of the scene object, named after their constructors.
 struct ThreeLayerAnimModel { ThreeLayerAnimModel(); u32 pad[0x1b4 / 4]; };
 struct Unk_0201ad3c { Unk_0201ad3c(); u32 pad[0xc / 4]; };
-struct Unk_02019dd8 { Unk_02019dd8(); u32 pad[0x88 / 4]; };
-struct Unk_02016350 { Unk_02016350(); u32 pad[0x1c / 4]; };
+struct NpcFaceAnim { NpcFaceAnim(); u32 pad[0x88 / 4]; };
+struct NpcAnimCtrl { NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc { Unk_0201accc(); u32 pad[0x58 / 4]; };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); u32 pad[0x68 / 4]; };
-struct Unk_0201a194 { Unk_0201a194(); u32 pad[8 / 4]; };
+struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_02032238 { Unk_02032238(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); u32 pad[0x1c / 4]; u32 unk_1c; u32 pad_20[0x24 / 4]; u8 unk_44; u8 pad_45[3]; };
 struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
 struct Unk_020135e4 { Unk_020135e4(); u8 pad[0xb]; u8 unk_0b; };
-struct Unk_02019858 { Unk_02019858(); u32 pad[0xb4 / 4]; };
+struct NpcActionCtrl { NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
 struct Unk_020e06dc { Unk_020e06dc(); u32 pad[0x14 / 4]; };
 
@@ -211,31 +211,31 @@ public:
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
 
     u16 pad_e0[5];
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -469,7 +469,7 @@ BOOL SpNpcNookIntro::vfunc_04() {
     Unk_020d77a4_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
     Unk_020d77a4_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((FieldVillager *)this);
-    func_0201a8d0(&unk_350, 2, 0x399, 0x133, 0x199);
+    NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x399, 0x133, 0x199);
     return TRUE;
 }
 
@@ -523,7 +523,7 @@ BOOL SpNpcNookIntro::vfunc_00() {
             }
         }
     }
-    func_02034dd0(0x13, 0xf, 0);
+    Bgm_RequestSilence(0x13, 0xf, 0);
     return TRUE;
 }
 
@@ -571,15 +571,15 @@ BOOL SpNpcNookIntro::setupAct01() {
     if (p != NULL) {
         x = Unk_020d77a4_getAngleTo(this, p);
     }
-    func_020141b4(&unk_618, 0, x, 1);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, x, 1);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct01() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         Camera_SetModeDefault();
-        func_02034dd0(0x13, 0x3c, 0);
-        func_02034d84(0x47);
+        Bgm_RequestSilence(0x13, 0x3c, 0);
+        Bgm_Release(0x47);
         changeAct(3);
     }
     return TRUE;
@@ -606,13 +606,13 @@ BOOL SpNpcNookIntro::mainAct02() {
 }
 
 BOOL SpNpcNookIntro::setupAct03() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct03() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             changeAct(4);
         }
     }
@@ -625,13 +625,13 @@ BOOL SpNpcNookIntro::setupAct04() {
     unk_71c = unk_64;
     unk_714 -= 0x2000;
     unk_71c += 0xa000;
-    func_020196b4(&unk_564, 2, 1, unk_714, unk_71c, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 2, 1, unk_714, unk_71c, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_720 = 0x3c;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (func_02019790(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
+    if (NpcActionCtrl_isActionDone(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
         TalkRequest_EndTalkWith(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -647,8 +647,8 @@ BOOL SpNpcNookIntro::setupAct05() {
 
 BOOL SpNpcNookIntro::mainAct05() {
     if (func_020e7518(&unk_720) == 0) {
-        func_02034d70(0x13);
-        func_02034dd0(0x12, 5, 5);
+        Bgm_ReleasePriority(0x13);
+        Bgm_RequestSilence(0x12, 5, 5);
         ProcBase_RequestDelete(this);
     }
     return TRUE;
@@ -689,7 +689,7 @@ void SpNpcNookIntroTalk::vfunc_14() {
         if (p == 0) {
             buf = 0xf;
         } else {
-            func_02015958(this, p, 1, 0xa, 1, 0);
+            ActorTalkRequest_setNumberSlot(this, p, 1, 0xa, 1, 0);
             if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
             } else if (func_020978a4(data_021d735c) <= 1) {
@@ -751,8 +751,8 @@ void SpNpcNookIntroTalk::runWalkScript() {
     switch (unk_b0) {
     case 0:
         if (unk_3c->unk_04 == 5) {
-            func_02034d70(0x13);
-            func_02034e10(0x15, 0x47, 0x7f, 1);
+            Bgm_ReleasePriority(0x13);
+            Bgm_Request(0x15, 0x47, 0x7f, 1);
             func_02094f48(0, 4);
             Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
             Unk_ov068_02266680_Vec *pv = &o->unk_5c;
@@ -763,17 +763,17 @@ void SpNpcNookIntroTalk::runWalkScript() {
             o = (Unk_ov068_02266bd0_Owner *)unk_b4;
             o->unk_714.x += 0x6000;
             o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            func_020196b4(o->unk_564, 2, 2, o->unk_714.x, o->unk_714.z, 0, 0, 0, 0, data_020c6cc8, 0);
+            NpcActionCtrl_requestAction(o->unk_564, 2, 2, o->unk_714.x, o->unk_714.z, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_b0 = 1;
         }
         break;
     case 1: {
         Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-        if (func_02019790(o->unk_564) != 0) {
+        if (NpcActionCtrl_isActionDone(o->unk_564) != 0) {
             o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            if (func_020197a8(o->unk_564) == 2) {
+            if (NpcActionCtrl_getAction(o->unk_564) == 2) {
                 o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-                func_020196b4(o->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(o->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 unk_b0 = 2;
             }
         }
@@ -781,9 +781,9 @@ void SpNpcNookIntroTalk::runWalkScript() {
     }
     case 2: {
         Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-        if (func_02019790(o->unk_564) != 0) {
+        if (NpcActionCtrl_isActionDone(o->unk_564) != 0) {
             o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            if (func_020197a8(o->unk_564) == 0) {
+            if (NpcActionCtrl_getAction(o->unk_564) == 0) {
                 Unk_ov068_02266bd0_Scene *sc = unk_3c;
                 volatile u8 buf = data_021edb68;
                 if (GameStart_IsNewTown() != 0) {

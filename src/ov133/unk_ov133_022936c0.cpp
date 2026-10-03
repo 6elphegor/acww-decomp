@@ -45,7 +45,7 @@ BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
-u64 func_02076c94(void *p);
+u64 PlayerWifiData_GetFriendCode(void *p);
 void *FriendList_GetEntries(void *p);
 BOOL DwcFriendData_IsValid(void *p);
 BOOL DwcFriendData_Compare(u32 a, void *p);
@@ -1112,7 +1112,7 @@ BOOL FriendCodeMenu::isOwnFriendCode() {
     for (i = 0; i < 12; i++) {
         sum = sum * 10 + (s64)(u32)unk_a4[i];
     }
-    return func_02076c94(((PlayerData *)h)->getWifiUserData()) == sum;
+    return PlayerWifiData_GetFriendCode(((PlayerData *)h)->getWifiUserData()) == sum;
 }
 
 void FriendCodeMenu::confirm() {

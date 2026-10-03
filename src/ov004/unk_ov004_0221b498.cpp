@@ -140,8 +140,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -153,7 +153,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -171,10 +171,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    void func_020196b4(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -243,12 +243,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -258,19 +258,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -312,33 +312,33 @@ struct Unk_ov004_0221b6d4_Bits {
 };
 
 // Real symbol names of the callees outside this unit (all are called as free functions taking the object first).
-#define func_0201b9fc _ZN12Unk_020d77a413func_0201b9fcEjjjz
-#define func_0201ba88 _ZN12Unk_020d77a413func_0201ba88Ev
+#define Unk_020d77a4_netSetSlotsIfOwner _ZN12Unk_020d77a418netSetSlotsIfOwnerEjjjz
+#define Unk_020d77a4_isNetOwner _ZN12Unk_020d77a410isNetOwnerEv
 #define func_0201b9e8 _ZN12Unk_020d77a413func_0201b9e8Eii
-#define func_0201b9bc _ZN12Unk_020d77a413func_0201b9bcEv
-#define func_0201b964 _ZN12Unk_020d77a413func_0201b964EPvi
-#define func_0201b980 _ZN12Unk_020d77a413func_0201b980EPhj
+#define Unk_020d77a4_netIsTalkLocked _ZN12Unk_020d77a415netIsTalkLockedEv
+#define Unk_020d77a4_setNetUserBytes _ZN12Unk_020d77a415setNetUserBytesEPvi
+#define Unk_020d77a4_getNetUserBytes _ZN12Unk_020d77a415getNetUserBytesEPhj
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
-#define func_0201bd9c _ZN12Unk_020d77a413func_0201bd9cEi
+#define Unk_020d77a4_setCollisionRadius _ZN12Unk_020d77a418setCollisionRadiusEi
 #define func_0201b08c _ZN12Unk_020d77a48vfunc_4cEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define func_0202e548 _ZN12Unk_020d8bc813func_0202e548Eii
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_020195c8 _ZN12Unk_0201985813func_020195c8Eiijtt
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02014198 _ZN12Unk_02013b1013func_02014198Ehh
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_0201622c _ZN12Unk_0201635013func_0201622cEiPv
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_0209868c _ZN10PlayerData13func_0209868cEv
-#define func_02015a80 _ZN16ActorTalkRequest13func_02015a80EP18Unk_02015b8c_Scene
+#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
 #define func_02087c50 _ZN12Unk_02087ad813func_02087c50Ej
 #define func_02087c54 _ZN12Unk_02087ad813func_02087c54Ev
 
@@ -352,41 +352,41 @@ extern const u8 sSpNpcSableWeekdayMsgs[];
 extern const u8 sSpNpcSableTalkMsgs[];
 extern u32 sSpNpcSableMsgFiles[];
 
-s32 func_0201b9fc(void *self, s32 a, s32 b, s32 c);
-BOOL func_0201ba88(void *self);
+s32 Unk_020d77a4_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
+BOOL Unk_020d77a4_isNetOwner(void *self);
 s32 func_0201b9e8(void *self, s32 *a, s32 *b);
-BOOL func_0201b9bc(void *self);
-void func_0201b964(void *self, void *p, s32 n);
-BOOL func_0201b980(void *self, u8 *p, u32 n);
+BOOL Unk_020d77a4_netIsTalkLocked(void *self);
+void Unk_020d77a4_setNetUserBytes(void *self, void *p, s32 n);
+BOOL Unk_020d77a4_getNetUserBytes(void *self, u8 *p, u32 n);
 void Unk_020d77a4_setTalkRequest(void *self, void *p);
 u32 Unk_020d77a4_getPlayerActor(void *self, u32 id);
 s32 Unk_020d77a4_getAngleTo(void *self, void *p);
-void func_0201bd9c(void *self, s32 v);
+void Unk_020d77a4_setCollisionRadius(void *self, s32 v);
 void func_0201b08c(void *self, u32 a, u32 b);
 void Character_setInteractionRange(void *self, s32 v);
 void func_0202e548(void *self, s32 a, s32 b);
 void func_02015ab0(void *self, u32 v);
 Unk_020d77a4 *func_02015aac(void *self);
-void func_0201a6c0(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
-s32 func_020197a8(void *self);
-BOOL func_02019790(void *self);
-void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void func_020195c8(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-BOOL func_02014220(void *self);
-void func_02014198(void *self, u8 a, u8 b);
-void func_020141b4(void *self, s32 a, s32 b, s32 c);
-BOOL func_0201622c(void *self, s32 a, void *b);
+void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
+s32 NpcActionCtrl_getAction(void *self);
+BOOL NpcActionCtrl_isActionDone(void *self);
+void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
+void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
+BOOL NpcTalkCtrl_isBusy(void *self);
+void NpcTalkCtrl_requestTalk(void *self, u8 a, u8 b);
+void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
+BOOL NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
 BOOL CommManager_isOnline(void *g);
 void *func_0209868c(void *p);
-void func_02015a80(void *self, void *p);
+void ActorTalkRequest_setPartnerActor(void *self, void *p);
 void func_02087c50(void *self, u32 v);
 u32 func_02087c54(void *self);
 void *PlayerData_GetCurrent();
 s32 func_02063b8c(s32);
 BOOL NetArea_IsLocalOwner();
-BOOL func_0202e1cc(s32 a, s32 b);
-BOOL func_0202e18c(void *self, void *out, s32 x);
-void func_0202e174(void *self, void *p);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
+void Talk_AdvanceDrama(void *self, void *p);
 s16 *func_0209c37c(s32 a, s32 b);
 s32 GameStart_IsActive();
 s32 Clock_GetWeekday();
@@ -424,7 +424,7 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual void vfunc_90();
+    virtual void onLeaveTalk();
 
     BOOL mainAct06();
     BOOL setupAct06();
@@ -477,7 +477,7 @@ BOOL SpNpcSable::vfunc_04() {
     Unk_020d77a4_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((Unk_ov004_0221b6d4_Owner *)this);
     func_0202e548(this, 0x119a, 0x2000);
-    func_0201bd9c(this, 0);
+    Unk_020d77a4_setCollisionRadius(this, 0);
     Character_setInteractionRange(this, 0x3000);
     return TRUE;
 }
@@ -493,12 +493,12 @@ BOOL SpNpcSable::vfunc_00() {
         if (NetArea_IsLocalOwner()) {
             changeAct(0);
         } else {
-            func_0201b980(this, &unk_70e, 1);
+            Unk_020d77a4_getNetUserBytes(this, &unk_70e, 1);
             changeAct(4);
         }
     } else {
         changeAct(0);
-        if (func_0202e18c(this, &v, 2)) {
+        if (Talk_IsDramaPending(this, &v, 2)) {
             unk_70a = 1;
         }
     }
@@ -511,7 +511,7 @@ u8 *SpNpcSable::getModelPath() { return sSpNpcSableModelPath; }
 
 BOOL SpNpcSable::updateAct() {
     unk_70e = SewingMachine_GetFrame() / 0x38;
-    func_0201b964(this, &unk_70e, 1);
+    Unk_020d77a4_setNetUserBytes(this, &unk_70e, 1);
     BOOL r = FALSE;
     if (sSpNpcSableActTable[unk_654].exit) {
         r = (this->*sSpNpcSableActTable[unk_654].exit)();
@@ -530,8 +530,8 @@ void SpNpcSable::changeAct(s32 state) {
 }
 
 BOOL SpNpcSable::setupAct00() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-    func_020195c8(&unk_564, 1, 0xe4, 0, data_020c6cc8, unk_70c);
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0xe4, 0, data_020c6cc8, unk_70c);
     return TRUE;
 }
 
@@ -540,7 +540,7 @@ BOOL SpNpcSable::mainAct00() {
         changeAct(3);
         return TRUE;
     }
-    if (func_0201622c(&unk_334, 0xe4, &unk_2a0)) {
+    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0xe4, &unk_2a0)) {
         if (SewingMachine_IsStopped()) {
             SewingMachine_Start();
             u32 t = unk_70e * 0x38;
@@ -552,27 +552,27 @@ BOOL SpNpcSable::mainAct00() {
 
 BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) >= 6) {
-        func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+        NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     }
     SewingMachine_Stop();
     if (SpNpcSable_GetTalkCount(this) < 6) {
-        func_02014198(&unk_618, 1, 0);
+        NpcTalkCtrl_requestTalk(&unk_618, 1, 0);
     } else {
         Unk_020d77a4 *p = func_02015aac(&unk_658);
         s32 r = 0;
         if (p) {
             r = Unk_020d77a4_getAngleTo(this, p);
         }
-        func_020141b4(&unk_618, 0, r, 0);
+        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct01() {
-    if (func_02014220(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&unk_618)) {
         return TRUE;
     }
-    if (!CommManager_isOnline(gCommManager) && !func_0202e1cc(0x11, 1)) {
+    if (!CommManager_isOnline(gCommManager) && !Talk_CheckAndSetPlayerFlag(0x11, 1)) {
         u32 t = (u8)(SpNpcSable_GetTalkCount(this) + 1);
         if (t > 0xf) {
             t = 0xf;
@@ -589,13 +589,13 @@ BOOL SpNpcSable::setupAct02() { return TRUE; }
 BOOL SpNpcSable::mainAct02() { return TRUE; }
 
 BOOL SpNpcSable::setupAct03() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, unk_708, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_708, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct03() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             changeAct(0);
         }
     }
@@ -603,20 +603,20 @@ BOOL SpNpcSable::mainAct03() {
 }
 
 BOOL SpNpcSable::setupAct04() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct04() {
     s32 a, b;
-    if (func_0201ba88(this)) {
+    if (Unk_020d77a4_isNetOwner(this)) {
         a = 4;
         b = 4;
         if (func_0201b9e8(this, &a, &b)) {
             s32 av = a;
             s32 g = gCommManager->unk_64;
             if (av == g && av == b) {
-                func_0201b9fc(this, 1, g, g);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, g, g);
                 ActorTalkRequest *p = &unk_658;
                 p->vfunc_08();
                 func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
@@ -625,11 +625,11 @@ BOOL SpNpcSable::mainAct04() {
             }
         }
         if (NetArea_IsLocalOwner() && b == 4) {
-            func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
     } else if (!NetArea_IsLocalOwner()) {
-        if (func_0201622c(&unk_334, 0xe4, &unk_2a0)) {
+        if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0xe4, &unk_2a0)) {
             if (SewingMachine_IsStopped()) {
                 SewingMachine_Start();
                 u32 t = unk_70e * 0x38;
@@ -644,16 +644,16 @@ end:
 }
 
 BOOL SpNpcSable::setupAct05() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct05() {
-    if (func_0201ba88(this)) {
+    if (Unk_020d77a4_isNetOwner(this)) {
         s32 a = 4;
         s32 b = 4;
         if (func_0201b9e8(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
     }
@@ -668,8 +668,8 @@ BOOL SpNpcSable::setupAct06() {
 
 BOOL SpNpcSable::mainAct06() { return TRUE; }
 
-void SpNpcSable::vfunc_90() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+void SpNpcSable::onLeaveTalk() {
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
 }
 
 SpNpcSableTalk::SpNpcSableTalk() {}
@@ -692,12 +692,12 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
         out->unk_04 = 5;
     } else {
         Unk_ov004_0221b6d4_Bits bits;
-        if (func_0202e18c(unk_ac, &bits, 2) != 0) {
+        if (Talk_IsDramaPending(unk_ac, &bits, 2) != 0) {
             idx = 1;
             unk_ac->unk_70a = idx;
             out->unk_04 = (sSpNpcSableDramaMsgs + bits.b * 7)[bits.c];
-            func_0202e174(unk_ac, &bits);
-        } else if (func_0202e1cc(0x10, 1) == 0) {
+            Talk_AdvanceDrama(unk_ac, &bits);
+        } else if (Talk_CheckAndSetPlayerFlag(0x10, 1) == 0) {
             if (idx >= 0xc) {
                 out->unk_04 = sSpNpcSableWeekdayMsgs[Clock_GetWeekday()];
             } else {
@@ -743,7 +743,7 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
         case 43: {
             void *r = NpcRegistry_FindSpNpc(4);
             if (r) {
-                func_02015a80(this, r);
+                ActorTalkRequest_setPartnerActor(this, r);
             }
             break;
         }
@@ -756,7 +756,7 @@ void SpNpcSableTalk::vfunc_14() {}
 void SpNpcSableTalk::vfunc_18() {}
 
 BOOL SpNpcSable::vfunc_48() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc(this) != 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || Unk_020d77a4_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -767,12 +767,12 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
     case 3:
         unk_558.unk_08 = v;
         if (v != 4) {
-            func_0201b9fc(this, 1, gCommManager->unk_64, v);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, v);
             changeAct(6);
         } else {
-            if (func_0201ba88(this) != 0) {
+            if (Unk_020d77a4_isNetOwner(this) != 0) {
                 s32 g = gCommManager->unk_64;
-                func_0201b9fc(this, 1, g, g);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, g, g);
                 changeAct(6);
             }
         }
@@ -780,12 +780,12 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
     case 0:
         unk_558.unk_08 = v;
         if (v != 4 && v != gCommManager->unk_64) {
-            func_0201b9fc(this, 1, v, v);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, v, v);
             changeAct(5);
         } else {
-            if (func_0201ba88(this) != 0) {
+            if (Unk_020d77a4_isNetOwner(this) != 0) {
                 s32 g = gCommManager->unk_64;
-                func_0201b9fc(this, 1, g, g);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, g, g);
                 unk_658.vfunc_08();
                 func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
                 changeAct(1);
@@ -795,17 +795,17 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
     case 8:
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
                 changeAct(3);
             } else {
-                func_0201b9fc(this, 1, 4, gCommManager->unk_64);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
                 changeAct(4);
             }
         }
         break;
     case 4:
-        if (func_0201b9bc(this) != 0) {
-            if (func_0201ba88(this) != 0) {
+        if (Unk_020d77a4_netIsTalkLocked(this) != 0) {
+            if (Unk_020d77a4_isNetOwner(this) != 0) {
                 s32 a = 4;
                 s32 b = 4;
                 if (func_0201b9e8(this, &a, &b) != 0) {
@@ -820,7 +820,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
                         break;
                     }
                 body:
-                    func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+                    Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
                     changeAct(0);
                 }
             }

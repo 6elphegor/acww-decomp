@@ -309,12 +309,12 @@ void *func_02085170(void *p);
 void *func_0208516c(void *p);
 void *func_02085174(void *p);
 void *func_02085178(void *p);
-void _ZN12Unk_02086af013func_02086af0EPvPtP17Unk_020868cc_Vec3(void *a, void *b, u16 *c, void *d);
-void _ZNK12Unk_020868cc13func_020868ccEP17Unk_020868cc_Vec3(void *a, void *b);
+void _ZN12Unk_02086af016getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(void *a, void *b, u16 *c, void *d);
+void _ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(void *a, void *b);
 void _ZN12Unk_02086c0413func_02086ec4EP17Unk_02086ec4_Vec3(void *a, void *b);
-s32 _ZN12Unk_02086c0413func_02086e60Ev(void *a);
-void _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(void *a, void *b);
-s32 _ZN12Unk_02086f8413func_02086fd0Ev(void *a);
+s32 _ZN12Unk_02086c049getFacingEv(void *a);
+void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+s32 _ZN12Unk_02086f8412pickKatiePosEv(void *a);
 s32 func_02063b8c(s32 a);
 s32 PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_02098698Ev();
@@ -328,9 +328,9 @@ s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
 s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 void Clock_GetDateTime(void *p);
 s32 Event_IsActive(s32 a, void *p);
-s32 _ZN12Unk_0208722413func_0208723cEv(void *p);
-s32 func_0208740c();
-s32 func_02087444();
+s32 _ZN16BlancaFaceRecord11isBlancaDueEv(void *p);
+s32 LostChild_IsKaitlinDue();
+s32 LostChild_IsKatieDue();
 s32 MapBlock_HasAnyAttr(void *c, s32 v);
 s32 MapBlock_HasAllAttr(void *c, s32 v);
 s32 func_02031194(s32 x, s32 y);
@@ -368,10 +368,10 @@ s32 func_020b0f0c();
 s32 func_020b0f30();
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *);
-void *func_02099db4(void *, s32);
-void *func_0209a4f0(void *);
+void *PlayerErrands_GetSlot(void *, s32);
+void *PlayerErrandSlot_GetRecord(void *);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
-s32 _ZN12Unk_0209ada413func_0209abccEv(void *);
+s32 _ZN12Unk_0209ada411getSubGroupEv(void *);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
 void Clock_GetDateTime(void *);
 void *_ZN11SaveRecord412isDateActiveEv(void *);
@@ -381,10 +381,10 @@ s32 func_020850e0();
 s32 func_02085178(s32);
 s32 func_0208517c(s32);
 s32 func_020851bc(s32, s32);
-s32 _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(s32, void *);
-s32 _ZN12Unk_02086f8413func_02086fa8Ev(s32);
+s32 _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(s32, void *);
+s32 _ZN12Unk_02086f8411isFollowingEv(s32);
 s32 _ZN12Unk_02086f1413func_02086f18Ev(s32);
-s32 func_02087444();
+s32 LostChild_IsKatieDue();
 s32 Event_IsActive(u32, void *);
 s32 FieldPos_FromUnitCenter(void *, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
@@ -455,21 +455,21 @@ s32 CommSyncVar_GetVarSize(u32 id);
 void CommRecord_PackSource(u8 *p, u32 a, s32 b);
 void NetBuf_PackPair20(u8 *p, s32 a, s32 b);
 u8 *_ZN11CommManager10getSyncVarEj(CommManager *g, s32 i);
-void *func_0207aa78(s32 i);
-s32 func_02078568(void *p, s32 v);
-s32 func_0207854c(void *p, s32 v);
-s32 func_0207869c();
+void *VillagerStates_GetEntry(s32 i);
+s32 VillagerState_SetMood(void *p, s32 v);
+s32 VillagerState_SetMoodTimer(void *p, s32 v);
+s32 VillagerTrend_TickIdle();
 s32 SaveVillagers_UpdatePlans(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 _ZN12VillagerData13getVillagerIdEv();
 s32 _ZN10VillagerId7isValidEv();
-void *func_0207e310(void *p);
+void *Villager_GetState(void *p);
 s32 NpcRegistry_FindVillagerByHandle(u16 *p);
-s32 func_0207856c(void *p);
-s32 func_0207853c(void *p);
-s32 func_02078548(void *p);
-void *func_020784f4(void *p);
-s32 func_020784b8(void *p, s32 v);
+s32 VillagerState_GetMood(void *p);
+s32 VillagerState_TickMoodTimer(void *p);
+s32 VillagerState_GetMoodTimer(void *p);
+void *VillagerState_GetTalkRepeat(void *p);
+s32 TalkRepeat_Tick(void *p, s32 v);
 u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n);
 BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
 void VisitorSchedule_Clear(VisitorSchedule *g);
@@ -508,42 +508,42 @@ extern u8 sDateVisitorChecks[];
 extern u32 data_020cf1cc;
 void _ZN12Unk_02083c0821releaseVisitorOverlayEv();
 void VisitorSchedule_Clear(void *p);
-void func_020782c4();
+void VillagerStates_ClearFleaVillager();
 s32 func_020b5184();
-void func_0207af34(void *p);
+void SaveVillagers_UpdatePlansNow(void *p);
 s32 func_020b4994();
 s32 func_020b51b8();
-void *func_0207bdf4(void *p, s32 v);
+void *SaveVillagers_GetByHouseRoom(void *p, s32 v);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 s32 _ZN10VillagerId7isValidEv(void *p);
-void func_0207e4f4(void *p);
+void Villager_PlaceReceivedItems(void *p);
 void *func_020850e0();
 void *func_02085174(void *p);
 void *func_02085170(void *p);
-void _ZN12Unk_02086c0413func_02086e78Ev(void *p);
-void _ZN12Unk_02086b7c13func_02086b88Ev(void *p);
-void _ZN12Unk_02086b7c13func_02086b7cEv(void *p);
+void _ZN12Unk_02086c0418clearVisitorActiveEv(void *p);
+void _ZN17VisitorSpawnFlags19clearVisitorSpawnedEv(void *p);
+void _ZN17VisitorSpawnFlags17setVisitorSpawnedEv(void *p);
 s32 _ZN12Unk_02086c0413func_02086eb0Ev(void *p);
-void _ZN12Unk_02086c0413func_02086e6cEv(void *p);
-void func_02079a0c(void *p);
-void func_02079954(void *p);
-void func_0207821c(s32 v);
+void _ZN12Unk_02086c0416setVisitorActiveEv(void *p);
+void SaveVillagers_UpdateBirthdayParty(void *p);
+void SaveVillagers_ApplyBirthdayParty(void *p);
+void VillagerStates_SetFleaMarketBuyer(s32 v);
 s32 func_020b50dc();
 s32 func_020b5198(s32 v);
-s32 func_02078294();
+s32 VillagerStates_GetBirthdayHost();
 void Clock_GetDateTime(void *p);
-s32 func_02079ab0(void *p, void *q);
-void func_020782ac(s32 v);
-void func_0207827c(s32 v);
+s32 SaveVillagers_FindBirthdayVillager(void *p, void *q);
+void VillagerStates_SetBirthdayHost(s32 v);
+void VillagerStates_SetBirthdayGuest(s32 v);
 s32 func_02083b84();
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
 s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
-void func_020793e8(void *p, s32 v);
+void SaveVillagers_PickFleaVillager(void *p, s32 v);
 s32 func_020b51a4();
 s32 func_020b52f8();
-s32 func_02079fd8();
-s32 func_02078204();
+s32 VillagerEvent_GetTodayIndex();
+s32 VillagerStates_GetFleaMarketBuyer();
 s32 func_020b101c();
 s32 func_020b5328();
 void _ZN14VisitorSpawner11pickVisitorEv(void *p);
@@ -559,28 +559,28 @@ s32 SaveVillagers_IsValidIndex(s32 v);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 SaveVillagers_Find(void *p, void *q);
-s32 func_0207e310();
-s32 func_020785a8();
-void func_020798a0(void *p);
+s32 Villager_GetState();
+s32 VillagerState_ResetRole();
+void SaveVillagers_PickFleaMarketBuyerNow(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 s32 func_020b51d4();
 void *SaveVillagers_Get(void *p, s32 i);
 void *func_02084398(void *p);
 s32 NetArea_IsLocalOwner();
 s32 func_02063b8c(s32 n);
-s32 func_02078264();
+s32 VillagerStates_GetBirthdayGuest();
 s32 SaveVillagers_GetUnk3830Index(void *p);
 s32 SaveVillagers_GetUnk3830(void *p);
-s32 _ZN12Unk_020994cc13func_02099668Ev(s32 v);
+s32 _ZN18SickVillagerRecord11isRecoveredEv(s32 v);
 s32 Villager_GetResidentStatus(void *p);
-s32 func_020812f4();
-s32 func_0207b7d4(void *p, void *q);
+s32 Town_GetMaxOutdoorVillagers();
+s32 SaveVillagers_IsOutdoors(void *p, void *q);
 void CommRecord_UnpackSource(void *a, void *b, s32 c);
 s32 func_020b50e8();
 s32 func_020b5178(s32 v);
 void *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
-s32 func_0207e278(void *p);
+s32 Villager_GetWhereabouts(void *p);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, void *v, s32 a, s32 b);
 s32 _ZN12Unk_0203389c13func_02033914Ei(void *buf, s32 f);
 void func_02033988(void *buf);
@@ -843,7 +843,7 @@ extern "C" void func_02084c94(void *a, void *vec)
     u32 buf[17];
     void *u;
     F4::_ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, u, 0, 0);
-    if (F4::func_0207e278(a) == 0) {
+    if (F4::Villager_GetWhereabouts(a) == 0) {
         if (F4::_ZN12Unk_0203389c13func_02033914Ei(buf, 0)) {
             u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);
             F4::FieldPos_FromUnitCenter(vec, p[0] + 1, p[1] + 2);
@@ -861,7 +861,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
     w.h[1] = 0;
     w.h[2] = 0;
     w.h[3] = 0;
-    n = F4::func_020812f4();
+    n = F4::Town_GetMaxOutdoorVillagers();
     cnt = 0;
     w.b = 0;
     if (n > 0) {
@@ -871,7 +871,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         void *r7 = F4::SaveVillagers_Get(F4::data_021dfd8c, i);
         if (r7 == 0) goto next0;
         if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
-        if (F4::func_0207b7d4(F4::data_021dfd8c, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
+        if (F4::SaveVillagers_IsOutdoors(F4::data_021dfd8c, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
         w.b = 0;
         v.x = 0;
         v.y = 0;
@@ -953,17 +953,17 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
         s32 c = 0x85;
         s32 r6 = 0xd8;
         if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->unk_64) == 0) {
-            if (r7 == F4::func_02078294()) {
+            if (r7 == F4::VillagerStates_GetBirthdayHost()) {
                 c = 0x80;
-                if (F4::SaveVillagers_IsValidIndex(F4::func_02078264())) {
-                    h[1] = (F4::func_02078264() & 0xfff) | 0xe000;
+                if (F4::SaveVillagers_IsValidIndex(F4::VillagerStates_GetBirthdayGuest())) {
+                    h[1] = (F4::VillagerStates_GetBirthdayGuest() & 0xfff) | 0xe000;
                     r6 = 0x81;
                 }
             } else if (r7 == F4::SaveVillagers_GetUnk3830Index(F4::data_021dfd8c)) {
-                if (F4::_ZN12Unk_020994cc13func_02099668Ev(F4::SaveVillagers_GetUnk3830(F4::data_021dfd8c)) == 0) {
+                if (F4::_ZN18SickVillagerRecord11isRecoveredEv(F4::SaveVillagers_GetUnk3830(F4::data_021dfd8c)) == 0) {
                     c = 0x83;
                 }
-            } else if (F4::func_02079fd8() == 0xa) {
+            } else if (F4::VillagerEvent_GetTodayIndex() == 0xa) {
                 if (F4::Villager_GetResidentStatus(obj) == 3) {
                     c = 0x86;
                 }
@@ -1000,7 +1000,7 @@ extern "C" void func_020847b0(void *a)
     h[2] = 0;
     h[3] = 0;
     h[0] = 0xfff1;
-    s32 st = F4::func_02079fd8();
+    s32 st = F4::VillagerEvent_GetTodayIndex();
     if (st == 0xb) {
         Unk_020847b0_Top *top = (Unk_020847b0_Top *)F4::_ZN10PlayerData13func_0209865cEv(F4::PlayerData_GetCurrent());
         Unk_020847b0_Mid &m = *top;
@@ -1031,8 +1031,8 @@ extern "C" void func_020847b0(void *a)
                     } else {
                         F4::func_020b101c();
                         if (F4::SaveVillagers_Find(F4::data_021dfd8c, r7)) {
-                            F4::func_0207e310();
-                            F4::func_020785a8();
+                            F4::Villager_GetState();
+                            F4::VillagerState_ResetRole();
                         }
                     }
                 }
@@ -1045,9 +1045,9 @@ extern "C" void func_020847b0(void *a)
         }
     } else if (st == 0xa) {
         if (F4::func_020b5198(F4::func_020b50dc())) {
-            F4::func_020798a0(F4::data_021dfd8c);
+            F4::SaveVillagers_PickFleaMarketBuyerNow(F4::data_021dfd8c);
         }
-        s32 r4 = F4::func_02078204();
+        s32 r4 = F4::VillagerStates_GetFleaMarketBuyer();
         if (F4::SaveVillagers_IsValidIndex(r4)) {
             h[0] = (r4 & 0xfff) | 0xe000;
             code = 0x87;
@@ -1071,28 +1071,28 @@ BOOL NpcSpawner::vfunc_00()
     u8 *a = (u8 *)this;
     u32 saved = F4::sVisitorSpawnTableCount;
     u8 *g = F4::data_021dfd8c;
-    F4::_ZN12Unk_02086c0413func_02086e78Ev(F4::func_02085174(F4::func_020850e0()));
-    F4::_ZN12Unk_02086b7c13func_02086b88Ev(F4::func_02085170(F4::func_020850e0()));
+    F4::_ZN12Unk_02086c0418clearVisitorActiveEv(F4::func_02085174(F4::func_020850e0()));
+    F4::_ZN17VisitorSpawnFlags19clearVisitorSpawnedEv(F4::func_02085170(F4::func_020850e0()));
     if (F4::func_020b5184()) {
         if (g != 0) {
-            F4::func_02079a0c(g);
-            F4::func_02079954(g);
+            F4::SaveVillagers_UpdateBirthdayParty(g);
+            F4::SaveVillagers_ApplyBirthdayParty(g);
         }
-        F4::func_0207821c(-1);
+        F4::VillagerStates_SetFleaMarketBuyer(-1);
     } else {
         if (F4::func_020b5198(F4::func_020b50dc())) {
             s32 sp[2];
             sp[0] = 0;
             sp[1] = 0;
-            s32 r4 = F4::func_02078294();
+            s32 r4 = F4::VillagerStates_GetBirthdayHost();
             F4::Clock_GetDateTime(sp);
             s32 m = -1;
             if (r4 != m) {
-                if (r4 != F4::func_02079ab0(g, sp)) {
-                    F4::func_020782ac(-1);
-                    F4::func_0207827c(-1);
+                if (r4 != F4::SaveVillagers_FindBirthdayVillager(g, sp)) {
+                    F4::VillagerStates_SetBirthdayHost(-1);
+                    F4::VillagerStates_SetBirthdayGuest(-1);
                     if (g != 0) {
-                        F4::func_02079954(g);
+                        F4::SaveVillagers_ApplyBirthdayParty(g);
                     }
                 }
             }
@@ -1107,7 +1107,7 @@ BOOL NpcSpawner::vfunc_00()
                 } else {
                     r1 = 0;
                 }
-                F4::func_020793e8(g, r1);
+                F4::SaveVillagers_PickFleaVillager(g, r1);
             }
             F4::NpcSpawner_SpawnVillagers(a);
         }
@@ -1115,10 +1115,10 @@ BOOL NpcSpawner::vfunc_00()
         F4::NpcSpawner_SpawnHouseOwner(a);
     } else if (F4::func_020b52f8()) {
         if (g != 0) {
-            if (F4::func_02079fd8() != 0xa) {
+            if (F4::VillagerEvent_GetTodayIndex() != 0xa) {
                 s32 m = -1;
-                if (F4::func_02078204() != m) {
-                    F4::func_0207821c(m);
+                if (F4::VillagerStates_GetFleaMarketBuyer() != m) {
+                    F4::VillagerStates_SetFleaMarketBuyer(m);
                     F4::func_020b101c();
                 }
             }
@@ -1130,14 +1130,14 @@ BOOL NpcSpawner::vfunc_00()
     F4::_ZN14VisitorSpawner11pickVisitorEv(a);
     u16 *r4 = (u16 *)F4::_ZN14VisitorSpawner21spawnScheduledVisitorEP17VisitorSpawnEntryi(a, F4::sVisitorSpawnTable, saved);
     if (r4) {
-        F4::_ZN12Unk_02086b7c13func_02086b7cEv(F4::func_02085170(F4::func_020850e0()));
+        F4::_ZN17VisitorSpawnFlags17setVisitorSpawnedEv(F4::func_02085170(F4::func_020850e0()));
         if (r4[1] != 0xd008 || F4::_ZN12Unk_02086c0413func_02086eb0Ev(F4::func_02085174(F4::func_020850e0())) != 0) {
-            F4::_ZN12Unk_02086c0413func_02086e6cEv(F4::func_02085174(F4::func_020850e0()));
+            F4::_ZN12Unk_02086c0416setVisitorActiveEv(F4::func_02085174(F4::func_020850e0()));
         }
     }
     F4::func_020832c4(a);
     if (F4::func_020b5184()) {
-        F4::func_0207af34(g);
+        F4::SaveVillagers_UpdatePlansNow(g);
     }
     return TRUE;
 }
@@ -1146,16 +1146,16 @@ BOOL NpcSpawner::vfunc_0c()
 {
     F4::_ZN12Unk_02083c0821releaseVisitorOverlayEv();
     F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
-    F4::func_020782c4();
+    F4::VillagerStates_ClearFleaVillager();
     if (F4::func_020b5184()) {
         void *g = F4::data_021dfd8c;
-        F4::func_0207af34(g);
+        F4::SaveVillagers_UpdatePlansNow(g);
         s32 v = F4::func_020b4994();
         if (F4::func_020b51b8()) {
-            void *r = F4::func_0207bdf4(g, (s8)v);
+            void *r = F4::SaveVillagers_GetByHouseRoom(g, (s8)v);
             if (r) {
                 if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r))) {
-                    F4::func_0207e4f4(r);
+                    F4::Villager_PlaceReceivedItems(r);
                 }
             }
         }
@@ -1170,7 +1170,7 @@ BOOL NpcSpawner::onExecute()
     s32 i;
     u16 id;
     if (F3::func_020b5184()) {
-        F3::func_0207869c();
+        F3::VillagerTrend_TickIdle();
         if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64) == 0) {
             if (g) F3::SaveVillagers_UpdatePlans(g);
         }
@@ -1183,14 +1183,14 @@ BOOL NpcSpawner::onExecute()
                 if (a) {
                     F3::_ZN12VillagerData13getVillagerIdEv();
                     if (F3::_ZN10VillagerId7isValidEv()) {
-                        b = F3::func_0207e310(a);
+                        b = F3::Villager_GetState(a);
                         if (b) {
                             id = (i & 0xfff) | 0xe000;
                             if (F3::NpcRegistry_FindVillagerByHandle(&id) == 0) {
-                                if (F3::func_0207856c(b)) {
-                                    F3::func_0207853c(b);
-                                    if (F3::func_02078548(b) == 0) F3::func_02078568(b, 0);
-                                    F3::func_020784b8(F3::func_020784f4(b), 0);
+                                if (F3::VillagerState_GetMood(b)) {
+                                    F3::VillagerState_TickMoodTimer(b);
+                                    if (F3::VillagerState_GetMoodTimer(b) == 0) F3::VillagerState_SetMood(b, 0);
+                                    F3::TalkRepeat_Tick(F3::VillagerState_GetTalkRepeat(b), 0);
                                 }
                             }
                         }
@@ -1232,10 +1232,10 @@ extern "C" BOOL func_02084430(u16 *p, u32 b, u32 c) {
 extern "C" void func_02084404(void *dst, s32 id) {
     void *o;
     F3::func_020843c4(dst, id);
-    o = F3::func_0207aa78(id - 0xc);
+    o = F3::VillagerStates_GetEntry(id - 0xc);
     if (o) {
-        F3::func_02078568(o, 0);
-        F3::func_0207854c(o, 0);
+        F3::VillagerState_SetMood(o, 0);
+        F3::VillagerState_SetMoodTimer(o, 0);
     }
 }
 
@@ -1717,12 +1717,12 @@ extern "C" BOOL func_02083898()
     void *r4;
     void *r = F2::PlayerData_GetCurrent();
     if (r != 0)
-        r4 = F2::func_02099db4(F2::_ZN10PlayerData13func_0209865cEv(r), 0);
+        r4 = F2::PlayerErrands_GetSlot(F2::_ZN10PlayerData13func_0209865cEv(r), 0);
     else
         r4 = 0;
     if (r4 != 0) {
-        if (F2::_ZN12Unk_0209ada413func_0209ad68Ev(F2::func_0209a4f0(r4)) != 0) {
-            if (F2::_ZN12Unk_0209ada413func_0209abccEv(F2::func_0209a4f0(r4)) == 1) {
+        if (F2::_ZN12Unk_0209ada413func_0209ad68Ev(F2::PlayerErrandSlot_GetRecord(r4)) != 0) {
+            if (F2::_ZN12Unk_0209ada411getSubGroupEv(F2::PlayerErrandSlot_GetRecord(r4)) == 1) {
                 if (F2::func_02083b84() == 0)
                     return TRUE;
             }
@@ -1929,7 +1929,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
 {
     u16 k;
     if (F2::func_02083ba4() == 0 && F2::func_02083b84() == 0) {
-        if (F2::func_02087444() != 0) {
+        if (F2::LostChild_IsKatieDue() != 0) {
             if (flag == 0)
                 goto a8;
             {
@@ -1947,13 +1947,13 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             }
         }
     c2:
-        if (F2::_ZN12Unk_02086f8413func_02086fa8Ev(F2::func_02085178(F2::func_020850e0())) != 0) {
+        if (F2::_ZN12Unk_02086f8411isFollowingEv(F2::func_02085178(F2::func_020850e0())) != 0) {
             if (F2::func_020b50e8() == 0xb) {
                 if (F2::_ZN11CommManager8isOnlineEv(F2::gCommManager) == 0)
                     goto fe;
             }
         }
-        if (F2::_ZN12Unk_02086f8413func_02086fa8Ev(F2::func_02085178(F2::func_020850e0())) != 0) {
+        if (F2::_ZN12Unk_02086f8411isFollowingEv(F2::func_02085178(F2::func_020850e0())) != 0) {
             if (F2::func_020b50e8() == 0xc) {
             fe:
                 k = 0xd022;
@@ -1973,7 +1973,7 @@ extern "C" BOOL func_02083314(s32 a, Unk_02083314_V3 *p)
 {
     BOOL c = F2::data_020e416c == 0 ? TRUE : FALSE;
     if (c) {
-        F2::_ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(F2::func_02085178(F2::func_020850e0()), p);
+        F2::_ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(F2::func_02085178(F2::func_020850e0()), p);
         return TRUE;
     }
     F2::FieldPos_FromUnitCenter(p, 6, 0x11);
@@ -1984,9 +1984,9 @@ extern "C" BOOL func_02083314(s32 a, Unk_02083314_V3 *p)
 extern "C" void func_020832c4() {
     if (F1::gCommManager->isSlotActive(F1::gCommManager->unk_64) != 0) {
         if (F1::func_02083ba4() == 0) {
-            if (F1::func_02087444() != 0) {
+            if (F1::LostChild_IsKatieDue() != 0) {
                 if (F1::Unk_02083058_IsA()) {
-                    F1::_ZN12Unk_02086f8413func_02086fd0Ev(F1::func_02085178(F1::func_020850e0()));
+                    F1::_ZN12Unk_02086f8412pickKatiePosEv(F1::func_02085178(F1::func_020850e0()));
                 }
             }
         }
@@ -1995,7 +1995,7 @@ extern "C" void func_020832c4() {
 
 extern "C" BOOL Visitor_FindKaitlin(BOOL flag) {
     u16 v;
-    if (F1::func_0208740c() == 0) goto fail;
+    if (F1::LostChild_IsKaitlinDue() == 0) goto fail;
     if (F1::func_02083ba4() != 0) goto fail;
     if (F1::func_02083b84() != 0) goto fail;
     if (flag) {
@@ -2015,7 +2015,7 @@ extern "C" BOOL Visitor_CheckKaitlin() {
 }
 
 extern "C" BOOL func_02083214(void *self, void *b) {
-    F1::_ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(F1::func_02085178(F1::func_020850e0()), b);
+    F1::_ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(F1::func_02085178(F1::func_020850e0()), b);
     return TRUE;
 }
 
@@ -2042,7 +2042,7 @@ extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
-    if (F1::_ZN12Unk_0208722413func_0208723cEv(&F1::data_021eca50) == 0) goto fail;
+    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::data_021eca50) == 0) goto fail;
     v = 0xd020;
     return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
@@ -2176,18 +2176,18 @@ fail:
 extern "C" BOOL func_02082e58(void *self, void *b, u16 *out) {
     void *p = F1::func_02085174(F1::func_020850e0());
     F1::_ZN12Unk_02086c0413func_02086ec4EP17Unk_02086ec4_Vec3(p, b);
-    out[1] = F1::_ZN12Unk_02086c0413func_02086e60Ev(p);
+    out[1] = F1::_ZN12Unk_02086c049getFacingEv(p);
     return TRUE;
 }
 
 extern "C" BOOL func_02082e2c(void *self, void *b, u16 *out) {
-    F1::_ZNK12Unk_020868cc13func_020868ccEP17Unk_020868cc_Vec3(F1::func_0208516c(F1::func_020850e0()), b);
+    F1::_ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(F1::func_0208516c(F1::func_020850e0()), b);
     out[1] = F1::func_02063b8c(0xffff);
     return TRUE;
 }
 
 extern "C" BOOL func_02082e08(void *self, void *b, u16 *out, void *d) {
-    F1::_ZN12Unk_02086af013func_02086af0EPvPtP17Unk_020868cc_Vec3(F1::func_02085170(F1::func_020850e0()), b, out + 1, d);
+    F1::_ZN12Unk_02086af016getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(F1::func_02085170(F1::func_020850e0()), b, out + 1, d);
     return TRUE;
 }
 

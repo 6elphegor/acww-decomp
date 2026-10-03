@@ -267,13 +267,13 @@ void ScreenTransition_ShowCover();
 void Character_ResetList();
 void TalkRequestQueue_StartInitial();
 void func_02038fb0();
-void func_0203498c();
-void func_0209035c();
+void Bgm_StartSceneBgm();
+void Effect_ResetAll();
 void func_02089124();
-void func_02034938();
+void Bgm_EndSceneBgm();
 void func_0205b848();
 void func_02081d00();
-void func_02077e30();
+void NpcHeapPools_DestroyAll();
 void NpcRegistry_Clear();
 void func_0205fff4();
 void func_0205ed9c();
@@ -309,7 +309,7 @@ void func_0205edb8(u32);
 void func_0206000c(u32);
 void func_020ac500(s32);
 void func_020abe58();
-void func_02077e4c();
+void NpcHeapPools_CreateAll();
 void func_02081d08();
 void func_0205b864(u32);
 void func_0209c540();
@@ -795,7 +795,7 @@ BOOL Unk_020b5844::func_020b58f0(u32, u32) {
     func_0206000c(gCurrentHeap);
     func_020ac500(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     func_020abe58();
-    func_02077e4c();
+    NpcHeapPools_CreateAll();
     func_02081d08();
     NpcRegistry_Clear();
     func_0205b864(gCurrentHeap);
@@ -818,7 +818,7 @@ BOOL Unk_020b5844::func_020b58b0(u32 a, u32 b) {
 
 BOOL Unk_020b5844::func_020b5844(u32, u32) {
     Fog_InitDefault((s32)this);
-    func_0209035c();
+    Effect_ResetAll();
     reg_4000008 = (reg_4000008 & ~3) | 2;
     func_02089124();
     data_021ce63c = 0;
@@ -827,7 +827,7 @@ BOOL Unk_020b5844::func_020b5844(u32, u32) {
     TalkRequestQueue_StartInitial();
     if (func_020b50e8() == 0x2e || func_020b50e8() == 0xd || func_020b50e8() == 0x2f)
         func_02038fb0();
-    func_0203498c();
+    Bgm_StartSceneBgm();
     return TRUE;
 }
 
@@ -867,13 +867,13 @@ BOOL Unk_020e4238::vfunc_00() {
 }
 
 BOOL Unk_020e4238::vfunc_0c() {
-    func_02034938();
+    Bgm_EndSceneBgm();
     func_020b50b4();
     _ZN12Unk_020b696013func_020b6990Ev();
     gGfxFrameHooks = 0;
     func_0205b848();
     func_02081d00();
-    func_02077e30();
+    NpcHeapPools_DestroyAll();
     NpcRegistry_Clear();
     func_0205fff4();
     func_0205ed9c();

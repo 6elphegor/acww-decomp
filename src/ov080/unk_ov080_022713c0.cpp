@@ -5,15 +5,15 @@
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define func_0201610c _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti
+#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
 #define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
 #define func_02098a48 _ZN10PlayerData13func_02098a48Ev
-#define func_02014ce4 _ZN12Unk_0201442013func_02014ce4EPtjjj
-#define unk_618_func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define unk_618_func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define unk_564_func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
+#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define unk_618_func_020141b4 _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define unk_618_func_02014220 _ZN11NpcTalkCtrl6isBusyEv
+#define unk_564_func_020196b4 _ZN13NpcActionCtrl13requestActionEjiiissiitt
 
 class SpNpcTortimer;
 class SpNpcTortimerTalk;
@@ -26,8 +26,8 @@ void func_0203d948();
 BOOL func_0203c338();
 BOOL func_0203c31c();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
-void func_0201610c(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02014ce4(void *self, u16 *p, u32 a, u32 b, u32 c);
+void NpcAnimCtrl_playAnim(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Unk_02014420_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 BOOL unk_618_func_02014220(void *self);
 void unk_618_func_020141b4(void *self, u32 a, u32 b, u32 c);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -92,7 +92,7 @@ public:
     virtual void vfunc_88();
     void *func_02015aac();
     void getChoiceList();
-    void func_0201578c(u32 a, u32 b, u32 c);
+    void setItemNameSlot(u32 a, u32 b, u32 c);
     void func_02015ab0(u32 a);
     u8 pad_04[0x1a];
     u8 unk_1e;
@@ -126,7 +126,7 @@ public:
     virtual void vfunc_60();
     virtual void vfunc_64_alt();
     virtual void vfunc_88();
-    void func_02014e60(u16 *p, u32 a, u32 b, u32 c);
+    void requestGiveItem(u16 *p, u32 a, u32 b, u32 c);
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -168,13 +168,13 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -192,10 +192,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    void func_020196b4(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -263,12 +263,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -279,19 +279,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -399,7 +399,7 @@ BOOL SpNpcTortimer::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    func_0201610c(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
+    NpcAnimCtrl_playAnim(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     if (func_02098044(PlayerData_GetCurrent(), 1) == 0) {
@@ -539,7 +539,7 @@ void SpNpcTortimerTalk::vfunc_14() {
         }
         if (unk_1e == 2) {
             buf.v[0] = 0x1559;
-            this->func_02014e60(&buf.v[0], 0, 5, 0);
+            this->requestGiveItem(&buf.v[0], 0, 5, 0);
             buf.v[1] = 0x1559;
             func_02099014(&buf.v[1], 0);
             buf.t[0] = 4;
@@ -558,10 +558,10 @@ void SpNpcTortimerTalk::vfunc_14() {
                 buf.v[2] = 0x1375;
                 if (func_02099014(&buf.v[2], 0)) {
                     buf.v[3] = 0x1375;
-                    this->func_02014e60(&buf.v[3], 0, 5, 0);
+                    this->requestGiveItem(&buf.v[3], 0, 5, 0);
                     func_0209801c(g, 0x21);
                     buf.v[4] = 0x1375;
-                    this->func_0201578c((u32)&buf.v[4], 0, 7);
+                    this->setItemNameSlot((u32)&buf.v[4], 0, 7);
                     r = 1;
                 }
                 break;
@@ -570,10 +570,10 @@ void SpNpcTortimerTalk::vfunc_14() {
                 buf.v[5] = 0x1377;
                 if (func_02099014(&buf.v[5], 0)) {
                     buf.v[6] = 0x1377;
-                    this->func_02014e60(&buf.v[6], 0, 5, 0);
+                    this->requestGiveItem(&buf.v[6], 0, 5, 0);
                     func_0209801c(g, 0x22);
                     buf.v[7] = 0x1377;
-                    this->func_0201578c((u32)&buf.v[7], 0, 7);
+                    this->setItemNameSlot((u32)&buf.v[7], 0, 7);
                     r = 4;
                 }
                 break;
@@ -598,7 +598,7 @@ void SpNpcTortimerTalk::vfunc_18() {
             if (unk_b0 >= 0) {
                 func_02099064(unk_b0);
                 buf.v = 0x37e0;
-                func_02014ce4(this, &buf.v, 0, 5, 0);
+                Unk_02014420_requestTakeItem(this, &buf.v, 0, 5, 0);
             }
             r = 2;
         }

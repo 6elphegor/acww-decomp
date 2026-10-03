@@ -107,7 +107,7 @@ void String_Load2d(void *o, u8 *p, u32 x);
 BOOL GameStart_IsActive(void);
 void *PlayerData_GetCurrent(void);
 s16 *func_0209c37c(s32 a, s32 b);
-BOOL func_0202e1cc(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL MenuCtrl_IsFinished(void);
 BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
@@ -120,9 +120,9 @@ void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_EndTalkWith(void *self);
 s32 Clock_GetTimeOfDay();
 s32 func_020e7500(void *p);
-void func_020902f8(s32 h);
-s32 func_02090330(s32 a, void *b, void *c, s32 d);
-void func_020902d4(s32 h, void *b, void *c);
+void Effect_End(s32 h);
+s32 Effect_Create(s32 a, void *b, void *c, s32 d);
+void Effect_SetPosition(s32 h, void *b, void *c);
 
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 void _ZN12Unk_020e2f74C1Ev(void *self);
@@ -130,24 +130,24 @@ void _ZN12Unk_020e2f74D1Ev(void *self);
 void _ZN9MsgString12appendStringEPS_(void *self, void *p);
 void _ZN9MsgString4copyEPS_(void *self, void *p);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *b, void *c);
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-void _ZN12Unk_0201985813func_020195c8Eiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
-BOOL _ZN12Unk_0201985813func_02019790Ev(void *self);
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov046_0225a11c_Vec *v, s32 d, s32 e, u8 f);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
+s32 _ZN13NpcActionCtrl9getActionEv(void *self);
+BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
+void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov046_0225a11c_Vec *v, s32 d, s32 e, u8 f);
 }
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define MsgString_appendString _ZN9MsgString12appendStringEPS_
 #define MsgString_copy _ZN9MsgString4copyEPS_
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_020195c8 _ZN12Unk_0201985813func_020195c8Eiijtt
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 
 class ActorTalkRequest {
 public:
@@ -188,9 +188,9 @@ public:
     virtual void vfunc_88();
     void *func_02015aac();
     void func_02015ab0(u32 p);
-    void func_02015848(u32 a, u32 b);
-    void func_02015878(u32 a, u32 b);
-    void func_02015958(s32 a, u32 b, s32 c, s32 d, s32 e);
+    void setDaySlot(u32 a, u32 b);
+    void setMonthSlot(u32 a, u32 b);
+    void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
     u8 unk_1e;
@@ -217,9 +217,9 @@ public:
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    void func_02015158(u32 a, u32 b, u32 c);
-    void func_02015170(u32 a, u32 b);
-    void func_020151d0(s32 a);
+    void setSubSceneKindArg(u32 a, u32 b, u32 c);
+    void setSubSceneKind(u32 a, u32 b);
+    void openSubScene(s32 a);
     virtual void vfunc_50();
     virtual void vfunc_54();
     virtual void vfunc_58();
@@ -248,8 +248,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -261,7 +261,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -279,9 +279,9 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -348,36 +348,36 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     void *getPlayerActor(u32 v);
-    BOOL func_0201b9bc();
+    BOOL netIsTalkLocked();
     s32 getAngleTo(Unk_020d77a4 *other);
 
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -584,7 +584,7 @@ BOOL SpNpcCeleste::vfunc_0c() {
         return FALSE;
     }
     if (unk_73c != -1) {
-        func_020902f8(unk_73c);
+        Effect_End(unk_73c);
         unk_73c = -1;
     }
     return TRUE;
@@ -614,9 +614,9 @@ void SpNpcCeleste::changeAct(s32 state) {
 }
 
 BOOL SpNpcCeleste::setupAct00() {
-    func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_734 = 0x78;
-    func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -636,13 +636,13 @@ BOOL SpNpcCeleste::mainAct00() {
 }
 
 BOOL SpNpcCeleste::setupAct01() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, unk_736, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_736, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcCeleste::mainAct01() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
+    if (NpcActionCtrl_getAction(&unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&unk_564)) {
             changeAct(0);
         }
     }
@@ -650,8 +650,8 @@ BOOL SpNpcCeleste::mainAct01() {
 }
 
 BOOL SpNpcCeleste::setupAct02() {
-    func_020195c8(&unk_564, 1, 0xf0, 0, unk_738, 0);
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0xf0, 0, unk_738, 0);
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     unk_73a = 1;
     return TRUE;
 }
@@ -661,9 +661,9 @@ BOOL SpNpcCeleste::mainAct02() {
         return TRUE;
     }
     if (unk_73c == -1) {
-        unk_73c = func_02090330(0x3c, (u8 *)this + 0x478, &unk_8e, 0);
+        unk_73c = Effect_Create(0x3c, (u8 *)this + 0x478, &unk_8e, 0);
     } else {
-        func_020902d4(unk_73c, (u8 *)this + 0x478, &unk_8e);
+        Effect_SetPosition(unk_73c, (u8 *)this + 0x478, &unk_8e);
     }
     return TRUE;
 }
@@ -675,16 +675,16 @@ BOOL SpNpcCeleste::setupAct03() {
         r = getAngleTo(p);
     }
     if (unk_73c != -1) {
-        func_020902f8(unk_73c);
+        Effect_End(unk_73c);
         unk_73c = -1;
     }
-    func_020141b4(&unk_618, 0, r, 0);
-    func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
+    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcCeleste::mainAct03() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         unk_73a = 0;
         unk_658.setTopic(5);
         TalkRequest_EndTalkWith(this);
@@ -807,9 +807,9 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
         t.w0 = 0;
         t.w1 = 0;
         Constellation_GetViewingTime(&t, unk_bc);
-        func_02015878(((u8 *)&t)[4], 2);
-        func_02015848(((u8 *)&t)[3], 3);
-        func_02015958(((u8 *)&t)[1], 5, 2, 0, 0);
+        setMonthSlot(((u8 *)&t)[4], 2);
+        setDaySlot(((u8 *)&t)[3], 3);
+        setNumberSlot(((u8 *)&t)[1], 5, 2, 0, 0);
         s32 h = 0x19;
         s32 m = ((u8 *)&t)[2];
         if (m > 0xc) {
@@ -819,7 +819,7 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
         if (m == 0) {
             m = 0xc;
         }
-        func_02015958(m, 4, 2, 0, 0);
+        setNumberSlot(m, 4, 2, 0, 0);
         msg[1] = h;
         _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &msg[1], (u8 *)"st_general");
         msg[0] = 8;
@@ -900,7 +900,7 @@ void SpNpcCelesteTalk::vfunc_78(TalkStartMsg *out) {
         return;
     }
     if (unk_ac == 5) {
-        if (func_0202e1cc(2, 1) == 0) {
+        if (Talk_CheckAndSetPlayerFlag(2, 1) == 0) {
             if (unk_b0[0x73a] == 0) {
                 unk_ac = 1;
             } else {
@@ -1046,8 +1046,8 @@ void SpNpcCelesteTalk::showTelescopeMenu() {
 void SpNpcCelesteTalk::startConstellationEditor() {
     unk_bc = Constellation_FindFreeSlot();
     if (unk_bc >= 0) {
-        func_02015158(0x2e, (u8)unk_bc, 0);
-        func_020151d0(3);
+        setSubSceneKindArg(0x2e, (u8)unk_bc, 0);
+        openSubScene(3);
         setResultHandler(1);
     } else {
         unk_d8 = 0x3e;
@@ -1075,20 +1075,20 @@ void SpNpcCelesteTalk::showConstellationList() {
 }
 
 void SpNpcCelesteTalk::startNameEntry() {
-    func_02015170(0x12, 0);
-    func_020151d0(2);
+    setSubSceneKind(0x12, 0);
+    openSubScene(2);
     setResultHandler(2);
 }
 
 void SpNpcCelesteTalk::startRenameEntry() {
-    func_02015170(0x12, 0);
-    func_020151d0(2);
+    setSubSceneKind(0x12, 0);
+    openSubScene(2);
     setResultHandler(4);
 }
 
 void SpNpcCelesteTalk::startStargazing() {
-    func_02015170(0x2d, 0);
-    func_020151d0(2);
+    setSubSceneKind(0x2d, 0);
+    openSubScene(2);
     setResultHandler(0);
 }
 
@@ -1173,9 +1173,9 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
             l.w[0] = 0;
             l.w[1] = 0;
             Constellation_GetViewingTime(&l.w, unk_bc);
-            func_02015878(((u8 *)l.w)[4], 2);
-            func_02015848(((u8 *)l.w)[3], 3);
-            func_02015958(((u8 *)l.w)[1], 5, 2, 0, 0);
+            setMonthSlot(((u8 *)l.w)[4], 2);
+            setDaySlot(((u8 *)l.w)[3], 3);
+            setNumberSlot(((u8 *)l.w)[1], 5, 2, 0, 0);
             s32 t4 = ((u8 *)l.w)[2];
             s32 r1 = 0x19;
             if (t4 > 0xc) {
@@ -1187,11 +1187,11 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
             }
             l.msg = r1;
             _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &l.msg, (u8 *)"st_general");
-            func_02015958(t4, 4, 2, 0, 0);
+            setNumberSlot(t4, 4, 2, 0, 0);
             unk_d8 = 0x17;
         } else if (unk_c2 == 2) {
-            func_02015158(0x2e, (u8)unk_bc, 0);
-            func_020151d0(3);
+            setSubSceneKindArg(0x2e, (u8)unk_bc, 0);
+            openSubScene(3);
             setResultHandler(3);
         }
         unk_c2 = 0;
@@ -1379,14 +1379,14 @@ void SpNpcCelesteTalk::onRenameChoice(s32 a) {
 }
 
 BOOL SpNpcCeleste::vfunc_48() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcCeleste::vfunc_58() {
-    return func_02014220(&unk_618) == 0 ? TRUE : FALSE;
+    return NpcTalkCtrl_isBusy(&unk_618) == 0 ? TRUE : FALSE;
 }
 
 void SpNpcCeleste::vfunc_4c(s32 a) {
@@ -1416,7 +1416,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
     } else {
         r6 = FALSE;
     }
-    if (p == 0 || func_02014220(&unk_618) != 0) {
+    if (p == 0 || NpcTalkCtrl_isBusy(&unk_618) != 0) {
         unk_658.setTopic(5);
         result = FALSE;
         goto end;

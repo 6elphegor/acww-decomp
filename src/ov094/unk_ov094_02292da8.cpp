@@ -277,7 +277,7 @@ u16 *PlayerInventory_getPocket(s32 a, s32 b);
 u16 *PlayerData_getHeldItem(s32 a);
 s32 func_02098750(s32 a);
 s32 PlayerData_getPlayerId(...);
-void func_02098e90(void *a, void *b);
+void Player_GetDeliveryRecipientName(void *a, void *b);
 void func_0209909c(u16 *a, s32 b, s32 c);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
@@ -695,7 +695,7 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
             ItemName_setFromItem(c, p);
             StrBuf_Copy(b, c);
         } else {
-            func_02098e90(d, p);
+            Player_GetDeliveryRecipientName(d, p);
             String_SetSlot(0, d);
             func_0206f9fc(a, 0x40);
             StrBuf_Copy(b, a);

@@ -291,7 +291,7 @@ void AnimModel_setFrame(void *p);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
 BOOL func_02088d38(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
-void func_020902b0(u32 a, void *v, s32 b, s32 c);
+void Effect_PlayById(u32 a, void *v, s32 b, s32 c);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02089040(void *a);
@@ -611,7 +611,7 @@ void HouseRoach::updateState() {
         unk_22c = (func_02063b8c(10) + 3) * 20;
         break;
     case 2:
-        func_020902b0(0x50, &unk_5c, 0, 0);
+        Effect_PlayById(0x50, &unk_5c, 0, 0);
         F08(this) = F08(this) - 1;
         unk_110 = 2;
         playSe(2);

@@ -78,7 +78,7 @@ void *_ZN7Pattern13func_02071e58Ev(void *self);
 void _ZN12Unk_02071ed013func_02071ff0Ev(void *self);
 void _ZN12Unk_02071ed013func_0207200cEj(void *self, s32 a);
 u8 _ZN12Unk_02071ed013func_0207202cEv(void *self);
-void *_ZN12Unk_0208722413func_02087298Ev(void *self);
+void *_ZN16BlancaFaceRecord10getPatternEv(void *self);
 void *_ZN10PlayerData13func_020986d4Ev(void *self);
 u16 *_ZN10PlayerData6getHatEv(void *self);
 u16 *_ZN10PlayerData8getShirtEv(void *self);
@@ -1424,7 +1424,7 @@ void PatternEditorMenu::saveToPlayerPattern()
 
 void PatternEditorMenu::loadFromExternalPattern()
 {
-    void *o = _ZN12Unk_0208722413func_02087298Ev(&data_021eca50);
+    void *o = _ZN16BlancaFaceRecord10getPatternEv(&data_021eca50);
     MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(o), unk_a04, 0x200);
     MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(o), unk_c04, 0x200);
     u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN7Pattern13func_02071e04Ev(o));
@@ -1433,7 +1433,7 @@ void PatternEditorMenu::loadFromExternalPattern()
 
 void PatternEditorMenu::saveToExternalPattern()
 {
-    void *o = _ZN12Unk_0208722413func_02087298Ev(&data_021eca50);
+    void *o = _ZN16BlancaFaceRecord10getPatternEv(&data_021eca50);
     _ZN7Pattern13func_02071e3cEPv(o, getCanvas());
     _ZN12Unk_02071ed013func_02071ff0Ev(_ZN7Pattern13func_02071e04Ev(o));
     _ZN12Unk_02071ed013func_0207200cEj(_ZN7Pattern13func_02071e04Ev(o), unk_a1);

@@ -203,7 +203,7 @@ BOOL MenuCtrl_IsTouch();
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(void *self, u32 id);
 s32 Comm_IsSeqConfirmed(s32 v);
-void func_020795a8(void *a);
+void SaveVillagers_ClearTuneRequester(void *a);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 void func_02088378(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
@@ -853,7 +853,7 @@ void MelodyMenu::confirmTune() {
     setMainState(9);
     Melody_Pack(data_021ed2f8, unk_a0);
     Melody_ApplyEditPattern();
-    func_020795a8(data_021dfd8c);
+    SaveVillagers_ClearTuneRequester(data_021dfd8c);
     sendTune();
 }
 

@@ -355,7 +355,7 @@ void *BgModelCache_Get(void);
 void *_ZN12BgModelCache12getGroundTexEv(void *);
 s32 func_020850e0(void);
 s32 func_02085180(s32);
-s32 _ZN12Unk_02086ef013func_02086efcEv(s32);
+s32 _ZN15TownTravelState7getModeEv(s32);
 s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
 void _ZN5Model15setInitCallbackEii(void *, void *, void *);
@@ -449,7 +449,7 @@ BOOL CheckInGate::vfunc_00() {
         }
         break;
     case 0xc:
-        if (_ZN12Unk_02086ef013func_02086efcEv(s) == 1) {
+        if (_ZN15TownTravelState7getModeEv(s) == 1) {
             vfunc_60(0);
         } else {
             vfunc_60(2);

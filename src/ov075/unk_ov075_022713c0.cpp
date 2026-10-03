@@ -31,32 +31,32 @@ public:
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
 #define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define func_02014f38 _ZN12Unk_020d771013func_02014f38Ej
-#define func_02014f74 _ZN12Unk_020d771013func_02014f74Ev
-#define func_02014198 _ZN12Unk_02013b1013func_02014198Ehh
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_020195c8 _ZN12Unk_0201985813func_020195c8Eiijtt
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201ad34 _ZN12Unk_0201ad2013func_0201ad34Ei
-#define func_02015e48 _ZN12Unk_02015b8c13func_02015e48Ej
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
-#define func_0201a7e8 _ZN12Unk_0201a33413func_0201a7e8Ev
+#define Unk_020d7710_requestCloseWindow _ZN12Unk_020d771018requestCloseWindowEj
+#define Unk_020d7710_requestReopenWindow _ZN12Unk_020d771019requestReopenWindowEv
+#define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
+#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define func_0201acfc _ZN12Unk_0201acf813func_0201acfcEv
-#define func_0201a9a0 _ZN12Unk_0201a8c413func_0201a9a0EP18Unk_0201a334_Scenei
-#define func_0201a968 _ZN12Unk_0201a8c413func_0201a968Ev
-#define func_0201a8f0 _ZN12Unk_0201a8c413func_0201a8f0Ev
-#define func_0201a97c _ZN12Unk_0201a8c413func_0201a97cEP17Unk_0201a334_Vec3
-#define func_0201a978 _ZN12Unk_0201a8c413func_0201a978Ev
-#define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
+#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
+#define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
+#define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
+#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
+#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define func_02086eb0 _ZN12Unk_02086c0413func_02086eb0Ev
 #define func_02086ec4 _ZN12Unk_02086c0413func_02086ec4EP17Unk_02086ec4_Vec3
 #define func_02086edc _ZN12Unk_02086c0413func_02086edcEv
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleToPlayer _ZN12Unk_020d77a416getAngleToPlayerEj
-#define Unk_ov075_0227188c_CallA() func_020196b4(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
+#define Unk_ov075_0227188c_CallA() NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
 
 class SpNpcPete;
@@ -82,29 +82,29 @@ s32 ChoiceList_getResult();
 s32 func_02098044(void *p, s32 a);
 s32 func_0209801c(void *p, s32 a);
 s32 func_02063b8c(s32 a);
-BOOL func_0202e1cc(s32 a, s32 b);
-void func_02014f38(void *self, s32 a);
-s32 func_02014f74(void *self);
-BOOL func_02014220(void *self);
-void func_02014198(void *self, s32 a, s32 b);
-void func_020141b4(void *self, s32 a, s32 b, s32 c);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+void Unk_020d7710_requestCloseWindow(void *self, s32 a);
+s32 Unk_020d7710_requestReopenWindow(void *self);
+BOOL NpcTalkCtrl_isBusy(void *self);
+void NpcTalkCtrl_requestTalk(void *self, s32 a, s32 b);
+void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 void TalkRequest_EndTalkWith(void *self);
-void func_020195c8(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void func_0201ad34(void *p, s32 v);
-s32 func_02015e48(void *p, s32 a);
-s32 func_02019790(void *p);
-s32 func_020197a8(void *p);
-void func_0201a6c0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void NpcActionCtrl_requestPlayAnim(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void NpcMoveAnimSet_setStandAnim(void *p, s32 v);
+s32 Unk_02015b8c_getAnimId(void *p, s32 a);
+s32 NpcActionCtrl_isActionDone(void *p);
+s32 NpcActionCtrl_getAction(void *p);
+void NpcLookAt_setTarget(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 func_0201acfc(void *p);
-s32 func_0201a7e8(void *p);
-s32 func_0201a9a0(void *p, void *q, s32 a);
-s32 func_0201a968(void *p);
-void func_0201a8f0(void *p);
-void func_0201a97c(void *p, void *q);
-Unk_ov075_Vec3 *func_0201a978(void *p);
-void func_0201a900(void *out, void *a, void *b, s32 c);
-s32 func_0201a834(void *p);
+s32 NpcLookAt_getObstacleBits(void *p);
+s32 NpcMoveCtrl_hasArrived(void *p, void *q, s32 a);
+s32 NpcMoveCtrl_hasNextLeg(void *p);
+void NpcMoveCtrl_resetDestination(void *p);
+void NpcMoveCtrl_setDestination(void *p, void *q);
+Unk_ov075_Vec3 *NpcMoveCtrl_getDestination(void *p);
+void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
+s32 Npc_IsPosBlocked(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
 u32 Unk_020d77a4_getPlayerActor(void *p, s32 n);
@@ -114,8 +114,8 @@ void func_020e7518(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
-s32 func_02077f40(void *v, s32 a);
-void func_020135c4(void *p);
+s32 TownMap_IsPosWalkable(void *v, s32 a);
+void Unk_02013474_enableFootsteps(void *p);
 void *func_020850e0();
 void *func_02085174(void *p);
 s32 func_02086eb0(void *p);
@@ -252,13 +252,13 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -275,9 +275,9 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -346,12 +346,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -360,19 +360,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -612,9 +612,9 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
 }
 
 BOOL SpNpcPete::setupAct00() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
-    func_020195c8(&unk_564, 1, 0xef, 1, data_020c6cc8, 0);
-    func_0201ad34(&unk_2a0, 0xef);
+    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0xef, 1, data_020c6cc8, 0);
+    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xef);
     return TRUE;
 }
 
@@ -644,10 +644,10 @@ BOOL SpNpcPete::mainAct04() {
 
 BOOL SpNpcPete::setupAct05() {
     unk_715 = 0;
-    func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    func_020135c4(&unk_558);
-    func_020135c4(&unk_558);
-    func_0201a6c0(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    Unk_02013474_enableFootsteps(&unk_558);
+    Unk_02013474_enableFootsteps(&unk_558);
+    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -706,7 +706,7 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + unk_64;
         FieldPos_SnapToUnitCenter(&v, &v);
-        if (func_02077f40(&v, r) != 0) {
+        if (TownMap_IsPosWalkable(&v, r) != 0) {
             *px = v.x;
             *pz = v.z;
             r = TRUE;
@@ -719,8 +719,8 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
 BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
     BOOL r = FALSE;
     Unk_ov075_Vec4 t;
-    func_0201a900(&t, &unk_5c, p, unk_94);
-    if (func_0201a834(&t) != 1) {
+    Npc_RotateOffsetXZ(&t, &unk_5c, p, unk_94);
+    if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.v[0];
         out->y = t.v[1];
         out->z = t.v[2];
@@ -732,35 +732,35 @@ BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
 BOOL SpNpcPete::steerAroundObstacle() {
     void *a = &unk_564;
     void *b = &unk_350;
-    s32 r6 = func_0201a7e8(&unk_3a8);
+    s32 r6 = NpcLookAt_getObstacleBits(&unk_3a8);
     BOOL r = FALSE;
     Unk_ov075_Vec3 t;
-    if (func_0201a9a0(b, this, 1) == 0) {
+    if (NpcMoveCtrl_hasArrived(b, this, 1) == 0) {
         switch (r6) {
         case 3:
-            func_020196b4(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             r = TRUE;
             break;
         case 1:
             if (findSidestepPos(&t, &sSpNpcPeteSidestepOffsets[1])) {
-                func_0201a97c(b, &t);
+                NpcMoveCtrl_setDestination(b, &t);
             } else {
-                func_020196b4(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         case 2:
             if (findSidestepPos(&t, &sSpNpcPeteSidestepOffsets[0])) {
-                func_0201a97c(b, &t);
+                NpcMoveCtrl_setDestination(b, &t);
             } else {
-                func_020196b4(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         }
     } else {
-        if (func_0201a968(b)) {
-            func_0201a8f0(b);
+        if (NpcMoveCtrl_hasNextLeg(b)) {
+            NpcMoveCtrl_resetDestination(b);
         }
     }
     return r;
@@ -782,7 +782,7 @@ BOOL SpNpcPete::mainAct05() {
     func_020e7518(&unk_715);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
-            if (func_02019790(r4) != 0) {
+            if (NpcActionCtrl_isActionDone(r4) != 0) {
                 if (func_0201acfc(&unk_3aa) == 2) {
                     Unk_ov075_0227188c_CallA();
                 } else if ((Random_Next(gRandom) & 7) == 0) {
@@ -797,10 +797,10 @@ BOOL SpNpcPete::mainAct05() {
                             if (func_02063b8c(4) == 0) {
                                 r6 = 2;
                             }
-                            func_020196b4(r4, r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            NpcActionCtrl_requestAction(r4, r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
                             unk_715 = 100;
                         } else {
-                            func_020196b4(r4, 4, 1, a.x, a.z, 0, r6, 0, 0, data_020c6cc8, 0);
+                            NpcActionCtrl_requestAction(r4, 4, 1, a.x, a.z, 0, r6, 0, 0, data_020c6cc8, 0);
                             unk_715 = 80;
                         }
                     } else {
@@ -811,12 +811,12 @@ BOOL SpNpcPete::mainAct05() {
                 }
             } else {
                 if (unk_98 != 0) {
-                    if (func_020197a8(&unk_564) == 1 || func_020197a8(&unk_564) == 2 || func_020197a8(&unk_564) == 4) {
+                    if (NpcActionCtrl_getAction(&unk_564) == 1 || NpcActionCtrl_getAction(&unk_564) == 2 || NpcActionCtrl_getAction(&unk_564) == 4) {
                         if (unk_715 == 0) {
                             Unk_ov075_0227188c_CallA();
                         } else {
                             Unk_ov075_Vec3 b;
-                            Unk_ov075_Vec3 *q = func_0201a978(&unk_350);
+                            Unk_ov075_Vec3 *q = NpcMoveCtrl_getDestination(&unk_350);
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;
@@ -836,13 +836,13 @@ BOOL SpNpcPete::setupAct01() {
     void *r4 = unk_658.func_02015aac();
     s32 r6 = unk_8e;
     if (unk_714 != 0) {
-        func_0201a6c0(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         unk_4cc.unk_1c &= ~2;
     }
     if (r4 != 0) {
         r6 = Unk_020d77a4_getAngleTo(this, r4);
     }
-    func_020141b4(&unk_618, 0, r6, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r6, 0);
     return TRUE;
 }
 
@@ -852,13 +852,13 @@ BOOL SpNpcPete::mainAct01() {
 
 BOOL SpNpcPete::setupAct02() {
     if (unk_714 == 0) {
-        func_02014198(&unk_618, 0, 0);
+        NpcTalkCtrl_requestTalk(&unk_618, 0, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcPete::mainAct02() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         SpNpcPete_ChangeAct(this, 3);
     }
@@ -900,34 +900,34 @@ void SpNpcPeteTalk::scriptWakeUp() {
     switch (unk_b0) {
     case 0:
         if (unk_3c->unk_04 == 5) {
-            func_020195c8(unk_b4 + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
-            func_0201ad34(unk_b4 + 0x2a0, 0);
+            NpcActionCtrl_requestPlayAnim(unk_b4 + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
+            NpcMoveAnimSet_setStandAnim(unk_b4 + 0x2a0, 0);
             unk_b0 = unk_b0 + 1;
         }
         break;
     case 1:
-        if (func_02015e48(unk_b4 + 0x334, 0) == 0xd5) {
-            if (func_02019790(unk_b4 + 0x564) != 0) {
+        if (Unk_02015b8c_getAnimId(unk_b4 + 0x334, 0) == 0xd5) {
+            if (NpcActionCtrl_isActionDone(unk_b4 + 0x564) != 0) {
                 u32 r = Unk_020d77a4_getAngleToPlayer(unk_b4, 4);
-                func_020196b4(unk_b4 + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(unk_b4 + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
                 unk_b0 = unk_b0 + 1;
             }
         }
         break;
     case 2:
-        if (func_020197a8(unk_b4 + 0x564) == 3) {
-            if (func_02019790(unk_b4 + 0x564) != 0) {
+        if (NpcActionCtrl_getAction(unk_b4 + 0x564) == 3) {
+            if (NpcActionCtrl_isActionDone(unk_b4 + 0x564) != 0) {
                 void *p = PlayerData_GetCurrent();
                 u8 buf[2];
                 unk_b4[0x714] = 1;
-                func_02014f74(this);
+                Unk_020d7710_requestReopenWindow(this);
                 if (func_02098044(p, 6) == 0) {
                     func_0209801c(p, 6);
-                    func_0202e1cc(0x12, 1);
+                    Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[0] = 0x10;
                     unk_3c->setNextMessage(buf, (void *)"sp_npc_mpelican");
                 } else {
-                    func_0202e1cc(0x12, 1);
+                    Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[1] = func_02063b8c(12);
                     unk_3c->setNextMessage(&buf[1], (void *)"sp_npc_mpelican");
                 }
@@ -960,7 +960,7 @@ void SpNpcPeteTalk::vfunc_78(TalkStartMsg *out) {
 void SpNpcPeteTalk::vfunc_14() {
     PlayerData_GetCurrent();
     if (unk_1e == 0x1a) {
-        func_02014f38(this, 0);
+        Unk_020d7710_requestCloseWindow(this, 0);
         setScript(1);
     }
 }
@@ -973,7 +973,7 @@ void SpNpcPeteTalk::vfunc_18() {
 BOOL SpNpcPete::vfunc_48() {
     BOOL r = FALSE;
     if (unk_558.unk_09 != 0) {
-        if (func_02014220(&unk_618) == 0) {
+        if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
             r = TRUE;
         }
     }

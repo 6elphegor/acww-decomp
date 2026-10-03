@@ -33,7 +33,7 @@ void Comm_CreateHeap(u32);
 void NetSession_Init();
 void NpcSpawn_ResetAll();
 void func_02038ef0();
-void func_020349e0();
+void Bgm_ResetAll();
 void Text_ResetLabels();
 void Scene_RequestBoot();
 s32 GameProc_CreateRoot(s32, s32, s32);
@@ -64,7 +64,7 @@ extern "C" void func_0209cb0c() {
 
 extern "C" void func_0209caf4() {
     func_02038ef0();
-    func_020349e0();
+    Bgm_ResetAll();
     Text_ResetLabels();
 }
 

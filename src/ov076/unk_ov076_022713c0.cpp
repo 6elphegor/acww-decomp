@@ -63,24 +63,24 @@ struct ItemPickSpec {
 };
 
 extern "C" {
-void _ZN12Unk_0201442013func_02014ce4EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771013func_0201517cEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN12Unk_020d771013func_020151d0Ei(void *p, s32 v);
+void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
+void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
-void _ZN12Unk_0201a8c413func_0201a99cEs(void *self, s32 a);
-void _ZN12Unk_0201a33413func_0201a784Ev(void *self);
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN12Unk_0201985813func_020195c8Eiijtt(void *self, s32 a, s32 b, u32 c, s32 d, s32 e);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-BOOL _ZN12Unk_0201985813func_02019790Ev(void *self);
-s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
-s32 _ZN12Unk_02015b8c13func_02015e48Ej(void *self, s32 a);
-BOOL _ZN12Unk_02015b8c13func_02015e74EP18Unk_02015b8c_Scene(void *self, void *o);
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, s32 a, s32 b, s32 c);
+void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 a);
+void _ZN9NpcLookAt7disableEv(void *self);
+void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, s32 d, s32 e);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
+s32 _ZN13NpcActionCtrl9getActionEv(void *self);
+s32 _ZN12Unk_02015b8c9getAnimIdEj(void *self, s32 a);
+BOOL _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(void *self, void *o);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 func_02063b8c(s32 a);
-BOOL func_0202e1cc(s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void func_02099014(u16 *, s32);
 void func_02099064();
 s32 func_02098ffc();
@@ -96,7 +96,7 @@ void TalkRequest_EndTalkWith(void *self);
 void func_020e7530(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
 void FieldFish_ScareAround(Unk_ov076_Vec *v, s32 a);
-void func_02090330(s32 a, Unk_ov076_Vec *v, s32 b, s32 c);
+void Effect_Create(s32 a, Unk_ov076_Vec *v, s32 b, s32 c);
 void func_02003ddc(void *self, s32 a, s32 b, s32 c);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -221,8 +221,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -234,7 +234,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -252,10 +252,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    void func_020196b4(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -324,12 +324,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -339,19 +339,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -520,7 +520,7 @@ void SpNpcPascal::changeAct(s32 state) {
 }
 
 BOOL SpNpcPascal::setupAct00() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -532,12 +532,12 @@ BOOL SpNpcPascal::setupAct01() {
     if (p != NULL) {
         r = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, r, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct01() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         changeAct(2);
     }
@@ -550,13 +550,13 @@ BOOL SpNpcPascal::setupAct03() {
     if (unk_718 == 1) {
         unk_71a = unk_71a + 0x8000;
     }
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, (s16)unk_71a, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, (s16)unk_71a, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct03() {
-    if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 3) {
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
             if (unk_718 == 0) {
                 changeAct(0);
             } else {
@@ -568,28 +568,28 @@ BOOL SpNpcPascal::mainAct03() {
 }
 
 BOOL SpNpcPascal::setupAct04() {
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xf9, 1, 0, 0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xf9, 1, 0, 0);
     func_02003ddc(&unk_514, 0x814, 0x7f, 0);
     unk_8e = unk_8e + 0x8000;
     unk_94 = unk_8e;
-    _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, unk_8e);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, unk_8e);
     s32 t = -(unk_8e / 6);
     if (t < 0) {
         t = -t;
     }
     unk_720 = t;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
     unk_71c = unk_64;
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct04() {
     Unk_ov076_Vec v;
-    if (_ZN12Unk_02015b8c13func_02015e48Ej(&unk_334, 0) == 0xf9 &&
-        _ZN12Unk_02015b8c13func_02015e74EP18Unk_02015b8c_Scene(&unk_334, this)) {
+    if (_ZN12Unk_02015b8c9getAnimIdEj(&unk_334, 0) == 0xf9 &&
+        _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&unk_334, this)) {
         changeAct(5);
     } else {
-        if (_ZN12Unk_02015b8c13func_02015e48Ej(&unk_334, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
+        if (_ZN12Unk_02015b8c9getAnimIdEj(&unk_334, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
             *((u8 *)this + 0x511) = 0;
             *((u8 *)this + 0x510) = 0;
         }
@@ -602,21 +602,21 @@ BOOL SpNpcPascal::mainAct04() {
             v.y = 0;
             v.z = v.z + 0x3800;
             FieldFish_ScareAround(&v, 0x5000);
-            func_02090330(0x16, &v, 0, 0);
+            Effect_Create(0x16, &v, 0, 0);
             func_02003ddc(&unk_514, 0x7ed, 0x7f, 0);
         }
     }
     unk_94 = unk_8e;
-    _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, unk_8e);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, unk_8e);
     return TRUE;
 }
 
 BOOL SpNpcPascal::setupAct05() {
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xfa, 0, 0, 0);
-    _ZN12Unk_0201a33413func_0201a784Ev(&unk_3b0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xfa, 0, 0, 0);
+    _ZN9NpcLookAt7disableEv(&unk_3b0);
     unk_8e = 0;
     unk_94 = 0;
-    _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, 0);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, 0);
     unk_64 += 0x4000;
     return TRUE;
 }
@@ -624,7 +624,7 @@ BOOL SpNpcPascal::setupAct05() {
 BOOL SpNpcPascal::mainAct05() {
     unk_94 = 0;
     unk_8e = 0;
-    _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, 0);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, 0);
     unk_64 += 0xeb;
     if (unk_64 > unk_71c + 0x14000) {
         ProcBase_RequestDelete(this);
@@ -660,7 +660,7 @@ void SpNpcPascalTalk::onScallopPicked() {
             func_02099064();
         }
         m.unk_02 = 0x1559;
-        _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &m.unk_02, 0, 5, 0);
+        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.unk_02, 0, 5, 0);
         m.unk_00 = 6;
     }
     r4->setNextMessage(&m.unk_00, sSpNpcPascalKey);
@@ -710,8 +710,8 @@ void SpNpcPascalTalk::vfunc_14() {
     }
     switch (unk_1e) {
     case 4:
-        _ZN12Unk_020d771013func_0201517cEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
-        _ZN12Unk_020d771013func_020151d0Ei(this, 0);
+        _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
+        _ZN12Unk_020d771012openSubSceneEi(this, 0);
         setResultHandler(0);
         break;
     case 5:
@@ -727,10 +727,10 @@ void SpNpcPascalTalk::vfunc_14() {
         } else {
             unk_b4 = 0x1373;
         }
-        _ZN12Unk_020d771013func_02014e60EPtjjj(this, &unk_b4, 0, 5, 0);
+        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
         func_02099014(&unk_b4, 0);
         unk_b0->unk_718 = 1;
-        func_0202e1cc(0x18, 1);
+        Talk_CheckAndSetPlayerFlag(0x18, 1);
         code = 0xc;
         break;
     case 12:
@@ -779,9 +779,9 @@ void SpNpcPascalTalk::vfunc_14() {
                     unk_b4 = oc;
                     func_02063388(&o2);
                 }
-                _ZN12Unk_020d771013func_02014e60EPtjjj(this, &unk_b4, 0, 5, 0);
+                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
                 func_02099014(&unk_b4, 0);
-                func_0202e1cc(0x18, 1);
+                Talk_CheckAndSetPlayerFlag(0x18, 1);
             }
             unk_b0->unk_718 = 1;
         }
@@ -836,10 +836,10 @@ void SpNpcPascalTalk::vfunc_18() {
 
 BOOL SpNpcPascal::vfunc_48() {
     BOOL r = FALSE;
-    if (func_0202e1cc(0x18, r) == 1) {
+    if (Talk_CheckAndSetPlayerFlag(0x18, r) == 1) {
         return r;
     }
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         r = TRUE;
     }
     return r;

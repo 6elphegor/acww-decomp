@@ -28,7 +28,7 @@ BOOL _ZN12HudCountdown9isStoppedEv(void *a);
 s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 void Melody_Pack(void *a, void *b);
 void Melody_ApplyEditPattern();
-void func_020795a8(void *a);
+void SaveVillagers_ClearTuneRequester(void *a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
@@ -49,7 +49,7 @@ u8 *func_02095204(u8 x);
 BOOL HeldInsect_GetStage(u8 x);
 void HeldInsect_Start(u32 a, u8 b);
 s32 HeldInsect_Release(u8 a, s32 b);
-s32 func_02076f88(void *p);
+s32 Bbs_AddPost(void *p);
 
 void func_0206f4f0(u8 *p);
 void func_0206f53c(u32 x);
@@ -78,7 +78,7 @@ extern "C" void func_0206f7d0(u8 *p) {
     void *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0xc0);
     MI_CpuCopy8(p + 1, buf, 0xc0);
-    func_02076f88(buf);
+    Bbs_AddPost(buf);
     Heap_Free(heap, buf);
 }
 
@@ -187,7 +187,7 @@ extern "C" void func_0206f56c(u8 *p) {
     MI_CpuCopy8(p + 1, gMelodyEditPattern, 0x10);
     Melody_Pack(data_021ed2f8, gMelodyEditPattern);
     Melody_ApplyEditPattern();
-    func_020795a8(data_021dfd8c);
+    SaveVillagers_ClearTuneRequester(data_021dfd8c);
 }
 
 extern "C" void func_0206f53c(u32 x) {

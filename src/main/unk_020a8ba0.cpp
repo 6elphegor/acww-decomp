@@ -432,8 +432,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;

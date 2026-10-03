@@ -29,28 +29,28 @@ public:
 class HouseOwnerVillager;
 
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
-#define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
+#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_02015e48 _ZN12Unk_02015b8c13func_02015e48Ej
-#define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201b9bc _ZN12Unk_020d77a413func_0201b9bcEv
+#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
+#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define Unk_020d77a4_netIsTalkLocked _ZN12Unk_020d77a415netIsTalkLockedEv
 #define func_0201b9e8 _ZN12Unk_020d77a413func_0201b9e8Eii
-#define func_0201b9fc _ZN12Unk_020d77a413func_0201b9fcEjjjz
-#define func_0201ba88 _ZN12Unk_020d77a413func_0201ba88Ev
+#define Unk_020d77a4_netSetSlotsIfOwner _ZN12Unk_020d77a418netSetSlotsIfOwnerEjjjz
+#define Unk_020d77a4_isNetOwner _ZN12Unk_020d77a410isNetOwnerEv
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleToPlayer _ZN12Unk_020d77a416getAngleToPlayerEj
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
 #define VillagerMood_update _ZN12VillagerMood6updateEP12VillagerTalk
 #define VillagerMood_requestApply _ZN12VillagerMood12requestApplyEv
-#define func_0201c784 _ZN12VillagerTalk13func_0201c784Ev
-#define func_0202bcdc _ZN18VillagerTalkTopics13func_0202bcdcEPhPvj
+#define VillagerTalk_getEventKind _ZN12VillagerTalk12getEventKindEv
+#define VillagerTalkTopics_updateCatchPlans _ZN18VillagerTalkTopics16updateCatchPlansEPhPvj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerClothModel_getItem _ZN18VillagerClothModel7getItemEv
 #define VillagerClothModel_change _ZN18VillagerClothModel6changeEP13VillagerActorPt
@@ -97,27 +97,27 @@ extern u16 data_020c6cc8;
 extern const u8 data_ov004_02240090[4];
 extern const u8 data_ov004_02240094[5];
 
-s32 func_0201b9fc(void *, u32, u32, u32);
-s32 func_0201ba88(void *);
+s32 Unk_020d77a4_netSetSlotsIfOwner(void *, u32, u32, u32);
+s32 Unk_020d77a4_isNetOwner(void *);
 s32 func_0201b9e8(void *, s32 *, s32 *);
-s32 func_0201b9bc(void *);
-s32 func_0201c784(void *);
+s32 Unk_020d77a4_netIsTalkLocked(void *);
+s32 VillagerTalk_getEventKind(void *);
 s32 Villager_GetResidentStatus(void *);
 s32 Unk_020d77a4_getPlayerActor(void *, u32);
 void VillagerTalk_begin(void *, void *, s32);
 void func_02015ab0(void *, s32);
 s32 NetArea_IsLocalOwner();
-s32 func_02014220(void *);
-s32 func_020197a8(void *);
-s32 func_02019790(void *);
-void func_02019614(void *, u32, u32);
+s32 NpcTalkCtrl_isBusy(void *);
+s32 NpcActionCtrl_getAction(void *);
+s32 NpcActionCtrl_isActionDone(void *);
+void NpcActionCtrl_requestStand(void *, u32, u32);
 s32 Unk_020d77a4_getAngleToPlayer(void *, u32);
-void func_020196b4(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
+void NpcActionCtrl_requestAction(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 void VillagerMood_requestApply(void *);
 void TalkRequest_EndTalkWith(void *);
 void *func_02015aac(void *);
 s32 Unk_020d77a4_getAngleTo(void *, void *);
-void func_020141b4(void *, u32, s32, u32);
+void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 func_02063b8c(u32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_FromUnitCenter(s32 *, s32, s32);
@@ -131,20 +131,20 @@ u16 *VillagerClothModel_getItem(void *o);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 void VillagerMood_update(void *o, void *owner);
-void func_0202bcdc(void *o, const void *a, const void *b, u32 c);
+void VillagerTalkTopics_updateCatchPlans(void *o, const void *a, const void *b, u32 c);
 void TalkRequest_AddPlayerTalk6(void *o, u32 a);
 void func_02083f44(void *o);
-void func_020135c4(void *o);
-void *func_0207e310(void *o);
-u32 func_020785ec(void *o);
-void func_020785e8(void *o, u32 a);
+void Unk_02013474_enableFootsteps(void *o);
+void *Villager_GetState(void *o);
+u32 VillagerState_GetRole(void *o);
+void VillagerState_SetRole(void *o, u32 a);
 void *VillagerData_getVillagerId(void *o);
 u32 VillagerId_isValid(void *o);
-void *func_020784f4(void *o);
-void func_020784e0(void *o);
+void *VillagerState_GetTalkRepeat(void *o);
+void TalkRepeat_Reset(void *o);
 void Unk_020d77a4_setTalkRequest(void *self, void *p);
 void VillagerClothModel_change(void *self, void *owner, u16 *p);
-u32 func_02015e48(void *o, u32 v);
+u32 Unk_02015b8c_getAnimId(void *o, u32 v);
 }
 
 // Members of the scene object, named after their constructors.
@@ -154,18 +154,18 @@ struct Unk_02053d3c {
     u32 pad[0x1b4 / 4];
 };
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
-struct Unk_02019dd8 { Unk_02019dd8(); ~Unk_02019dd8(); u32 pad[0x88 / 4]; };
-struct Unk_02016350 { Unk_02016350(); ~Unk_02016350(); u32 pad[0x1c / 4]; };
+struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
+struct NpcAnimCtrl { NpcAnimCtrl(); ~NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc { Unk_0201accc(); ~Unk_0201accc(); u32 pad[0x58 / 4]; };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
-struct Unk_0201a194 { Unk_0201a194(); ~Unk_0201a194(); u32 pad[8 / 4]; };
+struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 unk_44; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
-struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
+struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
 class SndSeEmitter {
@@ -246,30 +246,30 @@ public:
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
 
     u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_020323b0 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -395,9 +395,9 @@ BOOL HouseOwnerVillager::vfunc_04() {
     void *p = vfunc_64();
     if (p) {
         if (VillagerId_isValid(VillagerData_getVillagerId(p))) {
-            void *t = func_0207e310(p);
+            void *t = Villager_GetState(p);
             if (t) {
-                func_020784e0(func_020784f4(t));
+                TalkRepeat_Reset(VillagerState_GetTalkRepeat(t));
             }
         }
     }
@@ -409,18 +409,18 @@ BOOL HouseOwnerVillager::vfunc_00() {
         return FALSE;
     }
     unk_894 = &HouseOwnerVillager::drawModel;
-    func_020135c4(&unk_558);
-    if (func_0201ba88(this)) {
+    Unk_02013474_enableFootsteps(&unk_558);
+    if (Unk_020d77a4_isNetOwner(this)) {
         unk_89c.changeState(this, 0);
-        func_0202bcdc(this, data_ov004_02240094, data_ov004_02240090, 0);
+        VillagerTalkTopics_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
     } else {
         unk_89c.changeState(this, 3);
     }
     u32 *g = (u32 *)gCommManager;
     if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
         if (vfunc_64()) {
-            if (func_020785ec(func_0207e310(vfunc_64())) == 1) {
-                func_020785e8(func_0207e310(vfunc_64()), 0);
+            if (VillagerState_GetRole(Villager_GetState(vfunc_64())) == 1) {
+                VillagerState_SetRole(Villager_GetState(vfunc_64()), 0);
             }
         }
     }
@@ -454,7 +454,7 @@ void HouseOwnerVillager::vfunc_80() { unk_8d0 = 1; }
 BOOL HouseOwnerVillager::updateAct() {
     unk_89c.update(this);
     if (CommManager_isOnline(gCommManager)) {
-        if (func_02015e48(&unk_334, 0) != 6) {
+        if (Unk_02015b8c_getAnimId(&unk_334, 0) != 6) {
             if (vfunc_64()) {
                 u16 *p = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
                 u16 *q = VillagerClothModel_getItem(&unk_64c);
@@ -568,7 +568,7 @@ extern "C" Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4] = {
 
 BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
     o->unk_894 = &HouseOwnerVillager::drawModel;
-    func_020196b4(&o->unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&o->unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_10 = 0;
     return TRUE;
 }
@@ -576,7 +576,7 @@ BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
 BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
     u8 *sub = (u8 *)&o->unk_564;
     s32 a, b;
-    if (func_02019790(sub) != 0) {
+    if (NpcActionCtrl_isActionDone(sub) != 0) {
         a = 0;
         b = 0;
         if (func_02063b8c(7) == 0) {
@@ -585,25 +585,25 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
                 if (v == o->unk_8e) {
                     v = (s16)(v + 0x4000);
                 }
-                func_020196b4(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             } else {
                 if (func_02063b8c(3) != 0 && findStepTarget(&a, &b, o) != 0) {
-                    func_020196b4(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
+                    NpcActionCtrl_requestAction(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
                     unk_10 = 0x3c;
                 } else {
                     s32 v = (s32)(func_02063b8c(4) << 30) >> 16;
                     if (v == o->unk_8e) {
                         v = (s16)(v + 0x4000);
                     }
-                    func_020196b4(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                    NpcActionCtrl_requestAction(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
                 }
             }
         } else {
-            func_020196b4(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (unk_10 == 0 && func_020197a8(sub) == 1) {
-            func_020196b4(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (unk_10 == 0 && NpcActionCtrl_getAction(sub) == 1) {
+            NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return FALSE;
@@ -615,12 +615,12 @@ BOOL HouseOwnerAi::enterState01(HouseOwnerVillager *o) {
     if (t != 0) {
         r = Unk_020d77a4_getAngleTo(o, t);
     }
-    func_020141b4(&o->unk_618, 0, r, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&o->unk_618, 0, r, 0);
     return TRUE;
 }
 
 void HouseOwnerAi::updateState01Step00(HouseOwnerVillager *o) {
-    if (func_02014220(&o->unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&o->unk_618) == 0) {
         VillagerMood_requestApply(&o->unk_838);
         TalkRequest_EndTalkWith(o);
         unk_0c = 1;
@@ -639,15 +639,15 @@ BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
 
 BOOL HouseOwnerAi::enterState02(HouseOwnerVillager *o) {
     s32 t = Unk_020d77a4_getAngleToPlayer(o, o->unk_558.unk_08);
-    func_020196b4(&o->unk_564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&o->unk_564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     unk_0c = 0;
     return TRUE;
 }
 
 void HouseOwnerAi::updateState02Step00(HouseOwnerVillager *o) {
-    if (func_020197a8(&o->unk_564) == 3) {
-        if (func_02019790(&o->unk_564) != 0) {
-            func_02019614(&o->unk_564, 2, data_020c6cc8);
+    if (NpcActionCtrl_getAction(&o->unk_564) == 3) {
+        if (NpcActionCtrl_isActionDone(&o->unk_564) != 0) {
+            NpcActionCtrl_requestStand(&o->unk_564, 2, data_020c6cc8);
             unk_0c = 1;
         }
     }
@@ -666,14 +666,14 @@ BOOL HouseOwnerAi::enterState03(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
-    if (func_0201ba88(o) != 0) {
+    if (Unk_020d77a4_isNetOwner(o) != 0) {
         s32 a = 4;
         s32 b = 4;
         s32 la;
         void *w = o->unk_82c;
         s32 g;
         if (func_0201b9e8(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
-            func_0201b9fc(o, 1, g, g);
+            Unk_020d77a4_netSetSlotsIfOwner(o, 1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->unk_8d4 = 12;
             } else {
@@ -684,7 +684,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
             o->unk_89c.changeState(o, 1);
         } else {
             if (NetArea_IsLocalOwner() != 0 && b == 4) {
-                func_0201b9fc(o, 1, gCommManager->unk_64, 4);
+                Unk_020d77a4_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
                 if (o->unk_89c.applyPendingState(o) == 0) {
                     o->unk_89c.changeState(o, 0);
                 }
@@ -699,13 +699,13 @@ BOOL HouseOwnerAi::enterState04(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
-    if (func_0201ba88(o) != 0) {
+    if (Unk_020d77a4_isNetOwner(o) != 0) {
         s32 a = 4;
         s32 b = 4;
         if (func_0201b9e8(o, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
-                    func_0201b9fc(o, 1, gCommManager->unk_64, 4);
+                    Unk_020d77a4_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
                     if (o->unk_89c.applyPendingState(o) == 0) {
                         o->unk_89c.changeState(o, 0);
                     }
@@ -717,7 +717,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerVillager::vfunc_48() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc(this) != 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || Unk_020d77a4_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -728,18 +728,18 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     case 3:
         unk_558.unk_08 = v;
         if (v != 4) {
-            func_0201b9fc(this, 1, gCommManager->unk_64, v);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, v);
             unk_89c.changeState(this, 2);
         } else {
-            if (func_0201ba88(this) == 0) {
+            if (Unk_020d77a4_isNetOwner(this) == 0) {
                 return;
             }
             s32 g = gCommManager->unk_64;
-            func_0201b9fc(this, 1, g, g);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, g, g);
             if (unk_82c != 0 && Villager_GetResidentStatus(unk_82c) != 3) {
                 unk_8d4 = 12;
             } else {
-                switch (func_0201c784(this)) {
+                switch (VillagerTalk_getEventKind(this)) {
                 case 1:
                     unk_8d4 = 3;
                     break;
@@ -761,12 +761,12 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     case 0:
         unk_558.unk_08 = v;
         if (v != 4 && v != gCommManager->unk_64) {
-            func_0201b9fc(this, 1, v, v);
+            Unk_020d77a4_netSetSlotsIfOwner(this, 1, v, v);
             unk_89c.changeState(this, 4);
         } else {
-            if (func_0201ba88(this) != 0) {
+            if (Unk_020d77a4_isNetOwner(this) != 0) {
                 s32 g = gCommManager->unk_64;
-                func_0201b9fc(this, 1, g, g);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, g, g);
                 VillagerTalk_begin(&unk_680, this, unk_8d4);
                 func_02015ab0(&unk_680, Unk_020d77a4_getPlayerActor(this, 4));
                 unk_89c.changeState(this, 1);
@@ -777,19 +777,19 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     case 8:
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
                 if (unk_89c.applyPendingState(this) == 0) {
                     unk_89c.changeState(this, 0);
                 }
             } else {
-                func_0201b9fc(this, 1, 4, gCommManager->unk_64);
+                Unk_020d77a4_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
                 unk_89c.changeState(this, 3);
             }
         }
         break;
     case 4:
-        if (func_0201b9bc(this) != 0) {
-            if (func_0201ba88(this) != 0) {
+        if (Unk_020d77a4_netIsTalkLocked(this) != 0) {
+            if (Unk_020d77a4_isNetOwner(this) != 0) {
                 s32 a = 4;
                 s32 b = 4;
                 if (func_0201b9e8(this, &a, &b) != 0) {
@@ -804,7 +804,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
                         break;
                     }
                 body:
-                    func_0201b9fc(this, 1, gCommManager->unk_64, 4);
+                    Unk_020d77a4_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
                     if (unk_89c.applyPendingState(this) == 0) {
                         unk_89c.changeState(this, 0);
                     }

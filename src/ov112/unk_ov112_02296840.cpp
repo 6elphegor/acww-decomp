@@ -66,17 +66,17 @@ public:
     void fromMsgString(MsgString *src);
 };
 
-class Unk_020e0574 : public MsgString {
+class MsgString193 : public MsgString {
 public:
-    Unk_020e0574();
-    virtual ~Unk_020e0574();
+    MsgString193();
+    virtual ~MsgString193();
     u32 unk_04[(0xc4 - 4) / 4];
 };
 
-class Unk_020e055c : public EncodedString {
+class EncodedString192 : public EncodedString {
 public:
-    Unk_020e055c();
-    virtual ~Unk_020e055c();
+    EncodedString192();
+    virtual ~EncodedString192();
     u32 unk_04[(0xd0 - 4) / 4];
 };
 
@@ -413,9 +413,9 @@ public:
     /* 0x40ac */ MenuScrollKnob unk_40ac;
     /* 0x40f4 */ MenuBottomButtons unk_40f4;
     /* 0x4258 */ MenuCursorBuf0 unk_4258;
-    /* 0x42bc */ Unk_020e0574 unk_42bc;
+    /* 0x42bc */ MsgString193 unk_42bc;
     /* 0x4380 */ u32 unk_4380[(0x4390 - 0x4380) / 4];
-    /* 0x4390 */ Unk_020e055c unk_4390;
+    /* 0x4390 */ EncodedString192 unk_4390;
     /* 0x4460 */ u8 unk_4460[0x800];
     /* 0x4c60 */ u8 unk_4c60[0x1e00];
     /* 0x6a60 */ s32 unk_6a60[7];
@@ -448,9 +448,9 @@ s32 func_020512e0(void *p, s32 n);
 void func_0206f920(void *p, void *q, u32 n, u32 a, u32 b);
 void func_0206cf4c(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 BOOL MenuCtrl_IsTouch();
-void func_02076f88(void *p);
+void Bbs_AddPost(void *p);
 PlayerData *PlayerData_GetCurrent();
-s32 func_020998d8();
+s32 Arbeit_OnBbsPosted();
 u32 Keyboard_HitTestText(void *a, void *b, u32 c, u32 d, u32 e, void *f);
 u32 Keyboard_DeleteRange(void *a, void *b, u32 c, u32 d, u32 e);
 u32 Keyboard_GetTypedRunLength(void *p);
@@ -1762,11 +1762,11 @@ extern "C" void BbsWriteMenu_ConfirmYes(S *s) {
     if (BbsWriteMenu_HasFlags(s, 0x2000)) {
         Snd_PlaySe(0x28);
     } else {
-        func_02076f88(s->unk_0c3);
+        Bbs_AddPost(s->unk_0c3);
         Snd_PlaySe(0x27);
         ((BbsWriteMenu *)s)->sendPostToPeers();
         PlayerData_GetCurrent()->func_0209865c();
-        func_020998d8();
+        Arbeit_OnBbsPosted();
     }
 }
 

@@ -24,9 +24,9 @@ void _ZN12Unk_0205d1f813func_0205d20cEj(void *);
 void _ZN12Unk_0205ce0c13func_0205cf84Ej(void *);
 void _ZN12Unk_0205ca9413func_0205cba8Ev(void *);
 void _ZN12Unk_0205ca9413func_0205cbb0Ej(void *);
-void func_02077b84(void *);
-void func_02077ad8(void *);
-void func_02077b18(void *);
+void NpcTexPatBufRef_Assign(void *);
+void SpNpcAnimHeapRef_Assign(void *);
+void VillagerAnimHeapRef_Assign(void *);
 void func_0205c384(void *);
 struct Unk_020829b0;
 void _ZN12Unk_020829b013func_020829b0Ev(Unk_020829b0 *, u32);
@@ -47,25 +47,25 @@ struct Unk_0205ce0c {
     Unk_0205ce0c();
     ~Unk_0205ce0c();
 };
-struct Unk_02077b8c {
+struct NpcTexPatBufRef {
     u32 pad;
-    Unk_02077b8c();
-    ~Unk_02077b8c();
+    NpcTexPatBufRef();
+    ~NpcTexPatBufRef();
 };
 struct Unk_0205ca94 {
     u8 pad;
     Unk_0205ca94();
     ~Unk_0205ca94();
 };
-struct Unk_02077af8 {
+struct SpNpcAnimHeapRef {
     u32 unk_00;
-    Unk_02077af8();
-    ~Unk_02077af8();
+    SpNpcAnimHeapRef();
+    ~SpNpcAnimHeapRef();
 };
-struct Unk_02077b38 {
+struct VillagerAnimHeapRef {
     u32 unk_00;
-    Unk_02077b38();
-    ~Unk_02077b38();
+    VillagerAnimHeapRef();
+    ~VillagerAnimHeapRef();
 };
 struct Unk_0205c3a4 {
     Unk_0205c3a4();
@@ -96,7 +96,7 @@ extern "C" Unk_020e077c *func_02082514();
 struct Unk_02082af0 : Unk_02082d68 {
     Unk_02082af0();
     ~Unk_02082af0();
-    Unk_02077b38 unk_04;
+    VillagerAnimHeapRef unk_04;
     void func_02082af0(u32 x);
 };
 
@@ -106,7 +106,7 @@ struct Unk_020e0798 : Unk_020e085c {
     virtual ~Unk_020e0798();
     virtual void vfunc_08(u32 i);
     virtual Unk_02082af0 *vfunc_10(u32 i);
-    Unk_02077b38 *func_020829f4(u32 i);
+    VillagerAnimHeapRef *func_020829f4(u32 i);
 };
 
 extern Unk_020e0798 data_021cd3d4;
@@ -116,7 +116,7 @@ extern "C" Unk_020e0798 *func_02082a50();
 struct Unk_020826f4 : Unk_02082d68 {
     Unk_020826f4();
     ~Unk_020826f4();
-    Unk_02077b8c unk_04;
+    NpcTexPatBufRef unk_04;
     void func_020826f4(u32 id);
 };
 
@@ -126,7 +126,7 @@ struct Unk_020e07b4 : Unk_020e085c {
     virtual ~Unk_020e07b4();
     virtual void vfunc_08(u32 i);
     virtual Unk_020826f4 *vfunc_10(u32 i);
-    Unk_02077b8c *func_020825f8(u32 i);
+    NpcTexPatBufRef *func_020825f8(u32 i);
 };
 
 extern Unk_020e07b4 data_021cd3a4;
@@ -179,7 +179,7 @@ extern "C" Unk_020e07ec *func_02082274();
 
 // ---- 0x020e0808
 struct Unk_020829b0 : Unk_02082d68 {
-    Unk_02077af8 unk_04;
+    SpNpcAnimHeapRef unk_04;
     void func_020829b0();
     Unk_020829b0();
     ~Unk_020829b0();
@@ -191,7 +191,7 @@ struct Unk_020e0808 : Unk_020e085c {
     virtual ~Unk_020e0808();
     virtual void vfunc_08(u32 i);
     virtual Unk_020829b0 *vfunc_10(u32 i);
-    Unk_02077af8 *func_020828b4(u32 i);
+    SpNpcAnimHeapRef *func_020828b4(u32 i);
 };
 
 extern Unk_020e0808 data_021cd37c;
@@ -307,7 +307,7 @@ Unk_02082af0::Unk_02082af0() {}
 Unk_02082af0::~Unk_02082af0() {}
 
 void Unk_02082af0::func_02082af0(u32 x) {
-    func_02077b18(&unk_04);
+    VillagerAnimHeapRef_Assign(&unk_04);
     unk_00 = 1;
 }
 
@@ -331,8 +331,8 @@ Unk_02082af0 *Unk_020e0798::vfunc_10(u32 i) {
     return r;
 }
 
-Unk_02077b38 *Unk_020e0798::func_020829f4(u32 i) {
-    Unk_02077b38 *r = 0;
+VillagerAnimHeapRef *Unk_020e0798::func_020829f4(u32 i) {
+    VillagerAnimHeapRef *r = 0;
     if (i < (u32)unk_04) {
         Unk_02082af0 *e = &func_02082a50()->unk_08[i];
         r = &e->unk_04;
@@ -345,7 +345,7 @@ Unk_020829b0::Unk_020829b0() {}
 Unk_020829b0::~Unk_020829b0() {}
 
 void Unk_020829b0::func_020829b0() {
-    func_02077ad8(&unk_04);
+    SpNpcAnimHeapRef_Assign(&unk_04);
     unk_00 = 1;
 }
 
@@ -371,8 +371,8 @@ Unk_020829b0 *Unk_020e0808::vfunc_10(u32 i) {
     return r;
 }
 
-Unk_02077af8 *Unk_020e0808::func_020828b4(u32 i) {
-    Unk_02077af8 *r = 0;
+SpNpcAnimHeapRef *Unk_020e0808::func_020828b4(u32 i) {
+    SpNpcAnimHeapRef *r = 0;
     if (i < (u32)unk_04) {
         Unk_020829b0 *e = &func_02082910()->unk_08[i];
         r = &e->unk_04;
@@ -437,7 +437,7 @@ Unk_020826f4::Unk_020826f4() {}
 Unk_020826f4::~Unk_020826f4() {}
 
 void Unk_020826f4::func_020826f4(u32 id) {
-    func_02077b84(&unk_04);
+    NpcTexPatBufRef_Assign(&unk_04);
     unk_00 = 1;
 }
 
@@ -463,8 +463,8 @@ Unk_020826f4 *Unk_020e07b4::vfunc_10(u32 i) {
     return r;
 }
 
-Unk_02077b8c *Unk_020e07b4::func_020825f8(u32 i) {
-    Unk_02077b8c *r = 0;
+NpcTexPatBufRef *Unk_020e07b4::func_020825f8(u32 i) {
+    NpcTexPatBufRef *r = 0;
     if (i < (u32)unk_04) {
         Unk_020826f4 *e = &func_02082654()->unk_08[i];
         r = &e->unk_04;

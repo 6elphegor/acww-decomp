@@ -86,7 +86,7 @@ void *ExpHeap_Create(u32 size, void *parent);
 void *FrameHeap_Create(u32 size, void *parent, ...);
 u32 func_02094340(void);
 u32 func_0209433c(void);
-s32 func_020812f4(void);
+s32 Town_GetMaxOutdoorVillagers(void);
 void *func_020b50e8(void);
 s32 func_020b491c(void *);
 s32 func_020b4928(void *);
@@ -725,7 +725,7 @@ extern "C" void func_0205ba88(void) {
 extern "C" void func_0205ba1c(void *parent) {
     s32 n;
     if (data_020e416c == 0 ? TRUE : FALSE) {
-        n = func_020812f4();
+        n = Town_GetMaxOutdoorVillagers();
     } else {
         n = func_020b491c(func_020b50e8()) - func_020b4928(func_020b50e8());
     }
@@ -776,7 +776,7 @@ extern "C" void *func_0205b8c0(void *parent) {
     u32 t = 0;
     s32 n;
     if (data_020e416c == 0 ? TRUE : FALSE) {
-        n = func_020812f4();
+        n = Town_GetMaxOutdoorVillagers();
     } else {
         n = func_020b491c(func_020b50e8()) - func_020b4928(func_020b50e8());
     }

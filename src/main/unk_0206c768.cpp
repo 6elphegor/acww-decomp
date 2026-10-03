@@ -64,8 +64,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;
@@ -121,8 +121,8 @@ class Unk_020ddebc : public EncodedString {
 public:
     Unk_020ddebc();
     virtual ~Unk_020ddebc();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x0e */ u8 unk_0e[0x200];
 };
@@ -132,8 +132,8 @@ class Unk_020ddf5c : public EncodedString {
 public:
     Unk_020ddf5c();
     virtual ~Unk_020ddf5c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x0e */ u8 unk_0e[0x28];
 };
@@ -237,9 +237,9 @@ Unk_020ddebc::Unk_020ddebc() {}
 // ---- Unk_020ddebc
 Unk_020ddebc::~Unk_020ddebc() {}
 
-u32 Unk_020ddebc::vfunc_08() { return 0x200; }
+u32 Unk_020ddebc::capacity() { return 0x200; }
 
-u8 *Unk_020ddebc::vfunc_0c() { return (u8 *)this + 0xe; }
+u8 *Unk_020ddebc::data() { return (u8 *)this + 0xe; }
 
 extern "C" void func_0206c92c() {
     Unk_020dded4 src;

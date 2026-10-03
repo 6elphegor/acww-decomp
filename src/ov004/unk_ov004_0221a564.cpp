@@ -30,29 +30,29 @@ public:
 class SickVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02014ce4 _ZN12Unk_0201442013func_02014ce4EPtjjj
-#define func_020157e8 _ZN16ActorTalkRequest13func_020157e8Ejj
+#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
-#define func_02019638 _ZN12Unk_0201985813func_02019638Eiht
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
-#define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
-#define func_0201a9ec _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3
-#define func_0201ad30 _ZN12Unk_0201ad2013func_0201ad30Ei
-#define func_0201ad34 _ZN12Unk_0201ad2013func_0201ad34Ei
+#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
+#define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
+#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define func_0201b138 _ZN12Unk_020d77a46onDrawEv
-#define func_0201bb3c _ZN12Unk_020d77a413func_0201bb3cEP16Unk_020d77a4_Vec
+#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
-#define func_0201c3e8 _ZN12VillagerMood13func_0201c3e8EP12VillagerTalk
-#define func_0201c574 _ZN12VillagerMood13func_0201c574EP12VillagerTalk
+#define VillagerMood_playMood3Effect _ZN12VillagerMood15playMood3EffectEP12VillagerTalk
+#define VillagerMood_updateSoundPos _ZN12VillagerMood14updateSoundPosEP12VillagerTalk
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
@@ -62,9 +62,9 @@ class SickVillager;
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_02099678 _ZN12Unk_020994cc13func_02099678EP16Unk_020994cc_Ent
-#define func_02099690 _ZN12Unk_020994cc13func_02099690Ev
-#define func_02099700 _ZN12Unk_020994cc13func_02099700Ev
+#define SickVillagerRecord_setTodaysVisitor _ZN18SickVillagerRecord16setTodaysVisitorEP16Unk_020994cc_Ent
+#define SickVillagerRecord_hasTodaysVisitor _ZN18SickVillagerRecord16hasTodaysVisitorEv
+#define SickVillagerRecord_getTodaysVisitor _ZN18SickVillagerRecord16getTodaysVisitorEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
 #define ChoiceList_setEntry _ZN10ChoiceList8setEntryEiPKhiS1_PKci
@@ -172,22 +172,22 @@ s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_EndTalkWith(void *);
 void *func_02095204(u32);
 s32 Unk_020d77a4_getAngleTo(void *, void *);
-void func_020141b4(void *, u32, s32, u32);
-s32 func_02019638(void *, u32, u32, u32);
-s32 func_02019614(void *, u32, u32);
-s32 func_020197a8(void *);
-s32 func_02019790(void *);
-s32 func_020196b4(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-void func_0201c3e8(void *, void *);
-s32 func_0201bb3c(void *, void *);
-void func_0201a9ec(void *, void *);
+void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
+s32 NpcActionCtrl_requestEmotion(void *, u32, u32, u32);
+s32 NpcActionCtrl_requestStand(void *, u32, u32);
+s32 NpcActionCtrl_getAction(void *);
+s32 NpcActionCtrl_isActionDone(void *);
+s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void VillagerMood_playMood3Effect(void *, void *);
+s32 Unk_020d77a4_findAvoidPos(void *, void *);
+void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e9650(void *, void *);
 s32 func_02063b8c(s32);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
-void *func_02099700(void *);
-void func_020157e8(void *, void *, s32);
+void *SickVillagerRecord_getTodaysVisitor(void *);
+void ActorTalkRequest_setPlayerNameSlot(void *, void *, s32);
 s32 Snd_PlaySe(s32);
 BOOL SickVillager_IsMedicine(u16 *p, s32 x);
 BOOL SickVillager_HasCurrentVisitor(void *o);
@@ -196,31 +196,31 @@ s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 s32 func_02099064();
-void func_02014ce4(void *, void *, s32, s32, s32);
+void Unk_02014420_requestTakeItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
-void func_02099678(void *, void *);
-s32 func_02099690(void *);
+void SickVillagerRecord_setTodaysVisitor(void *, void *);
+s32 SickVillagerRecord_hasTodaysVisitor(void *);
 void VillagerTalk_begin(void *, void *, u32);
 void func_02015ab0(void *, s32);
 s32 Unk_020d77a4_getPlayerActor(void *, s32);
-s32 func_02014220(void *);
-void *func_0207f55c(void *, void *);
-void func_02080ecc(void *, s32, s32, s32);
+s32 NpcTalkCtrl_isBusy(void *);
+void *Villager_FindOrCreateMemory(void *, void *);
+void VillagerMemory_RecordTalk(void *, s32, s32, s32);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
 void func_0203002c(s32, s32);
-void func_0201c574(void *, void *);
+void VillagerMood_updateSoundPos(void *, void *);
 s32 func_0202d928();
 s32 func_0202d948(void *);
 s32 func_0202dab0(void *);
-void func_020135c4(void *);
+void Unk_02013474_enableFootsteps(void *);
 s32 func_0201b138(void *);
 void Unk_020d77a4_setTalkRequest(void *, void *);
-s32 func_0201ad30(void *, s32);
-s32 func_0201ad34(void *, s32);
-void func_0201a8d0(void *, s32, s32, s32, s32);
-void func_0201a6c0(void *, s32, s32, s32, void *, s32, s32, s32);
+s32 NpcMoveAnimSet_setWalkAnim(void *, s32);
+s32 NpcMoveAnimSet_setStandAnim(void *, s32);
+void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
+void NpcLookAt_setTarget(void *, s32, s32, s32, void *, s32, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 }
@@ -233,18 +233,18 @@ struct Unk_02053d3c {
     u32 pad[0x1b4 / 4];
 };
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
-struct Unk_02019dd8 { Unk_02019dd8(); ~Unk_02019dd8(); u32 pad[0x88 / 4]; };
-struct Unk_02016350 { Unk_02016350(); ~Unk_02016350(); u32 pad[0x1c / 4]; };
+struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
+struct NpcAnimCtrl { NpcAnimCtrl(); ~NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc { Unk_0201accc(); ~Unk_0201accc(); u32 pad[0x58 / 4]; };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
-struct Unk_0201a194 { Unk_0201a194(); ~Unk_0201a194(); u32 pad[8 / 4]; };
+struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x3c / 4]; u8 unk_3c; u8 pad_3d[3]; u32 pad_40; u8 unk_44; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
-struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
+struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
 class SndSeEmitter {
@@ -334,30 +334,30 @@ public:
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
 
     u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_020323b0 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -632,13 +632,13 @@ BOOL SickVillager::vfunc_04() {
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(data_021dfd8c);
     *((u8 *)this + 0xa3c) = p[0x8e];
     if (unk_89c.getSickStage() > 1) {
-        func_0201ad30(&unk_2a0, 0xea);
-        func_0201ad34(&unk_2a0, 0xe9);
-        func_0201a8d0(&unk_350, 1, 0xa4, 0x10, 0x10);
-        func_0201a6c0(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0xea);
+        NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xe9);
+        NpcMoveCtrl_setSpeedPreset(&unk_350, 1, 0xa4, 0x10, 0x10);
+        NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         unk_838.unk_5b = 1;
     } else {
-        func_0201a8d0(&unk_350, 1, 0xcd, 0x14, 0x14);
+        NpcMoveCtrl_setSpeedPreset(&unk_350, 1, 0xcd, 0x14, 0x14);
         unk_838.unk_5b = 0;
     }
     changeAct(0);
@@ -651,7 +651,7 @@ BOOL SickVillager::vfunc_00() {
     }
     unk_a44 = PMB(data_ov004_0224ca68);
     blockFurnitureCells();
-    func_020135c4(&unk_558);
+    Unk_02013474_enableFootsteps(&unk_558);
     return TRUE;
 }
 
@@ -679,7 +679,7 @@ BOOL SickVillager::preDelete() {
 
 BOOL SickVillager::updateAct() {
     execAct();
-    func_0201c574(&unk_838, this);
+    VillagerMood_updateSoundPos(&unk_838, this);
     return TRUE;
 }
 
@@ -708,14 +708,14 @@ void SickVillager::func_ov004_0221b1b0() {
     if (p) {
         if (unk_82c) {
             void *g = PlayerData_getPlayerId(p);
-            void *t = func_0207f55c(unk_82c, g);
-            func_02080ecc(t, 0, 0, 0);
+            void *t = Villager_FindOrCreateMemory(unk_82c, g);
+            VillagerMemory_RecordTalk(t, 0, 0, 0);
         }
     }
 }
 
 BOOL SickVillager::vfunc_48() {
-    if (func_02014220(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&unk_618)) {
         return FALSE;
     }
     if (unk_898 > 1) {
@@ -753,7 +753,7 @@ void SickVillager::vfunc_4c(u32 idx, u32 v) {
 u8 SickVillagerTalk::getSickStage() { return unk_1a0; }
 
 extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
-    if (func_02099690(SaveVillagers_GetUnk3830(data_021dfd8c))) {
+    if (SickVillagerRecord_hasTodaysVisitor(SaveVillagers_GetUnk3830(data_021dfd8c))) {
         return TRUE;
     }
     return FALSE;
@@ -761,7 +761,7 @@ extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
 
 extern "C" void SickVillager_SetCurrentVisitor() {
     void *p = SaveVillagers_GetUnk3830(data_021dfd8c);
-    func_02099678(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+    SickVillagerRecord_setTodaysVisitor(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
 }
 
 void SickVillagerTalk::attachOwner(SickVillager *owner) {
@@ -792,7 +792,7 @@ void SickVillagerTalk::vfunc_80() {
                 buf[1] = func_02063b8c(3) + 16;
                 TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
-                func_02014ce4(this, buf + 2, 0, 6, 0);
+                Unk_02014420_requestTakeItem(this, buf + 2, 0, 6, 0);
                 unk_1a4->changeAct(7);
             }
         }
@@ -820,8 +820,8 @@ void SickVillagerTalk::vfunc_78(Unk_ov004_0221af1c_Out *out) {
 void SickVillagerTalk::vfunc_10() {
     void *p = SaveVillagers_GetUnk3830(data_021dfd8c);
     if (p != 0) {
-        if (func_02099700(p) != 0) {
-            func_020157e8(this, func_02099700(p), 0);
+        if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
+            ActorTalkRequest_setPlayerNameSlot(this, SickVillagerRecord_getTodaysVisitor(p), 0);
         }
     }
 }
@@ -968,26 +968,26 @@ void SickVillager::execAct() {
 }
 
 BOOL SickVillager::setupAct00() {
-    return func_02019614(&unk_564, 1, data_020c6cc8);
+    return NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
 }
 
 void SickVillager::mainAct00() {
     Unk_ov004_0221a7d4_Vec v;
     if (unk_838.unk_5b != 0) {
-        if (func_020197a8(&unk_564) == 1) {
+        if (NpcActionCtrl_getAction(&unk_564) == 1) {
             if (gFrameCounter % 14 == 0) {
-                func_0201c3e8(&unk_838, this);
+                VillagerMood_playMood3Effect(&unk_838, this);
             }
         }
     }
     if (unk_4cc.unk_3c != 0) {
-        if (func_020197a8(&unk_564) == 1) {
+        if (NpcActionCtrl_getAction(&unk_564) == 1) {
             if (changeAct(1)) {
                 return;
             }
         }
     }
-    if (func_020197a8(&unk_564) == 0) {
+    if (NpcActionCtrl_getAction(&unk_564) == 0) {
         if (unk_a6e != 0) {
             unk_a6e--;
         }
@@ -997,7 +997,7 @@ void SickVillager::mainAct00() {
             unk_a70.y = unk_a7c.y;
             unk_a70.z = unk_a7c.z;
             if (unk_a6c != unk_8e) {
-                if (func_020196b4(&unk_564, 3, 1, 0, 0, 0, unk_a6c, 0, 0, data_020c6cc8, 0) == 0) {
+                if (NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_a6c, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (unk_838.unk_5b != 0) {
@@ -1006,7 +1006,7 @@ void SickVillager::mainAct00() {
                     unk_a6e = func_02063b8c(0x46) + 0x14;
                 }
             } else {
-                if (func_020196b4(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
+                if (NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (unk_838.unk_5b != 0) {
@@ -1016,28 +1016,28 @@ void SickVillager::mainAct00() {
                 }
             }
         } else {
-            if (func_02019790(&unk_564) != 0) {
-                func_02019614(&unk_564, 1, data_020c6cc8);
+            if (NpcActionCtrl_isActionDone(&unk_564) != 0) {
+                NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
             }
         }
     } else {
-        if (func_020197a8(&unk_564) == 3) {
-            if (func_02019790(&unk_564) != 0) {
-                func_020196b4(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&unk_564) == 3) {
+            if (NpcActionCtrl_isActionDone(&unk_564) != 0) {
+                NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
-        } else if (func_020197a8(&unk_564) == 1) {
-            switch (func_0201bb3c(this, &v)) {
+        } else if (NpcActionCtrl_getAction(&unk_564) == 1) {
+            switch (Unk_020d77a4_findAvoidPos(this, &v)) {
             case 1:
-                func_02019614(&unk_564, 1, data_020c6cc8);
+                NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
                 break;
             case 2:
                 unk_a70 = v;
-                func_0201a9ec(&unk_350, &unk_a70);
+                NpcMoveCtrl_setWaypoint(&unk_350, &unk_a70);
                 break;
             default:
                 if (func_020e96ec(&unk_a70, &unk_a7c) != 0) {
                     unk_a70 = unk_a7c;
-                    func_0201a9ec(&unk_350, &unk_a7c);
+                    NpcMoveCtrl_setWaypoint(&unk_350, &unk_a7c);
                 } else if (func_020e9650(&unk_a7c, (u8 *)this + 0x5c) < 0x200) {
                     changeAct(1);
                 }
@@ -1048,7 +1048,7 @@ void SickVillager::mainAct00() {
 }
 
 BOOL SickVillager::setupAct01() {
-    if (func_02019614(&unk_564, 1, data_020c6cc8)) {
+    if (NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8)) {
         unk_a88 = 0x46;
         return TRUE;
     }
@@ -1058,10 +1058,10 @@ BOOL SickVillager::setupAct01() {
 void SickVillager::mainAct01() {
     switch (unk_a88) {
     case 0x45:
-        func_02019638(&unk_564, 1, 7, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&unk_564, 1, 7, data_020c6cc8);
         break;
     case 1:
-        func_02019638(&unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&unk_564, 1, 0, data_020c6cc8);
         unk_a6e = func_02063b8c(0x14) + 0x14;
         break;
     case 0:
@@ -1077,7 +1077,7 @@ void SickVillager::mainAct01() {
 
 BOOL SickVillager::setupAct02() {
     if (unk_898 == 1) {
-        func_02019638(&unk_564, 2, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&unk_564, 2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -1088,7 +1088,7 @@ BOOL SickVillager::setupAct03() {
     BOOL r;
     void *o = func_02095204(4);
     if (o != 0) {
-        func_020141b4(&unk_618, 0, Unk_020d77a4_getAngleTo(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, Unk_020d77a4_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;

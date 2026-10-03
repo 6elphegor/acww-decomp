@@ -17,10 +17,10 @@ public:
     void setLine(u8 *s);
 };
 
-class Unk_020e0574 {
+class MsgString193 {
 public:
-    Unk_020e0574();
-    ~Unk_020e0574();
+    MsgString193();
+    ~MsgString193();
     u32 pad[0xd4 / 4];
 };
 
@@ -114,7 +114,7 @@ public:
     /* 0x0018 */ StaffRollLayer unk_18;
     /* 0x0820 */ StaffRollLayer unk_820;
     /* 0x1028 */ u16 unk_1028[0x400];
-    /* 0x1828 */ Unk_020e0574 unk_1828;
+    /* 0x1828 */ MsgString193 unk_1828;
     /* 0x18fc */ Unk_020e0488 unk_18fc[26];
     /* 0x1f7c */ BgVramTask unk_1f7c[2];
 };

@@ -4521,7 +4521,7 @@ s32 func_020b51a4();
 u32 func_020b51d4();
 s32 func_020b52f8();
 s32 SaveVillagers_Get(void *p, u32 a);
-u32 func_0207e364();
+u32 Villager_GetInfo4d();
 void _ZN8ItemNameC1EPt(void *out, u16 *in);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN15TalkWindowState12setNamedSlotEiPvj(void *a, s32 b, void *c, s32 d);
@@ -4534,8 +4534,8 @@ u16 MenuCtrl_GetSongItem();
 s32 MenuCtrl_OpenLauncher(s32 a);
 void func_02051cc8(void *self, s32 a, u8 b, s32 c);
 void func_02051da4(void *self, s32 a, u8 b, s32 c);
-void func_02034d84(u16 a);
-void func_02034e10(s32 a, u16 b, s32 c, s32 d);
+void Bgm_Release(u16 a);
+void Bgm_Request(s32 a, u16 b, s32 c, s32 d);
 void _ZN9FtrSwitch3setEji(void *p, s32 a, s32 b);
 BOOL _ZN9FtrSwitch10isChangingEv(void *p);
 u8 _ZN9FtrSwitch4isOnEv(void *p);
@@ -4668,7 +4668,7 @@ BOOL FtrStereo::enterTalkAct04() {
         u32 t = 0;
         u32 r = p18::func_020b51d4();
         if (p18::SaveVillagers_Get(p18::data_021dfd8c, r)) {
-            t = p18::func_0207e364();
+            t = p18::Villager_GetInfo4d();
         }
         l.v = Unk_ov004_0220ec30_Val(t);
         p18::_ZN8ItemNameC1EPt(buf1, &l.v);
@@ -4794,7 +4794,7 @@ void FtrStereo::vfunc_4c(u32 a, u8 b) {
 void FtrStereo::stopSong(u32 a, BOOL b) {
     if (unk_840 != 0) {
         if (a < 0x46) {
-            p18::func_02034d84(a + 0xb0);
+            p18::Bgm_Release(a + 0xb0);
             if (b) {
                 u16 v = 0xfff1;
                 p18::func_02060190(&v);
@@ -4807,7 +4807,7 @@ void FtrStereo::stopSong(u32 a, BOOL b) {
 void FtrStereo::startSong(u32 a) {
     if (unk_840 == 0) {
         if (a < 0x46) {
-            p18::func_02034e10(0x11, a + 0xb0, 0x7f, 0);
+            p18::Bgm_Request(0x11, a + 0xb0, 0x7f, 0);
             u16 v = Unk_ov004_0220ec30_Val(a);
             p18::func_02060190(&v);
             unk_840 = 1;
@@ -4854,7 +4854,7 @@ BOOL FtrStereo::initModel() {
             u32 t = 0;
             u32 r = p18::func_020b51d4();
             if (p18::SaveVillagers_Get(p18::data_021dfd8c, r)) {
-                t = p18::func_0207e364();
+                t = p18::Villager_GetInfo4d();
             }
             BOOL f = FALSE;
             volatile u16 *pg = &p18::sStereoSong;

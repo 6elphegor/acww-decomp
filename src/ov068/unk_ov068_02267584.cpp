@@ -126,9 +126,9 @@ void func_0201bda8(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
 u32 func_020e7518(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_02034d70(u32 a);
-void func_02034d84(u32 a);
-void func_02034dd0(u32 a, u32 b, u32 c);
+void Bgm_ReleasePriority(u32 a);
+void Bgm_Release(u32 a);
+void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Camera_SetModeDefault();
 BOOL func_020951b8(s32 a);
 void *func_020947f0(s32 a);
@@ -170,7 +170,7 @@ s32 func_020e9688(void *);
 Unk_ov068_022678c4_Rec *func_02095204(s32);
 extern s32 data_020c7c1c;
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
-void func_02090330(s32 a, void *v, s32 b, void *h);
+void Effect_Create(s32 a, void *v, s32 b, void *h);
 void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
@@ -353,7 +353,7 @@ void Unk_ov068_02268214::spawnSnowballBreak() {
     func_01ffd070(&v, &unk_5c, unk_304);
     v.y = v.y + (unk_268 - 0x400);
     h = FX_Div(unk_268, 0x1000);
-    func_02090330(0x3e, &v, 0, &h);
+    Effect_Create(0x3e, &v, 0, &h);
     func_02003e70(unk_324, 0x81f, 0x7f, 0);
 }
 
@@ -365,7 +365,7 @@ void Unk_ov068_02268214::spawnSnowballSplash() {
     v.z = unk_64;
     v.y = data_020c7c1c + 0x100;
     h = FX_Div(unk_268, 0x1000);
-    func_02090330(0x3f, &v, 0, &h);
+    Effect_Create(0x3f, &v, 0, &h);
     func_02003e70(unk_324, 0x821, 0x7f, 0);
     FieldFish_ScareAround(&unk_5c, 0x5000);
 }

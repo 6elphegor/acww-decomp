@@ -33,8 +33,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;
@@ -61,8 +61,8 @@ class Unk_020e0470 : public EncodedString {
 public:
     Unk_020e0470();
     virtual ~Unk_020e0470();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     s32 func_0206f828();
 
@@ -221,7 +221,7 @@ void Melody_ApplyEditPattern();
 }
 
 extern "C" {
-void func_020795a8(void *a);
+void SaveVillagers_ClearTuneRequester(void *a);
 }
 
 extern "C" {
@@ -305,7 +305,7 @@ s32 HeldInsect_Release(u8 a, s32 b);
 }
 
 extern "C" {
-s32 func_02076f88(void *p);
+s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {

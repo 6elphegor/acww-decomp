@@ -26,10 +26,10 @@ void ProcBase_RequestDelete();
 extern u8 *data_021c1b3c;
 }
 
-class Unk_02035758 {
+class BgmVolumeMixer {
 public:
-    void func_02035bb4();
-    void func_02035bbc(s32 a);
+    void endMenuDuck();
+    void setMenuDuck(s32 a);
 };
 
 class Unk_ov002_022013a0 {
@@ -180,7 +180,7 @@ void MenuLauncher::setNextRequest(s32 a, s32 b) {
         if (b != 0) {
             Snd_PlaySe(2);
         }
-        ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bb4();
+        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->endMenuDuck();
     }
 }
 
@@ -573,13 +573,13 @@ void MenuLauncher::initLauncher() {
     switch (unk_91) {
     case 0x2d:
     case 0x2e:
-        ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(1);
+        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(1);
         break;
     case 0x3f:
-        ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(2);
+        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(2);
         break;
     default:
-        ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(0);
+        ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
         break;
     }
 }

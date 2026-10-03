@@ -44,25 +44,25 @@ void func_020947c0(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 s32 func_02094fec(void);
-s32 _ZN12Unk_020d8e3413func_02035ed0Ej(void *p, s32 a);
-s32 _ZN12Unk_020d8e4413func_02035fe0Ej(void *p, s32 a);
+s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
+s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
 void Snd_RestoreSubPlayers(void);
 void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 id);
-s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN12Unk_020d8e1413func_02035284Ev(void *p);
-s32 _ZN12Unk_020d8e1413func_02035328Ev(s32 a);
-s32 _ZN12Unk_02036a6413func_02036a98Ev(s32 a);
+s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void _ZN12BgmSceneFade6updateEv(void *p);
+s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
+s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
 s32 func_02040c7c(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
 s32 _ZN10PlayerData13func_0209865cEv(s32 a);
-s32 func_02099c1c(s32 a);
+s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
 s32 Clock_GetYear(void);
@@ -103,25 +103,25 @@ void *BgModel_LoadBcl(s32 id, void *heap);
 s32 BgModel_GetGrassType(void *);
 }
 // ---- unified class definitions of the unit (union of the views of the five source files) ----
-class Unk_02036bf8;
-class Unk_02034ae8;
-class Unk_02035780_Owner;
-class Unk_02035758;
-class Unk_02035ca4;
+class BgmRequest;
+class BgmManagerView;
+class BgmManagerOwnerView;
+class BgmVolumeMixer;
+class BgmVolumeChannel;
 
 // 0x1c-byte slot
-class Unk_02036bf8 {
+class BgmRequest {
 public:
-    Unk_02036bf8();
-    Unk_02036bf8(s32 a, u32 b, s32 c, s32 d, u8 e);
-    ~Unk_02036bf8();
+    BgmRequest();
+    BgmRequest(s32 a, u32 b, s32 c, s32 d, u8 e);
+    ~BgmRequest();
 
-    BOOL func_02036ba4();
-    void func_02036bbc(Unk_02036bf8 *src);
-    void func_02036bf8();
+    BOOL tickLifetime();
+    void copyFrom(BgmRequest *src);
+    void clear();
     void func_02036c18();
-    Unk_02036bf8 *func_02036c1c(s32 a, u32 b, s32 c, s32 d, u8 e);
-    Unk_02036bf8 *func_02036c48();
+    BgmRequest *init(s32 a, u32 b, s32 c, s32 d, u8 e);
+    BgmRequest *initEmpty();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ u16 unk_04;
@@ -138,14 +138,14 @@ public:
 };
 
 // the symbols name this class in the parameter of three methods of the composite
-class Unk_02036ba4 : public Unk_02036bf8 {
+class BgmRequestView : public BgmRequest {
 public:
-    BOOL func_02034784();
+    BOOL clearPlaying();
 };
 
-typedef BOOL (Unk_02036ba4::*Unk_02034574_Fn)();
+typedef BOOL (BgmRequestView::*Unk_02034574_Fn)();
 
-class Unk_020d8e24 {
+class EventBgm {
 public:
     u32 unk_04;
     u16 unk_08;
@@ -157,56 +157,56 @@ public:
     u8 unk_13;
     u8 unk_14;
     u8 unk_15;
-    virtual ~Unk_020d8e24();
-    Unk_020d8e24(u32 a);
-    void func_0203617c();
-    void func_020361a8();
-    void func_020361c4(u32 a);
-    void func_020361e0();
-    void func_02036200();
-    void func_02036220();
-    s32 func_02036220_call(); // alias of func_02036220 declared s32 so the caller emits bl instead of a tail branch
-    void func_02036240();
-    void func_02036260();
-    void func_02036280(u32 a);
-    void func_0203629c(u32 a);
-    void func_020362b8(u32 a);
-    void func_020362d4(u32 a);
-    void func_020362f0(u32 a);
-    s32 func_02036308(BOOL a);
-    void func_02036330(BOOL a);
-    void func_02036470(BOOL a);
-    void func_02036528();
-    void func_020365d8(u32 a);
-    void func_020365dc();
-    void func_02036614();
-    void func_02036620();
-    void func_02036654();
-    void func_02036670();
-    void func_02036678();
+    virtual ~EventBgm();
+    EventBgm(u32 a);
+    void updateYearChanged();
+    void stopCountdownFade();
+    void startCountdownFade(u32 a);
+    void stopFireworks();
+    void stopCountdown();
+    void stopNewYearDay();
+    s32 stopNewYearDayAlias(); // alias of func_02036220 declared s32 so the caller emits bl instead of a tail branch
+    void stopNewYearNight();
+    void stopNewYearFanfare();
+    void playFireworks(u32 a);
+    void playCountdown(u32 a);
+    void playNewYearDay(u32 a);
+    void playNewYearNight(u32 a);
+    void playNewYearFanfare(u32 a);
+    s32 updateFireworks(BOOL a);
+    void updateCountdown(BOOL a);
+    void updateNewYearDay(BOOL a);
+    void updateEvents();
+    void setKeep(u32 a);
+    void end();
+    void start();
+    void stop();
+    void update();
+    void exit();
+    void init();
 };
 
-class Unk_020d8e64 {
+class FieldSpecialBgm {
 public:
     u32 unk_04;
     u16 unk_08;
     u8 unk_0a;
     u8 unk_0b;
 
-    Unk_020d8e64(u32 a);
-    virtual ~Unk_020d8e64();
-    void func_020366e0();
-    void func_02036700(s32 a, u32 b, u32 c);
-    void func_0203671c(u32 a);
-    void func_02036720();
-    void func_02036738();
-    void func_020367e8();
-    void func_020367fc();
-    void func_02036800();
-    void func_02036808();
+    FieldSpecialBgm(u32 a);
+    virtual ~FieldSpecialBgm();
+    void stopBgm();
+    void play(s32 a, u32 b, u32 c);
+    void setKeep(u32 a);
+    void end();
+    void start();
+    void stop();
+    void update();
+    void exit();
+    void init();
 };
 
-class Unk_020d8e04 {
+class HourlyBgm {
 public:
     u32 unk_04;
     s32 unk_08;
@@ -215,33 +215,33 @@ public:
     u8 unk_0f;
     u8 unk_10;
 
-    Unk_020d8e04(u32 v);
-    virtual ~Unk_020d8e04();
-    void func_02036858();
-    void func_020368dc();
-    void func_020368f8(u32 x);
-    void func_02036914();
-    void func_0203693c();
-    void func_0203695c();
-    void func_02036984(u32 v);
-    void func_02036988();
-    void func_020369ac();
-    void func_020369c4();
-    void func_020369e4();
-    void func_02036a00();
-    void func_02036a08();
+    HourlyBgm(u32 v);
+    virtual ~HourlyBgm();
+    void updateHourFade();
+    void stopHourFade();
+    void startHourFade(u32 x);
+    void updateHour();
+    void stopHourBgm();
+    void playHourBgm();
+    void setKeep(u32 v);
+    void end();
+    void start();
+    void stop();
+    void update();
+    void exit();
+    void init();
 };
 
-class Unk_020356b8 {
+class BgmCommandQueue {
 public:
-    Unk_020356b8(void *owner);
-    ~Unk_020356b8();
-    void func_020356b8();
-    void func_0203570c();
-    Unk_020356b8 *func_02035744(void *owner);
-    void func_02035724(s32 a, s32 b);
-    void func_02035730(s32 a);
-    void func_02035738(u16 a);
+    BgmCommandQueue(void *owner);
+    ~BgmCommandQueue();
+    void flush();
+    void clear();
+    BgmCommandQueue *init(void *owner);
+    void requestVolume(s32 a, s32 b);
+    void requestStop(s32 a);
+    void requestPlay(u16 a);
     void func_02035740();
 
     u32 unk_00;
@@ -257,12 +257,12 @@ public:
     s32 unk_18;
 };
 
-typedef void (Unk_02035780_Owner::*Unk_02035780_OwnerFn)();
+typedef void (BgmManagerOwnerView::*Unk_02035780_OwnerFn)();
 
-class Unk_02035780_Owner {
+class BgmManagerOwnerView {
 public:
-    void func_02034574(Unk_02035780_OwnerFn fn);
-    void func_02035868();
+    void forEachRequest(Unk_02035780_OwnerFn fn);
+    void clearVolumePending();
 
     u8 pad_00[4];
     u16 unk_04;
@@ -276,15 +276,15 @@ public:
     u8 pad_15[0x1c0 - 0x15];
     s32 unk_1c0;
     u8 pad_1c4[0x2b4 - 0x1c4];
-    Unk_020356b8 unk_2b4;
+    BgmCommandQueue unk_2b4;
 };
 
-class Unk_02035ca4 {
+class BgmVolumeChannel {
 public:
-    Unk_02035ca4();
-    ~Unk_02035ca4();
-    void func_02035ca4(s32 a, s32 b, u8 c);
-    void func_02035cac();
+    BgmVolumeChannel();
+    ~BgmVolumeChannel();
+    void set(s32 a, s32 b, u8 c);
+    void clear();
 
     u8 unk_00;
     u8 unk_01;
@@ -294,48 +294,48 @@ public:
     s32 unk_0c;
 };
 
-class Unk_02035758 {
+class BgmVolumeMixer {
 public:
-    Unk_02035758(Unk_02035780_Owner *owner);
-    ~Unk_02035758();
-    void func_02035758();
-    void func_0203576c();
-    void func_02035780();
-    void func_020357f4();
-    void func_0203581c(Unk_02035ca4 *e);
-    void func_02035870(Unk_02035ca4 *e);
-    void func_020358d4(Unk_02035ca4 *e);
-    void func_02035974(Unk_02035ca4 *e);
-    void func_020359b0(Unk_02035ca4 *e);
-    void func_020359ec(Unk_02035ca4 *e);
-    void func_02035a5c(Unk_02035ca4 *e);
-    void func_02035ac4(Unk_02035ca4 *e);
-    void func_02035ac8();
-    void func_02035b94();
-    void func_02035b9c();
-    void func_02035ba4();
-    void func_02035bac();
-    void func_02035bb4();
-    void func_02035bbc(s32 i);
-    void func_02035bcc();
-    void func_02035bd4();
-    void func_02035bdc();
-    void func_02035c0c();
-    void func_02035c34();
-    void func_02035c38();
+    BgmVolumeMixer(BgmManagerOwnerView *owner);
+    ~BgmVolumeMixer();
+    void clearMasks();
+    void clearChanged();
+    void applyVolume();
+    void maskForTopRequest();
+    void updateRequestVolume(BgmVolumeChannel *e);
+    void updateSceneDuck(BgmVolumeChannel *e);
+    void updatePositionDuck(BgmVolumeChannel *e);
+    void updateAct81Duck(BgmVolumeChannel *e);
+    void updateFishDuck(BgmVolumeChannel *e);
+    void updateTalkDuck(BgmVolumeChannel *e);
+    void updateMenuDuck(BgmVolumeChannel *e);
+    void updateChannel0(BgmVolumeChannel *e);
+    void updateChannels();
+    void endAct81Duck();
+    void startAct81Duck();
+    void endFishDuck();
+    void startFishDuck();
+    void endMenuDuck();
+    void setMenuDuck(s32 i);
+    void endTalkDuck();
+    void startTalkDuck();
+    void reset();
+    void update();
+    void exit();
+    void init();
 
-    Unk_02035780_Owner *unk_00;
-    Unk_02035ca4 unk_04[8];
+    BgmManagerOwnerView *unk_00;
+    BgmVolumeChannel unk_04[8];
     s32 unk_84;
 };
 
-typedef void (Unk_02035758::*Unk_02035758_Fn)(Unk_02035ca4 *);
+typedef void (BgmVolumeMixer::*Unk_02035758_Fn)(BgmVolumeChannel *);
 
 // 0x18-byte object
-class Unk_02036a64 {
+class BgmClock {
 public:
-    Unk_02036a64();
-    ~Unk_02036a64();
+    BgmClock();
+    ~BgmClock();
     s32 unk_00;
     u16 unk_04;
     u8 unk_06;
@@ -346,31 +346,31 @@ public:
     u16 unk_12;
     s32 unk_14;
 
-    void func_02036a64();
-    BOOL func_02036a98();
-    BOOL func_02036aa8();
-    BOOL func_02036ab8(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-    BOOL func_02036b14(u32 a, u32 b, u32 c, u32 d);
-    BOOL func_02036b50(u16 *a, u16 *b);
+    void update();
+    BOOL hasYearChanged();
+    BOOL hasHourChanged();
+    BOOL isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+    BOOL isMinuteInRange(u32 a, u32 b, u32 c, u32 d);
+    BOOL isAt(u16 *a, u16 *b);
 };
 
-class Unk_020d8e44 {
+class FieldBgm {
 public:
-    Unk_020d8e04 unk_04;
-    Unk_020d8e64 unk_18;
-    Unk_020d8e24 unk_24;
-    virtual ~Unk_020d8e44();
-    Unk_020d8e44(u32 a);
-    void func_02035fe0(u32 a);
-    void func_0203600c();
-    void func_0203603c();
-    void func_0203606c();
-    void func_0203608c();
-    void func_020360ac();
-    void func_020360cc();
+    HourlyBgm unk_04;
+    FieldSpecialBgm unk_18;
+    EventBgm unk_24;
+    virtual ~FieldBgm();
+    FieldBgm(u32 a);
+    void setKeep(u32 a);
+    void end();
+    void start();
+    void stop();
+    void update();
+    void exit();
+    void init();
 };
 
-class Unk_020d8e34 {
+class RoomBgm {
 public:
     u32 unk_04;
     u8 unk_08;
@@ -380,38 +380,38 @@ public:
     u8 unk_0e;
     u8 unk_0f;
     u8 unk_10;
-    virtual ~Unk_020d8e34();
-    void func_02035da8();
-    void func_02035dd8();
-    void func_02035cd0();
-    void func_02035e0c();
-    void func_02035e2c(s32 a);
-    void func_02035ed0(u32 a);
-    void func_02035ed4();
-    void func_02035f18();
-    void func_02035f30();
-    void func_02035f38();
-    void func_02035f58();
-    void func_02035f74();
-    void func_02035f7c();
-    Unk_020d8e34(u32 a);
+    virtual ~RoomBgm();
+    void stopClosingMusic();
+    void updateSceneBgm();
+    void updateClosingMusic();
+    void stopSceneBgm();
+    void playSceneBgm(s32 a);
+    void setKeep(u32 a);
+    void end();
+    void start();
+    void forceClosingMusic();
+    void stop();
+    void update();
+    void exit();
+    void init();
+    RoomBgm(u32 a);
 };
 
-class Unk_020d8e14 {
+class BgmSceneFade {
 public:
-    Unk_020d8e14(u32 owner);
-    virtual ~Unk_020d8e14();
-    void func_02035284();
-    BOOL func_02035328();
-    BOOL func_02035338();
-    void func_02035354();
-    void func_0203535c(s32 i);
+    BgmSceneFade(u32 owner);
+    virtual ~BgmSceneFade();
+    void update();
+    BOOL hasExitSilence();
+    BOOL isKeepingBgm();
+    void setKeepBgm();
+    void setFadeDelay(s32 i);
     void func_02035368(s32 a, s32 b);
     void func_020353b0(s32 a, s32 b);
-    void func_020354d8();
-    void func_02035514();
-    void func_02035518();
-    void func_020355dc();
+    void reset();
+    void init();
+    void onFadeIn();
+    void onFadeOut();
 
     u32 unk_04;
     u8 unk_08;
@@ -422,118 +422,118 @@ public:
     s32 unk_10;
 };
 
-class Unk_020d8df4 {
+class FaintBgm {
 public:
-    virtual ~Unk_020d8df4();
-    Unk_02034ae8 *unk_04;
+    virtual ~FaintBgm();
+    BgmManagerView *unk_04;
     u16 unk_08;
     u8 unk_0a;
-    Unk_020d8df4(Unk_02034ae8 *o);
-    void func_0203517c();
-    void func_020351b0();
-    void func_020351b8();
-    void func_020351bc();
-    void func_02035200();
-    void func_02035214();
+    FaintBgm(BgmManagerView *o);
+    void stop();
+    void exit();
+    void init();
+    void fadeOut();
+    void startSilence();
+    void play();
 };
 
-class Unk_020d8e54 {
+class BgmTracks {
 public:
-    virtual ~Unk_020d8e54();
-    Unk_020d8e54();
+    virtual ~BgmTracks();
+    BgmTracks();
 };
 
 // composite object seen by the first file (data_021c1b3c)
-class Unk_02034518 {
+class BgmManager {
 public:
-    Unk_02034518();
-    ~Unk_02034518();
+    BgmManager();
+    ~BgmManager();
 
-    void func_02034518();
-    void func_02034ae8();
-    void func_02034b50();
-    void func_02034574(Unk_02034574_Fn fn);
-    void func_020345c4(s32 idx);
-    Unk_02036bf8 *func_02034608(s32 n);
-    s32 func_02034630(u16 id);
-    s32 func_02034660(s32 v);
-    s32 func_02034690();
-    s32 func_020346c4(Unk_02036ba4 *key);
-    void func_020346f8();
-    void func_02034738();
-    void func_02034784();
-    void func_0203478c();
-    void func_020347f0();
-    void func_02034850();
-    void func_02034894(u16 id);
-    void func_020348bc(s32 v);
-    void func_020348e4(Unk_02036ba4 *e);
+    void updateHourChime();
+    void exit();
+    void init();
+    void forEachRequest(Unk_02034574_Fn fn);
+    void insertAt(s32 idx);
+    BgmRequest *findKeptBefore(s32 n);
+    s32 findByBgm(u16 id);
+    s32 findByPriority(s32 v);
+    s32 findPlaying();
+    s32 findInsertPos(BgmRequestView *key);
+    void tickRequests();
+    void startTop();
+    void clearPlaying();
+    void removeMarked();
+    void updateStop();
+    void updateRequests();
+    void releaseBgm(u16 id);
+    void releasePriority(s32 v);
+    void push(BgmRequestView *e);
     s32 func_02034514();
-    void func_02034a90();
+    void update();
 
-    /* 0x000 */ Unk_02036bf8 unk_00[16];
+    /* 0x000 */ BgmRequest unk_00[16];
     /* 0x1c0 */ s32 unk_1c0;
-    /* 0x1c4 */ Unk_02035758 unk_1c4;
-    /* 0x24c */ Unk_02036a64 unk_24c;
-    /* 0x264 */ Unk_020d8e44 unk_264;
-    /* 0x2a0 */ Unk_020d8e34 unk_2a0;
-    /* 0x2b4 */ Unk_020356b8 unk_2b4;
-    /* 0x2d0 */ Unk_020d8e14 unk_2d0;
-    /* 0x2e4 */ Unk_020d8df4 unk_2e4;
-    /* 0x2f0 */ Unk_020d8e54 unk_2f0;
+    /* 0x1c4 */ BgmVolumeMixer unk_1c4;
+    /* 0x24c */ BgmClock unk_24c;
+    /* 0x264 */ FieldBgm unk_264;
+    /* 0x2a0 */ RoomBgm unk_2a0;
+    /* 0x2b4 */ BgmCommandQueue unk_2b4;
+    /* 0x2d0 */ BgmSceneFade unk_2d0;
+    /* 0x2e4 */ FaintBgm unk_2e4;
+    /* 0x2f0 */ BgmTracks unk_2f0;
     /* 0x2f4 */ u8 unk_2f4;
     /* 0x2f5 */ u8 pad_2f5[3];
 };
 
 // Vtable at 0x020d8e74.
-class Unk_020d8e74 : public GameProc {
+class BgmProc : public GameProc {
 public:
-    Unk_020d8e74();
+    BgmProc();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
-    virtual ~Unk_020d8e74();
-    static Unk_020d8e74 *func_020344f8();
+    virtual ~BgmProc();
+    static BgmProc *create();
 
-    /* 0x50 */ Unk_02034518 unk_50;
+    /* 0x50 */ BgmManager unk_50;
 };
 
 // composite object seen by the second file
-class Unk_02034ae8 {
+class BgmManagerView {
 public:
-    Unk_02036bf8 unk_000[16];
+    BgmRequest unk_000[16];
     s32 unk_1c0;
-    Unk_02035758 unk_1c4;
-    Unk_02036a64 unk_24c;
-    Unk_020d8e44 unk_264;
-    Unk_020d8e34 unk_2a0;
-    Unk_020356b8 unk_2b4;
-    Unk_020d8e14 unk_2d0;
-    Unk_020d8df4 unk_2e4;
-    Unk_020d8e54 unk_2f0;
+    BgmVolumeMixer unk_1c4;
+    BgmClock unk_24c;
+    FieldBgm unk_264;
+    RoomBgm unk_2a0;
+    BgmCommandQueue unk_2b4;
+    BgmSceneFade unk_2d0;
+    FaintBgm unk_2e4;
+    BgmTracks unk_2f0;
     u8 unk_2f4;
-    Unk_02034ae8();
-    ~Unk_02034ae8();
-    void func_02034ae8();
-    void func_02034b50();
+    BgmManagerView();
+    ~BgmManagerView();
+    void exit();
+    void init();
 };
 
 // plain functions that take the sub-object as `this`
 namespace Ns_this {
 extern "C" {
-void func_02036b88(void *);
-void func_02036b84(void *);
-void func_02036b7c(void *);
-void func_02036b68(void *);
-void func_0203550c(void *);
-void func_02035504(void *);
-void func_020351ac(void *);
-void func_02034f4c(void *);
+void BgmClock_Init(void *);
+void BgmClock_Exit(void *);
+void BgmClock_Update(void *);
+void BgmClock_Reset(void *);
+void BgmSceneFade_Reset(void *);
+void BgmSceneFade_Update(void *);
+void FaintBgm_Update(void *);
+void BgmTracks_Update(void *);
 }
 }
 
 struct Unk_020d8dbc_Rec {
-    Unk_020d8e74 *(*fn)();
+    BgmProc *(*fn)();
     s16 a;
     s16 b;
 };
@@ -542,25 +542,25 @@ struct Unk_02034250_Id {
     u16 v;
 };
 
-class Unk_02036bf8;
+class BgmRequest;
 
 struct Unk_02034320_Pkt {
     u16 a;
     u16 b;
 };
 
-class Unk_02034ae8;
+class BgmManagerView;
 
 extern "C" {
 struct Unk_020353b0_Rec { s32 unk_00; u16 unk_04; };
 }
 
-class Unk_02035780_Owner;
+class BgmManagerOwnerView;
 
-class Unk_02035cd0 {
+class RoomBgmClosingView {
 public:
-    void func_02035cd0();
-    void func_02035da8();
+    void updateClosingMusic();
+    void stopClosingMusic();
 
     u8 pad_00[0xc];
     u8 unk_0c;
@@ -568,11 +568,11 @@ public:
     u8 unk_0e;
 };
 
-class Unk_02035dd8 {
+class RoomBgmSceneView {
 public:
-    void func_02035dd8();
-    void func_02035e0c();
-    void func_02035e2c(s32 t);
+    void updateSceneBgm();
+    void stopSceneBgm();
+    void playSceneBgm(s32 t);
 
     u8 pad_00[8];
     u8 unk_08;
@@ -692,11 +692,11 @@ BOOL func_020b5184();
 BOOL func_020b0f0c();
 void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
-extern Unk_02034518 *data_021c1b3c;
-s32 _ZN12Unk_0203451813func_02034690Ev(Unk_02034ae8 *o);
-void _ZN12Unk_0203451813func_02034894Et(Unk_02034ae8 *o, s32 a, s32 b);
-void _ZN12Unk_0203451813func_020348bcEi(Unk_02034ae8 *o, s32 a);
-void _ZN12Unk_0203451813func_020348e4EP12Unk_02036ba4(Unk_02034ae8 *o, Unk_02036bf8 *e);
+extern BgmManager *data_021c1b3c;
+s32 _ZN10BgmManager11findPlayingEv(BgmManagerView *o);
+void _ZN10BgmManager10releaseBgmEt(BgmManagerView *o, s32 a, s32 b);
+void _ZN10BgmManager15releasePriorityEi(BgmManagerView *o, s32 a);
+void _ZN10BgmManager4pushEP14BgmRequestView(BgmManagerView *o, BgmRequest *e);
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
 s32 func_020b50dc(void);
@@ -711,8 +711,8 @@ s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 extern Unk_020355dc_Data *gActorDefaultParent;
 s32 func_02094fec(void);
-s32 _ZN12Unk_020d8e3413func_02035ed0Ej(void *p, s32 a);
-s32 _ZN12Unk_020d8e4413func_02035fe0Ej(void *p, s32 a);
+s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
+s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
 void Snd_RestoreSubPlayers(void);
 void Snd_MoveBgmVolume(s32 a, s32 b);
@@ -722,17 +722,17 @@ Unk_020358d4_Src *func_020947f0(u32 n);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_020358d4_Buf *p, Unk_020358d4_Src *pos, s32 a, s32 b);
 void func_02033988(Unk_020358d4_Buf *p);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 id);
-s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN12Unk_020d8e1413func_02035284Ev(void *p);
-s32 _ZN12Unk_020d8e1413func_02035328Ev(s32 a);
-s32 _ZN12Unk_02036a6413func_02036a98Ev(s32 a);
+s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void _ZN12BgmSceneFade6updateEv(void *p);
+s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
+s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
 s32 func_02040c7c(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
 s32 _ZN10PlayerData13func_0209865cEv(s32 a);
-s32 func_02099c1c(s32 a);
+s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
 s32 Clock_GetYear(void);
@@ -776,76 +776,76 @@ extern Unk_021e5890_T data_021e5890;
 
 // Declarations for data defined further down
 // Data order: this unit is placed object by object (see object_order.txt).
-extern const u16 data_020c8b28[0x3a];
-extern u16 data_020d8d8c[2];
-extern u16 data_020d8d90[2];
-extern u16 data_020d8d88[2];
-extern Unk_020d8dbc_Rec data_020d8dbc;
-extern const u8 data_020c8ae4[8];
-extern const s32 data_020c8aec[3];
-extern const u16 data_020c8af8[0x18];
+extern const u16 sSceneBgmTable[0x3a];
+extern u16 sNewYearEveDate[2];
+extern u16 sNewYearEveTime[2];
+extern u16 sNewYearDayDate[2];
+extern Unk_020d8dbc_Rec sBgmProcProfile;
+extern const u8 sBgmSceneFadeDelays[8];
+extern const s32 sBgmMenuDuckStates[3];
+extern const u16 sHourlyBgmIds[0x18];
 
 // own functions
 extern "C" {
-Unk_02036bf8 *func_02034910();
-void func_02034938();
-void func_0203498c();
-void func_020349e0();
-void func_02034d04(void);
-void func_02034d18(void);
-u16 func_02034d2c(void);
-void func_02034d5c(s32 a);
-void func_02034d70(s32 a);
-void func_02034d84(s32 a);
-void func_02034d98(s32 a, s32 b);
-void func_02034dd0(s32 a, s32 b, s32 c);
-void func_02034e10(s32 a, s32 b, s32 c, u8 d);
-void func_02034e48(s32 x);
-void func_02034e9c(void);
-void func_02034f4c(s32 a);
-void func_02034f6c(s32 a, s32 b);
-void func_02034f80(void);
-void func_02034f98(void);
-void func_02034fb0(void);
-void func_0203507c(void);
-void func_020351ac(void);
-Unk_020d8e14 *func_02035234(void);
-void *func_020355a0(void);
-void *func_020355b4(void);
-void *func_020355c8(void);
-void *func_02035d94(void);
-void func_02035504(void *p);
-void func_0203550c(Unk_020d8e14 *p);
-s32 func_02035e60(void);
-s32 func_02035ea0(s32 a);
-void func_02036b68(Unk_02036a64 *p);
-void func_02036b7c(Unk_02036a64 *p);
-void func_02036b84(void);
-void func_02036b88(Unk_02036a64 *p);
+BgmRequest *Bgm_GetPlayingRequest();
+void Bgm_EndSceneBgm();
+void Bgm_StartSceneBgm();
+void Bgm_ResetAll();
+void Bgm_DisableHourChime(void);
+void Bgm_EnableHourChime(void);
+u16 Bgm_GetCurrent(void);
+void Bgm_ReleaseTransient(s32 a);
+void Bgm_ReleasePriority(s32 a);
+void Bgm_Release(s32 a);
+void Bgm_RequestTransient(s32 a, s32 b);
+void Bgm_RequestSilence(s32 a, s32 b, s32 c);
+void Bgm_Request(s32 a, s32 b, s32 c, u8 d);
+void BgmTracks_UpdateWeatherVariant(s32 x);
+void BgmTracks_ApplySceneMask(void);
+void BgmTracks_Update(s32 a);
+void BgmTracks_OnBgmStart(s32 a, s32 b);
+void BgmTracks_FadeInScene22(void);
+void BgmTracks_FadeOutScene22(void);
+void BgmTracks_FadeInForScene(void);
+void BgmTracks_FadeOutForScene(void);
+void FaintBgm_Update(void);
+BgmSceneFade *Bgm_GetSceneFade(void);
+void *Bgm_GetRoomBgm(void);
+void *Bgm_GetFieldBgm(void);
+void *Bgm_GetTracks(void);
+void *Bgm_GetClock(void);
+void BgmSceneFade_Update(void *p);
+void BgmSceneFade_Reset(BgmSceneFade *p);
+s32 Bgm_IsSameSceneBgm(void);
+s32 Bgm_GetSceneBgmId(s32 a);
+void BgmClock_Reset(BgmClock *p);
+void BgmClock_Update(BgmClock *p);
+void BgmClock_Exit(void);
+void BgmClock_Init(BgmClock *p);
 void func_02036b9c(void);
 void func_02036ba0(void);
 }
 
 namespace Ns_02034ae8 {
 extern "C" {
-extern Unk_02034ae8 *data_021c1b3c;
+extern BgmManagerView *data_021c1b3c;
 s32 func_020b50e8(void);
 s32 func_020b5184(void);
-void func_02034e10(s32 a, s32 b, s32 c, s32 d);
-Unk_020353b0_Rec *func_02034910(void);
+void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
+Unk_020353b0_Rec *Bgm_GetPlayingRequest(void);
 }
 }
 
 namespace Ns_020354d8 {
 extern "C" {
 extern u8 *data_021c1b3c;
-s32 func_02034d70(s32 a);
-s32 func_02034d84(s32 a);
-s32 func_02034dd0(s32 a, s32 b, s32 c);
-s32 func_02034e10(s32 a, s32 b, s32 c, s32 d);
-s32 func_02034fb0(void *p);
-s32 func_0203507c(void *p);
-s32 func_02034f6c(void *p, u32 a);
+s32 Bgm_ReleasePriority(s32 a);
+s32 Bgm_Release(s32 a);
+s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
+s32 Bgm_Request(s32 a, s32 b, s32 c, s32 d);
+s32 BgmTracks_FadeInForScene(void *p);
+s32 BgmTracks_FadeOutForScene(void *p);
+s32 BgmTracks_OnBgmStart(void *p, u32 a);
 s32 func_020b50e8(void);
 void *PlayerData_GetCurrent(void);
 }
@@ -853,17 +853,17 @@ void *PlayerData_GetCurrent(void);
 
 namespace Ns_02035e2c {
 extern "C" {
-void func_02034e10(u32 a, u32 b, u32 c, u32 d);
-void func_02034d70(u32 a);
-void func_02034dd0(u32 a, u32 b, u32 c);
-void func_02034d84(u32 a);
-void func_02034d5c(u32 a);
-void func_02034d98(u32 a);
+void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
+void Bgm_ReleasePriority(u32 a);
+void Bgm_RequestSilence(u32 a, u32 b, u32 c);
+void Bgm_Release(u32 a);
+void Bgm_ReleaseTransient(u32 a);
+void Bgm_RequestTransient(u32 a);
 s32 func_020b50e8(void);
-s32 func_02035234(void);
+s32 Bgm_GetSceneFade(void);
 s32 func_020b5184(void);
-s32 func_02035d94(void);
-s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 Bgm_GetClock(void);
+s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 extern u32 gCommManager;
 s32 _ZN11CommManager8isOnlineEv(u32 a);
 s32 PlayerData_GetCurrent(void);
@@ -874,11 +874,11 @@ s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
 
 namespace Ns_020367e8 {
 extern "C" {
-void func_02034d70(u32);
-void func_02034dd0(u32, u32, u32);
-void func_02034e10(u32, u32, u32, u32);
-void func_02034d84(u32 a);
-Unk_02036a64 *func_02035d94(void);
+void Bgm_ReleasePriority(u32);
+void Bgm_RequestSilence(u32, u32, u32);
+void Bgm_Request(u32, u32, u32, u32);
+void Bgm_Release(u32 a);
+BgmClock *Bgm_GetClock(void);
 }
 }
 
@@ -890,15 +890,15 @@ static inline BOOL Unk_02034938_IsB() { return data_020e416c == 1; }
 
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
-Unk_02036bf8 *Unk_02036bf8::func_02036c48()
+BgmRequest *BgmRequest::initEmpty()
 {
-    func_02036bf8();
+    clear();
     return this;
 }
 
-Unk_02036bf8 *Unk_02036bf8::func_02036c1c(s32 a, u32 b, s32 c, s32 d, u8 e)
+BgmRequest *BgmRequest::init(s32 a, u32 b, s32 c, s32 d, u8 e)
 {
-    func_02036bf8();
+    clear();
     unk_00 = a;
     unk_04 = b;
     unk_0c = c;
@@ -907,11 +907,11 @@ Unk_02036bf8 *Unk_02036bf8::func_02036c1c(s32 a, u32 b, s32 c, s32 d, u8 e)
     return this;
 }
 
-void Unk_02036bf8::func_02036c18()
+void BgmRequest::func_02036c18()
 {
 }
 
-void Unk_02036bf8::func_02036bf8()
+void BgmRequest::clear()
 {
     unk_00 = 0x25;
     unk_04 = 0xffff;
@@ -925,9 +925,9 @@ void Unk_02036bf8::func_02036bf8()
     unk_18 = 0;
 }
 
-void Unk_02036bf8::func_02036bbc(Unk_02036bf8 *src)
+void BgmRequest::copyFrom(BgmRequest *src)
 {
-    func_02036bf8();
+    clear();
     unk_00 = src->unk_00;
     unk_04 = src->unk_04;
     unk_08 = src->unk_08;
@@ -940,7 +940,7 @@ void Unk_02036bf8::func_02036bbc(Unk_02036bf8 *src)
     unk_18 = src->unk_18;
 }
 
-BOOL Unk_02036bf8::func_02036ba4()
+BOOL BgmRequest::tickLifetime()
 {
     BOOL r = FALSE;
     if (unk_18 > 0) {
@@ -960,28 +960,28 @@ extern "C" void func_02036b9c(void)
 {
 }
 
-extern "C" void func_02036b88(Unk_02036a64 *p)
+extern "C" void BgmClock_Init(BgmClock *p)
 {
-    p->func_02036a64();
-    p->func_02036a64();
+    p->update();
+    p->update();
 }
 
-extern "C" void func_02036b84(void)
+extern "C" void BgmClock_Exit(void)
 {
 }
 
-extern "C" void func_02036b7c(Unk_02036a64 *p)
+extern "C" void BgmClock_Update(BgmClock *p)
 {
-    p->func_02036a64();
+    p->update();
 }
 
-extern "C" void func_02036b68(Unk_02036a64 *p)
+extern "C" void BgmClock_Reset(BgmClock *p)
 {
-    p->func_02036a64();
-    p->func_02036a64();
+    p->update();
+    p->update();
 }
 
-BOOL Unk_02036a64::func_02036b50(u16 *a, u16 *b)
+BOOL BgmClock::isAt(u16 *a, u16 *b)
 {
     if (unk_04 == *a && *(u16 *)&unk_06 == *b) {
         return TRUE;
@@ -989,7 +989,7 @@ BOOL Unk_02036a64::func_02036b50(u16 *a, u16 *b)
     return FALSE;
 }
 
-BOOL Unk_02036a64::func_02036b14(u32 a, u32 b, u32 c, u32 d)
+BOOL BgmClock::isMinuteInRange(u32 a, u32 b, u32 c, u32 d)
 {
     u32 t = unk_08 + unk_06 * 0x3c;
     u32 lo = b + a * 0x3c;
@@ -1003,7 +1003,7 @@ BOOL Unk_02036a64::func_02036b14(u32 a, u32 b, u32 c, u32 d)
     return r;
 }
 
-BOOL Unk_02036a64::func_02036ab8(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
+BOOL BgmClock::isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
 {
     u32 t = unk_08 + (unk_07 * 0xe10 + unk_06 * 0x3c);
     u32 lo = c + (a * 0xe10 + b * 0x3c);
@@ -1017,7 +1017,7 @@ BOOL Unk_02036a64::func_02036ab8(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
     return r;
 }
 
-BOOL Unk_02036a64::func_02036aa8()
+BOOL BgmClock::hasHourChanged()
 {
     if (*((u8 *)this + 0x13) != unk_07) {
         return TRUE;
@@ -1025,7 +1025,7 @@ BOOL Unk_02036a64::func_02036aa8()
     return FALSE;
 }
 
-BOOL Unk_02036a64::func_02036a98()
+BOOL BgmClock::hasYearChanged()
 {
     if (unk_0c != unk_00) {
         return TRUE;
@@ -1033,8 +1033,8 @@ BOOL Unk_02036a64::func_02036a98()
     return FALSE;
 }
 
-// ---- Unk_02036a64 methods ----
-void Unk_02036a64::func_02036a64()
+// ---- BgmClock methods ----
+void BgmClock::update()
 {
     unk_0c = unk_00;
     unk_10 = unk_04;
@@ -1046,15 +1046,15 @@ void Unk_02036a64::func_02036a64()
     unk_08 = Clock_GetSecond();
 }
 
-Unk_020d8e04::Unk_020d8e04(u32 v) : unk_04(v), unk_08(0x18), unk_0c(0xffff), unk_0e(0), unk_0f(0), unk_10(0)
+HourlyBgm::HourlyBgm(u32 v) : unk_04(v), unk_08(0x18), unk_0c(0xffff), unk_0e(0), unk_0f(0), unk_10(0)
 {
 }
 
-Unk_020d8e04::~Unk_020d8e04()
+HourlyBgm::~HourlyBgm()
 {
 }
 
-void Unk_020d8e04::func_02036a08()
+void HourlyBgm::init()
 {
     unk_0c = 0xffff;
     unk_08 = 0x18;
@@ -1063,176 +1063,176 @@ void Unk_020d8e04::func_02036a08()
     unk_10 = 0;
 }
 
-void Unk_020d8e04::func_02036a00()
+void HourlyBgm::exit()
 {
-    func_020369c4();
+    stop();
 }
 
-void Unk_020d8e04::func_020369e4()
+void HourlyBgm::update()
 {
     if (unk_10 != 0) {
-        func_02036914();
-        func_02036858();
+        updateHour();
+        updateHourFade();
     }
 }
 
-void Unk_020d8e04::func_020369c4()
+void HourlyBgm::stop()
 {
-    func_0203693c();
+    stopHourBgm();
     unk_08 = 0x18;
-    func_020368dc();
+    stopHourFade();
     unk_0f = 0;
     unk_10 = 0;
 }
 
-void Unk_020d8e04::func_020369ac()
+void HourlyBgm::start()
 {
     unk_10 = 1;
-    func_02036914();
-    func_02036858();
+    updateHour();
+    updateHourFade();
 }
 
-void Unk_020d8e04::func_02036988()
+void HourlyBgm::end()
 {
     if (unk_0f == 0) {
-        func_0203693c();
+        stopHourBgm();
         unk_08 = 0x18;
-        func_020368dc();
+        stopHourFade();
     }
     unk_10 = 0;
 }
 
-void Unk_020d8e04::func_02036984(u32 v)
+void HourlyBgm::setKeep(u32 v)
 {
     unk_0f = v;
 }
 
-void Unk_020d8e04::func_0203695c()
+void HourlyBgm::playHourBgm()
 {
-    u16 t = data_020c8af8[unk_08];
-    Ns_020367e8::func_02034e10(0x24, t, 0x7f, 0);
+    u16 t = sHourlyBgmIds[unk_08];
+    Ns_020367e8::Bgm_Request(0x24, t, 0x7f, 0);
     unk_0c = t;
 }
 
-void Unk_020d8e04::func_0203693c()
+void HourlyBgm::stopHourBgm()
 {
     u16 t = unk_0c;
     if (t != 0xffff) {
-        Ns_020367e8::func_02034d84(t);
+        Ns_020367e8::Bgm_Release(t);
         unk_0c = 0xffff;
     }
 }
 
-void Unk_020d8e04::func_02036914()
+void HourlyBgm::updateHour()
 {
-    u32 v = Ns_020367e8::func_02035d94()->unk_07;
+    u32 v = Ns_020367e8::Bgm_GetClock()->unk_07;
     if (v != unk_08) {
-        func_0203693c();
+        stopHourBgm();
         unk_08 = v;
-        func_0203695c();
+        playHourBgm();
     }
 }
 
-void Unk_020d8e04::func_020368f8(u32 x)
+void HourlyBgm::startHourFade(u32 x)
 {
     if (unk_0e == 0) {
-        Ns_020367e8::func_02034dd0(0x1b, x, 0);
+        Ns_020367e8::Bgm_RequestSilence(0x1b, x, 0);
         unk_0e = 1;
     }
 }
 
-void Unk_020d8e04::func_020368dc()
+void HourlyBgm::stopHourFade()
 {
     if (unk_0e != 0) {
-        Ns_020367e8::func_02034d70(0x1b);
+        Ns_020367e8::Bgm_ReleasePriority(0x1b);
         unk_0e = 0;
     }
 }
 
-void Unk_020d8e04::func_02036858()
+void HourlyBgm::updateHourFade()
 {
-    Unk_02036a64 *p = Ns_020367e8::func_02035d94();
-    BOOL r = p->func_02036b14(0x3b, 0x32, 0, 0x10);
+    BgmClock *p = Ns_020367e8::Bgm_GetClock();
+    BOOL r = p->isMinuteInRange(0x3b, 0x32, 0, 0x10);
     u16 a[4];
-    a[0] = data_020d8d8c[0];
-    a[1] = data_020d8d88[0];
-    a[2] = data_020d8d90[0];
+    a[0] = sNewYearEveDate[0];
+    a[1] = sNewYearDayDate[0];
+    a[2] = sNewYearEveTime[0];
     func_02133ef8(&a[3], 2);
-    if (p->func_02036b50(&a[0], &a[2]) || p->func_02036b50(&a[1], &a[3])) {
+    if (p->isAt(&a[0], &a[2]) || p->isAt(&a[1], &a[3])) {
         r = FALSE;
     }
     if (r) {
-        func_020368f8(200);
+        startHourFade(200);
     } else {
-        func_020368dc();
+        stopHourFade();
     }
 }
 
-Unk_020d8e64::Unk_020d8e64(u32 v) : unk_04(v), unk_08(0xffff), unk_0a(0), unk_0b(0)
+FieldSpecialBgm::FieldSpecialBgm(u32 v) : unk_04(v), unk_08(0xffff), unk_0a(0), unk_0b(0)
 {
 }
 
-Unk_020d8e64::~Unk_020d8e64()
+FieldSpecialBgm::~FieldSpecialBgm()
 {
 }
 
-void Unk_020d8e64::func_02036808()
+void FieldSpecialBgm::init()
 {
     unk_08 = 0xffff;
     unk_0a = 0;
     unk_0b = 0;
 }
 
-void Unk_020d8e64::func_02036800()
+void FieldSpecialBgm::exit()
 {
-    func_020367e8();
+    stop();
 }
 
-void Unk_020d8e64::func_020367fc()
+void FieldSpecialBgm::update()
 {
 }
 
-void Unk_020d8e64::func_020367e8()
+void FieldSpecialBgm::stop()
 {
-    func_020366e0();
+    stopBgm();
     unk_0a = 0;
     unk_0b = 0;
 }
 
-void Unk_020d8e64::func_02036738() {
+void FieldSpecialBgm::start() {
     unk_0b = 1;
     if (unk_08 == 0xffff) {
         s32 r5 = Ns_02035e2c::PlayerData_GetCurrent();
         if (Ns_02035e2c::func_020b0f0c() != 0) {
-            Ns_02035e2c::func_02034dd0(3, 0, 5);
-            func_02036700(4, 0x45, 1);
+            Ns_02035e2c::Bgm_RequestSilence(3, 0, 5);
+            play(4, 0x45, 1);
         } else if (func_020b0f30() != 0) {
-            func_02036700(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0 && func_02099c1c(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
-            func_02036700(0x1c, 0x46, 0);
+            play(0xd, 0x4a, 0);
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
+            play(0x1c, 0x46, 0);
         } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0) {
-            func_02036700(0x1d, 0x48, 0);
+            play(0x1d, 0x48, 0);
         }
     }
 }
 
-void Unk_020d8e64::func_02036720() {
-    if (unk_0a == 0) func_020366e0();
+void FieldSpecialBgm::end() {
+    if (unk_0a == 0) stopBgm();
     unk_0b = 0;
 }
 
-void Unk_020d8e64::func_0203671c(u32 a) { unk_0a = a; }
+void FieldSpecialBgm::setKeep(u32 a) { unk_0a = a; }
 
-void Unk_020d8e64::func_02036700(s32 a, u32 b, u32 c) {
-    Ns_02035e2c::func_02034e10(a, b, 0x7f, c);
+void FieldSpecialBgm::play(s32 a, u32 b, u32 c) {
+    Ns_02035e2c::Bgm_Request(a, b, 0x7f, c);
     unk_08 = b;
 }
 
-void Unk_020d8e64::func_020366e0() {
-    if (unk_08 != 0xffff) { Ns_02035e2c::func_02034d84(unk_08); unk_08 = 0xffff; }
+void FieldSpecialBgm::stopBgm() {
+    if (unk_08 != 0xffff) { Ns_02035e2c::Bgm_Release(unk_08); unk_08 = 0xffff; }
 }
 
-Unk_020d8e24::Unk_020d8e24(u32 a) {
+EventBgm::EventBgm(u32 a) {
     unk_04 = a;
     unk_08 = 0xffff;
     unk_0a = 0xffff;
@@ -1245,9 +1245,9 @@ Unk_020d8e24::Unk_020d8e24(u32 a) {
     unk_15 = 0;
 }
 
-Unk_020d8e24::~Unk_020d8e24() {}
+EventBgm::~EventBgm() {}
 
-void Unk_020d8e24::func_02036678() {
+void EventBgm::init() {
     unk_08 = 0xffff;
     unk_0a = 0xffff;
     unk_0c = 0xffff;
@@ -1259,47 +1259,47 @@ void Unk_020d8e24::func_02036678() {
     unk_15 = 0;
 }
 
-void Unk_020d8e24::func_02036670() { func_02036620(); }
+void EventBgm::exit() { stop(); }
 
-void Unk_020d8e24::func_02036654() {
+void EventBgm::update() {
     if (unk_15 != 0) {
-        func_0203617c();
-        func_02036528();
+        updateYearChanged();
+        updateEvents();
     }
 }
 
-void Unk_020d8e24::func_02036620() {
-    func_02036260();
-    func_02036240();
-    func_02036220();
-    func_02036200();
-    func_020361e0();
-    func_020361a8();
+void EventBgm::stop() {
+    stopNewYearFanfare();
+    stopNewYearNight();
+    stopNewYearDay();
+    stopCountdown();
+    stopFireworks();
+    stopCountdownFade();
     unk_13 = 0;
     unk_14 = 0;
     unk_15 = 0;
 }
 
-void Unk_020d8e24::func_02036614() {
+void EventBgm::start() {
     unk_15 = 1;
-    func_02036528();
+    updateEvents();
 }
 
-void Unk_020d8e24::func_020365dc() {
+void EventBgm::end() {
     if (unk_14 == 0) {
-        func_02036260();
-        func_02036240();
-        func_02036220();
-        func_02036200();
-        func_020361e0();
-        func_020361a8();
+        stopNewYearFanfare();
+        stopNewYearNight();
+        stopNewYearDay();
+        stopCountdown();
+        stopFireworks();
+        stopCountdownFade();
     }
     unk_15 = 0;
 }
 
-void Unk_020d8e24::func_020365d8(u32 a) { unk_14 = a; }
+void EventBgm::setKeep(u32 a) { unk_14 = a; }
 
-void Unk_020d8e24::func_02036528() {
+void EventBgm::updateEvents() {
     s32 r5 = func_02040c7c();
     u32 t[2];
     u32 b0[2], b1[2], b2[2];
@@ -1322,197 +1322,197 @@ void Unk_020d8e24::func_02036528() {
     } else {
         r5 = 0;
     }
-    func_02036470(r6);
-    func_02036330(r7);
+    updateNewYearDay(r6);
+    updateCountdown(r7);
     BOOL v;
     if (r5 != 0) v = TRUE; else v = FALSE;
-    func_02036308(v);
+    updateFireworks(v);
 }
 
-void Unk_020d8e24::func_02036470(BOOL a) {
+void EventBgm::updateNewYearDay(BOOL a) {
     if (a != 0) {
-        s32 o = Ns_02035e2c::func_02035d94();
-        s32 r0 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0, 0, 0, 2, 0, 0);
-        s32 r1 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 2, 0, 0, 0, 0, 0);
+        s32 o = Ns_02035e2c::Bgm_GetClock();
+        s32 r0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0, 0, 0, 2, 0, 0);
+        s32 r1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 2, 0, 0, 0, 0, 0);
         if (r0 != 0) {
             if (unk_13 != 0) {
                 if (unk_08 != 0x35) {
-                    func_02036260();
-                    func_020362f0(0x35);
+                    stopNewYearFanfare();
+                    playNewYearFanfare(0x35);
                 }
                 unk_13 = 0;
             }
             if (unk_0a != 0x36) {
-                func_02036240();
-                func_020362d4(0x36);
+                stopNewYearNight();
+                playNewYearNight(0x36);
             }
         } else {
-            func_02036260();
-            func_02036240();
+            stopNewYearFanfare();
+            stopNewYearNight();
         }
         if (r1 != 0) {
             if (unk_0c != 0x37) {
-                func_02036220();
-                func_020362b8(0x37);
+                stopNewYearDay();
+                playNewYearDay(0x37);
             }
         } else {
-            func_02036220();
+            stopNewYearDay();
         }
     } else {
-        func_02036260();
-        func_02036240();
-        func_02036220_call();
+        stopNewYearFanfare();
+        stopNewYearNight();
+        stopNewYearDayAlias();
     }
 }
 
-void Unk_020d8e24::func_02036330(BOOL a) {
+void EventBgm::updateCountdown(BOOL a) {
     if (a != 0) {
-        s32 o = Ns_02035e2c::func_02035d94();
+        s32 o = Ns_02035e2c::Bgm_GetClock();
         u32 c = 0xffff;
-        s32 r0 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0, 0, 0x17, 0x1e, 0);
-        s32 r1 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x1e, 0, 0x17, 0x32, 0);
-        s32 r2 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x32, 0, 0x17, 0x37, 0);
-        s32 r3 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x37, 0, 0, 0, 0);
+        s32 r0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0, 0, 0x17, 0x1e, 0);
+        s32 r1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x1e, 0, 0x17, 0x32, 0);
+        s32 r2 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x32, 0, 0x17, 0x37, 0);
+        s32 r3 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x37, 0, 0, 0, 0);
         if (r0 != 0) c = 0x31;
         else if (r1 != 0) c = 0x32;
         else if (r2 != 0) c = 0x33;
         else if (r3 != 0) c = 0x34;
         if (c != 0xffff) {
             if (unk_0e != c) {
-                func_02036200();
-                func_0203629c(c);
+                stopCountdown();
+                playCountdown(c);
             }
         } else {
-            func_02036200();
+            stopCountdown();
         }
-        s32 q0 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x1d, 0x32, 0x17, 0x1e, 0);
-        s32 q1 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x31, 0x32, 0x17, 0x32, 0);
-        s32 q2 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x36, 0x32, 0x17, 0x37, 0);
-        s32 q3 = Ns_02035e2c::_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(o, 0x17, 0x3a, 0x32, 0, 0, 0);
+        s32 q0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x1d, 0x32, 0x17, 0x1e, 0);
+        s32 q1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x31, 0x32, 0x17, 0x32, 0);
+        s32 q2 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x36, 0x32, 0x17, 0x37, 0);
+        s32 q3 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0x17, 0x3a, 0x32, 0, 0, 0);
         if (q0 != 0 || q1 != 0 || q2 != 0 || q3 != 0) {
-            func_020361c4(200);
+            startCountdownFade(200);
         } else {
-            func_020361a8();
+            stopCountdownFade();
         }
     } else {
-        func_02036200();
-        func_020361a8();
+        stopCountdown();
+        stopCountdownFade();
     }
 }
 
-s32 Unk_020d8e24::func_02036308(BOOL a) {
+s32 EventBgm::updateFireworks(BOOL a) {
     if (a != 0) {
         if (unk_10 != 0x30) {
-            func_020361e0();
-            func_02036280(0x30);
+            stopFireworks();
+            playFireworks(0x30);
         }
     } else {
-        func_020361e0();
+        stopFireworks();
     }
 }
 
-void Unk_020d8e24::func_020362f0(u32 a) { Ns_02035e2c::func_02034d98(0x1f); unk_08 = a; }
+void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f); unk_08 = a; }
 
-void Unk_020d8e24::func_020362d4(u32 a) { Ns_02035e2c::func_02034e10(0x20, a, 0x7f, 0); unk_0a = a; }
+void EventBgm::playNewYearNight(u32 a) { Ns_02035e2c::Bgm_Request(0x20, a, 0x7f, 0); unk_0a = a; }
 
-void Unk_020d8e24::func_020362b8(u32 a) { Ns_02035e2c::func_02034e10(0x21, a, 0x7f, 0); unk_0c = a; }
+void EventBgm::playNewYearDay(u32 a) { Ns_02035e2c::Bgm_Request(0x21, a, 0x7f, 0); unk_0c = a; }
 
-void Unk_020d8e24::func_0203629c(u32 a) { Ns_02035e2c::func_02034e10(0x22, a, 0x7f, 0); unk_0e = a; }
+void EventBgm::playCountdown(u32 a) { Ns_02035e2c::Bgm_Request(0x22, a, 0x7f, 0); unk_0e = a; }
 
-void Unk_020d8e24::func_02036280(u32 a) { Ns_02035e2c::func_02034e10(0x23, a, 0x7f, 0); unk_10 = a; }
+void EventBgm::playFireworks(u32 a) { Ns_02035e2c::Bgm_Request(0x23, a, 0x7f, 0); unk_10 = a; }
 
-void Unk_020d8e24::func_02036260() {
-    if (unk_08 != 0xffff) { Ns_02035e2c::func_02034d5c(unk_08); unk_08 = 0xffff; }
+void EventBgm::stopNewYearFanfare() {
+    if (unk_08 != 0xffff) { Ns_02035e2c::Bgm_ReleaseTransient(unk_08); unk_08 = 0xffff; }
 }
 
-void Unk_020d8e24::func_02036240() {
-    if (unk_0a != 0xffff) { Ns_02035e2c::func_02034d84(unk_0a); unk_0a = 0xffff; }
+void EventBgm::stopNewYearNight() {
+    if (unk_0a != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0a); unk_0a = 0xffff; }
 }
 
-void Unk_020d8e24::func_02036220() {
-    if (unk_0c != 0xffff) { Ns_02035e2c::func_02034d84(unk_0c); unk_0c = 0xffff; }
+void EventBgm::stopNewYearDay() {
+    if (unk_0c != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0c); unk_0c = 0xffff; }
 }
 
-void Unk_020d8e24::func_02036200() {
-    if (unk_0e != 0xffff) { Ns_02035e2c::func_02034d84(unk_0e); unk_0e = 0xffff; }
+void EventBgm::stopCountdown() {
+    if (unk_0e != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0e); unk_0e = 0xffff; }
 }
 
-void Unk_020d8e24::func_020361e0() {
-    if (unk_10 != 0xffff) { Ns_02035e2c::func_02034d84(unk_10); unk_10 = 0xffff; }
+void EventBgm::stopFireworks() {
+    if (unk_10 != 0xffff) { Ns_02035e2c::Bgm_Release(unk_10); unk_10 = 0xffff; }
 }
 
-void Unk_020d8e24::func_020361c4(u32 a) {
+void EventBgm::startCountdownFade(u32 a) {
     if (unk_12 == 0) {
-        Ns_02035e2c::func_02034dd0(0x1e, a, 0);
+        Ns_02035e2c::Bgm_RequestSilence(0x1e, a, 0);
         unk_12 = 1;
     }
 }
 
-void Unk_020d8e24::func_020361a8() {
+void EventBgm::stopCountdownFade() {
     if (unk_12 != 0) {
-        Ns_02035e2c::func_02034d70(0x1e);
+        Ns_02035e2c::Bgm_ReleasePriority(0x1e);
         unk_12 = 0;
     }
 }
 
-void Unk_020d8e24::func_0203617c() {
+void EventBgm::updateYearChanged() {
     u8 *p = &unk_13;
-    s32 r = _ZN12Unk_02036a6413func_02036a98Ev(Ns_02035e2c::func_02035d94());
+    s32 r = _ZN8BgmClock14hasYearChangedEv(Ns_02035e2c::Bgm_GetClock());
     if ((unk_13 | r) != 0) r = 1; else r = 0;
     *p = r;
 }
 
-Unk_020d8e44::Unk_020d8e44(u32 a) : unk_04(a), unk_18(a), unk_24(a) {}
+FieldBgm::FieldBgm(u32 a) : unk_04(a), unk_18(a), unk_24(a) {}
 
-Unk_020d8e44::~Unk_020d8e44() {}
+FieldBgm::~FieldBgm() {}
 
-void Unk_020d8e44::func_020360cc() {
-    unk_04.func_02036a08();
-    unk_18.func_02036808();
-    unk_24.func_02036678();
+void FieldBgm::init() {
+    unk_04.init();
+    unk_18.init();
+    unk_24.init();
 }
 
-void Unk_020d8e44::func_020360ac() {
-    unk_24.func_02036670();
-    unk_18.func_02036800();
-    unk_04.func_02036a00();
+void FieldBgm::exit() {
+    unk_24.exit();
+    unk_18.exit();
+    unk_04.exit();
 }
 
-void Unk_020d8e44::func_0203608c() {
-    unk_04.func_020369e4();
-    unk_18.func_020367fc();
-    unk_24.func_02036654();
+void FieldBgm::update() {
+    unk_04.update();
+    unk_18.update();
+    unk_24.update();
 }
 
-void Unk_020d8e44::func_0203606c() {
-    unk_04.func_020369c4();
-    unk_18.func_020367e8();
-    unk_24.func_02036620();
+void FieldBgm::stop() {
+    unk_04.stop();
+    unk_18.stop();
+    unk_24.stop();
 }
 
-void Unk_020d8e44::func_0203603c() {
+void FieldBgm::start() {
     if (Ns_02035e2c::func_020b5184() != 0 || func_020b5164() != 0) {
-        unk_04.func_020369ac();
-        unk_18.func_02036738();
-        unk_24.func_02036614();
+        unk_04.start();
+        unk_18.start();
+        unk_24.start();
     }
 }
 
-void Unk_020d8e44::func_0203600c() {
+void FieldBgm::end() {
     if (Ns_02035e2c::func_020b5184() != 0 || func_020b5164() != 0) {
-        unk_24.func_020365dc();
-        unk_18.func_02036720();
-        unk_04.func_02036988();
+        unk_24.end();
+        unk_18.end();
+        unk_04.end();
     }
 }
 
-void Unk_020d8e44::func_02035fe0(u32 a) {
-    unk_04.func_02036984(a);
-    unk_18.func_0203671c(a);
-    unk_24.func_020365d8(a);
+void FieldBgm::setKeep(u32 a) {
+    unk_04.setKeep(a);
+    unk_18.setKeep(a);
+    unk_24.setKeep(a);
 }
 
-Unk_020d8e34::Unk_020d8e34(u32 a) {
+RoomBgm::RoomBgm(u32 a) {
     unk_04 = a;
     unk_08 = 0x3f;
     unk_0a = 0xffff;
@@ -1523,9 +1523,9 @@ Unk_020d8e34::Unk_020d8e34(u32 a) {
     unk_10 = 0;
 }
 
-Unk_020d8e34::~Unk_020d8e34() {}
+RoomBgm::~RoomBgm() {}
 
-void Unk_020d8e34::func_02035f7c() {
+void RoomBgm::init() {
     unk_08 = 0x3f;
     unk_0a = 0xffff;
     unk_0c = 0;
@@ -1535,107 +1535,107 @@ void Unk_020d8e34::func_02035f7c() {
     unk_10 = 0;
 }
 
-void Unk_020d8e34::func_02035f74() { func_02035f38(); }
+void RoomBgm::exit() { stop(); }
 
-void Unk_020d8e34::func_02035f58() {
+void RoomBgm::update() {
     if (unk_0f != 0) {
-        func_02035dd8();
-        func_02035cd0();
+        updateSceneBgm();
+        updateClosingMusic();
     }
 }
 
-void Unk_020d8e34::func_02035f38() {
-    func_02035e0c();
+void RoomBgm::stop() {
+    stopSceneBgm();
     unk_08 = 0x3f;
-    func_02035da8();
+    stopClosingMusic();
     unk_10 = 0;
     unk_0f = 0;
 }
 
-void Unk_020d8e34::func_02035f30() { unk_0e = 1; }
+void RoomBgm::forceClosingMusic() { unk_0e = 1; }
 
-void Unk_020d8e34::func_02035f18() {
+void RoomBgm::start() {
     unk_0f = 1;
-    func_02035dd8();
-    func_02035cd0();
+    updateSceneBgm();
+    updateClosingMusic();
 }
 
-void Unk_020d8e34::func_02035ed4() {
+void RoomBgm::end() {
     if (unk_10 == 0) {
         BOOL r;
-        if (unk_0d != 0 && _ZN12Unk_020d8e1413func_02035328Ev(Ns_02035e2c::func_02035234()) != 0) r = TRUE; else r = FALSE;
-        func_02035e0c();
+        if (unk_0d != 0 && _ZN12BgmSceneFade14hasExitSilenceEv(Ns_02035e2c::Bgm_GetSceneFade()) != 0) r = TRUE; else r = FALSE;
+        stopSceneBgm();
         unk_08 = 0x3f;
-        func_02035da8();
+        stopClosingMusic();
         unk_0e = r;
     }
     unk_0f = 0;
 }
 
-void Unk_020d8e34::func_02035ed0(u32 a) { unk_10 = a; }
+void RoomBgm::setKeep(u32 a) { unk_10 = a; }
 
-extern "C" s32 func_02035ea0(s32 a) {
+extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
     u16 *e = data_020c8b9c;
     u32 r = 0xffff;
     const u16 *p;
-    for (p = data_020c8b28; p < e; p += 2) {
+    for (p = sSceneBgmTable; p < e; p += 2) {
         if (((u8 *)p)[0] == a) { r = p[1]; break; }
     }
     return r;
 }
 
-extern "C" s32 func_02035e60(void) {
+extern "C" s32 Bgm_IsSameSceneBgm(void) {
     s32 a = Ns_02035e2c::func_020b50e8();
     func_020b4934();
     s32 b = func_020b49a8();
-    s32 x = func_02035ea0(a);
-    s32 y = func_02035ea0(b);
+    s32 x = Bgm_GetSceneBgmId(a);
+    s32 y = Bgm_GetSceneBgmId(b);
     if (x == y && x != 0xffff) return TRUE;
     return FALSE;
 }
 
-void Unk_020d8e34::func_02035e2c(s32 a) {
-    s32 r = func_02035ea0(a);
+void RoomBgm::playSceneBgm(s32 a) {
+    s32 r = Bgm_GetSceneBgmId(a);
     u32 c = 0x7f, d = 0;
     if (r == 1) c = 0x38;
     if (r == 0x14 || r == 0x5c) d = 1;
-    Ns_02035e2c::func_02034e10(0x11, r, c, d);
+    Ns_02035e2c::Bgm_Request(0x11, r, c, d);
     unk_0a = r;
 }
 
-void Unk_02035dd8::func_02035e0c() {
+void RoomBgmSceneView::stopSceneBgm() {
     if (unk_0a != 0xffff) {
-        Ns_020354d8::func_02034d84(unk_0a);
+        Ns_020354d8::Bgm_Release(unk_0a);
         unk_0a = 0xffff;
     }
 }
 
-void Unk_02035dd8::func_02035dd8() {
+void RoomBgmSceneView::updateSceneBgm() {
     s32 t = Ns_020354d8::func_020b50e8();
     if (unk_08 != t) {
-        if (unk_0a != func_02035ea0(t)) {
-            func_02035e0c();
-            func_02035e2c(t);
+        if (unk_0a != Bgm_GetSceneBgmId(t)) {
+            stopSceneBgm();
+            playSceneBgm(t);
         }
         unk_08 = t;
     }
 }
 
-void Unk_02035cd0::func_02035da8() {
+void RoomBgmClosingView::stopClosingMusic() {
     if (unk_0c != 0) {
-        Ns_020354d8::func_02034d70(0x10);
+        Ns_020354d8::Bgm_ReleasePriority(0x10);
         unk_0c = 0;
     }
     if (unk_0d != 0) {
-        Ns_020354d8::func_02034d84(0x51);
+        Ns_020354d8::Bgm_Release(0x51);
         unk_0d = 0;
     }
     unk_0e = 0;
 }
 
-extern "C" void *func_02035d94(void) { return Ns_020354d8::data_021c1b3c + 0x24c; }
+extern "C" void *Bgm_GetClock(void) { return Ns_020354d8::data_021c1b3c + 0x24c; }
 
-void Unk_02035cd0::func_02035cd0() {
+void RoomBgmClosingView::updateClosingMusic() {
     BOOL a;
     void *p = Ns_020354d8::PlayerData_GetCurrent();
     if (p) {
@@ -1654,29 +1654,29 @@ void Unk_02035cd0::func_02035cd0() {
         c = FALSE;
     }
     if (a == 0 && c != 0) {
-        void *pl = func_02035d94();
+        void *pl = Bgm_GetClock();
         if (unk_0c == 0) {
-            if (_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(pl, 0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
-                Ns_020354d8::func_02034dd0(0x10, 0xc8, 0);
+            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
+                Ns_020354d8::Bgm_RequestSilence(0x10, 0xc8, 0);
                 unk_0c = 1;
             }
         }
         if (unk_0d == 0) {
-            if (_ZN12Unk_02036a6413func_02036ab8Ejjjjjj(pl, 0x16, 0x32, 0, 0, 0, 0) != 0 || unk_0e != 0) {
-                Ns_020354d8::func_02034e10(0xf, 0x51, 0x7f, 0);
+            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x32, 0, 0, 0, 0) != 0 || unk_0e != 0) {
+                Ns_020354d8::Bgm_Request(0xf, 0x51, 0x7f, 0);
                 unk_0d = 1;
             }
         }
     }
 }
 
-Unk_02035ca4::Unk_02035ca4() {
-    func_02035cac();
+BgmVolumeChannel::BgmVolumeChannel() {
+    clear();
 }
 
-Unk_02035ca4::~Unk_02035ca4() {}
+BgmVolumeChannel::~BgmVolumeChannel() {}
 
-void Unk_02035ca4::func_02035cac() {
+void BgmVolumeChannel::clear() {
     unk_00 = 0;
     unk_01 = 0;
     unk_04 = 0;
@@ -1684,59 +1684,59 @@ void Unk_02035ca4::func_02035cac() {
     unk_0c = 0;
 }
 
-void Unk_02035ca4::func_02035ca4(s32 a, s32 b, u8 c) {
+void BgmVolumeChannel::set(s32 a, s32 b, u8 c) {
     unk_04 = a;
     unk_08 = b;
     unk_00 = c;
 }
 
-Unk_02035758::Unk_02035758(Unk_02035780_Owner *owner) : unk_00(owner) {}
+BgmVolumeMixer::BgmVolumeMixer(BgmManagerOwnerView *owner) : unk_00(owner) {}
 
-Unk_02035758::~Unk_02035758() {}
+BgmVolumeMixer::~BgmVolumeMixer() {}
 
-void Unk_02035758::func_02035c38() {
+void BgmVolumeMixer::init() {
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].func_02035cac();
+        unk_04[i].clear();
     }
     unk_84 = 0;
 }
 
-void Unk_02035758::func_02035c34() {}
+void BgmVolumeMixer::exit() {}
 
-void Unk_02035758::func_02035c0c() {
-    func_02035ac8();
-    func_020357f4();
-    func_02035780();
-    func_0203576c();
-    func_02035758();
+void BgmVolumeMixer::update() {
+    updateChannels();
+    maskForTopRequest();
+    applyVolume();
+    clearChanged();
+    clearMasks();
 }
 
-void Unk_02035758::func_02035bdc() {
+void BgmVolumeMixer::reset() {
     if ((u32)(unk_04[2].unk_0c - 8) <= 1) {
         Snd_RestoreSubPlayers();
     }
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].func_02035cac();
+        unk_04[i].clear();
     }
     unk_84 = 0;
 }
 
-void Unk_02035758::func_02035bd4() { unk_04[2].unk_0c = 7; }
+void BgmVolumeMixer::startTalkDuck() { unk_04[2].unk_0c = 7; }
 
-void Unk_02035758::func_02035bcc() { unk_04[2].unk_0c = 9; }
+void BgmVolumeMixer::endTalkDuck() { unk_04[2].unk_0c = 9; }
 
-void Unk_02035758::func_02035bbc(s32 i) { unk_04[1].unk_0c = data_020c8aec[i]; }
+void BgmVolumeMixer::setMenuDuck(s32 i) { unk_04[1].unk_0c = sBgmMenuDuckStates[i]; }
 
-void Unk_02035758::func_02035bb4() { unk_04[1].unk_0c = 6; }
+void BgmVolumeMixer::endMenuDuck() { unk_04[1].unk_0c = 6; }
 
-void Unk_02035758::func_02035bac() { unk_04[3].unk_0c = 0xa; }
+void BgmVolumeMixer::startFishDuck() { unk_04[3].unk_0c = 0xa; }
 
-void Unk_02035758::func_02035ba4() { unk_04[3].unk_0c = 0xc; }
+void BgmVolumeMixer::endFishDuck() { unk_04[3].unk_0c = 0xc; }
 
-void Unk_02035758::func_02035b9c() { unk_04[4].unk_0c = 0xd; }
+void BgmVolumeMixer::startAct81Duck() { unk_04[4].unk_0c = 0xd; }
 
-void Unk_02035758::func_02035b94() { unk_04[4].unk_0c = 0xf; }//DEF data_020c8b28
-const u16 data_020c8b28[0x3a] = {
+void BgmVolumeMixer::endAct81Duck() { unk_04[4].unk_0c = 0xf; }//DEF sSceneBgmTable
+const u16 sSceneBgmTable[0x3a] = {
     0x1a, 0x4d, 0x1b, 0x4e, 0x1c, 0x4f, 0x1d, 0x50,
     0x1e, 0x50, 0xa, 0x58, 0xb, 0x53, 0xc, 0x53,
     0xd, 0x53, 0xe, 0x53, 0x2f, 0x53, 0x2d, 0x1,
@@ -1747,54 +1747,54 @@ const u16 data_020c8b28[0x3a] = {
     0x30, 0x14,
 };
 
-//DEF data_020d8d8c
-u16 data_020d8d8c[2] = {0xc1f, 0};
+//DEF sNewYearEveDate
+u16 sNewYearEveDate[2] = {0xc1f, 0};
 
-//DEF data_020d8d90
-u16 data_020d8d90[2] = {0x173b, 0};
+//DEF sNewYearEveTime
+u16 sNewYearEveTime[2] = {0x173b, 0};
 
-//DEF data_020d8d88
-u16 data_020d8d88[2] = {0x101, 0};
+//DEF sNewYearDayDate
+u16 sNewYearDayDate[2] = {0x101, 0};
 
-//DEF data_020d8dbc
-Unk_020d8dbc_Rec data_020d8dbc = {&Unk_020d8e74::func_020344f8, 0xcf, 0xcb};
+//DEF sBgmProcProfile
+Unk_020d8dbc_Rec sBgmProcProfile = {&BgmProc::create, 0xcf, 0xcb};
 
-void Unk_02035758::func_02035ac8() {
+void BgmVolumeMixer::updateChannels() {
     static Unk_02035758_Fn tbl[8] = {
-        &Unk_02035758::func_02035ac4, &Unk_02035758::func_02035a5c, &Unk_02035758::func_020359ec,
-        &Unk_02035758::func_020359b0, &Unk_02035758::func_02035974, &Unk_02035758::func_020358d4,
-        &Unk_02035758::func_02035870, &Unk_02035758::func_0203581c,
+        &BgmVolumeMixer::updateChannel0, &BgmVolumeMixer::updateMenuDuck, &BgmVolumeMixer::updateTalkDuck,
+        &BgmVolumeMixer::updateFishDuck, &BgmVolumeMixer::updateAct81Duck, &BgmVolumeMixer::updatePositionDuck,
+        &BgmVolumeMixer::updateSceneDuck, &BgmVolumeMixer::updateRequestVolume,
     };
     for (s32 i = 0; i < 8; i++) {
         (this->*tbl[i])(&unk_04[i]);
     }
 }
 
-void Unk_02035758::func_02035ac4(Unk_02035ca4 *e) {}
+void BgmVolumeMixer::updateChannel0(BgmVolumeChannel *e) {}
 
-void Unk_02035758::func_02035a5c(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updateMenuDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     if (st == 2) {
-        e->func_02035ca4(0x28, 5, 1);
+        e->set(0x28, 5, 1);
         e->unk_0c = 5;
     } else if (st == 3) {
-        e->func_02035ca4(0x7f, 5, 1);
+        e->set(0x7f, 5, 1);
         e->unk_0c = 5;
     } else if (st == 4) {
-        e->func_02035ca4(0, 5, 1);
+        e->set(0, 5, 1);
         e->unk_0c = 5;
     } else if (st != 5) {
         if (st == 6) {
-            e->func_02035ca4(0x7f, 5, 1);
+            e->set(0x7f, 5, 1);
             e->unk_0c = 0;
         }
     }
 }
 
-void Unk_02035758::func_020359ec(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updateTalkDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     if (st == 7) {
-        e->func_02035ca4(0x28, 5, 1);
+        e->set(0x28, 5, 1);
         e->unk_0c = 8;
         unk_84 = 0;
         Snd_DuckSubPlayers(0);
@@ -1804,7 +1804,7 @@ void Unk_02035758::func_020359ec(Unk_02035ca4 *e) {
                 unk_84 = unk_84 - 1;
             }
             if (unk_84 <= 0) {
-                e->func_02035ca4(0x7f, 5, 1);
+                e->set(0x7f, 5, 1);
                 e->unk_0c = 0;
                 Snd_RestoreSubPlayers();
             }
@@ -1812,33 +1812,33 @@ void Unk_02035758::func_020359ec(Unk_02035ca4 *e) {
     }
 }
 
-void Unk_02035758::func_020359b0(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updateFishDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     if (st == 0xa) {
-        e->func_02035ca4(0x28, 0xf, 1);
+        e->set(0x28, 0xf, 1);
         e->unk_0c = 0xb;
     } else if (st != 0xb) {
         if (st == 0xc) {
-            e->func_02035ca4(0x7f, 0xf, 1);
+            e->set(0x7f, 0xf, 1);
             e->unk_0c = 0;
         }
     }
 }
 
-void Unk_02035758::func_02035974(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updateAct81Duck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     if (st == 0xd) {
-        e->func_02035ca4(0x28, 0xf, 1);
+        e->set(0x28, 0xf, 1);
         e->unk_0c = 0xe;
     } else if (st != 0xe) {
         if (st == 0xf) {
-            e->func_02035ca4(0x7f, 0xf, 1);
+            e->set(0x7f, 0xf, 1);
             e->unk_0c = 0;
         }
     }
 }
 
-void Unk_02035758::func_020358d4(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     s32 flag = 0;
     Unk_020358d4_Src *p = func_020947f0(4);
@@ -1858,74 +1858,74 @@ void Unk_02035758::func_020358d4(Unk_02035ca4 *e) {
     }
     if (st == 0) {
         if (flag != 0) {
-            e->func_02035ca4(0x28, 0x3c, 1);
+            e->set(0x28, 0x3c, 1);
             e->unk_0c = 0x10;
         }
     } else if (st == 0x10) {
         if (flag == 0) {
-            e->func_02035ca4(0x7f, 0x3c, 1);
+            e->set(0x7f, 0x3c, 1);
             e->unk_0c = 0;
         }
     }
 }
 
-void Unk_02035758::func_02035870(Unk_02035ca4 *e) {
+void BgmVolumeMixer::updateSceneDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     s32 t = Ns_020354d8::func_020b50e8();
     BOOL a = t == 0x27 ? TRUE : FALSE;
     BOOL b = t == 0x28 ? TRUE : FALSE;
     if (st == 0) {
         if (a || b) {
-            e->func_02035ca4(0x40, 0x28, 1);
+            e->set(0x40, 0x28, 1);
             e->unk_0c = 0x11;
         }
     } else if (st == 0x11) {
         if (!a && !b) {
-            e->func_02035ca4(0x7f, 0x28, 1);
+            e->set(0x7f, 0x28, 1);
             e->unk_0c = 0;
         }
     }
 }
 
-void Unk_02035780_Owner::func_02035868() {
+void BgmManagerOwnerView::clearVolumePending() {
     unk_14 = 0;
 }
-//DEF data_020c8ae4
-const u8 data_020c8ae4[8] = {0x01, 0x2f, 0x1b, 0x34, 0x2f, 0x00, 0x00, 0x00};
+//DEF sBgmSceneFadeDelays
+const u8 sBgmSceneFadeDelays[8] = {0x01, 0x2f, 0x1b, 0x34, 0x2f, 0x00, 0x00, 0x00};
 
-void Unk_02035758::func_0203581c(Unk_02035ca4 *e) {
-    Unk_02035780_Owner *o = unk_00;
+void BgmVolumeMixer::updateRequestVolume(BgmVolumeChannel *e) {
+    BgmManagerOwnerView *o = unk_00;
     if (o->unk_1c0 > 0) {
         if (o->unk_14 != 0 && o->unk_0c != 0) {
-            e->func_02035ca4(o->unk_0c, 0, 1);
+            e->set(o->unk_0c, 0, 1);
         }
-        unk_00->func_02034574(&Unk_02035780_Owner::func_02035868);
+        unk_00->forEachRequest(&BgmManagerOwnerView::clearVolumePending);
         e->unk_0c = 0x12;
     } else {
         e->unk_0c = 0;
     }
 }
 
-void Unk_02035758::func_020357f4() {
-    Unk_02035780_Owner *o = unk_00;
+void BgmVolumeMixer::maskForTopRequest() {
+    BgmManagerOwnerView *o = unk_00;
     if (o->unk_1c0 > 0 && o->unk_10 != 0) {
-        Unk_02035ca4 *p = &unk_04[2];
-        Unk_02035ca4 *end = &unk_04[7];
+        BgmVolumeChannel *p = &unk_04[2];
+        BgmVolumeChannel *end = &unk_04[7];
         for (; p < end; p++) {
             p->unk_01 = 1;
         }
     }
 }
 
-void Unk_02035758::func_02035780() {
-    Unk_02035ca4 *end;
+void BgmVolumeMixer::applyVolume() {
+    BgmVolumeChannel *end;
     s32 f;
     s32 a;
     BOOL ok = FALSE;
     s32 t;
     s32 b;
-    Unk_02035780_Owner *o = unk_00;
-    Unk_02035ca4 *p;
+    BgmManagerOwnerView *o = unk_00;
+    BgmVolumeChannel *p;
     if (o->unk_1c0 > 0 && o->unk_12 != 0 && o->unk_04 != 0xffff) {
         ok = TRUE;
     }
@@ -1948,48 +1948,48 @@ void Unk_02035758::func_02035780() {
             }
         }
         if (f != 0) {
-            o->unk_2b4.func_02035724(a, b);
+            o->unk_2b4.requestVolume(a, b);
         }
     }
 }
 
-void Unk_02035758::func_0203576c() {
+void BgmVolumeMixer::clearChanged() {
     for (s32 i = 0; i < 8; i++) {
         unk_04[i].unk_00 = 0;
     }
 }
 
-void Unk_02035758::func_02035758() {
+void BgmVolumeMixer::clearMasks() {
     for (s32 i = 0; i < 8; i++) {
         unk_04[i].unk_01 = 0;
     }
 }
 
-Unk_020356b8 *Unk_020356b8::func_02035744(void *owner) {
+BgmCommandQueue *BgmCommandQueue::init(void *owner) {
     unk_00 = (u32)owner;
-    func_0203570c();
+    clear();
     return this;
 }
 
-void Unk_020356b8::func_02035740() {}
+void BgmCommandQueue::func_02035740() {}
 
-void Unk_020356b8::func_02035738(u16 a) {
+void BgmCommandQueue::requestPlay(u16 a) {
     unk_04 = 1;
     unk_06 = a;
 }
 
-void Unk_020356b8::func_02035730(s32 a) {
+void BgmCommandQueue::requestStop(s32 a) {
     unk_08 = 1;
     unk_0c = a;
 }
 
-void Unk_020356b8::func_02035724(s32 a, s32 b) {
+void BgmCommandQueue::requestVolume(s32 a, s32 b) {
     unk_10 = 1;
     unk_14 = a;
     unk_18 = b;
 }
 
-void Unk_020356b8::func_0203570c() {
+void BgmCommandQueue::clear() {
     unk_04 = 0;
     unk_06 = 0xffff;
     unk_08 = 0;
@@ -1999,7 +1999,7 @@ void Unk_020356b8::func_0203570c() {
     unk_18 = 0;
 }
 
-void Unk_020356b8::func_020356b8() {
+void BgmCommandQueue::flush() {
     if (unk_08 != 0) {
         unk_08 = 0;
         Snd_StopBgm(unk_0c);
@@ -2007,7 +2007,7 @@ void Unk_020356b8::func_020356b8() {
     if (unk_04 != 0) {
         unk_04 = 0;
         Snd_PlayBgm(unk_06);
-        Ns_020354d8::func_02034f6c(Ns_020354d8::data_021c1b3c + 0x2f0, unk_06);
+        Ns_020354d8::BgmTracks_OnBgmStart(Ns_020354d8::data_021c1b3c + 0x2f0, unk_06);
     }
     if (unk_10 != 0) {
         unk_10 = 0;
@@ -2015,7 +2015,7 @@ void Unk_020356b8::func_020356b8() {
     }
 }
 
-Unk_020d8e14::Unk_020d8e14(u32 owner) {
+BgmSceneFade::BgmSceneFade(u32 owner) {
     unk_04 = owner;
     unk_08 = 0;
     unk_09 = 0;
@@ -2025,42 +2025,42 @@ Unk_020d8e14::Unk_020d8e14(u32 owner) {
     unk_10 = 0;
 }
 
-Unk_020d8e14::~Unk_020d8e14() {}
+BgmSceneFade::~BgmSceneFade() {}
 
-void Unk_020d8e14::func_020355dc() {
+void BgmSceneFade::onFadeOut() {
     if (gActorDefaultParent->unk_0c != 5) {
         if (unk_0b == 1) {
-            Ns_020354d8::func_02034dd0(8, 0xf, 0);
+            Ns_020354d8::Bgm_RequestSilence(8, 0xf, 0);
             unk_0b = 2;
         } else if (unk_0b == 3) {
-            Ns_020354d8::func_02034d70(8);
+            Ns_020354d8::Bgm_ReleasePriority(8);
             unk_0b = 0;
         }
-        unk_09 = func_02035e60();
-        _ZN12Unk_020d8e3413func_02035ed0Ej(func_020355a0(), unk_09);
+        unk_09 = Bgm_IsSameSceneBgm();
+        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), unk_09);
         if (unk_08 == 0 && unk_09 == 0 && unk_0a == 0) {
             if (unk_0c != 0 || unk_10 != 0) {
-                Ns_020354d8::func_02034d70(7);
+                Ns_020354d8::Bgm_ReleasePriority(7);
             }
             unk_0c = -1;
             unk_10 = 0;
-            Ns_020354d8::func_02034dd0(7, 0xf, 0);
+            Ns_020354d8::Bgm_RequestSilence(7, 0xf, 0);
         } else {
-            _ZN12Unk_020d8e4413func_02035fe0Ej(func_020355b4(), 1);
+            _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 1);
             if (unk_09 != 0) {
-                Ns_020354d8::func_0203507c(func_020355c8());
+                Ns_020354d8::BgmTracks_FadeOutForScene(Bgm_GetTracks());
             }
         }
     }
 }
 
-extern "C" void *func_020355c8(void) { return Ns_020354d8::data_021c1b3c + 0x2f0; }
+extern "C" void *Bgm_GetTracks(void) { return Ns_020354d8::data_021c1b3c + 0x2f0; }
 
-extern "C" void *func_020355b4(void) { return Ns_020354d8::data_021c1b3c + 0x264; }
+extern "C" void *Bgm_GetFieldBgm(void) { return Ns_020354d8::data_021c1b3c + 0x264; }
 
-extern "C" void *func_020355a0(void) { return Ns_020354d8::data_021c1b3c + 0x2a0; }
+extern "C" void *Bgm_GetRoomBgm(void) { return Ns_020354d8::data_021c1b3c + 0x2a0; }
 
-void Unk_020d8e14::func_02035518() {
+void BgmSceneFade::onFadeIn() {
     if (gActorDefaultParent->unk_0c != 5) {
         if (unk_0c < 0) {
             s32 r = func_02094fec();
@@ -2081,35 +2081,35 @@ void Unk_020d8e14::func_02035518() {
             }
         }
         if (unk_09 != 0) {
-            Ns_020354d8::func_02034fb0(func_020355c8());
+            Ns_020354d8::BgmTracks_FadeInForScene(Bgm_GetTracks());
         }
         unk_08 = 0;
         unk_09 = 0;
         unk_0a = 0;
-        _ZN12Unk_020d8e4413func_02035fe0Ej(func_020355b4(), 0);
-        _ZN12Unk_020d8e3413func_02035ed0Ej(func_020355a0(), 0);
+        _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 0);
+        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), 0);
     }
 }
 
-void Unk_020d8e14::func_02035514() {}
+void BgmSceneFade::init() {}
 
-extern "C" void func_0203550c(Unk_020d8e14 *p) { p->func_020354d8(); }
+extern "C" void BgmSceneFade_Reset(BgmSceneFade *p) { p->reset(); }
 
-extern "C" void func_02035504(void *p) { _ZN12Unk_020d8e1413func_02035284Ev(p); }
+extern "C" void BgmSceneFade_Update(void *p) { _ZN12BgmSceneFade6updateEv(p); }
 
-void Unk_020d8e14::func_020354d8() {
+void BgmSceneFade::reset() {
     unk_08 = 0;
     unk_09 = 0;
     unk_0a = 0;
     unk_0b = 0;
     if (unk_0c != 0 || unk_10 != 0) {
-        Ns_020354d8::func_02034d70(7);
+        Ns_020354d8::Bgm_ReleasePriority(7);
         unk_0c = 0;
         unk_10 = 0;
     }
 }
 
-void Unk_020d8e14::func_020353b0(s32 a, s32 b) {
+void BgmSceneFade::func_020353b0(s32 a, s32 b) {
     s32 res = 0;
     s32 f = 0;
     if (Ns_02034ae8::func_020b5184()) {
@@ -2118,7 +2118,7 @@ void Unk_020d8e14::func_020353b0(s32 a, s32 b) {
         s32 a2 = (a == 2) ? 1 : 0;
         s32 b9 = (b == 9) ? 1 : 0;
         s32 b6 = (b == 6) ? 1 : 0;
-        Unk_020353b0_Rec *rec = Ns_02034ae8::func_02034910();
+        Unk_020353b0_Rec *rec = Ns_02034ae8::Bgm_GetPlayingRequest();
         u32 x;
         s32 y;
         if (rec) x = rec->unk_04; else x = 0xffff;
@@ -2153,7 +2153,7 @@ void Unk_020d8e14::func_020353b0(s32 a, s32 b) {
     if (f) unk_0b = 1;
 }
 
-void Unk_020d8e14::func_02035368(s32 a, s32 b) {
+void BgmSceneFade::func_02035368(s32 a, s32 b) {
     if (unk_0b == 2) {
         unk_0b = 3;
     } else {
@@ -2165,21 +2165,21 @@ void Unk_020d8e14::func_02035368(s32 a, s32 b) {
     }
 }
 
-void Unk_020d8e14::func_0203535c(s32 i) { unk_0c = data_020c8ae4[i]; }
+void BgmSceneFade::setFadeDelay(s32 i) { unk_0c = sBgmSceneFadeDelays[i]; }
 
-void Unk_020d8e14::func_02035354() { unk_0a = 1; }
+void BgmSceneFade::setKeepBgm() { unk_0a = 1; }
 
-BOOL Unk_020d8e14::func_02035338() {
+BOOL BgmSceneFade::isKeepingBgm() {
     if (unk_08 || unk_09 || unk_0a) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020d8e14::func_02035328() {
+BOOL BgmSceneFade::hasExitSilence() {
     if (unk_0b) return TRUE;
     return FALSE;
 }
 
-void Unk_020d8e14::func_02035284() {
+void BgmSceneFade::update() {
     if (unk_0c > 0) {
         unk_0c--;
         if (unk_0c <= 0) {
@@ -2203,66 +2203,66 @@ void Unk_020d8e14::func_02035284() {
     }
     if (unk_10 > 0) {
         unk_10--;
-        if (unk_10 <= 0) func_02034d70(7);
+        if (unk_10 <= 0) Bgm_ReleasePriority(7);
     }
 }
 
-Unk_020d8df4::Unk_020d8df4(Unk_02034ae8 *o) {
+FaintBgm::FaintBgm(BgmManagerView *o) {
     unk_04 = o;
     unk_08 = 0xffff;
     unk_0a = 0;
 }
 
-Unk_020d8df4::~Unk_020d8df4() {}
+FaintBgm::~FaintBgm() {}
 
-extern "C" Unk_020d8e14 *func_02035234(void) { return &Ns_02034ae8::data_021c1b3c->unk_2d0; }
+extern "C" BgmSceneFade *Bgm_GetSceneFade(void) { return &Ns_02034ae8::data_021c1b3c->unk_2d0; }
 
-void Unk_020d8df4::func_02035214() {
+void FaintBgm::play() {
     unk_08 = 0x41;
-    Ns_02034ae8::func_02034e10(0xb, 0x41, 0x7f, 1);
-    func_02035234()->func_02035354();
+    Ns_02034ae8::Bgm_Request(0xb, 0x41, 0x7f, 1);
+    Bgm_GetSceneFade()->setKeepBgm();
 }
 
-void Unk_020d8df4::func_02035200() {
+void FaintBgm::startSilence() {
     unk_0a = 1;
-    func_02034dd0(10, 15, 0);
+    Bgm_RequestSilence(10, 15, 0);
 }
 
-void Unk_020d8df4::func_020351bc() {
+void FaintBgm::fadeOut() {
     if (unk_08 != 0xffff) {
-        func_02034dd0(10, 5, 5);
-        func_02034d84(unk_08);
+        Bgm_RequestSilence(10, 5, 5);
+        Bgm_Release(unk_08);
         unk_08 = 0xffff;
     }
     if (unk_0a) {
-        func_02034d70(10);
-        func_02034dd0(10, 5, 5);
+        Bgm_ReleasePriority(10);
+        Bgm_RequestSilence(10, 5, 5);
         unk_0a = 0;
     }
 }
 
-void Unk_020d8df4::func_020351b8() {}
+void FaintBgm::init() {}
 
-void Unk_020d8df4::func_020351b0() { func_0203517c(); }
+void FaintBgm::exit() { stop(); }
 
-extern "C" void func_020351ac(void) {}
+extern "C" void FaintBgm_Update(void) {}
 
-void Unk_020d8df4::func_0203517c() {
+void FaintBgm::stop() {
     if (unk_08 != 0xffff) {
-        func_02034d84(unk_08);
+        Bgm_Release(unk_08);
         unk_08 = 0xffff;
     }
     if (unk_0a) {
-        func_02034d70(10);
+        Bgm_ReleasePriority(10);
         unk_0a = 0;
     }
 }
 
-Unk_020d8e54::Unk_020d8e54() {}
+BgmTracks::BgmTracks() {}
 
-Unk_020d8e54::~Unk_020d8e54() {}
+BgmTracks::~BgmTracks() {}
 
-extern "C" void func_0203507c(void) {
+extern "C" void BgmTracks_FadeOutForScene(void) {
     s32 r = Ns_02034ae8::func_020b50e8();
     s32 s;
     func_020b4934();
@@ -2284,7 +2284,7 @@ extern "C" void func_0203507c(void) {
     if (v) Snd_FadeOutBgmTracks(v);
 }
 
-extern "C" void func_02034fb0(void) {
+extern "C" void BgmTracks_FadeInForScene(void) {
     s32 t = func_020b50dc();
     s32 r = Ns_02034ae8::func_020b50e8();
     s32 e20 = (t == 0x20) ? 1 : 0;
@@ -2304,23 +2304,23 @@ extern "C" void func_02034fb0(void) {
     if (v) Snd_FadeInBgmTracks(v);
 }
 
-extern "C" void func_02034f98(void) {
+extern "C" void BgmTracks_FadeOutScene22(void) {
     if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeOutBgmTracks(5);
 }
 
-extern "C" void func_02034f80(void) {
+extern "C" void BgmTracks_FadeInScene22(void) {
     if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeInBgmTracks(5);
 }
 
-extern "C" void func_02034f6c(s32 a, s32 b) {
-    if (b == 0x62) func_02034e9c();
+extern "C" void BgmTracks_OnBgmStart(s32 a, s32 b) {
+    if (b == 0x62) BgmTracks_ApplySceneMask();
 }
 
-extern "C" void func_02034f4c(s32 a) {
-    if (Ns_02034ae8::func_020b5184() || func_020b5164()) func_02034e48(a);
+extern "C" void BgmTracks_Update(s32 a) {
+    if (Ns_02034ae8::func_020b5184() || func_020b5164()) BgmTracks_UpdateWeatherVariant(a);
 }
 
-extern "C" void func_02034e9c(void) {
+extern "C" void BgmTracks_ApplySceneMask(void) {
     s32 r = Ns_02034ae8::func_020b50e8();
     s32 a22 = (r == 0x22) ? 1 : 0;
     s32 a23 = (r == 0x23) ? 1 : 0;
@@ -2339,7 +2339,7 @@ extern "C" void func_02034e9c(void) {
     if (v) Snd_FadeOutBgmTracks(v);
 }
 
-extern "C" void func_02034e48(s32 x) {
+extern "C" void BgmTracks_UpdateWeatherVariant(s32 x) {
     s32 r = Weather_GetPrecipKind();
     s32 a, b;
     BOOL c, d, e;
@@ -2356,219 +2356,219 @@ extern "C" void func_02034e48(s32 x) {
     Snd_SetBgmTrackVariant(v);
 }
 
-extern "C" void func_02034e10(s32 a, s32 b, s32 c, u8 d) {
-    Unk_02036bf8 e(a, b, c, 0, d);
-    _ZN12Unk_0203451813func_020348e4EP12Unk_02036ba4(Ns_02034ae8::data_021c1b3c, &e);
+extern "C" void Bgm_Request(s32 a, s32 b, s32 c, u8 d) {
+    BgmRequest e(a, b, c, 0, d);
+    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
 }
 
-extern "C" void func_02034dd0(s32 a, s32 b, s32 c) {
-    Unk_02036bf8 e(a, 0xffff, 0, b, 0);
+extern "C" void Bgm_RequestSilence(s32 a, s32 b, s32 c) {
+    BgmRequest e(a, 0xffff, 0, b, 0);
     if (c > 0) e.unk_18 = c;
-    _ZN12Unk_0203451813func_020348e4EP12Unk_02036ba4(Ns_02034ae8::data_021c1b3c, &e);
+    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
 }
 
-extern "C" void func_02034d98(s32 a, s32 b) {
-    Unk_02036bf8 e(a, b, 0x7f, 0, 0);
+extern "C" void Bgm_RequestTransient(s32 a, s32 b) {
+    BgmRequest e(a, b, 0x7f, 0, 0);
     e.unk_11 = 1;
-    _ZN12Unk_0203451813func_020348e4EP12Unk_02036ba4(Ns_02034ae8::data_021c1b3c, &e);
+    _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
 }
 
-extern "C" void func_02034d84(s32 a) { _ZN12Unk_0203451813func_02034894Et(Ns_02034ae8::data_021c1b3c, a, 0); }
+extern "C" void Bgm_Release(s32 a) { _ZN10BgmManager10releaseBgmEt(Ns_02034ae8::data_021c1b3c, a, 0); }
 
-extern "C" void func_02034d70(s32 a) { _ZN12Unk_0203451813func_020348bcEi(Ns_02034ae8::data_021c1b3c, a); }
+extern "C" void Bgm_ReleasePriority(s32 a) { _ZN10BgmManager15releasePriorityEi(Ns_02034ae8::data_021c1b3c, a); }
 
-extern "C" void func_02034d5c(s32 a) { _ZN12Unk_0203451813func_02034894Et(Ns_02034ae8::data_021c1b3c, a, 1); }
+extern "C" void Bgm_ReleaseTransient(s32 a) { _ZN10BgmManager10releaseBgmEt(Ns_02034ae8::data_021c1b3c, a, 1); }
 
-extern "C" u16 func_02034d2c(void) {
-    s32 i = _ZN12Unk_0203451813func_02034690Ev(Ns_02034ae8::data_021c1b3c);
+extern "C" u16 Bgm_GetCurrent(void) {
+    s32 i = _ZN10BgmManager11findPlayingEv(Ns_02034ae8::data_021c1b3c);
     u16 r = 0xffff;
     if (i >= 0) r = Ns_02034ae8::data_021c1b3c->unk_000[i].unk_04;
     return r;
 }
 
-extern "C" void func_02034d18(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 0; }
+extern "C" void Bgm_EnableHourChime(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 0; }
 
-extern "C" void func_02034d04(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 1; }
+extern "C" void Bgm_DisableHourChime(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 1; }
 
-Unk_02034ae8::Unk_02034ae8() : unk_1c0(0), unk_1c4((Unk_02035780_Owner *)this), unk_264((u32)this), unk_2a0((u32)this), unk_2b4(this), unk_2d0((u32)this), unk_2e4(this) {
+BgmManagerView::BgmManagerView() : unk_1c0(0), unk_1c4((BgmManagerOwnerView *)this), unk_264((u32)this), unk_2a0((u32)this), unk_2b4(this), unk_2d0((u32)this), unk_2e4(this) {
     unk_2f4 = 0;
 }
 
-Unk_02034ae8::~Unk_02034ae8() {}
+BgmManagerView::~BgmManagerView() {}
 
-void Unk_02034ae8::func_02034b50() {
-    Unk_02036bf8 *p, *end;
+void BgmManagerView::init() {
+    BgmRequest *p, *end;
     Ns_02034ae8::data_021c1b3c = this;
-    end = (Unk_02036bf8 *)&unk_1c0;
+    end = (BgmRequest *)&unk_1c0;
     for (p = unk_000; p < end; p++) {
-        p->func_02036bf8();
+        p->clear();
     }
     unk_1c0 = 0;
-    unk_1c4.func_02035c38();
-    Ns_this::func_02036b88(&unk_24c);
-    unk_264.func_020360cc();
-    unk_2a0.func_02035f7c();
-    unk_2b4.func_0203570c();
-    unk_2d0.func_02035514();
-    unk_2e4.func_020351b8();
+    unk_1c4.init();
+    Ns_this::BgmClock_Init(&unk_24c);
+    unk_264.init();
+    unk_2a0.init();
+    unk_2b4.clear();
+    unk_2d0.init();
+    unk_2e4.init();
     unk_2f4 = 0;
 }
 
-void Unk_02034ae8::func_02034ae8() {
-    unk_2e4.func_020351b0();
-    Ns_this::func_0203550c(&unk_2d0);
-    unk_2b4.func_0203570c();
-    unk_2a0.func_02035f74();
-    unk_264.func_020360ac();
-    Ns_this::func_02036b84(&unk_24c);
-    unk_1c4.func_02035c34();
+void BgmManagerView::exit() {
+    unk_2e4.exit();
+    Ns_this::BgmSceneFade_Reset(&unk_2d0);
+    unk_2b4.clear();
+    unk_2a0.exit();
+    unk_264.exit();
+    Ns_this::BgmClock_Exit(&unk_24c);
+    unk_1c4.exit();
     Ns_02034ae8::data_021c1b3c = 0;
 }
 
-void Unk_02034518::func_02034a90() {
-    Ns_this::func_020351ac(&unk_2e4);
-    Ns_this::func_02035504(&unk_2d0);
-    Ns_this::func_02036b7c(&unk_24c);
-    unk_264.func_0203608c();
-    unk_2a0.func_02035f58();
-    func_02034850();
-    func_02034518();
+void BgmManager::update() {
+    Ns_this::FaintBgm_Update(&unk_2e4);
+    Ns_this::BgmSceneFade_Update(&unk_2d0);
+    Ns_this::BgmClock_Update(&unk_24c);
+    unk_264.update();
+    unk_2a0.update();
+    updateRequests();
+    updateHourChime();
     func_02034514();
 }
 
-extern "C" void func_020349e0() {
-    Unk_02034518 *p;
-    Unk_02036bf8 *e, *end;
-    data_021c1b3c->unk_2e4.func_0203517c();
-    data_021c1b3c->unk_2d0.func_020354d8();
-    data_021c1b3c->unk_2b4.func_0203570c();
-    data_021c1b3c->unk_2a0.func_02035f38();
-    data_021c1b3c->unk_264.func_0203606c();
-    Ns_this::func_02036b68(&data_021c1b3c->unk_24c);
-    data_021c1b3c->unk_1c4.func_02035bdc();
+extern "C" void Bgm_ResetAll() {
+    BgmManager *p;
+    BgmRequest *e, *end;
+    data_021c1b3c->unk_2e4.stop();
+    data_021c1b3c->unk_2d0.reset();
+    data_021c1b3c->unk_2b4.clear();
+    data_021c1b3c->unk_2a0.stop();
+    data_021c1b3c->unk_264.stop();
+    Ns_this::BgmClock_Reset(&data_021c1b3c->unk_24c);
+    data_021c1b3c->unk_1c4.reset();
     e = data_021c1b3c->unk_00;
     end = &data_021c1b3c->unk_00[16];
     for (; e < end; e++) {
-        e->func_02036bf8();
+        e->clear();
     }
     data_021c1b3c->unk_1c0 = 0;
     data_021c1b3c->unk_2f4 = 0;
 }
 
-extern "C" void func_0203498c() {
+extern "C" void Bgm_StartSceneBgm() {
     if (Unk_02034938_IsA()) {
-        data_021c1b3c->unk_264.func_0203603c();
+        data_021c1b3c->unk_264.start();
     } else if (Unk_02034938_IsB()) {
-        data_021c1b3c->unk_2a0.func_02035f18();
+        data_021c1b3c->unk_2a0.start();
     }
 }
 
-extern "C" void func_02034938() {
+extern "C" void Bgm_EndSceneBgm() {
     if (Unk_02034938_IsA()) {
-        data_021c1b3c->unk_264.func_0203600c();
+        data_021c1b3c->unk_264.end();
     } else if (Unk_02034938_IsB()) {
-        data_021c1b3c->unk_2a0.func_02035ed4();
+        data_021c1b3c->unk_2a0.end();
     }
 }
 
-extern "C" Unk_02036bf8 *func_02034910() {
-    s32 i = data_021c1b3c->func_02034690();
-    Unk_02036bf8 *p = NULL;
+extern "C" BgmRequest *Bgm_GetPlayingRequest() {
+    s32 i = data_021c1b3c->findPlaying();
+    BgmRequest *p = NULL;
     if (i >= 0) {
         p = &data_021c1b3c->unk_00[i];
     }
     return p;
 }
 
-void Unk_02034518::func_020348e4(Unk_02036ba4 *e) {
-    s32 i = func_020346c4(e);
+void BgmManager::push(BgmRequestView *e) {
+    s32 i = findInsertPos(e);
     if (i >= 0) {
-        func_020345c4(i);
-        unk_00[i].func_02036bbc(e);
+        insertAt(i);
+        unk_00[i].copyFrom(e);
     }
 }
 
-void Unk_02034518::func_020348bc(s32 v) {
-    s32 i = func_02034660(v);
+void BgmManager::releasePriority(s32 v) {
+    s32 i = findByPriority(v);
     if (i >= 0 && i < unk_1c0) {
         unk_00[i].unk_13 = 1;
     }
 }
 
-void Unk_02034518::func_02034894(u16 id) {
-    s32 i = func_02034630(id);
+void BgmManager::releaseBgm(u16 id) {
+    s32 i = findByBgm(id);
     if (i >= 0 && i < unk_1c0) {
         unk_00[i].unk_13 = 1;
     }
 }
 
-void Unk_02034518::func_02034850() {
-    func_020347f0();
-    func_0203478c();
-    func_02034738();
-    unk_1c4.func_02035c0c();
-    unk_2b4.func_020356b8();
-    Ns_this::func_02034f4c(&unk_2f0);
-    func_020346f8();
+void BgmManager::updateRequests() {
+    updateStop();
+    removeMarked();
+    startTop();
+    unk_1c4.update();
+    unk_2b4.flush();
+    Ns_this::BgmTracks_Update(&unk_2f0);
+    tickRequests();
 }
 
-void Unk_02034518::func_020347f0() {
-    s32 i = func_02034690();
-    Unk_02036bf8 *p;
+void BgmManager::updateStop() {
+    s32 i = findPlaying();
+    BgmRequest *p;
     if (i >= 0) {
         p = &unk_00[i];
         if (p->unk_04 != 0xffff) {
             BOOL done = FALSE;
             if (i > 0) {
-                Unk_02036bf8 *q = func_02034608(i);
+                BgmRequest *q = findKeptBefore(i);
                 if (q != NULL) {
-                    unk_2b4.func_02035730(q->unk_08);
+                    unk_2b4.requestStop(q->unk_08);
                     done = TRUE;
                 }
             }
             if (!done) {
                 if (p->unk_13 != 0) {
-                    unk_2b4.func_02035730(p->unk_08);
+                    unk_2b4.requestStop(p->unk_08);
                 }
             }
         }
     }
 }
 
-void Unk_02034518::func_0203478c() {
+void BgmManager::removeMarked() {
     s32 i, j, last;
     for (i = unk_1c0 - 1; i >= 0; i--) {
         if (unk_00[i].unk_13 != 0) {
             last = unk_1c0 - 1;
             for (j = i; j < last; j++) {
-                unk_00[j].func_02036bbc(&unk_00[j + 1]);
+                unk_00[j].copyFrom(&unk_00[j + 1]);
             }
-            unk_00[last].func_02036bf8();
+            unk_00[last].clear();
             unk_1c0 = last;
         }
     }
 }
 
-void Unk_02034518::func_02034784() { unk_00[0].unk_12 = 0; }
-//DEF data_020c8aec
-const s32 data_020c8aec[3] = {2, 3, 4};
+void BgmManager::clearPlaying() { unk_00[0].unk_12 = 0; }
+//DEF sBgmMenuDuckStates
+const s32 sBgmMenuDuckStates[3] = {2, 3, 4};
 
-void Unk_02034518::func_02034738() {
+void BgmManager::startTop() {
     if (unk_1c0 > 0 && unk_00[0].unk_12 == 0) {
         if (unk_00[0].unk_04 != 0xffff) {
-            unk_2b4.func_02035738(unk_00[0].unk_04);
+            unk_2b4.requestPlay(unk_00[0].unk_04);
             unk_00[0].unk_14 = 1;
         }
-        func_02034574(&Unk_02036ba4::func_02034784);
+        forEachRequest(&BgmRequestView::clearPlaying);
         unk_00[0].unk_12 = 1;
     }
 }
 
-void Unk_02034518::func_020346f8() {
-    Unk_02036bf8 *end = &unk_00[unk_1c0];
-    Unk_02036bf8 *p;
+void BgmManager::tickRequests() {
+    BgmRequest *end = &unk_00[unk_1c0];
+    BgmRequest *p;
     for (p = unk_00; p < end; p++) {
-        if (p->func_02036ba4()) {
+        if (p->tickLifetime()) {
             p->unk_13 = 1;
         }
         if (p != unk_00 && p->unk_11 != 0) {
@@ -2577,7 +2577,7 @@ void Unk_02034518::func_020346f8() {
     }
 }
 
-s32 Unk_02034518::func_020346c4(Unk_02036ba4 *key) {
+s32 BgmManager::findInsertPos(BgmRequestView *key) {
     s32 r = -1;
     s32 n = unk_1c0;
     if (n < 16) {
@@ -2590,7 +2590,7 @@ s32 Unk_02034518::func_020346c4(Unk_02036ba4 *key) {
     return r;
 }
 
-s32 Unk_02034518::func_02034690() {
+s32 BgmManager::findPlaying() {
     s32 r = -1;
     s32 i;
     for (i = 0; i < unk_1c0; i++) {
@@ -2602,7 +2602,7 @@ s32 Unk_02034518::func_02034690() {
     return r;
 }
 
-s32 Unk_02034518::func_02034660(s32 v) {
+s32 BgmManager::findByPriority(s32 v) {
     s32 r = -1;
     s32 i;
     for (i = 0; i < unk_1c0; i++) {
@@ -2615,7 +2615,7 @@ s32 Unk_02034518::func_02034660(s32 v) {
     return r;
 }
 
-s32 Unk_02034518::func_02034630(u16 id) {
+s32 BgmManager::findByBgm(u16 id) {
     s32 r = -1;
     s32 i;
     for (i = 0; i < unk_1c0; i++) {
@@ -2628,11 +2628,11 @@ s32 Unk_02034518::func_02034630(u16 id) {
     return r;
 }
 
-Unk_02036bf8 *Unk_02034518::func_02034608(s32 n) {
-    Unk_02036bf8 *r = NULL;
+BgmRequest *BgmManager::findKeptBefore(s32 n) {
+    BgmRequest *r = NULL;
     s32 i;
     for (i = 0; i < n; i++) {
-        Unk_02036bf8 *p = &unk_00[i];
+        BgmRequest *p = &unk_00[i];
         if (p->unk_13 == 0) {
             r = p;
             break;
@@ -2641,25 +2641,25 @@ Unk_02036bf8 *Unk_02034518::func_02034608(s32 n) {
     return r;
 }
 
-void Unk_02034518::func_020345c4(s32 idx) {
+void BgmManager::insertAt(s32 idx) {
     s32 i;
     if (unk_1c0 > 0) {
         for (i = unk_1c0 - 1; i >= idx; i--) {
-            unk_00[i + 1].func_02036bbc(&unk_00[i]);
+            unk_00[i + 1].copyFrom(&unk_00[i]);
         }
     }
     unk_1c0++;
 }
 
-void Unk_02034518::func_02034574(Unk_02034574_Fn fn) {
+void BgmManager::forEachRequest(Unk_02034574_Fn fn) {
     s32 i;
     for (i = 0; i < unk_1c0; i++) {
-        (((Unk_02036ba4 *)&unk_00[i])->*fn)();
+        (((BgmRequestView *)&unk_00[i])->*fn)();
     }
 }
 
-void Unk_02034518::func_02034518() {
-    if (unk_24c.func_02036aa8()) {
+void BgmManager::updateHourChime() {
+    if (unk_24c.hasHourChanged()) {
         BOOL ok = TRUE;
         if (!func_020b5364(1)) {
             ok = FALSE;
@@ -2673,37 +2673,37 @@ void Unk_02034518::func_02034518() {
             ok = FALSE;
         }
         if (ok) {
-            unk_24c.func_02036a98();
+            unk_24c.hasYearChanged();
             Melody_StartTrackA();
         }
     }
 }
 
-s32 Unk_02034518::func_02034514() {}
+s32 BgmManager::func_02034514() {}
 
-Unk_020d8e74 *Unk_020d8e74::func_020344f8() { return new Unk_020d8e74(); }
+BgmProc *BgmProc::create() { return new BgmProc(); }
 
-Unk_020d8e74::Unk_020d8e74() {}
+BgmProc::BgmProc() {}
 
-Unk_020d8e74::~Unk_020d8e74() {}
+BgmProc::~BgmProc() {}
 
-BOOL Unk_020d8e74::vfunc_00() {
-    unk_50.func_02034b50();
+BOOL BgmProc::vfunc_00() {
+    unk_50.init();
     return TRUE;
 }
 
-BOOL Unk_020d8e74::onExecute() {
-    unk_50.func_02034a90();
+BOOL BgmProc::onExecute() {
+    unk_50.update();
     return TRUE;
 }
 
-BOOL Unk_020d8e74::vfunc_0c() {
-    unk_50.func_02034ae8();
+BOOL BgmProc::vfunc_0c() {
+    unk_50.exit();
     return TRUE;
 }
 
-//DEF data_020c8af8
-const u16 data_020c8af8[0x18] = {
+//DEF sHourlyBgmIds
+const u16 sHourlyBgmIds[0x18] = {
     0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d,
     0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25,
     0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d,

@@ -308,8 +308,8 @@ class EncodedString {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 
     u8 unk_04[10];
 };
@@ -319,8 +319,8 @@ class EncodedString32 : public EncodedString {
 public:
     EncodedString32() {}
     virtual ~EncodedString32() {}
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u8 unk_0e[0x20];
 };
@@ -1739,9 +1739,9 @@ void ChatMenu::setFlags(u32 mask) { unk_a4 = unk_a4 | mask; }
 
 void ChatMenu::clearFlags(u32 mask) { unk_a4 = unk_a4 & ~mask; }
 
-u32 EncodedString32::vfunc_08() { return 0x20; }
+u32 EncodedString32::capacity() { return 0x20; }
 
-u8 *EncodedString32::vfunc_0c() { return (u8 *)this + 0xe; }
+u8 *EncodedString32::data() { return (u8 *)this + 0xe; }
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 extern "C" char data_ov111_022989c8[] = "menu/chat2/b_cht.bsc";

@@ -6,13 +6,13 @@ struct Unk_020829b0_Y {
     u32 unk_00;
     Unk_020829b0_Y();
     ~Unk_020829b0_Y();
-    void func_02077ad8();
+    void SpNpcAnimHeapRef_Assign();
 };
 struct Unk_02082af0_X {
     u32 unk_00;
     Unk_02082af0_X();
     ~Unk_02082af0_X();
-    void func_02077b18();
+    void VillagerAnimHeapRef_Assign();
 };
 struct Unk_02082c54_Z {
     Unk_02082c54_Z();
@@ -254,11 +254,11 @@ s32 func_0208723c(void *p);
 }
 
 extern "C" {
-s32 func_0208740c();
+s32 LostChild_IsKaitlinDue();
 }
 
 extern "C" {
-s32 func_02087444();
+s32 LostChild_IsKatieDue();
 }
 
 extern "C" {

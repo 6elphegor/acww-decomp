@@ -15,8 +15,8 @@ public:
 class EncodedStringBase {
 public:
     virtual ~EncodedStringBase() {}
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 };
 
 class MsgStringAttr {
@@ -34,8 +34,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(class MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;
@@ -213,8 +213,8 @@ class Unk_020d914c : public EncodedStringBase {
 public:
     Unk_020d914c(u8 *data, u32 size);
     virtual ~Unk_020d914c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     /* 0x04 */ u8 *unk_04;
     /* 0x08 */ u32 unk_08;
 };
@@ -248,8 +248,8 @@ class Unk_020d9164 : public EncodedString {
 public:
     Unk_020d9164(u8 *data, u32 size);
     virtual ~Unk_020d9164();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     /* 0x10 */ u8 *unk_10;
     /* 0x14 */ u32 unk_14;
 };
@@ -339,9 +339,9 @@ Unk_020d9164::Unk_020d9164(u8 *data, u32 size) : unk_10(data), unk_14(size) {}
 
 Unk_020d9164::~Unk_020d9164() {}
 
-u32 Unk_020d9164::vfunc_08() { return unk_14; }
+u32 Unk_020d9164::capacity() { return unk_14; }
 
-u8 *Unk_020d9164::vfunc_0c() { return unk_10; }
+u8 *Unk_020d9164::data() { return unk_10; }
 
 Unk_020d9134::Unk_020d9134() { StrBuf_Clear(this); }
 
@@ -355,9 +355,9 @@ Unk_020d914c::Unk_020d914c(u8 *data, u32 size) : unk_04(data), unk_08(size) {}
 
 Unk_020d914c::~Unk_020d914c() {}
 
-u32 Unk_020d914c::vfunc_08() { return unk_08; }
+u32 Unk_020d914c::capacity() { return unk_08; }
 
-u8 *Unk_020d914c::vfunc_0c() { return unk_04; }
+u8 *Unk_020d914c::data() { return unk_04; }
 
 Unk_020d9194::Unk_020d9194()
     : unk_0c(0), unk_10(0), unk_14(0), unk_18(0), unk_44(0), unk_48(0), unk_4c(0), unk_50(0) {

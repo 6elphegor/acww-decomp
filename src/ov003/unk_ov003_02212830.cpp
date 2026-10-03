@@ -414,9 +414,9 @@ void func_020e9888(void *v, s32 ang);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
 s32 WorldCurve_ToCurved(void *out, void *in);
-void func_02099218(void *a, void *b, void *out);
-void func_02099300(void *a, void *out);
-void func_020993dc(void *a);
+void Quat_Mul(void *a, void *b, void *out);
+void Quat_ToMtx43(void *a, void *out);
+void Quat_Normalize(void *a);
 void func_020309d4(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
@@ -699,9 +699,9 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
         q.y = v1.y;
         q.z = v1.z;
         q.w = data_02135f44[u + 1];
-        func_02099218(&q, &o->unk_2f4, &o->unk_2f4);
+        Quat_Mul(&q, &o->unk_2f4, &o->unk_2f4);
         if ((gFrameCounter & 7) == o->unk_08) {
-            func_020993dc(&o->unk_2f4);
+            Quat_Normalize(&o->unk_2f4);
         }
     }
     func_01ffd070(&ex, &o->unk_5c, &o->unk_304);
@@ -710,7 +710,7 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
     s32 ang = WorldCurve_ToCurved(&pv, &ex);
     func_020e8388(&m, pv.x, pv.y, pv.z);
     func_020e8434(&m, ang);
-    func_02099300(&o->unk_2f4, &m2);
+    Quat_ToMtx43(&o->unk_2f4, &m2);
     MTX_Concat43(&m2, &m, &m);
     *(Blk *)((u8 *)o + 0x194) = m;
     *(Blk *)((u8 *)o + 0x230) = m;

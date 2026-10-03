@@ -945,9 +945,9 @@ void CommManager_writeRecord(void *g, void *buf, s32 n);
 void CommManager_beginRecord(void *g);
 BOOL CommManager_isMyAid(void *g, s32 a);
 BOOL CommManager_isOnline(void *g);
-void func_020902d4(s32 h, void *v, s32 a, s32 b);
-void func_020902f8(s32 h);
-s32 func_02090330(s32 a, void *v, s32 b, s32 c);
+void Effect_SetPosition(s32 h, void *v, s32 a, s32 b);
+void Effect_End(s32 h);
+s32 Effect_Create(s32 a, void *v, s32 b, s32 c);
 void func_020947c0(u16 *out, s32 a);
 void *func_020947f0(s32 a);
 void *func_020951ec(s32 n);
@@ -1937,7 +1937,7 @@ extern "C" void FishShadow_MoveFlee(Obj_f8 *self)
         v.y = self->unk_120.y;
         v.z = self->unk_120.z;
         v.y = data_020c7c1c;
-        ((void (*)(s32, V3_f8 *, s32, s32))func_020902d4)(self->unk_204, &v, 0, 0);
+        ((void (*)(s32, V3_f8 *, s32, s32))Effect_SetPosition)(self->unk_204, &v, 0, 0);
     }
 }
 
@@ -2365,7 +2365,7 @@ extern "C" BOOL FishShadow_BiteFlee(Obj_f7 *o) {
     t.y = o->unk_120.y;
     t.z = o->unk_120.z;
     t.y = data_020c7c1c;
-    ((void (*)(s32, V3_f7 *, s32, s32))func_020902d4)(o->unk_204, &t, 0, 0);
+    ((void (*)(s32, V3_f7 *, s32, s32))Effect_SetPosition)(o->unk_204, &t, 0, 0);
     return TRUE;
 }
 
@@ -2894,28 +2894,28 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     loc.z = pv->z;
     switch (sel) {
     case 0:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x12, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x12, &loc, z, z);
         break;
     case 1:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x13, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x13, &loc, z, z);
         break;
     case 2:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x14, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x14, &loc, z, z);
         break;
     case 3:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x15, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x15, &loc, z, z);
         break;
     case 4:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x16, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x16, &loc, z, z);
         break;
     case 5:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x17, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x17, &loc, z, z);
         break;
     case 6:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x19, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x19, &loc, z, z);
         break;
     case 7:
-        ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x18, &loc, z, z);
+        ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x18, &loc, z, z);
         break;
     }
     buf[0] = 0;
@@ -3260,7 +3260,7 @@ extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
         } else if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 2) {
             func_02003e70(self, 0x7e1, 0x7f, 0);
             b.y = data_020c7c1c;
-            ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x15, &b, 0, 0);
+            ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x15, &b, 0, 0);
         }
     } else {
         a.x = self->unk_54.x;
@@ -3537,7 +3537,7 @@ extern "C" void FishCatch_Reset(Self_f5 *self, s32 a) {
     self->unk_96 = 0;
     self->unk_98 = 0;
     self->unk_9a = 0;
-    func_020902f8(self->unk_9c);
+    Effect_End(self->unk_9c);
     self->unk_9c = -1;
     if (self->unk_94) {
         FishCatch_StartSwimAway(self, a);
@@ -3564,43 +3564,43 @@ extern "C" s32 FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
     s32 *h = &self->unk_9c;
     switch (t) {
     case 0:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x12, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1a, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x12, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1a, &v, 0, 0);
         func_02003e70(self, 0x7e2, 0x7f, 0);
         break;
     case 1:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x13, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1b, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x13, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1b, &v, 0, 0);
         func_02003e70(self, 0x7e2, 0x7f, 0);
         break;
     case 2:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x14, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1c, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x14, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1c, &v, 0, 0);
         func_02003e70(self, 0x7e2, 0x7f, 0);
         break;
     case 3:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x15, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1d, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x15, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1d, &v, 0, 0);
         func_02003e70(self, 0x7e3, 0x7f, 0);
         break;
     case 4:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x16, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1e, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x16, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1e, &v, 0, 0);
         func_02003e70(self, 0x7e3, 0x7f, 0);
         break;
     case 5:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x17, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x1f, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x17, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x1f, &v, 0, 0);
         func_02003e70(self, 0x7e4, 0x7f, 0);
         break;
     case 6:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x19, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x21, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x19, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x21, &v, 0, 0);
         func_02003e70(self, 0x7e4, 0x7f, 0);
         break;
     case 7:
-        ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x18, &v, 0, 0);
-        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))func_02090330)(0x20, &v, 0, 0);
+        ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x18, &v, 0, 0);
+        *h = ((s32 (*)(s32, V3_f5 *, s32, s32))Effect_Create)(0x20, &v, 0, 0);
         func_02003e70(self, 0x7e3, 0x7f, 0);
         break;
     }
@@ -3689,7 +3689,7 @@ extern "C" BOOL FishCatch_UpdateSwimAway(Self_f5 *self, V3_f5 *p) {
     v.y = self->unk_54.y;
     v.z = self->unk_54.z;
     v.y = data_020c7c1c;
-    ((void (*)(s32, V3_f5 *, s32, s32))func_020902d4)(self->unk_9c, &v, 0, 0);
+    ((void (*)(s32, V3_f5 *, s32, s32))Effect_SetPosition)(self->unk_9c, &v, 0, 0);
     return TRUE;
 }
 
@@ -3971,7 +3971,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
     if (idx >= 0 && idx < 6) {
         Unk_ov003_02221524_Slot *s = &((Unk_ov003_02221524_Slot *)(sFishShadows))[idx];
         s->unk_80 = 0;
-        func_020902f8(s->unk_204);
+        Effect_End(s->unk_204);
         s->unk_204 = -1;
         if (s->unk_1fc == 0) {
             s->unk_1fc = 3;
@@ -4525,14 +4525,14 @@ extern "C" BOOL FishShadow_StartFlee(E_f3 *e, s32 a) {
     V3_f3 w = v;
     w.y = data_020c7c1c;
     switch (k) {
-    case 0: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1a, &w, 0, 0); break;
-    case 1: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1b, &w, 0, 0); break;
-    case 2: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1c, &w, 0, 0); break;
-    case 3: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1d, &w, 0, 0); break;
-    case 4: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1e, &w, 0, 0); break;
-    case 5: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x1f, &w, 0, 0); break;
-    case 6: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x21, &w, 0, 0); break;
-    case 7: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))func_02090330)(0x20, &w, 0, 0); break;
+    case 0: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1a, &w, 0, 0); break;
+    case 1: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1b, &w, 0, 0); break;
+    case 2: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1c, &w, 0, 0); break;
+    case 3: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1d, &w, 0, 0); break;
+    case 4: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1e, &w, 0, 0); break;
+    case 5: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x1f, &w, 0, 0); break;
+    case 6: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x21, &w, 0, 0); break;
+    case 7: *pr = ((s32 (*)(s32, V3_f3 *, s32, s32))Effect_Create)(0x20, &w, 0, 0); break;
     }
     return TRUE;
 }

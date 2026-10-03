@@ -351,8 +351,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 
     /* 0x04 */ MsgStringAttr unk_04;
 };
@@ -380,8 +380,8 @@ public:
     EncodedString16Buf();
     EncodedString16Buf(u8 *src);
     virtual ~EncodedString16Buf();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     BOOL copyTo(u8 *out, s32 n);
 
     /* 0x0e */ u8 unk_0e[16];

@@ -30,14 +30,14 @@ public:
 class CafeVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_0201ad2c _ZN12Unk_0201ad2013func_0201ad2cEi
-#define func_0201ad30 _ZN12Unk_0201ad2013func_0201ad30Ei
-#define func_0201ad34 _ZN12Unk_0201ad2013func_0201ad34Ei
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
+#define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
+#define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
 #define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
@@ -75,17 +75,17 @@ void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void func_02015ab0(void *o, s32 a);
 s32 Unk_020d77a4_getPlayerActor(void *o, s32 a);
-s32 func_02014220(void *o);
+s32 NpcTalkCtrl_isBusy(void *o);
 void TalkRequest_EndTalkWith(void *o);
 void *func_02015aac(void *o);
 s32 Unk_020d77a4_getAngleTo(void *o, void *p);
-void func_020141b4(void *o, s32 a, s32 b, s32 c);
-void func_0201ad34(void *o, s32 a);
-void func_0201ad30(void *o, s32 a);
-void func_0201ad2c(void *o, s32 a);
+void NpcTalkCtrl_requestTurnAndTalk(void *o, s32 a, s32 b, s32 c);
+void NpcMoveAnimSet_setStandAnim(void *o, s32 a);
+void NpcMoveAnimSet_setWalkAnim(void *o, s32 a);
+void NpcMoveAnimSet_setRunAnim(void *o, s32 a);
 void Unk_020d77a4_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
-void func_020196b4(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 }
 
 // Members of the scene object, named after their constructors.
@@ -96,18 +96,18 @@ struct Unk_02053d3c {
     u32 pad[0x1b4 / 4];
 };
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
-struct Unk_02019dd8 { Unk_02019dd8(); ~Unk_02019dd8(); u32 pad[0x88 / 4]; };
-struct Unk_02016350 { Unk_02016350(); ~Unk_02016350(); u32 pad[0x1c / 4]; };
+struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
+struct NpcAnimCtrl { NpcAnimCtrl(); ~NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc { Unk_0201accc(); ~Unk_0201accc(); u32 pad[0x58 / 4]; };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
-struct Unk_0201a194 { Unk_0201a194(); ~Unk_0201a194(); u32 pad[8 / 4]; };
+struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 unk_44; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
-struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
+struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
 class SndSeEmitter {
@@ -191,30 +191,30 @@ public:
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
 
     u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_020323b0 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -400,9 +400,9 @@ BOOL CafeVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
-    func_0201ad34(&unk_2a0, 0x1e);
-    func_0201ad30(&unk_2a0, 0x1e);
-    func_0201ad2c(&unk_2a0, 0x1e);
+    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0x1e);
+    NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0x1e);
+    NpcMoveAnimSet_setRunAnim(&unk_2a0, 0x1e);
     Unk_020d77a4_setTalkRequest(this, &unk_898);
     unk_898.attachOwner(this);
     return TRUE;
@@ -435,7 +435,7 @@ void CafeVillager::changeAct(s32 idx) {
 }
 
 BOOL CafeVillager::setupAct02() {
-    func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -447,12 +447,12 @@ BOOL CafeVillager::setupAct00() {
     if (p) {
         v = Unk_020d77a4_getAngleTo(this, p);
     }
-    func_020141b4(&unk_618, 0, v, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, v, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct00() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         changeAct(1);
     }
@@ -483,7 +483,7 @@ void CafeVillagerTalk::vfunc_14() {}
 void CafeVillagerTalk::vfunc_18() {}
 
 BOOL CafeVillager::vfunc_48() {
-    if (func_02014220(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         return TRUE;
     }
     return FALSE;

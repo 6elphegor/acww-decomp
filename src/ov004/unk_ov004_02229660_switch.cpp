@@ -347,10 +347,10 @@ class ChoiceList;
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define func_02068290 _ZN9TalkVoice13func_02068290Ev
-#define func_02068298 _ZN9TalkVoice13func_02068298Ei
-#define func_0206829c _ZN9TalkVoice13func_0206829cEv
-#define func_020682a4 _ZN9TalkVoice13func_020682a4Ei
+#define TalkVoice_clearMsgModeOverride _ZN9TalkVoice20clearMsgModeOverrideEv
+#define TalkVoice_setMsgModeOverride _ZN9TalkVoice18setMsgModeOverrideEi
+#define TalkVoice_clearVoiceOverride _ZN9TalkVoice18clearVoiceOverrideEv
+#define TalkVoice_setVoiceOverride _ZN9TalkVoice16setVoiceOverrideEi
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define SaveData_clearFlag _ZN8SaveData9clearFlagEj
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
@@ -390,10 +390,10 @@ void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
 ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);
 void TalkWindowState_openChoices(TalkWindowState *p, u32 v);
 void TalkWindowState_setNextMessage(TalkWindowState *p, u8 *src, const void *s);
-void func_02068290(void *p);
-void func_02068298(void *p, s32 a);
-void func_0206829c(void *p);
-void func_020682a4(void *p, s32 a);
+void TalkVoice_clearMsgModeOverride(void *p);
+void TalkVoice_setMsgModeOverride(void *p, s32 a);
+void TalkVoice_clearVoiceOverride(void *p);
+void TalkVoice_setVoiceOverride(void *p, s32 a);
 BOOL CommManager_isOnline(void *g);
 void SaveData_clearFlag(void *p, u32 n);
 void SaveData_setFlag(void *p, u32 n);

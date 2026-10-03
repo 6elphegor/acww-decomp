@@ -660,7 +660,7 @@ void WorldCurve_FromCurved(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
-void func_020902f8(s32);
+void Effect_End(s32);
 s32 Weather_GetFallingPrecip(void);
 s32 NetArea_IsLocalOwner(void);
 u8 func_02060b9c(u8 v);
@@ -793,9 +793,9 @@ s32 func_020e8434(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
-s32 func_02090330(s32 a, V3 *v, s32 b, u16 *c);
-s32 func_020902d4(s32 h, V3 *v, s32 a, u16 *c);
-s32 func_020902f8(s32 h);
+s32 Effect_Create(s32 a, V3 *v, s32 b, u16 *c);
+s32 Effect_SetPosition(s32 h, V3 *v, s32 a, u16 *c);
+s32 Effect_End(s32 h);
 void *func_0209c0ac(void *p);
 s32 func_02106020(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
@@ -943,7 +943,7 @@ BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 s32 NetArea_IsLocalOwner(void);
 s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
-void func_020902f8(s32 h);
+void Effect_End(s32 h);
 BOOL func_0203a4c4(void *p, s32 a, s32 b);
 void func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020e9650(void *a, void *b);
@@ -2671,7 +2671,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 Unk_02095204_Obj *func_02095204(u32 n);
 s32 Unk_02003c40_callRequest(void *p, s32 v);
 s32 Unk_02003c40_callRequestSustained(void *p, s32 v);
-s32 func_02090330(s32 a, V3 *v, void *p, s32 b);
+s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 s32 Flower_GetColor(s32 a);
 s32 Flower_GetSpecies(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -3243,14 +3243,14 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
         case 0xd:
         case 0x1e:
         case 0x1f:
-            func_02090330(0x13, &v, 0, 0);
+            Effect_Create(0x13, &v, 0, 0);
             break;
         case 0x36:
         case 0x37:
-            func_02090330(0x14, &v, 0, 0);
+            Effect_Create(0x14, &v, 0, 0);
             break;
         default:
-            func_02090330(0x12, &v, 0, 0);
+            Effect_Create(0x12, &v, 0, 0);
             break;
         }
         return TRUE;
@@ -10073,7 +10073,7 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
         s32 r = PlayerActor_GetAction(i);
         if (cur != i && o->unk_251 != 0xb && r != 0x57 && r != 0x58 && r != 0x76 && r != 6) {
             if (o->unk_24d == 0x39) {
-                func_020902f8(o->unk_22c);
+                Effect_End(o->unk_22c);
                 o->unk_22c = neg;
             }
             func_ov003_022287c8(a, o, 3);
@@ -10186,7 +10186,7 @@ extern "C" void HeldInsect_Release(s32 idx, s32 v) {
             break;
         case 0x39:
             if (o->unk_22c != -1) {
-                func_020902f8(o->unk_22c);
+                Effect_End(o->unk_22c);
                 o->unk_22c = -1;
             }
             break;
@@ -10513,7 +10513,7 @@ extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
         CommManager_endRecord(g2, 0x30, 4);
     }
     if (o->unk_22c != -1) {
-        func_020902f8(o->unk_22c);
+        Effect_End(o->unk_22c);
         o->unk_22c = -1;
     }
     o->unk_251 = 10;
@@ -10856,12 +10856,12 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
         WorldCurve_FromCurved(&pos, &pos);
         if (o->unk_21c == 0) {
             arr[0] = o->unk_210;
-            *h = func_02090330(0x3a, &pos, 0, &arr[0]);
+            *h = Effect_Create(0x3a, &pos, 0, &arr[0]);
             o->unk_21c = 1;
         } else {
             arr[1] = o->unk_210;
             s32 t = *h;
-            if (t != -1) func_020902d4(t, &pos, 0, &arr[1]);
+            if (t != -1) Effect_SetPosition(t, &pos, 0, &arr[1]);
         }
     }
 }
@@ -11420,7 +11420,7 @@ extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Unk_ov003_02226180_Blk
             s32 t = e->unk_22c;
             s32 m1 = -1;
             if (t != m1) {
-                func_020902f8(t);
+                Effect_End(t);
                 e->unk_22c = -1;
             }
         }

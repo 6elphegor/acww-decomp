@@ -175,7 +175,7 @@ s32 func_020771d8(void *p, s32 v);
 }
 
 extern "C" {
-s32 func_02076f88(void *p);
+s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {

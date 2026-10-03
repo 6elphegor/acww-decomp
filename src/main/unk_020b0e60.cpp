@@ -364,9 +364,9 @@ void _ZN11CommManager11beginRecordEv(void *p);
 BOOL _ZN11CommManager7isMyAidEj(void *p, u32 a);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
-u32 func_0207e278(void);
+u32 Villager_GetWhereabouts(void);
 void func_02084ffc(void);
-void func_0208627c(void *a);
+void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
 void _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
 void func_020b4934(void);
@@ -1373,7 +1373,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         for (i = x - 1; i >= 1; i--) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
-                    func_0208627c(&data_021e58a6);
+                    GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
@@ -1383,7 +1383,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         for (i = x + 1; i <= 4; i++) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
-                    func_0208627c(&data_021e58a6);
+                    GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
@@ -1393,7 +1393,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     for (i = 1; i <= 4; i++) {
         if (i != y) {
             if (func_020b19ec(GetCell(g, x, i), 0x5020)) {
-                func_0208627c(&data_021e58a6);
+                GulliverQuest_Init(&data_021e58a6);
                 TownUpdater_MarkEventApplied(0x44);
                 return TRUE;
             }
@@ -1403,7 +1403,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         for (i = x + 1; i <= 4; i++) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
-                    func_0208627c(&data_021e58a6);
+                    GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
@@ -1413,7 +1413,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         for (i = x - 1; i >= 1; i--) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
-                    func_0208627c(&data_021e58a6);
+                    GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
@@ -1421,7 +1421,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         }
     }
     if (func_020b19ec(GetCell(g, x, y), 0x5020)) {
-        func_0208627c(&data_021e58a6);
+        GulliverQuest_Init(&data_021e58a6);
         TownUpdater_MarkEventApplied(0x44);
         return TRUE;
     }
@@ -1592,7 +1592,7 @@ extern "C" BOOL func_020b1454(Obj *o, s32 v) {
 
 extern "C" u32 func_020b1428(s32 v) {
     if (SaveVillagers_Get(&data_021dfd8c, v)) {
-        if (func_0207e278() == 2) {
+        if (Villager_GetWhereabouts() == 2) {
             return TRUE;
         }
         return FALSE;

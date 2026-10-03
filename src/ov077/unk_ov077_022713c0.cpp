@@ -46,25 +46,25 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209868cEv(void *p);
 s32 _ZN12Unk_02087ad813func_02087bf4Ev(void *p);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, u8 *b, void *c);
-void _ZN12Unk_0201985813func_020195c8Eiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
-void _ZN12Unk_0201ad2013func_0201ad30Ei(void *self, s32 a);
-void _ZN12Unk_0201ad2013func_0201ad34Ei(void *self, s32 a);
+void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
+void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *self, s32 a);
+void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void func_0203d960();
 void func_0203d96c();
 s32 func_020e77cc(void *p, u32 lo, u32 hi);
 u32 func_02063b8c(u32 n);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
-void func_02034d84(s32 a);
-void func_02034dd0(s32 a, s32 b, s32 c);
-void func_02034d70(s32 a);
-void func_02034e10(s32 a, s32 b, s32 c, s32 d);
+void Bgm_Release(s32 a);
+void Bgm_RequestSilence(s32 a, s32 b, s32 c);
+void Bgm_ReleasePriority(s32 a);
+void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 s32 func_020e7518(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
 s32 func_020951ec(s32 v);
 u16 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
-s32 func_02090330(s32 a, void *b, s32 c, s32 d);
-void func_020902f8(s32 h);
+s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
+void Effect_End(s32 h);
 BOOL TalkRequest_EndTalkWith(void *p);
 void *func_020850e0();
 void *func_0208517c(void *p);
@@ -76,8 +76,8 @@ void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 s32 BlockMap_FindItemAllAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_LocalPlayAnim99(void *p);
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 extern u16 data_020c6cc8;
 extern u8 data_020e416c;
 extern void *gSceneBlockMap;
@@ -160,9 +160,9 @@ public:
     virtual void vfunc_5c();
     virtual void vfunc_60();
     virtual void vfunc_64_alt();
-    void func_02015158(u32 a, u32 b, u32 c);
-    void func_020151d0(s32 a);
-    void func_02014f74();
+    void setSubSceneKindArg(u32 a, u32 b, u32 c);
+    void openSubScene(s32 a);
+    void requestReopenWindow();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -232,18 +232,18 @@ struct Unk_0201ad3c {
     Unk_0201ad3c();
     ~Unk_0201ad3c();
 };
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-struct Unk_02016350 {
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+struct NpcAnimCtrl {
     u8 unk_00[0x1c];
-    Unk_02016350();
-    ~Unk_02016350();
-    BOOL func_0201622c(s32 a, void *b);
+    NpcAnimCtrl();
+    ~NpcAnimCtrl();
+    BOOL isPlayingAnim(s32 a, void *b);
 };
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -264,10 +264,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    BOOL func_02019790();
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    BOOL isActionDone();
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -336,12 +336,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -351,19 +351,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -531,8 +531,8 @@ BOOL SpNpcResetti::vfunc_04() {
     unk_714 = 0xff;
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner(this);
-    _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_2a0, 0xfc);
-    _ZN12Unk_0201ad2013func_0201ad30Ei(&unk_2a0, 0xfc);
+    _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0xfc);
+    _ZN14NpcMoveAnimSet11setWalkAnimEi(&unk_2a0, 0xfc);
     unk_4cc.unk_45 = 0;
     unk_4cc.unk_44 = 0;
     return TRUE;
@@ -597,15 +597,15 @@ BOOL SpNpcResetti::setupAct01() {
     if (p != NULL) {
         v = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, v, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, v, 0);
     return TRUE;
 }
 
 BOOL SpNpcResetti::mainAct01() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0) {
         return TRUE;
     }
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         changeAct(5);
     }
     return TRUE;
@@ -619,7 +619,7 @@ BOOL SpNpcResetti::setupAct03() {
     void *g;
     s32 a, b, c, d;
     u16 u0, u1;
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xfd, 1, 0, 0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xfd, 1, 0, 0);
     if (Unk_ov077_02271bf4_IsZero(data_020e416c)) {
         g = gSceneBlockMap;
         a = 0;
@@ -700,10 +700,10 @@ BOOL SpNpcResetti::mainAct03() {
 
 BOOL SpNpcResetti::setupAct04() {
     unk_ec.unk_ac = 0x1000;
-    unk_720 = func_02090330(0x30, &unk_5c, 0, 0);
+    unk_720 = Effect_Create(0x30, &unk_5c, 0, 0);
     func_02003ddc(&unk_514, 0x7e6, 0x7f, 0);
     unk_4cc.unk_44 = 1;
-    func_02034dd0(0x17, 0xf, 0);
+    Bgm_RequestSilence(0x17, 0xf, 0);
     return TRUE;
 }
 
@@ -713,13 +713,13 @@ BOOL SpNpcResetti::mainAct04() {
     unk_8e = v;
     unk_94 = v;
     if ((s16)unk_ec.unk_a4.b.mid == 0xc) {
-        func_020902f8(unk_720);
+        Effect_End(unk_720);
         unk_720 = -1;
     }
-    if (unk_334.func_0201622c(0xfd, &unk_2a0)) {
-        if (unk_564.func_02019790()) {
+    if (unk_334.isPlayingAnim(0xfd, &unk_2a0)) {
+        if (unk_564.isActionDone()) {
             if (unk_720 != -1) {
-                func_020902f8(unk_720);
+                Effect_End(unk_720);
                 unk_720 = -1;
             }
             changeAct(1);
@@ -730,7 +730,7 @@ BOOL SpNpcResetti::mainAct04() {
 }
 
 BOOL SpNpcResetti::setupAct05() {
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xfe, 1, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xfe, 1, data_020c6cc8, 0);
     func_02003ddc(&unk_514, 0x7e7, 0x7f, 0);
     return TRUE;
 }
@@ -743,21 +743,21 @@ BOOL SpNpcResetti::mainAct05() {
     unk_94 = v;
     f = (s16)unk_ec.unk_a4.b.mid;
     if (f == 2) {
-        unk_720 = func_02090330(0x30, &unk_5c, 0, 0);
+        unk_720 = Effect_Create(0x30, &unk_5c, 0, 0);
     }
     if (f == 0xc) {
         if (unk_720 != -1) {
-            func_020902f8(unk_720);
+            Effect_End(unk_720);
             unk_720 = -1;
         }
     }
-    if (unk_334.func_0201622c(0xfe, &unk_2a0)) {
-        if (unk_564.func_02019790()) {
+    if (unk_334.isPlayingAnim(0xfe, &unk_2a0)) {
+        if (unk_564.isActionDone()) {
             TalkRequest_EndTalkWith(this);
             _ZN12Unk_02086f1413func_02086f14Ej(func_0208517c(func_020850e0()), 0);
             ProcBase_RequestDelete(this);
             if (unk_720 != -1) {
-                func_020902f8(unk_720);
+                Effect_End(unk_720);
                 unk_720 = -1;
             }
             return TRUE;
@@ -794,7 +794,7 @@ void SpNpcResettiTalk::scriptWaitForTip() {
     if (func_020e7518(&unk_b0) == 0) {
         u8 v = 0x10;
         unk_3c->setNextMessage(&v, sSpNpcResettiMsgKey);
-        func_02014f74();
+        requestReopenWindow();
         setScript(0);
     }
 }
@@ -821,8 +821,8 @@ SpNpcResettiTalk::~SpNpcResettiTalk() {}
 
 void SpNpcResettiTalk::vfunc_74() {
     if (unk_b8 == 0) {
-        func_02034d70(0x17);
-        func_02034e10(0x18, 0x43, 0x7f, 1);
+        Bgm_ReleasePriority(0x17);
+        Bgm_Request(0x18, 0x43, 0x7f, 1);
         unk_b8 = 1;
     }
 }
@@ -834,8 +834,8 @@ void SpNpcResettiTalk::vfunc_70() {
     case 0x12:
     case 0x1a:
     case 0x23:
-        func_02034d84(0x43);
-        func_02034dd0(0x17, 0x16, 0x20);
+        Bgm_Release(0x43);
+        Bgm_RequestSilence(0x17, 0x16, 0x20);
         break;
     }
 }
@@ -901,8 +901,8 @@ void SpNpcResettiTalk::vfunc_14() {
         setScript(2);
         break;
     case 0x17:
-        func_02015158(0xc, unk_b4->unk_714, 0);
-        func_020151d0(3);
+        setSubSceneKindArg(0xc, unk_b4->unk_714, 0);
+        openSubScene(3);
         setScript(1);
         break;
     }

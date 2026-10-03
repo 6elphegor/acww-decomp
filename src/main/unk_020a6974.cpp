@@ -447,7 +447,7 @@ class BmgReader;
 class EncodedStringBase {
 public:
     virtual ~EncodedStringBase() {}
-    virtual u32 vfunc_08();
+    virtual u32 capacity();
 };
 
 class MsgStringBase {
@@ -521,8 +521,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;
@@ -1547,8 +1547,8 @@ u8 MsgString::copy(MsgString *other) {
 }
 
 BOOL MsgString::fromEncoded(EncodedString *src, BOOL a, BOOL b) {
-    s32 srcSize = src->vfunc_08();
-    u8 *srcPtr = src->vfunc_0c();
+    s32 srcSize = src->capacity();
+    u8 *srcPtr = src->data();
     u8 *dst = vfunc_0c();
     u32 dstSize = vfunc_08();
     u32 pos = 0;
@@ -1695,8 +1695,8 @@ BOOL EncodedString::fromMsgString(MsgString *src) {
     u8 *sp = src->vfunc_0c();
     u32 srcSize = src->vfunc_08();
     u32 consumed = 0;
-    u8 *dp = vfunc_0c();
-    u32 dstSize = vfunc_08();
+    u8 *dp = data();
+    u32 dstSize = capacity();
     u32 count = 0;
     BOOL ok = TRUE;
     while (consumed < srcSize && count < dstSize) {

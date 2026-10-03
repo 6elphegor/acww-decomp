@@ -39,8 +39,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     MsgStringAttr unk_04;
 };
 
@@ -68,8 +68,8 @@ class Unk_020e2f5c : public EncodedString {
 public:
     Unk_020e2f5c();
     virtual ~Unk_020e2f5c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 unk_0e[0x10];
 };
 
@@ -157,9 +157,9 @@ Unk_020e2f5c::Unk_020e2f5c() {}
 
 Unk_020e2f5c::~Unk_020e2f5c() {}
 
-u32 Unk_020e2f5c::vfunc_08() { return 0x10; }
+u32 Unk_020e2f5c::capacity() { return 0x10; }
 
-u8 *Unk_020e2f5c::vfunc_0c() { return unk_0e; }
+u8 *Unk_020e2f5c::data() { return unk_0e; }
 
 Unk_020b08b4::Unk_020b08b4() {
     _ZN10BgVramTaskC1Ev(this);

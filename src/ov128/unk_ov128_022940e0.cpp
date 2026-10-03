@@ -63,8 +63,8 @@ u8 *func_020b053c();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void PlayerActor_LocalRequestAct12();
 void func_02094960();
-void func_02034f80(void *p);
-void func_02034f98(void *p);
+void BgmTracks_FadeInScene22(void *p);
+void BgmTracks_FadeOutScene22(void *p);
 void Gfx2d_LoadCharFile(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_SetSubBgModeState(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
@@ -537,7 +537,7 @@ void StargazingMenu::initMembers() {
     unk_2d14 = 1;
     resetNameLabel();
     PlayerActor_LocalRequestAct12();
-    func_02034f98(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
 }
 
 void StargazingMenu::releaseResources() {
@@ -546,7 +546,7 @@ void StargazingMenu::releaseResources() {
     unk_94.freeText();
     unk_2cb0.func_0206fc44();
     func_02094960();
-    func_02034f80(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 

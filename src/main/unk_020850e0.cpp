@@ -28,7 +28,7 @@ public:
     void func_020858b0(Unk_02085810_Base *src);
     void func_02085900(u32 v);
     void func_02085908();
-    void func_02085940();
+    void clear();
     void func_020858ac();
 
     /* 0x00 */ Unk_02085810_Base unk_00;
@@ -116,23 +116,23 @@ s32 func_0203c338();
 s32 func_0203c31c();
 void Clock_GetDateTime(void *);
 s32 Event_GetState(s32, void *, s32);
-void _ZN12Unk_02086f8413func_02086f84Ev(void *);
-void _ZN12Unk_02086b7c13func_02086bf0Ev(void *);
-void func_02086adc(void *);
-void _ZN12Unk_02086b7c13func_02086bfcEv(void *);
+void _ZN12Unk_02086f8416clearClosingTimeEv(void *);
+void _ZN17VisitorSpawnFlags5clearEv(void *);
+void VisitorPos_Clear(void *);
+void _ZN17VisitorSpawnFlags13func_02086bfcEv(void *);
 void _ZN12Unk_02086f1413func_02086f30Ev(void *);
 void _ZN12Unk_02086c0413func_02086ee8Ev(void *);
-void _ZN12Unk_02086ef013func_02086f0cEv(void *);
+void _ZN15TownTravelState13func_02086f0cEv(void *);
 void _ZN12Unk_02086f8413func_02086f8cEv(void *);
-void _ZN12Unk_0208721013func_0208721cEv(void *);
+void _ZN15KatieVisitState13func_0208721cEv(void *);
 void func_02086ae8(void *);
 void func_02086aec(void *);
-void _ZN12Unk_0208721013func_02087220Ev(void *);
+void _ZN15KatieVisitState13func_02087220Ev(void *);
 void _ZN12Unk_02086f8413func_02086f90Ev(void *);
-void _ZN12Unk_02086ef013func_02086f10Ev(void *);
+void _ZN15TownTravelState13func_02086f10Ev(void *);
 void _ZN12Unk_02086c0413func_02086eecEv(void *);
 void _ZN12Unk_02086f1413func_02086f34Ev(void *);
-void _ZN12Unk_02086b7c13func_02086c00Ev(void *);
+void _ZN17VisitorSpawnFlags13func_02086c00Ev(void *);
 void func_020030e8(...);
 void _ZN8PlayerId13func_02094294Ev(...);
 s32 func_02063b8c(s32);
@@ -172,7 +172,7 @@ struct Unk_020856a4_Rec {
 
 void Unk_02085810::func_02085908() {
     u8 d[8];
-    func_02085940();
+    clear();
     Clock_GetDate(d);
     unk_36 = d[2];
     unk_35 = d[1];
@@ -491,32 +491,32 @@ Unk_0208524c::Unk_0208524c()
 {
     u8 *self = (u8 *)this;
     func_02086aec(self + 4);
-    _ZN12Unk_0208721013func_02087220Ev(self + 0xc);
+    _ZN15KatieVisitState13func_02087220Ev(self + 0xc);
     _ZN12Unk_02086f8413func_02086f90Ev(self + 0x18);
-    _ZN12Unk_02086ef013func_02086f10Ev(self + 0x20);
+    _ZN15TownTravelState13func_02086f10Ev(self + 0x20);
     _ZN12Unk_02086c0413func_02086eecEv(self + 0x24);
     _ZN12Unk_02086f1413func_02086f34Ev(self + 0x30);
-    _ZN12Unk_02086b7c13func_02086c00Ev(self + 0x31);
+    _ZN17VisitorSpawnFlags13func_02086c00Ev(self + 0x31);
 }
 
 Unk_0208524c::~Unk_0208524c()
 {
     u8 *self = (u8 *)this;
-    _ZN12Unk_02086b7c13func_02086bfcEv(self + 0x31);
+    _ZN17VisitorSpawnFlags13func_02086bfcEv(self + 0x31);
     _ZN12Unk_02086f1413func_02086f30Ev(self + 0x30);
     _ZN12Unk_02086c0413func_02086ee8Ev(self + 0x24);
-    _ZN12Unk_02086ef013func_02086f0cEv(self + 0x20);
+    _ZN15TownTravelState13func_02086f0cEv(self + 0x20);
     _ZN12Unk_02086f8413func_02086f8cEv(self + 0x18);
-    _ZN12Unk_0208721013func_0208721cEv(self + 0xc);
+    _ZN15KatieVisitState13func_0208721cEv(self + 0xc);
     func_02086ae8(self + 4);
 }
 
 extern "C" void *func_020851e4(u8 *self)
 {
-    _ZN12Unk_02086f8413func_02086f84Ev(self + 0x18);
+    _ZN12Unk_02086f8416clearClosingTimeEv(self + 0x18);
     MI_CpuFill8(self, 0, 4);
-    _ZN12Unk_02086b7c13func_02086bf0Ev(self + 0x31);
-    func_02086adc(self + 4);
+    _ZN17VisitorSpawnFlags5clearEv(self + 0x31);
+    VisitorPos_Clear(self + 4);
 }
 
 extern "C" BOOL func_020851bc(u32 *w, u32 bit)

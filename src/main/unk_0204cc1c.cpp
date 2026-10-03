@@ -349,9 +349,9 @@ void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void *Heap_AllocTail(void *heap, s32 size);
 void func_020e885c(u32 v);
 u32 SaveVillagers_Get(u32 *a, s32 b);
-s32 _ZN20VillagerDataItemView13func_0207f07cEPiS0_(u32 h, s32 *a, s32 *b);
-u32 _ZN20VillagerDataItemView13func_0207f04cEv(u32 h);
-void func_0207e568(u32 h, void *p);
+s32 _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(u32 h, s32 *a, s32 *b);
+u32 _ZN20VillagerDataItemView13getInfo28ItemEv(u32 h);
+void Villager_ResolveRoomLayout(u32 h, void *p);
 void File_ReadRangeByPath(u32 a, void *dst, s32 size, s32 off);
 void *File_LoadAlloc(u32 a, void *heap, s32 b, s32 *sizeOut);
 u32 MapBlock_NewArray(s32 a, void *heap, s32 b);
@@ -1831,7 +1831,7 @@ extern "C" Unk_0204d0f4_Info *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *hea
     if (p) {
         u32 h = SaveVillagers_Get(&data_021dfd8c, b);
         if (h) {
-            p->a = _ZN20VillagerDataItemView13func_0207f04cEv(h);
+            p->a = _ZN20VillagerDataItemView13getInfo28ItemEv(h);
         } else {
             p->a = 0x1010;
         }
@@ -1851,10 +1851,10 @@ extern "C" BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap) {
     y = 0;
     r = FALSE;
     h = SaveVillagers_Get(&data_021dfd8c, b);
-    if (h) _ZN20VillagerDataItemView13func_0207f07cEPiS0_(h, &x, &y);
+    if (h) _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y);
     if (h) {
         if (FgData_ApplyLayoutGlobal(dst, x, y, heap)) {
-            func_0207e568(h, dst);
+            Villager_ResolveRoomLayout(h, dst);
             r = TRUE;
         }
     }
@@ -2112,7 +2112,7 @@ extern "C" void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *h
 extern "C" void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d) {
     u32 h = SaveVillagers_Get(&data_021dfd8c, c);
     s32 x = 2, y = 0;
-    if (h && _ZN20VillagerDataItemView13func_0207f07cEPiS0_(h, &x, &y)) {
+    if (h && _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y)) {
         return FgData_ReadLayoutEntries(a, b, x, y, d);
     }
     return 0;

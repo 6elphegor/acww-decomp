@@ -5,10 +5,10 @@ s32 func_02065578();
 void func_02065c94(void *p);
 void _ZN6LetterD1Ev(void *p);
 void _ZN6LetterC1Ev(void *p);
-void func_020874c8(void *p);
-void func_020874d8(void *p);
-void func_020789ac(void *p);
-void func_020789bc(void *p);
+void LostChildRecord_Destruct(void *p);
+void LostChildRecord_Construct(void *p);
+void VillagerTransfer_DestructVillager(void *p);
+void VillagerTransfer_ConstructVillager(void *p);
 void func_020b0a30(void *p);
 void _ZN12Unk_020b0a60D1Ev(void *p);
 void _ZN12Unk_020b0a60C1Ev(void *p);
@@ -63,13 +63,13 @@ extern "C" void *func_0208f0e8(s32 i);
 Unk_0208f238::Unk_0208f238() {
     _ZN6LetterC1Ev(this);
     _ZN12Unk_020b0a60C1Ev((u8 *)this + 0xf4);
-    func_020789bc((u8 *)this + 0x13c);
-    func_020874d8((u8 *)this + 0x83e);
+    VillagerTransfer_ConstructVillager((u8 *)this + 0x13c);
+    LostChildRecord_Construct((u8 *)this + 0x83e);
 }
 
 Unk_0208f238::~Unk_0208f238() {
-    func_020874c8((u8 *)this + 0x83e);
-    func_020789ac((u8 *)this + 0x13c);
+    LostChildRecord_Destruct((u8 *)this + 0x83e);
+    VillagerTransfer_DestructVillager((u8 *)this + 0x13c);
     _ZN12Unk_020b0a60D1Ev((u8 *)this + 0xf4);
     _ZN6LetterD1Ev(this);
 }

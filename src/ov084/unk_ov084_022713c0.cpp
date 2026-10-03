@@ -51,10 +51,10 @@ s32 func_02098ffc();
 s32 func_02098eb0(u16 *p);
 void func_02099014(u16 *p, s32 v);
 void func_02099064(s32 v);
-void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442013func_02014ce4EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest13func_0201578cEjjj(void *p, u16 *q, s32 a, s32 b);
-BOOL func_0202e1cc(s32 a, s32 b);
+void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
@@ -69,11 +69,11 @@ void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void func_020856a4(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
+void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 data_021ed24c[];
 extern u8 gSaveData[];
 }
@@ -195,8 +195,8 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -208,7 +208,7 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 struct Unk_02088d00 {
@@ -226,10 +226,10 @@ struct Unk_020135e4 {
     Unk_020135e4();
     ~Unk_020135e4();
 };
-struct Unk_02019858 {
-    Unk_02019858();
-    ~Unk_02019858();
-    void func_020196b4(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    ~NpcActionCtrl();
+    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
     u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 {
@@ -298,12 +298,12 @@ public:
     virtual void vfunc_80();
     virtual void getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual s32 vfunc_a8();
 
@@ -313,19 +313,19 @@ public:
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
 };
 
@@ -473,7 +473,7 @@ BOOL SpNpcTortimerFireworks::vfunc_00() {
     }
     changeAct(0);
     func_02085784(data_021ed24c, 0);
-    _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     u8 buf[8];
@@ -508,7 +508,7 @@ void SpNpcTortimerFireworks::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFireworks::setupAct00() {
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -520,12 +520,12 @@ BOOL SpNpcTortimerFireworks::setupAct01() {
     if (p != NULL) {
         x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFireworks::mainAct01() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         changeAct(2);
     }
@@ -560,7 +560,7 @@ void SpNpcTortimerFireworksTalk::vfunc_78(TalkStartMsg *out) {
             return;
         }
     }
-    if (func_0202e1cc(0x1e, 1)) {
+    if (Talk_CheckAndSetPlayerFlag(0x1e, 1)) {
         func_020947c0(&h[0], Net_GetJoiningAid());
         h[2] = 0x137e;
         s32 t1 = func_02098eb0(&h[2]);
@@ -623,7 +623,7 @@ void SpNpcTortimerFireworksTalk::vfunc_14() {
         }
         if (unk_1e == 2) {
             h[1] = 0x1559;
-            _ZN12Unk_020d771013func_02014e60EPtjjj(this, &h[1], 0, 5, 0);
+            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[1], 0, 5, 0);
             h[2] = 0x1559;
             func_02099014(&h[2], 0);
             b = 4;
@@ -671,9 +671,9 @@ void SpNpcTortimerFireworksTalk::vfunc_14() {
                 if (_ZN12Unk_02087ad813func_02087b8cEv(g2) < 10) {
                     _ZN12Unk_02087ad813func_02087b4cEv(g2);
                     s32 r = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-                    _ZN12Unk_020d771013func_02014e60EPtjjj(this, &h[0], 0, 5, 0);
+                    _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
                     func_02099014(&h[0], 0);
-                    _ZN16ActorTalkRequest13func_0201578cEjjj(this, &h[0], 0, 7);
+                    _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
                     if (r == 0) {
                         msg = 3;
                     } else {
@@ -683,14 +683,14 @@ void SpNpcTortimerFireworksTalk::vfunc_14() {
                     msg = 0xb;
                 }
             } else {
-                _ZN16ActorTalkRequest13func_0201578cEjjj(this, &h[0], 0, 7);
+                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
                 msg = 5;
             }
             break;
         }
         case 9:
             h[6] = 0x1565;
-            _ZN12Unk_020d771013func_02014e60EPtjjj(this, &h[6], 0, 5, 0);
+            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[6], 0, 5, 0);
             msg = 0xa;
             break;
         }
@@ -715,7 +715,7 @@ void SpNpcTortimerFireworksTalk::vfunc_18() {
                 if (unk_b0 >= 0) {
                     func_02099064(unk_b0);
                     h[0] = 0x37e0;
-                    _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &h[0], 0, 5, 0);
+                    _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h[0], 0, 5, 0);
                 }
                 msg = 2;
             }
@@ -768,7 +768,7 @@ void SpNpcTortimerFireworksTalk::vfunc_18() {
 
 BOOL SpNpcTortimerFireworks::vfunc_48() {
     BOOL r = FALSE;
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         r = TRUE;
     }
     return r;

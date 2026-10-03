@@ -162,7 +162,7 @@ void Villager_GetSpeciesName(Unk_02041e00_Obj *o, u32 v);
 void MailText_SetSlot(s32 a, Unk_02041e00_Obj *o);
 s32 func_02063b8c(s32 v);
 s32 Event_GetStateAt(u32 ty, Unk_02042104_Date *d, s32 v);
-void func_02076ff0(s32 a, const char *fmt, u32 b, u32 c, u32 d);
+void Bbs_PostMsgDated(s32 a, const char *fmt, u32 b, u32 c, u32 d);
 s32 TownBbs_UnpackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);
 void TownBbs_PackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
@@ -295,7 +295,7 @@ u32 FieldPlayer_GetHeldItem(void *);
 u16 Flower_GetWateredForm(void *, void *, s32);
 void func_0205f094(s32, s32, s32, u32, s32);
 void FieldPos_FromUnitCenter(void *, s32, s32);
-s32 func_0207878c(void *);
+s32 VillagerTrend_NotifyUnk5(void *);
 void FieldAction_Clear(Unk_02042578_Entry *, s32);
 void MoneyRock_Init(Unk_02042564_Obj *);
 void MoneyRock_Reset(Unk_02042564_Obj *);
@@ -1100,7 +1100,7 @@ s32 TownState_PickNextWeekDate(void *, void *);
 s32 func_0205b124(void *);
 s32 func_0205afa0(void *);
 s32 func_0205b120(void *);
-s32 _ZN12Unk_0208634013func_02086444Ei(void *, s32);
+s32 _ZN12TurnipMarket9updateDayEi(void *, s32);
 s32 func_020981f8();
 extern u8 gSaveData[];
 extern u8 data_021ed29c[];
@@ -1264,7 +1264,7 @@ void Town_UpdateRedTurnips(void *, void *, s32);
 void Town_SpawnCoconut(void *, void *, s32);
 void Town_BuryGyroids(void *, void *, s32, s32, u32);
 void Town_UpgradeBuriedShovels(void *, void *, s32, s32);
-void _ZN12Unk_0208581013func_020859b4Ev(void *);
+void _ZN12Unk_0208581017sendResultLettersEv(void *);
 void _ZN10MuseumData22checkCompletionLettersEv(void *);
 void _ZN9HouseData13func_020605a8Ev(void *);
 void NookShop_ApplyRenovation();
@@ -1279,12 +1279,12 @@ void _ZN7TownMap13func_0204df30Ev(void *);
 void Sky_OnDayChange(s32);
 void BottleLetter_OnNewDay(s32);
 void MotherLetter_OnNewDay(void *, s32);
-void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
+void _ZN14RoostGuestRoll4rollEv(void *);
 void NookShop_UpdateDaily(void *, s32);
-void func_0208747c(s32);
-s32 _ZN12Unk_0208722413func_02087280Ev(void *);
-void _ZN12Unk_0208722413func_0208728cEj(void *, s32);
-void func_02078150(void *, void *);
+void LostChild_AdvanceDays(s32);
+s32 _ZN16BlancaFaceRecord8getStateEv(void *);
+void _ZN16BlancaFaceRecord8setStateEj(void *, s32);
+void SaveVillagers_OnNewDay(void *, void *);
 s32 Date_GetWeekday(s32, s32, s32);
 void Turnips_SpoilAll(void *);
 void ChopCount_ClearAll(void *);
@@ -1495,10 +1495,10 @@ s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 func_0203fc10(void *a, s32 b);
 s32 Villager_GetPlan(void *p);
-s32 func_0209a610();
-s32 _ZN12Unk_0209b3bc13func_0209b354Ev();
+s32 VillagerPlanBlock_GetPlan();
+s32 _ZN12VillagerPlan8getStateEv();
 u8 *_ZN20VillagerDataItemView11getHousePosEv(void *p);
-s32 func_02081038(void *p);
+s32 HousePos_IsValid(void *p);
 s32 Town_SpawnBeeTrees(void *a, void *b, s32 c, s32 d);
 s32 Town_SpawnFurnitureTrees(void *a, void *b, s32 c, s32 d);
 s32 Town_SpawnBellTrees(void *a, void *b, s32 c, s32 d);
@@ -4572,11 +4572,11 @@ extern "C" void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d) {
         if (func_0203fc10(p, r)) {
             if (c == 0) {
                 Villager_GetPlan(p);
-                func_0209a610();
-                if (_ZN12Unk_0209b3bc13func_0209b354Ev() != 5) continue;
+                VillagerPlanBlock_GetPlan();
+                if (_ZN12VillagerPlan8getStateEv() != 5) continue;
             }
             q = _ZN20VillagerDataItemView11getHousePosEv(p);
-            if (func_02081038(q)) {
+            if (HousePos_IsValid(q)) {
                 Unk_02047e64_Pos pos(q[0], q[1]);
                 Town_SpawnFlowersAroundHouse(a, b, &pos, d);
             }
@@ -5495,7 +5495,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Town_SpawnCoconut(a, p, x);
         Town_BuryGyroids(a, p, x, y, e);
         Town_UpgradeBuriedShovels(a, p, x, y);
-        _ZN12Unk_0208581013func_020859b4Ev(data_021ed24c);
+        _ZN12Unk_0208581017sendResultLettersEv(data_021ed24c);
         _ZN10MuseumData22checkCompletionLettersEv(data_021ed0a0);
         char *const g = data_021e58a8;
         _ZN9HouseData13func_020605a8Ev(g);
@@ -5510,14 +5510,14 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Sky_OnDayChange(n);
         BottleLetter_OnNewDay(n);
         MotherLetter_OnNewDay(&t3, n);
-        _ZN12Unk_02085f7c13func_02085fb4Ev(data_021e58a7);
+        _ZN14RoostGuestRoll4rollEv(data_021e58a7);
         NookShop_UpdateDaily(data_021ed104, 0);
-        func_0208747c(n);
+        LostChild_AdvanceDays(n);
         if (n > 0) {
             char *g2 = data_021eca50;
-            if (_ZN12Unk_0208722413func_02087280Ev(g2) == 1) _ZN12Unk_0208722413func_0208728cEj(g2, 2);
+            if (_ZN16BlancaFaceRecord8getStateEv(g2) == 1) _ZN16BlancaFaceRecord8setStateEj(g2, 2);
         }
-        func_02078150(data_021dfd8c, c);
+        SaveVillagers_OnNewDay(data_021dfd8c, c);
         m = Date_GetWeekday(b[5], b[4], b[3]);
         s32 q2 = Date_GetWeekday(c[5], c[4], c[3]);
         s32 d = q2 - m;
@@ -5865,7 +5865,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
         src->b = ((u8 *)&l.t)[4];
         src->a = ((u8 *)&l.t)[3];
     }
-    _ZN12Unk_0208634013func_02086444Ei(data_021ed29c, days);
+    _ZN12TurnipMarket9updateDayEi(data_021ed29c, days);
     func_020981f8();
 }
 }
@@ -8747,7 +8747,7 @@ extern "C" void FieldAction_WaterFlowers(void *self, Unk_020422c0_Pos *p) {
         if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             u8 buf[12];
             FieldPos_FromUnitCenter(buf, p->x, p->y);
-            func_0207878c(buf);
+            VillagerTrend_NotifyUnk5(buf);
         }
     }
 }
@@ -9132,7 +9132,7 @@ extern "C" void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p,
         }
         *p = 1;
     }
-    func_02076ff0(idx, fmt, d->c5, d->c4, d->c3);
+    Bbs_PostMsgDated(idx, fmt, d->c5, d->c4, d->c3);
 }
 }
 
@@ -9212,7 +9212,7 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
             break;
         }
         if (t != ~v14) {
-            func_02076ff0(t, "bbs_event", d->c5, d->c4, d->c3);
+            Bbs_PostMsgDated(t, "bbs_event", d->c5, d->c4, d->c3);
         }
         z++;
         n = i + 1;

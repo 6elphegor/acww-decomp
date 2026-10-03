@@ -128,15 +128,15 @@ s32 PlayerData_GetCurrentIndex(void);
 s32 func_02040234(Unk_0203ff50_Slot *, u32);
 s32 func_02040188(Unk_0203f554_Cal);
 s32 func_020400f8(Unk_0203f554_Cal);
-s32 func_02087444();
-s32 func_0208740c();
-s32 _ZN12Unk_0208722413func_0208723cEv(void *);
+s32 LostChild_IsKatieDue();
+s32 LostChild_IsKaitlinDue();
+s32 _ZN16BlancaFaceRecord11isBlancaDueEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 s32 Villager_GetResidentStatus(void *);
-s32 func_0207e334(void *);
+s32 Villager_GetIndex(void *);
 void *SaveVillagers_Get(void *, s32);
 s32 SaveVillagers_GetUnk3830Index(void *);
-u8 *func_0207fae4(void *);
+u8 *Villager_GetBirthday(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 *_ZN12Unk_02097ff413func_02098308Ev(s32);
 
@@ -504,7 +504,7 @@ extern "C" BOOL func_0203fc10(void *a, s32 b) {
     BOOL r = FALSE;
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
         if (Villager_GetResidentStatus(a) == 3) {
-            s32 x = func_0207e334(a);
+            s32 x = Villager_GetIndex(a);
             if (x != -1 && x != b) {
                 r = TRUE;
             }
@@ -519,7 +519,7 @@ extern "C" void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_
     if (n < 0 || n > 7) n -= 0x4b;
     void *r6 = SaveVillagers_Get(base + 0x8a3c, n);
     if (func_0203fc10(r6, SaveVillagers_GetUnk3830Index(base + 0x8a3c))) {
-        u8 *p = func_0207fae4(r6);
+        u8 *p = Villager_GetBirthday(r6);
         if (p) {
             out->s.b3 = p[0];
             out->s.b2 = p[1];
@@ -753,7 +753,7 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
         } else {
             if (EventWeekSlots_IsUnavailable(e->id, cal.s.b0) && EventWeekSlots_IsUnavailable(e->id, (u8)(cal.s.b0 - 1))) return 1;
         }
-        if (func_02087444() || func_0208740c()) return 1;
+        if (LostChild_IsKatieDue() || LostChild_IsKaitlinDue()) return 1;
         return 0;
     }
     lo = e->a.w & ~0xff;
@@ -766,10 +766,10 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
         }
     }
     if (kind >= 2) {
-        if (func_02087444() || func_0208740c()) return 1;
+        if (LostChild_IsKatieDue() || LostChild_IsKaitlinDue()) return 1;
     }
     if (kind >= 3) {
-        if (_ZN12Unk_0208722413func_0208723cEv(data_021eca50)) return 1;
+        if (_ZN16BlancaFaceRecord11isBlancaDueEv(data_021eca50)) return 1;
     }
     switch (e->id) {
     case 0x3c:

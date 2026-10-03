@@ -242,13 +242,13 @@ public:
     u8 pad[0x34];
 };
 
-struct Unk_020d8e14 {
-    void func_0203535c(s32 a);
+struct BgmSceneFade {
+    void setFadeDelay(s32 a);
 };
 
-struct Unk_02034518 {
+struct BgmManager {
     u8 pad_00[0x2d0];
-    Unk_020d8e14 unk_2d0;
+    BgmSceneFade unk_2d0;
 };
 
 class BuildingActor;
@@ -583,7 +583,7 @@ extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
 extern u8 data_020d0a7c[];
 extern void *data_021c6204;
 extern void *gCurrentHeap;
-extern Unk_02034518 *data_021c1b3c;
+extern BgmManager *data_021c1b3c;
 
 void _ZN9Character13func_0203e47cEi(void *self, MsgRequest *a);
 void _ZN9Character13func_0203e488Ei(void *self, MsgRequest *a);

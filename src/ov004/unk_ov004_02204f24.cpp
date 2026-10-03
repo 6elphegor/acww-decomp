@@ -1073,7 +1073,7 @@ u32 func_02031060(u32 a);
 s32 FtrMgr_CountSwitchedOn(void *fn);
 void LightSwitch_SetOff(u32 a, u32 b);
 s32 func_020516a4(u32 a, u32 b);
-void func_0209028c(u32 id, void *v, u32 a, u32 b);
+void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
 void *func_020947f0(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
 u32 func_020b52d0(void);
@@ -3133,7 +3133,7 @@ void FtrActor::spawnEffectAt(Unk_0203e4f0_Vec *v) {
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    func_0209028c(0x3d, &t, 0, 0);
+    Effect_PlayById2(0x3d, &t, 0, 0);
 }
 
 // @02206fa0

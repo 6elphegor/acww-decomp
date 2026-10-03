@@ -19,7 +19,7 @@ u32 func_0204f100(u32 r);
 extern void *gCommManager;
 }
 
-extern "C" void func_02012100(void);
+extern "C" void VillagerRoute_PickOwnHouseBlock(void);
 extern void *data_020da4ac[3];
 extern void *data_020da4b8[3];
 extern void *data_020da4c4[3];
@@ -245,7 +245,7 @@ void *data_020db864[18] = {
     (void *)0x4001806,
     (void *)0x1f02001d,
     (void *)0x200100,
-    (void *)func_02012100,
+    (void *)VillagerRoute_PickOwnHouseBlock,
     (void *)0x39020038,
     (void *)0x3a0200,
     (void *)0x1

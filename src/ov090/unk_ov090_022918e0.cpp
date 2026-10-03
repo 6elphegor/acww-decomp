@@ -326,20 +326,20 @@ public:
     u32 unk_00[0x42];
 };
 
-class Unk_02035758 {
+class BgmVolumeMixer {
 public:
-    void func_02035bb4();
-    void func_02035bbc(s32 i);
+    void endMenuDuck();
+    void setMenuDuck(s32 i);
     u32 unk_00;
 };
 
-class Unk_02034518 {
+class BgmManager {
 public:
     u32 unk_00[0x71];
-    Unk_02035758 unk_1c4;
+    BgmVolumeMixer unk_1c4;
 };
 
-extern "C" Unk_02034518 *data_021c1b3c;
+extern "C" BgmManager *data_021c1b3c;
 
 class MenuTabBar;
 typedef void (MenuTabBar::*Unk_ov090_022921e0_Fn)();
@@ -543,7 +543,7 @@ void MenuTabBar::selectTab(u32 idx) {
             MenuScreen_BeginClose();
         }
         Snd_PlaySe(2);
-        data_021c1b3c->unk_1c4.func_02035bb4();
+        data_021c1b3c->unk_1c4.endMenuDuck();
     } else {
         if (idx <= 6 && old <= 6) {
             Snd_PlaySe(3);
@@ -682,7 +682,7 @@ void MenuTabBar::initTabBar() {
     unk_94 = 0;
     unk_95 = 0;
     Snd_PlaySe(1);
-    data_021c1b3c->unk_1c4.func_02035bbc(0);
+    data_021c1b3c->unk_1c4.setMenuDuck(0);
 }
 
 void MenuTabBar::releaseResources() { cancelVramTasks(); }

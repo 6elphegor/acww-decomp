@@ -34,10 +34,10 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-class Unk_020872fc {
+class LostChildRecord {
 public:
-    BOOL func_02087314();
-    u16 *func_02087364();
+    BOOL isEscorting();
+    u16 *getTownId();
 };
 
 class CommManager {
@@ -319,7 +319,7 @@ void Comm_ProcessReceived(s32 a);
 void func_0208e968(void);
 s32 func_02097444(s32 a);
 s32 PlayerData_Get(s32 a);
-Unk_020872fc *_ZN10PlayerData13func_020986a4Ev(s32 a);
+LostChildRecord *_ZN10PlayerData13func_020986a4Ev(s32 a);
 void func_0209caf4(void);
 void func_0209f230(s32 a);
 void Net_SetJoiningAid(s32 a);
@@ -1687,7 +1687,7 @@ void NetSessionState::updateSyncClient() {
             s32 x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
             u8 *idb = (u8 *)&data_021d7352;
-            if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->func_02087314() && (p = _ZN10PlayerData13func_020986a4Ev(x)->func_02087364(), p[0] == *(u16 *)idb) &&
+            if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->isEscorting() && (p = _ZN10PlayerData13func_020986a4Ev(x)->getTownId(), p[0] == *(u16 *)idb) &&
                 memcmp(p + 1, idb + 2, 8) == 0) {
                 func_020b4f58(func_020b4934(), 0x2f, 2, 2);
             } else {

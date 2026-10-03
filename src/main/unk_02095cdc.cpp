@@ -251,7 +251,7 @@ u32 func_02072e88(CommManager *p, s32 v);
 void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
 void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
-void func_020795c4(void *, void *);
+void SaveVillagers_DeliverLetter(void *, void *);
 s32 SaveVillagers_FindIndex(void *, void *);
 s32 SaveVillagers_IsValidIndex(s32);
 void *func_0208f05c(void *);
@@ -481,7 +481,7 @@ extern "C" BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e) {
 }
 
 extern "C" void LetterDelivery_SendToVillager(Letter *e) {
-    func_020795c4(data_021dfd8c, e);
+    SaveVillagers_DeliverLetter(data_021dfd8c, e);
 }
 
 extern "C" BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag) {

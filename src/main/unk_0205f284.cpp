@@ -99,8 +99,8 @@ extern CommManager *gCommManager;
 extern u8 data_021e6e3c[];
 extern u8 data_021e58a8[];
 
-s32 func_020902f8(s32 h);
-s32 func_02090330(u32 id, void *a, u32 b, u32 c);
+s32 Effect_End(s32 h);
+s32 Effect_Create(u32 id, void *a, u32 b, u32 c);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_0205f92c_Buf *p, Unk_0205f8d4_Vec *v, s32 a, s32 b);
 void func_02033988(Unk_0205f92c_Buf *p);
 BOOL FishShadow_FleeFromPlayer(void *p);
@@ -158,7 +158,7 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 func_020e7870(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
-s32 func_020902d4(s32 h, Unk_0205f8d4_Vec *v, void *a, s32 b);
+s32 Effect_SetPosition(s32 h, Unk_0205f8d4_Vec *v, void *a, s32 b);
 void func_020e9790(Unk_0205f8d4_Vec *out, Unk_0205f8d4_Vec *in, s32 n);
 void VEC_Add(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
 void VEC_Subtract(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
@@ -594,7 +594,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
     s32 old;
 
     if (unk_34 != -1) {
-        func_020902f8(unk_34);
+        Effect_End(unk_34);
         unk_34 = -1;
     }
     if (unk_28 == 0) {
@@ -633,7 +633,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
             v.y = unk_08.y;
             v.z = unk_08.z;
             v.y = buf.unk_3c;
-            func_02090330(0xd, &v, 0, 0);
+            Effect_Create(0xd, &v, 0, 0);
         }
         break;
     }
@@ -660,7 +660,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
             v.y = unk_08.y;
             v.z = unk_08.z;
             v.y = buf.unk_3c;
-            func_02090330(0x10, &v, 0, 0);
+            Effect_Create(0x10, &v, 0, 0);
         }
         break;
     case 4:
@@ -670,7 +670,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
                 v.y = unk_08.y;
                 v.z = unk_08.z;
                 v.y = buf.unk_3c;
-                func_02090330(0xf, &v, 0, 0);
+                Effect_Create(0xf, &v, 0, 0);
             }
         }
         break;
@@ -680,7 +680,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
             v.y = unk_08.y;
             v.z = unk_08.z;
             v.y = buf.unk_3c;
-            unk_34 = func_02090330(0x11, &v, 0, 0);
+            unk_34 = Effect_Create(0x11, &v, 0, 0);
         }
         break;
     case 0:
@@ -795,7 +795,7 @@ void Unk_0205f360::func_0205f6b4()
                 v.y = unk_08.y;
                 v.z = unk_08.z;
                 v.y = y;
-                func_02090330(0xc, &v, 0, 0);
+                Effect_Create(0xc, &v, 0, 0);
                 unk_38 = 1;
                 FieldFish_StartCastSplash();
             }
@@ -831,7 +831,7 @@ void Unk_0205f360::func_0205f52c()
                     v.y = unk_08.y;
                     v.z = unk_08.z;
                     v.y = y;
-                    func_02090330(0xf, &v, 0, 0);
+                    Effect_Create(0xf, &v, 0, 0);
                 }
             } else {
                 unk_08.y = c + 0x66;
@@ -854,22 +854,22 @@ void Unk_0205f360::func_0205f52c()
             v.z = unk_08.z;
             v.y = o.unk_3c;
             if (unk_34 == -1) {
-                unk_34 = func_02090330(0xe, &v, (u32)&ang, 0);
+                unk_34 = Effect_Create(0xe, &v, (u32)&ang, 0);
             } else {
-                func_020902d4(unk_34, &v, &ang, 0);
+                Effect_SetPosition(unk_34, &v, &ang, 0);
             }
         }
     } else {
         if (unk_34 != -1) {
             if (dist < 0x7e66) {
-                func_020902f8(unk_34);
+                Effect_End(unk_34);
                 unk_34 = -1;
             } else if (o.unk_30 != 0) {
                     v.x = unk_08.x;
                 v.y = unk_08.y;
                 v.z = unk_08.z;
                 v.y = o.unk_3c;
-                func_020902d4(unk_34, &v, &ang, 0);
+                Effect_SetPosition(unk_34, &v, &ang, 0);
             }
         }
     }
@@ -905,9 +905,9 @@ void Unk_0205f360::func_0205f400()
             v.z = unk_08.z;
             v.y = o.unk_3c;
             if (unk_34 == -1) {
-                unk_34 = func_02090330(0x11, &v, 0, 0);
+                unk_34 = Effect_Create(0x11, &v, 0, 0);
             } else {
-                func_020902d4(unk_34, &v, 0, 0);
+                Effect_SetPosition(unk_34, &v, 0, 0);
             }
         }
     } else {
@@ -926,9 +926,9 @@ void Unk_0205f360::func_0205f400()
             v.z = unk_08.z;
             v.y = o.unk_3c;
             if (unk_34 == -1) {
-                unk_34 = func_02090330(0x11, &v, 0, 0);
+                unk_34 = Effect_Create(0x11, &v, 0, 0);
             } else {
-                func_020902d4(unk_34, &v, 0, 0);
+                Effect_SetPosition(unk_34, &v, 0, 0);
             }
         }
     }

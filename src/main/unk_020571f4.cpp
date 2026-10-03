@@ -219,7 +219,7 @@ void func_020e759c(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
 s32 func_0204f334(s32 a);
-s32 func_020902b0(s32 a, Unk_020dc034_V *v, void *b, void *c);
+s32 Effect_PlayById(s32 a, Unk_020dc034_V *v, void *b, void *c);
 void Field_DrawIconModel(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void RoomItemIcons_DrawIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void Field_DrawItemIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
@@ -938,7 +938,7 @@ void Unk_020dc034::func_02058320()
     if (unk_54 == 2) {
         unk_54 = 0;
     }
-    func_020902b0(0x93, &unk_60, 0, 0);
+    Effect_PlayById(0x93, &unk_60, 0, 0);
 }
 
 void Unk_020dc034::func_020582ec()

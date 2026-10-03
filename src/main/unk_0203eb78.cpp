@@ -168,15 +168,15 @@ s32 func_02097954(s32 p, s32 v);
 }
 
 extern "C" {
-s32 _ZN12Unk_0207719813func_020771e4Ev(void *p);
+s32 _ZN8BbsBoard11getNoticeIdEv(void *p);
 }
 
 extern "C" {
-s32 _ZN12Unk_0207719813func_020771d8Et(void *p, s32 v);
+s32 _ZN8BbsBoard11setNoticeIdEt(void *p, s32 v);
 }
 
 extern "C" {
-s32 func_02076f88(void *p);
+s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
@@ -347,9 +347,9 @@ extern "C" u8 *func_0203ec4c(u8 *p) { return p + 0xc2; }
 extern "C" BOOL func_0203ec18(u8 *p) {
     u8 *g = data_021e87d8;
     u32 v = *(u16 *)(p + 0xc0);
-    if (v != _ZN12Unk_0207719813func_020771e4Ev(g)) {
-        _ZN12Unk_0207719813func_020771d8Et(g, v);
-        func_02076f88(p);
+    if (v != _ZN8BbsBoard11getNoticeIdEv(g)) {
+        _ZN8BbsBoard11setNoticeIdEt(g, v);
+        Bbs_AddPost(p);
         return TRUE;
     }
     return FALSE;

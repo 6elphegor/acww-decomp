@@ -47,15 +47,15 @@ void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void *PlayerData_GetCurrent();
 void *PlayerData_GetBySessionSlot(u32 a);
-s32 func_02076c8c(void *p);
-s32 func_02076c84(void *p);
-u64 func_02076c94(void *p);
+s32 PlayerWifiData_HasUserId(void *p);
+s32 PlayerWifiData_IsConfigValid(void *p);
+u64 PlayerWifiData_GetFriendCode(void *p);
 void *FriendEntry_GetFriendData(void *p);
 void *FriendList_GetEntries(void *p);
 void *DwcFriendData_GetBytes(void *p);
 BOOL DwcFriendData_IsValid(void *p);
-void *func_02076ce8(void *p);
-void *func_02076cec(void *p);
+void *FriendEntry_GetTownName(void *p);
+void *FriendEntry_GetPlayerName(void *p);
 BOOL DwcFriendData_IsNotFriendKey(void *p);
 BOOL DwcFriendData_Compare(void *p, void *q);
 void FriendList_Compact(void *p);
@@ -187,10 +187,10 @@ public:
     u8 unk_00[0x40];
 };
 
-class Unk_020e0574 {
+class MsgString193 {
 public:
-    Unk_020e0574();
-    ~Unk_020e0574();
+    MsgString193();
+    ~MsgString193();
     u32 unk_00[0xd4 / 4];
 };
 
@@ -546,7 +546,7 @@ public:
     /* 0x0bc */ u8 unk_bc[0x20];
     /* 0x0dc */ PopupChoiceMenu unk_dc;
     /* 0x3dc */ Unk_020e0488 unk_3dc[0x13];
-    /* 0x89c */ Unk_020e0574 unk_89c;
+    /* 0x89c */ MsgString193 unk_89c;
     /* 0x970 */ MenuCursorBuf0 unk_970;
     /* 0x9d4 */ u16 unk_9d4[0x800];
     /* 0x19d4 */ void *unk_19d4;
@@ -1523,9 +1523,9 @@ void FriendRosterTab::registerPresentPlayer()
     void *d = FriendEntry_GetFriendData(rec);
     DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)));
     void *e = func_02094104(c);
-    Mem_Copy(e, func_02076cec(rec), 8);
+    Mem_Copy(e, FriendEntry_GetPlayerName(rec), 8);
     void *f = func_02063964(func_0209409c(c));
-    Mem_Copy(f, func_02076ce8(rec), 8);
+    Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
     MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
     unk_b4 = i;
     if (isWifiMode()) {
@@ -1882,9 +1882,9 @@ void FriendRosterTab::drawFriendCodeHelp() {
     u8 ch = data_021edb68;
     void *p = PlayerData_GetCurrent();
     s32 i;
-    if (func_02076c8c(PlayerData_getWifiUserData(p)) == 0) {
+    if (PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) == 0) {
         ch = 0xd4;
-    } else if (func_02076c84(PlayerData_getWifiUserData(p)) == 0) {
+    } else if (PlayerWifiData_IsConfigValid(PlayerData_getWifiUserData(p)) == 0) {
         ch = 0xec;
     } else {
         ch = 0xd5;
@@ -1943,11 +1943,11 @@ void FriendRosterTab::drawRosterPage() {
             rec = 0;
         }
         if (rec != 0 && DwcFriendData_IsValid(FriendEntry_GetFriendData(rec))) {
-            func_020a78a4(&LightLevel, (void *)func_02076ce8(rec), 8);
+            func_020a78a4(&LightLevel, (void *)FriendEntry_GetTownName(rec), 8);
             MsgString_fromEncoded(&LampLights, &LightLevel, 0, 0);
             String_SetSlot(0, &LampLights);
             func_0206f9fc(a, 0x66);
-            func_0206f994(b, (void *)func_02076cec(rec), 8);
+            func_0206f994(b, (void *)FriendEntry_GetPlayerName(rec), 8);
             unk_af = unk_af + 1;
             if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec))) {
                 setRowIcon(&unk_9d4[pos], 0x50);
@@ -2033,12 +2033,12 @@ u32 FriendRosterTab::getPageOfFriend(s32 idx) {
 void FriendRosterTab::loadOwnFriendCode() {
     void *p = PlayerData_GetCurrent();
     s32 i;
-    if ((func_02076c8c(PlayerData_getWifiUserData(p)) & func_02076c84(PlayerData_getWifiUserData(p))) == 0) {
+    if ((PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) & PlayerWifiData_IsConfigValid(PlayerData_getWifiUserData(p))) == 0) {
         for (i = 0; i < 12; i++) {
             unk_a1[i] = 10;
         }
     } else {
-        u64 v = func_02076c94(PlayerData_getWifiUserData(p));
+        u64 v = PlayerWifiData_GetFriendCode(PlayerData_getWifiUserData(p));
         for (i = 11; i >= 0; i--) {
             unk_a1[i] = (u8)(v % 10);
             v = v / 10;

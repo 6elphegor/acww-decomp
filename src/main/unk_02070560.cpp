@@ -179,8 +179,8 @@ class EncodedString16Buf {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
+    virtual void capacity();
+    virtual void data();
     EncodedString16Buf();
     virtual ~EncodedString16Buf();
     void copyTo(u8 *dst, s32 n);
@@ -1465,16 +1465,16 @@ extern "C" {
 s32 _ZN10VillagerId7isValidEv(s32 p);
 }
 extern "C" {
-u8 *func_0207f968(void *p);
+u8 *Villager_GetFashionTaste(void *p);
 }
 extern "C" {
 s32 Villager_GetPlan(void *p);
 }
 extern "C" {
-s32 func_0209a610(s32 p);
+s32 VillagerPlanBlock_GetPlan(s32 p);
 }
 extern "C" {
-s32 _ZN12Unk_0209b3bc13func_0209b354Ev(s32 p);
+s32 _ZN12VillagerPlan8getStateEv(s32 p);
 }
 extern "C" {
 s32 func_02063b8c(s32 n);
@@ -1565,8 +1565,8 @@ extern "C" BOOL func_02070fbc(s32 a, s32 b) {
     void *p = SaveVillagers_Get(data_021dfd8c, a);
     if (p != NULL) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) != 0) {
-            u32 val = *func_0207f968(p);
-            s32 mode = _ZN12Unk_0209b3bc13func_0209b354Ev(func_0209a610(Villager_GetPlan(p)));
+            u32 val = *Villager_GetFashionTaste(p);
+            s32 mode = _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(p)));
             u32 rnd = func_02063b8c(100);
             s32 fa, fb, fc;
             u16 bufw[2];
@@ -2011,7 +2011,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 }
 extern "C" {
-s32 _ZN12Unk_0208722413func_02087298Ev(void *p);
+s32 _ZN16BlancaFaceRecord10getPatternEv(void *p);
 }
 extern "C" {
 s32 func_020718dc();
@@ -2070,7 +2070,7 @@ extern "C" s32 func_02070718(s32 x) {
     return _ZN12Unk_020718a413func_020718e4Ev(t);
 }
 extern "C" s32 func_02070708() {
-    return _ZN12Unk_0208722413func_02087298Ev(data_021eca50);
+    return _ZN16BlancaFaceRecord10getPatternEv(data_021eca50);
 }
 extern "C" void *func_020706e8(s32 i) {
     void *p = PlayerData_GetCurrent();

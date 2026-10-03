@@ -4,7 +4,7 @@ struct Unk_02093aa8_Vec {
     s32 x, y, z;
 };
 
-// Effect entry (0x1c bytes), array data_021d04b0[32], scratch entry at data_021d0830
+// Effect entry (0x1c bytes), array gEffectManager[32], scratch entry at data_021d0830
 struct Unk_02093c28_Entry {
     /* 0x00 */ s32 x, y, z;
     /* 0x0c */ s16 unk_0c;
@@ -83,7 +83,7 @@ public:
 };
 
 extern "C" {
-extern Unk_02093c28_Entry data_021d04b0[];
+extern Unk_02093c28_Entry gEffectManager[];
 }
 
 extern "C" {
@@ -95,11 +95,11 @@ extern Unk_02093aa8_Vec gVec3Zero;
 }
 
 extern "C" {
-extern u32 data_020e17bc[];
+extern u32 sEffectDefaultTrackedCbs[];
 }
 
 extern "C" {
-extern u32 data_020e16f4[];
+extern u32 sEffectDefaultOneShotCbs[];
 }
 
 extern "C" {
@@ -155,31 +155,31 @@ s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
-s32 func_02093c28(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_FollowTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 func_02093c94(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_InitTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 func_02093d54(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
+s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void func_02093dc8(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 func_02093e88(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
 }
 
 extern "C" {
-s32 func_02093efc(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
 }
 
 extern "C" {
-s32 func_02093f50(Unk_02093dc8_Obj *o);
+s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o);
 }
 
  // extern "C"
@@ -213,8 +213,8 @@ class EncodedString : public EncodedStringBase {
 public:
     EncodedString();
     virtual ~EncodedString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
     /* 0x04 */ MsgStringAttr unk_04;
@@ -240,8 +240,8 @@ class Unk_020e1c4c : public EncodedString {
 public:
     Unk_020e1c4c();
     virtual ~Unk_020e1c4c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     void func_02093f90(void *dst, u32 n);
 
@@ -358,9 +358,9 @@ Unk_020e1c4c::Unk_020e1c4c() {}
 
 Unk_020e1c4c::~Unk_020e1c4c() {}
 
-u32 Unk_020e1c4c::vfunc_08() { return 8; }
+u32 Unk_020e1c4c::capacity() { return 8; }
 
 void Unk_020e1c4c::func_02093f90(void *dst, u32 n) { MI_CpuCopy8(unk_0e, dst, n); }
 
-u8 *Unk_020e1c4c::vfunc_0c() { return unk_0e; }
+u8 *Unk_020e1c4c::data() { return unk_0e; }
 

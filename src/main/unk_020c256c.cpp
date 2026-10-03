@@ -8,7 +8,7 @@ void _ZN12Unk_020d77a412setNpcHandleEPt(void *p, u16 *q);
 u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
 extern u16 data_020c6cc8;
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
@@ -140,29 +140,29 @@ public:
     }
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
-struct Unk_02019858 {
-    Unk_02019858();
-    BOOL func_02019790();
-    s32 func_020197a8();
-    void func_020196b4(u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
+struct NpcActionCtrl {
+    NpcActionCtrl();
+    BOOL isActionDone();
+    s32 getAction();
+    void requestAction(u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
     u8 unk_00[0x618 - 0x564];
 };
-struct Unk_02013b10 {
-    BOOL func_02014220();
+struct NpcTalkCtrl {
+    BOOL isBusy();
     u8 unk_00[0x28];
 };
-struct Unk_02014254 : Unk_02013b10 {
+struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };
 struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
@@ -209,19 +209,19 @@ struct Unk_020d77a4 : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
@@ -244,12 +244,12 @@ struct Unk_020d77a4 : Character {
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual BOOL vfunc_a8();
 };
@@ -575,7 +575,7 @@ void SpNpcTest::changeAct(s32 state) {
 }
 
 BOOL SpNpcTest::setupAct00() {
-    unk_564.func_020196b4(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    unk_564.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -590,13 +590,13 @@ BOOL SpNpcTest::setupAct01() {
     if (p != NULL) {
         x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     unk_658.setPhase(0);
     return TRUE;
 }
 
 BOOL SpNpcTest::mainAct01() {
-    if (unk_618.func_02014220() == 0) {
+    if (unk_618.isBusy() == 0) {
         TalkRequest_EndTalkWith(this);
         changeAct(2);
     }
@@ -608,13 +608,13 @@ BOOL SpNpcTest::mainAct02() {
 }
 
 BOOL SpNpcTest::setupAct03() {
-    unk_564.func_020196b4(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+    unk_564.requestAction(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTest::mainAct03() {
-    if (unk_564.func_020197a8() == 3) {
-        if (unk_564.func_02019790() == 1) {
+    if (unk_564.getAction() == 3) {
+        if (unk_564.isActionDone() == 1) {
             changeAct(0);
         }
     }

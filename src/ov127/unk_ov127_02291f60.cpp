@@ -63,7 +63,7 @@ s32 func_020b005c(s32 x, s32 y);
 void func_020b0008(void *p);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
-s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
+s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 s32 Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
@@ -238,7 +238,7 @@ extern "C" s32 StarSky_HitArrow(void *s, s32 x, s32 y)
     xs = x - 0x80;
     ys = y - 0x60;
     for (i = 0; i < 4; i = i + 1) {
-        if (func_02087dac(data_ov127_02293fd4 + i * 8, xs, ys, 2, 2)) {
+        if (Cell_HitTest(data_ov127_02293fd4 + i * 8, xs, ys, 2, 2)) {
             return i;
         }
     }

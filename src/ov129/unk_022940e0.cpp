@@ -36,8 +36,8 @@ void Gfx2d_LoadCharFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02004008(s32 a);
 void Snd_StopSe(s32 a, s32 b);
 void func_02094960();
-void func_02034f80(void *a);
-void func_02034f98(void *a);
+void BgmTracks_FadeInScene22(void *a);
+void BgmTracks_FadeOutScene22(void *a);
 void Gfx2d_DisableSubWindows(s32 a);
 void Gfx2d_EnableSubWindows(s32 a);
 void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -787,7 +787,7 @@ void ConstellationEditorMenu::initMembers() {
     unk_b3 = 0xff;
     func_ov129_0229497c();
     PlayerActor_LocalRequestAct12();
-    func_02034f98(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
 }
 
 void ConstellationEditorMenu::releaseResources() {
@@ -795,7 +795,7 @@ void ConstellationEditorMenu::releaseResources() {
     StarSky_CancelUpload(&unk_6b8);
     unk_1c0.freeTexts();
     func_02094960();
-    func_02034f80(data_021c1b3c + 0x2f0);
+    BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 

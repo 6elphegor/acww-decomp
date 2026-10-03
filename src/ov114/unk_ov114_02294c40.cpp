@@ -130,7 +130,7 @@ void _ZN14MenuScrollKnob7releaseEv(void *p);
 void Menu_PlayScrollTickSe(void *p);
 void func_020e761c(void *p, s32 a, s32 b);
 
-s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
+s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void Gfx2d_LoadPaletteFile(const char *name, s32 h, s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadScreenFile(const char *name, s32 h, s32 a);
@@ -449,10 +449,10 @@ void CreatureBookPanel::drawButtons(s32 y) {
 BOOL CreatureBookPanel::hitDescPageButtons(s32 x, s32 y) {
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
-    if (func_02087dac(data_ov114_02296588, xs, ys, 2, 2)) {
+    if (Cell_HitTest(data_ov114_02296588, xs, ys, 2, 2)) {
         return CreatureBook_NextDescPage((S *)this);
     }
-    if (func_02087dac(data_ov114_02296590, xs, ys, 2, 2)) {
+    if (Cell_HitTest(data_ov114_02296590, xs, ys, 2, 2)) {
         return CreatureBook_PrevDescPage((S *)this);
     }
     return FALSE;
@@ -487,11 +487,11 @@ BOOL CreatureBookPanel::beginScrollTouch(s32 x, s32 y) {
     }
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
-    if (func_02087dac(data_ov114_022965c0, xs, ys, 2, 2)) {
+    if (Cell_HitTest(data_ov114_022965c0, xs, ys, 2, 2)) {
         unk_1297 = 0;
         return TRUE;
     }
-    if (func_02087dac((data_ov114_022965c0 + 8), xs, ys, 2, 2)) {
+    if (Cell_HitTest((data_ov114_022965c0 + 8), xs, ys, 2, 2)) {
         unk_1297 = 1;
         return TRUE;
     }

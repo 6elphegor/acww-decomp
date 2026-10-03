@@ -20,7 +20,7 @@
 #define func_02071ef4 _ZN12Unk_02071ed013func_02071ef4EPh
 #define func_02071f48 _ZN12Unk_02071ed013func_02071f48EPh
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_02087298 _ZN12Unk_0208722413func_02087298Ev
+#define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
 #define func_02094104 _ZN8PlayerId13func_02094104Ev
@@ -114,15 +114,15 @@ void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 s32 String_CensorTaboo(void *a);
 void EncodedString_fromMsgString(void *a, void *b);
 void StrBuf_GetBytes(void *a, void *b, s32 c);
-void *func_02076cec(void *a);
-void *func_02076ce8(void *a);
+void *FriendEntry_GetPlayerName(void *a);
+void *FriendEntry_GetTownName(void *a);
 void Mem_Copy(void *a, void *b, s32 c);
 s32 func_02051218(void *a, void *b, s32 c);
 void Mem_Clear(void *p, s32 v);
 s32 func_020512e0(void *p, s32 v);
 u32 func_02051348(void *p, u32 a);
 BOOL func_020512f8(void *p, u32 a);
-void *func_02087298(void *a);
+void *BlancaFaceRecord_getPattern(void *a);
 void *func_02071e04(void *a);
 void func_02071ef4(void *a, void *b);
 void func_02071f48(void *a, void *b);
@@ -1957,11 +1957,11 @@ u8 *NameEntryMenu::getFriendEntry() {
 }
 
 void NameEntryMenu::loadFriendField1() {
-    Mem_Copy(func_02076ce8(getFriendEntry()), unk_4088, 8);
+    Mem_Copy(FriendEntry_GetTownName(getFriendEntry()), unk_4088, 8);
 }
 
 void NameEntryMenu::loadFriendField2() {
-    Mem_Copy(func_02076cec(getFriendEntry()), unk_4088, 8);
+    Mem_Copy(FriendEntry_GetPlayerName(getFriendEntry()), unk_4088, 8);
 }
 
 void NameEntryMenu::loadInitialText() {
@@ -2054,17 +2054,17 @@ void NameEntryMenu::func_ov126_02297328() {
 
 void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
-    void *p = func_02087298(data_021eca50);
+    void *p = BlancaFaceRecord_getPattern(data_021eca50);
     Mem_Copy(unk_4088, buf, 0x10);
     func_02071ef4(func_02071e04(p), buf);
 }
 
 void NameEntryMenu::storeFriendField1() {
-    Mem_Copy(unk_4088, func_02076ce8(getFriendEntry()), 8);
+    Mem_Copy(unk_4088, FriendEntry_GetTownName(getFriendEntry()), 8);
 }
 
 void NameEntryMenu::storeFriendField2() {
-    Mem_Copy(unk_4088, func_02076cec(getFriendEntry()), 8);
+    Mem_Copy(unk_4088, FriendEntry_GetPlayerName(getFriendEntry()), 8);
 }
 
 void NameEntryMenu::commitEntry() {

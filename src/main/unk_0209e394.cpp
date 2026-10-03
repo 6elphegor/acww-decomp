@@ -6,7 +6,7 @@ class TalkWindowState {
 public:
     void *getChoiceList();
     void lockAdvance();
-    void func_02067990();
+    void hideBusyIcon();
     void unlockAdvance();
     void setNextMessage(u8 *a, void *b);
     void openChoices(s32 v);
@@ -119,7 +119,7 @@ struct Unk_0209ea1c_Entry {
 
 extern "C" SaveMenu *SaveMenu_Create();
 extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
-extern "C" void _ZN15TalkWindowState13func_0206799cEv(TalkWindowState *o, s32 v);
+extern "C" void _ZN15TalkWindowState12showBusyIconEv(TalkWindowState *o, s32 v);
 
 Unk_0209ea1c_Entry data_020e2394 = {(void *)SaveMenu_Create, 0xd5, 0xd0};
 
@@ -611,7 +611,7 @@ void SaveMenu::updateSaveA() {
     TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
-        o->func_02067990();
+        o->hideBusyIcon();
         o->unlockAdvance();
         if (r == 5) {
             NetSession_SetMemberSyncReply(0, 6);
@@ -640,7 +640,7 @@ void SaveMenu::updateSaveB() {
     TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
-        o->func_02067990();
+        o->hideBusyIcon();
         o->unlockAdvance();
         if (r == 5) {
             NetSession_SetMemberSyncReply(0, 6);
@@ -693,7 +693,7 @@ void SaveMenuTalk::vfunc_18() {
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState13func_0206799cEv(o, 1);
+            _ZN15TalkWindowState12showBusyIconEv(o, 1);
             unk_44->setState(4);
             break;
         case 1: {
@@ -707,7 +707,7 @@ void SaveMenuTalk::vfunc_18() {
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState13func_0206799cEv(o, 1);
+            _ZN15TalkWindowState12showBusyIconEv(o, 1);
             unk_44->setState(5);
             break;
         case 1:

@@ -1,7 +1,7 @@
 _ZN12SpNpcKatrinaD1Ev kind:function(thumb,size=0x28) addr:0x02258de0
 _ZN12SpNpcKatrinaD0Ev kind:function(thumb,size=0x2c) addr:0x02258e08
-_ZN22KatrinaEncodedString168vfunc_0cEv kind:function(thumb,size=0x4) addr:0x02258e34
-_ZN22KatrinaEncodedString168vfunc_08Ev kind:function(thumb,size=0x4) addr:0x02258e38
+_ZN22KatrinaEncodedString164dataEv kind:function(thumb,size=0x4) addr:0x02258e34
+_ZN22KatrinaEncodedString168capacityEv kind:function(thumb,size=0x4) addr:0x02258e38
 _ZN22KatrinaEncodedString16D0Ev kind:function(thumb,size=0x20) addr:0x02258e3c
 _ZN22KatrinaEncodedString16D1Ev kind:function(thumb,size=0x18) addr:0x02258e5c
 _ZN22KatrinaEncodedString16C1Ev kind:function(thumb,size=0x18) addr:0x02258e74

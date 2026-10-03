@@ -1,9 +1,9 @@
 #include "types.h"
 
-class Unk_020d8e14 {
+class BgmSceneFade {
 public:
-    void func_02035518();
-    void func_020355dc();
+    void onFadeIn();
+    void onFadeOut();
 };
 
 struct Unk_02041104_Ent {
@@ -283,7 +283,7 @@ extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
     fn = sTransitionTypeTable[a].unk_00[0];
     if (fn) {
         fn();
-        ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_020355dc();
+        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeOut();
         func_0208e9f4(a);
         if (a == 2) Snd_FadeOutScene();
     }
@@ -311,7 +311,7 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
         gScreenTransition.unk_08 = FX_Div(-0x1000, b << 12);
     }
     if (c == 0) {
-        ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_02035518();
+        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeIn();
         func_0208e9d4(a);
     }
     return TRUE;

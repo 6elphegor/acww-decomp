@@ -1089,7 +1089,7 @@ s32 FX_Div(s32, s32);
 s32 PlayerActor_RequestAct79();
 void func_ov004_02239a4c(void *, s32);
 s32 func_020e7e6c(void *a, void *b, s32 c, s32 d, s32 e);
-s32 func_0209028c(s32 a, void *b, void *c, s32 d);
+s32 Effect_PlayById2(s32 a, void *b, void *c, s32 d);
 void Unk_02003c40_callRequest(void *o, s32 id);
 void Unk_02003c40_callRequestSustained(void *o, s32 id);
 void func_020e93a0(void *v, s32 a);
@@ -2263,7 +2263,7 @@ extern "C" void MuseumInsect_PondSkaterStartGlide(Obj_c4bc *o, s16 *p)
         v.y = sp_->y;
         v.z = sp_->z;
         a = 0;
-        func_0209028c(0x1f, &v, &a, 0);
+        Effect_PlayById2(0x1f, &v, &a, 0);
     }
 }
 

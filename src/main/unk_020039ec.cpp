@@ -91,7 +91,7 @@ void SndMgr_PlayTalkVoice(void *, u32, u32, u32, u32);
 }
 
 extern "C" {
-s32 _ZN12Unk_020d8e1413func_02035338Ev(u8 *);
+s32 _ZN12BgmSceneFade12isKeepingBgmEv(u8 *);
 }
 
 extern "C" {
@@ -658,7 +658,7 @@ extern "C" void Snd_CreateScene() {
 
 extern "C" void Snd_DestroyScene() {
     if (gSndScene != NULL) {
-        if (_ZN12Unk_020d8e1413func_02035338Ev(data_021c1b3c + 0x2d0) != 0) {
+        if (_ZN12BgmSceneFade12isKeepingBgmEv(data_021c1b3c + 0x2d0) != 0) {
             data_021f5be0[2] = 1;
         }
         gSndScene->vfunc_18();

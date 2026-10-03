@@ -88,8 +88,8 @@ void *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *p);
 s32 func_020b4934(void);
 void func_020b4bbc(s32, s32);
-void _ZN12Unk_020d8e1413func_02035368Eii(void *, s32, s32);
-void _ZN12Unk_020d8e1413func_020353b0Eii(void *, s32, s32);
+void _ZN12BgmSceneFade13func_02035368Eii(void *, s32, s32);
+void _ZN12BgmSceneFade13func_020353b0Eii(void *, s32, s32);
 void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 s32 func_0203d9cc(void);
@@ -490,7 +490,7 @@ extern "C" void func_02040b48(s32)
                 if (r != 0) {
                     func_020b4a08(func_020b4934(), 0);
                     func_020b4f18(func_020b4934(), 0x31, buf, 0x400000, 0, 2, 2);
-                    _ZN12Unk_020d8e1413func_020353b0Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
+                    _ZN12BgmSceneFade13func_020353b0Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
                     data_021c3ca8.unk_00 = 4;
                     data_021c3c98 = 1;
                 }
@@ -518,7 +518,7 @@ extern "C" void func_02040a84(s32)
     if (p->unk_04 == 0) {
         _ZN15TalkWindowState13detachRequestEv(p);
         func_020b4bbc(func_020b4934(), 20);
-        _ZN12Unk_020d8e1413func_02035368Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
+        _ZN12BgmSceneFade13func_02035368Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
         data_021c3c94 = 0;
         data_021c3ca8.unk_00 = 0;
         data_021c3ca8.unk_02 = 0;

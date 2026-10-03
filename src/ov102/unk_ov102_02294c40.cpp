@@ -100,7 +100,7 @@ void PlayerData_GetCurrent();
 void func_020979b0();
 s32 func_02039d74();
 s32 func_020639e8(char *buf, char *fmt, ...);
-BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
+BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_02088730(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
 }
 
@@ -1952,7 +1952,7 @@ BOOL ChestMenu::hitTestPageTab(s32 x, s32 y) {
     s32 py = y - 0x60;
     for (i = 0, j = 0; i < 6; i++, j += 3) {
         if (i != unk_24d6) {
-            if (func_02087dac(&sChestPageTabSprites[j], px, py, 2, 2)) {
+            if (Cell_HitTest(&sChestPageTabSprites[j], px, py, 2, 2)) {
                 unk_24d6 = i;
                 return TRUE;
             }

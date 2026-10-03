@@ -216,7 +216,7 @@ static inline void Unk_0205a930_Clear(void *dst, u32 n)
 // ---- callees ----
 extern "C" {
 void *SaveVillagers_Find(void *tbl, s32 id);
-void *func_0207fae4(void *p);
+void *Villager_GetBirthday(void *p);
 void MailText_SetSlotMonth(s32 slot, s32 v);
 void MailText_SetSlotDayOrdinal(s32 slot, s32 v);
 s32 func_02063b8c(s32 n);
@@ -284,8 +284,8 @@ void *_ZN9HouseData13func_0206052cEi(void *p, s32 a);
 u16 *_ZN9HouseRoom13func_02060850EPi(void *h, s32 i);
 u16 *_ZN9HouseRoom13func_02060834EPi(void *h, s32 i);
 s32 SaveVillagers_Get(void *p, s32 k);
-s32 func_0207e3a0();
-s32 func_0207e3ac();
+s32 Villager_GetCarpet();
+s32 Villager_GetWallpaper();
 u32 MATH_CountPopulation(u32 v);
 void func_020524a8(Unk_0205b320_Buf *b, void *cell);
 u32 func_0205248c(Unk_0205b320_Buf *b);
@@ -551,7 +551,7 @@ extern "C" void *Unk_020dc09c::vfunc_00(s32 i) {
 extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
-        u32 t = func_0207e3ac();
+        u32 t = Villager_GetWallpaper();
         if (t < 0x44) v = (u16)(t + 0x1100);
         else v = 0x1100;
         *(u16 *)this = v;
@@ -563,7 +563,7 @@ extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
 extern "C" void Unk_020dc09c::vfunc_08(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
-        u32 t = func_0207e3a0();
+        u32 t = Villager_GetCarpet();
         if (t < 0x44) v = (u16)(t + 0x1144);
         else v = 0x1144;
         *(u16 *)this = v;
@@ -1592,8 +1592,8 @@ extern "C" BOOL func_0205989c(s32 a, s32 b)
 {
     void *r = SaveVillagers_Find(data_021dfd8c, b);
     if (r) {
-        MailText_SetSlotMonth(2, *(u8 *)func_0207fae4(r));
-        MailText_SetSlotDayOrdinal(3, ((u8 *)func_0207fae4(r))[1]);
+        MailText_SetSlotMonth(2, *(u8 *)Villager_GetBirthday(r));
+        MailText_SetSlotDayOrdinal(3, ((u8 *)Villager_GetBirthday(r))[1]);
         return func_02059900("ev_nbirth", func_02063b8c(3), a, b, 0, 0x1a);
     }
     return FALSE;

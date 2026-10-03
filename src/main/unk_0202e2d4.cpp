@@ -56,18 +56,18 @@ void Npc_GetName(u32 a, u16 *p);
     }
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
+MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
+MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
+MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(Unk_02032238, 0x30);
 MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); ~Unk_020135e4(); };
-MEMBER(Unk_02019858, 0x618 - 0x564);
+MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
 struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); ~Unk_020e06dc(); };
 
@@ -119,19 +119,19 @@ struct Unk_020d77a4 : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
+    NpcFaceAnim unk_2ac;
+    NpcAnimCtrl unk_334;
     Unk_0201accc unk_350;
     Unk_0201a8bc unk_3a8;
     Unk_0201ad18 unk_3aa;
     Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
+    NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     Unk_02032238 unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
+    NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
     Unk_020d77a4();
     virtual ~Unk_020d77a4() {}
@@ -155,12 +155,12 @@ struct Unk_020d77a4 : Character {
     virtual void vfunc_80();
     virtual u16 getSpecies();
     virtual void setShirt();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
+    virtual void onJoinTalk();
+    virtual void onLeaveTalk();
+    virtual void getAct0BAnimA();
+    virtual void getAct0BAnimB();
     virtual void vfunc_9c();
-    virtual void vfunc_a0();
+    virtual void getTeachableEmotion();
     virtual void addMood();
     virtual BOOL vfunc_a8();
     u16 getNpcIndex();
@@ -174,14 +174,14 @@ BOOL func_020e96ec(void *a, void *b);
 void *_ZN12Unk_020e074013func_02081fb8Ev(void *p);
 BOOL _ZN12Unk_020e071813func_02082140Ev(void *p);
 void _ZN12Unk_020e071813func_0208211cEv(void *p);
-BOOL _ZN12Unk_02019dd813func_02019cacEP18Unk_02019cac_Owner(void *p, void *q);
-BOOL _ZN12Unk_0201635013func_020162c4EP16Unk_02015fe0_Obji(void *p, void *q, s32 r);
-void _ZN12Unk_0201985813func_020197acEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+BOOL _ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(void *p, void *q);
+BOOL _ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(void *p, void *q, s32 r);
+void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
 BOOL NpcRegistry_AddSpNpc(void *p, void *q);
-void _ZN12Unk_0201347413func_020135c4Ev(void *p);
-s32 _ZN12Unk_020d77a413func_0201b888EPiPh(void *self, void *a, void *b);
-s32 func_02077ac4(void *p);
+void _ZN12Unk_0201347415enableFootstepsEv(void *p);
+s32 _ZN12Unk_020d77a415netReadPositionEPiPh(void *self, void *a, void *b);
+s32 SpNpcAnimHeapRef_GetHeap(void *p);
 BOOL _ZN11CachedModel16allocJointRecordEPv(void *p, s32 v);
 BOOL _ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(void *p, s32 v);
 }
@@ -221,10 +221,10 @@ Unk_020d8bc8::~Unk_020d8bc8() {}
 
 BOOL Unk_020d8bc8::loadAnimSet() {
     void *p = _ZN12Unk_020e074013func_02081fb8Ev(&unk_640);
-    if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, func_02077ac4(p))) {
+    if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
     }
-    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&unk_ec, func_02077ac4(p))) {
+    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
         return TRUE;
     }
     return FALSE;
@@ -255,7 +255,7 @@ BOOL Unk_020d8bc8::vfunc_00() {
         v.y = 0;
         v.z = 0;
         s = 0;
-        if (_ZN12Unk_020d77a413func_0201b888EPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
+        if (_ZN12Unk_020d77a415netReadPositionEPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
             Unk_0203e7a4_Vec *p = &unk_5c;
             p->x = v.x;
             p->y = v.y;
@@ -272,18 +272,18 @@ BOOL Unk_020d8bc8::vfunc_00() {
             return FALSE;
         }
     }
-    if (!_ZN12Unk_02019dd813func_02019cacEP18Unk_02019cac_Owner(&unk_2ac, this)) {
+    if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&unk_2ac, this)) {
         return FALSE;
     }
-    if (!_ZN12Unk_0201635013func_020162c4EP16Unk_02015fe0_Obji(&unk_334, this, vfunc_a8())) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&unk_334, this, vfunc_a8())) {
         return FALSE;
     }
-    _ZN12Unk_0201985813func_020197acEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
+    _ZN13NpcActionCtrl11startActionEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
     _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
     if (!NpcRegistry_AddSpNpc(this, &unk_ea)) {
         return FALSE;
     }
-    _ZN12Unk_0201347413func_020135c4Ev(&unk_558);
+    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
     return TRUE;
 }
 

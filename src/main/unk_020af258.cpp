@@ -60,7 +60,7 @@ u8 *NookShop_GetLevel(void *p);
 }
 
 extern "C" {
-s32 func_02076fc8(u8 *a, const void *b);
+s32 Bbs_PostMsgToday(u8 *a, const void *b);
 }
 
 extern "C" {

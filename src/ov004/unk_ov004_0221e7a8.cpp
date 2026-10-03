@@ -2364,7 +2364,7 @@ void NetBuf_WriteS16B(void *a, s32 b);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 s32 func_02098ffc(void);
-void func_02099124(void *p);
+void Pocket_AddFoundItem(void *p);
 s32 _ZN12Unk_02006d1415getHeldToolKindEv(Obj *o);
 void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
 s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
@@ -2485,7 +2485,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
             }
         }
         w.a = o->unk_81c;
-        func_02099124(&w.a);
+        Pocket_AddFoundItem(&w.a);
         *p = 5;
         break;
     case 1:
@@ -3578,7 +3578,7 @@ extern void *gCommManager;
 extern u8 sAct12Pos[];
 
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
-s32 func_02034d2c(void);
+s32 Bgm_GetCurrent(void);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
 u8 *Snd_GetBeatState(void);
 void _ZN10JointBlend5startEi(void *p, s32 n);
@@ -3987,7 +3987,7 @@ extern "C" void PlayerActor_EndSit(Obj *o) {
 
 extern "C" void PlayerActor_SitUpdateAnim(Obj *o) {
     u8 *p;
-    if (func_020e77cc(func_02034d2c(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
+    if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
         Sub *sb = &o->unk_230;
         Rec *r = &o->unk_7d0;
         if (r->u.flag == 0) {

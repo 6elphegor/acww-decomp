@@ -321,7 +321,7 @@ extern u32 sVillagerHouses[];
 BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 func_0207e274(void *p);
-s32 func_0207e278(void *p);
+s32 Villager_GetWhereabouts(void *p);
 void NetArea_GetSlotStatus(s32 i, u8 *a, u8 *b, u8 *c);
 s32 func_020b51e8(u32 a);
 s32 VillagerId_GetPersonality(void *);
@@ -586,8 +586,8 @@ BOOL VillagerHouse::vfunc_8c() {
         if (func_0207e274(p) == 0) {
             return FALSE;
         }
-        if (func_0207e278(p) == 0 || func_0207e278(p) == 3 || func_0207e278(p) == 4 || func_0207e278(p) == 5 ||
-            func_0207e278(p) == 6 || func_0207e278(p) == 7) {
+        if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||
+            Villager_GetWhereabouts(p) == 6 || Villager_GetWhereabouts(p) == 7) {
             return FALSE;
         }
         return TRUE;
@@ -603,11 +603,11 @@ BOOL VillagerHouse::vfunc_9c() {
             if (func_0207e274(p) == 0) {
                 return FALSE;
             }
-            if (func_0207e278(p) == 0 || func_0207e278(p) == 3 || func_0207e278(p) == 4 || func_0207e278(p) == 5 ||
-                func_0207e278(p) == 6 || func_0207e278(p) == 7) {
+            if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||
+                Villager_GetWhereabouts(p) == 6 || Villager_GetWhereabouts(p) == 7) {
                 return FALSE;
             }
-            if (func_0207e278(p) == 2) {
+            if (Villager_GetWhereabouts(p) == 2) {
                 u8 a, b, c;
                 u32 i = 0;
                 void *g = gCommManager;

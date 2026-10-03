@@ -1,7 +1,7 @@
 _ZN11SpNpcShrunkD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN11SpNpcShrunkD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN11SpNpcShrunk12teachEmotionEii kind:function(thumb,size=0x18) addr:0x02271414
-_ZN11SpNpcShrunk8vfunc_a0Ev kind:function(thumb,size=0x20) addr:0x0227142c
+_ZN11SpNpcShrunk19getTeachableEmotionEv kind:function(thumb,size=0x20) addr:0x0227142c
 _ZN11SpNpcShrunk8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x0227144c
 _ZN11SpNpcShrunk8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x0227149c
 _ZN15SpNpcShrunkTalk8vfunc_18Ev kind:function(thumb,size=0xa8) addr:0x022714bc

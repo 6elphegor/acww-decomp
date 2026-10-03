@@ -95,7 +95,7 @@ s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void _ZN11SaveRecord410expireDateEv(void *);
 void NpcSpawn_ResetAll(void);
 void func_02084ecc(void);
-void func_02079c7c(void *);
+void SaveVillagers_ResetMoods(void *);
 void func_020850e0(void);
 void func_020851e4(void);
 void func_0205267c(void);
@@ -109,24 +109,24 @@ void Town_OnLoad(void);
 void NookShop_UpdateDaily(void *, s32);
 void Melody_SetPacked(void *);
 void func_02085178(void);
-void _ZN12Unk_02086f8413func_02086fd0Ev(void);
+void _ZN12Unk_02086f8412pickKatiePosEv(void);
 void func_02085174(void);
 void _ZN12Unk_02086c0413func_02086edcEv(void);
 void func_020850e8(void);
 void func_0208516c(void);
-void _ZN12Unk_020868cc13func_020868e4Ev(void);
+void _ZN10VisitorPos13pickRandomPosEv(void);
 s32 Hud_GetCountdown(void);
 void _ZN12HudCountdown5startEii(s32, s32, s32);
 void func_0202e8b0(void);
-void func_0207a038(void *);
+void SaveVillagers_PickGreeter(void *);
 void MenuCtrl_InitKeyboardState(void);
 void func_020b101c(void);
 void *PlayerData_GetCurrent(void);
-void func_02079f1c(void *, void *);
-void func_020781ec(void);
-void func_02078308(void);
-void func_020782e0(void);
-void func_02078328(void);
+void SaveVillagers_InitTalkUrges(void *, void *);
+void VillagerStates_ResetIdleFrames(void);
+void VillagerStates_ClearUnk1dBit2(void);
+void VillagerStates_ResetTalkRepeats(void);
+void VillagerStates_ClearUnk1dBit0(void);
 }
 
 static inline void Unk_0209cdf8_Norm(Unk_0209cdf8_T *p, u16 *out) {
@@ -168,7 +168,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     _ZN11SaveRecord410expireDateEv(p + 0x15fc5);
     NpcSpawn_ResetAll();
     func_02084ecc();
-    func_02079c7c(p + 0x8a3c);
+    SaveVillagers_ResetMoods(p + 0x8a3c);
     func_020850e0();
     func_020851e4();
     func_0205267c();
@@ -183,7 +183,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     Melody_SetPacked(p + 0x15fa8);
     func_020850e0();
     func_02085178();
-    _ZN12Unk_02086f8413func_02086fd0Ev();
+    _ZN12Unk_02086f8412pickKatiePosEv();
     func_020850e0();
     func_02085174();
     _ZN12Unk_02086c0413func_02086edcEv();
@@ -191,17 +191,17 @@ extern "C" void SaveData_Apply(u8 *p) {
     func_020850e8();
     func_020850e0();
     func_0208516c();
-    _ZN12Unk_020868cc13func_020868e4Ev();
+    _ZN10VisitorPos13pickRandomPosEv();
     _ZN12HudCountdown5startEii(Hud_GetCountdown(), 0, 1);
     func_0202e8b0();
-    func_0207a038(p + 0x8a3c);
+    SaveVillagers_PickGreeter(p + 0x8a3c);
     MenuCtrl_InitKeyboardState();
     func_020b101c();
-    func_02079f1c(p + 0x8a3c, PlayerData_GetCurrent());
-    func_020781ec();
-    func_02078308();
-    func_020782e0();
-    func_02078328();
+    SaveVillagers_InitTalkUrges(p + 0x8a3c, PlayerData_GetCurrent());
+    VillagerStates_ResetIdleFrames();
+    VillagerStates_ClearUnk1dBit2();
+    VillagerStates_ResetTalkRepeats();
+    VillagerStates_ClearUnk1dBit0();
 }
 
 extern "C" BOOL LetterStorage_IsValid(Unk_0209d5f8 *p) {

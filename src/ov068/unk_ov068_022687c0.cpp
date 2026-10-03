@@ -216,7 +216,7 @@ extern u8 *gSceneBlockMap;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
-void func_02090330(s32 a, void *v, s32 b, void *h);
+void Effect_Create(s32 a, void *v, s32 b, void *h);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void FieldFish_ScareAround(void *a, s32 b);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
@@ -285,10 +285,10 @@ s32 Snowball_GetMaxRadius(void);
 s32 Snowball_GetMinRadius(void);
 s32 Insect_RandomTurn(s32, s32);
 s32 PlayerActor_RequestAct79(void);
-void func_02034d70(s32);
-void func_02034e10(s32, s32, s32, s32);
+void Bgm_ReleasePriority(s32);
+void Bgm_Request(s32, s32, s32, s32);
 void PlayerActor_SetSlotFlag(s32, s32);
-void func_02034dd0(s32, s32, s32);
+void Bgm_RequestSilence(s32, s32, s32);
 void _ZN9AnimModel8setFrameEi(void *, s32);
 s32 func_ov068_02268b70(BObj *, s16 *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
@@ -304,7 +304,7 @@ void func_020e9960(void *, void *, void *);
 void func_020e93a0(void *, s32);
 void Insect_SetAnimSpeed(void *, s32);
 s32 func_020312a8(s32, s32);
-void func_0209028c(s32, void *, void *, s32);
+void Effect_PlayById2(s32, void *, void *, s32);
 s32 Insect_CheckObstacle(void *, s32, s32);
 void *NpcRegistry_GetBySlot(u32);
 s32 NpcRegistry_GetSlotCount();
@@ -546,7 +546,7 @@ void func_ov068_0226a320(DObj *o, u16 *p) {
     v.y = pv->y;
     v.z = pv->z;
     v.y = v.y + 0x100;
-    func_0209028c(0x1f, &v, &a, 0);
+    Effect_PlayById2(0x1f, &v, &a, 0);
 }
 
 
@@ -1019,7 +1019,7 @@ void Unk_ov068_02268214::func_ov068_022697b8() {
     unk_232 = 0x28;
     unk_f4 = 0x2d000;
     unk_21c = 0xf0;
-    func_02034dd0(0x19, 0, 0);
+    Bgm_RequestSilence(0x19, 0, 0);
 }
 
 
@@ -1039,8 +1039,8 @@ void Unk_ov068_02268214::func_ov068_02269714() {
         v[0] = 0x1000;
         v[1] = 0x1000;
         v[2] = 0x1000;
-        func_02034d70(0x19);
-        func_02034e10(0x1a, 0x3f, 0x7f, 0);
+        Bgm_ReleasePriority(0x19);
+        Bgm_Request(0x1a, 0x3f, 0x7f, 0);
         PlayerActor_SetSlotFlag(0x1a, 4);
     }
 }

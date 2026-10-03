@@ -54,7 +54,7 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 extern s32 MenuTabBar_TabFromX(s32 a);
-BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
+BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL MenuKeys_HasRight(void *p);
 BOOL MenuKeys_HasLeft(void *p);
 BOOL MenuKeys_HasDown(void *p);
@@ -78,7 +78,7 @@ s32 MenuCtrl_GetKeyboardPage(void);
 s32 func_0206f9fc(void *a, s32 b);
 s32 _ZN12Unk_020e048813func_0206fab4Eii(void *a, s32 b, s32 c);
 s32 _ZN12Unk_020e048813func_0206fb48Ejjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
+s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
@@ -1760,7 +1760,7 @@ void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w)
 
 BOOL Keyboard_TouchSendKey()
 {
-    if (func_02087dac(data_ov095_02295588, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0) != 0) {
+    if (Cell_HitTest(data_ov095_02295588, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -1768,7 +1768,7 @@ BOOL Keyboard_TouchSendKey()
 
 BOOL Keyboard_TouchPageTab(Keyboard *s)
 {
-    s32 r = func_02087d6c(s->unk_30, 3, gTouchCurX - 0x80, gTouchCurY - 0x60, 2, 2);
+    s32 r = Cell_HitTestList(s->unk_30, 3, gTouchCurX - 0x80, gTouchCurY - 0x60, 2, 2);
     if (r == -1) {
         return FALSE;
     }
@@ -1793,7 +1793,7 @@ BOOL Keyboard_TouchPageTab(Keyboard *s)
 
 BOOL Keyboard_TouchEmotionKey(Keyboard *s)
 {
-    s32 r = func_02087d6c((&data_ov095_02295e48[4]), s->unk_04, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0);
+    s32 r = Cell_HitTestList((&data_ov095_02295e48[4]), s->unk_04, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0);
     if (r == -1) {
         return FALSE;
     }
