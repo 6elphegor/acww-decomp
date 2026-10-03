@@ -49,16 +49,16 @@ public:
 class MsgStringBase {
 public:
     virtual ~MsgStringBase() {}
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity();
+    virtual u8 *data() = 0;
 };
 
 class LabelBalloonText : public MsgStringBase {
 public:
     LabelBalloonText();
     virtual ~LabelBalloonText();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x04 */ u8 unk_04[0x24];
 };
@@ -166,12 +166,12 @@ LabelBalloonText::LabelBalloonText() { StrBuf_Clear((StrBuf *)this); }
 
 LabelBalloonText::~LabelBalloonText() {}
 
-u32 LabelBalloonText::vfunc_08() { return 0x21; }
+u32 LabelBalloonText::capacity() { return 0x21; }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // LabelBalloonText and UiWidget members
 
-u8 *LabelBalloonText::vfunc_0c() { return (u8 *)this + 4; }
+u8 *LabelBalloonText::data() { return (u8 *)this + 4; }
 
 LabelBalloon::LabelBalloon(s32 flag)
     : unk_34(0), unk_38(0), unk_3c(0), unk_40(0), unk_44(-1), unk_48(0), unk_4c(0), unk_50(0), unk_54(0),
@@ -261,12 +261,12 @@ void LabelBalloon::setClampToScreen(u8 v) { unk_57 = v; }
 void LabelBalloon::refreshText(s32 flag) {
     TextLabel *p = unk_b0;
     if (p) {
-        p->unk_10 = (u32)unk_60.vfunc_0c();
+        p->unk_10 = (u32)unk_60.data();
         unk_b0->requestRedraw();
     }
     p = unk_b4;
     if (p) {
-        p->unk_10 = (u32)unk_88.vfunc_0c();
+        p->unk_10 = (u32)unk_88.data();
         unk_b4->requestRedraw();
     }
     if (flag) {

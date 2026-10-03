@@ -154,32 +154,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    virtual void vfunc_14();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual void vfunc_s6c();
-    virtual void vfunc_s70();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     u8 pad_20[0x1c];
     /* 0x3c */ TalkWindowState *unk_3c;
@@ -5600,8 +5600,8 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
     // overrides of slots 0x14 / 0x18 of the secondary base TalkMsgRequest (new slots at the end of the vtable + thunks)
-    virtual void vfunc_14();
-    virtual void vfunc_s18();
+    virtual void onMessageEnd();
+    virtual void onChoice();
 
     void execFtrAct0D();
     BOOL enterFtrAct0D();
@@ -7751,7 +7751,7 @@ BOOL FtrStorage::setTalkAct(s32 s) {
     return FALSE;
 }
 
-void FtrBed::vfunc_s18() {
+void FtrBed::onChoice() {
     u32 r = p20::_ZN10ChoiceList9getResultEv(p20::_ZN15TalkWindowState13getChoiceListEv(((u32)unk_3c)));
     if (unk_854 == 1) {
         switch (r) {
@@ -7777,7 +7777,7 @@ void FtrBed::vfunc_s18() {
     }
 }
 
-void FtrBed::vfunc_14() {
+void FtrBed::onMessageEnd() {
     if (unk_1e == 0) {
         u32 o = ((u32)unk_3c);
         u32 h = p20::_ZN15TalkWindowState13getChoiceListEv(o);

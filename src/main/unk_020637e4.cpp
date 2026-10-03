@@ -19,12 +19,19 @@ public:
     /* 0x04 */ u8 unk_04[10];
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
 };
 
@@ -32,8 +39,8 @@ class MsgString9C : public MsgString {
 public:
     MsgString9C();
     virtual ~MsgString9C();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 };
 
 class EncodedString8B : public EncodedString {
@@ -63,9 +70,9 @@ MsgString9C::MsgString9C() {}
 
 MsgString9C::~MsgString9C() {}
 
-u32 MsgString9C::vfunc_08() { return 9; }
+u32 MsgString9C::capacity() { return 9; }
 
-u8 *MsgString9C::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString9C::data() { return (u8 *)this + 0x12; }
 
 EncodedString8B::EncodedString8B() {}
 

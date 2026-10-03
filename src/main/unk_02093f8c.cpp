@@ -224,8 +224,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
@@ -253,8 +253,8 @@ class MsgString9B : public MsgString {
 public:
     MsgString9B();
     virtual ~MsgString9B();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[9];
 };

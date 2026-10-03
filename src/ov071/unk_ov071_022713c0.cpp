@@ -175,36 +175,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_88();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
     void *func_02015aac();
     void func_02015ab0(u32 p);
@@ -219,30 +219,30 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
     void requestCloseWindow(u32 a);
     s32 requestReopenWindow();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_88();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onTaskDone();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -259,10 +259,10 @@ public:
     SpNpcLyleTalk();
     virtual ~SpNpcLyleTalk();
     virtual void vfunc_08();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone();
 
     void attachOwner(SpNpcLyle *o);
     void scriptCloseItemSelect();
@@ -407,7 +407,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     void *getPlayerActor(u32 v);
@@ -445,7 +444,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -467,7 +466,7 @@ public:
     virtual u8 *getModelPath();
     virtual s32 getAct0BAnimA();
     virtual s32 getAct0BAnimB();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     s32 pickUnaskedQuestion(u8 *p, s32 n);
     s32 countUnaskedQuestions(u8 *p, s32 n);
@@ -581,7 +580,7 @@ extern "C" SpNpcLyle *SpNpcLyle_Create() {
     return new SpNpcLyle();
 }
 
-s32 SpNpcLyle::vfunc_a8() { return data_020c6cf0 - 0x1000; }
+s32 SpNpcLyle::getWalkAnimSpeedScale() { return data_020c6cf0 - 0x1000; }
 
 BOOL SpNpcLyle::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
@@ -1022,7 +1021,7 @@ BOOL SpNpcLyle::mainAct02() {
     return TRUE;
 }
 
-void SpNpcLyleTalk::vfunc_88() {
+void SpNpcLyleTalk::onTaskDone() {
     if (unk_b8) {
         (this->*unk_b8)();
         Unk_ov071_02272ba8_Fn t = *(Unk_ov071_02272ba8_Fn *)__ptmf_null;
@@ -1199,7 +1198,7 @@ void SpNpcLyleTalk::attachOwner(SpNpcLyle *o) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcLyleTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcLyleTalk::start(TalkStartMsg *out) {
     BOOL b = FALSE;
     void *h = PlayerData_GetCurrent();
     if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
@@ -1234,7 +1233,7 @@ void SpNpcLyleTalk::vfunc_78(TalkStartMsg *out) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcLyleTalk::vfunc_14() {
+void SpNpcLyleTalk::onMessageEnd() {
     u8 *const name = sSpNpcLyleKey;
     Unk_ov071_0227160c_Msg m;
     s32 r5 = 0xff;
@@ -1329,7 +1328,7 @@ void SpNpcLyleTalk::vfunc_14() {
     }
 }
 
-void SpNpcLyleTalk::vfunc_18() {
+void SpNpcLyleTalk::onChoice() {
     u8 m;
     s32 t = getChoiceList()->getResult();
     u8 *const name = sSpNpcLyleKey;

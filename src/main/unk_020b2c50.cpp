@@ -28,12 +28,19 @@ public:
     /* 0x09 */ u8 unk_09;
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     u8 appendString(MsgString *other);
     u8 append(u8 *str);
     u8 copy(MsgString *other);
@@ -48,8 +55,8 @@ class MsgString33 : public MsgString {
 public:
     MsgString33();
     virtual ~MsgString33();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u32 unk_14[8];
 };
@@ -235,8 +242,8 @@ class MsgString25 : public MsgString {
 public:
     MsgString25();
     virtual ~MsgString25();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u32 unk_14[6];
 };
@@ -268,8 +275,8 @@ class MsgString256 : public MsgString {
 public:
     MsgString256();
     virtual ~MsgString256();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x100];
 };
@@ -278,8 +285,8 @@ class ArticleCacheEntry : public MsgString {
 public:
     ArticleCacheEntry();
     virtual ~ArticleCacheEntry();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u32 unk_14;
     /* 0x18 */ u32 unk_18;
@@ -324,17 +331,17 @@ MsgString25::MsgString25() { clear(); }
 
 MsgString25::~MsgString25() {}
 
-u32 MsgString25::vfunc_08() { return 0x19; }
+u32 MsgString25::capacity() { return 0x19; }
 
-u8 *MsgString25::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString25::data() { return (u8 *)this + 0x12; }
 
 MsgString256::MsgString256() { clear(); }
 
 MsgString256::~MsgString256() {}
 
-u32 MsgString256::vfunc_08() { return 0x100; }
+u32 MsgString256::capacity() { return 0x100; }
 
-u8 *MsgString256::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString256::data() { return (u8 *)this + 0x12; }
 
 extern "C" MsgString256 *String_GetTabooScratch(void) {
     static MsgString256 inst;
@@ -345,11 +352,11 @@ ArticleCacheEntry::ArticleCacheEntry() : unk_1c(0) { clear(); }
 
 ArticleCacheEntry::~ArticleCacheEntry() {}
 
-u32 ArticleCacheEntry::vfunc_08() {
+u32 ArticleCacheEntry::capacity() {
     return 10;
 }
 
-u8 *ArticleCacheEntry::vfunc_0c() {
+u8 *ArticleCacheEntry::data() {
     return (u8 *)this + 0x12;
 }
 
@@ -598,7 +605,7 @@ void StringExpander::handleTagFF02() {
 }
 
 void StringExpander::insertSlot() {
-    pushText(unk_24->unk_8fc[unk_28.getSlotIndex()].vfunc_0c());
+    pushText(unk_24->unk_8fc[unk_28.getSlotIndex()].data());
 }
 
 void StringExpander::setAttr() {
@@ -668,7 +675,7 @@ void TabooCensorWriter::resetWriter() {
 
 void TabooCensorWriter::setSource(MsgString *p) {
     unk_28 = p;
-    unk_30 = p->vfunc_0c();
+    unk_30 = p->data();
 }
 
 void TabooCensorWriter::setDest(MsgString *p) {

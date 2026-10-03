@@ -310,36 +310,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14(u32 a);
-    virtual void vfunc_18(u32 a);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd(u32 a);
+    virtual void onChoice(u32 a);
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -350,27 +350,27 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -386,11 +386,11 @@ public:
 
     SpNpcMabelTalk();
     virtual ~SpNpcMabelTalk();
-    virtual void vfunc_14(u32 a);
-    virtual void vfunc_18(u32 a);
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onMessageEnd(u32 a);
+    virtual void onChoice(u32 a);
+    virtual void start(TalkStartMsg *out);
+    virtual void update();
+    virtual void onTaskDone();
 
     void sellItemToPlayer();
     void openChoiceMenu(void *rec, s32 x);
@@ -549,7 +549,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     BOOL netIsTalkLocked();
     BOOL isNetOwner();
@@ -594,7 +593,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
     void setColliderSize(s32 a, s32 b);
 
     SpNpcAnimHeapHandle unk_640;
@@ -1396,7 +1395,7 @@ void SpNpcMabelTalk::setTopic(s32 v) { unk_b0 = v; }
 
 s32 SpNpcMabelTalk::getTopic() { return unk_b0; }
 
-void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
     void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands());
     u8 buf[4];
@@ -1470,7 +1469,7 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
     }
 }
 
-void SpNpcMabelTalk::vfunc_14(u32 a) {
+void SpNpcMabelTalk::onMessageEnd(u32 a) {
     if (getTopic() != 2 || !GameStart_IsActive()) {
         static SpNpcMabelTalk::Fn tbl[3] = {
             *(SpNpcMabelTalk::Fn *)data_ov049_0225bb18,
@@ -1646,7 +1645,7 @@ extern "C" void *data_ov049_0225bc48[2] = {(void *)_ZN14SpNpcMabelTalk13onTryOnC
 
 extern "C" void *data_ov049_0225bb20[2] = {(void *)_ZN14SpNpcMabelTalk20onTradePatternChosenEv, 0};
 
-void SpNpcMabelTalk::vfunc_18(u32 a) {
+void SpNpcMabelTalk::onChoice(u32 a) {
     if (getTopic() != 2 || !GameStart_IsActive()) {
         static SpNpcMabelTalk::Fn tbl[3] = {
             *(SpNpcMabelTalk::Fn *)data_ov049_0225bb28,
@@ -1963,7 +1962,7 @@ void SpNpcMabelTalk::onDramaMenuChoice() {
     }
 }
 
-void SpNpcMabelTalk::vfunc_80() {
+void SpNpcMabelTalk::update() {
     s32 i = unk_b4;
     if (sSpNpcMabelTalkScripts[i].flag != 0) {
         if (sSpNpcMabelTalkScripts[i].fn != 0) {
@@ -1972,7 +1971,7 @@ void SpNpcMabelTalk::vfunc_80() {
     }
 }
 
-void SpNpcMabelTalk::vfunc_84() {
+void SpNpcMabelTalk::onTaskDone() {
     s32 i = unk_b4;
     if (sSpNpcMabelTalkScripts[i].flag == 0) {
         if (sSpNpcMabelTalkScripts[i].fn != 0) {

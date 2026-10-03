@@ -25,8 +25,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0; // size
-    virtual u8 *vfunc_0c() = 0; // data
+    virtual u32 capacity() = 0; // size
+    virtual u8 *data() = 0; // data
     u8 copy(MsgString *other);
     void clear();
 
@@ -55,8 +55,8 @@ class ChoiceString : public MsgString {
 public:
     ChoiceString();
     virtual ~ChoiceString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     BOOL loadFromBmg(const char *path, void *entry, BmgMsgAttr *out);
 
@@ -68,8 +68,8 @@ class LabelButtonText : public MsgString {
 public:
     LabelButtonText();
     virtual ~LabelButtonText();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[8];
 };
@@ -1497,13 +1497,13 @@ ChoiceString::ChoiceString() { clear(); }
 
 ChoiceString::~ChoiceString() {}
 
-u32 ChoiceString::vfunc_08() { return 0x21; }
+u32 ChoiceString::capacity() { return 0x21; }
 
-u8 *ChoiceString::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *ChoiceString::data() { return (u8 *)this + 0x12; }
 
 BOOL ChoiceString::loadFromBmg(const char *path, void *entry, BmgMsgAttr *out) {
-    u8 *d = vfunc_0c();
-    u32 s = vfunc_08();
+    u8 *d = data();
+    u32 s = capacity();
     BOOL r;
     sChoiceBmgReader.setBuffer(d, s);
     sChoiceBmgReader.open(path);
@@ -1784,7 +1784,7 @@ void ChoiceListCursor::createLabels() {
         TextLabel *t = MsgTextLabel_CreateVram(size, 0xd, 2);
         if (t) {
             t->unk_2c = 1;
-            t->unk_10 = (u32)buf->vfunc_0c();
+            t->unk_10 = (u32)buf->data();
             t->unk_50 = 2;
             t->unk_39 = 0xe;
             t->unk_38 = i + 1;
@@ -2078,7 +2078,7 @@ void ChoiceSliderCursor::createLabels() {
         TextLabel *o = MsgTextLabel_CreateVram(font, 13, 2);
         if (o) {
             o->unk_2c = 1;
-            o->unk_10 = (u32)text->vfunc_0c();
+            o->unk_10 = (u32)text->data();
             o->unk_50 = 2;
             o->unk_39 = 14;
             o->unk_38 = i + 1;

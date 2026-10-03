@@ -52,36 +52,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_88();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(void *arg);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     void *func_02015aac();
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
@@ -95,30 +95,30 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
     Unk_020d7710();
     virtual ~Unk_020d7710();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_88();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onTaskDone();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -254,7 +254,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     void *getPlayerActor(u32 v);
@@ -291,7 +290,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -484,12 +483,12 @@ class SpNpcBrewsterTalk : public Unk_020d7710 {
 public:
     SpNpcBrewsterTalk();
     virtual ~SpNpcBrewsterTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_70();
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_80();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onWindowClose();
+    virtual void start(void *arg);
+    virtual void update();
+    virtual void onTaskDone();
 
     void runScript03();
     void runDrinkScript();
@@ -809,7 +808,7 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
     unk_b0 = (SpNpcBrewster *)v;
 }
 
-void SpNpcBrewsterTalk::vfunc_78(void *arg) {
+void SpNpcBrewsterTalk::start(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     if (GameStart_IsActive() != 0) {
@@ -844,7 +843,7 @@ void SpNpcBrewsterTalk::vfunc_78(void *arg) {
     }
 }
 
-void SpNpcBrewsterTalk::vfunc_14() {
+void SpNpcBrewsterTalk::onMessageEnd() {
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
     u32 d = sSpNpcBrewsterMsgFiles[0];
@@ -882,7 +881,7 @@ void SpNpcBrewsterTalk::vfunc_14() {
     }
 }
 
-void SpNpcBrewsterTalk::vfunc_18() {
+void SpNpcBrewsterTalk::onChoice() {
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     s32 t = getChoiceList()->getResult();
     u32 d = sSpNpcBrewsterMsgFiles[0];
@@ -920,7 +919,7 @@ void SpNpcBrewsterTalk::vfunc_18() {
     }
 }
 
-void SpNpcBrewsterTalk::vfunc_80() {
+void SpNpcBrewsterTalk::update() {
     s32 i = unk_ac;
     if (sSpNpcBrewsterTalkScripts[i].flag != 0) {
         if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
@@ -929,7 +928,7 @@ void SpNpcBrewsterTalk::vfunc_80() {
     }
 }
 
-void SpNpcBrewsterTalk::vfunc_88() {
+void SpNpcBrewsterTalk::onTaskDone() {
     s32 i = unk_ac;
     if (sSpNpcBrewsterTalkScripts[i].flag == 0) {
         if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
@@ -1107,7 +1106,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
     }
 }
 
-void SpNpcBrewsterTalk::vfunc_70() {
+void SpNpcBrewsterTalk::onWindowClose() {
     s32 t = unk_1e;
     if (t >= 0x30 && t <= 0x3b) {
         Bgm_Release(0x3e);

@@ -45,32 +45,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14(void *a);
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd(void *a);
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     /* 0x04 */ u32 unk_04[0x38 / 4];
     /* 0x3c */ u32 unk_3c;
@@ -87,23 +87,23 @@ public:
     ActorTalkRequest();
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_78(Unk_020c270c_Out *out) = 0;
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual s32 getVoiceType();
+    virtual void start(Unk_020c270c_Out *out) = 0;
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
 
     void *func_02015aac();
     void func_02015ab0(u32 a);
@@ -119,8 +119,8 @@ class SpNpcTestTalk : public ActorTalkRequest {
 public:
     SpNpcTestTalk();
     virtual ~SpNpcTestTalk();
-    virtual void vfunc_14(void *a);
-    virtual void vfunc_78(Unk_020c270c_Out *out);
+    virtual void onMessageEnd(void *a);
+    virtual void start(Unk_020c270c_Out *out);
 
     void onMessageEndPhase00(void *a);
     void dispatchStart(Unk_020c270c_Out *out);
@@ -251,7 +251,6 @@ struct NpcActor : Character {
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual BOOL vfunc_a8();
 };
 
 class SpNpcActor : public NpcActor {
@@ -267,7 +266,7 @@ public:
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
-    virtual BOOL vfunc_a8();
+    virtual BOOL getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -649,7 +648,7 @@ void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
     }
 }
 
-void SpNpcTestTalk::vfunc_78(Unk_020c270c_Out *out) {
+void SpNpcTestTalk::start(Unk_020c270c_Out *out) {
     dispatchStart(out);
 }
 
@@ -663,7 +662,7 @@ char sSpNpcModelCml[] = "npc_sp/model/cml.nsbmd";
 char sSpNpcModelPgb[] = "npc_sp/model/pgb.nsbmd";
 char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
-void SpNpcTestTalk::vfunc_14(void *a) {
+void SpNpcTestTalk::onMessageEnd(void *a) {
     static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
     if (unk_ac >= 0 && unk_ac < 1) {
         if (tbl[unk_ac]) {

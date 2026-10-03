@@ -147,36 +147,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     void *func_02015aac();
     void func_02015ab0(u32 p);
     void getChoiceList();
@@ -190,27 +190,27 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -223,11 +223,11 @@ class SpNpcPeteTalk : public SpNpcTalkRequest {
 public:
     SpNpcPeteTalk();
     virtual ~SpNpcPeteTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void start(TalkStartMsg *out);
+    virtual void update();
+    virtual void onTaskDone();
 
     void attachOwner(void *owner);
     void scriptWakeUp();
@@ -353,7 +353,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
 
@@ -389,7 +388,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -408,7 +407,7 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     BOOL mainAct03();
     BOOL mainAct01();
@@ -576,7 +575,7 @@ BOOL SpNpcPete::vfunc_00() {
     return TRUE;
 }
 
-s32 SpNpcPete::vfunc_a8() { return data_020c6cf0; }
+s32 SpNpcPete::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
 BOOL SpNpcPete::vfunc_0c() {
     if (SpNpcActor::vfunc_0c() == 0) {
@@ -869,7 +868,7 @@ BOOL SpNpcPete::mainAct03() {
     return TRUE;
 }
 
-void SpNpcPeteTalk::vfunc_80() {
+void SpNpcPeteTalk::update() {
     s32 i = unk_ac * 12;
     if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] != 0) {
         Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
@@ -879,7 +878,7 @@ void SpNpcPeteTalk::vfunc_80() {
     }
 }
 
-void SpNpcPeteTalk::vfunc_84() {
+void SpNpcPeteTalk::onTaskDone() {
     s32 i = unk_ac * 12;
     if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] == 0) {
         Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
@@ -947,7 +946,7 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
     unk_b4 = (u8 *)owner;
 }
 
-void SpNpcPeteTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->unk_04 = 0x1a;
     if (unk_b4[0x714] != 0) {
         if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
@@ -957,7 +956,7 @@ void SpNpcPeteTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_00 = "sp_npc_mpelican";
 }
 
-void SpNpcPeteTalk::vfunc_14() {
+void SpNpcPeteTalk::onMessageEnd() {
     PlayerData_GetCurrent();
     if (unk_1e == 0x1a) {
         Unk_020d7710_requestCloseWindow(this, 0);
@@ -965,7 +964,7 @@ void SpNpcPeteTalk::vfunc_14() {
     }
 }
 
-void SpNpcPeteTalk::vfunc_18() {
+void SpNpcPeteTalk::onChoice() {
     getChoiceList();
     s32 r = ChoiceList_getResult();
 }

@@ -1014,33 +1014,33 @@ public:
     virtual ~SpNpcTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(Unk_020c0538_Out *out);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
+    virtual void onActionTag4();
+    virtual void onConditionTag();
+    virtual void onEventTag(void *p);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(Unk_020c0538_Out *out);
 };
 struct Unk_020c0408_Obj {
     u8 unk_00[4];
@@ -1054,11 +1054,11 @@ class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
     SpNpcKatieTalk();
     virtual ~SpNpcKatieTalk();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_78(Unk_020c0538_Out *out);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onEventTag(void *p);
+    virtual void start(Unk_020c0538_Out *out);
 
     /* 0x04 */ u8 unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -1655,7 +1655,7 @@ extern "C" {
 s32 _ZN14NpcMoveAnimSet11setWalkAnimEi(void *p, s32 a);
 }
 extern "C" {
-s32 _ZN16ActorTalkRequest8vfunc_38Ej(void *p, void *q);
+s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
 }
 extern "C" {
 void _ZN16SpNpcTalkRequestD2Ev(void *p);

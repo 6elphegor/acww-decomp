@@ -268,8 +268,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 
       u32 unk_04;
       MsgStringAttr unk_08;
@@ -279,8 +279,8 @@ class MsgString17B : public MsgString {
 public:
     MsgString17B();
     virtual ~MsgString17B();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
       u8 unk_12[0x11];
 };
 
@@ -298,8 +298,8 @@ class MsgString17 : public MsgString {
 public:
     MsgString17();
     virtual ~MsgString17();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
       u8 unk_12[0x11];
 };
 
@@ -316,8 +316,8 @@ class MsgString11 : public MsgString {
 public:
     MsgString11();
     virtual ~MsgString11();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
       u8 unk_12[0xb];
 };
 
@@ -3627,10 +3627,10 @@ MsgString11::MsgString11() {
 MsgString11::~MsgString11() {
     using namespace nQ;}
 
-u32 MsgString11::vfunc_08() {
+u32 MsgString11::capacity() {
     using namespace nQ; return 0xb; }
 
-u8 *MsgString11::vfunc_0c() {
+u8 *MsgString11::data() {
     using namespace nQ; return (u8 *)this + 0x12; }
 
 EncodedString10::EncodedString10() {
@@ -3657,10 +3657,10 @@ MsgString17::MsgString17() {
 MsgString17::~MsgString17() {
     using namespace nQ;}
 
-u32 MsgString17::vfunc_08() {
+u32 MsgString17::capacity() {
     using namespace nQ; return 0x11; }
 
-u8 *MsgString17::vfunc_0c() {
+u8 *MsgString17::data() {
     using namespace nQ; return (u8 *)this + 0x12; }
 
 EncodedString16::EncodedString16() {
@@ -3681,10 +3681,10 @@ MsgString17B::MsgString17B() {
 MsgString17B::~MsgString17B() {
     using namespace nQ;}
 
-u32 MsgString17B::vfunc_08() {
+u32 MsgString17B::capacity() {
     using namespace nQ; return 0x11; }
 
-u8 *MsgString17B::vfunc_0c() {
+u8 *MsgString17B::data() {
     using namespace nQ; return (u8 *)this + 0x12; }
 
 EncodedString16B::EncodedString16B() {

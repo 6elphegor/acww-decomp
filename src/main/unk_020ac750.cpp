@@ -206,8 +206,8 @@ class ReddPasswordString : public MsgString {
 public:
     ReddPasswordString();
     virtual ~ReddPasswordString();
-    virtual u32 vfunc_08();
-    virtual void *vfunc_0c();
+    virtual u32 capacity();
+    virtual void *data();
 };
 
 struct ReddPassword {
@@ -2127,7 +2127,7 @@ namespace n2 {
 }
 
 
-void *ReddPasswordString::vfunc_0c() {
+void *ReddPasswordString::data() {
     using namespace n2;
     return (u8 *)this + 0x12;
 }
@@ -2135,7 +2135,7 @@ namespace n2 {
 }
 
 
-u32 ReddPasswordString::vfunc_08() {
+u32 ReddPasswordString::capacity() {
     using namespace n2;
     return 0x21;
 }

@@ -361,8 +361,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     u8 set(u8 *str);
     void clear();
 
@@ -394,8 +394,8 @@ public:
     ItemName(s32 idx);
     ItemName(u16 *p);
     virtual ~ItemName();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 setString(u8 *str);
     BOOL setSeriesName(s32 idx);
     BOOL setFromItem(u16 *p);
@@ -451,7 +451,7 @@ BOOL ItemName::setSeriesName(s32 idx) {
 
 u8 ItemName::setString(u8 *str) { return set(str); }
 
-u32 ItemName::vfunc_08() { return 0x11; }
+u32 ItemName::capacity() { return 0x11; }
 
-u8 *ItemName::vfunc_0c() { return unk_12; }
+u8 *ItemName::data() { return unk_12; }
 

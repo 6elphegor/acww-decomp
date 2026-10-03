@@ -31,7 +31,7 @@ u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
 s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
 s32 _ZN16ActorTalkRequest13func_02015aacEv(void *a);
 void _ZN16ActorTalkRequest13func_02015ab0Ej(void *a, s32 b);
-s32 _ZN16ActorTalkRequest8vfunc_38Ej(void *p, void *q);
+s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
 void _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(void *p, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
@@ -151,32 +151,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(void *a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     /* 0x04 */ u8 unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -190,23 +190,23 @@ public:
     ActorTalkRequest();
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_78(Unk_020c0538_Out *out) = 0;
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(void *a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual s32 getVoiceType();
+    virtual void start(Unk_020c0538_Out *out) = 0;
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
 
     u32 pad_44[(0xac - 0x44) / 4];
 };
@@ -221,11 +221,11 @@ class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
     SpNpcKatieTalk();
     virtual ~SpNpcKatieTalk();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_78(Unk_020c0538_Out *out);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onEventTag(void *p);
+    virtual void start(Unk_020c0538_Out *out);
 
     s32 getTopic();
     void setTopic(s32 v);
@@ -357,7 +357,6 @@ struct NpcActor : Character {
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual BOOL vfunc_a8();
 };
 
 class SpNpcActor : public NpcActor {
@@ -373,7 +372,7 @@ public:
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
-    virtual BOOL vfunc_a8();
+    virtual BOOL getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -949,13 +948,13 @@ s32 SpNpcKatieTalk::getTopic() {
     return unk_b0;
 }
 
-void SpNpcKatieTalk::vfunc_38(void *p) {
+void SpNpcKatieTalk::onEventTag(void *p) {
     _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_ac->unk_2a0, 0);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&unk_ac->unk_2a0, 1);
-    _ZN16ActorTalkRequest8vfunc_38Ej(this, p);
+    _ZN16ActorTalkRequest10onEventTagEj(this, p);
 }
 
-void SpNpcKatieTalk::vfunc_78(Unk_020c0538_Out *out) {
+void SpNpcKatieTalk::start(Unk_020c0538_Out *out) {
     void *t = PlayerData_GetCurrent();
     out->unk_00 = (u32)sSpNpcKatieMsgKey;
     switch (getTopic()) {
@@ -987,19 +986,19 @@ void SpNpcKatieTalk::vfunc_78(Unk_020c0538_Out *out) {
     unk_ac->unk_70d = 0;
 }
 
-void SpNpcKatieTalk::vfunc_10() {
+void SpNpcKatieTalk::onMessageStart() {
     s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }
 
-void SpNpcKatieTalk::vfunc_14() {
+void SpNpcKatieTalk::onMessageEnd() {
     if (unk_1e == 0x14) {
         unk_3c->unk_14 = 0;
     }
 }
 
-void SpNpcKatieTalk::vfunc_18() {
+void SpNpcKatieTalk::onChoice() {
     switch (unk_1e) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
     case 25: case 26: case 27:

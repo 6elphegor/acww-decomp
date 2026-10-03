@@ -209,8 +209,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void clear();
 
     u32 unk_04;
@@ -221,8 +221,8 @@ class MsgString406 : public MsgString {
 public:
     MsgString406();
     virtual ~MsgString406();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u8 unk_14[0x20 - 0x14];
 };
@@ -646,9 +646,9 @@ MsgString406::MsgString406() { clear(); }
 
 MsgString406::~MsgString406() {}
 
-u32 MsgString406::vfunc_08() { return 0x196; }
+u32 MsgString406::capacity() { return 0x196; }
 
-u8 *MsgString406::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString406::data() { return (u8 *)this + 0x12; }
 
 void CreatureBook_LoadDescription(S *s)
 {

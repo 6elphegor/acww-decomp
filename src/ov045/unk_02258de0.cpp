@@ -18,7 +18,7 @@
 #define NpcActionCtrl_getEmotionId _ZN13NpcActionCtrl12getEmotionIdEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define base_vfunc_38 _ZN16ActorTalkRequest8vfunc_38Ej
+#define base_vfunc_38 _ZN16ActorTalkRequest10onEventTagEj
 
 class SpNpcKatrina;
 class SpNpcKatrinaTalk;
@@ -96,36 +96,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(s32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(void *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(s32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x1d];
@@ -137,13 +133,16 @@ class ActorTalkRequest : public TalkMsgRequest {
 public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_6c();
-    virtual void vfunc_7c();
+    virtual void onConditionTag();
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void getVoiceType();
+    virtual void start(void *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     void *func_02015aac();
     void getChoiceList();
     void func_02015ab0(u32 a);
@@ -153,12 +152,12 @@ class Unk_020d7710 : public ActorTalkRequest {
 public:
     Unk_020d7710();
     virtual ~Unk_020d7710();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
     void setSubSceneKind(u32 a, u32 b);
     void openSubScene(s32 a);
 };
@@ -181,12 +180,19 @@ public:
     u8 unk_04[10];
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void fromEncoded(EncodedString *dst, s32 a, s32 b);
 
     u8 unk_04[14];
@@ -197,8 +203,8 @@ class KatrinaMsgString17 : public MsgString {
 public:
     KatrinaMsgString17();
     virtual ~KatrinaMsgString17();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u8 unk_12[0x24 - 0x12];
 };
@@ -221,13 +227,13 @@ class SpNpcKatrinaTalk : public Unk_020d7710 {
 public:
     SpNpcKatrinaTalk();
     virtual ~SpNpcKatrinaTalk();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_38(s32 a);
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onEventTag(s32 a);
+    virtual void start(void *arg);
+    virtual void update();
+    virtual void onTaskDone();
 
     void scriptReadPartnerName();
     void setScript(s32 v);
@@ -354,7 +360,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     u32 getPlayerActor(u32 a);
@@ -393,7 +398,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -580,7 +585,7 @@ BOOL SpNpcKatrina::updateAct() {
     s32 t = NpcActionCtrl_getEmotionId(&unk_564);
     if (t != 0x1e && t != 0x20) {
     } else if (NpcActionCtrl_isActionDone(&unk_564)) {
-        unk_68c.vfunc_38(0);
+        unk_68c.onEventTag(0);
     }
     if (unk_654 == -1) {
         if (t == 0x21 && ((((u32)unk_ec.unk_a4 << 4) >> 16)) >= 0x12) {
@@ -657,7 +662,7 @@ SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 
 SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
-void SpNpcKatrinaTalk::vfunc_38(s32 a) {
+void SpNpcKatrinaTalk::onEventTag(s32 a) {
     if (a != NpcActionCtrl_getEmotionId(&unk_b0->unk_564) || NpcActionCtrl_getAction(&unk_b0->unk_564) != 8) {
         switch (a) {
         case 0x1e:
@@ -680,7 +685,7 @@ void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
     unk_b0 = o;
 }
 
-void SpNpcKatrinaTalk::vfunc_78(void *arg) {
+void SpNpcKatrinaTalk::start(void *arg) {
     Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
     out->unk_00 = (u32)sSpNpcKatrinaMsgKey;
     s32 a = Talk_CheckAndSetPlayerFlag(4, 0);
@@ -704,7 +709,7 @@ void SpNpcKatrinaTalk::vfunc_78(void *arg) {
     }
 }
 
-void SpNpcKatrinaTalk::vfunc_14() {
+void SpNpcKatrinaTalk::onMessageEnd() {
     void *h = PlayerData_GetCurrent();
     u8 *gp = gSaveData;
     u32 sel = 0xff;
@@ -827,13 +832,13 @@ void SpNpcKatrinaTalk::vfunc_14() {
     }
 }
 
-void SpNpcKatrinaTalk::vfunc_10() {
+void SpNpcKatrinaTalk::onMessageStart() {
     if (unk_1e == 0xe || unk_1e == 0x17) {
         Bgm_RequestSilence(0x10, 0, 0);
     }
 }
 
-void SpNpcKatrinaTalk::vfunc_18() {
+void SpNpcKatrinaTalk::onChoice() {
     u8 buf;
     u32 sel;
     s32 st;
@@ -897,7 +902,7 @@ void SpNpcKatrinaTalk::vfunc_18() {
     }
 }
 
-void SpNpcKatrinaTalk::vfunc_80() {
+void SpNpcKatrinaTalk::update() {
     s32 i = unk_ac;
     if (sSpNpcKatrinaTalkScripts[i].flag != 0) {
         if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
@@ -906,7 +911,7 @@ void SpNpcKatrinaTalk::vfunc_80() {
     }
 }
 
-void SpNpcKatrinaTalk::vfunc_84() {
+void SpNpcKatrinaTalk::onTaskDone() {
     s32 i = unk_ac;
     if (sSpNpcKatrinaTalkScripts[i].flag == 0) {
         if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
@@ -1031,9 +1036,9 @@ KatrinaMsgString17::KatrinaMsgString17() {}
 
 KatrinaMsgString17::~KatrinaMsgString17() {}
 
-u32 KatrinaMsgString17::vfunc_08() { return 0x11; }
+u32 KatrinaMsgString17::capacity() { return 0x11; }
 
-u8 *KatrinaMsgString17::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *KatrinaMsgString17::data() { return (u8 *)this + 0x12; }
 
 KatrinaEncodedString16::KatrinaEncodedString16() {}
 

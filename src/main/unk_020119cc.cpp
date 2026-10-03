@@ -841,37 +841,36 @@ public:
     virtual void vfunc_04();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(s32 flag);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84(s32 oldState);
-    virtual void vfunc_88();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
+    virtual void onActionTag4();
+    virtual void onConditionTag();
+    virtual void onEventTag(s32 flag);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start();
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone(s32 id);
 
     BOOL giveItemWait();
     BOOL giveItemStart();
@@ -1005,32 +1004,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
       u32 unk_04[0x38 / 4];
       u32 unk_3c;
@@ -1043,23 +1042,23 @@ public:
     ActorTalkRequest();
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_78() = 0;
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual s32 getVoiceType();
+    virtual void start() = 0;
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
 
     u8 getSpeakerIndex();
     Unk_02015b8c_Scene *getSpeakerActor();
@@ -8142,17 +8141,17 @@ void ActorTalkRequest::vfunc_08() {
     _ZN12Unk_020d771010resetTasksEv(this);
 }
 
-void ActorTalkRequest::vfunc_80() {
+void ActorTalkRequest::update() {
     using namespace nH;
 }
 
 void ActorTalkRequest::tick() {
     using namespace nH;
-    vfunc_80();
+    update();
     _ZN12Unk_020d77107runTaskEv(this);
 }
 
-void ActorTalkRequest::vfunc_7c() {
+void ActorTalkRequest::runDeferred() {
     using namespace nH;
 }
 
@@ -8197,7 +8196,7 @@ s32 ActorTalkRequest::getChoiceList() {
     return r;
 }
 
-s32 ActorTalkRequest::vfunc_6c() {
+s32 ActorTalkRequest::getVoiceType() {
     using namespace nH;
     switch (unk_51) {
     case 0:
@@ -8233,7 +8232,7 @@ void ActorTalkRequest::playEmotion(u32 a, u32 b) {
     }
 }
 
-void ActorTalkRequest::vfunc_38(u32 a) {
+void ActorTalkRequest::onEventTag(u32 a) {
     using namespace nH;
     playEmotion(a, unk_50);
 }
@@ -8337,21 +8336,21 @@ void ActorTalkRequest::setSlotFromString(u32 a, u32 b, u32 c) {
     _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, a, b, c);
 }
 
-void ActorTalkRequest::vfunc_34() {
+void ActorTalkRequest::onConditionTag() {
     using namespace nH;
 }
 
-void ActorTalkRequest::vfunc_3c() {
+void ActorTalkRequest::onTag09_0() {
     using namespace nH;
     unk_50 = 2;
 }
 
-void ActorTalkRequest::vfunc_40() {
+void ActorTalkRequest::onTag09_1() {
     using namespace nH;
     unk_50 = 0;
 }
 
-void ActorTalkRequest::vfunc_44() {
+void ActorTalkRequest::onTag09_2() {
     using namespace nH;
     unk_50 = 1;
 }
@@ -8402,7 +8401,7 @@ extern "C" s32 TalkRequest_GetPlayerId(void) {
 }
 }
 
-void ActorTalkRequest::vfunc_48() {
+void ActorTalkRequest::onTag09_3() {
     using namespace nH;
     Unk_02015b8c_Scene *p = getActor(unk_50);
     if (p != NULL) {
@@ -8410,7 +8409,7 @@ void ActorTalkRequest::vfunc_48() {
     }
 }
 
-void Unk_020d7710::vfunc_50() {
+void Unk_020d7710::onTag09_4() {
     using namespace nG;
     u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, unk_50);
     if (p5 != NULL) {
@@ -8448,7 +8447,7 @@ void Unk_020d7710::makePlayerTurnTo(u8 *p) {
     }
 }
 
-void Unk_020d7710::vfunc_54() {
+void Unk_020d7710::onTag09_5() {
     using namespace nG;
     u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
     if (p4 != NULL) {
@@ -8468,7 +8467,7 @@ void Unk_020d7710::vfunc_54() {
     }
 }
 
-void Unk_020d7710::vfunc_58() {
+void Unk_020d7710::onTag09_6() {
     using namespace nG;
     u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
     if (p7 != NULL) {
@@ -8479,7 +8478,7 @@ void Unk_020d7710::vfunc_58() {
             if (p4 != NULL) {
                 Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
                 s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
-                vfunc_50();
+                onTag09_5();
                 if (h != NULL) {
                     h->vfunc_38(0);
                 }
@@ -8494,7 +8493,7 @@ void Unk_020d7710::vfunc_58() {
     }
 }
 
-void Unk_020d7710::vfunc_5c() {
+void Unk_020d7710::onTag09_7() {
     using namespace nG;
     u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
     if (p4 != NULL) {
@@ -8514,7 +8513,7 @@ void Unk_020d7710::vfunc_5c() {
     }
 }
 
-void Unk_020d7710::vfunc_60() {
+void Unk_020d7710::onTag09_8() {
     using namespace nG;
     u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
     if (p7 != NULL) {
@@ -8525,7 +8524,7 @@ void Unk_020d7710::vfunc_60() {
             if (p4 != NULL) {
                 Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
                 s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
-                vfunc_58();
+                onTag09_7();
                 if (h != NULL) {
                     h->vfunc_38(0);
                 }
@@ -8540,7 +8539,7 @@ void Unk_020d7710::vfunc_60() {
     }
 }
 
-void Unk_020d7710::vfunc_64_alt() {
+void Unk_020d7710::onTag09_9() {
     using namespace nG;
     nG::_ZN12Unk_0201425820requestSwitchSpeakerEh(this, 1);
 }
@@ -8612,12 +8611,12 @@ void Unk_020d7710::runTask() {
             s32 old = unk_60;
             unk_a9 = 0;
             unk_60 = 12;
-            vfunc_84(old);
+            onTaskDone(old);
         }
     }
 }
 
-void Unk_020d7710::vfunc_88() {
+void Unk_020d7710::onTaskDone(s32 id) {
     using namespace nG;
 }
 
@@ -8851,7 +8850,7 @@ BOOL Unk_020d7710::giveItemStart() {
             _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
         }
         if (_ZN13NpcActionCtrl9getActionEv(unk_48 + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(unk_48 + 0x564) == 0) {
-            vfunc_38(0);
+            onEventTag(0);
         } else if (unk_3c != NULL) {
             if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj(unk_48 + 0x564, 4, &unk_7a, unk_7c, unk_90, unk_94, unk_44)) {
                 unk_a8 = 1;
@@ -10806,10 +10805,10 @@ namespace nB {
 extern "C" void VillagerRoute_PickOtherHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, Unk_02011f74_Obj *obj) {
     out->a = 0;
     out->b = 0;
-    if (obj->vfunc_64()) {
+    if (((Unk_02011f74_Obj *)obj)->vfunc_64()) {
         s32 key;
         func_02133ef8(&key, 4);
-        key = _ZN12VillagerData13getVillagerIdEv(obj->vfunc_64());
+        key = _ZN12VillagerData13getVillagerIdEv(((Unk_02011f74_Obj *)obj)->vfunc_64());
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
             s32 z = p[1] + 1;
@@ -10846,10 +10845,10 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Unk_02011f74_Pair *out, void *
     Unk_02011f74_World *world = gSceneBlockMap;
     out->a = 0;
     out->b = 0;
-    if (world && obj->vfunc_64()) {
+    if (world && ((Unk_02011f74_Obj *)obj)->vfunc_64()) {
         s32 key;
         func_02133ef8(&key, 4);
-        key = _ZN12VillagerData13getVillagerIdEv(obj->vfunc_64());
+        key = _ZN12VillagerData13getVillagerIdEv(((Unk_02011f74_Obj *)obj)->vfunc_64());
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
             Unk_02011f74_Pair pos;
@@ -10878,8 +10877,8 @@ namespace nB {
 extern "C" void VillagerRoute_PickOwnHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, Unk_02011f74_Obj *obj) {
     out->a = 0;
     out->b = 0;
-    if (obj->vfunc_64()) {
-        u8 *p = _ZN20VillagerDataItemView11getHousePosEv(obj->vfunc_64());
+    if (((Unk_02011f74_Obj *)obj)->vfunc_64()) {
+        u8 *p = _ZN20VillagerDataItemView11getHousePosEv(((Unk_02011f74_Obj *)obj)->vfunc_64());
         s32 z = p[1] + 1;
         out->a = p[0];
         out->b = z;
@@ -10923,8 +10922,8 @@ extern "C" void VillagerRoute_PickOwnHouseBlock(Unk_02011f74_Pair *out, void *se
     Unk_02011f74_World *world = gSceneBlockMap;
     out->a = 0;
     out->b = 0;
-    if (world && obj->vfunc_64()) {
-        u8 *p = _ZN20VillagerDataItemView11getHousePosEv(obj->vfunc_64());
+    if (world && ((Unk_02011f74_Obj *)obj)->vfunc_64()) {
+        u8 *p = _ZN20VillagerDataItemView11getHousePosEv(((Unk_02011f74_Obj *)obj)->vfunc_64());
         Unk_02011f74_Pair pos;
         pos.a = 0;
         pos.b = 0;

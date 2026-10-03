@@ -113,32 +113,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual s32 vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual s32 onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual void vfunc_s6c();
-    virtual void vfunc_6c();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     /* 0x20 */ u8 pad_20[0x60];
     /* 0x80 */ s32 unk_80;
@@ -3666,9 +3666,9 @@ public:
     BOOL func_0200f660();
     BOOL getRemoteTransform(u8 *a, s32 *b, s32 *c, u16 *d);
     u8 isLocomotionAction(u32 i);
-    void vfunc_6c();
-    void vfunc_68();
-    void vfunc_64();
+    void onWindowClose();
+    void onChoice();
+    void onMessageEnd();
 
       u8 unk_000[8];
       s32 unk_08;
@@ -4611,10 +4611,10 @@ public:
     virtual BOOL onDraw();
     virtual ~PlayerActor();
     virtual BOOL vfunc_5c(Unk_02006d14_Vec3 *out);
-    virtual s32 vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
+    virtual s32 onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onWindowClose();
 
     void doDraw();
     BOOL doDelete();
@@ -7344,7 +7344,7 @@ extern "C" BOOL PlayerActor_IsWaitingForSlots() {
 }
 }
 
-s32 PlayerActor::vfunc_60() {
+s32 PlayerActor::onMessageStart() {
     using namespace nP;
     s32 v = ((nP::Unk_02006d14 *)this)->unk_818;
     if (v > 15) {

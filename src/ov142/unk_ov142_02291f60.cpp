@@ -31,8 +31,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(void *src, BOOL a, BOOL b);
     void copy(MsgString *o);
     void clear();
@@ -46,8 +46,8 @@ class LabelString : public MsgString {
 public:
     LabelString();
     virtual ~LabelString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     void redrawRight();
     void redrawAligned(s32 a, s32 b);
@@ -63,8 +63,8 @@ class ItemName : public MsgString {
 public:
     ItemName();
     virtual ~ItemName();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     BOOL setFromItem(u16 *p);
 
     /* 0x12 */ u8 unk_12[0x11];

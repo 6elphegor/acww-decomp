@@ -55,8 +55,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
@@ -79,8 +79,8 @@ class LetterTextLine : public MsgString {
 public:
     LetterTextLine();
     virtual ~LetterTextLine();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     void setNameHighlight(u8 a, u8 b);
     void setHighlight(u8 a, u8 b, u32 c);
@@ -389,7 +389,7 @@ LetterTextLine::LetterTextLine() {
 
 LetterTextLine::~LetterTextLine() { freeLabel(); }
 
-u32 LetterTextLine::vfunc_08() { return 0x29; }
+u32 LetterTextLine::capacity() { return 0x29; }
 
 void LetterTextLine::setTarget(u16 v, u32 x) {
     unk_40 = v;
@@ -398,7 +398,7 @@ void LetterTextLine::setTarget(u16 v, u32 x) {
     unk_42 = Gfx2d_GetLayerBgIndex(x);
 }
 
-u8 *LetterTextLine::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *LetterTextLine::data() { return (u8 *)this + 0x12; }
 
 void LetterTextLine::freeLabel() {
     if (unk_3c != NULL) {
@@ -445,7 +445,7 @@ void LetterTextLine::redrawIfDirty(BOOL b) {
             TextLabel *t;
             unk_44 = 0;
             t = unk_3c;
-            t->unk_10 = (u32)vfunc_0c();
+            t->unk_10 = (u32)data();
             if (b) unk_3c->alignRight();
             unk_3c->requestRedraw();
         }

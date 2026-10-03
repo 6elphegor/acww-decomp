@@ -24,8 +24,8 @@ public:
 class MsgStringBase {
 public:
     virtual ~MsgStringBase();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 };
 
 class MsgStringAttr {
@@ -41,8 +41,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void clear();
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ MsgStringAttr unk_08;
@@ -67,8 +67,8 @@ class LabelButtonText : public MsgString {
 public:
     LabelButtonText();
     virtual ~LabelButtonText();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     /* 0x12 */ u8 unk_12[9];
 };
 
@@ -103,9 +103,9 @@ LabelButtonText::LabelButtonText() { clear(); }
 LabelButtonText::~LabelButtonText() {}
 
 // ---- LabelButtonText ----
-u32 LabelButtonText::vfunc_08() { return 9; }
+u32 LabelButtonText::capacity() { return 9; }
 
-u8 *LabelButtonText::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *LabelButtonText::data() { return (u8 *)this + 0x12; }
 
 LabelButton::LabelButton(u8 a, s32 b) : unk_0c(0), unk_10(0), unk_14(-1), unk_18(b), unk_44(0), unk_48(0) {
     unk_68 = 0x50c0;

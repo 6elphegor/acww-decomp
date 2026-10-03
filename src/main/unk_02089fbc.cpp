@@ -49,12 +49,19 @@ public:
     /* 0x09 */ u8 unk_09;
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void clear();
 
     /* 0x04 */ u32 unk_04;
@@ -234,8 +241,8 @@ class MsgString3 : public MsgString {
 public:
     MsgString3();
     virtual ~MsgString3();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[3];
 };
@@ -704,14 +711,14 @@ typedef void (HudClock::*Unk_020e0f64_Fn)();
 void NameLabelBalloonView::createLabel() {
     if (unk_6c == NULL) {
         BOOL c = unk_0c == 4 ? TRUE : FALSE;
-        s32 size = c ? 0x1c8 : (unk_0c << 6) + 0xc0;
+        s32 width = c ? 0x1c8 : (unk_0c << 6) + 0xc0;
         u8 t = c ? 0xe : 0xf;
-        unk_6c = MsgTextLabel_CreateVram(size, 0x14, 2);
+        unk_6c = MsgTextLabel_CreateVram(width, 0x14, 2);
         MsgTextLabel *o = unk_6c;
         if (o != NULL) {
             o->unk_2c = 4;
             MsgTextLabel *p = unk_6c;
-            p->unk_10 = (u32)((MsgString *)((u8 *)this + 0x38))->vfunc_0c();
+            p->unk_10 = (u32)((MsgString *)((u8 *)this + 0x38))->data();
             unk_6c->unk_50 = 2;
             unk_6c->unk_55 = 1;
             unk_6c->unk_39 = t;
@@ -734,11 +741,11 @@ MsgString3::MsgString3() {
 
 MsgString3::~MsgString3() {}
 
-u32 MsgString3::vfunc_08() {
+u32 MsgString3::capacity() {
     return 3;
 }
 
-u8 *MsgString3::vfunc_0c() {
+u8 *MsgString3::data() {
     return unk_12;
 }
 

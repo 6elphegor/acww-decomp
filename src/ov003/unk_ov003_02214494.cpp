@@ -108,7 +108,8 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
+// (onMessageEnd) is overridden by BuildingActor.
 class MsgRequest {
 public:
     MsgRequest();
@@ -132,32 +133,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    virtual void vfunc_88();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual BOOL vfunc_s6c();
-    virtual void vfunc_s70();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual BOOL getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     void setNoSpeakerName(u32 a);
     void setSpeakerName(u8 *a, u32 b);
@@ -203,7 +204,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();
@@ -304,11 +305,11 @@ public:
     virtual BOOL onExecute();
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
     virtual BOOL vfunc_8c();
-    virtual void vfunc_s10();
-    virtual void vfunc_s18();
-    virtual BOOL vfunc_s6c();
+    virtual void onMessageStart();
+    virtual void onChoice();
+    virtual BOOL getVoiceType();
 
     void execTentIdle();
     void execTentCheck();
@@ -386,7 +387,7 @@ no:
 }
 
 
-void ReddTent::vfunc_s10() {
+void ReddTent::onMessageStart() {
     if (unk_1e == 2) {
         u32 obj[0x38 / 4];
         _ZN18ReddPasswordStringC1Ev(obj);
@@ -398,7 +399,7 @@ void ReddTent::vfunc_s10() {
 }
 
 
-void ReddTent::vfunc_88() {
+void ReddTent::onMessageEnd() {
     switch (unk_1e) {
     case 2:
         unk_3c->unk_14 = 1;
@@ -412,11 +413,11 @@ void ReddTent::vfunc_88() {
 }
 
 
-void ReddTent::vfunc_s18() {
+void ReddTent::onChoice() {
 }
 
 
-BOOL ReddTent::vfunc_s6c() {
+BOOL ReddTent::getVoiceType() {
     return FALSE;
 }
 

@@ -97,35 +97,35 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 a);
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag(s32 a);
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
     void *func_02015aac();
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
@@ -139,27 +139,27 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c(s32 a);
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag(s32 a);
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
     void setSubSceneKindArg(u32 a, u32 b, u32 c);
     void openSubScene(s32 a);
     void requestReopenWindow();
@@ -180,15 +180,15 @@ class SpNpcResettiTalk : public SpNpcTalkRequest {
 public:
     SpNpcResettiTalk();
     virtual ~SpNpcResettiTalk();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 a);
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag(s32 a);
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void update();
+    virtual void onTaskDone();
 
     void attachOwner(SpNpcResetti *owner);
     void scriptCheckApology();
@@ -343,7 +343,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     void *getPlayerActor(u32 v);
@@ -380,7 +379,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -766,7 +765,7 @@ BOOL SpNpcResetti::mainAct05() {
     return TRUE;
 }
 
-void SpNpcResettiTalk::vfunc_80() {
+void SpNpcResettiTalk::update() {
     s32 i = unk_ac * 12;
     if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] != 0) {
         if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
@@ -775,7 +774,7 @@ void SpNpcResettiTalk::vfunc_80() {
     }
 }
 
-void SpNpcResettiTalk::vfunc_84() {
+void SpNpcResettiTalk::onTaskDone() {
     s32 i = unk_ac * 12;
     if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] == 0) {
         if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
@@ -819,7 +818,7 @@ SpNpcResettiTalk::SpNpcResettiTalk() {}
 
 SpNpcResettiTalk::~SpNpcResettiTalk() {}
 
-void SpNpcResettiTalk::vfunc_74() {
+void SpNpcResettiTalk::onTalkEnd() {
     if (unk_b8 == 0) {
         Bgm_ReleasePriority(0x17);
         Bgm_Request(0x18, 0x43, 0x7f, 1);
@@ -827,7 +826,7 @@ void SpNpcResettiTalk::vfunc_74() {
     }
 }
 
-void SpNpcResettiTalk::vfunc_70() {
+void SpNpcResettiTalk::onWindowClose() {
     switch (unk_1e) {
     case 3:
     case 8:
@@ -845,7 +844,7 @@ void SpNpcResettiTalk::attachOwner(SpNpcResetti *owner) {
     unk_b4 = owner;
 }
 
-void SpNpcResettiTalk::vfunc_1c(s32 a) {
+void SpNpcResettiTalk::onSignalTag(s32 a) {
     switch (a) {
     case 0:
         PlayerActor_LocalPlayAnim99(this);
@@ -859,7 +858,7 @@ void SpNpcResettiTalk::vfunc_1c(s32 a) {
     }
 }
 
-void SpNpcResettiTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcResettiTalk::start(TalkStartMsg *out) {
     s32 t = _ZN17PlayerSpNpcRecord13getResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent())) - 1;
     if (t < 0) {
         t = 0;
@@ -878,7 +877,7 @@ void SpNpcResettiTalk::vfunc_78(TalkStartMsg *out) {
     out->a = (u32)sSpNpcResettiMsgKey;
 }
 
-void SpNpcResettiTalk::vfunc_10() {
+void SpNpcResettiTalk::onMessageStart() {
     if (unk_1e == 0x17) {
         u8 n = Random_GlobalBelow(0x10);
         u8 c;
@@ -894,7 +893,7 @@ void SpNpcResettiTalk::vfunc_10() {
     }
 }
 
-void SpNpcResettiTalk::vfunc_14() {
+void SpNpcResettiTalk::onMessageEnd() {
     switch (unk_1e) {
     case 0xf:
         unk_3c->unk_14 = 0;
@@ -908,7 +907,7 @@ void SpNpcResettiTalk::vfunc_14() {
     }
 }
 
-void SpNpcResettiTalk::vfunc_18() {
+void SpNpcResettiTalk::onChoice() {
     u8 cmd;
     s32 r = getChoiceList()->getResult();
     cmd = 0xff;

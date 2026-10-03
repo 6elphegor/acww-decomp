@@ -146,32 +146,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual s32 vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual s32 getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     u8 pad_20[0x1c];
     /* 0x3c */ TalkWindowState *unk_3c;
@@ -196,9 +196,9 @@ class TitleTalk : public TalkMsgRequest {
 public:
     TitleTalk();
     virtual ~TitleTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_70();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onWindowClose();
 
     void setOwner(void *owner);
     u8 getGreetingMsg();
@@ -670,7 +670,7 @@ TitleTalk::~TitleTalk() {}
 
 void TitleTalk::setOwner(void *owner) { unk_44 = (TitleScreen *)owner; }
 
-void TitleTalk::vfunc_14() {
+void TitleTalk::onMessageEnd() {
     static u8 s258[4] = { 0x02, 0x0a, 0x0b, 0x05 };
     static u8 s260[4] = { 2, 0x37, 1, gTalkMsgIndexEnd };
     static u8 s250[4] = { 0x00, 0x0a, 0x0b, 0x05 };
@@ -836,13 +836,13 @@ void TitleTalk::openResidentChoices() {
     sp0->openChoices(1);
 }
 
-void TitleTalk::vfunc_70() {
+void TitleTalk::onWindowClose() {
     if (unk_1e == 0x24 || unk_1e == 0x27) {
         Snd_PlaySe(0x3a);
     }
 }
 
-void TitleTalk::vfunc_18() {
+void TitleTalk::onChoice() {
     typedef void (TitleTalk::*Fn)();
     TalkWindowState *sp0 = TalkWindow_Get(0);
     s32 r5 = sp0->getChoiceList()->getResult();

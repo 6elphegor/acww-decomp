@@ -44,9 +44,13 @@ struct NpcActor {
     virtual void vfunc_9c();
     virtual void vfunc_a0();
     virtual void vfunc_a4();
-    virtual BOOL vfunc_a8();
     u8 pad_04[0x58];
     u32 unk_5c;
+};
+
+// The villager slots hold VillagerActors; slot 0xa8 is VillagerActor's own virtual.
+struct VillagerActor : NpcActor {
+    virtual BOOL vfunc_a8();
 };
 
 extern "C" {
@@ -241,7 +245,7 @@ NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
     s32 i = cnt;
     for (; i < 8; i++) {
         NpcRegistryVillagerSlot *s = &unk_00[i];
-        if (isVillagerSlotUsed(s) && s->unk_00->vfunc_a8()) {
+        if (isVillagerSlotUsed(s) && ((VillagerActor *)s->unk_00)->vfunc_a8()) {
             cnt++;
         }
     }
@@ -249,7 +253,7 @@ NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
         s32 n = Random_GlobalBelow(cnt);
         for (i = 0; i < 8; i++) {
             NpcRegistryVillagerSlot *s = &unk_00[i];
-            if (isVillagerSlotUsed(s) && s->unk_00->vfunc_a8()) {
+            if (isVillagerSlotUsed(s) && ((VillagerActor *)s->unk_00)->vfunc_a8()) {
                 if (n == 0) {
                     r = s->unk_00;
                     if (idx) {

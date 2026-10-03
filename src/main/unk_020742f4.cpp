@@ -109,8 +109,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void clear();
 
     /* 0x04 */ u32 unk_04;
@@ -122,8 +122,8 @@ class MsgString193 : public MsgString {
 public:
     MsgString193();
     virtual ~MsgString193();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[0xaf];
 };
@@ -1132,13 +1132,13 @@ MsgString193::~MsgString193() {
 namespace n6 {
 }
 
-u32 MsgString193::vfunc_08() {
+u32 MsgString193::capacity() {
     using namespace n6; return 0xc1; }
 namespace n6 {
 }
 
 
-u8 *MsgString193::vfunc_0c() {
+u8 *MsgString193::data() {
     using namespace n6; return unk_12; }
 namespace n6 {
 }

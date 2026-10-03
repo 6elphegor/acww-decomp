@@ -93,7 +93,8 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
+// (onMessageEnd) is overridden by BuildingActor.
 class MsgRequest {
 public:
     MsgRequest();
@@ -117,32 +118,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    virtual void vfunc_88();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual s32 vfunc_s6c();
-    virtual void vfunc_s70();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     void setSpeakerName(u8 *a, u32 b);
 
@@ -193,7 +194,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();
@@ -234,10 +235,10 @@ public:
     virtual BOOL onDraw();
     virtual void vfunc_60(u32 a, void *b);
     virtual BOOL vfunc_70();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
     virtual BOOL vfunc_b0();
     virtual Unk_ov068_0226b12c_Vec3 vfunc_b4();
-    virtual s32 vfunc_s6c();
+    virtual s32 getVoiceType();
 
     // update states
     void execTaxiLeaveEnd();
@@ -333,8 +334,8 @@ class MsgString9B {
 public:
     MsgString9B();
     virtual ~MsgString9B();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 pad_04[0x1c];
 };
 
@@ -589,11 +590,11 @@ void KappnTaxi::vfunc_60(u32 a, void *b) {
     }
 }
 
-s32 KappnTaxi::vfunc_s6c() {
+s32 KappnTaxi::getVoiceType() {
     return 0;
 }
 
-void KappnTaxi::vfunc_88() {
+void KappnTaxi::onMessageEnd() {
 }
 
 Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
@@ -785,7 +786,7 @@ BOOL KappnTaxi::enterTaxiTalk() {
     l.h = 0xd014;
     Npc_GetName(&o, &l.h);
     MsgString9B *po = (MsgString9B *)(u8 *)&o;
-    this->setSpeakerName(po->vfunc_0c(), 0);
+    this->setSpeakerName(po->data(), 0);
     return TRUE;
 }
 

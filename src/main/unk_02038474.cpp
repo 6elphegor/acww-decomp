@@ -8,8 +8,8 @@
 class MsgStringBase {
 public:
     virtual ~MsgStringBase() {}
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 };
 
 class EncodedStringBase {
@@ -46,8 +46,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     u8 copy(MsgString *other);
     void clear();
@@ -111,8 +111,8 @@ class ChatBalloonText : public MsgString {
 public:
     ChatBalloonText();
     virtual ~ChatBalloonText();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     /* 0x14 */ u8 unk_14[0x20];
 };
 
@@ -121,8 +121,8 @@ class ChatBalloonName : public MsgStringBase {
 public:
     ChatBalloonName();
     virtual ~ChatBalloonName();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     /* 0x04 */ u8 unk_04[9];
 };
 
@@ -331,9 +331,9 @@ ChatBalloonText::ChatBalloonText() { clear(); }
 
 ChatBalloonText::~ChatBalloonText() {}
 
-u32 ChatBalloonText::vfunc_08() { return 0x21; }
+u32 ChatBalloonText::capacity() { return 0x21; }
 
-u8 *ChatBalloonText::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *ChatBalloonText::data() { return (u8 *)this + 0x12; }
 
 EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : unk_10(data), unk_14(size) {}
 
@@ -347,9 +347,9 @@ ChatBalloonName::ChatBalloonName() { StrBuf_Clear(this); }
 
 ChatBalloonName::~ChatBalloonName() {}
 
-u32 ChatBalloonName::vfunc_08() { return 9; }
+u32 ChatBalloonName::capacity() { return 9; }
 
-u8 *ChatBalloonName::vfunc_0c() { return (u8 *)this + 4; }
+u8 *ChatBalloonName::data() { return (u8 *)this + 4; }
 
 EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : unk_04(data), unk_08(size) {}
 
@@ -699,7 +699,7 @@ void ChatBalloon::createTextLabel() {
         if (unk_9c != NULL) {
             unk_9c->unk_2c = 4;
             TextLabel *t = unk_9c;
-            t->unk_10 = (u32)((MsgString *)&unk_54)->vfunc_0c();
+            t->unk_10 = (u32)((MsgString *)&unk_54)->data();
             if (gGfxMainOnTop == 0) {
                 unk_9c->unk_50 = 3;
             } else {

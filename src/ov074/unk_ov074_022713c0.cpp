@@ -196,35 +196,35 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
     s32 getChoiceList();
     void func_02015ab0(u32 a);
     u32 func_02015aac();
@@ -240,27 +240,27 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
     void setSubSceneKind(u32 a, u32 b);
     void openSubScene(s32 a);
 };
@@ -296,10 +296,10 @@ public:
 
     SpNpcBlancaTalk();
     virtual ~SpNpcBlancaTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_84();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone();
 
     void attachOwner(SpNpcBlanca *o);
     BOOL onConceptChosen();
@@ -400,7 +400,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
     u32 getPlayerActor(u32 v);
@@ -437,7 +436,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -456,7 +455,7 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     BOOL mainAct04();
     BOOL setupAct04();
@@ -563,7 +562,7 @@ extern "C" SpNpcBlanca *SpNpcBlanca_Create() {
     return new SpNpcBlanca();
 }
 
-s32 SpNpcBlanca::vfunc_a8() { return data_020c6cf0; }
+s32 SpNpcBlanca::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
 BOOL SpNpcBlanca::vfunc_04() {
     if (SpNpcActor::vfunc_04() == 0) {
@@ -849,7 +848,7 @@ BOOL SpNpcBlanca::setupAct04() {
 
 BOOL SpNpcBlanca::mainAct04() { return TRUE; }
 
-void SpNpcBlancaTalk::vfunc_84() {
+void SpNpcBlancaTalk::onTaskDone() {
     if (unk_b0 != 0) {
         (this->*unk_b0)();
         unk_b0 = *(Fn *)__ptmf_null;
@@ -959,7 +958,7 @@ void SpNpcBlancaTalk::attachOwner(SpNpcBlanca *o) {
     unk_ac = o;
 }
 
-void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcBlancaTalk::start(TalkStartMsg *out) {
     u8 buf[1];
     Unk_ov074_02271564_A l;
     Unk_ov074_02271564_B m;
@@ -998,7 +997,7 @@ next:
     func_02072064(&l);
 }
 
-void SpNpcBlancaTalk::vfunc_14() {
+void SpNpcBlancaTalk::onMessageEnd() {
     u8 buf[1];
     char *name = ((char *)"sp_npc_mysterycat");
     s32 t = 0xff;
@@ -1030,7 +1029,7 @@ void SpNpcBlancaTalk::vfunc_14() {
     }
 }
 
-void SpNpcBlancaTalk::vfunc_18() {
+void SpNpcBlancaTalk::onChoice() {
     u8 buf[1];
     Unk_ov074_02271564_A l;
     Unk_ov074_02271564_B m;

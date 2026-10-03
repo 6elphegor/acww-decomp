@@ -32,32 +32,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     u8 pad_20[0x1c];
     /* 0x3c */ u32 unk_3c;
@@ -71,8 +71,8 @@ class SaveMenuTalk : public TalkMsgRequest {
 public:
     SaveMenuTalk();
     virtual ~SaveMenuTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
+    virtual void onMessageEnd();
+    virtual void onChoice();
 
     void setOwner(SaveMenu *owner);
 
@@ -666,7 +666,7 @@ void SaveMenuTalk::setOwner(SaveMenu *owner) {
     unk_44 = owner;
 }
 
-void SaveMenuTalk::vfunc_14() {
+void SaveMenuTalk::onMessageEnd() {
     if (unk_1e == 0) {
         TalkWindowState *o = (TalkWindowState *)unk_3c;
         void *h = o->getChoiceList();
@@ -685,7 +685,7 @@ void SaveMenuTalk::vfunc_14() {
 
 // SaveMenuTalk
 
-void SaveMenuTalk::vfunc_18() {
+void SaveMenuTalk::onChoice() {
     TalkWindowState *o = (TalkWindowState *)unk_3c;
     s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
     switch (unk_1e) {

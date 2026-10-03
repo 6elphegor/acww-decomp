@@ -162,7 +162,6 @@ struct NpcActor : Character {
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual BOOL vfunc_a8();
     u16 getNpcIndex();
 };
 
@@ -206,7 +205,7 @@ public:
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
-    virtual BOOL vfunc_a8();
+    virtual BOOL getWalkAnimSpeedScale();
 
     BOOL loadAnimSet();
     void setColliderSize(s32 a, s32 b);
@@ -275,7 +274,7 @@ BOOL SpNpcActor::vfunc_00() {
     if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&unk_2ac, this)) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&unk_334, this, vfunc_a8())) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&unk_334, this, getWalkAnimSpeedScale())) {
         return FALSE;
     }
     _ZN13NpcActionCtrl11startActionEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
@@ -324,5 +323,5 @@ u16 SpNpcActor::getSpecies() {
     return 0xffff;
 }
 
-BOOL SpNpcActor::vfunc_a8() { return sSpNpcWalkAnimSpeedScale; }
+BOOL SpNpcActor::getWalkAnimSpeedScale() { return sSpNpcWalkAnimSpeedScale; }
 

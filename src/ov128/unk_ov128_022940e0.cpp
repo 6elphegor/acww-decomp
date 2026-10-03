@@ -151,8 +151,8 @@ class LabelString {
 public:
     LabelString();
     virtual ~LabelString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     s32 getTextWidth();
     void redrawAligned(s32 a, s32 b);

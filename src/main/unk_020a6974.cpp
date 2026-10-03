@@ -453,7 +453,7 @@ public:
 class MsgStringBase {
 public:
     virtual ~MsgStringBase() {}
-    virtual u32 vfunc_08();
+    virtual u32 capacity();
 };
 
 // Script interpreter root
@@ -576,8 +576,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL appendRange(u8 *start, u8 *end);
     BOOL assignRange(u8 *start, u8 *end);
     BOOL equals(MsgString *other);
@@ -625,8 +625,8 @@ class MsgString33 : public MsgString {
 public:
     MsgString33();
     virtual ~MsgString33();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     void initEmpty();
 };
 
@@ -679,8 +679,8 @@ class ChoiceString : public MsgString {
 public:
     ChoiceString();
     virtual ~ChoiceString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x20];
 };
@@ -1541,7 +1541,7 @@ u8 MsgString::set(u8 *str) {
 }
 
 u8 MsgString::copy(MsgString *other) {
-    u8 r = set(other->vfunc_0c());
+    u8 r = set(other->data());
     unk_08.copyFrom(&other->unk_08);
     return r;
 }
@@ -1549,8 +1549,8 @@ u8 MsgString::copy(MsgString *other) {
 BOOL MsgString::fromEncoded(EncodedString *src, BOOL a, BOOL b) {
     s32 srcSize = src->capacity();
     u8 *srcPtr = src->data();
-    u8 *dst = vfunc_0c();
-    u32 dstSize = vfunc_08();
+    u8 *dst = data();
+    u32 dstSize = capacity();
     u32 pos = 0;
     BOOL over = FALSE;
     BOOL done = FALSE;
@@ -1634,18 +1634,18 @@ u8 MsgString::append(u8 *str) {
 }
 
 u8 MsgString::appendString(MsgString *other) {
-    return append(other->vfunc_0c());
+    return append(other->data());
 }
 
 BOOL MsgString::equals(MsgString *other) {
-    u8 *o = other->vfunc_0c();
-    return strcmp(vfunc_0c(), o) == 0;
+    u8 *o = other->data();
+    return strcmp(data(), o) == 0;
 }
 
 BOOL MsgString::assignRange(u8 *start, u8 *end) {
     clear();
-    u8 *buf = vfunc_0c();
-    u32 cap = vfunc_08();
+    u8 *buf = data();
+    u32 cap = capacity();
     s32 len = end - start;
     BOOL ok;
     if ((u32)(len + 1) <= cap) {
@@ -1663,8 +1663,8 @@ BOOL MsgString::assignRange(u8 *start, u8 *end) {
 }
 
 BOOL MsgString::appendRange(u8 *start, u8 *end) {
-    u8 *buf = vfunc_0c();
-    u32 cap = vfunc_08();
+    u8 *buf = data();
+    u32 cap = capacity();
     buf += unk_04;
     cap -= unk_04;
     s32 len = end - start;
@@ -1692,8 +1692,8 @@ extern "C" BOOL EncodedString_SetRaw(StrBuf *buf, const void *src, s32 len) {
 }
 
 BOOL EncodedString::fromMsgString(MsgString *src) {
-    u8 *sp = src->vfunc_0c();
-    u32 srcSize = src->vfunc_08();
+    u8 *sp = src->data();
+    u32 srcSize = src->capacity();
     u32 consumed = 0;
     u8 *dp = data();
     u32 dstSize = capacity();
@@ -2043,9 +2043,9 @@ MsgString33::MsgString33() { initEmpty(); }
 
 MsgString33::~MsgString33() {}
 
-u32 MsgString33::vfunc_08() { return 0x21; }
+u32 MsgString33::capacity() { return 0x21; }
 
-u8 *MsgString33::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString33::data() { return (u8 *)this + 0x12; }
 
 void MsgString33::initEmpty() { clear(); }
 

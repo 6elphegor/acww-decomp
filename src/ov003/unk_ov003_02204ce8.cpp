@@ -855,10 +855,10 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    virtual void vfunc_s14();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
 
     void MsgRequest_setFileName(const char *src);
 
@@ -2296,10 +2296,10 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    virtual void vfunc_s14();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
 
     void MsgRequest_setFileName(const char *src);
 

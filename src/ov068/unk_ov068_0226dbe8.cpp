@@ -232,36 +232,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14(u32 v);
-    virtual void vfunc_18(u32 v);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart(u32 v);
+    virtual void onMessageEnd(u32 v);
+    virtual void onChoice(u32 v);
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(void *arg);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -272,18 +272,18 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_1c();
-    virtual void vfunc_64();
-    virtual void vfunc_74();
+    virtual void onSignalTag();
+    virtual void onScannedTag();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
 };
 
 struct Unk_020d8938_Tbl;
@@ -293,21 +293,21 @@ public:
     void begin(VillagerActor *owner, u32 idx);
     VillagerTalk();
     virtual ~VillagerTalk();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14(u32 v);
-    virtual void vfunc_18(u32 v);
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart(u32 v);
+    virtual void onMessageEnd(u32 v);
+    virtual void onChoice(u32 v);
+    virtual void start(void *arg);
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_64_alt();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onTag09_9();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     u8 pad_ac[0x1a0 - 0xac];
 };
 
@@ -387,12 +387,19 @@ public:
     virtual u8 *data();
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     void fromEncoded(EncodedString *dst, s32 a, s32 b);
 };
 
@@ -416,10 +423,10 @@ public:
 class HouseVisitVillagerTalk : public VillagerTalk {
 public:
     inline HouseVisitVillagerTalk() {}
-    virtual void vfunc_10(u32 a);
-    virtual void vfunc_14(u32 a);
-    virtual void vfunc_18(u32 a);
-    virtual void vfunc_78(void *arg);
+    virtual void onMessageStart(u32 a);
+    virtual void onMessageEnd(u32 a);
+    virtual void onChoice(u32 a);
+    virtual void start(void *arg);
 
     void attachOwner(HouseVisitVillager *owner);
 
@@ -940,7 +947,7 @@ void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
     unk_1a0 = owner;
 }
 
-void HouseVisitVillagerTalk::vfunc_78(void *arg) {
+void HouseVisitVillagerTalk::start(void *arg) {
     using namespace sB;
     Unk_ov068_02270a6c_Out *out = (Unk_ov068_02270a6c_Out *)arg;
     out->unk_00 = sHouseVisitMsgFileName;
@@ -1029,28 +1036,28 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
     } else if (rnd < 70) {
         unk_1a0->unk_a52 = 0;
         setTopicFns((Unk_020d8938_Tbl *)sHouseVisitTsuTopicTable);
-        VillagerTalk::vfunc_78(out);
+        VillagerTalk::start(out);
     } else {
         unk_1a0->unk_a52 = 0;
         setTopicFns((Unk_020d8938_Tbl *)data_021be810);
-        VillagerTalk::vfunc_78(out);
+        VillagerTalk::start(out);
     }
 }
 
-void HouseVisitVillagerTalk::vfunc_10(u32 a) {
+void HouseVisitVillagerTalk::onMessageStart(u32 a) {
     using namespace sB;
     if (unk_1a0->unk_a52 == 0) {
-        VillagerTalk::vfunc_10(a);
+        VillagerTalk::onMessageStart(a);
     }
 }
 
-void HouseVisitVillagerTalk::vfunc_14(u32 a) {
+void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
     using namespace sB;
     u8 buf[2];
     HouseVisitVillager *o = unk_1a0;
     u32 st = o->unk_a52;
     if (st == 0) {
-        VillagerTalk::vfunc_14(a);
+        VillagerTalk::onMessageEnd(a);
     } else if (o != 0) {
         if (st == 1) {
             o->setVisitState(2);
@@ -1068,10 +1075,10 @@ void HouseVisitVillagerTalk::vfunc_14(u32 a) {
     }
 }
 
-void HouseVisitVillagerTalk::vfunc_18(u32 a) {
+void HouseVisitVillagerTalk::onChoice(u32 a) {
     using namespace sB;
     if (unk_1a0->unk_a52 == 0) {
-        VillagerTalk::vfunc_18(a);
+        VillagerTalk::onChoice(a);
     }
 }
 

@@ -121,36 +121,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 a);
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag(s32 a);
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -161,15 +157,17 @@ public:
 class ActorTalkRequest : public TalkMsgRequest {
 public:
     virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_6c();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void getVoiceType();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     ChoiceList *getChoiceList();
 };
 
@@ -177,12 +175,12 @@ class Unk_020d7710 : public ActorTalkRequest {
 public:
     Unk_020d7710();
     virtual ~Unk_020d7710();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
 };
 
 #define MEMBER(name, size) \
@@ -307,7 +305,6 @@ public:
     virtual s32 vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     void setTalkRequest(Unk_0201bc1c *p);
 
@@ -343,7 +340,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual u32 getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -358,12 +355,12 @@ public:
 
     SpNpcKappnTalk();
     virtual ~SpNpcKappnTalk();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 a);
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_84();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag(s32 a);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone();
 
     u8 genderMsg(u32 v);
     void onMoneyChoice(u32 sel);
@@ -703,13 +700,13 @@ void SpNpcKappnTalk::attachOwner(SpNpcKappn *owner) {
     unk_ac = owner;
 }
 
-void SpNpcKappnTalk::vfunc_1c(s32 a) {
+void SpNpcKappnTalk::onSignalTag(s32 a) {
     if (a == 0) {
         TaxiInterior_StopRain();
     }
 }
 
-void SpNpcKappnTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcKappnTalk::start(TalkStartMsg *out) {
     out->unk_00 = (u32)sSpNpcKappnMsgKey;
     if (GameStart_IsNewTown() || GameStart_IsMode3()) {
         out->unk_04 = 0;
@@ -718,7 +715,7 @@ void SpNpcKappnTalk::vfunc_78(TalkStartMsg *out) {
     }
 }
 
-void SpNpcKappnTalk::vfunc_84() {
+void SpNpcKappnTalk::onTaskDone() {
     if (unk_b0) {
         (this->*unk_b0)();
         unk_b0 = *(Fn *)__ptmf_null;
@@ -759,7 +756,7 @@ void SpNpcKappnTalk::onClockSet() {
     unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
 }
 
-void SpNpcKappnTalk::vfunc_10() {
+void SpNpcKappnTalk::onMessageStart() {
     struct {
         u8 msg;
         u8 pad[3];
@@ -912,7 +909,7 @@ extern "C" void *data_ov051_0225a07c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainCh
 extern "C" void *data_ov051_0225a124[2] = {(void *)_ZN10SpNpcKappn9mainAct04Ev, 0};
 extern "C" void *data_ov051_0225a11c[2] = {(void *)_ZN14SpNpcKappnTalk16askMoneyOrArriveEv, 0};
 
-void SpNpcKappnTalk::vfunc_14() {
+void SpNpcKappnTalk::onMessageEnd() {
     static Unk_ov051_022592e8_Ent tbl[32] = {
         {0x01, *(Fn *)data_ov051_02259fec},
         {0x04, *(Fn *)data_ov051_0225a0c4},
@@ -1154,7 +1151,7 @@ extern "C" void *data_ov051_02259f9c[2] = {(void *)_ZN14SpNpcKappnTalk15onPurpos
 extern "C" void *data_ov051_02259fb4[2] = {(void *)_ZN14SpNpcKappnTalk15onPurposeChoiceEj, 0};
 extern "C" void *data_ov051_0225a02c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
 
-void SpNpcKappnTalk::vfunc_18() {
+void SpNpcKappnTalk::onChoice() {
     static Unk_ov051_02258e68_Ent tbl[14] = {
         {0x05, *(FnU *)data_ov051_0225a02c},
         {0x03, *(FnU *)data_ov051_0225a06c},

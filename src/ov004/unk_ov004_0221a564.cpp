@@ -404,36 +404,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual s32 vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual s32 onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov004_0221af1c_Out *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84(u32 a);
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(Unk_ov004_0221af1c_Out *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone(u32 a);
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -444,47 +444,47 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_1c();
-    virtual void vfunc_64();
-    virtual void vfunc_74();
+    virtual void onSignalTag();
+    virtual void onScannedTag();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
 };
 
 class VillagerTalk : public Unk_020d7710 {
 public:
     VillagerTalk();
     virtual ~VillagerTalk();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_64_alt();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84(u32 a);
+    virtual void onTag09_9();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone(u32 a);
     u8 pad_ac[0x1a0 - 0xac];
 };
 
 class SickVillagerTalk : public VillagerTalk {
 public:
     SickVillagerTalk() {}
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual s32 vfunc_18();
-    virtual void vfunc_78(Unk_ov004_0221af1c_Out *out);
-    virtual void vfunc_80();
-    virtual void vfunc_84(u32 a);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual s32 onChoice();
+    virtual void start(Unk_ov004_0221af1c_Out *out);
+    virtual void update();
+    virtual void onTaskDone(u32 a);
 
     void attachOwner(SickVillager *owner);
     u8 getSickStage();
@@ -769,14 +769,14 @@ void SickVillagerTalk::attachOwner(SickVillager *owner) {
     unk_1a4 = owner;
 }
 
-void SickVillagerTalk::vfunc_84(u32 a) {
+void SickVillagerTalk::onTaskDone(u32 a) {
     if (a == 4) {
         SickVillager_SetCurrentVisitor();
         ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
     }
 }
 
-void SickVillagerTalk::vfunc_80() {
+void SickVillagerTalk::update() {
     u8 buf[4];
     SickVillager *o = unk_1a4;
     if (o->unk_898 == 6) {
@@ -799,7 +799,7 @@ void SickVillagerTalk::vfunc_80() {
     }
 }
 
-void SickVillagerTalk::vfunc_78(Unk_ov004_0221af1c_Out *out) {
+void SickVillagerTalk::start(Unk_ov004_0221af1c_Out *out) {
     out->unk_00 = (u32)data_ov004_0225095c;
     getSickStage();
     if (unk_1a4->unk_838.unk_5b == 0) {
@@ -817,7 +817,7 @@ void SickVillagerTalk::vfunc_78(Unk_ov004_0221af1c_Out *out) {
     }
 }
 
-void SickVillagerTalk::vfunc_10() {
+void SickVillagerTalk::onMessageStart() {
     void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     if (p != 0) {
         if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
@@ -826,7 +826,7 @@ void SickVillagerTalk::vfunc_10() {
     }
 }
 
-void SickVillagerTalk::vfunc_14() {
+void SickVillagerTalk::onMessageEnd() {
     u8 b[6];
     SickVillager *o = unk_1a4;
     if (o->unk_895 == 0) {
@@ -885,7 +885,7 @@ void SickVillagerTalk::vfunc_14() {
     }
 }
 
-s32 SickVillagerTalk::vfunc_18() {
+s32 SickVillagerTalk::onChoice() {
     u8 buf[6];
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_1a4->unk_89c.unk_3c));
     if (unk_1a4->unk_838.unk_5b == 0) {

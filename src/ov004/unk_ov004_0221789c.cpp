@@ -361,36 +361,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart(u32 v);
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov004_0224c4e4_Out *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(Unk_ov004_0224c4e4_Out *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -401,36 +401,36 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_1c();
-    virtual void vfunc_64();
-    virtual void vfunc_74();
+    virtual void onSignalTag();
+    virtual void onScannedTag();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
 };
 
 class VillagerTalk : public Unk_020d7710 {
 public:
     VillagerTalk();
     virtual ~VillagerTalk();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart(u32 v);
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
-    virtual void vfunc_64_alt();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onTag09_9();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     u8 pad_ac[0x1a0 - 0xac];
 };
 
@@ -438,9 +438,9 @@ class FleaMarketSellerVillagerTalk : public VillagerTalk {
 public:
     FleaMarketSellerVillagerTalk();
     virtual ~FleaMarketSellerVillagerTalk();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov004_0224c4e4_Out *out);
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void start(Unk_ov004_0224c4e4_Out *out);
 
     void sellFurniture();
     void attachOwner(FleaMarketSellerVillager *owner);
@@ -859,7 +859,7 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
     }
 }
 
-void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
+void FleaMarketSellerVillagerTalk::start(Unk_ov004_0224c4e4_Out *out) {
     void *r7 = Villager_FindOrCreateMemory(unk_1a0->unk_82c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (r7) {
         VillagerMemory_RecordTalk(r7, 0, 0, 0);
@@ -951,9 +951,9 @@ BOOL FleaMarketSellerVillager::canPlayTalkMelody() {
 void FleaMarketSellerVillager::onTalkMelodyPlayed() { unk_a4e = 1; }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void FleaMarketSellerVillagerTalk::vfunc_14() {}
+void FleaMarketSellerVillagerTalk::onMessageEnd() {}
 
-void FleaMarketSellerVillagerTalk::vfunc_18() {
+void FleaMarketSellerVillagerTalk::onChoice() {
     void *r6 = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 r4 = 0xff;
     u8 *s;

@@ -57,8 +57,7 @@ struct TalkWindowState {
 
 // Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
 // the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the derived names onMessageStart/onMessageEnd/onChoice here
-// (the thunks are _ZThn236_N17MuseumExhibitInfo14onMessageStartEv ...). Every other slot is named vfunc_sXX: main has a
-// label _ZN14TalkMsgRequest9vfunc_sXXEv for each, and the names cannot be overridden by the primary chain by accident.
+// (the thunks are _ZThn236_N17MuseumExhibitInfo14onMessageStartEv ...). The other slots keep the TalkMsgRequest names.
 class MsgRequest {
 public:
     MsgRequest();
@@ -79,29 +78,29 @@ public:
     virtual void onMessageStart();
     virtual BOOL onMessageEnd();
     virtual BOOL onChoice();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual void vfunc_s6c();
-    virtual void vfunc_s70();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     u8 pad_20[0x1c];
     /* 0x3c */ TalkWindowState *unk_3c;

@@ -23,14 +23,11 @@
 //   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
 //   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
 //   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
-//   main   TalkMsgRequest slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
-//          cannot override them): _ZN14TalkMsgRequest9vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
-//          5c 60 64 68 6c 70 74 (existing name _ZN14TalkMsgRequest8vfunc_XXEv) and _ZN14TalkMsgRequest9vfunc_s38Ej (existing
-//          _ZN14TalkMsgRequest8vfunc_38Ej).
-//   ov003  0x0221445c is _ZThn236_N13BuildingActor8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
-//          vtable.  Every unit of the family names that slot vfunc_88, so each emits the thunk as a link-once function and
+//   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
+//          primary-chain class of the family declares a method of these names.
+//   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
+//          vtable.  Every unit of the family names that slot onMessageEnd, so each emits the thunk as a link-once function and
 //          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
-//          (No alias: the old label _ZN14TalkMsgRequest9vfunc_s14Ev is gone.)
 // Notes:
 //  * The ctor of a derived class calls BuildingActor::BuildingActor() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
@@ -113,7 +110,8 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14 (vfunc_88).
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
+// (onMessageEnd) is overridden by BuildingActor.
 class MsgRequest {
 public:
     MsgRequest();
@@ -137,35 +135,35 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_s10();
-    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    virtual void onMessageStart();
+    // Slot 0x14 has the name of BuildingActor::onMessageEnd, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor12onMessageEndEv (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
-    virtual void vfunc_88();
-    virtual void vfunc_s18();
-    virtual void vfunc_s1c();
-    virtual void vfunc_s20();
-    virtual void vfunc_s24();
-    virtual void vfunc_s28();
-    virtual void vfunc_s2c();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_s34();
-    virtual void vfunc_s38(u32 a);
-    virtual void vfunc_s3c();
-    virtual void vfunc_s40();
-    virtual void vfunc_s44();
-    virtual void vfunc_s48();
-    virtual void vfunc_s4c();
-    virtual void vfunc_s50();
-    virtual void vfunc_s54();
-    virtual void vfunc_s58();
-    virtual void vfunc_s5c();
-    virtual void vfunc_s60();
-    virtual void vfunc_s64();
-    virtual void vfunc_s68();
-    virtual void vfunc_s6c();
-    virtual void vfunc_s70();
-    virtual void vfunc_s74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     void setSpeakerName(u8 *a, u32 b);
 
@@ -210,7 +208,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void vfunc_88();
+    virtual void onMessageEnd();
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();

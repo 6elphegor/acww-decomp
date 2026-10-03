@@ -452,12 +452,19 @@ public:
     void setVoiceOverride(s32 v);
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void copy(MsgString *p);
     void set(u8 *p);
     void clear();
@@ -469,8 +476,8 @@ class MsgString9 : public MsgString {
 public:
     MsgString9();
     virtual ~MsgString9();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 };
 
 class MsgRequest {
@@ -489,32 +496,32 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual const char *vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual u32 vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual u32 getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 
     void detachWindow();
     void attachWindow(u32 v);
@@ -779,8 +786,8 @@ public:
 class Unk_0206ad58_Ent {
 public:
     virtual ~Unk_0206ad58_Ent();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 unk_04[0x30];
 };
 
@@ -1224,15 +1231,32 @@ public:
     virtual ~Unk_020ddcf0_v13();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 v);
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
+    virtual void onSignalTag(s32 v);
+    virtual void onActionTag0();
+    virtual void onActionTag1(u32 v);
+    virtual void onActionTag2(u32 v);
+    virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 a);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual u32 getSpeakerData();
+    virtual s32 getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
     MsgString9 *getSpeakerName();
 };
 
@@ -1773,7 +1797,7 @@ void TalkRenderProcessor::tagPlayerName() {
 }
 void TalkRenderProcessor::tagSpeakerName() {
     using namespace n16;
-    pushText(unk_2c->unk_13b0_v16->getSpeakerName()->vfunc_0c());
+    pushText(unk_2c->unk_13b0_v16->getSpeakerName()->data());
 }
 void TalkRenderProcessor::tagCatchphrase() {
     using namespace n16;
@@ -2382,10 +2406,10 @@ void TalkParser::expandArticle(Unk_0206ad58_Ent *ent, BOOL flag) {
     if (r != 0) {
         if (flag) {
             pushText(Msg_GetColorTag(unk_4c.unk_5c));
-            pushText(((Unk_0206ad58_Ent *)r)->vfunc_0c());
+            pushText(((Unk_0206ad58_Ent *)r)->data());
             pushText(Msg_GetColorTag(0));
         } else {
-            pushText(((Unk_0206ad58_Ent *)r)->vfunc_0c());
+            pushText(((Unk_0206ad58_Ent *)r)->data());
         }
     }
     unk_e0 = 0;
@@ -2393,7 +2417,7 @@ void TalkParser::expandArticle(Unk_0206ad58_Ent *ent, BOOL flag) {
 void TalkParser::expandSlot(s32 idx) {
     using namespace n15;
     Unk_0206ad58_Ent *ent = &unk_24->unk_13c0[idx];
-    pushText(ent->vfunc_0c());
+    pushText(ent->data());
     expandArticle(ent, 1);
 }
 void TalkParser::expandNamedSlot(s32 idx) {
@@ -2401,7 +2425,7 @@ void TalkParser::expandNamedSlot(s32 idx) {
     Unk_0206ad58_Ent *ent = &unk_24->unk_15fc[idx];
     u8 *s = unk_24->unk_16cc[idx];
     pushText(Msg_GetColorTag(unk_4c.unk_5c));
-    pushText(ent->vfunc_0c());
+    pushText(ent->data());
     pushText(Msg_GetColorTag((s32)s));
     expandArticle(ent, 0);
 }
@@ -2807,31 +2831,31 @@ void TalkParserVarTags::tagSignal0() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_1c(0);
+    o->onSignalTag(0);
 }
 void TalkParserVarTags::tagSignal1() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_1c(1);
+    o->onSignalTag(1);
 }
 void TalkParserVarTags::tagSignal2() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_1c(2);
+    o->onSignalTag(2);
 }
 void TalkParserVarTags::tagSignal3() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_1c(3);
+    o->onSignalTag(3);
 }
 void TalkParserVarTags::tagSignal4() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_1c(4);
+    o->onSignalTag(4);
 }
 void TalkParserVarTags::tagAutoAdvance() {
     using namespace n13;
@@ -2945,28 +2969,28 @@ void TalkParserVarTags::tagAction0() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     MsgTag_DtorStub(&unk_38);
-    o->vfunc_20();
+    o->onActionTag0();
 }
 void TalkParserVarTags::tagAction1() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     u8 v[4];
     unk_38.getArgs1(v);
-    o->vfunc_24(v[0]);
+    o->onActionTag1(v[0]);
 }
 void TalkParserVarTags::tagAction2() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     u8 v[4];
     unk_38.getArgs1(v);
-    o->vfunc_28(v[0]);
+    o->onActionTag2(v[0]);
 }
 void TalkParserVarTags::tagAction3() {
     using namespace n13;
     TalkMsgRequest *o = unk_24->unk_13b0;
     u8 v[4];
     unk_38.getArgs1(v);
-    o->vfunc_2c(v[0]);
+    o->onActionTag3(v[0]);
 }
 void TalkParserVarTags::tagAction4() {
     using namespace n13;
@@ -2985,7 +3009,7 @@ void TalkParserVarTags::tagPlayerName() {
 void TalkParserVarTags::tagSpeakerName() {
     using namespace n13;
     pushText(Msg_GetColorTag(unk_5c));
-    pushText(unk_24->unk_13b0->getSpeakerName()->vfunc_0c());
+    pushText(unk_24->unk_13b0->getSpeakerName()->data());
     pushText(Msg_GetColorTag(6));
 }
 #undef TalkMsgRequest
@@ -4481,7 +4505,7 @@ void TalkWindowState::refreshNameColor() {
     u16 * base;
     u16 * p;
     BOOL flag;
-    if (unk_13b0->vfunc_68() == 0) {
+    if (unk_13b0->getSpeakerData() == 0) {
         flag = TRUE;
     } else {
         flag = FALSE;
@@ -4608,7 +4632,7 @@ void TalkWindowState::finish() {
     using namespace n7;
     clearAdvancePending();
     resetPrint();
-    unk_13b0->vfunc_74();
+    unk_13b0->onTalkEnd();
 }
 void TalkWindowState::stopText() {
     using namespace n7;
@@ -5225,9 +5249,9 @@ void TalkWindowState::enterOpening() {
     else reloadMessage();
     s32 r6 = BmgMsgAttr_LookupUnkA(unk_13b4);
     TalkMsgRequest *o = unk_13b0;
-    u8 *p = o->getSpeakerName()->vfunc_0c();
+    u8 *p = o->getSpeakerName()->data();
     u32 v8 = unk_13b0->getNameKind();
-    BOOL r7 = unk_13b0->vfunc_68() == 0 ? TRUE : FALSE;
+    BOOL r7 = unk_13b0->getSpeakerData() == 0 ? TRUE : FALSE;
     u32 r2 = unk_13b0->isNoSpeakerName();
     if (r2 == 0 && r6 == 0 && *(s8 *)p == 0) r6 = 5;
     _ZN9TalkFrame4loadEijih(unk_1c, r6, r2, v8, r7);
@@ -5334,7 +5358,7 @@ void TalkWindowState::enterClosing() {
         if (unk_14 != 1 && unk_14 != 2 && unk_14 != 3) _ZN14BgmVolumeMixer11endTalkDuckEv(data_021c1b3c + 0x1c4);
     }
     if (unk_1a1a == 0) Snd_PlaySe(10);
-    unk_13b0->vfunc_70();
+    unk_13b0->onWindowClose();
 }
 void TalkWindowState::execClosing() {
     using namespace n3;
@@ -5416,10 +5440,10 @@ MsgString9::MsgString9() {
     using namespace n3; clear(); }
 MsgString9::~MsgString9() {
     using namespace n3;}
-u32 MsgString9::vfunc_08() {
+u32 MsgString9::capacity() {
     using namespace n3; return 9; }
 // ---- MsgString9 ----
-u8 *MsgString9::vfunc_0c() {
+u8 *MsgString9::data() {
     using namespace n3; return (u8 *)this + 0x12; }
 TalkMsgRequest::TalkMsgRequest() {
     using namespace n3;
@@ -5485,57 +5509,57 @@ u32 TalkMsgRequest::getNameKind() {
     using namespace n1; return unk_04[(0x2c - 4) / 4]; }
 const char *TalkMsgRequest::vfunc_0c() {
     using namespace n1; return data_020ddd68; }
-void TalkMsgRequest::vfunc_10() {
+void TalkMsgRequest::onMessageStart() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_14() {
+void TalkMsgRequest::onMessageEnd() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_18() {
+void TalkMsgRequest::onChoice() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_1c() {
+void TalkMsgRequest::onSignalTag() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_20() {
+void TalkMsgRequest::onActionTag0() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_24() {
+void TalkMsgRequest::onActionTag1() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_28() {
+void TalkMsgRequest::onActionTag2() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_2c() {
+void TalkMsgRequest::onActionTag3() {
     using namespace n1;}
 void TalkMsgRequest::onActionTag4() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_34() {
+void TalkMsgRequest::onConditionTag() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_38(u32 a) {
+void TalkMsgRequest::onEventTag(u32 a) {
     using namespace n1;}
-void TalkMsgRequest::vfunc_3c() {
+void TalkMsgRequest::onTag09_0() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_40() {
+void TalkMsgRequest::onTag09_1() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_44() {
+void TalkMsgRequest::onTag09_2() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_48() {
+void TalkMsgRequest::onTag09_3() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_4c() {
+void TalkMsgRequest::onTag09_4() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_50() {
+void TalkMsgRequest::onTag09_5() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_54() {
+void TalkMsgRequest::onTag09_6() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_58() {
+void TalkMsgRequest::onTag09_7() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_5c() {
+void TalkMsgRequest::onTag09_8() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_60() {
+void TalkMsgRequest::onTag09_9() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_64() {
+void TalkMsgRequest::onScannedTag() {
     using namespace n1;}
-u32 TalkMsgRequest::vfunc_68() {
+u32 TalkMsgRequest::getSpeakerData() {
     using namespace n1; return 0; }
-s32 TalkMsgRequest::vfunc_6c() {
+s32 TalkMsgRequest::getVoiceType() {
     using namespace n1; return 5; }
-void TalkMsgRequest::vfunc_70() {
+void TalkMsgRequest::onWindowClose() {
     using namespace n1;}
-void TalkMsgRequest::vfunc_74() {
+void TalkMsgRequest::onTalkEnd() {
     using namespace n1;}
 void TalkMsgRequest::attachWindow(u32 v) {
     using namespace n1; unk_3c = v; }

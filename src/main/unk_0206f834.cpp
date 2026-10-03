@@ -45,8 +45,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
@@ -74,8 +74,8 @@ class LabelString : public MsgString {
 public:
     LabelString();
     virtual ~LabelString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u32 getTextWidth();
     void setHighlight(u8 a, u8 b, u32 c, u32 d);
@@ -580,7 +580,7 @@ void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
 void LabelString::redrawAligned(s32 a, s32 b) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)vfunc_0c();
+        o->unk_10 = (u32)data();
         if (b != 0) {
             unk_3c->unk_57 = 1;
         } else {
@@ -598,7 +598,7 @@ void LabelString::redrawAligned(s32 a, s32 b) {
 void LabelString::redrawOffset(s32 a, s32 b) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)vfunc_0c();
+        o->unk_10 = (u32)data();
         if (a != 0) {
             unk_3c->alignCenter();
         } else {
@@ -612,7 +612,7 @@ void LabelString::redrawOffset(s32 a, s32 b) {
 void LabelString::redrawRight() {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)vfunc_0c();
+        o->unk_10 = (u32)data();
         unk_3c->alignRight();
         unk_3c->requestRedraw();
     }
@@ -621,7 +621,7 @@ void LabelString::redrawRight() {
 void LabelString::redrawAt(s32 v) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)vfunc_0c();
+        o->unk_10 = (u32)data();
         unk_3c->unk_30 = v;
         unk_3c->requestRedraw();
     }

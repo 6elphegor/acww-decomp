@@ -444,8 +444,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL appendRange(u8 *start, u8 *end);
     BOOL assignRange(u8 *start, u8 *end);
     BOOL equals(MsgString *other);
@@ -465,8 +465,8 @@ class MsgString33 : public MsgString {
 public:
     MsgString33();
     virtual ~MsgString33();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     void initEmpty();
 };
 
@@ -475,8 +475,8 @@ class Unk_020aa8e0 : public MsgString {
 public:
     Unk_020aa8e0();
     virtual ~Unk_020aa8e0();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x20];
 };

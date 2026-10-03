@@ -45,8 +45,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
@@ -74,8 +74,8 @@ class LabelString : public MsgString {
 public:
     LabelString();
     virtual ~LabelString();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     u32 getTextWidth();
     void setHighlight(u8 a, u8 b, u32 c, u32 d);
@@ -564,9 +564,9 @@ LabelString::LabelString() {
 
 LabelString::~LabelString() { destroyLabel(); }
 
-u32 LabelString::vfunc_08() { return 0x2a; }
+u32 LabelString::capacity() { return 0x2a; }
 
-u8 *LabelString::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *LabelString::data() { return (u8 *)this + 0x12; }
 
 void LabelString::destroyLabel() {
     if (unk_3c != NULL) {

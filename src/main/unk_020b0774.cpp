@@ -48,8 +48,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     void clear();
     u32 unk_04;
     MsgStringAttr unk_08;
@@ -59,8 +59,8 @@ class ConstellationMsgString17 : public MsgString {
 public:
     ConstellationMsgString17();
     virtual ~ConstellationMsgString17();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
     u8 unk_12[0x11];
 };
 
@@ -149,9 +149,9 @@ ConstellationMsgString17::ConstellationMsgString17() {
 
 ConstellationMsgString17::~ConstellationMsgString17() {}
 
-u32 ConstellationMsgString17::vfunc_08() { return 0x11; }
+u32 ConstellationMsgString17::capacity() { return 0x11; }
 
-u8 *ConstellationMsgString17::vfunc_0c() { return unk_12; }
+u8 *ConstellationMsgString17::data() { return unk_12; }
 
 ConstellationEncodedString16::ConstellationEncodedString16() {}
 

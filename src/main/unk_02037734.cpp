@@ -12,12 +12,19 @@ public:
     /* 0x09 */ u8 unk_09;
 };
 
-class MsgString {
+class MsgStringBase {
+public:
+    virtual ~MsgStringBase();
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
+};
+
+class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     u8 appendString(MsgString *other);
     u8 append(u8 *str);
     u8 setLine(u8 *str);
@@ -32,8 +39,8 @@ class MsgString25 : public MsgString {
 public:
     MsgString25();
     virtual ~MsgString25();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u32 unk_14[6];
 };
@@ -60,8 +67,8 @@ class CautionMsgString64 : public MsgString {
 public:
     CautionMsgString64();
     virtual ~CautionMsgString64();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x40];
 };
@@ -70,8 +77,8 @@ class CautionMsgString128 : public MsgString {
 public:
     CautionMsgString128();
     virtual ~CautionMsgString128();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x80];
 };
@@ -81,8 +88,8 @@ class CautionMsgString256 : public MsgString {
 public:
     CautionMsgString256();
     virtual ~CautionMsgString256();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u8 unk_14[0x100];
 };
@@ -288,20 +295,20 @@ CautionMsgString256::CautionMsgString256() { clear(); }
 
 CautionMsgString256::~CautionMsgString256() {}
 
-u32 CautionMsgString256::vfunc_08() { return 0x100; }
+u32 CautionMsgString256::capacity() { return 0x100; }
 
-u8 *CautionMsgString256::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *CautionMsgString256::data() { return (u8 *)this + 0x12; }
 
 CautionMsgString64::CautionMsgString64() { clear(); }
 
 CautionMsgString64::~CautionMsgString64() {
 }
 
-u32 CautionMsgString64::vfunc_08() {
+u32 CautionMsgString64::capacity() {
     return 0x40;
 }
 
-u8 *CautionMsgString64::vfunc_0c() {
+u8 *CautionMsgString64::data() {
     return (u8 *)this + 0x12;
 }
 
@@ -312,11 +319,11 @@ CautionMsgString128::CautionMsgString128() {
 CautionMsgString128::~CautionMsgString128() {
 }
 
-u32 CautionMsgString128::vfunc_08() {
+u32 CautionMsgString128::capacity() {
     return 0x80;
 }
 
-u8 *CautionMsgString128::vfunc_0c() {
+u8 *CautionMsgString128::data() {
     return (u8 *)this + 0x12;
 }
 
@@ -506,7 +513,7 @@ void CommCautionWindow::renderLine() {
         MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
         if (o != NULL) {
             o->unk_2c = 5;
-            o->unk_10 = (u32)unk_250.vfunc_0c();
+            o->unk_10 = (u32)unk_250.data();
             o->unk_58 = 2;
             o->unk_50 = 0;
             o->unk_28 = (GameFontDesc *)gFontA;
@@ -540,7 +547,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
     if (o != NULL) {
         o->unk_2c = 5;
-        o->unk_10 = (u32)((MsgString *)&t)->vfunc_0c();
+        o->unk_10 = (u32)((MsgString *)&t)->data();
         o->unk_58 = 2;
         o->unk_50 = 0;
         o->unk_28 = (GameFontDesc *)gFontA;
@@ -557,7 +564,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
 void CommCautionWindow::buildLine(u32 a, u32 b) {
     unk_250.clear();
     unk_e0 = 0;
-    u8 *r = (u8 *)Msg_SkipLines((char *)unk_e8.vfunc_0c(), a);
+    u8 *r = (u8 *)Msg_SkipLines((char *)unk_e8.data(), a);
     if (r != NULL) {
         unk_250.setLine(r);
         if (unk_e4 >= 0 && a == 3) {

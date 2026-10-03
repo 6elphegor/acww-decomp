@@ -175,16 +175,16 @@ public:
 class MsgStringBase {
 public:
     virtual ~MsgStringBase() {}
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
 };
 
 class LabelBalloonText : public MsgStringBase {
 public:
     LabelBalloonText();
     virtual ~LabelBalloonText();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x04 */ u8 unk_04[0x24];
 };

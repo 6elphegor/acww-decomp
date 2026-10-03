@@ -90,8 +90,8 @@ class MsgString : public MsgStringBase {
 public:
     MsgString();
     virtual ~MsgString();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
+    virtual u32 capacity() = 0;
+    virtual u8 *data() = 0;
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
@@ -147,8 +147,8 @@ class MsgString513 : public MsgString {
 public:
     MsgString513();
     virtual ~MsgString513();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[513];
 };
@@ -157,8 +157,8 @@ class MsgString33B : public MsgString {
 public:
     MsgString33B();
     virtual ~MsgString33B();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[33];
 };
@@ -167,8 +167,8 @@ class MsgString129 : public MsgString {
 public:
     MsgString129();
     virtual ~MsgString129();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[129];
 };
@@ -177,8 +177,8 @@ class MsgString25B : public MsgString {
 public:
     MsgString25B();
     virtual ~MsgString25B();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x12 */ u8 unk_12[25];
 };
@@ -187,8 +187,8 @@ class LetterTextLine : public MsgString {
 public:
     LetterTextLine();
     virtual ~LetterTextLine();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     void setNameHighlight(u8 a, u8 b);
     void setHighlight(u8 a, u8 b, u32 c);
@@ -234,7 +234,7 @@ MsgString25B::MsgString25B() { clear(); }
 
 MsgString25B::~MsgString25B() {}
 
-u32 MsgString25B::vfunc_08() { return 0x19; }
+u32 MsgString25B::capacity() { return 0x19; }
 
-u8 *MsgString25B::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString25B::data() { return (u8 *)this + 0x12; }
 

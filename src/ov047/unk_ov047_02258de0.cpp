@@ -211,36 +211,36 @@ public:
     virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18(u32 a);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a);
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onConditionTag();
+    virtual void onEventTag(u32 v);
+    virtual void onTag09_0();
+    virtual void onTag09_1();
+    virtual void onTag09_2();
+    virtual void onTag09_3();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void getVoiceType();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
+    virtual void start(TalkStartMsg *out);
+    virtual void runDeferred();
+    virtual void update();
+    virtual void onTaskDone();
     char unk_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -251,28 +251,28 @@ public:
 class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
+    virtual void onMessageStart();
+    virtual void onSignalTag();
+    virtual void onActionTag0();
+    virtual void onActionTag1();
+    virtual void onActionTag2();
+    virtual void onActionTag3();
     virtual void onActionTag4();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    virtual void onScannedTag();
+    virtual void getSpeakerData();
+    virtual void onWindowClose();
+    virtual void onTalkEnd();
 };
 
 class Unk_020d7710 : public TalkMsgRequest {
 public:
     void setSubSceneKindArg(u32 a, u32 b, u32 c);
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
+    virtual void onTag09_4();
+    virtual void onTag09_5();
+    virtual void onTag09_6();
+    virtual void onTag09_7();
+    virtual void onTag09_8();
+    virtual void onTag09_9();
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -402,7 +402,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
     virtual void addMood();
-    virtual s32 vfunc_a8();
 
     BOOL netIsTalkLocked();
     void setNetUserBytes(void *dst, s32 n);
@@ -446,7 +445,7 @@ public:
     virtual void canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
     virtual void getSpecies();
-    virtual s32 vfunc_a8();
+    virtual s32 getWalkAnimSpeedScale();
 
     SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
@@ -464,10 +463,10 @@ public:
     SpNpcBlathersTalk();
     virtual ~SpNpcBlathersTalk();
     virtual void vfunc_08();
-    virtual void vfunc_14();
-    virtual void vfunc_18(u32 a);
-    virtual void vfunc_78(TalkStartMsg *out);
-    virtual void vfunc_84();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone();
 
     void onDeliveryChoice(u32 a);
     void onDonateMoreChoice(u32 a);
@@ -1013,7 +1012,7 @@ BOOL SpNpcBlathers::mainAct08() { return TRUE; }
 // ---- unit 4
 // ---------------------------------------------------------------------------------------------------------------------
 
-void SpNpcBlathersTalk::vfunc_84() {
+void SpNpcBlathersTalk::onTaskDone() {
     if (unk_b4) {
         (this->*unk_b4)();
         Fn n = *(Fn *)__ptmf_null;
@@ -1241,7 +1240,7 @@ void SpNpcBlathersTalk::attachOwner(SpNpcBlathers *owner) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
+void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     if (GameStart_IsActive()) {
         out->unk_00 = sSpNpcBlathersSequence4Key;
         out->unk_04 = 8;
@@ -1370,7 +1369,7 @@ extern "C" Unk_ov047_SceneEntry sSpNpcBlathersProfile = {SpNpcBlathers_Create, 0
 extern "C" void *data_ov047_0225b4f8[2] = {(void *)_ZN17SpNpcBlathersTalk21scriptCloseItemSelectEv, 0};
 extern "C" void *data_ov047_0225b400[2] = {(void *)_ZN17SpNpcBlathersTalk15openExhibitListEv, 0};
 
-void SpNpcBlathersTalk::vfunc_14() {
+void SpNpcBlathersTalk::onMessageEnd() {
     void *p;
     volatile u8 hdr[4];
     volatile u16 tt[3];
@@ -1708,7 +1707,7 @@ void SpNpcBlathersTalk::openExhibitList() {
 extern "C" void *data_ov047_0225b4d8[2] = {(void *)_ZN17SpNpcBlathersTalk18openDonationPickerEv, 0};
 extern "C" void *data_ov047_0225b4d0[2] = {(void *)_ZN17SpNpcBlathersTalk14returnHeldItemEv, 0};
 
-void SpNpcBlathersTalk::vfunc_18(u32 a) {
+void SpNpcBlathersTalk::onChoice(u32 a) {
     if (!GameStart_IsActive()) {
         static void (SpNpcBlathersTalk::*tbl[2])(u32) = {
             *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3b0,
