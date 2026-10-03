@@ -124,6 +124,16 @@ inline helpers above them. This is the original file's definition order, so inli
   named object is *defined* relative to the functions. `--apply` searches for a placement that reproduces the
   original and moves the definitions (adding extern declarations). Recompile and rerun `data` until it says
   `compiled object's data order: MATCHES the original`.
+* `check` also builds the overlay's data as the link would: `.rodata`, `.data` and `.ctor` byte for byte with the
+  object's pointers resolved (the Thumb bit of a pointer to a Thumb function, e.g. the `.ctor` word of the
+  `__sinit`, is set by the linker and expected), and the end of every section against its range (zero padding up to
+  the section's `align:` is allowed). It simulates dead-stripping first: a data/bss object that nothing kept refers
+  to and that has no `symbols.txt` name is listed as `unused` and left out (mwld strips it, and everything after it
+  moves). `DATA` = wrong bytes or wrong order, `SIZE` = the objects do not fill the range. A data label of the
+  overlay that code outside the unit uses (an extern in another `src/` file, a relocation of delinked code of
+  another module) must be a global of the object at that address, or recorded (`interior:` in renames.txt,
+  `lcf_symbols.txt`): `MISSING ... used from outside the unit`. Overlays with an `object_order.txt` skip these data
+  tests (the link places every object by its address).
 
 ## 5. Deliver
 
@@ -157,6 +167,30 @@ compiled-order line. For hard orders, write a small script that inverts the heap
 (several agents did this; annealing over definition placement + local-static declaration order works).
 Objects only reachable through a pointer table in .rodata are "contents match nowhere" in `data`; verify
 them by hand (the ROM checksum catches any mismatch anyway).
+
+## Overlays without .text (ov005-ov044)
+
+39 overlays have no code of their own: their `delinks.txt` header lists only `.init`, `.ctor`, `.data` and `.bss`
+(ov005-ov008, ov010-ov044: a map scene record, its entry list and id grid, and for ov013-ov029/ov031-ov044 1-7
+static map objects of main's class `Unk_020b4f8c`). Their one source file defines the data under the `symbols.txt`
+names; mwcc emits the Thumb `__sinit_<file>` (`.init`) and its `.ctor` word itself from the objects with a
+non-constant initialiser (an aggregate with an `extern u8` element: the byte that `__sinit` copies from ov003/ov004;
+`Unk_020b4f8c` objects built by their out-of-line constructor and registered with `__register_global_object`).
+The units are in `pipeline_wip/sdk_units/OV_ovNNN/` (generated and order-solved by
+`pipeline_wip/smallov2_work/gen.py` / `solve.py`).
+
+* The spec has no `.text` line: `unit unit.cpp`, then `.init`, `.ctor`, `.data` and (when not empty) `.bss`.
+  `install_tu.py ovNNN spec.txt` names the file after the first range (`src/ovNNN/unk_ovNNN_<.init start>.cpp`).
+* `linkprep.py` (`check`, `data`, `diff`) and `ovdump.py` take an empty `.text` at the image start for such an
+  overlay.
+* Object boundaries come from the scene graph, not from dsd's labels (many are interior and marked `ambiguous`):
+  scene 24 bytes, head 8, entry 8 per list, id list 4 per id, record list 20 per record, grid 4 x width x height,
+  object table 8, object array 0x1c per object. Every overlay's `.data` is then one ascending size run.
+* A global that nothing refers to is dead-stripped unless `symbols.txt` names it (`check`: `unused`); a named
+  global keeps its `symbols.txt` name (ov069's empty initialiser object `data_ov069_02260cc0`).
+* Labels used from outside the unit: main's `data_020e4280` table names `data_ov005_0225b79c`, which is the fourth
+  id of ov005's list `data_ov005_0225b790`: `ov005 0225b79c interior:0225b790` in the unit's renames.txt.
+* `link_candidates.py` lists such an overlay as `data-only` until a complete unit covers all its sections.
 
 ## Overlays that were two translation units
 

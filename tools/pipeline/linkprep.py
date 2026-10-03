@@ -151,6 +151,11 @@ def overlay_sections(ov):
         m = re.match(r"\s*(\S+)\s+start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", line)
         if m:
             secs[m.group(1)] = (int(m.group(2), 16), int(m.group(3), 16))
+    if ".text" not in secs and secs:
+        # an overlay without code of its own (only .init/.ctor/.data/.bss: the map-scene tables of ov005-ov044):
+        # an empty .text at the start of the image, so that the code checks pass and the image base is right
+        s0 = min(a for a, _ in secs.values())
+        secs[".text"] = (s0, s0)
     return secs
 
 
@@ -894,12 +899,18 @@ def cmd_check(objpath, ov):
     problems += bytes_bad
     # predicted final address of every object section (the linker lays each kind out in object order)
     layout = {}
-    for kind in (".rodata", ".data", ".bss", ".init"):
+    keep = kept_sections(o, syms)
+    for i, s in enumerate(o.sh):
+        if o.secname[i] in (".rodata", ".data", ".bss") and s[5] and i not in keep:
+            name = next((y[0] for y in o.syms if y[5] == i and y[0] and y[3] == 1), f"section {i}")
+            print(f"unused  {o.secname[i]} {name} ({s[5]:#x} bytes): nothing the link keeps refers to it, mwld "
+                  f"dead-strips it (a global with its symbols.txt name is kept)")
+    for kind in (".rodata", ".data", ".bss", ".init", ".ctor"):
         if kind not in secs:
             continue
         pos = secs[kind][0]
         for i, s in enumerate(o.sh):
-            if o.secname[i] == kind and s[5]:
+            if o.secname[i] == kind and s[5] and i in keep:
                 align = max(s[8], 4)  # mwld aligns every section to at least 4
                 pos = (pos + align - 1) // align * align
                 layout[i] = pos
@@ -938,6 +949,8 @@ def cmd_check(objpath, ov):
                 if ((have + addend) & ~1) != (want & ~1):
                     print(f"TARGET  .init+{off:#x} uses {sname}+{addend:#x} (would link at {have + addend:#010x}); the original uses {want:#010x}")
                     problems += 1
+    data_problems, data_missing = check_overlay_data(o, ov, secs, layout, target_addr, orig, base, syms)
+    problems += data_problems
     # every relocation in the code must point where the original's does (right symbol name, not just a name)
     relocs = overlay_relocs(ov)
     local = {}  # symbols defined in this object: name -> original address (via symbols.txt)
@@ -969,7 +982,7 @@ def cmd_check(objpath, ov):
                 print(f"TARGET  {fname}+{off:#x} uses {sname} ({got:#010x}); the original uses {want:#010x} "
                       f"{' '.join(n for n, (m, a) in syms_by_addr(syms, want & ~1))}")
                 wrong += 1
-    missing = cmd_undef(objpath)
+    missing = cmd_undef(objpath) + data_missing
     # the overlay's own symbols are only defined by this object once it is linked
     own = {y[0] for y in o.syms if y[5] != 0}
     for name in sorted({y[0] for y in o.syms if y[5] == 0 and y[0]} - own):
@@ -978,6 +991,150 @@ def cmd_check(objpath, ov):
             missing += 1
     print(f"{problems} layout problems, {wrong} wrong targets, {missing} unresolved symbols")
     return problems + missing + wrong
+
+
+def overlay_alignments(ov):
+    '''section -> alignment from the overlay's delinks.txt header (`align:32`)'''
+    out = {}
+    for line in (CONFIG / "overlays" / ov / "delinks.txt").read_text().split("\n\n")[0].splitlines():
+        m = re.match(r"\s*(\S+)\s+start:\S+ end:\S+.*\balign:(\d+)", line)
+        if m:
+            out[m.group(1)] = int(m.group(2))
+    return out
+
+
+def thumb_functions():
+    '''names that symbols.txt gives to Thumb functions (a pointer to one has bit 0 set)'''
+    out = set()
+    for p in CONFIG.rglob("symbols.txt"):
+        for line in p.read_text().splitlines():
+            if "kind:function(thumb" in line or "kind:label(thumb" in line:
+                out.add(line.split(" ", 1)[0])
+    return out
+
+
+def complete_ranges(module_cfg):
+    '''[start, end) of every section range of the complete units of one module'''
+    out = []
+    _, _, units = (module_cfg / "delinks.txt").read_text().partition("\n\n")
+    for b in re.split(r"\n\s*\n", units.strip()):
+        if any(l.strip() == "complete" for l in b.splitlines()[1:]):
+            out += [(int(a, 16), int(e, 16)) for a, e in re.findall(r"start:(0x[0-9a-f]+) end:(0x[0-9a-f]+)", b)]
+    return out
+
+
+def check_overlay_data(o, ov, secs, layout, target_addr, orig, base, syms):
+    '''the overlay's data as the link makes it: .rodata, .data and .ctor byte for byte (R_ARM_ABS32 words resolved;
+    the Thumb bit of a pointer to a Thumb function, e.g. the .ctor word of a Thumb __sinit, is set by the linker), and
+    the end of every section (.init, .ctor, .rodata, .data, .bss) against the original range (the last object may be
+    followed by zero padding up to the section's alignment). Then the names other code uses for the overlay's data:
+    an extern of a compiled source outside src/<ov>/, and a relocation of delinked code of another module, must find
+    a global of the object at its address, a name of lcf_symbols.txt, or an interior:/section: line of renames.txt.
+    Returns (layout problems, missing names).'''
+    problems = 0
+    missing = 0
+    if (CONFIG / "overlays" / ov / "object_order.txt").exists():
+        # tools/object_order.py places the unit object by object: the section order simulated here is not the link's
+        print("note: object_order.txt: data bytes not compared (the link places every object by its address)")
+        return problems, missing
+    aligns = overlay_alignments(ov)
+    thumb = None
+    funcs = {y[0] for y in o.syms if y[3] == 2}
+    for kind in (".init", ".ctor", ".rodata", ".data", ".bss"):
+        if kind not in secs:
+            continue
+        a0, a1 = secs[kind]
+        end = a0
+        for i in sorted((i for i in layout if o.secname[i] == kind), key=lambda i: layout[i]):
+            p = layout[i]
+            end = p + o.sh[i][5]
+            if kind in (".bss", ".init"):
+                continue  # .init bytes and literal targets are compared above
+            data = bytearray(o.section_bytes(i))
+            want = orig[p - base:p - base + len(data)]
+            for off, sname, addend, rtype in o.relocs.get(i, []):
+                t = target_addr(sname)
+                if rtype != 2 or t is None:
+                    continue  # unresolved names are counted by the symbol check
+                v = (t + addend) & 0xffffffff
+                if sname in funcs or sname in syms:
+                    if thumb is None:
+                        thumb = thumb_functions()
+                    if sname in thumb or (sname in funcs and sname not in syms and off + 4 <= len(want)
+                                          and struct.unpack_from("<I", want, off)[0] == v | 1):
+                        v |= 1  # a local Thumb function (the __sinit of the .ctor word): the linker sets the bit
+                struct.pack_into("<I", data, off, v)
+            bad = [k for k in range(len(data)) if k >= len(want) or data[k] != want[k]]
+            if bad:
+                name = next((y[0] for y in o.syms if y[5] == i and y[0] and y[3] == 1), f"section {i}")
+                k = bad[0]
+                print(f"DATA    {kind} {name} at {p:#010x}: {len(bad)} bytes differ from the original (first at "
+                      f"+{k:#x}: original {want[k:k + 4].hex() or '(past the end)'}, linked {bytes(data[k:k + 4]).hex()})")
+                problems += 1
+        al = aligns.get(kind, 4)
+        if end > a1 or (end + al - 1) // al * al < a1:
+            print(f"SIZE    {kind} objects end at {end:#010x}, original {kind} {a0:#010x}-{a1:#010x} (align {al})")
+            problems += 1
+        elif kind != ".bss" and any(orig[end - base:a1 - base]):
+            print(f"SIZE    {kind} objects end at {end:#010x}; the original has data up to {a1:#010x}")
+            problems += 1
+    # names that code outside the unit uses
+    defined = {y[0]: target_addr(y[0]) for y in o.syms if y[5] in layout and y[4] == 1 and y[0]}
+    own = {n: a for n, (m, a) in syms.items() if m == ov}
+    ok = set(lcf_symbols()) | {n for n, a in own.items() if (ov, a) in INTERIOR or (ov, a) in SECTION_LABELS}
+    lo, hi = min(a for a, _ in secs.values()), max(b for _, b in secs.values())
+    used = {}
+    pat = re.compile(r"\b(data_%s_[0-9a-f]{8})\b" % ov)
+    for src in sorted(Path("src").rglob("*.c*")):
+        if len(src.parts) > 1 and src.parts[1] == ov:
+            continue
+        for name in pat.findall(src.read_text(errors="replace")):
+            used.setdefault(name, str(src))
+    n = int(ov[2:])
+    for rp in sorted(CONFIG.rglob("relocs.txt")):
+        if rp.parent.name == ov:
+            continue
+        done = None
+        for line in rp.read_text().splitlines():
+            m = re.match(r"from:(0x[0-9a-f]+) kind:\S+ to:(0x[0-9a-f]+)(?: add:\S+)? module:overlay\((\d+)\)$", line)
+            if not m or int(m.group(3)) != n:
+                continue
+            frm, to = int(m.group(1), 16), int(m.group(2), 16)
+            if not lo <= to < hi:
+                continue
+            if done is None:
+                done = complete_ranges(rp.parent)
+            if any(a <= frm < b for a, b in done):
+                continue  # compiled code: its source names the symbol (above)
+            name = next((k for k, a in own.items() if a == to), None)
+            used.setdefault(name or f"{to:#010x}", f"{rp} from:{frm:#010x}")
+    for name, where in sorted(used.items()):
+        if name in ok or (name in defined and name in own and defined[name] == own[name]):
+            continue
+        what = "is not defined at its address" if name in defined else "is not defined"
+        print(f"MISSING {name} is used from outside the unit ({where}) but {what}: define it there, or record "
+              f"it (renames.txt `{ov} <label addr> interior:<object addr>`)")
+        missing += 1
+    return problems, missing
+
+def kept_sections(o, syms):
+    '''the sections of a compiled overlay unit that survive the link's dead-stripping: every section with a global
+    that symbols.txt names (tools/force_active.py), .init and .ctor (KEEP_SECTION), every .text section (the code
+    checks place functions themselves), and whatever those refer to'''
+    nsec = len(o.sh)
+    todo = [shndx for name, value, size, typ, bind, shndx in o.syms if bind != 0 and 0 < shndx < nsec and name in syms]
+    todo += [i for i in range(nsec) if o.secname[i] in (".init", ".ctor", ".text") and o.sh[i][5]]
+    keep = set()
+    while todo:
+        i = todo.pop()
+        if i in keep:
+            continue
+        keep.add(i)
+        for idx in o.relsym.get(i, []):
+            shndx = o.syms[idx][5]
+            if 0 < shndx < nsec and shndx not in keep:
+                todo.append(shndx)
+    return keep
 
 
 _BY_ADDR = None

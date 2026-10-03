@@ -32,7 +32,7 @@ for p in Path("config/usa/arm9").rglob("symbols.txt"):
         if m and (p.parent == cfg or p.parent.name in ("arm9", "autoload_2", "itcm", "overlays") or True):
             names.setdefault(int(m.group(2), 16), m.group(1))
 b = Path(f"extract/usa/arm9_overlays/{ov}.bin").read_bytes()
-base = secs[".text"][0]
+base = min(a for a, _ in secs.values())  # the image start (.text, or .init for an overlay without code)
 for sec in (".rodata", ".data"):
     if sec not in secs:
         continue
