@@ -3852,8 +3852,8 @@ from:0x0221790c kind:load to:0x02003c31 module:main
 from:0x02217926 kind:thumb_call to:0x02003c70 module:main
 from:0x0221792e kind:thumb_call to:0x02003c40 module:main
 from:0x02217940 kind:load to:0x02003cbd module:main
-from:0x02217954 kind:load to:0x0213b91c module:autoload(2)
-from:0x02217958 kind:load to:0x0213b938 module:autoload(2)
+from:0x02217954 kind:load to:0x0213b914 add:0x8 module:autoload(2)
+from:0x02217958 kind:load to:0x0213b930 add:0x8 module:autoload(2)
 from:0x02217988 kind:load to:0x020c8cbc module:main
 from:0x022179c0 kind:thumb_call to:0x02217970 module:overlay(3)
 from:0x022179f2 kind:thumb_call to:0x02217a84 module:overlay(3)
@@ -5439,8 +5439,8 @@ from:0x022219f8 kind:thumb_call to:0x0209c370 module:main
 from:0x02221a00 kind:thumb_call to:0x02054e3c module:main
 from:0x02221a08 kind:thumb_call to:0x020548d0 module:main
 from:0x02221a1a kind:thumb_call to:0x022218f8 module:overlay(3)
-from:0x02221a68 kind:load to:0x0213b91c module:autoload(2)
-from:0x02221a6c kind:load to:0x0213b954 module:autoload(2)
+from:0x02221a68 kind:load to:0x0213b914 add:0x8 module:autoload(2)
+from:0x02221a6c kind:load to:0x0213b94c add:0x8 module:autoload(2)
 from:0x02221ae0 kind:thumb_call to:0x02223310 module:overlay(3)
 from:0x02221af8 kind:thumb_call to:0x02223310 module:overlay(3)
 from:0x02221b14 kind:thumb_call to:0x02223310 module:overlay(3)
@@ -6004,8 +6004,8 @@ from:0x02225f52 kind:thumb_call to:0x0209c140 module:main
 from:0x02225f70 kind:thumb_call_arm to:0x02135714 module:autoload(2)
 from:0x02225f78 kind:thumb_call to:0x0209c370 module:main
 from:0x02225f80 kind:thumb_call to:0x0209c0c8 module:main
-from:0x02225fe0 kind:load to:0x0213b91c module:autoload(2)
-from:0x02225fe8 kind:load to:0x0213b954 module:autoload(2)
+from:0x02225fe0 kind:load to:0x0213b914 add:0x8 module:autoload(2)
+from:0x02225fe8 kind:load to:0x0213b94c add:0x8 module:autoload(2)
 from:0x02225fec kind:load to:0x02000c8d module:main
 from:0x02225ff4 kind:load to:0x02000c99 module:main
 from:0x0222605e kind:thumb_call to:0x0209cf18 module:main

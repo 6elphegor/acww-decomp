@@ -1,1 +1,5 @@
+data_0213b91c addr:0x0213b91c base:_ZTV12Unk_0213b91c
+data_0213b938 addr:0x0213b938 base:_ZTV12Unk_0213b938
+data_0213b954 addr:0x0213b954 base:_ZTV12Unk_0213b954
+data_0213b970 addr:0x0213b970 base:_ZTV12Unk_0213b970
 data_0213b9c4 addr:0x0213b9c4 base:_ZTV12Unk_020f3e50
