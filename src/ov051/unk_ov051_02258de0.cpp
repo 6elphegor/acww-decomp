@@ -76,14 +76,14 @@ void _ZN12Unk_0201ad2013func_0201ad34Ei(void *self, s32 a);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *p, void *q);
 void *PlayerData_GetCurrent();
 Unk_02067918 *TalkWindow_Get(s32 a);
-BOOL func_020a0318();
-BOOL func_020a02dc();
-BOOL func_020a02f0();
-BOOL func_020a0304();
-BOOL func_0206ed04();
+BOOL GameStart_IsNewTown();
+BOOL GameStart_IsMode4();
+BOOL GameStart_IsMode3();
+BOOL GameStart_IsNewResident();
+BOOL MenuCtrl_IsResultDuplicateName();
 void Clock_GetDateTime(void *p);
 void Town_SetGenGateMode(u32 a);
-void func_0206e8cc(void *p);
+void MenuCtrl_SetDateTime(void *p);
 void SaveData_Setup(void *p, s32 a);
 void SaveData_Apply(void *p);
 s32 TownBlockMap_Get();
@@ -652,19 +652,19 @@ BOOL SpNpcKappn::mainAct03() {
     if (Unk_ov051_02259a8c_IsZero(gScreenTransition)) {
         ScreenTransition_StartFadeIn(3, 0, 1);
         func_020b0f24();
-        if (func_020a02f0() || func_020a0318()) {
+        if (GameStart_IsMode3() || GameStart_IsNewTown()) {
             l.w[0] = 0;
             l.w[1] = 0;
             Clock_GetDateTime(&l.w);
-            func_0206e8cc(&l.w);
+            MenuCtrl_SetDateTime(&l.w);
         }
-        if (func_020a0318()) {
+        if (GameStart_IsNewTown()) {
             SaveData_Setup(gSaveData, 0);
             SaveData_Apply(gSaveData);
-        } else if (func_020a02f0()) {
+        } else if (GameStart_IsMode3()) {
             SaveData_Setup(gSaveData, 6);
             SaveData_Apply(gSaveData);
-        } else if (func_020a0304()) {
+        } else if (GameStart_IsNewResident()) {
             SaveData_Setup(gSaveData, 1);
             SaveData_Apply(gSaveData);
         }
@@ -711,7 +711,7 @@ void SpNpcKappnTalk::vfunc_1c(s32 a) {
 
 void SpNpcKappnTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_00 = (u32)sSpNpcKappnMsgKey;
-    if (func_020a0318() || func_020a02f0()) {
+    if (GameStart_IsNewTown() || GameStart_IsMode3()) {
         out->unk_04 = 0;
     } else {
         out->unk_04 = 0x28;
@@ -744,7 +744,7 @@ void SpNpcKappnTalk::onTownNameEntered() {
 
 void SpNpcKappnTalk::onPlayerNameEntered() {
     u8 m[2];
-    if (func_0206ed04()) {
+    if (MenuCtrl_IsResultDuplicateName()) {
         m[0] = 0x29;
         unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
     } else {
@@ -807,7 +807,7 @@ void SpNpcKappnTalk::openTownNameEntry() {
 
 void SpNpcKappnTalk::askVisitPlan() {
     u8 m[2];
-    if (func_020a02dc()) {
+    if (GameStart_IsMode4()) {
         m[0] = 0x30;
         unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
     }
@@ -816,7 +816,7 @@ void SpNpcKappnTalk::askVisitPlan() {
 // Dialog class SpNpcKappnTalk
 void SpNpcKappnTalk::askReasonOrMoney() {
     u8 m[2];
-    if (func_020a0318()) {
+    if (GameStart_IsNewTown()) {
         m[0] = genderMsg(0x15);
         unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
     } else {
@@ -833,7 +833,7 @@ void SpNpcKappnTalk::askDestination() {
 
 void SpNpcKappnTalk::askAfterBoyCorrection() {
     u8 msg[2];
-    if (func_020a0304()) {
+    if (GameStart_IsNewResident()) {
         msg[0] = 0x19;
         unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
@@ -844,7 +844,7 @@ void SpNpcKappnTalk::askAfterBoyCorrection() {
 
 void SpNpcKappnTalk::askAfterGirlCorrection() {
     u8 msg[2];
-    if (func_020a0304()) {
+    if (GameStart_IsNewResident()) {
         msg[0] = 0x1a;
         unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
@@ -855,7 +855,7 @@ void SpNpcKappnTalk::askAfterGirlCorrection() {
 
 void SpNpcKappnTalk::askMoneyOrArrive() {
     u8 msg[2];
-    if (func_020a02f0()) {
+    if (GameStart_IsMode3()) {
         msg[0] = genderMsg(0x25);
         unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
@@ -871,7 +871,7 @@ void SpNpcKappnTalk::announceArrival() {
 }
 
 void SpNpcKappnTalk::applyFaceFromAnswers() {
-    if (func_020a0304() || func_020a0318()) {
+    if (GameStart_IsNewResident() || GameStart_IsNewTown()) {
         void *h = PlayerData_GetCurrent();
         u32 res = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(h));
         u32 off4;
@@ -964,7 +964,7 @@ void SpNpcKappnTalk::onTownNameConfirmChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        if (func_020a02f0()) {
+        if (GameStart_IsMode3()) {
             msg[0] = genderMsg(0x15);
             unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
@@ -984,7 +984,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
     switch (sel) {
     case 0:
         _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
-        if (func_020a0304()) {
+        if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
@@ -1005,7 +1005,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
     switch (sel) {
     case 0:
         _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
-        if (func_020a0304()) {
+        if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
@@ -1045,7 +1045,7 @@ void SpNpcKappnTalk::onVisitPlanChoice(u32 sel) {
 void SpNpcKappnTalk::onRainChoice(u32 sel) {
     u8 msg;
     u32 v;
-    if (func_020a02f0()) {
+    if (GameStart_IsMode3()) {
         v = *(u8 *)(_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) + ((u32)sSpNpcKappnRainReplyMsgsMode3 + sel * 2));
     } else {
         v = sSpNpcKappnRainReplyMsgs[sel];
@@ -1069,7 +1069,7 @@ void SpNpcKappnTalk::onPurposeChoice(u32 sel) {
 void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
     u8 msg;
     u32 v;
-    if (func_020a0318()) {
+    if (GameStart_IsNewTown()) {
         v = genderMsg(sSpNpcKappnMoneyReplyMsgs[sel]);
     } else if (sel == 0) {
         if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0) {

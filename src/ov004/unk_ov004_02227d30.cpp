@@ -1,22 +1,22 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 
-// shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
+// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
 //   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN18Unk_ov004_0224d4e88vfunc_20Ej)
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
 // Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN18Unk_ov004_0224d4e8C2Ev (0x02225244, the only ctor in the original);
+//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (Unk_ov004_02224ee4: real C1/D1 methods), unk_248 (Unk_ov004_02224d60) and unk_250
-//    (Unk_ov004_02224cf4) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
+//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
+//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
+//    (RoomObj_DestructSe / RoomObjTex_Destruct), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
@@ -153,33 +153,33 @@ public:
 };
 
 extern "C" {
-s32 func_ov004_02224d8c(void *self, u32 i);
-void func_ov004_02224d9c(void *self);
-void func_ov004_02224dbc(void *self, const char *s);
-void *func_ov004_02224d68(void *self);
-void func_ov004_02224d60(void *self);
-void func_ov004_02224d5c(void *self);
-void func_ov004_02224d08(void *self);
-void func_ov004_02224d10(void *self, const char *s);
-u32 func_ov004_02224d04(void *self);
-void func_ov004_02224cf4(void *self);
-void func_ov004_02224ce4(void *self);
-void func_ov004_02224ca4(void *self, s32 v);
-void func_ov004_02224cb8(void *self);
-void func_ov004_02224cc0(void *self, void *v);
-void func_ov004_02224cdc(void *self);
+s32 RoomObjRes_GetBca(void *self, u32 i);
+void RoomObjRes_Free(void *self);
+void RoomObjRes_Load(void *self, const char *s);
+void *RoomObjRes_GetModel(void *self);
+void RoomObjTex_Construct(void *self);
+void RoomObjTex_Destruct(void *self);
+void RoomObjTex_Reset(void *self);
+void RoomObjTex_Load(void *self, const char *s);
+u32 RoomObjTex_Get(void *self);
+void RoomObj_ConstructSe(void *self);
+void RoomObj_DestructSe(void *self);
+void RoomObj_PlaySe(void *self, s32 v);
+void RoomObj_DeactivateSe(void *self);
+void RoomObj_SetSePos(void *self, void *v);
+void RoomObj_ActivateSe(void *self);
 }
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class Unk_ov004_02224ee4 {
+class RoomObjRes {
 public:
-    Unk_ov004_02224ee4();
-    ~Unk_ov004_02224ee4();
-    void func_ov004_02224ee4();
-    inline s32 func_ov004_02224d8c(u32 i) { return ::func_ov004_02224d8c(this, i); }
-    inline void func_ov004_02224d9c() { ::func_ov004_02224d9c(this); }
-    inline void func_ov004_02224dbc(const char *s) { ::func_ov004_02224dbc(this, s); }
-    inline void *func_ov004_02224d68() { return ::func_ov004_02224d68(this); }
+    RoomObjRes();
+    ~RoomObjRes();
+    void clear();
+    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
+    inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
+    inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
+    inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
     u32 unk_00;
     u32 unk_04;
@@ -188,32 +188,32 @@ public:
     u32 unk_70[13];
 };
 
-class Unk_ov004_02224d60 {
+class RoomObjTex {
 public:
-    inline Unk_ov004_02224d60() { func_ov004_02224d60(this); }
-    inline void func_ov004_02224d08() { ::func_ov004_02224d08(this); }
-    inline void func_ov004_02224d10(const char *s) { ::func_ov004_02224d10(this, s); }
-    inline u32 func_ov004_02224d04() { return ::func_ov004_02224d04(this); }
+    inline RoomObjTex() { RoomObjTex_Construct(this); }
+    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
+    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
+    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
     u32 unk_00;
     u8 unk_04;
 };
 
-class Unk_ov004_02224cf4 {
+class RoomObjSe {
 public:
-    inline Unk_ov004_02224cf4() { func_ov004_02224cf4(this); }
-    inline void func_ov004_02224ca4(s32 v) { ::func_ov004_02224ca4(this, v); }
-    inline void func_ov004_02224cb8() { ::func_ov004_02224cb8(this); }
-    inline void func_ov004_02224cc0(Unk_ov004_02224ee4_Vec *v) { ::func_ov004_02224cc0(this, v); }
-    inline void func_ov004_02224cdc() { ::func_ov004_02224cdc(this); }
+    inline RoomObjSe() { RoomObj_ConstructSe(this); }
+    inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
+    inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
+    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
+    inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Character {
+class RoomObjActor : public Character {
 public:
-    Unk_ov004_0224d4e8();
-    virtual ~Unk_ov004_0224d4e8();
+    RoomObjActor();
+    virtual ~RoomObjActor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -221,17 +221,17 @@ public:
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
 
-    void func_ov004_02224f58(u32 v);
-    s32 func_ov004_02224f20();
-    s32 func_ov004_02224f3c();
-    void func_ov004_02224f60();
-    void func_ov004_02224f90(char *name);
-    void func_ov004_02224fc8(char *a, char *b);
+    void setSyncSlot(u32 v);
+    s32 storeSyncState();
+    s32 getSyncState();
+    void releaseResources();
+    void loadResourcesByName(char *name);
+    void loadResources(char *a, char *b);
 
     /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60 unk_248;
-    /* 0x250 */ Unk_ov004_02224cf4 unk_250;
+    /* 0x1a4 */ RoomObjRes unk_1a4;
+    /* 0x248 */ RoomObjTex unk_248;
+    /* 0x250 */ RoomObjSe unk_250;
 };
 
 
@@ -242,10 +242,10 @@ struct Unk_ov004_Scene_Entry {
     s32 unk_08[4];
 };
 
-class Unk_ov004_0224dc50 : public Unk_ov004_0224d4e8 {
+class BarberPole : public RoomObjActor {
 public:
-    Unk_ov004_0224dc50();
-    virtual ~Unk_ov004_0224dc50();
+    BarberPole();
+    virtual ~BarberPole();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -254,7 +254,7 @@ public:
 
 extern "C" {
 extern u32 gBgHeap;
-s32 func_ov004_02224d8c(void *, u32);
+s32 RoomObjRes_GetBca(void *, u32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
 s32 _ZN9AnimModel10attachAnimEv(void *);
@@ -262,39 +262,39 @@ s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
-extern "C" Unk_ov004_0224dc50 *func_ov004_02227e20();
-extern "C" Unk_ov004_Scene_Entry data_ov004_0224dc30 = {(void *(*)())func_ov004_02227e20, 0x16, 0x1a, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" BarberPole *BarberPole_Create();
+extern "C" Unk_ov004_Scene_Entry sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, {0, 0xc8000, 0x12c000, 0x258000}};
 
-extern "C" Unk_ov004_0224dc50 *func_ov004_02227e20() {
-    return new Unk_ov004_0224dc50();
+extern "C" BarberPole *BarberPole_Create() {
+    return new BarberPole();
 }
 
-Unk_ov004_0224dc50::Unk_ov004_0224dc50() {}
+BarberPole::BarberPole() {}
 
-Unk_ov004_0224dc50::~Unk_ov004_0224dc50() {}
+BarberPole::~BarberPole() {}
 
-BOOL Unk_ov004_0224dc50::vfunc_00() {
-    func_ov004_02224f90("obj_b_pole");
-    if (func_ov004_02224d8c((u8 *)this + 0x1a4, 0) != 0) {
+BOOL BarberPole::vfunc_00() {
+    loadResourcesByName("obj_b_pole");
+    if (RoomObjRes_GetBca((u8 *)this + 0x1a4, 0) != 0) {
         if (_ZN9AnimModel11allocAnmObjEPv((u8 *)this + 0xec, gBgHeap) != 0) {
-            _ZN14BlendAnimModel8initAnimEiiitt((u8 *)this + 0xec, func_ov004_02224d8c((u8 *)this + 0x1a4, 0), 0, 0x1000, 0, 0);
+            _ZN14BlendAnimModel8initAnimEiiitt((u8 *)this + 0xec, RoomObjRes_GetBca((u8 *)this + 0x1a4, 0), 0, 0x1000, 0, 0);
             _ZN9AnimModel10attachAnimEv((u8 *)this + 0xec);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dc50::onExecute() {
+BOOL BarberPole::onExecute() {
     _ZN9AnimModel8stepAnimEv((u8 *)this + 0xec);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dc50::onDraw() {
+BOOL BarberPole::onDraw() {
     _ZN9AnimModel12drawAnimatedEPv((u8 *)this + 0xec, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dc50::vfunc_0c() {
-    func_ov004_02224f60();
+BOOL BarberPole::vfunc_0c() {
+    releaseResources();
     return TRUE;
 }

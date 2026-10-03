@@ -103,56 +103,56 @@ s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 void *func_0212899c(void *, s32, s32);
 
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32, s32, void (*)(void *));
-void func_ov065_02278570(Unk_ov065_022786bc_Vec *, s32);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *);
-void func_ov065_0227899c(char *, s32, char *);
-s32 func_ov065_02278bc0(s32);
-s32 func_ov065_02278cf8(s32, s32, s32);
-s32 func_ov065_02278da4(s32, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8(s32 fd);
-s32 func_ov065_02278fcc(s32);
-s32 func_ov065_02278ffc(s32);
-s32 func_ov065_0227902c(s32, s32);
-s32 func_ov065_0227905c(s32, s32);
-s32 func_ov065_0227908c(s32, s32);
-s32 func_ov065_02279100(s32);
-s32 func_ov065_0227ced4(Ctx0228 **, s32, s32, s32);
-s32 func_ov065_0227cf78(Ctx0228 **, s32, s32, const char *);
-s32 func_ov065_0227d96c(Ctx0228 **, char **);
-s32 func_ov065_0227d9b0(Ctx0228 **, char **, s32 *, s32 *, s32 *);
-s32 func_ov065_0227da7c(Ctx0228 **, s32, char **, s32 *, s32, const char *);
-s32 func_ov065_0227db18(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
-s32 func_ov065_0227dde8(Ctx0228 **, char **, s32);
-s32 func_ov065_0227de10(Ctx0228 **, char **, const char *);
-s32 func_ov065_0227e0e8(Ctx0228 **, Pair0228, void *, s32, s32);
-s32 func_ov065_0227f4c8(Ctx0228 **, s32, char *);
-s32 func_ov065_022809a4(Ctx0228 **, s32, s32, Ent0228 **, s32, s32, s32);
-s32 func_ov065_02280d70(Ctx0228 **, Node0228 *);
-void func_ov065_02281880(Ctx0228 **, Ent0228 *);
-s32 func_ov065_022818bc(Ctx0228 **, s32, Ent0228 **);
-s32 func_ov065_02283304(Ctx0228 **, Node0228 *, s32, char *, s32, s32);
-void func_ov065_02283460(Ctx0228 **, const char *);
-s32 func_ov065_02283590(Ctx0228 **, s32, s32 *);
-s32 func_ov065_02283630(char *, const char *, char *, s32);
-void func_ov065_02283720(Ctx0228 **, const char *, ...);
+void GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+Unk_ov065_022786bc_Vec *GsArray_New(s32, s32, void (*)(void *));
+void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *, s32);
+void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
+void GsArray_Free(Unk_ov065_022786bc_Vec *);
+void GsUtil_Md5Hex(char *, s32, char *);
+s32 GsUtil_GetTimeSeconds(s32);
+s32 GsSock_Accept(s32, s32, s32);
+s32 GsSock_Shutdown(s32, s32);
+s32 GsSock_Close(s32);
+s32 GsSock_CanRead(s32 fd);
+s32 GsSock_GetSendBufSize(s32);
+s32 GsSock_GetRecvBufSize(s32);
+s32 GsSock_SetSendBufSize(s32, s32);
+s32 GsSock_SetRecvBufSize(s32, s32);
+s32 GsSock_SetBlocking(s32, s32);
+s32 GsUtil_StrDup(s32);
+s32 GsGp_SendBuddyMessageEx(Ctx0228 **, s32, s32, s32);
+s32 GsGp_SendServerBuddyMessage(Ctx0228 **, s32, s32, const char *);
+s32 GsGpBuf_Compact(Ctx0228 **, char **);
+s32 GsGpPeer_ParseMessage(Ctx0228 **, char **, s32 *, s32 *, s32 *);
+s32 GsGp_SendBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
+s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
+s32 GsGpBuf_AppendInt(Ctx0228 **, char **, s32);
+s32 GsGpBuf_AppendString(Ctx0228 **, char **, const char *);
+s32 GsGp_QueueCallback(Ctx0228 **, Pair0228, void *, s32, s32);
+s32 GsGp_SendGetProfile(Ctx0228 **, s32, char *);
+s32 GsGp_AddOperation(Ctx0228 **, s32, s32, Ent0228 **, s32, s32, s32);
+s32 GsGpPeer_Connect(Ctx0228 **, Node0228 *);
+void GsGpProfile_Remove(Ctx0228 **, Ent0228 *);
+s32 GsGpProfile_Find(Ctx0228 **, s32, Ent0228 **);
+s32 GsGpPeer_DeclineTransfer(Ctx0228 **, Node0228 *, s32, char *, s32, s32);
+void GsGp_SetErrorString(Ctx0228 **, const char *);
+s32 GsGp_CheckConnectComplete(Ctx0228 **, s32, s32 *);
+s32 GsGp_GetValue(char *, const char *, char *, s32);
+void GsGp_DebugLog(Ctx0228 **, const char *, ...);
 
-s32 func_ov065_0228176c(Ent0228 *);
-s32 func_ov065_02281530(Ctx0228 **, Node0228 *);
-s32 func_ov065_022813ac(Ctx0228 **, Node0228 *);
-s32 func_ov065_02281180(Ctx0228 **, Node0228 *);
-s32 func_ov065_0228132c(Ctx0228 **, Node0228 *);
-s32 func_ov065_0228113c(Ctx0228 **, Node0228 *);
-void func_ov065_02281068(Ctx0228 **, Node0228 *);
-void func_ov065_022810fc(Ctx0228 **, Node0228 *);
-void func_ov065_02281000(s32);
-void func_ov065_02280f24(void *);
-Node0228 *func_ov065_02280eb8(Ctx0228 **, s32, s32);
+s32 GsGpProfile_IsUnused(Ent0228 *);
+s32 GsGpPeer_ProcessOutgoing(Ctx0228 **, Node0228 *);
+s32 GsGpPeer_ProcessIncoming(Ctx0228 **, Node0228 *);
+s32 GsGpPeer_ProcessConnected(Ctx0228 **, Node0228 *);
+s32 GsGpPeer_FlushQueue(Ctx0228 **, Node0228 *);
+s32 GsGpPeer_Process(Ctx0228 **, Node0228 *);
+void GsGpPeer_Remove(Ctx0228 **, Node0228 *);
+void GsGpPeer_Free(Ctx0228 **, Node0228 *);
+void GsGpPeer_SetSocketBuffers(s32);
+void GsGpPeer_FreeQueuedMessage(void *);
+Node0228 *GsGpPeer_New(Ctx0228 **, s32, s32);
 
 
 
@@ -170,7 +170,7 @@ Node0228 *func_ov065_02280eb8(Ctx0228 **, s32, s32);
 
 }
 extern "C" {
-s32 func_ov065_0228176c(Ent0228 *e);
+s32 GsGpProfile_IsUnused(Ent0228 *e);
 }
 }
 
@@ -266,35 +266,35 @@ extern char data_ov065_0228db1c[];
 
 typedef s32 (*Unk_ov065_022817c8_Cb)(Ctx0228 **, Node0228 *, void *);
 
-s32 func_ov065_02278758(void *, s32 (*)(void *, void *), void *);
-s32 func_ov065_02278810(void *, void *);
-void *func_ov065_022787c4(void *, void *);
-s32 func_ov065_0227885c(void *, void *);
-void *func_ov065_02278980(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-void func_ov065_02283460(Ctx0228 **, const char *);
-void func_ov065_02283470(Ctx0228 **, s32, const char *);
-s32 func_ov065_02283684(Ctx0228 **, char *, s32);
-s32 func_ov065_02283630(char *, const char *, void *, s32);
-s32 func_ov065_02283590(Ctx0228 **, s32, void *);
-void func_ov065_0227e160(Ctx0228 **, s32, s32);
-s32 func_ov065_0227e0e8(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
-void func_ov065_0228090c(Ctx0228 **, Node0228 *);
-void func_ov065_0227f2a4(void *);
+s32 GsHash_FindIf(void *, s32 (*)(void *, void *), void *);
+s32 GsHash_Remove(void *, void *);
+void *GsHash_Find(void *, void *);
+s32 GsHash_Insert(void *, void *);
+void *GsHash_New(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
+void GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+void GsGp_SetErrorString(Ctx0228 **, const char *);
+void GsGp_SetError(Ctx0228 **, s32, const char *);
+s32 GsGp_CheckServerError(Ctx0228 **, char *, s32);
+s32 GsGp_GetValue(char *, const char *, void *, s32);
+s32 GsGp_CheckConnectComplete(Ctx0228 **, s32, void *);
+void GsGp_CallErrorCallback(Ctx0228 **, s32, s32);
+s32 GsGp_QueueCallback(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
+void GsGp_RemoveOperation(Ctx0228 **, Node0228 *);
+void GsGp_FreeCachedInfo(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
 s32 func_0212b770(void *);
 
-s32 func_ov065_02281bf4(Ctx0228 **, Node0228 *);
-s32 func_ov065_022817b0(Ctx0228 **, Node0228 *, void *);
-s32 func_ov065_022817fc(Node0228 *, void *);
-s32 func_ov065_02281844(Ctx0228 **, Node0228 *, void *);
-s32 func_ov065_022818bc(Ctx0228 **, s32, void *);
-void func_ov065_02281ab4(void *);
-s32 func_ov065_022817c8(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
-s32 func_ov065_02281b04(s32 *, s32 *);
-s32 func_ov065_02281b0c(s32 *, s32);
+s32 GsGpSearch_Process(Ctx0228 **, Node0228 *);
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *, void *);
+s32 GsGpProfile_FindIfAdapter(Node0228 *, void *);
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *, void *);
+s32 GsGpProfile_Find(Ctx0228 **, s32, void *);
+void GsGpProfile_FreeEntry(void *);
+s32 GsGpProfile_FindIf(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
+s32 GsGpProfile_CompareId(s32 *, s32 *);
+s32 GsGpProfile_HashId(s32 *, s32);
 
 struct Unk_ov065_02281790_L1 {
     s32 a;
@@ -396,21 +396,21 @@ extern char data_ov065_0228dd70[];
 extern char data_ov065_0228dd78[];
 extern char data_ov065_0228dd7c[];
 extern char data_ov065_0228db2c[];
-extern char data_ov065_02290fe4[];
+extern char sGsGameName[];
 extern char data_ov065_0228db1c[];
 
-s32 func_ov065_02283498(Ctx0228 **, char *, s32 *, char *, char *);
-void func_ov065_0227de10(Ctx0228 **, char **, const char *);
-void func_ov065_0227dde8(Ctx0228 **, char **, s32);
-s32 func_ov065_0227da7c(Ctx0228 **, s32, char **, s32 *, s32, const char *);
-s32 func_ov065_0227db18(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
-void *func_ov065_02277ad8(void *, s32);
-void func_ov065_02283728(char *, const char *, s32);
+s32 GsGp_ReadKeyValue(Ctx0228 **, char *, s32 *, char *, char *);
+void GsGpBuf_AppendString(Ctx0228 **, char **, const char *);
+void GsGpBuf_AppendInt(Ctx0228 **, char **, s32);
+s32 GsGp_SendBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
+s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
+void *GsUtil_Realloc(void *, s32);
+void GsUtil_StrCopyN(char *, const char *, s32);
 void *func_0212899c(void *, s32, s32);
 char *func_02127838(char *, const char *);
 char *func_02129f1c(const char *, const char *);
-void func_ov065_0227913c(s32);
-s32 func_ov065_02282f90(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
+void GsUtil_Sleep(s32);
+s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
 
 struct Unk_ov065_02281bf4_Rec {
     s32 unk_00;
@@ -475,64 +475,63 @@ struct Unk_ov065_02281bf4_S1 {
     Unk_ov065_02281bf4_Rec *unk_0c;
 };
 
-#define ERR3() { func_ov065_02283470(h, 1, data_ov065_0228dcec); func_ov065_0227e160(h, 3, 1); return 3; }
-#define ERRMEM(m) { func_ov065_02283460(h, m); return 1; }
-#define GETTOK(t) r = func_ov065_02283498(h, c->unk_08, &pos, t, buf); if (r != 0) { return r; }
-#define S(x) data_ov065_0228##x
+#define ERR3() { GsGp_SetError(h, 1, data_ov065_0228dcec); GsGp_CallErrorCallback(h, 3, 1); return 3; }
+#define ERRMEM(m) { GsGp_SetErrorString(h, m); return 1; }
+#define GETTOK(t) r = GsGp_ReadKeyValue(h, c->unk_08, &pos, t, buf); if (r != 0) { return r; }
 
 
 }
 extern "C" {
-void *func_ov065_02281790(Ctx0228 **h, s32 a);
-s32 func_ov065_022817b0(Ctx0228 **, Node0228 *n, void *arg);
-s32 func_ov065_022817c8(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg);
-s32 func_ov065_022817fc(Node0228 *n, void *p);
-s32 func_ov065_02281814(Ctx0228 **h, s32 a, s32 b, s32 *out);
-s32 func_ov065_02281844(Ctx0228 **, Node0228 *n, void *arg);
-s32 func_ov065_02281880(Ctx0228 **h, void *n);
-void func_ov065_02281894(Ctx0228 **h, s32 a);
-s32 func_ov065_022818bc(Ctx0228 **h, s32 a, void *out);
-s32 func_ov065_022818f4(Ctx0228 **h, s32 a);
-s32 func_ov065_02281974(Ctx0228 **h, Node0228 *n, char *s);
+void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a);
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg);
+s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg);
+s32 GsGpProfile_FindIfAdapter(Node0228 *n, void *p);
+s32 GsGpProfile_FindByNickEmail(Ctx0228 **h, s32 a, s32 b, s32 *out);
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *n, void *arg);
+s32 GsGpProfile_Remove(Ctx0228 **h, void *n);
+void GsGpProfile_RemoveById(Ctx0228 **h, s32 a);
+s32 GsGpProfile_Find(Ctx0228 **h, s32 a, void *out);
+s32 GsGpProfile_Add(Ctx0228 **h, s32 a);
+s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, Node0228 *n, char *s);
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_02281974(Ctx0228 **h, Node0228 *n, char *s) {
+s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, Node0228 *n, char *s) {
     char buf[0x10];
     s32 v;
     Unk_ov065_02281974_Nest pr;
     void *p;
-    if (func_ov065_02283684(h, s, 1) != 0) {
+    if (GsGp_CheckServerError(h, s, 1) != 0) {
         return 4;
     }
     if (strncmp(s, "\\npr\\", 5) != 0) {
-        func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
-        func_ov065_0227e160(h, 3, 1);
+        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
+        GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    if (func_ov065_02283630(s, "\\profileid\\", buf, 0x10) == 0) {
-        func_ov065_02283470(h, 1, "Unexpected data was received from the server.");
-        func_ov065_0227e160(h, 3, 1);
+    if (GsGp_GetValue(s, "\\profileid\\", buf, 0x10) == 0) {
+        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
+        GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
     v = func_0212b770(buf);
     pr = n->unk_0c;
     if (pr.p.a != 0) {
-        p = func_ov065_02277af0(8);
+        p = GsUtil_Alloc(8);
         if (p == 0) {
-            func_ov065_02283460(h, "Out of memory.");
+            GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
         ((s32 *)p)[1] = v;
         ((s32 *)p)[0] = 0;
-        s32 r = func_ov065_0227e0e8(h, pr.p, p, n, 0);
+        s32 r = GsGp_QueueCallback(h, pr.p, p, n, 0);
         if (r != 0) {
             return r;
         }
     }
-    func_ov065_0228090c(h, n);
+    GsGp_RemoveOperation(h, n);
     return 0;
 }
 }
@@ -540,13 +539,13 @@ s32 func_ov065_02281974(Ctx0228 **h, Node0228 *n, char *s) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_022818f4(Ctx0228 **h, s32 a) {
+s32 GsGpProfile_Add(Ctx0228 **h, s32 a) {
     void *out;
     void **t = &(*h)->unk_428;
     if (a <= 0) {
         return 0;
     }
-    if (func_ov065_022818bc(h, a, &out) != 0) {
+    if (GsGpProfile_Find(h, a, &out) != 0) {
         return (s32)out;
     }
     Elem0228 tmp;
@@ -558,9 +557,9 @@ s32 func_ov065_022818f4(Ctx0228 **h, s32 a) {
     tmp.unk_10 = 0;
     tmp.unk_18 = 0;
     tmp.unk_14 = 0;
-    func_ov065_0227885c(*t, (Elem0228 *)ad);
+    GsHash_Insert(*t, (Elem0228 *)ad);
     ((s32 *)t)[1]++;
-    if (func_ov065_022818bc(h, a, &out) != 0) {
+    if (GsGpProfile_Find(h, a, &out) != 0) {
         return (s32)out;
     }
     return 0;
@@ -570,12 +569,12 @@ s32 func_ov065_022818f4(Ctx0228 **h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_022818bc(Ctx0228 **h, s32 a, void *out) {
+s32 GsGpProfile_Find(Ctx0228 **h, s32 a, void *out) {
     Elem0228 key;
     void *r;
     Ctx0228 *c = *h;
     key.unk_00 = a;
-    r = func_ov065_022787c4(c->unk_428, &key);
+    r = GsHash_Find(c->unk_428, &key);
     if (out != 0) {
         *(void **)out = r;
     }
@@ -589,11 +588,11 @@ s32 func_ov065_022818bc(Ctx0228 **h, s32 a, void *out) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_02281894(Ctx0228 **h, s32 a) {
+void GsGpProfile_RemoveById(Ctx0228 **h, s32 a) {
     Ctx0228 *c = *h;
     void *out;
-    if (func_ov065_022818bc(h, a, &out) != 0) {
-        func_ov065_02278810(c->unk_428, out);
+    if (GsGpProfile_Find(h, a, &out) != 0) {
+        GsHash_Remove(c->unk_428, out);
     }
 }
 }
@@ -601,15 +600,15 @@ void func_ov065_02281894(Ctx0228 **h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_02281880(Ctx0228 **h, void *n) {
-    return func_ov065_02278810((*h)->unk_428, n);
+s32 GsGpProfile_Remove(Ctx0228 **h, void *n) {
+    return GsHash_Remove((*h)->unk_428, n);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_02281844(Ctx0228 **, Node0228 *n, void *arg) {
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *n, void *arg) {
     Unk_ov065_02281814_L *l = (Unk_ov065_02281814_L *)arg;
     char **e = (char **)n->unk_0c.p.a;
     if (e != 0) {
@@ -628,13 +627,13 @@ s32 func_ov065_02281844(Ctx0228 **, Node0228 *n, void *arg) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_02281814(Ctx0228 **h, s32 a, s32 b, s32 *out) {
+s32 GsGpProfile_FindByNickEmail(Ctx0228 **h, s32 a, s32 b, s32 *out) {
     Unk_ov065_02281814_L l;
     l.a = a;
     l.b = b;
     l.out = out;
     l.f = 0;
-    func_ov065_022817c8(h, func_ov065_02281844, &l);
+    GsGpProfile_FindIf(h, GsGpProfile_MatchNickEmailCb, &l);
     if (l.f == 0) {
         *out = 0;
     }
@@ -645,7 +644,7 @@ s32 func_ov065_02281814(Ctx0228 **h, s32 a, s32 b, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_022817fc(Node0228 *n, void *p) {
+s32 GsGpProfile_FindIfAdapter(Node0228 *n, void *p) {
     Unk_ov065_022817c8_Args *a = (Unk_ov065_022817c8_Args *)p;
     return a->cb(a->h, n, a->arg);
 }
@@ -654,13 +653,13 @@ s32 func_ov065_022817fc(Node0228 *n, void *p) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_022817c8(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
+s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
     Unk_ov065_022817c8_Args a;
     Ctx0228 *c = *h;
     a.h = h;
     a.cb = cb;
     a.arg = arg;
-    if (func_ov065_02278758(c->unk_428, (s32 (*)(void *, void *))func_ov065_022817fc, &a) == 0) {
+    if (GsHash_FindIf(c->unk_428, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
         return 1;
     }
     return 0;
@@ -670,7 +669,7 @@ s32 func_ov065_022817c8(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_022817b0(Ctx0228 **, Node0228 *n, void *arg) {
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg) {
     Unk_ov065_02281790_L1 *l = (Unk_ov065_02281790_L1 *)arg;
     if (n->unk_08 != 0 && l->a == n->unk_08->unk_00) {
         l->r = n;
@@ -683,11 +682,11 @@ s32 func_ov065_022817b0(Ctx0228 **, Node0228 *n, void *arg) {
 
 namespace Nb {
 extern "C" {
-void *func_ov065_02281790(Ctx0228 **h, s32 a) {
+void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a) {
     Unk_ov065_02281790_L1 l;
     l.a = a;
     l.r = 0;
-    func_ov065_022817c8(h, func_ov065_022817b0, &l);
+    GsGpProfile_FindIf(h, GsGpProfile_MatchBuddyIndexCb, &l);
     return l.r;
 }
 }
@@ -695,7 +694,7 @@ void *func_ov065_02281790(Ctx0228 **h, s32 a) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0228176c(Ent0228 *e) {
+s32 GsGpProfile_IsUnused(Ent0228 *e) {
     if (e != NULL && e->unk_0c == 0 && e->unk_08 == 0 && e->unk_18 == NULL && e->unk_10 == 0) {
         return 1;
     }

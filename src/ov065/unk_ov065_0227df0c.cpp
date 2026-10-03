@@ -118,42 +118,42 @@ u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_ov065_02283630(const char *, const char *, char *, s32);
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283470(void *, s32, const char *);
-void func_ov065_02283720(void *, const char *, ...);
-void *func_ov065_02277ad8(void *, s32);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02277ac8(void *);
-s32 func_ov065_02278ce0(s32, void *, s32, s32);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-s32 func_ov065_02278be8(s32);
-s32 func_ov065_02278684(s32);
-s32 func_ov065_02278da4(s32, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_0228090c(void *, void *);
-s32 func_ov065_022810fc(void *, void *);
-s32 func_ov065_022817c8(void *, s32, s32);
-s32 func_ov065_0227e350(void);
+s32 GsGp_GetValue(const char *, const char *, char *, s32);
+void GsGp_SetErrorString(void *, const char *);
+void GsGp_SetError(void *, s32, const char *);
+void GsGp_DebugLog(void *, const char *, ...);
+void *GsUtil_Realloc(void *, s32);
+void *GsUtil_Alloc(s32);
+s32 GsUtil_Free(void *);
+s32 GsSock_Recv(s32, void *, s32, s32);
+s32 GsSock_Send(s32, void *, s32, s32);
+s32 GsSock_GetLastError(s32);
+s32 GsArray_Count(s32);
+s32 GsSock_Shutdown(s32, s32);
+s32 GsSock_Close(s32);
+s32 GsGp_RemoveOperation(void *, void *);
+s32 GsGpPeer_Free(void *, void *);
+s32 GsGpProfile_FindIf(void *, s32, s32);
+s32 GsGp_FreeBuddyDataCb(void);
 
-s32 func_ov065_0227dd38(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 func_ov065_0227dde8(Unk_H *, Unk_B *, s32);
-s32 func_ov065_0227de10(Unk_H *, Unk_B *, const char *);
-s32 func_ov065_0227de30(Unk_H *, Unk_B *, const char *, s32);
-s32 func_ov065_0227deb4(Unk_H *, Unk_B *, char);
-s32 func_ov065_0227dc48(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
-s32 func_ov065_0227da7c(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
-s32 func_ov065_0227dfd8(Unk_H *, Unk_N *);
-s32 func_ov065_0227e0e8(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
-void func_ov065_0227e160(Unk_H *, s32, s32);
+s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 GsGpBuf_AppendInt(Unk_H *, Unk_B *, s32);
+s32 GsGpBuf_AppendString(Unk_H *, Unk_B *, const char *);
+s32 GsGpBuf_Append(Unk_H *, Unk_B *, const char *, s32);
+s32 GsGpBuf_AppendChar(Unk_H *, Unk_B *, char);
+s32 GsGpPeer_Send(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
+s32 GsGp_SendBuffer(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
+s32 GsGp_CallCallback(Unk_H *, Unk_N *);
+s32 GsGp_QueueCallback(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
+void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 }
 
 extern "C" {
-s32 func_ov065_0227e0e8(Unk_H *h, Unk_ov065_0227e0e8_Wrap p, Unk_N *m, Unk_ov065_0227e0e8_G *g, s32 k) {
+s32 GsGp_QueueCallback(Unk_H *h, Unk_ov065_0227e0e8_Wrap p, Unk_N *m, Unk_ov065_0227e0e8_G *g, s32 k) {
     Unk_C *ctx = h->unk_00;
-    Unk_N *node = (Unk_N *)func_ov065_02277af0(0x18);
+    Unk_N *node = (Unk_N *)GsUtil_Alloc(0x18);
     if (node == NULL) {
-        func_ov065_02283460(h, "Out of memory.");
+        GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
     *(Unk_ov065_0227e0e8_Wrap *)node = p;
@@ -177,59 +177,59 @@ s32 func_ov065_0227e0e8(Unk_H *h, Unk_ov065_0227e0e8_Wrap p, Unk_N *m, Unk_ov065
 }
 
 extern "C" {
-s32 func_ov065_0227dfd8(Unk_H *h, Unk_N *n) {
+s32 GsGp_CallCallback(Unk_H *h, Unk_N *n) {
     s32 i;
     s32 k;
     n->unk_00(h, n->unk_08, n->unk_04);
     k = n->unk_0c;
     if (k == 2) {
-        func_ov065_02277ac8((void *)((Unk_ov065_0227dfd8_D4 *)n->unk_08)->unk_08);
+        GsUtil_Free((void *)((Unk_ov065_0227dfd8_D4 *)n->unk_08)->unk_08);
         ((Unk_ov065_0227dfd8_D4 *)n->unk_08)->unk_08 = 0;
     } else if (k == 3) {
         Unk_ov065_0227dfd8_D3 *d = (Unk_ov065_0227dfd8_D3 *)n->unk_08;
         for (i = 0; i < d->unk_38; i++) {
-            func_ov065_02277ac8((void *)d->unk_3c[i]);
+            GsUtil_Free((void *)d->unk_3c[i]);
             d->unk_3c[i] = 0;
-            func_ov065_02277ac8((void *)d->unk_40[i]);
+            GsUtil_Free((void *)d->unk_40[i]);
             d->unk_40[i] = 0;
         }
-        func_ov065_02277ac8(d->unk_3c);
+        GsUtil_Free(d->unk_3c);
         d->unk_3c = NULL;
-        func_ov065_02277ac8(d->unk_40);
+        GsUtil_Free(d->unk_40);
         d->unk_40 = NULL;
     } else if (k == 4) {
         Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
-        func_ov065_02277ac8((void *)d->unk_0c);
+        GsUtil_Free((void *)d->unk_0c);
         d->unk_0c = 0;
     } else if (k == 7) {
         Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
         if (d->unk_10 != 0) {
-            func_ov065_02277ac8((void *)d->unk_10);
+            GsUtil_Free((void *)d->unk_10);
             d->unk_10 = 0;
         }
     } else if (k == 8) {
         Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
         if (d->unk_08 != 0) {
-            func_ov065_02277ac8((void *)d->unk_08);
+            GsUtil_Free((void *)d->unk_08);
             d->unk_08 = 0;
         }
     } else if (k == 9) {
         Unk_ov065_0227dfd8_D9 *d = (Unk_ov065_0227dfd8_D9 *)n->unk_08;
         for (i = 0; i < d->unk_04; i++) {
-            func_ov065_02277ac8((void *)d->unk_08[i]);
+            GsUtil_Free((void *)d->unk_08[i]);
             d->unk_08[i] = 0;
         }
-        func_ov065_02277ac8(d->unk_08);
+        GsUtil_Free(d->unk_08);
         d->unk_08 = NULL;
     }
-    func_ov065_02277ac8(n->unk_08);
+    GsUtil_Free(n->unk_08);
     n->unk_08 = NULL;
-    func_ov065_02277ac8(n);
+    GsUtil_Free(n);
 }
 }
 
 extern "C" {
-s32 func_ov065_0227df0c(Unk_H *h, void *key) {
+s32 GsGp_CallPendingCallbacks(Unk_H *h, void *key) {
     Unk_C *ctx = h->unk_00;
     Unk_N *head;
     Unk_N *tail;
@@ -255,7 +255,7 @@ s32 func_ov065_0227df0c(Unk_H *h, void *key) {
                     if (tail == node) {
                         tail = prev;
                     }
-                    func_ov065_0227dfd8(h, node);
+                    GsGp_CallCallback(h, node);
                 } else {
                     prev = node;
                 }
@@ -279,7 +279,7 @@ s32 func_ov065_0227df0c(Unk_H *h, void *key) {
             if (node != NULL) {
                 do {
                     next = node->unk_14;
-                    func_ov065_0227dfd8(h, node);
+                    GsGp_CallCallback(h, node);
                     node = next;
                 } while (node != NULL);
             }

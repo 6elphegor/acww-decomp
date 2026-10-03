@@ -401,9 +401,9 @@ s32 func_0201578c(void *self, u16 *p, s32 a, s32 b);
 void func_020157e8(void *self, s32 a, s32 b);
 void func_02015958(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_0201622c(void *self, s32 a, void *b);
-s32 func_0206ed18(void);
-u32 func_0206ed38(void);
-u16 *func_0206eb9c(void);
+s32 MenuCtrl_IsResultOk(void);
+u32 MenuCtrl_GetIndex(void);
+u16 *MenuCtrl_GetChosenItems(void);
 void *PlayerData_GetCurrent(void);
 void *func_020986d4(void *p);
 void *func_02071c5c(void *p);
@@ -418,20 +418,20 @@ void PlayerActor_RequestWearHatAlt(u16 *p);
 void TalkWindowState_setNextMessage(void *o, void *p, u32 d);
 void *TalkWindowState_getChoiceList(void *o);
 s32 ChoiceList_getResult(void *p);
-void *func_0209ebf0(void);
+void *JoinHistory_GetLatest(void);
 s32 PlayerData_GetBySessionSlot(void *p);
 void *PlayerData_getPlayerId(s32 v);
 void Visitor_GetTodaysNpc(u16 *p);
 s32 func_02039e44(void);
 s32 func_02039e1c(void);
 s32 func_0202e148(void);
-s32 func_020a032c(void);
+s32 GameStart_IsActive(void);
 s32 func_02063b8c(s32 n);
 s32 func_02098044(void *p, s32 n);
 void func_0209801c(void *p, s32 n);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
-s32 func_020a62a0(void);
+s32 NetArea_IsLocalOwner(void);
 void TalkRequest_EndTalkWith(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_GetUnk3830(void *p);
@@ -646,7 +646,7 @@ BOOL SpNpcBooker::mainAct04() {
                 goto end;
             }
         }
-        if (func_020a62a0() && b == 4) {
+        if (NetArea_IsLocalOwner() && b == 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -661,7 +661,7 @@ BOOL SpNpcBooker::mainAct05() {
     if (func_0201ba88(this)) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) && a == 4 && func_020a62a0()) {
+        if (func_0201b9e8(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             changeAct(3);
         }
@@ -692,7 +692,7 @@ void SpNpcBookerTalk::vfunc_78(void *arg) {
     };
     Msg *out = (Msg *)arg;
     void *g = PlayerData_GetCurrent();
-    if (func_0202e148() == 0 || func_020a032c() != 0) {
+    if (func_0202e148() == 0 || GameStart_IsActive() != 0) {
         out->unk_04 = func_02063b8c(3) + 8;
     } else if (func_02098044(g, 0x1b) == 0) {
         out->unk_04 = 0;
@@ -731,7 +731,7 @@ void SpNpcBookerTalk::vfunc_18() {
             Unk_ov004_0221b954_Global *s = gCommManager;
             if (CommManager_isSlotActive(s, s->unk_64) != 0) {
                 if (CommManager_isOnline(s) != 0) {
-                    s32 q = PlayerData_GetBySessionSlot(func_0209ebf0());
+                    s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
                         func_020157e8(this, (s32)PlayerData_getPlayerId(q), 1);
                     }
@@ -828,9 +828,9 @@ void SpNpcBookerTalk::setScript(s32 v) {
 
 void SpNpcBookerTalk::runScript01() {
     u8 buf[2];
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
-        u32 idx = func_0206ed38();
+        u32 idx = MenuCtrl_GetIndex();
         s32 t = func_02071c1c(func_02071c5c(func_020986d4(g)), idx);
         func_02070e4c(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
@@ -849,9 +849,9 @@ void SpNpcBookerTalk::runScript02() {
         u16 a;
         u16 b;
     } m;
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
-        u32 idx = func_0206ed38();
+        u32 idx = MenuCtrl_GetIndex();
         u32 t = func_02071c1c(func_02071c5c(func_020986d4(g)), idx);
         func_02070b68(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
@@ -897,11 +897,11 @@ void SpNpcBookerTalk::runScript03() {
     u8 c;
     u16 v;
     c = 0x20;
-    if (func_0206ed18() != 0) {
-        if (func_0206ed38() > 1) {
+    if (MenuCtrl_IsResultOk() != 0) {
+        if (MenuCtrl_GetIndex() > 1) {
             c = 0x1c;
         } else {
-            v = *func_0206eb9c();
+            v = *MenuCtrl_GetChosenItems();
             func_0201578c(this, &v, 0, 7);
             c = 0x1e;
         }
@@ -959,7 +959,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0() != 0) {
+            if (NetArea_IsLocalOwner() != 0) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 changeAct(3);
             } else {

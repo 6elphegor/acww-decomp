@@ -31,8 +31,8 @@ void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void *func_020947f0(s32);
 s32 Clock_GetDateTime(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
-s32 func_0206ed18();
-s32 func_0206ecf0();
+s32 MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetText();
 void func_020a78a4(void *, s32, s32);
 s32 ChoiceList_getResult();
 s32 NpcActor_CanPlayerPay(void *, s32);
@@ -61,10 +61,10 @@ void func_0207787c(void *, void *, void *);
 s32 func_020197a0(void *self);
 s32 func_020197a8(void *self);
 BOOL func_02019790(void *self);
-void func_ov004_02228ee0();
-void func_ov004_02228ec0();
-void func_ov004_02228ea0();
-s32 func_ov004_02228e84();
+void TarotProps_StartAct01();
+void TarotProps_StartAct02();
+void TarotProps_StartAct03();
+s32 TarotProps_Draw();
 void unk_618_func_02014198(void *self, u8 a, u8 b);
 BOOL unk_618_func_02014220(void *self);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -568,7 +568,7 @@ BOOL SpNpcKatrina::onDraw() {
         return FALSE;
     }
     Model_GetJointWorldMtx(&unk_ec, &unk_65c, 0xe);
-    func_ov004_02228e84();
+    TarotProps_Draw();
     return TRUE;
 }
 
@@ -661,14 +661,14 @@ void SpNpcKatrinaTalk::vfunc_38(s32 a) {
     if (a != func_020197a0(&unk_b0->unk_564) || func_020197a8(&unk_b0->unk_564) != 8) {
         switch (a) {
         case 0x1e:
-            func_ov004_02228ee0();
+            TarotProps_StartAct01();
             break;
         case 0x1f:
             func_02034d70(0x10);
-            func_ov004_02228ec0();
+            TarotProps_StartAct02();
             break;
         case 0x20:
-            func_ov004_02228ea0();
+            TarotProps_StartAct03();
             break;
         }
     }
@@ -927,8 +927,8 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
     u8 msg;
     void *o = unk_3c;
     msg = 0xb;
-    if (func_0206ed18()) {
-        unk_b0->unk_750 = func_0206ecf0();
+    if (MenuCtrl_IsResultOk()) {
+        unk_b0->unk_750 = MenuCtrl_GetText();
         KatrinaMsgString17 src;
         KatrinaEncodedString16 dst;
         func_020a78a4(&dst, unk_b0->unk_750, 0x10);

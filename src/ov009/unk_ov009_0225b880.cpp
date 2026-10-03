@@ -699,7 +699,7 @@ void BuildingLights_updateLights(void *, void *);
 void BuildingLights_bind(void *, void *, s32);
 void func_020b200c(void *);
 void func_0203e9d8();
-void func_020ac790(u32);
+void NookShop_SetVisitState(u32);
 BOOL func_02002d9c(void *);
 s32 func_02002dd0(void *, u32);
 BOOL func_0203e638(void *);
@@ -994,7 +994,7 @@ BOOL BuildingActor::preDelete() {
     if (unk_232.f0) {
         func_0203e9d8();
         if (Item_IsNookShop(&unk_132)) {
-            func_020ac790(1);
+            NookShop_SetVisitState(1);
         }
     }
     return TRUE;

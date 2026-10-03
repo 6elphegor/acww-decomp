@@ -485,7 +485,7 @@ BOOL MenuKeys_HasRight(s32 p);
 BOOL MenuKeys_HasLeft(s32 p);
 void Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void File_LoadToBuffer(const char *a, void *b, s32 c);
-void func_0206ee80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadCharFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_SetSubBgModeState(s32 a);
@@ -504,8 +504,8 @@ void Keyboard_LoadLetterChars(void *p, u32 a);
 s32 Keyboard_LoadObjGfx(void *p);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_0206e63c();
-BOOL func_0206e61c();
+void MenuCtrl_TickForceClose();
+BOOL MenuCtrl_IsForceCloseDue();
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Keyboard_Shutdown(void *p);
@@ -731,8 +731,8 @@ void BbsWriteMenu::runMainState() {
 }
 
 BOOL BbsWriteMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 1:
@@ -1020,7 +1020,7 @@ extern "C" void BbsWriteMenu_LoadBg(S *s) {
     u32 g = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_bbs.bpl", g, 4, 8, 8, 0xe);
     File_LoadToBuffer("menu/chat2/b_bbs_us.bsc", s->unk_4460, 0x800);
-    func_0206ee80(s->unk_4460, 6, 5, 0x19, 6, 0xa);
+    BgScreen_SetRectPalette(s->unk_4460, 6, 5, 0x19, 6, 0xa);
     Gfx2d_LoadScreen(s->unk_4460, 4, 0x800, 0);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", g, 4, 0x13d, 0x13d, 0x1e9);
     Gfx2d_LoadCharFile("menu/chat2/b_bbs.bch", g, 4, 0x10, 0x10, 0x13f);

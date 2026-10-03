@@ -19,10 +19,10 @@ extern void *gCommManager;
 extern u8 data_021d735c[];
 extern u8 data_021e58a8[];
 
-void *func_ov004_0222aa74();
-void *func_ov004_0222aa1c();
-void *func_ov004_0222aacc(u16 *id, s32 a, s32 b);
-void *func_ov004_0222ab80(u16 *id, s32 a, s32 b);
+void *RoomShell_GetPrevCarpet();
+void *RoomShell_GetPrevWallpaper();
+void *RoomShell_SetCarpet(u16 *id, s32 a, s32 b);
+void *RoomShell_SetWallpaper(u16 *id, s32 a, s32 b);
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 _ZN10PlayerData11getPlayerIdEv();
@@ -93,7 +93,7 @@ extern "C" void *func_020342cc(u16 *id, s32 a, s32 b, s32 c) {
     u16 t = *id;
     void *r;
     if (Unk_020341c0_IsOne(data_020e416c)) {
-        r = func_ov004_0222ab80(&t, a, b);
+        r = RoomShell_SetWallpaper(&t, a, b);
         if (c != 0) {
             func_02034320(&t, a, 1, b);
         }
@@ -112,7 +112,7 @@ extern "C" void *func_02034250(u16 *id, s32 a, s32 b, s32 c) {
     u16 t = *id;
     void *r;
     if (Unk_020341c0_IsOne(data_020e416c)) {
-        r = func_ov004_0222aacc(&t, a, b);
+        r = RoomShell_SetCarpet(&t, a, b);
         if (c != 0) {
             func_02034320(&t, a, 0, b);
         }
@@ -129,7 +129,7 @@ extern "C" void *func_02034228(s32 a, s32 b, s32 c, s32 d) {
 
 extern "C" BOOL func_020341f4(s32 a) {
     if (Unk_020341c0_IsOne(data_020e416c)) {
-        func_020342cc((u16 *)func_ov004_0222aa1c(), 0, 0, a);
+        func_020342cc((u16 *)RoomShell_GetPrevWallpaper(), 0, 0, a);
         return TRUE;
     }
     return FALSE;
@@ -137,7 +137,7 @@ extern "C" BOOL func_020341f4(s32 a) {
 
 extern "C" BOOL func_020341c0(s32 a) {
     if (Unk_020341c0_IsOne(data_020e416c)) {
-        func_02034250((u16 *)func_ov004_0222aa74(), 0, 0, a);
+        func_02034250((u16 *)RoomShell_GetPrevCarpet(), 0, 0, a);
         return TRUE;
     }
     return FALSE;

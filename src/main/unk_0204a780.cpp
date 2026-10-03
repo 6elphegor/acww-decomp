@@ -351,9 +351,9 @@ s32 ItemInfo_GetKind(u16 *p);
 s32 ItemInfo_GetUnk07(u16 *p);
 s32 ItemInfo_GetUnk02(u16 *p);
 s32 ItemInfo_GetPrice(const ItemId &p);
-s32 func_020aeb80(void *p);
-s32 func_020acde8(u32 x);
-u16 *func_020acf54(u16 *p);
+s32 NookShop_IsSaleTime(void *p);
+s32 NookPoints_GetRank(u32 x);
+u16 *NookPoints_GetValuePtr(u16 *p);
 u16 *_ZN10PlayerData13getNookPointsEv(void *p);
 void *PlayerData_GetCurrent();
 s32 FtrInfo_GetPrice(s32 x);
@@ -685,7 +685,7 @@ extern "C" s32 Item_GetPrice(u16 *p) {
 
 #pragma dont_inline on
 namespace nC {
-extern "C" s32 func_0204be64(u16 *p) { return func_020acde8(*p); }
+extern "C" s32 func_0204be64(u16 *p) { return NookPoints_GetRank(*p); }
 }
 #pragma dont_inline reset
 
@@ -695,7 +695,7 @@ extern "C" s32 Item_GetMemberPrice(u16 *p) {
     if (Item_IsMoneyBag(p)) return a;
     void *g = PlayerData_GetCurrent();
     if (g) {
-        s32 c = func_0204be64(func_020acf54(_ZN10PlayerData13getNookPointsEv(g)));
+        s32 c = func_0204be64(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(g)));
         s32 k = 0;
         switch (c) {
         case 2: k = 5; break;
@@ -725,7 +725,7 @@ namespace nC {
 extern "C" s32 Item_GetShopPrice(u16 *p) {
     s32 a = Item_GetMemberPrice(p);
     if (Item_IsMoneyBag(p)) return a;
-    a >>= func_020aeb80(func_0204bdb8() + 0x15db4);
+    a >>= NookShop_IsSaleTime(func_0204bdb8() + 0x15db4);
     return a;
 }
 }

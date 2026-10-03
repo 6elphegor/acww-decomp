@@ -33,8 +33,8 @@ void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 s32 Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
-BOOL func_0206e61c();
-BOOL func_0206e63c();
+BOOL MenuCtrl_IsForceCloseDue();
+BOOL MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -61,7 +61,7 @@ BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 void PopupChoice_CopyPlayerIdName(void *p, s32 a);
 void PopupChoice_CopyResidentName(void *p, s32 a);
 void PopupChoice_CopyVillagerName(void *p, s32 a);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadPaletteFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
@@ -652,8 +652,8 @@ BOOL MapTab::execClosed() {
 }
 
 BOOL MapTab::handleTabSwitch() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         return requestTab(7);
     }
     if (unk_8d != 0 && unk_8d != 3 && unk_8d != 10) {
@@ -880,7 +880,7 @@ void MapTab::loadBgGfx() {
     File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e8, 0x800);
     Gfx2d_LoadScreen(unk_4e8, 4, 0x800, 0);
     File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce8, 0x800);
-    func_0206ee80(unk_1ce8, 0x13, 0, 0x1c, 1, 4);
+    BgScreen_SetRectPalette(unk_1ce8, 0x13, 0, 0x1c, 1, 4);
 }
 
 s32 MapTab::loadMapStep1() {
@@ -1302,7 +1302,7 @@ s32 MapTab::rebuildList() {
         setFlags(8);
         k = 3;
     }
-    func_0206ee80(unk_4e8, 0x1d, 0xa, 0x1d, 0x15, k);
+    BgScreen_SetRectPalette(unk_4e8, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
     highlightListRow(unk_aa);
 }
@@ -1474,11 +1474,11 @@ void MapTab::selectEntry(u8 v) {
 s32 MapTab::highlightListRow(u32 v) {
     setFlags(0x80);
     if (v == 0xe) {
-        func_0206ee80(unk_14e8, 0x13, 0, 0x1c, 0x19, 4);
+        BgScreen_SetRectPalette(unk_14e8, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
-        func_0206ee80(unk_14e8, 0x13, 0, 0x1c, unk_b0 * 2 - 1, 3);
+        BgScreen_SetRectPalette(unk_14e8, 0x13, 0, 0x1c, unk_b0 * 2 - 1, 3);
     } else {
-        func_0206ee80(unk_14e8, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
+        BgScreen_SetRectPalette(unk_14e8, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
     }
 }
 

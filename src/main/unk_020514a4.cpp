@@ -131,15 +131,15 @@ inline BOOL Range(u16 *p, u32 lo, u32 hi) {
 extern "C" {
 BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(s32 a, s32 *x, s32 *y, s32 z, s32 w);
 s32 FtrActor_GetLayer(s32 a);
-void *func_ov004_02235718();
-Unk_02051d24_Obj *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 a, s32 b, s32 c);
+void *FtrActorGrid_GetInstance();
+Unk_02051d24_Obj *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void FtrActor_GetFtrIndex(void *p);
 s32 _ZN8FtrActor9isPreviewEv(void *p);
 s32 FtrActor_PredIsStereo(void *p);
 s32 _ZN9FtrSwitch4isOnEv(void *p);
-s32 func_ov004_02234c2c(void (*f)());
+s32 FtrMgr_CountSwitchedOn(void (*f)());
 void _ZN8FtrActor8isGyroidEv();
-void *func_ov004_02234bb4(void (*f)(), s32 a);
+void *FtrMgr_SwitchOffRandom(void (*f)(), s32 a);
 
 s32 _ZN11CommManager8isOnlineEv(void *p);
 s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
@@ -147,7 +147,7 @@ void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 u32 func_020b50e8();
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *BlockMap_GetForArea(s32 a);
 s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
@@ -489,7 +489,7 @@ Unk_0205242c_Item data_021c4e8c[4] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Ite
 
 extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
     if (IsOne(data_020e416c) && a == func_020b50e8()) {
-        Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), b, c, d);
+        Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
         if (o) {
             return o->vfunc_70(e, i);
         }
@@ -574,11 +574,11 @@ extern "C" s32 func_020520a8(s32 a, Unk_020520a8_W *w) {
 extern "C" void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e) {
     if (a == func_020b50e8() && IsOne(data_020e416c)) {
         {
-            Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), b, c, d);
+            Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
             if (o) {
                 if (_ZN9FtrSwitch4isOnEv((u8 *)o + 0x73c) == 0) {
-                    if ((u32)func_ov004_02234c2c(_ZN8FtrActor8isGyroidEv) >= 4) {
-                        void *r = func_ov004_02234bb4(_ZN8FtrActor8isGyroidEv, 0);
+                    if ((u32)FtrMgr_CountSwitchedOn(_ZN8FtrActor8isGyroidEv) >= 4) {
+                        void *r = FtrMgr_SwitchOffRandom(_ZN8FtrActor8isGyroidEv, 0);
                         if (r) {
                             func_02051da4((s32)r, 0, 0xff, e);
                         }
@@ -626,7 +626,7 @@ extern "C" s32 func_02051f40(s32 x) {
 extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     u32 w;
     u32 r5 = (g != 4) ? 1 : 0;
-    Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), a, b, c);
+    Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
     if (_ZN11CommManager8isOnlineEv(gCommManager) && o && !_ZN8FtrActor9isPreviewEv(o)) {
         u32 t = o->vfunc_74(d);
@@ -666,7 +666,7 @@ extern "C" s32 func_02051da4(s32 a, s32 b, u8 c, u8 d) {
 
 extern "C" s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (!IsOne(data_020e416c)) return 0;
-    Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), a, b, c);
+    Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
     o->vfunc_70(d, e);
     if (g) {
@@ -694,7 +694,7 @@ extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (!(data_020e416c == 1 ? TRUE : FALSE)) {
         return 0;
     }
-    p = (u8 *)_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), a, b, c);
+    p = (u8 *)_ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (p == NULL) {
         return 0;
     }
@@ -879,12 +879,12 @@ extern "C" void func_020516a4(s32 a, s32 b) {
 }
 
 extern "C" void func_020515e0(s32 a, s32 b, s32 c, s32 d) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 || func_020a62a0() != 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 || NetArea_IsLocalOwner() != 0) {
         ((void (*)(s32, s32, s32, s32, s32))func_02051ff8)(a, b, c, d, 1);
     } else {
         volatile u16 bits;
         void *t;
-        u8 *q = (u8 *)_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), b, c, d);
+        u8 *q = (u8 *)_ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
         if (q != NULL) {
             q[0x779] = 1;
         }

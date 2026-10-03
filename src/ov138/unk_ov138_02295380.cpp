@@ -24,8 +24,8 @@ void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-void func_0206e814();
-s32 func_0206ed50();
+void MenuCtrl_SetClockEdited();
+s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 void *ProcBase_GetParent();
 BOOL MenuKeys_HasRight(u32 v);
@@ -44,8 +44,8 @@ void DateTimePicker_OpenList(void *self, u32 a);
 void DateTimePicker_DecideList(void *self);
 void DateTimePicker_CancelList(void *self);
 BOOL MenuCtrl_IsTouch();
-void func_0206e8cc(void *p);
-void func_0206ecf8(u32 v);
+void MenuCtrl_SetDateTime(void *p);
+void MenuCtrl_SetResult(u32 v);
 s32 DateTimePicker_HitTestList(void *self, u32 a, u32 b);
 BOOL DateTimePicker_UpdateListClose(void *self);
 s32 DateTimePicker_GetCursorField(void *self);
@@ -691,15 +691,15 @@ void DateSelectMenu::confirm() {
     v[0] = 0;
     v[1] = 0;
     DateTimePicker_GetDateTime(&unk_260, v);
-    func_0206e8cc(v);
-    func_0206ecf8(1);
+    MenuCtrl_SetDateTime(v);
+    MenuCtrl_SetResult(1);
 }
 
 void DateSelectMenu::cancel() {
     unk_fc.setSelected(7);
     setTransitionState(2);
     setMainState(0xb);
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
 }
 
 void DateSelectMenu::openFieldList(u32 a) {

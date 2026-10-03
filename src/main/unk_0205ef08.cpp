@@ -56,7 +56,7 @@ void func_0205efa8(u32 *a);
 void func_0205efd0(u32 *a);
 void NetBuf_WriteU16(void *p, s32 v);
 void CommRecord_PackSource(void *p, s32 a, u8 b);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
@@ -209,7 +209,7 @@ extern "C" void func_0205f094(s32 a, s32 b, s32 c, s32 d, s32 e)
     CommRecord_PackSource(buf + 2, c, e ? 1 : 0);
     buf[3] = a;
     buf[4] = b;
-    if (func_020a62a0()) {
+    if (NetArea_IsLocalOwner()) {
         func_0205f100(buf);
     } else {
         void *q = (void *)gCommManager;

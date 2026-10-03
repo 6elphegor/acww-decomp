@@ -61,7 +61,7 @@ extern CommManager *gCommManager;
 extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
-extern u8 data_020d043c[];
+extern u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
@@ -142,11 +142,11 @@ s32 func_020a03f0();
 }
 
 extern "C" {
-s32 func_020a0414();
+s32 Net_GetJoiningAid();
 }
 
 extern "C" {
-s32 func_020a5ef8();
+s32 NetSession_GetLastSyncSlot();
 }
 
 extern "C" {
@@ -198,7 +198,7 @@ void ProcBase_RequestDelete(void *p);
 }
 
 extern "C" {
-u8 func_020a6358(s32 idx);
+u8 NetArea_GetSlotScene(s32 idx);
 }
 
 extern "C" {
@@ -250,15 +250,15 @@ void func_02065c94(void *p);
 }
 
 extern "C" {
-s32 func_02095dcc();
+s32 BottleLetter_IsBottleInTown();
 }
 
 extern "C" {
-s32 func_02095e34();
+s32 BottleLetter_PlaceBottle();
 }
 
 extern "C" {
-s32 func_02095e48(u8 *p);
+s32 BottleLetter_CreateGameLetter(u8 *p);
 }
 
 extern "C" {
@@ -393,9 +393,9 @@ BOOL Unk_020e1c88::onExecute() {
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->unk_0e)) goto ret1;
         if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
-            mode = func_020a0414();
+            mode = Net_GetJoiningAid();
         } else {
-            mode = func_020a5ef8();
+            mode = NetSession_GetLastSyncSlot();
         }
         if (mode >= 4) goto ret1;
         if (func_02095204(mode)) goto ret1;

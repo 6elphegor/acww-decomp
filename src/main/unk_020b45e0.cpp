@@ -6,9 +6,9 @@ void AbAllObjGfx_Upload(void);
 void Snd_CreateScene(void);
 void func_0208e9a8(void);
 u32 func_0209c08c(void);
-void func_020a4414(u32 a, u32 b, u32 c, u32 d);
-u32 func_020a5ec8(void);
-void func_020a5ed8(u32 x);
+void Scene_Request(u32 a, u32 b, u32 c, u32 d);
+u32 NetArea_GetMoveState(void);
+void NetArea_SetMoveState(u32 x);
 void func_020b5408(void);
 void Scene_SetupGraphics(void);
 extern u32 gGfxFrameHooks;
@@ -23,9 +23,9 @@ struct CommManager {
 extern CommManager *gCommManager;
 
 // Intermediate game-state class with an inline constructor that sets flags
-class Unk_020e2988 : public GameProc {
+class SceneBase : public GameProc {
 public:
-    Unk_020e2988() {
+    SceneBase() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
@@ -37,10 +37,10 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Unk_020e2988() {}
+    virtual ~SceneBase() {}
 };
 
-class Unk_020e40cc : public Unk_020e2988 {
+class Unk_020e40cc : public SceneBase {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -58,14 +58,14 @@ public:
 extern "C" Unk_020e40cc *func_020b4748(void) { return new Unk_020e40cc; }
 
 void Unk_020e40cc::func_020b4728() {
-    if (func_020a5ec8() == 0xb) {
-        func_020a5ed8(0xc);
+    if (NetArea_GetMoveState() == 0xb) {
+        NetArea_SetMoveState(0xc);
         func_020b4708();
     }
 }
 
 void Unk_020e40cc::func_020b4708() {
-    func_020a4414(6, 3, func_0209c08c(), 1);
+    Scene_Request(6, 3, func_0209c08c(), 1);
     unk_50 = 2;
 }
 

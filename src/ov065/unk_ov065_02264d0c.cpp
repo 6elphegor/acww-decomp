@@ -86,12 +86,12 @@ typedef Unk_ov065_022665d8_Rsa Rsa;
 typedef Unk_ov065_02266c90_Key Key;
 
 extern "C" {
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(void *);
-extern u16 data_ov065_0228b44c[2];
-extern u8 data_ov065_022903dc[];
-extern u32 data_ov065_0228b440;
-extern char *data_ov065_0228b47c[6];
+extern void *(*sIpAlloc)(u32);
+extern void (*sIpFree)(void *);
+extern u16 sSslCipherSuites[2];
+extern u8 sSslNoSession[];
+extern u32 gSslRsaThreadPriority;
+extern char *sSslCertOidTable[6];
 struct Unk_ov065_02266c90_Os {
     u32 unk_00;
     u32 unk_04;
@@ -109,47 +109,47 @@ u32 OS_GetThreadPriority(u32);
 void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
-void func_ov065_02267a84(void *);
-void func_ov065_022679f8(void *, const void *, u32);
-void func_ov065_022679a4(void *, void *);
-void func_ov065_0226750c(void *);
-void func_ov065_02267480(void *, const void *, u32);
-void func_ov065_0226742c(void *, void *);
-u8 *func_ov065_022673dc(u8 *);
-u8 *func_ov065_0226733c(u8 *);
-s32 func_ov065_02267250(u8 **);
-void func_ov065_02267208(void *, u8 *, s32);
-u32 func_ov065_022671a0(u8 *);
-Key *func_ov065_022672a0(Ctx *, u8 *);
-void func_ov065_02268210(u16 *, u8 *, s32, s32);
-void func_ov065_0226824c(u16 *, u16 *, u16 *, s32, u16 *);
-void func_ov065_02268a7c(u16 *, u16 *, u16 *, s32);
-void func_ov065_02268950(u16 *, u16 *, u16 *, s32);
-void func_ov065_02268b6c(u16 *, u16 *, u16 *, s32);
-s32 func_ov065_02268be8(u16 *, s32);
-void func_ov065_02268b00(u16 *, s32);
-void func_ov065_02268658(s32, u16 *, u16 *, u16 *, s32, u16 *);
-void func_ov065_022681e0(u8 *, u16 *, s32, s32);
-void func_ov065_02268540(u16 *, u16 *, u16 *, s32, u16 *);
+void SslSha1_Init(void *);
+void SslSha1_Update(void *, const void *, u32);
+void SslSha1_Final(void *, void *);
+void SslMd5_Init(void *);
+void SslMd5_Update(void *, const void *, u32);
+void SslMd5_Final(void *, void *);
+u8 *SslSession_FindById(u8 *);
+u8 *SslSession_Add(u8 *);
+s32 SslCert_ReadDerLength(u8 **);
+void SslCert_AppendName(void *, u8 *, s32);
+u32 SslCert_ParseTime(u8 *);
+Key *SslCert_FindRootCa(Ctx *, u8 *);
+void SslBigNum_FromBytes(u16 *, u8 *, s32, s32);
+void SslBigNum_ModExpMontgomery(u16 *, u16 *, u16 *, s32, u16 *);
+void SslBigNum_Sub(u16 *, u16 *, u16 *, s32);
+void SslBigNum_Mul(u16 *, u16 *, u16 *, s32);
+void SslBigNum_Add(u16 *, u16 *, u16 *, s32);
+s32 SslBigNum_Sign(u16 *, s32);
+void SslBigNum_Negate(u16 *, s32);
+void SslBigNum_DivMod(s32, u16 *, u16 *, u16 *, s32, u16 *);
+void SslBigNum_ToBytes(u8 *, u16 *, s32, s32);
+void SslBigNum_ModExp(u16 *, u16 *, u16 *, s32, u16 *);
 
 // in range
-void func_ov065_0226650c(Ctx *);
-void func_ov065_02266550(u8 *, char *, Ctx *);
-void func_ov065_022665d8(u8 *, u8 *, Rsa *);
-void func_ov065_02266744(Ctx *, u8 *);
-void func_ov065_022667b0(Ctx *, u8 *);
-s32 func_ov065_02266844(u32, u32);
-u32 func_ov065_02266850(u8 *, s32, s32);
-s32 func_ov065_02266894(u8 *, s32, s32, u32);
-void func_ov065_022668cc(Ctx *, u8 *);
-void func_ov065_02266948(Ctx *, u8 *);
-s32 func_ov065_02266b24(char *, char *);
-s32 func_ov065_02266b84(char *);
-u32 func_ov065_02266b9c(Ctx *);
-s32 func_ov065_02266c90(Ctx *, Key *);
-s32 func_ov065_02266df4(Ctx *, u8 **, s32, s32, s32);
+void Ssl_DeriveMasterSecret(Ctx *);
+void Ssl_DeriveSecretPart(u8 *, char *, Ctx *);
+void SslRsa_PrivateDecrypt(u8 *, u8 *, Rsa *);
+void Ssl_HandleClientHello(Ctx *, u8 *);
+void Ssl_HandleClientHelloV2(Ctx *, u8 *);
+s32 Ssl_IsVersion3(u32, u32);
+u32 Ssl_ChooseCipherSuite(u8 *, s32, s32);
+s32 Ssl_ListContains(u8 *, s32, s32, u32);
+void Ssl_HandleServerHello(Ctx *, u8 *);
+void Ssl_HandleCertificate(Ctx *, u8 *);
+s32 SslCert_MatchHostName(char *, char *);
+s32 SslCert_LabelLength(char *);
+u32 SslCert_Verify(Ctx *);
+s32 SslCert_VerifySignature(Ctx *, Key *);
+s32 SslCert_ParseAsn1(Ctx *, u8 **, s32, s32, s32);
 
-s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
+s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     u8 *p;
     u32 tag;
     s32 len;
@@ -162,7 +162,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     char *oe;
     p = *pp;
     tag = *p++;
-    len = func_ov065_02267250(&p);
+    len = SslCert_ReadDerLength(&p);
     if (len < 0 || len > 0x7d0) {
         return 1;
     }
@@ -221,7 +221,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         }
         if (c->unk_581 != 0) {
             p++;
-            if (func_ov065_02266df4(c, &p, depth, 0, mode) != 0) {
+            if (SslCert_ParseAsn1(c, &p, depth, 0, mode) != 0) {
                 return 1;
             }
             c->unk_581 = 0;
@@ -231,7 +231,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         break;
     case 6:
         oi = 0;
-        tbl = data_ov065_0228b47c;
+        tbl = sSslCertOidTable;
         op = p;
         do {
             oe = *tbl;
@@ -271,13 +271,13 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     case 22:
         if (mode != 2) {
             if (c->unk_580 != 0) {
-                func_ov065_02267208(c->unk_684, p, len);
+                SslCert_AppendName(c->unk_684, p, len);
                 if (c->unk_582 == 5 && len <= 0x4f) {
                     MI_CpuCopy8(p, c->unk_784, len);
                     (c->unk_784)[len] = 0;
                 }
             } else {
-                func_ov065_02267208(c->unk_584, p, len);
+                SslCert_AppendName(c->unk_584, p, len);
             }
         }
         c->unk_582 = 0;
@@ -286,7 +286,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     case 23:
     case 24:
         if (mode != 2) {
-            u32 t = func_ov065_022671a0(p);
+            u32 t = SslCert_ParseTime(p);
             if (idx == 0) {
                 if (c->unk_7e0 >= t) {
                     c->unk_583 = 1;
@@ -306,7 +306,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         }
         send = p + len;
         for (i = 0; p < send;) {
-            s32 r = func_ov065_02266df4(c, &p, depth + 1, i, mode);
+            s32 r = SslCert_ParseAsn1(c, &p, depth + 1, i, mode);
             i++;
             if (r != 0) {
                 return 1;
@@ -319,7 +319,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     case 17:
         end = p + len;
         while (p < end) {
-            if (func_ov065_02266df4(c, &p, depth + 1, 0, mode) != 0) {
+            if (SslCert_ParseAsn1(c, &p, depth + 1, 0, mode) != 0) {
                 return 1;
             }
         }
@@ -329,7 +329,7 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         if (tag == 0xa0) {
             end = p + len;
             while (p < end) {
-                if (func_ov065_02266df4(c, &p, depth + 1, 0, mode) != 0) {
+                if (SslCert_ParseAsn1(c, &p, depth + 1, 0, mode) != 0) {
                     return 1;
                 }
             }
@@ -342,31 +342,31 @@ s32 func_ov065_02266df4(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     return 0;
 }
 
-s32 func_ov065_02266c90(Ctx *c, Key *k) {
+s32 SslCert_VerifySignature(Ctx *c, Key *k) {
     if (c->unk_578 == 0 || c->unk_57c == 0 || k->unk_10 == 0 || k->unk_0c == 0 || k->unk_08 == 0 || k->unk_04 == 0) {
         return 2;
     }
     s32 n = (k->unk_04 * 2) / 2;
-    u16 *buf = (u16 *)data_ov065_0228ebc8(n * 8);
+    u16 *buf = (u16 *)sIpAlloc(n * 8);
     if (buf == 0) {
         return 2;
     }
     u16 *b1 = buf + n;
     u16 *b2 = b1 + n;
     u16 *b3 = b2 + n;
-    func_ov065_02268210(b1, c->unk_578, c->unk_57c, n);
-    func_ov065_02268210(b2, k->unk_10, k->unk_0c, n);
-    func_ov065_02268210(b3, k->unk_08, k->unk_04, n);
-    if (data_ov065_0228b440 < 0x20) {
+    SslBigNum_FromBytes(b1, c->unk_578, c->unk_57c, n);
+    SslBigNum_FromBytes(b2, k->unk_10, k->unk_0c, n);
+    SslBigNum_FromBytes(b3, k->unk_08, k->unk_04, n);
+    if (gSslRsaThreadPriority < 0x20) {
         u32 th = data_021fcc2c.unk_04;
         u32 pr = OS_GetThreadPriority(th);
-        OS_SetThreadPriority(th, data_ov065_0228b440);
-        func_ov065_02268540(buf, b1, b2, n, b3);
+        OS_SetThreadPriority(th, gSslRsaThreadPriority);
+        SslBigNum_ModExp(buf, b1, b2, n, b3);
         OS_SetThreadPriority(th, pr);
     } else {
-        func_ov065_02268540(buf, b1, b2, n, b3);
+        SslBigNum_ModExp(buf, b1, b2, n, b3);
     }
-    func_ov065_022681e0((u8 *)b1, buf, k->unk_04, n);
+    SslBigNum_ToBytes((u8 *)b1, buf, k->unk_04, n);
     s32 r = 0;
     u8 *q = (u8 *)b1;
     if (q[0] != 0 || q[1] != 1) {
@@ -388,11 +388,11 @@ s32 func_ov065_02266c90(Ctx *c, Key *k) {
             r = 2;
         }
     }
-    data_ov065_0228ebd0(buf);
+    sIpFree(buf);
     return r;
 }
 
-u32 func_ov065_02266b9c(Ctx *c) {
+u32 SslCert_Verify(Ctx *c) {
     u32 r;
     if (c->unk_583 != 0) {
         r = 0;
@@ -406,19 +406,19 @@ u32 func_ov065_02266b9c(Ctx *c) {
     switch (c->unk_42c) {
     case 3: {
         u8 *h = c->unk_3d0;
-        func_ov065_0226750c(h);
+        SslMd5_Init(h);
         u8 *s = c->unk_434;
-        func_ov065_02267480(h, s, c->unk_438 - s);
-        func_ov065_0226742c(h, c->unk_43c);
+        SslMd5_Update(h, s, c->unk_438 - s);
+        SslMd5_Final(h, c->unk_43c);
         c->unk_450 = 0x10;
         break;
     }
     case 4: {
         u8 *h = c->unk_31c;
-        func_ov065_02267a84(h);
+        SslSha1_Init(h);
         u8 *s = c->unk_434;
-        func_ov065_022679f8(h, s, c->unk_438 - s);
-        func_ov065_022679a4(h, c->unk_43c);
+        SslSha1_Update(h, s, c->unk_438 - s);
+        SslSha1_Final(h, c->unk_43c);
         c->unk_450 = 0x14;
         break;
     }
@@ -426,16 +426,16 @@ u32 func_ov065_02266b9c(Ctx *c) {
         r |= 3;
         return r;
     }
-    Key *k = func_ov065_022672a0(c, c->unk_584);
+    Key *k = SslCert_FindRootCa(c, c->unk_584);
     if (k == 0) {
         r |= 1;
         return r;
     }
-    r |= func_ov065_02266c90(c, k);
+    r |= SslCert_VerifySignature(c, k);
     return r;
 }
 
-s32 func_ov065_02266b84(char *s) {
+s32 SslCert_LabelLength(char *s) {
     char *o = s;
     while (*(s8 *)s != '.' && *(s8 *)s != 0) {
         s++;
@@ -443,7 +443,7 @@ s32 func_ov065_02266b84(char *s) {
     return s - o;
 }
 
-s32 func_ov065_02266b24(char *a, char *b) {
+s32 SslCert_MatchHostName(char *a, char *b) {
     s8 x, y;
     for (;;) {
         while (x = *(s8 *)b++, y = *(s8 *)a++, y == x) {
@@ -455,8 +455,8 @@ s32 func_ov065_02266b24(char *a, char *b) {
             return 1;
         }
         a--;
-        s32 la = func_ov065_02266b84(a);
-        s32 lb = func_ov065_02266b84(b);
+        s32 la = SslCert_LabelLength(a);
+        s32 lb = SslCert_LabelLength(b);
         if (lb > la) {
             return 1;
         }
@@ -464,7 +464,7 @@ s32 func_ov065_02266b24(char *a, char *b) {
     }
 }
 
-void func_ov065_02266948(Ctx *c, u8 *p) {
+void Ssl_HandleCertificate(Ctx *c, u8 *p) {
     u32 len;
     u32 rl;
     u32 ty;
@@ -493,23 +493,23 @@ void func_ov065_02266948(Ctx *c, u8 *p) {
         c->unk_784[0] = 0;
         c->unk_7d8 = p;
         c->unk_7dc = rl;
-        if (func_ov065_02266df4(c, &p, 0, 0, k) != 0 || (u32)c->unk_568 < 0x33 || c->unk_574 == 0) {
+        if (SslCert_ParseAsn1(c, &p, 0, 0, k) != 0 || (u32)c->unk_568 < 0x33 || c->unk_574 == 0) {
             c->unk_429 = 9;
             return;
         }
-        r4 = func_ov065_02266b9c(c);
-        if (i == 0 && c->unk_7d4 != 0 && func_ov065_02266b24(c->unk_7d4, (char *)c->unk_784) != 0) {
+        r4 = SslCert_Verify(c);
+        if (i == 0 && c->unk_7d4 != 0 && SslCert_MatchHostName(c->unk_7d4, (char *)c->unk_784) != 0) {
             r4 |= 0x4000;
         }
         ty = r4 & 0xff;
         if (ty == 1 && len != 0) {
             u8 *q = p + 3;
             c->unk_581 = 0;
-            if (func_ov065_02266df4(c, &q, 0, 0, 2) != 0) {
+            if (SslCert_ParseAsn1(c, &q, 0, 0, 2) != 0) {
                 c->unk_429 = 9;
                 return;
             }
-            r4 = (r4 & ~0xff) | func_ov065_02266c90(c, &c->unk_454);
+            r4 = (r4 & ~0xff) | SslCert_VerifySignature(c, &c->unk_454);
         }
         if (c->unk_7e4 != 0) {
             r4 = c->unk_7e4(r4, c, i);
@@ -528,7 +528,7 @@ void func_ov065_02266948(Ctx *c, u8 *p) {
     }
 }
 
-void func_ov065_022668cc(Ctx *c, u8 *p) {
+void Ssl_HandleServerHello(Ctx *c, u8 *p) {
     u8 n;
     u8 *old;
     MI_CpuCopy8(p + 2, c->unk_28, 0x20);
@@ -542,9 +542,9 @@ void func_ov065_022668cc(Ctx *c, u8 *p) {
             old[0x5a] = 0;
         }
         if (n == 0) {
-            c->unk_00 = data_ov065_022903dc;
+            c->unk_00 = sSslNoSession;
         } else {
-            c->unk_00 = func_ov065_0226733c(p);
+            c->unk_00 = SslSession_Add(p);
         }
         c->unk_04 = 0;
     }
@@ -553,7 +553,7 @@ void func_ov065_022668cc(Ctx *c, u8 *p) {
     c->unk_429 = 2;
 }
 
-s32 func_ov065_02266894(u8 *p, s32 cnt, s32 size, u32 key) {
+s32 Ssl_ListContains(u8 *p, s32 cnt, s32 size, u32 key) {
     s32 i;
     for (i = 0; i < cnt; p += size, i++) {
         u32 v = (p[0] << 8) + p[1];
@@ -567,28 +567,28 @@ s32 func_ov065_02266894(u8 *p, s32 cnt, s32 size, u32 key) {
     return FALSE;
 }
 
-u32 func_ov065_02266850(u8 *p, s32 cnt, s32 size) {
+u32 Ssl_ChooseCipherSuite(u8 *p, s32 cnt, s32 size) {
     u32 i;
     u16 *t;
-    for (i = 0, t = data_ov065_0228b44c; i < 2; t++, i++) {
-        if (func_ov065_02266894(p, cnt, size, *t)) {
-            return data_ov065_0228b44c[i];
+    for (i = 0, t = sSslCipherSuites; i < 2; t++, i++) {
+        if (Ssl_ListContains(p, cnt, size, *t)) {
+            return sSslCipherSuites[i];
         }
     }
     return 0;
 }
 
-s32 func_ov065_02266844(u32 a, u32 b) {
+s32 Ssl_IsVersion3(u32 a, u32 b) {
     if (a == 3) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov065_022667b0(Ctx *c, u8 *p) {
-    if (func_ov065_02266844(p[0], p[1])) {
+void Ssl_HandleClientHelloV2(Ctx *c, u8 *p) {
+    if (Ssl_IsVersion3(p[0], p[1])) {
         s32 a = (p[2] << 8) + p[3];
-        u16 r = func_ov065_02266850(p + 8, a / 3, 3);
+        u16 r = Ssl_ChooseCipherSuite(p + 8, a / 3, 3);
         if (r != 0) {
             c->unk_06 = r;
             s32 b = (p[4] << 8) + p[5];
@@ -607,18 +607,18 @@ void func_ov065_022667b0(Ctx *c, u8 *p) {
     }
 }
 
-void func_ov065_02266744(Ctx *c, u8 *p) {
-    if (func_ov065_02266844(p[0], p[1])) {
+void Ssl_HandleClientHello(Ctx *c, u8 *p) {
+    if (Ssl_IsVersion3(p[0], p[1])) {
         MI_CpuCopy8(p + 2, c->unk_08, 0x20);
         u32 n = p[0x22];
         u8 *q = p + 0x23;
         if (n != 0x20) {
             c->unk_00 = 0;
         } else {
-            c->unk_00 = func_ov065_022673dc(q);
+            c->unk_00 = SslSession_FindById(q);
         }
         q += n;
-        u16 r = func_ov065_02266850(q + 2, ((q[0] << 8) + q[1]) / 2, 2);
+        u16 r = Ssl_ChooseCipherSuite(q + 2, ((q[0] << 8) + q[1]) / 2, 2);
         c->unk_06 = r;
         if (r != 0) {
             c->unk_429 = 1;
@@ -626,10 +626,10 @@ void func_ov065_02266744(Ctx *c, u8 *p) {
     }
 }
 
-void func_ov065_022665d8(u8 *out, u8 *in, Rsa *k) {
+void SslRsa_PrivateDecrypt(u8 *out, u8 *in, Rsa *k) {
     if (k != 0 && k->unk_00 != 0) {
         s32 n = (k->unk_00 * 2) / 2 + 1;
-        u16 *b0 = (u16 *)data_ov065_0228ebc8(n * 20);
+        u16 *b0 = (u16 *)sIpAlloc(n * 20);
         if (b0 != 0) {
             u16 *b1 = b0 + n;
             u16 *b2 = b1 + n;
@@ -638,54 +638,54 @@ void func_ov065_022665d8(u8 *out, u8 *in, Rsa *k) {
             u16 *b5 = b4 + n;
             u16 *b6 = b5 + n;
             u16 *b7 = b6 + n;
-            func_ov065_02268210(b0, in, k->unk_00, n);
-            func_ov065_02268210(b1, k->unk_1c, k->unk_18, n);
-            func_ov065_02268210(b5, k->unk_0c, k->unk_08, n);
-            func_ov065_0226824c(b3, b0, b1, n, b5);
-            func_ov065_02268210(b1, k->unk_24, k->unk_20, n);
-            func_ov065_02268210(b5, k->unk_14, k->unk_10, n);
-            func_ov065_0226824c(b4, b0, b1, n, b5);
-            func_ov065_02268a7c(b0, b3, b4, n);
-            func_ov065_02268210(b1, k->unk_2c, k->unk_28, n);
-            func_ov065_02268950(b2, b0, b1, n);
-            func_ov065_02268210(b1, k->unk_14, k->unk_10, n);
-            func_ov065_02268950(b0, b2, b1, n);
-            func_ov065_02268b6c(b2, b0, b4, n);
-            func_ov065_02268210(b1, k->unk_04, k->unk_00, n);
-            if (func_ov065_02268be8(b2, n) < 0) {
-                func_ov065_02268b00(b2, n);
-                func_ov065_02268658(0, b2, b1, b6, n, b7);
-                func_ov065_02268a7c(b6, b1, b6, n);
+            SslBigNum_FromBytes(b0, in, k->unk_00, n);
+            SslBigNum_FromBytes(b1, k->unk_1c, k->unk_18, n);
+            SslBigNum_FromBytes(b5, k->unk_0c, k->unk_08, n);
+            SslBigNum_ModExpMontgomery(b3, b0, b1, n, b5);
+            SslBigNum_FromBytes(b1, k->unk_24, k->unk_20, n);
+            SslBigNum_FromBytes(b5, k->unk_14, k->unk_10, n);
+            SslBigNum_ModExpMontgomery(b4, b0, b1, n, b5);
+            SslBigNum_Sub(b0, b3, b4, n);
+            SslBigNum_FromBytes(b1, k->unk_2c, k->unk_28, n);
+            SslBigNum_Mul(b2, b0, b1, n);
+            SslBigNum_FromBytes(b1, k->unk_14, k->unk_10, n);
+            SslBigNum_Mul(b0, b2, b1, n);
+            SslBigNum_Add(b2, b0, b4, n);
+            SslBigNum_FromBytes(b1, k->unk_04, k->unk_00, n);
+            if (SslBigNum_Sign(b2, n) < 0) {
+                SslBigNum_Negate(b2, n);
+                SslBigNum_DivMod(0, b2, b1, b6, n, b7);
+                SslBigNum_Sub(b6, b1, b6, n);
             } else {
-                func_ov065_02268658(0, b2, b1, b6, n, b7);
+                SslBigNum_DivMod(0, b2, b1, b6, n, b7);
             }
-            func_ov065_022681e0(out, b6, 0x30, n);
-            data_ov065_0228ebd0(b0);
+            SslBigNum_ToBytes(out, b6, 0x30, n);
+            sIpFree(b0);
         }
     }
 }
 
-void func_ov065_02266550(u8 *out, char *label, Ctx *c) {
+void Ssl_DeriveSecretPart(u8 *out, char *label, Ctx *c) {
     u8 tmp[0x14];
     u8 *h = c->unk_31c;
-    func_ov065_02267a84(h);
-    func_ov065_022679f8(h, label, func_0212a438(label));
-    func_ov065_022679f8(h, c->unk_00 + 0x20, 0x30);
-    func_ov065_022679f8(h, c->unk_08, 0x20);
-    func_ov065_022679f8(h, c->unk_28, 0x20);
-    func_ov065_022679a4(h, tmp);
+    SslSha1_Init(h);
+    SslSha1_Update(h, label, func_0212a438(label));
+    SslSha1_Update(h, c->unk_00 + 0x20, 0x30);
+    SslSha1_Update(h, c->unk_08, 0x20);
+    SslSha1_Update(h, c->unk_28, 0x20);
+    SslSha1_Final(h, tmp);
     h = c->unk_3d0;
-    func_ov065_0226750c(h);
-    func_ov065_02267480(h, c->unk_00 + 0x20, 0x30);
-    func_ov065_02267480(h, tmp, 0x14);
-    func_ov065_0226742c(h, out);
+    SslMd5_Init(h);
+    SslMd5_Update(h, c->unk_00 + 0x20, 0x30);
+    SslMd5_Update(h, tmp, 0x14);
+    SslMd5_Final(h, out);
 }
 
-void func_ov065_0226650c(Ctx *c) {
+void Ssl_DeriveMasterSecret(Ctx *c) {
     u8 buf[0x30];
-    func_ov065_02266550(buf, "A", c);
-    func_ov065_02266550(buf + 0x10, "BB", c);
-    func_ov065_02266550(buf + 0x20, "CCC", c);
+    Ssl_DeriveSecretPart(buf, "A", c);
+    Ssl_DeriveSecretPart(buf + 0x10, "BB", c);
+    Ssl_DeriveSecretPart(buf + 0x20, "CCC", c);
     MI_CpuCopy8(buf, c->unk_00 + 0x20, 0x30);
 }
 }
@@ -738,8 +738,8 @@ typedef Unk_ov065_02265a5c_St St;
 typedef Unk_ov065_02265a5c_Sess Sess;
 
 extern "C" {
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(void *);
+extern void *(*sIpAlloc)(u32);
+extern void (*sIpFree)(void *);
 
 // main module
 void *MI_CpuFill8(void *, s32, u32);
@@ -747,38 +747,38 @@ void *MI_CpuCopy8(const void *, void *, u32);
 s32 memcmp(const void *, const void *, u32);
 
 // same overlay, out of range
-u8 *func_ov065_02262708(u32 *, Sess *);
-void func_ov065_02262670(u32, Sess *);
-void func_ov065_022667b0(St *, u8 *);
-void func_ov065_022679f8(void *, const void *, u32);
-void func_ov065_022679a4(void *, void *);
-void func_ov065_02267a84(void *);
-void func_ov065_02267480(void *, const void *, u32);
-void func_ov065_0226742c(void *, void *);
-void func_ov065_0226750c(void *);
-void func_ov065_0226813c(void *, void *, u32);
-void func_ov065_0226818c(void *, void *, u32);
-void func_ov065_02266744(St *, u8 *);
-void func_ov065_022668cc(St *, u8 *);
-void func_ov065_02266948(St *, u8 *);
-void func_ov065_022665d8(u8 *, u8 *, u32);
-void func_ov065_0226650c(St *);
+u8 *Tcp_Read(u32 *, Sess *);
+void Tcp_Consume(u32, Sess *);
+void Ssl_HandleClientHelloV2(St *, u8 *);
+void SslSha1_Update(void *, const void *, u32);
+void SslSha1_Final(void *, void *);
+void SslSha1_Init(void *);
+void SslMd5_Update(void *, const void *, u32);
+void SslMd5_Final(void *, void *);
+void SslMd5_Init(void *);
+void SslRc4_Crypt(void *, void *, u32);
+void SslRc4_Init(void *, void *, u32);
+void Ssl_HandleClientHello(St *, u8 *);
+void Ssl_HandleServerHello(St *, u8 *);
+void Ssl_HandleCertificate(St *, u8 *);
+void SslRsa_PrivateDecrypt(u8 *, u8 *, u32);
+void Ssl_DeriveMasterSecret(St *);
 
 // in range
-u8 func_ov065_02265a5c(Sess *);
-void func_ov065_02265b9c(St *, u8 *);
-s32 func_ov065_02265d5c(u8 *, s32, Sess *);
-s32 func_ov065_02265dac(St *, u8 *);
-s32 func_ov065_02265f38(St *, u8 *);
-s32 func_ov065_022660dc(St *, u8 *, s32);
-void func_ov065_022660f4(u8 *);
-void func_ov065_02266110(St *, u8 *);
-void func_ov065_022661c0(St *, u8 *, u32);
-void func_ov065_02266264(St *, u8 *, u32);
-void func_ov065_02266308(St *, u8 *);
-void func_ov065_02266338(St *);
+u8 Ssl_ReadRecord(Sess *);
+void Ssl_ProcessRecord(St *, u8 *);
+s32 Ssl_ReadExact(u8 *, s32, Sess *);
+s32 Ssl_EncryptRecord(St *, u8 *);
+s32 Ssl_DecryptRecord(St *, u8 *);
+s32 Ssl_DecryptInPlace(St *, u8 *, s32);
+void Ssl_IncrementSeqNum(u8 *);
+void Ssl_HandleFinished(St *, u8 *);
+void Ssl_CalcFinishedSha1(St *, u8 *, u32);
+void Ssl_CalcFinishedMd5(St *, u8 *, u32);
+void Ssl_HandleClientKeyExchange(St *, u8 *);
+void Ssl_DeriveKeyBlock(St *);
 
-void func_ov065_02266338(St *st) {
+void Ssl_DeriveKeyBlock(St *st) {
     s32 a, b, c;
     s32 total;
     s32 i;
@@ -804,22 +804,22 @@ void func_ov065_02266338(St *st) {
         do {
             s32 j;
             void *ctx = st->unk_31c;
-            func_ov065_02267a84(ctx);
+            SslSha1_Init(ctx);
             tmp[0] = 0x41 + i;
             j = 0;
             while (j < i + 1) {
-                func_ov065_022679f8(ctx, tmp, 1);
+                SslSha1_Update(ctx, tmp, 1);
                 j++;
             }
-            func_ov065_022679f8(ctx, st->unk_00 + 0x20, 0x30);
-            func_ov065_022679f8(ctx, st->unk_28, 0x20);
-            func_ov065_022679f8(ctx, st->unk_08, 0x20);
-            func_ov065_022679a4(ctx, tmp + 1);
+            SslSha1_Update(ctx, st->unk_00 + 0x20, 0x30);
+            SslSha1_Update(ctx, st->unk_28, 0x20);
+            SslSha1_Update(ctx, st->unk_08, 0x20);
+            SslSha1_Final(ctx, tmp + 1);
             ctx = st->unk_3d0;
-            func_ov065_0226750c(ctx);
-            func_ov065_02267480(ctx, st->unk_00 + 0x20, 0x30);
-            func_ov065_02267480(ctx, tmp + 1, 0x14);
-            func_ov065_0226742c(ctx, st->unk_48 + off);
+            SslMd5_Init(ctx);
+            SslMd5_Update(ctx, st->unk_00 + 0x20, 0x30);
+            SslMd5_Update(ctx, tmp + 1, 0x14);
+            SslMd5_Final(ctx, st->unk_48 + off);
             off += 0x10;
             i++;
         } while (off < total);
@@ -839,71 +839,71 @@ void func_ov065_02266338(St *st) {
         st->unk_1ac = st->unk_1a8 + a + b;
         st->unk_1b0 = st->unk_1ac + b + c;
     }
-    func_ov065_0226818c(st->unk_1b4, st->unk_1ac, 0x10);
-    func_ov065_0226818c(st->unk_9c, st->unk_94, 0x10);
+    SslRc4_Init(st->unk_1b4, st->unk_1ac, 0x10);
+    SslRc4_Init(st->unk_9c, st->unk_94, 0x10);
 }
 
-void func_ov065_02266308(St *st, u8 *p) {
-    func_ov065_022665d8(st->unk_00 + 0x20, p, st->unk_7f0);
-    func_ov065_0226650c(st);
-    func_ov065_02266338(st);
+void Ssl_HandleClientKeyExchange(St *st, u8 *p) {
+    SslRsa_PrivateDecrypt(st->unk_00 + 0x20, p, st->unk_7f0);
+    Ssl_DeriveMasterSecret(st);
+    Ssl_DeriveKeyBlock(st);
     st->unk_429 = 5;
 }
 
-void func_ov065_02266264(St *st, u8 *out, u32 who) {
+void Ssl_CalcFinishedMd5(St *st, u8 *out, u32 who) {
     u8 pad[0x30];
     u8 *ctx = st->unk_378;
 
     if ((st->unk_428 ^ who) != 0) {
-        func_ov065_02267480(ctx, "SRVR", 4);
+        SslMd5_Update(ctx, "SRVR", 4);
     } else {
-        func_ov065_02267480(ctx, "CLNT", 4);
+        SslMd5_Update(ctx, "CLNT", 4);
     }
-    func_ov065_02267480(ctx, st->unk_00 + 0x20, 0x30);
+    SslMd5_Update(ctx, st->unk_00 + 0x20, 0x30);
     MI_CpuFill8(pad, 0x36, 0x30);
-    func_ov065_02267480(ctx, pad, 0x30);
-    func_ov065_0226742c(ctx, out);
-    func_ov065_0226750c(ctx);
-    func_ov065_02267480(ctx, st->unk_00 + 0x20, 0x30);
+    SslMd5_Update(ctx, pad, 0x30);
+    SslMd5_Final(ctx, out);
+    SslMd5_Init(ctx);
+    SslMd5_Update(ctx, st->unk_00 + 0x20, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x30);
-    func_ov065_02267480(ctx, pad, 0x30);
-    func_ov065_02267480(ctx, out, 0x10);
-    func_ov065_0226742c(ctx, out);
+    SslMd5_Update(ctx, pad, 0x30);
+    SslMd5_Update(ctx, out, 0x10);
+    SslMd5_Final(ctx, out);
 }
 
-void func_ov065_022661c0(St *st, u8 *out, u32 who) {
+void Ssl_CalcFinishedSha1(St *st, u8 *out, u32 who) {
     u8 pad[0x28];
     u8 *ctx = st->unk_2c0;
 
     if ((st->unk_428 ^ who) != 0) {
-        func_ov065_022679f8(ctx, "SRVR", 4);
+        SslSha1_Update(ctx, "SRVR", 4);
     } else {
-        func_ov065_022679f8(ctx, "CLNT", 4);
+        SslSha1_Update(ctx, "CLNT", 4);
     }
-    func_ov065_022679f8(ctx, st->unk_00 + 0x20, 0x30);
+    SslSha1_Update(ctx, st->unk_00 + 0x20, 0x30);
     MI_CpuFill8(pad, 0x36, 0x28);
-    func_ov065_022679f8(ctx, pad, 0x28);
-    func_ov065_022679a4(ctx, out);
-    func_ov065_02267a84(ctx);
-    func_ov065_022679f8(ctx, st->unk_00 + 0x20, 0x30);
+    SslSha1_Update(ctx, pad, 0x28);
+    SslSha1_Final(ctx, out);
+    SslSha1_Init(ctx);
+    SslSha1_Update(ctx, st->unk_00 + 0x20, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x28);
-    func_ov065_022679f8(ctx, pad, 0x28);
-    func_ov065_022679f8(ctx, out, 0x14);
-    func_ov065_022679a4(ctx, out);
+    SslSha1_Update(ctx, pad, 0x28);
+    SslSha1_Update(ctx, out, 0x14);
+    SslSha1_Final(ctx, out);
 }
 
-void func_ov065_02266110(St *st, u8 *in) {
+void Ssl_HandleFinished(St *st, u8 *in) {
     u8 out[0x14];
 
     MI_CpuCopy8(st->unk_378, st->unk_3d0, 0x58);
-    func_ov065_02266264(st, out, 1);
+    Ssl_CalcFinishedMd5(st, out, 1);
     MI_CpuCopy8(st->unk_3d0, st->unk_378, 0x58);
     if (memcmp(in, out, 0x10) != 0) {
         st->unk_429 = 9;
         return;
     }
     MI_CpuCopy8(st->unk_2c0, st->unk_31c, 0x5c);
-    func_ov065_022661c0(st, out, 1);
+    Ssl_CalcFinishedSha1(st, out, 1);
     MI_CpuCopy8(st->unk_31c, st->unk_2c0, 0x5c);
     if (memcmp(in + 0x10, out, 0x14) != 0) {
         st->unk_429 = 9;
@@ -912,7 +912,7 @@ void func_ov065_02266110(St *st, u8 *in) {
     st->unk_429 = 6;
 }
 
-void func_ov065_022660f4(u8 *p) {
+void Ssl_IncrementSeqNum(u8 *p) {
     s32 i = 8;
     do {
         u32 v;
@@ -926,40 +926,40 @@ void func_ov065_022660f4(u8 *p) {
     } while (i != 0);
 }
 
-s32 func_ov065_022660dc(St *st, u8 *buf, s32 len) {
-    func_ov065_0226813c(st->unk_1b4, buf, len);
+s32 Ssl_DecryptInPlace(St *st, u8 *buf, s32 len) {
+    SslRc4_Crypt(st->unk_1b4, buf, len);
     return len;
 }
 
-s32 func_ov065_02265f38(St *st, u8 *buf) {
+s32 Ssl_DecryptRecord(St *st, u8 *buf) {
     u8 digest[0x14];
     u8 pad[0x30];
     s32 len;
     s32 n;
     void *ctx;
 
-    len = func_ov065_022660dc(st, buf + 5, (buf[3] << 8) + buf[4]);
+    len = Ssl_DecryptInPlace(st, buf + 5, (buf[3] << 8) + buf[4]);
     switch (st->unk_06) {
     case 4:
         len -= 0x10;
         buf[3] = len >> 8;
         buf[4] = len;
         ctx = st->unk_3d0;
-        func_ov065_0226750c(ctx);
-        func_ov065_02267480(ctx, st->unk_1a8, 0x10);
+        SslMd5_Init(ctx);
+        SslMd5_Update(ctx, st->unk_1a8, 0x10);
         MI_CpuFill8(pad, 0x36, 0x30);
-        func_ov065_02267480(ctx, pad, 0x30);
-        func_ov065_02267480(ctx, st->unk_2b8, 8);
-        func_ov065_02267480(ctx, buf, 1);
-        func_ov065_02267480(ctx, buf + 3, 2);
-        func_ov065_02267480(ctx, buf + 5, len);
-        func_ov065_0226742c(ctx, digest);
-        func_ov065_0226750c(ctx);
-        func_ov065_02267480(ctx, st->unk_1a8, 0x10);
+        SslMd5_Update(ctx, pad, 0x30);
+        SslMd5_Update(ctx, st->unk_2b8, 8);
+        SslMd5_Update(ctx, buf, 1);
+        SslMd5_Update(ctx, buf + 3, 2);
+        SslMd5_Update(ctx, buf + 5, len);
+        SslMd5_Final(ctx, digest);
+        SslMd5_Init(ctx);
+        SslMd5_Update(ctx, st->unk_1a8, 0x10);
         MI_CpuFill8(pad, 0x5c, 0x30);
-        func_ov065_02267480(ctx, pad, 0x30);
-        func_ov065_02267480(ctx, digest, 0x10);
-        func_ov065_0226742c(ctx, digest);
+        SslMd5_Update(ctx, pad, 0x30);
+        SslMd5_Update(ctx, digest, 0x10);
+        SslMd5_Final(ctx, digest);
         n = 0x10;
         break;
     case 5:
@@ -967,32 +967,32 @@ s32 func_ov065_02265f38(St *st, u8 *buf) {
         buf[3] = len >> 8;
         buf[4] = len;
         ctx = st->unk_31c;
-        func_ov065_02267a84(ctx);
-        func_ov065_022679f8(ctx, st->unk_1a8, 0x14);
+        SslSha1_Init(ctx);
+        SslSha1_Update(ctx, st->unk_1a8, 0x14);
         MI_CpuFill8(pad, 0x36, 0x28);
-        func_ov065_022679f8(ctx, pad, 0x28);
-        func_ov065_022679f8(ctx, st->unk_2b8, 8);
-        func_ov065_022679f8(ctx, buf, 1);
-        func_ov065_022679f8(ctx, buf + 3, 2);
-        func_ov065_022679f8(ctx, buf + 5, len);
-        func_ov065_022679a4(ctx, digest);
-        func_ov065_02267a84(ctx);
-        func_ov065_022679f8(ctx, st->unk_1a8, 0x14);
+        SslSha1_Update(ctx, pad, 0x28);
+        SslSha1_Update(ctx, st->unk_2b8, 8);
+        SslSha1_Update(ctx, buf, 1);
+        SslSha1_Update(ctx, buf + 3, 2);
+        SslSha1_Update(ctx, buf + 5, len);
+        SslSha1_Final(ctx, digest);
+        SslSha1_Init(ctx);
+        SslSha1_Update(ctx, st->unk_1a8, 0x14);
         MI_CpuFill8(pad, 0x5c, 0x28);
-        func_ov065_022679f8(ctx, pad, 0x28);
-        func_ov065_022679f8(ctx, digest, 0x14);
-        func_ov065_022679a4(ctx, digest);
+        SslSha1_Update(ctx, pad, 0x28);
+        SslSha1_Update(ctx, digest, 0x14);
+        SslSha1_Final(ctx, digest);
         n = 0x14;
         break;
     }
     if (memcmp(buf + 5 + len, digest, n) != 0) {
         st->unk_429 = 9;
     }
-    func_ov065_022660f4(st->unk_2b8 + 8);
+    Ssl_IncrementSeqNum(st->unk_2b8 + 8);
     return len + 5;
 }
 
-s32 func_ov065_02265dac(St *st, u8 *buf) {
+s32 Ssl_EncryptRecord(St *st, u8 *buf) {
     u8 *mac = 0;
     u8 pad[0x30];
     s32 len;
@@ -1003,55 +1003,55 @@ s32 func_ov065_02265dac(St *st, u8 *buf) {
     switch (st->unk_06) {
     case 4:
         ctx = st->unk_3d0;
-        func_ov065_0226750c(ctx);
-        func_ov065_02267480(ctx, st->unk_90, 0x10);
+        SslMd5_Init(ctx);
+        SslMd5_Update(ctx, st->unk_90, 0x10);
         MI_CpuFill8(pad, 0x36, 0x30);
-        func_ov065_02267480(ctx, pad, 0x30);
-        func_ov065_02267480(ctx, st->unk_1a0, 8);
-        func_ov065_02267480(ctx, buf, 1);
-        func_ov065_02267480(ctx, buf + 3, 2);
-        func_ov065_02267480(ctx, buf + 5, len);
-        func_ov065_0226742c(ctx, mac);
-        func_ov065_0226750c(ctx);
-        func_ov065_02267480(ctx, st->unk_90, 0x10);
+        SslMd5_Update(ctx, pad, 0x30);
+        SslMd5_Update(ctx, st->unk_1a0, 8);
+        SslMd5_Update(ctx, buf, 1);
+        SslMd5_Update(ctx, buf + 3, 2);
+        SslMd5_Update(ctx, buf + 5, len);
+        SslMd5_Final(ctx, mac);
+        SslMd5_Init(ctx);
+        SslMd5_Update(ctx, st->unk_90, 0x10);
         MI_CpuFill8(pad, 0x5c, 0x30);
-        func_ov065_02267480(ctx, pad, 0x30);
-        func_ov065_02267480(ctx, mac, 0x10);
-        func_ov065_0226742c(ctx, mac);
+        SslMd5_Update(ctx, pad, 0x30);
+        SslMd5_Update(ctx, mac, 0x10);
+        SslMd5_Final(ctx, mac);
         len += 0x10;
         break;
     case 5:
         ctx = st->unk_31c;
-        func_ov065_02267a84(ctx);
-        func_ov065_022679f8(ctx, st->unk_90, 0x14);
+        SslSha1_Init(ctx);
+        SslSha1_Update(ctx, st->unk_90, 0x14);
         MI_CpuFill8(pad, 0x36, 0x28);
-        func_ov065_022679f8(ctx, pad, 0x28);
-        func_ov065_022679f8(ctx, st->unk_1a0, 8);
-        func_ov065_022679f8(ctx, buf, 1);
-        func_ov065_022679f8(ctx, buf + 3, 2);
-        func_ov065_022679f8(ctx, buf + 5, len);
-        func_ov065_022679a4(ctx, mac);
-        func_ov065_02267a84(ctx);
-        func_ov065_022679f8(ctx, st->unk_90, 0x14);
+        SslSha1_Update(ctx, pad, 0x28);
+        SslSha1_Update(ctx, st->unk_1a0, 8);
+        SslSha1_Update(ctx, buf, 1);
+        SslSha1_Update(ctx, buf + 3, 2);
+        SslSha1_Update(ctx, buf + 5, len);
+        SslSha1_Final(ctx, mac);
+        SslSha1_Init(ctx);
+        SslSha1_Update(ctx, st->unk_90, 0x14);
         MI_CpuFill8(pad, 0x5c, 0x28);
-        func_ov065_022679f8(ctx, pad, 0x28);
-        func_ov065_022679f8(ctx, mac, 0x14);
-        func_ov065_022679a4(ctx, mac);
+        SslSha1_Update(ctx, pad, 0x28);
+        SslSha1_Update(ctx, mac, 0x14);
+        SslSha1_Final(ctx, mac);
         len += 0x14;
         break;
     }
     buf[3] = len >> 8;
     buf[4] = len;
-    func_ov065_0226813c(st->unk_9c, buf + 5, len);
-    func_ov065_022660f4(st->unk_1a0 + 8);
+    SslRc4_Crypt(st->unk_9c, buf + 5, len);
+    Ssl_IncrementSeqNum(st->unk_1a0 + 8);
     return len + 5;
 }
 
-s32 func_ov065_02265d5c(u8 *dst, s32 n, Sess *s) {
+s32 Ssl_ReadExact(u8 *dst, s32 n, Sess *s) {
     u32 len;
     u8 *p;
     do {
-        p = func_ov065_02262708(&len, s);
+        p = Tcp_Read(&len, s);
         if (len == 0) {
             return -1;
         }
@@ -1059,14 +1059,14 @@ s32 func_ov065_02265d5c(u8 *dst, s32 n, Sess *s) {
             len = n;
         }
         MI_CpuCopy8(p, dst, len);
-        func_ov065_02262670(len, s);
+        Tcp_Consume(len, s);
         dst += len;
         n -= len;
     } while (n > 0);
     return 0;
 }
 
-void func_ov065_02265b9c(St *st, u8 *buf) {
+void Ssl_ProcessRecord(St *st, u8 *buf) {
     u32 len;
     u32 type;
     u8 *p;
@@ -1075,13 +1075,13 @@ void func_ov065_02265b9c(St *st, u8 *buf) {
     u32 n4;
 
     if (st->unk_429 == 9) {
-        data_ov065_0228ebd0(buf);
+        sIpFree(buf);
         return;
     }
     type = buf[0];
     len = (buf[3] << 8) + buf[4] + 5;
     if ((((u8)(st->unk_429 + 0xf9) <= 1) && type != 0x15) || (type == 0x15 && len > 7)) {
-        len = func_ov065_02265f38(st, buf);
+        len = Ssl_DecryptRecord(st, buf);
     }
     p = buf + 5;
     len -= 5;
@@ -1116,30 +1116,30 @@ void func_ov065_02265b9c(St *st, u8 *buf) {
             goto dflt;
         c1:
             if (st->unk_428 != 0 && st->unk_429 == 0) {
-                func_ov065_02266744(st, p);
+                Ssl_HandleClientHello(st, p);
             }
             goto join;
         c16:
-            func_ov065_02266308(st, p);
+            Ssl_HandleClientKeyExchange(st, p);
             goto join;
         c2:
-            func_ov065_022668cc(st, p);
+            Ssl_HandleServerHello(st, p);
             goto join;
         c11:
-            func_ov065_02266948(st, p);
+            Ssl_HandleCertificate(st, p);
             goto join;
         c14:
             st->unk_429 = 4;
             goto join;
         c20:
-            func_ov065_02266110(st, p);
+            Ssl_HandleFinished(st, p);
             goto join;
         dflt:
             st->unk_429 = 9;
         join:
             n4 = n + 4;
-            func_ov065_022679f8(st->unk_2c0, p - 4, n4);
-            func_ov065_02267480(st->unk_378, p - 4, n4);
+            SslSha1_Update(st->unk_2c0, p - 4, n4);
+            SslMd5_Update(st->unk_378, p - 4, n4);
             p += n;
             len -= n + 4;
             if (len == 0) {
@@ -1157,17 +1157,17 @@ void func_ov065_02265b9c(St *st, u8 *buf) {
         st->unk_429 = 9;
         break;
     }
-    data_ov065_0228ebd0(buf);
+    sIpFree(buf);
 }
 
-u8 func_ov065_02265a5c(Sess *s) {
+u8 Ssl_ReadRecord(Sess *s) {
     St *st = s->unk_0c;
     u32 len;
     u8 *p;
     u8 *buf;
 
     do {
-        p = func_ov065_02262708(&len, s);
+        p = Tcp_Read(&len, s);
         if (len == 0) {
             st->unk_429 = 9;
             return 9;
@@ -1177,20 +1177,20 @@ u8 func_ov065_02265a5c(Sess *s) {
     if (p[0] == 0x80) {
         if (st->unk_428 != 0 && st->unk_429 == 0) {
             len = p[1];
-            func_ov065_02262670(2, s);
-            buf = (u8 *)data_ov065_0228ebc8(len);
+            Tcp_Consume(2, s);
+            buf = (u8 *)sIpAlloc(len);
             if (buf == 0) {
                 st->unk_429 = 9;
                 return 9;
             }
-            if (func_ov065_02265d5c(buf, len, s) == 0 && buf[0] == 1) {
-                func_ov065_022667b0(st, buf + 1);
+            if (Ssl_ReadExact(buf, len, s) == 0 && buf[0] == 1) {
+                Ssl_HandleClientHelloV2(st, buf + 1);
             } else {
                 st->unk_429 = 9;
             }
-            func_ov065_022679f8(st->unk_2c0, buf, len);
-            func_ov065_02267480(st->unk_378, buf, len);
-            data_ov065_0228ebd0(buf);
+            SslSha1_Update(st->unk_2c0, buf, len);
+            SslMd5_Update(st->unk_378, buf, len);
+            sIpFree(buf);
         } else {
             st->unk_429 = 9;
         }
@@ -1200,17 +1200,17 @@ u8 func_ov065_02265a5c(Sess *s) {
             st->unk_429 = 9;
             return 9;
         }
-        buf = (u8 *)data_ov065_0228ebc8(len);
+        buf = (u8 *)sIpAlloc(len);
         if (buf == 0) {
             st->unk_429 = 9;
             return 9;
         }
-        if (func_ov065_02265d5c(buf, len, s) != 0) {
-            data_ov065_0228ebd0(buf);
+        if (Ssl_ReadExact(buf, len, s) != 0) {
+            sIpFree(buf);
             st->unk_429 = 9;
             return 9;
         }
-        func_ov065_02265b9c(st, buf);
+        Ssl_ProcessRecord(st, buf);
     }
     return st->unk_429;
 }
@@ -1298,14 +1298,14 @@ typedef Unk_ov065_02265130_Sess Sess;
 typedef Unk_ov065_02265130_Ctx Ctx;
 
 extern "C" {
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(void *);
-extern u32 data_ov065_0228b440;
-extern u16 data_ov065_0228b44c[2];
-extern Unk_ov065_0226599c_Rng data_ov065_0228ec04;
-extern u32 data_ov065_022903c4;
-extern u8 data_ov065_022903c8[20];
-extern u8 data_ov065_022903c0;
+extern void *(*sIpAlloc)(u32);
+extern void (*sIpFree)(void *);
+extern u32 gSslRsaThreadPriority;
+extern u16 sSslCipherSuites[2];
+extern Unk_ov065_0226599c_Rng sIpRandState;
+extern u32 sSslSessionIdCounter;
+extern u8 sSslRandPool[20];
+extern u8 sSslRandSeeded;
 extern Unk_ov065_02265334_Os data_021fcc2c;
 
 // main module
@@ -1319,52 +1319,52 @@ u32 OS_GetThreadPriority(u32);
 void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
-s32 func_ov065_022628ac(Sess *);
-void func_ov065_02262968(Sess *);
-void func_ov065_02262804(Sess *);
-u32 func_ov065_0226242c(u8 *, u32, u8 *, u32, Sess *);
-void func_ov065_02267a84(void *);
-void func_ov065_0226750c(void *);
-void func_ov065_02267480(void *, u8 *, u32);
-void func_ov065_022679f8(void *, u8 *, u32);
-void func_ov065_022679a4(void *, void *);
-void func_ov065_0226797c(void *, void *);
-u32 func_ov065_02267314();
-u32 func_ov065_02267394(u32, u32);
-u32 func_ov065_0226733c(u8 *);
-void func_ov065_02266338(Ctx *);
-void func_ov065_0226650c(Ctx *);
-void func_ov065_02266264(Ctx *, u8 *, u32);
-void func_ov065_022661c0(Ctx *, u8 *, u32);
-void func_ov065_02268210(u16 *, void *, s32, s32);
-void func_ov065_02268540(u16 *, u16 *, u16 *, s32, u16 *);
-s32 func_ov065_02265a5c(Sess *);
-s32 func_ov065_02265dac(Ctx *, u8 *);
+s32 Tcp_Connect(Sess *);
+void Tcp_Listen(Sess *);
+void Tcp_Shutdown(Sess *);
+u32 Tcp_Write(u8 *, u32, u8 *, u32, Sess *);
+void SslSha1_Init(void *);
+void SslMd5_Init(void *);
+void SslMd5_Update(void *, u8 *, u32);
+void SslSha1_Update(void *, u8 *, u32);
+void SslSha1_Final(void *, void *);
+void SslSha1_FinalRaw(void *, void *);
+u32 Ssl_GetUnixTime();
+u32 SslSession_FindByPeer(u32, u32);
+u32 SslSession_Add(u8 *);
+void Ssl_DeriveKeyBlock(Ctx *);
+void Ssl_DeriveMasterSecret(Ctx *);
+void Ssl_CalcFinishedMd5(Ctx *, u8 *, u32);
+void Ssl_CalcFinishedSha1(Ctx *, u8 *, u32);
+void SslBigNum_FromBytes(u16 *, void *, s32, s32);
+void SslBigNum_ModExp(u16 *, u16 *, u16 *, s32, u16 *);
+s32 Ssl_ReadRecord(Sess *);
+s32 Ssl_EncryptRecord(Ctx *, u8 *);
 
 // in range
-s32 func_ov065_02265130(Sess *);
-s32 func_ov065_02265188(Sess *);
-void func_ov065_02265228(Sess *);
-s32 func_ov065_02265294(Sess *);
-s32 func_ov065_02265304(Sess *);
-void func_ov065_02265334(Sess *);
-void func_ov065_0226555c(Sess *);
-void func_ov065_02265680(Sess *);
-s32 func_ov065_02265794(Sess *);
-void func_ov065_02265950(u8 *, u32);
-void func_ov065_0226599c(u8 *, s32);
+s32 Ssl_Connect(Sess *);
+s32 Ssl_ClientHandshake(Sess *);
+void Ssl_Accept(Sess *);
+s32 Ssl_ServerHandshake(Sess *);
+s32 Ssl_WaitPeerFinished(Sess *);
+void Ssl_SendClientKeyExchange(Sess *);
+void Ssl_SendClientHello(Sess *);
+void Ssl_SendFinished(Sess *);
+s32 Ssl_SendServerHello(Sess *);
+void SslRand_AddSeed(u8 *, u32);
+void SslRand_GetNonZeroBytes(u8 *, s32);
 
-void func_ov065_0226599c(u8 *out, s32 n) {
+void SslRand_GetNonZeroBytes(u8 *out, s32 n) {
     u32 seed;
     u8 buf[20];
     Unk_ov065_02265130_Hash h;
     s32 i;
     s32 j;
     u32 z;
-    if (data_ov065_022903c0 == 0) {
-        data_ov065_0228ec04.unk_00 = data_ov065_0228ec04.unk_10 + _ll_mul(data_ov065_0228ec04.unk_08, data_ov065_0228ec04.unk_00);
-        seed = (u32)(data_ov065_0228ec04.unk_00 >> 32);
-        func_ov065_02265950((u8 *)&seed, 4);
+    if (sSslRandSeeded == 0) {
+        sIpRandState.unk_00 = sIpRandState.unk_10 + _ll_mul(sIpRandState.unk_08, sIpRandState.unk_00);
+        seed = (u32)(sIpRandState.unk_00 >> 32);
+        SslRand_AddSeed((u8 *)&seed, 4);
     }
     j = 0x14;
     i = 0;
@@ -1376,14 +1376,14 @@ void func_ov065_0226599c(u8 *out, s32 n) {
             u8 *b;
             u8 *a;
             u32 v;
-            func_ov065_02267a84(&h);
+            SslSha1_Init(&h);
             th = OS_DisableInterrupts();
-            func_ov065_022679f8(&h, data_ov065_022903c8, 0x14);
-            func_ov065_0226797c(&h, buf);
+            SslSha1_Update(&h, sSslRandPool, 0x14);
+            SslSha1_FinalRaw(&h, buf);
             c = 1;
             k = 0x13;
             b = buf + 0x13;
-            a = data_ov065_022903c8 + 0x13;
+            a = sSslRandPool + 0x13;
             for (; k >= 0; k--) {
                 v = *a + *b + c;
                 *a = v;
@@ -1403,19 +1403,19 @@ void func_ov065_0226599c(u8 *out, s32 n) {
     }
 }
 
-void func_ov065_02265950(u8 *p, u32 n) {
+void SslRand_AddSeed(u8 *p, u32 n) {
     Unk_ov065_02265130_Hash h;
     u32 th;
-    func_ov065_02267a84(&h);
+    SslSha1_Init(&h);
     th = OS_DisableInterrupts();
-    func_ov065_022679f8(&h, data_ov065_022903c8, 0x14);
-    func_ov065_022679f8(&h, p, n);
-    func_ov065_022679a4(&h, data_ov065_022903c8);
+    SslSha1_Update(&h, sSslRandPool, 0x14);
+    SslSha1_Update(&h, p, n);
+    SslSha1_Final(&h, sSslRandPool);
     OS_RestoreInterrupts(th);
-    data_ov065_022903c0 = 1;
+    sSslRandSeeded = 1;
 }
 
-s32 func_ov065_02265794(Sess *s) {
+s32 Ssl_SendServerHello(Sess *s) {
     Ctx *ctx = s->unk_0c;
     Unk_ov065_02265130_Cert *cert = ctx->unk_7f4;
     s32 cl;
@@ -1428,13 +1428,13 @@ s32 func_ov065_02265794(Sess *s) {
     } else {
         cl = 0;
     }
-    t = func_ov065_02267314();
+    t = Ssl_GetUnixTime();
     ctx->unk_28[0] = t >> 24;
     ctx->unk_28[1] = t >> 16;
     ctx->unk_28[2] = t >> 8;
     ctx->unk_28[3] = t;
-    func_ov065_0226599c(ctx->unk_2c, 0x1c);
-    buf = (u8 *)data_ov065_0228ebc8(cl + 0x9d);
+    SslRand_GetNonZeroBytes(ctx->unk_2c, 0x1c);
+    buf = (u8 *)sIpAlloc(cl + 0x9d);
     if (buf == 0) {
         ctx->unk_429 = 9;
         return 1;
@@ -1453,15 +1453,15 @@ s32 func_ov065_02265794(Sess *s) {
         q += 0x47;
         ctx->unk_04 = 1;
     } else {
-        func_ov065_0226599c(q + 0x27, 0x1c);
-        t = data_ov065_022903c4;
+        SslRand_GetNonZeroBytes(q + 0x27, 0x1c);
+        t = sSslSessionIdCounter;
         q[0x43] = t >> 24;
         q[0x44] = t >> 16;
         q[0x45] = t >> 8;
         q += 0x46;
         *q++ = t;
-        ctx->unk_00 = (Unk_ov065_02265130_Pms *)func_ov065_0226733c(q - 0x20);
-        data_ov065_022903c4++;
+        ctx->unk_00 = (Unk_ov065_02265130_Pms *)SslSession_Add(q - 0x20);
+        sSslSessionIdCounter++;
         ctx->unk_04 = 0;
     }
     q[0] = ctx->unk_06 >> 8;
@@ -1496,17 +1496,17 @@ s32 func_ov065_02265794(Sess *s) {
     buf[2] = 0;
     buf[3] = len >> 8;
     buf[4] = len;
-    func_ov065_022679f8(ctx->unk_2c0, buf + 5, len);
-    func_ov065_02267480(ctx->unk_378, buf + 5, len);
-    func_ov065_0226242c(buf, len + 5, 0, 0, s);
-    data_ov065_0228ebd0(buf);
+    SslSha1_Update(ctx->unk_2c0, buf + 5, len);
+    SslMd5_Update(ctx->unk_378, buf + 5, len);
+    Tcp_Write(buf, len + 5, 0, 0, s);
+    sIpFree(buf);
     return ctx->unk_04;
 }
 
-void func_ov065_02265680(Sess *s) {
+void Ssl_SendFinished(Sess *s) {
     Ctx *ctx = s->unk_0c;
     u8 *b;
-    b = (u8 *)data_ov065_0228ebc8(0x83);
+    b = (u8 *)sIpAlloc(0x83);
     if (b == 0) {
         ctx->unk_429 = 9;
         return;
@@ -1528,18 +1528,18 @@ void func_ov065_02265680(Sess *s) {
     b[13] = 0;
     b[14] = 0x24;
     MI_CpuCopy8(ctx->unk_378, ctx->unk_3d0, 0x58);
-    func_ov065_02266264(ctx, b + 0xf, 0);
+    Ssl_CalcFinishedMd5(ctx, b + 0xf, 0);
     MI_CpuCopy8(ctx->unk_3d0, ctx->unk_378, 0x58);
     MI_CpuCopy8(ctx->unk_2c0, ctx->unk_31c, 0x5c);
-    func_ov065_022661c0(ctx, b + 0x1f, 0);
+    Ssl_CalcFinishedSha1(ctx, b + 0x1f, 0);
     MI_CpuCopy8(ctx->unk_31c, ctx->unk_2c0, 0x5c);
-    func_ov065_022679f8(ctx->unk_2c0, b + 0xb, 0x28);
-    func_ov065_02267480(ctx->unk_378, b + 0xb, 0x28);
-    func_ov065_0226242c(b, func_ov065_02265dac(ctx, b + 6) + 6, 0, 0, s);
-    data_ov065_0228ebd0(b);
+    SslSha1_Update(ctx->unk_2c0, b + 0xb, 0x28);
+    SslMd5_Update(ctx->unk_378, b + 0xb, 0x28);
+    Tcp_Write(b, Ssl_EncryptRecord(ctx, b + 6) + 6, 0, 0, s);
+    sIpFree(b);
 }
 
-void func_ov065_0226555c(Sess *s) {
+void Ssl_SendClientHello(Sess *s) {
     Ctx *ctx = s->unk_0c;
     u8 *buf;
     u8 *q;
@@ -1547,7 +1547,7 @@ void func_ov065_0226555c(Sess *s) {
     s32 len;
     u32 i;
     u16 *tp;
-    buf = (u8 *)data_ov065_0228ebc8(0x98);
+    buf = (u8 *)sIpAlloc(0x98);
     if (buf == 0) {
         ctx->unk_429 = 9;
         return;
@@ -1555,14 +1555,14 @@ void func_ov065_0226555c(Sess *s) {
     q = buf + 9;
     buf[9] = 3;
     q[1] = 0;
-    t = func_ov065_02267314();
+    t = Ssl_GetUnixTime();
     ctx->unk_08[0] = t >> 24;
     ctx->unk_08[1] = t >> 16;
     ctx->unk_08[2] = t >> 8;
     ctx->unk_08[3] = t;
-    func_ov065_0226599c(&ctx->unk_08[4], 0x1c);
+    SslRand_GetNonZeroBytes(&ctx->unk_08[4], 0x1c);
     MI_CpuCopy8(ctx->unk_08, q + 2, 0x20);
-    ctx->unk_00 = (Unk_ov065_02265130_Pms *)func_ov065_02267394(s->unk_1c, s->unk_18);
+    ctx->unk_00 = (Unk_ov065_02265130_Pms *)SslSession_FindByPeer(s->unk_1c, s->unk_18);
     if (ctx->unk_00) {
         q[0x22] = 0x20;
         MI_CpuCopy8(ctx->unk_00, q + 0x23, 0x20);
@@ -1574,7 +1574,7 @@ void func_ov065_0226555c(Sess *s) {
     i = 0;
     *q++ = 0;
     *q++ = 4;
-    tp = data_ov065_0228b44c;
+    tp = sSslCipherSuites;
     for (; i < 2; i++) {
         *q++ = *tp >> 8;
         *q++ = *tp;
@@ -1593,13 +1593,13 @@ void func_ov065_0226555c(Sess *s) {
     buf[6] = (len - 4) >> 16;
     buf[7] = (len - 4) >> 8;
     buf[8] = len - 4;
-    func_ov065_0226242c(buf, len + 5, 0, 0, s);
-    func_ov065_02267480(ctx->unk_378, buf + 5, len);
-    func_ov065_022679f8(ctx->unk_2c0, buf + 5, len);
-    data_ov065_0228ebd0(buf);
+    Tcp_Write(buf, len + 5, 0, 0, s);
+    SslMd5_Update(ctx->unk_378, buf + 5, len);
+    SslSha1_Update(ctx->unk_2c0, buf + 5, len);
+    sIpFree(buf);
 }
 
-void func_ov065_02265334(Sess *s) {
+void Ssl_SendClientKeyExchange(Sess *s) {
     Ctx *ctx = s->unk_0c;
     s32 n;
     s32 cnt;
@@ -1612,44 +1612,44 @@ void func_ov065_02265334(Sess *s) {
     u8 *q;
     ctx->unk_00->unk_20 = 3;
     ctx->unk_00->unk_21 = 0;
-    func_ov065_0226599c(ctx->unk_00->unk_22, 0x2e);
+    SslRand_GetNonZeroBytes(ctx->unk_00->unk_22, 0x2e);
     n = ctx->unk_568;
     cnt = _s32_div_f(n * 2, 2);
-    buf1 = (u8 *)data_ov065_0228ebc8(n);
+    buf1 = (u8 *)sIpAlloc(n);
     if (buf1 == 0) {
         ctx->unk_429 = 9;
         return;
     }
     buf1[0] = 0;
     buf1[1] = 2;
-    func_ov065_0226599c(buf1 + 2, n - 0x33);
+    SslRand_GetNonZeroBytes(buf1 + 2, n - 0x33);
     buf1[n - 0x31] = 0;
     MI_CpuCopy8(&ctx->unk_00->unk_20, buf1 + n - 0x30, 0x30);
-    p0 = (u16 *)data_ov065_0228ebc8(cnt * 8);
+    p0 = (u16 *)sIpAlloc(cnt * 8);
     if (p0 == 0) {
-        data_ov065_0228ebd0(buf1);
+        sIpFree(buf1);
         ctx->unk_429 = 9;
         return;
     }
     p1 = p0 + cnt;
     p2 = p1 + cnt;
     p3 = p2 + cnt;
-    func_ov065_02268210(p1, buf1, n, cnt);
-    func_ov065_02268210(p2, ctx->unk_56c, ctx->unk_574, cnt);
-    func_ov065_02268210(p3, ctx->unk_468, n, cnt);
-    if (data_ov065_0228b440 < 0x20) {
+    SslBigNum_FromBytes(p1, buf1, n, cnt);
+    SslBigNum_FromBytes(p2, ctx->unk_56c, ctx->unk_574, cnt);
+    SslBigNum_FromBytes(p3, ctx->unk_468, n, cnt);
+    if (gSslRsaThreadPriority < 0x20) {
         u32 th = data_021fcc2c.unk_04;
         u32 pr = OS_GetThreadPriority(th);
-        OS_SetThreadPriority(th, data_ov065_0228b440);
-        func_ov065_02268540(p0, p1, p2, cnt, p3);
+        OS_SetThreadPriority(th, gSslRsaThreadPriority);
+        SslBigNum_ModExp(p0, p1, p2, cnt, p3);
         OS_SetThreadPriority(th, pr);
     } else {
-        func_ov065_02268540(p0, p1, p2, cnt, p3);
+        SslBigNum_ModExp(p0, p1, p2, cnt, p3);
     }
-    buf2 = (u8 *)data_ov065_0228ebc8(n + 0x49);
+    buf2 = (u8 *)sIpAlloc(n + 0x49);
     if (buf2 == 0) {
-        data_ov065_0228ebd0(buf1);
-        data_ov065_0228ebd0(p0);
+        sIpFree(buf1);
+        sIpFree(p0);
         ctx->unk_429 = 9;
         return;
     }
@@ -1681,88 +1681,88 @@ void func_ov065_02265334(Sess *s) {
             } while (i >= 0);
         }
     }
-    func_ov065_0226242c(buf2, n + 9, 0, 0, s);
-    func_ov065_02267480(ctx->unk_378, buf2 + 5, (u32)n + 4);
-    func_ov065_022679f8(ctx->unk_2c0, buf2 + 5, n + 4);
-    data_ov065_0228ebd0(buf2);
-    data_ov065_0228ebd0(p0);
-    data_ov065_0228ebd0(buf1);
+    Tcp_Write(buf2, n + 9, 0, 0, s);
+    SslMd5_Update(ctx->unk_378, buf2 + 5, (u32)n + 4);
+    SslSha1_Update(ctx->unk_2c0, buf2 + 5, n + 4);
+    sIpFree(buf2);
+    sIpFree(p0);
+    sIpFree(buf1);
 }
 
-s32 func_ov065_02265304(Sess *s) {
-    if (func_ov065_02265a5c(s) != 7) {
+s32 Ssl_WaitPeerFinished(Sess *s) {
+    if (Ssl_ReadRecord(s) != 7) {
         return 1;
     }
-    if (func_ov065_02265a5c(s) != 6) {
+    if (Ssl_ReadRecord(s) != 6) {
         return 1;
     }
     return 0;
 }
 
-s32 func_ov065_02265294(Sess *s) {
-    if (func_ov065_02265a5c(s) != 1) {
+s32 Ssl_ServerHandshake(Sess *s) {
+    if (Ssl_ReadRecord(s) != 1) {
         return 1;
     }
-    if (func_ov065_02265794(s)) {
-        func_ov065_02266338(s->unk_0c);
-        func_ov065_02265680(s);
-        if (func_ov065_02265304(s)) {
+    if (Ssl_SendServerHello(s)) {
+        Ssl_DeriveKeyBlock(s->unk_0c);
+        Ssl_SendFinished(s);
+        if (Ssl_WaitPeerFinished(s)) {
             return 1;
         }
     } else {
-        if (func_ov065_02265a5c(s) != 5) {
+        if (Ssl_ReadRecord(s) != 5) {
             return 1;
         }
-        if (func_ov065_02265304(s)) {
+        if (Ssl_WaitPeerFinished(s)) {
             return 1;
         }
-        func_ov065_02265680(s);
+        Ssl_SendFinished(s);
     }
     return 0;
 }
 
-void func_ov065_02265228(Sess *s) {
+void Ssl_Accept(Sess *s) {
     Ctx *ctx = s->unk_0c;
     for (;;) {
-        func_ov065_02262968(s);
+        Tcp_Listen(s);
         ctx->unk_429 = 0;
         ctx->unk_428 = 1;
-        func_ov065_02267a84(ctx->unk_2c0);
-        func_ov065_0226750c(ctx->unk_378);
-        if (func_ov065_02265294(s) == 0) {
+        SslSha1_Init(ctx->unk_2c0);
+        SslMd5_Init(ctx->unk_378);
+        if (Ssl_ServerHandshake(s) == 0) {
             ctx->unk_429 = 8;
             return;
         }
-        func_ov065_02262804(s);
+        Tcp_Shutdown(s);
         s->unk_18 = s->unk_1a;
         s->unk_1c = s->unk_20;
     }
 }
 
-s32 func_ov065_02265188(Sess *s) {
+s32 Ssl_ClientHandshake(Sess *s) {
     Ctx *ctx = s->unk_0c;
     s32 r;
-    func_ov065_0226555c(s);
+    Ssl_SendClientHello(s);
     do {
-        r = func_ov065_02265a5c(s);
+        r = Ssl_ReadRecord(s);
         if (r == 9) {
             return 1;
         }
     } while (r != 4 && ctx->unk_04 == 0);
     if (ctx->unk_04 != 0) {
-        func_ov065_02266338(ctx);
-        if (func_ov065_02265304(s)) {
+        Ssl_DeriveKeyBlock(ctx);
+        if (Ssl_WaitPeerFinished(s)) {
             return 1;
         }
-        func_ov065_02265680(s);
+        Ssl_SendFinished(s);
     } else {
         ctx->unk_00->unk_54 = s->unk_1c;
         ctx->unk_00->unk_58 = s->unk_18;
-        func_ov065_02265334(s);
-        func_ov065_0226650c(ctx);
-        func_ov065_02266338(ctx);
-        func_ov065_02265680(s);
-        if (func_ov065_02265304(s)) {
+        Ssl_SendClientKeyExchange(s);
+        Ssl_DeriveMasterSecret(ctx);
+        Ssl_DeriveKeyBlock(ctx);
+        Ssl_SendFinished(s);
+        if (Ssl_WaitPeerFinished(s)) {
             return 1;
         }
     }
@@ -1770,18 +1770,18 @@ s32 func_ov065_02265188(Sess *s) {
     return 0;
 }
 
-s32 func_ov065_02265130(Sess *s) {
+s32 Ssl_Connect(Sess *s) {
     Ctx *ctx = s->unk_0c;
     if (s->unk_08 != 4) {
-        if (func_ov065_022628ac(s)) {
+        if (Tcp_Connect(s)) {
             return 1;
         }
     }
     ctx->unk_429 = 0;
     ctx->unk_428 = 0;
-    func_ov065_02267a84(ctx->unk_2c0);
-    func_ov065_0226750c(ctx->unk_378);
-    return func_ov065_02265188(s);
+    SslSha1_Init(ctx->unk_2c0);
+    SslMd5_Init(ctx->unk_378);
+    return Ssl_ClientHandshake(s);
 }
 }
 
@@ -1871,50 +1871,50 @@ struct Unk_ov065_02264d80_Obj {
 };
 
 extern "C" {
-extern u32 data_ov065_0228ebc0;
-extern u32 data_ov065_0228eba4;
-extern u32 data_ov065_0228ebd8;
-extern u32 data_ov065_0228b41c;
-extern u8 data_ov065_0228ee40[];
-extern u8 data_ov065_0228ed80[];
-extern u32 data_ov065_0228ebe4;
-extern u32 data_ov065_0228ebe8;
-extern u32 data_ov065_0228ebec;
-extern void (*data_ov065_0228ebcc)(void);
-extern u32 data_ov065_0228ebd4;
-extern u32 data_ov065_0228eba0;
-extern u32 data_ov065_0228ebfc[2];
-extern u32 data_ov065_0228ebb0;
-extern u8 data_ov065_0228ec58[];
+extern u32 sGateway;
+extern u32 sNetmask;
+extern u32 gOwnIp;
+extern u32 sIpThreadPriority;
+extern u8 sIpRecvThread[];
+extern u8 sIpTimerThread[];
+extern u32 sRecvRingWaiter;
+extern u32 sRecvRingBuf;
+extern u32 sRecvRingSize;
+extern void (*sIpIdleCallback)(void);
+extern u32 sIpTimerStopRequest;
+extern u32 sIpStackStatus;
+extern u32 sDnsServers[2];
+extern u32 sDhcpServerId;
+extern u8 sArpCache[];
 extern Unk_ov065_02264c44_Info data_021fcc2c;
-extern Unk_ov065_02264c44_Ent data_ov065_0228f200[8];
-extern void (*data_ov065_0228ebd0)(void *);
-extern u32 data_ov065_0228ebb4;
-extern Unk_ov065_02264d24_Ent data_ov065_02290438[4];
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void *(*data_ov065_0228eba8)(void);
-extern s32 (*data_ov065_0228ebac)(void);
-extern u32 data_ov065_0228ebbc;
-extern u16 data_ov065_0228eb94;
-extern u32 data_ov065_0228ebe0;
-extern u32 data_ov065_0228ebf0;
-extern u32 data_ov065_0228ebb8;
-extern u16 data_ov065_0228eb98;
-extern u8 data_ov065_0228ebf4[];
-extern u8 data_ov065_0228eb8c;
-extern Unk_ov065_02264a48_Rng data_ov065_0228ec04;
-extern u8 data_ov065_022903c0[];
-extern u8 data_ov065_0228fbc0[];
+extern Unk_ov065_02264c44_Ent sIpFragTable[8];
+extern void (*sIpFree)(void *);
+extern u32 sIpYieldMode;
+extern Unk_ov065_02264d24_Ent sSslSessionCache[4];
+extern void *(*sIpAlloc)(u32);
+extern void *(*sAddrConfiguredCallback)(void);
+extern s32 (*sIpLinkCheckCallback)(void);
+extern u32 sIpStackFlags;
+extern u16 sMss;
+extern u32 sDhcpRequestedIp;
+extern u32 sRecvRingRead;
+extern u32 sRecvRingWrite;
+extern u16 sNextEphemeralPort;
+extern u8 sOwnMac[];
+extern u8 sArpConflict;
+extern Unk_ov065_02264a48_Rng sIpRandState;
+extern u8 sSslRandSeeded[];
+extern u8 sIpRecvThreadStack[];
 
-void func_ov065_02262ae4(void);
-void func_ov065_02261fd8(void);
-u32 func_ov065_02265dac(void *, void *);
-u32 func_ov065_0226242c(void *, u32, u32, u32, Unk_ov065_02264d80_Obj *);
-u8 *func_ov065_02262708(u32 *, Unk_ov065_02264d80_Obj *);
-void func_ov065_02262670(u32, Unk_ov065_02264d80_Obj *);
-void func_ov065_02265b9c(void *, void *);
-s32 func_ov065_02265d5c(void *, u32, Unk_ov065_02264d80_Obj *);
-s32 func_ov065_02265a5c(Unk_ov065_02264d80_Obj *);
+void IpStack_RecvThreadMain(void);
+void IpStack_TimerThreadMain(void);
+u32 Ssl_EncryptRecord(void *, void *);
+u32 Tcp_Write(void *, u32, u32, u32, Unk_ov065_02264d80_Obj *);
+u8 *Tcp_Read(u32 *, Unk_ov065_02264d80_Obj *);
+void Tcp_Consume(u32, Unk_ov065_02264d80_Obj *);
+void Ssl_ProcessRecord(void *, void *);
+s32 Ssl_ReadExact(void *, u32, Unk_ov065_02264d80_Obj *);
+s32 Ssl_ReadRecord(Unk_ov065_02264d80_Obj *);
 
 u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
@@ -1932,29 +1932,29 @@ void OS_GetMacAddress(void *);
 void *MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 
-u32 func_ov065_02264900(u8 *p, u32 len, u32 sum);
-s32 func_ov065_02264848(u32 a);
-void func_ov065_02264c44(u32 a);
-s32 func_ov065_02264a08(void);
-void func_ov065_02264d0c(void);
-void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o);
-s32 func_ov065_02264c18(void);
-void func_ov065_02264c1c(void);
+u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum);
+s32 Ip_IsOnLocalNet(u32 a);
+void IpStack_ResetAddress(u32 a);
+s32 IpStack_RequestStop(void);
+void Ssl_ClearSessionCache(void);
+void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o);
+s32 IpStack_ReturnTrue(void);
+void IpStack_Nop(void);
 }
 
 extern "C" {
 
-u8 *func_ov065_02265074(u32 *out, Unk_ov065_02264d80_Obj *o) {
+u8 *Ssl_Read(u32 *out, Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     u8 **pb;
     if (c->unk_7f8 != 0 && c->unk_42a == 0) {
-        if (func_ov065_02265d5c(c->unk_7f8 + c->unk_800, c->unk_7fc - c->unk_800, o) != 0) {
-            data_ov065_0228ebd0(c->unk_7f8);
+        if (Ssl_ReadExact(c->unk_7f8 + c->unk_800, c->unk_7fc - c->unk_800, o) != 0) {
+            sIpFree(c->unk_7f8);
             c->unk_7f8 = 0;
             *out = 0;
             return 0;
         }
-        func_ov065_02265b9c(c, c->unk_7f8);
+        Ssl_ProcessRecord(c, c->unk_7f8);
         if (c->unk_42a == 0) {
             c->unk_7f8 = 0;
         }
@@ -1962,7 +1962,7 @@ u8 *func_ov065_02265074(u32 *out, Unk_ov065_02264d80_Obj *o) {
     pb = &c->unk_7f8;
     if (*pb == 0) {
         do {
-            if (func_ov065_02265a5c(o) == 9) {
+            if (Ssl_ReadRecord(o) == 9) {
                 *out = 0;
                 return 0;
             }
@@ -1972,11 +1972,11 @@ u8 *func_ov065_02265074(u32 *out, Unk_ov065_02264d80_Obj *o) {
     return c->unk_7f8 + c->unk_800;
 }
 
-void func_ov065_0226502c(u32 n, Unk_ov065_02264d80_Obj *o) {
+void Ssl_Consume(u32 n, Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     if (n >= c->unk_7fc - c->unk_800) {
         if (c->unk_7f8 != 0) {
-            data_ov065_0228ebd0(c->unk_7f8);
+            sIpFree(c->unk_7f8);
         }
         c->unk_7f8 = 0;
     } else {
@@ -1984,7 +1984,7 @@ void func_ov065_0226502c(u32 n, Unk_ov065_02264d80_Obj *o) {
     }
 }
 
-void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
+void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     u32 len;
     u8 *src;
@@ -1993,13 +1993,13 @@ void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
         if (o->unk_44 < 5) {
             return;
         }
-        src = func_ov065_02262708(&len, o);
+        src = Tcp_Read(&len, o);
         len = (src[3] << 8) + src[4] + 5;
         if (len > 0x4805) {
             c->unk_429 = 9;
             return;
         }
-        c->unk_7f8 = (u8 *)data_ov065_0228ebc8(len);
+        c->unk_7f8 = (u8 *)sIpAlloc(len);
         if (c->unk_7f8 == 0) {
             c->unk_429 = 9;
             return;
@@ -2012,7 +2012,7 @@ void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
             return;
         }
     }
-    src = func_ov065_02262708(&len, o);
+    src = Tcp_Read(&len, o);
     {
         u32 avail = c->unk_7fc - c->unk_800;
         if (len >= avail) {
@@ -2023,9 +2023,9 @@ void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
         }
     }
     MI_CpuCopy8(src, c->unk_7f8 + c->unk_800, len);
-    func_ov065_02262670(len, o);
+    Tcp_Consume(len, o);
     if (flag) {
-        func_ov065_02265b9c(c, c->unk_7f8);
+        Ssl_ProcessRecord(c, c->unk_7f8);
         if (c->unk_42a != 0) {
             return;
         }
@@ -2036,10 +2036,10 @@ void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o) {
     return;
 }
 
-s32 func_ov065_02264eac(Unk_ov065_02264d80_Obj *o) {
+s32 Ssl_GetReadLength(Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     if (c->unk_7f8 == 0 || c->unk_42a == 0) {
-        func_ov065_02264f28(o);
+        Ssl_ReceiveRecordPart(o);
     }
     if (c->unk_7f8 != 0 && c->unk_42a != 0) {
         return c->unk_7fc - c->unk_800;
@@ -2052,7 +2052,7 @@ s32 func_ov065_02264eac(Unk_ov065_02264d80_Obj *o) {
     return 0;
 }
 
-u32 func_ov065_02264dd4(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
+u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     s32 total = n1 + n2;
     u32 c2;
@@ -2067,7 +2067,7 @@ u32 func_ov065_02264dd4(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *
         } else {
             chunk = total;
         }
-        rec = (u8 *)data_ov065_0228ebc8(chunk + 0x19);
+        rec = (u8 *)sIpAlloc(chunk + 0x19);
         if (rec == 0) {
             break;
         }
@@ -2083,11 +2083,11 @@ u32 func_ov065_02264dd4(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *
         rec[2] = z1;
         rec[3] = chunk >> 8;
         rec[4] = chunk;
-        len = func_ov065_02265dac(c, rec);
-        if (func_ov065_0226242c(rec, len, z2, z2, o) < len) {
+        len = Ssl_EncryptRecord(c, rec);
+        if (Tcp_Write(rec, len, z2, z2, o) < len) {
             chunk = z3;
         }
-        data_ov065_0228ebd0(rec);
+        sIpFree(rec);
         total -= chunk;
         sent += chunk;
         if (total == 0) {
@@ -2100,7 +2100,7 @@ u32 func_ov065_02264dd4(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *
     return sent;
 }
 
-void func_ov065_02264d80(Unk_ov065_02264d80_Obj *o) {
+void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
     Unk_ov065_02264d80_Conn *c = o->unk_0c;
     if (c->unk_429 == 8) {
         u8 b[32];
@@ -2112,13 +2112,13 @@ void func_ov065_02264d80(Unk_ov065_02264d80_Obj *o) {
         b[4] = 2;
         b[5] = 1;
         b[6] = 0;
-        n = func_ov065_02265dac(c, b);
-        func_ov065_0226242c(b, n, 0, 0, o);
+        n = Ssl_EncryptRecord(c, b);
+        Tcp_Write(b, n, 0, 0, o);
     }
     c->unk_429 = 0;
 }
 
-void func_ov065_02264d58(u32 v) {
+void Ssl_EnableOnCurrentSocket(u32 v) {
     func_02000b44(0x2000c14);
     Unk_ov065_02264c44_Sub *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.unk_04)->unk_a4;
     if (s != 0) {
@@ -2126,10 +2126,10 @@ void func_ov065_02264d58(u32 v) {
     }
 }
 
-void func_ov065_02264d24(s32 now) {
+void Ssl_ExpireSessions(s32 now) {
     s32 i;
     Unk_ov065_02264d24_Ent *e;
-    for (i = 0, e = data_ov065_02290438; i < 4; e++, i++) {
+    for (i = 0, e = sSslSessionCache; i < 4; e++, i++) {
         if (e->unk_5a != 0) {
             if (now - e->unk_50 > 0xef) {
                 e->unk_5a = 0;
@@ -2138,23 +2138,23 @@ void func_ov065_02264d24(s32 now) {
     }
 }
 
-void func_ov065_02264d0c(void) {
-    MI_CpuFill8(data_ov065_02290438, 0, 0x170);
+void Ssl_ClearSessionCache(void) {
+    MI_CpuFill8(sSslSessionCache, 0, 0x170);
 }
 }
 
 }
 
-extern "C" u8 data_ov065_022903dc[0x5c] = {0};
-extern "C" u8 data_ov065_022903c8[0x14] = {0};
-extern "C" u32 data_ov065_022903c4 = 0;
-extern "C" u8 data_ov065_0228b444[4] = {0xff, 0xff, 0xff, 0};
-extern "C" u8 data_ov065_0228b448[4] = {0x55, 4, 3, 0};
-extern "C" u32 data_ov065_0228b440 = 0xffffffff;
-extern "C" u16 data_ov065_0228b44c[2] = {4, 5};
-extern "C" u8 data_ov065_0228b450[8] = {0x55, 8, 1, 1, 0, 0, 0, 0};
-extern "C" u8 data_ov065_0228b458[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 1, 0, 0, 0};
-extern "C" u8 data_ov065_0228b464[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 4, 0, 0, 0};
-extern "C" u8 data_ov065_022903c0 = 0;
-extern "C" u8 data_ov065_0228b470[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 5, 0, 0, 0};
-extern "C" char *data_ov065_0228b47c[6] = {(char *)data_ov065_0228b444, (char *)data_ov065_0228b458, (char *)data_ov065_0228b450, (char *)data_ov065_0228b464, (char *)data_ov065_0228b470, (char *)data_ov065_0228b448};
+extern "C" u8 sSslNoSession[0x5c] = {0};
+extern "C" u8 sSslRandPool[0x14] = {0};
+extern "C" u32 sSslSessionIdCounter = 0;
+extern "C" u8 sSslOidNone[4] = {0xff, 0xff, 0xff, 0};
+extern "C" u8 sSslOidCommonName[4] = {0x55, 4, 3, 0};
+extern "C" u32 gSslRsaThreadPriority = 0xffffffff;
+extern "C" u16 sSslCipherSuites[2] = {4, 5};
+extern "C" u8 sSslOidRsaX500[8] = {0x55, 8, 1, 1, 0, 0, 0, 0};
+extern "C" u8 sSslOidRsaEncryption[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 1, 0, 0, 0};
+extern "C" u8 sSslOidMd5WithRsa[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 4, 0, 0, 0};
+extern "C" u8 sSslRandSeeded = 0;
+extern "C" u8 sSslOidSha1WithRsa[12] = {0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 1, 1, 5, 0, 0, 0};
+extern "C" char *sSslCertOidTable[6] = {(char *)sSslOidNone, (char *)sSslOidRsaEncryption, (char *)sSslOidRsaX500, (char *)sSslOidMd5WithRsa, (char *)sSslOidSha1WithRsa, (char *)sSslOidCommonName};

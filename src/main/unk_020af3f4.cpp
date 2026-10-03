@@ -11,7 +11,7 @@ void MailText_SetSlot(s32 a, void *b);
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
-void func_02096a50(void *a, s32 b);
+void LetterDelivery_QueueOutgoing(void *a, s32 b);
 void func_020af488(u32 a);
 extern u8 data_021ee25c[];
 extern const u16 data_020d09cc[];
@@ -33,7 +33,7 @@ extern "C" void func_020af488(u32 idx) {
             MailText_SetSlot(1, &s);
             func_020656dc(&big, &l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc, _ZN10PlayerData11getPlayerIdEv(obj));
             _ZN12Unk_0206555413func_02065588Etj(&big, l.b, 1);
-            func_02096a50(&big, 0);
+            LetterDelivery_QueueOutgoing(&big, 0);
         }
     }
 }

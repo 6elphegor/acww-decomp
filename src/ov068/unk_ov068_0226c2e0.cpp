@@ -604,27 +604,27 @@ s32 *TalkWindow_Get(s32 a);
 s32 func_02063b8c(s32 a);
 s16 *func_0209c37c(s32 a, s32 b);
 void func_02034e10(s32 a, s32 b, s32 c, s32 d);
-void *func_0206ecf0();
+void *MenuCtrl_GetText();
 void func_020a78a4(void *a, void *b, u32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
-BOOL func_0206ed18();
-u32 func_0206ed38();
+BOOL MenuCtrl_IsResultOk();
+u32 MenuCtrl_GetIndex();
 s32 func_02098eb0(u16 *p);
 void func_02099064();
 u32 TalkWindowState_getChoiceList(TalkWindowState *self);
 u32 ChoiceList_getResult(u32 a);
 
-void func_ov004_0223f350();
-void func_ov004_0223f3cc();
-void func_ov004_0223f850();
-void func_ov004_0223f2f4();
-void func_ov004_0223f860();
-void func_ov004_0223f31c(s32 a);
-void func_ov004_0223f3a4();
-BOOL func_ov004_0223f2c8();
-void func_ov004_0223f870();
-void func_ov004_0223f3f4();
+void KkShowFx_Stop();
+void KkShowFx_Update();
+void RoomCamera_KkShowResetShot();
+void KkShowFx_CallUnk1de4();
+void RoomCamera_KkShowPickShot();
+void KkShowFx_SetParam(s32 a);
+void KkShowFx_CallUnk1f70();
+BOOL KkShowFx_GetState();
+void RoomCamera_KkShowWideShot();
+void KkShowFx_Start();
 }
 
 }
@@ -634,7 +634,7 @@ void *PlayerData_GetCurrent();
 void TalkRequest_EndTalkWith(void *p);
 void Unk_020d77a4_setTalkRequest(void *p, void *q);
 void Unk_020d77a4_setNpcHandle(void *p, u16 *q);
-u32 func_020ae02c(void *p);
+u32 NookShop_GetLevel(void *p);
 void ProcBase_RequestDelete(void *p);
 void func_02034d70(u32 a);
 void func_02034d18();
@@ -642,11 +642,11 @@ void func_02034d04();
 void func_02034dd0(u32 a, u32 b, u32 c);
 void Camera_SetModeDefault();
 s32 PlayerActor_IsInAction(s32 a, s32 b);
-void func_ov004_02224a38(s32 a);
-void func_ov004_0223f880();
-void func_ov004_0223f350();
-void func_ov004_022264b8(void *p);
-void func_ov004_022264a0();
+void PlayerActor_LocalRequestStandUp(s32 a);
+void Camera_SetMode18();
+void KkShowFx_Stop();
+void CafeCoffeeSet_StartEffectB(void *p);
+void CafeCoffeeSet_SetFlagEF8();
 void func_02105f90(s32 a, s32 b);
 void func_0201610c(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
@@ -772,7 +772,7 @@ BOOL SpNpcRoostGuest::vfunc_04() {
         }
         if (mo == 0x17 && dy <= 0x3b) {
             if (func_02085f7c(g)) {
-                if (func_020ae02c(&data_021ed104) == 3) {
+                if (NookShop_GetLevel(&data_021ed104) == 3) {
                     unk_72c = 2;
                 }
             }
@@ -858,7 +858,7 @@ BOOL SpNpcRoostGuest::vfunc_0c() {
         return FALSE;
     }
     if (unk_72c == 7) {
-        func_ov004_0223f350();
+        KkShowFx_Stop();
     }
     return TRUE;
 }
@@ -914,10 +914,10 @@ BOOL SpNpcRoostGuest::mainAct00() {
     if (unk_72c == 7) {
         checkPlayerSeated();
     } else {
-        func_ov004_022264b8(this);
+        CafeCoffeeSet_StartEffectB(this);
     }
     if (unk_72c == 6) {
-        func_ov004_022264a0();
+        CafeCoffeeSet_SetFlagEF8();
     }
     return TRUE;
 }
@@ -964,7 +964,7 @@ BOOL SpNpcRoostGuest::mainAct03() {
 BOOL SpNpcRoostGuest::setupAct02() {
     using namespace sB;
     func_020195c8(&unk_564, 1, 0x102, 0, data_020c6cc8, 0);
-    func_ov004_0223f880();
+    Camera_SetMode18();
     func_0201a664(&unk_3b0, 0, 0, 0x1000, data_020c6cc4, data_020c6cbc);
     func_02014198(&unk_618, 0, 1);
     func_02034dd0(0x10, 0xf, 0);
@@ -981,7 +981,7 @@ BOOL SpNpcRoostGuest::mainAct02() {
     if (func_02014220(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
         if (PlayerActor_IsInAction(0x28, 4)) {
-            func_ov004_02224a38(0);
+            PlayerActor_LocalRequestStandUp(0);
         }
         func_02034d70(0x10);
         func_02034d18();
@@ -1300,17 +1300,17 @@ void SpNpcRoostGuestTalk::func_ov068_0226c9b0() {
     using namespace sA;
     u8 cmd;
     u16 tmp;
-    MI_CpuCopy8(func_0206ecf0(), unk_b0->unk_730, 0x10);
+    MI_CpuCopy8(MenuCtrl_GetText(), unk_b0->unk_730, 0x10);
     ItemName objA;
     EncodedString16Buf objB;
     func_020a78a4(&objB, unk_b0->unk_730, 0x10);
     MsgString_fromEncoded(&objA, &objB, 0, 0);
     TalkWindowState_setNamedSlot(unk_3c, 0, &objA, 7);
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         u32 v;
         u16 h;
         unk_b0->unk_743 = 0;
-        v = func_0206ed38();
+        v = MenuCtrl_GetIndex();
         if (v < 0x46) {
             h = v + 0x1323;
         } else {
@@ -1338,7 +1338,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c870() {
             func_0201a664(&unk_b0->unk_3b0, 0, -0xc18, 0, 0x276, 0x276);
         }
         if (func_020e7500(&unk_b0->unk_740) == 0) {
-            func_ov004_0223f870();
+            RoomCamera_KkShowWideShot();
             unk_b0->unk_654 = 0;
             if (unk_b0->unk_743 != 0) {
                 unk_b0->unk_654 = func_02063b8c(3) + 0xa9;
@@ -1365,7 +1365,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c870() {
             }
             func_02034e10(0xf, (u16)unk_b0->unk_654, 0x7f, 0);
             unk_b8.unk_14 = 0;
-            func_ov004_0223f3f4();
+            KkShowFx_Start();
             setScript(3);
         }
     }
@@ -1374,7 +1374,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c870() {
 void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
     using namespace sA;
     Unk_ov068_0226c63c_Msg *p = Snd_GetBeatState();
-    func_ov004_0223f3cc();
+    KkShowFx_Update();
     if (p != NULL) {
         if (p->unk_03 == 1 && unk_b8.unk_03 == 1) {
             goto end;
@@ -1382,10 +1382,10 @@ void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
         s32 t4 = p->unk_04;
         if (t4 != unk_b8.unk_04) {
             if (t4 == 2) {
-                func_ov004_0223f850();
-                func_ov004_0223f2f4();
+                RoomCamera_KkShowResetShot();
+                KkShowFx_CallUnk1de4();
             } else if ((u8)t4 <= 1) {
-                func_ov004_0223f860();
+                RoomCamera_KkShowPickShot();
             }
         }
         s32 t1 = p->unk_01;
@@ -1425,9 +1425,9 @@ void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
             s32 t3 = p->unk_03;
             if (t3 != unk_b8.unk_03) {
                 if (t3 == 0) {
-                    func_ov004_0223f3cc();
-                    func_ov004_0223f31c(0);
-                    func_ov004_0223f3a4();
+                    KkShowFx_Update();
+                    KkShowFx_SetParam(0);
+                    KkShowFx_CallUnk1f70();
                 }
                 if (p->unk_03 == 1) {
                     func_020199e0(&unk_b0->unk_2ac, (u32)data_ov068_02270368);
@@ -1438,9 +1438,9 @@ void SpNpcRoostGuestTalk::func_ov068_0226c63c() {
         }
     }
 end:
-    func_ov004_0223f3a4();
+    KkShowFx_CallUnk1f70();
     MI_CpuCopy8(p, &unk_b8, 0x14);
-    if (func_ov004_0223f2c8()) {
+    if (KkShowFx_GetState()) {
         unk_b0->unk_740 = 0x14;
         setScript(4);
     }
@@ -1466,7 +1466,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c530() {
                 TalkWindowState_setNextMessage(unk_3c, &c2, sRoostGuestMsgFiles[unk_b0->unk_72c]);
             }
         }
-        func_ov004_0223f350();
+        KkShowFx_Stop();
         func_02034d84(unk_b0->unk_654);
         unk_b0->unk_740 = 0x1e;
         LightSwitch_SetOff(1, 1);

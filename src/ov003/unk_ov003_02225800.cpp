@@ -510,7 +510,7 @@ BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, s32 *v);
 void *MI_CpuCopy8(void *dst, void *src, s32 n);
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 BOOL Town_GetRafflesiaPos(void *buf);
 BOOL CommManager_isSlotActive(void *p, u32 v);
 void Clock_GetMinuteHour(void *p);
@@ -661,8 +661,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
 void func_020902f8(s32);
-s32 func_020b8fe8(void);
-s32 func_020a62a0(void);
+s32 Weather_GetFallingPrecip(void);
+s32 NetArea_IsLocalOwner(void);
 u8 func_02060b9c(u8 v);
 void *func_02095204(s32 v);
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
@@ -670,7 +670,7 @@ s32 func_020e9650(void *a, void *b);
 void Mem_Free(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 void func_0209c15c(void *p);
-void func_02043b90(void);
+void Town_ClearBeesReleased(void);
 s32 Insect_RollKind(s8 *p);
 void Insect_SetScale(Rec *e, s32 v);
 void InsectSpawn_CopyMask(Buf *b, s32 v);
@@ -802,7 +802,7 @@ s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 AnimModel_drawAnimated(void *p, void *q);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
 BOOL CommManager_isSlotActive(void *p, s32 i);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 void *func_02095204(s32 a);
 BOOL CommManager_isMyAid(void *g, s32 a);
 void CommManager_beginRecord(void *g);
@@ -940,8 +940,8 @@ extern Rec sHeldInsects[];
 extern Unk_ov003_02234c6c_Ent sInsectBehaviours[];
 extern Unk_ov003_02234b04_Ent sInsectModelParams[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-s32 func_020a62a0(void);
-s32 func_020b8fe8(void);
+s32 NetArea_IsLocalOwner(void);
+s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
 void func_020902f8(s32 h);
 BOOL func_0203a4c4(void *p, s32 a, s32 b);
@@ -1192,7 +1192,7 @@ extern u8 sAntSpawnEnabled;
 extern Unk_ov003_02234b04_Rec sInsectModelParams[];
 extern void *gCurrentHeap;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *func_02095204(s32 a);
 Unk_ov003_02227f20_Slot *NpcRegistry_FindVillager(s32 i);
@@ -1790,7 +1790,7 @@ s32 NNS_G3dMdlSetMdlAlpha(s32 p, s32 a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 func_020a62a0(void);
+s32 NetArea_IsLocalOwner(void);
 void func_020339bc(Unk_ov003_0222abc0_Obj *o, V3 *p, s32 a, s32 b);
 s32 func_020338d0(Unk_ov003_0222abc0_Obj *o, s32 v);
 void func_02033988(Unk_ov003_0222abc0_Obj *o);
@@ -1967,7 +1967,7 @@ struct Unk_020cbb18_Ptr {
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 MenuCtrl_IsMenuOpen();
 s32 func_0209c0ac(void *p);
 s32 func_02106020(void *a, s32 b);
@@ -2104,7 +2104,7 @@ extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 extern u8 data_020e12cc[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 BOOL func_02031218(s32 x, s32 y);
 s32 func_0209c0ac(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
@@ -2246,7 +2246,7 @@ struct Unk_02095204_Obj {
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 func_02063b8c(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
@@ -2381,7 +2381,7 @@ struct Unk_020cbb18_Ptr {
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(V3 *dst, V3 *a, V3 *b);
@@ -2503,7 +2503,7 @@ extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 extern s16 data_02135f44[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 void *func_02095204(u32 a);
 s32 Math_AngleXZ(void *a, void *b);
 s32 FX_Div(s32 a, s32 b);
@@ -2662,7 +2662,7 @@ extern u8 data_ov003_0225b470[];
 extern u8 data_ov003_0225b474[];
 extern u8 data_ov003_0225b475[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 func_02063b8c(s32 n);
 void AnimModel_setFrame(void *p, s32 v);
 s32 func_02030814(u32 a);
@@ -2735,7 +2735,7 @@ extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 namespace s14 {
 // 0x222e500
 extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b) {
-    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0() || o->unk_251 == 9 || o->unk_251 == 0xb) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || NetArea_IsLocalOwner() || o->unk_251 == 9 || o->unk_251 == 0xb) {
         Insect_SetFeelers(o, a, b);
         if ((u8)(s8)(o->unk_24d - 0x36) <= 1 && o->unk_251 == 4) {
             return Insect_TestFeelersHole(o);
@@ -3628,7 +3628,7 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
         s32 k = Insect_GetFlutterTargetSpeed(self);
         if (func_020e7d4c(r6, r10, 0x28, k + 0x19a, Insect_GetFlutterTargetSpeed(self)) == 0) {
             if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-                if (func_020a62a0() == 0) {
+                if (NetArea_IsLocalOwner() == 0) {
                     return;
                 }
             }
@@ -3728,7 +3728,7 @@ namespace s13 {
 // 0x222d6a0
 extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p) {
     s32 c = self->unk_254;
-    if (func_020a62a0()) {
+    if (NetArea_IsLocalOwner()) {
         if (p->x != 0 && self->unk_24a == 0 && c >= self->unk_255) {
             self->unk_240 = Math_AngleXZ(p, &self->unk_204);
             self->unk_251 = 7;
@@ -4148,7 +4148,7 @@ namespace s12 {
 extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt) {
     V3 *p = &self->unk_204;
     s32 r = func_02063b8c(100);
-    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 && func_020a62a0() == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 && NetArea_IsLocalOwner() == 0) {
         V3 *q = &self->unk_1d4;
         if (q->x != p->x || q->z != p->z) {
             self->unk_251 = 4;
@@ -4227,7 +4227,7 @@ extern "C" void Dragonfly_FlyToTarget(Rec *self) {
         s32 x, y;
         self->unk_23a = Math_AngleXZ(p, q);
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
-            if (func_020a62a0() == 0) {
+            if (NetArea_IsLocalOwner() == 0) {
                 FieldPos_ToUnit(&x, &y, p);
                 if (x < 0x10 || x > 0x4f || y < 0x10) {
                     self->unk_251 = 0x13;
@@ -4371,7 +4371,7 @@ extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a) {
     BOOL result = FALSE;
     s16 ang = self->unk_23a;
     if (self->unk_251 != 0xb) {
-        if (func_020a62a0() == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
+        if (NetArea_IsLocalOwner() == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
             if (self->unk_204.x != self->unk_1d4.x && self->unk_204.z != self->unk_1d4.z) {
                 self->unk_251 = 4;
                 self->unk_24c = a;
@@ -4492,7 +4492,7 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
     r4 = o->unk_255;
     out[0] = 0;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-        if (func_020a62a0() == 0) {
+        if (NetArea_IsLocalOwner() == 0) {
             flagC = r;
         }
         i = 0;
@@ -4619,7 +4619,7 @@ namespace s11 {
 // 0x222c668
 extern "C" void Hopper_Rest(Rec *o, s16 *p) {
     *p = *p + 1;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && !func_020a62a0()) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && !NetArea_IsLocalOwner()) {
         V3 *a = &o->unk_204;
         V3 *b = &o->unk_1d4;
         if (a->x != b->x || a->z != b->z) {
@@ -4770,7 +4770,7 @@ extern "C" void Hopper_Jump(Rec *o) {
 namespace s11 {
 // 0x222c3c4
 extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p) {
-    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || NetArea_IsLocalOwner()) {
         void *r = Insect_CheckObstacle(o, 0x50, 0xe38);
         if (r) {
             *p = 0;
@@ -4995,7 +4995,7 @@ namespace s11 {
 extern "C" void Firefly_Wander(Rec *o) {
     s16 t = o->unk_23a;
     s16 *p = &o->unk_242;
-    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || NetArea_IsLocalOwner()) {
         if (Insect_CheckAlarm(o) == 2) {
             Insect_SetAnimSpeed(o, 0x1000);
             o->unk_24a = 0;
@@ -5314,7 +5314,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
                     AnimModel_setFrame(self->unk_50, 1);
                 }
                 if (self->unk_24d == 0x31 || self->unk_24d == 0x1e) {
-                    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
+                    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && NetArea_IsLocalOwner()) {
                         Insect_SetMoveTarget(self, self->unk_23a, 0xc000);
                     }
                 }
@@ -5583,7 +5583,7 @@ extern "C" void PillBug_Curled(Rec *self) {
                 AnimModel_setFrame(&self->unk_50, 1);
                 s32 a = Math_AngleXZ(pos, &out);
                 self->unk_23a = a + 0x8000;
-                if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
+                if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && NetArea_IsLocalOwner()) {
                     Insect_SetMoveTarget(self, self->unk_23a, 0xc000);
                 }
             }
@@ -5621,11 +5621,11 @@ extern "C" void PillBug_Walk(Rec *self) {
     V3 out;
     Insect_UpdateAlarm(self, &out.x);
     if (self->unk_254 >= self->unk_255 &&
-        (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0 || func_020a62a0() != 0 ||
+        (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0 || NetArea_IsLocalOwner() != 0 ||
          (self->unk_1d4.x == self->unk_204.x && self->unk_1d4.z == self->unk_204.z))) {
         self->unk_251 = 7;
         AnimModel_setFrame(&self->unk_50, 0);
-        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && NetArea_IsLocalOwner()) {
             V3 *src = &self->unk_204;
             V3 *dst = &self->unk_1d4;
             dst->x = src->x;
@@ -6080,7 +6080,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     V3 dir;
     Insect_GetDirVec(&dir, self->unk_23a);
     s32 nang;
-    if (func_020a62a0() != 0 || self->unk_251 == 0x11) {
+    if (NetArea_IsLocalOwner() != 0 || self->unk_251 == 0x11) {
         if (o.unk_30 != 0) {
             if (func_020338d0(&o, pos->y) != 0) {
                 Insect_Despawn(self);
@@ -6116,7 +6116,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
         r = func_020e7d4c(pos, vel, 8, 0x1000, 0x52);
     }
     if (r == 0) {
-        if (func_020a62a0() != 0) {
+        if (NetArea_IsLocalOwner() != 0) {
             if (Insect_SetMoveTarget(self, self->unk_23a, 0xc000) == 0) {
                 vel->x += data_02135f44[((u16)self->unk_23a >> 4) * 2];
                 vel->z += data_02135f44[(((u16)self->unk_23a >> 4) * 2 + 1)];
@@ -9087,7 +9087,7 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
         Insect_UpdateHideTimer(a, e);
     }
     if (kind == 1) {
-        if (r7 == 0 || func_020a62a0() != 0) {
+        if (r7 == 0 || NetArea_IsLocalOwner() != 0) {
             s16 *p = &e->unk_234;
             if (r4 != 0) {
                 *p = 0x4b0;
@@ -9344,7 +9344,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
     u8 ok;
     s32 px, py;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
-        if (func_020a62a0() != 0) {
+        if (NetArea_IsLocalOwner() != 0) {
             u8 i;
             s32 z0 = 0, z1 = 0;
             for (i = 0; i < 4; i++) {
@@ -9709,7 +9709,7 @@ extern "C" void Insect_UpdateSpawning(void *self) {
     s8 b[8];
     s32 px, py;
     s32 r4 = CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
-    if (r4 == 0 || func_020a62a0() != 0) {
+    if (r4 == 0 || NetArea_IsLocalOwner() != 0) {
         if (sInsectSpawnTimer % 20 == 0) {
             FieldInsect_PurgeStale();
         }
@@ -9863,7 +9863,7 @@ loop0:
     sw0:
         switch (k) {
         case 2:
-            if (func_020a62a0() == 0 && CommManager_isSlotActive(g, g->unk_64)) {
+            if (NetArea_IsLocalOwner() == 0 && CommManager_isSlotActive(g, g->unk_64)) {
                 if (l.a != o->unk_24d && v18 > 0) {
                     func_ov003_022287c8(a, o, 1);
                 } else {
@@ -9875,14 +9875,14 @@ loop0:
             break;
         case 3:
             if (CommManager_isSlotActive(g, g->unk_64)) {
-                if (func_020a62a0() == 0) {
+                if (NetArea_IsLocalOwner() == 0) {
                     if (Insect_IsNetKindMismatch(a, o, l.a, v18, v1c)) {
                         o->unk_251 = 10;
                         func_ov003_022287c8(a, o, 1);
                     }
                 }
                 s32 kind = o->unk_24d;
-                if (Insect_GetWeatherReaction(kind, func_020b8fe8()) == 5) {
+                if (Insect_GetWeatherReaction(kind, Weather_GetFallingPrecip()) == 5) {
                     o->unk_246 = 0;
                 } else {
                     o->unk_246 = 1;
@@ -9894,7 +9894,7 @@ loop0:
             if (CommManager_isSlotActive(g, g->unk_64) == 0) {
                 o->unk_251 = 10;
                 func_ov003_022287c8(a, o, 1);
-            } else if (func_020a62a0()) {
+            } else if (NetArea_IsLocalOwner()) {
                 s16 *cnt = &o->unk_242;
                 V3 *pv = &o->unk_204;
                 t1.x = pv->x;
@@ -10128,7 +10128,7 @@ extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
     if (t != 0x3a && t != 0x3b) {
         Unk_020cbb18_Ptr *g = gCommManager;
         if (CommManager_isSlotActive(g, g->unk_64) == 0) goto cont;
-        if (func_020a62a0() != 0) goto cont;
+        if (NetArea_IsLocalOwner() != 0) goto cont;
     }
     return FALSE;
 cont:
@@ -10594,7 +10594,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
     if (o == 0) r = 1;
     if (r != 1) {
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-            if (!func_020a62a0()) r = sInsectCatchResult;
+            if (!NetArea_IsLocalOwner()) r = sInsectCatchResult;
         }
     }
     if (r == 1) {
@@ -10602,7 +10602,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
         Insect_CancelCatch(id);
         b = id;
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-            if (!func_020a62a0()) {
+            if (!NetArea_IsLocalOwner()) {
                 Unk_ov003_02226d54_Net *g = gCommManager;
                 CommManager_beginRecord(g);
                 CommManager_writeRecord(g, &b, 1);
@@ -10681,7 +10681,7 @@ extern "C" s32 Insect_TryCatch(u8 id) {
         o->unk_251 = 0x10;
     }
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-        if (!func_020a62a0()) {
+        if (!NetArea_IsLocalOwner()) {
             sInsectCatchResult = 2;
             Unk_ov003_02226d54_Net *g = gCommManager;
             CommManager_beginRecord(g);
@@ -10949,7 +10949,7 @@ BOOL InsectManager::vfunc_0c() { using namespace s01;
     func_0209c15c(obj->unk_50);
     func_0209c15c(obj->unk_68);
     func_0209c15c(obj->unk_80);
-    func_02043b90();
+    Town_ClearBeesReleased();
     return TRUE;
 }
 #undef sFieldInsects
@@ -10997,7 +10997,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
     s32 z0 = z - 0x1c000;
     s32 x1 = x + 0x10000;
     s32 z1 = z + 0xc000;
-    s32 h = func_020b8fe8();
+    s32 h = Weather_GetFallingPrecip();
     u8 i = 0;
     s32 m = 1;
     m = m << idx;
@@ -11008,7 +11008,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
             Vec3 *p = &e->unk_204;
             u32 bits = e->unk_258;
             r = Insect_GetWeatherReaction(e->unk_24d, h);
-            if (func_020a62a0() == 0 && r == 4) {
+            if (NetArea_IsLocalOwner() == 0 && r == 4) {
                 r = 3;
             }
             u32 t = e->unk_249;
@@ -11074,7 +11074,7 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
         s32 z0 = cp.z - 0x1c000;
         s32 x1 = cp.x + 0x10000;
         s32 z1 = cp.z + 0xc000;
-        s32 h = func_020b8fe8();
+        s32 h = Weather_GetFallingPrecip();
         u8 i;
         for (i = 0; i < n; e++, i++) {
             if (e->unk_248 != 0 && e->unk_24d >= 0) {
@@ -11703,7 +11703,7 @@ namespace s00 {
 // 0x2225e34
 extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c)
 {
-    s32 r = func_020b8fe8();
+    s32 r = Weather_GetFallingPrecip();
     u8 buf[16];
     if (c != 0) {
         if (r == 0) {
@@ -11799,7 +11799,7 @@ extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out)
         return FALSE;
     }
     cnt = t[b].unk_04;
-    v = func_020b8fe8();
+    v = Weather_GetFallingPrecip();
     i = 0;
     ent = &t[b];
     for (; i < cnt; i++) {

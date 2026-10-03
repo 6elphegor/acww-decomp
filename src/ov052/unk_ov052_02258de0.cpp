@@ -92,12 +92,12 @@ void *func_02095204(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *func_ov004_02235718();
-void *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 a, s32 b, s32 c);
+void *FtrActorGrid_GetInstance();
+void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void *func_020b50b4();
 void *func_020b6048(void *a, s32 b, s32 c);
 void func_020b60b0(void *a, void *b);
-u16 *func_ov004_0223ed40(s32 a, s32 b);
+u16 *ShopStock_GetItemAt(s32 a, s32 b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetPrice(u16 *p);
@@ -107,9 +107,9 @@ BOOL func_020b50dc();
 s32 _ZN11CommManager8isOnlineEv(void *g);
 void NpcActor_ChargePlayer(void *o, s32 v);
 s32 NpcActor_CanPlayerPay(void *o, s32 v);
-void func_020ac894(s32 a, s32 b, s32 c);
-BOOL func_020ac88c();
-u16 *func_020acfa8(void *tbl, s32 a, s32 b);
+void ReddShop_BuyAt(s32 a, s32 b, s32 c);
+BOOL ReddShop_IsPurchaseSynced();
+u16 *ReddShop_GetItem(void *tbl, s32 a, s32 b);
 void _ZN12Unk_0208632813func_020862a8EPKS_(void *a, void *b);
 void _ZN12Unk_0208632813func_020862a0EPKS_(void *a, void *b);
 void _ZN12Unk_0208632813func_02086298EPKS_(void *dst, void *src);
@@ -775,7 +775,7 @@ BOOL SpNpcRedd::mainAct05() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618)) {
         return TRUE;
     }
-    if (unk_72c != 0 && func_020ac88c() == 0) {
+    if (unk_72c != 0 && ReddShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
     TalkRequest_EndTalkWith(this);
@@ -912,7 +912,7 @@ s32 SpNpcReddTalk::getTopic() { return unk_ac; }
 extern "C" BOOL SpNpcRedd_IsSoldOut(void *self) {
     s32 i;
     for (i = 0; (u32)i < 3; i++) {
-        u16 *p = func_020acfa8(data_021ed2c0, i, 0);
+        u16 *p = ReddShop_GetItem(data_021ed2c0, i, 0);
         BOOL r;
         if (Item_IsFurniture(p)) {
             u16 t = 0x1547;
@@ -1136,7 +1136,7 @@ void SpNpcReddTalk::vfunc_18() {
 void SpNpcReddTalk::completePurchase() {
     NpcActor_ChargePlayer(unk_b0, unk_b4);
     func_02099014(&unk_b0->unk_71a, 0);
-    func_020ac894(unk_b0->unk_724, unk_b0->unk_728, 0xf);
+    ReddShop_BuyAt(unk_b0->unk_724, unk_b0->unk_728, 0xf);
     u8 *const g = data_021ed284;
     _ZN12Unk_0208632813func_020862a8EPKS_(g, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     _ZN12Unk_0208632813func_020862a0EPKS_(g, &unk_b0->unk_71a);
@@ -1228,7 +1228,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
     v.z += func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
     FieldPos_ToUnit(&bx, &by, &v);
     if (f) {
-        void *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), bx, by, 0);
+        void *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
             if (o != func_020b6048(func_020b50b4(), 0, 0)) {
                 return FALSE;
@@ -1243,7 +1243,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
             }
         }
     }
-    t[0] = *func_ov004_0223ed40(bx, by);
+    t[0] = *ShopStock_GetItemAt(bx, by);
     if (Unk_ov052_02258f34_Eq(&t[0], &t[1])) {
         return FALSE;
     }

@@ -300,8 +300,8 @@ void _ZN10SpriteAnim11setPlayOnceEi(void *p, s32 v);
 void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void *p, void *v);
 void StrBuf_Clear(void *buf);
 BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
-s32 func_0206edbc(void);
-s32 func_0206ede0(void);
+s32 MenuCtrl_GetTransitionProgressOrFull(void);
+s32 MenuCtrl_GetTransitionProgress(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
@@ -431,12 +431,12 @@ Unk_020d9114 *data_021c3008;
 void Unk_020d9194::func_02039630() {
     s32 a, t, t2;
     if (unk_0c == 0) {
-        a = func_0206edbc();
+        a = MenuCtrl_GetTransitionProgressOrFull();
         t = func_01ffcb0c(0x4c000, a);
         t2 = func_01ffcb0c(0xc0000, 0x1000 - a);
         unk_50 = (t + t2) >> 12;
     } else {
-        a = func_0206ede0();
+        a = MenuCtrl_GetTransitionProgress();
         t = func_01ffcb0c(-0x5c000, a);
         t2 = func_01ffcb0c(0x30000, 0x1000 - a);
         unk_50 = (t + t2) >> 12;

@@ -98,14 +98,14 @@ void func_0201192c(u32 a, u32 b);
 void func_02011900(u32 a);
 s32 func_0201188c();
 BOOL func_020118f4();
-s32 func_0206edb0();
+s32 MenuCtrl_IsTransitionActive();
 s32 func_02038f60();
-s32 func_0206edbc();
+s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData13func_02098750Ev();
 s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
-s32 func_0206e900();
+s32 MenuCtrl_GetHandBells();
 void func_02003edc();
 void func_02003eec();
 void Snd_PlaySe(s32 a);
@@ -117,8 +117,8 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 BOOL func_0203d848();
 BOOL func_0203d854();
 void func_0203d860();
-BOOL func_0206e61c();
-void func_0206e660();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_ResetForceClose();
 BOOL Input_IsTouchMode();
 BOOL Input_IsButtonMode();
 BOOL Input_IsAnyKeyTrig();
@@ -891,8 +891,8 @@ u32 HudClock::canShow() {
         }
         BOOL f7 = FALSE;
         if (t != 0 && b != 0) {
-            BOOL x = func_0206edb0();
-            s32 y = func_0206edbc();
+            BOOL x = MenuCtrl_IsTransitionActive();
+            s32 y = MenuCtrl_GetTransitionProgressOrFull();
             if (x != 0) {
                 if (y < 0x1000) {
                     f7 = TRUE;
@@ -1404,8 +1404,8 @@ u8 HudCountdown::canShow() {
         if (a != 0 && b == 0) c = TRUE;
         BOOL d = FALSE;
         if (a != 0 && b != 0) {
-            s32 p = func_0206edb0();
-            s32 q = func_0206edbc();
+            s32 p = MenuCtrl_IsTransitionActive();
+            s32 q = MenuCtrl_GetTransitionProgressOrFull();
             if (p != 0) {
                 if (q < 0x1000) d = TRUE;
             } else {
@@ -2124,7 +2124,7 @@ void HudCameraButton::enterShown() {
 
 void HudCameraButton::updateShown() {
     if (func_0203d854()) {
-        func_0206e660();
+        MenuCtrl_ResetForceClose();
         enterGridOpening();
     } else if (!canShow()) {
         enterHiding();
@@ -2160,7 +2160,7 @@ void HudCameraButton::enterGridOpen() {
 
 void HudCameraButton::updateGridOpen() {
     BOOL a = isTogglePressed(1);
-    BOOL b = func_0206e61c();
+    BOOL b = MenuCtrl_IsForceCloseDue();
     if (a || b) {
         enterGridClosing();
     }
@@ -2406,20 +2406,20 @@ extern "C" s32 Hud_GetBells() {
     s32 r = 0;
     if (c != 0) {
         s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(), 1);
-        r = a + func_0206e900();
+        r = a + MenuCtrl_GetHandBells();
     }
     return r;
 }
 
 void HudWallet::updateBaseY() {
-    s32 v = func_0206edbc();
+    s32 v = MenuCtrl_GetTransitionProgressOrFull();
     s32 a = func_01ffcb0c(0, v);
     s32 b = func_01ffcb0c(0xc0000, 0x1000 - v);
     unk_24 = (a + b) >> 12;
 }
 
 void HudWallet::updateSlide() {
-    if (func_0206edb0() != 0) {
+    if (MenuCtrl_IsTransitionActive() != 0) {
         s32 r;
         if (func_02038f60() != 0) {
             r = 0x28000;

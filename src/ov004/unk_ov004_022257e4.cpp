@@ -132,15 +132,15 @@ public:
 };
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class Unk_ov004_02224ee4 {
+class RoomObjRes {
 public:
-    Unk_ov004_02224ee4();
-    ~Unk_ov004_02224ee4();
-    void func_ov004_02224ee4();
-    s32 func_ov004_02224d8c(u32 i);
-    void func_ov004_02224d9c();
-    void func_ov004_02224dbc(const char *s);
-    void *func_ov004_02224d68();
+    RoomObjRes();
+    ~RoomObjRes();
+    void clear();
+    s32 RoomObjRes_GetBca(u32 i);
+    void RoomObjRes_Free();
+    void RoomObjRes_Load(const char *s);
+    void *RoomObjRes_GetModel();
 
     u32 unk_00;
     u32 unk_04;
@@ -149,52 +149,52 @@ public:
     u32 unk_70[13];
 };
 
-class Unk_ov004_02224d60 {
+class RoomObjTex {
 public:
-    Unk_ov004_02224d60();
-    ~Unk_ov004_02224d60();
-    void func_ov004_02224d08();
-    void func_ov004_02224d10(const char *s);
-    u32 func_ov004_02224d04();
+    RoomObjTex();
+    ~RoomObjTex();
+    void RoomObjTex_Reset();
+    void RoomObjTex_Load(const char *s);
+    u32 RoomObjTex_Get();
 
     u32 unk_00;
     u8 unk_04;
 };
 
-class Unk_ov004_02224cf4 {
+class RoomObjSe {
 public:
-    Unk_ov004_02224cf4();
-    ~Unk_ov004_02224cf4();
-    void func_ov004_02224ca4(s32 v);
-    void func_ov004_02224cb8();
-    void func_ov004_02224cc0(Unk_ov004_02224ee4_Vec *v);
-    void func_ov004_02224cdc();
+    RoomObjSe();
+    ~RoomObjSe();
+    void RoomObj_PlaySe(s32 v);
+    void RoomObj_DeactivateSe();
+    void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v);
+    void RoomObj_ActivateSe();
 
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Character {
+class RoomObjActor : public Character {
 public:
-    Unk_ov004_0224d4e8();
-    virtual ~Unk_ov004_0224d4e8();
+    RoomObjActor();
+    virtual ~RoomObjActor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
 
-    void func_ov004_02224f58(u32 v);
-    s32 func_ov004_02224f20();
-    s32 func_ov004_02224f3c();
-    void func_ov004_02224f60();
-    void func_ov004_02224f90(char *name);
-    void func_ov004_02224fc8(char *a, char *b);
+    void setSyncSlot(u32 v);
+    s32 storeSyncState();
+    s32 getSyncState();
+    void releaseResources();
+    void loadResourcesByName(char *name);
+    void loadResources(char *a, char *b);
     virtual void vfunc_20(u32 a);
 
     /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60 unk_248;
-    /* 0x250 */ Unk_ov004_02224cf4 unk_250;
+    /* 0x1a4 */ RoomObjRes unk_1a4;
+    /* 0x248 */ RoomObjTex unk_248;
+    /* 0x250 */ RoomObjSe unk_250;
 };
 
 struct Unk_ov004_02225cf4_Q {
@@ -272,34 +272,34 @@ public:
     u8 unk_00[0x2c];
 };
 
-class Unk_ov004_0224d80c : public Unk_ov004_0224d4e8 {
+class CheckInGate : public RoomObjActor {
 public:
-    Unk_ov004_0224d80c();
-    virtual ~Unk_ov004_0224d80c();
+    CheckInGate();
+    virtual ~CheckInGate();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_60(u32 a);
 
-    void func_ov004_022257e4();
-    BOOL func_ov004_02225870();
-    void func_ov004_022258e0();
-    BOOL func_ov004_02225924();
-    void func_ov004_02225984();
-    BOOL func_ov004_02225a14();
-    void func_ov004_02225a84();
-    BOOL func_ov004_02225abc();
-    void func_ov004_02225b1c();
-    void func_ov004_02225c48();
-    void func_ov004_02225c6c();
-    void func_ov004_02225cd4(s32 a);
-    void func_ov004_02225ce8();
-    void func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p);
-    BOOL func_ov004_02225f10();
-    BOOL func_ov004_02225f88();
-    void func_ov004_02225fec();
-    BOOL func_ov004_02226064();
+    void updateState03();
+    BOOL enterState03();
+    void updateState02();
+    BOOL enterState02();
+    void updateState01();
+    BOOL enterState01();
+    void updateState00();
+    BOOL enterState00();
+    void updateState();
+    void removeDoorCollision();
+    void updateDoorCollision();
+    void setDoorOffset(s32 a);
+    void clearDoorUpdate();
+    void applyHourLight(u32 a, Unk_ov004_02225cf4_P *p);
+    BOOL initMatAnim();
+    BOOL initBodyAnim();
+    void setGroundMatFlags();
+    BOOL bindTextures();
 
     /* 0x290 */ ModelAnim unk_290; // fields at 0x298 (u32), 0x2a8 (u32 *), 0x2b0/0x2b4/0x2b8 (u32) are read through F()
     /* 0x2bc */ u32 unk_2bc[0x27];    // a Unk_020d8cf4 (ctor/dtor by hand: the original destroys it with D2)
@@ -308,7 +308,7 @@ public:
     /* 0x490 */ u8 pad_490[8];
 };
 
-typedef Unk_ov004_0224d80c Cls;
+typedef CheckInGate Cls;
 typedef void (Cls::*Fn1)();
 typedef BOOL (Cls::*Fn2)();
 #define F(T, off) (*(T *)((u8 *)this + off))
@@ -317,15 +317,15 @@ extern "C" {
 extern u32 gBgHeap;
 extern void *gCommManager;
 
-s32 func_ov004_02224d8c(void *, u32);
-s32 func_ov004_02224d7c(void *, u32);
-u8 *func_ov004_02224d68(void *);
-u32 func_ov004_02224d04(void *);
-void func_ov004_02224d08(void *);
-void func_ov004_02224d9c(void *);
-s32 func_ov004_02224dbc(void *, const char *);
-void func_ov004_02225f04(Cls *c);
-s32 func_ov004_02224d10(void *, const char *);
+s32 RoomObjRes_GetBca(void *, u32);
+s32 RoomObjRes_GetBma(void *, u32);
+u8 *RoomObjRes_GetModel(void *);
+u32 RoomObjTex_Get(void *);
+void RoomObjTex_Reset(void *);
+void RoomObjRes_Free(void *);
+s32 RoomObjRes_Load(void *, const char *);
+void CheckInGate_SetInstance(Cls *c);
+s32 RoomObjTex_Load(void *, const char *);
 
 void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, u16, u16);
 void *_ZN5Model12getRenderObjEv(void *);
@@ -363,23 +363,23 @@ void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 }
 
-extern "C" const u8 data_ov004_0224014c[];
+extern "C" const u8 sCheckInGateHourLight[];
 extern "C" const u8 data_ov004_0224016c[];
-#define data_ov004_0224014d (data_ov004_0224014c + 1)
-#define data_ov004_0224014e (data_ov004_0224014c + 2)
-#define data_ov004_02240150 (data_ov004_0224014c + 4)
-#define data_ov004_02240154 (data_ov004_0224014c + 8)
+#define data_ov004_0224014d (sCheckInGateHourLight + 1)
+#define data_ov004_0224014e (sCheckInGateHourLight + 2)
+#define data_ov004_02240150 (sCheckInGateHourLight + 4)
+#define data_ov004_02240154 (sCheckInGateHourLight + 8)
 
-extern "C" Unk_ov004_0224d80c *func_ov004_02226484();
-extern "C" Unk_ov004_0224d80c *func_ov004_02226484();// declarations (definition order below sets the data layout)
+extern "C" CheckInGate *CheckInGate_Create();
+extern "C" CheckInGate *CheckInGate_Create();// declarations (definition order below sets the data layout)
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c48; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c4c; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c40; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c44; }
 extern "C" { extern char data_ov004_0224d7ac[]; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c50; }
-extern "C" { extern char *data_ov004_0224d7e8[7]; }
-extern "C" { extern Cls *data_ov004_02250c3c; }
+extern "C" { extern char *sCheckInGateGroundMats[7]; }
+extern "C" { extern Cls *sCheckInGate; }
 extern "C" { extern char data_ov004_0224d7b8[]; }
 extern "C" { extern char data_ov004_0224d77c[]; }
 extern "C" { extern char data_ov004_0224d7c4[]; }
@@ -387,58 +387,58 @@ extern "C" { extern char data_ov004_0224d788[]; }
 extern "C" { extern char data_ov004_0224d794[]; }
 extern "C" { extern char data_ov004_0224d7a0[]; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250c38; }
-extern "C" { extern Unk_ov004_Scene_Entry data_ov004_0224d7d0; }
-extern "C" { extern const u8 data_ov004_0224014c[0x20]; }
+extern "C" { extern Unk_ov004_Scene_Entry sCheckInGateProfile; }
+extern "C" { extern const u8 sCheckInGateHourLight[0x20]; }
 extern "C" { extern const u8 data_ov004_0224016c[0x104]; }
 
 // @2226484
-extern "C" Unk_ov004_0224d80c *func_ov004_02226484() {
-    return new Unk_ov004_0224d80c();
+extern "C" CheckInGate *CheckInGate_Create() {
+    return new CheckInGate();
 }
 
-extern "C" void func_ov004_02226468(Unk_ov004_02226458_Obj *o);
-extern "C" void func_ov004_02226468(Unk_ov004_02226458_Obj *o) {
+extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o);
+extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o) {
     Unk_ov004_02226468_Obj *t = (Unk_ov004_02226468_Obj *)o;
     Unk_ov004_02226468_Sub *s = t->unk_04;
     if (s->unk_2c != 0) {
-        ((Cls *)s->unk_2c)->func_ov004_02225cf4(t->unk_00->unk_00[1], (Unk_ov004_02225cf4_P *)o);
+        ((Cls *)s->unk_2c)->applyHourLight(t->unk_00->unk_00[1], (Unk_ov004_02225cf4_P *)o);
     }
 }
 
-extern "C" void func_ov004_02226458(Unk_ov004_02226458_Obj *o) {
-    o->unk_1c = (void (*)(void *))func_ov004_02226468;
+extern "C" void CheckInGate_InitRenderObj(Unk_ov004_02226458_Obj *o) {
+    o->unk_1c = (void (*)(void *))CheckInGate_MatCallback;
     o->unk_90 = 2;
 }
 
 // @2226410
-Unk_ov004_0224d80c::Unk_ov004_0224d80c() {
+CheckInGate::CheckInGate() {
     _ZN12Unk_020d8cf4C1Ev(unk_2bc);
     _ZN12Unk_020d8cf4C1Ev(unk_358);
     _ZN12Unk_020d8cf4C1Ev(unk_3f4);
 }
 
 // @2226374
-Unk_ov004_0224d80c::~Unk_ov004_0224d80c() {
+CheckInGate::~CheckInGate() {
     _ZN12Unk_020d8cf4D2Ev(unk_3f4);
     _ZN12Unk_020d8cf4D2Ev(unk_358);
     _ZN12Unk_020d8cf4D2Ev(unk_2bc);
 }
 
 // @2226158
-BOOL Unk_ov004_0224d80c::vfunc_00() {
+BOOL CheckInGate::vfunc_00() {
     s32 v;
     s32 s = func_02085180(func_020850e0());
-    func_ov004_02224dbc(&unk_1a4, "/roomObj/obj_check_in.arc");
-    func_ov004_02224d10(&unk_248, "/roomObj/obj_check_in.nsbtx");
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_ec, func_ov004_02224d68(&unk_1a4), 0);
-    F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_lt");
-    F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_ltdoor");
-    F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_open");
-    _ZN5Model15setInitCallbackEii(&unk_ec, (void *)func_ov004_02226458, this);
-    func_ov004_02226064();
-    func_ov004_02225fec();
-    func_ov004_02225f88();
-    func_ov004_02225f10();
+    RoomObjRes_Load(&unk_1a4, "/roomObj/obj_check_in.arc");
+    RoomObjTex_Load(&unk_248, "/roomObj/obj_check_in.nsbtx");
+    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_ec, RoomObjRes_GetModel(&unk_1a4), 0);
+    F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&unk_1a4), (u32)"m_lt");
+    F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&unk_1a4), (u32)"m_ltdoor");
+    F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&unk_1a4), (u32)"m_open");
+    _ZN5Model15setInitCallbackEii(&unk_ec, (void *)CheckInGate_InitRenderObj, this);
+    bindTextures();
+    setGroundMatFlags();
+    initBodyAnim();
+    initMatAnim();
     v = func_020b50e8();
     switch (v) {
     case 0xb:
@@ -461,7 +461,7 @@ BOOL Unk_ov004_0224d80c::vfunc_00() {
         vfunc_60(2);
         break;
     }
-    func_ov004_02225f04(this);
+    CheckInGate_SetInstance(this);
     F(s32, 0x494) = -1;
     static FxVec3 sa(0xb000, 0, 0x10800);
     static FxVec3 sb(0x15000, 0, 0x10800);
@@ -471,53 +471,53 @@ BOOL Unk_ov004_0224d80c::vfunc_00() {
 }
 
 // @222613c
-BOOL Unk_ov004_0224d80c::onExecute() {
-    func_ov004_02225ce8();
-    func_ov004_02225b1c();
-    func_ov004_02225c6c();
+BOOL CheckInGate::onExecute() {
+    clearDoorUpdate();
+    updateState();
+    updateDoorCollision();
     return TRUE;
 }
 
 // @2226128
-BOOL Unk_ov004_0224d80c::onDraw() {
+BOOL CheckInGate::onDraw() {
     _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
     return TRUE;
 }
 
 // @22260e4
-BOOL Unk_ov004_0224d80c::vfunc_0c() {
-    func_ov004_02224d9c(&unk_1a4);
-    func_ov004_02224d08(&unk_248);
-    func_ov004_02225c48();
+BOOL CheckInGate::vfunc_0c() {
+    RoomObjRes_Free(&unk_1a4);
+    RoomObjTex_Reset(&unk_248);
+    removeDoorCollision();
     func_020318cc(unk_358);
     func_020318cc(unk_3f4);
     return TRUE;
 }
 
 // @2226064
-BOOL Unk_ov004_0224d80c::func_ov004_02226064() {
+BOOL CheckInGate::bindTextures() {
     void *o;
-    o = func_ov004_02224d68(&unk_1a4);
+    o = RoomObjRes_GetModel(&unk_1a4);
     NNS_G3dBindMdlTex(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
-    o = func_ov004_02224d68(&unk_1a4);
+    o = RoomObjRes_GetModel(&unk_1a4);
     NNS_G3dBindMdlPltt(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
-    o = func_ov004_02224d68(&unk_1a4);
-    NNS_G3dBindMdlTex(o, (void *)func_ov004_02224d04(&unk_248));
-    o = func_ov004_02224d68(&unk_1a4);
-    NNS_G3dBindMdlPltt(o, (void *)func_ov004_02224d04(&unk_248));
+    o = RoomObjRes_GetModel(&unk_1a4);
+    NNS_G3dBindMdlTex(o, (void *)RoomObjTex_Get(&unk_248));
+    o = RoomObjRes_GetModel(&unk_1a4);
+    NNS_G3dBindMdlPltt(o, (void *)RoomObjTex_Get(&unk_248));
     return TRUE;
 }
 
 // @2225fec
-void Unk_ov004_0224d80c::func_ov004_02225fec() {
+void CheckInGate::setGroundMatFlags() {
     u32 i;
     u8 *base;
     u32 col;
-    { u8 *h = func_ov004_02224d68(&unk_1a4); base = h + *(s32 *)(h + 8); }
+    { u8 *h = RoomObjRes_GetModel(&unk_1a4); base = h + *(s32 *)(h + 8); }
     i = 0;
     col = ((const u32 *)data_ov004_0224016c)[0x40];
     for (; i < 7; i++) {
-        s32 x = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)data_ov004_0224d7e8[i]);
+        s32 x = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&unk_1a4), (u32)sCheckInGateGroundMats[i]);
         u8 *t = base + 4 + *(u16 *)(base + 0xa);
         u8 *q = t + *(u16 *)t * x;
         u32 *rec = (u32 *)(base + *(s32 *)(q + 4));
@@ -531,9 +531,9 @@ void Unk_ov004_0224d80c::func_ov004_02225fec() {
 }
 
 // @2225f88
-BOOL Unk_ov004_0224d80c::func_ov004_02225f88() {
-    if (func_ov004_02224d8c(&unk_1a4, 0) != 0 && _ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap) != 0) {
-        _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 0, 0x1000, 0, 0);
+BOOL CheckInGate::initBodyAnim() {
+    if (RoomObjRes_GetBca(&unk_1a4, 0) != 0 && _ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap) != 0) {
+        _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 0, 0x1000, 0, 0);
         _ZN9AnimModel10attachAnimEv(&unk_ec);
         return TRUE;
     }
@@ -541,9 +541,9 @@ BOOL Unk_ov004_0224d80c::func_ov004_02225f88() {
 }
 
 // @2225f10
-BOOL Unk_ov004_0224d80c::func_ov004_02225f10() {
-    if (func_ov004_02224d7c(&unk_1a4, 0) != 0 && _ZN9ModelAnim11allocMatAnmEjPv(&unk_290, F(u32, 0x148), gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(&unk_290, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
+BOOL CheckInGate::initMatAnim() {
+    if (RoomObjRes_GetBma(&unk_1a4, 0) != 0 && _ZN9ModelAnim11allocMatAnmEjPv(&unk_290, F(u32, 0x148), gBgHeap)) {
+        _ZN9ModelAnim4initEiiit(&unk_290, RoomObjRes_GetBma(&unk_1a4, 0), 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_290, _ZN5Model12getRenderObjEv(&unk_ec));
         return TRUE;
     }
@@ -551,36 +551,36 @@ BOOL Unk_ov004_0224d80c::func_ov004_02225f10() {
 }
 
 // @2225f04
-extern "C" void func_ov004_02225f04(Cls *c) {
-    data_ov004_02250c3c = c;
+extern "C" void CheckInGate_SetInstance(Cls *c) {
+    sCheckInGate = c;
 }
 
 // @2225ee0
-extern "C" BOOL func_ov004_02225ee0() {
-    if (data_ov004_02250c3c != 0) {
-        return data_ov004_02250c3c->vfunc_60(1);
+extern "C" BOOL CheckInGate_Open() {
+    if (sCheckInGate != 0) {
+        return sCheckInGate->vfunc_60(1);
     }
     return FALSE;
 }
 
 // @2225ebc
-extern "C" BOOL func_ov004_02225ebc() {
-    if (data_ov004_02250c3c != 0) {
-        return data_ov004_02250c3c->vfunc_60(3);
+extern "C" BOOL CheckInGate_Close() {
+    if (sCheckInGate != 0) {
+        return sCheckInGate->vfunc_60(3);
     }
     return FALSE;
 }
 
 // @2225e9c
-extern "C" BOOL func_ov004_02225e9c() {
-    if (data_ov004_02250c3c != 0 && data_ov004_02250c3c->unk_248.unk_04 == 2) {
+extern "C" BOOL CheckInGate_IsOpen() {
+    if (sCheckInGate != 0 && sCheckInGate->unk_248.unk_04 == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 // @2225cf4
-void Unk_ov004_0224d80c::func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p) {
+void CheckInGate::applyHourLight(u32 a, Unk_ov004_02225cf4_P *p) {
     u8 tm[2];
     Clock_GetMinuteHour(tm);
     s32 hr = tm[1];
@@ -591,7 +591,7 @@ void Unk_ov004_0224d80c::func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p) {
     s32 w1, w2;
     packed = (u8)(((0x1000 - f) * data_ov004_0224014e[i1] + f * data_ov004_0224014e[i0]) >> 12) << 10;
     {
-        u32 c = (u8)(((0x1000 - f) * data_ov004_0224014c[i1] + f * data_ov004_0224014c[i0]) >> 12);
+        u32 c = (u8)(((0x1000 - f) * sCheckInGateHourLight[i1] + f * sCheckInGateHourLight[i0]) >> 12);
         u32 d = (u8)(((0x1000 - f) * data_ov004_0224014d[i1] + f * data_ov004_0224014d[i0]) >> 12) << 5;
         packed |= c | d;
     }
@@ -616,18 +616,18 @@ void Unk_ov004_0224d80c::func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p) {
 }
 
 // @2225ce8
-void Unk_ov004_0224d80c::func_ov004_02225ce8() {
+void CheckInGate::clearDoorUpdate() {
     F(u8, 0x490) = 0;
 }
 
 // @2225cd4
-void Unk_ov004_0224d80c::func_ov004_02225cd4(s32 a) {
+void CheckInGate::setDoorOffset(s32 a) {
     F(u8, 0x490) = 1;
     F(s32, 0x494) = a;
 }
 
 // @2225c6c
-void Unk_ov004_0224d80c::func_ov004_02225c6c() {
+void CheckInGate::updateDoorCollision() {
     if (F(u8, 0x354)) {
         func_020318cc(unk_2bc);
     }
@@ -642,7 +642,7 @@ void Unk_ov004_0224d80c::func_ov004_02225c6c() {
 }
 
 // @2225c48
-void Unk_ov004_0224d80c::func_ov004_02225c48() {
+void CheckInGate::removeDoorCollision() {
     if (F(u8, 0x354)) {
         func_020318cc(unk_2bc);
     }
@@ -650,7 +650,7 @@ void Unk_ov004_0224d80c::func_ov004_02225c48() {
 
 extern "C" char data_ov004_0224d7ac[] = "m_grd_soi";
 
-extern "C" Cls *data_ov004_02250c3c = 0;
+extern "C" Cls *sCheckInGate = 0;
 
 extern "C" char data_ov004_0224d788[] = "m_grd_g_s";
 
@@ -687,7 +687,7 @@ extern "C" const u8 data_ov004_0224016c[0x104] = {
 
 extern "C" char data_ov004_0224d7b8[] = "m_grd_clf2";
 
-extern "C" const u8 data_ov004_0224014c[0x20] = {
+extern "C" const u8 sCheckInGateHourLight[0x20] = {
     0x1f, 0x1f, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0xcd, 0x04, 0x00, 0x00,
     0x1f, 0x1f, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0xcd, 0x04, 0x00, 0x00,
     0x1f, 0x1f, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -703,19 +703,19 @@ extern "C" char data_ov004_0224d7a0[] = "m_grd_s_s";
 
 extern "C" char data_ov004_0224d7c4[] = "m_grd_clf3";
 
-extern "C" char *data_ov004_0224d7e8[7] = {data_ov004_0224d77c, data_ov004_0224d7b8, data_ov004_0224d7c4, data_ov004_0224d788,
+extern "C" char *sCheckInGateGroundMats[7] = {data_ov004_0224d77c, data_ov004_0224d7b8, data_ov004_0224d7c4, data_ov004_0224d788,
                                            data_ov004_0224d794, data_ov004_0224d7a0, data_ov004_0224d7ac};
 
 extern "C" Unk_ov004_Rgba data_ov004_02250c38(20, 24, 24, 31);
 
 extern "C" char data_ov004_0224d77c[] = "m_grd_clf";
 
-extern "C" Unk_ov004_Scene_Entry data_ov004_0224d7d0 = {(void *(*)())func_ov004_02226484, 0x11, 0x14, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, {0, 0xc8000, 0x12c000, 0x258000}};
 
 // @2225ba8
-BOOL Unk_ov004_0224d80c::vfunc_60(u32 a) {
-    static Fn2 tbl[4] = {&Cls::func_ov004_02225abc, &Cls::func_ov004_02225a14, &Cls::func_ov004_02225924,
-                         &Cls::func_ov004_02225870};
+BOOL CheckInGate::vfunc_60(u32 a) {
+    static Fn2 tbl[4] = {&Cls::enterState00, &Cls::enterState01, &Cls::enterState02,
+                         &Cls::enterState03};
     if (a < 4) {
         if ((this->*tbl[a])()) {
             unk_248.unk_04 = a;
@@ -727,9 +727,9 @@ BOOL Unk_ov004_0224d80c::vfunc_60(u32 a) {
 }
 
 // @2225b1c
-void Unk_ov004_0224d80c::func_ov004_02225b1c() {
-    static Fn1 tbl[4] = {&Cls::func_ov004_02225a84, &Cls::func_ov004_02225984, &Cls::func_ov004_022258e0,
-                         &Cls::func_ov004_022257e4};
+void CheckInGate::updateState() {
+    static Fn1 tbl[4] = {&Cls::updateState00, &Cls::updateState01, &Cls::updateState02,
+                         &Cls::updateState03};
     u32 i = unk_248.unk_04;
     if (i < 4) {
         (this->*tbl[i])();
@@ -737,41 +737,41 @@ void Unk_ov004_0224d80c::func_ov004_02225b1c() {
 }
 
 // @2225abc
-BOOL Unk_ov004_0224d80c::func_ov004_02225abc() {
-    s32 r = func_ov004_02224d8c(&unk_1a4, 0);
+BOOL CheckInGate::enterState00() {
+    s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, RoomObjRes_GetBma(&unk_1a4, 0), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @2225a84
-void Unk_ov004_0224d80c::func_ov004_02225a84() {
+void CheckInGate::updateState00() {
     _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
-    func_ov004_02225cd4(0);
+    setDoorOffset(0);
 }
 
 // @2225a14
-BOOL Unk_ov004_0224d80c::func_ov004_02225a14() {
-    s32 r = func_ov004_02224d8c(&unk_1a4, 1);
+BOOL CheckInGate::enterState01() {
+    s32 r = RoomObjRes_GetBca(&unk_1a4, 1);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 1), 1, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, RoomObjRes_GetBma(&unk_1a4, 1), 1, 0x1000, 0);
     Snd_PlaySe(0x4eb);
     return TRUE;
 }
 
 // @2225984
-void Unk_ov004_0224d80c::func_ov004_02225984() {
+void CheckInGate::updateState01() {
     s32 v;
     _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     v = F(s32, 0x494);
     func_020e7820(&v, -0x2000, 0x100, 0x1000);
-    func_ov004_02225cd4(v);
+    setDoorOffset(v);
     if (_ZN13AnimFrameCtrl10isFinishedEv(((u8 *)this + 0x188))) {
         vfunc_60(2);
     } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(((u8 *)this + 0x188), 0x3a)) {
@@ -780,42 +780,42 @@ void Unk_ov004_0224d80c::func_ov004_02225984() {
 }
 
 // @2225924
-BOOL Unk_ov004_0224d80c::func_ov004_02225924() {
-    s32 r = func_ov004_02224d8c(&unk_1a4, 2);
+BOOL CheckInGate::enterState02() {
+    s32 r = RoomObjRes_GetBca(&unk_1a4, 2);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 2), 0, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, RoomObjRes_GetBma(&unk_1a4, 2), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @22258e0
-void Unk_ov004_0224d80c::func_ov004_022258e0() {
+void CheckInGate::updateState02() {
     _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     if (func_020b50e8() == 0xb) {
-        func_ov004_02225cd4(-0x2000);
+        setDoorOffset(-0x2000);
     }
 }
 
 // @2225870
-BOOL Unk_ov004_0224d80c::func_ov004_02225870() {
-    s32 r = func_ov004_02224d8c(&unk_1a4, 3);
+BOOL CheckInGate::enterState03() {
+    s32 r = RoomObjRes_GetBca(&unk_1a4, 3);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 3), 1, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, RoomObjRes_GetBma(&unk_1a4, 3), 1, 0x1000, 0);
     Snd_PlaySe(0x4ec);
     return TRUE;
 }
 
 // @22257e4
-void Unk_ov004_0224d80c::func_ov004_022257e4() {
+void CheckInGate::updateState03() {
     unk_ec.stepAnim();
     _ZN13AnimFrameCtrl4stepEv((u8 *)this + 0x290);
     *(u32 *)*(u32 *)((u8 *)this + 0x2a8) = *(u32 *)((u8 *)this + 0x298);
     u32 t = F(s32, 0x494);
     func_020e7820((s32 *)&t, 0, 0x100, 0x1000);
-    func_ov004_02225cd4(t);
+    setDoorOffset(t);
     if (unk_ec.isFinished() != 0) {
         vfunc_60(0);
     } else {

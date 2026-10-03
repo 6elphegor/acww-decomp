@@ -82,10 +82,10 @@ public:
     u32 unk_04[0x20 / 4];
 };
 
-class Unk_ov004_02235a0c {
+class FtrPreviewer {
 public:
-    void func_ov004_02235a2c();
-    void func_ov004_02235a54(u16 *p);
+    void clear();
+    void showItem(u16 *p);
 };
 
 class MenuLauncher {
@@ -105,9 +105,9 @@ extern void *gCurrentHeap;
 
 void func_0206f9c8(Unk_020e0488 *w, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(Unk_020e0488 *w, s32 a);
-void func_0206ecf8(s32 a);
+void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(u32 id);
-void *func_ov004_02235a04();
+void *FtrPreviewer_GetInstance();
 s32 Item_TestInfoFlag4(u16 *p);
 s32 Item_GetMemberPrice(u16 *p);
 s32 Item_TestInfoFlag3(u16 *p);
@@ -117,10 +117,10 @@ void MIi_CpuCopy16(void *dst, void *src, s32 n);
 u32 PlayerData_GetCurrent();
 s32 Catalog_HasItem(void *a, u16 *b);
 s32 _s32_div_f(s32 a, s32 b);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_020e761c(void *p, s32 a, s32 b);
 BOOL MenuCtrl_IsTouch();
-void func_0206e738(u32 a);
+void MenuCtrl_SetCatalogItem(u32 a);
 s32 Gfx2d_LoadCharFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
 s32 Gfx2d_LoadPaletteFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
 s32 File_LoadToBuffer(const void *src, void *dst, s32 n);
@@ -1073,8 +1073,8 @@ void CatalogMenu::confirmOrder() {
     Snd_PlaySe(0x29);
     unk_194.setSelected(3);
     setMainState(0xd);
-    func_0206ecf8(1);
-    func_0206e738(*getTabItemPtr(unk_b8));
+    MenuCtrl_SetResult(1);
+    MenuCtrl_SetCatalogItem(*getTabItemPtr(unk_b8));
     beginClose();
 }
 
@@ -1154,7 +1154,7 @@ void CatalogMenu::beginClose() {
     if (Unk_ov142_02293b34_IsOne()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
-            ((Unk_ov004_02235a0c *)func_ov004_02235a04())->func_ov004_02235a2c();
+            ((FtrPreviewer *)FtrPreviewer_GetInstance())->clear();
         }
     }
 }
@@ -1170,7 +1170,7 @@ void CatalogMenu::startOrderConfirm() {
 }
 
 void CatalogMenu::startQuit() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_194.setSelected(6);
     setMainState(0xd);
     beginClose();
@@ -1630,13 +1630,13 @@ void CatalogMenu::uploadListScreen() {
     } else {
         v = 3;
     }
-    func_0206ee80(unk_1d90, 0, 0, 0x1f, 0x1f, v);
+    BgScreen_SetRectPalette(unk_1d90, 0, 0, 0x1f, 0x1f, v);
     if (unk_bc == unk_be) {
         s32 b = unk_b8;
         s32 d = b - unk_b4;
         if (d >= 0 && d < 9) {
             s32 m = (b & 0xf) * 2;
-            func_0206ee80(unk_1d90, 0, m, 0x1f, m + 1, 4);
+            BgScreen_SetRectPalette(unk_1d90, 0, m, 0x1f, m + 1, 4);
         }
     }
     if (unk_678[0].requestScreen((u32)unk_1d90, 4, 0x800, 0)) {
@@ -1750,7 +1750,7 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
         if (t) {
             if (testFlags(0x40)) {
                 clearFlags(0x40);
-                ((Unk_ov004_02235a0c *)func_ov004_02235a04())->func_ov004_02235a2c();
+                ((FtrPreviewer *)FtrPreviewer_GetInstance())->clear();
             }
         }
     } else {
@@ -1774,7 +1774,7 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
         }
         if (t) {
             setFlags(0x40);
-            ((Unk_ov004_02235a0c *)func_ov004_02235a04())->func_ov004_02235a54((u16 *)&tmp);
+            ((FtrPreviewer *)FtrPreviewer_GetInstance())->showItem((u16 *)&tmp);
         }
     }
     setFlags(2);
@@ -2077,7 +2077,7 @@ void CatalogMenu::syncKnobToScroll() {
 }
 
 void CatalogMenu::paintScrollBarArea(s32 a) {
-    func_0206ee80(unk_2590, 0x17, 4, 0x18, 0x13, a);
+    BgScreen_SetRectPalette(unk_2590, 0x17, 4, 0x18, 0x13, a);
     setFlags(0x10);
 }
 

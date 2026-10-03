@@ -25,23 +25,23 @@ s32 func_0206f644();
 void func_02065c94(void *p);
 void func_02065e70(void *dst, void *src);
 void func_02065af0(u32 a);
-void func_0206ea2c(void *p);
-void func_0206ea3c(u32 a);
-s32 func_0206e90c();
-s32 func_0206e98c();
-void func_0206ecf8(s32 a);
+void MenuCtrl_SetFutureLetter(void *p);
+void MenuCtrl_SetPostOfficeResult(u32 a);
+s32 MenuCtrl_PostOfficeLettersSent();
+s32 MenuCtrl_GetPostOfficeOutcome();
+void MenuCtrl_SetResult(s32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-s32 func_02096914(void *p, s32 n);
-s32 func_020968e4(void *p, s32 n);
-s32 func_02096960(void *p);
-void func_02096a9c(void *p);
-s32 func_02096a0c(void *p);
-s32 func_020969b8(void *p);
-s32 func_02096acc(void *p, s32 a, s32 b);
-s32 func_02096a50(void *p, s32 a);
+s32 LetterList_Compact(void *p, s32 n);
+s32 LetterList_CountUsed(void *p, s32 n);
+s32 LetterDelivery_FindAddresseeVillager(void *p);
+void LetterDelivery_SendToVillager(void *p);
+s32 LetterDelivery_HasKnownAddressee(void *p);
+s32 LetterDelivery_FindAddresseePlayer(void *p);
+s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
+s32 LetterDelivery_QueueOutgoing(void *p, s32 a);
 void func_020968e0();
-void func_02096b74();
+void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
 void func_02099a98();
@@ -853,9 +853,9 @@ BOOL LetterStorageMenu::execPhase4() { return TRUE; }
 
 BOOL LetterStorageMenu::execClosed() {
     if (!testFlags(0x1000)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     } else {
-        func_0206ecf8(1);
+        MenuCtrl_SetResult(1);
         void *h = func_02097a04((void *)PlayerData_GetCurrent());
         if (h != 0) {
             s32 i;

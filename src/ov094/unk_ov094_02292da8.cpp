@@ -249,8 +249,8 @@ void func_020655f0(void *o, void *buf);
 s32 func_020655fc(void *o);
 void func_02065c94(void *o);
 void func_02065e70(void *o, s32 x);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_0206eed4(s32 a);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
 void func_0206fab4(void *p, s32 a, s32 b);
@@ -500,7 +500,7 @@ u8 *ItemIconCache::getIconChars(s32 idx)
         File_LoadToBuffer(buf, unk_04, 0x800);
     }
     u8 *r = unk_04;
-    r += func_0206eed4(idx & 0xf) << 5;
+    r += Menu_GetIconCharIndex(idx & 0xf) << 5;
     return r;
 }
 
@@ -510,7 +510,7 @@ u8 *ItemIconCache::getPresentChars(s32 idx)
     func_020639e8(buf, (const char *)data_ov094_02294b80);
     File_LoadToBuffer(buf, unk_04, 0x800);
     u8 *r = unk_04;
-    r += func_0206eed4(idx) << 5;
+    r += Menu_GetIconCharIndex(idx) << 5;
     unk_804 = 0xff;
     return r;
 }

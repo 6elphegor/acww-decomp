@@ -269,7 +269,7 @@ s32 func_ov068_02268e8c(BObj *, u32, u32);
 s32 Insect_GroundWalk(void *);
 s32 Insect_IsOverWater(void *);
 s32 PlayerActor_LocalBeeSting();
-void func_02043b90();
+void Town_ClearBeesReleased();
 void func_ov068_02269424(BVec *, BS50 *, s32);
 void func_ov068_022696e4(s32 *, s32);
 s32 MenuCtrl_IsMenuOpen(void);
@@ -1213,7 +1213,7 @@ void func_ov068_02269250(BObj *o) {
             z->y = 0;
             z->z = 0;
             o->unk_21c = 0;
-            func_02043b90();
+            Town_ClearBeesReleased();
             NNS_G3dMdlSetMdlAlpha((void *)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0, 0);
         }
     }

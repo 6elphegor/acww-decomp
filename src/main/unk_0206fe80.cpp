@@ -40,7 +40,7 @@ void Clock_GetDateTime(void *p);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
 s32 _ZN10PlayerData13func_02098a48Ev(void *p);
-s32 func_02096aac(void *p);
+s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 void func_020638d0(void *a, void *b);
 void MailText_SetSlot(s32 i, void *p);
 void _ZN12Unk_0206555413func_02065588Etj(void *p, u32 a, s32 b);
@@ -222,7 +222,7 @@ BOOL MuseumData::sendCompletionLetters() {
             b = 0;
             func_020656dc(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
             _ZN12Unk_0206555413func_02065588Etj(&big, 0x3870, 1);
-            if (func_02096aac(&big)) r = TRUE;
+            if (LetterDelivery_PutInAddresseeMailbox(&big)) r = TRUE;
         }
     }
     return r;

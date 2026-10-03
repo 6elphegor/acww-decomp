@@ -18,22 +18,22 @@ s32 func_020ffc60(u32 ctx, void *out);
 BOOL func_020ffd20(void *p);
 void func_020ffce8(void *p);
 void func_020ffdd0(void *p, u32 v);
-void func_ov065_02270710(u32 a, void *b, u32 c, void *d, u32 e);
-void func_ov065_022776c8(void *p);
-void func_ov065_022776b4(void *p);
-void func_ov065_022706f8(void *p, u32 v);
-void func_ov065_0227083c(u32 a, void *b, u32 c, void *d, u32 e);
-s32 func_ov065_02271ed8(u32 a);
-s32 func_ov065_02271e8c(u32 a);
-s32 func_ov066_0225ffcc(void);
-s32 func_ov066_02260cac(void *p, u32 a, u32 b);
-void *func_ov066_02260144(u32 a, u32 b);
-s32 func_ov066_0225f63c(void *p);
-s32 func_ov066_0225f688(void *p);
-s32 func_ov066_0225f64c(void *p);
-s32 func_ov066_02261ff8(void);
-s32 func_ov065_02270e60(void);
-s32 func_ov065_02270e7c(u32 *p);
+void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
+void DwcNet_SetSendDoneCallback(void *p);
+void DwcNet_SetRecvCallback(void *p);
+void DwcConn_SetClosedCallback(void *p, u32 v);
+void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
+s32 DwcFriend_GetProfileId(u32 a);
+s32 DwcFriend_FindIndexByProfileId(u32 a);
+s32 LocalWl_GetState(void);
+s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
+void *LocalWl_GetBeacon(u32 a, u32 b);
+s32 LocalWl_IsBeaconValid(void *p);
+s32 LocalWl_GetBeaconGameInfoSize(void *p);
+s32 LocalWl_GetBeaconGameInfo(void *p);
+s32 LocalWl_SetGameInfo(void);
+s32 DwcCore_ClearError(void);
+s32 DwcCore_GetLastError(u32 *p);
 s32 Net_WifiFindFriend(u32 a);
 u32 Net_GetLocalError(void);
 u32 Net_GetWifiError(void);
@@ -63,7 +63,7 @@ extern u8 *sWifiFriendList;
 }
 
 extern "C" u32 Net_GetWifiError(void) {
-    u32 err = func_ov065_02270e7c(&sLastErrorCode);
+    u32 err = DwcCore_GetLastError(&sLastErrorCode);
     u32 i;
     if (err != 0) {
         switch (err) {
@@ -116,53 +116,53 @@ extern "C" u32 Net_GetLastErrorCode(void) {
 }
 
 extern "C" s32 func_020ea72c(void) {
-    return func_ov065_02270e60();
+    return DwcCore_ClearError();
 }
 
 extern "C" s32 func_020ea720(void) {
-    return func_ov066_02261ff8();
+    return LocalWl_SetGameInfo();
 }
 
 extern "C" s32 func_020ea6f4(void *p) {
     if (p == NULL) return 0;
-    return func_ov066_0225f64c(p);
+    return LocalWl_GetBeaconGameInfo(p);
 }
 
 extern "C" s32 func_020ea6c8(void *p) {
     if (p == NULL) return 0;
-    return func_ov066_0225f688(p);
+    return LocalWl_GetBeaconGameInfoSize(p);
 }
 
 extern "C" u32 *Net_GetScanResults(void) {
     u32 i;
     u32 n;
     MI_CpuFill8(data_021f4910, 0, 32);
-    if (func_ov066_0225ffcc() == 7) {
+    if (LocalWl_GetState() == 7) {
         n = i = 0;
         for (; i < 8; i++) {
-            void *r = func_ov066_02260144(0, i & 0xff);
-            if (func_ov066_0225f63c(r) != 0) data_021f4910[n++] = (u32)r;
+            void *r = LocalWl_GetBeacon(0, i & 0xff);
+            if (LocalWl_IsBeaconValid(r) != 0) data_021f4910[n++] = (u32)r;
         }
     }
     return data_021f4910;
 }
 
 extern "C" s32 Net_ConnectToParent(void *p) {
-    if (func_ov066_0225ffcc() == 7 && p != NULL) {
+    if (LocalWl_GetState() == 7 && p != NULL) {
         MI_CpuCopy8(p, data_021f49e0, 0xe0);
-        return func_ov066_02260cac(data_021f49e0, 0, 0);
+        return LocalWl_ConnectToParent(data_021f49e0, 0, 0);
     }
     return 0;
 }
 
 extern "C" s32 Net_WifiFindFriend(u32 a) {
     if (sWifiConnectStep < 4) return -1;
-    return func_ov065_02271e8c(a);
+    return DwcFriend_FindIndexByProfileId(a);
 }
 
 extern "C" s32 func_020ea598(u32 a) {
     if (sWifiConnectStep < 4) return -1;
-    return func_ov065_02271ed8(a);
+    return DwcFriend_GetProfileId(a);
 }
 
 extern "C" u8 *Net_GetWifiFriendList(void) {
@@ -173,10 +173,10 @@ extern "C" u8 *Net_GetWifiFriendList(void) {
 extern "C" BOOL Net_WifiStartHost(void) {
     if (sWifiConnectStep < 4) return FALSE;
     sNetMode = 3;
-    func_ov065_0227083c(data_021f488c, (void *)func_020ec310, 0, (void *)func_020ec30c, 0);
-    func_ov065_022776c8((void *)Net_OnWifiSendDone);
-    func_ov065_022776b4((void *)Net_OnWifiRecv);
-    func_ov065_022706f8((void *)func_020ec3c0, 0);
+    DwcMatch_SetupGameServer(data_021f488c, (void *)func_020ec310, 0, (void *)func_020ec30c, 0);
+    DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
+    DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
+    DwcConn_SetClosedCallback((void *)func_020ec3c0, 0);
     return TRUE;
 }
 
@@ -186,10 +186,10 @@ extern "C" BOOL Net_WifiConnectToHost(u32 a) {
     sNetMode = 4;
     r = Net_WifiFindFriend(a);
     if (r == (u32)-1) return FALSE;
-    func_ov065_02270710(r, (void *)func_020ec3c4, 0, (void *)func_020ec30c, 0);
-    func_ov065_022776c8((void *)Net_OnWifiSendDone);
-    func_ov065_022776b4((void *)Net_OnWifiRecv);
-    func_ov065_022706f8((void *)func_020ec3c0, 0);
+    DwcMatch_ConnectToFriendServer(r, (void *)func_020ec3c4, 0, (void *)func_020ec30c, 0);
+    DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
+    DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
+    DwcConn_SetClosedCallback((void *)func_020ec3c0, 0);
     return TRUE;
 }
 

@@ -183,19 +183,19 @@ extern CommManager *gCommManager;
 extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
-extern const u8 data_020d043c[];
+extern const u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 data_021edb68[];
 extern Unk_02095f38_G data_021ed150;
-extern u8 data_020e1d34[];
-extern u8 data_020e1d28[];
+extern u8 sMotherMonthLetterCount[];
+extern u8 sMotherMonthLetterFirst[];
 extern u8 data_021ecfa8[];
-extern const u32 data_020d0444[];
-extern const u8 *data_020e1d40[];
-extern const u32 data_020d0454[];
-extern const u8 *data_020e1d50[];
+extern const u32 sSeasonLetterPaperCounts[];
+extern const u8 *sSeasonLetterPapers[];
+extern const u32 sPersonalityLetterPaperCounts[];
+extern const u8 *sPersonalityLetterPapers[];
 extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
 extern u8 data_021d7352[];
@@ -241,7 +241,7 @@ void func_02065c94(void *p);
 void _ZN6LetterD1Ev(void *);
 void _ZN6LetterC1Ev(void *);
 void func_02065e70(void *p, void *q);
-s32 func_0206e844(void);
+s32 MenuCtrl_IsClockMovedForward(void);
 void func_0206f604(s32 a, s32 b);
 u32 func_02072970(CommManager *p, u32 v);
 BOOL func_020729bc(CommManager *p, s32 v);
@@ -283,46 +283,46 @@ BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 u32 func_02095720(s32 idx);
 u32 func_02095758(s32 idx);
 Unk_02095774_Ent *PlayerActor_Get(s32 idx);
-void func_02095cdc();
-void func_02095d64(s32 a);
-s32 func_02095dcc();
-s32 func_02095e34();
-s32 func_02095e48(u8 *p);
-s32 func_02095e8c();
-u8 func_02095f10(s32 x);
-u16 func_02095f38(s32 code);
-u8 *func_020960f8(s32 a);
-s32 func_02096120(s32 a, s32 b);
-s32 func_020961dc(s32 a, s32 b, s32 c, s32 d);
-void func_02096258(s32 a, s32 n);
-s32 func_02096288(s32 a, s32 n, s32 k);
-s32 func_020962d0(s32 a, s32 n);
-void func_02096308(s32 x);
-u8 func_02096338(u8 v);
-u32 func_02096344(u8 v);
-s32 func_02096354(Unk_02096354_Arg *p);
-s32 func_020963d0(Unk_02096354_Arg *p);
-s32 func_02096484(Unk_02096354_Arg *p);
-void func_02096570(Unk_02096354_Arg *p, s32 n);
-void func_02096618(void);
-u8 func_02096670(u32 x);
-u8 func_020966b0(u32 i);
-u8 func_020966d0(u32 a, u32 b);
-void func_020966f8(void);
-s32 func_02096880(void);
-s32 func_020968b8(void *p);
+void BottleLetter_WashUpThrownBottle();
+void BottleLetter_OnNewDay(s32 a);
+s32 BottleLetter_IsBottleInTown();
+s32 BottleLetter_PlaceBottle();
+s32 BottleLetter_CreateGameLetter(u8 *p);
+s32 BottleLetter_Open();
+u8 MotherLetter_GetMsgIndex(s32 x);
+u16 MotherLetter_GetPresent(s32 code);
+u8 *MotherLetter_GetFileName(s32 a);
+s32 MotherLetter_Send(s32 a, s32 b);
+s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d);
+void MotherLetter_ClearSent(s32 a, s32 n);
+s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k);
+s32 MotherLetter_CountUnsent(s32 a, s32 n);
+void MotherLetter_ResetOtherMonths(s32 x);
+u8 MotherLetter_GetMonthCount(u8 v);
+u32 MotherLetter_GetMonthFirst(u8 v);
+s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p);
+s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p);
+s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p);
+void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n);
+void LetterDelivery_DeliverReceivedLetter(void);
+u8 LetterPaper_PickForMonth(u32 x);
+u8 LetterPaper_PickForPersonality(u32 i);
+u8 LetterPaper_PickRandom(u32 a, u32 b);
+void LetterDelivery_Update(void);
+s32 LetterDelivery_HasFreeOutgoingSlot(void);
+s32 LetterDelivery_HasFutureLetter(void *p);
 void func_020968e0(void);
-s32 func_020968e4(void *base, s32 n);
-s32 func_02096914(void *base, s32 n);
-s32 func_02096960(Letter *);
-s32 func_020969b8(Letter *);
-BOOL func_02096a0c(Letter *e);
-BOOL func_02096a50(Letter *e, BOOL flag);
-void func_02096a9c(Letter *e);
-BOOL func_02096aac(Letter *e);
-BOOL func_02096acc(Letter *e, s32 idx, u32 flag);
-BOOL func_02096b24(s32 idx);
-s32 func_02096b74(void);
+s32 LetterList_CountUsed(void *base, s32 n);
+s32 LetterList_Compact(void *base, s32 n);
+s32 LetterDelivery_FindAddresseeVillager(Letter *);
+s32 LetterDelivery_FindAddresseePlayer(Letter *);
+BOOL LetterDelivery_HasKnownAddressee(Letter *e);
+BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag);
+void LetterDelivery_SendToVillager(Letter *e);
+BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
+BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag);
+BOOL LetterDelivery_IsMailboxFull(s32 idx);
+s32 LetterDelivery_DeliverOutgoing(void);
 void func_02096c58(u32 mask);
 void func_02096c68(u32 mask);
 BOOL func_02096c78(u32 mask);
@@ -381,9 +381,9 @@ void DateTime_AddDays(void *, s32);
 s32 DateTime_Compare(void *, void *, u32);
 void Clock_GetDateTime(void *);
 s32 func_020a03f0();
-s32 func_020a0414();
-s32 func_020a5ef8();
-u8 func_020a6358(s32 idx);
+s32 Net_GetJoiningAid();
+s32 NetSession_GetLastSyncSlot();
+u8 NetArea_GetSlotScene(s32 idx);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 void func_020b413c(void *);
 void func_020b4154(void *);
@@ -400,50 +400,50 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern const u8 data_020d042c[0x4];
-extern const u8 data_020d0430[0x4];
-extern const u8 data_020d0434[0x4];
-extern const u8 data_020d0438[0x4];
-extern const u8 data_020d043c[0x8];
-extern const u32 data_020d0444[4];
-extern const u32 data_020d0454[6];
-extern const u8 data_020d046c[0x1c];
-extern const u8 data_020d0488[0x20];
-extern const u8 data_020d04a8[0x24];
-extern const u8 data_020d04cc[0x24];
-extern const u8 data_020d04f0[0x24];
-extern const u8 data_020d0514[0x24];
+extern const u8 sAutumnLetterPapers[0x4];
+extern const u8 sWinterLetterPapers[0x4];
+extern const u8 sSpringLetterPapers[0x4];
+extern const u8 sSummerLetterPapers[0x4];
+extern const u8 sThrownBottleReturnOdds[0x8];
+extern const u32 sSeasonLetterPaperCounts[4];
+extern const u32 sPersonalityLetterPaperCounts[6];
+extern const u8 sLetterPapersPersonality1[0x1c];
+extern const u8 sLetterPapersPersonality2[0x20];
+extern const u8 sLetterPapersPersonality4[0x24];
+extern const u8 sLetterPapersPersonality0[0x24];
+extern const u8 sLetterPapersPersonality3[0x24];
+extern const u8 sLetterPapersPersonality5[0x24];
 
-extern "C" s32 func_02096b74(void) {
+extern "C" s32 LetterDelivery_DeliverOutgoing(void) {
     Letter *base = data_021eb98c.func_02097020(0);
-    s32 n = func_02096914(base, 10);
+    s32 n = LetterList_Compact(base, 10);
     s32 i;
     volatile s32 flag = 0;
     volatile s32 zero = 0;
     for (i = 0; i < n; i++) {
         Letter *p = &base[i];
         if (((Unk_02065554 *)p)->func_02065578() != 0) {
-            s32 idx = func_020969b8(p);
+            s32 idx = LetterDelivery_FindAddresseePlayer(p);
             if (idx == -2) {
                 func_02065c94(p);
             } else if (idx != ~zero) {
-                if (func_02096acc(p, idx, flag) != 0) {
+                if (LetterDelivery_PutInMailbox(p, idx, flag) != 0) {
                     func_02065c94(p);
                 }
             } else {
-                if (func_02096960(p) < 0) {
+                if (LetterDelivery_FindAddresseeVillager(p) < 0) {
                     func_02065c94(p);
                 } else {
-                    func_02096a9c(p);
+                    LetterDelivery_SendToVillager(p);
                     func_02065c94(p);
                 }
             }
         }
     }
-    return func_02096914(base, 10);
+    return LetterList_Compact(base, 10);
 }
 
-extern "C" BOOL func_02096b24(s32 idx) {
+extern "C" BOOL LetterDelivery_IsMailboxFull(s32 idx) {
     if (idx == -1) {
         idx = (s32)_ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
     }
@@ -457,7 +457,7 @@ extern "C" BOOL func_02096b24(s32 idx) {
     return TRUE;
 }
 
-extern "C" BOOL func_02096acc(Letter *e, s32 idx, u32 flag) {
+extern "C" BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag) {
     Letter *p = data_021e935c[idx].func_020970b8(0);
     s32 i;
     for (i = 0; i < 10; p++, i++) {
@@ -472,19 +472,19 @@ extern "C" BOOL func_02096acc(Letter *e, s32 idx, u32 flag) {
     return FALSE;
 }
 
-extern "C" BOOL func_02096aac(Letter *e) {
-    s32 i = func_020969b8(e);
+extern "C" BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e) {
+    s32 i = LetterDelivery_FindAddresseePlayer(e);
     if (i < 0) {
         return FALSE;
     }
-    return func_02096acc(e, i, 0);
+    return LetterDelivery_PutInMailbox(e, i, 0);
 }
 
-extern "C" void func_02096a9c(Letter *e) {
+extern "C" void LetterDelivery_SendToVillager(Letter *e) {
     func_020795c4(data_021dfd8c, e);
 }
 
-extern "C" BOOL func_02096a50(Letter *e, BOOL flag) {
+extern "C" BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag) {
     s32 i;
     Letter *p = data_021eb98c.func_02097020(0);
     for (i = 0; i < 10; p++, i++) {
@@ -499,13 +499,13 @@ extern "C" BOOL func_02096a50(Letter *e, BOOL flag) {
     return FALSE;
 }
 
-extern "C" BOOL func_02096a0c(Letter *e) {
-    s32 r = func_020969b8(e);
+extern "C" BOOL LetterDelivery_HasKnownAddressee(Letter *e) {
+    s32 r = LetterDelivery_FindAddresseePlayer(e);
     if (r == -2) {
         return FALSE;
     }
     if (r == -1) {
-        r = func_02096960(e);
+        r = LetterDelivery_FindAddresseeVillager(e);
         if (r == -2) {
             return FALSE;
         }
@@ -516,7 +516,7 @@ extern "C" BOOL func_02096a0c(Letter *e) {
     return TRUE;
 }
 
-extern "C" s32 func_020969b8(Letter *) {
+extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
     void *r4 = func_02065628();
     u8 tmp[0x18];
     s32 res;
@@ -532,7 +532,7 @@ extern "C" s32 func_020969b8(Letter *) {
     return -2;
 }
 
-extern "C" s32 func_02096960(Letter *) {
+extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *) {
     void *r5 = data_021dfd8c;
     void *r4 = func_0206561c();
     u8 tmp[12];
@@ -549,7 +549,7 @@ extern "C" s32 func_02096960(Letter *) {
     return -2;
 }
 
-extern "C" s32 func_02096914(void *base, s32 n) {
+extern "C" s32 LetterList_Compact(void *base, s32 n) {
     s32 i = 0, j = i;
     for (; i < n; i++) {
         u8 *e = (u8 *)base + i * 0xf4;
@@ -564,7 +564,7 @@ extern "C" s32 func_02096914(void *base, s32 n) {
     return j;
 }
 
-extern "C" s32 func_020968e4(void *base, s32 n) {
+extern "C" s32 LetterList_CountUsed(void *base, s32 n) {
     s32 i, cnt;
     cnt = 0;
     i = cnt;
@@ -576,13 +576,13 @@ extern "C" s32 func_020968e4(void *base, s32 n) {
 
 extern "C" void func_020968e0(void) {}
 
-extern "C" s32 func_020968b8(void *p) {
+extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
     if (func_02096e54(func_02097a3c(p))->func_02065578() != 0) return 1;
     return 0;
 }
 
-extern "C" s32 func_02096880(void) {
+extern "C" s32 LetterDelivery_HasFreeOutgoingSlot(void) {
     s32 i;
     u8 *p = (u8 *)_ZN12Unk_0209702013func_02097020Ei(&data_021eb98c, 0);
     for (i = 0; i < 10; p += 0xf4, i++) {
@@ -591,7 +591,7 @@ extern "C" s32 func_02096880(void) {
     return 0;
 }
 
-extern "C" void func_020966f8(void) {
+extern "C" void LetterDelivery_Update(void) {
     u8 *r5;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) return;
     u8 *const g = (u8 *)&data_021eb98c;
@@ -627,8 +627,8 @@ extern "C" void func_020966f8(void) {
         }
         Y.d2 = r5[3];
         if (DateTime_Compare(&LampLights, &Y, 0x3c) != -1) {
-            func_02096b74();
-            if (DateTime_Compare(&LampLights, &Z, 0x3c) != -1) func_02096b74();
+            LetterDelivery_DeliverOutgoing();
+            if (DateTime_Compare(&LampLights, &Z, 0x3c) != -1) LetterDelivery_DeliverOutgoing();
         }
     } else {
         _ZN12Unk_0209702013func_02096fb8Ej(g, 1);
@@ -646,7 +646,7 @@ extern "C" void func_020966f8(void) {
                 Y.d3 = r6[0];
                 Y.d2 = 9;
                 if (DateTime_Compare(&LampLights, &Y, 0x3c) != ~z2) {
-                    if (func_02096acc((Letter *)s4, i, z1)) _ZN12Unk_02096e2813func_02096e28Ev(func_02097a3c(s0));
+                    if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12Unk_02096e2813func_02096e28Ev(func_02097a3c(s0));
                 }
             }
         }
@@ -657,59 +657,59 @@ extern "C" void func_020966f8(void) {
     r5[3] = LampLights.d2;
 }
 
-extern "C" u8 func_020966d0(u32 a, u32 b) {
-    if (func_02063b8c(10) < 3) return func_02096670(b);
-    return func_020966b0(a);
+extern "C" u8 LetterPaper_PickRandom(u32 a, u32 b) {
+    if (func_02063b8c(10) < 3) return LetterPaper_PickForMonth(b);
+    return LetterPaper_PickForPersonality(a);
 }
 
-extern "C" u8 func_020966b0(u32 i) {
-    return data_020e1d50[i][func_02063b8c(data_020d0454[i])];
+extern "C" u8 LetterPaper_PickForPersonality(u32 i) {
+    return sPersonalityLetterPapers[i][func_02063b8c(sPersonalityLetterPaperCounts[i])];
 }
 
-extern "C" u8 func_02096670(u32 x) {
+extern "C" u8 LetterPaper_PickForMonth(u32 x) {
     s32 i;
     if (x <= 2 || x == 12) i = 3;
     else if (x <= 5) i = 0;
     else if (x <= 8) i = 1;
     else i = 2;
-    return data_020e1d40[i][func_02063b8c(data_020d0444[i])];
+    return sSeasonLetterPapers[i][func_02063b8c(sSeasonLetterPaperCounts[i])];
 }
 
-extern "C" void func_02096618(void) {
+extern "C" void LetterDelivery_DeliverReceivedLetter(void) {
     void *r6 = data_021ecfa8;
     if (func_0208f070(r6) != 0) {
-        if (func_02096b24(-1) == 0) {
+        if (LetterDelivery_IsMailboxFull(-1) == 0) {
             void *r5 = func_0208f05c(r6);
             void *r4 = _ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
             func_02065ba4(r5, r4);
             func_02065ac0(r5);
-            if (func_02096acc((Letter *)r5, (s32)r4, 0) != 0) func_0208f088(r6);
+            if (LetterDelivery_PutInMailbox((Letter *)r5, (s32)r4, 0) != 0) func_0208f088(r6);
         }
     }
 }
 
-extern "C" void func_02096570(Unk_02096354_Arg *p, s32 n) {
+extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
     void *r6 = PlayerData_GetCurrent();
     void *r4;
     if (r6 == 0) return;
     if (n < 1) return;
-    if (func_02096880() == 0) {
-        if (func_02096b24(-1) == 1) return;
+    if (LetterDelivery_HasFreeOutgoingSlot() == 0) {
+        if (LetterDelivery_IsMailboxFull(-1) == 1) return;
     }
     r4 = func_02097a30(r6);
-    func_02096308((u8)p->unk_04);
+    MotherLetter_ResetOtherMonths((u8)p->unk_04);
     if (_ZN12Unk_02096d1013func_02096dbcEPi(r4, p) != 0) return;
-    if (func_02096484(p) != 0) {
+    if (MotherLetter_TrySendBirthday(p) != 0) {
         _ZN12Unk_02096d1013func_02096d10Ej(r4, (u8)p->unk_00);
         _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
         return;
     }
-    if (func_020963d0(p) != 0) {
+    if (MotherLetter_TrySendHoliday(p) != 0) {
         _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
         return;
     }
     if (func_02063b8c(10) < 2) {
-        if (func_02096354(p) != 0) {
+        if (MotherLetter_TrySendRandom(p) != 0) {
             _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
             return;
         }
@@ -717,7 +717,7 @@ extern "C" void func_02096570(Unk_02096354_Arg *p, s32 n) {
     _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
 }
 
-extern "C" s32 func_02096484(Unk_02096354_Arg *p) {
+extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r5 = PlayerData_GetCurrent();
     void *r6 = func_02097a30(r5);
     u8 *q = _ZN12Unk_02097ff413func_02098308Ev(r5);
@@ -748,55 +748,55 @@ extern "C" s32 func_02096484(Unk_02096354_Arg *p) {
         r = 1;
     }
 end:
-    if (r) r = func_020961dc(0x20, 2, (u8)p->unk_04, 1);
+    if (r) r = MotherLetter_SendRandomUnsent(0x20, 2, (u8)p->unk_04, 1);
     return r;
 }
 
-extern "C" s32 func_020963d0(Unk_02096354_Arg *p) {
+extern "C" s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p) {
     s32 c = p->unk_08;
     s32 b = p->unk_04;
-    if (b == c) return func_020961dc(c * 2 - 2, 2, (u8)b, 1);
-    if (b == 4 && c == 1) return func_020961dc(0x1c, 2, (u8)b, 1);
-    if (b == 12 && c == 0x18) return func_020961dc(0x1e, 2, (u8)b, 1);
+    if (b == c) return MotherLetter_SendRandomUnsent(c * 2 - 2, 2, (u8)b, 1);
+    if (b == 4 && c == 1) return MotherLetter_SendRandomUnsent(0x1c, 2, (u8)b, 1);
+    if (b == 12 && c == 0x18) return MotherLetter_SendRandomUnsent(0x1e, 2, (u8)b, 1);
     if (b == 6) {
         if (p->unk_08 == Date_GetNthWeekdayDay((u8)p->unk_00, (u8)b, 0, 3))
-            return func_020961dc(0x1a, 2, (u8)p->unk_04, 1);
+            return MotherLetter_SendRandomUnsent(0x1a, 2, (u8)p->unk_04, 1);
     }
     if (p->unk_04 == 5) {
         if (p->unk_08 == Date_GetNthWeekdayDay((u8)p->unk_00, (u8)p->unk_04, 0, 2))
-            return func_020961dc(0x18, 2, (u8)p->unk_04, 1);
+            return MotherLetter_SendRandomUnsent(0x18, 2, (u8)p->unk_04, 1);
     }
     return 0;
 }
 
-extern "C" s32 func_02096354(Unk_02096354_Arg *p) {
-    s32 r6 = func_02096344((u8)p->unk_04);
-    s32 r7 = func_02096338((u8)p->unk_04);
-    s32 r4 = func_020962d0(r6, r7);
+extern "C" s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p) {
+    s32 r6 = MotherLetter_GetMonthFirst((u8)p->unk_04);
+    s32 r7 = MotherLetter_GetMonthCount((u8)p->unk_04);
+    s32 r4 = MotherLetter_CountUnsent(r6, r7);
     if (r4 == r7) {
-        return func_020961dc(r6, r7, (u8)p->unk_04, 0);
+        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->unk_04, 0);
     }
-    if (func_02063b8c(r4 + func_020962d0(0x22, 0x38)) < r4) {
-        return func_020961dc(r6, r7, (u8)p->unk_04, 0);
+    if (func_02063b8c(r4 + MotherLetter_CountUnsent(0x22, 0x38)) < r4) {
+        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->unk_04, 0);
     }
-    return func_020961dc(0x22, 0x38, (u8)p->unk_04, 1);
+    return MotherLetter_SendRandomUnsent(0x22, 0x38, (u8)p->unk_04, 1);
 }
 
-extern "C" u32 func_02096344(u8 v) { return data_020e1d28[v - 1] + 0x5a; }
+extern "C" u32 MotherLetter_GetMonthFirst(u8 v) { return sMotherMonthLetterFirst[v - 1] + 0x5a; }
 
-extern "C" u8 func_02096338(u8 v) { return data_020e1d34[v - 1]; }
+extern "C" u8 MotherLetter_GetMonthCount(u8 v) { return sMotherMonthLetterCount[v - 1]; }
 
-extern "C" void func_02096308(s32 x) {
+extern "C" void MotherLetter_ResetOtherMonths(s32 x) {
     s32 i;
     for (i = 1; i <= 12; i++) {
         if (i != x) {
-            s32 t = func_02096344((u8)i);
-            func_02096258(t, func_02096338((u8)i));
+            s32 t = MotherLetter_GetMonthFirst((u8)i);
+            MotherLetter_ClearSent(t, MotherLetter_GetMonthCount((u8)i));
         }
     }
 }
 
-extern "C" s32 func_020962d0(s32 a, s32 n) {
+extern "C" s32 MotherLetter_CountUnsent(s32 a, s32 n) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 cnt = 0, i = cnt;
     for (; i < n; a++, i++) {
@@ -805,7 +805,7 @@ extern "C" s32 func_020962d0(s32 a, s32 n) {
     return cnt;
 }
 
-extern "C" s32 func_02096288(s32 a, s32 n, s32 k) {
+extern "C" s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 cnt = 0, idx = a, i = cnt;
     for (; i < n; idx++, i++) {
@@ -817,34 +817,34 @@ extern "C" s32 func_02096288(s32 a, s32 n, s32 k) {
     return a;
 }
 
-extern "C" void func_02096258(s32 a, s32 n) {
+extern "C" void MotherLetter_ClearSent(s32 a, s32 n) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 i;
     for (i = 0; i < n; a++, i++) _ZN12Unk_02096d1013func_02096d4cEi(g, a);
 }
 
-extern "C" s32 func_020961dc(s32 a, s32 b, s32 c, s32 d) {
+extern "C" s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d) {
     void *g;
     s32 v8, vc;
     s32 r7;
     g = func_02097a30(PlayerData_GetCurrent());
-    r7 = func_020962d0(a, b);
+    r7 = MotherLetter_CountUnsent(a, b);
     if (r7 == 0) {
         if (d == 0) return 0;
         r7 = b;
-        func_02096258(a, b);
+        MotherLetter_ClearSent(a, b);
         d = 0;
     }
-    v8 = func_02096288(a, b, func_02063b8c(r7));
-    vc = func_02096120(v8, c);
+    v8 = MotherLetter_GetNthUnsent(a, b, func_02063b8c(r7));
+    vc = MotherLetter_Send(v8, c);
     if (vc != 0) {
-        if (r7 == 1 && d == 1) func_02096258(a, b);
+        if (r7 == 1 && d == 1) MotherLetter_ClearSent(a, b);
         else _ZN12Unk_02096d1013func_02096d6cEi(g, v8);
     }
     return vc;
 }
 
-extern "C" s32 func_02096120(s32 a, s32 b) {
+extern "C" s32 MotherLetter_Send(s32 a, s32 b) {
     u8 rec[3];
     u32 buf[0xf4 / 4];
     s32 r4;
@@ -852,18 +852,18 @@ extern "C" s32 func_02096120(s32 a, s32 b) {
     func_02065c94(buf);
     r4 = (s32)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
     rec[0] = data_021edb68[0];
-    rec[0] = func_02095f10(a);
+    rec[0] = MotherLetter_GetMsgIndex(a);
     rec[1] = 1;
     if (a == 0x1a) rec[1] = 0x12;
-    rec[2] = func_020966d0(3, b);
-    func_020656dc(buf, rec, func_020960f8(a), rec + 1, rec + 2, (void *)r4);
-    u32 t = func_02095f38(a);
+    rec[2] = LetterPaper_PickRandom(3, b);
+    func_020656dc(buf, rec, MotherLetter_GetFileName(a), rec + 1, rec + 2, (void *)r4);
+    u32 t = MotherLetter_GetPresent(a);
     if (t != 0xfff1) _ZN12Unk_0206555413func_02065588Etj(buf, t, 1);
-    if (func_02096aac((Letter *)buf)) {
+    if (LetterDelivery_PutInAddresseeMailbox((Letter *)buf)) {
         _ZN6LetterD1Ev(buf);
         return 1;
     }
-    if (func_02096a50((Letter *)buf, 0)) {
+    if (LetterDelivery_QueueOutgoing((Letter *)buf, 0)) {
         _ZN6LetterD1Ev(buf);
         return 1;
     }
@@ -871,13 +871,13 @@ extern "C" s32 func_02096120(s32 a, s32 b) {
     return 0;
 }
 
-extern "C" u8 *func_020960f8(s32 a) {
+extern "C" u8 *MotherLetter_GetFileName(s32 a) {
     if (a >= 0 && a < 0x22) return (u8 *)"mother_day";
     if (a >= 0x22 && a < 0x5a) return (u8 *)"mother_always";
     return (u8 *)"mother_season";
 }
 
-extern "C" u16 func_02095f38(s32 code) {
+extern "C" u16 MotherLetter_GetPresent(s32 code) {
     u16 buf[4];
     ItemPickSpec o1;
     ItemPickSpec o2;
@@ -939,13 +939,13 @@ extern "C" u16 func_02095f38(s32 code) {
     return 0xfff1;
 }
 
-extern "C" u8 func_02095f10(s32 x) {
+extern "C" u8 MotherLetter_GetMsgIndex(s32 x) {
     if (x >= 0 && x < 0x22) return x;
     if (x >= 0x22 && x < 0x5a) return x - 0x22;
     return x - 0x5a;
 }
 
-extern "C" s32 func_02095e8c() {
+extern "C" s32 BottleLetter_Open() {
     void *r5 = func_020991e4();
     if (r5 == NULL) return FALSE;
     void *o = func_02096f44(data_021eceac);
@@ -963,20 +963,20 @@ extern "C" s32 func_02095e8c() {
     return TRUE;
 }
 
-extern "C" s32 func_02095e48(u8 *p) {
+extern "C" s32 BottleLetter_CreateGameLetter(u8 *p) {
     void *o = func_02096f44(data_021eceac);
     if (_ZN12Unk_0206555413func_02065578Ev(o)) return FALSE;
-    if (func_02095e34() == 0) return FALSE;
+    if (BottleLetter_PlaceBottle() == 0) return FALSE;
     func_02065640(o, p, (void *)"ev_bottle");
     return TRUE;
 }
 
-extern "C" s32 func_02095e34() {
+extern "C" s32 BottleLetter_PlaceBottle() {
     Town_GetUpdater();
     Town_WashUpBottle();
 }
 
-extern "C" s32 func_02095dcc() {
+extern "C" s32 BottleLetter_IsBottleInTown() {
     Unk_02095dcc_Grid *g = TownBlockMap_Get();
     s32 y, x, hx, hy;
     u16 *c;
@@ -999,23 +999,23 @@ extern "C" s32 func_02095dcc() {
     return FALSE;
 }
 
-extern "C" void func_02095d64(s32 a) {
+extern "C" void BottleLetter_OnNewDay(s32 a) {
     if (a > 0) {
-        if (func_02095dcc() == 0) {
+        if (BottleLetter_IsBottleInTown() == 0) {
             void *const o = data_021eceac;
             if (_ZN12Unk_0206555413func_02065578Ev(func_02096f44(o))) {
-                func_02095e34();
+                BottleLetter_PlaceBottle();
             } else if (func_02063b8c(10) == 7) {
                 u8 v = data_021edb68[0];
                 s32 r = _ZN12Unk_02096e7813func_02096e78Ev(o);
                 v = r;
-                if (func_02095e48(&v)) _ZN12Unk_02096e7813func_02096f10Ei(o, r);
+                if (BottleLetter_CreateGameLetter(&v)) _ZN12Unk_02096e7813func_02096f10Ei(o, r);
             }
         }
     }
 }
 
-extern "C" void func_02095cdc() {
+extern "C" void BottleLetter_WashUpThrownBottle() {
     void *const o = data_021e7f8c;
     if (_ZN12Unk_0208f23813func_0208f1c0Ev(o)) {
         void *r4 = func_0208f158(o);
@@ -1026,7 +1026,7 @@ extern "C" void func_02095cdc() {
                 s32 u = _ZN12Unk_0208f23813func_0208f15cEv(o);
                 if (u == 0) return;
                 if (u < 5) {
-                    if (func_02063b8c(data_020d043c[u]) != 1) return;
+                    if (func_02063b8c(sThrownBottleReturnOdds[u]) != 1) return;
                 }
                 break;
             }
@@ -1037,64 +1037,64 @@ extern "C" void func_02095cdc() {
             func_02065b28(r4);
             func_02065e70(func_02096f44(data_021eceac), r4);
             func_02065c94(r4);
-            if (func_02095dcc() == 0) func_02095e34();
+            if (BottleLetter_IsBottleInTown() == 0) BottleLetter_PlaceBottle();
         }
     }
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u8 data_020e1d34[0xc];
-extern const u8 data_020d0430[0x4];
+extern u8 sMotherMonthLetterCount[0xc];
+extern const u8 sWinterLetterPapers[0x4];
 extern const s32 data_020d0428;
-extern const u8 data_020d0434[0x4];
-extern const u8 data_020d042c[0x4];
-extern const u8 data_020d0438[0x4];
-extern const u8 data_020d043c[0x8];
-extern const u32 data_020d0444[4];
-extern const u32 data_020d0454[6];
-extern const u8 data_020d046c[0x1c];
-extern const u8 data_020d0488[0x20];
-extern const u8 data_020d04a8[0x24];
-extern const u8 data_020d04cc[0x24];
-extern const u8 data_020d04f0[0x24];
-extern const u8 data_020d0514[0x24];
-extern u8 data_020e1d28[0xc];
-extern const u8 *data_020e1d40[4];
-extern const u8 *data_020e1d50[6];
+extern const u8 sSpringLetterPapers[0x4];
+extern const u8 sAutumnLetterPapers[0x4];
+extern const u8 sSummerLetterPapers[0x4];
+extern const u8 sThrownBottleReturnOdds[0x8];
+extern const u32 sSeasonLetterPaperCounts[4];
+extern const u32 sPersonalityLetterPaperCounts[6];
+extern const u8 sLetterPapersPersonality1[0x1c];
+extern const u8 sLetterPapersPersonality2[0x20];
+extern const u8 sLetterPapersPersonality4[0x24];
+extern const u8 sLetterPapersPersonality0[0x24];
+extern const u8 sLetterPapersPersonality3[0x24];
+extern const u8 sLetterPapersPersonality5[0x24];
+extern u8 sMotherMonthLetterFirst[0xc];
+extern const u8 *sSeasonLetterPapers[4];
+extern const u8 *sPersonalityLetterPapers[6];
 
-u8 data_020e1d34[0xc] = {0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x08, 0x02, 0x02, 0x02, 0x02};
+u8 sMotherMonthLetterCount[0xc] = {0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x08, 0x02, 0x02, 0x02, 0x02};
 
 // 0x020d0428: first .rodata object of this file; read by the previous unit (0x02095130, src/main/unk_02094810.cpp)
 const s32 data_020d0428 = 0x2000;
 
-const u8 data_020d0434[0x4] = {0x00, 0x05, 0x1b, 0x00};
+const u8 sSpringLetterPapers[0x4] = {0x00, 0x05, 0x1b, 0x00};
 
-const u8 data_020d042c[0x4] = {0x07, 0x2d, 0x00, 0x00};
+const u8 sAutumnLetterPapers[0x4] = {0x07, 0x2d, 0x00, 0x00};
 
-const u8 data_020d0438[0x4] = {0x00, 0x04, 0x1b, 0x2b};
+const u8 sSummerLetterPapers[0x4] = {0x00, 0x04, 0x1b, 0x2b};
 
-const u8 data_020d043c[0x8] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x00, 0x00, 0x00};
+const u8 sThrownBottleReturnOdds[0x8] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x00, 0x00, 0x00};
 
-const u32 data_020d0444[4] = {0x3, 0x4, 0x2, 0x2};
+const u32 sSeasonLetterPaperCounts[4] = {0x3, 0x4, 0x2, 0x2};
 
-const u8 data_020d0430[0x4] = {0x06, 0x0e, 0x00, 0x00};
+const u8 sWinterLetterPapers[0x4] = {0x06, 0x0e, 0x00, 0x00};
 
-const u32 data_020d0454[6] = {0x22, 0x1b, 0x1d, 0x23, 0x22, 0x24};
+const u32 sPersonalityLetterPaperCounts[6] = {0x22, 0x1b, 0x1d, 0x23, 0x22, 0x24};
 
-const u8 data_020d046c[0x1c] = {0x08, 0x09, 0x0f, 0x13, 0x14, 0x15, 0x16, 0x21, 0x22, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x32, 0x33, 0x34, 0x38, 0x39, 0x3b, 0x3c, 0x3f, 0x00};
+const u8 sLetterPapersPersonality1[0x1c] = {0x08, 0x09, 0x0f, 0x13, 0x14, 0x15, 0x16, 0x21, 0x22, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x32, 0x33, 0x34, 0x38, 0x39, 0x3b, 0x3c, 0x3f, 0x00};
 
-const u8 data_020d0488[0x20] = {0x08, 0x09, 0x0f, 0x12, 0x13, 0x14, 0x15, 0x21, 0x22, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x33, 0x34, 0x36, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x00, 0x00, 0x00};
+const u8 sLetterPapersPersonality2[0x20] = {0x08, 0x09, 0x0f, 0x12, 0x13, 0x14, 0x15, 0x21, 0x22, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x33, 0x34, 0x36, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x00, 0x00, 0x00};
 
-const u8 data_020d04a8[0x24] = {0x08, 0x09, 0x0a, 0x0b, 0x0d, 0x0f, 0x14, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3b, 0x3c, 0x3d, 0x3f, 0x00, 0x00};
+const u8 sLetterPapersPersonality4[0x24] = {0x08, 0x09, 0x0a, 0x0b, 0x0d, 0x0f, 0x14, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3b, 0x3c, 0x3d, 0x3f, 0x00, 0x00};
 
-const u8 data_020d04cc[0x24] = {0x08, 0x09, 0x0b, 0x0d, 0x0f, 0x14, 0x15, 0x16, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x32, 0x33, 0x34, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x00, 0x00};
+const u8 sLetterPapersPersonality0[0x24] = {0x08, 0x09, 0x0b, 0x0d, 0x0f, 0x14, 0x15, 0x16, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2e, 0x30, 0x31, 0x32, 0x33, 0x34, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x00, 0x00};
 
-const u8 data_020d04f0[0x24] = {0x08, 0x09, 0x0a, 0x0b, 0x0d, 0x03, 0x0f, 0x14, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3a, 0x3c, 0x3d, 0x3e, 0x3f, 0x00};
+const u8 sLetterPapersPersonality3[0x24] = {0x08, 0x09, 0x0a, 0x0b, 0x0d, 0x03, 0x0f, 0x14, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3a, 0x3c, 0x3d, 0x3e, 0x3f, 0x00};
 
-const u8 data_020d0514[0x24] = {0x08, 0x09, 0x0a, 0x0d, 0x03, 0x0f, 0x12, 0x13, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3a, 0x3c, 0x3d, 0x3e, 0x3f};
+const u8 sLetterPapersPersonality5[0x24] = {0x08, 0x09, 0x0a, 0x0d, 0x03, 0x0f, 0x12, 0x13, 0x17, 0x20, 0x21, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2c, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x3a, 0x3c, 0x3d, 0x3e, 0x3f};
 
-u8 data_020e1d28[0xc] = {0x1a, 0x1c, 0x00, 0x02, 0x04, 0x06, 0x08, 0x0a, 0x12, 0x14, 0x16, 0x18};
+u8 sMotherMonthLetterFirst[0xc] = {0x1a, 0x1c, 0x00, 0x02, 0x04, 0x06, 0x08, 0x0a, 0x12, 0x14, 0x16, 0x18};
 
-const u8 *data_020e1d40[4] = {data_020d0434, data_020d0438, data_020d042c, data_020d0430};
+const u8 *sSeasonLetterPapers[4] = {sSpringLetterPapers, sSummerLetterPapers, sAutumnLetterPapers, sWinterLetterPapers};
 
-const u8 *data_020e1d50[6] = {data_020d04cc, data_020d046c, data_020d0488, data_020d04f0, data_020d04a8, data_020d0514};
+const u8 *sPersonalityLetterPapers[6] = {sLetterPapersPersonality0, sLetterPapersPersonality1, sLetterPapersPersonality2, sLetterPapersPersonality3, sLetterPapersPersonality4, sLetterPapersPersonality5};

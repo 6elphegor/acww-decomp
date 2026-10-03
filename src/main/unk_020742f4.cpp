@@ -1932,10 +1932,10 @@ extern "C" {
 void _ZN11CommManager9endRecordEjj(CommManager *g, u32 a, u32 b);
 }
 extern "C" {
-void func_020ac7e8(u32 a);
+void Shop_OnPurchaseAck(u32 a);
 }
 extern "C" {
-void func_020ac7f8(void *p, u32 a);
+void Shop_OnPurchaseRecord(void *p, u32 a);
 }
 extern "C" {
 void func_0209c3cc(void *p);
@@ -2326,9 +2326,9 @@ extern "C" void CommRecv_Act25(u32 a) {
 extern "C" void CommRecv_ShopPurchase(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_020ac7f8(buf, d);
+    Shop_OnPurchaseRecord(buf, d);
 }
-extern "C" void CommRecv_ShopPurchaseAck(u32 a, u32 b, u32 c, u32 d) { func_020ac7e8(d); }
+extern "C" void CommRecv_ShopPurchaseAck(u32 a, u32 b, u32 c, u32 d) { Shop_OnPurchaseAck(d); }
 extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
     struct L { volatile u8 b; volatile u8 f; } l;
     l.f = 1;
@@ -2400,7 +2400,7 @@ extern "C" {
 s32 func_020a0284(void *, s32, s32);
 }
 extern "C" {
-s32 func_020a5f9c(void *, u32);
+s32 NetSession_SetSyncState(void *, u32);
 }
 extern "C" {
 void _ZN11CommManager10readRecordEPhj(void *, void *, s32);
@@ -2514,7 +2514,7 @@ extern "C" {
 s32 func_0209c4e4(void *, s32);
 }
 extern "C" {
-s32 func_02044490(void *, s32);
+s32 FieldAction_OnNetResult(void *, s32);
 }
 extern "C" {
 s32 func_020945b4(u32, s32);
@@ -2571,16 +2571,16 @@ extern "C" {
 u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 }
 extern "C" {
-s32 func_020453e8(Unk_02075bc4_Pt *, u32);
+s32 PendingUnit_IndexAt(Unk_02075bc4_Pt *, u32);
 }
 extern "C" {
-s32 func_0204510c(Unk_02075bc4_Pt *, void *);
+s32 Field_IsUnitClearOfOthersForAid(Unk_02075bc4_Pt *, void *);
 }
 extern "C" {
-Unk_02075bc4_Q *func_02045214();
+Unk_02075bc4_Q *PendingUnit_Get();
 }
 extern "C" {
-s32 func_02044774(void *, BOOL, void *);
+s32 FieldAction_HostProcess(void *, BOOL, void *);
 }
 extern "C" {
 extern void *gCommManager;
@@ -2716,12 +2716,12 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
                 s32 x2, y2;
                 pt.x = x2 = c2 >> 8;
                 pt.y = y2 = b2 & 0xff;
-                if (func_020453e8(&pt, buf.flag) < 0) {
+                if (PendingUnit_IndexAt(&pt, buf.flag) < 0) {
                     pt2.x = x2;
                     pt2.y = y2;
-                    if (func_0204510c(&pt2, d) != 0) ok = TRUE;
+                    if (Field_IsUnitClearOfOthersForAid(&pt2, d) != 0) ok = TRUE;
                 } else {
-                    Unk_02075bc4_Q *q = func_02045214();
+                    Unk_02075bc4_Q *q = PendingUnit_Get();
                     if (q->a == buf.kind) {
                         if (q->b != 0) {
                             if (q->c == 0) ok = TRUE;
@@ -2730,14 +2730,14 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
                 }
             }
         }
-        func_02044774(&buf, ok, d);
+        FieldAction_HostProcess(&buf, ok, d);
     }
 }
 
 extern "C" void CommRecv_ItemActionResult(s32 a, s32 b, s32 c) {
     u8 buf[14];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 0xe);
-    func_02044490(buf, c);
+    FieldAction_OnNetResult(buf, c);
 }
 
 extern "C" void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d) {
@@ -2976,14 +2976,14 @@ extern "C" void CommRecv_VillagerItems() {
 extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d) {
     u8 v;
     _ZN11CommManager10readRecordEPhj(gCommManager, &v, 1);
-    func_020a5f9c(d, v);
+    NetSession_SetSyncState(d, v);
 }
 
 extern "C" void CommRecv_OwnNetState() {
     Unk_02075558_Obj *o = (Unk_02075558_Obj *)gCommManager;
     u8 b;
     _ZN11CommManager10readRecordEPhj(o, &b, 1);
-    func_020a5f9c(o->unk_64, b);
+    NetSession_SetSyncState(o->unk_64, b);
 }
 
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
@@ -3107,16 +3107,16 @@ extern "C" {
 void _ZN11CommManager10setAuxLenAEj(void *, void *);
 }
 extern "C" {
-void func_020a5dd8();
+void NetArea_OnStateAReceived();
 }
 extern "C" {
-void func_020a5e94(u32);
+void NetArea_SetOwnerAck(u32);
 }
 extern "C" {
-void func_020a5ea4(u32);
+void NetArea_SetStateRequester(u32);
 }
 extern "C" {
-void func_020a5eb4(u32, u32);
+void NetArea_SetMemberAck(u32, u32);
 }
 extern "C" {
 void func_020a66f4(void *);
@@ -3125,13 +3125,13 @@ extern "C" {
 void func_020a66ac(void *, void *, void *, void *);
 }
 extern "C" {
-void func_020a5f48(u32, u32);
+void NetSession_SetMemberSyncReply(u32, u32);
 }
 extern "C" {
-void func_020a5f38();
+void NetSession_SetSyncKind();
 }
 extern "C" {
-void func_020a5f5c();
+void NetSession_SetSyncRequester();
 }
 extern "C" {
 void func_020a66f0(void *);
@@ -3249,26 +3249,26 @@ extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     Unk_02074c4c_G *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, v, 1);
     func_020a66ac(v, v + 1, v + 2, v + 3);
-    if (d == 0) func_020a5f48(g->unk_64, v[1]);
-    else func_020a5f48(d, v[1]);
-    if (v[2] < 4) func_020a5f38();
-    if (v[3] < 4) func_020a5f5c();
+    if (d == 0) NetSession_SetMemberSyncReply(g->unk_64, v[1]);
+    else NetSession_SetMemberSyncReply(d, v[1]);
+    if (v[2] < 4) NetSession_SetSyncKind();
+    if (v[3] < 4) NetSession_SetSyncRequester();
     func_020a66f0(v);
 }
-extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { func_020a5eb4(d, 1); }
-extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { func_020a5ea4(d); }
+extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { NetArea_SetMemberAck(d, 1); }
+extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { NetArea_SetStateRequester(d); }
 extern "C" void CommRecv_Act0F(u32 n) {
     void *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufAEv(g), n);
     _ZN11CommManager10setAuxLenAEj(g, (void *)n);
-    func_020a5dd8();
+    NetArea_OnStateAReceived();
 }
 extern "C" void CommRecv_Act10(u32 n) {
     void *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufBEv(g), n);
     _ZN11CommManager10setAuxLenBEj(g, (void *)n);
 }
-extern "C" void CommRecv_Act11() { func_020a5e94(1); }
+extern "C" void CommRecv_Act11() { NetArea_SetOwnerAck(1); }
 extern "C" void CommRecv_ItemSet(u32 n) {
     u32 i = 0;
     void *g = gCommManager;
@@ -3542,7 +3542,7 @@ extern "C" {
 s32 func_02097a04(s32);
 }
 extern "C" {
-s32 _ZN12Unk_020e282413func_020a148cEv(s32);
+s32 _ZN15SaveManagerTalk13func_020a148cEv(s32);
 }
 extern "C" {
 s32 PlayerSession_SetDataIndex(s32, s32);
@@ -3581,13 +3581,13 @@ extern "C" {
 s32 _ZN11CommManager14setPendingModeEj(CommManager *, u32);
 }
 extern "C" {
-s32 func_020a5cfc(s32);
+s32 NetSession_SetCtrl07Received(s32);
 }
 extern "C" {
-s32 func_020a5f9c(s32, u32);
+s32 NetSession_SetSyncState(s32, u32);
 }
 extern "C" {
-s32 func_020a5f7c(u16);
+s32 NetSession_SetSyncMemberMask(u16);
 }
 extern "C" {
 s32 PlayerData_Get(s32);
@@ -3599,7 +3599,7 @@ extern "C" {
 s32 func_0208f1dc(s32);
 }
 extern "C" {
-s32 _ZN12Unk_020e282413func_020a1464Ejh(s32, s32, s32);
+s32 _ZN15SaveManagerTalk19setTransferReceivedEjh(s32, s32, s32);
 }
 extern "C" {
 s32 SaveManager_GetTownCompressBuf();
@@ -3650,7 +3650,7 @@ extern "C" {
 void Comm_GetRemoteMask();
 }
 extern "C" {
-s32 func_020a5e74(u32, u8 *, u8 *, u8 *);
+s32 NetArea_GetSlotStatus(u32, u8 *, u8 *, u8 *);
 }
 extern "C" {
 s32 Clock_GetDateTime(void *);
@@ -3707,7 +3707,7 @@ extern "C" s32 CommSend_SlotStatusAll(s32 a) {
                 u8 r, g, b;
                 u8 col[2];
             } l;
-            func_020a5e74(j, &l.r, &l.g, &l.b);
+            NetArea_GetSlotStatus(j, &l.r, &l.g, &l.b);
             func_020a68a8(l.col);
             func_020a6878(l.col, l.r, l.g, l.b, 7);
             MI_CpuCopy8(l.col, p, 2);
@@ -3825,7 +3825,7 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     }
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
         if (SaveManager_Get() != 0) {
-            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), c, 1);
+            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), c, 1);
         }
     }
 }
@@ -3839,7 +3839,7 @@ extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     }
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), gCommManager->unk_64, 1);
+            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), gCommManager->unk_64, 1);
         }
     }
 }
@@ -3852,15 +3852,15 @@ extern "C" void CommCtrl_RecvVisitorPlayerData(u8 *a, s32 b, s32 c) {
     PlayerSession_SetDataIndex(c, t);
 }
 extern "C" void CommCtrl_RecvNetState(u8 *a, s32 b, s32 c) {
-    func_020a5f9c(c, *a);
+    NetSession_SetSyncState(c, *a);
 }
 extern "C" void CommCtrl_Act06(u8 *a) {
     s32 v = *a;
-    func_020a5f9c(3, v & 7);
-    func_020a5f7c((v >> 4) & 0xf);
+    NetSession_SetSyncState(3, v & 7);
+    NetSession_SetSyncMemberMask((v >> 4) & 0xf);
 }
 extern "C" void CommCtrl_Act07() {
-    func_020a5cfc(1);
+    NetSession_SetCtrl07Received(1);
 }
 extern "C" void CommCtrl_Act08(u8 *a) {
     CommManager *g = gCommManager;
@@ -3963,7 +3963,7 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, &n, 4);
-            s32 r = _ZN12Unk_020e282413func_020a148cEv(SaveManager_Get());
+            s32 r = _ZN15SaveManagerTalk13func_020a148cEv(SaveManager_Get());
             CommManager *g = gCommManager;
             g->unk_68 = 0;
             PlayerSession_SetDataIndex(g->unk_68, r);

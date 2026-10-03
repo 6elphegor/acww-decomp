@@ -331,7 +331,7 @@ u32 MapBlock_HasAnyAttr(u8 *cell, u32 mask);
 BOOL MapBlock_FindItemInRange(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
 u16 *MapBlock_GetItemPtr(u8 *cell, s32 a, s32 b, s32 c);
 BOOL MapBlock_SetItem(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
-void func_02045ca8(u32 a);
+void TownUpdater_MarkEventApplied(u32 a);
 u16 Item_MakePlayerHouse(u32 a);
 BOOL Item_IsPlayerHouse(u16 *p);
 s32 Item_GetSnowmanIndex(void *p);
@@ -1374,7 +1374,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
                     func_0208627c(&data_021e58a6);
-                    func_02045ca8(0x44);
+                    TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
             }
@@ -1384,7 +1384,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
                     func_0208627c(&data_021e58a6);
-                    func_02045ca8(0x44);
+                    TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
             }
@@ -1394,7 +1394,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
         if (i != y) {
             if (func_020b19ec(GetCell(g, x, i), 0x5020)) {
                 func_0208627c(&data_021e58a6);
-                func_02045ca8(0x44);
+                TownUpdater_MarkEventApplied(0x44);
                 return TRUE;
             }
         }
@@ -1404,7 +1404,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
                     func_0208627c(&data_021e58a6);
-                    func_02045ca8(0x44);
+                    TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
             }
@@ -1414,7 +1414,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
             for (j = 1; j <= 4; j++) {
                 if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
                     func_0208627c(&data_021e58a6);
-                    func_02045ca8(0x44);
+                    TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
                 }
             }
@@ -1422,7 +1422,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     }
     if (func_020b19ec(GetCell(g, x, y), 0x5020)) {
         func_0208627c(&data_021e58a6);
-        func_02045ca8(0x44);
+        TownUpdater_MarkEventApplied(0x44);
         return TRUE;
     }
     return FALSE;

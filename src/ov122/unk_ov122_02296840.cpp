@@ -240,7 +240,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 s32 Mem_Clear(void *p, s32 n);
 s32 Mem_Copy(void *dst, void *src, u32 n);
-BOOL func_0206e61c();
+BOOL MenuCtrl_IsForceCloseDue();
 s32 Keyboard_PressCursorKey(void *st);
 u32 Keyboard_MoveCursor(void *st, u32 v);
 s32 Keyboard_HandleModeKey(void *st, s32 k, s32 v);
@@ -284,7 +284,7 @@ void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *func_02065c8c(void *p);
 void Menu_LoadPaperBg(void *p, s32 a);
-s32 func_0206ed68();
+s32 MenuCtrl_GetArg();
 s32 func_020655d8(void *p);
 void _ZN10ScrollKnob8setStateEi(void *p, s32 v);
 void Keyboard_LoadObjGfx(void *p);
@@ -306,9 +306,9 @@ u32 ProcBase_GetParent();
 void _ZN10MenuTabBar9selectTabEj(u32 a, u32 b);
 void _ZN10MenuTabBar15onTabMenuClosedEv(u32 a);
 void _ZN10MenuTabBar8showTabsEv(u32 a);
-u32 func_0206ec48();
-void func_0206ec54(u32 a);
-void func_0206e63c();
+u32 MenuCtrl_GetSavedSlot();
+void MenuCtrl_SetSavedSlot(u32 a);
+void MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsButtons();
 void Gfx2d_EnableSubWindows(u32 a);
 void Gfx2d_DisableSubWindows(u32 a);
@@ -847,8 +847,8 @@ BOOL LetterWriteMenu::execClosed() {
 }
 
 BOOL LetterWriteMenu::checkForcedClose() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 1:
@@ -881,9 +881,9 @@ BOOL LetterWriteMenu::checkForcedClose() {
 BOOL LetterWriteMenu::requestTab(s32 a) {
     u32 r6 = ProcBase_GetParent();
     if (a != -1 && a != 8) {
-        u32 r7 = func_0206ec48();
+        u32 r7 = MenuCtrl_GetSavedSlot();
         _ZN10MenuTabBar9selectTabEj(r6, (u8)a);
-        func_0206ec54(r7);
+        MenuCtrl_SetSavedSlot(r7);
         unk_8c = 2;
         setPhase(1);
         return TRUE;
@@ -1067,7 +1067,7 @@ void LetterWriteMenu::transitionAct0E() {
 }
 
 void LetterWriteMenu::init() {
-    unk_bc = (u8 *)func_0206ed68();
+    unk_bc = (u8 *)MenuCtrl_GetArg();
     Keyboard_Init(&unk_c0, 1);
     _ZN12Unk_0206d0a013func_0206d39cEi(&unk_3c7c, 3);
     _ZN12Unk_0206d0a013func_0206d288EPv(&unk_3c7c, (u32)unk_bc);
@@ -1358,7 +1358,7 @@ void C::mainAct04() {
 }
 
 void C::mainAct05() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         setFlags(0x2000);
         func_ov122_02296a48();
     } else if (checkSwitchToButtons(1)) {
@@ -1889,7 +1889,7 @@ void LetterWriteMenu::mainAct14()
 {
     u32 f;
 
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         setFlags(0x2000);
         func_ov122_02296a48();
     } else if (checkSwitchToTouch()) {

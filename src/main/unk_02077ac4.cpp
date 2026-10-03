@@ -1596,12 +1596,12 @@ s32 _ZN10VillagerId7isValidEv(void *);
 void _ZN6LetterC1Ev(void *);
 void _ZN6LetterD1Ev(void *);
 u32 VillagerId_GetPersonality(void *);
-u32 func_020966b0(void);
+u32 LetterPaper_PickForPersonality(void);
 void _ZN10VillagerId12makeFileNameEPvjj(void *, void *, s32, void *);
 void func_02065920(void *, u8 *, void *, u8 *, void *, void *, s32);
 void func_020658a8(void *, u8 *, u8 *, u8 *, u8 *, void *, u8 *, void *, void *, s32);
 void _ZN12Unk_0206555413func_02065588Etj(void *, u32, s32);
-s32 func_02096a50(void *, s32);
+s32 LetterDelivery_QueueOutgoing(void *, s32);
 u32 func_02063b8c(u32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 void *PlayerData_GetCurrent(void);
@@ -1867,7 +1867,7 @@ s32 _ZN10PlayerData13func_02098750Ev(void);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(s32 a);
 s32 Clock_GetTimeOfDay(void);
 u16 *_ZN10PlayerData8getShirtEv(u32 a);
-s32 func_020b8fe8(void);
+s32 Weather_GetFallingPrecip(void);
 u16 *_ZN10PlayerData11getHeldItemEv(u32 a);
 u16 *_ZN10PlayerData6getHatEv(u32 a);
 u16 *_ZN10PlayerData11getFaceItemEv(u32 a);
@@ -6522,14 +6522,14 @@ extern "C" BOOL func_0207d7d8(u32 a) {
 
 namespace nK {
 extern "C" BOOL func_0207d7c0(void) {
-    if (func_020b8fe8() == 1) return TRUE;
+    if (Weather_GetFallingPrecip() == 1) return TRUE;
     return FALSE;
 }
 }
 
 namespace nK {
 extern "C" BOOL func_0207d7a8(void) {
-    if (func_020b8fe8() == 2) return TRUE;
+    if (Weather_GetFallingPrecip() == 2) return TRUE;
     return FALSE;
 }
 }
@@ -7431,7 +7431,7 @@ extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u
     if (_ZN8PlayerId13func_02094218Ev(d) && _ZN10VillagerId7isValidEv(e)) {
         _ZN6LetterC1Ev(obj);
         VillagerId_GetPersonality(e);
-        buf[0] = func_020966b0();
+        buf[0] = LetterPaper_PickForPersonality();
         v1 = b + func_02063b8c((u32)c);
         v2 = b + func_02063b8c((u32)c);
         v3 = b + func_02063b8c((u32)c);
@@ -7446,7 +7446,7 @@ extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u
             u32 v = *f;
             if (v != 0xfff1) _ZN12Unk_0206555413func_02065588Etj(obj, v, 1);
         }
-        if (func_02096a50(obj, 0)) {
+        if (LetterDelivery_QueueOutgoing(obj, 0)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }
@@ -7463,7 +7463,7 @@ extern "C" s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e) {
     if (_ZN8PlayerId13func_02094218Ev(c) && _ZN10VillagerId7isValidEv(d)) {
         _ZN6LetterC1Ev(obj);
         VillagerId_GetPersonality(d);
-        buf[0] = func_020966b0();
+        buf[0] = LetterPaper_PickForPersonality();
         _ZN10VillagerId12makeFileNameEPvjj(d, data_021cc984, 0x28, a);
         buf[1] = b;
         func_02065920(obj, &buf[1], data_021cc984, buf, d, c, 1);
@@ -7471,7 +7471,7 @@ extern "C" s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e) {
             u32 v = *e;
             if (v != 0xfff1) _ZN12Unk_0206555413func_02065588Etj(obj, v, 1);
         }
-        if (func_02096a50(obj, 0)) {
+        if (LetterDelivery_QueueOutgoing(obj, 0)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }

@@ -12,10 +12,10 @@ struct Unk_ov004_SceneEntry {
 };
 
 // size 0x54
-class Unk_ov004_0224e53c : public GameProc {
+class NewYearCountdown : public GameProc {
 public:
-    Unk_ov004_0224e53c();
-    virtual ~Unk_ov004_0224e53c();
+    NewYearCountdown();
+    virtual ~NewYearCountdown();
     virtual BOOL vfunc_00();
     virtual BOOL onExecute();
 
@@ -29,38 +29,38 @@ extern "C" {
 u32 func_020b50e8(void);
 void Clock_GetDateTime(void *p);
 void Snd_PlaySe(s32 a);
-Unk_ov004_0224e53c *func_ov004_0222beb8();
+NewYearCountdown *NewYearCountdown_Create();
 }
 
-extern "C" const u8 data_ov004_022402b8[0x34] = {
+extern "C" const u8 sNewYearCountdownScenes[0x34] = {
     0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 0, 0
 };
 
-extern "C" Unk_ov004_SceneEntry data_ov004_0224e52c = { (void *(*)())func_ov004_0222beb8, 0x2a, 0x30 };
+extern "C" Unk_ov004_SceneEntry sNewYearCountdownProfile = { (void *(*)())NewYearCountdown_Create, 0x2a, 0x30 };
 
-extern "C" Unk_ov004_0224e53c *func_ov004_0222beb8() {
-    return new Unk_ov004_0224e53c;
+extern "C" NewYearCountdown *NewYearCountdown_Create() {
+    return new NewYearCountdown;
 }
 
-Unk_ov004_0224e53c::Unk_ov004_0224e53c() {}
-Unk_ov004_0224e53c::~Unk_ov004_0224e53c() {}
+NewYearCountdown::NewYearCountdown() {}
+NewYearCountdown::~NewYearCountdown() {}
 
-BOOL Unk_ov004_0224e53c::vfunc_00() {
+BOOL NewYearCountdown::vfunc_00() {
     unk_52 = 1;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224e53c::onExecute() {
+BOOL NewYearCountdown::onExecute() {
     u32 idx = func_020b50e8();
     Unk_0209d498_Time t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
     Clock_GetDateTime(&t);
     if (idx < 0x33) {
-        if (data_ov004_022402b8[idx] != 0) {
+        if (sNewYearCountdownScenes[idx] != 0) {
             if (t.b4 == 0xc && t.b3 == 0x1f) {
                 u32 secs = 0x15180 - (t.b0 + (t.b1 * 0x3c + t.b2 * 0xe10));
                 u32 h = secs / 0xe10;

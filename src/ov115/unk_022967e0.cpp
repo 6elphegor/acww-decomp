@@ -18,8 +18,8 @@ void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-BOOL func_0206e63c();
-BOOL func_0206e61c();
+BOOL MenuCtrl_TickForceClose();
+BOOL MenuCtrl_IsForceCloseDue();
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 s32 MenuTabBar_HitTestTouch();
@@ -342,8 +342,8 @@ BOOL FishBookTab::execClosed() {
 
 BOOL FishBookTab::handleTabSwitch() {
     s32 r;
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         return requestTab(7);
     }
     if (unk_8d != 0 && unk_8d != 2) {

@@ -59,7 +59,7 @@ void func_02033988(void *p);
 }
 
 extern "C" {
-u16 *func_ov004_0222aaa0(void);
+u16 *RoomShell_GetCarpet(void);
 }
 
 extern "C" {
@@ -359,7 +359,7 @@ void Clock_Init(void);
 }
 
 extern "C" {
-void func_02045c88(void);
+void Field_ResetActions(void);
 }
 
 extern "C" {
@@ -515,7 +515,7 @@ extern "C" u32 func_020b0d94(u32 a) {
 extern "C" u32 func_020b0d60(u32 a) {
     if (a == 0x1a) {
         if (isFlag1()) {
-            u16 v = *func_ov004_0222aaa0();
+            u16 v = *RoomShell_GetCarpet();
             return ItemInfo_GetIndoorUnk1(&v);
         }
     }
@@ -589,7 +589,7 @@ extern "C" void Main_Init(void) {
     Snd_Init();
     func_020e7d2c();
     Clock_Init();
-    func_02045c88();
+    Field_ResetActions();
     func_020380e0();
     gProfileTable = (u32)sProfileTableMain;
     func_02099214();

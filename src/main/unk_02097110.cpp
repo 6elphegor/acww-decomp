@@ -40,7 +40,7 @@ s32 _ZN10PlayerData11getPlayerIdEv(s32);
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32, s32);
 s32 _ZN12Unk_02097ff413func_02097ff4Ej(s32, s32);
 s32 _ZN12Unk_02097ff413func_0209801cEj(s32, s32);
-s32 func_0206e844(void);
+s32 MenuCtrl_IsClockMovedForward(void);
 void _ZN12Unk_020dd38cC2Ev(void *);
 void _ZN12Unk_020dd38cD1Ev(void *);
 void func_020638d0(void *, void *);
@@ -51,7 +51,7 @@ void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
 u32 _ZN12Unk_0206555413func_02065588Etj(void *, u32, u32);
 void func_020656dc(void *, void *, void *, void *, void *, s32);
-BOOL func_02096aac(Letter *e);
+BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void func_0211ea4c(s32 (*f)());
 s32 func_02097438();
 void func_02097410(Unk_020973e4 *p, u32 v);
@@ -100,7 +100,7 @@ extern "C" void func_020973e4(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
 extern "C" void func_02097318(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
-    if (func_0206e844() == 0) {
+    if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
             s32 m = func_02097414((Unk_020973e4 *)o);
             s32 q = _s32_div_f(m, 2000);
@@ -123,7 +123,7 @@ extern "C" void func_02097318(s32 n) {
                     String_FormatNumber(buf, n, 10, 1, 0, 0);
                     MailText_SetSlot(1, buf);
                     func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN10PlayerData11getPlayerIdEv(s));
-                    func_02096aac(&e);
+                    LetterDelivery_PutInAddresseeMailbox(&e);
                     _ZN11MsgString25D1Ev(buf);
                 }
             }
@@ -163,7 +163,7 @@ extern "C" void func_02097214(s32 n) {
                 MailText_SetSlot(0, buf);
                 func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
                 _ZN12Unk_0206555413func_02065588Etj(&e, col, 1);
-                if (func_02096aac(&e)) {
+                if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                     _ZN12Unk_02097ff413func_0209801cEj(s, bit);
                 }
                 _ZN12Unk_020dd38cD1Ev(buf);
@@ -221,7 +221,7 @@ extern "C" void func_02097110(s32 n) {
             if (v != 0xfff1) {
                 _ZN12Unk_0206555413func_02065588Etj(&e, v, 1);
             }
-            if (func_02096aac(&e)) {
+            if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                 _ZN12Unk_02097ff413func_02097ff4Ej(s, 0x16);
             }
         }

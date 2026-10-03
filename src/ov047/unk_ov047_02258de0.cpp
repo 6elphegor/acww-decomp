@@ -96,9 +96,9 @@ s32 Item_GetFossilGroup(u16 *p);
 s32 Fossil_CountInGroup(s32 id);
 s32 ItemPick_FromRange(u16 *a, u32 b, u32 c, void *d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02063b8c(s32 n);
-BOOL func_0206ea84(Unk_ov047_Cb cb);
-BOOL func_0206ed18();
-s32 func_0206ed38();
+BOOL MenuCtrl_BuildPocketMask(Unk_ov047_Cb cb);
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 s32 func_0206fe34(void *g, s32 id);
 void *func_020850e0();
 s32 func_020851bc(void *p, s32 a);
@@ -114,8 +114,8 @@ BOOL func_02099f98(u32 a, u16 *p);
 u32 func_0209a108(u32 a);
 s16 *func_0209c37c(s32 a, s32 b);
 s32 Clock_GetTimeOfDay();
-BOOL func_020a032c();
-BOOL func_020a62a0();
+BOOL GameStart_IsActive();
+BOOL NetArea_IsLocalOwner();
 s32 func_020e7500(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
 u32 func_0212a438(const char *s);
@@ -823,7 +823,7 @@ BOOL SpNpcBlathers::vfunc_00() {
     unk_734 = 0;
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
         unk_4cc.unk_1c |= 2;
-        if (func_020a62a0()) {
+        if (NetArea_IsLocalOwner()) {
             unk_5c = 0xf000;
             unk_64 = 0x15000;
             unk_8e = 0;
@@ -981,7 +981,7 @@ BOOL SpNpcBlathers::mainAct06() {
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
             changeAct(3);
-        } else if (func_020a62a0() && b == 4) {
+        } else if (NetArea_IsLocalOwner() && b == 4) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -998,7 +998,7 @@ BOOL SpNpcBlathers::mainAct07() {
     if (func_0201ba88()) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(&a, &b) && a == 4 && func_020a62a0()) {
+        if (func_0201b9e8(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -1064,10 +1064,10 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
     void *o = unk_3c;
     Unk_ov047_0225a5e8_Msg m;
     m.unk_00 = 0x22;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         Unk_020e1c64 ob;
         unk_c4 = -1;
-        unk_c4 = func_0206ed38();
+        unk_c4 = MenuCtrl_GetIndex();
         unk_ca = func_02099048(unk_c4);
         if (!Unk_ov047_0225a3e4_Same(&unk_ca, &m.unk_02)) {
             func_0201578c(this, &unk_ca, 0, 7);
@@ -1142,8 +1142,8 @@ void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
     void *o = unk_3c;
     Unk_ov047_0225a5e8_Msg m;
     m.unk_00 = 0x22;
-    if (func_0206ed18()) {
-        unk_c4 = func_0206ed38();
+    if (MenuCtrl_IsResultOk()) {
+        unk_c4 = MenuCtrl_GetIndex();
         unk_ca = func_02099048(unk_c4);
         func_02014ce4(this, &unk_ca, 0, 10, 0);
         m.unk_00 = 0x19;
@@ -1157,7 +1157,7 @@ void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
 
 void SpNpcBlathersTalk::scriptExhibitListClosed() {
     void *o = unk_3c;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         u8 cmd = 0x13;
         void *g = data_021ed0a0;
         s32 v = MuseumData_getDonationPercent(g);
@@ -1186,8 +1186,8 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
     Unk_ov047_0225a3e4_Msg m;
     m.unk_00 = 0xe8;
     u32 r7 = (u32)PlayerData_GetCurrent();
-    if (func_0206ed18() && func_0202e148()) {
-        s32 r5 = func_0206ed38();
+    if (MenuCtrl_IsResultOk() && func_0202e148()) {
+        s32 r5 = MenuCtrl_GetIndex();
         m.unk_02 = func_02099048(r5);
         if (r5 >= 0) {
             func_02099064(r5);
@@ -1242,7 +1242,7 @@ void SpNpcBlathersTalk::attachOwner(SpNpcBlathers *owner) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         out->unk_00 = sSpNpcBlathersSequence4Key;
         out->unk_04 = 8;
         return;
@@ -1374,7 +1374,7 @@ void SpNpcBlathersTalk::vfunc_14() {
     void *p;
     volatile u8 hdr[4];
     volatile u16 tt[3];
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         goto end;
     }
     if (strncmp((char *)&unk_04, sSpNpcBlathersKey, func_0212a438(sSpNpcBlathersKey)) != 0) {
@@ -1709,7 +1709,7 @@ extern "C" void *data_ov047_0225b4d8[2] = {(void *)_ZN17SpNpcBlathersTalk18openD
 extern "C" void *data_ov047_0225b4d0[2] = {(void *)_ZN17SpNpcBlathersTalk14returnHeldItemEv, 0};
 
 void SpNpcBlathersTalk::vfunc_18(u32 a) {
-    if (!func_020a032c()) {
+    if (!GameStart_IsActive()) {
         static void (SpNpcBlathersTalk::*tbl[2])(u32) = {
             *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b3b0,
             *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b348,
@@ -1868,7 +1868,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
     case 1: {
         unk_c8 = 0;
         u32 r = (u32)PlayerData_GetCurrent();
-        if (func_0206ea84(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
+        if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
             unk_cc = 0x18;
         } else if (func_02098044(r, 0x35) == 0) {
             unk_c8 = 1;
@@ -1931,7 +1931,7 @@ void SpNpcBlathersTalk::onKeepFossilChoice(u32 a) {
 
 void SpNpcBlathersTalk::onAppraiseAnotherChoice(u32 a) {
     if (a == 0) {
-        if (func_0206ea84(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
+        if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
             unk_cc = 0x18;
         } else {
             unk_cc = 0x16;
@@ -2027,7 +2027,7 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
+            if (NetArea_IsLocalOwner()) {
                 Unk_ov047_02258e34_Global *gl = gCommManager;
                 func_0201b9fc(1, gl->unk_64, 4);
                 if (CommManager_isOnline(gl) || *func_0209c37c(0, 0x4a) != 0) {

@@ -126,9 +126,9 @@ public:
 };
 
 // Intermediate class (vtable 0x020e2988): its virtuals are defined by another unit, ctor/dtor inline
-class Unk_020e2988 : public GameProc {
+class SceneBase : public GameProc {
 public:
-    Unk_020e2988() {
+    SceneBase() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
@@ -140,11 +140,11 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Unk_020e2988() {}
+    virtual ~SceneBase() {}
 };
 
 // Vtable 0x020e4230
-class Unk_020e4238 : public Unk_020e2988 {
+class Unk_020e4238 : public SceneBase {
 public:
     Unk_020e4238() {}
     virtual BOOL vfunc_00();
@@ -177,7 +177,7 @@ extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
 extern Unk_020cbb18_t* gCommManager;
-extern u16 data_020e2974;
+extern u16 gNextSceneProfile;
 extern u8 data_021e5890[];
 extern S2f0* gActorDefaultParent;
 extern u8 gTouchHeld;
@@ -188,7 +188,7 @@ extern u8 data_021c3cb8;
 extern u32 gGfxFrameHooks;
 extern u32 data_021ce63c;
 extern u32 gVBlanksPerFrame;
-extern u8 data_021eda64;
+extern u8 gSceneCreating;
 extern u8 data_021eda50[];
 extern u8 data_021eda58[];
 extern u32 gCurrentHeap;
@@ -202,8 +202,8 @@ extern u8 data_ov005_0225b79c[];
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_t* p, u32 i);
 BOOL _ZN11CommManager7isMyAidEj(Unk_020cbb18_t* p, u32 i);
 void _ZN11CommManager14setMemberCountEj(void*, s32);
-u32 func_020a6358(u32 i);
-void func_020a4414(s32 a, s32 b, s32 c, s32 d);
+u32 NetArea_GetSlotScene(u32 i);
+void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 s32 func_0209c098(s32 a);
 u32 func_0209501c(Vec3* a, s16* b);
 void FieldPos_ToUnit(s32* a, s32* b, Vec3* c);
@@ -221,8 +221,8 @@ void PlayerSession_SetGfxSlot(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
 s32 _ZN12Unk_020afaa413func_020afab8EPhS0_y(void*, void*, void*, u32, u32);
 void _ZN12Unk_020afaa413func_020afad0Ev(void*);
-s32 func_020a5ef8();
-void func_020a5ee8(s32);
+s32 NetSession_GetLastSyncSlot();
+void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
 void _ZN10PlayerData13func_02098a58Ev();
 s32 BgModelCache_Get();
@@ -259,10 +259,10 @@ void func_02030518();
 void func_02089118();
 u64 OS_GetTick();
 void Comm_ProcessReceived(s32);
-void func_020a5c30();
-void func_02045c68();
-u8 func_020a5f08();
-void func_020a5f18(s32);
+void NetSession_Update();
+void Field_UpdateActions();
+u8 NetSession_GetActiveSyncKind();
+void NetSession_SetActiveSyncKind(s32);
 void ScreenTransition_ShowCover();
 void Character_ResetList();
 void TalkRequestQueue_StartInitial();
@@ -313,7 +313,7 @@ void func_02077e4c();
 void func_02081d08();
 void func_0205b864(u32);
 void func_0209c540();
-void func_020ac750();
+void NookShop_OnSceneLoad();
 void func_0208e974();
 void Snd_CreateScene();
 }
@@ -714,9 +714,9 @@ extern "C" u16 func_020b5b98(void) {
 BOOL Unk_020b5844::func_020b5af4(u32, u32) {
     ScreenTransition_ShowCover();
     u8 m = data_020e4170;
-    u8 r0 = func_020a5f08();
+    u8 r0 = NetSession_GetActiveSyncKind();
     if (m == 0x2e || m == 0xd || m == 0xc || m == 0xe || m == 0x2f) {
-        if (r0 != 4) func_020a5f18(4);
+        if (r0 != 4) NetSession_SetActiveSyncKind(4);
     }
     Character_ResetList();
     data_020e4174 = data_020e4170;
@@ -803,7 +803,7 @@ BOOL Unk_020b5844::func_020b58f0(u32, u32) {
     if (func_020b50e8() == 0x2c || func_020b50e8() == 0x2d) {
         func_020b49b4((s32)func_020b4934());
     }
-    func_020ac750();
+    NookShop_OnSceneLoad();
     return TRUE;
 }
 
@@ -841,11 +841,11 @@ BOOL Unk_020e4238::vfunc_00() {
     u64 start = OS_GetTick();
     u32 fail = 0;
     for (;;) {
-        u32 idx = data_021eda64 - 1;
+        u32 idx = gSceneCreating - 1;
         if (idx >= 6) break;
         if ((self->*tbl[idx])((u32)start, (u32)(start >> 32))) {
-            data_021eda64++;
-            if (data_021eda64 > 6) break;
+            gSceneCreating++;
+            if (gSceneCreating > 6) break;
             u64 now = OS_GetTick();
             u64 d = (now - start) << 6;
             if ((u32)(d / 0x82ea) > 0x28) {
@@ -859,8 +859,8 @@ BOOL Unk_020e4238::vfunc_00() {
     }
     if (fail) {
         Comm_ProcessReceived(0);
-        func_020a5c30();
-        func_02045c68();
+        NetSession_Update();
+        Field_UpdateActions();
         return -1;
     }
     return 1;
@@ -912,12 +912,12 @@ BOOL Unk_020e4238::vfunc_0c() {
         s32 i = 2;
         for (; i >= 0; i--) PlayerSession_ClearDataIndex(i + 1);
     } else if (func_020b50e8() == 0xe) {
-        s32 v = func_020a5ef8();
+        s32 v = NetSession_GetLastSyncSlot();
         if (v > 0 && v < 4) {
             if (PlayerData_Get(v + 3)) _ZN10PlayerData13func_02098a58Ev();
             PlayerSession_ClearDataIndex(v);
         }
-        func_020a5ee8(4);
+        NetSession_SetLastSyncSlot(4);
     }
     func_020b5c0c();
     data_021ef2f0 = 0;
@@ -1491,8 +1491,8 @@ extern "C" u8 func_020b49a8(u8* p) { return *p; }
 extern "C" u8 func_020b4994() { return func_020b49a8((u8*)func_020b4934()); }
 
 extern "C" void func_020b4968(s32 a, s32 b) {
-    if (data_020e2974 != 5) {
-        func_020a4414(5, a, 3, 1);
+    if (gNextSceneProfile != 5) {
+        Scene_Request(5, a, 3, 1);
         func_0209c098(b);
     }
 }
@@ -1537,7 +1537,7 @@ extern "C" BOOL func_020b4880(void) {
     } else {
         for (i = 3; i >= 0; i--) {
             if (_ZN11CommManager12isSlotActiveEi(p, i) && !_ZN11CommManager7isMyAidEj(p, i)) {
-                v = func_020a6358(i);
+                v = NetArea_GetSlotScene(i);
                 if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
             }
         }

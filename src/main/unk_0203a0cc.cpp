@@ -375,12 +375,12 @@ s32 func_020e9688(void *v);
 s32 Math_AngleXZ(void *a, void *b);
 void func_020e944c(void *v, s32 a);
 void func_020e93a0(void *v, s32 a);
-s32 func_0206ede0();
+s32 MenuCtrl_GetTransitionProgress();
 s32 func_020b52f8();
 s32 func_020b51a4();
 s32 func_020b51fc();
 s32 Camera_UpdateSway(void *self);
-void func_ov004_0223fe00(void *self, s32 a);
+void Camera_UpdateRoomFocus(void *self, s32 a);
 void FieldCamera_UpdateFocusZoom(void *self);
 BOOL func_020e94f8(void *v);
 void func_020e92f4(void *v, s32 a);
@@ -423,27 +423,27 @@ s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL Item_TestInfoFlag3(u16 *p);
 }
 
-extern "C" void func_ov004_0223f8bc();
+extern "C" void Camera_UpdateMode20();
 extern "C" void _ZN12Unk_020d93b813initModeShakeEv();
-extern "C" void func_ov004_0223fa94();
-extern "C" void func_ov004_0223fc8c();
-extern "C" void func_ov004_0223fc00();
+extern "C" void Camera_UpdateMode16();
+extern "C" void Camera_InitMode11();
+extern "C" void Camera_InitMode12();
 extern "C" void _ZN12Unk_020d93b815initModeDefaultEv();
 extern "C" void _ZN16CameraEventModes10initMode13Ev();
-extern "C" void func_ov004_0223f6bc();
+extern "C" void Camera_UpdateMode18();
 extern "C" void _ZN16CameraEventModes12updateMode13Ev();
-extern "C" void func_ov004_0223fb9c();
+extern "C" void Camera_UpdateMode12();
 extern "C" void _ZN12Unk_020d93b89initMode4Ev();
-extern "C" void func_ov004_0223f7b0();
-extern "C" void func_ov004_0223fa54();
-extern "C" void func_ov004_0223fdbc();
+extern "C" void Camera_InitMode18();
+extern "C" void Camera_InitMode14();
+extern "C" void Camera_InitMode10();
 extern "C" void _ZN16CameraEventModes14updateModeSwayEv();
 extern "C" void _ZN16CameraEventModes12initModeSwayEv();
 extern "C" void _ZN16CameraEventModes18updateModeTownTourEv();
-extern "C" void func_ov004_0223f9f0();
+extern "C" void Camera_UpdateMode14();
 extern "C" void _ZN12Unk_020d93b819updateModeTrackPairEv();
 extern "C" void _ZN12Unk_020d93b815initModeRestoreEv();
-extern "C" void func_ov004_0223f9d0();
+extern "C" void Camera_InitMode15();
 extern "C" void _ZN12Unk_020d93b817initModeTrackPairEv();
 extern "C" void _ZN12Unk_020d93b811updateMode4Ev();
 extern "C" void _ZN12Unk_020d93b817updateModeRestoreEv();
@@ -454,14 +454,14 @@ extern "C" void _ZN12Unk_020d93b813initModeFocusEv();
 extern "C" void _ZN12Unk_020d93b811updateMode1Ev();
 extern "C" void _ZN12Unk_020d93b89initMode1Ev();
 extern "C" void _ZN12Unk_020d93b817updateModeDefaultEv();
-extern "C" void func_ov065_02266b24();
-extern "C" void func_ov004_0223f96c();
+extern "C" void SslCert_MatchHostName();
+extern "C" void Camera_UpdateMode15();
 extern "C" void _ZN16CameraEventModes22updateModeFollowTargetEv();
-extern "C" void func_ov004_0223fc28();
+extern "C" void Camera_UpdateMode11();
 extern "C" void _ZN16CameraEventModes16initModeTownTourEv();
-extern "C" void func_ov004_0223fb34();
-extern "C" void func_ov004_0223fd30();
-extern "C" void func_ov004_0223f92c();
+extern "C" void Camera_InitMode16();
+extern "C" void Camera_UpdateMode10();
+extern "C" void Camera_InitMode20();
 extern void *data_020d9258[2];
 extern void *data_020d9260[2];
 extern void *data_020d9268[2];
@@ -1223,8 +1223,8 @@ void Unk_020d93b8::updateMode1() {
             e.y = o.y;
             e.z = o.z;
         }
-        v.y = v.y + (0x1000 - func_0206ede0()) * 15;
-        e.y = e.y + (0x1000 - func_0206ede0()) * 2;
+        v.y = v.y + (0x1000 - MenuCtrl_GetTransitionProgress()) * 15;
+        e.y = e.y + (0x1000 - MenuCtrl_GetTransitionProgress()) * 2;
         if (unk_1fc == 9) {
             v.y = v.y + Camera_UpdateSway(this);
         }
@@ -1241,7 +1241,7 @@ BOOL Unk_020d93b8::initModeFocus() {
     if (data_021ef2f0->unk_04 == 0) {
         loadPose(0xb, 0);
         unk_1f6 = 3;
-        func_ov004_0223fe00(this, 0);
+        Camera_UpdateRoomFocus(this, 0);
     } else {
         loadPose(0xa, 0);
         FieldCamera_UpdateFocusZoom(this);
@@ -1258,7 +1258,7 @@ BOOL Unk_020d93b8::initModeFocus() {
 
 void Unk_020d93b8::updateModeFocus() {
     if (data_021ef2f0->unk_04 == 0) {
-        func_ov004_0223fe00(this, 0);
+        Camera_UpdateRoomFocus(this, 0);
     } else {
         FieldCamera_UpdateFocusZoom(this);
     }
@@ -1760,29 +1760,29 @@ s32 gCameraDistance;
 s32 data_020d9250 = 0x8;
 s32 data_020d9254 = 0x1800;
 Unk_0203c1f0_Entry sCameraProfile = { (void *)Camera_Create, 0xb, 0x6 };
-void *data_020d9258[2] = { (void *)func_ov004_0223f8bc, 0 };
+void *data_020d9258[2] = { (void *)Camera_UpdateMode20, 0 };
 void *data_020d9260[2] = { (void *)_ZN12Unk_020d93b813initModeShakeEv, 0 };
-void *data_020d9268[2] = { (void *)func_ov004_0223fa94, 0 };
-void *data_020d9270[2] = { (void *)func_ov004_0223fc8c, 0 };
-void *data_020d9278[2] = { (void *)func_ov004_0223fc00, 0 };
+void *data_020d9268[2] = { (void *)Camera_UpdateMode16, 0 };
+void *data_020d9270[2] = { (void *)Camera_InitMode11, 0 };
+void *data_020d9278[2] = { (void *)Camera_InitMode12, 0 };
 void *data_020d9280[2] = { (void *)_ZN12Unk_020d93b815initModeDefaultEv, 0 };
 void *data_020d9290[2] = { (void *)_ZN16CameraEventModes10initMode13Ev, 0 };
-void *data_020d9298[2] = { (void *)func_ov004_0223f6bc, 0 };
+void *data_020d9298[2] = { (void *)Camera_UpdateMode18, 0 };
 void *data_020d92a0[2] = { (void *)_ZN16CameraEventModes12updateMode13Ev, 0 };
-void *data_020d92a8[2] = { (void *)func_ov004_0223fb9c, 0 };
+void *data_020d92a8[2] = { (void *)Camera_UpdateMode12, 0 };
 void *data_020d92b0[2] = { (void *)_ZN12Unk_020d93b89initMode4Ev, 0 };
-void *data_020d92b8[2] = { (void *)func_ov004_0223f7b0, 0 };
-void *data_020d92c0[2] = { (void *)func_ov004_0223fa54, 0 };
+void *data_020d92b8[2] = { (void *)Camera_InitMode18, 0 };
+void *data_020d92c0[2] = { (void *)Camera_InitMode14, 0 };
 void *data_020d92c8[2] = { (void *)Camera_UpdateModeShake, 0 };
-void *data_020d92d0[2] = { (void *)func_ov004_0223fdbc, 0 };
+void *data_020d92d0[2] = { (void *)Camera_InitMode10, 0 };
 void *data_020d92d8[2] = { (void *)_ZN16CameraEventModes14updateModeSwayEv, 0 };
 void *data_020d92e0[2] = { (void *)_ZN16CameraEventModes12initModeSwayEv, 0 };
 void *data_020d92e8[2] = { (void *)_ZN16CameraEventModes18updateModeTownTourEv, 0 };
 void *data_020d92f0[2] = { (void *)Camera_InitMode19, 0 };
-void *data_020d92f8[2] = { (void *)func_ov004_0223f9f0, 0 };
+void *data_020d92f8[2] = { (void *)Camera_UpdateMode14, 0 };
 void *data_020d9300[2] = { (void *)_ZN12Unk_020d93b819updateModeTrackPairEv, 0 };
 void *data_020d9308[2] = { (void *)_ZN12Unk_020d93b815initModeRestoreEv, 0 };
-void *data_020d9310[2] = { (void *)func_ov004_0223f9d0, 0 };
+void *data_020d9310[2] = { (void *)Camera_InitMode15, 0 };
 void *data_020d9318[2] = { (void *)Camera_UpdateMode19, 0 };
 void *data_020d9320[2] = { (void *)_ZN12Unk_020d93b817initModeTrackPairEv, 0 };
 void *data_020d9328[2] = { (void *)_ZN12Unk_020d93b811updateMode4Ev, 0 };
@@ -1794,14 +1794,14 @@ void *data_020d9350[2] = { (void *)_ZN12Unk_020d93b813initModeFocusEv, 0 };
 void *data_020d9358[2] = { (void *)_ZN12Unk_020d93b811updateMode1Ev, 0 };
 void *data_020d9360[2] = { (void *)_ZN12Unk_020d93b89initMode1Ev, 0 };
 void *data_020d9368[2] = { (void *)_ZN12Unk_020d93b817updateModeDefaultEv, 0 };
-void *data_020d9370[2] = { (void *)func_ov065_02266b24, 0 };
-void *data_020d9378[2] = { (void *)func_ov004_0223f96c, 0 };
+void *data_020d9370[2] = { (void *)SslCert_MatchHostName, 0 };
+void *data_020d9378[2] = { (void *)Camera_UpdateMode15, 0 };
 void *data_020d9380[2] = { (void *)_ZN16CameraEventModes22updateModeFollowTargetEv, 0 };
-void *data_020d9388[2] = { (void *)func_ov004_0223fc28, 0 };
+void *data_020d9388[2] = { (void *)Camera_UpdateMode11, 0 };
 void *data_020d9390[2] = { (void *)_ZN16CameraEventModes16initModeTownTourEv, 0 };
-void *data_020d9398[2] = { (void *)func_ov004_0223fb34, 0 };
-void *data_020d93a0[2] = { (void *)func_ov004_0223fd30, 0 };
-void *data_020d93a8[2] = { (void *)func_ov004_0223f92c, 0 };
+void *data_020d9398[2] = { (void *)Camera_InitMode16, 0 };
+void *data_020d93a0[2] = { (void *)Camera_UpdateMode10, 0 };
+void *data_020d93a8[2] = { (void *)Camera_InitMode20, 0 };
 
 // .rodata 0x020c8ce4-0x020c8d3c: the three objects before sCameraBlendTable continue this file's ascending size run
 // (4, 0x24, 0x30, 0x60, 0x294). data_020c8ce4 is read by the unit at 0x02038474 (0x020388f8), sCameraPoseGrid by this

@@ -40,10 +40,10 @@ struct Unk_020a6790 {
     u32 unk_04;
 };
 
-extern Unk_020a6754 data_021eda94[];
+extern Unk_020a6754 gNetSessionState[];
 extern Unk_020a6720 data_021edaa0[];
-extern u8 data_021edac0[];  // data_021eda94 + 0x2c (Unk_020a66f8[4] member of U195's singleton)
-extern u8 data_021edad0[];  // data_021eda94 + 0x3c (Unk_020a6790[4] member)
+extern u8 data_021edac0[];  // gNetSessionState + 0x2c (Unk_020a66f8[4] member of U195's singleton)
+extern u8 data_021edad0[];  // gNetSessionState + 0x3c (Unk_020a6790[4] member)
 
 extern "C" s32 func_020a6478() { return 0; }
 
@@ -66,7 +66,7 @@ extern "C" void func_020a6430(u32 a, u8 b) {
 }
 
 extern "C" void func_020a63bc(s32 idx, u32 b, u32 c, u32 d, u32 e) {
-    Unk_020a6754 *t = &data_021eda94[idx];
+    Unk_020a6754 *t = &gNetSessionState[idx];
     u8 v[3];
     t->func_020a6760(&v[0], &v[1], &v[2]);
     if (e & 1) {

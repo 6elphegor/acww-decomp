@@ -6,21 +6,21 @@ struct Vec3 {
 
 extern "C" s32 Snowball_FindByParam(s32 a);
 extern "C" s32 RoomBoardSign_GetByIndex(s32 a);
-extern "C" s32 func_ov004_0222a2c0(void);
-extern "C" s32 func_ov004_0222864c(void);
+extern "C" s32 RoomTelephone_GetInstance(void);
+extern "C" s32 RecycleBox_GetInstance(void);
 extern "C" s32 MuseumExhibitInfo_GetByIndex(s32 a);
 extern "C" s32 Atm_GetInstance(void);
 extern "C" s32 VillagerBoard_Get(s32 a);
-extern "C" s32 func_ov004_0223584c(void);
+extern "C" s32 FtrActorTable_GetInstance(void);
 extern "C" s32 BuildingList_GetAt(s32 a);
 extern "C" s32 NpcRegistry_FindSpNpc(void);
 extern "C" s32 NpcRegistry_FindVillager(void);
 extern "C" s32 func_020951ec(void);
 extern "C" BOOL func_020b705c(u8 v);
 
-class Unk_ov004_0223583c {
+class FtrActorTable {
 public:
-    s32 func_ov004_02235720(u32 a);
+    s32 get(u32 a);
 };
 
 extern "C" u8 data_020e416c;
@@ -120,7 +120,7 @@ extern "C" s32 func_020b5fc8(s32 a) { return func_020b5fd0(a); }
 
 extern "C" s32 func_020b5f98(s32 a) {
     if (IsMode1()) {
-        return ((Unk_ov004_0223583c *)func_ov004_0223584c())->func_ov004_02235720(a);
+        return ((FtrActorTable *)FtrActorTable_GetInstance())->get(a);
     }
     return 0;
 }
@@ -148,14 +148,14 @@ extern "C" s32 func_020b5f20(s32 a) {
 
 extern "C" s32 func_020b5ef8(void) {
     if (IsMode1()) {
-        return func_ov004_0222864c();
+        return RecycleBox_GetInstance();
     }
     return 0;
 }
 
 extern "C" s32 func_020b5ed0(void) {
     if (IsMode1()) {
-        return func_ov004_0222a2c0();
+        return RoomTelephone_GetInstance();
     }
     return 0;
 }

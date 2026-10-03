@@ -13,8 +13,8 @@ extern u8 data_021e58a8[];
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
-void *func_ov004_02235718();
-u8 *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *p, s32 x, s32 y, s32 z);
+void *FtrActorGrid_GetInstance();
+u8 *_ZN12FtrActorGrid8getActorEiii(void *p, s32 x, s32 y, s32 z);
 void FtrActor_GetFtrIndex(void *p);
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FtrInfo_GetDmaUnk04();
@@ -29,7 +29,7 @@ void func_020728a4(void *p, void *data, s32 size);
 s32 func_020b50e8();
 s32 func_020529e4(void *p, s32 a, s32 b, void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 void func_02051ff8(s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02060244(void *p, s32 a, s32 b);
 void *BlockMap_GetForArea(s32 a);
@@ -63,7 +63,7 @@ extern "C" BOOL func_020513b0(s32 x, s32 y) {
     BOOL r;
     if (data_020e416c == 1 ? TRUE : FALSE) {
         void *p = gSceneBlockMap;
-        u8 *q = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), x, y, 0);
+        u8 *q = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), x, y, 0);
         if (p != NULL && q != NULL) {
             s32 hx = x >> 4;
             s32 hy = y >> 4;

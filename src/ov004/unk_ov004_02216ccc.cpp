@@ -106,7 +106,7 @@ s32 Villager_GetResidentStatus(void *);
 s32 Unk_020d77a4_getPlayerActor(void *, u32);
 void VillagerTalk_begin(void *, void *, s32);
 void func_02015ab0(void *, s32);
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 s32 func_02014220(void *);
 s32 func_020197a8(void *);
 s32 func_02019790(void *);
@@ -683,7 +683,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
             func_02015ab0(&o->unk_680, Unk_020d77a4_getPlayerActor(o, 4));
             o->unk_89c.changeState(o, 1);
         } else {
-            if (func_020a62a0() != 0 && b == 4) {
+            if (NetArea_IsLocalOwner() != 0 && b == 4) {
                 func_0201b9fc(o, 1, gCommManager->unk_64, 4);
                 if (o->unk_89c.applyPendingState(o) == 0) {
                     o->unk_89c.changeState(o, 0);
@@ -704,7 +704,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
         s32 b = 4;
         if (func_0201b9e8(o, &a, &b) != 0) {
             if (a == 4) {
-                if (func_020a62a0() != 0) {
+                if (NetArea_IsLocalOwner() != 0) {
                     func_0201b9fc(o, 1, gCommManager->unk_64, 4);
                     if (o->unk_89c.applyPendingState(o) == 0) {
                         o->unk_89c.changeState(o, 0);
@@ -776,7 +776,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
         break;
     case 8:
         if (v == 4) {
-            if (func_020a62a0() != 0) {
+            if (NetArea_IsLocalOwner() != 0) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 if (unk_89c.applyPendingState(this) == 0) {
                     unk_89c.changeState(this, 0);

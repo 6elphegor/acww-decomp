@@ -118,46 +118,46 @@ u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_ov065_02283630(const char *, const char *, char *, s32);
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283470(void *, s32, const char *);
-void func_ov065_02283720(void *, const char *, ...);
-void *func_ov065_02277ad8(void *, s32);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02277ac8(void *);
-s32 func_ov065_02278ce0(s32, void *, s32, s32);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-s32 func_ov065_02278be8(s32);
-s32 func_ov065_02278684(s32);
-s32 func_ov065_02278da4(s32, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_0228090c(void *, void *);
-s32 func_ov065_022810fc(void *, void *);
-s32 func_ov065_022817c8(void *, s32, s32);
-s32 func_ov065_0227e350(void);
+s32 GsGp_GetValue(const char *, const char *, char *, s32);
+void GsGp_SetErrorString(void *, const char *);
+void GsGp_SetError(void *, s32, const char *);
+void GsGp_DebugLog(void *, const char *, ...);
+void *GsUtil_Realloc(void *, s32);
+void *GsUtil_Alloc(s32);
+s32 GsUtil_Free(void *);
+s32 GsSock_Recv(s32, void *, s32, s32);
+s32 GsSock_Send(s32, void *, s32, s32);
+s32 GsSock_GetLastError(s32);
+s32 GsArray_Count(s32);
+s32 GsSock_Shutdown(s32, s32);
+s32 GsSock_Close(s32);
+s32 GsGp_RemoveOperation(void *, void *);
+s32 GsGpPeer_Free(void *, void *);
+s32 GsGpProfile_FindIf(void *, s32, s32);
+s32 GsGp_FreeBuddyDataCb(void);
 
-s32 func_ov065_0227dd38(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 func_ov065_0227dde8(Unk_H *, Unk_B *, s32);
-s32 func_ov065_0227de10(Unk_H *, Unk_B *, const char *);
-s32 func_ov065_0227de30(Unk_H *, Unk_B *, const char *, s32);
-s32 func_ov065_0227deb4(Unk_H *, Unk_B *, char);
-s32 func_ov065_0227dc48(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
-s32 func_ov065_0227da7c(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
-s32 func_ov065_0227dfd8(Unk_H *, Unk_N *);
-s32 func_ov065_0227e0e8(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
-void func_ov065_0227e160(Unk_H *, s32, s32);
+s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 GsGpBuf_AppendInt(Unk_H *, Unk_B *, s32);
+s32 GsGpBuf_AppendString(Unk_H *, Unk_B *, const char *);
+s32 GsGpBuf_Append(Unk_H *, Unk_B *, const char *, s32);
+s32 GsGpBuf_AppendChar(Unk_H *, Unk_B *, char);
+s32 GsGpPeer_Send(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
+s32 GsGp_SendBuffer(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
+s32 GsGp_CallCallback(Unk_H *, Unk_N *);
+s32 GsGp_QueueCallback(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
+void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 }
 
 extern "C" {
-s32 func_ov065_0227deb4(Unk_H *h, Unk_B *b, char c) {
+s32 GsGpBuf_AppendChar(Unk_H *h, Unk_B *b, char c) {
     s32 len = b->unk_08;
     s32 cap = b->unk_04;
     char *data = b->unk_00;
     if (cap == len) {
         cap += 0x800;
-        data = (char *)func_ov065_02277ad8(data, cap + 1);
+        data = (char *)GsUtil_Realloc(data, cap + 1);
         if (data == NULL) {
-            func_ov065_02283460(h, "Out of memory.");
+            GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
     }
@@ -171,7 +171,7 @@ s32 func_ov065_0227deb4(Unk_H *h, Unk_B *b, char c) {
 }
 
 extern "C" {
-s32 func_ov065_0227de30(Unk_H *h, Unk_B *b, const char *s, s32 n) {
+s32 GsGpBuf_Append(Unk_H *h, Unk_B *b, const char *s, s32 n) {
     s32 len;
     s32 cap;
     char *data;
@@ -183,9 +183,9 @@ s32 func_ov065_0227de30(Unk_H *h, Unk_B *b, const char *s, s32 n) {
     data = b->unk_00;
     if (cap - len < n) {
         cap += (n < 0x800) ? 0x800 : n;
-        data = (char *)func_ov065_02277ad8(data, cap + 1);
+        data = (char *)GsUtil_Realloc(data, cap + 1);
         if (data == NULL) {
-            func_ov065_02283460(h, "Out of memory.");
+            GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
     }
@@ -199,38 +199,38 @@ s32 func_ov065_0227de30(Unk_H *h, Unk_B *b, const char *s, s32 n) {
 }
 
 extern "C" {
-s32 func_ov065_0227de10(Unk_H *h, Unk_B *b, const char *s) {
-    return func_ov065_0227de30(h, b, s, STD_GetStringLength(s));
+s32 GsGpBuf_AppendString(Unk_H *h, Unk_B *b, const char *s) {
+    return GsGpBuf_Append(h, b, s, STD_GetStringLength(s));
 }
 }
 
 extern "C" {
-s32 func_ov065_0227dde8(Unk_H *h, Unk_B *b, s32 n) {
+s32 GsGpBuf_AppendInt(Unk_H *h, Unk_B *b, s32 n) {
     char tmp[0x14];
     OS_SPrintf(tmp, "%d", n);
-    return func_ov065_0227de10(h, b, tmp);
+    return GsGpBuf_AppendString(h, b, tmp);
 }
 }
 
 extern "C" {
-s32 func_ov065_0227dd38(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, const char *str) {
+s32 GsGp_SocketSend(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, const char *str) {
     s32 n;
     s32 e;
-    n = func_ov065_02278ca0(fd, buf, len, 0);
+    n = GsSock_Send(fd, buf, len, 0);
     if (n == -1) {
-        e = func_ov065_02278be8(fd);
+        e = GsSock_GetLastError(fd);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             if (str[0] == 'P' && str[1] == 'R') {
                 return 3;
             }
-            func_ov065_02283470(h, 5, "There was an error sending on a socket.");
-            func_ov065_0227e160((Unk_H *)h, 3, 0);
+            GsGp_SetError(h, 5, "There was an error sending on a socket.");
+            GsGp_CallErrorCallback((Unk_H *)h, 3, 0);
             return 3;
         }
         *pcnt = 0;
         *pflag = 0;
     } else if (n == 0) {
-        func_ov065_02283720(h, "SENDXXXX(%s): Connection closed\n", str);
+        GsGp_DebugLog(h, "SENDXXXX(%s): Connection closed\n", str);
         *pcnt = 0;
         *pflag = 1;
     } else {
@@ -242,12 +242,12 @@ s32 func_ov065_0227dd38(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pc
 }
 
 extern "C" {
-s32 func_ov065_0227dccc(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
+s32 GsGpPeer_SendChar(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
     s32 flag;
     s32 cnt;
     s32 r;
-    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && func_ov065_02278684(c->unk_38) == 0) {
-        r = func_ov065_0227dd38(h, c->unk_08, &ch, 1, &flag, &cnt, "PT");
+    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && GsArray_Count(c->unk_38) == 0) {
+        r = GsGp_SocketSend(h, c->unk_08, &ch, 1, &flag, &cnt, "PT");
         if (r != 0) {
             return r;
         }
@@ -255,12 +255,12 @@ s32 func_ov065_0227dccc(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
             return 0;
         }
     }
-    return func_ov065_0227deb4(h, &c->unk_28, ch);
+    return GsGpBuf_AppendChar(h, &c->unk_28, ch);
 }
 }
 
 extern "C" {
-s32 func_ov065_0227dc48(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
+s32 GsGpPeer_Send(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
     s32 sent = 0;
     s32 flag;
     s32 cnt;
@@ -268,9 +268,9 @@ s32 func_ov065_0227dc48(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32
     if (n == 0) {
         return sent;
     }
-    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && func_ov065_02278684(c->unk_38) == 0) {
+    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && GsArray_Count(c->unk_38) == 0) {
         do {
-            r = func_ov065_0227dd38(h, c->unk_08, (char *)s + sent, n, &flag, &cnt, "PT");
+            r = GsGp_SocketSend(h, c->unk_08, (char *)s + sent, n, &flag, &cnt, "PT");
             if (r != 0) {
                 return r;
             }
@@ -281,7 +281,7 @@ s32 func_ov065_0227dc48(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32
         } while (cnt != 0 && n != 0);
     }
     if (n != 0) {
-        r = func_ov065_0227de30(h, &c->unk_28, s + sent, n);
+        r = GsGpBuf_Append(h, &c->unk_28, s + sent, n);
         if (r != 0) {
             return r;
         }
@@ -291,12 +291,12 @@ s32 func_ov065_0227dc48(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32
 }
 
 extern "C" {
-s32 func_ov065_0227dc28(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s) {
-    return func_ov065_0227dc48(h, c, s, STD_GetStringLength(s));
+s32 GsGpPeer_SendString(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s) {
+    return GsGpPeer_Send(h, c, s, STD_GetStringLength(s));
 }
 }
 
-// Not in the original binary: unreferenced weak function compiled right after func_ov065_0227db18, so that the literal
+// Not in the original binary: unreferenced weak function compiled right after GsGp_RecvToBuffer, so that the literal
 // "%d" is pooled where the original has it (before "PT"); removed by the dead-stripping link (see notes.txt).
 extern "C" {
 __declspec(weak) void Unk_ov065_0227dc00_pool_order(void) {
@@ -305,7 +305,7 @@ __declspec(weak) void Unk_ov065_0227dc00_pool_order(void) {
 }
 
 extern "C" {
-s32 func_ov065_0227db18(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const char *str) {
+s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const char *str) {
     char *data = b->unk_00;
     s32 len = b->unk_08;
     s32 cap = b->unk_04;
@@ -320,22 +320,22 @@ s32 func_ov065_0227db18(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const
     for (;;) {
         if (len + 0x800 > cap) {
             cap = len + 0x800;
-            data = (char *)func_ov065_02277ad8(data, cap + 1);
+            data = (char *)GsUtil_Realloc(data, cap + 1);
             if (data == NULL) {
-                func_ov065_02283460(h, "Out of memory.");
+                GsGp_SetErrorString(h, "Out of memory.");
                 return 1;
             }
         }
-        n = func_ov065_02278ce0(fd, data + len, cap - len, z0);
+        n = GsSock_Recv(fd, data + len, cap - len, z0);
         if (n == ~z2) {
-            e = func_ov065_02278be8(fd);
+            e = GsSock_GetLastError(fd);
             if (e != -6 && e != -0x1a && e != -0x4c) {
-                func_ov065_02283460(h, "There was an error reading from a socket.");
+                GsGp_SetErrorString(h, "There was an error reading from a socket.");
                 return 3;
             }
         } else if (n == 0) {
             flag = 1;
-            func_ov065_02283720(h, "RECVXXXX(%s): Connection closed\n", str);
+            GsGp_DebugLog(h, "RECVXXXX(%s): Connection closed\n", str);
         } else {
             len += n;
             total += n;
@@ -346,7 +346,7 @@ s32 func_ov065_0227db18(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const
         }
     }
     if (total != 0) {
-        func_ov065_02283720(h, "RECVTOTL(%s): %d\n", str, total);
+        GsGp_DebugLog(h, "RECVTOTL(%s): %d\n", str, total);
     }
     b->unk_00 = data;
     b->unk_08 = len;
@@ -359,7 +359,7 @@ s32 func_ov065_0227db18(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const
 }
 
 extern "C" {
-s32 func_ov065_0227da7c(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const char *str) {
+s32 GsGp_SendBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const char *str) {
     char *data = b->unk_00;
     s32 len = b->unk_08;
     s32 pos = b->unk_0c;
@@ -373,7 +373,7 @@ s32 func_ov065_0227da7c(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, cons
         return sent;
     }
     do {
-        r = func_ov065_0227dd38(h, fd, data + (pos + sent), rem, &flag, &cnt, str);
+        r = GsGp_SocketSend(h, fd, data + (pos + sent), rem, &flag, &cnt, str);
         if (r != 0) {
             return r;
         }
@@ -400,7 +400,7 @@ s32 func_ov065_0227da7c(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, cons
 }
 
 extern "C" {
-s32 func_ov065_0227d9b0(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
+s32 GsGpPeer_ParseMessage(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
     char line[16];
     char *p;
     s32 n;
@@ -416,11 +416,11 @@ s32 func_ov065_0227d9b0(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
                 return 3;
             }
             *p = 0;
-            if (func_ov065_02283630(b->unk_00, "\\m\\", line, 16) == 0) {
+            if (GsGp_GetValue(b->unk_00, "\\m\\", line, 16) == 0) {
                 return 3;
             }
             *plen = func_0212b770(line);
-            if (func_ov065_02283630(b->unk_00, "\\len\\", line, 16) == 0) {
+            if (GsGp_GetValue(b->unk_00, "\\len\\", line, 16) == 0) {
                 return 3;
             }
             n = func_0212b770(line);
@@ -442,7 +442,7 @@ s32 func_ov065_0227d9b0(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
 }
 
 extern "C" {
-s32 func_ov065_0227d96c(void *h, Unk_B *b) {
+s32 GsGpBuf_Compact(void *h, Unk_B *b) {
     if (b == NULL || b->unk_00 == NULL || b->unk_0c == 0) {
         return 0;
     }

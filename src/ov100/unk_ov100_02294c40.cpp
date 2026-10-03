@@ -14,13 +14,13 @@ void Gfx2d_LoadCharFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreenFile(void *a, s32 b, s32 c);
 void Gfx2d_LoadPaletteFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Snd_PlaySe(s32 a);
-void func_0206eba4(void *p);
-s32 func_0206ebc0();
-void func_0206ec04();
-void func_0206ecf8(s32 a);
-s32 func_0206ed18();
-void func_0206ed2c(u32 a);
-s32 func_0206ed50();
+void MenuCtrl_SetChosenItems(void *p);
+s32 MenuCtrl_RestorePockets();
+void MenuCtrl_BackupPockets();
+void MenuCtrl_SetResult(s32 a);
+s32 MenuCtrl_IsResultOk();
+void MenuCtrl_SetIndex(u32 a);
+s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
@@ -708,7 +708,7 @@ extern "C" void ShopSellMenu_Init(S *s) {
     s->unk_2759 = 0;
     ((PopupChoiceMenu *)&s->unk_2270)->init(3, 1, 0);
     s->unk_275f = 0;
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
         for (i = 0; i < 15; i++) {
@@ -724,7 +724,7 @@ extern "C" void ShopSellMenu_Init(S *s) {
         break;
     }
     MI_CpuCopy8(s->unk_2714, s->unk_2732, 0x1e);
-    func_0206ec04();
+    MenuCtrl_BackupPockets();
 }
 
 extern "C" void ShopSellMenu_Exit(S *s) {
@@ -775,7 +775,7 @@ extern "C" void ShopSellMenu_LoadTopBg(S *s) {
     s32 h = gCurrentHeap;
     Gfx2d_LoadScreenFile((void *)"menu/inventory/b_itm_bg_tra1.bsc", h, 4);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
-    s32 v = func_0206ed50();
+    s32 v = MenuCtrl_GetMode();
     u8 *a = NULL;
     u8 *b = NULL;
     switch (v) {
@@ -1378,7 +1378,7 @@ extern "C" BOOL ShopSellMenu_IsItemRejected(S *s, u32 a)
         return TRUE;
     }
     v = t;
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x1e: {
         BOOL f = FALSE;
         u16 x = v;
@@ -1935,8 +1935,8 @@ void ShopSellMenu::cancel() {
     unk_2760 = 5;
     setMainState(0x15);
     setQuitLabel(1);
-    func_0206ecf8(0);
-    func_0206ebc0();
+    MenuCtrl_SetResult(0);
+    MenuCtrl_RestorePockets();
 }
 
 void ShopSellMenu::confirm() {
@@ -1946,14 +1946,14 @@ void ShopSellMenu::confirm() {
     setMainState(0x15);
     setOkLabel(1);
     s32 n = packItemList(unk_2714);
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
         if (n == 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
-            func_0206eba4(unk_2714);
+            MenuCtrl_SetResult(1);
+            MenuCtrl_SetChosenItems(unk_2714);
         }
         break;
     case 0x1f: {
@@ -1970,11 +1970,11 @@ void ShopSellMenu::confirm() {
         }
         n = packItemList(unk_2732);
         if (n == 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
-            func_0206ed2c((u8)n);
-            func_0206eba4(unk_2732);
+            MenuCtrl_SetResult(1);
+            MenuCtrl_SetIndex((u8)n);
+            MenuCtrl_SetChosenItems(unk_2732);
             MI_CpuCopy8(unk_2714, data_021ed210, 0x1e);
             sendItemsRecord(3);
         }
@@ -1983,7 +1983,7 @@ void ShopSellMenu::confirm() {
     case 0x20:
         MI_CpuCopy8(unk_2714, data_021ed22e, 0x1e);
         sendItemsRecord(4);
-        func_0206ecf8(1);
+        MenuCtrl_SetResult(1);
         break;
     }
 }
@@ -2019,7 +2019,7 @@ void ShopSellMenu::sendItemsRecord(u8 v) {
 }
 
 BOOL ShopSellMenu::isResultSent() {
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         return TRUE;
     }
     if (testFlags(8) == 0) {

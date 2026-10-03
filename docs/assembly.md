@@ -102,6 +102,6 @@ static inline u32 Clz(u32 x) {
 }
 ```
 
-for the ARM function `func_ov067_0225fe1c`. This is the NitroSDK's own form of `MATH_CountLeadingZeros`
+for the ARM function `WlxWm_MeasureChannelStep`. This is the NitroSDK's own form of `MATH_CountLeadingZeros`
 (`math.h`), a one-instruction inline `asm` in the SDK itself; mwcc 1.2 has no `clz` intrinsic. It is the only
 inline `asm` in a C or C++ file.

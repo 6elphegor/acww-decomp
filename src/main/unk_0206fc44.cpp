@@ -233,11 +233,11 @@ void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {
-s32 func_02096a50(void *obj, s32 v);
+s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 }
 
 extern "C" {
-BOOL func_02096880(void);
+BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 }
 
 extern "C" {

@@ -64,9 +64,9 @@ struct Unk_ov010_Scene {  // 24 bytes; main's table data_020e4280 points to it
     s32 unk_14;
 };
 
-extern u8 data_ov004_0224f2d4;  // copied into the entry table by __sinit
-extern Unk_ov010_Objs data_ov004_0224f2cc;
-extern u32 data_ov004_0224f2d8[];
+extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
+extern Unk_ov010_Objs sRoomSceneEntryList;
+extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern Unk_ov010_Entry data_ov010_02258a58[4];
@@ -80,7 +80,7 @@ extern u32 data_ov010_02258a04[1];
 
 Unk_ov010_Entry data_ov010_02258a58[4] = {
     {2, 1, 0, data_ov010_02258a00},
-    {2, data_ov004_0224f2d4, 0, data_ov004_0224f2d8},
+    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
     {1, 1, 0, data_ov010_02258a18},
     {0, 1, 0, data_ov010_02258a2c},
 };
@@ -99,6 +99,6 @@ Unk_ov010_Rec data_ov010_02258a2c[1] = {
 
 Unk_ov010_Grid data_ov010_02258a10 = {data_ov010_02258a04, 1, 1};
 
-Unk_ov010_Scene data_ov010_02258a40 = {&data_ov010_02258a08, 0, &data_ov010_02258a10, &data_ov004_0224f2cc, -1, -1};
+Unk_ov010_Scene data_ov010_02258a40 = {&data_ov010_02258a08, 0, &data_ov010_02258a10, &sRoomSceneEntryList, -1, -1};
 
 u32 data_ov010_02258a04[1] = {0x1003};

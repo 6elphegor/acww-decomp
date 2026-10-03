@@ -17,9 +17,9 @@ extern s32 gCurrentHeap;
 extern u8 *data_021c1b3c;
 
 s32 Snd_PlaySe(u32 id);
-s32 func_0206ed38();
+s32 MenuCtrl_GetIndex();
 void *func_020b053c(s32 i);
-void func_0206ecf8(u32 a);
+void MenuCtrl_SetResult(u32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void func_020b0a30(void *p);
@@ -46,7 +46,7 @@ void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
-void func_ov004_02224844();
+void PlayerActor_LocalRequestAct12();
 
 BOOL MenuKeys_HasLeft(s32 k);
 BOOL MenuKeys_HasRight(s32 k);
@@ -786,7 +786,7 @@ void ConstellationEditorMenu::initMembers() {
     unk_aa = 0xffff;
     unk_b3 = 0xff;
     func_ov129_0229497c();
-    func_ov004_02224844();
+    PlayerActor_LocalRequestAct12();
     func_02034f98(data_021c1b3c + 0x2f0);
 }
 
@@ -1228,11 +1228,11 @@ void ConstellationEditorMenu::acceptConfirmation() {
     setTransitionState(2);
     setMainState(0xa);
     if (testFlags(4)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
         Snd_PlaySe(0x28);
     } else {
-        func_0206ecf8(1);
-        s32 n = func_0206ed38();
+        MenuCtrl_SetResult(1);
+        s32 n = MenuCtrl_GetIndex();
         static Unk_020b0a60 obj;
         func_020b0a30(&obj);
         func_020b0450(&obj);
@@ -1481,7 +1481,7 @@ void ConstellationEditorMenu::func_ov129_02294aa4() {
 }
 
 void ConstellationEditorMenu::func_ov129_02294a50() {
-    s32 n = func_0206ed38();
+    s32 n = MenuCtrl_GetIndex();
     s32 i = 0;
     do {
         if (i != n) {
@@ -1501,7 +1501,7 @@ void ConstellationEditorMenu::func_ov129_02294a50() {
 }
 
 void ConstellationEditorMenu::func_ov129_0229497c() {
-    Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)func_020b053c(func_0206ed38());
+    Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)func_020b053c(MenuCtrl_GetIndex());
     s32 i;
     u16 *p = unk_2f00;
     u32 first = 0xffff;

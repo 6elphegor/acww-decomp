@@ -112,7 +112,7 @@ extern "C" {
 s32 _ZN11CommManager8isOnlineEv(u32 v);
 s32 Backup_GetStatus(void *p);
 s32 func_02040264(s32 v);
-s32 func_020a032c(void);
+s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 p, s32 v);
 s32 func_020400b0(...);
@@ -1057,7 +1057,7 @@ BOOL EventCalendarModule::vfunc_0c() { return TRUE; }
 
 extern "C" BOOL func_0203f14c(void) {
     BOOL r = FALSE;
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         r = TRUE;
     } else {
         s32 p = PlayerData_GetCurrent();

@@ -140,7 +140,7 @@ u32 func_0203c6c0();
 u32 Heap_Alloc(u32 *a, u32 b);
 void Heap_Free(u32 *a, u32 b);
 BOOL NpcActor_IsFrontAngle(s16 a);
-s32 func_0206ed18();
+s32 MenuCtrl_IsResultOk();
 PlayerData *PlayerData_GetCurrent();
 s32 func_0207d164(void *a, s32 b, s32 c);
 void func_02087274(u8 *p, s32 v);
@@ -929,7 +929,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
     void *p = unk_3c;
     u8 buf[1];
     buf[0] = 0xf;
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         buf[0] = 0x1c;
         unk_ac->unk_710.apply(&unk_ac->unk_ec);
     }
@@ -937,7 +937,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
 }
 
 BOOL SpNpcBlancaTalk::onConceptChosen() {
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         void *p = unk_3c;
         u8 *const g = data_021eca50;
         u8 buf[1];

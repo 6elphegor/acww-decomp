@@ -216,7 +216,7 @@ DonationMenu *DonationMenu_Create();
 void _ZN9MsgString4copyEPS_(void *self, void *o);
 void func_0206f9c8(Unk_020e0488 *w, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(Unk_020e0488 *w, s32 a);
-void func_0206ecf8(s32 a);
+void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(s32 a);
 BOOL MuseumData_isDonated(void *a, void *b);
 s32 func_02133150(s32 a, s32 b);
@@ -238,7 +238,7 @@ void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u16 v, void *dst, u32 n);
 s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
 void BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 BOOL MuseumData_getDonorName(void *a, void *b, void *c);
 BOOL MenuKeys_HasRight(u32 v);
@@ -783,7 +783,7 @@ void DonationMenu::resumeInput() {
 }
 
 void DonationMenu::startQuit() {
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     MenuBottomButtonsBody_setSelected(&unk_174, 6);
     setTransitionState(2);
     setMainState(9);
@@ -1110,10 +1110,10 @@ void DonationMenu::composeListScreen() {
 }
 
 void DonationMenu::uploadListScreen() {
-    func_0206ee80(unk_1146, 0, 0, 0x1f, 0x1f, 3);
+    BgScreen_SetRectPalette(unk_1146, 0, 0, 0x1f, 0x1f, 3);
     s32 n = getTabCount();
     if (n < 9) {
-        func_0206ee80(unk_1146, 0, n * 2, 0x1f, 0x12, 4);
+        BgScreen_SetRectPalette(unk_1146, 0, n * 2, 0x1f, 0x12, 4);
     }
     if (BgVramTask_requestScreen(unk_758, unk_1146, 4, 0x800, 0)) {
         clearFlags(8);

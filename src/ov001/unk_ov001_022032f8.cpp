@@ -31,18 +31,18 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 void MIi_CpuCopy32(void *src, void *dst, u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 
-s32 func_ov065_0226a284(void);
-s32 func_ov065_02269e50(void);
-s32 func_ov065_0226a264(s32 a, s32 b, s32 c);
-s32 func_ov065_0226a33c(void *a, void *b);
-s32 func_ov065_02269f24(void *a, void *b, s32 c);
-s32 func_ov065_0226a510(void *, s32);
-void func_ov065_0226a4c8(void);
-void func_ov065_0226a87c(s32 a);
-s32 func_ov065_0226a8e4(void);
-void *func_ov065_0226a828(u32 a);
-extern u8 data_ov065_0228b2a4[];
-extern u8 data_ov065_0228b2ac[];
+s32 WifiLink_CleanupAsync(void);
+s32 WifiLink_DisconnectAsync(void);
+s32 WifiLink_SearchAsync(s32 a, s32 b, s32 c);
+s32 WifiLink_StartupAsync(void *a, void *b);
+s32 WifiLink_ConnectAsync(void *a, void *b, s32 c);
+s32 WifiLink_Init(void *, s32);
+void WifiLink_Finish(void);
+void WifiLink_LockApList(s32 a);
+s32 WifiLink_GetApListCount(void);
+void *WifiLink_GetApListEntry(u32 a);
+extern u8 gWifiLinkAnyBssid[];
+extern u8 gWifiLinkAnySsid[];
 
 s32 Aoss_WcmToIdle(void);
 void Aoss_WcmCallback(void *p);
@@ -62,7 +62,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(6, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (func_ov065_0226a264((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -70,7 +70,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(2, 0);
                 }
             } else if (sAossWcmState == 8) {
-                if (func_ov065_02269f24(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
+                if (WifiLink_ConnectAsync(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -123,7 +123,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(0xa, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (func_ov065_0226a264((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -131,7 +131,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(2, 0);
                 }
             } else if (sAossWcmState == 2) {
-                if (func_ov065_0226a284() == 3) {
+                if (WifiLink_CleanupAsync() == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -139,7 +139,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(2, 0);
                 }
             } else if (sAossWcmState == 8) {
-                if (func_ov065_02269f24(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
+                if (WifiLink_ConnectAsync(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -162,7 +162,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(0xe, 0);
                 }
             } else if (sAossWcmState == 6) {
-                if (func_ov065_0226a264((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
+                if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -170,7 +170,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(2, 0);
                 }
             } else if (sAossWcmState == 2) {
-                if (func_ov065_0226a284() == 3) {
+                if (WifiLink_CleanupAsync() == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -178,7 +178,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
                     sAossWcmNotifyCb(2, 0);
                 }
             } else if (sAossWcmState == 8) {
-                if (func_ov065_02269f24(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
+                if (WifiLink_ConnectAsync(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
                     return;
                 }
                 sAossWcmState = 3;
@@ -198,7 +198,7 @@ extern "C" void Aoss_WcmCallback(void *arg) {
     case 2:
         if (p[1] == 0) {
             if (sAossWcmState == 2) {
-                func_ov065_0226a4c8();
+                WifiLink_Finish();
                 sAossWcmState = 0;
                 if (sAossWcmNotifyCb != NULL) {
                     sAossWcmNotifyCb(0x14, 0);
@@ -229,17 +229,17 @@ extern "C" void Aoss_WcmCallback(void *arg) {
 extern "C" s32 Aoss_WcmToIdle(void) {
     switch (sAossWcmState) {
     case 5:
-        if (func_ov065_0226a264(0, 0, 0) == 3) {
+        if (WifiLink_SearchAsync(0, 0, 0) == 3) {
             goto ok;
         }
         return FALSE;
     case 7:
-        if (func_ov065_02269e50() == 3) {
+        if (WifiLink_DisconnectAsync() == 3) {
             goto ok;
         }
         return FALSE;
     case 1:
-        if (func_ov065_0226a33c(sAossWcmConfig, (void *)Aoss_WcmCallback) == 3) {
+        if (WifiLink_StartupAsync(sAossWcmConfig, (void *)Aoss_WcmCallback) == 3) {
             goto ok;
         }
         return FALSE;
@@ -259,17 +259,17 @@ ok:
 extern "C" s32 Aoss_WcmReadApList(u8 *dst, s32 max) {
     s32 cnt;
     s32 i;
-    func_ov065_0226a87c(1);
-    cnt = func_ov065_0226a8e4();
+    WifiLink_LockApList(1);
+    cnt = WifiLink_GetApListCount();
     if (cnt > 0) {
         for (i = 0; i < cnt; i++, dst += 0xc0) {
             if (i >= max) {
                 break;
             }
-            MIi_CpuCopy32(func_ov065_0226a828((u16)i), dst, 0xc0);
+            MIi_CpuCopy32(WifiLink_GetApListEntry((u16)i), dst, 0xc0);
         }
     }
-    func_ov065_0226a87c(0);
+    WifiLink_LockApList(0);
     return cnt;
 }
 
@@ -285,7 +285,7 @@ extern "C" s32 Aoss_WcmStartSearch(u8 *a, u8 *b, s32 n, s32 d) {
         sAossWcmBssidPtr = sAossWcmBssid;
     } else {
         MI_CpuFill8(sAossWcmBssid, 0xff, 6);
-        sAossWcmBssidPtr = data_ov065_0228b2a4;
+        sAossWcmBssidPtr = gWifiLinkAnyBssid;
     }
     if (b != NULL && n > 0 && n <= 0x20) {
         i = 0;
@@ -306,10 +306,10 @@ extern "C" s32 Aoss_WcmStartSearch(u8 *a, u8 *b, s32 n, s32 d) {
         sAossWcmSsidPtr = sAossWcmSsid;
     } else {
         MI_CpuFill8(sAossWcmSsid, 0xff, 0x20);
-        sAossWcmSsidPtr = data_ov065_0228b2ac;
+        sAossWcmSsidPtr = gWifiLinkAnySsid;
     }
     if (sAossWcmState == 3) {
-        if (func_ov065_0226a264((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) != 3) {
+        if (WifiLink_SearchAsync((s32)sAossWcmBssidPtr, (s32)sAossWcmSsidPtr, sAossWcmSearchOption) != 3) {
             goto fail;
         }
         sAossWcmState = 6;
@@ -331,7 +331,7 @@ fail:
 extern "C" s32 Aoss_WcmEndSearch(void) {
     u32 irq = OS_DisableInterrupts();
     if (sAossWcmState == 5) {
-        if (func_ov065_0226a264(0, 0, 0) == 3) {
+        if (WifiLink_SearchAsync(0, 0, 0) == 3) {
             sAossWcmState = 4;
             OS_RestoreInterrupts(irq);
             return TRUE;
@@ -344,7 +344,7 @@ extern "C" s32 Aoss_WcmEndSearch(void) {
 extern "C" s32 Aoss_WcmDisconnect(void) {
     u32 irq = OS_DisableInterrupts();
     if (sAossWcmState == 7) {
-        if (func_ov065_02269e50() == 3) {
+        if (WifiLink_DisconnectAsync() == 3) {
             sAossWcmState = 4;
             OS_RestoreInterrupts(irq);
             return TRUE;
@@ -357,7 +357,7 @@ extern "C" s32 Aoss_WcmDisconnect(void) {
 extern "C" s32 Aoss_WcmCleanup(void) {
     u32 irq = OS_DisableInterrupts();
     if (sAossWcmState == 3) {
-        if (func_ov065_0226a284() != 3) {
+        if (WifiLink_CleanupAsync() != 3) {
             OS_RestoreInterrupts(irq);
             return FALSE;
         }
@@ -389,7 +389,7 @@ extern "C" s32 Aoss_WcmConnect(void *a, void *b, u32 c) {
         return 1;
     }
     if (sAossWcmState == 3) {
-        if (func_ov065_02269f24(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
+        if (WifiLink_ConnectAsync(sAossWcmBssDesc, sAossWcmWepDesc, sAossWcmConnectOption) == 3) {
             sAossWcmState = 8;
             OS_RestoreInterrupts(irq);
             return 1;
@@ -414,14 +414,14 @@ extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     sAossWcmConfig->unk_00 = 3;
     sAossWcmNotifyCb = (Unk_ov001_022034a0_Cb)fn;
     if (sAossWcmState == 0) {
-        if (func_ov065_0226a510(sAossWcmWork, 0x2300)) {
+        if (WifiLink_Init(sAossWcmWork, 0x2300)) {
             OS_RestoreInterrupts(irq);
             return 0;
         }
         sAossWcmState = 1;
     }
     if (sAossWcmState == 1) {
-        if (func_ov065_0226a33c(sAossWcmConfig, (void *)Aoss_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(sAossWcmConfig, (void *)Aoss_WcmCallback) != 3) {
             OS_RestoreInterrupts(irq);
             return 0;
         }

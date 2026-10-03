@@ -221,9 +221,9 @@ s32 func_02133150(s32 a, s32 b);
 s32 func_0204f334(s32 a);
 s32 func_020902b0(s32 a, Unk_020dc034_V *v, void *b, void *c);
 void Field_DrawIconModel(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-void func_ov004_0222c524(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
+void RoomItemIcons_DrawIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void Field_DrawItemIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-void func_ov004_0222c4d8(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
+void RoomItemIcons_DrawItem(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 s32 func_0204f3e4(s32 c4, s32 idx, Unk_020dc034_V *p, Unk_020dc034_V *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
 s32 _ZN9Character9getCharIdEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
@@ -552,7 +552,7 @@ void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_
     } else {
         Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
         Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
-        func_ov004_0222c4d8(*id, &a, &b, ang[0], ang[1], ang[2]);
+        RoomItemIcons_DrawItem(*id, &a, &b, ang[0], ang[1], ang[2]);
     }
 }
 
@@ -565,7 +565,7 @@ void func_02058ddc(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s
     } else {
         Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
         Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
-        func_ov004_0222c524(id, &a, &b, ang[0], ang[1], ang[2]);
+        RoomItemIcons_DrawIcon(id, &a, &b, ang[0], ang[1], ang[2]);
     }
 }
 

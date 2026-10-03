@@ -94,18 +94,18 @@ typedef Unk_ov065_0226e3ac_Ctx Unk_ov065_0226e0a8_Ctx;
 
 extern "C" {
 
-extern char data_ov065_0228bc0c[];
-extern char data_ov065_0228bd58[];
-extern char data_ov065_0228bea8[];
-extern char data_ov065_0228bf90[];
-extern char data_ov065_0228c054[];
-extern char data_ov065_0228c13c[];
-extern char data_ov065_0228c25c[];
-extern char data_ov065_0228c374[];
-extern char data_ov065_0228c4a0[];
-extern char data_ov065_0228c654[];
-extern char data_ov065_0228c730[];
-extern u32 data_ov065_0228ebd8;
+extern char sRootCaGlobalSign[];
+extern char sRootCaBaltimore[];
+extern char sRootCaGteGlobal[];
+extern char sRootCaGte[];
+extern char sRootCaNintendo[];
+extern char sRootCaThawtePremium[];
+extern char sRootCaThawteServer[];
+extern char sRootCaVeriSignG2[];
+extern char sRootCaVeriSignG3[];
+extern char sRootCaVeriSignClass3[];
+extern char sRootCaRsaSecureServer[];
+extern u32 gOwnIp;
 extern Unk_ov065_0226eacc_Tbl data_021fcc2c;
 
 s32 func_0212a438(const char *s);
@@ -132,56 +132,56 @@ char *func_0212a2ec(char *dst, const char *src, u32 n);
 s32 strncmp(const char *a, const char *b, u32 n);
 
 // other TUs
-s32 func_ov065_0226f9e0(const char *s, s32 len, char *dst, u32 size);
-s32 func_ov065_0226fb08(void *a, s32 b, void *c, s32 d);
-s32 func_ov065_02261638(void *);
-void func_ov065_02262a44(void *);
-void func_ov065_022629b0();
-void func_ov065_022629d0(u32, u32, u32);
-void func_ov065_022672ec(void *, u32);
-void func_ov065_02264d58(u32);
-void func_ov065_02265950(u8 *, u32);
-s32 func_ov065_02262874();
-void func_ov065_02262998();
-void func_ov065_02262a34();
-void func_ov065_022622c0();
-s32 func_ov065_022622ec();
-u32 func_ov065_02262334(u32, u32);
-u8 *func_ov065_022626b8(u32 *);
-void func_ov065_02262640(u32);
-void func_ov065_02262788();
-void func_ov065_022627d4();
+s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
+s32 NasBase64_Encode(void *a, s32 b, void *c, s32 d);
+s32 Dns_Resolve(void *);
+void IpSoc_Use(void *);
+void IpSoc_Init();
+void IpSoc_Bind(u32, u32, u32);
+void Ssl_SetRootCaList(void *, u32);
+void Ssl_EnableOnCurrentSocket(u32);
+void SslRand_AddSeed(u8 *, u32);
+s32 IpSoc_TcpConnect();
+void IpSoc_Release();
+void IpSoc_Unuse();
+void IpSoc_FlushPending();
+s32 IpSoc_GetReadLength();
+u32 IpSoc_Write(u32, u32);
+u8 *IpSoc_Read(u32 *);
+void IpSoc_Consume(u32);
+void IpSoc_TcpWaitClosed();
+void IpSoc_TcpShutdown();
 
 // this unit
-s32 func_ov065_0226de0c(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size);
-s32 func_ov065_0226de4c(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size);
-char *func_ov065_0226de90(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key);
-s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text);
-s32 func_ov065_0226e07c(Unk_ov065_0226ded4_List *l, const char *k, char *v);
-s32 func_ov065_0226e0a8(Unk_ov065_0226e3ac_Ctx *c, char *s);
-s32 func_ov065_0226e170(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
-void func_ov065_0226e1e8(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b);
-s32 func_ov065_0226e210(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
-u32 func_ov065_0226e25c(u32 v);
-s32 func_ov065_0226e274(Unk_ov065_0226e3ac_Ctx *c, const char *s);
-s32 func_ov065_0226e2e4(Unk_ov065_0226e3ac_Ctx *c, const char *a1, void *a2, s32 a3);
-s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2);
-s32 func_ov065_0226e44c(Unk_ov065_0226e3ac_Ctx *c);
-void func_ov065_0226e4dc(Unk_ov065_0226e3ac_Ctx *c);
-void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c);
-s32 func_ov065_0226ea40(Unk_ov065_0226e3ac_Ctx *c);
-void func_ov065_0226ea84(Unk_ov065_0226e3ac_Ctx *c);
-void func_ov065_0226eacc(Unk_ov065_0226e3ac_Ctx *c);
-s32 func_ov065_0226eb6c(Unk_ov065_0226e3ac_Ctx *c);
-s32 func_ov065_0226ebe4(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg);
+s32 DwcHttp_GetFieldString(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size);
+s32 DwcHttp_GetFieldDecoded(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size);
+char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key);
+s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text);
+s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v);
+s32 DwcHttp_ParseUrl(Unk_ov065_0226e3ac_Ctx *c, char *s);
+s32 DwcHttp_GrowBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
+void DwcHttp_FreeBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b);
+s32 DwcHttp_AllocBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
+u32 DwcHttp_CertCallback(u32 v);
+s32 DwcHttp_AppendBody(Unk_ov065_0226e3ac_Ctx *c, const char *s);
+s32 DwcHttp_AddFormParam(Unk_ov065_0226e3ac_Ctx *c, const char *a1, void *a2, s32 a3);
+s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2);
+s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c);
+void DwcHttp_Destroy(Unk_ov065_0226e3ac_Ctx *c);
+void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c);
+s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c);
+void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c);
+void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c);
+s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c);
+s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg);
 
 // data
-void *data_ov065_0228b93c[11] = {data_ov065_0228c4a0, data_ov065_0228c374, data_ov065_0228c654, data_ov065_0228c730,
-                                 data_ov065_0228bc0c, data_ov065_0228bea8, data_ov065_0228bf90, data_ov065_0228bd58,
-                                 data_ov065_0228c25c, data_ov065_0228c13c, data_ov065_0228c054};
-s32 data_ov065_02290618;
+void *sDwcHttpRootCaList[11] = {sRootCaVeriSignG3, sRootCaVeriSignG2, sRootCaVeriSignClass3, sRootCaRsaSecureServer,
+                                 sRootCaGlobalSign, sRootCaGteGlobal, sRootCaGte, sRootCaBaltimore,
+                                 sRootCaThawteServer, sRootCaThawtePremium, sRootCaNintendo};
+s32 sDwcHttpTestServer;
 
-s32 func_ov065_0226ebe4(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
+s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
     MI_CpuFill8(c, 0, 0x1a60);
     c->unk_960 = -1;
     *(Unk_ov065_0226e3ac_Cfg *)&c->unk_04 = *cfg;
@@ -195,47 +195,47 @@ s32 func_ov065_0226ebe4(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) 
         c->unk_24 = 1;
         return 1;
     }
-    func_ov065_0226e0a8(c, (char *)cfg->v[0]);
-    c->unk_24 = func_ov065_0226e44c(c);
+    DwcHttp_ParseUrl(c, (char *)cfg->v[0]);
+    c->unk_24 = DwcHttp_BuildRequestLine(c);
     if (c->unk_24 == 0) {
         c->unk_00 = 0xff;
     }
     return c->unk_24;
 }
 
-s32 func_ov065_0226eb6c(Unk_ov065_0226e3ac_Ctx *c) {
+s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
     char buf[8];
     s32 n;
-    if (func_ov065_0226e3ac(c, "Connection", "close") != 0) {
+    if (DwcHttp_AddHeader(c, "Connection", "close") != 0) {
         return 1;
     }
     n = func_0212a438(func_02129f1c((char *)c->unk_928.unk_00, "\r\n\r\n") + 4);
     if (n != 0) {
         OS_SNPrintf(buf, 7, "%d", n);
-        if (func_ov065_0226e3ac(c, "Content-Length", buf) != 0) {
+        if (DwcHttp_AddHeader(c, "Content-Length", buf) != 0) {
             return 1;
         }
     }
     return 0;
 }
 
-void func_ov065_0226eacc(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c) {
     u32 prio = OS_GetThreadPriority(data_021fcc2c.unk_04);
     c->unk_a40 = 0;
     OS_InitMutex(&c->unk_a28);
     OS_InitMutex(&c->unk_948);
     if (c->unk_1c == 1) {
-        data_ov065_02290618 = 1;
+        sDwcHttpTestServer = 1;
     } else {
-        data_ov065_02290618 = 0;
+        sDwcHttpTestServer = 0;
     }
     if (c->unk_9d4 == 0 || OS_IsThreadTerminated(&c->unk_968) != 0) {
-        OS_CreateThread(&c->unk_968, (s32 (*)(void *))func_ov065_0226e554, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
+        OS_CreateThread(&c->unk_968, (s32 (*)(void *))DwcHttp_ThreadMain, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
         OS_WakeupThreadDirect(&c->unk_968);
     }
 }
 
-void func_ov065_0226ea84(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c) {
     if (c->unk_00 == 0xff) {
         OS_LockMutex(&c->unk_a28);
         c->unk_a40 = 1;
@@ -246,7 +246,7 @@ void func_ov065_0226ea84(Unk_ov065_0226e3ac_Ctx *c) {
     }
 }
 
-s32 func_ov065_0226ea40(Unk_ov065_0226e3ac_Ctx *c) {
+s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c) {
     OS_LockMutex(&c->unk_a28);
     if (c->unk_a40 == 1) {
         OS_UnlockMutex(&c->unk_a28);
@@ -257,7 +257,7 @@ s32 func_ov065_0226ea40(Unk_ov065_0226e3ac_Ctx *c) {
     return 1;
 }
 
-void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
     s32 timeout;
     Unk_ov065_0226e554_Ssl *ssl;
     s32 host;
@@ -285,10 +285,10 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     conn->unk_40 = c->unk_91c;
     conn->unk_48 = 0x5ea;
     conn->unk_4c = c->unk_920;
-    func_ov065_02262a44(conn);
+    IpSoc_Use(conn);
     i = 0;
     do {
-        host = func_ov065_02261638(c->unk_a8);
+        host = Dns_Resolve(c->unk_a8);
         if (host != 0) {
             break;
         }
@@ -299,29 +299,29 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
         c->unk_24 = 2;
         return;
     }
-    func_ov065_022629b0();
+    IpSoc_Init();
     u32 port;
     if (c->unk_b0 == 1) {
         MI_CpuFill8(ssl, 0, 0x804);
-        ssl->unk_7e4 = func_ov065_0226e25c;
+        ssl->unk_7e4 = DwcHttp_CertCallback;
         ssl->unk_7d4 = c->unk_a8;
         conn->unk_0c = ssl;
-        func_ov065_022672ec(data_ov065_0228b93c, 0xb);
-        func_ov065_02264d58(1);
+        Ssl_SetRootCaList(sDwcHttpRootCaList, 0xb);
+        Ssl_EnableOnCurrentSocket(1);
         port = 0x1bb;
     } else {
         port = 0x50;
     }
-    func_ov065_022629d0(0, (u16)port, host);
+    IpSoc_Bind(0, (u16)port, host);
     start = OS_GetTick();
     if (c->unk_b0 == 1) {
         OS_GetLowEntropyData(tmp);
-        func_ov065_02265950(tmp, 0x20);
+        SslRand_AddSeed(tmp, 0x20);
         mark = start;
     }
     i = 0;
     do {
-        r = func_ov065_02262874();
+        r = IpSoc_TcpConnect();
         if (r == 0) {
             break;
         }
@@ -330,8 +330,8 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     } while (i < 3);
     if (r != 0) {
         c->unk_24 = 3;
-        func_ov065_02262998();
-        func_ov065_02262a34();
+        IpSoc_Release();
+        IpSoc_Unuse();
         return;
     }
     c->unk_928.unk_04 = c->unk_928.unk_00;
@@ -339,7 +339,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     c->unk_928.unk_08 = (u8 *)p + func_0212a438(p);
     if (c->unk_928.unk_04 < c->unk_928.unk_08) {
         do {
-            if (data_ov065_0228ebd8 == 0) {
+            if (gOwnIp == 0) {
                 c->unk_24 = 5;
                 goto fail;
             }
@@ -347,12 +347,12 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
             if (len > 0x2bc) {
                 len = 0x2bc;
             }
-            len = func_ov065_02262334((u32)c->unk_928.unk_04, len);
+            len = IpSoc_Write((u32)c->unk_928.unk_04, len);
             if (len <= 0) {
                 c->unk_24 = 5;
                 goto fail;
             }
-            func_ov065_022622c0();
+            IpSoc_FlushPending();
             u64 now = OS_GetTick();
             u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
@@ -363,21 +363,21 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     OS_GetLowEntropyData(tmp);
-                    func_ov065_02265950(tmp, 0x20);
+                    SslRand_AddSeed(tmp, 0x20);
                     mark = now;
                 }
             }
             c->unk_928.unk_04 = c->unk_928.unk_04 + len;
-            if (func_ov065_0226ea40(c) == 0) {
+            if (DwcHttp_CheckNotAborted(c) == 0) {
                 c->unk_24 = 7;
                 goto fail;
             }
         } while (c->unk_928.unk_04 < c->unk_928.unk_08);
     }
-    func_ov065_0226e1e8(c, &c->unk_928);
+    DwcHttp_FreeBuffer(c, &c->unk_928);
     OS_LockMutex(&c->unk_948);
     if (c->unk_0c == NULL) {
-        if (func_ov065_0226e210(c, &c->unk_938, c->unk_10) == 0) {
+        if (DwcHttp_AllocBuffer(c, &c->unk_938, c->unk_10) == 0) {
             c->unk_24 = 1;
             OS_UnlockMutex(&c->unk_948);
             goto fail;
@@ -393,7 +393,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
     OS_UnlockMutex(&c->unk_948);
     {
         for (;;) {
-            if (data_ov065_0228ebd8 == 0) {
+            if (gOwnIp == 0) {
                 c->unk_24 = 5;
                 goto fail;
             }
@@ -402,9 +402,9 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 OS_UnlockMutex(&c->unk_948);
                 goto done8;
             }
-            len = func_ov065_022622ec();
+            len = IpSoc_GetReadLength();
             if (len > 0) {
-                data = func_ov065_022626b8((u32 *)&len);
+                data = IpSoc_Read((u32 *)&len);
                 if (data == NULL) {
                     OS_UnlockMutex(&c->unk_948);
                     goto done8;
@@ -434,11 +434,11 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                     }
                 }
                 if ((u32)len > (u32)got) {
-                    func_ov065_02262640(len);
+                    IpSoc_Consume(len);
                     OS_UnlockMutex(&c->unk_948);
                     goto done8;
                 }
-                func_ov065_02262640(got);
+                IpSoc_Consume(got);
             }
             if (len < 0) {
                 OS_UnlockMutex(&c->unk_948);
@@ -459,38 +459,38 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     OS_GetLowEntropyData(tmp);
-                    func_ov065_02265950(tmp, 0x20);
+                    SslRand_AddSeed(tmp, 0x20);
                     mark = now;
                 }
             }
             OS_UnlockMutex(&c->unk_948);
-            if (func_ov065_0226ea40(c) == 0) {
+            if (DwcHttp_CheckNotAborted(c) == 0) {
                 c->unk_24 = 7;
                 goto fail;
             }
         }
     }
 done8:
-    func_ov065_022627d4();
-    func_ov065_02262788();
-    func_ov065_02262998();
-    func_ov065_02262a34();
+    IpSoc_TcpShutdown();
+    IpSoc_TcpWaitClosed();
+    IpSoc_Release();
+    IpSoc_Unuse();
     c->unk_24 = 8;
     return;
 fail:
-    func_ov065_022627d4();
-    func_ov065_02262788();
-    func_ov065_02262998();
-    func_ov065_02262a34();
+    IpSoc_TcpShutdown();
+    IpSoc_TcpWaitClosed();
+    IpSoc_Release();
+    IpSoc_Unuse();
     return;
 }
 
-void func_ov065_0226e4dc(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_Destroy(Unk_ov065_0226e3ac_Ctx *c) {
     if (c != NULL) {
         if (c->unk_0c == NULL) {
-            func_ov065_0226e1e8(c, &c->unk_938);
+            DwcHttp_FreeBuffer(c, &c->unk_938);
         }
-        func_ov065_0226e1e8(c, &c->unk_928);
+        DwcHttp_FreeBuffer(c, &c->unk_928);
         if (c->unk_91c != NULL) {
             c->unk_18("http->lowrecvbuf", c->unk_91c, 0);
             c->unk_91c = NULL;
@@ -503,14 +503,14 @@ void func_ov065_0226e4dc(Unk_ov065_0226e3ac_Ctx *c) {
     }
 }
 
-s32 func_ov065_0226e44c(Unk_ov065_0226e3ac_Ctx *c) {
+s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c) {
     Unk_ov065_0226e3ac_Buf *b = &c->unk_928;
     const char *fmt = c->unk_08 == 0 ? "POST /%s HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nHost: %s\r\n\r\n" : "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n";
     s32 n, r, sz;
     n = func_0212a438(c->unk_a8);
     n += func_0212a438(fmt) - 4 + func_0212a438(c->unk_ac);
     sz = n + 0x400;
-    if (func_ov065_0226e210(c, &c->unk_928, sz) != 1) {
+    if (DwcHttp_AllocBuffer(c, &c->unk_928, sz) != 1) {
         return 1;
     }
     r = OS_SNPrintf((char *)b->unk_04, b->unk_0c, fmt, c->unk_ac, c->unk_a8);
@@ -518,7 +518,7 @@ s32 func_ov065_0226e44c(Unk_ov065_0226e3ac_Ctx *c) {
     return 0;
 }
 
-s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2) {
+s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2) {
     s32 n, avail;
     Unk_ov065_0226e3ac_Buf *b = &c->unk_928;
     char *p;
@@ -527,7 +527,7 @@ s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a
     n += func_0212a438("%s: %s\r\n") - 4 + func_0212a438(a1);
     avail = b->unk_08 - b->unk_04;
     if (n + 1 > avail) {
-        if (func_ov065_0226e170(c, b, n - avail + 1) == 0) {
+        if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
             return 1;
         }
     }
@@ -540,24 +540,24 @@ s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a
     return 0;
 }
 
-s32 func_ov065_0226e2e4(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32 a3) {
+s32 DwcHttp_AddFormParam(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32 a3) {
     Unk_ov065_0226e170_Buf *b = &c->unk_928;
     const char *fmt = c->unk_924 == 0 ? "%s=" : "&%s=";
     s32 r7, len, tot, avail, r;
     c->unk_924++;
-    r7 = func_ov065_0226fb08(a2, a3, NULL, 0);
+    r7 = NasBase64_Encode(a2, a3, NULL, 0);
     len = func_0212a438(fmt);
     tot = r7 + (len - 2 + func_0212a438(a1));
     avail = b->unk_08 - b->unk_04;
     if (tot > avail) {
-        if (func_ov065_0226e170(c, b, tot - avail + 1) == 0) {
+        if (DwcHttp_GrowBuffer(c, b, tot - avail + 1) == 0) {
             return 1;
         }
         avail = b->unk_08 - b->unk_04;
     }
     r = OS_SNPrintf((char *)b->unk_04, avail, fmt, a1);
     b->unk_04 = b->unk_04 + r;
-    if (func_ov065_0226fb08(a2, a3, b->unk_04, b->unk_08 - b->unk_04 - 1) < 0) {
+    if (NasBase64_Encode(a2, a3, b->unk_04, b->unk_08 - b->unk_04 - 1) < 0) {
         return 1;
     }
     b->unk_04 = b->unk_04 + r7;
@@ -565,13 +565,13 @@ s32 func_ov065_0226e2e4(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32
     return 0;
 }
 
-s32 func_ov065_0226e274(Unk_ov065_0226e170_Ctx *c, const char *s) {
+s32 DwcHttp_AppendBody(Unk_ov065_0226e170_Ctx *c, const char *s) {
     s32 n, avail, r;
     Unk_ov065_0226e170_Buf *b = &c->unk_928;
     n = func_0212a438(s);
     avail = b->unk_08 - b->unk_04;
     if (n > avail) {
-        if (func_ov065_0226e170(c, b, n - avail + 1) == 0) {
+        if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
             return 1;
         }
         avail = b->unk_08 - b->unk_04;
@@ -584,14 +584,14 @@ s32 func_ov065_0226e274(Unk_ov065_0226e170_Ctx *c, const char *s) {
     return 0;
 }
 
-u32 func_ov065_0226e25c(u32 v) {
+u32 DwcHttp_CertCallback(u32 v) {
     if (v & 0x8000) {
         v &= ~0x8000;
     }
     return v;
 }
 
-s32 func_ov065_0226e210(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
+s32 DwcHttp_AllocBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
     if (n == 0) {
         return 0;
     }
@@ -605,14 +605,14 @@ s32 func_ov065_0226e210(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s3
     return 1;
 }
 
-void func_ov065_0226e1e8(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b) {
+void DwcHttp_FreeBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b) {
     if (b->unk_00 != NULL) {
         c->unk_18("DWCHttpBuffer", b->unk_00, 0);
     }
     MI_CpuFill8(b, 0, 0x10);
 }
 
-s32 func_ov065_0226e170(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
+s32 DwcHttp_GrowBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
     u8 *p;
     if (n <= 0) {
         return 0;
@@ -633,7 +633,7 @@ s32 func_ov065_0226e170(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s3
     return 1;
 }
 
-s32 func_ov065_0226e0a8(Unk_ov065_0226e0a8_Ctx *c, char *s) {
+s32 DwcHttp_ParseUrl(Unk_ov065_0226e0a8_Ctx *c, char *s) {
     char *q;
     u32 n;
     if ((u32)func_0212a438(s) >= 0x80) {
@@ -665,7 +665,7 @@ s32 func_ov065_0226e0a8(Unk_ov065_0226e0a8_Ctx *c, char *s) {
     return 1;
 }
 
-s32 func_ov065_0226e07c(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
+s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
     if (l->unk_08 > l->unk_04) {
         return 0;
     }
@@ -675,7 +675,7 @@ s32 func_ov065_0226e07c(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
     return 1;
 }
 
-s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text) {
+s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text) {
     Unk_ov065_0226ded4_List l;
     char *p;
     char *q;
@@ -698,11 +698,11 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
     }
     r = q + 1;
     r[3] = 0;
-    if (func_ov065_0226e07c(&l, "httpresult", r) != 1) {
+    if (DwcHttp_AddField(&l, "httpresult", r) != 1) {
         return 0;
     }
     if (flag == 1 || strncmp(r, "200", 3) != 0) {
-        if (func_ov065_0226e07c(&l, "httpbody", p + 4) != 1) {
+        if (DwcHttp_AddField(&l, "httpbody", p + 4) != 1) {
             return 0;
         }
         return 1;
@@ -726,7 +726,7 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
         }
         q[1] = 0;
         q[0] = q[1];
-        if (func_ov065_0226e07c(&l, tx, t) != 1) {
+        if (DwcHttp_AddField(&l, tx, t) != 1) {
             return 0;
         }
         tx = t + func_0212a438(t) + 2;
@@ -746,7 +746,7 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
         if (q != NULL) {
             q[0] = 0;
         }
-        if (func_ov065_0226e07c(&l, t, tx) != 1) {
+        if (DwcHttp_AddField(&l, t, tx) != 1) {
             return 0;
         }
         t = tx + func_0212a438(tx) + 1;
@@ -754,7 +754,7 @@ s32 func_ov065_0226ded4(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text
     return 1;
 }
 
-char *func_ov065_0226de90(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
+char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
     s32 i = 0;
     Unk_ov065_0226de90_Ent *p;
     if (n > 0) {
@@ -773,20 +773,20 @@ char *func_ov065_0226de90(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
     return NULL;
 }
 
-s32 func_ov065_0226de4c(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size) {
-    char *s = func_ov065_0226de90(tbl, n, key);
+s32 DwcHttp_GetFieldDecoded(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size) {
+    char *s = DwcHttp_FindField(tbl, n, key);
     if (s == NULL) {
         return 0;
     }
-    s32 r = func_ov065_0226f9e0(s, func_0212a438(s), dst, size);
+    s32 r = NasBase64_Decode(s, func_0212a438(s), dst, size);
     if (r != -1 && (u32)r < size) {
         dst[r] = 0;
     }
     return r;
 }
 
-s32 func_ov065_0226de0c(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size) {
-    char *s = func_ov065_0226de90(tbl, n, key);
+s32 DwcHttp_GetFieldString(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size) {
+    char *s = DwcHttp_FindField(tbl, n, key);
     if (s == NULL) {
         return 0;
     }

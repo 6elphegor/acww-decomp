@@ -50,7 +50,7 @@
 #define func_ov004_0220f29c _ZN9FtrStereo19func_ov004_0220f29cEv
 #define func_ov004_0220f2a8 _ZN9FtrStereo19func_ov004_0220f2a8Ev
 #define FtrBed_checkStepTile _ZN6FtrBed13checkStepTileEP20Unk_ov004_022108f0_ViS1_
-#define func_ov004_022326fc _ZN18Unk_ov004_0224e87cC1Ev
+#define func_ov004_022326fc _ZN14MuseumAquariumC1Ev
 
 
 
@@ -344,28 +344,28 @@ public:
 
 // ---- classes of unk_022350c8 (symbols name their methods)
 
-class Unk_ov004_0223583c;
-class Unk_ov004_02235708;
-class Unk_ov004_022351bc;
-class Unk_ov004_022358c8;
+class FtrActorTable;
+class FtrActorGrid;
+class FtrContactSet;
+class FtrActorHeap;
 
 // table of 0x1c object pointers
-class Unk_ov004_0223583c {
+class FtrActorTable {
 public:
     void *unk_00[0x1c];
-    Unk_ov004_0223583c();
-    ~Unk_ov004_0223583c();
-    FtrActor *func_ov004_02235720(u32 idx);
-    s32 func_ov004_02235740(void *v);
-    s32 func_ov004_0223576c();
-    s32 func_ov004_02235788();
-    s32 func_ov004_022357b0(void *v);
-    s32 func_ov004_022357e0(void *v);
-    void func_ov004_02235828();
+    FtrActorTable();
+    ~FtrActorTable();
+    FtrActor *get(u32 idx);
+    s32 indexOf(void *v);
+    s32 countFree();
+    s32 countUsed();
+    s32 remove(void *v);
+    s32 add(void *v);
+    void clear();
 };
 
 // slot (0x40)
-class Unk_ov004_022355ac {
+class FtrContact {
 public:
     s32 unk_00;
     Unk_ov004_02235528_V3 unk_04;
@@ -375,92 +375,92 @@ public:
     Unk_ov004_02235528_V3 unk_2c;
     s16 unk_38;
     s32 unk_3c;
-    Unk_ov004_022355ac();
-    ~Unk_ov004_022355ac();
-    s32 func_ov004_022354f8();
-    void func_ov004_02235528(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
+    FtrContact();
+    ~FtrContact();
+    s32 getStepDistance();
+    void set(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
                               Unk_ov004_02235528_V3 *d, Unk_ov004_02235528_V3 *e, s16 f, s32 g);
-    void func_ov004_02235580();
-    s32 func_ov004_02235524();
-    s16 func_ov004_022354e0();
-    s32 func_ov004_022354e8();
-    Unk_ov004_02235528_V3 *func_ov004_022354ec();
-    Unk_ov004_02235528_V3 *func_ov004_022354f0();
-    s32 func_ov004_022354f4();
-    Unk_ov004_02235528_V3 *func_ov004_0223551c();
-    Unk_ov004_02235528_V3 *func_ov004_02235520();
+    void clear();
+    s32 getActorIndex();
+    s16 getPushAngle();
+    s32 getSide();
+    Unk_ov004_02235528_V3 *getClampedContactPoint();
+    Unk_ov004_02235528_V3 *getContactPoint();
+    s32 getDepth();
+    Unk_ov004_02235528_V3 *getPlayerPos();
+    Unk_ov004_02235528_V3 *getPrevPlayerPos();
 };
 
-class Unk_ov004_022351bc {
+class FtrContactSet {
 public:
-    Unk_ov004_022355ac unk_00[2];
-    Unk_ov004_022351bc();
-    ~Unk_ov004_022351bc();
-    BOOL func_ov004_02235120(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
+    FtrContact unk_00[2];
+    FtrContactSet();
+    ~FtrContactSet();
+    BOOL setContact(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
                               Unk_ov004_02235528_V3 *d, Unk_ov004_02235528_V3 *e, s16 f, s32 g);
-    void func_ov004_02235180();
-    void *func_ov004_022351e8();
-    void *func_ov004_02235224();
-    void *func_ov004_02235234();
-    void *func_ov004_02235270();
-    Unk_ov004_02235528_V3 *func_ov004_0223527c(s16 v);
-    void *func_ov004_022352d0(s32 v);
-    void *func_ov004_0223531c();
-    void *func_ov004_0223532c();
-    void *func_ov004_0223533c();
-    void *func_ov004_0223534c();
-    void *func_ov004_0223535c(s32 v);
-    void *func_ov004_0223537c(s32 v);
-    void func_ov004_0223539c();
-    void *func_ov004_02235434(u32 idx);
-    Unk_ov004_022355ac *func_ov004_02235464(void *v);
-    Unk_ov004_022355ac *func_ov004_022354a4(u32 idx);
+    void clear();
+    void *startPull();
+    void *canPull();
+    void *startPush();
+    void *canPush();
+    Unk_ov004_02235528_V3 *makeStepVec(s16 v);
+    void *canMoveAt(s32 v);
+    void *startRotatePlus90();
+    void *canRotatePlus90();
+    void *startRotateMinus90();
+    void *canRotateMinus90();
+    void *startRotateBy(s32 v);
+    void *canRotateBy(s32 v);
+    void requestToggle();
+    void *getActor(u32 idx);
+    FtrContact *findContact(void *v);
+    FtrContact *getContact(u32 idx);
 };
 
 // 16x16 x 2 cell grid
-class Unk_ov004_02235708 {
+class FtrActorGrid {
 public:
     u8 unk_00[2][16][16];
-    Unk_ov004_02235708();
-    ~Unk_ov004_02235708();
-    FtrActor *func_ov004_022355b0(void *p, s32 layer);
-    FtrActor *func_ov004_022355d8(s32 x, s32 y, s32 layer);
-    s32 func_ov004_02235624(s32 x, s32 y, s32 layer);
-    BOOL func_ov004_02235648(s32 id, s32 x, s32 y, u8 layer);
-    BOOL func_ov004_0223568c(s32 id, s32 x, s32 y, u8 layer);
-    void func_ov004_022356cc();
+    FtrActorGrid();
+    ~FtrActorGrid();
+    FtrActor *getActorAtPos(void *p, s32 layer);
+    FtrActor *getActor(s32 x, s32 y, s32 layer);
+    s32 getIndex(s32 x, s32 y, s32 layer);
+    BOOL clearCell(s32 id, s32 x, s32 y, u8 layer);
+    BOOL setCell(s32 id, s32 x, s32 y, u8 layer);
+    void clear();
 };
 
 // heap wrapper
-class Unk_ov004_022358c8 {
+class FtrActorHeap {
 public:
     u32 unk_00;
-    Unk_ov004_022358c8();
-    ~Unk_ov004_022358c8();
-    void func_ov004_02235854(void *p);
-    void func_ov004_02235860();
-    void func_ov004_02235870();
-    BOOL func_ov004_0223588c(s32 n);
-    void func_ov004_022358bc();
+    FtrActorHeap();
+    ~FtrActorHeap();
+    void free(void *p);
+    void alloc();
+    void destroy();
+    BOOL create(s32 n);
+    void reset();
 };
 
 // sound handle wrapper
-class Unk_ov004_02235cc0 {
+class FtrSoundEmitter {
 public:
     u8 unk_00[0x1c];
     u8 unk_1c;
-    void func_ov004_022358e0(u32 a);
-    void func_ov004_022358f4(u32 a);
-    void func_ov004_02235908(u32 a, u32 b);
-    void func_ov004_0223591c(u32 a, u32 b);
-    void func_ov004_02235930();
-    void func_ov004_02235948();
+    void setPitch(u32 a);
+    void setPan(u32 a);
+    void playOnce(u32 a, u32 b);
+    void play(u32 a, u32 b);
+    void release();
+    void attach();
 };
 
 // ---- classes of unk_02235984
 
 // two-slot cache of loaded model resources
-class Unk_ov004_02235a0c {
+class FtrPreviewer {
 public:
     /* 0x00 */ u32 unk_00[2];
     /* 0x08 */ u16 unk_08[2];
@@ -469,16 +469,16 @@ public:
     /* 0x14 */ u32 unk_14[2];
     /* 0x1c */ u32 unk_1c[2];
 
-    u32 func_ov004_02235a0c();
-    u32 func_ov004_02235a1c();
-    void func_ov004_02235a2c();
-    BOOL func_ov004_02235a54(u16 *p);
-    void func_ov004_02235bc8();
-    void func_ov004_02235c10();
-    s32 func_ov004_02235c74();
-    void func_ov004_02235c78();
-    Unk_ov004_02235a0c();
-    ~Unk_ov004_02235a0c();
+    u32 getFloorBuffer();
+    u32 getWallBuffer();
+    void clear();
+    BOOL showItem(u16 *p);
+    void freeBuffers();
+    void allocBuffers();
+    s32 getSampleIndex();
+    void reset();
+    FtrPreviewer();
+    ~FtrPreviewer();
 };
 
 // object with a byte flag at +0x1c
@@ -487,35 +487,35 @@ public:
     /* 0x00 */ u8 unk_00[0x1c];
     /* 0x1c */ u8 unk_1c;
 
-    void func_ov004_02235984();
+    void resetAttached();
 };
 
 // small helper at +0x50 of the main object, flag at +0x10
-class Unk_ov004_0223598c {
+class FtrSoundList {
 public:
     /* 0x00 */ u8 unk_00[0x10];
     /* 0x10 */ u8 unk_10;
 
-    void func_ov004_0223599c();
-    void func_ov004_022359b4();
-    void *func_ov004_022359d8();
-    void func_ov004_022359e8();
-    void func_ov004_02235990();
-    u32 func_ov004_02235994();
-    u32 func_ov004_0223598c();
+    void update();
+    void tryInit();
+    void *destroy();
+    void reset();
+    void getList();
+    u32 checkInitialized();
+    u32 isInitialized();
 };
 
 // main object, vtable 0x0224e9d8
-class Unk_ov004_0224e9d8 : public GameProc {
+class FurnitureManager : public GameProc {
 public:
-    Unk_ov004_0224e9d8();
+    FurnitureManager();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224e9d8();
+    virtual ~FurnitureManager();
 
-    /* 0x50 */ Unk_ov004_0223598c unk_50;
+    /* 0x50 */ FtrSoundList unk_50;
     /* 0x64 */ Unk_ov004_02233560 unk_64;
     /* 0x1c4 */ Unk_ov004_02233b3c unk_1c4;
     /* 0x2a8 */ u8 unk_2a8;
@@ -524,14 +524,14 @@ public:
     /* 0x2b0 */ u8 unk_2b0;
 };
 
-extern Unk_ov004_02235a0c data_ov004_02252070;
-extern Unk_ov004_0223583c data_ov004_022520d4;
-extern Unk_ov004_022351bc data_ov004_02252144;
-extern Unk_ov004_02235708 data_ov004_022521c4;
-extern Unk_ov004_022358c8 data_ov004_02251f84;
-extern Unk_0209c15c data_ov004_02252058;
-extern FxVec3 data_ov004_0225203c;
-extern s32 data_ov004_02251f98;
+extern FtrPreviewer sFtrPreviewer;
+extern FtrActorTable sFtrActorTable;
+extern FtrContactSet sFtrContactSet;
+extern FtrActorGrid sFtrActorGrid;
+extern FtrActorHeap sFtrActorHeap;
+extern Unk_0209c15c sFtrMgrPool;
+extern FxVec3 sFtrRemovePos;
+extern s32 sFtrMgrSoundRangeSq;
 
 extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
@@ -545,28 +545,28 @@ extern Unk_ov004_02233244_Src data_021ed2b0;
 extern s32 data_021f47e0[];
 extern void *gCurrentHeap;
 extern Unk_ov004_Vec3 gVec3Zero;
-extern const u8 data_ov004_022406a4[4];
-extern const s8 data_ov004_022406a8[4];
-extern const Unk_ov004_02233138_Rec data_ov004_022406ac;
-extern const s32 data_ov004_022406b4[2];
-extern const Unk_ov004_02233330_Tbl data_ov004_022406bc[7];
-extern const u8 data_ov004_022406f4[0x44];
-extern const u8 data_ov004_02240738[0x4c];
-extern const u8 data_ov004_02240784[0x50];
-extern const u8 data_ov004_022407d4[0x50];
-extern const u8 data_ov004_02240824[0x50];
-extern const u8 data_ov004_02240874[0x54];
-extern const u8 data_ov004_022408c8[0x54];
-extern const u16 data_ov004_0224091c[0x30];
-extern const Unk_ov004_02233138_Rec data_ov004_0224097c[0x6e9];
-extern const char *data_ov004_0224e930;
-extern const char *data_ov004_0224e9a4[11];
-extern u8 data_ov004_02251f74;
-extern u8 data_ov004_02251f78;
-extern u16 data_ov004_02251f7c;
-extern Unk_ov004_0224e9d8 *data_ov004_02251f80;
-extern s8 data_ov004_022523c4;
-extern u8 *data_ov004_022523d4;
+extern const u8 sFtrPlaceDirOrder[4];
+extern const s8 sFtrProbeDirOffsets[4];
+extern const Unk_ov004_02233138_Rec sFtrSoundNoneRecord;
+extern const s32 sFtrPickRangeByLayer[2];
+extern const Unk_ov004_02233330_Tbl sTvScheduleByWeekday[7];
+extern const u8 sTvScheduleDay0[0x44];
+extern const u8 sTvScheduleDay6[0x4c];
+extern const u8 sTvScheduleDay1[0x50];
+extern const u8 sTvScheduleDay2[0x50];
+extern const u8 sTvScheduleDay5[0x50];
+extern const u8 sTvScheduleDay3[0x54];
+extern const u8 sTvScheduleDay4[0x54];
+extern const u16 sFtrKindProfiles[0x30];
+extern const Unk_ov004_02233138_Rec sFtrSoundTable[0x6e9];
+extern const char *sFtrMoveAnimModelNamePtr;
+extern const char *sTvWeatherNames[11];
+extern u8 sFtrMgrSaleMode;
+extern u8 sFtrMgrTvSoundEnabled;
+extern u16 sFtrMgrCycleCounter;
+extern FurnitureManager *sFurnitureManager;
+extern s8 sHouseRoachTurnCounter;
+extern u8 *sHouseRoachVillager;
 void MTX_MultVec43(void *v, void *m, void *out);
 void VEC_Add(void *, void *, void *);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -719,148 +719,148 @@ BOOL FtrBed_checkStepTile(FtrActor *, Unk_ov004_Vec3 *, s32, Unk_ov004_Vec3 *);
 void func_ov004_022326fc(void *);
 void func_ov004_02235180();
 void func_ov004_022356cc();
-u32 _ZN18Unk_ov004_0223598c19func_ov004_02235990Ev(Unk_ov004_0223598c *);
+u32 _ZN12FtrSoundList7getListEv(FtrSoundList *);
 }
 
 
-extern "C" Unk_ov004_0224e9d8 *func_ov004_02235fb4();
-extern "C" u32 func_ov004_02235d10();
-extern "C" void func_ov004_02235d04();
-extern "C" Unk_ov004_02235a0c *func_ov004_02235a04();
-extern "C" Unk_ov004_0223598c *func_ov004_022359f0();
-extern "C" void func_ov004_02235980();
-extern "C" Unk_ov004_022358c8 *func_ov004_022358d8();
-extern "C" Unk_ov004_0223583c *func_ov004_0223584c();
-extern "C" Unk_ov004_02235708 *func_ov004_02235718();
-extern "C" Unk_ov004_022351bc *func_ov004_022354d8();
-extern "C" s32 func_ov004_022350f4();
-extern "C" s32 func_ov004_022350c8();
-extern "C" s32 func_ov004_02235028(FtrActor *self);
-extern "C" s32 func_ov004_02234ff4(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
-extern "C" s32 func_ov004_02234f80(s32 x, s32 y);
-extern "C" s32 func_ov004_02234f6c(Unk_ov004_Vec3 *p);
-extern "C" s32 func_ov004_02234f30(Unk_ov004_Vec3 *pos, s32 ang, Unk_ov004_Vec3 *out);
-extern "C" s32 func_ov004_02234ed8(Unk_ov004_Vec3 *pos, s32 ang);
-extern "C" s32 func_ov004_02234e80(Unk_ov004_Vec3 *pos, s32 ang);
-extern "C" s32 func_ov004_02234df8(Unk_ov004_Vec3 *p, s16 ang, s32 dist);
-extern "C" BOOL func_ov004_02234dd4(Unk_ov004_Vec3 *pos, s32 ang);
-extern "C" BOOL func_ov004_02234d80(Unk_ov004_Vec3 *pos, s32 ang);
-extern "C" BOOL func_ov004_02234d2c(Unk_ov004_Vec3 *pos, s32 ang);
-extern "C" BOOL func_ov004_02234cd8();
-extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(FtrActor *), s32 a);
-extern "C" s32 func_ov004_02234c2c(BOOL (*f)(FtrActor *));
-extern "C" FtrActor *func_ov004_02234bb4(BOOL (*f)(FtrActor *), s32 a);
-extern "C" u16 func_ov004_02234ba8();
-extern "C" s32 func_ov004_02234b0c(u32 key);
-extern "C" u32 func_ov004_02234af8();
-extern "C" BOOL func_ov004_02234ad4();
+extern "C" FurnitureManager *FurnitureManager_Create();
+extern "C" u32 FtrMgr_IsSaleMode();
+extern "C" void FtrMgr_SetSaleMode();
+extern "C" FtrPreviewer *FtrPreviewer_GetInstance();
+extern "C" FtrSoundList *FurnitureManager_GetSoundList();
+extern "C" void FtrSoundEmitter_Destroy();
+extern "C" FtrActorHeap *FtrActorHeap_GetInstance();
+extern "C" FtrActorTable *FtrActorTable_GetInstance();
+extern "C" FtrActorGrid *FtrActorGrid_GetInstance();
+extern "C" FtrContactSet *FtrContactSet_GetInstance();
+extern "C" s32 FtrMgr_IsFurnitureEditable();
+extern "C" s32 FtrMgr_IsFurnitureUsable();
+extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self);
+extern "C" s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
+extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y);
+extern "C" s32 FtrMgr_GetSurfaceHeightAtPos(Unk_ov004_Vec3 *p);
+extern "C" s32 FtrMgr_CheckBedStep(Unk_ov004_Vec3 *pos, s32 ang, Unk_ov004_Vec3 *out);
+extern "C" s32 FtrMgr_CheckBedStepFront(Unk_ov004_Vec3 *pos, s32 ang);
+extern "C" s32 FtrMgr_CheckBedStepBack(Unk_ov004_Vec3 *pos, s32 ang);
+extern "C" s32 FtrMgr_TestStepTarget(Unk_ov004_Vec3 *p, s16 ang, s32 dist);
+extern "C" BOOL FtrMgr_CanStepForward(Unk_ov004_Vec3 *pos, s32 ang);
+extern "C" BOOL FtrMgr_CanStepSidePlus90(Unk_ov004_Vec3 *pos, s32 ang);
+extern "C" BOOL FtrMgr_CanStepSideMinus90(Unk_ov004_Vec3 *pos, s32 ang);
+extern "C" BOOL FtrMgr_BroadcastStereosAct0();
+extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a);
+extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *));
+extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a);
+extern "C" u16 FtrMgr_GetCycleCounter();
+extern "C" s32 FtrMgr_PickFurnitureComment(u32 key);
+extern "C" u32 FtrMgr_GetMaxFurniture();
+extern "C" BOOL FtrMgr_IsShopScene();
 extern "C" void func_ov004_02234ad0(void *);
-extern "C" void func_ov004_02234a48(void *);
-extern "C" void func_ov004_022349a8(void *);
-extern "C" void func_ov004_02234908(void *);
-extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self);
-extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, u16 *p1, u16 *p2);
-extern "C" s32 func_ov004_02234588(s32 *a, s32 *b, u16 *c, u16 *d);
-extern "C" u8 func_ov004_02234550(u32 i);
-extern "C" s32 func_ov004_022344e8(s32 idx, u16 *p1, u16 *p2);
-extern "C" s32 func_ov004_022344dc(s32 idx);
-extern "C" Unk_ov004_Vec3 *func_ov004_022344a4(s32 idx);
-extern "C" void func_ov004_02234490(Unk_ov004_Vec3 *v);
-extern "C" s32 func_ov004_02234464(FtrActor *p);
-extern "C" s32 func_ov004_02234440(s32 i);
-extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, s32 idx);
-extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
-extern "C" s32 func_ov004_02233f3c(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s32 ang, s32 mode);
-extern "C" s32 func_ov004_02233f08(void *a, u16 *b, u32 c);
-extern "C" s32 func_ov004_02233ee0();
-extern "C" s32 func_ov004_02233e98(void *a, u32 b, u32 c);
-extern "C" s32 func_ov004_02233e50(void *a, u32 b, u32 c);
-extern "C" s32 func_ov004_02233e08(void *a, u32 b, u32 c);
-extern "C" s32 func_ov004_02233dc0(void *a, u32 b, u32 c);
-extern "C" s32 func_ov004_02233d88(void *o0);
-extern "C" s32 func_ov004_02233d64(s32 a, s32 b);
-extern "C" s32 func_ov004_02233d2c(void *o0);
-extern "C" s32 func_ov004_02233d08(s32 a, s32 b);
+extern "C" void FtrMgr_SpawnAllFromMap(void *);
+extern "C" void FtrMgr_NotifyNearestCabinClock(void *);
+extern "C" void FtrMgr_NotifyNearestSoundingClock(void *);
+extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self);
+extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, u16 *p1, u16 *p2);
+extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d);
+extern "C" u8 FtrMgr_GetActorLayer(u32 i);
+extern "C" s32 FtrMgr_RemoveActor(s32 idx, u16 *p1, u16 *p2);
+extern "C" s32 FtrMgr_RemoveActorByIndex(s32 idx);
+extern "C" Unk_ov004_Vec3 *FtrMgr_PollRemovedPos(s32 idx);
+extern "C" void FtrMgr_SetRemovePos(Unk_ov004_Vec3 *v);
+extern "C" s32 FtrMgr_IsPickable(FtrActor *p);
+extern "C" s32 FtrMgr_IsPickableByIndex(s32 i);
+extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, s32 idx);
+extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
+extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s32 ang, s32 mode);
+extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c);
+extern "C" s32 FtrMgr_GetCurPlayerIndex();
+extern "C" s32 FtrMgr_FindPlacementMyDesignA(void *a, u32 b, u32 c);
+extern "C" s32 FtrMgr_FindPlacementMyDesignB(void *a, u32 b, u32 c);
+extern "C" s32 FtrMgr_FindPlacementMyDesignD(void *a, u32 b, u32 c);
+extern "C" s32 FtrMgr_FindPlacementMyDesignC(void *a, u32 b, u32 c);
+extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0);
+extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b);
+extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0);
+extern "C" s32 FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b);
 extern "C" BOOL func_ov004_02233d04(void);
 extern "C" BOOL func_ov004_02233d00(void);
 extern "C" BOOL func_ov004_02233cfc(void);
-extern "C" s32 func_ov004_02233cdc(void);
-extern "C" s32 func_ov004_02233cb4(void);
-extern "C" TvSound *func_ov004_02233c94(void);
-extern "C" s32 func_ov004_02233c74(void);
-extern "C" s32 func_ov004_02233c54(void);
-extern "C" void func_ov004_02233c3c(void);
-extern "C" u8 func_ov004_02233c20(void);
-extern "C" void func_ov004_02233c18(u8 *p);
-extern "C" void func_ov004_02233c10(u8 *p);
-extern "C" void *func_ov004_02233bf4(void);
-extern "C" void func_ov004_02233b90(Unk_ov004_02233b90_Obj *o);
-extern "C" void func_ov004_02233b80(Unk_ov004_02233b3c *r);
-extern "C" void *func_ov004_02233b54(Unk_ov004_02233b3c *r);
-extern "C" void *func_ov004_02233b3c(Unk_ov004_02233b3c *r);
-extern "C" void func_ov004_02233b20(Unk_ov004_02233b3c *r);
-extern "C" void func_ov004_02233b04(Unk_ov004_02233b3c *r);
-extern "C" void *func_ov004_02233b00(Unk_ov004_02233b3c *r);
-extern "C" void func_ov004_02233af0(Unk_ov004_02233b3c *r, Unk_ov004_02233b3c_V3 *v);
-extern "C" BOOL func_ov004_02233a70(Unk_ov004_02233b3c *r, s32 x, volatile u8 *flag, Unk_ov004_02233b3c_V3 *pos, s32 e);
-extern "C" BOOL func_ov004_02233a48(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c);
-extern "C" BOOL func_ov004_02233a20(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c);
-extern "C" BOOL func_ov004_022339cc(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *out);
-extern "C" BOOL func_ov004_0223399c(Unk_ov004_02233b3c *r);
-extern "C" BOOL func_ov004_0223397c(Unk_ov004_02233b3c *r);
-extern "C" BOOL func_ov004_022338e0(Unk_ov004_02233b3c *r);
-extern "C" BOOL func_ov004_022338d0(Unk_ov004_02233b3c *r);
-extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r);
-extern "C" BOOL func_ov004_022337c8(Unk_ov004_02233b3c *r);
-extern "C" u32 func_ov004_022337c4(Unk_ov004_02233b3c *r);
-extern "C" u32 func_ov004_022337c0(Unk_ov004_02233b3c *r);
-extern "C" u32 func_ov004_022337bc(Unk_ov004_02233b3c *r);
-extern "C" void *func_ov004_02233790(Unk_ov004_02233790 *p);
-extern "C" void *func_ov004_0223377c(Unk_ov004_02233790 *p);
-extern "C" void *func_ov004_02233744(Unk_ov004_02233790 *p, u32 a);
-extern "C" s32 func_ov004_0223372c(u32 i);
-extern "C" BOOL func_ov004_02233660(Unk_ov004_02233790 *p, u32 id, s32 x);
-extern "C" void func_ov004_02233644(Unk_ov004_02233790 *p);
-extern "C" void func_ov004_022335fc(Unk_ov004_02233790 *p);
-extern "C" void func_ov004_022335dc(Unk_ov004_02233790 *p);
-extern "C" s32 func_ov004_022335d4(Unk_ov004_02233790 *p);
-extern "C" s32 func_ov004_022335b8(Unk_ov004_02233790 *p);
-extern "C" u16 func_ov004_022335b0(Unk_ov004_02233790 *p);
-extern "C" u32 func_ov004_022335a8(Unk_ov004_02233790 *p);
-extern "C" void *func_ov004_02233560(Unk_ov004_02233560 *q);
-extern "C" void *func_ov004_02233544(Unk_ov004_02233560 *q);
-extern "C" void func_ov004_0223349c(Unk_ov004_02233560 *q);
-extern "C" BOOL func_ov004_022333f8(Unk_ov004_02233560 *o, s32 a, s32 b);
-extern "C" void func_ov004_022333a8(Unk_ov004_02233560 *o);
-extern "C" void func_ov004_02233380(Unk_ov004_02233560 *o);
-extern "C" u8 func_ov004_02233330(void *);
-extern "C" s32 func_ov004_022332b8();
-extern "C" s32 func_ov004_02233244(void *);
-extern "C" void func_ov004_022331e0(Unk_ov004_02233560 *o);
-extern "C" BOOL func_ov004_022331d0(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_022331b8(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_022331a0(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_02233194(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_02233188(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_02233170(Unk_ov004_02233560 *o);
-extern "C" s32 func_ov004_02233158(Unk_ov004_02233560 *o);
-extern "C" const Unk_ov004_02233138_Rec *func_ov004_02233138(s32 idx);
-extern "C" u16 func_ov004_02233128(s32 idx);
-extern "C" u16 func_ov004_02233118(s32 idx);
-extern "C" u16 func_ov004_02233108(s32 idx);
-extern "C" u16 func_ov004_022330f8(s32 idx);
-extern "C" void func_ov004_022330cc(s32 a);
-extern "C" void func_ov004_022330a0(s32 a);
-extern "C" void func_ov004_02233074(s32 a);
+extern "C" s32 FurnitureManager_GetTvTex(void);
+extern "C" s32 FurnitureManager_GetTvProgram(void);
+extern "C" TvSound *FurnitureManager_GetTvSound(void);
+extern "C" s32 FurnitureManager_GetTvLoopCount(void);
+extern "C" s32 FurnitureManager_GetTvFrame(void);
+extern "C" void FurnitureManager_SetTvProgramChanged(void);
+extern "C" u8 FurnitureManager_IsTvProgramChanged(void);
+extern "C" void FtrMoveFlag_Init(u8 *p);
+extern "C" void FtrMoveFlag_Destroy(u8 *p);
+extern "C" void *FurnitureManager_GetMoveAnim(void);
+extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o);
+extern "C" void FtrMoveAnim_InstallCallback(Unk_ov004_02233b3c *r);
+extern "C" void *FtrMoveAnim_Construct(Unk_ov004_02233b3c *r);
+extern "C" void *FtrMoveAnim_Destruct(Unk_ov004_02233b3c *r);
+extern "C" void FtrMoveAnim_Load(Unk_ov004_02233b3c *r);
+extern "C" void FtrMoveAnim_Unload(Unk_ov004_02233b3c *r);
+extern "C" void *FtrMoveAnim_GetMtx(Unk_ov004_02233b3c *r);
+extern "C" void FtrMoveAnim_SetPos(Unk_ov004_02233b3c *r, Unk_ov004_02233b3c_V3 *v);
+extern "C" BOOL FtrMoveAnim_Start(Unk_ov004_02233b3c *r, s32 x, volatile u8 *flag, Unk_ov004_02233b3c_V3 *pos, s32 e);
+extern "C" BOOL FtrMoveAnim_StartPush(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c);
+extern "C" BOOL FtrMoveAnim_StartPull(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c);
+extern "C" BOOL FtrMoveAnim_Step(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *out);
+extern "C" BOOL FtrMoveAnim_CreateHeap(Unk_ov004_02233b3c *r);
+extern "C" BOOL FtrMoveAnim_DestroyHeap(Unk_ov004_02233b3c *r);
+extern "C" BOOL FtrMoveAnim_LoadAnims(Unk_ov004_02233b3c *r);
+extern "C" BOOL FtrMoveAnim_ClearAnims(Unk_ov004_02233b3c *r);
+extern "C" BOOL FtrMoveAnim_LoadModel(Unk_ov004_02233b3c *r);
+extern "C" BOOL FtrMoveAnim_ClearModel(Unk_ov004_02233b3c *r);
+extern "C" u32 FtrMoveAnim_GetPushAnim(Unk_ov004_02233b3c *r);
+extern "C" u32 FtrMoveAnim_GetPullAnim(Unk_ov004_02233b3c *r);
+extern "C" u32 FtrMoveAnim_GetHaniwaAnim(Unk_ov004_02233b3c *r);
+extern "C" void *TvProgSlot_Construct(Unk_ov004_02233790 *p);
+extern "C" void *TvProgSlot_Destruct(Unk_ov004_02233790 *p);
+extern "C" void *TvProgSlot_Init(Unk_ov004_02233790 *p, u32 a);
+extern "C" s32 TvWeather_GetName(u32 i);
+extern "C" BOOL TvProgSlot_Load(Unk_ov004_02233790 *p, u32 id, s32 x);
+extern "C" void TvProgSlot_FreeFiles(Unk_ov004_02233790 *p);
+extern "C" void TvProgSlot_Update(Unk_ov004_02233790 *p);
+extern "C" void TvProgSlot_Release(Unk_ov004_02233790 *p);
+extern "C" s32 TvProgSlot_GetProgram(Unk_ov004_02233790 *p);
+extern "C" s32 TvProgSlot_GetWeather(Unk_ov004_02233790 *p);
+extern "C" u16 TvProgSlot_GetLoopCount(Unk_ov004_02233790 *p);
+extern "C" u32 TvProgSlot_GetFrame(Unk_ov004_02233790 *p);
+extern "C" void *TvScreen_Construct(Unk_ov004_02233560 *q);
+extern "C" void *TvScreen_Destruct(Unk_ov004_02233560 *q);
+extern "C" void TvScreen_Load(Unk_ov004_02233560 *q);
+extern "C" BOOL TvScreen_SetProgram(Unk_ov004_02233560 *o, s32 a, s32 b);
+extern "C" void TvScreen_UpdateSchedule(Unk_ov004_02233560 *o);
+extern "C" void TvScreen_Update(Unk_ov004_02233560 *o);
+extern "C" u8 TvSchedule_GetCurrentProgram(void *);
+extern "C" s32 TvWeather_IsUnkPeriod();
+extern "C" s32 TvWeather_GetForecastIndex(void *);
+extern "C" void TvScreen_Release(Unk_ov004_02233560 *o);
+extern "C" BOOL TvScreen_IsLoaded(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetProgram(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetWeather(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetTex(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetSound(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetLoopCount(Unk_ov004_02233560 *o);
+extern "C" s32 TvScreen_GetFrame(Unk_ov004_02233560 *o);
+extern "C" const Unk_ov004_02233138_Rec *FtrSound_GetRecord(s32 idx);
+extern "C" u16 FtrSound_GetSe0(s32 idx);
+extern "C" u16 FtrSound_GetSe1(s32 idx);
+extern "C" u16 FtrSound_GetSe2(s32 idx);
+extern "C" u16 FtrSound_GetSe3(s32 idx);
+extern "C" void FtrMgr_PlaySeatSound1At(s32 a);
+extern "C" void FtrMgr_PlaySeatSound0At(s32 a);
+extern "C" void FtrMgr_PlaySeatSound2At(s32 a);
 
 #define TILE_ENTRY(name, base)                                              \
     extern "C" s32 name(void *a, u32 b, u32 c) {                            \
-        s32 idx = func_ov004_02233ee0();                                    \
+        s32 idx = FtrMgr_GetCurPlayerIndex();                                    \
         s32 r;                                                              \
         if (idx != -1) {                                                    \
             u32 v = b + idx * 8;                                            \
             u16 t = (v < 0x20) ? (base + v * 4) : base;                     \
-            r = func_ov004_02233f08(a, &t, c);                              \
+            r = FtrMgr_FindPlacementForPlayer(a, &t, c);                              \
         } else {                                                            \
             r = 2;                                                          \
         }                                                                   \
@@ -869,20 +869,20 @@ extern "C" void func_ov004_02233074(s32 a);
 
 
 // forward declarations of the unit's data
-extern "C" const u8 data_ov004_022406a4[4];
-extern "C" const s8 data_ov004_022406a8[4];
-extern "C" const Unk_ov004_02233138_Rec data_ov004_022406ac;
-extern "C" const s32 data_ov004_022406b4[2];
-extern "C" const Unk_ov004_02233330_Tbl data_ov004_022406bc[7];
-extern "C" const u8 data_ov004_022406f4[0x44];
-extern "C" const u8 data_ov004_02240738[0x4c];
-extern "C" const u8 data_ov004_02240784[0x50];
-extern "C" const u8 data_ov004_022407d4[0x50];
-extern "C" const u8 data_ov004_02240824[0x50];
-extern "C" const u8 data_ov004_02240874[0x54];
-extern "C" const u8 data_ov004_022408c8[0x54];
-extern "C" const u16 data_ov004_0224091c[0x30];
-extern "C" const Unk_ov004_02233138_Rec data_ov004_0224097c[0x6e9];
+extern "C" const u8 sFtrPlaceDirOrder[4];
+extern "C" const s8 sFtrProbeDirOffsets[4];
+extern "C" const Unk_ov004_02233138_Rec sFtrSoundNoneRecord;
+extern "C" const s32 sFtrPickRangeByLayer[2];
+extern "C" const Unk_ov004_02233330_Tbl sTvScheduleByWeekday[7];
+extern "C" const u8 sTvScheduleDay0[0x44];
+extern "C" const u8 sTvScheduleDay6[0x4c];
+extern "C" const u8 sTvScheduleDay1[0x50];
+extern "C" const u8 sTvScheduleDay2[0x50];
+extern "C" const u8 sTvScheduleDay5[0x50];
+extern "C" const u8 sTvScheduleDay3[0x54];
+extern "C" const u8 sTvScheduleDay4[0x54];
+extern "C" const u16 sFtrKindProfiles[0x30];
+extern "C" const Unk_ov004_02233138_Rec sFtrSoundTable[0x6e9];
 extern "C" char data_ov004_0224e934[8];
 extern "C" char data_ov004_0224e93c[8];
 extern "C" char data_ov004_0224e944[8];
@@ -894,17 +894,17 @@ extern "C" char data_ov004_0224e96c[8];
 extern "C" char data_ov004_0224e974[8];
 extern "C" char data_ov004_0224e97c[8];
 extern "C" char data_ov004_0224e984[8];
-extern "C" Unk_ov004_0224e98c_Entry data_ov004_0224e98c;
-extern "C" char data_ov004_0224e994[0x10];
-extern "C" const char *data_ov004_0224e930;
-extern "C" const char *data_ov004_0224e9a4[11];
-extern "C" u8 data_ov004_02251f74;
-extern "C" u8 data_ov004_02251f78;
-extern "C" u16 data_ov004_02251f7c;
-extern "C" Unk_ov004_0224e9d8 *data_ov004_02251f80;
+extern "C" Unk_ov004_0224e98c_Entry sFurnitureManagerProfile;
+extern "C" char sFtrMoveAnimModelName[0x10];
+extern "C" const char *sFtrMoveAnimModelNamePtr;
+extern "C" const char *sTvWeatherNames[11];
+extern "C" u8 sFtrMgrSaleMode;
+extern "C" u8 sFtrMgrTvSoundEnabled;
+extern "C" u16 sFtrMgrCycleCounter;
+extern "C" FurnitureManager *sFurnitureManager;
 
 namespace Unk_ov004_02233f3c_Ns {
-extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u8 layer, s32 cx, s32 cy);
+extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u8 layer, s32 cx, s32 cy);
 }
 
 static inline BOOL Unk_ov004_02234f30_Is37(FtrActor *m) {
@@ -915,111 +915,111 @@ static inline BOOL Unk_ov004_02234f30_Is37(FtrActor *m) {
 }
 
 // @0x2235fb4 unk_02235984.cpp
-extern "C" Unk_ov004_0224e9d8 *func_ov004_02235fb4() {
-    Unk_ov004_0224e9d8 *p = new Unk_ov004_0224e9d8;
+extern "C" FurnitureManager *FurnitureManager_Create() {
+    FurnitureManager *p = new FurnitureManager;
     return p;
 }
 
 // @0x2235f78 unk_02235984.cpp
-Unk_ov004_0224e9d8::Unk_ov004_0224e9d8() {
-    unk_50.func_ov004_022359e8();
-    func_ov004_02233560(&unk_64);
-    func_ov004_02233b54(&unk_1c4);
+FurnitureManager::FurnitureManager() {
+    unk_50.reset();
+    TvScreen_Construct(&unk_64);
+    FtrMoveAnim_Construct(&unk_1c4);
 }
 
 // @0x2235ef4 unk_02235984.cpp
-Unk_ov004_0224e9d8::~Unk_ov004_0224e9d8() {
-    func_ov004_02233b3c(&unk_1c4);
-    func_ov004_02233544(&unk_64);
-    unk_50.func_ov004_022359d8();
+FurnitureManager::~FurnitureManager() {
+    FtrMoveAnim_Destruct(&unk_1c4);
+    TvScreen_Destruct(&unk_64);
+    unk_50.destroy();
 }
 
 // @0x2235dfc unk_02235984.cpp
-BOOL Unk_ov004_0224e9d8::vfunc_00() {
+BOOL FurnitureManager::vfunc_00() {
     if (func_020b52f8() || func_020b51a4()) {
-        data_ov004_02251f78 = 1;
+        sFtrMgrTvSoundEnabled = 1;
     }
     unk_2a9 = 1;
     unk_2a8 = 0;
     unk_2ac = 0;
     unk_2b0 = 0;
-    data_ov004_02251f74 = func_ov004_02234ad4();
-    data_ov004_02251f84.func_ov004_0223588c(func_ov004_02234af8());
-    data_ov004_02251f80 = this;
-    func_ov004_02235718()->func_ov004_022356cc();
-    func_ov004_022354d8()->func_ov004_02235180();
+    sFtrMgrSaleMode = FtrMgr_IsShopScene();
+    sFtrActorHeap.create(FtrMgr_GetMaxFurniture());
+    sFurnitureManager = this;
+    FtrActorGrid_GetInstance()->clear();
+    FtrContactSet_GetInstance()->clear();
     s32 flags = 0x1cc4;
     if (func_020b51fc()) {
         flags = 0x1c00;
     }
-    func_0209c1a4(&data_ov004_02252058, func_ov004_02234af8(), 0x2000, 0x80, flags, (void *)func_0205c158,
+    func_0209c1a4(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)func_0205c158,
                   (void *)func_0205c13c, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
     func_ov004_02234ad0(this);
-    if (func_ov004_02234af8() > 1) {
-        func_ov004_0223349c(&unk_64);
+    if (FtrMgr_GetMaxFurniture() > 1) {
+        TvScreen_Load(&unk_64);
     }
-    func_ov004_02233b20(&unk_1c4);
-    func_ov004_02235a04()->func_ov004_02235c10();
-    func_ov004_02234a48(this);
+    FtrMoveAnim_Load(&unk_1c4);
+    FtrPreviewer_GetInstance()->allocBuffers();
+    FtrMgr_SpawnAllFromMap(this);
     return TRUE;
 }
 
 // @0x2235d7c unk_02235984.cpp
-BOOL Unk_ov004_0224e9d8::onExecute() {
-    unk_50.func_ov004_022359b4();
-    unk_50.func_ov004_0223599c();
-    data_ov004_02251f7c = (data_ov004_02251f7c + 1) % 0x28;
-    if (func_ov004_02234af8() > 1) {
+BOOL FurnitureManager::onExecute() {
+    unk_50.tryInit();
+    unk_50.update();
+    sFtrMgrCycleCounter = (sFtrMgrCycleCounter + 1) % 0x28;
+    if (FtrMgr_GetMaxFurniture() > 1) {
         if (Backup_GetStatus(gBackup) == 4) {
             if (!func_020b52d0()) {
                 if (!func_020b52ac()) {
-                    func_ov004_022333a8(&unk_64);
-                    func_ov004_02234774(this);
-                    func_ov004_02233380(&unk_64);
+                    TvScreen_UpdateSchedule(&unk_64);
+                    FurnitureManager_UpdateTvSound(this);
+                    TvScreen_Update(&unk_64);
                 }
             }
         }
     }
-    func_ov004_02234908(this);
-    func_ov004_022349a8(this);
-    func_ov004_022354d8()->func_ov004_02235180();
+    FtrMgr_NotifyNearestSoundingClock(this);
+    FtrMgr_NotifyNearestCabinClock(this);
+    FtrContactSet_GetInstance()->clear();
     return TRUE;
 }
 
 // @0x2235d78 unk_02235984.cpp
-BOOL Unk_ov004_0224e9d8::onDraw() {
+BOOL FurnitureManager::onDraw() {
     return TRUE;
 }
 
 // @0x2235d1c unk_02235984.cpp
-BOOL Unk_ov004_0224e9d8::vfunc_0c() {
-    unk_50.func_ov004_02235994();
-    func_ov004_02233b04(&unk_1c4);
-    if (func_ov004_02234af8() > 1) {
-        func_ov004_022331e0(&unk_64);
+BOOL FurnitureManager::vfunc_0c() {
+    unk_50.checkInitialized();
+    FtrMoveAnim_Unload(&unk_1c4);
+    if (FtrMgr_GetMaxFurniture() > 1) {
+        TvScreen_Release(&unk_64);
     }
-    func_ov004_02235a04()->func_ov004_02235bc8();
-    data_ov004_02252058.func_0209c15c();
-    data_ov004_02251f80 = 0;
-    func_ov004_022354d8()->func_ov004_02235180();
-    data_ov004_02251f84.func_ov004_02235870();
+    FtrPreviewer_GetInstance()->freeBuffers();
+    sFtrMgrPool.func_0209c15c();
+    sFurnitureManager = 0;
+    FtrContactSet_GetInstance()->clear();
+    sFtrActorHeap.destroy();
     return TRUE;
 }
 
 // @0x2235d10 unk_02235984.cpp
-extern "C" u32 func_ov004_02235d10() {
-    return data_ov004_02251f74;
+extern "C" u32 FtrMgr_IsSaleMode() {
+    return sFtrMgrSaleMode;
 }
 
 // @0x2235d04 unk_02235984.cpp
-extern "C" void func_ov004_02235d04() {
-    data_ov004_02251f74 = 1;
+extern "C" void FtrMgr_SetSaleMode() {
+    sFtrMgrSaleMode = 1;
 }
 
 // @0x2235cc0 unk_02235984.cpp
-Unk_ov004_02235a0c::Unk_ov004_02235a0c() {
+FtrPreviewer::FtrPreviewer() {
     __cxa_vec_ctor(unk_08, 2, 2, (void *(*)(void *))func_0203442c, (void *(*)(void *, s32))func_02004b60);
-    func_ov004_02235c78();
+    reset();
     u32 i = 0;
     u32 z = i;
     for (; i < 2; i++) {
@@ -1029,13 +1029,13 @@ Unk_ov004_02235a0c::Unk_ov004_02235a0c() {
 }
 
 // @0x2235c9c unk_02235984.cpp
-Unk_ov004_02235a0c::~Unk_ov004_02235a0c() {
-    func_ov004_02235c78();
+FtrPreviewer::~FtrPreviewer() {
+    reset();
     __cxa_vec_cleanup(unk_08, 2, 2, (void *(*)(void *, s32))func_02004b60);
 }
 
 // @0x2235c78 unk_02235984.cpp
-void Unk_ov004_02235a0c::func_ov004_02235c78() {
+void FtrPreviewer::reset() {
     u32 i = 0;
     u32 z = i;
     for (; i < 2; i++) {
@@ -1046,12 +1046,12 @@ void Unk_ov004_02235a0c::func_ov004_02235c78() {
 }
 
 // @0x2235c74 unk_02235984.cpp
-s32 Unk_ov004_02235a0c::func_ov004_02235c74() {
+s32 FtrPreviewer::getSampleIndex() {
     return unk_10;
 }
 
 // @0x2235c10 unk_02235984.cpp
-void Unk_ov004_02235a0c::func_ov004_02235c10() {
+void FtrPreviewer::allocBuffers() {
     u32 *g = (u32 *)gCurrentHeap;
     for (u32 i = 0; i < 2; i++) {
         u32 *p = (u32 *)((u8 *)this + i * 4);
@@ -1075,7 +1075,7 @@ void Unk_ov004_02235a0c::func_ov004_02235c10() {
 }
 
 // @0x2235bc8 unk_02235984.cpp
-void Unk_ov004_02235a0c::func_ov004_02235bc8() {
+void FtrPreviewer::freeBuffers() {
     u32 *g = (u32 *)gCurrentHeap;
     volatile s32 z0 = 0;
     volatile s32 z1 = 0;
@@ -1093,7 +1093,7 @@ void Unk_ov004_02235a0c::func_ov004_02235bc8() {
 }
 
 // @0x2235a54 unk_02235984.cpp
-BOOL Unk_ov004_02235a0c::func_ov004_02235a54(u16 *p) {
+BOOL FtrPreviewer::showItem(u16 *p) {
     u16 v;
     s32 out;
     Item_ToPlacedForm(&v, p, 1);
@@ -1160,8 +1160,8 @@ BOOL Unk_ov004_02235a0c::func_ov004_02235a54(u16 *p) {
         u8 n = (u8)((unk_0c + 1) & 1);
         u32 *slot2 = &unk_00[n];
         if (*slot2 == 0) {
-            if (func_ov004_02233f08(&out, &v, 2) == 3) {
-                *slot2 = func_ov004_02235028((FtrActor *)out);
+            if (FtrMgr_FindPlacementForPlayer(&out, &v, 2) == 3) {
+                *slot2 = FtrMgr_SpawnFromArg((FtrActor *)out);
                 unk_08[n] = *p;
                 unk_0c = n;
                 return TRUE;
@@ -1172,33 +1172,33 @@ BOOL Unk_ov004_02235a0c::func_ov004_02235a54(u16 *p) {
 }
 
 // @0x2235a2c unk_02235984.cpp
-void Unk_ov004_02235a0c::func_ov004_02235a2c() {
+void FtrPreviewer::clear() {
     for (u32 i = 0; i < 2; i++) {
         if (unk_00[i]) {
             ProcBase_RequestDelete((void *)unk_00[i]);
         }
     }
-    func_ov004_02235c78();
+    reset();
 }
 
 // @0x2235a1c unk_02235984.cpp
-u32 Unk_ov004_02235a0c::func_ov004_02235a1c() {
+u32 FtrPreviewer::getWallBuffer() {
     return unk_14[unk_0c & 1];
 }
 
 // @0x2235a0c unk_02235984.cpp
-u32 Unk_ov004_02235a0c::func_ov004_02235a0c() {
+u32 FtrPreviewer::getFloorBuffer() {
     return unk_1c[unk_0c & 1];
 }
 
 // @0x2235a04 unk_02235984.cpp
-extern "C" Unk_ov004_02235a0c *func_ov004_02235a04() {
-    return &data_ov004_02252070;
+extern "C" FtrPreviewer *FtrPreviewer_GetInstance() {
+    return &sFtrPreviewer;
 }
 
 // @0x22359f0 unk_02235984.cpp
-extern "C" Unk_ov004_0223598c *func_ov004_022359f0() {
-    Unk_ov004_0224e9d8 *o = data_ov004_02251f80;
+extern "C" FtrSoundList *FurnitureManager_GetSoundList() {
+    FurnitureManager *o = sFurnitureManager;
     if (o) {
         return &o->unk_50;
     }
@@ -1206,19 +1206,19 @@ extern "C" Unk_ov004_0223598c *func_ov004_022359f0() {
 }
 
 // @0x22359e8 unk_02235984.cpp
-void Unk_ov004_0223598c::func_ov004_022359e8() {
+void FtrSoundList::reset() {
     unk_10 = 0;
 }
 
 // @0x22359d8 unk_02235984.cpp
-void *Unk_ov004_0223598c::func_ov004_022359d8() {
+void *FtrSoundList::destroy() {
     func_020f3a18(this);
     return this;
 }
 
 // @0x22359b4 unk_02235984.cpp
-void Unk_ov004_0223598c::func_ov004_022359b4() {
-    if (func_ov004_0223598c() == 0) {
+void FtrSoundList::tryInit() {
+    if (isInitialized() == 0) {
         if (func_02003ccc()) {
             Snd_PosListInit(this);
             unk_10 = 1;
@@ -1227,42 +1227,42 @@ void Unk_ov004_0223598c::func_ov004_022359b4() {
 }
 
 // @0x223599c unk_02235984.cpp
-void Unk_ov004_0223598c::func_ov004_0223599c() {
-    if (func_ov004_0223598c()) {
+void FtrSoundList::update() {
+    if (isInitialized()) {
         Snd_PosListUpdate(this);
     }
 }
 
 // @0x2235994 unk_02235984.cpp
-u32 Unk_ov004_0223598c::func_ov004_02235994() {
-    return func_ov004_0223598c();
+u32 FtrSoundList::checkInitialized() {
+    return isInitialized();
 }
 
 // @0x2235990 unk_02235984.cpp
-void Unk_ov004_0223598c::func_ov004_02235990() {
+void FtrSoundList::getList() {
 }
 
 // @0x223598c unk_02235984.cpp
-u32 Unk_ov004_0223598c::func_ov004_0223598c() {
+u32 FtrSoundList::isInitialized() {
     return unk_10;
 }
 
 // @0x2235984 unk_02235984.cpp
-void Unk_ov004_02235984::func_ov004_02235984() {
+void Unk_ov004_02235984::resetAttached() {
     unk_1c = 0;
 }
 
 // @0x2235980 unk_022350c8.cpp
-extern "C" void func_ov004_02235980() {
+extern "C" void FtrSoundEmitter_Destroy() {
 }
 
 // @0x2235948 unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_02235948() {
+void FtrSoundEmitter::attach() {
     if (!unk_1c) {
-        Unk_ov004_0223598c *h = func_ov004_022359f0();
+        FtrSoundList *h = FurnitureManager_GetSoundList();
         if (h != 0) {
-            if (h->func_ov004_0223598c()) {
-                Snd_PosNodeInit(this, _ZN18Unk_ov004_0223598c19func_ov004_02235990Ev(h));
+            if (h->isInitialized()) {
+                Snd_PosNodeInit(this, _ZN12FtrSoundList7getListEv(h));
                 unk_1c = 1;
             }
         }
@@ -1270,7 +1270,7 @@ void Unk_ov004_02235cc0::func_ov004_02235948() {
 }
 
 // @0x2235930 unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_02235930() {
+void FtrSoundEmitter::release() {
     if (unk_1c) {
         Snd_PosNodeRelease(this);
         unk_1c = 0;
@@ -1278,54 +1278,54 @@ void Unk_ov004_02235cc0::func_ov004_02235930() {
 }
 
 // @0x223591c unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_0223591c(u32 a, u32 b) {
+void FtrSoundEmitter::play(u32 a, u32 b) {
     if (unk_1c) {
         Snd_PosNodePlay(this, a, b);
     }
 }
 
 // @0x2235908 unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_02235908(u32 a, u32 b) {
+void FtrSoundEmitter::playOnce(u32 a, u32 b) {
     if (unk_1c) {
         Snd_PosNodePlayOnce(this, a, b);
     }
 }
 
 // @0x22358f4 unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_022358f4(u32 a) {
+void FtrSoundEmitter::setPan(u32 a) {
     if (unk_1c) {
         Snd_SetBgmPan(this, a);
     }
 }
 
 // @0x22358e0 unk_022350c8.cpp
-void Unk_ov004_02235cc0::func_ov004_022358e0(u32 a) {
+void FtrSoundEmitter::setPitch(u32 a) {
     if (unk_1c) {
         Snd_PosNodeSetPitch(this, a);
     }
 }
 
 // @0x22358d8 unk_022350c8.cpp
-extern "C" Unk_ov004_022358c8 *func_ov004_022358d8() {
-    return &data_ov004_02251f84;
+extern "C" FtrActorHeap *FtrActorHeap_GetInstance() {
+    return &sFtrActorHeap;
 }
 
 // @0x22358c8 unk_022350c8.cpp
-Unk_ov004_022358c8::Unk_ov004_022358c8() {
-    func_ov004_022358bc();
+FtrActorHeap::FtrActorHeap() {
+    reset();
 }
 
 // @0x22358c4 unk_022350c8.cpp
-Unk_ov004_022358c8::~Unk_ov004_022358c8() {
+FtrActorHeap::~FtrActorHeap() {
 }
 
 // @0x22358bc unk_022350c8.cpp
-void Unk_ov004_022358c8::func_ov004_022358bc() {
+void FtrActorHeap::reset() {
     unk_00 = 0;
 }
 
 // @0x223588c unk_022350c8.cpp
-BOOL Unk_ov004_022358c8::func_ov004_0223588c(s32 n) {
+BOOL FtrActorHeap::create(s32 n) {
     if (unk_00 == 0) {
         unk_00 = ExpHeap_Create(n * 0x93a, (u32)gCurrentHeap);
         return TRUE;
@@ -1334,52 +1334,52 @@ BOOL Unk_ov004_022358c8::func_ov004_0223588c(s32 n) {
 }
 
 // @0x2235870 unk_022350c8.cpp
-void Unk_ov004_022358c8::func_ov004_02235870() {
+void FtrActorHeap::destroy() {
     if (unk_00 != 0) {
         func_020e8c88((void *)unk_00);
     }
-    func_ov004_022358bc();
+    reset();
 }
 
 // @0x2235860 unk_022350c8.cpp
-void Unk_ov004_022358c8::func_ov004_02235860() {
+void FtrActorHeap::alloc() {
     Heap_Alloc((void *)unk_00, 0x8d6);
 }
 
 // @0x2235854 unk_022350c8.cpp
-void Unk_ov004_022358c8::func_ov004_02235854(void *p) {
+void FtrActorHeap::free(void *p) {
     Heap_Free((void *)unk_00, p);
 }
 
 // @0x223584c unk_022350c8.cpp
-extern "C" Unk_ov004_0223583c *func_ov004_0223584c() {
-    return &data_ov004_022520d4;
+extern "C" FtrActorTable *FtrActorTable_GetInstance() {
+    return &sFtrActorTable;
 }
 
 // @0x223583c unk_022350c8.cpp
-Unk_ov004_0223583c::Unk_ov004_0223583c() {
-    func_ov004_02235828();
+FtrActorTable::FtrActorTable() {
+    clear();
 }
 
 // @0x2235838 unk_022350c8.cpp
-Unk_ov004_0223583c::~Unk_ov004_0223583c() {
+FtrActorTable::~FtrActorTable() {
 }
 
 // @0x2235828 unk_022350c8.cpp
-void Unk_ov004_0223583c::func_ov004_02235828() {
+void FtrActorTable::clear() {
     for (u32 i = 0; i < 0x1c; i++) {
         unk_00[i] = 0;
     }
 }
 
 // @0x22357e0 unk_022350c8.cpp
-s32 Unk_ov004_0223583c::func_ov004_022357e0(void *v) {
-    for (u32 i = 0; i < func_ov004_02234af8(); i++) {
+s32 FtrActorTable::add(void *v) {
+    for (u32 i = 0; i < FtrMgr_GetMaxFurniture(); i++) {
         if (unk_00[i] == v) {
             return TRUE;
         }
     }
-    for (u32 i = 0; i < func_ov004_02234af8(); i++) {
+    for (u32 i = 0; i < FtrMgr_GetMaxFurniture(); i++) {
         if (unk_00[i] == 0) {
             unk_00[i] = v;
             return TRUE;
@@ -1389,8 +1389,8 @@ s32 Unk_ov004_0223583c::func_ov004_022357e0(void *v) {
 }
 
 // @0x22357b0 unk_022350c8.cpp
-s32 Unk_ov004_0223583c::func_ov004_022357b0(void *v) {
-    for (u32 i = 0; i < func_ov004_02234af8(); i++) {
+s32 FtrActorTable::remove(void *v) {
+    for (u32 i = 0; i < FtrMgr_GetMaxFurniture(); i++) {
         if (unk_00[i] == v) {
             unk_00[i] = 0;
             return TRUE;
@@ -1400,9 +1400,9 @@ s32 Unk_ov004_0223583c::func_ov004_022357b0(void *v) {
 }
 
 // @0x2235788 unk_022350c8.cpp
-s32 Unk_ov004_0223583c::func_ov004_02235788() {
+s32 FtrActorTable::countUsed() {
     u32 n = 0;
-    for (u32 i = 0; i < func_ov004_02234af8(); i++) {
+    for (u32 i = 0; i < FtrMgr_GetMaxFurniture(); i++) {
         if (unk_00[i] != 0) {
             n++;
         }
@@ -1411,14 +1411,14 @@ s32 Unk_ov004_0223583c::func_ov004_02235788() {
 }
 
 // @0x223576c unk_022350c8.cpp
-s32 Unk_ov004_0223583c::func_ov004_0223576c() {
-    u32 n = func_ov004_02234af8();
-    return n - func_ov004_02235788();
+s32 FtrActorTable::countFree() {
+    u32 n = FtrMgr_GetMaxFurniture();
+    return n - countUsed();
 }
 
 // @0x2235740 unk_022350c8.cpp
-s32 Unk_ov004_0223583c::func_ov004_02235740(void *v) {
-    for (u32 i = 0; i < func_ov004_02234af8(); i++) {
+s32 FtrActorTable::indexOf(void *v) {
+    for (u32 i = 0; i < FtrMgr_GetMaxFurniture(); i++) {
         if (unk_00[i] == v) {
             return i;
         }
@@ -1427,29 +1427,29 @@ s32 Unk_ov004_0223583c::func_ov004_02235740(void *v) {
 }
 
 // @0x2235720 unk_022350c8.cpp
-FtrActor *Unk_ov004_0223583c::func_ov004_02235720(u32 idx) {
-    if (idx < func_ov004_02234af8()) {
+FtrActor *FtrActorTable::get(u32 idx) {
+    if (idx < FtrMgr_GetMaxFurniture()) {
         return (FtrActor *)unk_00[idx];
     }
     return 0;
 }
 
 // @0x2235718 unk_022350c8.cpp
-extern "C" Unk_ov004_02235708 *func_ov004_02235718() {
-    return &data_ov004_022521c4;
+extern "C" FtrActorGrid *FtrActorGrid_GetInstance() {
+    return &sFtrActorGrid;
 }
 
 // @0x2235708 unk_022350c8.cpp
-Unk_ov004_02235708::Unk_ov004_02235708() {
-    func_ov004_022356cc();
+FtrActorGrid::FtrActorGrid() {
+    clear();
 }
 
 // @0x2235704 unk_022350c8.cpp
-Unk_ov004_02235708::~Unk_ov004_02235708() {
+FtrActorGrid::~FtrActorGrid() {
 }
 
 // @0x22356cc unk_022350c8.cpp
-void Unk_ov004_02235708::func_ov004_022356cc() {
+void FtrActorGrid::clear() {
     for (u32 l = 0; l < 2; l++) {
         for (u32 y = 0; y < 16; y++) {
             for (u32 x = 0; x < 16; x++) {
@@ -1460,9 +1460,9 @@ void Unk_ov004_02235708::func_ov004_022356cc() {
 }
 
 // @0x223568c unk_022350c8.cpp
-BOOL Unk_ov004_02235708::func_ov004_0223568c(s32 id, s32 x, s32 y, u8 layer) {
+BOOL FtrActorGrid::setCell(s32 id, s32 x, s32 y, u8 layer) {
     u8 *p = &unk_00[layer & 1][y & 15][x & 15];
-    s32 i = func_ov004_0223584c()->func_ov004_02235740((void *)id);
+    s32 i = FtrActorTable_GetInstance()->indexOf((void *)id);
     if (i != -1) {
         *p = i;
         return TRUE;
@@ -1471,9 +1471,9 @@ BOOL Unk_ov004_02235708::func_ov004_0223568c(s32 id, s32 x, s32 y, u8 layer) {
 }
 
 // @0x2235648 unk_022350c8.cpp
-BOOL Unk_ov004_02235708::func_ov004_02235648(s32 id, s32 x, s32 y, u8 layer) {
+BOOL FtrActorGrid::clearCell(s32 id, s32 x, s32 y, u8 layer) {
     u8 *p = &unk_00[layer & 1][y & 15][x & 15];
-    if (func_ov004_0223584c()->func_ov004_02235740((void *)id) != -1) {
+    if (FtrActorTable_GetInstance()->indexOf((void *)id) != -1) {
         *p = 0xff;
         return TRUE;
     }
@@ -1481,7 +1481,7 @@ BOOL Unk_ov004_02235708::func_ov004_02235648(s32 id, s32 x, s32 y, u8 layer) {
 }
 
 // @0x2235624 unk_022350c8.cpp
-s32 Unk_ov004_02235708::func_ov004_02235624(s32 x, s32 y, s32 layer) {
+s32 FtrActorGrid::getIndex(s32 x, s32 y, s32 layer) {
     u32 c = unk_00[layer & 1][y & 15][x & 15];
     if (c == 0xff) {
         return -1;
@@ -1490,34 +1490,34 @@ s32 Unk_ov004_02235708::func_ov004_02235624(s32 x, s32 y, s32 layer) {
 }
 
 // @0x22355d8 unk_022350c8.cpp
-FtrActor *Unk_ov004_02235708::func_ov004_022355d8(s32 x, s32 y, s32 layer) {
+FtrActor *FtrActorGrid::getActor(s32 x, s32 y, s32 layer) {
     u8 *p = &unk_00[layer & 1][y & 15][x & 15];
     u32 c = *p;
-    if (c != 0xff && c < func_ov004_02234af8()) {
-        if (func_ov004_0223584c()->func_ov004_02235720(c) != 0) {
-            return func_ov004_0223584c()->func_ov004_02235720(*p);
+    if (c != 0xff && c < FtrMgr_GetMaxFurniture()) {
+        if (FtrActorTable_GetInstance()->get(c) != 0) {
+            return FtrActorTable_GetInstance()->get(*p);
         }
     }
     return 0;
 }
 
 // @0x22355b0 unk_022350c8.cpp
-FtrActor *Unk_ov004_02235708::func_ov004_022355b0(void *p, s32 layer) {
+FtrActor *FtrActorGrid::getActorAtPos(void *p, s32 layer) {
     s32 x, y;
     FieldPos_ToUnit(&x, &y, p);
-    return func_ov004_022355d8(x, y, layer);
+    return getActor(x, y, layer);
 }
 
 // @0x22355ac unk_022350c8.cpp
-Unk_ov004_022355ac::Unk_ov004_022355ac() {
+FtrContact::FtrContact() {
 }
 
 // @0x22355a8 unk_022350c8.cpp
-Unk_ov004_022355ac::~Unk_ov004_022355ac() {
+FtrContact::~FtrContact() {
 }
 
 // @0x2235580 unk_022350c8.cpp
-void Unk_ov004_022355ac::func_ov004_02235580() {
+void FtrContact::clear() {
     unk_00 = -1;
     unk_04.x = 0;
     unk_04.y = 0;
@@ -1537,7 +1537,7 @@ void Unk_ov004_022355ac::func_ov004_02235580() {
 }
 
 // @0x2235528 unk_022350c8.cpp
-void Unk_ov004_022355ac::func_ov004_02235528(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
+void FtrContact::set(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
                                              Unk_ov004_02235528_V3 *d, Unk_ov004_02235528_V3 *e, s16 f, s32 g) {
     if (id != -1) {
         unk_00 = id;
@@ -1560,62 +1560,62 @@ void Unk_ov004_022355ac::func_ov004_02235528(s32 id, Unk_ov004_02235528_V3 *a, U
 }
 
 // @0x2235524 unk_022350c8.cpp
-s32 Unk_ov004_022355ac::func_ov004_02235524() {
+s32 FtrContact::getActorIndex() {
     return unk_00;
 }
 
 // @0x2235520 unk_022350c8.cpp
-Unk_ov004_02235528_V3 *Unk_ov004_022355ac::func_ov004_02235520() {
+Unk_ov004_02235528_V3 *FtrContact::getPrevPlayerPos() {
     return &unk_04;
 }
 
 // @0x223551c unk_022350c8.cpp
-Unk_ov004_02235528_V3 *Unk_ov004_022355ac::func_ov004_0223551c() {
+Unk_ov004_02235528_V3 *FtrContact::getPlayerPos() {
     return &unk_10;
 }
 
 // @0x22354f8 unk_022350c8.cpp
-s32 Unk_ov004_022355ac::func_ov004_022354f8() {
-    Unk_ov004_02235528_V3 *a = func_ov004_0223551c();
-    Unk_ov004_02235528_V3 *b = func_ov004_02235520();
+s32 FtrContact::getStepDistance() {
+    Unk_ov004_02235528_V3 *a = getPlayerPos();
+    Unk_ov004_02235528_V3 *b = getPrevPlayerPos();
     return func_020e9650(a, b);
 }
 
 // @0x22354f4 unk_022350c8.cpp
-s32 Unk_ov004_022355ac::func_ov004_022354f4() {
+s32 FtrContact::getDepth() {
     return unk_1c;
 }
 
 // @0x22354f0 unk_022350c8.cpp
-Unk_ov004_02235528_V3 *Unk_ov004_022355ac::func_ov004_022354f0() {
+Unk_ov004_02235528_V3 *FtrContact::getContactPoint() {
     return &unk_20;
 }
 
 // @0x22354ec unk_022350c8.cpp
-Unk_ov004_02235528_V3 *Unk_ov004_022355ac::func_ov004_022354ec() {
+Unk_ov004_02235528_V3 *FtrContact::getClampedContactPoint() {
     return &unk_2c;
 }
 
 // @0x22354e8 unk_022350c8.cpp
-s32 Unk_ov004_022355ac::func_ov004_022354e8() {
+s32 FtrContact::getSide() {
     return unk_3c;
 }
 
 // @0x22354e0 unk_022350c8.cpp
-s16 Unk_ov004_022355ac::func_ov004_022354e0() {
+s16 FtrContact::getPushAngle() {
     return unk_38;
 }
 
 // @0x22354d8 unk_022350c8.cpp
-extern "C" Unk_ov004_022351bc *func_ov004_022354d8() {
-    return &data_ov004_02252144;
+extern "C" FtrContactSet *FtrContactSet_GetInstance() {
+    return &sFtrContactSet;
 }
 
 // @0x22354a4 unk_022350c8.cpp
-Unk_ov004_022355ac *Unk_ov004_022351bc::func_ov004_022354a4(u32 idx) {
-    if (func_ov004_022350f4()) {
-        Unk_ov004_022355ac *s = &unk_00[idx & 1];
-        if (s->func_ov004_02235524() != -1) {
+FtrContact *FtrContactSet::getContact(u32 idx) {
+    if (FtrMgr_IsFurnitureEditable()) {
+        FtrContact *s = &unk_00[idx & 1];
+        if (s->getActorIndex() != -1) {
             return s;
         }
     }
@@ -1623,12 +1623,12 @@ Unk_ov004_022355ac *Unk_ov004_022351bc::func_ov004_022354a4(u32 idx) {
 }
 
 // @0x2235464 unk_022350c8.cpp
-Unk_ov004_022355ac *Unk_ov004_022351bc::func_ov004_02235464(void *v) {
-    s32 idx = func_ov004_0223584c()->func_ov004_02235740(v);
+FtrContact *FtrContactSet::findContact(void *v) {
+    s32 idx = FtrActorTable_GetInstance()->indexOf(v);
     if (idx != -1) {
         for (u32 i = 0; i < 2; i++) {
-            Unk_ov004_022355ac *s = &unk_00[i];
-            if (idx == s->func_ov004_02235524()) {
+            FtrContact *s = &unk_00[i];
+            if (idx == s->getActorIndex()) {
                 return s;
             }
         }
@@ -1637,23 +1637,23 @@ Unk_ov004_022355ac *Unk_ov004_022351bc::func_ov004_02235464(void *v) {
 }
 
 // @0x2235434 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_02235434(u32 idx) {
-    Unk_ov004_022355ac *s = func_ov004_022354a4(idx);
+void *FtrContactSet::getActor(u32 idx) {
+    FtrContact *s = getContact(idx);
     if (s != 0) {
-        Unk_ov004_0223583c *t = func_ov004_0223584c();
-        return t->func_ov004_02235720(s->func_ov004_02235524());
+        FtrActorTable *t = FtrActorTable_GetInstance();
+        return t->get(s->getActorIndex());
     }
     return 0;
 }
 
 // @0x223539c unk_022350c8.cpp
-void Unk_ov004_022351bc::func_ov004_0223539c() {
-    void *o1 = func_ov004_02235434(1);
-    Unk_ov004_022355ac *s1 = func_ov004_022354a4(1);
+void FtrContactSet::requestToggle() {
+    void *o1 = getActor(1);
+    FtrContact *s1 = getContact(1);
     if (o1 != 0 && s1 != 0) {
         BOOL k1 = TRUE;
         if (FtrInfo_TestAlwaysFlag4(FtrActor_GetFtrIndex(o1))) {
-            if (s1->func_ov004_022354e8()) {
+            if (s1->getSide()) {
                 k1 = FALSE;
             }
         }
@@ -1663,12 +1663,12 @@ void Unk_ov004_022351bc::func_ov004_0223539c() {
             }
         }
     }
-    void *o2 = func_ov004_02235434(0);
-    Unk_ov004_022355ac *s2 = func_ov004_022354a4(0);
+    void *o2 = getActor(0);
+    FtrContact *s2 = getContact(0);
     if (o2 != 0 && s2 != 0) {
         BOOL k2 = TRUE;
         if (FtrInfo_TestAlwaysFlag4(FtrActor_GetFtrIndex(o2))) {
-            if (s2->func_ov004_022354e8()) {
+            if (s2->getSide()) {
                 k2 = FALSE;
             }
         }
@@ -1681,8 +1681,8 @@ void Unk_ov004_022351bc::func_ov004_0223539c() {
 }
 
 // @0x223537c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223537c(s32 v) {
-    void *o = func_ov004_02235434(0);
+void *FtrContactSet::canRotateBy(s32 v) {
+    void *o = getActor(0);
     if (o != 0) {
         return (void *)FtrActor_canRotateBy(o, v);
     }
@@ -1690,8 +1690,8 @@ void *Unk_ov004_022351bc::func_ov004_0223537c(s32 v) {
 }
 
 // @0x223535c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223535c(s32 v) {
-    void *o = func_ov004_02235434(0);
+void *FtrContactSet::startRotateBy(s32 v) {
+    void *o = getActor(0);
     if (o != 0) {
         return (void *)FtrActor_startRotate(o, v);
     }
@@ -1699,64 +1699,64 @@ void *Unk_ov004_022351bc::func_ov004_0223535c(s32 v) {
 }
 
 // @0x223534c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223534c() {
-    return func_ov004_0223537c(-0x4000);
+void *FtrContactSet::canRotateMinus90() {
+    return canRotateBy(-0x4000);
 }
 
 // @0x223533c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223533c() {
-    return func_ov004_0223535c(-0x4000);
+void *FtrContactSet::startRotateMinus90() {
+    return startRotateBy(-0x4000);
 }
 
 // @0x223532c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223532c() {
-    return func_ov004_0223537c(0x4000);
+void *FtrContactSet::canRotatePlus90() {
+    return canRotateBy(0x4000);
 }
 
 // @0x223531c unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_0223531c() {
-    return func_ov004_0223535c(0x4000);
+void *FtrContactSet::startRotatePlus90() {
+    return startRotateBy(0x4000);
 }
 
 // @0x22352d0 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_022352d0(s32 v) {
-    Unk_ov004_022355ac *s = func_ov004_022354a4(0);
-    void *o = func_ov004_02235434(0);
+void *FtrContactSet::canMoveAt(s32 v) {
+    FtrContact *s = getContact(0);
+    void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_canMoveBy(o, func_ov004_0223527c((s16)(v + s->func_ov004_022354e0())));
+        return (void *)FtrActor_canMoveBy(o, makeStepVec((s16)(v + s->getPushAngle())));
     }
     return 0;
 }
 
 extern "C" char data_ov004_0224e934[8] = "tv_cc";
 
-Unk_0209c15c data_ov004_02252058;
+Unk_0209c15c sFtrMgrPool;
 
-extern "C" char data_ov004_0224e994[0x10] = "FTT:a/bmd/bmd0";
+extern "C" char sFtrMoveAnimModelName[0x10] = "FTT:a/bmd/bmd0";
 
-extern "C" const u8 data_ov004_02240874[0x54] = {6, 0, 0, 4, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 7, 19, 0, 4, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 5, 23, 0};
+extern "C" const u8 sTvScheduleDay3[0x54] = {6, 0, 0, 4, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 7, 19, 0, 4, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 5, 23, 0};
 
 extern "C" char data_ov004_0224e954[8] = "tv_fr";
 
-extern "C" const s32 data_ov004_022406b4[2] = {0x3000, 0x319a};
+extern "C" const s32 sFtrPickRangeByLayer[2] = {0x3000, 0x319a};
 
-extern "C" const u8 data_ov004_02240784[0x50] = {1, 0, 0, 0, 1, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 8, 19, 0, 5, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 8, 23, 0, 0, 0};
+extern "C" const u8 sTvScheduleDay1[0x50] = {1, 0, 0, 0, 1, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 8, 19, 0, 5, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 8, 23, 0, 0, 0};
 
-extern "C" const char *data_ov004_0224e9a4[11] = {data_ov004_0224e97c, data_ov004_0224e934, data_ov004_0224e93c,
+extern "C" const char *sTvWeatherNames[11] = {data_ov004_0224e97c, data_ov004_0224e934, data_ov004_0224e93c,
                                                   data_ov004_0224e944, data_ov004_0224e96c, data_ov004_0224e954,
                                                   data_ov004_0224e964, data_ov004_0224e974, data_ov004_0224e95c,
                                                   data_ov004_0224e984, data_ov004_0224e94c};
 
-Unk_ov004_0223583c data_ov004_022520d4;
+FtrActorTable sFtrActorTable;
 
 extern "C" char data_ov004_0224e964[8] = "tv_cr";
 
 extern "C" char data_ov004_0224e944[8] = "tv_fc";
 
-extern "C" const s8 data_ov004_022406a8[4] = {0, 0, 2, -2};
+extern "C" const s8 sFtrProbeDirOffsets[4] = {0, 0, 2, -2};
 
 // @0x223527c unk_022350c8.cpp
-Unk_ov004_02235528_V3 *Unk_ov004_022351bc::func_ov004_0223527c(s16 v) {
+Unk_ov004_02235528_V3 *FtrContactSet::makeStepVec(s16 v) {
     static FxVec3 r;
     r.x = 0;
     r.y = 0;
@@ -1766,62 +1766,62 @@ Unk_ov004_02235528_V3 *Unk_ov004_022351bc::func_ov004_0223527c(s16 v) {
 }
 
 // @0x2235270 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_02235270() {
-    return func_ov004_022352d0(0);
+void *FtrContactSet::canPush() {
+    return canMoveAt(0);
 }
 
 // @0x2235234 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_02235234() {
-    Unk_ov004_022355ac *s = func_ov004_022354a4(0);
-    void *o = func_ov004_02235434(0);
+void *FtrContactSet::startPush() {
+    FtrContact *s = getContact(0);
+    void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_startPush(o, s->func_ov004_022354e0());
+        return (void *)FtrActor_startPush(o, s->getPushAngle());
     }
     return 0;
 }
 
 // @0x2235224 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_02235224() {
-    return func_ov004_022352d0(-0x8000);
+void *FtrContactSet::canPull() {
+    return canMoveAt(-0x8000);
 }
 
 // @0x22351e8 unk_022350c8.cpp
-void *Unk_ov004_022351bc::func_ov004_022351e8() {
-    Unk_ov004_022355ac *s = func_ov004_022354a4(0);
-    void *o = func_ov004_02235434(0);
+void *FtrContactSet::startPull() {
+    FtrContact *s = getContact(0);
+    void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_startPull(o, s->func_ov004_022354e0());
+        return (void *)FtrActor_startPull(o, s->getPushAngle());
     }
     return 0;
 }
 
 // @0x22351bc unk_022350c8.cpp
-Unk_ov004_022351bc::Unk_ov004_022351bc() {
-    func_ov004_02235180();
+FtrContactSet::FtrContactSet() {
+    clear();
 }
 
 // @0x22351a0 unk_022350c8.cpp
-Unk_ov004_022351bc::~Unk_ov004_022351bc() {
+FtrContactSet::~FtrContactSet() {
 }
 
 // @0x2235180 unk_022350c8.cpp
-void Unk_ov004_022351bc::func_ov004_02235180() {
+void FtrContactSet::clear() {
     for (u32 i = 0; i < 2; i++) {
-        unk_00[i].func_ov004_02235580();
+        unk_00[i].clear();
     }
 }
 
 // @0x2235120 unk_022350c8.cpp
-BOOL Unk_ov004_022351bc::func_ov004_02235120(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
+BOOL FtrContactSet::setContact(s32 id, Unk_ov004_02235528_V3 *a, Unk_ov004_02235528_V3 *b, s32 c,
                                              Unk_ov004_02235528_V3 *d, Unk_ov004_02235528_V3 *e, s16 f, s32 g) {
     if (id == -1) {
         return FALSE;
     }
     {
-        void *o = func_ov004_0223584c()->func_ov004_02235720(id);
+        void *o = FtrActorTable_GetInstance()->get(id);
         if (o != 0) {
             u32 k = FtrActor_GetLayer(o);
-            unk_00[k & 1].func_ov004_02235528(id, a, b, c, d, e, f, g);
+            unk_00[k & 1].set(id, a, b, c, d, e, f, g);
             return TRUE;
         }
     }
@@ -1829,8 +1829,8 @@ BOOL Unk_ov004_022351bc::func_ov004_02235120(s32 id, Unk_ov004_02235528_V3 *a, U
 }
 
 // @0x22350f4 unk_022350c8.cpp
-extern "C" s32 func_ov004_022350f4() {
-    if (func_ov004_02235d10()) {
+extern "C" s32 FtrMgr_IsFurnitureEditable() {
+    if (FtrMgr_IsSaleMode()) {
         return FALSE;
     }
     if (func_020b52f8() || func_020b51a4()) {
@@ -1840,8 +1840,8 @@ extern "C" s32 func_ov004_022350f4() {
 }
 
 // @0x22350c8 unk_022350c8.cpp
-extern "C" s32 func_ov004_022350c8() {
-    if (func_ov004_022350f4()) {
+extern "C" s32 FtrMgr_IsFurnitureUsable() {
+    if (FtrMgr_IsFurnitureEditable()) {
         return TRUE;
     }
     switch (func_020b50e8()) {
@@ -1854,39 +1854,39 @@ extern "C" s32 func_ov004_022350c8() {
 }
 
 // @0x2235028 unk_02234774.cpp
-extern "C" s32 func_ov004_02235028(FtrActor *self) {
-    if (func_ov004_0223584c()->func_ov004_0223576c()) {
+extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
+    if (FtrActorTable_GetInstance()->countFree()) {
         s32 a = FtrInfo_GetDmaUnk02(FtrActor_GetArgFtrIndex(self));
         s32 b = FtrActor_GetArgMode(self);
         u16 v;
         if (a >= 0 && a < 0x30) {
-            v = data_ov004_0224091c[a];
+            v = sFtrKindProfiles[a];
         } else {
-            v = data_ov004_0224091c[0];
+            v = sFtrKindProfiles[0];
         }
         if (a == 0x18 && b == 1) {
-            if ((u32)func_ov004_02234c2c(FtrActor_isGyroid) >= 4) {
-                FtrActor *e = func_ov004_02234bb4(FtrActor_isGyroid, 0);
+            if ((u32)FtrMgr_CountSwitchedOn(FtrActor_isGyroid) >= 4) {
+                FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
                     e->unk_73c.set(1, 0);
                     func_020515b8(func_020b50e8(), (u8 *)e + 0x5c, 0);
                 }
             }
         }
-        return Actor_spawn(v, self, 0, 0, (u32)data_ov004_02251f80);
+        return Actor_spawn(v, self, 0, 0, (u32)sFurnitureManager);
     }
     return 0;
 }
 
 // @0x2234ff4 unk_02234774.cpp
-extern "C" s32 func_ov004_02234ff4(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
+extern "C" s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
     FtrInfo_GetDmaUnk02(a);
-    return func_ov004_02235028(FtrActor_MakeSpawnArg(x, y, a, b, c, d));
+    return FtrMgr_SpawnFromArg(FtrActor_MakeSpawnArg(x, y, a, b, c, d));
 }
 
 // @0x2234f80 unk_02234774.cpp
-extern "C" s32 func_ov004_02234f80(s32 x, s32 y) {
-    FtrActor *e = func_ov004_02235718()->func_ov004_022355d8(x, y, 0);
+extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y) {
+    FtrActor *e = FtrActorGrid_GetInstance()->getActor(x, y, 0);
     if (e != NULL) {
         if (e->unk_788 == 1) {
             return e->unk_5c.y;
@@ -1903,20 +1903,20 @@ extern "C" s32 func_ov004_02234f80(s32 x, s32 y) {
 }
 
 // @0x2234f6c unk_02234774.cpp
-extern "C" s32 func_ov004_02234f6c(Unk_ov004_Vec3 *p) {
-    return func_ov004_02234f80(p->x >> 13, p->z >> 13);
+extern "C" s32 FtrMgr_GetSurfaceHeightAtPos(Unk_ov004_Vec3 *p) {
+    return FtrMgr_GetSurfaceHeight(p->x >> 13, p->z >> 13);
 }
 
 // @0x2234f30 unk_02234774.cpp
-extern "C" s32 func_ov004_02234f30(Unk_ov004_Vec3 *pos, s32 ang, Unk_ov004_Vec3 *out) {
-    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+extern "C" s32 FtrMgr_CheckBedStep(Unk_ov004_Vec3 *pos, s32 ang, Unk_ov004_Vec3 *out) {
+    FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
     if (m != NULL && Unk_ov004_02234f30_Is37(m)) {
         return FtrBed_checkStepTile(m, pos, ang, out);
     }
     return 0;
 }
 
-extern "C" const Unk_ov004_02233138_Rec data_ov004_0224097c[0x6e9] = {
+extern "C" const Unk_ov004_02233138_Rec sFtrSoundTable[0x6e9] = {
     {0xffff, 0x434, 0x449, 0xffff},
     {0xffff, 0x450, 0x451, 0xffff},
     {0xffff, 0x452, 0x453, 0xffff},
@@ -3688,30 +3688,30 @@ extern "C" const Unk_ov004_02233138_Rec data_ov004_0224097c[0x6e9] = {
     {0xffff, 0xffff, 0xffff, 0xffff},
 };
 
-extern "C" const u8 data_ov004_02240824[0x50] = {8, 0, 0, 6, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 5, 23, 0, 0, 0};
+extern "C" const u8 sTvScheduleDay5[0x50] = {8, 0, 0, 6, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 5, 23, 0, 0, 0};
 
-extern "C" const u16 data_ov004_0224091c[0x30] = {0x2f, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x36, 0x37, 0x38, 0x38, 0x38, 0x38, 0x38, 0x39, 0x39, 0x3a, 0x3a, 0x3b, 0x3c, 0x3d, 0x3d, 0x3e, 0x3f, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x36, 0x4c, 0x4d, 0x3a, 0x37, 0x39, 0x36, 0x4f, 0x4e, 0x50};
+extern "C" const u16 sFtrKindProfiles[0x30] = {0x2f, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x36, 0x37, 0x38, 0x38, 0x38, 0x38, 0x38, 0x39, 0x39, 0x3a, 0x3a, 0x3b, 0x3c, 0x3d, 0x3d, 0x3e, 0x3f, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x36, 0x4c, 0x4d, 0x3a, 0x37, 0x39, 0x36, 0x4f, 0x4e, 0x50};
 
-extern "C" Unk_ov004_0224e98c_Entry data_ov004_0224e98c = {(void *(*)())func_ov004_02235fb4, 0xc5, 0x34};
+extern "C" Unk_ov004_0224e98c_Entry sFurnitureManagerProfile = {(void *(*)())FurnitureManager_Create, 0xc5, 0x34};
 
 extern "C" char data_ov004_0224e96c[8] = "tv_cf";
 
 // @0x2234ed8 unk_02234774.cpp
-extern "C" s32 func_ov004_02234ed8(Unk_ov004_Vec3 *pos, s32 ang) {
+extern "C" s32 FtrMgr_CheckBedStepFront(Unk_ov004_Vec3 *pos, s32 ang) {
     static FxVec3 dflt(0x2000);
-    return func_ov004_02234f30(pos, ang, (Unk_ov004_Vec3 *)&dflt);
+    return FtrMgr_CheckBedStep(pos, ang, (Unk_ov004_Vec3 *)&dflt);
 }
 
 extern "C" char data_ov004_0224e974[8] = "tv_rc";
 
 // @0x2234e80 unk_02234774.cpp
-extern "C" s32 func_ov004_02234e80(Unk_ov004_Vec3 *pos, s32 ang) {
+extern "C" s32 FtrMgr_CheckBedStepBack(Unk_ov004_Vec3 *pos, s32 ang) {
     static FxVec3 dflt(-0x2000);
-    return func_ov004_02234f30(pos, ang, (Unk_ov004_Vec3 *)&dflt);
+    return FtrMgr_CheckBedStep(pos, ang, (Unk_ov004_Vec3 *)&dflt);
 }
 
 // @0x2234df8 unk_02234774.cpp
-extern "C" s32 func_ov004_02234df8(Unk_ov004_Vec3 *p, s16 ang, s32 dist) {
+extern "C" s32 FtrMgr_TestStepTarget(Unk_ov004_Vec3 *p, s16 ang, s32 dist) {
     s32 y;
     s32 z;
     s32 idx = ((u16)ang >> 4) * 2;
@@ -3722,7 +3722,7 @@ extern "C" s32 func_ov004_02234df8(Unk_ov004_Vec3 *p, s16 ang, s32 dist) {
     v.x = x;
     v.y = y;
     v.z = z;
-    if (func_ov004_02234f6c(&v)) {
+    if (FtrMgr_GetSurfaceHeightAtPos(&v)) {
         return 0;
     }
     if (FtrActor_IsPosClearOfCharacters(&v, 0x800, 0x2000, 0x800, 0) == 0) {
@@ -3737,43 +3737,43 @@ two:
 }
 
 // @0x2234dd4 unk_02234774.cpp
-extern "C" BOOL func_ov004_02234dd4(Unk_ov004_Vec3 *pos, s32 ang) {
-    if (func_ov004_02234df8(pos, ang, 0x2000) == 2) {
+extern "C" BOOL FtrMgr_CanStepForward(Unk_ov004_Vec3 *pos, s32 ang) {
+    if (FtrMgr_TestStepTarget(pos, ang, 0x2000) == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 // @0x2234d80 unk_02234774.cpp
-extern "C" BOOL func_ov004_02234d80(Unk_ov004_Vec3 *pos, s32 ang) {
-    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+extern "C" BOOL FtrMgr_CanStepSidePlus90(Unk_ov004_Vec3 *pos, s32 ang) {
+    FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
     if (m != NULL && m->unk_77c != 0x26) {
         return FALSE;
     }
-    if (func_ov004_02234df8(pos, ang + 0x4000, 0x2000) == 2) {
+    if (FtrMgr_TestStepTarget(pos, ang + 0x4000, 0x2000) == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 // @0x2234d2c unk_02234774.cpp
-extern "C" BOOL func_ov004_02234d2c(Unk_ov004_Vec3 *pos, s32 ang) {
-    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+extern "C" BOOL FtrMgr_CanStepSideMinus90(Unk_ov004_Vec3 *pos, s32 ang) {
+    FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
     if (m != NULL && m->unk_77c != 0x26) {
         return FALSE;
     }
-    if (func_ov004_02234df8(pos, ang + 0xc000, 0x2000) == 2) {
+    if (FtrMgr_TestStepTarget(pos, ang + 0xc000, 0x2000) == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 // @0x2234cd8 unk_02234774.cpp
-extern "C" BOOL func_ov004_02234cd8() {
+extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     s32 i = 0;
     s32 z = 0;
-    for (; (u32)i < func_ov004_02234af8(); i++) {
-        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+    for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
+        FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL && FtrActor_PredIsStereo(e) && e->unk_73c.isOn()) {
             func_02051da4(e, z, 0xff, 1);
         }
@@ -3782,10 +3782,10 @@ extern "C" BOOL func_ov004_02234cd8() {
 }
 
 // @0x2234c7c unk_02234774.cpp
-extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(FtrActor *), s32 a) {
+extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a) {
     u32 i = 0;
-    for (; i < func_ov004_02234af8(); i++) {
-        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+    for (; i < FtrMgr_GetMaxFurniture(); i++) {
+        FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e))) {
                 if (v != e->unk_73c.isOn()) {
@@ -3797,11 +3797,11 @@ extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(FtrActor *), s32 a) {
 }
 
 // @0x2234c2c unk_02234774.cpp
-extern "C" s32 func_ov004_02234c2c(BOOL (*f)(FtrActor *)) {
+extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *)) {
     s32 cnt = 0;
     u32 i = 0;
-    for (; i < func_ov004_02234af8(); i++) {
-        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+    for (; i < FtrMgr_GetMaxFurniture(); i++) {
+        FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e) && e->unk_73c.isOn())) {
                 cnt++;
@@ -3812,14 +3812,14 @@ extern "C" s32 func_ov004_02234c2c(BOOL (*f)(FtrActor *)) {
 }
 
 // @0x2234bb4 unk_02234774.cpp
-extern "C" FtrActor *func_ov004_02234bb4(BOOL (*f)(FtrActor *), s32 a) {
-    s32 n = func_ov004_02234c2c(f);
+extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a) {
+    s32 n = FtrMgr_CountSwitchedOn(f);
     if (n != 0) {
         s32 pick = func_02063b8c(n);
         s32 cnt = 0;
         u32 i = 0;
-        for (; i < func_ov004_02234af8(); i++) {
-            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        for (; i < FtrMgr_GetMaxFurniture(); i++) {
+            FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL) {
                 if (f == NULL || (f != NULL && f(e))) {
                     if (e->unk_73c.isOn()) {
@@ -3837,18 +3837,18 @@ extern "C" FtrActor *func_ov004_02234bb4(BOOL (*f)(FtrActor *), s32 a) {
 }
 
 // @0x2234ba8 unk_02234774.cpp
-extern "C" u16 func_ov004_02234ba8() {
-    return data_ov004_02251f7c;
+extern "C" u16 FtrMgr_GetCycleCounter() {
+    return sFtrMgrCycleCounter;
 }
 
 // @0x2234b0c unk_02234774.cpp
-extern "C" s32 func_ov004_02234b0c(u32 key) {
-    u32 n = func_ov004_02234af8();
-    Unk_ov004_0223583c *mgr = func_ov004_0223584c();
+extern "C" s32 FtrMgr_PickFurnitureComment(u32 key) {
+    u32 n = FtrMgr_GetMaxFurniture();
+    FtrActorTable *mgr = FtrActorTable_GetInstance();
     s32 cnt = 0;
     u32 i = 0;
     for (; i < n; i++) {
-        FtrActor *e = mgr->func_ov004_02235720(i);
+        FtrActor *e = mgr->get(i);
         if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
             cnt++;
         }
@@ -3858,7 +3858,7 @@ extern "C" s32 func_ov004_02234b0c(u32 key) {
         cnt = 0;
         i = 0;
         for (; i < n; i++) {
-            FtrActor *e = mgr->func_ov004_02235720(i);
+            FtrActor *e = mgr->get(i);
             if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
                 if (cnt == pick) {
                     return e->unk_774;
@@ -3871,12 +3871,12 @@ extern "C" s32 func_ov004_02234b0c(u32 key) {
 }
 
 // @0x2234af8 unk_02234774.cpp
-extern "C" u32 func_ov004_02234af8() {
+extern "C" u32 FtrMgr_GetMaxFurniture() {
     return func_020b4904(func_020b50e8());
 }
 
 // @0x2234ad4 unk_02234774.cpp
-extern "C" BOOL func_ov004_02234ad4() {
+extern "C" BOOL FtrMgr_IsShopScene() {
     s32 t = func_020b50e8();
     if (func_020b5254() != 0 || t == 10 || t == 15) {
         return TRUE;
@@ -3889,7 +3889,7 @@ extern "C" void func_ov004_02234ad0(void *) {
 }
 
 // @0x2234a48 unk_02234774.cpp
-extern "C" void func_ov004_02234a48(void *) {
+extern "C" void FtrMgr_SpawnAllFromMap(void *) {
     Unk_ov004_02234a48_Grid *g = gSceneBlockMap;
     void *cells;
     if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells != NULL) {
@@ -3906,7 +3906,7 @@ extern "C" void func_ov004_02234a48(void *) {
                 void *c = MapBlock_GetItemPtr(cells, x, y, layer);
                 if (c != NULL && Item_IsFurniture(c)) {
                     s32 a = Item_GetFurnitureIndex(c);
-                    func_ov004_02234ff4(x, y, a, Item_GetFurnitureDirection(c), layer, 0);
+                    FtrMgr_SpawnFurniture(x, y, a, Item_GetFurnitureDirection(c), layer, 0);
                 }
             }
         }
@@ -3914,7 +3914,7 @@ extern "C" void func_ov004_02234a48(void *) {
 }
 
 // @0x22349a8 unk_02234774.cpp
-extern "C" void func_ov004_022349a8(void *) {
+extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
     u8 *p = (u8 *)func_02095204(4);
     if (p != NULL) {
         Unk_ov004_Vec3 v0;
@@ -3925,9 +3925,9 @@ extern "C" void func_ov004_022349a8(void *) {
         s32 best;
         u32 i = 0;
         best = -1;
-        s32 minv = data_ov004_02251f98;
-        for (; i < func_ov004_02234af8(); i++) {
-            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        s32 minv = sFtrMgrSoundRangeSq;
+        for (; i < FtrMgr_GetMaxFurniture(); i++) {
+            FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isCabinClock(e)) {
                 Unk_ov004_Vec3 v0c;
                 Unk_ov004_Vec3 t = e->unk_7b4;
@@ -3942,7 +3942,7 @@ extern "C" void func_ov004_022349a8(void *) {
             }
         }
         if (best != -1) {
-            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
+            FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
                 func_ov004_0220f29c(e);
             }
@@ -3951,7 +3951,7 @@ extern "C" void func_ov004_022349a8(void *) {
 }
 
 // @0x2234908 unk_02234774.cpp
-extern "C" void func_ov004_02234908(void *) {
+extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
     u8 *p = (u8 *)func_02095204(4);
     if (p != NULL) {
         Unk_ov004_Vec3 v0;
@@ -3962,9 +3962,9 @@ extern "C" void func_ov004_02234908(void *) {
         s32 best;
         u32 i = 0;
         best = -1;
-        s32 minv = data_ov004_02251f98;
-        for (; i < func_ov004_02234af8(); i++) {
-            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        s32 minv = sFtrMgrSoundRangeSq;
+        for (; i < FtrMgr_GetMaxFurniture(); i++) {
+            FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isSoundingClock(e)) {
                 Unk_ov004_Vec3 v0c;
                 Unk_ov004_Vec3 t = e->unk_7b4;
@@ -3979,7 +3979,7 @@ extern "C" void func_ov004_02234908(void *) {
             }
         }
         if (best != -1) {
-            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
+            FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
                 func_ov004_0220f2a8(e);
             }
@@ -3988,8 +3988,8 @@ extern "C" void func_ov004_02234908(void *) {
 }
 
 // @0x2234774 unk_02234774.cpp
-extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
-    if (data_ov004_02251f78 != 0) {
+extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
+    if (sFtrMgrTvSoundEnabled != 0) {
         BOOL r6 = TRUE;
         Unk_ov004_Vec3 v8;
         v8.x = gVec3Zero.x;
@@ -4004,9 +4004,9 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
             v14.z = pv->z;
             u32 i = 0;
             s32 best = -1;
-            s32 minv = data_ov004_02251f98;
-            for (; i < func_ov004_02234af8(); i++) {
-                FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+            s32 minv = sFtrMgrSoundRangeSq;
+            for (; i < FtrMgr_GetMaxFurniture(); i++) {
+                FtrActor *e = FtrActorTable_GetInstance()->get(i);
                 if (e != NULL && FtrActor_isTvOn(e)) {
                     Unk_ov004_Vec3 v20;
                     Unk_ov004_Vec3 t = e->unk_7b4;
@@ -4021,7 +4021,7 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
                 }
             }
             if (best != -1) {
-                FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
+                FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
                     func_ov004_0220e738(e);
                     Unk_ov004_Vec3 t = e->unk_7b4;
@@ -4032,21 +4032,21 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
                 }
             }
         }
-        TvSound *r4 = func_ov004_02233c94();
+        TvSound *r4 = FurnitureManager_GetTvSound();
         if (r4 != NULL) {
             if (r6) {
                 if (self->unk_2a9 == 0 || self->unk_2a8 == 0) {
                     r4->callTurnOff();
                     self->unk_2a8 = 1;
                 }
-                r4->callUpdate(func_ov004_02233c54(), NULL);
+                r4->callUpdate(FurnitureManager_GetTvFrame(), NULL);
             } else {
-                if (self->unk_2a9 == 0 && self->unk_2a8 != 0 && self->unk_2ac == func_ov004_02233cb4()) {
+                if (self->unk_2a9 == 0 && self->unk_2a8 != 0 && self->unk_2ac == FurnitureManager_GetTvProgram()) {
                 } else {
-                    s32 r7 = func_ov004_02233c54() - 1;
+                    s32 r7 = FurnitureManager_GetTvFrame() - 1;
                     if (r7 < 0) r7 = 0;
                     BOOL f;
-                    if (func_ov004_02233c74() == 0 && r7 == 0 && func_ov004_02233c20() != 0) {
+                    if (FurnitureManager_GetTvLoopCount() == 0 && r7 == 0 && FurnitureManager_IsTvProgramChanged() != 0) {
                         f = TRUE;
                     } else {
                         f = FALSE;
@@ -4054,16 +4054,16 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
                     r4->callTurnOn(f);
                     self->unk_2a8 = 1;
                 }
-                r4->callUpdate(func_ov004_02233c54(), &v8);
+                r4->callUpdate(FurnitureManager_GetTvFrame(), &v8);
             }
         }
         self->unk_2a9 = r6;
-        self->unk_2ac = func_ov004_02233cb4();
+        self->unk_2ac = FurnitureManager_GetTvProgram();
     }
 }
 
 // @0x22345c4 unk_02233dc0.cpp
-extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, u16 *p1, u16 *p2) {
+extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, u16 *p1, u16 *p2) {
     s32 i;
     Unk_ov004_02233f3c_World *w;
     s32 b24, b28;
@@ -4096,14 +4096,14 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
     }
     for (i = 0; (u32)i < 4; i++) {
         for (layer = 1; layer >= 0; layer--) {
-            if (func_ov004_02234320(&c2c, &c30, pos, ang, i) == 0) {
+            if (FtrMgr_GetProbeTile(&c2c, &c30, pos, ang, i) == 0) {
                 continue;
             }
             FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v40, c2c, c30);
-            if (func_020e9650(pos, &v40) > data_ov004_022406b4[layer & 1]) {
+            if (func_020e9650(pos, &v40) > sFtrPickRangeByLayer[layer & 1]) {
                 continue;
             }
-            o = func_ov004_02235718()->func_ov004_022355d8(c2c, c30, (u8)layer);
+            o = FtrActorGrid_GetInstance()->getActor(c2c, c30, (u8)layer);
             *ox = c2c;
             *oy = c30;
             if (o != 0 && o->isReady() != 0 && o->hasItemOnTop() == 0) {
@@ -4114,7 +4114,7 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
                 if (p2 != 0) {
                     *p2 = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
                 }
-                return func_ov004_0223584c()->func_ov004_02235740(o);
+                return FtrActorTable_GetInstance()->indexOf(o);
             }
             if (layer == 1 && o == 0) {
                 sx = *(volatile s32 *)&c2c;
@@ -4134,29 +4134,29 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
 }
 
 // @0x2234588 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02234588(s32 *a, s32 *b, u16 *c, u16 *d) {
+extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) {
     FtrActor *o = func_02095204(4);
     if (o != 0) {
-        return func_ov004_022345c4(a, b, &o->unk_5c, o->unk_8e, c, d);
+        return FtrMgr_FindFacingFurniture(a, b, &o->unk_5c, o->unk_8e, c, d);
     }
     return -1;
 }
 
 // @0x2234550 unk_02233dc0.cpp
-extern "C" u8 func_ov004_02234550(u32 i) {
-    if (i < func_ov004_02234af8()) {
-        if (func_ov004_0223584c()->func_ov004_02235720(i) != 0) {
-            return func_ov004_0223584c()->func_ov004_02235720(i)->unk_284;
+extern "C" u8 FtrMgr_GetActorLayer(u32 i) {
+    if (i < FtrMgr_GetMaxFurniture()) {
+        if (FtrActorTable_GetInstance()->get(i) != 0) {
+            return FtrActorTable_GetInstance()->get(i)->unk_284;
         }
     }
     return 0;
 }
 
 // @0x22344e8 unk_02233dc0.cpp
-extern "C" s32 func_ov004_022344e8(s32 idx, u16 *p1, u16 *p2) {
+extern "C" s32 FtrMgr_RemoveActor(s32 idx, u16 *p1, u16 *p2) {
     if (p1 != 0) *p1 = 0xfff1;
     if (p2 != 0) *p2 = 0xfff1;
-    FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(idx);
+    FtrActor *o = FtrActorTable_GetInstance()->get(idx);
     if (o != 0) {
         o->setAct(5);
         if (p1 != 0) {
@@ -4173,31 +4173,31 @@ extern "C" s32 func_ov004_022344e8(s32 idx, u16 *p1, u16 *p2) {
 }
 
 // @0x22344dc unk_02233dc0.cpp
-extern "C" s32 func_ov004_022344dc(s32 idx) {
-    return func_ov004_022344e8(idx, 0, 0);
+extern "C" s32 FtrMgr_RemoveActorByIndex(s32 idx) {
+    return FtrMgr_RemoveActor(idx, 0, 0);
 }
 
 // @0x22344a4 unk_02233dc0.cpp
-extern "C" Unk_ov004_Vec3 *func_ov004_022344a4(s32 idx) {
-    FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(idx);
+extern "C" Unk_ov004_Vec3 *FtrMgr_PollRemovedPos(s32 idx) {
+    FtrActor *o = FtrActorTable_GetInstance()->get(idx);
     if (o == 0) {
-        return (Unk_ov004_Vec3 *)&data_ov004_0225203c;
+        return (Unk_ov004_Vec3 *)&sFtrRemovePos;
     }
     if (o->unk_14c < 0x4cd) {
-        return (Unk_ov004_Vec3 *)&data_ov004_0225203c;
+        return (Unk_ov004_Vec3 *)&sFtrRemovePos;
     }
     return 0;
 }
 
 // @0x2234490 unk_02233dc0.cpp
-extern "C" void func_ov004_02234490(Unk_ov004_Vec3 *v) {
-    data_ov004_0225203c.x = v->x;
-    data_ov004_0225203c.y = v->y;
-    data_ov004_0225203c.z = v->z;
+extern "C" void FtrMgr_SetRemovePos(Unk_ov004_Vec3 *v) {
+    sFtrRemovePos.x = v->x;
+    sFtrRemovePos.y = v->y;
+    sFtrRemovePos.z = v->z;
 }
 
 // @0x2234464 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02234464(FtrActor *p) {
+extern "C" s32 FtrMgr_IsPickable(FtrActor *p) {
     if (p != 0) {
         if (p->isReady() != 0) {
             if (p->hasItemOnTop() == 0) {
@@ -4209,20 +4209,20 @@ extern "C" s32 func_ov004_02234464(FtrActor *p) {
 }
 
 // @0x2234440 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02234440(s32 i) {
+extern "C" s32 FtrMgr_IsPickableByIndex(s32 i) {
     if (i >= 0) {
-        FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(i);
+        FtrActor *o = FtrActorTable_GetInstance()->get(i);
         if (o != 0) {
-            return func_ov004_02234464(o);
+            return FtrMgr_IsPickable(o);
         }
     }
     return 0;
 }
 
-extern "C" const u8 data_ov004_022408c8[0x54] = {8, 0, 0, 10, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 8, 19, 0, 6, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 8, 23, 0};
+extern "C" const u8 sTvScheduleDay4[0x54] = {8, 0, 0, 10, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 8, 13, 30, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 8, 19, 0, 6, 20, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 8, 23, 0};
 
 // @0x2234320 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, s32 idx) {
+extern "C" s32 FtrMgr_GetProbeTile(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, s32 idx) {
     static Unk_ov004_02233f3c_P dirs[16] = {
         Unk_ov004_02233f3c_P(0, 1),  Unk_ov004_02233f3c_P(1, 1),   Unk_ov004_02233f3c_P(1, 1),
         Unk_ov004_02233f3c_P(1, 0),  Unk_ov004_02233f3c_P(1, 0),   Unk_ov004_02233f3c_P(1, -1),
@@ -4237,7 +4237,7 @@ extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
     if (idx < 4) {
         if (idx != 0) {
             s32 t = (ang >> 12) & 0xf;
-            s32 k = (t + data_ov004_022406a8[idx]) & 0xf;
+            s32 k = (t + sFtrProbeDirOffsets[idx]) & 0xf;
             *ox = *ox + dirs[k].x;
             *oy = *oy + dirs[k].y;
         }
@@ -4247,7 +4247,7 @@ extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
 }
 
 // @0x22341c0 unk_02233dc0.cpp
-extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy) {
+extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy) {
     s32 l18 = FtrInfo_TestIndoorFlag2(pl);
     s32 l1c = FtrInfo_GetUnk05(pl);
     s32 l20 = FtrInfo_GetDmaUnk04(pl);
@@ -4293,7 +4293,7 @@ extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32
                 ok = FALSE;
                 break;
             }
-            FtrActor *o = func_ov004_02235718()->func_ov004_022355d8(px, py, z2);
+            FtrActor *o = FtrActorGrid_GetInstance()->getActor(px, py, z2);
             if (o == 0 || (o != 0 && o->unk_784 != 1) || (o != 0 && o->isNotReady() != 0)) {
                 ok = FALSE;
                 break;
@@ -4309,16 +4309,16 @@ extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32
     return 2;
 }
 
-Unk_ov004_022358c8 data_ov004_02251f84;
+FtrActorHeap sFtrActorHeap;
 
-Unk_ov004_02235a0c data_ov004_02252070;
+FtrPreviewer sFtrPreviewer;
 
-Unk_ov004_02235708 data_ov004_022521c4;
+FtrActorGrid sFtrActorGrid;
 
-Unk_ov004_022351bc data_ov004_02252144;
+FtrContactSet sFtrContactSet;
 
 // @0x2233f3c unk_02233dc0.cpp
-extern "C" s32 func_ov004_02233f3c(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s32 ang, s32 mode) {
+extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s32 ang, s32 mode) {
     s32 pl, kind, base;
     s32 bx, by;
     s32 layer, n;
@@ -4333,7 +4333,7 @@ extern "C" s32 func_ov004_02233f3c(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s3
     if (Item_IsFurniture(tile) == 0) {
         return 0;
     }
-    if (func_ov004_0223584c()->func_ov004_0223576c() == 0) {
+    if (FtrActorTable_GetInstance()->countFree() == 0) {
         return 1;
     }
     if (mode == 2) {
@@ -4355,14 +4355,14 @@ loopL:
     k = 0;
     goto testK;
 loopK:
-    if (func_ov004_02234320(&c54, &c58, pos, ang, k) == 0) {
+    if (FtrMgr_GetProbeTile(&c54, &c58, pos, ang, k) == 0) {
         goto nextK;
     }
     FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v64, c54, c58);
     d = 0;
     goto testD;
 loopD:
-    r7 = (base + data_ov004_022406a4[d]) & 3;
+    r7 = (base + sFtrPlaceDirOrder[d]) & 3;
     if (kind == 2) {
         cnt = 4;
     } else {
@@ -4373,7 +4373,7 @@ loopD:
 loopE:
     px = c54 + dirs[e].x;
     py = c58 + dirs[e].y;
-    if (Unk_ov004_02233f3c_Ns::func_ov004_022341c0(out, px, py, r7, pl, layer, bx, by) == 3) {
+    if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px, py, r7, pl, layer, bx, by) == 3) {
         if (kind == 1) {
             s48 = Item_MakeFurniture(pl, r7);
             dr = (s32)(r7 << 30) >> 16;
@@ -4395,7 +4395,7 @@ loopE:
             if (func_020e780c(dr, func_020e7b98(v88.x, v88.z)) > 0x4000) {
                 s16 *p1 = func_0205242c(&buf, 1);
                 s16 *p2 = func_0205242c(&buf, 1);
-                if (Unk_ov004_02233f3c_Ns::func_ov004_022341c0(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, layer, bx, by) == 3) {
+                if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, layer, bx, by) == 3) {
                     func_020524a4(&buf);
                     return 3;
                 }
@@ -4421,16 +4421,16 @@ testL:
 }
 
 // @0x2233f08 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02233f08(void *a, u16 *b, u32 c) {
+extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
     FtrActor *o = func_02095204(4);
     if (o != 0) {
-        return func_ov004_02233f3c(a, b, &o->unk_5c, o->unk_8e, c);
+        return FtrMgr_FindPlacement(a, b, &o->unk_5c, o->unk_8e, c);
     }
     return 0;
 }
 
 // @0x2233ee0 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02233ee0() {
+extern "C" s32 FtrMgr_GetCurPlayerIndex() {
     if (PlayerData_GetCurrent() != 0) {
         return func_02097740(data_021d735c, PlayerData_getPlayerId());
     }
@@ -4438,19 +4438,19 @@ extern "C" s32 func_ov004_02233ee0() {
 }
 
 // @0x2233e98 unk_02233dc0.cpp
-TILE_ENTRY(func_ov004_02233e98, 0x3d84)
+TILE_ENTRY(FtrMgr_FindPlacementMyDesignA, 0x3d84)
 
 // @0x2233e50 unk_02233dc0.cpp
-TILE_ENTRY(func_ov004_02233e50, 0x3ea4)
+TILE_ENTRY(FtrMgr_FindPlacementMyDesignB, 0x3ea4)
 
 // @0x2233e08 unk_02233dc0.cpp
-TILE_ENTRY(func_ov004_02233e08, 0x4224)
+TILE_ENTRY(FtrMgr_FindPlacementMyDesignD, 0x4224)
 
 // @0x2233dc0 unk_02233dc0.cpp
-TILE_ENTRY(func_ov004_02233dc0, 0x3f24)
+TILE_ENTRY(FtrMgr_FindPlacementMyDesignC, 0x3f24)
 
 // @0x2233d88 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233d88(void *o0) {
+extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0) {
     Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
     if (o) {
         switch (o->unk_77c) {
@@ -4470,12 +4470,12 @@ extern "C" s32 func_ov004_02233d88(void *o0) {
 }
 
 // @0x2233d64 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233d64(s32 a, s32 b) {
-    return func_ov004_02233d88(func_ov004_02235718()->func_ov004_022355d8(a, b, 0));
+extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b) {
+    return FtrMgr_TakeDisplayedWearable(FtrActorGrid_GetInstance()->getActor(a, b, 0));
 }
 
 // @0x2233d2c unk_0223349c.cpp
-extern "C" s32 func_ov004_02233d2c(void *o0) {
+extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0) {
     Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
     if (o) {
         switch (o->unk_77c) {
@@ -4495,8 +4495,8 @@ extern "C" s32 func_ov004_02233d2c(void *o0) {
 }
 
 // @0x2233d08 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233d08(s32 a, s32 b) {
-    return func_ov004_02233d2c(func_ov004_02235718()->func_ov004_022355d8(a, b, 0));
+extern "C" s32 FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b) {
+    return FtrMgr_RestoreDisplayedWearable(FtrActorGrid_GetInstance()->getActor(a, b, 0));
 }
 
 // @0x2233d04 unk_0223349c.cpp
@@ -4515,61 +4515,61 @@ extern "C" BOOL func_ov004_02233cfc(void) {
 }
 
 // @0x2233cdc unk_0223349c.cpp
-extern "C" s32 func_ov004_02233cdc(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" s32 FurnitureManager_GetTvTex(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return func_ov004_02233194(&s->unk_64);
+        return TvScreen_GetTex(&s->unk_64);
     }
     return 0;
 }
 
 // @0x2233cb4 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233cb4(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" s32 FurnitureManager_GetTvProgram(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return (s16)func_ov004_022331b8(&s->unk_64);
+        return (s16)TvScreen_GetProgram(&s->unk_64);
     }
     return -1;
 }
 
 // @0x2233c94 unk_0223349c.cpp
-extern "C" TvSound *func_ov004_02233c94(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" TvSound *FurnitureManager_GetTvSound(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return (TvSound *)func_ov004_02233188(&s->unk_64);
+        return (TvSound *)TvScreen_GetSound(&s->unk_64);
     }
     return 0;
 }
 
 // @0x2233c74 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233c74(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" s32 FurnitureManager_GetTvLoopCount(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return func_ov004_02233170(&s->unk_64);
+        return TvScreen_GetLoopCount(&s->unk_64);
     }
     return 0xff;
 }
 
 // @0x2233c54 unk_0223349c.cpp
-extern "C" s32 func_ov004_02233c54(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" s32 FurnitureManager_GetTvFrame(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
-        return func_ov004_02233158(&s->unk_64);
+        return TvScreen_GetFrame(&s->unk_64);
     }
     return 0;
 }
 
 // @0x2233c3c unk_0223349c.cpp
-extern "C" void func_ov004_02233c3c(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" void FurnitureManager_SetTvProgramChanged(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
         s->unk_2b0 = 1;
     }
 }
 
 // @0x2233c20 unk_0223349c.cpp
-extern "C" u8 func_ov004_02233c20(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" u8 FurnitureManager_IsTvProgramChanged(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
         return s->unk_2b0;
     }
@@ -4577,18 +4577,18 @@ extern "C" u8 func_ov004_02233c20(void) {
 }
 
 // @0x2233c18 unk_0223349c.cpp
-extern "C" void func_ov004_02233c18(u8 *p) {
+extern "C" void FtrMoveFlag_Init(u8 *p) {
     *p = 0;
 }
 
 // @0x2233c10 unk_0223349c.cpp
-extern "C" void func_ov004_02233c10(u8 *p) {
+extern "C" void FtrMoveFlag_Destroy(u8 *p) {
     *p = 0;
 }
 
 // @0x2233bf4 unk_0223349c.cpp
-extern "C" void *func_ov004_02233bf4(void) {
-    Unk_ov004_0224e9d8 *s = data_ov004_02251f80;
+extern "C" void *FurnitureManager_GetMoveAnim(void) {
+    FurnitureManager *s = sFurnitureManager;
     if (s) {
         return &s->unk_1c4;
     }
@@ -4596,7 +4596,7 @@ extern "C" void *func_ov004_02233bf4(void) {
 }
 
 // @0x2233b90 unk_0223349c.cpp
-extern "C" void func_ov004_02233b90(Unk_ov004_02233b90_Obj *o) {
+extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o) {
     Unk_ov004_02233b3c_V3 v;
     Unk_ov004_02233b3c_V3 out;
     Unk_ov004_02233b3c *r;
@@ -4607,21 +4607,21 @@ extern "C" void func_ov004_02233b90(Unk_ov004_02233b90_Obj *o) {
         v.z = pv->z;
         r = o->unk_04->unk_2c;
         if (r != 0) {
-            *(Unk_ov004_02233b3c_Mat *)data_021f47e0 = *(Unk_ov004_02233b3c_Mat *)func_ov004_02233b00(r);
+            *(Unk_ov004_02233b3c_Mat *)data_021f47e0 = *(Unk_ov004_02233b3c_Mat *)FtrMoveAnim_GetMtx(r);
             MTX_MultVec43(&v, data_021f47e0, &out);
-            func_ov004_02233af0(r, &out);
+            FtrMoveAnim_SetPos(r, &out);
         }
     }
 }
 
 // @0x2233b80 unk_0223349c.cpp
-extern "C" void func_ov004_02233b80(Unk_ov004_02233b3c *r) {
-    r->unk_24 = (void *)func_ov004_02233b90;
+extern "C" void FtrMoveAnim_InstallCallback(Unk_ov004_02233b3c *r) {
+    r->unk_24 = (void *)FtrMoveAnim_NodeCallback;
     ((u8 *)&r->unk_90)[2] = 2;
 }
 
 // @0x2233b54 unk_0223349c.cpp
-extern "C" void *func_ov004_02233b54(Unk_ov004_02233b3c *r) {
+extern "C" void *FtrMoveAnim_Construct(Unk_ov004_02233b3c *r) {
     func_020548d0(r->unk_2c);
     r->unk_10 = 0;
     r->unk_24 = 0;
@@ -4638,40 +4638,40 @@ extern "C" void *func_ov004_02233b54(Unk_ov004_02233b3c *r) {
 }
 
 // @0x2233b3c unk_0223349c.cpp
-extern "C" void *func_ov004_02233b3c(Unk_ov004_02233b3c *r) {
+extern "C" void *FtrMoveAnim_Destruct(Unk_ov004_02233b3c *r) {
     r->unk_00 = 0;
     func_020548a0(r->unk_2c);
     return r;
 }
 
 // @0x2233b20 unk_0223349c.cpp
-extern "C" void func_ov004_02233b20(Unk_ov004_02233b3c *r) {
-    func_ov004_0223399c(r);
-    func_ov004_022338e0(r);
-    func_ov004_022337d4(r);
+extern "C" void FtrMoveAnim_Load(Unk_ov004_02233b3c *r) {
+    FtrMoveAnim_CreateHeap(r);
+    FtrMoveAnim_LoadAnims(r);
+    FtrMoveAnim_LoadModel(r);
 }
 
 // @0x2233b04 unk_0223349c.cpp
-extern "C" void func_ov004_02233b04(Unk_ov004_02233b3c *r) {
-    func_ov004_022337c8(r);
-    func_ov004_022338d0(r);
-    func_ov004_0223397c(r);
+extern "C" void FtrMoveAnim_Unload(Unk_ov004_02233b3c *r) {
+    FtrMoveAnim_ClearModel(r);
+    FtrMoveAnim_ClearAnims(r);
+    FtrMoveAnim_DestroyHeap(r);
 }
 
 // @0x2233b00 unk_0223349c.cpp
-extern "C" void *func_ov004_02233b00(Unk_ov004_02233b3c *r) {
+extern "C" void *FtrMoveAnim_GetMtx(Unk_ov004_02233b3c *r) {
     return &r->unk_90;
 }
 
 // @0x2233af0 unk_0223349c.cpp
-extern "C" void func_ov004_02233af0(Unk_ov004_02233b3c *r, Unk_ov004_02233b3c_V3 *v) {
+extern "C" void FtrMoveAnim_SetPos(Unk_ov004_02233b3c *r, Unk_ov004_02233b3c_V3 *v) {
     r->unk_04 = v->x;
     r->unk_08 = v->y;
     r->unk_0c = v->z;
 }
 
 // @0x2233a70 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233a70(Unk_ov004_02233b3c *r, s32 x, volatile u8 *flag, Unk_ov004_02233b3c_V3 *pos, s32 e) {
+extern "C" BOOL FtrMoveAnim_Start(Unk_ov004_02233b3c *r, s32 x, volatile u8 *flag, Unk_ov004_02233b3c_V3 *pos, s32 e) {
     if (*flag == 0 && r->unk_00 == 0 && x != 0) {
         BlendAnimModel_initAnim(r->unk_2c, x, 1, 0x1000, 0, 0);
         r->unk_00 = 1;
@@ -4688,17 +4688,17 @@ extern "C" BOOL func_ov004_02233a70(Unk_ov004_02233b3c *r, s32 x, volatile u8 *f
 }
 
 // @0x2233a48 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233a48(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c) {
-    return func_ov004_02233a70(r, func_ov004_022337c4(r), a, b, c);
+extern "C" BOOL FtrMoveAnim_StartPush(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c) {
+    return FtrMoveAnim_Start(r, FtrMoveAnim_GetPushAnim(r), a, b, c);
 }
 
 // @0x2233a20 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233a20(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c) {
-    return func_ov004_02233a70(r, func_ov004_022337c0(r), a, b, c);
+extern "C" BOOL FtrMoveAnim_StartPull(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *b, s32 c) {
+    return FtrMoveAnim_Start(r, FtrMoveAnim_GetPullAnim(r), a, b, c);
 }
 
 // @0x22339cc unk_0223349c.cpp
-extern "C" BOOL func_ov004_022339cc(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *out) {
+extern "C" BOOL FtrMoveAnim_Step(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *out) {
     if (r->unk_00 != 0 && *a != 0) {
         AnimModel_stepAnim(r->unk_2c);
         Model_drawNoGeCmd(r->unk_2c);
@@ -4716,7 +4716,7 @@ extern "C" BOOL func_ov004_022339cc(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_o
 }
 
 // @0x223399c unk_0223349c.cpp
-extern "C" BOOL func_ov004_0223399c(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_CreateHeap(Unk_ov004_02233b3c *r) {
     if (r->unk_10 == 0) {
         r->unk_10 = FrameHeap_Create(0x2800, gCurrentHeap);
         if (r->unk_10) {
@@ -4727,7 +4727,7 @@ extern "C" BOOL func_ov004_0223399c(Unk_ov004_02233b3c *r) {
 }
 
 // @0x223397c unk_0223349c.cpp
-extern "C" BOOL func_ov004_0223397c(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_DestroyHeap(Unk_ov004_02233b3c *r) {
     if (r->unk_10) {
         func_020e8c88(r->unk_10);
         r->unk_10 = 0;
@@ -4737,7 +4737,7 @@ extern "C" BOOL func_ov004_0223397c(Unk_ov004_02233b3c *r) {
 }
 
 // @0x22338e0 unk_0223349c.cpp
-extern "C" BOOL func_ov004_022338e0(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_LoadAnims(Unk_ov004_02233b3c *r) {
     Unk_ov004_022337d4_Arc arc;
     if (r->unk_14 == 0) {
         r->unk_14 = File_LoadAlloc("/ftr/anm/anm.arc", r->unk_10, 4, 0);
@@ -4765,7 +4765,7 @@ extern "C" BOOL func_ov004_022338e0(Unk_ov004_02233b3c *r) {
 }
 
 // @0x22338d0 unk_0223349c.cpp
-extern "C" BOOL func_ov004_022338d0(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_ClearAnims(Unk_ov004_02233b3c *r) {
     r->unk_14 = 0;
     r->unk_18 = 0;
     r->unk_1c = 0;
@@ -4774,7 +4774,7 @@ extern "C" BOOL func_ov004_022338d0(Unk_ov004_02233b3c *r) {
 }
 
 // @0x22337d4 unk_0223349c.cpp
-extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_LoadModel(Unk_ov004_02233b3c *r) {
     Unk_ov004_022337d4_Path path;
     Unk_ov004_022337d4_Arc arc;
     if (r->unk_10 == 0) {
@@ -4794,13 +4794,13 @@ extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r) {
         if (func_02101340(&arc, "FTT", r->unk_24)) {
             BOOL ok = FALSE;
             u8 *p;
-            p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov004_0224e930));
+            p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(sFtrMoveAnimModelNamePtr));
             r->unk_28 = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
             if (Model_setResourceAndBind(r->unk_2c, (void *)r->unk_28, ok)) {
                 if (AnimModel_allocAnmObj(r->unk_2c, r->unk_10)) {
-                    BlendAnimModel_initAnim(r->unk_2c, func_ov004_022337c4(r), 1, 0x1000, ok, ok);
+                    BlendAnimModel_initAnim(r->unk_2c, FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
                     AnimModel_attachAnim(r->unk_2c);
-                    Model_setInitCallback(r->unk_2c, (void *)func_ov004_02233b80, r);
+                    Model_setInitCallback(r->unk_2c, (void *)FtrMoveAnim_InstallCallback, r);
                     ok = TRUE;
                 }
             }
@@ -4812,29 +4812,29 @@ extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r) {
 }
 
 // @0x22337c8 unk_0223349c.cpp
-extern "C" BOOL func_ov004_022337c8(Unk_ov004_02233b3c *r) {
+extern "C" BOOL FtrMoveAnim_ClearModel(Unk_ov004_02233b3c *r) {
     r->unk_24 = 0;
     r->unk_28 = 0;
     return TRUE;
 }
 
 // @0x22337c4 unk_0223349c.cpp
-extern "C" u32 func_ov004_022337c4(Unk_ov004_02233b3c *r) {
+extern "C" u32 FtrMoveAnim_GetPushAnim(Unk_ov004_02233b3c *r) {
     return r->unk_18;
 }
 
 // @0x22337c0 unk_0223349c.cpp
-extern "C" u32 func_ov004_022337c0(Unk_ov004_02233b3c *r) {
+extern "C" u32 FtrMoveAnim_GetPullAnim(Unk_ov004_02233b3c *r) {
     return r->unk_1c;
 }
 
 // @0x22337bc unk_0223349c.cpp
-extern "C" u32 func_ov004_022337bc(Unk_ov004_02233b3c *r) {
+extern "C" u32 FtrMoveAnim_GetHaniwaAnim(Unk_ov004_02233b3c *r) {
     return r->unk_20;
 }
 
 // @0x2233790 unk_0223349c.cpp
-extern "C" void *func_ov004_02233790(Unk_ov004_02233790 *p) {
+extern "C" void *TvProgSlot_Construct(Unk_ov004_02233790 *p) {
     func_02056d8c(&p->unk_10);
     p->unk_a0 = -1;
     p->unk_a4 = -1;
@@ -4844,13 +4844,13 @@ extern "C" void *func_ov004_02233790(Unk_ov004_02233790 *p) {
 }
 
 // @0x223377c unk_0223349c.cpp
-extern "C" void *func_ov004_0223377c(Unk_ov004_02233790 *p) {
+extern "C" void *TvProgSlot_Destruct(Unk_ov004_02233790 *p) {
     func_02056d54(&p->unk_10);
     return p;
 }
 
 // @0x2233744 unk_0223349c.cpp
-extern "C" void *func_ov004_02233744(Unk_ov004_02233790 *p, u32 a) {
+extern "C" void *TvProgSlot_Init(Unk_ov004_02233790 *p, u32 a) {
     p->unk_a0 = -1;
     p->unk_a4 = -1;
     p->unk_00 = FrameHeap_Create(0xe00, gCurrentHeap);
@@ -4858,25 +4858,25 @@ extern "C" void *func_ov004_02233744(Unk_ov004_02233790 *p, u32 a) {
 }
 
 // @0x223372c unk_0223349c.cpp
-extern "C" s32 func_ov004_0223372c(u32 i) {
+extern "C" s32 TvWeather_GetName(u32 i) {
     if (i < 0xb) {
-        return (s32)data_ov004_0224e9a4[i];
+        return (s32)sTvWeatherNames[i];
     }
-    return (s32)data_ov004_0224e9a4[0];
+    return (s32)sTvWeatherNames[0];
 }
 
 // @0x2233660 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233660(Unk_ov004_02233790 *p, u32 id, s32 x) {
+extern "C" BOOL TvProgSlot_Load(Unk_ov004_02233790 *p, u32 id, s32 x) {
     char buf1[0x28];
     char buf2[0x28];
     s32 r6;
-    func_ov004_02233644(p);
+    TvProgSlot_FreeFiles(p);
     r6 = -1;
     if (id != 0xff) {
         func_020639e8(buf1, "/ftr/tv/prog/tv_program%d.nsbtx", id);
         func_020639e8(buf2, "/ftr/tv/prog/tv_program%d.nsbtp", id);
     } else {
-        r6 = func_ov004_0223372c(x);
+        r6 = TvWeather_GetName(x);
         func_020639e8(buf1, "/ftr/tv/weather/%s.nsbtx", r6);
         func_020639e8(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
         r6 = x;
@@ -4893,7 +4893,7 @@ extern "C" BOOL func_ov004_02233660(Unk_ov004_02233790 *p, u32 id, s32 x) {
 }
 
 // @0x2233644 unk_0223349c.cpp
-extern "C" void func_ov004_02233644(Unk_ov004_02233790 *p) {
+extern "C" void TvProgSlot_FreeFiles(Unk_ov004_02233790 *p) {
     if (p->unk_00) {
         func_020e885c(p->unk_00);
     }
@@ -4902,7 +4902,7 @@ extern "C" void func_ov004_02233644(Unk_ov004_02233790 *p) {
 }
 
 // @0x22335fc unk_0223349c.cpp
-extern "C" void func_ov004_022335fc(Unk_ov004_02233790 *p) {
+extern "C" void TvProgSlot_Update(Unk_ov004_02233790 *p) {
     if (p->unk_08 && p->unk_0c) {
         TexPatVramAnim_update(&p->unk_10);
         if (AnimFrameCtrl_hasPassedFrame(&p->unk_10, 0)) {
@@ -4917,7 +4917,7 @@ extern "C" void func_ov004_022335fc(Unk_ov004_02233790 *p) {
 }
 
 // @0x22335dc unk_0223349c.cpp
-extern "C" void func_ov004_022335dc(Unk_ov004_02233790 *p) {
+extern "C" void TvProgSlot_Release(Unk_ov004_02233790 *p) {
     if (p->unk_00) {
         func_020e8c88(p->unk_00);
         p->unk_00 = 0;
@@ -4928,31 +4928,31 @@ extern "C" void func_ov004_022335dc(Unk_ov004_02233790 *p) {
 }
 
 // @0x22335d4 unk_0223349c.cpp
-extern "C" s32 func_ov004_022335d4(Unk_ov004_02233790 *p) {
+extern "C" s32 TvProgSlot_GetProgram(Unk_ov004_02233790 *p) {
     return p->unk_a0;
 }
 
 // @0x22335b8 unk_0223349c.cpp
-extern "C" s32 func_ov004_022335b8(Unk_ov004_02233790 *p) {
-    if (func_ov004_022335d4(p) == 0xff) {
+extern "C" s32 TvProgSlot_GetWeather(Unk_ov004_02233790 *p) {
+    if (TvProgSlot_GetProgram(p) == 0xff) {
         return p->unk_a4;
     }
     return -1;
 }
 
 // @0x22335b0 unk_0223349c.cpp
-extern "C" u16 func_ov004_022335b0(Unk_ov004_02233790 *p) {
+extern "C" u16 TvProgSlot_GetLoopCount(Unk_ov004_02233790 *p) {
     return p->unk_a6;
 }
 
 // @0x22335a8 unk_0223349c.cpp
-extern "C" u32 func_ov004_022335a8(Unk_ov004_02233790 *p) {
+extern "C" u32 TvProgSlot_GetFrame(Unk_ov004_02233790 *p) {
     return (u32)(p->unk_10[2] << 4) >> 16;
 }
 
 // @0x2233560 unk_0223349c.cpp
-extern "C" void *func_ov004_02233560(Unk_ov004_02233560 *q) {
-    __cxa_vec_ctor(&q->unk_04, 2, 0xa8, (void *(*)(void *))func_ov004_02233790, (void *(*)(void *, s32))func_ov004_0223377c);
+extern "C" void *TvScreen_Construct(Unk_ov004_02233560 *q) {
+    __cxa_vec_ctor(&q->unk_04, 2, 0xa8, (void *(*)(void *))TvProgSlot_Construct, (void *(*)(void *, s32))TvProgSlot_Destruct);
     q->unk_00 = -1;
     q->unk_154 = 0;
     q->unk_158 = 0;
@@ -4961,13 +4961,13 @@ extern "C" void *func_ov004_02233560(Unk_ov004_02233560 *q) {
 }
 
 // @0x2233544 unk_0223349c.cpp
-extern "C" void *func_ov004_02233544(Unk_ov004_02233560 *q) {
-    __cxa_vec_cleanup(&q->unk_04, 2, 0xa8, (void *(*)(void *, s32))func_ov004_0223377c);
+extern "C" void *TvScreen_Destruct(Unk_ov004_02233560 *q) {
+    __cxa_vec_cleanup(&q->unk_04, 2, 0xa8, (void *(*)(void *, s32))TvProgSlot_Destruct);
     return q;
 }
 
 // @0x223349c unk_0223349c.cpp
-extern "C" void func_ov004_0223349c(Unk_ov004_02233560 *q) {
+extern "C" void TvScreen_Load(Unk_ov004_02233560 *q) {
     void *h;
     q->unk_00 = -1;
     q->unk_154 = 0;
@@ -4978,24 +4978,24 @@ extern "C" void func_ov004_0223349c(Unk_ov004_02233560 *q) {
         q->unk_154 = (u32)Gfx3d_CopyTex(r6, gBgHeap);
         Mem_Free(h);
     }
-    func_ov004_02233744(&q->unk_04[0], q->unk_154);
-    func_ov004_02233744(&q->unk_04[1], q->unk_154);
-    if (data_ov004_02251f78) {
+    TvProgSlot_Init(&q->unk_04[0], q->unk_154);
+    TvProgSlot_Init(&q->unk_04[1], q->unk_154);
+    if (sFtrMgrTvSoundEnabled) {
         q->unk_158 = FrameHeap_Create(TvSound_GetMaxSize() + 0x60, gCurrentHeap);
     }
-    s32 a = func_ov004_02233330(q);
-    s32 b = func_ov004_02233244(q);
-    func_ov004_022333f8(q, a, b);
+    s32 a = TvSchedule_GetCurrentProgram(q);
+    s32 b = TvWeather_GetForecastIndex(q);
+    TvScreen_SetProgram(q, a, b);
 }
 
 // @0x22333f8 unk_02232b1c.cpp
-extern "C" BOOL func_ov004_022333f8(Unk_ov004_02233560 *o, s32 a, s32 b) {
+extern "C" BOOL TvScreen_SetProgram(Unk_ov004_02233560 *o, s32 a, s32 b) {
     s8 idx;
-    func_ov004_02233644(&o->unk_04[o->unk_00 & 1]);
+    TvProgSlot_FreeFiles(&o->unk_04[o->unk_00 & 1]);
     idx = (o->unk_00 + 1) & 1;
-    if (func_ov004_02233660(&o->unk_04[idx], a, b)) {
+    if (TvProgSlot_Load(&o->unk_04[idx], a, b)) {
         o->unk_00 = idx;
-        if (data_ov004_02251f78) {
+        if (sFtrMgrTvSoundEnabled) {
             if (o->unk_158) {
                 if (o->unk_15c) {
                     TvSound_callRelease(o->unk_15c);
@@ -5012,30 +5012,30 @@ extern "C" BOOL func_ov004_022333f8(Unk_ov004_02233560 *o, s32 a, s32 b) {
 }
 
 // @0x22333a8 unk_02232b1c.cpp
-extern "C" void func_ov004_022333a8(Unk_ov004_02233560 *o) {
-    s32 t = func_ov004_02233330(o);
+extern "C" void TvScreen_UpdateSchedule(Unk_ov004_02233560 *o) {
+    s32 t = TvSchedule_GetCurrentProgram(o);
     if (t == 0xff) {
-        s32 u = func_ov004_02233244(o);
-        if (u != func_ov004_022331a0(o)) {
-            func_ov004_022333f8(o, t, u);
-            func_ov004_02233c3c();
+        s32 u = TvWeather_GetForecastIndex(o);
+        if (u != TvScreen_GetWeather(o)) {
+            TvScreen_SetProgram(o, t, u);
+            FurnitureManager_SetTvProgramChanged();
         }
     } else {
-        if (t != func_ov004_022331b8(o)) {
-            func_ov004_022333f8(o, t, 0xff);
-            func_ov004_02233c3c();
+        if (t != TvScreen_GetProgram(o)) {
+            TvScreen_SetProgram(o, t, 0xff);
+            FurnitureManager_SetTvProgramChanged();
         }
     }
 }
 
 // @0x2233380 unk_02232b1c.cpp
-extern "C" void func_ov004_02233380(Unk_ov004_02233560 *o) {
-    if (func_ov004_022331d0(o)) func_ov004_022335fc(&o->unk_04[o->unk_00 & 1]);
+extern "C" void TvScreen_Update(Unk_ov004_02233560 *o) {
+    if (TvScreen_IsLoaded(o)) TvProgSlot_Update(&o->unk_04[o->unk_00 & 1]);
 }
 
 // @0x2233330 unk_02232b1c.cpp
-extern "C" u8 func_ov004_02233330(void *) {
-    const Unk_ov004_02233330_Tbl *t = &data_ov004_022406bc[Clock_GetWeekday()];
+extern "C" u8 TvSchedule_GetCurrentProgram(void *) {
+    const Unk_ov004_02233330_Tbl *t = &sTvScheduleByWeekday[Clock_GetWeekday()];
     Unk_ov004_02233330_Time l;
     s32 i;
     u16 y;
@@ -5052,7 +5052,7 @@ extern "C" u8 func_ov004_02233330(void *) {
 }
 
 // @0x22332b8 unk_02232b1c.cpp
-extern "C" s32 func_ov004_022332b8() {
+extern "C" s32 TvWeather_IsUnkPeriod() {
     Unk_ov004_022332b8_Buf l;
     s32 r;
     l.unk_00 = 0;
@@ -5081,30 +5081,30 @@ extern "C" s32 func_ov004_022332b8() {
 }
 
 // @0x2233244 unk_02232b1c.cpp
-extern "C" s32 func_ov004_02233244(void *) {
+extern "C" s32 TvWeather_GetForecastIndex(void *) {
     s32 t = data_021ed2b0.unk_0b & 0x1f;
     if (t <= 6) return 0;
     if (t <= 9) return 1;
     if (t <= 15) {
-        if (func_ov004_022332b8()) return 8;
+        if (TvWeather_IsUnkPeriod()) return 8;
         return 2;
     }
     if (t <= 18) return 3;
     if (t <= 21) return 4;
     if (t <= 25) return 5;
     if (t <= 28) {
-        if (func_ov004_022332b8()) return 9;
+        if (TvWeather_IsUnkPeriod()) return 9;
         return 6;
     }
-    if (func_ov004_022332b8()) return 10;
+    if (TvWeather_IsUnkPeriod()) return 10;
     return 7;
 }
 
 // @0x22331e0 unk_02232b1c.cpp
-extern "C" void func_ov004_022331e0(Unk_ov004_02233560 *o) {
+extern "C" void TvScreen_Release(Unk_ov004_02233560 *o) {
     o->unk_00 = -1;
     o->unk_154 = 0;
-    if (data_ov004_02251f78) {
+    if (sFtrMgrTvSoundEnabled) {
         if (o->unk_158) {
             if (o->unk_15c) {
                 TvSound_callRelease(o->unk_15c);
@@ -5114,92 +5114,92 @@ extern "C" void func_ov004_022331e0(Unk_ov004_02233560 *o) {
             o->unk_158 = 0;
         }
     }
-    func_ov004_022335dc(&o->unk_04[0]);
-    func_ov004_022335dc(&o->unk_04[1]);
+    TvProgSlot_Release(&o->unk_04[0]);
+    TvProgSlot_Release(&o->unk_04[1]);
 }
 
 // @0x22331d0 unk_02232b1c.cpp
-extern "C" BOOL func_ov004_022331d0(Unk_ov004_02233560 *o) {
+extern "C" BOOL TvScreen_IsLoaded(Unk_ov004_02233560 *o) {
     BOOL r = FALSE;
     if (o->unk_00 != -1) r = TRUE;
     return r;
 }
 
 // @0x22331b8 unk_02232b1c.cpp
-extern "C" s32 func_ov004_022331b8(Unk_ov004_02233560 *o) {
-    return func_ov004_022335d4(&o->unk_04[o->unk_00 & 1]);
+extern "C" s32 TvScreen_GetProgram(Unk_ov004_02233560 *o) {
+    return TvProgSlot_GetProgram(&o->unk_04[o->unk_00 & 1]);
 }
 
 // @0x22331a0 unk_02232b1c.cpp
-extern "C" s32 func_ov004_022331a0(Unk_ov004_02233560 *o) {
-    return func_ov004_022335b8(&o->unk_04[o->unk_00 & 1]);
+extern "C" s32 TvScreen_GetWeather(Unk_ov004_02233560 *o) {
+    return TvProgSlot_GetWeather(&o->unk_04[o->unk_00 & 1]);
 }
 
 // @0x2233194 unk_02232b1c.cpp
-extern "C" s32 func_ov004_02233194(Unk_ov004_02233560 *o) {
+extern "C" s32 TvScreen_GetTex(Unk_ov004_02233560 *o) {
     return o->unk_154;
 }
 
 // @0x2233188 unk_02232b1c.cpp
-extern "C" s32 func_ov004_02233188(Unk_ov004_02233560 *o) {
+extern "C" s32 TvScreen_GetSound(Unk_ov004_02233560 *o) {
     return (s32)o->unk_15c;
 }
 
 // @0x2233170 unk_02232b1c.cpp
-extern "C" s32 func_ov004_02233170(Unk_ov004_02233560 *o) {
-    return func_ov004_022335b0(&o->unk_04[o->unk_00 & 1]);
+extern "C" s32 TvScreen_GetLoopCount(Unk_ov004_02233560 *o) {
+    return TvProgSlot_GetLoopCount(&o->unk_04[o->unk_00 & 1]);
 }
 
 // @0x2233158 unk_02232b1c.cpp
-extern "C" s32 func_ov004_02233158(Unk_ov004_02233560 *o) {
-    return func_ov004_022335a8(&o->unk_04[o->unk_00 & 1]);
+extern "C" s32 TvScreen_GetFrame(Unk_ov004_02233560 *o) {
+    return TvProgSlot_GetFrame(&o->unk_04[o->unk_00 & 1]);
 }
 
 // @0x2233138 unk_02232b1c.cpp
-extern "C" const Unk_ov004_02233138_Rec *func_ov004_02233138(s32 idx) {
-    if (idx < 0x6e9) return &data_ov004_0224097c[idx];
-    return &data_ov004_022406ac;
+extern "C" const Unk_ov004_02233138_Rec *FtrSound_GetRecord(s32 idx) {
+    if (idx < 0x6e9) return &sFtrSoundTable[idx];
+    return &sFtrSoundNoneRecord;
 }
 
 // @0x2233128 unk_02232b1c.cpp
-extern "C" u16 func_ov004_02233128(s32 idx) {
-    return func_ov004_02233138(idx)->unk_00;
+extern "C" u16 FtrSound_GetSe0(s32 idx) {
+    return FtrSound_GetRecord(idx)->unk_00;
 }
 
 // @0x2233118 unk_02232b1c.cpp
-extern "C" u16 func_ov004_02233118(s32 idx) {
-    return func_ov004_02233138(idx)->unk_02;
+extern "C" u16 FtrSound_GetSe1(s32 idx) {
+    return FtrSound_GetRecord(idx)->unk_02;
 }
 
 // @0x2233108 unk_02232b1c.cpp
-extern "C" u16 func_ov004_02233108(s32 idx) {
-    return func_ov004_02233138(idx)->unk_04;
+extern "C" u16 FtrSound_GetSe2(s32 idx) {
+    return FtrSound_GetRecord(idx)->unk_04;
 }
 
 // @0x22330f8 unk_02232b1c.cpp
-extern "C" u16 func_ov004_022330f8(s32 idx) {
-    return func_ov004_02233138(idx)->unk_06;
+extern "C" u16 FtrSound_GetSe3(s32 idx) {
+    return FtrSound_GetRecord(idx)->unk_06;
 }
 
 // @0x22330cc unk_02232b1c.cpp
-extern "C" void func_ov004_022330cc(s32 a) {
-    void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound1(p);
     }
 }
 
 // @0x22330a0 unk_02232b1c.cpp
-extern "C" void func_ov004_022330a0(s32 a) {
-    void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound0(p);
     }
 }
 
 // @0x2233074 unk_02232b1c.cpp
-extern "C" void func_ov004_02233074(s32 a) {
-    void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
+extern "C" void FtrMgr_PlaySeatSound2At(s32 a) {
+    void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
         if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound2(p);
     }
@@ -5207,36 +5207,36 @@ extern "C" void func_ov004_02233074(s32 a) {
 
 extern "C" char data_ov004_0224e95c[8] = "tv_ss";
 
-extern "C" u8 data_ov004_02251f78 = 0;
+extern "C" u8 sFtrMgrTvSoundEnabled = 0;
 
 extern "C" char data_ov004_0224e97c[8] = "tv_ff";
 
-extern "C" const u8 data_ov004_022406a4[4] = {0, 2, 1, 3};
+extern "C" const u8 sFtrPlaceDirOrder[4] = {0, 2, 1, 3};
 
-s32 data_ov004_02251f98 = (s32)(((s64)data_020c8cb8 * data_020c8cb8 + 0x800) >> 12);
+s32 sFtrMgrSoundRangeSq = (s32)(((s64)data_020c8cb8 * data_020c8cb8 + 0x800) >> 12);
 
-extern "C" u8 data_ov004_02251f74 = 0;
+extern "C" u8 sFtrMgrSaleMode = 0;
 
-extern "C" const u8 data_ov004_02240738[0x4c] = {4, 0, 0, 9, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 8, 8, 0, 6, 9, 0, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 6, 14, 0, 10, 15, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 5, 19, 0, 8, 20, 0, 9, 21, 0, 255, 22, 45, 2, 23, 0, 0};
+extern "C" const u8 sTvScheduleDay6[0x4c] = {4, 0, 0, 9, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 8, 8, 0, 6, 9, 0, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 6, 14, 0, 10, 15, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 5, 19, 0, 8, 20, 0, 9, 21, 0, 255, 22, 45, 2, 23, 0, 0};
 
-extern "C" const Unk_ov004_02233138_Rec data_ov004_022406ac = {0xffff, 0xffff, 0xffff, 0xffff};
+extern "C" const Unk_ov004_02233138_Rec sFtrSoundNoneRecord = {0xffff, 0xffff, 0xffff, 0xffff};
 
-extern "C" const Unk_ov004_02233330_Tbl data_ov004_022406bc[7] = {{data_ov004_022406f4, 22}, {data_ov004_02240784, 26}, {data_ov004_022407d4, 26}, {data_ov004_02240874, 28}, {data_ov004_022408c8, 28}, {data_ov004_02240824, 26}, {data_ov004_02240738, 25}};
+extern "C" const Unk_ov004_02233330_Tbl sTvScheduleByWeekday[7] = {{sTvScheduleDay0, 22}, {sTvScheduleDay1, 26}, {sTvScheduleDay2, 26}, {sTvScheduleDay3, 28}, {sTvScheduleDay4, 28}, {sTvScheduleDay5, 26}, {sTvScheduleDay6, 25}};
 
 extern "C" char data_ov004_0224e93c[8] = "tv_rr";
 
 extern "C" char data_ov004_0224e984[8] = "tv_cs";
 
-extern "C" const char *data_ov004_0224e930 = data_ov004_0224e994;
+extern "C" const char *sFtrMoveAnimModelNamePtr = sFtrMoveAnimModelName;
 
-FxVec3 data_ov004_0225203c(0);
+FxVec3 sFtrRemovePos(0);
 
-extern "C" const u8 data_ov004_022407d4[0x50] = {8, 0, 0, 9, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 6, 23, 0, 0, 0};
+extern "C" const u8 sTvScheduleDay2[0x50] = {8, 0, 0, 9, 1, 0, 1, 3, 0, 0, 4, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 2, 7, 0, 255, 7, 45, 3, 8, 0, 6, 8, 30, 7, 10, 0, 2, 11, 0, 255, 11, 45, 8, 12, 0, 3, 13, 0, 6, 15, 0, 7, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 3, 21, 0, 2, 22, 0, 255, 22, 45, 6, 23, 0, 0, 0};
 
-extern "C" const u8 data_ov004_022406f4[0x44] = {1, 0, 0, 0, 1, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 7, 7, 0, 6, 8, 0, 5, 9, 0, 8, 10, 0, 2, 11, 0, 255, 11, 45, 7, 12, 0, 10, 13, 0, 5, 15, 0, 6, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 9, 21, 0, 255, 22, 45, 2, 23, 0, 0, 0};
+extern "C" const u8 sTvScheduleDay0[0x44] = {1, 0, 0, 0, 1, 0, 1, 5, 0, 2, 6, 0, 255, 6, 45, 7, 7, 0, 6, 8, 0, 5, 9, 0, 8, 10, 0, 2, 11, 0, 255, 11, 45, 7, 12, 0, 10, 13, 0, 5, 15, 0, 6, 16, 0, 8, 17, 0, 2, 18, 0, 255, 18, 45, 10, 19, 0, 9, 21, 0, 255, 22, 45, 2, 23, 0, 0, 0};
 
-extern "C" u16 data_ov004_02251f7c = 0;
+extern "C" u16 sFtrMgrCycleCounter = 0;
 
-extern "C" Unk_ov004_0224e9d8 *data_ov004_02251f80 = 0;
+extern "C" FurnitureManager *sFurnitureManager = 0;
 
 extern "C" char data_ov004_0224e94c[8] = "tv_sc";

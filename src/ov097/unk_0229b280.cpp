@@ -9,12 +9,12 @@ extern "C" {
 s32 Snd_PlaySe(s32 a);
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 s32 Item_IsFurniture(u16 *p);
-s32 func_02042c64(s32 a, s32 b);
+s32 FieldAction_RequestDrop(s32 a, s32 b);
 u16 *func_020342cc(void *a, s32 b, s32 c, s32 d);
 u16 *func_02034250(void *a, s32 b, s32 c, s32 d);
 u32 func_020b0f54();
-s32 func_ov004_02233f08(void *out, void *in, s32 n);
-s32 func_ov004_02235028(s32 p);
+s32 FtrMgr_FindPlacementForPlayer(void *out, void *in, s32 n);
+s32 FtrMgr_SpawnFromArg(s32 p);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
@@ -184,7 +184,7 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
     s32 out;
     Item_ToPlacedForm(&v, &in, 0);
     if (Item_IsFurniture(&v)) {
-        switch (func_ov004_02233f08(&out, &v, 1)) {
+        switch (FtrMgr_FindPlacementForPlayer(&out, &v, 1)) {
         case 0:
             PocketMenu_ReturnToIdle(self);
             PocketMenu_ShowMessage(self, 3, 0xff, 0);
@@ -201,11 +201,11 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
             Snd_PlaySe(0x73);
             return 0;
         default:
-            func_ov004_02235028(out);
+            FtrMgr_SpawnFromArg(out);
             break;
         }
     } else {
-    self->unk_c4 = func_02042c64(gCommManager->unk_64, a);
+    self->unk_c4 = FieldAction_RequestDrop(gCommManager->unk_64, a);
     if (self->unk_c4 == -1) {
         PocketMenu_ReturnToIdle(self);
         PocketMenu_ShowMessage(self, 3, 0xff, 0);

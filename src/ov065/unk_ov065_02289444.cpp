@@ -3,8 +3,8 @@
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
-char *data_ov065_022918ac;
-void *data_ov065_022918b0;
+char *sGsSrvListMasterOverride;
+void *sGsSrvListSortList;
 u32 data_ov065_022918a8;
 }
 
@@ -106,9 +106,9 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 
 extern "C" {
 extern char *data_ov065_0228e928[2];
-extern char *data_ov065_0228e504[];
+extern char *gGsKeyNames[];
 extern u16 data_0213a510[];
-extern s32 data_ov065_02290fa0;
+extern s32 sGsAvailStatus;
 extern s32 data_ov065_022918a8;
 
 s32 strcmp(const char *, const char *);
@@ -117,66 +117,66 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212b770(char *);
 s32 func_02130b04(char *, char *);
 
-s32 func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02278684(void *);
-void *func_ov065_022787c4(void *, void *);
-s32 func_ov065_0227885c(void *, void *);
-s32 func_ov065_022788b0(void *);
-s32 func_ov065_022788f0(void *);
-void *func_ov065_02278928(s32, s32, s32, void *, void *, void *);
-s32 func_ov065_02278bf4(s32);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8(s32);
-s32 func_ov065_0227913c(s32);
-u32 func_ov065_02279144();
-s32 func_ov065_02288734(void *, void *);
-s32 func_ov065_02288758(void *, s32);
-s32 func_ov065_0228876c(void *);
-s32 func_ov065_02288a70(void *, void *, s32, s32);
-s32 func_ov065_02288acc(void *);
-s32 func_ov065_02288af4(void *);
-s32 func_ov065_02288b0c(void *, s32);
-s32 func_ov065_02288b10(void *, s32, s32, s32, void *, void *);
-s32 func_ov065_02288d18(void *);
-s32 func_ov065_02288d40(void *, s32);
-void *func_ov065_02288d44(void *, u32, u32);
-s32 func_ov065_02288db8(void *);
-s32 func_ov065_02288df0(void *);
-s32 func_ov065_0228a6f0(void *);
-s32 func_ov065_0228a718(void *);
-s32 func_ov065_0228a7f0(void *, char *, s32, s32, s32);
-s32 func_ov065_0228ad34(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 func_ov065_0228ae10(char *, s32);
-s32 func_ov065_0228ae64(s32, char *);
-s32 func_ov065_0228aed0(void *);
-s32 func_ov065_0228af0c(void *);
-s32 func_ov065_0228af48(void *);
-s32 func_ov065_0228af5c(void *);
-s32 func_ov065_0228af68(void *, s32);
-s32 func_ov065_0228afd8(void *, u32, u32);
-s32 func_ov065_0228b030(void *);
-s32 func_ov065_0228b070(void *, void *);
-s32 func_ov065_0228b0a4(void *);
-s32 func_ov065_0228993c(void *);
-s32 func_ov065_02289808(void *, s32, s32, s32);
-s32 func_ov065_02289880(void *, s32, s32, s32, s32);
+s32 GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+s32 GsArray_Count(void *);
+void *GsHash_Find(void *, void *);
+s32 GsHash_Insert(void *, void *);
+s32 GsHash_Count(void *);
+s32 GsHash_Free(void *);
+void *GsHash_NewEx(s32, s32, s32, void *, void *, void *);
+s32 GsSock_InetAddr(s32);
+s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
+s32 GsSock_Close(s32);
+s32 GsSock_CanRead(s32);
+s32 GsUtil_Sleep(s32);
+u32 GsUtil_GetTimeMs();
+s32 GsSrvQuery_Remove(void *, void *);
+s32 GsSrvQuery_AddKey(void *, s32);
+s32 GsSrvQuery_Think(void *);
+s32 GsSrvQuery_Add(void *, void *, s32, s32);
+s32 GsSrvQuery_Shutdown(void *);
+s32 GsSrvQuery_Clear(void *);
+s32 GsSrvQuery_SetPublicIp(void *, s32);
+s32 GsSrvQuery_Init(void *, s32, s32, s32, void *, void *);
+s32 GsServer_IsNull(void *);
+s32 GsServer_SetListFlags(void *, s32);
+void *GsServer_New(void *, u32, u32);
+s32 GsServer_GetPing(void *);
+s32 GsUtil_StrHashNoCase(void *);
+s32 GsSrvList_Free(void *);
+s32 GsSrvList_Disconnect(void *);
+s32 GsSrvList_SendListRequest(void *, char *, s32, s32, s32);
+s32 GsSrvList_Init(void *, s32, s32, s32, s32, s32, void *, void *);
+s32 GsUtil_StrSizeInBuffer(char *, s32);
+s32 GsStrPool_Add(s32, char *);
+s32 GsSrvList_ClearServers(void *);
+s32 GsSrvList_FreeDeadServers(void *);
+s32 GsSrvList_GetServer(void *);
+s32 GsSrvList_Count(void *);
+s32 GsSrvList_RemoveServerAt(void *, s32);
+s32 GsSrvList_FindServerByAddress(void *, u32, u32);
+s32 GsSrvList_FindServer(void *);
+s32 GsSrvList_AddServer(void *, void *);
+s32 GsSrvList_Sort(void *);
+s32 GsSrvList_Receive(void *);
+s32 GsSrvList_SendNatNegCookie(void *, s32, s32, s32);
+s32 GsSrvList_SendServerMessage(void *, s32, s32, s32, s32);
 
-s32 func_ov065_02289174(Unk_ov065_02289174_Ctx *a, char *k, char *v);
-char *func_ov065_02288fb8(char *s, s32 ch);
-s32 func_ov065_02288ffc(char *s);
-s32 func_ov065_0228911c(void *a, char *k, s32 d);
-s32 func_ov065_02289298(void *o);
-s32 func_ov065_022892b0(void *o);
-s32 func_ov065_02289384(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void func_ov065_02289500(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-void func_ov065_02289578(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-s32 func_ov065_022896dc(void *);
-s32 func_ov065_02289720(Unk_ov065_02289720_Sub *);
-s32 func_ov065_02289234(char **, char **);
-s32 func_ov065_02289228(void **);
-s32 func_ov065_02289240(void **);
+s32 GsServer_SetStringValue(Unk_ov065_02289174_Ctx *a, char *k, char *v);
+char *GsUtil_StrTok(char *s, s32 ch);
+s32 GsServer_IsKeyAllowed(char *s);
+s32 GsServer_GetStringValue(void *a, char *k, s32 d);
+s32 GsSrvBrowser_Halt(void *o);
+s32 GsSrvBrowser_Think(void *o);
+s32 GsSrvBrowser_UpdateListEx(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+void GsSrvBrowser_OnQueryEvent(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
+void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
+s32 GsSrvList_Think(void *);
+s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *);
+s32 GsStrPool_CompareCb(char **, char **);
+s32 GsStrPool_FreeEntryCb(void **);
+s32 GsStrPool_HashCb(void **);
 
 }
 }
@@ -233,41 +233,41 @@ struct Unk_ov065_02289808_Elem {
 
 extern "C" {
 extern u32 data_ov065_022918a8;
-s32 func_ov065_0228a7f0(Unk_ov065_02289808_Ctx *, s32, s32, s32, s32);
-s32 func_ov065_0228a9c0(Unk_ov065_02289808_Ctx *, u8 *, s32);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-s32 func_ov065_02278ce0(s32, void *, s32, s32);
-s32 func_ov065_02278ee8(s32);
-void func_ov065_0228aca8(Unk_ov065_02289808_Ctx *);
-void func_ov065_02288510(void *, void *, s32);
+s32 GsSrvList_SendListRequest(Unk_ov065_02289808_Ctx *, s32, s32, s32, s32);
+s32 GsSrvList_SendToMaster(Unk_ov065_02289808_Ctx *, u8 *, s32);
+s32 GsSock_Send(s32, void *, s32, s32);
+s32 GsSock_Recv(s32, void *, s32, s32);
+s32 GsSock_CanRead(s32);
+void GsSrvList_ReportError(Unk_ov065_02289808_Ctx *);
+void GsSrvListCrypt_Decrypt(void *, void *, s32);
 void memmove(void *, void *, s32);
-s32 func_ov065_0228a4f4(Unk_ov065_02289808_Ctx *, u8 *, s32, u32 *, u16 *);
-s32 func_ov065_0228afd8(Unk_ov065_02289808_Ctx *, u32, u32);
-s32 func_ov065_02288d44(Unk_ov065_02289808_Ctx *, u32, u32);
-s32 func_ov065_02288d18();
-s32 func_ov065_0228af48(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228af68(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228a300(Unk_ov065_02289808_Ctx *, s32, u8 *, s32, s32);
-s32 func_ov065_0228b070(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228ae10(u8 *, s32);
-void *func_ov065_0228ae64(Unk_ov065_02289808_Ctx *, u8 *);
-s32 func_ov065_0228a76c(Unk_ov065_02289808_Ctx *);
-void *func_ov065_022786bc(s32, s32, s32);
-s32 func_ov065_02278658(void *, void *);
-s32 func_ov065_02278684(void *);
-s32 func_ov065_0228a678(Unk_ov065_02289808_Ctx *, u8 *, s32);
-s32 func_ov065_0228a20c(Unk_ov065_02289808_Ctx *, u8 *);
-s32 func_ov065_0228a218(Unk_ov065_02289808_Ctx *, u8 *, s32);
+s32 GsSrvList_ReadServerAddress(Unk_ov065_02289808_Ctx *, u8 *, s32, u32 *, u16 *);
+s32 GsSrvList_FindServerByAddress(Unk_ov065_02289808_Ctx *, u32, u32);
+s32 GsServer_New(Unk_ov065_02289808_Ctx *, u32, u32);
+s32 GsServer_IsNull();
+s32 GsSrvList_GetServer(Unk_ov065_02289808_Ctx *, s32);
+s32 GsSrvList_RemoveServerAt(Unk_ov065_02289808_Ctx *, s32);
+s32 GsSrvList_ParseServer(Unk_ov065_02289808_Ctx *, s32, u8 *, s32, s32);
+s32 GsSrvList_AddServer(Unk_ov065_02289808_Ctx *, s32);
+s32 GsUtil_StrSizeInBuffer(u8 *, s32);
+void *GsStrPool_Add(Unk_ov065_02289808_Ctx *, u8 *);
+s32 GsSrvList_ReleaseKeyList(Unk_ov065_02289808_Ctx *);
+void *GsArray_New(s32, s32, s32);
+s32 GsArray_Append(void *, void *);
+s32 GsArray_Count(void *);
+s32 GsSrvList_InitCrypt(Unk_ov065_02289808_Ctx *, u8 *, s32);
+s32 GsSrvList_SetErrorText(Unk_ov065_02289808_Ctx *, u8 *);
+s32 GsSrvList_ParseListServer(Unk_ov065_02289808_Ctx *, u8 *, s32);
 
-s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len);
-s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c);
+s32 GsSrvList_SendServerMessage(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len);
+s32 GsSrvList_ProcessMessages(Unk_ov065_02289808_Ctx *c);
 
-s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c);
+s32 GsSrvList_HandleServerUpdate(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
+s32 GsSrvList_HandleServerDelete(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
+s32 GsSrvList_HandleMsg05(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
+s32 GsSrvList_HandleMsg06(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
+s32 GsSrvList_HandleKeyList(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
+s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c);
 }
 
 static inline void Cpy2(u8 *d, u8 *s) {
@@ -354,50 +354,50 @@ s32 memcmp(void *, void *, u32);
 s32 rand();
 s32 func_02133150(s32, s32);
 
-void *func_ov065_02277af0(u32);
-void func_ov065_02277ac8(void *);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-void func_ov065_02278dbc(s32);
-void func_ov065_022885d8(void *, void *, s32);
-u32 func_ov065_02288d2c(Unk_ov065_0228a218_Ent *);
-void func_ov065_02288d30(Unk_ov065_0228a218_Ent *, u8);
+void *GsUtil_Alloc(u32);
+void GsUtil_Free(void *);
+void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
+void GsArray_Free(Unk_ov065_022786bc_Vec *);
+s32 GsSock_Send(s32, void *, s32, s32);
+void GsSock_Close(s32);
+void GsSrvListCrypt_Init(void *, void *, s32);
+u32 GsServer_GetFlags(Unk_ov065_0228a218_Ent *);
+void GsServer_SetFlags(Unk_ov065_0228a218_Ent *, u8);
 void func_ov065_02288d34(Unk_ov065_0228a218_Ent *, u32);
-void func_ov065_02288d38(Unk_ov065_0228a218_Ent *, u32, u32);
-void func_ov065_02288d40(Unk_ov065_0228a218_Ent *, u32);
-Unk_ov065_0228a218_Ent *func_ov065_02288d44(Unk_ov065_0228a218_Ctx *, u32, u32);
-s32 func_ov065_02288d18(Unk_ov065_0228a218_Ent *);
-void func_ov065_0228914c(Unk_ov065_0228a218_Ent *, void *, u32);
-void func_ov065_02289174(Unk_ov065_0228a218_Ent *, void *, void *);
-void func_ov065_022891bc(Unk_ov065_0228a218_Ctx *);
-void func_ov065_0228b070(Unk_ov065_0228a218_Ctx *, Unk_ov065_0228a218_Ent *);
-s32 func_ov065_0228ab3c(u8 **, u32, s32 *);
-void func_ov065_0228ab50(u8 **, const char *, s32 *);
-s32 func_ov065_0228ab8c(Unk_ov065_0228a218_Ctx *);
-void func_ov065_0228aca8(Unk_ov065_0228a218_Ctx *);
-s32 func_ov065_0228ae10(void *, s32);
-void func_ov065_0228ae2c(Unk_ov065_0228a218_Ctx *, void *);
-void func_ov065_0228aed0(Unk_ov065_0228a218_Ctx *);
+void GsServer_SetPrivateAddress(Unk_ov065_0228a218_Ent *, u32, u32);
+void GsServer_SetListFlags(Unk_ov065_0228a218_Ent *, u32);
+Unk_ov065_0228a218_Ent *GsServer_New(Unk_ov065_0228a218_Ctx *, u32, u32);
+s32 GsServer_IsNull(Unk_ov065_0228a218_Ent *);
+void GsServer_SetIntValue(Unk_ov065_0228a218_Ent *, void *, u32);
+void GsServer_SetStringValue(Unk_ov065_0228a218_Ent *, void *, void *);
+void GsStrPool_FreeIfEmpty(Unk_ov065_0228a218_Ctx *);
+void GsSrvList_AddServer(Unk_ov065_0228a218_Ctx *, Unk_ov065_0228a218_Ent *);
+s32 GsSrvList_PutByte(u8 **, u32, s32 *);
+void GsSrvList_PutString(u8 **, const char *, s32 *);
+s32 GsSrvList_ConnectMaster(Unk_ov065_0228a218_Ctx *);
+void GsSrvList_ReportError(Unk_ov065_0228a218_Ctx *);
+s32 GsUtil_StrSizeInBuffer(void *, s32);
+void GsStrPool_Release(Unk_ov065_0228a218_Ctx *, void *);
+void GsSrvList_ClearServers(Unk_ov065_0228a218_Ctx *);
 
-void func_ov065_0228a20c(Unk_ov065_0228a218_Ctx *ctx, u32 v);
-s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
-s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag);
-void func_ov065_0228a4f4(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
-s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
-s32 func_ov065_0228a5e4(u8 *buf, s32 n);
-s32 func_ov065_0228a644(u32 flags);
-void func_ov065_0228a678(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n);
-void func_ov065_0228a6f0(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a718(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx);
-s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra);
-s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n);
-void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len);
-void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len);
+void GsSrvList_SetErrorText(Unk_ov065_0228a218_Ctx *ctx, u32 v);
+s32 GsSrvList_ParseListServer(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
+s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag);
+void GsSrvList_ReadServerAddress(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
+s32 GsSrvList_CheckKeyValues(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
+s32 GsSrvList_CheckExtraPairs(u8 *buf, s32 n);
+s32 GsSrvList_GetRecordHeaderSize(u32 flags);
+void GsSrvList_InitCrypt(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n);
+void GsSrvList_Free(Unk_ov065_0228a218_Ctx *ctx);
+void GsSrvList_Disconnect(Unk_ov065_0228a218_Ctx *ctx);
+void GsSrvList_ReleaseKeyList(Unk_ov065_0228a218_Ctx *ctx);
+void GsSrvList_ReleasePopularValues(Unk_ov065_0228a218_Ctx *ctx);
+s32 GsSrvList_SendListRequest(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra);
+s32 GsSrvList_SendToMaster(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n);
+void GsSrvList_MakeChallenge(Unk_ov065_0228a218_Ctx *ctx);
+void GsSrvList_PutBytes(u8 **cur, const void *src, s32 n, s32 *len);
+void GsSrvList_PutU32(u8 **cur, u32 v, s32 *len);
 
 }
 }
@@ -469,11 +469,11 @@ static inline void Cp4(Unk_ov065_0228ab8c_Ip *d, Unk_ov065_0228ab8c_Ip *s) {
 
 
 extern "C" {
-extern char *data_ov065_022918ac;
+extern char *sGsSrvListMasterOverride;
 extern char *data_ov065_0228e954;
 extern u32 data_ov065_022918a8;
-extern s32 data_ov065_02290fa0;
-extern Ctx070 *data_ov065_022918b0;
+extern s32 sGsAvailStatus;
+extern Ctx070 *sGsSrvListSortList;
 extern u8 data_0213a410[];
 s32 STD_GetStringLength(const char *s);
 void *memcpy(void *d, const void *s, u32 n);
@@ -484,72 +484,72 @@ s32 strcmp(const char *a, const char *b);
 s32 func_02130b04(const char *a, const char *b);
 void srand(u32 seed);
 
-s32 func_ov065_02278bf4(char *s);
-Unk_ov065_0228ab8c_Host *func_ov065_02261408(char *name);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-s32 func_ov065_02278dbc(s32 fd);
-s32 func_ov065_02278d34(s32 fd, void *sa, s32 len);
-s32 func_ov065_0228a20c(Ctx070 *c, ...);
-void func_ov065_0228a718(Ctx070 *c);
-void *func_ov065_022891e8(Ctx070 *c);
-void *func_ov065_022787c4(void *t, void *key);
-void func_ov065_02278810(void *t, void *key);
-void func_ov065_0227885c(void *t, void *key);
-char *func_ov065_02279100(char *s);
-void *func_ov065_022786bc(s32 a, s32 b, s32 c);
-void *func_ov065_0227866c(void *v, s32 i);
-s32 func_ov065_02278684(void *v);
-void func_ov065_02278420(void *v);
-void func_ov065_02278570(void *v, s32 i);
-void func_ov065_02278658(void *v, s32 *p);
-void func_ov065_02278538(void *v, void *cmp);
-void *func_ov065_0228903c(void *p);
-void func_ov065_022891a0(void *p);
-void func_ov065_02289040(void *a, void *b);
-u32 func_ov065_02289098(void *e);
-u32 func_ov065_02289078(void *e);
-char *func_ov065_0228911c(void *rec, char *key, char *dflt);
-double func_ov065_0228909c(void *rec, char *key, s32 a, s32 b);
-s32 func_ov065_022890b8(void *rec, char *key, s32 a);
-u32 func_ov065_02279144();
-void func_ov065_02279138();
+s32 GsSock_InetAddr(char *s);
+Unk_ov065_0228ab8c_Host *Sock_GetHostByName(char *name);
+s32 GsSock_Socket(s32 a, s32 b, s32 c);
+s32 GsSock_Close(s32 fd);
+s32 GsSock_Connect(s32 fd, void *sa, s32 len);
+s32 GsSrvList_SetErrorText(Ctx070 *c, ...);
+void GsSrvList_Disconnect(Ctx070 *c);
+void *GsStrPool_Get(Ctx070 *c);
+void *GsHash_Find(void *t, void *key);
+void GsHash_Remove(void *t, void *key);
+void GsHash_Insert(void *t, void *key);
+char *GsUtil_StrDup(char *s);
+void *GsArray_New(s32 a, s32 b, s32 c);
+void *GsArray_At(void *v, s32 i);
+s32 GsArray_Count(void *v);
+void GsArray_Clear(void *v);
+void GsArray_DeleteAt(void *v, s32 i);
+void GsArray_Append(void *v, s32 *p);
+void GsArray_Sort(void *v, void *cmp);
+void *GsServer_GetNextFree(void *p);
+void GsServer_Free(void *p);
+void GsServer_SetNextFree(void *a, void *b);
+u32 GsServer_GetPublicIp(void *e);
+u32 GsServer_GetPortRaw(void *e);
+char *GsServer_GetStringValue(void *rec, char *key, char *dflt);
+double GsServer_GetFloatValue(void *rec, char *key, s32 a, s32 b);
+s32 GsServer_GetIntValue(void *rec, char *key, s32 a);
+u32 GsUtil_GetTimeMs();
+void GsSock_StartupStub();
 
-void func_ov065_0228ab3c(char **p, u8 c, s32 *n);
-void func_ov065_0228ab50(char **p, char *s, s32 *n);
-s32 func_ov065_0228ab8c(Ctx070 *c);
-u32 func_ov065_0228ac6c(const char *s, u32 n);
-void func_ov065_0228aca8(Ctx070 *c);
-void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
-s32 func_ov065_0228ae10(const char *s, s32 n);
-void func_ov065_0228ae2c(Ctx070 *c, s32 key);
-u32 func_ov065_0228ae64(Ctx070 *c, s32 key);
-void func_ov065_0228aeb0(Ctx070 *c);
-void func_ov065_0228aed0(Ctx070 *c);
-void func_ov065_0228af0c(Ctx070 *c);
-u32 func_ov065_0228af48(Ctx070 *c, s32 i);
-s32 func_ov065_0228af5c(Ctx070 *c);
-void func_ov065_0228af68(Ctx070 *c, s32 i);
-void func_ov065_0228afa8(Ctx070 *c, void *x);
-s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b);
-s32 func_ov065_0228b030(Ctx070 *c, u32 key);
-void func_ov065_0228b070(Ctx070 *c, s32 a, s32 b, s32 d);
-void func_ov065_0228b0a4(Ctx070 *c, s32 a, char *b, u32 mode);
-s32 func_ov065_0228b108(void **a, void **b);
-s32 func_ov065_0228b160(void **a, void **b);
-s32 func_ov065_0228b1b8(void **a, void **b);
-s32 func_ov065_0228b258(void **a, void **b);
+void GsSrvList_PutByte(char **p, u8 c, s32 *n);
+void GsSrvList_PutString(char **p, char *s, s32 *n);
+s32 GsSrvList_ConnectMaster(Ctx070 *c);
+u32 GsSrvList_HashGameName(const char *s, u32 n);
+void GsSrvList_ReportError(Ctx070 *c);
+void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
+s32 GsUtil_StrSizeInBuffer(const char *s, s32 n);
+void GsStrPool_Release(Ctx070 *c, s32 key);
+u32 GsStrPool_Add(Ctx070 *c, s32 key);
+void GsSrvList_InitServers(Ctx070 *c);
+void GsSrvList_ClearServers(Ctx070 *c);
+void GsSrvList_FreeDeadServers(Ctx070 *c);
+u32 GsSrvList_GetServer(Ctx070 *c, s32 i);
+s32 GsSrvList_Count(Ctx070 *c);
+void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i);
+void GsSrvList_PushDeadServer(Ctx070 *c, void *x);
+s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b);
+s32 GsSrvList_FindServer(Ctx070 *c, u32 key);
+void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d);
+void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode);
+s32 GsSrvList_CompareStringNoCase(void **a, void **b);
+s32 GsSrvList_CompareString(void **a, void **b);
+s32 GsSrvList_CompareFloat(void **a, void **b);
+s32 GsSrvList_CompareInt(void **a, void **b);
 
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b258(void **a, void **b) {
+s32 GsSrvList_CompareInt(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    s32 r = func_ov065_022890b8(ra, data_ov065_022918b0->unk_498, 0);
-    r -= func_ov065_022890b8(rb, data_ov065_022918b0->unk_498, 0);
-    if (data_ov065_022918b0->unk_49c == 0) {
+    s32 r = GsServer_GetIntValue(ra, sGsSrvListSortList->unk_498, 0);
+    r -= GsServer_GetIntValue(rb, sGsSrvListSortList->unk_498, 0);
+    if (sGsSrvListSortList->unk_49c == 0) {
         r = -r;
     }
     return r;
@@ -559,13 +559,13 @@ s32 func_ov065_0228b258(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b1b8(void **a, void **b) {
+s32 GsSrvList_CompareFloat(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    double d1 = func_ov065_0228909c(ra, data_ov065_022918b0->unk_498, 0, 0);
-    double d2 = func_ov065_0228909c(rb, data_ov065_022918b0->unk_498, 0, 0);
+    double d1 = GsServer_GetFloatValue(ra, sGsSrvListSortList->unk_498, 0, 0);
+    double d2 = GsServer_GetFloatValue(rb, sGsSrvListSortList->unk_498, 0, 0);
     double d = d1 - d2;
-    if (data_ov065_022918b0->unk_49c == 0) {
+    if (sGsSrvListSortList->unk_49c == 0) {
         d = 0 - d;
     }
     if ((float)d > 0) {
@@ -578,11 +578,11 @@ s32 func_ov065_0228b1b8(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b160(void **a, void **b) {
-    char *s1 = func_ov065_0228911c(*a, data_ov065_022918b0->unk_498, "");
-    char *s2 = func_ov065_0228911c(*b, data_ov065_022918b0->unk_498, "");
+s32 GsSrvList_CompareString(void **a, void **b) {
+    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->unk_498, "");
+    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->unk_498, "");
     s32 r = strcmp(s1, s2);
-    if (data_ov065_022918b0->unk_49c == 0) {
+    if (sGsSrvListSortList->unk_49c == 0) {
         r = -r;
     }
     return r;
@@ -592,11 +592,11 @@ s32 func_ov065_0228b160(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b108(void **a, void **b) {
-    char *s1 = func_ov065_0228911c(*a, data_ov065_022918b0->unk_498, "");
-    char *s2 = func_ov065_0228911c(*b, data_ov065_022918b0->unk_498, "");
+s32 GsSrvList_CompareStringNoCase(void **a, void **b) {
+    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->unk_498, "");
+    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->unk_498, "");
     s32 r = func_02130b04(s1, s2);
-    if (data_ov065_022918b0->unk_49c == 0) {
+    if (sGsSrvListSortList->unk_49c == 0) {
         r = -r;
     }
     return r;
@@ -606,37 +606,37 @@ s32 func_ov065_0228b108(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228b0a4(Ctx070 *c, s32 a, char *b, u32 mode) {
+void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode) {
     void *cmp;
     switch (mode) {
     case 0:
-        cmp = (void *)func_ov065_0228b258;
+        cmp = (void *)GsSrvList_CompareInt;
         break;
     case 1:
-        cmp = (void *)func_ov065_0228b1b8;
+        cmp = (void *)GsSrvList_CompareFloat;
         break;
     case 2:
-        cmp = (void *)func_ov065_0228b160;
+        cmp = (void *)GsSrvList_CompareString;
         break;
     case 3:
-        cmp = (void *)func_ov065_0228b108;
+        cmp = (void *)GsSrvList_CompareStringNoCase;
         break;
     default:
-        cmp = (void *)func_ov065_0228b108;
+        cmp = (void *)GsSrvList_CompareStringNoCase;
         break;
     }
     c->unk_498 = b;
     c->unk_49c = a;
-    data_ov065_022918b0 = c;
-    func_ov065_02278538(c->unk_04, cmp);
+    sGsSrvListSortList = c;
+    GsArray_Sort(c->unk_04, cmp);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228b070(Ctx070 *c, s32 a, s32 b, s32 d) {
-    func_ov065_02278658(c->unk_04, &a);
+void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d) {
+    GsArray_Append(c->unk_04, &a);
     c->unk_488(c, 0, a, c->unk_494);
 }
 }
@@ -644,11 +644,11 @@ void func_ov065_0228b070(Ctx070 *c, s32 a, s32 b, s32 d) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b030(Ctx070 *c, u32 key) {
-    s32 n = func_ov065_02278684(c->unk_04);
+s32 GsSrvList_FindServer(Ctx070 *c, u32 key) {
+    s32 n = GsArray_Count(c->unk_04);
     s32 i;
     for (i = 0; i < n; i++) {
-        if (key == *(u32 *)func_ov065_0227866c(c->unk_04, i)) {
+        if (key == *(u32 *)GsArray_At(c->unk_04, i)) {
             return i;
         }
     }
@@ -659,13 +659,13 @@ s32 func_ov065_0228b030(Ctx070 *c, u32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b) {
+s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b) {
     void *e;
     s32 i;
-    s32 n = func_ov065_02278684(c->unk_04);
+    s32 n = GsArray_Count(c->unk_04);
     for (i = 0; i < n; i++) {
-        e = *(void **)func_ov065_0227866c(c->unk_04, i);
-        if ((u32)a == func_ov065_02289098(e) && (u32)b == func_ov065_02289078(e)) {
+        e = *(void **)GsArray_At(c->unk_04, i);
+        if ((u32)a == GsServer_GetPublicIp(e) && (u32)b == GsServer_GetPortRaw(e)) {
             return i;
         }
     }
@@ -676,12 +676,12 @@ s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228afa8(Ctx070 *c, void *x) {
+void GsSrvList_PushDeadServer(Ctx070 *c, void *x) {
     void *t = c->unk_5d0;
     if (t == NULL) {
-        func_ov065_02289040(x, NULL);
+        GsServer_SetNextFree(x, NULL);
     } else {
-        func_ov065_02289040(x, t);
+        GsServer_SetNextFree(x, t);
     }
     c->unk_5d0 = x;
 }
@@ -690,39 +690,39 @@ void func_ov065_0228afa8(Ctx070 *c, void *x) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228af68(Ctx070 *c, s32 i) {
-    u32 v = *(u32 *)func_ov065_0227866c(c->unk_04, i);
+void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i) {
+    u32 v = *(u32 *)GsArray_At(c->unk_04, i);
     c->unk_488(c, 2, v, c->unk_494);
-    func_ov065_02278570(c->unk_04, i);
-    func_ov065_0228afa8(c, (void *)v);
+    GsArray_DeleteAt(c->unk_04, i);
+    GsSrvList_PushDeadServer(c, (void *)v);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228af5c(Ctx070 *c) {
-    return func_ov065_02278684(c->unk_04);
+s32 GsSrvList_Count(Ctx070 *c) {
+    return GsArray_Count(c->unk_04);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228af48(Ctx070 *c, s32 i) {
-    return *(u32 *)func_ov065_0227866c(c->unk_04, i);
+u32 GsSrvList_GetServer(Ctx070 *c, s32 i) {
+    return *(u32 *)GsArray_At(c->unk_04, i);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228af0c(Ctx070 *c) {
+void GsSrvList_FreeDeadServers(Ctx070 *c) {
     if (c->unk_5d0 != NULL) {
         void *cur = c->unk_5d0;
         while (cur != NULL) {
-            void *next = func_ov065_0228903c(cur);
-            func_ov065_022891a0(&cur);
+            void *next = GsServer_GetNextFree(cur);
+            GsServer_Free(&cur);
             cur = next;
         }
         c->unk_5d0 = NULL;
@@ -733,23 +733,23 @@ void func_ov065_0228af0c(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aed0(Ctx070 *c) {
-    s32 n = func_ov065_02278684(c->unk_04);
+void GsSrvList_ClearServers(Ctx070 *c) {
+    s32 n = GsArray_Count(c->unk_04);
     s32 i;
     for (i = 0; i < n; i++) {
-        void *p = func_ov065_0227866c(c->unk_04, i);
-        func_ov065_0228afa8(c, *(void **)p);
+        void *p = GsArray_At(c->unk_04, i);
+        GsSrvList_PushDeadServer(c, *(void **)p);
     }
-    func_ov065_02278420(c->unk_04);
-    func_ov065_0228af0c(c);
+    GsArray_Clear(c->unk_04);
+    GsSrvList_FreeDeadServers(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aeb0(Ctx070 *c) {
-    c->unk_04 = func_ov065_022786bc(4, 0x64, 0);
+void GsSrvList_InitServers(Ctx070 *c) {
+    c->unk_04 = GsArray_New(4, 0x64, 0);
     c->unk_5d0 = NULL;
 }
 }
@@ -757,18 +757,18 @@ void func_ov065_0228aeb0(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228ae64(Ctx070 *c, s32 key) {
+u32 GsStrPool_Add(Ctx070 *c, s32 key) {
     Unk_ov065_0228ae2c_Ent l;
     Unk_ov065_0228ae2c_Ent *e;
     l.unk_00 = (char *)key;
-    e = (Unk_ov065_0228ae2c_Ent *)func_ov065_022787c4(func_ov065_022891e8(c), &l);
+    e = (Unk_ov065_0228ae2c_Ent *)GsHash_Find(GsStrPool_Get(c), &l);
     if (e != NULL) {
         e->unk_04++;
         return (u32)e->unk_00;
     }
-    l.unk_00 = func_ov065_02279100((char *)key);
+    l.unk_00 = GsUtil_StrDup((char *)key);
     l.unk_04 = 1;
-    func_ov065_0227885c(func_ov065_022891e8(c), &l);
+    GsHash_Insert(GsStrPool_Get(c), &l);
     return (u32)l.unk_00;
 }
 }
@@ -776,13 +776,13 @@ u32 func_ov065_0228ae64(Ctx070 *c, s32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ae2c(Ctx070 *c, s32 key) {
+void GsStrPool_Release(Ctx070 *c, s32 key) {
     s32 k = key;
-    Unk_ov065_0228ae2c_Ent *e = (Unk_ov065_0228ae2c_Ent *)func_ov065_022787c4(func_ov065_022891e8(c), &k);
+    Unk_ov065_0228ae2c_Ent *e = (Unk_ov065_0228ae2c_Ent *)GsHash_Find(GsStrPool_Get(c), &k);
     if (e != NULL) {
         e->unk_04--;
         if (e->unk_04 == 0) {
-            func_ov065_02278810(func_ov065_022891e8(c), &k);
+            GsHash_Remove(GsStrPool_Get(c), &k);
         }
     }
 }
@@ -791,7 +791,7 @@ void func_ov065_0228ae2c(Ctx070 *c, s32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228ae10(const char *s, s32 n) {
+s32 GsUtil_StrSizeInBuffer(const char *s, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (s[i] == 0) {
@@ -805,12 +805,12 @@ s32 func_ov065_0228ae10(const char *s, s32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
-    if (f != 0 || data_ov065_02290fa0 == 1) {
+void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
+    if (f != 0 || sGsAvailStatus == 1) {
         s32 neg = -1;
         c->unk_00 = 1;
-        func_ov065_0228aeb0(c);
-        func_ov065_022891e8(c);
+        GsSrvList_InitServers(c);
+        GsStrPool_Get(c);
         func_02127838(c->unk_0c, a);
         func_02127838(c->unk_30, b);
         func_02127838(c->unk_54, d);
@@ -827,10 +827,10 @@ void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, voi
         c->unk_480 = 0;
         c->unk_4a4 = 0;
         c->unk_4b8 = e;
-        func_ov065_0228a20c(c, "");
+        GsSrvList_SetErrorText(c, "");
         c->unk_5cc = 0;
-        srand(func_ov065_02279144());
-        func_ov065_02279138();
+        srand(GsUtil_GetTimeMs());
+        GsSock_StartupStub();
     }
 }
 }
@@ -838,24 +838,24 @@ void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, voi
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aca8(Ctx070 *c) {
+void GsSrvList_ReportError(Ctx070 *c) {
     if (c->unk_80 > 0 && (u32)c->unk_80 > (u32)STD_GetStringLength(data_ov065_0228e954)) {
         char *s = data_ov065_0228e954;
         s32 len = STD_GetStringLength(s);
         if (strncmp(c->unk_7c, s, len) == 0) {
-            func_ov065_0228a20c(c, c->unk_7c + STD_GetStringLength(s));
+            GsSrvList_SetErrorText(c, c->unk_7c + STD_GetStringLength(s));
             c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
         }
     }
     c->unk_488(c, 4, data_ov065_022918a8, c->unk_494);
-    func_ov065_0228a718(c);
+    GsSrvList_Disconnect(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228ac6c(const char *s, u32 n) {
+u32 GsSrvList_HashGameName(const char *s, u32 n) {
     s32 ch;
     u32 h = 0;
     ch = *s;
@@ -875,22 +875,22 @@ u32 func_ov065_0228ac6c(const char *s, u32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228ab8c(Ctx070 *c) {
+s32 GsSrvList_ConnectMaster(Ctx070 *c) {
     struct {
         Unk_ov065_0228ab8c_Sa sa;
         char host[0x80];
     } l;
-    u32 h = func_ov065_0228ac6c(c->unk_0c, 0x14);
-    if (data_ov065_022918ac != NULL) {
-        func_02127838(l.host, data_ov065_022918ac);
+    u32 h = GsSrvList_HashGameName(c->unk_0c, 0x14);
+    if (sGsSrvListMasterOverride != NULL) {
+        func_02127838(l.host, sGsSrvListMasterOverride);
     } else {
         OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->unk_0c, h);
     }
     l.sa.unk_1 = 2;
     l.sa.unk_2 = 0xee70;
-    l.sa.unk_4.w = func_ov065_02278bf4(l.host);
+    l.sa.unk_4.w = GsSock_InetAddr(l.host);
     if (l.sa.unk_4.w == (u32)-1) {
-        Unk_ov065_0228ab8c_Host *ent = func_ov065_02261408(l.host);
+        Unk_ov065_0228ab8c_Host *ent = Sock_GetHostByName(l.host);
         if (ent == NULL) {
             return 2;
         }
@@ -902,13 +902,13 @@ s32 func_ov065_0228ab8c(Ctx070 *c) {
         d[3] = s2[3];
     }
     if (c->unk_4b0 == -1) {
-        c->unk_4b0 = func_ov065_02278dd4(2, 1, 0);
+        c->unk_4b0 = GsSock_Socket(2, 1, 0);
         if (c->unk_4b0 == -1) {
             return 1;
         }
     }
-    if (func_ov065_02278d34(c->unk_4b0, &l.sa, 8) != 0) {
-        func_ov065_02278dbc(c->unk_4b0);
+    if (GsSock_Connect(c->unk_4b0, &l.sa, 8) != 0) {
+        GsSock_Close(c->unk_4b0);
         c->unk_4b0 = -1;
         return 3;
     }
@@ -919,7 +919,7 @@ s32 func_ov065_0228ab8c(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ab50(char **p, char *s, s32 *n) {
+void GsSrvList_PutString(char **p, char *s, s32 *n) {
     s32 len;
     if (s == NULL) {
         s = "";
@@ -934,7 +934,7 @@ void func_ov065_0228ab50(char **p, char *s, s32 *n) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ab3c(char **p, u8 c, s32 *n) {
+void GsSrvList_PutByte(char **p, u8 c, s32 *n) {
     **p = c;
     ++*n;
     ++*p;
@@ -944,7 +944,7 @@ void func_ov065_0228ab3c(char **p, u8 c, s32 *n) {
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len)
+void GsSrvList_PutU32(u8 **cur, u32 v, s32 *len)
 {
     u8 *d = *cur;
     u8 *sp = (u8 *)&v;
@@ -960,7 +960,7 @@ void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len)
+void GsSrvList_PutBytes(u8 **cur, const void *src, s32 n, s32 *len)
 {
     memcpy(*cur, src, n);
     *len += n;
@@ -971,7 +971,7 @@ void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
+void GsSrvList_MakeChallenge(Unk_ov065_0228a218_Ctx *ctx)
 {
     // No volatiles: the eight stack slots are the loop's literal 0/1 constants, hoisted out of the
     // loop and spilled (no free register); the ninth slot is the spilled temp of (i ^ a) & 1.
@@ -1004,7 +1004,7 @@ void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
+s32 GsSrvList_SendToMaster(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 {
     s32 tries = 1;
     s32 r;
@@ -1012,17 +1012,17 @@ s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
     do {
         tries--;
-        r = func_ov065_02278ca0(ctx->unk_4b0, buf, n, 0);
+        r = GsSock_Send(ctx->unk_4b0, buf, n, 0);
         if (r > 0) {
             break;
         }
         if (tries < 0) {
             break;
         }
-        func_ov065_0228a718(ctx);
-        res = func_ov065_0228a7f0(ctx, 0, 0, 2, 0);
+        GsSrvList_Disconnect(ctx);
+        res = GsSrvList_SendListRequest(ctx, 0, 0, 2, 0);
         if (res != 0) {
-            func_ov065_0228aca8(ctx);
+            GsSrvList_ReportError(ctx);
             return res;
         }
     } while (tries >= 0);
@@ -1036,7 +1036,7 @@ s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra)
+s32 GsSrvList_SendListRequest(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra)
 {
     u16 tmp;
     s32 len;
@@ -1058,29 +1058,29 @@ s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const cha
     if (STD_GetStringLength(pass) > 0x100) {
         return 6;
     }
-    r = func_ov065_0228ab8c(ctx);
+    r = GsSrvList_ConnectMaster(ctx);
     if (r != 0) {
         goto end;
     }
     ctx->unk_5c4 = flags;
-    func_ov065_0228aa34(ctx);
+    GsSrvList_MakeChallenge(ctx);
     len = 2;
     cur = &buf[2];
-    func_ov065_0228ab3c(&cur, 0, &len);
-    func_ov065_0228ab3c(&cur, 1, &len);
-    func_ov065_0228ab3c(&cur, 3, &len);
-    func_ov065_0228ab0c(&cur, ctx->unk_4b8, &len);
-    func_ov065_0228ab50(&cur, (const char *)ctx->unk_0c, &len);
-    func_ov065_0228ab50(&cur, (const char *)ctx->unk_30, &len);
-    func_ov065_0228aaec(&cur, ctx->unk_74, 8, &len);
-    func_ov065_0228ab50(&cur, pass, &len);
-    func_ov065_0228ab50(&cur, user, &len);
-    func_ov065_0228ab0c(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
+    GsSrvList_PutByte(&cur, 0, &len);
+    GsSrvList_PutByte(&cur, 1, &len);
+    GsSrvList_PutByte(&cur, 3, &len);
+    GsSrvList_PutU32(&cur, ctx->unk_4b8, &len);
+    GsSrvList_PutString(&cur, (const char *)ctx->unk_0c, &len);
+    GsSrvList_PutString(&cur, (const char *)ctx->unk_30, &len);
+    GsSrvList_PutBytes(&cur, ctx->unk_74, 8, &len);
+    GsSrvList_PutString(&cur, pass, &len);
+    GsSrvList_PutString(&cur, user, &len);
+    GsSrvList_PutU32(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
     if (ctx->unk_5c4 & 8) {
-        func_ov065_0228ab0c(&cur, ctx->unk_4a4, &len);
+        GsSrvList_PutU32(&cur, ctx->unk_4a4, &len);
     }
     if (ctx->unk_5c4 & 0x80) {
-        func_ov065_0228ab0c(&cur, extra, &len);
+        GsSrvList_PutU32(&cur, extra, &len);
     }
     {
         u16 l = (u16)*(volatile s32 *)&len;
@@ -1090,14 +1090,14 @@ s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const cha
     sp = (u8 *)&tmp;
     *(u8 *)da = sp[0];
     *(u8 *)(da + 1) = sp[1];
-    if (func_ov065_02278ca0(ctx->unk_4b0, (u8 *)da, len, 0) <= 0) {
-        func_ov065_0228a718(ctx);
+    if (GsSock_Send(ctx->unk_4b0, (u8 *)da, len, 0) <= 0) {
+        GsSrvList_Disconnect(ctx);
         return 3;
     }
     ctx->unk_00 = 3;
     ctx->unk_5c8 = 0;
     if (ctx->unk_7c == 0) {
-        ctx->unk_7c = func_ov065_02277af0(0x1000);
+        ctx->unk_7c = GsUtil_Alloc(0x1000);
         if (ctx->unk_7c == 0) {
             return 5;
         }
@@ -1112,7 +1112,7 @@ end:
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx)
+void GsSrvList_ReleasePopularValues(Unk_ov065_0228a218_Ctx *ctx)
 {
     s32 i = 0;
     s32 *pn = &ctx->unk_480;
@@ -1121,7 +1121,7 @@ void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx)
     if (*pn > 0) {
         p = (u32 *)ctx;
         do {
-            func_ov065_0228ae2c(ctx, (void *)p[0x84 / 4]);
+            GsStrPool_Release(ctx, (void *)p[0x84 / 4]);
             p++;
             i++;
         } while (i < *pn);
@@ -1133,21 +1133,21 @@ void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx)
+void GsSrvList_ReleaseKeyList(Unk_ov065_0228a218_Ctx *ctx)
 {
     s32 i;
     Unk_ov065_0228a218_Rec *rec;
 
     if (ctx->unk_08 != 0) {
         i = 0;
-        if (func_ov065_02278684(ctx->unk_08) > 0) {
+        if (GsArray_Count(ctx->unk_08) > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
-                func_ov065_0228ae2c(ctx, rec->unk_00);
+                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
+                GsStrPool_Release(ctx, rec->unk_00);
                 i++;
-            } while (i < func_ov065_02278684(ctx->unk_08));
+            } while (i < GsArray_Count(ctx->unk_08));
         }
-        func_ov065_02278688(ctx->unk_08);
+        GsArray_Free(ctx->unk_08);
         ctx->unk_08 = 0;
     }
 }
@@ -1156,34 +1156,34 @@ void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a718(Unk_ov065_0228a218_Ctx *ctx)
+void GsSrvList_Disconnect(Unk_ov065_0228a218_Ctx *ctx)
 {
     if (ctx->unk_7c != 0) {
-        func_ov065_02277ac8(ctx->unk_7c);
+        GsUtil_Free(ctx->unk_7c);
     }
     ctx->unk_7c = 0;
     ctx->unk_80 = 0;
     if (ctx->unk_4b0 != -1) {
-        func_ov065_02278dbc(ctx->unk_4b0);
+        GsSock_Close(ctx->unk_4b0);
     }
     ctx->unk_4b0 = -1;
     ctx->unk_00 = 1;
-    func_ov065_0228a76c(ctx);
+    GsSrvList_ReleaseKeyList(ctx);
     ctx->unk_484 = -1;
-    func_ov065_0228a7b4(ctx);
+    GsSrvList_ReleasePopularValues(ctx);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a6f0(Unk_ov065_0228a218_Ctx *ctx)
+void GsSrvList_Free(Unk_ov065_0228a218_Ctx *ctx)
 {
-    func_ov065_0228a718(ctx);
-    func_ov065_0228aed0(ctx);
-    func_ov065_022891bc(ctx);
+    GsSrvList_Disconnect(ctx);
+    GsSrvList_ClearServers(ctx);
+    GsStrPool_FreeIfEmpty(ctx);
     if (ctx->unk_04 != 0) {
-        func_ov065_02278688((Unk_ov065_022786bc_Vec *)ctx->unk_04);
+        GsArray_Free((Unk_ov065_022786bc_Vec *)ctx->unk_04);
     }
     ctx->unk_04 = 0;
 }
@@ -1192,7 +1192,7 @@ void func_ov065_0228a6f0(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a678(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n)
+void GsSrvList_InitCrypt(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n)
 {
     s32 len;
     s8 *pw;
@@ -1206,14 +1206,14 @@ void func_ov065_0228a678(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n)
         j = (i * c) % 8;
         ctx->unk_74[j] = (s8)(ctx->unk_74[j] ^ (s8)(ctx->unk_74[i % 8] ^ key[i]));
     }
-    func_ov065_022885d8(ctx->unk_4bc, ctx->unk_74, 8);
+    GsSrvListCrypt_Init(ctx->unk_4bc, ctx->unk_74, 8);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a644(u32 flags)
+s32 GsSrvList_GetRecordHeaderSize(u32 flags)
 {
     s32 sz = 5;
     if (flags & 2) {
@@ -1235,19 +1235,19 @@ s32 func_ov065_0228a644(u32 flags)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a5e4(u8 *buf, s32 n)
+s32 GsSrvList_CheckExtraPairs(u8 *buf, s32 n)
 {
     s32 l;
     s32 z = 0;
 
     while (n > 0 && ((s8 *)buf)[z] != 0) {
-        l = func_ov065_0228ae10(buf, n);
+        l = GsUtil_StrSizeInBuffer(buf, n);
         if (l < 0) {
             return 0;
         }
         buf += l;
         n -= l;
-        l = func_ov065_0228ae10(buf, n);
+        l = GsUtil_StrSizeInBuffer(buf, n);
         if (l < 0) {
             return 0;
         }
@@ -1267,7 +1267,7 @@ s32 func_ov065_0228a5e4(u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
+s32 GsSrvList_CheckKeyValues(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 {
     s32 cnt;
     s32 i;
@@ -1275,11 +1275,11 @@ s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
     u32 c;
     s32 l;
 
-    cnt = func_ov065_02278684(ctx->unk_08);
+    cnt = GsArray_Count(ctx->unk_08);
     i = 0;
     if (cnt > 0) {
         do {
-            rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
+            rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
             switch (rec->unk_04) {
             case 1:
                 buf += 1;
@@ -1297,7 +1297,7 @@ s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
                 buf++;
                 n--;
                 if (c == 0xff) {
-                    l = func_ov065_0228ae10(buf, n);
+                    l = GsUtil_StrSizeInBuffer(buf, n);
                     if (l == -1) {
                         return 0;
                     }
@@ -1321,7 +1321,7 @@ s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a4f4(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
+void GsSrvList_ReadServerAddress(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
 {
     u32 f;
     u8 *p;
@@ -1353,7 +1353,7 @@ end:;
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag)
+s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag)
 {
     s32 cnt;
     s32 orig;
@@ -1367,7 +1367,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
 
     orig = n;
     flags = buf[0];
-    func_ov065_02288d40(ent, flags);
+    GsServer_SetListFlags(ent, flags);
     buf += 5;
     n -= 5;
     if (flags & 0x10) {
@@ -1394,7 +1394,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
     } else {
         port = ctx->unk_4a8;
     }
-    func_ov065_02288d38(ent, ip, port);
+    GsServer_SetPrivateAddress(ent, ip, port);
     if (flags & 8) {
         d = (u8 *)&ip;
         d[0] = buf[0];
@@ -1406,14 +1406,14 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
         func_ov065_02288d34(ent, ip);
     }
     if (flags & 0x40) {
-        cnt = func_ov065_02278684(ctx->unk_08);
+        cnt = GsArray_Count(ctx->unk_08);
         i = 0;
         if (cnt > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
+                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
                 switch (rec->unk_04) {
                 case 1:
-                    func_ov065_0228914c(ent, rec->unk_00, *buf);
+                    GsServer_SetIntValue(ent, rec->unk_00, *buf);
                     buf++;
                     n--;
                     break;
@@ -1423,7 +1423,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                     d[0] = buf[0];
                     d[1] = buf[1];
                     sw = (u16)(((tmp >> 8) & 0xff) | ((tmp << 8) & 0xff00));
-                    func_ov065_0228914c(ent, rec->unk_00, sw);
+                    GsServer_SetIntValue(ent, rec->unk_00, sw);
                     buf += 2;
                     n -= 2;
                     break;
@@ -1439,12 +1439,12 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                     }
                     if (c == 0xff) {
                         s32 l;
-                        func_ov065_02289174(ent, rec->unk_00, buf);
+                        GsServer_SetStringValue(ent, rec->unk_00, buf);
                         l = STD_GetStringLength((const char *)buf) + 1;
                         buf += l;
                         n -= l;
                     } else {
-                        func_ov065_02289174(ent, rec->unk_00, (void *)ctx->unk_84[c]);
+                        GsServer_SetStringValue(ent, rec->unk_00, (void *)ctx->unk_84[c]);
                     }
                     break;
                 }
@@ -1452,7 +1452,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                 i++;
             } while (i < cnt);
         }
-        func_ov065_02288d30(ent, (u8)(func_ov065_02288d2c(ent) | 1));
+        GsServer_SetFlags(ent, (u8)(GsServer_GetFlags(ent) | 1));
     }
     flags = flags & 0x80;
     if (flags) {
@@ -1464,7 +1464,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
-            func_ov065_02289174(ent, p, buf);
+            GsServer_SetStringValue(ent, p, buf);
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
@@ -1477,7 +1477,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
             }
         }
         n--;
-        func_ov065_02288d30(ent, (u8)(func_ov065_02288d2c(ent) | 2));
+        GsServer_SetFlags(ent, (u8)(GsServer_GetFlags(ent) | 2));
     }
     return orig - n;
 }
@@ -1486,7 +1486,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
+s32 GsSrvList_ParseListServer(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 {
     s32 off;
     u32 flags;
@@ -1499,31 +1499,31 @@ s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
         return 0;
     }
     flags = buf[0];
-    off = func_ov065_0228a644(flags);
+    off = GsSrvList_GetRecordHeaderSize(flags);
     if (n < off) {
         return 0;
     }
     if (flags & 0x40) {
-        if (func_ov065_0228a544(ctx, buf + off, n - off) == 0) {
+        if (GsSrvList_CheckKeyValues(ctx, buf + off, n - off) == 0) {
             return 0;
         }
     }
     flags = flags & 0x80;
     if (flags) {
-        if (func_ov065_0228a5e4(buf + off, n - off) == 0) {
+        if (GsSrvList_CheckExtraPairs(buf + off, n - off) == 0) {
             return 0;
         }
     }
     if (memcmp(buf + 1, (void *)"\377\377\377\377", 4) == 0) {
         return -1;
     }
-    func_ov065_0228a4f4(ctx, buf, n, &ip, &port);
-    ent = func_ov065_02288d44(ctx, ip, port);
-    if (func_ov065_02288d18(ent) != 0) {
+    GsSrvList_ReadServerAddress(ctx, buf, n, &ip, &port);
+    ent = GsServer_New(ctx, ip, port);
+    if (GsServer_IsNull(ent) != 0) {
         return -2;
     }
-    r = func_ov065_0228a300(ctx, ent, buf, n, 1);
-    func_ov065_0228b070(ctx, ent);
+    r = GsSrvList_ParseServer(ctx, ent, buf, n, 1);
+    GsSrvList_AddServer(ctx, ent);
     return r;
 }
 }
@@ -1531,7 +1531,7 @@ s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a20c(Unk_ov065_0228a218_Ctx *ctx, u32 v)
+void GsSrvList_SetErrorText(Unk_ov065_0228a218_Ctx *ctx, u32 v)
 {
     ctx->unk_4ac = v;
 }
@@ -1540,7 +1540,7 @@ void func_ov065_0228a20c(Unk_ov065_0228a218_Ctx *ctx, u32 v)
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
+s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
     u8 *p = c->unk_7c;
     s32 n = c->unk_80;
     s32 a, b, l, r;
@@ -1555,11 +1555,11 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         l = p[a - 1] ^ 0xea;
         b = a + l;
         if (n < b) goto end;
-        func_ov065_0228a678(c, p + a, l);
+        GsSrvList_InitCrypt(c, p + a, l);
         c->unk_5c8 = 1;
         p += b;
         n -= b;
-        func_ov065_02288510(c->unk_4bc, p, n);
+        GsSrvListCrypt_Decrypt(c->unk_4bc, p, n);
     case 1:
         if (n < 6) goto end;
         dd = c->unk_4a0;
@@ -1574,8 +1574,8 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         sp++;
         dd[1] = sp[0];
         if (*(u16 *)dd == 0xffff) {
-            if (func_ov065_0228ae10(p + 6, n - 6) == -1) goto end;
-            func_ov065_0228a20c(c, p + 6);
+            if (GsUtil_StrSizeInBuffer(p + 6, n - 6) == -1) goto end;
+            GsSrvList_SetErrorText(c, p + 6);
             c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
             if (c->unk_7c == 0) goto end;
         }
@@ -1592,23 +1592,23 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         if (c->unk_484 == -1) {
             if (n < 1) goto end;
             c->unk_484 = p[0];
-            c->unk_08 = func_ov065_022786bc(8, c->unk_484, 0);
+            c->unk_08 = GsArray_New(8, c->unk_484, 0);
             if (c->unk_08 == 0) return 5;
             p++;
             n--;
         }
-        while (c->unk_484 > func_ov065_02278684(c->unk_08)) {
+        while (c->unk_484 > GsArray_Count(c->unk_08)) {
             if (n < 2) break;
-            l = func_ov065_0228ae10(p + 1, n - 1);
+            l = GsUtil_StrSizeInBuffer(p + 1, n - 1);
             if (l == -1) break;
             e.unk_04 = p[0];
-            e.unk_00 = func_ov065_0228ae64(c, p + 1);
-            func_ov065_02278658(c->unk_08, &e);
+            e.unk_00 = GsStrPool_Add(c, p + 1);
+            GsArray_Append(c->unk_08, &e);
             l = l + 1;
             p += l;
             n -= l;
         }
-        if (c->unk_484 > func_ov065_02278684(c->unk_08)) goto end;
+        if (c->unk_484 > GsArray_Count(c->unk_08)) goto end;
         c->unk_5c8 = 3;
         c->unk_484 = -1;
     case 3:
@@ -1620,9 +1620,9 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
             n--;
         }
         while (c->unk_484 > c->unk_480) {
-            l = func_ov065_0228ae10(p, n);
+            l = GsUtil_StrSizeInBuffer(p, n);
             if (l == -1) break;
-            b = (s32)func_ov065_0228ae64(c, p);
+            b = (s32)GsStrPool_Add(c, p);
             c->unk_84[c->unk_480++] = b;
             p += l;
             n -= l;
@@ -1633,7 +1633,7 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         if (n < 5) goto end;
         r = 0;
         do {
-            l = func_ov065_0228a218(c, p, n);
+            l = GsSrvList_ParseListServer(c, p, n);
             if (l == -2) return 5;
             if (l == -1) {
                 n -= 5;
@@ -1666,7 +1666,7 @@ end:
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 GsSrvList_HandleKeyList(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     s32 cnt;
     s32 i;
     s32 l;
@@ -1675,9 +1675,9 @@ s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     p++;
     n--;
     if (c->unk_08 != 0) {
-        func_ov065_0228a76c(c);
+        GsSrvList_ReleaseKeyList(c);
     }
-    c->unk_08 = func_ov065_022786bc(8, cnt, 0);
+    c->unk_08 = GsArray_New(8, cnt, 0);
     if (c->unk_08 == 0) {
         return 5;
     }
@@ -1687,13 +1687,13 @@ s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             if (n < 2) {
                 return 4;
             }
-            l = func_ov065_0228ae10(p + 1, n - 1);
+            l = GsUtil_StrSizeInBuffer(p + 1, n - 1);
             if (l == -1) {
                 return 4;
             }
             e.unk_04 = p[0];
-            e.unk_00 = func_ov065_0228ae64(c, p + 1);
-            func_ov065_02278658(c->unk_08, &e);
+            e.unk_00 = GsStrPool_Add(c, p + 1);
+            GsArray_Append(c->unk_08, &e);
             l = l + 1;
             p += l;
             n -= l;
@@ -1707,7 +1707,7 @@ s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 GsSrvList_HandleMsg06(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     s32 l;
     u32 flag;
     s32 i;
@@ -1730,7 +1730,7 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (cnt > 0) {
         do {
             s1 = p;
-            l = func_ov065_0228ae10(p, n);
+            l = GsUtil_StrSizeInBuffer(p, n);
             if (l == -1) {
                 return 4;
             }
@@ -1758,7 +1758,7 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             z = HTONL(z);
             p += 10;
             n -= 10;
-            l2 = func_ov065_0228ae10(p, n);
+            l2 = GsUtil_StrSizeInBuffer(p, n);
             if (l2 == -1) {
                 return 4;
             }
@@ -1778,7 +1778,7 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 GsSrvList_HandleMsg05(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     u16 b;
     u32 d;
     u32 a;
@@ -1803,11 +1803,11 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     dd[0] = s[0];
     s++;
     dd[1] = s[0];
-    r = func_ov065_0228afd8(c, a, b);
+    r = GsSrvList_FindServerByAddress(c, a, b);
     if (r == -1) {
         return 0;
     }
-    x = func_ov065_0228af48(c, r);
+    x = GsSrvList_GetServer(c, r);
     dd = (u8 *)&d;
     s = p + 6;
     dd[0] = s[0];
@@ -1824,7 +1824,7 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
         if (n < 1) {
             break;
         }
-        l = func_ov065_0228ae10(p, n);
+        l = GsUtil_StrSizeInBuffer(p, n);
         if (l == -1) {
             return 4;
         }
@@ -1844,7 +1844,7 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 GsSrvList_HandleServerDelete(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     u8 *d;
@@ -1863,9 +1863,9 @@ s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     d[0] = s[0];
     s++;
     d[1] = s[0];
-    r = func_ov065_0228afd8(c, a, b);
+    r = GsSrvList_FindServerByAddress(c, a, b);
     if (r != -1) {
-        func_ov065_0228af68(c, r);
+        GsSrvList_RemoveServerAt(c, r);
         return 0;
     }
     return 0;
@@ -1875,7 +1875,7 @@ s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 GsSrvList_HandleServerUpdate(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     s32 r4;
@@ -1883,21 +1883,21 @@ s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (n < 5) {
         return 4;
     }
-    func_ov065_0228a4f4(c, p, n, &a, &b);
-    r4 = func_ov065_0228afd8(c, a, b);
+    GsSrvList_ReadServerAddress(c, p, n, &a, &b);
+    r4 = GsSrvList_FindServerByAddress(c, a, b);
     if (r4 == -1) {
-        r6 = func_ov065_02288d44(c, a, b);
-        if (func_ov065_02288d18() != 0) {
+        r6 = GsServer_New(c, a, b);
+        if (GsServer_IsNull() != 0) {
             return 5;
         }
     } else {
-        r6 = func_ov065_0228af48(c, r4);
+        r6 = GsSrvList_GetServer(c, r4);
     }
-    if (func_ov065_0228a300(c, r6, p, n, 0) < 0) {
+    if (GsSrvList_ParseServer(c, r6, p, n, 0) < 0) {
         return 4;
     }
     if (r4 == -1) {
-        func_ov065_0228b070(c, r6);
+        GsSrvList_AddServer(c, r6);
     }
     c->unk_488(c, 1, r6, c->unk_494);
     return 0;
@@ -1907,7 +1907,7 @@ s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
+s32 GsSrvList_ProcessMessages(Unk_ov065_02289808_Ctx *c) {
     u8 *d;
     s32 r = 0;
     u16 ml;
@@ -1929,24 +1929,24 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
             case 0:
                 break;
             case 1:
-                r = func_ov065_02289e88(c, p + 3, ml - 3);
+                r = GsSrvList_HandleKeyList(c, p + 3, ml - 3);
                 break;
             case 2:
-                r = func_ov065_02289b28(c, p + 3, ml - 3);
+                r = GsSrvList_HandleServerUpdate(c, p + 3, ml - 3);
                 break;
             case 3:
-                if (func_ov065_02278ca0(c->unk_4b0, p, ml, 0) <= 0) {
+                if (GsSock_Send(c->unk_4b0, p, ml, 0) <= 0) {
                     return 3;
                 }
                 break;
             case 4:
-                r = func_ov065_02289bdc(c, p + 3, ml - 3);
+                r = GsSrvList_HandleServerDelete(c, p + 3, ml - 3);
                 break;
             case 5:
-                r = func_ov065_02289c34(c, p + 3, ml - 3);
+                r = GsSrvList_HandleMsg05(c, p + 3, ml - 3);
                 break;
             case 6:
-                r = func_ov065_02289d44(c, p + 3, ml - 3);
+                r = GsSrvList_HandleMsg06(c, p + 3, ml - 3);
                 break;
             }
             c->unk_80 = c->unk_80 - ml;
@@ -1957,7 +1957,7 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
         if (r != 0) break;
     }
     if (r != 0) {
-        func_ov065_0228aca8(c);
+        GsSrvList_ReportError(c);
     }
     return r;
 }
@@ -1966,32 +1966,32 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_0228993c(Unk_ov065_02289808_Ctx *c) {
+s32 GsSrvList_Receive(Unk_ov065_02289808_Ctx *c) {
     s32 old;
     s32 r;
     s32 res;
-    if (func_ov065_02278ee8(c->unk_4b0) == 0) {
+    if (GsSock_CanRead(c->unk_4b0) == 0) {
         return 0;
     }
     old = c->unk_80;
-    r = func_ov065_02278ce0(c->unk_4b0, c->unk_7c + old, 0x1000 - old, 0);
+    r = GsSock_Recv(c->unk_4b0, c->unk_7c + old, 0x1000 - old, 0);
     if (r == 0 || r == -1) {
-        func_ov065_0228aca8(c);
+        GsSrvList_ReportError(c);
         return 3;
     }
     c->unk_80 = c->unk_80 + r;
     res = 0;
     if (c->unk_00 == 2 || c->unk_5c8 > 0) {
-        func_ov065_02288510(c->unk_4bc, c->unk_7c + old, c->unk_80 - old);
+        GsSrvListCrypt_Decrypt(c->unk_4bc, c->unk_7c + old, c->unk_80 - old);
     }
     if (c->unk_00 == 3) {
-        res = func_ov065_02289f28(c);
+        res = GsSrvList_ParseListReply(c);
     }
     if (res != 0) {
         return res;
     }
     if (c->unk_00 == 2 && c->unk_80 > 0) {
-        return func_ov065_02289a00(c);
+        return GsSrvList_ProcessMessages(c);
     }
     return 0;
 }
@@ -2000,7 +2000,7 @@ s32 func_ov065_0228993c(Unk_ov065_02289808_Ctx *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len) {
+s32 GsSrvList_SendServerMessage(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len) {
     struct {
         u16 t;
         u8 pkt[9];
@@ -2010,7 +2010,7 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
     u8 *sp;
     s32 r;
     if (c->unk_00 == 1) {
-        func_ov065_0228a7f0(c, 0, 0, 2, 0);
+        GsSrvList_SendListRequest(c, 0, 0, 2, 0);
     }
     if (c->unk_00 == 1) {
         return 3;
@@ -2031,9 +2031,9 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
     sp = (u8 *)&a2;
     d[0] = sp[0];
     d[1] = sp[1];
-    r = func_ov065_0228a9c0(c, l.pkt, 9);
+    r = GsSrvList_SendToMaster(c, l.pkt, 9);
     if (r == 0) {
-        if (func_ov065_02278ca0(c->unk_4b0, data, len, 0) < 0) {
+        if (GsSock_Send(c->unk_4b0, data, len, 0) < 0) {
             return 3;
         }
         r = 0;
@@ -2045,7 +2045,7 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289808(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u32 ip) {
+s32 GsSrvList_SendNatNegCookie(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u32 ip) {
     u8 buf[10];
     u8 *d;
     u8 *s;
@@ -2062,14 +2062,14 @@ s32 func_ov065_02289808(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u32 ip) {
     d[1] = s[1];
     d[2] = s[2];
     d[3] = s[3];
-    return func_ov065_02289880(c, a1, a2, buf, 10);
+    return GsSrvList_SendServerMessage(c, a1, a2, buf, 10);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289720(Unk_ov065_02289720_Sub *s) {
+s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *s) {
     struct Unk_ov065_02289720_Addr {
         u16 fam;
         u16 port;
@@ -2080,24 +2080,24 @@ s32 func_ov065_02289720(Unk_ov065_02289720_Sub *s) {
     s32 r;
     void *e;
     len = 8;
-    if (func_ov065_02278ee8(s->unk_4b0) != 0) {
+    if (GsSock_CanRead(s->unk_4b0) != 0) {
         do {
-            r = func_ov065_02278cb8(s->unk_4b0, buf, 0x5db, 0, &addr, &len);
+            r = GsSock_RecvFrom(s->unk_4b0, buf, 0x5db, 0, &addr, &len);
             if (r != -1) {
-                r = func_ov065_0228afd8(s, addr.ip, addr.port);
+                r = GsSrvList_FindServerByAddress(s, addr.ip, addr.port);
                 if (r == -1) {
-                    e = func_ov065_02288d44(s, addr.ip, addr.port);
-                    if (func_ov065_02288d18(e) != 0) {
+                    e = GsServer_New(s, addr.ip, addr.port);
+                    if (GsServer_IsNull(e) != 0) {
                         return 5;
                     }
-                    func_ov065_02288d40(e, 0x11);
-                    func_ov065_0228b070(s, e);
+                    GsServer_SetListFlags(e, 0x11);
+                    GsSrvList_AddServer(s, e);
                 }
             }
-        } while (func_ov065_02278ee8(s->unk_4b0) != 0);
+        } while (GsSock_CanRead(s->unk_4b0) != 0);
     }
-    if (func_ov065_02279144() - s->unk_4b4 > 2000) {
-        func_ov065_02278dbc(s->unk_4b0);
+    if (GsUtil_GetTimeMs() - s->unk_4b4 > 2000) {
+        GsSock_Close(s->unk_4b0);
         s->unk_4b0 = -1;
         s->unk_00 = 1;
         s->unk_488(s, 3, data_ov065_022918a8, s->unk_494);
@@ -2109,14 +2109,14 @@ s32 func_ov065_02289720(Unk_ov065_02289720_Sub *s) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_022896dc(void *sub) {
-    func_ov065_0228af0c(sub);
+s32 GsSrvList_Think(void *sub) {
+    GsSrvList_FreeDeadServers(sub);
     switch (*(s32 *)sub) {
     case 2:
     case 3:
-        return func_ov065_0228993c(sub);
+        return GsSrvList_Receive(sub);
     case 0:
-        return func_ov065_02289720((Unk_ov065_02289720_Sub *)sub);
+        return GsSrvList_ThinkLan((Unk_ov065_02289720_Sub *)sub);
     case 1:
         break;
     }
@@ -2127,7 +2127,7 @@ s32 func_ov065_022896dc(void *sub) {
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
+void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
     switch (code) {
     case 0:
         o->unk_630(o, 0, p, o->unk_634);
@@ -2153,7 +2153,7 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
             } else {
                 m = 2;
             }
-            func_ov065_02288a70(o, p, 0, m);
+            GsSrvQuery_Add(o, p, 0, m);
         }
         break;
     case 1:
@@ -2165,15 +2165,15 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
         break;
     case 2:
         if ((p->unk_14 & 0x2c) != 0) {
-            func_ov065_02288734(o, p);
+            GsSrvQuery_Remove(o, p);
         }
         o->unk_630(o, 3, p, o->unk_634);
         break;
     case 3:
         if (o->unk_620 != 0) {
-            func_ov065_0228a718(s);
+            GsSrvList_Disconnect(s);
         }
-        if (func_ov065_02278684(s->unk_04) == 0 || o->unk_10 == 0) {
+        if (GsArray_Count(s->unk_04) == 0 || o->unk_10 == 0) {
             o->unk_630(o, 4, NULL, o->unk_634);
         }
         break;
@@ -2183,7 +2183,7 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
         o->unk_630(o, 5, NULL, o->unk_634);
         break;
     case 6:
-        func_ov065_02288b0c(o, o->unk_4ec);
+        GsSrvQuery_SetPublicIp(o, o->unk_4ec);
         break;
     }
     if (p != NULL) {
@@ -2197,7 +2197,7 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289500(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
+void GsSrvBrowser_OnQueryEvent(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
     switch (code) {
     case 1:
         o->unk_630(o, 2, p, o->unk_634);
@@ -2220,20 +2220,20 @@ void func_ov065_02289500(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065
 
 namespace F02288e2c {
 extern "C" {
-Unk_ov065_02289460_Obj *func_ov065_02289460(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
+Unk_ov065_02289460_Obj *GsSrvBrowser_New(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
     Unk_ov065_02289460_Obj *o;
-    if (s7 == 0 && data_ov065_02290fa0 != 1) {
+    if (s7 == 0 && sGsAvailStatus != 1) {
         return NULL;
     }
-    o = (Unk_ov065_02289460_Obj *)func_ov065_02277af0(0x638);
+    o = (Unk_ov065_02289460_Obj *)GsUtil_Alloc(0x638);
     if (o == NULL) {
         return NULL;
     }
     o->unk_630 = (void (*)(Unk_ov065_02289460_Obj *, s32, void *, void *))s8;
     o->unk_634 = s9;
     o->unk_624 = 0;
-    func_ov065_0228ad34(&o->unk_4c, a, b, c, d, s7, (void *)func_ov065_02289578, o);
-    func_ov065_02288b10(o, s5, s6, s7, (void *)func_ov065_02289500, o);
+    GsSrvList_Init(&o->unk_4c, a, b, c, d, s7, (void *)GsSrvBrowser_OnListEvent, o);
+    GsSrvQuery_Init(o, s5, s6, s7, (void *)GsSrvBrowser_OnQueryEvent, o);
     return o;
 }
 }
@@ -2241,10 +2241,10 @@ Unk_ov065_02289460_Obj *func_ov065_02289460(s32 a, s32 b, s32 c, s32 d, s32 s5, 
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289444(Unk_ov065_02289460_Obj *o) {
-    func_ov065_0228a6f0(&o->unk_4c);
-    func_ov065_02288acc(o);
-    func_ov065_02277ac8(o);
+void GsSrvBrowser_Free(Unk_ov065_02289460_Obj *o) {
+    GsSrvList_Free(&o->unk_4c);
+    GsSrvQuery_Shutdown(o);
+    GsUtil_Free(o);
 }
 }
 }

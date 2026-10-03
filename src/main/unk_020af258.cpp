@@ -5,8 +5,8 @@ struct Counter {
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
 };
-struct Unk_020af238 {
-    Unk_020af238();
+struct ShopAckCounter {
+    ShopAckCounter();
     u8 unk_00;
     u8 unk_01;
 };
@@ -14,7 +14,7 @@ struct Unk_020af238 {
 struct Elem2a { Elem2a(); u16 d; };
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
 struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
-struct Unk_020aec1c { u32 vt; Elem2b e[0x25]; Unk_020aec1c(); };
+struct NookShop { u32 vt; Elem2b e[0x25]; NookShop(); };
 
 struct Str { Str(const u16 *s); ~Str(); u8 d[0x24]; };
 struct Obj30 { Obj30(); ~Obj30(); u8 d[0x30]; };
@@ -48,15 +48,15 @@ void *func_021355f0(void *p, s32 n, s32 size, void *ctor);
 }
 
 extern "C" {
-void func_020ae870(void *p);
+void NookShop_ClearStock(void *p);
 }
 
 extern "C" {
-u8 *func_020aeac4(void *p);
+u8 *NookShop_GetRenovation(void *p);
 }
 
 extern "C" {
-u8 *func_020ae02c(void *p);
+u8 *NookShop_GetLevel(void *p);
 }
 
 extern "C" {
@@ -180,7 +180,7 @@ void func_020af488(u32 a);
 }
 
 extern "C" {
-void *func_ov004_02235718();
+void *FtrActorGrid_GetInstance();
 }
 
 extern "C" {
@@ -188,7 +188,7 @@ void *func_ov004_022355d8(void *a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void *func_ov004_0223584c();
+void *FtrActorTable_GetInstance();
 }
 
 extern "C" {
@@ -196,11 +196,11 @@ void func_ov004_02235740(void *a, void *b);
 }
 
 extern "C" {
-void func_ov004_022344dc();
+void FtrMgr_RemoveActorByIndex();
 }
 
 extern "C" {
-void func_020aee90(s32 x, s32 y, u32 a, s32 b);
+void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
 }
 
 extern "C" {
@@ -216,7 +216,7 @@ void func_02065588(void *a, u32 b, s32 c);
 }
 
 extern "C" {
-void func_02096a50(void *a, s32 b);
+void LetterDelivery_QueueOutgoing(void *a, s32 b);
 }
 
 extern "C" {
@@ -232,11 +232,11 @@ s32 Snowball_TryPushAny(s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-BOOL func_020af0a4(u32 i, u32 n, u8 *bits);
+BOOL StockList_IsSold(u32 i, u32 n, u8 *bits);
 }
 
 extern "C" {
-u16 *func_020af034(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
+u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 
 extern "C" {
@@ -264,11 +264,11 @@ void func_020af290();
 }
 
 extern "C" {
-void func_020af230(Counter *p);
+void ShopAckCounter_Clear(Counter *p);
 }
 
 extern "C" {
-BOOL func_020af1ec(Counter *p);
+BOOL ShopAckCounter_IsDone(Counter *p);
 }
 
 extern "C" {
@@ -288,19 +288,19 @@ extern u8 gCommManager[];
 }
 
 extern "C" {
-extern u8 data_021ee160[];
+extern u8 sShopAckCounter[];
 }
 
 extern "C" {
-extern u16 data_021ee164;
+extern u16 sStockNoItem;
 }
 
 extern "C" {
-extern u16 data_021ee168;
+extern u16 sStockSoldOutItem;
 }
 
 extern "C" {
-extern u8 data_021ee1f4[];
+extern u8 sShopRandom[];
 }
 
 extern "C" {

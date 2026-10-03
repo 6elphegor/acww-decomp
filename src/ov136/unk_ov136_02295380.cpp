@@ -22,8 +22,8 @@ extern u8 gTouchCurX;
 
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206e8cc(void *p);
-void func_0206ecf8(u32 v);
+void MenuCtrl_SetDateTime(void *p);
+void MenuCtrl_SetResult(u32 v);
 void Gfx2d_SetSubBgModeState(u32 a);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
@@ -697,8 +697,8 @@ void TimeSelectMenu::confirm() {
     v[0] = 0;
     v[1] = 0;
     DateTimePicker_GetDateTime(&unk_25c, v);
-    func_0206e8cc(v);
-    func_0206ecf8(1);
+    MenuCtrl_SetDateTime(v);
+    MenuCtrl_SetResult(1);
 }
 
 void TimeSelectMenu::openFieldList(u32 a) {

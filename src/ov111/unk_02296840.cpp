@@ -67,12 +67,12 @@ s32 Mem_Copy(void *src, void *dst, s32 n);
 s32 func_020512e0(void *p, s32 n);
 s32 func_02051348(void *p, s32 n);
 s32 File_LoadAlloc(u32 id, u32 g, s32 a, s32 b);
-void func_0206e594();
-void func_0206e5a4(void *p);
-s32 func_0206e5b4();
-s32 func_0206e61c();
-void func_0206e63c();
-void func_0206ee0c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void MenuCtrl_ClearChatDraft();
+void MenuCtrl_SetChatDraft(void *p);
+s32 MenuCtrl_GetChatDraft();
+s32 MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+void BgScreen_ReplaceRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_020943f8();
@@ -589,8 +589,8 @@ void ChatMenu::postInputUpdate() {
 }
 
 BOOL ChatMenu_HandleTabSwitch(S *s) {
-    func_0206e63c();
-    if (func_0206e61c() != 0) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue() != 0) {
         switch (s->unk_8d) {
         case 0:
         case 1:
@@ -640,9 +640,9 @@ BOOL ChatMenu_RequestTab(S *s, s32 a, u32 b) {
             s->setFlags(0x10);
         }
         if (b != 0) {
-            func_0206e5a4(s->unk_3c9c.unk_0e);
+            MenuCtrl_SetChatDraft(s->unk_3c9c.unk_0e);
         } else {
-            func_0206e594();
+            MenuCtrl_ClearChatDraft();
         }
         return TRUE;
     }
@@ -1061,7 +1061,7 @@ void ChatMenu_Init(S *s) {
     ChatMenu_ClearText(s);
     s->unk_a8 = NULL;
     Keyboard_Init(&s->unk_ac);
-    Mem_Copy((void *)func_0206e5b4(), s->unk_3c9c.unk_0e, 0x20);
+    Mem_Copy((void *)MenuCtrl_GetChatDraft(), s->unk_3c9c.unk_0e, 0x20);
     func_020943fc();
     if (((MenuTabBar *)ProcBase_GetParent(s))->isJustOpened()) {
         s->setFlags(0x20);
@@ -1090,7 +1090,7 @@ void ChatMenu_LoadSendAnimFrame(S *s, u32 a) {
         u8 *src = s->unk_2468;
         MI_CpuCopy8((void *)(r + 0x100), src + 0x100, 0x140);
         if (a == 1) {
-            func_0206ee0c(src, 0, 4, 0x1f, 9, 5, 6);
+            BgScreen_ReplaceRectPalette(src, 0, 4, 0x1f, 9, 5, 6);
         }
     }
     Heap_Free(g, r);

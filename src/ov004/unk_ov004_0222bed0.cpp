@@ -10,8 +10,8 @@
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02133150 _s32_div_f
 
-#define Unk_c788_call _ZN18Unk_ov004_0224e59419func_ov004_0222c788EtRK22Unk_ov004_0222c570_VecS2_sss
-#define Unk_c7e0_call _ZN18Unk_ov004_0224e59419func_ov004_0222c7e0EjRK22Unk_ov004_0222c570_VecS2_sss
+#define Unk_c788_call _ZN13RoomItemIcons13drawItemModelEtRK22Unk_ov004_0222c570_VecS2_sss
+#define Unk_c7e0_call _ZN13RoomItemIcons14setupIconModelEjRK22Unk_ov004_0222c570_VecS2_sss
 
 // ---------------------------------------------------------------- helper types
 struct Unk_ov004_0222c570_Vec {
@@ -50,7 +50,7 @@ struct Unk_ov004_0222c570_Mtx {
     s64 v[6];
 };
 
-// Effect entry, 0x94 bytes, 15 of them at data_ov004_022514b4 (5 groups of 3)
+// Effect entry, 0x94 bytes, 15 of them at sRoomItemDrops (5 groups of 3)
 struct Unk_ov004_0222bff4_Entry {
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -85,7 +85,7 @@ public:
 };
 
 // the 15 effect entries as one object: its implicit destructor is func_ov004_0222c9a0 (__cxa_vec_cleanup), its implicit constructor is inlined in the __sinit
-struct Unk_ov004_022514b4 {
+struct RoomItemDropList {
     Unk_ov004_0222c9d0 unk_00[15];
 };
 
@@ -117,19 +117,19 @@ struct Unk_ov004_0222c880_Model {
     Unk_ov004_0222c570_Mtx unk_64;
 };
 
-class Unk_ov004_0224e594 : public GameProc {
+class RoomItemIcons : public GameProc {
 public:
-    Unk_ov004_0224e594() {}
+    RoomItemIcons() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    BOOL func_ov004_0222c914();
-    void func_ov004_0222c640(void *grid);
-    Unk_ov004_0222c880_Model *func_ov004_0222c7e0(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
-    void func_ov004_0222c880(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m);
-    void func_ov004_0222c788(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
+    BOOL loadIconModels();
+    void drawGridItems(void *grid);
+    Unk_ov004_0222c880_Model *setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
+    void drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m);
+    void drawItemModel(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
 
     /* 0x050 */ void *unk_50[0x49];
     /* 0x174 */ Unk_020dbd44 unk_174;
@@ -151,7 +151,7 @@ void *ModelSet_Find(void *p, u32 a);
 u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(Unk_ov004_V3 *out, s32 a, s32 b);
-s32 func_ov004_02234f80(s32 a, s32 b);
+s32 FtrMgr_GetSurfaceHeight(s32 a, s32 b);
 void func_02003e50(void *p);
 void func_02003e80(void *p, void *v);
 void func_02003ecc(void *p);
@@ -159,7 +159,7 @@ s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
 void VEC_Add(void *a, void *b, void *c);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
-s32 func_ov004_02234f6c(void *p);
+s32 FtrMgr_GetSurfaceHeightAtPos(void *p);
 s32 Item_GetInfoUnk07(u16 *p);
 u32 WorldCurve_ToCurved(void *a, void *b);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
@@ -169,7 +169,7 @@ void func_020e84f8(void *m, s32 x, s32 y, s32 z);
 void Model_drawShapesDirect(void *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
-void func_02045570(void *p, u32 a);
+void PendingUnit_ApplyAt(void *p, u32 a);
 void func_020b5184(void);
 void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
@@ -180,17 +180,17 @@ void Snd_PlaySe(s32 a);
 void Unk_c788_call(s32 mgr, u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s32 d, s32 e);
 void Unk_c7e0_call(s32 mgr, u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s32 d, s32 e);
 
-void func_ov004_0222c08c(Unk_ov004_Entry *e);
-void func_ov004_0222c0b8(Unk_ov004_Entry *e);
-void func_ov004_0222c174(Unk_ov004_Entry *e);
-void func_ov004_0222c1d4(Unk_ov004_Entry *e);
-void func_ov004_0222c3a8(Unk_ov004_Entry *e);
-void func_ov004_0222c46c(Unk_ov004_Entry *e);
-void func_ov004_0222c204(Unk_ov004_Entry *e);
-void func_ov004_0222c2e0(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 v);
-void func_ov004_0222c3c8(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
-s32 func_ov004_0222bff4(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v);
-s32 func_ov004_0222bf34(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f);
+void ItemDropList_Release(Unk_ov004_Entry *e);
+void ItemDropList_Draw(Unk_ov004_Entry *e);
+void ItemDropList_Update(Unk_ov004_Entry *e);
+void ItemDropList_Init(Unk_ov004_Entry *e);
+void ItemDrop_Clear(Unk_ov004_Entry *e);
+void ItemDrop_Settle(Unk_ov004_Entry *e);
+void ItemDrop_Update(Unk_ov004_Entry *e);
+void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 v);
+void ItemDrop_Init(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
+s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v);
+s32 ItemDrop_Start(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f);
 }
 
 struct Unk_ov004_SceneEntry {
@@ -199,20 +199,20 @@ struct Unk_ov004_SceneEntry {
     u16 b;
 };
 
-extern "C" Unk_ov004_0224e594 *func_ov004_0222c964();
+extern "C" RoomItemIcons *RoomItemIcons_Create();
 
-extern "C" Unk_ov004_SceneEntry data_ov004_0224e584 = { (void *(*)())func_ov004_0222c964, 0x8b, 0xd2 };
+extern "C" Unk_ov004_SceneEntry sRoomItemIconsProfile = { (void *(*)())RoomItemIcons_Create, 0x8b, 0xd2 };
 extern "C" {
-Unk_ov004_0224e594 *data_ov004_022514a4;
-Unk_ov004_022514b4 data_ov004_022514b4;
+RoomItemIcons *sRoomItemIcons;
+RoomItemDropList sRoomItemDrops;
 }
 
 // ---------------------------------------------------------------- functions (descending address order)
-extern "C" Unk_ov004_0224e594 *func_ov004_0222c964() {
-    return new Unk_ov004_0224e594;
+extern "C" RoomItemIcons *RoomItemIcons_Create() {
+    return new RoomItemIcons;
 }
 
-BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
+BOOL RoomItemIcons::loadIconModels() {
     BOOL r = FALSE;
     void *d = (void *)"/fg/icon/icon.nsbmd";
     if (ModelSet_Load(&unk_174, d ? d : d, r)) {
@@ -225,23 +225,23 @@ BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
     return r;
 }
 
-BOOL Unk_ov004_0224e594::vfunc_00() {
+BOOL RoomItemIcons::vfunc_00() {
     BOOL r = FALSE;
-    if (func_ov004_0222c914()) {
+    if (loadIconModels()) {
         Town_GetEnvironmentRank();
-        data_ov004_022514a4 = this;
-        func_ov004_0222c1d4((Unk_ov004_Entry *)&data_ov004_022514b4);
+        sRoomItemIcons = this;
+        ItemDropList_Init((Unk_ov004_Entry *)&sRoomItemDrops);
         r = TRUE;
     }
     return r;
 }
 
-BOOL Unk_ov004_0224e594::onExecute() {
-    func_ov004_0222c174((Unk_ov004_Entry *)&data_ov004_022514b4);
+BOOL RoomItemIcons::onExecute() {
+    ItemDropList_Update((Unk_ov004_Entry *)&sRoomItemDrops);
     return TRUE;
 }
 
-void Unk_ov004_0224e594::func_ov004_0222c880(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m) {
+void RoomItemIcons::drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m) {
     if (model != NULL) {
         volatile u16 tmp[2];
         model->unk_64 = m;
@@ -252,7 +252,7 @@ void Unk_ov004_0224e594::func_ov004_0222c880(Unk_ov004_0222c880_Model *model, Un
     }
 }
 
-Unk_ov004_0222c880_Model *Unk_ov004_0224e594::func_ov004_0222c7e0(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
+Unk_ov004_0222c880_Model *RoomItemIcons::setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
     Unk_ov004_0222c880_Model *model = (Unk_ov004_0222c880_Model *)unk_50[idx];
     Unk_ov004_0222c570_Mtx m;
     s32 t[3];
@@ -262,19 +262,19 @@ Unk_ov004_0222c880_Model *Unk_ov004_0224e594::func_ov004_0222c7e0(u32 idx, const
     func_020e8464(data_021f47e0, rx, ry, rz);
     func_020e84f8(data_021f47e0, scale.x, scale.y, scale.z);
     m = *(Unk_ov004_0222c570_Mtx *)data_021f47e0;
-    func_ov004_0222c880(model, m);
+    drawIconModel(model, m);
     return model;
 }
 
-void Unk_ov004_0224e594::func_ov004_0222c788(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
+void RoomItemIcons::drawItemModel(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
     volatile u16 v = 0xfff1;
     v = id;
     Unk_ov004_0222c570_Vec p = pos;
     Unk_ov004_0222c570_Vec q = scale;
-    func_ov004_0222c7e0(Item_GetInfoUnk07((u16 *)&v), p, q, rx, ry, rz);
+    setupIconModel(Item_GetInfoUnk07((u16 *)&v), p, q, rx, ry, rz);
 }
 
-void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
+void RoomItemIcons::drawGridItems(void *grid) {
     if (gCamera == NULL) {
         return;
     }
@@ -304,22 +304,22 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
             u16 *p = BlockMap_GetItemPtrAtPos(grid, &c, 0);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
                 s32 z = c.z;
-                s32 y = c.y + func_ov004_02234f6c(&c);
+                s32 y = c.y + FtrMgr_GetSurfaceHeightAtPos(&c);
                 e1.x = c.x;
                 e1.y = y;
                 e1.z = z;
                 sc.z = sc.y = sc.x = 0x1000;
-                func_ov004_0222c788(*p, e1, sc, 0, 0, 0);
+                drawItemModel(*p, e1, sc, 0, 0, 0);
             }
             p = BlockMap_GetItemPtrAtPos(grid, &c, 1);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
                 s32 z = c.z;
-                s32 y = c.y + func_ov004_02234f6c(&c);
+                s32 y = c.y + FtrMgr_GetSurfaceHeightAtPos(&c);
                 e2.x = c.x;
                 e2.y = y;
                 e2.z = z;
                 sc.z = sc.y = sc.x = 0x1000;
-                func_ov004_0222c788(*p, e2, sc, 0, 0, 0);
+                drawItemModel(*p, e2, sc, 0, 0, 0);
             }
             c.x -= 0x2000;
         }
@@ -327,23 +327,23 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
     }
 }
 
-BOOL Unk_ov004_0224e594::onDraw() {
+BOOL RoomItemIcons::onDraw() {
     void *a = (void *)gSceneBlockMap;
     void *b = gCamera;
     if (a != NULL && b != NULL) {
-        func_ov004_0222c640(a);
-        func_ov004_0222c0b8((Unk_ov004_Entry *)&data_ov004_022514b4);
+        drawGridItems(a);
+        ItemDropList_Draw((Unk_ov004_Entry *)&sRoomItemDrops);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224e594::vfunc_0c() {
+BOOL RoomItemIcons::vfunc_0c() {
     ModelSet_Release(&unk_174);
-    func_ov004_0222c08c((Unk_ov004_Entry *)&data_ov004_022514b4);
+    ItemDropList_Release((Unk_ov004_Entry *)&sRoomItemDrops);
     return TRUE;
 }
 
-extern "C" BOOL func_ov004_0222c570(u16 *p, Unk_ov004_0222c570_Vec *v) {
+extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, Unk_ov004_0222c570_Vec *v) {
     void *g = (void *)gSceneBlockMap;
     Unk_ov004_0222c570_Global *o = (Unk_ov004_0222c570_Global *)func_02095204(4);
     BOOL r = FALSE;
@@ -364,7 +364,7 @@ extern "C" BOOL func_ov004_0222c570(u16 *p, Unk_ov004_0222c570_Vec *v) {
         q.x = v->x;
         q.y = v->y;
         q.z = v->z;
-        if (func_ov004_0222bf34(a, *p, &pos, &q, 0)) {
+        if (ItemDrop_Start(a, *p, &pos, &q, 0)) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -373,27 +373,27 @@ extern "C" BOOL func_ov004_0222c570(u16 *p, Unk_ov004_0222c570_Vec *v) {
     return r;
 }
 
-extern "C" void func_ov004_0222c524(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s16 d, s16 e) {
-    if (data_ov004_022514a4 != 0) {
+extern "C" void RoomItemIcons_DrawIcon(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s16 d, s16 e) {
+    if (sRoomItemIcons != 0) {
         Unk_ov004_V3 la;
         Unk_ov004_V3 lb;
         la = *a;
         lb = *b;
-        Unk_c7e0_call((s32)data_ov004_022514a4, id, &la, &lb, c, d, e);
+        Unk_c7e0_call((s32)sRoomItemIcons, id, &la, &lb, c, d, e);
     }
 }
 
-extern "C" void func_ov004_0222c4d8(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s16 d, s16 e) {
-    if (data_ov004_022514a4 != 0) {
+extern "C" void RoomItemIcons_DrawItem(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s16 d, s16 e) {
+    if (sRoomItemIcons != 0) {
         Unk_ov004_V3 la;
         Unk_ov004_V3 lb;
         la = *a;
         lb = *b;
-        Unk_c788_call((s32)data_ov004_022514a4, id, &la, &lb, c, d, e);
+        Unk_c788_call((s32)sRoomItemIcons, id, &la, &lb, c, d, e);
     }
 }
 
-extern "C" void func_ov004_0222c49c(s32 x, s32 y, u16 v, s32 z) {
+extern "C" void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z) {
     func_020b5184();
     if (gSceneBlockMap != 0) {
         volatile u16 buf = 0xfff1;
@@ -402,17 +402,17 @@ extern "C" void func_ov004_0222c49c(s32 x, s32 y, u16 v, s32 z) {
     }
 }
 
-extern "C" void func_ov004_0222c46c(Unk_ov004_Entry *e) {
+extern "C" void ItemDrop_Settle(Unk_ov004_Entry *e) {
     if (e->unk_8f != 0) {
         e->unk_8f = 0;
         Unk_ov004_P2 v;
         v.a = e->unk_10.a;
         v.b = e->unk_10.b;
-        func_02045570(&v, e->unk_90);
+        PendingUnit_ApplyAt(&v, e->unk_90);
     }
 }
 
-extern "C" void func_ov004_0222c3c8(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
+extern "C" void ItemDrop_Init(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
     e->unk_00 = idx;
     e->unk_04 = 1;
     e->unk_0c = flag;
@@ -435,19 +435,19 @@ extern "C" void func_ov004_0222c3c8(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p
         la = *a;
         lb = *b;
         pp = *p;
-        func_ov004_0222c2e0(e, &pp, &la, &lb, *(u16 *)&idv);
+        ItemDrop_SetTrajectory(e, &pp, &la, &lb, *(u16 *)&idv);
     }
 }
 
-extern "C" void func_ov004_0222c3a8(Unk_ov004_Entry *e) {
-    func_ov004_0222c46c(e);
+extern "C" void ItemDrop_Clear(Unk_ov004_Entry *e) {
+    ItemDrop_Settle(e);
     e->unk_04 = 0;
     e->unk_0c = 1;
     e->unk_08 = 0xfff1;
     e->unk_0a = 0xfff1;
 }
 
-extern "C" void func_ov004_0222c2e0(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
+extern "C" void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
     volatile u16 id = 0xfff1;
     Unk_ov004_V3 t;
     FieldPos_FromUnitCenter(&t, p->a, p->b);
@@ -480,7 +480,7 @@ extern "C" void func_ov004_0222c2e0(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov0
     }
 }
 
-extern "C" void func_ov004_0222c204(Unk_ov004_Entry *e) {
+extern "C" void ItemDrop_Update(Unk_ov004_Entry *e) {
     e->unk_3c.x = e->unk_3c.x + 0x19a;
     if (e->unk_3c.x >= 0x1000) e->unk_3c.x = 0x1000;
     e->unk_3c.z = e->unk_3c.x;
@@ -506,12 +506,12 @@ extern "C" void func_ov004_0222c204(Unk_ov004_Entry *e) {
             e->unk_30.x = 0;
             e->unk_30.y = 0;
             e->unk_30.z = 0;
-            func_ov004_0222c3a8(e);
+            ItemDrop_Clear(e);
         }
     }
 }
 
-extern "C" void func_ov004_0222c1d4(Unk_ov004_Entry *e) {
+extern "C" void ItemDropList_Init(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         e->unk_04 = 0;
@@ -521,7 +521,7 @@ extern "C" void func_ov004_0222c1d4(Unk_ov004_Entry *e) {
     }
 }
 
-extern "C" void func_ov004_0222c174(Unk_ov004_Entry *e) {
+extern "C" void ItemDropList_Update(Unk_ov004_Entry *e) {
     volatile u16 id = 0xfff1;
     s32 i;
     Unk_ov004_V3 v;
@@ -529,7 +529,7 @@ extern "C" void func_ov004_0222c174(Unk_ov004_Entry *e) {
         if (e->unk_04 == 2) {
             e->unk_8d = e->unk_8d + 1;
             id = e->unk_08;
-            if (e->unk_0c == 0) func_ov004_0222c204(e);
+            if (e->unk_0c == 0) ItemDrop_Update(e);
             v.x = e->unk_24.x;
             v.y = e->unk_24.y;
             v.z = e->unk_24.z;
@@ -538,7 +538,7 @@ extern "C" void func_ov004_0222c174(Unk_ov004_Entry *e) {
     }
 }
 
-extern "C" void func_ov004_0222c0b8(Unk_ov004_Entry *e) {
+extern "C" void ItemDropList_Draw(Unk_ov004_Entry *e) {
     volatile u16 id = 0xfff1;
     s32 i;
     for (i = 0; i < 15; e++, i++) {
@@ -562,21 +562,21 @@ extern "C" void func_ov004_0222c0b8(Unk_ov004_Entry *e) {
                 sc.x = 0x1000;
                 sc.y = 0x1000;
                 sc.z = 0x1000;
-                Unk_c788_call((s32)data_ov004_022514a4, idc, &pos, &sc, 0, 0, 0);
+                Unk_c788_call((s32)sRoomItemIcons, idc, &pos, &sc, 0, 0, 0);
             }
         }
     }
 }
 
-extern "C" void func_ov004_0222c08c(Unk_ov004_Entry *e) {
+extern "C" void ItemDropList_Release(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
-        if (e->unk_04 != 0) func_ov004_0222c3a8(e);
+        if (e->unk_04 != 0) ItemDrop_Clear(e);
         func_02003e50(e->unk_4c);
     }
 }
 
-extern "C" s32 func_ov004_0222bff4(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v) {
+extern "C" s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v) {
     s32 g = gSceneBlockMap;
     if (g == 0) return 0;
     Unk_ov004_Entry *e = (Unk_ov004_Entry *)base + idx * 3;
@@ -590,7 +590,7 @@ extern "C" s32 func_ov004_0222bff4(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov0
             la = *a;
             lb = *b;
             pp = *p;
-            func_ov004_0222c3c8(e, idx, &pp, &la, &lb, flag, *(u16 *)&idv, g, *(s16 *)&s16v, *(u8 *)&u8v);
+            ItemDrop_Init(e, idx, &pp, &la, &lb, flag, *(u16 *)&idv, g, *(s16 *)&s16v, *(u8 *)&u8v);
             e->unk_04 = 2;
             r = TRUE;
             break;
@@ -599,22 +599,22 @@ extern "C" s32 func_ov004_0222bff4(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov0
     return r;
 }
 
-extern "C" s32 func_ov004_0222bf80(s32 idx, u32 v, Unk_ov004_P2 *p, Unk_ov004_V3 *b, u32 f) {
+extern "C" s32 ItemDrop_StartToUnit(s32 idx, u32 v, Unk_ov004_P2 *p, Unk_ov004_V3 *b, u32 f) {
     Unk_ov004_P2 pair;
     Unk_ov004_V3 t;
     Unk_ov004_V3 lb;
     Unk_ov004_V3 lc;
     FieldPos_FromUnitCenter(&t, p->a, p->b);
     if (*(u8 *)&f != 0) {
-        t.y = func_ov004_02234f80(p->a, p->b);
+        t.y = FtrMgr_GetSurfaceHeight(p->a, p->b);
     }
     lb = *b;
     lc = t;
     pair = *p;
-    return func_ov004_0222bff4(&data_ov004_022514b4, idx, &pair, &lb, &lc, 0, v, 0, *(u8 *)&f);
+    return ItemDropList_Add(&sRoomItemDrops, idx, &pair, &lb, &lc, 0, v, 0, *(u8 *)&f);
 }
 
-extern "C" s32 func_ov004_0222bf34(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f) {
+extern "C" s32 ItemDrop_Start(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f) {
     Unk_ov004_V3 la;
     Unk_ov004_V3 lb;
     Unk_ov004_P2 pp;
@@ -622,6 +622,6 @@ extern "C" s32 func_ov004_0222bf34(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3
     lb = *b;
     pp.a = 0;
     pp.b = 0;
-    return func_ov004_0222bff4(&data_ov004_022514b4, idx, &pp, &la, &lb, 0, v, 0, *(u8 *)&f);
+    return ItemDropList_Add(&sRoomItemDrops, idx, &pp, &la, &lb, 0, v, 0, *(u8 *)&f);
 }
 

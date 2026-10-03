@@ -222,7 +222,7 @@ extern "C" {
 void G3_MultMtx33(void *m);
 void NNS_G3dGlbLightVector(s32 id, s32 x, s32 y, s32 z);
 void NNS_G3dGlbLightColor(s32 id, u32 c);
-u16 func_020baa04(s32 a);
+u16 Sky_GetLightColor(s32 a);
 void func_020e944c(Unk_02064674_Vec *v, s32 a);
 void func_020e93a0(Unk_02064674_Vec *v, s32 a);
 s32 func_020e94f8(Unk_02064674_Vec *v);
@@ -249,7 +249,7 @@ void LightSwitch_SetOn(s32 i, u32 a, u32 b);
 inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
 
-extern "C" u8 func_020ba9f8(u32 x);
+extern "C" u8 Sky_GetLightParam(u32 x);
 
 // ---- SceneLights::updateBaseColor
 static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
@@ -465,7 +465,7 @@ void SceneLights::updateBaseColor() {
         volatile u16 b;
         u16 pad;
     } l;
-    l.a = func_020baa04(3);
+    l.a = Sky_GetLightColor(3);
     l.b = l.a;
     *(u16 *)&l.c = l.b;
     if (func_020b52f8()) {
@@ -514,7 +514,7 @@ extern "C" s16 SceneLights_GetRoomColor(void) {
         break;
     }
     default:
-        l.a = func_020baa04(2);
+        l.a = Sky_GetLightColor(2);
         l.b = l.a;
         l.d = l.b;
     }
@@ -527,9 +527,9 @@ extern "C" u8 func_02064c84(u32 x) {
         if (x == 0) {
             return gSceneLights->unk_178;
         }
-        return func_020ba9f8(x);
+        return Sky_GetLightParam(x);
     }
-    return func_020ba9f8(x);
+    return Sky_GetLightParam(x);
 }
 
 s32 ThunderSe::clear()
@@ -837,7 +837,7 @@ void SceneLight::updateOutdoor()
     if (gCamera) {
         func_020e944c(&v, gCamera->getEyeCurveAngle());
     }
-    *(u16 *)&c0 = func_020baa04(unk_0c);
+    *(u16 *)&c0 = Sky_GetLightColor(unk_0c);
     c1 = *(u16 *)&c0;
     unk_34 = c1;
     w.x = v.x;
@@ -916,7 +916,7 @@ void SceneLight::updateColorAndDir()
         v.z = 0;
         break;
     default:
-        *(u16 *)&c0 = func_020baa04(unk_0c);
+        *(u16 *)&c0 = Sky_GetLightColor(unk_0c);
         c1 = *(u16 *)&c0;
         unk_34 = c1;
         v.x = 0;

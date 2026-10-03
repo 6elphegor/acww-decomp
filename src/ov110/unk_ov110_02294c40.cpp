@@ -30,15 +30,15 @@ void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreenFile(const void *a, s32 b, s32 c);
 void Gfx2d_LoadPaletteFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Snd_PlaySe(s32 a);
-BOOL func_0206e61c();
-void func_0206e63c();
-void func_0206eba4(void *p);
-s32 func_0206ebc0();
-void func_0206ec04();
-void func_0206ecf8(s32 a);
-s32 func_0206ed18();
-void func_0206ed2c(u32 a);
-s32 func_0206ed50();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+void MenuCtrl_SetChosenItems(void *p);
+s32 MenuCtrl_RestorePockets();
+void MenuCtrl_BackupPockets();
+void MenuCtrl_SetResult(s32 a);
+s32 MenuCtrl_IsResultOk();
+void MenuCtrl_SetIndex(u32 a);
+s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
@@ -746,14 +746,14 @@ void LostFoundRecycleMenu::runMainState() {
 }
 
 BOOL LostFoundRecycleMenu::isForcedClose() {
-    if (func_0206e61c() && func_0206ed50() == 0x20) {
+    if (MenuCtrl_IsForceCloseDue() && MenuCtrl_GetMode() == 0x20) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL LostFoundRecycleMenu::execMain() {
-    func_0206e63c();
+    MenuCtrl_TickForceClose();
     if (isForcedClose()) {
         if (unk_8d == 0 || unk_8d == 1 || unk_8d == 4) {
             LostFoundRecycleMenu_HideCursor((S *)this);
@@ -881,7 +881,7 @@ extern "C" void LostFoundRecycleMenu_Init(S *s) {
     s->unk_f5 = 0;
     func_ov002_02202310(s->unk_22dc, 3, 1, 0);
     s->unk_fb = 0;
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
         for (i = 0; i < 15; i++) {
@@ -897,7 +897,7 @@ extern "C" void LostFoundRecycleMenu_Init(S *s) {
         break;
     }
     MI_CpuCopy8(s->unk_b0, s->unk_ce, 0x1e);
-    func_0206ec04();
+    MenuCtrl_BackupPockets();
 }
 
 extern "C" void LostFoundRecycleMenu_Exit(S *s) {
@@ -948,7 +948,7 @@ extern "C" void LostFoundRecycleMenu_LoadTopBg(S *s) {
     s32 h = gCurrentHeap;
     Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra2.bsc", h, 4);
     Gfx2d_LoadCharFile("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
-    s32 v = func_0206ed50();
+    s32 v = MenuCtrl_GetMode();
     const char *a = NULL;
     const char *b = NULL;
     switch (v) {
@@ -1553,7 +1553,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsItemRejected(S *s, u32 a)
         return TRUE;
     }
     v = t;
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x1e: {
         BOOL f = FALSE;
         u16 x = v;
@@ -2090,7 +2090,7 @@ void LostFoundRecycleMenu::setOkLabel(s32 flag) {
 
 void LostFoundRecycleMenu::confirm(s32 flag) {
     clearFlags(8);
-    s32 r = func_0206ed50();
+    s32 r = MenuCtrl_GetMode();
     if (r == 0x20) {
         Snd_PlaySe(0x28);
     } else {
@@ -2108,10 +2108,10 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
     case 0x1d:
     case 0x1e:
         if (n == 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
-            func_0206eba4(unk_b0);
+            MenuCtrl_SetResult(1);
+            MenuCtrl_SetChosenItems(unk_b0);
         }
         break;
     case 0x1f: {
@@ -2128,11 +2128,11 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
         }
         n = packItemList(unk_ce);
         if (n == 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
-            func_0206ed2c((u8)n);
-            func_0206eba4(unk_ce);
+            MenuCtrl_SetResult(1);
+            MenuCtrl_SetIndex((u8)n);
+            MenuCtrl_SetChosenItems(unk_ce);
             MI_CpuCopy8(unk_b0, data_021ed210, 0x1e);
             sendItemsRecord(3);
         }
@@ -2141,7 +2141,7 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
     case 0x20:
         MI_CpuCopy8(unk_b0, data_021ed22e, 0x1e);
         sendItemsRecord(4);
-        func_0206ecf8(1);
+        MenuCtrl_SetResult(1);
         break;
     }
 }
@@ -2177,7 +2177,7 @@ void LostFoundRecycleMenu::sendItemsRecord(u8 v) {
 }
 
 BOOL LostFoundRecycleMenu::isResultSent() {
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         return TRUE;
     }
     if (testFlags(8) == 0) {

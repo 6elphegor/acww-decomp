@@ -58,7 +58,7 @@ BOOL func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
-void func_020ac7cc(u16 *p);
+void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
@@ -396,7 +396,7 @@ void func_0203c41c(void *p, u16 *q, s32 a);
 u32 func_02099048(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL func_0206ea84(u32 cb);
+BOOL MenuCtrl_BuildPocketMask(u32 cb);
 BOOL _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 n);
 u32 _ZN12Unk_02087ad813func_02087c0cEv(void *p);
@@ -621,7 +621,7 @@ void SpNpcCornimerTalk::vfunc_14() {
     switch (unk_1e) {
     case 2:
     case 3:
-        if (func_0206ea84((u32)SpNpcCornimer_IsAcorn)) {
+        if (MenuCtrl_BuildPocketMask((u32)SpNpcCornimer_IsAcorn)) {
             s32 i = 0;
             u32 cnt = 0;
             while (i < 15) {

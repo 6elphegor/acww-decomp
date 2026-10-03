@@ -110,8 +110,8 @@ s32 func_02098ffc();
 void func_02099064(s32 v);
 void func_02099014(u16 *p, s32 v);
 BOOL func_0202e1cc(s32 a, s32 b);
-BOOL func_0206ed18();
-s32 func_0206ed38();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 s32 func_02099048();
 s32 func_02085618(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
@@ -671,8 +671,8 @@ void SpNpcTortimerFishingTourneyTalk::scriptCatchChosen() {
     unk_c0 = 0xfff1;
     unk_ac->unk_720 = 0;
     m = 0xc;
-    if (func_0206ed18() != 0) {
-        s32 r4 = func_0206ed38();
+    if (MenuCtrl_IsResultOk() != 0) {
+        s32 r4 = MenuCtrl_GetIndex();
         unk_c0 = func_02099048();
         unk_ac->unk_720 = func_02085618(&unk_c0);
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &unk_c0, 0, 4, 0);

@@ -245,7 +245,7 @@ void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
-void func_0206ee80(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Snd_PlaySe(s32 a);
 void Gfx2d_EnableSubWindows(u32 a);
 void Gfx2d_DisableSubWindows(u32 a);
@@ -1193,7 +1193,7 @@ extern "C" void DateTimePicker_SetFieldPalette(DateTimePicker *self, s32 idx, s3
     a = DateTimePicker_GetFieldTop(self, idx);
     b = DateTimePicker_GetFieldRight(self, idx);
     c = DateTimePicker_GetFieldBottom(self, idx);
-    func_0206ee80(self->unk_584, t, a, b, c, x);
+    BgScreen_SetRectPalette(self->unk_584, t, a, b, c, x);
     self->setFlags(2);
 }
 
@@ -1206,7 +1206,7 @@ extern "C" void DateTimePicker_SetDropButtonPalette(DateTimePicker *self, s32 a,
     } else {
         z = x + 2;
     }
-    func_0206ee80(self->unk_584, x, y, z, y + 1, b);
+    BgScreen_SetRectPalette(self->unk_584, x, y, z, y + 1, b);
     self->setFlags(2);
 }
 
@@ -1548,7 +1548,7 @@ extern "C" s32 DateTimePicker_RedrawList(DateTimePicker *self) {
             continue;
         }
         if (self->isRowDisabled(r5)) {
-            func_0206ee80(self->unk_1d84, lim, r6 * 2, 7, r6 * 2 + 1, 6);
+            BgScreen_SetRectPalette(self->unk_1d84, lim, r6 * 2, 7, r6 * 2 + 1, 6);
         }
         if (r5 == self->unk_08[r6]) {
             continue;

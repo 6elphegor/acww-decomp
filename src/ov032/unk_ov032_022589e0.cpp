@@ -70,8 +70,8 @@ struct Unk_ov032_Scene {  // 24 bytes; main's table data_020e4280 points to it
     s32 unk_14;
 };
 
-extern u8 data_ov004_0224f2d4;  // copied into the entry table by __sinit
-extern u32 data_ov004_0224f2d8[];
+extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
+extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern Unk_ov032_Scene data_ov032_02258c34;
@@ -88,7 +88,7 @@ extern u32 data_ov032_02258c00[1];
 Unk_ov032_Scene data_ov032_02258c34 = {&data_ov032_02258c08, 0, &data_ov032_02258c10, &data_ov032_02258c18, -1, -1};
 
 Unk_ov032_Entry data_ov032_02258c4c[3] = {
-    {2, data_ov004_0224f2d4, 0, data_ov004_0224f2d8},
+    {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
     {2, 1, 0, data_ov032_02258c00},
     {1, 1, 0, data_ov032_02258c20},
 };

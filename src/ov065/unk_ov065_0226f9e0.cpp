@@ -2,13 +2,13 @@
 #include "types.h"
 
 extern "C" {
-char data_ov065_0228bbc4[0x44] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-";
-char *data_ov065_0228bbc0 = data_ov065_0228bbc4;
+char sNasBase64Alphabet[0x44] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-";
+char *sNasBase64AlphabetPtr = sNasBase64Alphabet;
 
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 
-s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {
+s32 NasBase64_Encode(u8 *in, u32 len, u8 *out, u32 cap) {
     u32 pad;
     u32 need;
     u8 *end;
@@ -47,19 +47,19 @@ s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {
                 }
                 MI_CpuFill8(t, 0, 3);
                 MI_CpuCopy8(in, t, n);
-                o[0] = data_ov065_0228bbc0[t[0] >> 2];
+                o[0] = sNasBase64AlphabetPtr[t[0] >> 2];
                 if (cnt >= 2) {
-                    o[1] = data_ov065_0228bbc0[((t[0] << 4) & 0x3f) | (t[1] >> 4)];
+                    o[1] = sNasBase64AlphabetPtr[((t[0] << 4) & 0x3f) | (t[1] >> 4)];
                 } else {
                     o[1] = 0x2a;
                 }
                 if (cnt >= 3) {
-                    o[2] = data_ov065_0228bbc0[((t[1] << 2) & 0x3f) | (t[2] >> 6)];
+                    o[2] = sNasBase64AlphabetPtr[((t[1] << 2) & 0x3f) | (t[2] >> 6)];
                 } else {
                     o[2] = 0x2a;
                 }
                 if (cnt >= 4) {
-                    o[3] = data_ov065_0228bbc0[t[2] & 0x3f];
+                    o[3] = sNasBase64AlphabetPtr[t[2] & 0x3f];
                 } else {
                     o[3] = 0x2a;
                 }
@@ -72,7 +72,7 @@ s32 func_ov065_0226fb08(u8 *in, u32 len, u8 *out, u32 cap) {
     return need;
 }
 
-s32 func_ov065_0226f9e0(s8 *in, u32 len, u8 *out, u32 cap) {
+s32 NasBase64_Decode(s8 *in, u32 len, u8 *out, u32 cap) {
     s32 bits;
     u32 i;
     s32 max;

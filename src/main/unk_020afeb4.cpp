@@ -58,9 +58,9 @@ BOOL func_020b0980(Base *b, s32 i);
 void func_020b0998(Base *b, s32 i);
 void func_020b09ac(Base *b, s32 i);
 void func_020b0a18(void *dst, void *src);
-s32 func_020b8ec0(void *a, s32 x, s32 y);
-s32 func_020b8f98(void);
-s32 func_020b8f8c(void);
+s32 Sky_GetStarViewingTime(void *a, s32 x, s32 y);
+s32 Sky_GetStarScrollX(void);
+s32 Sky_GetStarScrollY(void);
 void func_020a78a4(void *buf, const void *src, s32 len);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *self, void *buf, s32 a, s32 b);
 void _ZN12Unk_020e2f5cC2Ev(void *buf);
@@ -331,7 +331,7 @@ void Constellation_GetViewingTime(void *a, s32 idx) {
     func_020b05c4(e->slots, &x, &y);
     x -= 0x80;
     y -= 0x60;
-    func_020b8ec0(a, x, y);
+    Sky_GetStarViewingTime(a, x, y);
 }
 
 BOOL func_020b02bc(s32 x, s32 y, s32 px, s32 py) {
@@ -353,8 +353,8 @@ s32 func_020b0218(void) {
     if (((u8 *)tm)[2] >= 6 && ((u8 *)tm)[2] < 0x12) {
         return -1;
     }
-    x = func_020b8f98();
-    y = func_020b8f8c();
+    x = Sky_GetStarScrollX();
+    y = Sky_GetStarScrollY();
     best = -1;
     for (i = 0; i < 16; i++) {
         Entry *e = func_020b053c(i);

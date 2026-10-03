@@ -12,7 +12,7 @@ u8 *File_LoadAlloc(u32 id, void *heap, s32 a, void *out);
 void File_LoadToBuffer(u32 src, void *dst, s32 n);
 void Heap_Free(void *heap, void *p);
 void func_0206f9fc(void *o, u32 v);
-void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 s32 PlayerData_GetCurrent();
 void _ZN10PlayerData11getPlayerIdEv();
 s32 _ZN8PlayerId9getGenderEv();
@@ -191,7 +191,7 @@ void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
 s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 BOOL MenuKeys_HasUp(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
@@ -299,10 +299,10 @@ void NumberPad::loadBg() {
     switch (unk_07) {
     case 0:
     case 1:
-        func_0206ee80(unk_1b4, 2, 8, 0xd, 9, 0xa);
+        BgScreen_SetRectPalette(unk_1b4, 2, 8, 0xd, 9, 0xa);
         break;
     case 2:
-        func_0206ee80(unk_1b4, 2, 2, 0xd, 3, 0xa);
+        BgScreen_SetRectPalette(unk_1b4, 2, 2, 0xd, 3, 0xa);
         break;
     }
     Gfx2d_LoadScreen(unk_1b4, unk_0a, 0x800, 0);
@@ -453,7 +453,7 @@ extern "C" void NumberPad_ResetKeyPalettes(Ov130S *s) {
     s32 x;
     if (s->unk_08 == 0 || s->unk_08 == 2) x = 0x12;
     else x = 0xa;
-    func_0206ee80((u8 *)s + 0x9b4, x, 0xc, x + 0xc, 0x13, 2);
+    BgScreen_SetRectPalette((u8 *)s + 0x9b4, x, 0xc, x + 0xc, 0x13, 2);
     NumberPad_UnhighlightKey(s, 10);
     NumberPad_SetFlags(s, 2);
 }
@@ -467,7 +467,7 @@ extern "C" void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n) {
         a += 8;
         b += 8;
     }
-    func_0206ee80((u8 *)s + 0x9b4, a, c, b, d, n);
+    BgScreen_SetRectPalette((u8 *)s + 0x9b4, a, c, b, d, n);
     NumberPad_SetFlags(s, 2);
 }
 

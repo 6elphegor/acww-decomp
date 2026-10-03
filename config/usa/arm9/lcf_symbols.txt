@@ -35,11 +35,11 @@ data_020c8dac addr:0x020c8dac base:sCameraPoseTable
 data_020cf615 addr:0x020cf615 base:kHudCameraGridDirs
 data_020cf629 addr:0x020cf629 base:kHudCameraGridCells
 data_020d0608 addr:0x020d0608 base:data_020d0604
-data_020d0df1 addr:0x020d0df1 base:data_020d0df0
-data_020d0e51 addr:0x020d0e51 base:data_020d0e50
-data_020d16f0 addr:0x020d16f0 base:data_020d16e8
-data_020d16f5 addr:0x020d16f5 base:data_020d16e8
-data_020d18c8 addr:0x020d18c8 base:data_020d16e8
+data_020d0df1 addr:0x020d0df1 base:sSkyPaletteLayer
+data_020d0e51 addr:0x020d0e51 base:sFireworksPatternWeights
+data_020d16f0 addr:0x020d16f0 base:sSkyObjGfxTable
+data_020d16f5 addr:0x020d16f5 base:sSkyObjGfxTable
+data_020d18c8 addr:0x020d18c8 base:sSkyObjGfxTable
 p__sinit_020c2cd0 addr:0x020d1dd8 base:ARM9_CTOR_START
 data_020d6e6c addr:0x020d6e6c base:_ZTV11PlayerActor
 data_020d6f54 addr:0x020d6f54 base:_ZTV17SndSeEmitterKind1

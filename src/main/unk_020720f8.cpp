@@ -536,10 +536,10 @@ extern "C" {
 void _ZN11CommManager11setAckCountEij(CommManager *, u32, u32);
 }
 extern "C" {
-void func_020a5c94(u32);
+void NetSession_RemoveSlot(u32);
 }
 extern "C" {
-u32 func_020a5f8c(u32);
+u32 NetSession_GetSyncState(u32);
 }
 extern "C" {
 void CommPacket_SetHeader(void *, u32, u32);
@@ -566,7 +566,7 @@ extern "C" {
 void func_020b50e8();
 }
 extern "C" {
-u32 func_020a6114(u32, u32, u32, u8 *);
+u32 NetArea_ResolveRoute(u32, u32, u32, u8 *);
 }
 extern "C" {
 s32 _ZN11CommManager14isSyncVarDirtyEi(CommManager *, u32);
@@ -665,7 +665,7 @@ extern "C" {
 void func_02095260(u32);
 }
 extern "C" {
-void func_020ad4f4();
+void ReddPassword_ForgetVisitor();
 }
 namespace Unk_02073e14_ns {
 extern "C" s32 Comm_ResetPeerState(s32);
@@ -725,7 +725,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
         }
     }
     if (r4 == -4) {
-        func_020ad4f4();
+        ReddPassword_ForgetVisitor();
     }
     if ((r4 < 0 ? -r4 : r4) < 4) {
         if (r4 < 0) r4 = -r4;
@@ -830,7 +830,7 @@ extern "C" u32 Comm_CollectRecordsFor(u8 *dst, u32 id) {
         CommRecord_UnpackSource(a + 7, a, a + 1);
         u32 r4 = CommRecord_GetLength(a + 3);
         func_020b50e8();
-        u32 r = func_020a6114(id, l0c, a[0], a + 2);
+        u32 r = NetArea_ResolveRoute(id, l0c, a[0], a + 2);
         if (a[2] != 0) {
             l14 = _ZN11CommManager14getDeferredLenEv(o);
             u8 *d2 = (u8 *)_ZN11CommManager14getDeferredBufEv(o) + l14;
@@ -848,7 +848,7 @@ extern "C" u32 Comm_CollectRecordsFor(u8 *dst, u32 id) {
     return r7;
 }
 extern "C" s32 Comm_IsSyncFinished(u32 a) {
-    u32 v = func_020a5f8c(a);
+    u32 v = NetSession_GetSyncState(a);
     if (v - 5 <= 1) return 1;
     return 0;
 }
@@ -857,7 +857,7 @@ extern "C" s32 Comm_WriteSyncReply(u32 a) {
     if (Comm_IsSyncFinished(a)) {
         u8 *r6 = (u8 *)_ZN11CommManager10getSendBufEi(gCommManager, a);
         CommPacket_SetHeader(r6, r5, 6);
-        u32 r4 = func_020a5f8c(a);
+        u32 r4 = NetSession_GetSyncState(a);
         u32 t = Comm_GetMemberMask(r4);
         r6[1] = (r4 & 7) | ((t << 4) & 0xf0);
         r5 += 2;
@@ -882,7 +882,7 @@ extern "C" void Comm_RemoveMember(s32 a) {
     _ZN11CommManager14setMemberCountEj(o, (u8)(o->unk_6c - 1));
     _ZN11CommManager15resetSendCreditEi(o, a);
     _ZN11CommManager11setAckCountEij(o, a, 0);
-    func_020a5c94(a);
+    NetSession_RemoveSlot(a);
     Unk_02073e14_ns::Comm_ResetPeerState(-a);
 }
 extern "C" void Comm_CreateHeap(u32 a) {
@@ -1071,13 +1071,13 @@ extern "C" {
 void Comm_LeaveCritical();
 }
 extern "C" {
-void func_020a5f9c(s32 a, s32 b);
+void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-s32 func_020a5ec8();
+s32 NetArea_GetMoveState();
 }
 extern "C" {
-void func_020a5ed8(s32 a);
+void NetArea_SetMoveState(s32 a);
 }
 extern "C" {
 s32 CommPacket_GetAck(u8 *p);
@@ -1229,13 +1229,13 @@ extern "C" void Comm_Update(s32 a) {
                         } else if (sent) {
                             if (g->isMyAid(0)) {
                                 if (Comm_IsSyncFinished(i)) {
-                                    func_020a5f9c(i, 7);
+                                    NetSession_SetSyncState(i, 7);
                                 }
                             }
                         }
                     }
-                    if (func_020a5ec8() == 7) {
-                        func_020a5ed8(8);
+                    if (NetArea_GetMoveState() == 7) {
+                        NetArea_SetMoveState(8);
                     }
                 } else {
                     g->setDeferredLen(saved);
@@ -1383,16 +1383,16 @@ extern "C" {
 s32 Comm_End();
 }
 extern "C" {
-void func_020a5ca4();
+void NetSession_Reset();
 }
 extern "C" {
-void func_020a5cb4();
+void NetSession_OnBeginHost();
 }
 extern "C" {
-void func_020a5f8c(s32 a);
+void NetSession_GetSyncState(s32 a);
 }
 extern "C" {
-void func_020a5f9c(s32 a, s32 b);
+void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
 void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
@@ -1475,14 +1475,14 @@ extern "C" void Comm_BeginHostSession() {
     o->unk_64 = 0;
     o->setSlotActive(o->unk_64, 1);
     Comm_SetRecvBuffers(0);
-    func_020a5cb4();
+    NetSession_OnBeginHost();
     func_020a63bc(0, func_020b50e8(), 1, 0, 7);
 }
 extern "C" void Comm_PrepareJoin(u32 a) {
     gCommManager->setMode(0);
     Comm_SetRecvBuffers(a);
 }
-extern "C" void func_02073340() { func_020a5ca4(); }
+extern "C" void func_02073340() { NetSession_Reset(); }
 extern "C" void Comm_SetRecvBuffers(u32 a) {
     s32 i = 3;
     CommManager *g = gCommManager;
@@ -1503,7 +1503,7 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
     CommManager *o = gCommManager;
     s32 idx = o->unk_64;
     if (!o->isSlotActive(idx)) {
-        func_020a5f9c(3, 4);
+        NetSession_SetSyncState(3, 4);
         o = gCommManager;
         u8 *p = o->getSendBuf(4);
         CommPacket_SetHeader(p, 0, 5);
@@ -1511,9 +1511,9 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
         return o->sendPackets(o->getSendBuf(4), 2, 1, 0, 0, 0, 0, 0, 0);
     }
     if (o->isMyAid(0)) {
-        func_020a5f9c(idx, a);
+        NetSession_SetSyncState(idx, a);
     } else {
-        func_020a5f9c(idx, 4);
+        NetSession_SetSyncState(idx, 4);
         tmp = a;
         o = gCommManager;
         o->beginRecord();
@@ -1525,17 +1525,17 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
 extern "C" void Comm_GetSyncState() {
     s32 a = gCommManager->unk_64;
     if (!gCommManager->isSlotActive(a)) {
-        func_020a5f8c(3);
+        NetSession_GetSyncState(3);
     } else {
-        func_020a5f8c(a);
+        NetSession_GetSyncState(a);
     }
 }
 extern "C" void Comm_ClearSyncState() {
     s32 a = gCommManager->unk_64;
     if (!gCommManager->isSlotActive(a)) {
-        func_020a5f9c(3, 7);
+        NetSession_SetSyncState(3, 7);
     } else {
-        func_020a5f9c(a, 7);
+        NetSession_SetSyncState(a, 7);
     }
 }
 extern "C" u32 Comm_GetRemoteMask() {
@@ -1852,16 +1852,16 @@ extern "C" {
 s32 func_020b50e8();
 }
 extern "C" {
-s32 func_020a6214(u32 a);
+s32 NetArea_FindOwner(u32 a);
 }
 extern "C" {
-BOOL func_020a62f8(u32 a);
+BOOL NetArea_IsSlotMoving(u32 a);
 }
 extern "C" {
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 }
 extern "C" {
-void func_020a5cc0(s32 a);
+void NetArea_IsUnsharedScene(s32 a);
 }
 extern "C" {
 void Comm_EnterCritical();
@@ -1994,13 +1994,13 @@ void CommManager::processReceived() {
                 bb = b;
                 dbg = func_020b50e8();
                 len = CommRecord_GetLength(buf);
-                if (func_020a62f8(unk_64) && t == 7 && a != dbg) {
+                if (NetArea_IsSlotMoving(unk_64) && t == 7 && a != dbg) {
                     t = getHeldLen();
                     u8 *dd = getHeldBuf() + t;
                     MI_CpuCopy8(p - 5, dd, len + 5);
                     u32 nf = t; nf += len + 5; setHeldLen(nf);
                 } else {
-                    if (func_020a62a0() == 0 && t == 6) {
+                    if (NetArea_IsLocalOwner() == 0 && t == 6) {
                     } else if (t == 6 && a != dbg) {
                     } else if (t == 7 && a != dbg) {
                     } else {
@@ -2181,7 +2181,7 @@ void CommManager::endRecord(u32 a, u32 b) {
     u8 buf[8];
     if (_ZN11CommManager8isOnlineEv(this)) {
         if (b - 6 <= 1) {
-            func_020a5cc0(func_020b50e8());
+            NetArea_IsUnsharedScene(func_020b50e8());
         }
         u32 len = unk_d4 - unk_d0;
         CommRecord_SetLength(buf, (u16)(len - 5));
@@ -2271,7 +2271,7 @@ void CommManager::flushDeferred() {
             u8 *p = getDeferredBuf();
             MI_CpuCopy8(p, l.buf, 5);
             CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
-            s32 v = func_020a6214(l.a);
+            s32 v = NetArea_FindOwner(l.a);
             if (v >= 4) return;
             if (v == v6) {
                 u32 c6 = getLoopbackLen();

@@ -185,13 +185,13 @@ void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 BOOL func_0204e3a0(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
-s32 func_02045354(void *p, s32 a);
+s32 PendingUnit_Find(void *p, s32 a);
 BOOL func_0204e474(void *g, s32 x, s32 z);
 void *func_02095204(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02063ba4(s32 a);
-u8 *func_02045214();
+u8 *PendingUnit_Get();
 
 s32 FieldItemFxTable_StartForPlayer(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
 s32 FieldItemFxTable_Start(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
@@ -292,8 +292,8 @@ s32 WorldCurve_ToCurved(V3 *, V3 *);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
 void func_020e84f8(Blk *m, s32 x, s32 y, s32 z);
-s32 func_02045354(P2 p, s32 z);
-u8 *func_02045214(s32 i);
+s32 PendingUnit_Find(P2 p, s32 z);
+u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFx_Finish(Ent *e);
 s32 FieldItemFx_Init(Ent *e, s32 g, P2 p, V3 v, s32 a, u32 b, void *map, s32 c, s32 d);
@@ -445,8 +445,8 @@ void VEC_Add(void *a, void *b, void *out);
 void func_01ffd070(Unk_ov003_0221a4a0_V3 *out, void *m, Unk_ov003_0221a4a0_V3 *v);
 s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
 void func_0208fb00(s32 a, void *fn);
-void func_020b8e20(s32 a);
-void func_020b8e38(void);
+void Sky_PlayBalloonDropSe(s32 a);
+void Sky_EndBalloonDrop(void);
 void PlayerActor_LocalRequestAct77From(void *p);
 void FieldItemFx_Finish(Unk_ov003_0221a4a0 *p);
 s32 FieldItemFx_ReleasePending(Unk_ov003_0221a4a0 *p);
@@ -460,7 +460,7 @@ void Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 void Insect_SpawnBeeSwarm(void *p);
 s32 FieldItemFx_StartPop(u32 a, u32 b, void *p);
-void func_02043b9c(void);
+void Town_SetBeesReleased(void);
 void FieldItemFx_SplashPosCallback(void *p);
 }
 struct Unk_ov003_0221a664_Obj {
@@ -646,17 +646,17 @@ s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 z);
 s32 Item_IsFlower(void *c);
-s32 func_02044098(void *c, void *p, s32 a, s32 b);
-s32 func_0204403c(void *c, void *p);
+s32 Flower_SpawnPetalFx(void *c, void *p, s32 a, s32 b);
+s32 Weed_SpawnPullFx(void *c, void *p);
 s32 func_02044014(void *p);
 s32 func_02133150(s32 a, s32 b);
-s32 func_02045354(void *p, s32 a);
-Unk_ov003_0221b7d4_Ent *func_02045214(s32 i);
-s32 func_02045220(u8 a, s32 b);
-s32 func_02045570(void *p, s32 z);
-s32 func_02045460(void *p, s32 z);
+s32 PendingUnit_Find(void *p, s32 a);
+Unk_ov003_0221b7d4_Ent *PendingUnit_Get(s32 i);
+s32 PendingUnit_FindBySlot(u8 a, s32 b);
+s32 PendingUnit_ApplyAt(void *p, s32 z);
+s32 PendingUnit_CommitAt(void *p, s32 z);
 void *TownBlockMap_Get();
-s32 func_02045510(const P2 &p, s32 a, s32 b);
+s32 PendingUnit_ApplyAtIfAid(const P2 &p, s32 a, s32 b);
 void Heap_Free(void *heap, void *p);
 void *File_LoadAlloc(void *s, void *heap, s32 a, s32 b);
 void *func_021065dc(void *p);
@@ -664,7 +664,7 @@ void *func_021065f8(void *p, s32 a);
 void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 void AnimModel_attachAnim(void *self);
 s32 Item_IsTreeGrown(void *c);
-s32 func_02043ba8();
+s32 Town_CanReleaseBees();
 s32 TreeAnim_Begin(void *self, s32 a);
 s32 Tree_GetDropSide(s32 a, void *p);
 s32 Tree_DropFruit(void *c, s32 a, P2 p);
@@ -789,18 +789,18 @@ s32 func_02098044(void *p, s32 a);
 void FieldPos_FromUnitCenter(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
 void FieldItemFx_StartBeeHiveDrop(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
-s32 func_02045220(u8 a, u8 b);
-void *func_02045214(void);
+s32 PendingUnit_FindBySlot(u8 a, u8 b);
+void *PendingUnit_Get(void);
 s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldPos_ToUnit(s32 *x, s32 *y, Unk_ov003_0221b8bc_V3 *v);
 void FieldItemFx_StartTreeDrop(s32 a, s32 id, Unk_ov003_0221b8bc_V2 *p, Unk_ov003_0221b8bc_V3 *v, s32 f, s32 i);
-void *func_02043ee0(void *p);
+void *Field_AidOrLocal(void *p);
 u16 *func_02095204(void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
-s32 func_02045354(Unk_ov003_0221b8bc_V2 *p, s32 a);
+s32 PendingUnit_Find(Unk_ov003_0221b8bc_V2 *p, s32 a);
 void TreeAnim_DropItems(Unk_ov003_0221b8bc *o, u16 *cell);
-void func_02045510(Unk_ov003_0221b8bc_V2 *p, s32 id, s32 a);
+void PendingUnit_ApplyAtIfAid(Unk_ov003_0221b8bc_V2 *p, s32 id, s32 a);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 void TreeAnim_Reset(Unk_ov003_0221b8bc *o);
 void CachedModel_release(void *p);
@@ -827,8 +827,8 @@ void func_02003ecc(void *p);
 void TreeAnim_ModelCallback(void);
 Unk_ov003_0221b8bc *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
-s32 func_02043ba8(void);
-void func_02045570(Unk_ov003_0221b8bc_V2 *p, s32 a);
+s32 Town_CanReleaseBees(void);
+void PendingUnit_ApplyAt(Unk_ov003_0221b8bc_V2 *p, s32 a);
 void TreeAnimRequest_Resolve(Unk_ov003_0221c030_Ent *e);
 void TreeAnim_Start(Unk_ov003_0221b8bc *a, s32 id, Unk_ov003_0221b8bc_V2 *p, s32 c, s32 n, s32 d);
 
@@ -1112,22 +1112,22 @@ extern u8 sUnitSearchOffsets81[];
 extern u8 *gSceneBlockMap;
 extern u8 *gCamera;
 
-s32 func_02045220(u8 a, u8 b);
-Unk_ov003_0221cb54_Rec *func_02045214();
+s32 PendingUnit_FindBySlot(u8 a, u8 b);
+Unk_ov003_0221cb54_Rec *PendingUnit_Get();
 void FieldItemFx_StartStrikeShake(u32 a, u32 b, P2 p);
 void FieldItemFx_StartStrikeEject(u32 a, u32 b, P2 p, V3 v);
 void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 z);
 void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
-s32 func_020452c8(void *o, P2 p, s32 a);
+s32 PendingUnit_FindForAid(void *o, P2 p, s32 a);
 s32 Town_IsSaplingBlocker(u16 *c);
 void TreeAnimSet_Request(void *a, void *o, P2 p, s32 mode, s32 flag);
 s32 Item_IsTreeStage0(u16 *c);
 s32 func_0203a4c4(V3 *v, s32 a, s32 b);
-void *func_02043ec0(void *o);
+void *Field_AidOrZero(void *o);
 s32 Item_IsTreeGrown(u16 *c);
-void func_02045904();
-void func_02045510(P2 p, void *a, s32 b);
+void PendingUnit_Apply();
+void PendingUnit_ApplyAtIfAid(P2 p, void *a, s32 b);
 void FieldObj_DrawItemModel(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e);
 void FieldObj_DrawItemIcon(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
 void FieldObj_DrawIconModel(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
@@ -1140,7 +1140,7 @@ void TreeAnimSet_Release(void *p);
 void FieldItemFxTable_Release(void *p);
 void FieldItemFxTable_Draw(void *p);
 void TreeAnimSet_Draw(void *p);
-void func_020453ac();
+void PendingUnits_Flush();
 void func_020e8c94(void *p);
 s32 func_02133150(s32 a, s32 b);
 void FieldObj_DrawUnits(O *o, void *g);
@@ -1464,7 +1464,7 @@ void *ExpHeap_CreateInPlace(void *p, u32 n);
 void *ExpHeap_Create(u32 n, void *heap);
 s32 Item_GetInfoUnk07(volatile u16 *p);
 u32 TownState_GetSeasonPeriod();
-void func_02045e14();
+void Field_OnEnter();
 s32 CachedModel_loadWithSharedTex(void *p, void *t, u8 a, u8 b);
 s32 CachedModel_load(void *p, void *a, void *b);
 s32 CachedModel_loadWithTex(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
@@ -4439,7 +4439,7 @@ BOOL _ZN18FieldObjectManager8vfunc_00Ev(Obj *o) {
             TreeAnimSet_Init(o->unk_4b20);
             TreeLeafFx_Init(sTreeLeafFx);
             FieldItemFxTable_Init(sFieldItemFxTable);
-            func_02045e14();
+            Field_OnEnter();
             r = TRUE;
         } else {
             gFieldObjectManager = NULL;
@@ -5100,7 +5100,7 @@ BOOL FieldObjectManager::vfunc_0c() {
     using ns_0221cb54::sFieldObjectModelHeap;
     using ns_0221cb54::sFieldObjectAnimHeap;
     using ns_0221cb54::sFieldItemFxTable;
-    using ns_0221cb54::func_020453ac;
+    using ns_0221cb54::PendingUnits_Flush;
     using ns_0221cb54::ModelSet_Release;
     using ns_0221cb54::func_020e8c94;
     using ns_0221cb54::FieldItemFxTable_Release;
@@ -5113,7 +5113,7 @@ BOOL FieldObjectManager::vfunc_0c() {
     ModelSet_Release(self + 0x4b10);
     TreeAnimSet_Release(self + 0x4b20);
     FieldItemFxTable_Release(sFieldItemFxTable);
-    func_020453ac();
+    PendingUnits_Flush();
     if (sFieldObjectModelHeap != 0) {
         func_020e8c94(sFieldObjectModelHeap);
         sFieldObjectModelHeap = 0;
@@ -5235,10 +5235,10 @@ namespace ns_0221cb54 {
 extern "C" {
 s32 Tree_IsPendingStump(void *o, P2 pos) {
     BOOL r = FALSE;
-    s32 idx = func_020452c8(o, pos, 0);
+    s32 idx = PendingUnit_FindForAid(o, pos, 0);
     if (idx >= 0) {
         volatile u16 v = 0xfff1;
-        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))func_02045214)(idx)->unk_0a;
+        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))PendingUnit_Get)(idx)->unk_0a;
         BOOL f1 = TRUE, f2 = TRUE, f3 = TRUE, f0 = FALSE;
         u32 t = v;
         if (v >= 0x2b && t <= 0x2e) f0 = TRUE;
@@ -5292,7 +5292,7 @@ s32 Tree_BeginReaction(void *o, P2 pos) {
             s32 hz = z >> 4;
             u16 *cell = BlockMap_GetItemPtr(g2, hx, hz, x - (hx << 4), z - (hz << 4), 0);
             if (cell != 0) {
-                void *a = func_02043ec0(o);
+                void *a = Field_AidOrZero(o);
                 BOOL k = FALSE;
                 u32 t = *cell;
                 if (t >= 0x2f && t <= 0x56) k = TRUE;
@@ -5300,21 +5300,21 @@ s32 Tree_BeginReaction(void *o, P2 pos) {
                     if (Item_IsTreeGrown(cell) != 0) {
                         s32 i;
                         for (i = 0; i < 3; i++) {
-                            if (func_02045220((u32)a, i) >= 0) {
-                                func_02045214();
-                                func_02045904();
+                            if (PendingUnit_FindBySlot((u32)a, i) >= 0) {
+                                PendingUnit_Get();
+                                PendingUnit_Apply();
                             }
                         }
                     }
                 } else if ((t >= 0x66 && t <= 0x68) || (t >= 0x6a && t <= 0x6c)) {
-                    if (func_02045220((u32)a, 0) >= 0) {
-                        func_02045214();
-                        func_02045904();
+                    if (PendingUnit_FindBySlot((u32)a, 0) >= 0) {
+                        PendingUnit_Get();
+                        PendingUnit_Apply();
                     }
                 }
             }
         }
-        func_02045510(pos, func_02043ec0(o), 0);
+        PendingUnit_ApplyAtIfAid(pos, Field_AidOrZero(o), 0);
     }
     return result;
 }
@@ -5346,7 +5346,7 @@ void Tree_RequestChop(void *o, P2 pos, s32 mode) {
             if (Tree_IsPendingStump(o, pos) == 0) {
                 mode = 0;
             } else {
-                if (func_020452c8(o, pos, 0) >= 0) {
+                if (PendingUnit_FindForAid(o, pos, 0) >= 0) {
                     s32 x2 = pos.x;
                     s32 xx = x2 - 2;
                     s32 z2 = pos.z;
@@ -5367,7 +5367,7 @@ void Tree_RequestChop(void *o, P2 pos, s32 mode) {
             if (Tree_IsPendingStump(o, pos) == 0) {
                 mode = 0;
             } else {
-                if (func_020452c8(o, pos, 0) >= 0) {
+                if (PendingUnit_FindForAid(o, pos, 0) >= 0) {
                     s32 x2 = pos.x;
                     s32 xx = x2 + 2;
                     s32 z2 = pos.z;
@@ -5395,12 +5395,12 @@ namespace ns_0221cb54 {
 extern "C" {
 void FieldItemFx_StartStrikeResult(P2 pos) {
     u32 t = *(u32 *)(gCommManager + 0x64);
-    if (func_02045220(t, 4) >= 0) {
-        Unk_ov003_0221cb54_Rec *r = func_02045214();
+    if (PendingUnit_FindBySlot(t, 4) >= 0) {
+        Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
         FieldItemFx_StartStrikeShake(t, r->unk_0a, pos);
     }
-    if (func_02045220(t, 3) >= 0) {
-        Unk_ov003_0221cb54_Rec *r = func_02045214();
+    if (PendingUnit_FindBySlot(t, 3) >= 0) {
+        Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
         V3 v;
         FieldPos_FromUnitCenter(&v, pos.x, pos.z);
         Col c;
@@ -5974,7 +5974,7 @@ void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
                     f1 = 0;
                 }
                 if (f1 != 0) {
-                    if (func_02043ba8() != 0) {
+                    if (Town_CanReleaseBees() != 0) {
                         goto set;
                     }
                 }
@@ -6000,7 +6000,7 @@ void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
                 }
                 t.x = pos[0];
                 t.z = pos[1];
-                func_02045570(&t, 0);
+                PendingUnit_ApplyAt(&t, 0);
                 return;
             }
         set:
@@ -6250,18 +6250,18 @@ void TreeAnim_Begin(Unk_ov003_0221b8bc *o, s32 flag) {
     case 3:
         a.x = o->unk_cc;
         a.z = o->unk_d0;
-        if (func_02045354(&a, 0) >= 0) {
+        if (PendingUnit_Find(&a, 0) >= 0) {
             TreeAnim_DropItems(o, cell);
             b.x = o->unk_cc;
             b.z = o->unk_d0;
-            func_02045510(&b, o->unk_04, 0);
+            PendingUnit_ApplyAtIfAid(&b, o->unk_04, 0);
         }
         break;
     default:
         TreeAnim_DropItems(o, cell);
         c.x = o->unk_cc;
         c.z = o->unk_d0;
-        func_02045510(&c, o->unk_04, 0);
+        PendingUnit_ApplyAtIfAid(&c, o->unk_04, 0);
         break;
     }
     if (flag == 0) {
@@ -6297,7 +6297,7 @@ namespace ns_0221b8bc {
 extern "C" {
 s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p) {
     s32 r = 0;
-    u16 *q = func_02095204(func_02043ee0(o));
+    u16 *q = func_02095204(Field_AidOrLocal(o));
     if (q != 0) {
         if (*(s32 *)((u8 *)q + 0x5c) < p->x) {
             r = 1;
@@ -6337,12 +6337,12 @@ void Tree_DropFruit(u16 *cell, s32 id, s32 *pos) {
     xy.x = 0;
     xy.z = 0;
     for (i = 0; i < n; i++) {
-        s32 r = func_02045220(id, i);
+        s32 r = PendingUnit_FindBySlot(id, i);
         cur.x = base.x + tbl->x;
         cur.y = base.y + tbl->y;
         cur.z = base.z + tbl->z;
         if (r >= 0) {
-            u16 v = ((u16 *)func_02045214())[4];
+            u16 v = ((u16 *)PendingUnit_Get())[4];
             col.c = v;
             u16 t = col.c;
             col.b = t;
@@ -6392,7 +6392,7 @@ void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p) {
 namespace ns_0221aed4 {
 extern "C" void Tree_DropSpecial(u16 *cell, s32 a, P2 p)
 {
-    s32 rec = func_02045220((u8)a, 0);
+    s32 rec = PendingUnit_FindBySlot((u8)a, 0);
     if (rec >= 0) {
         s32 fl = 0;
         Unk_ov003_0221b7d4_Rec *tbl;
@@ -6410,7 +6410,7 @@ extern "C" void Tree_DropSpecial(u16 *cell, s32 a, P2 p)
         FieldPos_FromUnitCenter(&d, p.x, p.z);
         s32 idx = Tree_GetDropSide(a, &d);
         tbl = tbl + idx;
-        Unk_ov003_0221b7d4_Ent *e = func_02045214(rec);
+        Unk_ov003_0221b7d4_Ent *e = PendingUnit_Get(rec);
         Unk_ov003_0221aed4_Raw3 pos;
         s32 px = d.x + tbl->x;
         *(volatile s32 *)&pos.x = px;
@@ -6445,7 +6445,7 @@ extern "C" void Tree_DropItems(u16 *cell, s32 a, P2 p)
             Tree_DropFruit(cell, a, p);
         }
     } else if (t == 0x67 || t == 0x6b) {
-        if (func_02043ba8() != 0) {
+        if (Town_CanReleaseBees() != 0) {
             Tree_DropBeeHive(a, p);
         }
     } else if ((t >= 0x66 && t <= 0x68) || (t >= 0x6a && t <= 0x6c)) {
@@ -6580,7 +6580,7 @@ extern "C" void TreeAnimRequest_Resolve(Unk_ov003_0221b4b8_Obj *self)
             }
         }
     }
-    func_02045510(P2(self->unk_08), self->unk_04, 0);
+    PendingUnit_ApplyAtIfAid(P2(self->unk_08), self->unk_04, 0);
     self->unk_00 = 0;
 }
 }
@@ -6593,13 +6593,13 @@ extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self)
         Unk_ov003_0221aed4_Raw2 t;
         t.x = self->unk_10;
         t.z = self->unk_14;
-        func_02045570(&t, 0);
+        PendingUnit_ApplyAt(&t, 0);
     } else if (self->unk_a1 != 0) {
         self->unk_a1 = 0;
         Unk_ov003_0221aed4_Raw2 t;
         t.x = self->unk_10;
         t.z = self->unk_14;
-        func_02045460(&t, 0);
+        PendingUnit_CommitAt(&t, 0);
     }
 }
 }
@@ -6626,9 +6626,9 @@ extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 po
         Unk_ov003_0221aed4_Raw2 t;
         t.x = self->unk_10;
         t.z = self->unk_14;
-        s32 i = func_02045354(&t, 0);
+        s32 i = PendingUnit_Find(&t, 0);
         if (i >= 0) {
-            self->unk_0a = func_02045214(i)->unk_0a;
+            self->unk_0a = PendingUnit_Get(i)->unk_0a;
         } else {
             self->unk_0a = 0xfff1;
         }
@@ -6803,7 +6803,7 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
             Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
             q.z = p.z;
-            func_02044098(c, &q, 0, 0);
+            Flower_SpawnPetalFx(c, &q, 0, 0);
         } else {
             BOOL f = FALSE;
             u32 v = *c;
@@ -6812,7 +6812,7 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
                 Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
             q.z = p.z;
-                func_0204403c(c, &q);
+                Weed_SpawnPullFx(c, &q);
             } else if (v == 0xe2) {
                 Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
@@ -7065,7 +7065,7 @@ extern "C" void FieldItemFx_InitBeeHiveDrop(Unk_ov003_0221a4a0 *self, s32 a, Unk
     self->unk_44 = 0x1000;
     func_02003e70(self->unk_60, 0x7d6, 0x7f, 0);
     FieldItemFx_ReleasePending(self);
-    func_02043b9c();
+    Town_SetBeesReleased();
 }
 }
 
@@ -7320,12 +7320,12 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 self->unk_4c = 1;
                 self->unk_50 = 12;
                 self->unk_1c = self->unk_1c - 0x2000;
-                func_020b8e20(1);
+                Sky_PlayBalloonDropSe(1);
             }
         } else {
             self->unk_50 = self->unk_50 - 1;
             if (self->unk_50 < 0) {
-                func_020b8e38();
+                Sky_EndBalloonDrop();
                 PlayerActor_LocalRequestAct77From(&self->unk_18);
                 self->unk_a0 = 0;
                 FieldItemFx_Finish(self);
@@ -7343,7 +7343,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 self->unk_34 = 0x1000;
                 self->unk_38 = r5;
                 self->unk_4c = 1;
-                func_020b8e20(0);
+                Sky_PlayBalloonDropSe(0);
             }
         } else {
             self->unk_34 = self->unk_34 - 0x400;
@@ -7353,7 +7353,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 self->unk_30 = 0;
                 self->unk_34 = 0;
                 self->unk_38 = 0;
-                func_020b8e38();
+                Sky_EndBalloonDrop();
                 if (self->unk_50 == 0) {
                     if (self->unk_08 == 0x137b) {
                         func_0209801c(PlayerData_GetCurrent(), 0x30);
@@ -7386,9 +7386,9 @@ void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
     e->unk_34 = z;
     e->unk_38 = z;
     Field_SetUnitItem(p->x, p->y, 0xfff1, z);
-    s32 i = func_02045354(P2(e->unk_10), 0);
+    s32 i = PendingUnit_Find(P2(e->unk_10), 0);
     if (i >= 0) {
-        *(u16 *)(func_02045214(i) + 0xa) = 0xfff1;
+        *(u16 *)(PendingUnit_Get(i) + 0xa) = 0xfff1;
     }
 }
 }
@@ -7749,8 +7749,8 @@ extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b)
     Unk_ov003_022195b8_Pos pos;
     pos.x = p0;
     pos.z = p1;
-    if (func_02045354(&pos, 0) >= 0) {
-        u8 *c = func_02045214();
+    if (PendingUnit_Find(&pos, 0) >= 0) {
+        u8 *c = PendingUnit_Get();
         if (c != NULL) {
             r = *(u16 *)(c + 0xa);
         }
@@ -7947,7 +7947,7 @@ extern "C" s32 FieldItemFx_FindLandingUnit(s32 *p)
             Unk_ov003_022195b8_Pos pos;
             pos.x = x;
             pos.z = z;
-            if (func_02045354(&pos, k14) < 0) {
+            if (PendingUnit_Find(&pos, k14) < 0) {
                 if (func_0204e474(g, x, z)) {
                     p[0] = x;
                     p[1] = z;

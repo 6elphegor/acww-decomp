@@ -41,7 +41,7 @@ public:
 class SpNpcMissing1;
 
 extern "C" {
-void func_020be094(void *p);
+void SkySprite_Release(void *p);
 }
 
 extern "C" {
@@ -121,7 +121,7 @@ s32 func_020b50e8(void);
 }
 
 extern "C" {
-BOOL func_020a032c(void);
+BOOL GameStart_IsActive(void);
 }
 
 extern "C" {
@@ -221,7 +221,7 @@ void func_020c11b8(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_020a0414(void);
+s32 Net_GetJoiningAid(void);
 }
 
 extern "C" {
@@ -233,7 +233,7 @@ BOOL func_02094f2c(s32 a, s32 b);
 }
 
 extern "C" {
-void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 
 extern "C" {
@@ -289,7 +289,7 @@ s32 Math_AngleXZ(void *a, void *b);
 }
 
 extern "C" {
-void PlayerActor_RequestAct70(s32 a, s32 b);
+void PlayerActor_RequestTurnTo(s32 a, s32 b);
 }
 
 extern "C" {
@@ -349,11 +349,11 @@ extern u8 gVec3Zero[];
 }
 
 extern "C" {
-extern s32 data_020d0e20[];
+extern s32 sRainParallax[];
 }
 
 extern "C" {
-extern s32 data_020e463c;
+extern s32 sRainSideToggle;
 }
 
 extern "C" {
@@ -467,9 +467,9 @@ public:
     /* 0x64 */ u8 unk_64[4];
     /* 0x68 */ s32 unk_68;
 
-    void func_020bfe30();
-    void func_020bfe38();
-    void func_020bfec0(BOOL flag);
+    void endRainDrop();
+    void updateRainDrop();
+    void initRainDrop(BOOL flag);
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -618,7 +618,7 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
         self->unk_07 = 0;
     }
     if (func_020b50e8() != 0x3f) {
-        if (func_020a032c()) {
+        if (GameStart_IsActive()) {
             self->unk_04 = 4;
         } else {
             s32 t = PlayerData_GetCurrent();

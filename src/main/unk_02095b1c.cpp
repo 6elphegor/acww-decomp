@@ -61,7 +61,7 @@ extern CommManager *gCommManager;
 extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
-extern u8 data_020d043c[];
+extern u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
@@ -142,11 +142,11 @@ s32 func_020a03f0();
 }
 
 extern "C" {
-s32 func_020a0414();
+s32 Net_GetJoiningAid();
 }
 
 extern "C" {
-s32 func_020a5ef8();
+s32 NetSession_GetLastSyncSlot();
 }
 
 extern "C" {
@@ -198,7 +198,7 @@ void ProcBase_RequestDelete(void *p);
 }
 
 extern "C" {
-u8 func_020a6358(s32 idx);
+u8 NetArea_GetSlotScene(s32 idx);
 }
 
 extern "C" {
@@ -250,15 +250,15 @@ void func_02065c94(void *p);
 }
 
 extern "C" {
-s32 func_02095dcc();
+s32 BottleLetter_IsBottleInTown();
 }
 
 extern "C" {
-s32 func_02095e34();
+s32 BottleLetter_PlaceBottle();
 }
 
 extern "C" {
-s32 func_02095e48(u8 *p);
+s32 BottleLetter_CreateGameLetter(u8 *p);
 }
 
 extern "C" {
@@ -380,7 +380,7 @@ BOOL Unk_020e1ce0::onExecute() {
     do {
         if (_ZN11CommManager12isSlotActiveEi(g, i) && !_ZN11CommManager7isMyAidEj(g, i)) {
             idx = i;
-            c = func_020a6358(i);
+            c = NetArea_GetSlotScene(i);
             p8 = func_020952bc(idx);
             pc = func_020952b0(idx);
             r4 = func_020952a0(idx);

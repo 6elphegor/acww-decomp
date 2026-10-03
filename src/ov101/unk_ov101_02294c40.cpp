@@ -20,10 +20,10 @@ extern u8 gTouchChanged;
 
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-u32 func_0206ea6c();
-u32 func_0206ea78();
-void func_0206ecf8(u32 v);
-void func_0206ed2c(u32 v);
+u32 MenuCtrl_GetPocketSelectLabel();
+u32 MenuCtrl_GetPocketSelectMask();
+void MenuCtrl_SetResult(u32 v);
+void MenuCtrl_SetIndex(u32 v);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_ResetLayer(s32 a);
@@ -1101,7 +1101,7 @@ s32 PocketItemSelectMenu::getSlotY(u32 a) {
 }
 
 void PocketItemSelectMenu::disableFilteredPockets() {
-    u32 m = func_0206ea78();
+    u32 m = MenuCtrl_GetPocketSelectMask();
     u8 i = 0;
     s32 j = 0;
     do {
@@ -1366,8 +1366,8 @@ void PocketItemSelectMenu::cancelPopupForButtons() {
 }
 
 void PocketItemSelectMenu::closeWithSelection() {
-    func_0206ed2c(unk_b4);
-    func_0206ecf8(1);
+    MenuCtrl_SetIndex(unk_b4);
+    MenuCtrl_SetResult(1);
     unk_8c = 3;
     setPhase(1);
     unk_215c.hide(1);
@@ -1375,7 +1375,7 @@ void PocketItemSelectMenu::closeWithSelection() {
 }
 
 void PocketItemSelectMenu::closeWithoutChoice() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_8c = 3;
     setPhase(1);
     unk_215c.hide(1);
@@ -1383,7 +1383,7 @@ void PocketItemSelectMenu::closeWithoutChoice() {
 }
 
 void PocketItemSelectMenu::setPopupChoices() {
-    ChoiceIdList_Add(&unk_2298.unk_2f4, func_0206ea6c(), 0);
+    ChoiceIdList_Add(&unk_2298.unk_2f4, MenuCtrl_GetPocketSelectLabel(), 0);
     ChoiceIdList_Add(&unk_2298.unk_2f4, 2, 1);
 }
 

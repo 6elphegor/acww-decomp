@@ -383,20 +383,20 @@ void func_02087c50(void *self, u32 v);
 u32 func_02087c54(void *self);
 void *PlayerData_GetCurrent();
 s32 func_02063b8c(s32);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 BOOL func_0202e1cc(s32 a, s32 b);
 BOOL func_0202e18c(void *self, void *out, s32 x);
 void func_0202e174(void *self, void *p);
 s16 *func_0209c37c(s32 a, s32 b);
-s32 func_020a032c();
+s32 GameStart_IsActive();
 s32 Clock_GetWeekday();
 void *NpcRegistry_FindSpNpc(s32 n);
 void TalkRequest_EndTalkWith(void *self);
-void func_ov004_0222875c();
-s32 func_ov004_02228738();
-void func_ov004_02228780();
-void func_ov004_02228720(u32 v);
-s32 func_ov004_02228700();
+void SewingMachine_Stop();
+s32 SewingMachine_IsStopped();
+void SewingMachine_Start();
+void SewingMachine_SetFrame(u32 v);
+s32 SewingMachine_GetFrame();
 u32 SpNpcSable_GetTalkCount(void *self);
 void SpNpcSable_SetTalkCount(void *self, u32 v);
 }
@@ -490,7 +490,7 @@ BOOL SpNpcSable::vfunc_00() {
     unk_708 = unk_8e;
     unk_4cc.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
-        if (func_020a62a0()) {
+        if (NetArea_IsLocalOwner()) {
             changeAct(0);
         } else {
             func_0201b980(this, &unk_70e, 1);
@@ -510,7 +510,7 @@ u8 *SpNpcSable::getTexturePath() { return sSpNpcSableTexturePath; }
 u8 *SpNpcSable::getModelPath() { return sSpNpcSableModelPath; }
 
 BOOL SpNpcSable::updateAct() {
-    unk_70e = func_ov004_02228700() / 0x38;
+    unk_70e = SewingMachine_GetFrame() / 0x38;
     func_0201b964(this, &unk_70e, 1);
     BOOL r = FALSE;
     if (sSpNpcSableActTable[unk_654].exit) {
@@ -541,10 +541,10 @@ BOOL SpNpcSable::mainAct00() {
         return TRUE;
     }
     if (func_0201622c(&unk_334, 0xe4, &unk_2a0)) {
-        if (func_ov004_02228738()) {
-            func_ov004_02228780();
+        if (SewingMachine_IsStopped()) {
+            SewingMachine_Start();
             u32 t = unk_70e * 0x38;
-            func_ov004_02228720((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
+            SewingMachine_SetFrame((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
         }
     }
     return TRUE;
@@ -554,7 +554,7 @@ BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) >= 6) {
         func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     }
-    func_ov004_0222875c();
+    SewingMachine_Stop();
     if (SpNpcSable_GetTalkCount(this) < 6) {
         func_02014198(&unk_618, 1, 0);
     } else {
@@ -624,19 +624,19 @@ BOOL SpNpcSable::mainAct04() {
                 goto end;
             }
         }
-        if (func_020a62a0() && b == 4) {
+        if (NetArea_IsLocalOwner() && b == 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
-    } else if (!func_020a62a0()) {
+    } else if (!NetArea_IsLocalOwner()) {
         if (func_0201622c(&unk_334, 0xe4, &unk_2a0)) {
-            if (func_ov004_02228738()) {
-                func_ov004_02228780();
+            if (SewingMachine_IsStopped()) {
+                SewingMachine_Start();
                 u32 t = unk_70e * 0x38;
-                func_ov004_02228720((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
+                SewingMachine_SetFrame((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
             }
-        } else if (!func_ov004_02228738()) {
-            func_ov004_0222875c();
+        } else if (!SewingMachine_IsStopped()) {
+            SewingMachine_Stop();
         }
     }
 end:
@@ -652,7 +652,7 @@ BOOL SpNpcSable::mainAct05() {
     if (func_0201ba88(this)) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) && a == 4 && func_020a62a0()) {
+        if (func_0201b9e8(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -661,7 +661,7 @@ BOOL SpNpcSable::mainAct05() {
 }
 
 BOOL SpNpcSable::setupAct06() {
-    func_ov004_0222875c();
+    SewingMachine_Stop();
     unk_70c = unk_ec.unk_a4 >> 12;
     return TRUE;
 }
@@ -687,7 +687,7 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
     if (CommManager_isOnline(g) != 0 || *(s16 *)func_0209c37c(0, 0x4a) != 0) {
         idx = 0;
         out->unk_04 = 0x57;
-    } else if (func_020a032c() != 0) {
+    } else if (GameStart_IsActive() != 0) {
         idx = 2;
         out->unk_04 = 5;
     } else {
@@ -794,7 +794,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
         break;
     case 8:
         if (v == 4) {
-            if (func_020a62a0() != 0) {
+            if (NetArea_IsLocalOwner() != 0) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 changeAct(3);
             } else {

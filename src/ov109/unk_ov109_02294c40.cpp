@@ -28,10 +28,10 @@ void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Snd_PlaySe(s32 v);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206e63c();
-BOOL func_0206e61c();
-void func_0206ecf8(u32 v);
-void func_0206ed2c(u32 v);
+void MenuCtrl_TickForceClose();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_SetResult(u32 v);
+void MenuCtrl_SetIndex(u32 v);
 BOOL func_020600f4(s32 v);
 void func_0206009c(s32 v);
 
@@ -554,8 +554,8 @@ void SongPickMenu::runMainState() {
 }
 
 BOOL SongPickMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         u32 t = unk_8d;
         if (t != 0 && t != 1 && t != 5) {
         } else {
@@ -735,7 +735,7 @@ void SongPickMenu::mainAct01() {
 
 void SongPickMenu::mainAct02() {
     S *s = (S *)this;
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         M(s)->setMainState(4);
     } else if (gTouchHeld == 0) {
         M(s)->setMainState(4);
@@ -758,7 +758,7 @@ void SongPickMenu::mainAct03() {
 void SongPickMenu::mainAct04() {
     S *s = (S *)this;
     if (((PopupChoiceMenu *)s->unk_2270)->isOpen()) {
-        if (func_0206e61c()) {
+        if (MenuCtrl_IsForceCloseDue()) {
             M(s)->cancelChoice();
         } else if (M(s)->checkSwitchToButtons(1)) {
             M(s)->cancelChoice();
@@ -801,7 +801,7 @@ void SongPickMenu::updateButtons() {
 
 void SongPickMenu::mainAct06() {
     S *s = (S *)this;
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         M(s)->cancelChoice();
     } else if (M(s)->checkSwitchToTouch()) {
         M(s)->cancelChoice();
@@ -1239,8 +1239,8 @@ void SongPickMenu::cancelChoice() {
 }
 
 void SongPickMenu::closeWithSlot() {
-    func_0206ed2c(unk_27fc);
-    func_0206ecf8(1);
+    MenuCtrl_SetIndex(unk_27fc);
+    MenuCtrl_SetResult(1);
     unk_8c = 3;
     setPhase(1);
     unk_2134.hide(1);
@@ -1254,7 +1254,7 @@ void SongPickMenu::startClose() {
 }
 
 void SongPickMenu::closeWithoutResult() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_8c = 3;
     setPhase(1);
     unk_2134.hide(1);

@@ -44,163 +44,163 @@ void func_02127838(void *, const void *);
 s32 OS_SPrintf(char *, const char *, ...);
 void memcpy(void *, const void *, s32);
 
-Unk_ov065_02290f94_Fn data_ov065_02290f94;
-s32 data_ov065_02290fa0;
-Unk_ov065_02290f9c *data_ov065_02290f9c;
-Unk_ov065_02290f98_Fn data_ov065_02290f98;
-char data_ov065_02290fa4[0x40];
-char data_ov065_02290fe4[0x40];
-extern u32 data_ov065_0228b440;
+Unk_ov065_02290f94_Fn sDwcFreeHook;
+s32 sGsAvailStatus;
+Unk_ov065_02290f9c *sDwcInet;
+Unk_ov065_02290f98_Fn sDwcAllocHook;
+char sGsAvailHostOverride[0x40];
+char sGsGameName[0x40];
+extern u32 gSslRsaThreadPriority;
 
-void func_ov065_0226ad84();
-s32 func_ov065_0226b110();
-s32 func_ov065_0226b16c();
-void *func_ov065_0226b1e0();
-s32 func_ov065_0226b27c(void *);
-s32 func_ov065_02269c9c();
-void func_ov065_02270e34(s32, s32);
-void func_ov065_0226de00(const char *);
-s32 func_ov065_0227a1d4(s32, s32, void *, void *);
-s32 func_ov065_0227a024(s32, s32, s32, void *, void *);
-s32 func_ov065_02279eb4(s32);
-s32 func_ov065_02279eec();
-void func_ov065_02279ef4();
-void func_ov065_0227a1f8();
-void func_ov065_0227a244();
-s32 func_ov065_02278ee8(s32 fd);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
-void func_ov065_02278dbc(s32);
-u32 func_ov065_02279144();
-void func_ov065_02279138();
-void func_ov065_022782f4();
-s32 func_ov065_02278dd4(s32, s32, s32);
-s32 func_ov065_02278328(const char *, s32, const char *);
-s32 func_ov065_02278070(s32, s32, s32, s32, Unk_ov065_02277f70_Ctx *);
-s32 func_ov065_022781b0(s8 *, s32, u8 *, u32 *);
+void WifiAp_GetLinkLevel();
+s32 WifiAp_RequestCleanup();
+s32 WifiAp_GetStatus();
+void *WifiAp_Process();
+s32 WifiAp_Init(void *);
+s32 WifiLink_GetPhase();
+void DwcCore_SetError(s32, s32);
+void NasAuth_SetServerUrl(const char *);
+s32 GsHttp_Get(s32, s32, void *, void *);
+s32 GsHttp_Post(s32, s32, s32, void *, void *);
+s32 GsHttp_PostAddString(s32);
+s32 GsHttp_NewPost();
+void GsHttp_ProcessAll();
+void GsHttp_Cleanup();
+void GsHttp_Startup();
+s32 GsSock_CanRead(s32 fd);
+s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
+void GsSock_Close(s32);
+u32 GsUtil_GetTimeMs();
+void GsSock_StartupStub();
+void GsAvail_SendQuery();
+s32 GsSock_Socket(s32, s32, s32);
+s32 GsSock_ResolveAddress(const char *, s32, const char *);
+s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, Unk_ov065_02277f70_Ctx *);
+s32 GsAvail_ParseReply(s8 *, s32, u8 *, u32 *);
 
-void func_ov065_02277e30(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z);
-void func_ov065_02277e1c(Unk_ov065_02290f9c *p);
-void func_ov065_02277dd4(s32 x);
-void func_ov065_02277d68();
-BOOL func_ov065_02277d30();
-void func_ov065_02277cdc();
-s32 func_ov065_02277c68();
-void func_ov065_02277c34();
-BOOL func_ov065_02277bdc();
-BOOL func_ov065_02277bc0();
-void func_ov065_02277bb8();
-void func_ov065_02277ba4(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b);
-void *func_ov065_02277b8c(s32 a, s32 b);
-void *func_ov065_02277b78(s32 a, s32 b, s32 c);
-void *func_ov065_02277b64(s32 a, void *b, s32 c);
-void *func_ov065_02277b50(s32 a, s32 b, s32 c, s32 d);
-void *func_ov065_02277afc(s32 a, void *b, s32 c, s32 d, s32 e);
-void *func_ov065_02277af0(s32 a);
-void *func_ov065_02277ad8(s32 a, s32 b);
-void *func_ov065_02277ac8(s32 a);
-s32 func_ov065_02277a9c(s32 a, s32 b, char *dst, s32 d);
-s32 func_ov065_02277a6c(s32 a, s32 b, char *s, s32 d);
-s32 func_ov065_02277998(char *key, char *out, char *src, s32 sep);
-u64 func_ov065_02277974();
+void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z);
+void DwcInet_Init(Unk_ov065_02290f9c *p);
+void DwcInet_SelectAuthServer(s32 x);
+void DwcInet_StartConnect();
+BOOL DwcInet_IsConnectDone();
+void DwcInet_Process();
+s32 DwcInet_UpdateStatus();
+void DwcInet_WaitDisconnect();
+BOOL DwcInet_Disconnect();
+BOOL DwcInet_IsLinkLost();
+void DwcInet_GetLinkLevel();
+void DwcNet_SetAllocator(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b);
+void *DwcNet_Alloc(s32 a, s32 b);
+void *DwcNet_AllocAligned(s32 a, s32 b, s32 c);
+void *DwcNet_Free(s32 a, void *b, s32 c);
+void *DwcNet_Realloc(s32 a, s32 b, s32 c, s32 d);
+void *DwcNet_ReallocAligned(s32 a, void *b, s32 c, s32 d, s32 e);
+void *GsUtil_Alloc(s32 a);
+void *GsUtil_Realloc(s32 a, s32 b);
+void *GsUtil_Free(s32 a);
+s32 GsUtil_FormatKeyValue(s32 a, s32 b, char *dst, s32 d);
+s32 GsUtil_AppendKeyValue(s32 a, s32 b, char *s, s32 d);
+s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep);
+u64 DwcNet_GetTimeMs();
 }
 
-void func_ov065_02277e30(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
-    if (data_ov065_02290f9c == NULL) {
+void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
+    if (sDwcInet == NULL) {
         MI_CpuFill8(p, 0, 12);
         p->unk_08 = x;
         p->unk_0a = 1;
         p->unk_04 = 1;
         p->unk_06 = 0;
-        data_ov065_02290f9c = p;
-        func_ov065_02277dd4(0);
-        data_ov065_0228b440 = z;
+        sDwcInet = p;
+        DwcInet_SelectAuthServer(0);
+        gSslRsaThreadPriority = z;
     }
 }
 
-void func_ov065_02277e1c(Unk_ov065_02290f9c *p) {
-    func_ov065_02277e30(p, 3, 1, 0x14);
+void DwcInet_Init(Unk_ov065_02290f9c *p) {
+    DwcInet_InitEx(p, 3, 1, 0x14);
 }
 
-void func_ov065_02277dd4(s32 x) {
+void DwcInet_SelectAuthServer(s32 x) {
     switch (x) {
     case 0:
-        func_ov065_0226de00("https://nas.test.nintendowifi.net/ac");
+        NasAuth_SetServerUrl("https://nas.test.nintendowifi.net/ac");
         break;
     case 1:
-        func_ov065_0226de00("https://nas.dev.nintendowifi.net/ac");
+        NasAuth_SetServerUrl("https://nas.dev.nintendowifi.net/ac");
         break;
     case 2:
-        func_ov065_0226de00("https://nas.nintendowifi.net/ac");
+        NasAuth_SetServerUrl("https://nas.nintendowifi.net/ac");
         break;
     }
 }
 
-void func_ov065_02277d68() {
+void DwcInet_StartConnect() {
     Unk_ov065_02277d68_Args l;
-    if (data_ov065_02290f9c != NULL) {
-        if (data_ov065_02290f9c->unk_04 == 1) {
+    if (sDwcInet != NULL) {
+        if (sDwcInet->unk_04 == 1) {
             Unk_ov065_02290f9c *s;
             MI_CpuFill8(&l, 0, 12);
-            s = data_ov065_02290f9c;
+            s = sDwcInet;
             l.unk_08 = s->unk_08;
             l.unk_09 = s->unk_0a;
-            l.unk_00 = (void *)func_ov065_02277b8c;
-            l.unk_04 = (void *)func_ov065_02277b64;
+            l.unk_00 = (void *)DwcNet_Alloc;
+            l.unk_04 = (void *)DwcNet_Free;
             s->unk_04 = 2;
-            if (func_ov065_0226b27c(&l) == 0) {
-                func_ov065_02270e34(8, -6);
+            if (WifiAp_Init(&l) == 0) {
+                DwcCore_SetError(8, -6);
             }
         }
     } else {
-        func_ov065_02270e34(8, -4);
+        DwcCore_SetError(8, -4);
     }
 }
 
-BOOL func_ov065_02277d30() {
-    Unk_ov065_02290f9c *s = data_ov065_02290f9c;
+BOOL DwcInet_IsConnectDone() {
+    Unk_ov065_02290f9c *s = sDwcInet;
     if (s == NULL) {
         return FALSE;
     }
     if (s->unk_00 != 0) {
         s->unk_04 = 3;
-        func_ov065_02277c68();
+        DwcInet_UpdateStatus();
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov065_02277cdc() {
-    Unk_ov065_02290f9c *s = data_ov065_02290f9c;
+void DwcInet_Process() {
+    Unk_ov065_02290f9c *s = sDwcInet;
     if (s != NULL && s->unk_04 == 2) {
-        data_ov065_02290f9c->unk_00 = (s32)func_ov065_0226b1e0();
+        sDwcInet->unk_00 = (s32)WifiAp_Process();
         return;
     }
-    if (s != NULL && s->unk_04 == 4 && s->unk_06 != 0 && func_ov065_02269c9c() != 9) {
-        data_ov065_02290f9c->unk_06 = 0;
-        data_ov065_02290f9c->unk_04 = 6;
+    if (s != NULL && s->unk_04 == 4 && s->unk_06 != 0 && WifiLink_GetPhase() != 9) {
+        sDwcInet->unk_06 = 0;
+        sDwcInet->unk_04 = 6;
     }
 }
 
-s32 func_ov065_02277c68() {
+s32 DwcInet_UpdateStatus() {
     s32 st = 0;
-    if (data_ov065_02290f9c != NULL) {
-        s32 t = func_ov065_0226b16c();
+    if (sDwcInet != NULL) {
+        s32 t = WifiAp_GetStatus();
         if (t == 5) {
             st = 4;
-            data_ov065_02290f9c->unk_04 = st;
-            data_ov065_02290f9c->unk_06 = 1;
+            sDwcInet->unk_04 = st;
+            sDwcInet->unk_06 = 1;
             return st;
         }
         if (t < 0) {
             if (t >= -10) {
                 st = 8;
-                func_ov065_02270e34(st, t - 0x2bc);
-                data_ov065_02290f9c->unk_04 = st;
+                DwcCore_SetError(st, t - 0x2bc);
+                sDwcInet->unk_04 = st;
                 return st;
             }
             st = 7;
-            func_ov065_02270e34(5, t);
-            data_ov065_02290f9c->unk_04 = st;
+            DwcCore_SetError(5, t);
+            sDwcInet->unk_04 = st;
             return st;
         }
         st = 2;
@@ -208,19 +208,19 @@ s32 func_ov065_02277c68() {
     return st;
 }
 
-void func_ov065_02277c34() {
-    if (data_ov065_02290f9c != NULL) {
-        if (func_ov065_0226b110() == 0) {
+void DwcInet_WaitDisconnect() {
+    if (sDwcInet != NULL) {
+        if (WifiAp_RequestCleanup() == 0) {
             do {
                 OS_Sleep(10);
-            } while (func_ov065_0226b110() == 0);
+            } while (WifiAp_RequestCleanup() == 0);
         }
-        data_ov065_02290f9c = NULL;
+        sDwcInet = NULL;
     }
 }
 
-BOOL func_ov065_02277bdc() {
-    Unk_ov065_02290f9c *s = data_ov065_02290f9c;
+BOOL DwcInet_Disconnect() {
+    Unk_ov065_02290f9c *s = sDwcInet;
     if (s == NULL) {
         return TRUE;
     }
@@ -228,85 +228,85 @@ BOOL func_ov065_02277bdc() {
         return FALSE;
     }
     if (s->unk_04 == 1) {
-        data_ov065_02290f9c = NULL;
+        sDwcInet = NULL;
         return TRUE;
     }
     s->unk_04 = 5;
-    if (func_ov065_0226b110() != 0) {
-        data_ov065_02290f9c = NULL;
+    if (WifiAp_RequestCleanup() != 0) {
+        sDwcInet = NULL;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL func_ov065_02277bc0() {
-    if (data_ov065_02290f9c != NULL && data_ov065_02290f9c->unk_04 == 6) {
+BOOL DwcInet_IsLinkLost() {
+    if (sDwcInet != NULL && sDwcInet->unk_04 == 6) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov065_02277bb8() {
-    func_ov065_0226ad84();
+void DwcInet_GetLinkLevel() {
+    WifiAp_GetLinkLevel();
 }
 
-void func_ov065_02277ba4(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b) {
-    data_ov065_02290f98 = a;
-    data_ov065_02290f94 = b;
+void DwcNet_SetAllocator(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b) {
+    sDwcAllocHook = a;
+    sDwcFreeHook = b;
 }
 
-void *func_ov065_02277b8c(s32 a, s32 b) {
-    return data_ov065_02290f98(a, b, 0x20);
+void *DwcNet_Alloc(s32 a, s32 b) {
+    return sDwcAllocHook(a, b, 0x20);
 }
 
-void *func_ov065_02277b78(s32 a, s32 b, s32 c) {
-    return data_ov065_02290f98(a, b, c);
+void *DwcNet_AllocAligned(s32 a, s32 b, s32 c) {
+    return sDwcAllocHook(a, b, c);
 }
 
-void *func_ov065_02277b64(s32 a, void *b, s32 c) {
-    return data_ov065_02290f94(a, b, c);
+void *DwcNet_Free(s32 a, void *b, s32 c) {
+    return sDwcFreeHook(a, b, c);
 }
 
-void *func_ov065_02277b50(s32 a, s32 b, s32 c, s32 d) {
-    return func_ov065_02277afc(a, (void *)b, c, d, 0x20);
+void *DwcNet_Realloc(s32 a, s32 b, s32 c, s32 d) {
+    return DwcNet_ReallocAligned(a, (void *)b, c, d, 0x20);
 }
 
-void *func_ov065_02277afc(s32 a, void *b, s32 c, s32 d, s32 e) {
-    void *r = data_ov065_02290f98(a, d, e);
+void *DwcNet_ReallocAligned(s32 a, void *b, s32 c, s32 d, s32 e) {
+    void *r = sDwcAllocHook(a, d, e);
     if (r == NULL) {
         return NULL;
     }
     if (b != NULL) {
         MI_CpuCopy8(b, r, d);
-        data_ov065_02290f94(a, b, c);
+        sDwcFreeHook(a, b, c);
     }
     return r;
 }
 
-void *func_ov065_02277af0(s32 a) {
-    return func_ov065_02277b8c(5, a);
+void *GsUtil_Alloc(s32 a) {
+    return DwcNet_Alloc(5, a);
 }
 
-void *func_ov065_02277ad8(s32 a, s32 b) {
-    return func_ov065_02277b50(5, a, b, b);
+void *GsUtil_Realloc(s32 a, s32 b) {
+    return DwcNet_Realloc(5, a, b, b);
 }
 
-void *func_ov065_02277ac8(s32 a) {
-    return func_ov065_02277b64(5, (void *)a, 0);
+void *GsUtil_Free(s32 a) {
+    return DwcNet_Free(5, (void *)a, 0);
 }
 
-s32 func_ov065_02277a9c(s32 a, s32 b, char *dst, s32 d) {
+s32 GsUtil_FormatKeyValue(s32 a, s32 b, char *dst, s32 d) {
     OS_SNPrintf(dst, 0x1000, "%c%s%c%s", d, a, d, b);
     return STD_GetStringLength(dst);
 }
 
-s32 func_ov065_02277a6c(s32 a, s32 b, char *s, s32 d) {
+s32 GsUtil_AppendKeyValue(s32 a, s32 b, char *s, s32 d) {
     char *e = func_0212a120(s, 0);
-    func_ov065_02277a9c(a, b, e, d);
+    GsUtil_FormatKeyValue(a, b, e, d);
     return STD_GetStringLength(s);
 }
 
-s32 func_ov065_02277998(char *key, char *out, char *src, s32 sep) {
+s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep) {
     char *p;
     char *q;
     s32 len;
@@ -347,7 +347,7 @@ s32 func_ov065_02277998(char *key, char *out, char *src, s32 sep) {
     return len;
 }
 
-u64 func_ov065_02277974() {
+u64 DwcNet_GetTimeMs() {
     return (OS_GetTick() << 6) / 0x82ea;
 }
 

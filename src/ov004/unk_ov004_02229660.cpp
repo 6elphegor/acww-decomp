@@ -1,24 +1,24 @@
 // mwcc-version: 1.2/sp2
-// ov004 TU26: .text 0x02229660-0x0222a374 (class Unk_ov004_0224e2b8). The switch function at 0x02229c20
-// (Unk_ov004_0224e2b8::vfunc_70) needs mwcc 1.2/base and is in the _switch file (object order).
+// ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
+// (RoomTelephone::vfunc_70) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 
-// shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
+// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
 //   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN18Unk_ov004_0224d4e88vfunc_20Ej)
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
 // Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN18Unk_ov004_0224d4e8C2Ev (0x02225244, the only ctor in the original);
+//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (Unk_ov004_02224ee4: real C1/D1 methods), unk_248 (Unk_ov004_02224d60) and unk_250
-//    (Unk_ov004_02224cf4) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
+//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
+//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
+//    (RoomObj_DestructSe / RoomObjTex_Destruct), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
@@ -155,33 +155,33 @@ public:
 };
 
 extern "C" {
-s32 func_ov004_02224d8c(void *self, u32 i);
-void func_ov004_02224d9c(void *self);
-void func_ov004_02224dbc(void *self, const char *s);
-void *func_ov004_02224d68(void *self);
-void func_ov004_02224d60(void *self);
-void func_ov004_02224d5c(void *self);
-void func_ov004_02224d08(void *self);
-void func_ov004_02224d10(void *self, const char *s);
-u32 func_ov004_02224d04(void *self);
-void func_ov004_02224cf4(void *self);
-void func_ov004_02224ce4(void *self);
-void func_ov004_02224ca4(void *self, s32 v);
-void func_ov004_02224cb8(void *self);
-void func_ov004_02224cc0(void *self, void *v);
-void func_ov004_02224cdc(void *self);
+s32 RoomObjRes_GetBca(void *self, u32 i);
+void RoomObjRes_Free(void *self);
+void RoomObjRes_Load(void *self, const char *s);
+void *RoomObjRes_GetModel(void *self);
+void RoomObjTex_Construct(void *self);
+void RoomObjTex_Destruct(void *self);
+void RoomObjTex_Reset(void *self);
+void RoomObjTex_Load(void *self, const char *s);
+u32 RoomObjTex_Get(void *self);
+void RoomObj_ConstructSe(void *self);
+void RoomObj_DestructSe(void *self);
+void RoomObj_PlaySe(void *self, s32 v);
+void RoomObj_DeactivateSe(void *self);
+void RoomObj_SetSePos(void *self, void *v);
+void RoomObj_ActivateSe(void *self);
 }
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class Unk_ov004_02224ee4 {
+class RoomObjRes {
 public:
-    Unk_ov004_02224ee4();
-    ~Unk_ov004_02224ee4();
-    void func_ov004_02224ee4();
-    inline s32 func_ov004_02224d8c(u32 i) { return ::func_ov004_02224d8c(this, i); }
-    inline void func_ov004_02224d9c() { ::func_ov004_02224d9c(this); }
-    inline void func_ov004_02224dbc(const char *s) { ::func_ov004_02224dbc(this, s); }
-    inline void *func_ov004_02224d68() { return ::func_ov004_02224d68(this); }
+    RoomObjRes();
+    ~RoomObjRes();
+    void clear();
+    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
+    inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
+    inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
+    inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
     u32 unk_00;
     u32 unk_04;
@@ -190,32 +190,32 @@ public:
     u32 unk_70[13];
 };
 
-class Unk_ov004_02224d60 {
+class RoomObjTex {
 public:
-    inline Unk_ov004_02224d60() { func_ov004_02224d60(this); }
-    inline void func_ov004_02224d08() { ::func_ov004_02224d08(this); }
-    inline void func_ov004_02224d10(const char *s) { ::func_ov004_02224d10(this, s); }
-    inline u32 func_ov004_02224d04() { return ::func_ov004_02224d04(this); }
+    inline RoomObjTex() { RoomObjTex_Construct(this); }
+    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
+    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
+    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
     u32 unk_00;
     u8 unk_04;
 };
 
-class Unk_ov004_02224cf4 {
+class RoomObjSe {
 public:
-    inline Unk_ov004_02224cf4() { func_ov004_02224cf4(this); }
-    inline void func_ov004_02224ca4(s32 v) { ::func_ov004_02224ca4(this, v); }
-    inline void func_ov004_02224cb8() { ::func_ov004_02224cb8(this); }
-    inline void func_ov004_02224cc0(Unk_ov004_02224ee4_Vec *v) { ::func_ov004_02224cc0(this, v); }
-    inline void func_ov004_02224cdc() { ::func_ov004_02224cdc(this); }
+    inline RoomObjSe() { RoomObj_ConstructSe(this); }
+    inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
+    inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
+    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
+    inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Character {
+class RoomObjActor : public Character {
 public:
-    Unk_ov004_0224d4e8();
-    virtual ~Unk_ov004_0224d4e8();
+    RoomObjActor();
+    virtual ~RoomObjActor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -223,23 +223,23 @@ public:
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
 
-    void func_ov004_02224f58(u32 v);
-    s32 func_ov004_02224f20();
-    s32 func_ov004_02224f3c();
-    void func_ov004_02224f60();
-    void func_ov004_02224f90(char *name);
-    void func_ov004_02224fc8(char *a, char *b);
+    void setSyncSlot(u32 v);
+    s32 storeSyncState();
+    s32 getSyncState();
+    void releaseResources();
+    void loadResourcesByName(char *name);
+    void loadResources(char *a, char *b);
 
     /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60 unk_248;
-    /* 0x250 */ Unk_ov004_02224cf4 unk_250;
+    /* 0x1a4 */ RoomObjRes unk_1a4;
+    /* 0x248 */ RoomObjTex unk_248;
+    /* 0x250 */ RoomObjSe unk_250;
 };
 
 
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)
-// Unk_ov004_0224e2b8 overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
-// 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N18Unk_ov004_0224e2b88vfunc_68Ev ...).
+// RoomTelephone overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
+// 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N13RoomTelephone8vfunc_68Ev ...).
 // Every other slot is named vfunc_sXX: main has a label _ZN14TalkMsgRequest9vfunc_sXXEv for each of them.
 class MsgRequest {
 public:
@@ -405,9 +405,9 @@ void ChoiceList_reset(ChoiceList *p, u32 n, s32 v);
 BOOL func_020b68ec(Unk_020b6960 *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
 void func_020b6928(Unk_020b6960 *o, void *p);
 s32 TalkWindow_Get(s32 a);
-BOOL func_0206ec6c();
-s32 func_0206ed18();
-BOOL func_0206eca4(u32 a);
+BOOL MenuCtrl_IsFinished();
+s32 MenuCtrl_IsResultOk();
+BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 func_020b50e8();
 Unk_020b6960 *func_020b50b4();
 BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
@@ -424,18 +424,18 @@ u32 func_0203cb38();
 void Snd_SetOutputMode(u32 a);
 void func_0203ca94();
 s32 func_020e9650(s32 *a, s32 *b);
-void func_ov004_022248a0(void *p);
-void func_ov004_022248c4(void *p);
+void PlayerActor_LocalRequestPhoneHangUp(void *p);
+void PlayerActor_LocalRequestPhonePickUp(void *p);
 }
 
-class Unk_ov004_0224e2b8 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
+class RoomTelephone : public RoomObjActor, public TalkMsgRequest {
 public:
-    Unk_ov004_0224e2b8();
+    RoomTelephone();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224e2b8();
+    virtual ~RoomTelephone();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual void *getInteractionPos();
@@ -443,39 +443,39 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70(u32 a, u8 b);
 
-    void func_ov004_02229780(const char *name, u32 flag);
-    void func_ov004_022297d0();
-    void func_ov004_02229830();
-    void func_ov004_02229834();
-    void func_ov004_02229858();
-    void func_ov004_0222985c();
-    void func_ov004_02229888();
-    void func_ov004_0222988c();
-    void func_ov004_022298b8();
-    void func_ov004_022298bc();
-    void func_ov004_022298e0();
-    void func_ov004_02229900();
-    void func_ov004_0222992c(const char *name, u32 flag);
-    void func_ov004_0222993c();
-    void func_ov004_02229964();
-    void func_ov004_02229970();
-    void func_ov004_02229a04();
-    void func_ov004_02229a08();
-    void func_ov004_02229a0c();
-    void func_ov004_02229a10();
-    void func_ov004_02229a4c();
-    void func_ov004_02229a6c();
-    void func_ov004_02229a90();
-    void func_ov004_02229a94();
-    void func_ov004_02229ab8();
-    void func_ov004_02229abc();
-    void func_ov004_02229ae0();
-    void func_ov004_02229b40();
-    void func_ov004_02229b64();
-    void func_ov004_02229b84();
-    void func_ov004_02229be0();
-    void func_ov004_02229be4(s32 state);
-    void func_ov004_02229e1c(Unk_ov004_0224e2b8_Str *p, s32 v);
+    void openTalk(const char *name, u32 flag);
+    void execAct0E();
+    void enterAct0E();
+    void execAct0D();
+    void enterAct0D();
+    void execAct0C();
+    void enterAct0C();
+    void execAct0B();
+    void enterAct0B();
+    void execAct0A();
+    void enterAct0A();
+    void execAct09();
+    void enterAct09(const char *name, u32 flag);
+    void execAct08();
+    void enterAct08();
+    void execAct07();
+    void enterAct07();
+    void execAct06();
+    void enterAct06();
+    void execAct05();
+    void enterAct05();
+    void execAct04();
+    void enterAct04();
+    void execAct03();
+    void enterAct03();
+    void execAct02();
+    void enterAct02();
+    void execAct01();
+    void enterAct01();
+    void execAct00();
+    void enterAct00();
+    void changeAct(s32 state);
+    void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor C1 / dtor D2 by hand, as the original calls them)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
@@ -488,7 +488,7 @@ public:
 
 #define F(T, off) (*(T *)((u8 *)this + off))
 
-typedef void (Unk_ov004_0224e2b8::*Unk_ov004_0224e2b8_Fn)();
+typedef void (RoomTelephone::*Unk_ov004_0224e2b8_Fn)();
 
 struct Unk_ov004_0224e2b8_Ent {
     Unk_ov004_0224e2b8_Fn enter;
@@ -496,7 +496,7 @@ struct Unk_ov004_0224e2b8_Ent {
 };
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224e2b8 *(*factory)();
+    RoomTelephone *(*factory)();
     u16 id;
     u16 size;
     u32 zero;
@@ -514,23 +514,23 @@ struct Unk_ov004_Quad {
 };
 
 extern "C" {
-extern const u8 data_ov004_02240290[3];
-extern const u8 data_ov004_02240294[4];
-extern const s32 data_ov004_02240298[3];
-extern const char data_ov004_022402a4[];
+extern const u8 sRoomTelephoneChoiceMsgs[3];
+extern const u8 sRoomTelephoneChoiceMsgsScene6[4];
+extern const s32 sRoomTelephonePos[3];
+extern const char sRoomTelephoneMsgFile[];
 extern u8 data_ov004_0224e16c[2];
 extern u8 data_ov004_0224e170[3];
 extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
-extern char data_ov004_0224e26c[];
+extern char sRoomTelephoneMsgFile2[];
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e298;
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a0;
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a8;
-extern char data_ov004_0224e3ac[];
-extern char data_ov004_0224e3c8[];
-extern Unk_ov004_0224e2b8 *volatile data_ov004_02251288;
-extern Unk_ov004_0224e2b8_Ent data_ov004_02251298[15];
-Unk_ov004_0224e2b8 *func_ov004_0222a2cc();
+extern char sRoomTelephoneArcPath[];
+extern char sRoomTelephoneTexPath[];
+extern RoomTelephone *volatile sRoomTelephone;
+extern Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15];
+RoomTelephone *RoomTelephone_Create();
 }
 
 // ---- definitions ----
@@ -545,78 +545,77 @@ extern "C" Unk_ov004_Quad data_ov004_0225127c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_02251290(0x14, 0x18, 0x18, 0x1f);
 
 // State table: {function run on entering the state, function run every frame}.
-#define FN(x) (Unk_ov004_0224e2b8_Fn)&Unk_ov004_0224e2b8::func_ov004_##x
-extern "C" Unk_ov004_0224e2b8_Ent data_ov004_02251298[15] = {
-    { FN(02229be0), FN(02229b84) },
-    { FN(02229b64), FN(02229b40) },
-    { FN(02229ae0), FN(02229abc) },
-    { FN(02229ab8), FN(02229a94) },
-    { FN(02229a90), FN(02229a6c) },
-    { FN(02229a4c), FN(02229a10) },
-    { FN(02229a0c), FN(02229a08) },
-    { FN(02229a04), FN(02229970) },
-    { FN(02229964), FN(0222993c) },
-    { FN(0222992c), FN(02229900) },
-    { FN(022298e0), FN(022298bc) },
-    { FN(022298b8), FN(0222988c) },
-    { FN(02229888), FN(0222985c) },
-    { FN(02229858), FN(02229834) },
-    { FN(02229830), FN(022297d0) },
+extern "C" Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15] = {
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct00, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct00 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct01, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct01 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct02, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct02 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct03, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct03 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct04, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct04 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct05, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct05 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct06, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct06 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct07, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct07 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct08, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct08 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct09, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct09 },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0A, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0A },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0B, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0B },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0C, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0C },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0D, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0D },
+    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0E, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0E },
 };
 #undef FN
 
 extern "C" {
-extern const u8 data_ov004_02240290[3] = { 0x1b, 0x17, 0x20 };
-extern const u8 data_ov004_02240294[4] = { 0x0f, 0x1b, 0x17, 0x20 };
-extern const s32 data_ov004_02240298[3] = { 0x11000, 0, 0x11000 };
-extern const char data_ov004_022402a4[] = "sp_etc_sequence1";
+extern const u8 sRoomTelephoneChoiceMsgs[3] = { 0x1b, 0x17, 0x20 };
+extern const u8 sRoomTelephoneChoiceMsgsScene6[4] = { 0x0f, 0x1b, 0x17, 0x20 };
+extern const s32 sRoomTelephonePos[3] = { 0x11000, 0, 0x11000 };
+extern const char sRoomTelephoneMsgFile[] = "sp_etc_sequence1";
 u8 data_ov004_0224e16c[2] = { 0x14, 0x15 };
 u8 data_ov004_0224e170[3] = { 0x08, 0x11, 0x17 };
 u8 data_ov004_0224e174[4] = { 0x07, 0x08, 0x11, 0x17 };
-char data_ov004_0224e26c[] = "sp_etc_sequence1";
-const char *data_ov004_0224e178 = data_ov004_0224e26c;
+char sRoomTelephoneMsgFile2[] = "sp_etc_sequence1";
+const char *data_ov004_0224e178 = sRoomTelephoneMsgFile2;
 Unk_ov004_0224e2b8_Str data_ov004_0224e298 = { data_ov004_0224e174, 4 };
 Unk_ov004_0224e2b8_Str data_ov004_0224e2a0 = { data_ov004_0224e170, 3 };
 Unk_ov004_0224e2b8_Str data_ov004_0224e2a8 = { data_ov004_0224e16c, 2 };
-char data_ov004_0224e3ac[] = "/roomObj/obj_telephone.arc";
-char data_ov004_0224e3c8[] = "/roomObj/obj_telephone.nsbtx";
-Unk_ov004_0224e2b8 *volatile data_ov004_02251288;
+char sRoomTelephoneArcPath[] = "/roomObj/obj_telephone.arc";
+char sRoomTelephoneTexPath[] = "/roomObj/obj_telephone.nsbtx";
+RoomTelephone *volatile sRoomTelephone;
 }
-extern "C" Unk_ov004_SceneEntry data_ov004_0224e280 = { func_ov004_0222a2cc, 0x2d, 0x33, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov004_SceneEntry sRoomTelephoneProfile = { RoomTelephone_Create, 0x2d, 0x33, 0, 0xc8000, 0x12c000, 0x258000 };
 
 // ---------------------------------------------------------------- 0x02229660
-extern "C" void func_ov004_02229660() {
-    Unk_ov004_0224e2b8 *g = data_ov004_02251288;
+extern "C" void RoomTelephone_PlayAnimHold() {
+    RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&data_ov004_02251288->unk_ec, func_ov004_02224d8c(&g->unk_1a4, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
     }
 }
 
-extern "C" void func_ov004_022296ac() {
-    Unk_ov004_0224e2b8 *g = data_ov004_02251288;
+extern "C" void RoomTelephone_PlayAnimHangUp() {
+    RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&data_ov004_02251288->unk_ec, func_ov004_02224d8c(&g->unk_1a4, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
     }
 }
 
-extern "C" void func_ov004_022296f8() {
-    Unk_ov004_0224e2b8 *g = data_ov004_02251288;
+extern "C" void RoomTelephone_PlayAnimPickUp() {
+    RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&data_ov004_02251288->unk_ec, func_ov004_02224d8c(&g->unk_1a4, 0), 1, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 1, 0x1000, 0, 0);
     }
 }
 
-extern "C" BOOL func_ov004_02229738() {
-    Unk_ov004_0224e2b8 *g = data_ov004_02251288;
+extern "C" BOOL RoomTelephone_StartAct0A() {
+    RoomTelephone *g = sRoomTelephone;
     if (g) {
-        g->func_ov004_02229be4(10);
+        g->changeAct(10);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_ov004_0222975c() {
-    Unk_ov004_0224e2b8 *g = data_ov004_02251288;
+extern "C" BOOL RoomTelephone_IsTalking() {
+    RoomTelephone *g = sRoomTelephone;
     if (g) {
         if (g->unk_638) {
             return TRUE;
@@ -626,7 +625,7 @@ extern "C" BOOL func_ov004_0222975c() {
     return FALSE;
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229780(const char *name, u32 flag) {
+void RoomTelephone::openTalk(const char *name, u32 flag) {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     vfunc_s08();
     setFileName(name);
@@ -635,84 +634,84 @@ void Unk_ov004_0224e2b8::func_ov004_02229780(const char *name, u32 flag) {
     p->unk_08 = 1;
 }
 
-void Unk_ov004_0224e2b8::func_ov004_022297d0() {
-    if (func_0206ec6c()) {
+void RoomTelephone::execAct0E() {
+    if (MenuCtrl_IsFinished()) {
         TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
         u8 c = 0x10;
-        if (!func_0206ed18()) {
+        if (!MenuCtrl_IsResultOk()) {
             c = 0x18;
         }
-        TalkWindowState_setNextMessage(p, &c, data_ov004_0224e26c);
+        TalkWindowState_setNextMessage(p, &c, sRoomTelephoneMsgFile2);
         p->unk_08 = 1;
         if (func_020b50e8() == 6) {
-            func_ov004_02229be4(0xc);
+            changeAct(0xc);
         } else {
-            func_ov004_02229be4(4);
+            changeAct(4);
         }
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229830() {}
+void RoomTelephone::enterAct0E() {}
 
-void Unk_ov004_0224e2b8::func_ov004_02229834() {
+void RoomTelephone::execAct0D() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->unk_04 == 5) {
-        func_0206eca4(0x30);
-        func_ov004_02229be4(0xe);
+        MenuCtrl_OpenLauncher(0x30);
+        changeAct(0xe);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229858() {}
+void RoomTelephone::enterAct0D() {}
 
-void Unk_ov004_0224e2b8::func_ov004_0222985c() {
+void RoomTelephone::execAct0C() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->unk_04 == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
-        func_ov004_02229be4(7);
+        changeAct(7);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229888() {}
+void RoomTelephone::enterAct0C() {}
 
-void Unk_ov004_0224e2b8::func_ov004_0222988c() {
+void RoomTelephone::execAct0B() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->unk_04 == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
-        func_ov004_02229be4(7);
+        changeAct(7);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_022298b8() {}
+void RoomTelephone::enterAct0B() {}
 
-void Unk_ov004_0224e2b8::func_ov004_022298bc() {
+void RoomTelephone::execAct0A() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02229be4(0xb);
+            changeAct(0xb);
         }
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_022298e0() {
-    func_ov004_02229780(data_ov004_0224e26c, 0xe);
+void RoomTelephone::enterAct0A() {
+    openTalk(sRoomTelephoneMsgFile2, 0xe);
     unk_638 = 1;
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229900() {
+void RoomTelephone::execAct09() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->unk_04 == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
-        func_ov004_02229be4(7);
+        changeAct(7);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_0222992c(const char *name, u32 flag) {
-    func_ov004_02229780(data_ov004_0224e26c, 0x22);
+void RoomTelephone::enterAct09(const char *name, u32 flag) {
+    openTalk(sRoomTelephoneMsgFile2, 0x22);
 }
 
-void Unk_ov004_0224e2b8::func_ov004_0222993c() {
+void RoomTelephone::execAct08() {
     BOOL f;
     if (gScreenTransition == 2) {
         f = TRUE;
@@ -720,15 +719,15 @@ void Unk_ov004_0224e2b8::func_ov004_0222993c() {
         f = FALSE;
     }
     if (f) {
-        func_ov004_02229be4(9);
+        changeAct(9);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229964() {
+void RoomTelephone::enterAct08() {
     unk_638 = 1;
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229970() {
+void RoomTelephone::execAct07() {
     Unk_ov004_02229970_Xyz out;
     s32 a;
     u8 b;
@@ -754,7 +753,7 @@ void Unk_ov004_0224e2b8::func_ov004_02229970() {
             if (f) {
                 if (func_020b6080(func_020b50b4(), &out, &a, &b)) {
                     if (a == 0xd) {
-                        func_ov004_02229be4(0xa);
+                        changeAct(0xa);
                     }
                 }
             }
@@ -762,52 +761,52 @@ void Unk_ov004_0224e2b8::func_ov004_02229970() {
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229a04() {}
-void Unk_ov004_0224e2b8::func_ov004_02229a08() {}
-void Unk_ov004_0224e2b8::func_ov004_02229a0c() {}
+void RoomTelephone::enterAct07() {}
+void RoomTelephone::execAct06() {}
+void RoomTelephone::enterAct06() {}
 
-void Unk_ov004_0224e2b8::func_ov004_02229a10() {
+void RoomTelephone::execAct05() {
     if (AnimFrameCtrl_isFinished((u8 *)this + 0x188)) {
         func_0203e47c(this, this);
         TalkRequest_EndTalkWith(this);
-        func_ov004_02229be4(6);
+        changeAct(6);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229a4c() {
-    func_ov004_022248a0(this);
-    func_ov004_02224ca4(&unk_250, 0x4d5);
+void RoomTelephone::enterAct05() {
+    PlayerActor_LocalRequestPhoneHangUp(this);
+    RoomObj_PlaySe(&unk_250, 0x4d5);
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229a6c() {
+void RoomTelephone::execAct04() {
     if (unk_3c) {
         if (!unk_3c->unk_04) {
-            func_ov004_02229be4(5);
+            changeAct(5);
         }
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229a90() {}
+void RoomTelephone::enterAct04() {}
 
-void Unk_ov004_0224e2b8::func_ov004_02229a94() {
+void RoomTelephone::execAct03() {
     if (unk_3c) {
         if (!unk_3c->unk_04) {
-            func_ov004_02229be4(5);
+            changeAct(5);
         }
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229ab8() {}
+void RoomTelephone::enterAct03() {}
 
-void Unk_ov004_0224e2b8::func_ov004_02229abc() {
+void RoomTelephone::execAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02229be4(3);
+            changeAct(3);
         }
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229ae0() {
+void RoomTelephone::enterAct02() {
     Unk_ov004_02229ae0_Pad pad;
     func_0203e488(this, this);
     setFileName(data_ov004_0224e178);
@@ -819,18 +818,18 @@ void Unk_ov004_0224e2b8::func_ov004_02229ae0() {
     unk_3c->unk_08 = 1;
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229b40() {
+void RoomTelephone::execAct01() {
     if (AnimFrameCtrl_isFinished((u8 *)this + 0x188)) {
-        func_ov004_02229be4(2);
+        changeAct(2);
     }
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229b64() {
-    func_ov004_022248c4(this);
-    func_ov004_02224ca4(&unk_250, 0x4d4);
+void RoomTelephone::enterAct01() {
+    PlayerActor_LocalRequestPhonePickUp(this);
+    RoomObj_PlaySe(&unk_250, 0x4d4);
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229b84() {
+void RoomTelephone::execAct00() {
     s32 r5 = func_020b6014(func_020b50b4(), 0, 0);
     void *r0 = func_02095204(4);
     if (r5 && r0 && (void *)r5 == r0) {
@@ -842,17 +841,17 @@ void Unk_ov004_0224e2b8::func_ov004_02229b84() {
     func_020b6928(func_020b50b4(), unk_370);
 }
 
-void Unk_ov004_0224e2b8::func_ov004_02229be0() {}
+void RoomTelephone::enterAct00() {}
 
-void Unk_ov004_0224e2b8::func_ov004_02229be4(s32 state) {
-    if (data_ov004_02251298[state].enter) {
-        (this->*data_ov004_02251298[state].enter)();
+void RoomTelephone::changeAct(s32 state) {
+    if (sRoomTelephoneActTable[state].enter) {
+        (this->*sRoomTelephoneActTable[state].enter)();
     }
     unk_634 = state;
 }
 
 // ---------------------------------------------------------------- 0x02229e1c
-void Unk_ov004_0224e2b8::func_ov004_02229e1c(Unk_ov004_0224e2b8_Str *p, s32 v) {
+void RoomTelephone::openChoices(Unk_ov004_0224e2b8_Str *p, s32 v) {
     TalkWindowState *m = unk_3c;
     ChoiceList *o = TalkWindowState_getChoiceList(m);
     const u8 *s = p->unk_00;
@@ -879,23 +878,23 @@ void Unk_ov004_0224e2b8::func_ov004_02229e1c(Unk_ov004_0224e2b8_Str *p, s32 v) {
     TalkWindowState_openChoices(m, 1);
 }
 
-void Unk_ov004_0224e2b8::vfunc_6c() {
+void RoomTelephone::vfunc_6c() {
     TalkWindowState *m = unk_3c;
     switch (unk_1e) {
     case 0x1b:
-        func_ov004_02229e1c(&data_ov004_0224e2a8, -1);
+        openChoices(&data_ov004_0224e2a8, -1);
         break;
     case 0xe:
     case 0x1f:
         if (func_020b50e8() == 6) {
-            func_ov004_02229e1c(&data_ov004_0224e298, 3);
+            openChoices(&data_ov004_0224e298, 3);
         } else {
-            func_ov004_02229e1c(&data_ov004_0224e2a0, 2);
+            openChoices(&data_ov004_0224e2a0, 2);
         }
         break;
     case 0xf:
         m->unk_14 = 1;
-        func_ov004_02229be4(0xd);
+        changeAct(0xd);
         break;
     case 0x20:
         func_0206829c(m->unk_16dc);
@@ -908,7 +907,7 @@ void Unk_ov004_0224e2b8::vfunc_6c() {
     }
 }
 
-void Unk_ov004_0224e2b8::vfunc_68() {
+void RoomTelephone::vfunc_68() {
     TalkWindowState *m = unk_3c;
     switch (unk_1e) {
     case 0xe:
@@ -922,26 +921,26 @@ void Unk_ov004_0224e2b8::vfunc_68() {
     }
 }
 
-void *Unk_ov004_0224e2b8::getInteractionPos() {
-    return (void *)data_ov004_02240298;
+void *RoomTelephone::getInteractionPos() {
+    return (void *)sRoomTelephonePos;
 }
 
-void Unk_ov004_0224e2b8::vfunc_4c(u32 a, u8 b) {
+void RoomTelephone::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:
-        func_ov004_02229be4(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov004_02229be4(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224e2b8::vfunc_48(void *a) {
+BOOL RoomTelephone::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, (s32 *)data_ov004_02240298) < 0x2333) {
+        if (func_020e9650(o->unk_5c, (s32 *)sRoomTelephonePos) < 0x2333) {
             u32 d = (u16)(*(s16 *)((u8 *)o + 0x8e) - (F(s16, 0x8e) + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;
@@ -952,72 +951,72 @@ BOOL Unk_ov004_0224e2b8::vfunc_48(void *a) {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224e2b8::vfunc_0c() {
-    func_ov004_02224f60();
-    data_ov004_02251288 = 0;
+BOOL RoomTelephone::vfunc_0c() {
+    releaseResources();
+    sRoomTelephone = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224e2b8::onDraw() {
+BOOL RoomTelephone::onDraw() {
     AnimModel_drawAnimated(&unk_ec, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224e2b8::onExecute() {
-    if (data_ov004_02251298[unk_634].exit) {
-        (this->*data_ov004_02251298[unk_634].exit)();
+BOOL RoomTelephone::onExecute() {
+    if (sRoomTelephoneActTable[unk_634].exit) {
+        (this->*sRoomTelephoneActTable[unk_634].exit)();
     }
     AnimModel_stepAnim(&unk_ec);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224e2b8::vfunc_00() {
-    data_ov004_02251288 = this;
-    unk_5c[0] = data_ov004_02240298[0]; unk_5c[1] = data_ov004_02240298[1]; unk_5c[2] = data_ov004_02240298[2];
+BOOL RoomTelephone::vfunc_00() {
+    sRoomTelephone = this;
+    unk_5c[0] = sRoomTelephonePos[0]; unk_5c[1] = sRoomTelephonePos[1]; unk_5c[2] = sRoomTelephonePos[2];
     setCharId(0);
-    func_ov004_02224fc8(data_ov004_0224e3ac, data_ov004_0224e3c8);
-    if (func_ov004_02224d8c(&unk_1a4, 0)) {
+    loadResources(sRoomTelephoneArcPath, sRoomTelephoneTexPath);
+    if (RoomObjRes_GetBca(&unk_1a4, 0)) {
         if (AnimModel_allocAnmObj(&unk_ec, gBgHeap)) {
-            s32 r = func_ov004_02224d8c(&unk_1a4, 0);
+            s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
             BlendAnimModel_initAnim(&unk_ec, r, 3, 0x1000, 0, 0);
             AnimModel_attachAnim(&unk_ec);
         }
     }
     Unk_ov004_0222a0bc_V3 v;
-    v.v[0] = data_ov004_02240298[0];
-    v.v[1] = data_ov004_02240298[1];
-    v.v[2] = data_ov004_02240298[2];
+    v.v[0] = sRoomTelephonePos[0];
+    v.v[1] = sRoomTelephonePos[1];
+    v.v[2] = sRoomTelephonePos[2];
     func_020b68ec(func_020b50b4(), unk_370, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
     u8 *const g = gSaveData;
     if (func_020b50e8() == 6) {
         if (SaveData_testFlag(g, 0) == 0) {
-            func_ov004_02229be4(8);
+            changeAct(8);
             SaveData_setFlag(g, 0);
         } else {
-            func_ov004_02229be4(7);
+            changeAct(7);
         }
     } else {
-        func_ov004_02229be4(0);
+        changeAct(0);
     }
     return TRUE;
 }
 
-Unk_ov004_0224e2b8::~Unk_ov004_0224e2b8() {
+RoomTelephone::~RoomTelephone() {
     _ZN12Unk_020b6a94D1Ev(unk_618);
     _ZN12Unk_020b6e10D2Ev(unk_370);
     _ZN12Unk_020d8cf4D2Ev(unk_2d4);
 }
 
-Unk_ov004_0224e2b8::Unk_ov004_0224e2b8() {
+RoomTelephone::RoomTelephone() {
     _ZN12Unk_020d8cf4C1Ev(unk_2d4);
     _ZN12Unk_020b6e10C2Ev(unk_370);
     _ZN12Unk_020b6a94C1Ev(unk_618);
 }
 
-extern "C" Unk_ov004_0224e2b8 *func_ov004_0222a2c0() {
-    return data_ov004_02251288;
+extern "C" RoomTelephone *RoomTelephone_GetInstance() {
+    return sRoomTelephone;
 }
 
-extern "C" Unk_ov004_0224e2b8 *func_ov004_0222a2cc() {
-    return new Unk_ov004_0224e2b8;
+extern "C" RoomTelephone *RoomTelephone_Create() {
+    return new RoomTelephone;
 }

@@ -217,9 +217,9 @@ extern u16 gPad[];
 s32 ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
 void Gfx2d_ShowLayer(u32 x);
-s32 func_0206ed50();
-void func_0206ea6c();
-s32 func_02045400();
+s32 MenuCtrl_GetMode();
+void MenuCtrl_GetPocketSelectLabel();
+s32 PendingUnit_ClearActiveOfAid();
 BOOL CommManager_isOnline(void *p);
 BOOL CommManager_isSlotActive(void *p, s32 v);
 void CommManager_beginRecord(void *p);
@@ -227,26 +227,26 @@ void CommManager_writeRecord(void *p, void *buf, s32 n);
 void CommManager_endRecord(void *p, s32 a, s32 b);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void FieldPos_FromUnitCenter(void *out, s32 a, s32 b);
-s32 func_02042d10(s32 v);
-s32 func_02042830(s32 v);
-void func_02042820(s32 v);
-s32 func_02042c08(s32 a, s32 b);
-s32 func_02042bd0(s32 a, s32 b);
-s32 func_0204339c(s32 a, s32 b, s32 c, s32 d);
-u16 *func_020451c4(s32 a);
+s32 FieldAction_PollResult(s32 v);
+s32 FieldAction_PollDrop(s32 v);
+void FieldAction_Release(s32 v);
+s32 FieldAction_RequestPlaceAtPending(s32 a, s32 b);
+s32 FieldAction_RequestDropOrPlace(s32 a, s32 b);
+s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
+u16 *PendingUnit_GetActivePosOfAid(s32 a);
 void NetBuf_PackPair20(void *dst, s32 a, s32 b);
 u8 *func_02095204(s32 a);
 s32 func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 u32 func_02063b8c(s32 a);
-u16 func_0206e750();
+u16 MenuCtrl_GetPocketsFullItem();
 void Item_FromPlacedForm(void *a, void *b);
 u32 func_020991b0();
 void PlayerData_GetCurrent();
 s32 PlayerData_getCatalog();
 void func_0203c42c(s32 a, void *b, s32 c, s32 d);
-void func_0206e744();
-void func_0206ed2c(u32 a);
-void func_0206ecf8(s32 a);
+void MenuCtrl_SetPocketsFullItem();
+void MenuCtrl_SetIndex(u32 a);
+void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(u32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
@@ -260,7 +260,7 @@ void LabelBalloon_setPos(void *a, s32 b, s32 c);
 s32 HandCursor_getAnim(void *p);
 s32 HandCursor_isAnimDone(void *p);
 s32 HandCursor_enableObjWindow(void *p);
-s32 func_0206e868();
+s32 MenuCtrl_GetPtrArg0();
 
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -959,7 +959,7 @@ void PocketsFullMenu::mainAct0F()
             MenuCursorBase_warpTo(&unk_224c, a + b, a + c);
         }
     } else {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
         unk_8c = 3;
         setPhase(1);
         TouchPromptBalloon_hide(&unk_2174, 1);
@@ -1334,8 +1334,8 @@ void PocketsFullMenu::cancelPopupForButtons() {
 }
 
 void PocketsFullMenu::closeWithSelection() {
-    func_0206ed2c(unk_b9);
-    func_0206ecf8(1);
+    MenuCtrl_SetIndex(unk_b9);
+    MenuCtrl_SetResult(1);
     unk_8c = 3;
     setPhase(1);
     TouchPromptBalloon_hide(&unk_2174, 1);
@@ -1352,7 +1352,7 @@ void PocketsFullMenu::storeNewItem() {
     u16 a;
     u16 b;
     u32 r6, r4;
-    a = func_0206e750();
+    a = MenuCtrl_GetPocketsFullItem();
     Item_FromPlacedForm(&b, &a);
     r6 = b;
     r4 = 0;
@@ -1363,15 +1363,15 @@ void PocketsFullMenu::storeNewItem() {
     PlayerData_GetCurrent();
     func_0203c42c(PlayerData_getCatalog(), &b, 0, 1);
     getSlotItem(unk_b9);
-    func_0206e744();
+    MenuCtrl_SetPocketsFullItem();
     putItemInSlot(unk_b9, r6, r4);
 }
 
 void PocketsFullMenu::setPopupChoices() {
-    func_0206ea6c();
+    MenuCtrl_GetPocketSelectLabel();
     s32 r6 = getSlotItem(unk_b9);
     volatile u16 v = r6;
-    s32 t = func_0206ed50();
+    s32 t = MenuCtrl_GetMode();
     BOOL ok = FALSE;
     u32 a = v;
     u32 b = v;
@@ -1473,10 +1473,10 @@ BOOL PocketsFullMenu::moveCursorByPad(void *pad) {
 
 void PocketsFullMenu::onChoiceDrop() {
     s32 t = getSlotItem(unk_b9);
-    if (func_0206ed50() == 0x29) {
-        unk_ac = func_02042c08(gCommManager->unk_64, t);
+    if (MenuCtrl_GetMode() == 0x29) {
+        unk_ac = FieldAction_RequestPlaceAtPending(gCommManager->unk_64, t);
     } else {
-        unk_ac = func_02042bd0(gCommManager->unk_64, t);
+        unk_ac = FieldAction_RequestDropOrPlace(gCommManager->unk_64, t);
     }
     if (unk_ac == -1) {
         resumeInput();
@@ -1487,17 +1487,17 @@ void PocketsFullMenu::onChoiceDrop() {
 }
 
 void PocketsFullMenu::mainAct15() {
-    switch (func_02042830(unk_ac)) {
+    switch (FieldAction_PollDrop(unk_ac)) {
     case 1:
         endNewItemAction(0);
         storeNewItem();
-        func_02042820(unk_ac);
+        FieldAction_Release(unk_ac);
         unk_be = 10;
         setMainState(0x13);
         unk_ac = -1;
         break;
     case 2:
-        func_02042820(unk_ac);
+        FieldAction_Release(unk_ac);
         resumeInput();
         showMessage(3, 0xff);
         unk_ac = -1;
@@ -1550,7 +1550,7 @@ void PocketsFullMenu::sendInsectReleasePacket(u8 a, u8 b) {
 }
 
 BOOL PocketsFullMenu::canReleaseFish() {
-    s32 t = func_0206ed50();
+    s32 t = MenuCtrl_GetMode();
     u8 k = getLocalPlayerIndex();
     if (t == 0x2c) {
         return FishCatch_GetReelTarget(&unk_c0, k);
@@ -1621,12 +1621,12 @@ void PocketsFullMenu::sendFishReleasePacket(u8 v) {
 void PocketsFullMenu::onChoiceBury() {
     s32 t = getSlotItem(unk_b9);
     Unk_ov107_Comm *g = gCommManager;
-    unk_ac = func_0204339c(g->unk_64, 2, 0, t);
+    unk_ac = FieldAction_RequestToolAtPending(g->unk_64, 2, 0, t);
     if (unk_ac == -1) {
         resumeInput();
         showMessage(3, 0xff);
     } else {
-        u16 *p = func_020451c4(g->unk_68);
+        u16 *p = PendingUnit_GetActivePosOfAid(g->unk_68);
         u32 w = *p;
         unk_cc = (s32)w >> 8;
         unk_d0 = w & 0xff;
@@ -1635,7 +1635,7 @@ void PocketsFullMenu::onChoiceBury() {
 }
 
 void PocketsFullMenu::mainAct16() {
-    switch (func_02042d10(unk_ac)) {
+    switch (FieldAction_PollResult(unk_ac)) {
     case 1:
         setMainState(0x17);
         mainAct17();
@@ -1647,7 +1647,7 @@ void PocketsFullMenu::mainAct16() {
     default:
         return;
     }
-    func_02042820(unk_ac);
+    FieldAction_Release(unk_ac);
     unk_ac = -1;
 }
 
@@ -1673,7 +1673,7 @@ u8 PocketsFullMenu::getLocalPlayerIndex() {
 
 void PocketsFullMenu::endNewItemAction(BOOL flag) {
     u8 buf[2];
-    s32 t = func_0206ed50();
+    s32 t = MenuCtrl_GetMode();
     u8 k = getLocalPlayerIndex();
     switch (t) {
     case 0x29:
@@ -1681,7 +1681,7 @@ void PocketsFullMenu::endNewItemAction(BOOL flag) {
         if (flag == 0) {
             break;
         }
-        func_02045400();
+        PendingUnit_ClearActiveOfAid();
         if (CommManager_isOnline(gCommManager)) {
             buf[0] = 0x17;
             buf[1] = k;
@@ -1695,7 +1695,7 @@ void PocketsFullMenu::endNewItemAction(BOOL flag) {
         HeldInsect_Remove(k, 1);
         break;
     case 0x2c:
-        FishCatch_EndForShadow(func_0206e868());
+        FishCatch_EndForShadow(MenuCtrl_GetPtrArg0());
         break;
     }
 }

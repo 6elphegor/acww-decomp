@@ -1726,8 +1726,8 @@ s32 Npc_GetName(void *p, u16 *v);
 u32 _ZN10VillagerId7getNameEj(Unk_02003130 *r, u32 a);
 s32 _ZN10PlayerData11getPlayerIdEv(s32 v);
 s32 _ZN6TownId13func_02094058Ev(s32 v);
-s32 func_020ac7a8();
-s32 func_020ae940(void *p);
+s32 NookShop_IsOpenHour();
+s32 NookShop_IsClosedToday(void *p);
 }
 
 
@@ -1766,9 +1766,9 @@ extern "C" void func_0209a178(Unk_02099f98 *z, s32 i);
 extern "C" s32 func_0209a19c(Unk_02099f98 *z, s32 m);
 
 extern "C" s32 func_0209a19c(Unk_02099f98 *z, s32 m) {
-    if (func_020ac7a8() == 0) {
+    if (NookShop_IsOpenHour() == 0) {
         m = (u8)(m & ~3);
-    } else if (func_020ae940(data_021ed104)) {
+    } else if (NookShop_IsClosedToday(data_021ed104)) {
         m = (u8)(m & ~1);
     }
     s32 n = func_0209a230(z, m);

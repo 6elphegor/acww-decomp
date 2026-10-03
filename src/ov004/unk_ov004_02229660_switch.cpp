@@ -1,24 +1,24 @@
 // mwcc-version: 1.2/base
-// ov004 TU26: .text 0x02229660-0x0222a374 (class Unk_ov004_0224e2b8). The switch function at 0x02229c20
-// (Unk_ov004_0224e2b8::vfunc_70) needs mwcc 1.2/base and is in the _switch file (object order).
+// ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
+// (RoomTelephone::vfunc_70) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 
-// shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
+// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
 //   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN18Unk_ov004_0224d4e88vfunc_20Ej)
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
 // Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN18Unk_ov004_0224d4e8C2Ev (0x02225244, the only ctor in the original);
+//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (Unk_ov004_02224ee4: real C1/D1 methods), unk_248 (Unk_ov004_02224d60) and unk_250
-//    (Unk_ov004_02224cf4) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
+//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
+//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
+//    (RoomObj_DestructSe / RoomObjTex_Destruct), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
@@ -155,33 +155,33 @@ public:
 };
 
 extern "C" {
-s32 func_ov004_02224d8c(void *self, u32 i);
-void func_ov004_02224d9c(void *self);
-void func_ov004_02224dbc(void *self, const char *s);
-void *func_ov004_02224d68(void *self);
-void func_ov004_02224d60(void *self);
-void func_ov004_02224d5c(void *self);
-void func_ov004_02224d08(void *self);
-void func_ov004_02224d10(void *self, const char *s);
-u32 func_ov004_02224d04(void *self);
-void func_ov004_02224cf4(void *self);
-void func_ov004_02224ce4(void *self);
-void func_ov004_02224ca4(void *self, s32 v);
-void func_ov004_02224cb8(void *self);
-void func_ov004_02224cc0(void *self, void *v);
-void func_ov004_02224cdc(void *self);
+s32 RoomObjRes_GetBca(void *self, u32 i);
+void RoomObjRes_Free(void *self);
+void RoomObjRes_Load(void *self, const char *s);
+void *RoomObjRes_GetModel(void *self);
+void RoomObjTex_Construct(void *self);
+void RoomObjTex_Destruct(void *self);
+void RoomObjTex_Reset(void *self);
+void RoomObjTex_Load(void *self, const char *s);
+u32 RoomObjTex_Get(void *self);
+void RoomObj_ConstructSe(void *self);
+void RoomObj_DestructSe(void *self);
+void RoomObj_PlaySe(void *self, s32 v);
+void RoomObj_DeactivateSe(void *self);
+void RoomObj_SetSePos(void *self, void *v);
+void RoomObj_ActivateSe(void *self);
 }
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class Unk_ov004_02224ee4 {
+class RoomObjRes {
 public:
-    Unk_ov004_02224ee4();
-    ~Unk_ov004_02224ee4();
-    void func_ov004_02224ee4();
-    inline s32 func_ov004_02224d8c(u32 i) { return ::func_ov004_02224d8c(this, i); }
-    inline void func_ov004_02224d9c() { ::func_ov004_02224d9c(this); }
-    inline void func_ov004_02224dbc(const char *s) { ::func_ov004_02224dbc(this, s); }
-    inline void *func_ov004_02224d68() { return ::func_ov004_02224d68(this); }
+    RoomObjRes();
+    ~RoomObjRes();
+    void clear();
+    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
+    inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
+    inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
+    inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
     u32 unk_00;
     u32 unk_04;
@@ -190,32 +190,32 @@ public:
     u32 unk_70[13];
 };
 
-class Unk_ov004_02224d60 {
+class RoomObjTex {
 public:
-    inline Unk_ov004_02224d60() { func_ov004_02224d60(this); }
-    inline void func_ov004_02224d08() { ::func_ov004_02224d08(this); }
-    inline void func_ov004_02224d10(const char *s) { ::func_ov004_02224d10(this, s); }
-    inline u32 func_ov004_02224d04() { return ::func_ov004_02224d04(this); }
+    inline RoomObjTex() { RoomObjTex_Construct(this); }
+    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
+    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
+    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
     u32 unk_00;
     u8 unk_04;
 };
 
-class Unk_ov004_02224cf4 {
+class RoomObjSe {
 public:
-    inline Unk_ov004_02224cf4() { func_ov004_02224cf4(this); }
-    inline void func_ov004_02224ca4(s32 v) { ::func_ov004_02224ca4(this, v); }
-    inline void func_ov004_02224cb8() { ::func_ov004_02224cb8(this); }
-    inline void func_ov004_02224cc0(Unk_ov004_02224ee4_Vec *v) { ::func_ov004_02224cc0(this, v); }
-    inline void func_ov004_02224cdc() { ::func_ov004_02224cdc(this); }
+    inline RoomObjSe() { RoomObj_ConstructSe(this); }
+    inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
+    inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
+    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
+    inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Character {
+class RoomObjActor : public Character {
 public:
-    Unk_ov004_0224d4e8();
-    virtual ~Unk_ov004_0224d4e8();
+    RoomObjActor();
+    virtual ~RoomObjActor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -223,23 +223,23 @@ public:
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
 
-    void func_ov004_02224f58(u32 v);
-    s32 func_ov004_02224f20();
-    s32 func_ov004_02224f3c();
-    void func_ov004_02224f60();
-    void func_ov004_02224f90(char *name);
-    void func_ov004_02224fc8(char *a, char *b);
+    void setSyncSlot(u32 v);
+    s32 storeSyncState();
+    s32 getSyncState();
+    void releaseResources();
+    void loadResourcesByName(char *name);
+    void loadResources(char *a, char *b);
 
     /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60 unk_248;
-    /* 0x250 */ Unk_ov004_02224cf4 unk_250;
+    /* 0x1a4 */ RoomObjRes unk_1a4;
+    /* 0x248 */ RoomObjTex unk_248;
+    /* 0x250 */ RoomObjSe unk_250;
 };
 
 
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)
-// Unk_ov004_0224e2b8 overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
-// 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N18Unk_ov004_0224e2b88vfunc_68Ev ...).
+// RoomTelephone overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
+// 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N13RoomTelephone8vfunc_68Ev ...).
 // Every other slot is named vfunc_sXX: main has a label _ZN14TalkMsgRequest9vfunc_sXXEv for each of them.
 class MsgRequest {
 public:
@@ -405,9 +405,9 @@ void ChoiceList_reset(ChoiceList *p, u32 n, s32 v);
 BOOL func_020b68ec(Unk_020b6960 *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
 void func_020b6928(Unk_020b6960 *o, void *p);
 s32 TalkWindow_Get(s32 a);
-BOOL func_0206ec6c();
-s32 func_0206ed18();
-BOOL func_0206eca4(u32 a);
+BOOL MenuCtrl_IsFinished();
+s32 MenuCtrl_IsResultOk();
+BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 func_020b50e8();
 Unk_020b6960 *func_020b50b4();
 BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
@@ -424,18 +424,18 @@ u32 func_0203cb38();
 void Snd_SetOutputMode(u32 a);
 void func_0203ca94();
 s32 func_020e9650(s32 *a, s32 *b);
-void func_ov004_022248a0(void *p);
-void func_ov004_022248c4(void *p);
+void PlayerActor_LocalRequestPhoneHangUp(void *p);
+void PlayerActor_LocalRequestPhonePickUp(void *p);
 }
 
-class Unk_ov004_0224e2b8 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
+class RoomTelephone : public RoomObjActor, public TalkMsgRequest {
 public:
-    Unk_ov004_0224e2b8();
+    RoomTelephone();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224e2b8();
+    virtual ~RoomTelephone();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual void *getInteractionPos();
@@ -443,39 +443,39 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70(u32 a, u8 b);
 
-    void func_ov004_02229780(const char *name, u32 flag);
-    void func_ov004_022297d0();
-    void func_ov004_02229830();
-    void func_ov004_02229834();
-    void func_ov004_02229858();
-    void func_ov004_0222985c();
-    void func_ov004_02229888();
-    void func_ov004_0222988c();
-    void func_ov004_022298b8();
-    void func_ov004_022298bc();
-    void func_ov004_022298e0();
-    void func_ov004_02229900();
-    void func_ov004_0222992c(const char *name, u32 flag);
-    void func_ov004_0222993c();
-    void func_ov004_02229964();
-    void func_ov004_02229970();
-    void func_ov004_02229a04();
-    void func_ov004_02229a08();
-    void func_ov004_02229a0c();
-    void func_ov004_02229a10();
-    void func_ov004_02229a4c();
-    void func_ov004_02229a6c();
-    void func_ov004_02229a90();
-    void func_ov004_02229a94();
-    void func_ov004_02229ab8();
-    void func_ov004_02229abc();
-    void func_ov004_02229ae0();
-    void func_ov004_02229b40();
-    void func_ov004_02229b64();
-    void func_ov004_02229b84();
-    void func_ov004_02229be0();
-    void func_ov004_02229be4(s32 state);
-    void func_ov004_02229e1c(Unk_ov004_0224e2b8_Str *p, s32 v);
+    void openTalk(const char *name, u32 flag);
+    void execAct0E();
+    void enterAct0E();
+    void execAct0D();
+    void enterAct0D();
+    void execAct0C();
+    void enterAct0C();
+    void execAct0B();
+    void enterAct0B();
+    void execAct0A();
+    void enterAct0A();
+    void execAct09();
+    void enterAct09(const char *name, u32 flag);
+    void execAct08();
+    void enterAct08();
+    void execAct07();
+    void enterAct07();
+    void execAct06();
+    void enterAct06();
+    void execAct05();
+    void enterAct05();
+    void execAct04();
+    void enterAct04();
+    void execAct03();
+    void enterAct03();
+    void execAct02();
+    void enterAct02();
+    void execAct01();
+    void enterAct01();
+    void execAct00();
+    void enterAct00();
+    void changeAct(s32 state);
+    void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor C1 / dtor D2 by hand, as the original calls them)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
@@ -488,7 +488,7 @@ public:
 
 #define F(T, off) (*(T *)((u8 *)this + off))
 
-typedef void (Unk_ov004_0224e2b8::*Unk_ov004_0224e2b8_Fn)();
+typedef void (RoomTelephone::*Unk_ov004_0224e2b8_Fn)();
 
 struct Unk_ov004_0224e2b8_Ent {
     Unk_ov004_0224e2b8_Fn enter;
@@ -496,7 +496,7 @@ struct Unk_ov004_0224e2b8_Ent {
 };
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224e2b8 *(*factory)();
+    RoomTelephone *(*factory)();
     u16 id;
     u16 size;
     u32 zero;
@@ -514,28 +514,28 @@ struct Unk_ov004_Quad {
 };
 
 extern "C" {
-extern const u8 data_ov004_02240290[3];
-extern const u8 data_ov004_02240294[4];
-extern const s32 data_ov004_02240298[3];
-extern const char data_ov004_022402a4[];
+extern const u8 sRoomTelephoneChoiceMsgs[3];
+extern const u8 sRoomTelephoneChoiceMsgsScene6[4];
+extern const s32 sRoomTelephonePos[3];
+extern const char sRoomTelephoneMsgFile[];
 extern u8 data_ov004_0224e16c[2];
 extern u8 data_ov004_0224e170[3];
 extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
-extern char data_ov004_0224e26c[];
+extern char sRoomTelephoneMsgFile2[];
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e298;
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a0;
 extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a8;
-extern char data_ov004_0224e3ac[];
-extern char data_ov004_0224e3c8[];
-extern Unk_ov004_0224e2b8 *volatile data_ov004_02251288;
-extern Unk_ov004_0224e2b8_Ent data_ov004_02251298[15];
-Unk_ov004_0224e2b8 *func_ov004_0222a2cc();
+extern char sRoomTelephoneArcPath[];
+extern char sRoomTelephoneTexPath[];
+extern RoomTelephone *volatile sRoomTelephone;
+extern Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15];
+RoomTelephone *RoomTelephone_Create();
 }
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
 // It is the class's virtual at vtable slot 0x70 (and, through the thunk, the secondary base's slot 0x18).
-void Unk_ov004_0224e2b8::vfunc_70(u32 a_, u8 b_) {
+void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
     TalkWindowState *p = unk_3c;
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
     u32 r = 0;
@@ -543,9 +543,9 @@ void Unk_ov004_0224e2b8::vfunc_70(u32 a_, u8 b_) {
     case 0xe:
     case 0x1f:
         if (func_020b50e8() == 6) {
-            r = data_ov004_02240294[t];
+            r = sRoomTelephoneChoiceMsgsScene6[t];
         } else {
-            r = data_ov004_02240290[t];
+            r = sRoomTelephoneChoiceMsgs[t];
         }
         if (r == 0x17) {
             if (SaveData_testFlag(gSaveData, 0x13) && SaveData_testFlag(gSaveData, 0x14)) {
@@ -630,6 +630,6 @@ void Unk_ov004_0224e2b8::vfunc_70(u32 a_, u8 b_) {
     }
     if (r) {
         u8 b = r;
-        TalkWindowState_setNextMessage(p, &b, data_ov004_022402a4);
+        TalkWindowState_setNextMessage(p, &b, sRoomTelephoneMsgFile);
     }
 }

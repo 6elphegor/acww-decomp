@@ -443,7 +443,7 @@ s32 func_020b5184();
 s32 _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
 void OverlayMgr_Acquire(u32 ovl);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, void *d, void *e);
-s32 func_0204263c(Unk_02083c28_Vec *v);
+s32 Field_ClearObjectFcFdAt(Unk_02083c28_Vec *v);
 s32 func_02083ba4(u16 *p);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void FieldPos_FromUnitCenter(Unk_02083c28_Vec *out, s32 x, s32 y);
@@ -566,7 +566,7 @@ s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 s32 func_020b51d4();
 void *SaveVillagers_Get(void *p, s32 i);
 void *func_02084398(void *p);
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 s32 func_02063b8c(s32 n);
 s32 func_02078264();
 s32 SaveVillagers_GetUnk3830Index(void *p);
@@ -890,7 +890,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
                 u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
                 F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             }
-        } else if (F4::func_020a62a0() && ((u8 *)(F4::data_021cd654 + i * 30))[0] != 0) {
+        } else if (F4::NetArea_IsLocalOwner() && ((u8 *)(F4::data_021cd654 + i * 30))[0] != 0) {
             u8 *t = F4::data_021cd654 + i * 30;
             F4::CommRecord_UnpackSource(t + 3, &w, 0);
             s32 wb = w.b;
@@ -938,7 +938,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
     h[0] = (r7 & 0xfff) | 0xe000;
     u8 *e = (u8 *)F4::func_02084398(h);
     s32 r4;
-    if (F4::func_020a62a0()) {
+    if (F4::NetArea_IsLocalOwner()) {
         r4 = F4::func_02084e20(a, &v);
         h[3] = F4::func_02063b8c(4) << 14;
     } else if (e != 0 && e[0] != 0) {
@@ -1568,7 +1568,7 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                             w.x = v.x;
                             w.y = v.y;
                             w.z = v.z;
-                            F3::func_0204263c(&w);
+                            F3::Field_ClearObjectFcFdAt(&w);
                         }
                     }
                     result = (u16 *)e;

@@ -55,14 +55,14 @@ struct Unk_02006d14 {
     s32 func_020085f0(Unk_02094a08_Limit a, s32 b);
     s32 requestAct32(u32 a, s32 b);
     s32 requestAct30(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
-    s32 requestAct70(s32 a, u32 b, s32 c);
-    s32 requestAct6F(Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
+    s32 requestTurnTo(s32 a, u32 b, s32 c);
+    s32 requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
     s32 func_02008100(u16 *p, u32 a, s32 b);
-    s32 requestAct3F(u32 a, u32 b, s32 c);
+    s32 requestChangeHeldItem(u32 a, u32 b, s32 c);
     s32 func_0200c2b4(u32 a, u32 b, u32 c, u32 d, s32 e);
     s32 requestAct76(u32 a, u32 b, u32 c, u32 d, s32 e);
     s32 func_0200ce98(u32 a, u32 b, s32 c);
-    s32 func_ov004_0221efa4(Unk_02006d14_Vec *v, u32 a, s32 b);
+    s32 PlayerActor_RequestExitWalkOut(Unk_02006d14_Vec *v, u32 a, s32 b);
 };
 
 extern "C" {
@@ -130,7 +130,7 @@ void WorldCurve_FromCurved(Unk_02006d14_Vec *a, Unk_02006d14_Vec *b);
 }
 
 extern "C" {
-void func_0200f3ec(void *out, void *a, void *b, void *c, void *d);
+void PlayerActor_OffsetByAngle(void *out, void *a, void *b, void *c, void *d);
 }
 
 extern "C" {
@@ -138,7 +138,7 @@ s32 func_020b52f8();
 }
 
 extern "C" {
-s32 func_ov004_02234588(s32 *a, s32 *b, s32 c, s32 d);
+s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -154,7 +154,7 @@ void _ZN12Unk_02006d1415setShirtTextureEPv(Unk_02006d14 *o, u16 *p);
 }
 
 extern "C" {
-void _ZN12Unk_02006d1413func_0201000cEv(Unk_02006d14 *o);
+void _ZN12Unk_02006d1421requestShirtTexUploadEv(Unk_02006d14 *o);
 }
 
 extern "C" {
@@ -216,7 +216,7 @@ s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 // members of Unk_02006d14 whose symbols.txt names do not fit the method declarations (taken `this` first)
 extern "C" {
 s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Unk_02006d14 *o, u16 *p, u32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_020102ecEv(Unk_02006d14 *o);
+void _ZN12Unk_020102ec10replayAnimEv(Unk_02006d14 *o);
 s32 PlayerActor_GetHairStyle(Unk_02006d14 *o);
 s32 PlayerActor_GetHairColor(Unk_02006d14 *o);
 }
@@ -259,12 +259,12 @@ extern "C" BOOL func_020946f0(u32 a, u32 idx) {
         _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
         v[4] = 0xfff1;
         func_0205e24c(o->unk_59c, &v[4], 0);
-        _ZN12Unk_020102ec13func_020102ecEv(o);
+        _ZN12Unk_020102ec10replayAnimEv(o);
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
         _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
         func_0205e24c(o->unk_59c, &v[0], p);
-        _ZN12Unk_020102ec13func_020102ecEv(o);
+        _ZN12Unk_020102ec10replayAnimEv(o);
         func_0205e120(o->unk_59c);
     }
     return TRUE;
@@ -291,7 +291,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
     switch (kind) {
     case 0:
         _ZN12Unk_02006d1415setShirtTextureEPv(o, p);
-        _ZN12Unk_02006d1413func_0201000cEv(o);
+        _ZN12Unk_02006d1421requestShirtTexUploadEv(o);
         break;
     case 1:
         v1 = *p;
@@ -371,12 +371,12 @@ extern "C" u16 *func_02094440() {
     s32 a, b;
     if (!o) return 0;
     if (o->unk_7ec != 2) return 0;
-    func_0200f3ec(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &data_020e1c74);
+    PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &data_020e1c74);
     BOOL t = data_020e416c == 1 ? TRUE : FALSE;
     if (t) {
         if (func_020b52f8()) {
             if (gCommManager->unk_68 == 0) {
-                if (func_ov004_02234588(&a, &b, 0, 0) < 0) {
+                if (FtrMgr_FindFurnitureFacingPlayer(&a, &b, 0, 0) < 0) {
                     r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, buf, 0);
                 }
             }

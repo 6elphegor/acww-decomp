@@ -441,8 +441,8 @@ s32 func_020e7518(void *);
 void func_02034d70(u32);
 void Hud_Show();
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
-BOOL func_ov004_02224a38(s32 a);
-BOOL func_ov004_0223fb64(Unk_ov053_Vec *v);
+BOOL PlayerActor_LocalRequestStandUp(s32 a);
+BOOL Camera_SetMode16At(Unk_ov053_Vec *v);
 void TalkRequest_EndTalkWith(void *self);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *func_020b4934();
@@ -473,19 +473,19 @@ void func_020851a4(void *p, s32 v);
 void func_02085188(void *p, s32 v);
 s32 _ZN10PlayerData12getHairStyleEv(void *p);
 s32 _ZN10PlayerData12getHairColorEv(void *p);
-void func_ov004_02224b78(s32 v);
+void PlayerActor_LocalSetHeadwearHidden(s32 v);
 void Snd_PlaySe(s32 v);
 s32 func_0202e1cc(s32 a, s32 b);
 s32 func_02034dd0(s32 a, s32 b, s32 c);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *h, s32 v);
 void _ZN12Unk_02097ff413func_0209801cEj(void *h, s32 v);
 s32 func_02063b8c(s32 n);
-void func_ov004_0222487c();
+void PlayerActor_LocalRequestSit();
 void _ZN12Unk_02087ad813func_02087c24Ej(void *p, u32 v);
-void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 s32 func_020951b8(s32 a);
-void func_ov004_022248e8(u8 *a, u8 *b);
-void func_ov004_02225290();
+void PlayerActor_LocalRequestHaircutStart(u8 *a, u8 *b);
+void BarberMachine_Start();
 void func_02003ddc(void *a, u32 b, u32 c, u32 d);
 BOOL _ZN12Unk_0201635013func_0201622cEiPv(void *self, s32 a, void *b);
 }
@@ -692,7 +692,7 @@ BOOL SpNpcHarriet::setupAct02() {
         v.y = pv->y;
         v.z = pv->z;
         v.y += 0x2000;
-        func_ov004_0223fb64(&v);
+        Camera_SetMode16At(&v);
         unk_717 = 0x1f;
     }
     if (unk_658.getTopic() == 5 || unk_658.getTopic() == 8 || unk_658.getTopic() == 10) {
@@ -719,7 +719,7 @@ BOOL SpNpcHarriet::mainAct02() {
             return TRUE;
         } else {
             if (PlayerActor_IsInAction(0x28, 4)) {
-                if (func_ov004_02224a38(0)) {
+                if (PlayerActor_LocalRequestStandUp(0)) {
                     TalkRequest_EndTalkWith(this);
                     changeAct(3);
                 }
@@ -886,8 +886,8 @@ BOOL SpNpcHarriet::mainAct08() {
         u8 out[2];
         out[1] = unk_658.getNewHairColor();
         out[0] = unk_658.getNewHairStyle();
-        func_ov004_022248e8(&out[0], &out[1]);
-        func_ov004_02225290();
+        PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
+        BarberMachine_Start();
         func_02003ddc(&unk_514, 0x41, 0x7f, 0);
     }
     if (_ZN12Unk_0201635013func_0201622cEiPv(&unk_334, 0xf1, &unk_2a0)) {
@@ -926,7 +926,7 @@ BOOL SpNpcHarriet::mainAct09() {
         u.x = dx;
         u.y = dy;
         u.z = dz;
-        PlayerActor_RequestAct6F(&u, 0x266, 4);
+        PlayerActor_RequestWalkTo(&u, 0x266, 4);
         unk_714 = 2;
         break;
     }
@@ -1010,7 +1010,7 @@ void SpNpcHarrietTalk::vfunc_74() {
     u32 t = unk_1e;
     if (t == 0xe || t == 0x37) {
         if ((t == 0xe && unk_b5 == 1) || (t == 0x37 && unk_b5 == 2)) {
-            func_ov004_0222487c();
+            PlayerActor_LocalRequestSit();
             _ZN12Unk_02087ad813func_02087c24Ej(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()), 1);
         }
         unk_b5 = unk_b5 + 1;
@@ -1063,7 +1063,7 @@ void SpNpcHarrietTalk::vfunc_14() {
         break;
     }
     case 0x40:
-        func_ov004_02224b78(0);
+        PlayerActor_LocalSetHeadwearHidden(0);
         Snd_PlaySe(0x43);
         msg = getQuestionsStartMsg();
         break;
@@ -1077,7 +1077,7 @@ void SpNpcHarrietTalk::vfunc_14() {
         unk_3c->setNextMessage(gTalkMsgIndexEnd, 0);
         break;
     case 0x41:
-        func_ov004_02224b78(1);
+        PlayerActor_LocalSetHeadwearHidden(1);
         Snd_PlaySe(0x44);
         break;
     case 0x45:

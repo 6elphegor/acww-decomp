@@ -131,7 +131,7 @@ struct Unk_0202b4ac_Rec;
 struct Unk_0202b4ac_Str;
 struct Unk_0202bd3c_Arr;
 struct Unk_0202bd3c_Bytes;
-class Unk_020ad700;
+class ReddPassword;
 class Unk_0202b4ac_VBase;
 class Unk_0202b4ac_Owner;
 struct Unk_0202b520_Pair;
@@ -2089,9 +2089,9 @@ public:
     void *unk_15c;
 };
 
-class Unk_020ad700 {
+class ReddPassword {
 public:
-    void func_020ad5c0(void *p);
+    void getAnswerText(void *p);
 };
 
 class Unk_0202ce90_Base {
@@ -2288,12 +2288,12 @@ void _ZN12Unk_020e1c64C1Ev(void *);
 void _ZN12Unk_020e1c64D1Ev(void *);
 void _ZN9MsgString4copyEPS_(void *, void *);
 void _ZN9MsgString5clearEv(void *);
-void _ZN12Unk_020e2e54C1Ev(void *);
-void _ZN12Unk_020e2e54D1Ev(void *);
+void _ZN18ReddPasswordStringC1Ev(void *);
+void _ZN18ReddPasswordStringD1Ev(void *);
 s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, u32, void *, u32, u32);
 void _ZN14MatTexVramTask6cancelEv(void *);
 void _ZN14MatTexVramTaskC1Ev(void *);
-Unk_020ad700 * _ZN12Unk_021ed2c013func_020ad3bcEv(void *);
+ReddPassword * _ZN8ReddShop11getPasswordEv(void *);
 u16 VillagerId_GetSpecies(void *);
 void Villager_MakePersonalityFileName(void *, s32, u32, u32);
 u8 VillagerId_GetPersonality(void *);
@@ -2445,10 +2445,10 @@ void * func_02065634();
 void func_02065818(void *, void *, void *, void *, u32, void *, s32, s32);
 void func_02065c94(void *);
 void Melody_SaveRandomPattern(void *);
-void func_0206e8b8(void *);
-u32 func_0206ecf0();
-s32 func_0206ed18();
-s32 func_0206ed38();
+void MenuCtrl_GetDateTime(void *);
+u32 MenuCtrl_GetText();
+s32 MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 void func_02077450(void *, u16 *);
 void func_02077520(void *, void *);
 void func_020775a0(void *, s32, void *, s32, s32);
@@ -2610,8 +2610,8 @@ s32 DateTime_DiffDays(void *, void *);
 s32 DateTime_Compare(void *, void *, s32);
 s32 Clock_GetDateTime(void *);
 BOOL func_020a78a4(void *, const void *, s32);
-s32 func_020ad2c8();
-s32 func_020ad330();
+s32 ReddPassword_CurrentPlayerKnows();
+s32 ReddShop_IsTentOpen();
 s32 func_020b0218();
 void * Constellation_GetData();
 s32 func_020b0980(void *, s32);
@@ -2622,7 +2622,7 @@ s32 func_020b51d4();
 s32 func_020b51fc();
 s32 func_020b5240(s32);
 s32 func_020b5254();
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 s32 func_020e9650(void *, void *);
 void func_020f43fc(void *);
 void func_020f440c(void *);
@@ -5786,7 +5786,7 @@ void VillagerTalkTopics::selectGreeting(Unk_0201d2d0_Out *out) {
     n = 0;
     status = func_0202bb88(&n);
     unk24 = func_0207856c(rec);
-    kind = func_020b8fe8();
+    kind = Weather_GetFallingPrecip();
     v34 = 0;
     PlayerData_GetCurrent();
     v28 = 0;
@@ -5833,12 +5833,12 @@ void VillagerTalkTopics::selectGreeting(Unk_0201d2d0_Out *out) {
         d = &sTalkTopicAiSad;
     } else if (func_0202b998(unk24)) {
         d = &sTalkTopicAiTire;
-    } else if (func_0207cdbc(scene) && func_020ad330() && !func_020ad2c8()) {
-        _ZN12Unk_020e2e54C1Ev(obj);
-        _ZN12Unk_021ed2c013func_020ad3bcEv(data_021ed2c0)->func_020ad5c0(obj);
+    } else if (func_0207cdbc(scene) && ReddShop_IsTentOpen() && !ReddPassword_CurrentPlayerKnows()) {
+        _ZN18ReddPasswordStringC1Ev(obj);
+        _ZN8ReddShop11getPasswordEv(data_021ed2c0)->getAnswerText(obj);
         d = &sTalkTopicAiPassword;
         _ZN15TalkWindowState7setSlotEiPv(unk_3c, 4, obj);
-        _ZN12Unk_020e2e54D1Ev(obj);
+        _ZN18ReddPasswordStringD1Ev(obj);
     } else if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && unk_128_p != NULL && _ZN14VillagerMemory13func_0208091cEv(unk_128_p) != 0 &&
                func_02098ffc() != -1) {
         d = &sTalkTopicAiFortune;
@@ -6740,15 +6740,15 @@ void VillagerTalkTopics::func_0202a54c() {
     u8 b;
     Unk_0201d2d0_Out out;
     void *p;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         p = unk_fc->unk_82c;
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::data_021befd4[3]));
         if (unk_fc->unk_820 == 0) {
-            func_0207fb04(p, func_0206ecf0(), 10);
+            func_0207fb04(p, MenuCtrl_GetText(), 10);
         } else if (unk_128 != 0 && func_02080f94((void *)unk_128)) {
-            _ZN14VillagerMemory11setGreetingEPvi((void *)unk_128, func_0206ecf0(), 16);
+            _ZN14VillagerMemory11setGreetingEPvi((void *)unk_128, MenuCtrl_GetText(), 16);
         } else {
-            u32 v = func_0206ecf0();
+            u32 v = MenuCtrl_GetText();
             _ZN20VillagerDataItemView13func_0207f1a8EPviS0_(p, v, 16, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
         }
     }
@@ -6919,13 +6919,13 @@ void VillagerTalkTopics::func_02029f58() {
     u8 b;
     Unk_0201d2d0_Out out;
     Unk_02029f58_T t;
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         void *r4 = unk_fc->unk_82c;
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::data_021befd4[9]));
         if (unk_128_p != 0 && func_02080f94(unk_128_p) != 0) {
-            _ZN14VillagerMemory11setNicknameEPvi(unk_128_p, ((void *)func_0206ecf0()), 8);
+            _ZN14VillagerMemory11setNicknameEPvi(unk_128_p, ((void *)MenuCtrl_GetText()), 8);
         } else {
-            void *r6 = ((void *)func_0206ecf0());
+            void *r6 = ((void *)MenuCtrl_GetText());
             unk_128_p = func_0207f344(r4, r6, 8, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
         }
         if (unk_128_p != 0) {
@@ -8379,14 +8379,14 @@ void VillagerTalkTopics::func_02027424() {
 void VillagerTalkTopics::func_02027324() {
     Unk_02027324_S c;
     Unk_0201d2d0_Out out;
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 19 && ((Unk_0201d2d0_Msg *)unk_3c) != 0) {
             ((Unk_0201d2d0_Msg *)unk_3c)->unk_08 = 1;
         }
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::data_021bf2a4[11]));
     } else {
         s32 r4 = 2;
-        s32 r6 = func_0206ed38();
+        s32 r6 = MenuCtrl_GetIndex();
         void *r7 = _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
         switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
         case 10:
@@ -9352,7 +9352,7 @@ void VillagerTalkTopics::func_0202536c() {
     u8 b;
     Unk_0201d2d0_Out out;
     s32 r;
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         if (((u32 *)unk_3c)) {
             ((u32 *)unk_3c)[2] = 1;
         }
@@ -9363,7 +9363,7 @@ void VillagerTalkTopics::func_0202536c() {
         b = out.unk_04;
         _ZN15TalkWindowState14setNextMessageEPhPv(((u32 *)unk_3c), &b, out.unk_00);
     } else {
-        r = func_0206ed38();
+        r = MenuCtrl_GetIndex();
         unk_120 = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), r);
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &unk_120, 0, 4, 0);
         ((VillagerTalk *)this)->setNextQueuedFn((*(Unk_020d8938_Fn *)&data_020d7e28));
@@ -9423,7 +9423,7 @@ void VillagerTalkTopics::func_020251fc(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::func_020251c0() {
     u16 h;
-    s32 r = func_0206ed38();
+    s32 r = MenuCtrl_GetIndex();
     h = 0xfff1;
     func_0209909c(&h, 0, r);
     _ZN12Unk_0201442013func_02014a4cEv(this);
@@ -9528,7 +9528,7 @@ void VillagerTalkTopics::func_02024d38() {
     u8 b;
     u16 h;
     Unk_0201d2d0_Out out;
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         if (((u32 *)unk_3c)) {
             ((u32 *)unk_3c)[2] = 1;
         }
@@ -9539,7 +9539,7 @@ void VillagerTalkTopics::func_02024d38() {
         b = out.unk_04;
         _ZN15TalkWindowState14setNextMessageEPhPv(((u32 *)unk_3c), &b, out.unk_00);
     } else {
-        s32 r = func_0206ed38();
+        s32 r = MenuCtrl_GetIndex();
         unk_120 = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), r);
         h = 0xfff1;
         func_0209909c(&h, 0, r);
@@ -9696,7 +9696,7 @@ void VillagerTalkTopics::func_02024800() {
 void VillagerTalkTopics::func_0202475c() {
     Unk_0201d2d0_Out out;
     u8 b;
-    if (func_0206ed18() == 0) {
+    if (MenuCtrl_IsResultOk() == 0) {
         if (((Unk_0201d2d0_Menu *)unk_3c)) {
             ((Unk_0201d2d0_Menu *)unk_3c)->unk_08 = 1;
         }
@@ -9707,7 +9707,7 @@ void VillagerTalkTopics::func_0202475c() {
         b = out.unk_04;
         _ZN15TalkWindowState14setNextMessageEPhPv(((Unk_0201d2d0_Menu *)unk_3c), &b, out.unk_00);
     } else {
-        void *r5 = ((void *)func_0206ed38());
+        void *r5 = ((void *)MenuCtrl_GetIndex());
         unk_120 = *(u16 *)((void *)_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), (s32)r5));
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &unk_120, 0, 4, 0);
         ((VillagerTalk *)this)->setNextQueuedFn((*(Unk_020d8938_Fn *)&data_020d7d48));
@@ -9853,7 +9853,7 @@ void VillagerTalkTopics::func_02024370(Unk_0201d2d0_Out *out) {
 }
 
 void VillagerTalkTopics::func_020242d8() {
-    void *r2 = ((void *)func_0206ed38());
+    void *r2 = ((void *)MenuCtrl_GetIndex());
     u16 h = 0xfff1;
     func_0209909c(&h, 0, (s32)r2);
     if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
@@ -10180,8 +10180,8 @@ void VillagerTalkTopics::func_02023800() {
     u8 b;
     u16 h;
     Unk_0201d2d0_Out out;
-    if (func_0206ed18() != 0) {
-        s32 t = func_0206ed38();
+    if (MenuCtrl_IsResultOk() != 0) {
+        s32 t = MenuCtrl_GetIndex();
         PlayerData_GetCurrent();
         unk_120 = *_ZN15PlayerInventory9getPocketEi(((void * (*)())_ZN10PlayerData13func_02098750Ev)(), t);
         h = 0xfff1;
@@ -10465,7 +10465,7 @@ void VillagerTalkTopics::func_02022dc0() {
     l.b1 = 0;
     Clock_GetDateTime(&l.b0);
     MI_CpuCopy8(&l.b0, &l.a0, 8);
-    func_0206e8b8(&l.a0);
+    MenuCtrl_GetDateTime(&l.a0);
     if (DateTime_DiffMinutes(&l.b0, &l.a0) <= 30) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::data_021bf514[41]));
     } else if (func_0207c618(unk_fc->unk_82c, &l.a0) != 0) {
@@ -10504,7 +10504,7 @@ void VillagerTalkTopics::selectQ10Reserved(Unk_0201d2d0_Out *out) {
     Unk_02022bb4_Pair s;
     s.unk_00 = 0;
     s.unk_04 = 0;
-    func_0206e8b8(&s);
+    MenuCtrl_GetDateTime(&s);
     this->func_020289f8((Unk_020289f8_S *)(&s));
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), sTalkTopicQ10Reserved.unk_00, sTalkTopicQ10Reserved.unk_04, 0, 0);
     out->unk_00 = (u32)&unk_100;
@@ -10519,7 +10519,7 @@ void VillagerTalkTopics::func_02022bb4() {
     Unk_02022bb4_Pair s;
     s.unk_00 = 0;
     s.unk_04 = 0;
-    func_0206e8b8(&s);
+    MenuCtrl_GetDateTime(&s);
     func_02099e88(p + 0x88, _ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c), &s);
     func_0207e310(unk_fc->unk_82c);
     ((void (*)())func_02078578)();
@@ -12897,12 +12897,12 @@ void VillagerTalkKaraokeTopics::func_0201f9c0() {
 void VillagerTalkKaraokeTopics::func_0201f964() {
     void *r4;
     void *r5;
-    if (func_0206ed18() != 0) {
+    if (MenuCtrl_IsResultOk() != 0) {
         r4 = unk_fc->unk_82c;
         if (unk_128 != 0) {
-            _ZN14VillagerMemory13setComplimentEPvi(unk_128, func_0206ecf0(), 16);
+            _ZN14VillagerMemory13setComplimentEPvi(unk_128, MenuCtrl_GetText(), 16);
         } else {
-            u32 r = func_0206ecf0();
+            u32 r = MenuCtrl_GetText();
             _ZN20VillagerDataItemView13func_0207f20cEPviS0_(r4, r, 16, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
         }
     }
@@ -13357,8 +13357,8 @@ void VillagerTalkAcornTopics::func_0201ea8c() {
 void VillagerTalkAcornTopics::func_0201e9d0() {
     Unk_0201e9d0_S c;
     Unk_0201e5a4_Ret t;
-    if (func_0206ed18() != 0) {
-        u32 r4 = ((u32)func_0206ed38());
+    if (MenuCtrl_IsResultOk() != 0) {
+        u32 r4 = ((u32)MenuCtrl_GetIndex());
         unk_120 = *(u16 *)((u32)_ZN15PlayerInventory9getPocketEi((void *)((u32)_ZN10PlayerData13func_02098750Ev((void *)((u32)PlayerData_GetCurrent()))), r4));
         c.unk_02 = 0xfff1;
         func_0209909c(&c.unk_02, 0, r4);

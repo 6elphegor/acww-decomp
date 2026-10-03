@@ -441,8 +441,8 @@ void func_02034dd0(u32 a, u32 b, u32 c);
 void func_02034e10(u32 a, u32 b, u32 c, u32 d);
 s32 func_02063b8c(s32 n);
 s32 func_0202e1cc(...);
-s32 func_020a032c(void);
-s32 func_020a62a0(void);
+s32 GameStart_IsActive(void);
+s32 NetArea_IsLocalOwner(void);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
 s16 *func_0209c37c(s32 a, s32 b);
@@ -461,23 +461,23 @@ s32 func_02034d2c(void);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
 u8 *Snd_GetBeatState(void);
 // other ov004 units
-void func_ov004_022247fc();
-void func_ov004_022265e4();
-s32 func_ov004_02226520();
-void func_ov004_02226644();
-void func_ov004_02226624();
-void func_ov004_022266e4();
-void func_ov004_02226704();
-s32 func_ov004_022265c8();
-void func_ov004_02226604();
-void func_ov004_02224820();
-s32 func_ov004_02226574();
-void func_ov004_022266a4();
-void func_ov004_02226684();
-void func_ov004_022266c4();
-void func_ov004_02226664();
-void func_ov004_02224a38(s32 a);
-void func_ov004_02226860(void);
+void PlayerActor_LocalPlayAnim98();
+void CafeCoffeeSet_SetState09();
+s32 CafeCoffeeSet_IsAnim0CDone();
+void CafeCoffeeSet_SetState06();
+void CafeCoffeeSet_SetState07();
+void CafeCoffeeSet_SetState01();
+void CafeCoffeeSet_SetState00();
+s32 CafeCoffeeSet_GetState();
+void CafeCoffeeSet_SetState08();
+void PlayerActor_LocalRequestDrinkCoffee();
+s32 CafeCoffeeSet_IsAnim0BAtFrame9();
+void CafeCoffeeSet_SetState03();
+void CafeCoffeeSet_SetState04();
+void CafeCoffeeSet_SetState02();
+void CafeCoffeeSet_SetState05();
+void PlayerActor_LocalRequestStandUp(s32 a);
+void CafeCoffeeSet_SyncToBrewster(void);
 }
 
 class SpNpcBrewsterTalk : public Unk_020d7710 {
@@ -578,7 +578,7 @@ BOOL SpNpcBrewster::vfunc_00() {
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
-        if (func_020a62a0() != 0) {
+        if (NetArea_IsLocalOwner() != 0) {
             changeAct(0);
         } else {
             changeAct(5);
@@ -606,7 +606,7 @@ BOOL SpNpcBrewster::onDraw() {
     }
     Model_GetJointWorldMtx(&unk_ec, unk_714, 0xe);
     Model_GetJointWorldMtx(&unk_ec, unk_744, 0xb);
-    func_ov004_02226860();
+    CafeCoffeeSet_SyncToBrewster();
     return TRUE;
 }
 
@@ -701,7 +701,7 @@ BOOL SpNpcBrewster::mainAct01() {
     if (func_02014220(&unk_618) == 0) {
         if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
             if (PlayerActor_IsInAction(0x28, 4) != 0) {
-                func_ov004_02224a38(2);
+                PlayerActor_LocalRequestStandUp(2);
             }
             Hud_Show();
         }
@@ -760,7 +760,7 @@ BOOL SpNpcBrewster::mainAct05() {
             s32 r = Unk_020d77a4_getPlayerActor(this, 4);
             func_02015ab0(&unk_658, r);
             changeAct(1);
-        } else if (func_020a62a0() != 0 && b == 4) {
+        } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -779,7 +779,7 @@ BOOL SpNpcBrewster::mainAct06() {
         s32 b = 4;
         if (func_0201b9e8(this, &a, &b) != 0) {
             if (a == 4) {
-                if (func_020a62a0() != 0) {
+                if (NetArea_IsLocalOwner() != 0) {
                     func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                     changeAct(0);
                 }
@@ -812,7 +812,7 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
 void SpNpcBrewsterTalk::vfunc_78(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
     void *h = func_0209868c(PlayerData_GetCurrent());
-    if (func_020a032c() != 0) {
+    if (GameStart_IsActive() != 0) {
         out->unk_00 = sSpNpcBrewsterMsgFiles[1];
         out->unk_04 = 0x1f;
     } else {
@@ -849,7 +849,7 @@ void SpNpcBrewsterTalk::vfunc_14() {
     Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
-    if (func_020a032c() == 0) {
+    if (GameStart_IsActive() == 0) {
         if ((s32)unk_1e >= 0x1c && (s32)unk_1e <= 0x23) {
             if ((u32)func_02087c4c(h) >= 5) {
                 if (func_02063b8c(3) == 0) {
@@ -960,7 +960,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
     case 1:
         if (func_02019790(r5)) {
             func_020195c8(r5, 1, 0xf6, 1, data_020c6cc8, 0);
-            func_ov004_022266a4();
+            CafeCoffeeSet_SetState03();
             func_0201ad34(&unk_b0->unk_2a0, 0xf3);
             func_0201ad30(&unk_b0->unk_2a0, 0xf5);
             func_0201ad2c(&unk_b0->unk_2a0, 0xf5);
@@ -976,7 +976,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
         if (func_02019790(r5)) {
             func_0201a8c4(&unk_b0->unk_350, 2);
             func_020196b4(r5, 3, 1, 0, 0, 0, (s16)0x8000, 0, 0, data_020c6cc8, 0);
-            func_ov004_022266e4();
+            CafeCoffeeSet_SetState01();
             unk_b4 = 3;
         }
         break;
@@ -996,7 +996,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
     case 5:
         if (func_02019790(r5)) {
             func_020195c8(r5, 1, 0xf7, 1, data_020c6cc8, 0);
-            func_ov004_02226684();
+            CafeCoffeeSet_SetState04();
             unk_b4 = 6;
             unk_b0->unk_778 = 0;
         }
@@ -1013,7 +1013,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
             func_02003ddc(&unk_b0->unk_514, 0x4de, 0x7f, 0);
         }
         if (func_02019790(r5)) {
-            func_ov004_022266c4();
+            CafeCoffeeSet_SetState02();
             func_020196b4(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_b4 = 7;
         }
@@ -1034,7 +1034,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
         if (func_02019790(r5)) {
             func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020195c8(r5, 1, 0xf8, 1, data_020c6cc8, 0);
-            func_ov004_02226664();
+            CafeCoffeeSet_SetState05();
             unk_b4 = 10;
             unk_b0->unk_778 = 0;
         }
@@ -1060,9 +1060,9 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
 void SpNpcBrewsterTalk::runDrinkScript() {
     TalkWindowState *r6 = unk_3c;
     if (r6->unk_04 == 5) {
-        if (func_ov004_022265c8() == 5) {
-            func_ov004_02226604();
-            func_ov004_02224820();
+        if (CafeCoffeeSet_GetState() == 5) {
+            CafeCoffeeSet_SetState08();
+            PlayerActor_LocalRequestDrinkCoffee();
             unk_b0->unk_778 = 0;
         }
         unk_b0->unk_778++;
@@ -1083,7 +1083,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
                 func_02003ddc(&unk_b0->unk_514, 0x4e5, 0x7f, 0);
             }
         }
-        if (func_ov004_02226574()) {
+        if (CafeCoffeeSet_IsAnim0BAtFrame9()) {
             u8 r4;
             u8 buf;
             if (unk_b5 != 0) {
@@ -1123,8 +1123,8 @@ void SpNpcBrewsterTalk::runScript03() {
     switch (unk_b4) {
     case 0:
         if (r6->unk_04 == 5) {
-            func_ov004_022247fc();
-            func_ov004_022265e4();
+            PlayerActor_LocalPlayAnim98();
+            CafeCoffeeSet_SetState09();
             unk_b4 = 1;
             unk_b0->unk_778 = 0;
         }
@@ -1137,11 +1137,11 @@ void SpNpcBrewsterTalk::runScript03() {
         if (unk_b0->unk_778 == 0x14) {
             func_02003ddc(&unk_b0->unk_514, 0x4e7, 0x7f, 0);
         }
-        if (func_ov004_02226520()) {
+        if (CafeCoffeeSet_IsAnim0CDone()) {
             Camera_UnmuteSe();
             func_0201a6c0(&unk_b0->unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020195c8(r5, 4, 0xf8, 3, data_020c6cc8, 0);
-            func_ov004_02226644();
+            CafeCoffeeSet_SetState06();
             unk_b4 = 2;
             unk_b0->unk_778 = 0;
         }
@@ -1155,7 +1155,7 @@ void SpNpcBrewsterTalk::runScript03() {
             func_02003ddc(&unk_b0->unk_514, 0x4e9, 0x7f, 0);
         }
         if (func_02019790(r5)) {
-            func_ov004_022266e4();
+            CafeCoffeeSet_SetState01();
             func_020196b4(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_b4 = 3;
         }
@@ -1163,7 +1163,7 @@ void SpNpcBrewsterTalk::runScript03() {
     case 3:
         if (func_02019790(r5)) {
             func_020195c8(r5, 1, 0xf6, 3, data_020c6cc8, 0);
-            func_ov004_02226624();
+            CafeCoffeeSet_SetState07();
             func_0201ad34(&unk_b0->unk_2a0, 0xf2);
             func_0201ad30(&unk_b0->unk_2a0, 0xf4);
             func_0201ad2c(&unk_b0->unk_2a0, 0xf4);
@@ -1177,7 +1177,7 @@ void SpNpcBrewsterTalk::runScript03() {
             func_02003ddc(&unk_b0->unk_514, 0x4ea, 0x7f, 0);
         }
         if (func_02019790(r5)) {
-            func_ov004_02226704();
+            CafeCoffeeSet_SetState00();
             func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020196b4(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
             unk_b4 = 5;
@@ -1254,7 +1254,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
+            if (NetArea_IsLocalOwner()) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 changeAct(3);
             } else {

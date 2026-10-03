@@ -411,13 +411,13 @@ void _ZN11PlayerActor12requestAct01Ejj(void *, s32, s32);
 void _ZN12Unk_02006d1412requestAct10Esji(void *, s32, s32, s32);
 void *func_020952c8();
 void _ZN12Unk_020102ec11advanceAnimEv(void *);
-void _ZN12Unk_02006d1413func_0200f258Ev(void *);
-void _ZN12Unk_020102ec13func_02010358Eijt(void *, s32, s32, s32);
+void _ZN12Unk_02006d1414playFootstepSeEv(void *);
+void _ZN12Unk_020102ec13startAnimOnceEijt(void *, s32, s32, s32);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *);
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
-void func_0200f17c(void *, void *, void *);
+void PlayerActor_SetLastPlayDate(void *, void *, void *);
 void *PlayerActor_Get(s32);
 void func_0203d984();
 void *func_020b4934();
@@ -435,7 +435,7 @@ void *func_02095204(s32);
 s32 func_020e780c(s32, s32);
 void *BuildingList_FindByItem(s32);
 s32 _ZN13BuildingActor10isDoorIdleEv(void *);
-s32 PlayerActor_RequestAct6F(void *, s32, s32);
+s32 PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 _ZN13BuildingActor15openDoorForExitEv(void *);
 void func_0203d990();
 void Field_SetDoorExitMode(s32);
@@ -457,7 +457,7 @@ void func_02094030(void *);
 void Npc_GetName(void *, void *);
 void func_02094018(void *);
 void func_02094f20();
-void PlayerActor_RequestAct70(s32, s32);
+void PlayerActor_RequestTurnTo(s32, s32);
 void func_020902f8(s32);
 void func_020902d4(s32, void *, s32, s32);
 s32 func_02090330(s32, void *, s32, s32);
@@ -753,7 +753,7 @@ void KappnTaxi::execTaxiPlayerGetOut() {
         switch (unk_2d9) {
         case 0x12:
             func_02094f20();
-            PlayerActor_RequestAct70(getAngleToPlayer(), 4);
+            PlayerActor_RequestTurnTo(getAngleToPlayer(), 4);
             break;
         case 0x1c:
             setTaxiState(4);
@@ -842,7 +842,7 @@ void KappnTaxi::execTaxiDepart() {
                             *p = l1[2];
                             *p = *p + 0x200;
                             func_02094574(0, 0, 4);
-                            PlayerActor_RequestAct6F(&unk_2bc, 0x400, 4);
+                            PlayerActor_RequestWalkTo(&unk_2bc, 0x400, 4);
                         }
                     }
                 }
@@ -936,7 +936,7 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
                     v.y = pv->y;
                     v.z = pv->z;
                     v.z = v.z + 0x4000;
-                    if (PlayerActor_RequestAct6F(&v, 0x400, 4) != 0) {
+                    if (PlayerActor_RequestWalkTo(&v, 0x400, 4) != 0) {
                         setTaxiState(0xc);
                     }
                 }
@@ -1063,7 +1063,7 @@ s32 PlayerActTaxiGetOut::requestTaxiGetOut(s32 a, s32 b) {
 void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Loc l;
     Unk_ov068_0226a940_Words w;
-    _ZN12Unk_020102ec13func_02010358Eijt(this, 0x82, 0, 0);
+    _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x82, 0, 0);
     unk_8e = 0;
     _ZN12Unk_02006d1415clearActionFlagEj(this);
     void *r4 = PlayerActor_GetPlayerData(this);
@@ -1076,7 +1076,7 @@ void PlayerActTaxiGetOut::setupTaxiGetOut() {
         bits.a = ((u8 *)&w)[5];
         bits.b = ((u8 *)&w)[4];
         bits.c = ((u8 *)&w)[3];
-        func_0200f17c(this, r4, &bits);
+        PlayerActor_SetLastPlayDate(this, r4, &bits);
     }
 }
 
@@ -1092,7 +1092,7 @@ void PlayerActTaxiGetOut::endTaxiGetOut() {
 void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 0x16) != 0) {
-        _ZN12Unk_02006d1413func_0200f258Ev(this);
+        _ZN12Unk_02006d1414playFootstepSeEv(this);
     }
 }
 
@@ -1116,7 +1116,7 @@ s32 PlayerActTaxiGetIn::requestTaxiGetIn(s32 a, s32 b) {
 }
 
 void PlayerActTaxiGetIn::setupTaxiGetIn() {
-    _ZN12Unk_020102ec13func_02010358Eijt(this, 0x83, 3, 0);
+    _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x83, 3, 0);
     unk_8e = 0;
 }
 
@@ -1132,7 +1132,7 @@ void PlayerActTaxiGetIn::endTaxiGetIn() {
 void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 8) != 0) {
-        _ZN12Unk_02006d1413func_0200f258Ev(this);
+        _ZN12Unk_02006d1414playFootstepSeEv(this);
     }
 }
 

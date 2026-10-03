@@ -310,9 +310,9 @@ BOOL TalkRequest_EndTalkWith(void *p);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
 void _ZN9AnimModel8stepAnimEv(void *self);
 void _ZN9ModelAnim7replaceEiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
-BOOL func_0206ec6c();
+BOOL MenuCtrl_IsFinished();
 BOOL PlayerActor_LocalRequestAct6BOr6C(s32 a);
-BOOL func_0206eca4(u32 a);
+BOOL MenuCtrl_OpenLauncher(u32 a);
 s32 func_02030814(s32 a);
 BOOL PlayerActor_LocalRequestAct6A(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
@@ -584,7 +584,7 @@ s32 Mailbox::execUseOpen() {
 }
 
 s32 Mailbox::enterUseMenu() {
-    if (func_0206eca4(0x27)) {
+    if (MenuCtrl_OpenLauncher(0x27)) {
         return TRUE;
     }
     return FALSE;
@@ -599,7 +599,7 @@ s32 Mailbox::enterUseMenuWait() {
 }
 
 s32 Mailbox::execUseMenuWait() {
-    if (func_0206ec6c()) {
+    if (MenuCtrl_IsFinished()) {
         if (PlayerActor_LocalRequestAct6BOr6C(2)) {
             setUseState(4);
         }

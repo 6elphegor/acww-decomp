@@ -8,12 +8,12 @@ struct Unk_ov065_0228e1c0_Raw {
 
 extern "C" {
 extern Unk_ov065_0228e1c0_Raw data_ov065_0228e1c0;
-Unk_ov065_0228e1c0_Raw *data_ov065_0228e1b4 = &data_ov065_0228e1c0;
+Unk_ov065_0228e1c0_Raw *sGsQrDefault = &data_ov065_0228e1c0;
 u8 data_ov065_0228e1b8[8] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2, 0, 0};
 Unk_ov065_0228e1c0_Raw data_ov065_0228e1c0 = {-1};
-s32 data_ov065_02291748;
-u32 data_ov065_0229174c[5];
-char data_ov065_02291760[0x40];
+s32 sGsQrLocalAddrCount;
+u32 sGsQrLocalAddrs[5];
+char sGsQrMasterOverride[0x40];
 u8 data_ov065_022917a0[0x100];
 }
 
@@ -98,38 +98,38 @@ typedef Unk_ov065_02287348_Ent Ent;
 typedef Unk_ov065_022786bc_Vec Vec;
 
 extern "C" {
-extern Qr *data_ov065_0228e1b4;
+extern Qr *sGsQrDefault;
 extern u8 data_ov065_0228e1b8[];
-extern char *data_ov065_0228e504[];
-extern s32 data_ov065_02291748;
-extern u32 data_ov065_0229174c[];
+extern char *gGsKeyNames[];
+extern s32 sGsQrLocalAddrCount;
+extern u32 sGsQrLocalAddrs[];
 
 s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02279144(void);
-void func_ov065_02278688(Vec *);
-s32 func_ov065_02278684(Vec *);
-void *func_ov065_0227866c(Vec *, s32);
-void func_ov065_02278658(Vec *, void *);
-void func_ov065_0227858c(Vec *, s32);
-Vec *func_ov065_022786bc(s32, s32, void *);
-char *func_ov065_022610f0(Unk_ov065_02287390_W);
-void func_ov065_02287df8(Buf *, s32, u8 *);
-void func_ov065_02288094(Buf *, const char *);
-void func_ov065_022880d8(Buf *, s32);
-void func_ov065_02287b18(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void func_ov065_02287d04(Qr *, u8 *);
-void func_ov065_02287d90(Qr *, Buf *, u8 *, s32);
+s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
+s32 GsSock_Close(s32);
+s32 GsUtil_GetTimeMs(void);
+void GsArray_Free(Vec *);
+s32 GsArray_Count(Vec *);
+void *GsArray_At(Vec *, s32);
+void GsArray_Append(Vec *, void *);
+void GsArray_RemoveAt(Vec *, s32);
+Vec *GsArray_New(s32, s32, void *);
+char *Sock_InetNtoA(Unk_ov065_02287390_W);
+void GsQr_BeginPacket(Buf *, s32, u8 *);
+void GsQr_BufAppendString(Buf *, const char *);
+void GsQr_BufAppendInt(Buf *, s32);
+void GsQr_AppendAllKeyValues(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
+void GsQr_ParsePublicAddress(Qr *, u8 *);
+void GsQr_AppendChallengeResponse(Qr *, Buf *, u8 *, s32);
 
-void func_ov065_02287324(Ent *e);
-void func_ov065_02287940(Qr *q, Buf *buf, s32 kind);
-void func_ov065_022878f0(Qr *q, Buf *buf);
-BOOL func_ov065_022877d4(Qr *q, u32 v);
-void func_ov065_02287828(Qr *q, u8 *p, s32 n);
-void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n);
+void GsNatNeg_FreeEntry(Ent *e);
+void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind);
+void GsQr_BuildQr1Reply(Qr *q, Buf *buf);
+BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v);
+void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n);
+void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n);
 
 #define HTONS(x) ((u16)((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00)))
 #define HTONL(x) (((x) >> 24 & 0xff) | ((x) >> 8 & 0xff00) | ((x) << 8 & 0xff0000) | ((x) << 24 & 0xff000000))
@@ -226,12 +226,12 @@ struct Unk_ov065_02288124_Qr {
 };
 
 extern "C" {
-extern const char *data_ov065_0228e504[];
-extern Unk_ov065_02288124_Qr *data_ov065_0228e1b4;
+extern const char *gGsKeyNames[];
+extern Unk_ov065_02288124_Qr *sGsQrDefault;
 extern Unk_ov065_02288124_Qr data_ov065_0228e1c0;
-extern volatile s32 data_ov065_02291748;
-extern Unk_ov065_02287d04_Four data_ov065_0229174c[];
-extern char data_ov065_02291760[];
+extern volatile s32 sGsQrLocalAddrCount;
+extern Unk_ov065_02287d04_Four sGsQrLocalAddrs[];
+extern char sGsQrMasterOverride[];
 extern u8 data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
@@ -244,43 +244,43 @@ s32 strcmp(const char *, const char *);
 void srand(u32);
 s32 rand();
 
-void *func_ov065_02277af0(s32);
-void func_ov065_02277ac8(void *);
-Unk_ov065_0228804c_List *func_ov065_02278e64();
-s32 func_ov065_02278bf4(const char *);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, Unk_ov065_02287fcc_Sa *, s32 *);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8(s32);
-s32 func_ov065_02279134();
-u32 func_ov065_02279144();
-Unk_ov065_02287fcc_Host *func_ov065_02261408(const char *);
-void func_ov065_02287390(Unk_ov065_02288124_Qr *, s32);
-void func_ov065_02287534(Unk_ov065_02288124_Qr *);
-s32 func_ov065_0228758c(Unk_ov065_02288124_Qr *, u8 *, s32, Unk_ov065_02287fcc_Sa *);
+void *GsUtil_Alloc(s32);
+void GsUtil_Free(void *);
+Unk_ov065_0228804c_List *GsSock_GetLocalHost();
+s32 GsSock_InetAddr(const char *);
+s32 GsSock_RecvFrom(s32, void *, s32, s32, Unk_ov065_02287fcc_Sa *, s32 *);
+s32 GsSock_Close(s32);
+s32 GsSock_CanRead(s32);
+s32 GsSock_CleanupStub();
+u32 GsUtil_GetTimeMs();
+Unk_ov065_02287fcc_Host *Sock_GetHostByName(const char *);
+void GsQr_SendHeartbeat(Unk_ov065_02288124_Qr *, s32);
+void GsQr_SendKeepAlive(Unk_ov065_02288124_Qr *);
+s32 GsQr_HandlePacket(Unk_ov065_02288124_Qr *, u8 *, s32, Unk_ov065_02287fcc_Sa *);
 
-void func_ov065_02287b18(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
-void func_ov065_02287b54(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 type, s32 count, u8 *list);
-void func_ov065_02287d04(Unk_ov065_02288124_Qr *q, const char *s);
-void func_ov065_02287d90(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, const char *s, s32 n);
-void func_ov065_02287df8(Unk_ov065_02288094_Buf *b, s32 c, u8 *ip);
-void func_ov065_02287e18(u8 *key, s32 keylen, u8 *data, s32 datalen);
-void func_ov065_02287ef0(u8 *in, s32 len, u8 *out);
-u8 func_ov065_02287f88(u8 c);
-void func_ov065_02287fc0(u8 *a, u8 *b);
-s32 func_ov065_02287fcc(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp);
-void func_ov065_0228804c();
-void func_ov065_02288094(Unk_ov065_02288094_Buf *b, const char *s);
-void func_ov065_022880d8(Unk_ov065_02288094_Buf *b, s32 v);
-void func_ov065_022880fc(Unk_ov065_022880fc_Keys *k, s32 c);
-void func_ov065_02288124(Unk_ov065_02288124_Qr *q);
-void func_ov065_02288190(Unk_ov065_02288124_Qr *q);
-void func_ov065_022881e0(Unk_ov065_02288124_Qr *q);
-void func_ov065_022882b8(Unk_ov065_02288124_Qr *q);
-void func_ov065_02288318(Unk_ov065_02288124_Qr *q);
-void func_ov065_02288344(Unk_ov065_02288124_Qr *q, Unk_ov065_02288124_AddrCb cb);
-void func_ov065_02288358(Unk_ov065_02288124_Qr *q, s32 v);
-void func_ov065_0228836c(Unk_ov065_02288124_Qr *q, s32 v);
-s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, Unk_ov065_02288124_KeyCb cb88,
+void GsQr_AppendAllKeyValues(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
+void GsQr_AppendKeyValues(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 type, s32 count, u8 *list);
+void GsQr_ParsePublicAddress(Unk_ov065_02288124_Qr *q, const char *s);
+void GsQr_AppendChallengeResponse(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, const char *s, s32 n);
+void GsQr_BeginPacket(Unk_ov065_02288094_Buf *b, s32 c, u8 *ip);
+void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen);
+void GsQr_Base64Encode(u8 *in, s32 len, u8 *out);
+u8 GsQr_Base64Char(u8 c);
+void GsQr_SwapBytes(u8 *a, u8 *b);
+s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp);
+void GsQr_GetLocalAddresses();
+void GsQr_BufAppendString(Unk_ov065_02288094_Buf *b, const char *s);
+void GsQr_BufAppendInt(Unk_ov065_02288094_Buf *b, s32 v);
+void GsQr_KeyBufferAdd(Unk_ov065_022880fc_Keys *k, s32 c);
+void GsQr_Shutdown(Unk_ov065_02288124_Qr *q);
+void GsQr_SendStateChanged(Unk_ov065_02288124_Qr *q);
+void GsQr_CheckHeartbeat(Unk_ov065_02288124_Qr *q);
+void GsQr_ReceiveAll(Unk_ov065_02288124_Qr *q);
+void GsQr_Think(Unk_ov065_02288124_Qr *q);
+void GsQr_SetPublicAddressCallback(Unk_ov065_02288124_Qr *q, Unk_ov065_02288124_AddrCb cb);
+void GsQr_SetClientMessageCallback(Unk_ov065_02288124_Qr *q, s32 v);
+void GsQr_SetNatNegCallback(Unk_ov065_02288124_Qr *q, s32 v);
+s32 GsQr_Init(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, Unk_ov065_02288124_KeyCb cb88,
                         Unk_ov065_02288124_IdxCb cb8c, Unk_ov065_02288124_IdxCb cb90, Unk_ov065_02288124_ListCb cb94, Unk_ov065_02288124_CountCb cb98,
                         Unk_ov065_02288124_ErrCb cb9c, void *ud);
 
@@ -289,7 +289,7 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
 
 namespace F02287b18 {
 extern "C" {
-s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, Unk_ov065_02288124_KeyCb cb88,
+s32 GsQr_Init(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, Unk_ov065_02288124_KeyCb cb88,
                         Unk_ov065_02288124_IdxCb cb8c, Unk_ov065_02288124_IdxCb cb90, Unk_ov065_02288124_ListCb cb94, Unk_ov065_02288124_CountCb cb98,
                         Unk_ov065_02288124_ErrCb cb9c, void *ud) {
     s32 i;
@@ -299,10 +299,10 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
     if (out == NULL) {
         q = &data_ov065_0228e1c0;
     } else {
-        *out = (Unk_ov065_02288124_Qr *)func_ov065_02277af0(0x110);
+        *out = (Unk_ov065_02288124_Qr *)GsUtil_Alloc(0x110);
         q = *out;
     }
-    srand(func_ov065_02279144());
+    srand(GsUtil_GetTimeMs());
     func_02127838(q->unk_04, name);
     func_02127838(q->unk_44, secret);
     q->unk_c0 = a2;
@@ -335,15 +335,15 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
         q->unk_d8[i] = -1;
     }
     q->unk_100 = 0;
-    if (data_ov065_02291748 == 0) {
-        func_ov065_0228804c();
+    if (sGsQrLocalAddrCount == 0) {
+        GsQr_GetLocalAddresses();
     }
     if (a5 != 0) {
-        char c = data_ov065_02291760[0];
+        char c = sGsQrMasterOverride[0];
         if (c == 0) {
             OS_SPrintf(buf, "%s.master.gs.nintendowifi.net", name);
         }
-        ok = func_ov065_02287fcc(c != 0 ? data_ov065_02291760 : buf, 0x6cfc, &q->unk_cc, NULL);
+        ok = GsQr_ResolveAddress(c != 0 ? sGsQrMasterOverride : buf, 0x6cfc, &q->unk_cc, NULL);
     } else {
         ok = 1;
     }
@@ -357,9 +357,9 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_0228836c(Unk_ov065_02288124_Qr *q, s32 v) {
+void GsQr_SetNatNegCallback(Unk_ov065_02288124_Qr *q, s32 v) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     q->unk_a0 = v;
 }
@@ -368,9 +368,9 @@ void func_ov065_0228836c(Unk_ov065_02288124_Qr *q, s32 v) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288358(Unk_ov065_02288124_Qr *q, s32 v) {
+void GsQr_SetClientMessageCallback(Unk_ov065_02288124_Qr *q, s32 v) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     q->unk_a4 = v;
 }
@@ -379,9 +379,9 @@ void func_ov065_02288358(Unk_ov065_02288124_Qr *q, s32 v) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288344(Unk_ov065_02288124_Qr *q, Unk_ov065_02288124_AddrCb cb) {
+void GsQr_SetPublicAddressCallback(Unk_ov065_02288124_Qr *q, Unk_ov065_02288124_AddrCb cb) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     q->unk_a8 = cb;
 }
@@ -390,21 +390,21 @@ void func_ov065_02288344(Unk_ov065_02288124_Qr *q, Unk_ov065_02288124_AddrCb cb)
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288318(Unk_ov065_02288124_Qr *q) {
+void GsQr_Think(Unk_ov065_02288124_Qr *q) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     if (q->unk_bc != 0) {
-        func_ov065_022881e0(q);
+        GsQr_CheckHeartbeat(q);
     }
-    func_ov065_022882b8(q);
+    GsQr_ReceiveAll(q);
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_022882b8(Unk_ov065_02288124_Qr *q) {
+void GsQr_ReceiveAll(Unk_ov065_02288124_Qr *q) {
     struct {
         Unk_ov065_02287fcc_Sa sa;
         s32 len;
@@ -412,14 +412,14 @@ void func_ov065_022882b8(Unk_ov065_02288124_Qr *q) {
     s32 z = 0;
     l.len = 8;
     if (q->unk_c4 != 0) {
-        if (func_ov065_02278ee8(q->unk_00) != 0) {
+        if (GsSock_CanRead(q->unk_00) != 0) {
             do {
-                s32 r = func_ov065_02278cb8(q->unk_00, data_ov065_022917a0, 0xff, z, &l.sa, &l.len);
+                s32 r = GsSock_RecvFrom(q->unk_00, data_ov065_022917a0, 0xff, z, &l.sa, &l.len);
                 if (r != ~z) {
                     data_ov065_022917a0[r] = z;
-                    func_ov065_0228758c(q, data_ov065_022917a0, r, &l.sa);
+                    GsQr_HandlePacket(q, data_ov065_022917a0, r, &l.sa);
                 }
-            } while (func_ov065_02278ee8(q->unk_00) != 0);
+            } while (GsSock_CanRead(q->unk_00) != 0);
         }
     }
 }
@@ -428,8 +428,8 @@ void func_ov065_022882b8(Unk_ov065_02288124_Qr *q) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_022881e0(Unk_ov065_02288124_Qr *q) {
-    u32 now = func_ov065_02279144();
+void GsQr_CheckHeartbeat(Unk_ov065_02288124_Qr *q) {
+    u32 now = GsUtil_GetTimeMs();
     if (q->unk_00 != -1) {
         s32 r = q->unk_b8;
         if (r > 0 && now - q->unk_ac > 0x2710) {
@@ -438,18 +438,18 @@ void func_ov065_022881e0(Unk_ov065_02288124_Qr *q) {
                 q->unk_9c(5, "No challenge value was received from the master server.", q->unk_10c);
                 return;
             }
-            func_ov065_02287390(q, 3);
+            GsQr_SendHeartbeat(q, 3);
             q->unk_b8 = q->unk_b8 + 1;
         } else if (q->unk_b4 != 0 && now - q->unk_ac > 0x2710) {
-            func_ov065_02287390(q, 1);
+            GsQr_SendHeartbeat(q, 1);
         } else {
             u32 a = q->unk_ac;
             if (now - a > 0xea60 || a == 0 || now < a) {
-                func_ov065_02287390(q, 0);
+                GsQr_SendHeartbeat(q, 0);
             }
         }
         if (now - q->unk_b0 > 0x4e20) {
-            func_ov065_02287534(q);
+            GsQr_SendKeepAlive(q);
         }
     }
 }
@@ -458,17 +458,17 @@ void func_ov065_022881e0(Unk_ov065_02288124_Qr *q) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288190(Unk_ov065_02288124_Qr *q) {
+void GsQr_SendStateChanged(Unk_ov065_02288124_Qr *q) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     if (q->unk_bc != 0) {
-        u32 d = func_ov065_02279144() - q->unk_ac;
+        u32 d = GsUtil_GetTimeMs() - q->unk_ac;
         if (d < 0x2710) {
             q->unk_b4 = 1;
             return;
         }
-        func_ov065_02287390(q, 1);
+        GsQr_SendHeartbeat(q, 1);
         q->unk_b4 = 0;
     }
 }
@@ -477,23 +477,23 @@ void func_ov065_02288190(Unk_ov065_02288124_Qr *q) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288124(Unk_ov065_02288124_Qr *q) {
+void GsQr_Shutdown(Unk_ov065_02288124_Qr *q) {
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     if (q->unk_bc != 0) {
-        func_ov065_02287390(q, 2);
+        GsQr_SendHeartbeat(q, 2);
     }
     if (q->unk_00 != -1 && q->unk_c4 != 0) {
-        func_ov065_02278dbc(q->unk_00);
+        GsSock_Close(q->unk_00);
     }
     q->unk_00 = -1;
     q->unk_ac = 0;
     if (q->unk_c4 != 0) {
-        func_ov065_02279134();
+        GsSock_CleanupStub();
     }
     if (q != &data_ov065_0228e1c0) {
-        func_ov065_02277ac8(q);
+        GsUtil_Free(q);
     }
 }
 }
@@ -501,7 +501,7 @@ void func_ov065_02288124(Unk_ov065_02288124_Qr *q) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_022880fc(Unk_ov065_022880fc_Keys *k, s32 c) {
+void GsQr_KeyBufferAdd(Unk_ov065_022880fc_Keys *k, s32 c) {
     s32 n = k->unk_100;
     if (n < 0xfe && c >= 1 && c <= 0xfe) {
         k->unk_100 = n + 1;
@@ -513,17 +513,17 @@ void func_ov065_022880fc(Unk_ov065_022880fc_Keys *k, s32 c) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_022880d8(Unk_ov065_02288094_Buf *b, s32 v) {
+void GsQr_BufAppendInt(Unk_ov065_02288094_Buf *b, s32 v) {
     char t[0x18];
     OS_SPrintf(t, "%d", v);
-    func_ov065_02288094(b, t);
+    GsQr_BufAppendString(b, t);
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02288094(Unk_ov065_02288094_Buf *b, const char *s) {
+void GsQr_BufAppendString(Unk_ov065_02288094_Buf *b, const char *s) {
     s32 n = STD_GetStringLength(s) + 1;
     s32 len = b->unk_800;
     s32 avail = 0x800 - len;
@@ -541,20 +541,20 @@ void func_ov065_02288094(Unk_ov065_02288094_Buf *b, const char *s) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_0228804c() {
-    Unk_ov065_0228804c_List *l = func_ov065_02278e64();
+void GsQr_GetLocalAddresses() {
+    Unk_ov065_0228804c_List *l = GsSock_GetLocalHost();
     if (l != NULL) {
-        data_ov065_02291748 = 0;
+        sGsQrLocalAddrCount = 0;
         s32 t;
         do {
-            s32 i = data_ov065_02291748;
+            s32 i = sGsQrLocalAddrCount;
             u8 *e = l->unk_0c[i];
             if (e == NULL) {
                 break;
             }
-            data_ov065_0229174c[i] = *(Unk_ov065_02287d04_Four *)e;
-            t = data_ov065_02291748 + 1;
-            data_ov065_02291748 = t;
+            sGsQrLocalAddrs[i] = *(Unk_ov065_02287d04_Four *)e;
+            t = sGsQrLocalAddrCount + 1;
+            sGsQrLocalAddrCount = t;
         } while (t < 5);
     }
 }
@@ -563,7 +563,7 @@ void func_ov065_0228804c() {
 
 namespace F02287b18 {
 extern "C" {
-s32 func_ov065_02287fcc(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp) {
+s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp) {
     Unk_ov065_02287fcc_Host *h = NULL;
     s32 v;
     sa->unk_01 = 2;
@@ -572,11 +572,11 @@ s32 func_ov065_02287fcc(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
     if (name == NULL) {
         sa->unk_04 = 0;
     } else {
-        sa->unk_04 = func_ov065_02278bf4(name);
+        sa->unk_04 = GsSock_InetAddr(name);
     }
     if (sa->unk_04 == (u32)-1) {
         if (strcmp(name, "255.255.255.255") != 0) {
-            h = func_ov065_02261408(name);
+            h = Sock_GetHostByName(name);
             if (h == NULL) {
                 return 0;
             }
@@ -593,7 +593,7 @@ s32 func_ov065_02287fcc(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287fc0(u8 *a, u8 *b) {
+void GsQr_SwapBytes(u8 *a, u8 *b) {
     u8 t = *a;
     *a = *b;
     *b = t;
@@ -603,7 +603,7 @@ void func_ov065_02287fc0(u8 *a, u8 *b) {
 
 namespace F02287b18 {
 extern "C" {
-u8 func_ov065_02287f88(u8 c) {
+u8 GsQr_Base64Char(u8 c) {
     if (c < 0x1a) {
         return c + 0x41;
     }
@@ -626,7 +626,7 @@ u8 func_ov065_02287f88(u8 c) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287ef0(u8 *in, s32 len, u8 *out) {
+void GsQr_Base64Encode(u8 *in, s32 len, u8 *out) {
     u8 t[7];
     s32 k;
     u8 *tp;
@@ -652,7 +652,7 @@ void func_ov065_02287ef0(u8 *in, s32 len, u8 *out) {
                 t[6] = c & 0x3f;
             }
             for (k = 0, tp = &t[3]; k <= 3; out++, tp++, k++) {
-                *out = func_ov065_02287f88(*tp);
+                *out = GsQr_Base64Char(*tp);
             }
         } while (n < len);
     }
@@ -663,7 +663,7 @@ void func_ov065_02287ef0(u8 *in, s32 len, u8 *out) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287e18(u8 *key, s32 keylen, u8 *data, s32 datalen) {
+void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
     u8 state[0x100];
     s16 i;
     s16 k;
@@ -682,7 +682,7 @@ void func_ov065_02287e18(u8 *key, s32 keylen, u8 *data, s32 datalen) {
     for (; i < 0x100; i++) {
         j = (*q + key[x] + j) % 0x100;
         x = (x + 1) % keylen;
-        func_ov065_02287fc0(q, p + j);
+        GsQr_SwapBytes(q, p + j);
         q++;
     }
     {
@@ -693,7 +693,7 @@ void func_ov065_02287e18(u8 *key, s32 keylen, u8 *data, s32 datalen) {
             a = (a + data[k] + 1) % 0x100;
             pa = &state[a];
             c = (state[a] + c) % 0x100;
-            func_ov065_02287fc0(pa, &state[c]);
+            GsQr_SwapBytes(pa, &state[c]);
             data[k] ^= state[(u8)((state[a] + state[c]) % 0x100)];
         }
     }
@@ -703,7 +703,7 @@ void func_ov065_02287e18(u8 *key, s32 keylen, u8 *data, s32 datalen) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287df8(Unk_ov065_02288094_Buf *b, s32 c, u8 *ip) {
+void GsQr_BeginPacket(Unk_ov065_02288094_Buf *b, s32 c, u8 *ip) {
     u8 *d;
     b->unk_000[0] = c;
     d = b->unk_000 + 1;
@@ -718,12 +718,12 @@ void func_ov065_02287df8(Unk_ov065_02288094_Buf *b, s32 c, u8 *ip) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287d90(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, const char *s, s32 n) {
+void GsQr_AppendChallengeResponse(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, const char *s, s32 n) {
     char tmp[0x44];
     if (n >= 1 && n <= 0x41 && s[n - 1] == 0) {
         func_02127838(tmp, s);
-        func_ov065_02287e18((u8 *)q->unk_44, STD_GetStringLength(q->unk_44), (u8 *)tmp, n - 1);
-        func_ov065_02287ef0((u8 *)tmp, n - 1, (u8 *)b + b->unk_800);
+        GsQr_Rc4Crypt((u8 *)q->unk_44, STD_GetStringLength(q->unk_44), (u8 *)tmp, n - 1);
+        GsQr_Base64Encode((u8 *)tmp, n - 1, (u8 *)b + b->unk_800);
         b->unk_800 += STD_GetStringLength((char *)b + b->unk_800) + 1;
     }
 }
@@ -732,7 +732,7 @@ void func_ov065_02287d90(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, co
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287d04(Unk_ov065_02288124_Qr *q, const char *s) {
+void GsQr_ParsePublicAddress(Unk_ov065_02288124_Qr *q, const char *s) {
     u32 ip;
     u32 port;
     u32 pt;
@@ -752,7 +752,7 @@ void func_ov065_02287d04(Unk_ov065_02288124_Qr *q, const char *s) {
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287b54(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 type, s32 count, u8 *list) {
+void GsQr_AppendKeyValues(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 type, s32 count, u8 *list) {
     Unk_ov065_022880fc_Keys kb;
     s32 n;
     s32 i;
@@ -782,16 +782,16 @@ void func_ov065_02287b54(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s3
     if (count == 0xff) {
         q->unk_94(type, &kb, q->unk_10c);
         for (j = 0; j < kb.unk_100; j++) {
-            const char *s = data_ov065_0228e504[kb.unk_00[j]];
+            const char *s = gGsKeyNames[kb.unk_00[j]];
             if (s == NULL) {
                 s = "unknown";
             }
-            func_ov065_02288094(b, s);
+            GsQr_BufAppendString(b, s);
             if (type == 0) {
                 s32 sv = b->unk_800;
                 q->unk_88(kb.unk_00[j], b, q->unk_10c);
                 if (sv == b->unk_800) {
-                    func_ov065_02288094(b, "");
+                    GsQr_BufAppendString(b, "");
                 }
             }
         }
@@ -816,7 +816,7 @@ void func_ov065_02287b54(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s3
                 q->unk_90(list[j], i, b, q->unk_10c);
             }
             if (save == b->unk_800) {
-                func_ov065_02288094(b, "");
+                GsQr_BufAppendString(b, "");
             }
         }
     }
@@ -826,17 +826,17 @@ void func_ov065_02287b54(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s3
 
 namespace F02287b18 {
 extern "C" {
-void func_ov065_02287b18(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2) {
-    func_ov065_02287b54(q, b, 0, c0, l0);
-    func_ov065_02287b54(q, b, 1, c1, l1);
-    func_ov065_02287b54(q, b, 2, c2, l2);
+void GsQr_AppendAllKeyValues(Unk_ov065_02288124_Qr *q, Unk_ov065_02288094_Buf *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2) {
+    GsQr_AppendKeyValues(q, b, 0, c0, l0);
+    GsQr_AppendKeyValues(q, b, 1, c1, l1);
+    GsQr_AppendKeyValues(q, b, 2, c2, l2);
 }
 }
 }
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n) {
+void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n) {
     u32 l1, l2, l3;
     u8 *p1 = NULL;
     u8 *p2 = p1;
@@ -865,7 +865,7 @@ void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n) {
                     n -= l3;
                 }
                 if (n >= 0) {
-                    func_ov065_02287b18(q, buf, l1, p1, l2, p2, l3, p3);
+                    GsQr_AppendAllKeyValues(q, buf, l1, p1, l2, p2, l3, p3);
                 }
             }
         }
@@ -876,7 +876,7 @@ void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n) {
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
+void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind) {
     char tmp[0x80];
     struct Keys {
         u8 b[0x100];
@@ -899,23 +899,23 @@ void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
     if (i < k.n) {
       p = k.b;
       do {
-        name = data_ov065_0228e504[*p];
+        name = gGsKeyNames[*p];
         if (name == NULL) {
             name = "unknown";
         }
         if (kind == 0) {
-            func_ov065_02288094(buf, name);
+            GsQr_BufAppendString(buf, name);
             buf->unk_000[buf->unk_800 - 1] = 0x5c;
             mark = buf->unk_800;
             q->unk_88(*p, buf, q->unk_10c);
             if (mark == buf->unk_800) {
-                func_ov065_02288094(buf, "");
+                GsQr_BufAppendString(buf, "");
             }
             buf->unk_000[buf->unk_800 - 1] = 0x5c;
         } else {
             for (j = 0; j < cnt; j++) {
                 OS_SPrintf(tmp, "%s%d", name, j);
-                func_ov065_02288094(buf, tmp);
+                GsQr_BufAppendString(buf, tmp);
                 buf->unk_000[buf->unk_800 - 1] = 0x5c;
                 mark = buf->unk_800;
                 if (kind == 1) {
@@ -924,7 +924,7 @@ void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
                     q->unk_90(*p, j, buf, q->unk_10c);
                 }
                 if (mark == buf->unk_800) {
-                    func_ov065_02288094(buf, "");
+                    GsQr_BufAppendString(buf, "");
                 }
                 buf->unk_000[buf->unk_800 - 1] = 0x5c;
             }
@@ -938,13 +938,13 @@ void func_ov065_02287940(Qr *q, Buf *buf, s32 kind) {
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_022878f0(Qr *q, Buf *buf) {
+void GsQr_BuildQr1Reply(Qr *q, Buf *buf) {
     buf->unk_800 = 1;
     buf->unk_000[0] = 0x5c;
-    func_ov065_02287940(q, buf, 0);
-    func_ov065_02287940(q, buf, 1);
-    func_ov065_02287940(q, buf, 2);
-    func_ov065_02288094(buf, "final\\\\queryid\\1.1");
+    GsQr_AppendQr1Keys(q, buf, 0);
+    GsQr_AppendQr1Keys(q, buf, 1);
+    GsQr_AppendQr1Keys(q, buf, 2);
+    GsQr_BufAppendString(buf, "final\\\\queryid\\1.1");
     buf->unk_800--;
 }
 }
@@ -952,7 +952,7 @@ void func_ov065_022878f0(Qr *q, Buf *buf) {
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_02287828(Qr *q, u8 *p, s32 n) {
+void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n) {
     struct Hdr {
         u8 b[6];
     };
@@ -1001,7 +1001,7 @@ void func_ov065_02287828(Qr *q, u8 *p, s32 n) {
 
 namespace F02287200 {
 extern "C" {
-BOOL func_ov065_022877d4(Qr *q, u32 v) {
+BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v) {
     s32 i;
     for (i = 0; i < 10; i++) {
         if (v == q->unk_d8[i]) {
@@ -1017,7 +1017,7 @@ BOOL func_ov065_022877d4(Qr *q, u32 v) {
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
+void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
     struct {
         s32 x;
         Buf out;
@@ -1026,7 +1026,7 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
     s32 c;
     l.out.unk_800 = 0;
     if (q == NULL) {
-        q = data_ov065_0228e1b4;
+        q = sGsQrDefault;
     }
     c = data[0];
     if (c == 0x3b) {
@@ -1038,8 +1038,8 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
         return;
     }
     if (c == 0x5c) {
-        func_ov065_022878f0(q, &l.out);
-        func_ov065_02278c64(q->unk_00, &l.out, l.out.unk_800, 0, addr, 8);
+        GsQr_BuildQr1Reply(q, &l.out);
+        GsSock_SendTo(q->unk_00, &l.out, l.out.unk_800, 0, addr, 8);
         return;
     }
     if (n < 7) {
@@ -1059,16 +1059,16 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
         s8 *hdr = data + 3;
         s8 *body = data + 7;
         n -= 7;
-        func_ov065_02287df8(&l.out, type, (u8 *)hdr);
+        GsQr_BeginPacket(&l.out, type, (u8 *)hdr);
         switch (type) {
         case 0:
-            func_ov065_02287aa4(q, &l.out, (u8 *)body, n);
+            GsQr_HandleQuery(q, &l.out, (u8 *)body, n);
             break;
         case 1:
             if (n >= 13 && q->unk_a8 != 0) {
-                func_ov065_02287d04(q, (u8 *)body + n - 13);
+                GsQr_ParsePublicAddress(q, (u8 *)body + n - 13);
             }
-            func_ov065_02287d90(q, &l.out, (u8 *)body, n);
+            GsQr_AppendChallengeResponse(q, &l.out, (u8 *)body, n);
             break;
         case 2:
             if (n > 0x20) {
@@ -1111,8 +1111,8 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
             *(n ? (Unk_ov065_0228758c_B4 *)(l.out.unk_000 + l.out.unk_800) : (Unk_ov065_0228758c_B4 *)(l.out.unk_000 + l.out.unk_800)) = *(Unk_ov065_0228758c_B4 *)body;
             l.out.unk_800 = l.out.unk_800 + 4;
             *(n ? (Unk_ov065_0228758c_B4 *)&l.x : (Unk_ov065_0228758c_B4 *)&l.x) = *(Unk_ov065_0228758c_B4 *)body;
-            if (func_ov065_022877d4(q, l.x) == 0) {
-                func_ov065_02287828(q, (u8 *)body + 4, n - 4);
+            if (GsQr_IsDuplicateMessage(q, l.x) == 0) {
+                GsQr_HandleClientMessage(q, (u8 *)body + 4, n - 4);
             }
             break;
         }
@@ -1124,7 +1124,7 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
         default:
             return;
         }
-        func_ov065_02278c64(q->unk_00, &l.out, l.out.unk_800, 0, addr, 8);
+        GsSock_SendTo(q->unk_00, &l.out, l.out.unk_800, 0, addr, 8);
     }
 }
 }
@@ -1132,58 +1132,58 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_02287534(Qr *q) {
+void GsQr_SendKeepAlive(Qr *q) {
     Buf buf;
     buf.unk_800 = 0;
-    func_ov065_02287df8(&buf, 8, q->unk_84);
-    func_ov065_02278c64(q->unk_00, &buf, buf.unk_800, 0, q->unk_cc, 8);
-    q->unk_b0 = func_ov065_02279144();
+    GsQr_BeginPacket(&buf, 8, q->unk_84);
+    GsSock_SendTo(q->unk_00, &buf, buf.unk_800, 0, q->unk_cc, 8);
+    q->unk_b0 = GsUtil_GetTimeMs();
 }
 }
 }
 
 namespace F02287200 {
 extern "C" {
-void func_ov065_02287390(Qr *q, s32 mode) {
+void GsQr_SendHeartbeat(Qr *q, s32 mode) {
     Buf buf;
     char tmp[20];
     s32 i;
     u32 *p;
     buf.unk_800 = 0;
-    func_ov065_02287df8(&buf, 3, q->unk_84);
+    GsQr_BeginPacket(&buf, 3, q->unk_84);
     i = 0;
-    if (i < data_ov065_02291748) {
-        p = data_ov065_0229174c;
+    if (i < sGsQrLocalAddrCount) {
+        p = sGsQrLocalAddrs;
         do {
             OS_SPrintf(tmp, "localip%d", i);
-            func_ov065_02288094(&buf, tmp);
-            func_ov065_02288094(&buf, func_ov065_022610f0(*(Unk_ov065_02287390_W *)p));
+            GsQr_BufAppendString(&buf, tmp);
+            GsQr_BufAppendString(&buf, Sock_InetNtoA(*(Unk_ov065_02287390_W *)p));
             p++;
-        } while (++i < data_ov065_02291748);
+        } while (++i < sGsQrLocalAddrCount);
     }
-    func_ov065_02288094(&buf, "localport");
-    func_ov065_022880d8(&buf, q->unk_c0);
-    func_ov065_02288094(&buf, "natneg");
-    func_ov065_02288094(&buf, q->unk_c8 != 0 ? "1" : "0");
+    GsQr_BufAppendString(&buf, "localport");
+    GsQr_BufAppendInt(&buf, q->unk_c0);
+    GsQr_BufAppendString(&buf, "natneg");
+    GsQr_BufAppendString(&buf, q->unk_c8 != 0 ? "1" : "0");
     if (mode != 0) {
-        func_ov065_02288094(&buf, "statechanged");
-        func_ov065_022880d8(&buf, mode);
+        GsQr_BufAppendString(&buf, "statechanged");
+        GsQr_BufAppendInt(&buf, mode);
     }
-    func_ov065_02288094(&buf, "gamename");
-    func_ov065_02288094(&buf, (char *)q->unk_04);
+    GsQr_BufAppendString(&buf, "gamename");
+    GsQr_BufAppendString(&buf, (char *)q->unk_04);
     if (q->unk_a8 != 0) {
-        func_ov065_02288094(&buf, "publicip");
-        func_ov065_022880d8(&buf, q->unk_104);
-        func_ov065_02288094(&buf, "publicport");
-        func_ov065_022880d8(&buf, q->unk_108);
+        GsQr_BufAppendString(&buf, "publicip");
+        GsQr_BufAppendInt(&buf, q->unk_104);
+        GsQr_BufAppendString(&buf, "publicport");
+        GsQr_BufAppendInt(&buf, q->unk_108);
     }
     if (mode != 2) {
-        func_ov065_02287b18(q, &buf, 0xff, NULL, 0xff, NULL, 0xff, NULL);
+        GsQr_AppendAllKeyValues(q, &buf, 0xff, NULL, 0xff, NULL, 0xff, NULL);
     } else if (0x800 - buf.unk_800 >= 1) {
         buf.unk_000[buf.unk_800++] = 0;
     }
-    func_ov065_02278c64(q->unk_00, &buf, buf.unk_800, 0, q->unk_cc, 8);
-    q->unk_ac = func_ov065_02279144();
+    GsSock_SendTo(q->unk_00, &buf, buf.unk_800, 0, q->unk_cc, 8);
+    q->unk_ac = GsUtil_GetTimeMs();
     q->unk_b0 = q->unk_ac;
     if (mode != 0) {
         q->unk_b4 = 0;

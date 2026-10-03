@@ -6,26 +6,26 @@
 namespace Unk_ov065_02268470_Ns {
 extern "C" {
 
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(void *);
+extern void *(*sIpAlloc)(u32);
+extern void (*sIpFree)(void *);
 
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
 void memmove(void *dst, const void *src, u32 n);
 
-s32 func_ov065_02268be8(u16 *a, s32 n);
-s32 func_ov065_02268c20(u16 *a, s32 n);
-void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp);
-void func_ov065_02268808(u16 *dst, u16 *a, s32 n);
-void func_ov065_022688f0(u16 *dst, u16 *a, u32 m, s32 n);
-void func_ov065_02268950(u16 *dst, u16 *a, u16 *b, s32 n);
-void func_ov065_022689c0(u16 *a, u32 v, s32 i, s32 n);
-s32 func_ov065_022689e4(u16 *a, u16 *b, s32 n);
-void func_ov065_02268a7c(u16 *dst, u16 *a, u16 *b, s32 n);
-void func_ov065_02268b28(u16 *dst, u16 *src, u32 c, s32 n);
-void func_ov065_02268b6c(u16 *dst, u16 *a, u16 *b, s32 n);
+s32 SslBigNum_Sign(u16 *a, s32 n);
+s32 SslBigNum_GetLength(u16 *a, s32 n);
+void SslBigNum_DivMod(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp);
+void SslBigNum_Square(u16 *dst, u16 *a, s32 n);
+void SslBigNum_MulWord(u16 *dst, u16 *a, u32 m, s32 n);
+void SslBigNum_Mul(u16 *dst, u16 *a, u16 *b, s32 n);
+void SslBigNum_AddWordAt(u16 *a, u32 v, s32 i, s32 n);
+s32 SslBigNum_Compare(u16 *a, u16 *b, s32 n);
+void SslBigNum_Sub(u16 *dst, u16 *a, u16 *b, s32 n);
+void SslBigNum_AddWord(u16 *dst, u16 *src, u32 c, s32 n);
+void SslBigNum_Add(u16 *dst, u16 *a, u16 *b, s32 n);
 
-s32 func_ov065_02268c20(u16 *a, s32 n)
+s32 SslBigNum_GetLength(u16 *a, s32 n)
 {
     while (n != 0 && a[n - 1] == 0) {
         n--;
@@ -33,21 +33,21 @@ s32 func_ov065_02268c20(u16 *a, s32 n)
     return n;
 }
 
-s32 func_ov065_02268be8(u16 *a, s32 n)
+s32 SslBigNum_Sign(u16 *a, s32 n)
 {
     if ((a[n - 1] & 0x8000) != 0) {
         return -1;
     }
-    if (func_ov065_02268c20(a, n) != 0) {
+    if (SslBigNum_GetLength(a, n) != 0) {
         return 1;
     }
     return 0;
 }
 
-void func_ov065_02268b6c(u16 *dst, u16 *a, u16 *b, s32 n)
+void SslBigNum_Add(u16 *dst, u16 *a, u16 *b, s32 n)
 {
-    s32 la = func_ov065_02268c20(a, n);
-    s32 lb = func_ov065_02268c20(b, n);
+    s32 la = SslBigNum_GetLength(a, n);
+    s32 lb = SslBigNum_GetLength(b, n);
     s32 m = la;
     if (m < lb) {
         m = lb;
@@ -79,7 +79,7 @@ void func_ov065_02268b6c(u16 *dst, u16 *a, u16 *b, s32 n)
     }
 }
 
-void func_ov065_02268b28(u16 *dst, u16 *src, u32 c, s32 n)
+void SslBigNum_AddWord(u16 *dst, u16 *src, u32 c, s32 n)
 {
     s32 i = 0;
     u16 *ps;
@@ -114,7 +114,7 @@ void func_ov065_02268b28(u16 *dst, u16 *src, u32 c, s32 n)
     }
 }
 
-void func_ov065_02268b00(u16 *a, s32 n)
+void SslBigNum_Negate(u16 *a, s32 n)
 {
     s32 i = 0;
     u16 *p;
@@ -126,13 +126,13 @@ void func_ov065_02268b00(u16 *a, s32 n)
         i++;
     } while (i < n);
     }
-    func_ov065_02268b28(a, a, 1, n);
+    SslBigNum_AddWord(a, a, 1, n);
 }
 
-void func_ov065_02268a7c(u16 *dst, u16 *a, u16 *b, s32 n)
+void SslBigNum_Sub(u16 *dst, u16 *a, u16 *b, s32 n)
 {
-    s32 la = func_ov065_02268c20(a, n);
-    s32 lb = func_ov065_02268c20(b, n);
+    s32 la = SslBigNum_GetLength(a, n);
+    s32 lb = SslBigNum_GetLength(b, n);
     s32 m = la;
     if (m < lb) {
         m = lb;
@@ -159,7 +159,7 @@ void func_ov065_02268a7c(u16 *dst, u16 *a, u16 *b, s32 n)
     }
 }
 
-void func_ov065_02268a24(u16 *dst, u16 *src, u32 v, s32 n)
+void SslBigNum_SubWord(u16 *dst, u16 *src, u32 v, s32 n)
 {
     s32 i = 0;
     u16 *p;
@@ -194,7 +194,7 @@ void func_ov065_02268a24(u16 *dst, u16 *src, u32 v, s32 n)
     }
 }
 
-s32 func_ov065_022689e4(u16 *a, u16 *b, s32 n)
+s32 SslBigNum_Compare(u16 *a, u16 *b, s32 n)
 {
     s32 i;
     u16 *pb;
@@ -220,7 +220,7 @@ s32 func_ov065_022689e4(u16 *a, u16 *b, s32 n)
     return 0;
 }
 
-void func_ov065_022689c0(u16 *a, u32 v, s32 i, s32 n)
+void SslBigNum_AddWordAt(u16 *a, u32 v, s32 i, s32 n)
 {
     u16 *p = a + i;
     while (v != 0 && i < n) {
@@ -232,27 +232,27 @@ void func_ov065_022689c0(u16 *a, u32 v, s32 i, s32 n)
     }
 }
 
-void func_ov065_02268950(u16 *dst, u16 *a, u16 *b, s32 n)
+void SslBigNum_Mul(u16 *dst, u16 *a, u16 *b, s32 n)
 {
     s32 la, lb, i, j;
     u16 *pa;
     MI_CpuFill8(dst, 0, n * 2);
-    la = func_ov065_02268c20(a, n);
-    lb = func_ov065_02268c20(b, n);
+    la = SslBigNum_GetLength(a, n);
+    lb = SslBigNum_GetLength(b, n);
     for (i = 0; i < lb; i++) {
         j = 0;
         pa = a;
         for (; j < la && j < n - i; j++) {
-            func_ov065_022689c0(dst, *pa * *b, i + j, n);
+            SslBigNum_AddWordAt(dst, *pa * *b, i + j, n);
             pa++;
         }
         b++;
     }
 }
 
-void func_ov065_022688f0(u16 *dst, u16 *a, u32 m, s32 n)
+void SslBigNum_MulWord(u16 *dst, u16 *a, u32 m, s32 n)
 {
-    s32 l = func_ov065_02268c20(a, n);
+    s32 l = SslBigNum_GetLength(a, n);
     u32 c = 0;
     u16 *p;
     s32 i = c;
@@ -273,9 +273,9 @@ void func_ov065_022688f0(u16 *dst, u16 *a, u32 m, s32 n)
     MI_CpuFill8(dst + i, 0, (n - i) * 2);
 }
 
-void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
+void SslBigNum_Square(u16 *dst, u16 *a, s32 n)
 {
-    s32 l = func_ov065_02268c20(a, n);
+    s32 l = SslBigNum_GetLength(a, n);
     u16 *pi;
     u16 *pa;
     s32 i, j, k;
@@ -310,10 +310,10 @@ void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
             for (; j < l && (k = i + j) < n; j++) {
                 u32 t = *pa * *pi;
                 if (t <= 0x7fff8000) {
-                    func_ov065_022689c0(dst, t * 2, k, n);
+                    SslBigNum_AddWordAt(dst, t * 2, k, n);
                 } else {
-                    func_ov065_022689c0(dst, t, k, n);
-                    func_ov065_022689c0(dst, t, k, n);
+                    SslBigNum_AddWordAt(dst, t, k, n);
+                    SslBigNum_AddWordAt(dst, t, k, n);
                 }
                 pa++;
             }
@@ -323,7 +323,7 @@ void func_ov065_02268808(u16 *dst, u16 *a, s32 n)
     }
 }
 
-void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
+void SslBigNum_DivMod(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
 {
     s32 k;
     u64 d;
@@ -332,8 +332,8 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
     s32 la;
     s32 lb;
     MI_CpuFill8(t1, 0, n * 4);
-    la = func_ov065_02268c20(a, n);
-    lb = func_ov065_02268c20(b, n);
+    la = SslBigNum_GetLength(a, n);
+    lb = SslBigNum_GetLength(b, n);
     if (la > 0 && lb > 0) {
         k = lb + (n - la) - 1;
         if (k >= n) {
@@ -362,13 +362,13 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
                         qq = 0xffff;
                     }
                     for (;;) {
-                        func_ov065_022688f0(tmp, b, (u16)qq, n);
-                        if (func_ov065_022689e4(t2, tmp, n) >= 0) {
+                        SslBigNum_MulWord(tmp, b, (u16)qq, n);
+                        if (SslBigNum_Compare(t2, tmp, n) >= 0) {
                             break;
                         }
                         qq--;
                     }
-                    func_ov065_02268a7c(t2, t2, tmp, n);
+                    SslBigNum_Sub(t2, t2, tmp, n);
                     t1[0] = qq;
                     k++;
                 } while (k < n);
@@ -383,15 +383,15 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
     }
 }
 
-void func_ov065_02268540(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod)
+void SslBigNum_ModExp(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod)
 {
-    u16 *t0 = (u16 *)data_ov065_0228ebc8(n * 8);
+    u16 *t0 = (u16 *)sIpAlloc(n * 8);
     if (t0 != 0) {
         u16 *t1 = t0 + n;
         s32 i;
         MI_CpuFill8(out + 1, 0, (n - 1) * 2);
         out[0] = 1;
-        i = (n - func_ov065_02268c20(exp, n)) * 16;
+        i = (n - SslBigNum_GetLength(exp, n)) * 16;
         while (i < (u32)(n * 16)) {
             if (((0x8000u >> (i & 15)) & exp[n - (i >> 4) - 1]) != 0) {
                 MI_CpuCopy8(base, out, n * 2);
@@ -401,24 +401,24 @@ void func_ov065_02268540(u16 *out, u16 *base, u16 *exp, s32 n, u16 *mod)
             i++;
         }
         for (; i < (u32)(n * 16); i++) {
-            func_ov065_02268808(t0, out, n);
+            SslBigNum_Square(t0, out, n);
             MI_CpuCopy8(t0, out, n * 2);
             if (mod != 0) {
-                func_ov065_02268658(0, out, mod, out, n, t1);
+                SslBigNum_DivMod(0, out, mod, out, n, t1);
             }
             if (((0x8000u >> (i & 15)) & exp[n - (i >> 4) - 1]) != 0) {
-                func_ov065_02268950(t0, out, base, n);
+                SslBigNum_Mul(t0, out, base, n);
                 MI_CpuCopy8(t0, out, n * 2);
                 if (mod != 0) {
-                    func_ov065_02268658(0, out, mod, out, n, t1);
+                    SslBigNum_DivMod(0, out, mod, out, n, t1);
                 }
             }
         }
-        data_ov065_0228ebd0(t0);
+        sIpFree(t0);
     }
 }
 
-void func_ov065_02268470(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
+void SslBigNum_ModInverse(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
 {
     u16 *b0 = tmp;
     u16 *b1 = tmp + n;
@@ -430,17 +430,17 @@ void func_ov065_02268470(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
     MI_CpuCopy8(a, b0, n * 2);
     MI_CpuCopy8(b, b2, n * 2);
     b2[n] = 1;
-    while (func_ov065_02268be8(b0, n) > 0) {
-        func_ov065_02268658(b1, b2, b0, b5, n, b6);
+    while (SslBigNum_Sign(b0, n) > 0) {
+        SslBigNum_DivMod(b1, b2, b0, b5, n, b6);
         MI_CpuCopy8(b0, b2, n * 2);
         MI_CpuCopy8(b5, b0, n * 2);
-        func_ov065_02268950(b5, b1, b3, n);
-        func_ov065_02268a7c(b5, b4, b5, n);
+        SslBigNum_Mul(b5, b1, b3, n);
+        SslBigNum_Sub(b5, b4, b5, n);
         MI_CpuCopy8(b3, b4, n * 2);
         MI_CpuCopy8(b5, b3, n * 2);
     }
-    func_ov065_02268b6c(b4, b4, b, n);
-    func_ov065_02268658(0, b4, b, res, n, b6);
+    SslBigNum_Add(b4, b4, b, n);
+    SslBigNum_DivMod(0, b4, b, res, n, b6);
 }
 
 }
@@ -449,24 +449,24 @@ void func_ov065_02268470(u16 *res, u16 *a, u16 *b, s32 n, u16 *tmp)
 namespace Unk_ov065_02267ac0_Ns {
 extern "C" {
 
-extern u8 *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(u8 *);
+extern u8 *(*sIpAlloc)(u32);
+extern void (*sIpFree)(u8 *);
 
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, s32, u32);
 void memmove(void *, void *, u32);
 
-u32 func_ov065_02268c20(u16 *, u32);
-void func_ov065_02268470(u16 *, u16 *, u16 *, u32, u16 *);
-void func_ov065_02268950(u16 *, u16 *, u16 *, u32);
-void func_ov065_02268a24(u16 *, u16 *, u32, u32);
-void func_ov065_02268658(u16 *, u16 *, u16 *, u16 *, u32, u16 *);
-void func_ov065_022683a8(u16 *, u16 *, u32, u32, u32, u16 *, u16 *, u16 *, u16 *);
-void func_ov065_02268808(u16 *, u16 *, u32);
+u32 SslBigNum_GetLength(u16 *, u32);
+void SslBigNum_ModInverse(u16 *, u16 *, u16 *, u32, u16 *);
+void SslBigNum_Mul(u16 *, u16 *, u16 *, u32);
+void SslBigNum_SubWord(u16 *, u16 *, u32, u32);
+void SslBigNum_DivMod(u16 *, u16 *, u16 *, u16 *, u32, u16 *);
+void SslBigNum_MontgomeryStep(u16 *, u16 *, u32, u32, u32, u16 *, u16 *, u16 *, u16 *);
+void SslBigNum_Square(u16 *, u16 *, u32);
 
-void func_ov065_02268b6c(u16 *, u16 *, u16 *, u32);
-s32 func_ov065_022689e4(u16 *, u16 *, u32);
-void func_ov065_02268a7c(u16 *, u16 *, u16 *, u32);
+void SslBigNum_Add(u16 *, u16 *, u16 *, u32);
+s32 SslBigNum_Compare(u16 *, u16 *, u32);
+void SslBigNum_Sub(u16 *, u16 *, u16 *, u32);
 
 #define ROL(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #define F0(b, c, d) ((((c) ^ (d)) & (b)) ^ (d))
@@ -476,37 +476,37 @@ void func_ov065_02268a7c(u16 *, u16 *, u16 *, u32);
 #define R1(a, b, c, d, e, x) e += ROL(a, 5) + F1(b, c, d) + (x) + 0x6ed9eba1; b = ROL(b, 30);
 #define R2(a, b, c, d, e, x) e += ROL(a, 5) + F2(b, c, d) + (x) + 0x8f1bbcdc; b = ROL(b, 30);
 #define R3(a, b, c, d, e, x) e += ROL(a, 5) + F1(b, c, d) + (x) + 0xca62c1d6; b = ROL(b, 30);
-#define DoorLight(k) func_ov065_02268100((k), w)
+#define DoorLight(k) SslSha1_ExpandWord((k), w)
 
-void func_ov065_022680a4(u32 *dst, u8 *src, u32 n);
-u32 func_ov065_02268100(s32 i, u32 *w);
+void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n);
+u32 SslSha1_ExpandWord(s32 i, u32 *w);
 
-void func_ov065_022683a8(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
+void SslBigNum_MontgomeryStep(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1, u16 *t2, u16 *t3) {
     MI_CpuCopy8(a, (s32)b, n * 2);
     if (mode == 1) {
-        func_ov065_02268808(a, b, n);
+        SslBigNum_Square(a, b, n);
     } else if (mode != 0) {
-        func_ov065_02268950(a, b, (u16 *)mode, n);
+        SslBigNum_Mul(a, b, (u16 *)mode, n);
     }
-    func_ov065_02268950(t2, a, t1, k);
+    SslBigNum_Mul(t2, a, t1, k);
     MI_CpuFill8(t2 + k, 0, (n - k) * 2);
-    func_ov065_02268950(t3, t2, m, n);
-    func_ov065_02268b6c(a, a, t3, n);
+    SslBigNum_Mul(t3, t2, m, n);
+    SslBigNum_Add(a, a, t3, n);
     memmove(a, a + k, (n - k) * 2);
     MI_CpuFill8(a + n - k, 0, k * 2);
-    switch (func_ov065_022689e4(a, m, n)) {
+    switch (SslBigNum_Compare(a, m, n)) {
     case 0:
         MI_CpuFill8(a, 0, n * 2);
         break;
     case 1:
-        func_ov065_02268a7c(a, a, m, n);
+        SslBigNum_Sub(a, a, m, n);
         break;
     }
 }
 
-void func_ov065_0226824c(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
+void SslBigNum_ModExpMontgomery(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
     u32 bytes = n * 22;
-    u16 *buf = (u16 *)data_ov065_0228ebc8(bytes);
+    u16 *buf = (u16 *)sIpAlloc(bytes);
     u16 *p1, *p2, *p3, *p4, *p5, *p6;
     u32 k;
     s32 i;
@@ -519,28 +519,28 @@ void func_ov065_0226824c(u16 *x, u16 *y, u16 *z, u32 n, u16 *m) {
     p4 = p3 + n;
     p5 = p4 + n;
     p6 = p5 + n;
-    k = func_ov065_02268c20(m, n);
+    k = SslBigNum_GetLength(m, n);
     buf[k] = 1;
-    func_ov065_02268470(p1, buf, m, n, p2);
-    func_ov065_02268950(p3, buf, p1, n);
-    func_ov065_02268a24(p1, p3, 1, n);
-    func_ov065_02268658(p1, p1, m, 0, n, p6);
-    func_ov065_02268950(p2, y, buf, n);
-    func_ov065_02268658(0, p2, m, p2, n, p6);
-    func_ov065_02268658(0, buf, m, x, n, p6);
+    SslBigNum_ModInverse(p1, buf, m, n, p2);
+    SslBigNum_Mul(p3, buf, p1, n);
+    SslBigNum_SubWord(p1, p3, 1, n);
+    SslBigNum_DivMod(p1, p1, m, 0, n, p6);
+    SslBigNum_Mul(p2, y, buf, n);
+    SslBigNum_DivMod(0, p2, m, p2, n, p6);
+    SslBigNum_DivMod(0, buf, m, x, n, p6);
     i = 0;
     bound = k << 4;
     for (; (u32)i < (u32)bound; i++) {
-        func_ov065_022683a8(x, p5, 1, n, k, m, p1, p3, p4);
+        SslBigNum_MontgomeryStep(x, p5, 1, n, k, m, p1, p3, p4);
         if ((0x8000u >> (i & 15)) & z[k - (i >> 4) - 1]) {
-            func_ov065_022683a8(x, p5, (u32)p2, n, k, m, p1, p3, p4);
+            SslBigNum_MontgomeryStep(x, p5, (u32)p2, n, k, m, p1, p3, p4);
         }
     }
-    func_ov065_022683a8(x, p5, 0, n, k, m, p1, p3, p4);
-    data_ov065_0228ebd0((u8 *)buf);
+    SslBigNum_MontgomeryStep(x, p5, 0, n, k, m, p1, p3, p4);
+    sIpFree((u8 *)buf);
 }
 
-void func_ov065_02268210(u16 *dst, u8 *src, s32 n, u32 m) {
+void SslBigNum_FromBytes(u16 *dst, u8 *src, s32 n, u32 m) {
     MI_CpuFill8(dst, 0, m * 2);
     src += n - 1;
     while (n > 1) {
@@ -552,7 +552,7 @@ void func_ov065_02268210(u16 *dst, u8 *src, s32 n, u32 m) {
     if (n > 0) *dst = *src;
 }
 
-void func_ov065_022681e0(u8 *dst, u16 *src, s32 n) {
+void SslBigNum_ToBytes(u8 *dst, u16 *src, s32 n) {
     dst += n - 1;
     while (n > 1) {
         *dst-- = *src;
@@ -562,7 +562,7 @@ void func_ov065_022681e0(u8 *dst, u16 *src, s32 n) {
     if (n > 0) *dst = *src;
 }
 
-void func_ov065_0226818c(u8 *st, u8 *key, s32 keylen) {
+void SslRc4_Init(u8 *st, u8 *key, s32 keylen) {
     u8 *s;
     s32 i;
     u8 j;
@@ -585,7 +585,7 @@ void func_ov065_0226818c(u8 *st, u8 *key, s32 keylen) {
     }
 }
 
-void func_ov065_0226813c(u8 *st, u8 *buf, s32 n) {
+void SslRc4_Crypt(u8 *st, u8 *buf, s32 n) {
     s32 i;
     u8 x;
     u8 y;
@@ -606,7 +606,7 @@ void func_ov065_0226813c(u8 *st, u8 *buf, s32 n) {
     st[1] = y;
 }
 
-u32 func_ov065_02268100(s32 i, u32 *w) {
+u32 SslSha1_ExpandWord(s32 i, u32 *w) {
     u32 a = w[i];
     u32 b = w[(i + 2) & 15];
     u32 c = w[(i + 13) & 15];
@@ -616,7 +616,7 @@ u32 func_ov065_02268100(s32 i, u32 *w) {
     return w[i];
 }
 
-void func_ov065_022680d4(u8 *dst, u32 *src, u32 n) {
+void SslSha1_StoreBe32(u8 *dst, u32 *src, u32 n) {
     u32 i = 0;
     u32 cnt = n >> 2;
     for (; i < cnt; i++) {
@@ -630,7 +630,7 @@ void func_ov065_022680d4(u8 *dst, u32 *src, u32 n) {
     }
 }
 
-void func_ov065_022680a4(u32 *dst, u8 *src, u32 n) {
+void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n) {
     u32 i;
     for (i = 0; i < n; i += 4) {
         u32 b3 = src[i + 3];
@@ -641,7 +641,7 @@ void func_ov065_022680a4(u32 *dst, u8 *src, u32 n) {
     }
 }
 
-void func_ov065_02267ac0(u32 *ctx, u8 *data) {
+void SslSha1_Transform(u32 *ctx, u8 *data) {
     u32 a, b, c, d, e;
     u32 w[16];
     s32 i, j;
@@ -651,7 +651,7 @@ void func_ov065_02267ac0(u32 *ctx, u8 *data) {
     c = ctx[2];
     d = ctx[3];
     e = ctx[4];
-    func_ov065_022680a4(w, data, 0x40);
+    SslSha1_LoadBe32(w, data, 0x40);
     i = 0;
     {
         for (j = 0, p = w; j < 3; j++) {
@@ -726,13 +726,13 @@ extern "C" {
 
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-void func_ov065_022680d4(void *dst, const void *src, s32 n);
-void func_ov065_02267ac0(Unk_ov065_022679f8_Sha1 *ctx, const u8 *block);
-void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n);
+void SslSha1_StoreBe32(void *dst, const void *src, s32 n);
+void SslSha1_Transform(Unk_ov065_022679f8_Sha1 *ctx, const u8 *block);
+void SslSha1_Update(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n);
 
-u8 data_ov065_0228b630[0x40] = {0x80};
+u8 sSslSha1Padding[0x40] = {0x80};
 
-void func_ov065_02267a84(Unk_ov065_022679f8_Sha1 *ctx)
+void SslSha1_Init(Unk_ov065_022679f8_Sha1 *ctx)
 {
     MI_CpuFill8(ctx, 0, 0x5c);
     ctx->st[0] = 0x67452301;
@@ -742,7 +742,7 @@ void func_ov065_02267a84(Unk_ov065_022679f8_Sha1 *ctx)
     ctx->st[4] = 0xc3d2e1f0;
 }
 
-void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
+void SslSha1_Update(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
 {
     u32 idx = (ctx->lo >> 3) & 0x3f;
     u32 bits = n << 3;
@@ -757,9 +757,9 @@ void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
     if (n >= part) {
         MI_CpuCopy8(data, ctx->buf + idx, part);
         idx = 0;
-        func_ov065_02267ac0(ctx, ctx->buf);
+        SslSha1_Transform(ctx, ctx->buf);
         for (i = part; i + 63 < n; i += 64) {
-            func_ov065_02267ac0(ctx, data + i);
+            SslSha1_Transform(ctx, data + i);
         }
     } else {
         i = 0;
@@ -767,33 +767,33 @@ void func_ov065_022679f8(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
     MI_CpuCopy8(data + i, ctx->buf + idx, n - i);
 }
 
-void func_ov065_022679a4(Unk_ov065_022679f8_Sha1 *ctx, void *out)
+void SslSha1_Final(Unk_ov065_022679f8_Sha1 *ctx, void *out)
 {
     u32 idx;
-    func_ov065_022680d4(out, &ctx->hi, 8);
+    SslSha1_StoreBe32(out, &ctx->hi, 8);
     idx = (ctx->lo >> 3) & 0x3f;
     if ((s32)idx < 0x38) {
         idx = 0x38 - idx;
     } else {
         idx = 0x78 - idx;
     }
-    func_ov065_022679f8(ctx, data_ov065_0228b630, idx);
-    func_ov065_022679f8(ctx, (u8 *)out, 8);
-    func_ov065_022680d4(out, ctx, 0x14);
+    SslSha1_Update(ctx, sSslSha1Padding, idx);
+    SslSha1_Update(ctx, (u8 *)out, 8);
+    SslSha1_StoreBe32(out, ctx, 0x14);
 }
 
-void func_ov065_0226797c(Unk_ov065_022679f8_Sha1 *ctx, void *out)
+void SslSha1_FinalRaw(Unk_ov065_022679f8_Sha1 *ctx, void *out)
 {
-    func_ov065_022679f8(ctx, (data_ov065_0228b630 + 1), 0x2c);
-    func_ov065_022680d4(out, ctx, 0x14);
+    SslSha1_Update(ctx, (sSslSha1Padding + 1), 0x2c);
+    SslSha1_StoreBe32(out, ctx, 0x14);
 }
 
-void func_ov065_0226796c(void *dst, const void *src, s32 n)
+void SslMd5_Encode(void *dst, const void *src, s32 n)
 {
     MI_CpuCopy8(src, dst, n);
 }
 
-void func_ov065_0226795c(void *dst, const void *src, s32 n)
+void SslMd5_Decode(void *dst, const void *src, s32 n)
 {
     MI_CpuCopy8(src, dst, n);
 }

@@ -62,10 +62,10 @@ void FriendList_Compact(void *p);
 void FriendEntry_Clear(void *p);
 void *PlayerWifiData_GetOwnFriendData(void *a);
 void DwcFriendData_Copy(void *a, void *b);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(void *p, s32 a);
 void func_0206f994(void *p, void *s, s32 n);
-void func_0206ed2c(u32 v);
+void MenuCtrl_SetIndex(u32 v);
 void func_020a78a4(void *dst, void *src, s32 n);
 void String_SetSlot(s32 a, void *p);
 void String_Load2d(void *p, void *q, s32 a);
@@ -88,13 +88,13 @@ s32 func_02087e14(void *p);
 s32 func_02087e0c(void *p);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-BOOL func_0206e61c();
-void func_0206e63c();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-BOOL func_0206e5dc();
-u32 func_0206e5bc();
-u32 func_0206ed38(u32 a);
+BOOL MenuCtrl_IsFriendPageFromIndex();
+u32 MenuCtrl_ClearFriendPageFromIndex();
+u32 MenuCtrl_GetIndex(u32 a);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
@@ -744,8 +744,8 @@ BOOL FriendRosterTab::execClosed() {
 }
 
 BOOL FriendRosterTab::handleTabSwitch() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 2:
@@ -800,8 +800,8 @@ void FriendRosterTab::stateLoad() {
     addRegisterLabel();
     PopupChoice_LoadFriendBg(&unk_dc);
     u32 v;
-    if (func_0206e5dc()) {
-        v = func_0206ed38(func_0206e5bc());
+    if (MenuCtrl_IsFriendPageFromIndex()) {
+        v = MenuCtrl_GetIndex(MenuCtrl_ClearFriendPageFromIndex());
     } else {
         v = 0;
     }
@@ -948,7 +948,7 @@ void FriendRosterTab::updateTouch() {
 }
 
 void FriendRosterTab::mainAct01() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         cancelChoice();
     } else if (checkSwitchToButtons(1)) {
         cursorToPopupTop();
@@ -1016,7 +1016,7 @@ void FriendRosterTab::updateCursorRelease() {
 }
 
 void FriendRosterTab::mainAct06() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         cancelChoice();
     } else if (checkSwitchToTouch()) {
         hideCursor();
@@ -1039,7 +1039,7 @@ void FriendRosterTab::mainAct06() {
 }
 
 void FriendRosterTab::mainAct07() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         cancelChoice();
     } else if (U970_C->isAnimDone()) {
         PopupChoice_DecideRow(&unk_dc, unk_ae, 1);
@@ -1487,7 +1487,7 @@ void FriendRosterTab::removeFriend()
 
 void FriendRosterTab::openFriendEditor(s32 x)
 {
-    func_0206ed2c((u8)getFocusedFriendIndex());
+    MenuCtrl_SetIndex((u8)getFocusedFriendIndex());
     requestTab(x);
     func_ov119_02294fa8();
 }
@@ -1499,7 +1499,7 @@ void FriendRosterTab::useCodeEntry()
         showError(0x13);
     } else {
         FriendEntry_Clear((u8 *)getFriendEntries() + i * 0x1c);
-        func_0206ed2c((u8)i);
+        MenuCtrl_SetIndex((u8)i);
         requestTab(0xe);
         func_ov119_02294fa8();
     }
@@ -1619,11 +1619,11 @@ void FriendRosterTab::uploadScreen()
     updateRowMarkBlink();
     if (testFlags(4)) {
         if (unk_9c <= 3) {
-            func_0206ee80(unk_9d4, 5, 6, 0x17, 0x15, 3);
+            BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 3);
             s32 v = unk_9a;
             if (v != -1) {
                 s32 y = v * 2 + 6;
-                func_0206ee80(unk_9d4, 5, y, 0x17, y + 1, 4);
+                BgScreen_SetRectPalette(unk_9d4, 5, y, 0x17, y + 1, 4);
             }
         }
         clearFlags(4);
@@ -1852,7 +1852,7 @@ void FriendRosterTab::drawPresentPage() {
         y += 0x10;
         pos += 0x40;
     }
-    func_0206ee80(unk_9d4, 5, 6, 0x17, 0x15, 5);
+    BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 5);
     _ZN12Unk_020e1c64D1Ev(LightLevel);
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
@@ -2107,13 +2107,13 @@ void FriendRosterTab::drawRowMarks() {
     clearRowMarks();
     for (i = 0; i < 8; i++) {
         if (unk_b2 & (1 << i)) {
-            func_0206ee80(unk_9d4, 3, i * 2 + 6, 4, i * 2 + 7, 5);
+            BgScreen_SetRectPalette(unk_9d4, 3, i * 2 + 6, 4, i * 2 + 7, 5);
         }
     }
 }
 
 void FriendRosterTab::clearRowMarks() {
-    func_0206ee80(unk_9d4, 3, 6, 4, 0x15, 3);
+    BgScreen_SetRectPalette(unk_9d4, 3, 6, 4, 0x15, 3);
     setFlags(2);
 }
 

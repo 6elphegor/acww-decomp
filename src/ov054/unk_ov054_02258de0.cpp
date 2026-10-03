@@ -566,19 +566,19 @@ s32 func_0203ca94();
 s32 func_0202e18c(void *o, void *b, s32 c);
 void func_0202e174(void *o, void *b);
 void TalkWindowState_openChoices(void *o, s32 v);
-void func_0206e9bc();
-void func_0206e9d8();
-s32 func_020a62a0();
+void MenuCtrl_ReturnFutureLetter();
+void MenuCtrl_StoreFutureLetter();
+s32 NetArea_IsLocalOwner();
 void func_02015ab0(void *self, s32 v);
 s32 func_02014220(void *self);
 s32 func_0201b9e8(void *self, s32 *a, s32 *b);
 
 s32 func_0212a438(const char *s);
 s32 strncmp(const void *a, const char *b, s32 n);
-BOOL func_020a032c();
-BOOL func_020a0318();
-BOOL func_020a07e4();
-BOOL func_020a080c();
+BOOL GameStart_IsActive();
+BOOL GameStart_IsNewTown();
+BOOL SaveManager_HasAct1FFailed();
+BOOL SaveManager_IsIdleAfterAct1F();
 void SaveManager_RequestAct1F();
 u32 func_020978a4(void *g);
 u32 func_02097a3c(void *h);
@@ -592,7 +592,7 @@ u32 func_02099014(u16 *p, s32 a);
 BOOL TownState_IsPerfectStreak15();
 s32 Town_GetEnvironmentRank();
 u8 *TownEval_GetAdvice();
-BOOL func_0206e928();
+BOOL MenuCtrl_PostOfficeHadNoLetter();
 void NetOverlay_LoadWireless();
 void Comm_Start(s32 a, s32 b, s32 c);
 void TalkWindowState_lockAdvance(void *ctx);
@@ -622,13 +622,13 @@ void func_020157e8(void *self, u32 a, s32 b);
 
 void func_02014f74(void *self);
 void func_02014ce4(void *self, u16 *p, s32 a, s32 b, s32 c);
-BOOL func_020a0884();
+BOOL SaveManager_HasAct12Failed();
 BOOL SaveManager_IsIdle();
 void SaveManager_RequestAct12();
-BOOL func_0206ed18();
+BOOL MenuCtrl_IsResultOk();
 void *func_0209865c(void *p);
 void *func_02099864(void *p);
-s32 func_0206ed38();
+s32 MenuCtrl_GetIndex();
 u32 func_02099048(s32 a);
 void func_02099064(s32 a);
 BOOL Item_IsFurniture(u16 *p);
@@ -640,16 +640,16 @@ s32 func_02133150(s32 a, s32 b);
 void *func_020850e0();
 void func_020851a4(void *p, s32 a);
 void SaveData_clearFlag(void *p, s32 a);
-void func_0206e8b8(void *p);
-s32 func_0206e8e8();
+void MenuCtrl_GetDateTime(void *p);
+s32 MenuCtrl_GetAmount();
 void func_020973ec(s32 a);
-s32 func_0206e98c();
-BOOL func_020968b8(s32 a);
-BOOL func_0206e90c();
-s32 func_0206e960();
-BOOL func_0206e974();
-BOOL func_0206e944();
-BOOL func_020a0304();
+s32 MenuCtrl_GetPostOfficeOutcome();
+BOOL LetterDelivery_HasFutureLetter(s32 a);
+BOOL MenuCtrl_PostOfficeLettersSent();
+s32 MenuCtrl_GetPostOfficeFullMailboxes();
+BOOL MenuCtrl_PostOfficeHadBadAddress();
+BOOL MenuCtrl_PostOfficeWasRejected();
+BOOL GameStart_IsNewResident();
 BOOL Comm_End();
 s32 NetOverlay_Restore();
 
@@ -657,7 +657,7 @@ s32 func_02063b8c(s32 a);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_EndTalkWith(void *self);
 s32 func_020951b8(s32 a);
-void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 Unk_ov054_Vec *func_020947f0(s32 a);
 s32 func_020197a8(void *self);
 BOOL func_02019790(void *self);
@@ -971,7 +971,7 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         Clock_GetMinuteHour(&l);
         u8 b = l.unk_01;
         unk_804 = 0;
-        if (!func_020a032c()) {
+        if (!GameStart_IsActive()) {
             if (b >= 0x16 || b < 7) {
                 unk_804 = 1;
             }
@@ -992,13 +992,13 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
     }
     void *r = PlayerData_GetCurrent();
     if (isOnline()) {
-        if (func_020a62a0()) {
+        if (NetArea_IsLocalOwner()) {
             changeAct(2);
         } else {
             changeAct(9);
         }
     } else {
-        if (func_020a032c() && func_02098044(r, 9) == 0) {
+        if (GameStart_IsActive() && func_02098044(r, 9) == 0) {
             changeAct(0);
         } else {
             changeAct(2);
@@ -1102,7 +1102,7 @@ BOOL SpNpcPellyPhyllis::setupAct01() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    PlayerActor_RequestAct6F(&v, 0x400, 4);
+    PlayerActor_RequestWalkTo(&v, 0x400, 4);
     return TRUE;
 }
 
@@ -1250,7 +1250,7 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
             changeAct(4);
-        } else if (func_020a62a0() && b == 4) {
+        } else if (NetArea_IsLocalOwner() && b == 4) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             changeAct(2);
         }
@@ -1266,7 +1266,7 @@ BOOL SpNpcPellyPhyllis::mainAct0A() {
         s32 b = 4;
         if (func_0201b9e8(this, &a, &b)) {
             if (a == 4) {
-                if (func_020a62a0()) {
+                if (NetArea_IsLocalOwner()) {
                     func_0201b9fc(1, gCommManager->unk_64, 4);
                     changeAct(2);
                 }
@@ -1305,9 +1305,9 @@ void SpNpcPellyPhyllisTalk::vfunc_78(TalkStartMsg *out) {
         r7 = TRUE;
         goto end;
     }
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         if (!func_02098044(g0, 9)) {
-            if (func_020a0318() || func_020a0304()) {
+            if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
                 out->unk_04 = 0x12;
             } else {
                 out->unk_04 = 0x20;
@@ -1349,21 +1349,21 @@ end:
 }
 
 u32 SpNpcPellyPhyllisTalk::getMailResultMsg() {
-    if (func_0206e944()) {
+    if (MenuCtrl_PostOfficeWasRejected()) {
         return 0x61;
     }
     return getAddressErrorMsg();
 }
 
 u32 SpNpcPellyPhyllisTalk::getAddressErrorMsg() {
-    if (func_0206e974()) {
+    if (MenuCtrl_PostOfficeHadBadAddress()) {
         return 0x58;
     }
     return getFullMailboxMsg();
 }
 
 u8 SpNpcPellyPhyllisTalk::getFullMailboxMsg() {
-    s32 r = func_0206e960();
+    s32 r = MenuCtrl_GetPostOfficeFullMailboxes();
     if (r) {
         return r + 0x58;
     }
@@ -1371,7 +1371,7 @@ u8 SpNpcPellyPhyllisTalk::getFullMailboxMsg() {
 }
 
 u32 SpNpcPellyPhyllisTalk::getMailAcceptedMsg() {
-    if (func_0206e90c()) {
+    if (MenuCtrl_PostOfficeLettersSent()) {
         return 5;
     }
     return 9;
@@ -1415,8 +1415,8 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
     s32 r4 = 0;
     u16 v[2];
     unk_b8 = r4;
-    if (func_0206ed18()) {
-        switch (func_0206e98c()) {
+    if (MenuCtrl_IsResultOk()) {
+        switch (MenuCtrl_GetPostOfficeOutcome()) {
         case 0:
             r4 = getMailResultMsg();
             if (r4 == 9) {
@@ -1424,7 +1424,7 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
             }
             break;
         case 1:
-            if (func_020968b8(r4)) {
+            if (LetterDelivery_HasFutureLetter(r4)) {
                 r4 = 0xf;
             } else {
                 r4 = 0xb;
@@ -1454,7 +1454,7 @@ void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
     u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     u8 buf[1];
     s32 r1;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         r1 = 0x54;
     } else {
         r1 = 0x53;
@@ -1469,8 +1469,8 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
     u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     s32 r4, r6;
     u16 v[3];
-    if (func_0206ed18()) {
-        r4 = func_0206e8e8();
+    if (MenuCtrl_IsResultOk()) {
+        r4 = MenuCtrl_GetAmount();
         func_02015958(this, r4, 7, 10, 1, 0);
         if (r4 >= 0x1388) {
             r6 = 0x1d;
@@ -1497,13 +1497,13 @@ void SpNpcPellyPhyllisTalk::onTownTuneDone() {
     u8 buf[1];
     s32 r4;
     if (unk_ac->isLocalSlotActive()) {
-        if (func_0206ed18()) {
+        if (MenuCtrl_IsResultOk()) {
             r4 = 0x63;
         } else {
             r4 = 0x64;
         }
     } else {
-        if (func_0206ed18()) {
+        if (MenuCtrl_IsResultOk()) {
             r4 = 0x5d;
         } else {
             r4 = 0x5e;
@@ -1519,11 +1519,11 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
     u32 cb[1] = { sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]};
     s32 r4;
     Unk_ov054_0225a3cc_Msg l;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         r4 = 0xc;
         l.d.w0 = 0;
         l.d.w1 = 0;
-        func_0206e8b8(&l.d);
+        MenuCtrl_GetDateTime(&l.d);
         u8 *q = (u8 *)&l;
         u32 b8 = q[8];
         u32 b7 = q[7];
@@ -1532,7 +1532,7 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
         func_02015848(this, b7, 3);
     } else {
         r4 = 0xe;
-        func_0206e9bc();
+        MenuCtrl_ReturnFutureLetter();
     }
     setScript(0);
     l.id = r4;
@@ -1544,7 +1544,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
     u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     s32 r5;
     u16 v[2];
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         r5 = func_02060388(data_021e58a8);
         func_02015958(this, r5, 4, 10, 1, 0);
         if (r5 == 0) {
@@ -1571,7 +1571,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
     u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     s32 r4;
     u16 v[3];
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         s32 r6 = func_02097414(func_02098320(PlayerData_GetCurrent()));
         func_02015958(this, r6, 5, 10, 1, 0);
         func_02015958(this, func_02133150(r6, 200), 6, 10, 1, 0);
@@ -1611,11 +1611,11 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
     s32 r4 = 0x51;
     u16 v[3];
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         p = func_02099864(func_0209865c(PlayerData_GetCurrent()));
         if (func_0202e148(p)) {
             BOOL same;
-            s32 r5 = func_0206ed38();
+            s32 r5 = MenuCtrl_GetIndex();
             v[1] = func_02099048(r5);
             if (r5 >= 0) {
                 func_02099064(r5);
@@ -1660,7 +1660,7 @@ void SpNpcPellyPhyllisTalk::startMailboxSave() {
 
 void SpNpcPellyPhyllisTalk::waitMailboxSave() {
     void *m = unk_3c;
-    if (func_020a0884()) {
+    if (SaveManager_HasAct12Failed()) {
         u8 buf[1];
         func_02067990(m);
         TalkWindowState_unlockAdvance(m);
@@ -1767,9 +1767,9 @@ void SpNpcPellyPhyllisTalk::startMoveSave() {
 
 void SpNpcPellyPhyllisTalk::waitMoveSave() {
     void *ctx = unk_3c;
-    if (func_020a07e4()) {
+    if (SaveManager_HasAct1FFailed()) {
         setScript(0);
-    } else if (func_020a080c()) {
+    } else if (SaveManager_IsIdleAfterAct1F()) {
         u8 msg;
         func_02067990(ctx);
         TalkWindowState_unlockAdvance(ctx);
@@ -1788,7 +1788,7 @@ void SpNpcPellyPhyllisTalk::vfunc_10() {
         func_02015878(this, b1, 2);
         func_02015848(this, b0, 3);
     }
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         u32 id = unk_1e;
         if (id != 0x24 && id != 0x25 && id != 0x26) {
             return;
@@ -1817,7 +1817,7 @@ void SpNpcPellyPhyllisTalk::vfunc_14(s32 a) {
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
     s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         i = 2;
     } else if (r == 0) {
         i = 0;
@@ -1850,7 +1850,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     case 0x5c:
     case 0x62:
         giveBackLetters();
-        if (func_0206e928()) {
+        if (MenuCtrl_PostOfficeHadNoLetter()) {
             r5 = 9;
         } else {
             r5 = getMailResultMsg();
@@ -2036,7 +2036,7 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
         break;
     case 0x13:
         r4 = func_020978a4(data_021d735c);
-        if (func_020a0318()) {
+        if (GameStart_IsNewTown()) {
             r4 = 2;
         } else {
             r4 = (u8)(r4 + 0x22);
@@ -2058,7 +2058,7 @@ void SpNpcPellyPhyllisTalk::vfunc_18(s32 a) {
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
     s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         i = 2;
     } else if (r == 0) {
         i = 0;
@@ -2107,12 +2107,12 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
             id = 0x11;
         } else if (r == 1) {
             id = 0xe;
-            func_0206e9bc();
+            MenuCtrl_ReturnFutureLetter();
         }
         break;
     case 0xc:
         if (r == 0) {
-            func_0206e9d8();
+            MenuCtrl_StoreFutureLetter();
             id = 7;
         }
         break;
@@ -2300,12 +2300,12 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
         b L_end
     L_10_1:
         mov r6, #14
-        bl func_0206e9bc
+        bl MenuCtrl_ReturnFutureLetter
         b L_end
     L_c:
         cmp r4, #0
         bne L_end
-        bl func_0206e9d8
+        bl MenuCtrl_StoreFutureLetter
         mov r6, #7
         b L_end
     L_4_1c_34_5d_5e:
@@ -2561,7 +2561,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
+            if (NetArea_IsLocalOwner()) {
                 func_0201b9fc(1, gCommManager->unk_64, 4);
                 changeAct(2);
             } else {

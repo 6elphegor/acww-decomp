@@ -10,17 +10,17 @@ struct Unk_ov065_0228b31c_Tmpl {
 
 extern "C" {
 
-const char data_ov065_0228b2d4[8] = {'F', 'R', 'E', 'E', 'S', 'P', 'O', 'T'};
-const char data_ov065_0228b2cc[8] = {'W', 'a', 'y', 'p', 'o', 'r', 't', '2'};
-const char data_ov065_0228b2dc[12] = "NINTENDOWFC";
-const u32 data_ov065_0228b2e8[13] = {0x8002, 0x8004, 0x8008, 0x8010, 0x8020, 0x8040, 0x8080, 0x8100, 0x8200, 0x8400, 0x8800, 0x9000, 0xa000};
+const char sWifiApSsidFreespot[8] = {'F', 'R', 'E', 'E', 'S', 'P', 'O', 'T'};
+const char sWifiApSsidWayport[8] = {'W', 'a', 'y', 'p', 'o', 'r', 't', '2'};
+const char sWifiApSsidNintendoWfc[12] = "NINTENDOWFC";
+const u32 sWifiApScanChannelBits[13] = {0x8002, 0x8004, 0x8008, 0x8010, 0x8020, 0x8040, 0x8080, 0x8100, 0x8200, 0x8400, 0x8800, 0x9000, 0xa000};
 
-char data_ov065_0228b670[12] = "NWCUSBAP";
-char data_ov065_0228b67c[12] = "NINTENDO-DS";
+char sWifiApSsidUsbConnector[12] = "NWCUSBAP";
+char sWifiApHostName[12] = "NINTENDO-DS";
 
-const Unk_ov065_0228b31c_Tmpl data_ov065_0228b31c = {
+const Unk_ov065_0228b31c_Tmpl sWifiApSocketConfigTemplate = {
     {0x1000000, 0, 0, 1, 0, 0, 0, 0, 0, 0x1000, 0x1000, 0x2e4, 0, 0, 0, 0, 0, 0},
-    data_ov065_0228b67c,
+    sWifiApHostName,
     4,
     {0, 0},
 };
@@ -83,62 +83,62 @@ struct Unk_ov065_0226cfe4_Buf {
     u8 b[24];
 };
 
-extern u8 data_ov065_0228b2a4[];
-extern u8 data_ov065_0228b2ac[];
-extern u8 data_ov065_0228b31c[];
-extern u32 data_ov065_0228e9a4;
-extern s8 *data_ov065_0228b68c;
-extern s8 *data_ov065_0228b690;
-extern s8 *data_ov065_0228b694;
-extern s8 *data_ov065_0228b688;
-extern u8 data_ov065_0228b374[];
-extern u8 data_ov065_0228b384[];
-extern u8 data_ov065_0228b6b8[];
+extern u8 gWifiLinkAnyBssid[];
+extern u8 gWifiLinkAnySsid[];
+extern u8 sWifiApSocketConfigTemplate[];
+extern u32 sSockYieldMode;
+extern s8 *sWifiApUsbKey1Ptr;
+extern s8 *sWifiApUsbKey2Ptr;
+extern s8 *sWifiApNdwcshapKey1Ptr;
+extern s8 *sWifiApNdwcshapKey2Ptr;
+extern u8 sWifiApUsbKeyPermTable[];
+extern u8 sWifiApUsbKeySBox[];
+extern u8 sWifiApNdwcshapPermTable[];
 
 extern "C" {
-u8 *func_ov065_0226af74(u32 id);
-s32 func_ov065_0226af18(void);
-s32 func_ov065_02269c9c(void);
-s32 func_ov065_0226aec8(u32 v);
-void func_ov065_0226aed4(u32 v);
-s32 func_ov065_0226aef8(s32 v);
-s32 func_ov065_0226a33c(void *a, void *b);
-s32 func_ov065_0226b78c(void *a);
-void func_ov065_0226c160(void);
-void func_ov065_0226c28c(void *a, void *b, s32 c, u32 d);
-s32 func_ov065_0226c300(void *ctx, s32 v);
-s32 func_ov065_0226c44c(void *ctx);
-s32 func_ov065_0226c54c(void *ctx);
-s32 func_ov065_0226c674(void *ctx);
-s32 func_ov065_0226c700(void *ctx);
-void func_ov065_022612fc(void *a, void *b);
-s32 func_ov065_02261358(void);
-s32 func_ov065_02261118(void *p);
-s32 func_ov065_02261110(void);
-s32 func_ov065_02260b68(void);
-s32 func_ov065_0226ecd0(void);
-u32 func_ov065_0226ec94(void);
-s32 func_ov065_0226f7c8(void);
-s32 func_ov065_0226f878(void);
-s32 func_ov065_0226f924(void);
+u8 *WifiAp_GetBlock(u32 id);
+s32 WifiAp_GetState(void);
+s32 WifiLink_GetPhase(void);
+s32 WifiAp_FoldApIndex(u32 v);
+void WifiAp_SetConnectedApType(u32 v);
+s32 WifiAp_SetError(s32 v);
+s32 WifiLink_StartupAsync(void *a, void *b);
+s32 WifiAp_OnLinkNotify(void *a);
+void WifiAp_BuildSearchList(void);
+void WifiAp_StartScan(void *a, void *b, s32 c, u32 d);
+s32 WifiAp_CheckSearchResult(void *ctx, s32 v);
+s32 WifiAp_StepScanFoundChannels(void *ctx);
+s32 WifiAp_StepScanSsids(void *ctx);
+s32 WifiAp_StepScanAllChannels(void *ctx);
+s32 WifiAp_BeginSearch(void *ctx);
+void Sock_SetDnsServers(void *a, void *b);
+s32 Sock_GetHostId(void);
+s32 Sock_Startup(void *p);
+s32 Sock_Cleanup(void);
+s32 SockCore_TryShutdown(void);
+s32 NetCheck_GetState(void);
+u32 NetCheck_GetErrorCode(void);
+s32 NetCheck_Abort(void);
+s32 NetCheck_Destroy(void);
+s32 NetCheck_Start(void);
 s64 OS_GetTick(void);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void DGT_Hash1Reset(void *ctx);
 void DGT_Hash1SetSource(void *ctx, void *p, u32 n);
 void DGT_Hash1GetDigest_R(void *out, void *ctx);
 
-s32 func_ov065_0226ce78(u32 c);
-u32 func_ov065_0226c9f4(s32 n);
-u32 func_ov065_0226ca3c(u8 *p);
-s32 func_ov065_0226cd84(u8 *in, u8 *out, u32 len, u32 max);
-s32 func_ov065_0226cb18(void);
-s32 func_ov065_0226cb4c(Unk_ov065_0226b488_Ctx *c);
-s32 func_ov065_0226cb64(Unk_ov065_0226b488_Ctx *c);
-s32 func_ov065_0226cbc8(void);
-s32 func_ov065_0226cbf0(Unk_ov065_0226b488_Ctx *c);
-s32 func_ov065_0226cc80(Unk_ov065_0226b488_Ctx *c);
-void func_ov065_0226ca88(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c);
-void func_ov065_0226c988(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_Base64Value(u32 c);
+u32 WifiAp_PrefixToNetmask(s32 n);
+u32 WifiAp_ReadAddress(u8 *p);
+s32 WifiAp_Base64Decode(u8 *in, u8 *out, u32 len, u32 max);
+s32 WifiAp_StepStopSockets(void);
+s32 WifiAp_StepConnected(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepStartNetCheck(void);
+s32 WifiAp_StepWaitAddress(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepStartSockets(Unk_ov065_0226b488_Ctx *c);
+void WifiAp_BuildSocketConfig(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c);
+void WifiAp_ApplyStaticDns(Unk_ov065_0226b488_Ctx *c);
 
 
 
@@ -161,30 +161,30 @@ void func_ov065_0226c988(Unk_ov065_0226b488_Ctx *c);
 
 
 
-void func_ov065_0226c750(u32 r);
-s32 func_ov065_0226c81c(u32 n);
-void func_ov065_0226c878(u32 v);
-s32 func_ov065_0226c8a4(void);
-s32 func_ov065_0226c924(void);
-void func_ov065_0226c988(Unk_ov065_0226b488_Ctx *c);
-u32 func_ov065_0226c9f4(s32 n);
-u32 func_ov065_0226ca3c(u8 *p);
-void func_ov065_0226ca88(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c);
+void WifiAp_RescanForState(u32 r);
+s32 WifiAp_GetNthFoundChannel(u32 n);
+void WifiAp_AddFoundChannel(u32 v);
+s32 WifiAp_ProcessSearch(void);
+s32 WifiAp_ProcessStartup(void);
+void WifiAp_ApplyStaticDns(Unk_ov065_0226b488_Ctx *c);
+u32 WifiAp_PrefixToNetmask(s32 n);
+u32 WifiAp_ReadAddress(u8 *p);
+void WifiAp_BuildSocketConfig(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c);
 
-void func_ov065_0226ca88(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c) {
+void WifiAp_BuildSocketConfig(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c) {
     u32 *o = (u32 *)c;
-    MI_CpuCopy8(data_ov065_0228b31c, c, 0x58);
+    MI_CpuCopy8(sWifiApSocketConfigTemplate, c, 0x58);
     o[1] = ((u32 *)a)[0];
     o[2] = ((u32 *)a)[1];
     if (b->unk_d0d < 6) {
-        u8 *q = (u8 *)b + (func_ov065_0226aec8(b->unk_d0d) << 8);
+        u8 *q = (u8 *)b + (WifiAp_FoldApIndex(b->unk_d0d) << 8);
         if (q[0xc0] != 0) {
             o[3] = 0;
-            o[4] = func_ov065_0226ca3c(q + 0xc0);
-            o[5] = func_ov065_0226c9f4(q[0xd0]);
-            o[6] = func_ov065_0226ca3c(q + 0xc4);
-            o[7] = func_ov065_0226ca3c(q + 0xc8);
-            o[8] = func_ov065_0226ca3c(q + 0xcc);
+            o[4] = WifiAp_ReadAddress(q + 0xc0);
+            o[5] = WifiAp_PrefixToNetmask(q[0xd0]);
+            o[6] = WifiAp_ReadAddress(q + 0xc4);
+            o[7] = WifiAp_ReadAddress(q + 0xc8);
+            o[8] = WifiAp_ReadAddress(q + 0xcc);
         } else {
             o[3] = 1;
             o[4] = 0;
@@ -196,7 +196,7 @@ void func_ov065_0226ca88(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c) {
     }
 }
 
-u32 func_ov065_0226ca3c(u8 *p) {
+u32 WifiAp_ReadAddress(u8 *p) {
     u32 x = 0;
     x |= p[0] << 24;
     x |= p[1] << 16;
@@ -205,7 +205,7 @@ u32 func_ov065_0226ca3c(u8 *p) {
     return ((x << 24) & 0xff000000) | (((x << 8) & 0xff0000) | (((x >> 24) & 0xff) | ((x >> 8) & 0xff00)));
 }
 
-u32 func_ov065_0226c9f4(s32 n) {
+u32 WifiAp_PrefixToNetmask(s32 n) {
     n = 0x20 - n;
     s32 i = 0;
     u32 x = -1;
@@ -215,32 +215,32 @@ u32 func_ov065_0226c9f4(s32 n) {
     return ((x << 24) & 0xff000000) | (((x << 8) & 0xff0000) | (((x >> 24) & 0xff) | ((x >> 8) & 0xff00)));
 }
 
-void func_ov065_0226c988(Unk_ov065_0226b488_Ctx *c) {
+void WifiAp_ApplyStaticDns(Unk_ov065_0226b488_Ctx *c) {
     u32 buf[2];
     if (c->unk_d0d < 6) {
-        u8 *q = (u8 *)c + (func_ov065_0226aec8(c->unk_d0d) << 8);
+        u8 *q = (u8 *)c + (WifiAp_FoldApIndex(c->unk_d0d) << 8);
         u32 sum = q[0xcb] + (q[0xca] + (q[0xc8] + q[0xc9]));
         if (q[0xc0] == 0 && sum != 0) {
-            buf[0] = func_ov065_0226ca3c(q + 0xc8);
-            buf[1] = func_ov065_0226ca3c(q + 0xcc);
-            func_ov065_022612fc(&buf[0], &buf[1]);
+            buf[0] = WifiAp_ReadAddress(q + 0xc8);
+            buf[1] = WifiAp_ReadAddress(q + 0xcc);
+            Sock_SetDnsServers(&buf[0], &buf[1]);
         }
     }
 }
 
-s32 func_ov065_0226c924(void) {
-    s32 a = func_ov065_02269c9c();
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_ProcessStartup(void) {
+    s32 a = WifiLink_GetPhase();
+    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     if (a == 1) {
         u32 buf[4];
         buf[0] = *((u8 *)c + 0xd0a);
         buf[1] = 0;
         buf[2] = 0;
         buf[3] = 0;
-        func_ov065_0226c160();
-        s32 r = func_ov065_0226a33c(buf, (void *)func_ov065_0226b78c);
+        WifiAp_BuildSearchList();
+        s32 r = WifiLink_StartupAsync(buf, (void *)WifiAp_OnLinkNotify);
         if (r == 1 || r >= 4) {
-            func_ov065_0226aef8(1);
+            WifiAp_SetError(1);
             return 0x11;
         }
     } else {
@@ -249,39 +249,39 @@ s32 func_ov065_0226c924(void) {
     return 2;
 }
 
-s32 func_ov065_0226c8a4(void) {
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
-    s32 a = func_ov065_0226af18();
-    s32 b = func_ov065_02269c9c();
+s32 WifiAp_ProcessSearch(void) {
+    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
+    s32 a = WifiAp_GetState();
+    s32 b = WifiLink_GetPhase();
     if (a == 2 && b == 3) {
-        a = func_ov065_0226c700(c);
+        a = WifiAp_BeginSearch(c);
     } else if (a == 6) {
-        a = func_ov065_0226c300(c, a);
+        a = WifiAp_CheckSearchResult(c, a);
     } else if (b == 3 || b == 6) {
-        a = func_ov065_0226c300(c, a);
+        a = WifiAp_CheckSearchResult(c, a);
         if (a != 7) {
             if (a == 3) {
-                a = func_ov065_0226c674(c);
+                a = WifiAp_StepScanAllChannels(c);
             } else if (a == 4) {
-                a = func_ov065_0226c54c(c);
+                a = WifiAp_StepScanSsids(c);
             } else if (a == 5) {
-                a = func_ov065_0226c44c(c);
+                a = WifiAp_StepScanFoundChannels(c);
             }
         }
     }
     return a;
 }
 
-void func_ov065_0226c878(u32 v) {
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+void WifiAp_AddFoundChannel(u32 v) {
+    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     if (v > 0xd) {
         v = 0xd;
     }
     c->unk_d16 |= 1 << (v - 1);
 }
 
-s32 func_ov065_0226c81c(u32 n) {
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_GetNthFoundChannel(u32 n) {
+    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     u8 i;
     u8 cnt;
     u32 m;
@@ -303,14 +303,14 @@ s32 func_ov065_0226c81c(u32 n) {
     return -1;
 }
 
-void func_ov065_0226c750(u32 r) {
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+void WifiAp_RescanForState(u32 r) {
+    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     u8 *cb = (u8 *)c;
     switch (r) {
     case 3: {
         s64 t = OS_GetTick();
         *(s64 *)&c->unk_cb0 = t;
-        func_ov065_0226c28c(data_ov065_0228b2a4, data_ov065_0228b2ac, c->unk_d11, 0x200000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, c->unk_d11, 0x200000);
         break;
     }
     case 4: {
@@ -318,14 +318,14 @@ void func_ov065_0226c750(u32 r) {
         *(s64 *)&c->unk_cb0 = t;
         u32 idx = c->unk_d0f * 0x24;
         u8 *q = cb + idx;
-        func_ov065_0226c28c(data_ov065_0228b2a4, cb + 0x304 + idx, q[0x302], 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, cb + 0x304 + idx, q[0x302], 0x300000);
         break;
     }
     case 5: {
         s64 t = OS_GetTick();
         *(s64 *)&c->unk_cb0 = t;
         u32 idx = c->unk_d0f * 0x24;
-        func_ov065_0226c28c(data_ov065_0228b2a4, cb + 0x304 + idx, c->unk_d11, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, cb + 0x304 + idx, c->unk_d11, 0x300000);
         break;
     }
     }
@@ -390,43 +390,43 @@ struct Unk_ov065_0226bf70_Ctx {
 
 typedef Unk_ov065_0226bf70_Ctx Unk_ov065_0226bf70_Ctx_T;
 
-extern u8 data_ov065_0228b670[];
-extern u8 data_ov065_0228b2cc[];
-extern u8 data_ov065_0228b2dc[];
-extern u8 data_ov065_0228b2d4[];
-extern u8 data_ov065_0228b2a4[];
-extern u8 data_ov065_0228b2ac[];
-extern u32 data_ov065_0228b2e8[];
+extern u8 sWifiApSsidUsbConnector[];
+extern u8 sWifiApSsidWayport[];
+extern u8 sWifiApSsidNintendoWfc[];
+extern u8 sWifiApSsidFreespot[];
+extern u8 gWifiLinkAnyBssid[];
+extern u8 gWifiLinkAnySsid[];
+extern u32 sWifiApScanChannelBits[];
 
 extern "C" {
-u8 *func_ov065_0226af74(u32 id);
-s32 func_ov065_0226aeec(void);
-s32 func_ov065_0226bd74(u8 *p);
-s32 func_ov065_0226bd18(u8 *p);
-s32 func_ov065_02269c9c(void);
-s32 func_ov065_0226a0c4(void);
-s32 func_ov065_02269e50(void);
-s32 func_ov065_02269cc4(void);
-s32 func_ov065_0226aef8(s32 v);
-s32 func_ov065_0226a264(void *a, void *b, u32 c);
-s32 func_ov065_0226c81c(u32 v);
-s32 func_ov065_0226c750(s32 v);
+u8 *WifiAp_GetBlock(u32 id);
+s32 WifiAp_GetErrorCode(void);
+s32 WifiAp_GetErrorCodeForState(u8 *p);
+s32 WifiAp_CleanupStep(u8 *p);
+s32 WifiLink_GetPhase(void);
+s32 WifiLink_EndSearchAsync(void);
+s32 WifiLink_DisconnectAsync(void);
+s32 WifiLink_TerminateAsync(void);
+s32 WifiAp_SetError(s32 v);
+s32 WifiLink_SearchAsync(void *a, void *b, u32 c);
+s32 WifiAp_GetNthFoundChannel(u32 v);
+s32 WifiAp_RescanForState(s32 v);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void MIi_CpuClear32(u32 v, void *dst, u32 n);
 s32 strncmp(const void *a, const void *b, u32 n);
 s64 OS_GetTick(void);
 
-s32 func_ov065_0226be44(u8 *p);
-s32 func_ov065_0226be5c(void);
-s32 func_ov065_0226be64(u32 r);
-u8 func_ov065_0226bf70(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c0e8(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c038(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c160(s32 mode);
-s32 func_ov065_0226c628(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c2ac(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c3bc(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
-void func_ov065_0226c28c(void *a, void *b, s32 n, u32 flags);
+s32 WifiAp_GetNoApErrorCode(u8 *p);
+s32 WifiAp_GetWirelessOffError(void);
+s32 WifiAp_MapStartupError(u32 r);
+u8 WifiAp_BuildSearchFromSettings(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BuildSearchWithFreespot(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BuildSearchWithHotspots(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BuildSearchList(s32 mode);
+s32 WifiAp_RestartSearch(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_NextSearchPass(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_FinishSearchPass(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
+void WifiAp_StartScan(void *a, void *b, s32 n, u32 flags);
 
 
 
@@ -449,73 +449,73 @@ void func_ov065_0226c28c(void *a, void *b, s32 n, u32 flags);
 
 
 
-s32 func_ov065_0226be44(u8 *p);
-s32 func_ov065_0226be5c(void);
-s32 func_ov065_0226be64(u32 r);
-s32 func_ov065_0226be9c(void);
-s32 func_ov065_0226bee4(void);
-u32 func_ov065_0226bf08(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_ov065_0226bf70_Rec *rec);
-u8 func_ov065_0226bf70(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c038(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c0e8(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c138(u8 *rec);
-s32 func_ov065_0226c160(s32 mode);
-s32 func_ov065_0226c1e0(void);
-void func_ov065_0226c28c(void *a, void *b, s32 n, u32 flags);
-s32 func_ov065_0226c2ac(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c300(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
-s32 func_ov065_0226c3bc(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
-s32 func_ov065_0226c44c(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c54c(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c628(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c674(Unk_ov065_0226bf70_Ctx *ctx);
-s32 func_ov065_0226c700(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_GetNoApErrorCode(u8 *p);
+s32 WifiAp_GetWirelessOffError(void);
+s32 WifiAp_MapStartupError(u32 r);
+s32 WifiAp_GetErrorCode2(void);
+s32 WifiAp_StepFailedCleanup(void);
+u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_ov065_0226bf70_Rec *rec);
+u8 WifiAp_BuildSearchFromSettings(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BuildSearchWithHotspots(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BuildSearchWithFreespot(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_IsFreespot(u8 *rec);
+s32 WifiAp_BuildSearchList(s32 mode);
+s32 WifiAp_StepRecoverLink(void);
+void WifiAp_StartScan(void *a, void *b, s32 n, u32 flags);
+s32 WifiAp_NextSearchPass(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_CheckSearchResult(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
+s32 WifiAp_FinishSearchPass(Unk_ov065_0226bf70_Ctx *ctx, s32 s);
+s32 WifiAp_StepScanFoundChannels(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_StepScanSsids(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_RestartSearch(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_StepScanAllChannels(Unk_ov065_0226bf70_Ctx *ctx);
+s32 WifiAp_BeginSearch(Unk_ov065_0226bf70_Ctx *ctx);
 
-s32 func_ov065_0226c700(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_BeginSearch(Unk_ov065_0226bf70_Ctx *ctx) {
     ctx->unk_cb0 = OS_GetTick();
     ctx->unk_d11 = 0;
     ctx->unk_cb0 = OS_GetTick();
-    func_ov065_0226c28c(data_ov065_0228b2a4, data_ov065_0228b2ac, ctx->unk_d11, 0x200000);
+    WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, ctx->unk_d11, 0x200000);
     return 3;
 }
 
-s32 func_ov065_0226c674(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_StepScanAllChannels(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = OS_GetTick() - ctx->unk_cb0;
     if ((dt << 6) / 0x82ea >= 0x12c) {
         ctx->unk_d11 = ctx->unk_d11 + 2;
         if (ctx->unk_d11 >= 0xd) {
-            return func_ov065_0226c3bc(ctx, 3);
+            return WifiAp_FinishSearchPass(ctx, 3);
         }
         ctx->unk_cb0 = OS_GetTick();
-        func_ov065_0226c28c(data_ov065_0228b2a4, data_ov065_0228b2ac, ctx->unk_d11, 0x200000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, gWifiLinkAnySsid, ctx->unk_d11, 0x200000);
     }
     return 3;
 }
 
-s32 func_ov065_0226c628(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_RestartSearch(Unk_ov065_0226bf70_Ctx *ctx) {
     ctx->unk_d15 = 0;
     ctx->unk_d0b.hi = ctx->unk_d0b.hi + 1;
-    func_ov065_0226c160(0);
+    WifiAp_BuildSearchList(0);
     ctx->unk_d11 = 1;
     return 3;
 }
 
-s32 func_ov065_0226c54c(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_StepScanSsids(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = OS_GetTick() - ctx->unk_cb0;
     if ((dt << 6) / 0x82ea >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
         ctx->unk_300[ctx->unk_d0f].lo = 0;
         ctx->unk_d0f++;
         if (ctx->unk_d10 <= ctx->unk_d0f) {
             ctx->unk_d0f = 0;
-            return func_ov065_0226c3bc(ctx, 4);
+            return WifiAp_FinishSearchPass(ctx, 4);
         }
         ctx->unk_cb0 = OS_GetTick();
-        func_ov065_0226c28c(data_ov065_0228b2a4, ctx->unk_300[ctx->unk_d0f].unk_04, ctx->unk_300[ctx->unk_d0f].unk_02, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->unk_300[ctx->unk_d0f].unk_04, ctx->unk_300[ctx->unk_d0f].unk_02, 0x300000);
     }
     return 4;
 }
 
-s32 func_ov065_0226c44c(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_StepScanFoundChannels(Unk_ov065_0226bf70_Ctx *ctx) {
     u64 dt = OS_GetTick() - ctx->unk_cb0;
     if ((dt << 6) / 0x82ea >= 0x96 || ctx->unk_300[ctx->unk_d0f].lo == 1) {
         ctx->unk_300[ctx->unk_d0f].lo = 0;
@@ -523,49 +523,49 @@ s32 func_ov065_0226c44c(Unk_ov065_0226bf70_Ctx *ctx) {
         if (ctx->unk_d10 == ctx->unk_d0f) {
             ctx->unk_d15++;
             ctx->unk_d0f = 0;
-            ctx->unk_d11 = func_ov065_0226c81c(ctx->unk_d15);
+            ctx->unk_d11 = WifiAp_GetNthFoundChannel(ctx->unk_d15);
         }
         if (ctx->unk_d11 < 0) {
             ctx->unk_d15 = 0;
-            return func_ov065_0226c3bc(ctx, 5);
+            return WifiAp_FinishSearchPass(ctx, 5);
         }
         ctx->unk_cb0 = OS_GetTick();
-        func_ov065_0226c28c(data_ov065_0228b2a4, ctx->unk_300[ctx->unk_d0f].unk_04, ctx->unk_d11, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->unk_300[ctx->unk_d0f].unk_04, ctx->unk_d11, 0x300000);
     }
     return 5;
 }
 
-s32 func_ov065_0226c3bc(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
+s32 WifiAp_FinishSearchPass(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
     switch (s) {
     case 3:
         if (ctx->unk_d12 != 0 || ctx->unk_d16 != 0) {
-            if (func_ov065_0226c160(1) != 0) {
+            if (WifiAp_BuildSearchList(1) != 0) {
                 s = 4;
             } else {
-                s = func_ov065_0226c2ac(ctx);
+                s = WifiAp_NextSearchPass(ctx);
             }
         } else if (ctx->unk_d0b.hi < 1) {
-            s = func_ov065_0226c628(ctx);
+            s = WifiAp_RestartSearch(ctx);
         } else {
             s = 6;
         }
         break;
     case 4:
-        s = func_ov065_0226c2ac(ctx);
+        s = WifiAp_NextSearchPass(ctx);
         break;
     case 5:
         if (ctx->unk_d0b.hi < 1) {
-            s = func_ov065_0226c628(ctx);
+            s = WifiAp_RestartSearch(ctx);
         } else {
             s = 6;
         }
         break;
     }
-    func_ov065_0226c750(s);
+    WifiAp_RescanForState(s);
     return s;
 }
 
-s32 func_ov065_0226c300(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
+s32 WifiAp_CheckSearchResult(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
     u8 i;
     u8 n;
     if (s == 0x11) {
@@ -583,9 +583,9 @@ s32 func_ov065_0226c300(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
             goto reset;
         }
         if (i == 0) {
-            func_ov065_0226aef8(5);
+            WifiAp_SetError(5);
         } else {
-            func_ov065_0226aef8(6);
+            WifiAp_SetError(6);
         }
         return 0x11;
     }
@@ -600,35 +600,35 @@ s32 func_ov065_0226c300(Unk_ov065_0226bf70_Ctx *ctx, s32 s) {
     }
 reset:
     ctx->unk_d13 = i;
-    if (func_ov065_0226a0c4() != 1) {
+    if (WifiLink_EndSearchAsync() != 1) {
         ctx->unk_d0e = s;
         s = 7;
     }
     return s;
 }
 
-s32 func_ov065_0226c2ac(Unk_ov065_0226bf70_Ctx *ctx) {
-    if (ctx->unk_d16 != 0 && func_ov065_0226c160(2) != 0) {
-        ctx->unk_d11 = func_ov065_0226c81c(0);
+s32 WifiAp_NextSearchPass(Unk_ov065_0226bf70_Ctx *ctx) {
+    if (ctx->unk_d16 != 0 && WifiAp_BuildSearchList(2) != 0) {
+        ctx->unk_d11 = WifiAp_GetNthFoundChannel(0);
         return 5;
     }
     if (ctx->unk_d0b.hi < 1) {
-        return func_ov065_0226c628(ctx);
+        return WifiAp_RestartSearch(ctx);
     }
     return 6;
 }
 
-void func_ov065_0226c28c(void *a, void *b, s32 n, u32 flags) {
+void WifiAp_StartScan(void *a, void *b, s32 n, u32 flags) {
     if (n > 0xc) {
         n = 0xc;
     }
-    func_ov065_0226a264(a, b, flags | data_ov065_0228b2e8[n]);
+    WifiLink_SearchAsync(a, b, flags | sWifiApScanChannelBits[n]);
 }
 
-s32 func_ov065_0226c1e0(void) {
-    Unk_ov065_0226bf70_Ctx *ctx = (Unk_ov065_0226bf70_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_StepRecoverLink(void) {
+    Unk_ov065_0226bf70_Ctx *ctx = (Unk_ov065_0226bf70_Ctx *)WifiAp_GetBlock(0x10);
     u32 st = 9;
-    switch (func_ov065_02269c9c()) {
+    switch (WifiLink_GetPhase()) {
     case 0:
     case 1:
     case 2:
@@ -639,68 +639,68 @@ s32 func_ov065_0226c1e0(void) {
             ctx->unk_444[ctx->unk_d13 * 4] = 0;
             st = 7;
         } else if (st >= 3 && st <= 5) {
-            func_ov065_0226c750(st);
+            WifiAp_RescanForState(st);
         }
         break;
     case 4:
     case 5:
         break;
     case 6:
-        func_ov065_0226a0c4();
+        WifiLink_EndSearchAsync();
         break;
     case 7:
     case 8:
         break;
     case 9:
-        func_ov065_02269e50();
+        WifiLink_DisconnectAsync();
         break;
     case 10:
         break;
     case 12:
-        func_ov065_02269cc4();
-        func_ov065_0226aef8(4);
+        WifiLink_TerminateAsync();
+        WifiAp_SetError(4);
         st = 0x11;
         break;
     case 11:
-        func_ov065_0226aef8(0);
+        WifiAp_SetError(0);
         st = 0x11;
         break;
     }
     return st;
 }
 
-s32 func_ov065_0226c160(s32 mode) {
-    Unk_ov065_0226bf70_Ctx *ctx = (Unk_ov065_0226bf70_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_BuildSearchList(s32 mode) {
+    Unk_ov065_0226bf70_Ctx *ctx = (Unk_ov065_0226bf70_Ctx *)WifiAp_GetBlock(0x10);
     volatile s32 z = 0;
     MIi_CpuClear32(z, ctx->unk_300, 0x144);
     switch (mode) {
     case 0:
-        ctx->unk_d10 = func_ov065_0226c0e8(ctx);
+        ctx->unk_d10 = WifiAp_BuildSearchWithFreespot(ctx);
         break;
     case 1:
-        ctx->unk_d10 = func_ov065_0226bf08(ctx->unk_d12, ctx->unk_444, ctx->unk_300, (Unk_ov065_0226bf70_Rec *)ctx->unk_470);
+        ctx->unk_d10 = WifiAp_BuildSearchFromFound(ctx->unk_d12, ctx->unk_444, ctx->unk_300, (Unk_ov065_0226bf70_Rec *)ctx->unk_470);
         break;
     case 2:
-        ctx->unk_d10 = func_ov065_0226c038(ctx);
+        ctx->unk_d10 = WifiAp_BuildSearchWithHotspots(ctx);
         break;
     }
     return ctx->unk_d10;
 }
 
-s32 func_ov065_0226c138(u8 *rec) {
-    if (strncmp(rec + 0xc, data_ov065_0228b2d4, 8) == 0) {
+s32 WifiAp_IsFreespot(u8 *rec) {
+    if (strncmp(rec + 0xc, sWifiApSsidFreespot, 8) == 0) {
         return 8;
     }
     return 0;
 }
 
-s32 func_ov065_0226c0e8(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_BuildSearchWithFreespot(Unk_ov065_0226bf70_Ctx *ctx) {
     u8 n;
     Unk_ov065_0226bf70_Ent *out = ctx->unk_300;
-    n = func_ov065_0226bf70(ctx);
+    n = WifiAp_BuildSearchFromSettings(ctx);
     out += n;
     if (ctx->unk_d0c.lo == 0 || ctx->unk_d0c.lo == 6) {
-        MI_CpuCopy8(data_ov065_0228b2d4, out->unk_04, 8);
+        MI_CpuCopy8(sWifiApSsidFreespot, out->unk_04, 8);
         out->unk_03 = 8;
         out->unk_01 = 8;
         n++;
@@ -708,27 +708,27 @@ s32 func_ov065_0226c0e8(Unk_ov065_0226bf70_Ctx *ctx) {
     return n;
 }
 
-s32 func_ov065_0226c038(Unk_ov065_0226bf70_Ctx *ctx) {
+s32 WifiAp_BuildSearchWithHotspots(Unk_ov065_0226bf70_Ctx *ctx) {
     u8 n;
     Unk_ov065_0226bf70_Ent *out = ctx->unk_300;
-    n = func_ov065_0226bf70(ctx);
+    n = WifiAp_BuildSearchFromSettings(ctx);
     out += n;
     if (ctx->unk_d0c.lo == 0 || ctx->unk_d0c.lo == 4) {
-        MI_CpuCopy8(data_ov065_0228b670, out->unk_04, 8);
+        MI_CpuCopy8(sWifiApSsidUsbConnector, out->unk_04, 8);
         out->unk_03 = 8;
         out->unk_01 = 6;
         n++;
         out++;
     }
     if (ctx->unk_d0c.lo == 0 || ctx->unk_d0c.lo == 7) {
-        MI_CpuCopy8(data_ov065_0228b2cc, out->unk_04, 8);
+        MI_CpuCopy8(sWifiApSsidWayport, out->unk_04, 8);
         out->unk_03 = 8;
         out->unk_01 = 9;
         n++;
         out++;
     }
     if (ctx->unk_d0c.lo == 0 || ctx->unk_d0c.lo == 8) {
-        MI_CpuCopy8(data_ov065_0228b2dc, out->unk_04, 0xb);
+        MI_CpuCopy8(sWifiApSsidNintendoWfc, out->unk_04, 0xb);
         out->unk_03 = 0xb;
         out->unk_01 = 0xa;
         n++;
@@ -736,7 +736,7 @@ s32 func_ov065_0226c038(Unk_ov065_0226bf70_Ctx *ctx) {
     return n;
 }
 
-u8 func_ov065_0226bf70(Unk_ov065_0226bf70_Ctx *ctx) {
+u8 WifiAp_BuildSearchFromSettings(Unk_ov065_0226bf70_Ctx *ctx) {
     s32 i;
     u8 cnt;
     u8 *q;
@@ -798,7 +798,7 @@ u8 func_ov065_0226bf70(Unk_ov065_0226bf70_Ctx *ctx) {
     return cnt;
 }
 
-u32 func_ov065_0226bf08(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_ov065_0226bf70_Rec *rec) {
+u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_ov065_0226bf70_Rec *rec) {
     u8 cnt = 0;
     u8 i = 0;
     if (n > 0) {
@@ -829,29 +829,29 @@ u32 func_ov065_0226bf08(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_ov065_022
     return cnt;
 }
 
-s32 func_ov065_0226bee4(void) {
-    if (func_ov065_0226bd18(func_ov065_0226af74(1) + 0xa) == 1) {
+s32 WifiAp_StepFailedCleanup(void) {
+    if (WifiAp_CleanupStep(WifiAp_GetBlock(1) + 0xa) == 1) {
         return 0x12;
     }
     return 0x11;
 }
 
-s32 func_ov065_0226be9c(void) {
-    u8 *p = func_ov065_0226af74(1);
-    s32 n = func_ov065_0226aeec();
+s32 WifiAp_GetErrorCode2(void) {
+    u8 *p = WifiAp_GetBlock(1);
+    s32 n = WifiAp_GetErrorCode();
     if (n < 4) {
-        return func_ov065_0226be64(n);
+        return WifiAp_MapStartupError(n);
     }
     if (n < 5) {
-        return func_ov065_0226be5c();
+        return WifiAp_GetWirelessOffError();
     }
     if (n == 5) {
-        return func_ov065_0226be44(p);
+        return WifiAp_GetNoApErrorCode(p);
     }
-    return func_ov065_0226bd74(p);
+    return WifiAp_GetErrorCodeForState(p);
 }
 
-s32 func_ov065_0226be64(u32 r) {
+s32 WifiAp_MapStartupError(u32 r) {
     switch (r) {
     case 1:
         return -9;
@@ -865,11 +865,11 @@ s32 func_ov065_0226be64(u32 r) {
     return 0;
 }
 
-s32 func_ov065_0226be5c(void) {
+s32 WifiAp_GetWirelessOffError(void) {
     return -6;
 }
 
-s32 func_ov065_0226be44(u8 *p) {
+s32 WifiAp_GetNoApErrorCode(u8 *p) {
     if (p[0xb] == 0) {
         return -0xc3b3;
     }
@@ -939,45 +939,45 @@ struct Unk_ov065_0226b78c_Msg {
 };
 
 extern "C" {
-u8 *func_ov065_0226af74(u32 id);
-s32 func_ov065_0226af18(void);
-s32 func_ov065_0226b3c4(s32 a, void *ctx);
-s32 func_ov065_0226c878(u32 v);
-s32 func_ov065_0226c138(void *rec);
-s32 func_ov065_0226d08c(void *p);
-s32 func_ov065_0226d0fc(void *p);
-s32 func_ov065_0226d080(void *a, void *b);
-s32 func_ov065_0226d0e0(void *a, void *b);
-s32 func_ov065_02269c9c(void);
-s32 func_ov065_02269f24(void *rec, void *buf, u32 v);
-s32 func_ov065_0226a4c8(void);
-s32 func_ov065_0226a284(void);
-s32 func_ov065_0226a0c4(void);
-s32 func_ov065_02269e50(void);
-s32 func_ov065_02269cc4(void);
-s32 func_ov065_0226aef8(s32 v);
-s32 func_ov065_02260b68(void);
-s32 func_ov065_02261110(void);
-s32 func_ov065_0226f7c8(void);
-s32 func_ov065_0226f878(void);
+u8 *WifiAp_GetBlock(u32 id);
+s32 WifiAp_GetState(void);
+s32 WifiAp_SortFoundAp(s32 a, void *ctx);
+s32 WifiAp_AddFoundChannel(u32 v);
+s32 WifiAp_IsFreespot(void *rec);
+s32 WifiAp_IsUsbConnectorAp(void *p);
+s32 WifiAp_IsNdwcshapAp(void *p);
+s32 WifiAp_GetUsbApWepKey(void *a, void *b);
+s32 WifiAp_GetNdwcshapWepKey(void *a, void *b);
+s32 WifiLink_GetPhase(void);
+s32 WifiLink_ConnectAsync(void *rec, void *buf, u32 v);
+s32 WifiLink_Finish(void);
+s32 WifiLink_CleanupAsync(void);
+s32 WifiLink_EndSearchAsync(void);
+s32 WifiLink_DisconnectAsync(void);
+s32 WifiLink_TerminateAsync(void);
+s32 WifiAp_SetError(s32 v);
+s32 SockCore_TryShutdown(void);
+s32 Sock_Cleanup(void);
+s32 NetCheck_Abort(void);
+s32 NetCheck_Destroy(void);
 void MIi_CpuCopy32(void *src, void *dst, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, u32 n);
 s32 strncmp(void *a, void *b, u32 n);
 s64 OS_GetTick(void);
 
-s32 func_ov065_0226b630(Unk_ov065_0226b488_Rec *rec);
-s32 func_ov065_0226b5d4(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e);
-s32 func_ov065_0226b534(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
-void func_ov065_0226b6bc(Unk_ov065_0226b488_Rec *rec);
-u32 func_ov065_0226b8b4(Unk_ov065_0226b488_Ctx *ctx);
-u32 func_ov065_0226b8d4(Unk_ov065_0226b488_Ctx *ctx);
-u32 func_ov065_0226b8f4(Unk_ov065_0226b488_Ctx *ctx);
-BOOL func_ov065_0226b7f8(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out);
-s32 func_ov065_0226bb48(Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226ba44(Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226bca4(void);
-s32 func_ov065_0226bc70(void);
+s32 WifiAp_MatchSpecialSsid(Unk_ov065_0226b488_Rec *rec);
+s32 WifiAp_MatchSearchEntry(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e);
+s32 WifiAp_AddFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
+void WifiAp_OnApFound(Unk_ov065_0226b488_Rec *rec);
+u32 WifiAp_GetAuthOption(Unk_ov065_0226b488_Ctx *ctx);
+u32 WifiAp_GetPowerOption(Unk_ov065_0226b488_Ctx *ctx);
+u32 WifiAp_SelectApType(Unk_ov065_0226b488_Ctx *ctx);
+BOOL WifiAp_GetWepSetting(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out);
+s32 WifiAp_PrepareConnect(Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_StepConnect(Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_StepLinkShutdown(void);
+s32 WifiAp_StopSocketLayer(void);
 
 static inline u32 Unk_ov065_0226b488_Level(u16 f) {
     u32 v;
@@ -1019,26 +1019,26 @@ struct Unk_ov065_0226bd74_Obj {
 };
 
 
-void func_ov065_0226b488(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
-void func_ov065_0226b4e8(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226b534(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226b5d4(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e);
-s32 func_ov065_0226b630(Unk_ov065_0226b488_Rec *rec);
-void func_ov065_0226b6bc(Unk_ov065_0226b488_Rec *rec);
-void func_ov065_0226b78c(Unk_ov065_0226b78c_Msg *m);
-BOOL func_ov065_0226b7f8(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out);
-u32 func_ov065_0226b8b4(Unk_ov065_0226b488_Ctx *ctx);
-u32 func_ov065_0226b8d4(Unk_ov065_0226b488_Ctx *ctx);
-u32 func_ov065_0226b8f4(Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226ba44(Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226bb48(Unk_ov065_0226b488_Ctx *ctx);
-s32 func_ov065_0226bc40(void);
-s32 func_ov065_0226bc70(void);
-s32 func_ov065_0226bca4(void);
-s32 func_ov065_0226bd18(u8 *p);
-s32 func_ov065_0226bd74(Unk_ov065_0226bd74_Obj *o);
+void WifiAp_UpdateFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
+void WifiAp_StoreNewFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_AddFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_MatchSearchEntry(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e);
+s32 WifiAp_MatchSpecialSsid(Unk_ov065_0226b488_Rec *rec);
+void WifiAp_OnApFound(Unk_ov065_0226b488_Rec *rec);
+void WifiAp_OnLinkNotify(Unk_ov065_0226b78c_Msg *m);
+BOOL WifiAp_GetWepSetting(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out);
+u32 WifiAp_GetAuthOption(Unk_ov065_0226b488_Ctx *ctx);
+u32 WifiAp_GetPowerOption(Unk_ov065_0226b488_Ctx *ctx);
+u32 WifiAp_SelectApType(Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_StepConnect(Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_PrepareConnect(Unk_ov065_0226b488_Ctx *ctx);
+s32 WifiAp_ProcessConnect(void);
+s32 WifiAp_StopSocketLayer(void);
+s32 WifiAp_StepLinkShutdown(void);
+s32 WifiAp_CleanupStep(u8 *p);
+s32 WifiAp_GetErrorCodeForState(Unk_ov065_0226bd74_Obj *o);
 
-s32 func_ov065_0226bd74(Unk_ov065_0226bd74_Obj *o) {
+s32 WifiAp_GetErrorCodeForState(Unk_ov065_0226bd74_Obj *o) {
     s32 r;
     if (o->unk_16 < 10) {
         if (o->unk_14 == 3) {
@@ -1071,9 +1071,9 @@ s32 func_ov065_0226bd74(Unk_ov065_0226bd74_Obj *o) {
     return r;
 }
 
-s32 func_ov065_0226bd18(u8 *p) {
+s32 WifiAp_CleanupStep(u8 *p) {
     if (*p <= 10) {
-        s32 r = func_ov065_0226bca4();
+        s32 r = WifiAp_StepLinkShutdown();
         if (r == 1) {
             *p = 0;
             return 1;
@@ -1083,83 +1083,83 @@ s32 func_ov065_0226bd18(u8 *p) {
             return 1;
         }
     } else if (*p == 0xe) {
-        func_ov065_0226f7c8();
-        func_ov065_0226f878();
+        NetCheck_Abort();
+        NetCheck_Destroy();
         *p = 0xc;
     } else if (*p < 0x12) {
-        if (func_ov065_0226bc70() == 1) {
+        if (WifiAp_StopSocketLayer() == 1) {
             *p = 10;
         }
     }
     return 0;
 }
 
-s32 func_ov065_0226bca4(void) {
-    switch (func_ov065_02269c9c()) {
+s32 WifiAp_StepLinkShutdown(void) {
+    switch (WifiLink_GetPhase()) {
     case 0:
         return 1;
     case 1:
-        func_ov065_0226a4c8();
+        WifiLink_Finish();
         break;
     case 2:
         break;
     case 3:
-        func_ov065_0226a284();
+        WifiLink_CleanupAsync();
         break;
     case 4:
     case 5:
         break;
     case 6:
-        func_ov065_0226a0c4();
+        WifiLink_EndSearchAsync();
         break;
     case 7:
     case 8:
         break;
     case 9:
-        func_ov065_02269e50();
+        WifiLink_DisconnectAsync();
         break;
     case 10:
         break;
     case 12:
-        func_ov065_02269cc4();
+        WifiLink_TerminateAsync();
         break;
     case 11:
-        func_ov065_0226aef8(0);
+        WifiAp_SetError(0);
         return -1;
     }
     return 0;
 }
 
-s32 func_ov065_0226bc70(void) {
-    if (func_ov065_02260b68() != 0) {
+s32 WifiAp_StopSocketLayer(void) {
+    if (SockCore_TryShutdown() != 0) {
         return 0;
     }
-    s32 r = func_ov065_02261110();
+    s32 r = Sock_Cleanup();
     if (r == 0 || r == -0x27) {
         return 1;
     }
     return 0;
 }
 
-s32 func_ov065_0226bc40(void) {
-    s32 r = func_ov065_0226af18();
-    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_ProcessConnect(void) {
+    s32 r = WifiAp_GetState();
+    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     switch (r) {
     case 7:
-        r = func_ov065_0226bb48(ctx);
+        r = WifiAp_PrepareConnect(ctx);
         break;
     case 8:
-        r = func_ov065_0226ba44(ctx);
+        r = WifiAp_StepConnect(ctx);
         break;
     }
     return r;
 }
 
-s32 func_ov065_0226bb48(Unk_ov065_0226b488_Ctx *ctx) {
+s32 WifiAp_PrepareConnect(Unk_ov065_0226b488_Ctx *ctx) {
     Unk_ov065_0226b488_Rec *rec = ctx->unk_470 + ctx->unk_d13;
-    ctx->unk_d0d = func_ov065_0226b8f4(ctx);
+    ctx->unk_d0d = WifiAp_SelectApType(ctx);
     MI_CpuFill8(ctx->unk_cb8, 0, 0x52);
-    if (func_ov065_0226b7f8(ctx, ctx->unk_d0d, ctx->unk_cb8) != 0) {
+    if (WifiAp_GetWepSetting(ctx, ctx->unk_d0d, ctx->unk_cb8) != 0) {
         ctx->unk_d0b_hi = 1;
         if ((((s32)rec->unk_2c >> 4) & 1) == 0) {
             ctx->unk_444[ctx->unk_d13 * 4] = 3;
@@ -1181,12 +1181,12 @@ s32 func_ov065_0226bb48(Unk_ov065_0226b488_Ctx *ctx) {
     return 8;
 }
 
-s32 func_ov065_0226ba44(Unk_ov065_0226b488_Ctx *ctx) {
-    s32 s = func_ov065_02269c9c();
+s32 WifiAp_StepConnect(Unk_ov065_0226b488_Ctx *ctx) {
+    s32 s = WifiLink_GetPhase();
     Unk_ov065_0226b488_Rec *rec = ctx->unk_470 + ctx->unk_d13;
     u32 r6;
     if (s == 3) {
-        r6 = func_ov065_0226b8d4(ctx);
+        r6 = WifiAp_GetPowerOption(ctx);
         ctx->unk_d15 = ctx->unk_d15 + 1;
         if (ctx->unk_d15 > 3) {
             ctx->unk_d15 = 0;
@@ -1206,7 +1206,7 @@ s32 func_ov065_0226ba44(Unk_ov065_0226b488_Ctx *ctx) {
                 return 9;
             }
         }
-        func_ov065_02269f24(rec, ctx->unk_cb8, r6 | func_ov065_0226b8b4(ctx));
+        WifiLink_ConnectAsync(rec, ctx->unk_cb8, r6 | WifiAp_GetAuthOption(ctx));
     } else if (s == 9) {
         s64 t;
         ctx->unk_d15 = 0;
@@ -1218,7 +1218,7 @@ s32 func_ov065_0226ba44(Unk_ov065_0226b488_Ctx *ctx) {
     return 8;
 }
 
-u32 func_ov065_0226b8f4(Unk_ov065_0226b488_Ctx *ctx) {
+u32 WifiAp_SelectApType(Unk_ov065_0226b488_Ctx *ctx) {
     struct {
         Unk_ov065_0226b488_Rec *rec;
         s32 result;
@@ -1231,14 +1231,14 @@ u32 func_ov065_0226b8f4(Unk_ov065_0226b488_Ctx *ctx) {
         u32 cnt = l.result;
         u32 proto = l.rec->unk_0a;
         if (proto == 0x20) {
-            l.result = func_ov065_0226b630(l.rec);
+            l.result = WifiAp_MatchSpecialSsid(l.rec);
             if (l.result > 0) {
                 cnt++;
             } else {
                 l.result = 0;
             }
         } else if (proto == 8) {
-            l.result = func_ov065_0226c138(l.rec);
+            l.result = WifiAp_IsFreespot(l.rec);
             if (l.result != 0) {
                 cnt++;
             } else {
@@ -1298,21 +1298,21 @@ u32 func_ov065_0226b8f4(Unk_ov065_0226b488_Ctx *ctx) {
     return (u8)l.result;
 }
 
-u32 func_ov065_0226b8d4(Unk_ov065_0226b488_Ctx *ctx) {
+u32 WifiAp_GetPowerOption(Unk_ov065_0226b488_Ctx *ctx) {
     if (ctx->unk_d0b_lo == 1) {
         return 0x30000;
     }
     return 0x20000;
 }
 
-u32 func_ov065_0226b8b4(Unk_ov065_0226b488_Ctx *ctx) {
+u32 WifiAp_GetAuthOption(Unk_ov065_0226b488_Ctx *ctx) {
     if (ctx->unk_d0b_hi == 1) {
         return 0xc0000;
     }
     return 0x80000;
 }
 
-BOOL func_ov065_0226b7f8(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out) {
+BOOL WifiAp_GetWepSetting(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out) {
     u8 *c = (u8 *)ctx;
     switch (idx) {
     case 2:
@@ -1334,11 +1334,11 @@ BOOL func_ov065_0226b7f8(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out) {
         break;
     case 6:
         out[0] = 2;
-        func_ov065_0226d080(ctx->unk_470[ctx->unk_d13].unk_0c, out + 2);
+        WifiAp_GetUsbApWepKey(ctx->unk_470[ctx->unk_d13].unk_0c, out + 2);
         break;
     case 7:
         out[0] = 2;
-        func_ov065_0226d0e0(ctx->unk_470[ctx->unk_d13].unk_0c, out + 2);
+        WifiAp_GetNdwcshapWepKey(ctx->unk_470[ctx->unk_d13].unk_0c, out + 2);
         break;
     case 8:
     case 9:
@@ -1350,8 +1350,8 @@ BOOL func_ov065_0226b7f8(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out) {
     return FALSE;
 }
 
-void func_ov065_0226b78c(Unk_ov065_0226b78c_Msg *m) {
-    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+void WifiAp_OnLinkNotify(Unk_ov065_0226b78c_Msg *m) {
+    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     if (m->unk_00 == 5) {
         if (m->unk_02 != 0) {
             switch (m->unk_08) {
@@ -1370,31 +1370,31 @@ void func_ov065_0226b78c(Unk_ov065_0226b78c_Msg *m) {
             }
         }
     } else if (m->unk_00 == 7) {
-        func_ov065_0226b6bc((Unk_ov065_0226b488_Rec *)m->unk_04);
+        WifiAp_OnApFound((Unk_ov065_0226b488_Rec *)m->unk_04);
     }
 }
 
-void func_ov065_0226b6bc(Unk_ov065_0226b488_Rec *rec) {
+void WifiAp_OnApFound(Unk_ov065_0226b488_Rec *rec) {
     s32 r6 = -1;
-    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
-    func_ov065_0226af74(1)[0xb] = 1;
-    switch (func_ov065_0226af18()) {
+    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
+    WifiAp_GetBlock(1)[0xb] = 1;
+    switch (WifiAp_GetState()) {
     case 3: {
         u16 proto = rec->unk_0a;
         u8 c;
         if (proto == 0 || (c = rec->unk_0c[0]) == 0) {
-            func_ov065_0226c878(rec->unk_36);
+            WifiAp_AddFoundChannel(rec->unk_36);
         } else if (proto == 1 || c == 0x20) {
-            func_ov065_0226c878(rec->unk_36);
-            r6 = func_ov065_0226b5d4(rec, ctx->unk_d10, ctx->unk_300);
+            WifiAp_AddFoundChannel(rec->unk_36);
+            r6 = WifiAp_MatchSearchEntry(rec, ctx->unk_d10, ctx->unk_300);
         } else {
-            r6 = func_ov065_0226b5d4(rec, ctx->unk_d10, ctx->unk_300);
+            r6 = WifiAp_MatchSearchEntry(rec, ctx->unk_d10, ctx->unk_300);
         }
         break;
     }
     case 4:
     case 5:
-        r6 = func_ov065_0226b5d4(rec, 1, ctx->unk_300 + ctx->unk_d0f);
+        r6 = WifiAp_MatchSearchEntry(rec, 1, ctx->unk_300 + ctx->unk_d0f);
         if (r6 >= 0) {
             ((Unk_ov065_0226b488_Entry *)((u8 *)ctx + 0x300) + ctx->unk_d0f)->lo = 1;
         }
@@ -1403,22 +1403,22 @@ void func_ov065_0226b6bc(Unk_ov065_0226b488_Rec *rec) {
         return;
     }
     if (r6 >= 0) {
-        func_ov065_0226b3c4(func_ov065_0226b534(r6, rec, ctx), ctx);
+        WifiAp_SortFoundAp(WifiAp_AddFoundAp(r6, rec, ctx), ctx);
     }
 }
 
-s32 func_ov065_0226b630(Unk_ov065_0226b488_Rec *rec) {
-    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)func_ov065_0226af74(0x10);
+s32 WifiAp_MatchSpecialSsid(Unk_ov065_0226b488_Rec *rec) {
+    Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     if (ctx->unk_d0c_st == 0 || ctx->unk_d0c_st == 4) {
         if ((u8)(((s32)rec->unk_2c >> 4) & 1) == 1) {
-            if (func_ov065_0226d08c(rec->unk_0c) == 1) {
+            if (WifiAp_IsUsbConnectorAp(rec->unk_0c) == 1) {
                 return 6;
             }
         }
     }
     if (ctx->unk_d0c_st == 0 || ctx->unk_d0c_st == 5) {
         if ((u8)(((s32)rec->unk_2c >> 4) & 1) == 1) {
-            if (func_ov065_0226d0fc(rec->unk_0c) == 1) {
+            if (WifiAp_IsNdwcshapAp(rec->unk_0c) == 1) {
                 return 7;
             }
         }
@@ -1426,11 +1426,11 @@ s32 func_ov065_0226b630(Unk_ov065_0226b488_Rec *rec) {
     return -1;
 }
 
-s32 func_ov065_0226b5d4(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e) {
+s32 WifiAp_MatchSearchEntry(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e) {
     s32 i;
     u16 proto;
     if (rec->unk_0a == 0x20) {
-        s32 r = func_ov065_0226b630(rec);
+        s32 r = WifiAp_MatchSpecialSsid(rec);
         if (r > 0) {
             return r;
         }
@@ -1449,7 +1449,7 @@ s32 func_ov065_0226b5d4(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_E
     return -1;
 }
 
-s32 func_ov065_0226b534(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
+s32 WifiAp_AddFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
     s32 i = 0;
     s32 found = -1;
     u8 *e;
@@ -1470,18 +1470,18 @@ s32 func_ov065_0226b534(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_C
         } while (i < n);
     }
     if (found == -1) {
-        func_ov065_0226b4e8((u8)a, rec, ctx);
+        WifiAp_StoreNewFoundAp((u8)a, rec, ctx);
         if (ctx->unk_d12 < 10) {
             ctx->unk_d12++;
         }
         found = 10;
     } else {
-        func_ov065_0226b488(found, rec, ctx);
+        WifiAp_UpdateFoundAp(found, rec, ctx);
     }
     return found;
 }
 
-void func_ov065_0226b4e8(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
+void WifiAp_StoreNewFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
     u8 *p = ctx->unk_444 + 0x28;
     Unk_ov065_0226b488_Rec *q = ctx->unk_470 + 10;
     p[1] = a;
@@ -1491,7 +1491,7 @@ void func_ov065_0226b4e8(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_
     MIi_CpuCopy32(rec, q, 0xc0);
 }
 
-void func_ov065_0226b488(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
+void WifiAp_UpdateFoundAp(u32 a, Unk_ov065_0226b488_Rec *rec, Unk_ov065_0226b488_Ctx *ctx) {
     u8 *p = ctx->unk_444 + a * 4;
     Unk_ov065_0226b488_Rec *q = ctx->unk_470 + a;
     u16 f = rec->unk_02;
@@ -1584,15 +1584,15 @@ struct Unk_ov065_0226b3c4_Rec {
 
 extern "C" {
 
-extern Unk_ov065_0226ab40_Glb data_ov065_022905ac;
-extern u8 data_ov065_022905b8[];
-extern volatile u8 data_ov065_022905d8;
-extern u8 data_ov065_022905dc[];
-extern u8 *data_ov065_022905ec;
-extern void *data_ov065_022905f0;
-extern void *data_ov065_022905f4;
-extern Unk_ov065_0226b27c_F8 *data_ov065_022905f8;
-extern Unk_ov065_0226aed4_Fc *data_ov065_022905fc;
+extern Unk_ov065_0226ab40_Glb sWifiLinkSendState;
+extern u8 sWifiLinkSendLock[];
+extern volatile u8 sWifiRssiCount;
+extern u8 sWifiRssiSamples[];
+extern u8 *sWifiApContext;
+extern void *sWifiApLinkWork;
+extern void *sWifiApSocketConfig;
+extern Unk_ov065_0226b27c_F8 *sWifiApAllocator;
+extern Unk_ov065_0226aed4_Fc *sWifiApControl;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -1607,43 +1607,21 @@ s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
 void func_020ff154(void *);
 
-Unk_ov065_0226ab5c_Conn *func_ov065_02269bd0();
-s32 func_ov065_0226a510(void *, u32);
-s32 func_ov065_0226a97c(void *);
-s32 func_ov065_0226a9a8(void *);
-void func_ov065_0226a9d4();
-s32 func_ov065_0226bd18(u8 *);
-s32 func_ov065_0226be9c();
-u8 func_ov065_0226bee4();
-u8 func_ov065_0226bc40();
-u8 func_ov065_0226c1e0();
-u8 func_ov065_0226c8a4();
-u8 func_ov065_0226c924();
-u8 func_ov065_0226ccc8();
+Unk_ov065_0226ab5c_Conn *WifiLink_GetWork();
+s32 WifiLink_Init(void *, u32);
+s32 WifiLink_UnlockFromIrq(void *);
+s32 WifiLink_TryLockFromIrq(void *);
+void WifiLink_OnKeepAliveSent();
+s32 WifiAp_CleanupStep(u8 *);
+s32 WifiAp_GetErrorCode2();
+u8 WifiAp_StepFailedCleanup();
+u8 WifiAp_ProcessConnect();
+u8 WifiAp_StepRecoverLink();
+u8 WifiAp_ProcessSearch();
+u8 WifiAp_ProcessStartup();
+u8 WifiAp_ProcessNetSetup();
 
-u8 func_ov065_0226ad30();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void func_ov065_0226b084(u32, void *, u32);
-
-
-
-u8 func_ov065_0226af18();
-void *func_ov065_0226af74(u32);
+u8 WifiLink_GetAverageRssi();
 
 
 
@@ -1660,11 +1638,33 @@ void *func_ov065_0226af74(u32);
 
 
 
+void WifiAp_FreeBlock(u32, void *, u32);
 
 
-void func_ov065_0226b3c4(u32 n, u8 *base);
 
-void func_ov065_0226b3c4(u32 n, u8 *base) {
+u8 WifiAp_GetState();
+void *WifiAp_GetBlock(u32);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void WifiAp_SortFoundAp(u32 n, u8 *base);
+
+void WifiAp_SortFoundAp(u32 n, u8 *base) {
     Unk_ov065_0226b3c4_Key *keys = (Unk_ov065_0226b3c4_Key *)(base + 0x444);
     Unk_ov065_0226b3c4_Rec *recs = (Unk_ov065_0226b3c4_Rec *)(base + 0x470);
     s32 j = n - 1;

@@ -2687,20 +2687,20 @@ u32 _ZN12Unk_0201985813func_02019790Ev(u8 *p);
 BOOL _ZN12Unk_0201985813func_02019578EiPtjhjj(u8 *p, s32 a, u16 *b, u32 c, u32 d, u32 e, u32 f);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-BOOL func_0206ec6c();
-u16 func_0206ea84(u32 p);
-BOOL func_0206ead4(u32 a, u32 b);
-BOOL func_0206ea48();
-BOOL func_0206eca4(u32 a);
-BOOL func_0206ec84(u32 a, u32 b);
-BOOL func_0206e888(u32 a, u32 b);
+BOOL MenuCtrl_IsFinished();
+u16 MenuCtrl_BuildPocketMask(u32 p);
+BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b);
+BOOL MenuCtrl_OpenPostOffice();
+BOOL MenuCtrl_OpenLauncher(u32 a);
+BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b);
+BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
 BOOL MenuCtrl_RequestOpenMenu12(u32 a);
-BOOL func_0206e6ec(u32 a, u32 b, u32 c);
+BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
 u32 func_020156ec();
 u32 func_020947f0();
 s32 Math_AngleXZ(u32 a, u8 *b);
 void func_02094574(u32 a, s16 b, u32 c);
-void PlayerActor_RequestAct70(s32 a, u32 b);
+void PlayerActor_RequestTurnTo(s32 a, u32 b);
 void func_02094f48(u32 a, u32 b);
 Unk_020155e4_Ret *func_020951ec(u32 a);
 s32 _ZN12Unk_020d77a410getAngleToEPS_(u8 *a, u8 *b);
@@ -2718,7 +2718,7 @@ extern "C" {
 extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
 s32 func_020b50e8(void);
-s32 func_020a0414(void);
+s32 Net_GetJoiningAid(void);
 s32 func_02094348(void);
 s32 _ZN15TalkWindowState17setSlotFromStringEiii(u32 a, u32 b, u32 c, u32 d);
 s32 _ZN15TalkWindowState12setNamedSlotEiPvj(u32 a, u32 b, void *c, u32 d);
@@ -2876,7 +2876,7 @@ void *_ZN12Unk_0201985813func_0201978cEv(Unk_0201745c_State *s);
 BOOL func_020572b0(u32 a);
 void func_02057250(u32 a, void *p);
 BOOL func_020572e0(void *p);
-BOOL func_ov004_02224918(void);
+BOOL PlayerActor_LocalRequestAct37(void);
 BOOL _ZN12Unk_02015b8c13func_02015e74EP18Unk_02015b8c_Scene(void *p);
 s32 _ZN12Unk_02015b8c13func_02015e48Ej(void *p, u32 a);
 BOOL func_020573cc(u32 a, void *p);
@@ -2933,7 +2933,7 @@ Unk_02017d74_Data *_ZN12Unk_0201985813func_0201978cEv(void *s);
 BOOL func_020572b0(u32 a);
 void func_02057250(u32 a, void *p);
 BOOL func_020572e0(void *p);
-BOOL func_ov004_02224918(void);
+BOOL PlayerActor_LocalRequestAct37(void);
 BOOL _ZN12Unk_02015b8c13func_02015e74EP18Unk_02015b8c_Scene(void *p);
 BOOL func_020573cc(u32 a, void *p);
 void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
@@ -2952,7 +2952,7 @@ void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 s32 func_020b50e8(void);
-void func_ov004_0222493c(void *a, void *b, void *c, void *d, void *e);
+void PlayerActor_LocalRequestAct36(void *a, void *b, void *c, void *d, void *e);
 void PlayerActor_RequestAct30(void *a, void *b, void *c, void *d, void *e);
 void func_02057418(void *a, s32 b, u32 c, s32 d, void *e, s32 f);
 void func_020193c0(void *a, s32 b, u32 c, u32 d, u32 e);
@@ -3131,7 +3131,7 @@ void func_0201a900(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334
 s32 Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(void *v);
 s32 func_0202ffdc(s32 id);
-BOOL func_ov004_02234f6c(s32 id);
+BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 id, s32 a, s32 b);
 s32 _ZN12Unk_0203389c13func_02033914Ei(void *buf, s32 a);
 s32 func_02030798(s32 id);
@@ -3201,7 +3201,7 @@ void _ZN12Unk_0201985813func_02019334EPh(void *p, void *q);
 s32 _ZN12Unk_02015b8c13func_02015e48Ej(void *p, s32 a);
 void _ZN12Unk_02019e2c13func_02019e34EPvsit(void *a, void *b, s32 c, s32 d, s32 e);
 void _ZN12Unk_0201a8c413func_0201aa20EP18Unk_0201a334_Scene(void *p, void *q);
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 void func_020309d4(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
 s32 func_02030814(s32 a);
 void _ZN12Unk_0201a13c13func_0201a1e0EP17Unk_0201a1e0_Base(void *p, void *q);
@@ -3240,7 +3240,7 @@ extern s32 data_020c6d20;
 extern u8 data_021bdfb0[];
 extern s32 data_021c61a0;
 extern s16 data_02135f44[];
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 s32 _ZN9Character10postCreateEi(void *self, s32 x);
 BOOL _ZN9Character8vfunc_04Ev(void *self);
 s32 _ZN9Character13func_0203e3f4Ev(void *self);
@@ -4058,7 +4058,7 @@ BOOL Unk_020d77a4::func_0201ba88() {
     if (_ZN11CommManager8isOnlineEv(g) != 0 && unk_563 == 0) {
         u8 *p = func_020841fc(&unk_ea);
         if (p != NULL && p[0] != 0) {
-            if ((p[1] == 4 && func_020a62a0() != 0) || p[1] == g->unk_64) {
+            if ((p[1] == 4 && NetArea_IsLocalOwner() != 0) || p[1] == g->unk_64) {
                 return TRUE;
             }
             return FALSE;
@@ -4206,7 +4206,7 @@ BOOL Unk_020d77a4::vfunc_04() {
 
 BOOL Unk_020d77a4::vfunc_00() {
     using namespace nR;
-    if (func_020a62a0() != 0) {
+    if (NetArea_IsLocalOwner() != 0) {
         func_0201ba70(1, gCommManager->unk_64, 4);
     }
     if (loadModel() == 0) {
@@ -4222,7 +4222,7 @@ BOOL Unk_020d77a4::vfunc_00() {
 void Unk_020d77a4::postCreate(s32 x) {
     using namespace nR;
     if (x == 2) {
-        if (func_020a62a0() == 0) {
+        if (NetArea_IsLocalOwner() == 0) {
             if ((unk_4e8 & 2) == 0) {
                 unk_4e8 |= 2;
                 unk_62c = 1;
@@ -4310,7 +4310,7 @@ BOOL Unk_020d77a4::onExecute() {
     _ZN12Unk_0201985813func_02019334EPh(((void *)((u8 *)this + (0x564))), this);
     _ZN12Unk_02019e2c13func_02019e34EPvsit(((void *)((u8 *)this + (0x420))), ((void *)((u8 *)this + (0x478))), (*(s16 *)((u8 *)this + (0x8e))), _ZN12Unk_02015b8c13func_02015e48Ej(((void *)((u8 *)this + (0x334))), 0), ((Unk_0201b2b8_Bits *)((void *)((u8 *)this + (0x190))))->mid);
     _ZN12Unk_0201a8c413func_0201aa20EP18Unk_0201a334_Scene(((void *)((u8 *)this + (0x350))), this);
-    if (func_020a62a0() && (*(u8 *)((u8 *)this + (0x510))) && (*(s32 *)((u8 *)this + (0x638))) > 0) {
+    if (NetArea_IsLocalOwner() && (*(u8 *)((u8 *)this + (0x510))) && (*(s32 *)((u8 *)this + (0x638))) > 0) {
         func_020309d4(((void *)((u8 *)this + (0x49c))), ((void *)((u8 *)this + (0x5c))), ((void *)((u8 *)this + (0x68))), (*(s16 *)((u8 *)this + (0x8e))), (*(s32 *)((u8 *)this + (0x638))), this, 0xf);
     }
     (*(s32 *)((u8 *)this + (0x60))) = func_02030814(0);
@@ -4321,11 +4321,11 @@ BOOL Unk_020d77a4::onExecute() {
     _ZN5Actor15calcModelMatrixEPv(this, &t);
     (*(Unk_0201b2b8_T30 *)((u8 *)this + (0x150))) = t;
     if (_ZN12Unk_020d77a413func_0201b9bcEv(this)) {
-        if (((*(u32 *)((u8 *)this + (0x4e8))) & 2) == 0 && func_020a62a0()) {
+        if (((*(u32 *)((u8 *)this + (0x4e8))) & 2) == 0 && NetArea_IsLocalOwner()) {
             (*(u32 *)((u8 *)this + (0x4e8))) |= 2;
             (*(u8 *)((u8 *)this + (0x62c))) = 1;
         }
-    } else if ((*(u8 *)((u8 *)this + (0x62c))) == 1 && func_020a62a0()) {
+    } else if ((*(u8 *)((u8 *)this + (0x62c))) == 1 && NetArea_IsLocalOwner()) {
         (*(u32 *)((u8 *)this + (0x4e8))) &= ~2;
         (*(u8 *)((u8 *)this + (0x62c))) = 0;
     }
@@ -4902,7 +4902,7 @@ extern "C" BOOL func_0201a834(Unk_0201a334_Vec3 *pos) {
         if (func_0202ffdc((s32)pos) != -1) {
             return TRUE;
         }
-        if (func_ov004_02234f6c((s32)pos)) {
+        if (FtrMgr_GetSurfaceHeightAtPos((s32)pos)) {
             return TRUE;
         }
         return FALSE;
@@ -6770,7 +6770,7 @@ void Unk_02017d74::func_02018058(C_7d74 *c) {
         Unk_02017d74_Data *d = _ZN12Unk_0201985813func_0201978cEv(this);
         func_02057250(9, c);
         if (func_020572e0((void *)d->unk_28)) {
-            if (func_ov004_02224918()) {
+            if (PlayerActor_LocalRequestAct37()) {
                 unk_98 = 2;
             }
         }
@@ -6810,7 +6810,7 @@ BOOL Unk_02017d74::func_02017f10(C_7d74 *c) {
     _ZN12Unk_0201a8c413func_0201a97cEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
     if (d->unk_30 == 1) {
-        func_ov004_0222493c(&d->unk_22, &d->unk_24, &d->unk_2c, &d->unk_30, c);
+        PlayerActor_LocalRequestAct36(&d->unk_22, &d->unk_24, &d->unk_2c, &d->unk_30, c);
         unk_98 = 0xd;
     } else {
         PlayerActor_RequestAct30(&d->unk_22, &d->unk_24, &d->unk_2c, &d->unk_30, c);
@@ -7173,7 +7173,7 @@ extern "C" void _ZN12Unk_02016a4413func_0201745cEP12Unk_02006d14(S *s, C_745c *c
     if (!func_020572b0(2)) {
         func_02057250(9, c);
         if (func_020572e0(*(void **)((u8 *)r + 0x28))) {
-            if (func_ov004_02224918()) {
+            if (PlayerActor_LocalRequestAct37()) {
                 s->unk_98 = 9;
             }
         }
@@ -8397,7 +8397,7 @@ u8 ActorTalkRequest::getSpeakerIndex() {
 namespace nH {
 extern "C" s32 func_020156ec(void) {
     if (func_020b50e8() == 0x2f) {
-        return func_020a0414();
+        return Net_GetJoiningAid();
     }
     return func_02094348();
 }
@@ -8444,7 +8444,7 @@ void Unk_020d7710::func_020155a4(u8 *p) {
     if (b != 0) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
         func_02094574(0, 0, a);
-        PlayerActor_RequestAct70(s, a);
+        PlayerActor_RequestTurnTo(s, a);
         func_02094f48(1, a);
     }
 }
@@ -8701,29 +8701,29 @@ BOOL Unk_020d7710::func_02015030() {
         case 0: {
             u16 v = unk_78;
             if (unk_74 != 0) {
-                v = func_0206ea84(unk_74);
+                v = MenuCtrl_BuildPocketMask(unk_74);
             }
-            r = func_0206ead4(v, unk_80);
+            r = MenuCtrl_OpenPocketSelect(v, unk_80);
             break;
         }
         case 1:
             unk_84 = 1;
-            r = func_0206ea48();
+            r = MenuCtrl_OpenPostOffice();
             break;
         case 2:
-            r = func_0206eca4(unk_82);
+            r = MenuCtrl_OpenLauncher(unk_82);
             break;
         case 3:
-            r = func_0206ec84(unk_82, unk_83);
+            r = MenuCtrl_OpenLauncherWithIndex(unk_82, unk_83);
             break;
         case 4:
-            r = func_0206e888(unk_68, unk_6c);
+            r = MenuCtrl_OpenNearbyTowns(unk_68, unk_6c);
             break;
         case 5:
             r = MenuCtrl_RequestOpenMenu12(unk_70);
             break;
         case 6:
-            r = func_0206e6ec(unk_82, unk_98, unk_9c);
+            r = MenuCtrl_OpenLauncherWithText(unk_82, unk_98, unk_9c);
             break;
         case 7:
             if (unk_84 != 1) {
@@ -8742,7 +8742,7 @@ BOOL Unk_020d7710::func_02015030() {
 BOOL Unk_020d7710::func_02014ffc() {
     using namespace nG;
     BOOL result = FALSE;
-    if (func_0206ec6c()) {
+    if (MenuCtrl_IsFinished()) {
         if (unk_84 != 1) {
             unk_3c->unk_08 = 1;
         }

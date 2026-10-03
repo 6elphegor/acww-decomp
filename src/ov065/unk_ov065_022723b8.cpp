@@ -4,12 +4,12 @@
 typedef long long s64;
 
 extern "C" {
-u8 data_ov065_02290810[4];
-u32 data_ov065_0229081c;
-void *data_ov065_02290818;
-void *data_ov065_02290814;
-u8 data_ov065_02290820[0x20];
-u8 data_ov065_02290840[0x738];
+u8 sDwcMatchServerLock[4];
+u32 sDwcMatchUserFilter;
+void *sDwcMatchSyncOption;
+void *sDwcMatch;
+u8 sDwcMatchValidAids[0x20];
+u8 sDwcMatchUserKeys[0x738];
 }
 
 namespace F02271da0 {
@@ -125,8 +125,8 @@ struct Unk_ov065_022726a0_Hdr {
 
 extern "C" {
 
-extern Unk_ov065_0229080c *data_ov065_0229080c;
-extern Unk_ov065_02290814 *data_ov065_02290814;
+extern Unk_ov065_0229080c *sDwcFriendControl;
+extern Unk_ov065_02290814 *sDwcMatch;
 
 u64 OS_GetTick();
 s32 func_020ffc60(s32, void *);
@@ -140,53 +140,53 @@ void MI_CpuCopy8(const void *, void *, u32);
 s32 strncmp(const void *, const void *, u32);
 void OS_SNPrintf(char *, s32, const char *, u32);
 
-s32 func_ov065_02270e34(s32, s32);
-s32 func_ov065_02270e4c();
-s32 func_ov065_02270e94();
-s32 func_ov065_02270508();
-s32 func_ov065_02271474();
-void func_ov065_02271b7c();
-void func_ov065_02271ba0(void *, s32);
-s32 func_ov065_022715a4();
-void func_ov065_022715b0();
-void func_ov065_02271698();
-void func_ov065_02271d20();
-void func_ov065_02271d44();
-s32 func_ov065_022718ec();
-s32 func_ov065_0227194c(void *, Unk_ov065_0227194c_Out *);
-s32 func_ov065_0226f9e0(const char *, s32, char *, u32);
-s32 func_ov065_0226fb08(void *, s32, void *, u32);
-s32 func_ov065_02272d5c();
-s32 func_ov065_02272dd4(s32, s32);
-s32 func_ov065_02272e18();
-s32 func_ov065_02275474(void *);
-s32 func_ov065_0227627c(s32, s32);
-u64 func_ov065_02277974();
-s32 func_ov065_02277998(const char *, char *, char *, s32);
-s32 func_ov065_02283d14();
-s32 func_ov065_02284a80(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 func_ov065_022868b0(u32, u32, s32);
-s32 func_ov065_022741b0(u32);
-s32 func_ov065_0227412c(u32);
-s32 func_ov065_022749f8(u32, u32, u32, u32, void *, s32);
-s32 func_ov065_0227bd8c(Unk_ov065_0229080c_Sub *, s32, char *, char *);
-s32 func_ov065_0227bf5c(void *, s32);
-s32 func_ov065_0227bfb4(void *, s32);
-s32 func_ov065_0227c05c(void *, s32, Unk_ov065_0227194c_Out *);
-s32 func_ov065_0227c400(void *, s32, s32, s32, void (*)(), s32);
-s32 func_ov065_022722fc(void *, u8 *, u8 *, char *);
-s32 func_ov065_022723b8(void *, char *);
-s32 func_ov065_02271ed8(s32);
-s32 func_ov065_02271e8c(s32);
-s32 func_ov065_02271e00(s32, char *, char *);
-void func_ov065_02271fc8(s32, s32);
-s32 func_ov065_022723cc(s32);
+s32 DwcCore_SetError(s32, s32);
+s32 DwcCore_HasError();
+s32 DwcLogin_IsLoggedIn();
+s32 DwcCore_GetState();
+s32 DwcLogin_GetUserData();
+void DwcFriend_FinishUpdate();
+void DwcFriend_SyncList(void *, s32);
+s32 DwcFriend_GetControlField20();
+void DwcFriend_OnAuthorizedInfo();
+void DwcFriend_OnBuddyRequestInfo();
+void DwcFriend_Abort();
+void DwcFriend_Tick();
+s32 DwcFriend_HandleGpResult();
+s32 DwcFriend_GetBuddyStatus(void *, Unk_ov065_0227194c_Out *);
+s32 NasBase64_Decode(const char *, s32, char *, u32);
+s32 NasBase64_Encode(void *, s32, void *, u32);
+s32 DwcMatch_HandleGt2Result();
+s32 DwcMatch_HandleNnResult(s32, s32);
+s32 DwcMatch_HandleNnStartResult();
+s32 DwcMatch_SendNnRequest(void *);
+s32 DwcMatch_Fail(s32, s32);
+u64 DwcNet_GetTimeMs();
+s32 GsUtil_GetKeyValue(const char *, char *, char *, s32);
+s32 GsPersist_Process();
+s32 GsTransport_Connect(u32, s32, s32, char *, s32, s32, s32, s32);
+s32 GsTransport_AddressToString(u32, u32, s32);
+s32 DwcMatch_CancelNewClient(u32);
+s32 DwcMatch_RestartAfterNnFailure(u32);
+s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
+s32 GsGp_SetStatus(Unk_ov065_0229080c_Sub *, s32, char *, char *);
+s32 GsGp_DeleteBuddy(void *, s32);
+s32 GsGp_IsBuddy(void *, s32);
+s32 GsGp_GetBuddyStatus(void *, s32, Unk_ov065_0227194c_Out *);
+s32 GsGp_GetInfo(void *, s32, s32, s32, void (*)(), s32);
+s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
+s32 DwcFriend_GetStatusString(void *, char *);
+s32 DwcFriend_GetProfileId(s32);
+s32 DwcFriend_FindIndexByProfileId(s32);
+s32 DwcFriend_SetOwnStatus(s32, char *, char *);
+void DwcFriend_Fail(s32, s32);
+s32 DwcMatch_CountNnRetry(s32);
 
-s32 func_ov065_022723b8(void *a, char *b);
-s32 func_ov065_022723cc(s32 a);
-void func_ov065_02272428(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02272428_Sub *d);
-void func_ov065_0227269c();
-void func_ov065_022726a0(u8 *buf, u32 n);
+s32 DwcFriend_GetStatusString(void *a, char *b);
+s32 DwcMatch_CountNnRetry(s32 a);
+void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02272428_Sub *d);
+void DwcMatch_OnNnProgress();
+void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n);
 }
 
 }
@@ -261,72 +261,72 @@ struct Unk_ov065_02290840_Ent {
 };
 
 extern "C" {
-extern Unk_ov065_02290814_Ctx *data_ov065_02290814;
-extern Unk_ov065_02290818_Sm *data_ov065_02290818;
-extern Unk_ov065_02290840_Ent data_ov065_02290840[];
+extern Unk_ov065_02290814_Ctx *sDwcMatch;
+extern Unk_ov065_02290818_Sm *sDwcMatchSyncOption;
+extern Unk_ov065_02290840_Ent sDwcMatchUserKeys[];
 
 // callees outside this group
-s32 func_ov065_022754f0(s32 a, u32 b, u32 c);
-void func_ov065_022880fc(u32 a, u32 b);
-void func_ov065_022880d8(u32 a, s32 b);
-void func_ov065_02288094(u32 a, s32 *b);
-s32 func_ov065_02289268(u32 list);
-u32 func_ov065_02289274(u32 list, s32 i);
-u32 func_ov065_022890b8(u32 e, void *a, u32 b);
-void func_ov065_022892c8(u32 list, u32 e);
-void func_ov065_0228914c(u32 e, void *a, u32 b);
-void func_ov065_02289258(u32 list, u32 a, void *b, u32 c);
-u32 func_ov065_022778b0(u32 a);
-s32 func_ov065_0227330c(u32 e);
-s32 func_ov065_02275764(u32 a);
-s32 func_ov065_022745bc(u32 a, u32 b);
-s32 func_ov065_022746e4(s32 a);
-u32 func_ov065_02289098(u32 e);
-u32 func_ov065_0228907c(u32 e);
-s32 func_ov065_022740a4(u32 a);
-s32 func_ov065_02274308(u32 a);
-s32 func_ov065_022743e0(u32 a, u32 b);
-s32 func_ov065_02270508(void);
-void func_ov065_02271440(s32 a, s32 b);
-void func_ov065_02271fc8(s32 a, s32 b);
-void func_ov065_02270e34(s32 a, s32 b);
-void func_ov065_0227627c(s32 a, s32 b);
-u64 func_ov065_02277974(void);
+s32 DwcMatch_StartNatNegotiation(s32 a, u32 b, u32 c);
+void GsQr_KeyBufferAdd(u32 a, u32 b);
+void GsQr_BufAppendInt(u32 a, s32 b);
+void GsQr_BufAppendString(u32 a, s32 *b);
+s32 GsSrvBrowser_GetServerCount(u32 list);
+u32 GsSrvBrowser_GetServer(u32 list, s32 i);
+u32 GsServer_GetIntValue(u32 e, void *a, u32 b);
+void GsSrvBrowser_RemoveServer(u32 list, u32 e);
+void GsServer_SetIntValue(u32 e, void *a, u32 b);
+void GsSrvBrowser_Sort(u32 list, u32 a, void *b, u32 c);
+u32 DwcNet_Rand32(u32 a);
+s32 DwcMatch_GetServerProfileId(u32 e);
+s32 DwcMatch_StartServerQuery(u32 a);
+s32 DwcMatch_SendReservation(u32 a, u32 b);
+s32 DwcMatch_HandleResult(s32 a);
+u32 GsServer_GetPublicIp(u32 e);
+u32 GsServer_GetPublicPort(u32 e);
+s32 DwcMatch_SendCloseOrder(u32 a);
+s32 DwcMatch_SendReservationCancel(u32 a);
+s32 DwcMatch_TryNextFriend(u32 a, u32 b);
+s32 DwcCore_GetState(void);
+void DwcLogin_Fail(s32 a, s32 b);
+void DwcFriend_Fail(s32 a, s32 b);
+void DwcCore_SetError(s32 a, s32 b);
+void DwcMatch_Fail(s32 a, s32 b);
+u64 DwcNet_GetTimeMs(void);
 u64 OS_GetTick(void);
-s32 func_ov065_02273274(u32 a);
-s32 func_ov065_02273d38(u32 a);
-void func_ov065_02273230(u32 a);
-void func_ov065_02273a40(void);
-s32 func_ov065_02273b88(u32 a);
-s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+s32 DwcMatch_GetClientAidMask(u32 a);
+s32 DwcMatch_AdvanceConnect(u32 a);
+void DwcMatch_ResetSyncTimer(u32 a);
+void DwcMatch_CloseAllConnections(void);
+s32 DwcMatch_Restart(u32 a);
+s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 
 // in this group
-s32 func_ov065_02272e18(s32 a);
-s32 func_ov065_02272e60(s32 a);
-s32 func_ov065_02272f0c(s32 a);
-BOOL func_ov065_0227295c(u32 a);
-void func_ov065_02272aac(u32 a);
+s32 DwcMatch_HandleNnStartResult(s32 a);
+s32 DwcMatch_HandleQr2Result(s32 a);
+s32 DwcMatch_HandleSbResult(s32 a);
+BOOL DwcMatch_EvaluateServers(u32 a);
+void DwcMatch_Nop(u32 a);
 
 enum Unk_ov065_02272734_Z { Unk_ov065_02272734_Z_0 = 0 };
 
-void func_ov065_02272734(u32 a);
-void func_ov065_022727c4(u32 a, u32 b);
-s32 func_ov065_022727d4(s32 a);
-s32 func_ov065_022727dc(void);
-void func_ov065_022727e0(s32 a, u32 b);
-void func_ov065_02272850(void);
-void func_ov065_02272854(void);
-void func_ov065_02272858(s32 a, u32 b);
-BOOL func_ov065_0227295c(u32 a);
-void func_ov065_02272aac(u32 a);
-void func_ov065_02272ab0(u32 list, s32 mode, u32 c);
-s32 func_ov065_02272d5c(s32 a);
-s32 func_ov065_02272dd4(s32 a);
-s32 func_ov065_02272e18(s32 a);
-s32 func_ov065_02272e60(s32 a);
-s32 func_ov065_02272f0c(s32 a);
-s32 func_ov065_02272f80(s32 a);
-void func_ov065_02272fe0(void);
+void DwcMatch_OnQr2NnRequest(u32 a);
+void DwcMatch_OnQr2PublicAddress(u32 a, u32 b);
+s32 DwcMatch_OnQr2Error(s32 a);
+s32 DwcMatch_OnQr2Count(void);
+void DwcMatch_OnQr2KeyList(s32 a, u32 b);
+void DwcMatch_OnQr2TeamKey(void);
+void DwcMatch_OnQr2PlayerKey(void);
+void DwcMatch_OnQr2ServerKey(s32 a, u32 b);
+BOOL DwcMatch_EvaluateServers(u32 a);
+void DwcMatch_Nop(u32 a);
+void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c);
+s32 DwcMatch_HandleGt2Result(s32 a);
+s32 DwcMatch_HandleNnResult(s32 a);
+s32 DwcMatch_HandleNnStartResult(s32 a);
+s32 DwcMatch_HandleQr2Result(s32 a);
+s32 DwcMatch_HandleSbResult(s32 a);
+s32 DwcMatch_HandleGpResult(s32 a);
+void DwcMatch_ProcessServerSync(void);
 }
 
 }
@@ -334,7 +334,7 @@ void func_ov065_02272fe0(void);
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
 // ov065_033: DWC-like connection state machine (0x02273230..0x02273ad0)
 
@@ -388,53 +388,53 @@ struct Unk_ov065_02273274_G {
     u32 unk_2d8;
 };
 
-extern Unk_ov065_02273230_H *data_ov065_02290818;
-extern Unk_ov065_02273274_G *data_ov065_02290814;
-extern u8 data_ov065_02290840[];
+extern Unk_ov065_02273230_H *sDwcMatchSyncOption;
+extern Unk_ov065_02273274_G *sDwcMatch;
+extern u8 sDwcMatchUserKeys[];
 
 extern "C" {
-u64 func_ov065_02277974(void);
-s32 func_ov065_022890b8(...);
-void func_ov065_02277b64(u32, u32, u32);
+u64 DwcNet_GetTimeMs(void);
+s32 GsServer_GetIntValue(...);
+void DwcNet_Free(u32, u32, u32);
 void MIi_CpuClear32(u32, void *, u32);
-s32 func_ov065_02270508(u32);
-s32 func_ov065_02273b88(u32);
-s32 func_ov065_02273d38(u32);
-s32 func_ov065_0227532c(u32, u32, u32, u32, void *, u32);
-s32 func_ov065_022746e4(s32);
-s32 func_ov065_022741b0(u32);
-s32 func_ov065_02277750(u32, u32, void *, u32);
-s32 func_ov065_0227062c(u32);
-s32 func_ov065_022849f8(u32);
-s32 func_ov065_02284a18(u32);
-u32 *func_ov065_02270350(u32, u32);
-s32 func_ov065_02275f98(u32, u32);
-u32 func_ov065_02275764(u32);
-s32 func_ov065_02272f0c(u32);
-u32 func_ov065_022745bc(u32, u32);
+s32 DwcCore_GetState(u32);
+s32 DwcMatch_Restart(u32);
+s32 DwcMatch_AdvanceConnect(u32);
+s32 DwcMatch_SendCommand(u32, u32, u32, u32, void *, u32);
+s32 DwcMatch_HandleResult(s32);
+s32 DwcMatch_CancelNewClient(u32);
+s32 DwcNet_SendData(u32, u32, void *, u32);
+s32 DwcConn_CloseConnection(u32);
+s32 GsTransport_CloseAll(u32);
+s32 GsTransport_CloseHard(u32);
+u32 *DwcConn_FindSlotByProfileId(u32, u32);
+s32 DwcMatch_RemoveProfile(u32, u32);
+u32 DwcMatch_StartServerQuery(u32);
+s32 DwcMatch_HandleSbResult(u32);
+u32 DwcMatch_SendReservation(u32, u32);
 
-u32 func_ov065_022736fc(u32 a, u32 b);
-u32 func_ov065_02273958(u32 mask);
-void func_ov065_022738b4(u32 a, u32 b);
-void func_ov065_02273a40(void);
-s32 func_ov065_02273a70(u32 a);
+u32 DwcMatch_SendCancelSyncCommand(u32 a, u32 b);
+u32 DwcMatch_DropUnresponsiveClients(u32 mask);
+void DwcMatch_SendSyncPacket(u32 a, u32 b);
+void DwcMatch_CloseAllConnections(void);
+s32 DwcMatch_CloseProfileConnection(u32 a);
 
 
-void func_ov065_02273230(u32 a);
-u32 func_ov065_02273274(u32 a);
-u32 func_ov065_022732c0(u32 v, s32 k);
-u32 func_ov065_0227330c(char *s);
-u32 func_ov065_022733c0(void);
-void func_ov065_02273400(void);
-u32 func_ov065_02273440(void);
-u32 func_ov065_02273590(u32 a, u32 b, u32 c);
-u32 func_ov065_022736fc(u32 a, u32 b);
-u32 func_ov065_02273760(void);
-void func_ov065_022738b4(u32 a, u32 b);
-u32 func_ov065_02273958(u32 mask);
-void func_ov065_02273a40(void);
-s32 func_ov065_02273a70(u32 a);
-u32 func_ov065_02273ad0(void);
+void DwcMatch_ResetSyncTimer(u32 a);
+u32 DwcMatch_GetClientAidMask(u32 a);
+u32 DwcMatch_GetAidByProfileId(u32 v, s32 k);
+u32 DwcMatch_GetServerProfileId(char *s);
+u32 DwcMatch_AllocAid(void);
+void DwcMatch_ClearUserKeys(void);
+u32 DwcMatch_ProcessCancelSync(void);
+u32 DwcMatch_OnCancelSyncCommand(u32 a, u32 b, u32 c);
+u32 DwcMatch_SendCancelSyncCommand(u32 a, u32 b);
+u32 DwcMatch_ProcessCloseSync(void);
+void DwcMatch_SendSyncPacket(u32 a, u32 b);
+u32 DwcMatch_DropUnresponsiveClients(u32 mask);
+void DwcMatch_CloseAllConnections(void);
+s32 DwcMatch_CloseProfileConnection(u32 a);
+u32 DwcMatch_RestartAfterCancel(void);
 }
 #undef G
 }
@@ -442,7 +442,7 @@ u32 func_ov065_02273ad0(void);
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
 // ov065_034: DWC connection state machine (0x02273b60..0x022745bc)
 
@@ -512,66 +512,66 @@ struct Unk_ov065_022743e0_Rec {
     u32 unk_04;
 };
 
-extern Unk_ov065_02273b60_Ctx *data_ov065_02290814;
-extern u8 data_ov065_02290810[];
+extern Unk_ov065_02273b60_Ctx *sDwcMatch;
+extern u8 sDwcMatchServerLock[];
 
 
 extern "C" {
-s32 func_ov065_02273a40(void);
-s32 func_ov065_02273a70(s32);
-s32 func_ov065_022736fc(s32, s32);
-s32 func_ov065_022738b4(s32, s32);
-s32 func_ov065_02275984(void);
-s32 func_ov065_02271e8c(...);
-s32 func_ov065_02275764(s32);
-s32 func_ov065_02272f0c(void);
-s32 func_ov065_02272f80(void);
-s32 func_ov065_02275890(void);
-s32 func_ov065_02275ccc(void);
-s32 func_ov065_02271e00(s32, void *, s32);
-s32 func_ov065_0227bfb4(u32, u32);
-s32 func_ov065_0227532c(s32, u32, u32, u32, void *, s32);
-s32 func_ov065_022746e4(void);
-s32 func_ov065_0227627c(s32, s32);
-s32 func_ov065_02288190(u32);
-s32 func_ov065_02289444(u32);
-s32 func_ov065_02289280(u32);
-s32 func_ov065_02287260(void);
-s32 func_ov065_022849f8(u32);
-s32 func_ov065_02286da0(u32);
-s32 func_ov065_02271474(void);
-s32 func_ov065_0227c000(u32, s32, void *);
-s32 func_ov065_0227c05c(u32, u32, void *);
-s32 func_ov065_02277998(const char *, void *, void *, s32);
-s32 func_ov065_022745bc(s32, s32);
+s32 DwcMatch_CloseAllConnections(void);
+s32 DwcMatch_CloseProfileConnection(s32);
+s32 DwcMatch_SendCancelSyncCommand(s32, s32);
+s32 DwcMatch_SendSyncPacket(s32, s32);
+s32 DwcMatch_ResetState(void);
+s32 DwcFriend_FindIndexByProfileId(...);
+s32 DwcMatch_StartServerQuery(s32);
+s32 DwcMatch_HandleSbResult(void);
+s32 DwcMatch_HandleGpResult(void);
+s32 DwcMatch_Cleanup(void);
+s32 DwcMatch_UpdateServerStatus(void);
+s32 DwcFriend_SetOwnStatus(s32, void *, s32);
+s32 GsGp_IsBuddy(u32, u32);
+s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, s32);
+s32 DwcMatch_HandleResult(void);
+s32 DwcMatch_Fail(s32, s32);
+s32 GsQr_SendStateChanged(u32);
+s32 GsSrvBrowser_Free(u32);
+s32 GsSrvBrowser_Clear(u32);
+s32 GsNatNeg_FreeAll(void);
+s32 GsTransport_CloseAll(u32);
+s32 GsNatNeg_Cancel(u32);
+s32 DwcLogin_GetUserData(void);
+s32 GsGp_GetBuddyIndex(u32, s32, void *);
+s32 GsGp_GetBuddyStatus(u32, u32, void *);
+s32 GsUtil_GetKeyValue(const char *, void *, void *, s32);
+s32 DwcMatch_SendReservation(s32, s32);
 u64 OS_GetTick(void);
 s32 func_020ffc60(s32, u8 *);
 s32 func_020ffdd8(u8 *);
 s32 func_0212b854(void *, s32, s32);
 
-void func_ov065_02273b60(void);
-void func_ov065_02273b88(s32 a);
-void func_ov065_02273c30(void);
-s32 func_ov065_02273cb8(u32 *a, u32 n);
-void func_ov065_02273d38(s32 a);
-s32 func_ov065_022740a4(void);
-s32 func_ov065_0227412c(void);
-s32 func_ov065_022741b0(s32 a);
-s32 func_ov065_02274308(s32 a);
-s32 func_ov065_0227433c(void);
-s32 func_ov065_022743e0(s32 a, s32 b);
+void DwcMatch_AbortAndRestart(void);
+void DwcMatch_Restart(s32 a);
+void DwcMatch_FinishCancelled(void);
+s32 DwcMatch_AreAllBuddies(u32 *a, u32 n);
+void DwcMatch_AdvanceConnect(s32 a);
+s32 DwcMatch_SendCloseOrder(void);
+s32 DwcMatch_RestartAfterNnFailure(void);
+s32 DwcMatch_CancelNewClient(s32 a);
+s32 DwcMatch_SendReservationCancel(s32 a);
+s32 DwcMatch_BeginSearch(void);
+s32 DwcMatch_TryNextFriend(s32 a, s32 b);
 
-void func_ov065_02273b60(void);
-void func_ov065_02273b88(s32 a);
-void func_ov065_02273c30(void);
-s32 func_ov065_02273cb8(u32 *a, u32 n);
-void func_ov065_02273d38(s32 a);
-s32 func_ov065_022740a4(void);
-s32 func_ov065_0227412c(void);
-s32 func_ov065_022741b0(s32 a);
-s32 func_ov065_02274308(s32 a);
-s32 func_ov065_0227433c(void);
-s32 func_ov065_022743e0(s32 a, s32 b);
+void DwcMatch_AbortAndRestart(void);
+void DwcMatch_Restart(s32 a);
+void DwcMatch_FinishCancelled(void);
+s32 DwcMatch_AreAllBuddies(u32 *a, u32 n);
+void DwcMatch_AdvanceConnect(s32 a);
+s32 DwcMatch_SendCloseOrder(void);
+s32 DwcMatch_RestartAfterNnFailure(void);
+s32 DwcMatch_CancelNewClient(s32 a);
+s32 DwcMatch_SendReservationCancel(s32 a);
+s32 DwcMatch_BeginSearch(void);
+s32 DwcMatch_TryNextFriend(s32 a, s32 b);
 }
 #undef g
 }
@@ -658,59 +658,59 @@ struct Unk_ov065_022749f8_Sa {
     u32 unk_4;
 };
 
-extern Unk_ov065_022745bc_Ctx *data_ov065_02290814;
-extern Unk_ov065_022749f8_H *data_ov065_02290818;
-extern u8 data_ov065_02290810[];
+extern Unk_ov065_022745bc_Ctx *sDwcMatch;
+extern Unk_ov065_022749f8_H *sDwcMatchSyncOption;
+extern u8 sDwcMatchServerLock[];
 
 extern "C" {
 u64 OS_GetTick(void);
 void MIi_CpuCopy32(void *, void *, u32);
-u32 func_ov065_02289274(u32, s32);
-s32 func_ov065_022890b8(...);
-u32 func_ov065_02289098(u32);
-u32 func_ov065_0228907c(u32);
-s32 func_ov065_0227532c(u32, s32, u32, u32, void *, u32);
-s32 func_ov065_02272f0c(s32);
-s32 func_ov065_02272f80(s32);
-void func_ov065_02288190(u32);
-u32 func_ov065_022733c0(void);
-void func_ov065_02273230(u32);
-s32 func_ov065_0227bfb4(u32, s32);
-s32 func_ov065_02274308(u32);
-s32 func_ov065_02271e8c(s32);
-s32 func_ov065_022743e0(...);
-s32 func_ov065_02273cb8(void *, u32);
-s32 func_ov065_022754f0(s32, u32, u32);
-s32 func_ov065_02272e18(void);
-s32 func_ov065_02275764(u32);
-s32 func_ov065_0227433c(void);
-s32 func_ov065_022849f8(u32);
-s32 func_ov065_022741b0(u32);
-s32 func_ov065_022849c8(u32);
-void func_ov065_02272428(u32, u32, void *, void *);
-s32 func_ov065_02273d38(u32);
-s32 func_ov065_02273ad0(void);
-s32 func_ov065_0227412c(u32);
-s32 func_ov065_02273a40(void);
-s32 func_ov065_02273a70(u32);
-s32 func_ov065_02273b88(u32);
-s32 func_ov065_02273590(u32, u32, u32);
-u32 func_ov065_022732c0(u32, s32);
-s32 func_ov065_0227062c(u32);
-u64 func_ov065_02277974(void);
-s32 func_ov065_0227627c(u32, s32);
-s32 func_ov065_022740a4(void);
-s32 func_ov065_022746e4(s32);
-u32 func_ov065_02274864(s32, u32, u32, u32, u32);
-void func_ov065_0227470c(u32, u32 *);
-s32 func_ov065_02274754(u32, u32, u16);
+u32 GsSrvBrowser_GetServer(u32, s32);
+s32 GsServer_GetIntValue(...);
+u32 GsServer_GetPublicIp(u32);
+u32 GsServer_GetPublicPort(u32);
+s32 DwcMatch_SendCommand(u32, s32, u32, u32, void *, u32);
+s32 DwcMatch_HandleSbResult(s32);
+s32 DwcMatch_HandleGpResult(s32);
+void GsQr_SendStateChanged(u32);
+u32 DwcMatch_AllocAid(void);
+void DwcMatch_ResetSyncTimer(u32);
+s32 GsGp_IsBuddy(u32, s32);
+s32 DwcMatch_SendReservationCancel(u32);
+s32 DwcFriend_FindIndexByProfileId(s32);
+s32 DwcMatch_TryNextFriend(...);
+s32 DwcMatch_AreAllBuddies(void *, u32);
+s32 DwcMatch_StartNatNegotiation(s32, u32, u32);
+s32 DwcMatch_HandleNnStartResult(void);
+s32 DwcMatch_StartServerQuery(u32);
+s32 DwcMatch_BeginSearch(void);
+s32 GsTransport_CloseAll(u32);
+s32 DwcMatch_CancelNewClient(u32);
+s32 GsTransport_GetRemoteIp(u32);
+void DwcMatch_OnNnComplete(u32, u32, void *, void *);
+s32 DwcMatch_AdvanceConnect(u32);
+s32 DwcMatch_RestartAfterCancel(void);
+s32 DwcMatch_RestartAfterNnFailure(u32);
+s32 DwcMatch_CloseAllConnections(void);
+s32 DwcMatch_CloseProfileConnection(u32);
+s32 DwcMatch_Restart(u32);
+s32 DwcMatch_OnCancelSyncCommand(u32, u32, u32);
+u32 DwcMatch_GetAidByProfileId(u32, s32);
+s32 DwcConn_CloseConnection(u32);
+u64 DwcNet_GetTimeMs(void);
+s32 DwcMatch_Fail(u32, s32);
+s32 DwcMatch_SendCloseOrder(void);
+s32 DwcMatch_HandleResult(s32);
+u32 DwcMatch_CheckReservation(s32, u32, u32, u32, u32);
+void DwcMatch_StoreMemberList(u32, u32 *);
+s32 DwcMatch_AcceptNewClient(u32, u32, u16);
 
-s32 func_ov065_022745bc(u32 a, s32 b);
-s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n);
-u32 func_ov065_02274864(s32 a, u32 b, u32 c, u32 d, u32 e);
-s32 func_ov065_02274754(u32 a, u32 b, u16 c);
-void func_ov065_0227470c(u32 a, u32 *p);
-s32 func_ov065_022746e4(s32 a);
+s32 DwcMatch_SendReservation(u32 a, s32 b);
+s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n);
+u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e);
+s32 DwcMatch_AcceptNewClient(u32 a, u32 b, u16 c);
+void DwcMatch_StoreMemberList(u32 a, u32 *p);
+s32 DwcMatch_HandleResult(s32 a);
 }
 
 }
@@ -718,7 +718,7 @@ s32 func_ov065_022746e4(s32 a);
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
 // ov065_036: DWC matchmaking / SB (server browser) request code (0x022751b0..0x02275c60)
 
@@ -836,9 +836,9 @@ struct Unk_ov065_02290840_Ent {
     u8 unk_01[11];
 };
 
-extern Unk_ov065_02290814 *data_ov065_02290814;
-extern u32 data_ov065_0229081c;
-extern Unk_ov065_02290840_Ent data_ov065_02290840[];
+extern Unk_ov065_02290814 *sDwcMatch;
+extern u32 sDwcMatchUserFilter;
+extern Unk_ov065_02290840_Ent sDwcMatchUserKeys[];
 
 extern "C" {
 
@@ -852,45 +852,45 @@ void MIi_CpuClear16(u32, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 
-s32 func_ov065_0227bd20(u32, u32, char *);
-s32 func_ov065_022868b0(u32, u32, s32);
-s32 func_ov065_02289324(u32, s32, u32, void *, s32);
-s32 func_ov065_022892ec(u32, s32, u32, u32);
-s32 func_ov065_02272f0c(void);
-s32 func_ov065_022849c8(u32);
-s32 func_ov065_022849d4(u32);
-s32 func_ov065_02286dcc(s32, u32, u32, void *, void *, void *);
-void func_ov065_02272428(u32, u32, u32, void *);
-s32 func_ov065_0227269c(void);
-u64 func_ov065_02277974(void);
-s32 func_ov065_02289064(u32);
-u32 func_ov065_02289098(u32);
-u32 func_ov065_0228907c(u32);
-u32 func_ov065_02289060(u32);
-u32 func_ov065_02289044(u32);
-s32 func_ov065_0228924c(u32);
-s32 func_ov065_02261358(void);
-u32 func_ov065_022778b0(u32);
-s32 func_ov065_02289280(u32);
-s32 func_ov065_02289364(u32, u32, u32, void *, u32, void *, u32);
-s32 func_ov065_02289444(u32);
-s32 func_ov065_02287260(void);
-void func_ov065_02277b64(u32, u32);
-void func_ov065_02273400(void);
-void func_ov065_022884fc(u32, char *);
+s32 GsGp_SendBuddyMessage(u32, u32, char *);
+s32 GsTransport_AddressToString(u32, u32, s32);
+s32 GsSrvBrowser_SendMessage(u32, s32, u32, void *, s32);
+s32 GsSrvBrowser_SendNatNegCookie(u32, s32, u32, u32);
+s32 DwcMatch_HandleSbResult(void);
+s32 GsTransport_GetRemoteIp(u32);
+s32 GsTransport_GetLocalPort(u32);
+s32 GsNatNeg_Start(s32, u32, u32, void *, void *, void *);
+void DwcMatch_OnNnComplete(u32, u32, u32, void *);
+s32 DwcMatch_OnNnProgress(void);
+u64 DwcNet_GetTimeMs(void);
+s32 GsServer_HasPrivateAddress(u32);
+u32 GsServer_GetPublicIp(u32);
+u32 GsServer_GetPublicPort(u32);
+u32 GsServer_GetPrivateIp(u32);
+u32 GsServer_GetPrivatePort(u32);
+s32 GsSrvBrowser_GetPublicIp(u32);
+s32 Sock_GetHostId(void);
+u32 DwcNet_Rand32(u32);
+s32 GsSrvBrowser_Clear(u32);
+s32 GsSrvBrowser_UpdateList(u32, u32, u32, void *, u32, void *, u32);
+s32 GsSrvBrowser_Free(u32);
+s32 GsNatNeg_FreeAll(void);
+void DwcNet_Free(u32, u32);
+void DwcMatch_ClearUserKeys(void);
+void GsQr_RegisterKeyName(u32, char *);
 
 
-s32 func_ov065_022751b0(char *out, const char *s, s32 n);
-s32 func_ov065_02275228(u32 a, u32 b, u32 c, char *d);
-s32 func_ov065_02275298(u32 a, u32 b, u32 c, u32 *d, s32 e);
-s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
-s32 func_ov065_02275474(Unk_ov065_02275474_Arg *p);
-s32 func_ov065_022754f0(u32 a, u32 b, u32 c);
-void func_ov065_0227571c(char *buf, u32 x, u32 y, u32 z);
-void func_ov065_02275764(u32 a);
-void func_ov065_02275890(void);
-void func_ov065_022758f4(u32 a, u32 b, u32 c, u32 d);
-void func_ov065_02275984(u32 a);
+s32 DwcMatch_GetArgField(char *out, const char *s, s32 n);
+s32 DwcMatch_SendGpCommand(u32 a, u32 b, u32 c, char *d);
+s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e);
+s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
+s32 DwcMatch_SendNnRequest(Unk_ov065_02275474_Arg *p);
+s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c);
+void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
+void DwcMatch_StartServerQuery(u32 a);
+void DwcMatch_Cleanup(void);
+void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d);
+void DwcMatch_ResetState(u32 a);
 
 static inline void Unk_ov065_02275984_Clear32(void *d, u32 n) {
     volatile u32 t = 0;
@@ -902,17 +902,17 @@ static inline void Unk_ov065_02275984_Clear16(void *d, u32 n) {
     MIi_CpuClear16(t, d, n);
 }
 
-s32 func_ov065_022751b0(char *out, const char *s, s32 n);
-s32 func_ov065_02275228(u32 a, u32 b, u32 c, char *d);
-s32 func_ov065_02275298(u32 a, u32 b, u32 c, u32 *d, s32 e);
-s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
-s32 func_ov065_02275474(Unk_ov065_02275474_Arg *p);
-s32 func_ov065_022754f0(u32 a, u32 b, u32 c);
-void func_ov065_0227571c(char *buf, u32 x, u32 y, u32 z);
-void func_ov065_02275764(u32 a);
-void func_ov065_02275890(void);
-void func_ov065_022758f4(u32 a, u32 b, u32 c, u32 d);
-void func_ov065_02275984(u32 a);
+s32 DwcMatch_GetArgField(char *out, const char *s, s32 n);
+s32 DwcMatch_SendGpCommand(u32 a, u32 b, u32 c, char *d);
+s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e);
+s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
+s32 DwcMatch_SendNnRequest(Unk_ov065_02275474_Arg *p);
+s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c);
+void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
+void DwcMatch_StartServerQuery(u32 a);
+void DwcMatch_Cleanup(void);
+void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d);
+void DwcMatch_ResetState(u32 a);
 }
 #undef G
 }
@@ -920,7 +920,7 @@ void func_ov065_02275984(u32 a);
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
 // ov065_037: DWC connection helpers (0x02275c60..0x02276500)
 
@@ -991,11 +991,11 @@ struct Unk_ov065_02270344_Rec {
     u32 unk_04;
 };
 
-extern Unk_ov065_02290814 *data_ov065_02290814;
-extern u8 data_ov065_02290810[];
-extern u32 data_ov065_0229081c;
-extern u32 data_ov065_02290818;
-extern u8 data_ov065_02290820[];
+extern Unk_ov065_02290814 *sDwcMatch;
+extern u8 sDwcMatchServerLock[];
+extern u32 sDwcMatchUserFilter;
+extern u32 sDwcMatchSyncOption;
+extern u8 sDwcMatchValidAids[];
 
 
 extern "C" {
@@ -1003,62 +1003,62 @@ void OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuFill8(void *, s32, s32);
 u32 func_0212b854(const char *, char **, s32);
 
-void func_ov065_02277b64(s32, u32, s32);
-void func_ov065_02273400(void);
-s32 func_ov065_02277a9c(const char *, char *, char *, s32);
-s32 func_ov065_02277a6c(const char *, char *, char *, s32);
-s32 func_ov065_02271e00(s32, void *, s32);
-s32 func_ov065_02271e8c(void);
-s32 func_ov065_022741b0(...);
-s32 func_ov065_02270508(void);
-s32 func_ov065_02286da0(u32);
-s32 func_ov065_022849f8(u32);
-s32 func_ov065_02273ad0(void);
-s32 func_ov065_02273b88(u32);
-u64 func_ov065_02277974(void);
-s32 func_ov065_022738b4(u32, s32);
-s32 func_ov065_02273274(u32);
-s32 func_ov065_02273d38(u32);
-s32 func_ov065_02288190(u32);
-s32 func_ov065_02273a40(void);
-s32 func_ov065_02270e34(s32, s32);
-s32 func_ov065_02275890(void);
-s32 func_ov065_022751b0(char *, const char *, s32);
-s32 func_ov065_022749f8(u32, u32, u32, u32, void *, s32);
-s32 func_ov065_022868b0(u32, u32, s32);
-s32 func_ov065_02284a80(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 func_ov065_02272d5c(void);
-s32 func_ov065_022703ec(void);
-u32 *func_ov065_022703ac(s32);
-Unk_ov065_02270344_Rec *func_ov065_02270344(s32);
-s32 func_ov065_022849c0(u32, void *);
-s32 func_ov065_02284b8c(u32, const char *, s32);
-s32 func_ov065_02284b94(u32, u32);
+void DwcNet_Free(s32, u32, s32);
+void DwcMatch_ClearUserKeys(void);
+s32 GsUtil_FormatKeyValue(const char *, char *, char *, s32);
+s32 GsUtil_AppendKeyValue(const char *, char *, char *, s32);
+s32 DwcFriend_SetOwnStatus(s32, void *, s32);
+s32 DwcFriend_FindIndexByProfileId(void);
+s32 DwcMatch_CancelNewClient(...);
+s32 DwcCore_GetState(void);
+s32 GsNatNeg_Cancel(u32);
+s32 GsTransport_CloseAll(u32);
+s32 DwcMatch_RestartAfterCancel(void);
+s32 DwcMatch_Restart(u32);
+u64 DwcNet_GetTimeMs(void);
+s32 DwcMatch_SendSyncPacket(u32, s32);
+s32 DwcMatch_GetClientAidMask(u32);
+s32 DwcMatch_AdvanceConnect(u32);
+s32 GsQr_SendStateChanged(u32);
+s32 DwcMatch_CloseAllConnections(void);
+s32 DwcCore_SetError(s32, s32);
+s32 DwcMatch_Cleanup(void);
+s32 DwcMatch_GetArgField(char *, const char *, s32);
+s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
+s32 GsTransport_AddressToString(u32, u32, s32);
+s32 GsTransport_Connect(u32, s32, s32, char *, s32, s32, s32, s32);
+s32 DwcMatch_HandleGt2Result(void);
+s32 DwcConn_FindFreeSlot(void);
+u32 *DwcConn_GetSlot(s32);
+Unk_ov065_02270344_Rec *DwcConn_GetConnInfo(s32);
+s32 GsTransport_SetUserData(u32, void *);
+s32 GsTransport_Reject(u32, const char *, s32);
+s32 GsTransport_Accept(u32, u32);
 
-void func_ov065_02275df4(void);
-u32 func_ov065_02275e64(s32, s32);
-void func_ov065_0227627c(s32, s32);
-void func_ov065_02276304(void);
+void DwcMatch_UpdateValidAidCount(void);
+u32 DwcMatch_RemoveMemberAt(s32, s32);
+void DwcMatch_Fail(s32, s32);
+void DwcMatch_ClearPendingCommand(void);
 
-BOOL func_ov065_02275c60(void);
-void func_ov065_02275c74(void);
-s32 func_ov065_02275ccc(void);
-s32 func_ov065_02275d58(u8 **out);
-s32 func_ov065_02275dd0(u32 *out);
-void func_ov065_02275df4(void);
-u32 func_ov065_02275e3c(void);
-u32 func_ov065_02275e50(void);
-u32 func_ov065_02275e64(s32 idx, s32 n);
-BOOL func_ov065_02275f98(u32 v, s32 n);
-void func_ov065_02275fdc(u32 a);
-BOOL func_ov065_02276000(s32 a, u32 b);
-void func_ov065_02276124(u32 a, s32 b, u8 *c);
-void func_ov065_02276254(void);
-void func_ov065_0227627c(s32 a, s32 b);
-void func_ov065_02276304(void);
-void func_ov065_02276324(u32 a, u32 b, const char *s);
-void func_ov065_02276374(u32 a, u32 b);
-void func_ov065_02276500(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e);
+BOOL DwcMatch_IsInactive(void);
+void DwcMatch_Shutdown(void);
+s32 DwcMatch_UpdateServerStatus(void);
+s32 DwcMatch_GetValidAidList(u8 **out);
+s32 DwcMatch_GetAidList(u32 *out);
+void DwcMatch_UpdateValidAidCount(void);
+u32 DwcMatch_GetValidAidCount(void);
+u32 DwcMatch_GetClientCount(void);
+u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n);
+BOOL DwcMatch_RemoveProfile(u32 v, s32 n);
+void DwcMatch_OnClientDisconnected(u32 a);
+BOOL DwcMatch_OnConnectionClosed(s32 a, u32 b);
+void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c);
+void DwcMatch_ResetPlayerCounts(void);
+void DwcMatch_Fail(s32 a, s32 b);
+void DwcMatch_ClearPendingCommand(void);
+void DwcMatch_OnGpMatchCommand(u32 a, u32 b, const char *s);
+void DwcMatch_OnGt2Connected(u32 a, u32 b);
+void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e);
 }
 #undef g
 }
@@ -1066,7 +1066,7 @@ void func_ov065_02276500(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e);
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
 // ov065_038: DWC connection state machine (0x02276698..0x02276f4c)
 
@@ -1155,8 +1155,8 @@ struct Unk_ov065_02290810 {
     u16 unk_02;
 };
 
-extern Unk_ov065_02276f4c_Ctx *data_ov065_02290814;
-extern Unk_ov065_02290810 data_ov065_02290810;
+extern Unk_ov065_02276f4c_Ctx *sDwcMatch;
+extern Unk_ov065_02290810 sDwcMatchServerLock;
 extern char data_ov065_0228e16c[];
 
 
@@ -1166,64 +1166,64 @@ u64 func_02132ef8(u64 a, u64 b);
 void MIi_CpuClear32(u32 v, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, u32 n);
 s32 memcmp(void *, void *, u32);
-u64 func_ov065_02277974(void);
+u64 DwcNet_GetTimeMs(void);
 
-s32 func_ov065_0228758c(void *, char *, void *, void *);
-s32 func_ov065_02286934(char *, void *, void *);
-s32 func_ov065_02270e4c(void);
-s32 func_ov065_02288318(void *);
-s32 func_ov065_02284ba4(u32);
-s32 func_ov065_0227433c(void);
-s32 func_ov065_022745bc(u32, u32);
-s32 func_ov065_022746e4(void);
-s32 func_ov065_0227627c(s32, s32);
-s32 func_ov065_02275764(u32);
-s32 func_ov065_02272f0c(...);
-s32 func_ov065_0227412c(u32);
-s32 func_ov065_0227532c(s32, u32, u32, u32, void *, u32);
-s32 func_ov065_02276304(void);
-s32 func_ov065_022741b0(u32);
-s32 func_ov065_02273b60(void);
-s32 func_ov065_02272428(u32, u32, u32, void *);
-s32 func_ov065_022892b0(u32);
-s32 func_ov065_02288190(void *);
-s32 func_ov065_02286c3c(void);
-s32 func_ov065_02273ad0(void);
-s32 func_ov065_02273760(void);
-s32 func_ov065_02273440(void);
-s32 func_ov065_02272fe0(void);
-s32 func_ov065_022758f4(s32, u32, u32, u32);
-s32 func_ov065_02289460(u32, u32, u32, u32, u32, u32, u32, void *, u32);
-s32 func_ov065_02271e00(s32, void *, s32);
-s32 func_ov065_02272f80(void);
-s32 func_ov065_02275ccc(void);
-s32 func_ov065_02272ab0(void);
-s32 func_ov065_022849c8(u32);
-s32 func_ov065_022849d4(u32);
-s32 func_ov065_02288380(void *, s32, s32, u32, u32, u32, u32, void *, void *, void *, void *, void *, void *, u32);
-s32 func_ov065_02272e60(s32);
-s32 func_ov065_02288344(void *, void *);
-s32 func_ov065_0228836c(void *, void *);
-s32 func_ov065_02288358(void *, void *);
-s32 func_ov065_02272858(void);
-s32 func_ov065_02272854(void);
-s32 func_ov065_02272850(void);
-s32 func_ov065_022727e0(void);
-s32 func_ov065_022727dc(void);
-s32 func_ov065_022727d4(void);
-s32 func_ov065_022727c4(void);
-s32 func_ov065_02272734(void);
-s32 func_ov065_022726a0(void);
-s32 func_ov065_02273400(void);
-s32 func_ov065_02275984(u32);
-s32 func_ov065_02276e44(u32 a);
+s32 GsQr_HandlePacket(void *, char *, void *, void *);
+s32 GsNatNeg_HandlePacket(char *, void *, void *);
+s32 DwcCore_HasError(void);
+s32 GsQr_Think(void *);
+s32 GsTransport_Think(u32);
+s32 DwcMatch_BeginSearch(void);
+s32 DwcMatch_SendReservation(u32, u32);
+s32 DwcMatch_HandleResult(void);
+s32 DwcMatch_Fail(s32, s32);
+s32 DwcMatch_StartServerQuery(u32);
+s32 DwcMatch_HandleSbResult(...);
+s32 DwcMatch_RestartAfterNnFailure(u32);
+s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, u32);
+s32 DwcMatch_ClearPendingCommand(void);
+s32 DwcMatch_CancelNewClient(u32);
+s32 DwcMatch_AbortAndRestart(void);
+s32 DwcMatch_OnNnComplete(u32, u32, u32, void *);
+s32 GsSrvBrowser_Think(u32);
+s32 GsQr_SendStateChanged(void *);
+s32 GsNatNeg_ProcessAll(void);
+s32 DwcMatch_RestartAfterCancel(void);
+s32 DwcMatch_ProcessCloseSync(void);
+s32 DwcMatch_ProcessCancelSync(void);
+s32 DwcMatch_ProcessServerSync(void);
+s32 DwcMatch_Init(s32, u32, u32, u32);
+s32 GsSrvBrowser_New(u32, u32, u32, u32, u32, u32, u32, void *, u32);
+s32 DwcFriend_SetOwnStatus(s32, void *, s32);
+s32 DwcMatch_HandleGpResult(void);
+s32 DwcMatch_UpdateServerStatus(void);
+s32 DwcMatch_OnServerBrowserEvent(void);
+s32 GsTransport_GetRemoteIp(u32);
+s32 GsTransport_GetLocalPort(u32);
+s32 GsQr_Init(void *, s32, s32, u32, u32, u32, u32, void *, void *, void *, void *, void *, void *, u32);
+s32 DwcMatch_HandleQr2Result(s32);
+s32 GsQr_SetPublicAddressCallback(void *, void *);
+s32 GsQr_SetNatNegCallback(void *, void *);
+s32 GsQr_SetClientMessageCallback(void *, void *);
+s32 DwcMatch_OnQr2ServerKey(void);
+s32 DwcMatch_OnQr2PlayerKey(void);
+s32 DwcMatch_OnQr2TeamKey(void);
+s32 DwcMatch_OnQr2KeyList(void);
+s32 DwcMatch_OnQr2Count(void);
+s32 DwcMatch_OnQr2Error(void);
+s32 DwcMatch_OnQr2PublicAddress(void);
+s32 DwcMatch_OnQr2NnRequest(void);
+s32 DwcMatch_OnQr2ClientMessage(void);
+s32 DwcMatch_ClearUserKeys(void);
+s32 DwcMatch_ResetState(u32);
+s32 DwcMatch_StartQr2(u32 a);
 
-s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg);
-void func_ov065_0227674c(u32 a);
-s32 func_ov065_02276cc0(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-void func_ov065_02276db4(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-s32 func_ov065_02276e44(u32 a);
-void func_ov065_02276f4c(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7);
+s32 DwcMatch_OnUnrecognizedPacket(s32 a0, u32 ip, s32 port, char *name, void *arg);
+void DwcMatch_Process(u32 a);
+s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
+void DwcMatch_StartGameServer(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
+s32 DwcMatch_StartQr2(u32 a);
+void DwcMatch_InitControl(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7);
 }
 #undef g
 }
@@ -1289,27 +1289,27 @@ struct Unk_ov065_0227762c_Hdr {
 };
 
 extern "C" {
-extern u8 data_ov065_02290810[];
-extern u8 *data_ov065_02290814;
-extern Unk_ov065_02277054_Sm *data_ov065_02290818;
-extern Unk_ov065_02290f78 *data_ov065_02290f78;
-extern Unk_ov065_022778b0_Rng data_ov065_02290f7c;
+extern u8 sDwcMatchServerLock[];
+extern u8 *sDwcMatch;
+extern Unk_ov065_02277054_Sm *sDwcMatchSyncOption;
+extern Unk_ov065_02290f78 *sDwcNetChannels;
+extern Unk_ov065_022778b0_Rng sDwcNetRandState;
 
-void *func_ov065_02277b8c(s32, s32);
-u64 func_ov065_02277974(void);
-s32 func_ov065_02270418(s32);
-s32 func_ov065_02270428(s32);
-void func_ov065_02270e34(s32, s32);
-s32 func_ov065_02270e4c(void);
-s32 func_ov065_02270584(u8 **);
-s32 func_ov065_022705d0(void);
-s32 func_ov065_0227051c(s32);
-s32 func_ov065_02270310(s32);
-s32 func_ov065_022849cc(s32);
-s32 func_ov065_022849d8(s32);
-s32 func_ov065_02284a24(s32);
-void func_ov065_02284a2c(s32, void *, s32, s32);
-void func_ov065_02276124(s32, s32, s32);
+void *DwcNet_Alloc(s32, s32);
+u64 DwcNet_GetTimeMs(void);
+s32 DwcConn_GetAid(s32);
+s32 DwcConn_FindConnectionByAid(s32);
+void DwcCore_SetError(s32, s32);
+s32 DwcCore_HasError(void);
+s32 DwcConn_GetAidList(u8 **);
+s32 DwcConn_GetMyAid(void);
+s32 DwcConn_IsAidValid(s32);
+s32 DwcConn_IsAidConnected(s32);
+s32 GsTransport_GetSendFreeSpace(s32);
+s32 GsTransport_GetState(s32);
+s32 GsTransport_Ping(s32);
+void GsTransport_Send(s32, void *, s32, s32);
+void DwcMatch_OnSyncPacket(s32, s32, s32);
 u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
@@ -1318,43 +1318,43 @@ void func_0212a2ec(void *, void *, s32);
 void OS_GetMacAddress(void *);
 u64 func_02132ef8(u64, u64);
 
-void func_ov065_0227702c(void);
-BOOL func_ov065_02277038(void);
-s32 func_ov065_02277054(s32 m, u8 *p);
-s32 func_ov065_02277140(s32 id);
-void func_ov065_02277160(s32 a, void *b, s32 c);
-void func_ov065_02277190(s32 id, void *buf, s32 n);
-void func_ov065_02277230(s32 id, void *buf, s32 n);
-void func_ov065_022772b0(s32 a, void *buf, s32 n);
-void func_ov065_02277320(s32 a, void *buf, s32 n);
-void func_ov065_022773d4(s32 id, void *buf, s32 n, s32 f);
-u32 func_ov065_022773f0(s32 id);
-u32 func_ov065_02277404(s32 id);
-Unk_ov065_02277418_Rec *func_ov065_02277418(s32 id);
-void func_ov065_02277428(void);
-void func_ov065_02277434(s32 id);
-void func_ov065_0227746c(void);
-void func_ov065_02277588(s32 a, s32 b);
-void func_ov065_022775b8(s32 a, void *b, s32 c, s32 d);
-void func_ov065_022775e8(void *p);
-s32 func_ov065_02277618(s32 m);
-u32 func_ov065_0227762c(void *src);
-void func_ov065_02277660(void *p, u32 a, u32 b);
-void func_ov065_02277680(u32 v);
-void func_ov065_022776a0(void *cb);
-void func_ov065_022776b4(void *cb);
-void func_ov065_022776c8(void *cb);
-void func_ov065_022776dc(s32 id);
-BOOL func_ov065_02277714(s32 id, u8 *buf, s32 n);
-BOOL func_ov065_02277750(s32 m, s32 id, u8 *buf, s32 n);
-BOOL func_ov065_02277824(s32 id, u8 *buf, s32 n);
-BOOL func_ov065_02277840(s32 id, s32 m);
-BOOL func_ov065_022778a4(s32 id);
-u32 func_ov065_022778b0(u32 n);
+void DwcMatch_ClearServerLock(void);
+BOOL DwcMatch_IsServerLocked(void);
+s32 DwcMatch_SetOption(s32 m, u8 *p);
+s32 DwcNet_GetSendSpace(s32 id);
+void DwcNet_RecvControlBody(s32 a, void *b, s32 c);
+void DwcNet_RecvBodyChunk(s32 id, void *buf, s32 n);
+void DwcNet_RecvHeader(s32 id, void *buf, s32 n);
+void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n);
+void DwcNet_RecvReliable(s32 a, void *buf, s32 n);
+void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f);
+u32 DwcNet_GetRecvState(s32 id);
+u32 DwcNet_IsSending(s32 id);
+Unk_ov065_02277418_Rec *DwcNet_GetChannel(s32 id);
+void DwcNet_ClearChannelTable(void);
+void DwcNet_ResetChannel(s32 id);
+void DwcNet_ProcessSend(void);
+void DwcNet_OnPing(s32 a, s32 b);
+void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d);
+void DwcNet_InitChannelTable(void *p);
+s32 DwcNet_GetHeaderSize(s32 m);
+u32 DwcNet_ParseHeader(void *src);
+void DwcNet_BuildHeader(void *p, u32 a, u32 b);
+void DwcNet_SetMaxChunkSize(u32 v);
+void DwcNet_SetPingCallback(void *cb);
+void DwcNet_SetRecvCallback(void *cb);
+void DwcNet_SetSendDoneCallback(void *cb);
+void DwcNet_PingAid(s32 id);
+BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n);
+BOOL DwcNet_SendData(s32 m, s32 id, u8 *buf, s32 n);
+BOOL DwcNet_SendReliable(s32 id, u8 *buf, s32 n);
+BOOL DwcNet_CanSend(s32 id, s32 m);
+BOOL DwcNet_CanSendReliable(s32 id);
+u32 DwcNet_Rand32(u32 n);
 
-void func_ov065_0227702c(void);
-BOOL func_ov065_02277038(void);
-s32 func_ov065_02277054(s32 m, u8 *p);
+void DwcMatch_ClearServerLock(void);
+BOOL DwcMatch_IsServerLocked(void);
+s32 DwcMatch_SetOption(s32 m, u8 *p);
 }
 
 }
@@ -1364,8 +1364,8 @@ namespace F0227702c {
 extern "C" {
 
 
-s32 func_ov065_02277054(s32 m, u8 *p) {
-    u8 *g = data_ov065_02290814;
+s32 DwcMatch_SetOption(s32 m, u8 *p) {
+    u8 *g = sDwcMatch;
     if (g == NULL) {
         return 1;
     }
@@ -1381,35 +1381,35 @@ s32 func_ov065_02277054(s32 m, u8 *p) {
         if (p[0] != 0 && p[1] <= 1) {
             return 3;
         }
-        s = data_ov065_02290818;
+        s = sDwcMatchSyncOption;
         if (s == NULL) {
-            s = (Unk_ov065_02277054_Sm *)func_ov065_02277b8c(4, 0x20);
-            data_ov065_02290818 = s;
+            s = (Unk_ov065_02277054_Sm *)DwcNet_Alloc(4, 0x20);
+            sDwcMatchSyncOption = s;
             if (s == NULL) {
                 return 4;
             }
         }
         s->unk_00 = p[0];
-        data_ov065_02290818->unk_01 = p[1];
+        sDwcMatchSyncOption->unk_01 = p[1];
         {
             s32 z = 0;
-            data_ov065_02290818->unk_02 = z;
-            data_ov065_02290818->unk_03 = z;
-            data_ov065_02290818->unk_04 = *(u32 *)(p + 4);
-            data_ov065_02290818->unk_08 = z;
-            data_ov065_02290818->unk_0c = z;
+            sDwcMatchSyncOption->unk_02 = z;
+            sDwcMatchSyncOption->unk_03 = z;
+            sDwcMatchSyncOption->unk_04 = *(u32 *)(p + 4);
+            sDwcMatchSyncOption->unk_08 = z;
+            sDwcMatchSyncOption->unk_0c = z;
         }
-        data_ov065_02290818->unk_10 = func_ov065_02277974();
-        data_ov065_02290818->unk_18 = func_ov065_02277974();
+        sDwcMatchSyncOption->unk_10 = DwcNet_GetTimeMs();
+        sDwcMatchSyncOption->unk_18 = DwcNet_GetTimeMs();
         return 0;
     }
     case 1:
         if (*(u32 *)p != 0) {
-            data_ov065_02290810[0] = 1;
+            sDwcMatchServerLock[0] = 1;
         } else {
-            data_ov065_02290810[0] = 0;
+            sDwcMatchServerLock[0] = 0;
         }
-        data_ov065_02290810[1] = 0;
+        sDwcMatchServerLock[1] = 0;
         return 0;
     }
     return 2;
@@ -1422,8 +1422,8 @@ namespace F0227702c {
 extern "C" {
 
 
-BOOL func_ov065_02277038(void) {
-    if (data_ov065_02290810[0] == 0 || data_ov065_02290810[1] == 0) {
+BOOL DwcMatch_IsServerLocked(void) {
+    if (sDwcMatchServerLock[0] == 0 || sDwcMatchServerLock[1] == 0) {
         return FALSE;
     }
     return TRUE;
@@ -1436,8 +1436,8 @@ namespace F0227702c {
 extern "C" {
 
 
-void func_ov065_0227702c(void) {
-    data_ov065_02290810[1] = 0;
+void DwcMatch_ClearServerLock(void) {
+    sDwcMatchServerLock[1] = 0;
 }
 
 }
@@ -1445,9 +1445,9 @@ void func_ov065_0227702c(void) {
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276f4c(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7) {
+void DwcMatch_InitControl(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7) {
     g = a0;
     a0->unk_00 = a1;
     g->unk_04 = a2;
@@ -1471,11 +1471,11 @@ void func_ov065_02276f4c(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u3
     g->unk_450 = 0;
     g->unk_45c = 0;
     g->unk_460 = 0;
-    func_ov065_02273400();
-    data_ov065_02290810.unk_00 = 0;
-    data_ov065_02290810.unk_01 = 0;
-    data_ov065_02290810.unk_02 = 0;
-    func_ov065_02275984(0);
+    DwcMatch_ClearUserKeys();
+    sDwcMatchServerLock.unk_00 = 0;
+    sDwcMatchServerLock.unk_01 = 0;
+    sDwcMatchServerLock.unk_02 = 0;
+    DwcMatch_ResetState(0);
 }
 #undef g
 }
@@ -1483,9 +1483,9 @@ void func_ov065_02276f4c(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u3
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02276e44(u32 a) {
+s32 DwcMatch_StartQr2(u32 a) {
     Unk_ov065_02276f4c_Ctx *c;
     s32 i;
     s32 z;
@@ -1498,23 +1498,23 @@ s32 func_ov065_02276e44(u32 a) {
     z = i;
     for (; i < 5; i++) {
         c = g;
-        s32 h = func_ov065_022849c8(*c->unk_04);
-        s32 h2 = func_ov065_022849d4(*c->unk_04);
-        r = func_ov065_02288380(&g->unk_10, h, h2, c->unk_2dc, c->unk_2e0, 1, 1, (void *)func_ov065_02272858, (void *)func_ov065_02272854, (void *)func_ov065_02272850, (void *)func_ov065_022727e0, (void *)func_ov065_022727dc, (void *)func_ov065_022727d4, z);
+        s32 h = GsTransport_GetRemoteIp(*c->unk_04);
+        s32 h2 = GsTransport_GetLocalPort(*c->unk_04);
+        r = GsQr_Init(&g->unk_10, h, h2, c->unk_2dc, c->unk_2e0, 1, 1, (void *)DwcMatch_OnQr2ServerKey, (void *)DwcMatch_OnQr2PlayerKey, (void *)DwcMatch_OnQr2TeamKey, (void *)DwcMatch_OnQr2KeyList, (void *)DwcMatch_OnQr2Count, (void *)DwcMatch_OnQr2Error, z);
         if (r == 0) {
             break;
         }
         if (r != 3 || i == 4) {
-            func_ov065_02272e60(r);
+            DwcMatch_HandleQr2Result(r);
             return r;
         }
     }
     g->unk_1c = 0;
     g->unk_1a = 0;
-    func_ov065_02288344(g->unk_10, (void *)func_ov065_022727c4);
-    func_ov065_0228836c(g->unk_10, (void *)func_ov065_02272734);
-    func_ov065_02288358(g->unk_10, (void *)func_ov065_022726a0);
-    func_ov065_02288190(g->unk_10);
+    GsQr_SetPublicAddressCallback(g->unk_10, (void *)DwcMatch_OnQr2PublicAddress);
+    GsQr_SetNatNegCallback(g->unk_10, (void *)DwcMatch_OnQr2NnRequest);
+    GsQr_SetClientMessageCallback(g->unk_10, (void *)DwcMatch_OnQr2ClientMessage);
+    GsQr_SendStateChanged(g->unk_10);
     return r;
 }
 #undef g
@@ -1523,21 +1523,21 @@ s32 func_ov065_02276e44(u32 a) {
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276db4(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
-    func_ov065_022758f4(2, a0, a1, a2);
+void DwcMatch_StartGameServer(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
+    DwcMatch_Init(2, a0, a1, a2);
     g->unk_454 = a3;
     g->unk_458 = a4;
     g->unk_f4[0] = g->unk_1e8;
     g->unk_2d8 = 1;
     g->unk_0e = 0;
-    data_ov065_02290810.unk_01 = 0;
+    sDwcMatchServerLock.unk_01 = 0;
     g->unk_198 = 10;
-    func_ov065_02275ccc();
-    if (func_ov065_02272f80() == 0) {
+    DwcMatch_UpdateServerStatus();
+    if (DwcMatch_HandleGpResult() == 0) {
         if (g->unk_10 == 0) {
-            func_ov065_02276e44(g->unk_1e8);
+            DwcMatch_StartQr2(g->unk_1e8);
         }
     }
 }
@@ -1547,11 +1547,11 @@ void func_ov065_02276db4(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02276cc0(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
+s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     s32 r;
-    func_ov065_022758f4(3, 0, a1, a2);
+    DwcMatch_Init(3, 0, a1, a2);
     g->unk_454 = a3;
     g->unk_458 = a4;
     g->unk_17 = 1;
@@ -1559,27 +1559,27 @@ s32 func_ov065_02276cc0(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     g->unk_f4[0] = a0;
     g->unk_198 = 4;
     if (g->unk_e4 == 0) {
-        g->unk_e4 = func_ov065_02289460(g->unk_2dc, g->unk_2dc, g->unk_2e0, 0, 0x14, 1, 0, (void *)func_ov065_02272ab0, 0);
+        g->unk_e4 = GsSrvBrowser_New(g->unk_2dc, g->unk_2dc, g->unk_2e0, 0, 0x14, 1, 0, (void *)DwcMatch_OnServerBrowserEvent, 0);
     }
     if (g->unk_e4 == 0) {
-        r = func_ov065_02272f0c(5);
+        r = DwcMatch_HandleSbResult(5);
         if (r != 0) {
             return r;
         }
     }
-    func_ov065_02271e00(5, (char *)"", 0);
-    r = func_ov065_02272f80();
+    DwcFriend_SetOwnStatus(5, (char *)"", 0);
+    r = DwcMatch_HandleGpResult();
     if (r != 0) {
         return r;
     }
     if (g->unk_10 == 0) {
-        r = func_ov065_02276e44(g->unk_1e8);
+        r = DwcMatch_StartQr2(g->unk_1e8);
         if (r != 0) {
             return r;
         }
     }
-    func_ov065_022745bc(g->unk_f4[0], 0);
-    r = func_ov065_022746e4();
+    DwcMatch_SendReservation(g->unk_f4[0], 0);
+    r = DwcMatch_HandleResult();
     if (r != 0) {
         return r;
     }
@@ -1590,20 +1590,20 @@ s32 func_ov065_02276cc0(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_0227674c(u32 a) {
+void DwcMatch_Process(u32 a) {
     Unk_ov065_02276f4c_Pad pad;
     Unk_ov065_02276f4c_Ctx *c;
     u32 r5;
     if (g != 0) {
-        if (func_ov065_02270e4c() == 0) {
+        if (DwcCore_HasError() == 0) {
             if (a == 0) {
                 if (g->unk_10) {
-                    func_ov065_02288318(g->unk_10);
+                    GsQr_Think(g->unk_10);
                 }
                 if (g->unk_04 != 0) {
-                    func_ov065_02284ba4(*g->unk_04);
+                    GsTransport_Think(*g->unk_04);
                 }
                 return;
             }
@@ -1625,15 +1625,15 @@ void func_ov065_0227674c(u32 a) {
                         if (c->unk_15 == 3) {
                             c->unk_1a2++;
                             if (g->unk_1a2 > 5) {
-                                func_ov065_0227627c(6, -0x13a2e);
+                                DwcMatch_Fail(6, -0x13a2e);
                                 return;
                             }
-                            func_ov065_022745bc(g->unk_f4[0], 0);
-                            if (func_ov065_022746e4() != 0) {
+                            DwcMatch_SendReservation(g->unk_f4[0], 0);
+                            if (DwcMatch_HandleResult() != 0) {
                                 return;
                             }
                         } else {
-                            if (func_ov065_0227433c() == 0) {
+                            if (DwcMatch_BeginSearch() == 0) {
                                 return;
                             }
                         }
@@ -1645,8 +1645,8 @@ void func_ov065_0227674c(u32 a) {
                 }
                 { u32 t = c->unk_0d * 3000; r5 = t + 3000; }
                 if (((OS_GetTick() - *(u64 *)c->unk_1b4) << 6) / 0x82ea >= (u64)r5) {
-                    func_ov065_022745bc(c->unk_f4[0], 0);
-                    if (func_ov065_022746e4() != 0) {
+                    DwcMatch_SendReservation(c->unk_f4[0], 0);
+                    if (DwcMatch_HandleResult() != 0) {
                         return;
                     }
                 }
@@ -1665,8 +1665,8 @@ void func_ov065_0227674c(u32 a) {
                     r5 = 3000;
                 }
                 if ((u64)r5 < ((OS_GetTick() - *(u64 *)c->unk_ec) << 6) / 0x82ea) {
-                    func_ov065_02275764(c->unk_1ec);
-                    if (func_ov065_02272f0c() != 0) {
+                    DwcMatch_StartServerQuery(c->unk_1ec);
+                    if (DwcMatch_HandleSbResult() != 0) {
                         return;
                     }
                     g->unk_e8 = 0;
@@ -1674,29 +1674,29 @@ void func_ov065_0227674c(u32 a) {
                 break;
             case 7:
                 if (*(u64 *)c->unk_184 != 0) {
-                    u64 d = func_ov065_02277974() - *(u64 *)c->unk_184;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)c->unk_184;
                     if (d > 0x61a8) {
                         c = g;
                         *(u64 *)c->unk_184 = 0;
-                        if (func_ov065_0227412c(c->unk_f4[0]) != 0) {
+                        if (DwcMatch_RestartAfterNnFailure(c->unk_f4[0]) != 0) {
                             break;
                         }
                         return;
                     }
                     break;
                 } else if (c->unk_3b4 == 6) {
-                    u64 d = func_ov065_02277974() - *(u64 *)c->unk_444;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)c->unk_444;
                     if (d > 0x1770) {
                         c->unk_3b5++;
                         c = g;
                         if (c->unk_3b5 > 5) {
-                            func_ov065_02276304();
-                            if (func_ov065_0227412c(g->unk_f4[0]) == 0) {
+                            DwcMatch_ClearPendingCommand();
+                            if (DwcMatch_RestartAfterNnFailure(g->unk_f4[0]) == 0) {
                                 return;
                             }
                         } else {
-                            func_ov065_0227532c(6, c->unk_43c, c->unk_3b8, c->unk_3b6, c->unk_3bc, c->unk_440);
-                            if (func_ov065_022746e4() != 0) {
+                            DwcMatch_SendCommand(6, c->unk_43c, c->unk_3b8, c->unk_3b6, c->unk_3bc, c->unk_440);
+                            if (DwcMatch_HandleResult() != 0) {
                                 return;
                             }
                         }
@@ -1712,18 +1712,18 @@ void func_ov065_0227674c(u32 a) {
                     break;
                 }
                 if (c->unk_15 == 0) {
-                    u64 d = func_ov065_02277974() - *(u64 *)g->unk_444;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)g->unk_444;
                     if (d > 0x1770) {
                         goto do_b;
                     }
                 }
                 {
-                    u64 d = func_ov065_02277974() - *(u64 *)g->unk_444;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)g->unk_444;
                     if (d > 0x4a38) {
                     do_b:
-                        func_ov065_02276304();
+                        DwcMatch_ClearPendingCommand();
                         c = g;
-                        if (func_ov065_022741b0(c->unk_f4[c->unk_0d + 1]) != 0) {
+                        if (DwcMatch_CancelNewClient(c->unk_f4[c->unk_0d + 1]) != 0) {
                             break;
                         }
                         return;
@@ -1737,23 +1737,23 @@ void func_ov065_0227674c(u32 a) {
                     break;
                 }
                 {
-                    u64 d = func_ov065_02277974() - *(u64 *)c->unk_444;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)c->unk_444;
                     if (d > 0x7530) {
                         c->unk_3b5++;
                         c = g;
                         if (c->unk_3b5 != 0) {
-                            func_ov065_02276304();
+                            DwcMatch_ClearPendingCommand();
                             c = g;
                             if (c->unk_15 == 2) {
-                                if (func_ov065_022741b0(c->unk_f4[c->unk_0d]) == 0) {
+                                if (DwcMatch_CancelNewClient(c->unk_f4[c->unk_0d]) == 0) {
                                     return;
                                 }
                             } else {
-                                func_ov065_02273b60();
+                                DwcMatch_AbortAndRestart();
                             }
                         } else {
-                            func_ov065_0227532c(8, c->unk_43c, c->unk_3b8, c->unk_3b6, c->unk_3bc, c->unk_440);
-                            if (func_ov065_022746e4() == 0) {
+                            DwcMatch_SendCommand(8, c->unk_43c, c->unk_3b8, c->unk_3b6, c->unk_3bc, c->unk_440);
+                            if (DwcMatch_HandleResult() == 0) {
                                 break;
                             }
                             return;
@@ -1765,17 +1765,17 @@ void func_ov065_0227674c(u32 a) {
             c = g;
             if (c->unk_198 == 0xb || c->unk_198 == 6) {
                 if (*(u64 *)c->unk_17c != 0) {
-                    u64 d = func_ov065_02277974() - *(u64 *)c->unk_17c;
+                    u64 d = DwcNet_GetTimeMs() - *(u64 *)c->unk_17c;
                     if (d > 0x2710) {
-                        func_ov065_02272428(1, 0, 0, c->unk_18c);
+                        DwcMatch_OnNnComplete(1, 0, 0, c->unk_18c);
                     }
                 }
             }
             if (g->unk_e4) {
-                func_ov065_022892b0(g->unk_e4);
+                GsSrvBrowser_Think(g->unk_e4);
             }
             if (g->unk_10) {
-                func_ov065_02288318(g->unk_10);
+                GsQr_Think(g->unk_10);
                 c = g;
                 Unk_ov065_02276e44_Obj *o = c->unk_10;
                 if (o->unk_b4 == 0 && (c->unk_15 == 0 || c->unk_15 == 1)) {
@@ -1785,24 +1785,24 @@ void func_ov065_0227674c(u32 a) {
                 }
                 if (c->unk_15 == 2 && c->unk_198 == 0xb) {
                 do_kill:
-                    func_ov065_02288190(o);
+                    GsQr_SendStateChanged(o);
                 }
             }
-            func_ov065_02286c3c();
+            GsNatNeg_ProcessAll();
             if (g->unk_04 != 0) {
-                func_ov065_02284ba4(*g->unk_04);
+                GsTransport_Think(*g->unk_04);
             }
             if (g->unk_198 == 0x12) {
-                u64 d = func_ov065_02277974() - *(u64 *)g->unk_1e0;
+                u64 d = DwcNet_GetTimeMs() - *(u64 *)g->unk_1e0;
                 if (d > 0xbb8) {
-                    if (func_ov065_02273ad0() != 0) {
+                    if (DwcMatch_RestartAfterCancel() != 0) {
                         return;
                     }
                 }
             }
-            if (func_ov065_02273760() != 0) {
-                if (func_ov065_02273440() != 0) {
-                    func_ov065_02272fe0();
+            if (DwcMatch_ProcessCloseSync() != 0) {
+                if (DwcMatch_ProcessCancelSync() != 0) {
+                    DwcMatch_ProcessServerSync();
                 }
             }
         }
@@ -1814,9 +1814,9 @@ void func_ov065_0227674c(u32 a) {
 
 namespace F02276698 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg) {
+s32 DwcMatch_OnUnrecognizedPacket(s32 a0, u32 ip, s32 port, char *name, void *arg) {
     struct {
         u8 len;
         u8 family;
@@ -1835,10 +1835,10 @@ s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg) {
     u32 c = (u8)name[0];
     if ((c == 0xfe && (u8)name[1] == 0xfd) || c == 0x5c) {
         if (g->unk_10) {
-            func_ov065_0228758c(g->unk_10, name, arg, &addr);
+            GsQr_HandlePacket(g->unk_10, name, arg, &addr);
         }
     } else if (memcmp(name, data_ov065_0228e16c, 6) == 0) {
-        func_ov065_02286934(name, arg, &addr);
+        GsNatNeg_HandlePacket(name, arg, &addr);
     } else {
         if (c == 0xfe) {
             return 0;
@@ -1855,19 +1855,19 @@ s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276500(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
+void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
     s32 id;
     if (g != NULL && g->unk_198 == 7 && g->unk_1a1 == 0) {
     } else {
-        func_ov065_02284b8c(b, (char *)"Init state", -1);
+        GsTransport_Reject(b, (char *)"Init state", -1);
         return;
     }
-    id = func_ov065_022703ec();
+    id = DwcConn_FindFreeSlot();
     if (id == -1) {
-        func_ov065_02284b8c(b, (char *)"Server full", -1);
-        func_ov065_0227627c(6, -0x1543c);
+        GsTransport_Reject(b, (char *)"Server full", -1);
+        DwcMatch_Fail(6, -0x1543c);
         return;
     }
     if (c != g->unk_1f8[g->unk_0d] || d != g->unk_278[g->unk_0d]) {
@@ -1878,18 +1878,18 @@ void func_ov065_02276500(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
                 goto ok;
             }
         }
-        func_ov065_02284b8c(b, (char *)"Unknown connect attempt", -1);
+        GsTransport_Reject(b, (char *)"Unknown connect attempt", -1);
         return;
     }
 ok:
     Unk_ov065_02290814 *gs = g;
     gs->unk_184 = 0;
     gs->unk_188 = 0;
-    if (func_ov065_02284b94(b, gs->unk_08) == 0) {
-        func_ov065_0227627c(6, -0x13a1a);
+    if (GsTransport_Accept(b, gs->unk_08) == 0) {
+        DwcMatch_Fail(6, -0x13a1a);
         return;
     }
-    func_ov065_02276304();
+    DwcMatch_ClearPendingCommand();
     if (g->unk_0d == 0) {
         s32 t = s0 >> 1;
         if (t >= 0xffff) {
@@ -1897,16 +1897,16 @@ ok:
         }
         g->unk_1a6 = t;
     }
-    u32 *p = func_ov065_022703ac(id);
-    Unk_ov065_02270344_Rec *q = func_ov065_02270344(id);
+    u32 *p = DwcConn_GetSlot(id);
+    Unk_ov065_02270344_Rec *q = DwcConn_GetConnInfo(id);
     *p = b;
     g->unk_0d++;
     q->unk_00 = id;
     q->unk_01 = g->unk_2b8[g->unk_0d - 1];
     q->unk_02 = 0;
     q->unk_04 = 0;
-    func_ov065_022849c0(b, q);
-    func_ov065_02273d38(2);
+    GsTransport_SetUserData(b, q);
+    DwcMatch_AdvanceConnect(2);
 }
 #undef g
 }
@@ -1914,9 +1914,9 @@ ok:
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276374(u32 a, u32 b) {
+void DwcMatch_OnGt2Connected(u32 a, u32 b) {
     char buf[12];
     if (g == NULL) {
         return;
@@ -1931,47 +1931,47 @@ void func_ov065_02276374(u32 a, u32 b) {
         g->unk_0c++;
         if (g->unk_0c > 5) {
             g->unk_0c = 0;
-            func_ov065_022741b0(g->unk_f4[g->unk_14]);
+            DwcMatch_CancelNewClient(g->unk_f4[g->unk_14]);
             return;
         }
         OS_SNPrintf(buf, 12, (char *)"%u", g->unk_1e8);
         Unk_ov065_02290814 *c = g;
-        s32 r0 = func_ov065_022868b0(c->unk_1f8[c->unk_14], c->unk_278[c->unk_14], 0);
-        s32 r = func_ov065_02284a80(g->unk_04->unk_00, 0, r0, buf, -1, 0x1388, c->unk_08, 0);
+        s32 r0 = GsTransport_AddressToString(c->unk_1f8[c->unk_14], c->unk_278[c->unk_14], 0);
+        s32 r = GsTransport_Connect(g->unk_04->unk_00, 0, r0, buf, -1, 0x1388, c->unk_08, 0);
         if (r == 1) {
-            func_ov065_02272d5c();
+            DwcMatch_HandleGt2Result();
             return;
         } else if (r != 0) {
-            if (func_ov065_022741b0(g->unk_f4[g->unk_14]) == 0) {
+            if (DwcMatch_CancelNewClient(g->unk_f4[g->unk_14]) == 0) {
                 return;
             }
         }
         break;
     }
     default:
-        if (func_ov065_022741b0(g->unk_f4[g->unk_0d + 1]) == 0) {
+        if (DwcMatch_CancelNewClient(g->unk_f4[g->unk_0d + 1]) == 0) {
             return;
         }
         break;
     case 0: {
-        s32 id = func_ov065_022703ec();
+        s32 id = DwcConn_FindFreeSlot();
         if (id == -1) {
-            func_ov065_0227627c(6, -0x1543c);
+            DwcMatch_Fail(6, -0x1543c);
         }
-        u32 *p = func_ov065_022703ac(id);
-        Unk_ov065_02270344_Rec *q = func_ov065_02270344(id);
+        u32 *p = DwcConn_GetSlot(id);
+        Unk_ov065_02270344_Rec *q = DwcConn_GetConnInfo(id);
         *p = a;
         g->unk_0d++;
         q->unk_00 = id;
         q->unk_02 = 0;
         q->unk_04 = 0;
         q->unk_01 = g->unk_2b8[g->unk_0d];
-        func_ov065_022849c0(a, q);
+        GsTransport_SetUserData(a, q);
         if (g->unk_198 == 0xc) {
-            func_ov065_02273d38(0);
+            DwcMatch_AdvanceConnect(0);
             return;
         }
-        func_ov065_02273d38(1);
+        DwcMatch_AdvanceConnect(1);
         break;
     }
     }
@@ -1982,21 +1982,21 @@ void func_ov065_02276374(u32 a, u32 b) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276324(u32 a, u32 b, const char *s) {
+void DwcMatch_OnGpMatchCommand(u32 a, u32 b, const char *s) {
     char tmp[16];
     u32 arr[128];
     s32 i = 0;
     s32 z = 0;
     for (; i < 0x80; i++) {
-        s32 r = func_ov065_022751b0(tmp, s + 1, i);
+        s32 r = DwcMatch_GetArgField(tmp, s + 1, i);
         if (r == ~z) {
             break;
         }
         arr[i] = func_0212b854(tmp, NULL, 10);
     }
-    func_ov065_022749f8(*(u8 *)s, b, 0, 0, arr, i);
+    DwcMatch_HandleCommand(*(u8 *)s, b, 0, 0, arr, i);
 }
 #undef g
 }
@@ -2004,9 +2004,9 @@ void func_ov065_02276324(u32 a, u32 b, const char *s) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276304(void) {
+void DwcMatch_ClearPendingCommand(void) {
     g->unk_3b4 = 0xff;
     g->unk_3b5 = 0;
 }
@@ -2016,13 +2016,13 @@ void func_ov065_02276304(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_0227627c(s32 a, s32 b) {
+void DwcMatch_Fail(s32 a, s32 b) {
     if (g != NULL && a != 0) {
-        func_ov065_02273a40();
-        func_ov065_02270e34(a, b);
-        func_ov065_02271e00(1, (char *)"", 0);
+        DwcMatch_CloseAllConnections();
+        DwcCore_SetError(a, b);
+        DwcFriend_SetOwnStatus(1, (char *)"", 0);
         Unk_ov065_02290814 *c = g;
         BOOL x;
         BOOL y;
@@ -2036,9 +2036,9 @@ void func_ov065_0227627c(s32 a, s32 b) {
         } else {
             y = FALSE;
         }
-        s32 t = func_ov065_02271e8c();
+        s32 t = DwcFriend_FindIndexByProfileId();
         g->unk_44c(a, 0, y, x, t, c->unk_450);
-        func_ov065_02275890();
+        DwcMatch_Cleanup();
     }
 }
 #undef g
@@ -2047,13 +2047,13 @@ void func_ov065_0227627c(s32 a, s32 b) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276254(void) {
+void DwcMatch_ResetPlayerCounts(void) {
     if (g->unk_15 != 2) {
         g->unk_14 = 0;
         g->unk_16 = 0;
-        func_ov065_02288190(g->unk_10);
+        GsQr_SendStateChanged(g->unk_10);
     }
 }
 #undef g
@@ -2062,9 +2062,9 @@ void func_ov065_02276254(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02276124(u32 a, s32 b, u8 *c) {
+void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c) {
     switch (b) {
     case 2:
         if (g->unk_198 == 1) {
@@ -2080,7 +2080,7 @@ void func_ov065_02276124(u32 a, s32 b, u8 *c) {
             }
             g->unk_198 = 9;
         }
-        func_ov065_022738b4(a, 3);
+        DwcMatch_SendSyncPacket(a, 3);
         break;
     case 3:
         if (g->unk_198 == 0x10) {
@@ -2089,21 +2089,21 @@ void func_ov065_02276124(u32 a, s32 b, u8 *c) {
             if (v > g->unk_1a6) {
                 g->unk_1a6 = v;
             }
-            s32 r = func_ov065_02273274(0);
+            s32 r = DwcMatch_GetClientAidMask(0);
             if (g->unk_1c8 == r) {
                 s32 i;
                 for (i = 1; i <= g->unk_0d; i++) {
-                    func_ov065_022738b4(g->unk_2b8[i], 4);
+                    DwcMatch_SendSyncPacket(g->unk_2b8[i], 4);
                 }
                 g->unk_198 = 0x11;
             }
         } else {
-            func_ov065_022738b4(a, 4);
+            DwcMatch_SendSyncPacket(a, 4);
         }
         break;
     case 4:
         if (g->unk_198 == 9) {
-            func_ov065_02273d38(4);
+            DwcMatch_AdvanceConnect(4);
         }
         break;
     }
@@ -2114,17 +2114,17 @@ void func_ov065_02276124(u32 a, s32 b, u8 *c) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-BOOL func_ov065_02276000(s32 a, u32 b) {
-    if (func_ov065_02270508() != 5) {
+BOOL DwcMatch_OnConnectionClosed(s32 a, u32 b) {
+    if (DwcCore_GetState() != 5) {
         return FALSE;
     }
     if (g->unk_15 == 2) {
         return TRUE;
     }
     if (a != 0) {
-        func_ov065_0227627c(a, b - 0x13880);
+        DwcMatch_Fail(a, b - 0x13880);
         return TRUE;
     }
     g->unk_2b8[0] = 0;
@@ -2132,26 +2132,26 @@ BOOL func_ov065_02276000(s32 a, u32 b) {
         return TRUE;
     }
     if (g->unk_194 != 0) {
-        func_ov065_02286da0(g->unk_194);
+        GsNatNeg_Cancel(g->unk_194);
         g->unk_194 = 0;
     }
     if (g->unk_0d != 0) {
         if (g->unk_1a0 == 0) {
             g->unk_1a0 = 3;
-            func_ov065_022849f8(g->unk_04->unk_00);
+            GsTransport_CloseAll(g->unk_04->unk_00);
         }
     } else if (g->unk_15 == 3) {
-        func_ov065_0227627c(6, -0x13a2e);
+        DwcMatch_Fail(6, -0x13a2e);
     } else if (g->unk_1f0 != 0) {
-        func_ov065_02273ad0();
+        DwcMatch_RestartAfterCancel();
     } else if (g->unk_198 == 1) {
         g->unk_198 = 0x12;
-        u64 t = func_ov065_02277974();
+        u64 t = DwcNet_GetTimeMs();
         Unk_ov065_02290814 *c = g;
         c->unk_1e0 = (u32)t;
         c->unk_1e4 = (u32)(t >> 32);
     } else {
-        func_ov065_02273b88(1);
+        DwcMatch_Restart(1);
     }
     return TRUE;
 }
@@ -2161,11 +2161,11 @@ BOOL func_ov065_02276000(s32 a, u32 b) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02275fdc(u32 a) {
+void DwcMatch_OnClientDisconnected(u32 a) {
     if (g->unk_1a0 != 2) {
-        func_ov065_022741b0(a);
+        DwcMatch_CancelNewClient(a);
     }
 }
 #undef g
@@ -2174,9 +2174,9 @@ void func_ov065_02275fdc(u32 a) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-BOOL func_ov065_02275f98(u32 v, s32 n) {
+BOOL DwcMatch_RemoveProfile(u32 v, s32 n) {
     s32 i;
     u8 *q;
     if (g == NULL) {
@@ -2185,7 +2185,7 @@ BOOL func_ov065_02275f98(u32 v, s32 n) {
     q = (u8 *)g;
     for (i = 0; i < n; i++) {
         if (v == *(u32 *)(q + 0xf4)) {
-            func_ov065_02275e64(i, n);
+            DwcMatch_RemoveMemberAt(i, n);
             return TRUE;
         }
         q += 4;
@@ -2198,16 +2198,16 @@ BOOL func_ov065_02275f98(u32 v, s32 n) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-u32 func_ov065_02275e64(s32 idx, s32 n) {
+u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n) {
     u32 saved;
     if (g == NULL) {
         return 0;
     }
     saved = g->unk_f4[idx];
     g->unk_2d8 &= ~(1 << g->unk_2b8[idx]);
-    func_ov065_02275df4();
+    DwcMatch_UpdateValidAidCount();
     if (idx < n - 1) {
         s32 i;
         for (i = 0; i < n - idx; i++) {
@@ -2238,9 +2238,9 @@ u32 func_ov065_02275e64(s32 idx, s32 n) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-u32 func_ov065_02275e50(void) {
+u32 DwcMatch_GetClientCount(void) {
     if (g != NULL) {
         return g->unk_0d;
     }
@@ -2252,9 +2252,9 @@ u32 func_ov065_02275e50(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-u32 func_ov065_02275e3c(void) {
+u32 DwcMatch_GetValidAidCount(void) {
     if (g != NULL) {
         return g->unk_0e;
     }
@@ -2266,9 +2266,9 @@ u32 func_ov065_02275e3c(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02275df4(void) {
+void DwcMatch_UpdateValidAidCount(void) {
     s32 n, i;
     n = -1;
     i = 0;
@@ -2293,9 +2293,9 @@ void func_ov065_02275df4(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02275dd0(u32 *out) {
+s32 DwcMatch_GetAidList(u32 *out) {
     if (g == NULL) {
         return 0;
     }
@@ -2308,24 +2308,24 @@ s32 func_ov065_02275dd0(u32 *out) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02275d58(u8 **out) {
+s32 DwcMatch_GetValidAidList(u8 **out) {
     s32 i;
     u32 b;
     if (g == NULL) {
         return 0;
     }
-    MI_CpuFill8(data_ov065_02290820, 0, 0x20);
+    MI_CpuFill8(sDwcMatchValidAids, 0, 0x20);
     i = 0;
     for (; i <= g->unk_0e; i++) {
         b = g->unk_2b8[i];
         if ((g->unk_2d8 & (1 << b)) == 0) {
             break;
         }
-        data_ov065_02290820[i] = b;
+        sDwcMatchValidAids[i] = b;
     }
-    *out = data_ov065_02290820;
+    *out = sDwcMatchValidAids;
     return g->unk_0e + 1;
 }
 #undef g
@@ -2334,21 +2334,21 @@ s32 func_ov065_02275d58(u8 **out) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02275ccc(void) {
+s32 DwcMatch_UpdateServerStatus(void) {
     char buf[12];
     char buf2[32];
     if (g->unk_15 != 2) {
         return 0;
     }
     OS_SNPrintf(buf, 12, (char *)"%u", g->unk_16 + 1);
-    func_ov065_02277a9c((char *)"SCM", buf, buf2, 0x2f);
+    GsUtil_FormatKeyValue((char *)"SCM", buf, buf2, 0x2f);
     OS_SNPrintf(buf, 12, (char *)"%u", g->unk_0d + 1);
-    func_ov065_02277a6c((char *)"SCN", buf, buf2, 0x2f);
+    GsUtil_AppendKeyValue((char *)"SCN", buf, buf2, 0x2f);
     OS_SNPrintf(buf, 12, (char *)"%u", 3);
-    func_ov065_02277a6c((char *)"VER", buf, buf2, 0x2f);
-    return func_ov065_02271e00(6, buf2, 0);
+    GsUtil_AppendKeyValue((char *)"VER", buf, buf2, 0x2f);
+    return DwcFriend_SetOwnStatus(6, buf2, 0);
 }
 #undef g
 }
@@ -2356,22 +2356,22 @@ s32 func_ov065_02275ccc(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02275c74(void) {
+void DwcMatch_Shutdown(void) {
     s32 z = 0;
-    data_ov065_02290814 = (Unk_ov065_02290814 *)z;
-    if (data_ov065_0229081c != 0) {
-        func_ov065_02277b64(4, data_ov065_0229081c, z);
-        data_ov065_0229081c = 0;
+    sDwcMatch = (Unk_ov065_02290814 *)z;
+    if (sDwcMatchUserFilter != 0) {
+        DwcNet_Free(4, sDwcMatchUserFilter, z);
+        sDwcMatchUserFilter = 0;
     }
-    func_ov065_02273400();
-    if (data_ov065_02290818 != 0) {
-        func_ov065_02277b64(4, data_ov065_02290818, 0);
-        data_ov065_02290818 = 0;
+    DwcMatch_ClearUserKeys();
+    if (sDwcMatchSyncOption != 0) {
+        DwcNet_Free(4, sDwcMatchSyncOption, 0);
+        sDwcMatchSyncOption = 0;
     }
-    data_ov065_02290810[0] = 0;
-    data_ov065_02290810[1] = 0;
+    sDwcMatchServerLock[0] = 0;
+    sDwcMatchServerLock[1] = 0;
 }
 #undef g
 }
@@ -2379,9 +2379,9 @@ void func_ov065_02275c74(void) {
 
 namespace F02275c60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-BOOL func_ov065_02275c60(void) {
+BOOL DwcMatch_IsInactive(void) {
     if (g == NULL) {
         return TRUE;
     }
@@ -2393,12 +2393,12 @@ BOOL func_ov065_02275c60(void) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02275984(u32 a) {
+void DwcMatch_ResetState(u32 a) {
     G->unk_0c = 0;
     G->unk_174 = 0;
-    G->unk_176 = func_ov065_022778b0(0x10000);
+    G->unk_176 = DwcNet_Rand32(0x10000);
     G->unk_178 = 0;
     {
         Unk_ov065_02290814 *g = G;
@@ -2488,21 +2488,21 @@ void func_ov065_02275984(u32 a) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_022758f4(u32 a, u32 b, u32 c, u32 d) {
-    func_ov065_02275984(0);
+void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d) {
+    DwcMatch_ResetState(0);
     G->unk_15 = a;
     G->unk_16 = b;
     G->unk_44c = c;
     G->unk_450 = d;
     G->unk_175 = 0;
     G->unk_2b8[0] = 0;
-    func_ov065_022884fc(0x32, (char *)"dwc_pid");
-    func_ov065_022884fc(0x33, (char *)"dwc_mtype");
-    func_ov065_022884fc(0x34, (char *)"dwc_mresv");
-    func_ov065_022884fc(0x35, (char *)"dwc_mver");
-    func_ov065_022884fc(0x36, (char *)"dwc_eval");
+    GsQr_RegisterKeyName(0x32, (char *)"dwc_pid");
+    GsQr_RegisterKeyName(0x33, (char *)"dwc_mtype");
+    GsQr_RegisterKeyName(0x34, (char *)"dwc_mresv");
+    GsQr_RegisterKeyName(0x35, (char *)"dwc_mver");
+    GsQr_RegisterKeyName(0x36, (char *)"dwc_eval");
 }
 #undef G
 }
@@ -2510,21 +2510,21 @@ void func_ov065_022758f4(u32 a, u32 b, u32 c, u32 d) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02275890(void) {
+void DwcMatch_Cleanup(void) {
     if (G != NULL) {
         if (G->unk_e4 != 0) {
-            func_ov065_02289444(G->unk_e4);
+            GsSrvBrowser_Free(G->unk_e4);
             G->unk_e4 = 0;
         }
-        func_ov065_02287260();
+        GsNatNeg_FreeAll();
         G->unk_198 = 0;
-        if (data_ov065_0229081c != 0) {
-            func_ov065_02277b64(4, data_ov065_0229081c);
-            data_ov065_0229081c = 0;
+        if (sDwcMatchUserFilter != 0) {
+            DwcNet_Free(4, sDwcMatchUserFilter);
+            sDwcMatchUserFilter = 0;
         }
-        func_ov065_02273400();
+        DwcMatch_ClearUserKeys();
         G->unk_18 = 1;
     }
 }
@@ -2534,9 +2534,9 @@ void func_ov065_02275890(void) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02275764(u32 a) {
+void DwcMatch_StartServerQuery(u32 a) {
     char buf[0x100];
     u8 list[0xa8];
     s32 n = 7;
@@ -2553,7 +2553,7 @@ void func_ov065_02275764(u32 a) {
     list[6] = 0x36;
     if (G->unk_15 == 0 || G->unk_15 == 1) {
         i = 0;
-        e = data_ov065_02290840;
+        e = sDwcMatchUserKeys;
         q = &list[7];
         for (; i < 0x9a; e++, i++) {
             if (e->unk_00 != 0) {
@@ -2570,9 +2570,9 @@ void func_ov065_02275764(u32 a) {
     case 3:
         a = G->unk_1f0;
         if (a == 0) {
-            func_ov065_0227571c(buf, G->unk_1e8, G->unk_16, G->unk_15);
-            if (data_ov065_0229081c != 0) {
-                OS_SNPrintf(buf, 0x100, (char *)"%s and (%s)", buf, data_ov065_0229081c);
+            DwcMatch_BuildServerFilter(buf, G->unk_1e8, G->unk_16, G->unk_15);
+            if (sDwcMatchUserFilter != 0) {
+                OS_SNPrintf(buf, 0x100, (char *)"%s and (%s)", buf, sDwcMatchUserFilter);
             }
             break;
         }
@@ -2584,9 +2584,9 @@ void func_ov065_02275764(u32 a) {
         G->unk_1ec = a;
         break;
     }
-    func_ov065_02289280(G->unk_e4);
+    GsSrvBrowser_Clear(G->unk_e4);
     for (k = 0; k < 5; k++) {
-        s32 r = func_ov065_02289364(G->unk_e4, 1, 0, list, n, buf, 0x10);
+        s32 r = GsSrvBrowser_UpdateList(G->unk_e4, 1, 0, list, n, buf, 0x10);
         if (r == 0) break;
         if (r != 2) break;
     }
@@ -2597,9 +2597,9 @@ void func_ov065_02275764(u32 a) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_0227571c(char *buf, u32 x, u32 y, u32 z) {
+void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z) {
     OS_SNPrintf(buf, 0x100, (char *)"%s = %d and %s != %u and maxplayers = %d and numplayers < %d and %s = %d and %s != %s", (char *)"dwc_mver", 3, (char *)"dwc_pid", x, y, y, (char *)"dwc_mtype", z, (char *)"dwc_mresv", (char *)"dwc_pid");
 }
 #undef G
@@ -2608,25 +2608,25 @@ void func_ov065_0227571c(char *buf, u32 x, u32 y, u32 z) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 enum Unk_ov065_022754f0_Z { Unk_ov065_022754f0_Z_0 = 0 };
-s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
+s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c) {
     s32 flag;
     u8 idx = G->unk_14;
     s32 ret = 0;
     if (a == 0) {
         b = (G->unk_1e8 & 0xffff) | (G->unk_176 << 16);
-        if (func_ov065_02289064(c) != 0) {
-            s32 t = func_ov065_02289098(c);
-            if (t == func_ov065_0228924c(G->unk_e4)) {
-                G->unk_1f8[idx] = func_ov065_02289060(c);
-                G->unk_278[idx] = func_ov065_02289044(c);
+        if (GsServer_HasPrivateAddress(c) != 0) {
+            s32 t = GsServer_GetPublicIp(c);
+            if (t == GsSrvBrowser_GetPublicIp(G->unk_e4)) {
+                G->unk_1f8[idx] = GsServer_GetPrivateIp(c);
+                G->unk_278[idx] = GsServer_GetPrivatePort(c);
                 flag = 0;
             } else {
                 flag = 1;
             }
         } else {
-            u16 t = func_ov065_02261358();
+            u16 t = Sock_GetHostId();
             u32 lo;
             u32 m;
             if ((t & 0xffff) == 0xa8c0) goto yes;
@@ -2639,22 +2639,22 @@ s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
             yes:
                 flag = 1;
             } else {
-                G->unk_1f8[idx] = func_ov065_02289098(c);
-                G->unk_278[idx] = func_ov065_0228907c(c);
+                G->unk_1f8[idx] = GsServer_GetPublicIp(c);
+                G->unk_278[idx] = GsServer_GetPublicPort(c);
                 flag = 0;
             }
         }
         if (flag != 0) {
-            G->unk_176 = func_ov065_022778b0(0x10000);
+            G->unk_176 = DwcNet_Rand32(0x10000);
             G->unk_18c.unk_08 = b;
         } else {
             u32 loc[2];
             s32 x;
-            loc[0] = func_ov065_02261358();
-            loc[1] = func_ov065_022849d4(G->unk_04->unk_00);
-            x = func_ov065_02289098(c);
-            b = func_ov065_0228907c(c);
-            x = func_ov065_0227532c(6, G->unk_f4[idx], x, b, loc, 2);
+            loc[0] = Sock_GetHostId();
+            loc[1] = GsTransport_GetLocalPort(G->unk_04->unk_00);
+            x = GsServer_GetPublicIp(c);
+            b = GsServer_GetPublicPort(c);
+            x = DwcMatch_SendCommand(6, G->unk_f4[idx], x, b, loc, 2);
             G->unk_3b5 = 0;
             if (x != 0) {
                 return 2;
@@ -2663,8 +2663,8 @@ s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
         }
         G->unk_18c.unk_00 = 0;
         G->unk_18c.unk_01 = 0;
-        G->unk_18c.unk_02 = func_ov065_0228907c(c);
-        G->unk_18c.unk_04 = func_ov065_02289098(c);
+        G->unk_18c.unk_02 = GsServer_GetPublicPort(c);
+        G->unk_18c.unk_04 = GsServer_GetPublicIp(c);
     } else {
         flag = 1;
         G->unk_18c.unk_00 = 1;
@@ -2674,10 +2674,10 @@ s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
         G->unk_18c.unk_08 = b;
     }
     if (flag != 0) {
-        ret = func_ov065_02275474(&G->unk_18c);
+        ret = DwcMatch_SendNnRequest(&G->unk_18c);
     } else {
         Unk_ov065_02290814 *g = G;
-        func_ov065_02272428(0, func_ov065_022849c8(g->unk_04->unk_00), 0, &g->unk_18c);
+        DwcMatch_OnNnComplete(0, GsTransport_GetRemoteIp(g->unk_04->unk_00), 0, &g->unk_18c);
         Unk_ov065_022754f0_Z z = Unk_ov065_022754f0_Z_0;
         g = G;
         g->unk_184 = z;
@@ -2691,19 +2691,19 @@ s32 func_ov065_022754f0(u32 a, u32 b, u32 c) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_02275474(Unk_ov065_02275474_Arg *p) {
+s32 DwcMatch_SendNnRequest(Unk_ov065_02275474_Arg *p) {
     s32 i;
     s32 r;
     if (p->unk_00 == 0) {
-        func_ov065_022892ec(G->unk_e4, func_ov065_022868b0(p->unk_04, 0, 0), p->unk_02, p->unk_08);
-        if (func_ov065_02272f0c() != 0) {
+        GsSrvBrowser_SendNatNegCookie(G->unk_e4, GsTransport_AddressToString(p->unk_04, 0, 0), p->unk_02, p->unk_08);
+        if (DwcMatch_HandleSbResult() != 0) {
             return 2;
         }
     }
     for (i = 0; i < 5; i++) {
-        r = func_ov065_02286dcc(func_ov065_022849c8(G->unk_04->unk_00), p->unk_08, p->unk_00, (void *)func_ov065_0227269c, (void *)func_ov065_02272428, p);
+        r = GsNatNeg_Start(GsTransport_GetRemoteIp(G->unk_04->unk_00), p->unk_08, p->unk_00, (void *)DwcMatch_OnNnProgress, (void *)DwcMatch_OnNnComplete, p);
         if (r == 0) break;
         if (r != 3) break;
     }
@@ -2715,9 +2715,9 @@ s32 func_ov065_02275474(Unk_ov065_02275474_Arg *p) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
+s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
     s32 r;
     char buf[0x200];
     char tmp[0x10];
@@ -2725,7 +2725,7 @@ s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
     u32 *p;
     r = 0;
     if (G->unk_15 == 0 || ((G->unk_15 == 3 || G->unk_19e != 0) && a == 6)) {
-        r = func_ov065_02275298(a, c, d, e, f);
+        r = DwcMatch_SendSbCommand(a, c, d, e, f);
     } else {
         if (e != NULL && f != 0) {
             r = OS_SNPrintf(buf, 0x200, (char *)"%u", e[0]);
@@ -2742,7 +2742,7 @@ s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
             }
         }
         buf[r] = 0;
-        r = func_ov065_02275228(G->unk_00, a, b, buf);
+        r = DwcMatch_SendGpCommand(G->unk_00, a, b, buf);
     }
     if (a == 2 || a == 6 || (u8)(a + 0xf8) <= 1) {
         G->unk_3b4 = a;
@@ -2752,7 +2752,7 @@ s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
         G->unk_440 = f;
         {
             Unk_ov065_02290814 *g = G;
-            u64 t = func_ov065_02277974();
+            u64 t = DwcNet_GetTimeMs();
             g->unk_444 = (u32)t;
             g->unk_448 = (u32)(t >> 32);
             if (e != NULL && f != 0) {
@@ -2768,9 +2768,9 @@ s32 func_ov065_0227532c(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_02275298(u32 a, u32 b, u32 c, u32 *d, s32 e) {
+s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e) {
     Unk_ov065_02275298_Hdr h;
     s32 i;
     s32 r;
@@ -2788,7 +2788,7 @@ s32 func_ov065_02275298(u32 a, u32 b, u32 c, u32 *d, s32 e) {
     h.unk_10 = G->unk_1e8;
     i = 0;
     do {
-        r = func_ov065_02289324(G->unk_e4, func_ov065_022868b0(b, 0, 0), c, &h, h.unk_09 + 0x14);
+        r = GsSrvBrowser_SendMessage(G->unk_e4, GsTransport_AddressToString(b, 0, 0), c, &h, h.unk_09 + 0x14);
         if (r == 0) break;
         if (r != 2) break;
         i++;
@@ -2801,9 +2801,9 @@ s32 func_ov065_02275298(u32 a, u32 b, u32 c, u32 *d, s32 e) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_02275228(u32 a, u32 b, u32 c, char *d) {
+s32 DwcMatch_SendGpCommand(u32 a, u32 b, u32 c, char *d) {
     char buf[0x200];
     s32 n = OS_SNPrintf(buf, 0x200, (char *)"%s%dv%s", (char *)"GPCM", 3, (char *)"MAT");
     char *q = &buf[1];
@@ -2816,7 +2816,7 @@ s32 func_ov065_02275228(u32 a, u32 b, u32 c, char *d) {
         MI_CpuCopy8(d, p, len);
         p[len] = 0;
     }
-    return func_ov065_0227bd20(a, c, buf);
+    return GsGp_SendBuddyMessage(a, c, buf);
 }
 #undef G
 }
@@ -2824,9 +2824,9 @@ s32 func_ov065_02275228(u32 a, u32 b, u32 c, char *d) {
 
 namespace F022751b0 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_022751b0(char *out, const char *s, s32 n) {
+s32 DwcMatch_GetArgField(char *out, const char *s, s32 n) {
     char *end = func_0212a120(s, 0);
     s32 i;
     char *p;
@@ -2858,14 +2858,14 @@ namespace F022745bc {
 extern "C" {
 
 enum Unk_ov065_022749f8_Z { Unk_ov065_022749f8_Z_0 = 0 };
-s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
+s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
     u8 ub;
     u32 buf[0x41];
     u32 loc1c;
     Unk_ov065_022749f8_Sa sa;
     s32 z = 0;
     s32 i;
-    Unk_ov065_022745bc_Ctx *g = data_ov065_02290814;
+    Unk_ov065_022745bc_Ctx *g = sDwcMatch;
     s32 st;
     if (g == 0 || (st = g->unk_198) == 0) {
         return 1;
@@ -2878,28 +2878,28 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             p2 = args[1];
             p3 = (u16)args[2];
         }
-        r = func_ov065_02274864(h, p2, p3, args[0], ev == 0xb ? 1 : 0);
+        r = DwcMatch_CheckReservation(h, p2, p3, args[0], ev == 0xb ? 1 : 0);
         if (r == 2) {
             Unk_ov065_022745bc_Ctx *q;
-            if (func_ov065_022746e4(func_ov065_02274754(h, p2, p3)) != 0) {
+            if (DwcMatch_HandleResult(DwcMatch_AcceptNewClient(h, p2, p3)) != 0) {
                 return 0;
             }
-            q = data_ov065_02290814;
+            q = sDwcMatch;
             if (q->unk_15 == 2 && q->unk_454 != 0) {
-                data_ov065_02290814->unk_454(func_ov065_02271e8c(h), q->unk_458);
+                sDwcMatch->unk_454(DwcFriend_FindIndexByProfileId(h), q->unk_458);
             }
-            buf[0] = data_ov065_02290814->unk_14;
-            for (z = 1; z <= data_ov065_02290814->unk_14; z++) {
-                buf[z] = data_ov065_02290814->unk_f4[z];
+            buf[0] = sDwcMatch->unk_14;
+            for (z = 1; z <= sDwcMatch->unk_14; z++) {
+                buf[z] = sDwcMatch->unk_f4[z];
             }
-            buf[z++] = data_ov065_02290814->unk_1c;
-            buf[z++] = data_ov065_02290814->unk_1a;
-            data_ov065_02290814->unk_198 = 0xb;
+            buf[z++] = sDwcMatch->unk_1c;
+            buf[z++] = sDwcMatch->unk_1a;
+            sDwcMatch->unk_198 = 0xb;
         }
         if (r == 0xff) {
             break;
         }
-        if (func_ov065_022746e4(func_ov065_0227532c(r, h, p2, p3, buf, z)) != 0) {
+        if (DwcMatch_HandleResult(DwcMatch_SendCommand(r, h, p2, p3, buf, z)) != 0) {
             return 0;
         }
         break;
@@ -2912,46 +2912,46 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             break;
         }
         g->unk_1f0 = z;
-        data_ov065_02290814->unk_19f = z;
-        data_ov065_02290814->unk_1bc = z;
-        data_ov065_02290814->unk_1b0 = z;
-        data_ov065_02290814->unk_24[0] = (args + 1)[args[0]];
-        data_ov065_02290814->unk_a4[0] = (args + 2)[args[0]];
-        data_ov065_02290814->unk_1ac = (args + 1)[args[0]];
-        data_ov065_02290814->unk_1aa = (args + 2)[args[0]];
-        if (data_ov065_02290814->unk_15 == 1) {
-            if (func_ov065_02273cb8(args + 1, args[0]) != 0) {
-                if (data_ov065_02290814->unk_0d != 0) {
-                    func_ov065_0227470c(h, args);
+        sDwcMatch->unk_19f = z;
+        sDwcMatch->unk_1bc = z;
+        sDwcMatch->unk_1b0 = z;
+        sDwcMatch->unk_24[0] = (args + 1)[args[0]];
+        sDwcMatch->unk_a4[0] = (args + 2)[args[0]];
+        sDwcMatch->unk_1ac = (args + 1)[args[0]];
+        sDwcMatch->unk_1aa = (args + 2)[args[0]];
+        if (sDwcMatch->unk_15 == 1) {
+            if (DwcMatch_AreAllBuddies(args + 1, args[0]) != 0) {
+                if (sDwcMatch->unk_0d != 0) {
+                    DwcMatch_StoreMemberList(h, args);
                 }
             } else {
-                if (func_ov065_022746e4(func_ov065_02274308(h)) != 0) {
+                if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(h)) != 0) {
                     return z;
                 }
-                if (func_ov065_022746e4(func_ov065_022743e0(z, z)) == 0) {
+                if (DwcMatch_HandleResult(DwcMatch_TryNextFriend(z, z)) == 0) {
                     break;
                 }
                 return z;
             }
         }
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
             if (q->unk_15 == 0) {
                 if (q->unk_0d != 0) {
-                    func_ov065_0227470c(h, args);
-                    if (func_ov065_022746e4(func_ov065_022740a4()) != 0) {
+                    DwcMatch_StoreMemberList(h, args);
+                    if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder()) != 0) {
                         return 0;
                     }
                 }
-                data_ov065_02290814->unk_198 = 6;
-                func_ov065_022754f0(0, 0, func_ov065_02289274(data_ov065_02290814->unk_e4, 0));
-                if (func_ov065_02272e18() == 0) {
+                sDwcMatch->unk_198 = 6;
+                DwcMatch_StartNatNegotiation(0, 0, GsSrvBrowser_GetServer(sDwcMatch->unk_e4, 0));
+                if (DwcMatch_HandleNnStartResult() == 0) {
                     break;
                 }
                 return 0;
             } else {
                 q->unk_198 = 5;
-                if (func_ov065_02272f0c(func_ov065_02275764(h)) == 0) {
+                if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(h)) == 0) {
                     break;
                 }
                 return 0;
@@ -2964,7 +2964,7 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         if (h != g->unk_1ec) {
             break;
         }
-        return func_ov065_0227433c();
+        return DwcMatch_BeginSearch();
     case 4: {
         if (st != 4) {
             break;
@@ -2976,7 +2976,7 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         if ((g->unk_1f0 != 0 && g->unk_19f < 0x10) || g->unk_15 == 3) {
             Unk_ov065_022745bc_Ctx *q;
             g->unk_1b0 = 1;
-            q = data_ov065_02290814;
+            q = sDwcMatch;
             q->unk_1b4 = OS_GetTick();
             if (q->unk_15 != 3) {
                 q->unk_19f++;
@@ -2984,16 +2984,16 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         } else {
             Unk_ov065_022745bc_Ctx *q;
             g->unk_1f0 = 0;
-            data_ov065_02290814->unk_19f = 0;
-            q = data_ov065_02290814;
+            sDwcMatch->unk_19f = 0;
+            q = sDwcMatch;
             if (q->unk_15 == 0) {
                 q->unk_198 = 3;
-                data_ov065_02290814->unk_e8 = 1;
+                sDwcMatch->unk_e8 = 1;
                 u64 t = OS_GetTick();
-                Unk_ov065_022745bc_Ctx *q2 = data_ov065_02290814;
+                Unk_ov065_022745bc_Ctx *q2 = sDwcMatch;
                 q2->unk_ec = t;
             } else if (((volatile Unk_ov065_022745bc_Ctx *)q)->unk_15 == 1) {
-                func_ov065_022743e0(1, 0);
+                DwcMatch_TryNextFriend(1, 0);
             }
         }
         break;
@@ -3006,9 +3006,9 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             break;
         }
         if (g->unk_15 == 2 && g->unk_0d == 1 && g->unk_f4[1] == h) {
-            func_ov065_022849f8(*g->unk_04);
+            GsTransport_CloseAll(*g->unk_04);
         }
-        if (func_ov065_022741b0(h) == 0) {
+        if (DwcMatch_CancelNewClient(h) == 0) {
             return 0;
         }
         break;
@@ -3025,9 +3025,9 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         } else {
             break;
         }
-        data_ov065_02290814->unk_3b4 = 0xff;
+        sDwcMatch->unk_3b4 = 0xff;
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
             u32 *b0 = q->unk_f4;
             s32 k = q->unk_0d + 1;
             u32 *pe = b0 + k;
@@ -3037,14 +3037,14 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         }
         sa.unk_4 = x;
         sa.unk_2 = ((y >> 8) & 0xff) | ((y << 8) & 0xff00);
-        data_ov065_02290814->unk_18c = 1;
+        sDwcMatch->unk_18c = 1;
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
-            func_ov065_02272428(0, func_ov065_022849c8(*q->unk_04), &sa, &q->unk_18c);
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
+            DwcMatch_OnNnComplete(0, GsTransport_GetRemoteIp(*q->unk_04), &sa, &q->unk_18c);
         }
         Unk_ov065_022749f8_Z z6 = Unk_ov065_022749f8_Z_0;
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
             q->unk_184 = z6;
             q->unk_188 = z6;
         }
@@ -3061,13 +3061,13 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         {
             ub = (u8)args[1];
             g->unk_f4[g->unk_14 + 1] = loc1c;
-            data_ov065_02290814->unk_2b8[data_ov065_02290814->unk_14 + 1] = ub;
+            sDwcMatch->unk_2b8[sDwcMatch->unk_14 + 1] = ub;
         }
-        func_ov065_02288190(data_ov065_02290814->unk_10);
+        GsQr_SendStateChanged(sDwcMatch->unk_10);
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
             if (q->unk_454 != 0) {
-                data_ov065_02290814->unk_454(func_ov065_02271e8c(loc1c), q->unk_458);
+                sDwcMatch->unk_454(DwcFriend_FindIndexByProfileId(loc1c), q->unk_458);
             }
         }
         break;
@@ -3085,8 +3085,8 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             u32 a1 = args[1];
             u32 a2 = args[2];
             g->unk_2b8[a1] = a2;
-            data_ov065_02290814->unk_f4[a1] = data_ov065_02290814->unk_1e8;
-            func_ov065_02273d38(3);
+            sDwcMatch->unk_f4[a1] = sDwcMatch->unk_1e8;
+            DwcMatch_AdvanceConnect(3);
             break;
         } else {
             u32 a1 = args[1];
@@ -3094,23 +3094,23 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             u32 *b0 = g->unk_f4;
             u32 *pp = b0 + a1;
             if (v == b0[a1] && a1 == g->unk_0d - 1) {
-                if (func_ov065_022746e4(func_ov065_0227532c(9, h, g->unk_24[0], g->unk_a4[0], &loc1c, 1)) == 0) {
+                if (DwcMatch_HandleResult(DwcMatch_SendCommand(9, h, g->unk_24[0], g->unk_a4[0], &loc1c, 1)) == 0) {
                     break;
                 }
                 return 0;
             }
             *pp = v;
-            data_ov065_02290814->unk_2b8[a1] = ub;
-            data_ov065_02290814->unk_24[a1] = args[3];
-            data_ov065_02290814->unk_a4[a1] = args[4];
-            data_ov065_02290814->unk_1ac = args[3];
-            data_ov065_02290814->unk_1aa = args[4];
-            data_ov065_02290814->unk_198 = 5;
-            if (func_ov065_02272f0c(func_ov065_02275764(loc1c)) != 0) {
+            sDwcMatch->unk_2b8[a1] = ub;
+            sDwcMatch->unk_24[a1] = args[3];
+            sDwcMatch->unk_a4[a1] = args[4];
+            sDwcMatch->unk_1ac = args[3];
+            sDwcMatch->unk_1aa = args[4];
+            sDwcMatch->unk_198 = 5;
+            if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(loc1c)) != 0) {
                 return 0;
             }
-            data_ov065_02290814->unk_1bc = 0;
-            data_ov065_02290814->unk_1b0 = 0;
+            sDwcMatch->unk_1bc = 0;
+            sDwcMatch->unk_1b0 = 0;
             break;
         }
         }
@@ -3127,25 +3127,25 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             break;
         }
         g->unk_19c = t;
-        func_ov065_02273d38(z);
+        DwcMatch_AdvanceConnect(z);
         break;
     }
     case 10:
         if (st != 1 && st != 0x12) {
             break;
         }
-        if (g->unk_15 == 0 || func_ov065_02273cb8(args + 1, args[0]) != 0) {
-            data_ov065_02290814->unk_1f0 = args[1];
-            data_ov065_02290814->unk_19f = 0;
+        if (g->unk_15 == 0 || DwcMatch_AreAllBuddies(args + 1, args[0]) != 0) {
+            sDwcMatch->unk_1f0 = args[1];
+            sDwcMatch->unk_19f = 0;
         } else {
-            data_ov065_02290814->unk_1f0 = 0;
+            sDwcMatch->unk_1f0 = 0;
         }
         {
-            Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
+            Unk_ov065_022745bc_Ctx *q = sDwcMatch;
             if (q->unk_0d != 0) {
-                func_ov065_022849f8(*q->unk_04);
+                GsTransport_CloseAll(*q->unk_04);
             } else {
-                if (func_ov065_02273ad0() != 0) {
+                if (DwcMatch_RestartAfterCancel() != 0) {
                     return 0;
                 }
             }
@@ -3156,7 +3156,7 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
             break;
         }
         if (g->unk_15 == 0 || ((volatile Unk_ov065_022745bc_Ctx *)g)->unk_15 == 1) {
-            if (func_ov065_0227412c(h) == 0) {
+            if (DwcMatch_RestartAfterNnFailure(h) == 0) {
                 return 0;
             }
             break;
@@ -3166,16 +3166,16 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         }
         if (args[0] == 0) {
             g->unk_1f4 = h;
-            func_ov065_02273a40();
-            func_ov065_02273b88(z);
+            DwcMatch_CloseAllConnections();
+            DwcMatch_Restart(z);
         } else {
-            func_ov065_02273a70(args[0]);
+            DwcMatch_CloseProfileConnection(args[0]);
         }
         break;
     case 13:
     case 14:
     case 15:
-        if (func_ov065_02273590(h, ev, args[0]) == 0) {
+        if (DwcMatch_OnCancelSyncCommand(h, ev, args[0]) == 0) {
             return z;
         }
         break;
@@ -3185,9 +3185,9 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         }
         if (n > 0) {
             do {
-                u32 t = func_ov065_022732c0(args[0], 0);
+                u32 t = DwcMatch_GetAidByProfileId(args[0], 0);
                 if (t != 0xff) {
-                    func_ov065_0227062c(t);
+                    DwcConn_CloseConnection(t);
                 }
                 args++;
                 z++;
@@ -3195,9 +3195,9 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         }
         break;
     case 17: {
-        Unk_ov065_022749f8_H *m = data_ov065_02290818;
+        Unk_ov065_022749f8_H *m = sDwcMatchSyncOption;
         if (m != 0 && m->unk_00 != 0) {
-            u64 d = func_ov065_02277974() - m->unk_10;
+            u64 d = DwcNet_GetTimeMs() - m->unk_10;
             if (d >= m->unk_04) {
                 buf[0] = 1;
                 goto sent;
@@ -3205,7 +3205,7 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         }
         buf[0] = 0;
     sent:
-        if (func_ov065_022746e4(func_ov065_0227532c(0x12, h, p2, p3, buf, 1)) != 0) {
+        if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x12, h, p2, p3, buf, 1)) != 0) {
             return 0;
         }
         break;
@@ -3216,19 +3216,19 @@ s32 func_ov065_022749f8(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
         if (st != 0x13) {
             break;
         }
-        t = func_ov065_022732c0(h, z);
+        t = DwcMatch_GetAidByProfileId(h, z);
         if (t == 0xff) {
             break;
         }
         m = 1 << t;
-        data_ov065_02290818->unk_08 |= m;
+        sDwcMatchSyncOption->unk_08 |= m;
         if (args[0] != 0) {
-            data_ov065_02290818->unk_0c |= m;
+            sDwcMatchSyncOption->unk_0c |= m;
         }
         break;
     }
     case 19:
-        func_ov065_0227627c(0xb, z);
+        DwcMatch_Fail(0xb, z);
         return z;
     }
     return 1;
@@ -3241,17 +3241,17 @@ namespace F022745bc {
 extern "C" {
 
 
-u32 func_ov065_02274864(s32 a, u32 b, u32 c, u32 d, u32 e) {
-    Unk_ov065_022745bc_Ctx *g = data_ov065_02290814;
+u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e) {
+    Unk_ov065_022745bc_Ctx *g = sDwcMatch;
     u32 r;
     switch (g->unk_15) {
     case 1:
-        if (func_ov065_0227bfb4(g->unk_00, a) == 0) {
+        if (GsGp_IsBuddy(g->unk_00, a) == 0) {
             r = 0xff;
             goto end;
         }
     case 0:
-        g = data_ov065_02290814;
+        g = sDwcMatch;
         if (d != g->unk_15 || g->unk_1a1 != 0 || g->unk_14 == g->unk_16 ||
             (g->unk_17 != 0 && g->unk_20 == g->unk_1e8)) {
             r = 3;
@@ -3259,8 +3259,8 @@ u32 func_ov065_02274864(s32 a, u32 b, u32 c, u32 d, u32 e) {
                 u32 obj = g->unk_10;
                 if (*(u32 *)(obj + 0xb4) == 0) {
                     if (g->unk_17 != 0) {
-                        if (data_ov065_02290814->unk_20 == data_ov065_02290814->unk_1e8) {
-                            func_ov065_02288190(obj);
+                        if (sDwcMatch->unk_20 == sDwcMatch->unk_1e8) {
+                            GsQr_SendStateChanged(obj);
                         }
                     }
                 }
@@ -3310,7 +3310,7 @@ u32 func_ov065_02274864(s32 a, u32 b, u32 c, u32 d, u32 e) {
                     goto r3;
                 }
             }
-            if (func_ov065_022746e4(func_ov065_02274308(p)) != 0) {
+            if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(p)) != 0) {
                 return 0xff;
             }
             r = 2;
@@ -3323,15 +3323,15 @@ u32 func_ov065_02274864(s32 a, u32 b, u32 c, u32 d, u32 e) {
             goto end;
         }
     case 2:
-        if (func_ov065_0227bfb4(g->unk_00, a) == 0) {
+        if (GsGp_IsBuddy(g->unk_00, a) == 0) {
             r = 0xff;
             goto end;
         }
-        if (d != 3 || (g = data_ov065_02290814, g->unk_14 == g->unk_16)) {
+        if (d != 3 || (g = sDwcMatch, g->unk_14 == g->unk_16)) {
             r = 3;
             goto end;
         }
-        if (data_ov065_02290810[0] == 1 && data_ov065_02290810[1] == 1) {
+        if (sDwcMatchServerLock[0] == 1 && sDwcMatchServerLock[1] == 1) {
             r = 0x13;
             goto end;
         }
@@ -3362,36 +3362,36 @@ namespace F022745bc {
 extern "C" {
 
 
-s32 func_ov065_02274754(u32 a, u32 b, u16 c) {
+s32 DwcMatch_AcceptNewClient(u32 a, u32 b, u16 c) {
     u32 args[2];
     s32 i;
-    Unk_ov065_022745bc_Ctx *g = data_ov065_02290814;
+    Unk_ov065_022745bc_Ctx *g = sDwcMatch;
     if (g->unk_17 != 0 && g->unk_20 == a) {
         return 0;
     }
     g->unk_17 = 1;
-    data_ov065_02290814->unk_20 = a;
-    data_ov065_02290814->unk_1b0 = 0;
-    data_ov065_02290814->unk_1bc = 0;
-    func_ov065_02288190(data_ov065_02290814->unk_10);
-    data_ov065_02290814->unk_1ec = 0;
-    data_ov065_02290814->unk_f4[data_ov065_02290814->unk_14 + 1] = a;
-    data_ov065_02290814->unk_24[data_ov065_02290814->unk_14 + 1] = b;
-    data_ov065_02290814->unk_a4[data_ov065_02290814->unk_14 + 1] = c;
-    data_ov065_02290814->unk_1ac = b;
-    data_ov065_02290814->unk_1aa = c;
-    Unk_ov065_022745bc_Ctx *h = data_ov065_02290814;
-    h->unk_2b8[h->unk_14 + 1] = func_ov065_022733c0();
+    sDwcMatch->unk_20 = a;
+    sDwcMatch->unk_1b0 = 0;
+    sDwcMatch->unk_1bc = 0;
+    GsQr_SendStateChanged(sDwcMatch->unk_10);
+    sDwcMatch->unk_1ec = 0;
+    sDwcMatch->unk_f4[sDwcMatch->unk_14 + 1] = a;
+    sDwcMatch->unk_24[sDwcMatch->unk_14 + 1] = b;
+    sDwcMatch->unk_a4[sDwcMatch->unk_14 + 1] = c;
+    sDwcMatch->unk_1ac = b;
+    sDwcMatch->unk_1aa = c;
+    Unk_ov065_022745bc_Ctx *h = sDwcMatch;
+    h->unk_2b8[h->unk_14 + 1] = DwcMatch_AllocAid();
     args[0] = a;
-    args[1] = data_ov065_02290814->unk_2b8[data_ov065_02290814->unk_14 + 1];
-    for (i = 1; i <= data_ov065_02290814->unk_14; i++) {
-        Unk_ov065_022745bc_Ctx *q = data_ov065_02290814;
-        s32 r = func_ov065_0227532c(7, q->unk_f4[i], q->unk_24[i], q->unk_a4[i], args, 2);
+    args[1] = sDwcMatch->unk_2b8[sDwcMatch->unk_14 + 1];
+    for (i = 1; i <= sDwcMatch->unk_14; i++) {
+        Unk_ov065_022745bc_Ctx *q = sDwcMatch;
+        s32 r = DwcMatch_SendCommand(7, q->unk_f4[i], q->unk_24[i], q->unk_a4[i], args, 2);
         if (r != 0) {
             return r;
         }
     }
-    func_ov065_02273230(1);
+    DwcMatch_ResetSyncTimer(1);
     return 0;
 }
 
@@ -3402,13 +3402,13 @@ namespace F022745bc {
 extern "C" {
 
 
-void func_ov065_0227470c(u32 a, u32 *p) {
+void DwcMatch_StoreMemberList(u32 a, u32 *p) {
     u32 n = p[0] + 2;
     if (n > 2) {
-        MIi_CpuCopy32(&p[1], data_ov065_02290814->unk_338, (n - 2) * 4);
+        MIi_CpuCopy32(&p[1], sDwcMatch->unk_338, (n - 2) * 4);
     }
-    data_ov065_02290814->unk_330 = n - 1;
-    data_ov065_02290814->unk_334 = a;
+    sDwcMatch->unk_330 = n - 1;
+    sDwcMatch->unk_334 = a;
 }
 
 }
@@ -3418,11 +3418,11 @@ namespace F022745bc {
 extern "C" {
 
 
-s32 func_ov065_022746e4(s32 a) {
-    if (data_ov065_02290814->unk_15 == 0) {
-        return func_ov065_02272f0c(a);
+s32 DwcMatch_HandleResult(s32 a) {
+    if (sDwcMatch->unk_15 == 0) {
+        return DwcMatch_HandleSbResult(a);
     }
-    return func_ov065_02272f80(a);
+    return DwcMatch_HandleGpResult(a);
 }
 
 }
@@ -3432,42 +3432,42 @@ namespace F022745bc {
 extern "C" {
 
 
-s32 func_ov065_022745bc(u32 a, s32 b) {
+s32 DwcMatch_SendReservation(u32 a, s32 b) {
     u32 args[3];
     s32 n;
-    if (b != 0 || (data_ov065_02290814->unk_1c == 0 && data_ov065_02290814->unk_1a == 0)) {
-        data_ov065_02290814->unk_1b0 = 1;
-        Unk_ov065_022745bc_Ctx *h = data_ov065_02290814;
+    if (b != 0 || (sDwcMatch->unk_1c == 0 && sDwcMatch->unk_1a == 0)) {
+        sDwcMatch->unk_1b0 = 1;
+        Unk_ov065_022745bc_Ctx *h = sDwcMatch;
         h->unk_1b4 = OS_GetTick();
         h->unk_f4[0] = a;
         return 0;
     }
-    if (data_ov065_02290814->unk_15 == 0) {
-        u32 l = func_ov065_02289274(data_ov065_02290814->unk_e4, 0);
-        data_ov065_02290814->unk_f4[0] = func_ov065_022890b8(l, (char *)"dwc_pid", 0);
-        data_ov065_02290814->unk_24[0] = func_ov065_02289098(l);
-        data_ov065_02290814->unk_a4[0] = func_ov065_0228907c(l);
-        data_ov065_02290814->unk_1ec = data_ov065_02290814->unk_f4[0];
+    if (sDwcMatch->unk_15 == 0) {
+        u32 l = GsSrvBrowser_GetServer(sDwcMatch->unk_e4, 0);
+        sDwcMatch->unk_f4[0] = GsServer_GetIntValue(l, (char *)"dwc_pid", 0);
+        sDwcMatch->unk_24[0] = GsServer_GetPublicIp(l);
+        sDwcMatch->unk_a4[0] = GsServer_GetPublicPort(l);
+        sDwcMatch->unk_1ec = sDwcMatch->unk_f4[0];
         n = 1;
     } else {
-        if (((volatile Unk_ov065_022745bc_Ctx *)data_ov065_02290814)->unk_15 == 1) {
-            data_ov065_02290814->unk_f4[0] = a;
+        if (((volatile Unk_ov065_022745bc_Ctx *)sDwcMatch)->unk_15 == 1) {
+            sDwcMatch->unk_f4[0] = a;
         }
-        data_ov065_02290814->unk_1ec = a;
-        args[1] = data_ov065_02290814->unk_1c;
-        args[2] = data_ov065_02290814->unk_1a;
+        sDwcMatch->unk_1ec = a;
+        args[1] = sDwcMatch->unk_1c;
+        args[2] = sDwcMatch->unk_1a;
         n = 3;
     }
-    data_ov065_02290814->unk_1bc = 0x1770;
+    sDwcMatch->unk_1bc = 0x1770;
     {
-        Unk_ov065_022745bc_Ctx *h = data_ov065_02290814;
+        Unk_ov065_022745bc_Ctx *h = sDwcMatch;
         h->unk_1c0 = OS_GetTick();
         h->unk_1b0 = 0;
     }
-    u32 k = data_ov065_02290814->unk_1f0 != 0 ? 0xb : 1;
-    Unk_ov065_022745bc_Ctx *j = data_ov065_02290814;
+    u32 k = sDwcMatch->unk_1f0 != 0 ? 0xb : 1;
+    Unk_ov065_022745bc_Ctx *j = sDwcMatch;
     args[0] = j->unk_15;
-    return func_ov065_0227532c(k, a, j->unk_24[0], j->unk_a4[0], args, n);
+    return DwcMatch_SendCommand(k, a, j->unk_24[0], j->unk_a4[0], args, n);
 }
 
 }
@@ -3475,9 +3475,9 @@ s32 func_ov065_022745bc(u32 a, s32 b) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_022743e0(s32 a, s32 b) {
+s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
     s32 x;
     volatile s32 av = a;
     volatile s32 first;
@@ -3522,7 +3522,7 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
         }
         started = 1;
         c = *gp;
-        x = func_020ffc60(func_ov065_02271474(), c->unk_2e4 + c->unk_2ec[c->unk_19d] * 12);
+        x = func_020ffc60(DwcLogin_GetUserData(), c->unk_2e4 + c->unk_2ec[c->unk_19d] * 12);
         if (x == 0) continue;
         if (x == -1) continue;
         if (func_020ffdd8((*gp)->unk_2e4 + (*gp)->unk_2ec[(*gp)->unk_19d] * 12) == 0) continue;
@@ -3538,19 +3538,19 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
             } while (i <= *(volatile u8 *)&c->unk_0d);
         }
         if (i <= n) continue;
-        e0 = func_ov065_0227c000((*gp)->unk_00, x, &l.h);
-        e1 = func_ov065_0227c05c((*gp)->unk_00, l.h, &l.rec);
+        e0 = GsGp_GetBuddyIndex((*gp)->unk_00, x, &l.h);
+        e1 = GsGp_GetBuddyStatus((*gp)->unk_00, l.h, &l.rec);
         if ((e0 | e1) != 0) continue;
         if (l.rec.unk_04 != 4) continue;
-        n1 = func_ov065_02277998((char *)"VER", l.buf20, l.buf34, 0x2f);
-        l.n2 = func_ov065_02277998((char *)"FME", l.buf14 + 2, l.buf34, 0x2f);
-        n3 = func_ov065_02277998((char *)"MDF", l.buf14, l.buf34, 0x2f);
+        n1 = GsUtil_GetKeyValue((char *)"VER", l.buf20, l.buf34, 0x2f);
+        l.n2 = GsUtil_GetKeyValue((char *)"FME", l.buf14 + 2, l.buf34, 0x2f);
+        n3 = GsUtil_GetKeyValue((char *)"MDF", l.buf14, l.buf34, 0x2f);
         if (n1 <= 0) continue;
         if (l.n2 <= 0) continue;
         if (n3 <= 0) continue;
         if (func_0212b854(l.buf20, 0, 10) != 3) continue;
         if ((*gp)->unk_16 != func_0212b854(l.buf14 + 2, 0, 10)) continue;
-        return func_ov065_022745bc(x, av);
+        return DwcMatch_SendReservation(x, av);
     }
 }
 #undef g
@@ -3559,9 +3559,9 @@ s32 func_ov065_022743e0(s32 a, s32 b) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_0227433c(void) {
+s32 DwcMatch_BeginSearch(void) {
     Unk_ov065_02273b60_Ctx *c;
     u64 t;
     g->unk_1f0 = 0;
@@ -3572,13 +3572,13 @@ s32 func_ov065_0227433c(void) {
     c->unk_1c0 = t;
     if (c->unk_15 == 0) {
         c->unk_198 = 3;
-        func_ov065_02275764(0);
-        if (func_ov065_02272f0c() != 0) return FALSE;
+        DwcMatch_StartServerQuery(0);
+        if (DwcMatch_HandleSbResult() != 0) return FALSE;
     } else if (c->unk_15 == 1) {
-        func_ov065_022743e0(0, 0);
-        if (func_ov065_022746e4() != 0) return FALSE;
+        DwcMatch_TryNextFriend(0, 0);
+        if (DwcMatch_HandleResult() != 0) return FALSE;
     } else if (c->unk_15 == 3) {
-        func_ov065_0227627c(6, -0x13a1a);
+        DwcMatch_Fail(6, -0x13a1a);
         return FALSE;
     }
     return TRUE;
@@ -3589,11 +3589,11 @@ s32 func_ov065_0227433c(void) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02274308(s32 a) {
+s32 DwcMatch_SendReservationCancel(s32 a) {
     Unk_ov065_02273b60_Ctx *c = g;
-    s32 r = func_ov065_0227532c(5, a, c->unk_24[0], c->unk_a4[0], 0, 0);
+    s32 r = DwcMatch_SendCommand(5, a, c->unk_24[0], c->unk_a4[0], 0, 0);
     g->unk_1ec = 0;
     return r;
 }
@@ -3603,9 +3603,9 @@ s32 func_ov065_02274308(s32 a) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_022741b0(s32 a) {
+s32 DwcMatch_CancelNewClient(s32 a) {
     Unk_ov065_02273b60_Ctx *c = g;
     BOOL b;
     if (c->unk_17 != 0 && c->unk_20 == c->unk_1e8) b = FALSE;
@@ -3613,18 +3613,18 @@ s32 func_ov065_022741b0(s32 a) {
     if (b) {
         c->unk_17 = 0;
         g->unk_20 = 0;
-        func_ov065_02288190(g->unk_10);
+        GsQr_SendStateChanged(g->unk_10);
     }
     if (g->unk_0d < 0x1f) g->unk_f4[g->unk_0d + 1] = 0;
     g->unk_3b4 = 0xff;
     if (g->unk_194 != 0) {
-        func_ov065_02286da0(g->unk_194);
+        GsNatNeg_Cancel(g->unk_194);
         g->unk_194 = 0;
     }
     g->unk_14 = g->unk_0d;
     g->unk_1ec = 0;
     if (!b) {
-        if (g->unk_15 != 3) func_ov065_02273b60();
+        if (g->unk_15 != 3) DwcMatch_AbortAndRestart();
     } else if (g->unk_15 == 0) {
         g->unk_198 = 3;
         g->unk_e8 = 2;
@@ -3634,17 +3634,17 @@ s32 func_ov065_022741b0(s32 a) {
         d->unk_f0 = (u32)(t >> 32);
     } else if (g->unk_15 == 1) {
         g->unk_198 = 4;
-        func_ov065_022743e0(1, 0);
+        DwcMatch_TryNextFriend(1, 0);
     } else if (g->unk_15 == 2) {
         s32 i;
         g->unk_198 = 14;
         g->unk_1cc = 0;
         g->unk_1a8 = 0;
-        func_ov065_02273a70(a);
+        DwcMatch_CloseProfileConnection(a);
         for (i = 1; i <= g->unk_0d; i++) {
-            if (func_ov065_022736fc(g->unk_f4[i], 13) == 0) return FALSE;
+            if (DwcMatch_SendCancelSyncCommand(g->unk_f4[i], 13) == 0) return FALSE;
         }
-        if (g->unk_0d == 0) func_ov065_02273b88(2);
+        if (g->unk_0d == 0) DwcMatch_Restart(2);
     }
     return TRUE;
 }
@@ -3654,28 +3654,28 @@ s32 func_ov065_022741b0(s32 a) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_0227412c(void) {
+s32 DwcMatch_RestartAfterNnFailure(void) {
     BOOL r = TRUE;
     Unk_ov065_02273b60_Ctx *c = g;
     if (c->unk_15 == 3) {
-        if (c->unk_0d != 0) func_ov065_02273a40();
-        func_ov065_0227627c(6, -0x13a2e);
+        if (c->unk_0d != 0) DwcMatch_CloseAllConnections();
+        DwcMatch_Fail(6, -0x13a2e);
         return FALSE;
     }
     c->unk_14 = c->unk_0d;
     g->unk_1f0 = 0;
     if (g->unk_194 != 0) {
-        func_ov065_02286da0(g->unk_194);
+        GsNatNeg_Cancel(g->unk_194);
         g->unk_194 = 0;
     }
     c = g;
     if (c->unk_0d != 0) {
-        func_ov065_02273b60();
+        DwcMatch_AbortAndRestart();
     } else {
         c->unk_198 = 4;
-        r = func_ov065_0227433c();
+        r = DwcMatch_BeginSearch();
     }
     return r;
 }
@@ -3685,19 +3685,19 @@ s32 func_ov065_0227412c(void) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_022740a4(void) {
+s32 DwcMatch_SendCloseOrder(void) {
     s32 i, r;
     for (i = 1; i <= g->unk_0d; i++) {
         Unk_ov065_02273b60_Ctx *c = g;
-        r = func_ov065_0227532c(10, c->unk_f4[i], c->unk_24[i], c->unk_a4[i], &c->unk_330, c->unk_330 + 1);
+        r = DwcMatch_SendCommand(10, c->unk_f4[i], c->unk_24[i], c->unk_a4[i], &c->unk_330, c->unk_330 + 1);
         if (r != 0) return r;
     }
     g->unk_17 = 0;
     g->unk_20 = 0;
     g->unk_1a0 = 1;
-    func_ov065_022849f8(*(u32 *)g->unk_04);
+    GsTransport_CloseAll(*(u32 *)g->unk_04);
     g->unk_1a0 = 0;
     return 0;
 }
@@ -3707,9 +3707,9 @@ s32 func_ov065_022740a4(void) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02273d38(s32 a) {
+void DwcMatch_AdvanceConnect(s32 a) {
     s32 kind = 3;
     u32 args[6];
     BOOL done = FALSE;
@@ -3727,7 +3727,7 @@ void func_ov065_02273d38(s32 a) {
         } else {
             g->unk_17 = 0;
             g->unk_20 = 0;
-            func_ov065_02288190(g->unk_10);
+            GsQr_SendStateChanged(g->unk_10);
             if (g->unk_15 == 0) g->unk_198 = 3;
             else if (g->unk_15 == 1) g->unk_198 = 4;
             else g->unk_198 = 10;
@@ -3742,7 +3742,7 @@ void func_ov065_02273d38(s32 a) {
                 g->unk_198 = 0x10;
                 g->unk_1c8 = 0;
                 for (i = 1; i <= g->unk_0d; i++) {
-                    func_ov065_022738b4(g->unk_2b8[i], 2);
+                    DwcMatch_SendSyncPacket(g->unk_2b8[i], 2);
                 }
             } else {
                 args[0] = 0;
@@ -3755,7 +3755,7 @@ void func_ov065_02273d38(s32 a) {
                     c->unk_ec = (u32)t;
                     c->unk_f0 = (u32)(t >> 32);
                 } else if (g->unk_15 == 1) {
-                    func_ov065_022743e0(1, 0);
+                    DwcMatch_TryNextFriend(1, 0);
                 }
             }
             if (g->unk_15 != 2) done = TRUE;
@@ -3763,7 +3763,7 @@ void func_ov065_02273d38(s32 a) {
         if (g->unk_198 != 0x10) {
             Unk_ov065_02273b60_Ctx *c = g;
             u32 n = c->unk_0d;
-            if (func_ov065_0227532c(8, c->unk_f4[n], c->unk_24[n], c->unk_a4[n], args, kind), func_ov065_022746e4() != 0) return;
+            if (DwcMatch_SendCommand(8, c->unk_f4[n], c->unk_24[n], c->unk_a4[n], args, kind), DwcMatch_HandleResult() != 0) return;
             g->unk_3b5 = 0;
         }
         break;
@@ -3781,8 +3781,8 @@ void func_ov065_02273d38(s32 a) {
         if (g->unk_0d > 1) {
             Unk_ov065_02273b60_Ctx *c = g;
             u32 args2 = (u32)&c->unk_f4[c->unk_0d - 1];
-            func_ov065_0227532c(9, c->unk_f4[0], c->unk_24[0], c->unk_a4[0], (void *)args2, 1);
-            if (func_ov065_022746e4() != 0) return;
+            DwcMatch_SendCommand(9, c->unk_f4[0], c->unk_24[0], c->unk_a4[0], (void *)args2, 1);
+            if (DwcMatch_HandleResult() != 0) return;
         }
         break;
     case 3:
@@ -3791,26 +3791,26 @@ void func_ov065_02273d38(s32 a) {
         done = TRUE;
         break;
     case 4:
-        if (g->unk_15 != 2) func_ov065_02271e00(2, (char *)"", done);
+        if (g->unk_15 != 2) DwcFriend_SetOwnStatus(2, (char *)"", done);
         {
             Unk_ov065_02273b60_Ctx *c = g;
             BOOL r;
             if (c->unk_1f4 == 0) r = TRUE;
             else r = FALSE;
-            g->unk_44c(0, 0, r, 0, func_ov065_02271e8c(), c->unk_450);
+            g->unk_44c(0, 0, r, 0, DwcFriend_FindIndexByProfileId(), c->unk_450);
         }
         if (g->unk_15 == 0 || g->unk_15 == 1) {
-            func_ov065_02275890();
+            DwcMatch_Cleanup();
         } else {
             if (g->unk_e4 != 0) {
-                func_ov065_02289444(g->unk_e4);
+                GsSrvBrowser_Free(g->unk_e4);
                 g->unk_e4 = 0;
             }
-            func_ov065_02287260();
+            GsNatNeg_FreeAll();
             if (g->unk_15 == 2) {
-                func_ov065_02275ccc();
-                if (func_ov065_02272f80() != 0) return;
-                if (data_ov065_02290810[0] == 1) data_ov065_02290810[1] = 1;
+                DwcMatch_UpdateServerStatus();
+                if (DwcMatch_HandleGpResult() != 0) return;
+                if (sDwcMatchServerLock[0] == 1) sDwcMatchServerLock[1] = 1;
                 g->unk_198 = 10;
             } else {
                 g->unk_198 = 1;
@@ -3821,7 +3821,7 @@ void func_ov065_02273d38(s32 a) {
         break;
     }
     if (done != 0 && g->unk_15 != 3) {
-        func_ov065_02289280(g->unk_e4);
+        GsSrvBrowser_Clear(g->unk_e4);
     }
 }
 #undef g
@@ -3830,13 +3830,13 @@ void func_ov065_02273d38(s32 a) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-s32 func_ov065_02273cb8(u32 *a, u32 n) {
+s32 DwcMatch_AreAllBuddies(u32 *a, u32 n) {
     u32 i;
     if (g->unk_19e != 0 && g->unk_198 == 4) return TRUE;
     for (i = 0; i < n; a++, i++) {
-        if (func_ov065_0227bfb4(g->unk_00, *a) == 0) return FALSE;
+        if (GsGp_IsBuddy(g->unk_00, *a) == 0) return FALSE;
         if (g->unk_19e != 0 && g->unk_198 == 1) return TRUE;
     }
     return TRUE;
@@ -3847,15 +3847,15 @@ s32 func_ov065_02273cb8(u32 *a, u32 n) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02273c30(void) {
+void DwcMatch_FinishCancelled(void) {
     s32 v;
     Unk_ov065_02273b60_Ctx *c;
     BOOL r6, r5;
-    func_ov065_02271e00(1, (char *)"", 0);
-    if (func_ov065_02272f80() == 0) {
-        func_ov065_02275890();
+    DwcFriend_SetOwnStatus(1, (char *)"", 0);
+    if (DwcMatch_HandleGpResult() == 0) {
+        DwcMatch_Cleanup();
         c = g;
         v = c->unk_1f4;
         if (v != 0) r5 = TRUE;
@@ -3863,7 +3863,7 @@ void func_ov065_02273c30(void) {
         else r5 = FALSE;
         if (v == 0) r6 = TRUE;
         else r6 = FALSE;
-        g->unk_44c(0, 1, r6, r5, func_ov065_02271e8c(v), c->unk_450);
+        g->unk_44c(0, 1, r6, r5, DwcFriend_FindIndexByProfileId(v), c->unk_450);
         g->unk_1a1 = 0;
     }
 }
@@ -3873,28 +3873,28 @@ void func_ov065_02273c30(void) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02273b88(s32 a) {
+void DwcMatch_Restart(s32 a) {
     Unk_ov065_02273b60_Ctx *c;
     BOOL r;
     if (a == 0) {
-        func_ov065_02273c30();
+        DwcMatch_FinishCancelled();
     } else {
-        func_ov065_02275984();
+        DwcMatch_ResetState();
         c = g;
         if (c->unk_15 == 2 || c->unk_15 == 3) {
             if (c->unk_1f4 == 0) r = TRUE;
             else r = FALSE;
-            g->unk_44c(0, 1, r, 0, func_ov065_02271e8c(), c->unk_450);
+            g->unk_44c(0, 1, r, 0, DwcFriend_FindIndexByProfileId(), c->unk_450);
         } else if (c->unk_15 == 0) {
             if (a == 1) {
-                func_ov065_02275764(0);
-                if (func_ov065_02272f0c() != 0) return;
+                DwcMatch_StartServerQuery(0);
+                if (DwcMatch_HandleSbResult() != 0) return;
             }
         } else if (c->unk_15 == 1) {
             if (a == 1) {
-                func_ov065_022743e0(0, 0);
+                DwcMatch_TryNextFriend(0, 0);
             }
         }
     }
@@ -3905,13 +3905,13 @@ void func_ov065_02273b88(s32 a) {
 
 namespace F02273b60 {
 extern "C" {
-#define g data_ov065_02290814
+#define g sDwcMatch
 
-void func_ov065_02273b60(void) {
+void DwcMatch_AbortAndRestart(void) {
     if (g->unk_15 == 2) return;
     if (g->unk_15 == 3) return;
-    func_ov065_02273a40();
-    func_ov065_02273b88(1);
+    DwcMatch_CloseAllConnections();
+    DwcMatch_Restart(1);
 }
 #undef g
 }
@@ -3919,9 +3919,9 @@ void func_ov065_02273b60(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273ad0(void) {
+u32 DwcMatch_RestartAfterCancel(void) {
     u32 r = 0;
     G->unk_17 = r;
     G->unk_20 = r;
@@ -3929,15 +3929,15 @@ u32 func_ov065_02273ad0(void) {
     if (G->unk_1f0 != 0) {
         if (*(volatile u8 *)&G->unk_15 == 0) {
             G->unk_198 = 3;
-            r = func_ov065_02275764(r);
-            if (func_ov065_02272f0c(r)) return r;
+            r = DwcMatch_StartServerQuery(r);
+            if (DwcMatch_HandleSbResult(r)) return r;
         } else if (*(volatile u8 *)&G->unk_15 == 1) {
             G->unk_198 = 4;
-            r = func_ov065_022745bc(G->unk_1f0, 0);
-            if (func_ov065_022746e4(r)) return r;
+            r = DwcMatch_SendReservation(G->unk_1f0, 0);
+            if (DwcMatch_HandleResult(r)) return r;
         }
     } else {
-        func_ov065_02273b88(1);
+        DwcMatch_Restart(1);
     }
     return 0;
 }
@@ -3947,19 +3947,19 @@ u32 func_ov065_02273ad0(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-s32 func_ov065_02273a70(u32 a) {
+s32 DwcMatch_CloseProfileConnection(u32 a) {
     u32 *r;
     G->unk_1f4 = a;
-    r = func_ov065_02270350(a, G->unk_0d + 1);
+    r = DwcConn_FindSlotByProfileId(a, G->unk_0d + 1);
     if (r != NULL) {
         G->unk_1a0 = 2;
-        func_ov065_02284a18(*r);
+        GsTransport_CloseHard(*r);
         G->unk_1a0 = 0;
         return 1;
     }
-    func_ov065_02275f98(a, G->unk_0d + 1);
+    DwcMatch_RemoveProfile(a, G->unk_0d + 1);
     return 0;
 }
 #undef G
@@ -3968,11 +3968,11 @@ s32 func_ov065_02273a70(u32 a) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02273a40(void) {
+void DwcMatch_CloseAllConnections(void) {
     G->unk_1a0 = 2;
-    func_ov065_022849f8(*G->unk_04);
+    GsTransport_CloseAll(*G->unk_04);
     *(volatile u8 *)&G->unk_1a0 = 0;
 }
 #undef G
@@ -3981,9 +3981,9 @@ void func_ov065_02273a40(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273958(u32 mask) {
+u32 DwcMatch_DropUnresponsiveClients(u32 mask) {
     u32 a[32];
     u32 b[32];
     Unk_ov065_02273274_G *g;
@@ -4011,13 +4011,13 @@ u32 func_ov065_02273958(u32 mask) {
         } while (i <= g->unk_0d);
     }
     for (j = 0; j < n1; j++) {
-        if (func_ov065_022746e4(func_ov065_0227532c(0x10, b[j], 0, 0, a, n2))) return 0;
+        if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x10, b[j], 0, 0, a, n2))) return 0;
     }
     G->unk_1a0 = 2;
     for (j = 0; j < n2; j++) {
-        u32 idx = func_ov065_022732c0(a[j], 0);
+        u32 idx = DwcMatch_GetAidByProfileId(a[j], 0);
         if (idx != 0xff) {
-            func_ov065_0227062c(idx);
+            DwcConn_CloseConnection(idx);
         }
     }
     G->unk_1a0 = 0;
@@ -4029,9 +4029,9 @@ u32 func_ov065_02273958(u32 mask) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_022738b4(u32 a, u32 b) {
+void DwcMatch_SendSyncPacket(u32 a, u32 b) {
     u8 buf[4];
     switch (b) {
     case 2: {
@@ -4057,8 +4057,8 @@ void func_ov065_022738b4(u32 a, u32 b) {
         buf[1] = G->unk_1a6 >> 8;
         break;
     }
-    func_ov065_02277750(b, a, buf, 4);
-    G->unk_1d0 = func_ov065_02277974();
+    DwcNet_SendData(b, a, buf, 4);
+    G->unk_1d0 = DwcNet_GetTimeMs();
 }
 #undef G
 }
@@ -4066,21 +4066,21 @@ void func_ov065_022738b4(u32 a, u32 b) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273760(void) {
+u32 DwcMatch_ProcessCloseSync(void) {
     Unk_ov065_02273274_G *g = G;
     u64 d;
     s32 st = g->unk_198;
     if (st == 9 || st == 16 || st == 17) {
-        d = func_ov065_02277974() - g->unk_1d0;
+        d = DwcNet_GetTimeMs() - g->unk_1d0;
     } else {
         return 1;
     }
     switch (g->unk_198) {
     case 9:
         if (d > 0x1770) {
-            func_ov065_022738b4(g->unk_2b8[0], 3);
+            DwcMatch_SendSyncPacket(g->unk_2b8[0], 3);
         }
         break;
     case 16:
@@ -4091,22 +4091,22 @@ u32 func_ov065_02273760(void) {
                 if (*(volatile u8 *)&h->unk_15 == 0) goto yes;
                 if (*(volatile u8 *)&h->unk_15 == 1) {
                 yes:
-                    func_ov065_02273a40();
-                    func_ov065_02273b88(1);
+                    DwcMatch_CloseAllConnections();
+                    DwcMatch_Restart(1);
                 } else {
-                    if (!func_ov065_02273958(h->unk_1c8)) return 0;
+                    if (!DwcMatch_DropUnresponsiveClients(h->unk_1c8)) return 0;
                     if (G->unk_0d != 0) {
                         G->unk_1a3 = 0;
-                        G->unk_1d0 = func_ov065_02277974();
+                        G->unk_1d0 = DwcNet_GetTimeMs();
                     } else {
-                        if (!func_ov065_022741b0(G->unk_1f4)) return 0;
+                        if (!DwcMatch_CancelNewClient(G->unk_1f4)) return 0;
                     }
                 }
             } else {
                 s32 i;
                 for (i = 1; i <= G->unk_0d; i++) {
                     if ((G->unk_1c8 & (1 << G->unk_2b8[i])) == 0) {
-                        func_ov065_022738b4(G->unk_2b8[i], 2);
+                        DwcMatch_SendSyncPacket(G->unk_2b8[i], 2);
                     }
                 }
             }
@@ -4114,7 +4114,7 @@ u32 func_ov065_02273760(void) {
         break;
     case 17:
         if (g->unk_1a6 < d) {
-            func_ov065_02273d38(4);
+            DwcMatch_AdvanceConnect(4);
         }
         break;
     }
@@ -4126,9 +4126,9 @@ u32 func_ov065_02273760(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_022736fc(u32 a, u32 b) {
+u32 DwcMatch_SendCancelSyncCommand(u32 a, u32 b) {
     u32 tmp;
     u32 flag;
     if (b == 0xd) {
@@ -4137,8 +4137,8 @@ u32 func_ov065_022736fc(u32 a, u32 b) {
     } else {
         flag = 0;
     }
-    if (func_ov065_022746e4(func_ov065_0227532c(b, a, 0, 0, &tmp, flag))) return 0;
-    G->unk_1d8 = func_ov065_02277974();
+    if (DwcMatch_HandleResult(DwcMatch_SendCommand(b, a, 0, 0, &tmp, flag))) return 0;
+    G->unk_1d8 = DwcNet_GetTimeMs();
     return 1;
 }
 #undef G
@@ -4147,21 +4147,21 @@ u32 func_ov065_022736fc(u32 a, u32 b) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273590(u32 a, u32 b, u32 c) {
-    if (func_ov065_02270508(a) != 6) return 1;
+u32 DwcMatch_OnCancelSyncCommand(u32 a, u32 b, u32 c) {
+    if (DwcCore_GetState(a) != 6) return 1;
     switch (b) {
     case 0xd:
         if (G->unk_198 != 8) {
             G->unk_198 = 8;
-            func_ov065_02273a70(c);
+            DwcMatch_CloseProfileConnection(c);
         }
-        if (!func_ov065_022736fc(a, 0xe)) return 0;
+        if (!DwcMatch_SendCancelSyncCommand(a, 0xe)) return 0;
         break;
     case 0xe:
         if (G->unk_198 == 0xe) {
-            u64 now = func_ov065_02277974();
+            u64 now = DwcNet_GetTimeMs();
             Unk_ov065_02273274_G *g = G;
             u64 t0 = g->unk_1d8;
             u64 lim = t0 + 0x258;
@@ -4172,28 +4172,28 @@ u32 func_ov065_02273590(u32 a, u32 b, u32 c) {
                 }
             }
             {
-                u32 idx = func_ov065_022732c0(a, 0);
+                u32 idx = DwcMatch_GetAidByProfileId(a, 0);
                 if (idx != 0xff) {
                     G->unk_1cc |= 1 << idx;
                 }
             }
             {
-                u32 m = func_ov065_02273274(1);
+                u32 m = DwcMatch_GetClientAidMask(1);
                 if (G->unk_1cc == m) {
                     s32 i;
                     for (i = 1; i <= G->unk_0d; i++) {
-                        if (!func_ov065_022736fc(G->unk_f4[i], 0xf)) return 0;
+                        if (!DwcMatch_SendCancelSyncCommand(G->unk_f4[i], 0xf)) return 0;
                     }
                     G->unk_198 = 0xf;
                 }
             }
         } else {
-            if (!func_ov065_022736fc(a, 0xf)) return 0;
+            if (!DwcMatch_SendCancelSyncCommand(a, 0xf)) return 0;
         }
         break;
     case 0xf:
         if (G->unk_198 == 8) {
-            func_ov065_02273b88(2);
+            DwcMatch_Restart(2);
         }
         break;
     }
@@ -4205,39 +4205,39 @@ u32 func_ov065_02273590(u32 a, u32 b, u32 c) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273440(void) {
+u32 DwcMatch_ProcessCancelSync(void) {
     Unk_ov065_02273274_G *g = G;
     u64 d;
     s32 st = g->unk_198;
     if (st == 8 || st == 14 || st == 15) {
-        d = func_ov065_02277974() - g->unk_1d8;
+        d = DwcNet_GetTimeMs() - g->unk_1d8;
     } else {
         return 1;
     }
     switch (g->unk_198) {
     case 8:
         if (d > 0x1770) {
-            if (!func_ov065_022736fc(g->unk_f4[0], 0xe)) return 0;
+            if (!DwcMatch_SendCancelSyncCommand(g->unk_f4[0], 0xe)) return 0;
         }
         break;
     case 14:
         if (d > 0x1770) {
             g->unk_1a4++;
             if (G->unk_1a4 > 5) {
-                if (!func_ov065_02273958(G->unk_1cc)) return 0;
+                if (!DwcMatch_DropUnresponsiveClients(G->unk_1cc)) return 0;
                 if (G->unk_0d != 0) {
                     G->unk_1a4 = 0;
-                    G->unk_1d8 = func_ov065_02277974();
+                    G->unk_1d8 = DwcNet_GetTimeMs();
                 } else {
-                    func_ov065_02273b88(2);
+                    DwcMatch_Restart(2);
                 }
             } else {
                 s32 i;
                 for (i = 1; i <= G->unk_0d; i++) {
                     if ((G->unk_1cc & (1 << G->unk_2b8[i])) == 0) {
-                        if (!func_ov065_022736fc(G->unk_f4[i], 0xd)) return 0;
+                        if (!DwcMatch_SendCancelSyncCommand(G->unk_f4[i], 0xd)) return 0;
                     }
                 }
             }
@@ -4245,7 +4245,7 @@ u32 func_ov065_02273440(void) {
         break;
     case 15:
         if (g->unk_1a8 < d) {
-            func_ov065_02273b88(2);
+            DwcMatch_Restart(2);
         }
         break;
     }
@@ -4257,21 +4257,21 @@ u32 func_ov065_02273440(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02273400(void) {
+void DwcMatch_ClearUserKeys(void) {
     s32 i = 0;
     u32 *p;
-    p = (u32 *)data_ov065_02290840;
+    p = (u32 *)sDwcMatchUserKeys;
     for (; i < 0x9a; i++) {
         if (p[1] != 0) {
-            func_ov065_02277b64(4, p[1], 0);
+            DwcNet_Free(4, p[1], 0);
         }
         p += 3;
     }
     {
         volatile u32 z = 0;
-        MIi_CpuClear32(z, data_ov065_02290840, 0x738);
+        MIi_CpuClear32(z, sDwcMatchUserKeys, 0x738);
     }
 }
 #undef G
@@ -4280,9 +4280,9 @@ void func_ov065_02273400(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_022733c0(void) {
+u32 DwcMatch_AllocAid(void) {
     s32 j;
     Unk_ov065_02273274_G *g;
     u8 i = 0;
@@ -4301,15 +4301,15 @@ u32 func_ov065_022733c0(void) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_0227330c(char *s) {
-    if (func_ov065_022890b8(s, (char *)"numplayers", -1) == -1) return 0;
-    if (func_ov065_022890b8(s, (char *)"maxplayers", -1) == -1) return 0;
-    if (func_ov065_022890b8(s, (char *)"dwc_mtype", -1) == -1) return 0;
-    if (func_ov065_022890b8(s, (char *)"dwc_mresv", -1) == -1 && func_ov065_022890b8(s, (char *)"dwc_mresv", 0) == 0) return 0;
-    if (func_ov065_022890b8(s, (char *)"dwc_mver", -1) == -1) return 0;
-    return func_ov065_022890b8(s, (char *)"dwc_pid", 0);
+u32 DwcMatch_GetServerProfileId(char *s) {
+    if (GsServer_GetIntValue(s, (char *)"numplayers", -1) == -1) return 0;
+    if (GsServer_GetIntValue(s, (char *)"maxplayers", -1) == -1) return 0;
+    if (GsServer_GetIntValue(s, (char *)"dwc_mtype", -1) == -1) return 0;
+    if (GsServer_GetIntValue(s, (char *)"dwc_mresv", -1) == -1 && GsServer_GetIntValue(s, (char *)"dwc_mresv", 0) == 0) return 0;
+    if (GsServer_GetIntValue(s, (char *)"dwc_mver", -1) == -1) return 0;
+    return GsServer_GetIntValue(s, (char *)"dwc_pid", 0);
 }
 #undef G
 }
@@ -4317,9 +4317,9 @@ u32 func_ov065_0227330c(char *s) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_022732c0(u32 v, s32 k) {
+u32 DwcMatch_GetAidByProfileId(u32 v, s32 k) {
     Unk_ov065_02273274_G *g;
     s32 i;
     if (k == 0) {
@@ -4341,9 +4341,9 @@ u32 func_ov065_022732c0(u32 v, s32 k) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-u32 func_ov065_02273274(u32 a) {
+u32 DwcMatch_GetClientAidMask(u32 a) {
     u32 r = 0;
     if (a != 0) {
         return G->unk_2d8 & ~1;
@@ -4363,17 +4363,17 @@ u32 func_ov065_02273274(u32 a) {
 
 namespace F02273230 {
 extern "C" {
-#define G data_ov065_02290814
+#define G sDwcMatch
 
-void func_ov065_02273230(u32 a) {
-    Unk_ov065_02273230_H *h = data_ov065_02290818;
+void DwcMatch_ResetSyncTimer(u32 a) {
+    Unk_ov065_02273230_H *h = sDwcMatchSyncOption;
     if (h != NULL && h->unk_00 != 0) {
         h->unk_08 = 0;
-        data_ov065_02290818->unk_0c = 0;
-        data_ov065_02290818->unk_02 = 0;
-        data_ov065_02290818->unk_18 = func_ov065_02277974();
+        sDwcMatchSyncOption->unk_0c = 0;
+        sDwcMatchSyncOption->unk_02 = 0;
+        sDwcMatchSyncOption->unk_18 = DwcNet_GetTimeMs();
         if (a == 0) {
-            data_ov065_02290818->unk_10 = func_ov065_02277974();
+            sDwcMatchSyncOption->unk_10 = DwcNet_GetTimeMs();
         }
     }
 }
@@ -4385,9 +4385,9 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272fe0(void)
+void DwcMatch_ProcessServerSync(void)
 {
-    Unk_ov065_02290818_Sm *s = data_ov065_02290818;
+    Unk_ov065_02290818_Sm *s = sDwcMatchSyncOption;
     Unk_ov065_02290814_Ctx *cx;
     s32 st;
     s32 j;
@@ -4397,7 +4397,7 @@ void func_ov065_02272fe0(void)
     if (s->unk_00 == 0) {
         goto end;
     }
-    cx = data_ov065_02290814;
+    cx = sDwcMatch;
     if (cx->unk_15 == 2) {
         goto end;
     }
@@ -4406,55 +4406,55 @@ void func_ov065_02272fe0(void)
     }
     st = cx->unk_198;
     if (st == 0x13) {
-        s32 t = func_ov065_02273274(0);
+        s32 t = DwcMatch_GetClientAidMask(0);
         u32 five;
-        s = data_ov065_02290818;
+        s = sDwcMatchSyncOption;
         if (s->unk_08 == t) {
             if (s->unk_0c == t) {
-                data_ov065_02290814->unk_16 = data_ov065_02290814->unk_0d;
-                data_ov065_02290814->unk_19c = data_ov065_02290814->unk_0d - 1;
-                func_ov065_02273d38(0);
+                sDwcMatch->unk_16 = sDwcMatch->unk_0d;
+                sDwcMatch->unk_19c = sDwcMatch->unk_0d - 1;
+                DwcMatch_AdvanceConnect(0);
                 goto end;
             }
-            s->unk_18 = func_ov065_02277974();
+            s->unk_18 = DwcNet_GetTimeMs();
             s->unk_08 = 0;
-            if (data_ov065_02290814->unk_15 == 0) {
+            if (sDwcMatch->unk_15 == 0) {
                 u64 t2;
                 Unk_ov065_02290814_Ctx *cw;
-                data_ov065_02290814->unk_198 = 3;
-                data_ov065_02290814->unk_e8 = 2;
+                sDwcMatch->unk_198 = 3;
+                sDwcMatch->unk_e8 = 2;
                 t2 = OS_GetTick();
-                cw = data_ov065_02290814;
+                cw = sDwcMatch;
                 cw->unk_ec = (u32)t2;
                 cw->unk_f0 = (u32)(t2 >> 32);
                 goto end;
             }
-            data_ov065_02290814->unk_198 = 4;
-            func_ov065_022743e0(1, 0);
+            sDwcMatch->unk_198 = 4;
+            DwcMatch_TryNextFriend(1, 0);
             goto end;
         }
         five = s->unk_02;
-        if ((u64)(func_ov065_02277974() - s->unk_18) < (u64)(s64)(s32)(five * 0x1770)) {
+        if ((u64)(DwcNet_GetTimeMs() - s->unk_18) < (u64)(s64)(s32)(five * 0x1770)) {
             goto end;
         }
         if (five > 5) {
-            func_ov065_02273230(1);
-            func_ov065_02273a40();
-            func_ov065_02273b88(1);
+            DwcMatch_ResetSyncTimer(1);
+            DwcMatch_CloseAllConnections();
+            DwcMatch_Restart(1);
             goto end;
         }
         {
-            for (j = 1; j <= data_ov065_02290814->unk_0d; j++) {
-                u32 bits = data_ov065_02290818->unk_08;
+            for (j = 1; j <= sDwcMatch->unk_0d; j++) {
+                u32 bits = sDwcMatchSyncOption->unk_08;
                 Unk_ov065_02290814_Ctx *c2;
-                if ((bits & (1 << (((u8 *)data_ov065_02290814) + j)[0x2b8])) == 0) {
-                    c2 = data_ov065_02290814;
-                    if (func_ov065_022746e4(func_ov065_0227532c(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
+                if ((bits & (1 << (((u8 *)sDwcMatch) + j)[0x2b8])) == 0) {
+                    c2 = sDwcMatch;
+                    if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
                         goto end;
                     }
                 }
             }
-            data_ov065_02290818->unk_02++;
+            sDwcMatchSyncOption->unk_02++;
         }
     } else {
         if ((u32)(st - 3) > 1) {
@@ -4464,34 +4464,34 @@ void func_ov065_02272fe0(void)
             goto end;
         }
         if (s->unk_02 == 0) {
-            if (func_ov065_02277974() - s->unk_10 >= (u64)s->unk_04) {
+            if (DwcNet_GetTimeMs() - s->unk_10 >= (u64)s->unk_04) {
                 goto proceed;
             }
         }
         if (s->unk_02 == 0) {
             goto end;
         }
-        s = data_ov065_02290818;
-        if (func_ov065_02277974() - s->unk_18 < (u64)(s->unk_04 >> 2)) {
+        s = sDwcMatchSyncOption;
+        if (DwcNet_GetTimeMs() - s->unk_18 < (u64)(s->unk_04 >> 2)) {
             goto end;
         }
     proceed:
-        if (data_ov065_02290814->unk_1ec != 0) {
-            if (func_ov065_022746e4(func_ov065_02274308(data_ov065_02290814->unk_1ec)) != 0) {
+        if (sDwcMatch->unk_1ec != 0) {
+            if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->unk_1ec)) != 0) {
                 goto end;
             }
         }
-        data_ov065_02290814->unk_198 = 0x13;
+        sDwcMatch->unk_198 = 0x13;
         {
-            for (j = 1; j <= data_ov065_02290814->unk_0d; j++) {
-                Unk_ov065_02290814_Ctx *c2 = data_ov065_02290814;
-                if (func_ov065_022746e4(func_ov065_0227532c(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
+            for (j = 1; j <= sDwcMatch->unk_0d; j++) {
+                Unk_ov065_02290814_Ctx *c2 = sDwcMatch;
+                if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
                     goto end;
                 }
             }
         }
-        s = data_ov065_02290818;
-        s->unk_18 = func_ov065_02277974();
+        s = sDwcMatchSyncOption;
+        s->unk_18 = DwcNet_GetTimeMs();
         s->unk_02 = 1;
     }
 end:;
@@ -4504,7 +4504,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_02272f80(s32 a)
+s32 DwcMatch_HandleGpResult(s32 a)
 {
     s32 t, c;
     if (a == 0) {
@@ -4528,7 +4528,7 @@ s32 func_ov065_02272f80(s32 a)
         c = ~0x13;
         break;
     }
-    func_ov065_0227627c(t, c - 0x13c68);
+    DwcMatch_Fail(t, c - 0x13c68);
     return a;
 }
 
@@ -4539,7 +4539,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_02272f0c(s32 a)
+s32 DwcMatch_HandleSbResult(s32 a)
 {
     s32 t, c;
     if (a == 0) {
@@ -4571,7 +4571,7 @@ s32 func_ov065_02272f0c(s32 a)
         c = ~1;
         break;
     }
-    func_ov065_0227627c(t, c - 0x14c08);
+    DwcMatch_Fail(t, c - 0x14c08);
     return a;
 }
 
@@ -4582,7 +4582,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_02272e60(s32 a)
+s32 DwcMatch_HandleQr2Result(s32 a)
 {
     s32 c, t;
     if (a == 0) {
@@ -4610,18 +4610,18 @@ s32 func_ov065_02272e60(s32 a)
         c = ~0x13;
         break;
     }
-    switch (func_ov065_02270508()) {
+    switch (DwcCore_GetState()) {
     case 2:
-        func_ov065_02271440(t, c - 0xfa00);
+        DwcLogin_Fail(t, c - 0xfa00);
         break;
     case 4:
-        func_ov065_02271fc8(t, c - 0x12110);
+        DwcFriend_Fail(t, c - 0x12110);
         break;
     case 5:
-        func_ov065_0227627c(t, c - 0x14820);
+        DwcMatch_Fail(t, c - 0x14820);
         break;
     default:
-        func_ov065_02270e34(t, c - 0x16f30);
+        DwcCore_SetError(t, c - 0x16f30);
         break;
     }
     return a;
@@ -4634,7 +4634,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_02272e18(s32 a)
+s32 DwcMatch_HandleNnStartResult(s32 a)
 {
     s32 t, c;
     if (a == 0) {
@@ -4654,7 +4654,7 @@ s32 func_ov065_02272e18(s32 a)
         c = ~0x1d;
         break;
     }
-    func_ov065_0227627c(t, c - 0x14ff0);
+    DwcMatch_Fail(t, c - 0x14ff0);
     return a;
 }
 
@@ -4665,7 +4665,7 @@ namespace F02272734 {
 extern "C" {
 
 enum Unk_ov065_02272dd4_E { Unk_ov065_02272dd4_E_6 = 6 };
-s32 func_ov065_02272dd4(s32 a)
+s32 DwcMatch_HandleNnResult(s32 a)
 {
     Unk_ov065_02272dd4_E t;
     if (a == 0) {
@@ -4681,7 +4681,7 @@ s32 func_ov065_02272dd4(s32 a)
         break;
     }
     if (t != 0) {
-        func_ov065_0227627c(t, -0x14ff9);
+        DwcMatch_Fail(t, -0x14ff9);
     }
     return a;
 }
@@ -4693,7 +4693,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_02272d5c(s32 a)
+s32 DwcMatch_HandleGt2Result(s32 a)
 {
     s32 t, c;
     if (a == 0) {
@@ -4728,7 +4728,7 @@ s32 func_ov065_02272d5c(s32 a)
         break;
     }
     if (t != 0) {
-        func_ov065_0227627c(t, c - 0x153d8);
+        DwcMatch_Fail(t, c - 0x153d8);
     }
     return a;
 }
@@ -4740,121 +4740,121 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272ab0(u32 list, s32 mode, u32 c)
+void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c)
 {
     switch (mode) {
     case 0:
-        func_ov065_02272aac(c);
+        DwcMatch_Nop(c);
         break;
     case 4: {
         s32 i = 0;
-        if (func_ov065_02289268(list) > 0) {
+        if (GsSrvBrowser_GetServerCount(list) > 0) {
             do {
-                u32 e = func_ov065_02289274(list, i);
-                if (func_ov065_0227330c(e) == 0) {
-                    func_ov065_022892c8(list, e);
+                u32 e = GsSrvBrowser_GetServer(list, i);
+                if (DwcMatch_GetServerProfileId(e) == 0) {
+                    GsSrvBrowser_RemoveServer(list, e);
                     i--;
                 }
                 i++;
-            } while (i < func_ov065_02289268(list));
+            } while (i < GsSrvBrowser_GetServerCount(list));
         }
-        switch (data_ov065_02290814->unk_198) {
+        switch (sDwcMatch->unk_198) {
         case 2: {
             i = 0;
-            if (func_ov065_02289268(list) > 0) {
+            if (GsSrvBrowser_GetServerCount(list) > 0) {
                 do {
-                    u32 e = func_ov065_02289274(list, i);
-                    Unk_ov065_02290814_Ctx *cx = data_ov065_02290814;
+                    u32 e = GsSrvBrowser_GetServer(list, i);
+                    Unk_ov065_02290814_Ctx *cx = sDwcMatch;
                     if (cx->unk_1c != 0) {
-                        if (cx->unk_1c == func_ov065_02289098(e)) {
+                        if (cx->unk_1c == GsServer_GetPublicIp(e)) {
                             if (cx->unk_1a != 0) {
-                                if (data_ov065_02290814->unk_1a == func_ov065_0228907c(e)) {
+                                if (sDwcMatch->unk_1a == GsServer_GetPublicPort(e)) {
                                     break;
                                 }
                             }
                         }
                     }
                     i++;
-                } while (i < func_ov065_02289268(list));
+                } while (i < GsSrvBrowser_GetServerCount(list));
             }
-            if (i < func_ov065_02289268(list)) {
-                data_ov065_02290814->unk_198 = 3;
-                data_ov065_02290814->unk_1ec = 0;
-                if (func_ov065_02272f0c(func_ov065_02275764(data_ov065_02290814->unk_1ec)) != 0) {
+            if (i < GsSrvBrowser_GetServerCount(list)) {
+                sDwcMatch->unk_198 = 3;
+                sDwcMatch->unk_1ec = 0;
+                if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(sDwcMatch->unk_1ec)) != 0) {
                     return;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                data_ov065_02290814->unk_e8 = 2;
+                sDwcMatch->unk_e8 = 2;
                 t = OS_GetTick();
-                cw = data_ov065_02290814;
+                cw = sDwcMatch;
                 cw->unk_ec = (u32)t;
                 cw->unk_f0 = (u32)(t >> 32);
             }
             break;
         }
         case 3:
-            func_ov065_0227295c(1);
-            if (func_ov065_02289268(list) != 0) {
-                if (func_ov065_022746e4(func_ov065_022745bc(0, 0)) == 0) {
-                    data_ov065_02290814->unk_198 = 4;
-                    data_ov065_02290814->unk_e8 = 0;
+            DwcMatch_EvaluateServers(1);
+            if (GsSrvBrowser_GetServerCount(list) != 0) {
+                if (DwcMatch_HandleResult(DwcMatch_SendReservation(0, 0)) == 0) {
+                    sDwcMatch->unk_198 = 4;
+                    sDwcMatch->unk_e8 = 0;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                data_ov065_02290814->unk_e8 = 2;
+                sDwcMatch->unk_e8 = 2;
                 t = OS_GetTick();
-                cw = data_ov065_02290814;
+                cw = sDwcMatch;
                 cw->unk_ec = (u32)t;
                 cw->unk_f0 = (u32)(t >> 32);
             }
             break;
         case 5: {
-            if (func_ov065_02289268(list) != 0) {
+            if (GsSrvBrowser_GetServerCount(list) != 0) {
                 do {
-                    u32 e = func_ov065_02289274(list, 0);
-                    if (data_ov065_02290814->unk_1ac == func_ov065_02289098(e)) {
-                        if (data_ov065_02290814->unk_1aa == func_ov065_0228907c(e)) {
+                    u32 e = GsSrvBrowser_GetServer(list, 0);
+                    if (sDwcMatch->unk_1ac == GsServer_GetPublicIp(e)) {
+                        if (sDwcMatch->unk_1aa == GsServer_GetPublicPort(e)) {
                             break;
                         }
                     }
-                    func_ov065_022892c8(list, e);
-                } while (func_ov065_02289268(list) != 0);
+                    GsSrvBrowser_RemoveServer(list, e);
+                } while (GsSrvBrowser_GetServerCount(list) != 0);
             }
-            if (func_ov065_02289268(list) != 0) {
-                u32 e = func_ov065_02289274(list, 0);
-                u32 h = func_ov065_022890b8(e, (char *)"dwc_pid", 0);
-                Unk_ov065_02290814_Ctx *cx = data_ov065_02290814;
+            if (GsSrvBrowser_GetServerCount(list) != 0) {
+                u32 e = GsSrvBrowser_GetServer(list, 0);
+                u32 h = GsServer_GetIntValue(e, (char *)"dwc_pid", 0);
+                Unk_ov065_02290814_Ctx *cx = sDwcMatch;
                 if (cx->unk_15 == 1 && h == cx->unk_f4[0]) {
-                    if (func_ov065_0227295c(0) != 0) {
-                        if (data_ov065_02290814->unk_0d != 0) {
-                            if (func_ov065_022746e4(func_ov065_022740a4(data_ov065_02290814->unk_0d)) != 0) {
+                    if (DwcMatch_EvaluateServers(0) != 0) {
+                        if (sDwcMatch->unk_0d != 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder(sDwcMatch->unk_0d)) != 0) {
                                 return;
                             }
                         }
                     } else {
-                        if (func_ov065_022746e4(func_ov065_02274308(data_ov065_02290814->unk_f4[0])) != 0) {
+                        if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->unk_f4[0])) != 0) {
                             return;
                         }
-                        data_ov065_02290814->unk_198 = 4;
-                        if (func_ov065_022746e4(func_ov065_022743e0(0, 0)) != 0) {
+                        sDwcMatch->unk_198 = 4;
+                        if (DwcMatch_HandleResult(DwcMatch_TryNextFriend(0, 0)) != 0) {
                             return;
                         }
                         return;
                     }
                 }
-                data_ov065_02290814->unk_198 = 6;
-                if (func_ov065_02272e18(func_ov065_022754f0(0, 0, func_ov065_02289274(list, 0))) != 0) {
+                sDwcMatch->unk_198 = 6;
+                if (DwcMatch_HandleNnStartResult(DwcMatch_StartNatNegotiation(0, 0, GsSrvBrowser_GetServer(list, 0))) != 0) {
                     return;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                data_ov065_02290814->unk_e8 = 2;
+                sDwcMatch->unk_e8 = 2;
                 t = OS_GetTick();
-                cw = data_ov065_02290814;
+                cw = sDwcMatch;
                 cw->unk_ec = (u32)t;
                 cw->unk_f0 = (u32)(t >> 32);
             }
@@ -4875,7 +4875,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272aac(u32 a)
+void DwcMatch_Nop(u32 a)
 {
 }
 
@@ -4886,21 +4886,21 @@ namespace F02272734 {
 extern "C" {
 
 
-BOOL func_ov065_0227295c(u32 a)
+BOOL DwcMatch_EvaluateServers(u32 a)
 {
     BOOL flag2 = FALSE;
     s32 i = 0;
-    if (func_ov065_02289268(data_ov065_02290814->unk_e4) > 0) {
+    if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) > 0) {
         do {
-            u32 e = func_ov065_02289274(data_ov065_02290814->unk_e4, i);
+            u32 e = GsSrvBrowser_GetServer(sDwcMatch->unk_e4, i);
             BOOL found;
-            if (data_ov065_02290814->unk_15 == 0) {
-                u32 h = func_ov065_022890b8(e, (char *)"dwc_pid", 0);
+            if (sDwcMatch->unk_15 == 0) {
+                u32 h = GsServer_GetIntValue(e, (char *)"dwc_pid", 0);
                 s32 j;
                 found = FALSE;
-                for (j = 1; j <= data_ov065_02290814->unk_0d; j++) {
-                    if (h == data_ov065_02290814->unk_f4[j]) {
-                        func_ov065_022892c8(data_ov065_02290814->unk_e4, e);
+                for (j = 1; j <= sDwcMatch->unk_0d; j++) {
+                    if (h == sDwcMatch->unk_f4[j]) {
+                        GsSrvBrowser_RemoveServer(sDwcMatch->unk_e4, e);
                         i--;
                         found = TRUE;
                         break;
@@ -4910,32 +4910,32 @@ BOOL func_ov065_0227295c(u32 a)
                     goto next;
                 }
             }
-            if (data_ov065_02290814->unk_45c != 0) {
-                s32 v = data_ov065_02290814->unk_45c(i, data_ov065_02290814->unk_460);
+            if (sDwcMatch->unk_45c != 0) {
+                s32 v = sDwcMatch->unk_45c(i, sDwcMatch->unk_460);
                 if (v > 0) {
                     if (v > 0x7fffff) {
                         v = 0x7fffff;
                     }
-                    func_ov065_0228914c(e, (char *)"dwc_eval", (v << 8) | func_ov065_022778b0(0x100));
+                    GsServer_SetIntValue(e, (char *)"dwc_eval", (v << 8) | DwcNet_Rand32(0x100));
                 } else {
-                    func_ov065_022892c8(data_ov065_02290814->unk_e4, e);
+                    GsSrvBrowser_RemoveServer(sDwcMatch->unk_e4, e);
                     i--;
                     flag2 = TRUE;
                 }
             } else {
-                func_ov065_0228914c(e, (char *)"dwc_eval", func_ov065_022778b0(0x80));
+                GsServer_SetIntValue(e, (char *)"dwc_eval", DwcNet_Rand32(0x80));
             }
         next:
             i++;
-        } while (i < func_ov065_02289268(data_ov065_02290814->unk_e4));
+        } while (i < GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4));
     }
     if (a != 0) {
-        if (func_ov065_02289268(data_ov065_02290814->unk_e4) != 0) {
-            func_ov065_02289258(data_ov065_02290814->unk_e4, 0, (char *)"dwc_eval", 0);
+        if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) != 0) {
+            GsSrvBrowser_Sort(sDwcMatch->unk_e4, 0, (char *)"dwc_eval", 0);
         }
     }
     if (flag2 != 0) {
-        if (func_ov065_02289268(data_ov065_02290814->unk_e4) == 0) {
+        if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) == 0) {
             return FALSE;
         }
     }
@@ -4949,37 +4949,37 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272858(s32 a, u32 b)
+void DwcMatch_OnQr2ServerKey(s32 a, u32 b)
 {
     switch (a) {
     case 8:
-        func_ov065_022880d8(b, data_ov065_02290814->unk_14);
+        GsQr_BufAppendInt(b, sDwcMatch->unk_14);
         break;
     case 10:
-        func_ov065_022880d8(b, data_ov065_02290814->unk_16);
+        GsQr_BufAppendInt(b, sDwcMatch->unk_16);
         break;
     case 0x32:
-        func_ov065_022880d8(b, *(s32 *)((u8 *)data_ov065_02290814 + 0x1e8));
+        GsQr_BufAppendInt(b, *(s32 *)((u8 *)sDwcMatch + 0x1e8));
         break;
     case 0x33:
-        func_ov065_022880d8(b, data_ov065_02290814->unk_15);
+        GsQr_BufAppendInt(b, sDwcMatch->unk_15);
         break;
     case 0x34:
-        func_ov065_022880d8(b, data_ov065_02290814->unk_20);
+        GsQr_BufAppendInt(b, sDwcMatch->unk_20);
         break;
     case 0x35:
-        func_ov065_022880d8(b, 3);
+        GsQr_BufAppendInt(b, 3);
         break;
     case 0x36:
-        func_ov065_022880d8(b, 1);
+        GsQr_BufAppendInt(b, 1);
         break;
     default: {
         s32 i = a - 0x64;
-        if (data_ov065_02290840[i].unk_00 != 0) {
-            if (data_ov065_02290840[i].unk_01 != 0) {
-                func_ov065_02288094(b, data_ov065_02290840[i].unk_08);
+        if (sDwcMatchUserKeys[i].unk_00 != 0) {
+            if (sDwcMatchUserKeys[i].unk_01 != 0) {
+                GsQr_BufAppendString(b, sDwcMatchUserKeys[i].unk_08);
             } else {
-                func_ov065_022880d8(b, *data_ov065_02290840[i].unk_08);
+                GsQr_BufAppendInt(b, *sDwcMatchUserKeys[i].unk_08);
             }
         }
         break;
@@ -4994,7 +4994,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272854(void)
+void DwcMatch_OnQr2PlayerKey(void)
 {
 }
 
@@ -5005,7 +5005,7 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272850(void)
+void DwcMatch_OnQr2TeamKey(void)
 {
 }
 
@@ -5016,22 +5016,22 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_022727e0(s32 a, u32 b)
+void DwcMatch_OnQr2KeyList(s32 a, u32 b)
 {
     switch (a) {
     case 0: {
         s32 i;
         Unk_ov065_02290840_Ent *e;
-        func_ov065_022880fc(b, 8);
-        func_ov065_022880fc(b, 10);
-        func_ov065_022880fc(b, 0x32);
-        func_ov065_022880fc(b, 0x33);
-        func_ov065_022880fc(b, 0x34);
-        func_ov065_022880fc(b, 0x35);
-        func_ov065_022880fc(b, 0x36);
-        for (i = 0, e = data_ov065_02290840; i < 0x9a; e++, i++) {
+        GsQr_KeyBufferAdd(b, 8);
+        GsQr_KeyBufferAdd(b, 10);
+        GsQr_KeyBufferAdd(b, 0x32);
+        GsQr_KeyBufferAdd(b, 0x33);
+        GsQr_KeyBufferAdd(b, 0x34);
+        GsQr_KeyBufferAdd(b, 0x35);
+        GsQr_KeyBufferAdd(b, 0x36);
+        for (i = 0, e = sDwcMatchUserKeys; i < 0x9a; e++, i++) {
             if (e->unk_00 != 0) {
-                func_ov065_022880fc(b, e->unk_00);
+                GsQr_KeyBufferAdd(b, e->unk_00);
             }
         }
         break;
@@ -5050,7 +5050,7 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_022727dc(void)
+s32 DwcMatch_OnQr2Count(void)
 {
     return 0;
 }
@@ -5062,9 +5062,9 @@ namespace F02272734 {
 extern "C" {
 
 
-s32 func_ov065_022727d4(s32 a)
+s32 DwcMatch_OnQr2Error(s32 a)
 {
-    return func_ov065_02272e60(a);
+    return DwcMatch_HandleQr2Result(a);
 }
 
 }
@@ -5074,10 +5074,10 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_022727c4(u32 a, u32 b)
+void DwcMatch_OnQr2PublicAddress(u32 a, u32 b)
 {
-    data_ov065_02290814->unk_1c = a;
-    data_ov065_02290814->unk_1a = b;
+    sDwcMatch->unk_1c = a;
+    sDwcMatch->unk_1a = b;
 }
 
 }
@@ -5087,27 +5087,27 @@ namespace F02272734 {
 extern "C" {
 
 
-void func_ov065_02272734(u32 a)
+void DwcMatch_OnQr2NnRequest(u32 a)
 {
-    if (data_ov065_02290814->unk_198 == 1) {
-        data_ov065_02290814->unk_198 = 6;
-    } else if (data_ov065_02290814->unk_198 != 6 && data_ov065_02290814->unk_198 != 0xb) {
+    if (sDwcMatch->unk_198 == 1) {
+        sDwcMatch->unk_198 = 6;
+    } else if (sDwcMatch->unk_198 != 6 && sDwcMatch->unk_198 != 0xb) {
         return;
     }
-    if (data_ov065_02290814->unk_178 == a) {
-        data_ov065_02290814->unk_174++;
+    if (sDwcMatch->unk_178 == a) {
+        sDwcMatch->unk_174++;
     } else {
-        data_ov065_02290814->unk_174 = 0;
-        data_ov065_02290814->unk_178 = a;
+        sDwcMatch->unk_174 = 0;
+        sDwcMatch->unk_178 = a;
     }
     Unk_ov065_02272734_Z z = Unk_ov065_02272734_Z_0;
     {
-        Unk_ov065_02290814_Ctx *c = data_ov065_02290814;
+        Unk_ov065_02290814_Ctx *c = sDwcMatch;
         c->unk_17c = z;
         c->unk_180 = z;
     }
-    if (func_ov065_02272e18(func_ov065_022754f0(1, a, z)) == 0) {
-        data_ov065_02290814->unk_3b4 = 0xff;
+    if (DwcMatch_HandleNnStartResult(DwcMatch_StartNatNegotiation(1, a, z)) == 0) {
+        sDwcMatch->unk_3b4 = 0xff;
     }
 }
 
@@ -5118,13 +5118,13 @@ namespace F02271da0 {
 extern "C" {
 
 
-void func_ov065_022726a0(u8 *buf, u32 n) {
+void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n) {
     u32 off = 0;
     Unk_ov065_022726a0_Hdr hdr;
     u8 body[0x80];
-    if (func_ov065_02270508() == 5 ||
-        (func_ov065_02270508() == 6 &&
-         (data_ov065_02290814->unk_15 == 2 || data_ov065_02290814->unk_15 == 3))) {
+    if (DwcCore_GetState() == 5 ||
+        (DwcCore_GetState() == 6 &&
+         (sDwcMatch->unk_15 == 2 || sDwcMatch->unk_15 == 3))) {
         while (off + 0x14 <= n) {
             MI_CpuCopy8(buf, &hdr, 0x14);
             if (strncmp(&hdr, (char *)"SBCM", 4) != 0) {
@@ -5134,7 +5134,7 @@ void func_ov065_022726a0(u8 *buf, u32 n) {
                 break;
             }
             MI_CpuCopy8(buf + 0x14, body, hdr.unk_09);
-            if (func_ov065_022749f8(hdr.unk_08, hdr.unk_10, hdr.unk_0c, hdr.unk_0a, body, hdr.unk_09 >> 2) == 0) {
+            if (DwcMatch_HandleCommand(hdr.unk_08, hdr.unk_10, hdr.unk_0c, hdr.unk_0a, body, hdr.unk_09 >> 2) == 0) {
                 break;
             }
             off += hdr.unk_09 + 0x14;
@@ -5149,7 +5149,7 @@ namespace F02271da0 {
 extern "C" {
 
 
-void func_ov065_0227269c() {
+void DwcMatch_OnNnProgress() {
 }
 
 }
@@ -5159,9 +5159,9 @@ namespace F02271da0 {
 extern "C" {
 
 
-void func_ov065_02272428(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02272428_Sub *d) {
+void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02272428_Sub *d) {
     Unk_ov065_02290814 *g;
-    if (data_ov065_02290814->unk_198 != 6 && data_ov065_02290814->unk_198 != 0xb) {
+    if (sDwcMatch->unk_198 != 6 && sDwcMatch->unk_198 != 0xb) {
         return;
     }
     if (d == NULL) {
@@ -5171,44 +5171,44 @@ void func_ov065_02272428(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_0227
         s32 idx;
         char buf[12];
         d->unk_08 = 0;
-        data_ov065_02290814->unk_14++;
-        idx = data_ov065_02290814->unk_14;
+        sDwcMatch->unk_14++;
+        idx = sDwcMatch->unk_14;
         if (d->unk_00 != 0) {
-            data_ov065_02290814->unk_1f8[idx] = c->unk_04;
-            data_ov065_02290814->unk_278[idx] = ((c->unk_02 >> 8) & 0xff) | ((c->unk_02 << 8) & 0xff00);
-            data_ov065_02290814->unk_174 = 0;
-            data_ov065_02290814->unk_178 = 0;
-            *(u64 *)&data_ov065_02290814->unk_17c = 0;
-            if (data_ov065_02290814->unk_198 == 0xb) {
-                data_ov065_02290814->unk_198 = 0xc;
+            sDwcMatch->unk_1f8[idx] = c->unk_04;
+            sDwcMatch->unk_278[idx] = ((c->unk_02 >> 8) & 0xff) | ((c->unk_02 << 8) & 0xff00);
+            sDwcMatch->unk_174 = 0;
+            sDwcMatch->unk_178 = 0;
+            *(u64 *)&sDwcMatch->unk_17c = 0;
+            if (sDwcMatch->unk_198 == 0xb) {
+                sDwcMatch->unk_198 = 0xc;
             } else {
-                data_ov065_02290814->unk_198 = 7;
+                sDwcMatch->unk_198 = 7;
             }
-            data_ov065_02290814->unk_0c = 0;
-            OS_SNPrintf(buf, 12, (char *)"%u", data_ov065_02290814->unk_1e8);
-            s32 r = func_ov065_02284a80(data_ov065_02290814->unk_04->unk_00, 0,
-                                        func_ov065_022868b0(data_ov065_02290814->unk_1f8[idx], data_ov065_02290814->unk_278[idx], 0),
-                                        buf, -1, 0x1388, data_ov065_02290814->unk_08, 0);
+            sDwcMatch->unk_0c = 0;
+            OS_SNPrintf(buf, 12, (char *)"%u", sDwcMatch->unk_1e8);
+            s32 r = GsTransport_Connect(sDwcMatch->unk_04->unk_00, 0,
+                                        GsTransport_AddressToString(sDwcMatch->unk_1f8[idx], sDwcMatch->unk_278[idx], 0),
+                                        buf, -1, 0x1388, sDwcMatch->unk_08, 0);
             if (r == 1) {
-                func_ov065_02272d5c();
+                DwcMatch_HandleGt2Result();
                 return;
             }
             if (r == 0) {
                 return;
             }
-            if (func_ov065_022741b0(data_ov065_02290814->unk_f4[idx]) != 0) {
+            if (DwcMatch_CancelNewClient(sDwcMatch->unk_f4[idx]) != 0) {
                 return;
             }
             return;
         }
         if (c != NULL) {
             s32 i = idx - 1;
-            data_ov065_02290814->unk_1f8[i] = c->unk_04;
-            data_ov065_02290814->unk_278[i] = ((c->unk_02 >> 8) & 0xff) | ((c->unk_02 << 8) & 0xff00);
+            sDwcMatch->unk_1f8[i] = c->unk_04;
+            sDwcMatch->unk_278[i] = ((c->unk_02 >> 8) & 0xff) | ((c->unk_02 << 8) & 0xff00);
         }
-        g = data_ov065_02290814;
+        g = sDwcMatch;
         {
-            u64 t = func_ov065_02277974();
+            u64 t = DwcNet_GetTimeMs();
             *(u64 *)&g->unk_184 = t;
         }
         g->unk_198 = 7;
@@ -5218,48 +5218,48 @@ void func_ov065_02272428(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_0227
         return;
     }
     {
-        s32 r4 = func_ov065_02272dd4(a, d->unk_08);
+        s32 r4 = DwcMatch_HandleNnResult(a, d->unk_08);
         if (r4 != 2 && r4 != 1) {
             return;
         }
         if (d->unk_00 == 0) {
             if (r4 == 1 || (r4 == 2 && d->unk_01 >= 1)) {
                 d->unk_08 = 0;
-                if (func_ov065_022723cc(0) == 0) {
+                if (DwcMatch_CountNnRetry(0) == 0) {
                     return;
                 }
-                if (func_ov065_0227412c(data_ov065_02290814->unk_f4[data_ov065_02290814->unk_0d]) != 0) {
+                if (DwcMatch_RestartAfterNnFailure(sDwcMatch->unk_f4[sDwcMatch->unk_0d]) != 0) {
                     return;
                 }
                 return;
             }
             d->unk_01++;
-            func_ov065_02275474(d);
-            if (func_ov065_02272e18() != 0) {
+            DwcMatch_SendNnRequest(d);
+            if (DwcMatch_HandleNnStartResult() != 0) {
                 return;
             }
             return;
         }
-        g = data_ov065_02290814;
+        g = sDwcMatch;
         {
-            u64 t = func_ov065_02277974();
+            u64 t = DwcNet_GetTimeMs();
             *(u64 *)&g->unk_17c = t;
         }
         if (r4 == 1 || (r4 == 2 && g->unk_174 >= 1)) {
             d->unk_08 = 0;
-            if (data_ov065_02290814->unk_15 == 3 || data_ov065_02290814->unk_15 == 2) {
-                if (func_ov065_022723cc(1) == 0) {
+            if (sDwcMatch->unk_15 == 3 || sDwcMatch->unk_15 == 2) {
+                if (DwcMatch_CountNnRetry(1) == 0) {
                     return;
                 }
             } else {
-                if (func_ov065_022723cc(0) == 0) {
+                if (DwcMatch_CountNnRetry(0) == 0) {
                     return;
                 }
             }
-            data_ov065_02290814->unk_174 = 0;
-            data_ov065_02290814->unk_178 = 0;
-            *(u64 *)&data_ov065_02290814->unk_17c = 0;
-            if (func_ov065_022741b0(data_ov065_02290814->unk_f4[data_ov065_02290814->unk_0d + 1]) != 0) {
+            sDwcMatch->unk_174 = 0;
+            sDwcMatch->unk_178 = 0;
+            *(u64 *)&sDwcMatch->unk_17c = 0;
+            if (DwcMatch_CancelNewClient(sDwcMatch->unk_f4[sDwcMatch->unk_0d + 1]) != 0) {
                 return;
             }
         }
@@ -5273,15 +5273,15 @@ namespace F02271da0 {
 extern "C" {
 
 
-s32 func_ov065_022723cc(s32 a) {
+s32 DwcMatch_CountNnRetry(s32 a) {
     if (a != 0) {
         return 1;
     }
-    if (data_ov065_02290814->unk_15 != 3) {
-        data_ov065_02290814->unk_175++;
+    if (sDwcMatch->unk_15 != 3) {
+        sDwcMatch->unk_175++;
     }
-    if (data_ov065_02290814->unk_15 == 3 || data_ov065_02290814->unk_175 >= 5) {
-        func_ov065_0227627c(6, -0x15194);
+    if (sDwcMatch->unk_15 == 3 || sDwcMatch->unk_175 >= 5) {
+        DwcMatch_Fail(6, -0x15194);
         return 0;
     }
     return 1;
@@ -5294,8 +5294,8 @@ namespace F02271da0 {
 extern "C" {
 
 
-s32 func_ov065_022723b8(void *a, char *b) {
-    return func_ov065_022722fc(a, NULL, NULL, b);
+s32 DwcFriend_GetStatusString(void *a, char *b) {
+    return DwcFriend_GetStatus(a, NULL, NULL, b);
 }
 
 }

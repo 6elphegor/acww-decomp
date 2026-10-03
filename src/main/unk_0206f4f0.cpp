@@ -31,8 +31,8 @@ void Melody_ApplyEditPattern();
 void func_020795a8(void *a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
-s32 func_02096a50(void *obj, s32 v);
-BOOL func_02096880(void);
+s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
+BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
@@ -170,8 +170,8 @@ extern "C" void func_0206f5ac(u8 *p, u32 code) {
     void *buf = Heap_AllocTail(heap, 0xf4);
     s32 r = 0xb;
     MI_CpuCopy8(p + 1, buf, 0xf4);
-    if (func_02096a50(buf, 1)) {
-        if (func_02096880()) {
+    if (LetterDelivery_QueueOutgoing(buf, 1)) {
+        if (LetterDelivery_HasFreeOutgoingSlot()) {
             r = 9;
         } else {
             r = 0xa;

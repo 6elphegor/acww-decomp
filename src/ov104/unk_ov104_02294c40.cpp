@@ -25,23 +25,23 @@ s32 func_0206f644();
 void func_02065c94(void *p);
 void func_02065e70(void *dst, void *src);
 void func_02065af0(u32 a);
-void func_0206ea2c(void *p);
-void func_0206ea3c(u32 a);
-s32 func_0206e90c();
-s32 func_0206e98c();
-void func_0206ecf8(s32 a);
+void MenuCtrl_SetFutureLetter(void *p);
+void MenuCtrl_SetPostOfficeResult(u32 a);
+s32 MenuCtrl_PostOfficeLettersSent();
+s32 MenuCtrl_GetPostOfficeOutcome();
+void MenuCtrl_SetResult(s32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-s32 func_02096914(void *p, s32 n);
-s32 func_020968e4(void *p, s32 n);
-s32 func_02096960(void *p);
-void func_02096a9c(void *p);
-s32 func_02096a0c(void *p);
-s32 func_020969b8(void *p);
-s32 func_02096acc(void *p, s32 a, s32 b);
-s32 func_02096a50(void *p, s32 a);
+s32 LetterList_Compact(void *p, s32 n);
+s32 LetterList_CountUsed(void *p, s32 n);
+s32 LetterDelivery_FindAddresseeVillager(void *p);
+void LetterDelivery_SendToVillager(void *p);
+s32 LetterDelivery_HasKnownAddressee(void *p);
+s32 LetterDelivery_FindAddresseePlayer(void *p);
+s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
+s32 LetterDelivery_QueueOutgoing(void *p, s32 a);
 void func_020968e0();
-void func_02096b74();
+void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
 void func_02099a98();
@@ -755,37 +755,37 @@ BOOL PostOfficeMenu::execClosed() {
     u32 r4;
     if (testFlags(0x400)) {
         PostOfficeMenu_RestorePocketLetters(this);
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     } else if (testFlags(0x800)) {
         if (testFlags(0x1000)) return TRUE;
         if ((unk_b0 & 4) != 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
+            MenuCtrl_SetResult(1);
         }
         returnUnsentLetters(1);
-        func_0206ea3c(unk_b0);
+        MenuCtrl_SetPostOfficeResult(unk_b0);
     } else {
-        func_0206ecf8(1);
+        MenuCtrl_SetResult(1);
         r4 = 0;
-        if (func_02096914(unk_2b0c, 10) <= 0) r4 = 4;
+        if (LetterList_Compact(unk_2b0c, 10) <= 0) r4 = 4;
         if (((Unk_02097ff4 *)PlayerData_GetCurrent())->func_02098044(1)) {
             r4 |= deliverVillagerLettersNow(unk_2b0c);
         }
         r4 |= takeOtherTownLetter(unk_2b0c);
         r4 |= checkSendLetters(unk_2b0c, 0);
         if ((r4 & 4) != 0) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else if ((r4 & 0x10) != 0) {
-            func_02096b74();
+            LetterDelivery_DeliverOutgoing();
             r4 |= queueLetters(unk_2b0c);
             if ((r4 & 0x20) != 0) {
                 r4 |= deliverToMailboxes(unk_2b0c);
             }
         }
         returnUnsentLetters(0);
-        func_0206ea3c(r4);
-        if (func_0206e98c() == 1 || func_0206e90c() != 0) {
+        MenuCtrl_SetPostOfficeResult(r4);
+        if (MenuCtrl_GetPostOfficeOutcome() == 1 || MenuCtrl_PostOfficeLettersSent() != 0) {
             func_02099a98();
         }
     }
@@ -2190,7 +2190,7 @@ u32 PostOfficeMenu::takeOtherTownLetter(void *p) {
         } else {
             r |= 1;
             u8 *e = (u8 *)p + t * 0xf4;
-            func_0206ea2c(e);
+            MenuCtrl_SetFutureLetter(e);
             func_02065c94(e);
         }
     }
@@ -2198,7 +2198,7 @@ u32 PostOfficeMenu::takeOtherTownLetter(void *p) {
 }
 
 u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
-    if (func_020968e4(p, 10) == 0) {
+    if (LetterList_CountUsed(p, 10) == 0) {
         return 0;
     }
     u16 r = 0;
@@ -2213,7 +2213,7 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
                     func_02065c94(q);
                 }
             } else if (((Unk_02065554 *)q)->func_02065554() == 0) {
-                if (func_02096a0c(q) != 0) {
+                if (LetterDelivery_HasKnownAddressee(q) != 0) {
                     if (queueLetterForDelivery(q) != 0) {
                         if (flag != 0) {
                             unk_b2 |= 1 << i;
@@ -2235,7 +2235,7 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
 
 u32 PostOfficeMenu::queueLetters(void *p) {
     u16 r = 0;
-    s32 n = func_02096914(p, 10);
+    s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
         return 0;
     }
@@ -2245,7 +2245,7 @@ u32 PostOfficeMenu::queueLetters(void *p) {
         if (((Unk_02065554 *)q)->func_02065578() != 1) {
             func_02065c94(q);
         } else if (((Unk_02065554 *)q)->func_02065554() == 0) {
-            if (func_02096a0c(q) != 0) {
+            if (LetterDelivery_HasKnownAddressee(q) != 0) {
                 if (queueLetterForDelivery(q) != 0) {
                     func_02065c94(q);
                     r |= 0x200;
@@ -2259,12 +2259,12 @@ u32 PostOfficeMenu::queueLetters(void *p) {
 }
 
 s32 PostOfficeMenu::queueLetterForDelivery(void *p) {
-    return func_02096a50(p, 1);
+    return LetterDelivery_QueueOutgoing(p, 1);
 }
 
 u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     u16 r = 0;
-    s32 n = func_02096914(p, 10);
+    s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
         return r;
     }
@@ -2278,10 +2278,10 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     s32 j;
     for (; i < n; q += 0xf4, i++) {
         if (((Unk_02065554 *)q)->func_02065554() == 0) {
-            t = func_020969b8(q);
+            t = LetterDelivery_FindAddresseePlayer(q);
             if (t != -2) {
                 if (t != -1) {
-                    if (func_02096acc(q, t, 1) != 0) {
+                    if (LetterDelivery_PutInMailbox(q, t, 1) != 0) {
                         func_02065c94(q);
                         r |= 0x200;
                     } else {
@@ -2292,8 +2292,8 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
                         }
                     }
                 } else {
-                    if (func_02096960(q) >= 0) {
-                        func_02096a9c(q);
+                    if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
+                        LetterDelivery_SendToVillager(q);
                         func_02065c94(q);
                         r |= 0x200;
                     }
@@ -2329,15 +2329,15 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
 
 u32 PostOfficeMenu::deliverVillagerLettersNow(void *p) {
     u16 r = 0;
-    s32 n = func_02096914(p, 10);
+    s32 n = LetterList_Compact(p, 10);
     if (n == 0) {
         return 0;
     }
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < n; q += 0xf4, i++) {
-        if (func_02096960(q) >= 0) {
-            func_02096a9c(q);
+        if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
+            LetterDelivery_SendToVillager(q);
             func_02065c94(q);
             r |= 0x200;
         }
@@ -2350,7 +2350,7 @@ void PostOfficeMenu::beginOnlineSend() {
     if (g->isOnline()) {
         setFlags(0x800);
         unk_b2 = 0;
-        s32 n = func_020968e4(unk_2b0c, 10);
+        s32 n = LetterList_CountUsed(unk_2b0c, 10);
         unk_b0 = 0;
         if (n <= 0) {
             unk_b0 = 4;
@@ -2409,7 +2409,7 @@ void PostOfficeMenu::updateOnlineSend() {
         if (((Unk_02065554 *)e)->func_02065554() == 0) {
             if (((Unk_02065554 *)e)->func_02065578() == 1) {
                 unk_b0 |= 0x100;
-                if (func_02096a0c(e) != 0) {
+                if (LetterDelivery_HasKnownAddressee(e) != 0) {
                     if (r6 == 10) {
                         unk_b0 |= 0x400;
                         clearFlags(0x1000);

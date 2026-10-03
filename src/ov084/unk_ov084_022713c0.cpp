@@ -58,7 +58,7 @@ BOOL func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
-void func_020ac7cc(u16 *p);
+void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
@@ -402,7 +402,7 @@ void func_0203c41c(void *p, u16 *q, s32 a);
 u32 _ZN12Unk_02087ad813func_02087b8cEv(void *p);
 void _ZN12Unk_02087ad813func_02087b4cEv(void *p);
 s32 _ZN8PlayerId9getGenderEv(void *p);
-u32 func_020a0414();
+u32 Net_GetJoiningAid();
 void func_020947c0(u16 *out, u32 v);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
 BOOL func_0202e3a4(void *p);
@@ -561,7 +561,7 @@ void SpNpcTortimerFireworksTalk::vfunc_78(TalkStartMsg *out) {
         }
     }
     if (func_0202e1cc(0x1e, 1)) {
-        func_020947c0(&h[0], func_020a0414());
+        func_020947c0(&h[0], Net_GetJoiningAid());
         h[2] = 0x137e;
         s32 t1 = func_02098eb0(&h[2]);
         BOOL f1 = FALSE;

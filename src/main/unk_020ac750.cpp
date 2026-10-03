@@ -193,7 +193,7 @@ struct Unk_02062f94_Ret {
     Unk_02062f94_Ret();
 };
 
-class MsgString {  // base of Unk_020e2e54
+class MsgString {  // base of ReddPasswordString
 public:
     MsgString();
     virtual ~MsgString();
@@ -201,57 +201,57 @@ public:
     u8 unk_04[0x30];
 };
 
-// ---- Unk_020e2e54 : MsgString ----
-class Unk_020e2e54 : public MsgString {
+// ---- ReddPasswordString : MsgString ----
+class ReddPasswordString : public MsgString {
 public:
-    Unk_020e2e54();
-    virtual ~Unk_020e2e54();
+    ReddPasswordString();
+    virtual ~ReddPasswordString();
     virtual u32 vfunc_08();
     virtual void *vfunc_0c();
 };
 
-struct Unk_020ad700 {
+struct ReddPassword {
     /* 0x00 */ u32 bits;
     /* 0x04 */ volatile s8 slot;
     /* 0x05 */ u8 flags;
 
-    Unk_020ad700();
-    ~Unk_020ad700();
+    ReddPassword();
+    ~ReddPassword();
     inline s8 getSlot() { return slot; }
-    void func_020ad700();
-    void func_020ad444(u32 i);
-    BOOL func_020ad45c(u32 i);
-    u32 func_020ad474();
-    BOOL func_020ad498();
-    void func_020ad500(u32 i);
-    void func_020ad518(u32 i);
-    BOOL func_020ad53c(u32 i);
-    void func_020ad568();
-    void func_020ad570();
-    BOOL func_020ad594();
-    u32 func_020ad5c0(void *w);
-    u8 func_020ad5f8();
-    u32 func_020ad618(void *w);
-    BOOL func_020ad650();
-    BOOL func_020ad680();
+    void clear();
+    void markUsed(u32 i);
+    BOOL isUsed(u32 i);
+    u32 countUnused();
+    BOOL setVisitorKnows();
+    void clearResidentKnows(u32 i);
+    void setResidentKnows(u32 i);
+    BOOL residentKnows(u32 i);
+    void clearAllResidentKnows();
+    void markLetterSent();
+    BOOL needsLetter();
+    u32 getAnswerText(void *w);
+    u8 getAnswerIndex();
+    u32 getPromptText(void *w);
+    BOOL dropPassword();
+    BOOL pickPassword();
 };
 
-class Unk_021ed2c0 {
+class ReddShop {
 public:
     /* 0x00 */ ItemId arr[3];
-    /* 0x08 */ Unk_020ad700 s;
+    /* 0x08 */ ReddPassword s;
     /* 0x10 */ u16 tbl[3];
 
-    Unk_021ed2c0();
-    ~Unk_021ed2c0();
-    void func_020ad040();
-    Unk_020ad700 *func_020ad3bc();
-    void func_020ad3c8();
-    void func_020ad3d8();
+    ReddShop();
+    ~ReddShop();
+    void restock();
+    ReddPassword *getPassword();
+    void clearStock();
+    void reset();
 };
 
-// ---- Unk_020acf38 group (u16 at +0) ----
-struct Unk_020acf38 {
+// ---- NookPoints group (u16 at +0) ----
+struct NookPoints {
     u16 v;
 };
 // ======== types of unk_020ad818.cpp ========
@@ -302,16 +302,16 @@ struct Counter {
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
 };
-struct Unk_020af238 {
-    Unk_020af238();
-    ~Unk_020af238();
+struct ShopAckCounter {
+    ShopAckCounter();
+    ~ShopAckCounter();
     u8 unk_00;
     u8 unk_01;
 };
 
 struct Elem2a { Elem2a(); u16 d; };
 struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
-struct Unk_020aec1c { u32 vt; ItemId e[0x25]; Unk_020aec1c(); };
+struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
 struct Bits5a {
     u16 unk_00 : 5;
@@ -335,19 +335,19 @@ struct Unk_021c47c4 {
     u32 unk_00, unk_04, unk_08;
 };
 extern const s32 data_020d0964;
-extern const u8 data_020d0968[4];
-extern const u8 data_020d096c[4];
-extern const u8 data_020d0970[4];
-extern const u8 data_020d0974[4];
-extern const u8 data_020d0978[4];
-extern const u8 data_020d097c[4];
-extern const u8 data_020d0980[4];
-extern const u8 data_020d0984[4];
-extern const u8 data_020d0988[4];
-extern const u16 data_020d098c[4];
-extern const u16 data_020d0994[6];
-extern const u8 data_020d09a0[6][3];
-extern const u16 data_020d09b4[12];
+extern const u8 kNookCarpetCounts[4];
+extern const u8 kNookPaintCounts[4];
+extern const u8 kNookWallpaperCounts[4];
+extern const u8 kNookStationeryCounts[4];
+extern const u8 kNookToolCounts[4];
+extern const u8 kNookFurnitureCounts[4];
+extern const u8 kNookFlowerBagCounts[4];
+extern const u8 kNookSaplingCounts[4];
+extern const u8 kNookBottleCounts[4];
+extern const u16 kNookMemberGiftItems[4];
+extern const u16 kNookPointRankThresholds[6];
+extern const u8 sReddStockOrders[6][3];
+extern const u16 kNookFlowerBagItems[12];
 
 // ======== unk_020aebbc.cpp ========
 namespace n5 {
@@ -355,13 +355,13 @@ extern "C" {
 void *__cxa_vec_cleanup(void *p, s32 n, s32 size, void *ctor);
 }
 extern "C" {
-void func_020ae870(void *p);
+void NookShop_ClearStock(void *p);
 }
 extern "C" {
-u8 *func_020aeac4(void *p);
+u8 *NookShop_GetRenovation(void *p);
 }
 extern "C" {
-u8 *func_020ae02c(void *p);
+u8 *NookShop_GetLevel(void *p);
 }
 extern "C" {
 s32 func_02076fc8(u8 *a, const void *b);
@@ -454,22 +454,22 @@ extern "C" {
 void func_020af488(u32 a);
 }
 extern "C" {
-void *func_ov004_02235718();
+void *FtrActorGrid_GetInstance();
 }
 extern "C" {
-void *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *a, s32 b, s32 c, s32 d);
+void *_ZN12FtrActorGrid8getActorEiii(void *a, s32 b, s32 c, s32 d);
 }
 extern "C" {
-void *func_ov004_0223584c();
+void *FtrActorTable_GetInstance();
 }
 extern "C" {
-void _ZN18Unk_ov004_0223583c19func_ov004_02235740EPv(void *a, void *b);
+void _ZN13FtrActorTable7indexOfEPv(void *a, void *b);
 }
 extern "C" {
-void func_ov004_022344dc();
+void FtrMgr_RemoveActorByIndex();
 }
 extern "C" {
-void func_020aee90(s32 x, s32 y, u32 a, s32 b);
+void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
 }
 extern "C" {
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
@@ -481,7 +481,7 @@ extern "C" {
 void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
 }
 extern "C" {
-void func_02096a50(void *a, s32 b);
+void LetterDelivery_QueueOutgoing(void *a, s32 b);
 }
 extern "C" {
 void _ZN6LetterC1Ev(void *a);
@@ -493,10 +493,10 @@ extern "C" {
 s32 Snowball_TryPushAny(s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-BOOL func_020af0a4(u32 i, u32 n, u8 *bits);
+BOOL StockList_IsSold(u32 i, u32 n, u8 *bits);
 }
 extern "C" {
-u16 *func_020af034(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
+u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out);
 }
 extern "C" {
 BOOL func_020af278(s32 m);
@@ -517,10 +517,10 @@ extern "C" {
 void func_020af290();
 }
 extern "C" {
-void func_020af230(Counter *p);
+void ShopAckCounter_Clear(Counter *p);
 }
 extern "C" {
-BOOL func_020af1ec(Counter *p);
+BOOL ShopAckCounter_IsDone(Counter *p);
 }
 extern "C" {
 extern u8 data_021ed104[];
@@ -535,16 +535,16 @@ extern "C" {
 extern u8 gCommManager[];
 }
 extern "C" {
-extern u8 data_021ee160[];
+extern u8 sShopAckCounter[];
 }
 extern "C" {
-extern u16 data_021ee164;
+extern u16 sStockNoItem;
 }
 extern "C" {
-extern u16 data_021ee168;
+extern u16 sStockSoldOutItem;
 }
 extern "C" {
-extern u8 data_021ee1f4[];
+extern u8 sShopRandom[];
 }
 extern "C" {
 extern u8 data_021ee240;
@@ -595,42 +595,42 @@ extern "C" {
 struct Loc488 { u8 a; u8 pad; u16 b; };
 }
 
-extern "C" void func_020aebbc(Unk_020aebbc *p);
+extern "C" void NookShop_Clear(Unk_020aebbc *p);
 
 }
-extern "C" Unk_020af238::Unk_020af238() {
-    using namespace n5; func_020af230((Counter *)this); }
+extern "C" ShopAckCounter::ShopAckCounter() {
+    using namespace n5; ShopAckCounter_Clear((Counter *)this); }
 
 namespace n5 {
 }
-extern "C" Unk_020af238::~Unk_020af238() {
-    using namespace n5; func_020af230((Counter *)this); }
+extern "C" ShopAckCounter::~ShopAckCounter() {
+    using namespace n5; ShopAckCounter_Clear((Counter *)this); }
 
 namespace n5 {
-extern "C" void func_020af230(Counter *c) {
+extern "C" void ShopAckCounter_Clear(Counter *c) {
     c->unk_00 = 0;
     c->unk_01 = 0;
 }
-extern "C" void func_020af1fc(Counter *c) {
+extern "C" void ShopAckCounter_Start(Counter *c) {
     c->unk_01 = 0;
     u8 *p = *(u8 **)gCommManager;
     if (_ZN11CommManager8isOnlineEv(p)) c->unk_00 = p[0x6c] - 1;
     else c->unk_00 = 0;
 }
-extern "C" BOOL func_020af1ec(Counter *c) {
+extern "C" BOOL ShopAckCounter_IsDone(Counter *c) {
     if (c->unk_01 >= c->unk_00) return TRUE;
     return FALSE;
 }
-extern "C" void func_020af1d8(Counter *c) {
+extern "C" void ShopAckCounter_Add(Counter *c) {
     if (c->unk_01 < c->unk_00) c->unk_01++;
-    func_020af1ec(c);
+    ShopAckCounter_IsDone(c);
 }
-extern "C" void func_020af160(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
+extern "C" void StockList_AddFromPickList(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
     if (n != 0) {
         u16 tmp;
         {
             ItemPickSpec o(r2, r3);
-            ItemPick_OneEx((u8 *)buf + *pos * 2, n, &o, 0, data_021ee1f4, 0, 1, 0);
+            ItemPick_OneEx((u8 *)buf + *pos * 2, n, &o, 0, sShopRandom, 0, 1, 0);
         }
         if (flag) {
             for (u32 i = 0; i < n; i++) {
@@ -642,10 +642,10 @@ extern "C" void func_020af160(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unu
         *pos += n;
     }
 }
-extern "C" void func_020af0f8(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
+extern "C" void StockList_AddFromRange(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
     if (n != 0) {
         u16 tmp;
-        ItemPick_FillFromRange((u8 *)buf + *pos * 2, n, r2, r3, 0, 0, 10, data_021ee1f4, 0);
+        ItemPick_FillFromRange((u8 *)buf + *pos * 2, n, r2, r3, 0, 0, 10, sShopRandom, 0);
         if (flag) {
             for (u32 i = 0; i < n; i++) {
                 s32 off = (i + *pos) * 2;
@@ -656,51 +656,51 @@ extern "C" void func_020af0f8(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unu
         *pos += n;
     }
 }
-extern "C" void func_020af0c4(u16 *a, u8 *b, u32 n) {
+extern "C" void StockList_Clear(u16 *a, u8 *b, u32 n) {
     for (u32 i = 0; i < n; i++) a[i] = 0xfff1;
     u32 m = n / 8 + 1;
     for (u32 j = 0; j < m; j++) b[j] = 0;
 }
-extern "C" BOOL func_020af0a4(u32 i, u32 n, u8 *bits) {
+extern "C" BOOL StockList_IsSold(u32 i, u32 n, u8 *bits) {
     if (i < n) {
         if ((bits[i >> 3] >> (i & 7)) & 1) return TRUE;
         return FALSE;
     }
     return TRUE;
 }
-extern "C" BOOL func_020af070(u32 i, u32 n, u8 *bits) {
-    if (i < n && !func_020af0a4(i, n, bits)) {
+extern "C" BOOL StockList_MarkSold(u32 i, u32 n, u8 *bits) {
+    if (i < n && !StockList_IsSold(i, n, bits)) {
         bits[i >> 3] |= 1 << (i & 7);
         return TRUE;
     }
     return FALSE;
 }
-extern "C" u16 *func_020af034(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out) {
+extern "C" u16 *StockList_GetItem(u32 i, u16 *arr, u8 *bits, u32 n, u16 *out) {
     if (i < n) {
         u16 *p = arr + i;
         if (out) *out = *p;
-        if (func_020af0a4(i, n, bits)) return &data_021ee168;
+        if (StockList_IsSold(i, n, bits)) return &sStockSoldOutItem;
         return p;
     }
-    return &data_021ee164;
+    return &sStockNoItem;
 }
-extern "C" s32 func_020aef80(u16 *key, u16 *arr, u8 *bits, u32 n) {
+extern "C" s32 StockList_FindItem(u16 *key, u16 *arr, u8 *bits, u32 n) {
     u32 i;
     for (i = 0; i < n; i++) {
-        u16 *p = func_020af034(i, arr, bits, n, 0);
+        u16 *p = StockList_GetItem(i, arr, bits, n, 0);
         BOOL eq;
         if (Item_IsFurniture(p)) eq = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(key);
         else eq = *p == *key;
         if (eq) {
             BOOL eq2;
-            if (Item_IsFurniture(key)) eq2 = Item_GetFurnitureIndex(key) == Item_GetFurnitureIndex(&data_021ee168);
-            else eq2 = *key == data_021ee168;
+            if (Item_IsFurniture(key)) eq2 = Item_GetFurnitureIndex(key) == Item_GetFurnitureIndex(&sStockSoldOutItem);
+            else eq2 = *key == sStockSoldOutItem;
             if (!eq2) return i;
         }
     }
     return -1;
 }
-extern "C" void func_020aee90(s32 x, s32 y, u32 a, s32 b) {
+extern "C" void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b) {
     if (IsZ()) return;
     if (a != func_020b50e8()) return;
     void *w = gSceneBlockMap;
@@ -709,22 +709,22 @@ extern "C" void func_020aee90(s32 x, s32 y, u32 a, s32 b) {
     void *o = BlockMap_GetItemPtr(w, bx, by, x - (bx << 4), y - (by << 4), 0);
     if (o == 0) return;
     if (Item_IsFurnitureOrF031()) {
-        void *r = func_ov004_02235718();
-        void *t = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(r, x, y, 0);
+        void *r = FtrActorGrid_GetInstance();
+        void *t = _ZN12FtrActorGrid8getActorEiii(r, x, y, 0);
         if (t != 0) {
-            _ZN18Unk_ov004_0223583c19func_ov004_02235740EPv(func_ov004_0223584c(), t);
-            func_ov004_022344dc();
+            _ZN13FtrActorTable7indexOfEPv(FtrActorTable_GetInstance(), t);
+            FtrMgr_RemoveActorByIndex();
         }
         if (b != 0) Snd_PlaySe(0x2e);
     } else if (Item_IsNormalItem(o)) {
         u16 *pc = (u16 *)o;
         if (!R1(pc, 0x1000, 0x10ff)) {
-            if (!R2(pc, 0x151f, 0x151f)) BlockMap_SetItemAtUnit(w, &data_021ee168, x, y, 0);
+            if (!R2(pc, 0x151f, 0x151f)) BlockMap_SetItemAtUnit(w, &sStockSoldOutItem, x, y, 0);
         }
         if (b != 0) Snd_PlaySe(0x2e);
     }
 }
-extern "C" void func_020aedc4(u16 *p, u32 a, s32 b) {
+extern "C" void Shop_RemoveSoldItem(u16 *p, u32 a, s32 b) {
     if (IsZ()) return;
     if (a != func_020b50e8()) return;
     Unk_021c47c4 *s = gSceneBlockMap;
@@ -741,18 +741,18 @@ extern "C" void func_020aedc4(u16 *p, u32 a, s32 b) {
             if (Item_IsFurniture(e)) eq = Item_GetFurnitureIndex(e) == Item_GetFurnitureIndex(p);
             else eq = *e == *p;
             if (eq) {
-                func_020aee90(x, y, a, b);
+                Shop_RemoveSoldItemAt(x, y, a, b);
                 return;
             }
         }
     }
 }
-extern "C" void func_020aed98(s32 a, s32 b) {
+extern "C" void NookShop_PostPointSpecialNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(0, a);
     MailText_SetSlotDayOrdinal(1, b);
     func_02076fc8(func_02063b8c(2), "bbs_shopinfo");
 }
-extern "C" void func_020aed48(s32 x) {
+extern "C" void NookShop_PostSaleNotice(s32 x) {
     MsgString25 o;
     s32 m = x % 12;
     m = (u8)m;
@@ -760,25 +760,25 @@ extern "C" void func_020aed48(s32 x) {
     MailText_SetSlot(2, &o);
     func_02076fc8(func_02063b8c(2) + 2, "bbs_shopinfo");
 }
-extern "C" void func_020aed14(u16 *s) {
+extern "C" void NookShop_PostSpecialItemNotice(u16 *s) {
     ItemName str(s);
     MailText_SetSlot(3, &str);
     func_02076fc8(func_02063b8c(2) + 4, "bbs_shopinfo");
 }
-extern "C" void func_020aece4(s32 a, s32 b) {
+extern "C" void NookShop_PostRenovationNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(2, a);
     MailText_SetSlotDayOrdinal(3, b);
-    func_02076fc8(func_020ae02c(data_021ed104), "bbs_raccoon");
+    func_02076fc8(NookShop_GetLevel(data_021ed104), "bbs_raccoon");
 }
-extern "C" s32 func_020aecc4() {
-    return func_02076fc8(func_020ae02c(data_021ed104) + 3, "bbs_raccoon");
+extern "C" s32 NookShop_PostReopenNotice() {
+    return func_02076fc8(NookShop_GetLevel(data_021ed104) + 3, "bbs_raccoon");
 }
-extern "C" BOOL func_020aec74(Unk_020aec74_Out *out) {
+extern "C" BOOL NookShop_GetReopenDateTime(Unk_020aec74_Out *out) {
     u8 *h = data_021ed104;
-    if (func_020aeac4(h)[3] != 0) {
-        out->unk_05 = func_020aeac4(h)[2];
-        out->unk_04 = func_020aeac4(h)[1];
-        out->unk_03 = func_020aeac4(h)[0];
+    if (NookShop_GetRenovation(h)[3] != 0) {
+        out->unk_05 = NookShop_GetRenovation(h)[2];
+        out->unk_04 = NookShop_GetRenovation(h)[1];
+        out->unk_03 = NookShop_GetRenovation(h)[0];
         out->unk_02 = 6;
         out->unk_01 = 0;
         out->unk_00 = 0;
@@ -787,15 +787,15 @@ extern "C" BOOL func_020aec74(Unk_020aec74_Out *out) {
     }
     return FALSE;
 }
-extern "C" BOOL func_020aec4c() {
+extern "C" BOOL Shop_IsPurchaseSynced() {
     if (_ZN11CommManager8isOnlineEv(*(void **)gCommManager)) {
-        return func_020af1ec((Counter *)data_021ee160);
+        return ShopAckCounter_IsDone((Counter *)sShopAckCounter);
     }
     return TRUE;
 }
 }
-extern "C" Unk_020aec1c::Unk_020aec1c() {
-    using namespace n5; func_020aebbc((Unk_020aebbc *)this); }
+extern "C" NookShop::NookShop() {
+    using namespace n5; NookShop_Clear((Unk_020aebbc *)this); }
 
 namespace n5 {
 }
@@ -803,8 +803,8 @@ extern "C" Unk_020aec00::Unk_020aec00() {
     using namespace n5; __cxa_vec_cleanup(&e, 0x25, 2, (void *)_ZN6ItemIdD1Ev); }
 
 namespace n5 {
-extern "C" void func_020aebbc(Unk_020aebbc *p) {
-    func_020ae870(p);
+extern "C" void NookShop_Clear(Unk_020aebbc *p) {
+    NookShop_ClearStock(p);
     p->unk_5a.unk_09 = 0;
     p->unk_00 = 0;
     p->unk_5a.unk_00 = 0;
@@ -816,20 +816,20 @@ extern "C" void func_020aebbc(Unk_020aebbc *p) {
 // ======== unk_020ae290.cpp ========
 namespace n4 {
 extern "C" {
-extern u8 data_021ed2d4[], gCommManager[], data_021d735c[], data_021ee1f4[], data_021ee17c[], data_021ee180[],
+extern u8 data_021ed2d4[], gCommManager[], data_021d735c[], sShopRandom[], data_021ee17c[], data_021ee180[],
     data_021ee20c[], gSaveData[], data_021ed104[];
 }
 extern "C" {
 void MI_CpuCopy8(void*, void*, int);
 }
 extern "C" {
-void func_020ad9c4(void*);
+void AbleShop_UpdateDaily(void*);
 }
 extern "C" {
-int func_020ac79c();
+int NookShop_GetVisitState();
 }
 extern "C" {
-void func_020ac790(int);
+void NookShop_SetVisitState(int);
 }
 extern "C" {
 void func_020b4994();
@@ -856,7 +856,7 @@ extern "C" {
 int _ZN11CommManager8isOnlineEv(int);
 }
 extern "C" {
-void func_020ace7c();
+void NookPoints_SendMemberLetters();
 }
 extern "C" {
 int func_020978a4(void*);
@@ -874,13 +874,13 @@ extern "C" {
 int _ZN22DateSeededRandomSource6randomEj(void*, int);
 }
 extern "C" {
-void func_020aed48(u8);
+void NookShop_PostSaleNotice(u8);
 }
 extern "C" {
-void func_020aed14(u16*);
+void NookShop_PostSpecialItemNotice(u16*);
 }
 extern "C" {
-void func_020aece4(u8, u8);
+void NookShop_PostRenovationNotice(u8, u8);
 }
 extern "C" {
 int Item_IsFurniture(u16*);
@@ -892,49 +892,49 @@ extern "C" {
 int func_020626cc(u16*, int);
 }
 extern "C" {
-int func_020aec74(WindowLight*);
+int NookShop_GetReopenDateTime(WindowLight*);
 }
 extern "C" {
 void _ZN22DateSeededRandomSource4seedEhhh(void*, int, int, int);
 }
 extern "C" {
-void func_020add64(Obj*, int*);
+void NookShop_StockTools(Obj*, int*);
 }
 extern "C" {
-void func_020add3c(Obj*, int*);
+void NookShop_StockFurniture(Obj*, int*);
 }
 extern "C" {
-void func_020adcec(Obj*, int*);
+void NookShop_StockFlowerBags(Obj*, int*);
 }
 extern "C" {
-void func_020adcbc(Obj*, int*);
+void NookShop_StockSaplings(Obj*, int*);
 }
 extern "C" {
-void func_020adc94(Obj*, int*);
+void NookShop_StockWallpaper(Obj*, int*);
 }
 extern "C" {
-void func_020adc6c(Obj*, int*);
+void NookShop_StockCarpets(Obj*, int*);
 }
 extern "C" {
-void func_020adc44(Obj*, int*);
+void NookShop_StockStationery(Obj*, int*);
 }
 extern "C" {
-void func_020adbd0(Obj*, int*);
+void NookShop_StockPaint(Obj*, int*);
 }
 extern "C" {
-void func_020adba0(Obj*, int*);
+void NookShop_StockBottle(Obj*, int*);
 }
 extern "C" {
-void func_020adb70(Obj*, int*);
+void NookShop_StockMedicine(Obj*, int*);
 }
 extern "C" {
-int func_020ae02c(Obj*);
+int NookShop_GetLevel(Obj*);
 }
 extern "C" {
-void func_020ae03c(Obj*);
+void NookShop_RestockEnd(Obj*);
 }
 extern "C" {
-void func_020ae040(Obj*, WindowLight*);
+void NookShop_UpdatePointSpecial(Obj*, WindowLight*);
 }
 extern "C" {
 int _ZN8SaveData8testFlagEj(void*, int);
@@ -943,19 +943,19 @@ extern "C" {
 void _ZN8SaveData7setFlagEj(void*, int);
 }
 extern "C" {
-int func_020aef80(int, u16*, u8*, int);
+int StockList_FindItem(int, u16*, u8*, int);
 }
 extern "C" {
-u16* func_020af034(int, u16*, u8*, int, u16*);
+u16* StockList_GetItem(int, u16*, u8*, int, u16*);
 }
 extern "C" {
-int func_020af0a4(int, int, u8*);
+int StockList_IsSold(int, int, u8*);
 }
 extern "C" {
-int func_020aebbc(int);
+int NookShop_Clear(int);
 }
 extern "C" {
-void func_020af0c4(u16*, u8*, int);
+void StockList_Clear(u16*, u8*, int);
 }
 
 
@@ -964,58 +964,58 @@ static inline BOOL inRange(u16 v, u16 lo, u16 hi) {
     if (v >= lo && v <= hi) r = TRUE;
     return r;
 }extern "C" {
-S4* func_020aeac4(Obj* self);
+S4* NookShop_GetRenovation(Obj* self);
 }
 extern "C" {
-void func_020ae778(Obj* self);
+void NookShop_ScheduleRenovation(Obj* self);
 }
 extern "C" {
-u16* func_020ae844(Obj* self, int idx, u16* p);
+u16* NookShop_GetItem(Obj* self, int idx, u16* p);
 }
 extern "C" {
-int func_020ae860(Obj* self, int idx);
+int NookShop_IsSold(Obj* self, int idx);
 }
 extern "C" {
-void func_020ae870(Obj* self);
+void NookShop_ClearStock(Obj* self);
 }
 extern "C" {
-u32 func_020ae8d0(Obj* self, int mode);
+u32 NookShop_GetUpgradeSales(Obj* self, int mode);
 }
 extern "C" {
-int func_020ae888(Obj* self);
+int NookShop_GetEarnedLevel(Obj* self);
 }
 extern "C" {
-int func_020ae964(Obj* self, WindowLight* d);
+int NookShop_IsClosedOn(Obj* self, WindowLight* d);
 }
 extern "C" {
-int func_020aeb38(Obj* self, WindowLight* d);
+int NookShop_IsPointSpecialDay(Obj* self, WindowLight* d);
 }
 extern "C" {
-int func_020ae920(Obj* self, WindowLight* d);
+int NookShop_IsClosedNextDay(Obj* self, WindowLight* d);
 }
 extern "C" {
-void func_020ae648(Obj* self, int f);
+void NookShop_NoteBuyer(Obj* self, int f);
 }
 extern "C" {
-void func_020aece4(u8, u8);
+void NookShop_PostRenovationNotice(u8, u8);
 }
 extern "C" {
-int func_020aea04(Obj* self, WindowLight* d);
+int NookShop_IsReopenDue(Obj* self, WindowLight* d);
 }
 extern "C" {
-int func_020ae8fc(Obj*);
+int NookShop_IsClosedTomorrow(Obj*);
 }
 extern "C" {
-int func_020ae638(void*);
+int NookShop_HasVisitorBought(void*);
 }
 extern "C" {
-void func_020ae320(Obj* self, int a, int b, int c);
+void NookShop_Restock(Obj* self, int a, int b, int c);
 }
 extern "C" {
-int func_020ae2d4(Obj* self, WindowLight* d);
+int NookShop_IsStockStale(Obj* self, WindowLight* d);
 }
 extern "C" {
-void func_020ae29c(Obj* self, WindowLight* d);
+void NookShop_SetStockDate(Obj* self, WindowLight* d);
 }
 extern "C" {
 static inline BOOL inRangeP(u16* p, u16 lo, u16 hi) {
@@ -1031,7 +1031,7 @@ struct Rgba {
 }
 
 
-extern "C" BOOL func_020aeb80(Obj* self) {
+extern "C" BOOL NookShop_IsSaleTime(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
@@ -1043,45 +1043,45 @@ extern "C" BOOL func_020aeb80(Obj* self) {
     }
     return FALSE;
 }
-extern "C" int func_020aeb38(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsPointSpecialDay(Obj* self, WindowLight* d) {
     if (_ZN8SaveData8testFlagEj(gSaveData, 5) != 0 && self->date2[2] == d->f && self->date2[1] == d->e &&
         self->date2[0] == d->d)
         return TRUE;
     return FALSE;
 }
-extern "C" int func_020aeb14(Obj* self) {
+extern "C" int NookShop_IsPointSpecialToday(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
-    return func_020aeb38(self, &d);
+    return NookShop_IsPointSpecialDay(self, &d);
 }
 extern "C" BOOL func_020aeac8(Obj* self) {
     int z = 0;
     u32 i;
     for (i = 0; i < 0x25; i++) {
         u16 v = 0xfff1;
-        u16* p = func_020ae844(self, i, &v);
+        u16* p = NookShop_GetItem(self, i, &v);
         if (Item_IsFurniture(p) != 0 && func_020626cc(p, z) == 4) return TRUE;
     }
     return FALSE;
 }
-extern "C" S4* func_020aeac4(Obj* self) {
+extern "C" S4* NookShop_GetRenovation(Obj* self) {
     return &self->s;
 }
-extern "C" Rgba func_020aea38(Obj* self) {
+extern "C" Rgba NookShop_GetClosedDate(Obj* self) {
     Rgba r;
     WindowLight d;
     r.d = 0;
     r.a = r.d;
     r.b = r.a;
     r.c = r.b;
-    if (func_020aeac4(self)->flag != 0) {
+    if (NookShop_GetRenovation(self)->flag != 0) {
         ((u32*)&d)[0] = 0;
         ((u32*)&d)[1] = 0;
-        d.f = func_020aeac4(self)->c;
-        d.e = func_020aeac4(self)->b;
-        d.d = func_020aeac4(self)->a;
+        d.f = NookShop_GetRenovation(self)->c;
+        d.e = NookShop_GetRenovation(self)->b;
+        d.d = NookShop_GetRenovation(self)->a;
         d.c = 6;
         d.b = 0;
         d.a = 0;
@@ -1093,30 +1093,30 @@ extern "C" Rgba func_020aea38(Obj* self) {
     }
     return r;
 }
-extern "C" int func_020aea04(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsReopenDue(Obj* self, WindowLight* d) {
     WindowLight t;
     ((u32*)&t)[0] = 0;
     ((u32*)&t)[1] = 0;
-    if (func_020aec74(&t) != 0) {
+    if (NookShop_GetReopenDateTime(&t) != 0) {
         if ((u32)(DateTime_Compare(&t, d, 0x3c) + 1) <= 1) return TRUE;
     }
     return FALSE;
 }
-extern "C" int func_020ae9e0(Obj* self) {
+extern "C" int NookShop_IsReopenDueNow(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
-    return func_020aea04(self, &d);
+    return NookShop_IsReopenDue(self, &d);
 }
-extern "C" int func_020ae964(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsClosedOn(Obj* self, WindowLight* d) {
     WindowLight t;
-    if (func_020aeac4(self)->flag != 0) {
+    if (NookShop_GetRenovation(self)->flag != 0) {
         ((u32*)&t)[0] = 0;
         ((u32*)&t)[1] = 0;
-        t.f = func_020aeac4(self)->c;
-        t.e = func_020aeac4(self)->b;
-        t.d = func_020aeac4(self)->a;
+        t.f = NookShop_GetRenovation(self)->c;
+        t.e = NookShop_GetRenovation(self)->b;
+        t.d = NookShop_GetRenovation(self)->a;
         t.c = 6;
         t.b = 0;
         t.a = 0;
@@ -1127,25 +1127,25 @@ extern "C" int func_020ae964(Obj* self, WindowLight* d) {
     }
     return FALSE;
 }
-extern "C" int func_020ae940(Obj* self) {
+extern "C" int NookShop_IsClosedToday(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
-    return func_020ae964(self, &d);
+    return NookShop_IsClosedOn(self, &d);
 }
-extern "C" int func_020ae920(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsClosedNextDay(Obj* self, WindowLight* d) {
     DateTime_AddDays(d, 1);
-    return func_020ae964(self, d);
+    return NookShop_IsClosedOn(self, d);
 }
-extern "C" int func_020ae8fc(Obj* self) {
+extern "C" int NookShop_IsClosedTomorrow(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
-    return func_020ae920(self, &d);
+    return NookShop_IsClosedNextDay(self, &d);
 }
-extern "C" u32 func_020ae8d0(Obj* self, int mode) {
+extern "C" u32 NookShop_GetUpgradeSales(Obj* self, int mode) {
     switch (mode) {
     case 0: return 0x61a8;
     case 1: return 0x15f90;
@@ -1153,104 +1153,104 @@ extern "C" u32 func_020ae8d0(Obj* self, int mode) {
     default: return 0x3a980;
     }
 }
-extern "C" int func_020ae888(Obj* self) {
-    int t = func_020ae02c(self);
+extern "C" int NookShop_GetEarnedLevel(Obj* self) {
+    int t = NookShop_GetLevel(self);
     if (t == 3) return t;
-    if (self->timer >= func_020ae8d0(self, t)) {
-        int r = func_020ae638(data_021ed104);
+    if (self->timer >= NookShop_GetUpgradeSales(self, t)) {
+        int r = NookShop_HasVisitorBought(data_021ed104);
         if (t == 2) {
             if (r != 0) return t + 1;
         } else {
             return t + 1;
         }
     }
-    return func_020ae02c(self);
+    return NookShop_GetLevel(self);
 }
-extern "C" int func_020ae880(int a) {
-    return func_020aebbc(a);
+extern "C" int NookShop_InitNew(int a) {
+    return NookShop_Clear(a);
 }
-extern "C" void func_020ae870(Obj* self) {
-    func_020af0c4(self->items, self->mask, 0x25);
+extern "C" void NookShop_ClearStock(Obj* self) {
+    StockList_Clear(self->items, self->mask, 0x25);
 }
-extern "C" int func_020ae860(Obj* self, int idx) {
-    return func_020af0a4(idx, 0x25, self->mask);
+extern "C" int NookShop_IsSold(Obj* self, int idx) {
+    return StockList_IsSold(idx, 0x25, self->mask);
 }
-extern "C" u16* func_020ae844(Obj* self, int idx, u16* p) {
-    return func_020af034(idx, self->items, self->mask, 0x25, p);
+extern "C" u16* NookShop_GetItem(Obj* self, int idx, u16* p) {
+    return StockList_GetItem(idx, self->items, self->mask, 0x25, p);
 }
-extern "C" int func_020ae82c(Obj* self, int arg) {
-    return func_020aef80(arg, self->items, self->mask, 0x25);
+extern "C" int NookShop_FindItem(Obj* self, int arg) {
+    return StockList_FindItem(arg, self->items, self->mask, 0x25);
 }
-extern "C" void func_020ae778(Obj* self) {
+extern "C" void NookShop_ScheduleRenovation(Obj* self) {
     WindowLight d;
     WindowLight t;
-    int r4 = func_020ae888(self);
+    int r4 = NookShop_GetEarnedLevel(self);
     if (_ZN11CommManager8isOnlineEv(*(int*)gCommManager) != 0) return;
-    if (func_020ae02c(self) >= r4) return;
-    if (func_020aeac4(self)->flag != 0) return;
+    if (NookShop_GetLevel(self) >= r4) return;
+    if (NookShop_GetRenovation(self)->flag != 0) return;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
     DateTime_AddDays(&d, 2);
     MI_CpuCopy8(&d, &t, 8);
     DateTime_SubDays(&t, 1);
-    if (func_020aeb38(self, &t) != 0) DateTime_AddDays(&d, 1);
-    func_020aeac4(self)->flag = 1;
+    if (NookShop_IsPointSpecialDay(self, &t) != 0) DateTime_AddDays(&d, 1);
+    NookShop_GetRenovation(self)->flag = 1;
     u8 u;
     u = d.f;
-    func_020aeac4(self)->c = u;
+    NookShop_GetRenovation(self)->c = u;
     u = d.e;
-    func_020aeac4(self)->b = u;
+    NookShop_GetRenovation(self)->b = u;
     u = d.d;
-    func_020aeac4(self)->a = u;
+    NookShop_GetRenovation(self)->a = u;
     DateTime_SubDays(&d, 1);
-    func_020aece4(d.e, d.d);
+    NookShop_PostRenovationNotice(d.e, d.d);
 }
-extern "C" void func_020ae740(Obj* self, int add, int arg) {
-    u32 lim = func_020ae8d0(self, func_020ae02c(self));
+extern "C" void NookShop_AddSales(Obj* self, int add, int arg) {
+    u32 lim = NookShop_GetUpgradeSales(self, NookShop_GetLevel(self));
     self->timer += add;
     if (self->timer > lim) self->timer = lim;
-    func_020ae648(self, arg);
-    func_020ae778(self);
+    NookShop_NoteBuyer(self, arg);
+    NookShop_ScheduleRenovation(self);
 }
-extern "C" BOOL func_020ae664(Obj* self, u32 idx, int add, int arg) {
+extern "C" BOOL NookShop_SellSlot(Obj* self, u32 idx, int add, int arg) {
     if (idx < 0x25) {
-        u32 lim = func_020ae8d0(self, func_020ae02c(self));
+        u32 lim = NookShop_GetUpgradeSales(self, NookShop_GetLevel(self));
         self->timer += add;
         if (self->timer > lim) self->timer = lim;
-        if (func_020ae860(self, idx) == 0) {
+        if (NookShop_IsSold(self, idx) == 0) {
             u32 byte = idx >> 3;
             u32 bit = idx & 7;
-            if (!inRangeP(func_020ae844(self, idx, 0), 0x1000, 0x10ff)) {
-                if (!inRangeP(func_020ae844(self, idx, 0), 0x151f, 0x151f)) {
+            if (!inRangeP(NookShop_GetItem(self, idx, 0), 0x1000, 0x10ff)) {
+                if (!inRangeP(NookShop_GetItem(self, idx, 0), 0x151f, 0x151f)) {
                     self->mask[byte] |= 1 << bit;
                 }
             }
         }
-        func_020ae648(self, arg);
-        func_020ae778(self);
+        NookShop_NoteBuyer(self, arg);
+        NookShop_ScheduleRenovation(self);
         return TRUE;
     } else {
-        u32 lim = func_020ae8d0(self, func_020ae02c(self));
+        u32 lim = NookShop_GetUpgradeSales(self, NookShop_GetLevel(self));
         self->timer += add;
         if (self->timer > lim) self->timer = lim;
-        func_020ae648(self, arg);
-        func_020ae778(self);
+        NookShop_NoteBuyer(self, arg);
+        NookShop_ScheduleRenovation(self);
         return FALSE;
     }
 }
-extern "C" void func_020ae648(Obj* self, int flag) {
+extern "C" void NookShop_NoteBuyer(Obj* self, int flag) {
     if (flag == 0) _ZN8SaveData7setFlagEj(gSaveData, 7);
 }
-extern "C" int func_020ae638(void*) {
+extern "C" int NookShop_HasVisitorBought(void*) {
     return _ZN8SaveData8testFlagEj(gSaveData, 7);
 }
 }
 u32 data_020e2e34 = 3;
-DateSeededRandomSource data_021ee1f4;
-const u8 data_020d0984[4] = {0, 1, 2, 3};
+DateSeededRandomSource sShopRandom;
+const u8 kNookSaplingCounts[4] = {0, 1, 2, 3};
 namespace n4 {
-extern "C" void func_020ae3a4(Obj* self, int force) {
+extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     int fresh;
     WindowLight d;
     int ok;
@@ -1258,9 +1258,9 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
     int n;
     void* p;
 
-    func_020ad9c4(data_021ed2d4);
-    if (func_020ac79c() == 1) {
-        func_020ac790(2);
+    AbleShop_UpdateDaily(data_021ed2d4);
+    if (NookShop_GetVisitState() == 1) {
+        NookShop_SetVisitState(2);
         return;
     }
     func_020b4994();
@@ -1277,12 +1277,12 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
         DateTime_SubDays(&d, fresh);
         fresh = 0;
     }
-    if (force == 0 && func_020ae2d4(self, &d) == 0) return;
+    if (force == 0 && NookShop_IsStockStale(self, &d) == 0) return;
     self->flags.v = 0;
     if (_ZN11CommManager8isOnlineEv(*(int*)gCommManager) != 0) return;
-    func_020ace7c();
-    func_020ae29c(self, &d);
-    func_020ae320(self, d.f, d.e, d.d);
+    NookPoints_SendMemberLetters();
+    NookShop_SetStockDate(self, &d);
+    NookShop_Restock(self, d.f, d.e, d.d);
     ok = 1;
     int cnt = func_020978a4(data_021d735c);
     if (cnt != 0 && cnt != 1) {
@@ -1294,20 +1294,20 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
             }
         }
     }
-    if (ok == 0 && func_020aeac4(self)->flag == 0) {
-        func_020ae040(self, &d);
-        if (_ZN22DateSeededRandomSource6randomEj(data_021ee1f4, 0xe) == 0) {
-            self->flags.v = (u8)(_ZN22DateSeededRandomSource6randomEj(data_021ee1f4, 4) + 0x11);
-            if (fresh != 0) func_020aed48(self->flags.v);
+    if (ok == 0 && NookShop_GetRenovation(self)->flag == 0) {
+        NookShop_UpdatePointSpecial(self, &d);
+        if (_ZN22DateSeededRandomSource6randomEj(sShopRandom, 0xe) == 0) {
+            self->flags.v = (u8)(_ZN22DateSeededRandomSource6randomEj(sShopRandom, 4) + 0x11);
+            if (fresh != 0) NookShop_PostSaleNotice(self->flags.v);
         }
-        if (self->flags.v == 0 && func_020aeb38(self, &d) == 0) {
+        if (self->flags.v == 0 && NookShop_IsPointSpecialDay(self, &d) == 0) {
             static ItemPickSpec sx(0, 4);
-            if (_ZN22DateSeededRandomSource6randomEj(data_021ee1f4, 5) == 0) {
+            if (_ZN22DateSeededRandomSource6randomEj(sShopRandom, 5) == 0) {
                 for (i = 0; (u32)i < 0x25; i++) {
                     u16* q = &self->items[i];
                     if (Item_IsFurniture(q) != 0) {
-                        *q = ItemPick_One(sx, 0, data_021ee1f4, 0, 1, 0).v;
-                        if (fresh != 0) func_020aed14(q);
+                        *q = ItemPick_One(sx, 0, sShopRandom, 0, 1, 0).v;
+                        if (fresh != 0) NookShop_PostSpecialItemNotice(q);
                         break;
                     }
                 }
@@ -1328,7 +1328,7 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
             if (Item_IsFurniture(q) != 0) {
                 if (n == 1) {
                     ItemPickSpec tmp(0, t);
-                    *q = ItemPick_One(tmp, 0, data_021ee1f4, 0, 1, 0).v;
+                    *q = ItemPick_One(tmp, 0, sShopRandom, 0, 1, 0).v;
                     break;
                 }
                 n++;
@@ -1336,30 +1336,30 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
         }
     }
 }
-extern "C" void func_020ae320(Obj* self, int a, int b, int c) {
+extern "C" void NookShop_Restock(Obj* self, int a, int b, int c) {
     int z;
-    func_020ae870(self);
+    NookShop_ClearStock(self);
     z = 0;
-    _ZN22DateSeededRandomSource4seedEhhh(data_021ee1f4, a, b, c);
-    func_020add64(self, &z);
-    func_020add3c(self, &z);
-    func_020adcec(self, &z);
-    func_020adcbc(self, &z);
-    func_020adc94(self, &z);
-    func_020adc6c(self, &z);
-    func_020adc44(self, &z);
-    func_020adbd0(self, &z);
-    func_020adba0(self, &z);
-    func_020adb70(self, &z);
-    func_020ae03c(self);
+    _ZN22DateSeededRandomSource4seedEhhh(sShopRandom, a, b, c);
+    NookShop_StockTools(self, &z);
+    NookShop_StockFurniture(self, &z);
+    NookShop_StockFlowerBags(self, &z);
+    NookShop_StockSaplings(self, &z);
+    NookShop_StockWallpaper(self, &z);
+    NookShop_StockCarpets(self, &z);
+    NookShop_StockStationery(self, &z);
+    NookShop_StockPaint(self, &z);
+    NookShop_StockBottle(self, &z);
+    NookShop_StockMedicine(self, &z);
+    NookShop_RestockEnd(self);
 }
-extern "C" int func_020ae2d4(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsStockStale(Obj* self, WindowLight* d) {
     WindowLight t;
     MI_CpuCopy8(d, &t, 8);
     if (self->date[2] != t.f || self->date[1] != t.e || self->date[0] != t.d || self->date[3] != 0) return TRUE;
     return FALSE;
 }
-extern "C" void func_020ae29c(Obj* self, WindowLight* d) {
+extern "C" void NookShop_SetStockDate(Obj* self, WindowLight* d) {
     WindowLight t;
     MI_CpuCopy8(d, &t, 8);
     self->date[2] = t.f;
@@ -1367,7 +1367,7 @@ extern "C" void func_020ae29c(Obj* self, WindowLight* d) {
     self->date[0] = t.d;
     self->date[3] = 0;
 }
-extern "C" BOOL func_020ae290(int x) {
+extern "C" BOOL NookShop_IsBlockingEvent(int x) {
     if (x < 0x1c) return TRUE;
     return FALSE;
 }
@@ -1376,16 +1376,16 @@ extern "C" BOOL func_020ae290(int x) {
 // ======== unk_020ad818.cpp ========
 namespace n3 {
 extern "C" {
-extern u8 data_020d0988[], data_020d096c[], data_020d0974[], data_020d0968[], data_020d0970[], data_020d0984[], data_020d0980[], data_020d097c[], data_020d0978[];
+extern u8 kNookBottleCounts[], kNookPaintCounts[], kNookStationeryCounts[], kNookCarpetCounts[], kNookWallpaperCounts[], kNookSaplingCounts[], kNookFlowerBagCounts[], kNookFurnitureCounts[], kNookToolCounts[];
 }
 extern "C" {
-extern u16 data_020d09b4[];
+extern u16 kNookFlowerBagItems[];
 }
 extern "C" {
 extern u8 data_021ed104[];
 }
 extern "C" {
-extern u8 data_021ee1f4[];
+extern u8 sShopRandom[];
 }
 extern "C" {
 extern u8 gSaveData[];
@@ -1409,22 +1409,22 @@ extern "C" {
 void MI_CpuCopy8(const void*, void*, u32);
 }
 extern "C" {
-u32 func_020af070(u32, u32, void*);
+u32 StockList_MarkSold(u32, u32, void*);
 }
 extern "C" {
-void func_020aef80(u32, void*, void*, u32);
+void StockList_FindItem(u32, void*, void*, u32);
 }
 extern "C" {
-u16* func_020af034(u32, void*, void*, u32, u32);
+u16* StockList_GetItem(u32, void*, void*, u32, u32);
 }
 extern "C" {
-void func_020af0c4(void*, void*, u32);
+void StockList_Clear(void*, void*, u32);
 }
 extern "C" {
-void func_020af0f8(void*, void*, u32, u32, u32, u32, u32);
+void StockList_AddFromRange(void*, void*, u32, u32, u32, u32, u32);
 }
 extern "C" {
-void func_020af160(void*, void*, u32, u32, u32, u32, u32);
+void StockList_AddFromPickList(void*, void*, u32, u32, u32, u32, u32);
 }
 extern "C" {
 void Clock_GetDateTime(V8*);
@@ -1448,22 +1448,22 @@ extern "C" {
 u32 func_02063b8c(u32);
 }
 extern "C" {
-void func_020ad798(S1*);
+void AbleShop_RestockEnd(S1*);
 }
 extern "C" {
-void func_020ad79c(S1*, u32*);
+void AbleShop_StockAccessory(S1*, u32*);
 }
 extern "C" {
-void func_020ad7b8(S1*, u32*);
+void AbleShop_StockHeadwear(S1*, u32*);
 }
 extern "C" {
-u32 func_020ac79c(void);
+u32 NookShop_GetVisitState(void);
 }
 extern "C" {
-u32 func_020ae9e0(void*);
+u32 NookShop_IsReopenDueNow(void*);
 }
 extern "C" {
-u32 func_020ae888(void*);
+u32 NookShop_GetEarnedLevel(void*);
 }
 extern "C" {
 void* TownBlockMap_Get(u32);
@@ -1484,16 +1484,16 @@ extern "C" {
 void MapBlock_SetItem(void*, void*, u32, u32, u32);
 }
 extern "C" {
-u32 func_020aec74(void*);
+u32 NookShop_GetReopenDateTime(void*);
 }
 extern "C" {
-void func_020aecc4(void);
+void NookShop_PostReopenNotice(void);
 }
 extern "C" {
-G* func_020aeac4(void*);
+G* NookShop_GetRenovation(void*);
 }
 extern "C" {
-void func_020ae3a4(void*, u32);
+void NookShop_UpdateDaily(void*, u32);
 }
 extern "C" {
 s32 _ZN22DateSeededRandomSource6randomEj(void*, u32);
@@ -1523,79 +1523,79 @@ extern "C" {
 s32 EventSchedule_CollectDayAll(E12*, V8*);
 }
 extern "C" {
-BOOL func_020ae290(u16);
+BOOL NookShop_IsBlockingEvent(u16);
 }
 extern "C" {
 s32 DateTime_Compare(V8*, V8*, u32);
 }
 extern "C" {
-void func_020aed98(u32, u32);
+void NookShop_PostPointSpecialNotice(u32, u32);
 }
 extern "C" {
-u32 func_020ae02c(S*);
+u32 NookShop_GetLevel(S*);
 }
 extern "C" {
-void func_020ae008(S*, u32);
+void NookShop_SetLevel(S*, u32);
 }
 extern "C" {
-u32 func_020adff0(S*);
+u32 NookShop_GetToolCount(S*);
 }
 extern "C" {
-u32 func_020adfd8(S*);
+u32 NookShop_GetFurnitureCount(S*);
 }
 extern "C" {
-u32 func_020adfc0(S*);
+u32 NookShop_GetFlowerBagCount(S*);
 }
 extern "C" {
-u32 func_020adfa8(S*);
+u32 NookShop_GetSaplingCount(S*);
 }
 extern "C" {
-u32 func_020adf90(S*);
+u32 NookShop_GetWallpaperCount(S*);
 }
 extern "C" {
-u32 func_020adf78(S*);
+u32 NookShop_GetCarpetCount(S*);
 }
 extern "C" {
-u32 func_020adf60(S*);
+u32 NookShop_GetStationeryCount(S*);
 }
 extern "C" {
-u32 func_020adf48(S*);
+u32 NookShop_GetPaintCount(S*);
 }
 extern "C" {
-u32 func_020adf30(S*);
+u32 NookShop_GetBottleCount(S*);
 }
 extern "C" {
-u32 func_020adf2c(S*);
+u32 NookShop_GetMedicineCount(S*);
 }
 extern "C" {
-void func_020ada2c(S1*);
+void AbleShop_Clear(S1*);
 }
 extern "C" {
-u32 func_020ad8c0(S1*, u32);
+u32 AbleShop_MarkSold(S1*, u32);
 }
 extern "C" {
-u16* func_020ad8e8(S1*, u32, u32);
+u16* AbleShop_GetItem(S1*, u32, u32);
 }
 extern "C" {
-void func_020ad904(S1*, void*);
+void AbleShop_SetStockDate(S1*, void*);
 }
 extern "C" {
-u32 func_020ad930(S1*, void*);
+u32 AbleShop_IsStockStale(S1*, void*);
 }
 extern "C" {
-void func_020ad970(S1*, u32, u32, u32);
+void AbleShop_Restock(S1*, u32, u32, u32);
 }
 extern "C" {
-void func_020ad838(S1*, u32*);
+void AbleShop_StockUmbrella(S1*, u32*);
 }
 extern "C" {
-void func_020ad818(S1*, u32*);
+void AbleShop_StockShirts(S1*, u32*);
 }
 
 
 extern "C" // mwcc emits functions in reverse order: highest address first.
 
-void func_020ae040(S *s, V8 *p) {
+void NookShop_UpdatePointSpecial(S *s, V8 *p) {
     V8 LampLights;
     B4 LightLevel;
     V8 C, WindowLight, E, F, G, H, I;
@@ -1612,7 +1612,7 @@ void func_020ae040(S *s, V8 *p) {
     u8 e3;
     s32 k, i, cnt1, cnt2, r, r5;
     MI_CpuCopy8(p, &LampLights, 8);
-    mode = _ZN22DateSeededRandomSource6randomEj(data_021ee1f4, 2);
+    mode = _ZN22DateSeededRandomSource6randomEj(sShopRandom, 2);
     if (_ZN8SaveData8testFlagEj(gSaveData, 5)) {
         Clock_GetDate(&LightLevel);
         r = Date_DaysBetween(&LightLevel, &s->f52);
@@ -1645,10 +1645,10 @@ void func_020ae040(S *s, V8 *p) {
             cnt1 = 0;
             cnt2 = 0;
             for (i = 0; i < n1; i++) {
-                if (func_020ae290(arr1[i].h)) cnt1++;
+                if (NookShop_IsBlockingEvent(arr1[i].h)) cnt1++;
             }
             for (i = 0; i < n2; i++) {
-                if (func_020ae290(arr2[i].h)) cnt2++;
+                if (NookShop_IsBlockingEvent(arr2[i].h)) cnt2++;
             }
             if (cnt1 == 0 && cnt2 == 0) {
                 if (mode == 0) {
@@ -1683,7 +1683,7 @@ void func_020ae040(S *s, V8 *p) {
             if (DateTime_Compare(&G, &LampLights, 0x38) == -1) {
                 if (DateTime_Compare(&LampLights, &F, 0x38) == -1) {
                     if (!_ZN8SaveData8testFlagEj(gSaveData, 6)) {
-                        func_020aed98(s->f53, s->f52);
+                        NookShop_PostPointSpecialNotice(s->f53, s->f52);
                         _ZN8SaveData7setFlagEj(gSaveData, 6);
                     }
                 }
@@ -1691,42 +1691,42 @@ void func_020ae040(S *s, V8 *p) {
         }
     }
 }
-extern "C" void func_020ae03c(S *s) {}
-extern "C" u32 func_020ae02c(S *s) { return s->kind & 3; }
-extern "C" void func_020ae008(S *s, u32 v) { s->kind = (u16)(v & 3); }
-extern "C" u32 func_020adff0(S *s) { return data_020d0978[func_020ae02c(s)]; }
-extern "C" u32 func_020adfd8(S *s) { return data_020d097c[func_020ae02c(s)]; }
-extern "C" u32 func_020adfc0(S *s) { return data_020d0980[func_020ae02c(s)]; }
-extern "C" u32 func_020adfa8(S *s) { return data_020d0984[func_020ae02c(s)]; }
-extern "C" u32 func_020adf90(S *s) { return data_020d0970[func_020ae02c(s)]; }
-extern "C" u32 func_020adf78(S *s) { return data_020d0968[func_020ae02c(s)]; }
-extern "C" u32 func_020adf60(S *s) { return data_020d0974[func_020ae02c(s)]; }
-extern "C" u32 func_020adf48(S *s) { return data_020d096c[func_020ae02c(s)]; }
-extern "C" u32 func_020adf30(S *s) { return data_020d0988[func_020ae02c(s)]; }
-extern "C" u32 func_020adf2c(S *s) { return 1; }
+extern "C" void NookShop_RestockEnd(S *s) {}
+extern "C" u32 NookShop_GetLevel(S *s) { return s->kind & 3; }
+extern "C" void NookShop_SetLevel(S *s, u32 v) { s->kind = (u16)(v & 3); }
+extern "C" u32 NookShop_GetToolCount(S *s) { return kNookToolCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetFurnitureCount(S *s) { return kNookFurnitureCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetFlowerBagCount(S *s) { return kNookFlowerBagCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetSaplingCount(S *s) { return kNookSaplingCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetWallpaperCount(S *s) { return kNookWallpaperCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetCarpetCount(S *s) { return kNookCarpetCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetStationeryCount(S *s) { return kNookStationeryCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetPaintCount(S *s) { return kNookPaintCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetBottleCount(S *s) { return kNookBottleCounts[NookShop_GetLevel(s)]; }
+extern "C" u32 NookShop_GetMedicineCount(S *s) { return 1; }
 }
-const u16 data_020d098c[4] = {0x3860, 0x3864, 0x3868, 0x386c};
-const u8 data_020d097c[4] = {2, 3, 5, 8};
-const u8 data_020d09a0[6][3] = {{0, 1, 2}, {0, 2, 1}, {1, 2, 0}, {1, 0, 2}, {2, 0, 1}, {2, 1, 0}};
-const u8 data_020d0968[4] = {1, 1, 2, 3};
+const u16 kNookMemberGiftItems[4] = {0x3860, 0x3864, 0x3868, 0x386c};
+const u8 kNookFurnitureCounts[4] = {2, 3, 5, 8};
+const u8 sReddStockOrders[6][3] = {{0, 1, 2}, {0, 2, 1}, {1, 2, 0}, {1, 0, 2}, {2, 0, 1}, {2, 1, 0}};
+const u8 kNookCarpetCounts[4] = {1, 1, 2, 3};
 u32 data_020e2e48 = 0x19;
-const u8 data_020d0988[4] = {1, 1, 1, 1};
-const u16 data_020d09b4[12] = {0x14fe, 0x14ff, 0x1500, 0x1504, 0x1505, 0x1506, 0x150a, 0x150b, 0x150c, 0x1510, 0x1511, 0x1512};
-const u8 data_020d096c[4] = {0, 0, 0, 1};
-s32 data_021ee178;
+const u8 kNookBottleCounts[4] = {1, 1, 1, 1};
+const u16 kNookFlowerBagItems[12] = {0x14fe, 0x14ff, 0x1500, 0x1504, 0x1505, 0x1506, 0x150a, 0x150b, 0x150c, 0x1510, 0x1511, 0x1512};
+const u8 kNookPaintCounts[4] = {0, 0, 0, 1};
+s32 sNookShopVisitState;
 const s32 data_020d0964 = 5;
 namespace n3 {
-extern "C" void func_020add64(S *s, s32 *p) {
+extern "C" void NookShop_StockTools(S *s, s32 *p) {
     static ItemId tbl[7] = {ItemId(0x1369), ItemId(0x1378), ItemId(0x1376), ItemId(0x1374), ItemId(0x156c), ItemId(0x136b), ItemId(0x137a)};
-    s32 t = (func_020ae02c(s) == 0) ? ~2 : 0;
+    s32 t = (NookShop_GetLevel(s) == 0) ? ~2 : 0;
     u32 start = *p;
     u32 i;
-    func_020af0f8(s->str, p, 0, t + 7, func_020adff0(s), 0x25, 0);
-    if (func_020ae02c(s) == 0) {
+    StockList_AddFromRange(s->str, p, 0, t + 7, NookShop_GetToolCount(s), 0x25, 0);
+    if (NookShop_GetLevel(s) == 0) {
         u32 cnt = 0;
         u32 j = 0;
         S *base = (S*)((u16*)s + start);
-        for (; j < func_020adff0(s); j++) {
+        for (; j < NookShop_GetToolCount(s); j++) {
             u16 *q = &s->str[start + j];
             u32 m;
             if (Item_IsFurniture()) {
@@ -1746,36 +1746,36 @@ extern "C" void func_020add64(S *s, s32 *p) {
     S *base2;
     i = 0;
     base2 = (S*)((u16*)s + start);
-    for (; i < func_020adff0(s); i++) {
+    for (; i < NookShop_GetToolCount(s); i++) {
         base2->str[i] = tbl[base2->str[i]].v;
     }
 }
-extern "C" void func_020add3c(S *s, void *p) {
-    func_020af160(s->str, p, 0, 0, func_020adfd8(s), 0x25, 0);
+extern "C" void NookShop_StockFurniture(S *s, void *p) {
+    StockList_AddFromPickList(s->str, p, 0, 0, NookShop_GetFurnitureCount(s), 0x25, 0);
 }
-extern "C" void func_020adcec(S *s, s32 *p) {
+extern "C" void NookShop_StockFlowerBags(S *s, s32 *p) {
     u32 start = *p;
     u32 i;
-    func_020af0f8(s->str, p, 0, 0xc, func_020adfc0(s), 0x25, 0);
-    for (i = start; i < start + func_020adfc0(s); i++) {
-        s->str[i] = data_020d09b4[s->str[i]];
+    StockList_AddFromRange(s->str, p, 0, 0xc, NookShop_GetFlowerBagCount(s), 0x25, 0);
+    for (i = start; i < start + NookShop_GetFlowerBagCount(s); i++) {
+        s->str[i] = kNookFlowerBagItems[s->str[i]];
     }
 }
-extern "C" void func_020adcbc(S *s, void *p) {
-    func_020af0f8(s->str, p, 0x151d, 2, func_020adfa8(s), 0x25, 0);
+extern "C" void NookShop_StockSaplings(S *s, void *p) {
+    StockList_AddFromRange(s->str, p, 0x151d, 2, NookShop_GetSaplingCount(s), 0x25, 0);
 }
-extern "C" void func_020adc94(S *s, void *p) {
-    func_020af160(s->str, p, 4, 0, func_020adf90(s), 0x25, 0);
+extern "C" void NookShop_StockWallpaper(S *s, void *p) {
+    StockList_AddFromPickList(s->str, p, 4, 0, NookShop_GetWallpaperCount(s), 0x25, 0);
 }
-extern "C" void func_020adc6c(S *s, void *p) {
-    func_020af160(s->str, p, 3, 0, func_020adf78(s), 0x25, 0);
+extern "C" void NookShop_StockCarpets(S *s, void *p) {
+    StockList_AddFromPickList(s->str, p, 3, 0, NookShop_GetCarpetCount(s), 0x25, 0);
 }
-extern "C" void func_020adc44(S *s, void *p) {
-    func_020af160(s->str, p, 1, 0, func_020adf60(s), 0x25, 0);
+extern "C" void NookShop_StockStationery(S *s, void *p) {
+    StockList_AddFromPickList(s->str, p, 1, 0, NookShop_GetStationeryCount(s), 0x25, 0);
 }
-extern "C" void func_020adbd0(S *s, s32 *p) {
+extern "C" void NookShop_StockPaint(S *s, s32 *p) {
     u32 i;
-    for (i = 0; i < func_020adf48(s); i++) {
+    for (i = 0; i < NookShop_GetPaintCount(s); i++) {
         u32 c = s->cnt & 0xf;
         u16 v;
         if (c < 16) v = 0x1521 + c; else v = 0x1521;
@@ -1783,19 +1783,19 @@ extern "C" void func_020adbd0(S *s, s32 *p) {
         s->cnt++;
     }
 }
-extern "C" void func_020adba0(S *s, void *p) {
-    func_020af0f8(s->str, p, 0x151f, 1, func_020adf30(s), 0x25, 0);
+extern "C" void NookShop_StockBottle(S *s, void *p) {
+    StockList_AddFromRange(s->str, p, 0x151f, 1, NookShop_GetBottleCount(s), 0x25, 0);
 }
-extern "C" void func_020adb70(S *s, void *p) {
-    func_020af0f8(s->str, p, 0x155e, 1, func_020adf2c(s), 0x25, 0);
+extern "C" void NookShop_StockMedicine(S *s, void *p) {
+    StockList_AddFromRange(s->str, p, 0x155e, 1, NookShop_GetMedicineCount(s), 0x25, 0);
 }
-extern "C" u32 func_020ada88(void) {
+extern "C" u32 NookShop_ApplyRenovation(void) {
     u32 r6;
     void *r7;
     u32 y, x;
-    if (func_020ac79c() == 1) return 0;
-    if (func_020ae9e0(data_021ed104)) {
-        r6 = func_020ae888(data_021ed104);
+    if (NookShop_GetVisitState() == 1) return 0;
+    if (NookShop_IsReopenDueNow(data_021ed104)) {
+        r6 = NookShop_GetEarnedLevel(data_021ed104);
         void *t = TownBlockMap_Get(r6);
         if (t) {
             r7 = BlockMap_FindBlockAnyAttr(t, 2);
@@ -1808,15 +1808,15 @@ extern "C" u32 func_020ada88(void) {
                             V8 b;
                             name = Item_MakeNookShop(r6);
                             MapBlock_SetItem(r7, &name, x, y, 0);
-                            func_020ae008((S*)data_021ed104, r6);
+                            NookShop_SetLevel((S*)data_021ed104, r6);
                             a[0] = 0; a[1] = 0;
-                            if (func_020aec74(a)) {
+                            if (NookShop_GetReopenDateTime(a)) {
                                 ((u32*)&b)[0] = 0; ((u32*)&b)[1] = 0;
                                 Clock_GetDateTime(&b);
-                                if (b.b5 == ((V8*)a)->b5 && b.b4 == ((V8*)a)->b4 && b.b3 == ((V8*)a)->b3) func_020aecc4();
+                                if (b.b5 == ((V8*)a)->b5 && b.b4 == ((V8*)a)->b4 && b.b3 == ((V8*)a)->b3) NookShop_PostReopenNotice();
                             }
-                            func_020aeac4(data_021ed104)->p3 = 0;
-                            func_020ae3a4(data_021ed104, 1);
+                            NookShop_GetRenovation(data_021ed104)->p3 = 0;
+                            NookShop_UpdateDaily(data_021ed104, 1);
                             return 1;
                         }
                     }
@@ -1826,49 +1826,49 @@ extern "C" u32 func_020ada88(void) {
     }
     return 0;
 }
-extern "C" void* func_020ada60(void *p) {
+extern "C" void* AbleShop_Construct(void *p) {
     __cxa_vec_ctor(p, 6, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
     return p;
 }
-extern "C" void* func_020ada44(void *p) {
+extern "C" void* AbleShop_Destruct(void *p) {
     __cxa_vec_cleanup(p, 6, 2, _ZN6ItemIdD1Ev);
     return p;
 }
-extern "C" void func_020ada2c(S1 *s) {
-    func_020af0c4(s, s->arr, 6);
+extern "C" void AbleShop_Clear(S1 *s) {
+    StockList_Clear(s, s->arr, 6);
     s->f = 1;
 }
-extern "C" void func_020ada24(S1 *s) { func_020ada2c(s); }
-extern "C" void func_020ada20() {}
-extern "C" void func_020ad9c4(S1 *s) {
+extern "C" void AbleShop_Reset(S1 *s) { AbleShop_Clear(s); }
+extern "C" void AbleShop_InitNew() {}
+extern "C" void AbleShop_UpdateDaily(S1 *s) {
     V8 t;
     ((u32*)&t)[0] = 0;
     ((u32*)&t)[1] = 0;
     Clock_GetDateTime(&t);
     if (t.b2 < 6) DateTime_SubDays(&t, 1);
-    if (!_ZN11CommManager8isOnlineEv(gCommManager) && func_020ad930(s, &t)) {
-        func_020ad970(s, t.b5, t.b4, t.b3);
-        func_020ad904(s, &t);
+    if (!_ZN11CommManager8isOnlineEv(gCommManager) && AbleShop_IsStockStale(s, &t)) {
+        AbleShop_Restock(s, t.b5, t.b4, t.b3);
+        AbleShop_SetStockDate(s, &t);
     }
 }
-extern "C" void func_020ad970(S1 *s, u32 a, u32 b, u32 c) {
+extern "C" void AbleShop_Restock(S1 *s, u32 a, u32 b, u32 c) {
     u32 x;
-    func_020ada2c(s);
-    _ZN22DateSeededRandomSource4seedEhhh(&data_021ee1f4, a, b, c);
+    AbleShop_Clear(s);
+    _ZN22DateSeededRandomSource4seedEhhh(&sShopRandom, a, b, c);
     x = 0;
-    func_020ad838(s, &x);
-    func_020ad818(s, &x);
-    func_020ad7b8(s, &x);
-    func_020ad79c(s, &x);
-    func_020ad798(s);
+    AbleShop_StockUmbrella(s, &x);
+    AbleShop_StockShirts(s, &x);
+    AbleShop_StockHeadwear(s, &x);
+    AbleShop_StockAccessory(s, &x);
+    AbleShop_RestockEnd(s);
 }
-extern "C" u32 func_020ad930(S1 *s, void *p) {
+extern "C" u32 AbleShop_IsStockStale(S1 *s, void *p) {
     V8 buf;
     MI_CpuCopy8(p, &buf, 8);
     if (s->e != buf.b5 || s->d != buf.b4 || s->c != buf.b3 || s->f != 0) return 1;
     return 0;
 }
-extern "C" void func_020ad904(S1 *s, void *p) {
+extern "C" void AbleShop_SetStockDate(S1 *s, void *p) {
     V8 buf;
     MI_CpuCopy8(p, &buf, 8);
     s->e = buf.b5;
@@ -1876,19 +1876,19 @@ extern "C" void func_020ad904(S1 *s, void *p) {
     s->c = buf.b3;
     s->f = 0;
 }
-extern "C" u16* func_020ad8e8(S1 *s, u32 a, u32 c) {
-    return func_020af034(a, s, s->arr, 6, c);
+extern "C" u16* AbleShop_GetItem(S1 *s, u32 a, u32 c) {
+    return StockList_GetItem(a, s, s->arr, 6, c);
 }
-extern "C" void func_020ad8d0(S1 *s, u32 a) {
-    func_020aef80(a, s, s->arr, 6);
+extern "C" void AbleShop_FindItem(S1 *s, u32 a) {
+    StockList_FindItem(a, s, s->arr, 6);
 }
-extern "C" u32 func_020ad8c0(S1 *s, u32 a) {
-    return func_020af070(a, 6, s->arr);
+extern "C" u32 AbleShop_MarkSold(S1 *s, u32 a) {
+    return StockList_MarkSold(a, 6, s->arr);
 }
-extern "C" u32 func_020ad854(S1 *s, u16 *key) {
+extern "C" u32 AbleShop_MarkSoldItem(S1 *s, u16 *key) {
     u32 i;
     for (i = 0; i < 6; i++) {
-        u16 *p = func_020ad8e8(s, i, 0);
+        u16 *p = AbleShop_GetItem(s, i, 0);
         BOOL m;
         if (Item_IsFurniture()) {
             m = (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(key)) ? TRUE : FALSE;
@@ -1896,16 +1896,16 @@ extern "C" u32 func_020ad854(S1 *s, u16 *key) {
             m = (*p == *key) ? TRUE : FALSE;
         }
         if (m) {
-            return func_020ad8c0(s, i);
+            return AbleShop_MarkSold(s, i);
         }
     }
     return 0;
 }
-extern "C" void func_020ad838(S1 *a, u32 *b) {
-    func_020af160(a, b, 7, 0x1d, 1, 6, 1);
+extern "C" void AbleShop_StockUmbrella(S1 *a, u32 *b) {
+    StockList_AddFromPickList(a, b, 7, 0x1d, 1, 6, 1);
 }
-extern "C" void func_020ad818(S1 *a, u32 *b) {
-    func_020af160(a, b, 2, 0, 3, 6, 1);
+extern "C" void AbleShop_StockShirts(S1 *a, u32 *b) {
+    StockList_AddFromPickList(a, b, 2, 0, 3, 6, 1);
 }
 }
 
@@ -1936,10 +1936,10 @@ extern "C" {
 u32 ItemInfo_GetHatClass1dCount();
 }
 extern "C" {
-void func_020af0c4(void *a, void *b, u32 n);
+void StockList_Clear(void *a, void *b, u32 n);
 }
 extern "C" {
-void func_020af160(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g);
+void StockList_AddFromPickList(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g);
 }
 extern "C" {
 void func_020862f8(void *p);
@@ -1984,10 +1984,10 @@ extern "C" {
 void func_020656dc(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
 }
 extern "C" {
-u32 func_02096aac(Letter *c);
+u32 LetterDelivery_PutInAddresseeMailbox(Letter *c);
 }
 extern "C" {
-void func_02096a50(Letter *c, u32 i);
+void LetterDelivery_QueueOutgoing(Letter *c, u32 i);
 }
 extern "C" {
 u32 String_LoadResolveAltText(void *w, u8 *b, const char *s);
@@ -2020,16 +2020,16 @@ extern "C" {
 u32 Item_GetFurnitureIndex(void *p);
 }
 extern "C" {
-void *func_020aef80(u32 a, void *b, void *c, u32 d);
+void *StockList_FindItem(u32 a, void *b, void *c, u32 d);
 }
 extern "C" {
-void *func_020af034(u32 a, void *b, void *c, u32 d, u32 e);
+void *StockList_GetItem(u32 a, void *b, void *c, u32 d, u32 e);
 }
 extern "C" {
-u32 func_020af070(u32 a, u32 b, void *c);
+u32 StockList_MarkSold(u32 a, u32 b, void *c);
 }
 extern "C" {
-extern u8 data_021ee15c;
+extern u8 sReddVisitorKnowsPassword;
 }
 extern "C" {
 extern u8 gSaveData[];
@@ -2041,7 +2041,7 @@ extern "C" {
 extern u8 data_021ed284[];
 }
 extern "C" {
-extern u8 data_021ee1f4[];
+extern u8 sShopRandom[];
 }
 extern "C" {
 extern u32 gCommManager;
@@ -2059,7 +2059,7 @@ extern "C" {
 extern const char data_020e2e90[];
 }
 extern "C" {
-extern u8 data_020d09a0[][3];
+extern u8 sReddStockOrders[][3];
 }
 extern "C" {
 extern u32 data_021ee170;
@@ -2075,45 +2075,45 @@ extern u8 data_021ee188[];
 }
 
 
-extern "C" { extern Unk_021ed2c0 data_021ed2c0; }
+extern "C" { extern ReddShop data_021ed2c0; }
 extern "C" {
-void func_020acf38(Unk_020acf38 *p);
+void NookPoints_Clear(NookPoints *p);
 }
 extern "C" {
-void func_020acf40(Unk_020acf38 *p);
+void NookPoints_Destruct(NookPoints *p);
 }
 extern "C" {
-Unk_020acf38 *func_020acf44(Unk_020acf38 *p);
+NookPoints *NookPoints_Construct(NookPoints *p);
 }
 extern "C" {
-void func_020acf58(Unk_020acf38 *p);
+void NookPoints_Init(NookPoints *p);
 }
 extern "C" {
-void func_020acf60(Unk_020acf38 *p);
+void NookPoints_Reset(NookPoints *p);
 }
 
-extern "C" void *func_020acfa8(Unk_021ed2c0 *g, u32 a, u32 b);
+extern "C" void *ReddShop_GetItem(ReddShop *g, u32 a, u32 b);
 
 
 
-extern "C" void func_020ad7b8(void *a, void *b) {
+extern "C" void AbleShop_StockHeadwear(void *a, void *b) {
     u32 x = ItemInfo_GetHatClass1dCount();
     u32 y = ItemInfo_GetFullHeadwearClass1dCount();
-    if (_ZN22DateSeededRandomSource6randomEj(data_021ee1f4, x + y) < ItemInfo_GetHatClass1dCount()) {
-        func_020af160(a, b, 6, 0x1d, 1, 6, 1);
+    if (_ZN22DateSeededRandomSource6randomEj(sShopRandom, x + y) < ItemInfo_GetHatClass1dCount()) {
+        StockList_AddFromPickList(a, b, 6, 0x1d, 1, 6, 1);
     } else {
-        func_020af160(a, b, 8, 0x1d, 1, 6, 1);
+        StockList_AddFromPickList(a, b, 8, 0x1d, 1, 6, 1);
     }
 }
 
-extern "C" void func_020ad79c(void *a, void *b) {
-    func_020af160(a, b, 5, 0x1d, 1, 6, 1);
+extern "C" void AbleShop_StockAccessory(void *a, void *b) {
+    StockList_AddFromPickList(a, b, 5, 0x1d, 1, 6, 1);
 }
 
-extern "C" void func_020ad798() {}}
+extern "C" void AbleShop_RestockEnd() {}}
 
 
-Unk_020e2e54::Unk_020e2e54() {
+ReddPasswordString::ReddPasswordString() {
     using namespace n2;
     clear();
 }
@@ -2121,13 +2121,13 @@ namespace n2 {
 }
 
 
-Unk_020e2e54::~Unk_020e2e54() {
+ReddPasswordString::~ReddPasswordString() {
     using namespace n2;}
 namespace n2 {
 }
 
 
-void *Unk_020e2e54::vfunc_0c() {
+void *ReddPasswordString::vfunc_0c() {
     using namespace n2;
     return (u8 *)this + 0x12;
 }
@@ -2135,7 +2135,7 @@ namespace n2 {
 }
 
 
-u32 Unk_020e2e54::vfunc_08() {
+u32 ReddPasswordString::vfunc_08() {
     using namespace n2;
     return 0x21;
 }
@@ -2143,48 +2143,48 @@ namespace n2 {
 }
 
 
-Unk_020ad700::Unk_020ad700() {
+ReddPassword::ReddPassword() {
     using namespace n2;
-    func_020ad700();
+    clear();
 }
 namespace n2 {
 }
 
 
-Unk_020ad700::~Unk_020ad700() {
+ReddPassword::~ReddPassword() {
     using namespace n2;}
 namespace n2 {
 }
 
 
-// ---- Unk_020ad700 ----
-void Unk_020ad700::func_020ad700() {
+// ---- ReddPassword ----
+void ReddPassword::clear() {
     using namespace n2;
     bits = 0;
     slot = -1;
-    func_020ad568();
+    clearAllResidentKnows();
     _ZN8SaveData9clearFlagEj(gSaveData, 8);
 }
 namespace n2 {
 }
 
 
-BOOL Unk_020ad700::func_020ad680() {
+BOOL ReddPassword::pickPassword() {
     using namespace n2;
     if (slot == -1) {
-        u32 cnt = func_020ad474();
+        u32 cnt = countUnused();
         if (cnt != 0) {
             u32 target = func_02063b8c(cnt);
             u32 n = 0;
             u32 i;
             for (i = 0; i < 32; i++) {
-                if (!func_020ad45c(i)) {
+                if (!isUsed(i)) {
                     if (target == n) {
                         slot = i;
-                        func_020ad444(i);
+                        markUsed(i);
                         func_020862f8(data_021ed284);
-                        data_021ed2c0.func_020ad040();
-                        func_020ad568();
+                        data_021ed2c0.restock();
+                        clearAllResidentKnows();
                         _ZN8SaveData9clearFlagEj(gSaveData, 8);
                         return TRUE;
                     }
@@ -2200,13 +2200,13 @@ namespace n2 {
 }
 
 
-BOOL Unk_020ad700::func_020ad650() {
+BOOL ReddPassword::dropPassword() {
     using namespace n2;
     slot = -1;
-    if (func_020ad474() == 0) {
+    if (countUnused() == 0) {
         bits = 0;
     }
-    func_020ad568();
+    clearAllResidentKnows();
     _ZN8SaveData9clearFlagEj(gSaveData, 8);
     return TRUE;
 }
@@ -2214,7 +2214,7 @@ namespace n2 {
 }
 
 
-u32 Unk_020ad700::func_020ad618(void *w) {
+u32 ReddPassword::getPromptText(void *w) {
     using namespace n2;
     if (slot != -1) {
         u8 b = (slot & 0x1f) << 1;
@@ -2226,7 +2226,7 @@ namespace n2 {
 }
 
 
-u8 Unk_020ad700::func_020ad5f8() {
+u8 ReddPassword::getAnswerIndex() {
     using namespace n2;
     if (slot != -1) {
         return slot * 2 + 1;
@@ -2237,7 +2237,7 @@ namespace n2 {
 }
 
 
-u32 Unk_020ad700::func_020ad5c0(void *w) {
+u32 ReddPassword::getAnswerText(void *w) {
     using namespace n2;
     if (slot != -1) {
         u8 b = ((slot & 0x1f) << 1) + 1;
@@ -2249,7 +2249,7 @@ namespace n2 {
 }
 
 
-BOOL Unk_020ad700::func_020ad594() {
+BOOL ReddPassword::needsLetter() {
     using namespace n2;
     if (slot != -1) {
         if (_ZN8SaveData8testFlagEj(gSaveData, 8) == 0) {
@@ -2262,7 +2262,7 @@ namespace n2 {
 }
 
 
-void Unk_020ad700::func_020ad570() {
+void ReddPassword::markLetterSent() {
     using namespace n2;
     if (slot != -1) {
         _ZN8SaveData7setFlagEj(gSaveData, 8);
@@ -2272,7 +2272,7 @@ namespace n2 {
 }
 
 
-void Unk_020ad700::func_020ad568() {
+void ReddPassword::clearAllResidentKnows() {
     using namespace n2;
     flags = 0;
 }
@@ -2280,7 +2280,7 @@ namespace n2 {
 }
 
 
-BOOL Unk_020ad700::func_020ad53c(u32 i) {
+BOOL ReddPassword::residentKnows(u32 i) {
     using namespace n2;
     if (slot != -1) {
         return ((flags >> (i & 3)) & 1) != 0;
@@ -2291,7 +2291,7 @@ namespace n2 {
 }
 
 
-void Unk_020ad700::func_020ad518(u32 i) {
+void ReddPassword::setResidentKnows(u32 i) {
     using namespace n2;
     if (slot != -1) {
         flags |= 1 << (i & 3);
@@ -2301,30 +2301,30 @@ namespace n2 {
 }
 
 
-void Unk_020ad700::func_020ad500(u32 i) {
+void ReddPassword::clearResidentKnows(u32 i) {
     using namespace n2;
     flags &= ~(1 << (i & 3));
 }
 namespace n2 {
 
 
-extern "C" void func_020ad4f4() {
-    data_021ee15c = 0;
+extern "C" void ReddPassword_ForgetVisitor() {
+    sReddVisitorKnowsPassword = 0;
 }
 
-extern "C" BOOL func_020ad4cc() {
+extern "C" BOOL ReddPassword_VisitorKnows() {
     if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
-        return data_021ee15c;
+        return sReddVisitorKnowsPassword;
     }
     return FALSE;
 }}
 
 
-BOOL Unk_020ad700::func_020ad498() {
+BOOL ReddPassword::setVisitorKnows() {
     using namespace n2;
     if (slot != -1) {
         if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
-            n2::data_021ee15c = 1;
+            n2::sReddVisitorKnowsPassword = 1;
             return TRUE;
         }
     }
@@ -2334,12 +2334,12 @@ namespace n2 {
 }
 
 
-u32 Unk_020ad700::func_020ad474() {
+u32 ReddPassword::countUnused() {
     using namespace n2;
     u32 n = 0;
     u32 i;
     for (i = 0; i < 32; i++) {
-        if (!func_020ad45c(i)) {
+        if (!isUsed(i)) {
             n++;
         }
     }
@@ -2349,7 +2349,7 @@ namespace n2 {
 }
 
 
-BOOL Unk_020ad700::func_020ad45c(u32 i) {
+BOOL ReddPassword::isUsed(u32 i) {
     using namespace n2;
     return (bits & (1 << (i & 0x1f))) != 0;
 }
@@ -2357,7 +2357,7 @@ namespace n2 {
 }
 
 
-void Unk_020ad700::func_020ad444(u32 i) {
+void ReddPassword::markUsed(u32 i) {
     using namespace n2;
     bits |= 1 << (i & 0x1f);
 }
@@ -2365,41 +2365,41 @@ namespace n2 {
 }
 
 
-Unk_021ed2c0::Unk_021ed2c0() {
+ReddShop::ReddShop() {
     using namespace n2;}
 namespace n2 {
 }
 
 
-Unk_021ed2c0::~Unk_021ed2c0() {
+ReddShop::~ReddShop() {
     using namespace n2;}
 namespace n2 {
 }
 
 
-void Unk_021ed2c0::func_020ad3d8() {
+void ReddShop::reset() {
     using namespace n2;
-    func_020ad3c8();
-    s.func_020ad700();
+    clearStock();
+    s.clear();
 }
 namespace n2 {
 }
 
 
-void Unk_021ed2c0::func_020ad3c8() {
+void ReddShop::clearStock() {
     using namespace n2;
-    func_020af0c4(this, tbl, 3);
+    StockList_Clear(this, tbl, 3);
 }
 namespace n2 {
 
 
-extern "C" void func_020ad3c0(Unk_021ed2c0 *g) {
-    g->func_020ad3d8();
+extern "C" void ReddShop_Reset(ReddShop *g) {
+    g->reset();
 }}
 
 
-// ---- Unk_021ed2c0 ----
-Unk_020ad700 *Unk_021ed2c0::func_020ad3bc() {
+// ---- ReddShop ----
+ReddPassword *ReddShop::getPassword() {
     using namespace n2;
     return &s;
 }
@@ -2408,11 +2408,11 @@ namespace n2 {
 
 }
 u32 data_020e2e38 = 0x18;
-const u8 data_020d0970[4] = {1, 1, 2, 3};
+const u8 kNookWallpaperCounts[4] = {1, 1, 2, 3};
 u32 data_020e2e44 = 0xb;
-u8 data_021ee15c;
+u8 sReddVisitorKnowsPassword;
 namespace n2 {
-extern "C" BOOL func_020ad330() {
+extern "C" BOOL ReddShop_IsTentOpen() {
     u32 v[4];
     u32 a = TownBlockMap_Get();
     if (a != 0) {
@@ -2432,70 +2432,70 @@ extern "C" BOOL func_020ad330() {
     return FALSE;
 }
 
-extern "C" void func_020ad314(u32 i) {
-    data_021ed2c0.func_020ad3bc()->func_020ad500((u8)i);
+extern "C" void ReddPassword_ForgetResident(u32 i) {
+    data_021ed2c0.getPassword()->clearResidentKnows((u8)i);
 }
 
-extern "C" BOOL func_020ad2c8() {
+extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         void *q = _ZN10PlayerData11getPlayerIdEv(p);
         if (_ZN6TownId13func_02094058Ev(q) == 1) {
-            return func_020ad4cc();
+            return ReddPassword_VisitorKnows();
         }
         u8 v = func_02097740(data_021d735c, q) & 3;
-        return data_021ed2c0.func_020ad3bc()->func_020ad53c(v);
+        return data_021ed2c0.getPassword()->residentKnows(v);
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020ad274() {
+extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         void *q = _ZN10PlayerData11getPlayerIdEv(p);
         if (_ZN6TownId13func_02094058Ev(q) == 1) {
-            return data_021ed2c0.func_020ad3bc()->func_020ad498();
+            return data_021ed2c0.getPassword()->setVisitorKnows();
         }
         u8 v = func_02097740(data_021d735c, q) & 3;
-        data_021ed2c0.func_020ad3bc()->func_020ad518(v);
+        data_021ed2c0.getPassword()->setResidentKnows(v);
         return TRUE;
     }
     return FALSE;
 }
 
 // ---- misc ----
-extern "C" void func_020ad194() {
-    data_021ed2c0.func_020ad3bc()->func_020ad680();
-    if (data_021ed2c0.func_020ad3bc()->func_020ad594()) {
+extern "C" void ReddShop_SendPasswordLetters() {
+    data_021ed2c0.getPassword()->pickPassword();
+    if (data_021ed2c0.getPassword()->needsLetter()) {
         if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             Letter ctx;
             u8 r = func_02063b8c(3);
-            Unk_020e2e54 w;
-            data_021ed2c0.func_020ad3bc()->func_020ad5c0(&w);
+            ReddPasswordString w;
+            data_021ed2c0.getPassword()->getAnswerText(&w);
             MailText_SetSlot(2, &w);
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(data_021d735c, i);
                 if (p != NULL && _ZN10PlayerData13func_02098a48Ev() != 0 && _ZN12Unk_02097ff413func_02098044Ej(p, 12) != 0) {
                     func_020656dc(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
-                    if (func_02096aac(&ctx) == 0) {
-                        func_02096a50(&ctx, 0);
+                    if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
+                        LetterDelivery_QueueOutgoing(&ctx, 0);
                     }
                 }
             }
-            data_021ed2c0.func_020ad3bc()->func_020ad570();
+            data_021ed2c0.getPassword()->markLetterSent();
         }
     }
 }}
 
 
-void Unk_021ed2c0::func_020ad040() {
+void ReddShop::restock() {
     using namespace n2;
     u16 buf[3];
     u16 *p;
     u32 a, b;
     u32 i;
-    func_020ad3c8();
+    clearStock();
     a = func_0205b504() / 10 + 0x32;
     if (func_02063b8c(100) < a) {
         ItemPickSpec q(0, 0x26);
@@ -2522,20 +2522,20 @@ void Unk_021ed2c0::func_020ad040() {
     }
     u32 r = func_02063b8c(6);
     for (i = 0; i < 3; i++) {
-        arr[i].v = buf[n2::data_020d09a0[r][i]];
+        arr[i].v = buf[n2::sReddStockOrders[r][i]];
     }
 }
 namespace n2 {
 
 
-extern "C" u32 func_020ad030(Unk_021ed2c0 *g, u32 a) {
-    return func_020af070(a, 3, g->tbl);
+extern "C" u32 ReddShop_MarkSold(ReddShop *g, u32 a) {
+    return StockList_MarkSold(a, 3, g->tbl);
 }
 
-extern "C" u32 func_020acfc4(Unk_021ed2c0 *g, u16 *ptr) {
+extern "C" u32 ReddShop_MarkSoldItem(ReddShop *g, u16 *ptr) {
     u32 i;
     for (i = 0; i < 3; i++) {
-        u16 *p = (u16 *)func_020acfa8(g, i, 0);
+        u16 *p = (u16 *)ReddShop_GetItem(g, i, 0);
         BOOL eq;
         if (Item_IsFurniture() != 0) {
             eq = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(ptr);
@@ -2543,49 +2543,49 @@ extern "C" u32 func_020acfc4(Unk_021ed2c0 *g, u16 *ptr) {
             eq = *p == *ptr;
         }
         if (eq) {
-            return func_020ad030(g, i);
+            return ReddShop_MarkSold(g, i);
         }
     }
     return 0;
 }
 
-extern "C" void *func_020acfa8(Unk_021ed2c0 *g, u32 a, u32 b) {
-    return func_020af034(a, g, g->tbl, 3, b);
+extern "C" void *ReddShop_GetItem(ReddShop *g, u32 a, u32 b) {
+    return StockList_GetItem(a, g, g->tbl, 3, b);
 }
 
-extern "C" void func_020acf90(Unk_021ed2c0 *g, u32 a) {
-    func_020aef80(a, g, g->tbl, 3);
+extern "C" void ReddShop_FindItem(ReddShop *g, u32 a) {
+    StockList_FindItem(a, g, g->tbl, 3);
 }
 
-extern "C" Unk_020acf38 *func_020acf78(Unk_020acf38 *p) {
-    func_020acf44(p);
-    func_020acf58(p);
+extern "C" NookPoints *NookPoints_Create(NookPoints *p) {
+    NookPoints_Construct(p);
+    NookPoints_Init(p);
     return p;
 }
 
-extern "C" Unk_020acf38 *func_020acf68(Unk_020acf38 *p) {
-    func_020acf40(p);
+extern "C" NookPoints *NookPoints_Destroy(NookPoints *p) {
+    NookPoints_Destruct(p);
     return p;
 }
 
-extern "C" void func_020acf60(Unk_020acf38 *p) {
-    func_020acf38(p);
+extern "C" void NookPoints_Reset(NookPoints *p) {
+    NookPoints_Clear(p);
 }
 
-extern "C" void func_020acf58(Unk_020acf38 *p) {
-    func_020acf60(p);
+extern "C" void NookPoints_Init(NookPoints *p) {
+    NookPoints_Reset(p);
 }
 
-extern "C" void func_020acf54(Unk_020acf38 *p) {}
+extern "C" void NookPoints_GetValuePtr(NookPoints *p) {}
 
-extern "C" Unk_020acf38 *func_020acf44(Unk_020acf38 *p) {
-    func_020acf38(p);
+extern "C" NookPoints *NookPoints_Construct(NookPoints *p) {
+    NookPoints_Clear(p);
     return p;
 }
 
-extern "C" void func_020acf40(Unk_020acf38 *p) {}
+extern "C" void NookPoints_Destruct(NookPoints *p) {}
 
-extern "C" void func_020acf38(Unk_020acf38 *p) {
+extern "C" void NookPoints_Clear(NookPoints *p) {
     p->v = 0;
 }
 }
@@ -2790,34 +2790,34 @@ extern "C" {
 BOOL func_020b5184(void);
 }
 extern "C" {
-int func_020ac79c(void);
+int NookShop_GetVisitState(void);
 }
 extern "C" {
-void func_020ac790(int v);
+void NookShop_SetVisitState(int v);
 }
 extern "C" {
 void *_ZN11CommManager8isOnlineEv(void *h);
 }
 extern "C" {
-void func_020ada88(void);
+void NookShop_ApplyRenovation(void);
 }
 extern "C" {
-void func_020ae3a4(void *p, int v);
+void NookShop_UpdateDaily(void *p, int v);
 }
 extern "C" {
 u32 func_02063b8c(u32 n);
 }
 extern "C" {
-u32 func_020af1d8(void *p);
+u32 ShopAckCounter_Add(void *p);
 }
 extern "C" {
-void func_020af1fc(void *p);
+void ShopAckCounter_Start(void *p);
 }
 extern "C" {
-void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int e);
+void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int e);
 }
 extern "C" {
-void func_020ac8d4(u32 a, u32 b, u8 c, u32 d);
+void ReddShop_RecordPurchase(u32 a, u32 b, u8 c, u32 d);
 }
 extern "C" {
 BOOL func_020b5268(u32 v);
@@ -2832,25 +2832,25 @@ extern "C" {
 void _ZN11CommManager9endRecordEjj(void *h, u32 a, u32 b);
 }
 extern "C" {
-u32 func_020aec4c(void);
+u32 Shop_IsPurchaseSynced(void);
 }
 extern "C" {
-u32 _ZN18Unk_ov004_0223e9bc19func_ov004_0223e9c0Ev(u32 a, u32 b);
+u32 _ZN18Unk_ov004_0223e9bc13callGetItemAtEv(u32 a, u32 b);
 }
 extern "C" {
-u16 *func_ov004_0223ea90(u32 a, u32 b);
+u16 *ShopStock_GetItemAtTile(u32 a, u32 b);
 }
 extern "C" {
-u16 *func_ov004_0223ed40(void);
+u16 *ShopStock_GetItemAt(void);
 }
 extern "C" {
-u32 func_020acf90(void *p, u32 v);
+u32 ReddShop_FindItem(void *p, u32 v);
 }
 extern "C" {
-u32 func_020ad8d0(void *p, u16 *v);
+u32 AbleShop_FindItem(void *p, u16 *v);
 }
 extern "C" {
-BOOL func_020aca18(void);
+BOOL NookShop_CanTakeCatalogOrder(void);
 }
 extern "C" {
 void Item_FromPlacedForm(void *a, void *b);
@@ -2871,7 +2871,7 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-u32 func_020ae02c(void *p);
+u32 NookShop_GetLevel(void *p);
 }
 extern "C" {
 void func_020656dc(void *o, void *a, const void *b, void *c, void *d, void *e);
@@ -2883,19 +2883,19 @@ extern "C" {
 u32 Item_GetMemberPrice(void *p);
 }
 extern "C" {
-BOOL func_02096a50(void *o, int z);
+BOOL LetterDelivery_QueueOutgoing(void *o, int z);
 }
 extern "C" {
-void func_020ae740(void *p, u32 a, u32 b);
+void NookShop_AddSales(void *p, u32 a, u32 b);
 }
 extern "C" {
 void *_ZN10PlayerData13getNookPointsEv(void *p);
 }
 extern "C" {
-u16 *func_020acf54(void *p);
+u16 *NookPoints_GetValuePtr(void *p);
 }
 extern "C" {
-void func_020ace10(u16 *p, u32 v);
+void NookPoints_AddForPurchase(u16 *p, u32 v);
 }
 extern "C" {
 void _ZN6LetterD1Ev(void *p);
@@ -2904,31 +2904,31 @@ extern "C" {
 void _ZN8ItemNameD1Ev(void *p);
 }
 extern "C" {
-BOOL func_02096880(void);
+BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 }
 extern "C" {
 u32 func_020b50e8(void);
 }
 extern "C" {
-u16 *func_020ae844(void *p, u32 i, u16 *v);
+u16 *NookShop_GetItem(void *p, u32 i, u16 *v);
 }
 extern "C" {
-u32 func_020ae82c(void *p, u16 *v);
+u32 NookShop_FindItem(void *p, u16 *v);
 }
 extern "C" {
-u32 func_ov004_0223ecf4(u32 a, u32 b);
+u32 ShopStock_GetCode22Index(u32 a, u32 b);
 }
 extern "C" {
 u32 _ZN6TownId13func_02094058Ev(void *p);
 }
 extern "C" {
-u32 func_020ae664(void *p, u32 a, u32 b, u32 c);
+u32 NookShop_SellSlot(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
-BOOL func_ov004_0223ec44(u32 *x, u32 *y, u32 a);
+BOOL ShopStock_FindTileOfStock(u32 *x, u32 *y, u32 a);
 }
 extern "C" {
-void func_020aee90(u32 x, u32 y, u32 c, u32 e);
+void Shop_RemoveSoldItemAt(u32 x, u32 y, u32 c, u32 e);
 }
 extern "C" {
 BOOL Item_IsFurniture(u16 *p);
@@ -2937,34 +2937,34 @@ extern "C" {
 u32 Item_GetFurnitureIndex(u16 *p);
 }
 extern "C" {
-u16 *func_020ad8e8(void *p, u32 a, u32 b);
+u16 *AbleShop_GetItem(void *p, u32 a, u32 b);
 }
 extern "C" {
-u16 *func_020acfa8(void *p, u32 a, u32 b);
+u16 *ReddShop_GetItem(void *p, u32 a, u32 b);
 }
 extern "C" {
-void func_020ad854(void *p, u16 *v);
+void AbleShop_MarkSoldItem(void *p, u16 *v);
 }
 extern "C" {
-void func_020acfc4(void *p, u16 *v);
+void ReddShop_MarkSoldItem(void *p, u16 *v);
 }
 extern "C" {
-void func_020aedc4(u16 *p, u32 c, u32 e);
+void Shop_RemoveSoldItem(u16 *p, u32 c, u32 e);
 }
 extern "C" {
-BOOL func_020aeb14(void *p);
+BOOL NookShop_IsPointSpecialToday(void *p);
 }
 extern "C" {
-u32 func_020acde8(u32 v);
+u32 NookPoints_GetRank(u32 v);
 }
 extern "C" {
-u32 func_020acdd4(u32 i);
+u32 NookPoints_GetRankThreshold(u32 i);
 }
 extern "C" {
-void func_020ace48(u16 *p, u32 add);
+void NookPoints_Add(u16 *p, u32 add);
 }
 extern "C" {
-void func_020ace7c(void);
+void NookPoints_SendMemberLetters(void);
 }
 extern "C" {
 BOOL _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 i);
@@ -2985,22 +2985,22 @@ extern "C" {
 extern u8 data_021ed2d4[];
 }
 extern "C" {
-extern u8 data_021ee160[];
+extern u8 sShopAckCounter[];
 }
 extern "C" {
-extern int data_021ee178;
+extern int sNookShopVisitState;
 }
 extern "C" {
-extern u16 data_021ee168;
+extern u16 sStockSoldOutItem;
 }
 extern "C" {
-extern u16 data_020d09b4[];
+extern u16 kNookFlowerBagItems[];
 }
 extern "C" {
-extern u16 data_020d0994[];
+extern u16 kNookPointRankThresholds[];
 }
 extern "C" {
-extern u16 data_020d098c[];
+extern u16 kNookMemberGiftItems[];
 }
 extern "C" {
 extern u8 data_020e2e38[];
@@ -3081,11 +3081,11 @@ static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *t
 
 
 
-extern "C" void func_020ace7c(void) {
+extern "C" void NookPoints_SendMemberLetters(void) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         void *r5 = PlayerData_GetCurrent();
         if (r5) {
-            u32 n = func_020acde8(*func_020acf54(_ZN10PlayerData13getNookPointsEv(r5)));
+            u32 n = NookPoints_GetRank(*NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(r5)));
             if (n) {
                 u32 i;
                 int z = 0;
@@ -3097,8 +3097,8 @@ extern "C" void func_020ace7c(void) {
                         _ZN6LetterC1Ev(obj);
                         ib = i;
                         func_020656dc(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
-                        _ZN12Unk_0206555413func_02065588Etj(obj, data_020d098c[i & 3], 1);
-                        if (func_02096a50(obj, z)) {
+                        _ZN12Unk_0206555413func_02065588Etj(obj, kNookMemberGiftItems[i & 3], 1);
+                        if (LetterDelivery_QueueOutgoing(obj, z)) {
                             _ZN12Unk_02097ff413func_0209801cEj(r5, j);
                         }
                         _ZN6LetterD1Ev(obj);
@@ -3109,59 +3109,59 @@ extern "C" void func_020ace7c(void) {
     }
 }
 
-extern "C" void func_020ace48(u16 *p, u32 add) {
-    u32 k = func_020acde8(*p);
+extern "C" void NookPoints_Add(u16 *p, u32 add) {
+    u32 k = NookPoints_GetRank(*p);
     int s = add + *p;
     if (s >= 0xc350) {
         s = 0xc350;
     }
     *p = s;
-    if (k != func_020acde8(*p)) {
-        func_020ace7c();
+    if (k != NookPoints_GetRank(*p)) {
+        NookPoints_SendMemberLetters();
     }
 }
 
-extern "C" void func_020ace10(u16 *p, u32 v) {
+extern "C" void NookPoints_AddForPurchase(u16 *p, u32 v) {
     u16 t = _s32_div_f(v, 100);
-    if (func_020aeb14(data_021ed104)) {
+    if (NookShop_IsPointSpecialToday(data_021ed104)) {
         t = t * 5;
     }
-    func_020ace48(p, t);
+    NookPoints_Add(p, t);
 }
 
-extern "C" u32 func_020acde8(u32 v) {
+extern "C" u32 NookPoints_GetRank(u32 v) {
     int i;
     for (i = 4; i >= 0; i--) {
-        if (v >= func_020acdd4(i)) {
+        if (v >= NookPoints_GetRankThreshold(i)) {
             return i;
         }
     }
     return 0;
 }
 
-extern "C" u32 func_020acdd4(u32 i) {
+extern "C" u32 NookPoints_GetRankThreshold(u32 i) {
     if (i < 5) {
-        return data_020d0994[i];
+        return kNookPointRankThresholds[i];
     }
     return 0;
 }
 
-extern "C" u16 func_020acdac(u16 *p) {
-    u32 k = func_020acde8(*p);
+extern "C" u16 NookPoints_GetToNextRank(u16 *p) {
+    u32 k = NookPoints_GetRank(*p);
     if (k != 4) {
-        return func_020acdd4(k + 1) - *p;
+        return NookPoints_GetRankThreshold(k + 1) - *p;
     }
     return 0;
 }
 
-extern "C" void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int e) {
+extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int e) {
     u16 cur;
     Pack p1;
     u32 x, y;
     Pack p2;
     e = e;
     if (a == 0x3f) {
-        func_020ae740(data_021ed104, b, d);
+        NookShop_AddSales(data_021ed104, b, d);
         if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
             p1.a = a;
             p1.b = b;
@@ -3173,41 +3173,41 @@ extern "C" void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int
             _ZN11CommManager9endRecordEjj(h, 0x26, 4);
         }
     } else {
-        cur = data_021ee168;
+        cur = sStockSoldOutItem;
         switch (mode) {
         case 0:
-            cur = *func_020ae844(data_021ed104, a, 0);
+            cur = *NookShop_GetItem(data_021ed104, a, 0);
             break;
         case 1:
-            cur = *func_020ad8e8(data_021ed2d4, a, 0);
+            cur = *AbleShop_GetItem(data_021ed2d4, a, 0);
             break;
         case 2:
-            cur = *func_020acfa8(data_021ed2c0, a, 0);
+            cur = *ReddShop_GetItem(data_021ed2c0, a, 0);
             break;
         }
-        if (!cmp16(&cur, &data_021ee168)) {
+        if (!cmp16(&cur, &sStockSoldOutItem)) {
             switch (mode) {
             case 0:
-                func_020ae664(data_021ed104, a, b, d);
+                NookShop_SellSlot(data_021ed104, a, b, d);
                 if (flag) {
-                    func_020ace10(func_020acf54(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), b);
+                    NookPoints_AddForPurchase(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), b);
                 }
                 if (isOne()) {
-                    if (func_ov004_0223ec44(&x, &y, a)) {
+                    if (ShopStock_FindTileOfStock(&x, &y, a)) {
                         if (a == 0x3f) {
                             e = 0;
                         }
-                        func_020aee90(x, y, c, e);
+                        Shop_RemoveSoldItemAt(x, y, c, e);
                     }
                 }
                 break;
             case 1:
-                func_020ad854(data_021ed2d4, &cur);
-                func_020aedc4(&cur, c, e);
+                AbleShop_MarkSoldItem(data_021ed2d4, &cur);
+                Shop_RemoveSoldItem(&cur, c, e);
                 break;
             case 2:
-                func_020acfc4(data_021ed2c0, &cur);
-                func_020aedc4(&cur, c, e);
+                ReddShop_MarkSoldItem(data_021ed2c0, &cur);
+                Shop_RemoveSoldItem(&cur, c, e);
                 break;
             }
             if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
@@ -3224,54 +3224,54 @@ extern "C" void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int
     }
 }
 
-extern "C" void func_020acb28(int a) {
+extern "C" void NookShop_RecordBuyback(int a) {
     BOOL x = _ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
     if (a > 0x249f0) {
         a = 0x249f0;
     }
-    func_020acb74(0x3f, a, func_020b50e8(), x, 0, 1, 0);
+    Shop_RecordPurchase(0x3f, a, func_020b50e8(), x, 0, 1, 0);
 }
 
-extern "C" void func_020aca4c(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void NookShop_BuyAt(u32 a, u32 b, u32 c, u32 d) {
     u16 v[2];
     u32 r;
-    v[0] = *func_ov004_0223ed40();
+    v[0] = *ShopStock_GetItemAt();
     if (inRange2(v[0], v[0]) && func_020b50e8() == 0x1d) {
         u32 i;
         v[1] = 0xfff1;
         for (i = 0; i < 0x25; i++) {
-            func_020ae844(data_021ed104, i, &v[1]);
+            NookShop_GetItem(data_021ed104, i, &v[1]);
             if (inRange2v(&v[1])) {
                 break;
             }
         }
-        r = i + func_ov004_0223ecf4(a, b);
+        r = i + ShopStock_GetCode22Index(a, b);
     } else {
-        r = func_020ae82c(data_021ed104, v);
+        r = NookShop_FindItem(data_021ed104, v);
     }
     if (r != (u32)-1) {
         BOOL x = _ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
-        func_020af1fc(data_021ee160);
-        func_020acb74(r, c, d, x, 0, 1, 0);
+        ShopAckCounter_Start(sShopAckCounter);
+        Shop_RecordPurchase(r, c, d, x, 0, 1, 0);
     }
 }
 
-extern "C" u32 func_020aca44(void) {
-    return func_020aec4c();
+extern "C" u32 NookShop_IsPurchaseSynced(void) {
+    return Shop_IsPurchaseSynced();
 }
 
-extern "C" BOOL func_020aca18(void) {
+extern "C" BOOL NookShop_CanTakeCatalogOrder(void) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
-    if (func_02096880()) {
+    if (LetterDelivery_HasFreeOutgoingSlot()) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020ac948(void *name) {
-    if (func_020aca18()) {
+extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
+    if (NookShop_CanTakeCatalogOrder()) {
         u16 id;
         u8 by;
         u32 s1[9];
@@ -3282,13 +3282,13 @@ extern "C" BOOL func_020ac948(void *name) {
         _ZN6LetterC1Ev(obj);
         void *r4 = PlayerData_GetCurrent();
         u8 *d = data_021ed104;
-        by = func_020ae02c(d);
+        by = NookShop_GetLevel(d);
         func_020656dc(obj, &by, "sp_npc_raccoon", data_020e2e40, data_020e2e3c, _ZN10PlayerData11getPlayerIdEv(r4));
         _ZN12Unk_0206555413func_02065588Etj(obj, id, 1);
         u32 r = Item_GetMemberPrice(&id);
-        if (func_02096a50(obj, 0)) {
-            func_020ae740(d, r, 1);
-            func_020ace10(func_020acf54(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), r);
+        if (LetterDelivery_QueueOutgoing(obj, 0)) {
+            NookShop_AddSales(d, r, 1);
+            NookPoints_AddForPurchase(NookPoints_GetValuePtr(_ZN10PlayerData13getNookPointsEv(PlayerData_GetCurrent())), r);
             _ZN6LetterD1Ev(obj);
             _ZN8ItemNameD1Ev(s1);
             return TRUE;
@@ -3299,45 +3299,45 @@ extern "C" BOOL func_020ac948(void *name) {
     return FALSE;
 }
 
-extern "C" void func_020ac8fc(u32 a, u32 b, u32 c) {
-    u16 v = *func_ov004_0223ea90(a, b);
-    u32 r = func_020ad8d0(data_021ed2d4, &v);
+extern "C" void AbleShop_BuyAt(u32 a, u32 b, u32 c) {
+    u16 v = *ShopStock_GetItemAtTile(a, b);
+    u32 r = AbleShop_FindItem(data_021ed2d4, &v);
     if (r != (u32)-1) {
-        func_020af1fc(data_021ee160);
-        func_020acb74(r, 0, c, 1, 1, 1, 0);
+        ShopAckCounter_Start(sShopAckCounter);
+        Shop_RecordPurchase(r, 0, c, 1, 1, 1, 0);
     }
 }
 
-extern "C" u32 func_020ac8f4(void) {
-    return func_020aec4c();
+extern "C" u32 AbleShop_IsPurchaseSynced(void) {
+    return Shop_IsPurchaseSynced();
 }
 
-extern "C" void func_020ac8d4(u32 a, u32 b, u8 c, u32 d) {
-    func_020acb74(a, 0, b, 1, 2, c, d);
+extern "C" void ReddShop_RecordPurchase(u32 a, u32 b, u8 c, u32 d) {
+    Shop_RecordPurchase(a, 0, b, 1, 2, c, d);
 }
 
-extern "C" void func_020ac894(u32 a, u32 b, u32 c) {
-    u32 r = func_020acf90(data_021ed2c0, _ZN18Unk_ov004_0223e9bc19func_ov004_0223e9c0Ev(a, b));
+extern "C" void ReddShop_BuyAt(u32 a, u32 b, u32 c) {
+    u32 r = ReddShop_FindItem(data_021ed2c0, _ZN18Unk_ov004_0223e9bc13callGetItemAtEv(a, b));
     if (r != (u32)-1) {
-        func_020af1fc(data_021ee160);
-        func_020ac8d4(r, c, 1, 0);
+        ShopAckCounter_Start(sShopAckCounter);
+        ReddShop_RecordPurchase(r, c, 1, 0);
     }
 }
 
-extern "C" u32 func_020ac88c(void) {
-    return func_020aec4c();
+extern "C" u32 ReddShop_IsPurchaseSynced(void) {
+    return Shop_IsPurchaseSynced();
 }
 
-extern "C" void func_020ac7f8(Bits *p, u32 arg) {
+extern "C" void Shop_OnPurchaseRecord(Bits *p, u32 arg) {
     u32 a = p->a;
     u8 d = p->d;
     BOOL c = p->c ? TRUE : FALSE;
     if (d == 10) {
-        func_020acb74(a, 0, d, 1, 1, 0, 1);
+        Shop_RecordPurchase(a, 0, d, 1, 1, 0, 1);
     } else if (d == 15) {
-        func_020ac8d4(a, d, 0, 1);
+        ReddShop_RecordPurchase(a, d, 0, 1);
     } else if (func_020b5268(d)) {
-        func_020acb74(a, p->b, d, c, 0, 0, 1);
+        Shop_RecordPurchase(a, p->b, d, c, 0, 0, 1);
     }
     if (a != 0x3f) {
         void *h = gCommManager;
@@ -3346,15 +3346,15 @@ extern "C" void func_020ac7f8(Bits *p, u32 arg) {
     }
 }
 
-extern "C" u32 func_020ac7e8(void) {
-    return func_020af1d8(data_021ee160);
+extern "C" u32 Shop_OnPurchaseAck(void) {
+    return ShopAckCounter_Add(sShopAckCounter);
 }
 
-extern "C" void func_020ac7cc(u16 *p) {
-    *p = data_020d09b4[func_02063b8c(12)];
+extern "C" void NookShop_PickFlowerBag(u16 *p) {
+    *p = kNookFlowerBagItems[func_02063b8c(12)];
 }
 
-extern "C" BOOL func_020ac7a8(void) {
+extern "C" BOOL NookShop_IsOpenHour(void) {
     struct { u8 a; u8 b; u8 c; u8 d; } s;
     Clock_GetMinuteHour(&s);
     if (s.b >= 8 && s.b < 0x17) {
@@ -3363,34 +3363,34 @@ extern "C" BOOL func_020ac7a8(void) {
     return FALSE;
 }
 
-extern "C" int func_020ac79c(void) {
-    return data_021ee178;
+extern "C" int NookShop_GetVisitState(void) {
+    return sNookShopVisitState;
 }
 
-extern "C" void func_020ac790(int v) {
-    data_021ee178 = v;
+extern "C" void NookShop_SetVisitState(int v) {
+    sNookShopVisitState = v;
 }
 
-extern "C" void func_020ac750(void) {
+extern "C" void NookShop_OnSceneLoad(void) {
     if (func_020b5184()) {
-        if (func_020ac79c() == 2) {
+        if (NookShop_GetVisitState() == 2) {
             if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
-                func_020ada88();
-                func_020ae3a4(data_021ed104, 0);
+                NookShop_ApplyRenovation();
+                NookShop_UpdateDaily(data_021ed104, 0);
             }
         }
-        func_020ac790(0);
+        NookShop_SetVisitState(0);
     }
 }}
 
 
 // ======== data (last gap) ========
-ItemId data_021ee164(0xfff1);
+ItemId sStockNoItem(0xfff1);
 u32 data_020e2e40 = 3;
-const u8 data_020d0974[4] = {1, 2, 3, 4};
-const u8 data_020d0980[4] = {1, 2, 4, 7};
-ItemId data_021ee168(0x1547);
-const u8 data_020d0978[4] = {2, 3, 4, 6};
+const u8 kNookStationeryCounts[4] = {1, 2, 3, 4};
+const u8 kNookFlowerBagCounts[4] = {1, 2, 4, 7};
+ItemId sStockSoldOutItem(0x1547);
+const u8 kNookToolCounts[4] = {2, 3, 4, 6};
 u32 data_020e2e3c = 0x18;
-const u16 data_020d0994[6] = {0, 0x12c, 0x1388, 0x2710, 0x4e20, 0};
-Unk_020af238 data_021ee160;
+const u16 kNookPointRankThresholds[6] = {0, 0x12c, 0x1388, 0x2710, 0x4e20, 0};
+ShopAckCounter sShopAckCounter;

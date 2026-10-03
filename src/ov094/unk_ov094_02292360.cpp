@@ -249,8 +249,8 @@ void func_020655f0(void *o, void *buf);
 s32 func_020655fc(void *o);
 void func_02065c94(void *o);
 void func_02065e70(void *o, s32 x);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_0206eed4(s32 a);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
 void func_0206fab4(void *p, s32 a, s32 b);
@@ -612,18 +612,18 @@ void InventoryBg_UploadScreen(void *o)
 
 void InventoryBg_PaintNormal(void *o)
 {
-    func_0206ee80((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 2);
+    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 2);
     InventoryBg_SetDirty(o, 1);
 }
 
 void InventoryBg_PaintHighlight0(void *o)
 {
-    func_0206ee80((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 7);
+    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 7);
 }
 
 void InventoryBg_PaintHighlight1(void *o)
 {
-    func_0206ee80((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 6);
+    BgScreen_SetRectPalette((u8 *)o + 0x160, 0xe, 3, 0x17, 0xc, 6);
 }
 
 void InventoryBg_LoadPictureForHeldItem(void *o)
@@ -777,7 +777,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
         z = 8;
         break;
     }
-    func_0206ee80((u8 *)p + 0x160, x, 10, 11, 11, z);
+    BgScreen_SetRectPalette((u8 *)p + 0x160, x, 10, 11, 11, z);
     InventoryBg_SetDirty(p, 8);
     switch (n) {
     case 0:

@@ -11,7 +11,7 @@ void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
 void *File_LoadAlloc(void *a, void *b, s32 c, void *d);
 void Heap_Free(void *heap, void *p);
-s32 func_0206ed50();
+s32 MenuCtrl_GetMode();
 s32 func_020639e8(char *buf, const char *fmt, ...);
 
 extern void *gCurrentHeap;
@@ -89,7 +89,7 @@ GeneralMenuHeader::~GeneralMenuHeader() {}
 void GeneralMenuHeader::loadTitleBg(s32 a, s32 b) {
     loadBgGfx(a, 5);
     Gfx2d_LoadScreenFile("menu/han/b_bg.bsc", gCurrentHeap, b);
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 4:
     case 7:
     case 10: func_0206f9fc(this, 0x3a); break;
@@ -140,7 +140,7 @@ void GeneralMenuHeader::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
 }
 
 extern "C" s32 GeneralMenuHeader_GetStyle() {
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0xf:
     case 0x10:
     case 0x11:
@@ -159,7 +159,7 @@ void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
     char buf[0x20];
     Gfx2d_LoadCharFile("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
     Gfx2d_LoadPaletteFile("menu/han/bg.bpl", heap, a, 1, 1, 6);
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 4:
     case 5:
     case 7:
@@ -215,7 +215,7 @@ void GeneralMenuHeader::loadObjGfx(s32 v) {
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
     unk_91 = v;
     unk_40.setup((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0xb: unk_40.setLabelNoShadow(0x3b); break;
     case 0xf: unk_40.setLabelNoShadow(0xe6); break;
     case 0x10: unk_40.setLabelNoShadow(0xe7); break;

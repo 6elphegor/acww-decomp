@@ -170,14 +170,14 @@ extern void WfcUtil_ShowStepIndicator(s32);
 extern void WfcSetupMethod_FadeIn();
 extern void WfcHeap_Free(s32);
 extern void WfcHeap_Alloc(s32, s32);
-extern s32 func_ov065_0226b1e0();
+extern s32 WifiAp_Process();
 extern void WfcLinkIcon_Delete();
 extern void WfcSound_Stop();
-extern void func_ov065_0226b16c();
+extern void WifiAp_GetStatus();
 extern void WfcError_SetCode();
 extern void WfcConnTest_FadeOut();
 extern void WfcTask_RequestDelete(s32, s32);
-extern s32 func_ov065_0226b110();
+extern s32 WifiAp_RequestCleanup();
 extern void *func_020fe848();
 extern void MI_CpuCopy8(void *, void *, s32);
 extern void WfcBusyIcon_Delete();
@@ -203,9 +203,9 @@ extern void func_ov001_0221b608();
 extern void func_ov001_0221b60c();
 extern void WfcUtil_GetEditParams(s32, void *);
 extern void MIi_CpuCopy32(void *, void *, s32);
-extern s32 func_ov065_0226b27c(void *);
+extern s32 WifiAp_Init(void *);
 extern void Fatal_Trap();
-extern void func_ov065_0226b0ec(s32, void *);
+extern void WifiAp_SetApEntry(s32, void *);
 extern void WfcTask_Add(s32, void *, s32, s32);
 extern void WfcConnTest_PollTask(s32);
 
@@ -234,8 +234,8 @@ void WfcConnTest_Start() {
     WfcUtil_GetEditParams(0, &l);
     if (l == 2) m.b[10] = 4;
     else m.b[10] = o[0xf4] + 1;
-    if (func_ov065_0226b27c(&m) == 0) Fatal_Trap();
-    if (l == 0) func_ov065_0226b0ec(o[0xf4], o);
+    if (WifiAp_Init(&m) == 0) Fatal_Trap();
+    if (l == 0) WifiAp_SetApEntry(o[0xf4], o);
     WfcTask_Add(0, (void *)WfcConnTest_PollTask, 0, 0x78);
 }
 
@@ -284,7 +284,7 @@ void WfcConnTest_WaitFadeOut() {
 
 void WfcConnTest_Exit() {
     u8 *o = WfcConfig_Get();
-    if (func_ov065_0226b110() == 0) return;
+    if (WifiAp_RequestCleanup() == 0) return;
     MI_CpuCopy8(func_020fe848(), o + 0xf0, 0xe);
     MI_CpuCopy8(func_020fe848(), o + 0x1f0, 0xe);
     WfcBusyIcon_Delete();
@@ -300,7 +300,7 @@ void WfcConnTest_Exit() {
 }
 
 void WfcConnTest_PollTask(s32 a) {
-    s32 r = func_ov065_0226b1e0();
+    s32 r = WifiAp_Process();
     if (r == 0) return;
     WfcLinkIcon_Delete();
     WfcSound_Stop();
@@ -308,7 +308,7 @@ void WfcConnTest_PollTask(s32 a) {
         sWfcConnTestSucceeded = 1;
         WfcSound_Play(0x11);
     } else {
-        func_ov065_0226b16c();
+        WifiAp_GetStatus();
         WfcError_SetCode();
         WfcSound_Play(0x12);
     }

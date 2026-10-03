@@ -14,7 +14,7 @@ void OS_DisableIrqMask(s32 v);
 void OS_ResetRequestIrqMask(s32 v);
 void OverlayHandle_Load(void *p, s32 v);
 void OverlayHandle_Unload(void *p);
-void func_ov065_02277ba4(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
+void DwcNet_SetAllocator(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
 void OverlayMgr_Acquire(u32 id);
 void OverlayMgr_Release(u32 id);
 void *Mem_AllocAligned(u32 size, u32 align);
@@ -62,7 +62,7 @@ extern "C" void Main_RunWifiUtility(void) {
     OS_DisableIrqMask(7);
     OS_ResetRequestIrqMask(7);
     OverlayHandle_Load(gOverlayHandle, (s32)OVERLAY_65_ID);
-    func_ov065_02277ba4(Main_DwcAlloc, Main_DwcFree);
+    DwcNet_SetAllocator(Main_DwcAlloc, Main_DwcFree);
     OverlayMgr_Acquire((u32)OVERLAY_1_ID);
     void *p = Mem_AllocAligned(0x40000, 0x20);
     WfcUtil_Run(p, 1, 0x20);

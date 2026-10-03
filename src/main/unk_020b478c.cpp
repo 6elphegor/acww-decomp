@@ -2,9 +2,9 @@
 #include "Unk_020d8c7c.h"
 
 // Vtable at 0x020e2988; its constructor and destructor are inline. The virtuals are defined by another unit.
-class Unk_020e2988 : public GameProc {
+class SceneBase : public GameProc {
 public:
-    Unk_020e2988() {
+    SceneBase() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
@@ -16,11 +16,11 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Unk_020e2988() {}
+    virtual ~SceneBase() {}
 };
 
 // Vtable 0x020e4124
-class Unk_020e4124 : public Unk_020e2988 {
+class Unk_020e4124 : public SceneBase {
 public:
 };
 

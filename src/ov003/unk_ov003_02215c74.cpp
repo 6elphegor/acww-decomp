@@ -322,7 +322,7 @@ BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 func_0207e274(void *p);
 s32 func_0207e278(void *p);
-void func_020a5e74(s32 i, u8 *a, u8 *b, u8 *c);
+void NetArea_GetSlotStatus(s32 i, u8 *a, u8 *b, u8 *c);
 s32 func_020b51e8(u32 a);
 s32 VillagerId_GetPersonality(void *);
 
@@ -613,7 +613,7 @@ BOOL VillagerHouse::vfunc_9c() {
                 void *g = gCommManager;
                 for (; i < 4; i++) {
                     if (CommManager_isSlotActive(g, i)) {
-                        func_020a5e74(i, &a, &b, &c);
+                        NetArea_GetSlotStatus(i, &a, &b, &c);
                         if (idx == func_020b51e8(a)) {
                             return TRUE;
                         }

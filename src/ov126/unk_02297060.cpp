@@ -90,17 +90,17 @@ extern u8 *gCommManager;
 extern u32 data_ov126_02299ad0[4];
 
 // main
-s32 func_0206ed50();
-s32 func_0206ed38();
-void func_0206ecf8(s32 a);
-void *func_0206ecf0();
-void func_0206ed2c(u8 a);
-void func_0206ecc8(void *p, u32 a);
+s32 MenuCtrl_GetMode();
+s32 MenuCtrl_GetIndex();
+void MenuCtrl_SetResult(s32 a);
+void *MenuCtrl_GetText();
+void MenuCtrl_SetIndex(u8 a);
+void MenuCtrl_SetText(void *p, u32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-s32 func_0206e5cc();
-BOOL func_0206e61c();
-void func_0206e63c();
+s32 MenuCtrl_SetFriendPageFromIndex();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
 void Snd_PlaySe(u32 v);
 void Gfx2d_LoadCharFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadPaletteFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
@@ -657,7 +657,7 @@ BOOL NameEntryMenu::vfunc_00() {
 }
 
 BOOL NameEntryMenu::vfunc_0c() {
-    s32 t = func_0206ed50();
+    s32 t = MenuCtrl_GetMode();
     if ((u32)t >= 0x18 && (u32)t <= 0x1b) {
         void *h = ProcBase_GetParent(this);
         if (MenuTabBar_onTabMenuClosed(h) == 6) {
@@ -710,9 +710,9 @@ void NameEntryMenu::runMainState() {
 }
 
 BOOL NameEntryMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
-        u32 r5 = func_0206ed50();
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
+        u32 r5 = MenuCtrl_GetMode();
         switch (r5) {
         case 0x18:
         case 0x19:
@@ -789,7 +789,7 @@ void NameEntryMenu::transitionAct02() {
 
 void NameEntryMenu::transitionAct03() {
     clearFlags(2);
-    u32 r5 = func_0206ed50();
+    u32 r5 = MenuCtrl_GetMode();
     if (r5 >= 0x18 && r5 <= 0x1b) {
         void *r6 = ProcBase_GetParent(this);
         switch (r5) {
@@ -797,7 +797,7 @@ void NameEntryMenu::transitionAct03() {
         case 0x1a:
             MenuTabBar_selectTab(r6, 6);
             if (!testFlags(0x40)) {
-                func_0206e5cc();
+                MenuCtrl_SetFriendPageFromIndex();
             }
             break;
         case 0x19:
@@ -805,7 +805,7 @@ void NameEntryMenu::transitionAct03() {
                 MenuTabBar_selectTab(r6, 0xc);
             } else {
                 MenuTabBar_selectTab(r6, 6);
-                func_0206e5cc();
+                MenuCtrl_SetFriendPageFromIndex();
                 if (CommManager_isSlotActive(gCommManager, ((s32 *)gCommManager)[0x64 / 4])) {
                     s32 t = Net_GetMode();
                     if (t == 3) goto yes;
@@ -836,7 +836,7 @@ void NameEntryMenu::transitionAct03() {
 
 void NameEntryMenu::transitionAct04() {
     void *r4 = getFriendEntry();
-    s32 r6 = func_0206ed38();
+    s32 r6 = MenuCtrl_GetIndex();
     if (Net_WifiAddFriend(r6, DwcFriendData_GetBytes(FriendEntry_GetFriendData(r4)))) {
         beginSubSlideOut(0xa, 0, 0, 0x30);
         updateBgScroll();
@@ -851,12 +851,12 @@ void NameEntryMenu::transitionAct05() {
         clearFlags(1);
         setPhase(5);
         if (testFlags(0x40)) {
-            func_0206ecf8(0);
+            MenuCtrl_SetResult(0);
         } else {
-            func_0206ecf8(1);
+            MenuCtrl_SetResult(1);
             commitEntry();
-            func_0206ecc8(unk_4088, unk_a6);
-            s32 t = func_0206ed50();
+            MenuCtrl_SetText(unk_4088, unk_a6);
+            s32 t = MenuCtrl_GetMode();
             if (t != 0x18 && t != 0x19 && t != 0x1a) {
             } else {
                 MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
@@ -920,7 +920,7 @@ void NameEntryMenu::updateBgScroll() {
 void NameEntryMenu::init() {
     unk_a4 = 0;
     unk_a0 = 0;
-    u32 r5 = func_0206ed50();
+    u32 r5 = MenuCtrl_GetMode();
     switch (r5) {
     case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f: case 0x10: case 0x11: case 0x12:
     case 0x13: case 0x14: case 0x15: case 0x16: case 0x17: case 0x18: case 0x1a:
@@ -1041,7 +1041,7 @@ void NameEntryMenu::loadObjGfx() {
         func_0206fcc8(buf);
         MsgString_clear(buf);
         String_SetSlot(0, buf);
-        if (func_0206ed50() == 0x12) {
+        if (MenuCtrl_GetMode() == 0x12) {
             func_0206f9fc(&unk_3ec8, 0x80);
         } else {
             func_0206f9fc(&unk_3ec8, 0x66);
@@ -1365,7 +1365,7 @@ void NameEntryMenu::closeWithResult(s32 a) {
     if (testFlags(0x20)) {
         if (testFlags(0x40)) {
             Snd_PlaySe(0x2a);
-        } else if (func_0206ed50() == 0x19) {
+        } else if (MenuCtrl_GetMode() == 0x19) {
             Snd_PlaySe(0x27);
         } else {
             Snd_PlaySe(0x29);
@@ -1940,18 +1940,18 @@ BOOL NameEntryMenu::tryStartConfirm() {
 void NameEntryMenu::loadDesignName() {
     u8 buf[0x10];
     s32 a = func_020986d4(PlayerData_GetCurrent());
-    func_02071f48(func_02071e04(func_02071c68(a, func_0206ed38())), buf);
+    func_02071f48(func_02071e04(func_02071c68(a, MenuCtrl_GetIndex())), buf);
     Mem_Copy(buf, unk_4088, 0x10);
 }
 
 void NameEntryMenu::func_ov126_0229763c() {
-    func_020b03f0(unk_4088, func_0206ed38());
+    func_020b03f0(unk_4088, MenuCtrl_GetIndex());
 }
 
 u8 *NameEntryMenu::getFriendEntry() {
     s32 t = PlayerData_GetCurrent();
     s32 p = PlayerData_getFriendList(t);
-    s32 idx = func_0206ed38();
+    s32 idx = MenuCtrl_GetIndex();
     u8 *q = (u8 *)FriendList_GetEntries(p);
     return q + idx * 0x1c;
 }
@@ -1965,12 +1965,12 @@ void NameEntryMenu::loadFriendField2() {
 }
 
 void NameEntryMenu::loadInitialText() {
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 0x11:
     case 0x15:
     case 0x16:
     case 0x17:
-        Mem_Copy(func_0206ecf0(), unk_4088, unk_a6);
+        Mem_Copy(MenuCtrl_GetText(), unk_4088, unk_a6);
         break;
     case 0xb: loadDesignName(); break;
     case 0x12: func_ov126_0229763c(); break;
@@ -1984,16 +1984,16 @@ void NameEntryMenu::loadInitialText() {
 void NameEntryMenu::storeDesignName() {
     u8 buf[0x10];
     s32 a = func_020986d4(PlayerData_GetCurrent());
-    void *p = func_02071c68(a, func_0206ed38());
+    void *p = func_02071c68(a, MenuCtrl_GetIndex());
     Mem_Copy(unk_4088, buf, 0x10);
     func_02071ef4(func_02071e04(p), buf);
 }
 
 void NameEntryMenu::checkGeneralAnswer() {
     Unk_020e0488 b;
-    func_0206f9e4(&b, "st_general", func_0206ed38());
+    func_0206f9e4(&b, "st_general", MenuCtrl_GetIndex());
     if (!func_0206f88c(&b, unk_4088, unk_a6)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     }
 }
 
@@ -2007,19 +2007,19 @@ void NameEntryMenu::checkItemNameAnswer() {
         ItemName_setFromItem(&rec, &id);
         MsgString_copy(&b, &rec);
         if (func_0206f88c(&b, unk_4088, unk_a6)) {
-            func_0206ed2c((u8)(i - 0x1323));
-            func_0206ecf8(1);
+            MenuCtrl_SetIndex((u8)(i - 0x1323));
+            MenuCtrl_SetResult(1);
             return;
         }
     }
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
 }
 
 void NameEntryMenu::checkPasswordAnswer() {
     Unk_020e0488 b;
-    func_0206f9e4(&b, "st_password", func_0206ed38());
+    func_0206f9e4(&b, "st_password", MenuCtrl_GetIndex());
     if (!func_0206f88c(&b, unk_4088, unk_a6)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     }
 }
 
@@ -2032,7 +2032,7 @@ void NameEntryMenu::storePlayerName() {
     for (i = 0; i < 4; i++) {
         if (i != n && func_020978c8(data_021d735c, i)) {
             if (func_02051218((void *)func_02094104(PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, i))), unk_4088, 8)) {
-                func_0206ecf8(2);
+                MenuCtrl_SetResult(2);
                 return;
             }
         }
@@ -2045,9 +2045,9 @@ s32 NameEntryMenu::storeTownName() {
 }
 
 void NameEntryMenu::func_ov126_02297328() {
-    s32 t = func_0206ed38();
+    s32 t = MenuCtrl_GetIndex();
     if (func_020b0084(unk_4088, t)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     }
     func_020b0428(unk_4088, t);
 }
@@ -2068,7 +2068,7 @@ void NameEntryMenu::storeFriendField2() {
 }
 
 void NameEntryMenu::commitEntry() {
-    s32 r = func_0206ed50();
+    s32 r = MenuCtrl_GetMode();
     if (r != 0xc && r != 0xd && r != 0xe) {
         censorText();
     }

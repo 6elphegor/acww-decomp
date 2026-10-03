@@ -89,13 +89,13 @@ extern Unk_021c3070 *gCamera;
 extern Unk_0223f44c_Vec gVec3Zero;
 extern s16 data_02135f44[];
 extern u32 sCameraPoseGrid[][3];
-extern Unk_0223f44c_Tbl data_ov004_0224f36c;
-extern Unk_0223f44c_Tbl data_ov004_0224f34c;
-extern Unk_0223f44c_Tbl data_ov004_0224f38c;
+extern Unk_0223f44c_Tbl sCameraKkShowSetup;
+extern Unk_0223f44c_Tbl sCameraKkShowPrevSetup;
+extern Unk_0223f44c_Tbl sCameraKkShowWideSetup;
 extern u32 data_ov004_0224f31c[];
 extern u32 data_ov004_0224f32c[];
 extern u32 data_ov004_0224f33c[];
-extern Unk_0223f534_Ent data_ov004_0224f3ac[];
+extern Unk_0223f534_Ent sCameraKkShowShots[];
 extern const Unk_0223f44c_Vec data_ov004_02246838;
 extern const Unk_0223f44c_Vec data_ov004_0224682c;
 // linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
@@ -141,9 +141,9 @@ s32 _ZN12Unk_0203b35015getRoomEdgeSideEPi(Unk_021c3070 *o, s32 *p);
 #define Unk_020d93b8_lerpPoses _ZN12Unk_020d93b89lerpPosesEiii
 #define Unk_0203b350_getRoomEdgeSide _ZN12Unk_0203b35015getRoomEdgeSideEPi
 
-void func_ov004_0223f44c(Unk_021c3070 *o);
-void func_ov004_0223f534(Unk_021c3070 *o);
-void func_ov004_0223f644(Unk_021c3070 *o);
+void Camera_KkShowResetShot(Unk_021c3070 *o);
+void Camera_KkShowPickShot(Unk_021c3070 *o);
+void Camera_KkShowWideShot(Unk_021c3070 *o);
 }
 
 #define Unk_0223f44c_Finish(o)                                          \
@@ -159,7 +159,7 @@ void func_ov004_0223f644(Unk_021c3070 *o);
 
 extern "C" {
 
-void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
+void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     Unk_0223f44c_Vec *p;
     s32 lim;
     s32 sp4;
@@ -226,7 +226,7 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     a->unk_14 += sp8;
 }
 
-BOOL func_ov004_0223fdbc(Unk_021c3070 *self) {
+BOOL Camera_InitMode10(Unk_021c3070 *self) {
     Unk_020d93b8_loadPose(self, 0x11, 0);
     Unk_020d93b8_setBlendPreset(self, 0);
     self->unk_110 = gVec3Zero.x;
@@ -236,7 +236,7 @@ BOOL func_ov004_0223fdbc(Unk_021c3070 *self) {
     return TRUE;
 }
 
-BOOL func_ov004_0223fd70(Unk_021c3070 *self) {
+BOOL Camera_StartBlendToPlayer(Unk_021c3070 *self) {
     Unk_020d93b8_loadPose(self, sCameraPoseGrid[1][1], 0);
     Unk_020d93b8_setBlendPreset(self, 0);
     Unk_0223f44c_Vec *p = func_020947f0(4);
@@ -247,7 +247,7 @@ BOOL func_ov004_0223fd70(Unk_021c3070 *self) {
     return TRUE;
 }
 
-void func_ov004_0223fd30(Unk_021c3070 *self) {
+void Camera_UpdateMode10(Unk_021c3070 *self) {
     Unk_0223f44c_Vec v;
     Unk_0203b350_updateBlend(self);
     Camera_GetLookAtPoint(&v, self);
@@ -256,7 +256,7 @@ void func_ov004_0223fd30(Unk_021c3070 *self) {
     Unk_0203b350_setLookAtOrbit(self, &v, a, b, Unk_0203b350_getDistance(self));
 }
 
-s32 func_ov004_0223fcf4() {
+s32 Camera_GetShopTier() {
     s32 r = 0;
     switch (func_020b50e8()) {
     case 0x1a:
@@ -276,28 +276,28 @@ s32 func_ov004_0223fcf4() {
     return r;
 }
 
-BOOL func_ov004_0223fcd4() {
+BOOL Camera_SetMode11() {
     if (gCamera) {
         return Unk_0203b350_setMode(gCamera, 11);
     }
     return FALSE;
 }
 
-BOOL func_ov004_0223fcb4() {
+BOOL Camera_SetMode12() {
     if (gCamera) {
         return Unk_0203b350_setMode(gCamera, 12);
     }
     return FALSE;
 }
 
-BOOL func_ov004_0223fc8c(Unk_021c3070 *o) {
-    Unk_020d93b8_loadPose(o, func_ov004_0223fcf4() + 0x12, 0);
+BOOL Camera_InitMode11(Unk_021c3070 *o) {
+    Unk_020d93b8_loadPose(o, Camera_GetShopTier() + 0x12, 0);
     Unk_020d93b8_setBlendPreset(o, 0);
     Camera_StartBlend();
     return TRUE;
 }
 
-void func_ov004_0223fc28(Unk_021c3070 *o) {
+void Camera_UpdateMode11(Unk_021c3070 *o) {
     volatile s32 a, b, c;
     a = 0;
     b = 0;
@@ -308,14 +308,14 @@ void func_ov004_0223fc28(Unk_021c3070 *o) {
     Unk_0223f44c_Finish(o);
 }
 
-BOOL func_ov004_0223fc00(Unk_021c3070 *o) {
-    Unk_020d93b8_loadPose(o, func_ov004_0223fcf4() + 0x16, 0);
+BOOL Camera_InitMode12(Unk_021c3070 *o) {
+    Unk_020d93b8_loadPose(o, Camera_GetShopTier() + 0x16, 0);
     Unk_020d93b8_setBlendPreset(o, 0);
     Camera_StartBlend();
     return TRUE;
 }
 
-void func_ov004_0223fb9c(Unk_021c3070 *o) {
+void Camera_UpdateMode12(Unk_021c3070 *o) {
     volatile s32 a, b, c;
     a = 0;
     b = 0;
@@ -326,7 +326,7 @@ void func_ov004_0223fb9c(Unk_021c3070 *o) {
     Unk_0223f44c_Finish(o);
 }
 
-BOOL func_ov004_0223fb64(Unk_0223f44c_Vec *v) {
+BOOL Camera_SetMode16At(Unk_0223f44c_Vec *v) {
     Unk_021c3070 *c = gCamera;
     if (c) {
         Unk_0223f44c_Vec *d = &c->unk_1cc;
@@ -336,7 +336,7 @@ BOOL func_ov004_0223fb64(Unk_0223f44c_Vec *v) {
     return FALSE;
 }
 
-BOOL func_ov004_0223fb34(Unk_021c3070 *o) {
+BOOL Camera_InitMode16(Unk_021c3070 *o) {
     func_020947f0(4);
     Unk_020d93b8_loadPose(o, 0x1e, 0);
     Unk_020d93b8_setBlendPreset(o, 0);
@@ -345,7 +345,7 @@ BOOL func_ov004_0223fb34(Unk_021c3070 *o) {
     return TRUE;
 }
 
-void func_ov004_0223fa94(Unk_021c3070 *o) {
+void Camera_UpdateMode16(Unk_021c3070 *o) {
     Unk_0223f44c_Vec *p = func_020947f0(4);
     Unk_0223f44c_Vec a, b;
     s32 d;
@@ -362,74 +362,74 @@ void func_ov004_0223fa94(Unk_021c3070 *o) {
     Unk_0223f44c_Finish(o);
 }
 
-BOOL func_ov004_0223fa54(Unk_021c3070 *o) {
+BOOL Camera_InitMode14(Unk_021c3070 *o) {
     Unk_020d93b8_loadPose(o, sCameraPoseGrid[o->unk_1f0][o->unk_1ec], 0);
     Unk_020d93b8_setBlendPreset(o, 0);
     Camera_StartBlend();
     return TRUE;
 }
 
-void func_ov004_0223f9f0(Unk_021c3070 *o) {
+void Camera_UpdateMode14(Unk_021c3070 *o) {
     o->unk_110 = data_ov004_0224682c.x;
     o->unk_114 = data_ov004_0224682c.y;
     o->unk_118 = data_ov004_0224682c.z;
     Unk_0223f44c_Finish(o);
 }
 
-BOOL func_ov004_0223f9d0(Unk_021c3070 *o) {
+BOOL Camera_InitMode15(Unk_021c3070 *o) {
     Unk_020d93b8_loadPose(o, 0x1d, 0);
     Unk_020d93b8_setBlendPreset(o, 4);
     Camera_StartBlend();
     return TRUE;
 }
 
-void func_ov004_0223f96c(Unk_021c3070 *o) {
+void Camera_UpdateMode15(Unk_021c3070 *o) {
     o->unk_110 = data_ov004_02246838.x;
     o->unk_114 = data_ov004_02246838.y;
     o->unk_118 = data_ov004_02246838.z;
     Unk_0223f44c_Finish(o);
 }
 
-void func_ov004_0223f958(void) {
+void Camera_SetMode14(void) {
     Unk_0203b350_setMode(gCamera, 0xe);
 }
 
-void func_ov004_0223f944(void) {
+void Camera_SetMode15(void) {
     Unk_0203b350_setMode(gCamera, 0xf);
 }
 
-BOOL func_ov004_0223f92c(Unk_021c3070 *o) {
+BOOL Camera_InitMode20(Unk_021c3070 *o) {
     Unk_020d93b8_loadPose(o, 0x20, 0);
     Camera_FinishBlend();
     return TRUE;
 }
 
-void func_ov004_0223f8bc(Unk_021c3070 *o) {
+void Camera_UpdateMode20(Unk_021c3070 *o) {
     o->unk_110 = o->unk_1cc.x;
     o->unk_114 = o->unk_1cc.y;
     o->unk_118 = o->unk_1cc.z;
     Unk_0223f44c_Finish(o);
 }
 
-void func_ov004_0223f894(Unk_0223f44c_Vec *v) {
+void Camera_SetMode20At(Unk_0223f44c_Vec *v) {
     gCamera->unk_1cc = *v;
     Unk_0203b350_setMode(gCamera, 0x14);
 }
 
-void func_ov004_0223f880(void) {
+void Camera_SetMode18(void) {
     Unk_0203b350_setMode(gCamera, 0x12);
 }
 
-void func_ov004_0223f870(void) {
-    func_ov004_0223f644(gCamera);
+void RoomCamera_KkShowWideShot(void) {
+    Camera_KkShowWideShot(gCamera);
 }
 
-void func_ov004_0223f860(void) {
-    func_ov004_0223f534(gCamera);
+void RoomCamera_KkShowPickShot(void) {
+    Camera_KkShowPickShot(gCamera);
 }
 
-void func_ov004_0223f850(void) {
-    func_ov004_0223f44c(gCamera);
+void RoomCamera_KkShowResetShot(void) {
+    Camera_KkShowResetShot(gCamera);
 }
 
 #define COPY_TBL(o, t)                 \
@@ -443,7 +443,7 @@ void func_ov004_0223f850(void) {
     o->unk_114 = t.q.y;                \
     o->unk_118 = t.q.z
 
-BOOL func_ov004_0223f7b0(Unk_021c3070 *o) {
+BOOL Camera_InitMode18(Unk_021c3070 *o) {
     Unk_0223f44c_Mode *m = &o->unk_21c;
     m->v0 = 0;
     m->v2 = -1;
@@ -454,17 +454,17 @@ BOOL func_ov004_0223f7b0(Unk_021c3070 *o) {
     m->vc = 0xe;
     m->b0 = 0;
     m->b1 = 0;
-    COPY_TBL(o, data_ov004_0224f36c);
+    COPY_TBL(o, sCameraKkShowSetup);
     Unk_020d93b8_setBlendParams(o, data_ov004_0224f32c);
     Camera_StartBlend();
     return TRUE;
 }
 
-void func_ov004_0223f6bc(Unk_021c3070 *o) {
+void Camera_UpdateMode18(Unk_021c3070 *o) {
     Unk_0223f44c_Mode *m = &o->unk_21c;
     Unk_0223f534_Ent *e;
     if (m->v4 == 1) {
-        e = &data_ov004_0224f3ac[m->v2];
+        e = &sCameraKkShowShots[m->v2];
         o->unk_110 = e->w0;
         o->unk_114 = e->w1;
         o->unk_118 = e->w2;
@@ -484,13 +484,13 @@ void func_ov004_0223f6bc(Unk_021c3070 *o) {
     Unk_0223f44c_Finish(o);
 }
 
-void func_ov004_0223f644(Unk_021c3070 *o) {
-    COPY_TBL(o, data_ov004_0224f38c);
+void Camera_KkShowWideShot(Unk_021c3070 *o) {
+    COPY_TBL(o, sCameraKkShowWideSetup);
     Unk_020d93b8_setBlendParams(o, data_ov004_0224f33c);
     Camera_StartBlend();
 }
 
-void func_ov004_0223f534(Unk_021c3070 *o) {
+void Camera_KkShowPickShot(Unk_021c3070 *o) {
     Unk_0223f44c_Mode *m = &o->unk_21c;
     Unk_0223f534_Ent *e;
     s32 lim[2];
@@ -524,7 +524,7 @@ void func_ov004_0223f534(Unk_021c3070 *o) {
     (&m->v6)[m->va] = m->v2;
     m->va = m->va ^ 1;
     m->v4 = 1;
-    e = &data_ov004_0224f3ac[m->v2];
+    e = &sCameraKkShowShots[m->v2];
     o->unk_110 = e->w0;
     o->unk_114 = e->w1;
     o->unk_118 = e->w2;
@@ -538,27 +538,27 @@ void func_ov004_0223f534(Unk_021c3070 *o) {
     Camera_FinishBlend();
 }
 
-void func_ov004_0223f44c(Unk_021c3070 *o) {
+void Camera_KkShowResetShot(Unk_021c3070 *o) {
     Unk_0223f44c_Mode *m = &o->unk_21c;
     m->v0 = 0;
     m->v2 = 0;
     m->v4 = 2;
-    COPY_TBL(o, data_ov004_0224f36c);
-    o->unk_148 = data_ov004_0224f34c.a;
-    o->unk_14a = data_ov004_0224f34c.b;
-    o->unk_14c = data_ov004_0224f34c.w0;
-    o->unk_150 = data_ov004_0224f34c.p.x;
-    o->unk_154 = data_ov004_0224f34c.p.y;
-    o->unk_158 = data_ov004_0224f34c.p.z;
-    o->unk_15c = data_ov004_0224f34c.q.x;
-    o->unk_160 = data_ov004_0224f34c.q.y;
-    o->unk_164 = data_ov004_0224f34c.q.z;
+    COPY_TBL(o, sCameraKkShowSetup);
+    o->unk_148 = sCameraKkShowPrevSetup.a;
+    o->unk_14a = sCameraKkShowPrevSetup.b;
+    o->unk_14c = sCameraKkShowPrevSetup.w0;
+    o->unk_150 = sCameraKkShowPrevSetup.p.x;
+    o->unk_154 = sCameraKkShowPrevSetup.p.y;
+    o->unk_158 = sCameraKkShowPrevSetup.p.z;
+    o->unk_15c = sCameraKkShowPrevSetup.q.x;
+    o->unk_160 = sCameraKkShowPrevSetup.q.y;
+    o->unk_164 = sCameraKkShowPrevSetup.q.z;
     Unk_020d93b8_setBlendParams(o, data_ov004_0224f31c);
     Camera_StartBlend();
 }
 
-void func_ov004_0223f43c(void) {
-    func_ov004_0223fd70(gCamera);
+void RoomCamera_StartBlendToPlayer(void) {
+    Camera_StartBlendToPlayer(gCamera);
 }
 
 }
@@ -574,11 +574,11 @@ const Unk_0223f44c_Vec data_ov004_0224682c = {0x10000, 0, 0x11000};
 u32 data_ov004_0224f32c[4] = {0, 0x3c000, 0x5000, 0x5000};
 Unk_ov004_0223f43c_B4 data_ov004_02258998(20, 31, 31, 31);
 Unk_ov004_0223f43c_B4 data_ov004_0225899c(20, 24, 24, 31);
-Unk_0223f44c_Tbl data_ov004_0224f36c = {0, 0x1100, 0x14100, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x13600, 0x200, 0x17600)};
+Unk_0223f44c_Tbl sCameraKkShowSetup = {0, 0x1100, 0x14100, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x13600, 0x200, 0x17600)};
 u32 data_ov004_0224f31c[4] = {0, 0x438000, 0, 0x384000};
 u32 data_ov004_0224f33c[4] = {0, 0x7d0000, 0x7d0000, 0};
-Unk_0223f44c_Tbl data_ov004_0224f38c = {0, -0x200, 0x6a00, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x10400, 0x200, 0x12b00)};
-Unk_0223f534_Ent data_ov004_0224f3ac[14] = {
+Unk_0223f44c_Tbl sCameraKkShowWideSetup = {0, -0x200, 0x6a00, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x10400, 0x200, 0x12b00)};
+Unk_0223f534_Ent sCameraKkShowShots[14] = {
     {0xf9fc, 0x2000, 0x157c2, -2009, -8523, 0xe700, 0x0, -12544, 3328, 40, 0},
     {0xf623, 0x1b00, 0x11405, -1571, 0x1bfb, 0xb000, 0x20, 15104, 1280, -48, 0},
     {0x10fba, 0x2000, 0x14874, -9072, -4623, 0x8d00, 0x0, -17408, -256, 48, 0},
@@ -595,4 +595,4 @@ Unk_0223f534_Ent data_ov004_0224f3ac[14] = {
     {0x1a6f6, 0x2000, 0x15892, -5483, -2535, 0xe700, -48, -13568, 2560, -24, 0},
 };
 
-Unk_0223f44c_Tbl data_ov004_0224f34c = {0x1b00, 0x1000, 0x9700, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0xf5ad, 0x200, 0x12757)};
+Unk_0223f44c_Tbl sCameraKkShowPrevSetup = {0x1b00, 0x1000, 0x9700, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0xf5ad, 0x200, 0x12757)};

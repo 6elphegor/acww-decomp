@@ -609,7 +609,7 @@ struct Unk_ov066_02260518_Head {
     u8 unk_0d;
 };
 
-// data_ov066_022647ac
+// sLocalWl
 struct Unk_ov066_02260518_A {
     u32 unk_00;
     s32 unk_04;
@@ -626,7 +626,7 @@ struct Unk_ov066_02260518_A {
     Unk_ov066_02260518_Bits3 unk_3c;
 };
 
-// data_ov066_022647b0
+// sLocalWlScan
 struct Unk_ov066_02260518_B {
     Unk_ov066_02260518_Head *unk_00;
     u32 unk_04;
@@ -648,7 +648,7 @@ struct Unk_ov066_02260518_Rec {
     u16 unk_08;
 };
 
-// data_ov066_022647b4
+// sLocalWlSession
 struct Unk_ov066_02260518_C {
     u8 pad_00[0x88];
     Unk_ov066_02260518_Rec *unk_88;
@@ -788,18 +788,18 @@ s32 WM_Enable(void *);
 s32 WM_Disable(void *);
 s32 WM_PowerOn(void *);
 s32 WM_PowerOff(void *);
-s32 (*data_ov066_02264780[4])(void *) = {WM_Enable, WM_Disable, WM_PowerOn, WM_PowerOff};
+s32 (*sLocalWlPowerApis[4])(void *) = {WM_Enable, WM_Disable, WM_PowerOn, WM_PowerOff};
 u32 data_ov066_022647c4;
 u32 data_ov066_022647c0;
 u32 data_ov066_022647bc;
-u32 data_ov066_022647b8;
-Unk_ov066_02263c3c_V *data_ov066_022647b4;
-Unk_ov066_02263c3c_G *data_ov066_022647c8;
-Unk_ov066_0226460c_A *data_ov066_022647ac;
-void *(*data_ov066_022647a8)(u32, u32);
-Unk_ov066_02260518_B *data_ov066_022647b0;
-void (*data_ov066_022647a0)(u32);
-void (*data_ov066_022647a4)(void *);
+u32 sLocalWlRandSeed;
+Unk_ov066_02263c3c_V *sLocalWlSession;
+Unk_ov066_02263c3c_G *sLocalWlMp;
+Unk_ov066_0226460c_A *sLocalWl;
+void *(*sLocalWlAllocHook)(u32, u32);
+Unk_ov066_02260518_B *sLocalWlScan;
+void (*sLocalWlErrorHook)(u32);
+void (*sLocalWlFreeHook)(void *);
 
 u32 OS_DisableInterrupts(void);
 s32 OS_RestoreInterrupts(u32);
@@ -842,219 +842,219 @@ s32 func_021218d0(void *, s32, s32, u32, s32);
 s32 WM_SetGameInfo(void *, u32, u32, u32, u32, u8);
 u32 MATH_CountPopulation(void);
 u32 func_0213335c(u32 a, u32 b);
-s32 func_ov066_0225f1a0(void (*fn)(void *));
-void func_ov066_0225f1c0(u32 a, u32 b);
-void func_ov066_0225f1e4(void *p);
-void func_ov066_0225f22c(u32 v);
-void func_ov066_0225f284(void *p);
-s32 func_ov066_0225f2c8(s32 a, s32 b);
-void func_ov066_0225f310(void);
-void func_ov066_0225f32c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f3c8(void *p);
-void func_ov066_0225f40c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f44c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f494(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f4d4(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f514(u32 idx);
-void func_ov066_0225f554(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f5b4(void);
-u32 func_ov066_0225f63c(Unk_ov066_0225f1a0_Msg *m);
-void * func_ov066_0225f64c(Unk_ov066_0225f64c_Rec *r);
-s32 func_ov066_0225f688(Unk_ov066_0225f64c_Rec *r);
-s32 func_ov066_0225f6a8(void);
-void func_ov066_0225f77c(void);
-s32 func_ov066_0225f7c8(void);
-void func_ov066_0225f824(void);
-void func_ov066_0225f830(void);
-void func_ov066_0225f938(void);
-void func_ov066_0225f998(void);
-void func_ov066_0225f9f8(void);
-void func_ov066_0225fa48(void);
-void func_ov066_0225fa98(void);
-void func_ov066_0225faf8(void);
-void func_ov066_0225fb48(void);
-void func_ov066_0225fbe4(void);
-void func_ov066_0225fc3c(void);
-s32 func_ov066_0225fc78(s32 a, u32 b, u32 c);
-s32 func_ov066_0225fd08(void);
-s32 func_ov066_0225fdc4(void);
-s32 func_ov066_0225fe4c(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32));
-void func_ov066_0225fef0(u32 a);
-s32 func_ov066_0225ffcc(void);
-void func_ov066_0225fffc(Unk_ov066_0225faf8_Msg *m);
-s32 func_ov066_0226004c(void);
-void func_ov066_02260060(Unk_ov066_0225faf8_Msg *m);
-void func_ov066_02260100(void);
-s32 func_ov066_02260144(u32 idx, u32 b);
-s32 func_ov066_022601a0(u32 idx);
-s32 func_ov066_022601fc(void *a, u8 *b);
-void func_ov066_022602c8(void);
-void func_ov066_0226030c(void);
-void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m);
-void func_ov066_02260518(void);
-void func_ov066_022605a0(void);
-void func_ov066_022605cc(void);
-void func_ov066_02260634(void);
-void func_ov066_02260670(s32 t);
-u32 func_ov066_02260774(u32 idx);
-void func_ov066_022607c0(s32 v);
-void func_ov066_022607e8(void);
-void func_ov066_022608b8(void);
-void func_ov066_022609a8(u32 v);
-BOOL func_ov066_022609e4(u8 *p);
-u8 func_ov066_02260a3c(void);
-void func_ov066_02260a58(void);
-BOOL func_ov066_02260b4c(void);
-void func_ov066_02260c28(void);
-void func_ov066_02260c8c(void);
-s32 func_ov066_02260cac(Unk_ov066_02260518_Rec *p, u32 a, u32 b);
-void func_ov066_02260d30(u32 v);
-s32 func_ov066_02260d74(u8 *a, u8 *b);
-u32 func_ov066_02260dac(u8 *p);
-void func_ov066_02260dd0(Unk_ov066_02260dd0_Msg *m);
-void func_ov066_02260e18(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02260e4c(u32 a);
-void func_ov066_02260e84(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02260efc(void);
-void func_ov066_02260f30(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022610b0(void);
-void func_ov066_02261158(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022611b4(void);
-void func_ov066_02261238(Unk_ov066_02260e18_Msg *m);
-s32 func_ov066_0226128c(u32 a);
-void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022613dc(u32 a);
-void func_ov066_02261420(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02261490(void);
-void func_ov066_022614c4(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022615a4(void);
-void func_ov066_022615d8(Unk_ov066_02260e18_Msg *m);
-void func_ov066_0226160c(void);
-s32 func_ov066_02261650(void);
-void func_ov066_022616c8(void);
-void func_ov066_02261704(void *m);
-void func_ov066_02261764(Unk_ov066_02261764_Msg *m);
-void func_ov066_022617d4(void);
-void func_ov066_0226185c(void);
-void func_ov066_02261860(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261894(u32 idx, u8 *src);
-void func_ov066_022618dc(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261958(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261a4c(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261b14(void);
-void func_ov066_02261bc4(u32 a);
-void func_ov066_02261bfc(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261c5c(void);
-void func_ov066_02261c80(void);
-void func_ov066_02261ce0(u8 *a, u8 *b);
-void func_ov066_02261db0(void);
-void func_ov066_02261dfc(void);
-void func_ov066_02261ee8(void);
-void func_ov066_02261f6c(u32 idx, u8 *src);
-s32 func_ov066_02261ff8(void *a, u32 n);
-void func_ov066_02262074(u8 *p, u32 v);
-void func_ov066_022620e8(void);
-void func_ov066_02262108(u32 a);
-void func_ov066_0226214c(u32 a);
-void func_ov066_0226223c(u32 a, u32 b);
-s32 func_ov066_022622ac(u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_022622f4(void);
-u32 func_ov066_0226233c(void);
-u32 func_ov066_0226238c(void);
-u32 func_ov066_022623ac(void);
-void func_ov066_022623d4(void);
-void func_ov066_02262464(void);
-void func_ov066_02262548(void);
-void func_ov066_022625e8(void);
-void func_ov066_0226278c(void);
-s32 func_ov066_0226292c(void);
-void func_ov066_022629cc(void);
-void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m);
-s32 func_ov066_02262b20(u32 a);
-u32 func_ov066_02262b70(u32 a);
-void func_ov066_02262be4(void);
-s32 func_ov066_02262c38(u32 i);
-void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x);
-void func_ov066_02262d70(Unk_ov066_022629cc_Ent *o);
-void func_ov066_02262dc4(Unk_ov066_022629cc_Ent *o);
-Unk_ov066_022629cc_Rec * func_ov066_02262dd8(Unk_ov066_022629cc_Ent *o, u32 i);
-u32 func_ov066_02262df4(Unk_ov066_022629cc_Ent *o);
-void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r);
-s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e);
-void func_ov066_02263198(Unk_ov066_022629cc_Ent *o);
-void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n);
-s32 func_ov066_02263284(s32 idx, u32 a, u32 b);
-void func_ov066_02263320(void);
-void func_ov066_02263478(Unk_ov066_02263320_Msg *m);
-void func_ov066_022634e4(Unk_ov066_02263320_Msg *m);
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m);
-void func_ov066_02263628(u32 idx, void *src, u32 size);
-Unk_ov066_02263320_Rec * func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head);
-void func_ov066_0226378c(Unk_ov066_02263320_Msg *m);
-void func_ov066_022637dc(u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d);
-void func_ov066_02263878(u32 idx);
-void func_ov066_022638c4(void);
-void func_ov066_022638fc(void);
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p);
-void func_ov066_02263c3c(u32 idx, u8 *msg);
-void func_ov066_02263d90(void);
-void func_ov066_02263f54(Unk_ov066_02263f54_Obj *o);
-u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec);
-void func_ov066_022640dc(void);
-void func_ov066_022640f8(Unk_ov066_02263c3c_Wrap *w);
-void func_ov066_0226416c(void);
-void func_ov066_022641d8(void);
-s32 func_ov066_022641dc(u8 *a, u32 b, u32 c, void (*d)(u32));
-s32 func_ov066_0226427c(void);
-void func_ov066_022642cc(void);
-void func_ov066_02264378(u8 *msg);
-void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n);
-void * func_ov066_02264574(s32 n);
-void func_ov066_0226460c(Unk_ov066_0226460c_In *in);
+s32 LocalWl_SetEventCallback(void (*fn)(void *));
+void LocalWl_PostEvent(u32 a, u32 b);
+void LocalWl_CallEventCallback(void *p);
+void LocalWl_SetError(u32 v);
+void LocalWl_Free(void *p);
+s32 LocalWl_Alloc(s32 a, s32 b);
+void LocalWl_ClearResetFlag(void);
+void LocalWl_OnReset(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_Reset(void *p);
+void LocalWl_OnPowerOff(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_OnPowerOn(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_OnDisable(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_OnEnable(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_CallPowerApi(u32 idx);
+void LocalWl_OnPowerApiDone(Unk_ov066_0225f1a0_Msg *m);
+void LocalWl_Advance(void);
+u32 LocalWl_IsBeaconValid(Unk_ov066_0225f1a0_Msg *m);
+void * LocalWl_GetBeaconGameInfo(Unk_ov066_0225f64c_Rec *r);
+s32 LocalWl_GetBeaconGameInfoSize(Unk_ov066_0225f64c_Rec *r);
+s32 LocalWl_GetLinkLevel(void);
+void LocalWl_ResetIfActive(void);
+s32 LocalWl_IsAborting(void);
+void LocalWl_Abort(void);
+void LocalWl_Step(void);
+void LocalWl_StepChildMp(void);
+void LocalWl_StepParentMp(void);
+void LocalWl_StepMeasuring(void);
+void LocalWl_StepConnecting(void);
+void LocalWl_StepScanning(void);
+void LocalWl_StepParentWaiting(void);
+void LocalWl_StepIdle(void);
+void LocalWl_StepEnabled(void);
+void LocalWl_StepReady(void);
+s32 LocalWl_RequestMode(s32 a, u32 b, u32 c);
+s32 LocalWl_IsModeReached(void);
+s32 LocalWl_Finish(void);
+s32 LocalWl_Init(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32));
+void LocalWl_ResetSettings(u32 a);
+s32 LocalWl_GetState(void);
+void LocalWl_OnEndScan(Unk_ov066_0225faf8_Msg *m);
+s32 LocalWl_EndScan(void);
+void LocalWl_OnScan(Unk_ov066_0225faf8_Msg *m);
+void LocalWl_StartScan(void);
+s32 LocalWl_GetBeacon(u32 idx, u32 b);
+s32 LocalWl_GetBeaconCount(u32 idx);
+s32 LocalWl_FilterBeacon(void *a, u8 *b);
+void LocalWl_StopScanSoon(void);
+void LocalWl_OnScanStopTimer(void);
+void LocalWl_OnBeaconFound(Unk_ov066_0225faf8_Msg *m);
+void LocalWl_SetupScanParam(void);
+void LocalWl_StopScanLoop(void);
+void LocalWl_ScanNextChannel(void);
+void LocalWl_OnScanTimer(void);
+void LocalWl_StartScanLoop(s32 t);
+u32 LocalWl_GetScanChannel(u32 idx);
+void LocalWl_SetBeaconFilter(s32 v);
+void LocalWl_FreeScanWork(void);
+void LocalWl_AllocScanWork(void);
+void LocalWl_SetRecvCallback(u32 v);
+BOOL LocalWl_IsMacSet(u8 *p);
+u8 LocalWl_GetMemberCount(void);
+void LocalWl_StepAuto(void);
+BOOL LocalWl_JoinBestParent(void);
+void LocalWl_NextRoleTurn(void);
+void LocalWl_StartScanMode(void);
+s32 LocalWl_ConnectToParent(Unk_ov066_02260518_Rec *p, u32 a, u32 b);
+void LocalWl_StartParent(u32 v);
+s32 LocalWl_CompareMac(u8 *a, u8 *b);
+u32 LocalWl_ReadBe32(u8 *p);
+void LocalWl_OnConnectFailReset(Unk_ov066_02260dd0_Msg *m);
+void LocalWl_OnSetEntry(Unk_ov066_02260e18_Msg *m);
+void LocalWl_SetEntry(u32 a);
+void LocalWl_OnEndMp(Unk_ov066_02260e18_Msg *m);
+void LocalWl_EndMp(void);
+void LocalWl_OnMpEvent(Unk_ov066_02260e18_Msg *m);
+void LocalWl_StartMp(void);
+void LocalWl_OnSetGameInfo(Unk_ov066_02260e18_Msg *m);
+void LocalWl_UpdateGameInfo(void);
+void LocalWl_OnDisconnect(Unk_ov066_02260e18_Msg *m);
+s32 LocalWl_Disconnect(u32 a);
+void LocalWl_OnChildConnectEvent(Unk_ov066_02260e18_Msg *m);
+void LocalWl_StartConnect(u32 a);
+void LocalWl_OnEndParent(Unk_ov066_02260e18_Msg *m);
+void LocalWl_EndParent(void);
+void LocalWl_OnParentEvent(Unk_ov066_02260e18_Msg *m);
+void LocalWl_StartParentNow(void);
+void LocalWl_OnSetParentParameter(Unk_ov066_02260e18_Msg *m);
+void LocalWl_SetParentParameter(void);
+s32 LocalWl_CheckEndRequest(void);
+void LocalWl_RequestEnd(void);
+void LocalWl_ApplyMemberTable(void *m);
+void LocalWl_OnChildControl(Unk_ov066_02261764_Msg *m);
+void LocalWl_OnParentLost(void);
+void LocalWl_OnChildEvent8Stub(void);
+void LocalWl_OnChildConnected(Unk_ov066_02261764_Msg *m);
+void LocalWl_OnChildReady(u32 idx, u8 *src);
+void LocalWl_OnParentControl(Unk_ov066_02261764_Msg *m);
+void LocalWl_OnChildLeft(Unk_ov066_02261764_Msg *m);
+void LocalWl_OnChildJoined(Unk_ov066_02261764_Msg *m);
+void LocalWl_OnBeaconSent(void);
+void LocalWl_CallMemberLeftCb(u32 a);
+void LocalWl_OnControlRecv(Unk_ov066_02261764_Msg *m);
+void LocalWl_ClearMembers(void);
+void LocalWl_CountMembers(void);
+void LocalWl_MergeMemberTable(u8 *a, u8 *b);
+void LocalWl_OnMemberTableSent(void);
+void LocalWl_SendMemberTable(void);
+void LocalWl_SendReady(void);
+void LocalWl_SetMember(u32 idx, u8 *src);
+s32 LocalWl_SetGameInfo(void *a, u32 n);
+void LocalWl_ConnectToBeacon(u8 *p, u32 v);
+void LocalWl_ConnectToSelected(void);
+void LocalWl_BeginParent(u32 a);
+void LocalWl_BuildParentParameter(u32 a);
+void LocalWl_BuildGameInfo(u32 a, u32 b);
+s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d);
+s32 LocalWl_IsReadyToSend(void);
+u32 LocalWl_GetConnectedMask(void);
+u32 LocalWl_GetMyAid(void);
+u32 LocalWl_Rand(void);
+void LocalWl_StartSession(void);
+void LocalWl_FinishWm(void);
+void LocalWl_InitWm(void);
+void LocalWl_AllocBuffers(void);
+void LocalWl_ResetSessionInfo(void);
+s32 LocalWl_PickChannel(void);
+void LocalWl_StartMeasureChannels(void);
+void LocalWl_OnMeasureChannel(Unk_ov066_022629cc_Msg *m);
+s32 LocalWl_MeasureChannel(u32 a);
+u32 LocalWl_NextAllowedChannel(u32 a);
+void LocalWl_UpdateAllowedChannels(void);
+s32 LocalWl_MeasureNextChannel(u32 i);
+void LocalWlBcn_RefreshTimeouts(Unk_ov066_022629cc_Ent *o, s32 x);
+void LocalWlBcn_Clear(Unk_ov066_022629cc_Ent *o);
+void LocalWlBcn_CancelAlarms(Unk_ov066_022629cc_Ent *o);
+Unk_ov066_022629cc_Rec * LocalWlBcn_Get(Unk_ov066_022629cc_Ent *o, u32 i);
+u32 LocalWlBcn_Count(Unk_ov066_022629cc_Ent *o);
+void LocalWlBcn_OnExpire(Unk_ov066_022629cc_Rec *r);
+s32 LocalWlBcn_Add(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e);
+void LocalWlBcn_Free(Unk_ov066_022629cc_Ent *o);
+void LocalWlBcn_Init(Unk_ov066_022629cc_Ent *o, u32 id, s32 n);
+s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b);
+void LocalWlMp_Reset(void);
+void LocalWlMp_OnDataRecv(Unk_ov066_02263320_Msg *m);
+void LocalWlMp_OnDataDisconnectStub(Unk_ov066_02263320_Msg *m);
+void LocalWlMp_OnPacket(Unk_ov066_02263320_Msg *m);
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
+Unk_ov066_02263320_Rec * LocalWlMp_FindFrame(u32 id, Unk_ov066_02263320_Rec *head);
+void LocalWlMp_OnSetMpData(Unk_ov066_02263320_Msg *m);
+void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
+void LocalWlMp_OnMemberLeft(u32 idx);
+void LocalWlMp_ChildSendStep(void);
+void LocalWlMp_ParentSendStep(void);
+s32 LocalWlMp_MergeFrame(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
+void LocalWlMp_DeliverFrame(Unk_ov066_02263320_Pay *p);
+void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg);
+void LocalWlMp_BuildChildPacket(void);
+void LocalWlMp_PutParentRecord(Unk_ov066_02263f54_Obj *o);
+u16 LocalWlMp_PutSendRecord(Unk_ov066_02263c3c_Rec *rec);
+void LocalWlMp_OnFrameSent(void);
+void LocalWlMp_OnChildPacketSent(Unk_ov066_02263c3c_Wrap *w);
+void LocalWlMp_FinishSend(void);
+void LocalWlMp_OnIndicationStub(void);
+s32 LocalWlMp_Send(u8 *a, u32 b, u32 c, void (*d)(u32));
+s32 LocalWlMp_IsReadyToSend(void);
+void LocalWlMp_Shutdown(void);
+void LocalWlMp_Start(u8 *msg);
+void LocalWlMp_ClearRing(Unk_ov066_0226453c_Node *p, s32 n);
+void * LocalWlMp_AllocRing(s32 n);
+void LocalWl_ApplyConfig(Unk_ov066_0226460c_In *in);
 }
 
 #pragma thumb off
 extern "C" {
 
 // ---- unk_0226453c
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
 
-void func_ov066_0226460c(Unk_ov066_0226460c_In *in) {
+void LocalWl_ApplyConfig(Unk_ov066_0226460c_In *in) {
     u8 w = in->unk_06;
     u32 sz = w * in->unk_04;
     u16 t = sz + 4;
-    data_ov066_022647ac->unk_28 = in->unk_00;
-    data_ov066_022647ac->unk_3c.f3 = 0;
-    data_ov066_022647ac->unk_3c.f0 = 0;
-    data_ov066_022647ac->unk_3c.f5 = -1;
-    data_ov066_022647ac->unk_3c.f6 = -1;
-    data_ov066_022647ac->unk_3c.f7 = -1;
-    data_ov066_022647ac->unk_3c.f9 = 0;
-    data_ov066_022647ac->unk_3c.f8 = 0;
-    data_ov066_022647ac->unk_3c.f2 = -1;
-    data_ov066_022647ac->unk_3c.f1 = -1;
-    data_ov066_022647ac->unk_17 = in->unk_07;
-    data_ov066_022647ac->unk_08 = 0xfe;
-    data_ov066_022647ac->unk_09 = 1;
-    data_ov066_022647ac->unk_0a = in->unk_04 - 1;
-    data_ov066_022647ac->unk_0b = in->unk_04;
-    data_ov066_022647ac->unk_0c = in->unk_05;
-    data_ov066_022647ac->unk_18 = w;
-    data_ov066_022647ac->unk_1a = t;
-    data_ov066_022647ac->unk_1c = t;
-    data_ov066_022647ac->unk_1e = w;
-    data_ov066_022647ac->unk_22 = 0x1e;
-    data_ov066_022647ac->unk_20 = 0x5a;
-    data_ov066_022647ac->unk_24 = 0xc8;
-    data_ov066_022647ac->unk_14 = 4;
+    sLocalWl->unk_28 = in->unk_00;
+    sLocalWl->unk_3c.f3 = 0;
+    sLocalWl->unk_3c.f0 = 0;
+    sLocalWl->unk_3c.f5 = -1;
+    sLocalWl->unk_3c.f6 = -1;
+    sLocalWl->unk_3c.f7 = -1;
+    sLocalWl->unk_3c.f9 = 0;
+    sLocalWl->unk_3c.f8 = 0;
+    sLocalWl->unk_3c.f2 = -1;
+    sLocalWl->unk_3c.f1 = -1;
+    sLocalWl->unk_17 = in->unk_07;
+    sLocalWl->unk_08 = 0xfe;
+    sLocalWl->unk_09 = 1;
+    sLocalWl->unk_0a = in->unk_04 - 1;
+    sLocalWl->unk_0b = in->unk_04;
+    sLocalWl->unk_0c = in->unk_05;
+    sLocalWl->unk_18 = w;
+    sLocalWl->unk_1a = t;
+    sLocalWl->unk_1c = t;
+    sLocalWl->unk_1e = w;
+    sLocalWl->unk_22 = 0x1e;
+    sLocalWl->unk_20 = 0x5a;
+    sLocalWl->unk_24 = 0xc8;
+    sLocalWl->unk_14 = 4;
 }
 
-void *func_ov066_02264574(s32 n) {
-    u32 sz = (data_ov066_022647ac->unk_1a + 0x43) & ~0x1f;
+void *LocalWlMp_AllocRing(s32 n) {
+    u32 sz = (sLocalWl->unk_1a + 0x43) & ~0x1f;
     u32 tot = sz * n;
-    Unk_ov066_02264574_Node *p = (Unk_ov066_02264574_Node *)func_ov066_0225f2c8(tot, 0x20);
+    Unk_ov066_02264574_Node *p = (Unk_ov066_02264574_Node *)LocalWl_Alloc(tot, 0x20);
     u16 i;
     Unk_ov066_02264574_Node *q;
     Unk_ov066_02264574_Node *head;
@@ -1075,7 +1075,7 @@ void *func_ov066_02264574(s32 n) {
     return head;
 }
 
-void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n) {
+void LocalWlMp_ClearRing(Unk_ov066_0226453c_Node *p, s32 n) {
     u16 i;
     for (i = 0; (s32)i < n; ) {
         i++;
@@ -1085,74 +1085,74 @@ void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n) {
         p = p->unk_04;
     }
 }
-#undef func_ov066_0225f2c8
+#undef LocalWl_Alloc
 
 // ---- unk_02263c3c
-#define data_ov066_022647ac (*(Unk_ov066_02263c3c_S * *)&data_ov066_022647ac)
+#define sLocalWl (*(Unk_ov066_02263c3c_S * *)&sLocalWl)
 #define MI_CpuFill8 ((void (*)(void *, s32, u32))MI_CpuFill8)
 #define MI_CpuCopy8 ((s32 (*)(void *, void *, u32))MI_CpuCopy8)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02261bfc ((void (*)(void))func_ov066_02261bfc)
-#define func_ov066_02263478 ((void (*)(void))func_ov066_02263478)
-#define func_ov066_02263810 ((void (*)(u32, void *, s32, s32, void *))func_ov066_02263810)
-#define func_ov066_02263878 ((void (*)(void))func_ov066_02263878)
-#define func_ov066_022637dc ((void (*)(void))func_ov066_022637dc)
-#define func_ov066_0226460c ((void (*)(u8 *))func_ov066_0226460c)
-#define func_ov066_02264574 ((void * (*)(u32))func_ov066_02264574)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_OnControlRecv ((void (*)(void))LocalWl_OnControlRecv)
+#define LocalWlMp_OnDataRecv ((void (*)(void))LocalWlMp_OnDataRecv)
+#define LocalWlMp_SetMpData ((void (*)(u32, void *, s32, s32, void *))LocalWlMp_SetMpData)
+#define LocalWlMp_OnMemberLeft ((void (*)(void))LocalWlMp_OnMemberLeft)
+#define LocalWlMp_SendControl ((void (*)(void))LocalWlMp_SendControl)
+#define LocalWl_ApplyConfig ((void (*)(u8 *))LocalWl_ApplyConfig)
+#define LocalWlMp_AllocRing ((void * (*)(u32))LocalWlMp_AllocRing)
 
-void func_ov066_02264378(u8 *msg) {
+void LocalWlMp_Start(u8 *msg) {
     u32 n;
-    if (data_ov066_022647c8 != NULL) {
+    if (sLocalWlMp != NULL) {
         return;
     }
-    func_ov066_0226460c(msg);
-    func_ov066_02262548();
-    data_ov066_022647b4->unk_9c = (void *)func_ov066_02263320;
-    data_ov066_022647b4->unk_a0 = (void *)func_ov066_022638fc;
-    data_ov066_022647b4->unk_a4 = (void *)func_ov066_022638c4;
-    data_ov066_022647b4->unk_ac = (void *)func_ov066_022637dc;
-    data_ov066_022647b4->unk_b0 = (void *)func_ov066_022641dc;
-    data_ov066_022647b4->unk_b4 = (void *)func_ov066_0226427c;
-    data_ov066_022647b4->unk_a8 = (void *)func_ov066_022642cc;
-    data_ov066_022647b4->unk_bc = (void *)func_ov066_02263878;
-    data_ov066_022647c8 = (Unk_ov066_02263c3c_G *)func_ov066_0225f2c8(0x34, 4);
-    n = data_ov066_022647ac->unk_0b << 4;
-    data_ov066_022647c8->unk_30 = (Unk_ov066_02263c3c_Ent *)func_ov066_0225f2c8(n, 4);
-    MI_CpuFill8(data_ov066_022647c8->unk_30, 0, n);
-    data_ov066_022647c8->unk_08 = (u32)func_ov066_02264574(3);
-    data_ov066_022647c8->unk_0c = (u32)func_ov066_02264574(3);
-    n = data_ov066_022647ac->unk_0b << 2;
-    data_ov066_022647c8->unk_18 = (Unk_ov066_02263c3c_Q *)func_ov066_0225f2c8(n, 4);
-    MI_CpuFill8(data_ov066_022647c8->unk_18, 0, n);
-    data_ov066_022647c8->unk_00 = msg[6];
-    func_0211fb0c(0xc, (void *)func_ov066_02261bfc, 0);
-    func_0211fb0c(0xd, (void *)func_ov066_02263478, 0);
-    WM_SetIndCallback((void *)func_ov066_022641d8);
-    func_ov066_02263320();
+    LocalWl_ApplyConfig(msg);
+    LocalWl_InitWm();
+    sLocalWlSession->unk_9c = (void *)LocalWlMp_Reset;
+    sLocalWlSession->unk_a0 = (void *)LocalWlMp_ParentSendStep;
+    sLocalWlSession->unk_a4 = (void *)LocalWlMp_ChildSendStep;
+    sLocalWlSession->unk_ac = (void *)LocalWlMp_SendControl;
+    sLocalWlSession->unk_b0 = (void *)LocalWlMp_Send;
+    sLocalWlSession->unk_b4 = (void *)LocalWlMp_IsReadyToSend;
+    sLocalWlSession->unk_a8 = (void *)LocalWlMp_Shutdown;
+    sLocalWlSession->unk_bc = (void *)LocalWlMp_OnMemberLeft;
+    sLocalWlMp = (Unk_ov066_02263c3c_G *)LocalWl_Alloc(0x34, 4);
+    n = sLocalWl->unk_0b << 4;
+    sLocalWlMp->unk_30 = (Unk_ov066_02263c3c_Ent *)LocalWl_Alloc(n, 4);
+    MI_CpuFill8(sLocalWlMp->unk_30, 0, n);
+    sLocalWlMp->unk_08 = (u32)LocalWlMp_AllocRing(3);
+    sLocalWlMp->unk_0c = (u32)LocalWlMp_AllocRing(3);
+    n = sLocalWl->unk_0b << 2;
+    sLocalWlMp->unk_18 = (Unk_ov066_02263c3c_Q *)LocalWl_Alloc(n, 4);
+    MI_CpuFill8(sLocalWlMp->unk_18, 0, n);
+    sLocalWlMp->unk_00 = msg[6];
+    func_0211fb0c(0xc, (void *)LocalWl_OnControlRecv, 0);
+    func_0211fb0c(0xd, (void *)LocalWlMp_OnDataRecv, 0);
+    WM_SetIndCallback((void *)LocalWlMp_OnIndicationStub);
+    LocalWlMp_Reset();
 }
 
-void func_ov066_022642cc(void) {
-    if (data_ov066_022647c8 == NULL) {
+void LocalWlMp_Shutdown(void) {
+    if (sLocalWlMp == NULL) {
         return;
     }
     func_0211fb0c(0xc, 0, 0);
     func_0211fb0c(0xd, 0, 0);
-    func_ov066_0225f284(data_ov066_022647c8->unk_18);
-    func_ov066_0225f284((void *)data_ov066_022647c8->unk_0c);
-    func_ov066_0225f284((void *)data_ov066_022647c8->unk_08);
-    func_ov066_0225f284(data_ov066_022647c8->unk_30);
-    func_ov066_0225f284(data_ov066_022647c8);
-    func_ov066_02262464();
-    data_ov066_022647c8 = NULL;
+    LocalWl_Free(sLocalWlMp->unk_18);
+    LocalWl_Free((void *)sLocalWlMp->unk_0c);
+    LocalWl_Free((void *)sLocalWlMp->unk_08);
+    LocalWl_Free(sLocalWlMp->unk_30);
+    LocalWl_Free(sLocalWlMp);
+    LocalWl_FinishWm();
+    sLocalWlMp = NULL;
 }
 
-s32 func_ov066_0226427c(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
+s32 LocalWlMp_IsReadyToSend(void) {
+    Unk_ov066_02263c3c_G *g = sLocalWlMp;
     s32 r = 0;
     if (g == NULL) {
         return r;
     }
-    s32 t = data_ov066_022647ac->unk_04;
+    s32 t = sLocalWl->unk_04;
     switch (t) {
     case 10:
     case 11:
@@ -1166,45 +1166,45 @@ s32 func_ov066_0226427c(void) {
     return r;
 }
 
-s32 func_ov066_022641dc(u8 *a, u32 b, u32 c, void (*d)(u32)) {
+s32 LocalWlMp_Send(u8 *a, u32 b, u32 c, void (*d)(u32)) {
     s32 r = 0;
     u32 irq = OS_DisableInterrupts();
-    if (func_ov066_0226427c() != 0) {
-        data_ov066_022647c8->unk_04.f3 = 1;
-        data_ov066_022647c8->unk_04.f4 = 0;
-        data_ov066_022647c8->unk_20 = a;
-        data_ov066_022647c8->unk_24 = b;
-        data_ov066_022647c8->unk_28 = r;
+    if (LocalWlMp_IsReadyToSend() != 0) {
+        sLocalWlMp->unk_04.f3 = 1;
+        sLocalWlMp->unk_04.f4 = 0;
+        sLocalWlMp->unk_20 = a;
+        sLocalWlMp->unk_24 = b;
+        sLocalWlMp->unk_28 = r;
         r = 1;
-        data_ov066_022647c8->unk_1e = c;
-        data_ov066_022647c8->unk_2c = d;
+        sLocalWlMp->unk_1e = c;
+        sLocalWlMp->unk_2c = d;
     }
     OS_RestoreInterrupts(irq);
     return r;
 }
 
-void func_ov066_022641d8(void) {
+void LocalWlMp_OnIndicationStub(void) {
 }
 
-void func_ov066_0226416c(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
+void LocalWlMp_FinishSend(void) {
+    Unk_ov066_02263c3c_G *g = sLocalWlMp;
     u32 n = g->unk_24;
     void (*cb)(u32) = g->unk_2c;
     g->unk_04.f3 = 0;
-    data_ov066_022647c8->unk_1e = 0;
-    data_ov066_022647c8->unk_20 = 0;
-    data_ov066_022647c8->unk_24 = 0;
-    data_ov066_022647c8->unk_28 = -1;
-    data_ov066_022647c8->unk_2c = 0;
+    sLocalWlMp->unk_1e = 0;
+    sLocalWlMp->unk_20 = 0;
+    sLocalWlMp->unk_24 = 0;
+    sLocalWlMp->unk_28 = -1;
+    sLocalWlMp->unk_2c = 0;
     if (cb == NULL) {
         return;
     }
     cb(n);
 }
 
-void func_ov066_022640f8(Unk_ov066_02263c3c_Wrap *w) {
+void LocalWlMp_OnChildPacketSent(Unk_ov066_02263c3c_Wrap *w) {
     Unk_ov066_02263c3c_Rec *rec = w->unk_14;
-    data_ov066_022647c8->unk_02--;
+    sLocalWlMp->unk_02--;
     if (rec->a != 0) {
         if (rec->a != 1) {
             return;
@@ -1214,14 +1214,14 @@ void func_ov066_022640f8(Unk_ov066_02263c3c_Wrap *w) {
         return;
     }
     rec->c = 0;
-    func_ov066_0226416c();
+    LocalWlMp_FinishSend();
 }
 
-void func_ov066_022640dc(void) {
-    data_ov066_022647c8->unk_02--;
+void LocalWlMp_OnFrameSent(void) {
+    sLocalWlMp->unk_02--;
 }
 
-u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
+u16 LocalWlMp_PutSendRecord(Unk_ov066_02263c3c_Rec *rec) {
     u8 *dst;
     u8 *base;
     s32 off;
@@ -1232,18 +1232,18 @@ u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
     Unk_ov066_02263c3c_G *g;
     u32 len;
     u32 n;
-    off = data_ov066_022647c8->unk_28;
-    tot = data_ov066_022647c8->unk_24;
-    base = data_ov066_022647c8->unk_20;
+    off = sLocalWlMp->unk_28;
+    tot = sLocalWlMp->unk_24;
+    base = sLocalWlMp->unk_20;
     rem = tot - off;
     src = base + off;
     if (off == 0) {
         rec->a = 0;
         dst = (u8 *)rec + 8;
-        rec->unk_02 = data_ov066_022647c8->unk_1e;
-        rec->unk_04 = data_ov066_022647c8->unk_24;
-        rec->unk_06 = data_ov066_022647c8->unk_24 >> 16;
-        g = data_ov066_022647c8;
+        rec->unk_02 = sLocalWlMp->unk_1e;
+        rec->unk_04 = sLocalWlMp->unk_24;
+        rec->unk_06 = sLocalWlMp->unk_24 >> 16;
+        g = sLocalWlMp;
         n = g->unk_24;
         if (n > (u32)(g->unk_00 - 8)) {
             n = g->unk_00 - 8;
@@ -1253,7 +1253,7 @@ u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
     } else {
         rec->a = 1;
         dst = (u8 *)rec + 2;
-        g = data_ov066_022647c8;
+        g = sLocalWlMp;
         n = rem;
         if (n > (u32)(g->unk_00 - 2)) {
             n = g->unk_00 - 2;
@@ -1263,73 +1263,73 @@ u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
     }
     g->unk_28 += len;
     rec->unk_01 = len;
-    rec->c = (data_ov066_022647c8->unk_28 == (s32)data_ov066_022647c8->unk_24) ? 1 : 0;
-    data_ov066_022647c8->unk_04.f4 = rec->c;
+    rec->c = (sLocalWlMp->unk_28 == (s32)sLocalWlMp->unk_24) ? 1 : 0;
+    sLocalWlMp->unk_04.f4 = rec->c;
     MI_CpuCopy8(src, dst, len);
     return ret;
 }
 
-void func_ov066_02263f54(Unk_ov066_02263f54_Obj *o) {
-    func_ov066_02263f84(&o->unk_24);
+void LocalWlMp_PutParentRecord(Unk_ov066_02263f54_Obj *o) {
+    LocalWlMp_PutSendRecord(&o->unk_24);
     if (o->unk_24.c == 0) {
         return;
     }
-    func_ov066_0226416c();
+    LocalWlMp_FinishSend();
 }
 
-void func_ov066_02263d90(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
+void LocalWlMp_BuildChildPacket(void) {
+    Unk_ov066_02263c3c_G *g = sLocalWlMp;
     s32 sent = 0;
     Unk_ov066_02263c3c_Rec *rec = (Unk_ov066_02263c3c_Rec *)((u8 *)g->unk_10 + 0x20);
     if (g->unk_04.f2 != 0) {
         rec->a = 3;
         sent = 2;
-        rec->d = data_ov066_022647c8->unk_01.hi;
+        rec->d = sLocalWlMp->unk_01.hi;
     } else if (g->unk_04.f3 != 0) {
         if (g->unk_03 < 2) {
             if (g->unk_04.f4 == 0) {
                 if (g->unk_04.f1 == 0) {
-                    sent = func_ov066_02263f84(rec);
-                    data_ov066_022647c8->unk_03++;
+                    sent = LocalWlMp_PutSendRecord(rec);
+                    sLocalWlMp->unk_03++;
                 }
             }
         }
     }
-    if (data_ov066_022647c8->unk_18->unk_00 != (u32)data_ov066_022647c8->unk_18->unk_04) {
+    if (sLocalWlMp->unk_18->unk_00 != (u32)sLocalWlMp->unk_18->unk_04) {
         if (sent == 0) {
             rec->a = 2;
             sent = 2;
             rec->c = 0;
         }
         rec->b = 1;
-        rec->d = data_ov066_022647c8->unk_18->unk_04->unk_20;
-        data_ov066_022647c8->unk_18->unk_04 = data_ov066_022647c8->unk_18->unk_04->unk_04;
+        rec->d = sLocalWlMp->unk_18->unk_04->unk_20;
+        sLocalWlMp->unk_18->unk_04 = sLocalWlMp->unk_18->unk_04->unk_04;
     } else {
         rec->b = 0;
     }
     if (sent != 0) {
-        data_ov066_022647c8->unk_02++;
-        func_ov066_02263810(0xd, rec, sent, 1, (void *)func_ov066_022640f8);
-        data_ov066_022647c8->unk_10 = data_ov066_022647c8->unk_10->unk_04;
+        sLocalWlMp->unk_02++;
+        LocalWlMp_SetMpData(0xd, rec, sent, 1, (void *)LocalWlMp_OnChildPacketSent);
+        sLocalWlMp->unk_10 = sLocalWlMp->unk_10->unk_04;
     }
-    data_ov066_022647c8->unk_04.f1 = 0;
+    sLocalWlMp->unk_04.f1 = 0;
 }
 
-void func_ov066_02263c3c(u32 idx, u8 *msg) {
+void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg) {
     u32 len = 0;
-    Unk_ov066_02263c3c_Ent *e = data_ov066_022647c8->unk_30 + idx;
+    Unk_ov066_02263c3c_Ent *e = sLocalWlMp->unk_30 + idx;
     u8 *p;
     u32 t = ((Unk_ov066_02263c3c_Rec *)msg)->a;
     switch (t) {
     case 0:
         p = msg + 8;
-        if ((*(u16 *)(msg + 2) & (1 << func_ov066_0226238c())) != 0) {
-            data_ov066_022647c8->unk_1c |= 1 << idx;
+        if ((*(u16 *)(msg + 2) & (1 << LocalWl_GetMyAid())) != 0) {
+            sLocalWlMp->unk_1c |= 1 << idx;
             e->unk_0c = len;
             e->unk_08 = (*(u16 *)(msg + 6) << 16) | *(u16 *)(msg + 4);
             len = e->unk_08;
-            if (len > (u32)(data_ov066_022647c8->unk_00 - 8)) {
-                len = data_ov066_022647c8->unk_00 - 8;
+            if (len > (u32)(sLocalWlMp->unk_00 - 8)) {
+                len = sLocalWlMp->unk_00 - 8;
             }
         }
         break;
@@ -1338,7 +1338,7 @@ void func_ov066_02263c3c(u32 idx, u8 *msg) {
         len = msg[1];
         break;
     }
-    if ((data_ov066_022647c8->unk_1c & (1 << idx)) == 0) {
+    if ((sLocalWlMp->unk_1c & (1 << idx)) == 0) {
         return;
     }
     if (e->unk_0c + len <= e->unk_04) {
@@ -1348,54 +1348,54 @@ void func_ov066_02263c3c(u32 idx, u8 *msg) {
     if (e->unk_08 != e->unk_0c) {
         return;
     }
-    data_ov066_022647c8->unk_1c ^= 1 << idx;
-    if (data_ov066_022647b4->unk_b8 == NULL) {
+    sLocalWlMp->unk_1c ^= 1 << idx;
+    if (sLocalWlSession->unk_b8 == NULL) {
         return;
     }
-    data_ov066_022647b4->unk_b8(idx, e->unk_00, e->unk_08);
+    sLocalWlSession->unk_b8(idx, e->unk_00, e->unk_08);
 }
-#undef data_ov066_022647ac
+#undef sLocalWl
 #undef MI_CpuFill8
 #undef MI_CpuCopy8
-#undef func_ov066_0225f2c8
-#undef func_ov066_02261bfc
-#undef func_ov066_02263478
-#undef func_ov066_02263810
-#undef func_ov066_02263878
-#undef func_ov066_022637dc
-#undef func_ov066_0226460c
-#undef func_ov066_02264574
+#undef LocalWl_Alloc
+#undef LocalWl_OnControlRecv
+#undef LocalWlMp_OnDataRecv
+#undef LocalWlMp_SetMpData
+#undef LocalWlMp_OnMemberLeft
+#undef LocalWlMp_SendControl
+#undef LocalWl_ApplyConfig
+#undef LocalWlMp_AllocRing
 
 // ---- unk_02263320
-#define data_ov066_022647ac (*(Unk_ov066_02263320_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02263320_V * *)&data_ov066_022647b4)
-#define data_ov066_022647c8 (*(Unk_ov066_02263320_G * *)&data_ov066_022647c8)
-#define func_ov066_0226238c ((s32 (*)(void))func_ov066_0226238c)
-#define func_ov066_0226453c ((void (*)(void *, s32))func_ov066_0226453c)
-#define func_ov066_02263f54 ((void (*)(void *))func_ov066_02263f54)
-#define func_ov066_02263c3c ((void (*)(s32, void *))func_ov066_02263c3c)
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m);
-void func_ov066_02263628(u32 idx, void *src, u32 size);
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p);
-Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head);
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
+#define sLocalWl (*(Unk_ov066_02263320_S * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_02263320_V * *)&sLocalWlSession)
+#define sLocalWlMp (*(Unk_ov066_02263320_G * *)&sLocalWlMp)
+#define LocalWl_GetMyAid ((s32 (*)(void))LocalWl_GetMyAid)
+#define LocalWlMp_ClearRing ((void (*)(void *, s32))LocalWlMp_ClearRing)
+#define LocalWlMp_PutParentRecord ((void (*)(void *))LocalWlMp_PutParentRecord)
+#define LocalWlMp_ReceiveRecord ((void (*)(s32, void *))LocalWlMp_ReceiveRecord)
+void LocalWlMp_OnPacket(Unk_ov066_02263320_Msg *m);
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
+void LocalWlMp_DeliverFrame(Unk_ov066_02263320_Pay *p);
+Unk_ov066_02263320_Rec *LocalWlMp_FindFrame(u32 id, Unk_ov066_02263320_Rec *head);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
+s32 LocalWlMp_MergeFrame(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
 
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p) {
+void LocalWlMp_DeliverFrame(Unk_ov066_02263320_Pay *p) {
     u16 i;
     u8 *q = p->unk_04;
-    for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
+    for (i = 0; i < sLocalWl->unk_0b; i++) {
         if ((p->unk_02 & (1 << i)) != 0) {
-            if (i == func_ov066_0226238c()) {
-                data_ov066_022647c8->unk_03 = data_ov066_022647c8->unk_03 - 1;
+            if (i == LocalWl_GetMyAid()) {
+                sLocalWlMp->unk_03 = sLocalWlMp->unk_03 - 1;
             }
-            func_ov066_02263c3c(i, q);
-            q += data_ov066_022647c8->unk_00 & ~1;
+            LocalWlMp_ReceiveRecord(i, q);
+            q += sLocalWlMp->unk_00 & ~1;
         }
     }
 }
 
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src) {
+s32 LocalWlMp_MergeFrame(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src) {
     u16 mask;
     u16 i;
     u16 total;
@@ -1406,36 +1406,36 @@ s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src
     mask = src->unk_20.unk_02;
     if (mask != 0) {
         u32 t;
-        sz = data_ov066_022647c8->unk_00;
+        sz = sLocalWlMp->unk_00;
         rd = (u8 *)src + 0x24;
         total = 4;
         rp = (u8 *)dst + 0x24;
         dst->unk_20.unk_02 = mask;
-        t = data_ov066_022647c8->lo;
-        data_ov066_022647c8->lo = t + 1;
+        t = sLocalWlMp->lo;
+        sLocalWlMp->lo = t + 1;
         dst->unk_20.unk_00 = t;
-        for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
+        for (i = 0; i < sLocalWl->unk_0b; i++) {
             if ((mask & (1 << i)) != 0) {
                 MI_CpuCopy8(rd + sz * i, rp, sz);
                 rp += sz;
                 total = total + sz;
             }
-            if (data_ov066_022647c8->unk_18[i] == src) {
-                data_ov066_022647c8->unk_18[i] = src->unk_04;
+            if (sLocalWlMp->unk_18[i] == src) {
+                sLocalWlMp->unk_18[i] = src->unk_04;
             }
         }
         src->unk_20.unk_02 = 0;
-        dst->unk_0a = data_ov066_022647b4->unk_98;
+        dst->unk_0a = sLocalWlSession->unk_98;
         dst->unk_0c = 0;
         dst->unk_08 = total;
-        func_ov066_02263b90(&dst->unk_20);
+        LocalWlMp_DeliverFrame(&dst->unk_20);
         result = 1;
     }
     return result;
 }
 
-void func_ov066_022638fc(void) {
-    Unk_ov066_02263320_G *g = data_ov066_022647c8;
+void LocalWlMp_ParentSendStep(void) {
+    Unk_ov066_02263320_G *g = sLocalWlMp;
     Unk_ov066_02263320_Rec *n14;
     Unk_ov066_02263320_Rec *r5;
     Unk_ov066_02263320_Rec *e0;
@@ -1458,12 +1458,12 @@ void func_ov066_022638fc(void) {
         u16 a = p->unk_0a;
         if (a == 0 || a == p->unk_0c) {
             if (g->unk_04.f3) {
-                func_ov066_02263f54(e0);
+                LocalWlMp_PutParentRecord(e0);
                 e0->unk_20.unk_02 = e0->unk_20.unk_02 | 1;
-                data_ov066_022647c8->unk_03 = data_ov066_022647c8->unk_03 + 1;
+                sLocalWlMp->unk_03 = sLocalWlMp->unk_03 + 1;
             }
-            if (func_ov066_02263a48(data_ov066_022647c8->unk_10, e0) != 0) {
-                g = data_ov066_022647c8;
+            if (LocalWlMp_MergeFrame(sLocalWlMp->unk_10, e0) != 0) {
+                g = sLocalWlMp;
                 r5 = g->unk_10;
                 g->unk_10 = r5->unk_04;
             }
@@ -1475,21 +1475,21 @@ void func_ov066_022638fc(void) {
     if (r5->unk_0a == 0) {
         return;
     }
-    g = data_ov066_022647c8;
+    g = sLocalWlMp;
     g->unk_02 = g->unk_02 + 1;
-    func_ov066_02263810(0xd, (u32)&r5->unk_20, r5->unk_08, r5->unk_0a, (u32)func_ov066_022640dc);
+    LocalWlMp_SetMpData(0xd, (u32)&r5->unk_20, r5->unk_08, r5->unk_0a, (u32)LocalWlMp_OnFrameSent);
 }
 
-void func_ov066_022638c4(void) {
-    if (data_ov066_022647c8->unk_02 >= 2) {
+void LocalWlMp_ChildSendStep(void) {
+    if (sLocalWlMp->unk_02 >= 2) {
         return;
     }
-    func_ov066_02263d90();
+    LocalWlMp_BuildChildPacket();
 }
 
-void func_ov066_02263878(u32 idx) {
+void LocalWlMp_OnMemberLeft(u32 idx) {
     u16 mask = ~(1 << idx);
-    Unk_ov066_02263320_Rec *head = data_ov066_022647c8->unk_10;
+    Unk_ov066_02263320_Rec *head = sLocalWlMp->unk_10;
     Unk_ov066_02263320_Rec *n = head;
     do {
         n->unk_0a = n->unk_0a & mask;
@@ -1498,20 +1498,20 @@ void func_ov066_02263878(u32 idx) {
     } while (head != n);
 }
 
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d) {
-    s32 r = WM_SetMPDataToPortEx((void *)func_ov066_0226378c, d, a, b, c, x, 2);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d) {
+    s32 r = WM_SetMPDataToPortEx((void *)LocalWlMp_OnSetMpData, d, a, b, c, x, 2);
     if (r != 2 && r != 7) {
-        func_ov066_0225f22c(r);
+        LocalWl_SetError(r);
         return 0;
     }
     return 1;
 }
 
-void func_ov066_022637dc(u32 a, u32 b, u32 c, u32 d) {
-    func_ov066_02263810(0xc, a, b, c, d);
+void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d) {
+    LocalWlMp_SetMpData(0xc, a, b, c, d);
 }
 
-void func_ov066_0226378c(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnSetMpData(Unk_ov066_02263320_Msg *m) {
     if (m->unk_02 == 0) {
         if (m->unk_20 == 0) {
             return;
@@ -1519,11 +1519,11 @@ void func_ov066_0226378c(Unk_ov066_02263320_Msg *m) {
         m->unk_20(m);
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
     Fatal_Trap();
 }
 
-Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head) {
+Unk_ov066_02263320_Rec *LocalWlMp_FindFrame(u32 id, Unk_ov066_02263320_Rec *head) {
     Unk_ov066_02263320_Rec *n;
     for (n = head->unk_00; head != n; n = n->unk_00) {
         if (n->unk_20.unk_00 == id) {
@@ -1533,47 +1533,47 @@ Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head
     return 0;
 }
 
-void func_ov066_02263628(u32 idx, void *src, u32 size) {
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size) {
     Unk_ov066_02263320_Hdr h;
     Unk_ov066_02263320_Rec *r;
     Unk_ov066_02263320_Rec *e;
     MI_CpuCopy8(src, &h, 2);
     if (h.b) {
-        r = func_ov066_0226375c(h.c, data_ov066_022647c8->unk_10);
+        r = LocalWlMp_FindFrame(h.c, sLocalWlMp->unk_10);
         if (r != 0) {
             r->unk_0c = r->unk_0c | (r->unk_0a & (1 << idx));
         }
     }
     if (h.a == 3) {
-        if (data_ov066_022647c8->unk_14 != 0) {
+        if (sLocalWlMp->unk_14 != 0) {
             return;
         }
-        r = func_ov066_0226375c(h.c, data_ov066_022647c8->unk_10);
+        r = LocalWlMp_FindFrame(h.c, sLocalWlMp->unk_10);
         if (r != 0) {
-            data_ov066_022647c8->unk_14 = r;
+            sLocalWlMp->unk_14 = r;
         }
         return;
     }
     if (h.a == 2) {
         return;
     }
-    e = data_ov066_022647c8->unk_18[idx];
-    MI_CpuCopy8(src, (u8 *)e + 0x24 + idx * data_ov066_022647c8->unk_00, size);
+    e = sLocalWlMp->unk_18[idx];
+    MI_CpuCopy8(src, (u8 *)e + 0x24 + idx * sLocalWlMp->unk_00, size);
     e->unk_20.unk_02 = e->unk_20.unk_02 | (1 << idx);
-    data_ov066_022647c8->unk_18[idx] = e->unk_04;
+    sLocalWlMp->unk_18[idx] = e->unk_04;
 }
 
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnPacket(Unk_ov066_02263320_Msg *m) {
     Unk_ov066_02263320_G *g;
     Unk_ov066_02263320_Pay *p;
     if (m->unk_10 == 0) {
         return;
     }
     if (m->unk_12 != 0) {
-        func_ov066_02263628(m->unk_12, m->unk_0c, m->unk_10);
+        LocalWlMp_StoreChildPacket(m->unk_12, m->unk_0c, m->unk_10);
         return;
     }
-    g = data_ov066_022647c8;
+    g = sLocalWlMp;
     p = m->unk_0c;
     if (g->unk_04.f0 == 0) {
         if (p->unk_00 != ((g->lo + 1) & 0xf)) {
@@ -1583,12 +1583,12 @@ void func_ov066_022634e8(Unk_ov066_02263320_Msg *m) {
     {
         Unk_ov066_02263320_Rec *e = g->unk_18[0];
         e->unk_20.unk_00 = p->unk_00;
-        data_ov066_022647c8->unk_18[0] = e->unk_04;
+        sLocalWlMp->unk_18[0] = e->unk_04;
     }
-    func_ov066_02263b90(p);
-    data_ov066_022647c8->unk_04.f0 = 0;
-    data_ov066_022647c8->unk_04.f2 = 0;
-    data_ov066_022647c8->lo = p->unk_00;
+    LocalWlMp_DeliverFrame(p);
+    sLocalWlMp->unk_04.f0 = 0;
+    sLocalWlMp->unk_04.f2 = 0;
+    sLocalWlMp->lo = p->unk_00;
     return;
 cc:
     if (p->unk_00 != ((g->lo + 2) & 0xf)) {
@@ -1596,15 +1596,15 @@ cc:
         return;
     }
     g->unk_04.f2 = 1;
-    data_ov066_022647c8->hi = (data_ov066_022647c8->lo + 1) & 0xf;
+    sLocalWlMp->hi = (sLocalWlMp->lo + 1) & 0xf;
 }
 
-void func_ov066_022634e4(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnDataDisconnectStub(Unk_ov066_02263320_Msg *m) {
 }
 
-void func_ov066_02263478(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnDataRecv(Unk_ov066_02263320_Msg *m) {
     u32 t;
-    if (func_ov066_0225f7c8() != 0) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 != 0) {
@@ -1616,64 +1616,64 @@ void func_ov066_02263478(Unk_ov066_02263320_Msg *m) {
     }
     if (t != 9) {
         if (t == 0x15) {
-            func_ov066_022634e8(m);
+            LocalWlMp_OnPacket(m);
         }
     } else {
-        func_ov066_022634e4(m);
+        LocalWlMp_OnDataDisconnectStub(m);
     }
 }
 
-void func_ov066_02263320(void) {
+void LocalWlMp_Reset(void) {
     u32 t = OS_DisableInterrupts();
     u16 i;
-    data_ov066_022647c8->unk_10 = data_ov066_022647c8->unk_08;
-    func_ov066_0226453c(data_ov066_022647c8->unk_08, 3);
-    func_ov066_0226453c(data_ov066_022647c8->unk_0c, 3);
-    for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
-        data_ov066_022647c8->unk_18[i] = data_ov066_022647c8->unk_0c;
+    sLocalWlMp->unk_10 = sLocalWlMp->unk_08;
+    LocalWlMp_ClearRing(sLocalWlMp->unk_08, 3);
+    LocalWlMp_ClearRing(sLocalWlMp->unk_0c, 3);
+    for (i = 0; i < sLocalWl->unk_0b; i++) {
+        sLocalWlMp->unk_18[i] = sLocalWlMp->unk_0c;
     }
-    data_ov066_022647c8->lo = 0;
-    data_ov066_022647c8->hi = 0;
-    data_ov066_022647c8->unk_02 = 0;
-    data_ov066_022647c8->unk_03 = 0;
-    data_ov066_022647c8->unk_04.f0 = 1;
-    data_ov066_022647c8->unk_04.f1 = 0;
-    data_ov066_022647c8->unk_04.f2 = 0;
-    data_ov066_022647c8->unk_04.f3 = 0;
-    data_ov066_022647c8->unk_14 = 0;
-    data_ov066_022647c8->unk_1c = 0;
-    data_ov066_022647c8->unk_1e = 0;
-    data_ov066_022647c8->unk_20 = 0;
-    data_ov066_022647c8->unk_24 = 0;
-    data_ov066_022647c8->unk_28 = -1;
-    data_ov066_022647c8->unk_2c = 0;
+    sLocalWlMp->lo = 0;
+    sLocalWlMp->hi = 0;
+    sLocalWlMp->unk_02 = 0;
+    sLocalWlMp->unk_03 = 0;
+    sLocalWlMp->unk_04.f0 = 1;
+    sLocalWlMp->unk_04.f1 = 0;
+    sLocalWlMp->unk_04.f2 = 0;
+    sLocalWlMp->unk_04.f3 = 0;
+    sLocalWlMp->unk_14 = 0;
+    sLocalWlMp->unk_1c = 0;
+    sLocalWlMp->unk_1e = 0;
+    sLocalWlMp->unk_20 = 0;
+    sLocalWlMp->unk_24 = 0;
+    sLocalWlMp->unk_28 = -1;
+    sLocalWlMp->unk_2c = 0;
     OS_RestoreInterrupts(t);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
-#undef data_ov066_022647c8
-#undef func_ov066_0226238c
-#undef func_ov066_0226453c
-#undef func_ov066_02263f54
-#undef func_ov066_02263c3c
+#undef sLocalWl
+#undef sLocalWlSession
+#undef sLocalWlMp
+#undef LocalWl_GetMyAid
+#undef LocalWlMp_ClearRing
+#undef LocalWlMp_PutParentRecord
+#undef LocalWlMp_ReceiveRecord
 
 // ---- unk_022629cc
-#define data_ov066_022647ac (*(Unk_ov066_022629cc_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_022629cc_V * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_022629cc_S * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_022629cc_V * *)&sLocalWlSession)
 #define data_ov066_022647bc (*(u8 *)&data_ov066_022647bc)
 #define data_ov066_022647c0 (*(u16 *)&data_ov066_022647c0)
 #define data_ov066_022647c4 (*(u16 *)&data_ov066_022647c4)
-#define data_ov066_022647c8 (*(Unk_ov066_022629cc_G * *)&data_ov066_022647c8)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_0226292c ((s32 (*)(u32))func_ov066_0226292c)
-#define func_ov066_02260d74 ((s32 (*)(void *, void *))func_ov066_02260d74)
+#define sLocalWlMp (*(Unk_ov066_022629cc_G * *)&sLocalWlMp)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_PickChannel ((s32 (*)(u32))LocalWl_PickChannel)
+#define LocalWl_CompareMac ((s32 (*)(void *, void *))LocalWl_CompareMac)
 
-s32 func_ov066_02263284(s32 idx, u32 a, u32 b) {
+s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b) {
     BOOL r = FALSE;
     u32 t = OS_DisableInterrupts();
-    Unk_ov066_022629cc_G *g = data_ov066_022647c8;
+    Unk_ov066_022629cc_G *g = sLocalWlMp;
     Unk_ov066_022629cc_E *p;
-    if (g != NULL && (p = g->unk_30) != NULL && data_ov066_022647b4 != NULL && idx < (s32)data_ov066_022647ac->unk_0b) {
+    if (g != NULL && (p = g->unk_30) != NULL && sLocalWlSession != NULL && idx < (s32)sLocalWl->unk_0b) {
         if ((g->unk_1c & (1 << idx)) == 0) {
             p[idx].a = a;
             r = TRUE;
@@ -1684,7 +1684,7 @@ s32 func_ov066_02263284(s32 idx, u32 a, u32 b) {
     return r;
 }
 
-void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n) {
+void LocalWlBcn_Init(Unk_ov066_022629cc_Ent *o, u32 id, s32 n) {
     volatile s32 z;
     s32 i;
     s32 size = n * 0xe0;
@@ -1692,8 +1692,8 @@ void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n) {
     o->unk_01 = 0;
     o->unk_02 = n;
     o->unk_0c = NULL;
-    o->unk_04 = (Unk_ov066_022629cc_Rec *)func_ov066_0225f2c8(size, 0x20);
-    o->unk_08 = (Unk_ov066_022629cc_Sub *)func_ov066_0225f2c8(n * 0x2c, 0x20);
+    o->unk_04 = (Unk_ov066_022629cc_Rec *)LocalWl_Alloc(size, 0x20);
+    o->unk_08 = (Unk_ov066_022629cc_Sub *)LocalWl_Alloc(n * 0x2c, 0x20);
     z = 0;
     MIi_CpuClearFast(z, o->unk_04, size);
     DC_StoreRange(o->unk_04, size);
@@ -1702,15 +1702,15 @@ void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n) {
     }
 }
 
-void func_ov066_02263198(Unk_ov066_022629cc_Ent *o) {
+void LocalWlBcn_Free(Unk_ov066_022629cc_Ent *o) {
     o->unk_01 = 0;
     o->unk_02 = 0;
     func_02114ef4(o->unk_00 + 0x80);
-    func_ov066_0225f284(o->unk_08);
-    func_ov066_0225f284(o->unk_04);
+    LocalWl_Free(o->unk_08);
+    LocalWl_Free(o->unk_04);
 }
 
-s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
+s32 LocalWlBcn_Add(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
     u8 v8;
     Unk_ov066_022629cc_Rec *r;
     s32 i;
@@ -1724,7 +1724,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
     if (o->unk_01 != 0) {
         for (i = 0; i < o->unk_02; i++) {
             Unk_ov066_022629cc_Rec *r = &o->unk_04[i];
-            if (r->unk_00 == 1 && func_ov066_02260d74(r->unk_02, b) == 0) {
+            if (r->unk_00 == 1 && LocalWl_CompareMac(r->unk_02, b) == 0) {
                 s32 j, sum, k;
                 u32 soff;
                 u8 nw;
@@ -1746,7 +1746,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
                 DC_StoreRange(o->unk_04[i].unk_20, 0xc0);
                 OS_RestoreInterrupts(t);
                 soff = i * 0x2c;
-                OS_SetAlarm((u8 *)o->unk_08 + soff, a * 0x82ea / 64, (void *)func_ov066_02262dfc, &o->unk_04[i]);
+                OS_SetAlarm((u8 *)o->unk_08 + soff, a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, &o->unk_04[i]);
                 func_02114f74((u8 *)o->unk_08 + soff, o->unk_00 + 0x80);
                 return TRUE;
             }
@@ -1780,7 +1780,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
             OS_RestoreInterrupts(t);
             OS_CancelAlarm(&o->unk_08[i2]);
             off = i2 * 0xe0;
-            OS_SetAlarm(&o->unk_08[i2], a * 0x82ea / 64, (void *)func_ov066_02262dfc, (u8 *)o->unk_04 + off);
+            OS_SetAlarm(&o->unk_08[i2], a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, (u8 *)o->unk_04 + off);
             func_02114f74(&o->unk_08[i2], o->unk_00 + 0x80);
             if (o->unk_0c != NULL) {
                 o->unk_0c((Unk_ov066_022629cc_Rec *)((u8 *)o->unk_04 + off));
@@ -1794,7 +1794,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
     return FALSE;
 }
 
-void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r) {
+void LocalWlBcn_OnExpire(Unk_ov066_022629cc_Rec *r) {
     Unk_ov066_022629cc_Ent *o = r->unk_14;
     if (r->unk_00 != 1) {
         return;
@@ -1806,25 +1806,25 @@ void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r) {
     }
 }
 
-u32 func_ov066_02262df4(Unk_ov066_022629cc_Ent *o) {
+u32 LocalWlBcn_Count(Unk_ov066_022629cc_Ent *o) {
     return o->unk_01;
 }
 
-Unk_ov066_022629cc_Rec *func_ov066_02262dd8(Unk_ov066_022629cc_Ent *o, u32 i) {
+Unk_ov066_022629cc_Rec *LocalWlBcn_Get(Unk_ov066_022629cc_Ent *o, u32 i) {
     if (i < o->unk_02) {
         return &o->unk_04[i];
     }
     return NULL;
 }
 
-void func_ov066_02262dc4(Unk_ov066_022629cc_Ent *o) {
+void LocalWlBcn_CancelAlarms(Unk_ov066_022629cc_Ent *o) {
     func_02114ef4(o->unk_00 + 0x80);
 }
 
-void func_ov066_02262d70(Unk_ov066_022629cc_Ent *o) {
+void LocalWlBcn_Clear(Unk_ov066_022629cc_Ent *o) {
     volatile s32 z;
     u32 n;
-    func_ov066_02262dc4(o);
+    LocalWlBcn_CancelAlarms(o);
     o->unk_01 = 0;
     n = *(volatile u8 *)&o->unk_02;
     z = 0;
@@ -1832,14 +1832,14 @@ void func_ov066_02262d70(Unk_ov066_022629cc_Ent *o) {
     DC_StoreRange(o->unk_04, o->unk_02 * 0xe0);
 }
 
-void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x) {
+void LocalWlBcn_RefreshTimeouts(Unk_ov066_022629cc_Ent *o, s32 x) {
     s32 i = 0;
     if (i < o->unk_02) {
         s32 q = x * 0x82ea / 64;
         do {
             if (o->unk_04[i].unk_00 == 1) {
                 OS_CancelAlarm(&o->unk_08[i]);
-                OS_SetAlarm(&o->unk_08[i], q, (void *)func_ov066_02262dfc, &o->unk_04[i]);
+                OS_SetAlarm(&o->unk_08[i], q, (void *)LocalWlBcn_OnExpire, &o->unk_04[i]);
                 func_02114f74(&o->unk_08[i], o->unk_00 + 0x80);
             }
             i++;
@@ -1847,11 +1847,11 @@ void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x) {
     }
 }
 
-s32 func_ov066_02262c38(u32 i) {
+s32 LocalWl_MeasureNextChannel(u32 i) {
     if (i < 0xe) {
         do {
-            if (data_ov066_022647b4->unk_90 & (1 << i)) {
-                if (func_ov066_02262b20((u16)(i + 1)) != 0) {
+            if (sLocalWlSession->unk_90 & (1 << i)) {
+                if (LocalWl_MeasureChannel((u16)(i + 1)) != 0) {
                     return TRUE;
                 }
             }
@@ -1861,18 +1861,18 @@ s32 func_ov066_02262c38(u32 i) {
     return FALSE;
 }
 
-void func_ov066_02262be4(void) {
+void LocalWl_UpdateAllowedChannels(void) {
     u32 r = WM_GetAllowedChannel();
     if (r == 0) {
-        func_ov066_0225f22c(0x41);
+        LocalWl_SetError(0x41);
         return;
     }
-    data_ov066_022647b4->unk_90 = r;
+    sLocalWlSession->unk_90 = r;
     r = MATH_CountPopulation();
-    data_ov066_022647b4->unk_92 = r;
+    sLocalWlSession->unk_92 = r;
 }
 
-u32 func_ov066_02262b70(u32 a) {
+u32 LocalWl_NextAllowedChannel(u32 a) {
     u32 idx = a;
     u32 n = 0;
     do {
@@ -1880,7 +1880,7 @@ u32 func_ov066_02262b70(u32 a) {
         if (idx > 0xe) {
             idx = 1;
         }
-        if (data_ov066_022647b4->unk_90 & (1 << (idx - 1))) {
+        if (sLocalWlSession->unk_90 & (1 << (idx - 1))) {
             return idx;
         }
         n = (u16)(n + 1);
@@ -1888,16 +1888,16 @@ u32 func_ov066_02262b70(u32 a) {
     return a;
 }
 
-s32 func_ov066_02262b20(u32 a) {
-    s32 r = func_021218d0((void *)func_ov066_02262a34, 3, 0x11, a, 0x1e);
+s32 LocalWl_MeasureChannel(u32 a) {
+    s32 r = func_021218d0((void *)LocalWl_OnMeasureChannel, 3, 0x11, a, 0x1e);
     if (r == 2) {
         return TRUE;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
     return FALSE;
 }
 
-void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
+void LocalWl_OnMeasureChannel(Unk_ov066_022629cc_Msg *m) {
     if (m->unk_02 == 0) {
         u16 a = m->unk_0a;
         u16 b = m->unk_08;
@@ -1909,52 +1909,52 @@ void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
             data_ov066_022647c0 = data_ov066_022647c0 | (1 << (b - 1));
             data_ov066_022647bc = data_ov066_022647bc + 1;
         }
-        if (func_ov066_0226292c(b) != 0) {
-            data_ov066_022647ac->unk_04 = 4;
-            if (data_ov066_022647ac->unk_08 == 0xfe) {
-                data_ov066_022647b4->unk_c0 &= ~0x80;
+        if (LocalWl_PickChannel(b) != 0) {
+            sLocalWl->unk_04 = 4;
+            if (sLocalWl->unk_08 == 0xfe) {
+                sLocalWlSession->unk_c0 &= ~0x80;
             }
-            func_ov066_0225f5b4();
+            LocalWl_Advance();
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_022629cc(void) {
-    data_ov066_022647ac->unk_04 = 5;
+void LocalWl_StartMeasureChannels(void) {
+    sLocalWl->unk_04 = 5;
     data_ov066_022647bc = 0;
     data_ov066_022647c0 = 0;
     data_ov066_022647c4 = 0x65;
-    data_ov066_022647b4->unk_8d = 0;
-    func_ov066_0226292c(0);
+    sLocalWlSession->unk_8d = 0;
+    LocalWl_PickChannel(0);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlSession
 #undef data_ov066_022647bc
 #undef data_ov066_022647c0
 #undef data_ov066_022647c4
-#undef data_ov066_022647c8
-#undef func_ov066_0225f2c8
-#undef func_ov066_0226292c
-#undef func_ov066_02260d74
+#undef sLocalWlMp
+#undef LocalWl_Alloc
+#undef LocalWl_PickChannel
+#undef LocalWl_CompareMac
 
 // ---- unk_02262074
-#define data_ov066_022647ac (*(Unk_ov066_02262074_A * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02262074_B * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_02262074_A * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_02262074_B * *)&sLocalWlSession)
 #define data_ov066_022647bc (*(u8 *)&data_ov066_022647bc)
 #define data_ov066_022647c0 (*(u16 *)&data_ov066_022647c0)
 #define MI_CpuFill8 ((void (*)(void *, s32, s32))MI_CpuFill8)
-#define func_ov066_0225f2c8 ((void * (*)(s32, s32))func_ov066_0225f2c8)
-#define func_ov066_02260dac ((u32 (*)(void *))func_ov066_02260dac)
-#define func_ov066_022613dc ((void (*)(void *))func_ov066_022613dc)
-#define func_ov066_02262c38 ((s32 (*)(void))func_ov066_02262c38)
+#define LocalWl_Alloc ((void * (*)(s32, s32))LocalWl_Alloc)
+#define LocalWl_ReadBe32 ((u32 (*)(void *))LocalWl_ReadBe32)
+#define LocalWl_StartConnect ((void (*)(void *))LocalWl_StartConnect)
+#define LocalWl_MeasureNextChannel ((s32 (*)(void))LocalWl_MeasureNextChannel)
 
-s32 func_ov066_0226292c(void) {
-    if (func_ov066_02262c38() == 0) {
+s32 LocalWl_PickChannel(void) {
+    if (LocalWl_MeasureNextChannel() == 0) {
         if (data_ov066_022647bc != 0) {
             u8 i = 0;
-            u32 t = func_ov066_022623ac();
+            u32 t = LocalWl_Rand();
             u32 sel = (u8)(t % data_ov066_022647bc);
             u16 m = data_ov066_022647c0;
             do {
@@ -1962,7 +1962,7 @@ s32 func_ov066_0226292c(void) {
                     if (sel != 0) {
                         sel = (u8)(sel - 1);
                     } else {
-                        data_ov066_022647b4->unk_8d = i + 1;
+                        sLocalWlSession->unk_8d = i + 1;
                         return 1;
                     }
                 }
@@ -1973,245 +1973,245 @@ s32 func_ov066_0226292c(void) {
     return 0;
 }
 
-void func_ov066_0226278c(void) {
+void LocalWl_ResetSessionInfo(void) {
     u8 buf[6];
-    data_ov066_022647b4->unk_1e = 0xffff;
-    data_ov066_022647b4->unk_8c = 1;
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    data_ov066_022647b4->unk_c0.f1 = 0;
-    data_ov066_022647b4->unk_c0.f2 = 0;
-    data_ov066_022647b4->unk_c0.f3 = 0;
-    data_ov066_022647b4->unk_c0.f4 = 0;
-    data_ov066_022647b4->unk_c0.f5 = 0;
-    data_ov066_022647b4->unk_c0.f6 = 0;
-    data_ov066_022647b4->unk_c0.f10 = 0;
-    if ((u8)(data_ov066_022647ac->unk_08 + 2) <= 1) {
-        data_ov066_022647b4->unk_c0.f7 = 1;
-        data_ov066_022647b4->unk_8d = 0;
-        data_ov066_022647b4->unk_8e = 0;
-        data_ov066_022647b4->unk_8f = 0;
+    sLocalWlSession->unk_1e = 0xffff;
+    sLocalWlSession->unk_8c = 1;
+    sLocalWlSession->unk_c0.f0 = 0;
+    sLocalWlSession->unk_c0.f1 = 0;
+    sLocalWlSession->unk_c0.f2 = 0;
+    sLocalWlSession->unk_c0.f3 = 0;
+    sLocalWlSession->unk_c0.f4 = 0;
+    sLocalWlSession->unk_c0.f5 = 0;
+    sLocalWlSession->unk_c0.f6 = 0;
+    sLocalWlSession->unk_c0.f10 = 0;
+    if ((u8)(sLocalWl->unk_08 + 2) <= 1) {
+        sLocalWlSession->unk_c0.f7 = 1;
+        sLocalWlSession->unk_8d = 0;
+        sLocalWlSession->unk_8e = 0;
+        sLocalWlSession->unk_8f = 0;
     } else {
-        data_ov066_022647b4->unk_c0.f7 = 0;
-        data_ov066_022647b4->unk_8d = data_ov066_022647ac->unk_08;
-        data_ov066_022647b4->unk_8e = 0;
-        data_ov066_022647b4->unk_8f = data_ov066_022647ac->unk_08;
+        sLocalWlSession->unk_c0.f7 = 0;
+        sLocalWlSession->unk_8d = sLocalWl->unk_08;
+        sLocalWlSession->unk_8e = 0;
+        sLocalWlSession->unk_8f = sLocalWl->unk_08;
     }
     MI_CpuFill8(buf, 0, 6);
     s32 i;
-    Unk_ov066_02262074_Row *e = (Unk_ov066_02262074_Row *)data_ov066_022647b4;
+    Unk_ov066_02262074_Row *e = (Unk_ov066_02262074_Row *)sLocalWlSession;
     for (i = 0; i < 16; i++) {
         e->e = *(Unk_ov066_02262074_Ent *)buf;
         e = (Unk_ov066_02262074_Row *)((u8 *)e + 6);
     }
 }
 
-void func_ov066_022625e8(void) {
-    data_ov066_022647b4->unk_00 = (Unk_ov066_02262074_Rec *)func_ov066_0225f2c8(0x40, 0x20);
-    data_ov066_022647b4->unk_08 = (Unk_ov066_02262074_Rec2 *)func_ov066_0225f2c8(0x70, 0x20);
-    data_ov066_022647b4->unk_18 = 8;
-    u32 a = ((data_ov066_022647ac->unk_18 + 0xe) * data_ov066_022647ac->unk_0a + 0x29) & ~0x1f;
-    u32 b = (data_ov066_022647ac->unk_1c + 0x55) & ~0x1f;
+void LocalWl_AllocBuffers(void) {
+    sLocalWlSession->unk_00 = (Unk_ov066_02262074_Rec *)LocalWl_Alloc(0x40, 0x20);
+    sLocalWlSession->unk_08 = (Unk_ov066_02262074_Rec2 *)LocalWl_Alloc(0x70, 0x20);
+    sLocalWlSession->unk_18 = 8;
+    u32 a = ((sLocalWl->unk_18 + 0xe) * sLocalWl->unk_0a + 0x29) & ~0x1f;
+    u32 b = (sLocalWl->unk_1c + 0x55) & ~0x1f;
     u16 x = (u16)(a << 1);
     u16 y = (u16)(b << 1);
     if (x <= y) {
         x = y;
     }
-    data_ov066_022647b4->unk_1a = x;
-    data_ov066_022647b4->unk_0c = func_ov066_0225f2c8(data_ov066_022647b4->unk_1a, 0x20);
-    a = (data_ov066_022647ac->unk_1a + 0x23) & ~0x1f;
-    b = (data_ov066_022647ac->unk_1e + 0x21) & ~0x1f;
+    sLocalWlSession->unk_1a = x;
+    sLocalWlSession->unk_0c = LocalWl_Alloc(sLocalWlSession->unk_1a, 0x20);
+    a = (sLocalWl->unk_1a + 0x23) & ~0x1f;
+    b = (sLocalWl->unk_1e + 0x21) & ~0x1f;
     x = (u16)a;
     y = (u16)b;
     if (x <= y) {
         x = y;
     }
-    data_ov066_022647b4->unk_1c = x;
-    data_ov066_022647b4->unk_10 = func_ov066_0225f2c8(data_ov066_022647b4->unk_1c, 0x20);
-    data_ov066_022647b4->unk_14 = func_ov066_0225f2c8(data_ov066_022647ac->unk_1e * 2, 0x20);
-    data_ov066_022647b4->unk_b8 = 0;
-    func_ov066_022608b8();
-    OS_GetMacAddress(data_ov066_022647b4->unk_22);
-    data_ov066_022647b8 = func_ov066_02260dac(data_ov066_022647b4->unk_24);
-    data_ov066_022647ac->unk_04 = 2;
-    data_ov066_022647ac->unk_00 = 0;
-    func_ov066_0226278c();
+    sLocalWlSession->unk_1c = x;
+    sLocalWlSession->unk_10 = LocalWl_Alloc(sLocalWlSession->unk_1c, 0x20);
+    sLocalWlSession->unk_14 = LocalWl_Alloc(sLocalWl->unk_1e * 2, 0x20);
+    sLocalWlSession->unk_b8 = 0;
+    LocalWl_AllocScanWork();
+    OS_GetMacAddress(sLocalWlSession->unk_22);
+    sLocalWlRandSeed = LocalWl_ReadBe32(sLocalWlSession->unk_24);
+    sLocalWl->unk_04 = 2;
+    sLocalWl->unk_00 = 0;
+    LocalWl_ResetSessionInfo();
 }
 
-void func_ov066_02262548(void) {
-    if (data_ov066_022647b4 != NULL) {
+void LocalWl_InitWm(void) {
+    if (sLocalWlSession != NULL) {
         return;
     }
-    data_ov066_022647b4 = (Unk_ov066_02262074_B *)func_ov066_0225f2c8(0xc4, 4);
-    data_ov066_022647b4->unk_04 = (Unk_ov066_02262074_Buf *)func_ov066_0225f2c8(0xf00, 0x20);
-    if (WM_Init(data_ov066_022647b4->unk_04, data_ov066_022647ac->unk_0d) == 0) {
-        func_ov066_022625e8();
+    sLocalWlSession = (Unk_ov066_02262074_B *)LocalWl_Alloc(0xc4, 4);
+    sLocalWlSession->unk_04 = (Unk_ov066_02262074_Buf *)LocalWl_Alloc(0xf00, 0x20);
+    if (WM_Init(sLocalWlSession->unk_04, sLocalWl->unk_0d) == 0) {
+        LocalWl_AllocBuffers();
         return;
     }
-    func_ov066_0225f284(data_ov066_022647b4->unk_04);
+    LocalWl_Free(sLocalWlSession->unk_04);
 }
 
-void func_ov066_02262464(void) {
-    if (data_ov066_022647ac->unk_04 == 2) {
+void LocalWl_FinishWm(void) {
+    if (sLocalWl->unk_04 == 2) {
         if (func_0211f188() != 0) {
             return;
         }
-        func_ov066_022607e8();
-        func_ov066_0225f284(data_ov066_022647b4->unk_14);
-        func_ov066_0225f284(data_ov066_022647b4->unk_10);
-        func_ov066_0225f284(data_ov066_022647b4->unk_0c);
-        func_ov066_0225f284(data_ov066_022647b4->unk_08);
-        func_ov066_0225f284(data_ov066_022647b4->unk_00);
-        func_ov066_0225f284(data_ov066_022647b4->unk_04);
-        func_ov066_0225f284(data_ov066_022647b4);
-        data_ov066_022647b4 = NULL;
-        data_ov066_022647ac->unk_04 = 1;
+        LocalWl_FreeScanWork();
+        LocalWl_Free(sLocalWlSession->unk_14);
+        LocalWl_Free(sLocalWlSession->unk_10);
+        LocalWl_Free(sLocalWlSession->unk_0c);
+        LocalWl_Free(sLocalWlSession->unk_08);
+        LocalWl_Free(sLocalWlSession->unk_00);
+        LocalWl_Free(sLocalWlSession->unk_04);
+        LocalWl_Free(sLocalWlSession);
+        sLocalWlSession = NULL;
+        sLocalWl->unk_04 = 1;
     } else {
-        func_ov066_0225f22c(0x44);
+        LocalWl_SetError(0x44);
     }
 }
 
-void func_ov066_022623d4(void) {
-    func_ov066_022607c0(0);
-    data_ov066_022647b4->unk_c0.f2 = 0;
-    data_ov066_022647b4->unk_9c();
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    data_ov066_022647b4->unk_c0.f1 = 0;
-    data_ov066_022647b4->unk_93 = 0;
-    data_ov066_022647b4->unk_94 = 0;
-    data_ov066_022647b4->unk_95 = 0;
-    data_ov066_022647b4->unk_98 = 0;
-    func_ov066_02261c5c();
-    func_ov066_02262be4();
+void LocalWl_StartSession(void) {
+    LocalWl_SetBeaconFilter(0);
+    sLocalWlSession->unk_c0.f2 = 0;
+    sLocalWlSession->unk_9c();
+    sLocalWlSession->unk_c0.f0 = 0;
+    sLocalWlSession->unk_c0.f1 = 0;
+    sLocalWlSession->unk_93 = 0;
+    sLocalWlSession->unk_94 = 0;
+    sLocalWlSession->unk_95 = 0;
+    sLocalWlSession->unk_98 = 0;
+    LocalWl_ClearMembers();
+    LocalWl_UpdateAllowedChannels();
 }
 
-u32 func_ov066_022623ac(void) {
-    u32 t = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b8 = t;
+u32 LocalWl_Rand(void) {
+    u32 t = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlRandSeed = t;
     return t;
 }
 
-u32 func_ov066_0226238c(void) {
-    if (data_ov066_022647b4 != NULL) {
-        return data_ov066_022647b4->unk_1e;
+u32 LocalWl_GetMyAid(void) {
+    if (sLocalWlSession != NULL) {
+        return sLocalWlSession->unk_1e;
     }
     return 0xffff;
 }
 
-u32 func_ov066_0226233c(void) {
-    if (func_ov066_0225ffcc() != 10) {
+u32 LocalWl_GetConnectedMask(void) {
+    if (LocalWl_GetState() != 10) {
         return 0;
     }
-    Unk_ov066_02262074_Data *d = (Unk_ov066_02262074_Data *)data_ov066_022647b4->unk_04->unk_04;
+    Unk_ov066_02262074_Data *d = (Unk_ov066_02262074_Data *)sLocalWlSession->unk_04->unk_04;
     DC_InvalidateRange(&d->unk_17e, 2);
     return d->unk_17e;
 }
 
-s32 func_ov066_022622f4(void) {
-    if (data_ov066_022647b4 != NULL) {
-        if (data_ov066_022647b4->unk_b4 != NULL) {
-            return data_ov066_022647b4->unk_b4();
+s32 LocalWl_IsReadyToSend(void) {
+    if (sLocalWlSession != NULL) {
+        if (sLocalWlSession->unk_b4 != NULL) {
+            return sLocalWlSession->unk_b4();
         }
     }
     return 0;
 }
 
-s32 func_ov066_022622ac(u32 a, u32 b, u32 c, u32 d) {
-    if (data_ov066_022647b4 != NULL) {
-        if (data_ov066_022647b4->unk_b0 != NULL) {
-            return data_ov066_022647b4->unk_b0(a, b, c, d);
+s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d) {
+    if (sLocalWlSession != NULL) {
+        if (sLocalWlSession->unk_b0 != NULL) {
+            return sLocalWlSession->unk_b0(a, b, c, d);
         }
     }
     return 0;
 }
 
-void func_ov066_0226223c(u32 a, u32 b) {
-    Unk_ov066_02262074_Rec2 *r = data_ov066_022647b4->unk_08;
+void LocalWl_BuildGameInfo(u32 a, u32 b) {
+    Unk_ov066_02262074_Rec2 *r = sLocalWlSession->unk_08;
     if (a != 0xe34d) {
         r->unk_00 = a;
     }
-    data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    r->unk_02 = data_ov066_022647b8;
-    r->unk_04 = data_ov066_022647b4->unk_95;
+    sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    r->unk_02 = sLocalWlRandSeed;
+    r->unk_04 = sLocalWlSession->unk_95;
     r->unk_05 = b;
     r->unk_06 = 5;
 }
 
-void func_ov066_0226214c(u32 a) {
-    Unk_ov066_02262074_Rec *r = data_ov066_022647b4->unk_00;
-    data_ov066_022647b4->unk_8c = 1;
-    func_ov066_0226223c(a, 1);
-    r->unk_00 = data_ov066_022647b4->unk_08;
-    r->unk_04 = data_ov066_022647b4->unk_18;
-    r->unk_08 = data_ov066_022647ac->unk_28;
-    data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b4->unk_20 = data_ov066_022647b8;
-    r->unk_0c = data_ov066_022647b4->unk_20;
+void LocalWl_BuildParentParameter(u32 a) {
+    Unk_ov066_02262074_Rec *r = sLocalWlSession->unk_00;
+    sLocalWlSession->unk_8c = 1;
+    LocalWl_BuildGameInfo(a, 1);
+    r->unk_00 = sLocalWlSession->unk_08;
+    r->unk_04 = sLocalWlSession->unk_18;
+    r->unk_08 = sLocalWl->unk_28;
+    sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlSession->unk_20 = sLocalWlRandSeed;
+    r->unk_0c = sLocalWlSession->unk_20;
     r->unk_0e = 1;
     r->unk_12 = 0;
     r->unk_14 = 0;
     r->unk_16 = 0;
-    r->unk_10 = data_ov066_022647ac->unk_0a;
+    r->unk_10 = sLocalWl->unk_0a;
     r->unk_18 = WM_GetDispersionBeaconPeriod();
-    r->unk_32 = data_ov066_022647b4->unk_8d;
-    r->unk_34 = data_ov066_022647ac->unk_1a;
-    r->unk_36 = data_ov066_022647ac->unk_1e;
+    r->unk_32 = sLocalWlSession->unk_8d;
+    r->unk_34 = sLocalWl->unk_1a;
+    r->unk_36 = sLocalWl->unk_1e;
 }
 
-void func_ov066_02262108(u32 a) {
-    data_ov066_022647ac->unk_04 = 6;
-    data_ov066_022647b4->unk_96 = 0;
-    func_ov066_0226214c(a);
-    func_ov066_0226160c();
+void LocalWl_BeginParent(u32 a) {
+    sLocalWl->unk_04 = 6;
+    sLocalWlSession->unk_96 = 0;
+    LocalWl_BuildParentParameter(a);
+    LocalWl_SetParentParameter();
 }
 
-void func_ov066_022620e8(void) {
-    func_ov066_02262074(data_ov066_022647b4->unk_88, 0);
+void LocalWl_ConnectToSelected(void) {
+    LocalWl_ConnectToBeacon(sLocalWlSession->unk_88, 0);
 }
 
-void func_ov066_02262074(u8 *p, u32 v) {
-    if (data_ov066_022647ac->unk_04 != 4) {
+void LocalWl_ConnectToBeacon(u8 *p, u32 v) {
+    if (sLocalWl->unk_04 != 4) {
         return;
     }
     if (p == NULL) {
         return;
     }
-    data_ov066_022647ac->unk_04 = 8;
+    sLocalWl->unk_04 = 8;
     {
         u32 w = v & 1;
-        u32 c = *(u32 *)&data_ov066_022647b4->unk_c0;
-        *(u32 *)&data_ov066_022647b4->unk_c0 = (c & ~0x40) | (w << 6);
+        u32 c = *(u32 *)&sLocalWlSession->unk_c0;
+        *(u32 *)&sLocalWlSession->unk_c0 = (c & ~0x40) | (w << 6);
     }
-    func_ov066_022613dc(p + 0x20);
+    LocalWl_StartConnect(p + 0x20);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlSession
 #undef data_ov066_022647bc
 #undef data_ov066_022647c0
 #undef MI_CpuFill8
-#undef func_ov066_0225f2c8
-#undef func_ov066_02260dac
-#undef func_ov066_022613dc
-#undef func_ov066_02262c38
+#undef LocalWl_Alloc
+#undef LocalWl_ReadBe32
+#undef LocalWl_StartConnect
+#undef LocalWl_MeasureNextChannel
 
 // ---- unk_02261764
-#define data_ov066_022647ac (*(Unk_ov066_02261764_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02261764_V * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_02261764_S * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_02261764_V * *)&sLocalWlSession)
 #define MI_CpuFill8 ((s32 (*)(void *, u32, u32))MI_CpuFill8)
-#define func_ov066_02261704 ((void (*)(u8 *))func_ov066_02261704)
+#define LocalWl_ApplyMemberTable ((void (*)(u8 *))LocalWl_ApplyMemberTable)
 
-s32 func_ov066_02261ff8(void *a, u32 n) {
-    if (data_ov066_022647b4 != NULL && n <= 0x68) {
-        u8 *p = (u8 *)data_ov066_022647b4->unk_08;
-        data_ov066_022647b4->unk_c0.f4 = 1;
+s32 LocalWl_SetGameInfo(void *a, u32 n) {
+    if (sLocalWlSession != NULL && n <= 0x68) {
+        u8 *p = (u8 *)sLocalWlSession->unk_08;
+        sLocalWlSession->unk_c0.f4 = 1;
         MI_CpuCopy8(a, p + 8, n);
         p[7] = n;
-        data_ov066_022647b4->unk_18 = (n + 9) & ~1;
+        sLocalWlSession->unk_18 = (n + 9) & ~1;
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov066_02261f6c(u32 idx, u8 *src) {
+void LocalWl_SetMember(u32 idx, u8 *src) {
     u8 buf[6];
     u8 *r;
     if (src != NULL) {
@@ -2219,67 +2219,67 @@ void func_ov066_02261f6c(u32 idx, u8 *src) {
     } else {
         MI_CpuFill8(buf, 0, 6);
     }
-    r = (u8 *)data_ov066_022647b4 + idx * 6;
+    r = (u8 *)sLocalWlSession + idx * 6;
     *(Unk_ov066_02261764_R6 *)(r + 0x28) = *(Unk_ov066_02261764_R6 *)buf;
-    func_ov066_02261c80();
+    LocalWl_CountMembers();
 }
 
-void func_ov066_02261ee8(void) {
+void LocalWl_SendReady(void) {
     Unk_ov066_02261764_Hdr h;
     u32 seed;
-    seed = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
+    seed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
     h.a = 2;
     h.b = 8;
-    data_ov066_022647b8 = seed;
+    sLocalWlRandSeed = seed;
     h.c = seed;
-    MI_CpuCopy8(&h, data_ov066_022647b4->unk_14, 8);
-    data_ov066_022647b4->unk_ac(data_ov066_022647b4->unk_14, 8, 1, 0);
+    MI_CpuCopy8(&h, sLocalWlSession->unk_14, 8);
+    sLocalWlSession->unk_ac(sLocalWlSession->unk_14, 8, 1, 0);
 }
 
-void func_ov066_02261dfc(void) {
+void LocalWl_SendMemberTable(void) {
     Unk_ov066_02261764_Hdr h;
     u32 seed;
-    if (data_ov066_022647b4->unk_c0.f0 != 0) {
-        data_ov066_022647b4->unk_c0.f1 = 1;
+    if (sLocalWlSession->unk_c0.f0 != 0) {
+        sLocalWlSession->unk_c0.f1 = 1;
         return;
     }
-    data_ov066_022647b4->unk_c0.f0 = 1;
-    data_ov066_022647b4->unk_c0.f1 = 0;
+    sLocalWlSession->unk_c0.f0 = 1;
+    sLocalWlSession->unk_c0.f1 = 0;
     h.a = 0;
     h.b = 0x68;
-    seed = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b8 = seed;
+    seed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlRandSeed = seed;
     h.c = seed;
-    MI_CpuCopy8(&h, data_ov066_022647b4->unk_14, 8);
-    MI_CpuCopy8(data_ov066_022647b4->unk_28, data_ov066_022647b4->unk_14 + 8, 0x60);
-    data_ov066_022647b4->unk_ac(data_ov066_022647b4->unk_14, 0x68, 0xffff, func_ov066_02261db0);
+    MI_CpuCopy8(&h, sLocalWlSession->unk_14, 8);
+    MI_CpuCopy8(sLocalWlSession->unk_28, sLocalWlSession->unk_14 + 8, 0x60);
+    sLocalWlSession->unk_ac(sLocalWlSession->unk_14, 0x68, 0xffff, LocalWl_OnMemberTableSent);
 }
 
-void func_ov066_02261db0(void) {
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    if (data_ov066_022647b4->unk_c0.f1 == 0) {
+void LocalWl_OnMemberTableSent(void) {
+    sLocalWlSession->unk_c0.f0 = 0;
+    if (sLocalWlSession->unk_c0.f1 == 0) {
         return;
     }
-    func_ov066_02261dfc();
+    LocalWl_SendMemberTable();
 }
 
-void func_ov066_02261ce0(u8 *a, u8 *b) {
+void LocalWl_MergeMemberTable(u8 *a, u8 *b) {
     u16 i = 0;
     do {
-        BOOL ra = func_ov066_022609e4(a + i * 6);
-        BOOL rb = func_ov066_022609e4(b + i * 6);
+        BOOL ra = LocalWl_IsMacSet(a + i * 6);
+        BOOL rb = LocalWl_IsMacSet(b + i * 6);
         *(Unk_ov066_02261764_R6 *)(a + i * 6) = *(Unk_ov066_02261764_R6 *)(b + i * 6);
         if (ra == 0 && rb != 0) {
-            func_ov066_0225f1c0(0, i);
+            LocalWl_PostEvent(0, i);
         }
         if (ra != 0 && rb == 0) {
-            func_ov066_0225f1c0(1, i);
+            LocalWl_PostEvent(1, i);
         }
         i++;
     } while (i < 16);
 }
 
-void func_ov066_02261c80(void) {
+void LocalWl_CountMembers(void) {
     s32 i;
     u8 n;
     s32 off;
@@ -2287,96 +2287,96 @@ void func_ov066_02261c80(void) {
     i = 0;
     off = 0;
     do {
-        if (func_ov066_022609e4(data_ov066_022647b4->unk_28 + off) != 0) {
+        if (LocalWl_IsMacSet(sLocalWlSession->unk_28 + off) != 0) {
             n++;
         }
         i++;
         off += 6;
     } while (i < 16);
-    data_ov066_022647b4->unk_8c = n;
+    sLocalWlSession->unk_8c = n;
 }
 
-void func_ov066_02261c5c(void) {
-    MI_CpuFill8(data_ov066_022647b4->unk_28, 0, 0x60);
+void LocalWl_ClearMembers(void) {
+    MI_CpuFill8(sLocalWlSession->unk_28, 0, 0x60);
 }
 
-void func_ov066_02261bfc(Unk_ov066_02261764_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnControlRecv(Unk_ov066_02261764_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (func_ov066_02261650() != 0) {
+    if (LocalWl_CheckEndRequest() != 0) {
         return;
     }
-    if (data_ov066_022647b4->unk_1e == 0) {
-        func_ov066_022618dc(m);
+    if (sLocalWlSession->unk_1e == 0) {
+        LocalWl_OnParentControl(m);
         return;
     }
-    func_ov066_02261764(m);
+    LocalWl_OnChildControl(m);
 }
 
-void func_ov066_02261bc4(u32 a) {
-    if (data_ov066_022647b4->unk_bc == NULL) {
+void LocalWl_CallMemberLeftCb(u32 a) {
+    if (sLocalWlSession->unk_bc == NULL) {
         return;
     }
-    data_ov066_022647b4->unk_bc(a);
+    sLocalWlSession->unk_bc(a);
 }
 
-void func_ov066_02261b14(void) {
-    if (data_ov066_022647b4->unk_c0.f4 != 0) {
-        func_ov066_0226223c(0xe34d, data_ov066_022647b4->unk_8c);
-        func_ov066_022611b4();
-        data_ov066_022647b4->unk_c0.f4 = 0;
+void LocalWl_OnBeaconSent(void) {
+    if (sLocalWlSession->unk_c0.f4 != 0) {
+        LocalWl_BuildGameInfo(0xe34d, sLocalWlSession->unk_8c);
+        LocalWl_UpdateGameInfo();
+        sLocalWlSession->unk_c0.f4 = 0;
     }
-    if (data_ov066_022647ac->unk_04 != 6) {
+    if (sLocalWl->unk_04 != 6) {
         return;
     }
-    data_ov066_022647b4->unk_96++;
-    if (data_ov066_022647b4->unk_96 < data_ov066_022647ac->unk_14) {
+    sLocalWlSession->unk_96++;
+    if (sLocalWlSession->unk_96 < sLocalWl->unk_14) {
         return;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_02261a4c(Unk_ov066_02261764_Msg *m) {
-    data_ov066_022647b4->unk_c0.f4 = 1;
-    if (data_ov066_022647ac->unk_04 == 6) {
-        data_ov066_022647ac->unk_04 = 9;
-        data_ov066_022647b4->unk_1e = 0;
-        func_ov066_02261c5c();
-        data_ov066_022647b4->unk_c0.f5 = 1;
-        func_ov066_0226223c(0xbd8a, data_ov066_022647b4->unk_8c);
-        func_ov066_022611b4();
+void LocalWl_OnChildJoined(Unk_ov066_02261764_Msg *m) {
+    sLocalWlSession->unk_c0.f4 = 1;
+    if (sLocalWl->unk_04 == 6) {
+        sLocalWl->unk_04 = 9;
+        sLocalWlSession->unk_1e = 0;
+        LocalWl_ClearMembers();
+        sLocalWlSession->unk_c0.f5 = 1;
+        LocalWl_BuildGameInfo(0xbd8a, sLocalWlSession->unk_8c);
+        LocalWl_UpdateGameInfo();
     }
-    func_ov066_02261f6c(m->unk_10, (u8 *)&m->unk_0a);
-    func_ov066_0225f1c0(0, m->unk_10);
-    if (data_ov066_022647b4->unk_8c < data_ov066_022647ac->unk_0b) {
+    LocalWl_SetMember(m->unk_10, (u8 *)&m->unk_0a);
+    LocalWl_PostEvent(0, m->unk_10);
+    if (sLocalWlSession->unk_8c < sLocalWl->unk_0b) {
         return;
     }
-    func_ov066_02260e4c(0);
+    LocalWl_SetEntry(0);
 }
 
-void func_ov066_02261958(Unk_ov066_02261764_Msg *m) {
-    if (data_ov066_022647b4->unk_8c == data_ov066_022647ac->unk_0b) {
-        func_ov066_02260e4c(1);
+void LocalWl_OnChildLeft(Unk_ov066_02261764_Msg *m) {
+    if (sLocalWlSession->unk_8c == sLocalWl->unk_0b) {
+        LocalWl_SetEntry(1);
     }
-    data_ov066_022647b4->unk_98 &= ~(1 << m->unk_10);
-    func_ov066_02261f6c(m->unk_10, 0);
-    func_ov066_0225f1c0(1, m->unk_10);
-    if (data_ov066_022647b4->unk_8c <= 1) {
-        if (data_ov066_022647b4->unk_c0.f2 != 0) {
+    sLocalWlSession->unk_98 &= ~(1 << m->unk_10);
+    LocalWl_SetMember(m->unk_10, 0);
+    LocalWl_PostEvent(1, m->unk_10);
+    if (sLocalWlSession->unk_8c <= 1) {
+        if (sLocalWlSession->unk_c0.f2 != 0) {
             return;
         }
-        data_ov066_022647b4->unk_9c();
-        data_ov066_022647b4->unk_c0.f0 = 0;
-        data_ov066_022647b4->unk_c0.f1 = 0;
+        sLocalWlSession->unk_9c();
+        sLocalWlSession->unk_c0.f0 = 0;
+        sLocalWlSession->unk_c0.f1 = 0;
     } else {
-        func_ov066_02261bc4(m->unk_10);
-        func_ov066_02261dfc();
-        data_ov066_022647b4->unk_c0.f4 = 1;
+        LocalWl_CallMemberLeftCb(m->unk_10);
+        LocalWl_SendMemberTable();
+        sLocalWlSession->unk_c0.f4 = 1;
     }
 }
 
-void func_ov066_022618dc(Unk_ov066_02261764_Msg *m) {
+void LocalWl_OnParentControl(Unk_ov066_02261764_Msg *m) {
     u16 b[4];
     if (m->unk_10 == 0) {
         return;
@@ -2391,38 +2391,38 @@ void func_ov066_022618dc(Unk_ov066_02261764_Msg *m) {
     if (b[0] != 2) {
         return;
     }
-    func_ov066_02261894(m->unk_12, m->unk_0c);
+    LocalWl_OnChildReady(m->unk_12, m->unk_0c);
 }
 
-void func_ov066_02261894(u32 idx, u8 *src) {
+void LocalWl_OnChildReady(u32 idx, u8 *src) {
     u8 buf[8];
     MI_CpuCopy8(src, buf, 8);
-    data_ov066_022647b4->unk_98 |= 1 << idx;
-    func_ov066_02261dfc();
+    sLocalWlSession->unk_98 |= 1 << idx;
+    LocalWl_SendMemberTable();
 }
 
-void func_ov066_02261860(Unk_ov066_02261764_Msg *m) {
-    data_ov066_022647ac->unk_04 = 9;
-    data_ov066_022647b4->unk_1e = m->unk_0a;
-    func_ov066_022610b0();
+void LocalWl_OnChildConnected(Unk_ov066_02261764_Msg *m) {
+    sLocalWl->unk_04 = 9;
+    sLocalWlSession->unk_1e = m->unk_0a;
+    LocalWl_StartMp();
 }
 
-void func_ov066_0226185c(void) {
+void LocalWl_OnChildEvent8Stub(void) {
 }
 
-void func_ov066_022617d4(void) {
-    data_ov066_022647ac->unk_04 = 4;
-    data_ov066_022647b4->unk_9c();
-    if (data_ov066_022647ac->unk_3c.f8 != 0) {
-        func_ov066_02261f6c(0, 0);
+void LocalWl_OnParentLost(void) {
+    sLocalWl->unk_04 = 4;
+    sLocalWlSession->unk_9c();
+    if (sLocalWl->unk_3c.f8 != 0) {
+        LocalWl_SetMember(0, 0);
     }
-    if (data_ov066_022647b4->unk_c0.f2 == 0) {
-        func_ov066_0225f824();
+    if (sLocalWlSession->unk_c0.f2 == 0) {
+        LocalWl_Abort();
     }
-    func_ov066_0225f1c0(2, 0);
+    LocalWl_PostEvent(2, 0);
 }
 
-void func_ov066_02261764(Unk_ov066_02261764_Msg *m) {
+void LocalWl_OnChildControl(Unk_ov066_02261764_Msg *m) {
     u16 b[4];
     if (m->unk_10 == 0) {
         return;
@@ -2430,7 +2430,7 @@ void func_ov066_02261764(Unk_ov066_02261764_Msg *m) {
     MI_CpuCopy8(m->unk_0c, b, 4);
     switch (b[0]) {
     case 0:
-        func_ov066_02261704(m->unk_0c);
+        LocalWl_ApplyMemberTable(m->unk_0c);
         break;
     case 1:
         return;
@@ -2438,82 +2438,82 @@ void func_ov066_02261764(Unk_ov066_02261764_Msg *m) {
         break;
     }
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlSession
 #undef MI_CpuFill8
-#undef func_ov066_02261704
+#undef LocalWl_ApplyMemberTable
 
 // ---- unk_02260e18
-#define data_ov066_022647ac (*(Unk_ov066_02260e18_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02260e18_V * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_02260e18_S * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_02260e18_V * *)&sLocalWlSession)
 #define OS_DisableInterrupts ((s32 (*)(void))OS_DisableInterrupts)
 #define OS_RestoreInterrupts ((s32 (*)(s32))OS_RestoreInterrupts)
-#define func_ov066_02261f6c ((void (*)(u32, void *))func_ov066_02261f6c)
-#define func_ov066_02261860 ((void (*)(void *))func_ov066_02261860)
-#define func_ov066_0226185c ((void (*)(void *))func_ov066_0226185c)
-#define func_ov066_022617d4 ((void (*)(void *))func_ov066_022617d4)
-#define func_ov066_02261b14 ((void (*)(void *))func_ov066_02261b14)
-#define func_ov066_02261a4c ((void (*)(void *))func_ov066_02261a4c)
-#define func_ov066_02261958 ((void (*)(void *))func_ov066_02261958)
-#define func_ov066_02261ce0 ((void (*)(void *, void *))func_ov066_02261ce0)
-#define func_ov066_02260dd0 ((void (*)(void))func_ov066_02260dd0)
+#define LocalWl_SetMember ((void (*)(u32, void *))LocalWl_SetMember)
+#define LocalWl_OnChildConnected ((void (*)(void *))LocalWl_OnChildConnected)
+#define LocalWl_OnChildEvent8Stub ((void (*)(void *))LocalWl_OnChildEvent8Stub)
+#define LocalWl_OnParentLost ((void (*)(void *))LocalWl_OnParentLost)
+#define LocalWl_OnBeaconSent ((void (*)(void *))LocalWl_OnBeaconSent)
+#define LocalWl_OnChildJoined ((void (*)(void *))LocalWl_OnChildJoined)
+#define LocalWl_OnChildLeft ((void (*)(void *))LocalWl_OnChildLeft)
+#define LocalWl_MergeMemberTable ((void (*)(void *, void *))LocalWl_MergeMemberTable)
+#define LocalWl_OnConnectFailReset ((void (*)(void))LocalWl_OnConnectFailReset)
 
-void func_ov066_02261704(void *m) {
+void LocalWl_ApplyMemberTable(void *m) {
     u8 buf[8];
     MI_CpuCopy8(m, buf, 8);
-    func_ov066_02261ce0((u8 *)data_ov066_022647b4 + 0x28, (u8 *)m + 8);
-    func_ov066_02261c80();
-    if (data_ov066_022647ac->unk_04 == 9) {
-        data_ov066_022647ac->unk_04 = 11;
+    LocalWl_MergeMemberTable((u8 *)sLocalWlSession + 0x28, (u8 *)m + 8);
+    LocalWl_CountMembers();
+    if (sLocalWl->unk_04 == 9) {
+        sLocalWl->unk_04 = 11;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_022616c8(void) {
+void LocalWl_RequestEnd(void) {
     s32 t = OS_DisableInterrupts();
-    Unk_ov066_02260e18_V *v = data_ov066_022647b4;
+    Unk_ov066_02260e18_V *v = sLocalWlSession;
     if (v->unk_c0.f3 == 0) {
         v->unk_c0.f2 = 1;
     }
     OS_RestoreInterrupts(t);
 }
 
-s32 func_ov066_02261650(void) {
-    if (data_ov066_022647b4->unk_c0.f2 != 0 && data_ov066_022647b4->unk_c0.f3 == 0) {
-        func_ov066_02260efc();
-        data_ov066_022647b4->unk_c0.f3 = 1;
-        data_ov066_022647b4->unk_c0.f2 = 0;
+s32 LocalWl_CheckEndRequest(void) {
+    if (sLocalWlSession->unk_c0.f2 != 0 && sLocalWlSession->unk_c0.f3 == 0) {
+        LocalWl_EndMp();
+        sLocalWlSession->unk_c0.f3 = 1;
+        sLocalWlSession->unk_c0.f2 = 0;
         return 1;
     }
     return 0;
 }
 
-void func_ov066_0226160c(void) {
-    s32 r = WM_SetParentParameter((void *)func_ov066_022615d8, data_ov066_022647b4->unk_00);
+void LocalWl_SetParentParameter(void) {
+    s32 r = WM_SetParentParameter((void *)LocalWl_OnSetParentParameter, sLocalWlSession->unk_00);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022615d8(Unk_ov066_02260e18_Msg *m) {
+void LocalWl_OnSetParentParameter(Unk_ov066_02260e18_Msg *m) {
     if (m->unk_02 == 0) {
-        func_ov066_022615a4();
+        LocalWl_StartParentNow();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_022615a4(void) {
-    s32 r = WM_StartParent((void *)func_ov066_022614c4);
+void LocalWl_StartParentNow(void) {
+    s32 r = WM_StartParent((void *)LocalWl_OnParentEvent);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022614c4(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnParentEvent(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
@@ -2521,57 +2521,57 @@ void func_ov066_022614c4(Unk_ov066_02260e18_Msg *m) {
         case 0:
             break;
         case 2:
-            func_ov066_02261b14(m);
+            LocalWl_OnBeaconSent(m);
             break;
         case 7:
-            func_ov066_02261a4c(m);
+            LocalWl_OnChildJoined(m);
             break;
         case 9:
-            if (data_ov066_022647b4->unk_c0.f2 != 0) {
-                func_ov066_0225f824();
+            if (sLocalWlSession->unk_c0.f2 != 0) {
+                LocalWl_Abort();
             } else {
-                func_ov066_02261958(m);
+                LocalWl_OnChildLeft(m);
             }
             break;
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_02261490(void) {
-    s32 r = WM_EndParent((void *)func_ov066_02261420);
+void LocalWl_EndParent(void) {
+    s32 r = WM_EndParent((void *)LocalWl_OnEndParent);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02261420(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndParent(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        if (data_ov066_022647b4->unk_c0.f3 != 0) {
-            func_ov066_0226278c();
+        sLocalWl->unk_04 = 4;
+        if (sLocalWlSession->unk_c0.f3 != 0) {
+            LocalWl_ResetSessionInfo();
         }
-        func_ov066_0225f5b4();
+        LocalWl_Advance();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_022613dc(u32 a) {
-    s32 r = func_0211fcbc((void *)func_ov066_022612cc, a, 0, 1, 0);
+void LocalWl_StartConnect(u32 a) {
+    s32 r = func_0211fcbc((void *)LocalWl_OnChildConnectEvent, a, 0, 1, 0);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnChildConnectEvent(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
@@ -2579,225 +2579,225 @@ void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m) {
         case 6:
             break;
         case 7:
-            func_ov066_02261860(m);
+            LocalWl_OnChildConnected(m);
             break;
         case 8:
-            func_ov066_0226185c(m);
+            LocalWl_OnChildEvent8Stub(m);
             break;
         case 9:
-            if (data_ov066_022647b4->unk_c0.f2 != 0) {
-                func_ov066_0225f824();
+            if (sLocalWlSession->unk_c0.f2 != 0) {
+                LocalWl_Abort();
             } else {
-                func_ov066_022617d4(m);
+                LocalWl_OnParentLost(m);
             }
             break;
         default:
-            func_ov066_0225f22c(0x10);
+            LocalWl_SetError(0x10);
             break;
         }
     } else if (m->unk_02 == 1) {
-        if (data_ov066_022647b4->unk_c0.f6 != 0) {
-            func_ov066_0225f3c8((void *)func_ov066_02260dd0);
+        if (sLocalWlSession->unk_c0.f6 != 0) {
+            LocalWl_Reset((void *)LocalWl_OnConnectFailReset);
         } else {
-            func_ov066_0225f824();
+            LocalWl_Abort();
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-s32 func_ov066_0226128c(u32 a) {
-    s32 r = WM_Disconnect((void *)func_ov066_02261238, a);
+s32 LocalWl_Disconnect(u32 a) {
+    s32 r = WM_Disconnect((void *)LocalWl_OnDisconnect, a);
     if (r == 2) {
         return 1;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
     return 0;
 }
 
-void func_ov066_02261238(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnDisconnect(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0226278c();
-        func_ov066_0225f5b4();
+        sLocalWl->unk_04 = 4;
+        LocalWl_ResetSessionInfo();
+        LocalWl_Advance();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_022611b4(void) {
-    Unk_ov066_02260e18_S *s = data_ov066_022647ac;
+void LocalWl_UpdateGameInfo(void) {
+    Unk_ov066_02260e18_S *s = sLocalWl;
     u32 t = s->unk_0b;
-    u32 f = (*(Unk_ov066_02260e18_V *volatile *)&data_ov066_022647b4)->unk_8c < t;
-    Unk_ov066_02260e18_V *v = *(Unk_ov066_02260e18_V *volatile *)&data_ov066_022647b4;
-    s32 r = WM_SetGameInfo((void *)func_ov066_02261158, v->unk_08, v->unk_18, s->unk_28, v->unk_20, f);
+    u32 f = (*(Unk_ov066_02260e18_V *volatile *)&sLocalWlSession)->unk_8c < t;
+    Unk_ov066_02260e18_V *v = *(Unk_ov066_02260e18_V *volatile *)&sLocalWlSession;
+    s32 r = WM_SetGameInfo((void *)LocalWl_OnSetGameInfo, v->unk_08, v->unk_18, s->unk_28, v->unk_20, f);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02261158(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnSetGameInfo(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
-        if (data_ov066_022647b4->unk_c0.f5 == 0) {
+        if (sLocalWlSession->unk_c0.f5 == 0) {
             return;
         }
-        func_ov066_022610b0();
+        LocalWl_StartMp();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_022610b0(void) {
-    s32 r = func_021206b4((void *)func_ov066_02260f30, data_ov066_022647b4->unk_0c, data_ov066_022647b4->unk_1a,
-                          data_ov066_022647b4->unk_10, data_ov066_022647b4->unk_1c, data_ov066_022647ac->unk_17, 4,
-                          data_ov066_022647ac->unk_3c.f0, data_ov066_022647ac->unk_3c.f1, 1,
-                          data_ov066_022647ac->unk_3c.f2);
+void LocalWl_StartMp(void) {
+    s32 r = func_021206b4((void *)LocalWl_OnMpEvent, sLocalWlSession->unk_0c, sLocalWlSession->unk_1a,
+                          sLocalWlSession->unk_10, sLocalWlSession->unk_1c, sLocalWl->unk_17, 4,
+                          sLocalWl->unk_3c.f0, sLocalWl->unk_3c.f1, 1,
+                          sLocalWl->unk_3c.f2);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260f30(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnMpEvent(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
         switch (m->unk_04) {
         case 10:
-            data_ov066_022647b4->unk_c0.f5 = 0;
-            data_ov066_022647ac->unk_3c.f12 = 1;
-            data_ov066_022647b4->unk_9c();
-            data_ov066_022647b4->unk_c0.f0 = 0;
-            data_ov066_022647b4->unk_c0.f1 = 0;
-            if (data_ov066_022647b4->unk_1e == 0) {
-                func_ov066_02261f6c(0, &data_ov066_022647b4->unk_22[0]);
-                if (data_ov066_022647ac->unk_04 != 10) {
-                    data_ov066_022647ac->unk_04 = 10;
+            sLocalWlSession->unk_c0.f5 = 0;
+            sLocalWl->unk_3c.f12 = 1;
+            sLocalWlSession->unk_9c();
+            sLocalWlSession->unk_c0.f0 = 0;
+            sLocalWlSession->unk_c0.f1 = 0;
+            if (sLocalWlSession->unk_1e == 0) {
+                LocalWl_SetMember(0, &sLocalWlSession->unk_22[0]);
+                if (sLocalWl->unk_04 != 10) {
+                    sLocalWl->unk_04 = 10;
                 }
-                func_ov066_02261dfc();
-                func_ov066_0225f5b4();
+                LocalWl_SendMemberTable();
+                LocalWl_Advance();
             } else {
-                func_ov066_02261ee8();
+                LocalWl_SendReady();
             }
             break;
         case 11:
-            func_ov066_02261650();
-            if (data_ov066_022647b4->unk_a0 != NULL) {
-                data_ov066_022647b4->unk_a0();
+            LocalWl_CheckEndRequest();
+            if (sLocalWlSession->unk_a0 != NULL) {
+                sLocalWlSession->unk_a0();
             }
             break;
         case 12:
-            func_ov066_02261650();
+            LocalWl_CheckEndRequest();
             break;
         case 13:
-            if (data_ov066_022647b4->unk_a4 != NULL) {
-                data_ov066_022647b4->unk_a4();
+            if (sLocalWlSession->unk_a4 != NULL) {
+                sLocalWlSession->unk_a4();
             }
             break;
         }
     } else {
         if (m->unk_02 != 9 && m->unk_02 != 0xd && m->unk_02 != 0xf) {
-            func_ov066_0225f22c(m->unk_02);
+            LocalWl_SetError(m->unk_02);
         }
     }
 }
 
-void func_ov066_02260efc(void) {
-    s32 r = WM_EndMP((void *)func_ov066_02260e84);
+void LocalWl_EndMp(void) {
+    s32 r = WM_EndMP((void *)LocalWl_OnEndMp);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260e84(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndMp(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
-        if (data_ov066_022647b4->unk_c0.f3 == 0) {
+        if (sLocalWlSession->unk_c0.f3 == 0) {
             return;
         }
-        if (data_ov066_022647b4->unk_1e == 0) {
-            func_ov066_02261490();
+        if (sLocalWlSession->unk_1e == 0) {
+            LocalWl_EndParent();
         } else {
-            func_ov066_0226128c(0);
+            LocalWl_Disconnect(0);
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-void func_ov066_02260e4c(u32 a) {
-    s32 r = WM_SetEntry((void *)func_ov066_02260e18, a);
+void LocalWl_SetEntry(u32 a) {
+    s32 r = WM_SetEntry((void *)LocalWl_OnSetEntry, a);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260e18(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnSetEntry(Unk_ov066_02260e18_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlSession
 #undef OS_DisableInterrupts
 #undef OS_RestoreInterrupts
-#undef func_ov066_02261f6c
-#undef func_ov066_02261860
-#undef func_ov066_0226185c
-#undef func_ov066_022617d4
-#undef func_ov066_02261b14
-#undef func_ov066_02261a4c
-#undef func_ov066_02261958
-#undef func_ov066_02261ce0
-#undef func_ov066_02260dd0
+#undef LocalWl_SetMember
+#undef LocalWl_OnChildConnected
+#undef LocalWl_OnChildEvent8Stub
+#undef LocalWl_OnParentLost
+#undef LocalWl_OnBeaconSent
+#undef LocalWl_OnChildJoined
+#undef LocalWl_OnChildLeft
+#undef LocalWl_MergeMemberTable
+#undef LocalWl_OnConnectFailReset
 
 // ---- unk_02260518
-#define data_ov066_022647ac (*(Unk_ov066_02260518_A * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02260518_C * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_02260518_A * *)&sLocalWl)
+#define sLocalWlSession (*(Unk_ov066_02260518_C * *)&sLocalWlSession)
 #define OS_CancelAlarm ((void (*)(void *))OS_CancelAlarm)
 #define OS_CreateAlarm ((void (*)(void *))OS_CreateAlarm)
 #define OS_SetAlarm ((void (*)(void *, s64, void (*)(void), u32))OS_SetAlarm)
 #define OS_RestoreInterrupts ((void (*)(u32))OS_RestoreInterrupts)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02260144 ((Unk_ov066_02260518_Rec * (*)(u32, u32))func_ov066_02260144)
-#define func_ov066_02262074 ((void (*)(void *, s32))func_ov066_02262074)
-#define func_ov066_022629cc ((void (*)(u32))func_ov066_022629cc)
-#define func_ov066_02262ca8 ((void (*)(void *, s32))func_ov066_02262ca8)
-#define func_ov066_02262d70 ((void (*)(void *))func_ov066_02262d70)
-#define func_ov066_02263198 ((void (*)(void *))func_ov066_02263198)
-#define func_ov066_022631d0 ((void (*)(void *, u8, u32))func_ov066_022631d0)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_GetBeacon ((Unk_ov066_02260518_Rec * (*)(u32, u32))LocalWl_GetBeacon)
+#define LocalWl_ConnectToBeacon ((void (*)(void *, s32))LocalWl_ConnectToBeacon)
+#define LocalWl_StartMeasureChannels ((void (*)(u32))LocalWl_StartMeasureChannels)
+#define LocalWlBcn_RefreshTimeouts ((void (*)(void *, s32))LocalWlBcn_RefreshTimeouts)
+#define LocalWlBcn_Clear ((void (*)(void *))LocalWlBcn_Clear)
+#define LocalWlBcn_Free ((void (*)(void *))LocalWlBcn_Free)
+#define LocalWlBcn_Init ((void (*)(void *, u8, u32))LocalWlBcn_Init)
 
-void func_ov066_02260dd0(Unk_ov066_02260dd0_Msg *m) {
-    func_ov066_0225f310();
+void LocalWl_OnConnectFailReset(Unk_ov066_02260dd0_Msg *m) {
+    LocalWl_ClearResetFlag();
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_02260670(0x64);
+        sLocalWl->unk_04 = 4;
+        LocalWl_StartScanLoop(0x64);
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->unk_02);
     }
 }
 
-u32 func_ov066_02260dac(u8 *p) {
+u32 LocalWl_ReadBe32(u8 *p) {
     return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
 }
 
-s32 func_ov066_02260d74(u8 *a, u8 *b) {
+s32 LocalWl_CompareMac(u8 *a, u8 *b) {
     s32 i;
     for (i = 0; i < 6; i++) {
         u32 bb = b[i];
@@ -2812,44 +2812,44 @@ s32 func_ov066_02260d74(u8 *a, u8 *b) {
     return 0;
 }
 
-void func_ov066_02260d30(u32 v) {
-    if (data_ov066_022647b4->unk_c0.f7) {
-        func_ov066_022629cc(v);
+void LocalWl_StartParent(u32 v) {
+    if (sLocalWlSession->unk_c0.f7) {
+        LocalWl_StartMeasureChannels(v);
     } else {
-        func_ov066_02262108(v);
+        LocalWl_BeginParent(v);
     }
 }
 
-s32 func_ov066_02260cac(Unk_ov066_02260518_Rec *p, u32 a, u32 b) {
+s32 LocalWl_ConnectToParent(Unk_ov066_02260518_Rec *p, u32 a, u32 b) {
     if (p != NULL && p->unk_00 != 0 && (p->unk_08 == 0x2348 || p->unk_08 == 0xbd8a)) {
-        data_ov066_022647b4->unk_88 = p;
-        data_ov066_022647b4->unk_c0.f9 = 1;
-        return func_ov066_0225fc78(5, a, b);
+        sLocalWlSession->unk_88 = p;
+        sLocalWlSession->unk_c0.f9 = 1;
+        return LocalWl_RequestMode(5, a, b);
     }
     return 0;
 }
 
-void func_ov066_02260c8c(void) {
-    func_ov066_02260670(0);
-    func_ov066_0225f5b4();
+void LocalWl_StartScanMode(void) {
+    LocalWl_StartScanLoop(0);
+    LocalWl_Advance();
 }
 
-void func_ov066_02260c28(void) {
-    data_ov066_022647b4->unk_94 = data_ov066_022647b4->unk_94 + 1;
-    if (data_ov066_022647b4->unk_94 >= 4) {
-        data_ov066_022647b4->unk_94 = 0;
-        data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-        data_ov066_022647b4->unk_93 = data_ov066_022647b8 & 3;
+void LocalWl_NextRoleTurn(void) {
+    sLocalWlSession->unk_94 = sLocalWlSession->unk_94 + 1;
+    if (sLocalWlSession->unk_94 >= 4) {
+        sLocalWlSession->unk_94 = 0;
+        sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+        sLocalWlSession->unk_93 = sLocalWlRandSeed & 3;
     }
 }
 
-BOOL func_ov066_02260b4c(void) {
+BOOL LocalWl_JoinBestParent(void) {
     u8 i;
     Unk_ov066_02260518_Rec *best = NULL;
     i = 0;
-    if (i < data_ov066_022647ac->unk_0c) {
+    if (i < sLocalWl->unk_0c) {
         do {
-            Unk_ov066_02260518_Rec *e = func_ov066_02260144(data_ov066_022647b4->unk_95, i);
+            Unk_ov066_02260518_Rec *e = LocalWl_GetBeacon(sLocalWlSession->unk_95, i);
             if (e->unk_00 != 0) {
                 if (*(volatile u16 *)&e->unk_08 == 0xbd8a) {
                     best = e;
@@ -2857,7 +2857,7 @@ BOOL func_ov066_02260b4c(void) {
                 }
                 if (*(volatile u16 *)&e->unk_08 == 0x2348) {
                     if (best != NULL) {
-                        if (func_ov066_02260d74(e->unk_02, best->unk_02) != 0) {
+                        if (LocalWl_CompareMac(e->unk_02, best->unk_02) != 0) {
                             best = e;
                         }
                     } else {
@@ -2866,157 +2866,157 @@ BOOL func_ov066_02260b4c(void) {
                 }
             }
             i++;
-        } while (i < data_ov066_022647ac->unk_0c);
+        } while (i < sLocalWl->unk_0c);
     }
     if (best == NULL) {
         return FALSE;
     }
-    func_ov066_02262074(best, 1);
+    LocalWl_ConnectToBeacon(best, 1);
     return TRUE;
 }
 
-void func_ov066_02260a58(void) {
+void LocalWl_StepAuto(void) {
     s32 r = 0;
-    if (data_ov066_022647b4->unk_c0.f8) {
-        if (func_ov066_022601a0(data_ov066_022647b4->unk_95) > 0) {
-            r = func_ov066_02260b4c();
+    if (sLocalWlSession->unk_c0.f8) {
+        if (LocalWl_GetBeaconCount(sLocalWlSession->unk_95) > 0) {
+            r = LocalWl_JoinBestParent();
         }
     }
     if (r != 0) {
         return;
     }
-    if (data_ov066_022647b4->unk_94 == data_ov066_022647b4->unk_93) {
-        switch (data_ov066_022647ac->unk_04) {
+    if (sLocalWlSession->unk_94 == sLocalWlSession->unk_93) {
+        switch (sLocalWl->unk_04) {
         case 6:
-            func_ov066_02261490();
+            LocalWl_EndParent();
             break;
         case 4:
         case 7:
-            func_ov066_02260c28();
-            func_ov066_02260670(data_ov066_022647ac->unk_20);
+            LocalWl_NextRoleTurn();
+            LocalWl_StartScanLoop(sLocalWl->unk_20);
             break;
         }
     } else {
-        switch (data_ov066_022647ac->unk_04) {
+        switch (sLocalWl->unk_04) {
         case 4:
-            func_ov066_02260d30(0x2348);
+            LocalWl_StartParent(0x2348);
         case 6:
-            func_ov066_02260c28();
+            LocalWl_NextRoleTurn();
             break;
         }
     }
 }
 
-u8 func_ov066_02260a3c(void) {
-    if (data_ov066_022647b4 != NULL) {
-        return data_ov066_022647b4->unk_8c;
+u8 LocalWl_GetMemberCount(void) {
+    if (sLocalWlSession != NULL) {
+        return sLocalWlSession->unk_8c;
     }
     return 0;
 }
 
-BOOL func_ov066_022609e4(u8 *p) {
+BOOL LocalWl_IsMacSet(u8 *p) {
     if (p[0] != 0 || p[1] != 0 || p[2] != 0 || p[3] != 0 || p[4] != 0 || p[5] != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov066_022609a8(u32 v) {
-    if (data_ov066_022647b4 == NULL) {
+void LocalWl_SetRecvCallback(u32 v) {
+    if (sLocalWlSession == NULL) {
         return;
     }
     u32 s = OS_DisableInterrupts();
-    data_ov066_022647b4->unk_b8 = v;
+    sLocalWlSession->unk_b8 = v;
     OS_RestoreInterrupts(s);
 }
 
-void func_ov066_022608b8(void) {
+void LocalWl_AllocScanWork(void) {
     s32 i;
-    data_ov066_022647b0 = (Unk_ov066_02260518_B *)func_ov066_0225f2c8(0x70, 4);
-    data_ov066_022647b0->unk_00 = (Unk_ov066_02260518_Head *)func_ov066_0225f2c8(0x20, 0x20);
-    data_ov066_022647b0->unk_04 = (u32)func_ov066_0225f2c8(0xc0, 0x20);
-    data_ov066_022647b0->unk_08 = (Unk_ov066_02260518_Elem *)func_ov066_0225f2c8(data_ov066_022647ac->unk_09 << 4, 4);
-    for (i = 0; i < data_ov066_022647ac->unk_09; i++) {
-        func_ov066_022631d0(&data_ov066_022647b0->unk_08[i], i, data_ov066_022647ac->unk_0c);
+    sLocalWlScan = (Unk_ov066_02260518_B *)LocalWl_Alloc(0x70, 4);
+    sLocalWlScan->unk_00 = (Unk_ov066_02260518_Head *)LocalWl_Alloc(0x20, 0x20);
+    sLocalWlScan->unk_04 = (u32)LocalWl_Alloc(0xc0, 0x20);
+    sLocalWlScan->unk_08 = (Unk_ov066_02260518_Elem *)LocalWl_Alloc(sLocalWl->unk_09 << 4, 4);
+    for (i = 0; i < sLocalWl->unk_09; i++) {
+        LocalWlBcn_Init(&sLocalWlScan->unk_08[i], i, sLocalWl->unk_0c);
     }
-    OS_CreateAlarm(&data_ov066_022647b0->unk_10);
-    OS_CreateAlarm(&data_ov066_022647b0->unk_3c);
+    OS_CreateAlarm(&sLocalWlScan->unk_10);
+    OS_CreateAlarm(&sLocalWlScan->unk_3c);
 }
 
-void func_ov066_022607e8(void) {
+void LocalWl_FreeScanWork(void) {
     s32 i;
-    for (i = data_ov066_022647ac->unk_09 - 1; i >= 0; i--) {
-        func_ov066_02263198(&data_ov066_022647b0->unk_08[i]);
+    for (i = sLocalWl->unk_09 - 1; i >= 0; i--) {
+        LocalWlBcn_Free(&sLocalWlScan->unk_08[i]);
     }
-    func_ov066_0225f284(data_ov066_022647b0->unk_08);
-    func_ov066_0225f284((void *)data_ov066_022647b0->unk_04);
-    func_ov066_0225f284(data_ov066_022647b0->unk_00);
-    data_ov066_022647b0->unk_6c = 0;
-    data_ov066_022647b0->unk_0c.f0 = 0;
-    OS_CancelAlarm(&data_ov066_022647b0->unk_3c);
-    OS_CancelAlarm(&data_ov066_022647b0->unk_10);
-    func_ov066_0225f284(data_ov066_022647b0);
-    data_ov066_022647b0 = NULL;
+    LocalWl_Free(sLocalWlScan->unk_08);
+    LocalWl_Free((void *)sLocalWlScan->unk_04);
+    LocalWl_Free(sLocalWlScan->unk_00);
+    sLocalWlScan->unk_6c = 0;
+    sLocalWlScan->unk_0c.f0 = 0;
+    OS_CancelAlarm(&sLocalWlScan->unk_3c);
+    OS_CancelAlarm(&sLocalWlScan->unk_10);
+    LocalWl_Free(sLocalWlScan);
+    sLocalWlScan = NULL;
 }
 
-void func_ov066_022607c0(s32 v) {
+void LocalWl_SetBeaconFilter(s32 v) {
     u32 s = OS_DisableInterrupts();
-    data_ov066_022647b0->unk_6c = v;
+    sLocalWlScan->unk_6c = v;
     OS_RestoreInterrupts(s);
 }
 
-u32 func_ov066_02260774(u32 idx) {
-    u8 *p = data_ov066_022647ac->unk_10;
+u32 LocalWl_GetScanChannel(u32 idx) {
+    u8 *p = sLocalWl->unk_10;
     if (p != NULL) {
         return p[idx];
     }
-    return func_ov066_02262b70(data_ov066_022647b4->unk_8e);
+    return LocalWl_NextAllowedChannel(sLocalWlSession->unk_8e);
 }
 
-void func_ov066_02260670(s32 t) {
-    if (data_ov066_022647ac->unk_3c.f3) {
-        func_ov066_02262d70(&data_ov066_022647b0->unk_08[data_ov066_022647b4->unk_95]);
+void LocalWl_StartScanLoop(s32 t) {
+    if (sLocalWl->unk_3c.f3) {
+        LocalWlBcn_Clear(&sLocalWlScan->unk_08[sLocalWlSession->unk_95]);
     } else {
-        func_ov066_02262ca8(&data_ov066_022647b0->unk_08[data_ov066_022647b4->unk_95], 0x1f4);
-        func_ov066_022607c0(0);
+        LocalWlBcn_RefreshTimeouts(&sLocalWlScan->unk_08[sLocalWlSession->unk_95], 0x1f4);
+        LocalWl_SetBeaconFilter(0);
     }
-    data_ov066_022647b0->unk_0c.f1 = 1;
-    data_ov066_022647b0->unk_0c.f0 = 0;
+    sLocalWlScan->unk_0c.f1 = 1;
+    sLocalWlScan->unk_0c.f0 = 0;
     if (t != 0) {
-        OS_CancelAlarm(&data_ov066_022647b0->unk_10);
-        OS_SetAlarm(&data_ov066_022647b0->unk_10, t * 0x82ea / 64, func_ov066_02260634, 0);
+        OS_CancelAlarm(&sLocalWlScan->unk_10);
+        OS_SetAlarm(&sLocalWlScan->unk_10, t * 0x82ea / 64, LocalWl_OnScanTimer, 0);
     }
-    func_ov066_022605cc();
+    LocalWl_ScanNextChannel();
 }
 
-void func_ov066_02260634(void) {
-    if (data_ov066_022647b0->unk_0c.f0) {
+void LocalWl_OnScanTimer(void) {
+    if (sLocalWlScan->unk_0c.f0) {
         return;
     }
-    func_ov066_022605a0();
+    LocalWl_StopScanLoop();
 }
 
-void func_ov066_022605cc(void) {
-    data_ov066_022647ac->unk_04 = 7;
-    func_ov066_02260518();
-    func_ov066_02260100();
-    data_ov066_022647b4->unk_95++;
-    if (data_ov066_022647b4->unk_95 >= data_ov066_022647ac->unk_09) {
-        data_ov066_022647b4->unk_95 = 0;
+void LocalWl_ScanNextChannel(void) {
+    sLocalWl->unk_04 = 7;
+    LocalWl_SetupScanParam();
+    LocalWl_StartScan();
+    sLocalWlSession->unk_95++;
+    if (sLocalWlSession->unk_95 >= sLocalWl->unk_09) {
+        sLocalWlSession->unk_95 = 0;
     }
 }
 
-void func_ov066_022605a0(void) {
-    data_ov066_022647b0->unk_0c.f1 = 0;
-    OS_CancelAlarm(&data_ov066_022647b0->unk_10);
+void LocalWl_StopScanLoop(void) {
+    sLocalWlScan->unk_0c.f1 = 0;
+    OS_CancelAlarm(&sLocalWlScan->unk_10);
 }
 
-void func_ov066_02260518(void) {
-    Unk_ov066_02260518_Head *r = data_ov066_022647b0->unk_00;
-    data_ov066_022647b4->unk_8e = func_ov066_02260774(data_ov066_022647b4->unk_95);
-    r->unk_00 = data_ov066_022647b0->unk_04;
-    r->unk_04 = data_ov066_022647b4->unk_8e;
-    r->unk_06 = data_ov066_022647ac->unk_22;
+void LocalWl_SetupScanParam(void) {
+    Unk_ov066_02260518_Head *r = sLocalWlScan->unk_00;
+    sLocalWlSession->unk_8e = LocalWl_GetScanChannel(sLocalWlSession->unk_95);
+    r->unk_00 = sLocalWlScan->unk_04;
+    r->unk_04 = sLocalWlSession->unk_8e;
+    r->unk_06 = sLocalWl->unk_22;
     r->unk_08 = 0xff;
     r->unk_09 = 0xff;
     r->unk_0a = 0xff;
@@ -3024,42 +3024,42 @@ void func_ov066_02260518(void) {
     r->unk_0c = 0xff;
     r->unk_0d = 0xff;
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlSession
 #undef OS_CancelAlarm
 #undef OS_CreateAlarm
 #undef OS_SetAlarm
 #undef OS_RestoreInterrupts
-#undef func_ov066_0225f2c8
-#undef func_ov066_02260144
-#undef func_ov066_02262074
-#undef func_ov066_022629cc
-#undef func_ov066_02262ca8
-#undef func_ov066_02262d70
-#undef func_ov066_02263198
-#undef func_ov066_022631d0
+#undef LocalWl_Alloc
+#undef LocalWl_GetBeacon
+#undef LocalWl_ConnectToBeacon
+#undef LocalWl_StartMeasureChannels
+#undef LocalWlBcn_RefreshTimeouts
+#undef LocalWlBcn_Clear
+#undef LocalWlBcn_Free
+#undef LocalWlBcn_Init
 
 // ---- unk_0225faf8
-#define data_ov066_022647ac (*(Unk_ov066_0225faf8_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b0 (*(Unk_ov066_0225faf8_T * *)&data_ov066_022647b0)
-#define data_ov066_022647b4 (*(Unk_ov066_0225faf8_V * *)&data_ov066_022647b4)
+#define sLocalWl (*(Unk_ov066_0225faf8_S * *)&sLocalWl)
+#define sLocalWlScan (*(Unk_ov066_0225faf8_T * *)&sLocalWlScan)
+#define sLocalWlSession (*(Unk_ov066_0225faf8_V * *)&sLocalWlSession)
 #define DC_InvalidateRange ((s32 (*)(void *, s32))DC_InvalidateRange)
 #define OS_SetAlarm ((s32 (*)(void *, s32, s32, void *, s32))OS_SetAlarm)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02262dc4 ((void * (*)(void *))func_ov066_02262dc4)
-#define func_ov066_02262dd8 ((s32 (*)(void *, u32))func_ov066_02262dd8)
-#define func_ov066_02262df4 ((s32 (*)(void *))func_ov066_02262df4)
-#define func_ov066_02262e54 ((void (*)(void *, s32, void *, u32, u32, void *))func_ov066_02262e54)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWlBcn_CancelAlarms ((void * (*)(void *))LocalWlBcn_CancelAlarms)
+#define LocalWlBcn_Get ((s32 (*)(void *, u32))LocalWlBcn_Get)
+#define LocalWlBcn_Count ((s32 (*)(void *))LocalWlBcn_Count)
+#define LocalWlBcn_Add ((void (*)(void *, s32, void *, u32, u32, void *))LocalWlBcn_Add)
 
-void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m) {
+void LocalWl_OnBeaconFound(Unk_ov066_0225faf8_Msg *m) {
     volatile u16 buf[4];
-    DC_InvalidateRange(data_ov066_022647b0->unk_04, 0xc0);
-    Unk_ov066_0225faf8_W *w = data_ov066_022647b0->unk_04;
+    DC_InvalidateRange(sLocalWlScan->unk_04, 0xc0);
+    Unk_ov066_0225faf8_W *w = sLocalWlScan->unk_04;
     if (w->unk_3c == 0) {
-        if (data_ov066_022647ac->unk_3c.f4 != 0) {
+        if (sLocalWl->unk_3c.f4 != 0) {
             return;
         }
-        func_ov066_02262e54(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16, 0xfa0, &m->unk_0a, 0xacce, m->unk_12, w);
+        LocalWlBcn_Add(sLocalWlScan->unk_08 + sLocalWlSession->unk_95 * 16, 0xfa0, &m->unk_0a, 0xacce, m->unk_12, w);
         return;
     }
     if ((w->unk_4b & 1) == 0) {
@@ -3067,47 +3067,47 @@ void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m) {
     }
     MI_CpuCopy8(w->unk_50, (void *)buf, 8);
     DC_StoreRange((void *)buf, 8);
-    if (func_ov066_022601fc(m, (u8 *)buf) == 0) {
+    if (LocalWl_FilterBeacon(m, (u8 *)buf) == 0) {
         return;
     }
-    func_ov066_02262e54(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16, 0xfa0, &m->unk_0a, buf[0], m->unk_12, data_ov066_022647b0->unk_04);
-    if (data_ov066_022647ac->unk_3c.f3 == 0) {
+    LocalWlBcn_Add(sLocalWlScan->unk_08 + sLocalWlSession->unk_95 * 16, 0xfa0, &m->unk_0a, buf[0], m->unk_12, sLocalWlScan->unk_04);
+    if (sLocalWl->unk_3c.f3 == 0) {
         return;
     }
     if (buf[0] == 0xbd8a) {
-        func_ov066_022602c8();
+        LocalWl_StopScanSoon();
         return;
     }
     if (buf[0] != 0x2348) {
         return;
     }
-    if (data_ov066_022647b0->unk_0c.f0 != 0) {
+    if (sLocalWlScan->unk_0c.f0 != 0) {
         return;
     }
-    OS_CancelAlarm(&data_ov066_022647b0->unk_3c);
-    OS_SetAlarm(&data_ov066_022647b0->unk_3c, 0x3d5d, 0, (void *)func_ov066_0226030c, 0);
-    data_ov066_022647b0->unk_0c.f0 = 1;
+    OS_CancelAlarm(&sLocalWlScan->unk_3c);
+    OS_SetAlarm(&sLocalWlScan->unk_3c, 0x3d5d, 0, (void *)LocalWl_OnScanStopTimer, 0);
+    sLocalWlScan->unk_0c.f0 = 1;
 }
 
-void func_ov066_0226030c(void) {
-    func_ov066_022602c8();
+void LocalWl_OnScanStopTimer(void) {
+    LocalWl_StopScanSoon();
 }
 
-void func_ov066_022602c8(void) {
-    data_ov066_022647b4->unk_c0 |= 0x100;
-    OS_CancelAlarm(&data_ov066_022647b0->unk_3c);
-    func_ov066_022605a0();
+void LocalWl_StopScanSoon(void) {
+    sLocalWlSession->unk_c0 |= 0x100;
+    OS_CancelAlarm(&sLocalWlScan->unk_3c);
+    LocalWl_StopScanLoop();
 }
 
-s32 func_ov066_022601fc(void *a, u8 *b) {
-    Unk_ov066_0225faf8_S *s = data_ov066_022647ac;
+s32 LocalWl_FilterBeacon(void *a, u8 *b) {
+    Unk_ov066_0225faf8_S *s = sLocalWl;
     if (s->unk_3c.f5 != 0) {
-        if (data_ov066_022647b0->unk_04->unk_44 != s->unk_28) {
+        if (sLocalWlScan->unk_04->unk_44 != s->unk_28) {
             goto fail;
         }
     }
     if (s->unk_3c.f6 != 0) {
-        if (b[4] != data_ov066_022647b4->unk_95) {
+        if (b[4] != sLocalWlSession->unk_95) {
             goto fail;
         }
     }
@@ -3116,40 +3116,40 @@ s32 func_ov066_022601fc(void *a, u8 *b) {
             goto fail;
         }
     }
-    if (data_ov066_022647b0->unk_6c == NULL) {
+    if (sLocalWlScan->unk_6c == NULL) {
         return 1;
     }
-    return data_ov066_022647b0->unk_6c(a);
+    return sLocalWlScan->unk_6c(a);
 fail:
     return 0;
 }
 
-s32 func_ov066_022601a0(u32 idx) {
-    Unk_ov066_0225faf8_T *t = data_ov066_022647b0;
-    if (t != NULL && idx < data_ov066_022647ac->unk_09) {
-        return func_ov066_02262df4(t->unk_08 + idx * 16);
+s32 LocalWl_GetBeaconCount(u32 idx) {
+    Unk_ov066_0225faf8_T *t = sLocalWlScan;
+    if (t != NULL && idx < sLocalWl->unk_09) {
+        return LocalWlBcn_Count(t->unk_08 + idx * 16);
     }
     return 0;
 }
 
-s32 func_ov066_02260144(u32 idx, u32 b) {
-    Unk_ov066_0225faf8_T *t = data_ov066_022647b0;
-    if (t != NULL && idx < data_ov066_022647ac->unk_09) {
-        return func_ov066_02262dd8(t->unk_08 + idx * 16, b);
+s32 LocalWl_GetBeacon(u32 idx, u32 b) {
+    Unk_ov066_0225faf8_T *t = sLocalWlScan;
+    if (t != NULL && idx < sLocalWl->unk_09) {
+        return LocalWlBcn_Get(t->unk_08 + idx * 16, b);
     }
     return 0;
 }
 
-void func_ov066_02260100(void) {
-    s32 r = WM_StartScan((void *)func_ov066_02260060, data_ov066_022647b0->unk_00);
+void LocalWl_StartScan(void) {
+    s32 r = WM_StartScan((void *)LocalWl_OnScan, sLocalWlScan->unk_00);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260060(Unk_ov066_0225faf8_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnScan(Unk_ov066_0225faf8_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
@@ -3157,39 +3157,39 @@ void func_ov066_02260060(Unk_ov066_0225faf8_Msg *m) {
             if (m->unk_08 != 5) {
                 return;
             }
-            func_ov066_02260318(m);
+            LocalWl_OnBeaconFound(m);
         }
-        if (data_ov066_022647b0->unk_0c.f1 != 0) {
-            func_ov066_022605cc();
+        if (sLocalWlScan->unk_0c.f1 != 0) {
+            LocalWl_ScanNextChannel();
             return;
         }
-        func_ov066_02262dc4(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16);
-        func_ov066_0226004c();
+        LocalWlBcn_CancelAlarms(sLocalWlScan->unk_08 + sLocalWlSession->unk_95 * 16);
+        LocalWl_EndScan();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-s32 func_ov066_0226004c(void) {
-    return WM_EndScan((void *)func_ov066_0225fffc);
+s32 LocalWl_EndScan(void) {
+    return WM_EndScan((void *)LocalWl_OnEndScan);
 }
 
-void func_ov066_0225fffc(Unk_ov066_0225faf8_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndScan(Unk_ov066_0225faf8_Msg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0225f5b4();
+        sLocalWl->unk_04 = 4;
+        LocalWl_Advance();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-s32 func_ov066_0225ffcc(void) {
+s32 LocalWl_GetState(void) {
     s32 r = 0;
     u32 irq = OS_DisableInterrupts();
-    Unk_ov066_0225faf8_S *s = data_ov066_022647ac;
+    Unk_ov066_0225faf8_S *s = sLocalWl;
     if (s != NULL) {
         r = s->unk_04;
     }
@@ -3197,99 +3197,99 @@ s32 func_ov066_0225ffcc(void) {
     return r;
 }
 
-void func_ov066_0225fef0(u32 a) {
-    data_ov066_022647ac->unk_00 = 7;
-    data_ov066_022647ac->unk_04 = 1;
-    data_ov066_022647ac->unk_08 = 0xfe;
-    data_ov066_022647ac->unk_09 = 1;
-    data_ov066_022647ac->unk_0a = 0;
-    data_ov066_022647ac->unk_0b = 0;
-    data_ov066_022647ac->unk_0c = 0;
-    data_ov066_022647ac->unk_0d = a;
-    data_ov066_022647ac->unk_10 = 0;
-    data_ov066_022647ac->unk_15 = 0;
-    data_ov066_022647ac->unk_16 = 0;
-    data_ov066_022647ac->unk_30 = 0;
-    data_ov066_022647ac->unk_34 = 0;
-    data_ov066_022647ac->unk_38 = 0;
-    data_ov066_022647ac->unk_3c.f11 = 0;
-    data_ov066_022647ac->unk_3c.f10 = 0;
-    data_ov066_022647ac->unk_3c.f12 = 0;
-    data_ov066_022647ac->unk_3c.f11 = 0;
+void LocalWl_ResetSettings(u32 a) {
+    sLocalWl->unk_00 = 7;
+    sLocalWl->unk_04 = 1;
+    sLocalWl->unk_08 = 0xfe;
+    sLocalWl->unk_09 = 1;
+    sLocalWl->unk_0a = 0;
+    sLocalWl->unk_0b = 0;
+    sLocalWl->unk_0c = 0;
+    sLocalWl->unk_0d = a;
+    sLocalWl->unk_10 = 0;
+    sLocalWl->unk_15 = 0;
+    sLocalWl->unk_16 = 0;
+    sLocalWl->unk_30 = 0;
+    sLocalWl->unk_34 = 0;
+    sLocalWl->unk_38 = 0;
+    sLocalWl->unk_3c.f11 = 0;
+    sLocalWl->unk_3c.f10 = 0;
+    sLocalWl->unk_3c.f12 = 0;
+    sLocalWl->unk_3c.f11 = 0;
 }
 
-s32 func_ov066_0225fe4c(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32)) {
-    if (data_ov066_022647ac == NULL) {
-        data_ov066_022647a8 = b;
-        data_ov066_022647a4 = c;
-        data_ov066_022647a0 = d;
-        data_ov066_022647ac = (Unk_ov066_0225faf8_S *)func_ov066_0225f2c8(0x40, 4);
-        if (data_ov066_022647ac != NULL) {
+s32 LocalWl_Init(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32)) {
+    if (sLocalWl == NULL) {
+        sLocalWlAllocHook = b;
+        sLocalWlFreeHook = c;
+        sLocalWlErrorHook = d;
+        sLocalWl = (Unk_ov066_0225faf8_S *)LocalWl_Alloc(0x40, 4);
+        if (sLocalWl != NULL) {
             OS_InitTick();
             OS_InitAlarm();
             if (func_0211f7e4() != 0) {
-                func_ov066_0225fef0(a);
+                LocalWl_ResetSettings(a);
                 return 1;
             }
-            func_ov066_0225f22c(0x41);
-            func_ov066_0225f284(data_ov066_022647ac);
+            LocalWl_SetError(0x41);
+            LocalWl_Free(sLocalWl);
         }
     }
     return 0;
 }
 
-s32 func_ov066_0225fdc4(void) {
-    if (data_ov066_022647ac->unk_04 == 1) {
-        data_ov066_022647ac->unk_04 = 0;
-        func_ov066_0225f284(data_ov066_022647ac);
-        data_ov066_022647a8 = NULL;
-        data_ov066_022647a4 = NULL;
-        data_ov066_022647a0 = NULL;
-        data_ov066_022647ac = NULL;
+s32 LocalWl_Finish(void) {
+    if (sLocalWl->unk_04 == 1) {
+        sLocalWl->unk_04 = 0;
+        LocalWl_Free(sLocalWl);
+        sLocalWlAllocHook = NULL;
+        sLocalWlFreeHook = NULL;
+        sLocalWlErrorHook = NULL;
+        sLocalWl = NULL;
         return 1;
     }
-    func_ov066_0225f22c(0x44);
+    LocalWl_SetError(0x44);
     return 0;
 }
 
-s32 func_ov066_0225fd08(void) {
+s32 LocalWl_IsModeReached(void) {
     s32 r = 0;
-    switch (data_ov066_022647ac->unk_00) {
+    switch (sLocalWl->unk_00) {
     case 0:
-        if (data_ov066_022647ac->unk_04 == 2) {
+        if (sLocalWl->unk_04 == 2) {
             r = 1;
         }
         break;
     case 1:
-        if (data_ov066_022647ac->unk_04 == 3) {
+        if (sLocalWl->unk_04 == 3) {
             r = 1;
         }
         break;
     case 2:
-        if (data_ov066_022647ac->unk_04 == 4) {
+        if (sLocalWl->unk_04 == 4) {
             r = 1;
         }
         break;
     case 3:
-        if (data_ov066_022647ac->unk_04 == 10) {
+        if (sLocalWl->unk_04 == 10) {
             r = 1;
         }
         break;
     case 4:
-        if (data_ov066_022647ac->unk_04 == 7) {
+        if (sLocalWl->unk_04 == 7) {
             r = 1;
         }
         break;
     case 5:
-        if (data_ov066_022647ac->unk_04 == 11) {
+        if (sLocalWl->unk_04 == 11) {
             r = 1;
         }
         break;
     case 6:
         {
             s32 t = 1;
-            if (data_ov066_022647ac->unk_04 != 10) {
-                if (data_ov066_022647ac->unk_04 != 11) {
+            if (sLocalWl->unk_04 != 10) {
+                if (sLocalWl->unk_04 != 11) {
                     t = r;
                 }
             }
@@ -3300,133 +3300,133 @@ s32 func_ov066_0225fd08(void) {
     return r;
 }
 
-s32 func_ov066_0225fc78(s32 a, u32 b, u32 c) {
-    if (data_ov066_022647ac == NULL) {
+s32 LocalWl_RequestMode(s32 a, u32 b, u32 c) {
+    if (sLocalWl == NULL) {
         return 0;
     }
-    if (a >= 7 || a == data_ov066_022647ac->unk_00) {
+    if (a >= 7 || a == sLocalWl->unk_00) {
         return 0;
     }
-    data_ov066_022647ac->unk_00 = a;
-    data_ov066_022647ac->unk_30 = b;
-    data_ov066_022647ac->unk_34 = c;
-    if (data_ov066_022647ac->unk_3c.f11 == 0) {
-        data_ov066_022647ac->unk_3c.f11 = 1;
-        func_ov066_0225f830();
+    sLocalWl->unk_00 = a;
+    sLocalWl->unk_30 = b;
+    sLocalWl->unk_34 = c;
+    if (sLocalWl->unk_3c.f11 == 0) {
+        sLocalWl->unk_3c.f11 = 1;
+        LocalWl_Step();
     }
     return 1;
 }
 
-void func_ov066_0225fc3c(void) {
-    s32 v = data_ov066_022647ac->unk_00;
+void LocalWl_StepReady(void) {
+    s32 v = sLocalWl->unk_00;
     if (v <= 0) {
         return;
     }
-    func_ov066_0225f514(0);
+    LocalWl_CallPowerApi(0);
 }
 
-void func_ov066_0225fbe4(void) {
-    s32 v = data_ov066_022647ac->unk_00;
+void LocalWl_StepEnabled(void) {
+    s32 v = sLocalWl->unk_00;
     if (v < 1) {
-        func_ov066_0225f514(1);
+        LocalWl_CallPowerApi(1);
         return;
     }
     if (v <= 1) {
         return;
     }
-    func_ov066_0225f514(2);
+    LocalWl_CallPowerApi(2);
 }
 
-void func_ov066_0225fb48(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepIdle(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
-        func_ov066_0225f514(3);
+        LocalWl_CallPowerApi(3);
         break;
     case 2:
         break;
     case 3:
-        func_ov066_02260d30(0xbd8a);
+        LocalWl_StartParent(0xbd8a);
         break;
     case 4:
-        func_ov066_02260c8c();
+        LocalWl_StartScanMode();
         break;
     case 5:
-        func_ov066_022620e8();
+        LocalWl_ConnectToSelected();
         break;
     case 6:
-        func_ov066_02260a58();
+        LocalWl_StepAuto();
         break;
     }
 }
 
-void func_ov066_0225faf8(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepParentWaiting(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
     case 2:
     case 4:
     case 5:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 3:
         break;
     }
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b0
-#undef data_ov066_022647b4
+#undef sLocalWl
+#undef sLocalWlScan
+#undef sLocalWlSession
 #undef DC_InvalidateRange
 #undef OS_SetAlarm
-#undef func_ov066_0225f2c8
-#undef func_ov066_02262dc4
-#undef func_ov066_02262dd8
-#undef func_ov066_02262df4
-#undef func_ov066_02262e54
+#undef LocalWl_Alloc
+#undef LocalWlBcn_CancelAlarms
+#undef LocalWlBcn_Get
+#undef LocalWlBcn_Count
+#undef LocalWlBcn_Add
 
 // ---- unk_ov066_0225f1a0
-#define data_ov066_022647ac (*(Unk_ov066_0225f1a0_S * *)&data_ov066_022647ac)
-#define data_ov066_022647a8 (*(s32 (**)(s32, s32))&data_ov066_022647a8)
+#define sLocalWl (*(Unk_ov066_0225f1a0_S * *)&sLocalWl)
+#define sLocalWlAllocHook (*(s32 (**)(s32, s32))&sLocalWlAllocHook)
 
-void func_ov066_0225fa98(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepScanning(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 5:
-        func_ov066_022605a0();
+        LocalWl_StopScanLoop();
         break;
     case 4:
         break;
     }
 }
 
-void func_ov066_0225fa48(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepConnecting(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 5:
         break;
     }
 }
 
-void func_ov066_0225f9f8(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepMeasuring(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
     case 2:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 3:
     case 4:
@@ -3436,109 +3436,109 @@ void func_ov066_0225f9f8(void) {
     }
 }
 
-void func_ov066_0225f998(void) {
-    switch (data_ov066_022647ac->unk_00) {
-    case 0:
-    case 1:
-    case 2:
-    case 4:
-    case 6:
-        func_ov066_0225f824();
-        break;
-    case 5:
-        func_ov066_022616c8();
-        break;
-    case 3:
-        break;
-    }
-}
-
-void func_ov066_0225f938(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepParentMp(void) {
+    switch (sLocalWl->unk_00) {
     case 0:
     case 1:
     case 2:
     case 4:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
+        break;
+    case 5:
+        LocalWl_RequestEnd();
         break;
     case 3:
-        func_ov066_022616c8();
+        break;
+    }
+}
+
+void LocalWl_StepChildMp(void) {
+    switch (sLocalWl->unk_00) {
+    case 0:
+    case 1:
+    case 2:
+    case 4:
+    case 6:
+        LocalWl_Abort();
+        break;
+    case 3:
+        LocalWl_RequestEnd();
         break;
     case 5:
         break;
     }
 }
 
-void func_ov066_0225f830(void) {
-    switch (data_ov066_022647ac->unk_04) {
+void LocalWl_Step(void) {
+    switch (sLocalWl->unk_04) {
     case 2:
-        func_ov066_0225fc3c();
+        LocalWl_StepReady();
         break;
     case 3:
-        func_ov066_0225fbe4();
+        LocalWl_StepEnabled();
         break;
     case 4:
-        func_ov066_0225fb48();
+        LocalWl_StepIdle();
         break;
     case 6:
-        func_ov066_0225faf8();
+        LocalWl_StepParentWaiting();
         break;
     case 7:
-        func_ov066_0225fa98();
+        LocalWl_StepScanning();
         break;
     case 8:
-        func_ov066_0225fa48();
+        LocalWl_StepConnecting();
         break;
     case 5:
-        func_ov066_0225f9f8();
+        LocalWl_StepMeasuring();
         break;
     case 10:
-        func_ov066_0225f998();
+        LocalWl_StepParentMp();
         break;
     case 11:
-        func_ov066_0225f938();
+        LocalWl_StepChildMp();
         break;
     case 0:
     case 1:
-        func_ov066_0225f22c(0x44);
+        LocalWl_SetError(0x44);
         break;
     default:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     }
 }
 
-void func_ov066_0225f824(void) {
-    func_ov066_0225f77c();
+void LocalWl_Abort(void) {
+    LocalWl_ResetIfActive();
 }
 
-s32 func_ov066_0225f7c8(void) {
+s32 LocalWl_IsAborting(void) {
     BOOL r = FALSE;
-    if (((Unk_ov066_0225f7c8_Bits *)&data_ov066_022647ac->unk_3c)->f != 0) {
+    if (((Unk_ov066_0225f7c8_Bits *)&sLocalWl->unk_3c)->f != 0) {
         r = TRUE;
-    } else if (data_ov066_022647ac->unk_16 == 1) {
-        func_ov066_0225f77c();
+    } else if (sLocalWl->unk_16 == 1) {
+        LocalWl_ResetIfActive();
         r = TRUE;
     }
     return r;
 }
 
-void func_ov066_0225f77c(void) {
-    switch (data_ov066_022647ac->unk_04) {
+void LocalWl_ResetIfActive(void) {
+    switch (sLocalWl->unk_04) {
     case 0:
     case 1:
     case 2:
     case 3:
         break;
     default:
-        func_ov066_0225f3c8((void *)func_ov066_0225f32c);
+        LocalWl_Reset((void *)LocalWl_OnReset);
         break;
     }
 }
 
-s32 func_ov066_0225f6a8(void) {
-    switch (data_ov066_022647ac->unk_04) {
+s32 LocalWl_GetLinkLevel(void) {
+    switch (sLocalWl->unk_04) {
     case 0:
     case 1:
     case 2:
@@ -3568,195 +3568,195 @@ s32 func_ov066_0225f6a8(void) {
     return 5;
 }
 
-s32 func_ov066_0225f688(Unk_ov066_0225f64c_Rec *r) {
+s32 LocalWl_GetBeaconGameInfoSize(Unk_ov066_0225f64c_Rec *r) {
     if (r != NULL && r->unk_5c != 0) {
         return r->unk_77;
     }
     return 0;
 }
 
-void *func_ov066_0225f64c(Unk_ov066_0225f64c_Rec *r) {
+void *LocalWl_GetBeaconGameInfo(Unk_ov066_0225f64c_Rec *r) {
     if (r != NULL && r->unk_5c != 0) {
-        if (func_ov066_0225f688(r) != 0) {
+        if (LocalWl_GetBeaconGameInfoSize(r) != 0) {
             return (u8 *)((u32)r + 0x70) + 8;
         }
     }
     return NULL;
 }
 
-u32 func_ov066_0225f63c(Unk_ov066_0225f1a0_Msg *m) {
+u32 LocalWl_IsBeaconValid(Unk_ov066_0225f1a0_Msg *m) {
     if (m != NULL) {
         return m->unk_00;
     }
     return 0;
 }
 
-void func_ov066_0225f5b4(void) {
-    if (func_ov066_0225fd08() != 0) {
-        data_ov066_022647ac->unk_3c &= ~0x800;
-        if (data_ov066_022647ac->unk_30 != NULL) {
-            data_ov066_022647ac->unk_30(data_ov066_022647ac->unk_34);
-            if (data_ov066_022647ac != NULL) {
-                data_ov066_022647ac->unk_30 = NULL;
+void LocalWl_Advance(void) {
+    if (LocalWl_IsModeReached() != 0) {
+        sLocalWl->unk_3c &= ~0x800;
+        if (sLocalWl->unk_30 != NULL) {
+            sLocalWl->unk_30(sLocalWl->unk_34);
+            if (sLocalWl != NULL) {
+                sLocalWl->unk_30 = NULL;
             }
         }
-        if (data_ov066_022647ac != NULL) {
-            data_ov066_022647ac->unk_00 = 7;
+        if (sLocalWl != NULL) {
+            sLocalWl->unk_00 = 7;
         }
         return;
     }
-    func_ov066_0225f830();
+    LocalWl_Step();
 }
 
-void func_ov066_0225f554(Unk_ov066_0225f1a0_Msg *m) {
+void LocalWl_OnPowerApiDone(Unk_ov066_0225f1a0_Msg *m) {
     switch (m->unk_00) {
     case 0:
     case 1:
     case 2:
         break;
     case 3:
-        func_ov066_0225f4d4(m);
+        LocalWl_OnEnable(m);
         break;
     case 4:
-        func_ov066_0225f494(m);
+        LocalWl_OnDisable(m);
         break;
     case 5:
-        func_ov066_0225f44c(m);
+        LocalWl_OnPowerOn(m);
         break;
     case 6:
-        func_ov066_0225f40c(m);
+        LocalWl_OnPowerOff(m);
         break;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_0225f514(u32 idx) {
-    s32 r = data_ov066_02264780[idx]((void *)func_ov066_0225f554);
+void LocalWl_CallPowerApi(u32 idx) {
+    s32 r = sLocalWlPowerApis[idx]((void *)LocalWl_OnPowerApiDone);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_0225f4d4(Unk_ov066_0225f1a0_Msg *m) {
+void LocalWl_OnEnable(Unk_ov066_0225f1a0_Msg *m) {
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 3;
+        sLocalWl->unk_04 = 3;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-void func_ov066_0225f494(Unk_ov066_0225f1a0_Msg *m) {
+void LocalWl_OnDisable(Unk_ov066_0225f1a0_Msg *m) {
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 2;
+        sLocalWl->unk_04 = 2;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-void func_ov066_0225f44c(Unk_ov066_0225f1a0_Msg *m) {
+void LocalWl_OnPowerOn(Unk_ov066_0225f1a0_Msg *m) {
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_022623d4();
+        sLocalWl->unk_04 = 4;
+        LocalWl_StartSession();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-void func_ov066_0225f40c(Unk_ov066_0225f1a0_Msg *m) {
+void LocalWl_OnPowerOff(Unk_ov066_0225f1a0_Msg *m) {
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 3;
+        sLocalWl->unk_04 = 3;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->unk_02);
 }
 
-void func_ov066_0225f3c8(void *p) {
+void LocalWl_Reset(void *p) {
     s32 r = WM_Reset();
-    data_ov066_022647ac->unk_3c |= 0x400;
+    sLocalWl->unk_3c |= 0x400;
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_0225f32c(Unk_ov066_0225f1a0_Msg *m) {
-    data_ov066_022647ac->unk_16 = 0;
-    func_ov066_0225f310();
+void LocalWl_OnReset(Unk_ov066_0225f1a0_Msg *m) {
+    sLocalWl->unk_16 = 0;
+    LocalWl_ClearResetFlag();
     if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_15 = 0;
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0225f5b4();
+        sLocalWl->unk_15 = 0;
+        sLocalWl->unk_04 = 4;
+        LocalWl_Advance();
         return;
     }
-    data_ov066_022647ac->unk_15++;
-    if (data_ov066_022647ac->unk_15 > 0x10) {
-        func_ov066_0225f22c(m->unk_02);
+    sLocalWl->unk_15++;
+    if (sLocalWl->unk_15 > 0x10) {
+        LocalWl_SetError(m->unk_02);
         return;
     }
-    func_ov066_0225f3c8((void *)func_ov066_0225f32c);
+    LocalWl_Reset((void *)LocalWl_OnReset);
 }
 
-void func_ov066_0225f310(void) {
-    data_ov066_022647ac->unk_3c &= ~0x400;
+void LocalWl_ClearResetFlag(void) {
+    sLocalWl->unk_3c &= ~0x400;
 }
 
-s32 func_ov066_0225f2c8(s32 a, s32 b) {
-    if (data_ov066_022647a8 != NULL) {
-        s32 r = data_ov066_022647a8(a, b);
+s32 LocalWl_Alloc(s32 a, s32 b) {
+    if (sLocalWlAllocHook != NULL) {
+        s32 r = sLocalWlAllocHook(a, b);
         if (r != 0) {
             return r;
         }
     }
-    func_ov066_0225f22c(0x42);
+    LocalWl_SetError(0x42);
     return 0;
 }
 
-void func_ov066_0225f284(void *p) {
-    if (data_ov066_022647a4 == NULL) {
+void LocalWl_Free(void *p) {
+    if (sLocalWlFreeHook == NULL) {
         return;
     }
     if (p == NULL) {
         return;
     }
-    data_ov066_022647a4(p);
+    sLocalWlFreeHook(p);
 }
 
-void func_ov066_0225f22c(u32 v) {
-    data_ov066_022647ac->unk_04 = v | 0x80;
-    data_ov066_022647ac->unk_3c &= ~0x800;
-    if (data_ov066_022647a0 == NULL) {
+void LocalWl_SetError(u32 v) {
+    sLocalWl->unk_04 = v | 0x80;
+    sLocalWl->unk_3c &= ~0x800;
+    if (sLocalWlErrorHook == NULL) {
         return;
     }
-    data_ov066_022647a0(v);
+    sLocalWlErrorHook(v);
 }
 
-void func_ov066_0225f1e4(void *p) {
-    if (data_ov066_022647ac == NULL) {
+void LocalWl_CallEventCallback(void *p) {
+    if (sLocalWl == NULL) {
         return;
     }
-    if (data_ov066_022647ac->unk_38 == NULL) {
+    if (sLocalWl->unk_38 == NULL) {
         return;
     }
-    data_ov066_022647ac->unk_38(p);
+    sLocalWl->unk_38(p);
 }
 
-void func_ov066_0225f1c0(u32 a, u32 b) {
+void LocalWl_PostEvent(u32 a, u32 b) {
     u8 buf[2];
     buf[0] = a;
     buf[1] = b;
-    func_ov066_0225f1e4(buf);
+    LocalWl_CallEventCallback(buf);
 }
 
-s32 func_ov066_0225f1a0(void (*fn)(void *)) {
-    if (data_ov066_022647ac != NULL) {
-        data_ov066_022647ac->unk_38 = fn;
+s32 LocalWl_SetEventCallback(void (*fn)(void *)) {
+    if (sLocalWl != NULL) {
+        sLocalWl->unk_38 = fn;
         return TRUE;
     }
     return FALSE;
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647a8
+#undef sLocalWl
+#undef sLocalWlAllocHook
 
 }
 #pragma thumb reset

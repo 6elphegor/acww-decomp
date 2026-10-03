@@ -159,7 +159,7 @@ s32 func_02098878(s32 p);
 }
 
 extern "C" {
-s32 func_02096acc(void *p, s32 a, s32 b);
+s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
@@ -219,7 +219,7 @@ s32 func_0203f0fc(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
-s32 func_020a032c(void);
+s32 GameStart_IsActive(void);
 }
 
 extern "C" {

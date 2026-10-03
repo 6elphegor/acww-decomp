@@ -1,22 +1,22 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 
-// shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
+// shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
 //   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN18Unk_ov004_0224d4e88vfunc_20Ej)
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
 // Notes for derived classes:
-//  * M's constructor is the base-object ctor _ZN18Unk_ov004_0224d4e8C2Ev (0x02225244, the only ctor in the original);
+//  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
-//  * The helper members unk_1a4 (Unk_ov004_02224ee4: real C1/D1 methods), unk_248 (Unk_ov004_02224d60) and unk_250
-//    (Unk_ov004_02224cf4) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
+//  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
+//    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
+//    (RoomObj_DestructSe / RoomObjTex_Destruct), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
@@ -153,33 +153,33 @@ public:
 };
 
 extern "C" {
-s32 func_ov004_02224d8c(void *self, u32 i);
-void func_ov004_02224d9c(void *self);
-void func_ov004_02224dbc(void *self, const char *s);
-void *func_ov004_02224d68(void *self);
-void func_ov004_02224d60(void *self);
-void func_ov004_02224d5c(void *self);
-void func_ov004_02224d08(void *self);
-void func_ov004_02224d10(void *self, const char *s);
-u32 func_ov004_02224d04(void *self);
-void func_ov004_02224cf4(void *self);
-void func_ov004_02224ce4(void *self);
-void func_ov004_02224ca4(void *self, s32 v);
-void func_ov004_02224cb8(void *self);
-void func_ov004_02224cc0(void *self, void *v);
-void func_ov004_02224cdc(void *self);
+s32 RoomObjRes_GetBca(void *self, u32 i);
+void RoomObjRes_Free(void *self);
+void RoomObjRes_Load(void *self, const char *s);
+void *RoomObjRes_GetModel(void *self);
+void RoomObjTex_Construct(void *self);
+void RoomObjTex_Destruct(void *self);
+void RoomObjTex_Reset(void *self);
+void RoomObjTex_Load(void *self, const char *s);
+u32 RoomObjTex_Get(void *self);
+void RoomObj_ConstructSe(void *self);
+void RoomObj_DestructSe(void *self);
+void RoomObj_PlaySe(void *self, s32 v);
+void RoomObj_DeactivateSe(void *self);
+void RoomObj_SetSePos(void *self, void *v);
+void RoomObj_ActivateSe(void *self);
 }
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class Unk_ov004_02224ee4 {
+class RoomObjRes {
 public:
-    Unk_ov004_02224ee4();
-    ~Unk_ov004_02224ee4();
-    void func_ov004_02224ee4();
-    inline s32 func_ov004_02224d8c(u32 i) { return ::func_ov004_02224d8c(this, i); }
-    inline void func_ov004_02224d9c() { ::func_ov004_02224d9c(this); }
-    inline void func_ov004_02224dbc(const char *s) { ::func_ov004_02224dbc(this, s); }
-    inline void *func_ov004_02224d68() { return ::func_ov004_02224d68(this); }
+    RoomObjRes();
+    ~RoomObjRes();
+    void clear();
+    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
+    inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
+    inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
+    inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
     u32 unk_00;
     u32 unk_04;
@@ -188,32 +188,32 @@ public:
     u32 unk_70[13];
 };
 
-class Unk_ov004_02224d60 {
+class RoomObjTex {
 public:
-    inline Unk_ov004_02224d60() { func_ov004_02224d60(this); }
-    inline void func_ov004_02224d08() { ::func_ov004_02224d08(this); }
-    inline void func_ov004_02224d10(const char *s) { ::func_ov004_02224d10(this, s); }
-    inline u32 func_ov004_02224d04() { return ::func_ov004_02224d04(this); }
+    inline RoomObjTex() { RoomObjTex_Construct(this); }
+    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
+    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
+    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
     u32 unk_00;
     u8 unk_04;
 };
 
-class Unk_ov004_02224cf4 {
+class RoomObjSe {
 public:
-    inline Unk_ov004_02224cf4() { func_ov004_02224cf4(this); }
-    inline void func_ov004_02224ca4(s32 v) { ::func_ov004_02224ca4(this, v); }
-    inline void func_ov004_02224cb8() { ::func_ov004_02224cb8(this); }
-    inline void func_ov004_02224cc0(Unk_ov004_02224ee4_Vec *v) { ::func_ov004_02224cc0(this, v); }
-    inline void func_ov004_02224cdc() { ::func_ov004_02224cdc(this); }
+    inline RoomObjSe() { RoomObj_ConstructSe(this); }
+    inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
+    inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
+    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
+    inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Character {
+class RoomObjActor : public Character {
 public:
-    Unk_ov004_0224d4e8();
-    virtual ~Unk_ov004_0224d4e8();
+    RoomObjActor();
+    virtual ~RoomObjActor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -221,17 +221,17 @@ public:
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
 
-    void func_ov004_02224f58(u32 v);
-    s32 func_ov004_02224f20();
-    s32 func_ov004_02224f3c();
-    void func_ov004_02224f60();
-    void func_ov004_02224f90(char *name);
-    void func_ov004_02224fc8(char *a, char *b);
+    void setSyncSlot(u32 v);
+    s32 storeSyncState();
+    s32 getSyncState();
+    void releaseResources();
+    void loadResourcesByName(char *name);
+    void loadResources(char *a, char *b);
 
     /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60 unk_248;
-    /* 0x250 */ Unk_ov004_02224cf4 unk_250;
+    /* 0x1a4 */ RoomObjRes unk_1a4;
+    /* 0x248 */ RoomObjTex unk_248;
+    /* 0x250 */ RoomObjSe unk_250;
 };
 
 
@@ -330,10 +330,10 @@ struct Unk_ov004_Rgba {
     }
 };
 
-class Unk_ov004_0224dd98 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
+class RecycleBox : public RoomObjActor, public TalkMsgRequest {
 public:
-    Unk_ov004_0224dd98();
-    virtual ~Unk_ov004_0224dd98();
+    RecycleBox();
+    virtual ~RecycleBox();
     virtual BOOL vfunc_00();
     virtual BOOL func_ov004_02228478();
     virtual BOOL onExecute();
@@ -345,40 +345,40 @@ public:
     virtual void func_ov004_02227eac();
     virtual void func_ov004_02227ea8(u32 a, u8 b);
 
-    void func_ov004_02227e3c();
-    void func_ov004_02227e4c();
-    void func_ov004_02227ec4();
-    void func_ov004_02227ee0();
-    void func_ov004_02227eec();
-    BOOL func_ov004_02227f14();
-    void func_ov004_02227f30();
-    void func_ov004_02227f4c();
-    void func_ov004_02227f58();
-    BOOL func_ov004_02227f90();
-    void func_ov004_02227f94();
-    BOOL func_ov004_02227fb8();
-    void func_ov004_02228000();
-    BOOL func_ov004_02228004();
-    void func_ov004_02228008();
-    BOOL func_ov004_022280b0(s32 m);
-    void func_ov004_02228168();
-    BOOL func_ov004_02228198();
-    void func_ov004_022281e0();
-    BOOL func_ov004_022281e4();
-    void func_ov004_0222821c();
-    BOOL func_ov004_0222824c();
-    void func_ov004_02228294();
-    BOOL func_ov004_02228298();
-    void func_ov004_022282d0();
+    void removeCollision();
+    void initCollision();
+    void execAct05();
+    void enterAct05();
+    void execAct04();
+    BOOL enterAct04();
+    void execAct03();
+    void enterAct03();
+    void execAct02();
+    BOOL enterAct02();
+    void execAct01();
+    BOOL enterAct01();
+    void execAct00();
+    BOOL enterAct00();
+    void execAct();
+    BOOL changeAct(s32 m);
+    void updateState03();
+    BOOL enterState03();
+    void updateState02();
+    BOOL enterState02();
+    void updateState01();
+    BOOL enterState01();
+    void updateState00();
+    BOOL enterState00();
+    void updateState();
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor/dtor by hand: the original destroys it with D2)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
     /* 0x618 */ s32 unk_618;
 };
 
-typedef void (Unk_ov004_0224dd98::*Unk_ov004_02228008_Fn)();
-typedef void (Unk_ov004_0224dd98::*Unk_ov004_02228168_Fn)();
-typedef BOOL (Unk_ov004_0224dd98::*Unk_ov004_022280b0_Fn)();
+typedef void (RecycleBox::*Unk_ov004_02228008_Fn)();
+typedef void (RecycleBox::*Unk_ov004_02228168_Fn)();
+typedef BOOL (RecycleBox::*Unk_ov004_022280b0_Fn)();
 #define F(T, off) (*(T *)((u8 *)this + off))
 
 extern "C" {
@@ -390,8 +390,8 @@ s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
 Unk_020b6960 *func_020b50b4(void);
 s32 TalkRequest_EndTalkWith(void *);
 s32 func_0209c41c(void *, u32);
-s32 func_0206ec6c(void);
-s32 func_0206eca4(u32);
+s32 MenuCtrl_IsFinished(void);
+s32 MenuCtrl_OpenLauncher(u32);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
@@ -400,17 +400,17 @@ s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel10attachAnimEv(void *);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-s32 func_ov004_02224d8c(void *, u32);
-void func_ov004_02224ca4(void *, s32);
+s32 RoomObjRes_GetBca(void *, u32);
+void RoomObj_PlaySe(void *, s32);
 void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
-s32 _ZN18Unk_ov004_0224d4e819func_ov004_02224f20Ev(void *self, s32 a);
-Unk_ov004_0224dd98 *func_ov004_02228658();
-Unk_ov004_0224dd98 *func_ov004_0222864c();
+s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, s32 a);
+RecycleBox *RecycleBox_Create();
+RecycleBox *RecycleBox_GetInstance();
 }// declarations (definition order below sets the data layout)
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250e70; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250e64; }
@@ -418,10 +418,10 @@ extern "C" { extern Unk_ov004_Rgba data_ov004_02250e60; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250e6c; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250e5c; }
 extern "C" { extern Unk_ov004_Rgba data_ov004_02250e4c; }
-extern "C" { extern Unk_ov004_Scene_Entry data_ov004_0224dd78; }
-extern "C" { extern char data_ov004_0224dd68[0x10]; }
-extern "C" { extern char *data_ov004_0224dcc4; }
-extern "C" { extern Unk_ov004_0224dd98 *data_ov004_02250e50; }
+extern "C" { extern Unk_ov004_Scene_Entry sRecycleBoxProfile; }
+extern "C" { extern char sRecycleBoxMsgFile[0x10]; }
+extern "C" { extern char *sRecycleBoxMsgFilePtr; }
+extern "C" { extern RecycleBox *sRecycleBox; }
 
 extern "C" Unk_ov004_Rgba data_ov004_02250e70(31, 20, 20, 31);
 
@@ -435,70 +435,70 @@ extern "C" Unk_ov004_Rgba data_ov004_02250e5c(20, 31, 31, 31);
 
 extern "C" Unk_ov004_Rgba data_ov004_02250e4c(20, 24, 24, 31);
 
-extern "C" Unk_ov004_Scene_Entry data_ov004_0224dd78 = {(void *(*)())func_ov004_02228658, 0x12, 0x16, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sRecycleBoxProfile = {(void *(*)())RecycleBox_Create, 0x12, 0x16, {0, 0xc8000, 0x12c000, 0x258000}};
 
 // ---------------------------------------------------------------- data
-extern "C" char data_ov004_0224dd68[0x10] = "sp_npc_trash";
+extern "C" char sRecycleBoxMsgFile[0x10] = "sp_npc_trash";
 
-extern "C" char *data_ov004_0224dcc4 = data_ov004_0224dd68;
+extern "C" char *sRecycleBoxMsgFilePtr = sRecycleBoxMsgFile;
 
-extern "C" Unk_ov004_0224dd98 *data_ov004_02250e50 = 0;
+extern "C" RecycleBox *sRecycleBox = 0;
 
 // @0x2228658
-extern "C" Unk_ov004_0224dd98 *func_ov004_02228658() {
-    return new Unk_ov004_0224dd98;
+extern "C" RecycleBox *RecycleBox_Create() {
+    return new RecycleBox;
 }
 
-extern "C" Unk_ov004_0224dd98 *func_ov004_0222864c() {
-    return data_ov004_02250e50;
+extern "C" RecycleBox *RecycleBox_GetInstance() {
+    return sRecycleBox;
 }
 
-Unk_ov004_0224dd98::Unk_ov004_0224dd98() {
+RecycleBox::RecycleBox() {
     _ZN12Unk_020d8cf4C1Ev(unk_2d4);
     _ZN12Unk_020b6e10C2Ev(unk_370);
 }
 
-Unk_ov004_0224dd98::~Unk_ov004_0224dd98() {
+RecycleBox::~RecycleBox() {
     _ZN12Unk_020b6e10D2Ev(unk_370);
     _ZN12Unk_020d8cf4D2Ev(unk_2d4);
 }
 
-BOOL Unk_ov004_0224dd98::vfunc_00() {
-    data_ov004_02250e50 = this;
-    func_ov004_02224f58(0);
-    func_ov004_02224f90("obj_r_box");
-    func_ov004_02227e4c();
-    if (func_ov004_02224d8c(&unk_1a4, 0)) {
+BOOL RecycleBox::vfunc_00() {
+    sRecycleBox = this;
+    setSyncSlot(0);
+    loadResourcesByName("obj_r_box");
+    initCollision();
+    if (RoomObjRes_GetBca(&unk_1a4, 0)) {
         if (_ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap)) {
-            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
+            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
             _ZN9AnimModel10attachAnimEv(&unk_ec);
         }
     }
-    func_ov004_022280b0(0);
-    vfunc_60(func_ov004_02224f3c());
+    changeAct(0);
+    vfunc_60(getSyncState());
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dd98::onExecute() {
-    func_ov004_022282d0();
-    func_ov004_02228008();
+BOOL RecycleBox::onExecute() {
+    updateState();
+    execAct();
     func_020b50b4()->func_020b6928((Unk_020b6e10 *)unk_370);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dd98::onDraw() {
+BOOL RecycleBox::onDraw() {
     _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_02228478() {
-    func_ov004_02227e3c();
-    func_ov004_02224f60();
-    data_ov004_02250e50 = 0;
+BOOL RecycleBox::func_ov004_02228478() {
+    removeCollision();
+    releaseResources();
+    sRecycleBox = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224dd98::vfunc_48(void *a) {
+BOOL RecycleBox::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
         if (func_020e9650(o->unk_5c, unk_5c) < 0x299a) {
@@ -510,27 +510,27 @@ BOOL Unk_ov004_0224dd98::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov004_0224dd98::vfunc_4c(u32 a, u8 b) {
+void RecycleBox::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
-        func_ov004_022280b0(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov004_022280b0(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224dd98::vfunc_60(u32 idx) {
+BOOL RecycleBox::vfunc_60(u32 idx) {
     static Unk_ov004_022280b0_Fn tbl[4] = {
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02228298,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_0222824c,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_022281e4,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02228198,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterState00,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterState01,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterState02,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterState03,
     };
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
-            if (_ZN18Unk_ov004_0224d4e819func_ov004_02224f20Ev(this, idx)) {
+            if (_ZN12RoomObjActor14storeSyncStateEv(this, idx)) {
                 unk_248.unk_04 = idx;
                 return TRUE;
             }
@@ -539,12 +539,12 @@ BOOL Unk_ov004_0224dd98::vfunc_60(u32 idx) {
     return FALSE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_022282d0() {
+void RecycleBox::updateState() {
     static Unk_ov004_02228168_Fn tbl[4] = {
-        &Unk_ov004_0224dd98::func_ov004_02228294,
-        &Unk_ov004_0224dd98::func_ov004_0222821c,
-        &Unk_ov004_0224dd98::func_ov004_022281e0,
-        &Unk_ov004_0224dd98::func_ov004_02228168,
+        &RecycleBox::updateState00,
+        &RecycleBox::updateState01,
+        &RecycleBox::updateState02,
+        &RecycleBox::updateState03,
     };
     u32 i = unk_248.unk_04;
     if (i < 4) {
@@ -552,20 +552,20 @@ void Unk_ov004_0224dd98::func_ov004_022282d0() {
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_02228298() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
+BOOL RecycleBox::enterState00() {
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02228294() {}
+void RecycleBox::updateState00() {}
 
-BOOL Unk_ov004_0224dd98::func_ov004_0222824c() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
-    func_ov004_02224ca4(&unk_250, 0x4d6);
+BOOL RecycleBox::enterState01() {
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&unk_250, 0x4d6);
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_0222821c() {
+void RecycleBox::updateState01() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         vfunc_60(2);
     } else {
@@ -573,20 +573,20 @@ void Unk_ov004_0224dd98::func_ov004_0222821c() {
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_022281e4() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
+BOOL RecycleBox::enterState02() {
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 1), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_022281e0() {}
+void RecycleBox::updateState02() {}
 
-BOOL Unk_ov004_0224dd98::func_ov004_02228198() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
-    func_ov004_02224ca4(&unk_250, 0x4d7);
+BOOL RecycleBox::enterState03() {
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 1), 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&unk_250, 0x4d7);
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02228168() {
+void RecycleBox::updateState03() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         vfunc_60(0);
     } else {
@@ -594,14 +594,14 @@ void Unk_ov004_0224dd98::func_ov004_02228168() {
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_022280b0(s32 m) {
+BOOL RecycleBox::changeAct(s32 m) {
     static Unk_ov004_022280b0_Fn tbl[6] = {
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02228004,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02227fb8,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02227f90,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02227f4c,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02227f14,
-        (Unk_ov004_022280b0_Fn)&Unk_ov004_0224dd98::func_ov004_02227ee0,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct00,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct01,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct02,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct03,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct04,
+        (Unk_ov004_022280b0_Fn)&RecycleBox::enterAct05,
     };
     if (m < 6) {
         if ((this->*tbl[m])()) {
@@ -612,104 +612,104 @@ BOOL Unk_ov004_0224dd98::func_ov004_022280b0(s32 m) {
     return FALSE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02228008() {
+void RecycleBox::execAct() {
     static Unk_ov004_02228008_Fn tbl[6] = {
-        &Unk_ov004_0224dd98::func_ov004_02228000,
-        &Unk_ov004_0224dd98::func_ov004_02227f94,
-        &Unk_ov004_0224dd98::func_ov004_02227f58,
-        &Unk_ov004_0224dd98::func_ov004_02227f30,
-        &Unk_ov004_0224dd98::func_ov004_02227eec,
-        &Unk_ov004_0224dd98::func_ov004_02227ec4,
+        &RecycleBox::execAct00,
+        &RecycleBox::execAct01,
+        &RecycleBox::execAct02,
+        &RecycleBox::execAct03,
+        &RecycleBox::execAct04,
+        &RecycleBox::execAct05,
     };
     if (unk_618 < 6) {
         (this->*tbl[unk_618])();
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_02228004() {
+BOOL RecycleBox::enterAct00() {
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02228000() {}
+void RecycleBox::execAct00() {}
 
-BOOL Unk_ov004_0224dd98::func_ov004_02227fb8() {
+BOOL RecycleBox::enterAct01() {
     Unk_ov004_02227fb8_Pad pad;
     _ZN9Character13func_0203e488Ei(this, (TalkMsgRequest *)this);
-    MsgRequest::setFileName(data_ov004_0224dcc4);
+    MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::unk_1e = 0;
     TalkMsgRequest::unk_3c->unk_08 = 1;
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227f94() {
+void RecycleBox::execAct01() {
     if (TalkMsgRequest::unk_3c != 0) {
         if (TalkMsgRequest::unk_3c->unk_04 != 0) {
-            func_ov004_022280b0(2);
+            changeAct(2);
         }
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_02227f90() {
+BOOL RecycleBox::enterAct02() {
     return TRUE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227f58() {
+void RecycleBox::execAct02() {
     if (TalkMsgRequest::unk_3c != 0) {
         if (TalkMsgRequest::unk_3c->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, (TalkMsgRequest *)this);
-            func_ov004_022280b0(3);
+            changeAct(3);
         }
     }
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227f4c() {
+void RecycleBox::enterAct03() {
     func_0209c41c(this, 1);
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227f30() {
+void RecycleBox::execAct03() {
     if (unk_248.unk_04 == 2) {
-        func_ov004_022280b0(4);
+        changeAct(4);
     }
 }
 
-BOOL Unk_ov004_0224dd98::func_ov004_02227f14() {
-    if (func_0206eca4(0x20) != 0) {
+BOOL RecycleBox::enterAct04() {
+    if (MenuCtrl_OpenLauncher(0x20) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227eec() {
+void RecycleBox::execAct04() {
     if (gGfxMainOnTop == 0) {
-        if (func_0206ec6c() != 0) {
-            func_ov004_022280b0(5);
+        if (MenuCtrl_IsFinished() != 0) {
+            changeAct(5);
         }
     }
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227ee0() {
+void RecycleBox::enterAct05() {
     func_0209c41c(this, 3);
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227ec4() {
+void RecycleBox::execAct05() {
     if (unk_248.unk_04 == 0) {
         TalkRequest_EndTalkWith(this);
     }
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227ec0() {}
+void RecycleBox::func_ov004_02227ec0() {}
 
-void Unk_ov004_0224dd98::func_ov004_02227eac() {
+void RecycleBox::func_ov004_02227eac() {
     ((u32 *)data_021c1b3c)[0x248 / 4] = 0x1a;
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227ea8(u32 a, u8 b) {}
+void RecycleBox::func_ov004_02227ea8(u32 a, u8 b) {}
 
-void Unk_ov004_0224dd98::func_ov004_02227e4c() {
+void RecycleBox::initCollision() {
     func_02031908(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
     func_020b50b4()->func_020b68ec((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
-void Unk_ov004_0224dd98::func_ov004_02227e3c() {
+void RecycleBox::removeCollision() {
     func_020318cc(unk_2d4);
 }

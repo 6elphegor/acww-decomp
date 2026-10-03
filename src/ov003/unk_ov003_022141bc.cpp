@@ -242,8 +242,8 @@ struct Unk_ov003_SceneEntry {
 };
 
 extern "C" {
-BOOL func_0206ec6c();
-BOOL func_0206eca4(u32 a);
+BOOL MenuCtrl_IsFinished();
+BOOL MenuCtrl_OpenLauncher(u32 a);
 BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e780c(s32 a, s32 b);
 }
@@ -359,7 +359,7 @@ BOOL BulletinBoard::enterBoardIdle() {
 void BulletinBoard::execBoardIdle() {}
 
 BOOL BulletinBoard::enterBoardOpen() {
-    if (func_0206eca4(0)) {
+    if (MenuCtrl_OpenLauncher(0)) {
         return TRUE;
     }
     return FALSE;
@@ -374,7 +374,7 @@ BOOL BulletinBoard::enterBoardRead() {
 }
 
 void BulletinBoard::execBoardRead() {
-    if (func_0206ec6c()) {
+    if (MenuCtrl_IsFinished()) {
         TalkRequest_EndTalkWith(this);
     }
 }

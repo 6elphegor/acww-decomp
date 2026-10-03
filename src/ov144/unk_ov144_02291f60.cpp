@@ -80,7 +80,7 @@ void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void Snd_PlaySe(s32 a);
 void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 BOOL BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -106,8 +106,8 @@ void func_020e761c(void *p, s32 v, s32 n);
 s32 func_02098ffc();
 void func_0209909c(u16 *p, s32 a, s32 b);
 void func_02060044(u32 v);
-void func_0206ecf8(s32 v);
-void func_0206e720(u32 v);
+void MenuCtrl_SetResult(s32 v);
+void MenuCtrl_SetSongItem(u32 v);
 s32 MenuCtrl_IsTouch();
 s32 func_02133150(s32 a, s32 b);
 s32 MenuCursorBase_setPoseRelease(void *p);
@@ -129,7 +129,7 @@ s32 MenuScrollKnob_release(void *p);
 s32 MenuScrollKnob_hitTest(void *p);
 void MenuErrorMessage_open(void *p, void *q, s32 a, s32 b);
 void MenuProc_restartKeyRepeat(void *p);
-void func_ov004_02234cd8();
+void FtrMgr_BroadcastStereosAct0();
 void ProcBase_RequestDelete(void *p);
 s32 ProcBase_GetParent();
 void Gfx2d_ShowLayer(u32 x);
@@ -156,8 +156,8 @@ void File_LoadToBuffer(const char *s, void *d, s32 n);
 void Gfx2d_SetSubBgModeState(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
-void func_0206e63c();
-BOOL func_0206e61c();
+void MenuCtrl_TickForceClose();
+BOOL MenuCtrl_IsForceCloseDue();
 void Oam_DrawCell(u32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 BOOL MenuCtrl_IsButtons();
 }
@@ -476,8 +476,8 @@ void C::runMainState() {
 }
 
 BOOL C::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 1:
@@ -809,7 +809,7 @@ void MusicMenu::resumeInput() {
 }
 
 void MusicMenu::startQuit() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     MenuBottomButtonsBody_setSelected(&unk_170, 6);
     setTransitionState(2);
     setMainState(9);
@@ -828,8 +828,8 @@ BOOL MusicMenu::playSelectedSong() {
     paintPlayButton(8);
     setMainState(0xb);
     scrollToSong(unk_ba);
-    func_0206ecf8(1);
-    func_0206e720(unk_664[unk_ba]);
+    MenuCtrl_SetResult(1);
+    MenuCtrl_SetSongItem(unk_664[unk_ba]);
     setTransitionState(2);
     Snd_PlaySe(0x55);
     return TRUE;
@@ -837,7 +837,7 @@ BOOL MusicMenu::playSelectedSong() {
 
 void MusicMenu::stopSong() {
     if (IsZero(data_020e416c) == 0) {
-        func_ov004_02234cd8();
+        FtrMgr_BroadcastStereosAct0();
     }
     scrollToSong(unk_bc);
     unk_bc = -1;
@@ -861,7 +861,7 @@ BOOL MusicMenu::takeOutSong() {
     func_0209909c(&v, 0, t);
     if (unk_ba == unk_bc) {
         if (IsZero(data_020e416c) == 0) {
-            func_ov004_02234cd8();
+            FtrMgr_BroadcastStereosAct0();
         }
         unk_bc = -1;
     }
@@ -1241,13 +1241,13 @@ void MusicMenu::paintListRow(s32 idx, u32 col) {
         s32 d = idx - unk_b6;
         if (d >= 0 && d < 9) {
             s32 y = (idx & 0xf) << 1;
-            func_0206ee80(unk_f02, z, y, 0x1f, y + 1, col);
+            BgScreen_SetRectPalette(unk_f02, z, y, 0x1f, y + 1, col);
         }
     }
 }
 
 void MusicMenu::uploadListScreen() {
-    func_0206ee80(unk_f02, 0, 0, 0x1f, 0x1f, 4);
+    BgScreen_SetRectPalette(unk_f02, 0, 0, 0x1f, 0x1f, 4);
     if (unk_bc == unk_ba) {
         paintListRow(unk_bc, 0xa);
     } else {
@@ -1295,17 +1295,17 @@ void MusicMenu::setPlayButtonTiles(u16 v) {
 
 void MusicMenu::paintPlayButton(u32 a) {
     setFlags(2);
-    func_0206ee80(unk_1702, 2, 4, 5, 7, a);
+    BgScreen_SetRectPalette(unk_1702, 2, 4, 5, 7, a);
 }
 
 void MusicMenu::paintTakeOutButton(u32 a) {
     setFlags(2);
-    func_0206ee80(unk_1702, 2, 0xf, 5, 0x10, a);
+    BgScreen_SetRectPalette(unk_1702, 2, 0xf, 5, 0x10, a);
 }
 
 void MusicMenu::paintAddButton(u32 a) {
     setFlags(2);
-    func_0206ee80(unk_1702, 2, 0xc, 5, 0xd, a);
+    BgScreen_SetRectPalette(unk_1702, 2, 0xc, 5, 0xd, a);
 }
 
 void MusicMenu::refreshButtons() {

@@ -109,68 +109,68 @@ struct Unk_ov065_02279c7c {
 };
 
 extern "C" {
-extern s32 data_ov065_022910d8;
-extern void *data_ov065_022910c4;
-extern u32 data_ov065_0228ca4c;
-extern s32 data_ov065_0228ca50;
+extern s32 sGsHttpStartupCount;
+extern void *sGsHttpProxyHost;
+extern u32 sGsHttpThrottleDelay;
+extern s32 sGsHttpThrottleBytes;
 extern char data_ov065_0228ca58[4];
 
-s32 func_ov065_0227ac34(void *, const char *, const char *);
-s32 func_ov065_0227acfc();
-void func_ov065_02279b08(s32 (*)(Unk_ov065_02279c7c *));
-char *func_ov065_02279100(const char *);
-Unk_ov065_02279c7c *func_ov065_02279c7c();
-BOOL func_ov065_02279b58(Unk_ov065_02279c7c *);
-BOOL func_ov065_0227a8ec(Unk_ov065_02279c7c *);
-void func_ov065_0227913c(s32);
-void func_ov065_0227bb5c(Unk_ov065_02279c7c *);
-void func_ov065_0227b9c4(Unk_ov065_02279c7c *);
-void func_ov065_0227b8e4(Unk_ov065_02279c7c *);
-void func_ov065_0227b72c(Unk_ov065_02279c7c *);
-void func_ov065_0227b6dc(Unk_ov065_02279c7c *);
-void func_ov065_0227b68c(Unk_ov065_02279c7c *);
-void func_ov065_0227b51c(Unk_ov065_02279c7c *);
-void func_ov065_0227ae94(Unk_ov065_02279c7c *);
-void func_ov065_0227ada4(Unk_ov065_02279c7c *);
-void func_ov065_02279a64(Unk_ov065_02279c7c *);
-void func_ov065_0227960c(Unk_ov065_02279c7c *);
-void func_ov065_022799f4();
-void func_ov065_022799f8();
-void func_ov065_022799fc();
-void func_ov065_02279a00();
-void func_ov065_02279a04();
-void func_ov065_02277ac8(void *);
-s32 func_ov065_02278684(void *);
-Unk_ov065_0227a4e8_Slot *func_ov065_0227866c(void *, s32);
-s32 func_ov065_022791c0(Unk_ov065_02279c7c *);
-void func_ov065_0227924c(void *);
-s32 func_ov065_02279654(Unk_ov065_02279c7c *, const void *, s32);
-s32 func_ov065_022796a8(Unk_ov065_02279c7c *, const void *, s32);
-BOOL func_ov065_02279494(Unk_ov065_02279c7c *, void *, void *, s32);
-BOOL func_ov065_022794d0(Unk_ov065_02279c7c *, void *, s32, s32);
-void func_ov065_02279280(void *, s32);
-BOOL func_ov065_0227931c(void *, const void *, s32);
+s32 GsHttpPost_AddStringPart(void *, const char *, const char *);
+s32 GsHttpPost_New();
+void GsHttp_ForEachConnection(s32 (*)(Unk_ov065_02279c7c *));
+char *GsUtil_StrDup(const char *);
+Unk_ov065_02279c7c *GsHttp_NewConnection();
+BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *);
+BOOL GsHttp_InitPostState(Unk_ov065_02279c7c *);
+void GsUtil_Sleep(s32);
+void GsHttp_StepHostLookup(Unk_ov065_02279c7c *);
+void GsHttp_StepConnect(Unk_ov065_02279c7c *);
+void GsHttp_StepEncryption(Unk_ov065_02279c7c *);
+void GsHttp_StepSendRequest(Unk_ov065_02279c7c *);
+void GsHttp_StepSendPost(Unk_ov065_02279c7c *);
+void GsHttp_StepWaitReply(Unk_ov065_02279c7c *);
+void GsHttp_StepRecvStatus(Unk_ov065_02279c7c *);
+void GsHttp_StepRecvHeaders(Unk_ov065_02279c7c *);
+void GsHttp_StepRecvBody(Unk_ov065_02279c7c *);
+void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *);
+void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *);
+void GsHttp_LeaveCritical();
+void GsHttp_EnterCritical();
+void GsHttp_FreeCritical();
+void GsHttp_InitCritical();
+void GsHttp_FreeAllConnections();
+void GsUtil_Free(void *);
+s32 GsArray_Count(void *);
+Unk_ov065_0227a4e8_Slot *GsArray_At(void *, s32);
+s32 GsHttp_FlushSendBuffer(Unk_ov065_02279c7c *);
+void GsHttpBuf_Reset(void *);
+s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *, const void *, s32);
+s32 GsHttp_SocketSend(Unk_ov065_02279c7c *, const void *, s32);
+BOOL GsHttpBuf_InitUser(Unk_ov065_02279c7c *, void *, void *, s32);
+BOOL GsHttpBuf_Init(Unk_ov065_02279c7c *, void *, s32, s32);
+void GsHttpBuf_AppendChar(void *, s32);
+BOOL GsHttpBuf_Append(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 STD_GetStringLength(const char *);
 s32 func_0212a120(const char *, s32);
 s32 func_02128030(void *, s32, s32, u32);
 
-s32 func_ov065_0227a284(Unk_ov065_02279c7c *);
-void func_ov065_0227a350(Unk_ov065_02279c7c *);
-s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *, s32);
-s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-void func_ov065_0227a244();
+s32 GsHttp_Step(Unk_ov065_02279c7c *);
+void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *);
+s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *, s32);
+s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
+s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
+s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
+void GsHttp_Startup();
 }
 extern "C" {
-s32 func_ov065_0227a284(Unk_ov065_02279c7c *c);
-void func_ov065_0227a350(Unk_ov065_02279c7c *c);
-s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c);
-s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first);
-s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
-s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
-s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
+s32 GsHttp_Step(Unk_ov065_02279c7c *c);
+void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *c);
+s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c);
+s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first);
+s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
+s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
+s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
 }
 }
 
@@ -268,21 +268,21 @@ extern volatile s32 data_ov065_022910e0;
 extern volatile s32 data_ov065_022910dc;
 extern u16 data_0213a510[];
 
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278658(Unk_ov065_022786bc_Vec *, void *);
-Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32, s32, Unk_ov065_02278740_Dtor);
-void *func_ov065_02277af0(s32);
-void func_ov065_02277ac8(void *);
-char *func_ov065_02279100(const char *);
-s32 func_ov065_02279144(void);
-s32 func_ov065_02279714(void *, u8 *, s32 *);
-s32 func_ov065_0227931c(void *, u8 *, s32);
-void func_ov065_0227924c(void *);
-void func_ov065_022795d4(void *, u32, u32);
-s32 func_ov065_02278be8(s32);
-s32 func_ov065_0227b2a8(void *, u8 *, s32);
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
+void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
+void GsArray_Free(Unk_ov065_022786bc_Vec *);
+void GsArray_Append(Unk_ov065_022786bc_Vec *, void *);
+Unk_ov065_022786bc_Vec *GsArray_New(s32, s32, Unk_ov065_02278740_Dtor);
+void *GsUtil_Alloc(s32);
+void GsUtil_Free(void *);
+char *GsUtil_StrDup(const char *);
+s32 GsUtil_GetTimeMs(void);
+s32 GsHttp_SocketRecv(void *, u8 *, s32 *);
+s32 GsHttpBuf_Append(void *, u8 *, s32);
+void GsHttpBuf_Reset(void *);
+void GsHttp_CallProgressCallback(void *, u32, u32);
+s32 GsSock_GetLastError(s32);
+s32 GsHttp_ProcessBodyData(void *, u8 *, s32);
 u32 STD_GetStringLength(const char *);
 void func_02128250(s32);
 s32 func_02128318(s32, s32, s32);
@@ -296,13 +296,13 @@ s32 strncmp(char *, char *, s32);
 s32 func_0212b770(char *);
 s32 OS_SPrintf(char *, char *, ...);
 
-s32 func_ov065_0227aa74(Unk_ov065_0227a884_Obj *self);
-void func_ov065_0227a9ec(Unk_ov065_0227a8ec_Item *it);
-s32 func_ov065_0227aa10(Unk_ov065_0227a8ec_Item *it);
-s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self);
-s32 func_ov065_0227aba8(Unk_ov065_0227a884_Obj *self);
-void func_ov065_0227ace0(Unk_ov065_0227acfc_Task *t);
-void func_ov065_0227ad54(Unk_ov065_0227a884_Rec *r);
+s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self);
+void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it);
+s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it);
+s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self);
+s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self);
+void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t);
+void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r);
 }
 
 
@@ -323,21 +323,21 @@ enum Unk_ov065_0227acfc_Z { Unk_ov065_0227acfc_Z_0 = 0, Unk_ov065_0227acfc_Z_FF 
 #pragma enumsalwaysint reset
 }
 extern "C" {
-void func_ov065_0227a884(Unk_ov065_0227a884_Obj *self);
-s32 func_ov065_0227a8ec(Unk_ov065_0227a884_Obj *self);
-void func_ov065_0227a9ec(Unk_ov065_0227a8ec_Item *it);
-s32 func_ov065_0227aa10(Unk_ov065_0227a8ec_Item *it);
-s32 func_ov065_0227aa74(Unk_ov065_0227a884_Obj *self);
-s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self);
-s32 func_ov065_0227aba8(Unk_ov065_0227a884_Obj *self);
-char *func_ov065_0227ac08(Unk_ov065_0227a884_Obj *self);
-s32 func_ov065_0227ac34(Unk_ov065_0227acfc_Task *self, char *a, char *b);
-void func_ov065_0227ace0(Unk_ov065_0227acfc_Task *t);
-s32 func_ov065_0227acf8(Unk_ov065_0227acfc_Task *t);
-Unk_ov065_0227acfc_Task *func_ov065_0227acfc(void);
-void func_ov065_0227ad54(Unk_ov065_0227a884_Rec *r);
-void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self);
-void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self);
+void GsHttp_FreePostState(Unk_ov065_0227a884_Obj *self);
+s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self);
+void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it);
+s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it);
+s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self);
+s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self);
+s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self);
+char *GsHttp_GetContentType(Unk_ov065_0227a884_Obj *self);
+s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b);
+void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t);
+s32 GsHttpPost_GetAutoFree(Unk_ov065_0227acfc_Task *t);
+Unk_ov065_0227acfc_Task *GsHttpPost_New(void);
+void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r);
+void GsHttp_StepRecvBody(Unk_ov065_0227a884_Obj *self);
+void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self);
 }
 }
 
@@ -423,9 +423,9 @@ struct Unk_ov065_02261408_Hostent {
 };
 
 extern "C" {
-extern s32 data_ov065_0228ca50;
-extern char *data_ov065_022910c4;
-extern u16 data_ov065_022910c0;
+extern s32 sGsHttpThrottleBytes;
+extern char *sGsHttpProxyHost;
+extern u16 sGsHttpProxyPort;
 extern u16 data_0213a510[];
 
 char *func_0212a120(const char *, s32);
@@ -435,33 +435,33 @@ char *func_02129f1c(const char *hay, const char *needle);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
-s32 func_ov065_02278be8(s32);
-s32 func_ov065_02278bf4(char *);
-s32 func_ov065_02278d34(s32 a, void *src, u32 len);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-s32 func_ov065_02278f0c(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 func_ov065_0227905c(s32 sock, s32 val);
-s32 func_ov065_0227908c(s32 sock, s32 flag);
-s32 func_ov065_02279138();
-s32 func_ov065_022791c0(Unk_ov065_0227b2a8_Obj *);
-s32 func_ov065_0227924c(void *);
-s32 func_ov065_02279258(Unk_ov065_0227b2a8_Buf *, s32);
-s32 func_ov065_02279280(Unk_ov065_0227b2a8_Buf *, s32);
-s32 func_ov065_022792a4(Unk_ov065_0227b2a8_Buf *, const char *, const char *);
-s32 func_ov065_0227931c(void *, const char *, s32);
-s32 func_ov065_02279588(Unk_ov065_0227b2a8_Obj *);
-s32 func_ov065_022795d4(Unk_ov065_0227b2a8_Obj *, s32, s32);
-s32 func_ov065_02279714(Unk_ov065_0227b2a8_Obj *, char *, s32 *);
-s32 func_ov065_0227a3f4(Unk_ov065_0227b2a8_Obj *);
-s32 func_ov065_0227a884(Unk_ov065_0227b2a8_Obj *);
-char *func_ov065_0227ac08(Unk_ov065_0227b2a8_Obj *);
-Unk_ov065_02261408_Hostent *func_ov065_02261408(char *);
-s32 func_ov065_0227bbf4(Unk_ov065_0227b2a8_Obj *);
+s32 GsSock_GetLastError(s32);
+s32 GsSock_InetAddr(char *);
+s32 GsSock_Connect(s32 a, void *src, u32 len);
+s32 GsSock_Socket(s32 a, s32 b, s32 c);
+s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
+s32 GsSock_SetRecvBufSize(s32 sock, s32 val);
+s32 GsSock_SetBlocking(s32 sock, s32 flag);
+s32 GsSock_StartupStub();
+s32 GsHttp_FlushSendBuffer(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttpBuf_Reset(void *);
+s32 GsHttpBuf_AppendInt(Unk_ov065_0227b2a8_Buf *, s32);
+s32 GsHttpBuf_AppendChar(Unk_ov065_0227b2a8_Buf *, s32);
+s32 GsHttpBuf_AppendHeader(Unk_ov065_0227b2a8_Buf *, const char *, const char *);
+s32 GsHttpBuf_Append(void *, const char *, s32);
+s32 GsHttp_CallPostCallback(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttp_CallProgressCallback(Unk_ov065_0227b2a8_Obj *, s32, s32);
+s32 GsHttp_SocketRecv(Unk_ov065_0227b2a8_Obj *, char *, s32 *);
+s32 GsHttp_SendPostData(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttp_FreePostState(Unk_ov065_0227b2a8_Obj *);
+char *GsHttp_GetContentType(Unk_ov065_0227b2a8_Obj *);
+Unk_ov065_02261408_Hostent *Sock_GetHostByName(char *);
+s32 GsHttp_ParseUrl(Unk_ov065_0227b2a8_Obj *);
 
-void func_ov065_0227b404(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 func_ov065_0227b450(Unk_ov065_0227b2a8_Obj *self);
-s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 func_ov065_0227b5d4(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
+s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self);
+s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
+s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self);
 }
 
 #define HTONS(x) ((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00))
@@ -481,18 +481,18 @@ static inline s32 Unk_ov065_0227b5d4_Chk(char *s, s32 i) {
     return v;
 }
 extern "C" {
-s32 func_ov065_0227b2a8(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-void func_ov065_0227b404(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 func_ov065_0227b450(Unk_ov065_0227b2a8_Obj *self);
-s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-void func_ov065_0227b51c(Unk_ov065_0227b2a8_Obj *self);
-s32 func_ov065_0227b5d4(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227b68c(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227b6dc(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227b72c(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227b8e4(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self);
-void func_ov065_0227bb5c(Unk_ov065_0227b2a8_Obj *self);
+s32 GsHttp_ProcessBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
+void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
+s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self);
+s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
+void GsHttp_StepRecvStatus(Unk_ov065_0227b2a8_Obj *self);
+s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepWaitReply(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepSendPost(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepSendRequest(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepConnect(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self);
 }
 }
 
@@ -574,22 +574,22 @@ s32 strspn(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
 void *func_0212899c(void *, s32, s32);
-char *func_ov065_02279100(const char *);
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283728(char *, const char *, s32);
-s32 func_ov065_0227ced4(void *, s32, s32, s32);
-s32 func_ov065_0227cd34(void *, s32);
-s32 func_ov065_0227ce44(void *, s32);
-s32 func_ov065_0227f54c(void *, s32, s32);
-s32 func_ov065_0227f3c4(void *, s32, s32, s32, s32, s32);
-s32 func_ov065_02282f90(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 func_ov065_0227de10(void *, char *, const char *);
-s32 func_ov065_0227dde8(void *, char *, s32);
-s32 func_ov065_022818bc(void *, s32, void *);
-s32 func_ov065_02281790(void *, s32);
-s32 func_ov065_0228176c(void *);
-s32 func_ov065_02281880(void *, void *);
-void func_ov065_02277ac8(void *);
+char *GsUtil_StrDup(const char *);
+void GsGp_SetErrorString(void *, const char *);
+void GsUtil_StrCopyN(char *, const char *, s32);
+s32 GsGp_SendBuddyMessageEx(void *, s32, s32, s32);
+s32 GsGp_SendDeleteBuddy(void *, s32);
+s32 GsGp_AuthorizeBuddy(void *, s32);
+s32 GsGp_SetInfoString(void *, s32, s32);
+s32 GsGp_RequestProfileInfo(void *, s32, s32, s32, s32, s32);
+s32 GsGpSearch_ProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 GsGpBuf_AppendString(void *, char *, const char *);
+s32 GsGpBuf_AppendInt(void *, char *, s32);
+s32 GsGpProfile_Find(void *, s32, void *);
+s32 GsGpProfile_FindByBuddyIndex(void *, s32);
+s32 GsGpProfile_IsUnused(void *);
+s32 GsGpProfile_Remove(void *, void *);
+void GsUtil_Free(void *);
 
 }
 
@@ -599,13 +599,13 @@ struct Unk_ov065_0227c4b0_Args {
 };
 }
 extern "C" {
-BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u);
+BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u);
 }
 }
 
 namespace Nh {
 extern "C" {
-BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
+BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u) {
     char *p;
     char *e;
     BOOL https;
@@ -632,7 +632,7 @@ BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
     e = p + n;
     saved = p[n];
     p[n] = 0;
-    u->unk_18 = func_ov065_02279100(p);
+    u->unk_18 = GsUtil_StrDup(p);
     if (u->unk_18 == NULL) {
         return FALSE;
     }
@@ -655,7 +655,7 @@ BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
     if (*p == 0) {
         p = "/";
     }
-    u->unk_24 = func_ov065_02279100(p);
+    u->unk_24 = GsUtil_StrDup(p);
     p = u->unk_24;
     q = func_0212a120(p, 0x20);
     while (q != NULL) {
@@ -673,25 +673,25 @@ BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227bb5c(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self) {
     char *h;
-    func_ov065_022795d4(self, 0, 0);
-    func_ov065_02279138();
-    if (func_ov065_0227bbf4(self) == 0) {
+    GsHttp_CallProgressCallback(self, 0, 0);
+    GsSock_StartupStub();
+    if (GsHttp_ParseUrl(self) == 0) {
         self->unk_fc = 1;
         self->unk_38 = 3;
         return;
     }
     h = self->unk_15c;
     if (h == 0) {
-        h = data_ov065_022910c4;
+        h = sGsHttpProxyHost;
         if (h == 0) {
             h = self->unk_18;
         }
     }
-    self->unk_1c = func_ov065_02278bf4(h);
+    self->unk_1c = GsSock_InetAddr(h);
     if (self->unk_1c == -1) {
-        Unk_ov065_02261408_Hostent *he = func_ov065_02261408(h);
+        Unk_ov065_02261408_Hostent *he = Sock_GetHostByName(h);
         if (he == 0) {
             self->unk_fc = 1;
             self->unk_38 = 4;
@@ -700,33 +700,33 @@ void func_ov065_0227bb5c(Unk_ov065_0227b2a8_Obj *self) {
         self->unk_1c = **he->unk_0c;
     }
     self->unk_10 = 1;
-    func_ov065_022795d4(self, 0, 0);
+    GsHttp_CallProgressCallback(self, 0, 0);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepConnect(Unk_ov065_0227b2a8_Obj *self) {
     Unk_ov065_0227b9c4_Addr sa;
     s32 r;
     s32 w[2];
     if (self->unk_48 == -1) {
-        self->unk_48 = func_ov065_02278dd4(2, 1, 0);
+        self->unk_48 = GsSock_Socket(2, 1, 0);
         if (self->unk_48 == -1) {
             self->unk_fc = 1;
             self->unk_38 = 5;
-            self->unk_4c = func_ov065_02278be8(self->unk_48);
+            self->unk_4c = GsSock_GetLastError(self->unk_48);
             return;
         }
-        if (func_ov065_0227908c(self->unk_48, 0) == 0) {
+        if (GsSock_SetBlocking(self->unk_48, 0) == 0) {
             self->unk_fc = 1;
             self->unk_38 = 5;
-            self->unk_4c = func_ov065_02278be8(self->unk_48);
+            self->unk_4c = GsSock_GetLastError(self->unk_48);
             return;
         }
         if (self->unk_134 != 0) {
-            func_ov065_0227905c(self->unk_48, data_ov065_0228ca50);
+            GsSock_SetRecvBufSize(self->unk_48, sGsHttpThrottleBytes);
         }
         u32 *z = (u32 *)&sa;
         z[0] = 0;
@@ -734,15 +734,15 @@ void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self) {
         sa.family = 2;
         if (self->unk_15c != 0) {
             sa.port = HTONS(self->unk_160);
-        } else if (data_ov065_022910c4 != 0) {
-            sa.port = HTONS(data_ov065_022910c0);
+        } else if (sGsHttpProxyHost != 0) {
+            sa.port = HTONS(sGsHttpProxyPort);
         } else {
             sa.port = HTONS(self->unk_20);
         }
         sa.addr = self->unk_1c;
-        r = func_ov065_02278d34(self->unk_48, &sa, 8);
+        r = GsSock_Connect(self->unk_48, &sa, 8);
         if (r == -1) {
-            s32 e = func_ov065_02278be8(self->unk_48);
+            s32 e = GsSock_GetLastError(self->unk_48);
             if (e != -6 && e != -26 && e != -76) {
                 self->unk_fc = 1;
                 self->unk_38 = 6;
@@ -751,18 +751,18 @@ void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self) {
             }
         }
     }
-    r = func_ov065_02278f0c(self->unk_48, 0, &w[0], &w[1]) > 0 ? 1 : 0;
+    r = GsSock_Select(self->unk_48, 0, &w[0], &w[1]) > 0 ? 1 : 0;
     if (r == -1 || w[1] != 0) {
         self->unk_fc = 1;
         self->unk_38 = 6;
         if (r == 0) {
-            self->unk_4c = func_ov065_02278be8(self->unk_48);
+            self->unk_4c = GsSock_GetLastError(self->unk_48);
         }
         return;
     }
     if (w[0] != 0) {
         self->unk_10 = 2;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
     }
 }
 }
@@ -770,7 +770,7 @@ void func_ov065_0227b9c4(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b8e4(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self) {
     s32 len;
     char buf[0x400];
     if (self->unk_168 == 0) {
@@ -780,12 +780,12 @@ void func_ov065_0227b8e4(Unk_ov065_0227b2a8_Obj *self) {
             return;
         }
         self->unk_10 = 3;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
         return;
     }
     if (self->unk_170 != 0) {
         self->unk_10 = 3;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
         return;
     }
     if (self->unk_16c == 0) {
@@ -794,23 +794,23 @@ void func_ov065_0227b8e4(Unk_ov065_0227b2a8_Obj *self) {
         }
     }
     if (self->unk_50.unk_10 < self->unk_50.unk_0c) {
-        if (func_ov065_022791c0(self) == 0) {
+        if (GsHttp_FlushSendBuffer(self) == 0) {
             return;
         }
         if (self->unk_50.unk_10 < self->unk_50.unk_0c) {
             return;
         }
-        func_ov065_0227924c(&self->unk_50);
+        GsHttpBuf_Reset(&self->unk_50);
     }
     len = 0x400;
-    func_ov065_02279714(self, buf, &len);
+    GsHttp_SocketRecv(self, buf, &len);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b72c(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepSendRequest(Unk_ov065_0227b2a8_Obj *self) {
     Unk_ov065_0227b2a8_Buf *b;
     char tmp[0x14];
     if (self->unk_50.unk_0c == 0) {
@@ -823,51 +823,51 @@ void func_ov065_0227b72c(Unk_ov065_0227b2a8_Obj *self) {
         } else {
             m = "GET ";
         }
-        func_ov065_0227931c(b, m, 0);
-        if (self->unk_15c != 0 || data_ov065_022910c4 != 0) {
-            func_ov065_0227931c(b, self->unk_14, 0);
+        GsHttpBuf_Append(b, m, 0);
+        if (self->unk_15c != 0 || sGsHttpProxyHost != 0) {
+            GsHttpBuf_Append(b, self->unk_14, 0);
         } else {
-            func_ov065_0227931c(b, self->unk_24, 0);
+            GsHttpBuf_Append(b, self->unk_24, 0);
         }
-        func_ov065_0227931c(b, " HTTP/1.1\r\n", 0);
+        GsHttpBuf_Append(b, " HTTP/1.1\r\n", 0);
         if (self->unk_20 == 0x50) {
-            func_ov065_022792a4(b, "Host", self->unk_18);
+            GsHttpBuf_AppendHeader(b, "Host", self->unk_18);
         } else {
-            func_ov065_0227931c(b, "Host: ", 0);
-            func_ov065_0227931c(b, self->unk_18, 0);
-            func_ov065_02279280(b, 0x3a);
-            func_ov065_02279258(b, self->unk_20);
-            func_ov065_0227931c(b, "\r\n", 2);
+            GsHttpBuf_Append(b, "Host: ", 0);
+            GsHttpBuf_Append(b, self->unk_18, 0);
+            GsHttpBuf_AppendChar(b, 0x3a);
+            GsHttpBuf_AppendInt(b, self->unk_20);
+            GsHttpBuf_Append(b, "\r\n", 2);
         }
         if (self->unk_28 == 0 || func_02129f1c(self->unk_28, "User-Agent") == 0) {
-            func_ov065_022792a4(b, "User-Agent", "GameSpyHTTP/1.0");
+            GsHttpBuf_AppendHeader(b, "User-Agent", "GameSpyHTTP/1.0");
         }
         if (self->unk_34 != 0) {
-            func_ov065_022792a4(b, "Connection", "Keep-Alive");
+            GsHttpBuf_AppendHeader(b, "Connection", "Keep-Alive");
         } else {
-            func_ov065_022792a4(b, "Connection", "close");
+            GsHttpBuf_AppendHeader(b, "Connection", "close");
         }
         if (self->unk_13c != 0) {
             OS_SPrintf(tmp, "%d", self->unk_14c);
-            func_ov065_022792a4(b, "Content-Length", tmp);
-            func_ov065_022792a4(b, "Content-Type", func_ov065_0227ac08(self));
+            GsHttpBuf_AppendHeader(b, "Content-Length", tmp);
+            GsHttpBuf_AppendHeader(b, "Content-Type", GsHttp_GetContentType(self));
         }
         if (self->unk_28 != 0) {
-            func_ov065_0227931c(b, self->unk_28, 0);
+            GsHttpBuf_Append(b, self->unk_28, 0);
         }
-        func_ov065_0227931c(b, "\r\n", 2);
+        GsHttpBuf_Append(b, "\r\n", 2);
         if (b != &self->unk_50) {
-            func_ov065_0227931c(&self->unk_50, b->unk_04, b->unk_0c);
+            GsHttpBuf_Append(&self->unk_50, b->unk_04, b->unk_0c);
         }
     }
-    if (func_ov065_022791c0(self) != 0 && self->unk_50.unk_10 >= self->unk_50.unk_0c) {
-        func_ov065_0227924c(&self->unk_50);
+    if (GsHttp_FlushSendBuffer(self) != 0 && self->unk_50.unk_10 >= self->unk_50.unk_0c) {
+        GsHttpBuf_Reset(&self->unk_50);
         if (self->unk_13c != 0) {
             self->unk_10 = 4;
         } else {
             self->unk_10 = 5;
         }
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
     }
 }
 }
@@ -875,20 +875,20 @@ void func_ov065_0227b72c(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b6dc(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepSendPost(Unk_ov065_0227b2a8_Obj *self) {
     s32 old = self->unk_148;
-    s32 r = func_ov065_0227a3f4(self);
+    s32 r = GsHttp_SendPostData(self);
     if (r == 0) {
-        func_ov065_0227a884(self);
+        GsHttp_FreePostState(self);
         return;
     }
     if (old != self->unk_148) {
-        func_ov065_02279588(self);
+        GsHttp_CallPostCallback(self);
     }
     if (r == 1) {
-        func_ov065_0227a884(self);
+        GsHttp_FreePostState(self);
         self->unk_10 = 5;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
     }
 }
 }
@@ -896,17 +896,17 @@ void func_ov065_0227b6dc(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b68c(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepWaitReply(Unk_ov065_0227b2a8_Obj *self) {
     s32 v[2];
-    if (func_ov065_02278f0c(self->unk_48, v, 0, 0) == -1) {
+    if (GsSock_Select(self->unk_48, v, 0, 0) == -1) {
         self->unk_fc = 1;
         self->unk_38 = 5;
-        self->unk_4c = func_ov065_02278be8(self->unk_48);
+        self->unk_4c = GsSock_GetLastError(self->unk_48);
         return;
     }
     if (v[0] != 0) {
         self->unk_10 = 6;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
     }
 }
 }
@@ -914,7 +914,7 @@ void func_ov065_0227b68c(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227b5d4(Unk_ov065_0227b2a8_Obj *self) {
+s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self) {
     s32 a, b, c, d;
     s32 r;
     r = func_02128ca4(self->unk_74.unk_04, "HTTP/%d.%d %d%n", &a, &b, &c, &d);
@@ -937,12 +937,12 @@ s32 func_ov065_0227b5d4(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b51c(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepRecvStatus(Unk_ov065_0227b2a8_Obj *self) {
     s32 len;
     char buf[0x400];
     s32 r;
     len = 0x400;
-    r = func_ov065_02279714(self, buf, &len);
+    r = GsHttp_SocketRecv(self, buf, &len);
     if (r == 3) {
         return;
     }
@@ -952,7 +952,7 @@ void func_ov065_0227b51c(Unk_ov065_0227b2a8_Obj *self) {
         }
     }
     if (r == 0) {
-        if (func_ov065_0227931c(&self->unk_74, buf, len) == 0) {
+        if (GsHttpBuf_Append(&self->unk_74, buf, len) == 0) {
             return;
         }
     }
@@ -962,18 +962,18 @@ void func_ov065_0227b51c(Unk_ov065_0227b2a8_Obj *self) {
         *e = 0;
         d = e - self->unk_74.unk_04;
         self->unk_f8 = d + 1;
-        if (func_ov065_0227b5d4(self) == 0) {
+        if (GsHttp_ParseStatusLine(self) == 0) {
             return;
         }
         self->unk_74.unk_10 = d + 2;
         self->unk_10 = 7;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
         return;
     }
     if (r == 2) {
         self->unk_fc = 1;
         self->unk_38 = 7;
-        self->unk_4c = func_ov065_02278be8(self->unk_48);
+        self->unk_4c = GsSock_GetLastError(self->unk_48);
     }
 }
 }
@@ -981,7 +981,7 @@ void func_ov065_0227b51c(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
     char *a = 0;
     s32 b = 0;
     self->unk_100 += n;
@@ -989,7 +989,7 @@ s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
         self->unk_fc = 1;
     }
     if (self->unk_0c == 0) {
-        if (func_ov065_0227931c(&self->unk_bc, p, n) == 0) {
+        if (GsHttpBuf_Append(&self->unk_bc, p, n) == 0) {
             return 0;
         }
         a = self->unk_bc.unk_04;
@@ -1006,7 +1006,7 @@ s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
         a = p;
         b = n;
     }
-    func_ov065_022795d4(self, (s32)a, b);
+    GsHttp_CallProgressCallback(self, (s32)a, b);
     return 1;
 }
 }
@@ -1014,7 +1014,7 @@ s32 func_ov065_0227b480(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227b450(Unk_ov065_0227b2a8_Obj *self) {
+s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self) {
     s32 v;
     if (func_02128ca4(self->unk_114, "%x", &v) != 1) {
         return -1;
@@ -1026,7 +1026,7 @@ s32 func_ov065_0227b450(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void func_ov065_0227b404(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
     if (n != 0 && self->unk_120 < 10) {
         s32 l = 10 - self->unk_120;
         if (l >= n) {
@@ -1042,17 +1042,17 @@ void func_ov065_0227b404(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227b2a8(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+s32 GsHttp_ProcessBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
     if (self->unk_110 != 0) {
         while (n > 0) {
             if (self->unk_128 == 0) {
                 char *nl = func_0212a120(p, 10);
                 if (nl != 0) {
-                    func_ov065_0227b404(self, p, nl - p);
+                    GsHttp_AppendChunkSizeText(self, p, nl - p);
                     s32 k = nl + 1 - p;
                     n -= k;
                     p = nl + 1;
-                    self->unk_124 = func_ov065_0227b450(self);
+                    self->unk_124 = GsHttp_ParseChunkSize(self);
                     s32 t = self->unk_124;
                     if (t == -1) {
                         self->unk_fc = 1;
@@ -1065,7 +1065,7 @@ s32 func_ov065_0227b2a8(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
                         self->unk_128 = 1;
                     }
                 } else {
-                    func_ov065_0227b404(self, p, n);
+                    GsHttp_AppendChunkSizeText(self, p, n);
                     return 1;
                 }
             } else if (self->unk_128 == 1) {
@@ -1073,7 +1073,7 @@ s32 func_ov065_0227b2a8(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
                 if (c >= n) {
                     c = n;
                 }
-                if (func_ov065_0227b480(self, p, c) == 0) {
+                if (GsHttp_DeliverBodyData(self, p, c) == 0) {
                     return 0;
                 }
                 p += c;
@@ -1103,14 +1103,14 @@ s32 func_ov065_0227b2a8(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
         }
         return 1;
     }
-    return func_ov065_0227b480(self, p, n);
+    return GsHttp_DeliverBodyData(self, p, n);
 }
 }
 }
 
 namespace Na {
 extern "C" {
-void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self) {
     s32 len;
     u8 buf[0x1000];
     s32 r4;
@@ -1123,14 +1123,14 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
     s32 st;
     char *e;
     len = 0x1000;
-    r4 = func_ov065_02279714(self, buf, &len);
+    r4 = GsHttp_SocketRecv(self, buf, &len);
     if (r4 == 3) {
         return;
     }
     if (r4 == 1 && self->unk_84 == self->unk_80) {
         return;
     }
-    if (r4 == 0 && func_ov065_0227931c(&self->unk_74, buf, len) == 0) {
+    if (r4 == 0 && GsHttpBuf_Append(&self->unk_74, buf, len) == 0) {
         return;
     }
     off = self->unk_84;
@@ -1156,10 +1156,10 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
             self->unk_80 = rem;
             self->unk_84 = 0;
         } else {
-            func_ov065_0227924c(&self->unk_74);
+            GsHttpBuf_Reset(&self->unk_74);
         }
         self->unk_10 = 6;
-        func_ov065_022795d4(self, 0, 0);
+        GsHttp_CallProgressCallback(self, 0, 0);
         return;
     }
     if (st == 3) {
@@ -1208,7 +1208,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
             if (*d == '/') {
                 s32 l = STD_GetStringLength(self->unk_18);
                 s32 m = STD_GetStringLength(d);
-                self->unk_108 = (char *)func_ov065_02277af0(l + 0xe + m);
+                self->unk_108 = (char *)GsUtil_Alloc(l + 0xe + m);
                 if (self->unk_108 == NULL) {
                     self->unk_fc = 1;
                     self->unk_38 = 1;
@@ -1216,7 +1216,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
                 OS_SPrintf(self->unk_108, "http://%s:%d%s", self->unk_18, self->unk_20, d);
                 return;
             }
-            self->unk_108 = func_ov065_02279100(d);
+            self->unk_108 = GsUtil_StrDup(d);
             if (self->unk_108 != NULL) {
                 return;
             }
@@ -1273,14 +1273,14 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
         }
     }
     if (rem > 0) {
-        func_ov065_0227b2a8(self, rest, rem);
+        GsHttp_ProcessBodyData(self, rest, rem);
     }
     return;
 nomatch:
     if (r4 == 2) {
         self->unk_fc = 1;
         self->unk_38 = 7;
-        self->unk_4c = func_ov065_02278be8(self->unk_48);
+        self->unk_4c = GsSock_GetLastError(self->unk_48);
     }
 }
 }
@@ -1288,7 +1288,7 @@ nomatch:
 
 namespace Na {
 extern "C" {
-// Not in the original binary: unreferenced weak function compiled right after func_ov065_0227ae94, so that the literal
+// Not in the original binary: unreferenced weak function compiled right after GsHttp_StepRecvHeaders, so that the literal
 // "2147483647" is pooled where the original has it; removed by the dead-stripping link (see notes.txt).
 __declspec(weak) void Unk_ov065_0227ae94_pool_order(void) {
     STD_GetStringLength("2147483647");
@@ -1298,15 +1298,15 @@ __declspec(weak) void Unk_ov065_0227ae94_pool_order(void) {
 
 namespace Na {
 extern "C" {
-void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_StepRecvBody(Unk_ov065_0227a884_Obj *self) {
     s32 len;
     u8 buf[0x2000];
-    s32 start = func_ov065_02279144();
+    s32 start = GsUtil_GetTimeMs();
     u32 elapsed = 0;
     s32 r;
     while (self->unk_fc == 0 && elapsed < self->unk_158) {
         len = 0x2000;
-        r = func_ov065_02279714(self, buf, &len);
+        r = GsHttp_SocketRecv(self, buf, &len);
         if (r == 3 || r == 1) {
             break;
         }
@@ -1318,10 +1318,10 @@ void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self) {
             }
             break;
         }
-        if (func_ov065_0227b2a8(self, buf, len) == 0) {
+        if (GsHttp_ProcessBodyData(self, buf, len) == 0) {
             break;
         }
-        elapsed = func_ov065_02279144() - start;
+        elapsed = GsUtil_GetTimeMs() - start;
     }
 }
 }
@@ -1329,17 +1329,17 @@ void func_ov065_0227ada4(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-void func_ov065_0227ad54(Unk_ov065_0227a884_Rec *r) {
-    func_ov065_02277ac8(r->unk_04);
+void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r) {
+    GsUtil_Free(r->unk_04);
     if (r->unk_00 == 0) {
-        func_ov065_02277ac8(r->unk_08);
+        GsUtil_Free(r->unk_08);
     } else if (r->unk_00 == 1) {
-        func_ov065_02277ac8(r->unk_08);
-        func_ov065_02277ac8(r->unk_0c);
-        func_ov065_02277ac8(r->unk_10);
+        GsUtil_Free(r->unk_08);
+        GsUtil_Free(r->unk_0c);
+        GsUtil_Free(r->unk_10);
     } else if (r->unk_00 == 2) {
-        func_ov065_02277ac8(r->unk_10);
-        func_ov065_02277ac8(r->unk_14);
+        GsUtil_Free(r->unk_10);
+        GsUtil_Free(r->unk_14);
     }
 }
 }
@@ -1347,8 +1347,8 @@ void func_ov065_0227ad54(Unk_ov065_0227a884_Rec *r) {
 
 namespace Na {
 extern "C" {
-Unk_ov065_0227acfc_Task *func_ov065_0227acfc(void) {
-    Unk_ov065_0227acfc_Task *t = (Unk_ov065_0227acfc_Task *)func_ov065_02277af0(0x14);
+Unk_ov065_0227acfc_Task *GsHttpPost_New(void) {
+    Unk_ov065_0227acfc_Task *t = (Unk_ov065_0227acfc_Task *)GsUtil_Alloc(0x14);
     u8 *p;
     u32 i;
     u8 *q;
@@ -1365,9 +1365,9 @@ Unk_ov065_0227acfc_Task *func_ov065_0227acfc(void) {
         k--;
     } while (k != NULL);
     t->unk_10 = 1;
-    t->unk_00 = func_ov065_022786bc(0x18, 0, (Unk_ov065_02278740_Dtor)func_ov065_0227ad54);
+    t->unk_00 = GsArray_New(0x18, 0, (Unk_ov065_02278740_Dtor)GsHttpPost_FreePart);
     if (t->unk_00 == NULL) {
-        func_ov065_02277ac8(t);
+        GsUtil_Free(t);
         return NULL;
     }
     return t;
@@ -1377,7 +1377,7 @@ Unk_ov065_0227acfc_Task *func_ov065_0227acfc(void) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227acf8(Unk_ov065_0227acfc_Task *t) {
+s32 GsHttpPost_GetAutoFree(Unk_ov065_0227acfc_Task *t) {
     return t->unk_10;
 }
 }
@@ -1385,25 +1385,25 @@ s32 func_ov065_0227acf8(Unk_ov065_0227acfc_Task *t) {
 
 namespace Na {
 extern "C" {
-void func_ov065_0227ace0(Unk_ov065_0227acfc_Task *t) {
-    func_ov065_02278688(t->unk_00);
-    func_ov065_02277ac8(t);
+void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t) {
+    GsArray_Free(t->unk_00);
+    GsUtil_Free(t);
 }
 }
 }
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227ac34(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
+s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
     s32 len;
     s32 cnt;
     s32 i;
     s32 c;
-    a = func_ov065_02279100(a);
-    b = func_ov065_02279100(b);
+    a = GsUtil_StrDup(a);
+    b = GsUtil_StrDup(b);
     if (a == NULL || b == NULL) {
-        func_ov065_02277ac8(a);
-        func_ov065_02277ac8(b);
+        GsUtil_Free(a);
+        GsUtil_Free(b);
         return 0;
     }
     Unk_ov065_0227ac34_Item item = {0, 0, 0, 0, 0, 0};
@@ -1425,7 +1425,7 @@ s32 func_ov065_0227ac34(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
         }
         item.unk_14 = cnt;
     }
-    func_ov065_02278658(self->unk_00, &item);
+    GsArray_Append(self->unk_00, &item);
     return 1;
 }
 }
@@ -1433,7 +1433,7 @@ s32 func_ov065_0227ac34(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
 
 namespace Na {
 extern "C" {
-char *func_ov065_0227ac08(Unk_ov065_0227a884_Obj *self) {
+char *GsHttp_GetContentType(Unk_ov065_0227a884_Obj *self) {
     if (self->unk_13c == NULL) {
         return "";
     }
@@ -1447,19 +1447,19 @@ char *func_ov065_0227ac08(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227aba8(Unk_ov065_0227a884_Obj *self) {
+s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self) {
     Unk_ov065_0227acfc_Task *t = self->unk_13c;
     s32 sum = 0;
     s32 n;
     s32 i;
-    n = func_ov065_02278684(t->unk_00);
+    n = GsArray_Count(t->unk_00);
     if (n == 0) {
         return sum;
     }
     i = sum;
     if (i < n) {
         do {
-            Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)func_ov065_0227866c(t->unk_00, i);
+            Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)GsArray_At(t->unk_00, i);
             s32 l = STD_GetStringLength(r->unk_04);
             s32 t = sum + l;
             s32 u = t + (s32)r->unk_0c;
@@ -1474,7 +1474,7 @@ s32 func_ov065_0227aba8(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
+s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self) {
     Unk_ov065_0227acfc_Task *t = self->unk_13c;
     s32 sum = 0;
     s32 n;
@@ -1486,9 +1486,9 @@ s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
         data_ov065_022910e0 = l + 0x4c;
         data_ov065_022910dc = l + 4;
     }
-    n = func_ov065_02278684(t->unk_00);
+    n = GsArray_Count(t->unk_00);
     for (i = 0; i < n; i++) {
-        Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)func_ov065_0227866c(t->unk_00, i);
+        Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)GsArray_At(t->unk_00, i);
         if (r->unk_00 == 0) {
             sum += data_ov065_022910e4;
             sum += STD_GetStringLength(r->unk_04);
@@ -1498,7 +1498,7 @@ s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
             sum += STD_GetStringLength(r->unk_04);
             sum += STD_GetStringLength(r->unk_0c);
             sum += STD_GetStringLength(r->unk_10);
-            sum += (s32)((Unk_ov065_0227a884_Rec *)func_ov065_0227866c(self->unk_140, i))->unk_0c;
+            sum += (s32)((Unk_ov065_0227a884_Rec *)GsArray_At(self->unk_140, i))->unk_0c;
         } else if (r->unk_00 == 2) {
             sum += data_ov065_022910e0;
             sum += STD_GetStringLength(r->unk_04);
@@ -1516,21 +1516,21 @@ s32 func_ov065_0227aaa8(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227aa74(Unk_ov065_0227a884_Obj *self) {
+s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self) {
     if (self->unk_13c == NULL) {
         return 0;
     }
     if (self->unk_13c->unk_0c != 0) {
-        return func_ov065_0227aaa8(self);
+        return GsHttp_GetMultipartLength(self);
     }
-    return func_ov065_0227aba8(self);
+    return GsHttp_GetUrlEncodedLength(self);
 }
 }
 }
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227aa10(Unk_ov065_0227a8ec_Item *it) {
+s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it) {
     s32 t = it->unk_00->unk_00;
     s32 z = 0;
     it->unk_04 = -1;
@@ -1558,7 +1558,7 @@ s32 func_ov065_0227aa10(Unk_ov065_0227a8ec_Item *it) {
 
 namespace Na {
 extern "C" {
-void func_ov065_0227a9ec(Unk_ov065_0227a8ec_Item *it) {
+void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it) {
     switch (it->unk_00->unk_00) {
     case 0:
         break;
@@ -1575,7 +1575,7 @@ void func_ov065_0227a9ec(Unk_ov065_0227a8ec_Item *it) {
 
 namespace Na {
 extern "C" {
-s32 func_ov065_0227a8ec(Unk_ov065_0227a884_Obj *self) {
+s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self) {
     Unk_ov065_0227a8ec_Item item;
     s32 n;
     s32 i;
@@ -1587,8 +1587,8 @@ s32 func_ov065_0227a8ec(Unk_ov065_0227a884_Obj *self) {
     self->unk_14c = 0;
     self->unk_150 = self->unk_13c->unk_04;
     self->unk_154 = self->unk_13c->unk_08;
-    n = func_ov065_02278684(self->unk_13c->unk_00);
-    self->unk_140 = func_ov065_022786bc(0x10, n, NULL);
+    n = GsArray_Count(self->unk_13c->unk_00);
+    self->unk_140 = GsArray_New(0x10, n, NULL);
     if (self->unk_140 == NULL) {
         return 0;
     }
@@ -1597,26 +1597,26 @@ s32 func_ov065_0227a8ec(Unk_ov065_0227a884_Obj *self) {
         Unk_ov065_0227a8ec_Item *pi = &item;
         volatile s32 z = 0;
         do {
-            Unk_ov065_0227a884_Rec *rec = (Unk_ov065_0227a884_Rec *)func_ov065_0227866c(self->unk_13c->unk_00, i);
+            Unk_ov065_0227a884_Rec *rec = (Unk_ov065_0227a884_Rec *)GsArray_At(self->unk_13c->unk_00, i);
             s32 t = z;
             pi->unk_00 = (Unk_ov065_0227a884_Rec *)t;
             pi->unk_04 = t;
             pi->unk_08 = t;
             pi->unk_0c = t;
             item.unk_00 = rec;
-            if (func_ov065_0227aa10(pi) == 0) {
+            if (GsHttp_OpenPostPart(pi) == 0) {
                 for (i--; i >= 0; i--) {
-                    func_ov065_0227a9ec((Unk_ov065_0227a8ec_Item *)func_ov065_0227866c(self->unk_140, i));
+                    GsHttp_ClosePostPart((Unk_ov065_0227a8ec_Item *)GsArray_At(self->unk_140, i));
                 }
-                func_ov065_02278688(self->unk_140);
+                GsArray_Free(self->unk_140);
                 self->unk_140 = NULL;
                 return 0;
             }
-            func_ov065_02278658(self->unk_140, pi);
+            GsArray_Append(self->unk_140, pi);
             i++;
         } while (i < n);
     }
-    self->unk_14c = func_ov065_0227aa74(self);
+    self->unk_14c = GsHttp_GetPostLength(self);
     return 1;
 }
 }
@@ -1624,22 +1624,22 @@ s32 func_ov065_0227a8ec(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-void func_ov065_0227a884(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_FreePostState(Unk_ov065_0227a884_Obj *self) {
     if (self->unk_140 != NULL) {
-        s32 n = func_ov065_02278684(self->unk_140);
+        s32 n = GsArray_Count(self->unk_140);
         s32 i = 0;
         if (i < n) {
             do {
-                func_ov065_0227a9ec((Unk_ov065_0227a8ec_Item *)func_ov065_0227866c(self->unk_140, i));
+                GsHttp_ClosePostPart((Unk_ov065_0227a8ec_Item *)GsArray_At(self->unk_140, i));
                 i++;
             } while (i < n);
         }
-        func_ov065_02278688(self->unk_140);
+        GsArray_Free(self->unk_140);
         self->unk_140 = NULL;
     }
     if (self->unk_13c != NULL) {
         if (self->unk_13c->unk_10 != 0) {
-            func_ov065_0227ace0(self->unk_13c);
+            GsHttpPost_Free(self->unk_13c);
             self->unk_13c = NULL;
         }
     }
@@ -1649,7 +1649,7 @@ void func_ov065_0227a884(Unk_ov065_0227a884_Obj *self) {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
     Unk_ov065_0227a4e8_Part *q = st->unk_00;
     if (q->unk_0c == 0) {
         return 1;
@@ -1665,13 +1665,13 @@ s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
         if (ch != 0) {
             do {
                 if (func_0212a120("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", ch) != 0) {
-                    func_ov065_02279280(&c->unk_50, ch);
+                    GsHttpBuf_AppendChar(&c->unk_50, ch);
                 } else if (ch == 0x20) {
-                    func_ov065_02279280(&c->unk_50, 0x2b);
+                    GsHttpBuf_AppendChar(&c->unk_50, 0x2b);
                 } else {
                     tmp.b[1] = "0123456789ABCDEF"[ch / 16];
                     tmp.b[2] = "0123456789ABCDEF"[ch % 16];
-                    func_ov065_0227931c(&c->unk_50, &tmp, 3);
+                    GsHttpBuf_Append(&c->unk_50, &tmp, 3);
                 }
                 i++;
                 ch = s[i];
@@ -1680,7 +1680,7 @@ s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
         return 1;
     }
     s32 n = q->unk_0c - st->unk_04;
-    s32 r = func_ov065_022796a8(c, q->unk_08, n);
+    s32 r = GsHttp_SocketSend(c, q->unk_08, n);
     if (r == -1) {
         return 0;
     }
@@ -1695,7 +1695,7 @@ s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
     char buf[0x1000];
     s32 r;
     do {
@@ -1711,7 +1711,7 @@ s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
             c->unk_38 = 14;
             return 0;
         }
-        r = func_ov065_02279654(c, buf, n);
+        r = GsHttp_SendOrQueue(c, buf, n);
         if (r == 0) {
             return 0;
         }
@@ -1726,7 +1726,7 @@ s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
     Unk_ov065_0227a4e8_Part *p = st->unk_00;
     s32 len = p->unk_0c;
     if (len == 0) {
@@ -1737,7 +1737,7 @@ s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
         if (n >= 0x8000) {
             n = 0x8000;
         }
-        s32 r = func_ov065_022796a8(c, p->unk_08 + st->unk_04, n);
+        s32 r = GsHttp_SocketSend(c, p->unk_08 + st->unk_04, n);
         if (r == -1) {
             return 0;
         }
@@ -1757,7 +1757,7 @@ s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first) {
+s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first) {
     char buf[2048];
     if (st->unk_04 == -1) {
         st->unk_04 = 0;
@@ -1783,7 +1783,7 @@ s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
                 OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->unk_04, a, b);
             }
         }
-        s32 r = func_ov065_02279654(c, buf, STD_GetStringLength(buf));
+        s32 r = GsHttp_SendOrQueue(c, buf, STD_GetStringLength(buf));
         if (r == 0) {
             return 0;
         }
@@ -1792,36 +1792,36 @@ s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
         }
     }
     if (st->unk_00->unk_00 == 0) {
-        return func_ov065_0227a788(st, c);
+        return GsHttp_SendPostPartString(st, c);
     }
     if (st->unk_00->unk_00 == 1) {
-        return func_ov065_0227a694(st, c);
+        return GsHttp_SendPostPartFile(st, c);
     }
-    return func_ov065_0227a624(st, c);
+    return GsHttp_SendPostPartBuffer(st, c);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c) {
     Unk_ov065_0227a3f4_List *l = (Unk_ov065_0227a3f4_List *)&c->unk_140;
-    s32 cnt = func_ov065_02278684(l->unk_00);
+    s32 cnt = GsArray_Count(l->unk_00);
     if (c->unk_5c != 0) {
-        if (func_ov065_022791c0(c) == 0) {
+        if (GsHttp_FlushSendBuffer(c) == 0) {
             return 0;
         }
         if (c->unk_60 < c->unk_5c) {
             return 2;
         }
-        func_ov065_0227924c(&c->unk_50);
+        GsHttpBuf_Reset(&c->unk_50);
         if (c->unk_144 == cnt) {
             return 1;
         }
     }
     for (; l->unk_04 < cnt; l->unk_04++) {
-        Unk_ov065_0227a4e8_Slot *s = func_ov065_0227866c(l->unk_00, l->unk_04);
-        s32 r = func_ov065_0227a4e8(s, c, l->unk_04 == 0 ? 1 : 0);
+        Unk_ov065_0227a4e8_Slot *s = GsArray_At(l->unk_00, l->unk_04);
+        s32 r = GsHttp_SendPostPart(s, c, l->unk_04 == 0 ? 1 : 0);
         if (r == 0) {
             return 0;
         }
@@ -1831,7 +1831,7 @@ s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c) {
     }
     if (c->unk_13c->unk_0c != 0) {
         s32 n = STD_GetStringLength("\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n");
-        if (func_ov065_02279654(c, "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n", n) == 0) {
+        if (GsHttp_SendOrQueue(c, "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536--\r\n", n) == 0) {
             return 0;
         }
     }
@@ -1845,7 +1845,7 @@ s32 func_ov065_0227a3f4(Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-void func_ov065_0227a350(Unk_ov065_02279c7c *c) {
+void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *c) {
     s32 code = c->unk_ec;
     switch (code / 100) {
     case 0:
@@ -1886,47 +1886,47 @@ void func_ov065_0227a350(Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a284(Unk_ov065_02279c7c *c) {
+s32 GsHttp_Step(Unk_ov065_02279c7c *c) {
     s32 r;
     if (c->unk_12c != 0) {
         return 0;
     }
     c->unk_12c = 1;
     if (c->unk_10 == 0) {
-        func_ov065_0227bb5c(c);
+        GsHttp_StepHostLookup(c);
     }
     if (c->unk_10 == 1) {
-        func_ov065_0227b9c4(c);
+        GsHttp_StepConnect(c);
     }
     if (c->unk_10 == 2) {
-        func_ov065_0227b8e4(c);
+        GsHttp_StepEncryption(c);
     }
     if (c->unk_10 == 3) {
-        func_ov065_0227b72c(c);
+        GsHttp_StepSendRequest(c);
     }
     if (c->unk_10 == 4) {
-        func_ov065_0227b6dc(c);
+        GsHttp_StepSendPost(c);
     }
     if (c->unk_10 == 5) {
-        func_ov065_0227b68c(c);
+        GsHttp_StepWaitReply(c);
     }
     if (c->unk_10 == 6) {
-        func_ov065_0227b51c(c);
+        GsHttp_StepRecvStatus(c);
     }
     if (c->unk_10 == 7) {
-        func_ov065_0227ae94(c);
+        GsHttp_StepRecvHeaders(c);
     }
     if (c->unk_10 == 8) {
-        func_ov065_0227ada4(c);
+        GsHttp_StepRecvBody(c);
     }
     if (c->unk_108 != 0) {
-        func_ov065_02279a64(c);
+        GsHttp_ResetForRedirect(c);
     }
     r = c->unk_fc;
     if (r != 0) {
-        func_ov065_0227a350(c);
-        func_ov065_0227960c(c);
-        func_ov065_02279b58(c);
+        GsHttp_SetResultFromStatus(c);
+        GsHttp_CallCompletedCallback(c);
+        GsHttp_FreeConnection(c);
     } else {
         c->unk_12c = 0;
     }

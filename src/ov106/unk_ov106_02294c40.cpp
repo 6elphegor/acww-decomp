@@ -43,12 +43,12 @@ void func_02065af0(void *a);
 void * func_02065c8c(void *p);
 void func_02065c94(void *a);
 void func_02065e70(void *p, void *q);
-BOOL func_0206e61c();
-void func_0206e63c();
-void func_0206ecf8(s32 a);
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+void MenuCtrl_SetResult(s32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_02096914(void *a, s32 b);
+void LetterList_Compact(void *a, s32 b);
 void * PlayerData_GetCurrent();
 s32 func_020979d8();
 s32 func_020991fc();
@@ -742,8 +742,8 @@ void MailboxMenu::runMainState() {
 }
 
 BOOL MailboxMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         u32 s = unk_8d;
         if (s == 0 || s == 1 || s == 7) {
             hideCursor();
@@ -767,8 +767,8 @@ BOOL MailboxMenu::execPhase4() {
 }
 
 BOOL MailboxMenu::execClosed() {
-    func_0206ecf8(1);
-    func_02096914(unk_2924, 10);
+    MenuCtrl_SetResult(1);
+    LetterList_Compact(unk_2924, 10);
     PlayerData_GetCurrent();
     u8 *p = ((Unk_020970b8 *)func_020979d8())->func_020970b8(0);
     s32 i = 0;
@@ -1061,7 +1061,7 @@ void MailboxMenu::mainAct01() {
 }
 
 void MailboxMenu::mainAct02() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         setMainState(6);
     } else if (gTouchHeld == 0) {
         setMainState(6);
@@ -1085,7 +1085,7 @@ void MailboxMenu::mainAct03() {
 
 void MailboxMenu::mainAct04() {
     s32 p, t;
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         releaseHeldTo(unk_b7);
         pressCloseTab();
         ((TouchPromptBalloon *)&unk_2160)->hide(0);
@@ -1120,7 +1120,7 @@ void MailboxMenu::mainAct04() {
 }
 
 void MailboxMenu::mainAct05() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         forceCloseFromLetterView();
     } else if (checkSwitchToButtons(1)) {
         setMainState(9);
@@ -1133,7 +1133,7 @@ void MailboxMenu::mainAct05() {
 
 void MailboxMenu::mainAct06() {
     if (((PopupChoiceMenuBody *)&unk_229c)->isOpen()) {
-        if (func_0206e61c()) {
+        if (MenuCtrl_IsForceCloseDue()) {
             cancelPopupForButtons();
         } else if (checkSwitchToButtons(1)) {
             cancelPopupForButtons();
@@ -1211,7 +1211,7 @@ tail:
 }
 
 void MailboxMenu::mainAct08() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         releaseHeldTo(unk_b7);
         hideCursor();
         pressCloseTab();
@@ -1248,7 +1248,7 @@ void MailboxMenu::mainAct08() {
 }
 
 void MailboxMenu::mainAct09() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         forceCloseFromLetterView();
     } else {
         if (((HandCursor *)&unk_2238)->getAnim() == 0) {
@@ -1277,7 +1277,7 @@ void MailboxMenu::mainAct0A() {
 }
 
 void MailboxMenu::mainAct0B() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         cancelPopupForButtons();
     } else if (checkSwitchToTouch()) {
         cancelPopupForButtons();
@@ -1460,7 +1460,7 @@ void MailboxMenu::mainAct1B() {
 }
 
 void MailboxMenu::mainAct1C() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         pressPromptTab4();
     }
     if (checkSwitchToButtons(1)) {
@@ -1475,7 +1475,7 @@ void MailboxMenu::mainAct1C() {
 }
 
 void MailboxMenu::mainAct1D() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         hideCursor();
         pressPromptTab4();
     } else if (checkSwitchToTouch()) {

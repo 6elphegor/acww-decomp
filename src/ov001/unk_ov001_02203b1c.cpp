@@ -73,25 +73,25 @@ void func_0212899c(void *d, s32 v, u32 n);
 void func_0212a360(void *d, void *s);
 u32 func_0212a438(const void *s);
 
-s32 func_ov065_0226a284(void);
-s32 func_ov065_02269e50(void);
-s32 func_ov065_0226a264(void *a, void *b, s32 c);
-s32 func_ov065_0226a33c(void *p, void *cb);
-s32 func_ov065_02269f24(void *a, void *b, s32 c);
-s32 func_ov065_0226a4c8(void);
-s32 func_ov065_0226a87c(s32 a);
-s32 func_ov065_0226a8e4(void);
-void *func_ov065_0226a828(u32 a);
-s32 func_ov065_0226a510(void *p, s32 n);
-s32 func_ov065_02261110(void);
-s32 func_ov065_02261118(void *p);
-u8 *func_ov065_02260cb4();
-void func_ov065_02261034(u8 *a, u8 *out);
-s32 func_ov065_0226149c(u8 *a, u8 *d, u32 e, u32 f, Unk_ov001_022067b8_Hdr *hdr);
-s32 func_ov065_02261610(s32, s32, s32);
-s32 func_ov065_022615f0(s32, void *);
-s32 func_ov065_0226148c(s32);
-s32 func_ov065_02261524(s32, void *, s32, s32, void *);
+s32 WifiLink_CleanupAsync(void);
+s32 WifiLink_DisconnectAsync(void);
+s32 WifiLink_SearchAsync(void *a, void *b, s32 c);
+s32 WifiLink_StartupAsync(void *p, void *cb);
+s32 WifiLink_ConnectAsync(void *a, void *b, s32 c);
+s32 WifiLink_Finish(void);
+s32 WifiLink_LockApList(s32 a);
+s32 WifiLink_GetApListCount(void);
+void *WifiLink_GetApListEntry(u32 a);
+s32 WifiLink_Init(void *p, s32 n);
+s32 Sock_Cleanup(void);
+s32 Sock_Startup(void *p);
+u8 *SockCore_GetHostIp();
+void IpAddr_StoreBe32(u8 *a, u8 *out);
+s32 Sock_SendTo(u8 *a, u8 *d, u32 e, u32 f, Unk_ov001_022067b8_Hdr *hdr);
+s32 Sock_Create(s32, s32, s32);
+s32 Sock_Bind(s32, void *);
+s32 Sock_Close(s32);
+s32 Sock_RecvFrom(s32, void *, s32, s32, void *);
 
 s32 SimpleStart_NotifyStatus(void);
 s32 SimpleStart_GetResult(void *dst);
@@ -161,8 +161,8 @@ s32 SimpleStart_WcmToIdle(void);
 void SimpleStart_WcmCallback(void *pp);
 
 extern const u32 sSimpleStartAesRcon[10];
-extern u8 data_ov065_0228b2a4[];
-extern u8 data_ov065_0228b2ac[];
+extern u8 gWifiLinkAnyBssid[];
+extern u8 gWifiLinkAnySsid[];
 extern const u32 data_ov001_02227334[256];
 extern const u32 data_ov001_02227734[256];
 extern const u32 data_ov001_02227b34[256];
@@ -841,7 +841,7 @@ void SimpleStart_WcmCallback(void *pp) {
                 }
                 return;
             } else if (s == 6) {
-                if (func_ov065_0226a264(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) == 3) {
+                if (WifiLink_SearchAsync(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) == 3) {
                     return;
                 }
                 sSimpleStartWcmState = 3;
@@ -850,7 +850,7 @@ void SimpleStart_WcmCallback(void *pp) {
                 }
                 return;
             } else if (s == 8) {
-                if (func_ov065_02269f24(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
                     return;
                 }
                 sSimpleStartWcmState = 3;
@@ -906,21 +906,21 @@ void SimpleStart_WcmCallback(void *pp) {
                     sSimpleStartWcmNotifyCb(10, 0);
                 }
             } else if (s == 6) {
-                if (func_ov065_0226a264(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) != 3) {
+                if (WifiLink_SearchAsync(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
                     }
                 }
             } else if (s == 2) {
-                if (func_ov065_0226a284() != 3) {
+                if (WifiLink_CleanupAsync() != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
                     }
                 }
             } else if (s == 8) {
-                if (func_ov065_02269f24(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
@@ -943,21 +943,21 @@ void SimpleStart_WcmCallback(void *pp) {
                     sSimpleStartWcmNotifyCb(14, 0);
                 }
             } else if (s == 6) {
-                if (func_ov065_0226a264(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) != 3) {
+                if (WifiLink_SearchAsync(data_ov001_0222c894, data_ov001_0222c898, data_ov001_0222c8b0) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
                     }
                 }
             } else if (s == 2) {
-                if (func_ov065_0226a284() != 3) {
+                if (WifiLink_CleanupAsync() != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
                     }
                 }
             } else if (s == 8) {
-                if (func_ov065_02269f24(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
+                if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) != 3) {
                     sSimpleStartWcmState = 3;
                     if (sSimpleStartWcmNotifyCb != 0) {
                         sSimpleStartWcmNotifyCb(2, 0);
@@ -976,7 +976,7 @@ void SimpleStart_WcmCallback(void *pp) {
     case 2:
         if (p[1] == 0) {
             if (sSimpleStartWcmState == 2) {
-                func_ov065_0226a4c8();
+                WifiLink_Finish();
                 sSimpleStartWcmState = 0;
                 if (sSimpleStartWcmNotifyCb != 0) {
                     sSimpleStartWcmNotifyCb(0x14, 0);
@@ -1018,17 +1018,17 @@ void SimpleStart_WcmCallback(void *pp) {
 s32 SimpleStart_WcmToIdle(void) {
     switch (sSimpleStartWcmState) {
     case 5:
-        if (func_ov065_0226a264(0, 0, 0) != 3) {
+        if (WifiLink_SearchAsync(0, 0, 0) != 3) {
             return 0;
         }
         break;
     case 7:
-        if (func_ov065_02269e50() != 3) {
+        if (WifiLink_DisconnectAsync() != 3) {
             return 0;
         }
         break;
     case 1:
-        if (func_ov065_0226a33c(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
             return 0;
         }
         break;
@@ -1047,17 +1047,17 @@ s32 SimpleStart_WcmToIdle(void) {
 s32 SimpleStart_WcmReadApList(u8 *buf, s32 n) {
     s32 cnt;
     s32 i;
-    func_ov065_0226a87c(1);
-    cnt = func_ov065_0226a8e4();
+    WifiLink_LockApList(1);
+    cnt = WifiLink_GetApListCount();
     if (cnt > 0) {
         for (i = 0; i < cnt; i++, buf += 0xc0) {
             if (i >= n) {
                 break;
             }
-            MIi_CpuCopy32(func_ov065_0226a828((u16)i), buf, 0xc0);
+            MIi_CpuCopy32(WifiLink_GetApListEntry((u16)i), buf, 0xc0);
         }
     }
-    func_ov065_0226a87c(0);
+    WifiLink_LockApList(0);
     return cnt;
 }
 
@@ -1076,7 +1076,7 @@ s32 SimpleStart_WcmStartSearch(u8 *a, u8 *b, s32 c, s32 d) {
         } while (i < 6);
     } else {
         MI_CpuFill8(p, 0xff, 6);
-        data_ov001_0222c894 = data_ov065_0228b2a4;
+        data_ov001_0222c894 = gWifiLinkAnyBssid;
     }
     p = data_ov001_0222c944;
     data_ov001_0222c898 = p;
@@ -1097,10 +1097,10 @@ s32 SimpleStart_WcmStartSearch(u8 *a, u8 *b, s32 c, s32 d) {
         }
     } else {
         MI_CpuFill8(data_ov001_0222c944, 0xff, 0x20);
-        data_ov001_0222c898 = data_ov065_0228b2ac;
+        data_ov001_0222c898 = gWifiLinkAnySsid;
     }
     if (sSimpleStartWcmState == 3) {
-        if (func_ov065_0226a264(data_ov001_0222c8e4, data_ov001_0222c898, data_ov001_0222c8b0) == 3) {
+        if (WifiLink_SearchAsync(data_ov001_0222c8e4, data_ov001_0222c898, data_ov001_0222c8b0) == 3) {
             sSimpleStartWcmState = 6;
             OS_RestoreInterrupts(e);
             return 1;
@@ -1117,7 +1117,7 @@ s32 SimpleStart_WcmStartSearch(u8 *a, u8 *b, s32 c, s32 d) {
 s32 SimpleStart_WcmDisconnect(void) {
     s32 e = OS_DisableInterrupts();
     if (sSimpleStartWcmState == 7) {
-        if (func_ov065_02269e50() == 3) {
+        if (WifiLink_DisconnectAsync() == 3) {
             sSimpleStartWcmState = 4;
             OS_RestoreInterrupts(e);
             return 1;
@@ -1130,7 +1130,7 @@ s32 SimpleStart_WcmDisconnect(void) {
 s32 SimpleStart_WcmCleanup(void) {
     s32 e = OS_DisableInterrupts();
     if (sSimpleStartWcmState == 3) {
-        if (func_ov065_0226a284() != 3) {
+        if (WifiLink_CleanupAsync() != 3) {
             OS_RestoreInterrupts(e);
             return 0;
         }
@@ -1162,7 +1162,7 @@ s32 SimpleStart_WcmConnect(void *p, void *x, s32 y) {
         return 1;
     }
     if (sSimpleStartWcmState == 3) {
-        if (func_ov065_02269f24(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
+        if (WifiLink_ConnectAsync(data_ov001_0222c89c, (void *)data_ov001_0222c878, data_ov001_0222c8a8) == 3) {
             sSimpleStartWcmState = 8;
             OS_RestoreInterrupts(e);
             return 1;
@@ -1190,14 +1190,14 @@ s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size) {
     data_ov001_0222c858->unk_00 = 3;
     sSimpleStartWcmNotifyCb = (Unk_ov001_0220751c_Cb)cb;
     if (sSimpleStartWcmState == 0) {
-        if (func_ov065_0226a510(data_ov001_0222c88c, 0x2300) != 0) {
+        if (WifiLink_Init(data_ov001_0222c88c, 0x2300) != 0) {
             OS_RestoreInterrupts(e);
             return 0;
         }
         sSimpleStartWcmState = 1;
     }
     if (sSimpleStartWcmState == 1) {
-        if (func_ov065_0226a33c(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
+        if (WifiLink_StartupAsync(data_ov001_0222c858, (void *)SimpleStart_WcmCallback) != 3) {
             OS_RestoreInterrupts(e);
             return 0;
         }
@@ -1415,7 +1415,7 @@ s32 SimpleStart_ConnectAp(void) {
     }
     if (res > 0) {
         data_ov001_0222c870 = 1;
-        if (func_ov065_02261118(sSimpleStartSocConfig) < 0) {
+        if (Sock_Startup(sSimpleStartSocConfig) < 0) {
             res = -2;
         } else {
             data_ov001_0222c874 = 1;
@@ -1454,7 +1454,7 @@ void SimpleStart_Disconnect(void) {
     }
     if (data_ov001_0222c874 != 0) {
         data_ov001_0222c874 = 0;
-        func_ov065_02261110();
+        Sock_Cleanup();
     }
 }
 
@@ -1659,7 +1659,7 @@ cleanup:
 }
 
 s32 SimpleStart_SendTo(u8 *a, Unk_ov001_022067b8_Hdr *hdr, u8 *out, u8 *d, u32 e) {
-    s32 r = func_ov065_0226149c(a, d, e, 0, hdr);
+    s32 r = Sock_SendTo(a, d, e, 0, hdr);
     if (r < 0) r = -4;
     return r;
 }
@@ -1671,7 +1671,7 @@ s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c) {
     h.b = 2;
     h.d = -1;
     h.c = 0x1e6;
-    func_ov065_02261034(func_ov065_02260cb4(), out);
+    IpAddr_StoreBe32(SockCore_GetHostIp(), out);
     return SimpleStart_SendTo(a, &h, out, b, c);
 }
 
@@ -2041,7 +2041,7 @@ s32 SimpleStart_RunProtocol()
             sSimpleStartStep = 3;
             break;
         case 3:
-            h = func_ov065_02261610(2, 2, 0);
+            h = Sock_Create(2, 2, 0);
             if (h < 0) {
                 result = -2;
                 done = 1;
@@ -2052,7 +2052,7 @@ s32 SimpleStart_RunProtocol()
             l.req.b = 2;
             l.req.c = 0x1e6;
             l.req.d = 0;
-            result = func_ov065_022615f0(h, &l.req);
+            result = Sock_Bind(h, &l.req);
             if (result < 0) {
                 result = -2;
                 done = 1;
@@ -2062,14 +2062,14 @@ s32 SimpleStart_RunProtocol()
             break;
         case 4:
             if (SimpleStart_GetMilliseconds() >= sSimpleStartDeadline) {
-                func_ov065_0226148c(h);
+                Sock_Close(h);
                 result = -3;
                 done = 1;
                 break;
             }
             l.buf[0] = 8;
             SimpleStart_BuildSessionId((Unk_ov001_02206248_Out *)data_ov001_0222c8fc, l.buf);
-            if (func_ov065_02261524(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
                 if (SimpleStart_ParseHelloReply(sSimpleStartPacketBuf, &data_ov001_0222c8a0) != 0) {
                     sSimpleStartDeadline = SimpleStart_GetMilliseconds() + 30000;
                     sSimpleStartStep = 5;
@@ -2086,12 +2086,12 @@ s32 SimpleStart_RunProtocol()
             break;
         case 6:
             if (SimpleStart_GetMilliseconds() >= sSimpleStartDeadline) {
-                func_ov065_0226148c(h);
+                Sock_Close(h);
                 result = -4;
                 done = 1;
                 break;
             }
-            if (func_ov065_02261524(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0
                 && SimpleStart_RecvPacket(sSimpleStartPacketBuf, 3, sSimpleStartTlvBuf, data_ov001_0222c8fc) != 0) {
                 u8 *q = SimpleStart_FirstTlv(sSimpleStartTlvBuf, (s32 *)&l.w54, (s32 *)&l.w58);
                 if (l.w54 != 0x101) break;
@@ -2116,7 +2116,7 @@ s32 SimpleStart_RunProtocol()
             sSimpleStartStep = 8;
             break;
         case 8:
-            if (func_ov065_02261524(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
+            if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
                 data_ov001_0222c884 = SimpleStart_RecvPacket(sSimpleStartPacketBuf, 5, sSimpleStartTlvBuf, C924_B8.v);
                 if (data_ov001_0222c884 != 0 && SimpleStart_ParseConfigTlvs(sSimpleStartTlvBuf) != 0) {
                     if (*(s8 *)&data_ov001_0222cc30 != 0) data_ov001_0222c850 = 1;
@@ -2129,7 +2129,7 @@ s32 SimpleStart_RunProtocol()
             if (SimpleStart_GetMilliseconds() >= t40 + 1000) {
                 retries++;
                 if (retries >= 10) {
-                    func_ov065_0226148c(h);
+                    Sock_Close(h);
                     result = -2;
                     done = 1;
                 } else {
@@ -2163,7 +2163,7 @@ s32 SimpleStart_RunProtocol()
             break;
         }
     }
-    if (h != 0) func_ov065_0226148c(h);
+    if (h != 0) Sock_Close(h);
     if (sSimpleStartCancel != 0) result = -8;
     return result;
 }

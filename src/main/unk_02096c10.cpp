@@ -119,7 +119,7 @@ public:
 };
 
 extern "C" {
-void func_020966f8(void *);
+void LetterDelivery_Update(void *);
 s32 func_020b50f4(void);
 s32 func_02063b8c(s32);
 void func_02065c94(void *);
@@ -396,7 +396,7 @@ BOOL Unk_020e1db0::vfunc_0c() {
 }
 
 void Unk_020e1db0::func_02096c8c() {
-    func_020966f8(this);
+    LetterDelivery_Update(this);
 }
 
 BOOL Unk_020e1db0::func_02096c78(u32 mask) {

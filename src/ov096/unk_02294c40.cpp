@@ -176,10 +176,10 @@ s32 Snd_PlaySe(s32 a);
 void Camera_PopView();
 void Camera_PushView();
 BOOL Camera_IsViewPushed();
-void func_02042820(s32 a);
-s32 func_02042830(s32 a);
-s32 func_02042c64(s32 a, s32 b);
-s32 func_02042d10(s32 a);
+void FieldAction_Release(s32 a);
+s32 FieldAction_PollDrop(s32 a);
+s32 FieldAction_RequestDrop(s32 a, s32 b);
+s32 FieldAction_PollResult(s32 a);
 s32 Item_MakePaper(s32 a, s32 b);
 u32 Item_GetPaperCount(u16 *p);
 s32 Item_GetPaperIndex(u16 *p);
@@ -212,13 +212,13 @@ void _ZN12Unk_0206d0a013func_0206d394Ev(void *p);
 void _ZN12Unk_0206d0a013func_0206d39cEi(void *p, s32 a);
 void _ZN12Unk_0206d0a0C1Ev(void *p);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
-BOOL func_0206e61c();
-void func_0206e63c();
-s32 func_0206e8f4(s32 a);
-s32 func_0206ec48();
-s32 func_0206ec54(u32 a);
-void func_0206ed5c(void *p);
-s32 func_0206ed68();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+s32 MenuCtrl_SetHandBells(s32 a);
+s32 MenuCtrl_GetSavedSlot();
+s32 MenuCtrl_SetSavedSlot(u32 a);
+void MenuCtrl_SetArg(void *p);
+s32 MenuCtrl_GetArg();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 s32 func_0206f53c(s32 a);
@@ -233,7 +233,7 @@ void _ZN10HandCursor16disableObjWindowEv(void *p);
 void _ZN10HandCursor15enableObjWindowEv(void *p);
 void _ZN11LabelButton6setPosEii(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestHoldUpItem(u16 *p);
-s32 PlayerActor_RequestAct3F(u16 *p);
+s32 PlayerActor_RequestChangeHeldItem(u16 *p);
 s32 PlayerActor_RequestFaceChange();
 s32 PlayerActor_RequestWearHat(u16 *p);
 s32 PlayerActor_RequestWearFaceItem(u16 *p);
@@ -939,7 +939,7 @@ BOOL PocketMenu::vfunc_0c() {
     ProcBase_GetParent(this);
     _ZN10MenuTabBar15onTabMenuClosedEv();
     releaseResources();
-    func_0206e8f4(0);
+    MenuCtrl_SetHandBells(0);
     return TRUE;
 }
 
@@ -1069,8 +1069,8 @@ BOOL PocketMenu::execClosed() {
 }
 
 BOOL PocketMenu::handleTabSwitch() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         if (unk_8d == 0 || unk_8d == 1 || unk_8d == 0xa) {
             return requestTab(7);
         }
@@ -1252,7 +1252,7 @@ void PocketMenu::initPocketMenu() {
     _ZN18TouchPromptBalloon19func_ov002_022006acEi(unk_23c0, 2);
     _ZN12CursorMotion5resetEv(unk_2480);
     clearHand();
-    unk_b5 = func_0206ec48();
+    unk_b5 = MenuCtrl_GetSavedSlot();
     _ZN15PopupChoiceMenu4initEiiPKc(unk_24fc, 3, 1, 0);
     _ZN19PopupChoiceMenuBody18buildAddresseeListEv(unk_24fc);
     _ZN12Unk_0206d0a013func_0206d39cEi(unk_2904, 3);
@@ -1373,7 +1373,7 @@ stop:
 }
 
 void PocketMenu::mainAct02() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         setMainState(4);
     } else if (gTouchHeld == 0) {
         setMainState(4);
@@ -1399,7 +1399,7 @@ void PocketMenu::mainAct03() {
 
 void PocketMenu::mainAct04() {
     if (_ZN19PopupChoiceMenuBody6isOpenEv(unk_24fc)) {
-        if (func_0206e61c()) {
+        if (MenuCtrl_IsForceCloseDue()) {
             cancelOptions();
         } else if (checkSwitchToButtons(1)) {
             cancelOptions();
@@ -1418,7 +1418,7 @@ void PocketMenu::mainAct04() {
 }
 
 void PocketMenu::mainAct05() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         putHandBack(unk_b4, 1);
         requestTab(7);
         return;
@@ -1501,7 +1501,7 @@ void PocketMenu::mainAct05() {
 }
 
 void PocketMenu::mainAct06() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         putHandBack(unk_b4, 1);
         requestTab(7);
     } else {
@@ -1525,7 +1525,7 @@ void PocketMenu::mainAct06() {
 }
 
 void PocketMenu::mainAct07() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         closeLetterViewAndMenu();
     } else if (checkSwitchToButtons(1)) {
         setMainState(0x17);
@@ -1535,7 +1535,7 @@ void PocketMenu::mainAct07() {
 }
 
 void PocketMenu::mainAct08() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         func_ov096_02295c2c();
     } else if (checkSwitchToButtons(1)) {
         func_ov096_0229862c((S *)this);
@@ -1554,7 +1554,7 @@ void PocketMenu::mainAct08() {
 // ===== unit 022996e8 =====
 
 void PocketMenu::mainAct09() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         requestTab(7);
         InventoryBg_SetBellsPanelMode(unk_de0, 0);
     } else if (gTouchHeld == 0) {
@@ -1608,7 +1608,7 @@ void PocketMenu::mainAct0A() {
 }
 
 void PocketMenu::mainAct0B() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         putHandBack(unk_b4, 1);
         requestTab(7);
     } else {
@@ -1688,7 +1688,7 @@ void PocketMenu::mainAct0B() {
 }
 
 void PocketMenu::mainAct0C() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         putHandBack(unk_b4, 1);
         requestTab(7);
     } else {
@@ -1716,7 +1716,7 @@ void PocketMenu::mainAct0C() {
 }
 
 void PocketMenu::mainAct0D() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         cancelOptions();
     } else if (checkSwitchToTouch()) {
         cancelOptions();
@@ -1835,9 +1835,9 @@ void PocketMenu::mainAct16() {
 }
 
 void PocketMenu::mainAct17() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         closeLetterViewAndMenu();
-    } else if (func_0206e61c()) {
+    } else if (MenuCtrl_IsForceCloseDue()) {
         closeLetterView();
         setFlags(0x20000);
     } else {
@@ -1867,7 +1867,7 @@ void PocketMenu::mainAct18() {
 }
 
 void PocketMenu::mainAct19() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         func_ov096_02295c2c();
     } else if (checkSwitchToTouch()) {
         func_ov096_02298644((S *)this);
@@ -2008,7 +2008,7 @@ extern "C" void _ZN10PocketMenu9mainAct24Ev(S *s)
                 return;
             }
         }
-        if (_ZN19PopupChoiceMenuBody14applyAddresseeEPvj(s->s_24fc, (void *)func_0206ed68(), s->unk_be) == 2) {
+        if (_ZN19PopupChoiceMenuBody14applyAddresseeEPvj(s->s_24fc, (void *)MenuCtrl_GetArg(), s->unk_be) == 2) {
             s->unk_bd = s->unk_bd + 1;
             if (s->unk_bd >= _ZN19PopupChoiceMenuBody12getPageCountEv(s->s_24fc)) {
                 s->unk_bd = 0;
@@ -2130,7 +2130,7 @@ extern "C" void _ZN10PocketMenu9mainAct32Ev(S *s)
 
 extern "C" void _ZN10PocketMenu9mainAct28Ev(S *s)
 {
-    switch (func_02042830(s->unk_c4)) {
+    switch (FieldAction_PollDrop(s->unk_c4)) {
     case 1:
         if (_ZN10PocketMenu9testFlagsEj(s, 0x1000)) {
             InventoryItemGrid_ClearSlot((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, s->unk_b6));
@@ -2151,13 +2151,13 @@ extern "C" void _ZN10PocketMenu9mainAct28Ev(S *s)
     default:
         return;
     }
-    func_02042820(s->unk_c4);
+    FieldAction_Release(s->unk_c4);
     s->unk_c4 = -1;
 }
 
 extern "C" void _ZN10PocketMenu9mainAct29Ev(S *s)
 {
-    switch (func_02042d10(s->unk_c4)) {
+    switch (FieldAction_PollResult(s->unk_c4)) {
     case 1:
         if (_ZN10PocketMenu9testFlagsEj(s, 0x1000)) {
             InventoryItemGrid_ClearSlot((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, s->unk_b6));
@@ -2178,7 +2178,7 @@ extern "C" void _ZN10PocketMenu9mainAct29Ev(S *s)
     default:
         return;
     }
-    func_02042820(s->unk_c4);
+    FieldAction_Release(s->unk_c4);
     s->unk_c4 = -1;
 }
 
@@ -3125,7 +3125,7 @@ BOOL PocketMenu::canDropHeldItem() {
 
 void PocketMenu::clearHand() {
     unk_b1 = 0;
-    func_0206e8f4(0);
+    MenuCtrl_SetHandBells(0);
 }
 
 void PocketMenu::startUseOnPlayer() {
@@ -3269,7 +3269,7 @@ BOOL PocketMenu::requestUseOnPlayer(s32 k, u16 v) {
         }
         break;
     case 5:
-        if (PlayerActor_RequestAct3F(&t)) {
+        if (PlayerActor_RequestChangeHeldItem(&t)) {
             return TRUE;
         }
         break;
@@ -3316,9 +3316,9 @@ void PocketMenu::cancelUseOnPlayer() {
 void PocketMenu::updateHandPrice() {
     volatile u16 t = unk_ac;
     if (Unk_ov096_022968bc_InRange(&t, 0x1492, 0x14fd)) {
-        func_0206e8f4(Item_GetPrice((u16 *)&t));
+        MenuCtrl_SetHandBells(Item_GetPrice((u16 *)&t));
     } else {
-        func_0206e8f4(0);
+        MenuCtrl_SetHandBells(0);
     }
 }
 
@@ -3633,7 +3633,7 @@ BOOL PocketMenu::canDropItem(s32 a) {
 
 s32 PocketMenu::requestDropItem(s32 a) {
     if (Unk_ov096_0229652c_IsZero(data_020e416c)) {
-        unk_c4 = func_02042c64(gCommManager->unk_64, a);
+        unk_c4 = FieldAction_RequestDrop(gCommManager->unk_64, a);
         if (unk_c4 == -1) {
             PocketMenu_ReturnToIdle((S *)this);
             PocketMenu_ShowMessage((S *)this, 3, 0xff, 0);
@@ -3670,14 +3670,14 @@ void PocketMenu::actionDropItem() {
 }
 
 void PocketMenu::actionAct04() {
-    func_0206ed5c(getActionLetter());
+    MenuCtrl_SetArg(getActionLetter());
     func_ov096_022956d0();
     clearFlags(0x200);
 }
 
 void PocketMenu::actionEditLetter() {
-    func_0206ec54(unk_b6);
-    func_0206ed5c(getActionLetter());
+    MenuCtrl_SetSavedSlot(unk_b6);
+    MenuCtrl_SetArg(getActionLetter());
     requestTab(8);
     hideTabBar();
 }
@@ -3702,7 +3702,7 @@ BOOL PocketMenu::allocLetterSlot() {
         PocketMenu_ShowMessage((S *)this, 2, 0xff, 1);
         return FALSE;
     }
-    func_0206ec54(unk_b6);
+    MenuCtrl_SetSavedSlot(unk_b6);
     unk_b8 = unk_b6;
     unk_b6 = t + 0xf;
     return TRUE;
@@ -3710,7 +3710,7 @@ BOOL PocketMenu::allocLetterSlot() {
 
 void PocketMenu::actionWriteLetter() {
     if (allocLetterSlot()) {
-        func_0206ed5c(getActionLetter());
+        MenuCtrl_SetArg(getActionLetter());
         func_ov096_022956d0();
         setFlags(0x200);
     }
@@ -3720,7 +3720,7 @@ void PocketMenu::actionAct08() {
     if (allocLetterSlot()) {
         s32 t = (s32)getActionLetter();
         func_02065bfc();
-        func_0206ed5c((void *)t);
+        MenuCtrl_SetArg((void *)t);
         PocketMenu_ClearSlotItem((S *)this, unk_b8);
         requestTab(8);
         hideTabBar();
@@ -4429,7 +4429,7 @@ void PocketMenu::writeLetterOnPaper() {
     s32 r6 = Item_GetPaperIndex(&v);
     func_02065c34(r4, (u8)r6);
     _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(unk_24fc, r4, unk_be);
-    func_0206ed5c(r4);
+    MenuCtrl_SetArg(r4);
     requestTab(8);
     hideTabBar();
     u32 n = Item_GetPaperCount(&v);

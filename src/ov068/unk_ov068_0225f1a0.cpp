@@ -1795,9 +1795,9 @@ void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
 s32 func_020e9650(void *, void *);
 s32 Unk_020d77a4_getNpcIndex(void *);
-s32 func_02042e98(s32, void *);
-s32 func_02042d10();
-void func_02042820(s32);
+s32 FieldAction_RequestPitfallAt(s32, void *);
+s32 FieldAction_PollResult();
+void FieldAction_Release(s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
 s32 func_02063b8c(s32);
@@ -1844,7 +1844,7 @@ void *func_ov068_02264f4c(void *, Unk_ov068_Owner_649 *);
 void X_func_ov068_02265dc8(void *);
 s32 func_020197a8(void *);
 s32 func_02019790(void *);
-s32 func_020b8fe8(s32);
+s32 Weather_GetFallingPrecip(s32);
 s32 VillagerId_isValid(void *);
 s32 func_02078574(void *);
 void Clock_GetDateTime(void *);
@@ -2014,7 +2014,7 @@ void func_02085870(void *, void *);
 void func_02085814(void *, s32);
 void func_02085820(void *, void *);
 s32 BlockMap_BlockHasAllAttr(u32, s32, s32, s32);
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 void *func_0207850c(void *);
 void func_02078504(void *, void *);
 void func_0209adbc(void *, s32);
@@ -3587,7 +3587,7 @@ void FieldVillager_UpdateUmbrella(FieldVillager *o) {
         u32 z;
         void *r4 = func_0207e310(p);
         s32 r5 = func_02078574(r4);
-        s32 r7 = func_020b8fe8();
+        s32 r7 = Weather_GetFallingPrecip();
         if (r7 != 1) {
             if (Unk_ov068_02265c24_R((u16 *)func_0207850c(r4), 0x1380, 0x139f)) {
                 w = 0xfff1;
@@ -4423,7 +4423,7 @@ BOOL func_ov068_02264b9c(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
     l.z[0] = 0;
     l.z[1] = 0;
     id = 7;
-    m = func_020b8fe8(7);
+    m = Weather_GetFallingPrecip(7);
     if (p != 0) {
         if (VillagerId_isValid(VillagerData_getVillagerId(p)) != 0) {
             if (func_0207e310(p) != 0) {
@@ -4588,12 +4588,12 @@ BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o) {
         if (func_020e9650(&t, p) <= 0xb00) {
             q.x = a;
             q.y = b;
-            s32 idx = func_02042e98((s8)Unk_020d77a4_getNpcIndex(o), &q);
+            s32 idx = FieldAction_RequestPitfallAt((s8)Unk_020d77a4_getNpcIndex(o), &q);
             if (idx >= 0) {
-                if (func_02042d10() == 1) {
+                if (FieldAction_PollResult() == 1) {
                     r = TRUE;
                 }
-                func_02042820(idx);
+                FieldAction_Release(idx);
             }
         }
     }

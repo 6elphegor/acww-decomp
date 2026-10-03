@@ -222,13 +222,13 @@ void MailText_SetSlotDayOrdinal(s32 slot, s32 v);
 s32 func_02063b8c(s32 n);
 void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
 void VillagerId_GetPersonality(s32 a);
-s32 func_020966b0();
+s32 LetterPaper_PickForPersonality();
 void _ZN6LetterC1Ev(void *obj);
 void _ZN6LetterD1Ev(void *obj);
 void func_02065920(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
 void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 f);
-s32 func_02096aac(void *obj);
-s32 func_02096a50(void *obj, s32 v);
+s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
+s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 void *PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 v);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
@@ -239,7 +239,7 @@ s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
 void *PlayerData_GetResident(void *tbl, s32 i);
 s32 _ZN10PlayerData13func_02098a48Ev(void *p);
-s32 func_02096b24(s32 i);
+s32 LetterDelivery_IsMailboxFull(s32 i);
 void _ZN11MsgString25C1Ev(void *o);
 void _ZN11MsgString25D1Ev(void *o);
 s32 String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -1461,7 +1461,7 @@ extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
                     _ZN6LetterC1Ev(objD);
                     by[0] = a;
                     func_020656dc(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
-                    func_02096aac(objD);
+                    LetterDelivery_PutInAddresseeMailbox(objD);
                     _ZN6LetterD1Ev(objD);
                 }
             }
@@ -1496,17 +1496,17 @@ extern "C" void func_02059adc(void *self, s32 n)
             void *p = PlayerData_GetResident(data_021d735c, i);
             u32 obj[0x3e];
             u8 b;
-            if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff413func_02098044Ej(p, 0xe) && !func_02096b24(i)) {
+            if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff413func_02098044Ej(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
                 _ZN6LetterC1Ev(obj);
                 b = id;
                 func_020656dc(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
                 _ZN12Unk_0206555413func_02065588Etj(obj, off, 1);
-                if (func_02096aac(obj)) {
+                if (LetterDelivery_PutInAddresseeMailbox(obj)) {
                     _ZN8SaveData7setFlagEj(gSaveData, t);
                     _ZN6LetterD1Ev(obj);
                     break;
                 }
-                if (func_02096a50(obj, zero)) {
+                if (LetterDelivery_QueueOutgoing(obj, zero)) {
                     _ZN8SaveData7setFlagEj(gSaveData, t);
                     _ZN6LetterD1Ev(obj);
                     break;
@@ -1552,7 +1552,7 @@ extern "C" BOOL func_020599b0()
         _ZN6LetterC1Ev(obj);
         b = 0x1b;
         func_020656dc(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, _ZN10PlayerData11getPlayerIdEv(p));
-        if (func_02096aac(obj)) {
+        if (LetterDelivery_PutInAddresseeMailbox(obj)) {
             _ZN12Unk_02097ff413func_0209801cEj(p, 0xe);
             _ZN6LetterD1Ev(obj);
             return TRUE;
@@ -1570,16 +1570,16 @@ extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32
         _ZN10VillagerId12makeFileNameEPvjj(r3, data_021c5dec, 0x28, (s32)r0);
         buf[0] = r1;
         VillagerId_GetPersonality(r3);
-        buf[1] = func_020966b0();
+        buf[1] = LetterPaper_PickForPersonality();
         if (v != -1) buf[1] = v;
         _ZN6LetterC1Ev(obj);
         func_02065920(obj, buf, data_021c5dec, &buf[1], r3, r2, 1);
         if (p) _ZN12Unk_0206555413func_02065588Etj(obj, *p, 1);
-        if (func_02096aac(obj)) {
+        if (LetterDelivery_PutInAddresseeMailbox(obj)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }
-        if (func_02096a50(obj, 0)) {
+        if (LetterDelivery_QueueOutgoing(obj, 0)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }

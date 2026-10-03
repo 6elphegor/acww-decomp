@@ -19,12 +19,12 @@ extern u16 gPad[];
 void Mem_Clear(void *p, u32 n);
 void Mem_Copy(const void *src, void *dst, u32 n);
 void func_0206f994(void *win, u8 *src, u32 n);
-void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-void func_0206ecf8(u32 v);
-void func_0206ed2c(u32 v);
-void func_0206e874();
+void MenuCtrl_SetResult(u32 v);
+void MenuCtrl_SetIndex(u32 v);
+void MenuCtrl_ClearPtrArgs();
 void Snd_PlaySe(u32 v);
 void Gfx2d_SetSubBgModeState(u32 a);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
@@ -450,12 +450,12 @@ BOOL DistantTownsMenu::execPhase4() { return TRUE; }
 
 BOOL DistantTownsMenu::execClosed() {
     if (testFlags(2)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     } else {
-        func_0206ecf8(1);
-        func_0206ed2c(unk_8d5[unk_9c]);
+        MenuCtrl_SetResult(1);
+        MenuCtrl_SetIndex(unk_8d5[unk_9c]);
     }
-    func_0206e874();
+    MenuCtrl_ClearPtrArgs();
     ProcBase_RequestDelete(this);
     return TRUE;
 }
@@ -886,8 +886,8 @@ void DistantTownsMenu::flushBgScreen() {
 }
 
 void DistantTownsMenu::resetRowScreen() {
-    func_0206ee80(unk_ac, 6, 8, 0xf, 0x13, 7);
-    func_0206ee80(unk_ac, 0x11, 8, 0x18, 0x13, 7);
+    BgScreen_SetRectPalette(unk_ac, 6, 8, 0xf, 0x13, 7);
+    BgScreen_SetRectPalette(unk_ac, 0x11, 8, 0x18, 0x13, 7);
     setFlags(4);
 }
 

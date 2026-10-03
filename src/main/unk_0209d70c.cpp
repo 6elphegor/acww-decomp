@@ -5,7 +5,7 @@ s32 ClockOffset_Clear(void *p);
 u32 ClockOffset_CalcMinutes(void *p, void *q);
 u16 ClockOffset_CalcSeconds(void *p, void *q);
 void Clock_Init(void);
-void func_0206e8b8(void *);
+void MenuCtrl_GetDateTime(void *);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
@@ -27,8 +27,8 @@ extern "C" void _ZN11SaveRecord413func_0209eb90Ev(void *);
 extern "C" void _ZN12Unk_020af53cC1Ev(void *);
 extern "C" void _ZN12Unk_020b09f0C2Ev(void *);
 extern "C" void _ZN12Unk_020b246cD2Ev(void *);
-extern "C" void _ZN12Unk_021ed2c0C1Ev(void *);
-extern "C" void _ZN12Unk_020aec1cC1Ev(void *);
+extern "C" void _ZN8ReddShopC1Ev(void *);
+extern "C" void _ZN8NookShopC1Ev(void *);
 extern "C" void func_02039c04(void *);
 extern "C" void func_02039d70(void *);
 extern "C" void func_02039d8c(void *);
@@ -45,7 +45,7 @@ extern "C" void func_020874d8(void *);
 extern "C" void func_02096f58(void *);
 extern "C" void PlayerDataArray_Construct(void *);
 extern "C" void func_0209eb08(void *);
-extern "C" void func_020ada60(void *);
+extern "C" void AbleShop_Construct(void *);
 extern "C" void func_020c0320(void *);
 extern "C" void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 
@@ -77,7 +77,7 @@ public:
         func_02096f58(p + 0x15b5c);
         _ZN12Unk_0208f0a0C1Ev(p + 0x15c58);
         _ZN10MuseumData13func_02070550Ev(p + 0x15d50);
-        _ZN12Unk_020aec1cC1Ev(p + 0x15db4);
+        _ZN8NookShopC1Ev(p + 0x15db4);
         func_02040900(p + 0x15e18);
         func_0204c508(p + 0x15e54);
         func_02039d70(p + 0x15ec0);
@@ -86,8 +86,8 @@ public:
         _ZN12Unk_02086328C1Ev(p + 0x15f34);
         func_020868c8(p + 0x15f4c);
         func_020c0320(p + 0x15f66);
-        _ZN12Unk_021ed2c0C1Ev(p + 0x15f70);
-        func_020ada60(p + 0x15f84);
+        _ZN8ReddShopC1Ev(p + 0x15f70);
+        AbleShop_Construct(p + 0x15f84);
         _ZN12Unk_020af53cC1Ev(p + 0x15f96);
         func_0205b680(p + 0x15fb0);
         _ZN12Unk_02063578C2Ev(p + 0x15fbc);
@@ -169,7 +169,7 @@ extern "C" void SaveData_SyncClockOffset(u8 *p) {
     ClockOffset_Clear(p + 0x15fb4);
     a[0] = 0;
     a[1] = 0;
-    func_0206e8b8(a);
+    MenuCtrl_GetDateTime(a);
     MI_CpuCopy8(a, b, 8);
     u32 r4 = ClockOffset_CalcMinutes(p + 0x15fb4, b);
     MI_CpuCopy8(a, c, 8);

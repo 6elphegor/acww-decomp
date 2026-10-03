@@ -181,9 +181,9 @@ public:
 
 extern "C" {
 void *PlayerData_GetCurrent();
-u16 *func_020acf54(void *p);
-s32 func_020acde8(u32 x);
-s32 func_020acdac(u16 *p);
+u16 *NookPoints_GetValuePtr(void *p);
+s32 NookPoints_GetRank(u32 x);
+s32 NookPoints_GetToNextRank(u16 *p);
 s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 Unk_020b6960 *func_020b50b4();
 BOOL TalkRequest_EndTalkWith(void *p);
@@ -309,18 +309,18 @@ BOOL Atm::releaseCollision() {
 
 void Atm::setPointTexts() {
     if (unk_3c) {
-        u16 *p = func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()));
+        u16 *p = NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()));
         u8 buf[2];
         MsgString25 obj;
         String_FormatNumber(&obj, *p, 10, 1, 0, 0);
         unk_3c->setSlot(0, &obj);
-        String_FormatNumber(&obj, func_020acdac(p), 10, 1, 0, 0);
+        String_FormatNumber(&obj, NookPoints_GetToNextRank(p), 10, 1, 0, 0);
         unk_3c->setSlot(1, &obj);
-        if (func_020acde8(*p) != 0) {
-            buf[0] = func_020acde8(*p) - 1;
+        if (NookPoints_GetRank(*p) != 0) {
+            buf[0] = NookPoints_GetRank(*p) - 1;
             unk_3c->setSlotFromString(2, (s32)&buf[0], (s32)sAtmStringBankPtr);
         }
-        buf[1] = func_020acde8(*p);
+        buf[1] = NookPoints_GetRank(*p);
         unk_3c->setSlotFromString(3, (s32)&buf[1], (s32)sAtmStringBankPtr);
     }
 }
@@ -430,7 +430,7 @@ void Atm::onMessageEnd() {
     switch (unk_1e) {
     case 1:
     case 2:
-        if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
+        if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
             buf[0] = 5;
             unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
         } else {
@@ -449,7 +449,7 @@ void Atm::onChoice() {
     if (st == 0 || st == 7) {
         switch (v) {
         case 0:
-            if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
+            if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
                 buf[0] = 1;
                 unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
             } else {

@@ -4,12 +4,12 @@
 typedef long long s64;
 
 extern "C" {
-void (*data_ov065_02290808)(void *, void *, u32);
-void *data_ov065_02290804;
-u32 data_ov065_02290800;
-s32 data_ov065_022907fc;
-s32 data_ov065_022907f8;
-void *data_ov065_0229080c;
+void (*sDwcLoginDoneCallback)(void *, void *, u32);
+void *sDwcLoginControl;
+u32 sDwcLoginDoneArg;
+s32 sDwcErrorCode;
+s32 sDwcErrorClass;
+void *sDwcFriendControl;
 }
 
 namespace F02270b74 {
@@ -125,52 +125,52 @@ struct Unk_ov065_0227112c_Cfg {
 };
 
 namespace Unk_ov065_0227138c_Ns {
-extern "C" s32 func_ov065_0227138c(s32 r);
+extern "C" s32 DwcLogin_HandleGpResult(s32 r);
 }
 extern "C" {
-extern s32 data_ov065_022907f8;
-extern s32 data_ov065_022907fc;
-extern u32 data_ov065_02290800;
-extern Unk_ov065_02270eb0_H *data_ov065_02290804;
-extern Unk_ov065_02271440_Cb data_ov065_02290808;
-void func_ov065_02277cdc(void);
-s32 func_ov065_02277bc0(void);
-void func_ov065_02277c34(void);
-void func_ov065_02288124(void *);
-void func_ov065_02289444(void *);
-void func_ov065_02287260(void);
-void func_ov065_02283e00(void);
-void func_ov065_0227c624(void *, s32, s32, s32);
-void func_ov065_0227c670(void *);
-void func_ov065_0227c6a8(void *);
-void func_ov065_02271da0(void);
-void func_ov065_02275c74(void);
-void func_ov065_02277428(void);
-void func_ov065_02284bc8(void *);
-void func_ov065_02276374(void);
-void func_ov065_0226fed4(void);
-void func_ov065_0226fc54(void);
-void func_ov065_0226fc4c(void);
-void func_ov065_022703b8(void);
-void func_ov065_0227155c(void *, void *, void *, void *, u32, void *, s32);
-void func_ov065_02270114(void);
-void func_ov065_022720f8(void *, void *, void *, void *, void *);
-void func_ov065_02276f4c(void *, void *, void *, void *, void *, void *, void *, void *);
-void func_ov065_022775e8(void *);
+extern s32 sDwcErrorClass;
+extern s32 sDwcErrorCode;
+extern u32 sDwcLoginDoneArg;
+extern Unk_ov065_02270eb0_H *sDwcLoginControl;
+extern Unk_ov065_02271440_Cb sDwcLoginDoneCallback;
+void DwcInet_Process(void);
+s32 DwcInet_IsLinkLost(void);
+void DwcInet_WaitDisconnect(void);
+void GsQr_Shutdown(void *);
+void GsSrvBrowser_Free(void *);
+void GsNatNeg_FreeAll(void);
+void GsPersist_Disconnect(void);
+void GsGp_SetCallback(void *, s32, s32, s32);
+void GsGp_Process(void *);
+void GsGp_Destroy(void *);
+void DwcFriend_ClearControl(void);
+void DwcMatch_Shutdown(void);
+void DwcNet_ClearChannelTable(void);
+void GsTransport_CloseSocket(void *);
+void DwcMatch_OnGt2Connected(void);
+void DwcConn_OnGt2Receive(void);
+void DwcConn_OnGt2Closed(void);
+void DwcConn_OnGt2Ping(void);
+void DwcConn_ClearTables(void);
+void DwcLogin_InitControl(void *, void *, void *, void *, u32, void *, s32);
+void DwcLogin_OnLoginDone(void);
+void DwcFriend_InitControl(void *, void *, void *, void *, void *);
+void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *, void *);
+void DwcNet_InitChannelTable(void *);
 u32 STD_GetStringLength(const char *);
 void MI_CpuCopy8(const void *, void *, u32);
 void func_020fff48(void *, u32, void *);
-s32 func_ov065_0227c3b0(void *, s32, void *);
-s32 func_ov065_0227c400(void *, u32, s32, s32, void *, s32);
-s32 func_ov065_0227c538(void *);
-s32 func_ov065_0227c564(void *, void *, void *, s32, s32, void *, s32);
+s32 GsGp_SetInfo(void *, s32, void *);
+s32 GsGp_GetInfo(void *, u32, s32, s32, void *, s32);
+s32 GsGp_Disconnect(void *);
+s32 GsGp_ConnectPreAuth(void *, void *, void *, s32, s32, void *, s32);
 s32 strcmp(const char *, const char *);
 void func_020ffd30(void *, void *, u32);
-s32 func_ov065_0226db98(void);
-void func_ov065_0226db28(s32 *);
-void func_ov065_0226dbfc(void);
-void func_ov065_0226dc40(void);
-s32 func_ov065_0226dd2c(void *, void *);
+s32 NasAuth_GetState(void);
+void NasAuth_GetResult(s32 *);
+void NasAuth_Destroy(void);
+void NasAuth_Abort(void);
+s32 NasAuth_Start(void *, void *);
 void func_02127838(char *, const char *);
 void MI_CpuFill8(void *, s32, u32);
 u64 OS_GetTick(void);
@@ -181,32 +181,32 @@ s32 func_020ffe08(void *);
 s32 func_020ffe24(void *);
 void func_020ffe84(void *);
 void func_02100160(void *, u32);
-void func_ov065_02277b64(s32, void *, s32);
-void func_ov065_02277b8c(void);
-void *func_ov065_02277b78(s32, s32, s32);
-s32 func_ov065_02271e00(s32, void *);
-s32 func_ov065_02270474(void);
-s32 func_ov065_02276e44(u32);
-void func_ov065_02270b74(void);
-s32 func_ov065_02270b78(void);
-void func_ov065_02270ba4(void);
-void func_ov065_02270c94(Unk_ov065_02270ba4_G *g, Unk_ov065_02270eb0_P *a1, void *a2, const char *a3, const char *a4, void *a5, void *a6, void *a7, void *a8);
-void func_ov065_02270e34(s32 a, s32 b);
-BOOL func_ov065_02270e4c(void);
-void func_ov065_02270e60(void);
-s32 func_ov065_02270e7c(s32 *out);
-BOOL func_ov065_02270e94(void);
-void func_ov065_02270eb0(void *a0, Unk_ov065_02270eb0_X *x);
-void func_ov065_02270fd4(void);
-void func_ov065_0227112c(Unk_ov065_02271440_Cb cb, u32 arg);
-void func_ov065_0227124c(const char *a, const char *b, void *c, s32 d);
-void func_ov065_022712bc(const char *a, const char *b);
-void func_ov065_022712d4(void *a0, Unk_ov065_02270eb0_X *x);
-void func_ov065_022713ec(void);
-void func_ov065_02271404(void);
-void func_ov065_02271440(s32 a, s32 b);
-void *func_ov065_02271474(void);
-s32 func_ov065_0227138c(s32 r, s32 unused);
+void DwcNet_Free(s32, void *, s32);
+void DwcNet_Alloc(void);
+void *DwcNet_AllocAligned(s32, s32, s32);
+s32 DwcFriend_SetOwnStatus(s32, void *);
+s32 DwcConn_CreateGt2Socket(void);
+s32 DwcMatch_StartQr2(u32);
+void DwcCore_Nop(void);
+s32 DwcCore_CheckFatalError(void);
+void DwcCore_Shutdown(void);
+void DwcCore_Init(Unk_ov065_02270ba4_G *g, Unk_ov065_02270eb0_P *a1, void *a2, const char *a3, const char *a4, void *a5, void *a6, void *a7, void *a8);
+void DwcCore_SetError(s32 a, s32 b);
+BOOL DwcCore_HasError(void);
+void DwcCore_ClearError(void);
+s32 DwcCore_GetLastError(s32 *out);
+BOOL DwcLogin_IsLoggedIn(void);
+void DwcLogin_OnGpProfileInfo(void *a0, Unk_ov065_02270eb0_X *x);
+void DwcLogin_PollNasAuth(void);
+void DwcLogin_StartNasAuth(Unk_ov065_02271440_Cb cb, u32 arg);
+void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d);
+void DwcLogin_OnNasAuthDone(const char *a, const char *b);
+void DwcLogin_OnGpConnected(void *a0, Unk_ov065_02270eb0_X *x);
+void DwcLogin_ResetState(void);
+void DwcLogin_Shutdown(void);
+void DwcLogin_Fail(s32 a, s32 b);
+void *DwcLogin_GetUserData(void);
+s32 DwcLogin_HandleGpResult(s32 r, s32 unused);
 }
 }
 
@@ -278,8 +278,8 @@ struct Unk_ov065_02271ba0_Out {
     u8 unk_04[0x210];
 };
 extern "C" {
-extern Unk_ov065_02271488_A *data_ov065_02290804;
-extern Unk_ov065_02271774_B *data_ov065_0229080c;
+extern Unk_ov065_02271488_A *sDwcLoginControl;
+extern Unk_ov065_02271774_B *sDwcFriendControl;
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 void *MI_CpuFill8(void *, s32, u32);
@@ -290,43 +290,43 @@ void func_02100094(void *);
 void func_020ffb98(void *, void *, void *);
 void func_020ffba8(void *, s32);
 s32 func_020ffc60(void *, void *);
-void func_ov065_02271440(s32, s32);
-u32 func_ov065_02271474(void);
-s32 func_ov065_02270e4c(void);
-s32 func_ov065_02270e94(void);
-s32 func_ov065_02270fd4(void);
-void func_ov065_022712bc(void);
-void func_ov065_0227112c(void *, s32);
-s32 func_ov065_0227c670(void *);
-s32 func_ov065_0227c224(void *, s32);
-s32 func_ov065_0227c17c(void *, s32);
-s32 func_ov065_0227c278(void *, s32, s32);
-s32 func_ov065_0227c000(void *, s32, s32 *);
-s32 func_ov065_0227c05c(void *, s32, void *);
-s32 func_ov065_0227c14c(void *, s32 *);
-s32 func_ov065_0227bf5c(void *, s32);
-s32 func_ov065_0227c4b0(void *, s32, s32, s32, s32, void *, s32, s32, void *, s32);
-s32 func_ov065_02271dac(s32);
-s32 func_ov065_02271ed8(s32);
-s32 func_ov065_02271fc8(s32, s32);
-s32 func_ov065_02283e00(void);
-s32 func_ov065_022718ec(s32);
-s32 func_ov065_02271ac8(Unk_ov065_02271774_Ent *, s32, s32);
-s32 func_ov065_022719e0(s32);
-void func_ov065_02271b40(Unk_ov065_02271774_Ent *, s32, s32);
-s32 func_ov065_02271a04(Unk_ov065_02271774_Ent *, s32, s32);
-void func_ov065_02271488(void);
-void func_ov065_02271534(void);
-void func_ov065_0227155c(void *mem, void *a, void *b, void *c, void *d, void *e, void *f);
-void *func_ov065_022715a4(void);
-void func_ov065_022715b0(void *x, Unk_ov065_02271774_Rec *p);
-void func_ov065_02271698(void *x, Unk_ov065_02271774_Rec *p);
-void func_ov065_02271774(void *x, Unk_ov065_02271774_Rec *p, s32 idx);
-s32 func_ov065_0227194c(void *a, void *b);
-void func_ov065_02271b7c(void);
-void func_ov065_02271ba0(Unk_ov065_02271774_Ent *arr, s32 n);
-void func_ov065_02271d20(void);
-s32 func_ov065_02271d44(void);
+void DwcLogin_Fail(s32, s32);
+u32 DwcLogin_GetUserData(void);
+s32 DwcCore_HasError(void);
+s32 DwcLogin_IsLoggedIn(void);
+s32 DwcLogin_PollNasAuth(void);
+void DwcLogin_OnNasAuthDone(void);
+void DwcLogin_StartNasAuth(void *, s32);
+s32 GsGp_Process(void *);
+s32 GsGp_AuthorizeBuddyRequest(void *, s32);
+s32 GsGp_DenyBuddyRequest(void *, s32);
+s32 GsGp_SendBuddyRequest(void *, s32, s32);
+s32 GsGp_GetBuddyIndex(void *, s32, s32 *);
+s32 GsGp_GetBuddyStatus(void *, s32, void *);
+s32 GsGp_GetNumBuddies(void *, s32 *);
+s32 GsGp_DeleteBuddy(void *, s32);
+s32 GsGp_ProfileSearch(void *, s32, s32, s32, s32, void *, s32, s32, void *, s32);
+s32 DwcFriend_NotifyAdded(s32);
+s32 DwcFriend_GetProfileId(s32);
+s32 DwcFriend_Fail(s32, s32);
+s32 GsPersist_Disconnect(void);
+s32 DwcFriend_HandleGpResult(s32);
+s32 DwcFriend_MergeDuplicate(Unk_ov065_02271774_Ent *, s32, s32);
+s32 DwcFriend_SendBuddyRequest(s32);
+void DwcFriend_DeleteEntry(Unk_ov065_02271774_Ent *, s32, s32);
+s32 DwcFriend_RemoveDuplicates(Unk_ov065_02271774_Ent *, s32, s32);
+void DwcLogin_Process(void);
+void DwcLogin_Begin(void);
+void DwcLogin_InitControl(void *mem, void *a, void *b, void *c, void *d, void *e, void *f);
+void *DwcFriend_GetControlField20(void);
+void DwcFriend_OnAuthorizedInfo(void *x, Unk_ov065_02271774_Rec *p);
+void DwcFriend_OnBuddyRequestInfo(void *x, Unk_ov065_02271774_Rec *p);
+void DwcFriend_OnProfileSearch(void *x, Unk_ov065_02271774_Rec *p, s32 idx);
+s32 DwcFriend_GetBuddyStatus(void *a, void *b);
+void DwcFriend_FinishUpdate(void);
+void DwcFriend_SyncList(Unk_ov065_02271774_Ent *arr, s32 n);
+void DwcFriend_Abort(void);
+s32 DwcFriend_Tick(void);
 }
 }
 
@@ -436,8 +436,8 @@ struct Unk_ov065_022726a0_Hdr {
     u32 unk_10;
 };
 extern "C" {
-extern Unk_ov065_0229080c *data_ov065_0229080c;
-extern Unk_ov065_02290814 *data_ov065_02290814;
+extern Unk_ov065_0229080c *sDwcFriendControl;
+extern Unk_ov065_02290814 *sDwcMatch;
 u64 OS_GetTick();
 s32 func_020ffc60(s32, void *);
 s32 func_020ffdd8(void *);
@@ -449,80 +449,80 @@ void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
 s32 strncmp(const void *, const void *, u32);
 void OS_SNPrintf(char *, s32, const char *, u32);
-s32 func_ov065_02270e34(s32, s32);
-s32 func_ov065_02270e4c();
-s32 func_ov065_02270e94();
-s32 func_ov065_02270508();
-s32 func_ov065_02271474();
-void func_ov065_02271b7c();
-void func_ov065_02271ba0(void *, s32);
-s32 func_ov065_022715a4();
-void func_ov065_022715b0();
-void func_ov065_02271698();
-void func_ov065_02271d20();
-void func_ov065_02271d44();
-s32 func_ov065_022718ec();
-s32 func_ov065_0227194c(void *, Unk_ov065_0227194c_Out *);
-s32 func_ov065_0226f9e0(const char *, s32, char *, u32);
-s32 func_ov065_0226fb08(void *, s32, void *, u32);
-s32 func_ov065_02272d5c();
-s32 func_ov065_02272dd4(s32, s32);
-s32 func_ov065_02272e18();
-s32 func_ov065_02275474(void *);
-s32 func_ov065_0227627c(s32, s32);
-u64 func_ov065_02277974();
-s32 func_ov065_02277998(const char *, char *, char *, s32);
-s32 func_ov065_02283d14();
-s32 func_ov065_02284a80(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 func_ov065_022868b0(u32, u32, s32);
-s32 func_ov065_022741b0(u32);
-s32 func_ov065_0227412c(u32);
-s32 func_ov065_022749f8(u32, u32, u32, u32, void *, s32);
-s32 func_ov065_0227bd8c(Unk_ov065_0229080c_Sub *, s32, char *, char *);
-s32 func_ov065_0227bf5c(void *, s32);
-s32 func_ov065_0227bfb4(void *, s32);
-s32 func_ov065_0227c05c(void *, s32, Unk_ov065_0227194c_Out *);
-s32 func_ov065_0227c400(void *, s32, s32, s32, void (*)(), s32);
-s32 func_ov065_022722fc(void *, u8 *, u8 *, char *);
-s32 func_ov065_022723b8(void *, char *);
-s32 func_ov065_02271ed8(s32);
-s32 func_ov065_02271e8c(s32);
-s32 func_ov065_02271e00(s32, char *, char *);
-void func_ov065_02271fc8(s32, s32);
-s32 func_ov065_022723cc(s32);
-void func_ov065_02271da0();
-void func_ov065_02271dac(s32 idx);
-void func_ov065_02271e64();
-void func_ov065_02271f08(void *a, u32 *b);
-s32 func_ov065_02271f58(void *a, u32 *b);
-void func_ov065_02271f9c(void *a, u32 *b);
-void func_ov065_02272004(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f, void (*g)(void), void (*h)(void));
-void func_ov065_0227204c();
-void func_ov065_022720f8(Unk_ov065_0229080c *a, Unk_ov065_0229080c_Sub *b, s32 c, Unk_ov065_0229080c_Ent *d, s32 e);
-void func_ov065_02272164(void *p);
-BOOL func_ov065_022721cc();
-BOOL func_ov065_022721ec(void *a, s32 b);
-s32 func_ov065_02272254(u8 *p, s32 n);
-s32 func_ov065_02272290(void *a, u8 *b, u8 *c, char *d, s32 *out);
+s32 DwcCore_SetError(s32, s32);
+s32 DwcCore_HasError();
+s32 DwcLogin_IsLoggedIn();
+s32 DwcCore_GetState();
+s32 DwcLogin_GetUserData();
+void DwcFriend_FinishUpdate();
+void DwcFriend_SyncList(void *, s32);
+s32 DwcFriend_GetControlField20();
+void DwcFriend_OnAuthorizedInfo();
+void DwcFriend_OnBuddyRequestInfo();
+void DwcFriend_Abort();
+void DwcFriend_Tick();
+s32 DwcFriend_HandleGpResult();
+s32 DwcFriend_GetBuddyStatus(void *, Unk_ov065_0227194c_Out *);
+s32 NasBase64_Decode(const char *, s32, char *, u32);
+s32 NasBase64_Encode(void *, s32, void *, u32);
+s32 DwcMatch_HandleGt2Result();
+s32 DwcMatch_HandleNnResult(s32, s32);
+s32 DwcMatch_HandleNnStartResult();
+s32 DwcMatch_SendNnRequest(void *);
+s32 DwcMatch_Fail(s32, s32);
+u64 DwcNet_GetTimeMs();
+s32 GsUtil_GetKeyValue(const char *, char *, char *, s32);
+s32 GsPersist_Process();
+s32 GsTransport_Connect(u32, s32, s32, char *, s32, s32, s32, s32);
+s32 GsTransport_AddressToString(u32, u32, s32);
+s32 DwcMatch_CancelNewClient(u32);
+s32 DwcMatch_RestartAfterNnFailure(u32);
+s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
+s32 GsGp_SetStatus(Unk_ov065_0229080c_Sub *, s32, char *, char *);
+s32 GsGp_DeleteBuddy(void *, s32);
+s32 GsGp_IsBuddy(void *, s32);
+s32 GsGp_GetBuddyStatus(void *, s32, Unk_ov065_0227194c_Out *);
+s32 GsGp_GetInfo(void *, s32, s32, s32, void (*)(), s32);
+s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
+s32 DwcFriend_GetStatusString(void *, char *);
+s32 DwcFriend_GetProfileId(s32);
+s32 DwcFriend_FindIndexByProfileId(s32);
+s32 DwcFriend_SetOwnStatus(s32, char *, char *);
+void DwcFriend_Fail(s32, s32);
+s32 DwcMatch_CountNnRetry(s32);
+void DwcFriend_ClearControl();
+void DwcFriend_NotifyAdded(s32 idx);
+void DwcFriend_ResetTimer();
+void DwcFriend_OnBuddyStatus(void *a, u32 *b);
+s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b);
+void DwcFriend_OnBuddyRequest(void *a, u32 *b);
+void DwcFriend_StartUpdate(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f, void (*g)(void), void (*h)(void));
+void DwcFriend_Process();
+void DwcFriend_InitControl(Unk_ov065_0229080c *a, Unk_ov065_0229080c_Sub *b, s32 c, Unk_ov065_0229080c_Ent *d, s32 e);
+void DwcFriend_DeleteFriend(void *p);
+BOOL DwcFriend_IsIdle();
+BOOL DwcFriend_SetStatusData(void *a, s32 b);
+s32 DwcFriend_CountValid(u8 *p, s32 n);
+s32 DwcFriend_GetStatusData(void *a, u8 *b, u8 *c, char *d, s32 *out);
 }
 }
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_022722fc(void *a, u8 *p1, u8 *p2, char *dst) {
+s32 DwcFriend_GetStatus(void *a, u8 *p1, u8 *p2, char *dst) {
     char tmp[4];
     Unk_ov065_0227194c_Out o;
-    if (func_ov065_0227194c(a, &o) != 0) {
+    if (DwcFriend_GetBuddyStatus(a, &o) != 0) {
         if (o.unk_04 == 6) {
             if (p1 != NULL) {
-                if (func_ov065_02277998((char *)"SCM", tmp, o.unk_08, 0x2f) > 0) {
+                if (GsUtil_GetKeyValue((char *)"SCM", tmp, o.unk_08, 0x2f) > 0) {
                     *p1 = func_0212b854(tmp, NULL, 10);
                 } else {
                     *p1 = 0;
                 }
             }
             if (p2 != NULL) {
-                if (func_ov065_02277998((char *)"SCN", tmp, o.unk_08, 0x2f) > 0) {
+                if (GsUtil_GetKeyValue((char *)"SCN", tmp, o.unk_08, 0x2f) > 0) {
                     *p2 = func_0212b854(tmp, NULL, 10);
                 } else {
                     *p2 = 0;
@@ -554,19 +554,19 @@ s32 func_ov065_022722fc(void *a, u8 *p1, u8 *p2, char *dst) {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02272290(void *a, u8 *b, u8 *c, char *d, s32 *out) {
+s32 DwcFriend_GetStatusData(void *a, u8 *b, u8 *c, char *d, s32 *out) {
     char buf[0x100];
-    s32 r = func_ov065_022722fc(a, b, c, buf);
+    s32 r = DwcFriend_GetStatus(a, b, c, buf);
     s32 t;
     if (r == 0) {
         *out = -1;
         return r;
     }
-    *out = func_ov065_0226f9e0(buf, STD_GetStringLength(buf), NULL, 0);
+    *out = NasBase64_Decode(buf, STD_GetStringLength(buf), NULL, 0);
     if (d == NULL || (t = *out) == -1) {
         return r;
     }
-    func_ov065_0226f9e0(buf, STD_GetStringLength(buf), d, t);
+    NasBase64_Decode(buf, STD_GetStringLength(buf), d, t);
     return r;
 }
 }
@@ -574,7 +574,7 @@ s32 func_ov065_02272290(void *a, u8 *b, u8 *c, char *d, s32 *out) {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02272254(u8 *p, s32 n) {
+s32 DwcFriend_CountValid(u8 *p, s32 n) {
     s32 cnt = 0;
     s32 i;
     if (p == NULL) {
@@ -593,18 +593,18 @@ s32 func_ov065_02272254(u8 *p, s32 n) {
 
 namespace F02271da0 {
 extern "C" {
-BOOL func_ov065_022721ec(void *a, s32 b) {
+BOOL DwcFriend_SetStatusData(void *a, s32 b) {
     char buf[0x100];
     s32 n;
-    if (data_ov065_0229080c == NULL || func_ov065_02270e94() == 0) {
+    if (sDwcFriendControl == NULL || DwcLogin_IsLoggedIn() == 0) {
         return FALSE;
     }
-    n = func_ov065_0226fb08(a, b, buf, 0xff);
+    n = NasBase64_Encode(a, b, buf, 0xff);
     if (n == -1) {
         return FALSE;
     }
     buf[n] = 0;
-    if (func_ov065_02271e00(-1, NULL, buf) == 0) {
+    if (DwcFriend_SetOwnStatus(-1, NULL, buf) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -614,9 +614,9 @@ BOOL func_ov065_022721ec(void *a, s32 b) {
 
 namespace F02271da0 {
 extern "C" {
-BOOL func_ov065_022721cc() {
-    if (data_ov065_0229080c != NULL) {
-        if ((u8)(data_ov065_0229080c->unk_1e + 0xff) <= 1) {
+BOOL DwcFriend_IsIdle() {
+    if (sDwcFriendControl != NULL) {
+        if ((u8)(sDwcFriendControl->unk_1e + 0xff) <= 1) {
             return FALSE;
         }
     }
@@ -627,11 +627,11 @@ BOOL func_ov065_022721cc() {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02272164(void *p) {
-    if (data_ov065_0229080c != NULL && func_ov065_02270e94() != 0 && func_ov065_02271474() != 0) {
-        s32 t = func_020ffc60(func_ov065_02271474(), p);
-        if (t != 0 && t != -1 && func_ov065_0227bfb4(data_ov065_0229080c->unk_04, t) != 0) {
-            func_ov065_0227bf5c(data_ov065_0229080c->unk_04, t);
+void DwcFriend_DeleteFriend(void *p) {
+    if (sDwcFriendControl != NULL && DwcLogin_IsLoggedIn() != 0 && DwcLogin_GetUserData() != 0) {
+        s32 t = func_020ffc60(DwcLogin_GetUserData(), p);
+        if (t != 0 && t != -1 && GsGp_IsBuddy(sDwcFriendControl->unk_04, t) != 0) {
+            GsGp_DeleteBuddy(sDwcFriendControl->unk_04, t);
         }
     }
     MI_CpuFill8(p, 0, 12);
@@ -641,73 +641,73 @@ void func_ov065_02272164(void *p) {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_022720f8(Unk_ov065_0229080c *a, Unk_ov065_0229080c_Sub *b, s32 c, Unk_ov065_0229080c_Ent *d, s32 e) {
-    data_ov065_0229080c = a;
+void DwcFriend_InitControl(Unk_ov065_0229080c *a, Unk_ov065_0229080c_Sub *b, s32 c, Unk_ov065_0229080c_Ent *d, s32 e) {
+    sDwcFriendControl = a;
     a->unk_00 = 0;
-    data_ov065_0229080c->unk_04 = b;
-    data_ov065_0229080c->unk_08 = 0;
+    sDwcFriendControl->unk_04 = b;
+    sDwcFriendControl->unk_08 = 0;
     {
-        Unk_ov065_0229080c *g = data_ov065_0229080c;
+        Unk_ov065_0229080c *g = sDwcFriendControl;
         g->unk_0c = 0;
         g->unk_10 = 0;
         g->unk_14 = e;
     }
-    data_ov065_0229080c->unk_18 = d;
-    data_ov065_0229080c->unk_1c = 0;
-    data_ov065_0229080c->unk_1d = 0;
-    data_ov065_0229080c->unk_1e = 0;
-    data_ov065_0229080c->unk_1f = 0;
-    data_ov065_0229080c->unk_20 = 0;
-    data_ov065_0229080c->unk_24 = 0;
-    data_ov065_0229080c->unk_28 = c;
-    data_ov065_0229080c->unk_2c = NULL;
-    data_ov065_0229080c->unk_30 = 0;
-    data_ov065_0229080c->unk_34 = NULL;
-    data_ov065_0229080c->unk_38 = 0;
-    data_ov065_0229080c->unk_3c = NULL;
-    data_ov065_0229080c->unk_40 = NULL;
-    data_ov065_0229080c->unk_44 = NULL;
-    data_ov065_0229080c->unk_48 = 0;
-    data_ov065_0229080c->unk_4c = 0;
-    data_ov065_0229080c->unk_50 = 0;
+    sDwcFriendControl->unk_18 = d;
+    sDwcFriendControl->unk_1c = 0;
+    sDwcFriendControl->unk_1d = 0;
+    sDwcFriendControl->unk_1e = 0;
+    sDwcFriendControl->unk_1f = 0;
+    sDwcFriendControl->unk_20 = 0;
+    sDwcFriendControl->unk_24 = 0;
+    sDwcFriendControl->unk_28 = c;
+    sDwcFriendControl->unk_2c = NULL;
+    sDwcFriendControl->unk_30 = 0;
+    sDwcFriendControl->unk_34 = NULL;
+    sDwcFriendControl->unk_38 = 0;
+    sDwcFriendControl->unk_3c = NULL;
+    sDwcFriendControl->unk_40 = NULL;
+    sDwcFriendControl->unk_44 = NULL;
+    sDwcFriendControl->unk_48 = 0;
+    sDwcFriendControl->unk_4c = 0;
+    sDwcFriendControl->unk_50 = 0;
 }
 }
 }
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_0227204c() {
-    if (data_ov065_0229080c == NULL) {
+void DwcFriend_Process() {
+    if (sDwcFriendControl == NULL) {
         return;
     }
-    if (data_ov065_0229080c->unk_18 == NULL) {
+    if (sDwcFriendControl->unk_18 == NULL) {
         return;
     }
-    if (func_ov065_02270e4c() != 0) {
+    if (DwcCore_HasError() != 0) {
         return;
     }
-    if (func_ov065_022715a4() != 0 && func_ov065_02283d14() == 0) {
-        func_ov065_02271fc8(6, -0x1194a);
+    if (DwcFriend_GetControlField20() != 0 && GsPersist_Process() == 0) {
+        DwcFriend_Fail(6, -0x1194a);
         return;
     }
-    if (data_ov065_0229080c->unk_04 != NULL && data_ov065_0229080c->unk_04->unk_00 != NULL) {
-        func_ov065_02271d44();
-        if (func_ov065_022718ec() != 0) {
+    if (sDwcFriendControl->unk_04 != NULL && sDwcFriendControl->unk_04->unk_00 != NULL) {
+        DwcFriend_Tick();
+        if (DwcFriend_HandleGpResult() != 0) {
             return;
         }
-        if (data_ov065_0229080c->unk_18 != NULL && data_ov065_0229080c->unk_1e != 3 && data_ov065_0229080c->unk_08 > 7) {
-            if (data_ov065_0229080c->unk_1e <= 1) {
-                func_ov065_02271ba0(data_ov065_0229080c->unk_18, data_ov065_0229080c->unk_14);
+        if (sDwcFriendControl->unk_18 != NULL && sDwcFriendControl->unk_1e != 3 && sDwcFriendControl->unk_08 > 7) {
+            if (sDwcFriendControl->unk_1e <= 1) {
+                DwcFriend_SyncList(sDwcFriendControl->unk_18, sDwcFriendControl->unk_14);
             }
-            if (data_ov065_0229080c->unk_1c >= data_ov065_0229080c->unk_14) {
-                data_ov065_0229080c->unk_1e = 3;
-                data_ov065_0229080c->unk_1f++;
+            if (sDwcFriendControl->unk_1c >= sDwcFriendControl->unk_14) {
+                sDwcFriendControl->unk_1e = 3;
+                sDwcFriendControl->unk_1f++;
             }
         }
     }
-    if (data_ov065_0229080c->unk_1f >= 2) {
-        data_ov065_0229080c->unk_1f = 0;
-        func_ov065_02271b7c();
+    if (sDwcFriendControl->unk_1f >= 2) {
+        sDwcFriendControl->unk_1f = 0;
+        DwcFriend_FinishUpdate();
     }
 }
 }
@@ -715,33 +715,33 @@ void func_ov065_0227204c() {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02272004(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f,
+void DwcFriend_StartUpdate(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f,
                          void (*g)(void), void (*h)(void)) {
-    data_ov065_0229080c->unk_2c = c;
-    data_ov065_0229080c->unk_30 = d;
-    data_ov065_0229080c->unk_34 = e;
-    data_ov065_0229080c->unk_38 = f;
-    data_ov065_0229080c->unk_3c = g;
-    data_ov065_0229080c->unk_40 = h;
-    data_ov065_0229080c->unk_1d = 0;
-    data_ov065_0229080c->unk_1e = 0;
-    data_ov065_0229080c->unk_1f = 0;
-    data_ov065_0229080c->unk_1c = 0;
-    data_ov065_0229080c->unk_00 = 1;
-    data_ov065_0229080c->unk_1f++;
+    sDwcFriendControl->unk_2c = c;
+    sDwcFriendControl->unk_30 = d;
+    sDwcFriendControl->unk_34 = e;
+    sDwcFriendControl->unk_38 = f;
+    sDwcFriendControl->unk_3c = g;
+    sDwcFriendControl->unk_40 = h;
+    sDwcFriendControl->unk_1d = 0;
+    sDwcFriendControl->unk_1e = 0;
+    sDwcFriendControl->unk_1f = 0;
+    sDwcFriendControl->unk_1c = 0;
+    sDwcFriendControl->unk_00 = 1;
+    sDwcFriendControl->unk_1f++;
 }
 }
 }
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271fc8(s32 a, s32 b) {
-    if (data_ov065_0229080c != NULL && a != 0) {
-        func_ov065_02270e34(a, b);
-        if (data_ov065_0229080c->unk_00 != 0 && data_ov065_0229080c->unk_00 != 2) {
-            data_ov065_0229080c->unk_2c(a, data_ov065_0229080c->unk_1d, data_ov065_0229080c->unk_30);
+void DwcFriend_Fail(s32 a, s32 b) {
+    if (sDwcFriendControl != NULL && a != 0) {
+        DwcCore_SetError(a, b);
+        if (sDwcFriendControl->unk_00 != 0 && sDwcFriendControl->unk_00 != 2) {
+            sDwcFriendControl->unk_2c(a, sDwcFriendControl->unk_1d, sDwcFriendControl->unk_30);
         }
-        func_ov065_02271d20();
+        DwcFriend_Abort();
     }
 }
 }
@@ -749,9 +749,9 @@ void func_ov065_02271fc8(s32 a, s32 b) {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271f9c(void *a, u32 *b) {
-    if (data_ov065_0229080c->unk_18 != NULL) {
-        func_ov065_0227c400(a, b[0], 0, 0, func_ov065_02271698, 0);
+void DwcFriend_OnBuddyRequest(void *a, u32 *b) {
+    if (sDwcFriendControl->unk_18 != NULL) {
+        GsGp_GetInfo(a, b[0], 0, 0, DwcFriend_OnBuddyRequestInfo, 0);
     }
 }
 }
@@ -759,9 +759,9 @@ void func_ov065_02271f9c(void *a, u32 *b) {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02271f58(void *a, u32 *b) {
+s32 DwcFriend_HandleAuthorizedMessage(void *a, u32 *b) {
     if (strcmp((const char *)b[2], "I have authorized your request to add me to your list") == 0) {
-        func_ov065_0227c400(a, b[0], 0, 0, func_ov065_022715b0, 0);
+        GsGp_GetInfo(a, b[0], 0, 0, DwcFriend_OnAuthorizedInfo, 0);
         return 1;
     }
     return 0;
@@ -771,13 +771,13 @@ s32 func_ov065_02271f58(void *a, u32 *b) {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271f08(void *a, u32 *b) {
+void DwcFriend_OnBuddyStatus(void *a, u32 *b) {
     Unk_ov065_0227194c_Out o;
-    if (data_ov065_0229080c->unk_34 != NULL) {
-        s32 i = func_ov065_02271e8c(b[0]);
+    if (sDwcFriendControl->unk_34 != NULL) {
+        s32 i = DwcFriend_FindIndexByProfileId(b[0]);
         if (i != -1) {
-            func_ov065_0227c05c(a, b[2], &o);
-            data_ov065_0229080c->unk_34(i, (u8)o.unk_04, o.unk_108, data_ov065_0229080c->unk_38);
+            GsGp_GetBuddyStatus(a, b[2], &o);
+            sDwcFriendControl->unk_34(i, (u8)o.unk_04, o.unk_108, sDwcFriendControl->unk_38);
         }
     }
 }
@@ -786,8 +786,8 @@ void func_ov065_02271f08(void *a, u32 *b) {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02271ed8(s32 i) {
-    s32 r = func_020ffc60(func_ov065_02271474(), &data_ov065_0229080c->unk_18[i]);
+s32 DwcFriend_GetProfileId(s32 i) {
+    s32 r = func_020ffc60(DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i]);
     s32 m = -1;
     if (r == 0 || r == m) {
         r = 0;
@@ -799,13 +799,13 @@ s32 func_ov065_02271ed8(s32 i) {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02271e8c(s32 v) {
+s32 DwcFriend_FindIndexByProfileId(s32 v) {
     s32 i;
-    if (data_ov065_0229080c == NULL || v == 0) {
+    if (sDwcFriendControl == NULL || v == 0) {
         return -1;
     }
-    for (i = 0; i < data_ov065_0229080c->unk_14; i++) {
-        if (v == func_ov065_02271ed8(i)) {
+    for (i = 0; i < sDwcFriendControl->unk_14; i++) {
+        if (v == DwcFriend_GetProfileId(i)) {
             return i;
         }
     }
@@ -816,11 +816,11 @@ s32 func_ov065_02271e8c(s32 v) {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271e64() {
-    if (data_ov065_0229080c != NULL) {
-        data_ov065_0229080c->unk_08 = 0;
+void DwcFriend_ResetTimer() {
+    if (sDwcFriendControl != NULL) {
+        sDwcFriendControl->unk_08 = 0;
         u64 t = OS_GetTick();
-        Unk_ov065_0229080c *g = data_ov065_0229080c;
+        Unk_ov065_0229080c *g = sDwcFriendControl;
         g->unk_0c = (u32)t;
         g->unk_10 = (u32)(t >> 32);
     }
@@ -830,12 +830,12 @@ void func_ov065_02271e64() {
 
 namespace F02271da0 {
 extern "C" {
-s32 func_ov065_02271e00(s32 a, char *b, char *c) {
+s32 DwcFriend_SetOwnStatus(s32 a, char *b, char *c) {
     Unk_ov065_0229080c_Sub *s;
-    if (data_ov065_0229080c == NULL || data_ov065_0229080c->unk_04 == NULL) {
+    if (sDwcFriendControl == NULL || sDwcFriendControl->unk_04 == NULL) {
         return 0;
     }
-    s = data_ov065_0229080c->unk_04;
+    s = sDwcFriendControl->unk_04;
     if (a == -1) {
         a = s->unk_00->unk_214;
     }
@@ -845,21 +845,21 @@ s32 func_ov065_02271e00(s32 a, char *b, char *c) {
     if (c == NULL) {
         c = (char *)s->unk_00->unk_318;
     }
-    return func_ov065_0227bd8c(s, a, b, c);
+    return GsGp_SetStatus(s, a, b, c);
 }
 }
 }
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271dac(s32 idx) {
+void DwcFriend_NotifyAdded(s32 idx) {
     Unk_ov065_0227194c_Out o;
-    if (data_ov065_0229080c->unk_44 != NULL && data_ov065_0229080c->unk_00 != 1) {
-        data_ov065_0229080c->unk_44(idx, data_ov065_0229080c->unk_48);
+    if (sDwcFriendControl->unk_44 != NULL && sDwcFriendControl->unk_00 != 1) {
+        sDwcFriendControl->unk_44(idx, sDwcFriendControl->unk_48);
     }
-    if (data_ov065_0229080c->unk_34 != NULL) {
-        s32 r = func_ov065_022723b8(&data_ov065_0229080c->unk_18[idx], o.unk_108);
-        data_ov065_0229080c->unk_34(idx, r, o.unk_108, data_ov065_0229080c->unk_38);
+    if (sDwcFriendControl->unk_34 != NULL) {
+        s32 r = DwcFriend_GetStatusString(&sDwcFriendControl->unk_18[idx], o.unk_108);
+        sDwcFriendControl->unk_34(idx, r, o.unk_108, sDwcFriendControl->unk_38);
     }
 }
 }
@@ -867,23 +867,23 @@ void func_ov065_02271dac(s32 idx) {
 
 namespace F02271da0 {
 extern "C" {
-void func_ov065_02271da0() {
-    data_ov065_0229080c = NULL;
+void DwcFriend_ClearControl() {
+    sDwcFriendControl = NULL;
 }
 }
 }
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_02271d44(void)
+s32 DwcFriend_Tick(void)
 {
-    Unk_ov065_02271774_B *b = data_ov065_0229080c;
+    Unk_ov065_02271774_B *b = sDwcFriendControl;
     u64 d = (OS_GetTick() - *(u64 *)&b->unk_0c) << 6;
     d = d / 0x82ea;
     if (d >= 0x12c) {
         b->unk_08++;
-        func_ov065_0227c670(data_ov065_0229080c->unk_04);
-        *(u64 *)&data_ov065_0229080c->unk_0c = OS_GetTick();
+        GsGp_Process(sDwcFriendControl->unk_04);
+        *(u64 *)&sDwcFriendControl->unk_0c = OS_GetTick();
     }
     return 0;
 }
@@ -892,11 +892,11 @@ s32 func_ov065_02271d44(void)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271d20(void)
+void DwcFriend_Abort(void)
 {
-    if (data_ov065_0229080c != NULL) {
-        func_ov065_02283e00();
-        data_ov065_0229080c->unk_00 = 0;
+    if (sDwcFriendControl != NULL) {
+        GsPersist_Disconnect();
+        sDwcFriendControl->unk_00 = 0;
     }
 }
 }
@@ -904,7 +904,7 @@ void func_ov065_02271d20(void)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271ba0(Unk_ov065_02271774_Ent *arr, s32 n)
+void DwcFriend_SyncList(Unk_ov065_02271774_Ent *arr, s32 n)
 {
     s32 cnt;
     s32 idx;
@@ -912,52 +912,52 @@ void func_ov065_02271ba0(Unk_ov065_02271774_Ent *arr, s32 n)
     Unk_ov065_02271ba0_Out out;
     s32 j;
     s32 id;
-    if (data_ov065_0229080c->unk_1e == 0) {
-        func_ov065_022718ec(func_ov065_0227c14c(data_ov065_0229080c->unk_04, &cnt));
+    if (sDwcFriendControl->unk_1e == 0) {
+        DwcFriend_HandleGpResult(GsGp_GetNumBuddies(sDwcFriendControl->unk_04, &cnt));
         idx = 0;
         if (cnt > 0) {
             do {
-                func_ov065_022718ec(func_ov065_0227c05c(data_ov065_0229080c->unk_04, idx, &out));
+                DwcFriend_HandleGpResult(GsGp_GetBuddyStatus(sDwcFriendControl->unk_04, idx, &out));
                 for (j = 0; j < n; j++) {
-                    if (out.unk_00 == func_ov065_02271ed8(j)) {
+                    if (out.unk_00 == DwcFriend_GetProfileId(j)) {
                         s32 off = j * 12;
                         if (func_021000fc((void *)((u32)arr + off)) == 0) {
                             Unk_ov065_02271774_Ent *e = (Unk_ov065_02271774_Ent *)((u8 *)arr + off);
                             func_020ffba8(e, out.unk_00);
                             func_02100094(e);
-                            data_ov065_0229080c->unk_1d = 1;
+                            sDwcFriendControl->unk_1d = 1;
                         }
                         break;
                     }
                 }
                 if (j == n) {
-                    func_ov065_022718ec(func_ov065_0227bf5c(data_ov065_0229080c->unk_04, out.unk_00));
+                    DwcFriend_HandleGpResult(GsGp_DeleteBuddy(sDwcFriendControl->unk_04, out.unk_00));
                     cnt--;
                     idx--;
                 }
                 idx++;
             } while (idx < cnt);
         }
-        data_ov065_0229080c->unk_1e = 1;
+        sDwcFriendControl->unk_1e = 1;
     }
-    while (data_ov065_0229080c->unk_1c < n) {
-        id = func_ov065_02271ed8(data_ov065_0229080c->unk_1c);
+    while (sDwcFriendControl->unk_1c < n) {
+        id = DwcFriend_GetProfileId(sDwcFriendControl->unk_1c);
         if (id != 0) {
-            if (func_ov065_02271ac8(arr, data_ov065_0229080c->unk_1c, id) == 0) {
-                func_ov065_022718ec(func_ov065_0227c000(data_ov065_0229080c->unk_04, id, &idx));
+            if (DwcFriend_MergeDuplicate(arr, sDwcFriendControl->unk_1c, id) == 0) {
+                DwcFriend_HandleGpResult(GsGp_GetBuddyIndex(sDwcFriendControl->unk_04, id, &idx));
                 if (idx == -1) {
-                    func_ov065_022719e0(id);
+                    DwcFriend_SendBuddyRequest(id);
                 }
             }
         } else {
-            if (func_020ffc60((void *)func_ov065_02271474(), &arr[data_ov065_0229080c->unk_1c]) == -1) {
-                func_020ffb98((void *)func_ov065_02271474(), &arr[data_ov065_0229080c->unk_1c], buf);
-                func_ov065_0227c4b0(data_ov065_0229080c->unk_04, 0, 0, 0, 0, buf, 0, 0, (void *)func_ov065_02271774, data_ov065_0229080c->unk_1c);
-                data_ov065_0229080c->unk_1e = 2;
+            if (func_020ffc60((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->unk_1c]) == -1) {
+                func_020ffb98((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->unk_1c], buf);
+                GsGp_ProfileSearch(sDwcFriendControl->unk_04, 0, 0, 0, 0, buf, 0, 0, (void *)DwcFriend_OnProfileSearch, sDwcFriendControl->unk_1c);
+                sDwcFriendControl->unk_1e = 2;
                 return;
             }
         }
-        data_ov065_0229080c->unk_1c++;
+        sDwcFriendControl->unk_1c++;
     }
 }
 }
@@ -965,22 +965,22 @@ void func_ov065_02271ba0(Unk_ov065_02271774_Ent *arr, s32 n)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271b7c(void)
+void DwcFriend_FinishUpdate(void)
 {
-    data_ov065_0229080c->unk_2c(0, data_ov065_0229080c->unk_1d, data_ov065_0229080c->unk_30);
-    data_ov065_0229080c->unk_00 = 2;
+    sDwcFriendControl->unk_2c(0, sDwcFriendControl->unk_1d, sDwcFriendControl->unk_30);
+    sDwcFriendControl->unk_00 = 2;
 }
 }
 }
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271b40(Unk_ov065_02271774_Ent *arr, s32 i, s32 j)
+void DwcFriend_DeleteEntry(Unk_ov065_02271774_Ent *arr, s32 i, s32 j)
 {
-    if (data_ov065_0229080c != NULL) {
+    if (sDwcFriendControl != NULL) {
         MI_CpuFill8(&arr[i], 0, 12);
-        if (data_ov065_0229080c->unk_3c != NULL) {
-            data_ov065_0229080c->unk_3c(i, j, data_ov065_0229080c->unk_40);
+        if (sDwcFriendControl->unk_3c != NULL) {
+            sDwcFriendControl->unk_3c(i, j, sDwcFriendControl->unk_40);
         }
     }
 }
@@ -989,18 +989,18 @@ void func_ov065_02271b40(Unk_ov065_02271774_Ent *arr, s32 i, s32 j)
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_02271ac8(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
+s32 DwcFriend_MergeDuplicate(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
 {
     s32 i;
     for (i = 0; i < n; i++) {
-        s32 t = func_ov065_02271ed8(i);
+        s32 t = DwcFriend_GetProfileId(i);
         if (t != 0 && t == id) {
             if (func_021000fc(&arr[n]) != 0 && func_021000fc(&arr[i]) == 0) {
-                func_ov065_02271b40(arr, i, n);
+                DwcFriend_DeleteEntry(arr, i, n);
             } else {
-                func_ov065_02271b40(arr, n, i);
+                DwcFriend_DeleteEntry(arr, n, i);
             }
-            data_ov065_0229080c->unk_1d = 1;
+            sDwcFriendControl->unk_1d = 1;
             return TRUE;
         }
     }
@@ -1011,7 +1011,7 @@ s32 func_ov065_02271ac8(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_02271a04(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
+s32 DwcFriend_RemoveDuplicates(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
 {
     s32 res, i, j, t;
     Unk_ov065_02271774_Ent *q, *p;
@@ -1021,22 +1021,22 @@ s32 func_ov065_02271a04(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
         q = arr;
         p = arr;
         do {
-            t = func_ov065_02271ed8(i);
+            t = DwcFriend_GetProfileId(i);
             if (t != 0) {
                 if (t == id) {
                     res = i;
                 }
                 j = i + 1;
                 for (; j < n; j++) {
-                    if (t == func_ov065_02271ed8(j)) {
+                    if (t == DwcFriend_GetProfileId(j)) {
                         if (func_021000f4(q) == 2 && func_021000f4(&arr[j]) == 3) {
                             func_020ffba8(p, t);
                         }
                         if (func_021000fc(&arr[j]) != 0) {
                             func_02100094(p);
                         }
-                        func_ov065_02271b40(arr, j, i);
-                        data_ov065_0229080c->unk_1d = 1;
+                        DwcFriend_DeleteEntry(arr, j, i);
+                        sDwcFriendControl->unk_1d = 1;
                     }
                 }
             }
@@ -1052,10 +1052,10 @@ s32 func_ov065_02271a04(Unk_ov065_02271774_Ent *arr, s32 n, s32 id)
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_022719e0(s32 a)
+s32 DwcFriend_SendBuddyRequest(s32 a)
 {
-    s32 r = func_ov065_0227c278(data_ov065_0229080c->unk_04, a, data_ov065_0229080c->unk_28);
-    func_ov065_022718ec(r);
+    s32 r = GsGp_SendBuddyRequest(sDwcFriendControl->unk_04, a, sDwcFriendControl->unk_28);
+    DwcFriend_HandleGpResult(r);
     return r;
 }
 }
@@ -1063,24 +1063,24 @@ s32 func_ov065_022719e0(s32 a)
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_0227194c(void *a, void *b)
+s32 DwcFriend_GetBuddyStatus(void *a, void *b)
 {
     s32 out;
     s32 t;
     out = 0;
-    if (data_ov065_0229080c == NULL || func_ov065_02270e94() == 0) {
+    if (sDwcFriendControl == NULL || DwcLogin_IsLoggedIn() == 0) {
         return FALSE;
     }
-    t = func_020ffc60((void *)func_ov065_02271474(), a);
+    t = func_020ffc60((void *)DwcLogin_GetUserData(), a);
     if (t > 0) {
-        if (func_ov065_0227c000(data_ov065_0229080c->unk_04, t, &out) != 0) {
+        if (GsGp_GetBuddyIndex(sDwcFriendControl->unk_04, t, &out) != 0) {
             return FALSE;
         }
     }
     if (t <= 0 || out == -1) {
         return FALSE;
     }
-    if (func_ov065_0227c05c(data_ov065_0229080c->unk_04, out, b) == 0) {
+    if (GsGp_GetBuddyStatus(sDwcFriendControl->unk_04, out, b) == 0) {
         goto ok;
     }
     return FALSE;
@@ -1092,7 +1092,7 @@ ok:
 
 namespace F02271488 {
 extern "C" {
-s32 func_ov065_022718ec(s32 r)
+s32 DwcFriend_HandleGpResult(s32 r)
 {
     s32 a;
     s32 b;
@@ -1119,7 +1119,7 @@ s32 func_ov065_022718ec(s32 r)
         b = -20;
         break;
     }
-    func_ov065_02271fc8(a, b - 0x11558);
+    DwcFriend_Fail(a, b - 0x11558);
     return r;
 }
 }
@@ -1127,41 +1127,41 @@ s32 func_ov065_022718ec(s32 r)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271774(void *x, Unk_ov065_02271774_Rec *p, s32 idx)
+void DwcFriend_OnProfileSearch(void *x, Unk_ov065_02271774_Rec *p, s32 idx)
 {
     s32 off;
     s32 i;
     s32 out;
     if (p->unk_00 == 0 && p->unk_04 != 0) {
         off = idx * 12;
-        if (func_021000f4((u8 *)data_ov065_0229080c->unk_18 + off) != 0) {
-            if (data_ov065_0229080c->unk_00 == 1) {
-                data_ov065_0229080c->unk_1d = 1;
+        if (func_021000f4((u8 *)sDwcFriendControl->unk_18 + off) != 0) {
+            if (sDwcFriendControl->unk_00 == 1) {
+                sDwcFriendControl->unk_1d = 1;
                 for (i = 0; i < p->unk_04; i++) {
-                    if (func_ov065_02271ac8(data_ov065_0229080c->unk_18, idx, p->unk_0c[i].unk_00) != 0) {
-                        data_ov065_0229080c->unk_1c++;
-                        data_ov065_0229080c->unk_1e = 1;
+                    if (DwcFriend_MergeDuplicate(sDwcFriendControl->unk_18, idx, p->unk_0c[i].unk_00) != 0) {
+                        sDwcFriendControl->unk_1c++;
+                        sDwcFriendControl->unk_1e = 1;
                         p->unk_08 = 0x601;
                         return;
                     }
                 }
                 for (i = 0; i < p->unk_04; i++) {
-                    func_ov065_022718ec(func_ov065_0227c000(x, p->unk_0c[i].unk_00, &out));
+                    DwcFriend_HandleGpResult(GsGp_GetBuddyIndex(x, p->unk_0c[i].unk_00, &out));
                     if (out == -1) {
-                        func_ov065_022719e0(p->unk_0c[i].unk_00);
+                        DwcFriend_SendBuddyRequest(p->unk_0c[i].unk_00);
                     } else {
-                        func_020ffba8((u8 *)data_ov065_0229080c->unk_18 + off, p->unk_0c[0].unk_00);
-                        func_02100094((u8 *)data_ov065_0229080c->unk_18 + off);
-                        func_ov065_02271dac(idx);
-                        data_ov065_0229080c->unk_1c++;
-                        data_ov065_0229080c->unk_1e = 1;
+                        func_020ffba8((u8 *)sDwcFriendControl->unk_18 + off, p->unk_0c[0].unk_00);
+                        func_02100094((u8 *)sDwcFriendControl->unk_18 + off);
+                        DwcFriend_NotifyAdded(idx);
+                        sDwcFriendControl->unk_1c++;
+                        sDwcFriendControl->unk_1e = 1;
                         p->unk_08 = 0x601;
                         return;
                     }
                 }
                 if (p->unk_08 != 0x600) {
-                    data_ov065_0229080c->unk_1c++;
-                    data_ov065_0229080c->unk_1e = 1;
+                    sDwcFriendControl->unk_1c++;
+                    sDwcFriendControl->unk_1e = 1;
                     return;
                 }
             }
@@ -1169,16 +1169,16 @@ void func_ov065_02271774(void *x, Unk_ov065_02271774_Rec *p, s32 idx)
         }
     }
     if (p->unk_00 != 0) {
-        s32 e = func_ov065_022718ec(p->unk_00);
+        s32 e = DwcFriend_HandleGpResult(p->unk_00);
         if (e > 0) {
             e = 1;
         } else if (e != 0) {
             e = e;
         }
     } else {
-        if (data_ov065_0229080c->unk_00 == 1 || func_021000f4((u8 *)data_ov065_0229080c->unk_18 + idx * 12) == 0) {
-            data_ov065_0229080c->unk_1c++;
-            data_ov065_0229080c->unk_1e = 1;
+        if (sDwcFriendControl->unk_00 == 1 || func_021000f4((u8 *)sDwcFriendControl->unk_18 + idx * 12) == 0) {
+            sDwcFriendControl->unk_1c++;
+            sDwcFriendControl->unk_1e = 1;
         }
     }
 }
@@ -1187,35 +1187,35 @@ void func_ov065_02271774(void *x, Unk_ov065_02271774_Rec *p, s32 idx)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271698(void *x, Unk_ov065_02271774_Rec *p)
+void DwcFriend_OnBuddyRequestInfo(void *x, Unk_ov065_02271774_Rec *p)
 {
     s32 i;
     s32 found;
     found = 0;
     if (p->unk_00 == 0) {
         i = found;
-        for (; i < data_ov065_0229080c->unk_14; i++) {
-            if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 1) {
+        for (; i < sDwcFriendControl->unk_14; i++) {
+            if (func_021000f4(&sDwcFriendControl->unk_18[i]) == 1) {
                 u8 buf[24];
-                func_020ffb98((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i], buf);
+                func_020ffb98((void *)DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i], buf);
                 if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
-                    func_ov065_0227c224(x, p->unk_04);
-                    func_020ffba8(&data_ov065_0229080c->unk_18[i], p->unk_04);
+                    GsGp_AuthorizeBuddyRequest(x, p->unk_04);
+                    func_020ffba8(&sDwcFriendControl->unk_18[i], p->unk_04);
                     found = 1;
                 }
-            } else if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 3
-                       || func_021000f4(&data_ov065_0229080c->unk_18[i]) == 2) {
+            } else if (func_021000f4(&sDwcFriendControl->unk_18[i]) == 3
+                       || func_021000f4(&sDwcFriendControl->unk_18[i]) == 2) {
                 s32 v = p->unk_04;
-                if (v == func_020ffc60((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i])) {
-                    func_ov065_0227c224(x, v);
+                if (v == func_020ffc60((void *)DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i])) {
+                    GsGp_AuthorizeBuddyRequest(x, v);
                     found = 1;
                 }
             }
         }
         if (found != 0) {
-            func_ov065_022719e0(p->unk_04);
+            DwcFriend_SendBuddyRequest(p->unk_04);
         } else {
-            func_ov065_0227c17c(x, p->unk_04);
+            GsGp_DenyBuddyRequest(x, p->unk_04);
         }
     }
 }
@@ -1224,7 +1224,7 @@ void func_ov065_02271698(void *x, Unk_ov065_02271774_Rec *p)
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_022715b0(void *x, Unk_ov065_02271774_Rec *p)
+void DwcFriend_OnAuthorizedInfo(void *x, Unk_ov065_02271774_Rec *p)
 {
     s32 i;
     s32 found;
@@ -1232,27 +1232,27 @@ void func_ov065_022715b0(void *x, Unk_ov065_02271774_Rec *p)
     found = 0;
     if (p->unk_00 == 0) {
         i = found;
-        for (; i < data_ov065_0229080c->unk_14; i++) {
-            if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 1) {
-                func_020ffb98((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i], buf);
+        for (; i < sDwcFriendControl->unk_14; i++) {
+            if (func_021000f4(&sDwcFriendControl->unk_18[i]) == 1) {
+                func_020ffb98((void *)DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i], buf);
                 if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
-                    func_020ffba8(&data_ov065_0229080c->unk_18[i], p->unk_04);
-                    func_02100094(&data_ov065_0229080c->unk_18[i]);
+                    func_020ffba8(&sDwcFriendControl->unk_18[i], p->unk_04);
+                    func_02100094(&sDwcFriendControl->unk_18[i]);
                     found = 1;
                 }
-            } else if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 3
-                       || func_021000f4(&data_ov065_0229080c->unk_18[i]) == 2) {
+            } else if (func_021000f4(&sDwcFriendControl->unk_18[i]) == 3
+                       || func_021000f4(&sDwcFriendControl->unk_18[i]) == 2) {
                 s32 v = p->unk_04;
-                if (v == func_020ffc60((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i])) {
-                    func_020ffba8(&data_ov065_0229080c->unk_18[i], v);
-                    func_02100094(&data_ov065_0229080c->unk_18[i]);
+                if (v == func_020ffc60((void *)DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i])) {
+                    func_020ffba8(&sDwcFriendControl->unk_18[i], v);
+                    func_02100094(&sDwcFriendControl->unk_18[i]);
                     found = 1;
                 }
             }
         }
         if (found != 0) {
-            func_ov065_02271dac(func_ov065_02271a04(data_ov065_0229080c->unk_18, data_ov065_0229080c->unk_14, p->unk_04));
-            data_ov065_0229080c->unk_1d = 1;
+            DwcFriend_NotifyAdded(DwcFriend_RemoveDuplicates(sDwcFriendControl->unk_18, sDwcFriendControl->unk_14, p->unk_04));
+            sDwcFriendControl->unk_1d = 1;
         }
     }
 }
@@ -1261,68 +1261,68 @@ void func_ov065_022715b0(void *x, Unk_ov065_02271774_Rec *p)
 
 namespace F02271488 {
 extern "C" {
-void *func_ov065_022715a4(void)
+void *DwcFriend_GetControlField20(void)
 {
-    return data_ov065_0229080c->unk_20;
+    return sDwcFriendControl->unk_20;
 }
 }
 }
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_0227155c(void *mem, void *a, void *b, void *c, void *d, void *e, void *f)
+void DwcLogin_InitControl(void *mem, void *a, void *b, void *c, void *d, void *e, void *f)
 {
-    data_ov065_02290804 = (Unk_ov065_02271488_A *)mem;
-    MI_CpuFill8(data_ov065_02290804, 0, 0x264);
-    data_ov065_02290804->unk_00 = (Unk_ov065_02271488_Inner *)b;
-    data_ov065_02290804->unk_04 = 0;
-    data_ov065_02290804->unk_08 = c;
-    data_ov065_02290804->unk_0c = d;
-    data_ov065_02290804->unk_18 = (void (*)(s32, s32, void *))e;
-    data_ov065_02290804->unk_1c = f;
-    data_ov065_02290804->unk_20 = a;
+    sDwcLoginControl = (Unk_ov065_02271488_A *)mem;
+    MI_CpuFill8(sDwcLoginControl, 0, 0x264);
+    sDwcLoginControl->unk_00 = (Unk_ov065_02271488_Inner *)b;
+    sDwcLoginControl->unk_04 = 0;
+    sDwcLoginControl->unk_08 = c;
+    sDwcLoginControl->unk_0c = d;
+    sDwcLoginControl->unk_18 = (void (*)(s32, s32, void *))e;
+    sDwcLoginControl->unk_1c = f;
+    sDwcLoginControl->unk_20 = a;
 }
 }
 }
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271534(void)
+void DwcLogin_Begin(void)
 {
-    func_ov065_0227112c((void *)func_ov065_022712bc, 0);
-    data_ov065_02290804->unk_04 = 1;
-    data_ov065_02290804->unk_34 = 0;
+    DwcLogin_StartNasAuth((void *)DwcLogin_OnNasAuthDone, 0);
+    sDwcLoginControl->unk_04 = 1;
+    sDwcLoginControl->unk_34 = 0;
 }
 }
 }
 
 namespace F02271488 {
 extern "C" {
-void func_ov065_02271488(void)
+void DwcLogin_Process(void)
 {
-    if (data_ov065_02290804 != NULL) {
-        if (func_ov065_02270e4c() == 0) {
-            switch (data_ov065_02290804->unk_04) {
+    if (sDwcLoginControl != NULL) {
+        if (DwcCore_HasError() == 0) {
+            switch (sDwcLoginControl->unk_04) {
             case 0:
                 break;
             case 1:
-                func_ov065_02270fd4();
+                DwcLogin_PollNasAuth();
                 break;
             case 2:
             case 3:
             case 4: {
-                Unk_ov065_02271488_Inner *in = data_ov065_02290804->unk_00;
+                Unk_ov065_02271488_Inner *in = sDwcLoginControl->unk_00;
                 if (in != NULL) {
                     if (in->unk_00 != NULL) {
-                        func_ov065_0227c670(in);
+                        GsGp_Process(in);
                     }
                 }
-                if (data_ov065_02290804->unk_34 != 0) {
-                    u64 d = (OS_GetTick() - *(u64 *)&data_ov065_02290804->unk_38) << 6;
+                if (sDwcLoginControl->unk_34 != 0) {
+                    u64 d = (OS_GetTick() - *(u64 *)&sDwcLoginControl->unk_38) << 6;
                     d = d / 0x82ea;
                     if (d > 0xea60) {
-                        func_ov065_02271440(6, -0xee8e);
-                        data_ov065_02290804->unk_34 = 0;
+                        DwcLogin_Fail(6, -0xee8e);
+                        sDwcLoginControl->unk_34 = 0;
                     }
                 }
                 break;
@@ -1338,9 +1338,9 @@ void func_ov065_02271488(void)
 
 namespace F02270b74 {
 extern "C" {
-void *func_ov065_02271474(void) {
-    if (data_ov065_02290804 != NULL) {
-        return data_ov065_02290804->unk_20;
+void *DwcLogin_GetUserData(void) {
+    if (sDwcLoginControl != NULL) {
+        return sDwcLoginControl->unk_20;
     }
     return NULL;
 }
@@ -1349,13 +1349,13 @@ void *func_ov065_02271474(void) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02271440(s32 a, s32 b) {
-    if (data_ov065_02290804 != NULL && a != 0) {
-        func_ov065_02270e34(a, b);
-        if (data_ov065_02290804->unk_18 != NULL) {
-            data_ov065_02290804->unk_18(a, 0, data_ov065_02290804->unk_1c);
+void DwcLogin_Fail(s32 a, s32 b) {
+    if (sDwcLoginControl != NULL && a != 0) {
+        DwcCore_SetError(a, b);
+        if (sDwcLoginControl->unk_18 != NULL) {
+            sDwcLoginControl->unk_18(a, 0, sDwcLoginControl->unk_1c);
         }
-        func_ov065_022713ec();
+        DwcLogin_ResetState();
     }
 }
 }
@@ -1363,24 +1363,24 @@ void func_ov065_02271440(s32 a, s32 b) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02271404(void) {
-    if (data_ov065_02290804->unk_28 != NULL) {
-        func_ov065_0226dc40();
-        func_ov065_0226dbfc();
-        func_ov065_02277b64(0, data_ov065_02290804->unk_28, 0);
-        data_ov065_02290804->unk_28 = NULL;
+void DwcLogin_Shutdown(void) {
+    if (sDwcLoginControl->unk_28 != NULL) {
+        NasAuth_Abort();
+        NasAuth_Destroy();
+        DwcNet_Free(0, sDwcLoginControl->unk_28, 0);
+        sDwcLoginControl->unk_28 = NULL;
     }
-    data_ov065_02290804 = NULL;
+    sDwcLoginControl = NULL;
 }
 }
 }
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_022713ec(void) {
-    if (data_ov065_02290804 != NULL) {
-        data_ov065_02290804->unk_04 = 0;
-        data_ov065_02290804->unk_34 = 0;
+void DwcLogin_ResetState(void) {
+    if (sDwcLoginControl != NULL) {
+        sDwcLoginControl->unk_04 = 0;
+        sDwcLoginControl->unk_34 = 0;
     }
 }
 }
@@ -1388,7 +1388,7 @@ void func_ov065_022713ec(void) {
 
 namespace F02270b74 {
 extern "C" {
-s32 func_ov065_0227138c(s32 r, s32 unused) {
+s32 DwcLogin_HandleGpResult(s32 r, s32 unused) {
     s32 a = r;
     s32 b = unused;
     if (r == 0) {
@@ -1412,7 +1412,7 @@ s32 func_ov065_0227138c(s32 r, s32 unused) {
         b = -20;
         break;
     }
-    func_ov065_02271440(a, b - 0xee48);
+    DwcLogin_Fail(a, b - 0xee48);
     return r;
 }
 }
@@ -1420,31 +1420,31 @@ s32 func_ov065_0227138c(s32 r, s32 unused) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_022712d4(void *a0, Unk_ov065_02270eb0_X *x) {
-    data_ov065_02290804->unk_34 = 0;
+void DwcLogin_OnGpConnected(void *a0, Unk_ov065_02270eb0_X *x) {
+    sDwcLoginControl->unk_34 = 0;
     if (x->unk_00 == 0) {
-        if (data_ov065_02290804->unk_04 == 2) {
-            if (Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_02271e00(1, (void *)"")) == 0) {
-                if (data_ov065_02290804->unk_20->unk_1c == x->unk_04) {
-                    if (func_ov065_02270474() == 0) {
-                        if (func_ov065_02276e44(x->unk_04) == 0) {
-                            data_ov065_02290804->unk_04 = 5;
-                            data_ov065_02290804->unk_18(0, x->unk_04, data_ov065_02290804->unk_1c);
+        if (sDwcLoginControl->unk_04 == 2) {
+            if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(DwcFriend_SetOwnStatus(1, (void *)"")) == 0) {
+                if (sDwcLoginControl->unk_20->unk_1c == x->unk_04) {
+                    if (DwcConn_CreateGt2Socket() == 0) {
+                        if (DwcMatch_StartQr2(x->unk_04) == 0) {
+                            sDwcLoginControl->unk_04 = 5;
+                            sDwcLoginControl->unk_18(0, x->unk_04, sDwcLoginControl->unk_1c);
                         }
                     }
                 } else {
-                    func_ov065_02271440(6, -60000);
+                    DwcLogin_Fail(6, -60000);
                 }
             }
-        } else if (data_ov065_02290804->unk_04 == 3) {
-            s32 r = Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_0227c400(a0, x->unk_04, 0, 0, (void *)func_ov065_02270eb0, 0));
+        } else if (sDwcLoginControl->unk_04 == 3) {
+            s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_GetInfo(a0, x->unk_04, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
             if (r == 0) {
             } else if (r != 0) {
                 r = r;
             }
         }
     } else {
-        Unk_ov065_0227138c_Ns::func_ov065_0227138c(x->unk_00);
+        Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(x->unk_00);
     }
 }
 }
@@ -1452,24 +1452,24 @@ void func_ov065_022712d4(void *a0, Unk_ov065_02270eb0_X *x) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_022712bc(const char *a, const char *b) {
-    func_ov065_0227124c(a, b, (void *)func_ov065_022712d4, 2);
+void DwcLogin_OnNasAuthDone(const char *a, const char *b) {
+    DwcLogin_GpConnect(a, b, (void *)DwcLogin_OnGpConnected, 2);
 }
 }
 }
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_0227124c(const char *a, const char *b, void *c, s32 d) {
-    func_02127838(data_ov065_02290804->unk_4c, a);
-    func_02127838(data_ov065_02290804->unk_14c, b);
-    Unk_ov065_02270eb0_H *g = data_ov065_02290804;
+void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d) {
+    func_02127838(sDwcLoginControl->unk_4c, a);
+    func_02127838(sDwcLoginControl->unk_14c, b);
+    Unk_ov065_02270eb0_H *g = sDwcLoginControl;
     u64 t = OS_GetTick();
     g->unk_38 = t;
     g->unk_34 = 1;
-    Unk_ov065_02270eb0_H *h = data_ov065_02290804;
-    if (Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_0227c564(h->unk_00, h->unk_4c, h->unk_14c, 1, 0, c, 0)) == 0) {
-        data_ov065_02290804->unk_04 = d;
+    Unk_ov065_02270eb0_H *h = sDwcLoginControl;
+    if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_ConnectPreAuth(h->unk_00, h->unk_4c, h->unk_14c, 1, 0, c, 0)) == 0) {
+        sDwcLoginControl->unk_04 = d;
     }
 }
 }
@@ -1477,73 +1477,73 @@ void func_ov065_0227124c(const char *a, const char *b, void *c, s32 d) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_0227112c(Unk_ov065_02271440_Cb cb, u32 arg) {
+void DwcLogin_StartNasAuth(Unk_ov065_02271440_Cb cb, u32 arg) {
     Unk_ov065_0227112c_Cfg cfg;
     MI_CpuFill8(&cfg, 0, 0x2c);
-    data_ov065_02290808 = cb;
-    data_ov065_02290800 = arg;
-    if (func_020ffdfc(data_ov065_02290804->unk_20)) {
-        func_020fff48((u8 *)data_ov065_02290804->unk_20 + 0x10, data_ov065_02290804->unk_20->unk_24,
-                      data_ov065_02290804->unk_24c);
+    sDwcLoginDoneCallback = cb;
+    sDwcLoginDoneArg = arg;
+    if (func_020ffdfc(sDwcLoginControl->unk_20)) {
+        func_020fff48((u8 *)sDwcLoginControl->unk_20 + 0x10, sDwcLoginControl->unk_20->unk_24,
+                      sDwcLoginControl->unk_24c);
     } else {
-        if (func_020ffe08(&data_ov065_02290804->unk_40) == 0) {
-            if (func_020ffe24((u8 *)data_ov065_02290804->unk_20 + 4)) {
-                data_ov065_02290804->unk_40 = *(Unk_ov065_02270eb0_Tri *)((u8 *)data_ov065_02290804->unk_20 + 4);
+        if (func_020ffe08(&sDwcLoginControl->unk_40) == 0) {
+            if (func_020ffe24((u8 *)sDwcLoginControl->unk_20 + 4)) {
+                sDwcLoginControl->unk_40 = *(Unk_ov065_02270eb0_Tri *)((u8 *)sDwcLoginControl->unk_20 + 4);
             } else {
-                func_020ffe84(&data_ov065_02290804->unk_40);
+                func_020ffe84(&sDwcLoginControl->unk_40);
             }
         } else {
-            func_02100160(&data_ov065_02290804->unk_40, (u32)(((u64)((s64)OS_GetTick() * 0x5d588b656c078965LL) + 0x269ec3) >> 32));
+            func_02100160(&sDwcLoginControl->unk_40, (u32)(((u64)((s64)OS_GetTick() * 0x5d588b656c078965LL) + 0x269ec3) >> 32));
         }
-        func_020fff48(&data_ov065_02290804->unk_40, data_ov065_02290804->unk_0c, data_ov065_02290804->unk_24c);
+        func_020fff48(&sDwcLoginControl->unk_40, sDwcLoginControl->unk_0c, sDwcLoginControl->unk_24c);
     }
-    func_02127838(cfg.unk_16, data_ov065_02290804->unk_255);
-    cfg.unk_24 = (void *)func_ov065_02277b8c;
-    cfg.unk_28 = (void *)func_ov065_02277b64;
-    void *p = func_ov065_02277b78(0, 0x1a60, 4);
-    data_ov065_02290804->unk_28 = p;
+    func_02127838(cfg.unk_16, sDwcLoginControl->unk_255);
+    cfg.unk_24 = (void *)DwcNet_Alloc;
+    cfg.unk_28 = (void *)DwcNet_Free;
+    void *p = DwcNet_AllocAligned(0, 0x1a60, 4);
+    sDwcLoginControl->unk_28 = p;
     u64 t2 = OS_GetTick();
-    data_ov065_02290804->unk_2c = t2;
-    func_ov065_0226dd2c(&cfg, p);
+    sDwcLoginControl->unk_2c = t2;
+    NasAuth_Start(&cfg, p);
 }
 }
 }
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02270fd4(void) {
+void DwcLogin_PollNasAuth(void) {
     Unk_ov065_0227112c_Cfg cfg;
     Unk_ov065_02270fd4_S s1;
     Unk_ov065_02270fd4_S s2;
-    if (func_ov065_0226db98() == 0x14) {
-        func_ov065_0226db28(&s1.unk_00);
-        func_02127838(data_ov065_02290804->unk_4c, s1.unk_4a);
-        func_02127838(data_ov065_02290804->unk_14c, s1.unk_177);
-        func_ov065_0226dbfc();
-        func_ov065_02277b64(0, data_ov065_02290804->unk_28, 0);
-        data_ov065_02290804->unk_28 = NULL;
-        if (func_020ffdfc(data_ov065_02290804->unk_20)) {
-            data_ov065_02290808(data_ov065_02290804->unk_4c, data_ov065_02290804->unk_14c, data_ov065_02290800);
+    if (NasAuth_GetState() == 0x14) {
+        NasAuth_GetResult(&s1.unk_00);
+        func_02127838(sDwcLoginControl->unk_4c, s1.unk_4a);
+        func_02127838(sDwcLoginControl->unk_14c, s1.unk_177);
+        NasAuth_Destroy();
+        DwcNet_Free(0, sDwcLoginControl->unk_28, 0);
+        sDwcLoginControl->unk_28 = NULL;
+        if (func_020ffdfc(sDwcLoginControl->unk_20)) {
+            sDwcLoginDoneCallback(sDwcLoginControl->unk_4c, sDwcLoginControl->unk_14c, sDwcLoginDoneArg);
         } else {
-            func_ov065_0227124c(data_ov065_02290804->unk_4c, data_ov065_02290804->unk_14c,
-                                (void *)func_ov065_022712d4, 3);
+            DwcLogin_GpConnect(sDwcLoginControl->unk_4c, sDwcLoginControl->unk_14c,
+                                (void *)DwcLogin_OnGpConnected, 3);
         }
-    } else if (func_ov065_0226db98() != 0) {
+    } else if (NasAuth_GetState() != 0) {
         u64 now = OS_GetTick();
-        u64 d = now - data_ov065_02290804->unk_2c;
+        u64 d = now - sDwcLoginControl->unk_2c;
         if ((d * 64) / 0x82ea > 0x2710) {
-            func_ov065_0226db28(&s2.unk_00);
-            func_ov065_0226dbfc();
-            func_ov065_02277b64(0, data_ov065_02290804->unk_28, 0);
-            data_ov065_02290804->unk_28 = NULL;
-            func_ov065_02271440(2, s2.unk_00);
+            NasAuth_GetResult(&s2.unk_00);
+            NasAuth_Destroy();
+            DwcNet_Free(0, sDwcLoginControl->unk_28, 0);
+            sDwcLoginControl->unk_28 = NULL;
+            DwcLogin_Fail(2, s2.unk_00);
         } else {
-            func_ov065_0226dbfc();
+            NasAuth_Destroy();
             MI_CpuFill8(&cfg, 0, 0x2c);
-            func_02127838(cfg.unk_16, data_ov065_02290804->unk_255);
-            cfg.unk_24 = (void *)func_ov065_02277b8c;
-            cfg.unk_28 = (void *)func_ov065_02277b64;
-            func_ov065_0226dd2c(&cfg, data_ov065_02290804->unk_28);
+            func_02127838(cfg.unk_16, sDwcLoginControl->unk_255);
+            cfg.unk_24 = (void *)DwcNet_Alloc;
+            cfg.unk_28 = (void *)DwcNet_Free;
+            NasAuth_Start(&cfg, sDwcLoginControl->unk_28);
         }
     }
 }
@@ -1552,36 +1552,36 @@ void func_ov065_02270fd4(void) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02270eb0(void *a0, Unk_ov065_02270eb0_X *x) {
+void DwcLogin_OnGpProfileInfo(void *a0, Unk_ov065_02270eb0_X *x) {
     u8 a[0x14];
     u8 b[0x14];
     u8 c[0x1c];
     if (x->unk_00 == 0) {
-        if (data_ov065_02290804->unk_04 == 3) {
+        if (sDwcLoginControl->unk_04 == 3) {
             if (x->unk_8e[0] == 0) {
-                func_020fff48((u8 *)data_ov065_02290804->unk_20 + 4, data_ov065_02290804->unk_0c, a);
-                if (Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_0227c3b0(a0, 0x705, a)) == 0) {
-                    data_ov065_02290804->unk_04 = 4;
-                    s32 r = Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_0227c400(a0, x->unk_04, 0, 0, (void *)func_ov065_02270eb0, 0));
+                func_020fff48((u8 *)sDwcLoginControl->unk_20 + 4, sDwcLoginControl->unk_0c, a);
+                if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_SetInfo(a0, 0x705, a)) == 0) {
+                    sDwcLoginControl->unk_04 = 4;
+                    s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_GetInfo(a0, x->unk_04, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
                     if (r == 0) {
                     } else if (r != 0) {
                         r = r;
                     }
                 }
             } else {
-                func_ov065_0227c538(a0);
-                func_ov065_0227112c((Unk_ov065_02271440_Cb)func_ov065_022712bc, 0);
-                data_ov065_02290804->unk_04 = 1;
+                GsGp_Disconnect(a0);
+                DwcLogin_StartNasAuth((Unk_ov065_02271440_Cb)DwcLogin_OnNasAuthDone, 0);
+                sDwcLoginControl->unk_04 = 1;
             }
-        } else if (data_ov065_02290804->unk_04 == 4) {
-            func_020fff48((u8 *)data_ov065_02290804->unk_20 + 4, data_ov065_02290804->unk_0c, &b[1]);
+        } else if (sDwcLoginControl->unk_04 == 4) {
+            func_020fff48((u8 *)sDwcLoginControl->unk_20 + 4, sDwcLoginControl->unk_0c, &b[1]);
             if (strcmp((const char *)&x->unk_8e[0], (const char *)&b[1]) == 0) {
-                func_020fff48(&data_ov065_02290804->unk_40, data_ov065_02290804->unk_0c, &c[2]);
-                func_020ffd30(data_ov065_02290804->unk_20, &data_ov065_02290804->unk_40, x->unk_04);
-                func_ov065_0227c538(a0);
-                data_ov065_02290808(data_ov065_02290804->unk_4c, data_ov065_02290804->unk_14c, data_ov065_02290800);
+                func_020fff48(&sDwcLoginControl->unk_40, sDwcLoginControl->unk_0c, &c[2]);
+                func_020ffd30(sDwcLoginControl->unk_20, &sDwcLoginControl->unk_40, x->unk_04);
+                GsGp_Disconnect(a0);
+                sDwcLoginDoneCallback(sDwcLoginControl->unk_4c, sDwcLoginControl->unk_14c, sDwcLoginDoneArg);
             } else {
-                s32 r = Unk_ov065_0227138c_Ns::func_ov065_0227138c(func_ov065_0227c400(a0, x->unk_04, 0, 0, (void *)func_ov065_02270eb0, 0));
+                s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_GetInfo(a0, x->unk_04, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
                 if (r == 0) { return; }
             }
         }
@@ -1592,8 +1592,8 @@ void func_ov065_02270eb0(void *a0, Unk_ov065_02270eb0_X *x) {
 
 namespace F02270b74 {
 extern "C" {
-BOOL func_ov065_02270e94(void) {
-    if (data_ov065_02290804 != NULL && data_ov065_02290804->unk_04 == 5) {
+BOOL DwcLogin_IsLoggedIn(void) {
+    if (sDwcLoginControl != NULL && sDwcLoginControl->unk_04 == 5) {
         return TRUE;
     }
     return FALSE;
@@ -1603,21 +1603,21 @@ BOOL func_ov065_02270e94(void) {
 
 namespace F02270b74 {
 extern "C" {
-s32 func_ov065_02270e7c(s32 *out) {
+s32 DwcCore_GetLastError(s32 *out) {
     if (out != NULL) {
-        *out = data_ov065_022907fc;
+        *out = sDwcErrorCode;
     }
-    return data_ov065_022907f8;
+    return sDwcErrorClass;
 }
 }
 }
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02270e60(void) {
-    if (data_ov065_022907f8 != 8) {
-        data_ov065_022907f8 = 0;
-        data_ov065_022907fc = 0;
+void DwcCore_ClearError(void) {
+    if (sDwcErrorClass != 8) {
+        sDwcErrorClass = 0;
+        sDwcErrorCode = 0;
     }
 }
 }
@@ -1625,8 +1625,8 @@ void func_ov065_02270e60(void) {
 
 namespace F02270b74 {
 extern "C" {
-BOOL func_ov065_02270e4c(void) {
-    if (data_ov065_022907f8 != 0) {
+BOOL DwcCore_HasError(void) {
+    if (sDwcErrorClass != 0) {
         return TRUE;
     }
     return FALSE;
@@ -1636,10 +1636,10 @@ BOOL func_ov065_02270e4c(void) {
 
 namespace F02270b74 {
 extern "C" {
-void func_ov065_02270e34(s32 a, s32 b) {
-    if (data_ov065_022907f8 != 8) {
-        data_ov065_022907f8 = a;
-        data_ov065_022907fc = b;
+void DwcCore_SetError(s32 a, s32 b) {
+    if (sDwcErrorClass != 8) {
+        sDwcErrorClass = a;
+        sDwcErrorCode = b;
     }
 }
 }

@@ -110,7 +110,7 @@ addresses are not compared (the link check below catches those). asmdiff uses th
 header line pass them explicitly, e.g.
 
 ```
-python3 tools/asmdiff.py f.cpp func_ov065_02261fd8 --version 1.2/sp2p3 \
+python3 tools/asmdiff.py f.cpp IpStack_TimerThreadMain --version 1.2/sp2p3 \
     --flags "$(cd tools && python3 -c 'from mwcc_config import CC_FLAGS; print(CC_FLAGS)') -O4,p"
 ```
 
@@ -161,7 +161,7 @@ which ranges differ.
 ## 3. Naming
 
 * Free functions keep their `symbols.txt` name: declare them `extern "C"` (`GX_SetGraphicsMode`,
-  `func_ov065_02261fd8`). Never leave a `func_` name C++-mangled.
+  `IpStack_TimerThreadMain`). Never leave a `func_` name C++-mangled.
 * Classes are named `Unk_<address>` after their vtable (the address objects store, 8 bytes into the vtable) or,
   without a vtable, after their first function. Overlay-only classes are `Unk_ovNNN_<address>`. Local helper
   types are `Unk_<function address>_Xxx`. Generic names (`Obj`, `Info`) collide when files are combined.

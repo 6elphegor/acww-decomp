@@ -134,7 +134,7 @@ BOOL func_02094c38(void);
 }
 
 extern "C" {
-u32 func_0206ec6c(u32);
+u32 MenuCtrl_IsFinished(u32);
 }
 
 extern "C" {
@@ -242,7 +242,7 @@ void _ZN11CommManager9endRecordEjj(void *, u32, u32);
 }
 
 extern "C" {
-BOOL func_020a62a0(void);
+BOOL NetArea_IsLocalOwner(void);
 }
 
 extern "C" {

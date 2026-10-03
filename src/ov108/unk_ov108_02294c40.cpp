@@ -18,8 +18,8 @@ void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Snd_PlaySe(u32 a);
 void func_02065e70(void *a, void *b);
-void func_0206ecf8(u32 a);
-void func_0206ed2c(u32 a);
+void MenuCtrl_SetResult(u32 a);
+void MenuCtrl_SetIndex(u32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void *ProcBase_GetParent(void *p);
@@ -962,7 +962,7 @@ void LetterGiveMenu::mainAct17() {
             ((MenuCursorBase *)&unk_2418)->warpTo(r4 + r6, r4 + r2);
         }
     } else {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
         unk_8c = 3;
         setPhase(1);
         unk_2340.hide(1);
@@ -1033,8 +1033,8 @@ void LetterGiveMenu::flyLetterBack(u32 a, u32 c) {
 }
 
 void LetterGiveMenu::confirmGiveLetter() {
-    func_0206ed2c((u8)(unk_299 - 0xb));
-    func_0206ecf8(1);
+    MenuCtrl_SetIndex((u8)(unk_299 - 0xb));
+    MenuCtrl_SetResult(1);
     unk_8c = 3;
     setPhase(1);
     unk_2340.hide(1);

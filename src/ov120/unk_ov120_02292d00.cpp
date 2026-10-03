@@ -55,7 +55,7 @@ void Gfx2d_LoadCharFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void File_LoadToBuffer(const void *a, void *b, u32 c);
 void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
-void func_0206ee80(void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void BgScreen_SetRectPalette(void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Gfx2d_SetLayerOffset(u32 a, u32 b, u32 c);
@@ -757,7 +757,7 @@ void MapViewerMenu::loadBgGfx() {
     File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e4, 0x800);
     Gfx2d_LoadScreen(unk_4e4, 4, 0x800, 0);
     File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce4, 0x800);
-    func_0206ee80(unk_1ce4, 0x13, 0, 0x1c, 1, 4);
+    BgScreen_SetRectPalette(unk_1ce4, 0x13, 0, 0x1c, 1, 4);
 }
 
 extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN13MapViewerMenu17updateKnobReleaseEv, 0};
@@ -1088,7 +1088,7 @@ s32 MapViewerMenu::rebuildList() {
         setFlags(8);
         k = 3;
     }
-    func_0206ee80(unk_4e4, 0x1d, 0xa, 0x1d, 0x15, k);
+    BgScreen_SetRectPalette(unk_4e4, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
     highlightListRow(unk_a9);
 }
@@ -1255,11 +1255,11 @@ void MapViewerMenu::selectEntry(u8 v) {
 void MapViewerMenu::highlightListRow(u8 v) {
     setFlags(0x80);
     if (v == 0xe) {
-        func_0206ee80(unk_14e4, 0x13, 0, 0x1c, 0x19, 4);
+        BgScreen_SetRectPalette(unk_14e4, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
-        func_0206ee80(unk_14e4, 0x13, 0, 0x1c, 7, 3);
+        BgScreen_SetRectPalette(unk_14e4, 0x13, 0, 0x1c, 7, 3);
     } else {
-        func_0206ee80(unk_14e4, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
+        BgScreen_SetRectPalette(unk_14e4, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
     }
 }
 

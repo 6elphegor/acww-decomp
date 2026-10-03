@@ -5,9 +5,9 @@ extern "C" void Snd_CreateScene(void);
 
 // Intermediate class (vtable 0x020e2988); its constructor and destructor are inline.
 // Its virtuals vfunc_04/08/10/14/1c/20/28/2c are defined by another unit (declared only).
-class Unk_020e2988 : public GameProc {
+class SceneBase : public GameProc {
 public:
-    Unk_020e2988() {
+    SceneBase() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
@@ -19,10 +19,10 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Unk_020e2988() {}
+    virtual ~SceneBase() {}
 };
 
-class Unk_020e4428 : public Unk_020e2988 {
+class Unk_020e4428 : public SceneBase {
 public:
     Unk_020e4428() {}
     virtual BOOL vfunc_00();

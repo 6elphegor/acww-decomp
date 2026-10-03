@@ -244,10 +244,10 @@ s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
 void func_020639e8(char *buf, const char *fmt, ...);
 BOOL File_LoadToBuffer(const void *a, void *b, s32 c);
 BOOL MenuCtrl_RequestOpenNested(u32 v);
-void func_0206ed44(u8 v);
-u32 func_0206ed50();
+void MenuCtrl_SetMode(u8 v);
+u32 MenuCtrl_GetMode();
 void MenuScreen_BeginClose();
-void func_0206ec60();
+void MenuCtrl_ClearSavedSlot();
 void func_0206e03c();
 BOOL Save_WritePlayerFriendList();
 void MenuScreen_Reset();
@@ -428,7 +428,7 @@ BOOL MenuTabBar::vfunc_00() {
     unk_8d = 1;
     unk_8c = 0;
     setPhase(0);
-    func_0206ec60();
+    MenuCtrl_ClearSavedSlot();
     Snd_BeginMenuDuck();
     MenuCtrl_SyncFromInputMode();
     return TRUE;
@@ -550,7 +550,7 @@ void MenuTabBar::selectTab(u32 idx) {
         }
     }
     if (idx == 0) {
-        func_0206ec60();
+        MenuCtrl_ClearSavedSlot();
     }
     if (old <= 6 && idx <= 6) {
         unk_95 = 1;
@@ -635,12 +635,12 @@ void MenuTabBar::updateOpenTabMenu() {
         case 11:
         case 12:
             MenuCtrl_RequestOpenNested(0xf);
-            func_0206ed44(unk_93 + 0xf);
+            MenuCtrl_SetMode(unk_93 + 0xf);
             break;
         case 13:
         case 14:
             MenuCtrl_RequestOpenNested(0x2b);
-            func_0206ed44(unk_93);
+            MenuCtrl_SetMode(unk_93);
             break;
         case 7:
             break;
@@ -655,7 +655,7 @@ void MenuTabBar::stateLoad() {
     Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
     File_LoadToBuffer("menu/tag/obj1.bch", unk_144, 0x800);
     File_LoadToBuffer("menu/tag/obj2.bch", unk_944, 0x800);
-    showTab(func_0206ed50());
+    showTab(MenuCtrl_GetMode());
     unk_91 = 1;
     unk_92 = 0;
     unk_8c = 1;

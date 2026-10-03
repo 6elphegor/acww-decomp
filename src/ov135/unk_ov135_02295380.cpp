@@ -21,12 +21,12 @@ extern u8 gSaveData[];
 
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-void func_0206e814();
-void func_0206ecf8(u32 v);
-s32 func_0206ed50();
-void func_0206e8cc(void *p);
-void func_0206e82c();
-void func_0206e820();
+void MenuCtrl_SetClockEdited();
+void MenuCtrl_SetResult(u32 v);
+s32 MenuCtrl_GetMode();
+void MenuCtrl_SetDateTime(void *p);
+void MenuCtrl_SetClockMovedBack();
+void MenuCtrl_SetClockMovedForward();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 ClockOffset_CalcMinutes(void *p, void *q);
 u16 ClockOffset_CalcSeconds(void *p, void *q);
@@ -419,7 +419,7 @@ void ClockAdjustMenu::updateLayerSlide() {
 
 void ClockAdjustMenu::initPicker() {
     DateTimePicker_Init(&unk_260, 0, 6, 4, 3);
-    if (func_0206ed50() == 0x33) {
+    if (MenuCtrl_GetMode() == 0x33) {
         DateTimePicker_EnableMinLimit(&unk_260);
     }
     unk_95 = 0;
@@ -482,7 +482,7 @@ void ClockAdjustMenu::updateTouch() {
                 u8 a = gTouchCurX;
                 u8 b = gTouchCurY;
                 if (DateTimePicker_GrabHand(&unk_260, b ? a : a, b)) {
-                    func_0206e814();
+                    MenuCtrl_SetClockEdited();
                     setMainState(1);
                 }
                 s32 r = DateTimePicker_HitTestField(&unk_260, a, b);
@@ -723,17 +723,17 @@ void ClockAdjustMenu::confirm() {
     unk_fc.setSelected(6);
     setTransitionState(2);
     setMainState(0xd);
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     u32 v[2];
     v[0] = 0;
     v[1] = 0;
     DateTimePicker_GetDateTime(&unk_260, v);
-    func_0206e8cc(v);
+    MenuCtrl_SetDateTime(v);
     u8 *g = gSaveData;
     if (DateTimePicker_IsBeforeStart(&unk_260)) {
-        func_0206e82c();
+        MenuCtrl_SetClockMovedBack();
     } else {
-        func_0206e820();
+        MenuCtrl_SetClockMovedForward();
     }
     u32 a[2];
     MI_CpuCopy8(v, a, 8);
@@ -750,14 +750,14 @@ void ClockAdjustMenu::cancel() {
     unk_fc.setSelected(7);
     setTransitionState(2);
     setMainState(0xd);
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
 }
 
 void ClockAdjustMenu::openFieldList(u32 a) {
     hideCursor();
     DateTimePicker_OpenList(&unk_260, a);
     setMainState(0xe);
-    func_0206e814();
+    MenuCtrl_SetClockEdited();
 }
 
 void ClockAdjustMenu::decideList() {

@@ -22,11 +22,11 @@ void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
 void *_ZN12Unk_02097ff413func_02098320Ev(void *p);
 void *_ZN10PlayerData13func_02098750Ev(void *p);
-s32 func_0206ed50();
-void func_0206ecf8(s32 a);
+s32 MenuCtrl_GetMode();
+void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
 s32 MenuCtrl_IsButtons();
-void func_0206e8dc();
+void MenuCtrl_SetAmount();
 void func_02097410(void *p, s32 v);
 s32 func_02097414(void *p);
 void func_02097a48(void *p, s32 v, s32 w);
@@ -35,7 +35,7 @@ s32 func_02097ce4(void *p, s32 v, s32 w);
 void *ProcBase_GetParent();
 void func_0206f9fc(void *self, s32 v);
 s32 File_LoadToBuffer(const char *a, void *b, s32 c);
-s32 func_0206ee80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void _ZN10BgVramTask13requestScreenEjhjj(void *self, void *buf, s32 a, s32 b, s32 c);
 void _ZN10HandCursor16disableObjWindowEv(void *self);
@@ -445,10 +445,10 @@ void BankMenu::setupBgLayers() {
 void BankMenu::loadBgGfx() {
     NumberPad_LoadBgGraphics(6);
     File_LoadToBuffer("menu/bank/c0_bg.bsc", unk_42c, 0x800);
-    func_0206ee80(unk_42c, 6, 7, 0x19, 0xf, 6);
+    BgScreen_SetRectPalette(unk_42c, 6, 7, 0x19, 0xf, 6);
     Gfx2d_LoadScreen(unk_42c, 6, 0x800, 0);
     File_LoadToBuffer("menu/bank/c1_bg.bsc", unk_c2c, 0x800);
-    func_0206ee80(unk_c2c, 6, 7, 0x19, 0xf, 6);
+    BgScreen_SetRectPalette(unk_c2c, 6, 7, 0x19, 0xf, 6);
     Gfx2d_LoadScreen(unk_c2c, 4, 0x800, 0);
     Unk_020e0488 *p = (Unk_020e0488 *)allocLabel();
     func_0206f9fc(p, 0x5f);
@@ -599,7 +599,7 @@ void BankMenu::resumeInput() {
 
 void BankMenu::quit() {
     unk_1431 = 0x44;
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_f8.setSelected(6);
     setTransitionState(2);
     setMainState(5);
@@ -619,8 +619,8 @@ void BankMenu::selectDeposit() {
         showMessage(0xe);
     } else {
         unk_1431 = 0x35;
-        func_0206ee80(unk_42c, 6, 7, 0x19, 0xa, 7);
-        func_0206ee80(unk_c2c, 6, 7, 0x19, 0xa, 7);
+        BgScreen_SetRectPalette(unk_42c, 6, 7, 0x19, 0xa, 7);
+        BgScreen_SetRectPalette(unk_c2c, 6, 7, 0x19, 0xa, 7);
         startSelect();
     }
 }
@@ -630,8 +630,8 @@ void BankMenu::selectWithdraw() {
         showMessage(0xf);
     } else {
         unk_1431 = 0x36;
-        func_0206ee80(unk_42c, 6, 0xc, 0x19, 0xf, 7);
-        func_0206ee80(unk_c2c, 6, 0xc, 0x19, 0xf, 7);
+        BgScreen_SetRectPalette(unk_42c, 6, 0xc, 0x19, 0xf, 7);
+        BgScreen_SetRectPalette(unk_c2c, 6, 0xc, 0x19, 0xf, 7);
         startSelect();
     }
 }

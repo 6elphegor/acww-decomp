@@ -14,7 +14,7 @@ extern u8 data_020de390;
 s32 func_020512e0(const u8 *str, s32 len);
 
 void func_0206f4d8(u8 *p, u32 x);
-void func_0206f4e4(u8 *p, u32 x);
+void CommSub_StartCountdown(u8 *p, u32 x);
 void func_0206f4f0(u8 *p, u32 x);
 void func_0206f56c(u8 *p, u32 x);
 void func_0206f5a0(u8 *p, u32 x);
@@ -33,7 +33,7 @@ Unk_0206f804_Fn data_020de3a8[24] = {
     func_0206f7d0, func_0206f770, func_0206f6fc, func_0206f6b8, func_0206f6b8, func_0206f6fc,
     func_0206f668, func_0206f650, func_0206f5ac, func_0206f5a0, func_0206f5a0, func_0206f5a0,
     func_0206f56c, func_0206f4f0, func_0206f4f0, func_0206f4f0, func_0206f4f0, func_0206f4f0,
-    func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4d8,
+    CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
 };
 
 s32 Unk_020e0470::func_0206f828() { return func_020512e0(unk_0e, 0x29); }

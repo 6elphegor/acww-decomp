@@ -73,11 +73,11 @@ void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 s32 Math_AngleXZ(void *a, void *b);
-void PlayerActor_RequestAct70(s32 a, s32 b);
-void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
+void PlayerActor_RequestTurnTo(s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 BOOL func_02094f2c(s32 a, s32 b);
 BOOL func_020951b8(s32 a);
-s32 func_020a0414(void);
+s32 Net_GetJoiningAid(void);
 s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL func_020a03c4(void);
 void func_020b78c4(void);
@@ -814,7 +814,7 @@ BOOL SpNpcMissing1::mainAct08() {
     u8 buf;
     Unk_020bfe30_Vec vec24;
     Unk_020bfe30_Vec vec30;
-    s32 r5 = func_020a0414();
+    s32 r5 = Net_GetJoiningAid();
     CommManager *r7 = gCommManager;
     s32 r6 = r7->unk_68;
     s32 s = PlayerData_GetBySessionSlot(r5);
@@ -828,7 +828,7 @@ BOOL SpNpcMissing1::mainAct08() {
         break;
     case 1:
         vec30 = data_020d1c8c;
-        PlayerActor_RequestAct6F(&vec30, 0x35c, r5);
+        PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
         _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
         unk_724 = 2;
         break;
@@ -881,7 +881,7 @@ BOOL SpNpcMissing1::mainAct08() {
     case 6:
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
-            PlayerActor_RequestAct70(0, r5);
+            PlayerActor_RequestTurnTo(0, r5);
             SpNpcMissing2_ChangeAct06();
             unk_724 = 7;
         }

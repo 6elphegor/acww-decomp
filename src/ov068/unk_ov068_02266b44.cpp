@@ -97,7 +97,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_EndTalkWith(void *p);
-u32 func_020ae02c(void *p);
+u32 NookShop_GetLevel(void *p);
 u32 func_020e7518(void *p);
 void ProcBase_RequestDelete(void *p);
 void func_02034d70(u32 a);
@@ -108,11 +108,11 @@ void Camera_SetModeDefault();
 void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
 BOOL func_020951b8(s32 a);
 void *func_020947f0(s32 a);
-void PlayerActor_RequestAct6F(void *v, u32 a, u32 b);
+void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
 void func_02094f48(s32 a, s32 b);
-void func_020a02d0();
-BOOL func_020a0304();
-BOOL func_020a0318();
+void GameStart_Clear();
+BOOL GameStart_IsNewResident();
+BOOL GameStart_IsNewTown();
 s32 func_020978a4(void *self);
 void func_02097ff4(void *self, s32 a);
 void *func_02060388(void *self);
@@ -466,7 +466,7 @@ BOOL SpNpcNookIntro::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
-    Unk_020d77a4_setNpcHandle(this, &tbl[func_020ae02c(&data_021ed104)].v);
+    Unk_020d77a4_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
     Unk_020d77a4_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((FieldVillager *)this);
     func_0201a8d0(&unk_350, 2, 0x399, 0x133, 0x199);
@@ -517,8 +517,8 @@ BOOL SpNpcNookIntro::vfunc_00() {
     unk_4cc.unk_1c |= 2;
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        if (!func_020a0304()) {
-            if (!func_020a0318()) {
+        if (!GameStart_IsNewResident()) {
+            if (!GameStart_IsNewTown()) {
                 func_02097ff4(p, 1);
             }
         }
@@ -528,11 +528,11 @@ BOOL SpNpcNookIntro::vfunc_00() {
 }
 
 const char *SpNpcNookIntro::getTexturePath() {
-    return sNookTexPaths[func_020ae02c(&data_021ed104)];
+    return sNookTexPaths[NookShop_GetLevel(&data_021ed104)];
 }
 
 const char *SpNpcNookIntro::getModelPath() {
-    return sNookModelPaths[func_020ae02c(&data_021ed104)];
+    return sNookModelPaths[NookShop_GetLevel(&data_021ed104)];
 }
 
 BOOL SpNpcNookIntro::updateAct() {
@@ -592,7 +592,7 @@ BOOL SpNpcNookIntro::setupAct02() {
     v.y = p->y;
     v.z = p->z;
     v.z += 0x2000;
-    PlayerActor_RequestAct6F(&v, 0x400, 4);
+    PlayerActor_RequestWalkTo(&v, 0x400, 4);
     return TRUE;
 }
 
@@ -634,7 +634,7 @@ BOOL SpNpcNookIntro::mainAct04() {
     if (func_02019790(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
         TalkRequest_EndTalkWith(this);
         if (PlayerData_GetCurrent()) {
-            func_020a02d0();
+            GameStart_Clear();
         }
     }
     return TRUE;
@@ -690,7 +690,7 @@ void SpNpcNookIntroTalk::vfunc_14() {
             buf = 0xf;
         } else {
             func_02015958(this, p, 1, 0xa, 1, 0);
-            if (func_020a0318() != 0) {
+            if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
             } else if (func_020978a4(data_021d735c) <= 1) {
                 buf = 0x27;
@@ -703,14 +703,14 @@ void SpNpcNookIntroTalk::vfunc_14() {
     case 11:
     case 0x1c:
     case 0x27:
-        if (func_020a0304() == 0 && func_020a0318() == 0) {
+        if (GameStart_IsNewResident() == 0 && GameStart_IsNewTown() == 0) {
             buf = 0xe;
         } else {
             buf = 0xc;
         }
         break;
     case 15:
-        if (func_020a0304() == 0 && func_020a0318() == 0) {
+        if (GameStart_IsNewResident() == 0 && GameStart_IsNewTown() == 0) {
             buf = 0x10;
         } else {
             buf = 0x11;
@@ -786,7 +786,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
             if (func_020197a8(o->unk_564) == 0) {
                 Unk_ov068_02266bd0_Scene *sc = unk_3c;
                 volatile u8 buf = data_021edb68;
-                if (func_020a0318() != 0) {
+                if (GameStart_IsNewTown() != 0) {
                     buf = 0xd;
                 } else {
                     buf = 0xa;

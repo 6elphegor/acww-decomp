@@ -104,12 +104,12 @@ void Constellation_Erase(s32 idx);
 void Constellation_GetViewingTime(void *a, s32 idx);
 s32 Constellation_GetName(void *self, s32 idx);
 void String_Load2d(void *o, u8 *p, u32 x);
-BOOL func_020a032c(void);
+BOOL GameStart_IsActive(void);
 void *PlayerData_GetCurrent(void);
 s16 *func_0209c37c(s32 a, s32 b);
 BOOL func_0202e1cc(s32 a, s32 b);
-BOOL func_0206ec6c(void);
-BOOL func_0206ed18(void);
+BOOL MenuCtrl_IsFinished(void);
+BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
 Unk_ov046_02258e68_Actor *func_02095204(s32 n);
 s32 func_020e9650(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
@@ -803,7 +803,7 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
     u8 msg[4];
     Unk_ov046_02259de8_Time t;
     msg[0] = 0xc;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         t.w0 = 0;
         t.w1 = 0;
         Constellation_GetViewingTime(&t, unk_bc);
@@ -834,8 +834,8 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
 void SpNpcCelesteTalk::onConstellationNamed() {
     TalkWindowState *o = unk_3c;
     u8 v = 5;
-    if (func_0206ec6c()) {
-        if (func_0206ed18()) {
+    if (MenuCtrl_IsFinished()) {
+        if (MenuCtrl_IsResultOk()) {
             Unk_020e2f74 s;
             v = 0xb;
             Constellation_GetName(&s, unk_bc);
@@ -848,7 +848,7 @@ void SpNpcCelesteTalk::onConstellationNamed() {
 void SpNpcCelesteTalk::onConstellationRedrawn() {
     TalkWindowState *o = unk_3c;
     u8 v = 0x1d;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         v = 0x38;
     } else {
         unk_c1 = 0x10 - Constellation_CountFreeSlots();
@@ -861,8 +861,8 @@ void SpNpcCelesteTalk::onConstellationRedrawn() {
 void SpNpcCelesteTalk::onConstellationRenamed() {
     TalkWindowState *o = unk_3c;
     u8 v = 5;
-    if (func_0206ec6c()) {
-        if (func_0206ed18()) {
+    if (MenuCtrl_IsFinished()) {
+        if (MenuCtrl_IsResultOk()) {
             v = 0x3d;
             Unk_020e2f74 s;
             Constellation_GetName(&s, unk_bc);
@@ -894,7 +894,7 @@ void SpNpcCelesteTalk::setTopic(s32 v) {
 }
 
 void SpNpcCelesteTalk::vfunc_78(TalkStartMsg *out) {
-    if (func_020a032c()) {
+    if (GameStart_IsActive()) {
         out->unk_00 = (u8 *)"sp_etc_sequence4";
         out->unk_04 = 0x14;
         return;
@@ -955,7 +955,7 @@ extern "C" u8 sSpNpcCelesteKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's',
 // Data order: this unit is placed object by object (see object_order.txt).
 
 void SpNpcCelesteTalk::vfunc_14() {
-    if (func_020a032c() == 0) {
+    if (GameStart_IsActive() == 0) {
         PlayerData_GetCurrent();
         unk_d8 = 0xff;
         static Unk_ov046_0225aa0c_Row tbl[29] = {

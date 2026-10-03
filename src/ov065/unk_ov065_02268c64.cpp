@@ -4,17 +4,17 @@
 extern "C" {
 
 // const objects have internal linkage in C++ unless declared extern; TU12 reads these two
-extern const u8 data_ov065_0228b2a4[8];
-extern const u8 data_ov065_0228b2ac[0x20];
-const u8 data_ov065_0228b2a4[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0};
-const u8 data_ov065_0228b2ac[0x20] = {
+extern const u8 gWifiLinkAnyBssid[8];
+extern const u8 gWifiLinkAnySsid[0x20];
+const u8 gWifiLinkAnyBssid[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0};
+const u8 gWifiLinkAnySsid[0x20] = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 };
-u32 data_ov065_022905ac;
-void *data_ov065_022905a8;
-u8 data_ov065_022905b0[8];
-u8 data_ov065_022905b8[0x20];
+u32 sWifiLinkSendState;
+void *sWifiLinkWork;
+u8 sWifiLinkSendWaitQueue[8];
+u8 sWifiLinkSendLock[0x20];
 
 }
 
@@ -94,15 +94,15 @@ struct Unk_ov065_0226b3c4_Rec {
 
 extern "C" {
 
-extern Unk_ov065_0226ab40_Glb data_ov065_022905ac;
-extern u8 data_ov065_022905b8[];
-extern volatile u8 data_ov065_022905d8;
-extern u8 data_ov065_022905dc[];
-extern u8 *data_ov065_022905ec;
-extern void *data_ov065_022905f0;
-extern void *data_ov065_022905f4;
-extern Unk_ov065_0226b27c_F8 *data_ov065_022905f8;
-extern Unk_ov065_0226aed4_Fc *data_ov065_022905fc;
+extern Unk_ov065_0226ab40_Glb sWifiLinkSendState;
+extern u8 sWifiLinkSendLock[];
+extern volatile u8 sWifiRssiCount;
+extern u8 sWifiRssiSamples[];
+extern u8 *sWifiApContext;
+extern void *sWifiApLinkWork;
+extern void *sWifiApSocketConfig;
+extern Unk_ov065_0226b27c_F8 *sWifiApAllocator;
+extern Unk_ov065_0226aed4_Fc *sWifiApControl;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -117,43 +117,21 @@ s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
 void func_020ff154(void *);
 
-Unk_ov065_0226ab5c_Conn *func_ov065_02269bd0();
-s32 func_ov065_0226a510(void *, u32);
-s32 func_ov065_0226a97c(void *);
-s32 func_ov065_0226a9a8(void *);
-void func_ov065_0226a9d4();
-s32 func_ov065_0226bd18(u8 *);
-s32 func_ov065_0226be9c();
-u8 func_ov065_0226bee4();
-u8 func_ov065_0226bc40();
-u8 func_ov065_0226c1e0();
-u8 func_ov065_0226c8a4();
-u8 func_ov065_0226c924();
-u8 func_ov065_0226ccc8();
+Unk_ov065_0226ab5c_Conn *WifiLink_GetWork();
+s32 WifiLink_Init(void *, u32);
+s32 WifiLink_UnlockFromIrq(void *);
+s32 WifiLink_TryLockFromIrq(void *);
+void WifiLink_OnKeepAliveSent();
+s32 WifiAp_CleanupStep(u8 *);
+s32 WifiAp_GetErrorCode2();
+u8 WifiAp_StepFailedCleanup();
+u8 WifiAp_ProcessConnect();
+u8 WifiAp_StepRecoverLink();
+u8 WifiAp_ProcessSearch();
+u8 WifiAp_ProcessStartup();
+u8 WifiAp_ProcessNetSetup();
 
-u8 func_ov065_0226ad30();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void func_ov065_0226b084(u32, void *, u32);
-
-
-
-u8 func_ov065_0226af18();
-void *func_ov065_0226af74(u32);
+u8 WifiLink_GetAverageRssi();
 
 
 
@@ -170,39 +148,61 @@ void *func_ov065_0226af74(u32);
 
 
 
+void WifiAp_FreeBlock(u32, void *, u32);
 
 
-void func_ov065_0226ac7c() {
-    if (data_ov065_022905ac.unk_00 == 0) {
-        data_ov065_022905ac.unk_00 = 1;
-        data_ov065_022905ac.unk_24 = 0;
-        data_ov065_022905ac.unk_08 = 0;
-        data_ov065_022905ac.unk_04 = 0;
-        OS_InitMutex(data_ov065_022905b8);
+
+u8 WifiAp_GetState();
+void *WifiAp_GetBlock(u32);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void WifiLink_InitSendState() {
+    if (sWifiLinkSendState.unk_00 == 0) {
+        sWifiLinkSendState.unk_00 = 1;
+        sWifiLinkSendState.unk_24 = 0;
+        sWifiLinkSendState.unk_08 = 0;
+        sWifiLinkSendState.unk_04 = 0;
+        OS_InitMutex(sWifiLinkSendLock);
     }
 }
 
-void func_ov065_0226ac54(u8 *p) {
-    Unk_ov065_0226ac54_Cb cb = data_ov065_022905ac.unk_28;
+void WifiLink_OnFrameReceived(u8 *p) {
+    Unk_ov065_0226ac54_Cb cb = sWifiLinkSendState.unk_28;
     if (cb != 0) {
         cb(p + 0x1e, p + 0x18, p + 0x2c, *(u16 *)(p + 6));
     }
 }
 
-void func_ov065_0226abf4() {
-    Unk_ov065_0226ab5c_Conn *c = func_ov065_02269bd0();
+void WifiLink_SendKeepAlive() {
+    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
     if (c != 0 && c->unk_2260 == 9 && c->unk_226b != 1) {
-        if (func_ov065_0226a9a8(data_ov065_022905b8) != 0) {
-            if (WM_SetDCFData((void *)func_ov065_0226a9d4, c->unk_2144, c->unk_0f00, 0) != 2) {
-                func_ov065_0226a97c(data_ov065_022905b8);
+        if (WifiLink_TryLockFromIrq(sWifiLinkSendLock) != 0) {
+            if (WM_SetDCFData((void *)WifiLink_OnKeepAliveSent, c->unk_2144, c->unk_0f00, 0) != 2) {
+                WifiLink_UnlockFromIrq(sWifiLinkSendLock);
             }
         }
     }
 }
 
-u8 *func_ov065_0226abb0() {
+u8 *WifiLink_GetConnectedBssid() {
     u8 *r5 = 0;
-    Unk_ov065_0226ab5c_Conn *c = func_ov065_02269bd0();
+    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
     u32 irq = OS_DisableInterrupts();
     if (c != 0 && c->unk_2260 == 9 && c->unk_226b == 0) {
         r5 = c->unk_2144;
@@ -211,10 +211,10 @@ u8 *func_ov065_0226abb0() {
     return r5;
 }
 
-u8 *func_ov065_0226ab5c(u16 *out) {
+u8 *WifiLink_GetConnectedSsid(u16 *out) {
     u8 *r7 = 0;
     u32 r6 = 0;
-    Unk_ov065_0226ab5c_Conn *c = func_ov065_02269bd0();
+    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
     u32 irq = OS_DisableInterrupts();
     if (c != 0 && c->unk_2260 == 9 && c->unk_226b == 0) {
         r7 = c->unk_214c;
@@ -227,9 +227,9 @@ u8 *func_ov065_0226ab5c(u16 *out) {
     return r7;
 }
 
-void func_ov065_0226ab40(Unk_ov065_0226ac54_Cb cb) {
+void WifiLink_SetRecvCallback(Unk_ov065_0226ac54_Cb cb) {
     u32 irq = OS_DisableInterrupts();
-    data_ov065_022905ac.unk_28 = cb;
+    sWifiLinkSendState.unk_28 = cb;
     OS_RestoreInterrupts(irq);
 }
 
@@ -238,7 +238,7 @@ void func_ov065_0226ab40(Unk_ov065_0226ac54_Cb cb) {
 
 namespace N_a144 {
 
-// Network library state (big object pointed to by data_ov065_022905a8)
+// Network library state (big object pointed to by sWifiLinkWork)
 
 struct Unk_ov065_0226a73c_Node {
     u8 unk_00;
@@ -296,10 +296,10 @@ struct Unk_ov065_0226a9e4_Msg {
 };
 
 extern "C" {
-extern Unk_ov065_022905a8_S *volatile data_ov065_022905a8;
-extern Unk_ov065_0226a97c_Mutex data_ov065_022905b8;
-extern Unk_ov065_0226a9e4_G data_ov065_022905ac;
-extern u8 data_ov065_022905b0[];
+extern Unk_ov065_022905a8_S *volatile sWifiLinkWork;
+extern Unk_ov065_0226a97c_Mutex sWifiLinkSendLock;
+extern Unk_ov065_0226a9e4_G sWifiLinkSendState;
+extern u8 sWifiLinkSendWaitQueue[];
 
 // main module
 u32 OS_DisableInterrupts(void);
@@ -328,41 +328,41 @@ void OS_LockMutex(void *);
 void OS_UnlockMutex(void *);
 
 // overlay 065, other groups
-void func_ov065_02269350(void);
-void func_ov065_02269550(void);
-void func_ov065_02269784(void);
-void func_ov065_022699e8(void *, void *, s32);
-void func_ov065_02269b18(void *, void *);
-void func_ov065_0226989c(s32);
-void func_ov065_022699d0(void);
-void func_ov065_02269848(void);
-Unk_ov065_022905a8_S *func_ov065_02269bd0(void);
-s32 func_ov065_0226a0c4(void *, void *, s32);
-s32 func_ov065_0226adbc(void *, void *);
-void func_ov065_0226ac7c(void);
+void WifiLink_OnScanResult(void);
+void WifiLink_OnWmCommand(void);
+void WifiLink_OnWmIndication(void);
+void WifiLink_SetupScanParams(void *, void *, s32);
+void WifiLink_ApplyConfig(void *, void *);
+void WifiLink_SetPhase(s32);
+void WifiLink_SetDefaultOptions(void);
+void WifiLink_RestartKeepAliveAlarm(void);
+Unk_ov065_022905a8_S *WifiLink_GetWork(void);
+s32 WifiLink_EndSearchAsync(void *, void *, s32);
+s32 WifiAp_MacEquals(void *, void *);
+void WifiLink_InitSendState(void);
 
 // same group
-s32 func_ov065_0226a144(void *, void *, s32);
-s32 func_ov065_0226a264(void *, void *, s32);
-s32 func_ov065_0226a284(void);
-s32 func_ov065_0226a33c(void *, void *);
-s32 func_ov065_0226a4c8(void);
-s32 func_ov065_0226a510(void *, u32);
-void func_ov065_0226a5f8(Unk_ov065_0226a73c_Node *);
-Unk_ov065_0226a73c_Node *func_ov065_0226a678(u32);
-Unk_ov065_0226a73c_Node *func_ov065_0226a6b4(void *);
-Unk_ov065_0226a73c_Node *func_ov065_0226a70c(void);
-Unk_ov065_0226a73c_Node *func_ov065_0226a73c(void);
-void func_ov065_0226a7bc(u8 *, u32);
-void *func_ov065_0226a828(u32);
-BOOL func_ov065_0226a87c(BOOL);
-u32 func_ov065_0226a8e4(void);
-void func_ov065_0226a934(void);
-void func_ov065_0226a97c(Unk_ov065_0226a97c_Mutex *);
-BOOL func_ov065_0226a9a8(Unk_ov065_0226a97c_Mutex *);
-void func_ov065_0226a9d4(void);
-void func_ov065_0226a9e4(Unk_ov065_0226a9e4_Msg *);
-s32 func_ov065_0226aa14(u32, void *, u32);
+s32 WifiLink_BeginSearchAsync(void *, void *, s32);
+s32 WifiLink_SearchAsync(void *, void *, s32);
+s32 WifiLink_CleanupAsync(void);
+s32 WifiLink_StartupAsync(void *, void *);
+s32 WifiLink_Finish(void);
+s32 WifiLink_Init(void *, u32);
+void WifiApList_MoveToTail(Unk_ov065_0226a73c_Node *);
+Unk_ov065_0226a73c_Node *WifiApList_FindById(u32);
+Unk_ov065_0226a73c_Node *WifiApList_FindByBssid(void *);
+Unk_ov065_0226a73c_Node *WifiApList_GetOldest(void);
+Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void);
+void WifiLink_AddApListEntry(u8 *, u32);
+void *WifiLink_GetApListEntry(u32);
+BOOL WifiLink_LockApList(BOOL);
+u32 WifiLink_GetApListCount(void);
+void WifiLink_ClearApList(void);
+void WifiLink_UnlockFromIrq(Unk_ov065_0226a97c_Mutex *);
+BOOL WifiLink_TryLockFromIrq(Unk_ov065_0226a97c_Mutex *);
+void WifiLink_OnKeepAliveSent(void);
+void WifiLink_OnSendDone(Unk_ov065_0226a9e4_Msg *);
+s32 WifiLink_SendFrame(u32, void *, u32);
 
 
 
@@ -391,27 +391,27 @@ static inline u8 *Unk_ov065_0226a6b4_Data(Unk_ov065_0226a73c_Node *n)
 
 
 
-s32 func_ov065_0226aa14(u32 a, void *b, u32 c)
+s32 WifiLink_SendFrame(u32 a, void *b, u32 c)
 {
     u32 e = OS_DisableInterrupts();
-    if (func_ov065_02269bd0() == NULL) {
+    if (WifiLink_GetWork() == NULL) {
         OS_RestoreInterrupts(e);
         return -1;
     }
-    OS_LockMutex(&data_ov065_022905b8);
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    OS_LockMutex(&sWifiLinkSendLock);
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     if (s == NULL) {
-        OS_UnlockMutex(&data_ov065_022905b8);
+        OS_UnlockMutex(&sWifiLinkSendLock);
         OS_RestoreInterrupts(e);
         return -1;
     }
     if (s->unk_2260 != 9 || s->unk_226b == 1) {
-        OS_UnlockMutex(&data_ov065_022905b8);
+        OS_UnlockMutex(&sWifiLinkSendLock);
         OS_RestoreInterrupts(e);
         return -4;
     }
     MI_CpuCopy8(b, (u8 *)s + 0xf00, c);
-    switch (WM_SetDCFData((void *)func_ov065_0226a9e4, (void *)a, (u8 *)s + 0xf00, (u16)c)) {
+    switch (WM_SetDCFData((void *)WifiLink_OnSendDone, (void *)a, (u8 *)s + 0xf00, (u16)c)) {
     case 0:
     case 1:
     case 3:
@@ -421,43 +421,43 @@ s32 func_ov065_0226aa14(u32 a, void *b, u32 c)
     case 7:
     case 8:
     default:
-        OS_UnlockMutex(&data_ov065_022905b8);
+        OS_UnlockMutex(&sWifiLinkSendLock);
         OS_RestoreInterrupts(e);
         return -5;
     case 2:
         break;
     }
-    OS_SleepThread(data_ov065_022905b0);
-    switch (data_ov065_022905ac.unk_24) {
+    OS_SleepThread(sWifiLinkSendWaitQueue);
+    switch (sWifiLinkSendState.unk_24) {
     case 1:
     default:
-        OS_UnlockMutex(&data_ov065_022905b8);
+        OS_UnlockMutex(&sWifiLinkSendLock);
         OS_RestoreInterrupts(e);
         return -5;
     case 0:
-        OS_UnlockMutex(&data_ov065_022905b8);
+        OS_UnlockMutex(&sWifiLinkSendLock);
         OS_RestoreInterrupts(e);
         return c;
     }
 }
 
-void func_ov065_0226a9e4(Unk_ov065_0226a9e4_Msg *p)
+void WifiLink_OnSendDone(Unk_ov065_0226a9e4_Msg *p)
 {
     if (p->unk_00 == 0x12) {
-        data_ov065_022905ac.unk_24 = p->unk_02;
+        sWifiLinkSendState.unk_24 = p->unk_02;
         if (p->unk_02 == 0) {
-            func_ov065_02269848();
+            WifiLink_RestartKeepAliveAlarm();
         }
-        OS_WakeupThread(data_ov065_022905b0);
+        OS_WakeupThread(sWifiLinkSendWaitQueue);
     }
 }
 
-void func_ov065_0226a9d4(void)
+void WifiLink_OnKeepAliveSent(void)
 {
-    func_ov065_0226a97c(&data_ov065_022905b8);
+    WifiLink_UnlockFromIrq(&sWifiLinkSendLock);
 }
 
-BOOL func_ov065_0226a9a8(Unk_ov065_0226a97c_Mutex *m)
+BOOL WifiLink_TryLockFromIrq(Unk_ov065_0226a97c_Mutex *m)
 {
     void *o = m->unk_08;
     if (o == NULL) {
@@ -472,7 +472,7 @@ BOOL func_ov065_0226a9a8(Unk_ov065_0226a97c_Mutex *m)
     return FALSE;
 }
 
-void func_ov065_0226a97c(Unk_ov065_0226a97c_Mutex *m)
+void WifiLink_UnlockFromIrq(Unk_ov065_0226a97c_Mutex *m)
 {
     if (m->unk_08 == (void *)OS_IrqHandler) {
         m->unk_0c = m->unk_0c - 1;
@@ -483,10 +483,10 @@ void func_ov065_0226a97c(Unk_ov065_0226a97c_Mutex *m)
     }
 }
 
-void func_ov065_0226a934(void)
+void WifiLink_ClearApList(void)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     if (s == NULL) {
         OS_RestoreInterrupts(e);
         return;
@@ -498,10 +498,10 @@ void func_ov065_0226a934(void)
     OS_RestoreInterrupts(e);
 }
 
-u32 func_ov065_0226a8e4(void)
+u32 WifiLink_GetApListCount(void)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     u32 r = 0;
     if (s == NULL) {
         OS_RestoreInterrupts(e);
@@ -515,10 +515,10 @@ u32 func_ov065_0226a8e4(void)
     return r;
 }
 
-BOOL func_ov065_0226a87c(BOOL a)
+BOOL WifiLink_LockApList(BOOL a)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     if (s == NULL) {
         OS_RestoreInterrupts(e);
         return FALSE;
@@ -534,15 +534,15 @@ BOOL func_ov065_0226a87c(BOOL a)
     return a;
 }
 
-void *func_ov065_0226a828(u32 id)
+void *WifiLink_GetApListEntry(u32 id)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     if (s == NULL) {
         OS_RestoreInterrupts(e);
         return NULL;
     }
-    Unk_ov065_0226a73c_Node *n = func_ov065_0226a678(id);
+    Unk_ov065_0226a73c_Node *n = WifiApList_FindById(id);
     if (n == NULL) {
         OS_RestoreInterrupts(e);
         return NULL;
@@ -551,32 +551,32 @@ void *func_ov065_0226a828(u32 id)
     return n->unk_10;
 }
 
-void func_ov065_0226a7bc(u8 *a, u32 b)
+void WifiLink_AddApListEntry(u8 *a, u32 b)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     if (s != NULL) {
         if (s->unk_226a == 0) {
             if (*(u16 *)(a + 0x3c) == 0) {
-                Unk_ov065_0226a73c_Node *n = func_ov065_0226a6b4(a + 4);
+                Unk_ov065_0226a73c_Node *n = WifiApList_FindByBssid(a + 4);
                 if (n == NULL) {
-                    n = func_ov065_0226a73c();
+                    n = WifiApList_AllocEntry();
                 }
                 if (n == NULL && s->unk_2278 == 1) {
-                    n = func_ov065_0226a70c();
+                    n = WifiApList_GetOldest();
                 }
                 if (n != NULL) {
                     n->unk_02 = b;
                     MIi_CpuCopyFast(a, n->unk_10, 0xc0);
-                    func_ov065_0226a5f8(n);
+                    WifiApList_MoveToTail(n);
                 }
             }
         }
     }
 }
 
-Unk_ov065_0226a73c_Node *func_ov065_0226a73c(void)
+Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     Unk_ov065_0226a73c_List *list = s->unk_2270;
     Unk_ov065_0226a73c_Node *r = NULL;
     if (list != NULL && s->unk_2274 > 0xc) {
@@ -610,9 +610,9 @@ Unk_ov065_0226a73c_Node *func_ov065_0226a73c(void)
     return r;
 }
 
-Unk_ov065_0226a73c_Node *func_ov065_0226a70c(void)
+Unk_ov065_0226a73c_Node *WifiApList_GetOldest(void)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     Unk_ov065_0226a73c_List *list = s->unk_2270;
     if (list != NULL && s->unk_2274 > 0xc) {
         return list->unk_04;
@@ -620,9 +620,9 @@ Unk_ov065_0226a73c_Node *func_ov065_0226a70c(void)
     return NULL;
 }
 
-Unk_ov065_0226a73c_Node *func_ov065_0226a6b4(void *key)
+Unk_ov065_0226a73c_Node *WifiApList_FindByBssid(void *key)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     Unk_ov065_0226a73c_List *list = s->unk_2270;
     Unk_ov065_0226a73c_Node *n = NULL;
     if (key == NULL) {
@@ -630,7 +630,7 @@ Unk_ov065_0226a73c_Node *func_ov065_0226a6b4(void *key)
     }
     if (list != NULL && s->unk_2274 > 0xc) {
         for (n = list->unk_04; n != NULL; n = n->unk_0c) {
-            if (func_ov065_0226adbc(Unk_ov065_0226a6b4_Data(n) + 4, key) != 0) {
+            if (WifiAp_MacEquals(Unk_ov065_0226a6b4_Data(n) + 4, key) != 0) {
                 break;
             }
         }
@@ -638,9 +638,9 @@ Unk_ov065_0226a73c_Node *func_ov065_0226a6b4(void *key)
     return n;
 }
 
-Unk_ov065_0226a73c_Node *func_ov065_0226a678(u32 id)
+Unk_ov065_0226a73c_Node *WifiApList_FindById(u32 id)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     Unk_ov065_0226a73c_List *list = s->unk_2270;
     Unk_ov065_0226a73c_Node *n = NULL;
     if (list != NULL && s->unk_2274 > 0xc) {
@@ -653,9 +653,9 @@ Unk_ov065_0226a73c_Node *func_ov065_0226a678(u32 id)
     return n;
 }
 
-void func_ov065_0226a5f8(Unk_ov065_0226a73c_Node *node)
+void WifiApList_MoveToTail(Unk_ov065_0226a73c_Node *node)
 {
-    Unk_ov065_022905a8_S *s = func_ov065_02269bd0();
+    Unk_ov065_022905a8_S *s = WifiLink_GetWork();
     Unk_ov065_0226a73c_List *list = s->unk_2270;
     if (node != NULL && list != NULL && s->unk_2274 > 0xc) {
         Unk_ov065_0226a73c_Node *c = list->unk_04;
@@ -689,10 +689,10 @@ void func_ov065_0226a5f8(Unk_ov065_0226a73c_Node *node)
     }
 }
 
-s32 func_ov065_0226a510(void *a, u32 b)
+s32 WifiLink_Init(void *a, u32 b)
 {
     u32 e = OS_DisableInterrupts();
-    if (data_ov065_022905a8 != NULL) {
+    if (sWifiLinkWork != NULL) {
         OS_RestoreInterrupts(e);
         return 1;
     }
@@ -708,31 +708,31 @@ s32 func_ov065_0226a510(void *a, u32 b)
         OS_RestoreInterrupts(e);
         return 6;
     }
-    data_ov065_022905a8 = (Unk_ov065_022905a8_S *)a;
+    sWifiLinkWork = (Unk_ov065_022905a8_S *)a;
     ((Unk_ov065_022905a8_S *)a)->unk_2260 = 1;
-    data_ov065_022905a8->unk_2280 = 0;
-    data_ov065_022905a8->unk_2268 = 0;
-    data_ov065_022905a8->unk_226a = 0;
-    data_ov065_022905a8->unk_226b = 0;
-    data_ov065_022905a8->unk_2282 = 0;
-    data_ov065_022905a8->unk_22f8 = 0;
-    func_ov065_022699d0();
-    func_ov065_0226ac7c();
+    sWifiLinkWork->unk_2280 = 0;
+    sWifiLinkWork->unk_2268 = 0;
+    sWifiLinkWork->unk_226a = 0;
+    sWifiLinkWork->unk_226b = 0;
+    sWifiLinkWork->unk_2282 = 0;
+    sWifiLinkWork->unk_22f8 = 0;
+    WifiLink_SetDefaultOptions();
+    WifiLink_InitSendState();
     if (OS_IsTickAvailable() == 0) {
         OS_InitTick();
     }
     if (OS_IsAlarmAvailable() == 0) {
         OS_InitAlarm();
     }
-    OS_CreateAlarm(data_ov065_022905a8->unk_22cc);
+    OS_CreateAlarm(sWifiLinkWork->unk_22cc);
     OS_RestoreInterrupts(e);
     return 0;
 }
 
-s32 func_ov065_0226a4c8(void)
+s32 WifiLink_Finish(void)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *g = data_ov065_022905a8;
+    Unk_ov065_022905a8_S *g = sWifiLinkWork;
     if (g == NULL) {
         OS_RestoreInterrupts(e);
         return 1;
@@ -741,22 +741,22 @@ s32 func_ov065_0226a4c8(void)
         OS_RestoreInterrupts(e);
         return 1;
     }
-    data_ov065_022905a8 = NULL;
+    sWifiLinkWork = NULL;
     OS_RestoreInterrupts(e);
     return 0;
 }
 
-s32 func_ov065_0226a33c(void *a, void *b)
+s32 WifiLink_StartupAsync(void *a, void *b)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *g = data_ov065_022905a8;
+    Unk_ov065_022905a8_S *g = sWifiLinkWork;
     if (g == NULL) {
         OS_RestoreInterrupts(e);
         return 1;
     }
     switch (g->unk_2260) {
     case 1:
-        func_ov065_02269b18(a, b);
+        WifiLink_ApplyConfig(a, b);
         break;
     case 2:
         OS_RestoreInterrupts(e);
@@ -768,10 +768,10 @@ s32 func_ov065_0226a33c(void *a, void *b)
         OS_RestoreInterrupts(e);
         return 1;
     }
-    Unk_ov065_022905a8_S *t = data_ov065_022905a8;
+    Unk_ov065_022905a8_S *t = sWifiLinkWork;
     switch (WM_Init(t, (u16)t->unk_226c)) {
     case 3:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     case 4:
@@ -782,7 +782,7 @@ s32 func_ov065_0226a33c(void *a, void *b)
     case 5:
     case 6:
     default:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     case 0:
@@ -790,30 +790,30 @@ s32 func_ov065_0226a33c(void *a, void *b)
     }
     if (WM_GetAllowedChannel() == 0) {
         if (func_0211f188() != 0) {
-            func_ov065_0226989c(0xb);
+            WifiLink_SetPhase(0xb);
             OS_RestoreInterrupts(e);
             return 7;
         }
         OS_RestoreInterrupts(e);
         return 5;
     }
-    if (WM_SetIndCallback((void *)func_ov065_02269784) != 0) {
-        func_ov065_0226989c(0xb);
+    if (WM_SetIndCallback((void *)WifiLink_OnWmIndication) != 0) {
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     }
-    switch (WM_Enable((void *)func_ov065_02269550)) {
+    switch (WM_Enable((void *)WifiLink_OnWmCommand)) {
     case 2:
-        func_ov065_0226989c(2);
-        data_ov065_022905a8->unk_2280 = 1;
+        WifiLink_SetPhase(2);
+        sWifiLinkWork->unk_2280 = 1;
         break;
     case 8:
-        func_ov065_0226989c(0xc);
+        WifiLink_SetPhase(0xc);
         OS_RestoreInterrupts(e);
         return 1;
     case 3:
     default:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     }
@@ -821,10 +821,10 @@ s32 func_ov065_0226a33c(void *a, void *b)
     return 3;
 }
 
-s32 func_ov065_0226a284(void)
+s32 WifiLink_CleanupAsync(void)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *g = data_ov065_022905a8;
+    Unk_ov065_022905a8_S *g = sWifiLinkWork;
     if (g == NULL) {
         OS_RestoreInterrupts(e);
         return 1;
@@ -842,17 +842,17 @@ s32 func_ov065_0226a284(void)
     case 3:
         break;
     }
-    switch (WM_PowerOff((void *)func_ov065_02269550)) {
+    switch (WM_PowerOff((void *)WifiLink_OnWmCommand)) {
     case 2:
-        func_ov065_0226989c(4);
-        data_ov065_022905a8->unk_2280 = 2;
+        WifiLink_SetPhase(4);
+        sWifiLinkWork->unk_2280 = 2;
         break;
     case 8:
         OS_RestoreInterrupts(e);
         return 4;
     case 3:
     default:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     }
@@ -860,29 +860,29 @@ s32 func_ov065_0226a284(void)
     return 3;
 }
 
-s32 func_ov065_0226a264(void *a, void *b, s32 c)
+s32 WifiLink_SearchAsync(void *a, void *b, s32 c)
 {
     if (a == NULL || b == NULL) {
-        return func_ov065_0226a0c4(a, b, c);
+        return WifiLink_EndSearchAsync(a, b, c);
     }
-    return func_ov065_0226a144(a, b, c);
+    return WifiLink_BeginSearchAsync(a, b, c);
 }
 
-s32 func_ov065_0226a144(void *a, void *b, s32 c)
+s32 WifiLink_BeginSearchAsync(void *a, void *b, s32 c)
 {
     u32 e = OS_DisableInterrupts();
-    Unk_ov065_022905a8_S *g = data_ov065_022905a8;
+    Unk_ov065_022905a8_S *g = sWifiLinkWork;
     if (g == NULL) {
         OS_RestoreInterrupts(e);
         return 1;
     }
     switch (g->unk_2260) {
     case 5:
-        func_ov065_022699e8(a, b, c);
+        WifiLink_SetupScanParams(a, b, c);
         OS_RestoreInterrupts(e);
         return 2;
     case 6:
-        func_ov065_022699e8(a, b, c);
+        WifiLink_SetupScanParams(a, b, c);
         OS_RestoreInterrupts(e);
         return 0;
     default:
@@ -891,26 +891,26 @@ s32 func_ov065_0226a144(void *a, void *b, s32 c)
     case 3:
         break;
     }
-    func_ov065_022699e8(a, b, c);
+    WifiLink_SetupScanParams(a, b, c);
     {
-        Unk_ov065_022905a8_S *t = data_ov065_022905a8;
+        Unk_ov065_022905a8_S *t = sWifiLinkWork;
         DC_InvalidateRange(t->unk_2288, t->unk_228c);
     }
     {
-        u32 *cp = &data_ov065_022905a8->unk_2284;
+        u32 *cp = &sWifiLinkWork->unk_2284;
         *cp = *cp + 1;
     }
-    switch (WM_StartScanEx((void *)func_ov065_02269350, &data_ov065_022905a8->unk_2288)) {
+    switch (WM_StartScanEx((void *)WifiLink_OnScanResult, &sWifiLinkWork->unk_2288)) {
     case 2:
-        func_ov065_0226989c(5);
-        data_ov065_022905a8->unk_2280 = 3;
+        WifiLink_SetPhase(5);
+        sWifiLinkWork->unk_2280 = 3;
         break;
     case 8:
         OS_RestoreInterrupts(e);
         return 4;
     case 3:
     default:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(e);
         return 7;
     }
@@ -978,9 +978,9 @@ struct Unk_ov065_02269b18_In {
 };
 
 extern "C" {
-extern G *data_ov065_022905a8;
-extern u8 data_ov065_0228b2a4[];
-extern u8 data_ov065_0228b2ac[];
+extern G *sWifiLinkWork;
+extern u8 gWifiLinkAnyBssid[];
+extern u8 gWifiLinkAnySsid[];
 
 // main module
 u32 OS_DisableInterrupts();
@@ -1001,42 +1001,42 @@ s32 WM_SetLifeTime(void *, u32, u32, u32, u32);
 s32 func_02133150(s32, s32);
 
 // same overlay, out of range
-void func_ov065_02268c64();
-void func_ov065_02268ec8();
-void func_ov065_02269550();
-void func_ov065_0226abf4();
+void WifiLink_OnReset();
+void WifiLink_OnEndDcf();
+void WifiLink_OnWmCommand();
+void WifiLink_SendKeepAlive();
 
 // in range
-void func_ov065_022697ec();
-void func_ov065_02269834();
-void func_ov065_02269848();
-void func_ov065_0226989c(s32);
-void func_ov065_0226990c(s32, s32, s32, s32, s32);
-void func_ov065_02269944(s32, s32, s32, s32);
-u32 func_ov065_0226997c(s32);
-void func_ov065_022699d0();
-void func_ov065_022699e8(u8 *, u8 *, u32);
-void func_ov065_02269b18(Unk_ov065_02269b18_In *, u32);
-u32 func_ov065_02269bd0();
-u32 func_ov065_02269bdc(u32);
-u32 func_ov065_02269c9c();
-s32 func_ov065_02269cc4();
-s32 func_ov065_02269e50();
-s32 func_ov065_02269f24(u8 *, u8 *, u32);
-s32 func_ov065_0226a0c4();
+void WifiLink_ResetOnError();
+void WifiLink_OnKeepAliveAlarm();
+void WifiLink_RestartKeepAliveAlarm();
+void WifiLink_SetPhase(s32);
+void WifiLink_Notify(s32, s32, s32, s32, s32);
+void WifiLink_NotifyRequest(s32, s32, s32, s32);
+u32 WifiLink_NextAllowedChannel(s32);
+void WifiLink_SetDefaultOptions();
+void WifiLink_SetupScanParams(u8 *, u8 *, u32);
+void WifiLink_ApplyConfig(Unk_ov065_02269b18_In *, u32);
+u32 WifiLink_GetWork();
+u32 WifiLink_UpdateOptions(u32);
+u32 WifiLink_GetPhase();
+s32 WifiLink_TerminateAsync();
+s32 WifiLink_DisconnectAsync();
+s32 WifiLink_ConnectAsync(u8 *, u8 *, u32);
+s32 WifiLink_EndSearchAsync();
 }
 
-s32 func_ov065_0226a0c4() {
+s32 WifiLink_EndSearchAsync() {
     u32 irq = OS_DisableInterrupts();
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     if (g == 0) {
         OS_RestoreInterrupts(irq);
         return 1;
     }
     switch (g->unk_2260) {
     case 6:
-        func_ov065_0226989c(7);
-        data_ov065_022905a8->unk_2280 = 4;
+        WifiLink_SetPhase(7);
+        sWifiLinkWork->unk_2280 = 4;
         break;
     case 7:
         OS_RestoreInterrupts(irq);
@@ -1052,12 +1052,12 @@ s32 func_ov065_0226a0c4() {
     return 3;
 }
 
-s32 func_ov065_02269f24(u8 *a, u8 *b, u32 c) {
+s32 WifiLink_ConnectAsync(u8 *a, u8 *b, u32 c) {
     u32 irq;
     G *g;
     s32 r;
     irq = OS_DisableInterrupts();
-    g = data_ov065_022905a8;
+    g = sWifiLinkWork;
     if (g == 0) {
         OS_RestoreInterrupts(irq);
         return 1;
@@ -1079,8 +1079,8 @@ s32 func_ov065_02269f24(u8 *a, u8 *b, u32 c) {
                 return 1;
             }
             g->unk_2250 = x;
-            data_ov065_022905a8->unk_2251 = b[1];
-            g = data_ov065_022905a8;
+            sWifiLinkWork->unk_2251 = b[1];
+            g = sWifiLinkWork;
             if (g->unk_2250 == 0) {
                 MI_CpuFill8(g->unk_2200, 0, 0x50);
             } else {
@@ -1089,10 +1089,10 @@ s32 func_ov065_02269f24(u8 *a, u8 *b, u32 c) {
         } else {
             MI_CpuFill8(g->unk_2200, 0, 0x52);
         }
-        MI_CpuCopy8(a, data_ov065_022905a8->unk_2140, 0xc0);
-        g = data_ov065_022905a8;
+        MI_CpuCopy8(a, sWifiLinkWork->unk_2140, 0xc0);
+        g = sWifiLinkWork;
         g->unk_2170 = g->unk_216e | 3;
-        func_ov065_02269bdc(c);
+        WifiLink_UpdateOptions(c);
         break;
     case 8:
         OS_RestoreInterrupts(irq);
@@ -1104,18 +1104,18 @@ s32 func_ov065_02269f24(u8 *a, u8 *b, u32 c) {
         OS_RestoreInterrupts(irq);
         return 1;
     }
-    r = WM_SetLifeTime((void *)func_ov065_02269550, 0xffff, 0x50, 0xffff, 0xffff);
+    r = WM_SetLifeTime((void *)WifiLink_OnWmCommand, 0xffff, 0x50, 0xffff, 0xffff);
     switch (r) {
     case 2:
-        func_ov065_0226989c(8);
-        data_ov065_022905a8->unk_2280 = 5;
+        WifiLink_SetPhase(8);
+        sWifiLinkWork->unk_2280 = 5;
         break;
     case 8:
         OS_RestoreInterrupts(irq);
         return 4;
     case 3:
     default:
-        func_ov065_0226989c(0xb);
+        WifiLink_SetPhase(0xb);
         OS_RestoreInterrupts(irq);
         return 7;
     }
@@ -1123,9 +1123,9 @@ s32 func_ov065_02269f24(u8 *a, u8 *b, u32 c) {
     return 3;
 }
 
-s32 func_ov065_02269e50() {
+s32 WifiLink_DisconnectAsync() {
     u32 irq = OS_DisableInterrupts();
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     s32 r;
     if (g == 0) {
         OS_RestoreInterrupts(irq);
@@ -1143,21 +1143,21 @@ s32 func_ov065_02269e50() {
         return 1;
     case 9:
         if (g->unk_226b == 1) {
-            func_ov065_0226989c(0xa);
-            data_ov065_022905a8->unk_2280 = 6;
+            WifiLink_SetPhase(0xa);
+            sWifiLinkWork->unk_2280 = 6;
         } else {
-            r = WM_EndDCF((void *)func_ov065_02268ec8);
+            r = WM_EndDCF((void *)WifiLink_OnEndDcf);
             switch (r) {
             case 2:
-                func_ov065_0226989c(0xa);
-                data_ov065_022905a8->unk_2280 = 6;
+                WifiLink_SetPhase(0xa);
+                sWifiLinkWork->unk_2280 = 6;
                 break;
             case 8:
                 OS_RestoreInterrupts(irq);
                 return 4;
             case 3:
             default:
-                func_ov065_0226989c(0xb);
+                WifiLink_SetPhase(0xb);
                 OS_RestoreInterrupts(irq);
                 return 7;
             }
@@ -1167,9 +1167,9 @@ s32 func_ov065_02269e50() {
     }
 }
 
-s32 func_ov065_02269cc4() {
+s32 WifiLink_TerminateAsync() {
     u32 irq = OS_DisableInterrupts();
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     s32 r;
     if (g == 0) {
         OS_RestoreInterrupts(irq);
@@ -1183,8 +1183,8 @@ s32 func_ov065_02269cc4() {
         OS_RestoreInterrupts(irq);
         return 0;
     case 6:
-        func_ov065_0226989c(0xd);
-        data_ov065_022905a8->unk_2280 = 9;
+        WifiLink_SetPhase(0xd);
+        sWifiLinkWork->unk_2280 = 9;
         OS_RestoreInterrupts(irq);
         return 3;
     default:
@@ -1194,8 +1194,8 @@ s32 func_ov065_02269cc4() {
     case 9:
     case 12:
         if (g->unk_226b == 1) {
-            func_ov065_0226989c(0xd);
-            data_ov065_022905a8->unk_2280 = 9;
+            WifiLink_SetPhase(0xd);
+            sWifiLinkWork->unk_2280 = 9;
             goto done;
         } else {
             u16 *p = WMi_GetStatusAddress();
@@ -1204,34 +1204,34 @@ s32 func_ov065_02269cc4() {
             case 0:
                 r = func_0211f188();
                 if (r == 0) {
-                    func_ov065_0226989c(1);
-                    data_ov065_022905a8->unk_2280 = 0;
+                    WifiLink_SetPhase(1);
+                    sWifiLinkWork->unk_2280 = 0;
                     OS_RestoreInterrupts(irq);
                     return 0;
                 }
                 break;
             case 1:
-                r = WM_Disable((void *)func_ov065_02269550);
+                r = WM_Disable((void *)WifiLink_OnWmCommand);
                 break;
             case 2:
-                r = WM_PowerOff((void *)func_ov065_02269550);
+                r = WM_PowerOff((void *)WifiLink_OnWmCommand);
                 break;
             default:
-                data_ov065_022905a8->unk_226b = 1;
-                r = WM_Reset((void *)func_ov065_02268c64);
+                sWifiLinkWork->unk_226b = 1;
+                r = WM_Reset((void *)WifiLink_OnReset);
                 break;
             }
             switch (r) {
             case 2:
-                func_ov065_0226989c(0xd);
-                data_ov065_022905a8->unk_2280 = 9;
+                WifiLink_SetPhase(0xd);
+                sWifiLinkWork->unk_2280 = 9;
                 goto done;
             case 8:
                 OS_RestoreInterrupts(irq);
                 return 4;
             case 3:
             default:
-                func_ov065_0226989c(0xb);
+                WifiLink_SetPhase(0xb);
                 OS_RestoreInterrupts(irq);
                 return 7;
             }
@@ -1242,10 +1242,10 @@ done:
     return 3;
 }
 
-u32 func_ov065_02269c9c() {
+u32 WifiLink_GetPhase() {
     u32 irq = OS_DisableInterrupts();
     u32 r = 0;
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     if (g != 0) {
         r = g->unk_2260;
     }
@@ -1253,10 +1253,10 @@ u32 func_ov065_02269c9c() {
     return r;
 }
 
-u32 func_ov065_02269bdc(u32 v) {
+u32 WifiLink_UpdateOptions(u32 v) {
     u32 irq = OS_DisableInterrupts();
     u32 m = 0;
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     u32 old = g->unk_2264;
     if (g == 0) {
         OS_RestoreInterrupts(irq);
@@ -1275,58 +1275,58 @@ u32 func_ov065_02269bdc(u32 v) {
     return old;
 }
 
-u32 func_ov065_02269bd0() {
-    return (u32)data_ov065_022905a8;
+u32 WifiLink_GetWork() {
+    return (u32)sWifiLinkWork;
 }
 
-void func_ov065_02269b18(Unk_ov065_02269b18_In *p, u32 arg) {
+void WifiLink_ApplyConfig(Unk_ov065_02269b18_In *p, u32 arg) {
     if (p == 0) {
-        data_ov065_022905a8->unk_226c = 3;
-        data_ov065_022905a8->unk_2270 = 0;
-        data_ov065_022905a8->unk_2274 = 0;
-        data_ov065_022905a8->unk_2278 = 0;
+        sWifiLinkWork->unk_226c = 3;
+        sWifiLinkWork->unk_2270 = 0;
+        sWifiLinkWork->unk_2274 = 0;
+        sWifiLinkWork->unk_2278 = 0;
     } else {
         u32 t4;
-        data_ov065_022905a8->unk_226c = p->unk_00 & 3;
+        sWifiLinkWork->unk_226c = p->unk_00 & 3;
         t4 = p->unk_04;
         if (((4 - (t4 & 3)) & 3) + 0xc > p->unk_08) {
-            data_ov065_022905a8->unk_2270 = 0;
-            data_ov065_022905a8->unk_2274 = 0;
+            sWifiLinkWork->unk_2270 = 0;
+            sWifiLinkWork->unk_2274 = 0;
         } else {
-            data_ov065_022905a8->unk_2270 = (t4 + 3) & ~3;
-            data_ov065_022905a8->unk_2274 = p->unk_08 - ((4 - (p->unk_04 & 3)) & 3);
-            MI_CpuFill8((void *)data_ov065_022905a8->unk_2270, 0, data_ov065_022905a8->unk_2274);
+            sWifiLinkWork->unk_2270 = (t4 + 3) & ~3;
+            sWifiLinkWork->unk_2274 = p->unk_08 - ((4 - (p->unk_04 & 3)) & 3);
+            MI_CpuFill8((void *)sWifiLinkWork->unk_2270, 0, sWifiLinkWork->unk_2274);
         }
-        data_ov065_022905a8->unk_2278 = p->unk_0c;
+        sWifiLinkWork->unk_2278 = p->unk_0c;
     }
-    data_ov065_022905a8->unk_227c = (Unk_ov065_0226990c_Cb)arg;
+    sWifiLinkWork->unk_227c = (Unk_ov065_0226990c_Cb)arg;
 }
 
-void func_ov065_022699e8(u8 *a, u8 *b, u32 c) {
+void WifiLink_SetupScanParams(u8 *a, u8 *b, u32 c) {
     G *g;
     u32 t;
-    func_ov065_02269bdc(c);
-    g = data_ov065_022905a8;
+    WifiLink_UpdateOptions(c);
+    g = sWifiLinkWork;
     g->unk_2288 = (u8 *)g + 0x1500;
-    data_ov065_022905a8->unk_228c = 0x400;
-    data_ov065_022905a8->unk_228e = (1 << func_ov065_0226997c(0)) >> 1;
-    t = data_ov065_022905a8->unk_2268;
+    sWifiLinkWork->unk_228c = 0x400;
+    sWifiLinkWork->unk_228e = (1 << WifiLink_NextAllowedChannel(0)) >> 1;
+    t = sWifiLinkWork->unk_2268;
     if (t == 0) t = WM_GetDispersionScanPeriod();
-    g = data_ov065_022905a8;
+    g = sWifiLinkWork;
     g->unk_2290 = t;
-    g = data_ov065_022905a8;
+    g = sWifiLinkWork;
     g->unk_2298 = (g->unk_2264 & 0x300000) != 0x300000 ? 1 : 0;
     if (a == 0) {
-        MI_CpuCopy8(data_ov065_0228b2a4, data_ov065_022905a8->unk_2292, 6);
+        MI_CpuCopy8(gWifiLinkAnyBssid, sWifiLinkWork->unk_2292, 6);
     } else {
-        MI_CpuCopy8(a, data_ov065_022905a8->unk_2292, 6);
+        MI_CpuCopy8(a, sWifiLinkWork->unk_2292, 6);
     }
-    if (b == 0 || b == data_ov065_0228b2ac) {
-        MI_CpuCopy8(data_ov065_0228b2ac, data_ov065_022905a8->unk_229c, 0x20);
-        data_ov065_022905a8->unk_229a = 0;
+    if (b == 0 || b == gWifiLinkAnySsid) {
+        MI_CpuCopy8(gWifiLinkAnySsid, sWifiLinkWork->unk_229c, 0x20);
+        sWifiLinkWork->unk_229a = 0;
     } else {
         s32 n;
-        MI_CpuCopy8(b, data_ov065_022905a8->unk_229c, 0x20);
+        MI_CpuCopy8(b, sWifiLinkWork->unk_229c, 0x20);
         n = 0;
         for (;;) {
             if (*b == 0) break;
@@ -1334,19 +1334,19 @@ void func_ov065_022699e8(u8 *a, u8 *b, u32 c) {
             n++;
             if (n >= 0x20) break;
         }
-        data_ov065_022905a8->unk_229a = n;
+        sWifiLinkWork->unk_229a = n;
     }
-    data_ov065_022905a8->unk_2284 = 0;
+    sWifiLinkWork->unk_2284 = 0;
 }
 
-void func_ov065_022699d0() {
-    data_ov065_022905a8->unk_2264 = 0xaaa082;
+void WifiLink_SetDefaultOptions() {
+    sWifiLinkWork->unk_2264 = 0xaaa082;
 }
 
-u32 func_ov065_0226997c(s32 a) {
+u32 WifiLink_NextAllowedChannel(s32 a) {
     s32 i = 0;
     s32 c = a;
-    u32 mask = data_ov065_022905a8->unk_2264;
+    u32 mask = sWifiLinkWork->unk_2264;
     do {
         if ((mask & (1 << (c % 13 + 1))) != 0) break;
         c++;
@@ -1355,15 +1355,15 @@ u32 func_ov065_0226997c(s32 a) {
     return (u16)((a + i) % 13 + 1);
 }
 
-void func_ov065_02269944(s32 a, s32 b, s32 c, s32 d) {
-    G *g = data_ov065_022905a8;
+void WifiLink_NotifyRequest(s32 a, s32 b, s32 c, s32 d) {
+    G *g = sWifiLinkWork;
     s32 old = g->unk_2280;
     g->unk_2280 = 0;
-    func_ov065_0226990c(old, a, b, c, d);
+    WifiLink_Notify(old, a, b, c, d);
 }
 
-void func_ov065_0226990c(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    G *g = data_ov065_022905a8;
+void WifiLink_Notify(s32 a, s32 b, s32 c, s32 d, s32 e) {
+    G *g = sWifiLinkWork;
     Unk_ov065_0226990c_Cb *cb = &g->unk_227c;
     if (*cb != 0) {
         Unk_ov065_0226990c_Ev ev;
@@ -1376,46 +1376,46 @@ void func_ov065_0226990c(s32 a, s32 b, s32 c, s32 d, s32 e) {
     }
 }
 
-void func_ov065_0226989c(s32 st) {
+void WifiLink_SetPhase(s32 st) {
     u32 irq = OS_DisableInterrupts();
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     if (g->unk_2260 == 9 && st != 9) {
         OS_CancelAlarm(g->unk_22cc);
     }
-    g = data_ov065_022905a8;
+    g = sWifiLinkWork;
     if (g->unk_2260 != 0xb) {
         g->unk_2260 = st;
     }
     if (st == 9) {
-        g = data_ov065_022905a8;
-        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
+        g = sWifiLinkWork;
+        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)WifiLink_OnKeepAliveAlarm, 0);
     }
     OS_RestoreInterrupts(irq);
 }
 
-void func_ov065_02269848() {
+void WifiLink_RestartKeepAliveAlarm() {
     u32 irq = OS_DisableInterrupts();
-    G *g = data_ov065_022905a8;
+    G *g = sWifiLinkWork;
     OS_CancelAlarm(g->unk_22cc);
-    g = data_ov065_022905a8;
+    g = sWifiLinkWork;
     if (g->unk_2260 == 9) {
-        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
+        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)WifiLink_OnKeepAliveAlarm, 0);
     }
     OS_RestoreInterrupts(irq);
 }
 
-void func_ov065_02269834() {
-    func_ov065_0226abf4();
-    func_ov065_02269848();
+void WifiLink_OnKeepAliveAlarm() {
+    WifiLink_SendKeepAlive();
+    WifiLink_RestartKeepAliveAlarm();
 }
 
-void func_ov065_022697ec() {
-    G *g = data_ov065_022905a8;
+void WifiLink_ResetOnError() {
+    G *g = sWifiLinkWork;
     if (g->unk_226b == 0) {
         g->unk_226b = 1;
-        if (WM_Reset((void *)func_ov065_02268c64) != 2) {
-            func_ov065_0226989c(0xb);
-            func_ov065_02269944(7, 0, 0, 0x611);
+        if (WM_Reset((void *)WifiLink_OnReset) != 2) {
+            WifiLink_SetPhase(0xb);
+            WifiLink_NotifyRequest(7, 0, 0, 0x611);
         }
     }
 }
@@ -1471,18 +1471,18 @@ typedef Unk_ov065_02268ec8_G Unk_ov065_02268ec8_GG;
 
 extern "C" {
 
-extern Unk_ov065_02268ec8_G *data_ov065_022905a8;
+extern Unk_ov065_02268ec8_G *sWifiLinkWork;
 
-void func_ov065_0226989c(u32);
-s32 func_ov065_02269944(u32, void *, u32, u32);
-void func_ov065_0226990c(u32, u32, u32, void *, u32);
-void func_ov065_022697ec();
-u32 func_ov065_02268c38(u32);
-u32 func_ov065_02268c5c(u32);
-u32 func_ov065_0226997c(u32);
-void func_ov065_0226aca8(u32);
-void func_ov065_0226ac54(void *);
-void func_ov065_0226a7bc(u32, u32);
+void WifiLink_SetPhase(u32);
+s32 WifiLink_NotifyRequest(u32, void *, u32, u32);
+void WifiLink_Notify(u32, u32, u32, void *, u32);
+void WifiLink_ResetOnError();
+u32 WifiLink_CountBits(u32);
+u32 WifiLink_CountLeadingZeros(u32);
+u32 WifiLink_NextAllowedChannel(u32);
+void WifiLink_AddRssiSample(u32);
+void WifiLink_OnFrameReceived(void *);
+void WifiLink_AddApListEntry(u32, u32);
 void DC_InvalidateRange(void *, u32);
 s32 WM_Disconnect(void *, u32);
 s32 WM_StartDCF(void *, void *, u32);
@@ -1495,13 +1495,13 @@ s32 WM_SetBeaconIndication(void *, u32);
 s32 WM_SetWEPKeyEx(void *, u32, u32, void *);
 s32 func_0211fcbc(void *, void *, u32, u32, u32);
 
-void func_ov065_02268ec8(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_02268fb0(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_02269080(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_02269128(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_022692ec(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_02269350(Unk_ov065_02268ec8_Msg *m);
-void func_ov065_02269550(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnEndDcf(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnDcfEvent(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnDisconnect(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnConnectEvent(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnEndScan(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnScanResult(Unk_ov065_02268ec8_Msg *m);
+void WifiLink_OnWmCommand(Unk_ov065_02268ec8_Msg *m);
 
 
 
@@ -1512,18 +1512,18 @@ void func_ov065_02269550(Unk_ov065_02268ec8_Msg *m);
 
 
 
-void func_ov065_02269784(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnWmIndication(Unk_ov065_02268ec8_Msg *m) {
     if (m->h2 == 8 && m->h4 == 0x16 && m->h6 == 0x25) {
-        switch (data_ov065_022905a8->unk_2260) {
+        switch (sWifiLinkWork->unk_2260) {
         case 8:
-            func_ov065_0226989c(0xc);
+            WifiLink_SetPhase(0xc);
             break;
         case 9:
         case 12:
-            func_ov065_022697ec();
+            WifiLink_ResetOnError();
             break;
         case 10:
-            func_ov065_0226989c(0xc);
+            WifiLink_SetPhase(0xc);
             break;
         case 11:
             break;
@@ -1531,52 +1531,52 @@ void func_ov065_02269784(Unk_ov065_02268ec8_Msg *m) {
     }
 }
 
-void func_ov065_02269550(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnWmCommand(Unk_ov065_02268ec8_Msg *m) {
     s32 res = 0x14;
     switch (m->h2) {
     case 0: {
         switch (m->h0) {
         case 3:
-            res = WM_PowerOn((void *)func_ov065_02269550);
+            res = WM_PowerOn((void *)WifiLink_OnWmCommand);
             break;
         case 4: {
             s32 r = func_0211f188();
             switch (r) {
             case 0:
-                func_ov065_0226989c(1);
-                func_ov065_02269944(0, 0, 0, 0x663);
+                WifiLink_SetPhase(1);
+                WifiLink_NotifyRequest(0, 0, 0, 0x663);
                 return;
             case 4:
             default:
-                func_ov065_0226989c(0xb);
-                func_ov065_02269944(7, 0, 0, 0x66a);
+                WifiLink_SetPhase(0xb);
+                WifiLink_NotifyRequest(7, 0, 0, 0x66a);
                 return;
             }
         }
         case 5:
-            func_ov065_0226989c(3);
-            func_ov065_02269944(0, 0, 0, 0x670);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(0, 0, 0, 0x670);
             return;
         case 6:
-            res = WM_Disable((void *)func_ov065_02269550);
+            res = WM_Disable((void *)WifiLink_OnWmCommand);
             break;
         case 0x1d:
-            res = WM_SetBeaconIndication((void *)func_ov065_02269550, 0);
+            res = WM_SetBeaconIndication((void *)WifiLink_OnWmCommand, 0);
             break;
         case 0x19: {
-            Unk_ov065_02268ec8_G *g = data_ov065_022905a8;
-            res = WM_SetWEPKeyEx((void *)func_ov065_02269550, g->unk_2250, g->unk_2251, g->unk_2200);
+            Unk_ov065_02268ec8_G *g = sWifiLinkWork;
+            res = WM_SetWEPKeyEx((void *)WifiLink_OnWmCommand, g->unk_2250, g->unk_2251, g->unk_2200);
             break;
         }
         case 0x27: {
-            Unk_ov065_02268ec8_G *g = data_ov065_022905a8;
+            Unk_ov065_02268ec8_G *g = sWifiLinkWork;
             u32 t = g->unk_2264;
             s32 a0;
             u32 b;
             if ((t & 0xc0000) == 0xc0000) a0 = 1; else a0 = 0;
             u16 a = a0;
             if ((t & 0x30000) != 0x30000) b = 1; else b = 0;
-            res = func_0211fcbc((void *)func_ov065_02269128, g->unk_2140, 0, b, a);
+            res = func_0211fcbc((void *)WifiLink_OnConnectEvent, g->unk_2140, 0, b, a);
             break;
         }
         }
@@ -1585,72 +1585,72 @@ void func_ov065_02269550(Unk_ov065_02268ec8_Msg *m) {
         }
         if (res == 3) goto e3;
         if (res != 8) goto e3;
-        func_ov065_0226989c(0xc);
-        func_ov065_02269944(1, data_ov065_022905a8->unk_2280 == 5 ? data_ov065_022905a8->unk_2140 : 0, 0, 0x6a7);
+        WifiLink_SetPhase(0xc);
+        WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2280 == 5 ? sWifiLinkWork->unk_2140 : 0, 0, 0x6a7);
         return;
     e3:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2280 == 5 ? data_ov065_022905a8->unk_2140 : 0, 0, 0x6b0);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2280 == 5 ? sWifiLinkWork->unk_2140 : 0, 0, 0x6b0);
         return;
     }
     case 1:
-        func_ov065_0226989c(0xc);
-        func_ov065_02269944(1, data_ov065_022905a8->unk_2280 == 5 ? data_ov065_022905a8->unk_2140 : 0, 0, 0x6d0);
+        WifiLink_SetPhase(0xc);
+        WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2280 == 5 ? sWifiLinkWork->unk_2140 : 0, 0, 0x6d0);
         return;
     case 2:
     case 3:
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2280 == 5 ? data_ov065_022905a8->unk_2140 : 0, 0, 0x6da);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2280 == 5 ? sWifiLinkWork->unk_2140 : 0, 0, 0x6da);
         return;
     }
 }
 
-void func_ov065_02269350(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnScanResult(Unk_ov065_02268ec8_Msg *m) {
     s32 res = 0x14;
     switch (m->h2) {
     case 0: {
-        if (data_ov065_022905a8->unk_2260 == 5) {
-            func_ov065_0226989c(6);
-            func_ov065_02269944(0, 0, 0, 0x6f6);
+        if (sWifiLinkWork->unk_2260 == 5) {
+            WifiLink_SetPhase(6);
+            WifiLink_NotifyRequest(0, 0, 0, 0x6f6);
         }
-        switch (data_ov065_022905a8->unk_2260) {
+        switch (sWifiLinkWork->unk_2260) {
         case 6: {
-            data_ov065_022905a8->unk_2280 = 7;
+            sWifiLinkWork->unk_2280 = 7;
             if (m->h8 == 5) {
                 s32 i;
-                DC_InvalidateRange(*(void **)data_ov065_022905a8->unk_2288, data_ov065_022905a8->unk_228c);
+                DC_InvalidateRange(*(void **)sWifiLinkWork->unk_2288, sWifiLinkWork->unk_228c);
                 for (i = 0; i < (s32)m->he; i++) {
-                    func_ov065_0226a7bc(m->p10[i], m->h50[i]);
-                    func_ov065_0226990c(7, 0, m->p10[i], m, 0x70b);
+                    WifiLink_AddApListEntry(m->p10[i], m->h50[i]);
+                    WifiLink_Notify(7, 0, m->p10[i], m, 0x70b);
                 }
             }
-            u32 t = data_ov065_022905a8->unk_2264;
+            u32 t = sWifiLinkWork->unk_2264;
             if ((t & 0xc00000) == 0xc00000) {
-                u32 cnt = func_ov065_02268c38(t & 0x3ffe);
+                u32 cnt = WifiLink_CountBits(t & 0x3ffe);
                 if (cnt != 0) {
-                    u32 x = data_ov065_022905a8->unk_2284;
+                    u32 x = sWifiLinkWork->unk_2284;
                     if (x % cnt == 0) {
-                        func_ov065_0226990c(8, 0, x, 0, 0x718);
+                        WifiLink_Notify(8, 0, x, 0, 0x718);
                     }
                 }
             }
             {
-                u32 n = func_ov065_02268c5c(m->ha);
-                u32 k = func_ov065_0226997c((u16)(32 - n));
-                data_ov065_022905a8->unk_228e = (s16)((1 << k) >> 1);
+                u32 n = WifiLink_CountLeadingZeros(m->ha);
+                u32 k = WifiLink_NextAllowedChannel((u16)(32 - n));
+                sWifiLinkWork->unk_228e = (s16)((1 << k) >> 1);
             }
-            DC_InvalidateRange(*(void **)data_ov065_022905a8->unk_2288, data_ov065_022905a8->unk_228c);
-            data_ov065_022905a8->unk_2284++;
-            res = WM_StartScanEx((void *)func_ov065_02269350, data_ov065_022905a8->unk_2288);
+            DC_InvalidateRange(*(void **)sWifiLinkWork->unk_2288, sWifiLinkWork->unk_228c);
+            sWifiLinkWork->unk_2284++;
+            res = WM_StartScanEx((void *)WifiLink_OnScanResult, sWifiLinkWork->unk_2288);
             break;
         }
         case 7:
-            res = WM_EndScan((void *)func_ov065_022692ec);
+            res = WM_EndScan((void *)WifiLink_OnEndScan);
             break;
         case 0xd:
-            func_ov065_022697ec();
+            WifiLink_ResetOnError();
             return;
         default:
             break;
@@ -1660,64 +1660,64 @@ void func_ov065_02269350(Unk_ov065_02268ec8_Msg *m) {
         }
         if (res == 3) goto e3;
         if (res != 8) goto e3;
-        func_ov065_0226989c(0xc);
-        func_ov065_02269944(1, 0, 0, 0x743);
+        WifiLink_SetPhase(0xc);
+        WifiLink_NotifyRequest(1, 0, 0, 0x743);
         return;
     e3:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, 0, 0, 0x74c);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, 0, 0, 0x74c);
         return;
     }
     case 1:
-        func_ov065_022697ec();
+        WifiLink_ResetOnError();
         return;
     case 2:
     case 3:
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, 0, 0, 0x75d);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, 0, 0, 0x75d);
         return;
     }
 }
 
-void func_ov065_022692ec(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnEndScan(Unk_ov065_02268ec8_Msg *m) {
     switch (m->h2) {
     case 0:
-        func_ov065_0226989c(3);
-        func_ov065_02269944(0, 0, 0, 0x774);
+        WifiLink_SetPhase(3);
+        WifiLink_NotifyRequest(0, 0, 0, 0x774);
         return;
     case 1:
-        func_ov065_022697ec();
+        WifiLink_ResetOnError();
         return;
     case 2:
     case 3:
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, 0, 0, 0x784);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, 0, 0, 0x784);
         return;
     }
 }
 
-void func_ov065_02269128(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnConnectEvent(Unk_ov065_02268ec8_Msg *m) {
     switch (m->h2) {
     case 0:
         switch (m->h8) {
         case 8:
         case 9: {
-            Unk_ov065_02268ec8_G *g = data_ov065_022905a8;
+            Unk_ov065_02268ec8_G *g = sWifiLinkWork;
             switch (g->unk_2260 - 8) {
             case 2:
                 g->unk_2282 = 0;
             case 0:
-                func_ov065_0226989c(0xc);
+                WifiLink_SetPhase(0xc);
                 break;
             case 1:
                 g->unk_2282 = 0;
-                data_ov065_022905a8->unk_2280 = 6;
+                sWifiLinkWork->unk_2280 = 6;
             case 4:
-                func_ov065_022697ec();
+                WifiLink_ResetOnError();
                 break;
             case 3:
                 break;
@@ -1725,152 +1725,152 @@ void func_ov065_02269128(Unk_ov065_02268ec8_Msg *m) {
             break;
         }
         case 7: {
-            if (data_ov065_022905a8->unk_2260 == 0xc) {
-                func_ov065_0226989c(8);
-                func_ov065_022697ec();
+            if (sWifiLinkWork->unk_2260 == 0xc) {
+                WifiLink_SetPhase(8);
+                WifiLink_ResetOnError();
                 return;
             }
             u32 v = m->ha;
             if (v >= 1 && v <= 0x7d7) {
-                data_ov065_022905a8->unk_2282 = v;
-                s32 r = WM_StartDCF((void *)func_ov065_02268fb0, data_ov065_022905a8->unk_1500, 0x620);
+                sWifiLinkWork->unk_2282 = v;
+                s32 r = WM_StartDCF((void *)WifiLink_OnDcfEvent, sWifiLinkWork->unk_1500, 0x620);
                 if (r == 2) {
                     return;
                 }
                 if (r == 3) goto e3;
                 if (r != 8) goto e3;
-                func_ov065_0226989c(0xc);
-                func_ov065_02269944(1, data_ov065_022905a8->unk_2140, 0, 0x7d7);
+                WifiLink_SetPhase(0xc);
+                WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2140, 0, 0x7d7);
                 return;
             e3:
-                func_ov065_0226989c(0xb);
-                func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x7e0);
+                WifiLink_SetPhase(0xb);
+                WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x7e0);
                 return;
             }
-            func_ov065_022697ec();
+            WifiLink_ResetOnError();
             return;
         }
         case 6:
             break;
         case 0: case 1: case 2: case 3: case 4: case 5:
         default:
-            func_ov065_0226989c(0xb);
-            func_ov065_02269944(7, data_ov065_022905a8->unk_2140, m->h8, 0x7ee);
+            WifiLink_SetPhase(0xb);
+            WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, m->h8, 0x7ee);
             return;
         }
         break;
     case 1:
-        data_ov065_022905a8->unk_22f8 = m->he;
+        sWifiLinkWork->unk_22f8 = m->he;
     case 6:
     case 11:
     case 12:
-        func_ov065_0226989c(8);
-        func_ov065_022697ec();
+        WifiLink_SetPhase(8);
+        WifiLink_ResetOnError();
         return;
     case 2: case 3: case 4: case 5: case 7: case 8: case 9: case 10:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x804);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x804);
         return;
     }
 }
 
-void func_ov065_02269080(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnDisconnect(Unk_ov065_02268ec8_Msg *m) {
     switch (m->h2) {
     case 0: {
-        Unk_ov065_02268ec8_G *g = data_ov065_022905a8;
+        Unk_ov065_02268ec8_G *g = sWifiLinkWork;
         if (g->unk_2260 == 0xc) {
-            func_ov065_0226989c(0xa);
-            func_ov065_022697ec();
+            WifiLink_SetPhase(0xa);
+            WifiLink_ResetOnError();
             return;
         }
         g->unk_2282 = 0;
-        func_ov065_0226989c(3);
-        func_ov065_02269944(0, data_ov065_022905a8->unk_2140, 0, 0x827);
+        WifiLink_SetPhase(3);
+        WifiLink_NotifyRequest(0, sWifiLinkWork->unk_2140, 0, 0x827);
         return;
     }
     case 1:
     case 3:
-        func_ov065_0226989c(0xa);
-        func_ov065_022697ec();
+        WifiLink_SetPhase(0xa);
+        WifiLink_ResetOnError();
         return;
     case 2:
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x839);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x839);
         return;
     }
 }
 
-void func_ov065_02268fb0(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnDcfEvent(Unk_ov065_02268ec8_Msg *m) {
     switch (m->h2) {
     case 0:
         switch (m->h4) {
         case 0xe:
-            if (data_ov065_022905a8->unk_2260 == 0xc) {
-                func_ov065_0226989c(8);
-                func_ov065_022697ec();
+            if (sWifiLinkWork->unk_2260 == 0xc) {
+                WifiLink_SetPhase(8);
+                WifiLink_ResetOnError();
                 return;
             }
-            func_ov065_0226989c(9);
-            func_ov065_02269944(0, data_ov065_022905a8->unk_2140, 0, 0x85d);
+            WifiLink_SetPhase(9);
+            WifiLink_NotifyRequest(0, sWifiLinkWork->unk_2140, 0, 0x85d);
             return;
         case 0xf: {
             Unk_ov065_02268fb0_Ptr *p = *(Unk_ov065_02268fb0_Ptr **)&m->h8;
-            func_ov065_0226aca8((u8)(p->he >> 8));
+            WifiLink_AddRssiSample((u8)(p->he >> 8));
             DC_InvalidateRange(*(void **)&m->h8, 0x620);
-            func_ov065_0226ac54(*(void **)&m->h8);
+            WifiLink_OnFrameReceived(*(void **)&m->h8);
             return;
         }
         default:
-            func_ov065_0226989c(0xb);
-            func_ov065_02269944(7, data_ov065_022905a8->unk_2140, m->h4, 0x86b);
+            WifiLink_SetPhase(0xb);
+            WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, m->h4, 0x86b);
             return;
         }
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x877);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x877);
     }
 }
 
-void func_ov065_02268ec8(Unk_ov065_02268ec8_Msg *m) {
+void WifiLink_OnEndDcf(Unk_ov065_02268ec8_Msg *m) {
     switch (m->h2) {
     case 0: {
-        if (data_ov065_022905a8->unk_2260 == 0xc) {
-            func_ov065_0226989c(0xa);
-            func_ov065_022697ec();
+        if (sWifiLinkWork->unk_2260 == 0xc) {
+            WifiLink_SetPhase(0xa);
+            WifiLink_ResetOnError();
             return;
         }
-        s32 r = WM_Disconnect((void *)func_ov065_02269080, 0);
+        s32 r = WM_Disconnect((void *)WifiLink_OnDisconnect, 0);
         if (r == 2) {
             return;
         }
         if (r == 3) goto b3;
         if (r != 8) goto b0;
-        func_ov065_0226989c(0xc);
-        func_ov065_02269944(1, data_ov065_022905a8->unk_2140, 0, 0x8a0);
+        WifiLink_SetPhase(0xc);
+        WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2140, 0, 0x8a0);
         return;
     b3:
-        func_ov065_0226989c(0xa);
-        func_ov065_022697ec();
+        WifiLink_SetPhase(0xa);
+        WifiLink_ResetOnError();
         return;
     b0:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x8ac);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x8ac);
         return;
     }
     case 1:
     case 3:
-        func_ov065_0226989c(0xa);
-        func_ov065_022697ec();
+        WifiLink_SetPhase(0xa);
+        WifiLink_ResetOnError();
         return;
     case 2:
     case 4:
     default:
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, 0, 0x8bf);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, 0, 0x8bf);
         return;
     }
 }
@@ -1901,28 +1901,28 @@ struct Unk_ov065_022905a8 {
 };
 
 extern "C" {
-extern Unk_ov065_022905a8 *data_ov065_022905a8;
-s32 func_ov065_0226989c(s32 a);
-s32 func_ov065_02269944(s32 a, void *b, u32 c, u32 d);
-s32 func_ov065_02269128(void *);
-s32 func_ov065_02269550(void *);
+extern Unk_ov065_022905a8 *sWifiLinkWork;
+s32 WifiLink_SetPhase(s32 a);
+s32 WifiLink_NotifyRequest(s32 a, void *b, u32 c, u32 d);
+s32 WifiLink_OnConnectEvent(void *);
+s32 WifiLink_OnWmCommand(void *);
 s32 func_0211fcbc(void *cb, void *buf, u32 a, u32 b, u32 c);
 s32 WM_PowerOff(void *cb);
 
-void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
+void WifiLink_OnReset(Unk_ov065_02268c64_Msg *m)
 {
     if (m->unk_02 == 0) {
-        data_ov065_022905a8->unk_226b = 0;
-        data_ov065_022905a8->unk_2282 = 0;
-        switch (data_ov065_022905a8->unk_2260) {
+        sWifiLinkWork->unk_226b = 0;
+        sWifiLinkWork->unk_2282 = 0;
+        switch (sWifiLinkWork->unk_2260) {
         case 5:
         case 6:
-            func_ov065_0226989c(3);
-            func_ov065_02269944(1, 0, 0, 0x8e1);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(1, 0, 0, 0x8e1);
             break;
         case 7:
-            func_ov065_0226989c(3);
-            func_ov065_02269944(0, 0, 0, 0x8e7);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(0, 0, 0, 0x8e7);
             break;
         case 8: {
             u32 old;
@@ -1931,14 +1931,14 @@ void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
             u32 y;
             u16 xs;
             s32 r;
-            old = data_ov065_022905a8->unk_22f8;
-            data_ov065_022905a8->unk_22f8 = 0;
+            old = sWifiLinkWork->unk_22f8;
+            sWifiLinkWork->unk_22f8 = 0;
             if (old == 0x12) {
-                Unk_ov065_022905a8 *g = data_ov065_022905a8;
+                Unk_ov065_022905a8 *g = sWifiLinkWork;
                 if ((g->unk_2170 & 0x24) != 0x24) {
                     x = 0;
                     g->unk_2170 |= 0x24;
-                    w = data_ov065_022905a8->unk_2264;
+                    w = sWifiLinkWork->unk_2264;
                     if ((w & 0xc0000) == 0xc0000) {
                         x = 1;
                     }
@@ -1948,55 +1948,55 @@ void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
                     } else {
                         y = 1;
                     }
-                    r = func_0211fcbc((void *)func_ov065_02269128, data_ov065_022905a8->unk_2140, 0, y, xs);
+                    r = func_0211fcbc((void *)WifiLink_OnConnectEvent, sWifiLinkWork->unk_2140, 0, y, xs);
                     if (r == 2) {
                         break;
                     }
                     if (r != 3 && r == 8) {
-                        func_ov065_0226989c(0xc);
-                        func_ov065_02269944(1, data_ov065_022905a8->unk_2140, old, 0x905);
+                        WifiLink_SetPhase(0xc);
+                        WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2140, old, 0x905);
                     } else {
-                        func_ov065_0226989c(0xb);
-                        func_ov065_02269944(7, data_ov065_022905a8->unk_2140, old, 0x90c);
+                        WifiLink_SetPhase(0xb);
+                        WifiLink_NotifyRequest(7, sWifiLinkWork->unk_2140, old, 0x90c);
                     }
                     break;
                 }
             }
-            func_ov065_0226989c(3);
-            func_ov065_02269944(1, data_ov065_022905a8->unk_2140, old, 0x913);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(1, sWifiLinkWork->unk_2140, old, 0x913);
             break;
         }
         case 9:
         case 12:
-            func_ov065_0226989c(3);
-            func_ov065_02269944(0, data_ov065_022905a8->unk_2140, 1, 0x91b);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(0, sWifiLinkWork->unk_2140, 1, 0x91b);
             break;
         case 10:
-            func_ov065_0226989c(3);
-            func_ov065_02269944(0, data_ov065_022905a8->unk_2140, 0, 0x922);
+            WifiLink_SetPhase(3);
+            WifiLink_NotifyRequest(0, sWifiLinkWork->unk_2140, 0, 0x922);
             break;
         case 13: {
-            s32 r = WM_PowerOff((void *)func_ov065_02269550);
+            s32 r = WM_PowerOff((void *)WifiLink_OnWmCommand);
             if (r == 2) {
                 break;
             }
             if (r != 3 && r == 8) {
-                func_ov065_0226989c(0xc);
-                func_ov065_02269944(1, 0, 0, 0x930);
+                WifiLink_SetPhase(0xc);
+                WifiLink_NotifyRequest(1, 0, 0, 0x930);
             } else {
-                func_ov065_0226989c(0xb);
-                func_ov065_02269944(7, 0, 0, 0x939);
+                WifiLink_SetPhase(0xb);
+                WifiLink_NotifyRequest(7, 0, 0, 0x939);
             }
             break;
         }
         default:
-            func_ov065_0226989c(0xb);
-            func_ov065_02269944(7, 0, data_ov065_022905a8->unk_2260, 0x93f);
+            WifiLink_SetPhase(0xb);
+            WifiLink_NotifyRequest(7, 0, sWifiLinkWork->unk_2260, 0x93f);
             break;
         }
     } else {
-        func_ov065_0226989c(0xb);
-        func_ov065_02269944(7, 0, 0, 0x946);
+        WifiLink_SetPhase(0xb);
+        WifiLink_NotifyRequest(7, 0, 0, 0x946);
     }
 }
 }

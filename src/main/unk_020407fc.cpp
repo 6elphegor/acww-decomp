@@ -112,7 +112,7 @@ s32 Town_FindGulliverShip(s32, void *);
 s32 Town_FindTownHall(s32, void *, s32, s32);
 void func_020b4a08(s32, s32);
 void func_020b4f18(s32, s32, void *, s32, ...);
-s32 func_020a5cc0(s32);
+s32 NetArea_IsUnsharedScene(s32);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
 s32 func_0203d99c(void);
@@ -352,7 +352,7 @@ extern "C" BOOL func_02040d80(void)
     if (func_020b50e8() == 6) {
         return FALSE;
     }
-    if (func_020a5cc0(func_020b50e8()) != 0) {
+    if (NetArea_IsUnsharedScene(func_020b50e8()) != 0) {
         return FALSE;
     }
     if (gActorDefaultParent != 0 && gActorDefaultParent->unk_0c != 6) {

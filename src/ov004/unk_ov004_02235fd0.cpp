@@ -156,33 +156,33 @@ public:
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
 
 // vtable 0x0224ebe4, size 0x268
-class Unk_ov004_0224ebec : public Actor {
+class HouseRoach : public Actor {
 public:
-    Unk_ov004_0224ebec();
+    HouseRoach();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224ebec();
+    virtual ~HouseRoach();
 
-    Unk_ov004_02236320_Ent *func_02236320();
-    void func_0223638c(s32 dist, s32 delta);
-    u8 func_022364d0();
-    void func_02236630(u32 sel);
-    BOOL func_02236694();
-    BOOL func_022366cc();
-    BOOL func_02236758();
-    BOOL func_022367dc();
-    BOOL func_02236838();
-    void func_02236910();
-    void func_02236950();
-    void func_02236bb8();
-    BOOL func_02236004();
-    void func_022361f4();
-    void func_02236244();
-    BOOL func_02236cb8();
-    void func_02236d9c(s32 v);
-    s32 func_02236da8();
+    Unk_ov004_02236320_Ent *getNearestCharacter();
+    void setProbePoints(s32 dist, s32 delta);
+    u8 probeWalls();
+    void playSe(u32 sel);
+    BOOL release();
+    BOOL draw();
+    BOOL checkStomped();
+    BOOL checkHeight();
+    BOOL execute();
+    void updateAppear();
+    void updateCollision();
+    void updateState();
+    BOOL move();
+    void updateHitBox();
+    void updateCrawl();
+    BOOL setup();
+    void setSoundState(s32 v);
+    s32 getSoundState();
 
     /* 0xd4 */ s32 unk_d4;
     /* 0xd8 */ s32 unk_d8;
@@ -213,13 +213,13 @@ public:
 };
 
 // vtable 0x0224eb9c, size 0x50
-class Unk_ov004_0224eb9c : public GameProc {
+class HouseRoachManager : public GameProc {
 public:
-    Unk_ov004_0224eb9c();
+    HouseRoachManager();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
-    virtual ~Unk_ov004_0224eb9c();
+    virtual ~HouseRoachManager();
 };
 
 extern "C" {
@@ -230,8 +230,8 @@ extern u32 gCurrentHeap;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 extern s16 data_02135f44[];
-Unk_ov004_0224eb9c *func_ov004_02237428();
-Unk_ov004_0224ebec *func_ov004_0223740c();
+HouseRoachManager *HouseRoachManager_Create();
+HouseRoach *HouseRoach_Create();
 
 BOOL func_020b52f8();
 s32 func_020b5328();
@@ -296,9 +296,9 @@ s32 Math_AngleXZ(void *a, void *b);
 s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02089040(void *a);
 
-void func_ov004_02236db4(void *self);
-BOOL func_ov004_02236fb8(void *self);
-BOOL func_ov004_02236fe0(void *owner);
+void HouseRoach_FindVillager(void *self);
+BOOL HouseRoach_LoadCount(void *self);
+BOOL HouseRoach_SpawnInitial(void *owner);
 }
 
 struct Unk_ov004_0224eb5c_Entry {
@@ -317,59 +317,59 @@ struct Unk_ov004_0224eb7c_Entry {
     u32 unk_14;
 };
 
-extern "C" Unk_ov004_0224eb5c_Entry data_ov004_0224eb5c;
-extern "C" char data_ov004_0224eb64[0x18];
-extern "C" Unk_ov004_0224eb7c_Entry data_ov004_0224eb7c;
-extern "C" s8 data_ov004_022523c4;
-extern "C" volatile u8 data_ov004_022523c8;
-extern "C" void *data_ov004_022523d0;
-extern "C" Unk_ov004_02236320_Ent *data_ov004_022523d4;
-extern "C" volatile u8 data_ov004_022523cc;
-extern "C" Unk_ov004_0224ebec *data_ov004_022523d8[3];
+extern "C" Unk_ov004_0224eb5c_Entry sHouseRoachManagerProfile;
+extern "C" char sHouseRoachModelPath[0x18];
+extern "C" Unk_ov004_0224eb7c_Entry sHouseRoachProfile;
+extern "C" s8 sHouseRoachTurnCounter;
+extern "C" volatile u8 sHouseRoachActiveCount;
+extern "C" void *sHouseRoachManager;
+extern "C" Unk_ov004_02236320_Ent *sHouseRoachVillager;
+extern "C" volatile u8 sHouseRoachTotal;
+extern "C" HouseRoach *sHouseRoaches[3];
 
-extern "C" Unk_ov004_0224eb9c *func_ov004_02237428() {
-    return new Unk_ov004_0224eb9c();
+extern "C" HouseRoachManager *HouseRoachManager_Create() {
+    return new HouseRoachManager();
 }
 
-extern "C" Unk_ov004_0224ebec *func_ov004_0223740c() {
-    return new Unk_ov004_0224ebec();
+extern "C" HouseRoach *HouseRoach_Create() {
+    return new HouseRoach();
 }
 
-Unk_ov004_0224eb9c::Unk_ov004_0224eb9c() {
+HouseRoachManager::HouseRoachManager() {
 }
 
-Unk_ov004_0224eb9c::~Unk_ov004_0224eb9c() {
+HouseRoachManager::~HouseRoachManager() {
 }
 
-BOOL Unk_ov004_0224eb9c::vfunc_0c() {
+BOOL HouseRoachManager::vfunc_0c() {
     if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
-    ((HouseData *)data_021e58a8)->func_020603b0(data_ov004_022523cc);
-    data_ov004_022523d0 = 0;
+    ((HouseData *)data_021e58a8)->func_020603b0(sHouseRoachTotal);
+    sHouseRoachManager = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224eb9c::onExecute() {
+BOOL HouseRoachManager::onExecute() {
     if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
     u8 mask = 0;
     s8 last = 0;
     s32 i = 0;
     for (i = 0; i < 3; i++) {
-        Unk_ov004_0224ebec **s = &data_ov004_022523d8[i];
+        HouseRoach **s = &sHouseRoaches[i];
         if (*s != 0) {
-            if (*(s32 *)((u8 *)data_ov004_022523d8[i] + 8) == 0xffff) {
+            if (*(s32 *)((u8 *)sHouseRoaches[i] + 8) == 0xffff) {
                 *(s32 *)((u8 *)*s + 8) = 0;
-                (*s)->func_02236d9c(0);
+                (*s)->setSoundState(0);
                 ProcBase_RequestDelete(*s);
                 *s = 0;
-                u32 c = data_ov004_022523c8;
+                u32 c = sHouseRoachActiveCount;
                 if (c != 0) {
-                    data_ov004_022523c8 = c - 1;
-                    data_ov004_022523cc = data_ov004_022523cc - 1;
+                    sHouseRoachActiveCount = c - 1;
+                    sHouseRoachTotal = sHouseRoachTotal - 1;
                 }
-            } else if (data_ov004_022523d8[i]->func_02236da8() == 1) {
+            } else if (sHouseRoaches[i]->getSoundState() == 1) {
                 mask = mask | (1 << i);
                 last = last - 1;
-            } else if ((*s)->func_02236da8() == 2) {
+            } else if ((*s)->getSoundState() == 2) {
                 mask = 0xff;
             }
         }
@@ -380,7 +380,7 @@ BOOL Unk_ov004_0224eb9c::onExecute() {
         if (p != 0) {
             void *q = (u8 *)p + 0x5c;
             for (i = 0; i < 3; i++) {
-                Unk_ov004_0224ebec *o = data_ov004_022523d8[i];
+                HouseRoach *o = sHouseRoaches[i];
                 if (o != 0 && ((mask >> i) & 1) != 0) {
                     if (last == -1) {
                         last = (s8)i;
@@ -394,32 +394,32 @@ BOOL Unk_ov004_0224eb9c::onExecute() {
                 }
             }
         }
-        data_ov004_022523d8[last]->func_02236d9c(2);
+        sHouseRoaches[last]->setSoundState(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224eb9c::vfunc_00() {
+BOOL HouseRoachManager::vfunc_00() {
     if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
-    data_ov004_022523d0 = this;
-    if (!func_ov004_02236fb8(this)) return TRUE;
-    func_ov004_02236fe0(this);
+    sHouseRoachManager = this;
+    if (!HouseRoach_LoadCount(this)) return TRUE;
+    HouseRoach_SpawnInitial(this);
     return TRUE;
 }
 
-extern "C" BOOL func_ov004_0223717c(u32 a, u32 b) {
+extern "C" BOOL HouseRoach_SpawnFromFurniture(u32 a, u32 b) {
     BOOL r = FALSE;
     if (gCommManager->isOnline()) return r;
-    u32 c = data_ov004_022523c8;
+    u32 c = sHouseRoachActiveCount;
     if (c < 3) {
-        s32 d = data_ov004_022523cc - c;
+        s32 d = sHouseRoachTotal - c;
         if (d > 0) {
             s32 i;
             for (i = 0; i < 3; i++) {
-                Unk_ov004_0224ebec **s = &data_ov004_022523d8[i];
+                HouseRoach **s = &sHouseRoaches[i];
                 if (*s == 0) {
-                    *s = (Unk_ov004_0224ebec *)Actor_spawn(0xc0, 0, (void *)a, (void *)b, data_ov004_022523d0);
-                    data_ov004_022523c8 = data_ov004_022523c8 + 1;
+                    *s = (HouseRoach *)Actor_spawn(0xc0, 0, (void *)a, (void *)b, sHouseRoachManager);
+                    sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
                     r = TRUE;
                     break;
                 }
@@ -429,7 +429,7 @@ extern "C" BOOL func_ov004_0223717c(u32 a, u32 b) {
     return r;
 }
 
-extern "C" BOOL func_ov004_02236fe0(void *owner) {
+extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     s32 x2;
     s32 y2;
     u8 cnt = 0;
@@ -479,7 +479,7 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
     xt0:
         if (x < g->unk_0c) goto xl0;
     }
-    for (i = 0; i < 3 && data_ov004_022523c8 < data_ov004_022523cc; i++) {
+    for (i = 0; i < 3 && sHouseRoachActiveCount < sHouseRoachTotal; i++) {
         if (cnt == 0) break;
         loc.unk_00 = 0;
         loc.unk_04 = 0;
@@ -513,19 +513,19 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         y2++;
     yt1:
         if (y2 < g->unk_10) goto yl1;
-        data_ov004_022523d8[i] = (Unk_ov004_0224ebec *)Actor_spawn(0xc0, 0x1f, &loc, 0, owner);
-        data_ov004_022523c8 = data_ov004_022523c8 + 1;
+        sHouseRoaches[i] = (HouseRoach *)Actor_spawn(0xc0, 0x1f, &loc, 0, owner);
+        sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
     }
     return TRUE;
 }
 
-extern "C" BOOL func_ov004_02236fb8(void *self) {
-    data_ov004_022523cc = ((HouseData *)data_021e58a8)->func_020603bc();
-    if (data_ov004_022523cc != 0) return TRUE;
+extern "C" BOOL HouseRoach_LoadCount(void *self) {
+    sHouseRoachTotal = ((HouseData *)data_021e58a8)->func_020603bc();
+    if (sHouseRoachTotal != 0) return TRUE;
     return FALSE;
 }
 
-Unk_ov004_0224ebec::Unk_ov004_0224ebec() {
+HouseRoach::HouseRoach() {
     volatile u32 *p = unk_114;
     unk_d4 = 0x614;
     unk_d8 = 0x6b8;
@@ -543,7 +543,7 @@ Unk_ov004_0224ebec::Unk_ov004_0224ebec() {
     unk_10c = 3;
 }
 
-Unk_ov004_0224ebec::~Unk_ov004_0224ebec() {
+HouseRoach::~HouseRoach() {
     func_021355f0(unk_248, 2, 12, (void *)func_02000c8c);
     func_021355f0(unk_230, 2, 12, (void *)func_02000c8c);
     func_02088c34(unk_1d8);
@@ -551,24 +551,24 @@ Unk_ov004_0224ebec::~Unk_ov004_0224ebec() {
     func_0203239c(unk_dc);
 }
 
-extern "C" void func_ov004_02236db4(void *) {
+extern "C" void HouseRoach_FindVillager(void *) {
     u8 i;
     for (i = 0; i < 8; i++) {
         void *r = NpcRegistry_FindVillager(i);
-        if (r) data_ov004_022523d4 = (Unk_ov004_02236320_Ent *)r;
+        if (r) sHouseRoachVillager = (Unk_ov004_02236320_Ent *)r;
     }
 }
 
-s32 Unk_ov004_0224ebec::func_02236da8() {
+s32 HouseRoach::getSoundState() {
     return unk_264;
 }
 
-void Unk_ov004_0224ebec::func_02236d9c(s32 v) {
+void HouseRoach::setSoundState(s32 v) {
     unk_264 = v;
 }
 
-BOOL Unk_ov004_0224ebec::func_02236cb8() {
-    CachedModel_loadCached(unk_120, 0x474f4b49, data_ov004_0224eb64);
+BOOL HouseRoach::setup() {
+    CachedModel_loadCached(unk_120, 0x474f4b49, sHouseRoachModelPath);
     void *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
     ProcBase_SetHeap(this, h);
     AnimModel_allocAnmObj(unk_120, 0);
@@ -590,14 +590,14 @@ BOOL Unk_ov004_0224ebec::func_02236cb8() {
     return TRUE;
 }
 
-void Unk_ov004_0224ebec::func_02236bb8() {
+void HouseRoach::updateState() {
     Unk_ov004_02236320_V3 v;
     if (unk_10c != 2) {
-        func_02236950();
+        updateCollision();
     }
     switch (unk_10c) {
     case 0:
-        func_02236244();
+        updateCrawl();
         break;
     case 1:
         unk_98 = unk_d4;
@@ -614,7 +614,7 @@ void Unk_ov004_0224ebec::func_02236bb8() {
         func_020902b0(0x50, &unk_5c, 0, 0);
         F08(this) = F08(this) - 1;
         unk_110 = 2;
-        func_02236630(2);
+        playSe(2);
         break;
     case 3:
         if (func_02063b8c(100) > 0x32) {
@@ -633,7 +633,7 @@ void Unk_ov004_0224ebec::func_02236bb8() {
     Unk_02003c40_callUpdateRelative(unk_114, &v);
 }
 
-void Unk_ov004_0224ebec::func_02236950() {
+void HouseRoach::updateCollision() {
     s32 ang;
     Unk_ov004_02236320_V3 *p;
     Unk_ov004_02236950_Obj o0;
@@ -700,7 +700,7 @@ void Unk_ov004_0224ebec::func_02236950() {
         }
     }
     if (unk_10c != 0) {
-        func_02236004();
+        move();
     }
     updatePosition((Unk_02002cb0_Vec *)&unk_1d8);
     func_020309d4(&unk_dc, p, &unk_68, ang, 0x666, this, 0xf);
@@ -715,10 +715,10 @@ void Unk_ov004_0224ebec::func_02236950() {
     func_02031c10(&o0);
 }
 
-void Unk_ov004_0224ebec::func_02236910() {
+void HouseRoach::updateAppear() {
     Unk_ov004_02236320_V3 v;
     unk_98 = unk_d4;
-    func_02236950();
+    updateCollision();
     unk_5c.y = unk_6c;
     Unk_ov004_02236320_V3 *pv = &unk_5c;
     v.x = unk_5c.x;
@@ -727,19 +727,19 @@ void Unk_ov004_0224ebec::func_02236910() {
     Unk_02003c40_callUpdateRelative(unk_114, &v);
 }
 
-BOOL Unk_ov004_0224ebec::func_02236838() {
+BOOL HouseRoach::execute() {
     u32 t;
     unk_263 = 0;
     t = F08(this);
     if (t >= 0x1f) {
         if (unk_110 == 1) {
-            if (data_ov004_022523d4 == NULL) {
-                func_ov004_02236db4(this);
+            if (sHouseRoachVillager == NULL) {
+                HouseRoach_FindVillager(this);
             }
-            func_02236758();
-            func_022361f4();
-            func_02236bb8();
-            func_022367dc();
+            checkStomped();
+            updateHitBox();
+            updateState();
+            checkHeight();
             if (unk_22a != 0) {
                 AnimModel_stepAnim(unk_120);
             }
@@ -749,7 +749,7 @@ BOOL Unk_ov004_0224ebec::func_02236838() {
     } else {
         if (unk_110 == 1) {
             F08(this) = t + 2;
-            func_02236910();
+            updateAppear();
         } else {
             F08(this) = t - 1;
         }
@@ -760,15 +760,15 @@ BOOL Unk_ov004_0224ebec::func_02236838() {
         calcModelMatrix(&buf);
         unk_184 = buf;
     } else {
-        func_02236694();
+        release();
     }
     if (unk_263 == 0) {
-        func_02236d9c(0);
+        setSoundState(0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224ebec::func_022367dc() {
+BOOL HouseRoach::checkHeight() {
     if (unk_5c.y >= 0xc00) {
         unk_5c.y = unk_6c;
         if ((unk_dc[1] & 1) != 0) {
@@ -783,7 +783,7 @@ BOOL Unk_ov004_0224ebec::func_022367dc() {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224ebec::func_02236758() {
+BOOL HouseRoach::checkStomped() {
     Unk_ov004_02236320_Ent *pl = (Unk_ov004_02236320_Ent *)func_02095204(4);
     if (unk_214 != 0) {
         if (unk_22a == 0) {
@@ -795,8 +795,8 @@ BOOL Unk_ov004_0224ebec::func_02236758() {
                     }
                 }
             }
-            if (data_ov004_022523d4 != NULL) {
-                if (data_ov004_022523d4->unk_98 > 0) {
+            if (sHouseRoachVillager != NULL) {
+                if (sHouseRoachVillager->unk_98 > 0) {
                     if (func_02088d38(unk_1d8, 8) != 0) {
                         unk_10c = 2;
                         return TRUE;
@@ -808,7 +808,7 @@ BOOL Unk_ov004_0224ebec::func_02236758() {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224ebec::func_022366cc() {
+BOOL HouseRoach::draw() {
     if (unk_110 != 4) {
         Unk_ov004_02236320_V3 *pv = &unk_5c;
         if (F08(this) > 0x1f) {
@@ -825,7 +825,7 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224ebec::func_02236694() {
+BOOL HouseRoach::release() {
     CachedModel_release(unk_120);
     unk_110 = 4;
     F08(this) = 0xffff;
@@ -833,14 +833,14 @@ BOOL Unk_ov004_0224ebec::func_02236694() {
     return TRUE;
 }
 
-void Unk_ov004_0224ebec::func_02236630(u32 sel) {
+void HouseRoach::playSe(u32 sel) {
     switch (sel) {
     case 0:
         unk_263 = 1;
-        if (func_02236da8() == 2) {
+        if (getSoundState() == 2) {
             Unk_02003c40_callRequest(unk_114, 0x1d2);
         } else {
-            func_02236d9c(1);
+            setSoundState(1);
         }
         break;
     case 1:
@@ -852,7 +852,7 @@ void Unk_ov004_0224ebec::func_02236630(u32 sel) {
     }
 }
 
-u8 Unk_ov004_0224ebec::func_022364d0() {
+u8 HouseRoach::probeWalls() {
     u8 r6 = 0;
     Unk_ov004_02236320_V3 *r4r = &unk_230[0];
     Unk_ov004_02236320_O1 o1;
@@ -892,7 +892,7 @@ u8 Unk_ov004_0224ebec::func_022364d0() {
     return r6;
 }
 
-void Unk_ov004_0224ebec::func_0223638c(s32 dist, s32 delta) {
+void HouseRoach::setProbePoints(s32 dist, s32 delta) {
     Unk_ov004_02236320_V3 *pv = &unk_5c;
     s16 ang = unk_8e;
     u32 idx;
@@ -918,7 +918,7 @@ void Unk_ov004_0224ebec::func_0223638c(s32 dist, s32 delta) {
     unk_230[1].y = 0x200;
 }
 
-Unk_ov004_02236320_Ent *Unk_ov004_0224ebec::func_02236320() {
+Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
     s32 d4, d3, d2, d1;
     Unk_ov004_02236320_Ent *p;
     Unk_ov004_02236320_Ent *g;
@@ -926,7 +926,7 @@ Unk_ov004_02236320_Ent *Unk_ov004_0224ebec::func_02236320() {
     Unk_ov004_02236320_V3 *b;
     Unk_ov004_02236320_V3 *c;
     p = (Unk_ov004_02236320_Ent *)func_02095204(4);
-    g = data_ov004_022523d4;
+    g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
             a = &unk_5c;
@@ -949,7 +949,7 @@ Unk_ov004_02236320_Ent *Unk_ov004_0224ebec::func_02236320() {
     return p;
 }
 
-void Unk_ov004_0224ebec::func_02236244() {
+void HouseRoach::updateCrawl() {
     u8 *self0 = (u8 *)&unk_5c;
     s32 res = 0;
     u8 i;
@@ -959,7 +959,7 @@ void Unk_ov004_0224ebec::func_02236244() {
         if (i == 0) {
             o = (s32)func_02095204(4);
         } else {
-            o = (s32)data_ov004_022523d4;
+            o = (s32)sHouseRoachVillager;
         }
         if (o != 0 && res == 0) {
             u8 *q = (u8 *)(o + 0x5c);
@@ -980,7 +980,7 @@ void Unk_ov004_0224ebec::func_02236244() {
         }
     }
     if (res == 2) {
-        Unk_ov004_02236320_Ent *t = func_02236320();
+        Unk_ov004_02236320_Ent *t = getNearestCharacter();
         if (t) {
             s16 *q92 = &unk_92;
             q92[1] = Math_AngleXZ(&t->unk_5c, self0);
@@ -989,24 +989,24 @@ void Unk_ov004_0224ebec::func_02236244() {
     }
 }
 
-void Unk_ov004_0224ebec::func_022361f4() {
+void HouseRoach::updateHitBox() {
     func_02088bf8(unk_1d8, this, &unk_5c, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
     func_02089040(unk_1d8);
 }
 
-BOOL Unk_ov004_0224ebec::func_02236004() {
+BOOL HouseRoach::move() {
     s32 a = unk_8e;
     Unk_ov004_02236320_V3 *p6 = &unk_5c;
     s32 hit = 0;
     u8 i;
-    func_0223638c(0x3c, 0xe38);
-    unk_260 = func_022364d0();
+    setProbePoints(0x3c, 0xe38);
+    unk_260 = probeWalls();
     for (i = 0; i < 2; i++) {
         s32 o;
         if (i == 0) {
             o = (s32)func_02095204(4);
         } else {
-            o = (s32)data_ov004_022523d4;
+            o = (s32)sHouseRoachVillager;
         }
         if (o != 0 && hit == 0) {
             Unk_ov004_02236320_V3 *q = (Unk_ov004_02236320_V3 *)(o + 0x5c);
@@ -1022,7 +1022,7 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
                         unk_22a = 1;
                         hit = 1;
                         unk_98 = unk_d8;
-                        func_02236630(1);
+                        playSe(1);
                     }
                 }
             }
@@ -1059,18 +1059,18 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
                 unk_262 = 2;
             }
         } else {
-            if (data_ov004_022523c4 == 4) {
+            if (sHouseRoachTurnCounter == 4) {
                 a = (s16)(a + 0xaaa);
-                data_ov004_022523c4 = -1;
-            } else if (data_ov004_022523c4 == 2) {
+                sHouseRoachTurnCounter = -1;
+            } else if (sHouseRoachTurnCounter == 2) {
                 a = (s16)(a - 0xaaa);
             }
-            data_ov004_022523c4 = data_ov004_022523c4 + 1;
+            sHouseRoachTurnCounter = sHouseRoachTurnCounter + 1;
             if (unk_262 < 10) {
                 unk_262 = unk_262 * 10;
             }
         }
-        func_02236630(m > 0 ? 0 : 0);
+        playSe(m > 0 ? 0 : 0);
     }
     s16 *q92 = &unk_92;
     q92[1] = a;
@@ -1078,43 +1078,43 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224ebec::onDraw() {
-    return func_022366cc();
+BOOL HouseRoach::onDraw() {
+    return draw();
 }
 
 // ---- 0224ebec methods (symbols.txt names 0x2235fd0-0x2236244 after the 0224eb9c class; renamed)
 
-BOOL Unk_ov004_0224ebec::vfunc_00() {
+BOOL HouseRoach::vfunc_00() {
     if (func_020b52f8()) {
-        return func_02236cb8();
+        return setup();
     }
     return 1;
 }
 
-BOOL Unk_ov004_0224ebec::onExecute() {
-    return func_02236838();
+BOOL HouseRoach::onExecute() {
+    return execute();
 }
 
-BOOL Unk_ov004_0224ebec::vfunc_0c() {
-    return func_02236694();
+BOOL HouseRoach::vfunc_0c() {
+    return release();
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
 
-extern "C" Unk_ov004_0224eb5c_Entry data_ov004_0224eb5c = {(void *(*)())func_ov004_02237428, 0xbf, 0xc2};
+extern "C" Unk_ov004_0224eb5c_Entry sHouseRoachManagerProfile = {(void *(*)())HouseRoachManager_Create, 0xbf, 0xc2};
 
-extern "C" char data_ov004_0224eb64[0x18] = "/insect/51/bug52.nsbmd";
+extern "C" char sHouseRoachModelPath[0x18] = "/insect/51/bug52.nsbmd";
 
-extern "C" Unk_ov004_0224eb7c_Entry data_ov004_0224eb7c = {(void *(*)())func_ov004_0223740c, 0xc0, 0xc3, 2, 0x50000, 0x50000, 0x140000};
+extern "C" Unk_ov004_0224eb7c_Entry sHouseRoachProfile = {(void *(*)())HouseRoach_Create, 0xc0, 0xc3, 2, 0x50000, 0x50000, 0x140000};
 
-extern "C" s8 data_ov004_022523c4 = 0;
+extern "C" s8 sHouseRoachTurnCounter = 0;
 
-extern "C" volatile u8 data_ov004_022523c8 = 0;
+extern "C" volatile u8 sHouseRoachActiveCount = 0;
 
-extern "C" void *data_ov004_022523d0 = 0;
+extern "C" void *sHouseRoachManager = 0;
 
-extern "C" Unk_ov004_02236320_Ent *data_ov004_022523d4 = 0;
+extern "C" Unk_ov004_02236320_Ent *sHouseRoachVillager = 0;
 
-extern "C" volatile u8 data_ov004_022523cc = 0;
+extern "C" volatile u8 sHouseRoachTotal = 0;
 
-extern "C" Unk_ov004_0224ebec *data_ov004_022523d8[3] = {0};
+extern "C" HouseRoach *sHouseRoaches[3] = {0};

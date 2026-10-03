@@ -169,7 +169,7 @@ struct Unk_020d77a4 : Character {
 extern "C" {
 void NpcRegistry_RemoveSpNpc(void *p);
 BOOL _ZN11CommManager8isOnlineEv(u32 v);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 BOOL func_020e96ec(void *a, void *b);
 void *_ZN12Unk_020e074013func_02081fb8Ev(void *p);
 BOOL _ZN12Unk_020e071813func_02082140Ev(void *p);
@@ -248,7 +248,7 @@ BOOL Unk_020d8bc8::vfunc_00() {
     if (!Unk_020d77a4::vfunc_00()) {
         return FALSE;
     }
-    if (!func_020a62a0() && _ZN11CommManager8isOnlineEv(gCommManager) && !unk_558.unk_0b) {
+    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !unk_558.unk_0b) {
         Unk_0203e7a4_Vec v;
         s16 s;
         v.x = 0;

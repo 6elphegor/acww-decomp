@@ -64,56 +64,56 @@ void OverlayMgr_Acquire(u32 id);
 
 extern "C" {
 
-extern u8 data_ov004_02258910;
-extern void *data_ov004_02258914;
+extern u8 sKkShowFxActive;
+extern void *sKkShowFx;
 
-void func_ov004_0223f3f4(void) {
+void KkShowFx_Start(void) {
     OverlayMgr_Acquire((u32)OVERLAY_93_ID);
-    data_ov004_02258914 = Heap_Alloc(data_021c6210, 0x1fc4);
-    if (data_ov004_02258914) {
-        func_ov093_022921b8(data_ov004_02258914);
+    sKkShowFx = Heap_Alloc(data_021c6210, 0x1fc4);
+    if (sKkShowFx) {
+        func_ov093_022921b8(sKkShowFx);
     }
-    func_ov093_0229212c(data_ov004_02258914);
-    data_ov004_02258910 = 1;
+    func_ov093_0229212c(sKkShowFx);
+    sKkShowFxActive = 1;
 }
 
-void func_ov004_0223f3cc(void) {
-    if (data_ov004_02258910 & 1) {
-        func_ov093_02291ff0(data_ov004_02258914);
-    }
-}
-
-void func_ov004_0223f3a4(void) {
-    if (data_ov004_02258910 & 1) {
-        func_ov093_02291f70(data_ov004_02258914);
+void KkShowFx_Update(void) {
+    if (sKkShowFxActive & 1) {
+        func_ov093_02291ff0(sKkShowFx);
     }
 }
 
-void func_ov004_0223f350() {
-    if (data_ov004_02258910 & 1) {
-        func_ov093_02291f5c(data_ov004_02258914);
+void KkShowFx_CallUnk1f70(void) {
+    if (sKkShowFxActive & 1) {
+        func_ov093_02291f70(sKkShowFx);
+    }
+}
+
+void KkShowFx_Stop() {
+    if (sKkShowFxActive & 1) {
+        func_ov093_02291f5c(sKkShowFx);
         void *heap = data_021c6210;
-        func_ov093_02292174(data_ov004_02258914);
-        Heap_Free(heap, data_ov004_02258914);
-        data_ov004_02258914 = 0;
+        func_ov093_02292174(sKkShowFx);
+        Heap_Free(heap, sKkShowFx);
+        sKkShowFx = 0;
         OverlayMgr_Release((u32)OVERLAY_93_ID);
     }
-    data_ov004_02258910 = 0;
+    sKkShowFxActive = 0;
 }
 
-void func_ov004_0223f31c(s32 a) {
-    if (data_ov004_02258910 & 1) {
+void KkShowFx_SetParam(s32 a) {
+    if (sKkShowFxActive & 1) {
         if (a <= 0) a = 0x1400;
-        func_ov093_02291e6c(data_ov004_02258914, a);
+        func_ov093_02291e6c(sKkShowFx, a);
     }
 }
 
-void func_ov004_0223f2f4() {
-    if (data_ov004_02258910 & 1) func_ov093_02291de4(data_ov004_02258914);
+void KkShowFx_CallUnk1de4() {
+    if (sKkShowFxActive & 1) func_ov093_02291de4(sKkShowFx);
 }
 
-s32 func_ov004_0223f2c8() {
-    if (data_ov004_02258910 & 1) return func_ov093_02291dd8(data_ov004_02258914);
+s32 KkShowFx_GetState() {
+    if (sKkShowFxActive & 1) return func_ov093_02291dd8(sKkShowFx);
     return 0;
 }
 
@@ -122,14 +122,14 @@ s32 func_ov004_0223f2c8() {
 // file-scope objects (the static initialiser); the definition order sets the data/bss order
 extern Unk_020b4fc0 data_ov004_0225893c;
 
-u8 data_ov004_02258910;
-void *data_ov004_02258914;
+u8 sKkShowFxActive;
+void *sKkShowFx;
 // {pointer to the first static entry, count}
-Unk_020b4fc0 *data_ov004_0224f2cc = &data_ov004_0225893c;
+Unk_020b4fc0 *sRoomSceneEntryList = &data_ov004_0225893c;
 extern "C" u32 data_ov004_0224f2d0 = 3;  // unreferenced: kept by its symbols.txt name
 Unk_020b4fc0 data_ov004_0225893c(1, Unk_ov004_Vec3C(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2);
-u32 data_ov004_0224f2d4 = 0x11;
+u32 sRoomCommonProfileCount = 0x11;
 Unk_020b4fc0 data_ov004_02258958(5, Unk_ov004_Vec3C(0x11000, 0x200, 0x1d000), 0x11000000, -0x4000, 2, 2, 0x4000, 2);
 Unk_020b4fc0 data_ov004_02258974(0x3e, Unk_ov004_Vec3C(0, 0, 0), 0x800000, 0, 2, 2, 0, 0);
 // list of 17 ids
-u32 data_ov004_0224f2d8[17] = {0xc9, 0xca, 0xe, 0x7, 0x8c, 0x8e, 0xc6, 0x8b, 0xd6, 0xc5, 0x89, 0xd5, 0xbf, 0xd1, 0xd2, 0x8d, 0x2a};
+u32 sRoomCommonProfiles[17] = {0xc9, 0xca, 0xe, 0x7, 0x8c, 0x8e, 0xc6, 0x8b, 0xd6, 0xc5, 0x89, 0xd5, 0xbf, 0xd1, 0xd2, 0x8d, 0x2a};

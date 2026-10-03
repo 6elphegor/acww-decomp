@@ -119,9 +119,9 @@ BOOL func_0203d7ec(void);
 void *TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsMenuOpen(void);
 BOOL func_0206e5ec(void);
-BOOL func_0206ed8c(void);
-BOOL func_0206edb0(void);
-s32 func_0206ede0(void);
+BOOL MenuCtrl_IsScreenChanging(void);
+BOOL MenuCtrl_IsTransitionActive(void);
+s32 MenuCtrl_GetTransitionProgress(void);
 void Snd_PlaySe(s32 a);
 void func_02038450(void);
 BOOL func_020b79e0(void);
@@ -251,9 +251,9 @@ void Unk_020e451c::func_020b7a24() {
 }
 
 extern "C" BOOL func_020b79e0() {
-    BOOL a = func_0206ed8c() != 0;
-    BOOL b = func_0206edb0() != 0;
-    s32 v = func_0206ede0();
+    BOOL a = MenuCtrl_IsScreenChanging() != 0;
+    BOOL b = MenuCtrl_IsTransitionActive() != 0;
+    s32 v = MenuCtrl_GetTransitionProgress();
     if (a || (b && v < 0x1000)) return TRUE;
     return FALSE;
 }

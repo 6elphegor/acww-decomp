@@ -22,7 +22,7 @@ extern u8 gTouchChanged;
 extern u8 data_021edb68;
 extern u16 gPad[];
 
-void func_0206ee80(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
 void *FriendEntry_GetFriendData(void *p);
@@ -31,13 +31,13 @@ void *PlayerData_GetCurrent();
 void *PlayerWifiData_GetDwcUserData(void *p);
 void DwcFriendData_Clear(void *p);
 BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *ctx);
-void func_0206ecf8(u32 v);
-s32 func_0206ed50();
+void MenuCtrl_SetResult(u32 v);
+s32 MenuCtrl_GetMode();
 void FriendEntry_Clear(void *p);
 void InventoryBg_DrawSprite();
-s32 func_0206e5cc();
+s32 MenuCtrl_SetFriendPageFromIndex();
 s32 Net_GetMode();
-s32 func_0206ed38();
+s32 MenuCtrl_GetIndex();
 u32 DwcFriendData_GetBytes(void *p);
 BOOL Net_WifiAddFriend(u32 a, u32 b);
 void *ProcBase_GetParent();
@@ -59,8 +59,8 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Snd_SetKeySeMode(s32 a);
-BOOL func_0206e61c();
-void func_0206e63c();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void NumberPad_LoadObjGraphics(s32 a);
 void NumberPad_LoadBgGraphics(s32 a);
@@ -519,8 +519,8 @@ void FriendCodeMenu::runMainState() {
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295248,
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295200,
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295238};
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 1:
@@ -532,7 +532,7 @@ void FriendCodeMenu::runMainState() {
             hideCursor();
             setTransitionState(3);
             notifyParent(7);
-            if (func_0206ed50() == 0xe) {
+            if (MenuCtrl_GetMode() == 0xe) {
                 FriendEntry_Clear(getFriendEntry());
             }
             setPhase(1);
@@ -872,7 +872,7 @@ void FriendCodeMenu::stateMessage() {
 
 void FriendCodeMenu::stateRetryAddFriend() {
     void *r = getFriendEntry();
-    s32 idx = func_0206ed38();
+    s32 idx = MenuCtrl_GetIndex();
     u32 t = DwcFriendData_GetBytes(FriendEntry_GetFriendData(r));
     if (Net_WifiAddFriend((u8)idx, t)) {
         setMainState(10);
@@ -1086,13 +1086,13 @@ u32 FriendCodeMenu::hitTest(s32 x0, s32 y) {
 
 void *FriendCodeMenu::getFriendEntry() {
     void *h = ((PlayerData *)PlayerData_GetCurrent())->getFriendList();
-    s32 idx = func_0206ed38();
+    s32 idx = MenuCtrl_GetIndex();
     return (u8 *)FriendList_GetEntries(h) + idx * 0x1c;
 }
 
 BOOL FriendCodeMenu::isDuplicateFriend(u32 a) {
     void *h = PlayerData_GetCurrent();
-    s32 idx = func_0206ed38();
+    s32 idx = MenuCtrl_GetIndex();
     u8 *p = (u8 *)FriendList_GetEntries(((PlayerData *)h)->getFriendList());
     s32 i;
     for (i = 0; i < 0x20; p += 0x1c, i++) {
@@ -1137,22 +1137,22 @@ void FriendCodeMenu::confirm() {
     void *s = getFriendEntry();
     void *t = FriendEntry_GetFriendData(s);
     DwcFriendData_FromCodeDigits(t, unk_a4, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     unk_154.setSelected(6);
     setTransitionState(3);
     setMainState(10);
     Snd_PlaySe(0x29);
-    if (func_0206ed50() == 0xe) {
+    if (MenuCtrl_GetMode() == 0xe) {
         notifyParent(0xc);
     } else {
         ((MenuTabBar *)((void *(*)(void *))ProcBase_GetParent)(this))->requestSaveOnClose();
         notifyParent(6);
-        func_0206e5cc();
+        MenuCtrl_SetFriendPageFromIndex();
         if (gCommManager->isSlotActive(gCommManager->unk_64)) {
             switch (Net_GetMode()) {
             case 3:
             case 4: {
-                s32 pl = func_0206ed38();
+                s32 pl = MenuCtrl_GetIndex();
                 u32 x = DwcFriendData_GetBytes(FriendEntry_GetFriendData(s));
                 if (!Net_WifiAddFriend((u8)pl, x)) {
                     setMainState(0xc);
@@ -1165,12 +1165,12 @@ void FriendCodeMenu::confirm() {
 }
 
 void FriendCodeMenu::cancel() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_154.setSelected(7);
     setTransitionState(3);
     setMainState(10);
     notifyParent(6);
-    if (func_0206ed50() == 0xe) {
+    if (MenuCtrl_GetMode() == 0xe) {
         FriendEntry_Clear(getFriendEntry());
     }
     Snd_PlaySe(0x28);
@@ -1405,7 +1405,7 @@ void FriendCodeMenu::drawCodeDigits() {
 }
 
 void FriendCodeMenu::drawSelection() {
-    func_0206ee80(unk_b00, 4, 7, 0x1b, 8, 4);
+    BgScreen_SetRectPalette(unk_b00, 4, 7, 0x1b, 8, 4);
     u32 b = unk_a3;
     u32 a = unk_a2;
     if (a != b) {
@@ -1419,7 +1419,7 @@ void FriendCodeMenu::drawSelection() {
         }
         lo = lo * 2 + 4;
         hi = hi * 2 + 3;
-        func_0206ee80(unk_b00, lo, 7, hi, 8, 8);
+        BgScreen_SetRectPalette(unk_b00, lo, 7, hi, 8, 8);
     }
 }
 
@@ -1469,7 +1469,7 @@ BOOL FriendCodeMenu::tickKeyRepeat() {
 }
 
 void FriendCodeMenu::resetKeyPalettes() {
-    func_0206ee80(unk_300, 9, 0xc, 0x15, 0x14, 2);
+    BgScreen_SetRectPalette(unk_300, 9, 0xc, 0x15, 0x14, 2);
     unhighlightKey(0xb);
     unhighlightKey(0xa);
     setFlags(2);
@@ -1485,7 +1485,7 @@ void FriendCodeMenu::setKeyPalette(s32 idx, u32 to) {
         x1 = x0 + 3;
     }
     u32 y0 = sKeyRowY[idx];
-    func_0206ee80(unk_300, x0, y0, x1, y0 + 1, to);
+    BgScreen_SetRectPalette(unk_300, x0, y0, x1, y0 + 1, to);
     setFlags(2);
 }
 

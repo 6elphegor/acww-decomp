@@ -139,9 +139,9 @@ Unk_0203dad4_Task *func_0203eb78();
 void PrioList_Insert(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void func_0203ebdc(Unk_0203dc50_List *l);
 void func_020e79a0(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
-void func_020a5d4c();
-void func_020a5d0c();
-void func_020a42c4();
+void NetArea_SendStateToNewOwner();
+void NetArea_SendStateToRequester();
+void Scene_CheckExit();
 void _ZN8ProcBase8vfunc_20Ev(void *a, u32 b);
 BOOL TalkRequest_IsActive();
 BOOL _ZN9Character13func_0203e3e8Ev();
@@ -166,7 +166,7 @@ BOOL func_02094898();
 u32 func_020b4934();
 void func_020b4bbc(u32 a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(s32 v);
-BOOL func_ov004_0222497c();
+BOOL PlayerActor_LocalRequestLeaveRoom();
 Unk_0203e604_Obj *Character_FindInteractionTarget(Unk_0203e604_Obj *o);
 BOOL _ZN9Character16checkInteractionEPS_(Unk_0203e604_Obj *a, Unk_0203e604_Obj *b);
 s32 _ZN9Character13func_0203e400Ev(Unk_0203e604_Obj *o);
@@ -175,12 +175,12 @@ BOOL func_0203e22c(Unk_0203dad4_Task *t);
 void TalkRequestFlags_Set(u32 mask);
 BOOL TalkRequestFlags_Test(u32 mask);
 BOOL func_0203d8dc(u32 x);
-void func_0206e67c(void);
+void MenuCtrl_RequestForceClose(void);
 void func_0203ec00(void *p);
 s32 _ZN15TalkWindowState13detachRequestEv(u32 x);
 u32 TalkWindow_Get(u32 x);
 s32 _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(u32 a, u32 b);
-u32 func_0206ec6c(u32 a);
+u32 MenuCtrl_IsFinished(u32 a);
 BOOL MenuCtrl_IsIdle(void);
 BOOL func_02094e64(void);
 BOOL PlayerActor_RequestAct05(void);
@@ -312,7 +312,7 @@ extern "C" BOOL func_0203e298(Unk_0203dad4_Task *s) {
 }
 
 extern "C" u32 func_0203e290(u32 a) {
-    return func_0206ec6c(a);
+    return MenuCtrl_IsFinished(a);
 }
 
 extern "C" BOOL func_0203e278(void) {
@@ -663,7 +663,7 @@ extern "C" BOOL func_0203dce8(Unk_0203dad4_Task *t) {
     if (!func_02094d60()) {
         return FALSE;
     }
-    if (!func_ov004_0222497c()) {
+    if (!PlayerActor_LocalRequestLeaveRoom()) {
         return FALSE;
     }
     t->unk_16 = 5;
@@ -763,10 +763,10 @@ BOOL TalkRequestQueue::onDraw() {
 }
 
 void TalkRequestQueue::vfunc_20(u32 b) {
-    func_020a5d4c();
-    func_020a5d0c();
+    NetArea_SendStateToNewOwner();
+    NetArea_SendStateToRequester();
     if (gActorDefaultParent != 0) {
-        func_020a42c4();
+        Scene_CheckExit();
     }
     _ZN8ProcBase8vfunc_20Ev(this, b);
 }
@@ -1030,7 +1030,7 @@ extern "C" BOOL func_0203d56c(void) {
         return FALSE;
     }
     if (TalkRequest_IsActive()) {
-        func_0206e67c();
+        MenuCtrl_RequestForceClose();
         return FALSE;
     }
     if (!func_02094f84()) {

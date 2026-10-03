@@ -61,7 +61,7 @@ void func_020b0788(void *p, s32 a);
 void func_020b080c(void *p);
 u8 *func_020b053c();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_ov004_02224844();
+void PlayerActor_LocalRequestAct12();
 void func_02094960();
 void func_02034f80(void *p);
 void func_02034f98(void *p);
@@ -536,7 +536,7 @@ void StargazingMenu::initMembers() {
     unk_2cf4 = 0x60;
     unk_2d14 = 1;
     resetNameLabel();
-    func_ov004_02224844();
+    PlayerActor_LocalRequestAct12();
     func_02034f98(data_021c1b3c + 0x2f0);
 }
 

@@ -99,7 +99,7 @@ extern "C" void *sAossConnectResult;
 #define sAossEssidStr ((u8 *)"ESSID-AOSS")
 
 extern "C" {
-extern u32 data_ov065_0228ebd8;
+extern u32 gOwnIp;
 extern s32 (*sAossFreeFunc)(s32);
 extern s32 (*sAossAllocFunc)(s32);
 
@@ -173,14 +173,14 @@ u32 Aoss_PickHostAddress(u32 a, u32 b);
 s32 Aoss_RunProtocol(u8 *o);
 s32 Aoss_Run(Unk_ov001_02202b3c_Cfg *a);
 s32 RTC_GetTime(void *p);
-s32 func_ov065_0226148c();
-s32 func_ov065_022615f0();
-s32 func_ov065_02261610();
-s32 func_ov065_0226149c(s32, s32, s32, s32, u8 *);
-s32 func_ov065_02260fa4(void *, s32, s64);
-s32 func_ov065_02261524(s32, s32, s32, s32, u8 *);
-s32 func_ov065_02261110();
-s32 func_ov065_02261118(void *);
+s32 Sock_Close();
+s32 Sock_Bind();
+s32 Sock_Create();
+s32 Sock_SendTo(s32, s32, s32, s32, u8 *);
+s32 Sock_Poll(void *, s32, s64);
+s32 Sock_RecvFrom(s32, s32, s32, s32, u8 *);
+s32 Sock_Cleanup();
+s32 Sock_Startup(void *);
 s32 Aoss_WlanDisconnect();
 void *MI_CpuFill8(void *, s32, u32);
 void *MI_CpuCopy8(void *, void *, u32);
@@ -1746,19 +1746,19 @@ extern "C" s32 Aoss_NetStartup(u32 a, u32 b, u32 c) {
     sAossSocConfig.unk_10 = Aoss_Htonl(a);
     sAossSocConfig.unk_14 = Aoss_Htonl(b);
     sAossSocConfig.unk_18 = Aoss_Htonl(c);
-    if (func_ov065_02261118(&sAossSocConfig) < 0) {
+    if (Sock_Startup(&sAossSocConfig) < 0) {
         return -1;
     }
-    if (data_ov065_0228ebd8 == 0) {
+    if (gOwnIp == 0) {
         do {
             OS_Sleep(100);
-        } while (data_ov065_0228ebd8 == 0);
+        } while (gOwnIp == 0);
     }
     return 0;
 }
 
 extern "C" s32 Aoss_NetCleanup() {
-    if (func_ov065_02261110() < 0) {
+    if (Sock_Cleanup() < 0) {
         return -1;
     }
     return -(Aoss_WlanDisconnect() != 0 ? 1 : 0);
@@ -1794,7 +1794,7 @@ extern "C" void *Aoss_Memset(void *p, u32 v, u32 n) {
 extern "C" s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q) {
     s32 v = *q;
     *p = v;
-    return func_ov065_02261524(a, b, c, d, p);
+    return Sock_RecvFrom(a, b, c, d, p);
 }
 
 extern "C" s32 Aoss_Select(s32 a, Unk_ov001_022007fc_P *p, s32 c, s32 d, s32 *q) {
@@ -1802,28 +1802,28 @@ extern "C" s32 Aoss_Select(s32 a, Unk_ov001_022007fc_P *p, s32 c, s32 d, s32 *q)
     Unk_ov001_022007fc_P t = *p;
     sum += q[0] * 0x1ff6210 / 0x40;
     sum += q[1] * 0x1ff6210 / 0x40;
-    return func_ov065_02260fa4(&t, 1, sum);
+    return Sock_Poll(&t, 1, sum);
 }
 
 extern "C" s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v) {
     *p = v;
-    return func_ov065_0226149c(a, b, c, d, p);
+    return Sock_SendTo(a, b, c, d, p);
 }
 
 extern "C" s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n) {
 }
 
 extern "C" s32 Aoss_SocketCreate(s32 a, s32 b, s32 c) {
-    return func_ov065_02261610();
+    return Sock_Create();
 }
 
 extern "C" s32 Aoss_SocketBind(s32 a, u8 *b, s32 c) {
     *b = c;
-    return func_ov065_022615f0();
+    return Sock_Bind();
 }
 
 extern "C" s32 Aoss_SocketClose(s32 s) {
-    return func_ov065_0226148c();
+    return Sock_Close();
 }
 
 extern "C" u32 Aoss_Htonl(u32 v) {

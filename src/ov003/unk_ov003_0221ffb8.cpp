@@ -975,7 +975,7 @@ void func_020339bc(void *o, void *p, s32 a, s32 b);
 s32 MapBlockAcre_hasPond(void *c);
 void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
 s32 WorldCurve_Apply(V3_f3 *v);
-s32 func_020429d0(s32 a, s32 *p, s32 c);
+s32 FieldAction_FindDropUnit(s32 a, s32 *p, s32 c);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
@@ -1024,7 +1024,7 @@ s32 func_0209c15c(void *p);
 void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 void func_0209c364(void *p);
 void func_0209c370(void *p);
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 BOOL func_020e7500(void *a);
 s32 func_020e780c(s32, s32);
 s32 func_020e7b98(s32 x, s32 z);
@@ -2113,7 +2113,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
                 {
                     s32 arr[2];
                     arr[1] = arr[0] = 0;
-                    if (func_020429d0(0x10, arr, 0)) {
+                    if (FieldAction_FindDropUnit(0x10, arr, 0)) {
                         self->unk_224 = 4;
                         self->unk_225 = 6;
                         r = TRUE;
@@ -4889,7 +4889,7 @@ extern "C" BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s
 //@ 0x22203e0
 extern "C" BOOL FieldFish_IsRainOrSnow(void *self) {
     BOOL r = FALSE;
-    u32 t = func_020b8fe8() - 1;
+    u32 t = Weather_GetFallingPrecip() - 1;
     if (t <= 1) {
         r = TRUE;
     }

@@ -177,14 +177,14 @@ typedef Unk_ov065_0225f4d4_Msg Msg;
 
 // the same function is called with and without its argument (0x0225f8dc.. vs 0x0225fbbc..)
 namespace Unk_ov065_0225fbbc_Ns {
-extern "C" s32 func_ov065_02260f04(Sess *s);
+extern "C" s32 SockCore_IsInvalidHandle(Sess *s);
 }
 
 extern "C" {
 // own data (other TUs of the overlay)
-extern Unk_ov065_0225faf4_Alloc *data_ov065_0228e9a0;
-extern Obj *data_ov065_0228e9b0;
-extern Unk_ov065_0225f634_Params data_ov065_0228b3dc;
+extern Unk_ov065_0225faf4_Alloc *sSockCoreConfig;
+extern Obj *sSockDefaultSocket;
+extern Unk_ov065_0225f634_Params sSockTcpParams;
 
 // main module
 u32 OS_DisableInterrupts(void);
@@ -200,41 +200,41 @@ void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 // other TUs of the overlay
-void func_ov065_0225f378(void *);
-s32 func_ov065_0225f3e4(Obj *, Msg *);
-s32 func_ov065_0225f404(Obj *, Msg *);
-Msg *func_ov065_0225f4d4(void *, Obj *, s32);
-s32 func_ov065_02260f04(void);
-u32 func_ov065_02260ed8(u32);
-void func_ov065_02260f94(void *);
-void func_ov065_02262a44(void *);
-void func_ov065_02262984(void *);
-void func_ov065_022629b0(void);
-void func_ov065_02262a18(void);
-void func_ov065_02262954(void *);
-void func_ov065_022629d0(u32, u32, void *);
-void func_ov065_02262924(void);
-void *func_ov065_02262840(u16 *, s32 *);
-s32 func_ov065_02262874(void);
+void SockCore_CommandThreadMain(void *);
+s32 SockCore_ExecCommand(Obj *, Msg *);
+s32 SockCore_ExecOnRecvSide(Obj *, Msg *);
+Msg *SockCore_AllocMsg(void *, Obj *, s32);
+s32 SockCore_IsInvalidHandle(void);
+u32 SockCore_Align4(u32);
+void SockCore_AddToOpenList(void *);
+void IpSoc_Use(void *);
+void IpSoc_ShareWithThread(void *);
+void IpSoc_Init(void);
+void IpSoc_SetUdp(void);
+void IpSoc_SetUdpCallback(void *);
+void IpSoc_Bind(u32, u32, void *);
+void IpSoc_TcpListen(void);
+void *IpSoc_GetPeer(u16 *, s32 *);
+s32 IpSoc_TcpConnect(void);
 
 // this TU
-s32 func_ov065_0225fd18(void *data, u32 len, Sess *s);
-s32 func_ov065_0225fc98(Sess *s, u16 a);
-s32 func_ov065_0225fbbc(Sess *s, u16 a, u32 b);
-s32 func_ov065_0225fb68(Sess *s);
-s32 func_ov065_0225faf4(Job *j);
-s32 func_ov065_0225fa6c(Obj *);
-s32 func_ov065_0225f9a8(Obj *, u32 *, u32 *);
-s32 func_ov065_0225f8dc(Obj *, u32 *, u32 *);
-s32 func_ov065_0225f880(Msg *);
-s32 func_ov065_0225f84c(Unk_ov065_0225f634_Params *);
-s32 func_ov065_0225f7ec(Msg *);
-Obj *func_ov065_0225f7a0(Unk_ov065_0225f634_Params *);
-u32 func_ov065_0225f738(Unk_ov065_0225f634_Params *);
-u32 func_ov065_0225f718(Unk_ov065_0225f5c8_T *);
-u8 *func_ov065_0225f634(Obj *, Unk_ov065_0225f634_Params *);
-u8 *func_ov065_0225f618(u8 *, Unk_ov065_0225f618_Pair *, u32);
-u32 func_ov065_0225f5c8(void *, void *, Unk_ov065_0225f5c8_T *);
+s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s);
+s32 SockCore_Bind(Sess *s, u16 a);
+s32 SockCore_Connect(Sess *s, u16 a, u32 b);
+s32 SockCore_PostConnect(Sess *s);
+s32 SockCore_CmdConnect(Job *j);
+s32 SockCore_Listen(Obj *);
+s32 SockCore_Accept(Obj *, u32 *, u32 *);
+s32 SockCore_StartAccept(Obj *, u32 *, u32 *);
+s32 SockCore_CmdAccept(Msg *);
+s32 SockCore_Create(Unk_ov065_0225f634_Params *);
+s32 SockCore_CmdOpen(Msg *);
+Obj *SockCore_Alloc(Unk_ov065_0225f634_Params *);
+u32 SockCore_CalcSize(Unk_ov065_0225f634_Params *);
+u32 SockCore_CalcThreadAreaSize(Unk_ov065_0225f5c8_T *);
+u8 *SockCore_InitLayout(Obj *, Unk_ov065_0225f634_Params *);
+u8 *SockCore_CarveBuffer(u8 *, Unk_ov065_0225f618_Pair *, u32);
+u32 SockCore_StartCommandThread(void *, void *, Unk_ov065_0225f5c8_T *);
 }
 
 static inline BOOL Unk_ov065_0225f8dc_IsOpen(Obj *o)
@@ -277,16 +277,16 @@ static inline BOOL IsValid(Sess *s)
 }
 
 extern "C" {
-s32 data_ov065_0228b3c0 = -0x1a;
-Unk_ov065_0225fd18_Counters data_ov065_0228ea08;
+s32 sSockConnectInProgressError = -0x1a;
+Unk_ov065_0225fd18_Counters sSockUdpDropCount;
 
-s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
+s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
 {
     Ctx *c = s->ctx;
     u32 irq = OS_DisableInterrupts();
 
     if (c->cap >= c->used + len) {
-        Node *n = data_ov065_0228e9a0->alloc(len + 12);
+        Node *n = sSockCoreConfig->alloc(len + 12);
         if (n != NULL) {
             c->used += len;
             n->next = NULL;
@@ -307,19 +307,19 @@ s32 func_ov065_0225fd18(void *data, u32 len, Sess *s)
                 c->head = n;
             }
         } else {
-            data_ov065_0228ea08.unk_00++;
+            sSockUdpDropCount.unk_00++;
         }
     } else {
-        data_ov065_0228ea08.unk_04++;
+        sSockUdpDropCount.unk_04++;
     }
     OS_WakeupThread(c->queue);
     OS_RestoreInterrupts(irq);
     return 1;
 }
 
-s32 func_ov065_0225fc98(Sess *s, u16 a)
+s32 SockCore_Bind(Sess *s, u16 a)
 {
-    if (Unk_ov065_0225fbbc_Ns::func_ov065_02260f04(s) != 0) {
+    if (Unk_ov065_0225fbbc_Ns::SockCore_IsInvalidHandle(s) != 0) {
         return -0x1c;
     }
     if (!IsValid(s)) {
@@ -330,15 +330,15 @@ s32 func_ov065_0225fc98(Sess *s, u16 a)
     }
     s->unk_74 = a;
     if (s->state == 1) {
-        return func_ov065_0225fb68(s);
+        return SockCore_PostConnect(s);
     }
     return 0;
 }
 
-s32 func_ov065_0225fbbc(Sess *s, u16 a, u32 b)
+s32 SockCore_Connect(Sess *s, u16 a, u32 b)
 {
     s32 r;
-    if (Unk_ov065_0225fbbc_Ns::func_ov065_02260f04(s) != 0 || (s->flags & 8) != 0) {
+    if (Unk_ov065_0225fbbc_Ns::SockCore_IsInvalidHandle(s) != 0 || (s->flags & 8) != 0) {
         return -0x1c;
     }
     if (!IsValid(s)) {
@@ -355,11 +355,11 @@ s32 func_ov065_0225fbbc(Sess *s, u16 a, u32 b)
             if (s->flags & 0x40) {
                 return s->unk_6c;
             }
-            return data_ov065_0228b3c0;
+            return sSockConnectInProgressError;
         }
         s->unk_76 = a;
         s->unk_78 = b;
-        r = func_ov065_0225fb68(s);
+        r = SockCore_PostConnect(s);
         if (s->unk_72 == 1) {
             return r;
         }
@@ -370,9 +370,9 @@ s32 func_ov065_0225fbbc(Sess *s, u16 a, u32 b)
     return 0;
 }
 
-s32 func_ov065_0225fb68(Sess *s)
+s32 SockCore_PostConnect(Sess *s)
 {
-    u32 r0 = (u32)func_ov065_0225f4d4((void *)func_ov065_0225faf4, (Obj *)s, s->unk_72);
+    u32 r0 = (u32)SockCore_AllocMsg((void *)SockCore_CmdConnect, (Obj *)s, s->unk_72);
     Job *j = (Job *)r0;
     if (j == NULL) {
         return -0x21;
@@ -381,10 +381,10 @@ s32 func_ov065_0225fb68(Sess *s)
     j->unk_12 = s->unk_76;
     j->unk_14 = (void *)s->unk_78;
     s->flags |= 2;
-    return func_ov065_0225f404((Obj *)s, (Msg *)j);
+    return SockCore_ExecOnRecvSide((Obj *)s, (Msg *)j);
 }
 
-s32 func_ov065_0225faf4(Job *j)
+s32 SockCore_CmdConnect(Job *j)
 {
     Sess *s = j->sess;
     Ctx *c;
@@ -392,10 +392,10 @@ s32 func_ov065_0225faf4(Job *j)
     c = s->ctx;
 
     OS_LockMutex(c->mutex);
-    func_ov065_022629d0(j->unk_10, j->unk_12, j->unk_14);
+    IpSoc_Bind(j->unk_10, j->unk_12, j->unk_14);
     c->pos = err;
     if (j->unk_0c == 0 || j->unk_0c == 4) {
-        err = func_ov065_02262874();
+        err = IpSoc_TcpConnect();
     }
     OS_UnlockMutex(c->mutex);
     if (err) {
@@ -406,9 +406,9 @@ s32 func_ov065_0225faf4(Job *j)
     return 0;
 }
 
-s32 func_ov065_0225fa6c(Obj *o)
+s32 SockCore_Listen(Obj *o)
 {
-    if (func_ov065_02260f04() != 0) {
+    if (SockCore_IsInvalidHandle() != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {
@@ -426,10 +426,10 @@ s32 func_ov065_0225fa6c(Obj *o)
     return -6;
 }
 
-s32 func_ov065_0225f9a8(Obj *o, u32 *x, u32 *y)
+s32 SockCore_Accept(Obj *o, u32 *x, u32 *y)
 {
     s32 h;
-    if (func_ov065_02260f04() != 0) {
+    if (SockCore_IsInvalidHandle() != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {
@@ -444,11 +444,11 @@ s32 func_ov065_0225f9a8(Obj *o, u32 *x, u32 *y)
     if (o->unk_72 != 1) {
         return -6;
     }
-    h = func_ov065_0225f84c(&data_ov065_0228b3dc);
+    h = SockCore_Create(&sSockTcpParams);
     if (h >= 0) {
-        s32 r = func_ov065_0225fc98((Sess *)h, o->unk_74);
+        s32 r = SockCore_Bind((Sess *)h, o->unk_74);
         if (r >= 0) {
-            r = func_ov065_0225f8dc((Obj *)h, x, y);
+            r = SockCore_StartAccept((Obj *)h, x, y);
             if (r >= 0) {
                 r = h;
             }
@@ -458,11 +458,11 @@ s32 func_ov065_0225f9a8(Obj *o, u32 *x, u32 *y)
     return h;
 }
 
-s32 func_ov065_0225f8dc(Obj *o, u32 *x, u32 *y)
+s32 SockCore_StartAccept(Obj *o, u32 *x, u32 *y)
 {
     s32 t;
     Msg *m;
-    if (func_ov065_02260f04() != 0) {
+    if (SockCore_IsInvalidHandle() != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {
@@ -481,15 +481,15 @@ s32 func_ov065_0225f8dc(Obj *o, u32 *x, u32 *y)
     if (o->unk_74 == 0) {
         return -0x1c;
     }
-    m = func_ov065_0225f4d4((void *)func_ov065_0225f880, o, t);
+    m = SockCore_AllocMsg((void *)SockCore_CmdAccept, o, t);
     m->unk_10 = o->unk_74;
     m->unk_14 = x;
     m->unk_18 = y;
     o->unk_70 = o->unk_70 | 2;
-    return func_ov065_0225f404(o, (Msg *)m);
+    return SockCore_ExecOnRecvSide(o, (Msg *)m);
 }
 
-s32 func_ov065_0225f880(Msg *m)
+s32 SockCore_CmdAccept(Msg *m)
 {
     Obj *o = m->unk_04;
     Unk_ov065_0225f634_Sub1 *s = o->unk_64;
@@ -497,10 +497,10 @@ s32 func_ov065_0225f880(Msg *m)
     s32 b;
     s32 r;
     OS_LockMutex(s->unk_e0);
-    func_ov065_022629d0(m->unk_10, 0, 0);
-    func_ov065_02262924();
+    IpSoc_Bind(m->unk_10, 0, 0);
+    IpSoc_TcpListen();
     s->unk_f8 = 0;
-    r = (s32)func_ov065_02262840(&a, &b);
+    r = (s32)IpSoc_GetPeer(&a, &b);
     *(u16 *)m->unk_14 = a;
     *(s32 *)m->unk_18 = r;
     o->unk_70 = o->unk_70 | 4;
@@ -508,35 +508,35 @@ s32 func_ov065_0225f880(Msg *m)
     return 0;
 }
 
-s32 func_ov065_0225f84c(Unk_ov065_0225f634_Params *p)
+s32 SockCore_Create(Unk_ov065_0225f634_Params *p)
 {
-    Obj *o = func_ov065_0225f7a0(p);
+    Obj *o = SockCore_Alloc(p);
     if (o == NULL) {
         return -0x31;
     }
-    func_ov065_0225f3e4(o, func_ov065_0225f4d4((void *)func_ov065_0225f7ec, o, 1));
+    SockCore_ExecCommand(o, SockCore_AllocMsg((void *)SockCore_CmdOpen, o, 1));
     return (s32)o;
 }
 
-s32 func_ov065_0225f7ec(Msg *m)
+s32 SockCore_CmdOpen(Msg *m)
 {
     Obj *o = (Obj *)m->unk_04;
     u8 *sub;
-    func_ov065_02262a44(o);
+    IpSoc_Use(o);
     sub = (u8 *)o->unk_68;
     switch (o->unk_73) {
     case 0:
     case 4:
-        func_ov065_02262984(sub + 0x20);
-        func_ov065_022629b0();
+        IpSoc_ShareWithThread(sub + 0x20);
+        IpSoc_Init();
         break;
     case 1:
-        func_ov065_022629b0();
-        func_ov065_02262a18();
-        func_ov065_02262954((void *)func_ov065_0225fd18);
+        IpSoc_Init();
+        IpSoc_SetUdp();
+        IpSoc_SetUdpCallback((void *)SockCore_OnUdpReceive);
         break;
     case 2:
-        func_ov065_02262a18();
+        IpSoc_SetUdp();
         break;
     case 3:
         break;
@@ -545,46 +545,46 @@ s32 func_ov065_0225f7ec(Msg *m)
     return 0;
 }
 
-Obj *func_ov065_0225f7a0(Unk_ov065_0225f634_Params *p)
+Obj *SockCore_Alloc(Unk_ov065_0225f634_Params *p)
 {
-    u32 size = func_ov065_0225f738(p);
+    u32 size = SockCore_CalcSize(p);
     u32 irq = OS_DisableInterrupts();
-    Obj *o = (Obj *)data_ov065_0228e9a0->alloc(size);
+    Obj *o = (Obj *)sSockCoreConfig->alloc(size);
     if (o != NULL) {
         MI_CpuFill8(o, 0, size);
-        func_ov065_0225f634(o, p);
-        func_ov065_02260f94(o);
+        SockCore_InitLayout(o, p);
+        SockCore_AddToOpenList(o);
     }
     OS_RestoreInterrupts(irq);
     return o;
 }
 
-u32 func_ov065_0225f738(Unk_ov065_0225f634_Params *p)
+u32 SockCore_CalcSize(Unk_ov065_0225f634_Params *p)
 {
     u32 sz = 0x80;
     if (p->unk_02 != 0) {
         sz += 0x114;
-        sz += func_ov065_02260ed8(p->unk_02);
-        sz += func_ov065_02260ed8(p->unk_08);
-        sz += func_ov065_0225f718(&p->unk_10);
+        sz += SockCore_Align4(p->unk_02);
+        sz += SockCore_Align4(p->unk_08);
+        sz += SockCore_CalcThreadAreaSize(&p->unk_10);
     }
     if (p->unk_06 != 0) {
         sz += 0x110;
-        sz += func_ov065_02260ed8(p->unk_06);
-        sz += func_ov065_02260ed8(p->unk_0a);
-        sz += func_ov065_02260ed8(p->unk_0c);
-        sz += func_ov065_0225f718(&p->unk_14);
+        sz += SockCore_Align4(p->unk_06);
+        sz += SockCore_Align4(p->unk_0a);
+        sz += SockCore_Align4(p->unk_0c);
+        sz += SockCore_CalcThreadAreaSize(&p->unk_14);
     }
     return sz;
 }
 
-u32 func_ov065_0225f718(Unk_ov065_0225f5c8_T *t)
+u32 SockCore_CalcThreadAreaSize(Unk_ov065_0225f5c8_T *t)
 {
-    u32 a = func_ov065_02260ed8(t->unk_03 << 2);
-    return a + func_ov065_02260ed8(t->unk_00);
+    u32 a = SockCore_Align4(t->unk_03 << 2);
+    return a + SockCore_Align4(t->unk_00);
 }
 
-u8 *func_ov065_0225f634(Obj *o, Unk_ov065_0225f634_Params *p)
+u8 *SockCore_InitLayout(Obj *o, Unk_ov065_0225f634_Params *p)
 {
     Unk_ov065_0225f634_Sub1 *s1;
     Unk_ov065_0225f634_Sub2 *s2;
@@ -596,9 +596,9 @@ u8 *func_ov065_0225f634(Obj *o, Unk_ov065_0225f634_Params *p)
         s1 = (Unk_ov065_0225f634_Sub1 *)cur;
         o->unk_64 = s1;
         s1->unk_fc = p->unk_04;
-        cur = (u8 *)func_ov065_0225f5c8(s1->unk_114, s1, &p->unk_10);
-        cur = func_ov065_0225f618(cur, &o->unk_3c, p->unk_02);
-        cur = func_ov065_0225f618(cur, &o->unk_50, p->unk_08);
+        cur = (u8 *)SockCore_StartCommandThread(s1->unk_114, s1, &p->unk_10);
+        cur = SockCore_CarveBuffer(cur, &o->unk_3c, p->unk_02);
+        cur = SockCore_CarveBuffer(cur, &o->unk_50, p->unk_08);
         s1->unk_10a = p->unk_0e;
         s1->unk_10c = s1->unk_110 = 0;
     }
@@ -606,18 +606,18 @@ u8 *func_ov065_0225f634(Obj *o, Unk_ov065_0225f634_Params *p)
         s2 = (Unk_ov065_0225f634_Sub2 *)cur;
         o->unk_68 = s2;
         s2->unk_10c = o;
-        cur = (u8 *)func_ov065_0225f5c8(s2->unk_110, s2, &p->unk_14);
-        cur = func_ov065_0225f618(cur, &o->unk_48, p->unk_06);
-        cur = func_ov065_0225f618(cur, &o->unk_58, p->unk_0a);
-        cur = func_ov065_0225f618(cur, &s2->unk_f8, p->unk_0c);
+        cur = (u8 *)SockCore_StartCommandThread(s2->unk_110, s2, &p->unk_14);
+        cur = SockCore_CarveBuffer(cur, &o->unk_48, p->unk_06);
+        cur = SockCore_CarveBuffer(cur, &o->unk_58, p->unk_0a);
+        cur = SockCore_CarveBuffer(cur, &s2->unk_f8, p->unk_0c);
         s2->unk_104 = s2->unk_108 = 0;
     } else {
-        o->unk_68 = data_ov065_0228e9b0->unk_68;
+        o->unk_68 = sSockDefaultSocket->unk_68;
     }
     return cur;
 }
 
-u8 *func_ov065_0225f618(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
+u8 *SockCore_CarveBuffer(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
 {
     u8 *v = base;
     if (n == 0) {
@@ -625,15 +625,15 @@ u8 *func_ov065_0225f618(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
     }
     dst->unk_04 = (u32)v;
     dst->unk_00 = (void *)n;
-    return base + func_ov065_02260ed8(n);
+    return base + SockCore_Align4(n);
 }
 
-u32 func_ov065_0225f5c8(void *a, void *b, Unk_ov065_0225f5c8_T *c)
+u32 SockCore_StartCommandThread(void *a, void *b, Unk_ov065_0225f5c8_T *c)
 {
-    u32 r = (u32)a + func_ov065_0225f718(c);
+    u32 r = (u32)a + SockCore_CalcThreadAreaSize(c);
     OS_InitMessageQueue(b, a, c->unk_03);
     OS_InitMutex((u8 *)b + 0xe0);
-    OS_CreateThread((u8 *)b + 0x20, (void *)func_ov065_0225f378, b, (void *)r, c->unk_00, c->unk_02);
+    OS_CreateThread((u8 *)b + 0x20, (void *)SockCore_CommandThreadMain, b, (void *)r, c->unk_00, c->unk_02);
     OS_WakeupThreadDirect((u8 *)b + 0x20);
     return r;
 }

@@ -11,7 +11,7 @@ void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetMainBgModeState(u32 a);
-void *func_0206ed68();
+void *MenuCtrl_GetArg();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void Snd_EndMenuDuck();
@@ -265,7 +265,7 @@ void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
     ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(0);
     Gfx2d_SetMainBgModeState(0);
-    unk_94.func_0206d2e0((Unk_0206d1d4_Src *)func_0206ed68(), 0, (void *)2, 1);
+    unk_94.func_0206d2e0((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(0);
     applySlideOffset(0, 0, 0);

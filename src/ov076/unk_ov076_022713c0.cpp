@@ -86,9 +86,9 @@ void func_02099064();
 s32 func_02098ffc();
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-s32 func_0206ea84(BOOL (*cb)(u16 *, s32));
-s32 func_0206ed18();
-s32 func_0206ed38();
+s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
+s32 MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02063388(ItemPickSpec *o);
 void EventWeekSlots_MarkPlayer(u32 id);
@@ -655,8 +655,8 @@ void SpNpcPascalTalk::onScallopPicked() {
     TalkWindowState *r4 = unk_3c;
     Unk_ov076_02271864_Msg m;
     m.unk_00 = 5;
-    if (func_0206ed18()) {
-        if (func_0206ed38() >= 0) {
+    if (MenuCtrl_IsResultOk()) {
+        if (MenuCtrl_GetIndex() >= 0) {
             func_02099064();
         }
         m.unk_02 = 0x1559;
@@ -686,7 +686,7 @@ void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
 
 void SpNpcPascalTalk::vfunc_78(void *a) {
     Unk_ov076_02271744_Out *out = (Unk_ov076_02271744_Out *)a;
-    if (func_0206ea84(SpNpcPascal_IsScallop)) {
+    if (MenuCtrl_BuildPocketMask(SpNpcPascal_IsScallop)) {
         unk_ac = 0;
     } else if (func_02063b8c(2) == 0) {
         unk_ac = 1;

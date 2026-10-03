@@ -10,30 +10,30 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 u64 OS_GetTick(void); // OS_GetTick
 BOOL OS_ReadMessage(void *p, void *q, u32 v);
 
-s32 func_ov066_0225ffcc(void);
-u32 func_ov066_022622f4(void);
-s32 func_ov066_022601a0(u32 a);
-s32 func_ov066_0226233c(void);
-s32 func_ov066_0226238c(void);
-u32 func_ov065_02270584(u8 **p);
-u32 func_ov065_022705d0(void);
-BOOL func_ov065_022778a4(u32 a);
-u32 func_ov065_02270558(void);
-s32 func_ov065_02272254(u8 *a, u32 b);
-u32 func_ov066_02260a3c(void);
-BOOL func_ov066_02263284(u32 a, u32 b, u32 c);
-s32 func_ov065_022705e8(void);
-BOOL func_ov065_02277714(u32 a, u32 b, u32 c);
-u32 func_ov065_02277bb8(void);
-u32 func_ov066_0225f6a8(void);
-void func_ov066_02261158(void);
-s32 func_ov065_0227067c(void);
-void func_ov065_022780c0(void);
-void func_ov065_02270ba4(void);
-BOOL func_ov065_02277bdc(void);
-void func_ov066_0225fc78(u32 a, u32 b, u32 c);
-void func_ov066_022642cc(void);
-BOOL func_ov066_0225fdc4(void);
+s32 LocalWl_GetState(void);
+u32 LocalWl_IsReadyToSend(void);
+s32 LocalWl_GetBeaconCount(u32 a);
+s32 LocalWl_GetConnectedMask(void);
+s32 LocalWl_GetMyAid(void);
+u32 DwcConn_GetAidList(u8 **p);
+u32 DwcConn_GetMyAid(void);
+BOOL DwcNet_CanSendReliable(u32 a);
+u32 DwcConn_GetAidBitmap(void);
+s32 DwcFriend_CountValid(u8 *a, u32 b);
+u32 LocalWl_GetMemberCount(void);
+BOOL LocalWlMp_SetRecvBuffer(u32 a, u32 b, u32 c);
+s32 DwcConn_GetConnectionCount(void);
+BOOL DwcNet_SetRecvBuffer(u32 a, u32 b, u32 c);
+u32 DwcInet_GetLinkLevel(void);
+u32 LocalWl_GetLinkLevel(void);
+void Wlx_Stop(void);
+s32 DwcConn_CloseAllConnections(void);
+void DwcGsHttp_Cleanup(void);
+void DwcCore_Shutdown(void);
+BOOL DwcInet_Disconnect(void);
+void LocalWl_RequestMode(u32 a, u32 b, u32 c);
+void LocalWlMp_Shutdown(void);
+BOOL LocalWl_Finish(void);
 
 BOOL Net_IsReadyToSend(void);
 BOOL Net_WifiAllPeersSendable(void);
@@ -95,24 +95,24 @@ struct NetInit {
     u8 b7;
 };
 extern "C" {
-void func_ov065_02277e1c(void *p);
-void func_ov065_02277dd4(u32 a);
-void func_ov065_02277d68(void);
-BOOL func_ov065_02277d30(void);
-s32 func_ov065_02277c68(void);
-void func_ov065_022780d0(void *p);
-void func_ov065_02270c94(void *a, void *b, u32 c, void *d, void *e, u32 f, u32 g, void *h, u32 i);
-void func_ov065_02270958(u32 a, u32 b, void *c, u32 d);
-void func_ov065_02277680(u32 a);
-void func_ov065_022776a0(void *p);
-void func_ov065_02277ba4(void *a, void *b);
-void func_ov065_02277cdc(void);
-void func_ov065_022709c0(void);
-void func_ov065_022780b0(void);
-void func_ov066_0225fe4c(u32 a, void *b, void *c, u32 d);
-void func_ov066_0225f1a0(void *p);
-void func_ov066_02264378(void *p);
-void func_ov066_022609a8(void *p);
+void DwcInet_Init(void *p);
+void DwcInet_SelectAuthServer(u32 a);
+void DwcInet_StartConnect(void);
+BOOL DwcInet_IsConnectDone(void);
+s32 DwcInet_UpdateStatus(void);
+void DwcGsHttp_Startup(void *p);
+void DwcCore_Init(void *a, void *b, u32 c, void *d, void *e, u32 f, u32 g, void *h, u32 i);
+void DwcLogin_Start(u32 a, u32 b, void *c, u32 d);
+void DwcNet_SetMaxChunkSize(u32 a);
+void DwcNet_SetPingCallback(void *p);
+void DwcNet_SetAllocator(void *a, void *b);
+void DwcInet_Process(void);
+void DwcCore_Process(void);
+void DwcGsHttp_Process(void);
+void LocalWl_Init(u32 a, void *b, void *c, u32 d);
+void LocalWl_SetEventCallback(void *p);
+void LocalWlMp_Start(void *p);
+void LocalWl_SetRecvCallback(void *p);
 void OS_InitMessageQueue(void *a, void *b, u32 n);
 void func_020ebd04(void);
 void Net_WifiPingNextPeer(void);
@@ -156,16 +156,16 @@ struct HexTable {
     u8 c[17];
 };
 extern "C" {
-BOOL func_ov065_02277038(void);
-void func_ov065_0227702c(void);
-void func_ov065_02277054(u32 a, u32 *b);
-BOOL func_ov065_0227051c(u32 a);
-void func_ov065_022776dc(u32 a);
-void func_ov065_02277f70(void *a, void *b, void *c);
-void func_ov065_0226f9e0(u32 a, u32 b, u32 c, u32 d);
-void func_ov065_022721ec(void *p, u32 n);
-void func_ov065_0227089c(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
-u32 func_ov065_02272290(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
+BOOL DwcMatch_IsServerLocked(void);
+void DwcMatch_ClearServerLock(void);
+void DwcMatch_SetOption(u32 a, u32 *b);
+BOOL DwcConn_IsAidValid(u32 a);
+void DwcNet_PingAid(u32 a);
+void DwcGsHttp_Get(void *a, void *b, void *c);
+void NasBase64_Decode(u32 a, u32 b, u32 c, u32 d);
+void DwcFriend_SetStatusData(void *p, u32 n);
+void DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
+u32 DwcFriend_GetStatusData(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 BOOL func_020ffde0(void *p);
 char *func_02127838(char *dst, const char *src);
 char *func_021277a4(char *dst, const char *src);
@@ -197,8 +197,8 @@ struct NetSlot {
 extern "C" {
 BOOL OS_ReceiveMessage(void *q, void *msg, u32 flags);
 BOOL OS_SendMessage(void *q, u32 msg, u32 flags);
-s32 func_ov066_022622ac(u32 a, u32 b, u32 c, void *d);
-BOOL func_ov065_02277824(u32 a, u32 b, u32 c);
+s32 LocalWl_Send(u32 a, u32 b, u32 c, void *d);
+BOOL DwcNet_SendReliable(u32 a, u32 b, u32 c);
 void Main_WaitVBlank(void);
 void Net_Update(void);
 void Net_OnSendDone(u32 a);
@@ -236,8 +236,8 @@ extern "C" BOOL Net_SendNextQueued(void) {
     if (OS_ReadMessage(sSendQueue, &msg, 0) != 0) {
         s = &sSendSlots[msg];
         st = sNetMode;
-        if ((u8)(st + 255) <= 1) return func_ov066_022622ac(s->a, s->b, s->c, (void *)Net_OnSendDone);
-        if ((u8)(st + 253) <= 1) return func_ov065_02277824((u8)s->c, s->a, s->b);
+        if ((u8)(st + 255) <= 1) return LocalWl_Send(s->a, s->b, s->c, (void *)Net_OnSendDone);
+        if ((u8)(st + 253) <= 1) return DwcNet_SendReliable((u8)s->c, s->a, s->b);
     }
     return FALSE;
 }
@@ -359,7 +359,7 @@ extern "C" void Net_OnWifiServersUpdated(u32 a) {
     for (; i < 32; i++) {
         if (func_020ffde0(sWifiFriendList + u) != 0) {
             u8 *p = sWifiFriendList;
-            u32 r = func_ov065_02272290(p + u, p + 0x191 + t, p + 0x192 + t, p + 0x180 + t, &local);
+            u32 r = DwcFriend_GetStatusData(p + u, p + 0x191 + t, p + 0x192 + t, p + 0x180 + t, &local);
             (sWifiFriendList + t)[0x190] = r;
         }
         u += 12;
@@ -371,7 +371,7 @@ extern "C" void Net_OnWifiFriendStatus(u32 a) {
     u32 local;
     u8 *base = sWifiFriendList;
     u32 t = a * 19;
-    u32 r = func_ov065_02272290(base + a * 12, base + 0x191 + t, base + 0x192 + t, base + 0x180 + t, &local);
+    u32 r = DwcFriend_GetStatusData(base + a * 12, base + 0x191 + t, base + 0x192 + t, base + 0x180 + t, &local);
     (sWifiFriendList + t)[0x190] = r;
 }
 
@@ -386,8 +386,8 @@ extern "C" void Net_OnWifiFriendDeleted(u32 a) {
 
 extern "C" void Net_OnWifiLogin(u32 a, u32 b, u32 c) {
     if (a != 0) return;
-    func_ov065_022721ec(sWifiUserData, 16);
-    func_ov065_0227089c(0, (void *)Net_OnWifiServersUpdated, c, (void *)Net_OnWifiFriendStatus, c, (void *)Net_OnWifiFriendDeleted, c);
+    DwcFriend_SetStatusData(sWifiUserData, 16);
+    DwcFriend_UpdateServersAsync(0, (void *)Net_OnWifiServersUpdated, c, (void *)Net_OnWifiFriendStatus, c, (void *)Net_OnWifiFriendDeleted, c);
 }
 
 extern "C" void Net_OnGameStatsUploadDone(void) {
@@ -396,7 +396,7 @@ extern "C" void Net_OnGameStatsUploadDone(void) {
 
 extern "C" void Net_OnGameStatsDownloadDone(void *a, void *b, u32 c, u32 d) {
     if (a != NULL && b != NULL && c == 0) {
-        func_ov065_0226f9e0((u32)a, (u32)b, d, data_021f48ac);
+        NasBase64_Decode((u32)a, (u32)b, d, data_021f48ac);
     }
     data_0213b068 = 1;
 }
@@ -422,7 +422,7 @@ extern "C" void Net_OnGameStatsChallenge(const char *a, u32 b, u32 c, char *d) {
         }
         data_021f48a4[40] = 0;
         OS_SNPrintf(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, func_020ea3c4(sWifiUserData + 16), data_021f48a4, data_021f48a8);
-        func_ov065_02277f70(data_021f48dc, (void *)Net_OnGameStatsDownloadDone, d);
+        DwcGsHttp_Get(data_021f48dc, (void *)Net_OnGameStatsDownloadDone, d);
     } else {
         data_0213b068 = 1;
     }
@@ -450,10 +450,10 @@ extern "C" void Net_WifiPingNextPeer(void) {
     v = (u8)(ms % data_021f488c);
     if (data_0213b058 == v) return;
     data_0213b058 = v;
-    if (v != func_ov065_022705d0()) {
-        if (func_ov065_0227051c(v) != 0) {
+    if (v != DwcConn_GetMyAid()) {
+        if (DwcConn_IsAidValid(v) != 0) {
             sWifiPingState[v].b++;
-            func_ov065_022776dc(v);
+            DwcNet_PingAid(v);
         } else {
             sWifiPingState[v].a = 0xffff;
             sWifiPingState[v].b = 0;
@@ -469,12 +469,12 @@ extern "C" void func_020ebd04(void) {
     data_021f48cc = 0;
     if (sNetMode != 3) return;
     v = 1;
-    func_ov065_02277054(1, &v);
+    DwcMatch_SetOption(1, &v);
 }
 
 extern "C" void Net_WifiCheckHostIdle(void) {
     if (sNetMode != 3) return;
-    if (func_ov065_02277038() == 0) return;
+    if (DwcMatch_IsServerLocked() == 0) return;
     if (data_021f48cc == 0) return;
     {
         s64 ms = (OS_GetTick() << 6) / 33514;
@@ -483,7 +483,7 @@ extern "C" void Net_WifiCheckHostIdle(void) {
         if (!over) return;
     }
     data_021f48cc = 0;
-    func_ov065_0227702c();
+    DwcMatch_ClearServerLock();
 }
 
 extern "C" void func_020ebc38(void) {
@@ -508,11 +508,11 @@ extern "C" void Net_Init(u32 a, u32 b, u32 c, u64 d, u8 e, AllocFn f, FreeFn g) 
 extern "C" void Net_Update(void) {
     if ((u8)(sNetMode + 253) > 1) return;
     if (sWifiConnectStep == 1) {
-        func_ov065_02277cdc();
+        DwcInet_Process();
         return;
     }
-    func_ov065_022709c0();
-    func_ov065_022780b0();
+    DwcCore_Process();
+    DwcGsHttp_Process();
     Net_WifiPingNextPeer();
     Net_WifiCheckHostIdle();
 }
@@ -527,14 +527,14 @@ extern "C" void Net_StartLocal(u32 a, NetCb3 b) {
     init.b6 = 60;
     init.b7 = 2;
     init.b5 = 8;
-    func_ov066_0225fe4c(data_0213b05c, (void *)Net_Alloc, (void *)Net_Free, 0);
-    func_ov066_0225f1a0((void *)Net_OnLocalPeerEvent);
-    func_ov066_02264378(&init);
-    func_ov066_022609a8((void *)Net_OnLocalRecv);
+    LocalWl_Init(data_0213b05c, (void *)Net_Alloc, (void *)Net_Free, 0);
+    LocalWl_SetEventCallback((void *)Net_OnLocalPeerEvent);
+    LocalWlMp_Start(&init);
+    LocalWl_SetRecvCallback((void *)Net_OnLocalRecv);
     if (a == 1) {
-        func_ov066_0225fc78(3, 0, 0);
+        LocalWl_RequestMode(3, 0, 0);
     } else if (a == 2) {
-        func_ov066_0225fc78(4, 0, 0);
+        LocalWl_RequestMode(4, 0, 0);
     }
 }
 
@@ -564,32 +564,32 @@ extern "C" void Net_StartWifi(u32 a, NetCb3 b, NetCb c, u8 *d, u8 *e) {
         (sWifiFriendList + t)[0x190] = 0;
         t += 19;
     }
-    func_ov065_02277ba4((void *)Net_DwcAllocHook, (void *)Net_DwcFreeHook);
+    DwcNet_SetAllocator((void *)Net_DwcAllocHook, (void *)Net_DwcFreeHook);
 }
 
 extern "C" BOOL Net_IsLocalConnected(void) {
-    return (u32)(func_ov066_0225ffcc() - 10) <= 1;
+    return (u32)(LocalWl_GetState() - 10) <= 1;
 }
 
 extern "C" BOOL Net_WifiConnectStep(void) {
     switch (sWifiConnectStep) {
     case 0:
-        func_ov065_02277e1c(data_021f48f4);
-        func_ov065_02277dd4(2);
-        func_ov065_02277d68();
+        DwcInet_Init(data_021f48f4);
+        DwcInet_SelectAuthServer(2);
+        DwcInet_StartConnect();
         sWifiConnectStep = 1;
         break;
     case 1:
-        if (func_ov065_02277d30() != 0) {
-            if (func_ov065_02277c68() == 4) sWifiConnectStep = 2;
+        if (DwcInet_IsConnectDone() != 0) {
+            if (DwcInet_UpdateStatus() == 4) sWifiConnectStep = 2;
         }
         break;
     case 2:
-        func_ov065_022780d0(sDwcGameName);
+        DwcGsHttp_Startup(sDwcGameName);
         data_0213b064 = 1;
         data_0213b06c = 1;
-        func_ov065_02270c94(data_021f4bc0, sWifiUserData + 16, 0x299e, sDwcGameName, sDwcSecretKey, 0, 0, sWifiFriendList, 32);
-        func_ov065_02270958(0, 0, (void *)Net_OnWifiLogin, 0);
+        DwcCore_Init(data_021f4bc0, sWifiUserData + 16, 0x299e, sDwcGameName, sDwcSecretKey, 0, 0, sWifiFriendList, 32);
+        DwcLogin_Start(0, 0, (void *)Net_OnWifiLogin, 0);
         sWifiConnectStep = 3;
         break;
     case 3:
@@ -601,8 +601,8 @@ extern "C" BOOL Net_WifiConnectStep(void) {
     case 4:
         if (sNetMode == 3) data_0213b06c = 0;
         if (data_0213b06c == 0) {
-            func_ov065_02277680(0x100);
-            func_ov065_022776a0((void *)Net_OnWifiPingReply);
+            DwcNet_SetMaxChunkSize(0x100);
+            DwcNet_SetPingCallback((void *)Net_OnWifiPingReply);
             func_020ebd04();
             sWifiConnectStep = 5;
         }
@@ -625,16 +625,16 @@ extern "C" BOOL Net_PollConnected(void) {
 
 extern "C" BOOL Net_LocalShutdown(void) {
     u32 start;
-    func_ov066_0225fc78(0, 0, 0);
+    LocalWl_RequestMode(0, 0, 0);
     start = (u32)((OS_GetTick() << 6) / 33514);
-    while (func_ov066_0225ffcc() != 2) {
+    while (LocalWl_GetState() != 2) {
         s64 ms = (OS_GetTick() << 6) / 33514;
         u64 diff = ms - (s64)start;
         BOOL over = diff > (u64)data_0213b060;
         if (over != 0) return FALSE;
     }
-    func_ov066_022642cc();
-    if (func_ov066_0225fdc4() == 0) return FALSE;
+    LocalWlMp_Shutdown();
+    if (LocalWl_Finish() == 0) return FALSE;
     sNetMode = 6;
     return TRUE;
 }
@@ -648,7 +648,7 @@ extern "C" BOOL Net_WifiShutdownStep(void) {
     case 1:
         if (data_0213b06c == 0 || sWifiConnectStep == 4 || timedout48ec()) {
             Net_GetError();
-            if (func_ov065_0227067c() < 0) {
+            if (DwcConn_CloseAllConnections() < 0) {
                 data_021f48ec = 0;
             } else {
                 data_021f48ec = (u32)((OS_GetTick() << 6) / 33514);
@@ -657,22 +657,22 @@ extern "C" BOOL Net_WifiShutdownStep(void) {
         }
         break;
     case 2:
-        if (func_ov065_022705e8() < 2) {
+        if (DwcConn_GetConnectionCount() < 2) {
             sWifiShutdownStep = 3;
         } else if (timedout48ec()) {
             sWifiShutdownStep = 3;
         }
         break;
     case 3:
-        func_ov065_022780c0();
+        DwcGsHttp_Cleanup();
         sWifiShutdownStep = 4;
         break;
     case 4:
-        func_ov065_02270ba4();
+        DwcCore_Shutdown();
         sWifiShutdownStep = 5;
         break;
     case 5:
-        if (func_ov065_02277bdc() != 0) sWifiShutdownStep = 6;
+        if (DwcInet_Disconnect() != 0) sWifiShutdownStep = 6;
         break;
     case 6:
         if (data_021f48b4 != NULL) {
@@ -696,7 +696,7 @@ extern "C" BOOL Net_WifiShutdownStep(void) {
 }
 
 extern "C" BOOL Net_ShutdownOv067(void) {
-    func_ov066_02261158();
+    Wlx_Stop();
     while (data_021f48e0 == 0) {
         Net_WaitFrame();
     }
@@ -725,7 +725,7 @@ extern "C" BOOL Net_WifiShutdownStepExt(void) {
 }
 
 extern "C" u32 func_020eb164(void) {
-    switch (func_ov066_0225f6a8()) {
+    switch (LocalWl_GetLinkLevel()) {
     case 0:
         break;
     case 1:
@@ -740,7 +740,7 @@ extern "C" u32 func_020eb164(void) {
 
 extern "C" u32 func_020eb12c(void) {
     if (sWifiConnectStep <= 1) return 0;
-    return func_ov065_02277bb8();
+    return DwcInet_GetLinkLevel();
 }
 
 extern "C" BOOL Net_GetLinkLevel(void) {
@@ -752,33 +752,33 @@ extern "C" BOOL Net_GetLinkLevel(void) {
 
 extern "C" BOOL Net_SetRecvBuffer(u32 a, u32 b, u32 c) {
     u32 st = sNetMode;
-    if ((u8)(st + 255) <= 1) return func_ov066_02263284(a, b, c);
+    if ((u8)(st + 255) <= 1) return LocalWlMp_SetRecvBuffer(a, b, c);
     if ((u8)(st + 253) > 1) return FALSE;
-    return func_ov065_02277714((u8)a, b, c);
+    return DwcNet_SetRecvBuffer((u8)a, b, c);
 }
 
 extern "C" u32 Net_GetMemberCount(void) {
     u32 st = sNetMode;
-    if ((u8)(st + 255) <= 1) return func_ov066_02260a3c();
+    if ((u8)(st + 255) <= 1) return LocalWl_GetMemberCount();
     if ((u8)(st + 253) > 1) return TRUE;
-    return (u8)func_ov065_022705e8();
+    return (u8)DwcConn_GetConnectionCount();
 }
 
 extern "C" u32 Net_GetMyAid(void) {
     u32 st = sNetMode;
     if ((u8)(st + 255) <= 1) {
         if (st == 1) return FALSE;
-        return func_ov066_0226238c();
+        return LocalWl_GetMyAid();
     }
     if ((u8)(st + 253) > 1) return FALSE;
-    return func_ov065_022705d0();
+    return DwcConn_GetMyAid();
 }
 
 extern "C" u32 Net_GetConnectedMask(void) {
     u32 st = sNetMode;
-    if ((u8)(st + 255) <= 1) return func_ov066_0226233c();
+    if ((u8)(st + 255) <= 1) return LocalWl_GetConnectedMask();
     if ((u8)(st + 253) > 1) return TRUE;
-    return (u16)func_ov065_02270558();
+    return (u16)DwcConn_GetAidBitmap();
 }
 
 extern "C" u32 Net_GetMode(void) {
@@ -786,12 +786,12 @@ extern "C" u32 Net_GetMode(void) {
 }
 
 extern "C" s32 func_020eaee4(void) {
-    if (func_ov066_0225ffcc() != 7) return -1;
-    return func_ov066_022601a0(0);
+    if (LocalWl_GetState() != 7) return -1;
+    return LocalWl_GetBeaconCount(0);
 }
 
 extern "C" s32 func_020eaec8(void) {
-    return func_ov065_02272254(sWifiFriendList, 32);
+    return DwcFriend_CountValid(sWifiFriendList, 32);
 }
 
 extern "C" s32 func_020eae78(void) {
@@ -830,12 +830,12 @@ extern "C" BOOL Net_WifiAllPeersSendable(void) {
     u8 *buf;
     u32 i;
     u32 n;
-    n = func_ov065_02270584(&buf);
+    n = DwcConn_GetAidList(&buf);
     i = 0;
     for (; i < n; i++) {
         u32 c = buf[i];
-        if (c != func_ov065_022705d0()) {
-            if (func_ov065_022778a4(c) == 0) return FALSE;
+        if (c != DwcConn_GetMyAid()) {
+            if (DwcNet_CanSendReliable(c) == 0) return FALSE;
         }
     }
     return TRUE;
@@ -844,7 +844,7 @@ extern "C" BOOL Net_WifiAllPeersSendable(void) {
 extern "C" BOOL Net_IsReadyToSend(void) {
     u32 st = sNetMode;
     if ((u8)(st + 255) <= 1) {
-        return Net_IsSendIdle(func_ov066_022622f4());
+        return Net_IsSendIdle(LocalWl_IsReadyToSend());
     }
     if ((u8)(st + 253) > 1) return FALSE;
     return Net_IsSendIdle(Net_WifiAllPeersSendable());
@@ -866,7 +866,7 @@ extern "C" BOOL Net_SendPackets3(u32 a0, u32 b0, u16 c0, u32 d0, u32 a1, u32 b1,
 }
 
 extern "C" u32 Net_GetLocalError(void) {
-    s32 st = func_ov066_0225ffcc();
+    s32 st = LocalWl_GetState();
     if ((st & 0x80) != 0) {
         switch (st & ~0x80) {
         case 0:

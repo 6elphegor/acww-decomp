@@ -6,7 +6,7 @@
 #undef vfunc_14
 
 extern "C" {
-u32 func_0206ed50();
+u32 MenuCtrl_GetMode();
 void MenuScreen_BeginOpen();
 void func_0206db88(s32 a);
 void Snd_PlaySe(s32 a);
@@ -14,7 +14,7 @@ void func_02003f5c(s32 a);
 void Gfx2d_SetSubBgModeState(s32 a);
 void func_0206e60c();
 void MenuCtrl_RequestOpenNested(s32 a);
-void func_0206ed44(s32 a);
+void MenuCtrl_SetMode(s32 a);
 void func_0206e03c();
 void MenuScreen_BeginClose();
 void func_0206e5fc();
@@ -205,7 +205,7 @@ void MenuLauncher::onChildClosed() {
     case 0x36:
     case 0x40:
         unk_8d = 1;
-        func_0206ed44(unk_91);
+        MenuCtrl_SetMode(unk_91);
         break;
     }
 }
@@ -532,7 +532,7 @@ void MenuLauncher::stateStart() {
 }
 
 void MenuLauncher::initLauncher() {
-    unk_91 = func_0206ed50();
+    unk_91 = MenuCtrl_GetMode();
     unk_8d = 1;
     if (unk_91 == 0) {
         setPhase(2);

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-// ---------------------------------------------------------------- Unk_ov004_0224e3f8
+// ---------------------------------------------------------------- PlayerBedSetter
 struct Unk_0204e858_Grid;
 
 struct Unk_ov004_0222a374_Loc {
@@ -23,11 +23,11 @@ struct Unk_ov004_SceneEntry {
     u16 b;
 };
 
-class Unk_ov004_0224e3f8 : public GameProc {
+class PlayerBedSetter : public GameProc {
 public:
-    Unk_ov004_0224e3f8();
+    PlayerBedSetter();
     virtual BOOL vfunc_00();
-    virtual ~Unk_ov004_0224e3f8();
+    virtual ~PlayerBedSetter();
 };
 
 extern "C" {
@@ -41,26 +41,26 @@ s32 Ftr_GetUnk05(Unk_ov004_0222a374_Loc *l);
 void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
 }
 
-extern "C" Unk_ov004_0224e3f8 *func_ov004_0222a4e8();
-extern "C" void func_ov004_0222a374();
+extern "C" PlayerBedSetter *PlayerBedSetter_Create();
+extern "C" void Room_PlacePlayerBeds();
 
-extern "C" Unk_ov004_SceneEntry data_ov004_0224e3e8 = { (void *(*)())func_ov004_0222a4e8, 0x2b, 0x31 };
+extern "C" Unk_ov004_SceneEntry sPlayerBedSetterProfile = { (void *(*)())PlayerBedSetter_Create, 0x2b, 0x31 };
 
-extern "C" Unk_ov004_0224e3f8 *func_ov004_0222a4e8() {
-    return new Unk_ov004_0224e3f8;
+extern "C" PlayerBedSetter *PlayerBedSetter_Create() {
+    return new PlayerBedSetter;
 }
 
-Unk_ov004_0224e3f8::Unk_ov004_0224e3f8() {}
+PlayerBedSetter::PlayerBedSetter() {}
 
-Unk_ov004_0224e3f8::~Unk_ov004_0224e3f8() {}
+PlayerBedSetter::~PlayerBedSetter() {}
 
-BOOL Unk_ov004_0224e3f8::vfunc_00() {
-    func_ov004_0222a374();
+BOOL PlayerBedSetter::vfunc_00() {
+    Room_PlacePlayerBeds();
     return TRUE;
 }
 
 extern "C" {
-void func_ov004_0222a374() {
+void Room_PlacePlayerBeds() {
     static Unk_ov004_0222a374_Pair tbl[4] = { Unk_ov004_0222a374_Pair(6, 9), Unk_ov004_0222a374_Pair(9, 9), Unk_ov004_0222a374_Pair(6, 12), Unk_ov004_0222a374_Pair(9, 12) };
     Unk_0204e858_Grid *g = gSceneBlockMap;
     if (g != 0) {

@@ -121,7 +121,7 @@ s32 func_02098ffc();
 s32 func_02099014(u16 *p, u32 v);
 void Snd_PlaySe(s32 id);
 s32 StrBuf_GameToAscii(void *p, void *q);
-s32 func_02042c64(u32 p, u32 a);
+s32 FieldAction_RequestDrop(u32 p, u32 a);
 s32 func_020342a4(u32 a, u32 b, u32 c, u32 d);
 s32 func_02034228(u32 a, u32 b, u32 c, u32 d);
 s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
@@ -131,11 +131,11 @@ s32 Camera_PopView();
 s32 Camera_PushView();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-BOOL func_0206e61c();
-void func_0206e63c();
-s32 func_02042830(s32 h);
-void func_02042820(s32 h);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+s32 FieldAction_PollDrop(s32 h);
+void FieldAction_Release(s32 h);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void *ProcBase_GetParent();
@@ -158,7 +158,7 @@ BOOL func_02094fa8();
 BOOL func_02094fb4();
 BOOL PlayerActor_RequestWearShirt(u16 *v);
 BOOL PlayerActor_RequestWearHat(u16 *v);
-BOOL PlayerActor_RequestAct3F(u16 *v);
+BOOL PlayerActor_RequestChangeHeldItem(u16 *v);
 
 // ov002 / ov004 / ov090 (methods reached as free functions, or plain functions)
 BOOL MenuKeys_HasRight(void *pad);
@@ -208,13 +208,13 @@ void MenuCursor_setAnimIfChanged(void *p, s32 v);
 BOOL MenuErrorMessage_update(void *p, s32 a);
 void MenuErrorMessage_open(void *p, u8 *q, u32 a, u32 b);
 
-s32 func_ov004_02233e98(u32 *out, u32 a, u32 b);
-s32 func_ov004_02233e08(u32 *out, u32 a, u32 b);
-s32 func_ov004_02233dc0(u32 *out, u32 a, u32 b);
-s32 func_ov004_02233e50(u32 *out, u32 a, u32 b);
-s32 func_ov004_02235028(u32 a);
-u16 *func_ov004_0222aa48();
-u16 *func_ov004_0222aaa0();
+s32 FtrMgr_FindPlacementMyDesignA(u32 *out, u32 a, u32 b);
+s32 FtrMgr_FindPlacementMyDesignD(u32 *out, u32 a, u32 b);
+s32 FtrMgr_FindPlacementMyDesignC(u32 *out, u32 a, u32 b);
+s32 FtrMgr_FindPlacementMyDesignB(u32 *out, u32 a, u32 b);
+s32 FtrMgr_SpawnFromArg(u32 a);
+u16 *RoomShell_GetWallpaper();
+u16 *RoomShell_GetCarpet();
 
 s32 MenuTabBar_TabFromX(s32 v);
 s32 MenuTabBar_GetTabX(s32 i);
@@ -677,8 +677,8 @@ BOOL DesignTab::execClosed() {
 }
 
 BOOL DesignTab::handleTabSwitch() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         switch (unk_8d) {
         case 0:
         case 1:
@@ -931,7 +931,7 @@ void DesignTab::updateTouchHold() {
 
 void DesignTab::updateTouchDrag() {
     clearFlags(8);
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         clearFlags(4);
         highlightTarget(0x18);
         setMainState(0);
@@ -959,7 +959,7 @@ b:
 }
 
 void DesignTab::updatePopupTouch() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         abortPopup();
         return;
     }
@@ -1028,7 +1028,7 @@ void DesignTab::updateButtons() {
 }
 
 void DesignTab::updateCarry() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         clearFlags(4);
         requestTab(7);
     } else if (moveCursorByPad((void *)takeRepeatedKeys(), 1)) {
@@ -1095,7 +1095,7 @@ void DesignTab::updateDrop() {
 }
 
 void DesignTab::updatePopupButtons() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         abortPopup();
     } else if (checkSwitchToTouch()) {
         hideCursor();
@@ -1114,7 +1114,7 @@ void DesignTab::updatePopupButtons() {
 }
 
 void DesignTab::updatePopupPress() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         abortPopup();
     } else if (HandCursor_isAnimDone(&unk_398)) {
         unk_b2 = getPopupRowValue(unk_b3);
@@ -1174,7 +1174,7 @@ void DesignTab::updateMessage() {
 }
 
 void DesignTab::updateItemPlace() {
-    switch (func_02042830(unk_98)) {
+    switch (FieldAction_PollDrop(unk_98)) {
     case 1:
         restoreCamera();
         startTargetBlink(unk_af);
@@ -1187,7 +1187,7 @@ void DesignTab::updateItemPlace() {
     default:
         return;
     }
-    func_02042820(unk_98);
+    FieldAction_Release(unk_98);
     unk_98 = -1;
 }
 
@@ -1234,7 +1234,7 @@ void DesignTab::setTargetPalette(u32 id, u32 s) {
     u32 k = id - 9;
     u32 xv = sDesignTabTargetTileY[k];
     u32 yv = sDesignTabTargetTileX[k];
-    func_0206ee80(unk_874, yv, xv, yv + 3, xv + 3, s);
+    BgScreen_SetRectPalette(unk_874, yv, xv, yv + 3, xv + 3, s);
     setFlags(2);
 }
 
@@ -1439,7 +1439,7 @@ void DesignTab::applyRoomDesignA(u32 m) {
     }
     PlayerData_GetCurrent();
     s32 s = func_02098ffc();
-    v = *func_ov004_0222aaa0();
+    v = *RoomShell_GetCarpet();
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7) && s == -1) {
         openMessageWindow(4, 1);
         return;
@@ -1460,7 +1460,7 @@ void DesignTab::applyRoomDesignB(u32 m) {
         return;
     }
     s32 s = func_02098ffc();
-    v = *func_ov004_0222aa48();
+    v = *RoomShell_GetWallpaper();
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7) && s == -1) {
         openMessageWindow(4, 1);
         return;
@@ -1553,16 +1553,16 @@ void DesignTab::placeDesignInRoom() {
     }
     switch (unk_af - 9) {
     case 4:
-        r = func_ov004_02233e98(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignA(&buf, (u8)getSlotPattern(unk_ae), 1);
         break;
     case 3:
-        r = func_ov004_02233e08(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignD(&buf, (u8)getSlotPattern(unk_ae), 1);
         break;
     case 0:
-        r = func_ov004_02233dc0(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignC(&buf, (u8)getSlotPattern(unk_ae), 1);
         break;
     case 5:
-        r = func_ov004_02233e50(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignB(&buf, (u8)getSlotPattern(unk_ae), 1);
         break;
     case 1:
     case 2:
@@ -1582,7 +1582,7 @@ void DesignTab::placeDesignInRoom() {
         break;
     default:
         restoreCamera();
-        func_ov004_02235028(buf);
+        FtrMgr_SpawnFromArg(buf);
         resumeInput();
         startTargetBlink(unk_af);
         break;
@@ -1595,7 +1595,7 @@ void DesignTab::placeDesignItem() {
     u32 x = sDesignItemBase[t];
     x += u;
     unk_a0 = x;
-    unk_98 = func_02042c64(gCommManager->unk_64, unk_a0);
+    unk_98 = FieldAction_RequestDrop(gCommManager->unk_64, unk_a0);
     if (unk_98 == -1) {
         openMessageWindow(3, 0);
         Snd_PlaySe(0x73);
@@ -2054,7 +2054,7 @@ BOOL DesignTab::requestWear(s32 k, u32 v) {
         }
         break;
     case 2:
-        if (PlayerActor_RequestAct3F(&t)) {
+        if (PlayerActor_RequestChangeHeldItem(&t)) {
             return TRUE;
         }
         break;

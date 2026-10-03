@@ -470,8 +470,8 @@ s32 func_02098f30(Unk_02098f30_Out *out, s32 (*fn)(u16 *));
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
 void func_020851a4(void *p, s32 v);
-BOOL func_0206ed18();
-s32 func_0206e8e8();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetAmount();
 BOOL TalkRequest_EndTalkWith(void *p);
 void NpcActor_ChargePlayer(void *p, s32 v);
 void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
@@ -683,8 +683,8 @@ void SpNpcGracieTalk::onFeeEntered() {
     TalkWindowState *m = unk_3c;
     u8 v = 0x4b;
     unk_bc = 0;
-    if (func_0206ed18()) {
-        unk_bc = func_0206e8e8();
+    if (MenuCtrl_IsResultOk()) {
+        unk_bc = MenuCtrl_GetAmount();
         v = 0x2d;
         if (unk_bc > 1000 && unk_bc <= 2000) {
             v = 0x2e;

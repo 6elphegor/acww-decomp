@@ -8,14 +8,14 @@ struct Unk_0203fe18_B3 { u8 b0, b1, b2; };
 struct Unk_020400b0_Big { u8 pad[0x15e28]; u8 unk_15e28; u8 unk_15e29; u8 unk_15e2a; };
 struct Unk_0203ff20_Entry { u16 unk_00; u8 unk_02, unk_03, unk_04, unk_05; };
 struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; Unk_0203ff20_Entry ent[5]; long long unk_34; };
-class Unk_020ad700 {
+class ReddPassword {
 public:
-    BOOL func_020ad650();
-    s32 func_020ad680();
+    BOOL dropPassword();
+    s32 pickPassword();
 };
-class Unk_021ed2c0 {
+class ReddShop {
 public:
-    Unk_020ad700 *func_020ad3bc();
+    ReddPassword *getPassword();
 };
 struct Unk_020d96fc_G { u8 b0, b1, b2, b3; };
 
@@ -50,7 +50,7 @@ extern Unk_020d96fc_G data_021ed170;
 }
 
 extern "C" {
-extern Unk_021ed2c0 data_021ed2c0;
+extern ReddShop data_021ed2c0;
 }
 
 extern "C" {
@@ -110,7 +110,7 @@ s32 EventSchedule_CollectDayAll(void*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-s32 func_020ad194(void);
+s32 ReddShop_SendPasswordLetters(void);
 }
 
 extern "C" {
@@ -214,10 +214,10 @@ extern "C" void func_02040684(Unk_0203ff50_Slot *s) {
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) EventWeekSlot_Clear(e);
-    Unk_021ed2c0 *p = &data_021ed2c0;
+    ReddShop *p = &data_021ed2c0;
     for (i = 0; i < 1; i++) {
-        p->func_020ad3bc()->func_020ad650();
-        p->func_020ad3bc()->func_020ad680();
+        p->getPassword()->dropPassword();
+        p->getPassword()->pickPassword();
     }
 }
 
@@ -385,7 +385,7 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, idx);
         if (e) {
             if (e->unk_04 == 0) {
-                func_020ad194();
+                ReddShop_SendPasswordLetters();
                 e->unk_04 = 1;
             }
         }

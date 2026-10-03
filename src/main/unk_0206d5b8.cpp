@@ -214,7 +214,7 @@ void OverlayHandle_Unload(void *p);
 }
 
 extern "C" {
-void func_ov065_02277ba4(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
+void DwcNet_SetAllocator(void *(*alloc)(u32, void *, u32), void (*free)(u32, void *));
 }
 
 extern "C" {
@@ -330,7 +330,7 @@ void func_020118a4(void);
 }
 
 extern "C" {
-void func_020b8e44(void);
+void Sky_SwapBuffers(void);
 }
 
 extern "C" {
@@ -354,7 +354,7 @@ void VramQueue2d_Run(void);
 }
 
 extern "C" {
-void func_020a5c2c(void);
+void NetSession_PostUpdate(void);
 }
 
 extern "C" {
@@ -703,7 +703,7 @@ extern "C" void Main_PreTaskUpdate(u32 r) {
 
 extern "C" void Main_PostTaskUpdate(u32 r) {
     if (r == 0) {
-        func_020a5c2c();
+        NetSession_PostUpdate();
     }
     Comm_Update(r);
     Gfx_PostTaskUpdate();
@@ -720,7 +720,7 @@ extern "C" void Main_PostFrameUpdate(void) {
 extern "C" void Main_LateUpdate(u32 r) {
     TextLabel_FlushGroup0();
     func_020118a4();
-    func_020b8e44();
+    Sky_SwapBuffers();
     HBlank_RunFrame();
     Snd_Update(r != 0 ? 1 : 0);
 }

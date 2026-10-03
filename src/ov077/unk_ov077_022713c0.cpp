@@ -59,8 +59,8 @@ void func_02034dd0(s32 a, s32 b, s32 c);
 void func_02034d70(s32 a);
 void func_02034e10(s32 a, s32 b, s32 c, s32 d);
 s32 func_020e7518(void *p);
-BOOL func_0206ec6c();
-BOOL func_0206ed18();
+BOOL MenuCtrl_IsFinished();
+BOOL MenuCtrl_IsResultOk();
 s32 func_020951ec(s32 v);
 u16 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 s32 func_02090330(s32 a, void *b, s32 c, s32 d);
@@ -801,9 +801,9 @@ void SpNpcResettiTalk::scriptWaitForTip() {
 
 void SpNpcResettiTalk::scriptCheckApology() {
     TalkWindowState *m = unk_3c;
-    if (func_0206ec6c()) {
+    if (MenuCtrl_IsFinished()) {
         u8 v = 0x18;
-        if (func_0206ed18()) {
+        if (MenuCtrl_IsResultOk()) {
             if (func_02063b8c(2) == 0) {
                 v = 0x1a;
             } else {

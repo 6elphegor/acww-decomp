@@ -229,14 +229,14 @@ s32 Item_GetNookShopLevel(void *p);
 void *PlayerData_GetCurrent();
 void Clock_GetDateTime(void *p);
 void Clock_GetMinuteHour(void *p);
-BOOL func_020a032c();
+BOOL GameStart_IsActive();
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
 BOOL func_02098044(void *p, s32 a);
-BOOL func_020ae964(void *p, void *q);
-BOOL func_020ae9e0(void *p);
-void *func_020aeac4(void *p);
-BOOL func_020ae8fc(void *p);
-BOOL func_020ae940(void *p);
+BOOL NookShop_IsClosedOn(void *p, void *q);
+BOOL NookShop_IsReopenDueNow(void *p);
+void *NookShop_GetRenovation(void *p);
+BOOL NookShop_IsClosedTomorrow(void *p);
+BOOL NookShop_IsClosedToday(void *p);
 }
 
 struct Unk_ov003_SceneEntry {
@@ -308,7 +308,7 @@ void ShopBuilding::vfunc_78() {
         }
     } else {
         void *x = PlayerData_GetCurrent();
-        if (func_020a032c() || func_02098044(x, 0x23)) {
+        if (GameStart_IsActive() || func_02098044(x, 0x23)) {
             setFileName("sp_etc_sequence4");
             unk_1e = 0x15;
         } else if (isClosedToday()) {
@@ -319,17 +319,17 @@ void ShopBuilding::vfunc_78() {
         } else {
             BOOL k = FALSE;
             u8 *p = data_021ed104;
-            if (((u8 *)func_020aeac4(p))[3]) {
+            if (((u8 *)NookShop_GetRenovation(p))[3]) {
                 l.a = 0;
                 l.b = 0;
                 Clock_GetDateTime(&l.a);
-                if (func_020ae8fc(p)) {
+                if (NookShop_IsClosedTomorrow(p)) {
                     if (*((u8 *)&l + 10) > 0xc) {
                         k = TRUE;
                     }
-                } else if (func_020ae940(p)) {
+                } else if (NookShop_IsClosedToday(p)) {
                     k = TRUE;
-                } else if (func_020ae9e0(p)) {
+                } else if (NookShop_IsReopenDueNow(p)) {
                     k = TRUE;
                 }
             }
@@ -354,7 +354,7 @@ BOOL ShopBuilding::vfunc_8c() {
         return FALSE;
     }
     void *x = PlayerData_GetCurrent();
-    if (func_020a032c() || (x && func_02098044(x, 0x23))) {
+    if (GameStart_IsActive() || (x && func_02098044(x, 0x23))) {
         return FALSE;
     }
     if (x && func_02098044(x, 1)) {
@@ -370,7 +370,7 @@ BOOL ShopBuilding::vfunc_8c() {
     }
     return FALSE;
 range:
-    if (!func_020ae9e0(data_021ed104)) {
+    if (!NookShop_IsReopenDueNow(data_021ed104)) {
         return TRUE;
     }
     return FALSE;
@@ -384,7 +384,7 @@ BOOL ShopBuilding::isClosedToday() {
         d.a = 0;
         d.b = 0;
         Clock_GetDateTime(&d);
-        if (func_020ae964(data_021ed104, &d)) {
+        if (NookShop_IsClosedOn(data_021ed104, &d)) {
             return TRUE;
         }
     }

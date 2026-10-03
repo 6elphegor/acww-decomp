@@ -1480,7 +1480,7 @@ extern "C" {
 s32 func_02063b8c(s32 n);
 }
 extern "C" {
-void func_020ad8e8(void *tbl, s32 i, u16 *out);
+void AbleShop_GetItem(void *tbl, s32 i, u16 *out);
 }
 extern "C" {
 void Item_FromPlacedForm(u16 *dst, u16 *src);
@@ -1594,7 +1594,7 @@ extern "C" BOOL func_02070fbc(s32 a, s32 b) {
                 *(volatile u16 *)&bufw[0] = 0xfff1;
                 BOOL z = FALSE;
                 for (s32 i = 0; (u32)i < 6; i++) {
-                    func_020ad8e8(data_021ed2d4, i, &bufw[0]);
+                    AbleShop_GetItem(data_021ed2d4, i, &bufw[0]);
                     BOOL in1 = z;
                     u32 v = *(volatile u16 *)&bufw[0];
                     u32 w = *(volatile u16 *)&bufw[0];
@@ -1969,7 +1969,7 @@ extern "C" {
 s32 _ZN10PlayerData13func_02098a48Ev(void *p);
 }
 extern "C" {
-s32 func_02096aac(void *p);
+s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 }
 extern "C" {
 void func_020638d0(void *a, void *b);

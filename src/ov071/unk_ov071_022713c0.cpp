@@ -107,13 +107,13 @@ s32 func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void func_02040144(s32 a, s32 b);
-BOOL func_0206ed18();
-s32 func_0206ed38();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 u32 func_02099048();
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void func_02099064(s32 n);
-s32 func_0206ea84(void *cb);
+s32 MenuCtrl_BuildPocketMask(void *cb);
 s32 NpcActor_CanPlayerPay(void *owner, s32 n);
 void NpcActor_ChargePlayer(void *owner, s32 n);
 u32 func_020951ec(s32 n);
@@ -1112,8 +1112,8 @@ void SpNpcLyleTalk::onClaimItemChosen() {
     TalkWindowState *scene = unk_3c;
     Unk_ov071_0227160c_Msg m;
     m.id = 0x24;
-    if (func_0206ed18() != 0) {
-        s32 r4 = func_0206ed38();
+    if (MenuCtrl_IsResultOk() != 0) {
+        s32 r4 = MenuCtrl_GetIndex();
         m.a = func_02099048();
         BOOL same;
         if (Item_IsFurniture(&m.a) != 0) {
@@ -1316,7 +1316,7 @@ void SpNpcLyleTalk::vfunc_14() {
         break;
     case 0x25:
         _ZN12Unk_0201442013func_02014a4cEv(this);
-        if (func_0206ea84((void *)SpNpcLyle_IsForgedPainting) != 0) {
+        if (MenuCtrl_BuildPocketMask((void *)SpNpcLyle_IsForgedPainting) != 0) {
             r5 = 0x21;
         } else {
             r5 = 0x26;

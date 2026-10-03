@@ -31,33 +31,33 @@ s64 func_02133540(u32, u32, u32);
 void *func_020f5b84(void *);
 void Gfx2d_DisableMainWindows(u32);
 void Gfx2d_ResetLayer(u32);
-void func_0206ed74();
+void MenuCtrl_ClearScreenChanging();
 void Gfx2d_EnableMainWindows(u32);
 void Gfx2d_SetMainWin1Planes(u32);
 void Gfx2d_SetMainWinOutPlanes(u32);
 void Gfx2d_HideMainPlanes(u32);
 BOOL Camera_RestorePrevMode();
 void Gfx2d_SetLayerPriority(u32, u32);
-void func_0206ed98();
+void MenuCtrl_ClearTransitionActive();
 void Gfx2d_ShowLayer(u32);
 void func_02011940();
 void Sky_SetEngine(u32);
-void func_0206ef68();
+void MenuCtrl_ClearMenuOnTop();
 void func_0203d4c4(u32);
 s32 func_01ffcb0c(s32, s32);
-void func_0206ee00(s32);
+void MenuCtrl_SetTransitionProgress(s32);
 BOOL Camera_IsViewPushed();
 void Camera_PopView();
 void func_0203d4c8(u32);
 void Sky_Disable();
 void Gfx2d_SetMainBgModeState(u32);
 void Gfx2d_HideSubPlanes(u32);
-void func_0206ef5c();
+void MenuCtrl_SetMenuOnTop();
 BOOL Camera_SetMode1();
-void func_0206eda4();
+void MenuCtrl_SetTransitionActive();
 void Gfx2d_SetMainWin1Rect(s32, s32, s32, s32);
 BOOL func_0203d4d4();
-void func_0206ed80();
+void MenuCtrl_SetScreenChanging();
 u32 PlayerData_GetCurrent();
 u16 *_ZN12Unk_02097ff413func_020983ccEv();
 void *Heap_AllocTail(void *, u32);
@@ -318,14 +318,14 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
 
 extern "C" void MenuScreen_BeginClose() {
     sMenuScreenState.v = 8;
-    func_0206ed80();
+    MenuCtrl_SetScreenChanging();
 }
 
 extern "C" void MenuScreen_BeginOpen() {
     MenuScreen_SetupMainBg();
     sMenuScreenState.v = 1;
     data_021cb464.v = 4;
-    func_0206ed80();
+    MenuCtrl_SetScreenChanging();
 }
 
 extern "C" void func_0206e03c() { func_0206dbac(1); }
@@ -343,7 +343,7 @@ extern "C" void MenuScreen_Reset() {
     }
     Gfx2d_DisableMainWindows(2);
     gGfxMainOnTop = 0;
-    func_0206ed74();
+    MenuCtrl_ClearScreenChanging();
     MenuScreen_ClearState();
     MenuScreen_StopWipe();
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -391,8 +391,8 @@ extern "C" BOOL MenuScreen_StepAct02() {
 
 extern "C" BOOL MenuScreen_StepAct03() {
     if (Camera_SetMode1()) {
-        func_0206eda4();
-        func_0206ee00(0);
+        MenuCtrl_SetTransitionActive();
+        MenuCtrl_SetTransitionProgress(0);
         data_021cb47c = 0x1000;
         data_021cb478 = 0x200;
         sMenuScreenState.v = 4;
@@ -406,8 +406,8 @@ extern "C" BOOL MenuScreen_StepAct04() {
         Gfx2d_HideSubPlanes(0xf);
         Gfx2d_ShowLayer(5);
         gGfxMainOnTop = 1;
-        func_0206ed74();
-        func_0206ef5c();
+        MenuCtrl_ClearScreenChanging();
+        MenuCtrl_SetMenuOnTop();
         Gfx2d_ResetLayer(1);
         sMenuScreenState.v = 5;
         if (Unk_0206dc9c_IsZero(data_020e416c)) {
@@ -431,7 +431,7 @@ extern "C" BOOL MenuScreen_StepAct05() {
     } else {
         data_021cb47c = 0;
     }
-    func_0206ee00(0x1000 - func_01ffcb0c(data_021cb47c, data_021cb47c));
+    MenuCtrl_SetTransitionProgress(0x1000 - func_01ffcb0c(data_021cb47c, data_021cb47c));
     return TRUE;
 }
 
@@ -464,7 +464,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
         if (!MenuScreen_HasFlags(1)) {
             Gfx2d_SetLayerPriority(5, 1);
             MenuScreen_LoadBackground(1);
-            func_0206ed98();
+            MenuCtrl_ClearTransitionActive();
             sMenuScreenState.v = 10;
             gGfxMainOnTop = 0;
             Gfx2d_HideMainPlanes(0xe);
@@ -474,7 +474,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
             if (Unk_0206dc9c_IsZero(data_020e416c)) {
                 Sky_SetEngine(0);
             }
-            func_0206ef68();
+            MenuCtrl_ClearMenuOnTop();
             func_0203d4c4(0);
         }
     }
@@ -483,7 +483,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
     } else {
         data_021cb47c = 0;
     }
-    func_0206ee00(func_01ffcb0c(data_021cb47c, data_021cb47c));
+    MenuCtrl_SetTransitionProgress(func_01ffcb0c(data_021cb47c, data_021cb47c));
     return TRUE;
 }
 
@@ -505,7 +505,7 @@ extern "C" BOOL MenuScreen_StepAct0B() {
         sMenuScreenState.v = 0xc;
         Gfx2d_DisableMainWindows(2);
         Gfx2d_ResetLayer(1);
-        func_0206ed74();
+        MenuCtrl_ClearScreenChanging();
     }
     return TRUE;
 }

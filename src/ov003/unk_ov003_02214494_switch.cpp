@@ -230,7 +230,7 @@ public:
 struct Unk_ov003_022141bc_Target {u8 pad_00[4]; u32 unk_04; u32 unk_08;};
 struct Unk_ov003_0221475c_Pad {s32 v[2]; Unk_ov003_0221475c_Pad() {} ~Unk_ov003_0221475c_Pad() {}};
 struct Unk_ov003_02214890_Buf {s32 w0,w1;};
-class Unk_020ad700 {public: u32 func_020ad618(void *w);};
+class ReddPassword {public: u32 getPromptText(void *w);};
 
 
 extern "C" {
@@ -240,8 +240,8 @@ void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
-BOOL func_0206ec6c();
-BOOL func_0206eca4(u32 a);
+BOOL MenuCtrl_IsFinished();
+BOOL MenuCtrl_OpenLauncher(u32 a);
 BOOL TalkRequest_EndTalkWith(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
@@ -255,16 +255,16 @@ s32 func_020b50e8();
 void func_020b49c4(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
 s32 func_02030814(u32 a);
 BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
-BOOL func_0206ed18();
-s32 func_020ad274();
+BOOL MenuCtrl_IsResultOk();
+s32 ReddPassword_LearnCurrentPlayer();
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
 void func_020b1040(u32 a, u32 b);
 extern u8 data_ov003_02231138[];
 extern u8 data_021ed2c0[];
-Unk_020ad700 *_ZN12Unk_021ed2c013func_020ad3bcEv(void *p);
-s32 _ZN12Unk_020ad70013func_020ad5f8Ev();
-void func_0206ec84(u32 a, s32 b);
-s32 func_020ad2c8();
+ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
+s32 _ZN12ReddPassword14getAnswerIndexEv();
+void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
+s32 ReddPassword_CurrentPlayerKnows();
 u32 func_020b10c4(u32 a);
 void func_020b10e0(u32 a);
 s32 func_020e780c(s32 a, s32 b);
@@ -273,9 +273,9 @@ s32 func_020e780c(s32 a, s32 b);
 extern "C" {
 extern u8 data_021ed2c0[];
 extern u8 data_021ecc7c[];
-void _ZN12Unk_020e2e54C1Ev(void *);
-void _ZN12Unk_020e2e54D1Ev(void *);
-Unk_020ad700 *_ZN12Unk_021ed2c013func_020ad3bcEv(void *);
+void _ZN18ReddPasswordStringC1Ev(void *);
+void _ZN18ReddPasswordStringD1Ev(void *);
+ReddPassword *_ZN8ReddShop11getPasswordEv(void *);
 void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, s32);

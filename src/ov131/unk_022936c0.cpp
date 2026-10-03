@@ -22,11 +22,11 @@ void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
 void *_ZN12Unk_02097ff413func_02098320Ev();
 void *_ZN10PlayerData13func_02098750Ev(void *p);
-s32 func_0206ed50();
-void func_0206ecf8(s32 a);
+s32 MenuCtrl_GetMode();
+void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
 s32 MenuCtrl_IsButtons();
-void func_0206e8dc();
+void MenuCtrl_SetAmount();
 void func_02097410(void *p, s32 v);
 s32 func_02097414(void *p);
 void func_02097a48(void *p, s32 v, s32 w);
@@ -370,7 +370,7 @@ void AmountEntryMenu::updateLayerSlide() {
 }
 
 void AmountEntryMenu::initPad() {
-    unk_25c.init((u8)(func_0206ed50() - 0x34), 6, 4);
+    unk_25c.init((u8)(MenuCtrl_GetMode() - 0x34), 6, 4);
     setupAmounts();
     unk_1410 = 0;
 }
@@ -545,16 +545,16 @@ BOOL AmountEntryMenu::confirm() {
     unk_f8.setSelected(6);
     setTransitionState(2);
     setMainState(7);
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     NumberPad_GetValue(&unk_25c);
-    func_0206e8dc();
+    MenuCtrl_SetAmount();
     commitAmount();
     return TRUE;
 }
 
 void AmountEntryMenu::cancel() {
     Snd_PlaySe(0x2a);
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_f8.setSelected(7);
     setTransitionState(2);
     setMainState(7);
@@ -617,7 +617,7 @@ void AmountEntryMenu::releaseCursor() {
 void AmountEntryMenu::setupAmounts() {
     s32 hi;
     s32 lo;
-    s32 m = func_0206ed50();
+    s32 m = MenuCtrl_GetMode();
     void *p = PlayerData_GetCurrent();
     void *q = _ZN12Unk_02097ff413func_02098320Ev();
     switch (m) {
@@ -678,7 +678,7 @@ void AmountEntryMenu::commitAmount() {
     s32 c = NumberPad_GetBottomAmount(&unk_25c);
     void *p = PlayerData_GetCurrent();
     void *q = _ZN12Unk_02097ff413func_02098320Ev();
-    s32 m = func_0206ed50();
+    s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
         func_02097410(q, b - a);

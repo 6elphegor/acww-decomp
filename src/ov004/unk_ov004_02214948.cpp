@@ -322,7 +322,7 @@ BirthdayHostVillager *BirthdayHostVillager_Get();
 BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag);
 u16 BirthdayHost_PickReturnGift(s32 n);
 void func_ov004_0221570c(void *a, void *b);
-s32 func_ov004_02234f6c(Unk_ov004_02215c94_V *v);
+s32 FtrMgr_GetSurfaceHeightAtPos(Unk_ov004_02215c94_V *v);
 Unk_ov004_022146ec_Actor *BirthdayGuestVillager_Get(void);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 }
@@ -394,8 +394,8 @@ s32 func_0201bb3c(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e9650(void *, void *);
 void TalkWindowState_setNextMessage(void *, void *, s32);
-s32 func_0206ea84(void *);
-s32 func_0206ead4(s32, u32);
+s32 MenuCtrl_BuildPocketMask(void *);
+s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_EndTalkWith(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u16 data_020c6cc8;
@@ -421,9 +421,9 @@ void VillagerId_makeFileName(void *, void *, s32, void *);
 void func_020157b8(void *, void *, s32);
 void *NpcRegistry_GetVillager(s32);
 s32 NpcRegistry_GetSlotCount();
-s32 func_0206ec6c();
-s32 func_0206ed18();
-void *func_0206ed38();
+s32 MenuCtrl_IsFinished();
+s32 MenuCtrl_IsResultOk();
+void *MenuCtrl_GetIndex();
 u16 func_02099048();
 s32 Item_GetPrice(u16 *);
 void func_02099064(void *);
@@ -557,7 +557,7 @@ BOOL BirthdayHostVillager::vfunc_04() {
     for (i = 0; i < 6; i++) {
         Unk_ov004_02215c94_V t;
         func_01ffd070(&t, unk_5c, &vs[i]);
-        if (!func_ov004_02234f6c(&t)) {
+        if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
             unk_5c[0] = t.x;
             unk_5c[1] = t.y;
             unk_5c[2] = t.z;
@@ -797,14 +797,14 @@ void BirthdayHostVillagerTalk::vfunc_80() {
     u8 b0, b1, b2;
     u16 x;
     if (unk_1a0->unk_894 == 0xb) {
-        if (func_0206ec6c()) {
-            if (func_0206ed18() == 0) {
+        if (MenuCtrl_IsFinished()) {
+            if (MenuCtrl_IsResultOk() == 0) {
                 unk_3c->unk_08 = 1;
                 b0 = func_02063b8c(2) + 7;
                 TalkWindowState_setNextMessage(unk_3c, &b0, 0);
                 unk_1a0->changeAct(6);
             } else {
-                void *r6 = func_0206ed38();
+                void *r6 = MenuCtrl_GetIndex();
                 x = func_02099048();
                 s32 r4 = Item_GetPrice(&x);
                 func_02099064(r6);
@@ -989,7 +989,7 @@ void BirthdayHostVillagerTalk::vfunc_18() {
     case 4:
     case 5:
         if (r == 0) {
-            if (func_0206ea84((void *)BirthdayHost_GiftFilter)) {
+            if (MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter)) {
                 b[0] = func_02063b8c(2) + 9;
                 TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[0], 0);
             } else {
@@ -1283,7 +1283,7 @@ BOOL BirthdayHostVillager::setupAct0A() {
 
 void BirthdayHostVillager::mainAct0A() {
     if (unk_89c.unk_3c->unk_04 == 5) {
-        if (func_0206ead4(func_0206ea84((void *)BirthdayHost_GiftFilter), 0xd) != 0) {
+        if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter), 0xd) != 0) {
             changeAct(0xb);
         }
     }

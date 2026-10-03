@@ -33,17 +33,17 @@ BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
 BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
-void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void func_0206f994(void *p, void *s, s32 n);
-void func_0206ecf8(u32 v);
-s32 func_0206ed50();
+void MenuCtrl_SetResult(u32 v);
+s32 MenuCtrl_GetMode();
 void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
 void *func_020716cc();
 void *PlayerData_GetCurrent();
-void *func_0206ed38();
+void *MenuCtrl_GetIndex();
 void func_02004008(s32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
@@ -774,7 +774,7 @@ void PatternEditorMenu::stateOpen() {
     unk_a4 = 0x22;
     selectTool(0);
     loadObjGfx();
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 2:
         loadFromPlayerPattern();
         break;
@@ -965,7 +965,7 @@ void PatternEditorMenu::initEditor() {
     resetShapeDrag();
     unk_af = 0x10;
     unk_b0 = 0x10;
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     PlayerActor_RequestAct05();
     unk_98 = 0;
     unk_b3 = 0;
@@ -976,7 +976,7 @@ void PatternEditorMenu::releaseResources() {
     resetPaletteLabel();
     cancelVramTasks();
     func_02094960();
-    if (func_0206ed50() == 3) {
+    if (MenuCtrl_GetMode() == 3) {
         func_02003f5c(0);
     }
 }
@@ -1384,7 +1384,7 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 void PatternEditorMenu::loadFromPlayerPattern()
 {
     void *b = _ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent());
-    void *d = _ZN14PlayerPatterns13func_02071c68Ej(b, func_0206ed38());
+    void *d = _ZN14PlayerPatterns13func_02071c68Ej(b, MenuCtrl_GetIndex());
     MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(d), unk_a04, 0x200);
     MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(d), unk_c04, 0x200);
     u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN7Pattern13func_02071e04Ev(d));
@@ -1395,7 +1395,7 @@ void PatternEditorMenu::saveToPlayerPattern()
 {
     void *a = PlayerData_GetCurrent();
     void *b = _ZN10PlayerData13func_020986d4Ev(a);
-    void *c = func_0206ed38();
+    void *c = MenuCtrl_GetIndex();
     void *d = _ZN14PlayerPatterns13func_02071c68Ej(b, c);
     _ZN7Pattern13func_02071e3cEPv(d, getCanvas());
     _ZN12Unk_02071ed013func_02071ff0Ev(_ZN7Pattern13func_02071e04Ev(d));
@@ -1631,10 +1631,10 @@ void PatternEditorMenu::activateButton() {
         if (t == 0x1f) {
             startBarTransition(2, 3);
             if (testFlags(8)) {
-                func_0206ecf8(0);
+                MenuCtrl_SetResult(0);
                 Snd_PlaySe(0x28);
             } else {
-                switch (func_0206ed50()) {
+                switch (MenuCtrl_GetMode()) {
                 case 2:
                     saveToPlayerPattern();
                     break;
@@ -1642,7 +1642,7 @@ void PatternEditorMenu::activateButton() {
                     saveToExternalPattern();
                     break;
                 }
-                func_0206ecf8(1);
+                MenuCtrl_SetResult(1);
                 Snd_PlaySe(0x27);
             }
         } else if (t == 0x20) {
@@ -2172,7 +2172,7 @@ void PatternEditorMenu::pickColorAtCursor() {
 void PatternEditorMenu::setButtonPalette(u32 a, u32 b) {
     if (a <= 0xc) {
         u32 t = sPatternEditorButtonTileY[a];
-        func_0206ee80(&unk_204, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
+        BgScreen_SetRectPalette(&unk_204, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
         setFlags(0x10);
     }
 }

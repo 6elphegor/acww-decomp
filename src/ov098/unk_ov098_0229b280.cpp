@@ -10,11 +10,11 @@ s32 Snd_PlaySe(s32 a);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 u8 *func_02095204(s32 a);
 void *PlayerData_GetCurrent();
-s32 func_0206e61c();
-s32 func_0204341c(s32 a, void *b, s32 c, s32 d, s32 e);
-s32 func_02042c9c(s32 a, s32 b, s32 c);
-s32 func_02042d10(s32 a);
-void func_02042820(s32 a);
+s32 MenuCtrl_IsForceCloseDue();
+s32 FieldAction_RequestTool(s32 a, void *b, s32 c, s32 d, s32 e);
+s32 FieldAction_RequestAtFreeUnit(s32 a, s32 b, s32 c);
+s32 FieldAction_PollResult(s32 a);
+void FieldAction_Release(s32 a);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void FieldPos_ToUnit(s32 *x, s32 *z, void *p);
 void *TownBlockMap_Get();
@@ -472,7 +472,7 @@ void PocketMenu::actionBuryItem() {
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
-        unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
+        unk_c4 = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 == -1) {
             PocketMenu_ReturnToIdle(this);
             PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
@@ -483,7 +483,7 @@ void PocketMenu::actionBuryItem() {
 }
 
 void PocketMenu::mainAct2D() {
-    switch (func_02042d10(unk_c4)) {
+    switch (FieldAction_PollResult(unk_c4)) {
     case 1:
         setMainState(0x2e);
         mainAct2E();
@@ -492,7 +492,7 @@ void PocketMenu::mainAct2D() {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 3, 0xff, 1);
     done:
-        func_02042820(unk_c4);
+        FieldAction_Release(unk_c4);
         unk_c4 = -1;
     }
 }
@@ -514,13 +514,13 @@ void PocketMenu::actionPlantItem() {
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
-        unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
+        unk_c4 = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 != -1) {
             setMainState(0x2d);
             return;
         }
     }
-    unk_c4 = func_02042c9c(gCommManager->unk_64, 0x18, a);
+    unk_c4 = FieldAction_RequestAtFreeUnit(gCommManager->unk_64, 0x18, a);
     if (unk_c4 == -1) {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 8, 0xff, 0);
@@ -595,7 +595,7 @@ void PocketMenu::mainAct36() {
 
 void PocketMenu::mainAct37() {
     unk_27fc.updatePromptBalloon();
-    if (func_0206e61c() != 0 || Unk_ov098_0229b2d8_Both() || (gPad[1] & 1) || (gPad[1] & 2)) {
+    if (MenuCtrl_IsForceCloseDue() != 0 || Unk_ov098_0229b2d8_Both() || (gPad[1] & 1) || (gPad[1] & 2)) {
         setMainState(0x38);
         unk_27fc.hidePromptBalloon();
     }

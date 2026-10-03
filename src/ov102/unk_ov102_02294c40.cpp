@@ -14,13 +14,13 @@ void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreenFile(const char *a, s32 b, s32 c);
 void Gfx2d_LoadPaletteFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Snd_PlaySe(s32 a);
-void func_0206eba4(void *p);
-s32 func_0206ebc0();
-void func_0206ec04();
-void func_0206ecf8(s32 a);
-s32 func_0206ed18();
-void func_0206ed2c(u32 a);
-s32 func_0206ed50();
+void MenuCtrl_SetChosenItems(void *p);
+s32 MenuCtrl_RestorePockets();
+void MenuCtrl_BackupPockets();
+void MenuCtrl_SetResult(s32 a);
+s32 MenuCtrl_IsResultOk();
+void MenuCtrl_SetIndex(u32 a);
+s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
@@ -94,8 +94,8 @@ extern s32 gCurrentHeap;
 // extra decls
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
-BOOL func_0206e61c();
-void func_0206e63c();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
 void PlayerData_GetCurrent();
 void func_020979b0();
 s32 func_02039d74();
@@ -579,8 +579,8 @@ void ChestMenu::runMainState() {
 }
 
 BOOL ChestMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         u32 s = unk_8d;
         if (s == 0 || s == 1 || s == 3) {
             ChestMenu_HideCursor(this);
@@ -747,7 +747,7 @@ void ChestMenu::initMembers() {
     PlayerData_GetCurrent();
     func_020979b0();
     MI_CpuCopy8((void *)func_02039d74(), unk_2414, 0xb4);
-    func_0206ec04();
+    MenuCtrl_BackupPockets();
     unk_24d6 = 0;
 }
 
@@ -843,7 +843,7 @@ void ChestMenu::mainAct01() {
 }
 
 void ChestMenu::mainAct02() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         ChestMenu_ReleaseHeldItem(this, unk_24ce);
         ChestMenu_HideCursor(this);
         unk_2134.hide(0);
@@ -931,7 +931,7 @@ tail:
 }
 
 void ChestMenu::mainAct04() {
-    if (func_0206e61c()) {
+    if (MenuCtrl_IsForceCloseDue()) {
         ChestMenu_ReleaseHeldItem(this, unk_24ce);
         ChestMenu_HideCursor(this);
         unk_2134.hide(0);
@@ -1917,7 +1917,7 @@ void ChestMenu::confirm(s32 v) {
     }
     setMainState(0xf);
     setOkLabel(1);
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     PlayerData_GetCurrent();
     func_020979b0();
     MI_CpuCopy8(unk_2414, (u8 *)func_02039d74(), 0xb4);

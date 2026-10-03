@@ -129,8 +129,8 @@ s32 Net_WifiFindFriend(s32);
 s32 Net_WifiConnectToHost(s32);
 s32 func_020ea598(s32);
 BOOL Net_WifiShutdownStepExt(s32);
-BOOL func_0206ed18();
-s32 func_0206ed38();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 u8 * _ZN11CommManager15getWifiUserDataEv(void *);
 u8 * _ZN11CommManager17getWifiFriendListEv(void *);
 void * PlayerData_GetCurrent();
@@ -140,8 +140,8 @@ void AxMail_ApplyMail();
 void AxMail_ApplyBbs();
 void Wifi_StoreFriendList();
 BOOL Save_WritePlayerFriendList();
-BOOL func_020a0828();
-BOOL func_020a084c();
+BOOL SaveManager_HasAct13Failed();
+BOOL SaveManager_IsIdleAfterAct13();
 void SpNpcMissing1_ChangeAct05();
 s32 SpNpcMissing1_ResetAct();
 void SaveManager_RequestAct13();
@@ -163,10 +163,10 @@ s32 func_02133150(s32, s32);
 BOOL AxMail_DownloadMail();
 s32 Net_PollConnected(...);
 s32 Net_GetWifiFriendList(s32);
-BOOL func_020a032c();
+BOOL GameStart_IsActive();
 s32 _ZN10ChoiceList9getResultEv(void *);
 void * _ZN15TalkWindowState13getChoiceListEv(void *);
-s32 func_ov004_02225ebc();
+s32 CheckInGate_Close();
 s32 func_02073340();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
 BOOL _ZN11CommManager8isOnlineEv(void *);
@@ -182,8 +182,8 @@ void _ZN11CommManager12setErrorModeEj(void *, s32);
 s32 _ZN15TalkWindowState13func_02067990Ev(void *);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *);
 s32 _ZN15TalkWindowState13func_0206799cEv(void *, s32);
-s32 func_ov004_02225e9c();
-s32 func_ov004_02225ee0();
+s32 CheckInGate_IsOpen();
+s32 CheckInGate_Open();
 s32 func_0202e148();
 void _ZN12Unk_02097ff413func_0209801cEj(void *, s32);
 u32 Clock_GetTimeOfDay();
@@ -195,7 +195,7 @@ s32 NetOverlay_LoadWireless();
 s32 Comm_Start(s32, s32, s32);
 s32 Comm_End();
 s32 _ZN12Unk_020d77a413func_0201b9e8Eii(void *, s32 *, s32 *);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 Unk_ov048_Rec * TalkWindow_Get(s32);
 void SaveManager_RequestAct02();
 void * func_020b4934();
@@ -211,11 +211,11 @@ void Camera_SaveView();
 void SaveManager_RequestAct17();
 void SaveManager_RequestAct14();
 s32 func_020b4f18(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
-s32 func_020a5ef8();
+s32 NetSession_GetLastSyncSlot();
 void * PlayerData_GetBySessionSlot();
 void _ZN15TalkWindowState13detachRequestEv(void *);
 void func_020b4bbc(void *, s32);
-void PlayerActor_RequestAct6F(void *, s32, s32);
+void PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 func_020951b8(s32);
 void _ZN10PlayerData13func_02098a58Ev(void *);
 void _ZN10MsgRequest11setFileNameEPKc(void *, const char *);
@@ -224,7 +224,7 @@ void * _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *, void *);
 s32 func_020a03c4();
 void func_020b78c4();
-s32 func_020a0414();
+s32 Net_GetJoiningAid();
 s32 func_02094f2c(s32, s32);
 void func_02094f48(s32, s32);
 void _ZN12Unk_0201a8c413func_0201a99cEs(void *, s32);
@@ -248,9 +248,9 @@ s32 _ZN12Unk_0201985813func_020197a8Ev(void *);
 void _ZN12Unk_0201985813func_02019614Ejt(void *, s32, s32);
 void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 func_02063b8c(s32);
-s32 func_ov004_0223f944();
-s32 func_ov004_0223f958();
-s32 PlayerActor_RequestAct70(s32, s32);
+s32 Camera_SetMode15();
+s32 Camera_SetMode14();
+s32 PlayerActor_RequestTurnTo(s32, s32);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *);
 s32 Camera_IsBlending();
 void TalkRequest_EndTalkWith(void *);
@@ -277,16 +277,16 @@ BOOL SpNpcMissing1_IsIdle();
 BOOL TalkRequest_IsActive();
 s32 _ZN12Unk_02019dd813func_02019d8cEv(void *);
 s32 Net_GetMyAid();
-void func_020a0408();
+void Net_SetJoiningAid();
 s32 Comm_GetSyncState();
 void Comm_ClearSyncState();
 BOOL Comm_RequestSync(u32);
-void func_020a5f38(u32);
-void func_020a5f18(u32);
+void NetSession_SetSyncKind(u32);
+void NetSession_SetActiveSyncKind(u32);
 void * func_02085178(void *);
 BOOL _ZN12Unk_02086f8413func_02086fa8Ev(void *);
 void _ZN12Unk_020872fc13func_02087308Ev(void *);
-s32 func_020a5f6c();
+s32 NetSession_GetSyncMemberMask();
 BOOL CommSend_PlayerData(void *, s32);
 void Comm_PrepareJoin();
 
@@ -1107,7 +1107,7 @@ BOOL SpNpcCopper::mainAct05() {
         break;
     case 1:
         *(Unk_ov048_Vec *)&b = sCopperTurnBackPos;
-        PlayerActor_RequestAct6F(&b, 0x266, 4);
+        PlayerActor_RequestWalkTo(&b, 0x266, 4);
         unk_658.unk_7e9 = 3;
         break;
     case 3:
@@ -1137,7 +1137,7 @@ BOOL SpNpcCopper::mainAct06() {
         break;
     case 1:
         if (Camera_IsBlending() == 0) {
-            func_ov004_02225ee0();
+            CheckInGate_Open();
             unk_658.unk_7e6 = 0x3c;
             unk_658.unk_7e9 = 2;
             if (Net_GetMode() == 4) {
@@ -1191,7 +1191,7 @@ BOOL SpNpcCopper::mainAct07() {
         break;
     case 1:
         if (Camera_IsBlending() == 0) {
-            func_ov004_02225ebc();
+            CheckInGate_Close();
             unk_658.unk_7e6 = 0x3c;
             unk_658.unk_7e9 = 2;
         }
@@ -1208,9 +1208,9 @@ BOOL SpNpcCopper::mainAct07() {
 BOOL SpNpcCopper::act08Step0() {
     Unk_ov048_Vec v;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
-        func_ov004_0223f958();
+        Camera_SetMode14();
         v = sCopperSendOffWalkPos;
-        PlayerActor_RequestAct6F(&v, 0x400, 4);
+        PlayerActor_RequestWalkTo(&v, 0x400, 4);
         func_02094f48(1, 4);
         return TRUE;
     }
@@ -1219,7 +1219,7 @@ BOOL SpNpcCopper::act08Step0() {
 
 BOOL SpNpcCopper::act08Step1() {
     if (func_020951b8(4) == 0) {
-        PlayerActor_RequestAct70((s32)0xffff8000, 4);
+        PlayerActor_RequestTurnTo((s32)0xffff8000, 4);
         _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, (s32)0xffffc000, 0, 0, data_020c6cc8, 0);
         unk_658.unk_7e6 = (u8)(func_02063b8c(5) + 5);
         return TRUE;
@@ -1253,11 +1253,11 @@ BOOL SpNpcCopper::act08Step3() {
     if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 0) {
         if (_ZN12Unk_0201985813func_020197a8Ev(r4) == 0) {
             v = sCopperSendOffExitPos;
-            PlayerActor_RequestAct6F(&v, 0x666, 4);
+            PlayerActor_RequestWalkTo(&v, 0x666, 4);
             _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x81, 1, data_020c6cc8, 0);
             unk_658.unk_7e8 = func_02063b8c(5) + 5;
             unk_658.unk_7e6 = 0x16;
-            func_ov004_0223f944();
+            Camera_SetMode15();
             return TRUE;
         }
     }
@@ -1636,12 +1636,12 @@ BOOL SpNpcCopper::mainAct08() {
 
 BOOL SpNpcCopper::act09Step0() {
     Unk_ov048_Vec v;
-    s32 a = func_020a0414();
+    s32 a = Net_GetJoiningAid();
     if (Unk_ov048_0225b4e4_Is2()) {
         if (func_02094f2c(1, a)) {
             func_02094f48(1, 4);
             v = sCopperArrivalWalkPos;
-            PlayerActor_RequestAct6F(&v, 0x35c, a);
+            PlayerActor_RequestWalkTo(&v, 0x35c, a);
             return TRUE;
         }
     }
@@ -1652,7 +1652,7 @@ BOOL SpNpcCopper::act09Step1() {
     u8 buf[0x1c];
     void *h;
     void *o;
-    s32 a = func_020a0414();
+    s32 a = Net_GetJoiningAid();
     h = PlayerData_GetBySessionSlot();
     if (func_020951b8(a) == 0) {
         o = TalkWindow_Get(0);
@@ -1721,7 +1721,7 @@ BOOL SpNpcCopper::act0BStep0() {
     u8 buf[0x1c];
     void *h;
     void *o;
-    func_020a5ef8();
+    NetSession_GetLastSyncSlot();
     h = PlayerData_GetBySessionSlot();
     if (Unk_ov048_0225b4e4_Is2()) {
         o = TalkWindow_Get(0);
@@ -1740,20 +1740,20 @@ BOOL SpNpcCopper::act0BStep0() {
 }
 
 BOOL SpNpcCopper::act0BStep1() {
-    s32 a = func_020a5ef8();
+    s32 a = NetSession_GetLastSyncSlot();
     void *o = TalkWindow_Get(0);
     if (*(s32 *)((u8 *)o + 4) == 0) {
         Unk_ov048_Vec v;
         _ZN15TalkWindowState13detachRequestEv(o);
         v = sCopperDepartWalkPos;
-        PlayerActor_RequestAct6F(&v, 0x35c, a);
+        PlayerActor_RequestWalkTo(&v, 0x35c, a);
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL SpNpcCopper::act0BStep2() {
-    s32 a = func_020a5ef8();
+    s32 a = NetSession_GetLastSyncSlot();
     void *b = PlayerData_GetBySessionSlot();
     if (func_020951b8(a) == 0) {
         _ZN10PlayerData13func_02098a58Ev(b);
@@ -2187,7 +2187,7 @@ BOOL SpNpcCopper::mainAct0F() {
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             unk_658.func_02015ab0(getPlayerActor(4));
             SpNpcCopper_ChangeAct(this, 2);
-        } else if (func_020a62a0() != 0 && b == 4) {
+        } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             SpNpcCopper_ChangeAct(this, 1);
         }
@@ -2206,7 +2206,7 @@ BOOL SpNpcCopper::mainAct11() {
         b = 4;
         if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0) {
             if (a == 4) {
-                if (func_020a62a0() != 0) {
+                if (NetArea_IsLocalOwner() != 0) {
                     func_0201b9fc(1, gCommManager->unk_64, 4);
                     SpNpcCopper_ChangeAct(this, 4);
                 }
@@ -2307,11 +2307,11 @@ void SpNpcCopperTalk::vfunc_78(void *arg) {
     unk_7e1 = 0;
     unk_7e0 = 0;
     h = PlayerData_GetCurrent();
-    if (func_020a032c() != 0) {
+    if (GameStart_IsActive() != 0) {
         setTopic(8);
     } else if (getTopic() == 6) {
-        if (func_ov004_02225e9c() == 0) {
-            func_ov004_02225ee0();
+        if (CheckInGate_IsOpen() == 0) {
+            CheckInGate_Open();
         }
     } else if (getTopic() != 7 && getTopic() != 9 && getTopic() != 0xa) {
         if (func_0202e148() == 0) {
@@ -2746,7 +2746,7 @@ void SpNpcCopperTalk::onChoiceGoOutInstead(s32 p) {
     if (p == 0) {
         u8 v = 0x52;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
-        func_ov004_02225ebc();
+        CheckInGate_Close();
         func_02073340();
         if (Net_GetMode() == 3 || Net_GetMode() == 4) {
             setScript(0x14);
@@ -2807,7 +2807,7 @@ extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
 extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
 
 void SpNpcCopperTalk::vfunc_18() {
-    if (func_020a032c() == 0) {
+    if (GameStart_IsActive() == 0) {
         static Unk_ov048_0225a108_Row tbl[29] = {
             {0x15, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c89c},
             {0x41, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c904},
@@ -3067,8 +3067,8 @@ void SpNpcCopperTalk::scanForOpenTowns() {
 }
 
 void SpNpcCopperTalk::onFriendListClosed() {
-    if (func_0206ed18()) {
-        s32 r5 = func_0206ed38();
+    if (MenuCtrl_IsResultOk()) {
+        s32 r5 = MenuCtrl_GetIndex();
         u8 a;
         NetOverlay_AssertWifi();
         unk_b8.unk_3d4 = func_020ea598(r5);
@@ -3084,7 +3084,7 @@ void SpNpcCopperTalk::onFriendListClosed() {
 }
 
 void SpNpcCopperTalk::onTownListClosed() {
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         u8 a = 0x59;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &a, sSpNpcCopperMsgKey);
     } else {
@@ -3134,13 +3134,13 @@ void SpNpcCopperTalk::requestSave() {
 
 void SpNpcCopperTalk::waitSaveDone() {
     void *t = unk_3c;
-    if (func_020a0828()) {
+    if (SaveManager_HasAct13Failed()) {
         u8 a;
         unlockWindow();
         a = 0xa;
         _ZN15TalkWindowState14setNextMessageEPhPv(t, &a, (void *)"sp_etc_sequence2");
         setScript(0);
-    } else if (func_020a084c()) {
+    } else if (SaveManager_IsIdleAfterAct13()) {
         u8 b;
         unk_7e1 = 1;
         unlockWindow();
@@ -3347,12 +3347,12 @@ void SpNpcCopperTalk::waitJoinAccepted() {
                     _ZN12Unk_020872fc13func_02087308Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
                 }
             }
-            if (CommSend_PlayerData(&unk_7e2, func_020a5f6c())) {
+            if (CommSend_PlayerData(&unk_7e2, NetSession_GetSyncMemberMask())) {
                 _ZN11CommManager12setErrorModeEj(gCommManager, 0);
-                func_020a5f38(0);
-                func_020a5f18(0);
+                NetSession_SetSyncKind(0);
+                NetSession_SetActiveSyncKind(0);
                 Net_GetMyAid();
-                func_020a0408();
+                Net_SetJoiningAid();
                 Comm_ClearSyncState();
                 unk_3c->unk_14 = 0;
                 unlockWindow();
@@ -3384,8 +3384,8 @@ void SpNpcCopperTalk::waitGoHomeAccepted() {
         if (t == 5) {
             o->unk_14 = 0;
             SpNpcCopper_ChangeAct(unk_b4, 0xd);
-            func_020a5f38(1);
-            func_020a5f18(1);
+            NetSession_SetSyncKind(1);
+            NetSession_SetActiveSyncKind(1);
         } else {
             u8 b[4];
             b[0] = 0xc;
@@ -3555,7 +3555,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
+            if (NetArea_IsLocalOwner()) {
                 func_0201b9fc(1, gCommManager->unk_64, 4);
                 SpNpcCopper_ChangeAct(this, 4);
             } else {

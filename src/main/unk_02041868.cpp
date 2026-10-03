@@ -79,10 +79,10 @@ s32 func_0203f14c();
 s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
 void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
-void func_02041ee4(void *o, u8 *base, Unk_02042104_Date *d);
-void func_02041f50(void *o, u8 *base, Unk_02042104_Date *d);
+void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
+void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
 s32 EventSchedule_CollectDayAll(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
-void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
+void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041b1c(u8 *arg);
 void OS_ExitThread();
 u32 DC_FlushAll();
@@ -155,7 +155,7 @@ extern "C" void func_02041cec(void *o, u8 *base, Unk_02042104_Date *d) {
     MI_CpuCopy8(&x, &y, 8);
     if (EventSchedule_CollectDayAll(z, &y) > 0) {
         MI_CpuCopy8(&x, &w, 8);
-        func_02041e00(o, z, &w);
+        TownBbs_PostDayEvents(o, z, &w);
     }
     base[0x15e76] = 1;
 }
@@ -181,12 +181,12 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
         a.c3 = p[0];
         if (DateTime_DiffDays(&b, &a) == 0) {
             MI_CpuCopy8(&a, &c, 8);
-            func_02041ee4(o, base, &c);
+            TownBbs_PostPelicanNotice(o, base, &c);
             TownState_PickNextWeekDate(base + 0x15e54, p);
         }
         if (flag == 1) {
             MI_CpuCopy8(&b, &e, 8);
-            func_02041f50(o, base, &e);
+            TownBbs_PostSlogan(o, base, &e);
         }
         if (f4 != 0) {
             func_02041cec(o, base, &b);

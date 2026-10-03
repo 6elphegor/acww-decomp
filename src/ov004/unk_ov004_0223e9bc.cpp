@@ -3,16 +3,16 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-class Unk_ov004_0224f284;
+class ShopStockPlacer;
 
 extern "C" {
 extern void *gSceneBlockMap;
 extern u8 data_021ed104[];
 extern u8 data_021ed2d4[];
 extern u8 data_021ed2c0[];
-extern const u32 data_ov004_0224502c[];
-extern const u32 data_ov004_0224482c[];
-extern const u32 data_ov004_02244c2c[];
+extern const u32 sNookShopLayouts[];
+extern const u32 sScene10ShopLayout[];
+extern const u32 sScene15ShopLayout[];
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -26,57 +26,57 @@ BOOL func_020b5254();
 BOOL func_020b5268(u32 id);
 s32 func_020b5284();
 void Item_FromPlacedForm(u16 *out, u16 *in);
-u16 *func_020ad8e8(void *tbl, s32 idx, u16 *out);
-u16 *func_020ae844(void *tbl, s32 idx, u16 *out);
-s32 func_020ae82c(void *tbl, u16 *p);
-s32 func_020ad8d0(void *tbl, u16 *p);
-s32 func_020acf90(void *tbl, u16 *p);
+u16 *AbleShop_GetItem(void *tbl, s32 idx, u16 *out);
+u16 *NookShop_GetItem(void *tbl, s32 idx, u16 *out);
+s32 NookShop_FindItem(void *tbl, u16 *p);
+s32 AbleShop_FindItem(void *tbl, u16 *p);
+s32 ReddShop_FindItem(void *tbl, u16 *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 BlockMap_SetItemAtUnit(void *g, u16 *v, s32 x, s32 y, u32 z);
-void *func_ov004_02235718();
-void *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 x, s32 y, s32 z);
-#define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
+void *FtrActorGrid_GetInstance();
+void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 x, s32 y, s32 z);
+#define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 s32 FtrActor_GetFtrIndex(void *o);
 
-u8 *func_ov004_0223f278();
-s32 func_ov004_0223f210(u16 *p);
-u16 *func_ov004_0223ed40(s32 x, s32 y);
-u16 *func_020acfa8(void *p, u32 a, void *b);
-void _ZN18Unk_ov004_0223e9bc19func_ov004_0223e9bcEv();
-void _ZN18Unk_ov004_0223e9bc19func_ov004_0223e9c8Ev();
-void _ZN18Unk_ov004_0224f28419func_ov004_0223ef44Ev();
-void _ZN18Unk_ov004_0224f28419func_ov004_0223ea98Ev();
+u8 *ShopStock_GetLayout();
+s32 ShopStock_GetItemCode(u16 *p);
+u16 *ShopStock_GetItemAt(s32 x, s32 y);
+u16 *ReddShop_GetItem(void *p, u32 a, void *b);
+void _ZN18Unk_ov004_0223e9bc11setupNoShopEv();
+void _ZN18Unk_ov004_0223e9bc16setupScene15ShopEv();
+void _ZN15ShopStockPlacer13setupNookShopEv();
+void _ZN15ShopStockPlacer16setupScene10ShopEv();
 extern void *data_ov004_0224f254[2];
 extern void *data_ov004_0224f25c[2];
 extern void *data_ov004_0224f264[2];
 extern void *data_ov004_0224f274[2];
-BOOL func_ov004_0223eeb8(u16 *p);
+BOOL ShopStock_IsForSale(u16 *p);
 }
 
 class Unk_ov004_0223e9bc {
 public:
-    BOOL func_ov004_0223e9bc();
-    u16 *func_ov004_0223e9c0();
-    BOOL func_ov004_0223e9c8();
-    void func_ov004_0223e9d8();
+    BOOL setupNoShop();
+    u16 *callGetItemAt();
+    BOOL setupScene15Shop();
+    void placeScene15Stock();
 };
 
-class Unk_ov004_0224f284 : public GameProc {
+class ShopStockPlacer : public GameProc {
 public:
-    typedef BOOL (Unk_ov004_0224f284::*Fn)();
+    typedef BOOL (ShopStockPlacer::*Fn)();
 
-    Unk_ov004_0224f284();
-    virtual ~Unk_ov004_0224f284();
+    ShopStockPlacer();
+    virtual ~ShopStockPlacer();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    BOOL func_ov004_0223ea98();
-    BOOL func_ov004_0223ef44();
-    void func_ov004_0223eb8c();
-    void func_ov004_0223ef60();
-    BOOL func_ov004_0223f018(u16 *item, s32 code);
+    BOOL setupScene10Shop();
+    BOOL setupNookShop();
+    void placeScene10Stock();
+    void placeNookStock();
+    BOOL placeItem(u16 *item, s32 code);
 
     /* 0x50 */ s32 unk_50;
     /* 0x54 */ s32 unk_54;
@@ -116,17 +116,17 @@ static inline BOOL Unk_ov004_0223f210_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" Unk_ov004_0224f284 *func_ov004_0223f2b0() { return new Unk_ov004_0224f284; }
+extern "C" ShopStockPlacer *ShopStockPlacer_Create() { return new ShopStockPlacer; }
 
-extern "C" u8 *func_ov004_0223f278() {
+extern "C" u8 *ShopStock_GetLayout() {
     if (func_020b5254()) {
-        return (u8 *)data_ov004_0224502c + (func_020b5284() << 10);
+        return (u8 *)sNookShopLayouts + (func_020b5284() << 10);
     }
-    if (func_020b50e8() == 10) return (u8 *)data_ov004_0224482c;
-    return (u8 *)data_ov004_02244c2c;
+    if (func_020b50e8() == 10) return (u8 *)sScene10ShopLayout;
+    return (u8 *)sScene15ShopLayout;
 }
 
-extern "C" s32 func_ov004_0223f210(u16 *p) {
+extern "C" s32 ShopStock_GetItemCode(u16 *p) {
     u16 c;
     Item_FromPlacedForm(&c, p);
     if (Item_IsFurniture(&c)) return 0x19;
@@ -139,9 +139,9 @@ rest:
     return Item_GetKind(&c);
 }
 
-Unk_ov004_0224f284::Unk_ov004_0224f284() {}
+ShopStockPlacer::ShopStockPlacer() {}
 
-Unk_ov004_0224f284::~Unk_ov004_0224f284() {}
+ShopStockPlacer::~ShopStockPlacer() {}
 
 // scene registration entry (referenced from main by address only)
 struct Unk_ov004_0224f26c_Entry {
@@ -149,9 +149,9 @@ struct Unk_ov004_0224f26c_Entry {
     u16 a;
     u16 b;
 };
-Unk_ov004_0224f26c_Entry data_ov004_0224f26c = {(void *(*)())func_ov004_0223f2b0, 0xc6, 0xd3};
+Unk_ov004_0224f26c_Entry sShopStockPlacerProfile = {(void *(*)())ShopStockPlacer_Create, 0xc6, 0xd3};
 
-const u32 data_ov004_0224502c[1536] = {
+const u32 sNookShopLayouts[1536] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -250,7 +250,7 @@ const u32 data_ov004_0224502c[1536] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-const u32 data_ov004_0224482c[256] = {
+const u32 sScene10ShopLayout[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -269,7 +269,7 @@ const u32 data_ov004_0224482c[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-const u32 data_ov004_02244c2c[256] = {
+const u32 sScene15ShopLayout[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -288,15 +288,15 @@ const u32 data_ov004_02244c2c[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-void *data_ov004_0224f254[2] = {(void *)_ZN18Unk_ov004_0224f28419func_ov004_0223ef44Ev, 0};
+void *data_ov004_0224f254[2] = {(void *)_ZN15ShopStockPlacer13setupNookShopEv, 0};
 
-void *data_ov004_0224f25c[2] = {(void *)_ZN18Unk_ov004_0224f28419func_ov004_0223ea98Ev, 0};
+void *data_ov004_0224f25c[2] = {(void *)_ZN15ShopStockPlacer16setupScene10ShopEv, 0};
 
-void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc19func_ov004_0223e9c8Ev, 0};
+void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc16setupScene15ShopEv, 0};
 
-void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc19func_ov004_0223e9bcEv, 0};
+void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc11setupNoShopEv, 0};
 
-BOOL Unk_ov004_0224f284::vfunc_00() {
+BOOL ShopStockPlacer::vfunc_00() {
     unk_50 = func_020b5284();
     if (func_020b5254()) {
         unk_54 = 0;
@@ -312,14 +312,14 @@ BOOL Unk_ov004_0224f284::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224f284::onExecute() { return TRUE; }
+BOOL ShopStockPlacer::onExecute() { return TRUE; }
 
-BOOL Unk_ov004_0224f284::onDraw() { return TRUE; }
+BOOL ShopStockPlacer::onDraw() { return TRUE; }
 
-BOOL Unk_ov004_0224f284::vfunc_0c() { return TRUE; }
+BOOL ShopStockPlacer::vfunc_0c() { return TRUE; }
 
-BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
-    u8 *tbl = func_ov004_0223f278();
+BOOL ShopStockPlacer::placeItem(u16 *item, s32 code) {
+    u8 *tbl = ShopStock_GetLayout();
     void *g = gSceneBlockMap;
     s32 y;
     s32 x;
@@ -363,14 +363,14 @@ BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
     return FALSE;
 }
 
-void Unk_ov004_0224f284::func_ov004_0223ef60() {
+void ShopStockPlacer::placeNookStock() {
     u32 i;
     s32 f1 = 0, f2 = 0, f3 = 0, f4 = 0;
     u16 v[3];
     for (i = 0; i < 0x25; i++) {
         BOOL a, b;
         v[0] = 0xfff1;
-        u16 *r = func_020ae844(data_021ed104, i, &v[0]);
+        u16 *r = NookShop_GetItem(data_021ed104, i, &v[0]);
         if (Item_IsFurniture(r)) {
             v[1] = 0xfff1;
             s32 x = Item_GetFurnitureIndex(r);
@@ -387,21 +387,21 @@ void Unk_ov004_0224f284::func_ov004_0223ef60() {
                 b = (v[0] == 0xfff1) ? 1 : f4;
             }
             if (!b) {
-                func_ov004_0223f018(r, func_ov004_0223f210(&v[0]));
+                placeItem(r, ShopStock_GetItemCode(&v[0]));
             }
         }
     }
 }
 
-BOOL Unk_ov004_0224f284::func_ov004_0223ef44() {
-    if (func_020b50e8() != 0x1f) func_ov004_0223ef60();
+BOOL ShopStockPlacer::setupNookShop() {
+    if (func_020b50e8() != 0x1f) placeNookStock();
     return TRUE;
 }
 
-extern "C" BOOL func_ov004_0223eeb8(u16 *p) {
+extern "C" BOOL ShopStock_IsForSale(u16 *p) {
     s32 t = func_020b50e8();
     if (func_020b5268(t)) {
-        s32 r = func_020ae82c(data_021ed104, p);
+        s32 r = NookShop_FindItem(data_021ed104, p);
         BOOL k = FALSE;
         if (r != -1) k = TRUE;
         return k;
@@ -412,17 +412,17 @@ extern "C" BOOL func_ov004_0223eeb8(u16 *p) {
         u32 v = *p;
         if (v >= 0x3e04 && v <= 0x3e23) r = TRUE;
         if (!r) {
-            if (func_020ad8d0(data_021ed2d4, p) == -1) k = FALSE;
+            if (AbleShop_FindItem(data_021ed2d4, p) == -1) k = FALSE;
         }
         return k;
     }
-    s32 r = func_020acf90(data_021ed2c0, p);
+    s32 r = ReddShop_FindItem(data_021ed2c0, p);
     BOOL k = FALSE;
     if (r != -1) k = TRUE;
     return k;
 }
 
-extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
+extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
     static ItemId dflt(0xfff1);
     u16 cv[3];
     void *g = gSceneBlockMap;
@@ -433,14 +433,14 @@ extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
         if (r4) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
                 if (Item_IsFurnitureOrF031(r4)) {
-                    void *o = func_ov004_022355d8(func_ov004_02235718(), x, y, 0);
+                    void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x, y, 0);
                     if (!o) return &dflt.v;
                     static ItemId v2(0xfff1);
                     v2.v = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
-                    if (func_ov004_0223eeb8(&v2.v)) return &v2.v;
+                    if (ShopStock_IsForSale(&v2.v)) return &v2.v;
                 } else if (Item_IsNormalItem(r4)) {
                     if (!Unk_ov004_0223ed40_Chk(r4, &cv[2], 0x1547)) {
-                        if (func_ov004_0223eeb8(r4)) return r4;
+                        if (ShopStock_IsForSale(r4)) return r4;
                     }
                 }
             }
@@ -449,8 +449,8 @@ extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
     return &dflt.v;
 }
 
-extern "C" s32 func_ov004_0223ecf4(s32 x, s32 y) {
-    u8 *tbl = func_ov004_0223f278();
+extern "C" s32 ShopStock_GetCode22Index(s32 x, s32 y) {
+    u8 *tbl = ShopStock_GetLayout();
     s32 n = 0;
     s32 j = n;
     s32 i0 = 0;
@@ -475,20 +475,20 @@ testj:
     return -1;
 }
 
-extern "C" BOOL func_ov004_0223ec44(s32 *px, s32 *py, s32 code) {
-    u8 *tbl = func_ov004_0223f278();
+extern "C" BOOL ShopStock_FindTileOfStock(s32 *px, s32 *py, s32 code) {
+    u8 *tbl = ShopStock_GetLayout();
     u16 c = 0xfff1;
-    func_020ae844(data_021ed104, code, &c);
-    s32 key = func_ov004_0223f210(&c);
+    NookShop_GetItem(data_021ed104, code, &c);
+    s32 key = ShopStock_GetItemCode(&c);
     s32 n = 0;
     s32 i = n;
     goto test0;
 loop0:
     {
         u16 c2 = 0xfff1;
-        func_020ae844(data_021ed104, i, &c2);
+        NookShop_GetItem(data_021ed104, i, &c2);
         if (code == i) goto done0;
-        if (key == func_ov004_0223f210(&c2)) n++;
+        if (key == ShopStock_GetItemCode(&c2)) n++;
         i++;
     }
 test0:
@@ -526,14 +526,14 @@ done0:
     return FALSE;
 }
 
-void Unk_ov004_0224f284::func_ov004_0223eb8c() {
+void ShopStockPlacer::placeScene10Stock() {
     u32 i;
     s32 f1 = 0, f2 = 0, f3 = 0, f4 = 0;
     u16 v[3];
     for (i = 0; i < 6; i++) {
         BOOL a, b;
         v[0] = 0xfff1;
-        u16 *r = func_020ad8e8(data_021ed2d4, i, &v[0]);
+        u16 *r = AbleShop_GetItem(data_021ed2d4, i, &v[0]);
         if (Item_IsFurniture(r)) {
             v[1] = 0xfff1;
             s32 x = Item_GetFurnitureIndex(r);
@@ -550,14 +550,14 @@ void Unk_ov004_0224f284::func_ov004_0223eb8c() {
                 b = (v[0] == 0xfff1) ? 1 : f4;
             }
             if (!b) {
-                func_ov004_0223f018(r, func_ov004_0223f210(&v[0]));
+                placeItem(r, ShopStock_GetItemCode(&v[0]));
             }
         }
     }
 }
 
-BOOL Unk_ov004_0224f284::func_ov004_0223ea98() {
-    func_ov004_0223eb8c();
+BOOL ShopStockPlacer::setupScene10Shop() {
+    placeScene10Stock();
     void *g = gSceneBlockMap;
     u16 v;
     v = 0xfff1;
@@ -580,9 +580,9 @@ BOOL Unk_ov004_0224f284::func_ov004_0223ea98() {
     return TRUE;
 }
 
-extern "C" u16 *func_ov004_0223ea90(s32 x, s32 y) { return func_ov004_0223ed40(x, y); }
+extern "C" u16 *ShopStock_GetItemAtTile(s32 x, s32 y) { return ShopStock_GetItemAt(x, y); }
 
-void Unk_ov004_0223e9bc::func_ov004_0223e9d8() {
+void Unk_ov004_0223e9bc::placeScene15Stock() {
     u32 i = 0;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u16 buf[3];
@@ -590,7 +590,7 @@ void Unk_ov004_0223e9bc::func_ov004_0223e9d8() {
         u16 *r4;
         BOOL f;
         buf[0] = 0xfff1;
-        r4 = func_020acfa8(data_021ed2c0, i, buf);
+        r4 = ReddShop_GetItem(data_021ed2c0, i, buf);
         if (Item_IsFurniture(r4)) {
             s32 a, b;
             buf[1] = 0xfff1;
@@ -611,22 +611,22 @@ void Unk_ov004_0223e9bc::func_ov004_0223e9d8() {
                 f = (buf[0] == 0xfff1) ? 1 : z4;
             }
             if (!f) {
-                ((Unk_ov004_0224f284 *)this)->func_ov004_0223f018(r4, func_ov004_0223f210(buf));
+                ((ShopStockPlacer *)this)->placeItem(r4, ShopStock_GetItemCode(buf));
             }
         }
     }
 }
 
-BOOL Unk_ov004_0223e9bc::func_ov004_0223e9c8() {
-    func_ov004_0223e9d8();
+BOOL Unk_ov004_0223e9bc::setupScene15Shop() {
+    placeScene15Stock();
     return TRUE;
 }
 
-u16 *Unk_ov004_0223e9bc::func_ov004_0223e9c0() {
-    return ((u16 *(*)())func_ov004_0223ed40)();
+u16 *Unk_ov004_0223e9bc::callGetItemAt() {
+    return ((u16 *(*)())ShopStock_GetItemAt)();
 }
 
-BOOL Unk_ov004_0223e9bc::func_ov004_0223e9bc() {
+BOOL Unk_ov004_0223e9bc::setupNoShop() {
     return TRUE;
 }
 

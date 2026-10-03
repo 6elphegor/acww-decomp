@@ -43,20 +43,20 @@ s32 _ZN12Unk_02087ad813func_02087b30Ev(void *p);
 void _ZN12Unk_02087ad813func_02087b18Ev(void *p);
 void func_020656dc(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
 void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
-s32 func_02096aac(void *obj);
+s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
-s32 func_020ae02c(void *p);
+s32 NookShop_GetLevel(void *p);
 void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-s32 func_0206e844();
-s32 func_0206e850();
+s32 MenuCtrl_IsClockMovedForward();
+s32 MenuCtrl_IsClockMovedBack();
 s32 func_02063b74(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
@@ -90,11 +90,11 @@ void *_ZN10PlayerData13func_020986b0Ev(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
-BOOL func_02096a50(void *a, s32 b);
+BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void func_02063388(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-s32 func_020966d0(s32, s32);
+s32 LetterPaper_PickRandom(s32, s32);
 s32 func_02087e14(void *);
 s32 func_02087e50(void *);
 s32 func_02087e0c(void *);
@@ -659,20 +659,20 @@ s32 _ZN12Unk_02087ad813func_02087b30Ev(void *p);
 void _ZN12Unk_02087ad813func_02087b18Ev(void *p);
 void func_020656dc(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
 void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
-s32 func_02096aac(void *obj);
+s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
-s32 func_020ae02c(void *p);
+s32 NookShop_GetLevel(void *p);
 void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
-s32 func_0206e844();
-s32 func_0206e850();
+s32 MenuCtrl_IsClockMovedForward();
+s32 MenuCtrl_IsClockMovedBack();
 s32 func_02063b74(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
@@ -707,11 +707,11 @@ void *_ZN10PlayerData13func_020986b0Ev(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
-BOOL func_02096a50(void *a, s32 b);
+BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void func_02063388(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-s32 func_020966d0(s32, s32);
+s32 LetterPaper_PickRandom(s32, s32);
 s32 func_02087e14(void *);
 s32 func_02087e50(void *);
 s32 func_02087e0c(void *);
@@ -1033,13 +1033,13 @@ extern "C" void func_02087a20() {
         l.a = 0;
         l.a = Ns_020874d8::func_02063b8c(3);
         Ns_020874d8::Clock_GetDate(l.c);
-        l.b = func_020966d0(3, l.c[1]);
+        l.b = LetterPaper_PickRandom(3, l.c[1]);
         Ns_020874d8::func_020656dc(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
         _ZN12ItemPickSpec3setEii(obj, 0, 0x1b);
         ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
         _ZN12Unk_0206555413func_02065588Etj(big, l.h, 1);
         func_02063388(obj);
-        if (func_02096a50(big, 0)) {
+        if (LetterDelivery_QueueOutgoing(big, 0)) {
             Ns_020874d8::_ZN12Unk_02097ff413func_02097ff4Ej(r4, 0x36);
         }
         _ZN6LetterD1Ev(big);
@@ -1056,7 +1056,7 @@ BOOL Unk_02087ad8::func_020879b4(s32 idx, u16 *v) {
     c = idx;
     Ns_020874d8::func_020656dc(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(o));
     _ZN12Unk_0206555413func_02065588Etj(big, *v, 1);
-    if (func_02096a50(big, 0)) {
+    if (LetterDelivery_QueueOutgoing(big, 0)) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -1290,7 +1290,7 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
             break;
         case 3:
             Unk_020874e8_K k = UNK_020874E8_K;
-            if (func_020ae02c((u8 *)((u32)gSaveData + k)) == 3) {
+            if (NookShop_GetLevel((u8 *)((u32)gSaveData + k)) == 3) {
                 return TRUE;
             }
             break;
@@ -2074,7 +2074,7 @@ u16 Unk_02086340::func_0208653c() {
 
 void Unk_02086340::func_020864f8() {
     Unk_02086340_T t;
-    if (func_0206e844() != 0 || func_0206e850() != 0) {
+    if (MenuCtrl_IsClockMovedForward() != 0 || MenuCtrl_IsClockMovedBack() != 0) {
         t.w0 = 0;
         t.w1 = 0;
         Clock_GetDateTime(&t);
@@ -2280,7 +2280,7 @@ void Unk_02085f7c::func_02085fb4() {
         if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
         else if (func_020e77cc(b, 0x4b, 0x55)) unk_00_2 = 1;
         else unk_00_2 = 2;
-        if (func_020e77cc(c, 0, 0x1d) && func_020ae02c(data_021ed104) == 3) unk_00_3 = 1;
+        if (func_020e77cc(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) unk_00_3 = 1;
         else unk_00_3 = 0;
         break;
     }
@@ -2446,7 +2446,7 @@ void Unk_02085810::func_020859b4() {
             else if (unk_37 == 3) l.unk_02 = 0x3880;
             _ZN12Unk_0206555413func_02065588Etj(&buf, l.unk_02, 1);
         }
-        func_02096aac(&buf);
+        LetterDelivery_PutInAddresseeMailbox(&buf);
     }
     func_02085df0();
     func_02085940();

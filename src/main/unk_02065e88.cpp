@@ -3357,7 +3357,7 @@ extern "C" { s32 Villager_GetAnimalKind(void); }
 extern "C" { s32 PlayerData_GetCurrentIndex(void); }
 extern "C" { s32 func_020978fc(void); }
 extern "C" { s32 func_020978a4(void *p); }
-extern "C" { s32 func_020b8fe8(void); }
+extern "C" { s32 Weather_GetFallingPrecip(void); }
 extern "C" { void _ZN15TalkCharStepper10startCountEPhih(void *self, u32 a, u32 b, BOOL c); }
 extern "C" { void _ZN15TalkCharStepper10startUntilEPhjh(void *self, u32 a, u32 b, BOOL c); }
 extern "C" { void _ZN11TalkTextBox9appendTagEPv(void *a, void *b); }
@@ -3372,7 +3372,7 @@ void TalkTagScanner::func_02068e40() {
     s32 i, r;
     unk_24->unk_13b0->vfunc_34(9, 3);
     unk_38.getArgs3(&b[1], &b[2], &b[3]);
-    r = func_020b8fe8();
+    r = Weather_GetFallingPrecip();
     i = 0;
     if (r == 1) i = 1;
     else if (r == 2) i = 2;

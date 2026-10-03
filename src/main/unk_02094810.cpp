@@ -100,20 +100,20 @@ s32 _ZN11PlayerActor19getRequiredPriorityEv(Unk_02006d14 *o);
 s32 _ZN12Unk_0200804012requestAct79Ejj(Unk_02006d14 *o, Unk_02094a08_Limit a, s32 b);
 s32 _ZN12Unk_02006d1412requestAct32Ejj(Unk_02006d14 *o, u32 a, s32 b);
 s32 _ZN12Unk_02006d1412requestAct30EPtjjjjjs(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
-s32 _ZN12Unk_02006d1412requestAct70Esjj(Unk_02006d14 *o, s32 a, u32 b, s32 c);
-s32 _ZN12Unk_02006d1412requestAct6FEP16Unk_02006d14_Vecjjs(Unk_02006d14 *o, Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
+s32 _ZN12Unk_02006d1413requestTurnToEsjj(Unk_02006d14 *o, s32 a, u32 b, s32 c);
+s32 _ZN12Unk_02006d1413requestWalkToEP16Unk_02006d14_Vecjjs(Unk_02006d14 *o, Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
 s32 _ZN12Unk_0200804017requestHoldUpItemEPtjj(Unk_02006d14 *o, u16 *p, u32 a, s32 b);
-s32 _ZN12Unk_02006d1412requestAct3FEtjj(Unk_02006d14 *o, u32 a, u32 b, s32 c);
+s32 _ZN12Unk_02006d1421requestChangeHeldItemEtjj(Unk_02006d14 *o, u32 a, u32 b, s32 c);
 s32 _ZN12Unk_0200769420requestChangeClothesEtjjjs(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 _ZN12Unk_02006d1412requestAct76Ehhhjs(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 _ZN11PlayerActor11requestWaitEjjj(Unk_02006d14 *o, u32 a, u32 b, s32 c);
-s32 func_ov004_0221efa4(Unk_02006d14 *o, Unk_02006d14_Vec *v, u32 a, s32 b);
+s32 PlayerActor_RequestExitWalkOut(Unk_02006d14 *o, Unk_02006d14_Vec *v, u32 a, s32 b);
 s32 _ZN12Unk_0200769412requestAct05Etjj(Unk_02006d14 *o, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor20getEffectivePriorityEv(Unk_02006d14 *o);
 BOOL _ZN12Unk_02006d1414testActionFlagEj(Unk_02006d14 *o, s32 id);
 void _ZN12Unk_02006d1415clearActionFlagEj(Unk_02006d14 *o, s32 id);
 void _ZN12Unk_02006d1413setActionFlagEj(Unk_02006d14 *o, s32 id);
-s32 _ZN12Unk_02006d1413func_0200ea10Ej(Unk_02006d14 *o, s32 v);
+s32 _ZN12Unk_02006d1413canAcceptTalkEj(Unk_02006d14 *o, s32 v);
 
 s32 func_020b52f8();
 BOOL func_0203d978();
@@ -126,13 +126,13 @@ void *func_020b4934();
 void func_020b4b68(void *a, s32 b, void *c, void *d);
 s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 s32 PlayerActor_RequestFishReelIn(Unk_02006d14 *o, u32 a, u32 b, s32 c);
-void func_ov004_0222113c(Unk_02006d14 *o, s32 a);
-void func_ov004_0222148c(Unk_02006d14 *o, s32 a);
-void func_ov004_02221558(Unk_02006d14 *o, s32 a);
-void func_ov004_02224224(Unk_02006d14 *o, s32 a);
-void func_ov004_022237fc(Unk_02006d14 *o, s32 a);
-void func_ov004_02223ca0(Unk_02006d14 *o, s32 a);
-void func_0200f3ec(Unk_02006d14_V3 *out, Unk_02006d14 *o, Unk_02006d14_V3 *in, u16 *ang, s32 *p);
+void PlayerActor_EndStandUpFront(Unk_02006d14 *o, s32 a);
+void PlayerActor_EndStandUpSide1(Unk_02006d14 *o, s32 a);
+void PlayerActor_EndStandUpSide2(Unk_02006d14 *o, s32 a);
+void PlayerActor_EndGetOutOfBed(Unk_02006d14 *o, s32 a);
+void PlayerActor_EndGetIntoBed(Unk_02006d14 *o, s32 a);
+void PlayerActor_EndBedRoll(Unk_02006d14 *o, s32 a);
+void PlayerActor_OffsetByAngle(Unk_02006d14_V3 *out, Unk_02006d14 *o, Unk_02006d14_V3 *in, u16 *ang, s32 *p);
 void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
 void _ZN6FxVec3D1Ev(void *p);
@@ -606,17 +606,17 @@ extern "C" s32 func_0209501c(Unk_02006d14_V3 *out, s16 *outAng)
             break;
         case 0x2c:
             st = 2;
-            func_ov004_0222113c(o, st);
+            PlayerActor_EndStandUpFront(o, st);
             break;
         case 0x29:
         case 0x2a:
             if (st == 0x29) {
-                func_ov004_0222148c(o, 0x2c);
+                PlayerActor_EndStandUpSide1(o, 0x2c);
             } else {
-                func_ov004_02221558(o, 0x2c);
+                PlayerActor_EndStandUpSide2(o, 0x2c);
             }
             st = 2;
-            func_0200f3ec(&tmp, o, &saved, (u16 *)&o->unk_8e, (s32 *)&data_020d0428);
+            PlayerActor_OffsetByAngle(&tmp, o, &saved, (u16 *)&o->unk_8e, (s32 *)&data_020d0428);
             {
                 Unk_02006d14_V3 *pv = &o->unk_5c;
                 *pv = tmp;
@@ -630,15 +630,15 @@ extern "C" s32 func_0209501c(Unk_02006d14_V3 *out, s16 *outAng)
             break;
         case 10:
             st = 2;
-            func_ov004_02224224(o, st);
+            PlayerActor_EndGetOutOfBed(o, st);
             break;
         case 15:
             st = 8;
-            func_ov004_022237fc(o, st);
+            PlayerActor_EndGetIntoBed(o, st);
             break;
         case 13:
             st = 8;
-            func_ov004_02223ca0(o, st);
+            PlayerActor_EndBedRoll(o, st);
             break;
         }
         {
@@ -684,7 +684,7 @@ extern "C" s32 func_02094f84()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
-        return _ZN12Unk_02006d1413func_0200ea10Ej(o, o->unk_7ec);
+        return _ZN12Unk_02006d1413canAcceptTalkEj(o, o->unk_7ec);
     }
     return 0;
 }
@@ -888,9 +888,9 @@ extern "C" s32 PlayerActor_RequestWearFaceItemAlt(u16 *p) { return PlayerActor_R
 
 extern "C" s32 PlayerActor_RequestWearHatAlt(u16 *p) { return PlayerActor_RequestChangeClothes(p, 2, 0x10); }
 
-extern "C" s32 PlayerActor_RequestAct3F(u16 *p) {
+extern "C" s32 PlayerActor_RequestChangeHeldItem(u16 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
-    if (o) return _ZN12Unk_02006d1412requestAct3FEtjj(o, *p, 6, -1);
+    if (o) return _ZN12Unk_02006d1421requestChangeHeldItemEtjj(o, *p, 6, -1);
     return 0;
 }
 
@@ -903,21 +903,21 @@ extern "C" s32 PlayerActor_RequestHoldUpItem(u16 *p) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_RequestAct6F(Unk_02006d14_Vec *v, u32 b, u32 idx) {
+extern "C" s32 PlayerActor_RequestWalkTo(Unk_02006d14_Vec *v, u32 b, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
         Unk_02006d14_Vec t;
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
-        return _ZN12Unk_02006d1412requestAct6FEP16Unk_02006d14_Vecjjs(o, &t, b, 5, -1);
+        return _ZN12Unk_02006d1413requestWalkToEP16Unk_02006d14_Vecjjs(o, &t, b, 5, -1);
     }
     return 0;
 }
 
-extern "C" s32 PlayerActor_RequestAct70(s32 a, u32 idx) {
+extern "C" s32 PlayerActor_RequestTurnTo(s32 a, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
-    if (o) return _ZN12Unk_02006d1412requestAct70Esjj(o, a, 5, -1);
+    if (o) return _ZN12Unk_02006d1413requestTurnToEsjj(o, a, 5, -1);
     return 0;
 }
 
@@ -1006,7 +1006,7 @@ extern "C" s32 func_02094898() {
             case 3: v.x -= 0x6000; break;
             case 1: v.x += 0x6000; break;
             }
-            return func_ov004_0221efa4(o, &v, 6, -1);
+            return PlayerActor_RequestExitWalkOut(o, &v, 6, -1);
         }
     }
     return 0;

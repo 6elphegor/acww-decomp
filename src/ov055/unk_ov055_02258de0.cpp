@@ -339,7 +339,7 @@ void *func_020b4934();
 s32 func_020b4f58(void *a, s32 b, s32 c, s32 d);
 void _ZN12Unk_02013b1013func_02014198Ehh(void *self, u8 a, u8 b);
 void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-void func_ov004_0223f894(void *p);
+void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
 class SpNpcRoverTalk;
@@ -517,7 +517,7 @@ BOOL SpNpcRover::vfunc_00() {
     sSpNpcRoverInstance = this;
     loadTagModeOverlay();
     changeAct(0);
-    func_ov004_0223f894(&unk_5c);
+    Camera_SetMode20At(&unk_5c);
     func_0203d990();
     prepareTagData();
     return TRUE;

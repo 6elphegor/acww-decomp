@@ -87,11 +87,11 @@ s32 Aoss_WcmToIdle();
 s32 Aoss_WcmEndSearch();
 s32 Aoss_WcmDisconnect();
 s32 Aoss_WcmCleanup();
-s32 func_ov065_0226a934();
-s32 func_ov065_0226a510(void *, s32);
-s32 func_ov065_0226a33c(void *, void *);
-s32 func_ov065_02269f24(void *, void *, s32);
-s32 func_ov065_0226a284();
+s32 WifiLink_ClearApList();
+s32 WifiLink_Init(void *, s32);
+s32 WifiLink_StartupAsync(void *, void *);
+s32 WifiLink_ConnectAsync(void *, void *, s32);
+s32 WifiLink_CleanupAsync();
 void Aoss_WcmCallback(void);
 void Aoss_PostAlarmMsg(s32);
 void Aoss_PostWcmMsg(s32);
@@ -410,7 +410,7 @@ extern "C" s32 Aoss_ConnectAp(Unk_ov001_02202c90_In *a, void *b) {
     }
     sAossWepDesc[1] = 0;
     MI_CpuCopy8(a->unk_2c, data_ov001_0222c6ce, a->unk_28);
-    func_ov065_0226a934();
+    WifiLink_ClearApList();
     if (Aoss_WcmStartSearch(0, a->unk_04, a->unk_00, 0x30bffe)) {
         s32 msg;
         u32 thr[12];

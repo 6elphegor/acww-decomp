@@ -3,8 +3,8 @@
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
-void *data_ov065_022918a4;
-char *data_ov065_022918a0;
+void *sGsStrPool;
+char *sGsStrTokPos;
 }
 
 namespace F022884fc {
@@ -75,11 +75,11 @@ struct Unk_ov065_02288b60_Buf8 {
 };
 
 extern "C" {
-extern u32 data_ov065_0228e504[];
+extern u32 gGsKeyNames[];
 extern u8 data_ov065_0228e8fc[];
 extern Unk_ov065_02288b60_Buf13 data_ov065_0228e904;
 extern Unk_ov065_02288b60_Buf8 data_ov065_0228e914;
-extern s32 data_ov065_02290fa0;
+extern s32 sGsAvailStatus;
 extern u32 data_ov065_022918a8;
 extern u8 data_0213a410[];
 
@@ -87,21 +87,21 @@ u32 func_0213335c(u32 a, u32 b);
 s32 func_02129f1c(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
 
-u32 func_ov065_02279144(void);
-void func_ov065_02279138(void);
-s32 func_ov065_02278ee8(s32 s);
-s32 func_ov065_02278cb8(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
-s32 func_ov065_02278c64(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
-s32 func_ov065_02278dbc(s32 s);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-void *func_ov065_02277af0(u32 n);
-void func_ov065_02277ac8(void *p);
-void *func_ov065_02278928(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
-s32 func_ov065_0228ae10(u8 *buf, s32 n);
-void func_ov065_0228ae2c(s32 a, void *p);
-void func_ov065_02289174(void *e, u32 v, u8 *buf);
-void func_ov065_02288e2c(void *e, u8 *buf, s32 n);
-void func_ov065_02288f64(void *e, u8 *buf);
+u32 GsUtil_GetTimeMs(void);
+void GsSock_StartupStub(void);
+s32 GsSock_CanRead(s32 s);
+s32 GsSock_RecvFrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
+s32 GsSock_SendTo(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
+s32 GsSock_Close(s32 s);
+s32 GsSock_Socket(s32 a, s32 b, s32 c);
+void *GsUtil_Alloc(u32 n);
+void GsUtil_Free(void *p);
+void *GsHash_NewEx(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
+s32 GsUtil_StrSizeInBuffer(u8 *buf, s32 n);
+void GsStrPool_Release(s32 a, void *p);
+void GsServer_SetStringValue(void *e, u32 v, u8 *buf);
+void GsServer_ParseQr2Reply(void *e, u8 *buf, s32 n);
+void GsServer_ParseQr1Reply(void *e, u8 *buf);
 }
 
 typedef Unk_ov065_02288538_Cipher Cipher;
@@ -111,25 +111,25 @@ typedef Unk_ov065_02288c78_List List;
 typedef Unk_ov065_02288b60_Sa Sa;
 
 extern "C" {
-u32 func_ov065_02288538(Cipher *c, u32 x);
-void func_ov065_02288670(Cipher *c);
-u32 func_ov065_022886b4(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
-s32 func_ov065_02288c84(List *l, Ent *e);
-void func_ov065_02288830(Mgr *m, s32 flag);
-void func_ov065_022887d8(Mgr *m);
-void func_ov065_022887a8(Mgr *m);
-void func_ov065_02288b60(Mgr *m, Ent *e);
-s32 func_ov065_02288930(Mgr *m, Ent *e, u8 *buf, s32 n);
-void func_ov065_02288934(Mgr *m, Ent *e, u8 *buf, s32 n);
-void func_ov065_022889ac(Mgr *m, Ent *e, u8 *buf, s32 n);
-void func_ov065_02288c78(List *l);
-Ent *func_ov065_02288cc0(List *l);
-void func_ov065_02288ce0(List *l, Ent *e);
-void func_ov065_02288cf8(List *l, Ent *e);
-void func_ov065_02288dbc(u32 *a, u32 *b);
-u32 func_ov065_02288dc8(u32 *p, u32 n);
-void func_ov065_02288dd4(u32 *p);
-u32 func_ov065_02288df0(u8 *s, u32 n);
+u32 GsSrvListCrypt_NextByte(Cipher *c, u32 x);
+void GsSrvListCrypt_InitDefault(Cipher *c);
+u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
+s32 GsSrvQueue_Remove(List *l, Ent *e);
+void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag);
+void GsSrvQuery_CheckTimeouts(Mgr *m);
+void GsSrvQuery_StartPending(Mgr *m);
+void GsSrvQuery_SendQuery(Mgr *m, Ent *e);
+s32 GsSrvQuery_HandleAltReplyStub(Mgr *m, Ent *e, u8 *buf, s32 n);
+void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void GsSrvQueue_Init(List *l);
+Ent *GsSrvQueue_PopFront(List *l);
+void GsSrvQueue_PushFront(List *l, Ent *e);
+void GsSrvQueue_PushBack(List *l, Ent *e);
+void GsServer_CompareKeyCb(u32 *a, u32 *b);
+u32 GsServer_HashKeyCb(u32 *p, u32 n);
+void GsServer_FreeKeyCb(u32 *p);
+u32 GsUtil_StrHashNoCase(u8 *s, u32 n);
 
 }
 }
@@ -231,12 +231,12 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 }
 
 extern "C" {
-extern char *data_ov065_022918a0;
-extern void *data_ov065_022918a4;
+extern char *sGsStrTokPos;
+extern void *sGsStrPool;
 extern char *data_ov065_0228e928[2];
-extern char *data_ov065_0228e504[];
+extern char *gGsKeyNames[];
 extern u16 data_0213a510[];
-extern s32 data_ov065_02290fa0;
+extern s32 sGsAvailStatus;
 extern s32 data_ov065_022918a8;
 
 s32 strcmp(const char *, const char *);
@@ -245,73 +245,73 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212b770(char *);
 s32 func_02130b04(char *, char *);
 
-s32 func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02278684(void *);
-void *func_ov065_022787c4(void *, void *);
-s32 func_ov065_0227885c(void *, void *);
-s32 func_ov065_022788b0(void *);
-s32 func_ov065_022788f0(void *);
-void *func_ov065_02278928(s32, s32, s32, void *, void *, void *);
-s32 func_ov065_02278bf4(s32);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8(s32);
-s32 func_ov065_0227913c(s32);
-u32 func_ov065_02279144();
-s32 func_ov065_02288734(void *, void *);
-s32 func_ov065_02288758(void *, s32);
-s32 func_ov065_0228876c(void *);
-s32 func_ov065_02288a70(void *, void *, s32, s32);
-s32 func_ov065_02288acc(void *);
-s32 func_ov065_02288af4(void *);
-s32 func_ov065_02288b0c(void *, s32);
-s32 func_ov065_02288b10(void *, s32, s32, s32, void *, void *);
-s32 func_ov065_02288d18(void *);
-s32 func_ov065_02288d40(void *, s32);
-void *func_ov065_02288d44(void *, u32, u32);
-s32 func_ov065_02288db8(void *);
-s32 func_ov065_02288df0(void *);
-s32 func_ov065_0228a6f0(void *);
-s32 func_ov065_0228a718(void *);
-s32 func_ov065_0228a7f0(void *, char *, s32, s32, s32);
-s32 func_ov065_0228ad34(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 func_ov065_0228ae10(char *, s32);
-s32 func_ov065_0228ae64(s32, char *);
-s32 func_ov065_0228aed0(void *);
-s32 func_ov065_0228af0c(void *);
-s32 func_ov065_0228af48(void *);
-s32 func_ov065_0228af5c(void *);
-s32 func_ov065_0228af68(void *, s32);
-s32 func_ov065_0228afd8(void *, u32, u32);
-s32 func_ov065_0228b030(void *);
-s32 func_ov065_0228b070(void *, void *);
-s32 func_ov065_0228b0a4(void *);
-s32 func_ov065_0228993c(void *);
-s32 func_ov065_02289808(void *, s32, s32, s32);
-s32 func_ov065_02289880(void *, s32, s32, s32, s32);
+s32 GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+s32 GsArray_Count(void *);
+void *GsHash_Find(void *, void *);
+s32 GsHash_Insert(void *, void *);
+s32 GsHash_Count(void *);
+s32 GsHash_Free(void *);
+void *GsHash_NewEx(s32, s32, s32, void *, void *, void *);
+s32 GsSock_InetAddr(s32);
+s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
+s32 GsSock_Close(s32);
+s32 GsSock_CanRead(s32);
+s32 GsUtil_Sleep(s32);
+u32 GsUtil_GetTimeMs();
+s32 GsSrvQuery_Remove(void *, void *);
+s32 GsSrvQuery_AddKey(void *, s32);
+s32 GsSrvQuery_Think(void *);
+s32 GsSrvQuery_Add(void *, void *, s32, s32);
+s32 GsSrvQuery_Shutdown(void *);
+s32 GsSrvQuery_Clear(void *);
+s32 GsSrvQuery_SetPublicIp(void *, s32);
+s32 GsSrvQuery_Init(void *, s32, s32, s32, void *, void *);
+s32 GsServer_IsNull(void *);
+s32 GsServer_SetListFlags(void *, s32);
+void *GsServer_New(void *, u32, u32);
+s32 GsServer_GetPing(void *);
+s32 GsUtil_StrHashNoCase(void *);
+s32 GsSrvList_Free(void *);
+s32 GsSrvList_Disconnect(void *);
+s32 GsSrvList_SendListRequest(void *, char *, s32, s32, s32);
+s32 GsSrvList_Init(void *, s32, s32, s32, s32, s32, void *, void *);
+s32 GsUtil_StrSizeInBuffer(char *, s32);
+s32 GsStrPool_Add(s32, char *);
+s32 GsSrvList_ClearServers(void *);
+s32 GsSrvList_FreeDeadServers(void *);
+s32 GsSrvList_GetServer(void *);
+s32 GsSrvList_Count(void *);
+s32 GsSrvList_RemoveServerAt(void *, s32);
+s32 GsSrvList_FindServerByAddress(void *, u32, u32);
+s32 GsSrvList_FindServer(void *);
+s32 GsSrvList_AddServer(void *, void *);
+s32 GsSrvList_Sort(void *);
+s32 GsSrvList_Receive(void *);
+s32 GsSrvList_SendNatNegCookie(void *, s32, s32, s32);
+s32 GsSrvList_SendServerMessage(void *, s32, s32, s32, s32);
 
-s32 func_ov065_02289174(Unk_ov065_02289174_Ctx *a, char *k, char *v);
-char *func_ov065_02288fb8(char *s, s32 ch);
-s32 func_ov065_02288ffc(char *s);
-s32 func_ov065_0228911c(void *a, char *k, s32 d);
-s32 func_ov065_02289298(void *o);
-s32 func_ov065_022892b0(void *o);
-s32 func_ov065_02289384(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void func_ov065_02289500(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-void func_ov065_02289578(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-s32 func_ov065_022896dc(void *);
-s32 func_ov065_02289720(Unk_ov065_02289720_Sub *);
-s32 func_ov065_02289234(char **, char **);
-s32 func_ov065_02289228(void **);
-s32 func_ov065_02289240(void **);
+s32 GsServer_SetStringValue(Unk_ov065_02289174_Ctx *a, char *k, char *v);
+char *GsUtil_StrTok(char *s, s32 ch);
+s32 GsServer_IsKeyAllowed(char *s);
+s32 GsServer_GetStringValue(void *a, char *k, s32 d);
+s32 GsSrvBrowser_Halt(void *o);
+s32 GsSrvBrowser_Think(void *o);
+s32 GsSrvBrowser_UpdateListEx(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+void GsSrvBrowser_OnQueryEvent(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
+void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
+s32 GsSrvList_Think(void *);
+s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *);
+s32 GsStrPool_CompareCb(char **, char **);
+s32 GsStrPool_FreeEntryCb(void **);
+s32 GsStrPool_HashCb(void **);
 
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289384(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
+s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
     Unk_ov065_02289460_Obj *o = (Unk_ov065_02289460_Obj *)op;
     char buf[0x100] = {0};
     s32 i;
@@ -325,20 +325,20 @@ s32 func_ov065_02289384(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s
     if (n > 0) {
         do {
             u8 *pj = data + j;
-            if (i + (s32)STD_GetStringLength(data_ov065_0228e504[*pj]) + 1 >= 0x100) {
+            if (i + (s32)STD_GetStringLength(gGsKeyNames[*pj]) + 1 >= 0x100) {
                 break;
             }
-            i += OS_SPrintf(buf + i, "\\%s", data_ov065_0228e504[*pj]);
-            func_ov065_02288758(o, *pj);
+            i += OS_SPrintf(buf + i, "\\%s", gGsKeyNames[*pj]);
+            GsSrvQuery_AddKey(o, *pj);
             j++;
         } while (j < n);
     }
-    r = func_ov065_0228a7f0(&o->unk_4c, buf, c, d, e);
+    r = GsSrvList_SendListRequest(&o->unk_4c, buf, c, d, e);
     if (r == 0 && a == 0) {
         t = 10;
         while (o->unk_4c == 3 || (o->unk_10 > 0 && r == 0)) {
-            func_ov065_0227913c(t);
-            r = func_ov065_022892b0(o);
+            GsUtil_Sleep(t);
+            r = GsSrvBrowser_Think(o);
         }
     }
 }
@@ -347,36 +347,36 @@ s32 func_ov065_02289384(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289364(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
-    return func_ov065_02289384(o, a, b, c, e, f, 0x80, g);
+s32 GsSrvBrowser_UpdateList(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
+    return GsSrvBrowser_UpdateListEx(o, a, b, c, e, f, 0x80, g);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289324(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c, s32 e) {
-    s32 x = func_ov065_02278bf4(a);
-    return func_ov065_02289880(&o->unk_4c, x, Unk_ov065_02289044_Htons(b), c, e);
+s32 GsSrvBrowser_SendMessage(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c, s32 e) {
+    s32 x = GsSock_InetAddr(a);
+    return GsSrvList_SendServerMessage(&o->unk_4c, x, Unk_ov065_02289044_Htons(b), c, e);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_022892ec(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c) {
-    s32 x = func_ov065_02278bf4(a);
-    return func_ov065_02289808(&o->unk_4c, x, Unk_ov065_02289044_Htons(b), c);
+s32 GsSrvBrowser_SendNatNegCookie(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c) {
+    s32 x = GsSock_InetAddr(a);
+    return GsSrvList_SendNatNegCookie(&o->unk_4c, x, Unk_ov065_02289044_Htons(b), c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_022892c8(Unk_ov065_02289460_Obj *o) {
-    s32 r = func_ov065_0228b030(&o->unk_4c);
+void GsSrvBrowser_RemoveServer(Unk_ov065_02289460_Obj *o) {
+    s32 r = GsSrvList_FindServer(&o->unk_4c);
     if (r != -1) {
-        func_ov065_0228af68(&o->unk_4c, r);
+        GsSrvList_RemoveServerAt(&o->unk_4c, r);
     }
 }
 }
@@ -384,59 +384,59 @@ void func_ov065_022892c8(Unk_ov065_02289460_Obj *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_022892b0(void *o) {
-    func_ov065_0228876c(o);
-    return func_ov065_022896dc(&((Unk_ov065_02289460_Obj *)o)->unk_4c);
+s32 GsSrvBrowser_Think(void *o) {
+    GsSrvQuery_Think(o);
+    return GsSrvList_Think(&((Unk_ov065_02289460_Obj *)o)->unk_4c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289298(void *o) {
-    func_ov065_0228a718(&((Unk_ov065_02289460_Obj *)o)->unk_4c);
-    return func_ov065_02288af4(o);
+s32 GsSrvBrowser_Halt(void *o) {
+    GsSrvList_Disconnect(&((Unk_ov065_02289460_Obj *)o)->unk_4c);
+    return GsSrvQuery_Clear(o);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289280(Unk_ov065_02289460_Obj *o) {
-    func_ov065_02289298(o);
-    func_ov065_0228aed0(&o->unk_4c);
+void GsSrvBrowser_Clear(Unk_ov065_02289460_Obj *o) {
+    GsSrvBrowser_Halt(o);
+    GsSrvList_ClearServers(&o->unk_4c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289274(Unk_ov065_02289460_Obj *o) {
-    return func_ov065_0228af48(&o->unk_4c);
+s32 GsSrvBrowser_GetServer(Unk_ov065_02289460_Obj *o) {
+    return GsSrvList_GetServer(&o->unk_4c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289268(Unk_ov065_02289460_Obj *o) {
-    return func_ov065_0228af5c(&o->unk_4c);
+s32 GsSrvBrowser_GetServerCount(Unk_ov065_02289460_Obj *o) {
+    return GsSrvList_Count(&o->unk_4c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289258(Unk_ov065_02289460_Obj *o) {
+s32 GsSrvBrowser_Sort(Unk_ov065_02289460_Obj *o) {
     Unk_ov065_02289258_Pad pad;
-    func_ov065_0228b0a4(&o->unk_4c);
+    GsSrvList_Sort(&o->unk_4c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_0228924c(Unk_ov065_02289460_Obj *o) {
+s32 GsSrvBrowser_GetPublicIp(Unk_ov065_02289460_Obj *o) {
     return o->unk_4ec;
 }
 }
@@ -444,15 +444,15 @@ s32 func_ov065_0228924c(Unk_ov065_02289460_Obj *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289240(void **p) {
-    return func_ov065_02288df0(*p);
+s32 GsStrPool_HashCb(void **p) {
+    return GsUtil_StrHashNoCase(*p);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289234(char **a, char **b) {
+s32 GsStrPool_CompareCb(char **a, char **b) {
     return func_02130b04(*a, *b);
 }
 }
@@ -460,30 +460,30 @@ s32 func_ov065_02289234(char **a, char **b) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289228(void **p) {
-    return func_ov065_02277ac8(*p);
+s32 GsStrPool_FreeEntryCb(void **p) {
+    return GsUtil_Free(*p);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void *func_ov065_022891e8() {
-    if (data_ov065_022918a4 == NULL) {
-        data_ov065_022918a4 = func_ov065_02278928(8, 100, 2, (void *)func_ov065_02289240, (void *)func_ov065_02289234, (void *)func_ov065_02289228);
+void *GsStrPool_Get() {
+    if (sGsStrPool == NULL) {
+        sGsStrPool = GsHash_NewEx(8, 100, 2, (void *)GsStrPool_HashCb, (void *)GsStrPool_CompareCb, (void *)GsStrPool_FreeEntryCb);
     }
-    return data_ov065_022918a4;
+    return sGsStrPool;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_022891bc() {
-    if (data_ov065_022918a4 != NULL) {
-        if (func_ov065_022788b0(data_ov065_022918a4) == 0) {
-            func_ov065_022788f0(data_ov065_022918a4);
-            data_ov065_022918a4 = NULL;
+void GsStrPool_FreeIfEmpty() {
+    if (sGsStrPool != NULL) {
+        if (GsHash_Count(sGsStrPool) == 0) {
+            GsHash_Free(sGsStrPool);
+            sGsStrPool = NULL;
         }
     }
 }
@@ -492,46 +492,46 @@ void func_ov065_022891bc() {
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_022891a0(Unk_ov065_02289174_Ctx **pp) {
+void GsServer_Free(Unk_ov065_02289174_Ctx **pp) {
     Unk_ov065_02289174_Ctx *q = *pp;
-    func_ov065_022788f0(q->unk_18);
+    GsHash_Free(q->unk_18);
     q->unk_18 = NULL;
-    func_ov065_02277ac8(q);
+    GsUtil_Free(q);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289174(Unk_ov065_02289174_Ctx *a, char *k, char *v) {
+s32 GsServer_SetStringValue(Unk_ov065_02289174_Ctx *a, char *k, char *v) {
     Unk_ov065_02289174_KV kv;
-    kv.unk_00 = func_ov065_0228ae64(0, k);
-    kv.unk_04 = func_ov065_0228ae64(0, v);
-    return func_ov065_0227885c(a->unk_18, &kv);
+    kv.unk_00 = GsStrPool_Add(0, k);
+    kv.unk_04 = GsStrPool_Add(0, v);
+    return GsHash_Insert(a->unk_18, &kv);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_0228914c(void *a, char *b) {
+void GsServer_SetIntValue(void *a, char *b) {
     char buf[0x14];
     OS_SPrintf(buf, "%d");
-    func_ov065_02289174((Unk_ov065_02289174_Ctx *)a, b, buf);
+    GsServer_SetStringValue((Unk_ov065_02289174_Ctx *)a, b, buf);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_0228911c(void *a, char *k, s32 d) {
+s32 GsServer_GetStringValue(void *a, char *k, s32 d) {
     Unk_ov065_0228911c_Ent *e;
     s32 key[2];
     if (a == NULL) {
         return 0;
     }
     key[0] = (s32)k;
-    e = (Unk_ov065_0228911c_Ent *)func_ov065_022787c4(((Unk_ov065_02289174_Ctx *)a)->unk_18, key);
+    e = (Unk_ov065_0228911c_Ent *)GsHash_Find(((Unk_ov065_02289174_Ctx *)a)->unk_18, key);
     if (e != NULL) {
         d = e->unk_04;
     }
@@ -542,13 +542,13 @@ s32 func_ov065_0228911c(void *a, char *k, s32 d) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_022890b8(void *a, char *b, s32 c) {
+s32 GsServer_GetIntValue(void *a, char *b, s32 c) {
     char *v;
     s32 t;
     if (strcmp(b, "ping") == 0) {
-        return func_ov065_02288db8(a);
+        return GsServer_GetPing(a);
     }
-    v = (char *)func_ov065_0228911c(a, b, 0);
+    v = (char *)GsServer_GetStringValue(a, b, 0);
     if (v != NULL) {
         s32 ch = *(u8 *)v;
         if (ch < 0 || ch >= 0x80) {
@@ -569,8 +569,8 @@ call:
 
 namespace F02288e2c {
 extern "C" {
-u64 func_ov065_0228909c(void *a, char *b, u64 v) {
-    func_ov065_0228911c(a, b, 0);
+u64 GsServer_GetFloatValue(void *a, char *b, u64 v) {
+    GsServer_GetStringValue(a, b, 0);
     return v;
 }
 }
@@ -578,7 +578,7 @@ u64 func_ov065_0228909c(void *a, char *b, u64 v) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289098(s32 *o) {
+s32 GsServer_GetPublicIp(s32 *o) {
     return o[0];
 }
 }
@@ -586,7 +586,7 @@ s32 func_ov065_02289098(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 func_ov065_0228907c(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPublicPort(Unk_ov065_02289044_Hdr *o) {
     return Unk_ov065_02289044_Htons(o->unk_04);
 }
 }
@@ -594,7 +594,7 @@ u16 func_ov065_0228907c(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 func_ov065_02289078(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPortRaw(Unk_ov065_02289044_Hdr *o) {
     return o->unk_04;
 }
 }
@@ -602,7 +602,7 @@ u16 func_ov065_02289078(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-BOOL func_ov065_02289064(Unk_ov065_02289044_Hdr *o) {
+BOOL GsServer_HasPrivateAddress(Unk_ov065_02289044_Hdr *o) {
     if ((o->unk_15 & 2) == 2) {
         return TRUE;
     }
@@ -613,7 +613,7 @@ BOOL func_ov065_02289064(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289060(s32 *o) {
+s32 GsServer_GetPrivateIp(s32 *o) {
     return o[2];
 }
 }
@@ -621,7 +621,7 @@ s32 func_ov065_02289060(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 func_ov065_02289044(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPrivatePort(Unk_ov065_02289044_Hdr *o) {
     return Unk_ov065_02289044_Htons(o->unk_0c);
 }
 }
@@ -629,7 +629,7 @@ u16 func_ov065_02289044(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289040(Unk_ov065_0228903c_Obj *o, s32 v) {
+void GsServer_SetNextFree(Unk_ov065_0228903c_Obj *o, s32 v) {
     o->unk_20 = v;
 }
 }
@@ -637,7 +637,7 @@ void func_ov065_02289040(Unk_ov065_0228903c_Obj *o, s32 v) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_0228903c(Unk_ov065_0228903c_Obj *o) {
+s32 GsServer_GetNextFree(Unk_ov065_0228903c_Obj *o) {
     return o->unk_20;
 }
 }
@@ -645,7 +645,7 @@ s32 func_ov065_0228903c(Unk_ov065_0228903c_Obj *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02288ffc(char *s) {
+s32 GsServer_IsKeyAllowed(char *s) {
     Unk_ov065_02288ffc_W l = *(Unk_ov065_02288ffc_W *)data_ov065_0228e928;
     u32 i;
     char **p = l.v;
@@ -662,19 +662,19 @@ s32 func_ov065_02288ffc(char *s) {
 
 namespace F02288e2c {
 extern "C" {
-char *func_ov065_02288fb8(char *s, s32 ch) {
+char *GsUtil_StrTok(char *s, s32 ch) {
     char *start;
     char *p;
     s8 c;
     if (s != NULL) {
-        data_ov065_022918a0 = s;
+        sGsStrTokPos = s;
     }
-    start = data_ov065_022918a0;
+    start = sGsStrTokPos;
     goto test;
 loop:
-    data_ov065_022918a0++;
+    sGsStrTokPos++;
 test:
-    p = data_ov065_022918a0;
+    p = sGsStrTokPos;
     c = *p;
     if (c == 0) {
         goto out;
@@ -687,7 +687,7 @@ out:
         start = NULL;
     }
     if (c != 0) {
-        data_ov065_022918a0++;
+        sGsStrTokPos++;
         *p = 0;
     }
     return start;
@@ -697,20 +697,20 @@ out:
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02288f64(Unk_ov065_02289174_Ctx *c, char *s) {
+void GsServer_ParseQr1Reply(Unk_ov065_02289174_Ctx *c, char *s) {
     char *k;
     char *v;
-    k = func_ov065_02288fb8(s + 1, 0x5c);
+    k = GsUtil_StrTok(s + 1, 0x5c);
     if (k != NULL) {
         do {
-            v = func_ov065_02288fb8(NULL, 0x5c);
+            v = GsUtil_StrTok(NULL, 0x5c);
             if (v == NULL) {
                 v = "";
             }
-            if (func_ov065_02288ffc(k) != 0) {
-                func_ov065_02289174(c, k, v);
+            if (GsServer_IsKeyAllowed(k) != 0) {
+                GsServer_SetStringValue(c, k, v);
             }
-            k = func_ov065_02288fb8(NULL, 0x5c);
+            k = GsUtil_StrTok(NULL, 0x5c);
         } while (k != NULL);
     }
 }
@@ -719,7 +719,7 @@ void func_ov065_02288f64(Unk_ov065_02289174_Ctx *c, char *s) {
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
+void GsServer_ParseQr2Reply(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
     s32 r;
     char *q;
     char *name;
@@ -732,21 +732,21 @@ void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
     s32 k;
     char buf[0x80];
     while (*p != 0) {
-        r = func_ov065_0228ae10(p, len);
+        r = GsUtil_StrSizeInBuffer(p, len);
         if (r < 0) {
             return;
         }
         name = p;
         p += r;
         len -= r;
-        r = func_ov065_0228ae10(p, len);
+        r = GsUtil_StrSizeInBuffer(p, len);
         if (r < 0) {
             return;
         }
         val = p;
         p += r;
         len -= r;
-        func_ov065_02289174(c, name, val);
+        GsServer_SetStringValue(c, name, val);
     }
     p++;
     len--;
@@ -765,7 +765,7 @@ void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
         q = p;
         n = 0;
         while (*p != 0) {
-            r = func_ov065_0228ae10(p, len);
+            r = GsUtil_StrSizeInBuffer(p, len);
             if (r < 0 || r > 100) {
                 return;
             }
@@ -778,12 +778,12 @@ void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
         for (j = 0; j < cnt; j++) {
             s = q;
             for (k = 0; k < n; k++) {
-                r = func_ov065_0228ae10(p, len);
+                r = GsUtil_StrSizeInBuffer(p, len);
                 if (r < 0) {
                     return;
                 }
                 OS_SPrintf(buf, "%s%d", s, j);
-                func_ov065_02289174(c, buf, p);
+                GsServer_SetStringValue(c, buf, p);
                 p += r;
                 len -= r;
                 s += STD_GetStringLength(s) + 1;
@@ -796,7 +796,7 @@ void func_ov065_02288e2c(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
 
 namespace F022884fc {
 extern "C" {
-u32 func_ov065_02288df0(u8 *s, u32 n) {
+u32 GsUtil_StrHashNoCase(u8 *s, u32 n) {
     s32 c;
     u32 h = 0;
     c = *(s8 *)s;
@@ -818,24 +818,24 @@ u32 func_ov065_02288df0(u8 *s, u32 n) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288dd4(u32 *p) {
-    func_ov065_0228ae2c(0, (void *)p[0]);
-    func_ov065_0228ae2c(0, (void *)p[1]);
+void GsServer_FreeKeyCb(u32 *p) {
+    GsStrPool_Release(0, (void *)p[0]);
+    GsStrPool_Release(0, (void *)p[1]);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-u32 func_ov065_02288dc8(u32 *p, u32 n) {
-    return func_ov065_02288df0((u8 *)*p, n);
+u32 GsServer_HashKeyCb(u32 *p, u32 n) {
+    return GsUtil_StrHashNoCase((u8 *)*p, n);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288dbc(u32 *a, u32 *b) {
+void GsServer_CompareKeyCb(u32 *a, u32 *b) {
     func_02130b04((void *)*a, (void *)*b);
 }
 }
@@ -843,7 +843,7 @@ void func_ov065_02288dbc(u32 *a, u32 *b) {
 
 namespace F022884fc {
 extern "C" {
-u32 func_ov065_02288db8(Ent *e) {
+u32 GsServer_GetPing(Ent *e) {
     return e->unk_1c;
 }
 }
@@ -851,14 +851,14 @@ u32 func_ov065_02288db8(Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-Ent *func_ov065_02288d44(s32 unused, u32 addr, u32 port) {
-    Ent *e = (Ent *)func_ov065_02277af0(0x24);
+Ent *GsServer_New(s32 unused, u32 addr, u32 port) {
+    Ent *e = (Ent *)GsUtil_Alloc(0x24);
     if (e == 0) {
         return 0;
     }
-    e->unk_18 = func_ov065_02278928(8, 8, 4, (void *)func_ov065_02288dc8, (void *)func_ov065_02288dbc, (void *)func_ov065_02288dd4);
+    e->unk_18 = GsHash_NewEx(8, 8, 4, (void *)GsServer_HashKeyCb, (void *)GsServer_CompareKeyCb, (void *)GsServer_FreeKeyCb);
     if (e->unk_18 == 0) {
-        func_ov065_02277ac8(e);
+        GsUtil_Free(e);
         return 0;
     }
     e->unk_14 = 0;
@@ -877,7 +877,7 @@ Ent *func_ov065_02288d44(s32 unused, u32 addr, u32 port) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288d40(Ent *e, u32 v) {
+void GsServer_SetListFlags(Ent *e, u32 v) {
     e->unk_15 = v;
 }
 }
@@ -885,7 +885,7 @@ void func_ov065_02288d40(Ent *e, u32 v) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288d38(Ent *e, u32 addr, u32 port) {
+void GsServer_SetPrivateAddress(Ent *e, u32 addr, u32 port) {
     e->addr2 = addr;
     e->port2 = port;
 }
@@ -902,7 +902,7 @@ void func_ov065_02288d34(Ent *e, s32 v) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288d30(Ent *e, u32 v) {
+void GsServer_SetFlags(Ent *e, u32 v) {
     e->unk_14 = v;
 }
 }
@@ -910,7 +910,7 @@ void func_ov065_02288d30(Ent *e, u32 v) {
 
 namespace F022884fc {
 extern "C" {
-u32 func_ov065_02288d2c(Ent *e) {
+u32 GsServer_GetFlags(Ent *e) {
     return e->unk_14;
 }
 }
@@ -918,7 +918,7 @@ u32 func_ov065_02288d2c(Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-BOOL func_ov065_02288d18(u32 v) {
+BOOL GsServer_IsNull(u32 v) {
     if (v == data_ov065_022918a8) {
         return TRUE;
     }
@@ -929,7 +929,7 @@ BOOL func_ov065_02288d18(u32 v) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288cf8(List *l, Ent *e) {
+void GsSrvQueue_PushBack(List *l, Ent *e) {
     if (l->tail != 0) {
         l->tail->next = e;
     }
@@ -945,7 +945,7 @@ void func_ov065_02288cf8(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288ce0(List *l, Ent *e) {
+void GsSrvQueue_PushFront(List *l, Ent *e) {
     e->next = l->head;
     l->head = e;
     if (l->tail == 0) {
@@ -958,7 +958,7 @@ void func_ov065_02288ce0(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-Ent *func_ov065_02288cc0(List *l) {
+Ent *GsSrvQueue_PopFront(List *l) {
     Ent *e = l->head;
     if (e != 0) {
         l->head = e->next;
@@ -974,7 +974,7 @@ Ent *func_ov065_02288cc0(List *l) {
 
 namespace F022884fc {
 extern "C" {
-s32 func_ov065_02288c84(List *l, Ent *e) {
+s32 GsSrvQueue_Remove(List *l, Ent *e) {
     Ent *cur;
     Ent *prev;
     prev = 0;
@@ -1005,7 +1005,7 @@ s32 func_ov065_02288c84(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288c78(List *l) {
+void GsSrvQueue_Init(List *l) {
     l->tail = 0;
     l->head = l->tail;
     l->count = 0;

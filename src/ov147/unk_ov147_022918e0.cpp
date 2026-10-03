@@ -114,10 +114,10 @@ void *func_0208f158(void *p);
 BOOL func_020978c8(void *t, s32 i);
 s32 func_020978a4(void *t);
 void *PlayerData_GetResident(void *t, s32 i);
-void func_020a0420(s32 i);
-void func_020a0364();
-void func_020a0358();
-void func_020a034c();
+void SaveManager_SetEraseResidentSlot(s32 i);
+void GameStart_SetNewTown();
+void GameStart_SetNewResident();
+void GameStart_SetMode3();
 const void *Choice_GetBmgName(u32 i);
 
 extern u8 data_021e7f8c[];
@@ -263,7 +263,7 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern u8 *data_021c1b3c;
 
-void func_020a4414(s32 a, s32 b, s32 c, s32 d);
+void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 void *func_020b4934();
 void func_020b4f58(void *a, s32 b, s32 c, s32 d);
 void SaveManager_RequestAct1C();
@@ -278,7 +278,7 @@ void func_02034d70(s32 a);
 void func_02034dd0(s32 a, s32 b, s32 c);
 void func_02034e10(s32 a, s32 b, s32 c, s32 d);
 void func_0203d984();
-void func_020a042c();
+void GameStart_SetupSave();
 void func_0203cbb8();
 void _ZN12Unk_0203c92c13func_0203c98cEv();
 void func_0203d990();
@@ -429,7 +429,7 @@ BOOL TitleScreen::vfunc_0c() {
     unk_cc.cancel();
     func_0203d984();
     if (unk_50 == 7) {
-        func_020a042c();
+        GameStart_SetupSave();
     }
     return TRUE;
 }
@@ -657,7 +657,7 @@ void TitleScreen::updateWifiSettings() {
     TalkWindowState *r = TalkWindow_Get(0);
     if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
         r->detachRequest();
-        func_020a4414(2, 2, 0, 0);
+        Scene_Request(2, 2, 0, 0);
         stopBgm();
     }
 }
@@ -735,7 +735,7 @@ void TitleTalk::vfunc_14() {
         }
         break;
     case 0x27:
-        func_020a0358();
+        GameStart_SetNewResident();
         r5->setSilent();
         unk_44->changeState(7);
         break;
@@ -771,7 +771,7 @@ void TitleTalk::vfunc_14() {
     case 0x24:
         r5->setSilent();
         r5->setNextMessage(&gTalkMsgIndexEnd, 0);
-        func_020a034c();
+        GameStart_SetMode3();
         unk_44->changeState(7);
         break;
     case 0x32:
@@ -902,7 +902,7 @@ void TitleTalk::vfunc_18() {
 }
 
 void TitleTalk::chooseNewGame() {
-    func_020a0364();
+    GameStart_SetNewTown();
     unk_44->changeState(7);
 }
 
@@ -923,7 +923,7 @@ void TitleTalk::chooseResident() {
     for (r4 = 0; r4 < 4; r4++) {
         if (func_020978c8(data_021d735c, r4)) {
             if (a == r5) {
-                func_020a0420(r4);
+                SaveManager_SetEraseResidentSlot(r4);
                 Unk_020e1c64 o;
                 ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
                 r7->setSlot(0, &o);

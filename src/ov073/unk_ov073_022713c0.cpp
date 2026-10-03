@@ -77,8 +77,8 @@ s32 NpcActor_CanPlayerPay(s32 a, s32 b);
 void NpcActor_ChargePlayer(s32 a, s32 b);
 s32 func_02099014(u16 *p, s32 a);
 void func_02098f30(void *buf, s32 (*cb)(u16 *));
-s32 func_0206ed18(void);
-s32 func_0206e8e8(void);
+s32 MenuCtrl_IsResultOk(void);
+s32 MenuCtrl_GetAmount(void);
 s32 func_0202e1cc(s32 a, s32 b);
 s32 TalkRequest_EndTalkWith(void *p);
 s32 Math_AngleXZ(void *a, void *b);
@@ -797,9 +797,9 @@ void SpNpcJoanTalk::onAmountEntered() {
     void *obj = unk_3c;
     u8 buf[2];
     buf[0] = 0x11;
-    if (func_0206ed18()) {
-        s32 a = func_0206e8e8() * 10;
-        unk_c0 = func_0206e8e8();
+    if (MenuCtrl_IsResultOk()) {
+        s32 a = MenuCtrl_GetAmount() * 10;
+        unk_c0 = MenuCtrl_GetAmount();
         unk_bc = a * _ZN12Unk_0208634013func_0208653cEv(data_021ed29c);
         _ZN16ActorTalkRequest13func_02015958Eijiii(this, a, 1, 3, 1, 0);
         _ZN16ActorTalkRequest13func_02015958Eijiii(this, unk_bc, 2, 10, 1, 0);

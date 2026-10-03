@@ -115,13 +115,13 @@ extern u8 data_ov065_0228e16c[];
 
 
 
-extern char data_ov065_02290fe4[];
-extern s32 data_ov065_02290fa0;
+extern char sGsGameName[];
+extern s32 sGsAvailStatus;
 extern u32 data_ov065_02291534;
 extern u32 data_ov065_02291538;
-extern u32 data_ov065_0229153c;
-extern u32 data_ov065_02291540;
-extern void *data_ov065_02291544;
+extern u32 sGsNatNegServer2;
+extern u32 sGsNatNegServer1;
+extern void *sGsNatNegList;
 extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
@@ -129,39 +129,39 @@ s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 char *func_02127838(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 
-char *func_ov065_022610f0(Unk_ov065_022868b0_InAddr a);
-Unk_ov065_02286f04_Hostent *func_ov065_02261408(const char *name);
-s32 func_ov065_0227866c(void *list, s32 i);
-s32 func_ov065_02278684(void *list);
-s32 func_ov065_02278bf4(const char *s);
-s32 func_ov065_02278c14(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
-s32 func_ov065_02278cb8(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
-s32 func_ov065_02278dbc(s32 fd);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-Unk_ov065_022871ac_List *func_ov065_02278e64();
-s32 func_ov065_02278dfc(void *p);
-s32 func_ov065_02278ee8(s32 fd);
-u32 func_ov065_02279144();
-s32 func_ov065_0228723c();
-s32 func_ov065_02287200(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 func_ov065_02287280(Unk_ov065_02286c74_Ctx *ctx);
-s32 func_ov065_022872c8();
-Unk_ov065_02286c74_Ctx *func_ov065_02287348(u32 cookie);
+char *Sock_InetNtoA(Unk_ov065_022868b0_InAddr a);
+Unk_ov065_02286f04_Hostent *Sock_GetHostByName(const char *name);
+s32 GsArray_At(void *list, s32 i);
+s32 GsArray_Count(void *list);
+s32 GsSock_InetAddr(const char *s);
+s32 GsSock_GetSockName(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
+s32 GsSock_RecvFrom(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
+s32 GsSock_Close(s32 fd);
+s32 GsSock_Socket(s32 a, s32 b, s32 c);
+Unk_ov065_022871ac_List *GsSock_GetLocalHost();
+s32 GsSock_IsPrivateAddress(void *p);
+s32 GsSock_CanRead(s32 fd);
+u32 GsUtil_GetTimeMs();
+s32 GsNatNeg_HasMagic();
+s32 GsNatNeg_SendTo(s32 fd, u32 addr, u32 port, void *buf, s32 len);
+s32 GsNatNeg_Remove(Unk_ov065_02286c74_Ctx *ctx);
+s32 GsNatNeg_Add();
+Unk_ov065_02286c74_Ctx *GsNatNeg_FindByCookie(u32 cookie);
 
-u32 func_ov065_022871ac();
-u32 func_ov065_02287188(s32 fd);
-void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx);
-void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx);
-u32 func_ov065_02286f04(const char *name);
-u32 func_ov065_02286ed8(const char *name, const char *s);
-s32 func_ov065_02286e70();
-void func_ov065_02286da0(u32 cookie);
-void func_ov065_02286c74(Unk_ov065_02286c74_Ctx *ctx);
-void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286aa8(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
+u32 GsNatNeg_GetLocalIp();
+u32 GsNatNeg_GetLocalPort(s32 fd);
+void GsNatNeg_SendInit(Unk_ov065_02286c74_Ctx *ctx);
+void GsNatNeg_SendPeerPing(Unk_ov065_02286c74_Ctx *ctx);
+u32 GsNatNeg_ResolveHost(const char *name);
+u32 GsNatNeg_ResolveServer(const char *name, const char *s);
+s32 GsNatNeg_ResolveServers();
+void GsNatNeg_Cancel(u32 cookie);
+void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx);
+void GsNatNeg_SendConnectAck(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
 }
 
 
@@ -268,7 +268,7 @@ typedef Unk_ov065_022786bc_Vec Vec;
 
 extern "C" {
 extern u8 data_ov065_0228e16c[];
-extern Qr *data_ov065_0228e1b4;
+extern Qr *sGsQrDefault;
 extern u8 data_ov065_0228e1b8[];
 extern char data_ov065_0228e2d0[];
 extern char data_ov065_0228e2dc[];
@@ -283,37 +283,37 @@ extern char data_ov065_0228e32c[];
 extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
-extern char *data_ov065_0228e504[];
-extern Vec *data_ov065_02291544;
-extern s32 data_ov065_02291748;
-extern u32 data_ov065_0229174c[];
+extern char *gGsKeyNames[];
+extern Vec *sGsNatNegList;
+extern s32 sGsQrLocalAddrCount;
+extern u32 sGsQrLocalAddrs[];
 
 s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02279144(void);
-void func_ov065_02278688(Vec *);
-s32 func_ov065_02278684(Vec *);
-void *func_ov065_0227866c(Vec *, s32);
-void func_ov065_02278658(Vec *, void *);
-void func_ov065_0227858c(Vec *, s32);
-Vec *func_ov065_022786bc(s32, s32, void *);
-char *func_ov065_022610f0(Unk_ov065_02287390_W);
-void func_ov065_02287df8(Buf *, s32, u8 *);
-void func_ov065_02288094(Buf *, const char *);
-void func_ov065_022880d8(Buf *, s32);
-void func_ov065_02287b18(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void func_ov065_02287d04(Qr *, u8 *);
-void func_ov065_02287d90(Qr *, Buf *, u8 *, s32);
+s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
+s32 GsSock_Close(s32);
+s32 GsUtil_GetTimeMs(void);
+void GsArray_Free(Vec *);
+s32 GsArray_Count(Vec *);
+void *GsArray_At(Vec *, s32);
+void GsArray_Append(Vec *, void *);
+void GsArray_RemoveAt(Vec *, s32);
+Vec *GsArray_New(s32, s32, void *);
+char *Sock_InetNtoA(Unk_ov065_02287390_W);
+void GsQr_BeginPacket(Buf *, s32, u8 *);
+void GsQr_BufAppendString(Buf *, const char *);
+void GsQr_BufAppendInt(Buf *, s32);
+void GsQr_AppendAllKeyValues(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
+void GsQr_ParsePublicAddress(Qr *, u8 *);
+void GsQr_AppendChallengeResponse(Qr *, Buf *, u8 *, s32);
 
-void func_ov065_02287324(Ent *e);
-void func_ov065_02287940(Qr *q, Buf *buf, s32 kind);
-void func_ov065_022878f0(Qr *q, Buf *buf);
-BOOL func_ov065_022877d4(Qr *q, u32 v);
-void func_ov065_02287828(Qr *q, u8 *p, s32 n);
-void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n);
+void GsNatNeg_FreeEntry(Ent *e);
+void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind);
+void GsQr_BuildQr1Reply(Qr *q, Buf *buf);
+BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v);
+void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n);
+void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n);
 
 #define HTONS(x) ((u16)((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00)))
 #define HTONL(x) (((x) >> 24 & 0xff) | ((x) >> 8 & 0xff00) | ((x) << 8 & 0xff0000) | ((x) << 24 & 0xff000000))
@@ -339,16 +339,16 @@ void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n);
 }
 
 extern "C" { u32 data_ov065_02291538; } //@
-extern "C" { void *data_ov065_02291544; } //@
+extern "C" { void *sGsNatNegList; } //@
 namespace N02287200 { extern "C" {
-Ent *func_ov065_02287348(s32 x) {
+Ent *GsNatNeg_FindByCookie(s32 x) {
     s32 i;
     Ent *e;
-    if (data_ov065_02291544 == NULL) {
+    if (sGsNatNegList == NULL) {
         return NULL;
     }
-    for (i = 0; i < func_ov065_02278684(data_ov065_02291544); i++) {
-        e = (Ent *)func_ov065_0227866c(data_ov065_02291544, i);
+    for (i = 0; i < GsArray_Count(sGsNatNegList); i++) {
+        e = (Ent *)GsArray_At(sGsNatNegList, i);
         if (e->unk_08 == x) {
             return e;
         }
@@ -358,33 +358,33 @@ Ent *func_ov065_02287348(s32 x) {
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287324(Ent *e) {
+void GsNatNeg_FreeEntry(Ent *e) {
     if (e->unk_00 != -1) {
-        func_ov065_02278dbc(e->unk_00);
+        GsSock_Close(e->unk_00);
     }
     e->unk_00 = -1;
     e->unk_10 = 4;
 }
 } }
 
-extern "C" { u32 data_ov065_02291540; } //@
+extern "C" { u32 sGsNatNegServer1; } //@
 namespace N02287200 { extern "C" {
-void *func_ov065_022872c8(void) {
+void *GsNatNeg_Add(void) {
     Ent z = {0};
-    if (data_ov065_02291544 == NULL) {
-        data_ov065_02291544 = func_ov065_022786bc(0x40, 4, (void *)func_ov065_02287324);
+    if (sGsNatNegList == NULL) {
+        sGsNatNegList = GsArray_New(0x40, 4, (void *)GsNatNeg_FreeEntry);
     }
-    func_ov065_02278658(data_ov065_02291544, &z);
-    return func_ov065_0227866c(data_ov065_02291544, func_ov065_02278684(data_ov065_02291544) - 1);
+    GsArray_Append(sGsNatNegList, &z);
+    return GsArray_At(sGsNatNegList, GsArray_Count(sGsNatNegList) - 1);
 }
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287280(void *key) {
+void GsNatNeg_Remove(void *key) {
     s32 i;
-    for (i = 0; i < func_ov065_02278684(data_ov065_02291544); i++) {
-        if (key == func_ov065_0227866c(data_ov065_02291544, i)) {
-            func_ov065_0227858c(data_ov065_02291544, i);
+    for (i = 0; i < GsArray_Count(sGsNatNegList); i++) {
+        if (key == GsArray_At(sGsNatNegList, i)) {
+            GsArray_RemoveAt(sGsNatNegList, i);
             return;
         }
     }
@@ -392,16 +392,16 @@ void func_ov065_02287280(void *key) {
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287260(void) {
-    if (data_ov065_02291544 != NULL) {
-        func_ov065_02278688(data_ov065_02291544);
-        data_ov065_02291544 = NULL;
+void GsNatNeg_FreeAll(void) {
+    if (sGsNatNegList != NULL) {
+        GsArray_Free(sGsNatNegList);
+        sGsNatNegList = NULL;
     }
 }
 } }
 
 namespace N02287200 { extern "C" {
-BOOL func_ov065_0228723c(void *p) {
+BOOL GsNatNeg_HasMagic(void *p) {
     if (memcmp(p, data_ov065_0228e16c, 6) == 0) {
         return TRUE;
     }
@@ -411,19 +411,19 @@ BOOL func_ov065_0228723c(void *p) {
 
 extern "C" { u8 data_ov065_02291548[0x200]; } //@
 namespace N02287200 { extern "C" {
-s32 func_ov065_02287200(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
+s32 GsNatNeg_SendTo(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
     Unk_ov065_02287200_Sa sa;
     sa.unk_1 = 2;
     sa.unk_2 = HTONS(port);
     sa.unk_4 = ip;
-    return func_ov065_02278c64(sock, buf, len, 0, &sa, 8);
+    return GsSock_SendTo(sock, buf, len, 0, &sa, 8);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_022871ac() {
+extern "C" u32 GsNatNeg_GetLocalIp() {
     u32 r = 0;
-    Unk_ov065_022871ac_List *list = func_ov065_02278e64();
+    Unk_ov065_022871ac_List *list = GsSock_GetLocalHost();
     if (list == NULL) {
         return r;
     }
@@ -439,7 +439,7 @@ extern "C" u32 func_ov065_022871ac() {
             continue;
         }
         r = *e;
-        if (func_ov065_02278dfc(e) != 0) {
+        if (GsSock_IsPrivateAddress(e) != 0) {
             return r;
         }
     }
@@ -449,10 +449,10 @@ extern "C" u32 func_ov065_022871ac() {
 
 extern "C" u8 data_ov065_0228e16c[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02287188(s32 fd) {
+extern "C" u32 GsNatNeg_GetLocalPort(s32 fd) {
     Unk_ov065_02286c74_Sa sa;
     s32 len = 8;
-    s32 r = func_ov065_02278c14(fd, &sa, &len);
+    s32 r = GsSock_GetSockName(fd, &sa, &len);
     u32 port = 0;
     if (r != -1) {
         port = sa.port;
@@ -462,7 +462,7 @@ extern "C" u32 func_ov065_02287188(s32 fd) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx) {
+extern "C" void GsNatNeg_SendInit(Unk_ov065_02286c74_Ctx *ctx) {
     Unk_ov065_02287000_Pkt pkt;
     u8 *p = (u8 *)&pkt;
     const u8 *m = (const u8 *)data_ov065_0228e16c;
@@ -482,38 +482,38 @@ extern "C" void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx) {
         flag = 1;
     }
     p[0xe] = flag;
-    u32 ip = SWAP32(func_ov065_022871ac());
+    u32 ip = SWAP32(GsNatNeg_GetLocalIp());
     pkt.unk_0f = ip >> 24;
     pkt.unk_10 = ip >> 16;
     pkt.unk_11 = ip >> 8;
     pkt.unk_12 = ip;
     pkt.unk_13 = 0;
     pkt.unk_14 = 0;
-    func_02127838(pkt.name, data_ov065_02290fe4);
-    s32 len = STD_GetStringLength(data_ov065_02290fe4) + 0x16;
+    func_02127838(pkt.name, sGsGameName);
+    s32 len = STD_GetStringLength(sGsGameName) + 0x16;
     if (p[0xe] != 0 && ctx->unk_14[0] == 0) {
         p[0xc] = 0;
-        func_ov065_02287200(ctx->unk_04, data_ov065_02291540, 0x6cfd, p, len);
+        GsNatNeg_SendTo(ctx->unk_04, sGsNatNegServer1, 0x6cfd, p, len);
     }
     if (ctx->unk_14[1] == 0) {
         p[0xc] = 1;
-        func_ov065_02287200(ctx->unk_00, data_ov065_02291540, 0x6cfd, p, len);
+        GsNatNeg_SendTo(ctx->unk_00, sGsNatNegServer1, 0x6cfd, p, len);
     }
-    s32 port = SWAP16((s32)func_ov065_02287188(p[0xe] != 0 ? ctx->unk_04 : ctx->unk_00));
+    s32 port = SWAP16((s32)GsNatNeg_GetLocalPort(p[0xe] != 0 ? ctx->unk_04 : ctx->unk_00));
     port = (u16)port;
     pkt.unk_13 = port >> 8;
     pkt.unk_14 = port;
     if (ctx->unk_14[2] == 0) {
         p[0xc] = 2;
-        func_ov065_02287200(ctx->unk_00, data_ov065_0229153c, 0x6cfd, p, len);
+        GsNatNeg_SendTo(ctx->unk_00, sGsNatNegServer2, 0x6cfd, p, len);
     }
-    ctx->unk_28 = func_ov065_02279144() + 0x1f4;
+    ctx->unk_28 = GsUtil_GetTimeMs() + 0x1f4;
     ctx->unk_24 = 0x1e;
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx) {
+extern "C" void GsNatNeg_SendPeerPing(Unk_ov065_02286c74_Ctx *ctx) {
     Unk_ov065_02286bb4_Pkt pkt;
     u8 *d = (u8 *)&pkt;
     const u8 *m = (const u8 *)data_ov065_0228e16c;
@@ -536,8 +536,8 @@ extern "C" void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx) {
     if (fd == -1) {
         fd = ctx->unk_00;
     }
-    func_ov065_02287200(fd, ctx->unk_2c, ctx->unk_30, &pkt, 0x14);
-    ctx->unk_28 = func_ov065_02279144() + 0x2bc;
+    GsNatNeg_SendTo(fd, ctx->unk_2c, ctx->unk_30, &pkt, 0x14);
+    ctx->unk_28 = GsUtil_GetTimeMs() + 0x2bc;
     ctx->unk_24 = 0xc;
     if (ctx->unk_32 != 0) {
         ctx->unk_33 = 1;
@@ -546,10 +546,10 @@ extern "C" void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02286f04(const char *name) {
-    u32 r = func_ov065_02278bf4(name);
+extern "C" u32 GsNatNeg_ResolveHost(const char *name) {
+    u32 r = GsSock_InetAddr(name);
     if (r == (u32)-1) {
-        Unk_ov065_02286f04_Hostent *h = func_ov065_02261408(name);
+        Unk_ov065_02286f04_Hostent *h = Sock_GetHostByName(name);
         if (h == NULL) {
             return 0;
         }
@@ -560,25 +560,25 @@ extern "C" u32 func_ov065_02286f04(const char *name) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02286ed8(const char *name, const char *s) {
+extern "C" u32 GsNatNeg_ResolveServer(const char *name, const char *s) {
     char buf[0x80];
     if (name == NULL) {
-        OS_SNPrintf(buf, 0x80, "%s.%s", data_ov065_02290fe4, s);
+        OS_SNPrintf(buf, 0x80, "%s.%s", sGsGameName, s);
         name = buf;
     }
-    return func_ov065_02286f04(name);
+    return GsNatNeg_ResolveHost(name);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 func_ov065_02286e70() {
-    if (data_ov065_02291540 == 0) {
-        data_ov065_02291540 = func_ov065_02286ed8((const char *)data_ov065_02291538, "natneg1.gs.nintendowifi.net");
+extern "C" s32 GsNatNeg_ResolveServers() {
+    if (sGsNatNegServer1 == 0) {
+        sGsNatNegServer1 = GsNatNeg_ResolveServer((const char *)data_ov065_02291538, "natneg1.gs.nintendowifi.net");
     }
-    if (data_ov065_0229153c == 0) {
-        data_ov065_0229153c = func_ov065_02286ed8((const char *)data_ov065_02291534, "natneg2.gs.nintendowifi.net");
+    if (sGsNatNegServer2 == 0) {
+        sGsNatNegServer2 = GsNatNeg_ResolveServer((const char *)data_ov065_02291534, "natneg2.gs.nintendowifi.net");
     }
-    if (data_ov065_02291540 == 0 || data_ov065_0229153c == 0) {
+    if (sGsNatNegServer1 == 0 || sGsNatNegServer2 == 0) {
         return 0;
     }
     return 1;
@@ -586,14 +586,14 @@ extern "C" s32 func_ov065_02286e70() {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 func_ov065_02286dcc(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
-    if (data_ov065_02290fa0 != 1) {
+extern "C" s32 GsNatNeg_Start(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
+    if (sGsAvailStatus != 1) {
         return 2;
     }
-    if (func_ov065_02286e70() == 0) {
+    if (GsNatNeg_ResolveServers() == 0) {
         return 3;
     }
-    Unk_ov065_02286c74_Ctx *ctx = (Unk_ov065_02286c74_Ctx *)func_ov065_022872c8();
+    Unk_ov065_02286c74_Ctx *ctx = (Unk_ov065_02286c74_Ctx *)GsNatNeg_Add();
     if (ctx == NULL) {
         return 1;
     }
@@ -603,7 +603,7 @@ extern "C" s32 func_ov065_02286dcc(u32 a, u32 b, s32 c, s32 d, void *e, void *f)
     ctx->unk_34 = (Unk_ov065_02286c74_Cb34)d;
     ctx->unk_38 = (Unk_ov065_02286c74_Cb38)e;
     ctx->unk_3c = f;
-    ctx->unk_00 = func_ov065_02278dd4(2, 2, 0);
+    ctx->unk_00 = GsSock_Socket(2, 2, 0);
     ctx->unk_20 = 0;
     ctx->unk_32 = 0;
     ctx->unk_33 = 0;
@@ -611,21 +611,21 @@ extern "C" s32 func_ov065_02286dcc(u32 a, u32 b, s32 c, s32 d, void *e, void *f)
     ctx->unk_30 = 0;
     ctx->unk_24 = 0;
     if (ctx->unk_00 == -1) {
-        func_ov065_02287280(ctx);
+        GsNatNeg_Remove(ctx);
         return 2;
     }
-    func_ov065_02287000(ctx);
+    GsNatNeg_SendInit(ctx);
     return 0;
 }
 } }
 
-extern "C" { u32 data_ov065_0229153c; } //@
+extern "C" { u32 sGsNatNegServer2; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286da0(u32 cookie) {
-    Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(cookie);
+extern "C" void GsNatNeg_Cancel(u32 cookie) {
+    Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(cookie);
     if (ctx != NULL) {
         if (ctx->unk_00 != -1) {
-            func_ov065_02278dbc(ctx->unk_00);
+            GsSock_Close(ctx->unk_00);
         }
         ctx->unk_00 = -1;
         ctx->unk_10 = 4;
@@ -634,46 +634,46 @@ extern "C" void func_ov065_02286da0(u32 cookie) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286c74(Unk_ov065_02286c74_Ctx *ctx) {
+extern "C" void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx) {
     Unk_ov065_02286c74_Sa from;
     s32 len;
     Unk_ov065_02286c74_Sa out;
     len = 8;
     if (ctx->unk_10 == 4) {
-        func_ov065_02287280(ctx);
+        GsNatNeg_Remove(ctx);
         return;
     }
     while (ctx->unk_00 != -1) {
-        if (func_ov065_02278ee8(ctx->unk_00) == 0) {
+        if (GsSock_CanRead(ctx->unk_00) == 0) {
             break;
         }
-        s32 n = func_ov065_02278cb8(ctx->unk_00, data_ov065_02291548, 0x200, 0, &from, &len);
+        s32 n = GsSock_RecvFrom(ctx->unk_00, data_ov065_02291548, 0x200, 0, &from, &len);
         if (n == -1) {
             break;
         }
-        func_ov065_02286934(data_ov065_02291548, n, &from);
+        GsNatNeg_HandlePacket(data_ov065_02291548, n, &from);
         if (ctx->unk_10 == 4) {
             break;
         }
     }
     if (ctx->unk_10 == 0 || ctx->unk_10 == 2) {
-        if (func_ov065_02279144() > ctx->unk_28) {
+        if (GsUtil_GetTimeMs() > ctx->unk_28) {
             s32 a = ctx->unk_20;
             if (a > ctx->unk_24) {
                 ctx->unk_38(2, -1, 0, ctx->unk_3c);
-                func_ov065_02286da0(ctx->unk_08);
+                GsNatNeg_Cancel(ctx->unk_08);
             } else {
                 ctx->unk_20 = a + 1;
                 if (ctx->unk_10 == 0) {
-                    func_ov065_02287000(ctx);
+                    GsNatNeg_SendInit(ctx);
                 } else {
-                    func_ov065_02286f34(ctx);
+                    GsNatNeg_SendPeerPing(ctx);
                 }
             }
         }
     }
     if (ctx->unk_10 == 3) {
-        if (func_ov065_02279144() > ctx->unk_28) {
+        if (GsUtil_GetTimeMs() > ctx->unk_28) {
             if (ctx->unk_04 == -1) {
                 out.family = 2;
                 u16 p = ctx->unk_30;
@@ -682,31 +682,31 @@ extern "C" void func_ov065_02286c74(Unk_ov065_02286c74_Ctx *ctx) {
                 ctx->unk_38(0, ctx->unk_00, &out, ctx->unk_3c);
                 ctx->unk_00 = -1;
             }
-            func_ov065_02286da0(ctx->unk_08);
+            GsNatNeg_Cancel(ctx->unk_08);
         }
     }
     if (ctx->unk_10 == 1) {
-        if (func_ov065_02279144() > ctx->unk_28) {
+        if (GsUtil_GetTimeMs() > ctx->unk_28) {
             ctx->unk_38(1, -1, 0, ctx->unk_3c);
-            func_ov065_02286da0(ctx->unk_08);
+            GsNatNeg_Cancel(ctx->unk_08);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286c3c() {
-    if (data_ov065_02291544 != NULL) {
+extern "C" void GsNatNeg_ProcessAll() {
+    if (sGsNatNegList != NULL) {
         s32 i;
-        for (i = func_ov065_02278684(data_ov065_02291544) - 1; i >= 0; i--) {
-            func_ov065_02286c74((Unk_ov065_02286c74_Ctx *)func_ov065_0227866c(data_ov065_02291544, i));
+        for (i = GsArray_Count(sGsNatNegList) - 1; i >= 0; i--) {
+            GsNatNeg_Process((Unk_ov065_02286c74_Ctx *)GsArray_At(sGsNatNegList, i));
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_SendConnectAck(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa) {
     Unk_ov065_02286bb4_Pkt pkt;
     u8 *d = (u8 *)&pkt;
     const u8 *m = data_ov065_0228e16c;
@@ -722,15 +722,15 @@ extern "C" void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286
     u32 c = ctx->unk_08;
     pkt.cookie = SWAP32(c);
     u16 p = sa->port;
-    func_ov065_02287200(ctx->unk_00, sa->addr, (u16)SWAP16(p), d, 0x15);
+    GsNatNeg_SendTo(ctx->unk_00, sa->addr, (u16)SWAP16(p), d, 0x15);
 }
 } }
 
 extern "C" { u32 data_ov065_02291534; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (pkt[0x13] == 0) {
-        func_ov065_02286bb4(ctx, sa);
+        GsNatNeg_SendConnectAck(ctx, sa);
     }
     if (ctx->unk_10 < 2) {
         u32 r = pkt[0x13];
@@ -742,7 +742,7 @@ extern "C" void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
                 code = 2;
             }
             ctx->unk_38(code, -1, 0, ctx->unk_3c);
-            func_ov065_02286da0(ctx->unk_08);
+            GsNatNeg_Cancel(ctx->unk_08);
         } else {
             ctx->unk_2c = *(u32 *)&pkt[0xc];
             u16 p = *(u16 *)&pkt[0x10];
@@ -750,41 +750,41 @@ extern "C" void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
             ctx->unk_20 = 0;
             ctx->unk_10 = 2;
             ctx->unk_34(ctx->unk_10, ctx->unk_3c);
-            func_ov065_02286f34(ctx);
+            GsNatNeg_SendPeerPing(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286aa8(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (ctx->unk_10 >= 2) {
         ctx->unk_2c = sa->addr;
         u16 p = sa->port;
         ctx->unk_30 = SWAP16(p);
         ctx->unk_32 = 1;
         if (pkt[0x12] == 0) {
-            func_ov065_02286f34(ctx);
+            GsNatNeg_SendPeerPing(ctx);
             return;
         }
         if (ctx->unk_10 == 2) {
             if (ctx->unk_33 == 0) {
-                func_ov065_02286f34(ctx);
+                GsNatNeg_SendPeerPing(ctx);
             }
             ctx->unk_10 = 3;
-            ctx->unk_28 = func_ov065_02279144() + 5000;
+            ctx->unk_28 = GsUtil_GetTimeMs() + 5000;
             if (ctx->unk_04 != -1) {
                 ctx->unk_38(0, ctx->unk_04, sa, ctx->unk_3c);
             }
         } else if (pkt[0x13] == 0) {
-            func_ov065_02286f34(ctx);
+            GsNatNeg_SendPeerPing(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     switch (pkt[7]) {
     case 1: {
         u32 i = pkt[0xc];
@@ -793,7 +793,7 @@ extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
             if (ctx->unk_10 == 0 && ctx->unk_14[1] != 0 && ctx->unk_14[2] != 0) {
                 if (ctx->unk_04 == -1 || ctx->unk_14[0] != 0) {
                     ctx->unk_10 = 1;
-                    ctx->unk_28 = func_ov065_02279144() + 10000;
+                    ctx->unk_28 = GsUtil_GetTimeMs() + 10000;
                     ctx->unk_34(ctx->unk_10, ctx->unk_3c);
                 }
             }
@@ -803,7 +803,7 @@ extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
     case 2: {
         pkt[7] = 3;
         u16 p = sa->port;
-        func_ov065_02287200(ctx->unk_00, sa->addr, (u16)SWAP16(p), pkt, 0x15);
+        GsNatNeg_SendTo(ctx->unk_00, sa->addr, (u16)SWAP16(p), pkt, 0x15);
         break;
     }
     }
@@ -811,10 +811,10 @@ extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
     Unk_ov065_02286934_Buf14 h;
     Unk_ov065_02286934_Buf15 g;
-    if (func_ov065_0228723c() == 0) {
+    if (GsNatNeg_HasMagic() == 0) {
         return;
     }
     u32 type = pkt[7];
@@ -824,14 +824,14 @@ extern "C" void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa)
         }
         h = *(Unk_ov065_02286934_Buf14 *)pkt;
         u32 c = *(u32 *)&h.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(SWAP32(c));
+        Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
         if (type == 5) {
-            func_ov065_02286b34(ctx, h.b, sa);
+            GsNatNeg_HandleConnect(ctx, h.b, sa);
         } else {
-            func_ov065_02286aa8(ctx, h.b, sa);
+            GsNatNeg_HandlePeerPing(ctx, h.b, sa);
         }
     } else {
         if (len < 0x15) {
@@ -839,11 +839,11 @@ extern "C" void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa)
         }
         g = *(Unk_ov065_02286934_Buf15 *)pkt;
         u32 c = *(u32 *)&g.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(SWAP32(c));
+        Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
-        func_ov065_02286a0c(ctx, g.b, sa);
+        GsNatNeg_HandleServerReply(ctx, g.b, sa);
     }
 }
 } }

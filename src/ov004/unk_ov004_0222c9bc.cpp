@@ -67,7 +67,7 @@ struct Bits {
     u32 hi : 4;
 };
 
-// one 0x11-byte record of the actor table (data_ov004_022402ec[56])
+// one 0x11-byte record of the actor table (sAquariumFishParams[56])
 struct Rec {
     u8 unk_00;
     u8 unk_01;
@@ -88,7 +88,7 @@ struct Rec {
     u8 unk_10;
 };
 
-// library object with a destructor (two of these are static: data_ov004_02251d84 / d9c)
+// library object with a destructor (two of these are static: sAquariumTankCenterB / d9c)
 struct FxVec3 {
     s32 x, y, z;
     FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
@@ -150,16 +150,16 @@ public:
     /* 0x40 */ V3 unk_40;
 };
 
-class Unk_ov004_0224e774;
+class AquariumFish;
 
 // ---------------------------------------------------------------------------------------------------------------
 // The "Ent" family: state actors. Root = vtable 0x0224e774 (0x1fc bytes of common state).
-class Unk_ov004_0224e774 {
+class AquariumFish {
 public:
-    Unk_ov004_0224e774();
+    AquariumFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
-    virtual ~Unk_ov004_0224e774();
+    virtual ~AquariumFish();
 
     /* 0x004 */ u8 unk_04[0x13 - 4];
     /* 0x013 */ u8 unk_13;
@@ -169,7 +169,7 @@ public:
     /* 0x020 */ u8 pad_20[0x40 - 0x20];
     /* 0x040 */ u8 unk_40;
     /* 0x041 */ u8 pad_41[0x50 - 0x41];
-    /* 0x050 */ Unk_ov004_0224e774 *unk_50;
+    /* 0x050 */ AquariumFish *unk_50;
     /* 0x054 */ u32 unk_54[4];
     /* 0x064 */ u8 unk_64[0xc8 - 0x64];
     /* 0x0c8 */ Mtx unk_c8;
@@ -217,10 +217,10 @@ public:
 };
 
 // vtable 0x0224e864: common base of most state actors (0x258 bytes)
-class Unk_ov004_0224e864 : public Unk_ov004_0224e774 {
+class AquariumSwimFish : public AquariumFish {
 public:
-    Unk_ov004_0224e864();
-    virtual ~Unk_ov004_0224e864();
+    AquariumSwimFish();
+    virtual ~AquariumSwimFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
 
@@ -269,18 +269,18 @@ public:
     /* 0x257 */ u8 unk_257;
 };
 
-class Unk_ov004_0224e72c : public Unk_ov004_0224e864 {
+class AquariumBigFish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e72c();
-    virtual ~Unk_ov004_0224e72c();
+    AquariumBigFish();
+    virtual ~AquariumBigFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
 };
 
-class Unk_ov004_0224e84c : public Unk_ov004_0224e774 {
+class AquariumCrawfish : public AquariumFish {
 public:
-    Unk_ov004_0224e84c();
-    virtual ~Unk_ov004_0224e84c();
+    AquariumCrawfish();
+    virtual ~AquariumCrawfish();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x1fc */ s32 unk_1fc;
@@ -299,10 +299,10 @@ public:
     /* 0x21d */ u8 pad_21d[3];
 };
 
-class Unk_ov004_0224e7bc : public Unk_ov004_0224e864 {
+class AquariumSeaButterfly : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e7bc();
-    virtual ~Unk_ov004_0224e7bc();
+    AquariumSeaButterfly();
+    virtual ~AquariumSeaButterfly();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ s32 unk_258[3];
@@ -313,29 +313,29 @@ public:
 };
 
 // vtable 0x0224e6e8: 0x50-byte collision sub-object of every actor
-class Unk_ov004_0224e6e8 : public Unk_020e0d1c {
+class AquariumFishHitBox : public Unk_020e0d1c {
 public:
-    Unk_ov004_0224e6e8();
-    ~Unk_ov004_0224e6e8();
+    AquariumFishHitBox();
+    ~AquariumFishHitBox();
     virtual void vfunc_08(u32 a, u32 b, u32 c);
-    /* 0x4c */ Unk_ov004_0224e774 *unk_4c;
+    /* 0x4c */ AquariumFish *unk_4c;
 };
 
 // vtables 0x0224e714 / 0x0224e75c: 0x25c bytes
-class Unk_ov004_0224e714 : public Unk_ov004_0224e864 {
+class AquariumSurfacingFish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e714();
-    virtual ~Unk_ov004_0224e714();
+    AquariumSurfacingFish();
+    virtual ~AquariumSurfacingFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ u8 unk_258;
     /* 0x259 */ u8 unk_259;
 };
 
-class Unk_ov004_0224e834 : public Unk_ov004_0224e774 {
+class AquariumFrog : public AquariumFish {
 public:
-    Unk_ov004_0224e834();
-    virtual ~Unk_ov004_0224e834();
+    AquariumFrog();
+    virtual ~AquariumFrog();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x1fc */ Unk_0213b954 unk_1fc;
@@ -346,17 +346,17 @@ public:
 };
 
 // state actors derived from the root directly
-class Unk_ov004_0224e7ec : public Unk_ov004_0224e774 {
+class AquariumOctopus : public AquariumFish {
 public:
-    Unk_ov004_0224e7ec();
-    virtual ~Unk_ov004_0224e7ec();
+    AquariumOctopus();
+    virtual ~AquariumOctopus();
     virtual void vfunc_00();
 };
 
-class Unk_ov004_0224e7a4 : public Unk_ov004_0224e864 {
+class AquariumSeahorse : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e7a4();
-    virtual ~Unk_ov004_0224e7a4();
+    AquariumSeahorse();
+    virtual ~AquariumSeahorse();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ s32 unk_258[3];
@@ -365,63 +365,63 @@ public:
     /* 0x268 */ s32 unk_268;
 };
 
-class Unk_ov004_0224e78c : public Unk_ov004_0224e864 {
+class AquariumPufferFish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e78c();
-    virtual ~Unk_ov004_0224e78c();
+    AquariumPufferFish();
+    virtual ~AquariumPufferFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ u8 unk_258;
 };
 
-class Unk_ov004_0224e75c : public Unk_ov004_0224e864 {
+class AquariumPiranha : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e75c();
-    virtual ~Unk_ov004_0224e75c();
+    AquariumPiranha();
+    virtual ~AquariumPiranha();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ u8 unk_258;
     /* 0x259 */ u8 unk_259;
 };
 
-class Unk_ov004_0224e744 : public Unk_ov004_0224e864 {
+class AquariumFastFish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e744();
-    virtual ~Unk_ov004_0224e744();
+    AquariumFastFish();
+    virtual ~AquariumFastFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
 };
 
 // element of the 5-entry array in the manager (0x64 bytes)
-struct Unk_ov004_02232624_Elem {
-    Unk_ov004_0224e6e8 unk_00;
+struct AquariumObstacle {
+    AquariumFishHitBox unk_00;
     u32 unk_50[5];
 };
 
 // vtable 0x0224e87c: the scene object (0x810 bytes)
-class Unk_ov004_0224e87c : public GameProc {
+class MuseumAquarium : public GameProc {
 public:
-    Unk_ov004_0224e87c();
-    virtual ~Unk_ov004_0224e87c();
+    MuseumAquarium();
+    virtual ~MuseumAquarium();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x050 */ Unk_ov004_02232624_Elem unk_50[5];
-    /* 0x244 */ Unk_ov004_0224e6e8 unk_244;
+    /* 0x050 */ AquariumObstacle unk_50[5];
+    /* 0x244 */ AquariumFishHitBox unk_244;
     /* 0x294 */ u32 unk_294[5];
     /* 0x2a8 */ u32 unk_2a8[0x550 / 4];
     /* 0x7f8 */ u32 unk_7f8[6];
 
-    typedef void (Unk_ov004_0224e87c::*Fn)(Unk_ov004_0224e774 **, s32);
+    typedef void (MuseumAquarium::*Fn)(AquariumFish **, s32);
 };
 
 // vtable 0x0224e6fc: 0x27c bytes
-class Unk_ov004_0224e6fc : public Unk_ov004_0224e864 {
+class AquariumHidingFish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e6fc();
-    virtual ~Unk_ov004_0224e6fc();
+    AquariumHidingFish();
+    virtual ~AquariumHidingFish();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ s32 unk_258[3];
@@ -433,18 +433,18 @@ public:
     /* 0x278 */ u32 unk_278;
 };
 
-class Unk_ov004_0224e81c : public Unk_ov004_0224e864 {
+class AquariumSquid : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e81c();
-    virtual ~Unk_ov004_0224e81c();
+    AquariumSquid();
+    virtual ~AquariumSquid();
     virtual void vfunc_00();
     virtual void vfunc_04();
 };
 
-class Unk_ov004_0224e804 : public Unk_ov004_0224e774 {
+class AquariumEel : public AquariumFish {
 public:
-    Unk_ov004_0224e804();
-    virtual ~Unk_ov004_0224e804();
+    AquariumEel();
+    virtual ~AquariumEel();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x1fc */ u8 pad_1fc[4];
@@ -460,10 +460,10 @@ public:
     /* 0x20f */ u8 pad_20f;
 };
 
-class Unk_ov004_0224e7d4 : public Unk_ov004_0224e864 {
+class AquariumJellyfish : public AquariumSwimFish {
 public:
-    Unk_ov004_0224e7d4();
-    virtual ~Unk_ov004_0224e7d4();
+    AquariumJellyfish();
+    virtual ~AquariumJellyfish();
     virtual void vfunc_00();
     virtual void vfunc_04();
     /* 0x258 */ s32 unk_258;
@@ -519,23 +519,23 @@ public:
     /* 0x4c */ u8 unk_4c[0x48];
 };
 
-typedef Unk_ov004_0224e774 R;
-typedef Unk_ov004_0224e864 E864;
-typedef Unk_ov004_0224e87c Mgr;
-typedef Unk_ov004_0224e6fc E6fc;
-typedef Unk_ov004_0224e714 E714;
-typedef Unk_ov004_0224e75c E75c;
-typedef Unk_ov004_0224e78c E78c;
-typedef Unk_ov004_0224e7a4 E7a4;
-typedef Unk_ov004_0224e7bc E7bc;
-typedef Unk_ov004_0224e7d4 E7d4;
-typedef Unk_ov004_0224e72c E72c;
-typedef Unk_ov004_0224e744 E744;
-typedef Unk_ov004_0224e81c E81c;
-typedef Unk_ov004_0224e7ec E7ec;
-typedef Unk_ov004_0224e804 E804;
-typedef Unk_ov004_0224e834 E834;
-typedef Unk_ov004_0224e84c E84c;
+typedef AquariumFish R;
+typedef AquariumSwimFish E864;
+typedef MuseumAquarium Mgr;
+typedef AquariumHidingFish E6fc;
+typedef AquariumSurfacingFish E714;
+typedef AquariumPiranha E75c;
+typedef AquariumPufferFish E78c;
+typedef AquariumSeahorse E7a4;
+typedef AquariumSeaButterfly E7bc;
+typedef AquariumJellyfish E7d4;
+typedef AquariumBigFish E72c;
+typedef AquariumFastFish E744;
+typedef AquariumSquid E81c;
+typedef AquariumOctopus E7ec;
+typedef AquariumEel E804;
+typedef AquariumFrog E834;
+typedef AquariumCrawfish E84c;
 typedef void (E864::*Fn)();
 typedef void (E804::*Fn804)();
 typedef void (Mgr::*MgrFn)(R **, s32);
@@ -584,26 +584,26 @@ struct Unk_ov004_SceneEntry {
 
 // ---------------------------------------------------------------------------------------------------------------
 // constructors of the state actors (called by the allocation switches)
-#define func_02232864 _ZN18Unk_ov004_0224e6fcC1Ev
-#define func_022328b4 _ZN18Unk_ov004_0224e714C1Ev
-#define func_02232930 _ZN18Unk_ov004_0224e75cC1Ev
-#define func_02232a08 _ZN18Unk_ov004_0224e84cC1Ev
-#define func_02232b54 _ZN18Unk_ov004_0224e804C1Ev
-#define func_02232bb0 _ZN18Unk_ov004_0224e834C1Ev
-#define func_02232d8c _ZN18Unk_ov004_0224e864C1Ev
-#define func_ov004_02232ce4 _ZN18Unk_ov004_0224e7d4C1Ev
-#define func_ov004_02232c88 _ZN18Unk_ov004_0224e744C1Ev
-#define func_ov004_02232c24 _ZN18Unk_ov004_0224e72cC1Ev
-#define func_ov004_02232adc _ZN18Unk_ov004_0224e7bcC1Ev
-#define func_ov004_02232a64 _ZN18Unk_ov004_0224e7a4C1Ev
-#define func_ov004_0223299c _ZN18Unk_ov004_0224e78cC1Ev
-#define func_ov004_02232864 _ZN18Unk_ov004_0224e6fcC1Ev
-#define func_ov004_02232808 _ZN18Unk_ov004_0224e81cC1Ev
-#define func_ov004_022327b8 _ZN18Unk_ov004_0224e7ecC1Ev
-#define func_ov004_02232d8c _ZN18Unk_ov004_0224e864C1Ev
+#define func_02232864 _ZN18AquariumHidingFishC1Ev
+#define func_022328b4 _ZN21AquariumSurfacingFishC1Ev
+#define func_02232930 _ZN15AquariumPiranhaC1Ev
+#define func_02232a08 _ZN16AquariumCrawfishC1Ev
+#define func_02232b54 _ZN11AquariumEelC1Ev
+#define func_02232bb0 _ZN12AquariumFrogC1Ev
+#define func_02232d8c _ZN16AquariumSwimFishC1Ev
+#define func_ov004_02232ce4 _ZN17AquariumJellyfishC1Ev
+#define func_ov004_02232c88 _ZN16AquariumFastFishC1Ev
+#define func_ov004_02232c24 _ZN15AquariumBigFishC1Ev
+#define func_ov004_02232adc _ZN20AquariumSeaButterflyC1Ev
+#define func_ov004_02232a64 _ZN16AquariumSeahorseC1Ev
+#define func_ov004_0223299c _ZN18AquariumPufferFishC1Ev
+#define func_ov004_02232864 _ZN18AquariumHidingFishC1Ev
+#define func_ov004_02232808 _ZN13AquariumSquidC1Ev
+#define func_ov004_022327b8 _ZN15AquariumOctopusC1Ev
+#define func_ov004_02232d8c _ZN16AquariumSwimFishC1Ev
 
-#define func_ov004_02232608 _ZN18Unk_ov004_0224e6e8C1Ev
-#define func_ov004_022325f0 _ZN18Unk_ov004_0224e6e8D1Ev
+#define func_ov004_02232608 _ZN18AquariumFishHitBoxC1Ev
+#define func_ov004_022325f0 _ZN18AquariumFishHitBoxD1Ev
 
 extern "C" {
 void func_ov004_02232608(void *);
@@ -638,7 +638,7 @@ extern u8 gTouchPrevChanged;
 extern u8 gTouchPrevHeld;
 extern Mtx data_021f47e0;
 extern void *gCurrentHeap;
-extern V3 data_ov004_022513f0;
+extern V3 sRoomHasuPos;
 
 void MTX_MultVec43(V3 *, void *, V3 *);
 s32 FX_Div(s32, s32);
@@ -743,182 +743,182 @@ static inline s32 Unk_ov004_0222d460_Clamp(s32 a) {
     return a;
 }
 
-extern "C" void func_ov004_02233058();
-extern "C" Unk_ov004_0224e7bc::Unk_ov004_0224e7bc();
-extern "C" Unk_ov004_0224e7bc::~Unk_ov004_0224e7bc();
-extern "C" Unk_ov004_0224e7a4::Unk_ov004_0224e7a4();
-extern "C" Unk_ov004_0224e7a4::~Unk_ov004_0224e7a4();
-extern "C" Unk_ov004_0224e84c::Unk_ov004_0224e84c();
-extern "C" Unk_ov004_0224e84c::~Unk_ov004_0224e84c();
-extern "C" Unk_ov004_0224e78c::Unk_ov004_0224e78c();
-extern "C" Unk_ov004_0224e78c::~Unk_ov004_0224e78c();
-extern "C" Unk_ov004_0224e75c::Unk_ov004_0224e75c();
-extern "C" Unk_ov004_0224e75c::~Unk_ov004_0224e75c();
-extern "C" Unk_ov004_0224e714::Unk_ov004_0224e714();
-extern "C" Unk_ov004_0224e714::~Unk_ov004_0224e714();
-extern "C" Unk_ov004_0224e6fc::Unk_ov004_0224e6fc();
-extern "C" Unk_ov004_0224e6fc::~Unk_ov004_0224e6fc();
-extern "C" Unk_ov004_0224e81c::Unk_ov004_0224e81c();
-extern "C" Unk_ov004_0224e81c::~Unk_ov004_0224e81c();
-extern "C" Unk_ov004_0224e7ec::Unk_ov004_0224e7ec();
-extern "C" Unk_ov004_0224e7ec::~Unk_ov004_0224e7ec();
-extern "C" Unk_ov004_0224e87c::Unk_ov004_0224e87c();
-extern "C" Unk_ov004_0224e87c::~Unk_ov004_0224e87c();
-extern "C" Unk_ov004_0224e6e8::Unk_ov004_0224e6e8();
+extern "C" void MuseumAquarium_Create();
+extern "C" AquariumSeaButterfly::AquariumSeaButterfly();
+extern "C" AquariumSeaButterfly::~AquariumSeaButterfly();
+extern "C" AquariumSeahorse::AquariumSeahorse();
+extern "C" AquariumSeahorse::~AquariumSeahorse();
+extern "C" AquariumCrawfish::AquariumCrawfish();
+extern "C" AquariumCrawfish::~AquariumCrawfish();
+extern "C" AquariumPufferFish::AquariumPufferFish();
+extern "C" AquariumPufferFish::~AquariumPufferFish();
+extern "C" AquariumPiranha::AquariumPiranha();
+extern "C" AquariumPiranha::~AquariumPiranha();
+extern "C" AquariumSurfacingFish::AquariumSurfacingFish();
+extern "C" AquariumSurfacingFish::~AquariumSurfacingFish();
+extern "C" AquariumHidingFish::AquariumHidingFish();
+extern "C" AquariumHidingFish::~AquariumHidingFish();
+extern "C" AquariumSquid::AquariumSquid();
+extern "C" AquariumSquid::~AquariumSquid();
+extern "C" AquariumOctopus::AquariumOctopus();
+extern "C" AquariumOctopus::~AquariumOctopus();
+extern "C" MuseumAquarium::MuseumAquarium();
+extern "C" MuseumAquarium::~MuseumAquarium();
+extern "C" AquariumFishHitBox::AquariumFishHitBox();
 extern "C" /*EXTERN_C_CLOSE*/
 
-Unk_ov004_0224e6e8::~Unk_ov004_0224e6e8();
-extern "C" void func_ov004_022325c8(s32 *p, s32 a, u32 ang);
-extern "C" void func_ov004_0223259c(s32 *p, s32 a, u32 ang);
-extern "C" void func_ov004_0223257c(V3 *p, s32 a, s16 ang);
-extern "C" void func_ov004_02232548(E864 *o);
-extern "C" void func_ov004_022323b4(E864 *o);
-extern "C" void func_ov004_0223230c(E864 *o, s32 f, u32 a, u32 b);
-extern "C" void func_ov004_02232270(E864 *o, u32 a);
-extern "C" s32 func_ov004_02232220(E864 *o);
-extern "C" void func_ov004_022321e8(E864 *o, s32 i);
-extern "C" void func_ov004_022321cc(E864 *o);
-extern "C" void func_ov004_022321b4(E864 *o);
-extern "C" void func_ov004_02232158(E864 *o, s32 a, s32 b, s32 c);
-extern "C" void func_ov004_02232130(E864 *o);
-extern "C" void func_ov004_022320c8(E864 *o);
-extern "C" void func_ov004_02232068(E864 *o);
-extern "C" void func_ov004_02231f98(E864 *o, s32 lim, s32 b);
-extern "C" void func_ov004_02231eec(E864 *o, s32 a);
-extern "C" void func_ov004_02231e8c(E864 *o, s32 m, s32 lim, u32 mode);
-extern "C" s32 func_ov004_02231e74(s32 a, s32 b);
-extern "C" s16 func_ov004_02231e3c(s32 a, s32 b);
-extern "C" s32 func_ov004_02231e28(s32 a, s32 b);
-extern "C" BOOL func_ov004_02231dec(void *obj, void *a, void *b, s32 max);
-extern "C" BOOL func_ov004_02231d54(s32 *p, s32 v);
-extern "C" BOOL func_ov004_02231d1c(V3 *pos);
-extern "C" BOOL func_ov004_02231c68(E864 *o);
-extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_00Ev(E7d4 *o);
-extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_04Ev(E7d4 *o);
-extern "C" void func_ov004_022319ac(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul);
-extern "C" void func_ov004_0223197c(E7d4 *o);
-extern "C" void func_ov004_02231938(E7d4 *o);
-extern "C" void func_ov004_022318dc(E7d4 *o);
-extern "C" void func_ov004_02231878(E7d4 *o);
-extern "C" void func_ov004_02231838(E7d4 *o);
-extern "C" void func_ov004_022317d0(E7d4 *o);
-extern "C" void func_ov004_02231750(E7d4 *o);
-extern "C" void func_ov004_022316e0(E7d4 *o);
-extern "C" void func_ov004_02231600(R *o, V3 *out);
-extern "C" void _ZN18Unk_ov004_0224e7448vfunc_00Ev(E744 *o);
-extern "C" void _ZN18Unk_ov004_0224e7448vfunc_04Ev(E744 *o);
-extern "C" void func_ov004_02231420(E744 *o, s32 a, s32 b);
-extern "C" void _ZN18Unk_ov004_0224e72c8vfunc_00Ev(E72c *o);
-extern "C" void _ZN18Unk_ov004_0224e72c8vfunc_04Ev(E72c *o);
-extern "C" void func_ov004_022311cc(E72c *o, s32 a, s32 b);
-extern "C" void _ZN18Unk_ov004_0224e8348vfunc_00Ev(E834 *o);
-extern "C" void _ZN18Unk_ov004_0224e8348vfunc_04Ev(E834 *o);
-extern "C" void func_ov004_02231060(E834 *o);
-extern "C" void func_ov004_02230fd0(E834 *o);
-extern "C" void _ZN18Unk_ov004_0224e8048vfunc_00Ev(E804 *e);
-extern "C" void _ZN18Unk_ov004_0224e8048vfunc_04Ev(E804 *e);
-extern "C" void func_ov004_02230ecc(E804 *e);
-extern "C" void func_ov004_02230e88(E804 *e);
-extern "C" void func_ov004_02230e50(E804 *e);
-extern "C" void func_ov004_02230e10(E804 *e);
-extern "C" void func_ov004_02230ddc(E804 *e);
-extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_00Ev(E7bc *e);
-extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_04Ev(E7bc *e);
-extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_00Ev(E7a4 *e);
-extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_04Ev(E7a4 *e);
-extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_00Ev(E78c *e);
-extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e);
-extern "C" void _ZN18Unk_ov004_0224e75c8vfunc_00Ev(E75c *e);
-extern "C" void _ZN18Unk_ov004_0224e75c8vfunc_04Ev(E75c *o);
-extern "C" void func_ov004_022304f4(E75c *o);
-extern "C" void func_ov004_022303b4(E75c *o);
-extern "C" void func_ov004_022302b4(E75c *o);
-extern "C" void func_ov004_02230238(E75c *o);
-extern "C" void func_ov004_022301fc(E75c *o);
-extern "C" void func_ov004_022301b4(E75c *o);
-extern "C" void func_ov004_0223015c(E75c *o);
-extern "C" void _ZN18Unk_ov004_0224e7148vfunc_00Ev(E714 *o);
-extern "C" void _ZN18Unk_ov004_0224e7148vfunc_04Ev(E714 *o);
-extern "C" void func_ov004_02230034(E714 *o);
-extern "C" void func_ov004_0222fff8(E714 *o);
-extern "C" void func_ov004_0222fe1c(E714 *o);
-extern "C" void _ZN18Unk_ov004_0224e6fc8vfunc_00Ev(E6fc *o);
-extern "C" void _ZN18Unk_ov004_0224e6fc8vfunc_04Ev(E6fc *o);
-extern "C" void func_ov004_0222fbe0(E6fc *o);
-extern "C" void func_ov004_0222fafc(E6fc *o);
-extern "C" void func_ov004_0222fabc(E6fc *o);
-extern "C" void func_ov004_0222fa5c(E6fc *o);
-extern "C" void func_ov004_0222f968(E6fc *o, s32 f);
-extern "C" void func_ov004_0222f8fc(E6fc *o);
-extern "C" void _ZN18Unk_ov004_0224e84c8vfunc_00Ev(E84c *o);
-extern "C" void _ZN18Unk_ov004_0224e84c8vfunc_04Ev(E84c *o);
-extern "C" void func_ov004_0222f7d4(E84c *o);
-extern "C" void func_ov004_0222f6c4(E84c *o);
-extern "C" void func_ov004_0222f5e4(E84c *o);
-extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_00Ev(E81c *o);
-extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_04Ev(E81c *o);
-extern "C" void func_ov004_0222f284(E864 *e);
-extern "C" void _ZN18Unk_ov004_0224e7ec8vfunc_00Ev(E7ec *e);
-extern "C" void func_ov004_0222f1d0(E864 *e);
-extern "C" void func_ov004_0222f0e4(E864 *e);
-extern "C" void func_ov004_0222f090(E864 *e);
-extern "C" void func_ov004_0222ef5c(E864 *e);
-extern "C" void func_ov004_0222ef40(Cb *c);
-extern "C" void func_ov004_0222ef24(Cb *c);
-extern "C" void func_ov004_0222ef04(Cb *c);
-extern "C" BOOL func_ov004_0222ee2c(E864 *e, V3 *out);
-extern "C" BOOL func_ov004_0222ede0(E864 *e);
-extern "C" void func_ov004_0222ed24(E864 *e, V3 *p);
-extern "C" void _ZN18Unk_ov004_0224e8648vfunc_00Ev(E864 *e);
-extern "C" void _ZN18Unk_ov004_0224e8648vfunc_04Ev(E864 *e);
-extern "C" void func_ov004_0222eb8c(E864 *e);
-extern "C" void func_ov004_0222eb30(E864 *e);
-extern "C" void func_ov004_0222ead8(E864 *e);
-extern "C" void func_ov004_0222ea74(E864 *e);
-extern "C" void func_ov004_0222ea40(E864 *e);
-extern "C" void func_ov004_0222e9ac(E864 *e);
-extern "C" void func_ov004_0222e9a8();
-extern "C" void func_ov004_0222e8d8(E864 *e);
-extern "C" void func_ov004_0222e874(E864 *e);
-extern "C" void func_ov004_0222e820(R *e);
-extern "C" void func_ov004_0222e7a4(R *e);
-extern "C" void func_ov004_0222e61c(E864 *e);
-extern "C" void func_ov004_0222e4f0(R *e);
-extern "C" void func_ov004_0222e48c(R *e);
-extern "C" s32 func_ov004_0222e3e0(R *a, R **b);
-extern "C" void func_ov004_0222e390(R *a, R **b);
-extern "C" void func_ov004_0222e2f4(E864 *e);
-extern "C" void func_ov004_0222e288(E864 *e, s32 lo);
-extern "C" void func_ov004_0222e238(R *e);
-extern "C" void func_ov004_0222e0f0(void *unused, R **pp, R **q);
-extern "C" void func_ov004_0222e060(R *self);
-extern "C" void func_ov004_0222dfbc(E864 *self);
-extern "C" void func_ov004_0222dea8(E864 *self);
-extern "C" BOOL func_ov004_0222de34(Mgr *self, s32 i);
-extern "C" void func_ov004_0222dd3c(Mgr *self, s32 i);
-extern "C" BOOL _ZN18Unk_ov004_0224e87c8vfunc_00Ev(Mgr *self);
-extern "C" BOOL func_ov004_0222d874(Mgr *self);
-extern "C" s32 func_ov004_0222d62c(Mgr *o);
-extern "C" s32 func_ov004_0222d5a8(Mgr *o, R **p, s32 idx, s32 n);
-extern "C" void func_ov004_0222d564(Mgr *o, R **p, s32 i);
-extern "C" void func_ov004_0222d560();
-extern "C" s32 func_ov004_0222d558(Mgr *o, R **p, s32 i);
-extern "C" void func_ov004_0222d460(Mgr *o, R **p, s32 x);
-extern "C" s32 _ZN18Unk_ov004_0224e87c9onExecuteEv(Mgr *o);
-extern "C" void func_ov004_0222d314(Mgr *o, s32 n);
-extern "C" s32 func_ov004_0222d1d8(Mgr *o, R **p, s32 idx);
-extern "C" void func_ov004_0222d180(Mgr *o, R **p);
-extern "C" s32 _ZN18Unk_ov004_0224e87c6onDrawEv(Mgr *o);
-extern "C" s32 _ZN18Unk_ov004_0224e87c8vfunc_0cEv(Mgr *o);
-extern "C" void func_ov004_0222cf38(Mgr *o);
-extern "C" void func_ov004_0222cde0(Mgr *self);
-extern "C" void func_ov004_0222ca24(void *self, R **ctx, s32 type);
-extern "C" void func_ov004_0222c9ec(void *self, s32 *p, s32 a, s32 b, s32 c, s32 d);
+AquariumFishHitBox::~AquariumFishHitBox();
+extern "C" void Aquarium_StepX(s32 *p, s32 a, u32 ang);
+extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang);
+extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang);
+extern "C" void AquariumFish_UpdateWallTurn(E864 *o);
+extern "C" void AquariumFish_TurnAtWall(E864 *o);
+extern "C" void AquariumFish_PickTurn(E864 *o, s32 f, u32 a, u32 b);
+extern "C" void AquariumFish_PlayTurnAnim(E864 *o, u32 a);
+extern "C" s32 AquariumFish_EndTurnAnim(E864 *o);
+extern "C" void AquariumFish_PlayAnim(E864 *o, s32 i);
+extern "C" void AquariumFish_PlaySwimAnim(E864 *o);
+extern "C" void AquariumFish_CancelTurn(E864 *o);
+extern "C" void AquariumFish_MoveVertical(E864 *o, s32 a, s32 b, s32 c);
+extern "C" void AquariumFish_UpdateDepth(E864 *o);
+extern "C" void AquariumFish_UpdateDepthCapped(E864 *o);
+extern "C" void AquariumFish_UpdatePitchByDir(E864 *o);
+extern "C" void AquariumFish_UpdatePitch(E864 *o, s32 lim, s32 b);
+extern "C" void AquariumFish_UpdatePitchSmooth(E864 *o, s32 a);
+extern "C" void AquariumFish_Bob(E864 *o, s32 m, s32 lim, u32 mode);
+extern "C" s32 Aquarium_RandFx(s32 a, s32 b);
+extern "C" s16 Aquarium_RandAngle(s32 a, s32 b);
+extern "C" s32 Aquarium_RandRange(s32 a, s32 b);
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max);
+extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v);
+extern "C" BOOL Aquarium_TestHeight800At(V3 *pos);
+extern "C" BOOL AquariumFish_IsNearWall(E864 *o);
+extern "C" void _ZN17AquariumJellyfish8vfunc_00Ev(E7d4 *o);
+extern "C" void _ZN17AquariumJellyfish8vfunc_04Ev(E7d4 *o);
+extern "C" void Aquarium_Oscillate(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul);
+extern "C" void AquariumJellyfish_UpdateDrift(E7d4 *o);
+extern "C" void AquariumJellyfish_StartDrift(E7d4 *o);
+extern "C" void AquariumJellyfish_DriftOut(E7d4 *o);
+extern "C" void AquariumJellyfish_DriftBack(E7d4 *o);
+extern "C" void AquariumJellyfish_UpdatePulse(E7d4 *o);
+extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o);
+extern "C" void AquariumJellyfish_PulseGrow(E7d4 *o);
+extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o);
+extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out);
+extern "C" void _ZN16AquariumFastFish8vfunc_00Ev(E744 *o);
+extern "C" void _ZN16AquariumFastFish8vfunc_04Ev(E744 *o);
+extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b);
+extern "C" void _ZN15AquariumBigFish8vfunc_00Ev(E72c *o);
+extern "C" void _ZN15AquariumBigFish8vfunc_04Ev(E72c *o);
+extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b);
+extern "C" void _ZN12AquariumFrog8vfunc_00Ev(E834 *o);
+extern "C" void _ZN12AquariumFrog8vfunc_04Ev(E834 *o);
+extern "C" void AquariumFrog_StartCroak(E834 *o);
+extern "C" void AquariumFrog_Croak(E834 *o);
+extern "C" void _ZN11AquariumEel8vfunc_00Ev(E804 *e);
+extern "C" void _ZN11AquariumEel8vfunc_04Ev(E804 *e);
+extern "C" void AquariumEel_StateStart(E804 *e);
+extern "C" void AquariumEel_StateSpeedUp(E804 *e);
+extern "C" void AquariumEel_StateHold(E804 *e);
+extern "C" void AquariumEel_StateSlowDown(E804 *e);
+extern "C" void AquariumEel_StateWait(E804 *e);
+extern "C" void _ZN20AquariumSeaButterfly8vfunc_00Ev(E7bc *e);
+extern "C" void _ZN20AquariumSeaButterfly8vfunc_04Ev(E7bc *e);
+extern "C" void _ZN16AquariumSeahorse8vfunc_00Ev(E7a4 *e);
+extern "C" void _ZN16AquariumSeahorse8vfunc_04Ev(E7a4 *e);
+extern "C" void _ZN18AquariumPufferFish8vfunc_00Ev(E78c *e);
+extern "C" void _ZN18AquariumPufferFish8vfunc_04Ev(E78c *e);
+extern "C" void _ZN15AquariumPiranha8vfunc_00Ev(E75c *e);
+extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o);
+extern "C" void AquariumPiranha_StateSwim(E75c *o);
+extern "C" void AquariumPiranha_StateApproach(E75c *o);
+extern "C" void AquariumPiranha_StateBite(E75c *o);
+extern "C" void AquariumPiranha_BobDepth(E75c *o);
+extern "C" void AquariumPiranha_BiteIdle(E75c *o);
+extern "C" void AquariumPiranha_BiteLunge(E75c *o);
+extern "C" void AquariumPiranha_BiteRecoil(E75c *o);
+extern "C" void _ZN21AquariumSurfacingFish8vfunc_00Ev(E714 *o);
+extern "C" void _ZN21AquariumSurfacingFish8vfunc_04Ev(E714 *o);
+extern "C" void AquariumSurfacingFish_StateSwim(E714 *o);
+extern "C" void AquariumSurfacingFish_StateSurface(E714 *o);
+extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o);
+extern "C" void _ZN18AquariumHidingFish8vfunc_00Ev(E6fc *o);
+extern "C" void _ZN18AquariumHidingFish8vfunc_04Ev(E6fc *o);
+extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o);
+extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o);
+extern "C" void AquariumHidingFish_CheckTouch(E6fc *o);
+extern "C" void AquariumHidingFish_UpdateHide(E6fc *o);
+extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f);
+extern "C" void AquariumHidingFish_StayHidden(E6fc *o);
+extern "C" void _ZN16AquariumCrawfish8vfunc_00Ev(E84c *o);
+extern "C" void _ZN16AquariumCrawfish8vfunc_04Ev(E84c *o);
+extern "C" void AquariumCrawfish_StartWalk(E84c *o);
+extern "C" void AquariumCrawfish_Walk(E84c *o);
+extern "C" void AquariumCrawfish_SlowDown(E84c *o);
+extern "C" void _ZN13AquariumSquid8vfunc_00Ev(E81c *o);
+extern "C" void _ZN13AquariumSquid8vfunc_04Ev(E81c *o);
+extern "C" void AquariumSquid_TurnAtTankEnd(E864 *e);
+extern "C" void _ZN15AquariumOctopus8vfunc_00Ev(E7ec *e);
+extern "C" void AquariumSwimFish_SetupSea(E864 *e);
+extern "C" void AquariumSwimFish_UpdateSea(E864 *e);
+extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e);
+extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e);
+extern "C" void AquariumFish_JointCalcPre(Cb *c);
+extern "C" void AquariumFish_JointCalcPost(Cb *c);
+extern "C" void AquariumFish_InstallJointCallbacks(Cb *c);
+extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out);
+extern "C" BOOL AquariumFish_CheckTouched(E864 *e);
+extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p);
+extern "C" void _ZN16AquariumSwimFish8vfunc_00Ev(E864 *e);
+extern "C" void _ZN16AquariumSwimFish8vfunc_04Ev(E864 *e);
+extern "C" void AquariumFish_StateStart(E864 *e);
+extern "C" void AquariumFish_StateAccelerate(E864 *e);
+extern "C" void AquariumFish_StateCruise(E864 *e);
+extern "C" void AquariumFish_StateDecelerate(E864 *e);
+extern "C" void AquariumFish_StateRest(E864 *e);
+extern "C" void AquariumFish_StateFlee(E864 *e);
+extern "C" void AquariumFish_StateNone();
+extern "C" void AquariumFish_StateStartFast(E864 *e);
+extern "C" void AquariumFish_StateSlowDown(E864 *e);
+extern "C" void AquariumFish_ClampHeadingSideways(R *e);
+extern "C" void AquariumFish_TurnAtTankEnds(R *e);
+extern "C" void AquariumFish_UpdateAvoid(E864 *e);
+extern "C" void AquariumFish_AvoidOther(R *e);
+extern "C" void AquariumFish_ClearContact(R *e);
+extern "C" s32 Aquarium_GetContactSide(R *a, R **b);
+extern "C" void AquariumFish_SplitDepth(R *a, R **b);
+extern "C" void AquariumFish_TurnToTarget(E864 *e);
+extern "C" void AquariumFish_UpdateAnimSpeed(E864 *e, s32 lo);
+extern "C" void AquariumFish_KeepInsideX(R *e);
+extern "C" void AquariumFish_RecordContact(void *unused, R **pp, R **q);
+extern "C" void AquariumFish_ResetContacts(R *self);
+extern "C" void AquariumFish_SteerFromWall(E864 *self);
+extern "C" void AquariumFish_LoadParams(E864 *self);
+extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i);
+extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i);
+extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self);
+extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self);
+extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o);
+extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n);
+extern "C" void MuseumAquarium_UpdateFish(Mgr *o, R **p, s32 i);
+extern "C" void MuseumAquarium_FishStateNone();
+extern "C" s32 MuseumAquarium_FishStateLoad(Mgr *o, R **p, s32 i);
+extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x);
+extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o);
+extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n);
+extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx);
+extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p);
+extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o);
+extern "C" s32 _ZN14MuseumAquarium8vfunc_0cEv(Mgr *o);
+extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o);
+extern "C" void MuseumAquarium_PlaceSeaFish(Mgr *self);
+extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type);
+extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c, s32 d);
 
 extern "C" {
-extern const Rec data_ov004_022402ec[56];
-extern u8 data_ov004_0224e5f0;
-extern u8 data_ov004_0224e5f4;
+extern const Rec sAquariumFishParams[56];
+extern u8 sAquariumEndFish;
+extern u8 sAquariumObstacleCount;
 extern void *data_ov004_0224e5f8[2];
 extern void *data_ov004_0224e600[2];
 extern void *data_ov004_0224e608[2];
@@ -944,31 +944,31 @@ extern void *data_ov004_0224e6a0[2];
 extern void *data_ov004_0224e6a8[2];
 extern void *data_ov004_0224e6b0[2];
 extern void *data_ov004_0224e6b8[2];
-extern Unk_ov004_SceneEntry data_ov004_0224e6c0;
+extern Unk_ov004_SceneEntry sMuseumAquariumProfile;
 extern void *data_ov004_0224e6c8[2];
 extern void *data_ov004_0224e6d0[2];
 extern void *data_ov004_0224e6d8[2];
-extern u8 data_ov004_02251d60;
-extern u8 data_ov004_02251d64;
-extern E834 *data_ov004_02251d6c;
-extern E7d4 *data_ov004_02251d74;
-extern E7bc *data_ov004_02251d78;
-extern R *data_ov004_02251e94[0x38];
-extern FxVec3 data_ov004_02251d9c;
-extern FxVec3 data_ov004_02251d84;
-extern PairFn data_ov004_02251de4[2];
-extern Fn data_ov004_02251e5c[7];
-extern Fn data_ov004_02251e2c[6];
-extern Fn804 data_ov004_02251e04[5];
-extern Fn data_ov004_02251db4[3];
-extern MgrFn data_ov004_02251dcc[3];
+extern u8 sAquariumRoom;
+extern u8 sAquariumFirstFish;
+extern E834 *sAquariumFrog;
+extern E7d4 *sAquariumJellyfish;
+extern E7bc *sAquariumSeaButterfly;
+extern R *sAquariumFish[0x38];
+extern FxVec3 sAquariumTankCenterA;
+extern FxVec3 sAquariumTankCenterB;
+extern PairFn sAquariumSwimFishRoomFns[2];
+extern Fn sAquariumSwimStates[7];
+extern Fn sAquariumFastSwimStates[6];
+extern Fn804 sAquariumEelStates[5];
+extern Fn sAquariumPiranhaStates[3];
+extern MgrFn sAquariumFishLoadStates[3];
 }
 
 extern "C" {
-void *data_ov004_0224e638[2] = {(void *)func_ov004_0222d560, 0};
-FxVec3 data_ov004_02251d9c(0x11000, 0, 0x15000);
-void *data_ov004_0224e600[2] = {(void *)func_ov004_0222f1d0, 0};
-const Rec data_ov004_022402ec[56] = {
+void *data_ov004_0224e638[2] = {(void *)MuseumAquarium_FishStateNone, 0};
+FxVec3 sAquariumTankCenterA(0x11000, 0, 0x15000);
+void *data_ov004_0224e600[2] = {(void *)AquariumSwimFish_SetupSea, 0};
+const Rec sAquariumFishParams[56] = {
     {0x00, 0x01, 0x38, 0x28, 0xd8, 0x14, 0x19, 0x3d, 0x0a, 0x03, 0x1e, 0x05, 0x78, 0x1a, 0x7c, 0x98, 0x0c},
     {0x00, 0x01, 0x24, 0x28, 0xe0, 0x19, 0x21, 0x3d, 0x14, 0x03, 0x1e, 0x05, 0x78, 0x14, 0x7a, 0xc0, 0x0c},
     {0x01, 0x01, 0x48, 0x38, 0xc8, 0x0c, 0x08, 0x48, 0x28, 0x0a, 0x78, 0x14, 0x78, 0x14, 0x6e, 0xb5, 0x14},
@@ -1026,21 +1026,21 @@ const Rec data_ov004_022402ec[56] = {
     {0x06, 0x03, 0x00, 0x00, 0xa4, 0xf6, 0x04, 0x85, 0x50, 0x0a, 0x32, 0x05, 0x01, 0x1f, 0x6a, 0x73, 0x00},
     {0x03, 0x03, 0x74, 0xac, 0x7c, 0x19, 0x08, 0x52, 0x28, 0x05, 0xdc, 0x14, 0xa0, 0x09, 0x4d, 0x5a, 0x40},
 };
-void *data_ov004_0224e610[2] = {(void *)func_ov004_0222f090, 0};
-void *data_ov004_0224e6d0[2] = {(void *)func_ov004_0222eb8c, 0};
-FxVec3 data_ov004_02251d84(0x11000, 0, 0x7000);
-void *data_ov004_0224e670[2] = {(void *)func_ov004_0222d460, 0};
-void *data_ov004_0224e668[2] = {(void *)func_ov004_022304f4, 0};
-void *data_ov004_0224e680[2] = {(void *)func_ov004_0222e874, 0};
-void *data_ov004_0224e6a0[2] = {(void *)func_ov004_02230e88, 0};
-void *data_ov004_0224e5f8[2] = {(void *)func_ov004_02230ddc, 0};
+void *data_ov004_0224e610[2] = {(void *)AquariumSwimFish_SetupFreshwater, 0};
+void *data_ov004_0224e6d0[2] = {(void *)AquariumFish_StateStart, 0};
+FxVec3 sAquariumTankCenterB(0x11000, 0, 0x7000);
+void *data_ov004_0224e670[2] = {(void *)MuseumAquarium_FishStateActive, 0};
+void *data_ov004_0224e668[2] = {(void *)AquariumPiranha_StateSwim, 0};
+void *data_ov004_0224e680[2] = {(void *)AquariumFish_StateSlowDown, 0};
+void *data_ov004_0224e6a0[2] = {(void *)AquariumEel_StateSpeedUp, 0};
+void *data_ov004_0224e5f8[2] = {(void *)AquariumEel_StateWait, 0};
 }
 
-extern "C" void func_ov004_02233058() {
-    new Unk_ov004_0224e87c;
+extern "C" void MuseumAquarium_Create() {
+    new MuseumAquarium;
 }
 
-Unk_ov004_0224e774::Unk_ov004_0224e774() {
+AquariumFish::AquariumFish() {
     func_ov004_02232608(unk_04);
     func_02054514(unk_64);
     func_0209c370((u16 *)unk_166);
@@ -1056,7 +1056,7 @@ Unk_ov004_0224e774::Unk_ov004_0224e774() {
     for (s32 i = 0; i < 4; i++) unk_54[i] = 0;
 }
 
-Unk_ov004_0224e774::~Unk_ov004_0224e774() {
+AquariumFish::~AquariumFish() {
     __cxa_vec_cleanup(unk_1d0, 2, 0xc, func_02000c8c);
     func_0209c128(unk_168);
     func_0209c364((u16 *)unk_166);
@@ -1064,7 +1064,7 @@ Unk_ov004_0224e774::~Unk_ov004_0224e774() {
     func_ov004_022325f0(unk_04);
 }
 
-Unk_ov004_0224e864::Unk_ov004_0224e864() {
+AquariumSwimFish::AquariumSwimFish() {
     unk_1ee = 2;
     unk_1fe = 2;
     unk_200 = 3;
@@ -1080,9 +1080,9 @@ Unk_ov004_0224e864::Unk_ov004_0224e864() {
     unk_254 = 0;
 }
 
-Unk_ov004_0224e864::~Unk_ov004_0224e864() {}
+AquariumSwimFish::~AquariumSwimFish() {}
 
-Unk_ov004_0224e7d4::Unk_ov004_0224e7d4() {
+AquariumJellyfish::AquariumJellyfish() {
     unk_255 = 1;
     unk_21c = 0;
     unk_20c = 0x41;
@@ -1091,79 +1091,79 @@ Unk_ov004_0224e7d4::Unk_ov004_0224e7d4() {
     unk_284 = 0;
 }
 
-Unk_ov004_0224e7d4::~Unk_ov004_0224e7d4() {}
+AquariumJellyfish::~AquariumJellyfish() {}
 
-Unk_ov004_0224e744::Unk_ov004_0224e744() {
+AquariumFastFish::AquariumFastFish() {
     unk_238 = 0;
 }
 
-Unk_ov004_0224e744::~Unk_ov004_0224e744() {}
+AquariumFastFish::~AquariumFastFish() {}
 
-Unk_ov004_0224e72c::Unk_ov004_0224e72c() {
+AquariumBigFish::AquariumBigFish() {
     unk_255 = 0;
     unk_256 = 0;
 }
 
-Unk_ov004_0224e72c::~Unk_ov004_0224e72c() {}
+AquariumBigFish::~AquariumBigFish() {}
 
-Unk_ov004_0224e834::Unk_ov004_0224e834() {
+AquariumFrog::AquariumFrog() {
     unk_211 = 2;
 }
 
-Unk_ov004_0224e834::~Unk_ov004_0224e834() {}
+AquariumFrog::~AquariumFrog() {}
 
-Unk_ov004_0224e804::Unk_ov004_0224e804() {
+AquariumEel::AquariumEel() {
     unk_20e = 0;
 }
 
-Unk_ov004_0224e804::~Unk_ov004_0224e804() {}
+AquariumEel::~AquariumEel() {}
 
-extern "C" Unk_ov004_0224e7bc::Unk_ov004_0224e7bc() {
+extern "C" AquariumSeaButterfly::AquariumSeaButterfly() {
     unk_255 = 1;
     unk_21c = 0;
     unk_20c = 0x41;
     unk_270 = 0;
 }
 
-extern "C" Unk_ov004_0224e7bc::~Unk_ov004_0224e7bc() {
+extern "C" AquariumSeaButterfly::~AquariumSeaButterfly() {
 }
 
-extern "C" Unk_ov004_0224e7a4::Unk_ov004_0224e7a4() {
+extern "C" AquariumSeahorse::AquariumSeahorse() {
     unk_255 = 1;
     unk_21c = 0;
     unk_20c = 0xa3;
     unk_264 = 0;
 }
 
-extern "C" Unk_ov004_0224e7a4::~Unk_ov004_0224e7a4() {
+extern "C" AquariumSeahorse::~AquariumSeahorse() {
 }
 
-extern "C" Unk_ov004_0224e84c::Unk_ov004_0224e84c() {
+extern "C" AquariumCrawfish::AquariumCrawfish() {
     *(u8 *)&unk_21c = 2;
 }
 
-extern "C" Unk_ov004_0224e84c::~Unk_ov004_0224e84c() {
+extern "C" AquariumCrawfish::~AquariumCrawfish() {
 }
 
-extern "C" Unk_ov004_0224e78c::Unk_ov004_0224e78c() {
+extern "C" AquariumPufferFish::AquariumPufferFish() {
     unk_255 = 0;
     unk_256 = 0;
     unk_258 = 0;
 }
 
-extern "C" Unk_ov004_0224e78c::~Unk_ov004_0224e78c() {
+extern "C" AquariumPufferFish::~AquariumPufferFish() {
 }
 
-extern "C" Unk_ov004_0224e75c::Unk_ov004_0224e75c() {
+extern "C" AquariumPiranha::AquariumPiranha() {
     unk_255 = 0;
     unk_257 = 0;
     unk_259 = 0;
 }
 
-extern "C" Unk_ov004_0224e75c::~Unk_ov004_0224e75c() {
+extern "C" AquariumPiranha::~AquariumPiranha() {
 }
 
-extern "C" Unk_ov004_0224e714::Unk_ov004_0224e714() {
+extern "C" AquariumSurfacingFish::AquariumSurfacingFish() {
     unk_258 = 0;
     unk_257 = 0;
     unk_255 = 0;
@@ -1171,76 +1171,76 @@ extern "C" Unk_ov004_0224e714::Unk_ov004_0224e714() {
     unk_259 = 0;
 }
 
-extern "C" Unk_ov004_0224e714::~Unk_ov004_0224e714() {
+extern "C" AquariumSurfacingFish::~AquariumSurfacingFish() {
 }
 
-extern "C" Unk_ov004_0224e6fc::Unk_ov004_0224e6fc() {
+extern "C" AquariumHidingFish::AquariumHidingFish() {
 }
 
-extern "C" Unk_ov004_0224e6fc::~Unk_ov004_0224e6fc() {
+extern "C" AquariumHidingFish::~AquariumHidingFish() {
 }
 
-extern "C" Unk_ov004_0224e81c::Unk_ov004_0224e81c() {
+extern "C" AquariumSquid::AquariumSquid() {
     unk_255 = 0;
 }
 
-extern "C" Unk_ov004_0224e81c::~Unk_ov004_0224e81c() {
+extern "C" AquariumSquid::~AquariumSquid() {
 }
 
-extern "C" Unk_ov004_0224e7ec::Unk_ov004_0224e7ec() {
+extern "C" AquariumOctopus::AquariumOctopus() {
 }
 
-extern "C" Unk_ov004_0224e7ec::~Unk_ov004_0224e7ec() {
+extern "C" AquariumOctopus::~AquariumOctopus() {
 }
 
-extern "C" Unk_ov004_0224e87c::Unk_ov004_0224e87c() {
+extern "C" MuseumAquarium::MuseumAquarium() {
     __cxa_vec_ctor(unk_2a8, 2, 0x2a8, (void *)func_020b6e10, (void *)func_020b6df4);
     func_0209c2dc(unk_7f8);
 }
 
-extern "C" Unk_ov004_0224e87c::~Unk_ov004_0224e87c() {
+extern "C" MuseumAquarium::~MuseumAquarium() {
     func_0209c2d8(unk_7f8);
     __cxa_vec_cleanup(unk_2a8, 2, 0x2a8, (void *)func_020b6df4);
 }
 
-extern "C" Unk_ov004_0224e6e8::Unk_ov004_0224e6e8() {
+extern "C" AquariumFishHitBox::AquariumFishHitBox() {
     unk_4c = 0;
 }
 
 extern "C" /*EXTERN_C_CLOSE*/
 
-Unk_ov004_0224e6e8::~Unk_ov004_0224e6e8() {
+AquariumFishHitBox::~AquariumFishHitBox() {
 }
 
-extern "C" void func_ov004_022325c8(s32 *p, s32 a, u32 ang) {
+extern "C" void Aquarium_StepX(s32 *p, s32 a, u32 ang) {
     s32 idx = ((u16)ang >> 4) * 2;
     *p += func_01ffcb0c(a, data_02135f44[idx]);
 }
 
-extern "C" void func_ov004_0223259c(s32 *p, s32 a, u32 ang) {
+extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang) {
     s32 idx = ((u16)ang >> 4) * 2;
     *p += func_01ffcb0c(a, data_02135f44[idx + 1]);
 }
 
-extern "C" void func_ov004_0223257c(V3 *p, s32 a, s16 ang) {
-    func_ov004_022325c8((s32 *)p, a, ang);
-    func_ov004_0223259c((s32 *)p + 2, a, ang);
+extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang) {
+    Aquarium_StepX((s32 *)p, a, ang);
+    Aquarium_StepZ((s32 *)p + 2, a, ang);
 }
 
-extern "C" void func_ov004_02232548(E864 *o) {
-    if (func_ov004_02231c68(o)) {
-        func_ov004_022323b4(o);
+extern "C" void AquariumFish_UpdateWallTurn(E864 *o) {
+    if (AquariumFish_IsNearWall(o)) {
+        AquariumFish_TurnAtWall(o);
     } else {
         o->unk_1fc = 0;
         o->unk_1fd = 0;
-        func_ov004_02232220(o);
+        AquariumFish_EndTurnAnim(o);
     }
 }
 
-extern "C" void func_ov004_022323b4(E864 *o) {
+extern "C" void AquariumFish_TurnAtWall(E864 *o) {
     if (o->unk_1ee != 1) {
         if (o->unk_1fd == 0) {
-            if (func_ov004_02231e28(0, 100) < 0x4b) {
+            if (Aquarium_RandRange(0, 100) < 0x4b) {
                 o->unk_1fd = 1;
             } else {
                 o->unk_1fd = 2;
@@ -1262,15 +1262,15 @@ extern "C" void func_ov004_022323b4(E864 *o) {
                 l.x = o->unk_1a8.x;
                 l.y = o->unk_1a8.y;
                 l.z = o->unk_1a8.z;
-                func_ov004_0223257c(&l, ((s32)data_ov004_022402ec[o->unk_15c].unk_03 << 12) >> 7, o->unk_1c0);
-                s32 r = func_ov004_02231d54((s32 *)&l, o->unk_1c0);
-                func_ov004_0223230c(o, r, 2, 6);
+                Aquarium_StepXZ(&l, ((s32)sAquariumFishParams[o->unk_15c].unk_03 << 12) >> 7, o->unk_1c0);
+                s32 r = Aquarium_ProbeTurnSide((s32 *)&l, o->unk_1c0);
+                AquariumFish_PickTurn(o, r, 2, 6);
                 o->unk_1fc = 1;
                 o->unk_250 = 0;
                 o->unk_250 = o->unk_250 + o->unk_200;
             }
             if (o->unk_200 * o->unk_250 < 0) {
-                if (func_ov004_02232220(o)) {
+                if (AquariumFish_EndTurnAnim(o)) {
                     o->unk_1fd = 2;
                 } else if (o->unk_1c6 == 0) {
                     o->unk_1fd = 2;
@@ -1283,19 +1283,19 @@ extern "C" void func_ov004_022323b4(E864 *o) {
                 o->unk_22f = 0;
                 o->unk_1c0 = o->unk_1c0 + o->unk_200;
                 o->unk_250 = o->unk_250 + o->unk_200;
-                func_ov004_02232270(o, (u16)o->unk_1fe);
+                AquariumFish_PlayTurnAnim(o, (u16)o->unk_1fe);
                 if (o->unk_1ee == 4) {
                     o->unk_158 = 0;
                 }
             }
         } else if (o->unk_1fd == 2) {
-            func_ov004_02232220(o);
+            AquariumFish_EndTurnAnim(o);
         }
     }
 }
 
-extern "C" void func_ov004_0223230c(E864 *o, s32 f, u32 a, u32 b) {
-    s32 t = func_ov004_02231e28((u16)a, (u16)b);
+extern "C" void AquariumFish_PickTurn(E864 *o, s32 f, u32 a, u32 b) {
+    s32 t = Aquarium_RandRange((u16)a, (u16)b);
     o->unk_200 = t * 0xb6;
     if (f != 0) {
         s32 idx = (u16)o->unk_1c0 >> 4;
@@ -1316,7 +1316,7 @@ extern "C" void func_ov004_0223230c(E864 *o, s32 f, u32 a, u32 b) {
     }
 }
 
-extern "C" void func_ov004_02232270(E864 *o, u32 a) {
+extern "C" void AquariumFish_PlayTurnAnim(E864 *o, u32 a) {
     if (o->unk_1c6 != 0) {
         if (o->unk_22e != 0) {
             if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, a)) {
@@ -1325,9 +1325,9 @@ extern "C" void func_ov004_02232270(E864 *o, u32 a) {
         } else {
             if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, (u16)(o->unk_104.mid - 1))) {
                 if (a == 10) {
-                    func_ov004_022321e8(o, 2);
+                    AquariumFish_PlayAnim(o, 2);
                 } else {
-                    func_ov004_022321e8(o, 1);
+                    AquariumFish_PlayAnim(o, 1);
                 }
                 o->unk_22e = 1;
             }
@@ -1339,12 +1339,12 @@ extern "C" void func_ov004_02232270(E864 *o, u32 a) {
     }
 }
 
-extern "C" s32 func_ov004_02232220(E864 *o) {
+extern "C" s32 AquariumFish_EndTurnAnim(E864 *o) {
     BOOL r = FALSE;
     if (o->unk_1c6 != 0) {
         if (o->unk_22e != 0) {
             if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, o->unk_104.mid)) {
-                func_ov004_022321cc(o);
+                AquariumFish_PlaySwimAnim(o);
                 r = TRUE;
             }
         }
@@ -1352,25 +1352,25 @@ extern "C" s32 func_ov004_02232220(E864 *o) {
     return r;
 }
 
-extern "C" void func_ov004_022321e8(E864 *o, s32 i) {
+extern "C" void AquariumFish_PlayAnim(E864 *o, s32 i) {
     s32 t = func_021065dc(o->unk_54[i]);
     s32 r = func_021065f8(t, 0);
     BlendAnimModel_playBlend(o->unk_64, r, 2, 0, 0x1000, 0, 0);
 }
 
-extern "C" void func_ov004_022321cc(E864 *o)
+extern "C" void AquariumFish_PlaySwimAnim(E864 *o)
 {
-    func_ov004_022321e8(o, 0);
+    AquariumFish_PlayAnim(o, 0);
     o->unk_22e = 0;
 }
 
-extern "C" void func_ov004_022321b4(E864 *o)
+extern "C" void AquariumFish_CancelTurn(E864 *o)
 {
-    func_ov004_022321cc(o);
+    AquariumFish_PlaySwimAnim(o);
     o->unk_1fd = 2;
 }
 
-extern "C" void func_ov004_02232158(E864 *o, s32 a, s32 b, s32 c)
+extern "C" void AquariumFish_MoveVertical(E864 *o, s32 a, s32 b, s32 c)
 {
     s32 *p = &o->unk_1a8.y;
     s32 t = *p;
@@ -1383,24 +1383,24 @@ extern "C" void func_ov004_02232158(E864 *o, s32 a, s32 b, s32 c)
     }
 }
 
-extern "C" void func_ov004_02232130(E864 *o)
+extern "C" void AquariumFish_UpdateDepth(E864 *o)
 {
-    func_ov004_02232158(o, o->unk_224, o->unk_1cc, o->unk_228);
+    AquariumFish_MoveVertical(o, o->unk_224, o->unk_1cc, o->unk_228);
 }
 
-extern "C" void func_ov004_022320c8(E864 *o)
+extern "C" void AquariumFish_UpdateDepthCapped(E864 *o)
 {
     s32 k = o->unk_15c;
     if (k == 0x2d || k == 0x2e) {
-        func_ov004_02232158(o, o->unk_224, o->unk_1cc, o->unk_228);
+        AquariumFish_MoveVertical(o, o->unk_224, o->unk_1cc, o->unk_228);
     } else if (o->unk_1e8 == k) {
-        func_ov004_02232158(o, o->unk_224, o->unk_1cc, o->unk_228);
+        AquariumFish_MoveVertical(o, o->unk_224, o->unk_1cc, o->unk_228);
     } else {
-        func_ov004_02232158(o, 0x7b, 0x5000, o->unk_228);
+        AquariumFish_MoveVertical(o, 0x7b, 0x5000, o->unk_228);
     }
 }
 
-extern "C" void func_ov004_02232068(E864 *o)
+extern "C" void AquariumFish_UpdatePitchByDir(E864 *o)
 {
     u32 t = o->unk_1ee;
     if ((u8)(t + 0xff) > 1) {
@@ -1412,7 +1412,7 @@ extern "C" void func_ov004_02232068(E864 *o)
     }
 }
 
-extern "C" void func_ov004_02231f98(E864 *o, s32 lim, s32 b)
+extern "C" void AquariumFish_UpdatePitch(E864 *o, s32 lim, s32 b)
 {
     if ((u8)(o->unk_1ee + 0xff) > 1) {
         s32 t = -o->unk_23c * o->unk_1ca;
@@ -1447,7 +1447,7 @@ extern "C" void func_ov004_02231f98(E864 *o, s32 lim, s32 b)
     }
 }
 
-extern "C" void func_ov004_02231eec(E864 *o, s32 a)
+extern "C" void AquariumFish_UpdatePitchSmooth(E864 *o, s32 a)
 {
     if ((u8)(o->unk_1ee + 0xff) > 1) {
         if (o->unk_24e != 0) {
@@ -1471,7 +1471,7 @@ extern "C" void func_ov004_02231eec(E864 *o, s32 a)
     }
 }
 
-extern "C" void func_ov004_02231e8c(E864 *o, s32 m, s32 lim, u32 mode)
+extern "C" void AquariumFish_Bob(E864 *o, s32 m, s32 lim, u32 mode)
 {
     s32 *p = &o->unk_1a8.y;
     if (mode == 0 || mode == 2) {
@@ -1492,16 +1492,16 @@ extern "C" void func_ov004_02231e8c(E864 *o, s32 m, s32 lim, u32 mode)
     }
 }
 
-extern "C" s32 func_ov004_02231e74(s32 a, s32 b)
+extern "C" s32 Aquarium_RandFx(s32 a, s32 b)
 {
-    s32 r = func_ov004_02231e28(a, b);
+    s32 r = Aquarium_RandRange(a, b);
     if (r == 0) {
         r = 1;
     }
     return r << 12;
 }
 
-extern "C" s16 func_ov004_02231e3c(s32 a, s32 b)
+extern "C" s16 Aquarium_RandAngle(s32 a, s32 b)
 {
     s32 sign;
     s32 r;
@@ -1510,16 +1510,16 @@ extern "C" s16 func_ov004_02231e3c(s32 a, s32 b)
     } else {
         sign = -1;
     }
-    r = func_ov004_02231e28(b, a);
+    r = Aquarium_RandRange(b, a);
     return (s8)sign * r * 0xb6;
 }
 
-extern "C" s32 func_ov004_02231e28(s32 a, s32 b)
+extern "C" s32 Aquarium_RandRange(s32 a, s32 b)
 {
     return a + func_02063b8c(b - a);
 }
 
-extern "C" BOOL func_ov004_02231dec(void *obj, void *a, void *b, s32 max)
+extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max)
 {
     BOOL r = TRUE;
     if (func_020e96a4(a, b) > max) {
@@ -1529,7 +1529,7 @@ extern "C" BOOL func_ov004_02231dec(void *obj, void *a, void *b, s32 max)
     return r;
 }
 
-extern "C" BOOL func_ov004_02231d54(s32 *p, s32 v)
+extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v)
 {
     BOOL r = FALSE;
     s32 sgn = 2;
@@ -1553,7 +1553,7 @@ extern "C" BOOL func_ov004_02231d54(s32 *p, s32 v)
         q.x = p[0] + ((sgn * i) << 12) / 10;
         q.y = b;
         q.z = a;
-        if (func_ov004_02231d1c(&q) == 0) {
+        if (Aquarium_TestHeight800At(&q) == 0) {
             r = TRUE;
             break;
         }
@@ -1563,14 +1563,14 @@ extern "C" BOOL func_ov004_02231d54(s32 *p, s32 v)
         q.x = x;
         q.y = y;
         q.z = z;
-        if (func_ov004_02231d1c(&q) == 0) {
+        if (Aquarium_TestHeight800At(&q) == 0) {
             break;
         }
     }
     return r;
 }
 
-extern "C" BOOL func_ov004_02231d1c(V3 *pos)
+extern "C" BOOL Aquarium_TestHeight800At(V3 *pos)
 {
     u32 buf[16];
     BOOL r = FALSE;
@@ -1582,7 +1582,7 @@ extern "C" BOOL func_ov004_02231d1c(V3 *pos)
     return r;
 }
 
-extern "C" BOOL func_ov004_02231c68(E864 *o)
+extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
 {
     BOOL r = FALSE;
     V3 v;
@@ -1590,24 +1590,24 @@ extern "C" BOOL func_ov004_02231c68(E864 *o)
     v.x = o->unk_1a8.x;
     v.y = o->unk_1a8.y;
     v.z = o->unk_1a8.z;
-    func_ov004_0223257c(&v, (data_ov004_022402ec[o->unk_15c].unk_03 << 12) >> 7, o->unk_1c0);
+    Aquarium_StepXZ(&v, (sAquariumFishParams[o->unk_15c].unk_03 << 12) >> 7, o->unk_1c0);
     x = 0x400;
     if (o->unk_1fc != 0) {
         x = 0x1000;
     }
     if (o->unk_15c == 0x19 || o->unk_15c < 0x11) {
-        if (func_020308b4(&v.x, x, &data_ov004_02251d9c, 0xfc00, 0x3c00) != 0) {
+        if (func_020308b4(&v.x, x, &sAquariumTankCenterA, 0xfc00, 0x3c00) != 0) {
             r = TRUE;
         }
     } else {
-        if (func_020308b4(&v.x, x, &data_ov004_02251d84, 0xfc00, 0x3c00) != 0) {
+        if (func_020308b4(&v.x, x, &sAquariumTankCenterB, 0xfc00, 0x3c00) != 0) {
             r = TRUE;
         }
     }
     return r;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_00Ev(E7d4 *o)
+extern "C" void _ZN17AquariumJellyfish8vfunc_00Ev(E7d4 *o)
 {
     s32 *p = &o->unk_15c;
     o->unk_50 = o;
@@ -1618,14 +1618,14 @@ extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_00Ev(E7d4 *o)
     o->unk_214 = 1;
     o->unk_218 = 1;
     o->unk_230 = 0x96;
-    o->unk_204 = data_ov004_022402ec[*p].unk_08;
-    o->unk_205 = data_ov004_022402ec[*p].unk_09;
-    o->unk_206 = data_ov004_022402ec[*p].unk_0a;
-    o->unk_207 = data_ov004_022402ec[*p].unk_0b;
-    data_ov004_02251d74 = o;
+    o->unk_204 = sAquariumFishParams[*p].unk_08;
+    o->unk_205 = sAquariumFishParams[*p].unk_09;
+    o->unk_206 = sAquariumFishParams[*p].unk_0a;
+    o->unk_207 = sAquariumFishParams[*p].unk_0b;
+    sAquariumJellyfish = o;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_04Ev(E7d4 *o)
+extern "C" void _ZN17AquariumJellyfish8vfunc_04Ev(E7d4 *o)
 {
     u8 a = o->unk_1e8;
     u8 *p = &o->unk_252;
@@ -1636,14 +1636,14 @@ extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_04Ev(E7d4 *o)
         o->unk_281 = 1;
     }
     if (o->unk_281 == 0) {
-        (o->*data_ov004_02251e5c[o->unk_1ee])();
+        (o->*sAquariumSwimStates[o->unk_1ee])();
     } else {
-        func_ov004_0223197c(o);
+        AquariumJellyfish_UpdateDrift(o);
     }
-    func_ov004_022319ac(&o->unk_1c4, &o->unk_284, (s32 *)&o->unk_288, 0x2aac, 0x12c);
+    Aquarium_Oscillate(&o->unk_1c4, &o->unk_284, (s32 *)&o->unk_288, 0x2aac, 0x12c);
     switch (o->unk_255) {
     case 1: {
-        s32 r = func_ov004_02231e28(0, 250);
+        s32 r = Aquarium_RandRange(0, 250);
         s32 v;
         if (r <= 1 || (v = o->unk_1a8.y) >= 0x2b33) {
             if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, 1) != 0) {
@@ -1660,14 +1660,14 @@ extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_04Ev(E7d4 *o)
         break;
     }
     case 0:
-        if (func_ov004_02231e28(0, 100) <= 10) {
+        if (Aquarium_RandRange(0, 100) <= 10) {
             o->unk_21c = 0;
             o->unk_255 = 1;
         }
         o->unk_110 = 0x800;
         break;
     case 2: {
-        s32 r = func_ov004_02231e28(0, 250);
+        s32 r = Aquarium_RandRange(0, 250);
         if (r <= 1 || o->unk_1a8.y <= 0x800) {
             o->unk_21c = 0;
             o->unk_255 = 1;
@@ -1677,16 +1677,16 @@ extern "C" void _ZN18Unk_ov004_0224e7d48vfunc_04Ev(E7d4 *o)
     }
     }
     if (o->unk_1ee != 2) {
-        func_ov004_0222e2f4(o);
+        AquariumFish_TurnToTarget(o);
     }
-    func_ov004_02231e8c(o, 8, 0x28, o->unk_255);
+    AquariumFish_Bob(o, 8, 0x28, o->unk_255);
     o->unk_21c++;
     o->unk_158++;
-    func_ov004_02231838(o);
-    func_ov004_02231600(o, &o->unk_26c);
+    AquariumJellyfish_UpdatePulse(o);
+    AquariumFish_CalcHitCenter(o, &o->unk_26c);
 }
 
-extern "C" void func_ov004_022319ac(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul)
+extern "C" void Aquarium_Oscillate(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul)
 {
     s32 t;
     if (*flag != 0) {
@@ -1705,24 +1705,24 @@ extern "C" void func_ov004_022319ac(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 m
     *out = t;
 }
 
-extern "C" void func_ov004_0223197c(E7d4 *o)
+extern "C" void AquariumJellyfish_UpdateDrift(E7d4 *o)
 {
     switch (o->unk_281) {
     case 1:
-        func_ov004_02231938(o);
+        AquariumJellyfish_StartDrift(o);
         break;
     case 2:
-        func_ov004_022318dc(o);
+        AquariumJellyfish_DriftOut(o);
         break;
     case 3:
-        func_ov004_02231878(o);
+        AquariumJellyfish_DriftBack(o);
         break;
     }
 }
 
-extern "C" void func_ov004_02231938(E7d4 *o)
+extern "C" void AquariumJellyfish_StartDrift(E7d4 *o)
 {
-    R *p = data_ov004_02251e94[o->unk_1e8];
+    R *p = sAquariumFish[o->unk_1e8];
     if (p != NULL) {
         o->unk_282 = p->unk_1c0 + 0x4000;
     }
@@ -1730,7 +1730,7 @@ extern "C" void func_ov004_02231938(E7d4 *o)
     o->unk_158 = 0;
 }
 
-extern "C" void func_ov004_022318dc(E7d4 *o)
+extern "C" void AquariumJellyfish_DriftOut(E7d4 *o)
 {
     s32 t = o->unk_158 * 2;
     if (t > 0x7b) {
@@ -1739,10 +1739,10 @@ extern "C" void func_ov004_022318dc(E7d4 *o)
         o->unk_158 = 0;
     }
     func_020e769c(&o->unk_1c0, o->unk_1ec, 0x2d8);
-    func_ov004_0223257c(&o->unk_1a8, t, o->unk_1c0);
+    Aquarium_StepXZ(&o->unk_1a8, t, o->unk_1c0);
 }
 
-extern "C" void func_ov004_02231878(E7d4 *o) {
+extern "C" void AquariumJellyfish_DriftBack(E7d4 *o) {
     s32 t = 0x7b - o->unk_158 * 2;
     if (t < 0) {
         t = 0;
@@ -1751,25 +1751,25 @@ extern "C" void func_ov004_02231878(E7d4 *o) {
         o->unk_1ee = 2;
     }
     func_020e769c(&o->unk_1c0, o->unk_1ec, 0x2d8);
-    func_ov004_0223257c(&o->unk_1a8, t, o->unk_1c0);
+    Aquarium_StepXZ(&o->unk_1a8, t, o->unk_1c0);
 }
 
-extern "C" void func_ov004_02231838(E7d4 *o) {
+extern "C" void AquariumJellyfish_UpdatePulse(E7d4 *o) {
     switch (o->unk_264) {
     case 0:
-        func_ov004_022317d0(o);
+        AquariumJellyfish_BeginPulse(o);
         break;
     case 1:
-        func_ov004_02231750(o);
+        AquariumJellyfish_PulseGrow(o);
         break;
     case 2:
-        func_ov004_022316e0(o);
+        AquariumJellyfish_PulseShrink(o);
         break;
     }
     o->unk_268++;
 }
 
-extern "C" void func_ov004_022317d0(E7d4 *o) {
+extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o) {
     o->unk_264 = 1;
     o->unk_268 = 0;
     if (o->unk_280) {
@@ -1782,7 +1782,7 @@ extern "C" void func_ov004_022317d0(E7d4 *o) {
     }
 }
 
-extern "C" void func_ov004_02231750(E7d4 *o) {
+extern "C" void AquariumJellyfish_PulseGrow(E7d4 *o) {
     o->unk_258 = o->unk_27c + o->unk_278 * o->unk_268;
     if (o->unk_258 >= 0x1000) {
         o->unk_258 = 0x1000;
@@ -1799,7 +1799,7 @@ extern "C" void func_ov004_02231750(E7d4 *o) {
     }
 }
 
-extern "C" void func_ov004_022316e0(E7d4 *o) {
+extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o) {
     s32 t = o->unk_278 * o->unk_268;
     o->unk_258 = 0x1000 - t;
     if (o->unk_258 < o->unk_27c) {
@@ -1814,10 +1814,10 @@ extern "C" void func_ov004_022316e0(E7d4 *o) {
     }
 }
 
-extern "C" void func_ov004_02231600(R *o, V3 *out) {
+extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     s32 t = o->unk_15c;
-    static s32 k1 = (data_ov004_022402ec[t].unk_02 << 12) >> 7;
-    static s32 k2 = (data_ov004_022402ec[t].unk_03 << 12) >> 7;
+    static s32 k1 = (sAquariumFishParams[t].unk_02 << 12) >> 7;
+    static s32 k2 = (sAquariumFishParams[t].unk_03 << 12) >> 7;
     V3 l[4];
     l[0].x = 0;
     l[0].y = k1;
@@ -1838,36 +1838,36 @@ extern "C" void func_ov004_02231600(R *o, V3 *out) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7448vfunc_00Ev(E744 *o) {
+extern "C" void _ZN16AquariumFastFish8vfunc_00Ev(E744 *o) {
     o->unk_50 = o;
     o->unk_1c8 = 2;
-    Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
+    Model_setInitCallback(&o->unk_64, (void *)AquariumFish_InstallJointCallbacks, o);
     s32 *t = &o->unk_15c;
     o->unk_1e8 = *t;
     o->unk_1e9 = *t;
-    func_ov004_0222dea8(o);
+    AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7448vfunc_04Ev(E744 *o) {
-    func_ov004_02231420(o, -2, 0x24);
+extern "C" void _ZN16AquariumFastFish8vfunc_04Ev(E744 *o) {
+    AquariumFastFish_UpdateLap(o, -2, 0x24);
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-        func_ov004_022320c8(o);
+        AquariumFish_UpdateDepthCapped(o);
     }
-    func_ov004_0222e288(o, 0x333);
+    AquariumFish_UpdateAnimSpeed(o, 0x333);
     o->unk_158++;
-    func_ov004_0222ede0(o);
+    AquariumFish_CheckTouched(o);
 }
 
-extern "C" void func_ov004_02231420(E744 *o, s32 a, s32 b) {
+extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
     if (o->unk_1a8.x <= (a + 2) << 12) {
         o->unk_1fc = 1;
         if (func_020e769c(&o->unk_1c0, 0x4000, 0x38e)) {
             o->unk_1a8.x += 0x19a;
         }
-        o->unk_1a8.y = ((data_ov004_022402ec[o->unk_15c].unk_04 << 12) >> 6);
-        func_ov004_0223257c(&o->unk_1a8, 0x19a, o->unk_1c0);
+        o->unk_1a8.y = ((sAquariumFishParams[o->unk_15c].unk_04 << 12) >> 6);
+        Aquarium_StepXZ(&o->unk_1a8, 0x19a, o->unk_1c0);
         o->unk_110 = 0x1000;
-        func_ov004_02232270(o, 3);
+        AquariumFish_PlayTurnAnim(o, 3);
         return;
     }
     if (o->unk_1a8.x >= (b - 2) << 12) {
@@ -1875,76 +1875,76 @@ extern "C" void func_ov004_02231420(E744 *o, s32 a, s32 b) {
         if (func_020e769c(&o->unk_1c0, -0x4000, 0x38e)) {
             o->unk_1a8.x -= 0x19a;
         }
-        o->unk_1a8.y = ((data_ov004_022402ec[o->unk_15c].unk_04 << 12) >> 6);
-        func_ov004_0223257c(&o->unk_1a8, 0x19a, o->unk_1c0);
+        o->unk_1a8.y = ((sAquariumFishParams[o->unk_15c].unk_04 << 12) >> 6);
+        Aquarium_StepXZ(&o->unk_1a8, 0x19a, o->unk_1c0);
         o->unk_110 = 0x1000;
-        func_ov004_02232270(o, 10);
+        AquariumFish_PlayTurnAnim(o, 10);
         return;
     }
-    func_ov004_0222dfbc(o);
-    func_ov004_0222e61c(o);
-    (o->*data_ov004_02251e2c[o->unk_1ee])();
-    func_ov004_0222e2f4(o);
-    func_ov004_0222e820(o);
-    func_ov004_02232220(o);
-    func_ov004_0222e288(o, 0x333);
+    AquariumFish_SteerFromWall(o);
+    AquariumFish_UpdateAvoid(o);
+    (o->*sAquariumFastSwimStates[o->unk_1ee])();
+    AquariumFish_TurnToTarget(o);
+    AquariumFish_ClampHeadingSideways(o);
+    AquariumFish_EndTurnAnim(o);
+    AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e72c8vfunc_00Ev(E72c *o) {
+extern "C" void _ZN15AquariumBigFish8vfunc_00Ev(E72c *o) {
     s32 *t = &o->unk_15c;
     o->unk_1e8 = *t;
     o->unk_1c7 = 0;
     if ((u32)(*t - 0x35) <= 1) {
-        Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
+        Model_setInitCallback(&o->unk_64, (void *)AquariumFish_InstallJointCallbacks, o);
     }
     s32 r;
-    if (func_ov004_02231e28(0, 2) > 0) {
+    if (Aquarium_RandRange(0, 2) > 0) {
         r = 1;
     } else {
         r = -1;
     }
     o->unk_1c0 = r << 14;
-    func_ov004_0222dea8(o);
+    AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e72c8vfunc_04Ev(E72c *o) {
+extern "C" void _ZN15AquariumBigFish8vfunc_04Ev(E72c *o) {
     s32 t = o->unk_15c;
     if ((u32)(t - 0x35) <= 1) {
-        func_ov004_022311cc(o, 2, 0x20);
+        AquariumBigFish_UpdatePatrol(o, 2, 0x20);
     } else if (t == 0x34) {
-        func_ov004_022311cc(o, -4, 0x26);
+        AquariumBigFish_UpdatePatrol(o, -4, 0x26);
     }
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-        func_ov004_02232130(o);
+        AquariumFish_UpdateDepth(o);
         t = o->unk_15c;
         if ((u32)(t - 0x35) <= 1) {
-            func_ov004_02231f98(o, 0x924, 0x28a);
+            AquariumFish_UpdatePitch(o, 0x924, 0x28a);
         } else if (t == 0x34) {
-            func_ov004_02231f98(o, 0x71c, 0x28a);
+            AquariumFish_UpdatePitch(o, 0x71c, 0x28a);
         }
     }
     o->unk_158++;
 }
 
-extern "C" void func_ov004_022311cc(E72c *o, s32 a, s32 b) {
+extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
     if (o->unk_1a8.x <= (a + 2) << 12) {
         if (func_020e769c(&o->unk_1c0, 0x4000, 0x444)) {
             o->unk_1a8.x += 0x133;
         }
-        func_ov004_0223257c(&o->unk_1a8, 0x133, o->unk_1c0);
+        Aquarium_StepXZ(&o->unk_1a8, 0x133, o->unk_1c0);
         o->unk_110 = 0x1000;
         o->unk_1fe = 3;
-        func_ov004_02232270(o, (u16)o->unk_1fe);
+        AquariumFish_PlayTurnAnim(o, (u16)o->unk_1fe);
         return;
     }
     if (o->unk_1a8.x >= (b - 2) << 12) {
         if (func_020e769c(&o->unk_1c0, -0x4000, 0x444)) {
             o->unk_1a8.x -= 0x133;
         }
-        func_ov004_0223257c(&o->unk_1a8, 0x133, o->unk_1c0);
+        Aquarium_StepXZ(&o->unk_1a8, 0x133, o->unk_1c0);
         o->unk_110 = 0x1000;
         o->unk_1fe = 10;
-        func_ov004_02232270(o, (u16)o->unk_1fe);
+        AquariumFish_PlayTurnAnim(o, (u16)o->unk_1fe);
         return;
     }
     if (o->unk_1fe == 3) {
@@ -1952,38 +1952,38 @@ extern "C" void func_ov004_022311cc(E72c *o, s32 a, s32 b) {
     } else if (o->unk_1fe == 10) {
         func_020e769c(&o->unk_1c0, -0x4000, 0x444);
     }
-    (o->*data_ov004_02251e5c[o->unk_1ee])();
+    (o->*sAquariumSwimStates[o->unk_1ee])();
     if ((u32)(o->unk_15c - 0x35) <= 1) {
         func_020e759c(&o->unk_1a8.z, 0x10800, 0xcd);
     } else if (o->unk_15c == 0x34) {
         func_020e759c(&o->unk_1a8.z, 0x10000, 0xcd);
     }
-    func_ov004_02232220(o);
-    func_ov004_0222e288(o, 0x333);
+    AquariumFish_EndTurnAnim(o);
+    AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8348vfunc_00Ev(E834 *o) {
+extern "C" void _ZN12AquariumFrog8vfunc_00Ev(E834 *o) {
     o->unk_1c7 = 0;
     o->unk_1a8.x = 0x14500;
     o->unk_1a8.y = 0x3700;
     o->unk_1a8.z = 0x15400;
     o->unk_1c0 = 0;
-    data_ov004_02251d6c = o;
+    sAquariumFrog = o;
     Unk_02003c30_callReset(&o->unk_1fc);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8348vfunc_04Ev(E834 *o) {
+extern "C" void _ZN12AquariumFrog8vfunc_04Ev(E834 *o) {
     V3 l[2];
-    l[0] = data_ov004_022513f0;
+    l[0] = sRoomHasuPos;
     o->unk_1a8 = l[0];
     l[1] = o->unk_1a8;
     Unk_02003c40_callUpdateRelative(&o->unk_1fc, &l[1]);
     switch (o->unk_211) {
     case 2:
-        func_ov004_02231060(o);
+        AquariumFrog_StartCroak(o);
         break;
     case 4:
-        func_ov004_02230fd0(o);
+        AquariumFrog_Croak(o);
         break;
     case 6:
         if (o->unk_158 >= o->unk_1fc.unk_0c) {
@@ -1995,17 +1995,17 @@ extern "C" void _ZN18Unk_ov004_0224e8348vfunc_04Ev(E834 *o) {
     o->unk_158++;
 }
 
-extern "C" void func_ov004_02231060(E834 *o) {
-    o->unk_1fc.unk_0c = func_ov004_02231e28(0x28, 0xc8);
-    o->unk_20c = (func_ov004_02231e28(0x32, 0x4b) << 12) / 100;
+extern "C" void AquariumFrog_StartCroak(E834 *o) {
+    o->unk_1fc.unk_0c = Aquarium_RandRange(0x28, 0xc8);
+    o->unk_20c = (Aquarium_RandRange(0x32, 0x4b) << 12) / 100;
     o->unk_110 = o->unk_20c;
-    o->unk_1fc.unk_0e = func_ov004_02231e28(1, 7);
+    o->unk_1fc.unk_0e = Aquarium_RandRange(1, 7);
     o->unk_210 = 0;
     o->unk_158 = 0;
     o->unk_211 = 4;
 }
 
-extern "C" void func_ov004_02230fd0(E834 *o) {
+extern "C" void AquariumFrog_Croak(E834 *o) {
     if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, 1)) {
         Unk_02003c40_callRequestSustained(&o->unk_1fc, 0x832);
         o->unk_210++;
@@ -2020,7 +2020,7 @@ extern "C" void func_ov004_02230fd0(E834 *o) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8048vfunc_00Ev(E804 *e) {
+extern "C" void _ZN11AquariumEel8vfunc_00Ev(E804 *e) {
     e->unk_1c7 = 0;
     e->unk_1a8.x = 0;
     e->unk_1a8.y = 0;
@@ -2028,23 +2028,23 @@ extern "C" void _ZN18Unk_ov004_0224e8048vfunc_00Ev(E804 *e) {
     e->unk_1c0 = 0;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8048vfunc_04Ev(E804 *e) {
-    (e->*data_ov004_02251e04[e->unk_20e])();
+extern "C" void _ZN11AquariumEel8vfunc_04Ev(E804 *e) {
+    (e->*sAquariumEelStates[e->unk_20e])();
     e->unk_158++;
 }
 
-extern "C" void func_ov004_02230ecc(E804 *e) {
-    e->unk_208 = (func_ov004_02231e28(0xb, 0xf) << 12) / 10;
-    e->unk_200 = (func_ov004_02231e28(0x14, 0x32) << 12) / 1000;
-    e->unk_204 = (func_ov004_02231e28(0xa, 0x1e) << 12) / 1000;
-    e->unk_20c = func_ov004_02231e28(1, 0x96);
-    e->unk_20d = func_ov004_02231e28(0xa, 0x78);
+extern "C" void AquariumEel_StateStart(E804 *e) {
+    e->unk_208 = (Aquarium_RandRange(0xb, 0xf) << 12) / 10;
+    e->unk_200 = (Aquarium_RandRange(0x14, 0x32) << 12) / 1000;
+    e->unk_204 = (Aquarium_RandRange(0xa, 0x1e) << 12) / 1000;
+    e->unk_20c = Aquarium_RandRange(1, 0x96);
+    e->unk_20d = Aquarium_RandRange(0xa, 0x78);
     e->unk_158 = 0;
     e->unk_110 = 0;
     e->unk_20e = 1;
 }
 
-extern "C" void func_ov004_02230e88(E804 *e) {
+extern "C" void AquariumEel_StateSpeedUp(E804 *e) {
     s32 t = e->unk_200 * e->unk_158 * 5;
     s32 m = e->unk_208;
     if (t >= m) {
@@ -2055,7 +2055,7 @@ extern "C" void func_ov004_02230e88(E804 *e) {
     e->unk_110 = t;
 }
 
-extern "C" void func_ov004_02230e50(E804 *e) {
+extern "C" void AquariumEel_StateHold(E804 *e) {
     if (e->unk_158 >= e->unk_20c) {
         e->unk_20e = 3;
         e->unk_158 = 0;
@@ -2063,7 +2063,7 @@ extern "C" void func_ov004_02230e50(E804 *e) {
     e->unk_110 = e->unk_208;
 }
 
-extern "C" void func_ov004_02230e10(E804 *e) {
+extern "C" void AquariumEel_StateSlowDown(E804 *e) {
     s32 t = e->unk_208 - e->unk_204 * e->unk_158;
     if (t <= 0) {
         t = 0;
@@ -2073,7 +2073,7 @@ extern "C" void func_ov004_02230e10(E804 *e) {
     e->unk_110 = t;
 }
 
-extern "C" void func_ov004_02230ddc(E804 *e) {
+extern "C" void AquariumEel_StateWait(E804 *e) {
     e->unk_110 = 0;
     if (e->unk_158 >= e->unk_20d) {
         e->unk_20e = 0;
@@ -2081,7 +2081,7 @@ extern "C" void func_ov004_02230ddc(E804 *e) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_00Ev(E7bc *e) {
+extern "C" void _ZN20AquariumSeaButterfly8vfunc_00Ev(E7bc *e) {
     s32 *p = &e->unk_15c;
     e->unk_1e8 = *p;
     e->unk_1e9 = *p;
@@ -2093,29 +2093,29 @@ extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_00Ev(E7bc *e) {
     e->unk_258[0] = 0x6000;
     e->unk_258[1] = 0;
     e->unk_258[2] = 0x14a00;
-    e->unk_204 = data_ov004_022402ec[*p].unk_08;
-    e->unk_205 = data_ov004_022402ec[*p].unk_09;
-    e->unk_206 = data_ov004_022402ec[*p].unk_0a;
-    e->unk_207 = data_ov004_022402ec[*p].unk_0b;
-    data_ov004_02251d78 = e;
+    e->unk_204 = sAquariumFishParams[*p].unk_08;
+    e->unk_205 = sAquariumFishParams[*p].unk_09;
+    e->unk_206 = sAquariumFishParams[*p].unk_0a;
+    e->unk_207 = sAquariumFishParams[*p].unk_0b;
+    sAquariumSeaButterfly = e;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_04Ev(E7bc *e) {
+extern "C" void _ZN20AquariumSeaButterfly8vfunc_04Ev(E7bc *e) {
     if ((u8)(e->unk_1ee + 0xfd) <= 1) {
-        func_ov004_02231dec(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
+        Aquarium_TurnTowardHome(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
     }
-    (e->*data_ov004_02251e5c[e->unk_1ee])();
-    func_ov004_022319ac(&e->unk_1c4, &e->unk_270, &e->unk_274, 0x2aac, 0x12c);
+    (e->*sAquariumSwimStates[e->unk_1ee])();
+    Aquarium_Oscillate(&e->unk_1c4, &e->unk_270, &e->unk_274, 0x2aac, 0x12c);
     switch (e->unk_255) {
     case 1: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 1 || e->unk_1a8.y >= 0x2b33) {
             if (AnimFrameCtrl_hasPassedFrame(&e->unk_100, 1)) {
                 e->unk_21c = 0;
                 e->unk_255 = 2;
             }
         } else {
-            r = func_ov004_02231e28(0, 0x64);
+            r = Aquarium_RandRange(0, 0x64);
             if (r <= 0x1e) {
                 e->unk_21c = 0;
                 e->unk_255 = 0;
@@ -2128,7 +2128,7 @@ extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_04Ev(E7bc *e) {
         break;
     }
     case 0: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 0x1e) {
             e->unk_21c = 0;
             e->unk_255 = 1;
@@ -2137,7 +2137,7 @@ extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_04Ev(E7bc *e) {
         break;
     }
     case 2: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 1 || e->unk_1a8.y <= 0x800) {
             e->unk_21c = 0;
             e->unk_255 = 1;
@@ -2147,16 +2147,16 @@ extern "C" void _ZN18Unk_ov004_0224e7bc8vfunc_04Ev(E7bc *e) {
     }
     }
     if (e->unk_1ee != 2) {
-        func_ov004_0222e2f4(e);
+        AquariumFish_TurnToTarget(e);
     }
-    func_ov004_02231e8c(e, 8, 0x14, e->unk_255);
+    AquariumFish_Bob(e, 8, 0x14, e->unk_255);
     e->unk_21c++;
     e->unk_158++;
-    func_ov004_0222ede0(e);
-    func_ov004_02231600(e, &e->unk_264);
+    AquariumFish_CheckTouched(e);
+    AquariumFish_CalcHitCenter(e, &e->unk_264);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_00Ev(E7a4 *e) {
+extern "C" void _ZN16AquariumSeahorse8vfunc_00Ev(E7a4 *e) {
     s32 *p = &e->unk_15c;
     e->unk_1e8 = *p;
     e->unk_1e9 = *p;
@@ -2168,17 +2168,17 @@ extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_00Ev(E7a4 *e) {
     e->unk_258[0] = 0x7000;
     e->unk_258[1] = 0;
     e->unk_258[2] = 0x14a00;
-    e->unk_204 = data_ov004_022402ec[*p].unk_08;
-    e->unk_205 = data_ov004_022402ec[*p].unk_09;
-    e->unk_206 = data_ov004_022402ec[*p].unk_0a;
-    e->unk_207 = data_ov004_022402ec[*p].unk_0b;
+    e->unk_204 = sAquariumFishParams[*p].unk_08;
+    e->unk_205 = sAquariumFishParams[*p].unk_09;
+    e->unk_206 = sAquariumFishParams[*p].unk_0a;
+    e->unk_207 = sAquariumFishParams[*p].unk_0b;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_04Ev(E7a4 *e) {
-    func_ov004_02231dec(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
+extern "C" void _ZN16AquariumSeahorse8vfunc_04Ev(E7a4 *e) {
+    Aquarium_TurnTowardHome(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
     switch (e->unk_255) {
     case 1: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 8 || e->unk_1a8.y >= 0x2000) {
             e->unk_21c = 0;
             e->unk_255 = 2;
@@ -2190,7 +2190,7 @@ extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_04Ev(E7a4 *e) {
         break;
     }
     case 0: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 10) {
             e->unk_21c = 0;
             e->unk_255 = 1;
@@ -2199,7 +2199,7 @@ extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_04Ev(E7a4 *e) {
         break;
     }
     case 2: {
-        s32 r = func_ov004_02231e28(0, 0x64);
+        s32 r = Aquarium_RandRange(0, 0x64);
         if (r <= 3 || e->unk_1a8.y <= 0x1000) {
             e->unk_21c = 0;
             e->unk_255 = 1;
@@ -2208,31 +2208,31 @@ extern "C" void _ZN18Unk_ov004_0224e7a48vfunc_04Ev(E7a4 *e) {
         break;
     }
     }
-    (e->*data_ov004_02251e5c[e->unk_1ee])();
-    func_ov004_022319ac(&e->unk_1c4, &e->unk_264, &e->unk_268, 0x11c6, 0x96);
+    (e->*sAquariumSwimStates[e->unk_1ee])();
+    Aquarium_Oscillate(&e->unk_1c4, &e->unk_264, &e->unk_268, 0x11c6, 0x96);
     if (e->unk_1ee != 2) {
-        func_ov004_0222e2f4(e);
+        AquariumFish_TurnToTarget(e);
     }
-    func_ov004_02231e8c(e, 8, 0x51, e->unk_255);
+    AquariumFish_Bob(e, 8, 0x51, e->unk_255);
     e->unk_21c++;
     e->unk_158++;
-    func_ov004_0222ede0(e);
+    AquariumFish_CheckTouched(e);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_00Ev(E78c *e) {
+extern "C" void _ZN18AquariumPufferFish8vfunc_00Ev(E78c *e) {
     e->unk_50 = e;
     e->unk_1e8 = e->unk_15c;
     e->unk_1e9 = e->unk_15c;
     e->unk_1c8 = 1;
-    func_ov004_0222dea8(e);
-    Model_setInitCallback(&e->unk_64, (void *)func_ov004_0222ef04, e);
+    AquariumFish_LoadParams(e);
+    Model_setInitCallback(&e->unk_64, (void *)AquariumFish_InstallJointCallbacks, e);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
+extern "C" void _ZN18AquariumPufferFish8vfunc_04Ev(E78c *e) {
     u32 v;
     s32 t;
-    func_ov004_0222dfbc(e);
-    (e->*data_ov004_02251e5c[e->unk_1ee])();
+    AquariumFish_SteerFromWall(e);
+    (e->*sAquariumSwimStates[e->unk_1ee])();
     v = (u16)(e->unk_104.mid - 1);
     if (e->unk_110 > 0x1000) {
         v = (u16)(e->unk_104.mid - 2);
@@ -2247,17 +2247,17 @@ extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
                 e->unk_256 = 1;
                 t = e->unk_210;
                 e->unk_210 = t << 1;
-                func_ov004_022321e8(e, 1);
+                AquariumFish_PlayAnim(e, 1);
                 e->unk_255 = 0;
             }
         }
         break;
     case 1:
         if (AnimFrameCtrl_hasPassedFrame(&e->unk_100, v)) {
-            e->unk_257 = func_ov004_02231e28(0x3c, 0x50);
+            e->unk_257 = Aquarium_RandRange(0x3c, 0x50);
             e->unk_258 = 0;
             e->unk_256 = 2;
-            func_ov004_022321e8(e, 2);
+            AquariumFish_PlayAnim(e, 2);
         }
         break;
     case 2: {
@@ -2266,7 +2266,7 @@ extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
             if (AnimFrameCtrl_hasPassedFrame(&e->unk_100, v)) {
                 e->unk_256 = 3;
                 e->unk_210 = e->unk_210 >> 1;
-                func_ov004_022321e8(e, 3);
+                AquariumFish_PlayAnim(e, 3);
             }
         } else {
             e->unk_258 = b + 1;
@@ -2276,21 +2276,21 @@ extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
     case 3:
         if (AnimFrameCtrl_hasPassedFrame(&e->unk_100, v)) {
             e->unk_256 = 0;
-            func_ov004_022321e8(e, 0);
+            AquariumFish_PlayAnim(e, 0);
         }
         break;
     }
     if (e->unk_1ee != 2 && e->unk_1ee != 6) {
-        func_ov004_022320c8(e);
-        func_ov004_02231eec(e, 0x1554);
-        func_ov004_0222e2f4(e);
+        AquariumFish_UpdateDepthCapped(e);
+        AquariumFish_UpdatePitchSmooth(e, 0x1554);
+        AquariumFish_TurnToTarget(e);
     }
-    func_ov004_0222e288(e, 0x666);
-    func_ov004_0222e238(e);
-    func_ov004_0222e61c(e);
-    func_ov004_0222e7a4(e);
+    AquariumFish_UpdateAnimSpeed(e, 0x666);
+    AquariumFish_KeepInsideX(e);
+    AquariumFish_UpdateAvoid(e);
+    AquariumFish_TurnAtTankEnds(e);
     e->unk_158++;
-    if (func_ov004_0222ede0(e)) {
+    if (AquariumFish_CheckTouched(e)) {
         if (e->unk_256 == 0) {
             e->unk_255 = 1;
         } else {
@@ -2299,18 +2299,18 @@ extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e75c8vfunc_00Ev(E75c *e) {
+extern "C" void _ZN15AquariumPiranha8vfunc_00Ev(E75c *e) {
     e->unk_1e8 = e->unk_15c;
     e->unk_1c7 = 0;
-    func_ov004_0222dea8(e);
+    AquariumFish_LoadParams(e);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e75c8vfunc_04Ev(E75c *o) {
-    (o->*data_ov004_02251db4[o->unk_255])();
-    s32 t = (data_ov004_022402ec[30].unk_03 << 12) >> 7;
-    o->unk_256 = func_020308b4(&o->unk_1a8, t, &data_ov004_02251d84, 0x11c00, 0x5c00);
+extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o) {
+    (o->*sAquariumPiranhaStates[o->unk_255])();
+    s32 t = (sAquariumFishParams[30].unk_03 << 12) >> 7;
+    o->unk_256 = func_020308b4(&o->unk_1a8, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->unk_164 << 12, 10);
-    func_02088c64(o->unk_04, &o->unk_1a8, t, (data_ov004_022402ec[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
+    func_02088c64(o->unk_04, &o->unk_1a8, t, (sAquariumFishParams[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
     func_02089040(o->unk_04);
     o->unk_1b4.x = o->unk_1a8.x;
     o->unk_1b4.y = o->unk_1a8.y;
@@ -2318,15 +2318,15 @@ extern "C" void _ZN18Unk_ov004_0224e75c8vfunc_04Ev(E75c *o) {
     o->unk_158 = o->unk_158 + 1;
 }
 
-extern "C" void func_ov004_022304f4(E75c *o) {
-    (o->*data_ov004_02251e5c[o->unk_1ee])();
-    func_ov004_02232548(o);
+extern "C" void AquariumPiranha_StateSwim(E75c *o) {
+    (o->*sAquariumSwimStates[o->unk_1ee])();
+    AquariumFish_UpdateWallTurn(o);
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-        func_ov004_02232130(o);
-        func_ov004_02231f98(o, 0x1554, 0x384);
-        func_ov004_0222e2f4(o);
+        AquariumFish_UpdateDepth(o);
+        AquariumFish_UpdatePitch(o, 0x1554, 0x384);
+        AquariumFish_TurnToTarget(o);
     }
-    func_ov004_0222e288(o, 0x666);
+    AquariumFish_UpdateAnimSpeed(o, 0x666);
     P *p = func_02095204(4);
     if (p != 0) {
         V3 v;
@@ -2349,7 +2349,7 @@ extern "C" void func_ov004_022304f4(E75c *o) {
     }
 }
 
-extern "C" void func_ov004_022303b4(E75c *o) {
+extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     V3 v;
     P *p = func_02095204(4);
     if (p == 0) {
@@ -2361,13 +2361,13 @@ extern "C" void func_ov004_022303b4(E75c *o) {
     v.y = pv->y;
     v.z = pv->z;
     func_020e769c(&o->unk_1c0, Math_AngleXZ(&o->unk_1a8, (s32 *)&v), 0x222);
-    func_ov004_0223257c(&o->unk_1a8, o->unk_210, o->unk_1c0);
+    Aquarium_StepXZ(&o->unk_1a8, o->unk_210, o->unk_1c0);
     if (p->unk_98 != 0) {
         if (o->unk_1c4 != 0) func_020e769c(&o->unk_1c4, 0, 0x222);
         if (o->unk_1a8.y != 0x199a) func_020e759c(&o->unk_1a8.y, 0x199a, o->unk_224);
         o->unk_259 = 0;
     } else {
-        func_ov004_02230238(o);
+        AquariumPiranha_BobDepth(o);
         o->unk_259++;
         if (o->unk_259 >= 0x46) {
             o->unk_255 = 0;
@@ -2390,7 +2390,7 @@ extern "C" void func_ov004_022303b4(E75c *o) {
     o->unk_110 = 0x1000;
 }
 
-extern "C" void func_ov004_022302b4(E75c *o) {
+extern "C" void AquariumPiranha_StateBite(E75c *o) {
     P *p = func_020947f0(4);
     if (p == 0) {
         o->unk_255 = 0;
@@ -2400,13 +2400,13 @@ extern "C" void func_ov004_022302b4(E75c *o) {
     if (o->unk_1a8.y != 0x199a) func_020e759c(&o->unk_1a8.y, 0x199a, o->unk_224);
     switch (o->unk_257) {
     case 1:
-        func_ov004_022301b4(o);
+        AquariumPiranha_BiteLunge(o);
         break;
     case 2:
-        func_ov004_0223015c(o);
+        AquariumPiranha_BiteRecoil(o);
         break;
     case 0:
-        func_ov004_022301fc(o);
+        AquariumPiranha_BiteIdle(o);
         break;
     }
     func_020e769c(&o->unk_1c0, Math_AngleXZ(&o->unk_1a8, (s32 *)p), 0x222);
@@ -2421,9 +2421,9 @@ extern "C" void func_ov004_022302b4(E75c *o) {
     o->unk_110 = 0x1000;
 }
 
-extern "C" void func_ov004_02230238(E75c *o) {
+extern "C" void AquariumPiranha_BobDepth(E75c *o) {
     o->unk_1a8.y = o->unk_1a8.y + o->unk_224 * o->unk_1ca;
-    if (func_ov004_02231e28(0, 100) < 15) o->unk_1ca *= -1;
+    if (Aquarium_RandRange(0, 100) < 15) o->unk_1ca *= -1;
     if (o->unk_1a8.y > o->unk_1cc) {
         o->unk_1ca = -1;
         o->unk_1a8.y = o->unk_1cc;
@@ -2433,77 +2433,77 @@ extern "C" void func_ov004_02230238(E75c *o) {
     }
 }
 
-extern "C" void func_ov004_022301fc(E75c *o) {
-    if (func_ov004_02231e28(0, 100) < 15) {
+extern "C" void AquariumPiranha_BiteIdle(E75c *o) {
+    if (Aquarium_RandRange(0, 100) < 15) {
         o->unk_257 = 1;
-        o->unk_258 = func_ov004_02231e28(8, 0xd);
+        o->unk_258 = Aquarium_RandRange(8, 0xd);
         o->unk_158 = 0;
     }
 }
 
-extern "C" void func_ov004_022301b4(E75c *o) {
-    func_ov004_0223257c(&o->unk_1a8, 0x266, o->unk_1c0);
-    s16 t = func_ov004_02231e3c(0x168, 0);
-    func_ov004_0223257c(&o->unk_1a8, 0x52, t);
+extern "C" void AquariumPiranha_BiteLunge(E75c *o) {
+    Aquarium_StepXZ(&o->unk_1a8, 0x266, o->unk_1c0);
+    s16 t = Aquarium_RandAngle(0x168, 0);
+    Aquarium_StepXZ(&o->unk_1a8, 0x52, t);
     o->unk_257 = 2;
 }
 
-extern "C" void func_ov004_0223015c(E75c *o) {
-    func_ov004_0223257c(&o->unk_1a8, 0xcd, -o->unk_1c0);
+extern "C" void AquariumPiranha_BiteRecoil(E75c *o) {
+    Aquarium_StepXZ(&o->unk_1a8, 0xcd, -o->unk_1c0);
     if (o->unk_158 % 4 == 1) o->unk_257 = 1;
     if (o->unk_158 >= o->unk_258) o->unk_257 = 0;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7148vfunc_00Ev(E714 *o) {
+extern "C" void _ZN21AquariumSurfacingFish8vfunc_00Ev(E714 *o) {
     o->unk_1e8 = o->unk_15c;
-    Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
-    func_ov004_0222dea8(o);
+    Model_setInitCallback(&o->unk_64, (void *)AquariumFish_InstallJointCallbacks, o);
+    AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7148vfunc_04Ev(E714 *o) {
+extern "C" void _ZN21AquariumSurfacingFish8vfunc_04Ev(E714 *o) {
     switch (o->unk_255) {
     case 0:
-        func_ov004_02230034(o);
+        AquariumSurfacingFish_StateSwim(o);
         break;
     case 1:
-        func_ov004_0222fff8(o);
+        AquariumSurfacingFish_StateSurface(o);
         break;
     }
-    func_ov004_0222e288(o, 0x333);
+    AquariumFish_UpdateAnimSpeed(o, 0x333);
     o->unk_158 = o->unk_158 + 1;
-    func_ov004_0222ede0(o);
+    AquariumFish_CheckTouched(o);
 }
 
-extern "C" void func_ov004_02230034(E714 *o) {
+extern "C" void AquariumSurfacingFish_StateSwim(E714 *o) {
     if (o->unk_1ee == 2) {
         if (o->unk_259 != 0) {
-            if (func_ov004_02231e28(0, 100) < 15) {
+            if (Aquarium_RandRange(0, 100) < 15) {
                 o->unk_255 = 1;
                 return;
             }
             o->unk_259 = 0;
         } else {
-            if (func_ov004_02231e28(0, 100) < 0x46) {
+            if (Aquarium_RandRange(0, 100) < 0x46) {
                 o->unk_255 = 1;
                 return;
             }
         }
     }
-    (o->*data_ov004_02251e5c[o->unk_1ee])();
-    func_ov004_02232548(o);
+    (o->*sAquariumSwimStates[o->unk_1ee])();
+    AquariumFish_UpdateWallTurn(o);
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-        func_ov004_02232130(o);
-        func_ov004_02231f98(o, 0x1554, 0x3e8);
-        func_ov004_0222e2f4(o);
+        AquariumFish_UpdateDepth(o);
+        AquariumFish_UpdatePitch(o, 0x1554, 0x3e8);
+        AquariumFish_TurnToTarget(o);
     }
 }
 
-extern "C" void func_ov004_0222fff8(E714 *o) {
-    (o->*data_ov004_02251e5c[o->unk_1ee])();
-    func_ov004_0222fe1c(o);
+extern "C" void AquariumSurfacingFish_StateSurface(E714 *o) {
+    (o->*sAquariumSwimStates[o->unk_1ee])();
+    AquariumSurfacingFish_UpdateSurface(o);
 }
 
-extern "C" void func_ov004_0222fe1c(E714 *o) {
+extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o) {
     switch (o->unk_1ee) {
     case 0:
     case 2:
@@ -2582,7 +2582,7 @@ extern "C" void func_ov004_0222fe1c(E714 *o) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e6fc8vfunc_00Ev(E6fc *o) {
+extern "C" void _ZN18AquariumHidingFish8vfunc_00Ev(E6fc *o) {
     o->unk_50 = o;
     s32 *p = &o->unk_15c;
     o->unk_1e8 = *p;
@@ -2600,20 +2600,20 @@ extern "C" void _ZN18Unk_ov004_0224e6fc8vfunc_00Ev(E6fc *o) {
         w->w[1] = 0x1000;
         w->w[2] = 0x13900;
     }
-    func_ov004_0222dea8(o);
+    AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e6fc8vfunc_04Ev(E6fc *o) {
+extern "C" void _ZN18AquariumHidingFish8vfunc_04Ev(E6fc *o) {
     if (o->unk_15c == 0x26) {
-        func_ov004_0222fbe0(o);
+        AquariumHidingFish_UpdateClownfish(o);
     } else if (o->unk_15c == 0xc) {
-        func_ov004_0222fafc(o);
+        AquariumHidingFish_UpdateGoby(o);
     }
-    func_ov004_0222e288(o, 0x666);
+    AquariumFish_UpdateAnimSpeed(o, 0x666);
     o->unk_158++;
 }
 
-extern "C" void func_ov004_0222fbe0(E6fc *o) {
+extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o) {
     if (func_020e96a4(&o->unk_1a8, o->unk_258) <= 0x1000) {
         o->unk_255 = 1;
     } else {
@@ -2621,16 +2621,16 @@ extern "C" void func_ov004_0222fbe0(E6fc *o) {
     }
     if (o->unk_256 == 0) {
         if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-            func_ov004_022320c8(o);
-            func_ov004_02231eec(o, 0x1554);
+            AquariumFish_UpdateDepthCapped(o);
+            AquariumFish_UpdatePitchSmooth(o, 0x1554);
         }
-        (o->*data_ov004_02251e5c[o->unk_1ee])();
-        func_ov004_0222e2f4(o);
-        if (func_ov004_02231dec(&o->unk_1c0, &o->unk_1a8, o->unk_258, 0x1000)) {
+        (o->*sAquariumSwimStates[o->unk_1ee])();
+        AquariumFish_TurnToTarget(o);
+        if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->unk_1a8, o->unk_258, 0x1000)) {
             if (o->unk_278 >= o->unk_274) {
                 o->unk_278 = 0;
                 o->unk_256 = 1;
-                o->unk_274 = func_ov004_02231e28(200, 0x140);
+                o->unk_274 = Aquarium_RandRange(200, 0x140);
             }
             {
                 u8 a = o->unk_1e8;
@@ -2649,27 +2649,27 @@ extern "C" void func_ov004_0222fbe0(E6fc *o) {
                 if (a != o->unk_15c) {
                     *p = a;
                     if (o->unk_1ee != 1) {
-                        func_ov004_0222ed24(o, &data_ov004_02251e94[o->unk_1e8]->unk_1a8);
+                        AquariumFish_StartFlee(o, &sAquariumFish[o->unk_1e8]->unk_1a8);
                     }
                 }
             }
         }
         o->unk_278++;
     } else {
-        func_ov004_0222fa5c(o);
+        AquariumHidingFish_UpdateHide(o);
     }
-    func_ov004_0222fabc(o);
+    AquariumHidingFish_CheckTouch(o);
 }
 
-extern "C" void func_ov004_0222fafc(E6fc *o) {
+extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o) {
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
-        func_ov004_02232130(o);
-        func_ov004_02232068(o);
+        AquariumFish_UpdateDepth(o);
+        AquariumFish_UpdatePitchByDir(o);
     }
-    (o->*data_ov004_02251e5c[o->unk_1ee])();
-    func_ov004_0222e2f4(o);
-    if (func_ov004_02231dec(&o->unk_1c0, &o->unk_1a8, o->unk_258, 0x1000)) {
-        func_ov004_02232548(o);
+    (o->*sAquariumSwimStates[o->unk_1ee])();
+    AquariumFish_TurnToTarget(o);
+    if (Aquarium_TurnTowardHome(&o->unk_1c0, &o->unk_1a8, o->unk_258, 0x1000)) {
+        AquariumFish_UpdateWallTurn(o);
     } else {
         if (*(u8 *)&o->unk_1fc != 0) {
             o->unk_1ee = 2;
@@ -2683,31 +2683,31 @@ extern "C" void func_ov004_0222fafc(E6fc *o) {
             if (a != o->unk_15c) {
                 *p = a;
                 if (o->unk_1ee != 1) {
-                    func_ov004_0222ed24(o, &data_ov004_02251e94[o->unk_1e8]->unk_1a8);
+                    AquariumFish_StartFlee(o, &sAquariumFish[o->unk_1e8]->unk_1a8);
                 }
             }
         }
     }
-    func_ov004_0222ede0(o);
+    AquariumFish_CheckTouched(o);
 }
 
-extern "C" void func_ov004_0222fabc(E6fc *o) {
+extern "C" void AquariumHidingFish_CheckTouch(E6fc *o) {
     u32 buf[4];
-    if (func_ov004_0222ee2c(o, (V3 *)buf)) {
+    if (AquariumFish_GetTouchPoint(o, (V3 *)buf)) {
         if (o->unk_255 != 0) {
             if (o->unk_256 != 3) {
                 o->unk_256 = 2;
             }
         } else {
-            func_ov004_0222ed24(o, (V3 *)buf);
+            AquariumFish_StartFlee(o, (V3 *)buf);
         }
     }
 }
 
-extern "C" void func_ov004_0222fa5c(E6fc *o) {
+extern "C" void AquariumHidingFish_UpdateHide(E6fc *o) {
     switch (o->unk_256) {
     case 1: {
-        func_ov004_0222f968(o, 0);
+        AquariumHidingFish_MoveToHideout(o, 0);
         u8 a = o->unk_1e8;
         u8 *p = &o->unk_252;
         if (*p != a) {
@@ -2719,15 +2719,15 @@ extern "C" void func_ov004_0222fa5c(E6fc *o) {
         break;
     }
     case 2:
-        func_ov004_0222f968(o, 1);
+        AquariumHidingFish_MoveToHideout(o, 1);
         break;
     case 3:
-        func_ov004_0222f8fc(o);
+        AquariumHidingFish_StayHidden(o);
         break;
     }
 }
 
-extern "C" void func_ov004_0222f968(E6fc *o, s32 f) {
+extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
     if (o->unk_255 == 0) {
         o->unk_252 = o->unk_15c;
         o->unk_256 = 0;
@@ -2744,19 +2744,19 @@ extern "C" void func_ov004_0222f968(E6fc *o, s32 f) {
         if (o->unk_1a8.y <= o->unk_268) {
             o->unk_256 = 3;
             o->unk_158 = 0;
-            o->unk_270 = func_ov004_02231e28(0x3c, 0x78);
+            o->unk_270 = Aquarium_RandRange(0x3c, 0x78);
         }
     } else {
         o->unk_1c0 = Math_AngleXZ(&o->unk_1a8, &o->unk_264);
         if (f != 0) {
-            func_ov004_0223257c(&o->unk_1a8, o->unk_210 << 1, o->unk_1c0);
+            Aquarium_StepXZ(&o->unk_1a8, o->unk_210 << 1, o->unk_1c0);
         } else {
-            func_ov004_0223257c(&o->unk_1a8, o->unk_210 >> 1, o->unk_1c0);
+            Aquarium_StepXZ(&o->unk_1a8, o->unk_210 >> 1, o->unk_1c0);
         }
     }
 }
 
-extern "C" void func_ov004_0222f8fc(E6fc *o) {
+extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
     func_020e759c(&o->unk_1a8, o->unk_264, o->unk_210);
     func_020e759c(&o->unk_1a8.z, o->unk_26c, o->unk_210);
     if (o->unk_158 > o->unk_270) {
@@ -2766,22 +2766,22 @@ extern "C" void func_ov004_0222f8fc(E6fc *o) {
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e84c8vfunc_00Ev(E84c *o) {
+extern "C" void _ZN16AquariumCrawfish8vfunc_00Ev(E84c *o) {
     o->unk_1fc = 0xc800;
     o->unk_200 = 0;
     o->unk_204 = 0x14a00;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e84c8vfunc_04Ev(E84c *o) {
+extern "C" void _ZN16AquariumCrawfish8vfunc_04Ev(E84c *o) {
     switch (o->unk_21c) {
     case 2:
-        func_ov004_0222f7d4(o);
+        AquariumCrawfish_StartWalk(o);
         break;
     case 4:
-        func_ov004_0222f6c4(o);
+        AquariumCrawfish_Walk(o);
         break;
     case 5:
-        func_ov004_0222f5e4(o);
+        AquariumCrawfish_SlowDown(o);
         break;
     case 6:
         if (o->unk_158 >= *(u16 *)((u8 *)o + 0x212)) {
@@ -2793,20 +2793,20 @@ extern "C" void _ZN18Unk_ov004_0224e84c8vfunc_04Ev(E84c *o) {
     o->unk_158++;
 }
 
-extern "C" void func_ov004_0222f7d4(E84c *o) {
-    o->unk_1c0 += func_ov004_02231e3c(0x5a, 0);
-    *(u8 *)&o->unk_210 = func_ov004_02231e28(0x14, 0x78);
-    *(u16 *)((u8 *)o + 0x212) = func_ov004_02231e28(0x3c, 0xf0);
-    o->unk_20c = func_ov004_02231e74(2, 4) / 100;
+extern "C" void AquariumCrawfish_StartWalk(E84c *o) {
+    o->unk_1c0 += Aquarium_RandAngle(0x5a, 0);
+    *(u8 *)&o->unk_210 = Aquarium_RandRange(0x14, 0x78);
+    *(u16 *)((u8 *)o + 0x212) = Aquarium_RandRange(0x3c, 0xf0);
+    o->unk_20c = Aquarium_RandFx(2, 4) / 100;
     o->unk_158 = 0;
     o->unk_1a8.y = 0x700;
     o->unk_110 = o->unk_218 = 0x1000;
     o->unk_21c = 4;
 }
 
-extern "C" void func_ov004_0222f6c4(E84c *o) {
+extern "C" void AquariumCrawfish_Walk(E84c *o) {
     s32 r;
-    func_ov004_02231dec(&o->unk_1c0, &o->unk_1a8, &o->unk_1fc, 0x1600);
+    Aquarium_TurnTowardHome(&o->unk_1c0, &o->unk_1a8, &o->unk_1fc, 0x1600);
     r = o->unk_20c;
     o->unk_1a8.x += func_01ffcb0c(r, data_02135f44[((u16)o->unk_1c0 >> 4) * 2]);
     o->unk_1a8.z += func_01ffcb0c(r, data_02135f44[((u16)o->unk_1c0 >> 4) * 2 + 1]);
@@ -2822,7 +2822,7 @@ extern "C" void func_ov004_0222f6c4(E84c *o) {
     }
 }
 
-extern "C" void func_ov004_0222f5e4(E84c *o) {
+extern "C" void AquariumCrawfish_SlowDown(E84c *o) {
     s32 t = o->unk_20c;
     s32 r = t - (o->unk_158 << 3);
     if (r < 0) {
@@ -2839,27 +2839,27 @@ extern "C" void func_ov004_0222f5e4(E84c *o) {
     o->unk_1a8.z += func_01ffcb0c(r, data_02135f44[((u16)o->unk_208 >> 4) * 2]);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_00Ev(E81c *o) {
+extern "C" void _ZN13AquariumSquid8vfunc_00Ev(E81c *o) {
     o->unk_50 = o;
     o->unk_1e8 = o->unk_15c;
     o->unk_1e9 = o->unk_15c;
     o->unk_1c8 = 1;
-    func_ov004_0222dea8(o);
-    Model_setInitCallback((u8 *)o + 0x64, (void *)func_ov004_0222ef04, o);
+    AquariumFish_LoadParams(o);
+    Model_setInitCallback((u8 *)o + 0x64, (void *)AquariumFish_InstallJointCallbacks, o);
 }
 
-extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_04Ev(E81c *o) {
+extern "C" void _ZN13AquariumSquid8vfunc_04Ev(E81c *o) {
     if (o->unk_256 == 0) {
         if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, (u16)(o->unk_104.mid - 1))) {
             o->unk_256 = 1;
-            func_ov004_022321e8(o, 1);
+            AquariumFish_PlayAnim(o, 1);
         }
     }
     if (o->unk_1ee == 2) {
         o->unk_255 = 0;
         if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, (u16)(o->unk_104.mid - 1))) {
             o->unk_256 = 0;
-            func_ov004_022321e8(o, 0);
+            AquariumFish_PlayAnim(o, 0);
             o->unk_255 = 1;
         }
     } else if (o->unk_1ee != 2) {
@@ -2868,34 +2868,34 @@ extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_04Ev(E81c *o) {
         }
     }
     if (o->unk_255 != 0) {
-        (o->*data_ov004_02251e5c[o->unk_1ee])();
-        func_ov004_0222f284(o);
+        (o->*sAquariumSwimStates[o->unk_1ee])();
+        AquariumSquid_TurnAtTankEnd(o);
         if (o->unk_1ee == 4) {
-            func_ov004_022320c8(o);
-            func_ov004_02231eec(o, 0x1554);
+            AquariumFish_UpdateDepthCapped(o);
+            AquariumFish_UpdatePitchSmooth(o, 0x1554);
         }
     }
     if (o->unk_1ee != 6 && o->unk_1ee != 5) {
-        func_ov004_0222e2f4(o);
+        AquariumFish_TurnToTarget(o);
     }
     if (o->unk_256 == 0) {
-        func_ov004_0222e288(o, 0xccd);
+        AquariumFish_UpdateAnimSpeed(o, 0xccd);
     } else {
-        func_ov004_0222e288(o, 0x666);
+        AquariumFish_UpdateAnimSpeed(o, 0x666);
     }
-    func_ov004_0222e238(o);
-    func_ov004_0222e61c(o);
-    func_ov004_0222e7a4(o);
+    AquariumFish_KeepInsideX(o);
+    AquariumFish_UpdateAvoid(o);
+    AquariumFish_TurnAtTankEnds(o);
     o->unk_158++;
-    if (func_ov004_0222ede0(o)) {
+    if (AquariumFish_CheckTouched(o)) {
         o->unk_256 = 0;
-        func_ov004_022321e8(o, 0);
+        AquariumFish_PlayAnim(o, 0);
         o->unk_255 = 1;
     }
 }
 
-extern "C" void func_ov004_0222f284(E864 *e) {
-    s32 c = func_01ffcb0c(0x1800, (s32)(data_ov004_022402ec[e->unk_15c].unk_03 << 12) >> 7);
+extern "C" void AquariumSquid_TurnAtTankEnd(E864 *e) {
+    s32 c = func_01ffcb0c(0x1800, (s32)(sAquariumFishParams[e->unk_15c].unk_03 << 12) >> 7);
     s32 a = e->unk_1a8.z + c;
     s32 b = e->unk_1a8.z - c;
     s32 t = e->unk_1a8.x;
@@ -2917,7 +2917,7 @@ extern "C" void func_ov004_0222f284(E864 *e) {
 go:
     if (e->unk_1f1 != 0) goto fail1;
     if (e->unk_1fd == 0) {
-        if (func_ov004_02231e28(0, 0x64) < 0x4b) {
+        if (Aquarium_RandRange(0, 0x64) < 0x4b) {
             e->unk_1fd = 1;
         } else {
             e->unk_1fd = 2;
@@ -2932,10 +2932,10 @@ go:
     }
     if (e->unk_1fd == 1) {
         if (e->unk_1fc == 0) {
-            func_ov004_0223230c(e, 0, 1, 4);
+            AquariumFish_PickTurn(e, 0, 1, 4);
             e->unk_1fc = 1;
             if (e->unk_1a8.x >= 0xb000 && e->unk_1a8.x <= 0x17000) {
-                if (func_ov004_02231e28(0, 0x64) < 0x14) {
+                if (Aquarium_RandRange(0, 0x64) < 0x14) {
                     { s16 k = -1; e->unk_200 *= k; }
                 }
             }
@@ -2958,7 +2958,7 @@ fail2:
 end:;
 }
 
-extern "C" void _ZN18Unk_ov004_0224e7ec8vfunc_00Ev(E7ec *e) {
+extern "C" void _ZN15AquariumOctopus8vfunc_00Ev(E7ec *e) {
     e->unk_1c7 = 0;
     e->unk_1a8.x = 0x16f00;
     e->unk_1a8.y = 0xfffff400;
@@ -2966,7 +2966,7 @@ extern "C" void _ZN18Unk_ov004_0224e7ec8vfunc_00Ev(E7ec *e) {
     e->unk_1c0 = 0;
 }
 
-extern "C" void func_ov004_0222f1d0(E864 *e) {
+extern "C" void AquariumSwimFish_SetupSea(E864 *e) {
     e->unk_50 = e;
     s32 s = e->unk_15c;
     if ((u32)(s - 0x2d) <= 1) {
@@ -2979,23 +2979,23 @@ extern "C" void func_ov004_0222f1d0(E864 *e) {
     s32 *p = &e->unk_15c;
     e->unk_1e8 = *p;
     e->unk_1e9 = *p;
-    func_ov004_0222dea8(e);
+    AquariumFish_LoadParams(e);
     if (e->unk_1c6) {
-        Model_setInitCallback((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
+        Model_setInitCallback((u8 *)e + 0x64, (void *)AquariumFish_InstallJointCallbacks, e);
     }
 }
 
-extern "C" void func_ov004_0222f0e4(E864 *e) {
-    func_ov004_0222dfbc(e);
-    (e->*data_ov004_02251e5c[e->unk_1ee])();
+extern "C" void AquariumSwimFish_UpdateSea(E864 *e) {
+    AquariumFish_SteerFromWall(e);
+    (e->*sAquariumSwimStates[e->unk_1ee])();
     {
         s32 s = e->unk_15c;
         if (s != 0x2e && s != 0x2d) {
             if (s == 0x29 || s == 0x37 || s == 0x2b) {
-                func_ov004_0222e820(e);
+                AquariumFish_ClampHeadingSideways(e);
             }
-            func_ov004_0222e7a4(e);
-            func_ov004_0222e61c(e);
+            AquariumFish_TurnAtTankEnds(e);
+            AquariumFish_UpdateAvoid(e);
         } else {
             if (e->unk_1a8.z > 0x13dc2) {
                 e->unk_1a8.z = 0x13dc2;
@@ -3004,94 +3004,94 @@ extern "C" void func_ov004_0222f0e4(E864 *e) {
     }
     if (e->unk_1ee != 2 && e->unk_1ee != 6) {
         if (e->unk_15c == 0x2b || e->unk_15c == 0x37) {
-            func_ov004_022320c8(e);
-            func_ov004_02231eec(e, 0x71c);
+            AquariumFish_UpdateDepthCapped(e);
+            AquariumFish_UpdatePitchSmooth(e, 0x71c);
         } else {
-            func_ov004_022320c8(e);
-            func_ov004_02231eec(e, 0xe38);
+            AquariumFish_UpdateDepthCapped(e);
+            AquariumFish_UpdatePitchSmooth(e, 0xe38);
         }
-        func_ov004_0222e2f4(e);
+        AquariumFish_TurnToTarget(e);
     }
-    func_ov004_0222e288(e, 0x333);
-    func_ov004_0222e238(e);
+    AquariumFish_UpdateAnimSpeed(e, 0x333);
+    AquariumFish_KeepInsideX(e);
     e->unk_158++;
-    func_ov004_0222ede0(e);
+    AquariumFish_CheckTouched(e);
 }
 
-extern "C" void func_ov004_0222f090(E864 *e) {
-    if (data_ov004_022402ec[e->unk_15c].unk_00 == 0) {
+extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
+    if (sAquariumFishParams[e->unk_15c].unk_00 == 0) {
         e->unk_50 = e;
     }
     e->unk_1e8 = e->unk_15c;
-    func_ov004_0222dea8(e);
+    AquariumFish_LoadParams(e);
     if (e->unk_1c6) {
-        Model_setInitCallback((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
+        Model_setInitCallback((u8 *)e + 0x64, (void *)AquariumFish_InstallJointCallbacks, e);
     }
 }
 
-extern "C" void func_ov004_0222ef5c(E864 *e) {
-    (e->*data_ov004_02251e5c[e->unk_1ee])();
-    if (data_ov004_022402ec[e->unk_15c].unk_00 == 0) {
+extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e) {
+    (e->*sAquariumSwimStates[e->unk_1ee])();
+    if (sAquariumFishParams[e->unk_15c].unk_00 == 0) {
         u8 *p1 = &e->unk_1e8;
         u8 b = *p1;
         if (e->unk_252 != b && b != e->unk_15c) {
             e->unk_252 = b;
             if (e->unk_1ee != 1) {
-                func_ov004_0222ed24(e, (V3 *)((u8 *)data_ov004_02251e94[*p1] + 0x1a8));
+                AquariumFish_StartFlee(e, (V3 *)((u8 *)sAquariumFish[*p1] + 0x1a8));
             }
         }
     }
-    func_ov004_02232548(e);
+    AquariumFish_UpdateWallTurn(e);
     u8 m = e->unk_1ee;
     if (m == 5) {
         if (e->unk_20c < 0xcd) goto skip;
     }
     if (m == 6) goto skip;
-    func_ov004_02232130(e);
+    AquariumFish_UpdateDepth(e);
     {
         s32 s = e->unk_15c;
         if (s == 0x1d) {
-            func_ov004_02231f98(e, 0xe38, 0x4b0);
+            AquariumFish_UpdatePitch(e, 0xe38, 0x4b0);
         } else {
-            u32 k = data_ov004_022402ec[s].unk_00;
+            u32 k = sAquariumFishParams[s].unk_00;
             if (k == 0) {
-                func_ov004_02232068(e);
+                AquariumFish_UpdatePitchByDir(e);
             } else if (k >= 4) {
-                func_ov004_02231f98(e, 0x71c, 0x384);
+                AquariumFish_UpdatePitch(e, 0x71c, 0x384);
             } else {
-                func_ov004_02231f98(e, 0x1554, 0x384);
+                AquariumFish_UpdatePitch(e, 0x1554, 0x384);
             }
         }
     }
-    func_ov004_0222e2f4(e);
+    AquariumFish_TurnToTarget(e);
 skip:
-    func_ov004_0222e288(e, 0x333);
+    AquariumFish_UpdateAnimSpeed(e, 0x333);
     e->unk_158++;
-    func_ov004_0222ede0(e);
+    AquariumFish_CheckTouched(e);
 }
 
-extern "C" void func_ov004_0222ef40(Cb *c) {
+extern "C" void AquariumFish_JointCalcPre(Cb *c) {
     void *m = c->unk_04->unk_2c;
     if (m) {
         BlendAnimModel_onJointCalcPre((u8 *)m + 0x64, c);
     }
 }
 
-extern "C" void func_ov004_0222ef24(Cb *c) {
+extern "C" void AquariumFish_JointCalcPost(Cb *c) {
     void *m = c->unk_04->unk_2c;
     if (m) {
         BlendAnimModel_onJointCalcPost((u8 *)m + 0x64, c);
     }
 }
 
-extern "C" void func_ov004_0222ef04(Cb *c) {
-    c->unk_24 = (void *)func_ov004_0222ef40;
+extern "C" void AquariumFish_InstallJointCallbacks(Cb *c) {
+    c->unk_24 = (void *)AquariumFish_JointCalcPre;
     c->unk_92 = 1;
-    c->unk_24 = (void *)func_ov004_0222ef24;
+    c->unk_24 = (void *)AquariumFish_JointCalcPost;
     c->unk_92 = 2;
 }
 
-extern "C" BOOL func_ov004_0222ee2c(E864 *e, V3 *out) {
+extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     BOOL r = FALSE;
     u8 b;
     s32 t;
@@ -3128,7 +3128,7 @@ extern "C" BOOL func_ov004_0222ee2c(E864 *e, V3 *out) {
     return r;
 }
 
-extern "C" BOOL func_ov004_0222ede0(E864 *e) {
+extern "C" BOOL AquariumFish_CheckTouched(E864 *e) {
     BOOL r = FALSE;
     if (e->unk_253 != 0) {
         if (e->unk_1ee != 1) {
@@ -3137,15 +3137,15 @@ extern "C" BOOL func_ov004_0222ede0(E864 *e) {
         return FALSE;
     }
     V3 v;
-    if (func_ov004_0222ee2c(e, &v)) {
-        func_ov004_0222ed24(e, &v);
+    if (AquariumFish_GetTouchPoint(e, &v)) {
+        AquariumFish_StartFlee(e, &v);
         r = TRUE;
         e->unk_253 = r;
     }
     return r;
 }
 
-extern "C" void func_ov004_0222ed24(E864 *e, V3 *p) {
+extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p) {
     if (e->unk_253 == 0) {
         e->unk_1c4 = 0;
         e->unk_1ee = 1;
@@ -3154,39 +3154,39 @@ extern "C" void func_ov004_0222ed24(E864 *e, V3 *p) {
             if (e->unk_254 >= 0x7d) {
                 e->unk_24c = Math_AngleXZ(p, &e->unk_1a8);
             } else if (e->unk_1c0 >= 0) {
-                e->unk_24c = func_ov004_02231e28(0x38e4, 0x471c);
+                e->unk_24c = Aquarium_RandRange(0x38e4, 0x471c);
             } else {
-                e->unk_24c = -func_ov004_02231e28(0x38e4, 0x471c);
+                e->unk_24c = -Aquarium_RandRange(0x38e4, 0x471c);
             }
         } else {
             e->unk_24c = Math_AngleXZ(p, &e->unk_1a8);
         }
         if (e->unk_1fd == 1) {
-            func_ov004_022321b4(e);
+            AquariumFish_CancelTurn(e);
         }
     }
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8648vfunc_00Ev(E864 *e) {
-    (e->*data_ov004_02251de4[data_ov004_02251d60].a)();
+extern "C" void _ZN16AquariumSwimFish8vfunc_00Ev(E864 *e) {
+    (e->*sAquariumSwimFishRoomFns[sAquariumRoom].a)();
 }
 
-extern "C" void _ZN18Unk_ov004_0224e8648vfunc_04Ev(E864 *e) {
-    (e->*data_ov004_02251de4[data_ov004_02251d60].b)();
+extern "C" void _ZN16AquariumSwimFish8vfunc_04Ev(E864 *e) {
+    (e->*sAquariumSwimFishRoomFns[sAquariumRoom].b)();
 }
 
-extern "C" void func_ov004_0222eb8c(E864 *e) {
+extern "C" void AquariumFish_StateStart(E864 *e) {
     e->unk_20c = 0;
     if (e->unk_1fd == 2) {
-        e->unk_1c2 = e->unk_1c2 + func_ov004_02231e3c(0xb4, 0x96);
+        e->unk_1c2 = e->unk_1c2 + Aquarium_RandAngle(0xb4, 0x96);
         e->unk_1eb++;
     } else {
-        e->unk_1c2 = e->unk_1c2 + func_ov004_02231e3c(e->unk_230, 0);
+        e->unk_1c2 = e->unk_1c2 + Aquarium_RandAngle(e->unk_230, 0);
         e->unk_1eb = 0;
     }
     e->unk_158 = 0;
-    e->unk_202 = func_ov004_02231e28(e->unk_205, e->unk_204);
-    e->unk_203 = func_ov004_02231e28(e->unk_207, e->unk_206);
+    e->unk_202 = Aquarium_RandRange(e->unk_205, e->unk_204);
+    e->unk_203 = Aquarium_RandRange(e->unk_207, e->unk_206);
     e->unk_23c = 0;
     if (e->unk_1e8 == e->unk_15c) {
         s32 v = e->unk_1a8.y;
@@ -3195,7 +3195,7 @@ extern "C" void func_ov004_0222eb8c(E864 *e) {
         } else if (v <= e->unk_228) {
             e->unk_1ca = 1;
         } else {
-            s32 t = func_ov004_02231e28(0, 2);
+            s32 t = Aquarium_RandRange(0, 2);
             e->unk_1ca = t > 0 ? 1 : -1;
         }
     }
@@ -3204,31 +3204,31 @@ extern "C" void func_ov004_0222eb8c(E864 *e) {
     e->unk_22f = 1;
 }
 
-extern "C" void func_ov004_0222eb30(E864 *e) {
+extern "C" void AquariumFish_StateAccelerate(E864 *e) {
     s32 *p = &e->unk_20c;
     *p = e->unk_214 * e->unk_158;
-    func_ov004_0223257c(&e->unk_1a8, *p, e->unk_1c0);
+    Aquarium_StepXZ(&e->unk_1a8, *p, e->unk_1c0);
     if (e->unk_20c >= e->unk_210) {
         e->unk_158 = 0;
         e->unk_1ee = 4;
     }
 }
 
-extern "C" void func_ov004_0222ead8(E864 *e) {
+extern "C" void AquariumFish_StateCruise(E864 *e) {
     s32 *p = &e->unk_20c;
     *p = e->unk_210;
-    func_ov004_0223257c(&e->unk_1a8, *p, e->unk_1c0);
+    Aquarium_StepXZ(&e->unk_1a8, *p, e->unk_1c0);
     if (e->unk_158 >= e->unk_202) {
         e->unk_158 = 0;
         e->unk_1ee = 5;
     }
 }
 
-extern "C" void func_ov004_0222ea74(E864 *e) {
+extern "C" void AquariumFish_StateDecelerate(E864 *e) {
     s32 t = e->unk_210;
     s32 *p = &e->unk_20c;
     *p = t - e->unk_218 * e->unk_158;
-    func_ov004_0223257c(&e->unk_1a8, *p, e->unk_1c0);
+    Aquarium_StepXZ(&e->unk_1a8, *p, e->unk_1c0);
     if (e->unk_20c <= 0) {
         e->unk_20c = 0;
         e->unk_158 = 0;
@@ -3236,7 +3236,7 @@ extern "C" void func_ov004_0222ea74(E864 *e) {
     }
 }
 
-extern "C" void func_ov004_0222ea40(E864 *e) {
+extern "C" void AquariumFish_StateRest(E864 *e) {
     e->unk_20c = 0;
     if (e->unk_158 >= e->unk_203) {
         e->unk_158 = 0;
@@ -3244,7 +3244,7 @@ extern "C" void func_ov004_0222ea40(E864 *e) {
     }
 }
 
-extern "C" void func_ov004_0222e9ac(E864 *e) {
+extern "C" void AquariumFish_StateFlee(E864 *e) {
     if (e->unk_158 <= 0x28) {
         if ((u8)(e->unk_164 + 0xfc) <= 1) {
             func_020e7754(&e->unk_1c0, e->unk_24c, 3, 0xaaa);
@@ -3253,22 +3253,22 @@ extern "C" void func_ov004_0222e9ac(E864 *e) {
         }
         s32 *p = &e->unk_20c;
         *p = e->unk_210;
-        func_ov004_0223257c(&e->unk_1a8, *p, e->unk_1c0);
+        Aquarium_StepXZ(&e->unk_1a8, *p, e->unk_1c0);
     } else {
         e->unk_253 = 0;
         e->unk_1ee = 2;
     }
 }
 
-extern "C" void func_ov004_0222e9a8() {}
+extern "C" void AquariumFish_StateNone() {}
 
-extern "C" void func_ov004_0222e8d8(E864 *e) {
+extern "C" void AquariumFish_StateStartFast(E864 *e) {
     e->unk_158 = 1;
-    e->unk_202 = func_ov004_02231e28(e->unk_205, e->unk_204);
+    e->unk_202 = Aquarium_RandRange(e->unk_205, e->unk_204);
     e->unk_203 = 0;
     e->unk_23c = 0;
     if (e->unk_1f1 != 0) {
-        e->unk_1c2 += func_ov004_02231e3c(0x1e, 0xf);
+        e->unk_1c2 += Aquarium_RandAngle(0x1e, 0xf);
     }
     if (e->unk_1e8 == e->unk_15c) {
         if (e->unk_1a8.y >= e->unk_1cc) {
@@ -3276,17 +3276,17 @@ extern "C" void func_ov004_0222e8d8(E864 *e) {
         } else if (e->unk_1a8.y <= e->unk_228) {
             e->unk_1ca = 1;
         } else {
-            e->unk_1ca = func_ov004_02231e28(0, 2) > 0 ? 1 : -1;
+            e->unk_1ca = Aquarium_RandRange(0, 2) > 0 ? 1 : -1;
         }
     }
     e->unk_1ee = 3;
 }
 
-extern "C" void func_ov004_0222e874(E864 *e) {
+extern "C" void AquariumFish_StateSlowDown(E864 *e) {
     s32 t = e->unk_210;
     s32 *p = &e->unk_20c;
     *p = t - e->unk_218 * e->unk_158;
-    func_ov004_0223257c(&e->unk_1a8, *p, e->unk_1c0);
+    Aquarium_StepXZ(&e->unk_1a8, *p, e->unk_1c0);
     if (e->unk_20c <= 0xf6) {
         e->unk_20c = 0xf6;
         e->unk_158 = 3;
@@ -3294,7 +3294,7 @@ extern "C" void func_ov004_0222e874(E864 *e) {
     }
 }
 
-extern "C" void func_ov004_0222e820(R *e) {
+extern "C" void AquariumFish_ClampHeadingSideways(R *e) {
     s32 v = e->unk_1c0;
     s32 t;
     if (v < 0) t = -v; else t = v;
@@ -3314,7 +3314,7 @@ extern "C" void func_ov004_0222e820(R *e) {
     }
 }
 
-extern "C" void func_ov004_0222e7a4(R *e) {
+extern "C" void AquariumFish_TurnAtTankEnds(R *e) {
     s32 lo, hi;
     if (e->unk_1c8 == 1) {
         lo = 0;
@@ -3326,18 +3326,18 @@ extern "C" void func_ov004_0222e7a4(R *e) {
     s32 x = e->unk_1a8.x >> 12;
     if (x <= lo) {
         e->unk_1c0 = 0x4000;
-        e->unk_1a8.y = (data_ov004_022402ec[e->unk_15c].unk_04 << 12) >> 6;
+        e->unk_1a8.y = (sAquariumFishParams[e->unk_15c].unk_04 << 12) >> 6;
     } else if (x >= hi) {
         e->unk_1c0 = -0x4000;
-        e->unk_1a8.y = (data_ov004_022402ec[e->unk_15c].unk_04 << 12) >> 6;
+        e->unk_1a8.y = (sAquariumFishParams[e->unk_15c].unk_04 << 12) >> 6;
     }
 }
 
-extern "C" void func_ov004_0222e61c(E864 *e) {
+extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
     if (e->unk_1ee != 1) {
         if (e->unk_40 != 0) {
             if (e->unk_1f1 == 0) {
-                func_ov004_0222e48c(e);
+                AquariumFish_ClearContact(e);
                 e->unk_1ca = 1;
             } else {
                 u32 c5 = e->unk_1e8;
@@ -3349,18 +3349,18 @@ extern "C" void func_ov004_0222e61c(E864 *e) {
                     *c = *c + 1;
                     u32 n = *c;
                     if (n >= 0x7d) {
-                        R *o = data_ov004_02251e94[e->unk_1e8];
+                        R *o = sAquariumFish[e->unk_1e8];
                         if (!o) {
                             return;
                         } else {
-                            u32 ra = data_ov004_022402ec[e->unk_15c].unk_03;
-                            u32 rb = data_ov004_022402ec[o->unk_15c].unk_03;
+                            u32 ra = sAquariumFishParams[e->unk_15c].unk_03;
+                            u32 rb = sAquariumFishParams[o->unk_15c].unk_03;
                             if (ra <= rb) {
-                                func_ov004_0222ed24(e, &o->unk_1a8);
+                                AquariumFish_StartFlee(e, &o->unk_1a8);
                                 e->unk_254 = 0;
                                 return;
                             } else if (n >= 0x91) {
-                                func_ov004_0222ed24(e, &o->unk_1a8);
+                                AquariumFish_StartFlee(e, &o->unk_1a8);
                                 e->unk_254 = 0;
                                 return;
                             }
@@ -3374,8 +3374,8 @@ extern "C" void func_ov004_0222e61c(E864 *e) {
                     u32 m = e->unk_1ea;
                     if ((m & 8) != 0 || (m & 0x10) != 0) {
                         if (e->unk_1ee != 4) {
-                            u32 a = data_ov004_022402ec[e->unk_15c].unk_00;
-                            u32 b = data_ov004_022402ec[e->unk_1e8].unk_00;
+                            u32 a = sAquariumFishParams[e->unk_15c].unk_00;
+                            u32 b = sAquariumFishParams[e->unk_1e8].unk_00;
                             if (a <= b) {
                                 e->unk_1ee = 4;
                                 e->unk_158 = 0;
@@ -3385,7 +3385,7 @@ extern "C" void func_ov004_0222e61c(E864 *e) {
                     m = e->unk_1ea;
                     if (m >= 0x40) {
                         if (e->unk_1c9 == 0) {
-                            func_ov004_0222e4f0(e);
+                            AquariumFish_AvoidOther(e);
                         }
                     } else if ((m & 0x20) != 0) {
                         e->unk_1ca = 1;
@@ -3395,19 +3395,19 @@ extern "C" void func_ov004_0222e61c(E864 *e) {
                 }
             }
         } else {
-            func_ov004_0222e48c(e);
+            AquariumFish_ClearContact(e);
         }
     }
 }
 
-extern "C" void func_ov004_0222e4f0(R *e) {
+extern "C" void AquariumFish_AvoidOther(R *e) {
     s32 a;
     R** slot;
     V3* v;
     R* o;
     s32 c;
     s32 b;
-    slot = &data_ov004_02251e94[e->unk_1e8];
+    slot = &sAquariumFish[e->unk_1e8];
     o = *slot;
     if (o) {
         v = &o->unk_1a8;
@@ -3423,7 +3423,7 @@ extern "C" void func_ov004_0222e4f0(R *e) {
                 (*slot)->unk_1e9 = e->unk_15c;
                 (*slot)->unk_1ec = e->unk_1c0 + 0x8000;
             }
-            func_ov004_0222e390(e, slot);
+            AquariumFish_SplitDepth(e, slot);
         } else if (a <= 0x4000 && c <= 0x4000) {
             if (e->unk_1a8.z < v->z) {
                 e->unk_1ec = b + 0x8000;
@@ -3432,7 +3432,7 @@ extern "C" void func_ov004_0222e4f0(R *e) {
                 (*slot)->unk_1e9 = e->unk_15c;
                 (*slot)->unk_1ec = e->unk_1c0 + 0x8000;
             }
-            func_ov004_0222e390(e, slot);
+            AquariumFish_SplitDepth(e, slot);
         } else {
             s32 r = Math_AngleXZ(v, &e->unk_1a8);
             s32 d = (s16)(r - e->unk_1c0);
@@ -3445,13 +3445,13 @@ extern "C" void func_ov004_0222e4f0(R *e) {
     }
 }
 
-extern "C" void func_ov004_0222e48c(R *e) {
+extern "C" void AquariumFish_ClearContact(R *e) {
     e->unk_1ea = 0;
     e->unk_1c9 = 0;
     e->unk_1ec = e->unk_1c0;
     u32 t = e->unk_1e8;
     if (t != (u32)e->unk_15c) {
-        R *o = data_ov004_02251e94[t];
+        R *o = sAquariumFish[t];
         if (o) {
             o->unk_1c9 = 0;
         }
@@ -3460,7 +3460,7 @@ extern "C" void func_ov004_0222e48c(R *e) {
     }
 }
 
-extern "C" s32 func_ov004_0222e3e0(R *a, R **b) {
+extern "C" s32 Aquarium_GetContactSide(R *a, R **b) {
     s32 r4 = (*b)->unk_1c0;
     s32 y, x;
     s32 t = (s16)(Math_AngleXZ(&a->unk_1a8, &(*b)->unk_1a8) - 0x4000);
@@ -3484,7 +3484,7 @@ extern "C" s32 func_ov004_0222e3e0(R *a, R **b) {
     }
 }
 
-extern "C" void func_ov004_0222e390(R *a, R **b) {
+extern "C" void AquariumFish_SplitDepth(R *a, R **b) {
     if (a->unk_1cc < (*b)->unk_1cc) {
         a->unk_1ca = -1;
         R *o = *b;
@@ -3500,12 +3500,12 @@ extern "C" void func_ov004_0222e390(R *a, R **b) {
     }
 }
 
-extern "C" void func_ov004_0222e2f4(E864 *e) {
+extern "C" void AquariumFish_TurnToTarget(E864 *e) {
     if (e->unk_20c > 0x99a || e->unk_1ee != 5) {
         if (e->unk_1ee != 1) {
             if (e->unk_22f != 0) {
                 BOOL r;
-                if (data_ov004_022402ec[e->unk_15c].unk_00 >= 4) {
+                if (sAquariumFishParams[e->unk_15c].unk_00 >= 4) {
                     r = func_020e769c(&e->unk_1c0, e->unk_1c2, 0x88) ? TRUE : FALSE;
                 } else {
                     r = func_020e769c(&e->unk_1c0, e->unk_1c2, 0x16c) ? TRUE : FALSE;
@@ -3518,7 +3518,7 @@ extern "C" void func_ov004_0222e2f4(E864 *e) {
     }
 }
 
-extern "C" void func_ov004_0222e288(E864 *e, s32 lo) {
+extern "C" void AquariumFish_UpdateAnimSpeed(E864 *e, s32 lo) {
     s32 v;
     u8 m = e->unk_1ee;
     if (m == 1) {
@@ -3540,18 +3540,18 @@ extern "C" void func_ov004_0222e288(E864 *e, s32 lo) {
     e->unk_110 = v;
 }
 
-void Unk_ov004_0224e774::vfunc_00() {
+void AquariumFish::vfunc_00() {
 }
 
-void Unk_ov004_0224e774::vfunc_04() {
+void AquariumFish::vfunc_04() {
 }
 
-extern "C" void func_ov004_0222e238(R *e) {
+extern "C" void AquariumFish_KeepInsideX(R *e) {
     if (e->unk_1ee != 1) {
         s32 x = e->unk_1a8.x;
         if (x > 0x5000 && x < 0x1e000) {
         } else {
-            func_ov004_0222e820(e);
+            AquariumFish_ClampHeadingSideways(e);
             if (e->unk_1ee == 6) {
                 e->unk_1ee = 2;
             }
@@ -3559,23 +3559,23 @@ extern "C" void func_ov004_0222e238(R *e) {
     }
 }
 
-void Unk_ov004_0224e6e8::vfunc_08(u32 a, u32 idx, u32 c) {
+void AquariumFishHitBox::vfunc_08(u32 a, u32 idx, u32 c) {
     R *q0 = unk_4c;
     if (q0) {
         R *p = q0;
         if (idx >= 0x38) {
             p->unk_1ea |= 0x20;
         } else {
-            if (data_ov004_022402ec[idx].unk_00 != 0 || idx < 0x23) {
-                R **q = &data_ov004_02251e94[idx];
-                func_ov004_0222e0f0(this, &p, q);
-                func_ov004_0222e0f0(this, q, &p);
+            if (sAquariumFishParams[idx].unk_00 != 0 || idx < 0x23) {
+                R **q = &sAquariumFish[idx];
+                AquariumFish_RecordContact(this, &p, q);
+                AquariumFish_RecordContact(this, q, &p);
             }
         }
     }
 }
 
-extern "C" void func_ov004_0222e0f0(void *unused, R **pp, R **q)
+extern "C" void AquariumFish_RecordContact(void *unused, R **pp, R **q)
 {
     (*pp)->unk_1f1++;
     R *o = *pp;
@@ -3584,7 +3584,7 @@ extern "C" void func_ov004_0222e0f0(void *unused, R **pp, R **q)
     a = o->unk_15c;
     b = o->unk_1e8;
     s32 c = (*q)->unk_15c;
-    s32 r2 = func_ov004_0222e3e0(o, q);
+    s32 r2 = Aquarium_GetContactSide(o, q);
     R *o2 = *pp;
     u32 r1 = o2->unk_1ea;
     o2->unk_1f4[c >> 5] |= 1 << (c & 31);
@@ -3593,8 +3593,8 @@ extern "C" void func_ov004_0222e0f0(void *unused, R **pp, R **q)
         (*pp)->unk_1e8 = c;
         (*pp)->unk_1c9 = 0;
     } else {
-        u32 rc = data_ov004_022402ec[c].unk_00;
-        u32 rb = data_ov004_022402ec[b].unk_00;
+        u32 rc = sAquariumFishParams[c].unk_00;
+        u32 rb = sAquariumFishParams[b].unk_00;
         if (rb < rc) {
             (*pp)->unk_1ea = r2 | r1;
             (*pp)->unk_1e8 = c;
@@ -3609,7 +3609,7 @@ extern "C" void func_ov004_0222e0f0(void *unused, R **pp, R **q)
     }
 }
 
-extern "C" void func_ov004_0222e060(R *self)
+extern "C" void AquariumFish_ResetContacts(R *self)
 {
     s32 t0 = self->unk_15c;
     s32 c0 = self->unk_1e8;
@@ -3628,7 +3628,7 @@ extern "C" void func_ov004_0222e060(R *self)
     self->unk_1f0 = 0;
 }
 
-extern "C" void func_ov004_0222dfbc(E864 *self)
+extern "C" void AquariumFish_SteerFromWall(E864 *self)
 {
     if (self->unk_40 == 0 && self->unk_22f == 0 && self->unk_1f0 != 0) {
         s32 v = self->unk_1c0;
@@ -3652,9 +3652,9 @@ extern "C" void func_ov004_0222dfbc(E864 *self)
     }
 }
 
-extern "C" void func_ov004_0222dea8(E864 *self)
+extern "C" void AquariumFish_LoadParams(E864 *self)
 {
-    const Rec *t = data_ov004_022402ec;
+    const Rec *t = sAquariumFishParams;
     s32 *pi = &self->unk_15c;
     self->unk_210 = (s32)(t[*pi].unk_07 << 12) >> 10;
     self->unk_214 = (s32)(t[*pi].unk_05 << 12) >> 12;
@@ -3669,10 +3669,10 @@ extern "C" void func_ov004_0222dea8(E864 *self)
     self->unk_228 = ((s32)(t[*pi].unk_0f << 12) >> 6) - 0x1000;
 }
 
-extern "C" BOOL func_ov004_0222de34(Mgr *self, s32 i)
+extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i)
 {
-    if (i < data_ov004_02251d64 || i >= data_ov004_0224e5f0) return FALSE;
-    R **p = &data_ov004_02251e94[i];
+    if (i < sAquariumFirstFish || i >= sAquariumEndFish) return FALSE;
+    R **p = &sAquariumFish[i];
     if (*p == NULL) return FALSE;
     (*p)->unk_15c = i;
     (*p)->unk_160 = 1;
@@ -3681,10 +3681,10 @@ extern "C" BOOL func_ov004_0222de34(Mgr *self, s32 i)
     return TRUE;
 }
 
-extern "C" void func_ov004_0222dd3c(Mgr *self, s32 i)
+extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 {
-    if (i >= data_ov004_02251d64 && i < data_ov004_0224e5f0) {
-        R **p = &data_ov004_02251e94[i];
+    if (i >= sAquariumFirstFish && i < sAquariumEndFish) {
+        R **p = &sAquariumFish[i];
         s32 z = 0;
         s32 j;
         for (j = z; j < 4; j++) {
@@ -3700,27 +3700,27 @@ extern "C" void func_ov004_0222dd3c(Mgr *self, s32 i)
         func_0209c224((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
         switch ((*p)->unk_15c) {
         case 0xb:
-            if (data_ov004_02251d6c) {
-                Unk_02003c30_callRelease((u8 *)data_ov004_02251d6c + 0x1fc);
-                data_ov004_02251d6c = 0;
+            if (sAquariumFrog) {
+                Unk_02003c30_callRelease((u8 *)sAquariumFrog + 0x1fc);
+                sAquariumFrog = 0;
             }
             break;
         case 0x24:
-            if (data_ov004_02251d74) data_ov004_02251d74 = 0;
+            if (sAquariumJellyfish) sAquariumJellyfish = 0;
             break;
         case 0x23:
-            if (data_ov004_02251d78) data_ov004_02251d78 = 0;
+            if (sAquariumSeaButterfly) sAquariumSeaButterfly = 0;
             break;
         }
         (*p)->unk_15c = -1;
     }
 }
 
-extern "C" BOOL _ZN18Unk_ov004_0224e87c8vfunc_00Ev(Mgr *self)
+extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
 {
     func_0209c1a4((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)func_0205bf84, (void *)func_0205bf68, 0);
-    data_ov004_02251d60 = *(s32 *)&self->unk_04[4];
-    if (data_ov004_02251d60 == 0) {
+    sAquariumRoom = *(s32 *)&self->unk_04[4];
+    if (sAquariumRoom == 0) {
         self->unk_50[0].unk_50[0] = 0xc000;
         self->unk_50[0].unk_50[1] = 0x700;
         self->unk_50[0].unk_50[2] = 0x5600;
@@ -3746,10 +3746,10 @@ extern "C" BOOL _ZN18Unk_ov004_0224e87c8vfunc_00Ev(Mgr *self)
         self->unk_50[4].unk_50[2] = 0x14a00;
         self->unk_50[4].unk_50[3] = 0x700;
         self->unk_50[4].unk_50[4] = 0x700;
-        data_ov004_0224e5f4 = 5;
-        func_ov004_0222d874(self);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &data_ov004_02251d9c, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x550, &data_ov004_02251d84, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        sAquariumObstacleCount = 5;
+        MuseumAquarium_CreateFreshwaterFish(self);
+        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        func_020b68ec(func_020b50b4(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->unk_50[0].unk_50[0] = 0x8b00;
         self->unk_50[0].unk_50[1] = 0xfffff300;
@@ -3771,30 +3771,30 @@ extern "C" BOOL _ZN18Unk_ov004_0224e87c8vfunc_00Ev(Mgr *self)
         self->unk_50[3].unk_50[2] = 0x13100;
         self->unk_50[3].unk_50[3] = 0x1200;
         self->unk_50[3].unk_50[4] = 0x1400;
-        data_ov004_0224e5f4 = 4;
+        sAquariumObstacleCount = 4;
         self->unk_294[0] = 0x9e00;
         self->unk_294[1] = 0xfffff300;
         self->unk_294[2] = 0x14700;
         self->unk_294[3] = 0xc00;
         self->unk_294[4] = 0x2000;
-        func_ov004_0222d62c(self);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &data_ov004_02251d9c, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        MuseumAquarium_CreateSeaFish(self);
+        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     func_02004008(0x4da);
     return TRUE;
 }
 
-extern "C" BOOL func_ov004_0222d874(Mgr *self)
+extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self)
 {
     s32 i = 0;
-    data_ov004_02251d64 = 0;
-    data_ov004_0224e5f0 = 0x23;
-    data_ov004_02251d9c.x = 0x11000;
-    data_ov004_02251d9c.y = 0;
-    data_ov004_02251d9c.z = 0x15000;
+    sAquariumFirstFish = 0;
+    sAquariumEndFish = 0x23;
+    sAquariumTankCenterA.x = 0x11000;
+    sAquariumTankCenterA.y = 0;
+    sAquariumTankCenterA.z = 0x15000;
     void *heap = gCurrentHeap;
-    R **tbl = data_ov004_02251e94;
-    for (; i < data_ov004_0224e5f0; i++) {
+    R **tbl = sAquariumFish;
+    for (; i < sAquariumEndFish; i++) {
         R **p;
         switch (i) {
         case 11:
@@ -3836,122 +3836,122 @@ extern "C" BOOL func_ov004_0222d874(Mgr *self)
         }
         R *e = *p;
         if (e == NULL) return FALSE;
-        u32 t = data_ov004_022402ec[i].unk_01;
+        u32 t = sAquariumFishParams[i].unk_01;
         if (t == 3) e->unk_1c6 = 1;
-        if (!func_ov004_0222d5a8(self, p, i, t)) {
-            func_ov004_0222dd3c(self, i);
+        if (!MuseumAquarium_LoadFishAnims(self, p, i, t)) {
+            MuseumAquarium_ReleaseFish(self, i);
             (*p)->unk_1c6 = 0;
             return FALSE;
         }
     }
-    func_ov004_0222cf38(self);
+    MuseumAquarium_PlaceFreshwaterFish(self);
     return TRUE;
 }
 
-extern "C" s32 func_ov004_0222d62c(Mgr *o) {
+extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o) {
     s32 i = 0x23;
     R **p;
     void *heap;
-    data_ov004_02251d64 = 0x23;
-    data_ov004_0224e5f0 = 0x38;
-    data_ov004_02251d9c.x = 0x11000;
-    data_ov004_02251d9c.y = 0;
-    data_ov004_02251d9c.z = 0x136e1;
+    sAquariumFirstFish = 0x23;
+    sAquariumEndFish = 0x38;
+    sAquariumTankCenterA.x = 0x11000;
+    sAquariumTankCenterA.y = 0;
+    sAquariumTankCenterA.z = 0x136e1;
     heap = gCurrentHeap;
-    for (; i < data_ov004_0224e5f0; i++) {
+    for (; i < sAquariumEndFish; i++) {
         switch (i - 0x23) {
         case 1: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x28c);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232ce4(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x28c);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232ce4(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 15:
         case 16: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232c88(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232c88(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 17:
         case 18:
         case 19: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232c24(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232c24(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 0: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x278);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232adc(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x278);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232adc(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 2: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x26c);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232a64(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x26c);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232a64(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 5: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x25c);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_0223299c(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x25c);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_0223299c(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 3: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x27c);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232864(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x27c);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232864(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 12: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232808(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232808(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 13: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x1fc);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_022327b8(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x1fc);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_022327b8(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         case 4: case 6: case 7: case 8: case 9: case 10: case 11: case 14:
         default: {
             u32 off = i << 2;
-            p = &data_ov004_02251e94[i];
-            *(R **)((u8 *)data_ov004_02251e94 + off) = (R *)Heap_Alloc(heap, 0x258);
-            if (*(R **)((u8 *)data_ov004_02251e94 + off)) func_ov004_02232d8c(*(R **)((u8 *)data_ov004_02251e94 + off));
+            p = &sAquariumFish[i];
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x258);
+            if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_02232d8c(*(R **)((u8 *)sAquariumFish + off));
             break;
         }
         }
         if (*p == 0) {
             return 0;
         }
-        if (data_ov004_022402ec[i].unk_01 == 3) {
+        if (sAquariumFishParams[i].unk_01 == 3) {
             (*p)->unk_1c6 = 1;
         }
-        if (!func_ov004_0222d5a8(o, p, i, data_ov004_022402ec[i].unk_01)) {
-            func_ov004_0222dd3c(o, i);
+        if (!MuseumAquarium_LoadFishAnims(o, p, i, sAquariumFishParams[i].unk_01)) {
+            MuseumAquarium_ReleaseFish(o, i);
             (*p)->unk_1c6 = 0;
             return 0;
         }
     }
-    func_ov004_0222cde0(o);
+    MuseumAquarium_PlaceSeaFish(o);
     return TRUE;
 }
 
-extern "C" s32 func_ov004_0222d5a8(Mgr *o, R **p, s32 idx, s32 n) {
+extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n) {
     s32 k = idx / 10 + 10;
     s32 i = 0;
     s32 z = 0;
@@ -3970,24 +3970,24 @@ extern "C" s32 func_ov004_0222d5a8(Mgr *o, R **p, s32 idx, s32 n) {
     return 1;
 }
 
-extern "C" void func_ov004_0222d564(Mgr *o, R **p, s32 i) {
+extern "C" void MuseumAquarium_UpdateFish(Mgr *o, R **p, s32 i) {
     R *e = *p;
     u32 k = (u8)e->unk_160;
     if (k < 3) {
-        (o->*data_ov004_02251dcc[k])(p, i);
+        (o->*sAquariumFishLoadStates[k])(p, i);
     }
 }
 
-extern "C" void func_ov004_0222d560() {
+extern "C" void MuseumAquarium_FishStateNone() {
 }
 
-extern "C" s32 func_ov004_0222d558(Mgr *o, R **p, s32 i) {
-    return func_ov004_0222d1d8(o, p, i);
+extern "C" s32 MuseumAquarium_FishStateLoad(Mgr *o, R **p, s32 i) {
+    return MuseumAquarium_LoadFishModel(o, p, i);
 }
 
-extern "C" void func_ov004_0222d460(Mgr *o, R **p, s32 x) {
+extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
     V3 *v = &(*p)->unk_1a8;
-    if (data_ov004_02251d60 == 0) {
+    if (sAquariumRoom == 0) {
         s32 a = func_01ffcb0c((*p)->unk_14, 0x99a);
         s32 b = func_01ffcb0c((*p)->unk_1c, 0x99a);
         if ((*p)->unk_40 != 0) {
@@ -3999,7 +3999,7 @@ extern "C" void func_ov004_0222d460(Mgr *o, R **p, s32 x) {
             v->x = v->x + a;
             v->z = v->z + b;
         }
-    } else if (data_ov004_02251d60 == 1) {
+    } else if (sAquariumRoom == 1) {
         s32 a = func_01ffcb0c((*p)->unk_14, 0x866);
         s32 b = func_01ffcb0c((*p)->unk_1c, 0x866);
         if ((*p)->unk_40 != 0) {
@@ -4008,33 +4008,33 @@ extern "C" void func_ov004_0222d460(Mgr *o, R **p, s32 x) {
         }
     }
     (*p)->vfunc_04();
-    func_ov004_0222e060(*p);
-    func_ov004_0222ca24(o, p, x);
-    func_ov004_0222d180(o, p);
+    AquariumFish_ResetContacts(*p);
+    MuseumAquarium_ConfineFish(o, p, x);
+    MuseumAquarium_CalcFishMtx(o, p);
     BlendAnimModel_stepBlend((u8 *)(*p) + 0x64);
 }
 
-extern "C" s32 _ZN18Unk_ov004_0224e87c9onExecuteEv(Mgr *o) {
+extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o) {
     s32 i;
     R **p;
-    if (data_ov004_02251d60 == 0) {
+    if (sAquariumRoom == 0) {
         func_020b6928(func_020b50b4(), (u8 *)o + 0x2a8);
         func_020b6928(func_020b50b4(), (u8 *)o + 0x550);
-    } else if (data_ov004_02251d60 == 1) {
+    } else if (sAquariumRoom == 1) {
         func_020b6928(func_020b50b4(), (u8 *)o + 0x2a8);
     }
-    i = data_ov004_0224e5f0 - 1;
-    p = &data_ov004_02251e94[i];
-    for (; i >= data_ov004_02251d64; p--, i--) {
+    i = sAquariumEndFish - 1;
+    p = &sAquariumFish[i];
+    for (; i >= sAquariumFirstFish; p--, i--) {
         if (*p) {
-            func_ov004_0222d564((Mgr *)o, p, i);
+            MuseumAquarium_UpdateFish((Mgr *)o, p, i);
         }
     }
-    func_ov004_0222d314(o, data_ov004_0224e5f4);
+    MuseumAquarium_UpdateObstacles(o, sAquariumObstacleCount);
     return TRUE;
 }
 
-extern "C" void func_ov004_0222d314(Mgr *o, s32 n) {
+extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n) {
     s32 i;
     u32 z = 0;
     for (i = 0; i < n; i++) {
@@ -4044,13 +4044,13 @@ extern "C" void func_ov004_0222d314(Mgr *o, s32 n) {
         func_02088c64(obj, (u8 *)o + 0xa0 + off, *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
         func_02089040(obj);
     }
-    if (data_ov004_02251d60 == 1) {
+    if (sAquariumRoom == 1) {
         func_02088c64((u8 *)o + 0x244, (u8 *)o + 0x294, *(s32 *)((u8 *)o + 0x2a0), *(s32 *)((u8 *)o + 0x2a4), 0x202, 0x140, 0, 0xff, 0x1000);
         func_02089040((u8 *)o + 0x244);
     }
 }
 
-extern "C" s32 func_ov004_0222d1d8(Mgr *o, R **p, s32 idx) {
+extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     s32 res = 0;
     s32 n = (*p)->unk_15c;
     s32 a = func_0209c25c((u8 *)o + 0x7f8, (*p)->unk_166);
@@ -4065,14 +4065,14 @@ extern "C" s32 func_ov004_0222d1d8(Mgr *o, R **p, s32 idx) {
     if (func_0209c0d0(b, a, buf)) {
         void *q;
         s32 c, d;
-        (*p)->unk_1c0 = func_ov004_02231e3c(0x168, 0);
+        (*p)->unk_1c0 = Aquarium_RandAngle(0x168, 0);
         (*p)->unk_1c2 = (*p)->unk_1c0;
         (*p)->vfunc_00();
         q = (u8 *)(*p) + 0x64;
         Model_setResource(q, func_0209c0ac(b), 0);
         c = func_0209c348(a);
         if ((*p)->unk_54[0] == 0) {
-            func_ov004_0222dd3c(o, idx);
+            MuseumAquarium_ReleaseFish(o, idx);
             return 0;
         }
         d = func_021065f8(func_021065dc((*p)->unk_54[0]), 0);
@@ -4082,14 +4082,14 @@ extern "C" s32 func_ov004_0222d1d8(Mgr *o, R **p, s32 idx) {
             CachedModel_allocJointRecord(q, func_0209c348(a));
             (*p)->unk_160 = 2;
             (*p)->unk_1e8 = (*p)->unk_15c;
-            func_ov004_0222d180(o, p);
+            MuseumAquarium_CalcFishMtx(o, p);
             res = 1;
         }
     }
     return res;
 }
 
-extern "C" void func_ov004_0222d180(Mgr *o, R **p) {
+extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p) {
     R *e = *p;
     V3 *v = &e->unk_1a8;
     func_020e8388(&data_021f47e0, v->x, v->y, v->z);
@@ -4098,10 +4098,10 @@ extern "C" void func_ov004_0222d180(Mgr *o, R **p) {
     e->unk_c8 = data_021f47e0;
 }
 
-extern "C" s32 _ZN18Unk_ov004_0224e87c6onDrawEv(Mgr *o) {
-    s32 i = data_ov004_02251d64;
-    R **p = &data_ov004_02251e94[i];
-    for (; i < data_ov004_0224e5f0; p++, i++) {
+extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o) {
+    s32 i = sAquariumFirstFish;
+    R **p = &sAquariumFish[i];
+    for (; i < sAquariumEndFish; p++, i++) {
         if (*p) {
             if ((*p)->unk_160 == 2) {
                 V3 v;
@@ -4110,11 +4110,11 @@ extern "C" s32 _ZN18Unk_ov004_0224e87c6onDrawEv(Mgr *o) {
                     v.x = 0x1000;
                     v.y = 0x1000;
                     v.z = 0x1000;
-                    func_ov004_0222d180(o, p);
+                    MuseumAquarium_CalcFishMtx(o, p);
                     break;
                 case 0x24:
-                    if (data_ov004_02251d74) {
-                        V3 *q = (V3 *)((u8 *)data_ov004_02251d74 + 0x258);
+                    if (sAquariumJellyfish) {
+                        V3 *q = (V3 *)((u8 *)sAquariumJellyfish + 0x258);
                         v.x = q->x;
                         v.y = q->y;
                         v.z = q->z;
@@ -4137,13 +4137,13 @@ extern "C" s32 _ZN18Unk_ov004_0224e87c6onDrawEv(Mgr *o) {
     return TRUE;
 }
 
-extern "C" s32 _ZN18Unk_ov004_0224e87c8vfunc_0cEv(Mgr *o) {
-    s32 i = data_ov004_02251d64;
+extern "C" s32 _ZN14MuseumAquarium8vfunc_0cEv(Mgr *o) {
+    s32 i = sAquariumFirstFish;
     R **p;
-    for (; i < data_ov004_0224e5f0; i++) {
-        p = &data_ov004_02251e94[i];
-        if (data_ov004_02251e94[i]) {
-            func_ov004_0222dd3c(o, i);
+    for (; i < sAquariumEndFish; i++) {
+        p = &sAquariumFish[i];
+        if (sAquariumFish[i]) {
+            MuseumAquarium_ReleaseFish(o, i);
             Heap_Free(gCurrentHeap, *p);
             *p = 0;
         }
@@ -4153,22 +4153,22 @@ extern "C" s32 _ZN18Unk_ov004_0224e87c8vfunc_0cEv(Mgr *o) {
     return TRUE;
 }
 
-extern "C" void func_ov004_0222cf38(Mgr *o) {
-    s32 i = data_ov004_02251d64;
-    R **p = &data_ov004_02251e94[i];
+extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o) {
+    s32 i = sAquariumFirstFish;
+    R **p = &sAquariumFish[i];
     u16 id = 0xfff1;
-    for (; i < data_ov004_0224e5f0; p++, i++) {
+    for (; i < sAquariumEndFish; p++, i++) {
         V3 *v;
         id = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
         if (MuseumData_isDonated(data_021ed0a0, &id)) {
             v = &(*p)->unk_1a8;
             if (i >= 0x11) {
                 if (i != 0x19) {
-                    v->x = func_ov004_02231e74(9, 0x1a);
-                    v->z = func_ov004_02231e74(5, 0xa);
+                    v->x = Aquarium_RandFx(9, 0x1a);
+                    v->z = Aquarium_RandFx(5, 0xa);
                 } else {
-                    v->x = func_ov004_02231e74(9, 0x1a);
-                    v->z = func_ov004_02231e74(0x13, 0x18);
+                    v->x = Aquarium_RandFx(9, 0x1a);
+                    v->z = Aquarium_RandFx(0x13, 0x18);
                 }
             } else {
                 switch (i) {
@@ -4181,12 +4181,12 @@ extern "C" void func_ov004_0222cf38(Mgr *o) {
                     v->x = 0x15900;
                     break;
                 default:
-                    v->x = func_ov004_02231e74(9, 0x1a);
-                    v->z = func_ov004_02231e74(0x13, 0x18);
+                    v->x = Aquarium_RandFx(9, 0x1a);
+                    v->z = Aquarium_RandFx(0x13, 0x18);
                     break;
                 }
             }
-            v->y = ((data_ov004_022402ec[i].unk_04 << 12) >> 6) - 0x1000;
+            v->y = ((sAquariumFishParams[i].unk_04 << 12) >> 6) - 0x1000;
             {
                 R *e = *p;
                 V3 *d = &e->unk_1b4;
@@ -4194,17 +4194,17 @@ extern "C" void func_ov004_0222cf38(Mgr *o) {
                 d->y = v->y;
                 d->z = v->z;
             }
-            (*p)->unk_164 = data_ov004_022402ec[i].unk_00;
-            func_ov004_0222de34(o, i);
+            (*p)->unk_164 = sAquariumFishParams[i].unk_00;
+            MuseumAquarium_RequestFishModel(o, i);
         }
     }
 }
 
-extern "C" void func_ov004_0222cde0(Mgr *self) {
-    s32 i = data_ov004_02251d64;
-    R **pp = &data_ov004_02251e94[i];
+extern "C" void MuseumAquarium_PlaceSeaFish(Mgr *self) {
+    s32 i = sAquariumFirstFish;
+    R **pp = &sAquariumFish[i];
     volatile u16 v = 0xfff1;
-    for (; i < data_ov004_0224e5f0; pp++, i++) {
+    for (; i < sAquariumEndFish; pp++, i++) {
         u16 w;
         if ((u32)i < 0x38) {
             w = (u16)(i + 0x12e8);
@@ -4220,9 +4220,9 @@ extern "C" void func_ov004_0222cde0(Mgr *self) {
             case 0x36:
                 e[2] = 0x12000;
                 if ((u32)(i - 0x35) <= 1) {
-                    e[0] = func_ov004_02231e74(5, 0x1e);
+                    e[0] = Aquarium_RandFx(5, 0x1e);
                 } else if (i == 0x34) {
-                    e[0] = func_ov004_02231e74(5, 0x1e);
+                    e[0] = Aquarium_RandFx(5, 0x1e);
                 }
                 break;
             case 0x26:
@@ -4238,22 +4238,22 @@ extern "C" void func_ov004_0222cde0(Mgr *self) {
                 e[0] = 0x7000;
                 break;
             default:
-                e[2] = func_ov004_02231e74(0x12, 0x16);
-                e[0] = func_ov004_02231e74(5, 0x1e);
+                e[2] = Aquarium_RandFx(0x12, 0x16);
+                e[0] = Aquarium_RandFx(5, 0x1e);
                 break;
             }
-            e[1] = ((data_ov004_022402ec[i].unk_04 << 12) >> 6) - 0x1000;
+            e[1] = ((sAquariumFishParams[i].unk_04 << 12) >> 6) - 0x1000;
             s32 *d = (s32 *)((u8 *)*pp + 0x1b4);
             d[0] = e[0];
             d[1] = e[1];
             d[2] = e[2];
-            *((u8 *)*pp + 0x164) = data_ov004_022402ec[i].unk_00;
-            func_ov004_0222de34(self, i);
+            *((u8 *)*pp + 0x164) = sAquariumFishParams[i].unk_00;
+            MuseumAquarium_RequestFishModel(self, i);
         }
     }
 }
 
-extern "C" void func_ov004_0222ca24(void *self, R **ctx, s32 type) {
+extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type) {
     R *o;
     R *o1;
     R *o2;
@@ -4268,21 +4268,21 @@ extern "C" void func_ov004_0222ca24(void *self, R **ctx, s32 type) {
     V3 *ep;
     s32 off;
     s32 c164 = o1->unk_164;
-    w = (data_ov004_022402ec[type].unk_03 << 12) >> 7;
+    w = (sAquariumFishParams[type].unk_03 << 12) >> 7;
     if (o1->unk_1c7 == 0) {
         return;
     }
-    s32 h = (data_ov004_022402ec[type].unk_02 << 12) >> 7;
-    if (data_ov004_02251d60 == 0) {
+    s32 h = (sAquariumFishParams[type].unk_02 << 12) >> 7;
+    if (sAquariumRoom == 0) {
         func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
-    } else if (data_ov004_02251d60 == 1) {
+    } else if (sAquariumRoom == 1) {
         if (type == 0x24) {
-            u8 *g = (u8 *)data_ov004_02251d74;
+            u8 *g = (u8 *)sAquariumJellyfish;
             if (g != NULL) {
                 func_02088c64(&o1->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x23) {
-            u8 *g = (u8 *)data_ov004_02251d78;
+            u8 *g = (u8 *)sAquariumSeaButterfly;
             if (g != NULL) {
                 func_02088c64(&o1->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
@@ -4293,7 +4293,7 @@ extern "C" void func_ov004_0222ca24(void *self, R **ctx, s32 type) {
         }
     }
     func_02089040(&(*ctx)->unk_04);
-    len = (data_ov004_022402ec[type].unk_10 << 12) >> 7;
+    len = (sAquariumFishParams[type].unk_10 << 12) >> 7;
     base = w - (len >> 1);
     s32 k;
     k = 0;
@@ -4330,28 +4330,28 @@ loop0:
             bx1 = *(s32 *)((u8 *)o->unk_1d0 + off);
             bz1 = ep->z;
         }
-        if (data_ov004_02251d60 == 0) {
+        if (sAquariumRoom == 0) {
             if (type < 0x11) {
-                func_020308b4(ep, len, &data_ov004_02251d9c, 0x11c00, 0x5c00);
+                func_020308b4(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
             } else if (type != 0x19) {
-                func_020308b4(ep, len, &data_ov004_02251d84, 0x11c00, 0x5c00);
+                func_020308b4(ep, len, &sAquariumTankCenterB, 0x11c00, 0x5c00);
             } else {
-                func_020308b4(ep, len, &data_ov004_02251d9c, 0x11c00, 0x5c00);
+                func_020308b4(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
             }
         } else {
             switch (o->unk_1c8) {
             case 0:
-                if (func_020308b4(ep, len, &data_ov004_02251d9c, 0x1a000, 0x4dc3)) {
+                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x1a000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;
             case 1:
-                if (func_020308b4(ep, len, &data_ov004_02251d9c, 0x26000, 0x4dc3)) {
+                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x26000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;
             case 2:
-                if (func_020308b4(ep, len, &data_ov004_02251d9c, 0x2a000, 0x4dc3)) {
+                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x2a000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;
@@ -4371,15 +4371,15 @@ loop0:
     }
     k++;
     if (k < 2) goto loop0;
-    func_ov004_0222c9ec(self, &o->unk_1a8.x, bx0, ax0, bx1, ax1);
-    func_ov004_0222c9ec(self, &(*ctx)->unk_1a8.z, bz0, az0, bz1, az1);
+    Aquarium_ApplyCorrection(self, &o->unk_1a8.x, bx0, ax0, bx1, ax1);
+    Aquarium_ApplyCorrection(self, &(*ctx)->unk_1a8.z, bz0, az0, bz1, az1);
     V3 *dst = &(*ctx)->unk_1b4;
     dst->x = v->x;
     dst->y = v->y;
     dst->z = v->z;
 }
 
-extern "C" void func_ov004_0222c9ec(void *self, s32 *p, s32 a, s32 b, s32 c, s32 d) {
+extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c, s32 d) {
     s32 dx = b - a;
     s32 dy = d - c;
     s32 ax = dx < 0 ? -dx : dx;
@@ -4400,39 +4400,39 @@ Unk_ov004_0222c9d0::~Unk_ov004_0222c9d0() {
 }
 
 extern "C" {
-void *data_ov004_0224e6d8[2] = {(void *)func_ov004_0222ead8, 0};
-PairFn data_ov004_02251de4[2] = {{*(Fn *)data_ov004_0224e610, *(Fn *)data_ov004_0224e618}, {*(Fn *)data_ov004_0224e600, *(Fn *)data_ov004_0224e688}};
-void *data_ov004_0224e618[2] = {(void *)func_ov004_0222ef5c, 0};
-void *data_ov004_0224e688[2] = {(void *)func_ov004_0222f0e4, 0};
-void *data_ov004_0224e620[2] = {(void *)func_ov004_0222e9a8, 0};
-void *data_ov004_0224e628[2] = {(void *)func_ov004_0222ea74, 0};
-void *data_ov004_0224e648[2] = {(void *)func_ov004_0222e9ac, 0};
-Fn data_ov004_02251e5c[7] = {*(Fn *)data_ov004_0224e620, *(Fn *)data_ov004_0224e648, *(Fn *)data_ov004_0224e6d0, *(Fn *)data_ov004_0224e630, *(Fn *)data_ov004_0224e6d8, *(Fn *)data_ov004_0224e628, *(Fn *)data_ov004_0224e660};
-void *data_ov004_0224e630[2] = {(void *)func_ov004_0222eb30, 0};
-R *data_ov004_02251e94[0x38];
-void *data_ov004_0224e640[2] = {(void *)func_ov004_0222d558, 0};
-void *data_ov004_0224e650[2] = {(void *)func_ov004_022302b4, 0};
-void *data_ov004_0224e658[2] = {(void *)func_ov004_022303b4, 0};
-void *data_ov004_0224e6c8[2] = {(void *)func_ov004_0222e9a8, 0};
-Unk_ov004_SceneEntry data_ov004_0224e6c0 = {(void *)func_ov004_02233058, 0xc3, 0xc4};
-void *data_ov004_0224e6b8[2] = {(void *)func_ov004_0222e8d8, 0};
-E834 *data_ov004_02251d6c;
-void *data_ov004_0224e690[2] = {(void *)func_ov004_0222e9ac, 0};
-void *data_ov004_0224e6b0[2] = {(void *)func_ov004_02230ecc, 0};
-void *data_ov004_0224e6a8[2] = {(void *)func_ov004_0222ead8, 0};
-Fn data_ov004_02251e2c[6] = {*(Fn *)data_ov004_0224e6c8, *(Fn *)data_ov004_0224e690, *(Fn *)data_ov004_0224e6b8, *(Fn *)data_ov004_0224e698, *(Fn *)data_ov004_0224e6a8, *(Fn *)data_ov004_0224e680};
-void *data_ov004_0224e698[2] = {(void *)func_ov004_0222eb30, 0};
-void *data_ov004_0224e608[2] = {(void *)func_ov004_02230e50, 0};
-void *data_ov004_0224e678[2] = {(void *)func_ov004_02230e10, 0};
-E7bc *data_ov004_02251d78;
-u8 data_ov004_02251d64;
-void *data_ov004_0224e660[2] = {(void *)func_ov004_0222ea40, 0};
-u8 data_ov004_02251d60;
-E7d4 *data_ov004_02251d74;
-Fn804 data_ov004_02251e04[5] = {*(Fn804 *)data_ov004_0224e6b0, *(Fn804 *)data_ov004_0224e6a0, *(Fn804 *)data_ov004_0224e608, *(Fn804 *)data_ov004_0224e678, *(Fn804 *)data_ov004_0224e5f8};
-u8 data_ov004_0224e5f0 = 0x23;
-Fn data_ov004_02251db4[3] = {*(Fn *)data_ov004_0224e668, *(Fn *)data_ov004_0224e658, *(Fn *)data_ov004_0224e650};
-u8 data_ov004_0224e5f4 = 0x05;
-MgrFn data_ov004_02251dcc[3] = {*(MgrFn *)data_ov004_0224e638, *(MgrFn *)data_ov004_0224e640, *(MgrFn *)data_ov004_0224e670};
+void *data_ov004_0224e6d8[2] = {(void *)AquariumFish_StateCruise, 0};
+PairFn sAquariumSwimFishRoomFns[2] = {{*(Fn *)data_ov004_0224e610, *(Fn *)data_ov004_0224e618}, {*(Fn *)data_ov004_0224e600, *(Fn *)data_ov004_0224e688}};
+void *data_ov004_0224e618[2] = {(void *)AquariumSwimFish_UpdateFreshwater, 0};
+void *data_ov004_0224e688[2] = {(void *)AquariumSwimFish_UpdateSea, 0};
+void *data_ov004_0224e620[2] = {(void *)AquariumFish_StateNone, 0};
+void *data_ov004_0224e628[2] = {(void *)AquariumFish_StateDecelerate, 0};
+void *data_ov004_0224e648[2] = {(void *)AquariumFish_StateFlee, 0};
+Fn sAquariumSwimStates[7] = {*(Fn *)data_ov004_0224e620, *(Fn *)data_ov004_0224e648, *(Fn *)data_ov004_0224e6d0, *(Fn *)data_ov004_0224e630, *(Fn *)data_ov004_0224e6d8, *(Fn *)data_ov004_0224e628, *(Fn *)data_ov004_0224e660};
+void *data_ov004_0224e630[2] = {(void *)AquariumFish_StateAccelerate, 0};
+R *sAquariumFish[0x38];
+void *data_ov004_0224e640[2] = {(void *)MuseumAquarium_FishStateLoad, 0};
+void *data_ov004_0224e650[2] = {(void *)AquariumPiranha_StateBite, 0};
+void *data_ov004_0224e658[2] = {(void *)AquariumPiranha_StateApproach, 0};
+void *data_ov004_0224e6c8[2] = {(void *)AquariumFish_StateNone, 0};
+Unk_ov004_SceneEntry sMuseumAquariumProfile = {(void *)MuseumAquarium_Create, 0xc3, 0xc4};
+void *data_ov004_0224e6b8[2] = {(void *)AquariumFish_StateStartFast, 0};
+E834 *sAquariumFrog;
+void *data_ov004_0224e690[2] = {(void *)AquariumFish_StateFlee, 0};
+void *data_ov004_0224e6b0[2] = {(void *)AquariumEel_StateStart, 0};
+void *data_ov004_0224e6a8[2] = {(void *)AquariumFish_StateCruise, 0};
+Fn sAquariumFastSwimStates[6] = {*(Fn *)data_ov004_0224e6c8, *(Fn *)data_ov004_0224e690, *(Fn *)data_ov004_0224e6b8, *(Fn *)data_ov004_0224e698, *(Fn *)data_ov004_0224e6a8, *(Fn *)data_ov004_0224e680};
+void *data_ov004_0224e698[2] = {(void *)AquariumFish_StateAccelerate, 0};
+void *data_ov004_0224e608[2] = {(void *)AquariumEel_StateHold, 0};
+void *data_ov004_0224e678[2] = {(void *)AquariumEel_StateSlowDown, 0};
+E7bc *sAquariumSeaButterfly;
+u8 sAquariumFirstFish;
+void *data_ov004_0224e660[2] = {(void *)AquariumFish_StateRest, 0};
+u8 sAquariumRoom;
+E7d4 *sAquariumJellyfish;
+Fn804 sAquariumEelStates[5] = {*(Fn804 *)data_ov004_0224e6b0, *(Fn804 *)data_ov004_0224e6a0, *(Fn804 *)data_ov004_0224e608, *(Fn804 *)data_ov004_0224e678, *(Fn804 *)data_ov004_0224e5f8};
+u8 sAquariumEndFish = 0x23;
+Fn sAquariumPiranhaStates[3] = {*(Fn *)data_ov004_0224e668, *(Fn *)data_ov004_0224e658, *(Fn *)data_ov004_0224e650};
+u8 sAquariumObstacleCount = 0x05;
+MgrFn sAquariumFishLoadStates[3] = {*(MgrFn *)data_ov004_0224e638, *(MgrFn *)data_ov004_0224e640, *(MgrFn *)data_ov004_0224e670};
 }
 

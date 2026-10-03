@@ -736,7 +736,7 @@ void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 b, s3
 
 void func_02033988(void *buf);
 
-s32 func_020b8fe8(void);
+s32 Weather_GetFallingPrecip(void);
 
 s32 func_020b50bc(void);
 
@@ -846,7 +846,7 @@ void _ZN12Unk_0209053813func_02090538Ev(void *e);
 
 void func_0208fe0c(void *o);
 
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 
 s32 func_020b50bc();
 
@@ -854,7 +854,7 @@ void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 pos, 
 
 void func_02033988(void *buf);
 
-s32 func_020baa04(s32 a);
+s32 Sky_GetLightColor(s32 a);
 
 void func_02093f50(void *a);
 
@@ -1004,7 +1004,7 @@ s32 func_0208fc88(s32 kind, void *b, void *c, void *data);
 
 s32 _ZN12Unk_0209053813func_02090538Ev(void *obj);
 
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 
 s32 func_020b50bc();
 
@@ -1460,7 +1460,7 @@ extern "C" s32 func_020937dc(s32 a, void *b, u16 *c, s32 d)
             kind = 0x21;
             if (c != 0) *c = 0;
             p = data_020e16d4;
-        } else if (func_020b8fe8() == 1) {
+        } else if (Weather_GetFallingPrecip() == 1) {
             kind = 0x20;
             if (c != 0) *c = 0;
             p = data_020e16d4;
@@ -1522,7 +1522,7 @@ extern "C" s32 func_020935e8(s32 a, void *b, void *c, s32 d)
         if (t == 9 || t == 3) {
             result = func_02093d54(0x19, a, b, c, d, data_020e14b4);
         }
-    } else if (t == 0x16 || func_020b8fe8() == 1) {
+    } else if (t == 0x16 || Weather_GetFallingPrecip() == 1) {
         _ZN12Unk_0209053813func_020904f0EijP16Unk_020904f0_VecPsS2_s(&(*(Unk_021d0830 *)&data_021d04b0[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
         if (func_0208fb20(0x1b, b, c, data_020e14d4) != 0) {
             result = 2;
@@ -1674,7 +1674,7 @@ extern "C" s32 func_020932f0(s32 a, void *b, void *c, s32 d)
     o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
     t = o.unk_34;
     result = 3;
-    if (func_020b8fe8() == 1) {
+    if (Weather_GetFallingPrecip() == 1) {
         _ZN12Unk_0209053813func_020904f0EijP16Unk_020904f0_VecPsS2_s(&(*(Unk_021d0830 *)&data_021d04b0[32]), *(u16 *)(g + 0x39c), a, b, c, d, -1);
         if (func_0208fb20(0x36, b, c, data_020e1594) != 0) {
             result = 2;
@@ -2130,7 +2130,7 @@ extern "C" s32 func_02092770(s32 a, s32 b, s32 c, s32 d) {
         if (t == 9 || t == 3) {
             r = func_02093d54(0x4b, a, b, c, d, 0);
         }
-    } else if (t == 0x16 || func_020b8fe8() == 1) {
+    } else if (t == 0x16 || Weather_GetFallingPrecip() == 1) {
         r = func_02093d54(0x4d, a, b, c, d, 0);
     } else if (t == 3 && func_020b50bc()) {
         r = func_02093d54(0x4e, a, b, c, d, 0);
@@ -2514,7 +2514,7 @@ namespace R4 {
 extern "C" void func_02091fa4(u8 *p) {
     Unk_02091fa4_Color col[4];
     func_02093f50(p);
-    *(u16 *)&col[0] = func_020baa04(3);
+    *(u16 *)&col[0] = Sky_GetLightColor(3);
     col[3] = col[0];
     col[1] = col[3];
     *(u16 *)&col[2] = 0x7fff;
@@ -2545,7 +2545,7 @@ extern "C" s32 func_02091f5c(void *a) {
 
 namespace R4 {
 extern "C" s32 func_02091f24(s32 a, s32 b, s32 c, s32 d) {
-    if (func_020b8fe8() == 1) {
+    if (Weather_GetFallingPrecip() == 1) {
         return func_02093bb4(0x74, a, b, c, d, data_020e15cc);
     }
     return 3;
@@ -2932,7 +2932,7 @@ extern "C" s32 func_020916a0(s32 a, s32 b, s32 c, s32 d)
     _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     k = buf[13];
     result = 3;
-    if (k == 0x16 || func_020b8fe8() == 1) {
+    if (k == 0x16 || Weather_GetFallingPrecip() == 1) {
         if (func_02093bb4(0x85, a, b, c, d, data_020e155c) == 0) {
             result = 2;
         }

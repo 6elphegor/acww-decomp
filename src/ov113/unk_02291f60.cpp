@@ -21,7 +21,7 @@ s32 Snd_PlaySe(s32 a);
 u32 func_02076f78();
 void *ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
-void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void func_0206f9fc(void *o, u32 x);
 void func_0206f994(void *dst, const void *s, s32 len);
 void func_0206f920(void *dst, const void *s, s32 len, BOOL a, u32 b);
@@ -35,8 +35,8 @@ void Gfx2d_SetMainBgModeState(u32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-BOOL func_0206e61c();
-void func_0206e63c();
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
 s32 PlayerData_GetCurrentIndex();
 u8 *func_02077374(void *p);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
@@ -360,8 +360,8 @@ BOOL BbsReadMenu::execTransition() {
 }
 
 BOOL BbsReadMenu::execMain() {
-    func_0206e63c();
-    if (func_0206e61c()) {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
         if (unk_8d == 0) goto st;
         if (unk_8d == 1) {
         st:
@@ -727,13 +727,13 @@ void BbsReadMenu::markPostRead(void *unused) {
     } else {
         m = 0xa;
     }
-    func_0206ee80(unk_a0, 0x10, 0, 0x12, 3, m);
+    BgScreen_SetRectPalette(unk_a0, 0x10, 0, 0x12, 3, m);
     if (p->func_020772dc()) {
         m = 0xa;
     } else {
         m = 8;
     }
-    func_0206ee80(unk_a0, 6, 5, 0x19, 6, m);
+    BgScreen_SetRectPalette(unk_a0, 6, 5, 0x19, 6, m);
     setFlags(1);
     p->func_020772f0(n);
 }
@@ -834,7 +834,7 @@ void BbsReadMenu::setFocusHighlight(s32 flag) {
     case 3: {
         s32 e = flag ? 0xe : 0xd;
         s32 x = st * 6 + 4;
-        func_0206ee80(&unk_a0, x, 0x14, x + 5, 0x16, e);
+        BgScreen_SetRectPalette(&unk_a0, x, 0x14, x + 5, 0x16, e);
         setFlags(1);
         break;
     }

@@ -99,26 +99,26 @@ struct Unk_ov065_0228b778 {
 
 // the same symbol is called with and without its argument
 namespace Unk_ov065_0226e4dc_A {
-extern "C" s32 func_ov065_0226e4dc(void);
+extern "C" s32 DwcHttp_Destroy(void);
 }
 namespace Unk_ov065_0226e4dc_B {
-extern "C" s32 func_ov065_0226e4dc(void *p);
+extern "C" s32 DwcHttp_Destroy(void *p);
 }
 
 extern "C" {
-extern S *data_ov065_02290600;
-extern Unk_ov065_02290604_S data_ov065_02290604;
+extern S *sNasAuth;
+extern Unk_ov065_02290604_S sNasUserId;
 extern u32 data_0220064c;
-extern char data_ov065_0228b720[4];
-extern char data_ov065_0228b724[4];
-extern char data_ov065_0228b728[4];
-extern char data_ov065_0228b72c[4];
-extern char data_ov065_0228b730[4];
-extern char data_ov065_0228b734[4];
-extern char data_ov065_0228b738[4];
-extern char *data_ov065_0228b73c[7];
-extern char data_ov065_0228b758[0x20];
-extern Unk_ov065_0228b778 data_ov065_0228b778;
+extern char sNasLangCode01[4];
+extern char sNasLangCode03[4];
+extern char sNasLangCode04[4];
+extern char sNasLangCode02[4];
+extern char sNasLangCode05[4];
+extern char sNasLangCode00[4];
+extern char sNasLangCode06[4];
+extern char *sNasLangCodeTable[7];
+extern char sNasDefaultUrl[0x20];
+extern Unk_ov065_0228b778 sNasHttpParams;
 
 extern s32 memcmp(const void *a, const void *b, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
@@ -151,145 +151,145 @@ extern void OS_Sleep(u32 ms);
 extern s32 strcmp(const char *a, const char *b);
 extern char *func_0212a360(char *dst, const char *src);
 
-extern void func_ov065_0226d0b0(void *a, void *dst);
-extern u8 *func_ov065_0226abb0(void);
-extern u8 *func_ov065_0226ab5c(u16 *out);
-extern u32 func_ov065_0226b148(void);
-extern s32 func_ov065_0226e07c(void *l, const char *k, const char *v);
-extern s32 func_ov065_0226e3ac(void *a, const char *k, const char *v);
-extern s32 func_ov065_0226e2e4(void *a, const char *k, const char *v, u32 n);
-extern char *func_ov065_0226de90(void *buf, s32 n, const char *key);
-extern s32 func_ov065_0226de4c(void *buf, s32 n, const char *key, char *out, u32 max);
-extern s32 func_ov065_0226de0c(void *buf, s32 n, const char *key, char *out, s32 max);
-extern s32 func_ov065_0226ded4(void *buf, s32 n, s32 a, void *b);
-extern s32 func_ov065_0226ebe4(u32 a, void *b);
-extern s32 func_ov065_0226eb6c(u32 a);
-extern s32 func_ov065_0226eacc(u32 a);
-extern s32 func_ov065_0226ea84(void);
-extern s32 func_ov065_0226f9e0(const char *s, s32 len, char *dst, u32 size);
+extern void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
+extern u8 *WifiLink_GetConnectedBssid(void);
+extern u8 *WifiLink_GetConnectedSsid(u16 *out);
+extern u32 WifiAp_GetConnectedApType(void);
+extern s32 DwcHttp_AddField(void *l, const char *k, const char *v);
+extern s32 DwcHttp_AddHeader(void *a, const char *k, const char *v);
+extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);
+extern char *DwcHttp_FindField(void *buf, s32 n, const char *key);
+extern s32 DwcHttp_GetFieldDecoded(void *buf, s32 n, const char *key, char *out, u32 max);
+extern s32 DwcHttp_GetFieldString(void *buf, s32 n, const char *key, char *out, s32 max);
+extern s32 DwcHttp_ParseResponse(void *buf, s32 n, s32 a, void *b);
+extern s32 DwcHttp_Init(u32 a, void *b);
+extern s32 DwcHttp_FinishHeaders(u32 a);
+extern s32 DwcHttp_StartThread(u32 a);
+extern s32 DwcHttp_Abort(void);
+extern s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
 
-void func_ov065_0226d128(s32 v);
-s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5);
-s32 func_ov065_0226d544(void);
-s32 func_ov065_0226d6e4(void);
-void func_ov065_0226d860(void);
-s32 func_ov065_0226da64(s32 a);
-void func_ov065_0226db28(s32 *p);
-s32 func_ov065_0226db98(void);
-void func_ov065_0226dbd0(void);
-void func_ov065_0226dbfc(void);
-void func_ov065_0226dc40(void);
-void func_ov065_0226dcac(void);
-s32 func_ov065_0226dd2c(Unk_ov065_0226dd2c_Cfg *cfg, u32 a);
-void func_ov065_0226de00(char *s);
+void NasAuth_SetState(s32 v);
+s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5);
+s32 NasAuth_ParseResponse(void);
+s32 NasAuth_HandleResponse(void);
+void NasAuth_ThreadMain(void);
+s32 NasAuth_SendRequest(s32 a);
+void NasAuth_GetResult(s32 *p);
+s32 NasAuth_GetState(void);
+void NasAuth_JoinThread(void);
+void NasAuth_Destroy(void);
+void NasAuth_Abort(void);
+void NasAuth_StartThread(void);
+s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a);
+void NasAuth_SetServerUrl(char *s);
 }
 
 extern "C" {
-char data_ov065_0228b728[4] = "04";
-Unk_ov065_02290604_S data_ov065_02290604;
-char data_ov065_0228b720[4] = "01";
-char data_ov065_0228b738[4] = "06";
-char data_ov065_0228b758[0x20] = "https://nas.nintendowifi.net/ac";
-char data_ov065_0228b734[4] = "00";
-char data_ov065_0228b730[4] = "05";
-char data_ov065_0228b72c[4] = "02";
-Unk_ov065_0228b778 data_ov065_0228b778 = {data_ov065_0228b758, 0, 0, 0x1000, 0, 0, 0, 0x4e20};
-char data_ov065_0228b724[4] = "03";
-S *data_ov065_02290600;
-char *data_ov065_0228b73c[7] = {data_ov065_0228b734, data_ov065_0228b720, data_ov065_0228b72c,
-                                data_ov065_0228b724, data_ov065_0228b728, data_ov065_0228b730,
-                                data_ov065_0228b738};
+char sNasLangCode04[4] = "04";
+Unk_ov065_02290604_S sNasUserId;
+char sNasLangCode01[4] = "01";
+char sNasLangCode06[4] = "06";
+char sNasDefaultUrl[0x20] = "https://nas.nintendowifi.net/ac";
+char sNasLangCode00[4] = "00";
+char sNasLangCode05[4] = "05";
+char sNasLangCode02[4] = "02";
+Unk_ov065_0228b778 sNasHttpParams = {sNasDefaultUrl, 0, 0, 0x1000, 0, 0, 0, 0x4e20};
+char sNasLangCode03[4] = "03";
+S *sNasAuth;
+char *sNasLangCodeTable[7] = {sNasLangCode00, sNasLangCode01, sNasLangCode02,
+                                sNasLangCode03, sNasLangCode04, sNasLangCode05,
+                                sNasLangCode06};
 }
 
 extern "C" {
 
-void func_ov065_0226de00(char *s) {
-    data_ov065_0228b778.unk_00 = s;
+void NasAuth_SetServerUrl(char *s) {
+    sNasHttpParams.unk_00 = s;
 }
 
-s32 func_ov065_0226dd2c(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
-    if (data_ov065_02290600 != NULL) {
+s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
+    if (sNasAuth != NULL) {
         return 2;
     }
     void *p = ((Unk_ov065_0226dd2c_Alloc)cfg->v[9])("DWCAuth", 0x13e0);
     if (p == NULL) {
         return 2;
     }
-    data_ov065_02290600 = (S *)p;
+    sNasAuth = (S *)p;
     MI_CpuFill8(p, 0, 0x13e0);
-    data_ov065_02290600->unk_2f8 = (Unk_ov065_02290600_Obj *)a;
-    MI_CpuFill8(&data_ov065_02290600->unk_08, 0, 0x1c4);
-    data_ov065_02290600->unk_08 = -1;
-    data_ov065_02290600->unk_1cc = *cfg;
-    *((u8 *)data_ov065_02290600 + 0x1e0) = 0;
-    *((u8 *)data_ov065_02290600 + 0x1e1) = 0;
-    *((u8 *)data_ov065_02290600 + 0x1ed) = 0;
-    data_ov065_0228b778.unk_10 = (Unk_ov065_0226dd2c_Alloc)cfg->v[9];
-    data_ov065_0228b778.unk_14 = (Unk_ov065_0226dd2c_Free)cfg->v[10];
-    data_ov065_02290600->unk_04 = func_ov065_0226da64(1);
-    if (data_ov065_02290600->unk_04 == 0) {
-        func_ov065_0226dcac();
+    sNasAuth->unk_2f8 = (Unk_ov065_02290600_Obj *)a;
+    MI_CpuFill8(&sNasAuth->unk_08, 0, 0x1c4);
+    sNasAuth->unk_08 = -1;
+    sNasAuth->unk_1cc = *cfg;
+    *((u8 *)sNasAuth + 0x1e0) = 0;
+    *((u8 *)sNasAuth + 0x1e1) = 0;
+    *((u8 *)sNasAuth + 0x1ed) = 0;
+    sNasHttpParams.unk_10 = (Unk_ov065_0226dd2c_Alloc)cfg->v[9];
+    sNasHttpParams.unk_14 = (Unk_ov065_0226dd2c_Free)cfg->v[10];
+    sNasAuth->unk_04 = NasAuth_SendRequest(1);
+    if (sNasAuth->unk_04 == 0) {
+        NasAuth_StartThread();
         return 0;
     }
-    return data_ov065_02290600->unk_04;
+    return sNasAuth->unk_04;
 }
 
-void func_ov065_0226dcac(void) {
-    OS_InitMutex(data_ov065_02290600->unk_3bc);
-    data_ov065_02290600->unk_3d4 = 0;
-    if (data_ov065_02290600->unk_368 == 0 || OS_IsThreadTerminated(data_ov065_02290600->unk_2fc) != 0) {
-        OS_CreateThread(data_ov065_02290600->unk_2fc, (s32 (*)(void *))func_ov065_0226d860, &data_ov065_02290600,
-                      (u8 *)data_ov065_02290600 + 0x13e0, 0x1000, 0x10);
-        OS_WakeupThreadDirect(data_ov065_02290600->unk_2fc);
+void NasAuth_StartThread(void) {
+    OS_InitMutex(sNasAuth->unk_3bc);
+    sNasAuth->unk_3d4 = 0;
+    if (sNasAuth->unk_368 == 0 || OS_IsThreadTerminated(sNasAuth->unk_2fc) != 0) {
+        OS_CreateThread(sNasAuth->unk_2fc, (s32 (*)(void *))NasAuth_ThreadMain, &sNasAuth,
+                      (u8 *)sNasAuth + 0x13e0, 0x1000, 0x10);
+        OS_WakeupThreadDirect(sNasAuth->unk_2fc);
     }
 }
 
-void func_ov065_0226dc40(void) {
-    if (data_ov065_02290600 != NULL) {
-        OS_LockMutex(data_ov065_02290600->unk_3bc);
-        data_ov065_02290600->unk_3d4 = 1;
-        OS_UnlockMutex(data_ov065_02290600->unk_3bc);
-        if (data_ov065_02290600->unk_2f8) {
-            func_ov065_0226ea84();
+void NasAuth_Abort(void) {
+    if (sNasAuth != NULL) {
+        OS_LockMutex(sNasAuth->unk_3bc);
+        sNasAuth->unk_3d4 = 1;
+        OS_UnlockMutex(sNasAuth->unk_3bc);
+        if (sNasAuth->unk_2f8) {
+            DwcHttp_Abort();
         }
-        if (data_ov065_02290600->unk_368) {
-            OS_JoinThread(data_ov065_02290600->unk_2fc);
+        if (sNasAuth->unk_368) {
+            OS_JoinThread(sNasAuth->unk_2fc);
         }
     }
 }
 
-void func_ov065_0226dbfc(void) {
-    if (data_ov065_02290600 != NULL) {
-        if (data_ov065_02290600->unk_2f8) {
-            Unk_ov065_0226e4dc_A::func_ov065_0226e4dc();
+void NasAuth_Destroy(void) {
+    if (sNasAuth != NULL) {
+        if (sNasAuth->unk_2f8) {
+            Unk_ov065_0226e4dc_A::DwcHttp_Destroy();
         }
-        ((Unk_ov065_0226dd2c_Free)data_ov065_02290600->unk_1cc.v[10])("DWCauth", data_ov065_02290600, 0);
-        data_ov065_02290600 = NULL;
+        ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])("DWCauth", sNasAuth, 0);
+        sNasAuth = NULL;
     }
 }
 
-void func_ov065_0226dbd0(void) {
-    if (data_ov065_02290600->unk_368) {
-        OS_JoinThread(data_ov065_02290600->unk_2fc);
+void NasAuth_JoinThread(void) {
+    if (sNasAuth->unk_368) {
+        OS_JoinThread(sNasAuth->unk_2fc);
     }
 }
 
-s32 func_ov065_0226db98(void) {
+s32 NasAuth_GetState(void) {
     s32 r;
-    if (data_ov065_02290600 == NULL) {
+    if (sNasAuth == NULL) {
         return 0x15;
     }
-    OS_LockMutex(data_ov065_02290600->unk_3bc);
-    r = data_ov065_02290600->unk_04;
-    OS_UnlockMutex(data_ov065_02290600->unk_3bc);
+    OS_LockMutex(sNasAuth->unk_3bc);
+    r = sNasAuth->unk_04;
+    OS_UnlockMutex(sNasAuth->unk_3bc);
     return r;
 }
 
-void func_ov065_0226db28(s32 *p) {
-    if (data_ov065_02290600 == NULL) {
+void NasAuth_GetResult(s32 *p) {
+    if (sNasAuth == NULL) {
         MI_CpuFill8(p, 0, 0x1c4);
     }
-    MI_CpuCopy8(&data_ov065_02290600->unk_08, p, 0x1c4);
+    MI_CpuCopy8(&sNasAuth->unk_08, p, 0x1c4);
     s32 v = p[0];
     if (v >= 0) {
         if (v < 20000 || v >= 30000) {
@@ -300,30 +300,30 @@ void func_ov065_0226db28(s32 *p) {
     }
 }
 
-s32 func_ov065_0226da64(s32 a) {
-    if (strcmp(data_ov065_0228b778.unk_00, data_ov065_0228b758)) {
-        data_ov065_0228b778.unk_18 = 1;
+s32 NasAuth_SendRequest(s32 a) {
+    if (strcmp(sNasHttpParams.unk_00, sNasDefaultUrl)) {
+        sNasHttpParams.unk_18 = 1;
     }
-    if (func_ov065_0226ebe4((u32)data_ov065_02290600->unk_2f8, &data_ov065_0228b778)) {
+    if (DwcHttp_Init((u32)sNasAuth->unk_2f8, &sNasHttpParams)) {
         return 4;
     }
     if (a == 1) {
-        func_020ff0bc(&data_ov065_02290604);
+        func_020ff0bc(&sNasUserId);
     }
-    data_ov065_02290600->unk_04 = func_ov065_0226d158(
-        data_ov065_02290600->unk_2f8, (char *)data_ov065_02290600 + 0x1e2, (u16 *)((u8 *)data_ov065_02290600 + 0x1cc),
-        (Unk_ov065_0226d158_Kv *)((u8 *)data_ov065_02290600 + 0x1f8), 0x20, 0);
-    if (data_ov065_02290600->unk_04 != 0) {
+    sNasAuth->unk_04 = NasAuth_BuildRequest(
+        sNasAuth->unk_2f8, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
+        (Unk_ov065_0226d158_Kv *)((u8 *)sNasAuth + 0x1f8), 0x20, 0);
+    if (sNasAuth->unk_04 != 0) {
         return 4;
     }
-    if (func_ov065_0226eb6c((u32)data_ov065_02290600->unk_2f8)) {
+    if (DwcHttp_FinishHeaders((u32)sNasAuth->unk_2f8)) {
         return 4;
     }
-    func_ov065_0226eacc((u32)data_ov065_02290600->unk_2f8);
+    DwcHttp_StartThread((u32)sNasAuth->unk_2f8);
     return 0;
 }
 
-void func_ov065_0226d860(void) {
+void NasAuth_ThreadMain(void) {
     s32 tries = 0;
     s32 flag;
     s32 z0 = 0;
@@ -336,51 +336,51 @@ void func_ov065_0226d860(void) {
     S *g;
 
     for (;;) {
-        o = data_ov065_02290600->unk_2f8;
+        o = sNasAuth->unk_2f8;
         if (o->unk_9d4 != 0) {
             OS_JoinThread(o->unk_968);
         }
-        g = data_ov065_02290600;
+        g = sNasAuth;
         if (g->unk_2f8->unk_24 != 8) {
             g->unk_08 = -0x4e84;
-            r = data_ov065_02290600->unk_2f8->unk_24;
+            r = sNasAuth->unk_2f8->unk_24;
             if (r == 7) {
-                func_ov065_0226d128(0x13);
+                NasAuth_SetState(0x13);
                 return;
             }
             if (tries > 2) {
                 if (r == 2) {
-                    func_ov065_0226d128(9);
+                    NasAuth_SetState(9);
                     return;
                 }
-                func_ov065_0226d128(0xc);
+                NasAuth_SetState(0xc);
                 return;
             }
             tries++;
             flag = 1;
         } else {
-            r = func_ov065_0226d6e4();
+            r = NasAuth_HandleResponse();
             switch (r) {
             case 0x14:
-                func_ov065_0226d128(0x14);
+                NasAuth_SetState(0x14);
                 return;
             case 0xf:
                 if (tries >= 2) {
-                    func_ov065_0226d128(0xf);
-                    data_ov065_02290600->unk_08 = -data_ov065_02290600->unk_08;
+                    NasAuth_SetState(0xf);
+                    sNasAuth->unk_08 = -sNasAuth->unk_08;
                     return;
                 }
                 tries++;
                 flag = z1;
                 break;
             case 0x10:
-                data_ov065_02290600->unk_08 = -data_ov065_02290600->unk_08;
-                func_ov065_0226d128(r);
+                sNasAuth->unk_08 = -sNasAuth->unk_08;
+                NasAuth_SetState(r);
                 return;
             default:
                 if (tries >= 2) {
-                    data_ov065_02290600->unk_08 = -data_ov065_02290600->unk_08;
-                    func_ov065_0226d128(r);
+                    sNasAuth->unk_08 = -sNasAuth->unk_08;
+                    NasAuth_SetState(r);
                     return;
                 }
                 tries++;
@@ -390,102 +390,102 @@ void func_ov065_0226d860(void) {
         }
         t0 = OS_GetTick();
         while ((u64)((OS_GetTick() - t0) * 64) / 0x82ea < 0x1388) {
-            OS_LockMutex(data_ov065_02290600->unk_3bc);
-            if (data_ov065_02290600->unk_3d4 == 1) {
-                data_ov065_02290600->unk_08 = -0x4e84;
-                OS_UnlockMutex(data_ov065_02290600->unk_3bc);
-                func_ov065_0226d128(0x13);
+            OS_LockMutex(sNasAuth->unk_3bc);
+            if (sNasAuth->unk_3d4 == 1) {
+                sNasAuth->unk_08 = -0x4e84;
+                OS_UnlockMutex(sNasAuth->unk_3bc);
+                NasAuth_SetState(0x13);
                 return;
             }
-            OS_UnlockMutex(data_ov065_02290600->unk_3bc);
+            OS_UnlockMutex(sNasAuth->unk_3bc);
             OS_Sleep(0x1388);
         }
-        Unk_ov065_0226e4dc_B::func_ov065_0226e4dc(data_ov065_02290600->unk_2f8);
-        OS_LockMutex(data_ov065_02290600->unk_3bc);
-        data_ov065_02290600->unk_04 = func_ov065_0226da64(flag);
-        if (data_ov065_02290600->unk_04 != 0) {
-            data_ov065_02290600->unk_08 = -0x4e84;
-            OS_UnlockMutex(data_ov065_02290600->unk_3bc);
+        Unk_ov065_0226e4dc_B::DwcHttp_Destroy(sNasAuth->unk_2f8);
+        OS_LockMutex(sNasAuth->unk_3bc);
+        sNasAuth->unk_04 = NasAuth_SendRequest(flag);
+        if (sNasAuth->unk_04 != 0) {
+            sNasAuth->unk_08 = -0x4e84;
+            OS_UnlockMutex(sNasAuth->unk_3bc);
             return;
         }
-        OS_UnlockMutex(data_ov065_02290600->unk_3bc);
+        OS_UnlockMutex(sNasAuth->unk_3bc);
     }
 }
 
-s32 func_ov065_0226d6e4(void) {
+s32 NasAuth_HandleResponse(void) {
     S *g;
     char *m;
     void *r;
 
-    g = data_ov065_02290600;
-    if (func_ov065_0226ded4(g->unk_1f8, 0x20, 0, g->unk_2f8->unk_938) != 1) {
-        data_ov065_02290600->unk_08 = 0x4e84;
+    g = sNasAuth;
+    if (DwcHttp_ParseResponse(g->unk_1f8, 0x20, 0, g->unk_2f8->unk_938) != 1) {
+        sNasAuth->unk_08 = 0x4e84;
         return 0xd;
     }
-    if (func_ov065_0226d544() != 0) {
+    if (NasAuth_ParseResponse() != 0) {
         return 0xd;
     }
-    g = data_ov065_02290600;
+    g = sNasAuth;
     s32 st = g->unk_08;
     if (st < 0x4e84) {
         if (st == 0x4e22) {
             m = "bmwork";
             r = ((Unk_ov065_0226dd2c_Alloc)g->unk_1cc.v[9])(m, 0x71f);
             if (r == 0) {
-                data_ov065_02290600->unk_08 = 0x4e84;
+                sNasAuth->unk_08 = 0x4e84;
                 return 2;
             }
-            if (func_020ff6f4(&data_ov065_02290604, ((u32)r + 0x1f) & ~0x1f) != 1) {
-                ((Unk_ov065_0226dd2c_Free)data_ov065_02290600->unk_1cc.v[10])(m, r, 0);
-                data_ov065_02290600->unk_08 = 0x4e84;
+            if (func_020ff6f4(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
+                ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
+                sNasAuth->unk_08 = 0x4e84;
                 return 0xe;
             }
-            ((Unk_ov065_0226dd2c_Free)data_ov065_02290600->unk_1cc.v[10])(m, r, 0);
+            ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
         }
         return 0x14;
     }
     switch (st) {
     case 0x4e88:
-        func_020ff5cc(&data_ov065_02290604);
-        data_ov065_02290600->unk_08 = 0x4e88;
+        func_020ff5cc(&sNasUserId);
+        sNasAuth->unk_08 = 0x4e88;
         return 0xf;
     case 0x4e8c:
         m = "bmwork";
         r = ((Unk_ov065_0226dd2c_Alloc)g->unk_1cc.v[9])(m, 0x71f);
         if (r == 0) {
-            data_ov065_02290600->unk_08 = 0x4e8c;
+            sNasAuth->unk_08 = 0x4e8c;
             return 0x10;
         }
         func_020ff734(((u32)r + 0x1f) & ~0x1f);
-        ((Unk_ov065_0226dd2c_Free)data_ov065_02290600->unk_1cc.v[10])(m, r, 0);
-        data_ov065_02290600->unk_08 = 0x4e8c;
+        ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
+        sNasAuth->unk_08 = 0x4e8c;
         return 0x10;
     default:
         return 0x11;
     }
 }
 
-s32 func_ov065_0226d544(void) {
+s32 NasAuth_ParseResponse(void) {
     char *end = 0;
     S *g;
 
-    func_ov065_0226de90(data_ov065_02290600->unk_1f8, 0x20, "httpresult");
+    DwcHttp_FindField(sNasAuth->unk_1f8, 0x20, "httpresult");
     s32 st = func_0212b770();
     if (data_0220064c == 0x22) {
-        data_ov065_02290600->unk_08 = 0x4e85;
+        sNasAuth->unk_08 = 0x4e85;
         return 0xb;
     }
     if (st != 200) {
-        data_ov065_02290600->unk_08 = st + 0x59d8;
+        sNasAuth->unk_08 = st + 0x59d8;
         return 0x11;
     }
-    g = data_ov065_02290600;
-    if (func_ov065_0226de4c(g->unk_1f8, 0x20, "returncd", g->unk_0c, 4) <= 0) {
-        data_ov065_02290600->unk_08 = 0x4e85;
+    g = sNasAuth;
+    if (DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "returncd", g->unk_0c, 4) <= 0) {
+        sNasAuth->unk_08 = 0x4e85;
         return 0xd;
     }
-    s32 code = strtol(data_ov065_02290600->unk_0c, &end, 10);
-    g = data_ov065_02290600;
+    s32 code = strtol(sNasAuth->unk_0c, &end, 10);
+    g = sNasAuth;
     s32 l = func_0212a438(g->unk_0c);
     if (end != g->unk_0c + l) {
         g->unk_08 = 0x4e85;
@@ -493,27 +493,27 @@ s32 func_ov065_0226d544(void) {
     }
     g->unk_08 = code + 0x4e20;
     if (code < 100) {
-        data_ov065_02290600->unk_52[0] = 0;
-        data_ov065_02290600->unk_1f[0] = 0;
-        data_ov065_02290600->unk_17f[0] = 0;
-        data_ov065_02290600->unk_10[0] = 0;
-        data_ov065_02290600->unk_188[0] = 0;
-        g = data_ov065_02290600;
-        func_ov065_0226de4c(g->unk_1f8, 0x20, "token", g->unk_52, 0x12d);
-        g = data_ov065_02290600;
-        func_ov065_0226de4c(g->unk_1f8, 0x20, "locator", g->unk_1f, 0x33);
-        g = data_ov065_02290600;
-        func_ov065_0226de4c(g->unk_1f8, 0x20, "challenge", g->unk_17f, 9);
-        g = data_ov065_02290600;
-        func_ov065_0226de4c(g->unk_1f8, 0x20, "datetime", g->unk_10, 0xf);
-        g = data_ov065_02290600;
-        func_ov065_0226de0c(g->unk_1f8, 0x20, "Set-Cookie", g->unk_188, 0x41);
-        data_ov065_02290600->unk_188[0x2b] = 0;
+        sNasAuth->unk_52[0] = 0;
+        sNasAuth->unk_1f[0] = 0;
+        sNasAuth->unk_17f[0] = 0;
+        sNasAuth->unk_10[0] = 0;
+        sNasAuth->unk_188[0] = 0;
+        g = sNasAuth;
+        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "token", g->unk_52, 0x12d);
+        g = sNasAuth;
+        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "locator", g->unk_1f, 0x33);
+        g = sNasAuth;
+        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "challenge", g->unk_17f, 9);
+        g = sNasAuth;
+        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "datetime", g->unk_10, 0xf);
+        g = sNasAuth;
+        DwcHttp_GetFieldString(g->unk_1f8, 0x20, "Set-Cookie", g->unk_188, 0x41);
+        sNasAuth->unk_188[0x2b] = 0;
     }
     return 0;
 }
 
-s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5) {
+s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5) {
     u16 len;
     u8 mac[6];
     u8 mac2[6];
@@ -542,14 +542,14 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
         return 5;
     }
     irq = OS_DisableInterrupts();
-    ptr = func_ov065_0226abb0();
+    ptr = WifiLink_GetConnectedBssid();
     if (ptr == 0) {
         OS_RestoreInterrupts(irq);
         return 3;
     }
     MI_CpuCopy8(ptr, mac2, 6);
     MI_CpuFill8(buf, 0, 0x21);
-    ptr = func_ov065_0226ab5c(&len);
+    ptr = WifiLink_GetConnectedSsid(&len);
     if (ptr == 0) {
         OS_RestoreInterrupts(irq);
         return 3;
@@ -576,67 +576,67 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
     form.unk_00 = a3;
     form.unk_04 = a4;
     if (a5 != 1) {
-        if (data_ov065_02290604.unk_00 == 0) {
-            func_ov065_0226e07c(&form, "action", "acctcreate");
+        if (sNasUserId.unk_00 == 0) {
+            DwcHttp_AddField(&form, "action", "acctcreate");
         } else {
             if (func_0212a438(a1) == 0) {
                 return 6;
             }
-            func_ov065_0226e07c(&form, "action", "login");
-            func_ov065_0226e07c(&form, "gsbrcd", a1);
+            DwcHttp_AddField(&form, "action", "login");
+            DwcHttp_AddField(&form, "gsbrcd", a1);
         }
     } else {
-        func_020ff0bc(&data_ov065_02290604);
+        func_020ff0bc(&sNasUserId);
     }
-    func_ov065_0226e07c(&form, "sdkver", "001000");
-    if (data_ov065_02290604.unk_00 != 0) {
-        OS_SNPrintf(userid, 14, "%013llu", data_ov065_02290604.unk_00);
+    DwcHttp_AddField(&form, "sdkver", "001000");
+    if (sNasUserId.unk_00 != 0) {
+        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.unk_00);
     } else {
-        OS_SNPrintf(userid, 14, "%013llu", data_ov065_02290604.unk_08);
+        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.unk_08);
     }
-    func_ov065_0226e07c(&form, "userid", userid);
-    OS_SNPrintf(pw, 4, "%03u", data_ov065_02290604.unk_10);
-    func_ov065_0226e07c(&form, "passwd", pw);
+    DwcHttp_AddField(&form, "userid", userid);
+    OS_SNPrintf(pw, 4, "%03u", sNasUserId.unk_10);
+    DwcHttp_AddField(&form, "passwd", pw);
     OS_SNPrintf(bssid, 13, "%02x%02x%02x%02x%02x%02x", mac2[0], mac2[1], mac2[2], mac2[3], mac2[4], mac2[5]);
-    OS_SNPrintf(apinfo, 14, "%02d:0000000-00", func_ov065_0226b148());
-    func_ov065_0226d0b0(buf, apinfo + 3);
-    func_ov065_0226e07c(&form, "gamecd", code4);
-    func_ov065_0226e07c(&form, "makercd", code2);
-    func_ov065_0226e07c(&form, "unitcd", "0");
-    func_ov065_0226e07c(&form, "macadr", macstr);
-    func_ov065_0226e07c(&form, "lang", data_ov065_0228b73c[owner.unk_00]);
-    func_ov065_0226e07c(&form, "birth", birth);
-    func_ov065_0226e07c(&form, "devtime", devtime);
-    func_ov065_0226e07c(&form, "bssid", bssid);
-    func_ov065_0226e07c(&form, "apinfo", apinfo);
-    if (func_ov065_0226e3ac(a0, "User-Agent", "Nitro WiFi SDK/1.0") != 0) {
+    OS_SNPrintf(apinfo, 14, "%02d:0000000-00", WifiAp_GetConnectedApType());
+    WifiAp_GetNdwcshapApInfo(buf, apinfo + 3);
+    DwcHttp_AddField(&form, "gamecd", code4);
+    DwcHttp_AddField(&form, "makercd", code2);
+    DwcHttp_AddField(&form, "unitcd", "0");
+    DwcHttp_AddField(&form, "macadr", macstr);
+    DwcHttp_AddField(&form, "lang", sNasLangCodeTable[owner.unk_00]);
+    DwcHttp_AddField(&form, "birth", birth);
+    DwcHttp_AddField(&form, "devtime", devtime);
+    DwcHttp_AddField(&form, "bssid", bssid);
+    DwcHttp_AddField(&form, "apinfo", apinfo);
+    if (DwcHttp_AddHeader(a0, "User-Agent", "Nitro WiFi SDK/1.0") != 0) {
         return 7;
     }
-    if (func_ov065_0226e3ac(a0, "HTTP_X_GAMECD", code4) != 0) {
+    if (DwcHttp_AddHeader(a0, "HTTP_X_GAMECD", code4) != 0) {
         return 7;
     }
     i = 0;
     for (; a3->key != 0; a3++, i++) {
         const char *v = a3->val;
-        if (func_ov065_0226e2e4(a0, a3->key, v, func_0212a438(v)) != 0) {
+        if (DwcHttp_AddFormParam(a0, a3->key, v, func_0212a438(v)) != 0) {
             return 8;
         }
     }
-    if (func_ov065_0226e2e4(a0, "devname", nick, 0x14) != 0) {
+    if (DwcHttp_AddFormParam(a0, "devname", nick, 0x14) != 0) {
         return 8;
     }
     if (func_0212dcb4(a2) != 0) {
-        if (func_ov065_0226e2e4(a0, "ingamesn", (const char *)a2, func_0212dcb4(a2) * 2) != 0) {
+        if (DwcHttp_AddFormParam(a0, "ingamesn", (const char *)a2, func_0212dcb4(a2) * 2) != 0) {
             return 8;
         }
     }
     return 0;
 }
 
-void func_ov065_0226d128(s32 v) {
-    OS_LockMutex(data_ov065_02290600->unk_3bc);
-    data_ov065_02290600->unk_04 = v;
-    OS_UnlockMutex(data_ov065_02290600->unk_3bc);
+void NasAuth_SetState(s32 v) {
+    OS_LockMutex(sNasAuth->unk_3bc);
+    sNasAuth->unk_04 = v;
+    OS_UnlockMutex(sNasAuth->unk_3bc);
 }
 
 }

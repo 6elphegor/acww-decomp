@@ -196,11 +196,11 @@ void Melody_PlayNote(u32 a);
 void Melody_Unpack(void *a, void *b);
 void Melody_Pack(void *a, void *b);
 void Melody_ApplyEditPattern();
-void func_0206ecf8(s32 v);
-BOOL func_0206ed18();
+void MenuCtrl_SetResult(s32 v);
+BOOL MenuCtrl_IsResultOk();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(void *self, u32 id);
 s32 Comm_IsSeqConfirmed(s32 v);
 void func_020795a8(void *a);
@@ -847,7 +847,7 @@ void MelodyMenu::resumeConfirmInput() {
 }
 
 void MelodyMenu::confirmTune() {
-    func_0206ecf8(1);
+    MenuCtrl_SetResult(1);
     ((MenuBottomButtonsBody *)&unk_110)->setSelected(1);
     setTransitionState(2);
     setMainState(9);
@@ -858,7 +858,7 @@ void MelodyMenu::confirmTune() {
 }
 
 void MelodyMenu::startQuit() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     ((MenuBottomButtonsBody *)&unk_110)->setSelected(2);
     setTransitionState(2);
     setMainState(9);
@@ -879,7 +879,7 @@ void MelodyMenu::sendTune() {
 }
 
 BOOL MelodyMenu::isTuneSendDone() {
-    if (func_0206ed18() == 0) return TRUE;
+    if (MenuCtrl_IsResultOk() == 0) return TRUE;
     if (gCommManager->isOnline() != 0) {
         if (Comm_IsSeqConfirmed(unk_9c) == 0) return FALSE;
     }
@@ -1115,12 +1115,12 @@ void MelodyMenu::flushBgScreen() {
 
 void MelodyMenu::paintPlayButton(u32 v) {
     setFlags(4);
-    func_0206ee80(&unk_674, 0xc, 0x12, 0x15, 0x16, v);
+    BgScreen_SetRectPalette(&unk_674, 0xc, 0x12, 0x15, 0x16, v);
 }
 
 void MelodyMenu::paintEraseAllButton(u32 v) {
     setFlags(4);
-    func_0206ee80(&unk_674, 0, 0x11, 9, 0x17, v);
+    BgScreen_SetRectPalette(&unk_674, 0, 0x11, 9, 0x17, v);
 }
 
 void MelodyMenu::startPlayback() {

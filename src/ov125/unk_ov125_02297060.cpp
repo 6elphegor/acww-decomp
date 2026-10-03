@@ -39,9 +39,9 @@ void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
 s32 Snd_PlaySe(s32 a);
-void func_0206ed2c(u32 a);
-void func_0206ecf8(u32 v);
-s32 func_0206ed50();
+void MenuCtrl_SetIndex(u32 a);
+void MenuCtrl_SetResult(u32 v);
+s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void StrBuf_GameToAscii(void *p, void *q);
@@ -456,7 +456,7 @@ void PatternSelectMenu::stateOpening() {
 void PatternSelectMenu::stateClose() {
     hideCursor();
     MenuLauncher *r4 = (MenuLauncher *)ProcBase_GetParent(this);
-    s32 r6 = func_0206ed50();
+    s32 r6 = MenuCtrl_GetMode();
     if (testFlags(0x10)) {
         r4->setNextRequest(0x44, 1);
     } else if (r6 == 4) {
@@ -493,7 +493,7 @@ void PatternSelectMenu::initPatternSelect() {
     unk_6b7 = 9;
     u32 z = 0;
     unk_6b8 = z;
-    func_0206ecf8(z);
+    MenuCtrl_SetResult(z);
     unk_428.func_ov002_022006ac(2);
 }
 
@@ -744,7 +744,7 @@ void PatternSelectMenu::closeWithoutChoice() {
     unk_428.hide(1);
     setFlags(0x10);
     unk_8c = 3;
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     setPhase(1);
     Snd_PlaySe(0x28);
 }
@@ -806,7 +806,7 @@ void PatternSelectMenu::updateNameLabel() {
 
 void PatternSelectMenu::setPopupChoices() {
     ChoiceIdList_Clear((u8 *)this + 0x41c, 1);
-    switch (func_0206ed50()) {
+    switch (MenuCtrl_GetMode()) {
     case 5:
     case 8:
     case 9:
@@ -838,8 +838,8 @@ void PatternSelectMenu::openPopup() {
 void PatternSelectMenu::onPopupChoice() {
     switch (unk_6b9) {
     case 0:
-        func_0206ed2c(unk_6b7);
-        func_0206ecf8(1);
+        MenuCtrl_SetIndex(unk_6b7);
+        MenuCtrl_SetResult(1);
         unk_8c = 3;
         unk_428.hide(1);
         setPhase(1);

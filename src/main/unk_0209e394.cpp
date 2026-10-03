@@ -139,7 +139,7 @@ extern u8 gTalkMsgIndexEnd[];
 extern void *gCommManager;
 extern u16 gPad[];
 extern u8 gScreenTransition;
-extern u8 data_021ed3ac[];
+extern u8 sRecentJoinAids[];
 extern u8 sAxBbsReceived;
 extern u8 sAxBbsBuf[];
 
@@ -168,15 +168,15 @@ s32 Comm_GetSyncState();
 }
 
 extern "C" {
-void func_020a5f48(s32 a, s32 b);
+void NetSession_SetMemberSyncReply(s32 a, s32 b);
 }
 
 extern "C" {
-void func_020a5f28();
+void NetSession_GetSyncKind();
 }
 
 extern "C" {
-void func_020a5f18();
+void NetSession_SetActiveSyncKind();
 }
 
 extern "C" {
@@ -224,11 +224,11 @@ s32 func_0203d878();
 }
 
 extern "C" {
-s32 func_020a0318();
+s32 GameStart_IsNewTown();
 }
 
 extern "C" {
-s32 func_020a0304();
+s32 GameStart_IsNewResident();
 }
 
 extern "C" {
@@ -557,7 +557,7 @@ void SaveMenu::updateOpenTalk() {
         TalkWindowState *o = TalkWindow_Get(0);
         SaveMenuTalk *p = &unk_54;
         p->vfunc_08();
-        if (func_020a0318() != 0 || func_020a0304() != 0) {
+        if (GameStart_IsNewTown() != 0 || GameStart_IsNewResident() != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence4");
             unk_54.unk_1e = 4;
         } else if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
@@ -614,9 +614,9 @@ void SaveMenu::updateSaveA() {
         o->func_02067990();
         o->unlockAdvance();
         if (r == 5) {
-            func_020a5f48(0, 6);
-            func_020a5f28();
-            func_020a5f18();
+            NetSession_SetMemberSyncReply(0, 6);
+            NetSession_GetSyncKind();
+            NetSession_SetActiveSyncKind();
             o->setNextMessage(gTalkMsgIndexEnd, 0);
             func_0209f230(0);
             setState(3);
@@ -643,9 +643,9 @@ void SaveMenu::updateSaveB() {
         o->func_02067990();
         o->unlockAdvance();
         if (r == 5) {
-            func_020a5f48(0, 6);
-            func_020a5f28();
-            func_020a5f18();
+            NetSession_SetMemberSyncReply(0, 6);
+            NetSession_GetSyncKind();
+            NetSession_SetActiveSyncKind();
             o->setNextMessage(gTalkMsgIndexEnd, 0);
             func_0209f230(1);
             setState(3);

@@ -38,21 +38,21 @@ struct Unk_ov065_02278328_Host {
 };
 
 extern "C" {
-extern u32 data_ov065_02291080;
-extern s32 data_ov065_0228ca30;
+extern u32 sGsSockLastError;
+extern s32 sGsRandSeed;
 
-s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
-s32 func_ov065_02279144(void);
-Unk_ov065_02278328_Host *func_ov065_02261408(s32);
-void *func_ov065_02277af0(s32);
-void *func_ov065_02277ad8(void *, s32);
-void func_ov065_02277ac8(void *);
-s32 func_ov065_022610a0(s32, u32 *);
-s32 func_ov065_02261390(s32, void *);
-s32 func_ov065_02278dec(s32, s32);
-void func_ov065_0226adf0(void *);
-void func_ov065_0226ade8(void *, void *, s32);
-void func_ov065_0226ade0(void *, void *);
+s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
+s32 GsUtil_GetTimeMs(void);
+Unk_ov065_02278328_Host *Sock_GetHostByName(s32);
+void *GsUtil_Alloc(s32);
+void *GsUtil_Realloc(void *, s32);
+void GsUtil_Free(void *);
+s32 Sock_InetAtoN(s32, u32 *);
+s32 Sock_GetSockName(s32, void *);
+s32 GsSock_CheckResult(s32, s32);
+void WifiAp_HashReset(void *);
+void WifiAp_HashSetSource(void *, void *, s32);
+void WifiAp_HashGetDigest(void *, void *);
 void func_02128acc(void *, s32, s32, Unk_ov065_02278384_Cmp);
 void memmove(void *, void *, s32);
 void memcpy(void *, void *, s32);
@@ -60,61 +60,61 @@ s32 OS_SPrintf(char *, char *, s32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 
-s32 func_ov065_02278bf4(s32);
-void func_ov065_022789d0(u8 *, char *);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278700(Unk_ov065_022786bc_Vec *, void *, s32);
-void func_ov065_02278720(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278740(Unk_ov065_022786bc_Vec *, s32);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278658(Unk_ov065_022786bc_Vec *, void *);
-void func_ov065_02278ac0(char *, char *, s32);
-s32 func_ov065_02278b60(void);
-void func_ov065_02278570(Unk_ov065_022786bc_Vec *, s32);
-void func_ov065_0227858c(Unk_ov065_022786bc_Vec *, s32);
-void func_ov065_02278600(Unk_ov065_022786bc_Vec *, void *, s32);
-u32 func_ov065_02278b7c(u32);
+s32 GsSock_InetAddr(s32);
+void GsUtil_DigestToHex(u8 *, char *);
+void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
+void GsArray_CopyTo(Unk_ov065_022786bc_Vec *, void *, s32);
+void GsArray_Grow(Unk_ov065_022786bc_Vec *);
+void GsArray_DestroyElement(Unk_ov065_022786bc_Vec *, s32);
+void GsArray_Free(Unk_ov065_022786bc_Vec *);
+void GsArray_Append(Unk_ov065_022786bc_Vec *, void *);
+void GsUtil_Base64EncodeBlock(char *, char *, s32);
+s32 GsUtil_Rand(void);
+void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *, s32);
+void GsArray_RemoveAt(Unk_ov065_022786bc_Vec *, s32);
+void GsArray_InsertAt(Unk_ov065_022786bc_Vec *, void *, s32);
+u32 GsUtil_ParkMillerNext(u32);
 }
 
 extern "C" {
-void func_ov065_022789d0(u8 *digest, char *out);
-void func_ov065_0227899c(void *a, s32 b, char *out);
-Unk_ov065_02278928_Tbl *func_ov065_02278980(s32 esize, s32 n, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp, Unk_ov065_02278740_Dtor dtor);
-Unk_ov065_02278928_Tbl *func_ov065_02278928(s32 esize, s32 n, s32 cap, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp, Unk_ov065_02278740_Dtor dtor);
-void func_ov065_022788f0(Unk_ov065_02278928_Tbl *t);
-s32 func_ov065_022788b0(Unk_ov065_02278928_Tbl *t);
-void func_ov065_0227885c(Unk_ov065_02278928_Tbl *t, void *key);
-s32 func_ov065_02278810(Unk_ov065_02278928_Tbl *t, void *key);
-void *func_ov065_022787c4(Unk_ov065_02278928_Tbl *t, void *key);
-void func_ov065_02278790(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg);
-void *func_ov065_02278758(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg);
-void func_ov065_02278740(Unk_ov065_022786bc_Vec *v, s32 i);
-void func_ov065_02278720(Unk_ov065_022786bc_Vec *v);
-void func_ov065_02278700(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
-Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *v);
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *v);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *v, s32 i);
-void func_ov065_02278658(Unk_ov065_022786bc_Vec *v, void *x);
-void func_ov065_02278600(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
-void func_ov065_022785c8(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp);
-void func_ov065_0227858c(Unk_ov065_022786bc_Vec *v, s32 i);
-void func_ov065_02278570(Unk_ov065_022786bc_Vec *v, s32 i);
-void func_ov065_02278550(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
-void func_ov065_02278538(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278384_Cmp cmp);
-s32 func_ov065_022784b4(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp, s32 start, s32 sorted);
-void func_ov065_02278488(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg);
-void *func_ov065_02278448(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg);
-void func_ov065_02278420(Unk_ov065_022786bc_Vec *v);
-u8 *func_ov065_022783d8(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp);
-u8 *func_ov065_02278384(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp, s32 *found);
-s32 func_ov065_02278328(s32 a, u32 port, Unk_ov065_02278328_Addr *out);
+void GsUtil_DigestToHex(u8 *digest, char *out);
+void GsUtil_Md5Hex(void *a, s32 b, char *out);
+Unk_ov065_02278928_Tbl *GsHash_New(s32 esize, s32 n, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp, Unk_ov065_02278740_Dtor dtor);
+Unk_ov065_02278928_Tbl *GsHash_NewEx(s32 esize, s32 n, s32 cap, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp, Unk_ov065_02278740_Dtor dtor);
+void GsHash_Free(Unk_ov065_02278928_Tbl *t);
+s32 GsHash_Count(Unk_ov065_02278928_Tbl *t);
+void GsHash_Insert(Unk_ov065_02278928_Tbl *t, void *key);
+s32 GsHash_Remove(Unk_ov065_02278928_Tbl *t, void *key);
+void *GsHash_Find(Unk_ov065_02278928_Tbl *t, void *key);
+void GsHash_ForEach(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg);
+void *GsHash_FindIf(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg);
+void GsArray_DestroyElement(Unk_ov065_022786bc_Vec *v, s32 i);
+void GsArray_Grow(Unk_ov065_022786bc_Vec *v);
+void GsArray_CopyTo(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
+Unk_ov065_022786bc_Vec *GsArray_New(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor);
+void GsArray_Free(Unk_ov065_022786bc_Vec *v);
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *v);
+void *GsArray_At(Unk_ov065_022786bc_Vec *v, s32 i);
+void GsArray_Append(Unk_ov065_022786bc_Vec *v, void *x);
+void GsArray_InsertAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
+void GsArray_InsertSorted(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp);
+void GsArray_RemoveAt(Unk_ov065_022786bc_Vec *v, s32 i);
+void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *v, s32 i);
+void GsArray_ReplaceAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i);
+void GsArray_Sort(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278384_Cmp cmp);
+s32 GsArray_Search(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp, s32 start, s32 sorted);
+void GsArray_ForEachBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg);
+void *GsArray_FindBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg);
+void GsArray_Clear(Unk_ov065_022786bc_Vec *v);
+u8 *GsUtil_LinearSearch(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp);
+u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp, s32 *found);
+s32 GsSock_ResolveAddress(s32 a, u32 port, Unk_ov065_02278328_Addr *out);
 }
 
 extern "C" {
 
-void func_ov065_022789d0(u8 *digest, char *out) {
+void GsUtil_DigestToHex(u8 *digest, char *out) {
     u32 i = 0;
     s32 off = 0;
     do {
@@ -124,30 +124,30 @@ void func_ov065_022789d0(u8 *digest, char *out) {
     } while (i < 16);
 }
 
-void func_ov065_0227899c(void *a, s32 b, char *out) {
+void GsUtil_Md5Hex(void *a, s32 b, char *out) {
     u8 digest[16];
     u8 ctx[0x58];
-    func_ov065_0226adf0(ctx);
-    func_ov065_0226ade8(ctx, a, b);
-    func_ov065_0226ade0(digest, ctx);
-    func_ov065_022789d0(digest, out);
+    WifiAp_HashReset(ctx);
+    WifiAp_HashSetSource(ctx, a, b);
+    WifiAp_HashGetDigest(digest, ctx);
+    GsUtil_DigestToHex(digest, out);
 }
 
-Unk_ov065_02278928_Tbl *func_ov065_02278980(s32 esize, s32 n, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp,
+Unk_ov065_02278928_Tbl *GsHash_New(s32 esize, s32 n, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp,
                                             Unk_ov065_02278740_Dtor dtor) {
-    return func_ov065_02278928(esize, n, 4, hash, cmp, dtor);
+    return GsHash_NewEx(esize, n, 4, hash, cmp, dtor);
 }
 
-Unk_ov065_02278928_Tbl *func_ov065_02278928(s32 esize, s32 n, s32 cap, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp,
+Unk_ov065_02278928_Tbl *GsHash_NewEx(s32 esize, s32 n, s32 cap, Unk_ov065_022787c4_Hash hash, Unk_ov065_02278384_Cmp cmp,
                                             Unk_ov065_02278740_Dtor dtor) {
-    Unk_ov065_02278928_Tbl *t = (Unk_ov065_02278928_Tbl *)func_ov065_02277af0(0x14);
+    Unk_ov065_02278928_Tbl *t = (Unk_ov065_02278928_Tbl *)GsUtil_Alloc(0x14);
     s32 i;
-    t->unk_00 = (Unk_ov065_022786bc_Vec **)func_ov065_02277af0(n * 4);
+    t->unk_00 = (Unk_ov065_022786bc_Vec **)GsUtil_Alloc(n * 4);
     i = 0;
     if (n > 0) {
         s32 off = i;
         do {
-            Unk_ov065_022786bc_Vec *v = func_ov065_022786bc(esize, cap, dtor);
+            Unk_ov065_022786bc_Vec *v = GsArray_New(esize, cap, dtor);
             *(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off) = v;
             off += 4;
             i++;
@@ -160,23 +160,23 @@ Unk_ov065_02278928_Tbl *func_ov065_02278928(s32 esize, s32 n, s32 cap, Unk_ov065
     return t;
 }
 
-void func_ov065_022788f0(Unk_ov065_02278928_Tbl *t) {
+void GsHash_Free(Unk_ov065_02278928_Tbl *t) {
     if (t != NULL) {
         s32 i = 0;
         if (t->unk_04 > 0) {
             s32 off = i;
             do {
-                func_ov065_02278688(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
+                GsArray_Free(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
                 off += 4;
                 i++;
             } while (i < t->unk_04);
         }
-        func_ov065_02277ac8(t->unk_00);
-        func_ov065_02277ac8(t);
+        GsUtil_Free(t->unk_00);
+        GsUtil_Free(t);
     }
 }
 
-s32 func_ov065_022788b0(Unk_ov065_02278928_Tbl *t) {
+s32 GsHash_Count(Unk_ov065_02278928_Tbl *t) {
     s32 sum = 0;
     s32 i;
     if (t == NULL) {
@@ -186,7 +186,7 @@ s32 func_ov065_022788b0(Unk_ov065_02278928_Tbl *t) {
     if (t->unk_04 > 0) {
         s32 off = sum;
         do {
-            sum += func_ov065_02278684(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
+            sum += GsArray_Count(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
             off += 4;
             i++;
         } while (i < t->unk_04);
@@ -194,60 +194,60 @@ s32 func_ov065_022788b0(Unk_ov065_02278928_Tbl *t) {
     return sum;
 }
 
-void func_ov065_0227885c(Unk_ov065_02278928_Tbl *t, void *key) {
+void GsHash_Insert(Unk_ov065_02278928_Tbl *t, void *key) {
     s32 h;
     s32 r;
     if (t != NULL) {
         h = t->unk_0c(key, t->unk_04) * 4;
-        r = func_ov065_022784b4(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+        r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
         if (r == -1) {
-            func_ov065_02278658(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key);
+            GsArray_Append(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key);
             return;
         }
-        func_ov065_02278550(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, r);
+        GsArray_ReplaceAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, r);
     }
 }
 
-s32 func_ov065_02278810(Unk_ov065_02278928_Tbl *t, void *key) {
+s32 GsHash_Remove(Unk_ov065_02278928_Tbl *t, void *key) {
     s32 h;
     s32 r;
     if (t == NULL) {
         return 0;
     }
     h = t->unk_0c(key, t->unk_04) * 4;
-    r = func_ov065_022784b4(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
     if (r != -1) {
-        func_ov065_02278570(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
+        GsArray_DeleteAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
         return 1;
     }
     return 0;
 }
 
-void *func_ov065_022787c4(Unk_ov065_02278928_Tbl *t, void *key) {
+void *GsHash_Find(Unk_ov065_02278928_Tbl *t, void *key) {
     s32 h;
     s32 r;
     if (t == NULL) {
         return NULL;
     }
     h = t->unk_0c(key, t->unk_04) * 4;
-    r = func_ov065_022784b4(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
     if (r != -1) {
-        return func_ov065_0227866c(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
+        return GsArray_At(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
     }
     return NULL;
 }
 
-void func_ov065_02278790(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
+void GsHash_ForEach(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
     for (i = 0; i < t->unk_04; i++) {
-        func_ov065_02278488(t->unk_00[i], cb, arg);
+        GsArray_ForEachBackward(t->unk_00[i], cb, arg);
     }
 }
 
-void *func_ov065_02278758(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
+void *GsHash_FindIf(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
     for (i = 0; i < t->unk_04; i++) {
-        void *r = func_ov065_02278448(t->unk_00[i], cb, arg);
+        void *r = GsArray_FindBackward(t->unk_00[i], cb, arg);
         if (r != NULL) {
             return r;
         }
@@ -255,23 +255,23 @@ void *func_ov065_02278758(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, v
     return NULL;
 }
 
-void func_ov065_02278740(Unk_ov065_022786bc_Vec *v, s32 i) {
+void GsArray_DestroyElement(Unk_ov065_022786bc_Vec *v, s32 i) {
     if (v->unk_10 != NULL) {
-        v->unk_10(func_ov065_0227866c(v, i));
+        v->unk_10(GsArray_At(v, i));
     }
 }
 
-void func_ov065_02278720(Unk_ov065_022786bc_Vec *v) {
+void GsArray_Grow(Unk_ov065_022786bc_Vec *v) {
     v->unk_04 = v->unk_04 + v->unk_0c;
-    v->unk_14 = (u8 *)func_ov065_02277ad8(v->unk_14, v->unk_04 * v->unk_08);
+    v->unk_14 = (u8 *)GsUtil_Realloc(v->unk_14, v->unk_04 * v->unk_08);
 }
 
-void func_ov065_02278700(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
-    memcpy(func_ov065_0227866c(v, i), x, v->unk_08);
+void GsArray_CopyTo(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
+    memcpy(GsArray_At(v, i), x, v->unk_08);
 }
 
-Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor) {
-    Unk_ov065_022786bc_Vec *v = (Unk_ov065_022786bc_Vec *)func_ov065_02277af0(0x18);
+Unk_ov065_022786bc_Vec *GsArray_New(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor) {
+    Unk_ov065_022786bc_Vec *v = (Unk_ov065_022786bc_Vec *)GsUtil_Alloc(0x18);
     if (cap == 0) {
         cap = 8;
     }
@@ -281,85 +281,85 @@ Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32 size, s32 cap, Unk_ov065_0227874
     v->unk_0c = cap;
     v->unk_10 = dtor;
     if (v->unk_04 != 0) {
-        v->unk_14 = (u8 *)func_ov065_02277af0(v->unk_04 * v->unk_08);
+        v->unk_14 = (u8 *)GsUtil_Alloc(v->unk_04 * v->unk_08);
     } else {
         v->unk_14 = NULL;
     }
     return v;
 }
 
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *v) {
+void GsArray_Free(Unk_ov065_022786bc_Vec *v) {
     s32 i;
     for (i = 0; i < v->unk_00; i++) {
-        func_ov065_02278740(v, i);
+        GsArray_DestroyElement(v, i);
     }
-    func_ov065_02277ac8(v->unk_14);
-    func_ov065_02277ac8(v);
+    GsUtil_Free(v->unk_14);
+    GsUtil_Free(v);
 }
 
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *v) {
+s32 GsArray_Count(Unk_ov065_022786bc_Vec *v) {
     return v->unk_00;
 }
 
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *v, s32 i) {
+void *GsArray_At(Unk_ov065_022786bc_Vec *v, s32 i) {
     if (i < 0 || i >= v->unk_00) {
         return NULL;
     }
     return v->unk_14 + v->unk_08 * i;
 }
 
-void func_ov065_02278658(Unk_ov065_022786bc_Vec *v, void *x) {
+void GsArray_Append(Unk_ov065_022786bc_Vec *v, void *x) {
     if (v != NULL) {
-        func_ov065_02278600(v, x, v->unk_00);
+        GsArray_InsertAt(v, x, v->unk_00);
     }
 }
 
-void func_ov065_02278600(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
+void GsArray_InsertAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
     s32 last;
     if (v->unk_00 == v->unk_04) {
-        func_ov065_02278720(v);
+        GsArray_Grow(v);
     }
     v->unk_00 = v->unk_00 + 1;
     last = v->unk_00 - 1;
     if (i < last) {
-        void *dst = func_ov065_0227866c(v, i + 1);
-        void *src = func_ov065_0227866c(v, i);
+        void *dst = GsArray_At(v, i + 1);
+        void *src = GsArray_At(v, i);
         memmove(dst, src, v->unk_08 * (last - i));
     }
-    func_ov065_02278700(v, x, i);
+    GsArray_CopyTo(v, x, i);
 }
 
-void func_ov065_022785c8(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp) {
+void GsArray_InsertSorted(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp) {
     s32 found;
-    u8 *r = func_ov065_02278384(key, v->unk_14, v->unk_00, v->unk_08, cmp, &found);
-    func_ov065_02278600(v, key, (s32)(r - v->unk_14) / v->unk_08);
+    u8 *r = GsUtil_BinarySearch(key, v->unk_14, v->unk_00, v->unk_08, cmp, &found);
+    GsArray_InsertAt(v, key, (s32)(r - v->unk_14) / v->unk_08);
 }
 
-void func_ov065_0227858c(Unk_ov065_022786bc_Vec *v, s32 i) {
+void GsArray_RemoveAt(Unk_ov065_022786bc_Vec *v, s32 i) {
     s32 last = v->unk_00 - 1;
     if (i < last) {
-        void *a = func_ov065_0227866c(v, i);
-        void *b = func_ov065_0227866c(v, i + 1);
+        void *a = GsArray_At(v, i);
+        void *b = GsArray_At(v, i + 1);
         memmove(a, b, v->unk_08 * (last - i));
     }
     v->unk_00 = v->unk_00 - 1;
 }
 
-void func_ov065_02278570(Unk_ov065_022786bc_Vec *v, s32 i) {
-    func_ov065_02278740(v, i);
-    func_ov065_0227858c(v, i);
+void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *v, s32 i) {
+    GsArray_DestroyElement(v, i);
+    GsArray_RemoveAt(v, i);
 }
 
-void func_ov065_02278550(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
-    func_ov065_02278740(v, i);
-    func_ov065_02278700(v, x, i);
+void GsArray_ReplaceAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
+    GsArray_DestroyElement(v, i);
+    GsArray_CopyTo(v, x, i);
 }
 
-void func_ov065_02278538(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278384_Cmp cmp) {
+void GsArray_Sort(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278384_Cmp cmp) {
     func_02128acc(v->unk_14, v->unk_00, v->unk_08, cmp);
 }
 
-s32 func_ov065_022784b4(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp, s32 start, s32 sorted) {
+s32 GsArray_Search(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp, s32 start, s32 sorted) {
     s32 found = 1;
     s32 n;
     u8 *r;
@@ -367,9 +367,9 @@ s32 func_ov065_022784b4(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384
         return -1;
     }
     if (sorted != 0) {
-        r = func_ov065_02278384(key, (u8 *)func_ov065_0227866c(v, start), n - start, v->unk_08, cmp, &found);
+        r = GsUtil_BinarySearch(key, (u8 *)GsArray_At(v, start), n - start, v->unk_08, cmp, &found);
     } else {
-        r = func_ov065_022783d8(key, (u8 *)func_ov065_0227866c(v, start), n - start, v->unk_08, cmp);
+        r = GsUtil_LinearSearch(key, (u8 *)GsArray_At(v, start), n - start, v->unk_08, cmp);
     }
     if (r != NULL && found != 0) {
         return (s32)(r - v->unk_14) / v->unk_08;
@@ -377,17 +377,17 @@ s32 func_ov065_022784b4(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384
     return -1;
 }
 
-void func_ov065_02278488(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
+void GsArray_ForEachBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
     for (i = v->unk_00 - 1; i >= 0; i--) {
-        cb(func_ov065_0227866c(v, i), arg);
+        cb(GsArray_At(v, i), arg);
     }
 }
 
-void *func_ov065_02278448(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
+void *GsArray_FindBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
     for (i = v->unk_00 - 1; i >= 0; i--) {
-        void *p = func_ov065_0227866c(v, i);
+        void *p = GsArray_At(v, i);
         if (cb(p, arg) == 0) {
             return p;
         }
@@ -395,14 +395,14 @@ void *func_ov065_02278448(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, v
     return NULL;
 }
 
-void func_ov065_02278420(Unk_ov065_022786bc_Vec *v) {
+void GsArray_Clear(Unk_ov065_022786bc_Vec *v) {
     s32 i;
-    for (i = func_ov065_02278684(v) - 1; i >= 0; i--) {
-        func_ov065_02278570(v, i);
+    for (i = GsArray_Count(v) - 1; i >= 0; i--) {
+        GsArray_DeleteAt(v, i);
     }
 }
 
-u8 *func_ov065_022783d8(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp) {
+u8 *GsUtil_LinearSearch(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp) {
     s32 i = 0;
     s32 off;
     if (n > 0) {
@@ -418,7 +418,7 @@ u8 *func_ov065_022783d8(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384
     return NULL;
 }
 
-u8 *func_ov065_02278384(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp, s32 *found) {
+u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384_Cmp cmp, s32 *found) {
     s32 lo = 0;
     s32 hi = n - 1;
     *found = 0;
@@ -437,14 +437,14 @@ u8 *func_ov065_02278384(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384
     return base + lo * size;
 }
 
-s32 func_ov065_02278328(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
+s32 GsSock_ResolveAddress(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
     s32 p;
     out->unk_01 = 2;
     p = (u16)port;
     out->unk_02 = (u16)(((p >> 8) & 0xff) | ((p << 8) & 0xff00));
-    out->unk_04 = func_ov065_02278bf4(a);
+    out->unk_04 = GsSock_InetAddr(a);
     if (out->unk_04 == -1) {
-        Unk_ov065_02278328_Host *h = func_ov065_02261408(a);
+        Unk_ov065_02278328_Host *h = Sock_GetHostByName(a);
         if (h == NULL) {
             return 0;
         }

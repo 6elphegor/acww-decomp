@@ -79,22 +79,22 @@ s32 strspn(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
 void *func_0212899c(void *, s32, s32);
-char *func_ov065_02279100(const char *);
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283728(char *, const char *, s32);
-s32 func_ov065_0227ced4(void *, s32, s32, s32);
-s32 func_ov065_0227cd34(void *, s32);
-s32 func_ov065_0227ce44(void *, s32);
-s32 func_ov065_0227f54c(void *, s32, s32);
-s32 func_ov065_0227f3c4(void *, s32, s32, s32, s32, s32);
-s32 func_ov065_02282f90(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 func_ov065_0227de10(void *, char *, const char *);
-s32 func_ov065_0227dde8(void *, char *, s32);
-s32 func_ov065_022818bc(void *, s32, void *);
-s32 func_ov065_02281790(void *, s32);
-s32 func_ov065_0228176c(void *);
-s32 func_ov065_02281880(void *, void *);
-void func_ov065_02277ac8(void *);
+char *GsUtil_StrDup(const char *);
+void GsGp_SetErrorString(void *, const char *);
+void GsUtil_StrCopyN(char *, const char *, s32);
+s32 GsGp_SendBuddyMessageEx(void *, s32, s32, s32);
+s32 GsGp_SendDeleteBuddy(void *, s32);
+s32 GsGp_AuthorizeBuddy(void *, s32);
+s32 GsGp_SetInfoString(void *, s32, s32);
+s32 GsGp_RequestProfileInfo(void *, s32, s32, s32, s32, s32);
+s32 GsGpSearch_ProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 GsGpBuf_AppendString(void *, char *, const char *);
+s32 GsGpBuf_AppendInt(void *, char *, s32);
+s32 GsGpProfile_Find(void *, s32, void *);
+s32 GsGpProfile_FindByBuddyIndex(void *, s32);
+s32 GsGpProfile_IsUnused(void *);
+s32 GsGpProfile_Remove(void *, void *);
+void GsUtil_Free(void *);
 }
 }
 
@@ -191,7 +191,7 @@ struct Unk_ov065_0227c538_Ctx {
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
-extern s32 data_ov065_02290fa0;
+extern s32 sGsAvailStatus;
 
 struct Unk_ov065_0227c564_Z {
     s32 x;
@@ -200,41 +200,41 @@ struct Unk_ov065_0227c564_Z {
 
 typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
 
-void func_ov065_0227e1c8(Ctx0227 **, s32);
-void func_ov065_02283460(Ctx0227 **, const char *);
-s32 func_ov065_0227ee64(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void GsGp_CloseConnection(Ctx0227 **, s32);
+void GsGp_SetErrorString(Ctx0227 **, const char *);
+s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, Unk_ov065_0227c564_Fn, s32);
-s32 func_ov065_0227e3d0(Ctx0227 **);
-void func_ov065_0227913c(s32);
-s32 func_ov065_022808dc(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
-s32 func_ov065_0227df0c(Ctx0227 **, s32);
-s32 func_ov065_02280f5c(Ctx0227 **);
-s32 func_ov065_02281b20(Ctx0227 **);
-void func_ov065_02280a2c(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void func_ov065_0228090c(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void func_ov065_0227fef0(Ctx0227 **, char **);
-s32 func_ov065_0227da7c(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 func_ov065_0227db18(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void func_ov065_02283470(Ctx0227 **, s32, const char *);
-void func_ov065_0227e160(Ctx0227 **, s32, s32);
-void func_ov065_02283720(Ctx0227 **, const char *, ...);
-void *func_ov065_02277ad8(void *, s32);
-s32 func_ov065_02283684(Ctx0227 **, char *, s32);
-s32 func_ov065_0227d040(Ctx0227 **, char *);
-s32 func_ov065_022808b4(Ctx0227 **);
-s32 func_ov065_02280854(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
-void func_ov065_022817c8(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
-s32 func_ov065_022818bc(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
-void func_ov065_0227de10(Ctx0227 **, char **, const char *);
-void func_ov065_0227dde8(Ctx0227 **, char **, s32);
-s32 func_ov065_0228176c(Unk_ov065_0227c538_Node *);
-void func_ov065_02281880(Ctx0227 **, Unk_ov065_0227c538_Node *);
-s32 func_ov065_02281a5c(Ctx0227 **);
-void func_ov065_02279138();
-void func_ov065_02279144();
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-void func_ov065_022788f0(void *);
+s32 GsGp_CheckConnected(Ctx0227 **);
+void GsUtil_Sleep(s32);
+s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
+s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
+s32 GsGpPeer_ProcessAll(Ctx0227 **);
+s32 GsGpSearch_ProcessAll(Ctx0227 **);
+void GsGp_CallFailedCallback(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void GsGp_RemoveOperation(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void GsGp_FlushInfoUpdates(Ctx0227 **, char **);
+s32 GsGp_SendBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
+s32 GsGp_RecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
+void GsGp_SetError(Ctx0227 **, s32, const char *);
+void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
+void GsGp_DebugLog(Ctx0227 **, const char *, ...);
+void *GsUtil_Realloc(void *, s32);
+s32 GsGp_CheckServerError(Ctx0227 **, char *, s32);
+s32 GsGp_ProcessBuddyMessage(Ctx0227 **, char *);
+s32 GsGp_HasBlockingOperation(Ctx0227 **);
+s32 gpiProcessOperation(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
+void GsGpProfile_FindIf(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
+s32 GsGpProfile_Find(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
+void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
+void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
+s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
+void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
+s32 GsGpProfile_InitTable(Ctx0227 **);
+void GsSock_StartupStub();
+void GsUtil_GetTimeMs();
+void GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+void GsHash_Free(void *);
 
 char *func_02129f1c(const char *, const char *);
 void memcpy(void *, const void *, s32);
@@ -244,35 +244,35 @@ s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
 void srand();
 
-s32 func_ov065_0227ca28(Ctx0227 **h);
-s32 func_ov065_0227cbdc(Ctx0227 **h);
-s32 func_ov065_0227cc1c(Ctx0227 **h, s32 a, s32 b);
-s32 func_ov065_0227c6f0(Ctx0227 **h, s32 a);
-s32 func_ov065_0227c7dc(Ctx0227 **h);
-s32 func_ov065_0227cbcc(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
-s32 func_ov065_0227ce30(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 GsGp_ResetConnection(Ctx0227 **h);
+s32 GsGp_DestroyConnection(Ctx0227 **h);
+s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
+s32 GsGp_ProcessConnection(Ctx0227 **h, s32 a);
+s32 GsGp_ProcessCmMessages(Ctx0227 **h);
+s32 GsGp_ClearProfileCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227c6c0(Ctx0227 **h, s32 a, s32 b) {
-    if (data_ov065_02290fa0 != 1) {
+s32 GsGp_Initialize(Ctx0227 **h, s32 a, s32 b) {
+    if (sGsAvailStatus != 1) {
         return 2;
     }
     if (h == NULL) {
         return 2;
     }
-    return func_ov065_0227cc1c(h, a, b);
+    return gpiInitialize(h, a, b);
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void func_ov065_0227c6a8(Ctx0227 **h) {
+void GsGp_Destroy(Ctx0227 **h) {
     if (h != NULL && *h != NULL) {
-        func_ov065_0227cbdc(h);
+        GsGp_DestroyConnection(h);
     }
 }
 }
@@ -280,7 +280,7 @@ void func_ov065_0227c6a8(Ctx0227 **h) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227c670(Ctx0227 **h) {
+s32 GsGp_Process(Ctx0227 **h) {
     Ctx0227 *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -288,20 +288,20 @@ s32 func_ov065_0227c670(Ctx0227 **h) {
     if (c->unk_108 != 0) {
         return 0;
     }
-    return func_ov065_0227c6f0(h, 0);
+    return GsGp_ProcessConnection(h, 0);
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227c624(Ctx0227 **h, s32 i, s32 x, s32 y) {
+s32 GsGp_SetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
     Ctx0227 *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (i < 0 || i >= 6) {
-        func_ov065_02283460(h, "Invalid func.");
+        GsGp_SetErrorString(h, "Invalid func.");
         return 2;
     }
     c->unk_1a4[i].unk_00 = x;
@@ -313,7 +313,7 @@ s32 func_ov065_0227c624(Ctx0227 **h, s32 i, s32 x, s32 y) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227c564(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0227c564_Fn cb, s32 e) {
+s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0227c564_Fn cb, s32 e) {
     Ctx0227 *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
@@ -325,7 +325,7 @@ s32 func_ov065_0227c564(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0
         return 2;
     }
     if (cb == NULL) {
-        func_ov065_02283460(h, "No callback.");
+        GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
     if (ctx->unk_108 != 0) {
@@ -333,7 +333,7 @@ s32 func_ov065_0227c564(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0
         cb(h, z, e);
         return 0;
     }
-    return func_ov065_0227ee64(h, "", "", "",
+    return GsGp_Connect(h, "", "", "",
                                "", a, b, 0, c, 0, d, cb, e);
 }
 }
@@ -341,14 +341,14 @@ s32 func_ov065_0227c564(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0
 
 namespace Nc {
 extern "C" {
-void func_ov065_0227c538(Ctx0227 **h) {
+void GsGp_Disconnect(Ctx0227 **h) {
     Ctx0227 *c;
     if (h != NULL) {
         c = *h;
         if (c != NULL) {
             if (c->unk_108 == 0) {
-                func_ov065_0227e1c8(h, 1);
-                func_ov065_0227ca28(h);
+                GsGp_CloseConnection(h, 1);
+                GsGp_ResetConnection(h);
             }
         }
     }
@@ -361,13 +361,13 @@ struct Unk_ov065_0227c4b0_Args {
     s32 v[4];
 };
 extern "C" {
-s32 func_ov065_0227c4b0(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, Unk_ov065_0227c400_Cb cb, void *arg) {
+s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, Unk_ov065_0227c400_Cb cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
     }
     if (cb == NULL) {
-        func_ov065_02283460(h, "No callback.");
+        GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
     if (c->unk_108 != 0) {
@@ -376,20 +376,20 @@ s32 func_ov065_0227c4b0(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s3
         cb(h, &l, arg);
         return 0;
     }
-    return func_ov065_02282f90(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
+    return GsGpSearch_ProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c400(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, Unk_ov065_0227c400_Cb cb, void *arg) {
+s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, Unk_ov065_0227c400_Cb cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL || a1 == 0) {
         return 2;
     }
     if (cb == NULL) {
-        func_ov065_02283460(h, "No callback.");
+        GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
     if (c->unk_108 != 0) {
@@ -398,17 +398,17 @@ s32 func_ov065_0227c400(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, Un
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return func_ov065_0227f3c4(h, a1, a2, a3, (s32)cb, (s32)arg);
+    return GsGp_RequestProfileInfo(h, a1, a2, a3, (s32)cb, (s32)arg);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c3b0(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
+s32 GsGp_SetInfo(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
@@ -417,17 +417,17 @@ s32 func_ov065_0227c3b0(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return func_ov065_0227f54c(h, a, b);
+    return GsGp_SetInfoString(h, a, b);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c278(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
+s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
     Unk_ov065_0227bd20_Ctx *c;
     char b[0x401];
     char *p;
@@ -438,14 +438,14 @@ s32 func_ov065_0227c278(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (s == NULL) {
-        func_ov065_02283460(h, "Invalid reason.");
+        GsGp_SetErrorString(h, "Invalid reason.");
         return 2;
     }
-    func_ov065_02283728(b, s, 0x401);
+    GsUtil_StrCopyN(b, s, 0x401);
     if (b[0] != 0) {
         p = b;
         do {
@@ -455,14 +455,14 @@ s32 func_ov065_0227c278(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
             p++;
         } while (*p != 0);
     }
-    func_ov065_0227de10(h, c->unk_1f4, "\\addbuddy\\");
-    func_ov065_0227de10(h, c->unk_1f4, "\\sesskey\\");
-    func_ov065_0227dde8(h, c->unk_1f4, c->unk_198);
-    func_ov065_0227de10(h, c->unk_1f4, "\\newprofileid\\");
-    func_ov065_0227dde8(h, c->unk_1f4, v);
-    func_ov065_0227de10(h, c->unk_1f4, "\\reason\\");
-    func_ov065_0227de10(h, c->unk_1f4, b);
-    func_ov065_0227de10(h, c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\addbuddy\\");
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_198);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\newprofileid\\");
+    GsGpBuf_AppendInt(h, c->unk_1f4, v);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\reason\\");
+    GsGpBuf_AppendString(h, c->unk_1f4, b);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
     return 0;
 }
 }
@@ -470,7 +470,7 @@ s32 func_ov065_0227c278(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c224(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 GsGp_AuthorizeBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
@@ -479,17 +479,17 @@ s32 func_ov065_0227c224(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return func_ov065_0227ce44(h, a);
+    return GsGp_AuthorizeBuddy(h, a);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c17c(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 *e;
     if (h == NULL || (c = h->unk_00) == NULL) {
@@ -499,18 +499,18 @@ s32 func_ov065_0227c17c(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    if (func_ov065_022818bc(h, a, &e) == 0) {
+    if (GsGpProfile_Find(h, a, &e) == 0) {
         return 0;
     }
     e[5]--;
     if (c->unk_100 == 0 && e[5] <= 0) {
-        func_ov065_02277ac8((void *)e[4]);
+        GsUtil_Free((void *)e[4]);
         e[4] = 0;
-        if (func_ov065_0228176c(e) != 0) {
-            func_ov065_02281880(h, e);
+        if (GsGpProfile_IsUnused(e) != 0) {
+            GsGpProfile_Remove(h, e);
         }
     }
     return 0;
@@ -520,7 +520,7 @@ s32 func_ov065_0227c17c(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c14c(Unk_ov065_0227bd20_Handle *h, s32 *out) {
+s32 GsGp_GetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
@@ -537,7 +537,7 @@ s32 func_ov065_0227c14c(Unk_ov065_0227bd20_Handle *h, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c05c(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
+s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
     Unk_ov065_0227bd20_Ctx *c;
     Unk_ov065_0227c05c_Ent *ent;
     Unk_ov065_0227c05c_Src *s;
@@ -550,29 +550,29 @@ s32 func_ov065_0227c05c(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
         return 0;
     }
     if (out == NULL) {
-        func_ov065_02283460(h, "Invalid status.");
+        GsGp_SetErrorString(h, "Invalid status.");
         return 2;
     }
     n = c->unk_430;
     if (idx < 0 || idx >= n) {
-        func_ov065_02283460(h, "Invalid index.");
+        GsGp_SetErrorString(h, "Invalid index.");
         return 2;
     }
-    ent = (Unk_ov065_0227c05c_Ent *)func_ov065_02281790(h, idx);
+    ent = (Unk_ov065_0227c05c_Ent *)GsGpProfile_FindByBuddyIndex(h, idx);
     if (ent == NULL) {
-        func_ov065_02283460(h, "Invalid index.");
+        GsGp_SetErrorString(h, "Invalid index.");
         return 2;
     }
     s = ent->unk_08;
     out->unk_000 = ent->unk_00;
     out->unk_004 = s->unk_04;
     if (s->unk_08 != NULL) {
-        func_ov065_02283728(out->unk_008, s->unk_08, 0x100);
+        GsUtil_StrCopyN(out->unk_008, s->unk_08, 0x100);
     } else {
         *s->unk_08 = 0;
     }
     if (s->unk_0c != NULL) {
-        func_ov065_02283728(out->unk_108, s->unk_0c, 0x100);
+        GsUtil_StrCopyN(out->unk_108, s->unk_0c, 0x100);
     } else {
         *s->unk_0c = 0;
     }
@@ -585,7 +585,7 @@ s32 func_ov065_0227c05c(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227c000(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
+s32 GsGp_GetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
     if (h == NULL || (c = h->unk_00) == NULL) {
@@ -595,7 +595,7 @@ s32 func_ov065_0227c000(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
         *out = 0;
         return 0;
     }
-    if (func_ov065_022818bc(h, a, &e) != 0 && e[2] != 0) {
+    if (GsGpProfile_Find(h, a, &e) != 0 && e[2] != 0) {
         *out = *e[2];
     } else {
         *out = -1;
@@ -607,7 +607,7 @@ s32 func_ov065_0227c000(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227bfb4(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 GsGp_IsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
     if (h == NULL || (c = h->unk_00) == NULL) {
@@ -616,7 +616,7 @@ s32 func_ov065_0227bfb4(Unk_ov065_0227bd20_Handle *h, s32 a) {
     if (c->unk_108 != 0) {
         return 0;
     }
-    if (func_ov065_022818bc(h, a, &e) != 0 && e[2] != 0) {
+    if (GsGpProfile_Find(h, a, &e) != 0 && e[2] != 0) {
         return 1;
     }
     return 0;
@@ -626,7 +626,7 @@ s32 func_ov065_0227bfb4(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227bf5c(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 GsGp_DeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
@@ -635,10 +635,10 @@ s32 func_ov065_0227bf5c(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    if (func_ov065_0227cd34(h, a) == 0) {
+    if (GsGp_SendDeleteBuddy(h, a) == 0) {
         return 0;
     }
 }
@@ -647,7 +647,7 @@ s32 func_ov065_0227bf5c(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char *s2) {
+s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char *s2) {
     Unk_ov065_0227bd20_Ctx *c;
     char b1[0x100];
     char b2[0x100];
@@ -659,18 +659,18 @@ s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, con
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (s1 == NULL) {
-        func_ov065_02283460(h, "Invalid statusString.");
+        GsGp_SetErrorString(h, "Invalid statusString.");
         return 2;
     }
     if (s2 == NULL) {
-        func_ov065_02283460(h, "Invalid locationString.");
+        GsGp_SetErrorString(h, "Invalid locationString.");
         return 2;
     }
-    func_ov065_02283728(b1, s1, 0x100);
+    GsUtil_StrCopyN(b1, s1, 0x100);
     if (b1[0] != 0) {
         p = b1;
         do {
@@ -680,7 +680,7 @@ s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, con
             p++;
         } while (*p != 0);
     }
-    func_ov065_02283728(b2, s2, 0x100);
+    GsUtil_StrCopyN(b2, s2, 0x100);
     if (b2[0] != 0) {
         p = b2;
         do {
@@ -694,17 +694,17 @@ s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, con
         return 0;
     }
     c->unk_214 = v;
-    func_ov065_02283728(c->unk_218, b1, 0x100);
-    func_ov065_02283728(c->unk_318, b2, 0x100);
-    func_ov065_0227de10(h, c->unk_1f4, "\\status\\");
-    func_ov065_0227dde8(h, c->unk_1f4, v);
-    func_ov065_0227de10(h, c->unk_1f4, "\\sesskey\\");
-    func_ov065_0227dde8(h, c->unk_1f4, c->unk_198);
-    func_ov065_0227de10(h, c->unk_1f4, "\\statstring\\");
-    func_ov065_0227de10(h, c->unk_1f4, b1);
-    func_ov065_0227de10(h, c->unk_1f4, "\\locstring\\");
-    func_ov065_0227de10(h, c->unk_1f4, b2);
-    func_ov065_0227de10(h, c->unk_1f4, "\\final\\");
+    GsUtil_StrCopyN(c->unk_218, b1, 0x100);
+    GsUtil_StrCopyN(c->unk_318, b2, 0x100);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\status\\");
+    GsGpBuf_AppendInt(h, c->unk_1f4, v);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_198);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\statstring\\");
+    GsGpBuf_AppendString(h, c->unk_1f4, b1);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\locstring\\");
+    GsGpBuf_AppendString(h, c->unk_1f4, b2);
+    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
     return 0;
 }
 }
@@ -712,7 +712,7 @@ s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, con
 
 namespace Nb {
 extern "C" {
-s32 func_ov065_0227bd20(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
+s32 GsGp_SendBuddyMessage(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->unk_00) == NULL) {
         return 2;
@@ -721,27 +721,27 @@ s32 func_ov065_0227bd20(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
         return 0;
     }
     if (c->unk_1d8 == 4) {
-        func_ov065_02283460(h, "The connection has already been disconnected.");
+        GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (b == 0) {
-        func_ov065_02283460(h, "Invalid message.");
+        GsGp_SetErrorString(h, "Invalid message.");
         return 2;
     }
-    return func_ov065_0227ced4(h, a, 1, b);
+    return GsGp_SendBuddyMessageEx(h, a, 1, b);
 }
 }
 }
 
-// Not in the original binary: unreferenced weak function compiled right after func_ov065_0227bd20, so that the four
+// Not in the original binary: unreferenced weak function compiled right after GsGp_SendBuddyMessage, so that the four
 // shared literals are pooled first as in the original; removed by the dead-stripping link (see notes.txt).
 namespace Nb {
 extern "C" {
 __declspec(weak) void Unk_ov065_0227bd20_pool_order(void) {
-    func_ov065_02283460(0, "The connection has already been disconnected.");
-    func_ov065_02283460(0, "\\sesskey\\");
-    func_ov065_02283460(0, "\\final\\");
-    func_ov065_02283460(0, "No callback.");
+    GsGp_SetErrorString(0, "The connection has already been disconnected.");
+    GsGp_SetErrorString(0, "\\sesskey\\");
+    GsGp_SetErrorString(0, "\\final\\");
+    GsGp_SetErrorString(0, "No callback.");
 }
 }
 }

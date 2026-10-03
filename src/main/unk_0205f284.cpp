@@ -140,7 +140,7 @@ s32 func_0205bcb4();
 s32 func_0205bcd0();
 void NetBuf_WriteU16(void *p, s32 v);
 void CommRecord_PackSource(void *p, s32 a, u8 b);
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);

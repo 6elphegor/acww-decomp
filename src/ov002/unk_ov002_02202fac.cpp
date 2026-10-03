@@ -100,7 +100,7 @@ void Gfx2d_LoadScreenFile(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
-s32 func_0206e61c();
+s32 MenuCtrl_IsForceCloseDue();
 
 extern void *data_021c6210;
 extern void *gCurrentHeap;
@@ -1056,7 +1056,7 @@ BOOL MenuErrorMessage::update(s32 a) {
         break;
     case 1:
         if (unk_105 != 0) for (;;) {}
-        if (a == 0 || !func_0206e61c()) {
+        if (a == 0 || !MenuCtrl_IsForceCloseDue()) {
             BOOL k;
             if (gTouchHeld != 0 && gTouchChanged != 0) k = TRUE; else k = FALSE;
             if (!k) {

@@ -18,8 +18,8 @@ void func_02063968(Unk_020030d8 *p, Unk_020030d8 *other);
 void func_0206397c(Unk_020030d8 *p, Unk_020030d8 *other);
 void func_020118d4(u32 a);
 void func_020118e4(u32 v);
-BOOL func_0206edb0();
-s32 func_0206edbc();
+BOOL MenuCtrl_IsTransitionActive();
+s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 Net_GetMode();
 s32 Net_GetLinkLevel();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -266,8 +266,8 @@ BOOL Unk_02003574::func_02003648() {
 }
 
 void Unk_02003574::func_020035e8() {
-    BOOL a = func_0206edb0() ? TRUE : FALSE;
-    s32 b = func_0206edbc();
+    BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
+    s32 b = MenuCtrl_GetTransitionProgressOrFull();
     if (unk_10 > 0) {
         unk_10--;
     }
@@ -410,8 +410,8 @@ BOOL Unk_020d5e0c::func_020032e8() {
 }
 
 void Unk_020d5e0c::func_0200326c() {
-    BOOL a = func_0206edb0() ? TRUE : FALSE;
-    s32 b = func_0206edbc();
+    BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
+    s32 b = MenuCtrl_GetTransitionProgressOrFull();
     if (unk_2c > 0) {
         unk_2c--;
         if (unk_2c == 0) {

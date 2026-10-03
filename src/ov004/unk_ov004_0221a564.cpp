@@ -167,8 +167,8 @@ void TalkWindowState_openChoices(void *, s32);
 s32 TalkWindowState_setNextMessage(void *, void *, const void *);
 void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, const void *, s32, const void *);
-s32 func_0206ea84(void *);
-s32 func_0206ead4(s32, u32);
+s32 MenuCtrl_BuildPocketMask(void *);
+s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_EndTalkWith(void *);
 void *func_02095204(u32);
 s32 Unk_020d77a4_getAngleTo(void *, void *);
@@ -192,9 +192,9 @@ s32 Snd_PlaySe(s32);
 BOOL SickVillager_IsMedicine(u16 *p, s32 x);
 BOOL SickVillager_HasCurrentVisitor(void *o);
 void SickVillager_SetCurrentVisitor();
-s32 func_0206ec6c();
-s32 func_0206ed18();
-s32 func_0206ed38();
+s32 MenuCtrl_IsFinished();
+s32 MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 s32 func_02099064();
 void func_02014ce4(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
@@ -780,14 +780,14 @@ void SickVillagerTalk::vfunc_80() {
     u8 buf[4];
     SickVillager *o = unk_1a4;
     if (o->unk_898 == 6) {
-        if (func_0206ec6c()) {
-            if (func_0206ed18() == 0) {
+        if (MenuCtrl_IsFinished()) {
+            if (MenuCtrl_IsResultOk() == 0) {
                 ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
                 buf[0] = func_02063b8c(3) + 13;
                 TalkWindowState_setNextMessage(unk_3c, buf, 0);
                 unk_1a4->changeAct(4);
             } else {
-                func_0206ed38();
+                MenuCtrl_GetIndex();
                 func_02099064();
                 buf[1] = func_02063b8c(3) + 16;
                 TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
@@ -898,7 +898,7 @@ s32 SickVillagerTalk::vfunc_18() {
     if (unk_1a4->unk_894 == 0) {
         switch (t) {
         case 0:
-            if (func_0206ea84((void *)SickVillager_IsMedicine) != 0) {
+            if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
                 buf[0] = func_02063b8c(3) + 7;
                 TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[0], data_ov004_02250984);
             } else {
@@ -1119,7 +1119,7 @@ BOOL SickVillager::setupAct05() {
 void SickVillager::mainAct05() {
     Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)unk_89c.unk_3c;
     if (m->unk_04 == 5) {
-        if (func_0206ead4(func_0206ea84((void *)SickVillager_IsMedicine), 0xd) != 0) {
+        if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);
         }
     }

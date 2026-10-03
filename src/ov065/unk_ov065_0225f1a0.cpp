@@ -42,85 +42,85 @@ struct Unk_ov065_0225f634_Params {
 };
 
 extern "C" {
-extern Unk_ov065_0225f1cc_Cfg *data_ov065_0228e9a0;
-extern u32 data_ov065_0228e9a4;
-extern u32 data_ov065_0228e9a8;
-extern u32 data_ov065_0228e9ac;
-extern void *data_ov065_0228e9b0;
-extern Unk_ov065_0225f210_G data_ov065_0228e9b4;
+extern Unk_ov065_0225f1cc_Cfg *sSockCoreConfig;
+extern u32 sSockYieldMode;
+extern u32 sSockLastHostIp;
+extern u32 sSockCoreState;
+extern void *sSockDefaultSocket;
+extern Unk_ov065_0225f210_G sIpStackParams;
 
 // other TUs of this overlay
-extern u32 data_ov065_0228ebd8;
-extern u32 data_ov065_0228eba4;
-extern u32 data_ov065_0228ebc0;
-extern u32 data_ov065_0228ebfc[2];
-extern Unk_ov065_0225f634_Params data_ov065_0228b3dc;
-extern Unk_ov065_0225f634_Params data_ov065_0228b3f4;
+extern u32 gOwnIp;
+extern u32 sNetmask;
+extern u32 sGateway;
+extern u32 sDnsServers[2];
+extern Unk_ov065_0225f634_Params sSockTcpParams;
+extern Unk_ov065_0225f634_Params sSockSendOnlyParams;
 
 // main module
 void func_02000b44(u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 
-s32 func_ov065_0226abb0(void);
-void func_ov065_0226498c(s32);
-void func_ov065_0226ab40(void *);
-void func_ov065_022649fc(void *);
-void func_ov065_02264a48(void *);
-void func_ov065_0226459c(void);
-void func_ov065_022608a4(void);
-s32 func_ov065_0225f560(s32);
-s32 func_ov065_0225f84c(Unk_ov065_0225f634_Params *);
+s32 WifiLink_GetConnectedBssid(void);
+void IpStack_SetThreadPriority(s32);
+void WifiLink_SetRecvCallback(void *);
+void IpStack_SetIdleCallback(void *);
+void IpStack_Init(void *);
+void Eth_OnFrameReceived(void);
+void SockCore_FreeClosedSockets(void);
+s32 SockCore_CreateMsgPool(s32);
+s32 SockCore_Create(Unk_ov065_0225f634_Params *);
 
-BOOL func_ov065_0225f1a0(void);
-void func_ov065_0225f1bc(void);
-void func_ov065_0225f1cc(void);
-void func_ov065_0225f210(void);
-s32 func_ov065_0225f314(void);
-s32 func_ov065_0225f344(Unk_ov065_0225f1cc_Cfg *);
+BOOL SockCore_IsLinkUp(void);
+void SockCore_OnDhcpAddressReady(void);
+void SockCore_OnStaticAddressReady(void);
+void SockCore_SetupStackConfig(void);
+s32 SockCore_CreateMsgPoolAndDefaultSocket(void);
+s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *);
 }
 
 extern "C" {
-void *data_ov065_0228e9b0;
-u32 data_ov065_0228e9ac;
-u32 data_ov065_0228e9a8;
-u32 data_ov065_0228e9a4;
-Unk_ov065_0225f1cc_Cfg *data_ov065_0228e9a0;
-Unk_ov065_0225f210_G data_ov065_0228e9b4;
+void *sSockDefaultSocket;
+u32 sSockCoreState;
+u32 sSockLastHostIp;
+u32 sSockYieldMode;
+Unk_ov065_0225f1cc_Cfg *sSockCoreConfig;
+Unk_ov065_0225f210_G sIpStackParams;
 
-s32 func_ov065_0225f344(Unk_ov065_0225f1cc_Cfg *cfg)
+s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *cfg)
 {
     func_02000b44(0x2000bd4);
-    if (data_ov065_0228e9a0 != NULL) {
+    if (sSockCoreConfig != NULL) {
         return 0;
     }
-    data_ov065_0228e9a0 = cfg;
-    func_ov065_0225f210();
-    return func_ov065_0225f314();
+    sSockCoreConfig = cfg;
+    SockCore_SetupStackConfig();
+    return SockCore_CreateMsgPoolAndDefaultSocket();
 }
 
-s32 func_ov065_0225f314(void)
+s32 SockCore_CreateMsgPoolAndDefaultSocket(void)
 {
-    s32 r = func_ov065_0225f560(data_ov065_0228e9a0->unk_20);
+    s32 r = SockCore_CreateMsgPool(sSockCoreConfig->unk_20);
     if (r >= 0) {
-        data_ov065_0228e9b0 = (void *)func_ov065_0225f84c(&data_ov065_0228b3f4);
+        sSockDefaultSocket = (void *)SockCore_Create(&sSockSendOnlyParams);
     }
     return r;
 }
 
-void func_ov065_0225f210(void)
+void SockCore_SetupStackConfig(void)
 {
-    Unk_ov065_0225f210_G *g = &data_ov065_0228e9b4;
-    Unk_ov065_0225f1cc_Cfg *c = data_ov065_0228e9a0;
+    Unk_ov065_0225f210_G *g = &sIpStackParams;
+    Unk_ov065_0225f1cc_Cfg *c = sSockCoreConfig;
     s32 a;
     s32 b;
     MI_CpuFill8(g, 0, 0x30);
     g->unk_04 = (void *)c->unk_18;
     g->unk_08 = (void *)c->unk_1c;
-    g->unk_10 = (void *)func_ov065_0225f1a0;
+    g->unk_10 = (void *)SockCore_IsLinkUp;
     g->unk_14 = 0;
     g->unk_18 = 0;
-    g->unk_2c = data_ov065_0228e9a4;
+    g->unk_2c = sSockYieldMode;
     if (c->unk_24 != 0) {
         g->unk_20 = c->unk_24;
     } else {
@@ -129,7 +129,7 @@ void func_ov065_0225f210(void)
     if (c->unk_28 != 0) {
         g->unk_1c = (void *)c->unk_28;
     } else {
-        g->unk_1c = data_ov065_0228e9a0->unk_18(g->unk_20);
+        g->unk_1c = sSockCoreConfig->unk_18(g->unk_20);
     }
     a = c->unk_30;
     if (a == 0) {
@@ -140,50 +140,50 @@ void func_ov065_0225f210(void)
         b = 0x10c0;
     }
     g->unk_24 = a - 0x28;
-    data_ov065_0228b3dc.unk_02 = b;
-    data_ov065_0228b3dc.unk_04 = _s32_div_f(b, 2);
-    data_ov065_0228ebd8 = 0;
+    sSockTcpParams.unk_02 = b;
+    sSockTcpParams.unk_04 = _s32_div_f(b, 2);
+    gOwnIp = 0;
     if (c->unk_00 != 0) {
-        data_ov065_0228e9ac = 1;
+        sSockCoreState = 1;
         g->unk_00 = 0;
-        g->unk_0c = (void *)func_ov065_0225f1bc;
-        g->unk_28 = data_ov065_0228e9a8;
+        g->unk_0c = (void *)SockCore_OnDhcpAddressReady;
+        g->unk_28 = sSockLastHostIp;
     } else {
-        data_ov065_0228e9ac = 0;
+        sSockCoreState = 0;
         g->unk_00 = 1;
-        g->unk_0c = (void *)func_ov065_0225f1cc;
+        g->unk_0c = (void *)SockCore_OnStaticAddressReady;
     }
     {
         s32 t = c->unk_2c;
         if (t == 0) {
             t = 0xb;
         }
-        func_ov065_0226498c(t);
+        IpStack_SetThreadPriority(t);
     }
-    func_ov065_0226ab40((void *)func_ov065_0226459c);
-    func_ov065_022649fc((void *)func_ov065_022608a4);
-    func_ov065_02264a48(g);
+    WifiLink_SetRecvCallback((void *)Eth_OnFrameReceived);
+    IpStack_SetIdleCallback((void *)SockCore_FreeClosedSockets);
+    IpStack_Init(g);
 }
 
-void func_ov065_0225f1cc(void)
+void SockCore_OnStaticAddressReady(void)
 {
-    Unk_ov065_0225f1cc_Cfg *c = data_ov065_0228e9a0;
-    data_ov065_0228ebd8 = c->unk_04;
-    data_ov065_0228eba4 = c->unk_08;
-    data_ov065_0228ebc0 = c->unk_0c;
-    data_ov065_0228ebfc[0] = c->unk_10;
-    data_ov065_0228ebfc[1] = c->unk_14;
-    data_ov065_0228e9ac |= 2;
+    Unk_ov065_0225f1cc_Cfg *c = sSockCoreConfig;
+    gOwnIp = c->unk_04;
+    sNetmask = c->unk_08;
+    sGateway = c->unk_0c;
+    sDnsServers[0] = c->unk_10;
+    sDnsServers[1] = c->unk_14;
+    sSockCoreState |= 2;
 }
 
-void func_ov065_0225f1bc(void)
+void SockCore_OnDhcpAddressReady(void)
 {
-    data_ov065_0228e9ac |= 2;
+    sSockCoreState |= 2;
 }
 
-BOOL func_ov065_0225f1a0(void)
+BOOL SockCore_IsLinkUp(void)
 {
-    if (func_ov065_0226abb0()) {
+    if (WifiLink_GetConnectedBssid()) {
         return TRUE;
     }
     return FALSE;

@@ -145,11 +145,11 @@ BOOL func_020a78a4(void *dst, const void *src, s32 n);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(u32 a);
 s32 func_02133150(s32 a, s32 b);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(Unk_020e0488 *w, s32 a);
 void func_0206f994(Unk_020e0488 *dst, const void *s, s32 len);
-void func_0206ecf8(s32 a);
-void func_0206ed2c(u32 v);
+void MenuCtrl_SetResult(s32 a);
+void MenuCtrl_SetIndex(u32 v);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 u8 *Net_GetWifiFriendList();
@@ -743,8 +743,8 @@ void WfcFriendListMenu::loadBgGraphics() {
     MIi_CpuCopy16(unk_138a, unk_13aa, 0x20);
     Gfx2d_LoadScreenFile("menu/wfc/a_bg.bsc", p, 6);
     File_LoadToBuffer("menu/wfc/b_bg.bsc", unk_38a, 0x800);
-    func_0206ee80(unk_38a, 5, 7, 0xe, 0x14, 7);
-    func_0206ee80(unk_38a, 0x10, 7, 0x17, 0x14, 7);
+    BgScreen_SetRectPalette(unk_38a, 5, 7, 0xe, 0x14, 7);
+    BgScreen_SetRectPalette(unk_38a, 0x10, 7, 0x17, 0x14, 7);
 }
 
 void WfcFriendListMenu::loadObjGraphics() {
@@ -912,8 +912,8 @@ void WfcFriendListMenu::enterInputMode() {
 }
 
 void WfcFriendListMenu::decideConfirm() {
-    func_0206ecf8(1);
-    func_0206ed2c(unk_bb);
+    MenuCtrl_SetResult(1);
+    MenuCtrl_SetIndex(unk_bb);
     unk_b0 = 10;
     setFlags(0x40);
     unk_ba = 5;
@@ -923,7 +923,7 @@ void WfcFriendListMenu::decideConfirm() {
 }
 
 void WfcFriendListMenu::decideQuit() {
-    func_0206ecf8(0);
+    MenuCtrl_SetResult(0);
     unk_b1 = 10;
     unk_ba = 5;
     setTransitionState(2);

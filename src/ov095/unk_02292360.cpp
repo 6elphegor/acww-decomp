@@ -73,8 +73,8 @@ s32 func_02051370(u32 c);
 s32 File_LoadToBuffer(void *name, void *buf, s32 size);
 s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
-s32 func_0206e694(s32 a);
-s32 func_0206e6b8(void);
+s32 MenuCtrl_GetKeyboardPageMode(s32 a);
+s32 MenuCtrl_GetKeyboardPage(void);
 s32 func_0206f9fc(void *a, s32 b);
 s32 _ZN12Unk_020e048813func_0206fab4Eii(void *a, s32 b, s32 c);
 s32 _ZN12Unk_020e048813func_0206fb48Ejjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -95,8 +95,8 @@ void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void Snd_PlayKeySe(u32 a);
 void Snd_SetKeySeMode(s32 a);
 void Snd_PlaySe(s32 a);
-void func_0206e688(s32 a, s32 b);
-void func_0206e6ac(s32 a);
+void MenuCtrl_SetKeyboardPageMode(s32 a, s32 b);
+void MenuCtrl_SetKeyboardPage(s32 a);
 void _ZN12Unk_020e048813func_0206fc44Ev(void *a);
 void _ZN10PlayerData11getPlayerIdEv(void);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
@@ -1111,8 +1111,8 @@ s32 Keyboard_GetKeyCode(Keyboard *s, s32 a, u32 b)
 
 void Keyboard_RestoreLastPage(Keyboard *s, s32 a)
 {
-    s->unk_02 = func_0206e6b8();
-    Keyboard_SetMode(s, func_0206e694(s->unk_02), a, 0);
+    s->unk_02 = MenuCtrl_GetKeyboardPage();
+    Keyboard_SetMode(s, MenuCtrl_GetKeyboardPageMode(s->unk_02), a, 0);
 }
 
 void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
@@ -1120,12 +1120,12 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     s32 g;
     s32 h;
     if (mode == 8) {
-        mode = func_0206e694(s->unk_02);
+        mode = MenuCtrl_GetKeyboardPageMode(s->unk_02);
     }
     if (mode == 3 && Keyboard_TestFlags(s, 0x20) != 0) {
-        func_0206e688(s->unk_02, 2);
+        MenuCtrl_SetKeyboardPageMode(s->unk_02, 2);
     } else {
-        func_0206e688(s->unk_02, mode);
+        MenuCtrl_SetKeyboardPageMode(s->unk_02, mode);
     }
     g = gCurrentHeap;
     if (c == 0) {
@@ -1287,7 +1287,7 @@ void Keyboard_Shutdown(Keyboard *s)
     _ZN10BgVramTask6cancelEv((u8 *)s + 0x2318);
     _ZN12Unk_020e048813func_0206fc44Ev((u8 *)s + 0x233c);
     _ZN12Unk_020e048813func_0206fc44Ev((u8 *)s + 0x237c);
-    func_0206e6ac(s->unk_02);
+    MenuCtrl_SetKeyboardPage(s->unk_02);
 }
 
 void Keyboard_SetAltWriteLayout(Keyboard *s)

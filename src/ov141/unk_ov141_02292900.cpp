@@ -34,12 +34,12 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void File_LoadToBuffer(void *a, void *b, u32 c);
-void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206ecf8(s32 a);
-void *func_0206e868();
-void *func_0206e85c();
-void func_0206e874();
+void MenuCtrl_SetResult(s32 a);
+void *MenuCtrl_GetPtrArg0();
+void *MenuCtrl_GetPtrArg1();
+void MenuCtrl_ClearPtrArgs();
 void Oam_DrawCell(u32 a, s32 h, s32 x, u32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
@@ -364,19 +364,19 @@ BOOL NearbyTownsMenu::execPhase4() { return TRUE; }
 
 BOOL NearbyTownsMenu::execClosed() {
     if (testFlags(2)) {
-        func_0206ecf8(0);
+        MenuCtrl_SetResult(0);
     } else {
-        func_0206ecf8(1);
-        void *s = func_0206e868();
+        MenuCtrl_SetResult(1);
+        void *s = MenuCtrl_GetPtrArg0();
         if (s) {
             MI_CpuCopy8(unk_8a4[unk_e54], s, 0xe0);
         }
-        s = func_0206e85c();
+        s = MenuCtrl_GetPtrArg1();
         if (s) {
             MI_CpuCopy8(unk_de4[unk_e54], s, 0x11);
         }
     }
-    func_0206e874();
+    MenuCtrl_ClearPtrArgs();
     ProcBase_RequestDelete(this);
     return TRUE;
 }
@@ -480,8 +480,8 @@ void NearbyTownsMenu::loadBgGfx() {
     unk_94.loadBgGfx();
     unk_94.clearAllRows();
     File_LoadToBuffer((void *)"menu/res/b0_bg.bsc", unk_e60, 0x800);
-    func_0206ee80(unk_e60, 7, 8, 0x10, 0x13, 7);
-    func_0206ee80(unk_e60, 0x12, 8, 0x19, 0x13, 7);
+    BgScreen_SetRectPalette(unk_e60, 7, 8, 0x10, 0x13, 7);
+    BgScreen_SetRectPalette(unk_e60, 0x12, 8, 0x19, 0x13, 7);
     setFlags(4);
     Gfx2d_LoadPaletteFile((void *)"menu/res/ten0.bpl", gCurrentHeap, 6, 3, 3, 3);
 }

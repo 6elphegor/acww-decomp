@@ -64,7 +64,7 @@
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
 #define SaveData_testFlag _ZN8SaveData8testFlagEj
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
+#define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 #define data_0213a740 __ptmf_null
 
 struct Unk_0201bc1c;
@@ -722,11 +722,11 @@ s32 func_02063b8c(s32 a);
 void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
 void TalkWindowState_setSlot(void *self, s32 id, void *buf);
 void TalkWindowState_setNextMessage(void *o, void *p, void *q);
-s32 func_0206e72c();
-void func_0206eb38(s32 v);
-u16 *func_0206eb9c();
-BOOL func_0206ed18();
-s32 func_0206ed38();
+s32 MenuCtrl_GetCatalogItem();
+void MenuCtrl_ReturnChosenItems(s32 v);
+u16 *MenuCtrl_GetChosenItems();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 void func_02071e74(void *self);
 BOOL CommManager_isOnline(void *g);
 void func_020787b0();
@@ -745,7 +745,7 @@ u8 *func_02087c7c(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
 void *func_020947f0(s32 a);
-void PlayerActor_RequestAct6F(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 BOOL func_020951b8(s32 a);
 void *func_02095204(s32 a);
@@ -797,20 +797,20 @@ s32 DateTime_IsInvalid();
 void SaveData_clearFlag(void *g, s32 a);
 void SaveData_setFlag(void *g, s32 a);
 BOOL SaveData_testFlag(void *g, s32 a);
-s32 func_020a62a0();
+s32 NetArea_IsLocalOwner();
 s32 ChoiceList_getResult();
-void func_020ac948(void *p);
-s32 func_020aca18();
-s32 func_020aca44();
-void func_020aca4c(void *a, void *b, void *c, void *d);
-void func_020acb28(void *p);
-s32 func_020ae02c(void *g);
-BOOL func_020ae8fc(void *g);
-u32 func_020aea38(void *g);
-void *func_020aeac4(void *g);
+void NookShop_SendCatalogOrder(void *p);
+s32 NookShop_CanTakeCatalogOrder();
+s32 NookShop_IsPurchaseSynced();
+void NookShop_BuyAt(void *a, void *b, void *c, void *d);
+void NookShop_RecordBuyback(void *p);
+s32 NookShop_GetLevel(void *g);
+BOOL NookShop_IsClosedTomorrow(void *g);
+u32 NookShop_GetClosedDate(void *g);
+void *NookShop_GetRenovation(void *g);
 BOOL func_020aeac8(void *g);
-BOOL func_020aeb14(void *g);
-BOOL func_020aeb80(void *g);
+BOOL NookShop_IsPointSpecialToday(void *g);
+BOOL NookShop_IsSaleTime(void *g);
 s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 void *func_020b50b4();
@@ -826,11 +826,11 @@ s32 func_020e972c(Unk_ov050_0225cd90_Vec *a, void *b);
 void func_020e9960(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
 s32 func_0212a438(const char *s);
-void *func_ov004_022355d8(void *self, s32 a, s32 b, s32 c);
-void *func_ov004_02235718();
-u16 *func_ov004_0223ed40(s32 a, s32 b);
-void func_ov004_0223fcb4();
-void func_ov004_0223fcd4();
+void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
+void *FtrActorGrid_GetInstance();
+u16 *ShopStock_GetItemAt(s32 a, s32 b);
+void Camera_SetMode12();
+void Camera_SetMode11();
 BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
 s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self);
 BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
@@ -1121,7 +1121,7 @@ BOOL SpNpcNookShop::vfunc_00() {
     }
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
         unk_4cc.unk_1c |= 2;
-        if (func_020a62a0()) {
+        if (NetArea_IsLocalOwner()) {
             func_02086f80(func_02085184(func_020850e0()));
             if (DateTime_IsInvalid()) {
                 func_02086f68(func_02085184(func_020850e0()));
@@ -1429,7 +1429,7 @@ BOOL SpNpcNookShop::mainAct04() {
     if (func_02014220(&unk_618)) {
         return TRUE;
     }
-    if (unk_738 && func_020aca44() == 0) {
+    if (unk_738 && NookShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
     if (func_020851bc(func_020850e0(), 5)) {
@@ -1560,7 +1560,7 @@ BOOL SpNpcNookShop::mainAct11() {
         v2.x = gx;
         v2.y = gy;
         v2.z = gz;
-        PlayerActor_RequestAct6F(&v2, 0x266, 4);
+        PlayerActor_RequestWalkTo(&v2, 0x266, 4);
         unk_651 = 2;
         break;
     }
@@ -1625,7 +1625,7 @@ BOOL SpNpcNookShop::mainAct08() {
                 }
             }
             changeAct(4);
-        } else if (func_020a62a0() && b == 4) {
+        } else if (NetArea_IsLocalOwner() && b == 4) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             changeAct(0xd);
         }
@@ -1641,7 +1641,7 @@ BOOL SpNpcNookShop::mainAct09() {
     if (func_0201ba88()) {
         s32 a = 4;
         s32 b = 4;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && a == 4 && func_020a62a0()) {
+        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             func_0201b9fc(1, gCommManager->unk_64, 4);
             changeAct(0xd);
         }
@@ -2228,8 +2228,8 @@ void SpNpcNookShopTalk::handleSellMenu() {
     l.cmd = 8;
     unk_c0 = 0;
     unk_bc = 0;
-    if (func_0206ed18()) {
-        u16 *list = func_0206eb9c();
+    if (MenuCtrl_IsResultOk()) {
+        u16 *list = MenuCtrl_GetChosenItems();
         BOOL b1 = FALSE;
         BOOL b2 = FALSE;
         BOOL b3 = FALSE;
@@ -2309,8 +2309,8 @@ void SpNpcNookShopTalk::handleCatalogMenu() {
     void *o = unk_3c;
     Unk_ov050_0225c0a0_Msg m;
     m.unk_00 = 0x1b;
-    if (func_0206ed18() == 1) {
-        unk_b0->unk_72e = func_0206e72c();
+    if (MenuCtrl_IsResultOk() == 1) {
+        unk_b0->unk_72e = MenuCtrl_GetCatalogItem();
         u16 *p = &unk_b0->unk_72e;
         if (!Unk_ov050_0225bd54_Same(p, &m.unk_02, 0xfff1)) {
             unk_c0 = (s32)Item_GetMemberPrice(&unk_b0->unk_72e);
@@ -2343,10 +2343,10 @@ void SpNpcNookShopTalk::handleDeliveryMenu() {
     void *o = unk_3c;
     Unk_ov050_0225c0a0_Msg m;
     m.unk_00 = 4;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         void *r7 = PlayerData_GetCurrent();
         if (func_0202e148()) {
-            s32 r6 = func_0206ed38();
+            s32 r6 = MenuCtrl_GetIndex();
             m.unk_02 = func_02099048(r6);
             if (r6 >= 0) {
                 func_02099064(r6);
@@ -3104,21 +3104,21 @@ void SpNpcNookShopTalk::vfunc_78(Unk_ov050_0225a888_Out *out) {
         if (unk_ac == 0) {
             out->unk_00 = sSpNpcNookShopKey;
             if (func_02098044(h, 0x26) == 0) {
-                v = *(Unk_ov050_0225a888_Bytes *)func_020aeac4(data_021ed104);
+                v = *(Unk_ov050_0225a888_Bytes *)NookShop_GetRenovation(data_021ed104);
                 Clock_GetDate(&o1);
                 out->unk_04 = 0;
                 if (v.b[3] == 0) {
                     s32 r = Date_DaysBetween(&o1, &v);
                     if (unk_b0->unk_08 == 0xd01a && func_02098044(h, 0x24) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                        out->unk_04 = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    if (unk_b0->unk_08 == 0xd01b && func_020ae02c(data_021ed104) == 2 && func_02098044(h, 0x25) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                    if (unk_b0->unk_08 == 0xd01b && NookShop_GetLevel(data_021ed104) == 2 && func_02098044(h, 0x25) == 0 && r == 0) {
+                        out->unk_04 = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    if (unk_b0->unk_08 == 0xd01c && func_020ae02c(data_021ed104) == 3 && func_02098044(h, 0x26) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                    if (unk_b0->unk_08 == 0xd01c && NookShop_GetLevel(data_021ed104) == 3 && func_02098044(h, 0x26) == 0 && r == 0) {
+                        out->unk_04 = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    switch (func_020ae02c(data_021ed104)) {
+                    switch (NookShop_GetLevel(data_021ed104)) {
                     case 3:
                         func_0209801c(h, 0x26);
                     case 2:
@@ -3150,8 +3150,8 @@ void SpNpcNookShopTalk::vfunc_78(Unk_ov050_0225a888_Out *out) {
                 }
             }
             if (func_0202e1cc(0, 0) == 0) {
-                if (func_020ae8fc(data_021ed104)) {
-                    u32 t = func_020aea38(data_021ed104);
+                if (NookShop_IsClosedTomorrow(data_021ed104)) {
+                    u32 t = NookShop_GetClosedDate(data_021ed104);
                     s.b[0] = t;
                     t = (u32)(t >> 8);
                     s.b[1] = t;
@@ -3169,13 +3169,13 @@ void SpNpcNookShopTalk::vfunc_78(Unk_ov050_0225a888_Out *out) {
             }
         }
         if (flag == 0) {
-            if (func_020aeb14(data_021ed104)) {
+            if (NookShop_IsPointSpecialToday(data_021ed104)) {
                 if (unk_ac == 0) {
                     setTopic(2);
                 } else {
                     setTopic(0x1a);
                 }
-            } else if (func_020aeb80(data_021ed104)) {
+            } else if (NookShop_IsSaleTime(data_021ed104)) {
                 if (unk_ac == 0) {
                     setTopic(3);
                 } else {
@@ -3669,7 +3669,7 @@ void SpNpcNookShopTalk::onMainMenuChoice(s32 p) {
     case 1:
         if (func_0202e148() == 0) {
             unk_cc = 0x59;
-        } else if (func_020aca18() != 0) {
+        } else if (NookShop_CanTakeCatalogOrder() != 0) {
             unk_cc = 0x18;
         } else {
             unk_cc = 0x17;
@@ -3702,7 +3702,7 @@ void SpNpcNookShopTalk::onDeliveryChoice(s32 p) {
 
 void SpNpcNookShopTalk::onCannotBuyChoice(s32 p) {
     if (p != 0) {
-        func_0206eb38(0);
+        MenuCtrl_ReturnChosenItems(0);
     }
 }
 
@@ -3713,7 +3713,7 @@ void SpNpcNookShopTalk::onCatalogOrderChoice(s32 p) {
             unk_cc = 0x1c;
             u16 *q = &unk_b0->unk_72e;
             if (!Unk_ov050_02259bb8_Match(q)) {
-                func_020ac948(&unk_b0->unk_72e);
+                NookShop_SendCatalogOrder(&unk_b0->unk_72e);
             }
         } else {
             unk_cc = 0x1d;
@@ -3775,10 +3775,10 @@ void SpNpcNookShopTalk::onBuyOrShowChoice(s32 p) {
                 r = TRUE;
             }
             if (r) {
-                func_ov004_0223fcd4();
+                Camera_SetMode11();
                 func_020342cc(&unk_b0->unk_72e, 0, 1, 1);
             } else {
-                func_ov004_0223fcb4();
+                Camera_SetMode12();
                 func_02034250(&unk_b0->unk_72e, 0, 1, 1);
             }
         }
@@ -3797,7 +3797,7 @@ void SpNpcNookShopTalk::onBuyPaintChoice(s32 p) {
             PlayerData_GetCurrent();
             func_02097740(&data_021d735c, PlayerData_getPlayerId());
             o = unk_b0;
-            func_020aca4c((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
+            NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
         }
     }
 }
@@ -3819,23 +3819,23 @@ void SpNpcNookShopTalk::onSellConfirmChoice(s32 p) {
         switch (NpcActor_CheckPayoutFits(unk_b0, (s32)unk_c0, unk_bc)) {
         case 0:
             NpcActor_PayPlayer(unk_b0, (s32)unk_c0);
-            func_020acb28((void *)unk_c0);
+            NookShop_RecordBuyback((void *)unk_c0);
             unk_cc = 0x12;
             break;
         case 1:
-            func_020acb28((void *)unk_c0);
+            NookShop_RecordBuyback((void *)unk_c0);
             unk_cc = 0x13;
             break;
         case 2:
             unk_cc = 0x5d;
-            func_0206eb38(0);
+            MenuCtrl_ReturnChosenItems(0);
             break;
         }
     } else {
         if (unk_1e != 0x40) {
-            func_0206eb38(0);
+            MenuCtrl_ReturnChosenItems(0);
         } else {
-            func_0206eb38(1);
+            MenuCtrl_ReturnChosenItems(1);
         }
     }
 }
@@ -3887,7 +3887,7 @@ void SpNpcNookShopTalk::onDrama2Choice() {
         case 1:
             if (func_0202e148() == 0) {
                 unk_cc = 0x59;
-            } else if (func_020aca18() != 0) {
+            } else if (NookShop_CanTakeCatalogOrder() != 0) {
                 unk_cc = 0x18;
             } else {
                 unk_cc = 0x17;
@@ -3994,7 +3994,7 @@ s32 SpNpcNookShopTalk::buySelectedItem() {
     PlayerData_GetCurrent();
     func_02097740(&data_021d735c, PlayerData_getPlayerId());
     o = unk_b0;
-    func_020aca4c((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
+    NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
     func_020787b0();
 }
 
@@ -4076,7 +4076,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
+            if (NetArea_IsLocalOwner()) {
                 g = gCommManager;
                 func_0201b9fc(1, g->unk_64, 4);
                 if (unk_658.getTopic() == 1 || unk_658.getTopic() == 0x12 ||
@@ -4171,7 +4171,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     v.z += func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
     FieldPos_ToUnit(&bx, &by, &v);
     if (f) {
-        void *o = func_ov004_022355d8(func_ov004_02235718(), bx, by, 0);
+        void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
             if (o != func_020b6048(func_020b50b4(), 0, 0)) {
                 return FALSE;
@@ -4186,7 +4186,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
             }
         }
     }
-    t[0] = *func_ov004_0223ed40(bx, by);
+    t[0] = *ShopStock_GetItemAt(bx, by);
     if (Unk_ov050_022590f8_Eq(&t[0], &t[1])) {
         return FALSE;
     }

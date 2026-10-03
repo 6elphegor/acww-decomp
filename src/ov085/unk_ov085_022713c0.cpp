@@ -58,7 +58,7 @@ BOOL func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
-void func_020ac7cc(u16 *p);
+void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);

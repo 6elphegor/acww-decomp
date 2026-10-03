@@ -48,9 +48,9 @@ extern u8 data_021ed32c;
 }
 
 // Intermediate game-state class with an inline constructor that sets flags
-class Unk_020e2988 : public GameProc {
+class SceneBase : public GameProc {
 public:
-    Unk_020e2988() {
+    SceneBase() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
@@ -62,10 +62,10 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Unk_020e2988() {}
+    virtual ~SceneBase() {}
 };
 
-class BootLogoScene : public Unk_020e2988 {
+class BootLogoScene : public SceneBase {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();

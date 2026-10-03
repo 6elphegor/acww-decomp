@@ -94,7 +94,7 @@ struct Unk_ov065_0227c538_Ctx {
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
-extern s32 data_ov065_02290fa0;
+extern s32 sGsAvailStatus;
 
 struct Unk_ov065_0227c564_Z {
     s32 x;
@@ -103,41 +103,41 @@ struct Unk_ov065_0227c564_Z {
 
 typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
 
-void func_ov065_0227e1c8(Ctx0227 **, s32);
-void func_ov065_02283460(Ctx0227 **, const char *);
-s32 func_ov065_0227ee64(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void GsGp_CloseConnection(Ctx0227 **, s32);
+void GsGp_SetErrorString(Ctx0227 **, const char *);
+s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, Unk_ov065_0227c564_Fn, s32);
-s32 func_ov065_0227e3d0(Ctx0227 **);
-void func_ov065_0227913c(s32);
-s32 func_ov065_022808dc(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
-s32 func_ov065_0227df0c(Ctx0227 **, s32);
-s32 func_ov065_02280f5c(Ctx0227 **);
-s32 func_ov065_02281b20(Ctx0227 **);
-void func_ov065_02280a2c(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void func_ov065_0228090c(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void func_ov065_0227fef0(Ctx0227 **, char **);
-s32 func_ov065_0227da7c(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 func_ov065_0227db18(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void func_ov065_02283470(Ctx0227 **, s32, const char *);
-void func_ov065_0227e160(Ctx0227 **, s32, s32);
-void func_ov065_02283720(Ctx0227 **, const char *, ...);
-void *func_ov065_02277ad8(void *, s32);
-s32 func_ov065_02283684(Ctx0227 **, char *, s32);
-s32 func_ov065_0227d040(Ctx0227 **, char *);
-s32 func_ov065_022808b4(Ctx0227 **);
-s32 func_ov065_02280854(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
-void func_ov065_022817c8(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
-s32 func_ov065_022818bc(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
-void func_ov065_0227de10(Ctx0227 **, char **, const char *);
-void func_ov065_0227dde8(Ctx0227 **, char **, s32);
-s32 func_ov065_0228176c(Unk_ov065_0227c538_Node *);
-void func_ov065_02281880(Ctx0227 **, Unk_ov065_0227c538_Node *);
-s32 func_ov065_02281a5c(Ctx0227 **);
-void func_ov065_02279138();
-void func_ov065_02279144();
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-void func_ov065_022788f0(void *);
+s32 GsGp_CheckConnected(Ctx0227 **);
+void GsUtil_Sleep(s32);
+s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
+s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
+s32 GsGpPeer_ProcessAll(Ctx0227 **);
+s32 GsGpSearch_ProcessAll(Ctx0227 **);
+void GsGp_CallFailedCallback(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void GsGp_RemoveOperation(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void GsGp_FlushInfoUpdates(Ctx0227 **, char **);
+s32 GsGp_SendBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
+s32 GsGp_RecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
+void GsGp_SetError(Ctx0227 **, s32, const char *);
+void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
+void GsGp_DebugLog(Ctx0227 **, const char *, ...);
+void *GsUtil_Realloc(void *, s32);
+s32 GsGp_CheckServerError(Ctx0227 **, char *, s32);
+s32 GsGp_ProcessBuddyMessage(Ctx0227 **, char *);
+s32 GsGp_HasBlockingOperation(Ctx0227 **);
+s32 gpiProcessOperation(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
+void GsGpProfile_FindIf(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
+s32 GsGpProfile_Find(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
+void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
+void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
+s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
+void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
+s32 GsGpProfile_InitTable(Ctx0227 **);
+void GsSock_StartupStub();
+void GsUtil_GetTimeMs();
+void GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+void GsHash_Free(void *);
 
 char *func_02129f1c(const char *, const char *);
 void memcpy(void *, const void *, s32);
@@ -147,13 +147,13 @@ s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
 void srand();
 
-s32 func_ov065_0227ca28(Ctx0227 **h);
-s32 func_ov065_0227cbdc(Ctx0227 **h);
-s32 func_ov065_0227cc1c(Ctx0227 **h, s32 a, s32 b);
-s32 func_ov065_0227c6f0(Ctx0227 **h, s32 a);
-s32 func_ov065_0227c7dc(Ctx0227 **h);
-s32 func_ov065_0227cbcc(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
-s32 func_ov065_0227ce30(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 GsGp_ResetConnection(Ctx0227 **h);
+s32 GsGp_DestroyConnection(Ctx0227 **h);
+s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
+s32 GsGp_ProcessConnection(Ctx0227 **h, s32 a);
+s32 GsGp_ProcessCmMessages(Ctx0227 **h);
+s32 GsGp_ClearProfileCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
 }
 }
 
@@ -252,36 +252,36 @@ struct Unk_ov065_0227c538_Ctx {
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
-s32 func_ov065_022818bc(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
-void func_ov065_02283460(Ctx0227 **, const char *);
-s32 func_ov065_0227d8e0(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void func_ov065_02277ac8(void *);
-s32 func_ov065_0228176c(Unk_ov065_0227c538_Node *);
-void func_ov065_02281880(Ctx0227 **, Unk_ov065_0227c538_Node *);
-s32 func_ov065_02280f38(Ctx0227 **);
-s32 func_ov065_02280eb8(Ctx0227 **, s32, s32);
-s32 func_ov065_02280e7c(Ctx0227 **, s32);
-s32 func_ov065_02280d70(Ctx0227 **, s32);
-s32 func_ov065_02280cb4(Ctx0227 **, s32, s32, s32);
-void func_ov065_02283728(char *, const char *, s32);
-void func_ov065_0227de10(Ctx0227 **, char **, const char *);
-void func_ov065_0227dde8(Ctx0227 **, char **, s32);
-s32 func_ov065_02283630(const char *, const char *, char *, s32);
-void func_ov065_02283470(Ctx0227 **, s32, const char *);
-void func_ov065_0227e160(Ctx0227 **, s32, s32);
-s32 func_ov065_02278bc0(s32);
-void *func_ov065_02277af0(s32);
-char *func_ov065_02279100(const char *);
-s32 func_ov065_0227e0e8(Ctx0227 **, Unk_ov065_0227c538_Pair, void *, s32, s32);
-Unk_ov065_0227c538_Node *func_ov065_022818f4(Ctx0227 **, s32);
+s32 GsGpProfile_Find(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
+void GsGp_SetErrorString(Ctx0227 **, const char *);
+s32 GsGp_SendAuthAdd(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void GsUtil_Free(void *);
+s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
+void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
+s32 GsGpPeer_FindConnected(Ctx0227 **);
+s32 GsGpPeer_New(Ctx0227 **, s32, s32);
+s32 GsGpPeer_RequestSignature(Ctx0227 **, s32);
+s32 GsGpPeer_Connect(Ctx0227 **, s32);
+s32 GsGpPeer_QueueMessage(Ctx0227 **, s32, s32, s32);
+void GsUtil_StrCopyN(char *, const char *, s32);
+void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
+void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
+s32 GsGp_GetValue(const char *, const char *, char *, s32);
+void GsGp_SetError(Ctx0227 **, s32, const char *);
+void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
+s32 GsUtil_GetTimeSeconds(s32);
+void *GsUtil_Alloc(s32);
+char *GsUtil_StrDup(const char *);
+s32 GsGp_QueueCallback(Ctx0227 **, Unk_ov065_0227c538_Pair, void *, s32, s32);
+Unk_ov065_0227c538_Node *GsGpProfile_Add(Ctx0227 **, s32);
 
 s32 func_0212b770(const char *);
 s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 char *func_02129f1c(const char *, const char *);
 
-s32 func_ov065_0227cf78(Ctx0227 **h, s32 a, s32 b, const char *s);
-s32 func_ov065_0227ced4(Ctx0227 **h, s32 id, s32 b, s32 t);
+s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
+s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t);
 }
 }
 
@@ -403,49 +403,49 @@ u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_ov065_02283630(const char *, const char *, char *, s32);
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283470(void *, s32, const char *);
-void func_ov065_02283720(void *, const char *, ...);
-void *func_ov065_02277ad8(void *, s32);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02277ac8(void *);
-s32 func_ov065_02278ce0(s32, void *, s32, s32);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-s32 func_ov065_02278be8(s32);
-s32 func_ov065_02278684(s32);
-s32 func_ov065_02278da4(s32, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_0228090c(void *, void *);
-s32 func_ov065_022810fc(void *, void *);
-s32 func_ov065_022817c8(void *, s32, s32);
-s32 func_ov065_0227e350(void);
+s32 GsGp_GetValue(const char *, const char *, char *, s32);
+void GsGp_SetErrorString(void *, const char *);
+void GsGp_SetError(void *, s32, const char *);
+void GsGp_DebugLog(void *, const char *, ...);
+void *GsUtil_Realloc(void *, s32);
+void *GsUtil_Alloc(s32);
+s32 GsUtil_Free(void *);
+s32 GsSock_Recv(s32, void *, s32, s32);
+s32 GsSock_Send(s32, void *, s32, s32);
+s32 GsSock_GetLastError(s32);
+s32 GsArray_Count(s32);
+s32 GsSock_Shutdown(s32, s32);
+s32 GsSock_Close(s32);
+s32 GsGp_RemoveOperation(void *, void *);
+s32 GsGpPeer_Free(void *, void *);
+s32 GsGpProfile_FindIf(void *, s32, s32);
+s32 GsGp_FreeBuddyDataCb(void);
 
-s32 func_ov065_0227dd38(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 func_ov065_0227dde8(Unk_H *, Unk_B *, s32);
-s32 func_ov065_0227de10(Unk_H *, Unk_B *, const char *);
-s32 func_ov065_0227de30(Unk_H *, Unk_B *, const char *, s32);
-s32 func_ov065_0227deb4(Unk_H *, Unk_B *, char);
-s32 func_ov065_0227dc48(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
-s32 func_ov065_0227da7c(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
-s32 func_ov065_0227dfd8(Unk_H *, Unk_N *);
-s32 func_ov065_0227e0e8(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
-void func_ov065_0227e160(Unk_H *, s32, s32);
+s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 GsGpBuf_AppendInt(Unk_H *, Unk_B *, s32);
+s32 GsGpBuf_AppendString(Unk_H *, Unk_B *, const char *);
+s32 GsGpBuf_Append(Unk_H *, Unk_B *, const char *, s32);
+s32 GsGpBuf_AppendChar(Unk_H *, Unk_B *, char);
+s32 GsGpPeer_Send(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
+s32 GsGp_SendBuffer(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
+s32 GsGp_CallCallback(Unk_H *, Unk_N *);
+s32 GsGp_QueueCallback(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
+void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 }
 }
 
 namespace Nf {
 extern "C" {
-s32 func_ov065_0227d8e0(Unk_H *h, Unk_ov065_0227d8e0_Arg *a) {
+s32 GsGp_SendAuthAdd(Unk_H *h, Unk_ov065_0227d8e0_Arg *a) {
     Unk_C *c = h->unk_00;
-    func_ov065_0227de10(h, &c->unk_1f4, "\\authadd\\");
-    func_ov065_0227de10(h, &c->unk_1f4, "\\sesskey\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, c->unk_198);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\fromprofileid\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, *(s32 *)a);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\sig\\");
-    func_ov065_0227de10(h, &c->unk_1f4, a->unk_10);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\authadd\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\fromprofileid\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, *(s32 *)a);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sig\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, a->unk_10);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
     return 0;
 }
 }
@@ -464,18 +464,18 @@ static inline u16 Swap16(u16 x) {
 
 #define ERR3() \
     do { \
-        func_ov065_02283470(h, 1, "Unexpected data was received from the server."); \
-        func_ov065_0227e160(h, 3, 1); \
+        GsGp_SetError(h, 1, "Unexpected data was received from the server."); \
+        GsGp_CallErrorCallback(h, 3, 1); \
         return 3; \
     } while (0)
 
 #define ERR1() \
     do { \
-        func_ov065_02283460(h, "Out of memory."); \
+        GsGp_SetErrorString(h, "Out of memory."); \
         return 1; \
     } while (0)
 extern "C" {
-s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
+s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
     Ctx0227 *c = *h;
     s32 code;
     s32 v;
@@ -488,18 +488,18 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
     char buf[0x1000];
     char buf3[0x100];
 
-    if (func_ov065_02283630(s, "\\bm\\", buf, 0x1000) == 0) {
+    if (GsGp_GetValue(s, "\\bm\\", buf, 0x1000) == 0) {
         ERR3();
     }
     code = func_0212b770(buf);
-    if (func_ov065_02283630(s, "\\f\\", buf, 0x1000) == 0) {
+    if (GsGp_GetValue(s, "\\f\\", buf, 0x1000) == 0) {
         ERR3();
     }
     v = func_0212b770(buf);
-    if (func_ov065_02283630(s, "\\date\\", buf, 0x1000) != 0) {
+    if (GsGp_GetValue(s, "\\date\\", buf, 0x1000) != 0) {
         w = func_0212b770(buf);
     } else {
-        w = func_ov065_02278bc0(0);
+        w = GsUtil_GetTimeSeconds(0);
     }
     switch (code) {
     case 1: {
@@ -508,14 +508,14 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         if (p.p.unk_00 == 0) {
             break;
         }
-        r5 = (Unk_ov065_0227c538_Sub *)func_ov065_02277af0(0xc);
+        r5 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0xc);
         if (r5 == NULL) {
             ERR1();
         }
-        if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        r5->unk_08 = (char *)func_ov065_02277af0(STD_GetStringLength(buf) + 1);
+        r5->unk_08 = (char *)GsUtil_Alloc(STD_GetStringLength(buf) + 1);
         if (r5->unk_08 == NULL) {
             ERR1();
         }
@@ -523,7 +523,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         r5->unk_00 = v;
         r5->unk_04 = w;
         {
-            s32 r = func_ov065_0227e0e8(h, p.p, r5, 0, 2);
+            s32 r = GsGp_QueueCallback(h, p.p, r5, 0, 2);
             if (r != 0) {
                 return r;
             }
@@ -533,11 +533,11 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
     case 2: {
         Unk_ov065_0227c538_Node *n;
         char *t;
-        n = func_ov065_022818f4(h, v);
+        n = GsGpProfile_Add(h, v);
         if (n == NULL) {
             ERR1();
         }
-        if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
         t = func_02129f1c(buf, "|signed|");
@@ -548,24 +548,24 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         if (STD_GetStringLength(t + 8) != 0x20) {
             ERR3();
         }
-        func_ov065_02277ac8(n->unk_10);
+        GsUtil_Free(n->unk_10);
         n->unk_10 = 0;
-        n->unk_10 = func_ov065_02279100(t + 8);
+        n->unk_10 = GsUtil_StrDup(t + 8);
         n->unk_14 = n->unk_14 + 1;
         p2 = *(Unk_ov065_0227d040_PW *)&c->unk_1a4[1];
         if (p2.p.unk_00 == 0) {
             break;
         }
         {
-            Unk_ov065_0227c538_Sub *r5 = (Unk_ov065_0227c538_Sub *)func_ov065_02277af0(0x40c);
+            Unk_ov065_0227c538_Sub *r5 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0x40c);
             if (r5 == NULL) {
                 ERR1();
             }
-            func_ov065_02283728((char *)r5 + 8, buf, 0x401);
+            GsUtil_StrCopyN((char *)r5 + 8, buf, 0x401);
             r5->unk_00 = v;
             r5->unk_04 = w;
             {
-                s32 r = func_ov065_0227e0e8(h, p2.p, r5, 0, 6);
+                s32 r = GsGp_QueueCallback(h, p2.p, r5, 0, 6);
                 if (r != 0) {
                     return r;
                 }
@@ -576,14 +576,14 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
     case 100: {
         Unk_ov065_0227c538_Node *n;
         Unk_ov065_0227c538_Sub *r5;
-        n = func_ov065_022818f4(h, v);
+        n = GsGpProfile_Add(h, v);
         if (n == NULL) {
             ERR1();
         }
         if (n->unk_08 == NULL) {
             u8 *q;
             u8 *k;
-            n->unk_08 = (Unk_ov065_0227c538_Sub *)func_ov065_02277af0(0x18);
+            n->unk_08 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0x18);
             if (n->unk_08 == NULL) {
                 ERR1();
             }
@@ -601,37 +601,37 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
             }
         }
         r5 = n->unk_08;
-        if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        if (func_ov065_02283630(buf, "|s|", tmp, 0x10) == 0) {
+        if (GsGp_GetValue(buf, "|s|", tmp, 0x10) == 0) {
             ERR3();
         }
         r5->unk_04 = func_0212b770(tmp);
-        func_ov065_02277ac8(r5->unk_08);
+        GsUtil_Free(r5->unk_08);
         r5->unk_08 = NULL;
-        if (func_ov065_02283630(buf, "|ss|", buf3, 0x100) == 0) {
+        if (GsGp_GetValue(buf, "|ss|", buf3, 0x100) == 0) {
             buf3[0] = 0;
         }
-        r5->unk_08 = func_ov065_02279100(buf3);
+        r5->unk_08 = GsUtil_StrDup(buf3);
         if (r5->unk_08 == NULL) {
             ERR1();
         }
-        func_ov065_02277ac8(r5->unk_0c);
+        GsUtil_Free(r5->unk_0c);
         r5->unk_0c = NULL;
-        if (func_ov065_02283630(buf, "|ls|", buf3, 0x100) == 0) {
+        if (GsGp_GetValue(buf, "|ls|", buf3, 0x100) == 0) {
             buf3[0] = 0;
         }
-        r5->unk_0c = func_ov065_02279100(buf3);
+        r5->unk_0c = GsUtil_StrDup(buf3);
         if (r5->unk_0c == NULL) {
             ERR1();
         }
-        if (func_ov065_02283630(buf, "|ip|", tmp, 0x10) == 0) {
+        if (GsGp_GetValue(buf, "|ip|", tmp, 0x10) == 0) {
             r5->unk_10 = 0;
         } else {
             r5->unk_10 = SWAP32((u32)func_0212b770(tmp));
         }
-        if (func_ov065_02283630(buf, "|p|", tmp, 0x10) == 0) {
+        if (GsGp_GetValue(buf, "|p|", tmp, 0x10) == 0) {
             r5->unk_14 = 0;
         } else {
             r5->unk_14 = Swap16(func_0212b770(tmp));
@@ -641,7 +641,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
             break;
         }
         {
-            Unk_ov065_0227c538_Sub *m = (Unk_ov065_0227c538_Sub *)func_ov065_02277af0(0xc);
+            Unk_ov065_0227c538_Sub *m = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0xc);
             if (m == NULL) {
                 ERR1();
             }
@@ -649,7 +649,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
             m->unk_08 = (char *)(s32)r5->unk_00;
             m->unk_04 = w;
             {
-                s32 r = func_ov065_0227e0e8(h, p3.p, m, 0, 5);
+                s32 r = GsGp_QueueCallback(h, p3.p, m, 0, 5);
                 if (r != 0) {
                     return r;
                 }
@@ -662,7 +662,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         char *t2;
         s32 q;
         Unk_ov065_0227c538_Sub *r5;
-        if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
         t = func_02129f1c(buf, "|p|");
@@ -675,7 +675,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         q = func_0212b770(t + 3);
         t2 = func_02129f1c(buf, "|l|");
         if (t2 != NULL) {
-            func_ov065_02283728(buf3, t2 + 3, 0x100);
+            GsUtil_StrCopyN(buf3, t2 + 3, 0x100);
         } else {
             buf3[0] = 0;
         }
@@ -683,7 +683,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         if (p4.p.unk_00 == 0) {
             break;
         }
-        r5 = (Unk_ov065_0227c538_Sub *)func_ov065_02277af0(0x108);
+        r5 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0x108);
         if (r5 == NULL) {
             ERR1();
         }
@@ -691,7 +691,7 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         r5->unk_04 = q;
         func_02127838((char *)r5 + 8, buf3);
         {
-            s32 r = func_ov065_0227e0e8(h, p4.p, r5, 0, 0);
+            s32 r = GsGp_QueueCallback(h, p4.p, r5, 0, 0);
             if (r != 0) {
                 return r;
             }
@@ -699,10 +699,10 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
         break;
     }
     case 102:
-        if (func_ov065_02283630(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        func_ov065_0227ced4(h, v, 0x67, (s32)"1");
+        GsGp_SendBuddyMessageEx(h, v, 0x67, (s32)"1");
         break;
     }
     return 0;
@@ -712,19 +712,19 @@ s32 func_ov065_0227d040(Ctx0227 **h, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 func_ov065_0227cf78(Ctx0227 **h, s32 a, s32 b, const char *s) {
+s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
     Ctx0227 *c = *h;
     char buf[0xdad];
-    func_ov065_02283728(buf, s, 0xdad);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\bm\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, b);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\sesskey\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, c->unk_198);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\t\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, a);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\msg\\");
-    func_ov065_0227de10(h, &c->unk_1f4, buf);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\final\\");
+    GsUtil_StrCopyN(buf, s, 0xdad);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\bm\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, b);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\t\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, a);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\msg\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, buf);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
     return 0;
 }
 }
@@ -732,32 +732,32 @@ s32 func_ov065_0227cf78(Ctx0227 **h, s32 a, s32 b, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 func_ov065_0227ced4(Ctx0227 **h, s32 id, s32 b, s32 t) {
+s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t) {
     Unk_ov065_0227c538_Node *n;
     s32 r6;
-    r6 = func_ov065_02280f38(h);
+    r6 = GsGpPeer_FindConnected(h);
     if (r6 == 0) {
-        if (!(func_ov065_022818bc(h, id, &n) != 0 && n->unk_08 != NULL && n->unk_08->unk_14 != 0)) {
-            return func_ov065_0227cf78(h, id, b, (const char *)t);
+        if (!(GsGpProfile_Find(h, id, &n) != 0 && n->unk_08 != NULL && n->unk_08->unk_14 != 0)) {
+            return GsGp_SendServerBuddyMessage(h, id, b, (const char *)t);
         }
-        r6 = func_ov065_02280eb8(h, id, 1);
+        r6 = GsGpPeer_New(h, id, 1);
         if (r6 == 0) {
             return 1;
         }
         if (n->unk_18 == 0) {
-            s32 q = func_ov065_02280e7c(h, r6);
+            s32 q = GsGpPeer_RequestSignature(h, r6);
             if (q != 0) {
                 return q;
             }
         } else {
-            s32 q = func_ov065_02280d70(h, r6);
+            s32 q = GsGpPeer_Connect(h, r6);
             if (q != 0) {
                 return q;
             }
         }
     }
     {
-        s32 r = func_ov065_02280cb4(h, r6, b, t);
+        s32 r = GsGpPeer_QueueMessage(h, r6, b, t);
         if (r != 0) {
             return r;
         }
@@ -769,29 +769,29 @@ s32 func_ov065_0227ced4(Ctx0227 **h, s32 id, s32 b, s32 t) {
 
 namespace Nd {
 extern "C" {
-s32 func_ov065_0227ce44(Ctx0227 **h, s32 id) {
+s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
     Ctx0227 *c = *h;
     Unk_ov065_0227c538_Node *n;
     s32 r;
-    if (func_ov065_022818bc(h, id, &n) == 0) {
-        func_ov065_02283460(h, "Invalid profile.");
+    if (GsGpProfile_Find(h, id, &n) == 0) {
+        GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
     if (n->unk_10 == 0) {
-        func_ov065_02283460(h, "Invalid profile.");
+        GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
-    r = func_ov065_0227d8e0(h, n);
+    r = GsGp_SendAuthAdd(h, n);
     if (r != 0) {
         return r;
     }
     n->unk_14 = n->unk_14 - 1;
     if (c->unk_100 == 0) {
         if (n->unk_14 <= 0) {
-            func_ov065_02277ac8(n->unk_10);
+            GsUtil_Free(n->unk_10);
             n->unk_10 = 0;
-            if (func_ov065_0228176c(n) != 0) {
-                func_ov065_02281880(h, n);
+            if (GsGpProfile_IsUnused(n) != 0) {
+                GsGpProfile_Remove(h, n);
             }
         }
     }
@@ -802,7 +802,7 @@ s32 func_ov065_0227ce44(Ctx0227 **h, s32 id) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227ce30(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m) {
+s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m) {
     Unk_ov065_0227c538_Sub *s = n->unk_08;
     if (s != NULL) {
         if (s->unk_00 > m) {
@@ -816,32 +816,32 @@ s32 func_ov065_0227ce30(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_0227cd34(Ctx0227 **h, s32 x) {
+s32 GsGp_SendDeleteBuddy(Ctx0227 **h, s32 x) {
     Ctx0227 *c = *h;
     Unk_ov065_0227c538_Node *n;
-    if (func_ov065_022818bc(h, x, &n) == 0) {
-        func_ov065_02283460(h, "Invalid profile.");
+    if (GsGpProfile_Find(h, x, &n) == 0) {
+        GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
-    func_ov065_0227de10(h, &c->unk_1f4, "\\delbuddy\\");
-    func_ov065_0227de10(h, &c->unk_1f4, "\\sesskey\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, c->unk_198);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\delprofileid\\");
-    func_ov065_0227dde8(h, &c->unk_1f4, n->unk_00);
-    func_ov065_0227de10(h, &c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\delbuddy\\");
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\delprofileid\\");
+    GsGpBuf_AppendInt(h, &c->unk_1f4, n->unk_00);
+    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
     if (n->unk_08 != NULL) {
         s32 r6 = n->unk_08->unk_00;
-        func_ov065_02277ac8(n->unk_08->unk_08);
+        GsUtil_Free(n->unk_08->unk_08);
         n->unk_08->unk_08 = 0;
-        func_ov065_02277ac8(n->unk_08->unk_0c);
+        GsUtil_Free(n->unk_08->unk_0c);
         n->unk_08->unk_0c = 0;
-        func_ov065_02277ac8(n->unk_08);
+        GsUtil_Free(n->unk_08);
         n->unk_08 = 0;
-        if (func_ov065_0228176c(n) != 0) {
-            func_ov065_02281880(h, n);
+        if (GsGpProfile_IsUnused(n) != 0) {
+            GsGpProfile_Remove(h, n);
         }
         c->unk_430 = c->unk_430 - 1;
-        func_ov065_022817c8(h, func_ov065_0227ce30, r6);
+        GsGpProfile_FindIf(h, GsGp_FixBuddyIndexCb, r6);
     }
     return 0;
 }

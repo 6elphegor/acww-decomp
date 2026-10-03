@@ -90,8 +90,8 @@ s32 func_02098eb0(u16 *p);
 s32 func_02098ffc();
 void func_02099064(s32 v);
 BOOL func_0202e1cc(s32 a, s32 b);
-BOOL func_0206ed18();
-s32 func_0206ed38();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 s32 func_02085618(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
 u32 func_02063b8c(u32 n);
@@ -488,7 +488,7 @@ u16 *_ZN10PlayerData8getShirtEv(void *p);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void PlayerActor_RequestWearHatAlt(u16 *p);
-void PlayerActor_RequestAct3F(u16 *p);
+void PlayerActor_RequestChangeHeldItem(u16 *p);
 void func_02070e4c(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -966,8 +966,8 @@ void SpNpcWendellTalk::onFoodPicked() {
     TalkWindowState *m = unk_3c;
     u8 v = 1;
     unk_c4 = -1;
-    if (func_0206ed18()) {
-        unk_c4 = func_0206ed38();
+    if (MenuCtrl_IsResultOk()) {
+        unk_c4 = MenuCtrl_GetIndex();
         unk_c0 = func_02099048(unk_c4);
         v = 2;
         BOOL f = FALSE;
@@ -1010,9 +1010,9 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
     Unk_ov079_02271718_Buf buf;
     u32 r4;
     buf.t = 0xd;
-    if (func_0206ed18()) {
+    if (MenuCtrl_IsResultOk()) {
         void *g = PlayerData_GetCurrent();
-        u32 a0 = func_0206ed38();
+        u32 a0 = MenuCtrl_GetIndex();
         u32 r6 = _ZN12Unk_02071c1c13func_02071c1cEj(_ZN14PlayerPatterns13func_02071c5cEv(_ZN10PlayerData13func_020986d4Ev(g)), a0);
         r4 = 0;
         if (Unk_ov079_02271718_Chk(this, &buf.v[4], 0x131f)) {
@@ -1097,7 +1097,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         if (c == z) {
             if (Unk_ov079_Rng(_ZN10PlayerData11getHeldItemEv(g), 0x13a0, 0x13a7)) {
                 buf.v[3] = c;
-                PlayerActor_RequestAct3F(&buf.v[3]);
+                PlayerActor_RequestChangeHeldItem(&buf.v[3]);
             }
         }
         void *h = _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(g), r6);

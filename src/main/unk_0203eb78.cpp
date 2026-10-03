@@ -160,7 +160,7 @@ s32 _ZN10PlayerData8getIndexEv(s32 p);
 }
 
 extern "C" {
-s32 func_02096acc(void *p, s32 a, s32 b);
+s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 }
 
 extern "C" {
@@ -220,7 +220,7 @@ s32 func_0203f0fc(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
-s32 func_020a032c(void);
+s32 GameStart_IsActive(void);
 }
 
 extern "C" {
@@ -328,7 +328,7 @@ extern "C" BOOL func_0203ec58(u8 *p) {
         s32 q = _ZN10PlayerData8getIndexEv(h);
         func_02065ba4(l, q);
         func_02065ac0(l);
-        if (func_02096acc(l, q, 0)) {
+        if (LetterDelivery_PutInMailbox(l, q, 0)) {
             func_02097954(h, *(u16 *)(p + 0xf4));
             _ZN6LetterD1Ev(l);
             return TRUE;

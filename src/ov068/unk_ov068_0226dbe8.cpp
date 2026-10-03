@@ -637,7 +637,7 @@ void *VillagerData_getVillagerId(void *);
 u32 func_02063b8c(s32);
 void Snd_PlaySe(s32);
 s32 VillagerId_GetPersonality(void *);
-s32 func_ov004_02234b0c(s32);
+s32 FtrMgr_PickFurnitureComment(s32);
 void *PlayerData_GetCurrent();
 void *func_0209865c(void *);
 }
@@ -987,7 +987,7 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
         unk_1a0->unk_a54 = unk_1a0->unk_a54 - 1;
     }
     u32 rnd = func_02063b8c(100);
-    s32 v = func_ov004_02234b0c(VillagerId_GetPersonality(VillagerData_getVillagerId(unk_1a0->unk_82c)));
+    s32 v = FtrMgr_PickFurnitureComment(VillagerId_GetPersonality(VillagerData_getVillagerId(unk_1a0->unk_82c)));
     u32 n = unk_1a0->unk_a44;
     if (n >= 5) {
         n = 5;
