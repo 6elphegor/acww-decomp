@@ -9,8 +9,13 @@ config/usa/arm9/delinks.txt (src/main/unk_XXXXXXXX.cpp).
 
   check <obj.o> main <spec.txt | unit>
       Simulates the link of the object at the unit's ranges and compares it with the original:
-        ORDER    a function would not land on its symbols.txt address
-        BYTES    a function's bytes differ (relocated words masked)
+        ORDER    a function would not land on its symbols.txt address (in an assembly unit's section, each of
+                 its global function symbols is checked at its offset)
+        BYTES    a function's bytes differ (relocated words masked); an assembly unit's section that holds
+                 several functions or starts with data is compared as a whole
+        MODE     a function is ARM/Thumb/data in the object (mapping symbol $a/$t/$d at its offset) but the other
+                 mode in symbols.txt (mwld takes the mode for interworking calls from the mapping symbol)
+        LABEL    information: a global function symbol of an assembly unit that symbols.txt does not have
         EXTRA    a function the original does not have is kept by the linker (it shifts the unit)
         FOREIGN  the object defines a symbols.txt function that lives outside the unit's .text range
         MISSING  a symbols.txt function of the range is not defined; or a name other code refers to
@@ -240,11 +245,17 @@ class Layout:
         redirect = redirect or {}  # symbol index -> symbol index it is folded into (tools/aliases.py)
         nsec = len(o.sh)
         self.names = {}
+        # offset of the named symbol in its section: 0 for compiled code (one function per section); an assembly
+        # unit (.s) has one .text section with several functions, possibly after data (the secure area), and is
+        # named after its lowest function, at that function's offset
+        self.offset = {}
         for i in range(nsec):
             cands = [y for y in o.syms if y[5] == i and y[0] and not re.fullmatch(r"\$[atdb]", y[0]) and y[3] != 3]
             want = 2 if o.secname[i] in (".text", ".init") else 1
-            pick = [y for y in cands if y[3] == want and y[1] & ~1 == 0] or [y for y in cands if y[1] & ~1 == 0] or cands
+            pick = [y for y in cands if y[3] == want and y[1] & ~1 == 0] or [y for y in cands if y[1] & ~1 == 0] or \
+                sorted([y for y in cands if y[3] == want], key=lambda y: y[1]) or cands
             self.names[i] = pick[0][0] if pick else f"sec{i}"
+            self.offset[i] = pick[0][1] & ~1 if pick else 0
         # dead-stripping: the build keeps every global of a compiled object that symbols.txt names
         # (tools/force_active.py), .ctor, and whatever those reference
         keep = set()
@@ -418,23 +429,54 @@ def cmd_check(lp, objpath, unit):
             problems += 1
             continue
         defined_funcs.add(name)
+        start = want[1] - lay.offset[i]  # the section's address (an assembly unit's section may start with data)
         pos = (pos + 3) & ~3
-        if want[1] != pos:
-            say(f"ORDER   {name} would link at {pos:#010x}, original {want[1]:#010x}")
+        if start != pos:
+            say(f"ORDER   {name} would link at {pos + lay.offset[i]:#010x}, original {want[1]:#010x}")
             problems += 1
-            pos = want[1]
+            pos = start
+        # the other functions of the section (assembly units: entry points, Thumb stubs at 2-mod-4 addresses)
+        labels = [y for y in o.syms if y[5] == i and y[3] == 2 and y[4] != 0 and y[0] != name
+                  and not y[0].startswith("$")]
+        for lname, value, *_ in sorted(labels, key=lambda y: y[1]):
+            lwant = syms.get(lname)
+            at = start + (value & ~1)
+            if lwant is None:
+                say(f"LABEL   {lname} ({name}+{(value & ~1) - lay.offset[i]:#x}) is a global function symbol that "
+                    f"symbols.txt does not have (harmless; make it a local label unless something calls it)")
+            elif lwant[0] != MOD or lwant[1] != at:
+                say(f"ORDER   {lname} would link at {at:#010x}, symbols.txt has it at {lwant[1]:#010x} ({lwant[0]})")
+                problems += 1
+            else:
+                defined_funcs.add(lname)
+        # ARM/Thumb: the mapping symbol ($a/$t/$d) in effect at each function must agree with symbols.txt; mwld
+        # takes a function's mode from it (interworking calls), and data bytes that merely equal the code don't
+        maps = sorted((y[1], y[0][1]) for y in o.syms if y[5] == i and re.fullmatch(r"\$[atd]", y[0]))
+        for fname, value, *_ in [y for y in o.syms if y[5] == i and y[3] == 2 and y[4] != 0
+                                 and not y[0].startswith("$") and y[0] in syms]:
+            fwant = syms[fname]
+            mode = [m for v, m in maps if v <= (value & ~1)][-1:]
+            info = next((r for n, r, _ in by_addr.get(fwant[1], []) if n == fname), "")
+            kind = "thumb" if "(thumb" in info else "arm" if "(arm" in info else None
+            have = {"t": "thumb", "a": "arm", "d": "data"}.get(mode[0]) if mode else None
+            if kind and have and have != kind:
+                say(f"MODE    {fname} is {have} in the object ({'$' + mode[0]} mapping symbol), {kind} in symbols.txt: "
+                    f"write it as instructions after `.{kind}`")
+                problems += 1
         mine = o.section_bytes(i)
         m = re.search(r"size=(0x[0-9a-f]+)", next((r for n, r, _ in by_addr.get(want[1], []) if n == name), ""))
-        osize = int(m.group(1), 16) if m else len(mine)
-        theirs = orig_bytes(want[1], len(mine))
+        # a section with several functions or data around them is compared as a whole
+        osize = int(m.group(1), 16) if m and not labels and not lay.offset[i] else len(mine)
+        theirs = orig_bytes(start, len(mine))
         masked = set()
         for off, *_ in o.relocs.get(i, []):
             masked.update(range(off, off + 4))
-        diff = [k for k in range(len(mine)) if k not in masked and mine[k] != theirs[k]]
+        diff = [k for k in range(len(mine)) if k not in masked and (k >= len(theirs) or mine[k] != theirs[k])]
         if diff or len(mine) != osize:
             extra = f", size {len(mine):#x} vs original {osize:#x}" if len(mine) != osize else ""
-            say(f"BYTES   {name} differs from the original at +{(diff or [min(len(mine), osize)])[0]:#x} "
-                f"({len(diff)} bytes){extra}")
+            first = (diff or [min(len(mine), osize)])[0]
+            at = f"+{first:#x}" if not lay.offset[i] else f"{start + first:#010x}"
+            say(f"BYTES   {name} differs from the original at {at} ({len(diff)} bytes){extra}")
             problems += 1
         pos += size
     if ".text" in secs:
@@ -446,7 +488,9 @@ def cmd_check(lp, objpath, unit):
             if mod != MOD or not (t0 <= addr < t1):
                 continue
             if rest.startswith("kind:function") and addr not in defined_addrs:
-                say(f"MISSING {name} ({addr:#010x}) is inside the unit's .text range but the object does not define it")
+                untyped = any(y[0] == name and y[3] == 0 and y[4] != 0 and y[5] for y in o.syms)
+                say(f"MISSING {name} ({addr:#010x}) is inside the unit's .text range but the object does not define it"
+                    + (" as a function (assembly unit: add `.type " + name + ", @function`)" if untyped else ""))
                 problems += 1
         out.extend(alias_notes)
 
@@ -518,13 +562,13 @@ def cmd_check(lp, objpath, unit):
             want_addr = syms.get(lay.names[i])
             if not want_addr:
                 continue
-            a = want_addr[1]
+            a = want_addr[1] - lay.offset[i]
         for (off, sname, addend, rtype), idx in zip(o.relocs.get(i, []), o.relsym.get(i, [])):
             have, mods = resolve(idx)
             if have is None:
                 continue  # unresolved: reported below
             rel = relocs.get(a + off)
-            where = f"{lay.names[i]}+{off:#x}"
+            where = f"{lay.names[i]}+{off:#x}" if not lay.offset.get(i) else f"{lay.names[i]} section+{off:#x}"
             if mods == {lp.ABS_MODULE}:
                 # a number the linker script defines: the original word is that number and has no relocation
                 word = image.word(a + off)

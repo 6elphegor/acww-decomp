@@ -569,8 +569,8 @@ address words in the code that uses the objects.
   whose constructor is inline and empty (`struct A { A() {} ... }; A obj;`), also through an empty base
   constructor. The unit that owns such an object owns the `.init`/`.ctor` slot.
 * **Assembly routines of the original** (`func_0206d470`: pushes all registers and CPSR) cannot be written in
-  C++ and are not linked: cut the unit around them (TU113 is two complete units with the routine delinked in
-  between).
+  C++: cut the C++ unit around them (TU113 is two complete units with the routine in between) and link the routine
+  as an assembly unit of its own (see "Assembly units (.s)").
 * `extern const` objects defined in the *next* file look like part of this one by their users
   (`data_020ca638`, used only by TU068's `func_02050cb4`, is the first `.rodata` object of the following file):
   an object that sits after the unit's size-sorted run and is loaded from memory although its value is a
@@ -679,3 +679,107 @@ Not supported / open:
   `delinks.txt` has to be split first.
 * Unit file names are `unk_<address>`; mwld selects objects by file name only, so two units with the same text
   start in different modules cannot exist (the address ranges of main, autoload_2 and itcm do not overlap).
+
+# Assembly units (.s)
+
+Code that was hand-written assembly in the original (crt0, the secure area with the SVC stubs, runtime helpers such
+as the 64-bit divide, SDK routines built around mrs/msr, mcr/mrc, swi, stm/ldm with sp or pc) is linked as assembly:
+one `.s` file per routine or group of routines, headed as original assembly, assembled with the toolchain's own
+assembler `mwasmarm.exe` (`tools/mwccarm/<version>/`, same package as mwccarm and mwldarm). It is a complete unit
+like any other: listed in `delinks.txt`, checked with `linkprep.py check`, installed with `install_tu.py`.
+
+Older units write such code as mwcc `asm` functions inside a `.c`/`.cpp` (`src/main/unk_02000800.cpp` crt0,
+`src/autoload_2/`, `src/itcm/`). They stay valid, but that form cannot have a global label inside a routine (every
+further entry point has to be its own `asm` function), has only 4-aligned `dcd` data, cannot place Thumb code at a
+2-mod-4 address, and mis-assembles `blx label`. A `.s` unit has none of these limits. Write new assembly units as
+`.s`; convert an old one when it is touched.
+
+## Build
+
+* `tools/configure.py` builds every `src/**/*.s` with the rule `mwasm`:
+  `mwasmarm -proc arm5TE -little -msgstyle gcc -i include <header flags> -c x.s -o build/usa/src/.../x.o`
+  (`AS_FLAGS` in `tools/mwcc_config.py`; ARMv5TE is the arm946e's architecture: `blx`, `clz`, `qadd`, `ldrd`).
+  Within the first 10 lines a `; mwasm-flags: ...` line appends flags and `; mwasm-version: 1.2/sp2` selects
+  another package's assembler, like `// mwcc-flags:` / `// mwcc-version:`.
+* A `.s` and a `.c`/`.cpp` with the same name would build the same object: configure stops with a message.
+* There is no dependency file: a `.include`d file is not tracked by ninja (the units are self-contained; avoid it).
+* dsd needs nothing special: `src/main/unk_02000000.s:` in `delinks.txt` gives `unk_02000000.o(.text)` in the linker
+  script; `bss_units.py`, `aliases.py`, `lcf_symbols.py`, `force_active.py` and `dsd objdiff` work on the object as
+  on a compiled one.
+
+## What mwasmarm produces (checked with objects and a miniature mwld link)
+
+* Sections `.text`, `.data`, `.bss` (`.text`/`.data`/`.bss` directives) and `.section .rodata`, 4-aligned, with RELA
+  relocations, like mwcc's. Unlike mwcc it keeps one section per directive: all functions of a `.s` file are in one
+  `.text` section, at their offsets.
+* `.global name` makes a global symbol, `.type name, @function` a function (STT_FUNC), `.size name, 0x..` its size;
+  data labels are untyped. Every external symbol needs `.extern name`
+  ("Unknown identifier" otherwise). Comments start with `;`, labels end with `:`, directives start with `.`.
+* ARM or Thumb: `.arm` / `.thumb`. The assembler writes the mapping symbols `$a`, `$t`, `$d` itself (also for data
+  directives), the same way mwcc marks its code; mwld takes a function's mode for interworking from them. Function
+  symbols have even values, as mwcc's.
+* Calls to other files: ARM `bl x` is `R_ARM_PC24`, `blx x` `R_ARM_XPC25`; Thumb `bl x` is `R_ARM_THM_CALL`, `blx x`
+  `R_ARM_THM_XPC22`; `.word x` is `R_ARM_ABS32`. mwld turns each call into `bl` or `blx` by the target's mode,
+  including the H bit for a Thumb target at a 2-mod-4 address (miniature link). Both spellings link correctly (the
+  `blx label` problem is mwcc's inline assembler only); write what the original has.
+* **Branches to a label of the same file are resolved by the assembler, without relocation and without
+  interworking.** A `bl` to a label of the other mode in the same file stays a `bl` (wrong code). Write `blx label`
+  for a mode change inside one file: it is encoded correctly in both directions (tested).
+* Thumb functions at 2-mod-4 addresses inside the section are fine (secure area). The section itself is 4-aligned
+  (`ALIGNALL(4)` of dsd's script), so a unit cannot *start* at a 2-mod-4 address.
+* Data directives align themselves and pad with zeros: `.word` to 4, `.short` to 2. Use `.byte` for unaligned data.
+  `.align n` aligns to n bytes (not 2^n). `.space n` reserves n zero bytes.
+* `ldr rX, =value` puts its literal at the end of the section (`.ltorg` assembles; whether it moves the pool was not
+  tested). To keep the
+  original pool position, write the pool as labelled words and load them by label: `ldr r0, L_pool` /
+  `L_pool: .word sym` (relocation `R_ARM_ABS32`).
+
+## Writing a unit
+
+* First lines: `; Original assembly (<library>): hand-written in the original; linked as assembly per the project's
+  assembly policy.`, the range (`; autoload_2 0x02132ef8-0x02133100: ...`) and the evidence that it is assembly.
+* Every `symbols.txt` function of the range is a `.global` label with `.type ..., @function` and `.size` at its
+  address, under its `symbols.txt` name. Second entry points and join points inside a routine are just labels; other
+  labels stay local (`L_02132f1c:`). A global function symbol that `symbols.txt` does not have is harmless (check
+  prints `LABEL`), but make it local unless something calls it.
+* Data inside the range (a routine's literal pool, the secure area's filler) is written in place with `.word` /
+  `.short` / `.byte`. The file is laid out exactly as written: `linkprep.py reverse` and `data` refuse `.s` files.
+* Bytes that are not code but are reached as code by name (a stub) must still be instructions after `.thumb`/`.arm`,
+  not `.short`s: data gets a `$d` mapping symbol and an ARM caller would then not get its `blx` (`check`: `MODE`).
+
+## Checking and installing
+
+    python3 tools/pipeline/linkprep.py compile U/unit.s U/unit.o          build.ninja's mwasm rule + header lines
+    python3 tools/pipeline/linkprep.py check U/unit.o main U/spec.txt     (or autoload_2, itcm, ovNNN)
+    python3 tools/pipeline/install_tu.py [--replace] main U/spec.txt      spec: `unit unit.s`
+    tools/pipeline/mainbatch.sh [--module M] U ...                        `unit unit.s` works in every module
+
+`check` handles a section with several functions or with data before its first function: the section is placed by
+its lowest function symbol at that symbol's offset; every other global function symbol of the section is checked
+against its `symbols.txt` address (`ORDER`); the section's bytes are compared as a whole (`BYTES`, relocated words
+masked, first difference given as an address); each function's mode (mapping symbol at its offset) must agree with
+`symbols.txt` (`MODE`); a `symbols.txt` function defined without `.type` is `MISSING` with a hint. The other lines
+work as for compiled units. For compiled units nothing changes (one function per section at offset 0; checked: same
+output before and after on main, autoload_2, itcm and overlay units).
+
+`install_tu.py` keeps the extension: `src/main/unk_<start>.s`, `src/<module>/unk_<start>.s`,
+`src/ovNNN/unk_ovNNN_<start>.s`. To replace an existing `asm`-function unit (`.c`/`.cpp`) by a `.s`, give the same
+range and `--replace` (the old file is removed); a remaining unit with the same name and another extension is
+refused or, when it is trimmed, renamed with its own extension.
+
+## Examples (full ROM build `acww_usa.nds: OK`)
+
+* `src/autoload_2/unk_02132ef8.s`: the 64-bit divide (`_ll_udiv`, `_ull_mod`, `_ll_mod`, `_ll_sdiv`), one ARM
+  routine with four entry points and three global join points (`func_02132f0c/f60/fc4`), replacing the
+  seven-`asm`-function `unk_02132ef8.c`.
+* `src/main/unk_02000000.s`: main's secure area 0x02000000-0x02000800, 0x800 bytes in one unit: the `0xe7ffdeff`
+  marker words and Nintendo's filler as data, and the 18 Thumb SVC stubs of libsyscall (`IntrWait`, `WaitByLoop`,
+  `CpuSet`, ...) as global functions at their addresses, 11 of them at 2-mod-4 addresses. ARM callers in autoload_2
+  and ov001 reach them with `blx`, Thumb callers with `bl`. No symbol at 0x02000000 is needed (the range starts at
+  the section start). Generated from the original image by `pipeline_wip/asm_tooling_work/t/gen_secure.py`.
+
+## Limits
+
+* `tools/object_order.py` (units placed object by object) has not been tried with a `.s` object; an assembly unit
+  needs no placement (it is laid out as written).
+* The object's `FILE` symbol holds a Windows path (`Z:\...`); nothing reads it.

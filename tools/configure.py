@@ -8,7 +8,7 @@ import sys
 
 import ninja_syntax
 from get_platform import get_platform
-from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS
+from mwcc_config import MWCC_VERSION, DECOMP_ME_COMPILER, CC_FLAGS, AS_FLAGS
 import object_order
 import bss_units
 import aliases
@@ -84,6 +84,7 @@ DSD = str(args.dsd or os.path.join('.', str(root_path / f"dsd{EXE}")))
 OBJDIFF = os.path.join('.', str(root_path / f"objdiff-cli{EXE}"))
 CC = os.path.join('.', str(mwcc_path / "mwccarm.exe"))
 LD = os.path.join('.', str(mwcc_path / "mwldarm.exe"))
+AS = os.path.join('.', str(mwcc_path / "mwasmarm.exe"))
 PYTHON = sys.executable
 
 
@@ -134,7 +135,7 @@ class Project:
     def source_object_files(self) -> list[str]:
         return [
             str(self.game_build / source_file.with_suffix(".o"))
-            for source_file in get_c_cpp_files([src_path, libs_path])
+            for source_file in [*get_c_cpp_files([src_path, libs_path]), *get_asm_files([src_path, libs_path])]
         ]
 
     def arm9_lcf(self) -> Path:
@@ -203,6 +204,14 @@ def main():
             name="mwcc",
             command=mwcc_cmd,
             depfile="$basefile.d",
+        )
+        n.newline()
+
+        # Standalone assembly units (src/**/*.s, original hand-written assembly), see "Assembly units (.s)" in
+        # tools/pipeline/linking.md. mwasmarm has no -MD for .include files; the units are self-contained.
+        n.rule(
+            name="mwasm",
+            command=f'{WINE} "$as" {AS_FLAGS} {CC_INCLUDES} $as_flags -c $in -o $out',
         )
         n.newline()
 
@@ -303,6 +312,7 @@ def main():
         add_extract_build(n, project)
         add_delink_and_lcf_builds(n, project)
         add_mwcc_builds(n, project, mwcc_implicit)
+        add_mwasm_builds(n, project, [WINE] if platform.system != "windows" and WINE == DEFAULT_WIBO_PATH else [])
         add_mwld_and_rom_builds(n, project)
         add_check_builds(n, project)
         add_objdiff_builds(n, project)
@@ -337,7 +347,7 @@ def add_download_tool_builds(n: ninja_syntax.Writer):
     if args.compiler is None:
         n.build(
             rule="download_tool",
-            outputs=[CC, LD],
+            outputs=[CC, LD, AS],
             variables={
                 "tool": "mwccarm",
                 "tag": "latest",
@@ -630,6 +640,53 @@ def source_mwcc_flags(source_file: Path) -> list[str]:
             if match:
                 return match.group(1).split()
     return []
+
+
+def add_mwasm_builds(n: ninja_syntax.Writer, project: Project, implicit: list[str]):
+    compiled = {source_file.with_suffix("") for source_file in get_c_cpp_files([src_path, libs_path])}
+    for source_file in get_asm_files([src_path, libs_path]):
+        if source_file.with_suffix("") in compiled:
+            sys.exit(f"configure.py: {source_file} and a .c/.cpp file of the same name would both build "
+                     f"{source_file.with_suffix('.o')}")
+        assembler = AS
+        version = source_header(source_file, "mwasm-version")
+        if version is not None:
+            assembler = os.path.join('.', str(mwcc_root / version / "mwasmarm.exe"))
+        flags = source_header(source_file, "mwasm-flags")
+        n.build(
+            inputs=str(source_file),
+            implicit=[*implicit, assembler],
+            rule="mwasm",
+            outputs=str((project.game_build / source_file).with_suffix(".o")),
+            variables={
+                "as": assembler,
+                "as_flags": flags or "",
+            },
+        )
+        n.newline()
+
+
+def source_header(source_file: Path, key: str) -> str | None:
+    # A "; mwasm-flags: ..." / "; mwasm-version: 1.2/sp2" line within the first 10 lines of an assembly unit
+    with open(source_file, encoding="utf-8", errors="replace") as f:
+        for _, line in zip(range(10), f):
+            match = re.match(r"\s*;\s*" + re.escape(key) + r":\s*(.+?)\s*$", line)
+            if match:
+                return match.group(1)
+    return None
+
+
+def get_asm_files(dirs: list[Path]):
+    for dir in dirs:
+        for root, _, files in os.walk(dir):
+            root = Path(root)
+            for file in files:
+                if is_asm(file):
+                    yield root / file
+
+
+def is_asm(name: str):
+    return Path(name).suffix in [".s"]
 
 
 def get_c_cpp_files(dirs: list[Path]):

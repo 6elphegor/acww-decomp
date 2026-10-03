@@ -29,3 +29,11 @@ CC_FLAGS = " ".join([
     "-nolink",              # Do not link
     "-msgstyle gcc",        # Use GCC-like messages (some IDEs will make file names clickable)
 ])
+
+# Standalone assembler (mwasmarm, same package) for the original hand-written assembly units, src/**/*.s. See
+# "Assembly units (.s)" in tools/pipeline/linking.md. A "; mwasm-flags:" line in a unit appends flags.
+AS_FLAGS = " ".join([
+    "-proc arm5TE",         # ARMv5TE (arm946e): blx, clz, qadd, ldrd/strd
+    "-little",              # Little-endian
+    "-msgstyle gcc",        # Use GCC-like messages
+])

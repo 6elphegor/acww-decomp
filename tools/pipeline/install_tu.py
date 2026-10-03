@@ -5,7 +5,10 @@ usage: install_tu.py [--replace] <ovNNN | main | autoload_2 | itcm> <spec>
 
 <spec> is one block in install_units.py format: `unit <source.cpp>` then `<.section> <start> <end>` lines for
 the sections the TU owns. The TU is written to src/<ovNNN>/unk_<ovNNN>_<text start>.cpp (overlays) or
-src/main/unk_<text start>.cpp (main) and listed `complete`.
+src/main/unk_<text start>.cpp (main) and listed `complete`. An assembly unit (`unit unit.s`: original hand-written
+assembly, assembled with mwasmarm; tools/pipeline/linking.md, "Assembly units (.s)") keeps its extension:
+src/main/unk_<text start>.s, src/<module>/unk_<text start>.s, src/<ovNNN>/unk_<ovNNN>_<text start>.s. A file of
+the same name with another extension (.cpp/.s) counts as the same unit name (both would build the same object).
 Existing units of the module are adjusted so nothing overlaps the TU's .text range:
   - a non-complete unit whose .text lies entirely inside the TU's range is removed (git rm + delinks entry);
   - a non-complete unit that straddles the range keeps its file, and its .text range is trimmed to the part
@@ -93,14 +96,15 @@ cfg = ARM9 if ov == "main" else ARM9 / ov if is_main else ARM9 / "overlays" / ov
 if not (cfg / "delinks.txt").is_file():
     sys.exit(f"{ov}: no module {cfg}")
 BSS_CFG = ARM9 / "autoload_3"  # where the bss of main, autoload_2 and itcm lives
+# an assembly unit (original hand-written assembly, mwasmarm) keeps its .s extension in every module
 if ov == "main":
-    name = f"src/main/unk_{first:08x}.cpp"
+    name = f"src/main/unk_{first:08x}{'.s' if src.suffix == '.s' else '.cpp'}"
 elif is_main:
-    if src.suffix not in (".c", ".cpp"):
-        sys.exit(f"{src}: a unit source is a .c or .cpp file")
+    if src.suffix not in (".c", ".cpp", ".s"):
+        sys.exit(f"{src}: a unit source is a .c or .cpp file, or a .s assembly unit")
     name = f"src/{ov}/unk_{first:08x}{src.suffix}"
 else:
-    name = f"src/{ov}/unk_{ov}_{first:08x}.cpp"
+    name = f"src/{ov}/unk_{ov}_{first:08x}{'.s' if src.suffix == '.s' else '.cpp'}"
 
 
 def bss_placeholder(unit):
@@ -238,9 +242,10 @@ for b in blocks:
         print(f"removed {uname}" + (" (was complete)" if complete else ""))
         continue
     na, ne = (a, t0) if a < t0 else (t1, e)
-    if uname == name:
-        # the kept upper part needs a new file name: the TU takes this one
-        new_uname = str(Path(uname).with_name(Path(name).name.replace(f"{first:08x}", f"{na:08x}")))
+    if Path(uname).with_suffix("") == Path(name).with_suffix(""):
+        # the kept upper part needs a new file name: the TU takes this one (also when only the extension differs,
+        # .cpp/.s: both would build the same object)
+        new_uname = str(Path(uname).with_name(Path(uname).name.replace(f"{first:08x}", f"{na:08x}")))
         if Path(new_uname).exists():
             sys.exit(f"cannot rename {uname} to {new_uname}: it exists")
         git_ops.append(["git", "mv", uname, new_uname])
@@ -251,8 +256,8 @@ for b in blocks:
                         for l in lines[1:]]
     out_blocks.append("\n".join(new))
     print(f"trimmed {uname} to {na:#010x}..{ne:#010x}")
-if any(block_name(b) == name for b in out_blocks):
-    sys.exit(f"{name} is already a unit of {cfg / 'delinks.txt'}")
+if any(Path(block_name(b)).with_suffix("") == Path(name).with_suffix("") for b in out_blocks):
+    sys.exit(f"{name} (or a file of that name with another extension) is already a unit of {cfg / 'delinks.txt'}")
 main_kinds = [(s, a, b) for s, a, b in secs if in_main and s in MAIN_KINDS]
 if in_main:
     # the placeholders of removed units go; the TU's ranges in main must be delinked (no other unit of main has them)

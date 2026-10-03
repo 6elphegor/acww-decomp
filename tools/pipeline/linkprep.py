@@ -30,6 +30,8 @@ the unit's spec.txt (or its name in config/usa/arm9/delinks.txt once installed).
 The library modules `autoload_2` and `itcm` (C sources, ARM code) take the place of `main` in all of these:
 
   linkprep.py compile <src.c|src.cpp> <obj.o>      -lang by extension, `// mwcc-flags:` / `// mwcc-version:` lines
+  linkprep.py compile <src.s> <obj.o>              assembly unit: mwasmarm as the build (`; mwasm-flags:` line);
+                                                   `check` takes it like any unit (any module, main/library/overlay)
   linkprep.py check <obj.o> autoload_2 <spec.txt | unit>
   linkprep.py reverse <src.c> itcm
   linkprep.py diff autoload_2
@@ -211,6 +213,14 @@ class Obj:
     def functions(self):
         '''text section index -> function symbol name'''
         return {y[5]: y[0] for y in self.syms if y[3] == 2 and y[5] < len(self.sh)}
+
+    def text_anchor(self, i):
+        '''(name, offset) of the function a .text section is placed by: the first function symbol at offset 0 (compiled
+        code: one function per section), else the lowest one (an assembly unit's section may start with data and hold
+        several functions); None without function symbols'''
+        names = [y for y in self.syms if y[5] == i and y[3] == 2 and not y[0].startswith("$")]
+        first = [y for y in names if y[1] & ~1 == 0] or sorted(names, key=lambda y: y[1])
+        return (first[0][0], first[0][1] & ~1) if first else None
 
 
 # ---------------------------------------------------------------- heapsort model
@@ -841,10 +851,10 @@ def cmd_check(objpath, ov):
     funcs = []
     for i, s in enumerate(o.sh):
         if o.secname[i] == ".text" and s[5]:
-            names = [y[0] for y in o.syms if y[5] == i and y[3] == 2 and not y[0].startswith("$")]
-            funcs.append((names[0] if names else f"sec{i}", s[5]))
+            name, offset = o.text_anchor(i) or (f"sec{i}", 0)
+            funcs.append((name, s[5], offset))
     pos = t0
-    for name, size in funcs:
+    for name, size, offset in funcs:
         want = syms.get(name)
         if want is None or want[0] != ov:
             if re.search(r"(C2|D2)Ev$", name):
@@ -852,10 +862,10 @@ def cmd_check(objpath, ov):
             print(f"EXTRA   {name} ({size:#x} bytes) is not in {ov}'s symbols.txt; it will be linked unless unused")
             problems += 1
             continue
-        if want[1] != pos:
-            print(f"ORDER   {name} would link at {pos:#010x}, original {want[1]:#010x}")
+        if want[1] - offset != pos:
+            print(f"ORDER   {name} would link at {pos + offset:#010x}, original {want[1]:#010x}")
             problems += 1
-            pos = want[1]
+            pos = want[1] - offset
         pos = (pos + size + 3) & ~3
     if pos != t1 and (pos + 0x1f) & ~0x1f != (t1 + 0x1f) & ~0x1f:
         print(f"SIZE    code ends at {pos:#010x}, original .text ends at {t1:#010x}")
@@ -867,10 +877,10 @@ def cmd_check(objpath, ov):
     for i, s in enumerate(o.sh):
         if o.secname[i] != ".text" or not s[5]:
             continue
-        names = [y[0] for y in o.syms if y[5] == i and y[3] == 2 and not y[0].startswith("$")]
-        if not names or names[0] not in syms or syms[names[0]][0] != ov:
+        anchor = o.text_anchor(i)
+        if not anchor or anchor[0] not in syms or syms[anchor[0]][0] != ov:
             continue
-        addr = syms[names[0]][1]
+        addr = syms[anchor[0]][1] - anchor[1]
         mine = o.section_bytes(i)
         theirs = orig[addr - base:addr - base + len(mine)]
         masked = set()
@@ -878,7 +888,8 @@ def cmd_check(objpath, ov):
             masked.update(range(off, off + 4))
         diff = [k for k in range(len(mine)) if k not in masked and k < len(theirs) and mine[k] != theirs[k]]
         if diff:
-            print(f"BYTES   {names[0]} differs from the original at +{diff[0]:#x} ({len(diff)} bytes)")
+            print(f"BYTES   {anchor[0]} differs from the original at "
+                  + (f"+{diff[0]:#x}" if not anchor[1] else f"{addr + diff[0]:#010x}") + f" ({len(diff)} bytes)")
             bytes_bad += 1
     problems += bytes_bad
     # predicted final address of every object section (the linker lays each kind out in object order)
@@ -931,12 +942,11 @@ def cmd_check(objpath, ov):
     relocs = overlay_relocs(ov)
     local = {}  # symbols defined in this object: name -> original address (via symbols.txt)
     wrong = 0
-    fsec = o.functions()
     for sec_i, lst in o.relocs.items():
-        fname = fsec.get(sec_i)
+        fname, foff = o.text_anchor(sec_i) or (None, 0)
         if not fname or fname not in syms or syms[fname][0] != ov:
             continue
-        faddr = syms[fname][1]
+        faddr = syms[fname][1] - foff  # the section's address
         for off, sname, addend, rtype in lst:
             want = relocs.get(faddr + off)
             have = target_addr(sname)
@@ -983,8 +993,36 @@ def syms_by_addr(syms, addr):
 
 
 # ---------------------------------------------------------------- compile
+def cmd_assemble(src, out):
+    '''assemble one .s unit exactly as the build does (build.ninja's mwasm rule plus the file's header lines)'''
+    ninja = Path("build.ninja").read_text()
+    m = re.search(r"^rule mwasm\n  command = (.*?)\n(?:\S|\n|  description|$)", ninja, re.M | re.S)
+    if not m:
+        sys.exit("build.ninja has no mwasm rule: rerun `python3 tools/configure.py usa` with a configure.py that "
+                 "supports assembly units")
+    cmd = re.sub(r"\$\n +", "", m.group(1))
+    version = None
+    extra = []
+    for line in Path(src).read_text(errors="replace").splitlines()[:10]:  # as tools/configure.py (source_header)
+        mv = re.match(r"\s*;\s*mwasm-version:\s*(\S+)", line)
+        mf = re.match(r"\s*;\s*mwasm-flags:\s*(.+?)\s*$", line)
+        if mv and version is None:
+            version = mv.group(1)
+        if mf and not extra:
+            extra = mf.group(1).split()
+    asm = f"./tools/mwccarm/{version or '1.2/base'}/mwasmarm.exe"
+    cmd = cmd.replace('"$as"', f'"{asm}"').replace("$as_flags", " ".join(extra))
+    cmd = cmd.replace("$in", f'"{src}"').replace("$out", f'"{out}"')
+    r = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    sys.stdout.write(r.stdout + r.stderr)
+    return r.returncode
+
+
 def cmd_compile(src, out):
-    '''compile one file exactly as the build does (build.ninja's mwcc rule plus per-file overrides)'''
+    '''compile one file exactly as the build does (build.ninja's mwcc rule plus per-file overrides); a .s file is
+    assembled (build.ninja's mwasm rule)'''
+    if Path(src).suffix == ".s":
+        return cmd_assemble(src, out)
     ninja = Path("build.ninja").read_text()
     m = re.search(r"^rule mwcc\n  command = (.*?)\n  depfile", ninja, re.M | re.S)
     cmd = m.group(1).replace("$\n      ", "").split(" && ")[0]
@@ -1047,6 +1085,9 @@ if __name__ == "__main__":
     me = sys.modules[__name__]
     if a[0] in ("reverse", "undef", "check", "data") and len(a) > 1:
         load_renames(a[2] if a[0] == "data" else a[1])
+    if a[0] in ("reverse", "data") and len(a) > 1 and Path(a[1]).suffix == ".s":
+        sys.exit(f"linkprep.py {a[0]}: {a[1]} is an assembly unit: it is laid out in source order as written "
+                 f"(no function reversal, no data sort); use compile and check")
     if a[0] == "dump" and len(a) > 2 and a[1] in UNIT_MODULES:
         load_renames(a[2])
         main_module(a[1]).cmd_dump(me, a[2])

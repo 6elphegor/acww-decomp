@@ -6,7 +6,8 @@
 # main_unit_instructions.md describes it: spec.txt, unit.cpp, optionally renames.txt and aliases.txt.
 #   --commit   commit the linked units (one commit for the batch) when the ROM matches
 #   --module M the units belong to the library module M (autoload_2 or itcm) instead of main; the source is the
-#              file the spec's `unit` line names (unit.c or unit.cpp)
+#              file the spec's `unit` line names (unit.c or unit.cpp); in any module a spec line `unit unit.s`
+#              installs an assembly unit (tools/pipeline/linking.md, "Assembly units (.s)")
 #   REPLACE=1  pass --replace to install_tu.py (the unit replaces complete code-only units inside its range)
 #   NOCHECK=1  install even if `linkprep.py check` reports problems (to see what the real link does)
 # The tree must be clean in src/main and config (the revert discards every uncommitted change there).
@@ -18,7 +19,7 @@ if [ "$1" = "--module" ]; then MODULE="$2"; shift 2; fi
 if [ "$1" = "--commit" ]; then COMMIT=1; shift; fi
 case "$MODULE" in main|autoload_2|itcm) ;; *) echo "--module: main, autoload_2 or itcm"; exit 2;; esac
 SRC="src/$MODULE"
-[ $# -ge 1 ] || { sed -n 2,13p "$0"; exit 2; }
+[ $# -ge 1 ] || { sed -n 2,14p "$0"; exit 2; }
 [ -f build.ninja ] && [ -f tools/pipeline/install_tu.py ] || { echo "run from the repository root"; exit 2; }
 T="${LOGDIR:-/tmp/mainbatch}"; mkdir -p "$T"
 pgrep -x ninja >/dev/null && { echo "BUSY: a build is running"; exit 2; }
@@ -40,12 +41,13 @@ for D in "$@"; do
   # (renames.txt and aliases.txt are read next to the object, so it is compiled into the unit directory)
   U="$(sed -n 's/^unit[[:space:]]*//p' "$D/spec.txt" | head -1)"
   case "$U" in /*) ;; *) U="$D/$U";; esac
-  [ "$MODULE" = main ] && U="$D/unit.cpp"
+  # main: unit.cpp, or an assembly unit (`unit unit.s`, mwasmarm) as the spec names it
+  [ "$MODULE" = main ] && [ "${U##*.}" != s ] && U="$D/unit.cpp"
   python3 tools/pipeline/linkprep.py compile "$U" "$D/unit.o" > "$T/check_$N.log" 2>&1 \
     || { revert; echo "COMPILE FAILED $N"; tail -5 "$T/check_$N.log"; exit 1; }
   python3 tools/pipeline/linkprep.py check "$D/unit.o" "$MODULE" "$D/spec.txt" >> "$T/check_$N.log" 2>&1 \
     || [ -n "$NOCHECK" ] || { revert; echo "CHECK FAILED $N"
-         grep -E "^(ORDER|BYTES|EXTRA|FOREIGN|MISSING|NORANGE|SIZE|DATA|PLACE|TARGET)" "$T/check_$N.log" | head -15
+         grep -E "^(ORDER|BYTES|EXTRA|FOREIGN|MISSING|NORANGE|SIZE|DATA|PLACE|TARGET|MODE)" "$T/check_$N.log" | head -15
          tail -1 "$T/check_$N.log"; exit 1; }
   python3 tools/pipeline/install_tu.py ${REPLACE:+--replace} "$MODULE" "$D/spec.txt" > "$T/install_$N.log" 2>&1 \
     || { revert; echo "INSTALL FAILED $N"; tail -5 "$T/install_$N.log"; exit 1; }
