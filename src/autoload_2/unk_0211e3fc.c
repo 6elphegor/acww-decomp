@@ -113,12 +113,12 @@ extern void OS_SetIrqFunction(u32, void (*)(void));
 extern void OS_ResetRequestIrqMask(u32);
 extern void OS_EnableIrqMask(u32);
 extern void OS_DisableIrqMask(u32);
-extern void func_01ffa494(u32);
+extern void OS_SpinWait(u32);
 extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
 extern void IC_InvalidateRange(void *, u32);
-extern void func_021145f0(void);
+extern void DC_WaitWriteBufferEmpty(void);
 extern u32 OS_GetDTCMAddress(void);
 extern void MI_StopDma(u32);
 extern void MIi_CardDmaCopy32(u32, u32, u32, u32);
@@ -128,11 +128,11 @@ extern void OS_WakeupThreadDirect(void *);
 extern void OS_SleepThread(u32);
 extern int PXI_IsCallbackReady(u32, u32);
 extern int PXI_SendWordByFifo(u32, u32, u32);
-extern void func_02117dcc(void);
+extern void PXI_Init(void);
 extern void PXI_SetFifoRecvCallback(u32, void *);
 extern void WaitByLoop(u32);
 extern void func_0206d49c(void);
-extern void func_0211c670(void);
+extern void PM_ForceToPowerOff(void);
 extern int OS_ReceiveMessage(void *, void *, u32);
 extern void OS_JamMessage(void *, void *, u32);
 extern void OS_SendMessage(void *, void *, u32);
@@ -143,21 +143,21 @@ extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void OS_GetMacAddress(u8 *);
 extern void RTC_Init(void);
-extern int func_0211d2e0(u32 *);
+extern int RTC_GetTime(u32 *);
 extern void func_0211fb0c(u16, u32, u32);
 
 BOOL func_0211f7e4(void);
-u32 func_0211f73c(void);
+u32 WM_GetLinkLevel(void);
 u32 WM_GetDispersionBeaconPeriod(void);
 u32 WM_GetDispersionScanPeriod(void);
 WMOtherElements WM_GetOtherElements(WMBssDesc *b);
-u32 func_0211f410(void);
+u32 WM_GetNextTgid(void);
 u32 WM_Init(void *buf, u16 dmaNo);
 u32 func_0211f1fc(void *buf, u16 dmaNo, u32 size);
 u32 func_0211f188(void);
 void WMi_SetCallbackTable(u32 idx, void (*cb)(WMMsg *));
 u32 func_0211f01c(u32 id, u16 paramNum, ...);
-WMArm9Buf *func_0211f00c(void);
+WMArm9Buf *WMi_GetSystemWork(void);
 u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
@@ -165,18 +165,18 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err);
 void WmClearFifoRecvFlag(void);
 u32 WMi_GetStatusAddress(void);
 void CARD_InitPulledOutCallback(void);
-void func_0211ea5c(u32 tag, u32 data, BOOL err);
+void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
 void func_0211ea4c(int (*cb)(void));
 void func_0211ea0c(void);
 void func_0211e9a8(u32 data, u32 n);
 void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
 void CARDi_TaskThread(void);
-BOOL func_0211e7c0(CardCommon *c, u32 arg, int retry);
+BOOL CARDi_Request(CardCommon *c, u32 arg, int retry);
 BOOL CARDi_ReadFromCache(u8 *cache);
 void CARDi_SetRomOp(u32 hi, u32 lo);
 void CARDi_SetCardDma(void);
-void func_0211e558(void);
-BOOL func_0211e3fc(CardCommon *req);
+void CARDi_OnReadCard(void);
+BOOL CARDi_TryReadCardDma(CardCommon *req);
 
 // NOT in S013's range (starts at 0x0211e3fc < 0x0211e400); handed to the unit below.
 
@@ -185,7 +185,7 @@ const u32 i = 0x01ff8000;
     const u32 d = OS_GetDTCMAddress();
 return ((i < buf + len) && (i + 0x8000 > buf)) || ((d < buf + len) && (d + 0x4000 > buf));
 }
-BOOL func_0211e3fc(CardCommon *req) {
+BOOL CARDi_TryReadCardDma(CardCommon *req) {
     CardCommon *const c = &data_021fec00;
     u32 dst = c->dst;
     u32 len = c->len;
@@ -210,8 +210,8 @@ if ((dst & 3) == 0 && c->dma <= 3) { if (!CARDi_IsInTcm(dst, len)) ok = 1; }
             len += 32;
         }
         DC_InvalidateRange((void *)dst, len);
-        func_021145f0();
-        OS_SetIrqFunction(0x80000, (void (*)(void))func_0211e558);
+        DC_WaitWriteBufferEmpty();
+        OS_SetIrqFunction(0x80000, (void (*)(void))CARDi_OnReadCard);
         OS_ResetRequestIrqMask(0x80000);
         OS_EnableIrqMask(0x80000);
         OS_RestoreInterrupts(irq);

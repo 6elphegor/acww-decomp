@@ -114,7 +114,7 @@ extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void FS_InitFile(FSFile *);
 extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
-extern s32 func_021198b4(FSFile *, void *, s32);
+extern s32 FS_ReadFile(FSFile *, void *, s32);
 extern void FS_CloseFile(FSFile *);
 extern u32 FSi_GetPackedName(const char *, int);
 extern FSFile *FSi_NextCommand(FSArc *);
@@ -174,18 +174,18 @@ static inline u32 FSi_NameLen2(u32 name) {
 
 int FSi_TranslateCommand(FSFile *file, u32 cmd);
 void FSi_ReleaseCommand(FSFile *file, u32 result);
-int func_0211820c(void);
+int FSi_CloseFileCommand(void);
 int FSi_OpenFileDirectCommand(FSFile *file);
-int func_0211823c(FSFile *file);
+int FSi_OpenFileFastCommand(FSFile *file);
 int FSi_GetPathCommand(FSFile *file);
 int FSi_FindPathCommand(FSFile *file);
 int func_02118894(FSFile *file);
-int func_021189a4(FSFile *file);
+int FSi_SeekDirCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_ReadFileCommand(FSFile *file);
 int FSi_SeekDirDirect(FSFile *file, u32 id);
-void func_02118ae0(FSStream *s, void *dst, u32 len);
+void FSi_ReadTable(FSStream *s, void *dst, u32 len);
 int FSi_StrNICmp(const char *a, const char *b, u32 n);
 void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
@@ -201,7 +201,7 @@ FSArc *FS_FindArchive(const char *name, int len);
 void FS_InitArchive(FSArc *arc);
 BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
-int func_0211823c(FSFile *file) {
+int FSi_OpenFileFastCommand(FSFile *file) {
     u32 out[2];
     FSStream s;
     FSArc *arc = file->arc;
@@ -210,7 +210,7 @@ int func_0211823c(FSFile *file) {
     if (off >= arc->fat_size) return 1;
     s.arc = arc;
     s.pos = arc->fat + off;
-    func_02118ae0(&s, out, 8);
+    FSi_ReadTable(&s, out, 8);
     file->a.w.w30 = out[0];
     file->a.w.w34 = out[1];
     file->a.w.w38 = id;
@@ -225,7 +225,7 @@ int FSi_OpenFileDirectCommand(FSFile *file) {
     return 0;
 }
 
-int func_0211820c(void) {
+int FSi_CloseFileCommand(void) {
     return 0;
 }
 

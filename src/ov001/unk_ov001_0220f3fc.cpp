@@ -2,9 +2,9 @@
 #include "types.h"
 
 extern "C" {
-extern u8 func_02111a6c[];
-s32 func_01ffa494(u32 a);
-s32 func_0211c670();
+extern u8 GX_LoadBG2Scr[];
+s32 OS_SpinWait(u32 a);
+s32 PM_ForceToPowerOff();
 s32 func_ov001_022079fc();
 s32 func_ov001_02207a40(u32 a);
 s32 func_ov001_02208070();
@@ -156,8 +156,8 @@ s32 func_ov001_0220f760() {
 s32 func_ov001_0220f710() {
     if (func_ov001_022250e0(1) != 0) return;
     if (func_ov001_022250e0(0) != 0) return;
-    func_01ffa494(0x1000000);
-    func_0211c670();
+    OS_SpinWait(0x1000000);
+    PM_ForceToPowerOff();
 }
 
 s32 func_ov001_0220f6cc() {
@@ -170,7 +170,7 @@ s32 func_ov001_0220f6cc() {
 }
 
 void func_ov001_0220f62c() {
-    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", func_02111a6c);
+    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", GX_LoadBG2Scr);
     Unk_ov001_0220f62c_Bg();
 }
 

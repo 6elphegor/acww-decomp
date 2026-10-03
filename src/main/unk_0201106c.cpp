@@ -8,7 +8,7 @@ void *func_020e8594(u32 size);
 void func_020e8558(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
-s32 func_021198b4(void *self, void *dst, u32 size);
+s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 }
 
@@ -82,7 +82,7 @@ BOOL Unk_0201106c::func_020112dc(s32 alt) {
     }
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (func_021198b4(this, unk_50 + i * 0x100, 0x100) == ~z4) ok = z3;
+        if (FS_ReadFile(this, unk_50 + i * 0x100, 0x100) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;
@@ -120,7 +120,7 @@ BOOL Unk_0201106c::func_020111b0(s32 alt) {
     }
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (func_021198b4(this, unk_4c + i * 0x100, 0x100) == ~z4) ok = z3;
+        if (FS_ReadFile(this, unk_4c + i * 0x100, 0x100) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;
@@ -154,7 +154,7 @@ BOOL Unk_0201106c::func_020110bc(s32 alt) {
     src = data_020d6f68[alt];
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (func_021198b4(this, unk_4c + i * 0x40, 0x40) == ~z4) ok = z3;
+        if (FS_ReadFile(this, unk_4c + i * 0x40, 0x40) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;

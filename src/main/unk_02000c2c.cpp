@@ -82,7 +82,7 @@ void func_0206d774(void);
 void func_01ffa314(void);
 void func_0206d5c8(void);
 void func_0206d514(void);
-void func_02115468(u32 a);
+void OS_ResetSystem(u32 a);
 void func_020b0b90(void);
 s32 func_0206d610(void);
 
@@ -98,13 +98,13 @@ void func_02001264(u8 *dst, u32 src, u32 size);
 void func_02001338(const char *a, u32 b, const char *c, void *d);
 
 u64 OS_GetTick(void);
-u32 func_01ffa3b4(void);
+u32 OS_GetProcMode(void);
 void OS_DisableInterrupts(void);
 void func_020535e0(void);
 void GX_SetBankForBG(u32 a);
-void func_0210f900(u32 a);
-void func_021117fc(void *a, u32 b, u32 c);
-void func_02111794(void *a, u32 b, u32 c);
+void GX_SetBankForSubBG(u32 a);
+void GX_LoadBG1Char(void *a, u32 b, u32 c);
+void GXS_LoadBG1Char(void *a, u32 b, u32 c);
 void GX_LoadBGPltt(void *a, u32 b, u32 c);
 void GXS_LoadBGPltt(void *a, u32 b, u32 c);
 u32 G2_GetBG1ScrPtr(void);
@@ -239,7 +239,7 @@ void func_02000fc0(void) {
         func_020b82b8(&col, buf + 0x480, "%s:%u", r, data_0213c6e4);
         func_020b82d8(&col, buf + 0x4c0, data_0213c6e0);
     }
-    r = func_01ffa3b4();
+    r = OS_GetProcMode();
     thr = data_021fcc2c[1];
     func_020b82b8(&col, buf + 0x80, "ID:%u mode:%02x", thr->unk_6c, r);
     func_020b82b8(&col, buf + 0xc0, "S:%08x-%08x", thr->unk_90, thr->unk_94);
@@ -279,13 +279,13 @@ void func_02000e64(void) {
     *(vu16 *)0x4000050 = 0;
     *(vu16 *)0x4001050 = 0;
     GX_SetBankForBG(0x40);
-    func_0210f900(0x80);
+    GX_SetBankForSubBG(0x80);
     *(vu32 *)0x4000000 = (*(vu32 *)0x4000000 & 0xffffe0ff) | 0x200;
     *(vu32 *)0x4001000 = (*(vu32 *)0x4001000 & 0xffffe0ff) | 0x200;
     *(vu16 *)0x400000a = (*(vu16 *)0x400000a & 0x43) | 0x400;
     *(vu16 *)0x400100a = (*(vu16 *)0x400100a & 0x43) | 0x400;
-    func_021117fc(data_020de408, 0, 0x1000);
-    func_02111794(data_020de408, 0, 0x1000);
+    GX_LoadBG1Char(data_020de408, 0, 0x1000);
+    GXS_LoadBG1Char(data_020de408, 0, 0x1000);
     GX_LoadBGPltt(data_020e0408, 0x1a0, 0x60);
     GXS_LoadBGPltt(data_020e0408, 0x1a0, 0x60);
     *(vu16 *)0x5000000 = 0x7c00;
@@ -359,7 +359,7 @@ void func_02000cd4(void) {
         held = keys & 4;
         if (held != 0) {
             if ((trig & 1) != 0 && held != 0) {
-                if (func_01ffa3b4() == 0x1f) {
+                if (OS_GetProcMode() == 0x1f) {
                     u32 a = data_021f4824;
                     u32 b = data_021f482c;
                     u32 c = data_021f4818;
@@ -423,7 +423,7 @@ void NitroMain(void) {
         ime = (vu16 *)0x4000208;
         (void)*ime;
         *ime = 1;
-        func_02115468(2);
+        OS_ResetSystem(2);
     }
     func_020b0b90();
     func_0206d610();

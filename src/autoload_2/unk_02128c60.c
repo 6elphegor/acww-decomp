@@ -41,9 +41,9 @@ int OS_TryLockMutex(OSMutex *);
 void OS_LockMutex(OSMutex *);
 void OS_UnlockMutex(OSMutex *);
 void func_021279a0(int);
-const char *func_021298b8(const char *format_string, scan_format *format);
-u32 func_0212bd38(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
-u64 func_0212b8f0(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
+const char *parse_format(const char *format_string, scan_format *format);
+u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
+u64 __strtoull(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
 double func_0212a454(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
 float _d2f(double);
 int func_02128908(u16 *, const char *, u32);
@@ -58,7 +58,7 @@ static inline int isspace_(int c) {
 #define IS_NUM(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[c] & 8))
 
 // strcspn
-u32 func_02129fa0(const char *str, const char *set) {
+u32 strspn(const char *str, const char *set) {
     u8 tset[32] = {0};
     const u8 *p;
     u32 c;
@@ -121,7 +121,7 @@ int func_02129dcc(int sig) {
 }
 
 // parse_format (scanf)
-const char *func_021298b8(const char *format_string, scan_format *format) {
+const char *parse_format(const char *format_string, scan_format *format) {
     const u8 *s = (const u8 *)format_string;
     int c;
     int flag;
@@ -319,7 +319,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             format_ptr++;
             continue;
         }
-        format_ptr = (const u8 *)func_021298b8((const char *)format_ptr, &format);
+        format_ptr = (const u8 *)parse_format((const char *)format_ptr, &format);
         if (!format.suppress_assignment && format.conversion_char != '%') {
             arg_ptr = *(u8 **)((ap += 4) - 4);
         } else {
@@ -336,9 +336,9 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             base = 0;
         signed_int:
             if (format.argument_options == 7) {
-                ull = func_0212b8f0(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                ull = __strtoull(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             } else {
-                u = func_0212bd38(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                u = __strtoul(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             }
             if (!num_chars) goto end;
             chars_read += num_chars;
@@ -391,9 +391,9 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             base = 16;
         unsigned_int:
             if (format.argument_options == 7) {
-                ull = func_0212b8f0(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                ull = __strtoull(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             } else {
-                u = func_0212bd38(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                u = __strtoul(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             }
             if (!num_chars) goto end;
             chars_read += num_chars;
@@ -629,6 +629,6 @@ int rand(void) {
 }
 
 // srand
-void func_02128c60(u32 seed) {
+void srand(u32 seed) {
     data_0213c4fc = seed;
 }

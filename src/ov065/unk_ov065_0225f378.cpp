@@ -48,7 +48,7 @@ s32 OS_ReceiveMessage(void *, void *, s32);
 s32 OS_SendMessage(void *, void *, s32);
 void OS_EnableScheduler(void);
 void OS_RestoreInterrupts(u32);
-void func_02113554(void);
+void OSi_RescheduleThread(void);
 void OS_InitMessageQueue(void *, void *, s32);
 s32 OS_ReadMessage(void *, void *, s32);
 
@@ -216,7 +216,7 @@ void func_ov065_0225f378(void *q)
         func_ov065_0225f4b8(m);
         OS_EnableScheduler();
         OS_RestoreInterrupts(irq);
-        func_02113554();
+        OSi_RescheduleThread();
     }
 }
 }

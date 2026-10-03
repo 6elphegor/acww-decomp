@@ -16,7 +16,7 @@ static inline void BitReaderReload(BitReader *reader)
 }
 
 // NNSi_G2dBitReaderRead
-u32 func_02103734(BitReader *reader, int nBits)
+u32 NNSi_G2dBitReaderRead(BitReader *reader, int nBits)
 {
     u32 val = reader->bits;
     int nAvlBits = reader->availableBits;
@@ -25,7 +25,7 @@ u32 func_02103734(BitReader *reader, int nBits)
         int lack = nBits - nAvlBits;
         val <<= lack;
         BitReaderReload(reader);
-        val |= func_02103734(reader, lack);
+        val |= NNSi_G2dBitReaderRead(reader, lack);
     } else {
         int rest = nAvlBits - nBits;
         val >>= rest;

@@ -390,7 +390,7 @@ void func_02056b28(void *self, u8 *a, const char *b);
 s32 func_020567e4(void *self);
 s32 func_02056fcc(void *self, const char *s);
 s32 func_02057110(void *self, const char *s);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 u32 func_02064f60();
 s32 func_02055600(void *self, u32 a, u32 b);
@@ -422,7 +422,7 @@ void func_02003c30(void *self);
 void func_020547cc(void *self, s32 a);
 void func_020ac40c();
 void func_020abe28();
-void func_02106174(void *a, s32 b, u32 c);
+void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
 s32 func_02054584(void *self);
 void func_020547e4(void *self);
 void func_020566bc(void *self);
@@ -545,7 +545,7 @@ BOOL Unk_ov004_0224e488::vfunc_24() {
         Unk_ov004_0222b954_Pair t;
         t.a = func_ov004_0222a560(this);
         t.b = t.a;
-        func_02106174(unk_ac, unk_3540, t.b);
+        NNS_G3dMdlSetMdlDiff(unk_ac, unk_3540, t.b);
     }
     func_020547cc(&unk_50, 0);
     return TRUE;
@@ -1207,16 +1207,16 @@ void Unk_ov004_0224e488::vfunc_4c(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
     if (a) {
         switch (unk_3522) {
         case 4:
-            v8 = func_01ffc5a4(0, 0x64000) + 0x2000;
-            vc = func_01ffc5a4(0, 0x64000) + 0x4000;
+            v8 = FX_Div(0, 0x64000) + 0x2000;
+            vc = FX_Div(0, 0x64000) + 0x4000;
             break;
         case 6:
-            v8 = func_01ffc5a4(0, 0x64000) + 0x2000;
-            vc = func_01ffc5a4(0, 0x64000) + 0x4000;
+            v8 = FX_Div(0, 0x64000) + 0x2000;
+            vc = FX_Div(0, 0x64000) + 0x4000;
             break;
         case 8:
-            v8 = func_01ffc5a4(0, 0x64000) + 0x2000;
-            vc = func_01ffc5a4(0, 0x64000) + 0x4000;
+            v8 = FX_Div(0, 0x64000) + 0x2000;
+            vc = FX_Div(0, 0x64000) + 0x4000;
             break;
         }
         o->unk_b0->unk_18 = v8;
@@ -1224,13 +1224,13 @@ void Unk_ov004_0224e488::vfunc_4c(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
     } else {
         switch (unk_3522) {
         case 4:
-            v10 = func_01ffc5a4(0, 0x64000) + 0x2000;
+            v10 = FX_Div(0, 0x64000) + 0x2000;
             break;
         case 6:
-            v10 = func_01ffc5a4(0, 0x64000) + 0x3000;
+            v10 = FX_Div(0, 0x64000) + 0x3000;
             break;
         case 8:
-            v10 = func_01ffc5a4(0, 0x64000) + 0x4000;
+            v10 = FX_Div(0, 0x64000) + 0x4000;
             break;
         }
         o->unk_b0->unk_18 = v10;

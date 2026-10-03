@@ -412,7 +412,7 @@ s32 func_ov065_0226a264(void *a, void *b, u32 c);
 s32 func_ov065_0226c81c(u32 v);
 s32 func_ov065_0226c750(s32 v);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-void func_02115e64(u32 v, void *dst, u32 n);
+void MIi_CpuClear32(u32 v, void *dst, u32 n);
 s32 strncmp(const void *a, const void *b, u32 n);
 s64 OS_GetTick(void);
 
@@ -672,7 +672,7 @@ s32 func_ov065_0226c1e0(void) {
 s32 func_ov065_0226c160(s32 mode) {
     Unk_ov065_0226bf70_Ctx *ctx = (Unk_ov065_0226bf70_Ctx *)func_ov065_0226af74(0x10);
     volatile s32 z = 0;
-    func_02115e64(z, ctx->unk_300, 0x144);
+    MIi_CpuClear32(z, ctx->unk_300, 0x144);
     switch (mode) {
     case 0:
         ctx->unk_d10 = func_ov065_0226c0e8(ctx);
@@ -1601,7 +1601,7 @@ void OS_InitMutex(void *);
 s32 DGT_Hash1GetDigest_R();
 s32 DGT_Hash1SetSource();
 s32 DGT_Hash1Reset();
-void func_02115e64(u32, void *, u32);
+void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
@@ -1689,8 +1689,8 @@ void func_ov065_0226b3c4(u32 n, u8 *base) {
             j--;
         } while (j >= 0);
     }
-    { volatile u32 z = 0; keys += 10; func_02115e64(z, keys, 4); }
-    { volatile u32 z = 0; func_02115e64(z, recs + 10, 0xc0); }
+    { volatile u32 z = 0; keys += 10; MIi_CpuClear32(z, keys, 4); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, recs + 10, 0xc0); }
 }
 
 }

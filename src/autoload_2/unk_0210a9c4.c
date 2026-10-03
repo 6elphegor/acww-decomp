@@ -54,16 +54,16 @@ extern s32 data_021fb6a4;
 extern NNSFndList data_021fb6a8;
 extern Cap data_021fb7b4;
 extern void NNS_FndInitList(NNSFndList *, u16);
-extern void func_0210a4f0(void *);
-extern void func_0210a478(void *);
-extern void func_0210ab48(Cap *);
-extern void func_021097a4(u32);
-extern u32 func_021097dc(u32);
+extern void BeginSleep__stream(void *);
+extern void EndSleep__stream(void *);
+extern void AlarmCallback(Cap *);
+extern void NNS_SndUnlockChannel(u32);
+extern u32 NNS_SndLockChannel(u32);
 extern s32 OS_ReceiveMessage();
 extern s32 OS_SendMessage();
 extern void DC_InvalidateRange(void *, u32);
 extern void DC_FlushRange(void *, u32);
-extern void func_02115e64(u32, void *, u32);
+extern void MIi_CpuClear32(u32, void *, u32);
 extern void SND_StartTimer(u32, u32, u32, u32);
 extern void SND_StopTimer(u32, u32, u32, u32);
 extern u32 SND_GetCurrentCommandTag(void);
@@ -76,11 +76,11 @@ extern u32 data_027e038c;
 extern s32 data_027e0390;
 extern CapMsg data_021fb808[];
 extern u32 data_021fb774;
-extern void func_0210ad4c(void);
+extern void NNSi_SndCaptureStop(void);
 extern void func_0210aadc(void *);
 
 // NNS_SndCaptureStop
-void func_0210ad4c(void)
+void NNSi_SndCaptureStop(void)
 {
     BOOL hasAlarm;
     u32 tag;
@@ -102,7 +102,7 @@ void func_0210ad4c(void)
         NNS_SndUnlockCapture(c->capMask);
     }
     if (c->chMask != 0) {
-        func_021097a4(c->chMask);
+        NNS_SndUnlockChannel(c->chMask);
     }
     if (hasAlarm) {
         NNS_SndFreeAlarm(c->alarm);
@@ -114,7 +114,7 @@ void func_0210ad4c(void)
 }
 
 // NNS_SndCapturePause
-void func_0210acec(void)
+void NNSi_SndCaptureBeginSleep(void)
 {
     Cap *c = &data_021fb7b4;
     u32 tag;
@@ -129,7 +129,7 @@ void func_0210acec(void)
 }
 
 // NNS_SndCaptureStartEffect restart / clear
-void func_0210ac4c(void)
+void NNSi_SndCaptureEndSleep(void)
 {
     Cap *c = &data_021fb7b4;
     volatile u32 zero1;
@@ -139,16 +139,16 @@ void func_0210ac4c(void)
     }
     c->blkIdx = 0;
     zero1 = 0;
-    func_02115e64(zero1, (void *)c->bufL, c->size);
+    MIi_CpuClear32(zero1, (void *)c->bufL, c->size);
     zero2 = 0;
-    func_02115e64(zero2, (void *)c->bufR, c->size);
+    MIi_CpuClear32(zero2, (void *)c->bufR, c->size);
     DC_FlushRange((void *)c->bufL, c->size);
     DC_FlushRange((void *)c->bufR, c->size);
     SND_StartTimer(c->startCh, c->capMask, (c->alarm >= 0) ? 1 << c->alarm : 0, 0);
 }
 
 // capture alarm callback
-void func_0210ab48(Cap *cap)
+void AlarmCallback(Cap *cap)
 {
     u32 l;
     u32 r;
@@ -196,15 +196,15 @@ void func_0210aadc(void *arg)
 }
 
 // NNS_SndStrmInit
-void func_0210aa58(Strm *st)
+void NNS_SndStrmInit(Strm *st)
 {
     if (data_021fb6a4 == 0) {
         NNS_FndInitList(&data_021fb6a8, 0);
         data_021fb6a4 = 1;
     }
-    st->pm0.cb = (void (*)(void *))func_0210a4f0;
+    st->pm0.cb = (void (*)(void *))BeginSleep__stream;
     st->pm0.arg = st;
-    st->pm1.cb = (void (*)(void *))func_0210a478;
+    st->pm1.cb = (void (*)(void *))EndSleep__stream;
     st->pm1.arg = st;
     st->chMask = 0;
     st->chCount = 0;
@@ -213,7 +213,7 @@ void func_0210aa58(Strm *st)
 }
 
 // NNS_SndStrmAllocChannel
-BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
+BOOL NNS_SndStrmAllocChannel(Strm *st, s32 n, u8 *ch)
 {
     u32 mask = 0;
     s32 i;
@@ -221,7 +221,7 @@ BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
         st->chIdx[i] = ch[i];
         mask |= 1 << ch[i];
     }
-    if (func_021097dc(mask) == 0) {
+    if (NNS_SndLockChannel(mask) == 0) {
         return 0;
     }
     st->chCount = n;
@@ -230,12 +230,12 @@ BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
 }
 
 // NNS_SndStrmFreeChannel
-void func_0210a9c4(Strm *st)
+void NNS_SndStrmFreeChannel(Strm *st)
 {
     if (st->chMask == 0) {
         return;
     }
-    func_021097a4(st->chMask);
+    NNS_SndUnlockChannel(st->chMask);
     st->chMask = 0;
     st->chCount = 0;
 }

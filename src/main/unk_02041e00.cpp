@@ -113,7 +113,7 @@ s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
 void func_02041aec(Unk_020419b4 *p);
 void *func_020e8608(u32 heap, u32 size);
-void func_02113a70(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
+void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void func_020e9244(u32 a, u32 b);
 void OS_WakeupThreadDirect(void *th);
 u32 DC_FlushAll();

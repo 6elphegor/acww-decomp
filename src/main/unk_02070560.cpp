@@ -1939,7 +1939,7 @@ extern "C" {
 extern s32 (*data_020cbaf0[])(s32);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 void *func_02097868(void *a, s32 i);

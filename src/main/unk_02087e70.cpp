@@ -50,7 +50,7 @@ extern Unk_02088b20 *data_021ce63c;
 
 BOOL func_02087c8c(u32 mode);
 s32 func_02087cd8(void *base, s32 *cnt, s32 *m);
-s32 func_01ffc5a4(s32 v, s32 s);
+s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02087e30(u32 *p);
 s32 func_02087e50(u32 *p);
@@ -125,9 +125,9 @@ extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
     func_0203eeac(&v1, a);
     func_0203eeac(&v2, b);
     func_020e9960(&v3, &v2, &v1);
-    v3.x = func_01ffc5a4(v3.x, 0x6000);
-    v3.y = func_01ffc5a4(v3.y, 0x6000);
-    v3.z = func_01ffc5a4(v3.z, 0x6000);
+    v3.x = FX_Div(v3.x, 0x6000);
+    v3.y = FX_Div(v3.y, 0x6000);
+    v3.z = FX_Div(v3.z, 0x6000);
     for (i = 0; i < 6; i++) {
         pts[i].x = v1.x + i * v3.x;
         pts[i].y = v1.y + i * v3.y;
@@ -455,10 +455,10 @@ top:
             x = (x + hw) << 12;
             y = (y + hh) << 12;
             if (sx != 0x1000) {
-                x = func_01ffc5a4(x, sx);
+                x = FX_Div(x, sx);
             }
             if (sy != 0x1000) {
-                y = func_01ffc5a4(y, sy);
+                y = FX_Div(y, sy);
             }
             if (rot != 0) {
                 s16 *sinp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2];

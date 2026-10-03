@@ -54,8 +54,8 @@ void func_ov065_0226adf0(void *);
 void func_ov065_0226ade8(void *, void *, s32);
 void func_ov065_0226ade0(void *, void *);
 void func_02128acc(void *, s32, s32, Unk_ov065_02278384_Cmp);
-void func_021289b4(void *, void *, s32);
-void func_02128a00(void *, void *, s32);
+void memmove(void *, void *, s32);
+void memcpy(void *, void *, s32);
 s32 OS_SPrintf(char *, char *, s32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
@@ -267,7 +267,7 @@ void func_ov065_02278720(Unk_ov065_022786bc_Vec *v) {
 }
 
 void func_ov065_02278700(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
-    func_02128a00(func_ov065_0227866c(v, i), x, v->unk_08);
+    memcpy(func_ov065_0227866c(v, i), x, v->unk_08);
 }
 
 Unk_ov065_022786bc_Vec *func_ov065_022786bc(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor) {
@@ -324,7 +324,7 @@ void func_ov065_02278600(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
     if (i < last) {
         void *dst = func_ov065_0227866c(v, i + 1);
         void *src = func_ov065_0227866c(v, i);
-        func_021289b4(dst, src, v->unk_08 * (last - i));
+        memmove(dst, src, v->unk_08 * (last - i));
     }
     func_ov065_02278700(v, x, i);
 }
@@ -340,7 +340,7 @@ void func_ov065_0227858c(Unk_ov065_022786bc_Vec *v, s32 i) {
     if (i < last) {
         void *a = func_ov065_0227866c(v, i);
         void *b = func_ov065_0227866c(v, i + 1);
-        func_021289b4(a, b, v->unk_08 * (last - i));
+        memmove(a, b, v->unk_08 * (last - i));
     }
     v->unk_00 = v->unk_00 - 1;
 }

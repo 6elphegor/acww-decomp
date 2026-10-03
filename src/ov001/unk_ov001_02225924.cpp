@@ -21,9 +21,9 @@ typedef volatile u32 vu32;
 extern "C" {
 u32 OS_DisableIrqMask(u32 a);
 void OS_EnableIrqMask(u32 a);
-void func_021006c8(void *heap, void *p);
+void NNS_FndFreeToExpHeap(void *heap, void *p);
 void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, u32 b);
-void func_021008d4(void *heap);
+void NNS_FndDestroyExpHeap(void *heap);
 void *NNS_FndCreateExpHeapEx(void *buf, u32 size, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 size);
 void func_0206d49c();
@@ -67,7 +67,7 @@ void func_ov001_02225e58(void *buf) {
 }
 
 void func_ov001_02225e28() {
-    func_021008d4(data_ov001_0222df48);
+    NNS_FndDestroyExpHeap(data_ov001_0222df48);
     data_ov001_0222df48 = 0;
 }
 
@@ -89,7 +89,7 @@ void *func_ov001_02225db0(u32 size, u32 b) {
 void func_ov001_02225d58(void **pp) {
     u32 irq = OS_DisableIrqMask(1);
     if (*pp == 0) return;
-    func_021006c8(data_ov001_0222df48, *pp);
+    NNS_FndFreeToExpHeap(data_ov001_0222df48, *pp);
     OS_EnableIrqMask(irq);
     *pp = 0;
 }
@@ -97,7 +97,7 @@ void func_ov001_02225d58(void **pp) {
 void func_ov001_02225d08(void *p) {
     u32 irq = OS_DisableIrqMask(1);
     if (p == 0) return;
-    func_021006c8(data_ov001_0222df48, p);
+    NNS_FndFreeToExpHeap(data_ov001_0222df48, p);
     OS_EnableIrqMask(irq);
 }
 

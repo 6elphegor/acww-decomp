@@ -267,17 +267,17 @@ extern volatile int data_021f89c8;        // DL send busy flag
 extern int data_021f89cc;                 // use the fast GX DMA
 extern u32 data_0213bfec;                 // GXi_DmaId
 
-extern void func_02115e64(u32 data, void *dest, u32 size); // MIi_CpuClear32
+extern void MIi_CpuClear32(u32 data, void *dest, u32 size); // MIi_CpuClear32
 extern void MIi_CpuClearFast(u32 data, void *dest, u32 size); // MIi_CpuClearFast
 extern void MIi_CpuCopyFast(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
 extern void MIi_CpuSend32(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
 extern void MI_SendGXCommandAsyncFast(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
-extern void func_02105ac4(u32 *vec, AnmObj *anm);          // updateHintVec
+extern void updateHintVec_(u32 *vec, AnmObj *anm);          // updateHintVec
 extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
 extern void FX_DivAsync(fx32 numer, fx32 denom);         // FX_DivAsync
 extern fx32 FX_GetDivResult(void);                           // FX_GetDivResult
 extern void MI_Zero36B(void *dst);                      // MI_Zero36B (Thumb)
-extern void func_0210a544(void *p, u32 n);
+extern void StrmCallback(void *p, u32 n);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 {
@@ -375,54 +375,54 @@ void func_01ff8160(void);
 u32 OS_ResetRequestIrqMask(u32 intr);
 u32 OS_SetIrqMask(u32 intr);
 void OSi_IrqCallback(int index);
-void func_01ff82f8(void);
-void func_01ff8308(void);
-void func_01ff8318(void);
-void func_01ff8328(void);
-void func_01ff8338(void);
-void func_01ff8348(void);
-void func_01ff8358(void);
-void func_01ff8368(void);
-void func_01ff8378(void *arg);
+void OSi_IrqDma0(void);
+void OSi_IrqDma1(void);
+void OSi_IrqDma2(void);
+void OSi_IrqDma3(void);
+void OSi_IrqTimer0(void);
+void OSi_IrqTimer1(void);
+void OSi_IrqTimer2(void);
+void OSi_IrqTimer3(void);
+void simpleUnlock_(void *arg);
 void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a);
-void func_01ff83cc(MtxFx44 *m, const MatAnm *a);
-void func_01ff844c(MtxFx44 *m, const MatAnm *a);
-void func_01ff8528(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagR_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagS_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTRS_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a);
-void func_01ff8590(MtxFx44 *m, const MatAnm *a);
-void func_01ff8654(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTS_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagT_(MtxFx44 *m, const MatAnm *a);
 void func_01ff8740(MtxFx44 *m, const MatAnm *a);
 void func_01ff8858(u32 *vec, const AnmObj *anm);
-void func_01ff88d0(RS *rs, RenderObj *obj);
-void func_01ff8a64(RS *rs);
-void func_01ff8ad4(RenderObj *obj);
-void func_01ff8bd0(u32 op, const u32 *args, u32 num);
-void func_01ff8ccc(void);
-void func_01ff8d4c(const void *src, u32 szByte);
+void G3dDrawInternal_(RS *rs, RenderObj *obj);
+void G3dDrawInternal_Loop_(RS *rs);
+void NNS_G3dDraw(RenderObj *obj);
+void NNS_G3dGeBufferOP_N(u32 op, const u32 *args, u32 num);
+void NNS_G3dGeFlushBuffer(void);
+void NNS_G3dGeSendDL(const void *src, u32 szByte);
 void NNS_G3dGeWaitSendDL(void);
-void func_01ff8e30(RS *rs, u32 opt);
-void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
-void func_01ff931c(RS *rs, u32 opt);
-void func_01ff93f4(RS *rs, u32 opt);
-void func_01ff9580(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_MAT(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_MAT_InternalDefault(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
+void NNSi_G3dFuncSbc_MTX(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_NODE(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_NODEDESC(RS *rs, u32 opt);
 void func_01ff99c8(RS *rs, u32 opt);
 void func_01ff99f4(RS *rs, u32 opt);
 void func_01ff9a60(RS *rs, u32 opt);
-void func_01ff9a8c(RS *rs, u32 opt);
-void func_01ff9b04(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp);
-void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
-void func_01ff9d34(JntAnm *pResult);
+void NNSi_G3dFuncSbc_SHP(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_SHP_InternalDefault(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp);
+void NNSi_G3dGetJointScaleMaya(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
+void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
 void func_01ff9e10(MatAnm *pResult);
 void func_01ff9f5c(void *p);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
-void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 dir);
+void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
 void MIi_DMACallback(void *arg);
 void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
 void MIi_FIFOCallback(void);
 
 // NNS g3d: SBC interpreter loop
-void func_01ff8a64(RS *rs) {
+void G3dDrawInternal_Loop_(RS *rs) {
     do {
         rs->flag &= ~0x40;
         data_0213be50[*rs->c & 0x1f](rs, *rs->c & 0xe0);
@@ -430,7 +430,7 @@ void func_01ff8a64(RS *rs) {
 }
 
 // NNS g3d: initialise the render state and run the SBC (part of NNS_G3dDraw)
-void func_01ff88d0(RS *rs, RenderObj *obj) {
+void G3dDrawInternal_(RS *rs, RenderObj *obj) {
     {
         volatile u32 zero = 0;
         MIi_CpuClearFast(zero, rs, sizeof(RS));
@@ -462,7 +462,7 @@ void func_01ff88d0(RS *rs, RenderObj *obj) {
     if (obj->cbInitFunc) {
         obj->cbInitFunc(rs);
     }
-    func_01ff8a64(rs);
+    G3dDrawInternal_Loop_(rs);
     obj->flag &= ~1;
 }
 
@@ -499,7 +499,7 @@ void func_01ff8740(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT: scale + rotation
-void func_01ff8654(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagT_(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
     fx32 ssCos, ssSin, stSin, stCos;
@@ -518,7 +518,7 @@ void func_01ff8654(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT: rotation only
-void func_01ff8590(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagTS_(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
     FX_DivAsync(h, w);
@@ -542,7 +542,7 @@ void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT: identity
-void func_01ff8528(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagTRS_(MtxFx44 *m, const MatAnm *a) {
     m->_00 = 0x1000;
     m->_01 = 0;
     m->_10 = 0;
@@ -552,7 +552,7 @@ void func_01ff8528(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT (Maya): rotation + translation
-void func_01ff844c(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagS_(MtxFx44 *m, const MatAnm *a) {
     fx32 w = a->origW << 12;
     fx32 h = a->origH << 12;
     FX_DivAsync(h, w);
@@ -566,7 +566,7 @@ void func_01ff844c(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d texture SRT (Maya): scale + translation
-void func_01ff83cc(MtxFx44 *m, const MatAnm *a) {
+void texmtxCalc_flagR_(MtxFx44 *m, const MatAnm *a) {
     m->_00 = a->scaleS;
     m->_11 = a->scaleT;
     m->_01 = 0;
@@ -586,47 +586,47 @@ void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a) {
 }
 
 // NNS g3d: display-list DMA done callback (clears the busy flag)
-void func_01ff8378(void *arg) {
+void simpleUnlock_(void *arg) {
     *(u32 *)arg = 0;
 }
 
 // OSi_IrqTimer3
-void func_01ff8368(void) {
+void OSi_IrqTimer3(void) {
     OSi_IrqCallback(7);
 }
 
 // OSi_IrqTimer2
-void func_01ff8358(void) {
+void OSi_IrqTimer2(void) {
     OSi_IrqCallback(6);
 }
 
 // OSi_IrqTimer1
-void func_01ff8348(void) {
+void OSi_IrqTimer1(void) {
     OSi_IrqCallback(5);
 }
 
 // OSi_IrqTimer0
-void func_01ff8338(void) {
+void OSi_IrqTimer0(void) {
     OSi_IrqCallback(4);
 }
 
 // OSi_IrqDma3
-void func_01ff8328(void) {
+void OSi_IrqDma3(void) {
     OSi_IrqCallback(3);
 }
 
 // OSi_IrqDma2
-void func_01ff8318(void) {
+void OSi_IrqDma2(void) {
     OSi_IrqCallback(2);
 }
 
 // OSi_IrqDma1
-void func_01ff8308(void) {
+void OSi_IrqDma1(void) {
     OSi_IrqCallback(1);
 }
 
 // OSi_IrqDma0
-void func_01ff82f8(void) {
+void OSi_IrqDma0(void) {
     OSi_IrqCallback(0);
 }
 

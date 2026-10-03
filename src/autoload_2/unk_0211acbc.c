@@ -27,13 +27,13 @@ extern const u32 data_0213c008[48]; // MD5 message index table (rounds 2-4)
 extern const u8 data_0213c004[1];   // MD5 padding byte 0x80
 extern SHA1Compress data_0213c1c8;  // SHA1 block function pointer
 
-extern void func_02115e64(u32 data, void *dest, u32 size); // MI_CpuFill32
+extern void MIi_CpuClear32(u32 data, void *dest, u32 size); // MI_CpuFill32
 extern void MI_CpuFill8(void *dest, u32 data, u32 size); // MI_CpuFill8
 extern void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
 
 void DGT_Hash2Reset(SHA1Context *ctx);
 void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len);
-void func_0211b040(SHA1Context *ctx, u8 *hash, ...);
+void DGT_Hash2GetDigest(SHA1Context *ctx, u8 *hash, ...);
 void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
 void DGT_Hash1Reset(MD5Context *ctx);
 void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);

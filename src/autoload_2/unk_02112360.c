@@ -10,7 +10,7 @@ typedef struct { u32 func, enable, arg; } IrqCb;
 extern IrqCb data_027e0088[]; // OSi_IrqCallbackInfo
 
 // clears two words at 0x027e0450 (DTCM), probably an OS_Init* helper
-void func_021123ac(void) {
+void OS_InitIrqTable(void) {
     T12 *p = (T12 *)0x027e0450;
     p->b = 0;
     p->a = 0;

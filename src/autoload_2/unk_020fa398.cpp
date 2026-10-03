@@ -3,4 +3,4 @@
 // Empty texture-state callback of the particle manager (used when a resource has the "skip texture" bit; selected next to spl_set_tex).
 #include "types.h"
 
-extern "C" void func_020fa398(void *p) {}
+extern "C" void spl_set_tex_dummy(void *p) {}

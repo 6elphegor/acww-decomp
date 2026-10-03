@@ -8,7 +8,7 @@ u8 *func_02050208(void);
 u8 *func_0205021c(void);
 u32 func_020a6c1c(u32 a, u32 b);
 u32 func_020a6c40(u32 a, u32 b);
-int func_0212a190(const u8 *a, const u8 *b);
+int strcmp(const u8 *a, const u8 *b);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 s32 FX_Modf(s32 v, s32 *out);
 int func_020639e8(char *dst, const char *fmt, ...);
@@ -640,7 +640,7 @@ BOOL Unk_020e3f5c::func_020b38dc() {
 
 BOOL Unk_020e3f5c::func_020b38a8() {
     u8 *p = (u8 *)unk_24->unk_b38->vfunc_0c();
-    return func_0212a190(p, (u8 *)unk_24->unk_4fc) != 0;
+    return strcmp(p, (u8 *)unk_24->unk_4fc) != 0;
 }
 
 Unk_020e3f38::Unk_020e3f38() {

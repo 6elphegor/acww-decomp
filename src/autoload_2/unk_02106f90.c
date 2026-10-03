@@ -84,7 +84,7 @@ void getMdlTrans_(JOut *out)
 }
 
 // joint scale from the render state node (calls the RS callback with the data pointer)
-void func_021073f8(void *out)
+void getMdlScale_(void *out)
 {
     RS *rs = data_021f5cc0;
     u8 *jnt = rs->jnt;
@@ -107,7 +107,7 @@ void func_021073f8(void *out)
 }
 
 // joint rotation from the render state node (identity flag / pivot matrix / 8 stored values)
-void func_02107298(JOut *out)
+void getMdlRot_(JOut *out)
 {
     RS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
@@ -150,7 +150,7 @@ void func_02107298(JOut *out)
 }
 
 // same as 02106f90 but without frame blending
-void func_0210710c(s32 *out, u32 f, u32 *ent, u8 *base)
+void getTransData_(s32 *out, u32 f, u32 *ent, u8 *base)
 {
     u8 *d;
     u32 info;
@@ -218,7 +218,7 @@ fetch:
 }
 
 // joint animation: interpolated single value (s16 or s32, with frame blending)
-void func_02106f90(s32 *out, s32 frame, u32 *ent, u8 *hdr)
+void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     u8 *d = hdr + ent[1];
     u32 info = ent[0];

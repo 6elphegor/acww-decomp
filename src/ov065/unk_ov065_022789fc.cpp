@@ -129,9 +129,9 @@ char *func_02127838(char *d, const char *s);
 void *func_ov065_02277af0(u32 n);
 void *func_ov065_02277ad8(void *p, s32 n);
 void func_ov065_02277ac8(void *p);
-void func_021132e0(s32 ms);
+void OS_Sleep(s32 ms);
 u64 OS_GetTick();
-void func_02128a00(void *d, const void *s, u32 n);
+void memcpy(void *d, const void *s, u32 n);
 void func_0212899c(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
@@ -240,7 +240,7 @@ s32 func_ov065_02279168(Unk_ov065_0227931c_Buf *o, char *dst, s32 *len) {
     if (n >= avail) {
         n = avail;
     }
-    func_02128a00(dst, o->unk_04 + o->unk_10, n);
+    memcpy(dst, o->unk_04 + o->unk_10, n);
     dst[n] = 0;
     *len = n;
     o->unk_10 += n;
@@ -260,7 +260,7 @@ u32 func_ov065_02279144() {
 namespace FB {
 extern "C" {
 void func_ov065_0227913c(s32 ms) {
-    func_021132e0(ms);
+    OS_Sleep(ms);
 }
 }
 }

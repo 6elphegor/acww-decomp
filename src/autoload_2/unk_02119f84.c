@@ -207,11 +207,11 @@ static inline BOOL IsIdle(volatile FSFile *f) {
 }
 
 int FSi_RomArchiveProc(FSFile *file, u32 cmd);
-u32 func_02119f8c(void);
-u32 func_02119f84(void);
-u32 func_0211a024(void);
-int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len);
-void func_0211a078(FSArc *arc);
+u32 FSi_ReadDummyCallback(void);
+u32 FSi_EmptyArchiveProc(void);
+u32 FSi_WriteDummyCallback(void);
+int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len);
+void FSi_OnRomReadDone(FSArc *arc);
 void FS_InitFile(FSFile *file);
 void FSi_InitRom(u32 dma);
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
@@ -219,14 +219,14 @@ BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
 BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path);
 BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
 s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
-s32 func_021198b4(FSFile *file, void *dst, s32 len);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 BOOL FS_CloseFile(FSFile *file);
 BOOL FS_WaitAsync(FSFile *file);
 int FSi_ExecuteSyncCommand(FSFile *file);
 FSFile *FSi_NextCommand(volatile FSArc *arc);
 void FSi_ExecuteAsyncCommand(FSFile *file);
 BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
-void func_0211a258(FSOverlayInfoHeader *h);
+void FS_StartOverlay(FSOverlayInfoHeader *h);
 BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
 BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
@@ -288,7 +288,7 @@ BOOL FS_UnloadOverlayImage(FSOverlayInfo *p) {
 BOOL FS_LoadOverlay(int target, u32 id) {
     FSOverlayInfo info;
     if (!FS_LoadOverlayInfo(&info, target, id) || !FS_LoadOverlayImage(&info)) return 0;
-    func_0211a258(&info.header);
+    FS_StartOverlay(&info.header);
     return 1;
 }
 
@@ -300,17 +300,17 @@ BOOL FS_UnloadOverlay(int target, u32 id) {
 }
 
 // FSi_ReadRomCallback
-void func_0211a078(FSArc *arc) {
+void FSi_OnRomReadDone(FSArc *arc) {
     FS_NotifyArchiveAsyncEnd(arc, 0);
 }
 
 // FSi_ReadRomAsync
-int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len) {
-    CARDi_ReadRom(data_021fea80, src, dst, len, func_0211a078, arc, 1);
+int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len) {
+    CARDi_ReadRom(data_021fea80, src, dst, len, FSi_OnRomReadDone, arc, 1);
     return 6;
 }
 
-u32 func_0211a024(void) {
+u32 FSi_WriteDummyCallback(void) {
     return 1;
 }
 
@@ -330,10 +330,10 @@ int FSi_RomArchiveProc(FSFile *file, u32 cmd) {
     }
 }
 
-u32 func_02119f8c(void) {
+u32 FSi_ReadDummyCallback(void) {
     return 1;
 }
 
-u32 func_02119f84(void) {
+u32 FSi_EmptyArchiveProc(void) {
     return 4;
 }

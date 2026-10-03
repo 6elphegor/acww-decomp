@@ -67,7 +67,7 @@ extern "C" void _ZN12Unk_020dbe7c13func_020566bcEv(void *p);
 extern "C" void func_02056714(void *p);
 extern "C" s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, void *c, void *d);
 extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
-extern "C" s32 func_02106300(void *a, void *b);
+extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
 extern "C" void *NNS_G3dGetTex(void *p);
 extern "C" void *func_020e8608(void *heap, u32 size);
@@ -78,10 +78,10 @@ extern "C" void _ZN12Unk_020e45ecC2Ev(void *a);
 extern "C" s32 _ZN12Unk_020e45ec13func_020b8a84Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
 extern "C" s32 _ZN12Unk_020e45ec13func_020b8a34Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
 extern "C" void MTX_Identity33_(void *m);
-extern "C" s32 func_01ffc5a4(s32 a, s32 b);
+extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern "C" void VEC_CrossProduct(void *a, void *b, void *c);
-extern "C" u8 *func_021066e8(u8 *p, s32 z, u32 v);
+extern "C" u8 *NNSi_G3dGetTexPatAnmFV(u8 *p, s32 z, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 func_0212a438(const char *s);
@@ -299,7 +299,7 @@ s32 func_02057158(void *p, s32 a) {
     buf[2] = 0;
     buf[3] = 0;
     func_0212a360(buf);
-    return func_02106300(p, buf);
+    return NNS_G3dGetResDictIdxByName(p, buf);
 }
 
 u32 Unk_02057120::func_0205714c(void) {
@@ -576,14 +576,14 @@ BOOL Unk_020dbe8c::func_02056bf8() {
 void Unk_020dbe8c::func_02056b84(s32 *a, s32 *b) {
     *b = -1;
     *a = *b;
-    u8 *r7 = func_021066e8(unk_7c, 0, (u32)(unk_08 << 4) >> 16);
+    u8 *r7 = NNSi_G3dGetTexPatAnmFV(unk_7c, 0, (u32)(unk_08 << 4) >> 16);
     if (r7 != NULL) {
         u8 *first = NNSi_G3dGetTexPatAnmTexNameByIdx(unk_7c, r7[2]);
         r7 = NNSi_G3dGetTexPatAnmPlttNameByIdx(unk_7c, r7[3]);
-        *a = first != NULL ? func_02106300(unk_78 + 0x3c, first) : -1;
+        *a = first != NULL ? NNS_G3dGetResDictIdxByName(unk_78 + 0x3c, first) : -1;
         u8 *h = unk_78;
         u8 *tbl = h + *(u16 *)(h + 0x34);
-        *b = r7 != NULL ? func_02106300(tbl, r7) : -1;
+        *b = r7 != NULL ? NNS_G3dGetResDictIdxByName(tbl, r7) : -1;
     }
 }
 
@@ -719,9 +719,9 @@ BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
                     lo = e4 & 0x7ff;
                     hi = (e4 >> 11) & 0x7ff;
                     c = *(u16 *)(ent + 0x20);
-                    *(s32 *)(ent + 0x24) = lo != c ? func_01ffc5a4(lo << 12, c << 12) : 0x1000;
+                    *(s32 *)(ent + 0x24) = lo != c ? FX_Div(lo << 12, c << 12) : 0x1000;
                     c = *(u16 *)(ent + 0x22);
-                    *(s32 *)(ent + 0x28) = hi != c ? func_01ffc5a4(hi << 12, c << 12) : 0x1000;
+                    *(s32 *)(ent + 0x28) = hi != c ? FX_Div(hi << 12, c << 12) : 0x1000;
                 }
                 r7++;
             test:
@@ -955,7 +955,7 @@ void Unk_020dbe6c::func_02056520(s32 n) {
     if (n == 0) {
         unk_38 = 0;
     } else {
-        unk_38 = func_01ffc5a4(0x1000, n << 12);
+        unk_38 = FX_Div(0x1000, n << 12);
     }
 }
 
@@ -1081,7 +1081,7 @@ void Unk_0205614c::func_02056070(u32 frame, u8 *p2, void *p3, void *p4) {
         }
         if (unk_21 != i) {
             unk_21 = i;
-            u8 v = func_02106300((u8 *)p3 + 0x3c, b + *(u16 *)(b + 8) + (p[2] << 4));
+            u8 v = NNS_G3dGetResDictIdxByName((u8 *)p3 + 0x3c, b + *(u16 *)(b + 8) + (p[2] << 4));
             if (v != unk_20) {
                 unk_20 = v;
                 func_02056028(p4, p3);
@@ -1157,7 +1157,7 @@ void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
         u8 *a = (u8 *)unk_20 + 0xc;
         a = a + *(u16 *)(a + 6);
         u8 *b = a + *(u16 *)(a + 2);
-        unk_28[i].unk_22 = func_02106300(base + 4, b + i * 16);
+        unk_28[i].unk_22 = NNS_G3dGetResDictIdxByName(base + 4, b + i * 16);
         unk_28[i].unk_00 = NNSi_G3dGetTexPatAnmDataByIdx(unk_20, i);
         unk_28[i].unk_21 = 0xff;
         unk_28[i].unk_20 = 0xff;

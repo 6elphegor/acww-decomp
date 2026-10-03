@@ -207,11 +207,11 @@ static inline BOOL IsIdle(volatile FSFile *f) {
 }
 
 int FSi_RomArchiveProc(FSFile *file, u32 cmd);
-u32 func_02119f8c(void);
-u32 func_02119f84(void);
-u32 func_0211a024(void);
-int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len);
-void func_0211a078(FSArc *arc);
+u32 FSi_ReadDummyCallback(void);
+u32 FSi_EmptyArchiveProc(void);
+u32 FSi_WriteDummyCallback(void);
+int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len);
+void FSi_OnRomReadDone(FSArc *arc);
 void FS_InitFile(FSFile *file);
 void FSi_InitRom(u32 dma);
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
@@ -219,14 +219,14 @@ BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
 BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path);
 BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
 s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
-s32 func_021198b4(FSFile *file, void *dst, s32 len);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 BOOL FS_CloseFile(FSFile *file);
 BOOL FS_WaitAsync(FSFile *file);
 int FSi_ExecuteSyncCommand(FSFile *file);
 FSFile *FSi_NextCommand(volatile FSArc *arc);
 void FSi_ExecuteAsyncCommand(FSFile *file);
 BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
-void func_0211a258(FSOverlayInfoHeader *h);
+void FS_StartOverlay(FSOverlayInfoHeader *h);
 BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
 BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
@@ -245,7 +245,7 @@ BOOL FS_LoadOverlayImage(FSOverlayInfo *p) {
     if (!FS_OpenFileFast(&file, id)) return 0;
     len = FSi_GetOverlayBinarySize(&p->header);
     FS_ClearOverlayImage(&p->header);
-    if (len != func_021198b4(&file, (void *)p->header.ram_address, len)) {
+    if (len != FS_ReadFile(&file, (void *)p->header.ram_address, len)) {
         FS_CloseFile(&file);
         return 0;
     }

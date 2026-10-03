@@ -267,7 +267,7 @@ void func_ov004_02224ff4(char *s, void *a, void *b, void *c);
 void func_ov004_02224f7c(void *a, void *b);
 s32 _ZN18Unk_ov004_0224d4e819func_ov004_02224f20Ev(void *self, u32 v);
 void func_020e761c(void *dst, s32 v, s32 n);
-void func_02106054(void *o, u32 i, u32 v);
+void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 }
 
 class Unk_ov068_022708fc : public Unk_ov004_0224d4e8 {
@@ -336,7 +336,7 @@ BOOL Unk_ov068_022708fc::vfunc_18() {
     }
     u32 n = (*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148))->unk_18;
     for (u32 i = 0; i < n; i++) {
-        func_02106054(*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148), i, (u8)unk_290);
+        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148), i, (u8)unk_290);
     }
     return TRUE;
 }

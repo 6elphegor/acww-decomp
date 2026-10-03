@@ -58,7 +58,7 @@ double func_0212f010(double x, int n) {
 }
 
 // frexp
-double func_0212ef50(double x, int *eptr) {
+double frexp(double x, int *eptr) {
     static const double two54 = 1.80143985094819840000e+16;
     s32 hx, ix, lx;
     hx = *(1 + (s32 *)&x);

@@ -99,11 +99,11 @@ struct Mc {
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
-void func_020fe3a0(void *list, void *e);
+void spl_push_front(void *list, void *e);
 void spl_set_tex(void *p);
-void func_020fa398(void *p);
-void func_020fc984(void *e, void *l);
-void func_020f9714(Pm *m, u32 a);
+void spl_set_tex_dummy(void *p);
+void spl_gen_ptcl(void *e, void *l);
+void sDrawChild(Pm *m, u32 a);
 void func_020f97d0(Pm *m, u32 a);
 void func_020fbad0(Mc *m, Node *n, u32 a);
 void func_020fac28(Mc *m, Node *n, u32 a);
@@ -360,7 +360,7 @@ struct V3 {
     s32 z;
 };
 
-// emitter update (func_020f98ac): own views of the emitter, particle and resource block
+// emitter update (spl_calc): own views of the emitter, particle and resource block
 struct HdrU {
     u32 pad0 : 8;
     u32 b8 : 1;
@@ -520,10 +520,10 @@ void spl_tex_ptn_anm(Pt *, RU *, u32);
 void spl_chld_scl_out(Pt *, RU *, u32);
 void spl_chld_alp_out(Pt *, RU *, u32);
 void func_020fc6bc(Pt *, EU *, void *);
-void func_020fc984(void *, void *);
+void spl_gen_ptcl(void *, void *);
 u32 func_02133150x(void);
-Pt *func_020fe2f0(void *, Pt *);
-void func_020fe3a0(void *, void *);
+Pt *spl_del(void *, Pt *);
+void spl_push_front(void *, void *);
 }
 
 typedef void (*IFn)(void *, Pt *, s32 *, EU *);

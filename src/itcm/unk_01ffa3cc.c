@@ -217,7 +217,7 @@ extern volatile u64 data_021fcf24;
 /* PROTOS */
 /* END PROTOS */
 
-int func_01ffa3cc(void) {
+int OS_IsRunOnEmulator(void) {
     return 0;
 }
 

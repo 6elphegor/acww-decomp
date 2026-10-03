@@ -10,7 +10,7 @@ s32 func_02106618(void *p);
 s32 func_02106634(s32 a, s32 b);
 s32 func_02106788(void *p);
 s32 func_021067a4(s32 a, s32 b);
-void func_0210612c(void *p, s32 a, u32 b);
+void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
 void _ZN12Unk_020dbd3413func_02054b38EPv(void *p, void *h);
 void _ZN12Unk_020dbd5413func_02054800EPv(void *p, void *h);
@@ -38,26 +38,26 @@ void func_020e8c94(void *);
 void *func_020e8e7c(u32, s32);
 void *func_020e8574(u32);
 void func_020e8558(void *);
-void *func_020f8c44(void *, s32, s32);
-void *func_020f8bb0(void *, u32, u32);
-Unk_0209002c_Handle *func_020f94a8(void *, s32, s32, s32, s32, s32);
+void *SPL_Create(void *, s32, s32);
+void *SPL_CreateWithInitialize(void *, u32, u32);
+Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
 void func_020f8b44(void *, void *, s32);
 void func_020f8cb8(void *, void *, void *);
-void func_020f8d24(void *);
+void SPL_Calc(void *);
 void func_020f92d4(void *, void *);
-void func_020f9018(void *, s32);
-void func_021010d0(void *);
-void *func_021010dc(void *, void *, void *);
-void func_02115e64(s32, void *, s32);
+void SPL_Load(void *, s32);
+void NNS_FndDestroyFrmHeap(void *);
+void *NNS_FndCreateFrmHeapEx(void *, void *, void *);
+void MIi_CpuClear32(s32, void *, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 func_02064f18();
 u16 func_020b5b98();
 s32 func_0204c0ac();
 s32 func_020641d8(void *);
-void *func_02101088(u32 heap, u32 size, s32 align);
-s32 func_020f8e84(u32 h);
-s32 func_020f8e70(u32 h);
+void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
+s32 SPL_LoadTexByVRAMManager(u32 h);
+s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 }
 
 // Opaque views of library-side model classes (see unk_02054190.cpp / unk_020553f8.cpp for the full declarations)
@@ -874,7 +874,7 @@ static inline void Unk_0208fb20_SetTag(Unk_0208f8fc_Entry *e, Unk_0208f8fc_Tag t
 static inline void Unk_0208fb20_Fill(void *p, s32 v, u32 n)
 {
     volatile s32 d = v;
-    func_02115e64(d, p, n);
+    MIi_CpuClear32(d, p, n);
 }
 
 static inline void Unk_0208fb20_Clear(void *p, u32 n)
@@ -892,7 +892,7 @@ extern "C" Unk_020e141c *func_020901b0() {
 
 
 extern "C" void *func_0209019c(u32 size) {
-    return func_02101088((u32)data_021d04a4, size, 4);
+    return NNS_FndAllocFromFrmHeapEx((u32)data_021d04a4, size, 4);
 }
 
 extern "C" s32 func_0209018c(void *unused) {
@@ -900,8 +900,8 @@ extern "C" s32 func_0209018c(void *unused) {
 }
 
 extern "C" BOOL func_02090168(Unk_02090168_Arg *p) {
-    if (func_020f8e84(p->unk_50)) {
-        if (func_020f8e70(p->unk_50)) {
+    if (SPL_LoadTexByVRAMManager(p->unk_50)) {
+        if (SPL_LoadTexPlttByVRAMManager(p->unk_50)) {
             return TRUE;
         }
     }
@@ -930,8 +930,8 @@ BOOL Unk_020e141c::vfunc_00()
     data_021d04ac = NULL;
     data_021d04a8 = func_020e8574(0xc000);
     if (data_021d04a8 != NULL) {
-        data_021d04a4 = func_021010dc(data_021d04a8, (void *)0xc000, NULL);
-        unk_50 = func_020f94a8((void *)func_0209019c, 0x20, 0x64, 0x14, 0x15, 0x32);
+        data_021d04a4 = NNS_FndCreateFrmHeapEx(data_021d04a8, (void *)0xc000, NULL);
+        unk_50 = SPL_Init((void *)func_0209019c, 0x20, 0x64, 0x14, 0x15, 0x32);
         unk_50->unk_30 = 0x8800;
         if (unk_50 != NULL) {
             h = (void *)func_0209018c(this);
@@ -940,7 +940,7 @@ BOOL Unk_020e141c::vfunc_00()
                 if (func_02090168((Unk_02090168_Arg *)this) != 0) {
                     r = (s32)func_02090140(this, (Unk_02090140_Arg *)h);
                     if (r != 0) {
-                        func_020f9018(unk_50, r);
+                        SPL_Load(unk_50, r);
                         result = TRUE;
                     }
                 }
@@ -950,7 +950,7 @@ BOOL Unk_020e141c::vfunc_00()
     }
     if (result == FALSE) {
         if (data_021d04a4 != NULL) {
-            func_021010d0(data_021d04a4);
+            NNS_FndDestroyFrmHeap(data_021d04a4);
             data_021d04a4 = NULL;
         }
         if (data_021d04a8 != NULL) {
@@ -970,7 +970,7 @@ BOOL Unk_020e141c::vfunc_18()
 {
     func_0208f9f8(&unk_58);
     func_0208f890(unk_35c);
-    func_020f8d24(unk_50);
+    SPL_Calc(unk_50);
     return TRUE;
 }
 
@@ -990,7 +990,7 @@ BOOL Unk_020e141c::vfunc_24()
 BOOL Unk_020e141c::vfunc_0c()
 {
     if (data_021d04a4 != NULL) {
-        func_021010d0(data_021d04a4);
+        NNS_FndDestroyFrmHeap(data_021d04a4);
         data_021d04a4 = NULL;
     }
     if (data_021d04a8 != NULL) {
@@ -1105,7 +1105,7 @@ extern "C" s32 func_0208fc88(s32 idx, s32 p1, s16 *p2, u32 *p3)
         for (; i < count; i++) {
             o = (Unk_0208fb20_Obj *)_ZN12Unk_0208f32c13func_0208f354Ei(ctx, *ids);
             if (o == NULL) {
-                h = (Unk_0208fb20_Obj *)func_020f8bb0(data_021d049c->unk_50, *ids, *p3);
+                h = (Unk_0208fb20_Obj *)SPL_CreateWithInitialize(data_021d049c->unk_50, *ids, *p3);
                 if (h != NULL) {
                     if (_ZN12Unk_0208f32c13func_0208f32cEii(ctx, *ids, h) != 0) {
                         h->unk_1c |= 2;
@@ -1128,7 +1128,7 @@ extern "C" s32 func_0208fc88(s32 idx, s32 p1, s16 *p2, u32 *p3)
         }
     } else {
         for (i = 0; i < count; i++) {
-            func_020f8bb0(data_021d049c->unk_50, *ids, *p3);
+            SPL_CreateWithInitialize(data_021d049c->unk_50, *ids, *p3);
             ids++;
             p3++;
         }
@@ -1217,7 +1217,7 @@ extern "C" s32 func_0208faa0(Unk_0208f8fc_Entry *e, s32 id, s32 a2, s32 a3, Unk_
     c = tag.unk_02;
     d = tag.unk_03;
     r = 0;
-    e->unk_0c = (Unk_0208f8fc_Obj *)func_020f8c44(data_021d049c->unk_50, id, a2);
+    e->unk_0c = (Unk_0208f8fc_Obj *)SPL_Create(data_021d049c->unk_50, id, a2);
     if (e->unk_0c != NULL) {
         e->unk_00 = id;
         e->unk_08 = 1;
@@ -1539,7 +1539,7 @@ void Unk_0208f308::func_0208f480() {
         volatile u16 a, b;
         a = func_02064cc4();
         b = a;
-        func_0210612c(unk_24.unk_5c, 0, b);
+        NNS_G3dMdlSetMdlEmi(unk_24.unk_5c, 0, b);
     }
 }
 

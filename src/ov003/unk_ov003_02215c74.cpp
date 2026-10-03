@@ -328,7 +328,7 @@ s32 func_02003098(void *);
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void func_01ffd070(Unk_ov003_Vec *out, void *a, void *b);
-void func_021039ec(void *a, s32 b);
+void NNS_G3dBindMdlTex(void *a, s32 b);
 void _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, void *e);
 void _ZN12Unk_02002fc813func_02002fc8Ej(void *self, void *x);
 void _ZN12Unk_020660f813func_02067a3cEiPv(void *self, s32 a, void *q);
@@ -339,7 +339,7 @@ void *_ZN12Unk_020dbe3413func_020554c0Ev(void *self);
 BOOL _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *self, void *res, u32 b);
 void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
-void func_02103830(void *a, s32 b);
+void NNS_G3dBindMdlPltt(void *a, s32 b);
 
 s32 func_ov003_02218d8c();
 s32 func_ov003_02218978(s32 a);
@@ -459,19 +459,19 @@ BOOL Unk_ov003_022318e8::vfunc_70() {
     s32 r4 = func_ov003_02218980(func_ov003_02218d8c(), k);
     void *g = unk_194;
     if (r7) {
-        func_021039ec(g, r7);
+        NNS_G3dBindMdlTex(g, r7);
     }
     if (r4) {
-        func_021039ec(g, r4);
-        func_02103830(g, r4);
+        NNS_G3dBindMdlTex(g, r4);
+        NNS_G3dBindMdlPltt(g, r4);
     }
     if (func_ov003_02218868(func_ov003_02218d84())) {
         s32 q = func_ov003_02216018() >> 2;
         if (_ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(&unk_2b0, func_ov003_02218870(func_ov003_02218d84(), q), 0)) {
             void *a = func_ov003_02218870(func_ov003_02218d84(), q);
-            func_021039ec(a, func_ov003_02218880(func_ov003_02218d84()));
+            NNS_G3dBindMdlTex(a, func_ov003_02218880(func_ov003_02218d84()));
             void *b = func_ov003_02218870(func_ov003_02218d84(), q);
-            func_02103830(b, func_ov003_02218880(func_ov003_02218d84()));
+            NNS_G3dBindMdlPltt(b, func_ov003_02218880(func_ov003_02218d84()));
             if (unk_368.func_02055bcc((u32)unk_2b0.unk_5c, data_021c6204)) {
                 s32 c = func_ov003_0221886c(func_ov003_02218d84());
                 s32 d = func_ov003_02218880(func_ov003_02218d84());

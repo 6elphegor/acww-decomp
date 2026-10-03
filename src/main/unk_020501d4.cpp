@@ -24,15 +24,15 @@ char *func_0212a2ec(char *dst, const char *src, u32 n);
 void func_0206c92c(void);
 
 // autoload_2: copies of the tile buffer to VRAM, one per target
-void func_021118cc(void *src, u32 offset, u32 size);
-void func_021117fc(void *src, u32 offset, u32 size);
-void func_0211172c(void *src, u32 offset, u32 size);
-void func_0211165c(void *src, u32 offset, u32 size);
+void GX_LoadBG0Char(void *src, u32 offset, u32 size);
+void GX_LoadBG1Char(void *src, u32 offset, u32 size);
+void GX_LoadBG2Char(void *src, u32 offset, u32 size);
+void GX_LoadBG3Char(void *src, u32 offset, u32 size);
 void GX_LoadOBJ(void *src, u32 offset, u32 size);
-void func_02111864(void *src, u32 offset, u32 size);
-void func_02111794(void *src, u32 offset, u32 size);
-void func_021116c4(void *src, u32 offset, u32 size);
-void func_021115f4(void *src, u32 offset, u32 size);
+void GXS_LoadBG0Char(void *src, u32 offset, u32 size);
+void GXS_LoadBG1Char(void *src, u32 offset, u32 size);
+void GXS_LoadBG2Char(void *src, u32 offset, u32 size);
+void GXS_LoadBG3Char(void *src, u32 offset, u32 size);
 void GXS_LoadOBJ(void *src, u32 offset, u32 size);
 
 extern void *data_021f482c;
@@ -211,7 +211,7 @@ const u8 data_020ca4dc[0x7a] = {
 Unk_02050288_FontObj data_021c48fc;
 
 const Unk_02050288_LoadFunc data_020ca4c4[6] = {
-    func_02111864, func_02111794, func_021116c4, func_021115f4, GXS_LoadOBJ, NULL,
+    GXS_LoadBG0Char, GXS_LoadBG1Char, GXS_LoadBG2Char, GXS_LoadBG3Char, GXS_LoadOBJ, NULL,
 };
 
 const u16 data_020ca490 = 5;
@@ -219,7 +219,7 @@ const u16 data_020ca490 = 5;
 const u16 data_020ca480 = 6;
 
 const Unk_02050288_LoadFunc data_020ca4ac[6] = {
-    func_021118cc, func_021117fc, func_0211172c, func_0211165c, GX_LoadOBJ, NULL,
+    GX_LoadBG0Char, GX_LoadBG1Char, GX_LoadBG2Char, GX_LoadBG3Char, GX_LoadOBJ, NULL,
 };
 
 // ---- functions, from the highest address to the lowest (mwcc emits a file's functions last to first)

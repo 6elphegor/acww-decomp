@@ -36,55 +36,55 @@ static inline void copy16(s32 dmaNo, const void *src, void *dest, u32 size) {
 }
 
 // GXS_LoadBG0Scr
-void func_02111ba4(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG0Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2S_GetBG0ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GX_LoadBG1Scr
-void func_02111b3c(const void *src, u32 offset, u32 size) {
+void GX_LoadBG1Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2_GetBG1ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GXS_LoadBG1Scr
-void func_02111ad4(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG1Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2S_GetBG1ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GX_LoadBG2Scr
-void func_02111a6c(const void *src, u32 offset, u32 size) {
+void GX_LoadBG2Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2_GetBG2ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GXS_LoadBG2Scr
-void func_02111a04(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG2Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2S_GetBG2ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GX_LoadBG3Scr
-void func_0211199c(const void *src, u32 offset, u32 size) {
+void GX_LoadBG3Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2_GetBG3ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GXS_LoadBG3Scr (sub engine BG3 screen base, 16-bit copy)
-void func_02111934(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG3Scr(const void *src, u32 offset, u32 size) {
     u8 *base = G2S_GetBG3ScrPtr();
     copy16(data_0213bfec, src, base + offset, size);
 }
 
 // GX_LoadBG0Char (main engine BG0 character base)
-void func_021118cc(const void *src, u32 offset, u32 size) {
+void GX_LoadBG0Char(const void *src, u32 offset, u32 size) {
     u8 *base = G2_GetBG0CharPtr();
     copy32(data_0213bfec, src, base + offset, size);
 }
 
 // GXS_LoadBG0Char (sub engine BG0 character base, 32-bit copy)
-void func_02111864(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG0Char(const void *src, u32 offset, u32 size) {
     u8 *base = G2S_GetBG0CharPtr();
     copy32(data_0213bfec, src, base + offset, size);
 }

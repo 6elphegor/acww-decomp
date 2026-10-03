@@ -9,10 +9,10 @@
 
 ; reverse-operand entry: swaps x and y (three eors) and FALLS THROUGH into _fdiv (returns y / x).
 ; Evidence: fall-through into the next routine.
-	.global func_02132588
-	.type func_02132588, @function
-	.size func_02132588, 0xc
-func_02132588:
+	.global _frdiv
+	.type _frdiv, @function
+	.size _frdiv, 0xc
+_frdiv:
 	eor r0, r0, r1
 	eor r1, r0, r1
 	eor r0, r0, r1

@@ -21,7 +21,7 @@ void func_02002898();
 void func_02001e7c();
 void func_020b83e0();
 void func_020b8494();
-void func_0210f554();
+void GX_DisableBankForLCDC();
 void MIi_CpuClearFast(u32, void *, u32);
 void func_02053780();
 }
@@ -61,7 +61,7 @@ extern "C" void func_020537a4()
     GX_SetBankForLCDC(0x1f7);
     a = 0;
     MIi_CpuClearFast(a, (void *)0x6800000, 0x84000);
-    func_0210f554();
+    GX_DisableBankForLCDC();
     b = 0xc0;
     MIi_CpuClearFast(b, (void *)0x7000000, 0x400);
     c = 0;

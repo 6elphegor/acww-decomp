@@ -2525,7 +2525,7 @@ void _ZN12Unk_020d967013func_0203e47cEi(void *p, Unk_020ddcf0 *q);
 void _ZN12Unk_020d967013func_0203e488Ei(void *p, Unk_020ddcf0 *q);
 s32 func_0203d67c(void *p);
 s32 func_0203d704(void *p, s32 a);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_RotY33_(void *out, s32 a, s32 b);
 void MTX_Concat33(void *a, void *b, void *c);
@@ -2827,7 +2827,7 @@ void Unk_ov004_0224a62c::vfunc_6c(s32 a, void *b) {
     Unk_ov004_0220c0bc_Obj *p = (Unk_ov004_0220c0bc_Obj *)b;
     if (unk_840 == a) {
         s32 *dst = &p->unk_b4->unk_28[0];
-        s32 t = p13::func_01ffcb0c(p13::func_01ffc5a4(unk_84c, 0x168000), 0x10000000);
+        s32 t = p13::func_01ffcb0c(p13::FX_Div(unk_84c, 0x168000), 0x10000000);
         s32 r = (t << 4) >> 16;
         s32 ang;
         Unk_ov004_0220c0bc_Actor *act = p13::func_ov004_022087b0(this);

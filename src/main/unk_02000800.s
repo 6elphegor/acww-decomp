@@ -16,7 +16,7 @@
 	.extern data_027e0000
 	.extern OS_IrqHandler
 	.extern func_020b0a80
-	.extern func_02133acc
+	.extern _fp_init
 	.extern func_02135310
 	.arm
 
@@ -84,7 +84,7 @@ L_020008b0: ; flush_bss
 	add r1, r1, #0x3c ; DTCM + 0x3ffc: IRQ handler vector
 	ldr r0, L_02000914
 	str r0, [r1, #0]
-	bl func_02133acc
+	bl _fp_init
 	blx func_020b0a80 ; NitroStartUp (Thumb)
 	bl func_02135310
 	ldr r1, L_02000918

@@ -260,11 +260,11 @@ s32 func_0212b770(const char *);
 char *func_02129f1c(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
-void func_021289b4(void *, void *, u32);
-void func_02128a00(void *, const void *, s32);
+void memmove(void *, void *, u32);
+void memcpy(void *, const void *, s32);
 s32 rand();
-void func_02128c60(s32);
-s32 func_02127b40(s32);
+void srand(s32);
+s32 abs(s32);
 
 void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
 s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
@@ -347,7 +347,7 @@ char *func_ov065_02283e88(char *out, char *in) {
             }
             t = (u8)in[i];
             x = ("3b8dd8995f7c40a9a5c5b7dd5b481341"[(i + t) % klen] + i * t) % 0x20;
-            out[i] = func_02127b40((u8)in[x] ^ "3b8dd8995f7c40a9a5c5b7dd5b481341"[(c * j) % klen]) % 0x5d + 0x21;
+            out[i] = abs((u8)in[x] ^ "3b8dd8995f7c40a9a5c5b7dd5b481341"[(c * j) % klen]) % 0x5d + 0x21;
         }
         j += 0x4647;
     }
@@ -424,7 +424,7 @@ s32 func_ov065_02283d14() {
             if (r == data_ov065_022910ec) {
                 data_ov065_022910ec = 0;
             } else {
-                func_021289b4(data_ov065_022910f0, data_ov065_022910f0 + r, data_ov065_022910ec - r);
+                memmove(data_ov065_022910f0, data_ov065_022910f0 + r, data_ov065_022910ec - r);
                 data_ov065_022910ec -= r;
             }
         } while (func_ov065_02283c2c(data_ov065_0228df74) != 0);

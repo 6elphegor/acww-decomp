@@ -100,9 +100,9 @@ int func_02133ce0(void);
 int __FindExceptionTable(ExceptionInfo *info, char *retaddr);
 u8 *func_02133b68(u8 *p);
 void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
-u32 func_02133c68(ThrowContext *context, ExceptionInfo *info);
+u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
 void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
-void func_021279f4(void); // abort
+void abort(void); // abort
 void *func_020ec860(size_t size); // operator new[]
 void func_020ec848(void *p); // operator delete[]
 void func_02135578(void);
@@ -110,17 +110,17 @@ void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);
 u8 *func_02133da8(u8 *p, u32 *value);
 u8 *func_02133e50(u8 *p, s32 *value);
-u8 func_02134d70(ActionIterator *iter);
+u8 NextAction(ActionIterator *iter);
 u8 func_0213510c(ActionIterator *iter);
 void func_02135128(char *retaddr, ExceptionInfo *info);
-ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr);
-int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result);
+ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr);
+int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
 void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
-CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info);
-int func_02134308(const char *throwtype, ExSpecification *spec);
-void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
-u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
-void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset);
+CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info);
+int IsInSpecification(const char *throwtype, ExSpecification *spec);
+void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
+u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
+void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 }
 
 #define FRAME_VALUE(context, flag, off) ((flag) ? (context)->state.regs[off] : *(u32 *)((context)->FP + (off)))
@@ -134,7 +134,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
 #pragma exception_terminate // as in the original runtime: no exception may leave the unwinder
     for (;;) {
         if (info->action_pointer == 0) {
-            func_02135128((char *)func_02133c68(context, info), info);
+            func_02135128((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
                 func_02135578();
             }
@@ -415,7 +415,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
 }
 
 // rethrow: find the active catch block of the exception being rethrown and take its exception over
-extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) {
+extern "C" CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info) {
     s32 cinfo_ref;
     ActionIterator iter;
     CatchInfo *catchinfo;
@@ -423,7 +423,7 @@ extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) 
 
     iter.info = *info;
     iter.context = *context;
-    for (action = func_0213510c(&iter);; action = func_02134d70(&iter)) {
+    for (action = func_0213510c(&iter);; action = NextAction(&iter)) {
         switch (action) {
         case 13:
             break;
@@ -462,7 +462,7 @@ extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) 
 }
 
 // __IsInSpecification
-extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
+extern "C" int IsInSpecification(const char *throwtype, ExSpecification *spec) {
     struct {
         char *catch_type;
         s32 offset;
@@ -472,7 +472,7 @@ extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
 
     for (i = 0; i < spec->specs; i++) {
         s.catch_type = (char *)GET_LONG(p);
-        if (func_02135348(throwtype, s.catch_type, &s.offset)) {
+        if (__throw_catch_compare(throwtype, s.catch_type, &s.offset)) {
             return 1;
         }
         p += 4;
@@ -481,7 +481,7 @@ extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
 }
 
 // __HandleUnexpected: unwind to the frame with the violated exception specification and enter its handler
-extern "C" void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp) {
+extern "C" void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp) {
     CatchInfo *catchinfo;
 
 #pragma exception_terminate // as in the original runtime: no exception may leave this function
@@ -495,7 +495,7 @@ extern "C" void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpec
 }
 
 // __FindExceptionHandler: returns the action of the catch block that takes the exception
-extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset) {
+extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset) {
     ExCatchBlock catchblock;
     ExSpecification spec;
     ActionIterator iter;
@@ -503,13 +503,13 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
 
     iter.info = *info;
     iter.context = *context;
-    for (action = func_0213510c(&iter);; action = func_02134d70(&iter)) {
+    for (action = func_0213510c(&iter);; action = NextAction(&iter)) {
         switch (action) {
         case 12:
             catchblock.catch_type = (char *)GET_LONG(iter.info.action_pointer + 1);
             func_02133e50(func_02133da8(iter.info.action_pointer + 5, &catchblock.catch_pcoffset),
                           &catchblock.cinfo_ref);
-            if (!func_02135348(context->throwtype, catchblock.catch_type, result_offset)) {
+            if (!__throw_catch_compare(context->throwtype, catchblock.catch_type, result_offset)) {
                 continue;
             }
             break;
@@ -517,8 +517,8 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
             spec.spec = func_02133e50(
                 func_02133da8(func_02133da8(iter.info.action_pointer + 1, &spec.specs), &spec.pcoffset),
                 &spec.cinfo_ref);
-            if (func_02134308(context->throwtype, &spec) == 0) {
-                func_0213429c(context, info, &spec, iter.info.action_pointer);
+            if (IsInSpecification(context->throwtype, &spec) == 0) {
+                HandleUnexpected(context, info, &spec, iter.info.action_pointer);
             }
             continue;
         case 0:
@@ -550,7 +550,7 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
 }
 
 // __SetupCatchInfo
-extern "C" void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset) {
+extern "C" void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset) {
     CatchInfo *catchinfo = (CatchInfo *)(context->FP + cinfo_ref);
 
     catchinfo->location = context->location;
@@ -565,7 +565,7 @@ extern "C" void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset) 
 }
 
 // __ThrowHandler: entered from __rethrow (func_02133b1c) with the thrower's register context
-extern "C" void func_02133f68(ThrowContext *context) {
+extern "C" void __ThrowHandler(ThrowContext *context) {
     s32 offset;
     ExceptionInfo info;
     ExCatchBlock catchblock;
@@ -577,15 +577,15 @@ extern "C" void func_02133f68(ThrowContext *context) {
     }
     func_02133bc0(context, &info);
     if (context->throwtype == 0) {
-        context->catchinfo = func_02134394(context, &info);
+        context->catchinfo = FindMostRecentException(context, &info);
     } else {
         context->catchinfo = 0;
     }
-    p = func_021340bc(context, &info, &offset);
+    p = FindExceptionHandler(context, &info, &offset);
     catchblock.catch_type = (char *)GET_LONG(p + 1);
     func_02133e50(func_02133da8(p + 5, &catchblock.catch_pcoffset), &catchblock.cinfo_ref);
     func_021344e8(context, &info, p);
-    func_0213404c(context, catchblock.cinfo_ref, offset);
+    SetupCatchInfo(context, catchblock.cinfo_ref, offset);
     func_02133aec(context, &info, info.current_function + catchblock.catch_pcoffset);
 }
 

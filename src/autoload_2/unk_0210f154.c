@@ -29,7 +29,7 @@ extern u16 data_021fcbf0;
 extern u32 OS_GetLockID(void);
 extern void func_0206d49c(void);
 extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
-extern void func_02115e64(u32 data, void *dest, u32 size);
+extern void MIi_CpuClear32(u32 data, void *dest, u32 size);
 extern void OSi_UnlockVram(u16 a, u16 b);
 extern void GX_VRAMCNT_SetLCDC_(u32 mask);
 
@@ -43,27 +43,27 @@ void GX_SetBankForSubOBJ(u32 bank);
 void GX_SetBankForSubBGExtPltt(u32 bank);
 void GX_SetBankForSubOBJExtPltt(u32 bank);
 u32 resetBankForX_(u16 *p);
-u32 func_0210f720(void);
-u32 func_0210f70c(void);
+u32 GX_ResetBankForTex(void);
+u32 GX_ResetBankForTexPltt(void);
 u32 disableBankForX_(u16 *p);
-u32 func_0210f614(void);
-u32 func_0210f600(void);
-u32 func_0210f5dc(void);
-u32 func_0210f5b8(void);
-u32 func_0210f5a4(void);
-u32 func_0210f590(void);
-u32 func_0210f57c(void);
-u32 func_0210f568(void);
-u32 func_0210f554(void);
-u32 func_0210f540(void);
-u32 func_0210f52c(void);
-u32 func_0210f504(void);
-u32 func_0210f4dc(void);
-u32 func_0210f4cc(void);
+u32 GX_DisableBankForBG(void);
+u32 GX_DisableBankForOBJ(void);
+u32 GX_DisableBankForBGExtPltt(void);
+u32 GX_DisableBankForOBJExtPltt(void);
+u32 GX_DisableBankForTex(void);
+u32 GX_DisableBankForTexPltt(void);
+u32 GX_DisableBankForClearImage(void);
+u32 GX_DisableBankForARM7(void);
+u32 GX_DisableBankForLCDC(void);
+u32 GX_DisableBankForSubBG(void);
+u32 GX_DisableBankForSubOBJ(void);
+u32 GX_DisableBankForSubBGExtPltt(void);
+u32 GX_DisableBankForSubOBJExtPltt(void);
+u32 GX_GetBankForTex(void);
 u32 func_0210f478(u32 mask);
 u32 func_0210f460(void);
 void GX_InitGXState(void);
-void func_0210f248(void);
+void GX_Init(void);
 BOOL GX_HBlankIntr(BOOL enable);
 BOOL GX_VBlankIntr(BOOL enable);
 void GX_DispOff(void);
@@ -123,10 +123,10 @@ u32 resetBankForX_(u16 *p) {
 }
 
 // GX_ResetBankForTex
-u32 func_0210f720(void) { return resetBankForX_(&data_021fcbe0); }
+u32 GX_ResetBankForTex(void) { return resetBankForX_(&data_021fcbe0); }
 
 // GX_ResetBankForTexPltt
-u32 func_0210f70c(void) { return resetBankForX_(&data_021fcbe2); }
+u32 GX_ResetBankForTexPltt(void) { return resetBankForX_(&data_021fcbe2); }
 
 // GXi_DisableBank (clears the VRAMCNT registers of the banks in *p)
 u32 disableBankForX_(u16 *p) {
@@ -146,58 +146,58 @@ u32 disableBankForX_(u16 *p) {
 }
 
 // GX_DisableBankForBG
-u32 func_0210f614(void) { return disableBankForX_(&data_021fcbda); }
+u32 GX_DisableBankForBG(void) { return disableBankForX_(&data_021fcbda); }
 
 // GX_DisableBankForOBJ
-u32 func_0210f600(void) { return disableBankForX_(&data_021fcbdc); }
+u32 GX_DisableBankForOBJ(void) { return disableBankForX_(&data_021fcbdc); }
 
 // GX_DisableBankForBGExtPltt
-u32 func_0210f5dc(void) {
+u32 GX_DisableBankForBGExtPltt(void) {
     reg_GX_DISPCNT &= ~0x40000000;
     return disableBankForX_(&data_021fcbe6);
 }
 
 // GX_DisableBankForOBJExtPltt
-u32 func_0210f5b8(void) {
+u32 GX_DisableBankForOBJExtPltt(void) {
     reg_GX_DISPCNT &= ~0x80000000;
     return disableBankForX_(&data_021fcbe8);
 }
 
 // GX_DisableBankForTex
-u32 func_0210f5a4(void) { return disableBankForX_(&data_021fcbe0); }
+u32 GX_DisableBankForTex(void) { return disableBankForX_(&data_021fcbe0); }
 
 // GX_DisableBankForTexPltt
-u32 func_0210f590(void) { return disableBankForX_(&data_021fcbe2); }
+u32 GX_DisableBankForTexPltt(void) { return disableBankForX_(&data_021fcbe2); }
 
 // GX_DisableBankForClearImage
-u32 func_0210f57c(void) { return disableBankForX_(&data_021fcbe4); }
+u32 GX_DisableBankForClearImage(void) { return disableBankForX_(&data_021fcbe4); }
 
 // GX_DisableBankForARM7
-u32 func_0210f568(void) { return disableBankForX_(&data_021fcbde); }
+u32 GX_DisableBankForARM7(void) { return disableBankForX_(&data_021fcbde); }
 
 // GX_DisableBankForLCDC
-u32 func_0210f554(void) { return disableBankForX_(&data_021fcbd8[0]); }
+u32 GX_DisableBankForLCDC(void) { return disableBankForX_(&data_021fcbd8[0]); }
 
 // GX_DisableBankForSubBG
-u32 func_0210f540(void) { return disableBankForX_(&data_021fcbea); }
+u32 GX_DisableBankForSubBG(void) { return disableBankForX_(&data_021fcbea); }
 
 // GX_DisableBankForSubOBJ
-u32 func_0210f52c(void) { return disableBankForX_(&data_021fcbec); }
+u32 GX_DisableBankForSubOBJ(void) { return disableBankForX_(&data_021fcbec); }
 
 // GX_DisableBankForSubBGExtPltt
-u32 func_0210f504(void) {
+u32 GX_DisableBankForSubBGExtPltt(void) {
     reg_GXS_DB_DISPCNT &= ~0x40000000;
     return disableBankForX_(&data_021fcbee);
 }
 
 // GX_DisableBankForSubOBJExtPltt
-u32 func_0210f4dc(void) {
+u32 GX_DisableBankForSubOBJExtPltt(void) {
     reg_GXS_DB_DISPCNT &= ~0x80000000;
     return disableBankForX_(&data_021fcbf0);
 }
 
 // GX_GetBankForTex
-u32 func_0210f4cc(void) { return data_021fcbd8[4]; }
+u32 GX_GetBankForTex(void) { return data_021fcbd8[4]; }
 
 // GXi_GetBankSize (total size in bytes of a VRAM bank mask)
 u32 func_0210f478(u32 mask) {
@@ -240,7 +240,7 @@ void GX_InitGXState(void) {
 }
 
 // GX_Init
-void func_0210f248(void) {
+void GX_Init(void) {
     reg_GX_POWCNT |= 0x8000;
     reg_GX_POWCNT = (u16)((reg_GX_POWCNT & 0xfffffdf1) | 0x20e);
     reg_GX_POWCNT |= 1;
@@ -260,11 +260,11 @@ void func_0210f248(void) {
         MI_DmaFill32(data_0213bfec, (void *)0x04001000, 0, 0x70);
     } else {
         volatile u32 tmp = 0;
-        func_02115e64(tmp, (void *)0x04000008, 0x60);
+        MIi_CpuClear32(tmp, (void *)0x04000008, 0x60);
         *(volatile u16 *)0x0400006c = 0;
         {
             volatile u32 tmp2 = 0;
-            func_02115e64(tmp2, (void *)0x04001000, 0x70);
+            MIi_CpuClear32(tmp2, (void *)0x04001000, 0x70);
         }
     }
     *(volatile u16 *)0x04000020 = 0x100;

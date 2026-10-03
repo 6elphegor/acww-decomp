@@ -144,8 +144,8 @@ void VEC_Fx16CrossProduct(const VecFx16 *a, const VecFx16 *b, VecFx16 *axb);
 fx32 VEC_Mag(const VecFx32 *pSrc);
 void VEC_Normalize(const VecFx32 *pSrc, VecFx32 *pDst);
 void VEC_Fx16Normalize(const VecFx16 *pSrc, VecFx16 *pDst);
-fx32 func_01ffc5a4(fx32 numer, fx32 denom);
-fx32 func_01ffc588(fx32 x);
+fx32 FX_Div(fx32 numer, fx32 denom);
+fx32 FX_Inv(fx32 x);
 fx32 FX_Sqrt(fx32 x);
 
 /* END PROTOS */
@@ -265,13 +265,13 @@ void VEC_Fx16Normalize(const VecFx16 *pSrc, VecFx16 *pDst) {
 }
 
 // FX_Div
-fx32 func_01ffc5a4(fx32 numer, fx32 denom) {
+fx32 FX_Div(fx32 numer, fx32 denom) {
     FX_DivAsync(numer, denom);
     return FX_GetDivResult();
 }
 
 // FX_Inv
-fx32 func_01ffc588(fx32 x) {
+fx32 FX_Inv(fx32 x) {
     FX_InvAsync(x);
     return FX_GetDivResult();
 }

@@ -11,7 +11,7 @@ extern void (*data_ov065_0228ebd0)(void *);
 
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
-void func_021289b4(void *dst, const void *src, u32 n);
+void memmove(void *dst, const void *src, u32 n);
 
 s32 func_ov065_02268be8(u16 *a, s32 n);
 s32 func_ov065_02268c20(u16 *a, s32 n);
@@ -356,7 +356,7 @@ void func_ov065_02268658(u16 *q, u16 *a, u16 *b, u16 *r, s32 n, u16 *tmp)
                 u16 *rp = t2 + lb;
                 do {
                     u32 qq;
-                    func_021289b4(t1 + 1, t1, cs);
+                    memmove(t1 + 1, t1, cs);
                     qq = ((u64)rp[-3] + (((u64)rp[-2] << 16) + (((u64)rp[0] << 48) + ((u64)rp[-1] << 32)))) / d;
                     if (qq > 0xffff) {
                         qq = 0xffff;
@@ -454,7 +454,7 @@ extern void (*data_ov065_0228ebd0)(u8 *);
 
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, s32, u32);
-void func_021289b4(void *, void *, u32);
+void memmove(void *, void *, u32);
 
 u32 func_ov065_02268c20(u16 *, u32);
 void func_ov065_02268470(u16 *, u16 *, u16 *, u32, u16 *);
@@ -492,7 +492,7 @@ void func_ov065_022683a8(u16 *a, u16 *b, u32 mode, u32 n, u32 k, u16 *m, u16 *t1
     MI_CpuFill8(t2 + k, 0, (n - k) * 2);
     func_ov065_02268950(t3, t2, m, n);
     func_ov065_02268b6c(a, a, t3, n);
-    func_021289b4(a, a + k, (n - k) * 2);
+    memmove(a, a + k, (n - k) * 2);
     MI_CpuFill8(a + n - k, 0, k * 2);
     switch (func_ov065_022689e4(a, m, n)) {
     case 0:

@@ -7,8 +7,8 @@ typedef unsigned int u32;
 typedef int BOOL;
 #define NULL 0
 
-extern u8 *func_02106460(void *dict, void *name);          // NNS_G3dGetResDataByName-like
-extern void func_02103aa4(u8 *, u8 *, u8 *, u8 *);         // BindMdlPltt inner
+extern u8 *NNS_G3dGetResDataByName(void *dict, void *name);          // NNS_G3dGetResDataByName-like
+extern void bindMdlTex_Internal_(u8 *, u8 *, u8 *, u8 *);         // BindMdlPltt inner
 
 static inline u8 *Ent(u8 *dict, u32 i)
 {
@@ -17,7 +17,7 @@ static inline u8 *Ent(u8 *dict, u32 i)
 }
 
 // NNS_G3dBindMdlPltt (all palettes of a model)
-BOOL func_021039ec(u8 *mdl, u8 *pltt)
+BOOL NNS_G3dBindMdlTex(u8 *mdl, u8 *pltt)
 {
     BOOL ret;
     u8 *set = mdl + *(u32 *)(mdl + 8);
@@ -27,12 +27,12 @@ BOOL func_021039ec(u8 *mdl, u8 *pltt)
     i = 0;
     while (i < dict[1]) {
         u8 *ents = dict + *(u16 *)(dict + 6);
-        u8 *res = func_02106460(pltt + 0x3c, ents + *(u16 *)(ents + 2) + i * 16);
+        u8 *res = NNS_G3dGetResDataByName(pltt + 0x3c, ents + *(u16 *)(ents + 2) + i * 16);
         if (res != NULL) {
             u8 *e = dict + *(u16 *)(dict + 6);
             e = e + 4 + *(u16 *)e * i;
             if ((e[3] & 1) == 0) {
-                func_02103aa4(set, e, pltt, res);
+                bindMdlTex_Internal_(set, e, pltt, res);
             }
         } else {
             ret = 0;
@@ -50,6 +50,6 @@ BOOL func_02103978(u8 *mdl, u8 *pltt, u32 i, u32 j)
     u8 *t = Ent(pltt + 0x3c, j);
     u8 *e = Ent(dict, i);
     if (e == NULL) return 0;
-    func_02103aa4(set, e, pltt, t);
+    bindMdlTex_Internal_(set, e, pltt, t);
     return 1;
 }

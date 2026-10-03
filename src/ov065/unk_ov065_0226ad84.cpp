@@ -61,7 +61,7 @@ Unk_ov065_0226aed4_Fc *data_ov065_022905fc;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-void func_02115e64(u32, void *, u32);
+void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
 void func_020ff154(void *);
@@ -113,7 +113,7 @@ s32 func_ov065_0226b27c(Unk_ov065_0226b27c_Cfg *cfg) {
     s32 r;
     fc = (Unk_ov065_0226aed4_Fc *)cfg->unk_00(1, 0x18);
     data_ov065_022905fc = fc;
-    { volatile u32 z = 0; func_02115e64(z, data_ov065_022905fc, 0x18); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, data_ov065_022905fc, 0x18); }
     fc = data_ov065_022905fc;
     fc->unk_00 = cfg->unk_00;
     fc->unk_04 = cfg->unk_04;
@@ -124,10 +124,10 @@ s32 func_ov065_0226b27c(Unk_ov065_0226b27c_Cfg *cfg) {
     data_ov065_022905f0 = func_ov065_0226b0b4(2, 0x2300);
     data_ov065_022905f4 = func_ov065_0226b0b4(4, 0x58);
     data_ov065_022905f8 = (Unk_ov065_0226b27c_F8 *)func_ov065_0226b0b4(8, 0xc);
-    { volatile u32 z = 0; func_02115e64(z, data_ov065_022905ec, 0xd18); }
-    { volatile u32 z = 0; func_02115e64(z, data_ov065_022905f0, 0x2300); }
-    { volatile u32 z = 0; func_02115e64(z, data_ov065_022905f4, 0x58); }
-    { volatile u32 z = 0; func_02115e64(z, data_ov065_022905f8, 0xc); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, data_ov065_022905ec, 0xd18); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, data_ov065_022905f0, 0x2300); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, data_ov065_022905f4, 0x58); }
+    { volatile u32 z = 0; MIi_CpuClear32(z, data_ov065_022905f8, 0xc); }
     ec = data_ov065_022905ec;
     ec[0xd0a] = cfg->unk_08;
     ((Unk_ov065_0226b27c_B0b *)(ec + 0xd0b))->lo = cfg->unk_09;

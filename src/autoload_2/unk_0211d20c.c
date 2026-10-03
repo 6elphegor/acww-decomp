@@ -80,56 +80,56 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void func_02000b44(void *);
 void func_0206d49c(void);
-void func_021124a0(u32);
-void func_021124bc(u32);
+void OS_UnlockCard(u32);
+void OS_LockCard(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_WakeupThread(void *);
 void OS_SleepThread(void *);
-void func_02113a70(void *, void (*)(void *), void *, void *, u32, u32);
+void OS_CreateThread(void *, void (*)(void *), void *, void *, u32, u32);
 void DC_InvalidateRange(void *, u32);
 void DC_FlushRange(void *, u32);
-void func_021145f0(void);
+void DC_WaitWriteBufferEmpty(void);
 void MI_StopDma(u32);
 void MIi_CpuClearFast(u32, void *, u32);
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
-void func_02117dcc(void);
+void PXI_Init(void);
 BOOL PXI_IsCallbackReady(u32, u32);
 s32 PXI_SendWordByFifo(u32, u32, u32);
 void PXI_SetFifoRecvCallback(u32, void *);
-void func_0211cbd0(void);
-void func_0211cbe8(void);
-void func_0211cc7c(void);
+void RtcWaitBusy(void);
+void RtcGetResultCallback(void);
+void RtcCommonCallback(void);
 void CARDi_TaskThread(void *);
 void CARDi_OnFifoRecv(void);
-BOOL func_0211e7c0(void *, u32, u32);
+BOOL CARDi_Request(void *, u32, u32);
 void CARD_InitPulledOutCallback(void);
 void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
-BOOL func_0211e3fc(void *);
+BOOL CARDi_TryReadCardDma(void *);
 
 u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
 u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
 u32 RTC_GetDateAsync(u32, void (*)(void), u32);
 BOOL RtcSendPxiCommand(u32);
-BOOL func_0211d538(void);
-BOOL func_0211d528(void);
-BOOL func_0211d548(void);
+BOOL RTCi_ReadRawDateAsync(void);
+BOOL RTCi_ReadRawTimeAsync(void);
+BOOL RTCi_ReadRawDateTimeAsync(void);
 s32 RTCi_ConvertTimeToSecond(RTCTime *);
 s32 RTC_ConvertDateToDay(RTCDate *);
-void func_0211d798(u32);
-void func_0211d7a8(void);
-u32 func_0211d7d4(void);
-void func_0211d7e4(void);
-void func_0211d8ec(u32, u32);
-void func_0211d990(u32, u32);
+void CARD_Enable(u32);
+void CARD_CheckEnabled(void);
+u32 CARD_IsEnabled(void);
+void CARDi_InitCommon(void);
+void CARDi_UnlockResource(u32, u32);
+void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
 void func_0211da74(s32);
-void func_0211ded8(CARDCommon *);
-void *func_0211e094(void);
-BOOL func_0211e0a0(void);
-void func_0211e258(CARDCommon *);
+void CARDi_RequestStreamCommandCore(CARDCommon *);
+void *CARDi_GetRomAccessor(void);
+BOOL CARD_WaitRomAsync(void);
+void CARDi_ReadRomSyncCore(CARDCommon *);
 void CARDi_ReadCard(void *);
 BOOL CARDi_TryWaitAsync(void);
 BOOL CARDi_WaitAsync(void);
@@ -148,7 +148,7 @@ void CARDi_SetTask(void (*task)(CARDCommon *)) {
 }
 
 // CARDi_LockResource (lock id, target)
-void func_0211d990(u32 id, u32 type) {
+void CARDi_LockResource(u32 id, u32 type) {
     CARDCommon *const c = &data_021fec00;
     u32 irq = OS_DisableInterrupts();
     if (c->lockOwner == id) {
@@ -164,7 +164,7 @@ void func_0211d990(u32 id, u32 type) {
 }
 
 // CARDi_UnlockResource (lock id, target)
-void func_0211d8ec(u32 id, u32 type) {
+void CARDi_UnlockResource(u32 id, u32 type) {
     CARDCommon *c = &data_021fec00;
     u32 irq = OS_DisableInterrupts();
     if (c->lockOwner != id || c->lockCount == 0) {
@@ -183,7 +183,7 @@ void func_0211d8ec(u32 id, u32 type) {
 }
 
 // CARDi_InitCommon
-void func_0211d7e4(void) {
+void CARDi_InitCommon(void) {
     CARDCommon *const c = &data_021fec00;
     volatile u32 zero; // MI_CpuClear32 inline: vu32 data = 0
     data_021fec00.lockOwner = (u32)-3;
@@ -197,25 +197,25 @@ void func_0211d7e4(void) {
     c->queue.head = c->queue.tail = 0;
     c->tq.head = c->tq.tail = 0;
     c->priority = 4;
-    func_02113a70(&c->thread, CARDi_TaskThread, 0, &data_021ff220, 0x400, c->priority);
+    OS_CreateThread(&c->thread, CARDi_TaskThread, 0, &data_021ff220, 0x400, c->priority);
     OS_WakeupThreadDirect(&c->thread);
     PXI_SetFifoRecvCallback(11, CARDi_OnFifoRecv);
-    if (*(u16 *)0x027ffc40 != 2) func_0211d798(1);
+    if (*(u16 *)0x027ffc40 != 2) CARD_Enable(1);
 }
 
 // CARD_IsEnabled
-u32 func_0211d7d4(void) {
+u32 CARD_IsEnabled(void) {
     return data_021febb4;
 }
 
 // CARD_CheckEnabled
-void func_0211d7a8(void) {
-    if (func_0211d7d4()) return;
+void CARD_CheckEnabled(void) {
+    if (CARD_IsEnabled()) return;
     func_0206d49c();
 }
 
 // CARD_Enable
-void func_0211d798(u32 v) {
+void CARD_Enable(u32 v) {
     data_021febb4 = v;
 }
 
@@ -250,24 +250,24 @@ u32 func_0211d6e0(void) {
 
 // CARD_LockRom
 void CARD_LockRom(u32 id) {
-    func_0211d990(id, 1);
-    func_021124bc(id);
+    CARDi_LockResource(id, 1);
+    OS_LockCard(id);
 }
 
 // CARD_UnlockRom
 void CARD_UnlockRom(u32 id) {
-    func_021124a0(id);
-    func_0211d8ec(id, 1);
+    OS_UnlockCard(id);
+    CARDi_UnlockResource(id, 1);
 }
 
 // CARD_LockBackup
-void func_0211d690(u32 id) {
-    func_0211d990(id, 2);
+void CARD_LockBackup(u32 id) {
+    CARDi_LockResource(id, 2);
 }
 
 // CARD_UnlockBackup
-void func_0211d680(u32 id) {
-    func_0211d8ec(id, 2);
+void CARD_UnlockBackup(u32 id) {
+    CARDi_UnlockResource(id, 2);
 }
 
 // RTC_ConvertDateToDay
@@ -295,23 +295,23 @@ s64 RTC_ConvertDateTimeToSecond(RTCDate *date, RTCTime *time) {
     return (s64)day * 86400 + sec;
 }
 
-// func_0211d548
-BOOL func_0211d548(void) {
+// RTCi_ReadRawDateTimeAsync
+BOOL RTCi_ReadRawDateTimeAsync(void) {
     return RtcSendPxiCommand(0x10);
 }
 
-// func_0211d538
-BOOL func_0211d538(void) {
+// RTCi_ReadRawDateAsync
+BOOL RTCi_ReadRawDateAsync(void) {
     return RtcSendPxiCommand(0x11);
 }
 
-// func_0211d528
-BOOL func_0211d528(void) {
+// RTCi_ReadRawTimeAsync
+BOOL RTCi_ReadRawTimeAsync(void) {
     return RtcSendPxiCommand(0x12);
 }
 
-// func_0211d518
-BOOL func_0211d518(void) {
+// RTCi_WriteRawStatus2Async
+BOOL RTCi_WriteRawStatus2Async(void) {
     return RtcSendPxiCommand(0x27);
 }
 
@@ -329,10 +329,10 @@ void RTC_Init(void) {
     data_021feb90.f1c = 0;
     data_021feb90.f8 = 0;
     data_021feb90.fc = 0;
-    func_02117dcc();
+    PXI_Init();
     while (!PXI_IsCallbackReady(5, 1)) {
     }
-    PXI_SetFifoRecvCallback(5, func_0211cc7c);
+    PXI_SetFifoRecvCallback(5, RtcCommonCallback);
 }
 
 // RTC_ReadDateAsync (date, callback, arg)
@@ -349,14 +349,14 @@ u32 RTC_GetDateAsync(u32 a, void (*cb)(void), u32 arg) {
     data_021feb90.f8 = a;
     data_021feb90.f4 = (u32)cb;
     data_021feb90.f10 = arg;
-    return func_0211d538() ? 0 : 3;
+    return RTCi_ReadRawDateAsync() ? 0 : 3;
 }
 
 // RTC_ReadDate (sync)
-u32 func_0211d3a0(u32 a) {
-    u32 r = RTC_GetDateAsync(a, func_0211cbe8, 0);
+u32 RTC_GetDate(u32 a) {
+    u32 r = RTC_GetDateAsync(a, RtcGetResultCallback, 0);
     data_021feb90.result = r;
-    if (!r) func_0211cbd0();
+    if (!r) RtcWaitBusy();
     return data_021feb90.result;
 }
 
@@ -374,14 +374,14 @@ u32 RTC_GetTimeAsync(u32 a, void (*cb)(void), u32 arg) {
     data_021feb90.f8 = a;
     data_021feb90.f4 = (u32)cb;
     data_021feb90.f10 = arg;
-    return func_0211d528() ? 0 : 3;
+    return RTCi_ReadRawTimeAsync() ? 0 : 3;
 }
 
 // RTC_ReadTime (sync)
-u32 func_0211d2e0(u32 a) {
-    u32 r = RTC_GetTimeAsync(a, func_0211cbe8, 0);
+u32 RTC_GetTime(u32 a) {
+    u32 r = RTC_GetTimeAsync(a, RtcGetResultCallback, 0);
     data_021feb90.result = r;
-    if (!r) func_0211cbd0();
+    if (!r) RtcWaitBusy();
     return data_021feb90.result;
 }
 
@@ -400,13 +400,13 @@ u32 RTC_GetDateTimeAsync(u32 a, u32 b, void (*cb)(void), u32 arg) {
     data_021feb90.fc = b;
     data_021feb90.f4 = (u32)cb;
     data_021feb90.f10 = arg;
-    return func_0211d548() ? 0 : 3;
+    return RTCi_ReadRawDateTimeAsync() ? 0 : 3;
 }
 
-// RTC_ReadDateTime (sync wrapper of RTC_ReadDateTimeAsync; waits in func_0211cbd0)
-u32 func_0211d20c(u32 a, u32 b) {
-    u32 r = RTC_GetDateTimeAsync(a, b, func_0211cbe8, 0);
+// RTC_ReadDateTime (sync wrapper of RTC_ReadDateTimeAsync; waits in RtcWaitBusy)
+u32 RTC_GetDateTime(u32 a, u32 b) {
+    u32 r = RTC_GetDateTimeAsync(a, b, RtcGetResultCallback, 0);
     data_021feb90.result = r;
-    if (!r) func_0211cbd0();
+    if (!r) RtcWaitBusy();
     return data_021feb90.result;
 }

@@ -68,22 +68,22 @@ extern void *data_021f59f0;
 extern u8 data_021f59ec[];
 extern u8 data_021f5aac[];
 extern u8 data_021f5a1c[];
-void func_0210a294(void *p);
-void func_0210a378(void *p, u32 x);
+void NNS_SndHandleInit(void *p);
+void NNS_SndPlayerStopSeq(void *p, u32 x);
 void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0210cf78(void *a, u32 b, void *c);
-void func_0210bd58(void *a, u32 b);
+void NNS_SndArcPlayerStartSeqArc(void *a, u32 b, void *c);
+void NNS_SndHeapLoadState(void *a, u32 b);
 void *func_0210bd4c(void *a);
-s32 func_0210ccbc(u32 a, void *b);
-s32 func_0210be44(void *a);
-void *func_0210be9c(void *a, u32 b, void (*c)(void), u32 d, u32 e);
-void *func_0210bfe8(u32 a, u32 b);
-void func_0210bc00(void *a, u32 b, void *c, u32 d);
-void func_0210b918(void *a, u32 b);
-s32 func_0210d064(void *a);
-void func_0210962c(void);
+s32 NNS_SndArcLoadGroup(u32 a, void *b);
+s32 NNS_SndHeapSaveState(void *a);
+void *NNS_SndHeapAlloc(void *a, u32 b, void (*c)(void), u32 d, u32 e);
+void *NNS_SndHeapCreate(u32 a, u32 b);
+void NNS_SndArcInit(void *a, u32 b, void *c, u32 d);
+void NNS_SndArcInitOnMemory(void *a, u32 b);
+s32 NNS_SndArcPlayerSetup(void *a);
+void NNS_SndInit(void);
 void func_0210ef44(u32 a, u32 b, u32 c);
-s32 func_021095f8(void);
+s32 NNS_SndMain(void);
 
 }
 extern "C" {
@@ -132,19 +132,19 @@ extern "C" void *func_020edc88(void) {
 }
 
 extern "C" void func_020edbbc(u32 a, u32 b, u32 c, u32 d) {
-    func_0210962c();
+    NNS_SndInit();
     if (data_021f59e8 != NULL) func_0206d49c();
-    data_021f59e8 = func_0210bfe8(a, b);
+    data_021f59e8 = NNS_SndHeapCreate(a, b);
     if (data_021f59e8 == NULL) func_0206d49c();
     func_020edb20();
     if (c != 0) {
-        func_0210bc00(data_021f5aac, c, data_021f59e8, 0);
+        NNS_SndArcInit(data_021f5aac, c, data_021f59e8, 0);
     } else {
         if (d == 0) func_0206d49c();
-        func_0210b918(data_021f5a1c, d);
+        NNS_SndArcInitOnMemory(data_021f5a1c, d);
     }
-    if (func_0210d064(data_021f59e8) == 0) func_0206d49c();
-    func_0210a294(data_021f59ec);
+    if (NNS_SndArcPlayerSetup(data_021f59e8) == 0) func_0206d49c();
+    NNS_SndHandleInit(data_021f59ec);
 }
 
 extern "C" void func_020edbb8(void) {
@@ -156,12 +156,12 @@ extern "C" void func_020edb74(u32 a) {
 }
 
 extern "C" void func_020edb20(void) {
-    data_021f59f0 = func_0210be9c(func_020edc88(), 0x1020, func_020edbb8, 0, 0);
+    data_021f59f0 = NNS_SndHeapAlloc(func_020edc88(), 0x1020, func_020edbb8, 0, 0);
     if (data_021f59f0 == NULL) func_0206d49c();
 }
 
 extern "C" void func_020edb14(void) {
-    func_021095f8();
+    NNS_SndMain();
 }
 
 extern "C" void func_020edb00(s32 a, void *b) {
@@ -170,7 +170,7 @@ extern "C" void func_020edb00(s32 a, void *b) {
 
 extern "C" void func_020edad0(s32 a, void *b, void *c) {
     if (c == NULL) func_0206d49c();
-    func_0210cf78(c, (u32)b, (void *)a);
+    NNS_SndArcPlayerStartSeqArc(c, (u32)b, (void *)a);
 }
 
 extern "C" void func_020eda80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
@@ -180,25 +180,25 @@ extern "C" void func_020eda80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
 
 extern "C" void func_020eda60(void *a) {
     if (a == NULL) func_0206d49c();
-    func_0210a294(a);
+    NNS_SndHandleInit(a);
 }
 
 extern "C" void func_020eda30(void *a, u32 b) {
     if (a == NULL) func_0206d49c();
-    func_0210a378(a, b);
+    NNS_SndPlayerStopSeq(a, b);
 }
 
 extern "C" s32 func_020ed9c8(u32 a) {
     s32 r = (s32)func_020ed960();
-    if (func_0210ccbc(a, data_021f59e8) == 0) return -1;
-    if (func_0210be44(data_021f59e8) == -1) func_0206d49c();
+    if (NNS_SndArcLoadGroup(a, data_021f59e8) == 0) return -1;
+    if (NNS_SndHeapSaveState(data_021f59e8) == -1) func_0206d49c();
     return r;
 }
 
 extern "C" void *func_020ed978(u32 a) {
     if (a == 255) func_0206d49c();
     if (a == 0) func_0206d49c();
-    func_0210bd58(data_021f59e8, a);
+    NNS_SndHeapLoadState(data_021f59e8, a);
     if (a != (u32)func_020ed960()) func_0206d49c();
     return func_020ed960();
 }

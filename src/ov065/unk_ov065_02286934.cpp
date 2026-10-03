@@ -289,7 +289,7 @@ extern s32 data_ov065_02291748;
 extern u32 data_ov065_0229174c[];
 
 s32 memcmp(const void *, const void *, s32);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
 s32 func_ov065_02278dbc(s32);

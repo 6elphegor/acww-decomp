@@ -79,7 +79,7 @@ void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
-void func_02110de8(void *p);
+void G3X_SetToonTable(void *p);
 }
 
 extern "C" {
@@ -107,7 +107,7 @@ void G3X_Init(void);
 }
 
 extern "C" {
-void func_02110d00(void);
+void G3X_InitTable(void);
 }
 
 extern "C" {
@@ -119,7 +119,7 @@ void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void func_02105d98(void);
+void NNS_G3dInit(void);
 }
 
 extern "C" {
@@ -365,7 +365,7 @@ extern "C" void func_02002804(void);
 
 extern "C" void func_02002918(void) {
     G3X_Init();
-    func_02110d00();
+    G3X_InitTable();
     G3X_InitMtxStack();
     *(vu16 *)0x4000060 &= 0xffffcffd;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 0x10;
@@ -375,7 +375,7 @@ extern "C" void func_02002918(void) {
     G3i_PerspectiveW_(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
     *(vu32 *)0x400044c = 0;
     *(vu32 *)0x4000540 = 3;
-    func_02105d98();
+    NNS_G3dInit();
     func_02002804();
     G3X_SetClearColor(0, 0, 0x7fff, 0x3f, 1);
     data_0213c7a8 = 0;
@@ -412,7 +412,7 @@ extern "C" void func_02002804(void) {
     DC_FlushRange(&buf, 0x40);
     vu16 *reg = (vu16 *)0x4000060;
     *reg = *reg & 0xffffcffd;
-    func_02110de8(&buf);
+    G3X_SetToonTable(&buf);
 }
 
 extern "C" void func_020027f8(u32 v) { data_0213c7ac = v; }

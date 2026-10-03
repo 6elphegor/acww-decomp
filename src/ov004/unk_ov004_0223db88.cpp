@@ -60,7 +60,7 @@ extern "C" {
 extern void *data_021c47c4;
 extern const Unk_ov004_0223dd88_Tbl data_ov004_02244230[];
 
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_020b50e8();
 void func_ov004_02213be8(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -367,7 +367,7 @@ extern "C" void func_ov004_0223df58(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32
         }
         i++;
     } while (i < 4);
-    r->unk_10 = func_01ffc5a4(sum << 12, cnt << 12) >> 12;
+    r->unk_10 = FX_Div(sum << 12, cnt << 12) >> 12;
     if (cnt == 2) {
         if (func_020e780c(last, r->unk_10) >= 0x4000) {
             r->unk_10 = r->unk_10 + 0x8000;

@@ -125,7 +125,7 @@ s32 _ZN12Unk_020d5d8413func_02002d74Ej(s32 v);
 void _ZN12Unk_020e0cf48vfunc_04Ev(void *p);
 void func_02089118(void);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e9688(Vec3 *v);
 }
@@ -329,21 +329,21 @@ extern "C" void func_02088d58() {
             }
             if (data_021ce638->unk_1c & 2) {
                 o->unk_14 = 0;
-                pen = func_01ffc5a4(pen, len);
+                pen = FX_Div(pen, len);
                 o->unk_10 += func_01ffcb0c(d.x, pen);
                 o->unk_18 += func_01ffcb0c(d.z, pen);
             } else if (o->unk_1c & 2) {
                 data_021ce638->unk_14 = 0;
-                pen = func_01ffc5a4(pen, len);
+                pen = FX_Div(pen, len);
                 data_021ce638->unk_10 -= func_01ffcb0c(d.x, pen);
                 data_021ce638->unk_18 -= func_01ffcb0c(d.z, pen);
             } else {
                 w0 = data_021ce638->unk_34;
                 w1 = o->unk_34;
-                k = func_01ffc5a4(pen, len) >> 1;
+                k = FX_Div(pen, len) >> 1;
                 sumM = w0 + w1;
-                s32 f1 = func_01ffcb0c(k, func_01ffc5a4(w1, sumM));
-                pen = func_01ffcb0c(k, func_01ffc5a4(w0, sumM));
+                s32 f1 = func_01ffcb0c(k, FX_Div(w1, sumM));
+                pen = func_01ffcb0c(k, FX_Div(w0, sumM));
                 o->unk_14 = 0;
                 data_021ce638->unk_14 = 0;
                 data_021ce638->unk_10 -= func_01ffcb0c(d.x, f1);

@@ -198,7 +198,7 @@ char *func_0212a120(char *s, s32 c);
 }
 
 extern "C" {
-int func_0212a190(const u8 *a, const u8 *b);
+int strcmp(const u8 *a, const u8 *b);
 }
 
 extern "C" {

@@ -88,7 +88,7 @@ public:
 extern "C" {
 extern u8 data_021f5b80[];
 u32 func_020f07f0(void *g, u32 n);
-void func_0210d010(void *p, u32 v);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void func_02109fd0(void *p, u32 a, u32 b);
 void func_020eda30(void *p, u32 v);
 void func_020edad0(u32 code, u32 a, void *p);
@@ -98,7 +98,7 @@ void func_0210a024(void *p, u32 a, void *out);
 }
 
 void Unk_0213bb64::vfunc_14() {
-    func_0210d010(&b, 0xf6);
+    NNS_SndArcPlayerStartSeq(&b, 0xf6);
     e14 = -1;
     w16 = 0;
 }

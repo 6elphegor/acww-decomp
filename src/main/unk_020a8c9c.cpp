@@ -784,7 +784,7 @@ void func_020e85fc(void *heap, void *ptr);
 }
 
 extern "C" {
-void func_02111b3c(void *p, u32 a, u32 size);
+void GX_LoadBG1Scr(void *p, u32 a, u32 size);
 }
 
 extern "C" {
@@ -804,7 +804,7 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-s32 func_021198b4(void *file, void *buf, u32 size);
+s32 FS_ReadFile(void *file, void *buf, u32 size);
 }
 
 extern "C" {
@@ -966,7 +966,7 @@ BOOL Unk_020e2c98::func_020ab8f4(void *file) {
     BOOL ok;
     unk_04 = (u8 *)func_020e8594(0x800);
     if (unk_04) {
-        ok = func_021198b4(file, unk_04, 0x800) != -1;
+        ok = FS_ReadFile(file, unk_04, 0x800) != -1;
     } else {
         ok = FALSE;
     }
@@ -1106,7 +1106,7 @@ void Unk_020e2c98::func_020ab448() {
 
 void Unk_020e2c98::func_020ab428() {
     DC_FlushRange(unk_04, 0x800);
-    func_02111b3c(unk_04, 0, 0x800);
+    GX_LoadBG1Scr(unk_04, 0, 0x800);
 }
 
 void Unk_020e2c98::func_020ab3fc() {

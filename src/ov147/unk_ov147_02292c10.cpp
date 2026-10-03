@@ -11,11 +11,11 @@ u32 func_02001510(s32 a);
 void func_020014f4(s32 a);
 void func_020017e4(s32 a, s32 b);
 void DC_FlushRange(void *p, u32 size);
-void func_0211199c(void *p, u32 a, u32 size);
+void GX_LoadBG3Scr(void *p, u32 a, u32 size);
 void GX_LoadBGPltt(void *p, u32 a, u32 size);
-void func_0211165c(void *p, u32 a, u32 size);
+void GX_LoadBG3Char(void *p, u32 a, u32 size);
 void FS_OpenFile();
-void func_021198b4(void *a, void *b, u32 size);
+void FS_ReadFile(void *a, void *b, u32 size);
 void FS_CloseFile(void *a);
 void FS_InitFile(void *a);
 void *func_020e8594(u32 size);
@@ -181,25 +181,25 @@ extern "C" void func_ov147_02292e74(s32 idx) {
 
 extern "C" void func_ov147_02292e4c(void *a, void *b, void *c) {
     FS_OpenFile();
-    func_021198b4(a, c, 0x9e0);
+    FS_ReadFile(a, c, 0x9e0);
     FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292e28(void *a, void *b, void *c) {
     FS_OpenFile();
-    func_021198b4(a, c, 0x20);
+    FS_ReadFile(a, c, 0x20);
     FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292e00(void *a, void *b, void *c) {
     FS_OpenFile();
-    func_021198b4(a, c, 0x800);
+    FS_ReadFile(a, c, 0x800);
     FS_CloseFile(a);
 }
 
 extern "C" void func_ov147_02292de0(void *p) {
     DC_FlushRange(p, 0x9e0);
-    func_0211165c(p, 0, 0x9e0);
+    GX_LoadBG3Char(p, 0, 0x9e0);
 }
 
 extern "C" void func_ov147_02292dc4(void *p) {
@@ -209,7 +209,7 @@ extern "C" void func_ov147_02292dc4(void *p) {
 
 extern "C" void func_ov147_02292da4(void *p) {
     DC_FlushRange(p, 0x800);
-    func_0211199c(p, 0, 0x800);
+    GX_LoadBG3Scr(p, 0, 0x800);
 }
 
 extern "C" void func_ov147_02292d6c() {

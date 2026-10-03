@@ -285,7 +285,7 @@ struct Unk_ov069_Ent {
     Unk_ov069_Fn b;
     Unk_ov069_Fn c;
 };
-extern "C" void func_02128a00(void *, const void *, s32);
+extern "C" void memcpy(void *, const void *, s32);
 
 extern Unk_ov069_Ent data_021be7e0[3];
 extern Unk_ov069_Ent data_021bf10c[17];
@@ -498,21 +498,21 @@ Unk_ov069_EntB data_ov069_02260ebc[7] = {
     {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d4a8, 0, 0},
 };
 extern "C" void func_ov069_0225f1a0() {
-    func_02128a00(data_021be7e0, data_ov069_02260d24, 72);
-    func_02128a00(data_021bf10c, data_ov069_022613cc, 408);
-    func_02128a00(data_021befd4, data_ov069_02261294, 312);
-    func_02128a00(data_021be650, data_ov069_02260cc4, 24);
-    func_02128a00(data_021be668, data_ov069_02260cdc, 24);
-    func_02128a00(data_021be730, data_ov069_02260cf4, 48);
-    func_02128a00(data_021bf2a4, data_ov069_02261564, 1752);
-    func_02128a00(data_021bea78, data_ov069_02260e2c, 144);
-    func_02128a00(data_021bed30, data_ov069_022611bc, 216);
-    func_02128a00(data_021bebb0, data_ov069_02261024, 192);
-    func_02128a00(data_021be8c0, data_ov069_02260d6c, 96);
-    func_02128a00(data_021bee08, data_ov069_022610e4, 216);
-    func_02128a00(data_021be920, data_ov069_02260dcc, 96);
-    func_02128a00(data_021bec70, data_ov069_02260f64, 192);
-    func_02128a00(data_021beb08, data_ov069_02260ebc, 168);
+    memcpy(data_021be7e0, data_ov069_02260d24, 72);
+    memcpy(data_021bf10c, data_ov069_022613cc, 408);
+    memcpy(data_021befd4, data_ov069_02261294, 312);
+    memcpy(data_021be650, data_ov069_02260cc4, 24);
+    memcpy(data_021be668, data_ov069_02260cdc, 24);
+    memcpy(data_021be730, data_ov069_02260cf4, 48);
+    memcpy(data_021bf2a4, data_ov069_02261564, 1752);
+    memcpy(data_021bea78, data_ov069_02260e2c, 144);
+    memcpy(data_021bed30, data_ov069_022611bc, 216);
+    memcpy(data_021bebb0, data_ov069_02261024, 192);
+    memcpy(data_021be8c0, data_ov069_02260d6c, 96);
+    memcpy(data_021bee08, data_ov069_022610e4, 216);
+    memcpy(data_021be920, data_ov069_02260dcc, 96);
+    memcpy(data_021bec70, data_ov069_02260f64, 192);
+    memcpy(data_021beb08, data_ov069_02260ebc, 168);
 }
 
 // An empty object whose inline constructor runs the copy once all the tables are built (the call ends __sinit; the object

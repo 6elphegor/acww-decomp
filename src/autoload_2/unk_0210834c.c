@@ -26,7 +26,7 @@ static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 3
 static inline void BitVecReset(u32 *vec, u32 idx) { vec[idx >> 5] &= ~(1 << (idx & 31)); }
 
 // NNS_G3dGetJointScaleSi3d-style: joint scale with cumulative parent scale cache
-void func_0210834c(JntAnmResult *pResult, const s32 *p, const u8 *cmd, u32 srtflag)
+void NNSi_G3dGetJointScaleSi3d(JntAnmResult *pResult, const s32 *p, const u8 *cmd, u32 srtflag)
 {
     u32 nodeID = *(cmd + 1);
     u32 parentID = *(cmd + 2);

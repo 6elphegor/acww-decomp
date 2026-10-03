@@ -7,7 +7,7 @@ typedef unsigned long long u64;
 typedef int s32;
 
 extern volatile u64 data_021fcf24; // OSi_TickCounter
-u16 func_02114da0(void);           // OS_GetTickLo
+u16 OS_GetTickLo(void);           // OS_GetTickLo
 
 // OSSystemWork (HW_SYSTEM_WORK = 0x027ffc00), members used here
 typedef struct {
@@ -41,7 +41,7 @@ void OS_GetLowEntropyData(u32 *buffer) {
     const OSSystemWork *work = (const OSSystemWork *)0x027ffc00;
     const u8 *macAddress = (u8 *)((u32)(work->nvramUserInfo) + 0x74);
 
-    buffer[0] = (u32)((GX_GetVCount() << 16) | func_02114da0());
+    buffer[0] = (u32)((GX_GetVCount() << 16) | OS_GetTickLo());
     buffer[1] = (u32)(*(u16 *)(macAddress + 4) << 16) ^ (u32)(data_021fcf24);
     buffer[2] = (u32)(data_021fcf24 >> 32) ^ *(u32 *)macAddress ^ work->vblankCount;
     buffer[2] ^= reg_G3X_GXSTAT;

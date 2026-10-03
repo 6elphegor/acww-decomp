@@ -274,7 +274,7 @@ void func_02033988(void *o);
 s32 func_02033914(void *o, s32 a);
 void func_020309d4(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_02031908(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 s32 func_020318cc(void *p);
 void func_02003c30(void *p);
@@ -283,7 +283,7 @@ void func_02003c50(void *p, u32 id);
 s32 func_02003c70(void *p, void *v);
 void func_02054b14(void *p);
 void func_02055440(void *p, s32 a);
-void func_021061bc(u32 a, u32 b, u32 c);
+void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
 void func_020553f8(void *p, u32 v);
 void func_020547cc(void *p, u32 v);
 void func_020547e4(void *p);
@@ -652,7 +652,7 @@ void Unk_ov004_0224ebec::func_02236950() {
     p = (Unk_ov004_02236320_V3 *)((u8 *)p + 0x5c);
     n = 1;
     ang = unk_8e;
-    t = func_01ffc5a4(0x1000, 0x2000);
+    t = FX_Div(0x1000, 0x2000);
     switch (func_020b5328()) {
     case 1:
     case 4:
@@ -815,7 +815,7 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
             F08(this) = 0x1f;
         }
         func_02055440(unk_120, 3);
-        func_021061bc(unk_17c, 1, 0x1f0000);
+        NNSi_G3dModifyPolygonAttrMask(unk_17c, 1, 0x1f0000);
         func_020553f8(unk_120, (u8)F08(this));
         func_020547cc(unk_120, 0);
         if (F08(this) >= 0x1f && unk_110 == 1) {

@@ -107,9 +107,9 @@ s32 func_020ff2e4(u8 *p);
 BOOL func_020ff734(u32 v);
 BOOL func_020ff6f4(S *p, u32 v);
 extern void RTC_Init(void);
-extern s32 func_0211d3a0(Date *d);
-extern s32 func_0211d2e0(Time *t);
-extern s32 func_02114e38(void);
+extern s32 RTC_GetDate(Date *d);
+extern s32 RTC_GetTime(Time *t);
+extern s32 OS_IsTickAvailable(void);
 extern void OS_GetMacAddress(u8 *mac);
 void func_020ff0bc(S *out);
 BOOL func_020ff014(S *p, u8 *buf);
@@ -674,10 +674,10 @@ BOOL func_020ff770(S *p) {
     u32 seed;
     func_020ff0bc(p);
     RTC_Init();
-    if (func_0211d3a0(&date)) {
+    if (RTC_GetDate(&date)) {
         return 0;
     }
-    if (func_0211d2e0(&time)) {
+    if (RTC_GetTime(&time)) {
         return 0;
     }
     secs = func_020ff9f0(&date, &time);
@@ -685,7 +685,7 @@ BOOL func_020ff770(S *p) {
     if (secs < 0) {
         return 0;
     }
-    if (func_02114e38()) {
+    if (OS_IsTickAvailable()) {
         seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
     OS_GetMacAddress(mac);
@@ -749,10 +749,10 @@ BOOL func_020ff5cc(S *p) {
     u32 seed;
     func_020ff0bc(p);
     RTC_Init();
-    if (func_0211d3a0(&date)) {
+    if (RTC_GetDate(&date)) {
         return 0;
     }
-    if (func_0211d2e0(&time)) {
+    if (RTC_GetTime(&time)) {
         return 0;
     }
     secs = func_020ff9f0(&date, &time);
@@ -760,7 +760,7 @@ BOOL func_020ff5cc(S *p) {
     if (secs < 0) {
         return 0;
     }
-    if (func_02114e38()) {
+    if (OS_IsTickAvailable()) {
         seed += (u32)OS_GetTick; // original bug: the address of OS_GetTick, not its result
     }
     OS_GetMacAddress(mac);

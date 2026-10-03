@@ -177,7 +177,7 @@ u64 OS_GetTick(void);
 }
 
 extern "C" {
-u32 func_01ffa3b4(void);
+u32 OS_GetProcMode(void);
 }
 
 extern "C" {
@@ -193,15 +193,15 @@ void GX_SetBankForBG(u32 a);
 }
 
 extern "C" {
-void func_0210f900(u32 a);
+void GX_SetBankForSubBG(u32 a);
 }
 
 extern "C" {
-void func_021117fc(void *a, u32 b, u32 c);
+void GX_LoadBG1Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111794(void *a, u32 b, u32 c);
+void GXS_LoadBG1Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
@@ -327,7 +327,7 @@ u32 GX_SetGraphicsMode(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02110c98(u32 a);
+void G3X_SetHOffset(u32 a);
 }
 
 extern "C" {
@@ -371,23 +371,23 @@ void DC_FlushRange(void *p, u32 size);
 }
 
 extern "C" {
-void func_0211172c(void *a, u32 b, u32 c);
+void GX_LoadBG2Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_0211165c(void *a, u32 b, u32 c);
+void GX_LoadBG3Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111864(void *a, u32 b, u32 c);
+void GXS_LoadBG0Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_021116c4(void *a, u32 b, u32 c);
+void GXS_LoadBG2Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_021115f4(void *a, u32 b, u32 c);
+void GXS_LoadBG3Char(void *a, u32 b, u32 c);
 }
 
 extern "C" {
@@ -399,31 +399,31 @@ void GXS_LoadOBJ(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111b3c(void *a, u32 b, u32 c);
+void GX_LoadBG1Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111a6c(void *a, u32 b, u32 c);
+void GX_LoadBG2Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_0211199c(void *a, u32 b, u32 c);
+void GX_LoadBG3Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111ba4(void *a, u32 b, u32 c);
+void GXS_LoadBG0Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111ad4(void *a, u32 b, u32 c);
+void GXS_LoadBG1Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111a04(void *a, u32 b, u32 c);
+void GXS_LoadBG2Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02111934(void *a, u32 b, u32 c);
+void GXS_LoadBG3Scr(void *a, u32 b, u32 c);
 }
 
 extern "C" {
@@ -626,13 +626,13 @@ extern "C" s32 func_02002580(u8 *dst, u32 n, s32 a, s32 b, u8 c) {
 extern "C" s32 func_020024f0(u8 *dst, u32 n, s32 size, s32 x) {
     DC_FlushRange(dst, size);
     switch (n) {
-    case 0: func_02111b3c(dst, x, size); break;
-    case 1: func_02111a6c(dst, x, size); break;
-    case 2: func_0211199c(dst, x, size); break;
-    case 3: func_02111ba4(dst, x, size); break;
-    case 4: func_02111ad4(dst, x, size); break;
-    case 5: func_02111a04(dst, x, size); break;
-    case 6: func_02111934(dst, x, size); break;
+    case 0: GX_LoadBG1Scr(dst, x, size); break;
+    case 1: GX_LoadBG2Scr(dst, x, size); break;
+    case 2: GX_LoadBG3Scr(dst, x, size); break;
+    case 3: GXS_LoadBG0Scr(dst, x, size); break;
+    case 4: GXS_LoadBG1Scr(dst, x, size); break;
+    case 5: GXS_LoadBG2Scr(dst, x, size); break;
+    case 6: GXS_LoadBG3Scr(dst, x, size); break;
     }
     return 1;
 }
@@ -644,13 +644,13 @@ extern "C" s32 func_02002438(u8 *dst, u32 n, s32 a, s32 b, s32 c) {
     off = b * 32;
     DC_FlushRange(p, len);
     switch (n) {
-    case 0: func_021117fc(p, off, len); break;
-    case 1: func_0211172c(p, off, len); break;
-    case 2: func_0211165c(p, off, len); break;
-    case 3: func_02111864(p, off, len); break;
-    case 4: func_02111794(p, off, len); break;
-    case 5: func_021116c4(p, off, len); break;
-    case 6: func_021115f4(p, off, len); break;
+    case 0: GX_LoadBG1Char(p, off, len); break;
+    case 1: GX_LoadBG2Char(p, off, len); break;
+    case 2: GX_LoadBG3Char(p, off, len); break;
+    case 3: GXS_LoadBG0Char(p, off, len); break;
+    case 4: GXS_LoadBG1Char(p, off, len); break;
+    case 5: GXS_LoadBG2Char(p, off, len); break;
+    case 6: GXS_LoadBG3Char(p, off, len); break;
     case 7: GX_LoadOBJ(p, off, len); break;
     case 8: GXS_LoadOBJ(p, off, len); break;
     }
@@ -886,7 +886,7 @@ extern "C" void func_0200187c() {
             if ((*(volatile u32*)0x4000000 & 8) == 0) {
                 *(volatile u32*)0x4000010 = (data_0213c6f0.unk_00 & 0x1ff) | ((data_0213c6f0.unk_02 << 16) & 0x1ff0000);
             } else {
-                func_02110c98(data_0213c6f0.unk_00);
+                G3X_SetHOffset(data_0213c6f0.unk_00);
             }
         }
         if (data_0213c770.unk_11 & 2) {

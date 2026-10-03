@@ -26,7 +26,7 @@ extern "C" {
 s32 STD_GetStringLength(const char *);
 void func_02127838(void *, const void *);
 s32 memcmp(const void *, const void *, s32);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 
 extern s32 data_ov065_02290fa0;
@@ -85,7 +85,7 @@ void func_ov065_02278250(char *url) {
             s32 n;
             data_ov065_02291024.unk_0c = 9;
             n = STD_GetStringLength(url);
-            func_02128a00(data_ov065_02291024.unk_11, url, n + 1);
+            memcpy(data_ov065_02291024.unk_11, url, n + 1);
             data_ov065_02291024.unk_4c = n + 6;
             func_ov065_022782f4();
             data_ov065_02291024.unk_54 = 0;

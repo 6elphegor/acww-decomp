@@ -38,7 +38,7 @@ s32 func_ov001_02225254(s32, s32, s32, s32, s32, s32, s32, s32);
 s32 func_ov001_0222516c(s32);
 s32 func_ov001_022156e0(s32);
 s32 func_0212c234(void *, s32, void *, s32);
-void func_02111a6c(void *, s32, u32);
+void GX_LoadBG2Scr(void *, s32, u32);
 void func_ov001_0221aae4();
 void func_ov001_02217e40();
 
@@ -70,7 +70,7 @@ void func_ov001_022156b8() {
 }
 
 void func_ov001_02215618() {
-    func_ov001_02208594("char/jb4Error.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594("char/jb4Error.nsc.l", (void *)GX_LoadBG2Scr);
     REGSET(0x4001008);
     REGSET(0x400100a);
     REGSET(0x4000008);

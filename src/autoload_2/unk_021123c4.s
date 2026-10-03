@@ -7,19 +7,19 @@
 
 	.text
 
-	.extern func_02112528
+	.extern OS_UnlockCartridge
 	.arm
 
 ; OS_UnLockCartridge(lockID): `ldr r1, =OS_UnlockCartridge; bx r1` (the SDK's asm compatibility stub; a C tail
 ; call from mwcc goes through ip, not r1)
-	.global func_021123c4
-	.type func_021123c4, @function
-	.size func_021123c4, 0xc
-func_021123c4:
+	.global OS_UnLockCartridge
+	.type OS_UnLockCartridge, @function
+	.size OS_UnLockCartridge, 0xc
+OS_UnLockCartridge:
 	ldr r1, L_021123cc
 	bx r1
 L_021123cc:
-	.word func_02112528
+	.word OS_UnlockCartridge
 
 ; OS_GetLockID: finds a free lock ID with clz on the two 32-bit flag words; returns 0x40+n / 0x60+n or
 ; OS_LOCK_ID_ERROR (-3).

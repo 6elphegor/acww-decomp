@@ -50,10 +50,10 @@ s32 memcmp(const void *, const void *, s32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 WM_GetOtherElements(void *, void *);
 s32 func_0206d49c(void *);
-s32 func_0211faa0(void *);
+s32 WM_ReadStatus(void *);
 s32 WM_Reset(void *);
 s32 WM_End(void *);
-s32 func_0211fdd4(void *, void *);
+s32 WM_StartScanEx(void *, void *);
 s32 MIi_CpuClear16(s32, void *, s32);
 s32 WM_Initialize(void *, void *, s32);
 s32 WM_GetDispersionScanPeriod();
@@ -94,7 +94,7 @@ BOOL func_ov001_0221db6c() {
     if (WM_Initialize(data_ov001_0222deec, (void *)func_ov001_0221d970, 3) != 2) return FALSE;
     u8 *g;
     do {
-        func_0211faa0(data_ov001_0222deec + 0x168c);
+        WM_ReadStatus(data_ov001_0222deec + 0x168c);
         g = data_ov001_0222deec;
     } while (*(u16 *)(g + 0x168c) != 2);
     *(Unk_ov001_0221db6c_Blob *)(g + 0x1648) = *(const Unk_ov001_0221db6c_Blob *)data_ov001_0222a2b8;
@@ -105,17 +105,17 @@ BOOL func_ov001_0221db6c() {
 }
 
 BOOL func_ov001_0221db28() {
-    if (func_0211fdd4((void *)func_ov001_0221d970, data_ov001_0222deec + 0x1648) == 2) return TRUE;
+    if (WM_StartScanEx((void *)func_ov001_0221d970, data_ov001_0222deec + 0x1648) == 2) return TRUE;
     return FALSE;
 }
 
 BOOL func_ov001_0221da70() {
     data_ov001_0222deec[0x1e48] = 1;
-    func_0211faa0(data_ov001_0222deec + 0x168c);
+    WM_ReadStatus(data_ov001_0222deec + 0x168c);
     if (*(u16 *)(data_ov001_0222deec + 0x168c) != 2) {
         if (WM_Reset((void *)func_ov001_0221d970) != 2) return FALSE;
         do {
-            func_0211faa0(data_ov001_0222deec + 0x168c);
+            WM_ReadStatus(data_ov001_0222deec + 0x168c);
         } while (*(u16 *)(data_ov001_0222deec + 0x168c) != 2);
     }
     if (WM_End((void *)func_ov001_0221d970) != 2) return FALSE;

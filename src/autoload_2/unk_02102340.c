@@ -58,14 +58,14 @@ typedef struct CharCanvas {         // NNSG2dCharCanvas
     ClearAreaFunc clearArea;        // 0x1c
 } CharCanvas;
 
-extern u32 func_02101c6c(Font *font, u32 c);
-extern CharWidths *func_02101c08(Font *font, u32 idx);
+extern u32 NNS_G2dFontFindGlyphIndex(Font *font, u32 c);
+extern CharWidths *NNS_G2dFontGetCharWidthsFromIndex(Font *font, u32 idx);
 extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
-extern u32 func_02103734(BitReader *r, u32 nbits);   // bit reader: get n bits
+extern u32 NNSi_G2dBitReaderRead(BitReader *r, u32 nbits);   // bit reader: get n bits
 
-void func_02102b04(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, Glyph *glyph);
-void func_0210287c(CharCanvas *cc, u32 clr);
-void func_0210269c(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h);
+void DrawGlyphLine(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, Glyph *glyph);
+void ClearContinuous(CharCanvas *cc, u32 clr);
+void ClearAreaLine(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h);
 void InitCharCanvas(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGlyphFunc dg, ClearFunc cl, ClearAreaFunc ca, u32 param);
 
 // NNSi_G2dCharCanvasInitCommon (stores size, color mode, base and the draw/clear callbacks)
@@ -81,12 +81,12 @@ void InitCharCanvas(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode, DrawGl
 }
 
 // NNS_G2dCharCanvasDrawChar: look the glyph up in the font, call cc->drawGlyph, return the character advance
-s32 func_02102388(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, u16 ch) {
+s32 NNS_G2dCharCanvasDrawChar(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, u16 ch) {
     Glyph glyph;
-    u32 idx = func_02101c6c(font, ch);
+    u32 idx = NNS_G2dFontFindGlyphIndex(font, ch);
     GlyphBlock *g;
     if (idx == 0xffff) idx = font->info->alterCharIndex;
-    glyph.pWidths = func_02101c08(font, idx);
+    glyph.pWidths = NNS_G2dFontGetCharWidthsFromIndex(font, idx);
     g = font->info->pGlyph;
     glyph.pBitmap = (u8 *)(idx * g->cellSize + ((u8 *)g + 8));
     cc->drawGlyph(cc, font, x + glyph.pWidths->left, y, clr, &glyph);
@@ -96,7 +96,7 @@ s32 func_02102388(CharCanvas *cc, Font *font, s32 x, s32 y, s32 clr, u16 ch) {
 
 // NNS_G2dCharCanvasInitForOBJ1D (plugs the OBJ 1D mapping draw/clear functions into NNSi_G2dCharCanvasInitCommon;
 // the `param` is the area width in characters)
-void func_02102340(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode) {
-    InitCharCanvas(cc, charBase, w, h, mode, (DrawGlyphFunc)func_02102b04, func_0210287c, func_0210269c, w);
+void NNS_G2dCharCanvasInitForBG(CharCanvas *cc, u8 *charBase, s32 w, s32 h, s32 mode) {
+    InitCharCanvas(cc, charBase, w, h, mode, (DrawGlyphFunc)DrawGlyphLine, ClearContinuous, ClearAreaLine, w);
 }
 

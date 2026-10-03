@@ -105,7 +105,7 @@ extern s32 data_ov065_02291748;
 extern u32 data_ov065_0229174c[];
 
 s32 memcmp(const void *, const void *, s32);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
 s32 func_ov065_02278dbc(s32);
@@ -238,10 +238,10 @@ s32 func_02133150(s32, s32);
 u32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 s32 func_02128ca4(const char *, const char *, ...);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_0212a190(const char *, const char *);
-void func_02128c60(u32);
+s32 strcmp(const char *, const char *);
+void srand(u32);
 s32 rand();
 
 void *func_ov065_02277af0(s32);
@@ -302,7 +302,7 @@ s32 func_ov065_02288380(Unk_ov065_02288124_Qr **out, s32 fd, s32 a2, const char 
         *out = (Unk_ov065_02288124_Qr *)func_ov065_02277af0(0x110);
         q = *out;
     }
-    func_02128c60(func_ov065_02279144());
+    srand(func_ov065_02279144());
     func_02127838(q->unk_04, name);
     func_02127838(q->unk_44, secret);
     q->unk_c0 = a2;
@@ -531,7 +531,7 @@ void func_ov065_02288094(Unk_ov065_02288094_Buf *b, const char *s) {
         n = avail;
     }
     if (n != 0) {
-        func_02128a00(&b->unk_000[len], s, n);
+        memcpy(&b->unk_000[len], s, n);
         b->unk_800 += n;
         b->unk_000[b->unk_800 - 1] = 0;
     }
@@ -575,7 +575,7 @@ s32 func_ov065_02287fcc(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
         sa->unk_04 = func_ov065_02278bf4(name);
     }
     if (sa->unk_04 == (u32)-1) {
-        if (func_0212a190(name, "255.255.255.255") != 0) {
+        if (strcmp(name, "255.255.255.255") != 0) {
             h = func_ov065_02261408(name);
             if (h == NULL) {
                 return 0;
@@ -1075,7 +1075,7 @@ void func_ov065_0228758c(Qr *q, s8 *data, s32 n, void *addr) {
                 n = 0x20;
             }
             l.out.unk_000[0] = 5;
-            func_02128a00(l.out.unk_000 + l.out.unk_800, body, n);
+            memcpy(l.out.unk_000 + l.out.unk_800, body, n);
             l.out.unk_800 += n;
             break;
         case 4: {

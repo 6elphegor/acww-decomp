@@ -44,7 +44,7 @@ struct PadState {
 
 extern "C" {
 s32 func_02133150(s32, s32); // _s32_div_f (called by the compiler for the s16 division)
-s32 func_01ffc5a4(s32, s32); // FX_Div
+s32 FX_Div(s32, s32); // FX_Div
 s32 VEC_Mag(const VecFx32 *v); // VEC_Mag
 void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst); // VEC_Add
 void func_01ffb87c(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
@@ -55,7 +55,7 @@ void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab); // MTX_Conca
 void func_020e9960(VecFx32 *out, const VecFx32 *a, const VecFx32 *b); // out = a - b
 s32 func_020e9688(const VecFx32 *v); // length in the XZ plane
 void func_020e9888(VecFx32 *v, s32 s); // scale
-u16 func_0211ba58(void); // TP_GetLatestIndexInAuto
+u16 TP_GetLatestIndexInAuto(void); // TP_GetLatestIndexInAuto
 void TP_GetCalibratedPoint(TPData *dst, const TPData *src); // TP_GetCalibratedPoint
 void TP_Init(void); // TP_Init
 BOOL TP_GetUserInfo(TPCalibrateParam *p); // TP_GetUserInfo
@@ -221,7 +221,7 @@ extern "C" void func_020e7fd4(void) {
     s32 i;
     BOOL touched;
 
-    idx = func_0211ba58();
+    idx = TP_GetLatestIndexInAuto();
     touched = FALSE;
     for (i = 0; i < 4; i++) {
         s32 j = idx - 4 + i;
@@ -284,7 +284,7 @@ extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
     } else if (step < min) {
         step = min;
     }
-    func_020e9888(&d, func_01ffc5a4(step, len));
+    func_020e9888(&d, FX_Div(step, len));
     VEC_Add(p, &d, p);
     return len - step;
 }
@@ -313,7 +313,7 @@ extern "C" s32 func_020e7d4c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
     } else if (step < min) {
         step = min;
     }
-    func_020e9888(&d, func_01ffc5a4(step, len));
+    func_020e9888(&d, FX_Div(step, len));
     p->x += d.x;
     p->z += d.z;
     return len - step;
@@ -333,31 +333,31 @@ extern "C" s16 func_020e7b98(s32 x, s32 y) {
     } else if (x >= 0) {
         if (y >= 0) {
             if (y >= x) {
-                r = data_0213a748[func_01ffc5a4(x, y) >> 2];
+                r = data_0213a748[FX_Div(x, y) >> 2];
             } else {
-                r = 0x4000 - data_0213a748[func_01ffc5a4(y, x) >> 2];
+                r = 0x4000 - data_0213a748[FX_Div(y, x) >> 2];
             }
         } else {
             y = -y;
             if (y < x) {
-                r = data_0213a748[func_01ffc5a4(y, x) >> 2] + 0x4000;
+                r = data_0213a748[FX_Div(y, x) >> 2] + 0x4000;
             } else {
-                r = 0x8000 - data_0213a748[func_01ffc5a4(x, y) >> 2];
+                r = 0x8000 - data_0213a748[FX_Div(x, y) >> 2];
             }
         }
     } else {
         if (y < 0) {
             if (y <= x) {
-                r = data_0213a748[func_01ffc5a4(-x, -y) >> 2] + 0x8000;
+                r = data_0213a748[FX_Div(-x, -y) >> 2] + 0x8000;
             } else {
-                r = 0xc000 - data_0213a748[func_01ffc5a4(-y, -x) >> 2];
+                r = 0xc000 - data_0213a748[FX_Div(-y, -x) >> 2];
             }
         } else {
             x = -x;
             if (y < x) {
-                r = data_0213a748[func_01ffc5a4(y, x) >> 2] + 0xc000;
+                r = data_0213a748[FX_Div(y, x) >> 2] + 0xc000;
             } else {
-                r = -data_0213a748[func_01ffc5a4(x, y) >> 2];
+                r = -data_0213a748[FX_Div(x, y) >> 2];
             }
         }
     }

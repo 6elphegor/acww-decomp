@@ -34,9 +34,9 @@ void SND_SetPlayerVolume(u32 a, u32 b) { SNDi_SetPlayerParam(a, 6, b, 2); }
 
 void SND_SetPlayerChannelPriority(u32 a, u32 b) { SNDi_SetPlayerParam(a, 4, b, 1); }
 
-void func_02116ba8(u32 a, u32 b, u32 c) { PushCommand_impl(10, a, b, c, 0); }
+void SND_SetPlayerLocalVariable(u32 a, u32 b, u32 c) { PushCommand_impl(10, a, b, c, 0); }
 
-void func_02116b7c(u32 a, u32 b) { PushCommand_impl(11, a, b, 0, 0); }
+void SND_SetPlayerGlobalVariable(u32 a, u32 b) { PushCommand_impl(11, a, b, 0, 0); }
 
 void func_02116b54(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 10, c, 2); }
 
@@ -66,7 +66,7 @@ void SND_SetupAlarm(u32 a, u32 b, u32 c, u32 d, u32 e) {
     PushCommand_impl(18, a, b, c, x);
 }
 
-void func_02116968(u32 a, u32 b, u32 c) { PushCommand_impl(8, a, b, c, 0); }
+void SND_SetTrackMute(u32 a, u32 b, u32 c) { PushCommand_impl(8, a, b, c, 0); }
 
 void SND_LockChannel(u32 a, u32 b) { PushCommand_impl(26, a, b, 0, 0); }
 
@@ -86,17 +86,17 @@ void SND_InvalidateBankData(u32 a, u32 b) { PushCommand_impl(31, a, b, 0, 0); }
 
 void SND_InvalidateWaveData(u32 a, u32 b) { PushCommand_impl(32, a, b, 0, 0); }
 
-void func_021167a8(u32 a) { PushCommand_impl(23, a, 0, 0, 0); }
+void SND_SetMasterVolume(u32 a) { PushCommand_impl(23, a, 0, 0, 0); }
 
 void SND_SetOutputSelector(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(25, a, b, c, d); }
 
-void func_02116748(u32 a) { PushCommand_impl(33, a, 0, 0, 0); }
+void SND_ReadDriverInfo(u32 a) { PushCommand_impl(33, a, 0, 0, 0); }
 
 void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d) { PushCommand_impl(6, a, b, c, d); }
 
 void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e) { PushCommand_impl(7, a | (e << 24), b, c, d); }
 
-void func_021166b4(u32 a) { PushCommand_impl(22, a, 0, 0, 0); }
+void SND_SetSurroundDecay(u32 a) { PushCommand_impl(22, a, 0, 0, 0); }
 
 void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d) {
     u32 *p = (u32 *)SND_AllocCommand(1);

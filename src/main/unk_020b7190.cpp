@@ -108,7 +108,7 @@ Vec *func_020947f0(s32 a);
 void func_0203eeac(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
 u32 _ZN12Unk_0203b35013func_0203bc3cEv(u32 a);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_020e9888(void *a, s32 b);
 s32 func_02095154(s32 a, s32 b);
 u16 *func_02094440(void);
@@ -396,8 +396,8 @@ void Unk_020e450c::func_020b757c() {
         func_0203eeac(&w, &v);
         MTX_MultVec43(&w, &data_021f47e0, &x);
         s32 d = _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070);
-        s32 q = func_01ffc5a4(0x60000, d);
-        s32 r = func_01ffc5a4(-q, x.z);
+        s32 q = FX_Div(0x60000, d);
+        s32 r = FX_Div(-q, x.z);
         func_020e9888(&x, r);
         _ZN12Unk_020e0d9813func_02089ad8Eii(&unk_08, x.x >> 12, -x.y >> 12);
     }

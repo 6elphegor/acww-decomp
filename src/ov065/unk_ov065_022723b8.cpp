@@ -131,7 +131,7 @@ extern Unk_ov065_02290814 *data_ov065_02290814;
 u64 OS_GetTick();
 s32 func_020ffc60(s32, void *);
 s32 func_020ffdd8(void *);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 s32 func_0212b854(const char *, char **, s32);
@@ -396,7 +396,7 @@ extern "C" {
 u64 func_ov065_02277974(void);
 s32 func_ov065_022890b8(...);
 void func_ov065_02277b64(u32, u32, u32);
-void func_02115e64(u32, void *, u32);
+void MIi_CpuClear32(u32, void *, u32);
 s32 func_ov065_02270508(u32);
 s32 func_ov065_02273b88(u32);
 s32 func_ov065_02273d38(u32);
@@ -847,7 +847,7 @@ s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 void MI_CpuCopy8(const void *, void *, u32);
 void MIi_CpuCopy32(const void *, void *, u32);
-void func_02115e64(u32, void *, u32);
+void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuClear16(u32, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
@@ -894,7 +894,7 @@ void func_ov065_02275984(u32 a);
 
 static inline void Unk_ov065_02275984_Clear32(void *d, u32 n) {
     volatile u32 t = 0;
-    func_02115e64(t, d, n);
+    MIi_CpuClear32(t, d, n);
 }
 
 static inline void Unk_ov065_02275984_Clear16(void *d, u32 n) {
@@ -1163,7 +1163,7 @@ extern char data_ov065_0228e16c[];
 extern "C" {
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64 a, u64 b);
-void func_02115e64(u32 v, void *dst, u32 n);
+void MIi_CpuClear32(u32 v, void *dst, u32 n);
 void MI_CpuFill8(void *dst, s32 v, u32 n);
 s32 memcmp(void *, void *, u32);
 u64 func_ov065_02277974(void);
@@ -1828,7 +1828,7 @@ s32 func_ov065_02276698(s32 a0, u32 ip, s32 port, char *name, void *arg) {
         return 0;
     }
     z = 0;
-    func_02115e64(z, &addr, 8);
+    MIi_CpuClear32(z, &addr, 8);
     addr.family = 2;
     addr.ip = ip;
     addr.port = ((port >> 8) & 0xff) | ((port << 8) & 0xff00);
@@ -4271,7 +4271,7 @@ void func_ov065_02273400(void) {
     }
     {
         volatile u32 z = 0;
-        func_02115e64(z, data_ov065_02290840, 0x738);
+        MIi_CpuClear32(z, data_ov065_02290840, 0x738);
     }
 }
 #undef G

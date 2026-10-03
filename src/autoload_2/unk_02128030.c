@@ -58,19 +58,19 @@ void OS_LockMutex(OSMutex *);
 void OS_UnlockMutex(OSMutex *);
 int func_02127cb8(const void *, u32, u32, FILE *);
 int func_02127ad0(void);
-int func_02127b4c(FILE *, int);
-s64 func_0212ef50(s64 a, s32 *out);
+int __flush_buffer(FILE *, int);
+s64 frexp(s64 a, s32 *out);
 s64 func_0212f010(s64 a, s32 v);
 u32 func_0212a438(const char *);
 void func_02128a20(void *dst, int val, u32 n);
-int func_02128450(FILE *, u32, int);
+int _fseek(FILE *, u32, int);
 int func_02128318(FILE *, int, int);
-int func_02128150(FILE *);
-int func_02128778(FILE *);
+int fflush(FILE *);
+int _ftell(FILE *);
 int func_02128908(u16 *, const char *, u32);
 
 // memcpy
-void *func_02128a00(void *dst, const void *src, u32 n) {
+void *memcpy(void *dst, const void *src, u32 n) {
     const u8 *p = (const u8 *)src;
     u8 *q = (u8 *)dst;
     for (n++; --n;) *q++ = *p++;
@@ -78,7 +78,7 @@ void *func_02128a00(void *dst, const void *src, u32 n) {
 }
 
 // memmove
-void *func_021289b4(void *dst, const void *src, u32 n) {
+void *memmove(void *dst, const void *src, u32 n) {
     const u8 *p;
     u8 *q;
     if (src >= dst) {
@@ -168,13 +168,13 @@ int func_02128824(u16 *pwcs, const char *s, u32 n) {
 
 s64 func_021287f4(s64 a, s32 delta) {
     s32 v;
-    s64 r = func_0212ef50(a, &v);
+    s64 r = frexp(a, &v);
     v += delta;
     return func_0212f010(r, v);
 }
 
 // _ftell
-int func_02128778(FILE *file) {
+int _ftell(FILE *file) {
     int pos;
     u32 st;
     if ((u8)((u8)file->mode.file_kind + 255) > 1 || file->error != 0) {
@@ -209,19 +209,19 @@ int func_02128650(FILE *file) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
-    r = func_02128778(file);
+    r = _ftell(file);
     data_02200274[idx]--;
     if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }
 
 // _fseek
-int func_02128450(FILE *file, u32 offset, int whence) {
+int _fseek(FILE *file, u32 offset, int whence) {
     if ((u8)file->mode.file_kind != 1 || file->error != 0) {
         data_0220064c = 40;
         return -1;
     }
-    if (file->state.io_state == 1 && func_02127b4c(file, 0) != 0) {
+    if (file->state.io_state == 1 && __flush_buffer(file, 0) != 0) {
         file->error = 1;
         file->buffer_len = 0;
         data_0220064c = 40;
@@ -229,7 +229,7 @@ int func_02128450(FILE *file, u32 offset, int whence) {
     }
     if (whence == 1) {
         whence = 0;
-        offset += func_02128778(file);
+        offset += _ftell(file);
     }
     if (whence != 2 && file->mode.io_mode != 3 && (u32)(file->state.io_state - 2) <= 1) {
         if (offset >= file->position || offset < file->buffer_pos) {
@@ -277,14 +277,14 @@ int func_02128318(FILE *file, int offset, int whence) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
-    r = func_02128450(file, offset, whence);
+    r = _fseek(file, offset, whence);
     data_02200274[idx]--;
     if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }
 
 // rewind
-void func_021282f0(FILE *file) {
+void rewind(FILE *file) {
     file->error = 0;
     func_02128318(file, 0, 0);
     file->error = 0;
@@ -295,7 +295,7 @@ int func_02128250(FILE *file) {
     int r, r2;
     if (file == 0) return -1;
     if (file->mode.file_kind == 0) return 0;
-    r = func_02128150(file);
+    r = fflush(file);
     r2 = file->close_proc(file->handle);
     file->mode.file_kind = 0;
     file->handle = 0;
@@ -304,7 +304,7 @@ int func_02128250(FILE *file) {
 }
 
 // fflush
-int func_02128150(FILE *file) {
+int fflush(FILE *file) {
     if (file == 0) return func_02127ad0();
     if (file->error || file->mode.file_kind == 0) return -1;
     if (file->mode.io_mode == 1) return 0;
@@ -314,7 +314,7 @@ int func_02128150(FILE *file) {
         file->state.io_state = 0;
         return 0;
     }
-    if (func_02127b4c(file, 0) != 0) {
+    if (__flush_buffer(file, 0) != 0) {
         file->error = 1;
         file->buffer_len = 0;
         return -1;

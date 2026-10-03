@@ -19,7 +19,7 @@ enum { start = 0x01, check_for_zero = 0x02, leading_zero = 0x04, need_digit = 0x
 #define fetch() (count++, (*ReadProc)(ReadProcArg, 0, 0))
 
 // __strtoul
-u32 func_0212bd38(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg,
+u32 __strtoul(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg,
                   int *chars_scanned, int *negative, int *overflow) {
     int c;
     int scan_state = start;
@@ -102,7 +102,7 @@ u32 func_0212bd38(int base, int max_width, int (*ReadProc)(void *, int, int), vo
 }
 
 // __strtoull
-u64 func_0212b8f0(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg,
+u64 __strtoull(int base, int max_width, int (*ReadProc)(void *, int, int), void *ReadProcArg,
                   int *chars_scanned, int *negative, int *overflow) {
     int c;
     int scan_state = start;
@@ -196,7 +196,7 @@ u32 func_0212b854(const char *str, char **end, int base) {
     __InStrCtrl isc;
     isc.NextChar = (char *)str;
     isc.NullCharDetected = 0;
-    value = func_0212bd38(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
+    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
     if (end) *end = (char *)str + count;
     if (overflow) {
         value = 0xffffffff;
@@ -208,13 +208,13 @@ u32 func_0212b854(const char *str, char **end, int base) {
 }
 
 // strtol
-int func_0212b784(const char *str, char **end, int base) {
+int strtol(const char *str, char **end, int base) {
     u32 value;
     int count, negative, overflow;
     __InStrCtrl isc;
     isc.NextChar = (char *)str;
     isc.NullCharDetected = 0;
-    value = func_0212bd38(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
+    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
     if (end) *end = (char *)str + count;
     if (overflow || (!negative && value > 0x7fffffff) || (negative && value > 0x80000000)) {
         value = negative ? 0x80000000 : 0x7fffffff;
@@ -227,5 +227,5 @@ int func_0212b784(const char *str, char **end, int base) {
 
 // atol (strtol(str, NULL, 10))
 int func_0212b770(const char *str) {
-    return func_0212b784(str, 0, 10);
+    return strtol(str, 0, 10);
 }

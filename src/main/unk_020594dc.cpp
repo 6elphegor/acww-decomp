@@ -261,7 +261,7 @@ s32 func_020531d4(u16 *p);
 s32 func_020530f0(u16 *p);
 s32 func_0205304c(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 _ZN12Unk_0206022c13func_020604c4Ev(void *p);
 void func_02034038(s32 v);
 void func_0203402c(u32 v);
@@ -1206,7 +1206,7 @@ s32 Unk_02059d1c::func_0205a1d0(void *grid)
         j = 0;
         for (; j < 13; j++) {
             if (j != 0) {
-                s32 q = func_01ffc5a4(counts[j] << 12, n << 13);
+                s32 q = FX_Div(counts[j] << 12, n << 13);
                 if (q >= 0xe66) return cnt * 600;
                 if (q >= 0xb33) return cnt * 200;
             }
@@ -1272,7 +1272,7 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
         for (i = 0; i < 24; i++) if (arr_[i] != 0xffff) n++;
         for (i = 0; i < 3; i++) {
             if (i != 0) {
-                s32 r = func_01ffc5a4(a_[i] << 12, cnt << 12);
+                s32 r = FX_Div(a_[i] << 12, cnt << 12);
                 if (r >= 0xe66) { *out1 = i; total += n * 300; }
                 else if (r >= 0xb33) { *out1 = i; total += n * 100; }
             }
@@ -1314,7 +1314,7 @@ s32 Unk_02059d1c::func_02059f3c(void *grid, s32 *out1, s32 *out2)
         for (i = 0; i < 24; i++) if (arr_[i] != 0xffff) nn++;
         for (ii = 0; ii < 3; ii++) {
             if (ii != 0) {
-                s32 r = func_01ffc5a4(b_[ii] << 12, cnt << 12);
+                s32 r = FX_Div(b_[ii] << 12, cnt << 12);
                 if (r >= 0xe66) { *out2 = ii; total += nn * 300; }
                 else if (r >= 0xb33) { *out2 = ii; total += nn * 100; }
             }

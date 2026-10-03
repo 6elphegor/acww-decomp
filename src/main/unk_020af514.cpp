@@ -6,7 +6,7 @@ u32 func_020b50d0(u32);
 void func_0209d498(void *);
 void func_0209d164(void *, u32);
 s32 func_0209cd00(void *, void *);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void *func_0204da0c();
 void func_0204eb30(void *, void *, u32, u32, u32);
@@ -434,9 +434,9 @@ s32 Unk_020af85c::func_020af914() {
     }
     s32 u = 0x1000;
     if (c4 == 1) {
-        u = func_01ffc5a4(0x3000, 0x4000);
+        u = FX_Div(0x3000, 0x4000);
     } else if (c4 == 2) {
-        u = func_01ffc5a4(u, 0x2000);
+        u = FX_Div(u, 0x2000);
     }
     if (u > 0x1000) {
         u = 0x1000;
@@ -451,9 +451,9 @@ s32 Unk_020af85c::func_020af8bc() {
     }
     s32 u = 0x1000;
     if (c4 == 1) {
-        u = func_01ffc5a4(0x3000, 0x4000);
+        u = FX_Div(0x3000, 0x4000);
     } else if (c4 == 2) {
-        u = func_01ffc5a4(u, 0x2000);
+        u = FX_Div(u, 0x2000);
     }
     if (u > 0x1000) {
         u = 0x1000;

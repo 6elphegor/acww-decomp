@@ -114,7 +114,7 @@ extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void FS_InitFile(FSFile *);
 extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
-extern s32 func_021198b4(FSFile *, void *, s32);
+extern s32 FS_ReadFile(FSFile *, void *, s32);
 extern void FS_CloseFile(FSFile *);
 extern u32 FSi_GetPackedName(const char *, int);
 extern FSFile *FSi_NextCommand(FSArc *);
@@ -174,18 +174,18 @@ static inline u32 FSi_NameLen2(u32 name) {
 
 int FSi_TranslateCommand(FSFile *file, u32 cmd);
 void FSi_ReleaseCommand(FSFile *file, u32 result);
-int func_0211820c(void);
+int FSi_CloseFileCommand(void);
 int FSi_OpenFileDirectCommand(FSFile *file);
-int func_0211823c(FSFile *file);
+int FSi_OpenFileFastCommand(FSFile *file);
 int FSi_GetPathCommand(FSFile *file);
 int FSi_FindPathCommand(FSFile *file);
 int func_02118894(FSFile *file);
-int func_021189a4(FSFile *file);
+int FSi_SeekDirCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_ReadFileCommand(FSFile *file);
 int FSi_SeekDirDirect(FSFile *file, u32 id);
-void func_02118ae0(FSStream *s, void *dst, u32 len);
+void FSi_ReadTable(FSStream *s, void *dst, u32 len);
 int FSi_StrNICmp(const char *a, const char *b, u32 n);
 void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
@@ -297,7 +297,7 @@ int FSi_StrNICmp(const char *a, const char *b, u32 n) {
 }
 
 // FSi_ReadTable
-void func_02118ae0(FSStream *s, void *dst, u32 len) {
+void FSi_ReadTable(FSStream *s, void *dst, u32 len) {
     FSArc *arc = s->arc;
     int r;
     arc->flag |= 0x200;
@@ -344,7 +344,7 @@ int FSi_WriteFileCommand(FSFile *file) {
     return arc->write(arc, dst, pos, len);
 }
 
-int func_021189a4(FSFile *file) {
+int FSi_SeekDirCommand(FSFile *file) {
     FSArc *arc = file->arc;
     FSDirPos *pos = &file->a.pos;
     struct {
@@ -355,7 +355,7 @@ int func_021189a4(FSFile *file) {
     FSStream s;
     s.arc = arc;
     s.pos = arc->fnt + pos->u.d.own_id * 8;
-    func_02118ae0(&s, &buf, 8);
+    FSi_ReadTable(&s, &buf, 8);
     file->p.pos = *pos;
     if (pos->u.d.index == 0 && pos->pos == 0) {
         file->p.pos.u.d.index = buf.first;
@@ -372,18 +372,18 @@ int func_02118894(FSFile *file) {
     FSStream s;
     s.arc = file->arc;
     s.pos = file->p.w.w28;
-    func_02118ae0(&s, &b, 1);
+    FSi_ReadTable(&s, &b, 1);
     ent->name_len = b & 0x7f;
     ent->is_dir = (b >> 7) & 1;
     if (ent->name_len == 0) return 1;
     if (file->a.w.w34) {
         s.pos += ent->name_len;
     } else {
-        func_02118ae0(&s, ent->name, ent->name_len);
+        FSi_ReadTable(&s, ent->name, ent->name_len);
         ent->name[ent->name_len] = 0;
     }
     if (ent->is_dir) {
-        func_02118ae0(&s, &id, 2);
+        FSi_ReadTable(&s, &id, 2);
         ent->pos.arc = file->arc;
         ent->pos.u.d.own_id = id & 0xfff;
         ent->pos.u.d.index = 0;

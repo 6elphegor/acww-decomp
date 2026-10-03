@@ -71,11 +71,11 @@ void OSi_DoResetSystem(void);
 void func_0206d49c(void);          // OS_Terminate
 void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);
 void OSi_SetTimerReserved(s32 n);         // OSi_SetTimerReserved
-void func_02114ee4(void);
+void OSi_AlarmHandler(void);
 u32 OS_GetLockID(void);
 void CARD_LockRom(u32 id);
 void MI_StopDma(s32 dmaNo);
-void func_02117dcc(void);          // PXI_Init
+void PXI_Init(void);          // PXI_Init
 s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);  // PXI_SendWordByFifo
 s32 PXI_IsCallbackReady(u32 tag, u32 proc);           // PXI_IsCallbackReady
 void PXI_SetFifoRecvCallback(u32 tag, void *callback);    // PXI_SetFifoRecvCallback
@@ -84,7 +84,7 @@ void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
 void OSi_SetTimer(OSAlarm *alarm);
 void OSi_InsertAlarm(OSAlarm *alarm, u64 fire);
 void OS_CancelAlarm(OSAlarm *alarm);
-void func_02115518(u32 tag, u32 data, s32 err);
+void OSi_CommonCallback(u32 tag, u32 data, s32 err);
 void OSi_SendToPxi(u32 data);
 
 #define reg_OS_TM1CNT_L (*(volatile u16 *)0x04000104)
@@ -112,14 +112,14 @@ void OS_GetOwnerInfo(OSOwnerInfo *info) {
 void OS_InitReset(void) {
     if (data_021fcf4c) return;
     data_021fcf4c = 1;
-    func_02117dcc();
+    PXI_Init();
     while (!PXI_IsCallbackReady(12, 1)) {
     }
-    PXI_SetFifoRecvCallback(12, func_02115518);
+    PXI_SetFifoRecvCallback(12, OSi_CommonCallback);
 }
 
 // OSi_CommonCallback
-void func_02115518(u32 tag, u32 data, s32 err) {
+void OSi_CommonCallback(u32 tag, u32 data, s32 err) {
     u16 command = (u16)((data & 0x7f00) >> 8);
     if (command == 0x10) {
         data_021fcf50 = 1;
@@ -135,7 +135,7 @@ void OSi_SendToPxi(u32 data) {
 }
 
 // OS_ResetSystem
-void func_02115468(u32 parameter) {
+void OS_ResetSystem(u32 parameter) {
     if (*(volatile u16 *)0x027ffc40 == 2) func_0206d49c();
     CARD_LockRom((u16)OS_GetLockID());
     MI_StopDma(0);
@@ -167,7 +167,7 @@ void OSi_SetTimer(OSAlarm *alarm) {
     u64 tick = OS_GetTick();
     reg_OS_TM1CNT_H = 0;
     delta = (s64)(alarm->fire - tick);
-    OSi_EnterTimerCallback(1, func_02114ee4, 0);
+    OSi_EnterTimerCallback(1, OSi_AlarmHandler, 0);
     cnt = 0;
     if (delta < 0) {
         cnt = 0xfffe;
@@ -190,7 +190,7 @@ void OS_InitAlarm(void) {
 }
 
 // OS_IsAlarmAvailable
-u16 func_021152f4(void) {
+u16 OS_IsAlarmAvailable(void) {
     return data_021fcf2c;
 }
 
@@ -243,7 +243,7 @@ void OSi_InsertAlarm(OSAlarm *alarm, u64 fire) {
 }
 
 // OS_SetAlarm
-void func_0211512c(OSAlarm *alarm, u64 tick, void (*handler)(void *), void *arg) {
+void OS_SetAlarm(OSAlarm *alarm, u64 tick, void (*handler)(void *), void *arg) {
     u32 enabled;
     if (alarm == 0 || alarm->handler != 0) func_0206d49c();
     enabled = OS_DisableInterrupts();

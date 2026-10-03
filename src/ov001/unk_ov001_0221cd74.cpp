@@ -7,7 +7,7 @@ struct Unk_ov001_0221ce48_S { s32 unk_00; u8 unk_04[0x600]; u8 unk_604; };
 struct Unk_ov001_0221cd74_D { void *unk_00; void *unk_04; };
 
 extern "C" {
-void func_02111a6c(void *, s32, u32);
+void GX_LoadBG2Scr(void *, s32, u32);
 void MIi_CpuCopyFast(void *, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 void DC_FlushRange(void *, s32);
@@ -58,7 +58,7 @@ extern "C" void func_ov001_0221ceb0(u8 *a, s32 b, s32 c, s32 d) {
 extern "C" void func_ov001_0221ce48() {
     if (data_ov001_0222dedc->unk_604 == 0) return;
     DC_FlushRange(data_ov001_0222dedc->unk_04, 0x600);
-    func_02111a6c(data_ov001_0222dedc->unk_04, 0, 0x600);
+    GX_LoadBG2Scr(data_ov001_0222dedc->unk_04, 0, 0x600);
     data_ov001_0222dedc->unk_604 = 0;
 }
 

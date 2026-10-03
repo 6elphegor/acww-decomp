@@ -125,8 +125,8 @@ extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void OS_GetMacAddress(void *p);
 extern void OS_GetOwnerInfo(void *p);
-extern s32 func_0211d3a0(void *p);
-extern s32 func_0211d2e0(void *p);
+extern s32 RTC_GetDate(void *p);
+extern s32 RTC_GetTime(void *p);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32 v);
 extern s32 OS_SPrintf(char *buf, const char *fmt, ...);
@@ -138,17 +138,17 @@ extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
 extern s32 func_0212b770(void);
-extern s32 func_0212b784(const char *s, char **end, s32 base);
+extern s32 strtol(const char *s, char **end, s32 base);
 extern s32 func_020ff6f4(void *p, u32 v);
 extern void func_020ff5cc(void *p);
 extern void func_020ff734(u32 v);
 extern void OS_JoinThread(void *p);
 extern s32 OS_IsThreadTerminated(void *t);
 extern s32 OS_WakeupThreadDirect(void *t);
-extern s32 func_02113a70(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
+extern s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
 extern s64 OS_GetTick(void);
-extern void func_021132e0(u32 ms);
-extern s32 func_0212a190(const char *a, const char *b);
+extern void OS_Sleep(u32 ms);
+extern s32 strcmp(const char *a, const char *b);
 extern char *func_0212a360(char *dst, const char *src);
 
 extern void func_ov065_0226d0b0(void *a, void *dst);
@@ -238,7 +238,7 @@ void func_ov065_0226dcac(void) {
     OS_InitMutex(data_ov065_02290600->unk_3bc);
     data_ov065_02290600->unk_3d4 = 0;
     if (data_ov065_02290600->unk_368 == 0 || OS_IsThreadTerminated(data_ov065_02290600->unk_2fc) != 0) {
-        func_02113a70(data_ov065_02290600->unk_2fc, (s32 (*)(void *))func_ov065_0226d860, &data_ov065_02290600,
+        OS_CreateThread(data_ov065_02290600->unk_2fc, (s32 (*)(void *))func_ov065_0226d860, &data_ov065_02290600,
                       (u8 *)data_ov065_02290600 + 0x13e0, 0x1000, 0x10);
         OS_WakeupThreadDirect(data_ov065_02290600->unk_2fc);
     }
@@ -301,7 +301,7 @@ void func_ov065_0226db28(s32 *p) {
 }
 
 s32 func_ov065_0226da64(s32 a) {
-    if (func_0212a190(data_ov065_0228b778.unk_00, data_ov065_0228b758)) {
+    if (strcmp(data_ov065_0228b778.unk_00, data_ov065_0228b758)) {
         data_ov065_0228b778.unk_18 = 1;
     }
     if (func_ov065_0226ebe4((u32)data_ov065_02290600->unk_2f8, &data_ov065_0228b778)) {
@@ -398,7 +398,7 @@ void func_ov065_0226d860(void) {
                 return;
             }
             OS_UnlockMutex(data_ov065_02290600->unk_3bc);
-            func_021132e0(0x1388);
+            OS_Sleep(0x1388);
         }
         Unk_ov065_0226e4dc_B::func_ov065_0226e4dc(data_ov065_02290600->unk_2f8);
         OS_LockMutex(data_ov065_02290600->unk_3bc);
@@ -484,7 +484,7 @@ s32 func_ov065_0226d544(void) {
         data_ov065_02290600->unk_08 = 0x4e85;
         return 0xd;
     }
-    s32 code = func_0212b784(data_ov065_02290600->unk_0c, &end, 10);
+    s32 code = strtol(data_ov065_02290600->unk_0c, &end, 10);
     g = data_ov065_02290600;
     s32 l = func_0212a438(g->unk_0c);
     if (end != g->unk_0c + l) {
@@ -538,7 +538,7 @@ s32 func_ov065_0226d158(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d
 
     OS_GetMacAddress(mac);
     OS_GetOwnerInfo(&owner);
-    if (func_0211d3a0(&date) != 0 || func_0211d2e0(&time) != 0) {
+    if (RTC_GetDate(&date) != 0 || RTC_GetTime(&time) != 0) {
         return 5;
     }
     irq = OS_DisableInterrupts();

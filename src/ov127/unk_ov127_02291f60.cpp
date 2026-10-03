@@ -72,7 +72,7 @@ void func_020021fc(u32 a, s32 b, s32 c);
 void func_020e9960(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 s32 func_020e9688(Unk_ov127_02291f60_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
@@ -448,8 +448,8 @@ extern "C" void func_ov127_02292274(Unk_ov127_02291f60 *s)
         } else if (t > 0x40000) {
             t = 0x40000;
         }
-        l.c.x = func_01ffc5a4(func_01ffcb0c(l.c.x, t), len);
-        l.c.z = func_01ffc5a4(func_01ffcb0c(l.c.z, t), len);
+        l.c.x = FX_Div(func_01ffcb0c(l.c.x, t), len);
+        l.c.z = FX_Div(func_01ffcb0c(l.c.z, t), len);
         func_01ffd070(&l.f, &l.a, &l.c);
         l.b.x = l.f.x;
         l.b.y = l.f.y;

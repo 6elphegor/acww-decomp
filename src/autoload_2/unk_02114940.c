@@ -7,22 +7,22 @@ extern s32 data_021fce88;
 extern s32 data_021fce84; // OSi_ArenaInitialized
 
 u32 func_02113fd8(void); // OS_GetConsoleType
-void func_02114b44(u32 v);
-void func_02114b4c(u32 v);
+void OS_SetProtectionRegion1(u32 v);
+void OS_SetProtectionRegion2(u32 v);
 
-void func_02117dcc(void);
-void func_021126d0(void);
-void func_021123ac(void);
+void PXI_Init(void);
+void OS_InitLock(void);
+void OS_InitIrqTable(void);
 void OS_SetIrqStackChecker(void);
-void func_02114cf4(void);
+void OS_InitException(void);
 void MI_Init(void);
 void OS_InitVAlarm(void);
 void OSi_InitVramExclusive(void);
 void OS_InitThread(void);
 void OS_InitReset(void);
-void func_02127380(void);
+void CTRDG_Init(void);
 void CARD_Init(void);
-void func_0211ca48(void);
+void PM_Init(void);
 
 void OS_SetArenaLo(s32 id, void *lo);
 void OS_SetArenaHi(s32 id, void *hi);
@@ -60,8 +60,8 @@ void OS_InitArenaEx(void) {
     OS_SetArenaHi(2, OS_GetInitArenaHi(2));
     OS_SetArenaLo(2, OS_GetInitArenaLo(2));
     if (data_021fce88 != 0 && (func_02113fd8() & 3) != 1) return;
-    func_02114b44(0x0200002b);
-    func_02114b4c(0x023e0021);
+    OS_SetProtectionRegion1(0x0200002b);
+    OS_SetProtectionRegion2(0x023e0021);
 }
 
 // OS_GetArenaHi

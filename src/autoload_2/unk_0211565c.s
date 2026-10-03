@@ -8,9 +8,9 @@
 	.arm
 
 ; MATH_CountLeadingZeros(x)
-	.global func_0211565c
-	.type func_0211565c, @function
-	.size func_0211565c, 0x8
-func_0211565c:
+	.global OsCountZeroBits
+	.type OsCountZeroBits, @function
+	.size OsCountZeroBits, 0x8
+OsCountZeroBits:
 	clz r0, r0
 	bx lr

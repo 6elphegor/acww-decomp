@@ -24,7 +24,7 @@ struct Unk_ov001_02224b9c_T {
 
 extern "C" {
 void MIi_CpuCopy16(void *, void *, u32);
-void func_02115e64(s32, void *, u32);
+void MIi_CpuClear32(s32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 void func_ov001_02224038(void *);
 void *func_ov001_02224074(u32, void *, u32);
@@ -60,7 +60,7 @@ void func_ov001_02224b9c(s32 which, s32 idx, void *dst) {
     u8 *src = (u8 *)tbl + off;
     s32 i;
     z = 0;
-    func_02115e64(z, buf, 8);
+    MIi_CpuClear32(z, buf, 8);
     for (i = 0; i < (s32)cnt; i++) {
         MIi_CpuCopy16(src, buf, 6);
         MIi_CpuCopy32(buf, dst, 8);

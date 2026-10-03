@@ -95,27 +95,27 @@ extern u32 data_0213bff0;
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);
-u32 func_01ffa3b4(void);
-u32 func_01ffa3cc(void);
+u32 OS_GetProcMode(void);
+u32 OS_IsRunOnEmulator(void);
 void OS_LoadContext(OSThread *t);
 BOOL OS_SaveContext(OSThread *t);
 void func_01ffa4ec(void *);
 void func_0206d49c(void);
 u32 OS_GetLockID(void);
-u32 func_02112468(u32 addr);
-u32 func_02112508(u32 id);
-void func_02112528(u32 id);
+u32 OS_ReadOwnerOfLockWord(u32 addr);
+u32 OS_TryLockCartridge(u32 id);
+void OS_UnlockCartridge(u32 id);
 void OS_VSNPrintf(char *dst, u32 len, const char *fmt, va_list ap);
 void OS_CreateAlarm(void *alarm);
-void func_0211512c(void *alarm, u32 tick, u32 period, void (*cb)(void *), void *arg);
+void OS_SetAlarm(void *alarm, u32 tick, u32 period, void (*cb)(void *), void *arg);
 void OS_CancelAlarm(void *alarm);
-void func_02115e64(u32 data, void *dest, u32 size);
+void MIi_CpuClear32(u32 data, void *dest, u32 size);
 
 void OS_WakeupThread(OSThreadQueue *q);
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
 void OS_VSPrintf(char *dst, const char *fmt, va_list ap);
 void OS_SleepThread(OSThreadQueue *q);
-void func_02113554(void);
+void OSi_RescheduleThread(void);
 void OS_WakeupThreadDirect(OSThread *t);
 u32 OS_DisableScheduler(void);
 u32 OS_EnableScheduler(void);
@@ -123,13 +123,13 @@ void OSi_RemoveThreadFromList(OSThread *t);
 void OSi_InsertThreadToList(OSThread *t);
 OSThread *OSi_RemoveLinkFromQueue(OSThreadQueue *q);
 void OSi_InsertLinkToQueue(OSThreadQueue *q, OSThread *t);
-void func_02113e6c(OSContext *c, u32 pc, u32 sp);
+void OS_InitContext(OSContext *c, u32 pc, u32 sp);
 void OSi_ExitThread(void *arg);
-void func_02113944(void);
+void OSi_ExitThread_Destroy(void);
 void OSi_ExitThread_ArgSpecified(OSThread *t, void *arg);
 void OS_ExitThread(void);
 void OSi_CancelThreadAlarmForSleep(OSThread *t);
-void func_02113214(OSThread *t, void (*d)(void *));
+void OS_SetThreadDestructor(OSThread *t, void (*d)(void *));
 BOOL OS_SetThreadPriority(OSThread *t, u32 prio);
 OSThread *OS_SelectThread(void);
 void OSi_UnlockAllMutex(OSThread *t);
@@ -141,11 +141,11 @@ u32 OSi_GetUnusedThreadId(void);
 void OSi_SleepAlarmCallback(OSThread **p);
 void OS_WakeupThreadDirect(OSThread *t);
 void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio);
-u32 func_0211337c(OSThread *t);
-void func_02113a70(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
+u32 OS_GetThreadPriority(OSThread *t);
+void OS_CreateThread(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
 
 // OS_CreateThread
-void func_02113a70(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio) {
+void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio) {
     u32 e = OS_DisableInterrupts();
     volatile u32 zero;
     u32 stackTop;
@@ -163,12 +163,12 @@ void func_02113a70(OSThread *thread, void (*func)(void *), void *arg, void *stac
     *(u32 *)thread->stackTop = 0x7bf9dd5b;
     thread->joinQueue.tail = 0;
     thread->joinQueue.head = thread->joinQueue.tail;
-    func_02113e6c(&thread->context, (u32)func, (u32)stack - 4);
+    OS_InitContext(&thread->context, (u32)func, (u32)stack - 4);
     thread->context.r[0] = (u32)arg;
     thread->context.r[14] = (u32)OS_ExitThread;
     zero = 0;
-    func_02115e64(zero, (void *)(stackTop + 4), stackSize - 8);
-    func_02113214(thread, 0);
+    MIi_CpuClear32(zero, (void *)(stackTop + 4), stackSize - 8);
+    OS_SetThreadDestructor(thread, 0);
     thread->queue = 0;
     thread->linkNext = 0;
     thread->linkPrev = thread->linkNext;
@@ -185,7 +185,7 @@ void OS_ExitThread(void) {
 // OSi_ExitThread_ARM
 void OSi_ExitThread_ArgSpecified(OSThread *t, void *arg) {
     if (data_021fcc14 != 0) {
-        func_02113e6c(&t->context, (u32)OSi_ExitThread, data_021fcc14);
+        OS_InitContext(&t->context, (u32)OSi_ExitThread, data_021fcc14);
         t->context.r[0] = (u32)arg;
         t->context.cpsr |= 0x80;
         t->state = 1;
@@ -204,11 +204,11 @@ void OSi_ExitThread(void *arg) {
         d(arg);
         OS_DisableInterrupts();
     }
-    func_02113944();
+    OSi_ExitThread_Destroy();
 }
 
 // OSi_ExitThread_Destroy
-void func_02113944(void) {
+void OSi_ExitThread_Destroy(void) {
     OSThread *t = *data_021fcc24;
     OS_DisableScheduler();
     OSi_UnlockAllMutex(t);
@@ -216,14 +216,14 @@ void func_02113944(void) {
     t->state = 2;
     OS_WakeupThread(&t->joinQueue);
     OS_EnableScheduler();
-    func_02113554();
+    OSi_RescheduleThread();
     func_0206d49c();
 }
 
 // OS_DestroyThread
-void func_021138d0(OSThread *t) {
+void OS_DestroyThread(OSThread *t) {
     u32 e = OS_DisableInterrupts();
-    if (data_021fcc2c.current == t) func_02113944();
+    if (data_021fcc2c.current == t) OSi_ExitThread_Destroy();
     OS_DisableScheduler();
     OSi_UnlockAllMutex(t);
     OSi_CancelThreadAlarmForSleep(t);
@@ -232,12 +232,12 @@ void func_021138d0(OSThread *t) {
     OS_WakeupThread(&t->joinQueue);
     OS_EnableScheduler();
     OS_RestoreInterrupts(e);
-    func_02113554();
+    OSi_RescheduleThread();
 }
 
 // OS_KillThread
 void OS_KillThread(OSThread *t, void *arg) {
-    OS_KillThreadWithPriority(t, arg, func_0211337c(t));
+    OS_KillThreadWithPriority(t, arg, OS_GetThreadPriority(t));
 }
 
 // OSi_KillThreadWithPriority
@@ -248,14 +248,14 @@ void OS_KillThreadWithPriority(OSThread *t, void *arg, u32 prio) {
     OSi_CancelThreadAlarmForSleep(t);
     sp = data_021fcc14;
     if (sp == 0) sp = t->stackBottom - 4;
-    func_02113e6c(&t->context, (u32)OSi_ExitThread, sp);
+    OS_InitContext(&t->context, (u32)OSi_ExitThread, sp);
     t->context.r[0] = (u32)arg;
     t->context.cpsr |= 0x80;
     t->state = 1;
     OS_DisableScheduler();
     OS_SetThreadPriority(t, prio);
     OS_EnableScheduler();
-    func_02113554();
+    OSi_RescheduleThread();
     OS_RestoreInterrupts(e);
 }
 
@@ -286,7 +286,7 @@ void OS_SleepThread(OSThreadQueue *q) {
         OSi_InsertLinkToQueue(q, cur);
     }
     cur->state = 0;
-    func_02113554();
+    OSi_RescheduleThread();
     OS_RestoreInterrupts(e);
 }
 
@@ -303,7 +303,7 @@ void OS_WakeupThread(OSThreadQueue *q) {
         }
         q->tail = 0;
         q->head = q->tail;
-        func_02113554();
+        OSi_RescheduleThread();
     }
     OS_RestoreInterrupts(e);
 }
@@ -312,7 +312,7 @@ void OS_WakeupThread(OSThreadQueue *q) {
 void OS_WakeupThreadDirect(OSThread *t) {
     u32 e = OS_DisableInterrupts();
     t->state = 1;
-    func_02113554();
+    OSi_RescheduleThread();
     OS_RestoreInterrupts(e);
 }
 
@@ -324,12 +324,12 @@ OSThread *OS_SelectThread(void) {
 }
 
 // OS_RescheduleThread
-void func_02113554(void) {
+void OSi_RescheduleThread(void) {
     OSThread *cur;
     OSThread *next;
     OSThreadInfo *ti = &data_021fcc2c;
     if (data_021fcc18 != 0) return;
-    if (ti->irqDepth != 0 || func_01ffa3b4() == 0x12) {
+    if (ti->irqDepth != 0 || OS_GetProcMode() == 0x12) {
         ti->isNeedRescheduling = 1;
         return;
     }
@@ -368,7 +368,7 @@ void OS_YieldThread(void) {
     else prevCur->next = cur->next;
     cur->next = last->next;
     last->next = cur;
-    func_02113554();
+    OSi_RescheduleThread();
     OS_RestoreInterrupts(e);
 }
 
@@ -398,19 +398,19 @@ BOOL OS_SetThreadPriority(OSThread *thread, u32 prio) {
         else prev->next = thread->next;
         thread->priority = prio;
         OSi_InsertThreadToList(thread);
-        func_02113554();
+        OSi_RescheduleThread();
     }
     OS_RestoreInterrupts(e);
     return 1;
 }
 
 // OS_GetThreadPriority
-u32 func_0211337c(OSThread *t) {
+u32 OS_GetThreadPriority(OSThread *t) {
     return t->priority;
 }
 
 // OS_Sleep
-void func_021132e0(u32 msec) {
+void OS_Sleep(u32 msec) {
     u32 alarm[11];
     OSThread *thread;
     u32 e;
@@ -418,7 +418,7 @@ void func_021132e0(u32 msec) {
     thread = *data_021fcc24;
     e = OS_DisableInterrupts();
     thread->alarm = alarm;
-    func_0211512c(alarm, (msec * 0x82ea) >> 6, 0, (void (*)(void *))OSi_SleepAlarmCallback, &thread);
+    OS_SetAlarm(alarm, (msec * 0x82ea) >> 6, 0, (void (*)(void *))OSi_SleepAlarmCallback, &thread);
     while (thread != 0) OS_SleepThread(0);
     OS_RestoreInterrupts(e);
 }
@@ -467,7 +467,7 @@ u32 OS_EnableScheduler(void) {
 }
 
 // OS_SetThreadDestructor
-void func_02113214(OSThread *t, void (*d)(void *)) {
+void OS_SetThreadDestructor(OSThread *t, void (*d)(void *)) {
     t->destructor = d;
 }
 

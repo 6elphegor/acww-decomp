@@ -49,10 +49,10 @@ extern "C" {
 u64 OS_GetTick(void);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-s32 func_0212a190(const void *a, const void *b);
+s32 strcmp(const void *a, const void *b);
 s32 memcmp(const void *a, const void *b, u32 n);
-void func_0211d3a0(void *);
-void func_0211d2e0(void *);
+void RTC_GetDate(void *);
+void RTC_GetTime(void *);
 u32 RTC_ConvertDateTimeToSecond(void *, void *);
 void func_ov065_0226795c(void *dst, const void *src, s32 n);
 void func_ov065_0226796c(void *dst, const void *src, s32 n);
@@ -230,8 +230,8 @@ u32 func_ov065_02267314(void)
 {
     u32 a[4];
     u32 b[3];
-    func_0211d3a0(a);
-    func_0211d2e0(b);
+    RTC_GetDate(a);
+    RTC_GetTime(b);
     return RTC_ConvertDateTimeToSecond(a, b) + 0x386d4380;
 }
 
@@ -256,7 +256,7 @@ void *func_ov065_022672a0(Unk_ov065_022672a0_Tbl *o, const void *name)
     if (n > 0) {
         p = arr = o->unk_7e8;
         do {
-            if (func_0212a190(**(void ***)p, name) == 0) {
+            if (strcmp(**(void ***)p, name) == 0) {
                 return arr[i];
             }
             p++;

@@ -12,8 +12,8 @@ extern volatile u64 data_021fcf24; // OSi_TickCounter
 
 u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq
 void OS_RestoreInterrupts(u32 state); // OS_RestoreInterrupts_IrqAndFiq
-u32 func_0211565c(u32 x);      // MATH_CountLeadingZeros (asm)
-u16 func_02114da0(void);       // OS_GetTickLo
+u32 OsCountZeroBits(u32 x);      // MATH_CountLeadingZeros (asm)
+u16 OS_GetTickLo(void);       // OS_GetTickLo
 
 typedef int BOOL;
 // OSi_TryLockVram (os_vramExclusive.c)
@@ -24,7 +24,7 @@ BOOL OSi_TryLockVram(u16 bank, u16 lockId) {
 
     workMap = (u32)(bank & data_021fcf54);
     while (1) {
-        zeroBits = (s32)(31 - func_0211565c(workMap));
+        zeroBits = (s32)(31 - OsCountZeroBits(workMap));
         if (zeroBits < 0) {
             break;
         }
@@ -37,7 +37,7 @@ BOOL OSi_TryLockVram(u16 bank, u16 lockId) {
 
     workMap = (u32)(bank & 0x01ff);
     while (1) {
-        zeroBits = (s32)(31 - func_0211565c(workMap));
+        zeroBits = (s32)(31 - OsCountZeroBits(workMap));
         if (zeroBits < 0) {
             break;
         }

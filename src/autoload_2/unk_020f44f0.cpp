@@ -29,7 +29,7 @@ extern s32 data_021f5c04;
 extern s32 data_021f5c08;
 extern u8 data_021f5bfc;
 
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_020f48f0(PlayCtx *p);
 s32 func_020f48c8(PlayCtx *p);
 s32 func_020f4704(PlayCtx *p);
@@ -141,10 +141,10 @@ extern "C" void func_020f45b8(Ramp *r, s32 v) {
     t = r->w0 - 0xb000;
     r->w4 = 0x7f000 - FX_Mul(t, 0x3000);
     r->w8 = 0x68000 - FX_Mul(t, 0x4000);
-    r->wc = FX_Mul(func_01ffc5a4(0x2000, 0x3000), t) + 0x4000;
-    r->w10 = FX_Mul(func_01ffc5a4(0x4000, 0x3000), t) + 0x11000;
-    r->w14 = func_01ffc5a4(r->w4 - r->w8, r->wc - r->w0);
-    r->w18 = func_01ffc5a4(r->w8, r->w0 - r->w10);
+    r->wc = FX_Mul(FX_Div(0x2000, 0x3000), t) + 0x4000;
+    r->w10 = FX_Mul(FX_Div(0x4000, 0x3000), t) + 0x11000;
+    r->w14 = FX_Div(r->w4 - r->w8, r->wc - r->w0);
+    r->w18 = FX_Div(r->w8, r->w0 - r->w10);
 }
 
 // pan curve: piecewise-linear mapping of x (fixed point) through the Ramp points, clamped to 0..127

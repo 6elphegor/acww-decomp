@@ -77,7 +77,7 @@ void func_020014cc(u32);
 void func_0200145c(s32);
 s32 func_0203818c();
 s32 func_020e759c(void *, u32, s32);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 void func_0208e9d4(u32);
 void func_0208e9f4(u32);
 void func_0200403c();
@@ -290,7 +290,7 @@ extern "C" BOOL func_0204137c(u32 a, u32 b) {
     if (b == 0 || a == 3) {
         data_021c3cc0.unk_08 = 0x1000;
     } else {
-        data_021c3cc0.unk_08 = func_01ffc5a4(0x1000, b << 12);
+        data_021c3cc0.unk_08 = FX_Div(0x1000, b << 12);
     }
     return TRUE;
 }
@@ -308,7 +308,7 @@ extern "C" BOOL func_020412f0(u32 a, u32 b, u32 c) {
     if (b == 0 || a == 3) {
         data_021c3cc0.unk_08 = -0x1000;
     } else {
-        data_021c3cc0.unk_08 = func_01ffc5a4(-0x1000, b << 12);
+        data_021c3cc0.unk_08 = FX_Div(-0x1000, b << 12);
     }
     if (c == 0) {
         ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_02035518();

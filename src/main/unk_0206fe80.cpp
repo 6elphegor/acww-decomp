@@ -30,7 +30,7 @@ extern u8 data_021dfd8c[];
 extern u8 data_021ecc7c[];
 extern s32 (*data_020cbaf0[])(s32);
 
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void *func_02097868(void *a, s32 i);
 s32 _ZN12Unk_0209865c13func_0209888cEv(void *p);
 void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(s32 a, s32 b);
@@ -350,7 +350,7 @@ s32 Unk_0206fe80::func_0206fe80() {
         l[3] = i < 0x34 ? 0x450c + i * 4 : 0x450c;
         if (func_02070358(&l[3])) cnt++;
     }
-    return func_01ffc5a4((cnt * 100) << 12, 0xb8000);
+    return FX_Div((cnt * 100) << 12, 0xb8000);
 }
 
 u32 data_020e0498 = 4;

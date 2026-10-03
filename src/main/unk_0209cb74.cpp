@@ -63,7 +63,7 @@ extern s32 data_021d72ec[7];
 extern "C" {
 void func_0204605c();
 void RTC_Init();
-void func_0211d20c(void *date, void *time);
+void RTC_GetDateTime(void *date, void *time);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 void func_0209d0a4(Unk_0209d0e4 *p, u32 n);
 void func_0209d0e4(Unk_0209d0e4 *p, s32 n);
@@ -220,7 +220,7 @@ extern "C" void func_0209d5f8(Unk_0209d5f8 *p) {
 }
 
 extern "C" void func_0209d5d4(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
-    func_0211d20c(d, t);
+    RTC_GetDateTime(d, t);
     if (d->year == 0 && d->month == 1 && d->day == 1) {
         d->week = 6;
     }

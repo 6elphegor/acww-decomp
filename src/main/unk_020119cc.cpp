@@ -2449,7 +2449,7 @@ s32 func_020b50e8(void);
 s32 func_02038f00(void);
 void *func_020e8594(u32 size);
 void *FS_OpenFile(void *self, const char *path);
-s32 func_021198b4(void *self, void *buf, u32 size);
+s32 FS_ReadFile(void *self, void *buf, u32 size);
 s32 FS_CloseFile(void *self);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 func_0201188c(void);

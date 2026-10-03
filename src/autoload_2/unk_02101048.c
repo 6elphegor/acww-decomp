@@ -57,8 +57,8 @@ typedef struct ExpHead {
     union { u16 raw; struct { u16 allocMode : 1; u16 pad : 15; } f; } feature;
 } ExpHead;
 
-extern u32 func_02127b40(s32);          // abs
-extern void func_02115e64(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
+extern u32 abs(s32);          // abs
+extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32(data, dest, size)
 extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
@@ -89,7 +89,7 @@ static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
         volatile u32 zero = 0;
-        func_02115e64(zero, (void *)dst, size);
+        MIi_CpuClear32(zero, (void *)dst, size);
     }
 }
 
@@ -105,7 +105,7 @@ MBlock *InsertMBlock(void *list, MBlock *blk, MBlock *prev);
 MBlock *RemoveMBlock(void *list, MBlock *blk);
 void GetRegionOfMBlock(Region *r, MBlock *blk);
 BOOL RecycleRegion(ExpHead *e, Region *r);
-void *func_02100bb0(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
+void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
 void *AllocFromHead(HeapHead *h, u32 size, s32 alignment);
 void *AllocFromTail(HeapHead *h, u32 size, s32 alignment);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
@@ -118,7 +118,7 @@ void FreeHead(HeapHead *h);
 void FreeTail(HeapHead *h);
 void FreeHead(HeapHead *h);
 void FreeTail(HeapHead *h);
-HeapHead *func_0210126c(u32 start, u32 end, u16 opt);
+HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
 
 
 #define FRM(h) (&(h)->u.frm)
@@ -154,9 +154,9 @@ extern u16 data_021f5cb0;
 extern s32 (*data_0213bc10)();
 extern s32 (*data_0213bc14)();
 
-void func_0210169c(void);
-void func_021017c4(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
-u32 func_02101508(u32 szByte, BOOL is4x4, BOOL opt);
+void NNS_GfdResetFrmTexVramState(void);
+void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
+u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 s32 func_02101500();
 
 // prototypes
@@ -178,15 +178,15 @@ u16 func_02100600(HeapHead *heap);
 u16 func_02100608(HeapHead *heap, u16 id);
 u32 func_02100618(HeapHead *heap, s32 alignment);
 u32 NNS_FndGetTotalFreeSizeForExpHeap(HeapHead *heap);
-void func_021006c8(HeapHead *heap, u32 mem);
-u32 func_02100708(HeapHead *heap, u32 memBlock, u32 size);
+void NNS_FndFreeToExpHeap(HeapHead *heap, u32 mem);
+u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, u32 memBlock, u32 size);
 void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment);
-void func_021008d4(HeapHead *heap);
+void NNS_FndDestroyExpHeap(HeapHead *heap);
 HeapHead *NNS_FndCreateExpHeapEx(u32 start, u32 size, u16 opt);
 BOOL RecycleRegion(ExpHead *e, Region *rgn);
 void *AllocFromTail(HeapHead *heap, u32 size, s32 alignment);
 void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment);
-void *func_02100bb0(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
+void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 MBlock *InitMBlock(Region *rgn, u16 sig);
 MBlock *InsertMBlock(void *listp, MBlock *blk, MBlock *prev);
@@ -195,17 +195,17 @@ void GetRegionOfMBlock(Region *rgn, MBlock *blk);
 u32 func_02100e7c(HeapHead *heap, u32 mem, u32 size);
 u32 func_02100f20(HeapHead *heap);
 BOOL NNS_FndFreeByStateToFrmHeap(HeapHead *heap, u32 tag);
-BOOL func_02100fb0(HeapHead *heap, u32 tag);
-u32 func_02101008(HeapHead *heap, s32 alignment);
-void func_02101048(HeapHead *heap, u32 mode);
-void *func_02101088(HeapHead *heap, u32 size, s32 alignment);
-void func_021010d0(HeapHead *heap);
-HeapHead *func_021010dc(u32 start, u32 size, u16 opt);
+BOOL NNS_FndRecordStateForFrmHeap(HeapHead *heap, u32 tag);
+u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment);
+void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode);
+void *NNS_FndAllocFromFrmHeapEx(HeapHead *heap, u32 size, s32 alignment);
+void NNS_FndDestroyFrmHeap(HeapHead *heap);
+HeapHead *NNS_FndCreateFrmHeapEx(u32 start, u32 size, u16 opt);
 void FreeTail(HeapHead *heap);
 void FreeHead(HeapHead *heap);
 void *func_02101170(FrmHead *f, u32 size, u32 alignment);
 void *func_021011ec(FrmHead *f, u32 size, u32 alignment);
-HeapHead *func_0210126c(u32 start, u32 end, u16 opt);
+HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
 u32 func_021012bc(const char *path);
 BOOL func_02101310(void *arc);
 BOOL func_02101340(u32 *arc, const char *name, u32 *narc);
@@ -215,10 +215,10 @@ s32 func_021014e8();
 s32 func_021014f0();
 s32 func_021014f8();
 s32 func_02101500();
-u32 func_02101508(u32 szByte, BOOL is4x4, BOOL opt);
-void func_0210169c(void);
-void func_0210171c(u32 mode, BOOL setFuncs);
-void func_021017c4(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
+u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
+void NNS_GfdResetFrmTexVramState(void);
+void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
+void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
 s32 func_02101500() { return 0; }
 
@@ -290,7 +290,7 @@ u32 func_021012bc(const char *path) {
 }
 
 // frmheap: create (NNS_FndCreateFrmHeapEx tail)
-HeapHead *func_0210126c(u32 start, u32 end, u16 opt) {
+HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt) {
     HeapHead *heap = (HeapHead *)start;
     FrmHead *f = FRM(heap);
     NNSi_FndInitHeapHead(heap, 0x46524d48, (u32)(f + 1), end, opt);
@@ -344,20 +344,20 @@ void FreeTail(HeapHead *heap) {
 }
 
 // NNS_FndCreateFrmHeapEx
-HeapHead *func_021010dc(u32 start, u32 size, u16 opt) {
+HeapHead *NNS_FndCreateFrmHeapEx(u32 start, u32 size, u16 opt) {
     u32 end = (size + start) & ~3;
     start = (start + 3) & ~3;
     if (start > end || end - start < 0x30) return 0;
-    return func_0210126c(start, end, opt);
+    return InitFrameHeap(start, end, opt);
 }
 
 // NNS_FndDestroyFrmHeap
-void func_021010d0(HeapHead *heap) {
+void NNS_FndDestroyFrmHeap(HeapHead *heap) {
     NNSi_FndFinalizeHeap(heap);
 }
 
 // NNS_FndAllocFromFrmHeapEx
-void *func_02101088(HeapHead *heap, u32 size, s32 alignment) {
+void *NNS_FndAllocFromFrmHeapEx(HeapHead *heap, u32 size, s32 alignment) {
     FrmHead *f = FRM(heap);
     if (size == 0) size = 1;
     size = (size + 3) & ~3;
@@ -366,7 +366,7 @@ void *func_02101088(HeapHead *heap, u32 size, s32 alignment) {
 }
 
 // NNS_FndFreeToFrmHeap
-void func_02101048(HeapHead *heap, u32 mode) {
+void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode) {
     if (mode & 1) FreeHead(heap);
     if (mode & 2) FreeTail(heap);
 }

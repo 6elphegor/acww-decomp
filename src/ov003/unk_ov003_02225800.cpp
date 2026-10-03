@@ -791,14 +791,14 @@ s32 func_020e8404(void *m, s32 a);
 s32 func_020e83d4(void *m, s32 a);
 s32 func_020e8434(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
 s32 func_02090330(s32 a, V3 *v, s32 b, u16 *c);
 s32 func_020902d4(s32 h, V3 *v, s32 a, u16 *c);
 s32 func_020902f8(s32 h);
 void *func_0209c0ac(void *p);
 s32 func_02106020(void *a, s32 b);
-s32 func_02106054(void *p, s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 func_020547cc(void *p, void *q);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
 BOOL func_02072e88(void *p, s32 i);
@@ -1318,7 +1318,7 @@ void func_0209c0c8(void *p);
 void func_0209c224(void *p, void *q);
 void func_0209c25c(void *p, void *q);
 void *func_0209c0ac(void *p);
-s32 func_02106054(void *p, s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 func_02063b8c(s32 n);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
 s16 func_ov003_02229670();
@@ -1468,7 +1468,7 @@ typedef Unk_ov003_02229698_Buf Buf;
 
 extern "C" {
 s32 func_02063b8c(s32 a);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -1476,7 +1476,7 @@ void func_020547a4(void *p, s32 v);
 void func_020339bc(Buf *b, void *pos, s32 a, s32 c);
 void func_02033988(Buf *b);
 void *func_0209c0ac(void *p);
-s32 func_02106054(void *p, s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 func_ov003_02225ec8(Rec *self, s32 a);
 void func_ov003_0222a7d4(Rec *self);
 void func_ov003_0222c240(Rec *self);
@@ -1607,7 +1607,7 @@ typedef Unk_ov003_02229a3c_Rec Rec;
 
 extern "C" {
 s32 func_02063b8c(s32 n);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, void *b);
@@ -1618,7 +1618,7 @@ void func_0204ee10(s32 *x, s32 *y, void *p);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_02002bdc(void *a, void *b);
 void *func_0209c0ac(void *p);
-void func_02106054(void *a, s32 b, s32 c);
+void NNS_G3dMdlSetMdlAlpha(void *a, s32 b, s32 c);
 void func_ov003_02229910(Rec *o);
 void func_ov003_022297c8(Rec *o, s16 *p);
 void func_ov003_0222bb28(Rec *o, s16 *p);
@@ -1777,7 +1777,7 @@ struct Unk_ov003_0222abc0_Obj {
 
 extern "C" {
 extern s16 data_02135f44[];
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 func_02063b8c(s32 n);
@@ -1786,7 +1786,7 @@ void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
 void func_020547a4(void *p, u16 v);
 s32 func_0209c0ac(void *p);
 u32 func_02106020(u32 a, u32 b);
-s32 func_02106054(s32 p, s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(s32 p, s32 a, s32 b);
 void func_0204ee10(s32 *x, s32 *y, void *p);
 void *func_0204da0c(void);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
@@ -1971,8 +1971,8 @@ BOOL func_020a62a0();
 s32 func_0206f11c();
 s32 func_0209c0ac(void *p);
 s32 func_02106020(void *a, s32 b);
-s32 func_02106054(void *p, s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02002bdc(void *a, void *b);
 void func_0205668c(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -2107,8 +2107,8 @@ BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 BOOL func_02031218(s32 x, s32 y);
 s32 func_0209c0ac(void *p);
-s32 func_02106054(void *p, s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02002bdc(void *a, void *b);
 s32 func_020e9650(void *a, void *b);
@@ -2248,7 +2248,7 @@ extern Unk_020cbb18_Ptr *data_020cbb18;
 BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 func_02063b8c(s32 n);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_02002bdc(void *a, void *b);
 void func_020547a4(void *p, s32 v);
 s32 func_02030814(u32 a);
@@ -2382,7 +2382,7 @@ extern "C" {
 extern Unk_020cbb18_Ptr *data_020cbb18;
 BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 func_02002bdc(V3 *a, V3 *b);
@@ -2506,7 +2506,7 @@ BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 void *func_02095204(u32 a);
 s32 func_02002bdc(void *a, void *b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
 void VEC_Subtract(void *a, void *b, void *out);
@@ -3676,9 +3676,9 @@ namespace s13 {
 // 0x222d75c
 extern "C" void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c) {
     Vec3 *r6 = &self->unk_204;
-    s32 r4 = func_01ffc5a4(data_02135f44[((u16)a >> 4) * 2], c);
+    s32 r4 = FX_Div(data_02135f44[((u16)a >> 4) * 2], c);
     if (self->unk_220 != self->unk_228) {
-        b = func_01ffc5a4(b, 0x2000);
+        b = FX_Div(b, 0x2000);
     }
     if ((r4 > 0 && r6->y + r4 < b + self->unk_220) || (r4 < 0 && r6->y + r4 > self->unk_220 - b)) {
         r6->y = r6->y + r4;
@@ -3963,7 +3963,7 @@ extern "C" void func_ov003_0222d28c(Rec *self, s32 a) {
     }
     s32 c = *cnt;
     s32 t = func_01ffcb0c(a, (c * 0x44) << 12);
-    v.y = t >> (func_01ffc5a4((c * c) << 12, 0x1000) + 12);
+    v.y = t >> (FX_Div((c * c) << 12, 0x1000) + 12);
     if (func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
         v.x = func_01ffcb0c(v.x, 0x10000);
         v.z = func_01ffcb0c(v.z, 0x10000);
@@ -4265,7 +4265,7 @@ extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt) {
     t = *cnt << 12;
     s32 a = func_01ffcb0c(0x44000, t);
     s32 b = func_01ffcb0c(t, t);
-    s32 c = func_01ffc5a4(b, 0x2000);
+    s32 c = FX_Div(b, 0x2000);
     p->y += (a >> 12) + (c >> 12);
     (*cnt)++;
     if (func_ov003_0222af48(self, 1) != 0) {
@@ -5003,7 +5003,7 @@ extern "C" void func_ov003_0222c0d0(Rec *o) {
     }
     func_ov003_0222d7d8(o, &t, 0x38e, 0x28, 0x50, o->unk_257 << 12);
     s32 r = func_02063b8c(4);
-    r = func_01ffc5a4(0x2000, (r + 5) << 12);
+    r = FX_Div(0x2000, (r + 5) << 12);
     *p = *p + (s16)r;
     func_ov003_0222d75c(o, *p, 0x1000, (func_02063b8c(4) + 10) << 12);
 }
@@ -5131,7 +5131,7 @@ extern "C" void func_ov003_0222be88(Rec *self) {
     case 7:
     case 8:
         if (func_ov003_0222af48(self, 4)) {
-            func_02106054((void *)func_0209c0ac(self->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0);
             self->unk_251 = 0x13;
             V3 *p = &self->unk_204;
             p->x = 0;
@@ -5213,7 +5213,7 @@ extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt) {
         if (o != 0) {
             s32 a = func_02002bdc(pos, (u8 *)o + 0x5c);
             self->unk_251 = 5;
-            func_02106054((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
+            NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
             self->unk_23a = a + 0x8000;
             *cnt = 0;
         }
@@ -5379,7 +5379,7 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
     if (r7 == 0x1f) {
         s32 c = *cnt;
         if (c == 0) {
-            r6 = r6 + func_01ffc5a4(0x2000, 0x6000);
+            r6 = r6 + FX_Div(0x2000, 0x6000);
         } else if (c % 16 == 0) {
             r6 = r6 + 0x71c;
         } else if (c % 8 == 0) {
@@ -5388,7 +5388,7 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
     } else {
         s32 c = *cnt;
         if (c == 0) {
-            r6 = r6 + func_01ffc5a4(0x2000, 0x6000);
+            r6 = r6 + FX_Div(0x2000, 0x6000);
         } else if (c % 4 == 0) {
             r6 = r6 + 0xaaa;
         } else if (c % 2 == 0) {
@@ -5684,7 +5684,7 @@ extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
             if (o) {
                 s32 v = func_02002bdc(sub, (u8 *)o + 0x5c);
                 self->unk_251 = 5;
-                func_02106054((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
+                NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
                 self->unk_23a = v + 0x8000;
                 *out = 0;
                 return TRUE;
@@ -5899,7 +5899,7 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
                 self->unk_240 = t + j + 0x8000;
                 *p23e = 0;
             } else if (pos->y > 0 && self->unk_24d == 0x36) {
-                s32 t = func_01ffcb0c(func_01ffc5a4(0x1000, 0x12000), k << 12);
+                s32 t = func_01ffcb0c(FX_Div(0x1000, 0x12000), k << 12);
                 pos->y += t + k * k * -10;
                 *p23e = *p23e + 3;
                 if (pos->y <= 0) {
@@ -5970,7 +5970,7 @@ extern "C" BOOL func_ov003_0222af48(Rec *self, s32 a) {
     u8 *p = self->unk_130;
     s32 t = func_02106020((void *)func_0209c0ac(p), 0);
     if (t > 7) {
-        func_02106054((void *)func_0209c0ac(p), 0, t - a);
+        NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(p), 0, t - a);
     } else {
         return TRUE;
     }
@@ -6040,7 +6040,7 @@ extern "C" BOOL func_ov003_0222adc4(Rec *self) {
     s32 c = *cnt;
     if (c == 0) {
         o = self->unk_23a;
-        self->unk_23a = o + func_01ffc5a4(sp, 0x2000);
+        self->unk_23a = o + FX_Div(sp, 0x2000);
     } else if (c % 4 == 0) {
         self->unk_23a = sp + self->unk_23a;
     } else if (c % 2 == 0) {
@@ -6130,7 +6130,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
     s32 c = *cnt;
     if (c == 0) {
         s32 a = self->unk_23a;
-        self->unk_23a = a + func_01ffc5a4(0x2000, 0x6000);
+        self->unk_23a = a + FX_Div(0x2000, 0x6000);
     } else if (c % 4 == 0) {
         self->unk_23a = self->unk_23a + 0xaaa;
     } else if (c % 2 == 0) {
@@ -6162,7 +6162,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
 namespace s08 {
 // 0x222ab68
 extern "C" void func_ov003_0222ab68(V3 *out, V3 *in, s32 c) {
-    s32 lim = func_01ffc5a4(c << 12, 0x40000);
+    s32 lim = FX_Div(c << 12, 0x40000);
     out->x = in->x;
     out->y = in->y;
     out->z = in->z;
@@ -6248,7 +6248,7 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
             self->unk_251 = 0x13;
             self->unk_23c = 0;
             self->unk_204.x = self->unk_21c;
-            func_02106054(func_0209c0ac(self->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0);
         }
         break;
     case 1:
@@ -6276,7 +6276,7 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
             self->unk_251 = 1;
             self->unk_254 = 0;
             func_0205668c(self->unk_ec, 0x21, 1, 0x1000, 0);
-            func_02106054(func_0209c0ac(self->unk_130), 0, 0x1f);
+            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0x1f);
         } else {
             self->unk_100 = 1;
         }
@@ -6596,7 +6596,7 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
     pos = &self->unk_204;
     st = (self->unk_f4 << 4) >> 16;
     mode = self->unk_24d;
-    t = func_01ffc5a4(*cnt << 12, 0x4000);
+    t = FX_Div(*cnt << 12, 0x4000);
     u8 *s = self->unk_50;
     V3 v;
     func_ov003_0222e328(&v, self->unk_23a);
@@ -6656,7 +6656,7 @@ extern "C" void func_ov003_0222a24c(Rec *o, s16 *p) {
     if (func_ov003_0222af48(o, 1)) {
         func_ov003_02229910(o);
     } else {
-        s32 t = func_01ffc5a4(*p << 12, 0x4000);
+        s32 t = FX_Div(*p << 12, 0x4000);
         pos->y += func_01ffcb0c(func_01ffcb0c(0x100, t), t);
         *p = *p + 1;
         if (o->unk_251 == 0xb && (o->unk_23a == 0x6001 || o->unk_23a == -0x6001)) {
@@ -6701,7 +6701,7 @@ extern "C" void func_ov003_0222a1c8(Rec *o, s16 *p) {
                 if (v > 0x1f) {
                     v = 0x1f;
                 }
-                func_02106054(func_0209c0ac(o->unk_130), 0, v);
+                NNS_G3dMdlSetMdlAlpha(func_0209c0ac(o->unk_130), 0, v);
             }
         }
     }
@@ -6974,8 +6974,8 @@ extern "C" void func_ov003_02229ab4(Rec *o) {
     }
     func_ov003_0222e328(&d, a);
     o->unk_23a = a;
-    p->z += func_01ffc5a4(func_01ffcb0c(o->unk_257 << 12, d.z), 0x20000);
-    p->x += func_01ffc5a4(func_01ffcb0c(o->unk_257 << 12, d.x), 0x20000);
+    p->z += FX_Div(func_01ffcb0c(o->unk_257 << 12, d.z), 0x20000);
+    p->x += FX_Div(func_01ffcb0c(o->unk_257 << 12, d.x), 0x20000);
     if (p->x < lo->x || p->x > hi->x) {
         p->x = save.x;
     }
@@ -7006,13 +7006,13 @@ namespace s07 {
 extern "C" void func_ov003_02229a3c(Rec *o) {
     V3 *p = &o->unk_204;
     if (func_02063b8c(2) == 0) {
-        p->x += func_01ffc5a4(0x7000, 0x10000);
-        p->y = func_01ffc5a4(0xc000, 0x10000);
-        p->z += func_01ffc5a4(0x3000, 0x10000);
+        p->x += FX_Div(0x7000, 0x10000);
+        p->y = FX_Div(0xc000, 0x10000);
+        p->z += FX_Div(0x3000, 0x10000);
     } else {
-        p->x -= func_01ffc5a4(0x7000, 0x10000);
-        p->y = func_01ffc5a4(0xc000, 0x10000);
-        p->z += func_01ffc5a4(0x3000, 0x10000);
+        p->x -= FX_Div(0x7000, 0x10000);
+        p->y = FX_Div(0xc000, 0x10000);
+        p->z += FX_Div(0x3000, 0x10000);
     }
 }
 }
@@ -7031,24 +7031,24 @@ extern "C" void func_ov003_02229938(Rec *self) {
     Vec3 *r4 = &self->unk_1b0;
     Vec3 *r6 = &self->unk_1bc;
     if (self->unk_24d == 0x33) {
-        r4->x = r5->x - func_01ffc5a4(0x6000, 0x10000);
-        r4->y = func_01ffc5a4(0xa000, 0x10000);
-        r4->z = r5->z - func_01ffc5a4(0x4000, 0x10000);
-        r6->x = r5->x + func_01ffc5a4(0x6000, 0x10000);
-        r6->y = func_01ffc5a4(0xc000, 0x10000);
-        r6->z = r5->z + func_01ffc5a4(0x4000, 0x10000);
+        r4->x = r5->x - FX_Div(0x6000, 0x10000);
+        r4->y = FX_Div(0xa000, 0x10000);
+        r4->z = r5->z - FX_Div(0x4000, 0x10000);
+        r6->x = r5->x + FX_Div(0x6000, 0x10000);
+        r6->y = FX_Div(0xc000, 0x10000);
+        r6->z = r5->z + FX_Div(0x4000, 0x10000);
     } else if (self->unk_24d == 0x19) {
         r4->x = r5->x - 0x6000;
         r4->z = r5->z + 0x6000;
         r6->x = r5->x + 0x6000;
         r6->z = r5->z - 0x6000;
     } else {
-        r4->x = r5->x - func_01ffc5a4(0x9000, 0x10000);
-        r4->y = func_01ffc5a4(0x9000, 0x10000);
-        r4->z = r5->z - func_01ffc5a4(0x2000, 0x10000);
-        r6->x = r5->x + func_01ffc5a4(0x9000, 0x10000);
+        r4->x = r5->x - FX_Div(0x9000, 0x10000);
+        r4->y = FX_Div(0x9000, 0x10000);
+        r4->z = r5->z - FX_Div(0x2000, 0x10000);
+        r6->x = r5->x + FX_Div(0x9000, 0x10000);
         r6->y = 0x1000;
-        r6->z = r5->z + func_01ffc5a4(0x5000, 0x10000);
+        r6->z = r5->z + FX_Div(0x5000, 0x10000);
     }
 }
 }
@@ -7065,7 +7065,7 @@ namespace s06 {
 // 0x2229910
 extern "C" void func_ov003_02229910(Rec *self) {
     self->unk_250 = 4;
-    func_02106054(func_0209c0ac(self->unk_130), 0, 0);
+    NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0);
 }
 }
 #undef func_020339bc
@@ -7141,8 +7141,8 @@ extern "C" void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s
     Vec3 *p = &self->unk_204;
     func_020339bc(&b, p, 0, 0);
     Vec3 *q = &self->unk_210;
-    s32 r6 = func_01ffc5a4(s2 << 12, 0x10000);
-    s32 r0 = func_01ffc5a4(a3 << 12, 0x10000);
+    s32 r6 = FX_Div(s2 << 12, 0x10000);
+    s32 r0 = FX_Div(a3 << 12, 0x10000);
     if (self->unk_251 != 0xb && self->unk_251 != 0x10) {
         self->unk_251 = 0x13;
         self->unk_23a = s1;
@@ -7840,7 +7840,7 @@ extern "C" void func_ov003_02228de0(Unk_ov003_02228710_Act *a) {
     }
     a->unk_232 = 0x168;
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
-        func_02106054(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
     }
 }
 }
@@ -7923,7 +7923,7 @@ namespace s05 {
 // 0x2228d7c
 extern "C" void func_ov003_02228d7c(Unk_ov003_02228710_Act *a) {
     if (a->unk_251 == 0x13) {
-        func_02106054(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
     }
     func_ov003_02229698(a, 0, 0x5a, 0x3c, 0, 0, 2, 0, 0, 0);
     a->unk_21c = 0;
@@ -8152,7 +8152,7 @@ extern "C" void func_ov003_02228c1c(Unk_ov003_02228710_Act *a) {
     func_ov003_02229698(a, t, 0x5a, 0x40, 0, 0, 0x28, 0, 3, 0);
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
         a->unk_21c = p->x;
-        func_02106054(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
         p->z -= 0x7d0;
     } else {
         a->unk_238 = (s16)0xc000;
@@ -10479,7 +10479,7 @@ extern "C" void func_ov003_02227100(s32 id) {
     if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
     else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
     if (o->unk_250 == 3) {
-        func_02106054(func_0209c0ac(&o->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
     }
     o->unk_251 = 0x10;
 }
@@ -10639,7 +10639,7 @@ extern "C" void func_ov003_02226e70(s32 id) {
     else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
     if (o->unk_251 == 0x10 && o->unk_24d >= 0) {
         o->unk_251 = 0x13;
-        func_02106054(func_0209c0ac(&o->unk_130), 0, 0x1f);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0x1f);
     }
 }
 }
@@ -10677,7 +10677,7 @@ extern "C" s32 func_ov003_02226d54(u8 id) {
     if (c4 == 0x35 && t6 == 0x13) return 0;
     s32 c = o->unk_24d;
     if (c != 0x3a && c != 0x3b) {
-        func_02106054(func_0209c0ac(&o->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
         o->unk_251 = 0x10;
     }
     if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
@@ -10718,7 +10718,7 @@ extern "C" void func_ov003_02226d08(Obj *o, s32 v) {
         o->unk_218 = 0x1000;
     } else {
         s32 *p = &o->unk_210;
-        *p = func_01ffc5a4(v << 12, 0x64000);
+        *p = FX_Div(v << 12, 0x64000);
         o->unk_214 = *p;
         o->unk_218 = *p;
     }

@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK sound command layer (SND_Command*) + PXI send: autoload_2 0x02116c0c-0x02117e8c. ARM code, mwcc 1.2/base, -O4,p.
-// PXI_InitFifo (PXI_Init) is outside this unit; it is only called (tail call) from func_02117dcc.
+// PXI_InitFifo (PXI_Init) is outside this unit; it is only called (tail call) from PXI_Init.
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -119,9 +119,9 @@ extern u8 data_0213a0b4[];
 extern SlotEnt data_027e032c[];
 
 extern u32 OS_DisableInterrupts(void);
-extern u32 func_01ffa3cc(void);
+extern u32 OS_IsRunOnEmulator(void);
 extern void OS_RestoreInterrupts(u32);
-extern void func_01ffa494(u32);
+extern void OS_SpinWait(u32);
 extern void PxiFifoCallback(void);
 extern void OS_UnlockMutex(void *);
 extern void OS_LockMutex(void *);
@@ -150,8 +150,8 @@ void RequestCommandProc(void);
 Cmd *AllocCommand(void);
 u32 IsCommandAvailable(void);
 u32 SND_CountWaitingCommand(void);
-u32 func_02116e84(void);
-u32 func_02116ec4(void);
+u32 SND_CountReservedCommand(void);
+u32 SND_CountFreeCommand(void);
 u32 SND_IsFinishedCommandTag(u32 t);
 Cmd *SND_RecvCommandReply(u32 flags);
 u32 SND_FlushCommand(u32 flags);
@@ -161,8 +161,8 @@ void SND_CommandInit(void);
 void SND_AlarmInit(void);
 void SNDi_InitSharedWork(SndWork *w);
 u32 SNDi_GetFinishedCommandTag(void);
-void func_02116cb0(void);
-void func_02116cc4(void);
+void SNDi_UnlockMutex(void);
+void SNDi_LockMutex(void);
 void InitPXI(void);
 extern void PXI_InitFifo(void);
 extern void PXI_SetFifoRecvCallback(u32 tag, void (*cb)(void));
@@ -190,19 +190,19 @@ s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err) {
 }
 
 // tail call to PXI_Init (PXI_InitFifo)
-void func_02117dcc(void) {
+void PXI_Init(void) {
     PXI_InitFifo();
 }
 
 // SND_... slot attach
 void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
     Obj *old;
-    func_02116cc4();
+    SNDi_LockMutex();
     old = p->s[i].a;
     if (old != 0) {
         Slot *q;
         if (item == old) {
-            func_02116cb0();
+            SNDi_UnlockMutex();
             return;
         }
         q = old->s[0].a;
@@ -230,7 +230,7 @@ void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
         p->s[i].next = prev;
         p->s[i].a = item;
     }
-    func_02116cb0();
+    SNDi_UnlockMutex();
     DC_StoreRange(p, 0x3c);
     DC_StoreRange(item, 0x3c);
 }
@@ -238,7 +238,7 @@ void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
 // SND_... slot detach all
 void SND_DestroyBank(Obj *p) {
     s32 i;
-    func_02116cc4();
+    SNDi_LockMutex();
     for (i = 0; i < 4; i++) {
         Obj *o = p->s[i].a;
         if (o != 0) {
@@ -262,12 +262,12 @@ void SND_DestroyBank(Obj *p) {
             }
         }
     }
-    func_02116cb0();
+    SNDi_UnlockMutex();
 }
 
 void SND_DestroyWaveArc(Obj *p) {
     Slot *n;
-    func_02116cc4();
+    SNDi_LockMutex();
     n = p->s[0].a;
     if (n != 0) {
         do {
@@ -278,7 +278,7 @@ void SND_DestroyWaveArc(Obj *p) {
             n = nx;
         } while (n != 0);
     }
-    func_02116cb0();
+    SNDi_UnlockMutex();
 }
 
 void SND_GetFirstInstDataPos(Pair *p) {
@@ -336,21 +336,21 @@ u32 SND_GetNextInstData(Bank *b, InstOut *out, u32 *idx) {
     return 0;
 }
 
-u32 func_02117a04(Bank *b) {
+u32 SND_GetWaveDataCount(Bank *b) {
     return b->count;
 }
 
 void SND_SetWaveDataAddress(u8 *base, s32 i, u32 v) {
-    func_02116cc4();
+    SNDi_LockMutex();
     *(u32 *)(base + i * 4 + 0x3c) = v;
     DC_StoreRange(base + 0x3c + i * 4, 4);
-    func_02116cb0();
+    SNDi_UnlockMutex();
 }
 
 void *SND_GetWaveDataAddress(u8 *base, s32 i) {
     u32 off;
     u8 *r;
-    func_02116cc4();
+    SNDi_LockMutex();
     off = *(u32 *)(base + i * 4 + 0x3c);
     if (off != 0) {
         r = (u8 *)off;
@@ -360,7 +360,7 @@ void *SND_GetWaveDataAddress(u8 *base, s32 i) {
     } else {
         r = 0;
     }
-    func_02116cb0();
+    SNDi_UnlockMutex();
     return r;
 }
 
@@ -420,7 +420,7 @@ u32 func_0211777c(u8 *w, s32 ch, ChOut *out) {
     return 1;
 }
 
-u32 func_0211764c(u8 *w, s32 a, s32 b, TrackOut *o) {
+u32 SND_ReadTrackInfo(u8 *w, s32 a, s32 b, TrackOut *o) {
     u8 *e;
     u8 *k;
     u32 v;
@@ -547,7 +547,7 @@ Cmd *SND_RecvCommandReply(u32 flags) {
     if (flags & 1) {
         while (data_021fcf8c == SNDi_GetFinishedCommandTag()) {
             OS_RestoreInterrupts(e);
-            func_01ffa494(100);
+            OS_SpinWait(100);
             e = OS_DisableInterrupts();
         }
     } else {
@@ -649,7 +649,7 @@ u32 SND_FlushCommand(u32 flags) {
         }
         while (PXI_SendWordByFifo(7, (u32)data_021fcf90, 0) < 0) {
             OS_RestoreInterrupts(e);
-            func_01ffa494(100);
+            OS_SpinWait(100);
             e = OS_DisableInterrupts();
         }
     }
@@ -725,7 +725,7 @@ u32 SND_IsFinishedCommandTag(u32 t) {
     return r;
 }
 
-u32 func_02116ec4(void) {
+u32 SND_CountFreeCommand(void) {
     u32 e = OS_DisableInterrupts();
     u32 n = 0;
     Cmd *c = data_021fcf88;
@@ -737,7 +737,7 @@ u32 func_02116ec4(void) {
     return n;
 }
 
-u32 func_02116e84(void) {
+u32 SND_CountReservedCommand(void) {
     u32 e = OS_DisableInterrupts();
     u32 n = 0;
     Cmd *c = data_021fcf90;
@@ -750,8 +750,8 @@ u32 func_02116e84(void) {
 }
 
 u32 SND_CountWaitingCommand(void) {
-    u32 a = func_02116ec4();
-    return 256 - a - func_02116e84();
+    u32 a = SND_CountFreeCommand();
+    return 256 - a - SND_CountReservedCommand();
 }
 
 void InitPXI(void) {
@@ -763,7 +763,7 @@ void InitPXI(void) {
         return;
     }
     do {
-        func_01ffa494(100);
+        OS_SpinWait(100);
     } while (PXI_IsCallbackReady(7, 1) == 0);
 }
 
@@ -790,7 +790,7 @@ Cmd *AllocCommand(void) {
 u32 IsCommandAvailable(void) {
     u32 r;
     u32 e;
-    if (func_01ffa3cc() == 0) {
+    if (OS_IsRunOnEmulator() == 0) {
         return 1;
     }
     e = OS_DisableInterrupts();
@@ -812,12 +812,12 @@ void SND_Init(void) {
 }
 
 // SND lock
-void func_02116cc4(void) {
+void SNDi_LockMutex(void) {
     OS_LockMutex(&data_021fcf70);
 }
 
 // SND unlock
-void func_02116cb0(void) {
+void SNDi_UnlockMutex(void) {
     OS_UnlockMutex(&data_021fcf70);
 }
 

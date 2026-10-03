@@ -78,9 +78,9 @@ s32 FX_DivS32(u32, s32);
 s32 func_020fedcc(void *);
 s32 func_020fedec(void *, void *);
 s32 func_020fee84(void *);
-void func_0211165c();
-void func_0211172c();
-void func_0211199c();
+void GX_LoadBG3Char();
+void GX_LoadBG2Char();
+void GX_LoadBG3Scr();
 s32 GX_LoadOBJPltt();
 void GX_LoadBGPltt();
 void * MI_CpuFill8(void *, s32, u32);
@@ -265,10 +265,10 @@ extern "C" void func_ov001_02217c24() {
         *(volatile u16 *)0x400000c = t;
     }
     func_ov001_02208594((void *)"char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
-    func_ov001_02208594((void *)"char/jbBgStep2.ncg.l", (void *)func_0211165c);
-    func_ov001_02208594((void *)"char/jbBgStep21.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594((void *)"char/jbBgStep2.ncg.l", (void *)GX_LoadBG3Char);
+    func_ov001_02208594((void *)"char/jbBgStep21.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594(lc.b, (void *)GX_LoadBGPltt);
-    func_ov001_02208594((void *)"char/jb3List.nsc.l", (void *)func_0211199c);
+    func_ov001_02208594((void *)"char/jb3List.nsc.l", (void *)GX_LoadBG3Scr);
     data_ov001_0222de94->unk_08 = func_ov001_02224074(func_ov001_022085e0(lb.b), 0, 4);
     func_ov001_0221cf5c(data_ov001_0222de94->unk_08);
     func_ov001_0221cf10();

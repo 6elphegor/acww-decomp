@@ -436,7 +436,7 @@ extern "C" {
 s32 PM_SetLCDPower(s32 a);
 }
 extern "C" {
-void func_0211c6c4(s32 a, s32 b);
+void PM_SetBackLight(s32 a, s32 b);
 }
 extern "C" {
 void PM_GetBackLight(void *a, void *b);
@@ -2592,13 +2592,13 @@ extern "C" void func_020acf38(Unk_020acf38 *p) {
 // ======== unk_020abbcc.cpp ========
 namespace n1 {
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 extern "C" {
-void func_01ff8ccc(void);
+void NNS_G3dGeFlushBuffer(void);
 }
 extern "C" {
 void G3_LoadMtx43(void *p);
@@ -2619,10 +2619,10 @@ extern "C" {
 void func_02135558(void (*f)(), void *p);
 }
 extern "C" {
-void func_02106174(u32 a, u32 b, u32 c);
+void NNS_G3dMdlSetMdlDiff(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_0210622c(u32 a, u32 b, u32 c);
+void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 }
 extern "C" {
 void func_020e8388(void *m, s32 a, s32 b, s32 c);

@@ -232,9 +232,9 @@ void _ZN12Unk_020dbe6c13func_020561d8EP16Unk_02056160_Arg(void *p, void *q);
 void _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, s32 b, s32 c, u32 d);
 s32 _ZN12Unk_020dbe7c13func_020566bcEv(void *p);
 void _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-void func_02104000(void *a, s32 b, void *c, s32 d);
-void func_02103d64(void *a, void *b);
-void func_02103e40(void *a, void *b);
+void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
+void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
+void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 void _ZN12Unk_020dbe3413func_0205553cEPi(void *p, void *q);
 void *func_02055c08(void *a, void *b, void *c);
 extern u8 data_020dbd28[];
@@ -245,7 +245,7 @@ void func_0206fd10(void *a, void *b, void *c);
 void func_0206fd84(void *a);
 void func_0206fd64(void *a);
 void func_0206fdb4(void *a, void *b);
-s32 func_0212a190(void *a, void *b);
+s32 strcmp(void *a, void *b);
 void *func_020641ec(void *a, void *b, s32 c, s32 d);
 extern void *data_021f482c;
 extern void *data_021c6214;
@@ -258,8 +258,8 @@ void func_02055724(void *a, void *b);
 void *func_0205588c(void *a, void *heap);
 void *func_02055928(void *a, void *heap);
 void _ZN12Unk_020dbe3413func_02055600EP16Unk_020553f8_Resj(void *a, void *b, void *c);
-void func_021039ec(void *a, void *b);
-void func_02103830(void *a, void *b);
+void NNS_G3dBindMdlTex(void *a, void *b);
+void NNS_G3dBindMdlPltt(void *a, void *b);
 void func_02103978(void *a, void *b, s32 c, s32 d);
 void func_021037b4(void *a, void *b, s32 c, void *d);
 void *func_020558bc(void *a, u32 tag);
@@ -299,8 +299,8 @@ BOOL Unk_020dbd34::func_02054d58(void *res, void *name, u32 tag) {
     }
     if (q != NULL) {
         func_02055724(q, unk_94);
-        func_021039ec(unk_5c, q);
-        func_02103830(unk_5c, q);
+        NNS_G3dBindMdlTex(unk_5c, q);
+        NNS_G3dBindMdlPltt(unk_5c, q);
     }
     func_020e85fc(heap, h);
     func_0205562c();
@@ -320,12 +320,12 @@ BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 
         unk_5c = func_020558bc(p, tag);
     }
     if (tex != NULL) {
-        func_021039ec(unk_5c, tex);
+        NNS_G3dBindMdlTex(unk_5c, tex);
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
             func_02055724(q, unk_94);
-            func_021039ec(unk_5c, q);
+            NNS_G3dBindMdlTex(unk_5c, q);
         }
     }
     if (d != NULL) {
@@ -377,8 +377,8 @@ void Unk_020dbd34::func_02054b70(void *a) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(a));
     void *q = NNS_G3dGetTex(a);
     unk_5c = p;
-    func_021039ec(unk_5c, q);
-    func_02103830(unk_5c, q);
+    NNS_G3dBindMdlTex(unk_5c, q);
+    NNS_G3dBindMdlPltt(unk_5c, q);
     func_0205562c();
 }
 
@@ -456,7 +456,7 @@ extern "C" void *func_020549ac(Unk_02054970_Table *t, void *name)
     u32 i = 0;
     u32 n = t->unk_04;
     for (; i < n; i++) {
-        if (func_0212a190(name, t->unk_0c + i * 16) == 0) {
+        if (strcmp(name, t->unk_0c + i * 16) == 0) {
             return &t->unk_08[i];
         }
     }
@@ -541,19 +541,19 @@ void Unk_0205454c::func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e)
     }
     Unk_020dbe7c &r = *this;
     _ZN12Unk_020dbe7c13func_0205668cEihit(&r, e, b, c, d);
-    func_02104000(unk_b4, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(unk_b4, a, unk_5c, 0);
     unk_b4->unk_00 = unk_a4;
 }
 
 s32 Unk_020dbd54::func_02054710()
 {
-    func_02103e40(&unk_08, unk_b4);
+    NNS_G3dRenderObjAddAnmObj(&unk_08, unk_b4);
 }
 
 void Unk_020dbd54::func_020546ec()
 {
     if (unk_b4 != 0) {
-        func_02103d64(&unk_08, unk_18);
+        NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_18);
         unk_b4 = 0;
     }
 }
@@ -561,7 +561,7 @@ void Unk_020dbd54::func_020546ec()
 void Unk_020dbd54::func_020546c8()
 {
     if (unk_b4 != 0) {
-        func_02103d64(&unk_08, unk_20);
+        NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_20);
         unk_b4 = 0;
     }
 }
@@ -570,10 +570,10 @@ void Unk_020dbd54::func_0205468c()
 {
     if (unk_b4 != 0) {
         if (unk_18 == unk_b4) {
-            func_02103d64(&unk_08, unk_18);
+            NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_18);
             unk_b4 = 0;
         } else if (unk_20 == unk_b4) {
-            func_02103d64(&unk_08, unk_20);
+            NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_20);
             unk_b4 = 0;
         }
     }
@@ -719,8 +719,8 @@ extern "C" void func_0205415c(void *pv, void *qv) {
     Unk_0205415c_Item *q = (Unk_0205415c_Item *)qv;
     Unk_0205415c_Item *cur = p->unk_18;
     if (cur != q && cur != NULL && cur->unk_10 == 0) {
-        func_02103d64(&p->unk_08, cur);
-        func_02103e40(&p->unk_08, q);
+        NNS_G3dRenderObjRemoveAnmObj(&p->unk_08, cur);
+        NNS_G3dRenderObjAddAnmObj(&p->unk_08, q);
     }
 }
 
@@ -834,7 +834,7 @@ void Unk_020dbda4::func_02053e70(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL 
         *(u16 *)&f = func_02054778(c, (Unk_02054778_Info *)a);
     }
     _ZN12Unk_020dbe7c13func_0205668cEihit(&unk_f8, *(u16 *)&f, c, d, *(u16 *)&e);
-    func_02104000(unk_f4, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(unk_f4, a, unk_5c, 0);
     if (g != 0) {
         unk_04 = unk_04 | 0x4000;
     } else {
@@ -1007,7 +1007,7 @@ void Unk_020dbd74::func_02053900(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL 
         *(u16 *)&f = func_02054778(c, (Unk_02054778_Info *)a);
     }
     _ZN12Unk_020dbe7c13func_0205668cEihit(&unk_158, *(u16 *)&f, c, d, *(u16 *)&e);
-    func_02104000(unk_154, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(unk_154, a, unk_5c, 0);
     if (g != 0) {
         unk_04 = unk_04 | 0x8000;
     } else {

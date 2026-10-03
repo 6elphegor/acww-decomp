@@ -76,7 +76,7 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *func_0211f00c(void);
+extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
@@ -86,23 +86,23 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern u32 MATH_CountPopulation(u32);
-extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
+extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
-extern void func_02120b0c(WMPool *ds, BOOL flag);
+extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
-extern u32 func_02122e24(u32, u32, u16 *);
+extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
-void func_02120c98(WMPool *ds, u32 n, u16 *buf);
+void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
 void func_02120da4(WMMsg *msg);
-void func_02120ed4(WMMsg *msg);
+void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 void func_02120fe8(WMMsg *msg);
 u32 func_021214b4(WMPool *ds);
-u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
+u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
-extern void func_02120c98(WMPool *ds, u32 n, u16 *buf);
+extern void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
 extern void func_02120da4(WMMsg *msg);
-extern void func_02120ed4(WMMsg *msg);
-extern u32 func_02121e5c(void);
+extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
+extern u32 MBi_CommParentSendBlock(void);
 
 typedef struct {
     u32 w0;
@@ -152,21 +152,21 @@ typedef struct {
 #define ENT(c, i) ((Ent *)((u8 *)(c) + (i) * 0x5d4))
 
 extern Ctx *data_0220001c;
-extern u32 func_02122360(u32, u32);
-extern u32 func_021221b0(u32);
-extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
-extern u32 func_02126e00(void *msg, void *dst);
-extern u32 func_021266c0(void *, u32, u32, u32);
+extern u32 MBi_CommParentSendMsg(u32, u32);
+extern u32 MBi_CommParentSendDLFileInfo(u32);
+extern u32 MBi_get_blockinfo(void *out, void *arr, u32 count, void *ent);
+extern u32 MBi_MakeParentSendBuffer(void *msg, void *dst);
+extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
-extern void func_0212683c(void *, void *, u32, u32);
-extern u32 func_02123f24(u32, u32, void *);
+extern void MBi_SetTask(void *, void *, u32, u32);
+extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern void func_0206d49c(void);
 extern u32 func_02122114(void);
-u32 func_02121e5c(void);
+u32 MBi_CommParentSendBlock(void);
 void func_02121c60(u32 idx);
 
-// (unidentified: scans the 15 slot states and dispatches to func_02122360 / func_021221b0 / func_02121e5c)
-u32 func_02121cc8(void) {
+// (unidentified: scans the 15 slot states and dispatches to MBi_CommParentSendMsg / MBi_CommParentSendDLFileInfo / MBi_CommParentSendBlock)
+u32 MBi_CommParentSendData(void) {
     volatile u16 zero = 0;
     u16 m[5];
     u16 i;
@@ -192,19 +192,19 @@ u32 func_02121cc8(void) {
         }
     }
     if (m[3] != 0) {
-        r = func_02122360(5, m[3]);
+        r = MBi_CommParentSendMsg(5, m[3]);
     } else if (m[0] != 0) {
-        r = func_02122360(1, m[0]);
+        r = MBi_CommParentSendMsg(1, m[0]);
     } else if (m[4] != 0) {
-        r = func_02122360(6, m[4]);
+        r = MBi_CommParentSendMsg(6, m[4]);
     } else if (m[2] != 0) {
-        r = func_02122360(2, m[2]);
+        r = MBi_CommParentSendMsg(2, m[2]);
     } else if (m[1] != 0) {
-        r = func_021221b0(m[1]);
+        r = MBi_CommParentSendDLFileInfo(m[1]);
     } else {
-        r = func_02121e5c();
+        r = MBi_CommParentSendBlock();
     }
-    if (r == 21) r = func_02122360(0, 0xffff);
+    if (r == 21) r = MBi_CommParentSendMsg(0, 0xffff);
     return r;
 }
 
@@ -237,10 +237,10 @@ BOOL IsChildAidValid(u32 x) {
     return 0;
 }
 
-// (not WM; unidentified helper: stores a u16 through func_02122e24, id 13)
-u32 func_02121c10(u32 a, u32 b) {
+// (not WM; unidentified helper: stores a u16 through MBi_CommChangeParentStateCallbackOnly, id 13)
+u32 MBi_CommCallParentError(u32 a, u32 b) {
     u16 v = (u16)b;
-    return func_02122e24(a, 13, &v);
+    return MBi_CommChangeParentStateCallbackOnly(a, 13, &v);
 }
 
 // WM_SetWEPKey (request 20)
@@ -310,7 +310,7 @@ u32 WM_SetLifeTime(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16
 
 // WM_SetLifeTime (request 30)
 u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(1, 2);
     u16 *req;
     if (r != 0) return r;
@@ -338,22 +338,22 @@ u32 WM_SetEntry(WMCallback cb, u32 arg) {
 
 // WM_StartKeySharing
 u32 WM_StartKeySharing(WMPool *ds, u32 port) {
-    return func_02121570(ds, port, 0xffff, 2, 1);
+    return WM_StartDataSharing(ds, port, 0xffff, 2, 1);
 }
 
 // WM_EndKeySharing
-u32 func_02121838(WMPool *ds) {
+u32 WM_EndKeySharing(WMPool *ds) {
     return func_021214b4(ds);
 }
 
 // WM_StartDataSharing
-u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode) {
+u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode) {
     u32 ack = 1;
     u32 aid;
     WMStatus *st;
     u16 mask;
     u32 r;
-    st = func_0211f00c()->status;
+    st = WMi_GetSystemWork()->status;
     r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
     DC_InvalidateRange(&st->f0c, 4);
@@ -395,12 +395,12 @@ u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doub
         for (i = 0; i < 4; i++) {
             ds->pkt[i].hdr = ds->f80e & (ack | 1);
         }
-        func_0211fb0c(port, func_02120ed4, ds);
+        func_0211fb0c(port, WmDataSharingReceiveCallback_Parent, ds);
         p = ds->pkt;
         for (i = 0; i < (ds->f818 == 1 ? 2 : 1); i++) {
             u32 ret;
             ds->f808 = (ds->f808 + 1) & 3;
-            ret = func_0212052c(func_02120fe8, ds, p, ds->f814, ds->f80e & ack, ds->f816, 1);
+            ret = WM_SetMPDataToPortEx(func_02120fe8, ds, p, ds->f814, ds->f80e & ack, ds->f816, 1);
             if (ret == 7) {
                 ds->slot[i] = 0xffff;
                 ds->f80a = (ds->f80a + 1) & 3;
@@ -421,11 +421,11 @@ u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doub
 
 // WM_EndDataSharing
 u32 func_021214b4(WMPool *ds) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
     if (ds == 0) return 6;
-    if (ds->f80e == 0 || (w->portCb[ds->f816] != func_02120ed4 && w->portCb[ds->f816] != func_02120da4)) {
+    if (ds->f80e == 0 || (w->portCb[ds->f816] != WmDataSharingReceiveCallback_Parent && w->portCb[ds->f816] != func_02120da4)) {
         return 3;
     }
     func_0211fb0c(ds->f816, 0, 0);
@@ -435,7 +435,7 @@ u32 func_021214b4(WMPool *ds) {
 }
 
 // WM_StepDataSharing
-u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
+u32 WM_StepDataSharing(WMPool *ds, u16 *data, u16 *out) {
     u32 flag2;
     u32 ack;
     u32 ready;
@@ -443,7 +443,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
     WMStatus *st;
     u32 r;
     u32 rr;
-    st = func_0211f00c()->status;
+    st = WMi_GetSystemWork()->status;
     r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
     DC_InvalidateRange(&st->f0c, 4);
@@ -467,7 +467,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
             u32 idx;
             ds->f81c = 1;
             idx = (u16)((ds->f808 + 3) & 3);
-            rr = func_0212052c(func_02120fe8, ds, &ds->pkt[idx], ds->f814, ds->f80e & ack, ds->f816, 1);
+            rr = WM_SetMPDataToPortEx(func_02120fe8, ds, &ds->pkt[idx], ds->f814, ds->f80e & ack, ds->f816, 1);
             if (rr == 7) {
                 ds->slot[idx] = 0xffff;
                 ds->f80a = (ds->f80a + 1) & 3;
@@ -491,10 +491,10 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
                 flag2 = 0;
             }
         }
-        func_02120b0c(ds, 0);
+        WmDataSharingSendDataSet(ds, 0);
         if (ready != 0) {
-            func_02120c98(ds, 0, data);
-            if (ds->f818 == 0) func_02120b0c(ds, flag2);
+            WmDataSharingReceiveData(ds, 0, data);
+            if (ds->f818 == 0) WmDataSharingSendDataSet(ds, flag2);
         }
     } else {
         ready = 0;
@@ -516,7 +516,7 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
         if (ready != 0) {
             u8 *p = &ds->pkt[ds->f80a].data[28];
             MIi_CpuCopy16(data, p, ds->f810);
-            rr = func_0212052c(func_02120fe8, ds, p, ds->f810, ds->f80e, ds->f816, 1);
+            rr = WM_SetMPDataToPortEx(func_02120fe8, ds, p, ds->f810, ds->f80e, ds->f816, 1);
             ds->f80a = (ds->f80a + 1) & 3;
             if (rr != 2) {
                 if (rr != 0) {
@@ -531,12 +531,12 @@ u32 func_021210f0(WMPool *ds, u16 *data, u16 *out) {
 
 // WM data sharing: send-complete callback
 void func_02120fe8(WMMsg *msg) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     WMStatus *st = w->status;
     WMPool *ds;
     u32 err, aid;
     ds = (WMPool *)w->portArg[msg->f0a];
-    if (w->portCb[msg->f0a] != func_02120ed4 && w->portCb[msg->f0a] != func_02120da4) return;
+    if (w->portCb[msg->f0a] != WmDataSharingReceiveCallback_Parent && w->portCb[msg->f0a] != func_02120da4) return;
     if (ds == 0) return;
     if (ds != (WMPool *)msg->f20) return;
     DC_InvalidateRange(&st->f184, 2);

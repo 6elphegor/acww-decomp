@@ -80,7 +80,7 @@ void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
-void func_02110de8(void *p);
+void G3X_SetToonTable(void *p);
 }
 
 extern "C" {
@@ -108,7 +108,7 @@ void G3X_Init(void);
 }
 
 extern "C" {
-void func_02110d00(void);
+void G3X_InitTable(void);
 }
 
 extern "C" {
@@ -120,7 +120,7 @@ void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void func_02105d98(void);
+void NNS_G3dInit(void);
 }
 
 extern "C" {

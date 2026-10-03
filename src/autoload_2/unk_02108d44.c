@@ -12,7 +12,7 @@ typedef struct GeBuf4 {
     s32 w[18];
 } GeBuf4;
 
-extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
+extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
 extern void FX_DivAsync(s32 num, s32 den);
 extern s32 FX_GetDivResult(void);
 extern void (*data_0213bef0[8])(s32 *, u32 *);
@@ -24,7 +24,7 @@ static inline s32 FxMul(s32 a, s32 b)
 }
 
 // NNS g3d material SRT (Maya-style): scale + rotation
-void func_02108fe8(s32 *o, u8 *s)
+void texmtxCalc_flagT___xsi(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
@@ -48,7 +48,7 @@ void func_02108fe8(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT (Maya-style): rotation only
-void func_02108f38(s32 *o, u8 *s)
+void texmtxCalc_flagTS___xsi(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
@@ -65,7 +65,7 @@ void func_02108f38(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT (Maya-style): scale only
-void func_02108ef8(s32 *o, u8 *s)
+void texmtxCalc_flagTR___xsi(s32 *o, u8 *s)
 {
     o[0] = *(s32 *)(s + 24);
     o[5] = *(s32 *)(s + 28);
@@ -76,7 +76,7 @@ void func_02108ef8(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT (Maya-style): identity
-void func_02108ed4(s32 *o)
+void texmtxCalc_flagTRS___xsi(s32 *o)
 {
     o[0] = 0x1000;
     o[1] = 0;
@@ -130,6 +130,6 @@ void func_02108d44(u32 *a)
         s.w[6] = FxMul(a[13], s.w[6]);
         s.w[14] = FxMul(a[13], s.w[14]);
     }
-    func_01ff8bd0(s.cmd, (u32 *)&s + 1, 18);
+    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 18);
 }
 

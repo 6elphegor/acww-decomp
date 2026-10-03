@@ -124,11 +124,11 @@ extern MBBig *data_0220001c;
 extern u8 data_021fff80;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32 irq);
-extern BOOL func_02124888(void);
+extern BOOL MBi_IsStarted(void);
 extern BOOL func_02123368(void *dst, void *seg);
-extern BOOL func_021269f8(void);
+extern BOOL MBi_IsTaskAvailable(void);
 extern void MBi_InitTaskInfo(void *p);
-extern void func_02126a14(void *p, u32 len);
+extern void MBi_InitTaskThread(void *p, u32 len);
 
 extern MBBeacon data_021fffa0;
 extern u16 data_021fffa8[];
@@ -137,7 +137,7 @@ extern MBWork data_021fff8c;
 extern void (*data_021fff88)(u32);
 extern u32 data_021fff84;
 extern u8 data_021fffb0[4][22];
-extern u32 func_02123edc(const u16 *p, int len);
+extern u32 MBi_calc_cksum(const u16 *p, int len);
 extern void WM_SetGameInfo(u32 a, void *p, u32 len, u32 b, u32 c, u32 d);
 
 extern void MIi_CpuClear16(u32 value, void *dst, u32 size);
@@ -145,10 +145,10 @@ extern void MIi_CpuCopy16(const void *src, void *dst, u32 size);
 extern void MIi_CpuClearFast(u32 value, void *dst, u32 size);
 extern void FS_InitFile(FSFile *file);
 extern BOOL FS_OpenFile(FSFile *file, const char *path);
-extern s32 func_021198b4(FSFile *file, void *dst, s32 len);
+extern s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 extern BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin);
 extern void DC_FlushRange(void *addr, u32 len);
-extern void func_021145f0(void);
+extern void DC_WaitWriteBufferEmpty(void);
 extern void MI_CpuFill8(void *dst, u32 value, u32 size);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void func_0206d49c(void);
@@ -156,7 +156,7 @@ extern u32 data_0213a3ec[3];
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 extern void func_021267d4(void *ctx);
-extern void func_02126760(void *ctx, u32 addr, u32 len, void *data, u32 mode);
+extern void MBi_AttachCacheBuffer(void *ctx, u32 addr, u32 len, void *data, u32 mode);
 extern void DC_FlushRange(void *addr, u32 len);
 typedef struct MBRegion {
     u32 start;
@@ -170,40 +170,40 @@ extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int 
 extern void func_02124930(void *p, u32 a, u32 b);
 extern void FS_CloseFile(FSFile *file);
 extern u32 mystrlen(const u16 *s);
-extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
+extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
 
 extern void func_02124528(void);
 extern BOOL func_02124408(void);
 extern void func_021243bc(void);
 extern void func_0212423c(u32 a, u32 b, u32 c);
-extern void func_0212420c(void);
+extern void MBi_InitSendVolatBeacon(void);
 extern void func_02123f60(u32 a, u32 b, u32 c);
-extern void func_02123958(u32 *seg, u32 lo, u32 hi, int clear);
+extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
 
-extern void func_02124724(MBBuf *b, const u32 *info, const void *name);
-extern BOOL func_02124670(const char *path, void *dst, u32 isChar);
-extern void func_021245ec(MBBuf *b, const void *src, u32 mask, u32 w);
+extern void MBi_MakeGameInfo(MBBuf *b, const u32 *info, const void *name);
+extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
+extern void MB_UpdateGameInfoMember(MBBuf *b, const void *src, u32 mask, u32 w);
 extern u32 mystrlen(const u16 *s);
-extern void func_02124580(MBBuf *b);
+extern void MB_AddGameInfo(MBBuf *b);
 extern void func_0212454c(void);
 extern void func_02124528(void);
-extern void func_02124480(u32 a, u32 b, u32 c);
+extern void MB_SendGameInfoBeacon(u32 a, u32 b, u32 c);
 extern BOOL func_02124408(void);
 extern void func_021243bc(void);
 extern void func_0212423c(u32 a, u32 b, u32 c);
-extern void func_0212420c(void);
+extern void MBi_InitSendVolatBeacon(void);
 extern void func_02123f60(u32 a, u32 b, u32 c);
-extern void func_02123f24(u32 a, u32 b, void *c);
-extern u32 func_02123edc(const u16 *p, int len);
-extern u32 func_02123e58(FSFile *file);
-extern BOOL func_021239ec(FSFile *file, u32 *buf, u32 size);
-extern void func_02123958(u32 *seg, u32 lo, u32 hi, int clear);
-extern BOOL func_02123680(const u8 *key, const MBRomHeader *info);
+extern void MBi_BlockHeaderEnd(u32 a, u32 b, void *c);
+extern u32 MBi_calc_cksum(const u16 *p, int len);
+extern u32 MB_GetSegmentLength(FSFile *file);
+extern BOOL MB_ReadSegment(FSFile *file, u32 *buf, u32 size);
+extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
+extern BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info);
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 
 // MB parent: clamp [lo, hi) to the segment, then fill/copy it
-void func_02123958(u32 *seg, u32 lo, u32 hi, int clear) {
+void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear) {
     u32 base = seg[0];
     u32 len = seg[3];
     if (lo < 0x4000) lo = 0x4000;
@@ -219,14 +219,14 @@ void func_02123958(u32 *seg, u32 lo, u32 hi, int clear) {
 }
 
 // MB parent: register a new game entry
-BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
+BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info) {
     MBEnt *e;
     u8 idx = 0xff;
     u32 irq = OS_DisableInterrupts();
     u32 off;
     u8 i;
     u8 seq;
-    if (func_02124888() == 0) {
+    if (MBi_IsStarted() == 0) {
         OS_RestoreInterrupts(irq);
         return 0;
     }
@@ -257,9 +257,9 @@ BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
         OS_RestoreInterrupts(irq);
         return 0;
     }
-    func_02124724((MBBuf *)((u8 *)data_0220001c + 0x186c + off), (const u32 *)key, data_0220001c->f1300 - 0 + 0);
+    MBi_MakeGameInfo((MBBuf *)((u8 *)data_0220001c + 0x186c + off), (const u32 *)key, data_0220001c->f1300 - 0 + 0);
     data_0220001c->ent[idx].buf.f4b5 = idx;
-    func_02124580((MBBuf *)((u8 *)data_0220001c + 0x186c + off));
+    MB_AddGameInfo((MBBuf *)((u8 *)data_0220001c + 0x186c + off));
     seq = data_021fff80;
     data_021fff80 = seq + 1;
     data_0220001c->ent[idx].buf.f4b3 = seq;
@@ -268,9 +268,9 @@ BOOL func_02123680(const u8 *key, const MBRomHeader *info) {
     data_0220001c->ent[idx].p0 = (const u8 *)info + 0x1e8;
     data_0220001c->ent[idx].p1 = (const u8 *)info + 0x258;
     if (((const u32 *)data_0220001c->ent[idx].p0)[0x6c / 4] != 0) {
-        if (func_021269f8() == 0) {
+        if (MBi_IsTaskAvailable() == 0) {
             MBi_InitTaskInfo((u8 *)data_0220001c + 0x7ce0);
-            func_02126a14((u8 *)data_0220001c + 0x74e0, 0x800);
+            MBi_InitTaskThread((u8 *)data_0220001c + 0x74e0, 0x800);
         }
     }
     data_0220001c->ent[idx].used = 1;

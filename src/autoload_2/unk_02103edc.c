@@ -34,20 +34,20 @@ typedef struct TexData {
 } TexData;
 
 extern u32 data_0213bcd4, data_0213bcd0, data_0213bccc;
-extern void func_02115e64(u32, void *, u32);   // MIi_CpuClear32
+extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32
 extern void func_01ff8858(void *);
 extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
-extern void func_02111f7c(void *, u32, u32);    // GX_LoadTex
-extern void func_02111f24(void);                // GX_EndLoadTex
+extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
+extern void GX_EndLoadTexPltt(void);                // GX_EndLoadTex
 extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
 extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
 extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
 void addLink_(Node **head, Node *n);
 
-void func_02103f98(u32 *o, u32 x)
+void NNS_G3dRenderObjInit(u32 *o, u32 x)
 {
     volatile u32 zero = 0;
-    func_02115e64(zero, o, 0x54);
+    MIi_CpuClear32(zero, o, 0x54);
     o[3] = data_0213bcd4;
     o[5] = data_0213bcd0;
     o[7] = data_0213bccc;

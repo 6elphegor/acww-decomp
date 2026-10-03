@@ -75,7 +75,7 @@ extern u8 SDK_SECTION_ARENA_DTCM_START[]; // 0x027e0460
 
 void func_01ffa4ec(void *);
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
-void func_02113a70(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
+void OS_CreateThread(OSThread *t, void (*f)(void *), void *arg, void *stack, u32 size, u32 prio);
 
 // OS_InitThread
 void OS_InitThread(void) {
@@ -103,7 +103,7 @@ void OS_InitThread(void) {
     data_021fcc2c.irqDepth = 0;
     data_027fffa0 = &data_021fcc2c;
     OS_SetSwitchThreadCallback(0);
-    func_02113a70(&data_021fcc3c, func_01ffa4ec, 0, &data_021fce84, 200, 31);
+    OS_CreateThread(&data_021fcc3c, func_01ffa4ec, 0, &data_021fce84, 200, 31);
     data_021fcc3c.priority = 32;
     data_021fcc3c.state = 1;
 }

@@ -38,11 +38,11 @@ void func_0212a2ec(void *, const void *, s32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
-void func_021132e0(s32);
+void OS_Sleep(s32);
 s32 memcmp(const void *, const void *, s32);
 void func_02127838(void *, const void *);
 s32 OS_SPrintf(char *, const char *, ...);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 
 Unk_ov065_02290f94_Fn data_ov065_02290f94;
 s32 data_ov065_02290fa0;
@@ -212,7 +212,7 @@ void func_ov065_02277c34() {
     if (data_ov065_02290f9c != NULL) {
         if (func_ov065_0226b110() == 0) {
             do {
-                func_021132e0(10);
+                OS_Sleep(10);
             } while (func_ov065_0226b110() == 0);
         }
         data_ov065_02290f9c = NULL;

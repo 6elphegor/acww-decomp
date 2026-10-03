@@ -48,11 +48,11 @@ struct Unk_ov001_0222df2c {
 extern "C" {
 void MI_CpuFill8(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
-void func_02124c40();
-s32 func_02123008(s32);
+void MB_End();
+s32 MB_CommGetChildUser(s32);
 void func_0206d49c();
 u64 OS_GetTick();
-u32 func_0211f410();
+u32 WM_GetNextTgid();
 void func_020fefb0(void *);
 
 s32 func_ov001_02220ad8(s32);
@@ -140,7 +140,7 @@ extern "C" BOOL func_ov001_02223d9c() {
                 return FALSE;
             }
         }
-        func_02124c40();
+        MB_End();
         data_ov001_0222df2c->unk_a90 = 0x10;
         data_ov001_0222df2c->unk_aac = 2;
         return TRUE;
@@ -165,7 +165,7 @@ extern "C" BOOL func_ov001_02223d9c() {
 extern "C" void func_ov001_02223d10() {
     func_ov001_02222334(data_ov001_0222df2c->unk_ac8);
     data_ov001_0222df2c->unk_a90 = 1;
-    data_ov001_0222df2c->unk_648 = func_0211f410();
+    data_ov001_0222df2c->unk_648 = WM_GetNextTgid();
     MI_CpuCopy8(data_ov001_0222df2c->unk_aa4, data_ov001_0222df2c->unk_a50, 0x40);
     data_ov001_0222df2c->unk_a93 = 0;
     data_ov001_0222df2c->unk_204 = 0;
@@ -240,7 +240,7 @@ extern "C" void func_ov001_022237b4() {
         func_ov001_02223194();
         return;
     case 18:
-        func_02124c40();
+        MB_End();
         data_ov001_0222df2c->unk_a9c = 0;
         data_ov001_0222df2c->unk_a90 = 0x16;
         return;
@@ -318,7 +318,7 @@ extern "C" void func_ov001_0222376c(u8 *a, u8 *b) {
 }
 
 extern "C" s32 func_ov001_0222375c() {
-    return func_02123008(1);
+    return MB_CommGetChildUser(1);
 }
 
 extern "C" void func_ov001_02223688() {

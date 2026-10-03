@@ -15,12 +15,12 @@ void func_ov001_022084f8(s32);
 void func_ov001_02224ff8(s32, s32, s32, s32);
 void func_ov001_02225cb4(s32, s32);
 s32 func_ov001_02208594(void *, void *);
-void func_02111a6c();
+void GX_LoadBG2Scr();
 s32 func_ov001_0220891c(s32);
 void func_ov001_02208290(s32, s32, s32);
 void func_ov001_02208478(s32);
-void func_01ffa494(u32);
-void func_0211c670();
+void OS_SpinWait(u32);
+void PM_ForceToPowerOff();
 void func_ov001_02208070();
 void func_ov001_02224e4c(s32);
 void func_ov001_0221e9a0(s32);
@@ -78,7 +78,7 @@ extern "C" void func_ov001_0220e5ec() {
 }
 
 extern "C" void func_ov001_0220e54c() {
-    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -145,7 +145,7 @@ extern "C" void func_ov001_0220e370() {
 extern "C" void func_ov001_0220e320() {
     if (func_ov001_022250e0(1) != 0) return;
     if (func_ov001_022250e0(0) != 0) return;
-    func_01ffa494(0x1000000);
-    func_0211c670();
+    OS_SpinWait(0x1000000);
+    PM_ForceToPowerOff();
 }
 

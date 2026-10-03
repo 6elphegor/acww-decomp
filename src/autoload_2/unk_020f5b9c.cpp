@@ -94,17 +94,17 @@ extern "C" {
 extern u8 data_021f5b80[];
 void func_0206d49c(void);
 u32 func_020f07f0(void *g, u32 n);
-void func_0210cf78(void *slot, u32 a, s32 b);
-void func_0210d010(void *p, u32 v);
+void NNS_SndArcPlayerStartSeqArc(void *slot, u32 a, s32 b);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void func_02109fd0(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
-void func_0210a294(void *p);
+void NNS_SndHandleInit(void *p);
 void func_020eda30(void *p, u32 v);
 void func_0210a148(void *p, u32 a, u32 b);
-void func_0210a0e8(void *p, u32 a, u32 b);
-void func_0210a214(void *p, u32 a, u32 b);
-void func_0210a378(void *p, u32 a);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
+void NNS_SndPlayerMoveVolume(void *p, u32 a, u32 b);
+void NNS_SndPlayerStopSeq(void *p, u32 a);
 void func_020f4904(void *a, u32 b);
 u32 func_020f48d8(void);
 u32 func_020f4718(void *a, u32 b);
@@ -113,8 +113,8 @@ u32 func_020f4718(void *a, u32 b);
 static inline BOOL nz(u32 v) { return v != 0; }
 
 void Unk_0213bac4::vfunc_00() {
-    func_0210a294(&a);
-    func_0210a294(&b);
+    NNS_SndHandleInit(&a);
+    NNS_SndHandleInit(&b);
     c12 = 0;
     vfunc_14();
     NNS_SndPlayerSetVolume(&a, 0);
@@ -156,13 +156,13 @@ void Unk_0213bac4::update(void *x) {
     r4 = func_020f4718(x, 0);
     NNS_SndPlayerSetVolume(&a, r5);
     NNS_SndPlayerSetVolume(&b, r5);
-    func_0210a0e8(&a, 15, r4);
-    func_0210a0e8(&b, 15, r4);
+    NNS_SndPlayerSetTrackPan(&a, 15, r4);
+    NNS_SndPlayerSetTrackPan(&b, 15, r4);
 }
 
 void Unk_0213bac4::report(s32 code, u32 *slot) {
     if (slot == 0) func_0206d49c();
-    func_0210cf78(slot, 1, code % 1000);
+    NNS_SndArcPlayerStartSeqArc(slot, 1, code % 1000);
 }
 
 void Unk_0213b9e4::vfunc_14() {
@@ -193,10 +193,10 @@ void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
             report(0x4f6, &a);
             break;
         case 1:
-            func_0210d010(&a, 247);
+            NNS_SndArcPlayerStartSeq(&a, 247);
             break;
         case 2:
-            func_0210a214(&a, 40, 15);
+            NNS_SndPlayerMoveVolume(&a, 40, 15);
             break;
         }
         break;
@@ -221,7 +221,7 @@ void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
         report(0x4f5, &b);
         break;
     case 385:
-        if (d13 == 2) func_0210a378(&a, 15);
+        if (d13 == 2) NNS_SndPlayerStopSeq(&a, 15);
         break;
     }
     switch (d13) {
@@ -241,7 +241,7 @@ void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
 }
 
 void Unk_0213ba44::vfunc_14() {
-    func_0210d010(&a, 0xac);
+    NNS_SndArcPlayerStartSeq(&a, 0xac);
     d13 = 0;
 }
 
@@ -368,7 +368,7 @@ void Unk_0213baa4::vfunc_14() {
     c13 = 0;
     c14 = func_020f07f0(data_021f5b80, 3);
     c15 = 0;
-    func_0210d010(&a, (u16)(c14 + 0xad));
+    NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));
 }
 
 void Unk_0213baa4::nextFrame() {
@@ -377,7 +377,7 @@ void Unk_0213baa4::nextFrame() {
         v = func_020f07f0(data_021f5b80, 3);
     } while (v == c14);
     c14 = v;
-    func_0210d010(&a, (u16)(c14 + 0xad));
+    NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));
 }
 
 void Unk_0213baa4::vfunc_08(s32 id, void *arg) {

@@ -148,7 +148,7 @@ s32 func_020854e0(void *obj, void *grid);
 s32 func_020853a0(void *self, void *grid);
 s32 func_02063b74(s32);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_0204b978(u16 *);
 s32 func_0204b900(u16 *);
 void func_0209cf88(void *);
@@ -284,7 +284,7 @@ extern "C" s32 func_02085618(u16 *p)
         in = TRUE;
     }
     if (in) {
-        r = func_01ffc5a4(func_01ffcb0c(func_0204b978(p) << 12, base), 0x28a4);
+        r = FX_Div(func_01ffcb0c(func_0204b978(p) << 12, base), 0x28a4);
         if (r < 0x119a) {
             r = 0x119a;
         }

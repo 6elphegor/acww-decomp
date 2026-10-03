@@ -103,10 +103,10 @@ char *func_02127838(char *d, const char *s);
 void *func_ov065_02277af0(u32 n);
 void *func_ov065_02277ad8(void *p, s32 n);
 void func_ov065_02277ac8(void *p);
-void func_021132e0(s32 ms);
+void OS_Sleep(s32 ms);
 u64 OS_GetTick();
 u64 func_02132ef8(u64 a, u32 b, u32 c);
-void func_02128a00(void *d, const void *s, u32 n);
+void memcpy(void *d, const void *s, u32 n);
 void func_0212899c(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
@@ -249,7 +249,7 @@ void *func_ov065_02277af0(u32);
 void func_ov065_0227a884(void *);
 BOOL func_ov065_0227acf8(void *);
 void func_ov065_0227ace0(void *);
-void func_021289b4(void *, void *, u32);
+void memmove(void *, void *, u32);
 void func_0212899c(void *, s32, u32);
 
 void func_ov065_022799f4();
@@ -939,7 +939,7 @@ BOOL func_ov065_022798f8(Unk_ov065_02279c7c *self) {
         if (rest == 0) {
             func_ov065_0227924c(&self->unk_98);
         } else {
-            func_021289b4(self->unk_9c, self->unk_9c + self->unk_a8, rest);
+            memmove(self->unk_9c, self->unk_9c + self->unk_a8, rest);
             self->unk_a8 = 0;
             self->unk_a4 = rest;
         }
@@ -1265,7 +1265,7 @@ s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
                 return FALSE;
             }
         }
-        func_02128a00(o->unk_04 + o->unk_0c, s, len);
+        memcpy(o->unk_04 + o->unk_0c, s, len);
         o->unk_0c = t;
         o->unk_04[o->unk_0c] = 0;
     }

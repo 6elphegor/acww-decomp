@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // G013a: autoload_2 0x020f92d4-0x020fa0f4 (9 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ names, nothing defined but the functions.
-// SPL-style particle manager (continued from G011b): resource file loader (func_020f92d4: counts + texture table), manager creation (func_020f94a8),
-// file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (func_020f98ac).
+// SPL-style particle manager (continued from G011b): resource file loader (func_020f92d4: counts + texture table), manager creation (SPL_Init),
+// file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (spl_calc).
 #include "types.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
@@ -102,11 +102,11 @@ struct Mc {
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
-void func_020fe3a0(void *list, void *e);
+void spl_push_front(void *list, void *e);
 void spl_set_tex(void *p);
-void func_020fa398(void *p);
-void func_020fc984(void *e, void *l);
-void func_020f9714(Pm *m, u32 a);
+void spl_set_tex_dummy(void *p);
+void spl_gen_ptcl(void *e, void *l);
+void sDrawChild(Pm *m, u32 a);
 void func_020f97d0(Pm *m, u32 a);
 void func_020fbad0(Mc *m, Node *n, u32 a);
 void func_020fac28(Mc *m, Node *n, u32 a);
@@ -329,7 +329,7 @@ struct V3 {
     s32 z;
 };
 
-// emitter update (func_020f98ac): own views of the emitter, particle and resource block
+// emitter update (spl_calc): own views of the emitter, particle and resource block
 struct HdrU {
     u32 pad0 : 8;
     u32 b8 : 1;
@@ -489,15 +489,15 @@ void spl_tex_ptn_anm(Pt *, RU *, u32);
 void spl_chld_scl_out(Pt *, RU *, u32);
 void spl_chld_alp_out(Pt *, RU *, u32);
 void func_020fc6bc(Pt *, EU *, void *);
-void func_020fc984(void *, void *);
+void spl_gen_ptcl(void *, void *);
 u32 func_02133150x(void);
-Pt *func_020fe2f0(void *, Pt *);
-void func_020fe3a0(void *, void *);
+Pt *spl_del(void *, Pt *);
+void spl_push_front(void *, void *);
 }
 
 typedef void (*IFn)(void *, Pt *, s32 *, EU *);
 
-extern "C" void func_020f98ac(MU *m, EU *e) {
+extern "C" void spl_calc(MU *m, EU *e) {
     Pt *next;
     RU *res = e->res;
     HdrP *hp = res->p0;
@@ -514,7 +514,7 @@ extern "C" void func_020f98ac(MU *m, EU *e) {
     s32 acc[3];
     if (e->cb) e->cb(e, 0);
     if (hp->h56 == 0 || e->h56 < hp->h56) {
-        if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) func_020fc984(e, (u8 *)m + 20);
+        if (e->h56 % e->c104 == 0 && !e->fl.b0 && !e->fl.b1 && e->fl.b4) spl_gen_ptcl(e, (u8 *)m + 20);
     }
     if (h.b8) {
         arr[n].fn = spl_scl_in_out;
@@ -578,7 +578,7 @@ extern "C" void func_020f98ac(MU *m, EU *e) {
                 if (m->b12 > m->b6) m->b12 = m->b0;
             }
             p->h38 = p->h38 + 1;
-            if (p->h38 > p->h36) func_020fe3a0((u8 *)m + 20, func_020fe2f0((u8 *)e + 8, p));
+            if (p->h38 > p->h36) spl_push_front((u8 *)m + 20, spl_del((u8 *)e + 8, p));
             p = next;
         } while (p != 0);
     }
@@ -624,7 +624,7 @@ extern "C" void func_020f98ac(MU *m, EU *e) {
                     if (m->b12 > m->b6) m->b12 = m->b0;
                 }
                 p->h38 = p->h38 + 1;
-                if (p->h38 > p->h36) func_020fe3a0((u8 *)m + 20, func_020fe2f0((u8 *)e + 16, p));
+                if (p->h38 > p->h36) spl_push_front((u8 *)m + 20, spl_del((u8 *)e + 16, p));
                 p = next;
             } while (p != 0);
         }
@@ -652,7 +652,7 @@ extern "C" void func_020f97d0(Pm *mp, u32 a) {
             fn = (DrawFn)func_020fa858;
             break;
     }
-    tf = h->b11 ? spl_set_tex : func_020fa398;
+    tf = h->b11 ? spl_set_tex : spl_set_tex_dummy;
     n = cur->l8;
     if (n == 0) return;
     do {
@@ -662,7 +662,7 @@ extern "C" void func_020f97d0(Pm *mp, u32 a) {
     } while (n != 0);
 }
 
-extern "C" void func_020f9714(Pm *mp, u32 a) {
+extern "C" void sDrawChild(Pm *mp, u32 a) {
     Mc *m = (Mc *)mp;
     Em *cur = m->cur;
     Res *res = cur->res;
@@ -693,30 +693,30 @@ extern "C" void func_020f969c(Pm *m, u32 a) {
     Mc *mm = (Mc *)m;
     HdrW *ri = mm->cur->res->p0;
     if (ri->b21) {
-        func_020f9714(m, a);
+        sDrawChild(m, a);
         if (ri->b22) return;
         func_020f97d0(m, a);
     } else {
         if (!ri->b22) func_020f97d0(m, a);
-        func_020f9714(m, a);
+        sDrawChild(m, a);
     }
 }
 
 extern "C" void func_020f9690(void *e, void *l) {
-    func_020fc984(e, l);
+    spl_gen_ptcl(e, l);
 }
 
-extern "C" u32 func_020f9658(u32 a, u32 b) {
+extern "C" u32 sAllocTex(u32 a, u32 b) {
     u32 r = data_0213bc10(a, b, 0);
     return (r & 0xffff) << 3;
 }
 
-extern "C" u32 func_020f9620(u32 a, u32 b) {
+extern "C" u32 sAllocTexPalette(u32 a, u32 b) {
     u32 r = data_0213bc18(a, b, 0);
     return (r & 0xffff) << 3;
 }
 
-extern "C" PmNew *func_020f94a8(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, u16 a5) {
+extern "C" PmNew *SPL_Init(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, u16 a5) {
     PmNew *m = (PmNew *)alloc(60);
     s32 i;
     u8 *p;
@@ -739,13 +739,13 @@ extern "C" PmNew *func_020f94a8(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16
     p = (u8 *)alloc(n1 * 132);
     MI_CpuFill8(p, 0, n1 * 132);
     for (i = 0; i < n1; i++) {
-        func_020fe3a0(&m->w12, p);
+        spl_push_front(&m->w12, p);
         p += 132;
     }
     p = (u8 *)alloc(n2 * 68);
     MI_CpuFill8(p, 0, n2 * 68);
     for (i = 0; i < n2; i++) {
-        func_020fe3a0(&m->w20, p);
+        spl_push_front(&m->w20, p);
         p += 68;
     }
     m->w28 = 0;

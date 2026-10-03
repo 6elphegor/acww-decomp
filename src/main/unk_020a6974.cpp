@@ -198,7 +198,7 @@ char *func_0212a120(char *s, s32 c);
 }
 
 extern "C" {
-int func_0212a190(const u8 *a, const u8 *b);
+int strcmp(const u8 *a, const u8 *b);
 }
 
 extern "C" {
@@ -1639,7 +1639,7 @@ u8 Unk_020e2a78::func_020a7a0c(Unk_020e2a78 *other) {
 
 BOOL Unk_020e2a78::func_020a79dc(Unk_020e2a78 *other) {
     u8 *o = other->vfunc_0c();
-    return func_0212a190(vfunc_0c(), o) == 0;
+    return strcmp(vfunc_0c(), o) == 0;
 }
 
 BOOL Unk_020e2a78::func_020a798c(u8 *start, u8 *end) {

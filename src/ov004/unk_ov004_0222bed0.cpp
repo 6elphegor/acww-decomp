@@ -168,7 +168,7 @@ void func_020e8464(void *m, s32 x, s32 y, s32 z);
 void func_020e84f8(void *m, s32 x, s32 y, s32 z);
 void func_02055550(void *p, s32 a);
 u16 func_02064cc4();
-void func_0210612c(void *p, s32 a, u32 b);
+void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void func_02045570(void *p, u32 a);
 void func_020b5184(void);
 void func_0204eb30(void *grid, u16 *v, s32 x, s32 y, s32 z);
@@ -248,7 +248,7 @@ void Unk_ov004_0224e594::func_ov004_0222c880(Unk_ov004_0222c880_Model *model, Un
         func_02055550(model, 0);
         tmp[0] = func_02064cc4();
         tmp[1] = tmp[0];
-        func_0210612c(model->unk_5c, 0, tmp[1]);
+        NNS_G3dMdlSetMdlEmi(model->unk_5c, 0, tmp[1]);
     }
 }
 

@@ -44,7 +44,7 @@ extern "C" {
 void *func_020947f0(u32);
 s32 func_0203a6fc(void *a, void *b, void *c, void *d, s32 *e);
 s32 func_0203a7b8(void *a, void *b, void *c, s32 *d);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_0203c0b0(void *self, s32 a, s32 b, s32 c);
 void func_ov003_0222ec20(void *self);
 void func_ov003_0222ed20(void *self);
@@ -85,7 +85,7 @@ extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
     } else if (v > 0xb000) {
         v = 0xb000;
     }
-    u32 q = func_01ffc5a4(v - 0x4800, 0x6800);
+    u32 q = FX_Div(v - 0x4800, 0x6800);
     cam->unk_1e4 = 0x1000 - q;
     func_0203c0b0(cam, 0xa, 0, q);
 }

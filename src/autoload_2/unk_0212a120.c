@@ -80,7 +80,7 @@ char *func_0212a2bc(char *d, const char *s0) {
 }
 
 // strcmp
-int func_0212a190(const char *s1, const char *s2) {
+int strcmp(const char *s1, const char *s2) {
     register u8 *left = (u8 *)s1, *right = (u8 *)s2;
     register u32 l, r, align, mask1, mask2, t;
     if ((l = *left) - (r = *right)) return l - r;

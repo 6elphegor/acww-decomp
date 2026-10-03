@@ -22,7 +22,7 @@ extern void *G2S_GetBG1CharPtr(void);
 extern void *G2_GetBG1CharPtr(void);
 
 // GX_LoadBG1Char
-void func_021117fc(const void *src, u32 offset, u32 size) {
+void GX_LoadBG1Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2_GetBG1CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);
@@ -31,7 +31,7 @@ void func_021117fc(const void *src, u32 offset, u32 size) {
     }
 }
 // GXS_LoadBG1Char
-void func_02111794(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG1Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2S_GetBG1CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);
@@ -40,7 +40,7 @@ void func_02111794(const void *src, u32 offset, u32 size) {
     }
 }
 // GX_LoadBG2Char
-void func_0211172c(const void *src, u32 offset, u32 size) {
+void GX_LoadBG2Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2_GetBG2CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);
@@ -49,7 +49,7 @@ void func_0211172c(const void *src, u32 offset, u32 size) {
     }
 }
 // GXS_LoadBG2Char
-void func_021116c4(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG2Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2S_GetBG2CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);
@@ -58,7 +58,7 @@ void func_021116c4(const void *src, u32 offset, u32 size) {
     }
 }
 // GX_LoadBG3Char
-void func_0211165c(const void *src, u32 offset, u32 size) {
+void GX_LoadBG3Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2_GetBG3CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);
@@ -67,7 +67,7 @@ void func_0211165c(const void *src, u32 offset, u32 size) {
     }
 }
 // GXS_LoadBG3Char
-void func_021115f4(const void *src, u32 offset, u32 size) {
+void GXS_LoadBG3Char(const void *src, u32 offset, u32 size) {
     u8 *base = (u8 *)G2S_GetBG3CharPtr();
     if (data_0213bfec != -1 && size > 0x30) {
         MI_DmaCopy32(data_0213bfec, src, base + offset, size);

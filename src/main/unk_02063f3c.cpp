@@ -24,7 +24,7 @@ BOOL FS_OpenFile(void *f, const char *path);
 BOOL FS_LoadOverlay(void *f);
 BOOL FS_CloseFile(void *f);
 s32 FS_SeekFile(void *f, s32 off, s32 z);
-s32 func_021198b4(void *f, void *dst, u32 n);
+s32 FS_ReadFile(void *f, void *dst, u32 n);
 void MI_UncompressLZ8(const void *src, void *dst);
 u32 func_020e86fc(void *h, u32 flags);
 void *func_020e8608(void *h, u32 size);
@@ -89,8 +89,8 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
     size = path;
     if (size < 8) {
         ret = func_020e8628(heap, size, align);
-        if (ret) func_021198b4(&f, ret, size);
-    } else if (func_021198b4(&f, hdr, 8) != -1) {
+        if (ret) FS_ReadFile(&f, ret, size);
+    } else if (FS_ReadFile(&f, hdr, 8) != -1) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             usize = hdr[1] >> 8;
             ret = func_020e8628(heap, usize, align);
@@ -103,14 +103,14 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
                     DC_StoreAll();
                     DC_FlushAll();
                     size -= 8;
-                    if (func_021198b4(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
+                    if (FS_ReadFile(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
                 } else {
                     size = func_020e8a90(h);
                     p = func_020e8608(h, size);
                     if (p) {
                         func_021163b0(st, ret, &hdr[1]);
                         do {
-                            r = func_021198b4(&f, p, size);
+                            r = FS_ReadFile(&f, p, size);
                             if (r == -1) break;
                             if (func_021162b0(st, p, r) == 0) break;
                         } while (1);
@@ -124,7 +124,7 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
             ret = func_020e8628(heap, size, align);
             if (ret) {
                 MI_CpuCopy8(hdr, ret, 8);
-                if (func_021198b4(&f, (u8 *)ret + 8, size - 8) == -1) {
+                if (FS_ReadFile(&f, (u8 *)ret + 8, size - 8) == -1) {
                     func_020e85fc(heap, ret);
                     ret = 0;
                 }
@@ -159,11 +159,11 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
     ret = size;
     if (size < 8) {
         if (size <= n) {
-            func_021198b4(f, dst, size);
+            FS_ReadFile(f, dst, size);
         } else {
             ret = 0;
         }
-    } else if (func_021198b4(f, &hdr, 8) != -1) {
+    } else if (FS_ReadFile(f, &hdr, 8) != -1) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             ret = hdr[1] >> 8;
             void *h = data_021f4824;
@@ -175,14 +175,14 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
                 DC_StoreAll();
                 DC_FlushAll();
                 size -= 8;
-                if (func_021198b4(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
+                if (FS_ReadFile(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
             } else {
                 size = func_020e8a90(h);
                 n = (u32)func_020e8608(h, size);
                 if (n) {
                     func_021163b0(st, dst, &hdr[1]);
                     do {
-                        s32 r = func_021198b4(f, (void *)n, size);
+                        s32 r = FS_ReadFile(f, (void *)n, size);
                         if (r == -1) break;
                         if (func_021162b0(st, (void *)n, r) == 0) break;
                     } while (1);
@@ -195,7 +195,7 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
             u8 *d8 = (u8 *)dst + 8;
             dst = d8;
             size -= 8;
-            func_021198b4(f, d8, size);
+            FS_ReadFile(f, d8, size);
         } else {
             ret = 0;
         }
@@ -239,7 +239,7 @@ s32 func_02063f60(Unk_02063d18_File *f) {
         u32 base = f->unk_2c - f->unk_24;
         FS_SeekFile(f, 0, 0);
         e = -1;
-        if (func_021198b4(f, hdr, 8) == e) goto fail;
+        if (FS_ReadFile(f, hdr, 8) == e) goto fail;
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) size = hdr[1] >> 8;
         FS_SeekFile(f, base, 0);
     }

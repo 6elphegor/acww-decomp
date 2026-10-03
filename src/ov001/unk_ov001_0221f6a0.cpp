@@ -75,11 +75,11 @@ extern "C" {
 void DC_InvalidateRange(void *, s32);
 s32 memcmp(const void *, const void *, s32);
 void MI_CpuCopy8(const void *, const void *, s32);
-void func_0211faa0(void *);
+void WM_ReadStatus(void *);
 s32 WM_Reset(void *);
 s32 WM_End(void *);
 s32 WM_Initialize(void *, void *, s32);
-s32 func_0211fdd4(void *, void *);
+s32 WM_StartScanEx(void *, void *);
 u64 OS_GetTick();
 u32 WM_GetDispersionScanPeriod();
 void OS_GetOwnerInfo(void *);
@@ -110,7 +110,7 @@ s32 func_ov001_0221fd14(void (*cb)(s32))
     g->unk_1b74 = OS_GetTick();
     if (WM_Initialize(g, (void *)func_ov001_0221faf0, 3) == 2) {
         do {
-            func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
+            WM_ReadStatus((u8 *)data_ov001_0222df00 + 0x13b8);
             g = data_ov001_0222df00;
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)g + 0x13b8))->status != 2);
         *(Unk_ov001_0222a348_Blk *)g->unk_1374 = *(const Unk_ov001_0222a348_Blk *)data_ov001_0222a348;
@@ -132,20 +132,20 @@ s32 func_ov001_0221fd14(void (*cb)(s32))
 
 s32 func_ov001_0221fcd0()
 {
-    return func_0211fdd4((void *)func_ov001_0221faf0, (u8 *)data_ov001_0222df00 + 0x1374) == 2 ? 1 : 0;
+    return WM_StartScanEx((void *)func_ov001_0221faf0, (u8 *)data_ov001_0222df00 + 0x1374) == 2 ? 1 : 0;
 }
 
 s32 func_ov001_0221fbcc()
 {
     Unk_ov001_0222df00 *g = data_ov001_0222df00;
     g->unk_1b80 = 1;
-    func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
+    WM_ReadStatus((u8 *)data_ov001_0222df00 + 0x13b8);
     if (((Unk_ov001_0222df00_Buf *)((u8 *)data_ov001_0222df00 + 0x13b8))->status != 2) {
         if (WM_Reset((void *)func_ov001_0221faf0) != 2) {
             return 0;
         }
         do {
-            func_0211faa0((u8 *)data_ov001_0222df00 + 0x13b8);
+            WM_ReadStatus((u8 *)data_ov001_0222df00 + 0x13b8);
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)data_ov001_0222df00 + 0x13b8))->status != 2);
     }
     if (WM_End((void *)func_ov001_0221faf0) != 2) {

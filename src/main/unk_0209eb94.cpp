@@ -349,7 +349,7 @@ s32 func_02067918(s32 a);
 void _ZN12Unk_020660f813func_02067990Ev(void);
 void _ZN12Unk_020660f813func_02067a6cEv(s32 a);
 void _ZN12Unk_020660f813func_02067a84EPhPv(s32 a, u8 *b, void *c);
-void func_02113a70(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
+void OS_CreateThread(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
 void OS_WakeupThreadDirect(void *a);
 s32 OS_IsThreadTerminated(void *a);
 void OS_KillThread(void *a, u32 b);
@@ -441,7 +441,7 @@ void _ZN12Unk_0209ea5013func_0209eb6cEv(void *p);
 void func_020873e0();
 void func_0209f000(Unk_0209f638 *p);
 Unk_0209f898_Rec *func_02067918(s32 i);
-void func_02115468(s32 v);
+void OS_ResetSystem(s32 v);
 void func_02074eb4(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *func_0208f0b0(s32 a);
 BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *a);
@@ -4838,7 +4838,7 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
         *st = base2 + 4;
     } else if (cur == base2 + 4) {
         if (NC::func_02067918(0)->unk_04 == 0) {
-            NC::func_02115468(0);
+            NC::OS_ResetSystem(0);
         }
     }
     return 0x20;
@@ -5230,7 +5230,7 @@ void Unk_0209f080::func_0209f0c0() {
 }
 
 void Unk_0209f080::func_0209f08c(u32 a) {
-    NB::func_02113a70(this, (void *)NB::func_0209f110, a, &unk_10c4, 0x1000, 0x1e);
+    NB::OS_CreateThread(this, (void *)NB::func_0209f110, a, &unk_10c4, 0x1000, 0x1e);
     NB::OS_WakeupThreadDirect(this);
 }
 

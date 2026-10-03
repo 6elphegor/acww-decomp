@@ -46,7 +46,7 @@ extern "C" {
 u32 OS_DisableIrqMask(u32 a);
 void OS_EnableIrqMask(u32 a);
 void func_0206d49c();
-u32 func_0211ba58();
+u32 TP_GetLatestIndexInAuto();
 void TP_GetCalibratedPoint(Unk_ov001_02225924_Pt *p, void *e);
 u32 FX_ModS32(u32 a, u32 b);
 void func_ov001_02225970(u32 a, u32 b, Unk_ov001_02225924_Pt *out);
@@ -149,7 +149,7 @@ void func_ov001_02226214() {
     u8 found;
     BOOL prev = Unk_ov001_02226214_Flag0();
     found = 0;
-    u32 n = func_0211ba58();
+    u32 n = TP_GetLatestIndexInAuto();
     i = found;
     Unk_ov001_0222df54_S *s = data_ov001_0222df54;
     *(Unk_ov001_02225f40_W *)&s->pos1 = *(Unk_ov001_02225f40_W *)&s->pos0;

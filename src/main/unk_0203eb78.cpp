@@ -184,7 +184,7 @@ s32 func_0203bc7c(void);
 }
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {

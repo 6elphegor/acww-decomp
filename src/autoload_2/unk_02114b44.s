@@ -8,17 +8,17 @@
 	.arm
 
 ; OS_SetProtectionRegion1(param): CP15 c6,c1 = protection region 1 base/size
-	.global func_02114b44
-	.type func_02114b44, @function
-	.size func_02114b44, 0x8
-func_02114b44:
+	.global OS_SetProtectionRegion1
+	.type OS_SetProtectionRegion1, @function
+	.size OS_SetProtectionRegion1, 0x8
+OS_SetProtectionRegion1:
 	mcr p15, 0, r0, c6, c1, 0
 	bx lr
 
 ; OS_SetProtectionRegion2(param): CP15 c6,c2 = protection region 2 base/size
-	.global func_02114b4c
-	.type func_02114b4c, @function
-	.size func_02114b4c, 0x8
-func_02114b4c:
+	.global OS_SetProtectionRegion2
+	.type OS_SetProtectionRegion2, @function
+	.size OS_SetProtectionRegion2, 0x8
+OS_SetProtectionRegion2:
 	mcr p15, 0, r0, c6, c2, 0
 	bx lr

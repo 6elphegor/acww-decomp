@@ -287,8 +287,8 @@ u32 STD_GetStringLength(const char *);
 void func_02128250(s32);
 s32 func_02128318(s32, s32, s32);
 s32 func_02128650(s32);
-void func_021282f0(s32);
-void func_021289b4(void *, void *, s32);
+void rewind(s32);
+void memmove(void *, void *, s32);
 char *func_02129f1c(char *, char *);
 u32 func_0212a060(char *, char *);
 char *func_0212a120(char *, s32);
@@ -429,7 +429,7 @@ extern u16 data_ov065_022910c0;
 extern u16 data_0213a510[];
 
 char *func_0212a120(const char *, s32);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 func_02128ca4(const char *, const char *, ...);
 char *func_02129f1c(const char *hay, const char *needle);
 s32 strncmp(const char *, const char *, u32);
@@ -568,9 +568,9 @@ typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 
 
 extern "C" {
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 func_02129fa0(const char *, const char *);
+s32 strspn(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
 void *func_0212899c(void *, s32, s32);
@@ -628,7 +628,7 @@ BOOL func_ov065_0227bbf4(Unk_ov065_0227bbf4_Url *u) {
     } else {
         return FALSE;
     }
-    n = func_02129fa0(p, ":/");
+    n = strspn(p, ":/");
     e = p + n;
     saved = p[n];
     p[n] = 0;
@@ -1032,7 +1032,7 @@ void func_ov065_0227b404(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
         if (l >= n) {
             l = n;
         }
-        func_02128a00(self->unk_114 + self->unk_120, p, l);
+        memcpy(self->unk_114 + self->unk_120, p, l);
         self->unk_120 += l;
         self->unk_114[self->unk_120] = 0;
     }
@@ -1152,7 +1152,7 @@ void func_ov065_0227ae94(Unk_ov065_0227a884_Obj *self) {
     st = self->unk_ec / 100;
     if (st == 1) {
         if (rem != 0) {
-            func_021289b4(self->unk_78, rest, rem + 1);
+            memmove(self->unk_78, rest, rem + 1);
             self->unk_80 = rem;
             self->unk_84 = 0;
         } else {
@@ -1546,7 +1546,7 @@ s32 func_ov065_0227aa10(Unk_ov065_0227a8ec_Item *it) {
         if (it->unk_0c == -1) {
             return 0;
         }
-        func_021282f0(it->unk_08);
+        rewind(it->unk_08);
     } else if (t == 2) {
     } else {
         return z;

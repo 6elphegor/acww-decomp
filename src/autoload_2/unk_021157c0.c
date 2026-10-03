@@ -12,8 +12,8 @@ extern volatile u64 data_021fcf24; // OSi_TickCounter
 
 u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq
 void OS_RestoreInterrupts(u32 state); // OS_RestoreInterrupts_IrqAndFiq
-u32 func_0211565c(u32 x);      // MATH_CountLeadingZeros (asm)
-u16 func_02114da0(void);       // OS_GetTickLo
+u32 OsCountZeroBits(u32 x);      // MATH_CountLeadingZeros (asm)
+u16 OS_GetTickLo(void);       // OS_GetTickLo
 
 // OSi_InitLockTable
 void OSi_InitVramExclusive(void) {

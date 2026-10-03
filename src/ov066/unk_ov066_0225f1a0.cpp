@@ -810,7 +810,7 @@ s32 OS_InitTick(void);
 s32 func_02114ef4(u32);
 s32 func_02114f74(void *, u32);
 s32 OS_CancelAlarm(void *);
-s32 func_0211512c(void *, s64, void *, void *);
+s32 OS_SetAlarm(void *, s64, void *, void *);
 s32 OS_CreateAlarm(void *);
 s32 OS_InitAlarm(void);
 void OS_GetMacAddress(void *p);
@@ -821,21 +821,21 @@ s32 MI_CpuCopy8(void *, void *, s32);
 s32 func_0211f188(void);
 s32 WM_Init(void *p, s32 v);
 u32 WM_GetDispersionBeaconPeriod(void);
-s32 func_0211f73c(void);
+s32 WM_GetLinkLevel(void);
 s32 func_0211f7e4(void);
 u32 WM_GetAllowedChannel(void);
 s32 func_0211fb0c(u32, void *, s32);
-s32 func_0211fb68(void *);
-s32 func_0211fbb4(void *, u32);
+s32 WM_SetIndCallback(void *);
+s32 WM_Disconnect(void *, u32);
 s32 func_0211fcbc(void *, u32, u32, u32, u32);
 s32 WM_EndScan(void *);
-s32 func_0211ff5c(void *, s32);
+s32 WM_StartScan(void *, s32);
 s32 WM_EndParent(void *);
-s32 func_021200a8(void *);
+s32 WM_StartParent(void *);
 s32 WM_SetParentParameter(void *, u32);
 s32 WM_Reset(void);
 s32 WM_EndMP(void *);
-s32 func_0212052c(void *, u32, u32, u32, u32, u32, u32);
+s32 WM_SetMPDataToPortEx(void *, u32, u32, u32, u32, u32, u32);
 s32 func_021206b4(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
 s32 func_021218d0(void *, s32, s32, u32, s32);
@@ -1127,7 +1127,7 @@ void func_ov066_02264378(u8 *msg) {
     data_ov066_022647c8->unk_00 = msg[6];
     func_0211fb0c(0xc, (void *)func_ov066_02261bfc, 0);
     func_0211fb0c(0xd, (void *)func_ov066_02263478, 0);
-    func_0211fb68((void *)func_ov066_022641d8);
+    WM_SetIndCallback((void *)func_ov066_022641d8);
     func_ov066_02263320();
 }
 
@@ -1499,7 +1499,7 @@ void func_ov066_02263878(u32 idx) {
 }
 
 s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d) {
-    s32 r = func_0212052c((void *)func_ov066_0226378c, d, a, b, c, x, 2);
+    s32 r = WM_SetMPDataToPortEx((void *)func_ov066_0226378c, d, a, b, c, x, 2);
     if (r != 2 && r != 7) {
         func_ov066_0225f22c(r);
         return 0;
@@ -1746,7 +1746,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
                 DC_StoreRange(o->unk_04[i].unk_20, 0xc0);
                 OS_RestoreInterrupts(t);
                 soff = i * 0x2c;
-                func_0211512c((u8 *)o->unk_08 + soff, a * 0x82ea / 64, (void *)func_ov066_02262dfc, &o->unk_04[i]);
+                OS_SetAlarm((u8 *)o->unk_08 + soff, a * 0x82ea / 64, (void *)func_ov066_02262dfc, &o->unk_04[i]);
                 func_02114f74((u8 *)o->unk_08 + soff, o->unk_00 + 0x80);
                 return TRUE;
             }
@@ -1780,7 +1780,7 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
             OS_RestoreInterrupts(t);
             OS_CancelAlarm(&o->unk_08[i2]);
             off = i2 * 0xe0;
-            func_0211512c(&o->unk_08[i2], a * 0x82ea / 64, (void *)func_ov066_02262dfc, (u8 *)o->unk_04 + off);
+            OS_SetAlarm(&o->unk_08[i2], a * 0x82ea / 64, (void *)func_ov066_02262dfc, (u8 *)o->unk_04 + off);
             func_02114f74(&o->unk_08[i2], o->unk_00 + 0x80);
             if (o->unk_0c != NULL) {
                 o->unk_0c((Unk_ov066_022629cc_Rec *)((u8 *)o->unk_04 + off));
@@ -1839,7 +1839,7 @@ void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x) {
         do {
             if (o->unk_04[i].unk_00 == 1) {
                 OS_CancelAlarm(&o->unk_08[i]);
-                func_0211512c(&o->unk_08[i], q, (void *)func_ov066_02262dfc, &o->unk_04[i]);
+                OS_SetAlarm(&o->unk_08[i], q, (void *)func_ov066_02262dfc, &o->unk_04[i]);
                 func_02114f74(&o->unk_08[i], o->unk_00 + 0x80);
             }
             i++;
@@ -2505,7 +2505,7 @@ void func_ov066_022615d8(Unk_ov066_02260e18_Msg *m) {
 }
 
 void func_ov066_022615a4(void) {
-    s32 r = func_021200a8((void *)func_ov066_022614c4);
+    s32 r = WM_StartParent((void *)func_ov066_022614c4);
     if (r == 2) {
         return;
     }
@@ -2607,7 +2607,7 @@ void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m) {
 }
 
 s32 func_ov066_0226128c(u32 a) {
-    s32 r = func_0211fbb4((void *)func_ov066_02261238, a);
+    s32 r = WM_Disconnect((void *)func_ov066_02261238, a);
     if (r == 2) {
         return 1;
     }
@@ -2772,7 +2772,7 @@ void func_ov066_02260e18(Unk_ov066_02260e18_Msg *m) {
 #define data_ov066_022647b4 (*(Unk_ov066_02260518_C * *)&data_ov066_022647b4)
 #define OS_CancelAlarm ((void (*)(void *))OS_CancelAlarm)
 #define OS_CreateAlarm ((void (*)(void *))OS_CreateAlarm)
-#define func_0211512c ((void (*)(void *, s64, void (*)(void), u32))func_0211512c)
+#define OS_SetAlarm ((void (*)(void *, s64, void (*)(void), u32))OS_SetAlarm)
 #define OS_RestoreInterrupts ((void (*)(u32))OS_RestoreInterrupts)
 #define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
 #define func_ov066_02260144 ((Unk_ov066_02260518_Rec * (*)(u32, u32))func_ov066_02260144)
@@ -2984,7 +2984,7 @@ void func_ov066_02260670(s32 t) {
     data_ov066_022647b0->unk_0c.f0 = 0;
     if (t != 0) {
         OS_CancelAlarm(&data_ov066_022647b0->unk_10);
-        func_0211512c(&data_ov066_022647b0->unk_10, t * 0x82ea / 64, func_ov066_02260634, 0);
+        OS_SetAlarm(&data_ov066_022647b0->unk_10, t * 0x82ea / 64, func_ov066_02260634, 0);
     }
     func_ov066_022605cc();
 }
@@ -3028,7 +3028,7 @@ void func_ov066_02260518(void) {
 #undef data_ov066_022647b4
 #undef OS_CancelAlarm
 #undef OS_CreateAlarm
-#undef func_0211512c
+#undef OS_SetAlarm
 #undef OS_RestoreInterrupts
 #undef func_ov066_0225f2c8
 #undef func_ov066_02260144
@@ -3044,7 +3044,7 @@ void func_ov066_02260518(void) {
 #define data_ov066_022647b0 (*(Unk_ov066_0225faf8_T * *)&data_ov066_022647b0)
 #define data_ov066_022647b4 (*(Unk_ov066_0225faf8_V * *)&data_ov066_022647b4)
 #define DC_InvalidateRange ((s32 (*)(void *, s32))DC_InvalidateRange)
-#define func_0211512c ((s32 (*)(void *, s32, s32, void *, s32))func_0211512c)
+#define OS_SetAlarm ((s32 (*)(void *, s32, s32, void *, s32))OS_SetAlarm)
 #define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
 #define func_ov066_02262dc4 ((void * (*)(void *))func_ov066_02262dc4)
 #define func_ov066_02262dd8 ((s32 (*)(void *, u32))func_ov066_02262dd8)
@@ -3085,7 +3085,7 @@ void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m) {
         return;
     }
     OS_CancelAlarm(&data_ov066_022647b0->unk_3c);
-    func_0211512c(&data_ov066_022647b0->unk_3c, 0x3d5d, 0, (void *)func_ov066_0226030c, 0);
+    OS_SetAlarm(&data_ov066_022647b0->unk_3c, 0x3d5d, 0, (void *)func_ov066_0226030c, 0);
     data_ov066_022647b0->unk_0c.f0 = 1;
 }
 
@@ -3141,7 +3141,7 @@ s32 func_ov066_02260144(u32 idx, u32 b) {
 }
 
 void func_ov066_02260100(void) {
-    s32 r = func_0211ff5c((void *)func_ov066_02260060, data_ov066_022647b0->unk_00);
+    s32 r = WM_StartScan((void *)func_ov066_02260060, data_ov066_022647b0->unk_00);
     if (r == 2) {
         return;
     }
@@ -3378,7 +3378,7 @@ void func_ov066_0225faf8(void) {
 #undef data_ov066_022647b0
 #undef data_ov066_022647b4
 #undef DC_InvalidateRange
-#undef func_0211512c
+#undef OS_SetAlarm
 #undef func_ov066_0225f2c8
 #undef func_ov066_02262dc4
 #undef func_ov066_02262dd8
@@ -3547,7 +3547,7 @@ s32 func_ov066_0225f6a8(void) {
         break;
     case 10:
     case 11:
-        switch (func_0211f73c()) {
+        switch (WM_GetLinkLevel()) {
         case 0:
             return 0;
         case 1:

@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p -Cpp_exceptions on -char unsigned
 // Metrowerks ARM C++ exception runtime (exception handler), autoload_2 0x02133b68-0x02133ccc. Built as C++ with
 // exceptions on like the original: func_02133b68 and func_02133bc0 own their .exceptix index entries in main
-// (0x020c2bbc-0x020c2bd4); __FindExceptionTable and func_02133c68 make no calls and get none.
+// (0x020c2bbc-0x020c2bd4); __FindExceptionTable and __PopStackFrame make no calls and get none.
 #include "types.h"
 
 // Index entry of main's .exceptix (12 bytes): function, size | 1 if the unwind data is inline, data/table pointer.
@@ -50,7 +50,7 @@ extern "C" char *func_02133da8(char *p, u32 *value);
 
 // __PopStackFrame-like: restore the registers a frame saved (mask from the function header, highest first) and step to the caller:
 // returns the frame's saved lr.
-extern "C" u32 func_02133c68(ThrowContext *context, ExceptionInfo *info) {
+extern "C" u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info) {
     u32 size = context->state.frame_size;
     u32 *p = (u32 *)(context->FP + size - (context->state.has_fp_area ? 16 : 0));
     int i;

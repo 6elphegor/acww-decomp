@@ -111,7 +111,7 @@ extern u16 data_0213a510[];
 extern s32 data_ov065_02290fa0;
 extern s32 data_ov065_022918a8;
 
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212b770(char *);
@@ -240,7 +240,7 @@ s32 func_ov065_02278ce0(s32, void *, s32, s32);
 s32 func_ov065_02278ee8(s32);
 void func_ov065_0228aca8(Unk_ov065_02289808_Ctx *);
 void func_ov065_02288510(void *, void *, s32);
-void func_021289b4(void *, void *, s32);
+void memmove(void *, void *, s32);
 s32 func_ov065_0228a4f4(Unk_ov065_02289808_Ctx *, u8 *, s32, u32 *, u16 *);
 s32 func_ov065_0228afd8(Unk_ov065_02289808_Ctx *, u32, u32);
 s32 func_ov065_02288d44(Unk_ov065_02289808_Ctx *, u32, u32);
@@ -349,7 +349,7 @@ struct Unk_ov065_0228a218_Ctx {
 extern "C" {
 
 s32 STD_GetStringLength(const char *);
-void func_02128a00(void *, const void *, s32);
+void memcpy(void *, const void *, s32);
 s32 memcmp(void *, void *, u32);
 s32 rand();
 s32 func_02133150(s32, s32);
@@ -476,13 +476,13 @@ extern s32 data_ov065_02290fa0;
 extern Ctx070 *data_ov065_022918b0;
 extern u8 data_0213a410[];
 s32 STD_GetStringLength(const char *s);
-void *func_02128a00(void *d, const void *s, u32 n);
+void *memcpy(void *d, const void *s, u32 n);
 char *func_02127838(char *d, const char *s);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 strncmp(const char *a, const char *b, u32 n);
-s32 func_0212a190(const char *a, const char *b);
+s32 strcmp(const char *a, const char *b);
 s32 func_02130b04(const char *a, const char *b);
-void func_02128c60(u32 seed);
+void srand(u32 seed);
 
 s32 func_ov065_02278bf4(char *s);
 Unk_ov065_0228ab8c_Host *func_ov065_02261408(char *name);
@@ -581,7 +581,7 @@ extern "C" {
 s32 func_ov065_0228b160(void **a, void **b) {
     char *s1 = func_ov065_0228911c(*a, data_ov065_022918b0->unk_498, "");
     char *s2 = func_ov065_0228911c(*b, data_ov065_022918b0->unk_498, "");
-    s32 r = func_0212a190(s1, s2);
+    s32 r = strcmp(s1, s2);
     if (data_ov065_022918b0->unk_49c == 0) {
         r = -r;
     }
@@ -829,7 +829,7 @@ void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, voi
         c->unk_4b8 = e;
         func_ov065_0228a20c(c, "");
         c->unk_5cc = 0;
-        func_02128c60(func_ov065_02279144());
+        srand(func_ov065_02279144());
         func_ov065_02279138();
     }
 }
@@ -925,7 +925,7 @@ void func_ov065_0228ab50(char **p, char *s, s32 *n) {
         s = "";
     }
     len = STD_GetStringLength(s) + 1;
-    func_02128a00(*p, s, len);
+    memcpy(*p, s, len);
     *n += len;
     *p += len;
 }
@@ -962,7 +962,7 @@ namespace F0228a20c {
 extern "C" {
 void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len)
 {
-    func_02128a00(*cur, src, n);
+    memcpy(*cur, src, n);
     *len += n;
     *cur += n;
 }
@@ -1656,7 +1656,7 @@ end:
         return 0;
     }
     if (n != 0) {
-        func_021289b4(c->unk_7c, p, n);
+        memmove(c->unk_7c, p, n);
     }
     c->unk_80 = n;
     return 0;
@@ -1951,7 +1951,7 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
             }
             c->unk_80 = c->unk_80 - ml;
             if (c->unk_80 != 0 && c->unk_7c != 0) {
-                func_021289b4(c->unk_7c, c->unk_7c + ml, c->unk_80);
+                memmove(c->unk_7c, c->unk_7c + ml, c->unk_80);
             }
         }
         if (r != 0) break;

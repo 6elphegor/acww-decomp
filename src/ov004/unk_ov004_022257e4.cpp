@@ -346,11 +346,11 @@ s32 _ZN12Unk_02056fd813func_02057110Ei(void *, u32);
 s32 func_020318cc(void *);
 s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
 void func_0209cf18(u8 *);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 s32 func_020b50e8(void);
-void func_021039ec(void *, void *);
-void func_02103830(void *, void *);
+void NNS_G3dBindMdlTex(void *, void *);
+void NNS_G3dBindMdlPltt(void *, void *);
 void *func_02036c58(void);
 void *_ZN12Unk_02036cec13func_02036ce0Ev(void *);
 s32 func_020850e0(void);
@@ -498,13 +498,13 @@ BOOL Unk_ov004_0224d80c::vfunc_0c() {
 BOOL Unk_ov004_0224d80c::func_ov004_02226064() {
     void *o;
     o = func_ov004_02224d68(&unk_1a4);
-    func_021039ec(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
+    NNS_G3dBindMdlTex(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
     o = func_ov004_02224d68(&unk_1a4);
-    func_02103830(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
+    NNS_G3dBindMdlPltt(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
     o = func_ov004_02224d68(&unk_1a4);
-    func_021039ec(o, (void *)func_ov004_02224d04(&unk_248));
+    NNS_G3dBindMdlTex(o, (void *)func_ov004_02224d04(&unk_248));
     o = func_ov004_02224d68(&unk_1a4);
-    func_02103830(o, (void *)func_ov004_02224d04(&unk_248));
+    NNS_G3dBindMdlPltt(o, (void *)func_ov004_02224d04(&unk_248));
     return TRUE;
 }
 
@@ -584,7 +584,7 @@ void Unk_ov004_0224d80c::func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p) {
     u8 tm[2];
     func_0209cf18(tm);
     s32 hr = tm[1];
-    s32 f = func_01ffc5a4(tm[0] << 12, 0x3c000);
+    s32 f = FX_Div(tm[0] << 12, 0x3c000);
     u32 i0 = (u8)((hr + 1) % 24) * 12;
     u32 i1 = (u8)(hr % 24) * 12;
     u32 packed;

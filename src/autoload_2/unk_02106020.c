@@ -51,7 +51,7 @@ u8 *NNS_G3dGetTex(u8 *p)
 }
 
 // set/clear bits in the material flag (u16 at +0x1e) of every material (NNS_G3dMdlUse*/NotUse*)
-void func_0210622c(u8 *res, BOOL on, u32 mask)
+void NNSi_G3dModifyMatFlag(u8 *res, BOOL on, u32 mask)
 {
     u32 n = res[0x18];
     u32 i;
@@ -67,7 +67,7 @@ void func_0210622c(u8 *res, BOOL on, u32 mask)
 }
 
 // set/clear bits in the material polyAttrMask (+0x10) of every material
-void func_021061bc(u8 *res, BOOL on, u32 mask)
+void NNSi_G3dModifyPolygonAttrMask(u8 *res, BOOL on, u32 mask)
 {
     u32 n = res[0x18];
     u32 i;
@@ -83,35 +83,35 @@ void func_021061bc(u8 *res, BOOL on, u32 mask)
 }
 
 // NNS_G3dMdlSetMdlDiffuse (diffAmb bits 0-14)
-void func_02106174(u8 *res, u32 i, u32 v)
+void NNS_G3dMdlSetMdlDiff(u8 *res, u32 i, u32 v)
 {
     u32 *m = MatEnt(res, i);
     m[1] = (m[1] & ~0x7fff) | v;
 }
 
 // NNS_G3dMdlSetMdlEmission (specEmi bits 16-30)
-void func_0210612c(u8 *res, u32 i, u32 v)
+void NNS_G3dMdlSetMdlEmi(u8 *res, u32 i, u32 v)
 {
     u32 *m = MatEnt(res, i);
     m[2] = (m[2] & 0x8000ffff) | (v << 16);
 }
 
 // NNS_G3dMdlSetMdlLightEnableFlag (polyAttr bits 0-3)
-void func_021060e4(u8 *res, u32 i, u32 v)
+void NNS_G3dMdlSetMdlLightEnableFlag(u8 *res, u32 i, u32 v)
 {
     u32 *m = MatEnt(res, i);
     m[3] = (m[3] & ~0xf) | v;
 }
 
 // NNS_G3dMdlSetMdlPolygonID (polyAttr bits 24-29)
-void func_0210609c(u8 *res, u32 i, u32 v)
+void NNS_G3dMdlSetMdlPolygonID(u8 *res, u32 i, u32 v)
 {
     u32 *m = MatEnt(res, i);
     m[3] = (m[3] & ~0x3f000000) | (v << 24);
 }
 
 // NNS_G3dMdlSetMdlAlpha (polyAttr bits 16-20)
-void func_02106054(u8 *res, u32 i, u32 v)
+void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v)
 {
     u32 *m = MatEnt(res, i);
     m[3] = (m[3] & ~0x1f0000) | (v << 16);

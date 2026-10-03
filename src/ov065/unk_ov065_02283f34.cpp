@@ -54,11 +54,11 @@ s32 func_0212b770(const char *);
 char *func_02129f1c(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
-void func_021289b4(void *, void *, u32);
-void func_02128a00(void *, const void *, s32);
+void memmove(void *, void *, u32);
+void memcpy(void *, const void *, s32);
 s32 rand();
-void func_02128c60(s32);
-s32 func_02127b40(s32);
+void srand(s32);
+s32 abs(s32);
 
 void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
 s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
@@ -198,7 +198,7 @@ extern s32 func_ov065_02278658(void *, void *);
 extern s32 func_ov065_02278790(s32, void *, s32);
 extern s32 func_ov065_02279144();
 extern void func_ov065_0227913c(s32);
-extern void func_02128a00(void *, const void *, s32);
+extern void memcpy(void *, const void *, s32);
 
 extern s32 func_ov065_02286564(void *);
 extern s32 func_ov065_0228627c(void *, s32, u32, u32, u32);
@@ -1335,7 +1335,7 @@ s32 func_ov065_02284908(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, Unk_ov065_
         if (c->unk_38 == NULL) {
             return TRUE;
         }
-        func_02128a00(c->unk_38, (void *)msg, len);
+        memcpy(c->unk_38, (void *)msg, len);
         c->unk_3c = len;
     }
     if (x != NULL) {
@@ -1838,7 +1838,7 @@ void func_ov065_02284090(Unk_ov065_02284100_Buf *b, char *s, s32 n) {
         if (n == -1) {
             n = STD_GetStringLength(s);
         }
-        func_02128a00(b->unk_00 + b->unk_08, s, n);
+        memcpy(b->unk_00 + b->unk_08, s, n);
         b->unk_08 += n;
     }
 }
@@ -1849,7 +1849,7 @@ void func_ov065_0228405c(Unk_ov065_02284100_Buf *b, s32 pos, s32 n) {
     if (pos == -1) {
         pos = b->unk_08 - n;
     }
-    func_021289b4(b->unk_00 + pos, b->unk_00 + pos + n, b->unk_08 - pos - n);
+    memmove(b->unk_00 + pos, b->unk_00 + pos + n, b->unk_08 - pos - n);
     b->unk_08 -= n;
 }
 } }
@@ -1915,7 +1915,7 @@ char *func_ov065_02283f34(u8 *out) {
     u32 t1;
     u32 v[9];
     u32 acc;
-    func_02128c60(func_ov065_02279144(out));
+    srand(func_ov065_02279144(out));
     out[0] = rand() % 0x5d + 0x21;
     acc = 0;
     i = 1;

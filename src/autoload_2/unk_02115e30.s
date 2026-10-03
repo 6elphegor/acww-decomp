@@ -36,10 +36,10 @@ L_02115e4c: ; loop
 	bx lr
 
 ; MIi_CpuClear32(data, dest, size)
-	.global func_02115e64
-	.type func_02115e64, @function
-	.size func_02115e64, 0x14
-func_02115e64:
+	.global MIi_CpuClear32
+	.type MIi_CpuClear32, @function
+	.size MIi_CpuClear32, 0x14
+MIi_CpuClear32:
 	add ip, r1, r2
 L_02115e68: ; loop
 	cmp r1, ip

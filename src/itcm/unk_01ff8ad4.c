@@ -267,17 +267,17 @@ extern volatile int data_021f89c8;        // DL send busy flag
 extern int data_021f89cc;                 // use the fast GX DMA
 extern u32 data_0213bfec;                 // GXi_DmaId
 
-extern void func_02115e64(u32 data, void *dest, u32 size); // MIi_CpuClear32
+extern void MIi_CpuClear32(u32 data, void *dest, u32 size); // MIi_CpuClear32
 extern void MIi_CpuClearFast(u32 data, void *dest, u32 size); // MIi_CpuClearFast
 extern void MIi_CpuCopyFast(const void *src, void *dest, u32 size); // MIi_CpuCopyFast
 extern void MIi_CpuSend32(const void *src, volatile void *dest, u32 size); // MIi_CpuSend32
 extern void MI_SendGXCommandAsyncFast(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsyncFast
-extern void func_02105ac4(u32 *vec, AnmObj *anm);          // updateHintVec
+extern void updateHintVec_(u32 *vec, AnmObj *anm);          // updateHintVec
 extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 size, void (*cb)(void *), void *arg); // MI_SendGXCommandAsync
 extern void FX_DivAsync(fx32 numer, fx32 denom);         // FX_DivAsync
 extern fx32 FX_GetDivResult(void);                           // FX_GetDivResult
 extern void MI_Zero36B(void *dst);                      // MI_Zero36B (Thumb)
-extern void func_0210a544(void *p, u32 n);
+extern void StrmCallback(void *p, u32 n);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 {
@@ -375,83 +375,83 @@ void func_01ff8160(void);
 u32 OS_ResetRequestIrqMask(u32 intr);
 u32 OS_SetIrqMask(u32 intr);
 void OSi_IrqCallback(int index);
-void func_01ff82f8(void);
-void func_01ff8308(void);
-void func_01ff8318(void);
-void func_01ff8328(void);
-void func_01ff8338(void);
-void func_01ff8348(void);
-void func_01ff8358(void);
-void func_01ff8368(void);
-void func_01ff8378(void *arg);
+void OSi_IrqDma0(void);
+void OSi_IrqDma1(void);
+void OSi_IrqDma2(void);
+void OSi_IrqDma3(void);
+void OSi_IrqTimer0(void);
+void OSi_IrqTimer1(void);
+void OSi_IrqTimer2(void);
+void OSi_IrqTimer3(void);
+void simpleUnlock_(void *arg);
 void texmtxCalc_flagRS_(MtxFx44 *m, const MatAnm *a);
-void func_01ff83cc(MtxFx44 *m, const MatAnm *a);
-void func_01ff844c(MtxFx44 *m, const MatAnm *a);
-void func_01ff8528(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagR_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagS_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTRS_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a);
-void func_01ff8590(MtxFx44 *m, const MatAnm *a);
-void func_01ff8654(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagTS_(MtxFx44 *m, const MatAnm *a);
+void texmtxCalc_flagT_(MtxFx44 *m, const MatAnm *a);
 void func_01ff8740(MtxFx44 *m, const MatAnm *a);
 void func_01ff8858(u32 *vec, const AnmObj *anm);
-void func_01ff88d0(RS *rs, RenderObj *obj);
-void func_01ff8a64(RS *rs);
-void func_01ff8ad4(RenderObj *obj);
-void func_01ff8bd0(u32 op, const u32 *args, u32 num);
-void func_01ff8ccc(void);
-void func_01ff8d4c(const void *src, u32 szByte);
+void G3dDrawInternal_(RS *rs, RenderObj *obj);
+void G3dDrawInternal_Loop_(RS *rs);
+void NNS_G3dDraw(RenderObj *obj);
+void NNS_G3dGeBufferOP_N(u32 op, const u32 *args, u32 num);
+void NNS_G3dGeFlushBuffer(void);
+void NNS_G3dGeSendDL(const void *src, u32 szByte);
 void NNS_G3dGeWaitSendDL(void);
-void func_01ff8e30(RS *rs, u32 opt);
-void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
-void func_01ff931c(RS *rs, u32 opt);
-void func_01ff93f4(RS *rs, u32 opt);
-void func_01ff9580(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_MAT(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_MAT_InternalDefault(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat);
+void NNSi_G3dFuncSbc_MTX(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_NODE(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_NODEDESC(RS *rs, u32 opt);
 void func_01ff99c8(RS *rs, u32 opt);
 void func_01ff99f4(RS *rs, u32 opt);
 void func_01ff9a60(RS *rs, u32 opt);
-void func_01ff9a8c(RS *rs, u32 opt);
-void func_01ff9b04(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp);
-void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
-void func_01ff9d34(JntAnm *pResult);
+void NNSi_G3dFuncSbc_SHP(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_SHP_InternalDefault(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp);
+void NNSi_G3dGetJointScaleMaya(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
+void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
 void func_01ff9e10(MatAnm *pResult);
 void func_01ff9f5c(void *p);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
-void func_01ffa0f0(u32 dmaNo, u32 src, u32 size, u32 dir);
+void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
 void MIi_DMACallback(void *arg);
 void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
 void MIi_FIFOCallback(void);
 
 // NNS g3d joint matrix (send the joint SRT to the geometry engine)
-void func_01ff9d34(JntAnm *pResult) {
+void NNSi_G3dSendJointSRTMaya(JntAnm *pResult) {
     BOOL trFlag = FALSE;
     if (!(pResult->flag & 4)) {
         trFlag = TRUE;
     }
     if ((pResult->flag & 0x20) && !(pResult->flag & 8)) {
         if (trFlag) {
-            func_01ff8bd0(28, (const u32 *)&pResult->trans, 3);
+            NNS_G3dGeBufferOP_N(28, (const u32 *)&pResult->trans, 3);
             trFlag = FALSE;
         }
-        func_01ff8bd0(27, (const u32 *)&pResult->scaleEx0, 3);
+        NNS_G3dGeBufferOP_N(27, (const u32 *)&pResult->scaleEx0, 3);
     }
     if (!(pResult->flag & 2)) {
         if (trFlag) {
-            func_01ff8bd0(25, (const u32 *)&pResult->rot, 12);
+            NNS_G3dGeBufferOP_N(25, (const u32 *)&pResult->rot, 12);
         } else {
-            func_01ff8bd0(26, (const u32 *)&pResult->rot, 9);
+            NNS_G3dGeBufferOP_N(26, (const u32 *)&pResult->rot, 9);
         }
     } else {
         if (trFlag) {
-            func_01ff8bd0(28, (const u32 *)&pResult->trans, 3);
+            NNS_G3dGeBufferOP_N(28, (const u32 *)&pResult->trans, 3);
         }
     }
     if (!(pResult->flag & 1)) {
-        func_01ff8bd0(27, (const u32 *)&pResult->scale, 3);
+        NNS_G3dGeBufferOP_N(27, (const u32 *)&pResult->scale, 3);
     }
 }
 
 // NNS g3d joint scale (Maya: segment scale compensation)
-void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag) {
+void NNSi_G3dGetJointScaleMaya(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag) {
     u32 nodeAttr = cmd[3];
     if (srtflag & 4) {
         pResult->flag |= 1;
@@ -483,7 +483,7 @@ void func_01ff9be0(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag) {
 }
 
 // NNSi_G3dFuncSbc_SHP_InternalDefault
-void func_01ff9b04(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp) {
+void NNSi_G3dFuncSbc_SHP_InternalDefault(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp) {
     u32 cbTiming;
     BOOL skip;
     cbTiming = rs->cbVecFunc[5] ? rs->cbVecTiming[5] : 0;
@@ -496,7 +496,7 @@ void func_01ff9b04(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp) {
         skip = FALSE;
     }
     if (!skip && !(rs->flag & 0x100)) {
-        func_01ff8d4c((const u8 *)shp + shp->ofsDL, shp->sizeDL);
+        NNS_G3dGeSendDL((const u8 *)shp + shp->ofsDL, shp->sizeDL);
     }
     if (cbTiming == 2) {
         rs->flag &= ~0x40;
@@ -510,7 +510,7 @@ void func_01ff9b04(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp) {
 }
 
 // NNSi_G3dFuncSbc_SHP
-void func_01ff9a8c(RS *rs, u32 opt) {
+void NNSi_G3dFuncSbc_SHP(RS *rs, u32 opt) {
     if (!(rs->flag & 0x200) && (rs->flag & 1) && !(rs->flag & 2)) {
         u32 idxShp = *(rs->c + 1);
         const ResShpData *shp = GetShpDataByIdx(rs->pResShp, idxShp);
@@ -536,7 +536,7 @@ void func_01ff99f4(RS *rs, u32 opt) {
         } else {
             s.x = s.y = s.z = rs->invPosScale;
         }
-        func_01ff8bd0(27, (const u32 *)&s, 3);
+        NNS_G3dGeBufferOP_N(27, (const u32 *)&s, 3);
     }
     rs->c += 1;
 }
@@ -550,7 +550,7 @@ void func_01ff99c8(RS *rs, u32 opt) {
 }
 
 // NNSi_G3dFuncSbc_NODEDESC
-void func_01ff9580(RS *rs, u32 opt) {
+void NNSi_G3dFuncSbc_NODEDESC(RS *rs, u32 opt) {
     u32 cmdLen = 4;
     u32 curNode;
     JntAnm *pResult;
@@ -569,7 +569,7 @@ void func_01ff9580(RS *rs, u32 opt) {
             ++cmdLen;
             if (!(rs->flag & 0x100)) {
                 u32 arg = *(rs->c + 4);
-                func_01ff8bd0(20, &arg, 1);
+                NNS_G3dGeBufferOP_N(20, &arg, 1);
             }
         }
         rs->c += cmdLen;
@@ -585,7 +585,7 @@ void func_01ff9580(RS *rs, u32 opt) {
             arg = *(rs->c + 5);
         }
         if (!(rs->flag & 0x100)) {
-            func_01ff8bd0(20, &arg, 1);
+            NNS_G3dGeBufferOP_N(20, &arg, 1);
         }
     }
 
@@ -683,14 +683,14 @@ void func_01ff9580(RS *rs, u32 opt) {
         ++cmdLen;
         if (!skip && !(rs->flag & 0x100)) {
             u32 arg = *(rs->c + 4);
-            func_01ff8bd0(19, &arg, 1);
+            NNS_G3dGeBufferOP_N(19, &arg, 1);
         }
     }
     rs->c += cmdLen;
 }
 
 // NNSi_G3dFuncSbc_NODE
-void func_01ff93f4(RS *rs, u32 opt) {
+void NNSi_G3dFuncSbc_NODE(RS *rs, u32 opt) {
     if (!(rs->flag & 0x200)) {
         u32 curNode;
         u32 cbTiming;
@@ -741,7 +741,7 @@ void func_01ff93f4(RS *rs, u32 opt) {
 }
 
 // NNSi_G3dFuncSbc_MTX
-void func_01ff931c(RS *rs, u32 opt) {
+void NNSi_G3dFuncSbc_MTX(RS *rs, u32 opt) {
     if (!(rs->flag & 0x200) && (rs->flag & 1)) {
         u32 cbTiming;
         BOOL skip;
@@ -757,7 +757,7 @@ void func_01ff931c(RS *rs, u32 opt) {
         if (!skip) {
             u32 arg = *(rs->c + 1);
             if (!(rs->flag & 0x100)) {
-                func_01ff8bd0(20, &arg, 1);
+                NNS_G3dGeBufferOP_N(20, &arg, 1);
             }
         }
         if (cbTiming == 3) {
@@ -769,7 +769,7 @@ void func_01ff931c(RS *rs, u32 opt) {
 }
 
 // NNSi_G3dFuncSbc_MAT_InternalDefault
-void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat) {
+void NNSi_G3dFuncSbc_MAT_InternalDefault(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat) {
     MatAnm *pResult;
     u32 cbTiming;
     BOOL skip;
@@ -877,7 +877,7 @@ void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat) {
                 cmd[4] = 0x00002b2a;
                 cmd[5] = pResult->prmTexImage;
                 cmd[6] = pResult->prmTexPltt;
-                func_01ff8bd0(cmd[0], &cmd[1], 6);
+                NNS_G3dGeBufferOP_N(cmd[0], &cmd[1], 6);
                 if (pResult->flag & 0x18) {
                     rs->funcTexMtx(pResult);
                 }
@@ -894,7 +894,7 @@ void func_01ff8eb4(RS *rs, u32 opt, const ResMatData *mat, u32 idxMat) {
 }
 
 // NNSi_G3dFuncSbc_MAT
-void func_01ff8e30(RS *rs, u32 opt) {
+void NNSi_G3dFuncSbc_MAT(RS *rs, u32 opt) {
     u32 flag = rs->flag;
     if (!(flag & 0x200)) {
         u32 idxMat = rs->c[1];
@@ -913,22 +913,22 @@ void NNS_G3dGeWaitSendDL(void) {
 }
 
 // NNS_G3dGeSendDL
-void func_01ff8d4c(const void *src, u32 szByte) {
+void NNS_G3dGeSendDL(const void *src, u32 szByte) {
     if (szByte < 256 || data_0213bfec == (u32)-1) {
-        func_01ff8bd0(*(const u32 *)src, (const u32 *)src + 1, (szByte >> 2) - 1);
+        NNS_G3dGeBufferOP_N(*(const u32 *)src, (const u32 *)src + 1, (szByte >> 2) - 1);
         return;
     }
-    func_01ff8ccc();
+    NNS_G3dGeFlushBuffer();
     data_021f89c8 = 1;
     if (data_021f89cc) {
-        MI_SendGXCommandAsyncFast(data_0213bfec, src, szByte, func_01ff8378, (void *)&data_021f89c8);
+        MI_SendGXCommandAsyncFast(data_0213bfec, src, szByte, simpleUnlock_, (void *)&data_021f89c8);
     } else {
-        MI_SendGXCommandAsync(data_0213bfec, src, szByte, func_01ff8378, (void *)&data_021f89c8);
+        MI_SendGXCommandAsync(data_0213bfec, src, szByte, simpleUnlock_, (void *)&data_021f89c8);
     }
 }
 
 // NNS_G3dGeFlushBuffer
-void func_01ff8ccc(void) {
+void NNS_G3dGeFlushBuffer(void) {
     if (data_021f89c8) {
         NNS_G3dGeWaitSendDL();
     }
@@ -939,7 +939,7 @@ void func_01ff8ccc(void) {
 }
 
 // NNS_G3dGeBufferOP_N
-void func_01ff8bd0(u32 op, const u32 *args, u32 num) {
+void NNS_G3dGeBufferOP_N(u32 op, const u32 *args, u32 num) {
     if (data_021f89c4) {
         if (data_021f89c8 && data_021f89c4->idx + 1 + num <= 192) {
             u32 idx = data_021f89c4->idx;
@@ -952,7 +952,7 @@ void func_01ff8bd0(u32 op, const u32 *args, u32 num) {
             return;
         }
         if (data_021f89c4->idx) {
-            func_01ff8ccc();
+            NNS_G3dGeFlushBuffer();
         } else if (data_021f89c8) {
             NNS_G3dGeWaitSendDL();
         }
@@ -966,31 +966,31 @@ void func_01ff8bd0(u32 op, const u32 *args, u32 num) {
 }
 
 // NNS_G3dDraw
-void func_01ff8ad4(RenderObj *obj) {
+void NNS_G3dDraw(RenderObj *obj) {
     RS rs;
     if ((obj->flag & 0x10) == 0x10) {
         {
             volatile u32 zero = 0;
-            func_02115e64(zero, obj->hintMatAnmExist, 8);
+            MIi_CpuClear32(zero, obj->hintMatAnmExist, 8);
         }
         {
             volatile u32 zero = 0;
-            func_02115e64(zero, obj->hintJntAnmExist, 8);
+            MIi_CpuClear32(zero, obj->hintJntAnmExist, 8);
         }
         {
             volatile u32 zero = 0;
-            func_02115e64(zero, obj->hintVisAnmExist, 8);
+            MIi_CpuClear32(zero, obj->hintVisAnmExist, 8);
         }
-        if (obj->anmMat) func_02105ac4(obj->hintMatAnmExist, obj->anmMat);
-        if (obj->anmJnt) func_02105ac4(obj->hintJntAnmExist, obj->anmJnt);
-        if (obj->anmVis) func_02105ac4(obj->hintVisAnmExist, obj->anmVis);
+        if (obj->anmMat) updateHintVec_(obj->hintMatAnmExist, obj->anmMat);
+        if (obj->anmJnt) updateHintVec_(obj->hintJntAnmExist, obj->anmJnt);
+        if (obj->anmVis) updateHintVec_(obj->hintVisAnmExist, obj->anmVis);
         obj->flag &= ~0x10;
     }
     if (data_021f5cc0) {
-        func_01ff88d0(data_021f5cc0, obj);
+        G3dDrawInternal_(data_021f5cc0, obj);
     } else {
         data_021f5cc0 = &rs;
-        func_01ff88d0(&rs, obj);
+        G3dDrawInternal_(&rs, obj);
         data_021f5cc0 = NULL;
     }
 }

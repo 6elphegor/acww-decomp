@@ -12,7 +12,7 @@ typedef int BOOL;
 
 #define R32(a) (*(volatile u32 *)(a))
 
-extern s32 func_01ffc5a4(s32 numer, s32 denom); // FX_Div
+extern s32 FX_Div(s32 numer, s32 denom); // FX_Div
 extern s32 FX_GetDivResult(void);                 // FX_GetDivResult
 extern s64 FX_GetDivResultFx64c(void);                 // FX_GetDivResultFx64c
 
@@ -30,7 +30,7 @@ void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, 
     s32 cot, a, m22, m32, t;
     s64 inv;
     volatile u32 *fifo;
-    cot = func_01ffc5a4(fovyCos, fovySin);
+    cot = FX_Div(fovyCos, fovySin);
     if (scale != 0x1000) cot = cot * scale / 0x1000;
     *(volatile u64 *)0x04000290 = (u64)cot << 32;
     *(volatile u64 *)0x04000298 = (u32)aspect;

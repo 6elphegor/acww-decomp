@@ -68,9 +68,9 @@ u32 func_ov001_02224b14(u32, u32, u32);
 void func_ov001_02224558(u32, s32, u32, u32);
 void func_ov001_022244d8(u32, s32, s32);
 s32 func_ov001_02208594(void *, void *);
-void func_0211172c();
+void GX_LoadBG2Char();
 void GX_LoadBGPltt();
-void func_02111a6c();
+void GX_LoadBG2Scr();
 void GX_LoadOBJPltt();
 void *func_ov001_022085e0(void *);
 u32 func_ov001_02224074(void *, s32, s32);
@@ -130,9 +130,9 @@ void func_ov001_0221aae4() {
 void func_ov001_0221a9c8() {
     char buf[22] = "char/ybBgStep11.ncl.l";
     func_ov001_02208594((void *)"char/ybObjWay.ncl.l", (void *)GX_LoadOBJPltt);
-    func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)GX_LoadBGPltt);
-    func_ov001_02208594((void *)"char/jb2Ap.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/jb2Ap.nsc.l", (void *)GX_LoadBG2Scr);
     data_ov001_0222deb4->unk_00 = func_ov001_02224074(func_ov001_022085e0(&buf), 0, 4);
     func_ov001_02225cb4(1, 0x10);
     BGCNT(0x4001008, 3);
@@ -328,9 +328,9 @@ extern Unk_ov001_0222deb4_G *data_ov001_0222deb4;
 extern const u8 data_ov001_0222a15c[];
 extern const u16 data_ov001_0222a168[];
 
-extern void func_0211172c();
+extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
-extern void func_02111a6c();
+extern void GX_LoadBG2Scr();
 extern void GX_LoadOBJPltt();
 extern void func_ov001_02224ff8(s32, s32, s32, s32);
 extern void func_ov001_02225cb4(s32, s32);

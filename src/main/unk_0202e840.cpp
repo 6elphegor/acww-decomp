@@ -35,7 +35,7 @@ public:
 
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
 s32 func_01ffcb2c(s32 x, s32 y);

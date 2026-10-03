@@ -83,7 +83,7 @@ extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckInitialized(void);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *func_0211f00c(void);
+extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 WM_Init(void *buf, u16 dmaNo);
@@ -94,17 +94,17 @@ extern void MI_CpuCopy8(void *, void *, u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern u32 MATH_CountPopulation(u32);
-extern u32 func_021200b8(WMCallback cb, u32 arg);
+extern u32 WMi_StartParentEx(WMCallback cb, u32 arg);
 extern void func_02120fe8(WMMsg *);
 
-int func_0211f930(void);
-int func_0211fa1c(void);
-u32 func_0212052c(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
+int WM_GetMPReceiveBufferSize(void);
+int WM_GetMPSendBufferSize(void);
+u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 u32 WmGetSharedDataAddress(u8 *base, u32 x, u32 y, u32 n);
 BOOL WmCheckParentParameter(u8 *p);
 // (WM key-sharing MP send step, uses WM_SetMPDataToPortEx; callback func_02120fe8)
-void func_02120b0c(WMPool *buf, BOOL flag) {
-    WMStatus *st = func_0211f00c()->status;
+void WmDataSharingSendDataSet(WMPool *buf, BOOL flag) {
+    WMStatus *st = WMi_GetSystemWork()->status;
     u32 irq = OS_DisableInterrupts();
     if (buf->pkt[buf->cur].hdr == 0) {
         u32 nextNext, cur, ack, next;
@@ -126,7 +126,7 @@ void func_02120b0c(WMPool *buf, BOOL flag) {
         buf->pkt[cur].hdr = buf->f80e;
         if (flag == 1) buf->pkt[cur].hdr &= ~1;
         OS_RestoreInterrupts(irq);
-        ret = func_0212052c(func_02120fe8, (u32)buf, &buf->pkt[cur], buf->f814, buf->f80e & ack, buf->f816, 1);
+        ret = WM_SetMPDataToPortEx(func_02120fe8, (u32)buf, &buf->pkt[cur], buf->f814, buf->f80e & ack, buf->f816, 1);
         if (ret == 7) {
             buf->slot[cur] = 0xffff;
             buf->f80a = (buf->f80a + 1) & 3;
@@ -157,7 +157,7 @@ u32 WmGetSharedDataAddress(u8 *base, u32 x, u32 y, u32 n) {
 
 // WM_StartDCF (request 17)
 u32 WM_StartDCF(WMCallback cb, void *ptr, u32 len) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(1, 8);
     if (r != 0) return r;
     DC_InvalidateRange(&w->status->f10, 4);
@@ -173,7 +173,7 @@ u32 WM_StartDCF(WMCallback cb, void *ptr, u32 len) {
 
 // WM_SetDCFData (request 18)
 u32 WM_SetDCFData(WMCallback cb, void *mac, void *buf, u32 len) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 m[2];
     u32 r = WMi_CheckStateEx(1, 11);
     if (r != 0) return r;
@@ -190,7 +190,7 @@ u32 WM_SetDCFData(WMCallback cb, void *mac, void *buf, u32 len) {
 
 // WM_EndDCF (request 19)
 u32 WM_EndDCF(WMCallback cb) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(1, 11);
     if (r != 0) return r;
     DC_InvalidateRange(&w->status->f10, 4);
@@ -203,7 +203,7 @@ u32 WM_EndDCF(WMCallback cb) {
 
 // WM_StartMPEx (request 14)
 u32 func_021206b4(WMCallback cb, u32 a, u16 len, u32 c, u16 s1, u16 s2, u16 s3, u32 s4, u32 s5, u32 s6, u32 s7) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(2, 7, 8);
     if (r != 0) return r;
     DC_InvalidateRange(&w->status->f184, 2);
@@ -213,11 +213,11 @@ u32 func_021206b4(WMCallback cb, u32 a, u16 len, u32 c, u16 s1, u16 s2, u16 s3, 
     }
     DC_InvalidateRange(&w->status->f0c, 4);
     if (w->status->f0c == 1) return 3;
-    if (len < func_0211f930()) return 6;
+    if (len < WM_GetMPReceiveBufferSize()) return 6;
     if ((len & 0x3f) != 0) return 6;
     {
         int t = s1;
-        if (t < func_0211fa1c()) return 6;
+        if (t < WM_GetMPSendBufferSize()) return 6;
         if ((t & 0x1f) != 0) return 6;
     }
     WMi_SetCallbackTable(14, cb);
@@ -227,10 +227,10 @@ u32 func_021206b4(WMCallback cb, u32 a, u16 len, u32 c, u16 s1, u16 s2, u16 s3, 
 }
 
 // WM_SetMPDataToPortEx (request 15)
-u32 func_0212052c(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio) {
+u32 WM_SetMPDataToPortEx(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio) {
     int maxSize;
     u16 mask = 1;
-    WMStatus *st = func_0211f00c()->status;
+    WMStatus *st = WMi_GetSystemWork()->status;
     BOOL parent;
     u32 r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
@@ -257,7 +257,7 @@ u32 func_0212052c(WMCallback cb, u32 arg, void *sendData, u16 size, u16 destBitm
 
 // WM_EndMP (request 16)
 u32 WM_EndMP(WMCallback cb) {
-    WMArm9Buf *w = func_0211f00c();
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(2, 9, 10);
     if (r != 0) return r;
     DC_InvalidateRange(&w->status->f0c, 4);
@@ -274,7 +274,7 @@ u32 WM_Enable(WMCallback cb) {
     if (r != 0) return r;
     WMi_SetCallbackTable(3, cb);
     {
-        WMArm9Buf *w = func_0211f00c();
+        WMArm9Buf *w = WMi_GetSystemWork();
         r = func_0211f01c(3, 3, w->w0, w->status, w->f10);
     }
     if (r == 0) r = 2;
@@ -317,7 +317,7 @@ u32 WM_Initialize(void *buf, WMCallback cb, u16 dmaNo) {
     u32 r = WM_Init(buf, dmaNo);
     if (r != 0) return r;
     WMi_SetCallbackTable(0, cb);
-    w = func_0211f00c();
+    w = WMi_GetSystemWork();
     r = func_0211f01c(0, 3, w->w0, w->status, w->f10);
     if (r == 0) r = 2;
     return r;
@@ -375,7 +375,7 @@ BOOL WmCheckParentParameter(u8 *p) {
 }
 
 // WM_StartParent-style (request 8)
-u32 func_021200b8(WMCallback cb, u32 arg) {
+u32 WMi_StartParentEx(WMCallback cb, u32 arg) {
     u32 r = WMi_CheckStateEx(1, 2);
     if (r != 0) return r;
     WMi_SetCallbackTable(8, cb);
@@ -384,9 +384,9 @@ u32 func_021200b8(WMCallback cb, u32 arg) {
     return r;
 }
 
-// WM_StartParent-style wrapper -> func_021200b8(cb, 1)
-u32 func_021200a8(WMCallback cb) {
-    return func_021200b8(cb, 1);
+// WM_StartParent-style wrapper -> WMi_StartParentEx(cb, 1)
+u32 WM_StartParent(WMCallback cb) {
+    return WMi_StartParentEx(cb, 1);
 }
 
 // WM_EndParent (request 9)
@@ -400,7 +400,7 @@ u32 WM_EndParent(WMCallback cb) {
 }
 
 // WM_StartScan (request 10)
-u32 func_0211ff5c(WMCallback cb, u8 *p) {
+u32 WM_StartScan(WMCallback cb, u8 *p) {
     u32 r = WMi_CheckStateEx(3, 2, 3, 5);
     u8 *m;
     if (r != 0) return r;
@@ -408,7 +408,7 @@ u32 func_0211ff5c(WMCallback cb, u8 *p) {
     if (W32(p, 0) == 0) return 6;
     if (W16(p, 4) < 1 || W16(p, 4) > 14) return 6;
     WMi_SetCallbackTable(10, cb);
-    m = func_0211f00c()->req;
+    m = WMi_GetSystemWork()->req;
     W16(m, 0) = 10;
     W16(m, 2) = W16(p, 4);
     W32(m, 4) = W32(p, 0);
@@ -425,7 +425,7 @@ u32 func_0211ff5c(WMCallback cb, u8 *p) {
 }
 
 // WM_StartScanEx (request 38)
-u32 func_0211fdd4(WMCallback cb, u8 *p) {
+u32 WM_StartScanEx(WMCallback cb, u8 *p) {
     u32 r = WMi_CheckStateEx(3, 2, 3, 5);
     u8 *m;
     u32 v;
@@ -440,7 +440,7 @@ u32 func_0211fdd4(WMCallback cb, u8 *p) {
         if (W16(p, 0x34) > 32) return 6;
     }
     WMi_SetCallbackTable(38, cb);
-    m = func_0211f00c()->req;
+    m = WMi_GetSystemWork()->req;
     W16(m, 0) = 38;
     W16(m, 2) = W16(p, 6);
     W32(m, 4) = W32(p, 0);
@@ -474,7 +474,7 @@ u32 func_0211fcbc(WMCallback cb, u8 *bss, u8 *ssid, u32 arg, u16 extra) {
     if (bss == 0) return 6;
     DC_StoreRange(bss, W16(bss, 0) << 1);
     WMi_SetCallbackTable(12, cb);
-    m = func_0211f00c()->req;
+    m = WMi_GetSystemWork()->req;
     W16(m, 0) = 12;
     W32(m, 4) = (u32)bss;
     if (ssid != 0) {
@@ -490,8 +490,8 @@ u32 func_0211fcbc(WMCallback cb, u8 *bss, u8 *ssid, u32 arg, u16 extra) {
 }
 
 // WM_Disconnect (request 13)
-u32 func_0211fbb4(WMCallback cb, u32 aid) {
-    WMArm9Buf *w = func_0211f00c();
+u32 WM_Disconnect(WMCallback cb, u32 aid) {
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckStateEx(5, 7, 9, 8, 10, 11);
     if (r != 0) return r;
     if (w->status->state == 7 || w->status->state == 9) {
@@ -508,14 +508,14 @@ u32 func_0211fbb4(WMCallback cb, u32 aid) {
 }
 
 // WM_SetIndCallback
-u32 func_0211fb68(WMCallback cb) {
+u32 WM_SetIndCallback(WMCallback cb) {
     u32 irq = OS_DisableInterrupts();
     u32 r = WMi_CheckInitialized();
     if (r != 0) {
         OS_RestoreInterrupts(irq);
         return r;
     }
-    func_0211f00c()->cbC0 = cb;
+    WMi_GetSystemWork()->cbC0 = cb;
     OS_RestoreInterrupts(irq);
     return 0;
 }
@@ -529,7 +529,7 @@ u32 func_0211fb0c(u16 port, WMCallback cb, u32 arg) {
         return r;
     }
     {
-        WMArm9Buf *w = func_0211f00c();
+        WMArm9Buf *w = WMi_GetSystemWork();
         w->reqCb[port] = cb;
         w->reqArg[port] = arg;
     }
@@ -538,8 +538,8 @@ u32 func_0211fb0c(u16 port, WMCallback cb, u32 arg) {
 }
 
 // WM_ReadStatus
-u32 func_0211faa0(void *dst) {
-    WMArm9Buf *w = func_0211f00c();
+u32 WM_ReadStatus(void *dst) {
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 r = WMi_CheckInitialized();
     if (r != 0) return r;
     if (dst == 0) return 6;
@@ -549,8 +549,8 @@ u32 func_0211faa0(void *dst) {
 }
 
 // WM_GetMPSendBufferSize
-int func_0211fa1c(void) {
-    WMArm9Buf *w = func_0211f00c();
+int WM_GetMPSendBufferSize(void) {
+    WMArm9Buf *w = WMi_GetSystemWork();
     if (WMi_CheckStateEx(2, 7, 8) != 0) return 0;
     DC_InvalidateRange(&w->status->f0c, 4);
     if (w->status->f0c == 1) return 0;
@@ -559,8 +559,8 @@ int func_0211fa1c(void) {
 }
 
 // WM_GetMPReceiveBufferSize
-int func_0211f930(void) {
-    WMArm9Buf *w = func_0211f00c();
+int WM_GetMPReceiveBufferSize(void) {
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 a;
     BOOL idle;
     if (WMi_CheckStateEx(2, 7, 8) != 0) return 0;
@@ -575,8 +575,8 @@ int func_0211f930(void) {
     return (((a + 12) * w->status->ff4 + 41) & ~31) << 1;
 }
 
-u8 *func_0211f82c(WMSet *p, u32 ch) {
-    WMArm9Buf *w = func_0211f00c();
+u8 *WM_ReadMPData(WMSet *p, u32 ch) {
+    WMArm9Buf *w = WMi_GetSystemWork();
     u32 a[16];
     int i;
     if (WMi_CheckInitialized() != 0) return 0;

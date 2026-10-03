@@ -34,12 +34,12 @@ OSi_ExceptionHandler:
 	and r1, r1, #0x1f
 	teq r1, #0x17
 	bne L_02114b90
-	bl func_02114bc8
+	bl OSi_GetAndDisplayContext
 	b L_02114b9c
 L_02114b90: ; not_abort
 	teq r1, #0x1b
 	bne L_02114b9c
-	bl func_02114bc8
+	bl OSi_GetAndDisplayContext
 L_02114b9c: ; done
 	ldr ip, L_02114bc0
 	ldr ip, [ip, #0]
@@ -58,10 +58,10 @@ L_02114bc4:
 	.word 0x02000000
 
 ; OSi_GetAndDisplayContext: no stack padding around the two calls (mwcc pads a call frame to 8 bytes)
-	.global func_02114bc8
-	.type func_02114bc8, @function
-	.size func_02114bc8, 0x14
-func_02114bc8:
+	.global OSi_GetAndDisplayContext
+	.type OSi_GetAndDisplayContext, @function
+	.size OSi_GetAndDisplayContext, 0x14
+OSi_GetAndDisplayContext:
 	stmfd sp!, {lr}
 	bl OSi_SetExContext
 	bl OSi_DisplayExContext

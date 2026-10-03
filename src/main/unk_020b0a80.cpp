@@ -219,7 +219,7 @@ void OS_InitTick(void);
 }
 
 extern "C" {
-void func_0210f248(void);
+void GX_Init(void);
 }
 
 extern "C" {
@@ -227,7 +227,7 @@ void GX_SetBankForLCDC(u32 a);
 }
 
 extern "C" {
-void func_0210f554(void);
+void GX_DisableBankForLCDC(void);
 }
 
 extern "C" {
@@ -239,7 +239,7 @@ void OS_RestoreInterrupts(u32 a);
 }
 
 extern "C" {
-void func_020fe5c0(u32 a, void (*cb)(u32, u32), u32 c);
+void WVR_StartUpAsync(u32 a, void (*cb)(u32, u32), u32 c);
 }
 
 extern "C" {
@@ -267,7 +267,7 @@ void DC_FlushRange(u32 a, u32 b);
 }
 
 extern "C" {
-void func_02114b4c(u32 a);
+void OS_SetProtectionRegion2(u32 a);
 }
 
 extern "C" {
@@ -611,7 +611,7 @@ extern "C" void func_020b0b74(u32 a, u32 b) {
 }
 
 extern "C" void func_020b0b54(void) {
-    func_02114b4c(0x23ff017);
+    OS_SetProtectionRegion2(0x23ff017);
     OS_SetArenaHi(0, 0x23ff000);
 }
 
@@ -634,16 +634,16 @@ extern "C" void func_020b0a80(void) {
     u16 old;
     OS_Init();
     OS_InitTick();
-    func_0210f248();
+    GX_Init();
     GX_SetBankForLCDC(8);
     zero = 0;
     MIi_CpuClearFast(zero, 0x6800000, 0x20000);
-    func_0210f554();
+    GX_DisableBankForLCDC();
     old = *ime;
     *ime = 1;
     r5 = func_01ffa314();
     data_021ee284 = 0;
-    func_020fe5c0(8, func_020b0b74, 0);
+    WVR_StartUpAsync(8, func_020b0b74, 0);
     while (data_021ee284 == 0) {
     }
     OS_RestoreInterrupts(r5);

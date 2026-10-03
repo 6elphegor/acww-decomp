@@ -111,7 +111,7 @@ void OS_InitMutex(void *);
 s32 DGT_Hash1GetDigest_R();
 s32 DGT_Hash1SetSource();
 s32 DGT_Hash1Reset();
-void func_02115e64(u32, void *, u32);
+void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
@@ -306,16 +306,16 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void OS_IrqHandler(void);
 void DC_InvalidateRange(u32, u32);
-s32 func_0211fdd4(void *, void *);
+s32 WM_StartScanEx(void *, void *);
 s32 WM_PowerOff(void *);
 s32 WM_Init(void *, u32);
 s32 WM_GetAllowedChannel(void);
 s32 func_0211f188(void);
-s32 func_0211fb68(void *);
+s32 WM_SetIndCallback(void *);
 s32 WM_Enable(void *);
-s32 func_02114e38(void);
+s32 OS_IsTickAvailable(void);
 void OS_InitTick(void);
-s32 func_021152f4(void);
+s32 OS_IsAlarmAvailable(void);
 void OS_InitAlarm(void);
 void OS_CreateAlarm(void *);
 void MIi_CpuCopyFast(void *, void *, u32);
@@ -718,10 +718,10 @@ s32 func_ov065_0226a510(void *a, u32 b)
     data_ov065_022905a8->unk_22f8 = 0;
     func_ov065_022699d0();
     func_ov065_0226ac7c();
-    if (func_02114e38() == 0) {
+    if (OS_IsTickAvailable() == 0) {
         OS_InitTick();
     }
-    if (func_021152f4() == 0) {
+    if (OS_IsAlarmAvailable() == 0) {
         OS_InitAlarm();
     }
     OS_CreateAlarm(data_ov065_022905a8->unk_22cc);
@@ -797,7 +797,7 @@ s32 func_ov065_0226a33c(void *a, void *b)
         OS_RestoreInterrupts(e);
         return 5;
     }
-    if (func_0211fb68((void *)func_ov065_02269784) != 0) {
+    if (WM_SetIndCallback((void *)func_ov065_02269784) != 0) {
         func_ov065_0226989c(0xb);
         OS_RestoreInterrupts(e);
         return 7;
@@ -900,7 +900,7 @@ s32 func_ov065_0226a144(void *a, void *b, s32 c)
         u32 *cp = &data_ov065_022905a8->unk_2284;
         *cp = *cp + 1;
     }
-    switch (func_0211fdd4((void *)func_ov065_02269350, &data_ov065_022905a8->unk_2288)) {
+    switch (WM_StartScanEx((void *)func_ov065_02269350, &data_ov065_022905a8->unk_2288)) {
     case 2:
         func_ov065_0226989c(5);
         data_ov065_022905a8->unk_2280 = 3;
@@ -986,7 +986,7 @@ extern u8 data_ov065_0228b2ac[];
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 void OS_CancelAlarm(void *);
-void func_0211512c(void *, u32, u32, void *, u32);
+void OS_SetAlarm(void *, u32, u32, void *, u32);
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 WM_Reset(void *);
@@ -1388,7 +1388,7 @@ void func_ov065_0226989c(s32 st) {
     }
     if (st == 9) {
         g = data_ov065_022905a8;
-        func_0211512c(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
+        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
     }
     OS_RestoreInterrupts(irq);
 }
@@ -1399,7 +1399,7 @@ void func_ov065_02269848() {
     OS_CancelAlarm(g->unk_22cc);
     g = data_ov065_022905a8;
     if (g->unk_2260 == 9) {
-        func_0211512c(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
+        OS_SetAlarm(g->unk_22cc, 0x22f5341, 0, (void *)func_ov065_02269834, 0);
     }
     OS_RestoreInterrupts(irq);
 }
@@ -1484,9 +1484,9 @@ void func_ov065_0226aca8(u32);
 void func_ov065_0226ac54(void *);
 void func_ov065_0226a7bc(u32, u32);
 void DC_InvalidateRange(void *, u32);
-s32 func_0211fbb4(void *, u32);
+s32 WM_Disconnect(void *, u32);
 s32 WM_StartDCF(void *, void *, u32);
-s32 func_0211fdd4(void *, void *);
+s32 WM_StartScanEx(void *, void *);
 s32 WM_EndScan(void *);
 s32 WM_PowerOn(void *);
 s32 func_0211f188();
@@ -1643,7 +1643,7 @@ void func_ov065_02269350(Unk_ov065_02268ec8_Msg *m) {
             }
             DC_InvalidateRange(*(void **)data_ov065_022905a8->unk_2288, data_ov065_022905a8->unk_228c);
             data_ov065_022905a8->unk_2284++;
-            res = func_0211fdd4((void *)func_ov065_02269350, data_ov065_022905a8->unk_2288);
+            res = WM_StartScanEx((void *)func_ov065_02269350, data_ov065_022905a8->unk_2288);
             break;
         }
         case 7:
@@ -1843,7 +1843,7 @@ void func_ov065_02268ec8(Unk_ov065_02268ec8_Msg *m) {
             func_ov065_022697ec();
             return;
         }
-        s32 r = func_0211fbb4((void *)func_ov065_02269080, 0);
+        s32 r = WM_Disconnect((void *)func_ov065_02269080, 0);
         if (r == 2) {
             return;
         }

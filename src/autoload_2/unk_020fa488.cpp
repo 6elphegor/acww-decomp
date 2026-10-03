@@ -102,11 +102,11 @@ struct Mc {
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
-void func_020fe3a0(void *list, void *e);
+void spl_push_front(void *list, void *e);
 void spl_set_tex(void *p);
-void func_020fa398(void *p);
-void func_020fc984(void *e, void *l);
-void func_020f9714(Pm *m, u32 a);
+void spl_set_tex_dummy(void *p);
+void spl_gen_ptcl(void *e, void *l);
+void sDrawChild(Pm *m, u32 a);
 void func_020f97d0(Pm *m, u32 a);
 void func_020fbad0(Mc *m, Node *n, u32 a);
 void func_020fac28(Mc *m, Node *n, u32 a);

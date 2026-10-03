@@ -5,8 +5,8 @@
 
 extern "C" {
 
-s32 func_021132e0(s32);
-s32 func_02111a6c();
+s32 OS_Sleep(s32);
+s32 GX_LoadBG2Scr();
 s32 func_ov001_0221873c();
 s32 func_ov001_022088f8();
 s32 func_ov001_02208478(s32);
@@ -78,7 +78,7 @@ extern "C" void func_ov001_02218d60() {
 }
 
 extern "C" void func_ov001_02218cc0() {
-    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -110,7 +110,7 @@ extern "C" void func_ov001_02218c04() {
 }
 
 extern "C" void func_ov001_02218bd8() {
-    func_021132e0(10);
+    OS_Sleep(10);
     func_ov001_022188b8();
     func_ov001_02218b84();
     func_ov001_02218b80();

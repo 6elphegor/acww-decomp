@@ -278,8 +278,8 @@ void *NNS_G3dGetTex(void *p);
 BOOL func_020557a0(void *p, u32 a);
 void *func_0205588c(void *p, void *a);
 void func_020e8558(void *p);
-void func_021039ec(void *a, void *b);
-void func_02103830(void *a, void *b);
+void NNS_G3dBindMdlTex(void *a, void *b);
+void NNS_G3dBindMdlPltt(void *a, void *b);
 void _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, s32 e);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 BOOL _ZN18Unk_ov009_0225e29c19func_ov009_0225bbdcEP23Unk_ov009_0225b880_Vec3Ps(void *self, void *v, s16 *ang);
@@ -377,11 +377,11 @@ void Unk_ov003_02231c14::func_ov003_02216648() {
 
 void Unk_ov003_02231c14::func_ov003_02216604() {
     if (unk_2b0) {
-        func_021039ec(unk_194, unk_2b0);
+        NNS_G3dBindMdlTex(unk_194, unk_2b0);
     }
     if (unk_2b4) {
-        func_021039ec(unk_194, unk_2b4);
-        func_02103830(unk_194, unk_2b4);
+        NNS_G3dBindMdlTex(unk_194, unk_2b4);
+        NNS_G3dBindMdlPltt(unk_194, unk_2b4);
     }
 }
 

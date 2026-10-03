@@ -98,9 +98,9 @@ int func_02133ce0(void);
 int __FindExceptionTable(ExceptionInfo *info, char *retaddr);
 u8 *func_02133b68(u8 *p);
 void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
-u32 func_02133c68(ThrowContext *context, ExceptionInfo *info);
+u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
 void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
-void func_021279f4(void); // abort
+void abort(void); // abort
 void *func_020ec860(size_t size); // operator new[]
 void func_020ec848(void *p); // operator delete[]
 void func_02135578(void);
@@ -109,17 +109,17 @@ void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);
 u8 *func_02133da8(u8 *p, u32 *value);
 u8 *func_02133e50(u8 *p, s32 *value);
-u8 func_02134d70(ActionIterator *iter);
+u8 NextAction(ActionIterator *iter);
 u8 func_0213510c(ActionIterator *iter);
 void func_02135128(char *retaddr, ExceptionInfo *info);
-ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr);
-int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result);
+ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr);
+int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
 void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
-CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info);
-int func_02134308(const char *throwtype, ExSpecification *spec);
-void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
-u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
-void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset);
+CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info);
+int IsInSpecification(const char *throwtype, ExSpecification *spec);
+void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
+u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
+void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 }
 
 // __global_destructor_chain (autoload_3 bss 0x0220066c)
@@ -253,7 +253,7 @@ extern "C" void func_021355a8(void *array, size_t size, size_t padding, ObjFunc 
 
 // dthandler: default terminate handler
 extern "C" void func_0213559c(void) {
-    func_021279f4();
+    abort();
 }
 
 // terminate
@@ -271,7 +271,7 @@ extern "C" void *__register_global_object(void *object, void *destructor, void *
 }
 
 // __throw_catch_compare
-extern "C" int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result) {
+extern "C" int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result) {
     const char *cptr1;
     const char *cptr2;
 
@@ -377,7 +377,7 @@ extern "C" void func_021352b8(void) {
 }
 
 // binary search of the exception table index for the entry covering addr
-extern "C" ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr) {
+extern "C" ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr) {
     int lo = 0;
     int hi = count - 1;
     int mid;
@@ -410,7 +410,7 @@ extern "C" void func_02135128(char *retaddr, ExceptionInfo *info) {
     if (__FindExceptionTable(info, retaddr) == 0) {
         return;
     }
-    entry = func_0213524c((ExceptionTableIndex *)info->exception_table_start,
+    entry = BinarySearch((ExceptionTableIndex *)info->exception_table_start,
                           (info->exception_table_end - info->exception_table_start) / 12, retaddr);
     if (entry == 0) {
         return;

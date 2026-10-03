@@ -380,7 +380,7 @@ s32 _ZN12Unk_0204debc13func_0204e51cEPtii(u32 a, u32 b, u32 c, u32 d);
 void *func_020b27a4(u16 *t);
 u32 _ZN12Unk_020b28ac13func_020b29e4Ev(void *h);
 s32 _ZN12Unk_020b28ac13func_020b2958EPiS0_S0_j(void *h, Unk_0204d560_Vec *a, Unk_0204d560_Vec *b, Unk_0204d560_Vec *c, u32 i);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_02030814(s32 a);
 void func_02037638(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
 s32 func_0205b7fc();
@@ -1627,8 +1627,8 @@ extern "C" void func_0204d7fc(u16 *ret, void *m, s32 *pos, s32 *p4, s32 *p5, u16
                 }
             }
             d = (s32)_ZN12Unk_020b28ac13func_020b29e4Ev(h) * 3 << 12;
-            ax = func_01ffc5a4(sx, d);
-            az = func_01ffc5a4(sz, d);
+            ax = FX_Div(sx, d);
+            az = FX_Div(sz, d);
             zz = v.z + az + 0x1000;
             s32 yy = func_02030814(0);
             pos[0] = v.x + ax;

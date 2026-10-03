@@ -2,9 +2,9 @@
 #include "types.h"
 
 extern "C" {
-extern u8 func_02111a6c[];
-s32 func_01ffa494(u32 a);
-s32 func_0211c670();
+extern u8 GX_LoadBG2Scr[];
+s32 OS_SpinWait(u32 a);
+s32 PM_ForceToPowerOff();
 s32 func_ov001_022079fc();
 s32 func_ov001_02207a40(u32 a);
 s32 func_ov001_02208070();
@@ -122,7 +122,7 @@ void func_ov001_022100bc() {
 }
 
 void func_ov001_0221001c() {
-    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;

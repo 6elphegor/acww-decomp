@@ -16,7 +16,7 @@ u32 func_0212dcb4(const wchar_t *s) {
 }
 
 // wcscpy
-wchar_t *func_0212dc94(wchar_t *dst, const wchar_t *src) {
+wchar_t *wcscpy(wchar_t *dst, const wchar_t *src) {
     wchar_t *d = dst;
     while ((*d++ = *src++) != 0) {
     }

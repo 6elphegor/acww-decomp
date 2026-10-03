@@ -65,9 +65,9 @@ s32 MI_CpuCopy8(void *a, void *b, u32 c);
 s32 MI_CpuFill8(void *a, u32 b, u32 c);
 s32 func_0212b770(void *a);
 s32 memcmp(void *, const char *, s32);
-s32 func_0211172c(void);
+s32 GX_LoadBG2Char(void);
 s32 GX_LoadBGPltt(void);
-s32 func_02111a6c(void);
+s32 GX_LoadBG2Scr(void);
 
 void func_ov001_02217e40();
 void func_ov001_0221e44c();
@@ -140,9 +140,9 @@ void func_ov001_02214dd8() {
 
 void func_ov001_02214cfc() {
     func_ov001_02208594("char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
-    func_ov001_02208594("char/jbBgStep3.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594("char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594("char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
-    func_ov001_02208594("char/xb4EditAddr.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594("char/xb4EditAddr.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;

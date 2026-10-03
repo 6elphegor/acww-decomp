@@ -39,7 +39,7 @@ void OS_InitTick(void) {
 }
 
 // OS_IsTickAvailable
-u16 func_02114e38(void) {
+u16 OS_IsTickAvailable(void) {
     return data_021fcf1c;
 }
 
@@ -56,7 +56,7 @@ void OSi_CountUpTick(void) {
 }
 
 // OS_GetTick (low 16 bits)
-u16 func_02114da0(void) {
+u16 OS_GetTickLo(void) {
     return reg_OS_TM0CNT_L;
 }
 
@@ -66,7 +66,7 @@ void OSi_SetTimerReserved(s32 n) {
 }
 
 // OS_InitException
-void func_02114cf4(void) {
+void OS_InitException(void) {
     void *buf = *(void **)0x027ffd9c;
     if ((u32)buf >= 0x02600000 && (u32)buf < 0x02800000) {
         data_021fce94 = buf;

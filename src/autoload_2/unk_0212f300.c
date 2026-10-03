@@ -19,7 +19,7 @@ extern double data_0213c574[];
 extern float data_0213c31c;
 extern void func_02130628(decimal *, const u8 *, short);
 extern int func_02130030(const decimal *, const decimal *);
-extern int func_02130150(const decimal *, const decimal *);
+extern int __equals_dec(const decimal *, const decimal *);
 extern void func_0212fd74(decimal *, const decimal *, const decimal *);
 extern void func_0212fb1c(decimal *, double);
 extern double func_0212f2f4(double, double);
@@ -30,7 +30,6 @@ extern double copysign(double, double);
 #define ldexp func_0212f010
 #define __str2dec func_02130628
 #define __less_dec func_02130030
-#define __equals_dec func_02130150
 #define __minus_dec func_0212fd74
 #define __num2dec_internal func_0212fb1c
 #define INFINITY data_0213c31c

@@ -46,9 +46,9 @@ void func_ov001_0220d440();
 void func_ov001_0220f304();
 void func_ov001_0220e5ec();
 void func_ov001_0221aae4();
-void func_0211172c();
+void GX_LoadBG2Char();
 void GX_LoadBGPltt();
-void func_02111a6c();
+void GX_LoadBG2Scr();
 void func_ov001_0220d844();
 void func_ov001_0220d91c();
 void func_ov001_0220d97c();
@@ -68,8 +68,8 @@ void func_ov001_0220d9a8();
 void func_ov001_0220dc9c();
 void func_ov001_0220e044();
 void func_ov001_02208478(s32);
-void func_01ffa494(u32);
-void func_0211c670();
+void OS_SpinWait(u32);
+void PM_ForceToPowerOff();
 void func_ov001_0221df10();
 void *func_ov001_0222558c(s32, s32);
 void OS_GetMacAddress(void *);
@@ -118,7 +118,7 @@ extern "C" void func_ov001_0220e2cc() {
 }
 
 extern "C" void func_ov001_0220e22c() {
-    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;

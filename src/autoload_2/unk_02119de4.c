@@ -207,11 +207,11 @@ static inline BOOL IsIdle(volatile FSFile *f) {
 }
 
 int FSi_RomArchiveProc(FSFile *file, u32 cmd);
-u32 func_02119f8c(void);
-u32 func_02119f84(void);
-u32 func_0211a024(void);
-int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len);
-void func_0211a078(FSArc *arc);
+u32 FSi_ReadDummyCallback(void);
+u32 FSi_EmptyArchiveProc(void);
+u32 FSi_WriteDummyCallback(void);
+int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len);
+void FSi_OnRomReadDone(FSArc *arc);
 void FS_InitFile(FSFile *file);
 void FSi_InitRom(u32 dma);
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
@@ -219,14 +219,14 @@ BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
 BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path);
 BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
 s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
-s32 func_021198b4(FSFile *file, void *dst, s32 len);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
 BOOL FS_CloseFile(FSFile *file);
 BOOL FS_WaitAsync(FSFile *file);
 int FSi_ExecuteSyncCommand(FSFile *file);
 FSFile *FSi_NextCommand(volatile FSArc *arc);
 void FSi_ExecuteAsyncCommand(FSFile *file);
 BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
-void func_0211a258(FSOverlayInfoHeader *h);
+void FS_StartOverlay(FSOverlayInfoHeader *h);
 BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
 BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
 BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
@@ -256,17 +256,17 @@ void FSi_InitRom(u32 dma) {
         data_021fea84.size = 0;
         data_021fea8c.ptr = (u8 *)-1;
         data_021fea8c.size = 0;
-        FS_SetArchiveProc(&data_021fea94, (int (*)(FSFile *, u32))func_02119f84, -1);
-        FS_LoadArchive(&data_021fea94, 0, 0, 0, 0, 0, (int (*)(FSArc *, void *, u32, u32))func_02119f8c,
-                      (int (*)(FSArc *, void *, u32, u32))func_0211a024);
+        FS_SetArchiveProc(&data_021fea94, (int (*)(FSFile *, u32))FSi_EmptyArchiveProc, -1);
+        FS_LoadArchive(&data_021fea94, 0, 0, 0, 0, 0, (int (*)(FSArc *, void *, u32, u32))FSi_ReadDummyCallback,
+                      (int (*)(FSArc *, void *, u32, u32))FSi_WriteDummyCallback);
     } else {
         const FSROMTable *const fnt = GetFNT();
         const FSROMTable *const fat = GetFAT();
         FS_SetArchiveProc(&data_021fea94, FSi_RomArchiveProc, 0x602);
         if ((fnt->offset == 0xffffffff) || (fnt->offset == 0) || (fat->offset == 0xffffffff) || (fat->offset == 0)) {
         } else {
-            FS_LoadArchive(&data_021fea94, 0, fat->offset, fat->length, fnt->offset, fnt->length, func_0211a02c,
-                          (int (*)(FSArc *, void *, u32, u32))func_0211a024);
+            FS_LoadArchive(&data_021fea94, 0, fat->offset, fat->length, fnt->offset, fnt->length, FSi_ReadRomCallback,
+                          (int (*)(FSArc *, void *, u32, u32))FSi_WriteDummyCallback);
         }
     }
 }

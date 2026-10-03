@@ -305,7 +305,7 @@ extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
 char *func_02129f1c(const char *, const char *);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 func_0212b770(const char *);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -538,7 +538,7 @@ s32 func_ov065_022813ac(Ctx0228 **h, Node0228 *n) {
             }
             OS_SPrintf(b4, "%s%d%d", c->unk_177, c->unk_1a0, x);
             func_ov065_0227899c(b4, STD_GetStringLength(b4), b5);
-            if (func_0212a190(b3, b5) != 0) {
+            if (strcmp(b3, b5) != 0) {
                 func_ov065_0227de10(h, &n->unk_28, "\\anack\\");
                 func_ov065_0227de10(h, &n->unk_28, "\\final\\");
                 n->unk_00 = 0x6a;

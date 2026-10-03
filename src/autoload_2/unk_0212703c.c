@@ -40,7 +40,7 @@ extern void func_02133ae0(void);
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
 extern void func_0206d49c(void);
-extern void func_02117dcc(void);
+extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32, u32);
 extern void PXI_SetFifoRecvCallback(u32, void *);
 extern u32 OS_SetIrqMask(u32);
@@ -49,12 +49,12 @@ extern void DC_FlushAll(void);
 extern void DC_InvalidateRange(void *, u32);
 extern void MI_DmaCopy16(u32, u32, void *, u32);
 extern void MIi_CpuCopy32(u32, void *, u32);
-extern void func_0211b040(void *, void *);
+extern void DGT_Hash2GetDigest(void *, void *);
 extern void DGT_Hash2SetSource(void *, const void *, u32);
 extern void DGT_Hash2Reset(void *);
-extern void func_02126f30(u32);
+extern void CTRDGi_SendtoPxi(u32);
 extern void CTRDGi_UnlockByProcessor(u32, void *);
-extern void func_02126fbc(u32, void *);
+extern void CTRDGi_LockByProcessor(u32, void *);
 
 #define REG300 (*(volatile u16 *)0x04000300)
 #define REG208 (*(volatile u16 *)0x04000208)
@@ -98,31 +98,31 @@ typedef struct _FILE {
     void *ref_con;
 } FILE;
 extern FILE data_0213c238[3];
-extern s32 func_02128150(FILE *);
+extern s32 fflush(FILE *);
 extern u32 data_0213c320;
 extern void func_0213294c(u32);
-extern void func_02127c7c(FILE *);
+extern void __prep_buffer(FILE *);
 extern void func_02127cb0(u8 *, u32 *);
 extern void func_02127cb4(u8 *, u32 *);
 extern s32 func_0212c11c(FILE *, s32);
-extern void *func_02128a00(void *, const void *, u32);
+extern void *memcpy(void *, const void *, u32);
 extern u32 func_0213335c(u32, u32);
-extern s32 func_02127a3c(void);
-extern s32 func_02127be8(FILE *, u32 *, s32);
+extern s32 __flush_line_buffered_output_files(void);
+extern s32 __load_buffer(FILE *, u32 *, s32);
 /* prototypes */
 u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file);
 void func_02127cb4(u8 *buf, u32 *count);
 void func_02127cb0(u8 *buf, u32 *count);
-void func_02127c7c(FILE *file);
-s32 func_02127be8(FILE *file, u32 *bytes_loaded, s32 alignment);
-s32 func_02127b4c(FILE *file, u32 *bytes_flushed);
-s32 func_02127b40(s32 x);
+void __prep_buffer(FILE *file);
+s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment);
+s32 __flush_buffer(FILE *file, u32 *bytes_flushed);
+s32 abs(s32 x);
 s32 func_02127ad0(void);
-s32 func_02127a3c(void);
+s32 __flush_line_buffered_output_files(void);
 void nan(void);
-void func_021279f4(void);
+void abort(void);
 void func_021279a0(s32 status);
-void func_0212786c(s32 status);
+void __exit(s32 status);
 void func_021277fc(char *dst, const char *src, s32 n);
 u32 STD_GetStringLength(const char *s);
 u8 func_021276e0(const u8 *p, u32 len);
@@ -137,12 +137,12 @@ u16 MATH_CalcCRC16(const u16 *table, const void *data, u32 len);
 u32 MATH_CalcCRC32(const u32 *table, const void *data, u32 len);
 void MATH_CalcSHA1(void *digest, const void *data, u32 len);
 u32 MATH_CountPopulation(u32 x);
-void func_02127380(void);
-void func_021271b4(void);
-void func_02127178(u32 tag, u32 data);
+void CTRDG_Init(void);
+void CTRDGi_InitModuleInfo(void);
+void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data);
 void func_02127118(u32 tag, u32 data);
-void func_021270f8(void);
-void func_021270b8(void);
+void CTRDG_TerminateForPulledOut(void);
+void CTRDGi_InitCommon(void);
 void CTRDGi_ChangeLatestAccessCycle(Cycle *p);
 void CTRDGi_RestoreAccessCycle(Cycle *p);
 
@@ -178,7 +178,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
     }
 
     if (file->mode.buffer_mode & 1) {
-        if (func_02127a3c() != 0) {
+        if (__flush_line_buffered_output_files() != 0) {
             file->error = 1;
             file->buffer_len = 0;
             return 0;
@@ -207,7 +207,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
     if (bytes_to_go != 0 && (file->buffer_len != 0 || always_buffer)) {
         do {
             if (file->buffer_len == 0) {
-                ioresult = func_02127be8(file, NULL, 0);
+                ioresult = __load_buffer(file, NULL, 0);
                 if (ioresult != 0) {
                     if (ioresult == 1) {
                         file->error = 1;
@@ -223,7 +223,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
             }
             num_bytes = file->buffer_len;
             if (num_bytes > bytes_to_go) num_bytes = bytes_to_go;
-            func_02128a00(read_ptr, file->buffer_ptr, num_bytes);
+            memcpy(read_ptr, file->buffer_ptr, num_bytes);
             read_ptr += num_bytes;
             bytes_read += num_bytes;
             bytes_to_go -= num_bytes;
@@ -237,7 +237,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
         u32 save_size = file->buffer_size;
         file->buffer = read_ptr;
         file->buffer_size = bytes_to_go;
-        ioresult = func_02127be8(file, &num_bytes, 1);
+        ioresult = __load_buffer(file, &num_bytes, 1);
         if (ioresult != 0) {
             if (ioresult == 1) {
                 file->error = 1;
@@ -251,7 +251,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
         bytes_read += num_bytes;
         file->buffer = save_buffer;
         file->buffer_size = save_size;
-        func_02127c7c(file);
+        __prep_buffer(file);
         file->buffer_len = 0;
     }
 
@@ -267,7 +267,7 @@ void func_02127cb0(u8 *buf, u32 *count) {
 }
 
 // __prep_buffer
-void func_02127c7c(FILE *file) {
+void __prep_buffer(FILE *file) {
     file->buffer_ptr = file->buffer;
     file->buffer_len = file->buffer_size;
     file->buffer_len = file->buffer_len - (file->position & file->buffer_alignment);
@@ -275,9 +275,9 @@ void func_02127c7c(FILE *file) {
 }
 
 // __load_buffer
-s32 func_02127be8(FILE *file, u32 *bytes_loaded, s32 alignment) {
+s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment) {
     s32 ret;
-    func_02127c7c(file);
+    __prep_buffer(file);
     if (alignment == 1) file->buffer_len = file->buffer_size;
     ret = file->read_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
     if (ret == 2) file->buffer_len = 0;
@@ -289,7 +289,7 @@ s32 func_02127be8(FILE *file, u32 *bytes_loaded, s32 alignment) {
 }
 
 // __flush_buffer
-s32 func_02127b4c(FILE *file, u32 *bytes_flushed) {
+s32 __flush_buffer(FILE *file, u32 *bytes_flushed) {
     s32 ret;
     u32 n = file->buffer_ptr - file->buffer;
     if (n != 0) {
@@ -300,12 +300,12 @@ s32 func_02127b4c(FILE *file, u32 *bytes_flushed) {
         if (ret != 0) return ret;
         file->position += file->buffer_len;
     }
-    func_02127c7c(file);
+    __prep_buffer(file);
     return 0;
 }
 
 // abs
-s32 func_02127b40(s32 x) {
+s32 abs(s32 x) {
     if (x < 0) x = -x;
     return x;
 }
@@ -317,7 +317,7 @@ s32 func_02127ad0(void) {
     FILE *file = &data_0213c238[0];
     do {
         if (file->mode.file_kind != 0) {
-            if (func_02128150(file) != 0) result = -1;
+            if (fflush(file) != 0) result = -1;
         }
         file = (i < 3) ? &data_0213c238[i++] : NULL;
     } while (file != NULL);
@@ -325,13 +325,13 @@ s32 func_02127ad0(void) {
 }
 
 // __flush_line_buffered_output_files
-s32 func_02127a3c(void) {
+s32 __flush_line_buffered_output_files(void) {
     s32 result = 0;
     s32 i = 1;
     FILE *file = &data_0213c238[0];
     do {
         if (file->mode.file_kind != 0 && (file->mode.buffer_mode & 1) != 0 && file->state.io_state == 1) {
-            if (func_02128150(file) != 0) result = -1;
+            if (fflush(file) != 0) result = -1;
         }
         file = (i < 3) ? &data_0213c238[i++] : NULL;
     } while (file != NULL);
@@ -344,7 +344,7 @@ void nan(void) {
 }
 
 // MSL abort-style exit path
-void func_021279f4(void) {
+void abort(void) {
     func_02129dcc(1);
     data_0220014c = 1;
     func_021279a0(1);
@@ -359,11 +359,11 @@ void func_021279a0(s32 status) {
             data_02200144 = NULL;
         }
     }
-    func_0212786c(status);
+    __exit(status);
 }
 
 // MSL __exit: recursive exit-mutex lock, run atexit table, termination hook, shut down C library
-void func_0212786c(s32 status) {
+void __exit(s32 status) {
     if (OS_TryLockMutex(data_02200298) == 0) {
         data_02200250 = data_021fcc2c.cur->id;
         data_02200274 = 1;
@@ -384,7 +384,7 @@ void func_0212786c(s32 status) {
         data_02200140();
         data_02200140 = NULL;
     }
-    func_02128150(0);
+    fflush(0);
     func_02133ae0();
 }
 
@@ -571,7 +571,7 @@ void MATH_CalcSHA1(void *digest, const void *data, u32 len) {
     u8 ctx[0x68];
     DGT_Hash2Reset(ctx);
     DGT_Hash2SetSource(ctx, data, len);
-    func_0211b040(ctx, digest);
+    DGT_Hash2GetDigest(ctx, digest);
 }
 
 // MATH_CountPopulation
@@ -585,23 +585,23 @@ u32 MATH_CountPopulation(u32 x) {
     return x & 0xff;
 }
 
-// init: registers the two PXI callbacks on tag 13 and runs func_021271b4 once
-void func_02127380(void) {
+// init: registers the two PXI callbacks on tag 13 and runs CTRDGi_InitModuleInfo once
+void CTRDG_Init(void) {
     if (data_0220005c) return;
     data_0220005c = 1;
-    func_021270b8();
-    func_02117dcc();
+    CTRDGi_InitCommon();
+    PXI_Init();
     while (PXI_IsCallbackReady(13, 1) == 0) {
     }
-    PXI_SetFifoRecvCallback(13, func_02127178);
-    func_021271b4();
+    PXI_SetFifoRecvCallback(13, CTRDGi_CallbackForInitModuleInfo);
+    CTRDGi_InitModuleInfo();
     PXI_SetFifoRecvCallback(13, 0);
     PXI_SetFifoRecvCallback(13, func_02127118);
     data_02200060 = 0;
 }
 
 // cartridge/ROM-header init: copies header info to the shared work area at 0x027ffc30 (BIOS data at 0xffff0020)
-void func_021271b4(void) {
+void CTRDGi_InitModuleInfo(void) {
     u32 saved[2];
     Cycle cyc;
     u32 irq;
@@ -616,7 +616,7 @@ void func_021271b4(void) {
     irq = OS_SetIrqMask(0x40000);
     ime = REG208;
     REG208 = 1;
-    func_02126fbc(data_02200054[1], saved);
+    CTRDGi_LockByProcessor(data_02200054[1], saved);
     ex = (REG204 & 0x8000) >> 15;
     CTRDGi_ChangeLatestAccessCycle(&cyc);
     REG204 = (u16)(REG204 & ~0x8000);
@@ -635,7 +635,7 @@ void func_021271b4(void) {
     w->d = b->f_ac;
     MIi_CpuCopy32(0xffff0020, data_02200084, 0x9c);
     DC_FlushAll();
-    func_02126f30(((((u32)&data_02200080 - 0x02000000) >> 5) << 6) | 1);
+    CTRDGi_SendtoPxi(((((u32)&data_02200080 - 0x02000000) >> 5) << 6) | 1);
     while (data_02200054[0] != 1) {
         WaitByLoop(1);
     }
@@ -645,7 +645,7 @@ void func_021271b4(void) {
 }
 
 // PXI callback (tag 13): command 0x01 sets data_02200054[0] = 1
-void func_02127178(u32 tag, u32 data) {
+void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data) {
     if ((data & 0x3f) == 1) {
         data_02200054[0] = 1;
     } else {
@@ -659,20 +659,20 @@ void func_02127118(u32 tag, u32 data) {
         BOOL r = 0;
         if (data_02200060) r = data_02200060();
         if (r == 0) return;
-        func_021270f8();
+        CTRDG_TerminateForPulledOut();
     } else {
         func_0206d49c();
     }
 }
 
-// calls func_02126f30(2), then OS_Terminate
-void func_021270f8(void) {
-    func_02126f30(2);
+// calls CTRDGi_SendtoPxi(2), then OS_Terminate
+void CTRDG_TerminateForPulledOut(void) {
+    CTRDGi_SendtoPxi(2);
     func_0206d49c();
 }
 
 // clears the state at data_02200054 via CpuSet (fill) and stores OS_GetLockID() in its second halfword
-void func_021270b8(void) {
+void CTRDGi_InitCommon(void) {
     u32 zero = 0;
     CpuSet(&zero, data_02200054, 0x05000001);
     data_02200054[1] = (u16)OS_GetLockID();

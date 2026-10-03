@@ -172,40 +172,40 @@ extern RTCWork data_021feb90;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
-extern void func_02117dcc(void);
+extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
 extern void func_0206d49c(void);
 extern void OS_InitMutex(void *p);
-extern BOOL func_0211d518(void);
+extern BOOL RTCi_WriteRawStatus2Async(void);
 
 void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
 void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
 void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
 u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
-void func_0211cb60(u32 result, void *arg);
+void PMi_DummyCallback(u32 result, void *arg);
 void func_0211cb68(void);
 BOOL PMi_Lock(void);
 void PMi_SendPxiData(u32 data);
 u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
-u32 func_0211c790(u32 a);
+u32 PMi_SetLED(u32 a);
 u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg);
-u32 func_0211c834(u32 type, u16 *out);
+u32 PMi_ReadRegister(u32 type, u16 *out);
 u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg);
 u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg);
-u32 func_0211c6ac(PMCallback cb, void *arg);
+u32 PM_ForceToPowerOffAsync(PMCallback cb, void *arg);
 u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg);
 void PMi_CallCallbackAndUnlock(u32 result);
 u32 RtcBCD2HEX(u32 bcd);
-void func_0211bf60(u32 tag, u32 data, u32 err);
-void func_0211c95c(u32 tag, u32 data, u32 err);
+void TPi_TpCallback(u32 tag, u32 data, u32 err);
+void PMi_CommonCallback(u32 tag, u32 data, u32 err);
 u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
 // PMi_ReadRegister? (sync wrapper of PMi_ReadRegisterAsync)
-u32 func_0211c834(u32 type, u16 *out) {
+u32 PMi_ReadRegister(u32 type, u16 *out) {
     u32 result;
-    u32 r = PMi_ReadRegisterAsync(type, out, func_0211cb60, &result);
+    u32 r = PMi_ReadRegisterAsync(type, out, PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -237,9 +237,9 @@ u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg) {
 }
 
 // synchronous wrapper of PMi_SetLEDAsync
-u32 func_0211c790(u32 a) {
+u32 PMi_SetLED(u32 a) {
     u32 result;
-    u32 r = PMi_SetLEDAsync(a, func_0211cb60, &result);
+    u32 r = PMi_SetLEDAsync(a, PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -279,9 +279,9 @@ u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg) {
 }
 
 // PM_SetBackLight? (sync wrapper of PM_SetBackLightAsync)
-u32 func_0211c6c4(u32 a, u32 b) {
+u32 PM_SetBackLight(u32 a, u32 b) {
     u32 result;
-    u32 r = PM_SetBackLightAsync(a, b, func_0211cb60, &result);
+    u32 r = PM_SetBackLightAsync(a, b, PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -290,14 +290,14 @@ u32 func_0211c6c4(u32 a, u32 b) {
 }
 
 // PM utility command 14 (async)
-u32 func_0211c6ac(PMCallback cb, void *arg) {
+u32 PM_ForceToPowerOffAsync(PMCallback cb, void *arg) {
     return PM_SendUtilityCommandAsync(14, cb, arg);
 }
 
-// synchronous wrapper of func_0211c6ac
-u32 func_0211c670(void) {
+// synchronous wrapper of PM_ForceToPowerOffAsync
+u32 PM_ForceToPowerOff(void) {
     u32 result;
-    u32 r = func_0211c6ac(func_0211cb60, &result);
+    u32 r = PM_ForceToPowerOffAsync(PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -308,7 +308,7 @@ u32 func_0211c670(void) {
 // PM_GetBattery? (PMIC register 1 bit 0)
 u32 func_0211c618(u32 *p) {
     u16 v;
-    u32 r = func_0211c834(1, &v);
+    u32 r = PMi_ReadRegister(1, &v);
     if (r != 0) {
         return r;
     }
@@ -318,10 +318,10 @@ u32 func_0211c618(u32 *p) {
     return r;
 }
 
-// PM_GetBackLight? (PMIC register 0 via func_0211c834: bit 3 / bit 2)
+// PM_GetBackLight? (PMIC register 0 via PMi_ReadRegister: bit 3 / bit 2)
 u32 PM_GetBackLight(u32 *p1, u32 *p2) {
     u16 v;
-    u32 r = func_0211c834(0, &v);
+    u32 r = PMi_ReadRegister(0, &v);
     if (r != 0) {
         return r;
     }
@@ -351,7 +351,7 @@ u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
         }
         if (target != 0) {
             if (sync != 0) {
-                func_0211c790(target);
+                PMi_SetLED(target);
             } else {
                 PMi_SetLEDAsync(target, 0, 0);
             }
@@ -363,7 +363,7 @@ u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
         data_021feb3c = *(volatile u32 *)0x027ffc3c;
         if (target != 0) {
             if (sync != 0) {
-                func_0211c790(target);
+                PMi_SetLED(target);
             } else {
                 PMi_SetLEDAsync(target, 0, 0);
             }
@@ -398,9 +398,9 @@ u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg) {
 }
 
 // synchronous wrapper of PMi_SendLEDPatternCommandAsync
-u32 func_0211c3b4(u32 a) {
+u32 PMi_SendLEDPatternCommand(u32 a) {
     u32 result;
-    u32 r = PMi_SendLEDPatternCommandAsync(a, func_0211cb60, &result);
+    u32 r = PMi_SendLEDPatternCommandAsync(a, PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -421,9 +421,9 @@ u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg) {
 }
 
 // synchronous wrapper of PM_GetLEDPatternAsync (PM command 0x67, result through out)
-u32 func_0211c328(u32 *out) {
+u32 PM_GetLEDPattern(u32 *out) {
     u32 result;
-    u32 r = PM_GetLEDPatternAsync(out, func_0211cb60, &result);
+    u32 r = PM_GetLEDPatternAsync(out, PMi_DummyCallback, &result);
     if (r != 0) {
         return r;
     }
@@ -480,27 +480,27 @@ void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info) {
 }
 
 // PM_PrependPostSleepCallback? (PM callback list data_021feb38)
-void func_0211c268(PMCbInfo *info) {
+void PM_PrependPreSleepCallback(PMCbInfo *info) {
     PMi_PrependList(&data_021feb38, info);
 }
 
 // PM_AppendPreSleepCallback? (PM callback list data_021feb40)
-void func_0211c250(PMCbInfo *info) {
+void PM_AppendPostSleepCallback(PMCbInfo *info) {
     PMi_AppendList(&data_021feb40, info);
 }
 
 // PM_DeletePostSleepCallback? (PM callback list data_021feb38)
-void func_0211c238(PMCbInfo *info) {
+void PM_DeletePreSleepCallback(PMCbInfo *info) {
     PMi_DeleteList(&data_021feb38, info);
 }
 
 // PM_DeletePreSleepCallback? (PM callback list data_021feb40)
-void func_0211c220(PMCbInfo *info) {
+void PM_DeletePostSleepCallback(PMCbInfo *info) {
     PMi_DeleteList(&data_021feb40, info);
 }
 
 // TPi_TpCallback (PXI tag 6 receive callback); sample data comes from 0x027fffaa/ac
-void func_0211bf60(u32 tag, u32 data, u32 err) {
+void TPi_TpCallback(u32 tag, u32 data, u32 err) {
     u16 d = (u16)data;
     u16 type = (u16)((d & 0x7f00) >> 8);
     if (err) {
@@ -586,7 +586,7 @@ void TP_Init(void) {
         return;
     }
     data_021feaf0 = 1;
-    func_02117dcc();
+    PXI_Init();
     data_021feaf4.state = 0;
     data_021feaf4.busy = 0;
     data_021feaf4.index = 0;
@@ -596,7 +596,7 @@ void TP_Init(void) {
     data_021feaf4.pending = 0;
     while (!PXI_IsCallbackReady(6, 1)) {
     }
-    PXI_SetFifoRecvCallback(6, func_0211bf60);
+    PXI_SetFifoRecvCallback(6, TPi_TpCallback);
 }
 
 // TP_GetUserInfo: reads the touch calibration from the NVRAM user info copy (0x027ffc80 + 0x58)

@@ -67,7 +67,7 @@ extern s32 data_021c3070;
 extern s32 data_020c8cb8;
 extern Mtx43 data_0213c7e0;
 s32 _ZN12Unk_0203b35013func_0203bc3cEv(s32 a);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_020e94f8(Vec3 *v);
 void func_020e9888(Vec3 *v, s32 s);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
@@ -137,7 +137,7 @@ extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
-    s32 k = -func_01ffc5a4(0x60000, _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070));
+    s32 k = -FX_Div(0x60000, _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070));
     t.p.x = (x << 12) - 0x80000;
     t.p.y = -((z << 12) - 0x60000);
     t.p.z = k;

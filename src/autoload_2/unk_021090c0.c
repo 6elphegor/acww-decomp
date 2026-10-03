@@ -114,28 +114,28 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern void func_01ff9f5c(void);
 extern u32 _u32_div_f();
-extern void func_0210ac4c(void);
-extern void func_0210acec(void);
-extern void func_0210b1b0(void);
-extern void func_0210b260(void);
-extern void func_0210bf0c(void *);
-extern void *func_0210be9c();
-extern void *func_0210bfe8(void *, u32);
-extern void func_0210bfcc(void *);
-extern void func_0210e4e4(void);
+extern void NNSi_SndCaptureEndSleep(void);
+extern void NNSi_SndCaptureBeginSleep(void);
+extern void NNSi_SndCaptureMain(void);
+extern void NNSi_SndCaptureInit(void);
+extern void NNS_SndHeapClear(void *);
+extern void *NNS_SndHeapAlloc();
+extern void *NNS_SndHeapCreate(void *, u32);
+extern void NNS_SndHeapDestroy(void *);
+extern void NNSi_SndArcStrmMain(void);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern void NNSi_SndFaderUpdate(void *);
-extern s32 func_0210f00c(void *);
-extern void func_0210f048(void *, s32, s32);
+extern s32 NNSi_SndFaderGet(void *);
+extern void NNSi_SndFaderSet(void *, s32, s32);
 extern void NNSi_SndFaderInit(void *);
 extern void DC_InvalidateRange(void *, u32);
-extern void func_02116748(void *);
+extern void SND_ReadDriverInfo(void *);
 extern void SND_SetupChannelPcm();
 extern void SND_SetChannelPan(u32, u32);
 extern void SND_SetChannelVolume(u32, u32, u32);
 extern void SND_UnlockChannel(u32, u32);
 extern void SND_LockChannel(u32, u32);
-extern void func_02116968();
+extern void SND_SetTrackMute();
 extern void SND_SetupAlarm();
 extern void SND_StopTimer(u32, u32, u32, u32);
 extern void SND_StartTimer(u32, u32, u32, u32);
@@ -143,8 +143,8 @@ extern void SND_SetTrackAllocatableChannel();
 extern void SND_SetTrackPan();
 extern void SND_SetTrackPitch();
 extern void func_02116b54();
-extern void func_02116b7c();
-extern void func_02116ba8();
+extern void SND_SetPlayerGlobalVariable();
+extern void SND_SetPlayerLocalVariable();
 extern void SND_SetPlayerChannelPriority();
 extern void SND_SetPlayerVolume(u32, s32);
 extern void SND_SetPlayerTempoRatio();
@@ -157,42 +157,42 @@ extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
 extern u32 SND_RecvCommandReply(u32);
-extern u32 func_0211764c();
+extern u32 SND_ReadTrackInfo();
 extern u32 func_0211777c();
 extern s32 func_02117844(s32);
 extern s32 func_02117884();
 extern u32 SND_GetPlayerStatus(void);
 extern s32 SND_CalcChannelVolume(s32);
-extern void func_021167a8(u32);
-extern void func_0211c220(void *);
-extern void func_0211c238(void *);
-extern void func_0211c250(void *);
-extern void func_0211c268(void *);
+extern void SND_SetMasterVolume(u32);
+extern void PM_DeletePostSleepCallback(void *);
+extern void PM_DeletePreSleepCallback(void *);
+extern void PM_AppendPostSleepCallback(void *);
+extern void PM_PrependPreSleepCallback(void *);
 
 // in-unit prototypes
-void func_02109830(Seq *, u8);
-void func_02109a38(Seq *);
-void func_02109a98(NNSFndList *, Seq *);
-void func_021098f0(Seq *);
-void func_021099fc(Seq *);
-Seq *func_02109980(s32);
+void SetPlayerPriority(Seq *, u8);
+void InsertPrioList(Seq *);
+void InsertPlayerList(NNSFndList *, Seq *);
+void ShutdownPlayer(Seq *);
+void ForceStopSeq(Seq *);
+Seq *AllocSeqPlayer(s32);
 void NNS_SndHandleReleaseSeq(Handle *);
-void func_0210a544(Strm *, s32);
-void func_0210a5fc(Strm *);
+void StrmCallback(Strm *, s32);
+void ShutdownStrm(Strm *);
 void func_0210a630(Strm *);
-void func_0210a768(Strm *);
+void NNS_SndStrmStop(Strm *);
 void NNS_SndFreeAlarm(s32);
 s32 NNS_SndAllocAlarm(void);
-void func_02109b9c(Seq *, s32);
-void func_02109af4(Seq *);
-void func_02109894(HeapBlk *);
-void func_02109d20(void);
-void func_02109e94(void);
+void NNSi_SndPlayerStopSeq(Seq *, s32);
+void InitPlayer(Seq *);
+void PlayerHeapDisposeCallback(HeapBlk *);
+void NNSi_SndPlayerMain(void);
+void NNSi_SndPlayerInit(void);
 void NNSi_SndInitResourceMgr(void);
-u32 func_02109400(void);
-u32 func_02109498(u32, u32);
-u32 func_0210943c(u32, u32, u32);
-void func_021093f4(void);
+u32 BeginSleep(void);
+u32 NNS_SndReadDriverChannelInfo(u32, u32);
+u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
+void EndSleep(void);
 
 typedef struct TexSrt {
     u8 pad[0x18];
@@ -208,7 +208,7 @@ typedef struct TexSrt {
 #define FXM(a, b) ((s32)(((s64)(a) * (b)) >> 12))
 
 // NNS_SndStrmSetup
-BOOL func_0210a7f4(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval, StrmCb cb, void *arg)
+BOOL NNS_SndStrmSetup(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval, StrmCb cb, void *arg)
 {
     s32 i;
     u32 q;
@@ -216,7 +216,7 @@ BOOL func_0210a7f4(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval
     u32 t;
     u32 e;
     if (st->f.setup) {
-        func_0210a768(st);
+        NNS_SndStrmStop(st);
     }
     q = _u32_div_f(size, st->chCount * (interval << 5));
     st->blockSize = (q * interval) << 5;
@@ -246,26 +246,26 @@ BOOL func_0210a7f4(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 interval
     st->f.setup = 1;
     e = OS_DisableInterrupts();
     st->blkCount = 1;
-    func_0210a544(st, 0);
+    StrmCallback(st, 0);
     st->blkCount = interval;
     OS_RestoreInterrupts(e);
     return 1;
 }
 
 // NNS_SndStrmStart (start the stream timer; register the PM sleep callbacks)
-void func_0210a798(Strm *st)
+void NNS_SndStrmStart(Strm *st)
 {
     SND_StartTimer(st->chMask, 0, 1 << st->alarm, 0);
     if (st->f.started) {
         return;
     }
-    func_0211c268(&st->pm0);
-    func_0211c250(&st->pm1);
+    PM_PrependPreSleepCallback(&st->pm0);
+    PM_AppendPostSleepCallback(&st->pm1);
     st->f.started = 1;
 }
 
 // NNS_SndStrmStop-like: free the stream if it is set up
-void func_0210a768(Strm *st)
+void NNS_SndStrmStop(Strm *st)
 {
     if (!st->f.setup) {
         return;
@@ -274,7 +274,7 @@ void func_0210a768(Strm *st)
 }
 
 // NNS_SndStrmSetPlayPosition-like: per-channel pan/vol update from the position table
-void func_0210a6f4(Strm *st, u32 timer)
+void NNS_SndStrmSetVolume(Strm *st, u32 timer)
 {
     u32 ch;
     s32 i;
@@ -307,18 +307,18 @@ void func_0210a630(Strm *st)
     u32 t;
     if (st->f.started) {
         SND_StopTimer(st->chMask, 0, 1 << st->alarm, 0);
-        func_0211c238(&st->pm0);
-        func_0211c220(&st->pm1);
+        PM_DeletePreSleepCallback(&st->pm0);
+        PM_DeletePostSleepCallback(&st->pm1);
         st->f.started = 0;
         t = SND_GetCurrentCommandTag();
         SND_FlushCommand(1);
         SND_WaitForCommandProc(t);
     }
-    func_0210a5fc(st);
+    ShutdownStrm(st);
 }
 
 // NNSi_SndStrmRelease: free alarm, remove from stream list
-void func_0210a5fc(Strm *st)
+void ShutdownStrm(Strm *st)
 {
     NNS_SndFreeAlarm(st->alarm);
     NNS_FndRemoveListObject(&data_021fb6a8, st);
@@ -326,7 +326,7 @@ void func_0210a5fc(Strm *st)
 }
 
 // NNSi_SndStrmCallback: fill the next block through the user callback
-void func_0210a544(Strm *st, s32 flag)
+void StrmCallback(Strm *st, s32 flag)
 {
     u32 q = _u32_div_f(st->blockSize, st->blkCount);
     u32 off = q * st->blk;
@@ -343,7 +343,7 @@ void func_0210a544(Strm *st, s32 flag)
 }
 
 // NNS_SndStrmPause-like: stop timer and wait for the SND command
-void func_0210a4f0(Strm *st)
+void BeginSleep__stream(Strm *st)
 {
     u32 t;
     if (!st->f.started) {
@@ -356,7 +356,7 @@ void func_0210a4f0(Strm *st)
 }
 
 // NNS_SndStrmStop: drain to a block boundary then stop the SND timer
-void func_0210a478(Strm *st)
+void EndSleep__stream(Strm *st)
 {
     u32 e;
     if (!st->f.started) {
@@ -364,7 +364,7 @@ void func_0210a478(Strm *st)
     }
     while (st->blk != 0) {
         e = OS_DisableInterrupts();
-        func_0210a544(st, 1);
+        StrmCallback(st, 1);
         OS_RestoreInterrupts(e);
     }
     SND_StartTimer(st->chMask, 0, 1 << st->alarm, 0);
@@ -389,18 +389,18 @@ void NNS_SndPlayerSetAllocatableChannel(s32 i, u32 v)
 }
 
 // NNS_SndPlayerCreateHeap
-BOOL func_0210a388(s32 playerNo, void *heap, u32 size)
+BOOL NNS_SndPlayerCreateHeap(s32 playerNo, void *heap, u32 size)
 {
     HeapBlk *b;
     void *h;
-    b = func_0210be9c(heap, size + 20, func_02109894, 0, 0);
+    b = NNS_SndHeapAlloc(heap, size + 20, PlayerHeapDisposeCallback, 0, 0);
     if (b == 0) {
         return 0;
     }
     b->seq = 0;
     b->playerNo = playerNo;
     b->heap = 0;
-    h = func_0210bfe8((u8 *)b + 20, size);
+    h = NNS_SndHeapCreate((u8 *)b + 20, size);
     if (h == 0) {
         return 0;
     }
@@ -410,13 +410,13 @@ BOOL func_0210a388(s32 playerNo, void *heap, u32 size)
 }
 
 // NNS_SndHandleStop(handle, fadeFrames)
-void func_0210a378(Handle *h, s32 frames)
+void NNS_SndPlayerStopSeq(Handle *h, s32 frames)
 {
-    func_02109b9c(h->seq, frames);
+    NNSi_SndPlayerStopSeq(h->seq, frames);
 }
 
 // NNS_SndPlayerStopSeq(playerNo, fadeFrames)
-void func_0210a310(s32 playerNo, s32 frames)
+void NNS_SndPlayerStopSeqByPlayerNo(s32 playerNo, s32 frames)
 {
     s32 i;
     Seq *s;
@@ -425,25 +425,25 @@ void func_0210a310(s32 playerNo, s32 frames)
     s = data_021fade4;
     for (i = 0; i < 16; i++, s++) {
         if (s->status != 0 && s->player == p) {
-            func_02109b9c(s, frames);
+            NNSi_SndPlayerStopSeq(s, frames);
         }
     }
 }
 
 // NNS_SndPlayerStopSeqBySeqNo-like (a, b, fadeFrames)
-void func_0210a2a0(u32 a, u32 b, s32 c)
+void NNS_SndPlayerStopSeqBySeqNo(u32 a, u32 b, s32 c)
 {
     s32 i;
     Seq *s = data_021fade4;
     for (i = 0; i < 16; i++, s++) {
         if (s->status != 0 && s->cmd == 2 && s->a38 == a && s->a3a == b) {
-            func_02109b9c(s, c);
+            NNSi_SndPlayerStopSeq(s, c);
         }
     }
 }
 
 // NNS_SndHandleInit
-void func_0210a294(Handle *h)
+void NNS_SndHandleInit(Handle *h)
 {
     h->seq = 0;
 }
@@ -477,7 +477,7 @@ void NNS_SndPlayerSetInitialVolume(Handle *h, u8 v)
 }
 
 // NNS_SndHandleSetMasterVolume-like (fader target, frames)
-void func_0210a214(Handle *h, s32 v, s32 frames)
+void NNS_SndPlayerMoveVolume(Handle *h, s32 v, s32 frames)
 {
     Seq *s = h->seq;
     if (s == 0) {
@@ -486,7 +486,7 @@ void func_0210a214(Handle *h, s32 v, s32 frames)
     if (s->status == 2) {
         return;
     }
-    func_0210f048(s->fader, v << 8, frames);
+    NNSi_SndFaderSet(s->fader, v << 8, frames);
 }
 
 // NNS_SndHandleSetPriority
@@ -495,11 +495,11 @@ void func_0210a1e8(Handle *h, u8 prio)
     if (h->seq == 0) {
         return;
     }
-    func_02109830(h->seq, prio);
+    SetPlayerPriority(h->seq, prio);
 }
 
 // NNS_SndHandleSetTempoRatio-like
-void func_0210a1b8(Handle *h, u32 b)
+void NNS_SndPlayerSetChannelPriority(Handle *h, u32 b)
 {
     if (h->seq == 0) {
         return;
@@ -513,7 +513,7 @@ void func_0210a188(Handle *h, u32 b, u32 c)
     if (h->seq == 0) {
         return;
     }
-    func_02116968(h->seq->id, b, c);
+    SND_SetTrackMute(h->seq->id, b, c);
 }
 
 // NNS_SndHandleSetTrackPan-like (volume table lookup)
@@ -526,7 +526,7 @@ void func_0210a148(Handle *h, u32 b, s32 c)
 }
 
 // NNS_SndHandleSetTrackModDepth-like
-void func_0210a118(Handle *h, u32 b, u32 c)
+void NNS_SndPlayerSetTrackPitch(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
         return;
@@ -535,7 +535,7 @@ void func_0210a118(Handle *h, u32 b, u32 c)
 }
 
 // NNS_SndHandleSetTrackPitchBend-like
-void func_0210a0e8(Handle *h, u32 b, u32 c)
+void NNS_SndPlayerSetTrackPan(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
         return;
@@ -602,14 +602,14 @@ BOOL func_02109fd0(Handle *h, u32 b, u32 c)
     if (h->seq == 0) {
         return 0;
     }
-    func_02116ba8(h->seq->id, b, c);
+    SND_SetPlayerLocalVariable(h->seq->id, b, c);
     return 1;
 }
 
 // NNS_SndSetGlobalVariable-like
 BOOL func_02109fb4(u32 a, u32 b)
 {
-    func_02116b7c(a, b);
+    SND_SetPlayerGlobalVariable(a, b);
     return 1;
 }
 
@@ -619,7 +619,7 @@ u32 func_02109f80(Handle *h, u32 b)
     if (h->seq == 0) {
         return 0;
     }
-    return func_02109498(h->seq->id, b);
+    return NNS_SndReadDriverChannelInfo(h->seq->id, b);
 }
 
 // NNS_SndHandleGetTrackInfo-like
@@ -628,11 +628,11 @@ u32 func_02109f4c(Handle *h, u32 b, u32 c)
     if (h->seq == 0) {
         return 0;
     }
-    return func_0210943c(h->seq->id, b, c);
+    return NNSi_SndReadDriverTrackInfo(h->seq->id, b, c);
 }
 
 // NNSi_SndPlayerInit: init seq player lists/free list and 32 players
-void func_02109e94(void)
+void NNSi_SndPlayerInit(void)
 {
     s32 i;
     Seq *s;
@@ -656,7 +656,7 @@ void func_02109e94(void)
 }
 
 // NNSi_SndPlayerMain: per-frame seq player update (volume, fade, release)
-void func_02109d20(void)
+void NNSi_SndPlayerMain(void)
 {
     u32 mask = SND_GetPlayerStatus();
     Seq *s = NNS_FndGetNextListObject(&data_021fadd8, 0);
@@ -674,13 +674,13 @@ void func_02109d20(void)
             }
         }
         if (s->started != 0 && (mask & (1 << s->id)) == 0) {
-            func_021098f0(s);
+            ShutdownPlayer(s);
         } else {
             NNSi_SndFaderUpdate(s->fader);
             a = data_02139fb4[s->v41];
             b = data_02139fb4[s->v40];
             c = data_02139fb4[s->player->vol];
-            d = data_02139fb4[func_0210f00c(s->fader) >> 8];
+            d = data_02139fb4[NNSi_SndFaderGet(s->fader) >> 8];
             vol = d + (c + (b + a));
             if (vol < -723) {
                 vol = -723;
@@ -693,7 +693,7 @@ void func_02109d20(void)
             }
             if (s->status == 2) {
                 if (NNSi_SndFaderIsFinished(s->fader) != 0) {
-                    func_021099fc(s);
+                    ForceStopSeq(s);
                 }
             }
             if (s->pending != 0) {
@@ -706,7 +706,7 @@ void func_02109d20(void)
 }
 
 // NNSi_SndPlayerAllocSeqPlayer(handle, playerNo, prio)
-Seq *func_02109c64(Handle *h, s32 playerNo, s32 prio)
+Seq *NNSi_SndPlayerAllocSeqPlayer(Handle *h, s32 playerNo, s32 prio)
 {
     Player *p = &data_021fb224[playerNo];
     Seq *s = h->seq;
@@ -721,40 +721,40 @@ Seq *func_02109c64(Handle *h, s32 playerNo, s32 prio)
         if (prio < o->prio) {
             return 0;
         }
-        func_021099fc(o);
+        ForceStopSeq(o);
     }
-    s = func_02109980(prio);
+    s = AllocSeqPlayer(prio);
     if (s == 0) {
         return 0;
     }
-    func_02109a98(&p->seqList, s);
+    InsertPlayerList(&p->seqList, s);
     s->handle = h;
     h->seq = s;
     return s;
 }
 
-// tail to func_021098f0
-void func_02109c58(Seq *s)
+// tail to ShutdownPlayer
+void NNSi_SndPlayerFreeSeqPlayer(Seq *s)
 {
-    func_021098f0(s);
+    ShutdownPlayer(s);
 }
 
 // NNSi_SndPlayerStartSeq (SND_StartSeq command)
-void func_02109bfc(Seq *s)
+void NNSi_SndPlayerStartSeq(Seq *s)
 {
     Player *p = s->player;
     SND_PrepareSeq(s->id);
     if (p->bank != 0) {
         SND_SetTrackAllocatableChannel(s->id, 0xffff, p->bank);
     }
-    func_02109af4(s);
+    InitPlayer(s);
     s->tag = SND_GetCurrentCommandTag();
     s->pending = 1;
     s->status = 1;
 }
 
 // NNSi_SndPlayerStopSeq(seq, fadeFrames)
-void func_02109b9c(Seq *s, s32 frames)
+void NNSi_SndPlayerStopSeq(Seq *s, s32 frames)
 {
     if (s == 0) {
         return;
@@ -763,16 +763,16 @@ void func_02109b9c(Seq *s, s32 frames)
         return;
     }
     if (frames == 0) {
-        func_021099fc(s);
+        ForceStopSeq(s);
         return;
     }
-    func_0210f048(s->fader, 0, frames);
-    func_02109830(s, 0);
+    NNSi_SndFaderSet(s->fader, 0, frames);
+    SetPlayerPriority(s, 0);
     s->status = 2;
 }
 
 // NNSi_SndPlayerAllocHeap(playerNo, seq)
-void *func_02109b40(s32 playerNo, Seq *seq)
+void *NNSi_SndPlayerAllocHeap(s32 playerNo, Seq *seq)
 {
     Player *p = &data_021fb224[playerNo];
     HeapBlk *b = NNS_FndGetNextListObject(&p->heapList, 0);
@@ -782,12 +782,12 @@ void *func_02109b40(s32 playerNo, Seq *seq)
     NNS_FndRemoveListObject(&p->heapList, b);
     b->seq = seq;
     seq->heap = b;
-    func_0210bf0c(b->heap);
+    NNS_SndHeapClear(b->heap);
     return b->heap;
 }
 
 // NNSi_SndSeqPlayerInit
-void func_02109af4(Seq *s)
+void InitPlayer(Seq *s)
 {
     s->f2e = 0;
     s->started = 0;
@@ -797,11 +797,11 @@ void func_02109af4(Seq *s)
     s->v40 = 127;
     s->v41 = 127;
     NNSi_SndFaderInit(s->fader);
-    func_0210f048(s->fader, 0x7f00, 1);
+    NNSi_SndFaderSet(s->fader, 0x7f00, 1);
 }
 
 // insert seq into a player list sorted by priority
-void func_02109a98(NNSFndList *l, Seq *s)
+void InsertPlayerList(NNSFndList *l, Seq *s)
 {
     Seq *o = NNS_FndGetNextListObject(l, 0);
     while (o != 0) {
@@ -815,7 +815,7 @@ void func_02109a98(NNSFndList *l, Seq *s)
 }
 
 // insert seq into the global priority list
-void func_02109a38(Seq *s)
+void InsertPrioList(Seq *s)
 {
     Seq *o = NNS_FndGetNextListObject(&data_021fadd8, 0);
     while (o != 0) {
@@ -828,17 +828,17 @@ void func_02109a38(Seq *s)
 }
 
 // force-stop and free a seq player
-void func_021099fc(Seq *s)
+void ForceStopSeq(Seq *s)
 {
     if (s->status == 2) {
         SND_SetPlayerVolume(s->id, -723);
     }
     SND_StopSeq(s->id);
-    func_021098f0(s);
+    ShutdownPlayer(s);
 }
 
 // allocate a seq player (steal the lowest priority if none is free)
-Seq *func_02109980(s32 prio)
+Seq *AllocSeqPlayer(s32 prio)
 {
     Seq *s = NNS_FndGetNextListObject(&data_021fadcc, 0);
     if (s == 0) {
@@ -846,16 +846,16 @@ Seq *func_02109980(s32 prio)
         if (prio < s->prio) {
             return 0;
         }
-        func_021099fc(s);
+        ForceStopSeq(s);
     }
     NNS_FndRemoveListObject(&data_021fadcc, s);
     s->prio = prio;
-    func_02109a38(s);
+    InsertPrioList(s);
     return s;
 }
 
 // free a seq player
-void func_021098f0(Seq *s)
+void ShutdownPlayer(Seq *s)
 {
     Player *p;
     if (s->handle != 0) {
@@ -876,12 +876,12 @@ void func_021098f0(Seq *s)
 }
 
 // player heap block free callback
-void func_02109894(HeapBlk *b)
+void PlayerHeapDisposeCallback(HeapBlk *b)
 {
     if (b->heap == 0) {
         return;
     }
-    func_0210bfcc(b->heap);
+    NNS_SndHeapDestroy(b->heap);
     if (b->seq != 0) {
         b->seq->heap = 0;
         return;
@@ -890,7 +890,7 @@ void func_02109894(HeapBlk *b)
 }
 
 // set seq priority and reinsert it in the lists
-void func_02109830(Seq *s, u8 prio)
+void SetPlayerPriority(Seq *s, u8 prio)
 {
     Player *p = s->player;
     if (p != 0) {
@@ -900,13 +900,13 @@ void func_02109830(Seq *s, u8 prio)
     NNS_FndRemoveListObject(&data_021fadd8, s);
     s->prio = prio;
     if (p != 0) {
-        func_02109a98(&p->seqList, s);
+        InsertPlayerList(&p->seqList, s);
     }
-    func_02109a38(s);
+    InsertPrioList(s);
 }
 
 // NNSi_SndLockChannel (mask)
-BOOL func_021097dc(u32 m)
+BOOL NNS_SndLockChannel(u32 m)
 {
     if (m == 0) {
         return 1;
@@ -920,7 +920,7 @@ BOOL func_021097dc(u32 m)
 }
 
 // NNSi_SndUnlockChannel (mask)
-void func_021097a4(u32 m)
+void NNS_SndUnlockChannel(u32 m)
 {
     if (m == 0) {
         return;
@@ -975,43 +975,43 @@ void NNSi_SndInitResourceMgr(void)
 
 // NNS_SndInit
 // NNS_SndInit
-void func_0210962c(void)
+void NNS_SndInit(void)
 {
     if (data_021f89dc != 0) {
         return;
     }
     data_021f89dc = 1;
     SND_Init();
-    data_021f89e0.cb = (void (*)(void *))func_02109400;
+    data_021f89e0.cb = (void (*)(void *))BeginSleep;
     data_021f89e0.arg = 0;
-    data_021f89ec.cb = (void (*)(void *))func_021093f4;
+    data_021f89ec.cb = (void (*)(void *))EndSleep;
     data_021f89ec.arg = 0;
-    func_0211c268(&data_021f89e0);
-    func_0211c250(&data_021f89ec);
+    PM_PrependPreSleepCallback(&data_021f89e0);
+    PM_AppendPostSleepCallback(&data_021f89ec);
     NNSi_SndInitResourceMgr();
-    func_0210b260();
-    func_02109e94();
+    NNSi_SndCaptureInit();
+    NNSi_SndPlayerInit();
     data_021f89d0 = -1;
     data_021f89d4 = 1;
 }
 
 // NNS_SndMain
 // NNS_SndMain
-void func_021095f8(void)
+void NNS_SndMain(void)
 {
     s32 z = 0;
     while (SND_RecvCommandReply(z) != 0) {
     }
-    func_02109d20();
-    func_0210b1b0();
-    func_0210e4e4();
+    NNSi_SndPlayerMain();
+    NNSi_SndCaptureMain();
+    NNSi_SndArcStrmMain();
     SND_FlushCommand(0);
 }
 
-// tail to func_021167a8
-void func_021095ec(u32 a)
+// tail to SND_SetMasterVolume
+void NNS_SndSetMasterVolume(u32 a)
 {
-    func_021167a8(a);
+    SND_SetMasterVolume(a);
 }
 
 // NNS_SndUpdateDriverInfo-like (double-buffered SND_UpdateDriverInfo)
@@ -1024,7 +1024,7 @@ BOOL func_021094f8(void)
         if (data_021f89d0 < 0) {
             data_021f89d0 = 1;
         }
-        func_02116748(&data_021f8a00[data_021f89d0]);
+        SND_ReadDriverInfo(&data_021f8a00[data_021f89d0]);
         data_021f89d8 = SND_GetCurrentCommandTag();
         if (data_021f89d0 == 0) {
             data_021f89d0 = 1;
@@ -1034,7 +1034,7 @@ BOOL func_021094f8(void)
         DC_InvalidateRange(&data_021f8a00[data_021f89d0], sizeof(SndBuf));
         return 1;
     } else {
-        func_02116748(data_021f8a00);
+        SND_ReadDriverInfo(data_021f8a00);
         data_021f89d8 = SND_GetCurrentCommandTag();
         data_021f89d4 = 0;
         return 0;
@@ -1042,7 +1042,7 @@ BOOL func_021094f8(void)
 }
 
 // read channel info from the current driver info buffer
-u32 func_02109498(u32 a, u32 b)
+u32 NNS_SndReadDriverChannelInfo(u32 a, u32 b)
 {
     SndBuf *p;
     if (data_021f89d0 < 0) {
@@ -1057,7 +1057,7 @@ u32 func_02109498(u32 a, u32 b)
 }
 
 // read track/player info from the current driver info buffer
-u32 func_0210943c(u32 a, u32 b, u32 c)
+u32 NNSi_SndReadDriverTrackInfo(u32 a, u32 b, u32 c)
 {
     SndBuf *p;
     if (data_021f89d0 < 0) {
@@ -1068,24 +1068,24 @@ u32 func_0210943c(u32 a, u32 b, u32 c)
     if (p == 0) {
         return 0;
     }
-    return func_0211764c(p, a, b, c);
+    return SND_ReadTrackInfo(p, a, b, c);
 }
 
 // PM pre-sleep callback body: stop sound
-u32 func_02109400(void)
+u32 BeginSleep(void)
 {
     u32 t;
-    func_0210acec();
+    NNSi_SndCaptureBeginSleep();
     SND_StopTimer(0, 0, 0, 0);
     t = SND_GetCurrentCommandTag();
     SND_FlushCommand(1);
     return SND_WaitForCommandProc(t);
 }
 
-// PM post-sleep callback (tail to func_0210ac4c)
-void func_021093f4(void)
+// PM post-sleep callback (tail to NNSi_SndCaptureEndSleep)
+void EndSleep(void)
 {
-    func_0210ac4c();
+    NNSi_SndCaptureEndSleep();
 }
 
 // g3d texture SRT -> texture matrix (elements 0,1,4,5,12,13): scale + rotation + translation
@@ -1111,7 +1111,7 @@ void func_02109294(s32 *m, TexSrt *t)
 }
 
 // rotation + translation
-void func_021091a8(s32 *m, TexSrt *t)
+void texmtxCalc_flagS___xsi(s32 *m, TexSrt *t)
 {
     s32 w = t->w << 12;
     s32 h = t->h << 12;
@@ -1129,7 +1129,7 @@ void func_021091a8(s32 *m, TexSrt *t)
 }
 
 // scale + translation
-void func_02109120(s32 *m, TexSrt *t)
+void texmtxCalc_flagR___xsi(s32 *m, TexSrt *t)
 {
     s32 tx, ty;
     m[0] = t->sx; m[5] = t->sy; m[1] = 0;
@@ -1140,7 +1140,7 @@ void func_02109120(s32 *m, TexSrt *t)
 }
 
 // translation only
-void func_021090c0(s32 *m, TexSrt *t)
+void texmtxCalc_flagRS___xsi(s32 *m, TexSrt *t)
 {
     s32 tx, ty;
     m[0] = 0x1000; m[5] = 0x1000; m[1] = 0;

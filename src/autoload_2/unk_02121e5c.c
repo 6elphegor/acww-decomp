@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
-// MB/WH-style peer module: func_02121e5c (send next child block / cache miss -> task load), autoload_2 0x02121e5c-0x02122114.
-// ARM code, mwcc 1.2/base, flags -nothumb -O4,p. Header = S015b/unit.c header (prototypes fixed: func_02126e00 / func_02123f24).
+// MB/WH-style peer module: MBi_CommParentSendBlock (send next child block / cache miss -> task load), autoload_2 0x02121e5c-0x02122114.
+// ARM code, mwcc 1.2/base, flags -nothumb -O4,p. Header = S015b/unit.c header (prototypes fixed: MBi_MakeParentSendBuffer / MBi_BlockHeaderEnd).
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -76,7 +76,7 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *func_0211f00c(void);
+extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
@@ -86,23 +86,23 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern u32 MATH_CountPopulation(u32);
-extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
+extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
-extern void func_02120b0c(WMPool *ds, BOOL flag);
+extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
-extern u32 func_02122e24(u32, u32, u16 *);
+extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
-void func_02120c98(WMPool *ds, u32 n, u16 *buf);
+void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
 void func_02120da4(WMMsg *msg);
-void func_02120ed4(WMMsg *msg);
+void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 void func_02120fe8(WMMsg *msg);
 u32 func_021214b4(WMPool *ds);
-u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
+u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
-extern void func_02120c98(WMPool *ds, u32 n, u16 *buf);
+extern void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
 extern void func_02120da4(WMMsg *msg);
-extern void func_02120ed4(WMMsg *msg);
-extern u32 func_02121e5c(void);
+extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
+extern u32 MBi_CommParentSendBlock(void);
 
 typedef struct {
     u32 w0;
@@ -152,17 +152,17 @@ typedef struct {
 #define ENT(c, i) ((Ent *)((u8 *)(c) + (i) * 0x5d4))
 
 extern Ctx *data_0220001c;
-extern u32 func_02122360(u32, u32);
-extern u32 func_021221b0(u32);
-extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
-extern u32 func_02126e00(void *msg, void *dst);
-extern u32 func_021266c0(void *, u32, u32, u32);
+extern u32 MBi_CommParentSendMsg(u32, u32);
+extern u32 MBi_CommParentSendDLFileInfo(u32);
+extern u32 MBi_get_blockinfo(void *out, void *arr, u32 count, void *ent);
+extern u32 MBi_MakeParentSendBuffer(void *msg, void *dst);
+extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
-extern void func_0212683c(void *, void *, u32, u32);
-extern u32 func_02123f24(u32, u32, void *);
+extern void MBi_SetTask(void *, void *, u32, u32);
+extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern void func_0206d49c(void);
 extern u32 func_02122114(void);
-u32 func_02121e5c(void);
+u32 MBi_CommParentSendBlock(void);
 void func_02121c60(u32 idx);
 
 typedef struct {
@@ -172,7 +172,7 @@ typedef struct {
 } SlotBuf;
 
 // next child with pending data: send its block header, then read the block from the slot cache or start a cache load
-u32 func_02121e5c(void) {
+u32 MBi_CommParentSendBlock(void) {
     Msg2126e00 msg;
     Out2123294 out;
     u8 i;
@@ -183,7 +183,7 @@ u32 func_02121e5c(void) {
     }
     if (i == 16) return 21;
     func_02121c60(data_0220001c->cur);
-    if (func_02123294(&out, (u8 *)data_0220001c + 0x1d2c + data_0220001c->cur * 0x5d4, ENT(data_0220001c, data_0220001c->cur)->f1d48,
+    if (MBi_get_blockinfo(&out, (u8 *)data_0220001c + 0x1d2c + data_0220001c->cur * 0x5d4, ENT(data_0220001c, data_0220001c->cur)->f1d48,
                       (u8 *)data_0220001c + 0x1788 + data_0220001c->cur * 0x5d4) == 0) {
         return 21;
     }
@@ -191,10 +191,10 @@ u32 func_02121e5c(void) {
     msg.idx = data_0220001c->cur;
     msg.len = ENT(data_0220001c, data_0220001c->cur)->f1d48;
     {
-        u32 r = func_02126e00(&msg, data_0220001c);
+        u32 r = MBi_MakeParentSendBuffer(&msg, data_0220001c);
         u32 addr = out.w8 - ENT(data_0220001c, data_0220001c->cur)->a1d2c[out.wc] + ENT(data_0220001c, data_0220001c->cur)->f1d58[out.wc];
         SlotBuf *buf = (SlotBuf *)ENT(data_0220001c, data_0220001c->cur)->f1d54;
-        if (func_021266c0(buf, addr, r, out.w4) == 0) {
+        if (MBi_ReadFromCache(buf, addr, r, out.w4) == 0) {
             void *job = (u8 *)data_0220001c + 0x7ce0;
             if (MBi_IsTaskBusy(job) == 0 && buf->f0 != 0) {
                 Slot *slot = buf->slot;
@@ -213,11 +213,11 @@ u32 func_02121e5c(void) {
                 best->f0 = addr & ~31;
                 ((u32 *)job)[4] = (u32)best;
                 ((u32 *)job)[5] = (u32)buf;
-                func_0212683c(job, func_02122114, 0, 4);
+                MBi_SetTask(job, func_02122114, 0, 4);
             }
             return 21;
         } else {
-            return func_02123f24(out.w4 + 6, ENT(data_0220001c, data_0220001c->cur)->f1d4c, data_0220001c);
+            return MBi_BlockHeaderEnd(out.w4 + 6, ENT(data_0220001c, data_0220001c->cur)->f1d4c, data_0220001c);
         }
     }
     return 21;

@@ -66,8 +66,8 @@ typedef struct TextRect { s32 width; s32 height; } TextRect;
 
 void func_02101818(void);
 u32 func_02101834(u32 key);
-u32 func_0210183c(u32 szByte, BOOL b4pltt, u32 opt);
-extern s32 func_021035d4(void *file, Font *font);
+u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt);
+extern s32 NNSi_G2dGetUnpackedFont(void *file, Font *font);
 extern u32 NNSi_G2dSplitCharUTF16(const void **);
 
 static inline BOOL AllocHead(u32 szByte, BOOL b4pltt, u32 *pAddr) {
@@ -106,13 +106,13 @@ static inline BOOL AllocTail(u32 szByte, BOOL b4pltt, u32 *pAddr) {
     return tail;
 }
 
-s32 func_02101b44(Font *font, s32 hSpace, const void *txt, const void **next);
-CharWidths *func_02101c08(Font *font, u32 idx);
-u32 func_02101c6c(Font *font, u32 c);
-u32 func_02101d10(FontCodeMap *map, u32 c);
+s32 NNSi_G2dFontGetStringWidth(Font *font, s32 hSpace, const void *txt, const void **next);
+CharWidths *NNS_G2dFontGetCharWidthsFromIndex(Font *font, u32 idx);
+u32 NNS_G2dFontFindGlyphIndex(Font *font, u32 c);
+u32 GetGlyphIndex(FontCodeMap *map, u32 c);
 
 // NNSi_G2dGetGlyphIndex (code map lookup)
-u32 func_02101d10(FontCodeMap *m, u32 c) {
+u32 GetGlyphIndex(FontCodeMap *m, u32 c) {
     u16 index = 0xffff;
     switch (m->mappingMethod) {
     case 0:
@@ -141,24 +141,24 @@ u32 func_02101d10(FontCodeMap *m, u32 c) {
 }
 
 // NNS_G2dFontInit* (font file init: width-table stride from the file, character splitter = NNSi_G2dSplitCharUTF16)
-void func_02101ccc(Font *font, void *file) {
-    font->hasLeft = (u16)(func_021035d4(file, font) - 1);
+void NNS_G2dFontInitUTF16(Font *font, void *file) {
+    font->hasLeft = (u16)(NNSi_G2dGetUnpackedFont(file, font) - 1);
     font->stride = font->hasLeft != 0 ? 2 : 3;
     font->getChar = NNSi_G2dSplitCharUTF16;
 }
 
 // NNS_G2dFontGetGlyphIndexFromCharCode
-u32 func_02101c6c(Font *font, u32 c) {
+u32 NNS_G2dFontFindGlyphIndex(Font *font, u32 c) {
     FontCodeMap *m = font->info->pMap;
     while (m != 0) {
-        if (m->ccodeBegin <= c && c <= m->ccodeEnd) return func_02101d10(m, c);
+        if (m->ccodeBegin <= c && c <= m->ccodeEnd) return GetGlyphIndex(m, c);
         m = m->next;
     }
     return 0xffff;
 }
 
 // NNS_G2dFontGetCharWidthsFromIndex
-CharWidths *func_02101c08(Font *font, u32 idx) {
+CharWidths *NNS_G2dFontGetCharWidthsFromIndex(Font *font, u32 idx) {
     FontWidth *w = font->info->pWidth;
     while (w != 0) {
         if (w->indexBegin <= idx && idx <= w->indexEnd)
@@ -169,7 +169,7 @@ CharWidths *func_02101c08(Font *font, u32 idx) {
 }
 
 // NNSi_G2dFontGetLineWidth (static helper of NNS_G2dFontGetTextRect/GetTextWidth: width of one text line, start of the next line in *next)
-s32 func_02101b44(Font *font, s32 hSpace, const void *txtIn, const void **next) {
+s32 NNSi_G2dFontGetStringWidth(Font *font, s32 hSpace, const void *txtIn, const void **next) {
     const void *txt = txtIn;
     s32 width;
     u32 (*getChar)(const void **);
@@ -182,9 +182,9 @@ s32 func_02101b44(Font *font, s32 hSpace, const void *txtIn, const void **next) 
         CharWidths *cw;
         s32 w;
         if (c == 10) break;
-        idx = func_02101c6c(font, c);
+        idx = NNS_G2dFontFindGlyphIndex(font, c);
         if (idx == 0xffff) idx = font->info->alterCharIndex;
-        cw = func_02101c08(font, idx);
+        cw = NNS_G2dFontGetCharWidthsFromIndex(font, idx);
         if (font->hasLeft != 0) w = cw->left + cw->glyphWidth;
         else w = cw->charWidth;
         width += hSpace + w;
@@ -196,7 +196,7 @@ s32 func_02101b44(Font *font, s32 hSpace, const void *txtIn, const void **next) 
 }
 
 // NNS_G2dFontGetTextHeight(font, vSpace, txt): number of lines * (vSpace + linefeed) - vSpace
-s32 func_02101acc(Font *font, s32 vSpace, const void *txtIn) {
+s32 NNSi_G2dFontGetTextHeight(Font *font, s32 vSpace, const void *txtIn) {
     const void *txt = txtIn;
     TextRect rect = {0, 0};
     s32 lines = 1;
@@ -210,11 +210,11 @@ s32 func_02101acc(Font *font, s32 vSpace, const void *txtIn) {
 }
 
 // NNS_G2dFontGetTextRect
-TextRect func_02101a30(Font *font, s32 hSpace, s32 vSpace, const void *txt) {
+TextRect NNSi_G2dFontGetTextRect(Font *font, s32 hSpace, s32 vSpace, const void *txt) {
     TextRect rect = {0, 0};
     s32 lines = 1;
     while (txt != 0) {
-        s32 w = func_02101b44(font, hSpace, txt, &txt);
+        s32 w = NNSi_G2dFontGetStringWidth(font, hSpace, txt, &txt);
         if (w > rect.width) rect.width = w;
         lines++;
     }
@@ -223,7 +223,7 @@ TextRect func_02101a30(Font *font, s32 hSpace, s32 vSpace, const void *txt) {
 }
 
 // NNS_G2dFindBinaryBlock
-void *func_021019d0(BinHeader *h, u32 kind) {
+void *NNS_G2dFindBinaryBlock(BinHeader *h, u32 kind) {
     BinBlock *b = (BinBlock *)((u8 *)h + h->headerSize);
     u16 i;
     for (i = 0; i < h->dataBlocks; i++) {
@@ -234,17 +234,17 @@ void *func_021019d0(BinHeader *h, u32 kind) {
 }
 
 // NNS_GfdInitFrmPlttVramManager
-void func_0210197c(u32 szByte, BOOL useAsDefault) {
+void NNS_GfdInitFrmPlttVramManager(u32 szByte, BOOL useAsDefault) {
     data_021f5cb4.size = szByte;
     func_02101818();
     if (useAsDefault) {
-        data_0213bc18 = func_0210183c;
+        data_0213bc18 = NNS_GfdAllocFrmPlttVram;
         data_0213bc1c = func_02101834;
     }
 }
 
 // NNS_GfdAllocFrmPlttVram
-u32 func_0210183c(u32 szByte, BOOL b4pltt, u32 opt) {
+u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt) {
     u32 addr = 0;
     BOOL result;
     if (szByte == 0) szByte = 8;

@@ -9,13 +9,13 @@ u32 OS_DisableInterrupts_IrqAndFiq(void);                                       
 u32 OS_DisableInterrupts(void);                                        // OS_DisableInterrupts_IrqAndFiq
 void OS_RestoreInterrupts_IrqAndFiq(u32 state);                                  // OS_RestoreInterrupts
 void OS_RestoreInterrupts(u32 state);                                  // OS_RestoreInterrupts_IrqAndFiq
-void func_01ffa494(u32 cycles);                                 // OS_SpinWait
-s32 func_02116188(u32 lockID, void *lockp);                     // OSi_DoLockWord
-void func_02115e64(u32 data, void *dest, u32 size);             // MI_CpuFill32
+void OS_SpinWait(u32 cycles);                                 // OS_SpinWait
+s32 MI_SwapWord(u32 lockID, void *lockp);                     // OSi_DoLockWord
+void MIi_CpuClear32(u32 data, void *dest, u32 size);             // MI_CpuFill32
 s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq);
 s32 OSi_DoUnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq);
-s32 func_02112668(u32 lockID, void *lockp, void (*ctrl)(void));
-s32 func_021125c8(u32 lockID, void *lockp, void (*ctrl)(void));
+s32 OS_LockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
+s32 OS_UnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
 void func_02112458(void);
 void OSi_FreeCardBus(void);
 void OSi_AllocateCardBus(void);
@@ -23,14 +23,14 @@ void OSi_FreeCartridgeBus(void);
 void OSi_AllocateCartridgeBus(void);
 
 // OS_InitLock
-void func_021126d0(void) {
+void OS_InitLock(void) {
     volatile u16 *lock = (volatile u16 *)0x027ffff0;
     if (data_021fcc10) {
         return;
     }
     data_021fcc10 = 1;
     *(volatile u32 *)0x027ffff0 = 0;
-    func_02112668(0x7e, (void *)0x027ffff0, 0);
+    OS_LockByWord(0x7e, (void *)0x027ffff0, 0);
     while (lock[3] != 0) {
         func_02112458();
     }
@@ -38,16 +38,16 @@ void func_021126d0(void) {
     *(volatile u32 *)0x027fffb4 = 0xffff0000;
     {
         volatile u32 zero = 0;
-        func_02115e64(zero, (void *)0x027fffc0, 0x28);
+        MIi_CpuClear32(zero, (void *)0x027fffc0, 0x28);
     }
     *(volatile u16 *)0x04000204 |= 0x800;
     *(volatile u16 *)0x04000204 |= 0x80;
-    func_021125c8(0x7e, (void *)0x027ffff0, 0);
-    func_02112668(0x7f, (void *)0x027ffff0, 0);
+    OS_UnlockByWord(0x7e, (void *)0x027ffff0, 0);
+    OS_LockByWord(0x7f, (void *)0x027ffff0, 0);
 }
 
 // OSi_LockByWord (spin until acquired)
-s32 func_02112678(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq) {
+s32 OSi_DoLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq) {
     s32 lastLockFlag;
     while ((lastLockFlag = OSi_DoTryLockByWord(lockID, lockp, ctrl, disable_irq)) > 0) {
         func_02112458();
@@ -56,8 +56,8 @@ s32 func_02112678(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq) 
 }
 
 // OS_LockByWord
-s32 func_02112668(u32 lockID, void *lockp, void (*ctrl)(void)) {
-    return func_02112678(lockID, lockp, ctrl, 0);
+s32 OS_LockByWord(u32 lockID, void *lockp, void (*ctrl)(void)) {
+    return OSi_DoLockByWord(lockID, lockp, ctrl, 0);
 }
 
 // OSi_DoUnlockByWord (static)
@@ -85,7 +85,7 @@ s32 OSi_DoUnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_
 }
 
 // OS_UnlockByWord
-s32 func_021125c8(u32 lockID, void *lockp, void (*ctrl)(void)) {
+s32 OS_UnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void)) {
     return OSi_DoUnlockByWord(lockID, lockp, ctrl, 0);
 }
 
@@ -98,7 +98,7 @@ s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable
     } else {
         last = OS_DisableInterrupts();
     }
-    lastLockFlag = func_02116188(lockID, lockp);
+    lastLockFlag = MI_SwapWord(lockID, lockp);
     if (lastLockFlag == 0) {
         if (ctrl) {
             ctrl();
@@ -114,12 +114,12 @@ s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable
 }
 
 // OS_UnlockCartridge
-void func_02112528(u32 lockID) {
+void OS_UnlockCartridge(u32 lockID) {
     OSi_DoUnlockByWord(lockID, (void *)0x027fffe8, OSi_FreeCartridgeBus, 1);
 }
 
 // OS_LockCartridge
-void func_02112508(u32 lockID) {
+void OS_TryLockCartridge(u32 lockID) {
     OSi_DoTryLockByWord(lockID, (void *)0x027fffe8, OSi_AllocateCartridgeBus, 1);
 }
 
@@ -134,13 +134,13 @@ void OSi_FreeCartridgeBus(void) {
 }
 
 // OS_LockCard
-void func_021124bc(u32 lockID) {
-    func_02112668(lockID, (void *)0x027fffe0, OSi_AllocateCardBus);
+void OS_LockCard(u32 lockID) {
+    OS_LockByWord(lockID, (void *)0x027fffe0, OSi_AllocateCardBus);
 }
 
 // OS_UnlockCard
-void func_021124a0(u32 lockID) {
-    func_021125c8(lockID, (void *)0x027fffe0, OSi_FreeCardBus);
+void OS_UnlockCard(u32 lockID) {
+    OS_UnlockByWord(lockID, (void *)0x027fffe0, OSi_FreeCardBus);
 }
 
 // OSi_FreeCardBus (EXMEMCNT &= ~0x800)
@@ -154,12 +154,12 @@ void OSi_FreeCardBus(void) {
 }
 
 // returns the owner id halfword (+4) of a lock word
-u16 func_02112468(void *p) {
+u16 OS_ReadOwnerOfLockWord(void *p) {
     return ((u16 *)p)[2];
 }
 
 // OS_SpinWait(0x1000) wrapper
 void func_02112458(void) {
-    func_01ffa494(0x1000);
+    OS_SpinWait(0x1000);
 }
 

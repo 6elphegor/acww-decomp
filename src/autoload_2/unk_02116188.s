@@ -8,9 +8,9 @@
 	.arm
 
 ; MI_SwapWord(setData, destp): atomically exchanges *destp with setData, returns the old value
-	.global func_02116188
-	.type func_02116188, @function
-	.size func_02116188, 0x8
-func_02116188:
+	.global MI_SwapWord
+	.type MI_SwapWord, @function
+	.size MI_SwapWord, 0x8
+MI_SwapWord:
 	swp r0, r0, [r1]
 	bx lr

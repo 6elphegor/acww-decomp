@@ -172,34 +172,34 @@ extern RTCWork data_021feb90;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
-extern void func_02117dcc(void);
+extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
 extern void func_0206d49c(void);
 extern void OS_InitMutex(void *p);
-extern BOOL func_0211d518(void);
+extern BOOL RTCi_WriteRawStatus2Async(void);
 
 void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
 void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
 void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
 u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
-void func_0211cb60(u32 result, void *arg);
+void PMi_DummyCallback(u32 result, void *arg);
 void func_0211cb68(void);
 BOOL PMi_Lock(void);
 void PMi_SendPxiData(u32 data);
 u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
-u32 func_0211c790(u32 a);
+u32 PMi_SetLED(u32 a);
 u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg);
-u32 func_0211c834(u32 type, u16 *out);
+u32 PMi_ReadRegister(u32 type, u16 *out);
 u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg);
 u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg);
-u32 func_0211c6ac(PMCallback cb, void *arg);
+u32 PM_ForceToPowerOffAsync(PMCallback cb, void *arg);
 u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg);
 void PMi_CallCallbackAndUnlock(u32 result);
 u32 RtcBCD2HEX(u32 bcd);
-void func_0211bf60(u32 tag, u32 data, u32 err);
-void func_0211c95c(u32 tag, u32 data, u32 err);
+void TPi_TpCallback(u32 tag, u32 data, u32 err);
+void PMi_CommonCallback(u32 tag, u32 data, u32 err);
 u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
 // RTCi_BcdToBinary? (8 BCD digits, 0 when a digit is >= 10)
@@ -221,6 +221,6 @@ u32 RtcBCD2HEX(u32 bcd) {
 }
 
 // RTCi_SetCallback? (stores the word at data_021feb90 + 0x20)
-void func_0211cbe8(u32 v) {
+void RtcGetResultCallback(u32 v) {
     data_021feb90.cb20 = v;
 }

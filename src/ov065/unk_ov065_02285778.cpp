@@ -265,7 +265,7 @@ void *func_ov065_02286554();
 void func_ov065_02286788(char **s, s32 *len);
 s32 func_ov065_022867c0(char *s, u32 *ip, u16 *port);
 void func_0212899c(void *p, s32 v, u32 n);
-void func_02128a00(void *d, void *s, u32 n);
+void memcpy(void *d, void *s, u32 n);
 char *func_0212a120(char *s, s32 c);
 s32 func_0212b770(char *s);
 u32 STD_GetStringLength(char *s);
@@ -540,7 +540,7 @@ BOOL func_ov065_022867c0(char *s, u32 *pip, u16 *pport) {
                 ip = 0;
             } else {
                 s32 n = colon - s;
-                func_02128a00(host, s, n);
+                memcpy(host, s, n);
                 host[n] = 0;
                 s = host;
             }

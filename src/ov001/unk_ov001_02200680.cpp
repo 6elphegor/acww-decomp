@@ -172,7 +172,7 @@ void func_ov001_02201ff8();
 u32 func_ov001_02202030(u32 a, u32 b);
 s32 func_ov001_02202050(u8 *o);
 s32 func_ov001_02202b3c(Unk_ov001_02202b3c_Cfg *a);
-s32 func_0211d2e0(void *p);
+s32 RTC_GetTime(void *p);
 s32 func_ov065_0226148c();
 s32 func_ov065_022615f0();
 s32 func_ov065_02261610();
@@ -184,7 +184,7 @@ s32 func_ov065_02261118(void *);
 s32 func_ov001_02203004();
 void *MI_CpuFill8(void *, s32, u32);
 void *MI_CpuCopy8(void *, void *, u32);
-void func_021132e0(s32);
+void OS_Sleep(s32);
 void *func_ov001_02202c58(s32 n);
 void func_ov001_02202c44(void *p);
 s32 func_ov001_02202c6c(s32 a);
@@ -1751,7 +1751,7 @@ extern "C" s32 func_ov001_022008d4(u32 a, u32 b, u32 c) {
     }
     if (data_ov065_0228ebd8 == 0) {
         do {
-            func_021132e0(100);
+            OS_Sleep(100);
         } while (data_ov065_0228ebd8 == 0);
     }
     return 0;
@@ -1855,7 +1855,7 @@ extern "C" u16 func_ov001_02200694(void) {
         u32 s = 0;
         u32 buf[3];
         func_ov001_02200864(buf, 0, 12);
-        if (func_0211d2e0(buf) == 0) {
+        if (RTC_GetTime(buf) == 0) {
             s = s + (buf[0] << 10);
             s = s + (buf[1] << 3);
             s = s + buf[2];

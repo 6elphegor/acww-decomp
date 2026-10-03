@@ -105,7 +105,7 @@ s32 func_020b50e8(void);
 s32 func_02063b8c(s32 a);
 s32 func_02002bdc(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_01ffcbb0(void *out, Unk_021c3070 *o);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
@@ -180,7 +180,7 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     } else if (t > 0xb000) {
         t = 0xb000;
     }
-    sc = func_01ffc5a4(t - 0x4800, 0x6800);
+    sc = FX_Div(t - 0x4800, 0x6800);
     inv = 0x1000 - sc;
     self->unk_1e4 = inv;
     func_0203c0b0(self, 0xb, data_020c8ce8[self->unk_1f0][self->unk_1ec], sc);

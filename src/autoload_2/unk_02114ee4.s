@@ -9,10 +9,10 @@
 	.extern OSi_ArrangeTimer
 	.arm
 
-	.global func_02114ee4
-	.type func_02114ee4, @function
-	.size func_02114ee4, 0x10
-func_02114ee4:
+	.global OSi_AlarmHandler
+	.type OSi_AlarmHandler, @function
+	.size OSi_AlarmHandler, 0x10
+OSi_AlarmHandler:
 	stmfd sp!, {lr}
 	bl OSi_ArrangeTimer
 	ldmfd sp!, {lr}

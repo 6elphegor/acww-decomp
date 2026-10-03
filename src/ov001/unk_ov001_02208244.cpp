@@ -8,7 +8,7 @@ extern "C" const u16 data_ov001_02229b74[4] = {0x14, 0, 0xd8, 0x40};
 
 extern "C" {
 extern void *data_ov001_0222de1c;
-extern void func_02111ba4(void *, s32, u32);
+extern void GXS_LoadBG0Scr(void *, s32, u32);
 extern void func_ov001_022253d4(s32);
 extern void *func_ov001_0222558c(s32, s32);
 extern void *func_ov001_0220cbd0(void *, s32, s32, s32);
@@ -27,7 +27,7 @@ extern "C" void func_ov001_02208374() {
 extern "C" s32 func_ov001_02208290(s32 a, s32 b, s32 c) {
     void *r4, *r5;
     if (data_ov001_0222dd8c != 0) return 0;
-    func_ov001_02208594((void *)"char/jtNull.nsc.l", func_02111ba4);
+    func_ov001_02208594((void *)"char/jtNull.nsc.l", GXS_LoadBG0Scr);
     *(volatile u32 *)0x4001010 = 0x1920000;
     r4 = func_ov001_0222558c(1, 0);
     r5 = func_ov001_0220cbd0(data_ov001_0222de1c, a, b, c);

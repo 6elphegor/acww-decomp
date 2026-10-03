@@ -243,7 +243,7 @@ void GX_SetBankForTex(u32);
 void GX_SetBankForTexPltt(u32);
 void GX_SetBankForBG(u32);
 void GX_SetBankForOBJ(u32);
-void func_0210f900(u32);
+void GX_SetBankForSubBG(u32);
 void GX_SetBankForSubOBJ(u32);
 void func_020015a0(u32);
 void func_0200158c(u32);
@@ -251,8 +251,8 @@ void func_020b7f80();
 void func_020014f4(u32);
 void func_020014bc(u32);
 void G3X_SetFog(u32, u32, u32, u32);
-void func_02110e00(const void *);
-void func_01ff8ccc();
+void G3X_SetFogTable(const void *);
+void NNS_G3dGeFlushBuffer();
 void func_02034044();
 void func_02088d58();
 void func_02030518();
@@ -941,7 +941,7 @@ BOOL Unk_020e4238::vfunc_18() {
 
 BOOL Unk_020e4238::vfunc_24() {
     func_020b54b0((s32)this);
-    func_01ff8ccc();
+    NNS_G3dGeFlushBuffer();
     s32 r0 = (s32)func_020b50b4();
     func_020b60dc(r0, (u8)data_021f4778, (u8)data_021f477c, data_021f4770 ? 1 : 0);
     func_02034044();
@@ -968,7 +968,7 @@ extern "C" void func_020b54b0(s32 unused) {
     S394* a = &data_021ef394;
     G3X_SetFog(a->m20, 1, a->m21, a->h22);
     reg_4000358 = a->h24 | (a->m26 << 16);
-    func_02110e00(a);
+    G3X_SetFogTable(a);
 }
 
 extern "C" void func_020b541c(void) {
@@ -980,7 +980,7 @@ extern "C" void func_020b541c(void) {
     GX_SetBankForTexPltt(0x10);
     GX_SetBankForBG(0x20);
     GX_SetBankForOBJ(0x40);
-    func_0210f900(0x80);
+    GX_SetBankForSubBG(0x80);
     GX_SetBankForSubOBJ(0x100);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
     *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;

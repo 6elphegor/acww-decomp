@@ -972,7 +972,7 @@ void func_020339bc(void *out, V3 *v, s32 a, s32 b);
 void func_02033988(void *p);
 s32 func_0200e248(Obj *o, Msg *m);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
 void func_020e9960(V3 *out, V3 *a, V3 *b);
 s32 func_ov003_0221950c(s32 a, V3 *v);
@@ -13507,7 +13507,7 @@ extern "C" void func_ov003_02206c04(Obj *o) {
         c.y = d.y;
         c.z = d.z;
         if (VEC_Mag(&c) >= 0x59a) {
-            r4 = func_01ffc5a4(func_01ffcb0c(VEC_Mag(&c), 0x6400), 0x59a);
+            r4 = FX_Div(func_01ffcb0c(VEC_Mag(&c), 0x6400), 0x59a);
         }
         s32 t = 0;
         u32 k = data_021f47d8.b;
@@ -13532,7 +13532,7 @@ extern "C" void func_ov003_02206c04(Obj *o) {
             if (s4 != 0 || t != 0) {
                 func_0200ecdc(o, 0x7ef);
             }
-            p->f8 = func_01ffc5a4(func_01ffcb0c(func_01ffcb0c(0x1c00, *q), 0xa66), 0x190000) + 0x800;
+            p->f8 = FX_Div(func_01ffcb0c(func_01ffcb0c(0x1c00, *q), 0xa66), 0x190000) + 0x800;
         }
         if (func_0200ec44(o, 0xb) != 0 || p->f10 >= 0x190000) {
             func_ov003_02206bb0(o, 6, -1);

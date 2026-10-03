@@ -114,6 +114,6 @@ void func_0211ba68(u32 unused, u32 data) {
     }
 }
 
-u16 func_0211ba58(void) {
+u16 TP_GetLatestIndexInAuto(void) {
     return data_021feaf4.sampling;
 }

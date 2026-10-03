@@ -810,7 +810,7 @@ void func_020e8388(void *p, s32 x, s32 y, s32 z);
 void func_020e8434(void *p, s32 a);
 void func_020547cc(void *p, s32 a);
 u16 func_02064cc4(void);
-void func_0210612c(void *p, s32 a, s32 b);
+void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
 void func_020547e4(void *p);
 s32 func_02056654(void *p);
 void func_02105f00(void *p, s32 a);
@@ -6215,7 +6215,7 @@ void func_ov003_0221bbb8(Unk_ov003_0221b8bc *o) {
         func_020547cc(o->unk_08, 0);
         l.a = func_02064cc4();
         l.b = l.a;
-        func_0210612c(o->unk_64, 0, l.b);
+        NNS_G3dMdlSetMdlEmi(o->unk_64, 0, l.b);
     }
 }
 }

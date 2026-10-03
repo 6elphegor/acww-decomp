@@ -65,13 +65,13 @@ void *func_020ed960(void);
 void *func_020ed978(u32 a);
 BOOL func_020edd58(Player *o, u32 a, u32 b, Bytes4 s);
 void func_020edd20(Player *p, s32 v);
-void func_0210be44(void *p);
-void func_0210bd58(void *a, u32 b);
+void NNS_SndHeapSaveState(void *p);
+void NNS_SndHeapLoadState(void *a, u32 b);
 void *func_0210bd4c(void *a);
-void func_0210cc14(s32 a, void *b);
-void func_0210a388(s32 a, void *b, u32 c);
+void NNS_SndArcLoadWaveArc(s32 a, void *b);
+void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
 void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
-void func_0210a310(s32 a, s32 b);
+void NNS_SndPlayerStopSeqByPlayerNo(s32 a, s32 b);
 void func_020efab8(void);
 void func_020efa64(Glob *g);
 void func_020efc84(Glob *g, s32 a, s32 b);
@@ -398,7 +398,7 @@ Unk_0213b8e8::Unk_0213b8e8() {
 
 Unk_0213b8e8::~Unk_0213b8e8() {
     data_021f5b80.f2c = 0;
-    func_0210bd58(data_021f5b80.f28, 0);
+    NNS_SndHeapLoadState(data_021f5b80.f28, 0);
 }
 
 void Unk_0213b8e8::vfunc_08() {
@@ -419,21 +419,21 @@ void Unk_0213b8e8::vfunc_14() {
 }
 
 void Unk_0213b8e8::setTracks(s32 v) {
-    func_0210a310(11, v);
-    func_0210a310(2, v);
-    func_0210a310(4, v);
-    func_0210a310(5, v);
-    func_0210a310(6, v);
-    func_0210a310(7, v);
-    func_0210a310(8, v);
-    func_0210a310(9, v);
-    func_0210a310(10, v);
-    func_0210a310(12, v);
-    func_0210a310(15, v);
-    func_0210a310(16, v);
-    func_0210a310(17, v);
-    func_0210a310(18, v);
-    func_0210a310(19, v);
+    NNS_SndPlayerStopSeqByPlayerNo(11, v);
+    NNS_SndPlayerStopSeqByPlayerNo(2, v);
+    NNS_SndPlayerStopSeqByPlayerNo(4, v);
+    NNS_SndPlayerStopSeqByPlayerNo(5, v);
+    NNS_SndPlayerStopSeqByPlayerNo(6, v);
+    NNS_SndPlayerStopSeqByPlayerNo(7, v);
+    NNS_SndPlayerStopSeqByPlayerNo(8, v);
+    NNS_SndPlayerStopSeqByPlayerNo(9, v);
+    NNS_SndPlayerStopSeqByPlayerNo(10, v);
+    NNS_SndPlayerStopSeqByPlayerNo(12, v);
+    NNS_SndPlayerStopSeqByPlayerNo(15, v);
+    NNS_SndPlayerStopSeqByPlayerNo(16, v);
+    NNS_SndPlayerStopSeqByPlayerNo(17, v);
+    NNS_SndPlayerStopSeqByPlayerNo(18, v);
+    NNS_SndPlayerStopSeqByPlayerNo(19, v);
 }
 
 void Unk_0213b8e8::vfunc_18() {
@@ -441,7 +441,7 @@ void Unk_0213b8e8::vfunc_18() {
     void *t = func_020edc88();
     func_020edd20(&data_021f59f4, 1);
     if (data_021f5b80.f62 != 0) return;
-    func_0210bd58(t, 1);
+    NNS_SndHeapLoadState(t, 1);
     func_020f0dec(&data_021f5b80);
 }
 
@@ -477,60 +477,60 @@ void Unk_0213b8e8::setup(u32 a, s32 b) {
     void *t = func_020edc88();
     if (data_021f5b80.f62 == 0) {
         func_020f0df8(&data_021f5b80);
-        func_0210a388(0, t, a);
-        func_0210be44(t);
+        NNS_SndPlayerCreateHeap(0, t, a);
+        NNS_SndHeapSaveState(t);
     }
     Bytes4 q = data_0213b2c4;
     q.b0 = b;
     data_021f59f4.unk_15 = q;
     func_020edd58(&data_021f59f4, 0, 0, q);
     func_020f4468();
-    func_0210be44(t);
+    NNS_SndHeapSaveState(t);
 }
 
 void Unk_0213b8e8::allocRes4() {
-    func_0210a388(4, func_020edc88(), 0x206c);
+    NNS_SndPlayerCreateHeap(4, func_020edc88(), 0x206c);
 }
 
 void Unk_0213b8e8::allocRes11(s32 n) {
     void *t = func_020edc88();
     for (s32 i = 0; i < n; i++) {
-        func_0210a388(11, t, 0x650c);
+        NNS_SndPlayerCreateHeap(11, t, 0x650c);
     }
 }
 
 void Unk_0213b8e8::allocRes5() {
-    func_0210a388(5, func_020edc88(), 0x31ac);
+    NNS_SndPlayerCreateHeap(5, func_020edc88(), 0x31ac);
 }
 
 void Unk_0213b8e8::allocRes6() {
     void *t = func_020edc88();
     for (s32 i = 0; i < 2; i++) {
-        func_0210a388(6, t, 0x7a4c);
+        NNS_SndPlayerCreateHeap(6, t, 0x7a4c);
     }
 }
 
 void Unk_0213b8e8::allocRes17() {
     void *t = func_020edc88();
     for (s32 i = 0; i < 4; i++) {
-        func_0210a388(17, t, 0x356c);
+        NNS_SndPlayerCreateHeap(17, t, 0x356c);
     }
 }
 
 void Unk_0213b8e8::allocRes18() {
     void *t = func_020edc88();
-    func_0210a388(18, t, 0x5ecc);
-    func_0210a388(19, t, 0x46bc);
+    NNS_SndPlayerCreateHeap(18, t, 0x5ecc);
+    NNS_SndPlayerCreateHeap(19, t, 0x46bc);
 }
 
 void Unk_0213b8e8::allocRes13() {
-    func_0210a388(13, func_020edc88(), 0x1f4c);
+    NNS_SndPlayerCreateHeap(13, func_020edc88(), 0x1f4c);
 }
 
 void Unk_0213b8e8::allocRes12() {
     void *t = func_020edc88();
     for (s32 i = 0; i < 2; i++) {
-        func_0210a388(12, t, 0x8cc);
+        NNS_SndPlayerCreateHeap(12, t, 0x8cc);
     }
 }
 
@@ -549,7 +549,7 @@ void Unk_0213b8b4::vfunc_0c() {
     allocRes11(3);
     allocRes13();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     func_020f0838(&data_021f5b80, 143);
     data_021f5b80.f62 = 0;
 }
@@ -587,7 +587,7 @@ void Unk_0213b2d0::vfunc_0c() {
     setup(0x1f340, 2);
     allocRes11(2);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     func_020f0838(&data_021f5b80, 143);
     data_021f5b80.f62 = 0;
 }
@@ -605,7 +605,7 @@ void Unk_0213b574::vfunc_0c() {
     allocRes11(2);
     allocRes13();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     func_020f0838(&data_021f5b80, 143);
     data_021f5b80.f62 = 0;
 }
@@ -628,12 +628,12 @@ void Unk_0213b338::vfunc_0c() {
     allocRes17();
     allocRes18();
     void *t = func_020edc88();
-    func_0210cc14(9, t);
-    func_0210be44(t);
+    NNS_SndArcLoadWaveArc(9, t);
+    NNS_SndHeapSaveState(t);
     f1d = (u8)(u32)func_0210bd4c(t);
     func_020f0838(&data_021f5b80, 144);
     allocRes12();
-    func_0210be44(t);
+    NNS_SndHeapSaveState(t);
     state = 1;
     data_021f5b80.f62 = 0;
     func_020f8290(sub, 1);
@@ -660,7 +660,7 @@ void Unk_0213b338::vfunc_20() {
     Unk_0213b8e8::vfunc_20();
     func_020f0838(&data_021f5b80, 144);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     state = 1;
 }
 
@@ -675,7 +675,7 @@ void Unk_0213b36c::vfunc_0c() {
     setup(0x2a824, 6);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -690,7 +690,7 @@ void Unk_0213b3a0::vfunc_0c() {
     setup(0x2a824, 7);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -705,7 +705,7 @@ void Unk_0213b3d4::vfunc_0c() {
     setup(0x2a824, 8);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -720,7 +720,7 @@ void Unk_0213b408::vfunc_0c() {
     setup(0x2a824, 9);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -737,7 +737,7 @@ void Unk_0213b43c::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -752,7 +752,7 @@ void Unk_0213b470::vfunc_0c() {
     setup(0x2a824, 11);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -769,7 +769,7 @@ void Unk_0213b4a4::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -786,7 +786,7 @@ void Unk_0213b4d8::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -803,7 +803,7 @@ void Unk_0213b50c::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -820,7 +820,7 @@ void Unk_0213b540::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -837,7 +837,7 @@ void Unk_0213b304::vfunc_0c() {
     allocRes5();
     allocRes6();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -852,7 +852,7 @@ void Unk_0213b5a8::vfunc_0c() {
     setup(0x232f4, 17);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -867,7 +867,7 @@ void Unk_0213b5dc::vfunc_0c() {
     setup(0x245c0, 18);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -884,7 +884,7 @@ void Unk_0213b610::vfunc_0c() {
     setup(0x2a824, 19);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -913,7 +913,7 @@ void Unk_0213b644::vfunc_0c() {
     setup(0x245c0, 20);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -928,7 +928,7 @@ void Unk_0213b678::vfunc_0c() {
     setup(0x245c0, 21);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -943,7 +943,7 @@ void Unk_0213b6ac::vfunc_0c() {
     setup(0x245c0, 22);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -958,7 +958,7 @@ void Unk_0213b6e0::vfunc_0c() {
     setup(0x245c0, 23);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -973,7 +973,7 @@ void Unk_0213b714::vfunc_0c() {
     setup(0x245c0, 24);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -988,7 +988,7 @@ void Unk_0213b748::vfunc_0c() {
     setup(0x245c0, 25);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -1003,7 +1003,7 @@ void Unk_0213b77c::vfunc_0c() {
     setup(0x245c0, 26);
     allocRes4();
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -1019,7 +1019,7 @@ void Unk_0213b7b0::vfunc_0c() {
     setup(0x0, 27);
     allocRes11(3);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -1033,7 +1033,7 @@ Unk_0213b7e4::~Unk_0213b7e4() {
 void Unk_0213b7e4::vfunc_0c() {
     setup(0x0, 28);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
     func_020efab8();
 }
@@ -1054,7 +1054,7 @@ Unk_0213b818::~Unk_0213b818() {
 void Unk_0213b818::vfunc_0c() {
     setup(0x2a824, 29);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }
 
@@ -1069,7 +1069,7 @@ void Unk_0213b84c::vfunc_0c() {
     setup(0x21ef8, 4);
     allocRes11(2);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     func_020f0838(&data_021f5b80, 143);
     data_021f5b80.f62 = 0;
 }
@@ -1084,6 +1084,6 @@ Unk_0213b880::~Unk_0213b880() {
 void Unk_0213b880::vfunc_0c() {
     setup(0x2a824, 29);
     allocRes12();
-    func_0210be44(func_020edc88());
+    NNS_SndHeapSaveState(func_020edc88());
     data_021f5b80.f62 = 0;
 }

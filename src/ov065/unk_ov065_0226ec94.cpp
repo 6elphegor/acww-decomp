@@ -106,18 +106,18 @@ extern char *data_ov065_0228b778;
 void OS_LockMutex(void *p);
 void OS_UnlockMutex(void *p);
 void OS_JoinThread(void *p);
-void func_021132e0(s32 t);
+void OS_Sleep(s32 t);
 s32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(s32 v);
 void func_020ff0bc(u64 *out);
 s32 func_0212b770(const char *s);
 s32 func_0212a438(const char *s);
-s32 func_0212a190(const char *a, const char *b);
+s32 strcmp(const char *a, const char *b);
 void func_0212a2ec(char *dst, const char *src, u32 n);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 OS_IsThreadTerminated(void *);
-void func_02113a70(void *, void (*)(), void *, void *, u32, u32);
+void OS_CreateThread(void *, void (*)(), void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_InitMutex(void *);
 
@@ -210,7 +210,7 @@ void func_ov065_0226f818() {
     Unk_ov065_0226ecfc_Glob *g = data_ov065_02290620;
     if (g->unk_188 == 0 || OS_IsThreadTerminated(g->unk_11c) != 0) {
         g = data_ov065_02290620;
-        func_02113a70(g->unk_11c, func_ov065_0226ecfc, g, (u8 *)g + 0x1200, 0x1000, 0x10);
+        OS_CreateThread(g->unk_11c, func_ov065_0226ecfc, g, (u8 *)g + 0x1200, 0x1000, 0x10);
         g = data_ov065_02290620;
         OS_WakeupThreadDirect(g->unk_11c);
     }
@@ -306,7 +306,7 @@ void func_ov065_0226ecfc(void) {
             data_ov065_02290624.unk_10 = data_ov065_02290620->unk_108;
             data_ov065_02290624.unk_14 = data_ov065_02290620->unk_10c;
             data_ov065_02290624.unk_1c = 0x4e20;
-            if (func_0212a190(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
+            if (strcmp(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
                 data_ov065_02290624.unk_18 = 1;
             }
             if (func_ov065_0226ebe4(data_ov065_0229061c, &data_ov065_02290624)) {
@@ -427,7 +427,7 @@ void func_ov065_0226ecfc(void) {
         data_ov065_02290624.unk_10 = data_ov065_02290620->unk_108;
         data_ov065_02290624.unk_14 = data_ov065_02290620->unk_10c;
         data_ov065_02290624.unk_1c = 0x9c40;
-        if (func_0212a190(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
+        if (strcmp(data_ov065_02290624.unk_00, "https://nas.nintendowifi.net/ac")) {
             data_ov065_02290624.unk_18 = 1;
         }
         if (func_ov065_0226ebe4(data_ov065_0229061c, &data_ov065_02290624)) {
@@ -645,7 +645,7 @@ void func_ov065_0226ecfc(void) {
         }
         func_0212a2ec(p2, loc2, func_0212a438(loc2));
         func_ov065_0226e4dc(data_ov065_0229061c);
-        func_021132e0(t);
+        OS_Sleep(t);
     }
 end:
     if (a) {

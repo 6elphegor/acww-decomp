@@ -220,7 +220,7 @@ extern const Unk_0206513c_DefList *data_020dd3ec[];
 
 extern "C" {
 void G3_MultMtx33(void *m);
-void func_02104270(s32 id, s32 x, s32 y, s32 z);
+void NNS_G3dGlbLightVector(s32 id, s32 x, s32 y, s32 z);
 void NNS_G3dGlbLightColor(s32 id, u32 c);
 u16 func_020baa04(s32 a);
 void func_020e944c(Unk_02064674_Vec *v, s32 a);
@@ -639,7 +639,7 @@ void Unk_02064944::func_02064abc(void *m)
         *(volatile s32 *)0x4000440 = 2;
         *(volatile s32 *)0x4000454 = 0;
         G3_MultMtx33(m);
-        func_02104270(2, (s16)unk_08.x, (s16)unk_08.y, (s16)unk_08.z);
+        NNS_G3dGlbLightVector(2, (s16)unk_08.x, (s16)unk_08.y, (s16)unk_08.z);
         NNS_G3dGlbLightColor(2, unk_04);
     } else {
         NNS_G3dGlbLightColor(2, 0);
@@ -973,7 +973,7 @@ void Unk_0206444c::func_0206449c(void *m)
     *(volatile s32 *)0x4000440 = 2;
     *(volatile s32 *)0x4000454 = 0;
     G3_MultMtx33(m);
-    func_02104270(id, (s16)unk_38.x, (s16)unk_38.y, (s16)unk_38.z);
+    NNS_G3dGlbLightVector(id, (s16)unk_38.x, (s16)unk_38.y, (s16)unk_38.z);
     NNS_G3dGlbLightColor(id, unk_34);
 }
 

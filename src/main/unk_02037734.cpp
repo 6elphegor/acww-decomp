@@ -243,7 +243,7 @@ extern Unk_020d906c data_021c2408;
 
 extern "C" {
 s32 func_020b50e8(void);
-void func_02115468(s32);
+void OS_ResetSystem(s32);
 s32 func_020eaf18(void);
 s32 _ZN12Unk_020cbb1813func_0207235cEv(void *);
 s32 func_020ea748(void);

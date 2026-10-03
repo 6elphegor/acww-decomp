@@ -91,18 +91,18 @@ u32 func_020f07f0(void *g, u32 n);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
 void func_0210a148(void *p, u32 a, s32 b);
-void func_0210a0e8(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void func_0210a0b8(void *p, s32 v);
 void func_0210a024(void *p, u32 a, void *out);
 void func_020eda30(void *p, u32 v);
 void func_020eda60(void *p);
 void func_020edad0(u16 a, u16 b, void *out);
 void *func_020edc88(void);
-void func_0210bd58(void *a, u32 b);
+void NNS_SndHeapLoadState(void *a, u32 b);
 void func_0210cc84(u32 id, void *h);
-void func_0210cc4c(u32 id, void *h);
-BOOL func_0210cf78(void *a, u32 b, u32 c);
-s32 func_01ffc5a4(s32 a, s32 b);
+void NNS_SndArcLoadBank(u32 id, void *h);
+BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
+s32 FX_Div(s32 a, s32 b);
 
 s32 func_020f48d8(s32 x);
 s32 func_020f4718(Vec3 *p, s32 m);
@@ -310,7 +310,7 @@ extern "C" void func_020f5654(Seq2 *self) {
     {
         Ctl2 *c = data_021f5b80.f30;
         func_0210a148(self, 0xff, c->b39);
-        func_0210a0e8(self, 0xff, c->b3a);
+        NNS_SndPlayerSetTrackPan(self, 0xff, c->b3a);
     }
 }
 
@@ -525,11 +525,11 @@ extern "C" void func_020f5070(Seq2 *s, u16 v) {
     return func_020f5a34(s, v);
 }
 
-// same with volume reset (func_0210bd58(stream, 0)) and func_0210cc4c
+// same with volume reset (NNS_SndHeapLoadState(stream, 0)) and NNS_SndArcLoadBank
 extern "C" void func_020f5034(void *c, u32 id) {
     void *h = data_021f5b80.f28;
-    func_0210bd58(h, 0);
-    func_0210cc4c(id, h);
+    NNS_SndHeapLoadState(h, 0);
+    NNS_SndArcLoadBank(id, h);
 }
 
 // start sound id in the stream of the sound manager (data_021f5b80+0x28)
@@ -576,7 +576,7 @@ extern "C" void func_020f4e04(Seq1 *self, u16 id) {
     ok = 0;
     self->active = 1;
     self->step = -1;
-    if (func_0210cf78(self, self->id, ok)) {
+    if (NNS_SndArcPlayerStartSeqArc(self, self->id, ok)) {
         if (data_021f5c28 == self->id) ok = 1;
         func_020eda30(self, 0);
     }
@@ -590,16 +590,16 @@ extern "C" void func_020f4e04(Seq1 *self, u16 id) {
     }
     if (data_0213b9d8 == 1) {
         h = func_020edc88();
-        func_0210bd58(h, o->b1d + 1);
+        NNS_SndHeapLoadState(h, o->b1d + 1);
     } else if (data_0213b9d8 == 2) {
         h = data_021f5b80.f28;
         func_020edc88();
-        func_0210bd58(h, 0);
+        NNS_SndHeapLoadState(h, 0);
     }
     {
         u32 sid = self->id;
         func_0210cc84(sid, h);
-        func_0210cc4c(sid + 0x1db, h);
+        NNS_SndArcLoadBank(sid + 0x1db, h);
     }
 }
 
@@ -638,7 +638,7 @@ extern "C" void func_020f4c98(Seq1 *self, Vec3 *pos) {
         self->limit = w >> 12;
         return;
     }
-    self->limit = FX_Mul(w, func_01ffc5a4(v << 12, 100 << 12)) >> 12;
+    self->limit = FX_Mul(w, FX_Div(v << 12, 100 << 12)) >> 12;
 }
 
 // Seq1: read the two pattern parameters (ids 4 and 3) of the playing sound
@@ -658,7 +658,7 @@ extern "C" void func_020f4b50(Seq1 *self, Vec3 *pos) {
     switch (v) {
     case 13:
         if (nz(self->h)) func_020eda30(self, 0);
-        func_0210cf78(self, self->id, (u16)(v + 1 + func_020f07f0(&data_021f5b80, 6)));
+        NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1 + func_020f07f0(&data_021f5b80, 6)));
         func_020f4a5c(self, pos);
         return;
     case 14:
@@ -666,7 +666,7 @@ extern "C" void func_020f4b50(Seq1 *self, Vec3 *pos) {
         return;
     }
     if (nz(self->h)) func_020eda30(self, 0);
-    func_0210cf78(self, self->id, (u16)(v + 1));
+    NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1));
     func_020f4a5c(self, pos);
 }
 
@@ -697,7 +697,7 @@ extern "C" void func_020f4a5c(void *obj, Vec3 *pos) {
     s32 a = func_020f48d8(func_020f4904(pos, 0));
     s32 b = func_020f4718(pos, 0);
     func_0210a148(obj, 15, a);
-    func_0210a0e8(obj, 15, b);
+    NNS_SndPlayerSetTrackPan(obj, 15, b);
 }
 
 // ---- file-scope objects, defined after their users (definition order sets the .rodata / .data / .bss order)

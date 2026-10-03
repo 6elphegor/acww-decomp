@@ -249,7 +249,7 @@ s32 func_ov065_0227e0e8(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32
 void func_ov065_0228090c(Ctx0228 **, Node0228 *);
 void func_ov065_0227f2a4(void *);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 func_0212b770(void *);
 
 s32 func_ov065_02281bf4(Ctx0228 **, Node0228 *);
@@ -686,15 +686,15 @@ again:
         s1.unk_08 = 0x601;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "bsrdone") == 0) {
+            if (strcmp(tok, "bsrdone") == 0) {
                 GETTOK(tok)
-                if (func_0212a190(tok, "more") == 0) {
-                    if (func_0212a190(buf, "0") != 0) {
+                if (strcmp(tok, "more") == 0) {
+                    if (strcmp(buf, "0") != 0) {
                         s1.unk_08 = 0x600;
                     }
                 }
                 done = 1;
-            } else if (func_0212a190(tok, "bsr") == 0) {
+            } else if (strcmp(tok, "bsr") == 0) {
                 Unk_ov065_02281bf4_Rec *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Rec *base;
@@ -710,17 +710,17 @@ again:
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "nick") == 0) {
+                    if (strcmp(tok, "nick") == 0) {
                         func_ov065_02283728(e->unk_04, buf, 0x1f);
-                    } else if (func_0212a190(tok, "uniquenick") == 0) {
+                    } else if (strcmp(tok, "uniquenick") == 0) {
                         func_ov065_02283728(e->unk_23, buf, 0x15);
-                    } else if (func_0212a190(tok, "firstname") == 0) {
+                    } else if (strcmp(tok, "firstname") == 0) {
                         func_ov065_02283728(e->unk_38, buf, 0x1f);
-                    } else if (func_0212a190(tok, "lastname") == 0) {
+                    } else if (strcmp(tok, "lastname") == 0) {
                         func_ov065_02283728(e->unk_57, buf, 0x1f);
-                    } else if (func_0212a190(tok, "email") == 0) {
+                    } else if (strcmp(tok, "email") == 0) {
                         func_ov065_02283728(e->unk_76, buf, 0x33);
-                    } else if (func_0212a190(tok, "bsr") == 0 || func_0212a190(tok, "bsrdone") == 0) {
+                    } else if (strcmp(tok, "bsr") == 0 || strcmp(tok, "bsrdone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -752,7 +752,7 @@ again:
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "vr") != 0) ERR3()
+        if (strcmp(tok, "vr") != 0) ERR3()
         p = (Unk_ov065_02281bf4_Res2 *)func_ov065_02277af0(0x3c);
         if (p == 0) ERRMEM("Out of memory.")
         p->unk_00 = 0;
@@ -781,11 +781,11 @@ again:
         p->unk_3c = 0;
         p->unk_40 = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "nr") != 0) ERR3()
+        if (strcmp(tok, "nr") != 0) ERR3()
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "nick") == 0) {
+            if (strcmp(tok, "nick") == 0) {
                 void *t = func_ov065_02277ad8(p->unk_3c, (p->unk_38 + 1) * 4);
                 if (t == 0) ERRMEM("Out of memory.")
                 p->unk_3c = (char **)t;
@@ -794,7 +794,7 @@ again:
                 p->unk_3c[p->unk_38] = (char *)t;
                 func_ov065_02283728(p->unk_3c[p->unk_38], buf, 0x1f);
                 p->unk_38++;
-            } else if (func_0212a190(tok, "uniquenick") == 0) {
+            } else if (strcmp(tok, "uniquenick") == 0) {
                 if (p->unk_38 > 0) {
                     void *t = func_ov065_02277ad8(p->unk_40, p->unk_38 * 4);
                     if (t == 0) ERRMEM("Out of memory.")
@@ -804,7 +804,7 @@ again:
                     p->unk_40[p->unk_38 - 1] = (char *)t;
                     func_ov065_02283728(p->unk_40[p->unk_38 - 1], buf, 0x15);
                 }
-            } else if (func_0212a190(tok, "ndone") == 0) {
+            } else if (strcmp(tok, "ndone") == 0) {
                 done = 1;
             } else {
                 ERR3()
@@ -829,9 +829,9 @@ again:
         p4->unk_0c = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "psrdone") == 0) {
+            if (strcmp(tok, "psrdone") == 0) {
                 done = 1;
-            } else if (func_0212a190(tok, "psr") == 0) {
+            } else if (strcmp(tok, "psr") == 0) {
                 Unk_ov065_02281bf4_Ent *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Ent *base;
@@ -848,14 +848,14 @@ again:
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "status") == 0) {
+                    if (strcmp(tok, "status") == 0) {
                         func_ov065_02283728(e->unk_28, buf, 0x100);
-                    } else if (func_0212a190(tok, "nick") == 0) {
+                    } else if (strcmp(tok, "nick") == 0) {
                         func_ov065_02283728(e->unk_04, buf, 0x1f);
                     }
-                    if (func_0212a190(tok, "statuscode") == 0) {
+                    if (strcmp(tok, "statuscode") == 0) {
                         e->unk_24 = func_0212b770(buf);
-                    } else if (func_0212a190(tok, "psr") == 0 || func_0212a190(tok, "psrdone") == 0) {
+                    } else if (strcmp(tok, "psr") == 0 || strcmp(tok, "psrdone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -878,7 +878,7 @@ again:
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "cur") != 0) ERR3()
+        if (strcmp(tok, "cur") != 0) ERR3()
         a4 = func_0212b770(buf);
         if (a4 != 0) {
             ctx->unk_418 = a4;
@@ -905,7 +905,7 @@ again:
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "nur") != 0) ERR3()
+        if (strcmp(tok, "nur") != 0) ERR3()
         a4 = func_0212b770(buf);
         if (a4 != 0) {
             ctx->unk_418 = a4;
@@ -936,13 +936,13 @@ again:
         p7->unk_04 = 0;
         p7->unk_08 = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "others") != 0) ERR3()
+        if (strcmp(tok, "others") != 0) ERR3()
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "odone") == 0) {
+            if (strcmp(tok, "odone") == 0) {
                 done = 1;
-            } else if (func_0212a190(tok, "o") == 0) {
+            } else if (strcmp(tok, "o") == 0) {
                 Unk_ov065_02281bf4_Rec *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Rec *base;
@@ -959,17 +959,17 @@ again:
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "nick") == 0) {
+                    if (strcmp(tok, "nick") == 0) {
                         func_ov065_02283728(e->unk_04, buf, 0x1f);
-                    } else if (func_0212a190(tok, "uniquenick") == 0) {
+                    } else if (strcmp(tok, "uniquenick") == 0) {
                         func_ov065_02283728(e->unk_23, buf, 0x15);
-                    } else if (func_0212a190(tok, "first") == 0) {
+                    } else if (strcmp(tok, "first") == 0) {
                         func_ov065_02283728(e->unk_38, buf, 0x1f);
-                    } else if (func_0212a190(tok, "last") == 0) {
+                    } else if (strcmp(tok, "last") == 0) {
                         func_ov065_02283728(e->unk_57, buf, 0x1f);
-                    } else if (func_0212a190(tok, "email") == 0) {
+                    } else if (strcmp(tok, "email") == 0) {
                         func_ov065_02283728(e->unk_76, buf, 0x33);
-                    } else if (func_0212a190(tok, "o") == 0 || func_0212a190(tok, "odone") == 0) {
+                    } else if (strcmp(tok, "o") == 0 || strcmp(tok, "odone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -996,19 +996,19 @@ again:
         p->unk_04 = 0;
         p->unk_08 = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "us") != 0) ERR3()
+        if (strcmp(tok, "us") != 0) ERR3()
         p->unk_04 = func_0212b770(buf);
         p->unk_08 = (char **)func_ov065_02277af0(p->unk_04 * 4);
         if (p->unk_08 == 0) ERRMEM("Out of memory.")
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "nick") == 0) {
+            if (strcmp(tok, "nick") == 0) {
                 p->unk_08[cnt] = (char *)func_ov065_02277af0(0x15);
                 if (p->unk_08[cnt] == 0) ERRMEM("Out of memory.")
                 func_ov065_02283728(p->unk_08[cnt], buf, 0x15);
                 cnt++;
-            } else if (func_0212a190(tok, "usdone") == 0) {
+            } else if (strcmp(tok, "usdone") == 0) {
                 p->unk_04 = cnt;
                 done = 1;
             } else {

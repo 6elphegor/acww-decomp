@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f8b44 (companion of RC_020f7a5c): G011b without its first ten functions (the Rb state machine 0x020f86c0-0x020f8b44, now in the BGM file RC_020f7a5c).
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
-// 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (func_020f9018).
+// 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
 
 // BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
@@ -208,7 +208,7 @@ extern s16 data_021f5c30;
 extern s16 data_021f5c34;
 void func_0210a024(void *p, u32 sel, void *out);
 void func_0210a008(u32 sel, void *out);
-void func_0210d010(void *p, u32 v);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void func_020eda30(void *p, u32 v);
 void func_020eda60(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
@@ -220,35 +220,35 @@ void func_020f8604(Rb *r, void *arg);
 s32 func_020f83fc(Rb *r);
 void func_020f8a80(Rb *r, u32 mode);
 void func_020f9690(Entry *e, void *list);
-void func_020fa0f4(Entry *e, void *tab, void *v);
-Entry *func_020fe35c(void *list);
-void func_020fe3a0(void *list, Entry *e);
-Entry *func_020fe2f0(void *list, Entry *e);
+void spl_init(Entry *e, void *tab, void *v);
+Entry *spl_pop_front(void *list);
+void spl_push_front(void *list, Entry *e);
+Entry *spl_del(void *list, Entry *e);
 void func_020f969c(Mgr *m, u32 a);
-void func_020f98ac(Mgr *m, Entry *e);
+void spl_calc(Mgr *m, Entry *e);
 extern u16 data_021f5c38;
 void spl_calc_gravity(void);
 void spl_calc_random(void);
 void spl_calc_magnet(void);
-void func_020fe098(void);
-void func_020fdf7c(void);
+void spl_calc_spin(void);
+void spl_calc_scfield(void);
 void spl_calc_convergence(void);
 void GX_BeginLoadTexPltt(void);
-void func_02111f7c(void *dst, u32 a, u32 n);
-void func_02111f24(void);
+void GX_LoadTexPltt(void *dst, u32 a, u32 n);
+void GX_EndLoadTexPltt(void);
 void GX_BeginLoadTex(void);
 void GX_LoadTex(void *dst, u32 a, u32 n);
 void GX_EndLoadTex(void);
-s32 func_020f8e98(Fp *self, Cb cb);
-u32 func_020f9620(u32 a, u32 b);
-s32 func_020f8f4c(Fp *self, Cb cb);
-u32 func_020f9658(u32 a, u32 b);
+s32 SPL_LoadTexPlttByCallbackFunction(Fp *self, Cb cb);
+u32 sAllocTexPalette(u32 a, u32 b);
+s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb);
+u32 sAllocTex(u32 a, u32 b);
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 static inline BOOL nz(u32 v) { return v != 0; }
 
-extern "C" void func_020f9018(Fp *self, u8 *base) {
+extern "C" void SPL_Load(Fp *self, u8 *base) {
     s32 i;
     u32 off = 0;
     self->p1c = (u8 *)self->alloc(self->h24 << 5);
@@ -314,13 +314,13 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
             }
             if (h.b27) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe098;
+                it->fn = (void *)spl_calc_spin;
                 off += 4;
                 it++;
             }
             if (h.b28) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fdf7c;
+                it->fn = (void *)spl_calc_scfield;
                 off += 8;
                 it++;
             }
@@ -336,7 +336,7 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
     }
 }
 
-extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
+extern "C" s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb) {
     s32 i;
     GX_BeginLoadTex();
     for (i = 0; i < self->h26; i++) {
@@ -354,7 +354,7 @@ extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
     return 1;
 }
 
-extern "C" s32 func_020f8e98(Fp *self, Cb cb) {
+extern "C" s32 SPL_LoadTexPlttByCallbackFunction(Fp *self, Cb cb) {
     s32 i;
     GX_BeginLoadTexPltt();
     for (i = 0; i < self->h26; i++) {
@@ -363,23 +363,23 @@ extern "C" s32 func_020f8e98(Fp *self, Cb cb) {
         u32 r = 0;
         if (e->w16 != 0) {
             r = cb(e->w16, e->b.kind == 2 ? 1 : 0);
-            func_02111f7c((u8 *)s->e + e->wc, r, e->w16);
+            GX_LoadTexPltt((u8 *)s->e + e->wc, r, e->w16);
         }
         s->w8 = r;
     }
-    func_02111f24();
+    GX_EndLoadTexPltt();
     return 1;
 }
 
-extern "C" s32 func_020f8e84(Fp *self) {
-    return func_020f8f4c(self, func_020f9658);
+extern "C" s32 SPL_LoadTexByVRAMManager(Fp *self) {
+    return SPL_LoadTexByCallbackFunction(self, sAllocTex);
 }
 
-extern "C" s32 func_020f8e70(Fp *self) {
-    return func_020f8e98(self, func_020f9620);
+extern "C" s32 SPL_LoadTexPlttByVRAMManager(Fp *self) {
+    return SPL_LoadTexPlttByCallbackFunction(self, sAllocTexPalette);
 }
 
-extern "C" void func_020f8d24(Mgr *m) {
+extern "C" void SPL_Calc(Mgr *m) {
     Entry *e;
     for (e = m->act; e != 0;) {
         Entry *next;
@@ -394,11 +394,11 @@ extern "C" void func_020f8d24(Mgr *m) {
         }
         if (e->fl.b2 == 0) {
             u32 t = e->f16;
-            if (t == 0 || data_021f5c38 == t - 1) func_020f98ac(m, e);
+            if (t == 0 || data_021f5c38 == t - 1) spl_calc(m, e);
         }
         if ((ri->f14 != 0 && ri->h38 != 0 && e->fl.b4 != 0 && e->h38 > ri->h38) || e->fl.b0 != 0) {
             if (e->w12 == 0 && e->w20 == 0) {
-                func_020fe3a0(&m->fr, func_020fe2f0(&m->act, e));
+                spl_push_front(&m->fr, spl_del(&m->act, e));
             }
         }
         e = next;
@@ -420,25 +420,25 @@ extern "C" void func_020f8cb8(Mgr *m, u32 a1, u32 a2) {
     } while (e != 0);
 }
 
-extern "C" Entry *func_020f8c44(Mgr *m, s32 idx, void *p) {
+extern "C" Entry *SPL_Create(Mgr *m, s32 idx, void *p) {
     Entry *e = 0;
     if (m->fr != 0) {
-        e = func_020fe35c(&m->fr);
-        func_020fa0f4(e, m->tab + idx * 32, p);
-        func_020fe3a0(&m->act, e);
+        e = spl_pop_front(&m->fr);
+        spl_init(e, m->tab + idx * 32, p);
+        spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
     return e;
 }
 
-extern "C" Entry *func_020f8bb0(Mgr *m, u32 idx, void (*cb)(Entry *)) {
+extern "C" Entry *SPL_CreateWithInitialize(Mgr *m, u32 idx, void (*cb)(Entry *)) {
     Entry *e = 0;
     if (m->fr != 0) {
         Fx3 z = {0, 0, 0};
-        e = func_020fe35c(&m->fr);
-        func_020fa0f4(e, m->tab + idx * 32, &z);
+        e = spl_pop_front(&m->fr);
+        spl_init(e, m->tab + idx * 32, &z);
         if (cb != 0) cb(e);
-        func_020fe3a0(&m->act, e);
+        spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
     return e;

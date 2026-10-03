@@ -91,7 +91,7 @@ extern u8 data_021f5bc0[];
 
 u32 func_020f07f0(void *g, u32 n);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
-void func_0210a2a0(s32 a, s32 b, u32 c);
+void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
 void func_020eda80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 func_020edfbc(SndHandle *h, u32 a, u32 b, s32 c, s16 d);
 s32 func_020ee0c4(SndHandle *h, u32 a, u32 b, s32 c, s16 d);
@@ -165,7 +165,7 @@ void func_020eda60(void *p);
 void func_020edad0(u16 a, u16 b, void *out);
 void NNS_FndInitList(void *list, u16 offset);
 void func_02109fd0(void *p, u32 a, s32 b);
-void func_0210a0e8(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndHandleReleaseSeq(void *p);
 SeqInfo *func_0210b8a0(u32 a, u32 b);
 s32 func_020f4904(Vec3 *p, s32 m);
@@ -335,9 +335,9 @@ void Unk_020f43c8::vfunc_10() {
 void Unk_020f43c8::stopEffects() {
     s32 i;
     for (i = 82; i < 97; i++) {
-        func_0210a2a0(2, i, 0);
+        NNS_SndPlayerStopSeqBySeqNo(2, i, 0);
     }
-    func_0210a2a0(2, 54, 0);
+    NNS_SndPlayerStopSeqBySeqNo(2, 54, 0);
 }
 
 Unk_020d6f54::Unk_020d6f54() {
@@ -460,7 +460,7 @@ void SndPosNode::updatePan() {
     s32 a = func_020f48d8(func_020f4904(&pos, 0));
     s32 b = func_020f4718(&pos, 0);
     NNS_SndPlayerSetVolume(&h, a);
-    func_0210a0e8(&h, 255, b);
+    NNS_SndPlayerSetTrackPan(&h, 255, b);
 }
 
 void SndPosNode::playOnce(u32 v, Vec3 *p) {
@@ -488,7 +488,7 @@ void SndPosNode::setBgmPan(Vec3 *p) {
     s32 b = func_020f4718(p, 0);
     if (a < 40) a = 40;
     NNS_SndPlayerSetVolume(bh, a);
-    func_0210a0e8(bh, data_0213b200, b);
+    NNS_SndPlayerSetTrackPan(bh, data_0213b200, b);
 }
 
 void SndPosNode::release() {
@@ -551,7 +551,7 @@ void SndPosList::update() {
     SndSeqHandle *bh = (SndSeqHandle *)(void *)&data_021f5bbc;
     if (!bh) return;
     u32 id = ((SeqHeader *)bh->p)->unk_38;
-    if (id < 176 || id > 245) func_0210a2a0(1, 0x107, 5);
+    if (id < 176 || id > 245) NNS_SndPlayerStopSeqBySeqNo(1, 0x107, 5);
 }
 
 void SndPosList::remove(SndPosNode *node) {
@@ -565,7 +565,7 @@ void SndPosList::playAt(s32 v, Vec3 *p) {
     s32 a = func_020f48d8(func_020f4904(p, 0));
     s32 b = func_020f4718(p, 0);
     NNS_SndPlayerSetVolume(&h, a);
-    func_0210a0e8(&h, 255, b);
+    NNS_SndPlayerSetTrackPan(&h, 255, b);
 }
 
 void Unk_0213b91c::vfunc_00() {
@@ -720,7 +720,7 @@ void Unk_0213b91c::vfunc_10(Vec3 *pos) {
                 func_0210a148(&h, 12, b);
             } else {
                 NNS_SndPlayerSetVolume(&h, t);
-                func_0210a0e8(&h, data_0213b200, w);
+                NNS_SndPlayerSetTrackPan(&h, data_0213b200, w);
             }
         }
         flags &= ~1;

@@ -65,8 +65,8 @@ struct Player {
 
 extern "C" {
 void func_0206d49c(void);
-void func_0210a294(void *p);
-void func_0210a378(void *p, u32 x);
+void NNS_SndHandleInit(void *p);
+void NNS_SndPlayerStopSeq(void *p, u32 x);
 void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void NNS_SndHandleReleaseSeq(void *p);
 BOOL func_020ee5d4(Ent *e);
@@ -83,9 +83,9 @@ void func_020ee784(PlayCtx *c);
 InfoB *func_0210b8a0(u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a1e8(void *p, s32 v);
-void func_0210a0e8(void *p, u32 a, s32 v);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
-void func_0210a118(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
 extern Cfg4 data_021f59f4;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
@@ -165,7 +165,7 @@ extern "C" void func_020ee87c(Group *g, s32 i) {
     Ent *e = &g->unk_08[i];
     if (g->unk_36 == 0) func_0206d49c();
     func_0210a148(e, data_0213b200, e->unk_0a);
-    func_0210a118(e, data_0213b200, e->unk_04);
+    NNS_SndPlayerSetTrackPitch(e, data_0213b200, e->unk_04);
 }
 
 extern "C" void func_020ee86c(s32 (*f)(PlayCtx *)) {
@@ -198,7 +198,7 @@ extern "C" void func_020ee784(PlayCtx *p) {
 }
 
 extern "C" void func_020ee754(Ent *e) {
-    func_0210a294(e);
+    NNS_SndHandleInit(e);
     e->unk_08 = 0;
     e->unk_06 = 0;
     e->unk_09 = 0;
@@ -231,7 +231,7 @@ extern "C" BOOL func_020ee680(Ent *e, u32 a, u32 b) {
 }
 
 extern "C" void func_020ee630(Ent *e, s32 x) {
-    if (e->unk_00 != NULL) func_0210a378(e, x);
+    if (e->unk_00 != NULL) NNS_SndPlayerStopSeq(e, x);
     func_020ee5e8(e, 2, 0);
     func_020ee5e8(e, 3, 0);
     func_020ee5e8(e, 1, 0);
@@ -384,7 +384,7 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
                 if (!inited) func_0206d49c();
                 NNS_SndPlayerSetVolume(e, ctx.unk_14);
                 func_0210a1e8(e, vol);
-                func_0210a0e8(e, data_0213b200, ctx.unk_18);
+                NNS_SndPlayerSetTrackPan(e, data_0213b200, ctx.unk_18);
                 g->unk_30(g, i, vol);
             }
         next:

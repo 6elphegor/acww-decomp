@@ -982,7 +982,7 @@ s32 func_0209750c();
 BOOL func_0203d67c(void *p);
 s32 func_020e9650(void *a, void *b);
 s32 func_02052cf4();
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_020e761c(s32 *p, s32 target, s32 step);
 void func_ov004_02234490(void *p);
 void func_020943dc(u32 a);
@@ -1003,8 +1003,8 @@ s32 func_ov004_0222c570(u16 *a, Unk_ov004_Vec3 *b);
 s32 func_020b231c(void *p);
 s32 func_020b22ac(void *p);
 s32 func_020b22b0(s32 a, s32 b, s32 c);
-s32 func_0210622c(void *p, s32 a, s32 b);
-s32 func_0210612c(void *p, s32 a, s32 b);
+s32 NNSi_G3dModifyMatFlag(void *p, s32 a, s32 b);
+s32 NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
 Unk_ov004_02205c80_Obj *func_ov004_022355d8(void *mgr, s32 a, s32 b, s32 c);
 void *func_ov004_0223584c();
 s32 func_ov004_02235740(void *mgr, void *o);
@@ -1090,8 +1090,8 @@ void func_ov004_02235648(void *a, void *self, s32 x, s32 y, u32 layer);
 s32 func_ov004_02235624(void *a, s32 x, s32 y, s32 one);
 void func_02055440(void *self, u32 v);
 void func_02055488(void *self, s32 fn, void *arg);
-void func_021039ec(s32 a, void *b);
-void func_02103830(s32 a, void *b);
+void NNS_G3dBindMdlTex(s32 a, void *b);
+void NNS_G3dBindMdlPltt(s32 a, void *b);
 void func_0204eda4(void *p, s32 a, s32 b, u32 c, u32 d);
 s32 func_020e94f8(void *v);
 s32 func_020534a4(s32 a);
@@ -2608,9 +2608,9 @@ void Unk_ov004_022077a4::func_ov004_02207e48() {
     func_02055488(unk_534, (s32)func_ov004_02209e14, this);
     ((Unk_ov004_02205994 *)(unk_760))->func_ov004_022059b4((void *)unk_590, 1);
     s32 t = (s32)((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a2c();
-    func_021039ec(t, ((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a14());
+    NNS_G3dBindMdlTex(t, ((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a14());
     t = (s32)((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a2c();
-    func_02103830(t, ((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a14());
+    NNS_G3dBindMdlPltt(t, ((Unk_ov004_022069ec *)(unk_6c8))->func_ov004_02206a14());
     func_ov004_02207e14();
 }
 
@@ -4162,17 +4162,17 @@ void Unk_ov004_02205b14::func_ov004_02205b14() {
         func_020b231c(this);
         s32 x = func_020b22ac(this);
         if (x) {
-            func_0210622c(unk_18, 1, 0x400);
+            NNSi_G3dModifyMatFlag(unk_18, 1, 0x400);
             s32 col = func_ov004_02205b04();
             s32 r7 = func_020b22b0(x, ((col >> 10) & 0x1f) << 12, 0x1f000);
             s32 g = func_020b22b0(x, (col & 0x1f) << 12, 0x1f000);
             s32 b = func_020b22b0(x, ((col >> 5) & 0x1f) << 12, 0x1f000);
             u32 r7c = (u16)(((r7 >> 12) << 10) | ((g >> 12) | ((b >> 12) << 5)));
             for (s32 i = 0; i < unk_18->unk_18; i++) {
-                func_0210612c(unk_18, i, i == unk_14 ? r7c : col);
+                NNS_G3dMdlSetMdlEmi(unk_18, i, i == unk_14 ? r7c : col);
             }
         } else {
-            func_0210622c(unk_18, 0, 0x400);
+            NNSi_G3dModifyMatFlag(unk_18, 0, 0x400);
         }
     }
 }
@@ -4663,7 +4663,7 @@ void Unk_ov004_0224882c::func_ov004_02204f24() {
         unk_8e += 0x400;
     }
     func_ov004_022087a4(this);
-    s32 v = func_01ffc5a4(func_02052cf4(), 0x64000) >> 2;
+    s32 v = FX_Div(func_02052cf4(), 0x64000) >> 2;
     unk_14c = unk_150 = unk_154 = v;
 }
 

@@ -12,7 +12,7 @@ struct VecFx32 {
 extern "C" {
 void VEC_Normalize(VecFx32 *v); // VEC_Normalize
 void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
-s32 func_01ffc5a4(s32 a, s32 b); // FX_Div
+s32 FX_Div(s32 a, s32 b); // FX_Div
 s32 func_020e99b8(u64 x);
 void func_020e99a4(void);
 void func_020e954c(VecFx32 *out, VecFx32 *in);
@@ -276,9 +276,9 @@ extern "C" void func_020e97c8(VecFx32 *v, s32 d) {
         if (v->z > 0) v->z = 0x7fffffff;
         else if (v->z < 0) v->z = 0x80000000;
     } else {
-        v->x = func_01ffc5a4(v->x, d);
-        v->y = func_01ffc5a4(v->y, d);
-        v->z = func_01ffc5a4(v->z, d);
+        v->x = FX_Div(v->x, d);
+        v->y = FX_Div(v->y, d);
+        v->z = FX_Div(v->z, d);
     }
 }
 

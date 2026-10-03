@@ -19,9 +19,9 @@ void func_02063a5c(void *, void *, void *, void *);
 void _ZN12Unk_0205ca9413func_0205ca94EPtiii(void *, void *, s32, s32, s32);
 void *func_0205cdbc();
 s32 func_0205c91c(void *);
-s32 func_02103d3c(void *p);
-s32 func_02103d30(void *p);
-s32 func_02103c34(void *p);
+s32 NNS_G3dTexGetRequiredSize(void *p);
+s32 NNS_G3dTex4x4GetRequiredSize(void *p);
+s32 NNS_G3dPlttGetRequiredSize(void *p);
 extern u8 *data_020cbb18;
 extern u32 data_021c61cc;
 }
@@ -412,13 +412,13 @@ extern "C" void func_0205d934(u8 *p) {
     if (func_0205d7f8(p, 1) < 0x9e) {
         void *src = func_0205d854(p, 1);
         if (src) {
-            s32 a = func_02103d3c(q);
-            s32 b = func_02103d30(q);
-            s32 c = func_02103c34(q);
+            s32 a = NNS_G3dTexGetRequiredSize(q);
+            s32 b = NNS_G3dTex4x4GetRequiredSize(q);
+            s32 c = NNS_G3dPlttGetRequiredSize(q);
             void *q2 = NNS_G3dGetTex(src);
-            s32 e = func_02103d3c(q2);
-            s32 f = func_02103d30(q2);
-            s32 g = func_02103c34(q2);
+            s32 e = NNS_G3dTexGetRequiredSize(q2);
+            s32 f = NNS_G3dTex4x4GetRequiredSize(q2);
+            s32 g = NNS_G3dPlttGetRequiredSize(q2);
             Unk_020dbe24 *d1 = func_0205d820(p, 1);
             u32 x = d0->func_020552ec(d0->func_02055334(a), e);
             u32 y = d0->func_020552d8(d0->func_02055328(b), f);

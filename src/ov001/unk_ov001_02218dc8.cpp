@@ -4,7 +4,7 @@
 #pragma thumb off
 
 extern "C" {
-s32 func_02111a6c();
+s32 GX_LoadBG2Scr();
 s32 func_ov001_022088f8();
 s32 func_ov001_02208478(s32);
 s32 func_ov001_0220c668(void *);
@@ -42,7 +42,7 @@ extern "C" void func_ov001_0221901c() {
 }
 
 extern "C" void func_ov001_02218f7c() {
-    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;

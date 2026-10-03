@@ -185,7 +185,7 @@ s32 func_02132a4c(s32);
 s32 func_021319d0(s32, s32);
 s32 func_02132c80(s32, s32);
 s32 func_021329d0(s32);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 s32 func_0206e8e8();
 void func_02015958(void *, s32, u32, s32, s32, s32);
@@ -1142,7 +1142,7 @@ void Unk_ov004_0224c740::func_ov004_0221946c() {
                 } else {
                     r4 = func_02132c80(func_02132a4c(r4 << 12), 0x3f000000);
                 }
-                r4 = func_01ffc5a4(func_021329d0(r4), 0x200000);
+                r4 = FX_Div(func_021329d0(r4), 0x200000);
                 func_02015958(this, func_0206e8e8(), 0, 10, 1, 0);
                 r4 = func_01ffcb0c(unk_1a4, r4);
                 if (r4 <= 10) {

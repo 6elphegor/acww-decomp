@@ -189,7 +189,7 @@ extern Unk_ov065_0225f634_Params data_ov065_0228b3dc;
 // main module
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 v);
-void func_02113a70(void *, void *, void *, void *, u32, u32);
+void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_WakeupThread(void *q);
 s32 OS_InitMessageQueue(void *, void *, s32);
@@ -633,7 +633,7 @@ u32 func_ov065_0225f5c8(void *a, void *b, Unk_ov065_0225f5c8_T *c)
     u32 r = (u32)a + func_ov065_0225f718(c);
     OS_InitMessageQueue(b, a, c->unk_03);
     OS_InitMutex((u8 *)b + 0xe0);
-    func_02113a70((u8 *)b + 0x20, (void *)func_ov065_0225f378, b, (void *)r, c->unk_00, c->unk_02);
+    OS_CreateThread((u8 *)b + 0x20, (void *)func_ov065_0225f378, b, (void *)r, c->unk_00, c->unk_02);
     OS_WakeupThreadDirect((u8 *)b + 0x20);
     return r;
 }

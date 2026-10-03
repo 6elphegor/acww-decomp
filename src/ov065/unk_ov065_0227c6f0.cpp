@@ -139,12 +139,12 @@ void *func_ov065_02277af0(s32);
 void func_ov065_022788f0(void *);
 
 char *func_02129f1c(const char *, const char *);
-void func_02128a00(void *, const void *, s32);
-void func_021289b4(void *, void *, u32);
+void memcpy(void *, const void *, s32);
+void memmove(void *, void *, u32);
 s32 func_0212b770(const char *);
 s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
-void func_02128c60();
+void srand();
 
 s32 func_ov065_0227ca28(Ctx0227 **h);
 s32 func_ov065_0227cbdc(Ctx0227 **h);
@@ -196,7 +196,7 @@ s32 func_ov065_0227cc1c(Ctx0227 **h, s32 a, s32 b) {
     }
     func_ov065_02279138();
     func_ov065_02279144();
-    func_02128c60();
+    srand();
     *h = c;
     return 0;
 }
@@ -327,9 +327,9 @@ s32 func_ov065_0227c7dc(Ctx0227 **h) {
                     }
                     c->unk_1ec = (char *)np;
                 }
-                func_02128a00(c->unk_1ec, c->unk_1dc, len + 1);
+                memcpy(c->unk_1ec, c->unk_1dc, len + 1);
                 c->unk_1e4 = c->unk_1e4 - ((p + 7) - c->unk_1dc);
-                func_021289b4(c->unk_1dc, p + 7, c->unk_1e4 + 1);
+                memmove(c->unk_1dc, p + 7, c->unk_1e4 + 1);
                 char *q = c->unk_1ec;
                 char *f = func_02129f1c(q, "\\id\\");
                 if (f != NULL) {

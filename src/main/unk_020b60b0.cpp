@@ -132,7 +132,7 @@ extern s32 data_021c3070;
 extern s32 data_020c8cb8;
 extern Mtx43 data_0213c7e0;
 s32 func_0203bc3c(s32 a);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_020e94f8(Vec3 *v);
 void func_020e9888(Vec3 *v, s32 s);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
@@ -608,7 +608,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             if (dy < 0) {
                 dy = -dy;
             }
-            s32 ratio = func_01ffc5a4(ay, dy);
+            s32 ratio = FX_Div(ay, dy);
             r.x = p0.x + func_01ffcb0c(dl.d.x, ratio);
             r.y = p0.y + func_01ffcb0c(dl.d.y, ratio);
             r.z = p0.z + func_01ffcb0c(dl.d.z, ratio);

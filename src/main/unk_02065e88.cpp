@@ -3343,7 +3343,7 @@ extern "C" { extern u8 data_020cba24[]; }
 extern "C" { extern u8 data_021d7350[]; }
 extern "C" { void *func_020e8594(u32 size); }
 extern "C" { BOOL FS_OpenFile(void *self, const void *path); }
-extern "C" { s32 func_021198b4(void *self, void *dst, u32 size); }
+extern "C" { s32 FS_ReadFile(void *self, void *dst, u32 size); }
 extern "C" { BOOL FS_CloseFile(void *self); }
 extern "C" { void _ZN12Unk_020e0d44C1Eh(void *p, s32 v); }
 extern "C" { void _ZN12Unk_020e0d4413func_02089328Ev(void *p); }
@@ -3692,7 +3692,7 @@ BOOL Unk_02068808::func_02068748(void *file, BOOL alt) {
     BOOL ok;
     unk_00 = (u16 *)func_020e8594(0x800);
     if (unk_00 != NULL) {
-        s32 n = func_021198b4(file, unk_00, 0x800);
+        s32 n = FS_ReadFile(file, unk_00, 0x800);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
@@ -3708,7 +3708,7 @@ BOOL Unk_02068808::func_020686e4(void *file) {
     BOOL ok;
     unk_04 = func_020e8594(0x180);
     if (unk_04 != NULL) {
-        s32 n = func_021198b4(file, unk_04, 0x180);
+        s32 n = FS_ReadFile(file, unk_04, 0x180);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
@@ -3724,7 +3724,7 @@ BOOL Unk_02068808::func_02068680(void *file) {
     BOOL ok;
     unk_08 = func_020e8594(0x2800);
     if (unk_08 != NULL) {
-        s32 n = func_021198b4(file, unk_08, 0x2800);
+        s32 n = FS_ReadFile(file, unk_08, 0x2800);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
@@ -3841,8 +3841,8 @@ extern "C" { void func_02001750(s32); }
 extern "C" { void func_020016cc(s32); }
 extern "C" { void DC_FlushRange(void *, u32); }
 extern "C" { void GX_LoadBGPltt(void *, s32, u32); }
-extern "C" { void func_0211172c(void *, s32, u32); }
-extern "C" { void func_02111a6c(void *, s32, u32); }
+extern "C" { void GX_LoadBG2Char(void *, s32, u32); }
+extern "C" { void GX_LoadBG2Scr(void *, s32, u32); }
 extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { void func_020e8558(void *); }
 
@@ -3867,9 +3867,9 @@ extern "C" void func_02068490(Unk_02068490_Ptrs *p)
     DC_FlushRange(q + 1, 0x17e);
     GX_LoadBGPltt(q + 1, 2, 0x17e);
     DC_FlushRange(p->c, 0x2800);
-    func_0211172c(p->c, 0, 0x2800);
+    GX_LoadBG2Char(p->c, 0, 0x2800);
     DC_FlushRange(p->a, 0x800);
-    func_02111a6c(p->a, 0, 0x800);
+    GX_LoadBG2Scr(p->a, 0, 0x800);
 }
 extern "C" void func_02068478()
 {

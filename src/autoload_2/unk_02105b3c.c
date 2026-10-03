@@ -32,8 +32,8 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_01ff8d4c(void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGeSendDL(void *, u32);
 
 typedef struct V3 { s32 x, y, z; } V3;
 typedef union Glb {
@@ -53,18 +53,18 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
-extern void func_02105e5c(void *, void *);
+extern void NNS_G3dGetCurrentMtx(void *, void *);
 extern s8 data_02135d5c[];
 extern void G3X_Init(void);
-extern void func_02104338(void);
-extern void func_01ff8ccc(void);
+extern void NNS_G3dGlbInit(void);
+extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);
-extern void func_02106054(void *, u32, void *);
-extern void func_0210609c(void *, u32, void *);
-extern void func_021060e4(void *, u32, void *);
-extern void func_0210612c(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
 typedef struct Cb {
     u8 pad0[0x10];
     struct Cb *next;    // 0x10
@@ -73,9 +73,9 @@ typedef struct Cb {
     u16 tbl[1];         // 0x1a
 } Cb;
 extern void (*data_0213bd40[])(void *);
-extern u8 *func_02104140(void);
-extern u8 *func_021040fc(void);
-extern u8 *func_021041e8(void);
+extern u8 *NNS_G3dGlbGetWV(void);
+extern u8 *NNS_G3dGlbGetInvWV(void);
+extern u8 *NNS_G3dGlbGetInvV(void);
 extern void MTX_Copy43To44_(void *, void *);
 extern void MTX_Concat44(void *, void *, void *);
 extern s32 VEC_Mag(void *);
@@ -106,7 +106,7 @@ typedef struct MatArg {
 } MatArg;
 
 // NNS_G3dDraw1Mat1Shp
-void func_02105b3c(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
+void NNS_G3dDraw1Mat1Shp(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
 {
     u32 buf[7];
     MatArg a;
@@ -117,7 +117,7 @@ void func_02105b3c(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
         sc1[0] = ps;
         sc1[1] = ps;
         sc1[2] = ps;
-        func_01ff8bd0(0x1b, sc1, 3);
+        NNS_G3dGeBufferOP_N(0x1b, sc1, 3);
     }
     if (sendMat != 0) {
         u8 *m = mdl + *(u32 *)(mdl + 8);
@@ -140,7 +140,7 @@ void func_02105b3c(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
         buf[4] = 0x2b2a;
         buf[5] = *(u32 *)(mat + 0x14);
         buf[6] = *(u16 *)(mat + 0x1c);
-        func_01ff8bd0(buf[0], &buf[1], 6);
+        NNS_G3dGeBufferOP_N(buf[0], &buf[1], 6);
         if (*(u16 *)(mat + 0x1e) & 1) {
             void (*fn)(void *) = data_0213bd40[mdl[0x16]];
             u8 *p;
@@ -179,13 +179,13 @@ void func_02105b3c(u8 *mdl, u32 matIdx, u32 shpIdx, BOOL sendMat)
         u8 *s = mdl + *(u32 *)(mdl + 12);
         u8 *dict = s + *(u16 *)(s + 6);
         u8 *shp = s + *(u32 *)(dict + *(u16 *)dict * shpIdx + 4);
-        func_01ff8d4c(shp + *(u32 *)(shp + 8), *(u32 *)(shp + 12));
+        NNS_G3dGeSendDL(shp + *(u32 *)(shp + 8), *(u32 *)(shp + 12));
     }
     ps = *(s32 *)(mdl + 0x20);
     if (ps != 0x1000) {
         sc2[0] = ps;
         sc2[1] = ps;
         sc2[2] = ps;
-        func_01ff8bd0(0x1b, sc2, 3);
+        NNS_G3dGeBufferOP_N(0x1b, sc2, 3);
     }
 }

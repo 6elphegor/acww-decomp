@@ -6,8 +6,8 @@
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
 
 extern "C" {
-void func_0211172c();
-s32 func_02111a6c(void *, s32, u32);
+void GX_LoadBG2Char();
+s32 GX_LoadBG2Scr(void *, s32, u32);
 void GX_LoadBGPltt();
 s32 func_ov001_02208244();
 s32 func_ov001_02208594(void *, void *);
@@ -41,9 +41,9 @@ extern "C" void func_ov001_022182d4() {
 }
 
 extern "C" void func_ov001_02218224() {
-    func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
-    func_ov001_02208594((void *)"char/xb4None.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4None.nsc.l", (void *)GX_LoadBG2Scr);
     BGCNT(0x4001008, 3);
     BGCNT(0x400100a, 3);
     BGCNT(0x400000a, 3);

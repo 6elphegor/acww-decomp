@@ -156,7 +156,7 @@ s32 PM_SetLCDPower(s32 a);
 }
 
 extern "C" {
-void func_0211c6c4(s32 a, s32 b);
+void PM_SetBackLight(s32 a, s32 b);
 }
 
 extern "C" {
@@ -414,15 +414,15 @@ extern "C" void func_020af330() { func_020af268(2); }
 extern "C" void func_020af2fc() {
     if (!func_020af278(1)) {
         PM_GetBackLight(&data_021ee24c, &data_021ee248);
-        func_0211c6c4(2, 0);
+        PM_SetBackLight(2, 0);
         func_020af268(1);
     }
 }
 
 extern "C" void func_020af2c4() {
     if (func_020af278(1)) {
-        func_0211c6c4(0, data_021ee24c);
-        func_0211c6c4(1, data_021ee248);
+        PM_SetBackLight(0, data_021ee24c);
+        PM_SetBackLight(1, data_021ee248);
         func_020af258(1);
     }
 }

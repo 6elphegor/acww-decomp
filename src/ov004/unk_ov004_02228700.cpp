@@ -306,8 +306,8 @@ s32 _ZN12Unk_020dbd5413func_020547e4Ev(void *);
 s32 _ZN12Unk_020dbe7c13func_020566bcEv(void *);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 s32 _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *, void *, u32);
-s32 func_021039ec(void *, u32);
-s32 func_02103830(void *, u32);
+s32 NNS_G3dBindMdlTex(void *, u32);
+s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, void *);
 s32 _ZN12Unk_0205454c13func_02054720Eiiitt(void *, u32, u32, u32, u32, u32);
 s32 _ZN12Unk_020dbd5413func_02054710Ev(void *);
@@ -371,11 +371,11 @@ BOOL Unk_ov004_0224def8::vfunc_00() {
     _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(unk_290, func_ov004_02224d68(unk_348), 0);
     {
         void *a = func_ov004_02224d68(unk_348);
-        func_021039ec(a, func_ov004_02224d04(&unk_3ec));
+        NNS_G3dBindMdlTex(a, func_ov004_02224d04(&unk_3ec));
     }
     {
         void *a = func_ov004_02224d68(unk_348);
-        func_02103830(a, func_ov004_02224d04(&unk_3ec));
+        NNS_G3dBindMdlPltt(a, func_ov004_02224d04(&unk_3ec));
     }
     if (func_ov004_02224d8c(&unk_1a4, 0) && _ZN12Unk_020dbd5413func_02054800EPv(&unk_ec, data_021c620c)) {
         _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 0, 0x1000, 0, 0);

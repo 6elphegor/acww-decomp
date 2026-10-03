@@ -27,7 +27,7 @@ extern u32 data_0213bcb4;               // NNS_G3dAnmFmtNum
 extern AnmObjInitFunc data_0213bcd8[];  // NNS_G3dAnmObjInitFuncArray
 
 // NNS_G3dAnmObjInit
-void func_02104000(AnmObj *pAnmObj, void *pResAnm, const void *pResMdl, const void *pResTex)
+void NNS_G3dAnmObjInit(AnmObj *pAnmObj, void *pResAnm, const void *pResMdl, const void *pResTex)
 {
     const ResAnmHeader *hdr;
     u32 i;

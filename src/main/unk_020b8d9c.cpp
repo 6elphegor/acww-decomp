@@ -1547,7 +1547,7 @@ extern "C" {
 s32 _ZN12Unk_0203b35013func_0203bc3cEv(s32 a);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 void func_020e9888(void *a, s32 b);
@@ -1837,8 +1837,8 @@ extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in) {
     func_0203eeac(a, &v);
     MTX_MultVec43(a, &data_021f47e0, b);
     s32 c = _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070);
-    s32 q = -func_01ffc5a4(0x60000, c);
-    func_020e9888(b, func_01ffc5a4(q, b[2]));
+    s32 q = -FX_Div(0x60000, c);
+    func_020e9888(b, FX_Div(q, b[2]));
     *out = b[0] + 0x80000;
 }
 
@@ -2036,7 +2036,7 @@ extern "C" {
 s32 FX_Sqrt(s32);
 }
 extern "C" {
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 }
 extern "C" {
 s32 func_020e7b98(s32, s32);
@@ -2208,7 +2208,7 @@ extern "C" BOOL func_020bfc48(Unk_020bf4b4 *this_) {
     if (p != NULL && p->unk_04 == 2) {
         Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&p->unk_34;
         s32 k = ((s32)((u32)(p->unk_54 << 16) >> 16) >> 4) * 2;
-        s32 d = func_01ffc5a4(0x10000, p->unk_50);
+        s32 d = FX_Div(0x10000, p->unk_50);
         s32 y = pos->y + func_01ffcb0c(data_02135f44[k + 1], d);
         s32 x = pos->x - func_01ffcb0c(data_02135f44[k], d);
         Unk_020bf4b4_Vec *out = (Unk_020bf4b4_Vec *)&this_->unk_34;
@@ -2349,7 +2349,7 @@ extern "C" BOOL func_020bf948(void *out_) {
         r = func_01ffcb0c(0xffee0000, x) + 0x110000;
         y = func_01ffcb0c(x - 0x800, x - 0x800);
         y = FX_Sqrt(0x1000 - y);
-        y = func_01ffc5a4(y - 0xddb, 0x225);
+        y = FX_Div(y - 0xddb, 0x225);
         out[0] = r;
         y <<= 4;
         y = -y;
@@ -2535,7 +2535,7 @@ extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 void VEC_Add(Unk_020be018_Vec *a, Unk_020be018_Vec *b, Unk_020be018_Vec *out);
@@ -2669,7 +2669,7 @@ void Unk_020be018::func_020bf400()
             unk_64 = func_02063b8c(2) + 1;
             r4 = func_02063b8c(2) + 2;
             scale = unk_4c;
-            q = func_01ffc5a4(func_02063b8c(0x10) << 12, scale);
+            q = FX_Div(func_02063b8c(0x10) << 12, scale);
             idx = ((u16)(s16)func_02063b8c(0x10000) >> 4) << 1;
             y = unk_34.y + func_01ffcb0c(q, data_02135f44[idx]);
             Unk_020be018_Vec pos;
@@ -2923,8 +2923,8 @@ extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
     s32 d = v.z - base;
     s32 cnt = data_020c8cbc;
     s32 h = _s32_div_f(cnt << 2, 2);
-    s32 p = func_01ffc5a4((v.x - cnt * 3) << 4, h);
-    s32 q = func_01ffc5a4(d, base << 2);
+    s32 p = FX_Div((v.x - cnt * 3) << 4, h);
+    s32 q = FX_Div(d, base << 2);
     if (p < -0x10000) p = -0x10000;
     else if (p > 0x10000) p = 0x10000;
     if (q < 0) q = 0;
@@ -2938,7 +2938,7 @@ extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
     if (b < 0) c = 0;
     else if (b > 0xbf000) c = 0xbf000;
     else c = b;
-    s32 m = func_01ffcb0c(w, func_01ffc5a4(0xbf000 - c, 0xbf000));
+    s32 m = func_01ffcb0c(w, FX_Div(0xbf000 - c, 0xbf000));
     b = b + m;
     return Unk_020bee28_Vec2(a + p, b);
 }
@@ -3092,7 +3092,7 @@ extern "C" {
 void VEC_Add(Unk_020be204_Vec *a, Unk_020be204_Vec *b, Unk_020be204_Vec *c);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -3285,7 +3285,7 @@ void Unk_020be204::func_020be820() {
         lim = 0xc0000 - unk_34.z;
         s32 r = _ZN12Unk_020be01813func_020bebfcEi(lim, unk_64);
         if (r <= 0x20000) {
-            unk_50 = func_01ffc5a4(0x20000, r);
+            unk_50 = FX_Div(0x20000, r);
             unk_70 = 0xc0000 - _s32_div_f(r, 2);
         } else {
             if (r < lim) {
@@ -3298,7 +3298,7 @@ void Unk_020be204::func_020be820() {
                 }
                 r = lim;
             }
-            unk_70 = 0xc0000 - (r - func_01ffc5a4(0x10000, unk_50));
+            unk_70 = 0xc0000 - (r - FX_Div(0x10000, unk_50));
         }
         func_020bee28(&unk_34, unk_6c, unk_70, b31);
     }
@@ -3772,7 +3772,7 @@ extern "C" {
 s32 FS_OpenFile(void*, const char*);
 }
 extern "C" {
-s32 func_021198b4(void*, void*, u32);
+s32 FS_ReadFile(void*, void*, u32);
 }
 extern "C" {
 s32 FS_CloseFile(void*);
@@ -3807,10 +3807,10 @@ extern "C" {
 s32 func_01ffcb0c(s32, s32);
 }
 extern "C" {
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 }
 extern "C" {
-s32 func_01ffc588(s32);
+s32 FX_Inv(s32);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
@@ -4045,8 +4045,8 @@ extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     s32 inv, idx, z, y, t;
     s32 sx, sy, sc, fx, k, dz;
     dz = loc.unk_00[2] - q->unk_08;
-    fx = func_01ffc5a4(q->unk_00 - loc.unk_00[0], data_020c8cbc);
-    dz = func_01ffc5a4(dz, data_020c8cb8 << 2);
+    fx = FX_Div(q->unk_00 - loc.unk_00[0], data_020c8cbc);
+    dz = FX_Div(dz, data_020c8cb8 << 2);
     t = func_01ffcb0c(-0x1000, dz - 0x1000);
     k = func_01ffcb0c(dz, t + 0x1000);
     s32 w = func_01ffcb0c(-0x666, k) + 0xe66;
@@ -4067,7 +4067,7 @@ extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     sc = func_01ffcb0c(-0xc00, k) + 0x1000;
     if (sc < 0x400) sc = 0x400;
     else if (sc > 0x1000) sc = 0x1000;
-    z = func_01ffc588(sc);
+    z = FX_Inv(sc);
     p->unk_4c = z;
     p->unk_50 = z;
     idx = (u16)p->unk_2c >> 4;
@@ -4119,7 +4119,7 @@ extern "C" BOOL func_020bde0c(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
 extern "C" s32 func_020bddbc(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c) {
     s32 t = func_01ffcb0c(0x400, c);
     s32 u = func_01ffcb0c(0x1000, c);
-    s32 v = func_01ffc5a4(0x1000 - t, u - t);
+    s32 v = FX_Div(0x1000 - t, u - t);
     if (v < 0) v = 0;
     else if (v > 0x1000) v = 0x1000;
     out->unk_00 = a;
@@ -4180,7 +4180,7 @@ extern "C" BOOL func_020bdb68(u8* p, s32 idx) {
         ok1 &= FS_SeekFile(p, (row->unk_04 & ~0x1f) << 5, 0);
         for (i = 0; i < 4; i++) {
             if (t->unk_04 != 0) {
-                ok2 &= func_021198b4(p, p + 0x48, 0x400) > 0;
+                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
                 MI_CpuCopy8(p + 0x48 + ((row->unk_04 & 0x1f) << 5), src + (t->unk_00 << 5), t->unk_04 << 5);
             }
             src += 0x180;
@@ -4191,7 +4191,7 @@ extern "C" BOOL func_020bdb68(u8* p, s32 idx) {
         ok1 &= FS_SeekFile(p, (row->unk_06 & ~0x1f) << 5, 0);
         for (i = 4; i < 8; i++) {
             if (t->unk_0c != 0) {
-                ok2 &= func_021198b4(p, p + 0x48, 0x400) > 0;
+                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
                 MI_CpuCopy8(p + 0x48 + ((row->unk_06 & 0x1f) << 5), src + (t->unk_08 << 5), t->unk_0c << 5);
             }
             src += 0x180;
@@ -4213,11 +4213,11 @@ namespace n09 {
 extern "C" BOOL func_020bdaa4(u8* p) {
     char name1[0x17] = "/sky/a_sky_obj_ncl.bin";
     s32 a = FS_OpenFile(p, name1);
-    BOOL b = func_021198b4(p, p + 0x1048, 0x1c0) > 0;
+    BOOL b = FS_ReadFile(p, p + 0x1048, 0x1c0) > 0;
     s32 c = FS_CloseFile(p);
     char name2[0x1c] = "/sky/a_sky_moon_obj_ncl.bin";
     s32 d = FS_OpenFile(p, name2);
-    BOOL e = func_021198b4(p, p + 0x1208, 0x140) > 0;
+    BOOL e = FS_ReadFile(p, p + 0x1208, 0x140) > 0;
     s32 f = FS_CloseFile(p);
     if (a && b && c && d && e && f) return TRUE;
     return FALSE;
@@ -4365,7 +4365,7 @@ extern "C" {
 void func_020bffc0(s32* out, void* p);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 void func_020850e0();
@@ -4899,7 +4899,7 @@ void Unk_020bd1b0::func_020bd1e8() {
     if (p) {
         func_020bffc0(&x, p);
     }
-    s32 t = (func_01ffc5a4(unk_0c - x, 0x100000) * -10000) >> 12;
+    s32 t = (FX_Div(unk_0c - x, 0x100000) * -10000) >> 12;
     if (t < -5000) {
         t = -5000;
     } else if (t > 5000) {
@@ -5111,7 +5111,7 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 u32 func_0209cf00();
@@ -5486,7 +5486,7 @@ extern "C" s32 func_020bc8a0() {
     if (t < 0) t = 0;
     t = t * 100 + 0x974;
     t = ((t % 0xb89) << 12) / 100;
-    t = func_01ffc5a4(t, 0x1d87b);
+    t = FX_Div(t, 0x1d87b);
     t = (t * 0x1c - 0x800) >> 12;
     if (t < 0) t = 0x1b;
     if (t > 0x1b) t = 0x1b;

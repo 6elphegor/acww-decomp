@@ -183,7 +183,7 @@ s32 _ZN12Unk_020d93b813func_0203bc7cEv(void);
 }
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {
@@ -363,7 +363,7 @@ extern "C" s32 func_0203f048(u32 id) {
 
 #pragma thumb off
 extern "C" u32 func_0203efec(u32 x) {
-    s32 v = func_01ffc5a4((x & 0xffff) << 12, 0x10000000);
+    s32 v = FX_Div((x & 0xffff) << 12, 0x10000000);
     return (s32)(((s64)v * 0xc4ec6 + 0x800) >> 12);
 }
 #pragma thumb on
@@ -378,7 +378,7 @@ extern "C" s32 func_0203ef38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
             }
             base -= func_01ffcb0c(data_021c3ba4.unk_14, t);
         }
-        s32 ang = (func_01ffc5a4(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
+        s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
         s32 idx = (u16)ang >> 4;
         out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
@@ -394,7 +394,7 @@ extern "C" s32 func_0203ef38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
 extern "C" s32 func_0203eeac(Unk_0203ed90 *out, Unk_0203ed90 *in) {
     if (IsOne(data_021ef2f0->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
-        s32 ang = (func_01ffc5a4(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
+        s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
         s32 idx = (u16)ang >> 4;
         out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
@@ -445,7 +445,7 @@ Unk_0203ed90::Unk_0203ed90() {
     unk_04 = 0;
     unk_08 = 0;
     unk_0c = 0;
-    unk_14 = func_01ffc5a4(0x1000, 0xa000);
+    unk_14 = FX_Div(0x1000, 0xa000);
     unk_10 = 0xe000;
 }
 
@@ -462,10 +462,10 @@ extern "C" void func_0203ecec(Unk_0203ed90 *o, Unk_0203ed90 *in) {
         } else if (v < 0x21fd) {
             v = 0x21fd;
         }
-        o->unk_10 = func_01ffcb0c(-0x2c00, func_01ffc5a4((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
+        o->unk_10 = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
     }
     if (IsOne(data_021ef2f0->unk_04)) {
-        o->unk_0c = (func_01ffc5a4(o->unk_08, data_021c3b94) * 0x2999) >> 12;
+        o->unk_0c = (FX_Div(o->unk_08, data_021c3b94) * 0x2999) >> 12;
     } else {
         o->unk_0c = 0;
     }

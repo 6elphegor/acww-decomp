@@ -69,7 +69,7 @@ typedef struct SndHeapBlk {
 extern Cap data_021fb7b4;
 extern void NNS_FndInitList(NNSFndList *, u16);
 extern void DC_FlushRange(void *, u32);
-extern void func_02115e64(u32, void *, u32);
+extern void MIi_CpuClear32(u32, void *, u32);
 extern u32 SND_GetCurrentCommandTag(void);
 extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
@@ -81,47 +81,47 @@ extern u32 data_021fb794;
 extern u32 data_021fb8a8;
 extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
-extern s32 func_0210f00c(void *);
-extern void func_0210ad4c(void);
+extern s32 NNSi_SndFaderGet(void *);
+extern void NNSi_SndCaptureStop(void);
 extern void func_0210aadc(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
-extern void func_02113a70(void *, void *, void *, void *, u32, u32);
+extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
-extern void func_0210b31c(void);
-extern BOOL func_0210ae48(s32 mode, u32 bufL, u32 bufR, u32 len, s32 fmt, u32 a5, u32 a6, s32 loop, s32 rate, s32 vol, u32 pan1, u32 pan2, s32 nBlocks, CapCb cb, s32 cbArg);
+extern void NNS_SndCaptureStopEffect(void);
+extern BOOL NNSi_SndCaptureStart(s32 mode, u32 bufL, u32 bufR, u32 len, s32 fmt, u32 a5, u32 a6, s32 loop, s32 rate, s32 vol, u32 pan1, u32 pan2, s32 nBlocks, CapCb cb, s32 cbArg);
 extern Arc *data_021fbd68;
 extern BOOL FS_SeekFile(void *, u32, u32);
-extern s32 func_021198b4(void *, void *, u32);
+extern s32 FS_ReadFile(void *, void *, u32);
 extern u8 *NNSi_SndSeqArcGetSeqInfo(void *, u32);
-extern void *func_0210be9c(SndHeap *, u32, void (*)(void *, u32, void *, u32), void *, u32);
+extern void *NNS_SndHeapAlloc(SndHeap *, u32, void (*)(void *, u32, void *, u32), void *, u32);
 extern void MIi_CpuCopy32(void *, void *, u32);
 extern BOOL FS_ConvertPathToFileID();
 extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
-extern void *func_02101088(void *, u32, u32);
+extern void *NNS_FndAllocFromFrmHeapEx(void *, u32, u32);
 extern void NNS_FndAppendListObject(NNSFndList *, void *);
-extern void func_0210bd3c(NNSFndList *);
+extern void InitHeapSection(NNSFndList *);
 extern BOOL func_0210b9e4(Arc *, void *, BOOL);
 extern void *NNS_SndArcGetSeqArcInfo(s32);
 extern u32 NNS_SndArcGetFileAddress(u32);
-extern void func_0210b424(void *, u32, void *, u32);
-extern void func_0210b430(void *, u32, void *, u32);
-extern void func_0210b43c(void *, u32, void *, u32);
+extern void SymbolDisposeCallback(void *, u32, void *, u32);
+extern void FatDisposeCallback(void *, u32, void *, u32);
+extern void InfoDisposeCallback(void *, u32, void *, u32);
 extern void *NNS_FndGetPrevListObject(NNSFndList *, void *);
 extern void NNS_FndRemoveListObject(NNSFndList *, void *);
 extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern BOOL NNS_FndFreeByStateToFrmHeap(void *, u32);
-extern BOOL func_02100fb0(void *, u32);
-extern void func_02101048(void *, u32);
-extern void func_021010d0(void *);
-extern void *func_021010dc(u32, u32, u16);
-extern void func_0210bf0c(SndHeap *);
-extern void func_0210bc88(void);
-extern BOOL func_0210bcac(SndHeap *);
-extern BOOL func_0210bcfc(SndHeap *, void *);
+extern BOOL NNS_FndRecordStateForFrmHeap(void *, u32);
+extern void NNS_FndFreeToFrmHeap(void *, u32);
+extern void NNS_FndDestroyFrmHeap(void *);
+extern void *NNS_FndCreateFrmHeapEx(u32, u32, u16);
+extern void NNS_SndHeapClear(SndHeap *);
+extern void EraseSync(void);
+extern BOOL NewSection(SndHeap *);
+extern BOOL InitHeap(SndHeap *, void *);
 
 // NNS_SndHeapCreate
-SndHeap *func_0210bfe8(u32 start, u32 size)
+SndHeap *NNS_SndHeapCreate(u32 start, u32 size)
 {
     u32 end = start + size;
     SndHeap *h = (SndHeap *)((start + 3) & ~3);
@@ -134,26 +134,26 @@ SndHeap *func_0210bfe8(u32 start, u32 size)
     if (avail < 16) {
         return 0;
     }
-    heap = func_021010dc((u32)h + 16, avail - 16, 0);
+    heap = NNS_FndCreateFrmHeapEx((u32)h + 16, avail - 16, 0);
     if (heap == 0) {
         return 0;
     }
-    if (func_0210bcfc(h, heap) != 0) {
+    if (InitHeap(h, heap) != 0) {
         return h;
     }
-    func_021010d0(heap);
+    NNS_FndDestroyFrmHeap(heap);
     return 0;
 }
 
 // NNS_SndHeapDestroy
-void func_0210bfcc(SndHeap *h)
+void NNS_SndHeapDestroy(SndHeap *h)
 {
-    func_0210bf0c(h);
-    func_021010d0(h->heap);
+    NNS_SndHeapClear(h);
+    NNS_FndDestroyFrmHeap(h->heap);
 }
 
 // NNS_SndHeapClear
-void func_0210bf0c(SndHeap *h)
+void NNS_SndHeapClear(SndHeap *h)
 {
     NNSFndList *lv;
     SndHeapBlk *b;
@@ -173,17 +173,17 @@ void func_0210bf0c(SndHeap *h)
             lv = NNS_FndGetPrevListObject(&h->list, 0);
         } while (lv != 0);
     }
-    func_02101048(h->heap, 3);
+    NNS_FndFreeToFrmHeap(h->heap, 3);
     if (called) {
-        func_0210bc88();
+        EraseSync();
     }
-    func_0210bcac(h);
+    NewSection(h);
 }
 
 // NNS_SndHeapAlloc
-void *func_0210be9c(SndHeap *h, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b)
+void *NNS_SndHeapAlloc(SndHeap *h, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b)
 {
-    SndHeapBlk *blk = func_02101088(h->heap, ((size + 31) & ~31) + 32, 32);
+    SndHeapBlk *blk = NNS_FndAllocFromFrmHeapEx(h->heap, ((size + 31) & ~31) + 32, 32);
     NNSFndList *lv;
     if (blk == 0) {
         return 0;
@@ -198,12 +198,12 @@ void *func_0210be9c(SndHeap *h, u32 size, void (*cb)(void *, u32, void *, u32), 
 }
 
 // NNS_SndHeapSaveState
-s32 func_0210be44(SndHeap *h)
+s32 NNS_SndHeapSaveState(SndHeap *h)
 {
-    if (func_02100fb0(h->heap, h->list.num) == 0) {
+    if (NNS_FndRecordStateForFrmHeap(h->heap, h->list.num) == 0) {
         return -1;
     }
-    if (func_0210bcac(h) != 0) {
+    if (NewSection(h) != 0) {
         return h->list.num - 1;
     }
     NNS_FndFreeByStateToFrmHeap(h->heap, 0);
@@ -211,13 +211,13 @@ s32 func_0210be44(SndHeap *h)
 }
 
 // NNS_SndHeapLoadState
-void func_0210bd58(SndHeap *h, s32 level)
+void NNS_SndHeapLoadState(SndHeap *h, s32 level)
 {
     NNSFndList *lv;
     SndHeapBlk *b = 0;
     BOOL called = 0;
     if (level == 0) {
-        func_0210bf0c(h);
+        NNS_SndHeapClear(h);
         return;
     }
     if (level < h->list.num) {
@@ -236,10 +236,10 @@ void func_0210bd58(SndHeap *h, s32 level)
     }
     NNS_FndFreeByStateToFrmHeap(h->heap, level);
     if (called) {
-        func_0210bc88();
+        EraseSync();
     }
-    func_02100fb0(h->heap, h->list.num);
-    func_0210bcac(h);
+    NNS_FndRecordStateForFrmHeap(h->heap, h->list.num);
+    NewSection(h);
 }
 
 // NNS_SndHeapGetCurrentLevel
@@ -248,33 +248,33 @@ s32 func_0210bd4c(SndHeap *h)
     return h->list.num - 1;
 }
 
-void func_0210bd3c(NNSFndList *l)
+void InitHeapSection(NNSFndList *l)
 {
     NNS_FndInitList(l, 0);
 }
 
 // NNS_SndHeapCreate
-BOOL func_0210bcfc(SndHeap *h, void *heap)
+BOOL InitHeap(SndHeap *h, void *heap)
 {
     NNS_FndInitList(&h->list, 12);
     h->heap = heap;
-    return func_0210bcac(h) != 0;
+    return NewSection(h) != 0;
 }
 
 // NNS_SndHeapCreateLevel (push a state)
-BOOL func_0210bcac(SndHeap *h)
+BOOL NewSection(SndHeap *h)
 {
-    NNSFndList *lv = func_02101088(h->heap, 20, 4);
+    NNSFndList *lv = NNS_FndAllocFromFrmHeapEx(h->heap, 20, 4);
     if (lv == 0) {
         return 0;
     }
-    func_0210bd3c(lv);
+    InitHeapSection(lv);
     NNS_FndAppendListObject(&h->list, lv);
     return 1;
 }
 
 // flush the SND command queue and wait
-void func_0210bc88(void)
+void EraseSync(void)
 {
     u32 tag = SND_GetCurrentCommandTag();
     SND_FlushCommand(1);
@@ -282,7 +282,7 @@ void func_0210bc88(void)
 }
 
 // NNS_SndArcInitWithFile
-void func_0210bc00(Arc *arc, void *path, void *heap, BOOL loadSymb)
+void NNS_SndArcInit(Arc *arc, void *path, void *heap, BOOL loadSymb)
 {
     arc->info = 0;
     arc->fat = 0;
@@ -307,41 +307,41 @@ BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
     if (FS_SeekFile(&arc->file[0], 0, 0) == 0) {
         return 0;
     }
-    if (func_021198b4(&arc->file[0], arc, 0x30) != 0x30) {
+    if (FS_ReadFile(&arc->file[0], arc, 0x30) != 0x30) {
         return 0;
     }
     if (heap != 0 && 1) {
-        arc->info = func_0210be9c(heap, arc->infoSize, func_0210b43c, arc, 0);
+        arc->info = NNS_SndHeapAlloc(heap, arc->infoSize, InfoDisposeCallback, arc, 0);
         if (arc->info == 0) {
             return 0;
         }
         if (FS_SeekFile(&arc->file[0], arc->infoOff, 0) == 0) {
             return 0;
         }
-        n = func_021198b4(&arc->file[0], arc->info, arc->infoSize);
+        n = FS_ReadFile(&arc->file[0], arc->info, arc->infoSize);
         if (n != arc->infoSize) {
             return 0;
         }
-        arc->fat = func_0210be9c(heap, arc->fatSize, func_0210b430, arc, 0);
+        arc->fat = NNS_SndHeapAlloc(heap, arc->fatSize, FatDisposeCallback, arc, 0);
         if (arc->fat == 0) {
             return 0;
         }
         if (FS_SeekFile(&arc->file[0], arc->fatOff, 0) == 0) {
             return 0;
         }
-        n = func_021198b4(&arc->file[0], arc->fat, arc->fatSize);
+        n = FS_ReadFile(&arc->file[0], arc->fat, arc->fatSize);
         if (n != arc->fatSize) {
             return 0;
         }
         if (loadSymb != 0 && arc->symbSize != 0) {
-            arc->symb = func_0210be9c(heap, arc->symbSize, func_0210b424, arc, 0);
+            arc->symb = NNS_SndHeapAlloc(heap, arc->symbSize, SymbolDisposeCallback, arc, 0);
             if (arc->symb == 0) {
                 return 0;
             }
             if (FS_SeekFile(&arc->file[0], arc->symbOff, 0) == 0) {
                 return 0;
             }
-            n = func_021198b4(&arc->file[0], arc->symb, arc->symbSize);
+            n = FS_ReadFile(&arc->file[0], arc->symb, arc->symbSize);
         if (n != arc->symbSize) {
                 return 0;
             }
@@ -351,7 +351,7 @@ BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
 }
 
 // NNS_SndArcInitOnMemory
-void func_0210b918(Arc *arc, u8 *base)
+void NNS_SndArcInitOnMemory(Arc *arc, u8 *base)
 {
     u32 i;
     FatEnt *e;
@@ -376,7 +376,7 @@ Arc *NNS_SndArcSetCurrent(Arc *arc)
 }
 
 // NNS_SndArcGetCurrent
-Arc *func_0210b8f0(void)
+Arc *NNS_SndArcGetCurrent(void)
 {
     return data_021fbd68;
 }
@@ -510,7 +510,7 @@ void *NNS_SndArcGetWaveArcInfo(s32 idx)
 }
 
 // NNS_SndArc info record (0x24)
-void *func_0210b6ac(s32 idx)
+void *NNS_SndArcGetStrmInfo(s32 idx)
 {
     Arc *arc = data_021fbd68;
     u8 *info = arc->info;
@@ -538,7 +538,7 @@ void *func_0210b6ac(s32 idx)
 }
 
 // NNS_SndArc info record (0x18)
-void *func_0210b648(s32 idx)
+void *NNS_SndArcGetPlayerInfo(s32 idx)
 {
     Arc *arc = data_021fbd68;
     u8 *info = arc->info;
@@ -642,7 +642,7 @@ u32 NNS_SndArcGetFileSize(u32 idx)
 }
 
 // NNS_SndArcReadFile(fileId, buf, len, offset)
-s32 func_0210b4ac(u32 idx, void *buf, u32 len, u32 offset)
+s32 NNS_SndArcReadFile(u32 idx, void *buf, u32 len, u32 offset)
 {
     Arc *arc = data_021fbd68;
     Fat *fat = arc->fat;
@@ -659,7 +659,7 @@ s32 func_0210b4ac(u32 idx, void *buf, u32 len, u32 offset)
     if (FS_SeekFile(&arc->file[0], e->off + offset, 0) == 0) {
         return -1;
     }
-    return func_021198b4(&arc->file[0], buf, len);
+    return FS_ReadFile(&arc->file[0], buf, len);
 }
 
 // NNS_SndArcGetFileID
@@ -684,38 +684,38 @@ void NNS_SndArcSetFileAddress(u32 idx, u32 v)
     data_021fbd68->fat->e[idx].ptr = v;
 }
 
-void func_0210b43c(void *mem, u32 size, void *arg0, u32 arg1)
+void InfoDisposeCallback(void *mem, u32 size, void *arg0, u32 arg1)
 {
     ((Arc *)arg0)->info = 0;
 }
 
-void func_0210b430(void *mem, u32 size, void *arg0, u32 arg1)
+void FatDisposeCallback(void *mem, u32 size, void *arg0, u32 arg1)
 {
     ((Arc *)arg0)->fat = 0;
 }
 
-void func_0210b424(void *mem, u32 size, void *arg0, u32 arg1)
+void SymbolDisposeCallback(void *mem, u32 size, void *arg0, u32 arg1)
 {
     ((Arc *)arg0)->symb = 0;
 }
 
 // NNS_SndCaptureStartReverb
-BOOL func_0210b364(void *buf, u32 size, s32 fmt, s32 rate, s32 nBlocks, CapCb cb, s32 cbArg)
+BOOL NNS_SndCaptureStartEffect(void *buf, u32 size, s32 fmt, s32 rate, s32 nBlocks, CapCb cb, s32 cbArg)
 {
     volatile u32 zero;
-    func_0210b31c();
+    NNS_SndCaptureStopEffect();
     if (data_021fb7b4.active != 0) {
         return 0;
     }
     zero = 0;
-    func_02115e64(zero, buf, size);
+    MIi_CpuClear32(zero, buf, size);
     DC_FlushRange(buf, size);
-    return func_0210ae48(1, (u32)buf, (u32)buf + (size >> 1), size >> 1, fmt, 0, 0, 1, rate, 127, 0, 127,
+    return NNSi_SndCaptureStart(1, (u32)buf, (u32)buf + (size >> 1), size >> 1, fmt, 0, 0, 1, rate, 127, 0, 127,
                          nBlocks, cb, cbArg);
 }
 
 // NNS_SndCaptureStopReverb-like: stop if the running capture is mode 1
-void func_0210b31c(void)
+void NNS_SndCaptureStopEffect(void)
 {
     if (data_021fb7b4.active == 0) {
         return;
@@ -723,7 +723,7 @@ void func_0210b31c(void)
     if (data_021fb7b4.mode != 1) {
         return;
     }
-    func_0210ad4c();
+    NNSi_SndCaptureStop();
 }
 
 // NNS_SndCaptureInit(threadPrio)
@@ -734,20 +734,20 @@ void func_0210b280(u32 prio)
     }
     data_027e0390 = 0;
     OS_InitMessageQueue(&data_021fb774, &data_021fb794, 8);
-    func_02113a70(&data_021fb8a8, (void *)func_0210aadc, 0, &data_021fbd68, 1024, prio);
+    OS_CreateThread(&data_021fb8a8, (void *)func_0210aadc, 0, &data_021fbd68, 1024, prio);
     data_027e038c = 1;
     OS_WakeupThreadDirect(&data_021fb8a8);
 }
 
 // NNS_SndCaptureInit state reset
-void func_0210b260(void)
+void NNSi_SndCaptureInit(void)
 {
     data_027e038c = 0;
     data_021fb7b4.active = 0;
 }
 
 // NNS_SndCaptureUpdate (fade the effect volume)
-void func_0210b1b0(void)
+void NNSi_SndCaptureMain(void)
 {
     Cap *c = &data_021fb7b4;
     s32 vol;
@@ -761,10 +761,10 @@ void func_0210b1b0(void)
     f = &c->fader[0];
     NNSi_SndFaderUpdate(f);
     if (c->faderOn != 0 && NNSi_SndFaderIsFinished(f) != 0) {
-        func_0210ad4c();
+        NNSi_SndCaptureStop();
         return;
     }
-    vol = func_0210f00c(f) >> 8;
+    vol = NNSi_SndFaderGet(f) >> 8;
     if (vol == c->vol) {
         return;
     }

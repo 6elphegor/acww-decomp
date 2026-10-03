@@ -7,7 +7,7 @@
 
 	.text
 
-	.extern func_02133f68
+	.extern __ThrowHandler
 	.arm
 
 ; Resume at a landing pad: restore r4-r11 from the context, sp = throwSP - adjust, jump to r2.
@@ -30,7 +30,7 @@ func_02133aec:
 	mov pc, r2
 
 ; __rethrow (the name mwcc emits for `throw;`): build a ThrowContext on the stack (callee-saved registers, caller's
-; sp and return address, throwtype/location/dtor = 0) and enter the C++ throw handler func_02133f68 with it.
+; sp and return address, throwtype/location/dtor = 0) and enter the C++ throw handler __ThrowHandler with it.
 	.global func_02133b1c
 	.type func_02133b1c, @function
 	.size func_02133b1c, 0x4c
@@ -53,4 +53,4 @@ func_02133b1c:
 	str r12, [sp, #4]
 	str r12, [sp, #8]
 	mov r0, sp
-	b func_02133f68
+	b __ThrowHandler

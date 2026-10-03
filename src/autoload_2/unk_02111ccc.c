@@ -16,7 +16,7 @@ extern u32 data_021fcbf4, data_021fcc00, data_021fcc04, data_021fcc08;
 void MI_WaitDma(s32 dmaNo);                                   // MI_WaitDma
 void GX_SetBankForTexPltt(s32 bank);
 void GX_SetBankForTex(u32 bank);
-s32 func_0210f70c(void);
+s32 GX_ResetBankForTexPltt(void);
 void MI_DmaCopy32Async(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg);
 
 static inline void copy32(s32 dmaNo, const void *src, void *dest, u32 size) {
@@ -49,13 +49,13 @@ void GX_EndLoadTex(void) {
 
 // GX_BeginLoadBGExtPltt
 void GX_BeginLoadTexPltt(void) {
-    s32 v = func_0210f70c();
+    s32 v = GX_ResetBankForTexPltt();
     data_021fcbfc = v;
     data_021fcbf8 = (u32)data_02139f44[v >> 4] << 12;
 }
 
 // GX_LoadBGExtPltt
-void func_02111f7c(const void *src, u32 offset, u32 size) {
+void GX_LoadTexPltt(const void *src, u32 offset, u32 size) {
     u8 *dest = (u8 *)data_021fcbf8 + offset;
     if (data_0213bfec != -1) {
         MI_DmaCopy32Async(data_0213bfec, src, dest, size, 0, 0);
@@ -65,7 +65,7 @@ void func_02111f7c(const void *src, u32 offset, u32 size) {
 }
 
 // GX_EndLoadBGExtPltt
-void func_02111f24(void) {
+void GX_EndLoadTexPltt(void) {
     if (data_0213bfec != -1) {
         MI_WaitDma(data_0213bfec);
     }

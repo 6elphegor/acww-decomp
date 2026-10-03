@@ -140,12 +140,12 @@ void *func_ov065_02277af0(s32);
 void func_ov065_022788f0(void *);
 
 char *func_02129f1c(const char *, const char *);
-void func_02128a00(void *, const void *, s32);
-void func_021289b4(void *, void *, u32);
+void memcpy(void *, const void *, s32);
+void memmove(void *, void *, u32);
 s32 func_0212b770(const char *);
 s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
-void func_02128c60();
+void srand();
 
 s32 func_ov065_0227ca28(Ctx0227 **h);
 s32 func_ov065_0227cbdc(Ctx0227 **h);
@@ -400,8 +400,8 @@ char *func_0212a120(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
 u32 STD_GetStringLength(const char *);
-void func_021289b4(void *, void *, s32);
-void func_02128a00(void *, const void *, s32);
+void memmove(void *, void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02283630(const char *, const char *, char *, s32);
 void func_ov065_02283460(void *, const char *);

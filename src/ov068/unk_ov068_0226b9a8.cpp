@@ -336,7 +336,7 @@ s32 func_ov045_02258e34();
 s32 func_ov051_02258e50();
 void func_ov068_0226b9a8(void *self, u8 k, void *a, void *b, u8 s0, u32 s1, u16 s2, u16 s3);
 void func_ov068_0226b9ec(void *p, u32 b, void *c);
-void func_02106054(u32 p, s32 a, u8 b);
+void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
 void func_02055488(void *m, void (*fn)(Unk_ov068_0226c298_Arg *), void *self);
 s32 func_02057110(u32 a, const char *s);
 }
@@ -462,9 +462,9 @@ BOOL Unk_ov068_022702b4::vfunc_18() {
     }
     func_ov068_0226b9a8(this, k, &unk_434, &unk_4ec, 0, 0x1000, 0, 0);
     func_020547e4(&unk_434);
-    func_02106054((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59c, unk_59a);
-    func_02106054((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59e, unk_59a);
-    func_02106054((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_5a0, unk_59a);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59c, unk_59a);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59e, unk_59a);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_5a0, unk_59a);
     return TRUE;
 }
 

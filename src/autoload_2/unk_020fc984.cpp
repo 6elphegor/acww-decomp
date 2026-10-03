@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // G015a: autoload_2 0x020fc984-0x020fe4b4 (22 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ names, nothing defined but the functions.
-// Particle manager ("SPL" style): func_020fc984 emits particles of an emitter (10 emitter shapes), 020fd6c0/020fd820 emitter axes, 020fdaa8..020fdc8c per-particle
+// Particle manager ("SPL" style): spl_gen_ptcl emits particles of an emitter (10 emitter shapes), 020fd6c0/020fd820 emitter axes, 020fdaa8..020fdc8c per-particle
 // animation callbacks (alpha/scale/texture frame/colour over life), 020fdee8..020fe2bc the six field handlers (convergence, collision, spin, magnet, random, gravity),
 // 020fe2f0/020fe35c/020fe3a0 list helpers, 020fe3ec/020fe448 random unit vectors.
 #include "types.h"
@@ -209,7 +209,7 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 old);
 void OSi_UnlockVram(u32 a, u32 b);
 s32 OSi_TryLockVram(u32 a, u32 b);
-void func_02117dcc(void);
+void PXI_Init(void);
 s32 PXI_IsCallbackReady(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);
 s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
@@ -218,10 +218,10 @@ void func_020fe4b0(u32 a, u32 b);
 void func_020fe4b4(u32 a, u32 b);
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
-void func_020fe3a0(PList *l, P *n);
-P *func_020fe35c(PList *l);
-void func_020fd820(E *e);
-void func_020fd6c0(VecFx32 *out, const VecFx32 *in, E *e);
+void spl_push_front(PList *l, P *n);
+P *spl_pop_front(PList *l);
+void spl_set_cross_to_axis(E *e);
+void spl_set_circle_axis(VecFx32 *out, const VecFx32 *in, E *e);
 }
 
 static inline s32 FX_Mul(s32 a, s32 b) {
@@ -255,7 +255,7 @@ extern "C" void spl_rndm_get_arb_vec_xy(VecFx32 *v) {
     VEC_Normalize(v, v);
 }
 
-extern "C" void func_020fe3a0(PList *l, P *n) {
+extern "C" void spl_push_front(PList *l, P *n) {
     if (l->head == 0) {
         l->head = n;
         n->next = 0;
@@ -269,7 +269,7 @@ extern "C" void func_020fe3a0(PList *l, P *n) {
     l->count++;
 }
 
-extern "C" P *func_020fe35c(PList *l) {
+extern "C" P *spl_pop_front(PList *l) {
     P *r = 0;
     P *n = l->head;
     if (n != 0) {
@@ -283,7 +283,7 @@ extern "C" P *func_020fe35c(PList *l) {
     return r;
 }
 
-extern "C" P *func_020fe2f0(PList *l, P *n) {
+extern "C" P *spl_del(PList *l, P *n) {
     if (n->next == 0) {
         if (l->head == n) {
             l->head = 0;
@@ -327,7 +327,7 @@ extern "C" void spl_calc_magnet(MagF *f, P *p, VecFx32 *acc) {
     acc->z += (f->force * (f->z - p->pos.z - p->vel.z)) >> 12;
 }
 
-extern "C" void func_020fe098(SpinF *f, P *p, VecFx32 *acc) {
+extern "C" void spl_calc_spin(SpinF *f, P *p, VecFx32 *acc) {
     MtxFx33 m;
     switch (f->axis) {
     case 0:
@@ -343,7 +343,7 @@ extern "C" void func_020fe098(SpinF *f, P *p, VecFx32 *acc) {
     MTX_MultVec33(&p->pos, &m, &p->pos);
 }
 
-extern "C" void func_020fdf7c(CollF *f, P *p, VecFx32 *acc, E *e) {
+extern "C" void spl_calc_scfield(CollF *f, P *p, VecFx32 *acc, E *e) {
     s32 y = f->y;
     if (e->w5c != (s32)0x80000000) {
         y = e->w5c;
@@ -493,7 +493,7 @@ extern "C" void spl_chld_alp_out(P *p, void *x, s32 t) {
     p->fl.alpha = (u16)(((255 - t) * 31) / 255);
 }
 
-extern "C" void func_020fd820(E *e) {
+extern "C" void spl_set_cross_to_axis(E *e) {
     VecFx16 a = data_0213bba4;
     VecFx16 b;
     switch (e->res->hdr->f.axis) {
@@ -532,7 +532,7 @@ extern "C" void func_020fd820(E *e) {
     VEC_Fx16Normalize(&e->ax2, &e->ax2);
 }
 
-extern "C" void func_020fd6c0(VecFx32 *out, const VecFx32 *in, E *e) {
+extern "C" void spl_set_circle_axis(VecFx32 *out, const VecFx32 *in, E *e) {
     VecFx16 c;
     VEC_Fx16CrossProduct(&e->ax1, &e->ax2, &c);
     VEC_Fx16Normalize(&c, &c);
@@ -541,7 +541,7 @@ extern "C" void func_020fd6c0(VecFx32 *out, const VecFx32 *in, E *e) {
     out->z = FX_Mul(in->z, c.z) + (FX_Mul(in->x, e->ax1.z) + FX_Mul(in->y, e->ax2.z));
 }
 
-extern "C" void func_020fc984(E *e, PList *freeList) {
+extern "C" void spl_gen_ptcl(E *e, PList *freeList) {
     Res *res = e->res;
     Hdr *h = res->hdr;
     s32 i;
@@ -550,7 +550,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
     s32 count = sum >> 12;
     u32 t = h->f.type;
     if (t == 2 || t == 3 || (u32)(t - 5) <= 4) {
-        func_020fd820(e);
+        spl_set_cross_to_axis(e);
     }
     i = 0;
     if (count <= 0) {
@@ -559,11 +559,11 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
     s32 sa, sb;
     s32 ang = 0;
     do {
-        P *p = func_020fe35c(freeList);
+        P *p = spl_pop_front(freeList);
         if (p == 0) {
             return;
         }
-        func_020fe3a0(&e->list, p);
+        spl_push_front(&e->list, p);
         switch (h->f.type) {
         case 0:
             p->pos.x = p->pos.y = p->pos.z = 0;
@@ -580,7 +580,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             v.x = FX_Mul(v.x, e->radius);
             v.y = FX_Mul(v.y, e->radius);
             v.z = 0;
-            func_020fd6c0(&p->pos, &v, e);
+            spl_set_circle_axis(&p->pos, &v, e);
             break;
         }
         case 3: {
@@ -590,7 +590,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             v.x = FX_Mul(SIN_IDX(q), e->radius);
             v.y = FX_Mul(COS_IDX(q), e->radius);
             v.z = 0;
-            func_020fd6c0(&p->pos, &v, e);
+            spl_set_circle_axis(&p->pos, &v, e);
             break;
         }
         case 4: {
@@ -610,7 +610,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             v.x = FX_Mul(FX_Mul(v.x, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
             LCG();
             v.y = FX_Mul(FX_Mul(v.y, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
-            func_020fd6c0(&p->pos, &v, e);
+            spl_set_circle_axis(&p->pos, &v, e);
             break;
         }
         case 8: {
@@ -659,7 +659,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             v.y = FX_Mul(p->vel.y, e->radius);
             LCG();
             v.z = (e->len * (s32)(data_021f5c3c >> 23) - (e->len << 8)) >> 8;
-            func_020fd6c0(&p->pos, &v, e);
+            spl_set_circle_axis(&p->pos, &v, e);
             break;
         }
         case 7: {
@@ -671,7 +671,7 @@ extern "C" void func_020fc984(E *e, PList *freeList) {
             v.y = FX_Mul(FX_Mul(p->vel.y, e->radius), ((((s32)(data_021f5c3c >> 23) << 12) - 0x100000) >> 8));
             LCG();
             v.z = (e->len * (s32)(data_021f5c3c >> 23) - (e->len << 8)) >> 8;
-            func_020fd6c0(&p->pos, &v, e);
+            spl_set_circle_axis(&p->pos, &v, e);
             break;
         }
         }

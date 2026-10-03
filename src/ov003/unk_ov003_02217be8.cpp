@@ -274,7 +274,7 @@ void *func_020e8608(void *, s32);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
 s32 func_020302cc();
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_02056ca4(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
 
 // TU17 functions (the nearest-record class, sound handle helpers)
@@ -330,7 +330,7 @@ extern "C" void func_ov003_02218794(Unk_ov003_02218794_Obj *o) {
         u8 b = o->unk_00->unk_01;
         if (r3 != 0) {
             if (*(s8 *)(r3 + 0xe8) == b) {
-                func_01ffc5a4(o->unk_b0->unk_28 + 0xda2, 0xda2);
+                FX_Div(o->unk_b0->unk_28 + 0xda2, 0xda2);
                 func_020302cc();
                 data_ov003_02235494 = 1;
             }

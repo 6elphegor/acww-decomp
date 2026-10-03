@@ -336,8 +336,8 @@ s32 _ZN12Unk_020dbd5413func_020547e4Ev(void *);
 s32 _ZN12Unk_020dbe7c13func_020566bcEv(void *);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 s32 _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *, void *, u32);
-s32 func_021039ec(void *, u32);
-s32 func_02103830(void *, u32);
+s32 NNS_G3dBindMdlTex(void *, u32);
+s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, void *);
 s32 _ZN12Unk_0205454c13func_02054720Eiiitt(void *, u32, u32, u32, u32, u32);
 s32 _ZN12Unk_020dbd5413func_02054710Ev(void *);
@@ -572,11 +572,11 @@ void Unk_ov004_0224e034::func_02228e00(s32 i, void *a, void *b) {
     _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(&unk_290[i], func_ov004_02224d68(t1), 0);
     {
         void *x = func_ov004_02224d68(t1);
-        func_021039ec(x, func_ov004_02224d04(t2));
+        NNS_G3dBindMdlTex(x, func_ov004_02224d04(t2));
     }
     {
         void *x = func_ov004_02224d68(t1);
-        func_02103830(x, func_ov004_02224d04(t2));
+        NNS_G3dBindMdlPltt(x, func_ov004_02224d04(t2));
     }
 }
 

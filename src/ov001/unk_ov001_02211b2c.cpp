@@ -61,7 +61,7 @@ extern u16 data_ov001_0222de70;
 extern u8 data_ov001_0222de6c;
 extern void *data_ov001_0222af04[];
 
-void func_0211199c();
+void GX_LoadBG3Scr();
 s32 FX_DivS32(s32, s32);
 void func_ov001_02212bc8();
 void func_ov001_022128d0();
@@ -140,7 +140,7 @@ void func_ov001_02213338() {
 void func_ov001_022131d4() {
     char a[25] = "char/xb4ApListBack.nsc.l";
     char b[22] = "char/ybBgStep31.ncl.l";
-    func_ov001_02208594((void *)"char/jb4ApList.nsc.l", (void *)func_0211199c);
+    func_ov001_02208594((void *)"char/jb4ApList.nsc.l", (void *)GX_LoadBG3Scr);
     data_ov001_0222de74->unk_04 = (u32 *)func_ov001_02224074(func_ov001_022085e0(&a), 0, 4);
     func_ov001_0221cf5c(data_ov001_0222de74->unk_04);
     func_ov001_0221cf10();
@@ -625,7 +625,7 @@ struct Unk_ov001_0222de74 {
 
 extern "C" {
 extern u8 data_ov001_0222ae94[];
-extern u8 func_02111a6c[];
+extern u8 GX_LoadBG2Scr[];
 extern u8 data_ov001_0222de68;
 extern u8 data_ov001_0222aea8;
 extern u8 data_ov001_0222de6c;

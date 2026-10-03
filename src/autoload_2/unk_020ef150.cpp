@@ -85,18 +85,18 @@ extern u32 data_021f5b7c;
 extern u16 data_0213b200;
 extern SndEnt data_0213b204[];
 
-s32 func_01ffc5a4(s32 a, s32 b); // FX_Div
+s32 FX_Div(s32 a, s32 b); // FX_Div
 void func_020edad0(u16 a, u16 b, void *out);
 void func_020eda30(void *p, u32 a);
 void func_020eda80(void *p, u32 a, s32 b, s32 c, u32 d, u32 e);
 void func_020edb00(u16 a, u16 b);
-void func_0210a0e8(void *p, u32 a, u32 b);
-void func_0210a118(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackPitch(void *p, u32 a, u32 b);
 void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, u32 a);
 void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
-void func_0210a378(void *p);
-s32 func_0210d010(void *p, u32 a);
+void NNS_SndPlayerStopSeq(void *p);
+s32 NNS_SndArcPlayerStartSeq(void *p, u32 a);
 u32 func_0210e648(void *p);
 void *func_020f4500(void);
 void func_020f45b8(void *p, u32 a);
@@ -111,14 +111,14 @@ void func_020efc0c(SndMgr *self, s32 v);
 void func_020efc84(SndMgr *self, s32 a, s32 b);
 void func_020efd80(SndMgr *self, u32 flag);
 void func_020f0988(SndMgr *self, s32 a, u32 b);
-void func_0210a214(void *p, s32 v, u32 w);
+void NNS_SndPlayerMoveVolume(void *p, s32 v, u32 w);
 void func_0210e6b8(void *p, s32 v, u32 w);
 void func_0210e704(void *p, s32 v);
 void func_0210e730(void *p, u32 a, u32 b);
 s32 func_0210e5fc(void *p);
-void func_0210cc4c(void *a, u32 b);
+void NNS_SndArcLoadBank(void *a, u32 b);
 u32 func_020edc88(void);
-void func_0210a2a0(s32 a, s32 b, u32 c);
+void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
 void func_020f00d0(SndMgr *self);
 void func_020f00e0(SndMgr *self, u32 a, u32 b);
 
@@ -195,7 +195,7 @@ extern "C" void func_020f09d8(SndMgr *self, s32 a) {
 }
 
 extern "C" void func_020f0988(SndMgr *self, s32 a, u32 b) {
-    func_0210a2a0(a / 1000, a % 1000, b);
+    NNS_SndPlayerStopSeqBySeqNo(a / 1000, a % 1000, b);
 }
 
 extern "C" void func_020f0980(SndMgr *self, u32 v) {
@@ -226,12 +226,12 @@ extern "C" void func_020f0858(SndMgr *self, s32 a, u8 x, s32 y) {
     func_020edad0(a % 1000, a / 1000, &self->unk_48);
     if (isSet(self->unk_48)) {
         NNS_SndPlayerSetVolume(&self->unk_48, x);
-        func_0210a118(&self->unk_48, 15, y);
+        NNS_SndPlayerSetTrackPitch(&self->unk_48, 15, y);
     }
 }
 
 extern "C" void func_020f0838(SndMgr *self, void *a) {
-    func_0210cc4c(a, func_020edc88());
+    NNS_SndArcLoadBank(a, func_020edc88());
 }
 
 extern "C" u16 func_020f07f0(SndMgr *self, u32 n) {
@@ -291,7 +291,7 @@ extern "C" void func_020f0658(SndMgr *self, s32 v, u32 w) {
         func_0210e6b8(&self->unk_34, v, w);
         return;
     }
-    func_0210a214(&self->unk_3c, v, w);
+    NNS_SndPlayerMoveVolume(&self->unk_3c, v, w);
 }
 
 extern "C" void func_020f0508(SndMgr *self, s32 k) {
@@ -482,12 +482,12 @@ extern "C" void func_020f0110(SndMgr *self, u32 st) {
 }
 
 extern "C" void func_020f00e0(SndMgr *self, u32 a, u32 b) {
-    func_0210d010(&self->unk_3c, a);
+    NNS_SndArcPlayerStartSeq(&self->unk_3c, a);
     NNS_SndPlayerSetVolume(&self->unk_3c, b);
 }
 
 extern "C" void func_020f00d0(SndMgr *self) {
-    func_0210a378(&self->unk_3c);
+    NNS_SndPlayerStopSeq(&self->unk_3c);
 }
 
 extern "C" void func_020effd4(SndMgr *self) {
@@ -566,8 +566,8 @@ extern "C" void func_020efd80(SndMgr *self, u32 flag) {
         v = 127;
     }
     if (flag == 0) {
-        func_0210a0e8(&self->unk_38, 255, v);
-        func_0210a0e8(&self->unk_40, 255, v);
+        NNS_SndPlayerSetTrackPan(&self->unk_38, 255, v);
+        NNS_SndPlayerSetTrackPan(&self->unk_40, 255, v);
         return;
     }
     SndHandle *h = self->unk_38;
@@ -579,7 +579,7 @@ extern "C" void func_020efd80(SndMgr *self, u32 flag) {
         case 146:
         case 147:
         case 179:
-            func_0210a0e8(&self->unk_38, 255, v);
+            NNS_SndPlayerSetTrackPan(&self->unk_38, 255, v);
             break;
     }
 }
@@ -767,7 +767,7 @@ extern "C" void func_020ef894(SndMgr *self) {
 
 extern "C" void func_020ef850(SndMgr *self, u16 a, u32 b) {
     func_020edad0(a, 0, &self->unk_38);
-    func_0210a0e8(&self->unk_38, data_0213b200, b);
+    NNS_SndPlayerSetTrackPan(&self->unk_38, data_0213b200, b);
 }
 
 extern "C" void func_020ef83c(Ramp *r, s32 v) {
@@ -784,7 +784,7 @@ extern "C" void func_020ef7f8(Ramp *r, s16 target, u32 frames) {
         r->unk_04 = t;
         return;
     }
-    r->unk_08 = func_01ffc5a4(d, frames << 12);
+    r->unk_08 = FX_Div(d, frames << 12);
 }
 
 extern "C" s16 func_020ef7b0(Ramp *r) {

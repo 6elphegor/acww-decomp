@@ -5,7 +5,7 @@
 
 extern "C" {
 s32 DC_FlushRange(void *, u32);
-s32 func_02111ad4(void *, u32, u32);
+s32 GXS_LoadBG1Scr(void *, u32, u32);
 s32 func_ov001_02224038(void *);
 void *func_ov001_022085e0(u32);
 s32 func_ov001_02224074(void *, void *, u32);
@@ -34,7 +34,7 @@ void func_ov001_0221eae4(u32 i)
 void func_ov001_0221ea94(s32 a)
 {
     DC_FlushRange(data_ov001_0222def8, 0x600);
-    func_02111ad4(data_ov001_0222def8, 0, 0x600);
+    GXS_LoadBG1Scr(data_ov001_0222def8, 0, 0x600);
     func_ov001_02224038(data_ov001_0222def8);
     func_ov001_02226fdc(1, a);
 }

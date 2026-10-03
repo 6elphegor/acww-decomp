@@ -100,9 +100,9 @@ struct Bits {
 };
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ff8ccc(void);
+void NNS_G3dGeFlushBuffer(void);
 void G3_LoadMtx43(void *p);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 u32 _s32_div_f(u32 a, u32 b);
@@ -271,7 +271,7 @@ extern "C" void func_020ac40c() {
     } t;
     func_0209cf18(&t);
     s32 x = (t.a + ((t.b + 6) % 12) * 60) << 12;
-    x = func_01ffc5a4(x, 0x2d0000);
+    x = FX_Div(x, 0x2d0000);
     data_021edf44 = func_01ffcb0c((x - 0x800) << 1, 0x1000);
     func_020e8388(data_021f47e0, 0, 0, 0);
     func_020e84f8(data_021f47e0, 0x20000, 0x20000, 0x20000);
@@ -279,7 +279,7 @@ extern "C" void func_020ac40c() {
     func_020ac724(data_021edfe0, data_021edfbc);
     RGB c1 = func_02064f2c();
     u8 s = c1.b + (c1.r + c1.g);
-    u8 r4 = func_01ffcb0c(0x10000, func_01ffc5a4(s << 12, 0x5d000)) >> 12;
+    u8 r4 = func_01ffcb0c(0x10000, FX_Div(s << 12, 0x5d000)) >> 12;
     s32 base = func_02064c84(0);
     u8 v = base + r4;
     if (v > 0x1f) {
@@ -318,7 +318,7 @@ extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
             if (0xb000 < d) {
                 r4 = r4 >> 5;
             } else {
-                static s32 inv = func_01ffc5a4(0xf80, 0xb000);
+                static s32 inv = FX_Div(0xf80, 0xb000);
                 r4 = r4 - (u8)(func_01ffcb0c(func_01ffcb0c(r4 << 12, inv), d) >> 12);
             }
         } else {
@@ -438,7 +438,7 @@ BOOL Unk_020abea8::func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a,
     s32 *p6 = unk_1c;
     s32 *p7 = unk_28;
     for (i = 0; i < unk_14; i++) {
-        *p7++ = func_01ffcb0c(0x1000 - func_01ffc5a4(*p6, shift), unk_30->unk_0e << 12);
+        *p7++ = func_01ffcb0c(0x1000 - FX_Div(*p6, shift), unk_30->unk_0e << 12);
         p6++;
     }
     return TRUE;
@@ -450,7 +450,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
     if (unk_30 != 0 && unk_30->unk_00 != 0) {
         u8 lvl = func_020ac2d8(pos, unk_10);
         if (lvl > 1) {
-            func_01ff8ccc();
+            NNS_G3dGeFlushBuffer();
             REG(0x40004a8) = unk_30->unk_04;
             REG(0x40004ac) = unk_30->unk_08;
             REG(0x4000440) = 1;

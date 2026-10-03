@@ -10,8 +10,8 @@ u8 data_ov001_0222de98;
 }
 
 extern "C" {
-s32 func_02111a6c(void *, s32, u32);
-s32 func_021132e0(s32);
+s32 GX_LoadBG2Scr(void *, s32, u32);
+s32 OS_Sleep(s32);
 s32 func_ov001_022079fc();
 s32 func_ov001_02207a40(s32);
 s32 func_ov001_02208070();
@@ -78,7 +78,7 @@ extern "C" void func_ov001_022187dc() {
 }
 
 extern "C" void func_ov001_0221873c() {
-    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
     BGCNT(0x4001008, 3);
     BGCNT(0x400100a, 3);
     BGCNT(0x4000008, 3);
@@ -105,7 +105,7 @@ extern "C" void func_ov001_02218680() {
 }
 
 extern "C" void func_ov001_02218654() {
-    func_021132e0(10);
+    OS_Sleep(10);
     func_ov001_02218374();
     func_ov001_02218600();
     func_ov001_022185fc();

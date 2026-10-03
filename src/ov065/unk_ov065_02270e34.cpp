@@ -164,7 +164,7 @@ s32 func_ov065_0227c3b0(void *, s32, void *);
 s32 func_ov065_0227c400(void *, u32, s32, s32, void *, s32);
 s32 func_ov065_0227c538(void *);
 s32 func_ov065_0227c564(void *, void *, void *, s32, s32, void *, s32);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 void func_020ffd30(void *, void *, u32);
 s32 func_ov065_0226db98(void);
 void func_ov065_0226db28(s32 *);
@@ -283,7 +283,7 @@ extern Unk_ov065_02271774_B *data_ov065_0229080c;
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 void *MI_CpuFill8(void *, s32, u32);
-s32 func_0212a190(void *, void *);
+s32 strcmp(void *, void *);
 s32 func_021000f4(void *);
 s32 func_021000fc(void *);
 void func_02100094(void *);
@@ -441,7 +441,7 @@ extern Unk_ov065_02290814 *data_ov065_02290814;
 u64 OS_GetTick();
 s32 func_020ffc60(s32, void *);
 s32 func_020ffdd8(void *);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 s32 func_0212b854(const char *, char **, s32);
@@ -760,7 +760,7 @@ void func_ov065_02271f9c(void *a, u32 *b) {
 namespace F02271da0 {
 extern "C" {
 s32 func_ov065_02271f58(void *a, u32 *b) {
-    if (func_0212a190((const char *)b[2], "I have authorized your request to add me to your list") == 0) {
+    if (strcmp((const char *)b[2], "I have authorized your request to add me to your list") == 0) {
         func_ov065_0227c400(a, b[0], 0, 0, func_ov065_022715b0, 0);
         return 1;
     }
@@ -1198,7 +1198,7 @@ void func_ov065_02271698(void *x, Unk_ov065_02271774_Rec *p)
             if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 1) {
                 u8 buf[24];
                 func_020ffb98((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i], buf);
-                if (func_0212a190(buf, (u8 *)p + 0x8e) == 0) {
+                if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
                     func_ov065_0227c224(x, p->unk_04);
                     func_020ffba8(&data_ov065_0229080c->unk_18[i], p->unk_04);
                     found = 1;
@@ -1235,7 +1235,7 @@ void func_ov065_022715b0(void *x, Unk_ov065_02271774_Rec *p)
         for (; i < data_ov065_0229080c->unk_14; i++) {
             if (func_021000f4(&data_ov065_0229080c->unk_18[i]) == 1) {
                 func_020ffb98((void *)func_ov065_02271474(), &data_ov065_0229080c->unk_18[i], buf);
-                if (func_0212a190(buf, (u8 *)p + 0x8e) == 0) {
+                if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
                     func_020ffba8(&data_ov065_0229080c->unk_18[i], p->unk_04);
                     func_02100094(&data_ov065_0229080c->unk_18[i]);
                     found = 1;
@@ -1575,7 +1575,7 @@ void func_ov065_02270eb0(void *a0, Unk_ov065_02270eb0_X *x) {
             }
         } else if (data_ov065_02290804->unk_04 == 4) {
             func_020fff48((u8 *)data_ov065_02290804->unk_20 + 4, data_ov065_02290804->unk_0c, &b[1]);
-            if (func_0212a190((const char *)&x->unk_8e[0], (const char *)&b[1]) == 0) {
+            if (strcmp((const char *)&x->unk_8e[0], (const char *)&b[1]) == 0) {
                 func_020fff48(&data_ov065_02290804->unk_40, data_ov065_02290804->unk_0c, &c[2]);
                 func_020ffd30(data_ov065_02290804->unk_20, &data_ov065_02290804->unk_40, x->unk_04);
                 func_ov065_0227c538(a0);

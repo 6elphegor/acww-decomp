@@ -26,8 +26,8 @@ Unk_ov001_0220f164_Reg *data_ov001_0222de38;
 #define BGCNT(a) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | 3)
 
 extern "C" {
-void func_02111a6c(void);
-void func_0211172c(void);
+void GX_LoadBG2Scr(void);
+void GX_LoadBG2Char(void);
 s32 func_ov001_02208594(void *, void *);
 void *func_ov001_022085e0(void *);
 void func_ov001_02208690(u32, u32, u32, u32);
@@ -109,8 +109,8 @@ extern "C" void func_ov001_0220f164() {
     src = (u8 *)"char/ybBgOption.ncl.l";
     *(Unk_ov001_0220f164_Cp *)buf.a = *(Unk_ov001_0220f164_Cp *)src;
     *(Unk_ov001_0220f164_Cq *)buf.b = *(Unk_ov001_0220f164_Cq *)"char/ybBgOption1.ncl.l";
-    func_ov001_02208594((void *)"char/jbBgOption.ncg.l", (void *)func_0211172c);
-    func_ov001_02208594((void *)"char/jb5OptMenu.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/jbBgOption.ncg.l", (void *)GX_LoadBG2Char);
+    func_ov001_02208594((void *)"char/jb5OptMenu.nsc.l", (void *)GX_LoadBG2Scr);
     data_ov001_0222de34 = func_ov001_02224074(func_ov001_022085e0(buf.b), 0, 4);
     e = (u8 *)func_ov001_02224074(func_ov001_022085e0(buf.a), 0, 4);
     func_020ff0bc(&buf.t);

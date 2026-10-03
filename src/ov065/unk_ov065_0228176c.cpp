@@ -97,7 +97,7 @@ extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
 char *func_02129f1c(const char *, const char *);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 func_0212b770(const char *);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -283,7 +283,7 @@ s32 func_ov065_0227e0e8(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32
 void func_ov065_0228090c(Ctx0228 **, Node0228 *);
 void func_ov065_0227f2a4(void *);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 func_0212b770(void *);
 
 s32 func_ov065_02281bf4(Ctx0228 **, Node0228 *);
@@ -613,8 +613,8 @@ s32 func_ov065_02281844(Ctx0228 **, Node0228 *n, void *arg) {
     Unk_ov065_02281814_L *l = (Unk_ov065_02281814_L *)arg;
     char **e = (char **)n->unk_0c.p.a;
     if (e != 0) {
-        if (func_0212a190((const char *)l->a, e[0]) == 0) {
-            if (func_0212a190((const char *)l->b, e[2]) == 0) {
+        if (strcmp((const char *)l->a, e[0]) == 0) {
+            if (strcmp((const char *)l->b, e[2]) == 0) {
                 *(Node0228 **)l->out = n;
                 l->f = 1;
                 return 0;

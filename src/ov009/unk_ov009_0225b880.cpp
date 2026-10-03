@@ -707,8 +707,8 @@ BOOL func_0203e650(void *);
 void func_0203e624(void *, u32);
 BOOL func_0203a4c4(void *, s32, s32);
 s32 func_0203eeac(void *, void *);
-void func_02103830(void *, s32);
-void func_021039ec(void *, s32);
+void NNS_G3dBindMdlPltt(void *, s32);
+void NNS_G3dBindMdlTex(void *, s32);
 
 void func_020548d0(void *);
 void func_020b2034(void *);
@@ -1197,13 +1197,13 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d498(char *a, char *b, char *c) {
         if (func_020555ec(unk_138, (void *)r->unk_00, 0)) {
             func_ov003_02218d94();
             s32 x = func_ov003_022187f8();
-            func_02103830((void *)r->unk_00, x);
+            NNS_G3dBindMdlPltt((void *)r->unk_00, x);
             if (r->unk_14) {
-                func_021039ec((void *)r->unk_00, r->unk_14);
+                NNS_G3dBindMdlTex((void *)r->unk_00, r->unk_14);
             }
             if (r->unk_18) {
-                func_021039ec((void *)r->unk_00, r->unk_18);
-                func_02103830((void *)r->unk_00, r->unk_18);
+                NNS_G3dBindMdlTex((void *)r->unk_00, r->unk_18);
+                NNS_G3dBindMdlPltt((void *)r->unk_00, r->unk_18);
             }
             return TRUE;
         }

@@ -371,7 +371,7 @@ void GX_SetBankForBGExtPltt(s32 a);
 void GX_SetBankForOBJ(s32 a);
 void GX_SetBankForBG(s32 a);
 void G3X_Init(void);
-s32 func_02115468(s32 v);
+s32 OS_ResetSystem(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 s32 memcmp(const void *a, const void *b, u32 n);
 void func_02133ef8(void *dst, u32 size);
@@ -1901,7 +1901,7 @@ extern "C" BOOL func_020a4394(void) {
         return FALSE;
     }
     if (data_020e2974 == 2) {
-        func_02115468(1);
+        OS_ResetSystem(1);
     }
     s32 r = func_0202e880(data_020e2974, data_021d72e8, 0, 2);
     if (r != 0) {

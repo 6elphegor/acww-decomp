@@ -34,8 +34,8 @@ typedef struct TexData {
 } TexData;
 
 extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
-extern void func_02111f7c(void *, u32, u32);    // GX_LoadTex
-extern void func_02111f24(void);                // GX_EndLoadTex
+extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
+extern void GX_EndLoadTexPltt(void);                // GX_EndLoadTex
 extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
 extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
 extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
@@ -64,7 +64,7 @@ BOOL removeLink_(Node **head, Node *n)
 }
 
 // remove a node from any of the three lists
-void func_02103d64(u8 *o, Node *n)
+void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
 {
     if (removeLink_((Node **)(o + 8), n) || removeLink_((Node **)(o + 16), n) || removeLink_((Node **)(o + 24), n)) {
         *(u32 *)o |= 0x10;
@@ -81,10 +81,10 @@ void func_02103d50(u8 *o, u32 a, u32 b, u32 c, u32 d)
 void func_02103d48(u8 *o, u32 v) { *(u32 *)(o + 0x28) = v; }
 
 // palette size in bytes
-u32 func_02103d3c(TexData *o) { return o->plttSize << 3; }
+u32 NNS_G3dTexGetRequiredSize(TexData *o) { return o->plttSize << 3; }
 
 // 4x4-compressed palette size in bytes
-u32 func_02103d30(TexData *o) { return o->pltt4Size << 3; }
+u32 NNS_G3dTex4x4GetRequiredSize(TexData *o) { return o->pltt4Size << 3; }
 
 void NNS_G3dTexSetTexKey(TexData *o, u32 a, u32 b)
 {
@@ -93,7 +93,7 @@ void NNS_G3dTexSetTexKey(TexData *o, u32 a, u32 b)
 }
 
 // upload palette data to VRAM
-void func_02103c40(TexData *o, BOOL lock)
+void NNS_G3dTexLoad(TexData *o, BOOL lock)
 {
     u32 size;
     u32 size4;
@@ -116,15 +116,15 @@ void func_02103c40(TexData *o, BOOL lock)
 }
 
 // texture size in bytes
-u32 func_02103c34(TexData *o) { return o->texSize << 3; }
+u32 NNS_G3dPlttGetRequiredSize(TexData *o) { return o->texSize << 3; }
 
-void func_02103c2c(TexData *o, u32 v) { o->tex2c = v; }
+void NNS_G3dPlttSetPlttKey(TexData *o, u32 v) { o->tex2c = v; }
 
 // upload texture data to VRAM
-void func_02103bc0(TexData *o, BOOL lock)
+void NNS_G3dPlttLoad(TexData *o, BOOL lock)
 {
     if (lock) GX_BeginLoadTexPltt();
-    func_02111f7c((u8 *)o + o->texOfs, (o->tex2c & 0xffff) << 3, o->texSize << 3);
+    GX_LoadTexPltt((u8 *)o + o->texOfs, (o->tex2c & 0xffff) << 3, o->texSize << 3);
     o->texFlag |= 1;
-    if (lock) func_02111f24();
+    if (lock) GX_EndLoadTexPltt();
 }

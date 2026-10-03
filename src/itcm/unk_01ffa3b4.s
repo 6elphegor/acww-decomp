@@ -8,10 +8,10 @@
 	.arm
 
 ; OS_GetProcMode: CPSR mode bits (HW_PSR_CPU_MODE_MASK 0x1f)
-	.global func_01ffa3b4
-	.type func_01ffa3b4, @function
-	.size func_01ffa3b4, 0xc
-func_01ffa3b4:
+	.global OS_GetProcMode
+	.type OS_GetProcMode, @function
+	.size OS_GetProcMode, 0xc
+OS_GetProcMode:
 	mrs r0, cpsr
 	and r0, r0, #0x1f
 	bx lr

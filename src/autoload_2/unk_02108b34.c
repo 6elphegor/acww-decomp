@@ -13,7 +13,7 @@ extern s32 FX_GetDivResult(void);
 
 
 // NNS g3d material SRT: 2D matrix, rotation + translation
-void func_02108b34(s32 *o, u8 *s)
+void texmtxCalc_flagS___3dsmax(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);

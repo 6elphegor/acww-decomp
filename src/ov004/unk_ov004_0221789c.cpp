@@ -159,7 +159,7 @@ void *func_02095204(u32 a);
 s32 func_0202ff64(void *p);
 s32 func_0203e2f4();
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_0204ee10(s32 *x, s32 *y, void *v);
 void *func_ov004_02235718();
 s32 func_ov004_02235624(void *g, s32 x, s32 y, u32 z);
@@ -901,7 +901,7 @@ void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
             f = (float)(d << 12) - 0.5f;
         }
         s32 v = (s32)f;
-        unk_1a4 = func_01ffc5a4(func_01ffcb0c(unk_1a4, v), 0x200000);
+        unk_1a4 = FX_Div(func_01ffcb0c(unk_1a4, v), 0x200000);
         r6 = unk_1a4;
         s32 k = r6 / 10 * 10;
         if (r6 - k >= 5) {

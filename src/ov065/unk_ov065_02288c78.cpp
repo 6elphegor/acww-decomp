@@ -239,7 +239,7 @@ extern u16 data_0213a510[];
 extern s32 data_ov065_02290fa0;
 extern s32 data_ov065_022918a8;
 
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_0212b770(char *);
@@ -545,7 +545,7 @@ extern "C" {
 s32 func_ov065_022890b8(void *a, char *b, s32 c) {
     char *v;
     s32 t;
-    if (func_0212a190(b, "ping") == 0) {
+    if (strcmp(b, "ping") == 0) {
         return func_ov065_02288db8(a);
     }
     v = (char *)func_ov065_0228911c(a, b, 0);
@@ -650,7 +650,7 @@ s32 func_ov065_02288ffc(char *s) {
     u32 i;
     char **p = l.v;
     for (i = 0; i < 2; i++) {
-        if (func_0212a190(s, *p) == 0) {
+        if (strcmp(s, *p) == 0) {
             return 0;
         }
         p++;

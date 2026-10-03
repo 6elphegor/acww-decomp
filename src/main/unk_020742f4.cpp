@@ -1216,7 +1216,7 @@ extern "C" {
 void FS_LoadOverlayImage(void *p);
 }
 extern "C" {
-void func_0211a258(void *p);
+void FS_StartOverlay(void *p);
 }
 extern "C" {
 void FS_EndOverlay(void *p);
@@ -1670,7 +1670,7 @@ extern "C" void func_02076c24(Unk_02076c24_S *s, s32 v) {
     s->unk_00 = v;
     func_0204f054(s->unk_08);
     FS_LoadOverlayImage(s->unk_08);
-    func_0211a258(s->unk_08);
+    FS_StartOverlay(s->unk_08);
     s->unk_04 = 0;
 }
 

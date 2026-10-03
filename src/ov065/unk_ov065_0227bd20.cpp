@@ -73,9 +73,9 @@ struct Unk_ov065_0227c400_Buf {
 
 typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 extern "C" {
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 func_02129fa0(const char *, const char *);
+s32 strspn(const char *, const char *);
 char *func_0212a120(const char *, s32);
 s32 func_0212b770(const char *);
 void *func_0212899c(void *, s32, s32);
@@ -237,12 +237,12 @@ void *func_ov065_02277af0(s32);
 void func_ov065_022788f0(void *);
 
 char *func_02129f1c(const char *, const char *);
-void func_02128a00(void *, const void *, s32);
-void func_021289b4(void *, void *, u32);
+void memcpy(void *, const void *, s32);
+void memmove(void *, void *, u32);
 s32 func_0212b770(const char *);
 s32 strncmp(const char *, const char *, u32);
 void func_0212899c(void *, s32, u32);
-void func_02128c60();
+void srand();
 
 s32 func_ov065_0227ca28(Ctx0227 **h);
 s32 func_ov065_0227cbdc(Ctx0227 **h);
@@ -690,7 +690,7 @@ s32 func_ov065_0227bd8c(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, con
             p++;
         } while (*p != 0);
     }
-    if (v == c->unk_214 && func_0212a190(b1, c->unk_218) == 0 && func_0212a190(b2, c->unk_318) == 0) {
+    if (v == c->unk_214 && strcmp(b1, c->unk_218) == 0 && strcmp(b2, c->unk_318) == 0) {
         return 0;
     }
     c->unk_214 = v;

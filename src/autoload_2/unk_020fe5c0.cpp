@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // G015b: autoload_2 0x020fe5c0-0x020fe848 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
-// func_020fe5c0: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
+// WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
 #include "types.h"
 
 struct VecFx32 { s32 x, y, z; };
@@ -207,7 +207,7 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 old);
 void OSi_UnlockVram(u32 a, u32 b);
 s32 OSi_TryLockVram(u32 a, u32 b);
-void func_02117dcc(void);
+void PXI_Init(void);
 s32 PXI_IsCallbackReady(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);
 s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
@@ -216,10 +216,10 @@ void func_020fe4b0(u32 a, u32 b);
 void func_020fe4b4(u32 a, u32 b);
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
-void func_020fe3a0(PList *l, P *n);
-P *func_020fe35c(PList *l);
-void func_020fd820(E *e);
-void func_020fd6c0(VecFx32 *out, const VecFx32 *in, E *e);
+void spl_push_front(PList *l, P *n);
+P *spl_pop_front(PList *l);
+void spl_set_cross_to_axis(E *e);
+void spl_set_circle_axis(VecFx32 *out, const VecFx32 *in, E *e);
 }
 
 static inline s32 FX_Mul(s32 a, s32 b) {
@@ -229,8 +229,8 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 #define SIN_IDX(i) (data_02135f44[((i) >> 4) * 2])
 #define COS_IDX(i) (data_02135f44[((i) >> 4) * 2 + 1])
 
-extern "C" s32 func_020fe5c0(u32 cmd, void (*cb)(u32, u32), u32 arg) {
-    func_02117dcc();
+extern "C" s32 WVR_StartUpAsync(u32 cmd, void (*cb)(u32, u32), u32 arg) {
+    PXI_Init();
     if (PXI_IsCallbackReady(15, 1) == 0) {
         return 2;
     }

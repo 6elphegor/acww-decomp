@@ -12,7 +12,7 @@ typedef struct GeBuf4 {
     s32 w[18];
 } GeBuf4;
 
-extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
+extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
 extern void FX_DivAsync(s32 num, s32 den);
 extern s32 FX_GetDivResult(void);
 extern void (*data_0213bed0[8])(s32 *, u32 *);
@@ -24,7 +24,7 @@ static inline s32 FxMul(s32 a, s32 b)
 }
 
 // NNS g3d material SRT: 2D matrix, translation only
-void func_02108a64(s32 *o, u8 *s)
+void texmtxCalc_flagRS___3dsmax(s32 *o, u8 *s)
 {
     o[0] = 0x1000;
     o[5] = 0x1000;
@@ -35,7 +35,7 @@ void func_02108a64(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix, scale + rotation
-void func_02108960(s32 *o, u8 *s)
+void texmtxCalc_flagT___3dsmax(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
@@ -69,7 +69,7 @@ void func_02108960(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix, rotation only
-void func_0210887c(s32 *o, u8 *s)
+void texmtxCalc_flagTS___3dsmax(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
@@ -91,7 +91,7 @@ void func_0210887c(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix, scale only
-void func_0210882c(s32 *o, u8 *s)
+void texmtxCalc_flagTR___3dsmax(s32 *o, u8 *s)
 {
     o[0] = *(s32 *)(s + 24);
     o[5] = *(s32 *)(s + 28);
@@ -102,7 +102,7 @@ void func_0210882c(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix for flags 0 (identity)
-void func_02108808(s32 *o)
+void texmtxCalc_flagTRS___3dsmax(s32 *o)
 {
     o[0] = 0x1000;
     o[1] = 0;
@@ -144,17 +144,17 @@ void func_021086bc(u32 *a)
         s.w[6] = FxMul(a[13], s.w[6]);
         s.w[14] = FxMul(a[13], s.w[14]);
     }
-    func_01ff8bd0(s.cmd, (u32 *)&s + 1, 18);
+    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 18);
 }
 
 // NNS g3d: send joint SRT result (scale/trans through a temporary vector) to the geometry engine
-void func_02108584(u32 *a)
+void NNSi_G3dSendJointSRTSi3d(u32 *a)
 {
     s32 v[3];
     BOOL t = 0;
     u32 f = a[0] & 0x18;
     if (f == 0) {
-        func_01ff8bd0(0x1b, a + 7, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 7, 3);
     }
     if ((a[0] & 4) == 0) {
         if (f != 0) {
@@ -163,23 +163,23 @@ void func_02108584(u32 *a)
             v[0] = FxMul(a[19], a[4]);
             v[1] = FxMul(a[20], a[5]);
             v[2] = FxMul(a[21], a[6]);
-            func_01ff8bd0(0x1c, v, 3);
+            NNS_G3dGeBufferOP_N(0x1c, v, 3);
         }
     }
     if ((a[0] & 2) == 0) {
         if (t != 0) {
-            func_01ff8bd0(0x19, a + 10, 12);
+            NNS_G3dGeBufferOP_N(0x19, a + 10, 12);
         } else {
-            func_01ff8bd0(0x1a, a + 10, 9);
+            NNS_G3dGeBufferOP_N(0x1a, a + 10, 9);
         }
     } else if (t != 0) {
-        func_01ff8bd0(0x1c, a + 19, 3);
+        NNS_G3dGeBufferOP_N(0x1c, a + 19, 3);
     }
     if (f == 0) {
-        func_01ff8bd0(0x1b, a + 4, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 4, 3);
     }
     if ((a[0] & 1) == 0) {
-        func_01ff8bd0(0x1b, a + 1, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 1, 3);
     }
 }
 

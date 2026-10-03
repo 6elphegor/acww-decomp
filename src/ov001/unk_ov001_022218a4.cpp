@@ -94,43 +94,43 @@ typedef void (*Unk_ov001_0222df24_Fn)(u32, const void *, ...);
 extern "C" {
 extern Unk_ov001_0222df08_S *data_ov001_0222df08;
 
-s32 func_02122eb0(s32, s32);
+s32 MB_CommResponseRequest(s32, s32);
 s32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(s32);
 void func_02124a94(s32);
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
-s32 func_02123e58(void *);
-s32 func_021239ec(void *, void *, u32);
-s32 func_02123680(void *, void *);
+s32 MB_GetSegmentLength(void *);
+s32 MB_ReadSegment(void *, void *, u32);
+s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
 void func_ov001_02220d2c(u32);
-s32 func_02124d50(s32);
+s32 MB_StartParentFromIdle(s32);
 void func_0206d49c();
 void OS_GetOwnerInfo(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_021251ac(void *, void *, s32, s32, s32);
-void func_02125098(u32, u32);
-void func_021230a4(void *);
+void MB_SetParentCommParam(u32, u32);
+void MB_CommSetParentStateCallback(void *);
 void func_ov001_02220d40();
 s32 WM_End(void *);
-s32 func_021210f0(void *, s32, void *);
+s32 WM_StepDataSharing(void *, s32, void *);
 void WM_GetSharedDataAddress(void *, void *, s32);
 u32 WM_GetDispersionBeaconPeriod();
-s32 func_0211fb68(void *);
+s32 WM_SetIndCallback(void *);
 s32 WM_Initialize(void *, void *, s32);
 s32 WM_Reset(void *);
-s32 func_0211fbb4(void *, s32);
+s32 WM_Disconnect(void *, s32);
 s32 WM_EndMP(void *);
-s32 func_02121838(void *);
+s32 WM_EndKeySharing(void *);
 s32 WM_EndParent(void *);
 s32 func_021218d0(void *, s32, s32, s32, s32);
 s32 WM_GetAllowedChannel();
 void OS_GetMacAddress(u16 *);
 s32 WM_StartKeySharing(void *, s32);
-s32 func_02121570(void *, s32, s32, s32, s32);
+s32 WM_StartDataSharing(void *, s32, s32, s32, s32);
 s32 func_021206b4(void *, void *, s32, void *, s32, s32, s32, s32, s32, s32, s32);
-s32 func_021200a8(void *);
+s32 WM_StartParent(void *);
 s32 WM_SetWEPKey(void *, s32, void *);
 s32 WM_SetParentParameter(void *, void *);
 
@@ -281,7 +281,7 @@ extern "C" s32 func_ov001_02222b5c() {
     if ((u32)(G->unk_40 - 4) <= 2) {
         return TRUE;
     }
-    r = func_021200a8((void *)func_ov001_02222988);
+    r = WM_StartParent((void *)func_ov001_02222988);
     if (r != 2) {
         func_ov001_02222d98(r);
         return FALSE;
@@ -308,7 +308,7 @@ extern "C" void func_ov001_02222988(u16 *p) {
             LOG(0x8000000, "StartParent - new child (aid %x) connected\n", sh);
         }
         if (G->unk_4c != 0 && (r = G->unk_4c(p)) == 0) {
-            r = func_0211fbb4(0, p[8]);
+            r = WM_Disconnect(0, p[8]);
             if (r == 2) {
                 return;
             }
@@ -379,7 +379,7 @@ extern "C" void func_ov001_02222744(u16 *p) {
                 return;
             }
         } else if (g->unk_44 == 4) {
-            s32 r = func_02121570(g->unk_13e0, 0xd, 7, 0x44, 1);
+            s32 r = WM_StartDataSharing(g->unk_13e0, 0xd, 7, 0x44, 1);
             if (r != 0) {
                 func_ov001_02222d98(r);
                 func_ov001_02222db8(9);
@@ -416,7 +416,7 @@ extern "C" s32 func_ov001_022226f4() {
 
 extern "C" s32 func_ov001_022226b0() {
     s32 r;
-    r = func_02121838((u8 *)data_ov001_0222df28 + 0x1e00);
+    r = WM_EndKeySharing((u8 *)data_ov001_0222df28 + 0x1e00);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -466,7 +466,7 @@ extern "C" s32 func_ov001_0222251c() {
     s32 r;
     if (data_ov001_0222df28->unk_40 != 6) return 0;
     func_ov001_02222db8(3);
-    r = func_02121838((u8 *)data_ov001_0222df28 + 0x1e00);
+    r = WM_EndKeySharing((u8 *)data_ov001_0222df28 + 0x1e00);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     return 0;
@@ -494,7 +494,7 @@ extern "C" void func_ov001_02222488(Unk_ov001_02222088_A *a) {
 extern "C" s32 func_ov001_0222243c() {
     s32 r;
     func_ov001_02222db8(3);
-    r = func_0211fbb4((void *)func_ov001_02222404, 0);
+    r = WM_Disconnect((void *)func_ov001_02222404, 0);
     if (r == 2) return 1;
     func_ov001_02222d98(r);
     func_ov001_02221a84();
@@ -692,7 +692,7 @@ extern "C" void func_ov001_02221d48(u16 *p) {
         func_ov001_02222db8(0xa);
         return;
     }
-    s32 r = func_0211fb68((void *)func_ov001_02221e14);
+    s32 r = WM_SetIndCallback((void *)func_ov001_02221e14);
     if (r != 0) {
         func_ov001_02222d98(r);
         func_ov001_02222db8(0xa);
@@ -735,7 +735,7 @@ extern "C" void func_ov001_02221b74(s32 a) {
 
 extern "C" s32 func_ov001_02221ab4(s32 a) {
     Unk_ov001_0222df28_S *g = data_ov001_0222df28;
-    s32 r = func_021210f0(g->unk_13e0, a, g->unk_1c00);
+    s32 r = WM_StepDataSharing(g->unk_13e0, a, g->unk_1c00);
     if (r == 7) {
         if (data_ov001_0222df24 != 0) data_ov001_0222df24(0x8000000, "DWCi_MOV_WH_StepDataSharing - Warning No Child\n");
         return 0;

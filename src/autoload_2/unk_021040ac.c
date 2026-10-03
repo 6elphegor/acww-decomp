@@ -28,7 +28,7 @@ extern u32 data_027e0170[], data_027e0148[];
 extern void MTX_Concat43(void *, void *, void *);
 extern void MTX_ScaleApply43(void *, void *, s32, s32, s32);
 extern void MTX_Inverse43(void *, void *);
-extern void func_01ff8bd0(u32, void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 
 extern void MTX_Identity43_(void *);
 extern void MTX_Identity44_(void *);
@@ -45,7 +45,7 @@ typedef struct Cb {
 } Cb;
 
 
-BOOL func_02104588(void *p, Cb *n, u32 k)
+BOOL NNSi_G3dAnmBlendMat(void *p, Cb *n, u32 k)
 {
     BOOL ret = 0;
     do {
@@ -88,7 +88,7 @@ BOOL func_021044a4(u32 *out, Cb *n, u32 k)
     } while (n != NULL);
     return ret;
 }
-void func_02104338(void)
+void NNS_G3dGlbInit(void)
 {
     data_027e00c8.w[0] = 0x17101610;
     data_027e00c8.w[1] = 0;
@@ -132,27 +132,27 @@ void func_02104338(void)
 }
 
 // geometry command flush + clear dirty flags
-void func_021042f8(void)
+void NNS_G3dGlbFlushP(void)
 {
     u32 *p = (u32 *)&data_027e00c8;
-    func_01ff8bd0(*p++, p, 0x3e);
+    NNS_G3dGeBufferOP_N(*p++, p, 0x3e);
     data_027e00c8.n.flag &= ~1;
     data_027e00c8.n.flag &= ~2;
 }
 
-void func_021042d0(V3 *v)
+void NNS_G3dGlbSetBaseTrans(V3 *v)
 {
     data_027e00c8.n.e0 = *v;
     data_027e00c8.n.flag &= ~0xa4;
 }
 
-void func_021042a8(V3 *v)
+void NNS_G3dGlbSetBaseScale(V3 *v)
 {
     data_027e00c8.n.scale = *v;
     data_027e00c8.n.flag &= ~0xa4;
 }
 
-void func_02104270(u32 id, s32 a, s32 b, s32 c)
+void NNS_G3dGlbLightVector(u32 id, s32 a, s32 b, s32 c)
 {
     data_027e0148[id] = ((a >> 3) & 0x3ff) | (((b >> 3) & 0x3ff) << 10) | (((c >> 3) & 0x3ff) << 20) | (id << 30);
 }
@@ -167,7 +167,7 @@ void func_02104238(u32 a, u32 b, BOOL c)
     data_027e00c8.n.ctl98 = a | (b << 16) | ((c != 0) << 15);
 }
 
-u8 *func_021041e8(void)
+u8 *NNS_G3dGlbGetInvV(void)
 {
     if ((data_027e00c8.n.flag & 8) == 0) {
         MTX_Inverse43(data_027e0114, data_027e01c8);
@@ -176,26 +176,26 @@ u8 *func_021041e8(void)
     return data_027e01c8;
 }
 
-void func_02104184(void)
+void calcSrtCameraMtx_(void)
 {
     MTX_Concat43(data_027e0184, data_027e0114, data_027e01f8);
     MTX_ScaleApply43(data_027e01f8, data_027e01f8, data_027e00c8.n.scale.x, data_027e00c8.n.scale.y, data_027e00c8.n.scale.z);
     MTX_Inverse43(data_027e01f8, data_027e0228);
 }
 
-u8 *func_02104140(void)
+u8 *NNS_G3dGlbGetWV(void)
 {
     if ((data_027e00c8.n.flag & 0x80) == 0) {
-        func_02104184();
+        calcSrtCameraMtx_();
         data_027e00c8.n.flag |= 0x80;
     }
     return data_027e01f8;
 }
 
-u8 *func_021040fc(void)
+u8 *NNS_G3dGlbGetInvWV(void)
 {
     if ((data_027e00c8.n.flag & 0x80) == 0) {
-        func_02104184();
+        calcSrtCameraMtx_();
         data_027e00c8.n.flag |= 0x80;
     }
     return data_027e0228;

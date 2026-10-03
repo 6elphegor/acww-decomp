@@ -112,21 +112,21 @@ s32 func_0212a438(const char *s);
 char *func_02129f1c(const char *hay, const char *needle);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-void func_021289b4(void *dst, void *src, u32 n);
+void memmove(void *dst, void *src, u32 n);
 s32 func_0212b770(const char *s);
 s32 OS_SNPrintf(char *buf, s32 size, const char *fmt, ...);
-void func_021132e0(s32 ms);
+void OS_Sleep(s32 ms);
 void OS_GetLowEntropyData(void *p);
-u32 func_0211337c(u32 v);
+u32 OS_GetThreadPriority(u32 v);
 s32 OS_LockMutex(void *m);
 s32 OS_UnlockMutex(void *m);
 s32 OS_InitMutex(void *m);
 s32 OS_JoinThread(void *t);
 s32 OS_IsThreadTerminated(void *t);
 s32 OS_WakeupThreadDirect(void *t);
-s32 func_02113a70(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
+s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
 u64 OS_GetTick(void);
-s32 func_0212a190(const char *a, const char *b);
+s32 strcmp(const char *a, const char *b);
 char *func_0212a360(char *dst, const char *src);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
 s32 strncmp(const char *a, const char *b, u32 n);
@@ -220,7 +220,7 @@ s32 func_ov065_0226eb6c(Unk_ov065_0226e3ac_Ctx *c) {
 }
 
 void func_ov065_0226eacc(Unk_ov065_0226e3ac_Ctx *c) {
-    u32 prio = func_0211337c(data_021fcc2c.unk_04);
+    u32 prio = OS_GetThreadPriority(data_021fcc2c.unk_04);
     c->unk_a40 = 0;
     OS_InitMutex(&c->unk_a28);
     OS_InitMutex(&c->unk_948);
@@ -230,7 +230,7 @@ void func_ov065_0226eacc(Unk_ov065_0226e3ac_Ctx *c) {
         data_ov065_02290618 = 0;
     }
     if (c->unk_9d4 == 0 || OS_IsThreadTerminated(&c->unk_968) != 0) {
-        func_02113a70(&c->unk_968, (s32 (*)(void *))func_ov065_0226e554, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
+        OS_CreateThread(&c->unk_968, (s32 (*)(void *))func_ov065_0226e554, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
         OS_WakeupThreadDirect(&c->unk_968);
     }
 }
@@ -253,7 +253,7 @@ s32 func_ov065_0226ea40(Unk_ov065_0226e3ac_Ctx *c) {
         return 0;
     }
     OS_UnlockMutex(&c->unk_a28);
-    func_021132e0(10);
+    OS_Sleep(10);
     return 1;
 }
 
@@ -292,7 +292,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
         if (host != 0) {
             break;
         }
-        func_021132e0(500);
+        OS_Sleep(500);
         i++;
     } while (i < 3);
     if (host == 0) {
@@ -325,7 +325,7 @@ void func_ov065_0226e554(Unk_ov065_0226e3ac_Ctx *c) {
         if (r == 0) {
             break;
         }
-        func_021132e0(500);
+        OS_Sleep(500);
         i++;
     } while (i < 3);
     if (r != 0) {
@@ -533,7 +533,7 @@ s32 func_ov065_0226e3ac(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a
     }
     p = func_02129f1c((char *)b->unk_00, "\r\n\r\n") + 2;
     saved = p[0];
-    func_021289b4(p + n, p, func_0212a438(p) + 1);
+    memmove(p + n, p, func_0212a438(p) + 1);
     s32 r = OS_SNPrintf(p, n + 1, "%s: %s\r\n", a1, a2);
     p[r] = saved;
     b->unk_04 = b->unk_04 + n;
@@ -763,7 +763,7 @@ char *func_ov065_0226de90(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
             if (p->unk_00 == NULL) {
                 break;
             }
-            if (func_0212a190(key, p->unk_00) == 0) {
+            if (strcmp(key, p->unk_00) == 0) {
                 return tbl[i].unk_04;
             }
             p++;

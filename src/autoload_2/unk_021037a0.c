@@ -7,8 +7,8 @@ typedef unsigned int u32;
 typedef int BOOL;
 #define NULL 0
 
-extern u8 *func_02106460(void *dict, void *name);          // NNS_G3dGetResDataByName-like (dict, name) -> data
-extern void func_021038e0(u8 *, u8 *, u8 *, u8 *);         // BindMdlTex inner (mdl set, map entry, tex, tex data)
+extern u8 *NNS_G3dGetResDataByName(void *dict, void *name);          // NNS_G3dGetResDataByName-like (dict, name) -> data
+extern void bindMdlPltt_Internal_(u8 *, u8 *, u8 *, u8 *);         // BindMdlTex inner (mdl set, map entry, tex, tex data)
 
 // entry of a resource dictionary data block: [u16 unitSize, u16 ...] then units from +4
 static inline u8 *Ent(u8 *dict, u32 i)
@@ -18,7 +18,7 @@ static inline u8 *Ent(u8 *dict, u32 i)
 }
 
 // NNS_G3dBindMdlTex (all textures of a model)
-BOOL func_02103830(u8 *mdl, u8 *tex)
+BOOL NNS_G3dBindMdlPltt(u8 *mdl, u8 *tex)
 {
     u8 *set = mdl + *(u32 *)(mdl + 8);
     u8 *dict = set + *(u16 *)(set + 2);
@@ -28,12 +28,12 @@ BOOL func_02103830(u8 *mdl, u8 *tex)
     i = 0;
     while (i < dict[1]) {
         u8 *ents = dict + *(u16 *)(dict + 6);
-        u8 *res = func_02106460(tex + *(u16 *)(tex + 0x34), ents + *(u16 *)(ents + 2) + i * 16);
+        u8 *res = NNS_G3dGetResDataByName(tex + *(u16 *)(tex + 0x34), ents + *(u16 *)(ents + 2) + i * 16);
         if (res != NULL) {
             u8 *e = dict + *(u16 *)(dict + 6);
             e = e + 4 + *(u16 *)e * i;
             if ((e[3] & 1) == 0) {
-                func_021038e0(set, e, tex, res);
+                bindMdlPltt_Internal_(set, e, tex, res);
             }
         } else {
             ret = 0;
@@ -52,7 +52,7 @@ BOOL func_021037b4(u8 *mdl, u8 *tex, u32 i, u32 j)
     u8 *t = Ent(tdict, j);
     u8 *e = Ent(dict, i);
     if (e != NULL && (e[3] & 1) == 0) {
-        func_021038e0(set, e, tex, t);
+        bindMdlPltt_Internal_(set, e, tex, t);
         return 1;
     }
     return 0;

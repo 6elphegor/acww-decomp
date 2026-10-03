@@ -115,8 +115,8 @@ char *func_0212a120(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
 s32 func_0212b770(const char *);
 u32 STD_GetStringLength(const char *);
-void func_021289b4(void *, void *, s32);
-void func_02128a00(void *, const void *, s32);
+void memmove(void *, void *, s32);
+void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 func_ov065_02283630(const char *, const char *, char *, s32);
 void func_ov065_02283460(void *, const char *);
@@ -189,7 +189,7 @@ s32 func_ov065_0227de30(Unk_H *h, Unk_B *b, const char *s, s32 n) {
             return 1;
         }
     }
-    func_02128a00(data + len, s, n);
+    memcpy(data + len, s, n);
     data[len + n] = 0;
     b->unk_08 = b->unk_08 + n;
     b->unk_04 = cap;
@@ -384,7 +384,7 @@ s32 func_ov065_0227da7c(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, cons
     } while (cnt != 0 && rem != 0);
     if (compact != 0) {
         if (sent > 0) {
-            func_021289b4(data, data + sent, rem + 1);
+            memmove(data, data + sent, rem + 1);
             len -= sent;
         }
     } else {
@@ -448,7 +448,7 @@ s32 func_ov065_0227d96c(void *h, Unk_B *b) {
     }
     b->unk_08 = b->unk_08 - b->unk_0c;
     if (b->unk_08 != 0) {
-        func_021289b4(b->unk_00, b->unk_00 + b->unk_0c, b->unk_08);
+        memmove(b->unk_00, b->unk_00 + b->unk_0c, b->unk_08);
     }
     b->unk_00[b->unk_08] = 0;
     b->unk_0c = 0;

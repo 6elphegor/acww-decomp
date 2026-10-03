@@ -34,7 +34,7 @@ struct Unk_ov001_0222de74 {
 
 extern "C" {
 extern u8 data_ov001_0222ae94[];
-extern u8 func_02111a6c[];
+extern u8 GX_LoadBG2Scr[];
 extern u8 data_ov001_0222de68;
 extern u8 data_ov001_0222aea8;
 extern u8 data_ov001_0222de6c;
@@ -104,7 +104,7 @@ void func_ov001_02211ae4() {
 }
 
 void func_ov001_02211a5c() {
-    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", GX_LoadBG2Scr);
     *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
     *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
     *(volatile u16 *)0x400000a = (*(volatile u16 *)0x400000a & ~3) | 3;
@@ -196,9 +196,9 @@ void func_ov001_0221b318();
 void func_ov001_02211ae4();
 void func_ov001_0221be7c();
 void func_ov001_0221197c();
-void func_0211172c();
+void GX_LoadBG2Char();
 void GX_LoadBGPltt();
-void func_02111a6c();
+void GX_LoadBG2Scr();
 
 void func_ov001_02211030();
 void func_ov001_02211070();

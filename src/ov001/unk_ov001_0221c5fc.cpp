@@ -6,8 +6,8 @@
 struct Unk_ov001_0221ccb4_S { u8 pad_00[4]; u8 unk_04[0x14]; u16 unk_18; u8 pad_1a[0x3a]; };
 
 extern "C" {
-s32 func_02111a6c();
-s32 func_0211172c();
+s32 GX_LoadBG2Scr();
+s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 s32 OS_GetOwnerInfo(void *);
 void MIi_CpuClear16(u16, void *, u32);
@@ -97,9 +97,9 @@ extern "C" void func_ov001_0221ccb4() {
 }
 
 extern "C" void func_ov001_0221cbec() {
-    func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594((void *)"char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594((void *)"char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
-    func_ov001_02208594((void *)"char/jb4Usb.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/jb4Usb.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;

@@ -133,61 +133,61 @@ extern void OS_GetMacAddress(u8 *);
 extern void MI_DmaCopy16(u32, void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
-extern void func_02115e64(u32, void *, u32);
+extern void MIi_CpuClear32(u32, void *, u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 PXI_IsCallbackReady(u32, u32);
-extern u32 func_0211f410(void);
+extern u32 WM_GetNextTgid(void);
 extern u32 func_0211fb0c(u32, void *, u32);
-extern u32 func_0211fb68(WCb);
-extern u32 func_0211fbb4(WCb, u32);
+extern u32 WM_SetIndCallback(WCb);
+extern u32 WM_Disconnect(WCb, u32);
 extern u32 func_0211fcbc(WCb, u32, u32, u32, u32);
-extern u32 func_0211ff5c(WCb, void *);
+extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
-extern u32 func_0212052c(u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
 extern u32 func_021206b4(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
-extern void func_021230a4(void *);
+extern void MB_CommSetParentStateCallback(void *);
 extern void func_0212454c(void);
 extern u32 func_021265dc(void);
-extern u32 func_02126644(void *);
-extern u32 func_02126568(void);
-extern void func_021267e8(void *);
-extern u32 func_021269f8(void);
-extern void func_02126e88(u32);
-extern void func_02126ed4(void *);
+extern u32 changeScanChannel(void *);
+extern u32 MBi_OnInitializeDone(void);
+extern void MBi_EndTaskThread(void *);
+extern u32 MBi_IsTaskAvailable(void);
+extern void MBi_ClearParentPieceBuffer(u32);
+extern void MBi_SetParentPieceBuffer(void *);
 extern void func_02126ef4(u32);
 extern void func_02125d0c(void *);
-extern void func_02122944(u32, void *);
+extern void MBi_CommParentCallback(u32, void *);
 extern void func_02125c94(void *);
 
-void func_02124830(u32 id, u32 res);
-void func_02124a84(u32 t);
-u32 func_02124a34(WCb cb, void *a, u32 b, u32 c, u16 d);
-BOOL func_02124c80(void);
-BOOL func_02124d08(void);
-BOOL func_02124d14(void);
+void MBi_CheckWmErrcode(u32 id, u32 res);
+void MBi_SetMaxScanTime(u32 t);
+u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d);
+BOOL MBi_CommEnd(void);
+BOOL MBi_OnReset(void);
+BOOL MBi_CallReset(void);
 u32 func_02124d74(u32 a);
-u32 func_02124f98(void);
-BOOL func_0212513c(u32 a, u32 c, u32 d);
+u32 MBi_StartCommon(void);
+BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d);
 u32 func_021253a4(void);
 void func_0212541c(void *arg);
 
 // set WMScanParam.maxChannelTime of data_02200020
-void func_02124a84(u32 t) {
+void MBi_SetMaxScanTime(u32 t) {
     data_02200020.f6 = t;
 }
 
-// WM send helper: func_0212052c(cb, 0, data, size, bitmap, 1, 3) then report the result via func_02124830(15, ret)
-u32 func_02124a34(WCb cb, void *a, u32 b, u32 c, u16 d) {
-    u32 r = func_0212052c((u32)cb, 0, (u32)a, b, d, 1, 3);
-    func_02124830(15, r);
+// WM send helper: WM_SetMPDataToPortEx(cb, 0, data, size, bitmap, 1, 3) then report the result via MBi_CheckWmErrcode(15, ret)
+u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d) {
+    u32 r = WM_SetMPDataToPortEx((u32)cb, 0, (u32)a, b, d, 1, 3);
+    MBi_CheckWmErrcode(15, r);
     return r;
 }
 
-// send step (probably WC_SetMPData-like): wraps func_02124a34 in the MP state of the control block
+// send step (probably WC_SetMPData-like): wraps MBi_SetMPData in the MP state of the control block
 u32 func_02124930(void *a, u32 b0, u32 c0) {
     WCtl *g = data_02200018;
     u16 b = b0;
@@ -196,12 +196,12 @@ u32 func_02124930(void *a, u32 b0, u32 c0) {
     if (g->f528 == 0 || g->f526 == 1) return 1;
     switch (g->f524) {
     case 1:
-        r = func_02124a34(g->cb508, a, b, (u16)(g->f52c == 0 ? 1000 : 0), c);
+        r = MBi_SetMPData(g->cb508, a, b, (u16)(g->f52c == 0 ? 1000 : 0), c);
         if (r == 2) data_02200018->f50c = 1;
         if (r == 2) r = 0;
         return r;
     case 2:
-        r = func_02124a34(func_0212541c, a, b, 0, c);
+        r = MBi_SetMPData(func_0212541c, a, b, 0, c);
         if (r == 2) data_02200018->f50c = 1;
         if (r == 2) r = 0;
         return r;
@@ -211,28 +211,28 @@ u32 func_02124930(void *a, u32 b0, u32 c0) {
 }
 
 // getter: control block u32 at +0x08
-u32 func_0212491c(void) {
+u32 MBi_GetGgid(void) {
     return data_02200018->f08;
 }
 
 // getter: control block u16 at +0x0c
-u32 func_02124908(void) {
+u32 MBi_GetTgid(void) {
     return data_02200018->f0c;
 }
 
 // bitmask of the four mode flags (0e=1, 12=2, 14=4, 16=8)
-u8 func_021248a8(void) {
+u8 MBi_GetAttribute(void) {
     WCtl *g = data_02200018;
     return (u8)(((g->f0e != 0) ? 1 : 0) | ((g->f12 != 0) ? 2 : 0) | ((g->f14 != 0) ? 4 : 0) | ((g->f16 != 0) ? 8 : 0));
 }
 
 // is the wireless layer initialised (flag 0x50d == 1)
-BOOL func_02124888(void) {
+BOOL MBi_IsStarted(void) {
     return data_02200018->f50d == 1;
 }
 
 // notify the user callback (cb51c) of a failed WM call: (apiId, errcode); 0 and WM_ERRCODE_OPERATING(2) are silent
-void func_02124830(u32 id, u32 res) {
+void MBi_CheckWmErrcode(u32 id, u32 res) {
     u16 buf[2];
     if (res == 2) return;
     if (res == 0) return;

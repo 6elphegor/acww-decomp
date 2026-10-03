@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // V_020fe4b4: autoload_2 0x020fe4b4-0x020fe5c0 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
-// func_020fe4b4: PXI receive callback of the VRAM C/D lock helper (func_020fe5c0, G015b). On message 0x10000/7 or 0x20000/0 it releases the
-// locked banks (OSi_UnlockVram) and then calls the user callback stored by func_020fe5c0.
+// func_020fe4b4: PXI receive callback of the VRAM C/D lock helper (WVR_StartUpAsync, G015b). On message 0x10000/7 or 0x20000/0 it releases the
+// locked banks (OSi_UnlockVram) and then calls the user callback stored by WVR_StartUpAsync.
 #include "types.h"
 
 extern "C" {

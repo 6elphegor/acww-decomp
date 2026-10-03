@@ -17,7 +17,7 @@ typedef struct { s32 m[4][3]; } MtxFx43;
 extern u32 data_0213bfec; // sDmaNo (-1 = use the CPU)
 extern void MI_DmaFill32Async(u32 dmaNo, void *dst, u32 data, u32 size, void *cb, void *arg);
 extern void MI_DmaFill32(u32 dmaNo, void *dst, u32 data, u32 size);
-extern void func_02115e64(u32 data, void *dst, u32 size);
+extern void MIi_CpuClear32(u32 data, void *dst, u32 size);
 extern void MIi_CpuCopy16(const void *src, void *dst, u32 size);
 extern void MI_Copy32B(const void *src, void *dst);
 extern void MI_Copy36B(const void *src, void *dst);
@@ -28,7 +28,7 @@ extern s32 VEC_DotProduct(const VecFx32 *a, const VecFx32 *b);
 extern void GXi_NopClearFifo128_(void *dst); // GXi_NopClearFifo128_ (assembly, outside this unit)
 extern s32 G3X_GetMtxStackLevelPJ(u32 *p);
 extern s32 G3X_GetMtxStackLevelPV(u32 *p);
-extern void func_02110d00(void);
+extern void G3X_InitTable(void);
 extern void G3X_ResetMtxStack(void);
 extern void G3X_InitMtxStack(void);
 extern void G3X_ClearFifo(void);
@@ -104,7 +104,7 @@ void G3X_Init(void) {
     R32(0x04000358) = 0;
     R16(0x0400035c) = 0;
     R16(0x04000008) &= ~3;
-    func_02110d00();
+    G3X_InitTable();
     R32(0x040004a4) = 0x1f0080;
     R32(0x040004a8) = 0;
     R32(0x040004ac) = 0;
@@ -182,11 +182,11 @@ s32 G3X_GetVectorMtx(void *dst) {
     return 0;
 }
 // G3X_SetFogTable
-void func_02110e00(const void *t) {
+void G3X_SetFogTable(const void *t) {
     MI_Copy32B(t, (void *)0x04000360);
 }
 // G3X_SetToonTable
-void func_02110de8(const void *t) {
+void G3X_SetToonTable(const void *t) {
     MIi_CpuCopy16(t, (void *)0x04000380, 0x40);
 }
 // G3X_SetClearColor
@@ -197,7 +197,7 @@ void G3X_SetClearColor(u32 rgb, u32 alpha, u32 depth, u32 polyId, u32 fog) {
     R16(0x04000354) = depth;
 }
 // G3X_InitTable
-void func_02110d00(void) {
+void G3X_InitTable(void) {
     s32 i;
     if (data_0213bfec != -1) {
         MI_DmaFill32Async(data_0213bfec, (void *)0x04000330, 0, 16, 0, 0);
@@ -205,11 +205,11 @@ void func_02110d00(void) {
     } else {
         {
             volatile u32 z = 0;
-            func_02115e64(z, (void *)0x04000330, 16);
+            MIi_CpuClear32(z, (void *)0x04000330, 16);
         }
         {
             volatile u32 z = 0;
-            func_02115e64(z, (void *)0x04000360, 96);
+            MIi_CpuClear32(z, (void *)0x04000360, 96);
         }
     }
     for (i = 0; i < 32; i++) R32(0x040004d0) = 0;
@@ -227,6 +227,6 @@ s32 G3X_GetMtxStackLevelPJ(u32 *p) {
     return 0;
 }
 // writes REG_BG0OFS (0x04000010)
-void func_02110c98(u32 v) {
+void G3X_SetHOffset(u32 v) {
     R32(0x04000010) = v;
 }

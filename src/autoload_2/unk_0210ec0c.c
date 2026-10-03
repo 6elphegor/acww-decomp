@@ -143,45 +143,45 @@ extern void OS_RestoreInterrupts(u32);
 extern void OS_LockMutex(void *);
 extern void OS_UnlockMutex(void *);
 extern void OS_InitMutex(void *);
-extern void func_02113a70(void *, void *, void *, void *, u32, u32);
+extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern void OS_WakeupThread(void *);
 extern void MI_CpuFill8(u32, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopyFast();
 extern void DC_FlushRange(void *, u32);
-extern void func_021166b4(u32);
+extern void SND_SetSurroundDecay(u32);
 extern void func_021198c4(void *);
 extern void FS_CloseFile(void *);
 extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void func_0210a6b0(Ctx *, s32, s32);
-extern void func_0210a6f4(Ctx *, s32);
-extern void func_0210a768(Ctx *);
-extern void func_0210a798(Ctx *);
-extern BOOL func_0210a7f4();
-extern void func_0210a9c4(Ctx *);
-extern BOOL func_0210a9f4();
-extern void func_0210aa58(Ctx *);
-extern void func_0210b364();
+extern void NNS_SndStrmSetVolume(Ctx *, s32);
+extern void NNS_SndStrmStop(Ctx *);
+extern void NNS_SndStrmStart(Ctx *);
+extern BOOL NNS_SndStrmSetup();
+extern void NNS_SndStrmFreeChannel(Ctx *);
+extern BOOL NNS_SndStrmAllocChannel();
+extern void NNS_SndStrmInit(Ctx *);
+extern void NNS_SndCaptureStartEffect();
 extern FSFileID func_0210b48c(void);
-extern s32 func_0210b4ac();
+extern s32 NNS_SndArcReadFile();
 extern u32 func_0210b558();
 extern u8 *func_0210b5e4();
-extern SInfo *func_0210b6ac();
-extern void *func_0210be9c();
+extern SInfo *NNS_SndArcGetStrmInfo();
+extern void *NNS_SndHeapAlloc();
 extern void func_0210d10c();
 
 // in-unit prototypes
 void func_0210da28(Ctx *);
 void func_0210db74(s32, s32, u32 *, u32, s32, Ctx *);
 void func_0210dcc0(void *, u32, Ctx *);
-void func_0210dd6c(Job *);
+void FreeCommandBuffer(Job *);
 Job *func_0210dda4(void);
 Job *func_0210ddf0(NNSFndList *);
-void func_0210de44(NNSFndList *, Ctx *);
+void RemoveCommandByPlayer(NNSFndList *, Ctx *);
 void func_0210deb8(ThreadInfo *, u32);
-void func_0210df2c(Ctx *);
+void FreeChannel(Ctx *);
 BOOL func_0210df74();
 void func_0210dfb4(Ctx *);
 void func_0210e024(Ctx *);
@@ -201,8 +201,8 @@ void func_0210edb4();
 void func_0210ee4c(s32);
 BOOL NNSi_SndFaderIsFinished(Fader *);
 void NNSi_SndFaderInit(Fader *);
-s32 func_0210f00c(Fader *);
-void func_0210f048(Fader *, s32, s32);
+s32 NNSi_SndFaderGet(Fader *);
+void NNSi_SndFaderSet(Fader *, s32, s32);
 void NNSi_SndFaderUpdate(Fader *);
 
 // NNSi sound value encoder-like (0 -> 0, positive -> v|0x4000, negative -> (-v)|0x8000)
@@ -227,16 +227,16 @@ void NNSi_SndFaderInit(Fader *f)
 }
 
 // NNSiSndFader_Set
-void func_0210f048(Fader *f, s32 target, s32 frames)
+void NNSi_SndFaderSet(Fader *f, s32 target, s32 frames)
 {
-    f->start = func_0210f00c(f);
+    f->start = NNSi_SndFaderGet(f);
     f->end = target;
     f->frames = frames;
     f->cnt = 0;
 }
 
 // NNSiSndFader_Get
-s32 func_0210f00c(Fader *f)
+s32 NNSi_SndFaderGet(Fader *f)
 {
     s32 start;
     if (f->cnt >= f->frames) return f->end;
@@ -269,7 +269,7 @@ void *NNSi_SndSeqArcGetSeqInfo(ArcTbl *t, s32 i)
 void func_0210ef44(void *a, void *b, s32 effect)
 {
     func_0210ee4c(effect);
-    func_0210b364(a, b, 0, 32000, 2, func_0210edb4, &data_0213bf10);
+    NNS_SndCaptureStartEffect(a, b, 0, 32000, 2, func_0210edb4, &data_0213bf10);
 }
 
 // NNS_SndCaptureSetEffect-like (select effect 0..3, clear state)
@@ -278,7 +278,7 @@ void func_0210ee4c(s32 effect)
     u32 irq;
     volatile u16 zero;
     if (effect == data_0213bf10.type) return;
-    if (data_0213bf10.type == 1) func_021166b4(0);
+    if (data_0213bf10.type == 1) SND_SetSurroundDecay(0);
     irq = OS_DisableInterrupts();
     zero = 0;
     MIi_CpuClear16(zero, data_0213bf28, 0xc0);
@@ -302,7 +302,7 @@ void func_0210ee4c(s32 effect)
     }
     OS_RestoreInterrupts(irq);
     if (effect != 1) return;
-    func_021166b4(0x3000);
+    SND_SetSurroundDecay(0x3000);
 }
 
 // NNSi_SndCaptureCallback-like (pre callback, effect, post callback, flush)

@@ -41,10 +41,10 @@ public:
 };
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_02106174(u32 a, u32 b, u32 c);
-void func_0210622c(u32 a, u32 b, u32 c);
+void NNS_G3dMdlSetMdlDiff(u32 a, u32 b, u32 c);
+void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
 s32 func_02030814(s32 a);
@@ -78,7 +78,7 @@ extern "C" BOOL func_020abe58() {
     q = q + *(s32 *)(q + *(u16 *)(q + 0xa) + 8);
     data_021ede90 = (Unk_021ede90 *)q;
     data_020e2dc4 = 1;
-    func_0210622c((u32)data_021edea0.unk_5c, 1, 0x40);
+    NNSi_G3dModifyMatFlag((u32)data_021edea0.unk_5c, 1, 0x40);
     return ret;
 }
 
@@ -87,7 +87,7 @@ extern "C" void func_020abe28() {
     data_020e2dc4 = 1;
     c0 = func_02064cc4();
     c1 = c0;
-    func_02106174((u32)data_021edea0.unk_5c, 0, c1.v);
+    NNS_G3dMdlSetMdlDiff((u32)data_021edea0.unk_5c, 0, c1.v);
 }
 
 extern "C" void func_020abe10() {
@@ -101,7 +101,7 @@ extern "C" void func_020abdd0(Vec3 *pos, s32 a, s32 b, s32 c) {
     }
     s32 r6 = 0x1000;
     if (c != 0x1f) {
-        r6 = func_01ffc5a4((c - 1) << 12, 0x1e000);
+        r6 = FX_Div((c - 1) << 12, 0x1e000);
     }
     func_020abc10(pos, a, b, r6);
 }
@@ -137,14 +137,14 @@ extern "C" void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c) {
         absd = d;
     }
     if (d != 0) {
-        lvl -= func_01ffcb0c(absd, func_01ffc5a4(0x1f000, b)) >> 12;
+        lvl -= func_01ffcb0c(absd, FX_Div(0x1f000, b)) >> 12;
     }
     if (c != 0x1000) {
         lvl = (lvl * c) >> 12;
     }
     if (lvl > 1) {
         if (d != 0) {
-            s32 k = func_01ffcb0c(func_01ffc5a4(-0x1000, b), absd) + 0x1000;
+            s32 k = func_01ffcb0c(FX_Div(-0x1000, b), absd) + 0x1000;
             if (k >= 0xf33) {
                 k = 0x1000;
             }

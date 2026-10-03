@@ -25,9 +25,9 @@ static inline void Unk_ov001_0221381c_Clr(volatile u16 *p) {
 #pragma thumb off
 extern "C" {
 extern u8 GX_LoadOBJPltt[];
-extern u8 func_0211172c[];
+extern u8 GX_LoadBG2Char[];
 extern u8 GX_LoadBGPltt[];
-extern u8 func_02111a6c[];
+extern u8 GX_LoadBG2Scr[];
 
 s32 func_ov001_02225238(void *a, s32 b);
 s32 func_ov001_02225254(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
@@ -129,9 +129,9 @@ void func_ov001_02213f84() {
 
 void func_ov001_02213ea8() {
     func_ov001_02208594("char/ybObjKb.ncl.l", GX_LoadOBJPltt);
-    func_ov001_02208594("char/jbBgStep3.ncg.l", func_0211172c);
+    func_ov001_02208594("char/jbBgStep3.ncg.l", GX_LoadBG2Char);
     func_ov001_02208594("char/ybBgStep3.ncl.l", GX_LoadBGPltt);
-    func_ov001_02208594("char/xb4Edit.nsc.l", func_02111a6c);
+    func_ov001_02208594("char/xb4Edit.nsc.l", GX_LoadBG2Scr);
     *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
     *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
     *(volatile u16 *)0x4000008 = (*(volatile u16 *)0x4000008 & ~3) | 2;

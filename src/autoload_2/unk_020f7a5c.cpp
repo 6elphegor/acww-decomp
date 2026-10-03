@@ -119,15 +119,15 @@ struct Rb {
 extern "C" {
 extern Mg data_021f5b80;
 extern Hr data_021f5bbc;
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void func_0210a024(void *p, u32 sel, void *out);
 void func_0210a008(u32 sel, void *out);
-void func_0210d010(void *p, u32 v);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void func_020eda30(void *p, u32 v);
 void func_020eda60(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
-void func_0210a0e8(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void func_0210a0b8(void *p, s32 v);
 void func_02109fd0(void *p, u32 a, s32 b);
 void func_02109fb4(u32 a, s32 b);
@@ -176,7 +176,7 @@ extern "C" void func_020f8a80(Rb *r, u32 mode) {
         break;
     case 1:
         r->c8 = 1;
-        func_0210d010(r, r->h4);
+        NNS_SndArcPlayerStartSeq(r, r->h4);
         break;
     case 2:
         r->c8 = 2;
@@ -299,9 +299,9 @@ extern "C" void func_020f8604(Rb *r, void *arg) {
     a = func_020f48d8(func_020f4904((u32)arg, 0));
     b = func_020f4718((u32)arg, 0);
     NNS_SndPlayerSetVolume(r, a);
-    func_0210a0e8(r, 15, b);
+    NNS_SndPlayerSetTrackPan(r, 15, b);
     if (data_021f5b80.q == 0) return;
-    s32 x = func_01ffc5a4(data_021f5b80.q->s16v << 20, 0x78000) >> 12;
+    s32 x = FX_Div(data_021f5b80.q->s16v << 20, 0x78000) >> 12;
     if (!nz((u32)data_021f5b80.h)) return;
     if (data_021f5b80.h->id == 240) x >>= 1;
     func_0210a0b8(r, x);
@@ -327,7 +327,7 @@ extern "C" s32 func_020f83fc(Rb *r) {
                 rv += ((w - 32) << 14) >> 4;
             }
         } else {
-            rv += func_01ffc5a4(data_021f5c34 << 14, 0x18000);
+            rv += FX_Div(data_021f5c34 << 14, 0x18000);
         }
         if (r->c10 == 2) {
             rv <<= 1;
@@ -373,7 +373,7 @@ extern "C" s32 func_020f83fc(Rb *r) {
     if (r->c16 != 0) {
         rv = 0;
     } else {
-        rv = func_01ffc5a4((d * rv + data_021f5c34) << 12, (sc * rv) << 12) << 6;
+        rv = FX_Div((d * rv + data_021f5c34) << 12, (sc * rv) << 12) << 6;
     }
     }
     return rv;
@@ -403,7 +403,7 @@ void Unk_0213bb90::setMode(u8 v) {
     c9 = 0;
     if (c8 != 0) {
         h14 = 120;
-        w4 = func_01ffc5a4(0x258000, (s32)h14 << 12);
+        w4 = FX_Div(0x258000, (s32)h14 << 12);
     } else {
         h14 = 120;
         func_020eda30(&data_021f5bbc, 0);
@@ -412,7 +412,7 @@ void Unk_0213bb90::setMode(u8 v) {
 
 void Unk_0213bb90::vfunc_00() {
     s16 a[3];
-    if (!nz((u32)data_021f5b80.h)) func_0210d010(&data_021f5bbc, 248);
+    if (!nz((u32)data_021f5b80.h)) NNS_SndArcPlayerStartSeq(&data_021f5bbc, 248);
     func_0210a008(1, &a[0]);
     func_0210a008(2, &a[1]);
     func_0210a024(&data_021f5bbc, 6, &a[2]);
@@ -432,7 +432,7 @@ void Unk_0213bb90::start() {
     SND_FlushCommand(0);
     if (func_02109f80(h, buf) == 0) return;
     h14 = buf[3];
-    w4 = func_01ffc5a4(0x258000, (s32)h14 << 12);
+    w4 = FX_Div(0x258000, (s32)h14 << 12);
 }
 
 Unk_020f8134::Unk_020f8134() {
@@ -577,7 +577,7 @@ void Unk_0213bb84::calcPhase() {
     s16 t;
     s32 den;
     s32 d;
-    sub.w8 = func_01ffc5a4(s2c << 12, 0x3000);
+    sub.w8 = FX_Div(s2c << 12, 0x3000);
     t = s2c;
     switch (sub.s0) {
     case 3:
@@ -602,7 +602,7 @@ void Unk_0213bb84::calcPhase() {
         }
         break;
     }
-    d = func_01ffc5a4(t << 12, den) + 0xc000;
+    d = FX_Div(t << 12, den) + 0xc000;
     if (d >= 0x20000) d -= 0x20000;
     sub.w16 = d;
     t = s2c;
@@ -636,7 +636,7 @@ void Unk_0213bb84::calcPhase() {
         }
         break;
     }
-    d = func_01ffc5a4(t << 12, den) + 0x4000;
+    d = FX_Div(t << 12, den) + 0x4000;
     if (d >= 0x14000) d -= 0x14000;
     sub.w12 = d;
 }

@@ -8,10 +8,10 @@
 	.arm
 
 ; DC_InvalidateAll
-	.global func_02114528
-	.type func_02114528, @function
-	.size func_02114528, 0xc
-func_02114528:
+	.global DC_InvalidateAll
+	.type DC_InvalidateAll, @function
+	.size DC_InvalidateAll, 0xc
+DC_InvalidateAll:
 	mov r0, #0
 	mcr p15, 0, r0, c7, c6, 0
 	bx lr
@@ -101,19 +101,19 @@ L_021145d8: ; loop
 	bx lr
 
 ; DC_WaitWriteBufferEmpty
-	.global func_021145f0
-	.type func_021145f0, @function
-	.size func_021145f0, 0xc
-func_021145f0:
+	.global DC_WaitWriteBufferEmpty
+	.type DC_WaitWriteBufferEmpty, @function
+	.size DC_WaitWriteBufferEmpty, 0xc
+DC_WaitWriteBufferEmpty:
 	mov r0, #0
 	mcr p15, 0, r0, c7, c10, 4
 	bx lr
 
 ; IC_InvalidateAll
-	.global func_021145fc
-	.type func_021145fc, @function
-	.size func_021145fc, 0xc
-func_021145fc:
+	.global IC_InvalidateAll
+	.type IC_InvalidateAll, @function
+	.size IC_InvalidateAll, 0xc
+IC_InvalidateAll:
 	mov r0, #0
 	mcr p15, 0, r0, c7, c5, 0
 	bx lr

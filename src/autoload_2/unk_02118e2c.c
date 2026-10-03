@@ -114,7 +114,7 @@ extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void FS_InitFile(FSFile *);
 extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
-extern s32 func_021198b4(FSFile *, void *, s32);
+extern s32 FS_ReadFile(FSFile *, void *, s32);
 extern void FS_CloseFile(FSFile *);
 extern u32 FSi_GetPackedName(const char *, int);
 extern FSFile *FSi_NextCommand(FSArc *);
@@ -174,18 +174,18 @@ static inline u32 FSi_NameLen2(u32 name) {
 
 int FSi_TranslateCommand(FSFile *file, u32 cmd);
 void FSi_ReleaseCommand(FSFile *file, u32 result);
-int func_0211820c(void);
+int FSi_CloseFileCommand(void);
 int FSi_OpenFileDirectCommand(FSFile *file);
-int func_0211823c(FSFile *file);
+int FSi_OpenFileFastCommand(FSFile *file);
 int FSi_GetPathCommand(FSFile *file);
 int FSi_FindPathCommand(FSFile *file);
 int func_02118894(FSFile *file);
-int func_021189a4(FSFile *file);
+int FSi_SeekDirCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_ReadFileCommand(FSFile *file);
 int FSi_SeekDirDirect(FSFile *file, u32 id);
-void func_02118ae0(FSStream *s, void *dst, u32 len);
+void FSi_ReadTable(FSStream *s, void *dst, u32 len);
 int FSi_StrNICmp(const char *a, const char *b, u32 n);
 void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
 void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
@@ -209,7 +209,7 @@ u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max) {
         FSFile file;
         FS_InitFile(&file);
         if (FS_OpenFileDirect(&file, arc, arc->fat, arc->fat + arc->fat_size, -1)) {
-            if (func_021198b4(&file, tbl, arc->fat_size) < 0) {
+            if (FS_ReadFile(&file, tbl, arc->fat_size) < 0) {
                 MI_CpuFill8(tbl, 0, arc->fat_size);
             }
             FS_CloseFile(&file);
@@ -217,7 +217,7 @@ u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max) {
         arc->fat = (u32)tbl;
         tbl += arc->fat_size;
         if (FS_OpenFileDirect(&file, arc, arc->fnt, arc->fnt + arc->fnt_size, -1)) {
-            if (func_021198b4(&file, tbl, arc->fnt_size) < 0) {
+            if (FS_ReadFile(&file, tbl, arc->fnt_size) < 0) {
                 MI_CpuFill8(tbl, 0, arc->fnt_size);
             }
             FS_CloseFile(&file);

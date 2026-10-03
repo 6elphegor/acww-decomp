@@ -465,7 +465,7 @@ Unk_ov068_0226b12c_Vec3 *func_020947f0(s32);
 void func_020e9960(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *);
 void func_01ffd070(Unk_ov068_0226b12c_Vec3 *, void *, Unk_ov068_0226b12c_Vec3 *);
 s32 func_020e7b98(s32, s32);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 void func_020b0f18();
 void func_020b0f3c();
 void func_02094f64(s32);
@@ -601,7 +601,7 @@ Unk_ov068_0226b12c_Vec3 Unk_ov068_02270110::func_ov068_0226b6dc() {
     r.x = unk_2c8.x;
     r.y = unk_2c8.y;
     r.z = unk_2c8.z;
-    r.x += func_01ffc5a4(0x19000, 0x64000) - 0xf6;
+    r.x += FX_Div(0x19000, 0x64000) - 0xf6;
     return r;
 }
 

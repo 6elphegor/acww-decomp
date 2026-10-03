@@ -398,7 +398,7 @@ extern const s16 data_ov003_0222efb8[16];
 // 0x0222efba is the table's second element: no separate symbol once this unit is linked
 #define data_ov003_0222efba (&data_ov003_0222efb8[1])
 
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 VEC_Mag(void *v);
 void func_01ffd070(void *out, void *a, void *b);
@@ -598,7 +598,7 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
 }
 
 BOOL Unk_ov003_02230c6c::vfunc_18() {
-    s32 t = func_01ffc5a4(0xa000, 0x64000);
+    s32 t = FX_Div(0xa000, 0x64000);
     if (unk_374.e == 0) unk_370 = t;
     unk_68.x = unk_318.x;
     unk_68.y = unk_318.y;
@@ -628,7 +628,7 @@ BOOL Unk_ov003_02230c6c::vfunc_18() {
 BOOL Unk_ov003_02230c6c::vfunc_24() {
     if (data_021c3070 != 0) {
         if (func_020e9650(data_021c309c, &unk_5c) <= data_020c8cbc) {
-            s32 s = func_01ffc5a4(unk_268, 0x1000);
+            s32 s = FX_Div(unk_268, 0x1000);
             V3P v;
             v.x = s;
             v.y = s;
@@ -734,7 +734,7 @@ extern "C" void func_ov003_02213960(Obj *o)
     } else {
         o->unk_366 = 0;
     }
-    o->unk_2e8 = (func_01ffcb0c(func_01ffc5a4(o->unk_268 - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
+    o->unk_2e8 = (func_01ffcb0c(FX_Div(o->unk_268 - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
 }
 
 extern "C" s32 func_ov003_0221363c(Obj *o)
@@ -757,12 +757,12 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
     u32 fb = 0x12;
     u8 id = o->unk_08;
     if (o->unk_398 == 0xb) fb = 0x11;
-    s32 s = func_01ffc5a4(0x41000, 0x64000);
+    s32 s = FX_Div(0x41000, 0x64000);
     s32 t = o->unk_268;
     if (t < 0xa00) {
         s = 0x1000;
     } else if (t < 0xe00) {
-        s = func_01ffc5a4((0x64 - ((func_01ffc5a4(t - 0xa00, 0x400) * 0x23) >> 12)) << 12, 0x64000);
+        s = FX_Div((0x64 - ((FX_Div(t - 0xa00, 0x400) * 0x23) >> 12)) << 12, 0x64000);
     }
     s32 t2 = o->unk_268;
     s32 r2 = func_01ffcb0c(t2, s);
@@ -770,7 +770,7 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
     o->unk_2a0.func_02089040();
     func_020e9960(&d, &o->unk_5c, &o->unk_68);
     s32 len = VEC_Mag(&d);
-    s32 ang = (s16)((func_01ffc5a4(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
+    s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
     yaw = func_020e7b98(d.x, d.z);
     if (func_ov003_022132a0(o)) {
         s32 n = VEC_Mag(&d);
@@ -783,7 +783,7 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
             s32 w = o->unk_39c;
             if (w == 0 && o->unk_398 == 1) m = 1;
             if (m) {
-                v = n - func_01ffc5a4(0x2000, 0xa5000);
+                v = n - FX_Div(0x2000, 0xa5000);
             } else if (w == 0 && o->unk_398 == 5) {
                 v = n - 0x155;
             } else {
@@ -797,12 +797,12 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
                 } else if (q & 2) {
                     v = n - 0xaa;
                 } else {
-                    v = n - func_01ffc5a4(0x2000, 0xa0000);
+                    v = n - FX_Div(0x2000, 0xa0000);
                 }
             }
             if (v < 0) v = 0;
             if (v > 0x400) v = 0x400;
-            n = func_01ffc5a4(v, n);
+            n = FX_Div(v, n);
             o->unk_2ec = func_01ffcb0c(d.x, n);
             o->unk_2f0 = func_01ffcb0c(d.z, n);
         }
@@ -935,7 +935,7 @@ extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal
     o->unk_390 = h[0];
     func_02003e60(o->unk_324, 0x820, 0x7f, 0);
     {
-        s32 t = func_01ffc5a4(o->unk_268 - 0xa00, 0xa00);
+        s32 t = FX_Div(o->unk_268 - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;
         func_020e7820(&o->unk_370, 0x1000, r, 0x1000);
     }
@@ -1220,7 +1220,7 @@ BOOL Unk_ov003_02230c6c::vfunc_48(void *a) {
     s32 lim;
     BOOL r;
     func_0203e42c();
-    lim = func_01ffcb0c(0x2000, func_01ffc5a4(0x7d000, 0x64000));
+    lim = func_01ffcb0c(0x2000, FX_Div(0x7d000, 0x64000));
     if (a) {
         if (func_020e9650((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {
             if (unk_398 == 11) return TRUE;

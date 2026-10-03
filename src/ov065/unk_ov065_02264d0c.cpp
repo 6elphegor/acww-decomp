@@ -104,8 +104,8 @@ void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 u32 func_0212a438(const char *);
 s32 memcmp(const void *, const void *, u32);
-void func_0211d3a0(Unk_ov065_02266948_Date *);
-u32 func_0211337c(u32);
+void RTC_GetDate(Unk_ov065_02266948_Date *);
+u32 OS_GetThreadPriority(u32);
 void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
@@ -359,7 +359,7 @@ s32 func_ov065_02266c90(Ctx *c, Key *k) {
     func_ov065_02268210(b3, k->unk_08, k->unk_04, n);
     if (data_ov065_0228b440 < 0x20) {
         u32 th = data_021fcc2c.unk_04;
-        u32 pr = func_0211337c(th);
+        u32 pr = OS_GetThreadPriority(th);
         OS_SetThreadPriority(th, data_ov065_0228b440);
         func_ov065_02268540(buf, b1, b2, n, b3);
         OS_SetThreadPriority(th, pr);
@@ -475,7 +475,7 @@ void func_ov065_02266948(Ctx *c, u8 *p) {
     len = (((p[0] << 8) + p[1]) << 8) + p[2];
     p += 3;
     c->unk_430 = -1;
-    func_0211d3a0(&d);
+    RTC_GetDate(&d);
     c->unk_7e0 = d.day + (((d.year + 0x7d0) << 16) + (d.month << 8));
     c->unk_684[0] = 0;
     c->unk_568 = c->unk_574 = 0;
@@ -1315,7 +1315,7 @@ void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 s64 _ll_mul(s64, s64);
-u32 func_0211337c(u32);
+u32 OS_GetThreadPriority(u32);
 void OS_SetThreadPriority(u32, u32);
 
 // same overlay, out of range
@@ -1639,7 +1639,7 @@ void func_ov065_02265334(Sess *s) {
     func_ov065_02268210(p3, ctx->unk_468, n, cnt);
     if (data_ov065_0228b440 < 0x20) {
         u32 th = data_021fcc2c.unk_04;
-        u32 pr = func_0211337c(th);
+        u32 pr = OS_GetThreadPriority(th);
         OS_SetThreadPriority(th, data_ov065_0228b440);
         func_ov065_02268540(p0, p1, p2, cnt, p3);
         OS_SetThreadPriority(th, pr);
@@ -1922,12 +1922,12 @@ void OS_RestoreInterrupts(u32);
 void func_02000b44(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_JoinThread(void *);
-void func_021138d0(void *);
+void OS_DestroyThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_WakeupThreadDirect(void *);
 void OS_YieldThread(void);
-void func_021132e0(void);
-void func_02113a70(void *, void *, u32, void *, u32, u32);
+void OS_Sleep(void);
+void OS_CreateThread(void *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);
 void *MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);

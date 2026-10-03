@@ -213,14 +213,14 @@ struct Unk_ov068_02268608_Vec {
 extern "C" {
 extern s32 data_020c7c1c;
 extern u8 *data_021c47c4;
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void func_02090330(s32 a, void *v, s32 b, void *h);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void func_ov003_02220db0(void *a, s32 b);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
-void func_02106054(void *, s32, s32);
+void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s16 func_02002bdc(void *, void *);
 s32 func_02063b8c(s32);
 s32 _s32_div_f(s32 a, s32 b);
@@ -673,7 +673,7 @@ void func_ov068_0226a004(DObj *o) {
             o->unk_24b = k24b == 0 ? 1 : 0;
             pos->x = save.x;
         }
-        if (func_01ffc5a4(0x15000, 0x10000) > pos->y || func_01ffc5a4(0x32000, 0x10000) < pos->y) {
+        if (FX_Div(0x15000, 0x10000) > pos->y || FX_Div(0x32000, 0x10000) < pos->y) {
             o->unk_24c = k24c == 0 ? 1 : 0;
             pos->y = save.y;
         }
@@ -792,7 +792,7 @@ void Unk_ov068_02268214::func_ov068_02269d58() {
     }
     func_ov068_02268864(&h, 0xaaa, 0x1e, 0x46, unk_257 << 12);
     if (unk_24d == 10) {
-        s32 x = func_01ffc5a4(0x12000, 0x10000);
+        s32 x = FX_Div(0x12000, 0x10000);
         func_ov003_0222d75c(this, t, x, (func_02063b8c(8) + 10) << 12);
         unk_232 = t + 0xaaa;
     } else {
@@ -836,7 +836,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         w[1] = *(s32 *)(q + 4);
         w[2] = *(s32 *)(q + 8);
         static s32 base = (tmp = func_ov003_02213fb4(), tmp - func_ov003_02213fbc());
-        r6 -= func_01ffcb0c(0x4cd, func_01ffc5a4(r6 - func_ov003_02213fbc(), base));
+        r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - func_ov003_02213fbc(), base));
         if (unk_24f % 0x14 == 0) {
             s32 t = (s32)(func_ov003_0222c620(6, 1) << 17) >> 16;
             ang += t;
@@ -886,9 +886,9 @@ BOOL Unk_ov068_02268214::func_ov068_02269aa4() {
         u8 *p = (u8 *)func_02095204(4);
         if (p != 0) {
             if (v[0] < *(s32 *)(p + 0x5c)) {
-                v[0] = v[0] - func_01ffc5a4(0x14000, 0x10000);
+                v[0] = v[0] - FX_Div(0x14000, 0x10000);
             } else {
-                v[0] = v[0] + func_01ffc5a4(0x14000, 0x10000);
+                v[0] = v[0] + FX_Div(0x14000, 0x10000);
             }
             if (func_02063b8c(0x64) > 0x32) {
                 unk_24c = 0;
@@ -954,7 +954,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
                 unk_254 = c;
             }
             if (c >= 0x3c) {
-                if (dist < func_01ffc5a4(0x1000, 0x10000)) {
+                if (dist < FX_Div(0x1000, 0x10000)) {
                     if (func_02094a08() != 0) {
                         unk_24a = 0;
                         *p = 0;
@@ -964,7 +964,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
             }
         }
         if (dist < 0x2000) {
-            if (dist < func_01ffc5a4(0x1000, 0x4000) && unk_24a == 0) {
+            if (dist < FX_Div(0x1000, 0x4000) && unk_24a == 0) {
                 unk_24a = 1;
                 unk_254 = 0;
             }
@@ -978,11 +978,11 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
                 }
             }
         } else {
-            if (dist > func_01ffc5a4(0x1000, 0x2000) && unk_24a != 0 && c < 0x3c) {
+            if (dist > FX_Div(0x1000, 0x2000) && unk_24a != 0 && c < 0x3c) {
                 unk_24a = 0;
                 unk_254 = 0;
             }
-            s32 lim = (s16)func_01ffc5a4(0x555, 0x4000);
+            s32 lim = (s16)FX_Div(0x555, 0x4000);
             s32 nlim = -lim;
             if (ang < (s16)nlim || ang > lim) {
                 if (ang > 0 && rnd > 0x14) {
@@ -1011,7 +1011,7 @@ void Unk_ov068_02268214::func_ov068_022697b8() {
     if (tp != 0) {
         unk_23a = func_02002bdc(unk_204, tp + 0x5c);
     }
-    func_02106054(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
     unk_251 = 2;
     v[0] = 1;
     v[1] = 1;
@@ -1122,12 +1122,12 @@ void Unk_ov068_02268214::func_ov068_022694c0() {
     func_ov003_0222e328(w, h);
     if (dist > 0xe000) {
         r6 <<= 12;
-        pos[0] += func_01ffc5a4(func_01ffcb0c(r6, w[0]), 0x3800);
-        pos[2] += func_01ffc5a4(func_01ffcb0c(r6, w[2]), 0x3800);
+        pos[0] += FX_Div(func_01ffcb0c(r6, w[0]), 0x3800);
+        pos[2] += FX_Div(func_01ffcb0c(r6, w[2]), 0x3800);
     } else {
         r6 <<= 12;
-        pos[0] += func_01ffc5a4(func_01ffcb0c(r6, w[0]), 0x5000);
-        pos[2] += func_01ffc5a4(func_01ffcb0c(r6, w[2]), 0x5000);
+        pos[0] += FX_Div(func_01ffcb0c(r6, w[0]), 0x5000);
+        pos[2] += FX_Div(func_01ffcb0c(r6, w[2]), 0x5000);
     }
     func_ov068_02269424((BVec *)unk_210, (BS50 *)((u8 *)this + 0x50), (cur - h) * 5);
 }
@@ -1198,8 +1198,8 @@ void func_ov068_02269250(BObj *o) {
             r4->z = r4->z + 0x266;
             func_ov068_02269424(r4, &o->unk_50, 0);
         } else {
-            r6->x = r6->x + func_01ffc5a4(func_01ffcb0c(vec.x, o->unk_21c << 12), 0x5000);
-            r6->z = r6->z + func_01ffc5a4(func_01ffcb0c(vec.z, o->unk_21c << 12), 0x5000);
+            r6->x = r6->x + FX_Div(func_01ffcb0c(vec.x, o->unk_21c << 12), 0x5000);
+            r6->z = r6->z + FX_Div(func_01ffcb0c(vec.z, o->unk_21c << 12), 0x5000);
             r4->x = r4->x + 0x333;
             r4->y = r4->y + 0x333;
             r4->z = r4->z + 0x333;
@@ -1214,7 +1214,7 @@ void func_ov068_02269250(BObj *o) {
             z->z = 0;
             o->unk_21c = 0;
             func_02043b90();
-            func_02106054((void *)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0, 0);
         }
     }
 }
@@ -1232,7 +1232,7 @@ void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
         if (o->unk_24d == 0x36 &&
             (*p > 0 || (o->unk_24f % 10 == 0 && func_02063b8c(100) > 0x4b))) {
             s32 t = *p;
-            o->unk_204.y = o->unk_204.y + (func_01ffcb0c(func_01ffc5a4(0x1000, 0x12000), t << 12) + t * t * -10);
+            o->unk_204.y = o->unk_204.y + (func_01ffcb0c(FX_Div(0x1000, 0x12000), t << 12) + t * t * -10);
             if (*p == 0) {
                 void *q = func_02095204(4);
                 if (q) {
@@ -1357,7 +1357,7 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
                 } else {
                     s32 t = *pp;
                     if (t > 0 && o->unk_24d == 0x36) {
-                        v->y = v->y + (func_01ffcb0c(func_01ffc5a4(0x1000, 0x12000), t << 12) + t * t * -10);
+                        v->y = v->y + (func_01ffcb0c(FX_Div(0x1000, 0x12000), t << 12) + t * t * -10);
                         *pp = *pp + 3;
                         if (v->y <= 0) {
                             *pp = 0;
@@ -1402,8 +1402,8 @@ s32 func_ov068_02268b70(BObj *o, s16 *p) {
     BVec c;
     if (((Unk_ov068_02268214 *)o)->func_ov068_02268a30(&a, &b, (s32 *)&c) != 0) {
         if (inside != 0) {
-            if (b <= func_01ffc5a4(0x1000, 0x4000) && v->y <= c.y + func_01ffc5a4(0x1000, 0x8000) &&
-                v->y >= c.y - func_01ffc5a4(0x1000, 0x8000)) {
+            if (b <= FX_Div(0x1000, 0x4000) && v->y <= c.y + FX_Div(0x1000, 0x8000) &&
+                v->y >= c.y - FX_Div(0x1000, 0x8000)) {
                 o->unk_251 = 6;
                 o->unk_244 = (func_02063b8c(5) + 0x10) * 0x14;
                 o->unk_242 = 0;
@@ -1486,7 +1486,7 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
         func_ov068_022689c8((s8)func_020494bc(cell), pos);
     } else {
         pos[0] += 0x1000;
-        pos[1] = func_01ffc5a4(0xb000, 0x10000);
+        pos[1] = FX_Div(0xb000, 0x10000);
         pos[2] += 0x1000;
     }
     *out = func_02002bdc(p, pos);
@@ -1505,12 +1505,12 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
 
 extern "C" void func_ov068_022689c8(s32 code, s32 *v) {
     if (code == 1 || code == 4) {
-        v[0] += func_01ffc5a4(-0x1000, 0x10000);
-        v[1] = func_01ffc5a4(0x10000, 0x10000);
-        v[2] += func_01ffc5a4(-0x4000, 0x10000);
+        v[0] += FX_Div(-0x1000, 0x10000);
+        v[1] = FX_Div(0x10000, 0x10000);
+        v[2] += FX_Div(-0x4000, 0x10000);
     } else {
-        v[1] = func_01ffc5a4(0x9000, 0x10000);
-        v[2] += func_01ffc5a4(0x3000, 0x10000);
+        v[1] = FX_Div(0x9000, 0x10000);
+        v[2] += FX_Div(0x3000, 0x10000);
     }
 }
 
@@ -1562,6 +1562,6 @@ void Unk_ov068_02268214::func_ov068_022687e8(s32 *p) {
 }
 
 void Unk_ov068_02268214::func_ov068_022687c0() {
-    func_02106054(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
     unk_251 = 0x12;
 }

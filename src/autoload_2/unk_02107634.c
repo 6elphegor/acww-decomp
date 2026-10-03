@@ -12,7 +12,7 @@ typedef int BOOL;
 
 extern u32 data_0213bcc8;
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
-extern s32 func_02106300(u8 *, u8 *);          // NNS_G3dGetResDictIdxByName (dict, name)
+extern s32 NNS_G3dGetResDictIdxByName(u8 *, u8 *);          // NNS_G3dGetResDictIdxByName (dict, name)
 
 typedef struct TexObj {
     u32 pad0, pad4;
@@ -24,7 +24,7 @@ typedef struct TexObj {
 } TexObj;
 
 // packed u16 (RGB555-aware) animation array reader (frame, const / 1:1 / 1:2 / 1:4 rate with interpolation)
-u16 func_021077e4(u8 *base, u32 info, u32 idx)
+u16 GetMatColAnmValue_(u8 *base, u32 info, u32 idx)
 {
     u16 *d;
     u32 q;
@@ -131,7 +131,7 @@ u16 GetMatColAnmuAlphaValue_(u8 *base, u32 info, u32 idx)
 }
 
 // anm object init by name: for every animated entry find the model entry with the same name (NNS_G3dGetResDictIdxByName)
-void func_02107634(TexObj *o, u8 *names, u8 *res)
+void NNSi_G3dAnmObjInitNsBma(TexObj *o, u8 *names, u8 *res)
 {
     u8 *dict = res + *(u32 *)(res + 8);
     u32 i;
@@ -143,7 +143,7 @@ void func_02107634(TexObj *o, u8 *names, u8 *res)
     }
     for (i = 0; i < names[9]; i++) {
         u8 *blk = names + 8 + *(u16 *)(names + 14);
-        s32 idx = func_02106300(dict + 4, blk + *(u16 *)(blk + 2) + i * 16);
+        s32 idx = NNS_G3dGetResDictIdxByName(dict + 4, blk + *(u16 *)(blk + 2) + i * 16);
         if (idx >= 0) {
             o->tbl[idx] = i | 0x100;
         }

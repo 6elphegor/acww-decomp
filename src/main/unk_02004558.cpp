@@ -1796,7 +1796,7 @@ void _ZN12Unk_0203223813func_020323d8Ev(void *p);
 u16 func_0203ef38(void *a, void *b);
 void _ZN12Unk_020102ec13func_02010a50Et(Unk_02007694 *o, u32 a);
 void func_0203ee38(Unk_02007ebc_Vec *out, Unk_02007ebc_Vec *in);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(Unk_02007ebc_Vec *v, Unk_02007ebc_Mtx *m, Unk_02007ebc_Vec *out);
 void func_020e7870(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
@@ -2263,7 +2263,7 @@ void *func_0209c60c();
 s32 func_0209c86c();
 s32 func_02030814(u32);
 s32 *func_0209c868(void *);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void _ZN12Unk_020102ec13func_02010380Eijt(Unk_02006d14 *, u32, u32, u32);
 void _ZN12Unk_020dbda413func_02053f20Ev(void *);
@@ -3224,7 +3224,7 @@ extern u8 data_021c3cc0;
 extern u8 data_ov004_022523c8;
 extern Unk_020d6df4_Data *data_020cbb18;
 extern u8 *data_021c1b3c;
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 s32 func_020e9650(void *a, void *b);
@@ -3455,7 +3455,7 @@ BOOL func_0203a124(s32 *a, s32 *b, Unk_0200d64c_Xyz *p);
 s32 func_020e9688(Unk_0200d64c_Xyz *v);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 struct Unk_0200d64c_Keys { u16 a; u16 b; s16 c; };
 extern Unk_0200d64c_Keys data_021f47d8;
@@ -4360,7 +4360,7 @@ void *func_020e8594(u32 size);
 void func_020e8558(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
-s32 func_021198b4(void *self, void *dst, u32 size);
+s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 extern u8 data_020c6c68[];
 extern u32 data_020d6f68[];
@@ -8093,7 +8093,7 @@ BOOL Unk_020d6df4::func_0200c900() {
             return TRUE;
         }
     } else {
-        s32 t = func_01ffcb0c(r6 - 0x108, func_01ffc5a4(0x5da, 0x255e)) + 0x108;
+        s32 t = func_01ffcb0c(r6 - 0x108, FX_Div(0x5da, 0x255e)) + 0x108;
         if (t < 0x108) {
             t = 0x108;
         }
@@ -8166,7 +8166,7 @@ void Unk_020d6df4::func_0200c778() {
         if (t < 0) {
             func_02005ee0(this, 0x93, 1);
         }
-        s32 a = func_01ffc5a4(t, 0x1a3);
+        s32 a = FX_Div(t, 0x1a3);
         s32 b = func_01ffcb0c(0xc17000, a);
         _ZN12Unk_020102ec13func_02010a44Ev(this, (b << 4) >> 16);
     }
@@ -10259,7 +10259,7 @@ void Unk_02006d14::func_0200905c() {
             if (((nG::Unk_02006d14 *)this)->unk_5c.y >= r6) {
                 s32 d = Unk_0200905c_abs(((s32 *)func_0209c868(r7))[2] - ((nG::Unk_02006d14 *)this)->unk_5c.z);
                 if (d < 0x1000) {
-                    s32 m = func_01ffc5a4(0x1000 - d, 0x1000) * 6;
+                    s32 m = FX_Div(0x1000 - d, 0x1000) * 6;
                     *r4 = *r4 + (m >> 5);
                 } else {
                     *r4 = r6;
@@ -10798,7 +10798,7 @@ extern "C" void func_02007ebc(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n) {
             in.y = -0xa00;
         }
     } else {
-        in.y = -((0xa000 - func_01ffc5a4(n * 0x5000, 0x15000)) >> 4);
+        in.y = -((0xa000 - FX_Div(n * 0x5000, 0x15000)) >> 4);
     }
     MTX_MultVec43(&in, &m2, &res);
     tx += res.x;

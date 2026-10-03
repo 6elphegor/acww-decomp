@@ -1,10 +1,10 @@
 #include "types.h"
 
 extern "C" {
-void func_0210171c(u32 a, u32 b);
-void func_0210197c(u32 a, u32 b);
+void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
+void NNS_GfdInitFrmPlttVramManager(u32 a, u32 b);
 u32 func_0210f460(void);
-u32 func_0210f4cc(void);
+u32 GX_GetBankForTex(void);
 void func_0206d49c(void);
 void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
 }
@@ -164,8 +164,8 @@ extern "C" u32 func_020b8090(u32 a) {
 }
 
 extern "C" void func_020b7f80(void) {
-    func_0210171c(4, 1);
-    func_0210197c(0x8000, 1);
+    NNS_GfdInitFrmTexVramManager(4, 1);
+    NNS_GfdInitFrmPlttVramManager(0x8000, 1);
     data_0213bc10 = func_020b80b8;
     data_0213bc18 = func_020b8090;
     data_021ef608 = 0;
@@ -178,7 +178,7 @@ extern "C" void func_020b7f80(void) {
     data_021ef610 = 0;
     data_021ef614 = 0;
     data_021ef618 = 0;
-    u32 r = func_0210f4cc();
+    u32 r = GX_GetBankForTex();
     switch (r) {
     case 0xf:
         data_021ef628 = 0;

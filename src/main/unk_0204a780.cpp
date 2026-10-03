@@ -364,7 +364,7 @@ s32 func_0209cf0c();
 void func_0203f1e8(s32 *a, s32 *b, u32 c);
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
 s32 _s32_div_f(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_0209ceac(u32 a, u32 b, u32 c);
 void func_0209d2c0(void *p, s32 n);
 s32 func_02063b8c(s32 n);
@@ -705,7 +705,7 @@ extern "C" s32 func_0204bde8(u16 *p) {
         if (k == 0) return a;
         a = a * (100 - k);
         if (a >= 100) return _s32_div_f(a, 100);
-        return func_01ffc5a4(a << 12, 0x64000) >> 12;
+        return FX_Div(a << 12, 0x64000) >> 12;
     }
     return a;
 }

@@ -24,18 +24,18 @@ extern u8 data_0213c5dc[], data_0213c60c[], data_0213c634[], data_0213c64c[], da
     data_0213c68c[], data_0213c690[], data_0213c694[], data_0213c698[], data_0213c69c[], data_0213c6a0[],
     data_0213c6a4[], data_0213c6a8[], data_0213c6ac[];
 
-extern double func_0212ef50(double, int *);
+extern double frexp(double, int *);
 extern double func_0212f010(double, int);
 extern int func_02130b10(const char *, const char *);
-extern int func_02130a18(const decimal *, int);
-extern void func_021309c8(decimal *, int);
+extern int __must_round(const decimal *, int);
+extern void __dorounddecup(decimal *, int);
 extern void func_02130964(decimal *, int);
 extern void func_02130894(decimal *, u64);
 extern void func_021306ec(decimal *, const decimal *, const decimal *);
 extern void func_02130628(decimal *, const u8 *, short);
 extern void func_02130248(decimal *, int);
 extern int func_02130a88(u32);
-extern int func_02130150(const decimal *, const decimal *);
+extern int __equals_dec(const decimal *, const decimal *);
 extern int func_02130030(const decimal *, const decimal *);
 extern void func_0212fd74(decimal *, const decimal *, const decimal *);
 extern void func_0212fb1c(decimal *, double);
@@ -95,7 +95,7 @@ int func_02130a88(u32 x) {
 }
 
 // __rounddec helper: compare the dropped digits with one half (-1 below, 0 never, 1 above/odd)
-int func_02130a18(const decimal *d, int digits) {
+int __must_round(const decimal *d, int digits) {
     const u8 *p, *q;
     q = d->sig.text + digits;
     p = d->sig.text;
@@ -109,7 +109,7 @@ int func_02130a18(const decimal *d, int digits) {
 }
 
 // __ceil_dec-like: increment the digit string at `digits`, carrying
-void func_021309c8(decimal *d, int digits) {
+void __dorounddecup(decimal *d, int digits) {
     u8 *t = d->sig.text;
     u8 *p = t + digits;
     p--;
@@ -132,10 +132,10 @@ void func_02130964(decimal *d, int digits) {
     int rv;
     if (digits <= 0) return;
     if (digits >= d->sig.length) return;
-    rv = func_02130a18(d, digits);
+    rv = __must_round(d, digits);
     d->sig.length = digits;
     if (rv < 0) return;
-    func_021309c8(d, digits);
+    __dorounddecup(d, digits);
 }
 
 // __ull2dec
@@ -212,7 +212,7 @@ void func_021306ec(decimal *result, const decimal *x, const decimal *y) {
         if ((p[-1] & 1) == 0) return;
     }
 up:
-    func_021309c8(result, result->sig.length);
+    __dorounddecup(result, result->sig.length);
 }
 
 // __str2dec
@@ -233,7 +233,7 @@ void func_02130628(decimal *d, const u8 *s, short exp) {
         if ((d->sig.text[i - 1] & 1) == 0) return;
     }
 up:
-    func_021309c8(d, d->sig.length);
+    __dorounddecup(d, d->sig.length);
 }
 
 // __two_exp
@@ -277,7 +277,7 @@ void func_02130248(decimal *result, int exp) {
 }
 
 // __equals_dec
-int func_02130150(const decimal *x, const decimal *y) {
+int __equals_dec(const decimal *x, const decimal *y) {
     int i, length;
     if (x->sig.text[0] == 0) return y->sig.text[0] == 0;
     if (y->sig.text[0] == 0) return x->sig.text[0] == 0;
@@ -447,7 +447,7 @@ void func_0212fb1c(decimal *d, double x) {
         unsigned long long ull;
         decimal int_d, pow2_d;
         if (sign) x = -x;
-        frac = func_0212ef50(x, &exp);
+        frac = frexp(x, &exp);
         bits = __cnt(frac);
         bits = 53 - bits;
         func_02130248(&pow2_d, exp - bits);

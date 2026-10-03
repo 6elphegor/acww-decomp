@@ -38,23 +38,23 @@ extern "C" {
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_02122eb0(s32, s32);
-s32 func_02122fac(s32);
-s32 func_02123008(s32);
+s32 MB_CommResponseRequest(s32, s32);
+s32 MB_CommIsBootable(s32);
+s32 MB_CommGetChildUser(s32);
 void func_02124a94(s32);
-void func_02124c40();
+void MB_End();
 void func_0206d49c();
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
-s32 func_02123e58(void *);
-s32 func_021239ec(void *, void *, u32);
-s32 func_02123680(void *, void *);
+s32 MB_GetSegmentLength(void *);
+s32 MB_ReadSegment(void *, void *, u32);
+s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
-s32 func_02124d50(s32);
+s32 MB_StartParentFromIdle(s32);
 void OS_GetOwnerInfo(void *);
 s32 func_021251ac(void *, void *, s32, s32, s32);
-void func_02125098(u32, u32);
-void func_021230a4(void *);
+void MB_SetParentCommParam(u32, u32);
+void MB_CommSetParentStateCallback(void *);
 void func_ov001_02222e48(void *);
 
 u32 func_ov001_02220ad8(u8 *mac);
@@ -103,14 +103,14 @@ void func_ov001_02221734(s32 a, s32 b) {
     *(Unk_ov001_02221734_Z *)data_ov001_0222df08 = *zp;
     data_ov001_0222df08->unk_1b140 = (u8 *)data_ov001_0222df08 + 0x10040;
     if (func_021251ac(data_ov001_0222df08->unk_1b140, &d, a, b, 2) != 0) func_0206d49c();
-    func_02125098(0x100, 1);
-    func_021230a4((void *)func_ov001_02220d40);
+    MB_SetParentCommParam(0x100, 1);
+    MB_CommSetParentStateCallback((void *)func_ov001_02220d40);
     func_ov001_02220d2c(1);
 }
 
 void func_ov001_022216d0(s32 *a, s32 b) {
     func_ov001_02220d2c(2);
-    if (func_02124d50(b) != 0) {
+    if (MB_StartParentFromIdle(b) != 0) {
         func_ov001_02220d2c(7);
         return;
     }
@@ -129,12 +129,12 @@ s32 func_ov001_022215f4(s32 *p) {
         if (FS_OpenFile(buf, *p) == 0) return r;
         q = buf;
     }
-    if (func_02123e58(q) != 0) {
+    if (MB_GetSegmentLength(q) != 0) {
         Unk_ov001_02220ad8_S *g = data_ov001_0222df08;
         g->unk_1b144 = (u8 *)g + 0x2c;
         if (data_ov001_0222df08->unk_1b144 != 0) {
-            if (func_021239ec(q, data_ov001_0222df08->unk_1b144, 0x10000) != 0) {
-                if (func_02123680(p, data_ov001_0222df08->unk_1b144) != 0) r = 1;
+            if (MB_ReadSegment(q, data_ov001_0222df08->unk_1b144, 0x10000) != 0) {
+                if (MB_RegisterFile(p, data_ov001_0222df08->unk_1b144) != 0) r = 1;
             }
         }
     }
@@ -143,7 +143,7 @@ s32 func_ov001_022215f4(s32 *p) {
 }
 
 void func_ov001_02221540(u32 n) {
-    if (func_02122eb0(n, 1) != 0) return;
+    if (MB_CommResponseRequest(n, 1) != 0) return;
     u16 m = ~(1 << n);
     s32 e = OS_DisableInterrupts();
     data_ov001_0222df08->m[0] &= m;
@@ -157,7 +157,7 @@ void func_ov001_02221540(u32 n) {
 }
 
 void func_ov001_02221454(u32 n) {
-    if (func_02122eb0(n, 0) == 0) {
+    if (MB_CommResponseRequest(n, 0) == 0) {
         u16 m = ~(1 << n);
         s32 e = OS_DisableInterrupts();
         data_ov001_0222df08->m[0] &= m;
@@ -179,7 +179,7 @@ void func_ov001_02221454(u32 n) {
 
 void func_ov001_02221368(u32 id)
 {
-    if (func_02122eb0(id, 2) == 0) {
+    if (MB_CommResponseRequest(id, 2) == 0) {
         u16 k = ~(1 << id);
         u32 r = OS_DisableInterrupts();
         data_ov001_0222df08->m[0] &= k;
@@ -234,7 +234,7 @@ u32 func_ov001_02221200()
     u16 i;
     for (i = 1; i < 16; i++) {
         if (data_ov001_0222df08->m[0] & (1 << i)) {
-            if (func_02122fac(i) == 0) return 0;
+            if (MB_CommIsBootable(i) == 0) return 0;
         }
     }
     return 1;
@@ -247,7 +247,7 @@ void func_ov001_022210f0()
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
         if (data_ov001_0222df08->m[4] & bit) {
-            if (func_02122eb0(i, 3)) {
+            if (MB_CommResponseRequest(i, 3)) {
                 ok = ok | bit;
             } else {
                 u16 k = ~bit;
@@ -273,7 +273,7 @@ void func_ov001_022210f0()
 void func_ov001_022210d0()
 {
     func_ov001_02220d2c(6);
-    func_02124c40();
+    MB_End();
 }
 
 void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
@@ -323,7 +323,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
         s->m[1] = s->m[1] | (1 << id);
         func_ov001_02221540(id);
-        s32 r = func_02123008(id);
+        s32 r = MB_CommGetChildUser(id);
         if (r == 0) return;
         MI_CpuCopy8((void *)r, (u8 *)data_ov001_0222df08 + 0xe + (id - 1) * 0x1e, 0x16);
         break;
@@ -354,7 +354,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         s->m[5] = s->m[5] | (one << id);
         s = data_ov001_0222df08;
         if (s->m[0] != s->m[5]) return;
-        func_02124c40();
+        MB_End();
         break;
     }
     case 12: {

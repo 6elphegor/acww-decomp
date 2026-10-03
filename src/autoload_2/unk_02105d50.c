@@ -32,26 +32,26 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_02105e5c(void *, void *);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGetCurrentMtx(void *, void *);
 extern s8 data_02135d5c[];
 extern void G3X_Init(void);
-extern void func_02104338(void);
-extern void func_01ff8ccc(void);
+extern void NNS_G3dGlbInit(void);
+extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);
-extern void func_02106054(void *, u32, void *);
-extern void func_0210609c(void *, u32, void *);
-extern void func_021060e4(void *, u32, void *);
-extern void func_0210612c(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
 
 // NNS_G3dMdl*All: apply a per-material setter to all materials of a model (count at +0x18)
 void func_02105fd8(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_0210612c(m, i, x);
+        NNS_G3dMdlSetMdlEmi(m, i, x);
     }
 }
 
@@ -59,7 +59,7 @@ void func_02105f90(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_021060e4(m, i, x);
+        NNS_G3dMdlSetMdlLightEnableFlag(m, i, x);
     }
 }
 
@@ -67,7 +67,7 @@ void func_02105f48(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_0210609c(m, i, x);
+        NNS_G3dMdlSetMdlPolygonID(m, i, x);
     }
 }
 
@@ -75,16 +75,16 @@ void func_02105f00(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_02106054(m, i, x);
+        NNS_G3dMdlSetMdlAlpha(m, i, x);
     }
 }
 
 // NNS_G3dGetCurrentMtx(pos, nrm): reads the current position/normal matrices back from the geometry engine (projection matrix saved/cleared around it)
-void func_02105e5c(void *a, void *b)
+void NNS_G3dGetCurrentMtx(void *a, void *b)
 {
     s32 buf[16];
     s32 *p;
-    func_01ff8ccc();
+    NNS_G3dGeFlushBuffer();
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x04000444 = 0;
     *(volatile u32 *)0x04000454 = 0;
@@ -111,9 +111,9 @@ BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
     u32 kind = (u32)(*(u16 *)(base + *(u32 *)(ent + 4)) & 0xf800) >> 11;
     if (kind != 31) {
         u32 id = kind;
-        func_01ff8bd0(0x14, &id, 1);
+        NNS_G3dGeBufferOP_N(0x14, &id, 1);
         if (a != NULL || b != NULL) {
-            func_02105e5c(a, b);
+            NNS_G3dGetCurrentMtx(a, b);
         }
         return 1;
     }
@@ -122,10 +122,10 @@ BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
 
 
 // NNS_G3dInit
-void func_02105d98(void)
+void NNS_G3dInit(void)
 {
     G3X_Init();
-    func_02104338();
+    NNS_G3dGlbInit();
     *(volatile u32 *)0x04000600 = (*(volatile u32 *)0x04000600 & ~0xc0000000) | 0x80000000;
 }
 

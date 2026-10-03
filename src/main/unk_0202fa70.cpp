@@ -152,7 +152,7 @@ struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
     Unk_0202f7b8_V3() {}
     Unk_0202f7b8_V3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
 };
-extern "C" s32 func_01ffc5a4(s32 a, s32 b);
+extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
 class Unk_0202fdf0 {
@@ -693,7 +693,7 @@ public:
 struct Unk_0203389c_Vec {
     s32 x, y, z;
 };
-extern "C" s32 func_01ffc5a4(s32 a, s32 b);
+extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" long long func_020e9600(void *a, void *b);
 extern "C" BOOL func_020307c4(s32 a, s32 b, s32 *c, s32 *d, s32 *e);
 class Unk_0203389c {
@@ -1311,7 +1311,7 @@ s32 Unk_0203389c::func_02033914(s32 flag)
 s32 Unk_0203389c::func_020338e8()
 {
     if (unk_34 == 0x16) {
-        s32 t = func_01ffc5a4(0x1e000, 0x64000);
+        s32 t = FX_Div(0x1e000, 0x64000);
         return func_01ffcb0c(unk_3c, t);
     }
     return unk_3c;
@@ -3563,7 +3563,7 @@ BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
             if (func_020e94f8(&l.D)) {
                 s32 dy = l.D.y;
                 if ((dy < 0 ? -dy : dy) >= 4) {
-                    t = func_01ffc5a4(top - l.A.y, l.D.y);
+                    t = FX_Div(top - l.A.y, l.D.y);
                     z = l.A.z + func_01ffcb0c(l.D.z, t);
                     y = l.A.y + func_01ffcb0c(l.D.y, t);
                     l.P.x = l.A.x + func_01ffcb0c(l.D.x, t);
@@ -3597,10 +3597,10 @@ BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
         if (aq < 4) {
             return FALSE;
         }
-        s32 b = func_01ffc5a4(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
+        s32 b = FX_Div(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
         s32 zz = func_01ffcb0c(l.A.z - l.C.z, l.A.z - l.C.z);
         s32 xx = func_01ffcb0c(l.A.x - l.C.x, l.A.x - l.C.x);
-        s32 c = func_01ffc5a4(xx + zz - func_01ffcb0c(r, r), q);
+        s32 c = FX_Div(xx + zz - func_01ffcb0c(r, r), q);
         s32 disc = func_01ffcb0c(b, b) - (c << 2);
         if (disc < 0) {
             return FALSE;

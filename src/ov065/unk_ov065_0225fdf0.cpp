@@ -99,7 +99,7 @@ extern "C" {
 // main module
 s32 OS_DisableInterrupts();
 s32 OS_RestoreInterrupts(s32);
-s32 func_021132e0(s32);
+s32 OS_Sleep(s32);
 s32 MI_CpuCopy8(s32, void *, s32);
 s32 OS_SNPrintf(char *, u32, const char *, ...);
 s32 func_021277fc(char *, s32, s32);
@@ -422,7 +422,7 @@ s32 func_ov065_02260fa4(Unk_ov065_02260fa4_Ent *arr, u32 n, s64 timeout) {
         if (finite && timeout <= 0) {
             break;
         }
-        func_021132e0(1);
+        OS_Sleep(1);
         timeout = timeout - 0x20b;
     }
     return cnt;
@@ -628,18 +628,18 @@ typedef Unk_ov065_02260488_Alloc Alloc;
 extern "C" {
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-s32 func_01ffa3b4();
+s32 OS_GetProcMode();
 void MI_CpuCopy8(void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 void OS_SleepThread(void *);
 void OS_JoinThread(void *);
 void OS_DisableScheduler();
 void OS_EnableScheduler();
-void func_02113554();
+void OSi_RescheduleThread();
 s32 OS_ReceiveMessage(void *, void *, s32);
 void OS_SendMessage(void *, s32, s32);
 void OS_WakeupThread(void *);
-void func_021132e0(s32);
+void OS_Sleep(s32);
 s32 OS_TryLockMutex(void *);
 void OS_LockMutex(void *);
 void OS_UnlockMutex(void *);
@@ -767,8 +767,8 @@ s32 func_ov065_02260cb4() {
     u32 v = data_ov065_0228ebd8;
     if (v == 0) {
         if ((data_ov065_0228e9ac & 3) == 1) {
-            if (func_01ffa3b4() != 0x12) {
-                func_021132e0(10);
+            if (OS_GetProcMode() != 0x12) {
+                OS_Sleep(10);
             }
         }
     } else if (data_ov065_0228e9a8 == 0) {
@@ -784,7 +784,7 @@ s32 func_ov065_02260c40() {
     s32 r = func_ov065_02260b68();
     if (r == -0x1a) {
         do {
-            func_021132e0(100);
+            OS_Sleep(100);
         } while (func_ov065_02260b68() == -0x1a);
     }
     r = func_ov065_0225f524();
@@ -968,7 +968,7 @@ void func_ov065_022608d4(void *q) {
         }
         OS_EnableScheduler();
         OS_RestoreInterrupts(irq);
-        func_02113554();
+        OSi_RescheduleThread();
     }
 }
 
@@ -1306,8 +1306,8 @@ extern Unk_ov065_0225fd18_Counters data_ov065_0228ea08;
 
 u32 OS_DisableInterrupts(...);
 void OS_RestoreInterrupts(u32 v);
-s32 func_01ffa3b4();
-void func_021132e0(s32 v);
+s32 OS_GetProcMode();
+void OS_Sleep(s32 v);
 void OS_SleepThread(void *q);
 void OS_WakeupThread(void *q);
 s32 OS_TryLockMutex(void *m);
@@ -1455,7 +1455,7 @@ s32 func_ov065_02260254(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
         }
         blk = 0;
     } else {
-        if (func_01ffa3b4() == 0x12) {
+        if (OS_GetProcMode() == 0x12) {
             return -0x1c;
         }
         blk = 1;
@@ -1628,7 +1628,7 @@ s32 func_ov065_0225ff64(RJob *j)
                 break;
             }
         }
-        func_021132e0(10);
+        OS_Sleep(10);
     }
     if (s->state == 4) {
         if (src == NULL) {

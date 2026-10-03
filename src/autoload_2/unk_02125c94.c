@@ -17,9 +17,9 @@ extern void MI_CpuCopy8(void *, void *, u32);
 extern s32 _s32_div_f(s32, s32);
 extern s32 PXI_SendWordByFifo(s32, u32, u32);
 extern void WaitByLoop(u32);
-extern void func_021123c4(u32);
-extern u32 func_02112468(u32);
-extern u32 func_02112508(u32);
+extern void OS_UnLockCartridge(u32);
+extern u32 OS_ReadOwnerOfLockWord(u32);
+extern u32 OS_TryLockCartridge(u32);
 
 typedef struct WJob WJob;
 struct WJob {
@@ -49,10 +49,10 @@ typedef struct {
 } WSlotTab;
 
 extern WSys *data_02200040;
-extern u32 func_0211337c(void *);
+extern u32 OS_GetThreadPriority(void *);
 extern void OS_SetThreadPriority(void *, u32);
 extern void OS_SleepThread(u32);
-extern void func_02113a70(void *, void *, void *, void *, u32, u32);
+extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern void OS_ExitThread(void);
 extern void func_0206d49c(void);
@@ -82,44 +82,44 @@ extern u16 data_0213c20c;
 extern u16 data_0213c210;
 extern u16 data_0213c214;
 extern u16 data_0213c218;
-extern u32 func_0211fb68(void *);
+extern u32 WM_SetIndCallback(void *);
 #define W8(p, o) (*(u8 *)((u8 *)(p) + (o)))
 #define W16(p, o) (*(u16 *)((u8 *)(p) + (o)))
 #define W32(p, o) (*(u32 *)((u8 *)(p) + (o)))
 extern u8 *data_0220001c;
 extern u32 data_0213c220;
-extern void func_01ffa494(u32);
+extern void OS_SpinWait(u32);
 extern u32 WM_SetParentParameter(void *, void *);
 extern u32 WM_SetBeaconIndication(void *, u32);
-extern u32 func_021200b8(void *, u32);
+extern u32 WMi_StartParentEx(void *, u32);
 extern u32 func_021206b4(void *, u32, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_End(void *);
 extern void func_0211fb0c(u32, u32, u32);
 typedef struct { u8 _0[0x131c]; u32 f131c; u32 f1320; u8 _1324[0x1340-0x1324]; u8 _1340[0x14e8-0x1340]; u32 state[15]; } WWork;
 typedef struct { u16 id; u16 res; u16 sub; u16 f6; u16 f8; u16 fa; u16 fc; u16 fe; u16 f10; } WMsg2;
 
-extern void func_02124830(u32, u32);
+extern void MBi_CheckWmErrcode(u32, u32);
 extern u32 WM_SetLifeTime(void *, u32, u32, u32, u32);
 void func_02125d0c(WMsg2 *m);
-void func_02126568(void);
+void MBi_OnInitializeDone(void);
 
 void MBi_InitTaskInfo(void *p);
-BOOL func_021269f8(void);
+BOOL MBi_IsTaskAvailable(void);
 BOOL MBi_IsTaskBusy(WJob *job);
-void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio);
+void MBi_SetTask(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio);
 BOOL func_02126bb4(u32 n);
 u8 *func_02126c14(u8 *msg, u32 aid);
-void func_02126a9c(WSys *sys);
+void MBi_TaskThread(WSys *sys);
 typedef struct { u8 pad[4]; u16 cur; } WRot;
 
-// lock acquire helper: spin on lock word 0x027fffe8 bit 0x40 / func_02112508
-void func_02126fbc(u32 a, WLock *st) {
+// lock acquire helper: spin on lock word 0x027fffe8 bit 0x40 / OS_TryLockCartridge
+void CTRDGi_LockByProcessor(u32 a, WLock *st) {
     u32 *const p = (u32 *)0x027fffe8;
     for (;;) {
         st->irq = OS_DisableInterrupts();
-        st->flag = func_02112468((u32)p) & 0x40;
+        st->flag = OS_ReadOwnerOfLockWord((u32)p) & 0x40;
         if (st->flag != 0) return;
-        if (func_02112508(a) == 0) return;
+        if (OS_TryLockCartridge(a) == 0) return;
         OS_RestoreInterrupts(st->irq);
         WaitByLoop(1);
     }
@@ -127,12 +127,12 @@ void func_02126fbc(u32 a, WLock *st) {
 
 // lock release helper (RestoreInterrupts of the saved state)
 void CTRDGi_UnlockByProcessor(u32 a, WLock *st) {
-    if (st->flag == 0) func_021123c4(a);
+    if (st->flag == 0) OS_UnLockCartridge(a);
     OS_RestoreInterrupts(st->irq);
 }
 
 // spin until PXI_SendWordByFifo(13, x, 0) returns 0 (WaitByLoop(1) between polls)
-void func_02126f30(u32 x) {
+void CTRDGi_SendtoPxi(u32 x) {
     if (PXI_SendWordByFifo(13, x, 0) == 0) return;
     do {
         WaitByLoop(1);
@@ -147,13 +147,13 @@ void func_02126ef4(s32 n) {
 }
 
 // chunk reassembly: set work buffer and clear it (0x21c bytes)
-void func_02126ed4(void *p) {
+void MBi_SetParentPieceBuffer(void *p) {
     data_02200044 = p;
     MI_CpuFill8(p, 0, 0x21c);
 }
 
 // chunk reassembly: clear entry n
-void func_02126e88(u32 n) {
+void MBi_ClearParentPieceBuffer(u32 n) {
     u32 i;
     if (data_02200044 == 0) return;
     i = n - 1;
@@ -162,7 +162,7 @@ void func_02126e88(u32 n) {
 }
 
 // packet encode: record types 1..6 (type 4 carries two u16)
-u8 *func_02126e00(u8 *src, u8 *dst) {
+u8 *MBi_MakeParentSendBuffer(u8 *src, u8 *dst) {
     u8 *p = dst;
     *p++ = *src;
     switch (*src) {
@@ -185,7 +185,7 @@ u8 *func_02126e00(u8 *src, u8 *dst) {
 }
 
 // packet decode: record types 7/8/9
-u8 *func_02126cc4(u8 *src, u8 *dst, u32 aid) {
+u8 *MBi_SetRecvBufferFromChild(u8 *src, u8 *dst, u32 aid) {
     u8 *ret;
     dst[0] = src[0];
     switch (dst[0]) {
@@ -243,7 +243,7 @@ BOOL func_02126bb4(u32 n) {
 }
 
 // job-queue thread: worker entry, runs pre/post callbacks per job until the sentinel job
-void func_02126a9c(WSys *sys) {
+void MBi_TaskThread(WSys *sys) {
     WJob *job;
     u32 irq;
     u32 irq2;
@@ -264,7 +264,7 @@ void func_02126a9c(WSys *sys) {
         if (job->pre != 0) job->pre(job);
         irq2 = OS_DisableInterrupts();
         post = job->post;
-        cur = func_0211337c(sys);
+        cur = OS_GetThreadPriority(sys);
         if (HEAD(sys) == 0) {
             np = zero;
         } else if (cur < HEAD(sys)->prio) {
@@ -283,7 +283,7 @@ void func_02126a9c(WSys *sys) {
 }
 
 // job-queue thread: init and create the worker thread
-void func_02126a14(WSys *sys, u32 size) {
+void MBi_InitTaskThread(WSys *sys, u32 size) {
     u32 irq = OS_DisableInterrupts();
     if (data_02200040 == 0) {
         u32 ss;
@@ -291,14 +291,14 @@ void func_02126a14(WSys *sys, u32 size) {
         MBi_InitTaskInfo(&sys->sentinel);
         sys->head = 0;
         ss = (size - 0xe4) & ~3;
-        func_02113a70(sys, (void *)func_02126a9c, sys, (u8 *)sys + 0xe4 + ss, ss, 0);
+        OS_CreateThread(sys, (void *)MBi_TaskThread, sys, (u8 *)sys + 0xe4 + ss, ss, 0);
         OS_WakeupThreadDirect(sys);
     }
     OS_RestoreInterrupts(irq);
 }
 
 // job-queue: is queue running (data_02200040 != 0)
-BOOL func_021269f8(void) {
+BOOL MBi_IsTaskAvailable(void) {
     return data_02200040 != 0;
 }
 
@@ -313,13 +313,13 @@ BOOL MBi_IsTaskBusy(WJob *job) {
 }
 
 // job-queue thread: enqueue a job (priority insert; sentinel job shuts the queue down)
-void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio) {
+void MBi_SetTask(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio) {
     WSys *sys = data_02200040;
     u32 irq;
-    if (func_021269f8() == 0) func_0206d49c();
+    if (MBi_IsTaskAvailable() == 0) func_0206d49c();
     if (job->busy != 0) func_0206d49c();
     if (prio > 31) {
-        u32 cur = func_0211337c(sys);
+        u32 cur = OS_GetThreadPriority(sys);
         if (prio == 32) {
             prio = cur != 0 ? cur - 1 : 0;
         } else if (prio == 33) {
@@ -360,9 +360,9 @@ void func_0212683c(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 pri
 }
 
 // job-queue thread: post the shutdown (sentinel) job
-void func_021267e8(void (*post)(WJob *)) {
+void MBi_EndTaskThread(void (*post)(WJob *)) {
     u32 irq = OS_DisableInterrupts();
-    if (func_021269f8() != 0) func_0212683c(&data_02200040->sentinel, 0, post, 0);
+    if (MBi_IsTaskAvailable() != 0) MBi_SetTask(&data_02200040->sentinel, 0, post, 0);
     OS_RestoreInterrupts(irq);
 }
 
@@ -372,7 +372,7 @@ void func_021267d4(void *p) {
 }
 
 // slot table: register a slot in the first free entry (Terminate if full)
-void func_02126760(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) {
+void MBi_AttachCacheBuffer(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) {
     u32 irq = OS_DisableInterrupts();
     WSlot *e = t->slot;
     WSlot *end = t->slot + 4;
@@ -391,7 +391,7 @@ void func_02126760(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) {
 }
 
 // slot table: copy data out of the registered slot containing [addr, addr+len) (state >= 2)
-BOOL func_021266c0(WSlotTab *t, u32 addr, void *src, u32 len) {
+BOOL MBi_ReadFromCache(WSlotTab *t, u32 addr, void *src, u32 len) {
     BOOL ok = 0;
     u32 irq = OS_DisableInterrupts();
     WSlot *e = t->slot;
@@ -412,7 +412,7 @@ BOOL func_021266c0(WSlotTab *t, u32 addr, void *src, u32 len) {
 }
 
 // select next set bit of a 16-bit mask, rotating from p->cur
-BOOL func_02126644(WRot *p) {
+BOOL changeScanChannel(WRot *p) {
     u32 mask = WM_GetAllowedChannel();
     u16 lr;
     u16 n;
@@ -453,9 +453,9 @@ BOOL func_021265dc(void) {
 }
 
 // wireless helper: start sequence (issues WM calls with func_02125d0c as callback)
-void func_02126568(void) {
-    func_02124830(0x80, func_0211fb68((void *)func_02125d0c));
-    func_02124830(0x1d, WM_SetLifeTime((void *)func_02125d0c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+void MBi_OnInitializeDone(void) {
+    MBi_CheckWmErrcode(0x80, WM_SetIndCallback((void *)func_02125d0c));
+    MBi_CheckWmErrcode(0x1d, WM_SetLifeTime((void *)func_02125d0c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
 }
 
 // wireless helper (WH-style) WM completion callback; switch on WM API id (0 INITIALIZE, 1 RESET, 2 END, 7, 8, 13, 14, 15, 25, 29, 0x80 INDICATION)
@@ -466,25 +466,25 @@ void func_02125d0c(WMsg2 *m) {
             data_02200018->cb(0x100, m);
             return;
         }
-        func_02126568();
+        MBi_OnInitializeDone();
         return;
     case 29:
         if (m->res != 0) {
             data_02200018->cb(0x100, m);
             return;
         }
-        func_02124830(7, WM_SetParentParameter((void *)func_02125d0c, data_02200018));
+        MBi_CheckWmErrcode(7, WM_SetParentParameter((void *)func_02125d0c, data_02200018));
         return;
     case 7:
         data_02200018->cb(21, m);
-        func_02124830(25, WM_SetBeaconIndication((void *)func_02125d0c, 1));
+        MBi_CheckWmErrcode(25, WM_SetBeaconIndication((void *)func_02125d0c, 1));
         return;
     case 25:
         if (m->res != 0) {
             data_02200018->cb(0x100, m);
             return;
         }
-        func_02124830(8, func_021200b8((void *)func_02125d0c, data_0213c220));
+        MBi_CheckWmErrcode(8, WMi_StartParentEx((void *)func_02125d0c, data_0213c220));
         return;
     case 8:
         if (m->res != 0) {
@@ -504,7 +504,7 @@ void func_02125d0c(WMsg2 *m) {
                 u16 x;
                 ((WWork *)data_0220001c)->f131c = 1;
                 x = (data_02200018->f52c == 0) ? 1 : 0;
-                func_02124830(14, func_021206b4((void *)func_02125d0c, data_02200018->f504, data_02200018->f51a, data_02200018->f40, data_02200018->f518, x, 0, 0, 0, 1, 1));
+                MBi_CheckWmErrcode(14, func_021206b4((void *)func_02125d0c, data_02200018->f504, data_02200018->f51a, data_02200018->f40, data_02200018->f518, x, 0, 0, 0, 1, 1));
                 return;
             }
             if (func_021265dc() == 0) return;
@@ -548,7 +548,7 @@ void func_02125d0c(WMsg2 *m) {
                 }
                 i++;
             } while (i < 15);
-            if (cnt == 1) func_01ffa494(0x32c8);
+            if (cnt == 1) OS_SpinWait(0x32c8);
         }
         data_02200018->f50c = 0;
         if (m->res == 0) {
@@ -573,11 +573,11 @@ void func_02125d0c(WMsg2 *m) {
             }
             data_02200018->f52a = 0;
             data_02200018->f528 = 0;
-            func_02124830(2, WM_End((void *)func_02125d0c));
+            MBi_CheckWmErrcode(2, WM_End((void *)func_02125d0c));
             return;
         }
         func_0211fb0c(1, 0, 0);
-        func_0211fb68(0);
+        WM_SetIndCallback(0);
     case 2:
         if (m->res != 0) {
             data_02200018->f526 = 0;

@@ -707,8 +707,8 @@ BOOL func_0203e650(void *);
 void func_0203e624(void *, u32);
 BOOL func_0203a4c4(void *, s32, s32);
 s32 func_0203eeac(void *, void *);
-void func_02103830(void *, s32);
-void func_021039ec(void *, s32);
+void NNS_G3dBindMdlPltt(void *, s32);
+void NNS_G3dBindMdlTex(void *, s32);
 
 void func_020548d0(void *);
 void func_020b2034(void *);

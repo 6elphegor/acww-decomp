@@ -32,8 +32,8 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_01ff8d4c(void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGeSendDL(void *, u32);
 
 typedef struct V3 { s32 x, y, z; } V3;
 typedef union Glb {
@@ -53,18 +53,18 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
-extern void func_02105e5c(void *, void *);
+extern void NNS_G3dGetCurrentMtx(void *, void *);
 extern s8 data_02135d5c[];
 extern void G3X_Init(void);
-extern void func_02104338(void);
-extern void func_01ff8ccc(void);
+extern void NNS_G3dGlbInit(void);
+extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
 extern BOOL G3X_GetVectorMtx(void *);
 extern void MTX_Copy44To43_(void *, void *);
-extern void func_02106054(void *, u32, void *);
-extern void func_0210609c(void *, u32, void *);
-extern void func_021060e4(void *, u32, void *);
-extern void func_0210612c(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
 typedef struct Cb {
     u8 pad0[0x10];
     struct Cb *next;    // 0x10
@@ -73,9 +73,9 @@ typedef struct Cb {
     u16 tbl[1];         // 0x1a
 } Cb;
 extern void (*data_0213bd40[])(void *);
-extern u8 *func_02104140(void);
-extern u8 *func_021040fc(void);
-extern u8 *func_021041e8(void);
+extern u8 *NNS_G3dGlbGetWV(void);
+extern u8 *NNS_G3dGlbGetInvWV(void);
+extern u8 *NNS_G3dGlbGetInvV(void);
 extern void MTX_Copy43To44_(void *, void *);
 extern void MTX_Concat44(void *, void *, void *);
 extern s32 VEC_Mag(void *);
@@ -99,7 +99,7 @@ static inline BOOL BitVecCheck(const u32 *vec, u32 idx) { return (BOOL)(vec[idx 
 static inline void BitVecSet(u32 *vec, u32 idx) { vec[idx >> 5] |= 1 << (idx & 31); }
 // NNS_G3dFuncSbc_NODEMIX
 #define ACC(d, w, v) d += ((s64)(w) * (v)) >> 12
-void func_02104d80(RS *rs)
+void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
 {
     u32 had;
     s64 pw;
@@ -120,7 +120,7 @@ void func_02104d80(RS *rs)
     e = c + 3;
     pw = 0;
     MIi_CpuClearFast(zero, pos, 0x54);
-    func_01ff8ccc();
+    NNS_G3dGeFlushBuffer();
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x0400044c = 1;
     *(volatile u32 *)0x04000454 = 0;

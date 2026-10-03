@@ -46,13 +46,13 @@ L_01ffd534: ; scan
 L_01ffd55c:
 	.word data_027e0000
 L_01ffd560:
-	.word func_01ffd564
+	.word OS_IrqHandler_ThreadSwitch
 
 ; OS_IrqHandler_ThreadSwitch
-	.global func_01ffd564
-	.type func_01ffd564, @function
-	.size func_01ffd564, 0x15c
-func_01ffd564:
+	.global OS_IrqHandler_ThreadSwitch
+	.type OS_IrqHandler_ThreadSwitch, @function
+	.size OS_IrqHandler_ThreadSwitch, 0x15c
+OS_IrqHandler_ThreadSwitch:
 	mov r2, #1
 	mov r3, #0
 	ldr r12, L_01ffd6b0

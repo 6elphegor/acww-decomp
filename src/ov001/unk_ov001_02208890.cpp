@@ -4,8 +4,8 @@
 typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
 
 extern "C" {
-extern void func_02111b3c(void *, s32, u32);
-extern void func_021117fc(void *, s32, u32);
+extern void GX_LoadBG1Scr(void *, s32, u32);
+extern void GX_LoadBG1Char(void *, s32, u32);
 extern void DC_FlushRange(void *, u32);
 extern void MIi_CpuCopyFast(void *, void *, u32);
 extern u32 func_ov001_0220c5c8();
@@ -28,13 +28,13 @@ extern u8 *data_ov001_0222ddd4;
 
 extern "C" void func_ov001_02208990() {
     data_ov001_0222ddd4 = (u8 *)func_ov001_02225dd8(0xc0, 4);
-    func_ov001_02208594((void *)"char/jbBgHl.ncg.l", func_021117fc);
+    func_ov001_02208594((void *)"char/jbBgHl.ncg.l", GX_LoadBG1Char);
     switch (func_ov001_0220c5c8()) {
     case 0:
-        func_ov001_02208594(data_ov001_0222a7e0[0], func_02111b3c);
+        func_ov001_02208594(data_ov001_0222a7e0[0], GX_LoadBG1Scr);
         break;
     case 1:
-        func_ov001_02208594(data_ov001_0222a7e0[1], func_02111b3c);
+        func_ov001_02208594(data_ov001_0222a7e0[1], GX_LoadBG1Scr);
         break;
     }
 }
@@ -81,7 +81,7 @@ extern "C" char data_ov001_0222a7b0[];
 
 extern "C" void func_ov001_02208890(s32 a) {
     DC_FlushRange(data_ov001_0222ddd4, 0xc0);
-    func_02111b3c(data_ov001_0222ddd4, 0, 0xc0);
+    GX_LoadBG1Scr(data_ov001_0222ddd4, 0, 0xc0);
     func_ov001_02226fdc(1, a);
 }
 

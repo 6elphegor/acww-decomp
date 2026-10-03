@@ -14,10 +14,10 @@
 ; reverse-operand entry: swaps x and y (three-eor swap of both words) and FALLS THROUGH into _dsub,
 ; i.e. returns y - x. Evidence: fall-through into the next
 ; routine (second entry point).
-	.global func_02131604
-	.type func_02131604, @function
-	.size func_02131604, 0x18
-func_02131604:
+	.global _drsb
+	.type _drsb, @function
+	.size _drsb, 0x18
+_drsb:
 	eor r1, r1, r3
 	eor r3, r1, r3
 	eor r1, r1, r3

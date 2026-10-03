@@ -26,16 +26,16 @@ Unk_ov001_0220d1f4_V3 *data_ov001_0222de18;
 //ENDDEFS
 
 extern void func_0206d49c();
-extern void func_021132e0(s32);
-extern void func_02111794();
+extern void OS_Sleep(s32);
+extern void GXS_LoadBG1Char();
 extern void GXS_LoadBGPltt();
 extern void GXS_LoadOBJ();
 extern void GXS_LoadOBJPltt();
-extern void func_0211172c();
+extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
 extern void GX_LoadOBJ();
 extern void GX_LoadOBJPltt();
-extern void func_02111ad4();
+extern void GXS_LoadBG1Scr();
 
 extern s32 func_ov001_02203b38(void *);
 extern s32 func_ov001_02203b90();
@@ -95,20 +95,20 @@ void func_ov001_0220d570() {
     }
     func_ov001_02224c6c(1, func_ov001_022085e0((u8 *)"char/jtMain.nce.l"));
     func_ov001_02224c6c(0, func_ov001_022085e0((u8 *)"char/jbMain.nce.l"));
-    func_ov001_02208594((void *)"char/jtBgMain.ncg.l", (void *)func_02111794);
+    func_ov001_02208594((void *)"char/jtBgMain.ncg.l", (void *)GXS_LoadBG1Char);
     func_ov001_02208594((void *)"char/jtBgMain.ncl.l", (void *)GXS_LoadBGPltt);
     func_ov001_02208594((void *)"char/jtObjMain.ncg.l", (void *)GXS_LoadOBJ);
     func_ov001_02208594((void *)"char/xtObjMain.ncl.l", (void *)GXS_LoadOBJPltt);
-    func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)func_0211172c);
+    func_ov001_02208594((void *)"char/jbBgStep1.ncg.l", (void *)GX_LoadBG2Char);
     func_ov001_02208594((void *)"char/jbBgStep1.ncl.l", (void *)GX_LoadBGPltt);
     func_ov001_02208594((void *)"char/jbObjMain.ncg.l", (void *)GX_LoadOBJ);
     func_ov001_02208594((void *)"char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
     switch (func_ov001_0220c5c8()) {
     case 0:
-        func_ov001_02208594((void *)"char/jtTop.nsc.l", (void *)func_02111ad4);
+        func_ov001_02208594((void *)"char/jtTop.nsc.l", (void *)GXS_LoadBG1Scr);
         break;
     case 1:
-        func_ov001_02208594((void *)"char/jtStep1.nsc.l", (void *)func_02111ad4);
+        func_ov001_02208594((void *)"char/jtStep1.nsc.l", (void *)GXS_LoadBG1Scr);
         break;
     }
     volatile u16 *r1 = (volatile u16 *)0x400100a;
@@ -166,7 +166,7 @@ void func_ov001_0220d3b0() {
 void func_ov001_0220d340() {
     data_ov001_0222de18 = (Unk_ov001_0220d1f4_V3 *)func_ov001_02225db0(0xc, -4);
     if (func_ov001_02203c48(0xf, 0x40, (void *)func_ov001_0220d1f4, (void *)func_ov001_0220d1e4, (void *)func_ov001_0220d1d8, 0x800) != 1) func_0206d49c();
-    func_021132e0(10);
+    OS_Sleep(10);
 }
 
 void func_ov001_0220d310() {

@@ -20,40 +20,40 @@ extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
 extern void func_0206d49c(void);
-extern void *func_02126e00(void *, void *);
+extern void *MBi_MakeParentSendBuffer(void *, void *);
 extern u32 IsChildAidValid(u32);
-extern u32 func_02123f24(u32, u32, void *);
-extern u8 *func_0211f82c(void *, u32);
+extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
+extern u8 *WM_ReadMPData(void *, u32);
 extern void FS_InitFile(void *);
 extern void *FS_FindArchive(void *, u32);
 extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
-extern u32 func_021198b4(void *, u32, u32);
+extern u32 FS_ReadFile(void *, u32, u32);
 extern void FS_CloseFile(void *);
-extern u8 *func_02126cc4(void *, void *, u32);
+extern u8 *MBi_SetRecvBufferFromChild(void *, void *, u32);
 extern u32 MBi_calc_nextsendblock(u32, u32);
-extern void func_02126e88(u32);
-extern void func_02121cc8(void);
-extern void func_021245ec(void *, void *, u32, u32);
-extern u32 func_0212491c(void);
-extern u32 func_02124908(void);
-extern u32 func_021248a8(void);
-extern void func_02124480(u32, u32, u32);
-extern void func_02121c10(u32, u32);
+extern void MBi_ClearParentPieceBuffer(u32);
+extern void MBi_CommParentSendData(void);
+extern void MB_UpdateGameInfoMember(void *, void *, u32, u32);
+extern u32 MBi_GetGgid(void);
+extern u32 MBi_GetTgid(void);
+extern u32 MBi_GetAttribute(void);
+extern void MB_SendGameInfoBeacon(u32, u32, u32);
+extern void MBi_CommCallParentError(u32, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 typedef struct { u32 a[3]; u16 b[3]; u16 n; } WTab;
 typedef struct { u32 w0, w4, w8, wc; } WSeg;
 typedef struct { u8 pad[12]; WSeg seg[3]; } WSrc;
 typedef struct { u32 a[3]; u16 b[4]; } WDst;
-BOOL func_021230d0(u32 idx, u32 addr, u32 size);
-BOOL func_021231e4(u32 idx, u32 addr, u32 size);
-void func_02122e24(u32 a, u32 b, void *c);
+BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size);
+BOOL MBi_IsAbleToRecv(u32 idx, u32 addr, u32 size);
+void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c);
 void func_0212244c(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
 typedef struct { u8 pad[0x14]; u32 f14; } WObj;
 typedef struct { u8 pad[0x10]; WJob *job; WObj *obj; } WArg;
 typedef struct { u8 f0 : 4; u8 aid : 4; } WEnt;
-void func_02122e60(u32 a, u32 b, void *c);
+void MBi_CommChangeParentState(u32 a, u32 b, void *c);
 typedef struct { u8 f0 : 4; u8 aid : 4; u8 pad[21]; } WEnt22;
 typedef struct { u8 _0[0x14]; u32 f14; u8 f18; } WObj2;
 typedef struct {
@@ -87,8 +87,8 @@ typedef struct {
     WPeer peer[16];            // 0x1788
 } WWork;
 #define WK2 ((WWork *)data_0220001c)
-void func_021223a4(void *arg);
-// (wireless data-transfer table builder: prefix sums of 3 segment sizes, per-segment sector counts, uses func_021230d0 range check)
+void MBi_CommParentRecvData(void *arg);
+// (wireless data-transfer table builder: prefix sums of 3 segment sizes, per-segment sector counts, uses IsAbleToLoad range check)
 BOOL func_02123368(WDst *dst, WSrc *src) {
     u16 *tab = dst->b;
     u8 i;
@@ -105,14 +105,14 @@ BOOL func_02123368(WDst *dst, WSrc *src) {
         u32 sz = W32(data_0220001c + 0x1000, 0x318);
         u32 len = e->w8;
         u16 nx = tab[i] + (u16)((len + sz - 1) / sz);
-        if (func_021230d0(i, e->w4, len) == 0) return 0;
+        if (IsAbleToLoad(i, e->w4, len) == 0) return 0;
         if (i < 2) tab[i + 1] = nx;
         else W16(dst, 18) = nx;
     }
     return 1;
 }
 // (maps a sector index to segment/offset/length using the sector size at work+0x1318)
-BOOL func_02123294(u32 *out, WTab *tbl, u32 v, u8 *t3) {
+BOOL MBi_get_blockinfo(u32 *out, WTab *tbl, u32 v, u8 *t3) {
     s8 i;
     u8 *e;
     u32 d, diff;
@@ -136,7 +136,7 @@ BOOL func_02123294(u32 *out, WTab *tbl, u32 v, u8 *t3) {
 }
 
 // (address-range validity check, region type taken from data_0213a3ec[idx])
-BOOL func_021231e4(u32 idx, u32 addr, u32 size) {
+BOOL MBi_IsAbleToRecv(u32 idx, u32 addr, u32 size) {
     switch (data_0213a3ec[idx]) {
     case 2:
         if (addr >= 0x27ffe00 && addr + size <= 0x27fff60) return 1;
@@ -156,12 +156,12 @@ BOOL func_021231e4(u32 idx, u32 addr, u32 size) {
     return 0;
 }
 
-// (address-range validity check with extended ranges; types 0/2 defer to func_021231e4)
-BOOL func_021230d0(u32 idx, u32 addr, u32 size) {
+// (address-range validity check with extended ranges; types 0/2 defer to MBi_IsAbleToRecv)
+BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size) {
     switch (data_0213a3ec[idx]) {
     case 0:
     case 2:
-        return func_021231e4(idx, addr, size);
+        return MBi_IsAbleToRecv(idx, addr, size);
     case 1:
         if (addr >= 0x2000000 && addr < 0x23fe800) {
             u32 end = addr + size;
@@ -184,13 +184,13 @@ BOOL func_021230d0(u32 idx, u32 addr, u32 size) {
     return 0;
 }
 // (set callback at work+0x14e4 with interrupts disabled)
-void func_021230a4(void (*cb)()) {
+void MB_CommSetParentStateCallback(void (*cb)()) {
     u32 irq = OS_DisableInterrupts();
     W32(data_0220001c + 0x1000, 0x4e4) = (u32)cb;
     OS_RestoreInterrupts(irq);
 }
 // (copy 22-byte per-aid record into the work scratch buffer, returns pointer to it)
-u8 *func_02123008(u32 n) {
+u8 *MB_CommGetChildUser(u32 n) {
     u32 irq = OS_DisableInterrupts();
     if (data_0220001c != 0 && IsChildAidValid(n) != 0) {
         MI_CpuCopy8(data_0220001c + 0x1340 + (n - 1) * 22, data_0220001c + 0x1772, 22);
@@ -203,7 +203,7 @@ u8 *func_02123008(u32 n) {
 
 
 // (BOOL: aid valid and its state == 7)
-BOOL func_02122fac(u32 n) {
+BOOL MB_CommIsBootable(u32 n) {
     if (data_0220001c != 0 && IsChildAidValid(n) != 0) {
         if (W32(data_0220001c + (n - 1) * 4 + 0x1000, 0x4e8) == 7) return 1;
     }
@@ -211,7 +211,7 @@ BOOL func_02122fac(u32 n) {
 }
 
 // (aid state check, set transition code, interrupts disabled)
-BOOL func_02122eb0(u32 n, u32 kind) {
+BOOL MB_CommResponseRequest(u32 n, u32 kind) {
     u32 b, a, irq;
     irq = OS_DisableInterrupts();
     switch (kind) {
@@ -237,15 +237,15 @@ BOOL func_02122eb0(u32 n, u32 kind) {
 }
 
 // (store aid state, then call state callback)
-void func_02122e60(u32 a, u32 b, void *c) {
+void MBi_CommChangeParentState(u32 a, u32 b, void *c) {
     if (IsChildAidValid(a) != 0) {
         W32(data_0220001c + (a - 1) * 4 + 0x1000, 0x4e8) = b;
     }
-    func_02122e24(a, b, c);
+    MBi_CommChangeParentStateCallbackOnly(a, b, c);
 }
 
 // (call state callback work+0x14e4 if set)
-void func_02122e24(u32 a, u32 b, void *c) {
+void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c) {
     void (*cb)() = (void (*)())W32(data_0220001c + 0x1000, 0x4e4);
     if (cb != 0) cb(a, b, c);
 }

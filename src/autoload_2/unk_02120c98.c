@@ -76,7 +76,7 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
-extern WMArm9Buf *func_0211f00c(void);
+extern WMArm9Buf *WMi_GetSystemWork(void);
 extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
 extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
@@ -86,23 +86,23 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern u32 MATH_CountPopulation(u32);
-extern u32 func_0212052c(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
+extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
-extern void func_02120b0c(WMPool *ds, BOOL flag);
+extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
 extern u8 data_021fff00[];
-extern u32 func_02122e24(u32, u32, u16 *);
+extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
-void func_02120c98(WMPool *ds, u32 n, u16 *buf);
+void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
 void func_02120da4(WMMsg *msg);
-void func_02120ed4(WMMsg *msg);
+void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 void func_02120fe8(WMMsg *msg);
 u32 func_021214b4(WMPool *ds);
-u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
+u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
-extern void func_02120ed4(WMMsg *msg);
+extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 extern void func_02120fe8(WMMsg *msg);
 extern u32 func_021214b4(WMPool *ds);
-extern u32 func_02121838(WMPool *ds);
+extern u32 WM_EndKeySharing(WMPool *ds);
 extern u32 WM_StartKeySharing(WMPool *ds, u32 port);
 extern u32 WM_SetEntry(WMCallback cb, u32 arg);
 extern u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval);
@@ -111,14 +111,14 @@ extern u32 WM_SetBeaconIndication(WMCallback cb, u32 flag);
 extern u32 WM_SetGameInfo(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr);
 extern u32 WM_SetWEPKeyEx(WMCallback cb, u32 wepmode, u32 wepkeyid, void *key);
 extern u32 WM_SetWEPKey(WMCallback cb, u32 wepmode, void *key);
-extern u32 func_02121570(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
-extern u32 func_021210f0(WMPool *ds, u16 *data, u16 *out);
-extern u32 func_02121c10(u32 a, u32 b);
+extern u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
+extern u32 WM_StepDataSharing(WMPool *ds, u16 *data, u16 *out);
+extern u32 MBi_CommCallParentError(u32 a, u32 b);
 extern BOOL IsChildAidValid(u32 x);
 extern u32 MBi_calc_nextsendblock(u32 a, u32 b);
 extern void func_02121c60(u32 idx);
-extern u32 func_02121cc8(void);
-extern u32 func_02121e5c(void);
+extern u32 MBi_CommParentSendData(void);
+extern u32 MBi_CommParentSendBlock(void);
 
 // WM data sharing: child-side MP receive callback
 void func_02120da4(WMMsg *msg) {
@@ -128,7 +128,7 @@ void func_02120da4(WMMsg *msg) {
     u32 bitmap;
     u16 *p;
     u32 aid;
-    st = func_0211f00c()->status;
+    st = WMi_GetSystemWork()->status;
     ds = (WMPool *)msg->arg;
     if (ds == 0) return;
     if (msg->errcode == 0) {
@@ -154,7 +154,7 @@ void func_02120da4(WMMsg *msg) {
 }
 
 // WM data sharing: receive step
-void func_02120c98(WMPool *ds, u32 n, u16 *buf) {
+void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf) {
     u16 mask = (u16)(1 << n);
     u32 idx;
     u32 x;
@@ -229,16 +229,16 @@ typedef struct {
 #define ENT(c, i) ((Ent *)((u8 *)(c) + (i) * 0x5d4))
 
 extern Ctx *data_0220001c;
-extern u32 func_02122360(u32, u32);
-extern u32 func_021221b0(u32);
-extern u32 func_02123294(void *out, void *arr, u32 count, void *ent);
-extern u32 func_02126e00(void *msg, void *dst);
-extern u32 func_021266c0(void *, u32, u32, u32);
+extern u32 MBi_CommParentSendMsg(u32, u32);
+extern u32 MBi_CommParentSendDLFileInfo(u32);
+extern u32 MBi_get_blockinfo(void *out, void *arr, u32 count, void *ent);
+extern u32 MBi_MakeParentSendBuffer(void *msg, void *dst);
+extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
-extern void func_0212683c(void *, void *, u32, u32);
-extern u32 func_02123f24(u32, u32, void *);
+extern void MBi_SetTask(void *, void *, u32, u32);
+extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern void func_0206d49c(void);
 extern u32 func_02122114(void);
-u32 func_02121e5c(void);
+u32 MBi_CommParentSendBlock(void);
 void func_02121c60(u32 idx);
 

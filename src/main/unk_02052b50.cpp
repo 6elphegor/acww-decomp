@@ -3,19 +3,19 @@
 extern "C" {
 extern u32 data_0213bfec;
 void MI_DmaFill32(u32, void *, u32, u32);
-void func_0210f554();
-void func_0210f614();
-void func_0210f600();
-void func_0210f568();
-void func_0210f5a4();
-void func_0210f590();
-void func_0210f57c();
-void func_0210f5dc();
-void func_0210f5b8();
-void func_0210f540();
-void func_0210f52c();
-void func_0210f504();
-void func_0210f4dc();
+void GX_DisableBankForLCDC();
+void GX_DisableBankForBG();
+void GX_DisableBankForOBJ();
+void GX_DisableBankForARM7();
+void GX_DisableBankForTex();
+void GX_DisableBankForTexPltt();
+void GX_DisableBankForClearImage();
+void GX_DisableBankForBGExtPltt();
+void GX_DisableBankForOBJExtPltt();
+void GX_DisableBankForSubBG();
+void GX_DisableBankForSubOBJ();
+void GX_DisableBankForSubBGExtPltt();
+void GX_DisableBankForSubOBJExtPltt();
 s32 func_0204b248(s32 a, s32 b);
 s32 func_0204b25c(void *p);
 s32 func_0204b2d4(void *p);
@@ -109,19 +109,19 @@ extern "C" {
 
 void func_0205369c()
 {
-    func_0210f554();
-    func_0210f614();
-    func_0210f600();
-    func_0210f568();
-    func_0210f5a4();
-    func_0210f590();
-    func_0210f57c();
-    func_0210f5dc();
-    func_0210f5b8();
-    func_0210f540();
-    func_0210f52c();
-    func_0210f504();
-    func_0210f4dc();
+    GX_DisableBankForLCDC();
+    GX_DisableBankForBG();
+    GX_DisableBankForOBJ();
+    GX_DisableBankForARM7();
+    GX_DisableBankForTex();
+    GX_DisableBankForTexPltt();
+    GX_DisableBankForClearImage();
+    GX_DisableBankForBGExtPltt();
+    GX_DisableBankForOBJExtPltt();
+    GX_DisableBankForSubBG();
+    GX_DisableBankForSubOBJ();
+    GX_DisableBankForSubBGExtPltt();
+    GX_DisableBankForSubOBJExtPltt();
 }
 
 void func_020535e0()

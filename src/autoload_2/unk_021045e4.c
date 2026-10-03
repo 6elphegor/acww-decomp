@@ -36,31 +36,31 @@ typedef union Glb {
 } Glb;
 extern Glb data_027e00c8;
 extern u8 data_027e01a8[], data_027e0184[];
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_01ff8ccc(void);
-extern void func_02105e5c(void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGeFlushBuffer(void);
+extern void NNS_G3dGetCurrentMtx(void *, u32);
 extern BOOL G3X_GetClipMtx(void *);
-extern u8 *func_021041e8(void);
+extern u8 *NNS_G3dGlbGetInvV(void);
 extern u32 data_dummy_hw;
 
 #define RUN_CB(t) \
     ((cbTiming == (t)) ? (rs->flags &= ~0x40, rs->cb(rs), cbTiming = (rs->cb != NULL) ? rs->cbTiming : 0, (rs->flags & 0x40)) : 0)
 
-void func_021045e4(Rs *rs)
+void NNSi_G3dFuncSbc_PRJMAP(Rs *rs)
 {
     u32 cbTiming;
     u32 c0, c1, c2, c3;
     u32 m1[12];
     u32 m2[16];
     if ((rs->flags & 0x200) == 0 && (rs->flags & 1) != 0) {
-        func_02105e5c(m1, 0);
+        NNS_G3dGetCurrentMtx(m1, 0);
         c0 = 30;
-        func_01ff8bd0(19, &c0, 1);
+        NNS_G3dGeBufferOP_N(19, &c0, 1);
         if ((rs->shp->w10 & 0xc0000000) != 0xc0000000) {
             rs->shp->w10 &= ~0xc0000000;
             rs->shp->w10 |= 0xc0000000;
             data_0213bd50[1] = rs->shp->w10;
-            func_01ff8bd0(data_0213bd50[0], &data_0213bd50[1], 1);
+            NNS_G3dGeBufferOP_N(data_0213bd50[0], &data_0213bd50[1], 1);
         }
         cbTiming = (rs->cb != NULL) ? rs->cbTiming : 0;
         if (!RUN_CB(1)) {
@@ -70,7 +70,7 @@ void func_021045e4(Rs *rs)
             data_0213bd80[5] = (-b) << 15;
             data_0213bd80[12] = a << 15;
             data_0213bd80[13] = b << 15;
-            func_01ff8bd0(22, data_0213bd80, 16);
+            NNS_G3dGeBufferOP_N(22, data_0213bd80, 16);
         }
         if (!RUN_CB(2)) {
             u8 *d = rs->res + 4;
@@ -82,22 +82,22 @@ void func_021045e4(Rs *rs)
                 if ((mf & 2) == 0) p += 8;
                 if ((mf & 4) == 0) p += 4;
                 if ((mf & 8) == 0) p += 8;
-                func_01ff8bd0(24, p, 16);
+                NNS_G3dGeBufferOP_N(24, p, 16);
             }
         }
         if (!RUN_CB(3)) {
             u32 f = data_027e00c8.n.flag;
             if (f & 1) {
-                func_01ff8bd0(28, data_027e01a8, 3);
-                func_01ff8bd0(26, data_027e0184, 9);
-                func_01ff8bd0(25, m1, 12);
+                NNS_G3dGeBufferOP_N(28, data_027e01a8, 3);
+                NNS_G3dGeBufferOP_N(26, data_027e0184, 9);
+                NNS_G3dGeBufferOP_N(25, m1, 12);
             } else if (f & 2) {
-                func_01ff8bd0(25, m1, 12);
+                NNS_G3dGeBufferOP_N(25, m1, 12);
             } else {
-                func_01ff8bd0(25, func_021041e8(), 12);
-                func_01ff8bd0(25, m1, 12);
+                NNS_G3dGeBufferOP_N(25, NNS_G3dGlbGetInvV(), 12);
+                NNS_G3dGeBufferOP_N(25, m1, 12);
             }
-            func_01ff8ccc();
+            NNS_G3dGeFlushBuffer();
             *(volatile u32 *)0x04000440 = 0;
             *(volatile u32 *)0x04000444 = 0;
             *(volatile u32 *)0x04000454 = 0;
@@ -105,18 +105,18 @@ void func_021045e4(Rs *rs)
             } while (G3X_GetClipMtx(m2) != 0);
             *(volatile u32 *)0x04000448 = 1;
             *(volatile u32 *)0x04000440 = 3;
-            func_01ff8bd0(22, m2, 16);
+            NNS_G3dGeBufferOP_N(22, m2, 16);
             {
                 s32 px = (s32)m2[12] >> 4;
                 s32 py = (s32)m2[13] >> 4;
                 c1 = (u16)(s16)(px >> 8) | ((u16)(s16)(py >> 8) << 16);
-                func_01ff8bd0(34, &c1, 1);
+                NNS_G3dGeBufferOP_N(34, &c1, 1);
             }
         }
         c2 = 2;
-        func_01ff8bd0(16, &c2, 1);
+        NNS_G3dGeBufferOP_N(16, &c2, 1);
         c3 = 30;
-        func_01ff8bd0(20, &c3, 1);
+        NNS_G3dGeBufferOP_N(20, &c3, 1);
     }
     rs->code += 3;
 }

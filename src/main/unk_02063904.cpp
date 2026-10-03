@@ -84,7 +84,7 @@ u32 _ZN12Unk_02056fd813func_02057084Ei(void *a, s32 b);
 }
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {
@@ -156,7 +156,7 @@ s32 FS_SeekFile(void *f, s32 off, s32 z);
 }
 
 extern "C" {
-s32 func_021198b4(void *f, void *dst, u32 n);
+s32 FS_ReadFile(void *f, void *dst, u32 n);
 }
 
 extern "C" {
@@ -319,14 +319,14 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
     s32 a, b;
 
     FS_SeekFile(f, 0, 0);
-    if (func_021198b4(f, &hdr, 8) == -1) return;
+    if (FS_ReadFile(f, &hdr, 8) == -1) return;
     if (hdr.magic == 0x37375a4c || hdr.magic == 0x4c5a3737) {
         if ((hdr.w & 0xf0) != 0xf0) return;
         if ((u32)(f->unk_28 - f->unk_24) > 0xffff) return;
         blk = 0x20 << hdr.b.lg;
         data_021c7d40.tbl[0] = 0;
         n = ((_u32_div_f((hdr.w >> 8) - 1, blk) + 1)) * 2;
-        func_021198b4(f, (u8 *)data_021c7d40.tbl + 2, n);
+        FS_ReadFile(f, (u8 *)data_021c7d40.tbl + 2, n);
         base = n + 8;
         end = off + size;
         nblk = _u32_div_f(end - 1, blk) + 1;
@@ -342,7 +342,7 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
                 u32 t0 = tp[0];
                 len = tp[1] - t0;
                 FS_SeekFile(f, base + t0, 0);
-                func_021198b4(f, data_021c7d40.raw, len);
+                FS_ReadFile(f, data_021c7d40.raw, len);
                 u32 w = data_021c7d40.raw[0];
                 Unk_02063d18_Type ty = (Unk_02063d18_Type)(w & 0xf0);
                 u32 sz = w >> 8;
@@ -362,7 +362,7 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
         }
     } else {
         FS_SeekFile(f, off, 0);
-        func_021198b4(f, dst, size);
+        FS_ReadFile(f, dst, size);
     }
 }
 
@@ -443,11 +443,11 @@ extern "C" s32 func_02063a9c(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
     s32 w = hi - lo;
     s32 t = x - lo;
     if (w < a + b) return 0;
-    s32 k = func_01ffc5a4(0x1000, w * 2 - a - b);
+    s32 k = FX_Div(0x1000, w * 2 - a - b);
     s32 r = 0;
     if (a != 0) {
         if (t <= a) {
-            s32 v = func_01ffc5a4(func_01ffcb0c(k, func_01ffcb0c(t, t)), a);
+            s32 v = FX_Div(func_01ffcb0c(k, func_01ffcb0c(t, t)), a);
             if (v > 0x1000) return 0x1000;
             return v;
         }
@@ -462,7 +462,7 @@ extern "C" s32 func_02063a9c(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
     if (b != 0) {
         r += func_01ffcb0c(k, b);
         if (t < w) {
-            r -= func_01ffc5a4(func_01ffcb0c(k, func_01ffcb0c(w - t, w - t)), b);
+            r -= FX_Div(func_01ffcb0c(k, func_01ffcb0c(w - t, w - t)), b);
         }
     }
     if (r > 0x1000) r = 0x1000;

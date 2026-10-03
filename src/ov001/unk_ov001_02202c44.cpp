@@ -60,13 +60,13 @@ extern "C" u8 data_ov001_0222c6cc[0x74] = {0};
 extern "C" {
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-s32 func_021132e0(s32, s32, s32);
+s32 OS_Sleep(s32, s32, s32);
 s32 OS_ReceiveMessage(void *, void *, s32);
 s32 OS_SendMessage(void *, s32, s32);
 void OS_InitMessageQueue(void *, void *, s32);
 void OS_CancelAlarm(void *);
 void OS_CreateAlarm(void *);
-void func_0211512c(void *, u32, s32, void *, s32);
+void OS_SetAlarm(void *, u32, s32, void *, s32);
 void MIi_CpuClear16(u16, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
@@ -295,7 +295,7 @@ extern "C" s32 func_ov001_02202e74(void **out) {
     buf = r4;
     if (func_ov001_0220358c(r6, (void *)r6, r6, 0x30bffe)) {
         OS_CreateAlarm(thr);
-        func_0211512c(thr, 0x3fec42, r6, (void *)func_ov001_022031ec, 0x13);
+        OS_SetAlarm(thr, 0x3fec42, r6, (void *)func_ov001_022031ec, 0x13);
         do {
             OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
             switch (msg) {
@@ -416,7 +416,7 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
         u32 thr[12];
         cnt = 0;
         OS_CreateAlarm(thr);
-        func_0211512c(thr, 0x3fec42, 0, (void *)func_ov001_022031ec, 0x12);
+        OS_SetAlarm(thr, 0x3fec42, 0, (void *)func_ov001_022031ec, 0x12);
         r6 = r6 | 0x30000;
         s32 r5 = 0;
         do {
@@ -480,7 +480,7 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
 }
 
 extern "C" s32 func_ov001_02202c88(s32 a, s32 b, s32 c) {
-    return func_021132e0(a, b, c);
+    return OS_Sleep(a, b, c);
 }// Declarations for data defined further down (definition order sets the data layout)
 
 

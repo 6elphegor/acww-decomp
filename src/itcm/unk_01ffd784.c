@@ -18,10 +18,10 @@ typedef int BOOL;
 extern u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts
 extern u32 OS_RestoreInterrupts(u32 enabled); // OS_RestoreInterrupts
 extern void DC_StoreAll(void);
-extern void func_02114528(void);
-extern void func_021145fc(void);
-extern void func_021145f0(void);
-extern void func_01ffd6c0(void);      // OSi_DoBoot (assembly)
+extern void DC_InvalidateAll(void);
+extern void IC_InvalidateAll(void);
+extern void DC_WaitWriteBufferEmpty(void);
+extern void OSi_DoBoot(void);      // OSi_DoBoot (assembly)
 extern vu16 data_021fcf50;
 void OSi_ReadCardRom32(u32 src, void *dst, s32 len);
 void OSi_ReloadRomData(void);
@@ -74,7 +74,7 @@ void OSi_DoResetSystem(void) {
     }
     *(vu16 *)0x04000208 = 0;
     OSi_ReloadRomData();
-    func_01ffd6c0();
+    OSi_DoBoot();
 }
 
 // OSi_ReloadRomData
@@ -93,10 +93,10 @@ void OSi_ReloadRomData(void) {
     f = *(u32 *)0x027ffe3c;
     en = OS_DisableInterrupts();
     DC_StoreAll();
-    func_02114528();
+    DC_InvalidateAll();
     OS_RestoreInterrupts(en);
-    func_021145fc();
-    func_021145f0();
+    IC_InvalidateAll();
+    DC_WaitWriteBufferEmpty();
     a += base;
     d += base;
     if (a < 0x8000) {

@@ -58,11 +58,11 @@ SndMgr data_021f5b80;
 
 extern "C" {
 void func_0206d49c(void); // Thumb, in main: fatal stop
-void *func_0210bfe8(u32 a, u32 b);
+void *NNS_SndHeapCreate(u32 a, u32 b);
 void func_020edbbc(u32 a, u32 b, u32 c, u32 d);
 u32 func_0211d6e0(void);
 void func_0210b280(u32 a);
-void func_021095ec(u32 a);
+void NNS_SndSetMasterVolume(u32 a);
 void *func_020edc88(void);
 void func_0210e8bc(u32 a, void *b);
 void func_0210e6ac(void *p);
@@ -75,7 +75,7 @@ void func_020effd4(SndMgr *self);
 void func_020efe70(SndMgr *self);
 void func_020edb74(u32 a);
 void func_0210ee4c(u32 a);
-void func_0210b31c(SndMgr *self);
+void NNS_SndCaptureStopEffect(SndMgr *self);
 }
 
 SndMgr::SndMgr() {
@@ -90,13 +90,13 @@ SndMgr::SndMgr() {
 void SndMgr::init(u32 a, u32 b, u32 c) {
     unk_28 = NULL;
     if (unk_28 != NULL) func_0206d49c();
-    unk_28 = func_0210bfe8(a, 0x339c);
+    unk_28 = NNS_SndHeapCreate(a, 0x339c);
     if (unk_28 == NULL) func_0206d49c();
     func_020edbbc(a + 0x339c, b - 0x339c, c, 0);
     func_0210b280(func_0211d6e0() - 1);
     unk_50 = 1;
     applyMode();
-    func_021095ec(127);
+    NNS_SndSetMasterVolume(127);
     func_0210e8bc(10, func_020edc88());
     func_0210e6ac(&unk_34);
     func_020ed9c8(0);
@@ -121,11 +121,11 @@ void SndMgr::update() {
 }
 
 void SndMgr::volumeOff() {
-    func_021095ec(0);
+    NNS_SndSetMasterVolume(0);
 }
 
 void SndMgr::volumeOn() {
-    func_021095ec(127);
+    NNS_SndSetMasterVolume(127);
 }
 
 void SndMgr::setMode(u32 v) {
@@ -138,5 +138,5 @@ void SndMgr::applyMode() {
 }
 
 void SndMgr::stopAll() {
-    func_0210b31c(this);
+    NNS_SndCaptureStopEffect(this);
 }

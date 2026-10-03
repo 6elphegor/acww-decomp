@@ -641,7 +641,7 @@ extern void *data_021f482c;
 extern V3 data_ov004_022513f0;
 
 void MTX_MultVec43(V3 *, void *, V3 *);
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void *func_02000c98(void *);
 void func_02000c8c(void *);
@@ -3530,7 +3530,7 @@ extern "C" void func_ov004_0222e288(E864 *e, s32 lo) {
         } else if (m == 5) {
             t = func_02133150(t, 3);
         }
-        v = func_01ffcb0c(func_01ffc5a4(t, e->unk_210), 0x1800);
+        v = func_01ffcb0c(FX_Div(t, e->unk_210), 0x1800);
         if (v < lo) {
             v = lo;
         } else if (v > 0x1800) {

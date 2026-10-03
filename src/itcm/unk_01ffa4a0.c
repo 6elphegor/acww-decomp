@@ -228,20 +228,20 @@ extern RS *data_021f5cc0;                 // NNS_G3dRS
 extern const u8 data_02135e5c[][4];       // pivot index tables
 
 extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);     // MIi_CpuClearFast
-extern fx32 func_01ffc5a4(fx32 a, fx32 b);                     // FX_Div
+extern fx32 FX_Div(fx32 a, fx32 b);                     // FX_Div
 extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
 extern void VEC_CrossProduct(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
 extern void blendScaleVec_(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
-extern void func_02106f90(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_0210710c(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_0210685c(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02106ba8(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02106d60(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getTransDataEx_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getTransData_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getRotDataEx_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getScaleDataEx_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getScaleData_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
 extern void getMdlTrans_(JntAnm *pResult);
-extern void func_02107298(JntAnm *pResult);
-extern void func_021073f8(JntAnm *pResult);
-extern void func_01ffb040(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
+extern void getMdlRot_(JntAnm *pResult);
+extern void getMdlScale_(JntAnm *pResult);
+extern void getRotData_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
 
 /* PROTOS */
 /* END PROTOS */
@@ -301,7 +301,7 @@ typedef struct CbEntry {
 extern CbEntry data_027e032c[];
 
 // NNSi_G3dAnmCalcGetRotMtx
-BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx) {
+BOOL getRotDataByIdx_(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx) {
     if (idx & 0x8000) {
         u32 n;
         fx32 A;
@@ -352,7 +352,7 @@ BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 
 }
 
 // NNSi_G3dAnmCalcNsBca
-void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult) {
+void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult) {
     u32 ofs = pJntAnm->ofsAnm[dataIdx];
     BOOL interpolate;
     u32 info = *(const u32 *)((const u8 *)pJntAnm + ofs);
@@ -373,9 +373,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
     if (!(info & 6)) {
         if (!(info & 8)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.x, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.x, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.x, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.x, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -383,9 +383,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 16)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.y, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.y, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.y, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.y, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -393,9 +393,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 32)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.z, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.z, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.z, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.z, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -411,13 +411,13 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
     if (!(info & 0xc0)) {
         if (!(info & 0x100)) {
             if (interpolate) {
-                func_0210685c(&pResult->rot, frame, pData, pJntAnm);
+                getRotDataEx_(&pResult->rot, frame, pData, pJntAnm);
             } else {
-                func_01ffb040(&pResult->rot, frame, pData, pJntAnm);
+                getRotData_(&pResult->rot, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
-            if (func_01ffaea0(&pResult->rot, (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot3),
+            if (getRotDataByIdx_(&pResult->rot, (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot3),
                               (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot5), *pData)) {
                 fx32 c0, c1, c2;
                 c0 = (pResult->rot.a[1] * pResult->rot.a[5] - pResult->rot.a[2] * pResult->rot.a[4]) >> 12;
@@ -433,15 +433,15 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 0x40) {
             pResult->flag |= 2;
         } else {
-            func_02107298(pResult);
+            getMdlRot_(pResult);
         }
     }
     if (!(info & 0x600)) {
         if (!(info & 0x800)) {
             if (interpolate) {
-                func_02106ba8(&tx, frame, pData, pJntAnm);
+                getScaleDataEx_(&tx, frame, pData, pJntAnm);
             } else {
-                func_02106d60(&tx, frame, pData, pJntAnm);
+                getScaleData_(&tx, frame, pData, pJntAnm);
             }
             scale[0] = tx.s;
             scale[3] = tx.inv;
@@ -451,9 +451,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 0x1000)) {
             if (interpolate) {
-                func_02106ba8(&ty, frame, pData + 2, pJntAnm);
+                getScaleDataEx_(&ty, frame, pData + 2, pJntAnm);
             } else {
-                func_02106d60(&ty, frame, pData + 2, pJntAnm);
+                getScaleData_(&ty, frame, pData + 2, pJntAnm);
             }
             scale[1] = ty.s;
             scale[4] = ty.inv;
@@ -463,9 +463,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 0x2000)) {
             if (interpolate) {
-                func_02106ba8(&tz, frame, pData + 4, pJntAnm);
+                getScaleDataEx_(&tz, frame, pData + 4, pJntAnm);
             } else {
-                func_02106d60(&tz, frame, pData + 4, pJntAnm);
+                getScaleData_(&tz, frame, pData + 4, pJntAnm);
             }
             scale[2] = tz.s;
             scale[5] = tz.inv;
@@ -477,7 +477,7 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 0x200) {
             pResult->flag |= 1;
         } else {
-            func_021073f8(pResult);
+            getMdlScale_(pResult);
             return;
         }
     }
@@ -485,7 +485,7 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
 }
 
 // NNSi_G3dAnmCalcNsBca (frame clamp wrapper)
-void func_01ffaa68(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
+void NNSi_G3dAnmCalcNsBca(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     const ResJntAnm *pJntAnm = (const ResJntAnm *)pAnmObj->resAnm;
     fx32 frame = pAnmObj->frame;
     if (frame >= (fx32)(pJntAnm->numFrame << 12)) {
@@ -493,11 +493,11 @@ void func_01ffaa68(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     } else if (frame < 0) {
         frame = 0;
     }
-    func_01ffaab0(pJntAnm, dataIdx, frame, pResult);
+    getJntSRTAnmResult_(pJntAnm, dataIdx, frame, pResult);
 }
 
 // NNSi_G3dAnmBlendJnt
-BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
+BOOL NNSi_G3dAnmBlendJnt(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     if (!pAnmObj->next) {
         u16 mapData = pAnmObj->mapData[dataIdx];
         if ((mapData & 0x300) != 0x100) {
@@ -542,7 +542,7 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
                 if (sumOfRatio == 0x1000) {
                     ratio = pAnmObj->ratio;
                 } else {
-                    ratio = func_01ffc5a4(pAnmObj->ratio, sumOfRatio);
+                    ratio = FX_Div(pAnmObj->ratio, sumOfRatio);
                 }
                 blendScaleVec_(&pResult->scale, &tmp.scale, ratio, tmp.flag & 1);
                 blendScaleVec_(&pResult->scaleEx0, &tmp.scaleEx0, ratio, tmp.flag & 8);

@@ -93,7 +93,7 @@ s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
 void func_02041aec(Unk_020419b4 *p);
 void *func_020e8608(u32 heap, u32 size);
-void func_02113a70(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
+void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void OS_WakeupThreadDirect(void *th);
 }
 
@@ -267,7 +267,7 @@ extern "C" s32 func_020419b4(Unk_020419b4 *p) {
     p->unk_10e4 = 0x3039;
     p->unk_10e9 = 0;
     p->unk_10ea = 1;
-    func_02113a70(p, (void *)func_02041b1c, p->unk_c8, &p->unk_10e4, 0x1000, 0x1e);
+    OS_CreateThread(p, (void *)func_02041b1c, p->unk_c8, &p->unk_10e4, 0x1000, 0x1e);
     p->unk_c0 = data_021fcc2c[1];
     p->unk_c4 = data_021f482c;
     func_020e9244(p->unk_c0, 0);

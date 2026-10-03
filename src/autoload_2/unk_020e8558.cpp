@@ -137,25 +137,25 @@ typedef void (*ThreadHook)(void *, void *);
 extern "C" {
 u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 u32 OS_RestoreInterrupts(u32); // OS_RestoreInterrupts
-u32 func_01ffa3b4(void); // OS_GetProcMode
+u32 OS_GetProcMode(void); // OS_GetProcMode
 void func_0206d49c(void); // Thumb, in main: fatal stop
 void *func_02100f20(void *heap);
 u32 func_02100600(void *heap);
 u32 func_02100608(void *heap);
 u32 func_021005a4(void *p);
-u32 func_02101048(void *heap, s32);
+u32 NNS_FndFreeToFrmHeap(void *heap, s32);
 void func_021005ac(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param); // NNS_FndVisitAllocatedForExpHeap
-void func_021006c8(void *heap, void *p); // NNS_FndFreeToExpHeap
+void NNS_FndFreeToExpHeap(void *heap, void *p); // NNS_FndFreeToExpHeap
 void *func_02100e7c(void *heap);
-s32 func_02100708(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
-u32 func_02101008(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
+s32 NNS_FndResizeForMBlockExpHeap(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
+u32 NNS_FndGetAllocatableSizeForFrmHeapEx(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
 u32 NNS_FndGetTotalFreeSizeForExpHeap(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
 u32 func_02100618(void *heap, s32 align); // NNS_FndGetAllocatableSizeForExpHeapEx
-void *func_02101088(void *heap, u32 size, s32 align); // NNS_FndAllocFromFrmHeapEx
+void *NNS_FndAllocFromFrmHeapEx(void *heap, u32 size, s32 align); // NNS_FndAllocFromFrmHeapEx
 void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, s32 align); // NNS_FndAllocFromExpHeapEx
-void func_021010d0(void *heap);
-void func_021008d4(void *heap);
-void *func_021010dc(void *p, u32 size, u32 opt);
+void NNS_FndDestroyFrmHeap(void *heap);
+void NNS_FndDestroyExpHeap(void *heap);
+void *NNS_FndCreateFrmHeapEx(void *p, u32 size, u32 opt);
 void *NNS_FndCreateExpHeapEx(void *p, u32 size, u32 opt);
 BOOL OS_TryLockMutex(void *p);
 void OS_UnlockMutex(void *p);
@@ -322,7 +322,7 @@ extern "C" Unk_0213afb0 *func_020e8da0(u32 size, Unk_020e8b94 *parent) {
     p = (Unk_0213afb0 *)parent->alloc(total, 4);
     if (p != NULL) {
         q = (u8 *)p + 0x18;
-        h = func_021010dc(q, region, data_0213af4c);
+        h = NNS_FndCreateFrmHeapEx(q, region, data_0213af4c);
         if (h == NULL) {
             parent->free(p);
             p = NULL;
@@ -334,7 +334,7 @@ extern "C" Unk_0213afb0 *func_020e8da0(u32 size, Unk_020e8b94 *parent) {
 }
 
 void Unk_020e8b94::lock() {
-    if (func_01ffa3b4() != 31 && (unk_10 & 0x2000) == 0) func_0206d49c();
+    if (OS_GetProcMode() != 31 && (unk_10 & 0x2000) == 0) func_0206d49c();
     vfunc_08();
 }
 
@@ -381,12 +381,12 @@ void Unk_020e8b94::destroy2() {
 }
 
 void Unk_0213af58::vfunc_14() {
-    func_021008d4(unk_14);
+    NNS_FndDestroyExpHeap(unk_14);
     unk_14 = NULL;
 }
 
 void Unk_0213afb0::vfunc_14() {
-    func_021010d0(unk_14);
+    NNS_FndDestroyFrmHeap(unk_14);
     unk_14 = NULL;
 }
 
@@ -406,7 +406,7 @@ void *Unk_0213af58::vfunc_18(u32 size, s32 align) {
 }
 
 void *Unk_0213afb0::vfunc_18(u32 size, s32 align) {
-    return func_02101088(unk_14, size, align);
+    return NNS_FndAllocFromFrmHeapEx(unk_14, size, align);
 }
 
 BOOL Unk_0213af58::vfunc_24() {
@@ -442,7 +442,7 @@ u32 Unk_0213af58::vfunc_34() {
 }
 
 u32 Unk_0213afb0::vfunc_34() {
-    return func_02101008(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
 }
 
 u32 Unk_020e8b94::call_38() {
@@ -458,7 +458,7 @@ u32 Unk_0213af58::vfunc_38() {
 }
 
 u32 Unk_0213afb0::vfunc_38() {
-    return func_02101008(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
 }
 
 u32 Unk_020e8b94::maxAlloc(s32 align) {
@@ -474,7 +474,7 @@ u32 Unk_0213af58::vfunc_3c(s32 align) {
 }
 
 u32 Unk_0213afb0::vfunc_3c(s32 align) {
-    return func_02101008(unk_14, align);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, align);
 }
 
 u32 Unk_0213af58::vfunc_40() {
@@ -482,7 +482,7 @@ u32 Unk_0213af58::vfunc_40() {
 }
 
 u32 Unk_0213afb0::vfunc_40() {
-    return func_02101008(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
 }
 
 s32 Unk_020e8b94::resize(void *p, u32 size) {
@@ -494,7 +494,7 @@ s32 Unk_020e8b94::resize(void *p, u32 size) {
 }
 
 s32 Unk_0213af58::vfunc_2c(void *p, u32 size) {
-    return func_02100708(unk_14, p, size);
+    return NNS_FndResizeForMBlockExpHeap(unk_14, p, size);
 }
 
 s32 Unk_0213afb0::vfunc_2c(void *p, u32 size) {
@@ -511,7 +511,7 @@ void Unk_020e8b94::free(void *p) {
 
 void Unk_0213af58::vfunc_1c(void *p) {
     if (p == NULL) return;
-    func_021006c8(unk_14, p);
+    NNS_FndFreeToExpHeap(unk_14, p);
 }
 
 void Unk_0213afb0::vfunc_1c(void *p) {
@@ -527,7 +527,7 @@ void Unk_020e8b94::freeAll() {
 }
 
 extern "C" void func_020e8844(void *block, void *heap, u32 param) {
-    func_021006c8(heap, block);
+    NNS_FndFreeToExpHeap(heap, block);
 }
 
 void Unk_0213af58::vfunc_20() {
@@ -535,7 +535,7 @@ void Unk_0213af58::vfunc_20() {
 }
 
 void Unk_0213afb0::vfunc_20() {
-    func_02101048(unk_14, 3);
+    NNS_FndFreeToFrmHeap(unk_14, 3);
 }
 
 u32 Unk_0213af58::vfunc_30(void *p) {

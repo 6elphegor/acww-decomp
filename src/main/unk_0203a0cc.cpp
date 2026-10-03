@@ -354,7 +354,7 @@ extern s32 data_021c3068;
 extern "C" {
 s32 func_0203eeac(void *p, void *q);
 void MTX_MultVec43(void *in, void *m, void *out);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_020e9888(void *v, s32 s);
 void func_0200402c(s32 a);
@@ -386,7 +386,7 @@ BOOL func_020e94f8(void *v);
 void func_020e92f4(void *v, s32 a);
 s32 func_0203edd0(void *p);
 s32 func_02063a9c(s32, s32, s32, s32, s32);
-s32 func_01ffc588(s32);
+s32 FX_Inv(s32);
 s32 func_0202fe84(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12Unk_020375d013func_020375d0Ev(u32);
 void _ZN12Unk_020d924813func_0203a058Eitii(void *, s32, s32, s32, s32);
@@ -804,7 +804,7 @@ void Unk_020d93b8::func_0203bb0c(s32 a)
     M(s32, 0x1bc) = data_02135f44[i * 2];
     i = (u16)((s16)(M(s16, 0x1c8) + M(s16, 0x98)) >> 1) >> 4;
     M(s32, 0x1c0) = data_02135f44[i * 2 + 1];
-    M(s32, 0x1c4) = func_01ffcb0c(M(s32, 0x1bc), func_01ffc588(M(s32, 0x1c0)));
+    M(s32, 0x1c4) = func_01ffcb0c(M(s32, 0x1bc), FX_Inv(M(s32, 0x1c0)));
     _ZN12Unk_020d924813func_0203a058Eitii(data_021ef414, M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
                   M(s32, 0x1b8) + M(s32, 0x94));
 }
@@ -1703,8 +1703,8 @@ extern "C" BOOL func_0203a148(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
         l.m = *src;
         data_021f47e0 = l.m;
         MTX_MultVec43(p, &data_021f47e0, &l.v);
-        s32 t = func_01ffc5a4(0x60000, _ZN12Unk_020d93b813func_0203bc3cEv(data_021c3070));
-        t = func_01ffc5a4(-t, l.v.z);
+        s32 t = FX_Div(0x60000, _ZN12Unk_020d93b813func_0203bc3cEv(data_021c3070));
+        t = FX_Div(-t, l.v.z);
         func_020e9888(&l.v, t);
         *x = l.v.x >> 12;
         *y = -(l.v.y >> 12);

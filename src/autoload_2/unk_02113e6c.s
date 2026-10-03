@@ -10,10 +10,10 @@
 ; OS_InitContext(context, newpc, newsp): pc_plus4 = newpc + 4, sp_svc = newsp, sp = newsp - 0x40 (HW_SVC_STACK_SIZE),
 ; cpsr = Thumb bit of newpc ? 0x3f (SYS|T) : 0x1f (SYS), r0-r12 and lr cleared. OSContext offsets: cpsr 0x00,
 ; r[13] 0x04-0x34, sp 0x38, lr 0x3c, pc_plus4 0x40, sp_svc 0x44.
-	.global func_02113e6c
-	.type func_02113e6c, @function
-	.size func_02113e6c, 0x64
-func_02113e6c:
+	.global OS_InitContext
+	.type OS_InitContext, @function
+	.size OS_InitContext, 0x64
+OS_InitContext:
 	add r1, r1, #4
 	str r1, [r0, #0x40]
 	str r2, [r0, #0x44]

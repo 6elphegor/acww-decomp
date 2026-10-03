@@ -39,7 +39,7 @@ s32 memcmp(void *, void *, s32);
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, void *);
 void func_0206d49c();
-void func_021198b4(void *, void *, s32);
+void FS_ReadFile(void *, void *, s32);
 void FS_CloseFile(void *);
 void MI_UncompressLZ8(void *, void *);
 s32 FS_NotifyArchiveAsyncEnd(void *, s32);
@@ -83,8 +83,8 @@ extern "C" void func_ov001_022242e8() {
     }
     data_ov001_0222df30->unk_e4 = OS_GetLockID();
     r4 = *(u32 *)((u8 *)&o + 0x24);
-    func_021198b4(&o, a, 8);
-    func_021198b4(&o, b, 8);
+    FS_ReadFile(&o, a, 8);
+    FS_ReadFile(&o, b, 8);
     FS_CloseFile(&o);
     FS_InitArchive(data_ov001_0222df30->unk_88);
     if (FS_RegisterArchiveName(data_ov001_0222df30->unk_88, (void *)data_ov001_0222a450, 3) == 0) {
@@ -162,7 +162,7 @@ extern "C" void *func_ov001_02224074(void *name, u32 *outSize, s32 c) {
         r6 = c;
     }
     p = func_ov001_02225dd8(n, r6);
-    func_021198b4(&o, p, n);
+    FS_ReadFile(&o, p, n);
     FS_CloseFile(&o);
     if (r6 > 0) {
         return p;

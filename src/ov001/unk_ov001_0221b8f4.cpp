@@ -11,9 +11,9 @@ u8 data_ov001_0222decc;
 
 extern "C" {
 
-s32 func_0211172c();
+s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
-s32 func_02111a6c();
+s32 GX_LoadBG2Scr();
 s32 func_ov001_02208594(void *, void *);
 s32 func_ov001_0220c5f0(s32, s32 *);
 s32 func_ov001_0220c5c8();
@@ -82,7 +82,7 @@ void func_ov001_0221bbd4() {
 }
 
 void func_ov001_0221bb4c() {
-    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/xb4Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x400000a;

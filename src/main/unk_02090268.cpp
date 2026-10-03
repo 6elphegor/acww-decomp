@@ -612,15 +612,15 @@ extern u32 data_021d04a4;
 
 s32 func_020641d8(void *);
 
-void *func_02101088(u32 heap, u32 size, s32 align);
+void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
 
 void MI_CpuCopy8(void *dst, void *src, u32 size);
 
 void MI_CpuFill8(void *dst, s32 v, u32 size);
 
-s32 func_020f8e84(u32 h);
+s32 SPL_LoadTexByVRAMManager(u32 h);
 
-s32 func_020f8e70(u32 h);
+s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 
 s32 func_02093d54(s32, s32, s32, s32, s32, void *);
 
@@ -660,7 +660,7 @@ extern char data_020d02c4[], data_020d02e8[], data_020d02a0[], data_020d0258[], 
 
 extern char data_020e15d4[], data_020e14a8[], data_020e16d4[], data_020e148c[], data_020e1498[];
 
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 
 s32 func_01ffcb0c(s32 a, s32 b);
 
@@ -3093,12 +3093,12 @@ extern "C" s32 func_02091310(Unk_02090bd8_Obj *o)
     s32 a, b, c;
     s32 f = g->unk_10;
     if (f < 0xc00) {
-        s32 t = func_01ffc5a4(f - 0x600, 0x600);
+        s32 t = FX_Div(f - 0x600, 0x600);
         a = (s16)((s16)func_01ffcb0c(0x266, t) + 0x266);
         c = (s16)((s16)func_01ffcb0c(0x400, t) + 0x400);
         b = (s16)((s16)func_01ffcb0c(0x52, t) + 0xcd);
     } else {
-        s32 t = func_01ffc5a4(f - 0xc00, 0xc00);
+        s32 t = FX_Div(f - 0xc00, 0xc00);
         a = (s16)((s16)func_01ffcb0c(0x800, t) + 0x4cd);
         c = (s16)((s16)func_01ffcb0c(0x4cd, t) + 0x800);
         b = (s16)((s16)func_01ffcb0c(0x52, t) + 0x11f);
@@ -3122,7 +3122,7 @@ extern "C" s32 func_02091254(Unk_02090bd8_Obj *o)
     v.unk_00 = g->x;
     v.unk_04 = g->y;
     v.unk_08 = g->z;
-    s32 t = func_01ffc5a4(f - 0xc00, 0xc00);
+    s32 t = FX_Div(f - 0xc00, 0xc00);
     s32 a = (s16)((s16)func_01ffcb0c(0x4cd, t) + 0xb33);
     s32 c = (s16)((s16)func_01ffcb0c(0x19a, t) + 0x400);
     s32 b = (s16)((s16)func_01ffcb0c(0x19a, t) + 0x333);
@@ -3191,7 +3191,7 @@ namespace R2 {
 extern "C" s32 func_020910c0(s32 a, s32 b, s32 c, s16 *d)
 {
     if (d != 0) {
-        s16 t = func_01ffc5a4(*d - 0x600, 0x1200);
+        s16 t = FX_Div(*d - 0x600, 0x1200);
         return func_020931e8(a, b, c, &t, data_020e15d4, data_020e14a8, func_02091140);
     }
     return 3;

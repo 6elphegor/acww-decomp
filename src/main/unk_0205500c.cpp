@@ -17,11 +17,11 @@ void func_020e85fc(void *heap, void *p);
 }
 
 extern "C" {
-void func_021039ec(void *a, void *b);
+void NNS_G3dBindMdlTex(void *a, void *b);
 }
 
 extern "C" {
-void func_02103830(void *a, void *b);
+void NNS_G3dBindMdlPltt(void *a, void *b);
 }
 
 extern "C" {
@@ -166,8 +166,8 @@ u32 Unk_020dbe04::func_02055090(void *res, Unk_020dbe24 *b, void *tex, void *hea
         u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)unk_04));
         unk_0c = func_02055928(p, tex);
         void *q = NNS_G3dGetTex((void *)unk_04);
-        func_021039ec(unk_0c, q);
-        func_02103830(unk_0c, q);
+        NNS_G3dBindMdlTex(unk_0c, q);
+        NNS_G3dBindMdlPltt(unk_0c, q);
         func_020e85fc(unk_08, (void *)unk_04);
         unk_08 = NULL;
         unk_04 = 0;

@@ -13,7 +13,7 @@ void func_02062f94(u16 *a, Unk_02039cf4_Obj *o, s32 b, s32 c, s32 d, s32 e, s32 
 BOOL func_0204ba30(u16 *a, u16 *b);
 s32 MTX_MultVec43(void *v, void *m, void *out);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 void VEC_CrossProduct(void *dst, void *a, void *b);
 void VEC_Normalize(void *dst, void *src);
 }
@@ -45,7 +45,7 @@ public:
 void Unk_02039eb8::func_02039f9c() {
     s32 v[12];
     s32 idx = unk_58 >> 4;
-    s32 s = func_01ffc5a4(data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
+    s32 s = FX_Div(data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
     s32 y = func_01ffcb0c(unk_50, s);
     s32 x = func_01ffcb0c(unk_4c, y);
     v[0] = -x;

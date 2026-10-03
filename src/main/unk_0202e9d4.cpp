@@ -12,7 +12,7 @@ struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
 };
 
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
 s32 func_01ffcb2c(s32 x, s32 y);
@@ -150,7 +150,7 @@ BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
             s32 top = unk_00.y + unk_10;
             s32 ay = l.A.y;
             if (ay > top && l.B.y < top) {
-                t1 = func_01ffc5a4(top - ay, l.D.y);
+                t1 = FX_Div(top - ay, l.D.y);
                 z = l.A.z + func_01ffcb0c(l.D.z, t1);
                 y = l.A.y + func_01ffcb0c(l.D.y, t1);
                 l.P1.x = l.A.x + func_01ffcb0c(l.D.x, t1);
@@ -161,7 +161,7 @@ BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
                     return TRUE;
                 }
             } else if (ay < 0 && l.B.y > 0) {
-                t2 = func_01ffc5a4(-ay, l.D.y);
+                t2 = FX_Div(-ay, l.D.y);
                 z2 = l.A.z + func_01ffcb0c(l.D.z, t2);
                 y2 = l.A.y + func_01ffcb0c(l.D.y, t2);
                 l.P2.x = l.A.x + func_01ffcb0c(l.D.x, t2);
@@ -193,10 +193,10 @@ BOOL Unk_0202f7b8::func_0202f7b8(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
         if (aq < 4) {
             return FALSE;
         }
-        s32 b = func_01ffc5a4(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
+        s32 b = FX_Div(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
         s32 zz = func_01ffcb0c(l.A.z - l.C.z, l.A.z - l.C.z);
         s32 xx = func_01ffcb0c(l.A.x - l.C.x, l.A.x - l.C.x);
-        s32 c = func_01ffc5a4(xx + zz - func_01ffcb0c(r, r), q);
+        s32 c = FX_Div(xx + zz - func_01ffcb0c(r, r), q);
         s32 disc = func_01ffcb0c(b, b) - (c << 2);
         if (disc < 0) {
             return FALSE;
@@ -476,7 +476,7 @@ BOOL Unk_020d8ccc::func_0202f050(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0
         Unk_0202f2ac_V3 v;
         s32 t, y, z;
         func_020e9960(&v, q, p);
-        t = func_01ffc5a4(s, d);
+        t = FX_Div(s, d);
         z = p->z + func_01ffcb0c(t, v.z);
         y = p->y + func_01ffcb0c(t, v.y);
         out->x = p->x + func_01ffcb0c(t, v.x);
@@ -544,8 +544,8 @@ BOOL Unk_0202f048::func_0202ef40() {
     if (Unk_0202f2ac_Abs(r) < 4) {
         return FALSE;
     }
-    x = func_01ffc5a4(x, r);
-    y = func_01ffc5a4(y, r);
+    x = FX_Div(x, r);
+    y = FX_Div(y, r);
     return TRUE;
 }
 
@@ -610,19 +610,19 @@ BOOL Unk_020d8ce4::func_0202ece8(Unk_0202f048 *out, Unk_0202f048 *a, Unk_0202f04
     if (Unk_0202f2ac_Abs(det) >= 4) {
         s32 c = t.unk_1c;
         s32 g = unk_1c;
-        out->y = func_01ffc5a4(func_01ffcb0c(t.unk_14.x, g) - func_01ffcb0c(unk_14.x, c), det);
+        out->y = FX_Div(func_01ffcb0c(t.unk_14.x, g) - func_01ffcb0c(unk_14.x, c), det);
         s32 d = unk_14.x;
         if (Unk_0202f2ac_Abs(d) >= 4) {
             s32 e = unk_1c;
             s32 m = func_01ffcb0c(unk_14.y, out->y);
-            out->x = func_01ffc5a4(-(m + e), d);
+            out->x = FX_Div(-(m + e), d);
             return TRUE;
         } else {
             s32 f = t.unk_14.x;
             if (Unk_0202f2ac_Abs(f) >= 4) {
                 s32 e = t.unk_1c;
                 s32 m = func_01ffcb0c(t.unk_14.y, out->y);
-                out->x = func_01ffc5a4(-(m + e), f);
+                out->x = FX_Div(-(m + e), f);
                 return TRUE;
             }
         }

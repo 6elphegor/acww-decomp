@@ -80,56 +80,56 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void func_02000b44(void *);
 void func_0206d49c(void);
-void func_021124a0(u32);
-void func_021124bc(u32);
+void OS_UnlockCard(u32);
+void OS_LockCard(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_WakeupThread(void *);
 void OS_SleepThread(void *);
-void func_02113a70(void *, void (*)(void *), void *, void *, u32, u32);
+void OS_CreateThread(void *, void (*)(void *), void *, void *, u32, u32);
 void DC_InvalidateRange(void *, u32);
 void DC_FlushRange(void *, u32);
-void func_021145f0(void);
+void DC_WaitWriteBufferEmpty(void);
 void MI_StopDma(u32);
 void MIi_CpuClearFast(u32, void *, u32);
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
-void func_02117dcc(void);
+void PXI_Init(void);
 BOOL PXI_IsCallbackReady(u32, u32);
 s32 PXI_SendWordByFifo(u32, u32, u32);
 void PXI_SetFifoRecvCallback(u32, void *);
-void func_0211cbd0(void);
-void func_0211cbe8(void);
-void func_0211cc7c(void);
+void RtcWaitBusy(void);
+void RtcGetResultCallback(void);
+void RtcCommonCallback(void);
 void CARDi_TaskThread(void *);
 void CARDi_OnFifoRecv(void);
-BOOL func_0211e7c0(void *, u32, u32);
+BOOL CARDi_Request(void *, u32, u32);
 void CARD_InitPulledOutCallback(void);
 void CARDi_SetRomOp(u32, u32);
 BOOL CARDi_ReadFromCache(void *);
-BOOL func_0211e3fc(void *);
+BOOL CARDi_TryReadCardDma(void *);
 
 u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
 u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
 u32 RTC_GetDateAsync(u32, void (*)(void), u32);
 BOOL RtcSendPxiCommand(u32);
-BOOL func_0211d538(void);
-BOOL func_0211d528(void);
-BOOL func_0211d548(void);
+BOOL RTCi_ReadRawDateAsync(void);
+BOOL RTCi_ReadRawTimeAsync(void);
+BOOL RTCi_ReadRawDateTimeAsync(void);
 s32 RTCi_ConvertTimeToSecond(RTCTime *);
 s32 RTC_ConvertDateToDay(RTCDate *);
-void func_0211d798(u32);
-void func_0211d7a8(void);
-u32 func_0211d7d4(void);
-void func_0211d7e4(void);
-void func_0211d8ec(u32, u32);
-void func_0211d990(u32, u32);
+void CARD_Enable(u32);
+void CARD_CheckEnabled(void);
+u32 CARD_IsEnabled(void);
+void CARDi_InitCommon(void);
+void CARDi_UnlockResource(u32, u32);
+void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
 void func_0211da74(s32);
-void func_0211ded8(CARDCommon *);
-void *func_0211e094(void);
-BOOL func_0211e0a0(void);
-void func_0211e258(CARDCommon *);
+void CARDi_RequestStreamCommandCore(CARDCommon *);
+void *CARDi_GetRomAccessor(void);
+BOOL CARD_WaitRomAsync(void);
+void CARDi_ReadRomSyncCore(CARDCommon *);
 void CARDi_ReadCard(void *);
 BOOL CARDi_TryWaitAsync(void);
 BOOL CARDi_WaitAsync(void);
@@ -175,7 +175,7 @@ void CARDi_ReadCard(void *p) {
 }
 
 // CARDi_ReadRomEnd~ (task body)
-void func_0211e258(CARDCommon *unused) {
+void CARDi_ReadRomSyncCore(CARDCommon *unused) {
     RomDev *d = &data_021ff240;
     if (CARDi_ReadFromCache(d)) d->fn(d);
     {
@@ -200,7 +200,7 @@ void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void 
     CARDCommon *const c = &data_021fec00;
     RomDev *d = &data_021ff240;
     u32 irq;
-    func_0211d7a8();
+    CARD_CheckEnabled();
     irq = OS_DisableInterrupts();
     while (c->flag & 4) OS_SleepThread(&c->tq);
     c->flag |= 4;
@@ -212,17 +212,17 @@ void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void 
     c->dst = dst;
     c->len = len;
     if (cmd <= 3) MI_StopDma(cmd);
-    if (func_0211e3fc(d)) {
+    if (CARDi_TryReadCardDma(d)) {
         if (async) return;
-        func_0211e0a0();
+        CARD_WaitRomAsync();
         return;
     }
     if (async) {
-        CARDi_SetTask(func_0211e258);
+        CARDi_SetTask(CARDi_ReadRomSyncCore);
         return;
     }
     c->curThread = (OST *)data_021fcc2c[1];
-    func_0211e258(c);
+    CARDi_ReadRomSyncCore(c);
 }
 
 // CARD_Init
@@ -235,23 +235,23 @@ void CARD_Init(void) {
     c->callback = 0;
     c->cbArg = 0;
     data_021ff220 = 0;
-    func_0211d7e4();
-    data_021ff240.fn = (void (*)(void *))func_0211e094();
+    CARDi_InitCommon();
+    data_021ff240.fn = (void (*)(void *))CARDi_GetRomAccessor();
     CARD_InitPulledOutCallback();
 }
 
 // CARD_WaitRomAsync~ (tail call to CARDi_WaitAsync)
-BOOL func_0211e0a0(void) {
+BOOL CARD_WaitRomAsync(void) {
     return CARDi_WaitAsync();
 }
 
 // returns the ROM read routine CARDi_ReadCard
-void *func_0211e094(void) {
+void *CARDi_GetRomAccessor(void) {
     return CARDi_ReadCard;
 }
 
 // CARDi_ExecuteStreamTask~ (task body, 256-byte transfer loop)
-void func_0211ded8(CARDCommon *c) {
+void CARDi_RequestStreamCommandCore(CARDCommon *c) {
     u32 g = c->f2c;
     u32 mode = c->f34;
     u32 h = c->f30;
@@ -277,13 +277,13 @@ void func_0211ded8(CARDCommon *c) {
         } else {
             MI_CpuCopy8((void *)c->src, c->buf, len);
             DC_FlushRange(c->buf, len);
-            func_021145f0();
+            DC_WaitWriteBufferEmpty();
             c->cmd->srcBuf = (u32)c->buf;
             c->cmd->dstBuf = c->dst;
         }
-        if (!func_0211e7c0(c, g, h)) break;
+        if (!CARDi_Request(c, g, h)) break;
         if (mode == 2) {
-            if (!func_0211e7c0(c, 9, one)) break;
+            if (!CARDi_Request(c, 9, one)) break;
         } else if (mode == 0) {
             MI_CpuCopy8(c->buf, (void *)c->dst, len);
         }
@@ -319,28 +319,28 @@ BOOL CARDi_RequestStreamCommand(u32 a, u32 b, u32 len, void (*cb)(void *), void 
     c->f30 = h;
     c->f34 = mode;
     if (async) {
-        CARDi_SetTask(func_0211ded8);
+        CARDi_SetTask(CARDi_RequestStreamCommandCore);
         return 1;
     }
     data_021fec00.curThread = (OST *)data_021fcc2c[1];
-    func_0211ded8(c);
+    CARDi_RequestStreamCommandCore(c);
     return c->cmd->result == 0;
 }
 
 // returns a field of the current command block (+0x18)
-u32 func_0211ddd0(void) {
+u32 CARD_GetBackupTotalSize(void) {
     return data_021fec00.cmd->f18;
 }
 
 // CARD_IdentifyBackup~ (type)
-BOOL func_0211dc88(u32 op) {
+BOOL CARD_IdentifyBackup(u32 op) {
     CARDCommon *c = &data_021fec00;
     void (*cb)(void *);
     void *arg;
     u32 irq;
     func_02000b44((void *)0x02000bbc);
     if (op == 0) func_0206d49c();
-    func_0211d7a8();
+    CARD_CheckEnabled();
     irq = OS_DisableInterrupts();
     while (c->flag & 4) OS_SleepThread(&c->tq);
     c->flag |= 4;
@@ -349,11 +349,11 @@ BOOL func_0211dc88(u32 op) {
     OS_RestoreInterrupts(irq);
     func_0211da74(op);
     data_021fec00.curThread = (OST *)data_021fcc2c[1];
-    func_0211e7c0(c, 2, 1);
+    CARDi_Request(c, 2, 1);
     c->cmd->srcBuf = 0;
     c->cmd->dstBuf = (u32)c->buf;
     c->cmd->len = 1;
-    func_0211e7c0(c, 6, 1);
+    CARDi_Request(c, 6, 1);
     cb = c->callback;
     arg = c->cbArg;
     irq = OS_DisableInterrupts();
@@ -366,7 +366,7 @@ BOOL func_0211dc88(u32 op) {
 }
 
 // CARD_TryWaitRomAsync~ (tail call to CARDi_TryWaitAsync)
-BOOL func_0211dc7c(void) {
+BOOL CARD_TryWaitBackupAsync(void) {
     return CARDi_TryWaitAsync();
 }
 

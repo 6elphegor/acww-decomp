@@ -133,45 +133,45 @@ extern void OS_GetMacAddress(u8 *);
 extern void MI_DmaCopy16(u32, void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopy16(void *, void *, u32);
-extern void func_02115e64(u32, void *, u32);
+extern void MIi_CpuClear32(u32, void *, u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 PXI_IsCallbackReady(u32, u32);
-extern u32 func_0211f410(void);
+extern u32 WM_GetNextTgid(void);
 extern u32 func_0211fb0c(u32, void *, u32);
-extern u32 func_0211fb68(WCb);
-extern u32 func_0211fbb4(WCb, u32);
+extern u32 WM_SetIndCallback(WCb);
+extern u32 WM_Disconnect(WCb, u32);
 extern u32 func_0211fcbc(WCb, u32, u32, u32, u32);
-extern u32 func_0211ff5c(WCb, void *);
+extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
-extern u32 func_0212052c(u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
 extern u32 func_021206b4(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
-extern void func_021230a4(void *);
+extern void MB_CommSetParentStateCallback(void *);
 extern void func_0212454c(void);
 extern u32 func_021265dc(void);
-extern u32 func_02126644(void *);
-extern u32 func_02126568(void);
-extern void func_021267e8(void *);
-extern u32 func_021269f8(void);
-extern void func_02126e88(u32);
-extern void func_02126ed4(void *);
+extern u32 changeScanChannel(void *);
+extern u32 MBi_OnInitializeDone(void);
+extern void MBi_EndTaskThread(void *);
+extern u32 MBi_IsTaskAvailable(void);
+extern void MBi_ClearParentPieceBuffer(u32);
+extern void MBi_SetParentPieceBuffer(void *);
 extern void func_02126ef4(u32);
 extern void func_02125d0c(void *);
-extern void func_02122944(u32, void *);
+extern void MBi_CommParentCallback(u32, void *);
 extern void func_02125c94(void *);
 
-void func_02124830(u32 id, u32 res);
-void func_02124a84(u32 t);
-u32 func_02124a34(WCb cb, void *a, u32 b, u32 c, u16 d);
-BOOL func_02124c80(void);
-BOOL func_02124d08(void);
-BOOL func_02124d14(void);
+void MBi_CheckWmErrcode(u32 id, u32 res);
+void MBi_SetMaxScanTime(u32 t);
+u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d);
+BOOL MBi_CommEnd(void);
+BOOL MBi_OnReset(void);
+BOOL MBi_CallReset(void);
 u32 func_02124d74(u32 a);
-u32 func_02124f98(void);
-BOOL func_0212513c(u32 a, u32 c, u32 d);
+u32 MBi_StartCommon(void);
+BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d);
 u32 func_021253a4(void);
 void func_0212541c(void *arg);
 
@@ -187,7 +187,7 @@ void func_0212541c(void *arg) {
             return;
         }
         g->cb51c(21, msg);
-        func_02124830(29, WM_SetLifeTime(func_0212541c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+        MBi_CheckWmErrcode(29, WM_SetLifeTime(func_0212541c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
         return;
     case 29:
         if (msg->f2 != 0) {
@@ -205,7 +205,7 @@ void func_0212541c(void *arg) {
         data_02200020.bssid[5] = 0xff;
         g->f5e4 = 1;
         g->f5e8 = 1;
-        func_02124830(10, func_0211ff5c(func_0212541c, &data_02200020));
+        MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
         return;
     case 10:
         if (msg->f2 != 0) {
@@ -245,18 +245,18 @@ void func_0212541c(void *arg) {
             g->cb51c(4, msg);
             if (g->f5e4 == 0) return;
             if (g->f5e8 != 0) {
-                if (func_02126644(&data_02200020) == 0) func_02124c80();
+                if (changeScanChannel(&data_02200020) == 0) MBi_CommEnd();
             }
-            func_02124830(10, func_0211ff5c(func_0212541c, &data_02200020));
+            MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
             return;
         }
         case 4:
             g->cb51c(5, msg);
             if (g->f5e4 == 0) return;
             if (g->f5e8 != 0) {
-                if (func_02126644(&data_02200020) == 0) func_02124c80();
+                if (changeScanChannel(&data_02200020) == 0) MBi_CommEnd();
             }
-            func_02124830(10, func_0211ff5c(func_0212541c, &data_02200020));
+            MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
             return;
         default:
             g->cb51c(0x100, msg);
@@ -267,7 +267,7 @@ void func_0212541c(void *arg) {
             g->cb51c(0x100, msg);
             return;
         }
-        func_02124830(12, func_0211fcbc(func_0212541c, g->f520, 0, 1, 0));
+        MBi_CheckWmErrcode(12, func_0211fcbc(func_0212541c, g->f520, 0, 1, 0));
         return;
     case 12:
         if (msg->f2 != 0) {
@@ -285,7 +285,7 @@ void func_0212541c(void *arg) {
             g->cb51c(6, msg);
             g->f52a = 1;
             if (func_0211fb0c(1, func_02125c94, 0) != 0) return;
-            func_02124830(14, func_021206b4(func_0212541c, g->f504, g->f51a, (u8 *)g + 0x40, g->f518, (u16)(g->f52c == 0), 0, 0, 0, 1, 1));
+            MBi_CheckWmErrcode(14, func_021206b4(func_0212541c, g->f504, g->f51a, (u8 *)g + 0x40, g->f518, (u16)(g->f52c == 0), 0, 0, 0, 1, 1));
             return;
         case 9:
             g->cb51c(10, msg);
@@ -330,7 +330,7 @@ void func_0212541c(void *arg) {
         }
         g->f52a = 0;
         data_02200018->f528 = 0;
-        func_02124830(2, WM_End(func_0212541c));
+        MBi_CheckWmErrcode(2, WM_End(func_0212541c));
         return;
     case 2:
         if (msg->f2 != 0) {
@@ -390,13 +390,13 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     }
     g = (WCtl *)(((u32)buf + 31) & ~31);
     w = (WWork *)(((u32)g + 0x1e1f) & ~31);
-    if (b == 0x10000) b = func_0211f410();
+    if (b == 0x10000) b = WM_GetNextTgid();
     e = OS_DisableInterrupts();
     zero32 = 0;
     data_02200018 = g;
     data_0220001c = w;
     data_02200010 = dma;
-    func_02115e64(zero32, g, 0x1e00);
+    MIi_CpuClear32(zero32, g, 0x1e00);
     zero = 0;
     MIi_CpuClear16(zero, w, 0x1340);
     dst = g->f530;
@@ -433,7 +433,7 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
 }
 
 // parameter range check (a in 228..510, c in 8..16, size formula < 0x15e0)
-BOOL func_0212513c(u32 a, u32 c, u32 d) {
+BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d) {
     s32 v;
     if (a > 0x1fe || a < 228) return 0;
     if (c > 16 || c < 8) return 0;
@@ -441,14 +441,14 @@ BOOL func_0212513c(u32 a, u32 c, u32 d) {
     return v < 0x15e0;
 }
 
-// set channel/buffer parameters if not initialised yet; validates with func_0212513c
-BOOL func_02125098(u32 a, u32 b) {
+// set channel/buffer parameters if not initialised yet; validates with MBi_IsCommSizeValid
+BOOL MB_SetParentCommParam(u32 a, u32 b) {
     u32 e = OS_DisableInterrupts();
     if (data_02200018->f50d != 0) {
         OS_RestoreInterrupts(e);
         return 0;
     }
-    if (func_0212513c(a, 8, b) == 0) {
+    if (MBi_IsCommSizeValid(a, 8, b) == 0) {
         OS_RestoreInterrupts(e);
         return 0;
     }
@@ -459,26 +459,26 @@ BOOL func_02125098(u32 a, u32 b) {
     return 1;
 }
 
-// WM_Initialize retry loop (WM_Initialize = WM_Initialize(buf, cb, dmaNo)) then WM_SetIndCallback-like func_0211fb68
-u32 func_02124f98(void) {
+// WM_Initialize retry loop (WM_Initialize = WM_Initialize(buf, cb, dmaNo)) then WM_SetIndCallback-like WM_SetIndCallback
+u32 MBi_StartCommon(void) {
     data_02200018->f528 = 0;
     data_02200018->f52a = 0;
     data_02200018->f526 = 0;
     data_02200018->f538[8] = 0;
-    func_02124a84(10);
+    MBi_SetMaxScanTime(10);
     if (data_0220001c->f1320 == 0) {
         u32 r;
         do {
             r = WM_Initialize(data_02200014, data_02200018->cb508, data_02200010);
         } while (r == 4);
         if (r != 2) return 8;
-        func_0211fb68(data_02200018->cb508);
+        WM_SetIndCallback(data_02200018->cb508);
         data_02200018->f50d = 1;
         return 0;
     } else {
-        func_0211fb68(data_02200018->cb508);
+        WM_SetIndCallback(data_02200018->cb508);
         data_02200018->f50d = 1;
-        func_02126568();
+        MBi_OnInitializeDone();
         return 0;
     }
 }
@@ -497,10 +497,10 @@ u32 func_02124d74(u32 a) {
     cb = data_0220001c->cb;
     zero1 = 0;
     MIi_CpuClear16(zero1, data_0220001c->ent, 0x69c0);
-    func_021230a4((void *)cb);
+    MB_CommSetParentStateCallback((void *)cb);
     data_0220001c->f1318 = data_02200018->f500 - 6;
     func_02126ef4(data_02200018->f502);
-    func_02126ed4((u8 *)data_0220001c + 0x1538);
+    MBi_SetParentPieceBuffer((u8 *)data_0220001c + 0x1538);
     for (i = 0; i < 15; i++) {
         data_0220001c->state[i] = 0;
         data_0220001c->slot[i] = -1;
@@ -510,61 +510,61 @@ u32 func_02124d74(u32 a) {
     MIi_CpuClear16(zero2, data_0220001c->peers, 0x5d40);
     MI_CpuFill8((u8 *)data_0220001c + 0x1754, 0, 30);
     data_02200018->f524 = 1;
-    data_02200018->cb51c = func_02122944;
+    data_02200018->cb51c = MBi_CommParentCallback;
     data_02200018->cb508 = func_02125d0c;
     data_02200018->f34 = data_02200018->f500;
     data_02200018->f518 = (data_02200018->f34 + 35) & ~31;
     data_02200018->f36 = data_02200018->f502;
     data_02200018->f51a = (((data_02200018->f36 + 14) * 15 + 41) & ~31) << 1;
     func_0212454c();
-    r = func_02124f98();
+    r = MBi_StartCommon();
     OS_RestoreInterrupts(e);
     *(u32 *)((u8 *)data_0220001c + 0x74c8) = PXI_IsCallbackReady(15, 1);
     return r;
 }
 
 // set flag 0x1320 then tail-call the initialiser func_02124d74
-u32 func_02124d50(u32 a) {
+u32 MB_StartParentFromIdle(u32 a) {
     data_0220001c->f1320 = 1;
     return func_02124d74(a);
 }
 
 // WM_End-like step: WM_Reset (WM_End), report result
-BOOL func_02124d14(void) {
+BOOL MBi_CallReset(void) {
     u32 r = WM_Reset(data_02200018->cb508);
-    func_02124830(1, r);
+    MBi_CheckWmErrcode(1, r);
     if (r == 2) r = 0;
     return r;
 }
 
 // tail-call thunk used as a WM callback
-BOOL func_02124d08(void) {
-    return func_02124d14();
+BOOL MBi_OnReset(void) {
+    return MBi_CallReset();
 }
 
 // begin shutdown/reset of the wireless layer (state 0x526)
-BOOL func_02124c80(void) {
+BOOL MBi_CommEnd(void) {
     BOOL r = 1;
     u32 e = OS_DisableInterrupts();
     if (data_02200018->f526 == 0) {
         data_02200018->f5e4 = 0;
         data_02200018->f526 = r;
-        if (func_021269f8() != 0) {
-            func_021267e8((void *)func_02124d08);
+        if (MBi_IsTaskAvailable() != 0) {
+            MBi_EndTaskThread((void *)MBi_OnReset);
             r = 0;
         } else {
-            r = func_02124d14();
+            r = MBi_CallReset();
         }
     }
     OS_RestoreInterrupts(e);
     return r;
 }
 
-// OS_DisableInterrupts / terminate-if-not-set check / func_02124c80 / OS_RestoreInterrupts
-void func_02124c40(void) {
+// OS_DisableInterrupts / terminate-if-not-set check / MBi_CommEnd / OS_RestoreInterrupts
+void MB_End(void) {
     u32 e = OS_DisableInterrupts();
     if (data_0220001c->f1320 == 0) func_0206d49c();
-    func_02124c80();
+    MBi_CommEnd();
     OS_RestoreInterrupts(e);
 }
 

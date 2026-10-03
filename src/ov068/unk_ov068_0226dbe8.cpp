@@ -569,7 +569,7 @@ extern u16 data_020c6cc8;
 extern s32 data_020c8cbc;
 
 void func_020e761c(void *dst, s32 v, s32 n);
-void func_02106054(void *o, u32 i, u32 v);
+void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 s32 func_02063b8c(s32 n);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e96ec(void *a, void *b);

@@ -143,45 +143,45 @@ extern void OS_RestoreInterrupts(u32);
 extern void OS_LockMutex(void *);
 extern void OS_UnlockMutex(void *);
 extern void OS_InitMutex(void *);
-extern void func_02113a70(void *, void *, void *, void *, u32, u32);
+extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern void OS_WakeupThread(void *);
 extern void MI_CpuFill8(u32, u32, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopyFast();
 extern void DC_FlushRange(void *, u32);
-extern void func_021166b4(u32);
+extern void SND_SetSurroundDecay(u32);
 extern void func_021198c4(void *);
 extern void FS_CloseFile(void *);
 extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void func_0210a6b0(Ctx *, s32, s32);
-extern void func_0210a6f4(Ctx *, s32);
-extern void func_0210a768(Ctx *);
-extern void func_0210a798(Ctx *);
-extern BOOL func_0210a7f4();
-extern void func_0210a9c4(Ctx *);
-extern BOOL func_0210a9f4();
-extern void func_0210aa58(Ctx *);
-extern void func_0210b364();
+extern void NNS_SndStrmSetVolume(Ctx *, s32);
+extern void NNS_SndStrmStop(Ctx *);
+extern void NNS_SndStrmStart(Ctx *);
+extern BOOL NNS_SndStrmSetup();
+extern void NNS_SndStrmFreeChannel(Ctx *);
+extern BOOL NNS_SndStrmAllocChannel();
+extern void NNS_SndStrmInit(Ctx *);
+extern void NNS_SndCaptureStartEffect();
 extern FSFileID func_0210b48c(void);
-extern s32 func_0210b4ac();
+extern s32 NNS_SndArcReadFile();
 extern u32 func_0210b558();
 extern u8 *func_0210b5e4();
-extern SInfo *func_0210b6ac();
-extern void *func_0210be9c();
+extern SInfo *NNS_SndArcGetStrmInfo();
+extern void *NNS_SndHeapAlloc();
 extern void func_0210d10c();
 
 // in-unit prototypes
 void func_0210da28(Ctx *);
 void func_0210db74(s32, s32, u32 *, u32, s32, Ctx *);
 void func_0210dcc0(void *, u32, Ctx *);
-void func_0210dd6c(Job *);
+void FreeCommandBuffer(Job *);
 Job *func_0210dda4(void);
 Job *func_0210ddf0(NNSFndList *);
-void func_0210de44(NNSFndList *, Ctx *);
+void RemoveCommandByPlayer(NNSFndList *, Ctx *);
 void func_0210deb8(ThreadInfo *, u32);
-void func_0210df2c(Ctx *);
+void FreeChannel(Ctx *);
 BOOL func_0210df74();
 void func_0210dfb4(Ctx *);
 void func_0210e024(Ctx *);
@@ -201,8 +201,8 @@ void func_0210edb4();
 void func_0210ee4c(s32);
 BOOL NNSi_SndFaderIsFinished(Fader *);
 void NNSi_SndFaderInit(Fader *);
-s32 func_0210f00c(Fader *);
-void func_0210f048(Fader *, s32, s32);
+s32 NNSi_SndFaderGet(Fader *);
+void NNSi_SndFaderSet(Fader *, s32, s32);
 void NNSi_SndFaderUpdate(Fader *);
 
 // NNSi_SndCaptureEffect mono-mix-like (capture effect 3: average of both channels)
@@ -236,7 +236,7 @@ void func_0210e8bc(u32 prio, void *heap)
     for (i = 0; i < 4; i++, c++) {
         c->fl.a = 0;
         FS_InitFile(c->file);
-        func_0210aa58(c);
+        NNS_SndStrmInit(c);
         c->v148 = i;
         c->nch = 0;
         c->buf = 0;
@@ -266,7 +266,7 @@ BOOL func_0210e7e0(void *heap)
         }
         if (heap != 0) {
             size = c->nch << 11;
-            mem = func_0210be9c(heap, size, func_0210dcc0, c, 0);
+            mem = NNS_SndHeapAlloc(heap, size, func_0210dcc0, c, 0);
             if (mem == 0) return 0;
             func_0210e024(c);
             c->buf = mem;
@@ -279,7 +279,7 @@ BOOL func_0210e7e0(void *heap)
 // NNS_SndArcStrmPrepare-like (lookup stream info then start impl)
 BOOL func_0210e778(Ctx **h, s32 strmNo, s32 len)
 {
-    SInfo *info = func_0210b6ac(strmNo);
+    SInfo *info = NNS_SndArcGetStrmInfo(strmNo);
     if (info == 0) return 0;
     return func_0210e128(h, info, info->b6, info->b5, strmNo, len, 0, 0, 0, 0);
 }
@@ -313,7 +313,7 @@ void func_0210e6b8(Ctx **h, s32 vol, s32 frames)
     Ctx *c = *h;
     if (c == 0) return;
     if (c->fl.d != 0) return;
-    func_0210f048(&c->fader, vol << 8, frames);
+    NNSi_SndFaderSet(&c->fader, vol << 8, frames);
 }
 
 // NNS_SndArcStrmInitHandle-like
@@ -349,7 +349,7 @@ u32 func_0210e5fc(Ctx **h)
 }
 
 // NNS_SndArcStrmMain-like (per-frame update of the 4 contexts: start, fade, volume)
-void func_0210e4e4(void)
+void NNSi_SndArcStrmMain(void)
 {
     s32 i;
     s32 v;
@@ -363,17 +363,17 @@ void func_0210e4e4(void)
             continue;
         }
         if (c->fl.c != 0 && c->v118 != 0) {
-            func_0210a798(c);
+            NNS_SndStrmStart(c);
             c->fl.b = 1;
             c->fl.c = 0;
         }
         if (c->fl.b == 0) continue;
         NNSi_SndFaderUpdate(&c->fader);
         a = data_02139fb4[c->v154];
-        v = data_02139fb4[func_0210f00c(&c->fader) >> 8];
+        v = data_02139fb4[NNSi_SndFaderGet(&c->fader) >> 8];
         v = v + a;
         if (v != c->vol) {
-            func_0210a6f4(c, v);
+            NNS_SndStrmSetVolume(c, v);
             c->vol = v;
         }
         if (c->fl.d != 0) {
@@ -423,7 +423,7 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
 
     c = func_0210e43c(h, idx, prio);
     if (c == 0) return 0;
-    if (func_0210b4ac(info->file, HDR(c), 0x40, 0) != 0x40) {
+    if (NNS_SndArcReadFile(info->file, HDR(c), 0x40, 0) != 0x40) {
         FreePlayer(c);
         return 0;
     }
@@ -454,7 +454,7 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
     c->vol = 0;
     c->v154 = info->b4;
     NNSi_SndFaderInit(&c->fader);
-    func_0210f048(&c->fader, 0x7f00, 1);
+    NNSi_SndFaderSet(&c->fader, 0x7f00, 1);
     switch (c->type) {
     case 0:
         fmt = 0;
@@ -473,8 +473,8 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
         FreePlayer(c);
         return 0;
     }
-    if (func_0210a7f4(c, fmt, c->buf, (c->bufSize * n) / c->nch, c->c6, 4, func_0210db74, c) == 0) {
-        func_0210df2c(c);
+    if (NNS_SndStrmSetup(c, fmt, c->buf, (c->bufSize * n) / c->nch, c->c6, 4, func_0210db74, c) == 0) {
+        FreeChannel(c);
         FS_CloseFile(c->file);
         FreePlayer(c);
         return 0;
@@ -497,7 +497,7 @@ void func_0210e0c4(Ctx *c, s32 frames)
         func_0210e024(c);
         return;
     }
-    func_0210f048(&c->fader, 0, frames);
+    NNSi_SndFaderSet(&c->fader, 0, frames);
     c->fl.d = 1;
     c->prio = 0;
 }
@@ -507,7 +507,7 @@ void func_0210e024(Ctx *c)
 {
     OS_LockMutex(data_021fc62c);
     if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
-    if (c->fl.b) func_0210a768(c);
+    if (c->fl.b) NNS_SndStrmStop(c);
     if (c->fl.a) func_021198c4(c->file);
     func_0210dfb4(c);
     OS_UnlockMutex(data_021fc62c);
@@ -518,12 +518,12 @@ void func_0210e024(Ctx *c)
 void func_0210dfb4(Ctx *c)
 {
     if (c->fl.a == 0) return;
-    func_0210df2c(c);
+    FreeChannel(c);
     FS_CloseFile(c->file);
-    func_0210de44(&data_021fc644, c);
+    RemoveCommandByPlayer(&data_021fc644, c);
     {
         ThreadInfo *p = data_021fbdac;
-        if (p != 0) func_0210de44(&p->list, c);
+        if (p != 0) RemoveCommandByPlayer(&p->list, c);
     }
     FreePlayer(c);
 }
@@ -532,25 +532,25 @@ void func_0210dfb4(Ctx *c)
 BOOL func_0210df74(Ctx *c, s32 n, u8 *x)
 {
     if (c->users == 0) {
-        if (func_0210a9f4(c, n, x) == 0) return 0;
+        if (NNS_SndStrmAllocChannel(c, n, x) == 0) return 0;
     }
     c->users = c->users + 1;
     return 1;
 }
 
 // NNSi_SndArcStrmChannelRelease-like
-void func_0210df2c(Ctx *c)
+void FreeChannel(Ctx *c)
 {
     if (c->users == 0) return;
     c->users = c->users - 1;
     if (c->users != 0) return;
-    func_0210a9c4(c);
+    NNS_SndStrmFreeChannel(c);
 }
 
 // NNS_SndArcStrmThread create-like (OS_CreateThread + job list, mutex, queue)
 void func_0210deb8(ThreadInfo *t, u32 prio)
 {
-    func_02113a70(t, func_0210d10c, t, (u8 *)t + 0x4c0, 0x400, prio);
+    OS_CreateThread(t, func_0210d10c, t, (u8 *)t + 0x4c0, 0x400, prio);
     NNS_FndInitList(&t->list, 0);
     OS_InitMutex(&t->mutex);
     t->queue[1] = 0;
@@ -559,7 +559,7 @@ void func_0210deb8(ThreadInfo *t, u32 prio)
 }
 
 // NNSi_SndArcStrmJobCancel-like (drop all jobs of a stream)
-void func_0210de44(NNSFndList *list, Ctx *c)
+void RemoveCommandByPlayer(NNSFndList *list, Ctx *c)
 {
     u32 irq;
     Job *job;
@@ -569,7 +569,7 @@ void func_0210de44(NNSFndList *list, Ctx *c)
         next = NNS_FndGetNextListObject(list, job);
         if (job->owner == c) {
             NNS_FndRemoveListObject(list, job);
-            func_0210dd6c(job);
+            FreeCommandBuffer(job);
         }
     }
     OS_RestoreInterrupts(irq);
@@ -603,7 +603,7 @@ Job *func_0210dda4(void)
 }
 
 // NNSi_SndArcStrmJobFree-like (job back to the free list)
-void func_0210dd6c(Job *job)
+void FreeCommandBuffer(Job *job)
 {
     u32 irq = OS_DisableInterrupts();
     NNS_FndAppendListObject(&data_021fbdb4, job);
@@ -621,7 +621,7 @@ void func_0210dcc0(void *mem, u32 size, Ctx *c)
     c->bufSize = 0;
     c->nch = 0;
     if (c->users > 0) {
-        func_0210a9c4(c);
+        NNS_SndStrmFreeChannel(c);
         c->users = 0;
     }
     OS_UnlockMutex(data_021fc62c);
@@ -644,7 +644,7 @@ void func_0210db74(s32 ch, s32 n, u32 *bufs, u32 size, s32 unused, Ctx *c)
         }
         NNS_FndRemoveListObject(&data_021fc644, job);
         c->pending = c->pending - 1;
-        func_0210dd6c(job);
+        FreeCommandBuffer(job);
     }
     job = func_0210dda4();
     job->owner = c;
@@ -678,12 +678,12 @@ void func_0210da28(Ctx *c)
     out.n = 0;
     ok = ((BOOL (*)())c->cb)(0, &in, &out, c->cbArg);
     if (ok == 0) return;
-    info = func_0210b6ac(out.p);
+    info = NNS_SndArcGetStrmInfo(out.p);
     if (info == 0) return;
     oldType = c->type;
     oldRate = c->rate;
     c->a4 = func_0210b558(info->file);
-    func_0210b4ac(info->file, HDR(c), 0x40, 0);
+    NNS_SndArcReadFile(info->file, HDR(c), 0x40, 0);
     if (oldRate != c->rate) return;
     if (oldType == 0 && c->type != 0) return;
     if (oldType != 0 && c->type == 0) return;

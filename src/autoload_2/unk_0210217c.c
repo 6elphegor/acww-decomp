@@ -7,13 +7,13 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 
-void func_0210217c(u16 *dst, s32 w, s32 h, s32 stride, s32 idx, s32 pal);
+void NNS_G2dMapScrToChar256x16Pltt(u16 *dst, s32 w, s32 h, s32 stride, s32 idx, s32 pal);
 
 // NNS g2d screen helper: same fill at (x, y) of a screen that is scrW entries wide; screens wider than 32 are stored as
 // 32x32-entry blocks (256x256 BG pages), handled by the wrap logic in the else branch
-void func_021021e8(u16 *scrn, s32 w, s32 h, s32 x, s32 y, s32 scrW, s32 idx, s32 pal) {
+void NNS_G2dMapScrToCharText(u16 *scrn, s32 w, s32 h, s32 x, s32 y, s32 scrW, s32 idx, s32 pal) {
     if (scrW <= 32) {
-        func_0210217c(scrn + (scrW * y + x), w, h, scrW, idx, pal);
+        NNS_G2dMapScrToChar256x16Pltt(scrn + (scrW * y + x), w, h, scrW, idx, pal);
     } else {
         u16 pl;
         s32 xe, ye, xx;
@@ -33,7 +33,7 @@ void func_021021e8(u16 *scrn, s32 w, s32 h, s32 x, s32 y, s32 scrW, s32 idx, s32
 
 // NNS g2d screen helper: fill a w x h rectangle of u16 BG screen entries (stride in entries) with consecutive char numbers
 // starting at idx, OR-ed with the palette number (pal << 12)
-void func_0210217c(u16 *dst, s32 w, s32 h, s32 stride, s32 idx, s32 pal) {
+void NNS_G2dMapScrToChar256x16Pltt(u16 *dst, s32 w, s32 h, s32 stride, s32 idx, s32 pal) {
     u16 pl = (u16)(pal << 12);
     s32 j, i;
     for (i = 0; i < h; i++) {

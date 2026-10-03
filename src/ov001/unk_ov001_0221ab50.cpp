@@ -57,9 +57,9 @@ extern void func_ov001_02225cb4(s32, s32);
 extern void func_ov001_02208594(void *, void *);
 extern u8 *func_ov001_022085e0(void *);
 extern void *func_ov001_02224074(void *, s32, s32);
-extern void func_0211172c();
+extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
-extern void func_02111a6c();
+extern void GX_LoadBG2Scr();
 extern u8 *func_ov001_0221e8b4();
 extern u8 *func_ov001_0221e014();
 extern s32 func_ov001_0220c5e0();
@@ -144,9 +144,9 @@ void func_ov001_0221b318() {
 
 void func_ov001_0221b220() {
     char l[22] = "char/ybBgStep21.ncl.l";
-    func_ov001_02208594(data_ov001_0222b2ec, (void *)func_0211172c);
+    func_ov001_02208594(data_ov001_0222b2ec, (void *)GX_LoadBG2Char);
     func_ov001_02208594(data_ov001_0222b304, (void *)GX_LoadBGPltt);
-    func_ov001_02208594((void *)"char/jb3Way.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/jb3Way.nsc.l", (void *)GX_LoadBG2Scr);
     data_ov001_0222dec4 = func_ov001_02224074(func_ov001_022085e0(l), 0, 4);
     REGSET(0x4001008, 3);
     REGSET(0x400100a, 3);
@@ -322,9 +322,9 @@ u32 func_ov001_02224b14(u32, u32, u32);
 void func_ov001_02224558(u32, s32, u32, u32);
 void func_ov001_022244d8(u32, s32, s32);
 s32 func_ov001_02208594(void *, void *);
-void func_0211172c();
+void GX_LoadBG2Char();
 void GX_LoadBGPltt();
-void func_02111a6c();
+void GX_LoadBG2Scr();
 void GX_LoadOBJPltt();
 void *func_ov001_022085e0(void *);
 u32 func_ov001_02224074(void *, s32, s32);

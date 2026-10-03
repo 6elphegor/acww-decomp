@@ -325,7 +325,7 @@ s32 func_020b22b0(s32 t, s32 lo, s32 hi);
 extern "C" {
 void MTX_RotZ33_(void *m, s32 sn, s32 cs);
 void MTX_Concat33(void *a, void *b, void *out);
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 func_020374b0(u8 *cell, u32 mask);
 BOOL func_020374f4(u8 *cell, u32 *a, u32 *b, Unk_0203442c *m, Unk_0203442c *c, u32 d);
@@ -381,10 +381,10 @@ void func_020e8558(void *p);
 void *func_021012bc(char *name);
 void func_02101310(void *file);
 BOOL func_02101340(void *file, const void *mode, void *arc);
-void func_02106054(Ctx *c, s32 i, u8 v);
-void func_0210612c(Pal *p, s32 i, u16 c);
-void func_02106174(Ctx *c, s32 i, u16 v);
-void func_0210622c(Pal *p, s32 a, s32 b);
+void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
+void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
+void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
+void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
 Obj *func_ov003_02218b40(u32 a);
 Obj *func_ov003_02218c60(u32 a);
 BOOL _ZN18Unk_ov003_02232c088vfunc_08EPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
@@ -1018,7 +1018,7 @@ void X::func_020b2288(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "
 void X::func_020b223c(Ctx *c, s32 t)
 {
     if (unk_00 != -1) {
-        func_02106174(c, unk_00, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
+        NNS_G3dMdlSetMdlDiff(c, unk_00, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
     }
 }
 
@@ -1031,7 +1031,7 @@ void D::func_020b2214(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "
 void D::func_020b21ec(Ctx *c, s32 t)
 {
     if (unk_00 != -1) {
-        func_02106054(c, unk_00, (u8)((t * 0x1d >> 12) + 1));
+        NNS_G3dMdlSetMdlAlpha(c, unk_00, (u8)((t * 0x1d >> 12) + 1));
     }
 }
 
@@ -1071,17 +1071,17 @@ BOOL A::func_020b2134(s32 v)
 void A::func_020b208c(Pal *p, s32 t)
 {
     if (t != 0) {
-        func_0210622c(p, 1, 0x400);
+        NNSi_G3dModifyMatFlag(p, 1, 0x400);
         u16 col = func_020b207c();
         s32 r7 = func_020b22b0(t, ((col >> 10) & 0x1f) << 12, 0x1f000);
         s32 g = func_020b22b0(t, (col & 0x1f) << 12, 0x1f000);
         s32 b = func_020b22b0(t, ((col >> 5) & 0x1f) << 12, 0x1f000);
         u16 c2 = (r7 >> 12) << 10 | ((g >> 12) | (b >> 12) << 5);
         for (s32 i = 0; i < p->count; i++) {
-            func_0210612c(p, i, func_020b2134(i) ? c2 : col);
+            NNS_G3dMdlSetMdlEmi(p, i, func_020b2134(i) ? c2 : col);
         }
     } else {
-        func_0210622c(p, 0, 0x400);
+        NNSi_G3dModifyMatFlag(p, 0, 0x400);
     }
 }
 
@@ -1133,8 +1133,8 @@ void Unk_020b1ddc::func_020b1e74()
     func_0209cf18(t);
     if (data_021ee2ac != data_021f4768) {
         s32 rem = t[1] % 0xc;
-        s32 a = (s16)-(func_01ffc5a4(rem << 12, 0xc000) * 0xffff >> 12);
-        s32 b = (func_01ffc5a4(t[0] << 12, 0x3c000) * 0x1555 << 4) >> 16;
+        s32 a = (s16)-(FX_Div(rem << 12, 0xc000) * 0xffff >> 12);
+        s32 b = (FX_Div(t[0] << 12, 0x3c000) * 0x1555 << 4) >> 16;
         s32 idx = (u16)(s16)(a - b) >> 4;
         data_021ee2a4 = data_02135f44[idx * 2];
         data_020e3db4 = data_02135f44[idx * 2 + 1];
@@ -1156,7 +1156,7 @@ void Unk_020b1ddc::func_020b1ddc()
     Mtx33 *m = &unk_b4->mtx;
     func_0209cf18(t);
     s32 rem = t[0] % 0x3c;
-    s32 a = -(func_01ffc5a4(rem << 12, 0x3c000) * 0xffff >> 12);
+    s32 a = -(FX_Div(rem << 12, 0x3c000) * 0xffff >> 12);
     s32 idx = (u16)(s16)a >> 4;
     MTX_RotZ33_(&tmp, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
     if (unk_b4->flags & 2) {

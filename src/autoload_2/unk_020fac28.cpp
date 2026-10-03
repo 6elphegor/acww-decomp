@@ -123,9 +123,9 @@ void MTX_MultVec33(Vec3 *v, Vec3 *m, Vec3 *out);
 void MTX_MultVec43(Vec3 *v, s32 *m, Vec3 *out);
 void MTX_RotX43_(s32 *m, s32 s, s32 c);
 void G3_MultMtx43(s32 *m);
-void *func_020fe35c(void *list);
-void func_020fe3a0(void *list, void *node);
-s32 func_01ffc5a4(s32 a, s32 b);
+void *spl_pop_front(void *list);
+void spl_push_front(void *list, void *node);
+s32 FX_Div(s32 a, s32 b);
 }
 
 static inline u16 mulRGB(u16 a, u16 b) {
@@ -154,11 +154,11 @@ extern "C" void func_020fc6bc(Part *a, Emit *b, void *list) {
     s32 i = 0;
     if ((s32)ch->count <= 0) return;
     do {
-        p = (Part *)func_020fe35c(list);
+        p = (Part *)spl_pop_front(list);
         if (p == 0) return;
-        func_020fe3a0(b->list, p);
+        spl_push_front(b->list, p);
         p->pos = a->pos;
-        s32 ratio = func_01ffc5a4(ch->c8 << 12, 0xff000);
+        s32 ratio = FX_Div(ch->c8 << 12, 0xff000);
         m = FX_Mul(a->vel.v[0], ratio);
         p->vel.v[0] = m + ((ch->spread * (s32)rnd() - (ch->spread << 8)) >> 8);
         m = FX_Mul(a->vel.v[1], ratio);

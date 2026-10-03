@@ -111,7 +111,7 @@ s32 func_ov065_022701d0(s32);
 u32 func_ov065_02270298(u8 *, s32);
 void OS_JoinThread(void *);
 s32 OS_IsThreadTerminated(void *);
-void func_02113a70(void *, void (*)(), void *, void *, u32, u32);
+void OS_CreateThread(void *, void (*)(), void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_InitMutex(void *);
 void MI_CpuFill8(void *, u32, u32);
@@ -233,7 +233,7 @@ s32 func_ov065_02270e4c();
 void func_ov065_02270e34(s32 a, s32 b);
 s32 func_ov065_02270b78();
 void func_ov065_02270b74();
-void func_02115e64(u32 v, void *dst, u32 size);
+void MIi_CpuClear32(u32 v, void *dst, u32 size);
 s32 STD_GetStringLength(char *s);
 void MI_CpuCopy8(char *src, void *dst, s32 n);
 void func_ov065_022702fc(s32 s);
@@ -425,7 +425,7 @@ s32 func_ov065_0227c3b0(void *, s32, void *);
 s32 func_ov065_0227c400(void *, u32, s32, s32, void *, s32);
 s32 func_ov065_0227c538(void *);
 s32 func_ov065_0227c564(void *, void *, void *, s32, s32, void *, s32);
-s32 func_0212a190(const char *, const char *);
+s32 strcmp(const char *, const char *);
 void func_020ffd30(void *, void *, u32);
 s32 func_ov065_0226db98(void);
 void func_ov065_0226db28(s32 *);
@@ -975,9 +975,9 @@ namespace F022700e4 {
 extern "C" {
 void func_ov065_022703b8() {
     volatile u32 a = 0;
-    func_02115e64(a, data_ov065_02290678, 0x80);
+    MIi_CpuClear32(a, data_ov065_02290678, 0x80);
     volatile u32 b = 0;
-    func_02115e64(b, data_ov065_022906f8, 0x100);
+    MIi_CpuClear32(b, data_ov065_022906f8, 0x100);
 }
 }
 }

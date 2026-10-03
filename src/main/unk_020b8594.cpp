@@ -13,11 +13,11 @@ u32 _ZN12Unk_02056fd813func_02056fd8Ei(void *p, u32 x);
 u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
 u32 _ZN12Unk_0205712013func_02057120Ev(void *p);
 void DC_FlushRange(void *p, u32 x);
-void func_02103c40(void *p, u32 x);
-void func_02103bc0(void *p, u32 x);
+void NNS_G3dTexLoad(void *p, u32 x);
+void NNS_G3dPlttLoad(void *p, u32 x);
 void GX_BeginLoadTexPltt(void);
-void func_02111f7c(u32 a, u32 b, u32 c);
-void func_02111f24(void);
+void GX_LoadTexPltt(u32 a, u32 b, u32 c);
+void GX_EndLoadTexPltt(void);
 void GX_BeginLoadTex(void);
 void GX_LoadTex(u32 a, u32 b, u32 c);
 void GX_EndLoadTex(void);
@@ -174,15 +174,15 @@ void Unk_020b8c1c::func_020b8c88(void) {
 void Unk_020b8c1c::func_020b8c64(void) {
     DC_FlushRange((void *)unk_04, unk_08);
     GX_BeginLoadTexPltt();
-    func_02111f7c(unk_04, unk_00, unk_08);
-    func_02111f24();
+    GX_LoadTexPltt(unk_04, unk_00, unk_08);
+    GX_EndLoadTexPltt();
 }
 
 void Unk_020b8c1c::func_020b8c40(void) {
     u32 *p = (u32 *)unk_04;
     DC_FlushRange(p, p[1]);
-    func_02103c40(p, 1);
-    func_02103bc0(p, 1);
+    NNS_G3dTexLoad(p, 1);
+    NNS_G3dPlttLoad(p, 1);
 }
 
 u8 Unk_020b8c1c::func_020b8c30(void) {

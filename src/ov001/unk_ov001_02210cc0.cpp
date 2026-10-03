@@ -66,9 +66,9 @@ void func_ov001_0221b318();
 void func_ov001_02211ae4();
 void func_ov001_0221be7c();
 void func_ov001_0221197c();
-void func_0211172c();
+void GX_LoadBG2Char();
 void GX_LoadBGPltt();
-void func_02111a6c();
+void GX_LoadBG2Scr();
 
 void func_ov001_02211030();
 void func_ov001_02211070();
@@ -118,7 +118,7 @@ void func_ov001_02211150() {
 }
 
 void func_ov001_022110b0() {
-    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/yb5Multi.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -156,7 +156,7 @@ extern u8 data_ov001_0222de58;
 extern u8 data_ov001_0222ae14[];
 extern u8 data_ov001_0222ae28[];
 extern u16 data_ov001_02229ff8[];
-extern u8 func_02111a6c[];
+extern u8 GX_LoadBG2Scr[];
 
 s32 func_ov001_02208594(void *a, void *b);
 s32 func_ov001_02208478(u32 a);

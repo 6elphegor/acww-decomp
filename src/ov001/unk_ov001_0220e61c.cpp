@@ -29,12 +29,12 @@ void func_ov001_022084f8(s32);
 void func_ov001_02224ff8(s32, s32, s32, s32);
 void func_ov001_02225cb4(s32, s32);
 s32 func_ov001_02208594(void *, void *);
-void func_02111a6c();
+void GX_LoadBG2Scr();
 s32 func_ov001_0220891c(s32);
 void func_ov001_02208290(s32, s32, s32);
 void func_ov001_02208478(s32);
-void func_01ffa494(u32);
-void func_0211c670();
+void OS_SpinWait(u32);
+void PM_ForceToPowerOff();
 void func_ov001_02208070();
 void func_ov001_02224e4c(s32);
 void func_ov001_0221e9a0(s32);
@@ -84,7 +84,7 @@ void func_ov001_0220e810();
 void func_ov001_0220e868();
 void func_ov001_0220eab0();
 void func_ov001_0220eb50();
-void func_0211172c(void);
+void GX_LoadBG2Char(void);
 void *func_ov001_022085e0(void *);
 void func_ov001_02208690(u32, u32, u32, u32);
 void func_ov001_0220e8c8();
@@ -124,7 +124,7 @@ extern "C" void func_ov001_0220eb50() {
 }
 
 extern "C" void func_ov001_0220eab0() {
-    func_ov001_02208594((void *)"char/jb5Info.nsc.l", (void *)func_02111a6c);
+    func_ov001_02208594((void *)"char/jb5Info.nsc.l", (void *)GX_LoadBG2Scr);
     BGCNT(0x4001008);
     BGCNT(0x400100a);
     BGCNT(0x4000008);

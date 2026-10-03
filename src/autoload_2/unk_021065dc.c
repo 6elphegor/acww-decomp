@@ -16,7 +16,7 @@ typedef struct KF { u16 frame; u16 val; } KF;
 typedef struct P16 { s16 x, y; } P16;
 typedef struct P32 { s32 x, y; } P32;
 
-extern BOOL func_01ffaea0(M33 *, void *, void *, u32);   // itcm: decode compressed rotation matrix (tblA, tblB, index)
+extern BOOL getRotDataByIdx_(M33 *, void *, void *, u32);   // itcm: decode compressed rotation matrix (tblA, tblB, index)
 extern void VEC_Normalize(s32 *, s32 *);                 // itcm: normalise a 3-vector (src, dst)
 extern u8 *func_021062ec(u8 *, u32);                     // block by index (N005a)
 u8 *NNSi_G3dGetTexPatAnmDataByIdx(u8 *, u32);
@@ -34,7 +34,7 @@ static inline void Cross(V3 *a, V3 *b, V3 *c)
 }
 
 // joint animation: interpolated pair of values (s16 or s32 pairs, with frame blending, 1/2/4 frame rate)
-void func_02106ba8(s32 *out, s32 frame, u32 *ent, u8 *hdr)
+void getScaleDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     u8 *d = hdr + ent[1];
     u32 info = ent[0];
@@ -118,9 +118,9 @@ fin:
     }
 }
 
-// joint rotation animation with frame blending (getRotData): two compressed rotation matrices are decoded (func_01ffaea0),
+// joint rotation animation with frame blending (getRotData): two compressed rotation matrices are decoded (getRotDataByIdx_),
 // interpolated, rows normalised (VEC_Normalize), third row by cross product when the decoder says so
-void func_0210685c(M33 *out, s32 frame, u32 *ent, u8 *hdr)
+void getRotDataEx_(M33 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     M33 a, b;
     u8 *tblA;
@@ -151,7 +151,7 @@ void func_0210685c(M33 *out, s32 frame, u32 *ent, u8 *hdr)
             fb = 0;
             goto one;
         }
-        if (func_01ffaea0(out, tblA, tblB, ((u16 *)d)[f]) == 0) {
+        if (getRotDataByIdx_(out, tblA, tblB, ((u16 *)d)[f]) == 0) {
             return;
         }
         Cross(&out->r[0], &out->r[1], &out->r[2]);
@@ -189,8 +189,8 @@ one:
 fin:
     {
         r = 0;
-        r |= func_01ffaea0(&a, tblA, tblB, ((u16 *)d)[f]);
-        r |= func_01ffaea0(&b, tblA, tblB, ((u16 *)d)[fb]);
+        r |= getRotDataByIdx_(&a, tblA, tblB, ((u16 *)d)[f]);
+        r |= getRotDataByIdx_(&b, tblA, tblB, ((u16 *)d)[fb]);
         out->m[0] = a.m[0] * mul + ((t * (b.m[0] - a.m[0])) >> 12);
         out->m[1] = a.m[1] * mul + ((t * (b.m[1] - a.m[1])) >> 12);
         out->m[2] = a.m[2] * mul + ((t * (b.m[2] - a.m[2])) >> 12);
@@ -263,7 +263,7 @@ u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 i)
 }
 
 // pattern-anm key search: last key with frame <= frame (guess from the scaled frame, then walk)
-KF *func_021066e8(u8 *p, u32 i, u32 frame)
+KF *NNSi_G3dGetTexPatAnmFV(u8 *p, u32 i, u32 frame)
 {
     u16 *e = (u16 *)NNSi_G3dGetTexPatAnmDataByIdx(p, i);
     KF *tbl;
