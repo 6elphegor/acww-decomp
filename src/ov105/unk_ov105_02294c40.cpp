@@ -45,7 +45,7 @@ void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
 void Arbeit_NotifyLetterWritten();
-s32 func_020991fc();
+s32 Inventory_FindEmptyLetter();
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
@@ -164,7 +164,7 @@ public:
 };
 class Unk_02097ff4 {
 public:
-    BOOL func_02098044(u32 a);
+    BOOL testFlag(u32 a);
 };
 
 struct Unk_0206d1d4_Src;
@@ -461,7 +461,7 @@ extern "C" const char *sLetterStoragePageChars[3];
 
 class LetterStorage {
 public:
-    void *func_02096f88(s32 a);
+    void *getPage(s32 a);
 };
 extern "C" void InventoryItemGrid_DrawPocketsClipped(void *p, s32 a, s32 b, u32 c);
 extern "C" void _ZN17LetterStorageMenu14dropHeldOnSlotEj(void *self);
@@ -859,7 +859,7 @@ BOOL LetterStorageMenu::execClosed() {
         void *h = func_02097a04((void *)PlayerData_GetCurrent());
         if (h != 0) {
             s32 i;
-            Letter *p = (Letter *)((LetterStorage *)h)->func_02096f88(0);
+            Letter *p = (Letter *)((LetterStorage *)h)->getPage(0);
             for (i = 0; i < 0x4b; i++) {
                 func_02065e70(p, &unk_2b10[i]);
                 p++;
@@ -1123,7 +1123,7 @@ void LetterStorageMenu::initParts() {
     }
     void *q = func_02097a04((void *)PlayerData_GetCurrent());
     if (q) {
-        u8 *p = (u8 *)((LetterStorage *)q)->func_02096f88(0);
+        u8 *p = (u8 *)((LetterStorage *)q)->getPage(0);
         for (i = 0; i < 0x4b; i++) {
             func_02065e70(&unk_2b10[i], p);
             p += 0xf4;
@@ -1878,7 +1878,7 @@ void LetterStorageMenu::pickUpAndFlyTo(u32 a, u32 b, u32 c) {
 }
 
 u32 LetterStorageMenu::findFreePocketSlot() {
-    s32 r = func_020991fc();
+    s32 r = Inventory_FindEmptyLetter();
     if (r == -1) {
         return 0x41;
     }

@@ -261,7 +261,7 @@ public:
     virtual void vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_0c(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
+    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
     s32 func_0202f274(Unk_0202f2ac_V3 *p);
     BOOL func_0202f050(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
 
@@ -269,21 +269,21 @@ public:
     s32 unk_28, unk_2c, unk_30, unk_34;
 };
 
-class Unk_020d8d74 : public Unk_020d8ccc {
+class TriangleTrigger : public Unk_020d8ccc {
 public:
-    Unk_020d8d74();
-    void func_02031e10(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
+    TriangleTrigger();
+    void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
 
-    Unk_020d8d74 *unk_38;
+    TriangleTrigger *unk_38;
     s32 unk_3c, unk_40, unk_44;
     s32 unk_48;
 };
 
 // ov009 element (vtable 0x0225e280, size 0x54), one per ground-collision triangle
-class BuildingCollider : public Unk_020d8d74 {
+class BuildingCollider : public TriangleTrigger {
 public:
     BuildingCollider();
-    virtual void vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
+    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
     BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
     static void *operator new(unsigned long, void *p) { return p; }
 
@@ -537,7 +537,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
-#define func_02031ea0 _ZN12Unk_020d8d7413func_02031ea0Ev
+#define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -613,14 +613,14 @@ void AnimModel_drawAnimated(void *, u32);
 s32 func_020e7b98(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *);
-void *func_02031ea0(void *);
+void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void TalkAutoAdvance_start(void *, u32);
 void func_020b1040(u32, u32);
 void func_020b101c();
-void *func_020b4934();
-void func_020b49b4();
+void *Scene_GetWarpRequest();
+void Scene_ResetTownReturnPos();
 s32 func_020e780c(s32, s32);
 s32 func_020e9650(void *, void *);
 s32 *func_020947f0(u32);
@@ -629,12 +629,12 @@ BOOL func_020951d0();
 void func_020949a0(u32);
 BOOL func_020951c4();
 void Camera_SetMode3();
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
-s32 func_020b50e8();
-s32 func_020b4bbc(void *, s32);
-s32 func_02030814(u32);
-void func_020b49c4(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
+s32 Scene_GetCurrent();
+s32 SceneWarp_RequestExit(void *, s32);
+s32 Ground_GetDefaultY(u32);
+void Scene_SetTownReturnPos(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
 void func_020b0f00();
 
 s32 func_020b10c4(u32);
@@ -648,7 +648,7 @@ void Melody_PlayAt(void *, s32);
 s32 PlayerActor_TestSlotFlag(s32, s32);
 BOOL func_0203d978();
 void TalkRequest_AddPlayerTalk6(void *, s32);
-Unk_020b6960 *func_020b50b4();
+Unk_020b6960 *Scene_GetCollision();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);
 BOOL func_020b1d3c(u32, u32);
@@ -657,8 +657,8 @@ void *Heap_Alloc(void *heap, u32 size);
 u32 BuildingList_IndexOf(void *p);
 void Field_SetDoorExitMode(u32 a);
 BOOL PlayerActor_LocalRequestDoorExit();
-s32 func_02031da4(void *node);
-void func_02031de0(void *node);
+s32 TriangleTrigger_Unregister(void *node);
+void TriangleTrigger_Register(void *node);
 s32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
@@ -798,8 +798,8 @@ void BuildingActor::vfunc_4c(u32 a, u8 b) {
     case 6:
         func_020b1040(unk_132, 0);
         func_020b101c();
-        func_020b4934();
-        func_020b49b4();
+        Scene_GetWarpRequest();
+        Scene_ResetTownReturnPos();
         unk_230 = 1;
         break;
     case 0:

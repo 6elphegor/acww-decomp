@@ -41,7 +41,7 @@ void MenuCtrl_SetResult(u32 v);
 s32 MenuCtrl_GetMode();
 void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
-void *func_020716cc();
+void *PatternTexCache_Get();
 void *PlayerData_GetCurrent();
 void *MenuCtrl_GetIndex();
 void func_02004008(s32 a);
@@ -68,16 +68,16 @@ void ProcBase_RequestDelete(void *p);
 void *ProcBase_GetParent();
 
 // methods of other modules' classes, called with the object first (mangled-name trick)
-void *_ZN12Unk_020718a413func_020716d4Ei(void *self, s32 a);
-s32 _ZN12Unk_02071c1c13func_02071c1cEj(void *self, void *p);
-void *_ZN14PlayerPatterns13func_02071c5cEv(void *self);
-void *_ZN14PlayerPatterns13func_02071c68Ej(void *self, void *p);
-void *_ZN7Pattern13func_02071e04Ev(void *self);
-void _ZN7Pattern13func_02071e3cEPv(void *self, void *p);
-void *_ZN7Pattern13func_02071e58Ev(void *self);
-void _ZN12Unk_02071ed013func_02071ff0Ev(void *self);
-void _ZN12Unk_02071ed013func_0207200cEj(void *self, s32 a);
-u8 _ZN12Unk_02071ed013func_0207202cEv(void *self);
+void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
+s32 _ZN12PatternOrder7getSlotEj(void *self, void *p);
+void *_ZN14PlayerPatterns15getPatternOrderEv(void *self);
+void *_ZN14PlayerPatterns17getPatternByOrderEj(void *self, void *p);
+void *_ZN7Pattern7getInfoEv(void *self);
+void _ZN7Pattern9setPixelsEPv(void *self, void *p);
+void *_ZN7Pattern9getPixelsEv(void *self);
+void _ZN11PatternInfo24setAuthorToCurrentPlayerEv(void *self);
+void _ZN11PatternInfo10setPaletteEj(void *self, s32 a);
+u8 _ZN11PatternInfo10getPaletteEv(void *self);
 void *_ZN16BlancaFaceRecord10getPatternEv(void *self);
 void *_ZN10PlayerData13func_020986d4Ev(void *self);
 u16 *_ZN10PlayerData6getHatEv(void *self);
@@ -1384,10 +1384,10 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 void PatternEditorMenu::loadFromPlayerPattern()
 {
     void *b = _ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent());
-    void *d = _ZN14PlayerPatterns13func_02071c68Ej(b, MenuCtrl_GetIndex());
-    MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(d), unk_a04, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(d), unk_c04, 0x200);
-    u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN7Pattern13func_02071e04Ev(d));
+    void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, MenuCtrl_GetIndex());
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_a04, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_c04, 0x200);
+    u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(d));
     setPalette(r);
 }
 
@@ -1396,11 +1396,11 @@ void PatternEditorMenu::saveToPlayerPattern()
     void *a = PlayerData_GetCurrent();
     void *b = _ZN10PlayerData13func_020986d4Ev(a);
     void *c = MenuCtrl_GetIndex();
-    void *d = _ZN14PlayerPatterns13func_02071c68Ej(b, c);
-    _ZN7Pattern13func_02071e3cEPv(d, getCanvas());
-    _ZN12Unk_02071ed013func_02071ff0Ev(_ZN7Pattern13func_02071e04Ev(d));
-    _ZN12Unk_02071ed013func_0207200cEj(_ZN7Pattern13func_02071e04Ev(d), unk_a1);
-    s32 e = _ZN12Unk_02071c1c13func_02071c1cEj(_ZN14PlayerPatterns13func_02071c5cEv(b), c);
+    void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, c);
+    _ZN7Pattern9setPixelsEPv(d, getCanvas());
+    _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(d));
+    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(d), unk_a1);
+    s32 e = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(b), c);
     u16 *p = _ZN10PlayerData8getShirtEv(a);
     s32 r;
     if (R1(p, 0x12a8, 0x12af)) {
@@ -1425,18 +1425,18 @@ void PatternEditorMenu::saveToPlayerPattern()
 void PatternEditorMenu::loadFromExternalPattern()
 {
     void *o = _ZN16BlancaFaceRecord10getPatternEv(&data_021eca50);
-    MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(o), unk_a04, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern13func_02071e58Ev(o), unk_c04, 0x200);
-    u8 r = _ZN12Unk_02071ed013func_0207202cEv(_ZN7Pattern13func_02071e04Ev(o));
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_a04, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_c04, 0x200);
+    u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(o));
     setPalette(r);
 }
 
 void PatternEditorMenu::saveToExternalPattern()
 {
     void *o = _ZN16BlancaFaceRecord10getPatternEv(&data_021eca50);
-    _ZN7Pattern13func_02071e3cEPv(o, getCanvas());
-    _ZN12Unk_02071ed013func_02071ff0Ev(_ZN7Pattern13func_02071e04Ev(o));
-    _ZN12Unk_02071ed013func_0207200cEj(_ZN7Pattern13func_02071e04Ev(o), unk_a1);
+    _ZN7Pattern9setPixelsEPv(o, getCanvas());
+    _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(o));
+    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(o), unk_a1);
 }
 
 void PatternEditorMenu::buildPreviewChars()
@@ -1513,8 +1513,8 @@ void PatternEditorMenu::flushCanvasGfx()
 
 void PatternEditorMenu::requestPaletteUpload()
 {
-    void *a = func_020716cc();
-    void *b = _ZN12Unk_020718a413func_020716d4Ei(a, unk_a1);
+    void *a = PatternTexCache_Get();
+    void *b = _ZN15PatternTexCache10getPaletteEi(a, unk_a1);
     _ZN10BgVramTask14requestPaletteEjhj(unk_f8, b, 6, 0xe);
 }
 

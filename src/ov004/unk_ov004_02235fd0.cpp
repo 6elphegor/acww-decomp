@@ -11,12 +11,12 @@
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02031c10 _ZN12Unk_020d8cf4D2Ev
-#define func_02031c48 _ZN12Unk_020d8cf4C1Ev
-#define func_0203239c _ZN12Unk_02032238D1Ev
-#define func_020323b0 _ZN12Unk_02032238C1Ev
-#define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define func_02031c10 _ZN11BoxColliderD2Ev
+#define func_02031c48 _ZN11BoxColliderC1Ev
+#define func_0203239c _ZN14CollisionStateD1Ev
+#define func_020323b0 _ZN14CollisionStateC1Ev
+#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define func_0204e474 _ZN8BlockMap13func_0204e474Eii
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -233,8 +233,8 @@ extern s16 data_02135f44[];
 HouseRoachManager *HouseRoachManager_Create();
 HouseRoach *HouseRoach_Create();
 
-BOOL func_020b52f8();
-s32 func_020b5328();
+BOOL Scene_InHouseRoom();
+s32 Scene_GetHouseRoom();
 void CachedModel_loadCached(void *p, u32 a, void *b);
 void *FrameHeap_CreateAsCurrent(u32 a, u32 b);
 void ProcBase_SetHeap(void *a, void *b);
@@ -269,14 +269,14 @@ s32 func_020e9650(void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
 void Clock_GetMinuteHour(void *p);
-s32 func_020339bc(void *o, void *v, s32 a, s32 b);
-void func_02033988(void *o);
-s32 func_02033914(void *o, s32 a);
-void func_020309d4(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
+s32 GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
+void GroundInfo_Destruct(void *o);
+s32 GroundInfoBase_getHeight(void *o, s32 a);
+void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 func_02031908(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
-s32 func_020318cc(void *p);
+s32 BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
+s32 BoxCollider_Unregister(void *p);
 void Unk_02003c30_callRelease(void *p);
 void Unk_02003c40_callRequest(void *p, u32 id);
 void Unk_02003c40_callRequestSustained(void *p, u32 id);
@@ -342,14 +342,14 @@ HouseRoachManager::~HouseRoachManager() {
 }
 
 BOOL HouseRoachManager::vfunc_0c() {
-    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
+    if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
     ((HouseData *)data_021e58a8)->func_020603b0(sHouseRoachTotal);
     sHouseRoachManager = 0;
     return TRUE;
 }
 
 BOOL HouseRoachManager::onExecute() {
-    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
+    if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
     u8 mask = 0;
     s8 last = 0;
     s32 i = 0;
@@ -400,7 +400,7 @@ BOOL HouseRoachManager::onExecute() {
 }
 
 BOOL HouseRoachManager::vfunc_00() {
-    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
+    if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
     sHouseRoachManager = this;
     if (!HouseRoach_LoadCount(this)) return TRUE;
     HouseRoach_SpawnInitial(this);
@@ -653,7 +653,7 @@ void HouseRoach::updateCollision() {
     n = 1;
     ang = unk_8e;
     t = FX_Div(0x1000, 0x2000);
-    switch (func_020b5328()) {
+    switch (Scene_GetHouseRoom()) {
     case 1:
     case 4:
         v[0].x = func_01ffcb0c(0x20000, t);
@@ -692,21 +692,21 @@ void HouseRoach::updateCollision() {
         if (fm[i] != 0) {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = func_02031908((u8 *)&o0 + i * 0x9c, a, 0x1000, b, &v[i], z2, z2);
+            fr[i] = BoxCollider_Register((u8 *)&o0 + i * 0x9c, a, 0x1000, b, &v[i], z2, z2);
         } else {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = func_02031908((u8 *)&o0 + i * 0x9c, 0x1000, a, b, &v[i], z1, z1);
+            fr[i] = BoxCollider_Register((u8 *)&o0 + i * 0x9c, 0x1000, a, b, &v[i], z1, z1);
         }
     }
     if (unk_10c != 0) {
         move();
     }
     updatePosition((Unk_02002cb0_Vec *)&unk_1d8);
-    func_020309d4(&unk_dc, p, &unk_68, ang, 0x666, this, 0xf);
+    Collision_Move(&unk_dc, p, &unk_68, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
-            func_020318cc((u8 *)&o0 + i * 0x9c);
+            BoxCollider_Unregister((u8 *)&o0 + i * 0x9c);
         }
     }
     func_02031c10(&o3);
@@ -774,9 +774,9 @@ BOOL HouseRoach::checkHeight() {
         if ((unk_dc[1] & 1) != 0) {
             u8 buf[0x40];
             unk_10c = 2;
-            func_020339bc(buf, &unk_5c, 0, 0);
-            unk_5c.y = func_02033914(buf, 1);
-            func_02033988(buf);
+            GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
+            unk_5c.y = GroundInfoBase_getHeight(buf, 1);
+            GroundInfo_Destruct(buf);
             return TRUE;
         }
     }
@@ -863,31 +863,31 @@ u8 HouseRoach::probeWalls() {
     s16 t1v;
     s16 ang;
     func_020323b0(&o1);
-    func_020339bc(o2, r4r, r6, r6);
+    GroundInfo_initAtPos(o2, r4r, r6, r6);
     ang = unk_8e;
     if (unk_248[0].x == 0 || unk_248[0].z == 0) {
         unk_248[0].x = unk_230[0].x;
         unk_248[0].y = unk_230[0].y;
         unk_248[0].z = unk_230[0].z;
     }
-    func_020309d4(&o1, r4r, &unk_248[0], ang, 0x19a, this, 0xf);
+    Collision_Move(&o1, r4r, &unk_248[0], ang, 0x19a, this, 0xf);
     t1 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
-    if (func_02033914(o2, 1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
+    if (GroundInfoBase_getHeight(o2, 1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
         r6++;
     }
-    func_020339bc(o3, r4r + 1, 0, 0);
+    GroundInfo_initAtPos(o3, r4r + 1, 0, 0);
     if (unk_248[1].x == 0 || unk_248[1].z == 0) {
         unk_248[1].x = unk_230[1].x;
         unk_248[1].y = unk_230[1].y;
         unk_248[1].z = unk_230[1].z;
     }
-    func_020309d4(&o1, r4r + 1, &unk_248[1], ang, 0x19a, this, 0xf);
+    Collision_Move(&o1, r4r + 1, &unk_248[1], ang, 0x19a, this, 0xf);
     t2 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
-    if (func_02033914(o3, 1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
+    if (GroundInfoBase_getHeight(o3, 1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
         r6 += 2;
     }
-    func_02033988(o3);
-    func_02033988(o2);
+    GroundInfo_Destruct(o3);
+    GroundInfo_Destruct(o2);
     func_0203239c(&o1);
     return r6;
 }
@@ -1085,7 +1085,7 @@ BOOL HouseRoach::onDraw() {
 // ---- 0224ebec methods (symbols.txt names 0x2235fd0-0x2236244 after the 0224eb9c class; renamed)
 
 BOOL HouseRoach::vfunc_00() {
-    if (func_020b52f8()) {
+    if (Scene_InHouseRoom()) {
         return setup();
     }
     return 1;

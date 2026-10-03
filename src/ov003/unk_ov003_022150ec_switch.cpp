@@ -256,7 +256,7 @@ struct Unk_ov003_022150f0_Obj {
     u8 unk_2d5;
 };
 struct Unk_ov003_02214890_Buf {s32 w0,w1;};
-extern "C" s32 func_020b50e8();
+extern "C" s32 Scene_GetCurrent();
 extern "C" {
 extern u8 sCountdownSpawnIndex;
 extern u32 sCountdownHours;
@@ -470,7 +470,7 @@ extern "C" void CountdownDigit_Update(void *arg) {
         if (sCountdownHours != 0) {
             goto done;
         }
-        if (func_020b50e8() == 0x2c) {
+        if (Scene_GetCurrent() == 0x2c) {
             goto done;
         }
         if (sCountdownMinutes == 1 && sCountdownSeconds == 0) {

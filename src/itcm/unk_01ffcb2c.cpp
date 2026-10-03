@@ -52,7 +52,7 @@ struct Obj {
 };
 
 extern "C" {
-extern Grid *data_020d8ce8;
+extern Grid *gCurCollisionMap;
 extern Node *sHBlankListHead;
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 Chunk *func_01ffcb5c(s32 x, s32 z);
@@ -60,7 +60,7 @@ void Camera_GetLookAtOffset(Vec3 *out, Cam *c);
 }
 
 static inline Chunk *At(s32 x, s32 z) {
-    Grid *g = data_020d8ce8;
+    Grid *g = gCurCollisionMap;
     if (x >= 0 && z >= 0 && (u32)x < g->unk_124 && (u32)z < g->unk_128) {
         return (Chunk *)((u8 *)g + z * 0x30 + x * 8);
     }

@@ -97,7 +97,7 @@ void func_02089b18(void *p);
 
 extern u8 data_020d5d14[];
 extern u32 gCamera;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern Mat data_021f47e0;
 
 void String_Load2d(MsgString33 *buf, u8 *str, s32 n);
@@ -112,7 +112,7 @@ s32 FX_Div(s32 a, s32 b);
 void func_020e9888(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 u16 *func_02094440(void);
-u32 func_020b50e8(void);
+u32 Scene_GetCurrent(void);
 BOOL TalkRequest_IsTalking(void);
 BOOL func_0203d878(void);
 BOOL func_0203d7ec(void);
@@ -260,7 +260,7 @@ extern "C" BOOL func_020b79e0() {
 
 extern "C" void func_020b7914(s32 arg) {
     s32 v = 0;
-    u32 r = func_020b50e8();
+    u32 r = Scene_GetCurrent();
     BOOL ok = v;
     if (!((u8)(r + 0xf4) <= 2 || (u8)(r + 0xd2) <= 1)) ok = TRUE;
     if (ok) {
@@ -305,7 +305,7 @@ extern "C" void func_020b78c4() {
 extern "C" void func_020b78b8() { data_021ef4c8.unk_ec = 0; }
 
 extern "C" void func_020b7878(u32 arg) {
-    u32 r = func_020b50e8();
+    u32 r = Scene_GetCurrent();
     BOOL ok = FALSE;
     if (!((u8)(r + 0xf4) <= 2 || (u8)(r + 0xd2) <= 1)) ok = TRUE;
     if (ok) {
@@ -370,7 +370,7 @@ void Unk_020e450c::func_020b7610() {
     if (PlayerActor_IsInAction(2, 4)) p = func_02094440();
     if (p) {
         s32 t = (*p & 0xf000) >> 12;
-        BOOL b = data_020e416c == 0;
+        BOOL b = gFieldSceneKind == 0;
         if (b) {
             if (t != 1 && t != 3 && t != 4) p = 0;
         } else {

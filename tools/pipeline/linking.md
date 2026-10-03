@@ -186,7 +186,7 @@ Their sources were generated from the original image, with the definition order 
   object table 8, object array 0x1c per object. Every overlay's `.data` is then one ascending size run.
 * LampLights global that nothing refers to is dead-stripped unless `symbols.txt` names it (`check`: `unused`); a named
   global keeps its `symbols.txt` name (ov069's empty initialiser object `data_ov069_02260cc0`).
-* Labels used from outside the unit: main's `data_020e4280` table names `data_ov005_0225b79c`, which is the fourth
+* Labels used from outside the unit: main's `sSceneInfoTable` table names `data_ov005_0225b79c`, which is the fourth
   id of ov005's list `data_ov005_0225b790`: `ov005 0225b79c interior:0225b790` in the unit's renames.txt.
 
 ## Overlays that were two translation units

@@ -15,8 +15,8 @@ class SpNpcMissing1;
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
-s32 func_020b50e8(void);
-s32 func_020b50dc(void);
+s32 Scene_GetCurrent(void);
+s32 Scene_GetPrevious(void);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
@@ -45,7 +45,7 @@ void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 void _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void *PlayerData_GetCurrent(void);
-void *func_020850e0(void);
+void *TownSessionState_Get(void);
 void *func_02085178(void *a);
 void *func_020947f0(s32 a);
 void *TownBlockMap_Get(void);
@@ -54,10 +54,10 @@ void FieldPos_SnapToUnitCenter(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
 void FieldPos_FromUnitCenter(Unk_020c0acc_Vec *a, s32 b, s32 c);
 s32 _ZN10PlayerData13func_020986a4Ev(void *a);
 BOOL _ZN15LostChildRecord11isEscortingEv(s32 a);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *a, s32 b);
-s32 _ZN12Unk_02097ff413func_0209801cEj(void *a, s32 b);
+BOOL _ZN12Unk_02097ff48testFlagEj(void *a, s32 b);
+s32 _ZN12Unk_02097ff47setFlagEj(void *a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void TalkRequest_EndTalkWith(void *a);
+void TalkRequest_SetTargetDone(void *a);
 void func_0203d984(void);
 void func_0203d990(void);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *a);
@@ -85,8 +85,8 @@ BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
 void _ZN15LostChildRecord5clearEv(s32 a);
 void _ZN15KatieVisitState5clearEv(void *a);
-s32 func_020b4934(void);
-void func_020b4bbc(s32 a, s32 b);
+s32 Scene_GetWarpRequest(void);
+void SceneWarp_RequestExit(s32 a, s32 b);
 s32 NpcRegistry_FindSpNpc(s32 a);
 void Camera_SetMode19(void);
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
@@ -260,7 +260,7 @@ struct Unk_0201a13c {
     u8 unk_58[0x7c - 0x58];
     Unk_0201a13c();
 };
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_020e0cf4 {
     u8 unk_00[0x1c];
     u32 unk_1c;
@@ -323,7 +323,7 @@ struct NpcActor : Character {
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -453,15 +453,15 @@ BOOL SpNpcMissing1::vfunc_04() {
     unk_658.attachOwner(this);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 1, 0x1b3, 0xcc, 0x133);
-    if (func_020b50e8() == 0xb) {
+    if (Scene_GetCurrent() == 0xb) {
         unk_8e = -0x8000;
         unk_94 = -0x8000;
     }
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         unk_8e = -0x8000;
         unk_94 = -0x8000;
     }
-    if (func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0x2f) {
         unk_8e = 0;
         unk_94 = 0;
         unk_5c.x = 0xe000;
@@ -480,15 +480,15 @@ BOOL SpNpcMissing1::vfunc_00() {
     sSpNpcMissing1Instance = this;
     unk_720 = -1;
     p = PlayerData_GetCurrent();
-    if (func_020b50e8() == 0) {
+    if (Scene_GetCurrent() == 0) {
         FieldPos_SnapToUnitCenter(&unk_5c, &unk_5c);
         if (TownMap_FindBuildingAbovePos(&unk_5c, 1, 0, 0)) {
             TownMap_IsPosWalkable(&unk_5c, 0);
             unk_5c.x += 0x2000;
             unk_5c.z += 0x2000;
         }
-        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(func_020850e0())) != 0) {
-            if (func_020b50dc() == 0xb) {
+        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get())) != 0) {
+            if (Scene_GetPrevious() == 0xb) {
                 Town_FindGateHouse(TownBlockMap_Get(), &unk_5c, 0, 0);
                 unk_5c.z -= 0x2000;
                 unk_658.setTopic(3);
@@ -498,8 +498,8 @@ BOOL SpNpcMissing1::vfunc_00() {
                 unk_658.setTopic(5);
                 changeAct(1);
             }
-        } else if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x33) == 0) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x31) == 0) {
+        } else if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
+            if (_ZN12Unk_02097ff48testFlagEj(p, 0x31) == 0) {
                 unk_658.setTopic(0);
             } else {
                 unk_658.setTopic(1);
@@ -513,15 +513,15 @@ BOOL SpNpcMissing1::vfunc_00() {
             }
             changeAct(1);
         }
-    } else if (func_020b50e8() == 0xb) {
+    } else if (Scene_GetCurrent() == 0xb) {
         unk_658.setTopic(3);
         changeAct(5);
         unk_4cc.unk_44 = 0;
-    } else if (func_020b50e8() == 0xc) {
-        _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
+    } else if (Scene_GetCurrent() == 0xc) {
+        _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(func_02085178(TownSessionState_Get()), &unk_5c);
         unk_658.setTopic(3);
         changeAct(5);
-    } else if (func_020b50e8() == 0x2f) {
+    } else if (Scene_GetCurrent() == 0x2f) {
         unk_4cc.unk_44 = 0;
         func_0203d990();
         changeAct(8);
@@ -534,7 +534,7 @@ BOOL SpNpcMissing1::vfunc_0c() {
         return FALSE;
     }
     sSpNpcMissing1Instance = NULL;
-    if (func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0x2f) {
         func_0203d984();
     }
     return TRUE;
@@ -553,12 +553,12 @@ BOOL SpNpcMissing1::updateAct() {
     if (sSpNpcMissing1ActTable[unk_654].b != 0) {
         r = (this->*(sSpNpcMissing1ActTable[unk_654].b))();
     }
-    if (func_020b50e8() == 0) {
-        _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
+    if (Scene_GetCurrent() == 0) {
+        _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(func_02085178(TownSessionState_Get()), &unk_5c);
     }
-    if (func_020b50e8() == 0xb) {
+    if (Scene_GetCurrent() == 0xb) {
         if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()))) {
-            _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
+            _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(func_02085178(TownSessionState_Get()), &unk_5c);
         }
     }
     return r;
@@ -580,7 +580,7 @@ void SpNpcMissing1::vfunc_4c(s32 state) {
         break;
     case 8:
         unk_658.setTopic(3);
-        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(func_020850e0())) != 0) {
+        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get())) != 0) {
             changeAct(5);
         } else if (unk_70d != 0) {
             changeAct(2);
@@ -680,7 +680,7 @@ BOOL SpNpcMissing1::setupAct03() {
 
 BOOL SpNpcMissing1::mainAct03() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(7);
     }
     return TRUE;
@@ -722,14 +722,14 @@ BOOL SpNpcMissing1::mainAct05() {
     if (p == NULL) {
         return TRUE;
     }
-    if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0) {
+    if (unk_4cc.unk_44 == 0 && Scene_GetCurrent() == 0) {
         Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
         FieldPos_SnapToUnitCenter(&b, &unk_5c);
         if (b.z > a.z) {
             unk_4cc.unk_44 = 1;
         }
     }
-    if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0xb) {
+    if (unk_4cc.unk_44 == 0 && Scene_GetCurrent() == 0xb) {
         FieldPos_SnapToUnitCenter(&d, &unk_5c);
         FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
@@ -741,7 +741,7 @@ BOOL SpNpcMissing1::mainAct05() {
         return TRUE;
     }
     t = _ZN8NpcActor19getDistanceToPlayerEj(this, 4);
-    if ((func_020b50e8() == 0 || (func_020b50e8() == 0xc && _ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(p)) == 0)) && _ZN13NpcActionCtrl9getActionEv(&unk_564) == 2) {
+    if ((Scene_GetCurrent() == 0 || (Scene_GetCurrent() == 0xc && _ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(p)) == 0)) && _ZN13NpcActionCtrl9getActionEv(&unk_564) == 2) {
         s32 v, d2;
         if (t > 0x6000) {
             changeAct(6);
@@ -771,8 +771,8 @@ BOOL SpNpcMissing1::mainAct05() {
 }
 
 BOOL SpNpcMissing1::setupAct06() {
-    if (func_020b50e8() == 0) {
-        _ZN12Unk_02086f8414clearFollowingEv(func_02085178(func_020850e0()));
+    if (Scene_GetCurrent() == 0) {
+        _ZN12Unk_02086f8414clearFollowingEv(func_02085178(TownSessionState_Get()));
     }
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0x122, 1, data_020c6cc8, 0);
     unk_658.setTopic(4);
@@ -913,18 +913,18 @@ BOOL SpNpcMissing1::mainAct08() {
             if (_ZN15LostChildRecord13isKaitlinRoleEv() == 1) {
                 _ZN15LostChildRecord5clearEv(x);
             }
-            _ZN12Unk_02097ff413func_0209801cEj(PlayerData_GetCurrent(), 0x39);
+            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x39);
             _ZN15LostChildRecord5clearEv(_ZN10PlayerData13func_020986a4Ev((void *)s));
-            _ZN15KatieVisitState5clearEv(func_02085178(func_020850e0()));
-            func_020b4bbc(func_020b4934(), 1);
+            _ZN15KatieVisitState5clearEv(func_02085178(TownSessionState_Get()));
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
         if (r5 == r6) {
             _ZN15LostChildRecord5clearEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
-            _ZN15KatieVisitState5clearEv(func_02085178(func_020850e0()));
-            _ZN12Unk_02097ff413func_0209801cEj(PlayerData_GetCurrent(), 0x31);
-            func_020b4bbc(func_020b4934(), 0);
+            _ZN15KatieVisitState5clearEv(func_02085178(TownSessionState_Get()));
+            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x31);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
-            func_020b4bbc(func_020b4934(), 1);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
         unk_724 = 11;
         break;
@@ -960,11 +960,11 @@ void SpNpcMissing1Talk::vfunc_78(Unk_020c0538_Out *out) {
     out->unk_00 = (u32)sSpNpcMissing1MsgKey;
     switch (getTopic()) {
     case 0:
-        _ZN12Unk_02097ff413func_0209801cEj(t, 0x33);
+        _ZN12Unk_02097ff47setFlagEj(t, 0x33);
         out->unk_04 = 0;
         break;
     case 1:
-        _ZN12Unk_02097ff413func_0209801cEj(t, 0x33);
+        _ZN12Unk_02097ff47setFlagEj(t, 0x33);
         out->unk_04 = func_02063b8c(3) + 1;
         break;
     case 2:
@@ -1010,13 +1010,13 @@ void SpNpcMissing1Talk::vfunc_18() {
         case 0:
             v[0] = func_02063b8c(3) + 0x1c;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcMissing1MsgKey);
-            _ZN12Unk_02086f8412setFollowingEv(func_02085178(func_020850e0()));
+            _ZN12Unk_02086f8412setFollowingEv(func_02085178(TownSessionState_Get()));
             break;
         case 1:
             v[1] = func_02063b8c(3) + 0x1f;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcMissing1MsgKey);
-            if (func_020b50e8() == 0) {
-                _ZN12Unk_02086f8414clearFollowingEv(func_02085178(func_020850e0()));
+            if (Scene_GetCurrent() == 0) {
+                _ZN12Unk_02086f8414clearFollowingEv(func_02085178(TownSessionState_Get()));
             }
             unk_ac->unk_70d = 1;
             break;

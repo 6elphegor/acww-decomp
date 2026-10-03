@@ -227,10 +227,10 @@ public:
     void StrBuf_SetBytes(u8 *src, s32 n);
     u8 unk_04[0x20];
 };
-class Unk_02071ed0 : public Unk_020942c8 {
+class PatternInfo : public Unk_020942c8 {
 public:
-    Unk_02071ed0();
-    ~Unk_02071ed0();
+    PatternInfo();
+    ~PatternInfo();
     Unk_02071b10_Id16 unk_16;
     struct {
         u8 lo : 4;
@@ -238,48 +238,48 @@ public:
     } unk_26;
     u8 pad_27;
 
-    void func_02071ed0(u32 v);
-    u8 func_02071ee8();
-    void func_02071ef4(u8 *src);
-    void func_02071f08(EncodedString16Buf *o);
-    void func_02071f1c(void *x);
-    void func_02071f48(u8 *dst);
-    void func_02071f5c(EncodedString16Buf *o);
-    void func_02071f70(void *x);
-    Unk_020942c8 *func_02071fa0();
-    void func_02071fa4(Unk_020942c8 *src);
-    void func_02071ff0();
-    void func_0207200c(u32 v);
-    u8 func_0207202c();
-    void func_02072040();
-    BOOL func_02072084(Unk_02071ed0 *o);
+    void setTaste(u32 v);
+    u8 getTaste();
+    void setTitleRaw(u8 *src);
+    void setTitleEncoded(EncodedString16Buf *o);
+    void setTitle(void *x);
+    void getTitleRaw(u8 *dst);
+    void getTitleEncoded(EncodedString16Buf *o);
+    void getTitle(void *x);
+    Unk_020942c8 *getAuthor();
+    void setAuthor(Unk_020942c8 *src);
+    void setAuthorToCurrentPlayer();
+    void setPalette(u32 v);
+    u8 getPalette();
+    void getPaletteData();
+    BOOL infoEquals(PatternInfo *o);
 };
 class Pattern {
 public:
     Pattern();
     ~Pattern();
     u8 unk_00[0x200];
-    Unk_02071ed0 unk_200;
+    PatternInfo unk_200;
 
-    Unk_02071ed0 *func_02071e04();
-    void func_02071e10(u32 v);
-    void func_02071e3c(void *dst);
-    u8 *func_02071e58();
-    BOOL func_02071e8c(Pattern *o);
+    PatternInfo *getInfo();
+    void fill(u32 v);
+    void setPixels(void *dst);
+    u8 *getPixels();
+    BOOL equals(Pattern *o);
 };
-class Unk_02071ae0 : public Pattern {
+class TownFlagPattern : public Pattern {
 public:
-    Unk_02071ae0();
-    ~Unk_02071ae0();
+    TownFlagPattern();
+    ~TownFlagPattern();
 };
-class Unk_02071c1c {
+class PatternOrder {
 public:
-    Unk_02071c1c();
-    ~Unk_02071c1c();
+    PatternOrder();
+    ~PatternOrder();
     u8 unk_00[8];
-    u32 func_02071c1c(u32 i);
-    void func_02071c2c(u32 a, u32 b);
-    void func_02071c44();
+    u32 getSlot(u32 i);
+    void swap(u32 a, u32 b);
+    void reset();
 };
 class AbleSistersPatterns {
 public:
@@ -287,21 +287,21 @@ public:
     ~AbleSistersPatterns();
     Pattern unk_00[8];
 
-    Pattern *func_02071b00(u8 i);
-    void func_02071b10();
+    Pattern *getPattern(u8 i);
+    void initDefaultPatterns();
 };
 class PlayerPatterns {
 public:
     PlayerPatterns();
     ~PlayerPatterns();
     Pattern unk_00[8];
-    Unk_02071c1c unk_1140;
+    PatternOrder unk_1140;
 
-    Unk_02071c1c *func_02071c5c();
-    Pattern *func_02071c68(u32 i);
-    Pattern *func_02071c88(u8 i);
-    void func_02071c98(Unk_020942c8 *a, Unk_020942c8 *b);
-    void func_02071d08(Unk_020942c8 *a);
+    PatternOrder *getPatternOrder();
+    Pattern *getPatternByOrder(u32 i);
+    Pattern *getPattern(u8 i);
+    void replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b);
+    void initDefaultPatterns(Unk_020942c8 *a);
 };
 struct Unk_020720f8_Data {
     u32 v;
@@ -563,7 +563,7 @@ extern "C" {
 u32 CommRecord_GetLength(u8 *);
 }
 extern "C" {
-void func_020b50e8();
+void Scene_GetCurrent();
 }
 extern "C" {
 u32 NetArea_ResolveRoute(u32, u32, u32, u8 *);
@@ -629,10 +629,10 @@ extern "C" {
 void VillagerStates_ResetRuntime();
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-void func_020851e4();
+void TownSessionState_Reset();
 }
 extern "C" {
 void func_0205267c();
@@ -676,8 +676,8 @@ extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b);
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
         VillagerStates_ResetRuntime();
-        func_020850e0();
-        func_020851e4();
+        TownSessionState_Get();
+        TownSessionState_Reset();
     }
     func_0205267c();
     func_0209c408();
@@ -829,7 +829,7 @@ extern "C" u32 Comm_CollectRecordsFor(u8 *dst, u32 id) {
         l0c = a[6];
         CommRecord_UnpackSource(a + 7, a, a + 1);
         u32 r4 = CommRecord_GetLength(a + 3);
-        func_020b50e8();
+        Scene_GetCurrent();
         u32 r = NetArea_ResolveRoute(id, l0c, a[0], a + 2);
         if (a[2] != 0) {
             l14 = _ZN11CommManager14getDeferredLenEv(o);
@@ -1398,7 +1398,7 @@ extern "C" {
 void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 u32 Net_GetMemberCount();
@@ -1476,7 +1476,7 @@ extern "C" void Comm_BeginHostSession() {
     o->setSlotActive(o->unk_64, 1);
     Comm_SetRecvBuffers(0);
     NetSession_OnBeginHost();
-    func_020a63bc(0, func_020b50e8(), 1, 0, 7);
+    func_020a63bc(0, Scene_GetCurrent(), 1, 0, 7);
 }
 extern "C" void Comm_PrepareJoin(u32 a) {
     gCommManager->setMode(0);
@@ -1849,7 +1849,7 @@ extern "C" {
 u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 s32 NetArea_FindOwner(u32 a);
@@ -1992,7 +1992,7 @@ void CommManager::processReceived() {
                 t = buf[3];
                 CommRecord_UnpackSource(&buf[4], &a, &b);
                 bb = b;
-                dbg = func_020b50e8();
+                dbg = Scene_GetCurrent();
                 len = CommRecord_GetLength(buf);
                 if (NetArea_IsSlotMoving(unk_64) && t == 7 && a != dbg) {
                     t = getHeldLen();
@@ -2181,13 +2181,13 @@ void CommManager::endRecord(u32 a, u32 b) {
     u8 buf[8];
     if (_ZN11CommManager8isOnlineEv(this)) {
         if (b - 6 <= 1) {
-            NetArea_IsUnsharedScene(func_020b50e8());
+            NetArea_IsUnsharedScene(Scene_GetCurrent());
         }
         u32 len = unk_d4 - unk_d0;
         CommRecord_SetLength(buf, (u16)(len - 5));
         buf[2] = a;
         buf[3] = b;
-        CommRecord_PackSource(buf + 4, func_020b50e8(), (u8)unk_64);
+        CommRecord_PackSource(buf + 4, Scene_GetCurrent(), (u8)unk_64);
         MI_CpuCopy8(buf, unk_d0, 5);
         unk_c8 += len;
         unk_cc = unk_d4;
@@ -2336,7 +2336,7 @@ void CommManager::dispatchHeld() {
         u8 *p = getHeldBuf();
         MI_CpuCopy8(p, l.buf, 5);
         CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
-        if (l.a == func_020b50e8()) {
+        if (l.a == Scene_GetCurrent()) {
             u32 pos = 0;
             while (pos < size) {
                 MI_CpuCopy8(p, l.buf, 5);
@@ -2500,28 +2500,28 @@ extern "C" {
 void Mem_Free(void *p);
 }
 extern "C" {
-void func_020712dc(void *p);
+void AblePatternDefaults_Ctor(void *p);
 }
 extern "C" {
-void func_0207131c(void *p);
+void PlayerPatternDefaults_Ctor(void *p);
 }
 extern "C" {
-BOOL func_020712a0(void *t, void *buf, s16 i);
+BOOL AblePatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-BOOL func_020712e0(void *t, void *buf, s16 i);
+BOOL PlayerPatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-void func_020712c4(void *t);
+void AblePatternDefaults_Load(void *t);
 }
 extern "C" {
-void func_02071304(void *t);
+void PlayerPatternDefaults_Load(void *t);
 }
 extern "C" {
-void *func_02071320(void);
+void *PatternPresetInfo_Get(void);
 }
 extern "C" {
-void func_02071328(void *t, Unk_02071ed0 *s, s32 id);
+void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
 }
 extern "C" {
 Unk_020942c8 *func_0209409c(Unk_020942c8 *p);
@@ -2554,10 +2554,10 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void *func_020716cc();
+void *PatternTexCache_Get();
 }
 extern "C" {
-void _ZN12Unk_020718a413func_020716d4Ei(void *p, u32 v);
+void _ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
 }
 extern "C" {
 s32 Fatal_Trap();

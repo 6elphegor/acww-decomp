@@ -204,7 +204,7 @@ struct Unk_020dd3b8 {
 struct Unk_020b22ac_Dummy;
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern Unk_020d93b8 *gCamera;
 extern Unk_02064fa8_Data gViewMtx;
 }
@@ -230,11 +230,11 @@ s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Clock_GetMinuteHour(Unk_02064870_Time *t);
 void func_0209cdf8(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
-s32 func_020b5184();
-s32 func_020b5164();
+s32 Scene_InTown();
+s32 Scene_InTownUnk31();
 void Snd_PlaySe(u32 a);
-s32 func_020b50e8(void);
-s32 func_020b52f8(void);
+s32 Scene_GetCurrent(void);
+s32 Scene_InHouseRoom(void);
 void VEC_Normalize(void *a, void *b);
 void func_020e7968(void);
 void func_020e7a10(void *list, void *node, void *prev);
@@ -319,9 +319,9 @@ extern "C" SceneLights *SceneLights_Create(void) {
 void SceneLights::setupLights() {
     s32 id;
     s32 i = 0;
-    id = func_020b50e8();
-    if (IsOne(data_020e416c)) {
-        if (func_020b52f8() == 0) i = 1;
+    id = Scene_GetCurrent();
+    if (IsOne(gFieldSceneKind)) {
+        if (Scene_InHouseRoom() == 0) i = 1;
     }
     if (i) {
         LightSwitch_SetOn(0, 2, 0);
@@ -359,7 +359,7 @@ void SceneLights::setupLights() {
 
 BOOL SceneLights::vfunc_00() {
     gSceneLights = this;
-    s32 id = func_020b50e8();
+    s32 id = Scene_GetCurrent();
     unk_50 = data_020cb7d8[id];
     if (id == 0x21) {
         unk_16a = 0x3e99;
@@ -423,7 +423,7 @@ extern "C" void Light_GetViewRotation(void *a, void *b) {
 
 extern "C" s32 SceneLights_GetMatLightMask(void) {
     s32 r = 15;
-    u8 t = data_020cb7d8[func_020b50e8()];
+    u8 t = data_020cb7d8[Scene_GetCurrent()];
     switch (t) {
     case 2:
     case 3:
@@ -434,7 +434,7 @@ extern "C" s32 SceneLights_GetMatLightMask(void) {
 
 extern "C" s32 SceneLights_GetMatLightMask2(void) {
     s32 r = 15;
-    u8 t = data_020cb7d8[func_020b50e8()];
+    u8 t = data_020cb7d8[Scene_GetCurrent()];
     switch (t) {
     case 2:
     case 3:
@@ -468,12 +468,12 @@ void SceneLights::updateBaseColor() {
     l.a = Sky_GetLightColor(3);
     l.b = l.a;
     *(u16 *)&l.c = l.b;
-    if (func_020b52f8()) {
+    if (Scene_InHouseRoom()) {
         if (unk_58[2].unk_14.unk_00 != 0) {
             Unk_02064d6c_Adjust(&l.c);
         }
-    } else if (IsOne(data_020e416c)) {
-        switch (func_020b50e8()) {
+    } else if (IsOne(gFieldSceneKind)) {
+        switch (Scene_GetCurrent()) {
         case 0xb:
             Unk_02064d6c_Adjust(&l.c);
             break;
@@ -522,7 +522,7 @@ extern "C" s16 SceneLights_GetRoomColor(void) {
 }
 
 extern "C" u8 func_02064c84(u32 x) {
-    BOOL b = (data_020e416c == 1);
+    BOOL b = (gFieldSceneKind == 1);
     if (b) {
         if (x == 0) {
             return gSceneLights->unk_178;
@@ -544,7 +544,7 @@ void ThunderSe::tick()
     if (unk_00 == 0) {
         unk_04--;
         if (unk_04 < 0) {
-            if (func_020b5184() || func_020b5164()) {
+            if (Scene_InTown() || Scene_InTownUnk31()) {
                 x = data_020cb6fc[unk_00];
             } else {
                 x = data_020cb6f8[unk_00];

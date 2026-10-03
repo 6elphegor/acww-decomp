@@ -45,7 +45,7 @@ void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
 void Arbeit_NotifyLetterWritten();
-s32 func_020991fc();
+s32 Inventory_FindEmptyLetter();
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
@@ -164,7 +164,7 @@ public:
 };
 class Unk_02097ff4 {
 public:
-    BOOL func_02098044(u32 a);
+    BOOL testFlag(u32 a);
 };
 
 struct Unk_0206d1d4_Src;
@@ -769,7 +769,7 @@ BOOL PostOfficeMenu::execClosed() {
         MenuCtrl_SetResult(1);
         r4 = 0;
         if (LetterList_Compact(unk_2b0c, 10) <= 0) r4 = 4;
-        if (((Unk_02097ff4 *)PlayerData_GetCurrent())->func_02098044(1)) {
+        if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1)) {
             r4 |= deliverVillagerLettersNow(unk_2b0c);
         }
         r4 |= takeOtherTownLetter(unk_2b0c);
@@ -1546,7 +1546,7 @@ void PostOfficeMenu::pickUpAndFlyTo(u32 i, u32 a) {
 }
 
 u8 PostOfficeMenu::findFreePocketSlot() {
-    s32 r = func_020991fc();
+    s32 r = Inventory_FindEmptyLetter();
     if (r == -1) {
         return 0x21;
     }

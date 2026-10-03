@@ -272,7 +272,7 @@ BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 i);
 u8 *_ZN11CommManager10getSyncVarEj(CommManager *p, s32 i);
 BOOL TalkRequest_IsActive();
 BOOL func_02011880();
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void String_Load2d(Unk_020d917c *buf, u8 *c, s32 z);
 void Snd_PlaySe(u32 a);
 void *PlayerData_GetCurrent();
@@ -1032,7 +1032,7 @@ extern "C" u8 func_0203889c(s32 idx) {
     u8 *p = _ZN11CommManager10getSyncVarEj(gCommManager, idx + 0x14);
     u8 c = *p;
     if (c != 0) {
-        s32 r = func_020b50e8();
+        s32 r = Scene_GetCurrent();
         if (r == 0x2e || r == 0xc || r == 0xd || r == 0xe || r == 0x2f) {
             c = 0;
         } else {

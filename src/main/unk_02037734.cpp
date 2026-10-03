@@ -147,7 +147,7 @@ extern u8 data_021c2204;
 extern u32 data_021c2208;
 extern u8 data_021c2240[];
 extern Unk_020dbd34_Mtx data_021f47e0;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 gFontA[];
 
 struct Unk_020d905c_Ptr {
@@ -242,7 +242,7 @@ extern Unk_020d909c data_021c22a0;
 extern Unk_020d906c data_021c2408;
 
 extern "C" {
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void OS_ResetSystem(s32);
 s32 Net_GetMode(void);
 s32 _ZN11CommManager12getErrorModeEv(void *);
@@ -398,7 +398,7 @@ extern "C" void func_020380e0() {
 
 void Unk_020d905c::func_02038058() {
     BOOL a = TRUE;
-    u8 v = data_020e416c;
+    u8 v = gFieldSceneKind;
     if (!Unk_02038058_IsZero(v)) {
         if (!Unk_02038058_IsOne(v)) {
             a = FALSE;

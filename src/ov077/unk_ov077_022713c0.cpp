@@ -43,8 +43,8 @@ struct ChoiceList {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209868cEv(void *p);
-s32 _ZN12Unk_02087ad813func_02087bf4Ev(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+s32 _ZN17PlayerSpNpcRecord13getResetCountEv(void *p);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, u8 *b, void *c);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *self, s32 a);
@@ -65,10 +65,10 @@ s32 func_020951ec(s32 v);
 u16 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
 void Effect_End(s32 h);
-BOOL TalkRequest_EndTalkWith(void *p);
-void *func_020850e0();
-void *func_0208517c(void *p);
-void _ZN12Unk_02086f1413func_02086f14Ej(void *p, u32 v);
+BOOL TalkRequest_SetTargetDone(void *p);
+void *TownSessionState_Get();
+void *TownSessionState_GetResettiFlag(void *p);
+void _ZN16ResettiVisitFlag3setEj(void *p, u32 v);
 s32 ProcBase_RequestDelete(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
@@ -79,7 +79,7 @@ void PlayerActor_LocalPlayAnim99(void *p);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 extern u16 data_020c6cc8;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
 extern u32 __ptmf_null[];
 }
@@ -245,7 +245,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -359,7 +359,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -620,7 +620,7 @@ BOOL SpNpcResetti::setupAct03() {
     s32 a, b, c, d;
     u16 u0, u1;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xfd, 1, 0, 0);
-    if (Unk_ov077_02271bf4_IsZero(data_020e416c)) {
+    if (Unk_ov077_02271bf4_IsZero(gFieldSceneKind)) {
         g = gSceneBlockMap;
         a = 0;
         b = 0;
@@ -753,8 +753,8 @@ BOOL SpNpcResetti::mainAct05() {
     }
     if (unk_334.isPlayingAnim(0xfe, &unk_2a0)) {
         if (unk_564.isActionDone()) {
-            TalkRequest_EndTalkWith(this);
-            _ZN12Unk_02086f1413func_02086f14Ej(func_0208517c(func_020850e0()), 0);
+            TalkRequest_SetTargetDone(this);
+            _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(TownSessionState_Get()), 0);
             ProcBase_RequestDelete(this);
             if (unk_720 != -1) {
                 Effect_End(unk_720);
@@ -860,7 +860,7 @@ void SpNpcResettiTalk::vfunc_1c(s32 a) {
 }
 
 void SpNpcResettiTalk::vfunc_78(TalkStartMsg *out) {
-    s32 t = _ZN12Unk_02087ad813func_02087bf4Ev(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent())) - 1;
+    s32 t = _ZN17PlayerSpNpcRecord13getResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent())) - 1;
     if (t < 0) {
         t = 0;
     } else if (t > 5) {

@@ -18,17 +18,17 @@ extern "C" {
 extern u8 data_021d735c[];
 extern u16 data_021d7352[];
 extern u8 gSaveData[];
-extern u32 data_021cbd18[];
-extern u32 data_021cbd80[8][8];
-extern u8 *data_021cbca4;
-extern u8 *data_021cbcb4;
-extern u8 *data_021cbcb8;
-extern u8 *data_021cbcb0;
+extern u32 sAblePatternTexKeys[];
+extern u32 sPlayerPatternTexKeys[8][8];
+extern u8 *sAblePatternTexWork;
+extern u8 *sAblePatternVramTasks;
+extern u8 *sPlayerPatternTexWork;
+extern u8 *sPlayerPatternVramTasks;
 extern u8 data_021e6e4c[];
 extern u8 data_021eca50[];
 extern u8 data_021dfd8c[];
 extern u8 data_021ecc7c[];
-extern s32 (*data_020cbaf0[])(s32);
+extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
 void *PlayerData_GetResident(void *a, s32 i);
@@ -43,10 +43,10 @@ s32 _ZN10PlayerData13func_02098a48Ev(void *p);
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 void func_020638d0(void *a, void *b);
 void MailText_SetSlot(s32 i, void *p);
-void _ZN12Unk_0206555413func_02065588Etj(void *p, u32 a, s32 b);
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
-void func_02070b68(u32 a, u8 b, u32 c, u8 d, s32 e);
-void func_02070e4c(u32 a, u8 b, u32 c, u8 d, s32 e);
+void _ZN12Unk_0206555410setPresentEtj(void *p, u32 a, s32 b);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
+void PatternSrc_Swap(u32 a, u8 b, u32 c, u8 d, s32 e);
+void PatternSrc_Copy(u32 a, u8 b, u32 c, u8 d, s32 e);
 s32 func_02071b00(void *p, s32 i);
 void func_0203c6f8(void *p, s32 v);
 s32 func_0203c6c8(void *p);
@@ -55,7 +55,7 @@ void *func_020986d4(void *p);
 void *func_02071c88(void *p, s32 i);
 void *PlayerData_GetCurrent();
 s32 func_02087298(void *p);
-s32 func_020718dc();
+s32 PresetPatternBuffer_Get();
 s32 func_020718e8(s32 t, s32 x);
 s32 func_020718e4(s32 t);
 void *SaveVillagers_Get(void *a, s32 x);
@@ -220,8 +220,8 @@ BOOL MuseumData::sendCompletionLetters() {
         if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
             Letter big;
             b = 0;
-            func_020656dc(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
-            _ZN12Unk_0206555413func_02065588Etj(&big, 0x3870, 1);
+            Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
+            _ZN12Unk_0206555410setPresentEtj(&big, 0x3870, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&big)) r = TRUE;
         }
     }

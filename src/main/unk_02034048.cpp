@@ -14,7 +14,7 @@ struct Unk_02034250_Id {
 };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern u8 data_021d735c[];
 extern u8 data_021e58a8[];
@@ -28,8 +28,8 @@ BOOL PlayerData_GetCurrent();
 u32 _ZN10PlayerData11getPlayerIdEv();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
-s32 func_020b50e8();
-BOOL func_020b530c(s32 a);
+s32 Scene_GetCurrent();
+BOOL SceneId_IsHouseRoom(s32 a);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
@@ -78,7 +78,7 @@ extern "C" void func_02034320(u16 *id, s32 a, s32 b, s32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         Unk_02034320_Pkt pkt;
         pkt.a = *id;
-        pkt.b = (pkt.b & ~0x3f) | (func_020b50e8() & 0x3f);
+        pkt.b = (pkt.b & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         pkt.b = (pkt.b & ~0x40) | ((b & 1) << 6);
         pkt.b = (pkt.b & ~0x80) | (((u16)a & 1) << 7);
         pkt.b = (pkt.b & ~0x100) | ((c & 1) << 8);
@@ -92,7 +92,7 @@ extern "C" void func_02034320(u16 *id, s32 a, s32 b, s32 c) {
 extern "C" void *func_020342cc(u16 *id, s32 a, s32 b, s32 c) {
     u16 t = *id;
     void *r;
-    if (Unk_020341c0_IsOne(data_020e416c)) {
+    if (Unk_020341c0_IsOne(gFieldSceneKind)) {
         r = RoomShell_SetWallpaper(&t, a, b);
         if (c != 0) {
             func_02034320(&t, a, 1, b);
@@ -111,7 +111,7 @@ extern "C" void *func_020342a4(s32 a, s32 b, s32 c, s32 d) {
 extern "C" void *func_02034250(u16 *id, s32 a, s32 b, s32 c) {
     u16 t = *id;
     void *r;
-    if (Unk_020341c0_IsOne(data_020e416c)) {
+    if (Unk_020341c0_IsOne(gFieldSceneKind)) {
         r = RoomShell_SetCarpet(&t, a, b);
         if (c != 0) {
             func_02034320(&t, a, 0, b);
@@ -128,7 +128,7 @@ extern "C" void *func_02034228(s32 a, s32 b, s32 c, s32 d) {
 }
 
 extern "C" BOOL func_020341f4(s32 a) {
-    if (Unk_020341c0_IsOne(data_020e416c)) {
+    if (Unk_020341c0_IsOne(gFieldSceneKind)) {
         func_020342cc((u16 *)RoomShell_GetPrevWallpaper(), 0, 0, a);
         return TRUE;
     }
@@ -136,7 +136,7 @@ extern "C" BOOL func_020341f4(s32 a) {
 }
 
 extern "C" BOOL func_020341c0(s32 a) {
-    if (Unk_020341c0_IsOne(data_020e416c)) {
+    if (Unk_020341c0_IsOne(gFieldSceneKind)) {
         func_02034250((u16 *)RoomShell_GetPrevCarpet(), 0, 0, a);
         return TRUE;
     }
@@ -212,9 +212,9 @@ extern "C" void func_02034048(Unk_02034048_Pkt *p)
     } else {
         f8 = 0;
     }
-    if (p->id == func_020b50e8()) {
+    if (p->id == Scene_GetCurrent()) {
         func_02034194(&tmp, f7, f6, f8, 0);
-    } else if (func_020b530c(id)) {
+    } else if (SceneId_IsHouseRoom(id)) {
         void *r = _ZN9HouseData13func_02060550Ei(data_021e58a8, id);
         if (r != NULL) {
             if (f6) {

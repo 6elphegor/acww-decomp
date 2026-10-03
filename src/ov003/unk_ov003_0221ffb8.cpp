@@ -12,9 +12,9 @@
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
-#define func_0203239c _ZN12Unk_02032238D1Ev
-#define func_020323b0 _ZN12Unk_02032238C1Ev
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define func_0203239c _ZN14CollisionStateD1Ev
+#define func_020323b0 _ZN14CollisionStateC1Ev
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define MapBlockAcre_hasPond _ZN12MapBlockAcre7hasPondEv
 #define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
@@ -524,7 +524,7 @@ public:
 
 typedef Unk_ov003_02222658_Obj Obj_f6;
 
-class Unk_0203398c {
+class GroundInfo {
 public:
     u8 pad_00[0x24];
     s32 unk_24, unk_28, unk_2c;
@@ -532,8 +532,8 @@ public:
     s32 unk_34;
     u8 pad_38[4];
     s32 unk_3c;
-    Unk_0203398c() {}
-    ~Unk_0203398c();
+    GroundInfo() {}
+    ~GroundInfo();
 };
 
 static inline BOOL R74(volatile u16 *p)
@@ -854,8 +854,8 @@ void func_020f440c(void *p);
 void func_020f43fc(void *p);
 void func_0209c370(void *p);
 void func_0209c364(void *p);
-void _ZN12Unk_02032238C1Ev(void *p);
-void _ZN12Unk_02032238D1Ev(void *p);
+void _ZN14CollisionStateC1Ev(void *p);
+void _ZN14CollisionStateD1Ev(void *p);
 void _ZN11CachedModelC1Ev(void *p);
 void _ZN11CachedModelD1Ev(void *p);
 void _ZN9AnimModelC1Ev(void *p);
@@ -927,8 +927,8 @@ extern u8 data_ov003_02234a94[];
 s32 Math_AngleXZ(void *a, void *b);
 void func_02003e70(void *o, s32 a, s32 b, s32 c);
 void func_02003e80(void *self, void *v);
-s32 func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
-s32 func_020312a8(s32 x, s32 y);
+s32 Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
+s32 Ground_GetWaterKind(s32 x, s32 y);
 u32 MapBlock_GetAttr(void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void func_0204f4f8(u32 i, s32 a, s32 b, s32 c, s32 d);
@@ -966,12 +966,12 @@ void Unk_02003c40_callUpdateRelative(void *self, Unk_ov003_02221364_Vec *v);
 void Unk_02003c30_callReset(void *self);
 s32 func_02003e50(void *p);
 void func_02003ecc(void *self);
-BOOL func_02030d78(V3_f7 *out, void *pos, s32 ang, s32 a, s32 b, s32 c);
-s32 func_020312ec(s32 x, s32 y);
+BOOL Ground_FindWaterAhead(V3_f7 *out, void *pos, s32 ang, s32 a, s32 b, s32 c);
+s32 Ground_IsPond(s32 x, s32 y);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
-void func_02033988(void *o);
-void func_020339bc(void *o, void *p, s32 a, s32 b);
+void GroundInfo_Destruct(void *o);
+void GroundInfo_initAtPos(void *o, void *p, s32 a, s32 b);
 s32 MapBlockAcre_hasPond(void *c);
 void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
 s32 WorldCurve_Apply(V3_f3 *v);
@@ -1414,7 +1414,7 @@ BottleThrowStateOwner::~BottleThrowStateOwner() {}
 BottleThrow::BottleThrow()
 {
     BottleThrow *p = this;
-    _ZN12Unk_02032238C1Ev(p);
+    _ZN14CollisionStateC1Ev(p);
     p->unk_30 = 0;
     p->unk_34.x = 0x1000;
     p->unk_34.y = 0x1000;
@@ -1432,7 +1432,7 @@ BottleThrow::BottleThrow()
 //@ 0x2224d80
 BottleThrow::~BottleThrow()
 {
-    _ZN12Unk_02032238D1Ev(this);
+    _ZN14CollisionStateD1Ev(this);
 }
 
 
@@ -1608,7 +1608,7 @@ extern "C" void BottleThrow_StateFly(void *self, E_f9 *e)
         }
         s32 t = (*cnt * 0x199a) >> 5;
         if (t > 0x199a) t = 0x199a;
-        ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
+        ((void (*)(void *, void *, void *, s32, s32, s32, s32))Collision_Move)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
         V3_f9 t6c(*pos);
         V3_f9 b78(0x1000, 0x1000, 0x1000);
         Field_DrawItemModel(0x1520, &t6c, &b78, 0, 0, 0);
@@ -1648,7 +1648,7 @@ extern "C" void BottleThrow_StateDrift(void *self, E_f9 *e)
     pos->y = pos->y - sBottleSinkStep;
     t = (*cnt * 0x199a) >> 5;
     if (t > 0x199a) t = 0x199a;
-    ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
+    ((void (*)(void *, void *, void *, s32, s32, s32, s32))Collision_Move)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
     *cnt = *cnt + 1;
     if (*cnt >= 0x78) {
         e->unk_30 = 0;
@@ -1799,7 +1799,7 @@ extern "C" void FishShadow_ThinkFree(Obj_f9 *o)
         case 2:
         case 3:
             FieldPos_ToUnit(&x, &y, &o->unk_120);
-            if (func_020312a8(x, y) == 1) {
+            if (Ground_GetWaterKind(x, y) == 1) {
                 ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
             }
             break;
@@ -1808,7 +1808,7 @@ extern "C" void FishShadow_ThinkFree(Obj_f9 *o)
         case 5:
         case 6:
             FieldPos_ToUnit(&x, &y, &o->unk_120);
-            if (func_020312a8(x, y) == 2) {
+            if (Ground_GetWaterKind(x, y) == 2) {
                 ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
             }
             break;
@@ -1996,7 +1996,7 @@ extern "C" s32 FishShadow_BiteApproach(Obj_f8 *self)
         case 1:
         case 2:
         case 3:
-            if (func_020312a8(a, b) == 1) {
+            if (Ground_GetWaterKind(a, b) == 1) {
                 lim = 0x64;
             }
             break;
@@ -2004,7 +2004,7 @@ extern "C" s32 FishShadow_BiteApproach(Obj_f8 *self)
             break;
         case 5:
         case 6:
-            if (func_020312a8(a, b) == 2) {
+            if (Ground_GetWaterKind(a, b) == 2) {
                 lim = 0x64;
             }
             break;
@@ -2580,7 +2580,7 @@ extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
     V3_f7 *q = &rec->unk_60;
     ang = Math_AngleXZ(&rec->unk_6c, q);
     V3_f7 tmp;
-    if (func_02030d78(&tmp, pos, ang, 0x7800, 0x2000, 0xc)) {
+    if (Ground_FindWaterAhead(&tmp, pos, ang, 0x7800, 0x2000, 0xc)) {
         q->x = tmp.x;
         q->y = tmp.y;
         q->z = tmp.z;
@@ -2974,7 +2974,7 @@ extern "C" BOOL FishShadow_IsSeaNorth(Obj_f6 *self)
     p.z = pv->z;
     p.z = p.z - 0x2000;
     ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &p);
-    if (func_020312a8(x, y) == 1) {
+    if (Ground_GetWaterKind(x, y) == 1) {
         r = TRUE;
     }
     return r;
@@ -2995,7 +2995,7 @@ extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
         if (FishShadow_IsProbeOutOfWater(self)) {
             COPY();
             r = 1;
-        } else if (func_020312a8(x, y) == 1) {
+        } else if (Ground_GetWaterKind(x, y) == 1) {
             COPY();
             r = 3;
         }
@@ -3012,7 +3012,7 @@ extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
         } else if (FishShadow_IsProbeOutOfWater(self)) {
             COPY();
             r = 2;
-        } else if (func_020312a8(x, y) != 1) {
+        } else if (Ground_GetWaterKind(x, y) != 1) {
             COPY();
             r = 4;
         } else if (FishShadow_IsSeaNorth(self)) {
@@ -3022,12 +3022,12 @@ extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
     }
     default:
     dflt:
-        if (func_020312a8(x, y) == 2) {
+        if (Ground_GetWaterKind(x, y) == 2) {
             if (FishShadow_IsProbeOutOfWater(self)) {
                 COPY();
                 r = 1;
             }
-        } else if (func_020312a8(x, y) == 1) {
+        } else if (Ground_GetWaterKind(x, y) == 1) {
             s32 t = FishShadow_GetEdgeColumn(self);
             if (t == 0) {
                 r = 6;
@@ -3099,7 +3099,7 @@ extern "C" BOOL FishShadow_IsProbeOutOfWater(Obj_f6 *self)
 extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3)
 {
     V3_f6 v0, v1, v2;
-    Unk_0203398c g0, g1, g2;
+    GroundInfo g0, g1, g2;
     s16 ang;
     s32 r;
     s32 z0, z1, z2;
@@ -3122,9 +3122,9 @@ extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s
     v2.x = self->unk_120.x + (r * data_02135f44[i2]) / 100;
     v2.y = -0x1333;
     v2.z = z2;
-    func_020339bc(&g0, &v0, 0, 0);
-    func_020339bc(&g1, &v1, 0, 0);
-    func_020339bc(&g2, &v2, 0, 0);
+    GroundInfo_initAtPos(&g0, &v0, 0, 0);
+    GroundInfo_initAtPos(&g1, &v1, 0, 0);
+    GroundInfo_initAtPos(&g2, &v2, 0, 0);
     *o1 = g0.unk_34;
     *o2 = g1.unk_34;
     *o3 = g2.unk_34;
@@ -3846,7 +3846,7 @@ FishShadow::FishShadow()
     func_020f440c(a);
     *(volatile u8 **)(a + 0x40) = data_0213b91c;
     *(volatile u8 **)(a + 0x40) = data_0213b954;
-    _ZN12Unk_02032238C1Ev(a + 0x4c);
+    _ZN14CollisionStateC1Ev(a + 0x4c);
     func_0209c370(a + 0x7c);
     _ZN11CachedModelC1Ev(a + 0x84);
     _ZN9AnimModelC1Ev(a + 0x144);
@@ -3877,7 +3877,7 @@ FishShadow::~FishShadow()
     _ZN9AnimModelD1Ev(a + 0x144);
     _ZN11CachedModelD1Ev(a + 0x84);
     func_0209c364(a + 0x7c);
-    _ZN12Unk_02032238D1Ev(a + 0x4c);
+    _ZN14CollisionStateD1Ev(a + 0x4c);
     func_020f43fc(a);
 }
 
@@ -4215,7 +4215,7 @@ extern "C" void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x) {
     V3_f3 *pb = &e->unk_218;
     V3_f3 *pa = &e->unk_120;
     s32 t = func_02133150(((u8 *)((u8 *)&sFishSizeClassParams[0].c0))[e->unk_1ff * 0x14] << 12, 10);
-    func_020309d4((u8 *)e + 0x4c, pa, pb, e->unk_138, t, 0, 0xb);
+    Collision_Move((u8 *)e + 0x4c, pa, pb, e->unk_138, t, 0, 0xb);
     pb->x = e->unk_120.x;
     pb->y = pa->y;
     pb->z = pa->z;
@@ -4570,10 +4570,10 @@ extern "C" void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx) {
 //@ 0x22209ec
 extern "C" void FieldWater_ApplyFlow(s32 *p, s32 b) {
     Unk_ov003_022209ec_Buf buf;
-    func_020339bc(&buf, p, 0, 0);
+    GroundInfo_initAtPos(&buf, p, 0, 0);
     p[0] += func_01ffcb0c(b, buf.unk_24);
     p[2] += func_01ffcb0c(b, buf.unk_2c);
-    func_02033988(&buf);
+    GroundInfo_Destruct(&buf);
 }
 
 
@@ -4799,7 +4799,7 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
             switch (mode) {
             case 5:
             case 6:
-                if (func_020312a8(x, y) == 1) {
+                if (Ground_GetWaterKind(x, y) == 1) {
                     cand[z * 2] = x;
                     (&cand[z * 2])[1] = y;
                     z++;
@@ -4807,7 +4807,7 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
                 break;
             case 0:
             case 1:
-                if (func_020312a8(x, y) == 2) {
+                if (Ground_GetWaterKind(x, y) == 2) {
                     cand[z * 2] = x;
                     (&cand[z * 2])[1] = y;
                     z++;
@@ -4815,7 +4815,7 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
                 break;
             case 2:
                 if (y < sz + 3) {
-                    if (func_020312a8(x, y) == 2) {
+                    if (Ground_GetWaterKind(x, y) == 2) {
                         cand[z * 2] = x;
                         (&cand[z * 2])[1] = y;
                         z++;
@@ -4823,14 +4823,14 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
                 }
                 break;
             case 3:
-                if (func_020312ec(x, y) != 0) {
+                if (Ground_IsPond(x, y) != 0) {
                     cand[z * 2] = x;
                     (&cand[z * 2])[1] = y;
                     z++;
                 }
                 break;
             case 4:
-                if (func_020312a8(x, y) == 2 || func_020312a8(x, y) == 1) {
+                if (Ground_GetWaterKind(x, y) == 2 || Ground_GetWaterKind(x, y) == 1) {
                     cand[z * 2] = x;
                     (&cand[z * 2])[1] = y;
                     z++;

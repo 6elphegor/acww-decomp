@@ -167,7 +167,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -282,7 +282,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -443,45 +443,45 @@ void Hud_Show();
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_LocalRequestStandUp(s32 a);
 BOOL Camera_SetMode16At(Unk_ov053_Vec *v);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void *func_020b4934();
-s32 func_020b4bbc(void *, s32);
+void *Scene_GetWarpRequest();
+s32 SceneWarp_RequestExit(void *, s32);
 void Camera_SetModeDefault();
 BOOL _ZN11CommManager8isOnlineEv(void *g);
-void func_0202ffb0(s32 a);
-s32 func_020b50dc();
+void Ground_LockExit(s32 a);
+s32 Scene_GetPrevious();
 void *func_020947f0(s32 a);
-s32 func_0202ff64(void *p);
+s32 Ground_IsOnLockedExit(void *p);
 BOOL TalkRequest_IsTalking(void);
 s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
-void *func_020850e0();
-s32 func_020851bc(void *p, s32 a);
+void *TownSessionState_Get();
+s32 TownSessionState_TestFlag(void *p, s32 a);
 u16 *_ZN10PlayerData11getFaceItemEv(void *p);
 u16 *_ZN10PlayerData6getHatEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
-u32 _ZN12Unk_02087ad813func_02087c38Ev(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+u32 _ZN17PlayerSpNpcRecord15getHaircutCountEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 s32 _ZN8PlayerId9getGenderEv(void *p);
 s32 func_020aa514(void *p);
 s32 Hud_Hide();
 s32 NpcActor_CanPlayerPay(void *o, s32 a);
 void NpcActor_ChargePlayer(void *o, s32 v);
-void func_020851a4(void *p, s32 v);
-void func_02085188(void *p, s32 v);
+void TownSessionState_SetFlag(void *p, s32 v);
+void TownSessionState_ClearFlag(void *p, s32 v);
 s32 _ZN10PlayerData12getHairStyleEv(void *p);
 s32 _ZN10PlayerData12getHairColorEv(void *p);
 void PlayerActor_LocalSetHeadwearHidden(s32 v);
 void Snd_PlaySe(s32 v);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *h, s32 v);
-void _ZN12Unk_02097ff413func_0209801cEj(void *h, s32 v);
+s32 _ZN12Unk_02097ff48testFlagEj(void *h, s32 v);
+void _ZN12Unk_02097ff47setFlagEj(void *h, s32 v);
 s32 func_02063b8c(s32 n);
 void PlayerActor_LocalRequestSit();
-void _ZN12Unk_02087ad813func_02087c24Ej(void *p, u32 v);
+void _ZN17PlayerSpNpcRecord15addHaircutCountEj(void *p, u32 v);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 s32 func_020951b8(s32 a);
 void PlayerActor_LocalRequestHaircutStart(u8 *a, u8 *b);
@@ -605,7 +605,7 @@ BOOL SpNpcHarriet::vfunc_00() {
     }
     void *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) == 0) {
-        func_0202ffb0(0);
+        Ground_LockExit(0);
     }
     unk_718 = 0;
     unk_4cc.unk_1c |= 2;
@@ -614,7 +614,7 @@ BOOL SpNpcHarriet::vfunc_00() {
         changeAct(1);
         return TRUE;
     }
-    if (func_020b50dc() == 0x1d) {
+    if (Scene_GetPrevious() == 0x1d) {
         changeAct(0);
     } else {
         changeAct(1);
@@ -720,16 +720,16 @@ BOOL SpNpcHarriet::mainAct02() {
         } else {
             if (PlayerActor_IsInAction(0x28, 4)) {
                 if (PlayerActor_LocalRequestStandUp(0)) {
-                    TalkRequest_EndTalkWith(this);
+                    TalkRequest_SetTargetDone(this);
                     changeAct(3);
                 }
             } else if (unk_658.getTopic() == 10) {
                 if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-                    func_020b4bbc(func_020b4934(), 0);
+                    SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
                     changeAct(3);
                 }
             } else {
-                TalkRequest_EndTalkWith(this);
+                TalkRequest_SetTargetDone(this);
                 changeAct(3);
             }
         }
@@ -932,7 +932,7 @@ BOOL SpNpcHarriet::mainAct09() {
     }
     case 2:
         if (func_020951b8(4) == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
             changeAct(4);
         }
         break;
@@ -986,9 +986,9 @@ void SpNpcHarrietTalk::vfunc_78(TalkStartMsg *out) {
             getTopic() != 10) {
             if (unk_b0->isSessionPaid() == 0) {
                 if (Talk_CheckAndSetPlayerFlag(0x13, 0) == 0) {
-                    if (_ZN12Unk_02097ff413func_02098044Ej(p, 0xb) == 0) {
+                    if (_ZN12Unk_02097ff48testFlagEj(p, 0xb) == 0) {
                         setTopic(1);
-                        _ZN12Unk_02097ff413func_0209801cEj(p, 0xb);
+                        _ZN12Unk_02097ff47setFlagEj(p, 0xb);
                     } else {
                         setTopic(2);
                     }
@@ -1011,7 +1011,7 @@ void SpNpcHarrietTalk::vfunc_74() {
     if (t == 0xe || t == 0x37) {
         if ((t == 0xe && unk_b5 == 1) || (t == 0x37 && unk_b5 == 2)) {
             PlayerActor_LocalRequestSit();
-            _ZN12Unk_02087ad813func_02087c24Ej(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()), 1);
+            _ZN17PlayerSpNpcRecord15addHaircutCountEj(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()), 1);
         }
         unk_b5 = unk_b5 + 1;
     }
@@ -1073,7 +1073,7 @@ void SpNpcHarrietTalk::vfunc_14() {
     case 0xe:
     case 0x37:
         Talk_CheckAndSetPlayerFlag(0x13, 1);
-        func_02085188(func_020850e0(), 7);
+        TownSessionState_ClearFlag(TownSessionState_Get(), 7);
         unk_3c->setNextMessage(gTalkMsgIndexEnd, 0);
         break;
     case 0x41:
@@ -1108,7 +1108,7 @@ void SpNpcHarrietTalk::vfunc_18() {
             if (NpcActor_CanPlayerPay(unk_b0, 0xbb8)) {
                 NpcActor_ChargePlayer(unk_b0, 0xbb8);
                 msg = 0x3c;
-                func_020851a4(func_020850e0(), 7);
+                TownSessionState_SetFlag(TownSessionState_Get(), 7);
                 unk_b6 = 0;
                 unk_b7 = 0;
                 unk_b8 = _ZN10PlayerData12getHairStyleEv(p);
@@ -1141,7 +1141,7 @@ void SpNpcHarrietTalk::vfunc_18() {
 
 s32 SpNpcHarrietTalk::getQuestionsStartMsg() {
     void *p = PlayerData_GetCurrent();
-    if (_ZN12Unk_02087ad813func_02087c38Ev(_ZN10PlayerData13func_0209868cEv(p)) >= 0x10) {
+    if (_ZN17PlayerSpNpcRecord15getHaircutCountEv(_ZN10PlayerData14getSpNpcRecordEv(p)) >= 0x10) {
         if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(p)) == 0) {
             return 0x15;
         }
@@ -1250,7 +1250,7 @@ BOOL SpNpcHarriet::tryFarewellTalk() {
     Unk_ov053_02258e7c_Loc v;
     Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
     *(Unk_ov053_Vec *)&v = *src;
-    if (func_0202ff64(&v)) {
+    if (Ground_IsOnLockedExit(&v)) {
         unk_658.setTopic(10);
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
@@ -1267,7 +1267,7 @@ BOOL SpNpcHarriet::isWearingHeadItem() {
 }
 
 s32 SpNpcHarriet::isSessionPaid() {
-    return func_020851bc(func_020850e0(), 7);
+    return TownSessionState_TestFlag(TownSessionState_Get(), 7);
 }
 
 

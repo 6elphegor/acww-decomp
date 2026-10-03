@@ -9,7 +9,7 @@ _ZN29SpNpcTortimerBrightNightsTalk11attachOwnerEP25SpNpcTortimerBrightNights kin
 _ZN29SpNpcTortimerBrightNightsTalkD0Ev kind:function(thumb,size=0x20) addr:0x0227189c
 _ZN29SpNpcTortimerBrightNightsTalkD1Ev kind:function(thumb,size=0x18) addr:0x022718bc
 _ZN29SpNpcTortimerBrightNightsTalkC1Ev kind:function(thumb,size=0x18) addr:0x022718d4
-_ZN29SpNpcTortimerBrightNightsTalk8vfunc_8cEv kind:function(thumb,size=0x120) addr:0x022718ec
+_ZN29SpNpcTortimerBrightNightsTalk16openVillagerPageEv kind:function(thumb,size=0x120) addr:0x022718ec
 _ZN25SpNpcTortimerBrightNights9mainAct02Ev kind:function(thumb,size=0x4) addr:0x02271a0c
 _ZN25SpNpcTortimerBrightNights9mainAct01Ev kind:function(thumb,size=0x2c) addr:0x02271a10
 _ZN25SpNpcTortimerBrightNights10setupAct01Ev kind:function(thumb,size=0x38) addr:0x02271a3c

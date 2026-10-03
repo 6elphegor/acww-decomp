@@ -224,7 +224,7 @@ public:
 extern "C" {
 extern u32 sGulliverShipVisitorProfile;
 void Visitor_ScheduleLow(void *a, void *b, void *c);
-void *func_020b50e8();
+void *Scene_GetCurrent();
 }
 
 struct Unk_ov003_SceneEntry {
@@ -258,7 +258,7 @@ GulliverShip::~GulliverShip() {
 }
 
 BOOL GulliverShip::vfunc_70() {
-    Visitor_ScheduleLow(&sGulliverShipVisitorProfile, func_020b50e8(), &unk_5c);
+    Visitor_ScheduleLow(&sGulliverShipVisitorProfile, Scene_GetCurrent(), &unk_5c);
     return TRUE;
 }
 

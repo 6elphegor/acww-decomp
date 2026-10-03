@@ -371,7 +371,7 @@ public:
     BOOL enterState00();
     void updateState();
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor/dtor by hand: the original destroys it with D2)
+    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
     /* 0x618 */ s32 unk_618;
 };
@@ -385,10 +385,10 @@ extern "C" {
 extern void *data_021c1b3c;
 extern s32 gGfxMainOnTop;
 extern u32 gBgHeap;
-s32 func_020318cc(void *);
-s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
-Unk_020b6960 *func_020b50b4(void);
-s32 TalkRequest_EndTalkWith(void *);
+s32 BoxCollider_Unregister(void *);
+s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
+Unk_020b6960 *Scene_GetCollision(void);
+s32 TalkRequest_SetTargetDone(void *);
 s32 func_0209c41c(void *, u32);
 s32 MenuCtrl_IsFinished(void);
 s32 MenuCtrl_OpenLauncher(u32);
@@ -402,8 +402,8 @@ s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
 s32 RoomObjRes_GetBca(void *, u32);
 void RoomObj_PlaySe(void *, s32);
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
@@ -454,13 +454,13 @@ extern "C" RecycleBox *RecycleBox_GetInstance() {
 }
 
 RecycleBox::RecycleBox() {
-    _ZN12Unk_020d8cf4C1Ev(unk_2d4);
+    _ZN11BoxColliderC1Ev(unk_2d4);
     _ZN12Unk_020b6e10C2Ev(unk_370);
 }
 
 RecycleBox::~RecycleBox() {
     _ZN12Unk_020b6e10D2Ev(unk_370);
-    _ZN12Unk_020d8cf4D2Ev(unk_2d4);
+    _ZN11BoxColliderD2Ev(unk_2d4);
 }
 
 BOOL RecycleBox::vfunc_00() {
@@ -482,7 +482,7 @@ BOOL RecycleBox::vfunc_00() {
 BOOL RecycleBox::onExecute() {
     updateState();
     execAct();
-    func_020b50b4()->func_020b6928((Unk_020b6e10 *)unk_370);
+    Scene_GetCollision()->func_020b6928((Unk_020b6e10 *)unk_370);
     return TRUE;
 }
 
@@ -693,7 +693,7 @@ void RecycleBox::enterAct05() {
 
 void RecycleBox::execAct05() {
     if (unk_248.unk_04 == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
 }
 
@@ -706,10 +706,10 @@ void RecycleBox::func_ov004_02227eac() {
 void RecycleBox::func_ov004_02227ea8(u32 a, u8 b) {}
 
 void RecycleBox::initCollision() {
-    func_02031908(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    func_020b50b4()->func_020b68ec((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    BoxCollider_Register(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
+    Scene_GetCollision()->func_020b68ec((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {
-    func_020318cc(unk_2d4);
+    BoxCollider_Unregister(unk_2d4);
 }

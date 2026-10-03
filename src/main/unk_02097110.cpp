@@ -37,9 +37,9 @@ extern s32 data_020e1e0c;
 s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_02097ff413func_02098320Ev(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(s32);
-s32 _ZN12Unk_02097ff413func_02098044Ej(s32, s32);
-s32 _ZN12Unk_02097ff413func_02097ff4Ej(s32, s32);
-s32 _ZN12Unk_02097ff413func_0209801cEj(s32, s32);
+s32 _ZN12Unk_02097ff48testFlagEj(s32, s32);
+s32 _ZN12Unk_02097ff49clearFlagEj(s32, s32);
+s32 _ZN12Unk_02097ff47setFlagEj(s32, s32);
 s32 MenuCtrl_IsClockMovedForward(void);
 void _ZN12Unk_020dd38cC2Ev(void *);
 void _ZN12Unk_020dd38cD1Ev(void *);
@@ -49,8 +49,8 @@ void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
-u32 _ZN12Unk_0206555413func_02065588Etj(void *, u32, u32);
-void func_020656dc(void *, void *, void *, void *, void *, s32);
+u32 _ZN12Unk_0206555410setPresentEtj(void *, u32, u32);
+void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void func_0211ea4c(s32 (*f)());
 s32 func_02097438();
@@ -122,7 +122,7 @@ extern "C" void func_02097318(s32 n) {
                     _ZN11MsgString25C1Ev(buf);
                     String_FormatNumber(buf, n, 10, 1, 0, 0);
                     MailText_SetSlot(1, buf);
-                    func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN10PlayerData11getPlayerIdEv(s));
+                    Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN10PlayerData11getPlayerIdEv(s));
                     LetterDelivery_PutInAddresseeMailbox(&e);
                     _ZN11MsgString25D1Ev(buf);
                 }
@@ -153,7 +153,7 @@ extern "C" void func_02097214(s32 n) {
                 col = 0x3700;
             }
             s32 bit = k + 0x11;
-            if (_ZN12Unk_02097ff413func_02098044Ej(s, bit) == 0) {
+            if (_ZN12Unk_02097ff48testFlagEj(s, bit) == 0) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
@@ -161,10 +161,10 @@ extern "C" void func_02097214(s32 n) {
                 _ZN12Unk_020dd38cC2Ev(buf);
                 func_020638d0(data_021d7352, buf);
                 MailText_SetSlot(0, buf);
-                func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
-                _ZN12Unk_0206555413func_02065588Etj(&e, col, 1);
+                Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
+                _ZN12Unk_0206555410setPresentEtj(&e, col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                    _ZN12Unk_02097ff413func_0209801cEj(s, bit);
+                    _ZN12Unk_02097ff47setFlagEj(s, bit);
                 }
                 _ZN12Unk_020dd38cD1Ev(buf);
             }
@@ -181,13 +181,13 @@ extern "C" void func_02097110(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
     if (n > 0) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(s, 0x16)) {
+        if (_ZN12Unk_02097ff48testFlagEj(s, 0x16)) {
             s32 id = func_020973e8((Unk_020973e4 *)o);
             Letter e;
             u8 ch;
             ch = id;
             u32 v;
-            func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, _ZN10PlayerData11getPlayerIdEv(s));
+            Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, _ZN10PlayerData11getPlayerIdEv(s));
             v = 0xfff1;
             if (id > 13) goto hi;
             if (id >= 13) goto c13;
@@ -219,10 +219,10 @@ extern "C" void func_02097110(s32 n) {
         c20: v = 0x1404;
         done:
             if (v != 0xfff1) {
-                _ZN12Unk_0206555413func_02065588Etj(&e, v, 1);
+                _ZN12Unk_0206555410setPresentEtj(&e, v, 1);
             }
             if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                _ZN12Unk_02097ff413func_02097ff4Ej(s, 0x16);
+                _ZN12Unk_02097ff49clearFlagEj(s, 0x16);
             }
         }
     }

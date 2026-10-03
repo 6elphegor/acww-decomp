@@ -15,10 +15,10 @@
 #define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
 #define func_0206fca8 _ZN12Unk_020e0488D1Ev
 #define func_0206fcc8 _ZN12Unk_020e0488C1Ev
-#define func_02071c68 _ZN14PlayerPatterns13func_02071c68Ej
-#define func_02071e04 _ZN7Pattern13func_02071e04Ev
-#define func_02071ef4 _ZN12Unk_02071ed013func_02071ef4EPh
-#define func_02071f48 _ZN12Unk_02071ed013func_02071f48EPh
+#define PlayerPatterns_getPatternByOrder _ZN14PlayerPatterns17getPatternByOrderEj
+#define Pattern_getInfo _ZN7Pattern7getInfoEv
+#define PatternInfo_setTitleRaw _ZN11PatternInfo11setTitleRawEPh
+#define PatternInfo_getTitleRaw _ZN11PatternInfo11getTitleRawEPh
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
@@ -123,9 +123,9 @@ s32 func_020512e0(void *p, s32 v);
 u32 func_02051348(void *p, u32 a);
 BOOL func_020512f8(void *p, u32 a);
 void *BlancaFaceRecord_getPattern(void *a);
-void *func_02071e04(void *a);
-void func_02071ef4(void *a, void *b);
-void func_02071f48(void *a, void *b);
+void *Pattern_getInfo(void *a);
+void PatternInfo_setTitleRaw(void *a, void *b);
+void PatternInfo_getTitleRaw(void *a, void *b);
 BOOL func_020b0084(void *a, s32 b);
 void func_020b0428(void *a, s32 b);
 void func_020b03f0(void *a, s32 b);
@@ -153,7 +153,7 @@ void func_0206fab4(void *p, s32 a, s32 b);
 void func_0206fc44(void *p);
 s32 func_020986d4(s32 a);
 s32 PlayerData_getFriendList(s32 a);
-void *func_02071c68(s32 a, s32 b);
+void *PlayerPatterns_getPatternByOrder(s32 a, s32 b);
 void *FriendList_GetEntries(s32 a);
 void *FriendEntry_GetFriendData(void *p);
 void FriendEntry_Clear(void *p);
@@ -1940,7 +1940,7 @@ BOOL NameEntryMenu::tryStartConfirm() {
 void NameEntryMenu::loadDesignName() {
     u8 buf[0x10];
     s32 a = func_020986d4(PlayerData_GetCurrent());
-    func_02071f48(func_02071e04(func_02071c68(a, MenuCtrl_GetIndex())), buf);
+    PatternInfo_getTitleRaw(Pattern_getInfo(PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex())), buf);
     Mem_Copy(buf, unk_4088, 0x10);
 }
 
@@ -1984,9 +1984,9 @@ void NameEntryMenu::loadInitialText() {
 void NameEntryMenu::storeDesignName() {
     u8 buf[0x10];
     s32 a = func_020986d4(PlayerData_GetCurrent());
-    void *p = func_02071c68(a, MenuCtrl_GetIndex());
+    void *p = PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex());
     Mem_Copy(unk_4088, buf, 0x10);
-    func_02071ef4(func_02071e04(p), buf);
+    PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }
 
 void NameEntryMenu::checkGeneralAnswer() {
@@ -2056,7 +2056,7 @@ void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
     void *p = BlancaFaceRecord_getPattern(data_021eca50);
     Mem_Copy(unk_4088, buf, 0x10);
-    func_02071ef4(func_02071e04(p), buf);
+    PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }
 
 void NameEntryMenu::storeFriendField1() {

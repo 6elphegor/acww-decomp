@@ -52,7 +52,7 @@ extern u16 sNativeFruitTrees[];
 }
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -177,11 +177,11 @@ struct Unk_020b5350_Info {
 }
 
 extern "C" {
-Unk_020b5350_Info *func_020b5350();
+Unk_020b5350_Info *Scene_GetMapInfo();
 }
 
 extern "C" {
-s32 func_020b52d0();
+s32 Scene_InUnk6To8();
 }
 
 extern "C" {
@@ -193,27 +193,27 @@ u32 _ZN9HouseData13func_020604f8EiPv(void *p, u32 a, void *heap);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_020b52f8();
+s32 Scene_InHouseRoom();
 }
 
 extern "C" {
-u32 func_020b5328();
+u32 Scene_GetHouseRoom();
 }
 
 extern "C" {
-s32 func_020b51a4();
+s32 Scene_InVillagerHouse();
 }
 
 extern "C" {
-u32 func_020b51d4();
+u32 Scene_GetVillagerHouse();
 }
 
 extern "C" {
-s32 func_020b530c();
+s32 SceneId_IsHouseRoom();
 }
 
 extern "C" {
@@ -309,7 +309,7 @@ extern "C" Unk_0204da0c_Map *BlockMap_GetForArea(s32 a) {
     Unk_0204da0c_Map *r = NULL;
     if (a == 0) {
         r = TownBlockMap_Get();
-    } else if (func_020b530c() == 1) {
+    } else if (SceneId_IsHouseRoom() == 1) {
         r = HouseRoomMaps_GetForScene(a);
     }
     return r;
@@ -350,7 +350,7 @@ u32 SceneMapModule::loadLayoutGrid(u32 v, s32 idx, void *heap) {
     s32 k = 4;
     u32 m = v & 0xfff;
     u32 r = 0;
-    u8 c = data_020e416c;
+    u8 c = gFieldSceneKind;
     if (Unk_0204c5c0_IsZero(c)) {
         k = 0;
     } else if (Unk_0204cab4_IsOne(c)) {
@@ -368,12 +368,12 @@ u32 SceneMapModule::loadLayoutGrid(u32 v, s32 idx, void *heap) {
 u32 *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
     u32 *r = NULL;
     s32 i;
-    if (func_020b50e8() == 0 || func_020b50e8() == 0x31 || func_020b50e8() == 0x2c) {
+    if (Scene_GetCurrent() == 0 || Scene_GetCurrent() == 0x31 || Scene_GetCurrent() == 0x2c) {
         r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(data_021e3680, heap);
-    } else if (func_020b52f8()) {
-        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(data_021e58a8, func_020b5328(), heap);
-    } else if (func_020b51a4()) {
-        i = func_020b51d4();
+    } else if (Scene_InHouseRoom()) {
+        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(data_021e58a8, Scene_GetHouseRoom(), heap);
+    } else if (Scene_InVillagerHouse()) {
+        i = Scene_GetVillagerHouse();
         r = (u32 *)ItemGrid_Alloc(heap, 4);
         setOwnedGrid((u32)r, 0);
         r = (u32 *)VillagerRoom_BuildEntry(r, i, heap);
@@ -466,7 +466,7 @@ test2:
 }
 
 void SceneMapModule::getHouseUnk(u32 *out, s32 n) {
-    if (func_020b52d0()) *out = func_020603c8(data_021e58a8);
+    if (Scene_InUnk6To8()) *out = func_020603c8(data_021e58a8);
 }
 
 s32 SceneMapModule::buildSceneMap(void *heap) {
@@ -482,7 +482,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
         if (gSceneBlockMap != NULL) _ZN8BlockMap5clearEv();
     }
     if (gSceneBlockMap != NULL) {
-        info = func_020b5350();
+        info = Scene_GetMapInfo();
         h = gCurrentHeap;
         src = NULL;
         sz.a = 0;
@@ -501,7 +501,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
         r = buildEntries(src, unk_58, h);
         if (r != NULL) {
             _ZN8BlockMap5buildEP18Unk_0204debc_EntryP16Unk_0204e1a8_Outi(gSceneBlockMap, r, &sz, h);
-            if (Unk_0204c5c0_IsZero(data_020e416c)) Town_ClearBorderTrees((Unk_0204da0c_Map *)gSceneBlockMap);
+            if (Unk_0204c5c0_IsZero(gFieldSceneKind)) Town_ClearBorderTrees((Unk_0204da0c_Map *)gSceneBlockMap);
             Heap_Free(h, r);
         }
     }

@@ -77,15 +77,15 @@ s32 _ZN13GulliverQuest12getPartCountEv(void *self);
 void _ZN13GulliverQuest7addPartEv(void *self);
 void _ZN13GulliverQuest5startEv(void *self);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 s32 _ZN12Unk_02015b8c9getAnimIdEj(void *self, u32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
-s32 func_02098eb0(u16 *p);
-void func_02099064(s32 a);
-void func_02099014(u16 *p, s32 a);
+s32 Pocket_FindItem(u16 *p);
+void Pocket_RemoveItem(s32 a);
+void Pocket_AddItem(u16 *p, s32 a);
 u32 func_02063b8c(u32 n);
 void _ZN12ItemPickSpec3setEii(Unk_ov072_02271a58_Obj *o, s32 a, s32 b);
 void func_02063388(Unk_ov072_02271a58_Obj *o);
@@ -252,7 +252,7 @@ struct Unk_0201a794 {
 };
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -365,7 +365,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -826,7 +826,7 @@ BOOL SpNpcGulliver::mainAct02() {
         unk_71c = 0;
     }
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(3);
     }
     return TRUE;
@@ -906,7 +906,7 @@ void SpNpcGulliverTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
     s32 t;
     h = 0x1568;
-    t = func_02098eb0(&h);
+    t = Pocket_FindItem(&h);
     if (Talk_CheckAndSetPlayerFlag(0x14, 0) == 0) {
         if (_ZN13GulliverQuest9isStartedEv(&data_021e58a6)) {
             unk_b4 = 2;
@@ -937,12 +937,12 @@ void SpNpcGulliverTalk::vfunc_78(TalkStartMsg *out) {
             unk_b4 = 7;
         }
         for (i = 1; i <= 15; i++) {
-            func_02099064(t);
+            Pocket_RemoveItem(t);
             if (_ZN13GulliverQuest12getPartCountEv(&data_021e58a6) < 5) {
                 _ZN13GulliverQuest7addPartEv(&data_021e58a6);
             }
             h2 = 0x1568;
-            t = func_02098eb0(&h2);
+            t = Pocket_FindItem(&h2);
             if (t < 0) {
                 break;
             }
@@ -1001,7 +1001,7 @@ void SpNpcGulliverTalk::vfunc_14() {
         h0 = h2;
         func_02063388(&o);
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
-        func_02099014(&h0, 0);
+        Pocket_AddItem(&h0, 0);
         r = 0x19;
         break;
     case 0x19:

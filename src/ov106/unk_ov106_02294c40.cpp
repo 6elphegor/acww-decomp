@@ -51,7 +51,7 @@ BOOL MenuCtrl_IsTouch();
 void LetterList_Compact(void *a, s32 b);
 void * PlayerData_GetCurrent();
 s32 func_020979d8();
-s32 func_020991fc();
+s32 Inventory_FindEmptyLetter();
 void * ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *a);
 BOOL MenuKeys_HasRight(u32 pad);
@@ -102,7 +102,7 @@ void MailboxMenu_SetupBgLayers();
 class Unk_02065554;
 class Unk_0206d0a0;
 class Unk_0206d1d4_Src;
-class Unk_020970b8;
+class PlayerMailbox;
 class PlayerData;
 class Letter;
 class LabelBalloon;
@@ -276,9 +276,9 @@ public:
     u32 func_020655d0();
 };
 
-class Unk_020970b8 {
+class PlayerMailbox {
 public:
-    u8 * func_020970b8(s32);
+    u8 * getLetter(s32);
 };
 
 class PlayerData {
@@ -770,7 +770,7 @@ BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
     LetterList_Compact(unk_2924, 10);
     PlayerData_GetCurrent();
-    u8 *p = ((Unk_020970b8 *)func_020979d8())->func_020970b8(0);
+    u8 *p = ((PlayerMailbox *)func_020979d8())->getLetter(0);
     s32 i = 0;
     u8 *q = (u8 *)unk_2924;
     for (; i < 10; i++) {
@@ -949,7 +949,7 @@ void MailboxMenu::initParts() {
         func_02065c94((u8 *)unk_2924 + i * 0xf4);
     }
     PlayerData_GetCurrent();
-    p = ((Unk_020970b8 *)func_020979d8())->func_020970b8(0);
+    p = ((PlayerMailbox *)func_020979d8())->getLetter(0);
     for (i = 0; i < 10; i++) {
         func_02065e70((u8 *)unk_2924 + i * 0xf4, p);
         p += 0xf4;
@@ -1756,7 +1756,7 @@ void MailboxMenu::pickUpAndFlyTo(u32 a, u32 b) {
 }
 
 u32 MailboxMenu::findFreePocketSlot() {
-    s32 r = func_020991fc();
+    s32 r = Inventory_FindEmptyLetter();
     if (r == -1) {
         return 0x20;
     }

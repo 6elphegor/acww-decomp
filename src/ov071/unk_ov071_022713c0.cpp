@@ -93,12 +93,12 @@ extern s16 data_02135f44[];
 extern u32 __ptmf_null[];
 
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *h, s32 n);
-void _ZN12Unk_02097ff413func_0209801cEj(void *h, s32 n);
-void *_ZN10PlayerData13func_0209868cEv(void *h);
-s32 func_02087b14(void *h);
-void _ZN12Unk_020877e013func_02087af0Ev(void *h);
-void _ZN12Unk_02087ad813func_02087ad8Ev(void *h);
+s32 _ZN12Unk_02097ff48testFlagEj(void *h, s32 n);
+void _ZN12Unk_02097ff47setFlagEj(void *h, s32 n);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *h);
+s32 PlayerSpNpcRecord_GetInsuranceDate(void *h);
+void _ZN20PlayerDailyTalkFlags10stampTodayEv(void *h);
+void _ZN17PlayerSpNpcRecord17addInsuranceClaimEv(void *h);
 void Clock_GetDate(void *p);
 s32 Date_DaysBetween(void *p, s32 v);
 void Hud_Hide();
@@ -109,10 +109,10 @@ void MI_CpuFill8(void *dst, s32 v, s32 n);
 void func_02040144(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-u32 func_02099048();
+u32 Pocket_GetItem();
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-void func_02099064(s32 n);
+void Pocket_RemoveItem(s32 n);
 s32 MenuCtrl_BuildPocketMask(void *cb);
 s32 NpcActor_CanPlayerPay(void *owner, s32 n);
 void NpcActor_ChargePlayer(void *owner, s32 n);
@@ -151,14 +151,14 @@ void _ZN10VisitorPos13pickRandomPosEv();
 
 void Npc_RotateOffsetXZ(Unk_ov071_02271f54_Tmp *t, void *pos, void *p, s32 ang);
 BOOL Npc_IsPosBlocked(Unk_ov071_02271f54_Tmp *t);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 s32 func_020e96a4(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
 BOOL func_02040c88();
-void *func_020850e0();
-void func_0208516c(void *p);
+void *TownSessionState_Get();
+void TownSessionState_GetVisitorPos(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 }
@@ -311,7 +311,7 @@ struct Unk_0201a794 {
 };
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -424,7 +424,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -609,7 +609,7 @@ BOOL SpNpcLyle::vfunc_0c() {
         return FALSE;
     }
     if (func_02040c88() == 0) {
-        func_0208516c(func_020850e0());
+        TownSessionState_GetVisitorPos(TownSessionState_Get());
         _ZN10VisitorPos13pickRandomPosEv();
     }
     return TRUE;
@@ -713,7 +713,7 @@ BOOL SpNpcLyle::setupAct00() {
 
 BOOL SpNpcLyle::mainAct00() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -1114,7 +1114,7 @@ void SpNpcLyleTalk::onClaimItemChosen() {
     m.id = 0x24;
     if (MenuCtrl_IsResultOk() != 0) {
         s32 r4 = MenuCtrl_GetIndex();
-        m.a = func_02099048();
+        m.a = Pocket_GetItem();
         BOOL same;
         if (Item_IsFurniture(&m.a) != 0) {
             m.b = 0xfff1;
@@ -1131,12 +1131,12 @@ void SpNpcLyleTalk::onClaimItemChosen() {
             }
         }
         if (same == 0) {
-            void *w = _ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent());
+            void *w = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
             m.id = 0x25;
-            _ZN12Unk_02087ad813func_02087ad8Ev(w);
+            _ZN17PlayerSpNpcRecord17addInsuranceClaimEv(w);
             _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.a, 0, 4, 0);
             if (r4 >= 0) {
-                func_02099064(r4);
+                Pocket_RemoveItem(r4);
             }
             setNextScript(1);
         } else {
@@ -1202,13 +1202,13 @@ void SpNpcLyleTalk::attachOwner(SpNpcLyle *o) {
 void SpNpcLyleTalk::vfunc_78(TalkStartMsg *out) {
     BOOL b = FALSE;
     void *h = PlayerData_GetCurrent();
-    if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x17) != 0) {
-        s32 v = func_02087b14(_ZN10PlayerData13func_0209868cEv(h));
+    if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
+        s32 v = PlayerSpNpcRecord_GetInsuranceDate(_ZN10PlayerData14getSpNpcRecordEv(h));
         Unk_0209cf88_Obj obj;
         Clock_GetDate(&obj);
         if (Date_DaysBetween(&obj, v) < 1) {
             unk_ac = 1;
-        } else if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x18) != 0) {
+        } else if (_ZN12Unk_02097ff48testFlagEj(h, 0x18) != 0) {
             if (Talk_CheckAndSetPlayerFlag(0x28, b) != 0) {
                 unk_ac = 2;
             } else {
@@ -1245,7 +1245,7 @@ void SpNpcLyleTalk::vfunc_14() {
     case 0x1c:
         Hud_Hide();
         r5 = 0x15;
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x17) != 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
             r5 = 0x1d;
         }
         break;
@@ -1264,7 +1264,7 @@ void SpNpcLyleTalk::vfunc_14() {
         r5 = (u8)(idx + 0xe);
         unk_b4 = unk_b4 + 1;
         if (unk_b4 >= 4) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x18) == 0) {
+            if (_ZN12Unk_02097ff48testFlagEj(h, 0x18) == 0) {
                 r5 = 0x13;
             } else {
                 r5 = 0x1b;
@@ -1276,14 +1276,14 @@ void SpNpcLyleTalk::vfunc_14() {
         break;
     }
     case 0x13:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x17) == 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) == 0) {
             r5 = 0x14;
         } else {
             r5 = 0x1c;
         }
         break;
     case 0x18:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x17) == 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) == 0) {
             r5 = 0x19;
         } else {
             r5 = 0x1e;
@@ -1294,8 +1294,8 @@ void SpNpcLyleTalk::vfunc_14() {
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.a, 0, 5, 0);
         NpcActor_ChargePlayer(unk_b0, 0xbb8);
         r5 = 0x1a;
-        _ZN12Unk_02097ff413func_0209801cEj(h, 0x17);
-        _ZN12Unk_020877e013func_02087af0Ev(_ZN10PlayerData13func_0209868cEv(h));
+        _ZN12Unk_02097ff47setFlagEj(h, 0x17);
+        _ZN20PlayerDailyTalkFlags10stampTodayEv(_ZN10PlayerData14getSpNpcRecordEv(h));
         break;
     case 0x16:
     case 0x1a:
@@ -1307,7 +1307,7 @@ void SpNpcLyleTalk::vfunc_14() {
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.b, 0, 5, 0);
         NpcActor_ChargePlayer(unk_b0, 0x1770);
         r5 = 0x1f;
-        _ZN12Unk_02097ff413func_0209801cEj(h, 0x18);
+        _ZN12Unk_02097ff47setFlagEj(h, 0x18);
         break;
     case 0x23:
         _ZN12Unk_020d771015setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);

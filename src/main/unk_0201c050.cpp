@@ -1298,7 +1298,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); ~Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
@@ -1363,7 +1363,7 @@ struct NpcActor : Character {
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -2161,8 +2161,8 @@ s32 _ZN15TalkWindowState7setSlotEiPv(void *, u32, void *);
 void _ZN15TalkWindowState11lockAdvanceEv(void *);
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *, void *, u32);
 s32 _ZN15TalkWindowState21setNextMessageIfUnsetEPhPv(void *, u8 *, u32);
-void * _ZN7Pattern13func_02071e04Ev(s32);
-u16 * _ZN12Unk_02071ed013func_02071fa0Ev(void *);
+void * _ZN7Pattern7getInfoEv(s32);
+u16 * _ZN11PatternInfo9getAuthorEv(void *);
 s32 _ZN20VillagerDataItemView12getFurnitureEv(void *);
 void * _ZN20VillagerDataItemView18getMovedFromTownIdEv(void *);
 void _ZN20VillagerDataItemView14setGreetingForEPviS0_(void *, u32, s32, void *);
@@ -2192,12 +2192,12 @@ void _ZN14VillagerMemory11setNicknameEPvi(void *, void *, s32);
 void _ZN14VillagerMemory18setNicknameFromMsgEPv(void *, void *);
 void _ZN14VillagerMemory11getNicknameEPv(void *, void *);
 s32 _ZN14VillagerMemory13getFriendshipEv(void *);
-s32 _ZN12Unk_0208581013func_02085810Ev(Unk_021ed24c *);
-Unk_0201dc44_Id * _ZN12Unk_0208581013func_02085828Ev(void *);
-Unk_0201dc44_Id * _ZN12Unk_0208581013func_0208586cEv(void *);
-u32 _ZN12Unk_0208581013func_020858acEv(Unk_021ed24c *);
-void _ZN12Unk_020877e013func_02087804Ej(void *, u32);
-u32 _ZN12Unk_020877e013func_02087838Ej(void *, u32);
+s32 _ZN13ContestRecord7getSizeEv(Unk_021ed24c *);
+Unk_0201dc44_Id * _ZN13ContestRecord16getVotedVillagerEv(void *);
+Unk_0201dc44_Id * _ZN13ContestRecord17getHolderVillagerEv(void *);
+u32 _ZN13ContestRecord13func_020858acEv(Unk_021ed24c *);
+void _ZN20PlayerDailyTalkFlags3setEj(void *, u32);
+u32 _ZN20PlayerDailyTalkFlags4testEj(void *, u32);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *, void *);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *, void *);
 s32 _ZN8PlayerId13func_02094218Ev(void *);
@@ -2207,13 +2207,13 @@ s32 _ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(u32);
 s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
 u16 * _ZN15PlayerInventory9getPocketEi(void *, s32);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
+s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
 void _ZN12Unk_02097ff413func_020981c4Ev(u32);
 s32 _ZN12Unk_02097ff413func_020981ecEv(u32);
 void _ZN12Unk_02097ff413func_020982dcEj(void *, u32);
 u8 * _ZN12Unk_02097ff413func_02098308Ev();
 void * _ZN10PlayerData13func_0209865cEv(void *);
-void * _ZN10PlayerData13func_02098698Ev(void *);
+void * _ZN10PlayerData17getDailyTalkFlagsEv(void *);
 void * _ZN10PlayerData13func_020986b0Ev(void *);
 s32 _ZN10PlayerData10getCatalogEv(void *);
 void * _ZN10PlayerData13func_02098750Ev(void *);
@@ -2223,19 +2223,19 @@ s32 _ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(void *, s3
 s32 _ZN18SickVillagerRecord10hasVisitorEP16Unk_020994cc_Ent(void *, void *);
 void * _ZN18SickVillagerRecord13func_0209978cEv(void *);
 void _ZN18SickVillagerRecord11resetRecordEv();
-void * _ZN12Unk_0209ada413func_0209ab94Ev(void *);
-void _ZN12Unk_0209ada48setExtraEh(void *, u32);
-void * _ZN12Unk_0209ada48getExtraEv(void *);
-void _ZN12Unk_0209ada413func_0209abb4Eh(void *, s32);
-s32 _ZN12Unk_0209ada413func_0209abc4Ev(void *);
-s32 _ZN12Unk_0209ada411getSubGroupEv(void *);
-void * _ZN12Unk_0209ada413func_0209ac10Ev();
-s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *);
-s32 _ZN12Unk_0209ada48getGroupEv(void *);
-s32 _ZN12Unk_0209ada413getClassIndexEPi(void *, s32 *);
-s32 _ZN12Unk_0209ada48getClassEv(void *);
-s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
-s32 _ZN12Unk_0209ada413func_0209ad80Ev(void *);
+void * _ZN12ErrandRecord7getItemEv(void *);
+void _ZN12ErrandRecord8setExtraEh(void *, u32);
+void * _ZN12ErrandRecord8getExtraEv(void *);
+void _ZN12ErrandRecord7setStepEh(void *, s32);
+s32 _ZN12ErrandRecord7getStepEv(void *);
+s32 _ZN12ErrandRecord11getSubGroupEv(void *);
+void * _ZN12ErrandRecord13func_0209ac10Ev();
+s32 _ZN12ErrandRecord7getKindEv(void *);
+s32 _ZN12ErrandRecord8getGroupEv(void *);
+s32 _ZN12ErrandRecord13getClassIndexEPi(void *, s32 *);
+s32 _ZN12ErrandRecord8getClassEv(void *);
+s32 _ZN12ErrandRecord8isActiveEv(void *);
+s32 _ZN12ErrandRecord5clearEv(void *);
 void _ZN12VillagerPlan13func_0209b238Ev(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
 s32 _ZN8SaveData8testFlagEj(void *, s32);
@@ -2539,7 +2539,7 @@ u32 Date_GetStarSign(u32, u32);
 u32 FurnitureTaste_GetTextIndex(void *);
 void NpcRegistry_RemoveVillager(void *);
 s32 NpcRegistry_AddVillager(void *, void *);
-void func_02085818(void *, Unk_021ed24c *);
+void ContestRecord_GetItem(void *, Unk_021ed24c *);
 s32 func_020874e8(u32, u32, u32, void *);
 void func_020877a0(void *, u32);
 s32 Effect_Create(u32, void *, void *, u32);
@@ -2549,15 +2549,15 @@ void * PlayerData_GetCurrent();
 s32 func_02097740(void *, void *);
 s32 func_02097a48(s32, s32, u32);
 s32 func_02098778(void *);
-s32 func_02098eb0(void *);
-s32 func_02098f30(void *, BOOL (*)(u16 *));
-s32 func_02098f90(void *, u32);
-s32 func_02098ffc();
-void func_02099014(u16 *, s32);
-u32 func_02099048(s32);
-void func_0209909c(u16 *, s32, s32);
-s32 func_020991e4();
-s32 func_020991fc();
+s32 Pocket_FindItem(void *);
+s32 Pocket_CountMatching(void *, BOOL (*)(u16 *));
+s32 Pocket_CountKind(void *, u32);
+s32 Pocket_FindEmpty();
+void Pocket_AddItem(u16 *, s32);
+u32 Pocket_GetItem(s32);
+void Pocket_SetItem(u16 *, s32, s32);
+s32 Inventory_GetEmptyLetter();
+s32 Inventory_FindEmptyLetter();
 s32 func_0209948c(u32);
 s32 func_0209949c(u32);
 void * PlayerErrandSlots_FindByVillager(s32, void *, s32);
@@ -2616,12 +2616,12 @@ s32 func_020b0218();
 void * Constellation_GetData();
 s32 func_020b0980(void *, s32);
 s32 String_MakeNickname(void *, void *, u8 *);
-s32 func_020b50e8();
-s32 func_020b51a4();
-s32 func_020b51d4();
-s32 func_020b51fc();
-s32 func_020b5240(s32);
-s32 func_020b5254();
+s32 Scene_GetCurrent();
+s32 Scene_InVillagerHouse();
+s32 Scene_GetVillagerHouse();
+s32 Scene_InMuseumRoom();
+s32 SceneId_GetMuseumRoom(s32);
+s32 Scene_InNookShop();
 s32 Weather_GetFallingPrecip();
 s32 func_020e9650(void *, void *);
 void func_020f43fc(void *);
@@ -2666,7 +2666,7 @@ extern u8 sSmallTalkTopicTable[];
 extern u8 sEtcCancelTopicTable[];
 extern u8 sSmallTalkChoiceMsgRange[];
 extern u8 sLeaveChoiceMsgRange[];
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern Unk_021d7350_View gSaveData;
 extern Unk_020c7758_T sTalkTopicEvAcorn;
 extern u8 sEvSnowfesTopicTable[];
@@ -2716,7 +2716,7 @@ extern Unk_02020850_Fn data_020d7b30;
 extern Unk_02020850_Fn data_020d7ea8;
 extern Unk_02020850_Fn data_020d7ea0;
 extern u8 sTsuTopicWeightsWork[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern Unk_0201d2d0_Data sTalkTopicEvFmarket1;
 extern Unk_0201d2d0_Data sTalkTopicTsuStar;
 extern Unk_0201d2d0_Data sTalkTopicTsuDrama;
@@ -3142,7 +3142,7 @@ static inline BOOL Unk_02028a48_R1(u16 *p, u32 lo, u32 hi) {
 }
 
 static inline BOOL Unk_0202849c_F(BOOL r4) {
-    return data_020e416c == 0 ? TRUE : r4;
+    return gFieldSceneKind == 0 ? TRUE : r4;
 }
 
 static inline BOOL Unk_020295d0_Range(u16 *p, u32 lo, u32 hi) {
@@ -4140,13 +4140,13 @@ extern "C" BOOL Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag) {
     if (o == NULL) {
         return FALSE;
     }
-    void *h = _ZN10PlayerData13func_02098698Ev(o);
+    void *h = _ZN10PlayerData17getDailyTalkFlagsEv(o);
     BOOL r = TRUE;
-    if (_ZN12Unk_020877e013func_02087838Ej(h, a) == 0) {
+    if (_ZN20PlayerDailyTalkFlags4testEj(h, a) == 0) {
         r = FALSE;
     }
     if (flag) {
-        _ZN12Unk_020877e013func_02087804Ej(h, a);
+        _ZN20PlayerDailyTalkFlags3setEj(h, a);
     }
     if (r) {
         return TRUE;
@@ -5410,7 +5410,7 @@ extern "C" s32 Talk_FindInS8Array(s32 key, s8 *arr, s32 n) {
 }
 
 extern "C" s32 func_0202c094(void *a, void *b, s32 c, void *d, s32 e) {
-    if (Unk_0202c094_IsZero(data_020e416c)) {
+    if (Unk_0202c094_IsZero(gFieldSceneKind)) {
         s32 i;
         for (i = 0; i < 8; i++) {
             s32 t = Talk_FindInS8Array(FieldInsect_GetPosAndKind(a, (u8)i), (s8 *)b, c);
@@ -5428,9 +5428,9 @@ extern "C" s32 Talk_IsCatchPlanDue(Unk_0202be64_Host *a, void *b, Unk_0202be64_R
     void *s = PlanErrand_GetRecord(b);
     s32 r4 = PlanErrand_GetStep(b);
     s32 r6;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(s) != 0 && _ZN12Unk_0209ada413func_0209abc4Ev(s) == 0 && _ZN12Unk_0209ada48getClassEv(s) == 0 && r4 != 0
+    if (_ZN12ErrandRecord8isActiveEv(s) != 0 && _ZN12ErrandRecord7getStepEv(s) == 0 && _ZN12ErrandRecord8getClassEv(s) == 0 && r4 != 0
         && _ZN8PlayerId13func_02094218Ev(PlanErrand_GetPlayer(b)) != 0) {
-        r6 = _ZN12Unk_0209ada413func_0209ac64Ev(s);
+        r6 = _ZN12ErrandRecord7getKindEv(s);
         if (r4 < ((s32 (*)())PlanErrand_GetStepCount)()) {
             if (r6 == 0) {
                 if (!Unk_0202be64_InRange(PlanErrand_GetShownItem(b), 0x12b0, 0x12e7)) {
@@ -5475,7 +5475,7 @@ fail:
 
 extern "C" void Talk_UpdateInsectCatchPlan(Unk_0202be64_Host *a, void *b, u8 *arr, void *c, u8 flag, Unk_0202be64_Rec *rec) {
     void *s = PlanErrand_GetRecord(b);
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(s) == 0) {
+    if (_ZN12ErrandRecord7getKindEv(s) == 0) {
         s32 r6 = PlanErrand_GetStep(b);
         if (Talk_IsCatchPlanDue(a, b, rec, flag)) {
             s32 r7;
@@ -5485,7 +5485,7 @@ extern "C" void Talk_UpdateInsectCatchPlan(Unk_0202be64_Host *a, void *b, u8 *ar
                 r7 = 0;
             }
             s32 rnd = func_02063b8c(100);
-            u16 val = *((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(s));
+            u16 val = *((u16 *)_ZN12ErrandRecord7getItemEv(s));
             switch (r6) {
             case 0:
                 break;
@@ -5529,7 +5529,7 @@ void VillagerTalkTopics::updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3,
     s32 roll;
     u16 val;
     v = PlanErrand_GetRecord(s1);
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(v) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(v) == 1) {
         t = PlanErrand_GetStep(s1);
         if (Talk_IsCatchPlanDue((Unk_0202be64_Host *)this, s1, (Unk_0202be64_Rec *)arr, p3) != 0) {
             if (t < 5) {
@@ -5538,7 +5538,7 @@ void VillagerTalkTopics::updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3,
                 lim = 0;
             }
             roll = func_02063b8c(100);
-            val = *((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(v));
+            val = *((u16 *)_ZN12ErrandRecord7getItemEv(v));
             switch (t) {
             case 0:
                 break;
@@ -5654,7 +5654,7 @@ BOOL VillagerTalkTopics::hasFallen() {
 }
 
 BOOL VillagerTalkTopics::isBeeSwarmOut() {
-    BOOL f = IsZero(data_020e416c);
+    BOOL f = IsZero(gFieldSceneKind);
     if (f && Insect_IsBeeSwarmOut() != 0) {
         return TRUE;
     }
@@ -5840,7 +5840,7 @@ void VillagerTalkTopics::selectGreeting(Unk_0201d2d0_Out *out) {
         _ZN15TalkWindowState7setSlotEiPv(unk_3c, 4, obj);
         _ZN18ReddPasswordStringD1Ev(obj);
     } else if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && unk_128_p != NULL && _ZN14VillagerMemory18hasFortuneGreetingEv(unk_128_p) != 0 &&
-               func_02098ffc() != -1) {
+               Pocket_FindEmpty() != -1) {
         d = &sTalkTopicAiFortune;
         _ZN12ItemPickSpec3setEii(t, 0, 0);
         ItemPick_One(&pair.unk_02, t, 0, 0, 1, 1, 0);
@@ -5851,20 +5851,20 @@ void VillagerTalkTopics::selectGreeting(Unk_0201d2d0_Out *out) {
         if (unk_128_p != NULL) {
             _ZN14VillagerMemory20clearFortuneGreetingEv(unk_128_p);
         }
-    } else if (func_020b5254()) {
+    } else if (Scene_InNookShop()) {
         d = &sTalkTopicAiShop1;
         if (_ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(scene))) != 4) {
             v34 = 1;
         }
-    } else if (func_020b50e8() == 10) {
+    } else if (Scene_GetCurrent() == 10) {
         d = &sTalkTopicAiShop2;
         if (_ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(scene))) != 3) {
             v34 = 1;
         }
-    } else if (func_020b51fc() && func_020b5240(func_020b50e8()) == 1) {
+    } else if (Scene_InMuseumRoom() && SceneId_GetMuseumRoom(Scene_GetCurrent()) == 1) {
         d = &sTalkTopicAiShop3;
     } else if (status == 1) {
-        if (func_020b51a4()) {
+        if (Scene_InVillagerHouse()) {
             d = &sTalkTopicAiIndoor;
         } else if (kind == 1) {
             d = &sTalkTopicAiRain1;
@@ -5885,7 +5885,7 @@ void VillagerTalkTopics::selectGreeting(Unk_0201d2d0_Out *out) {
         d = &sTalkTopicAiJoy;
         v34 = Clock_GetTimeOfDay();
     } else {
-        BOOL f = IsZero(data_020e416c);
+        BOOL f = IsZero(gFieldSceneKind);
         if (f && kind == 1) {
             d = &sTalkTopicAiRain2;
         } else if (f && kind == 2) {
@@ -5980,15 +5980,15 @@ void VillagerTalkTopics::continueAfterGreeting() {
         case 1:
             unk_15c = PlayerErrands_GetSlot((s32)r4, (void *)((s32)func_0209ac1c(v)));
             if (unk_15c != 0) {
-                if (_ZN12Unk_0209ada413func_0209abc4Ev(PlayerErrandSlot_GetRecord(unk_15c)) == 0) {
+                if (_ZN12ErrandRecord7getStepEv(PlayerErrandSlot_GetRecord(unk_15c)) == 0) {
                     if (DateTime_Compare((void *)ErrandRecord_GetTime(PlayerErrandSlot_GetRecord(unk_15c)), buf, 0x3f) == -1) {
                         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[6]));
                         ((VillagerTalk *)this)->setUnk150((u32)PlayerErrandSlot_GetRecord(unk_15c));
                     } else {
-                        switch (_ZN12Unk_0209ada413func_0209ac64Ev(PlayerErrandSlot_GetRecord(unk_15c))) {
+                        switch (_ZN12ErrandRecord7getKindEv(PlayerErrandSlot_GetRecord(unk_15c))) {
                         case 10:
                             r4 = _ZN10PlayerData13func_02098750Ev(r6);
-                            if (Talk_FindFlaggedPocketItem(r4, (u16 *)((s32)_ZN12Unk_0209ada413func_0209ab94Ev(PlayerErrandSlot_GetRecord(unk_15c)))) == -1) {
+                            if (Talk_FindFlaggedPocketItem(r4, (u16 *)((s32)_ZN12ErrandRecord7getItemEv(PlayerErrandSlot_GetRecord(unk_15c)))) == -1) {
                                 ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[9]));
                                 ((VillagerTalk *)this)->setUnk150((u32)PlayerErrandSlot_GetRecord(unk_15c));
                             }
@@ -6010,7 +6010,7 @@ void VillagerTalkTopics::continueAfterGreeting() {
             u8 *p = (u8 *)r4 + 0x88;
             void *q = p + 0xc;
             void *s = p + 0x18;
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(q) != 0 && _ZN12Unk_0209ada413func_0209ac64Ev(q) == 0x15 && _ZN12Unk_0209ada413func_0209abc4Ev(q) == 0 && HouseVisitInvite_IsFrom(p, _ZN12VillagerData13getVillagerIdEv(r7)) != 0 && DateTime_Compare(buf, s, 0x3f) == 1) {
+            if (_ZN12ErrandRecord8isActiveEv(q) != 0 && _ZN12ErrandRecord7getKindEv(q) == 0x15 && _ZN12ErrandRecord7getStepEv(q) == 0 && HouseVisitInvite_IsFrom(p, _ZN12VillagerData13getVillagerIdEv(r7)) != 0 && DateTime_Compare(buf, s, 0x3f) == 1) {
                 ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[46]));
                 ((VillagerTalk *)this)->setUnk150((u32)q);
             }
@@ -6073,7 +6073,7 @@ BOOL VillagerTalkTopics::selectApItem() {
         r6 = 0;
         if (_ZN14VillagerMemory11isGiftGivenEv(unk_128_p) == 0) {
             if (_ZN14VillagerMemory13getFriendshipEv(unk_128_p) >= 0x50) {
-                if (func_02098ffc() != -1) {
+                if (Pocket_FindEmpty() != -1) {
                     _ZN14VillagerMemory12setGiftGivenEv(unk_128_p);
                     r4 = 1;
                 } else {
@@ -6127,7 +6127,7 @@ BOOL VillagerTalkTopics::selectApMail() {
 BOOL VillagerTalkTopics::selectApPresent1() {
     u16 v[2];
     void *r4;
-    if (func_02098ffc() != -1) {
+    if (Pocket_FindEmpty() != -1) {
         r4 = unk_fc->unk_82c;
         Villager_PickRandomReceivedItem(v, r4);
         unk_198 = v[0];
@@ -6146,7 +6146,7 @@ BOOL VillagerTalkTopics::selectApPresent1() {
 
 BOOL VillagerTalkTopics::selectApPresent2() {
     u16 v;
-    if (func_02098ffc() != -1) {
+    if (Pocket_FindEmpty() != -1) {
         Talk_PickRandomTradeItem(&v);
         unk_198 = v;
         unk_19a = 0;
@@ -6161,12 +6161,12 @@ extern "C" void Talk_PickPocketItemForPlan(u16 *out, s32 idx) {
     s32 i, n;
     *out = 0xfff1;
     if (PlanState_GetGroup(idx) == 0 && (u32)idx < 5) {
-        if (func_02098f90(&buf, sApPocketItemKinds[idx]) > 0) {
+        if (Pocket_CountKind(&buf, sApPocketItemKinds[idx]) > 0) {
             n = func_02063b8c(buf.unk_02);
             for (i = 0; i < 15; i++) {
                 if ((buf.unk_00 >> i) & 1) {
                     if (n == 0) {
-                        *out = func_02099048(i);
+                        *out = Pocket_GetItem(i);
                         break;
                     }
                     n--;
@@ -6235,7 +6235,7 @@ BOOL VillagerTalkTopics::selectApSell() {
     Villager_GetPlan(p);
     ((void * (*)())VillagerPlanBlock_GetPlan)();
     ((void * (*)())_ZN12VillagerPlan8getStateEv)();
-    if (func_02098ffc() != -1) {
+    if (Pocket_FindEmpty() != -1) {
         Villager_PickRandomReceivedItem(&buf[0], p);
         unk_198 = buf[0];
         if (unk_198 != 0xfff1) {
@@ -6992,11 +6992,11 @@ BOOL VillagerTalkTopics::tryAddHandOverChoice(s32 a, s32 b) {
     r6 = PlayerErrands_GetSlot(b, 0);
     p = PlayerErrandSlot_GetRecord(r6);
     result = FALSE;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(p) != 0 && _ZN12Unk_0209ada411getSubGroupEv(p) == 1) {
+    if (_ZN12ErrandRecord8isActiveEv(p) != 0 && _ZN12ErrandRecord11getSubGroupEv(p) == 1) {
         Unk_02029c74_Rec *r4 = (Unk_02029c74_Rec *)PlayerErrandSlot_GetVillager(r6, 1);
         Unk_02029c74_Rec *r7 = (Unk_02029c74_Rec *)_ZN12VillagerData13getVillagerIdEv((void *)a);
         if (r7->unk_00 == r4->unk_00 && memcmp(r7->unk_02, r4->unk_02, 8) == 0 && r7->unk_0b == r4->unk_0b && PlayerErrandSlot_IsStepDone(r6) == 0) {
-            s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(p);
+            s32 t = _ZN12ErrandRecord7getKindEv(p);
             switch (t) {
             case 0xe:
             case 0x10:
@@ -7035,7 +7035,7 @@ BOOL VillagerTalkTopics::tryAddDeliveryRecipientChoice(s32 a, s32 b) {
     } else {
         p = 0;
     }
-    r6 = p != 0 ? _ZN12Unk_0209ada411getSubGroupEv(p) : 4;
+    r6 = p != 0 ? _ZN12ErrandRecord11getSubGroupEv(p) : 4;
     r7 = FALSE;
     if (r6 == 0 || r6 == 2) {
         if (PlayerErrandSlot_IsStepDone(v) == 0) {
@@ -7049,7 +7049,7 @@ BOOL VillagerTalkTopics::tryAddDeliveryRecipientChoice(s32 a, s32 b) {
             ((VillagerTalk *)this)->setUnk150((u32)p);
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, cnt), cnt);
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 1), 1);
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), cnt, 7);
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), cnt, 7);
             if (DateTime_Compare((void *)ErrandRecord_GetTime(((void *)((VillagerTalk *)this)->getUnk150())), &l.pair, 0x3f) == -1) {
                 if (r6 != 0) {
                     if (r6 == 2) {
@@ -7071,7 +7071,7 @@ BOOL VillagerTalkTopics::tryAddDeliveryRecipientChoice(s32 a, s32 b) {
                     }
                 } else {
                     r6 = (s32)_ZN10PlayerData13func_02098750Ev(l.p10);
-                    if (Talk_FindFlaggedPocketItem((void *)r6, (u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(PlayerErrandSlot_GetRecord(unk_15c))) != -1) {
+                    if (Talk_FindFlaggedPocketItem((void *)r6, (u16 *)_ZN12ErrandRecord7getItemEv(PlayerErrandSlot_GetRecord(unk_15c))) != -1) {
                         TalkChoiceTable_SetRange(this, (Unk_0201c870_Tbl *)(&s), cnt, (const u8 *)data_020c74f4, (s32)((u8 *)&nZ::sRequestTopicsA[13]));
                         cnt++;
                         r7 = TRUE;
@@ -7102,7 +7102,7 @@ BOOL VillagerTalkTopics::tryAddDeliveryClientChoice(s32 unused, s32 a, s32 b) {
         ((VillagerTalk *)this)->setUnk150((u32)PlayerErrandSlot_GetRecord(unk_15c));
         _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, r), r);
         _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 1), 1);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), r, 7);
+        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), r, 7);
         if (PlayerErrandSlot_IsStepDone(unk_15c) != 0) {
             TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&s), r, 0x23, 0x23, (s32)((u8 *)&nZ::sRequestTopicsA[22]));
         } else {
@@ -7148,20 +7148,20 @@ s32 VillagerTalkTopics::openCreatureRequestMenu(BOOL (*f)(u16 *), s32 pa, s32 pb
     void *p, *q;
     u32 tmp;
     TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&buf));
-    switch (_ZN12Unk_0209ada413func_0209abc4Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getStepEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         p = PlanErrand_GetPlayer(unk_160);
         q = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
         if (*(u16 *)q == *(u16 *)p && memcmp((u8 *)q + 2, (u8 *)p + 2, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(q, p) != 0) {
             if (((u32)PlanErrand_GetStep(unk_160)) == 2) {
-                if (f((u16 *)((void *)PlanErrand_GetShownItem(unk_160))) != 0 && func_02098f30(&tmp, f) > 0) {
+                if (f((u16 *)((void *)PlanErrand_GetShownItem(unk_160))) != 0 && Pocket_CountMatching(&tmp, f) > 0) {
                     ((void (*)(void *, void *, s32, s32, s32, void *))TalkChoiceTable_Set)(this,  &buf,  idx,  pa,  pa,  ((u8 *)&nZ::sRequestTopicsB[8]));
                 } else {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), 0, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
                 }
             } else {
-                if (f((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()))) != 0) {
-                    if (func_02098eb0(_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()))) != -1) {
+                if (f((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()))) != 0) {
+                    if (Pocket_FindItem(_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()))) != -1) {
                         ((void (*)(void *, void *, s32, s32, s32, void *))TalkChoiceTable_Set)(this,  &buf,  idx,  pb,  pb,  ((u8 *)&nZ::sRequestTopicsB[13]));
                     } else {
                         TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
@@ -7170,8 +7170,8 @@ s32 VillagerTalkTopics::openCreatureRequestMenu(BOOL (*f)(u16 *), s32 pa, s32 pb
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
                 }
             }
-            if (*(u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())) != 0xfff1) {
-                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
+            if (*(u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())) != 0xfff1) {
+                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
             }
             idx++;
             res = TRUE;
@@ -7261,12 +7261,12 @@ s32 VillagerTalkTopics::openFurnitureRequestMenu() {
     void *p, *q;
     u32 tmp;
     TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&buf));
-    switch (_ZN12Unk_0209ada413func_0209abc4Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getStepEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         p = PlanErrand_GetPlayer(unk_160);
         q = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
         if (*(u16 *)q == *(u16 *)p && memcmp((u8 *)q + 2, (u8 *)p + 2, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(q, p) != 0) {
-            if (func_02098f30(&tmp, Talk_IsNonFossilFurniture) > 0) {
+            if (Pocket_CountMatching(&tmp, Talk_IsNonFossilFurniture) > 0) {
                 TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x1c, 0x1c, (s32)((u8 *)&nZ::sRequestTopicsB[18]));
             } else {
                 TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
@@ -7314,20 +7314,20 @@ s32 VillagerTalkTopics::openShirtRequestMenu() {
     void *p, *q;
     u32 tmp;
     TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&buf));
-    switch (_ZN12Unk_0209ada413func_0209abc4Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getStepEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         p = PlanErrand_GetPlayer(unk_160);
         q = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
         if (*(u16 *)q == *(u16 *)p && memcmp((u8 *)q + 2, (u8 *)p + 2, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(q, p) != 0) {
             if (((u32)PlanErrand_GetStep(unk_160)) <= 1) {
-                if (func_02098f30(&tmp, Talk_IsShirtItem) > 0) {
+                if (Pocket_CountMatching(&tmp, Talk_IsShirtItem) > 0) {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x1b, 0x1b, (s32)((u8 *)&nZ::sRequestTopicsB[18]));
                 } else {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
                 }
             } else {
-                if (Unk_02029234_Range((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0x11a8, 0x12a7)) {
-                    if (func_02098eb0(_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()))) != -1) {
+                if (Unk_02029234_Range((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0x11a8, 0x12a7)) {
+                    if (Pocket_FindItem(_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()))) != -1) {
                         TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x1b, 0x1b, (s32)((u8 *)&nZ::sRequestTopicsB[18]));
                     } else {
                         TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
@@ -7336,8 +7336,8 @@ s32 VillagerTalkTopics::openShirtRequestMenu() {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
                 }
             }
-            if (Unk_02029234_Range((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0x11a8, 0x12a7)) {
-                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
+            if (Unk_02029234_Range((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0x11a8, 0x12a7)) {
+                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
             }
             idx++;
             res = TRUE;
@@ -7446,13 +7446,13 @@ s32 VillagerTalkTopics::openFossilRequestMenu() {
     void *p, *q;
     struct { u8 t[2]; u8 tmp[6]; } L;
     TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&buf));
-    switch (_ZN12Unk_0209ada413func_0209abc4Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getStepEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         p = PlanErrand_GetPlayer(unk_160);
         q = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
         if (*(u16 *)q == *(u16 *)p && memcmp((u8 *)q + 2, (u8 *)p + 2, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(q, p) != 0) {
             if (((u32)PlanErrand_GetStep(unk_160)) <= 1) {
-                if (func_02098f30(L.tmp, Talk_IsFossilItem) > 0) {
+                if (Pocket_CountMatching(L.tmp, Talk_IsFossilItem) > 0) {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x1a, 0x1a, (s32)((u8 *)&nZ::sRequestTopicsB[18]));
                 } else {
                     TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&buf), idx, 0x14, 0x14, (s32)((u8 *)&nZ::sRequestTopicsB[6]));
@@ -7518,16 +7518,16 @@ BOOL VillagerTalkTopics::tryAddCollectRequestChoice(void *a, void *b, u32 c) {
     s32 r5, r6;
     unk_160 = VillagerPlanBlock_GetErrand(Villager_GetPlan(a));
     ((VillagerTalk *)this)->setUnk150((u32)((void *)((s32)PlanErrand_GetRecord(unk_160))));
-    r5 = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    r5 = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     if (((VillagerTalk *)unk_fc)->getEventKind() == 0xb) {
         if (_ZN8PlayerId13func_02094218Ev(PlanErrand_GetPlayer(unk_160)) == 0) {
             r6 = PlanErrand_GetStep(unk_160);
-            v1 = *(u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+            v1 = *(u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()));
             r5 = r7;
             k.w0 = r5;
             k.w1 = r5;
             Clock_GetDateTime(&k);
-            switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+            switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
             case 0:
                 if (Unk_0202849c_F(r7)) {
                     Npc_GetStateHeldItem((u16 *)(&v2), (VillagerTalk *)unk_fc);
@@ -7662,7 +7662,7 @@ BOOL VillagerTalkTopics::tryAddVisitReminderChoice(void *a, void *b, u32 c) {
     u8 *r7 = (u8 *)b + 0x88;
     void *r6 = r7 + 0xc;
     BOOL r4 = FALSE;
-    if (((VillagerTalk *)unk_fc)->getEventKind() == 0xb && _ZN12Unk_0209ada413func_0209ad68Ev(r6) != 0 && _ZN12Unk_0209ada413func_0209ac64Ev(r6) == 0x15 && HouseVisitInvite_IsFrom(r7, _ZN12VillagerData13getVillagerIdEv(a)) != 0 && _ZN12Unk_0209ada413func_0209abc4Ev(r6) == 0) {
+    if (((VillagerTalk *)unk_fc)->getEventKind() == 0xb && _ZN12ErrandRecord8isActiveEv(r6) != 0 && _ZN12ErrandRecord7getKindEv(r6) == 0x15 && HouseVisitInvite_IsFrom(r7, _ZN12VillagerData13getVillagerIdEv(a)) != 0 && _ZN12ErrandRecord7getStepEv(r6) == 0) {
         TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&s));
         TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&s), r4, 0x30, 0x30, (s32)((u8 *)&nZ::sRequestTopicsB[45]));
         TalkChoiceTable_SetRange(this, (Unk_0201c870_Tbl *)(&s), 1, (const u8 *)sLeaveChoiceMsgRange, (s32)sEtcCancelTopicTable);
@@ -7693,7 +7693,7 @@ s32 VillagerTalkTopics::tryAddActiveRequestChoice(void *a, void *b) {
     u32 r4;
     r4 = (u32)PlayerData_GetCurrent();
     res = 0;
-    if (_ZN12Unk_02097ff413func_02098044Ej((void *)r4, 1) != 0) {
+    if (_ZN12Unk_02097ff48testFlagEj((void *)r4, 1) != 0) {
         goto end;
     }
     r4 = Villager_GetPlayerErrandKind(data_021dfd8c, a, (void *)r4);
@@ -7732,14 +7732,14 @@ BOOL VillagerTalkTopics::tryOfferDeliveryRequest(void *a, void *b) {
     Unk_0202839c_Menu s;
     Unk_0201d2d0_Key k;
     void *r7 = VillagerState_GetErrand(Villager_GetState(a));
-    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12Unk_0209ada413func_0209ac10Ev());
+    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12ErrandRecord13func_0209ac10Ev());
     void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     s32 t;
     k.w0 = 0;
     k.w1 = 0;
     Clock_GetDateTime(&k);
-    if (r4 != NULL && _ZN12Unk_0209ada413func_0209ad68Ev(PlayerErrandSlot_GetRecord(r4)) == 0) {
-        t = _ZN12Unk_0209ada413func_0209ac64Ev(r7);
+    if (r4 != NULL && _ZN12ErrandRecord8isActiveEv(PlayerErrandSlot_GetRecord(r4)) == 0) {
+        t = _ZN12ErrandRecord7getKindEv(r7);
         if (func_0209a49c(t, _ZN12VillagerPlan8getStateEv(r6)) != 0 && ((VillagerTalk *)unk_fc)->getEventKind() == 0xb && SaveVillagers_FindBirthdayVillager(data_021dfd8c, &k) == -1 && pickRandomOtherVillager() != 0) {
             TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&s));
             unk_15c = r4;
@@ -7766,7 +7766,7 @@ BOOL VillagerTalkTopics::tryOfferCollectRequest(void *a) {
     r4 = FALSE;
     unk_160 = VillagerPlanBlock_GetErrand(Villager_GetPlan(a));
     if (((VillagerTalk *)unk_fc)->getEventKind() == 0xb) {
-        switch (_ZN12Unk_0209ada413func_0209ac64Ev(r6)) {
+        switch (_ZN12ErrandRecord7getKindEv(r6)) {
         case 0:
             if (Unk_0202849c_F(r4)) {
                 Npc_GetStateHeldItem((u16 *)(&v[1]), (VillagerTalk *)unk_fc);
@@ -7850,7 +7850,7 @@ BOOL VillagerTalkTopics::tryOfferVisitRequest(void *a, void *b) {
     Clock_GetDateTime(&k);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, *(s32 *)((u8 *)gCommManager + 0x64)) == 0) {
         r6 = (u8 *)r6 + 0xc;
-        if (_ZN12Unk_0209ada413func_0209ad68Ev(r6) == 0 && Villager_IsInPlayerErrand(a, b) == 0 && Villager_GetResidentStatus(a) == 3 && ((VillagerTalk *)unk_fc)->getEventKind() == 0xb && Villager_GetUpcomingBirthdayDay(a, 1, &k) == -1 && VillagerEvent_FindUpcomingIndex(1, &k) == 0xb) {
+        if (_ZN12ErrandRecord8isActiveEv(r6) == 0 && Villager_IsInPlayerErrand(a, b) == 0 && Villager_GetResidentStatus(a) == 3 && ((VillagerTalk *)unk_fc)->getEventKind() == 0xb && Villager_GetUpcomingBirthdayDay(a, 1, &k) == -1 && VillagerEvent_FindUpcomingIndex(1, &k) == 0xb) {
             Unk_0202839c_Menu s;
             TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&s));
             TalkChoiceTable_SetRange(this, (Unk_0201c870_Tbl *)(&s), 0, (const u8 *)sSmallTalkChoiceMsgRange, (s32)((u8 *)&nZ::sRequestTopicsB[39]));
@@ -7870,15 +7870,15 @@ BOOL VillagerTalkTopics::tryOfferVisitRequest(void *a, void *b) {
 BOOL VillagerTalkRequestReplyTopics::tryOfferNewRequest(void *a, void *b) {
     void *s = VillagerState_GetErrand(Villager_GetState(a));
     BOOL r = FALSE;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(s) != 0) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 1) == 0) {
+    if (_ZN12ErrandRecord8isActiveEv(s) != 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
             if (func_02063b8c(100) < 30) {
-                switch (_ZN12Unk_0209ada48getClassEv(s)) {
+                switch (_ZN12ErrandRecord8getClassEv(s)) {
                 case 0:
                     r = ((BOOL (*)(void *, void *, void *))_ZN18VillagerTalkTopics22tryOfferCollectRequestEPv)(this, a,  b);
                     break;
                 case 1:
-                    switch (_ZN12Unk_0209ada48getGroupEv(s)) {
+                    switch (_ZN12ErrandRecord8getGroupEv(s)) {
                     case 0:
                         break;
                     case 1:
@@ -7904,7 +7904,7 @@ BOOL VillagerTalkRequestReplyTopics::tryAddSickVillagerChoice(void *arg) {
         if (r4 == Villager_GetIndex(arg)) {
             void *p = SaveVillagers_GetUnk3830(r7);
             void *v = _ZN18SickVillagerRecord13func_0209978cEv(p);
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(v) != 0) {
+            if (_ZN12ErrandRecord8isActiveEv(v) != 0) {
                 if (_ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(p, 0) != 0) {
                     u16 *q = _ZN18SickVillagerRecord13getTopVisitorEv(p);
                     if (q != NULL) {
@@ -7913,7 +7913,7 @@ BOOL VillagerTalkRequestReplyTopics::tryAddSickVillagerChoice(void *arg) {
                             u8 *msg;
                             TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&s));
                             if (r6[0] == q[0] && memcmp(r6 + 1, q + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(r6, q) != 0) {
-                                if (_ZN12Unk_0209ada413func_0209abc4Ev(v) == 1) {
+                                if (_ZN12ErrandRecord7getStepEv(v) == 1) {
                                     msg = ((u8 *)&nZ::sRequestTopicsB[37]);
                                 } else {
                                     msg = ((u8 *)&nZ::sRequestTopicsB[33]);
@@ -8009,7 +8009,7 @@ void VillagerTalkRequestReplyTopics::runChosenTopic(Unk_02027a34_Out *, u32 idx)
 
 void VillagerTalkRequestReplyTopics::selectDeliveryRequest(Unk_02027a34_Out *out) {
     Unk_02027a34_Data *d = NULL;
-    s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    s32 t = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     switch (t) {
     case 10:
         d = &sTalkTopicQ06Req;
@@ -8059,7 +8059,7 @@ void VillagerTalkRequestReplyTopics::selectQTime(Unk_02027a34_Out *out) {
 void VillagerTalkRequestReplyTopics::openDeliveryAcceptChoice() {
     Unk_02027a34_Menu s;
     u8 *r4 = ((u8 *)&nZ::sRequestTopicsA[4]);
-    s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    s32 t = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     switch (t) {
     case 10:
         if (PlayerData_GetCurrent() != NULL) {
@@ -8069,7 +8069,7 @@ void VillagerTalkRequestReplyTopics::openDeliveryAcceptChoice() {
         }
         break;
     case 19:
-        if (func_020991fc() != -1) {
+        if (Inventory_FindEmptyLetter() != -1) {
             r4 = ((u8 *)&nZ::sRequestTopicsA[5]);
         }
         break;
@@ -8092,7 +8092,7 @@ void VillagerTalkRequestReplyTopics::selectQNoB(Unk_02027a34_Out *out) {
 }
 
 void VillagerTalkRequestReplyTopics::cancelRequest() {
-    _ZN12Unk_0209ada413func_0209ad80Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    _ZN12ErrandRecord5clearEv(((void *)((VillagerTalk *)this)->getUnk150()));
     SaveVillagers_UpdateErrands(data_021dfd8c);
 }
 
@@ -8107,7 +8107,7 @@ void VillagerTalkRequestReplyTopics::continueQFull() {
 
 void VillagerTalkRequestReplyTopics::selectDeliveryAccepted(Unk_02027a34_Out *out) {
     Unk_02027a34_Data *d = NULL;
-    s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    s32 t = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     switch (t) {
     case 10:
         d = &sTalkTopicQYes;
@@ -8129,7 +8129,7 @@ void VillagerTalkRequestReplyTopics::setDeliveryDeadline() {
         void *p = ((void *)ErrandRecord_GetTime(((void *)((VillagerTalk *)this)->getUnk150())));
         Clock_GetDateTime(p);
         DateTime_AddMinutes(p, unk_154);
-        _ZN12Unk_0209ada48setExtraEh(((void *)((VillagerTalk *)this)->getUnk150()), unk_155);
+        _ZN12ErrandRecord8setExtraEh(((void *)((VillagerTalk *)this)->getUnk150()), unk_155);
     }
 }
 
@@ -8139,14 +8139,14 @@ void VillagerTalkRequestReplyTopics::acceptDeliveryRequest() {
     void *r6 = unk_fc->unk_82c;
     s32 r4 = 2;
     if (unk_15c != NULL) {
-        s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+        s32 t = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
         void *h = _ZN12VillagerData13getVillagerIdEv(r6);
         PlayerErrandSlot_Start(unk_15c, t, h, unk_158);
-        _ZN12Unk_0209ada413func_0209ad80Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+        _ZN12ErrandRecord5clearEv(((void *)((VillagerTalk *)this)->getUnk150()));
         SaveVillagers_UpdateErrands(data_021dfd8c);
         ((VillagerTalk *)this)->setUnk150((u32)PlayerErrandSlot_GetRecord(unk_15c));
-        unk_120 = *(u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()));
-        s32 k = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+        unk_120 = *(u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()));
+        s32 k = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
         switch (k) {
         case 10: {
             s32 q = _ZN15PlayerInventory15findEmptyPocketEv((u32)_ZN10PlayerData13func_02098750Ev(p7));
@@ -8154,7 +8154,7 @@ void VillagerTalkRequestReplyTopics::acceptDeliveryRequest() {
             break;
         }
         case 19: {
-            s32 x = func_020991e4();
+            s32 x = Inventory_GetEmptyLetter();
             if (x != 0) {
                 PlayerErrandSlot_ComposeLetter(unk_15c, x);
             }
@@ -8169,12 +8169,12 @@ void VillagerTalkRequestReplyTopics::acceptDeliveryRequest() {
 }
 
 s32 VillagerTalkRequestReplyTopics::getRequestKind() {
-    return _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    return _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
 }
 
 void VillagerTalkRequestReplyTopics::selectDeliveryLate(Unk_02027a34_Out *out) {
     Unk_02027a34_Data *d = NULL;
-    s32 t = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    s32 t = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     switch (t) {
     case 10:
         d = &sTalkTopicQ06Over;
@@ -8185,11 +8185,11 @@ void VillagerTalkRequestReplyTopics::selectDeliveryLate(Unk_02027a34_Out *out) {
     }
     if (d != NULL) {
         u8 v = VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c));
-        Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, v, d->unk_00, d->unk_04, (u32)_ZN12Unk_0209ada48getExtraEv(((void *)((VillagerTalk *)this)->getUnk150())), 0);
+        Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, v, d->unk_00, d->unk_04, (u32)_ZN12ErrandRecord8getExtraEv(((void *)((VillagerTalk *)this)->getUnk150())), 0);
         if (unk_15c != NULL) {
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 0), 0);
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 1), 1);
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, _ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
         }
     }
     out->unk_00 = (u32)&unk_100;
@@ -8200,7 +8200,7 @@ void VillagerTalkTopics::continueLateLetterShown() {
     Unk_0201d2d0_Out out;
     u8 b;
     void *r5 = _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 19) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 19) {
         r5 = Talk_FindLetterKind7or8(r5);
         if (r5 != 0) {
             if (_ZN12Unk_0206555413func_02065578Ev(r5) == 7) {
@@ -8223,11 +8223,11 @@ void VillagerTalkTopics::continueDeliveryLate() {
     Unk_0201d2d0_Out out;
     s32 r4;
     void *r6 = _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
-        r4 = Talk_FindFlaggedPocketItem(r6, (u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())));
+        r4 = Talk_FindFlaggedPocketItem(r6, (u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())));
         if (r4 != -1) {
-            unk_120 = *(u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+            unk_120 = *(u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150()));
             c.unk_02 = 0xfff1;
             _ZN15PlayerInventory9setPocketEPtij(r6, &c.unk_02, r4, 0);
             ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[7]));
@@ -8252,7 +8252,7 @@ void VillagerTalkTopics::continueDeliveryLate() {
 
 void VillagerTalkTopics::selectDeliveryLateReply(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *r4 = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         r4 = &sTalkTopicQ06Payback;
         break;
@@ -8268,7 +8268,7 @@ void VillagerTalkTopics::selectDeliveryLateReply(Unk_0201d2d0_Out *out) {
 }
 
 void VillagerTalkTopics::finishLateDelivery() {
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 10) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 10) {
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_120, 2, 5, 0);
         ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7c10));
     }
@@ -8277,7 +8277,7 @@ void VillagerTalkTopics::finishLateDelivery() {
 
 void VillagerTalkTopics::selectDeliveryLost(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *r4 = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         r4 = &sTalkTopicQ06Lost;
         break;
@@ -8300,7 +8300,7 @@ void VillagerTalkTopics::finishLostDelivery() {
 
 void VillagerTalkTopics::selectDeliveryOpened(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *r4 = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         r4 = &sTalkTopicQ06Open;
         break;
@@ -8313,7 +8313,7 @@ void VillagerTalkTopics::selectDeliveryOpened(Unk_0201d2d0_Out *out) {
         if (unk_15c != 0) {
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 0), 0);
             _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, PlayerErrandSlot_GetVillager(unk_15c, 1), 1);
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0, 7);
         }
     }
     out->unk_00 = (u32)&unk_100;
@@ -8323,8 +8323,8 @@ void VillagerTalkTopics::selectDeliveryOpened(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::finishOpenedDelivery() {
     void *r4;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 19) {
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, (u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())), 0, 5, 0);
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 19) {
+        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, (u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())), 0, 5, 0);
         ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7940));
     }
     r4 = _ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c);
@@ -8347,7 +8347,7 @@ extern "C" BOOL Talk_FilterPickDeliveryShirt(u16 *p, s32 v) {
 }
 
 void VillagerTalkTopics::openDeliveryItemPicker() {
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         _ZN12Unk_020d771015setPocketFilterEjjj(this, (void *)Talk_FilterPickDeliveryShirt, 0xd, 0);
         _ZN12Unk_020d771012openSubSceneEi(this, 0);
@@ -8380,7 +8380,7 @@ void VillagerTalkTopics::onDeliveryItemPicked() {
     Unk_02027324_S c;
     Unk_0201d2d0_Out out;
     if (MenuCtrl_IsResultOk() == 0) {
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 19 && ((Unk_0201d2d0_Msg *)unk_3c) != 0) {
+        if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 19 && ((Unk_0201d2d0_Msg *)unk_3c) != 0) {
             ((Unk_0201d2d0_Msg *)unk_3c)->unk_08 = 1;
         }
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[11]));
@@ -8388,7 +8388,7 @@ void VillagerTalkTopics::onDeliveryItemPicked() {
         s32 r4 = 2;
         s32 r6 = MenuCtrl_GetIndex();
         void *r7 = _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
-        switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+        switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
         case 10:
             unk_120 = *_ZN15PlayerInventory9getPocketEi(r7, r6);
             c.unk_02 = 0xfff1;
@@ -8412,7 +8412,7 @@ void VillagerTalkTopics::onDeliveryItemPicked() {
 
 void VillagerTalkTopics::selectDeliveryReceived(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *r4 = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         r4 = &sTalkTopicQ06Get;
         break;
@@ -8431,7 +8431,7 @@ void VillagerTalkTopics::continueDeliveryReceived() {
     Unk_0201d2d0_Out out;
     u8 b;
     void *r4;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 10:
         _ZN12Unk_0201442016requestItemAct12Ev(this);
         ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d8018));
@@ -8514,7 +8514,7 @@ void VillagerTalkTopics::continuePresentLiked() {
 }
 
 void VillagerTalkTopics::selectQ06Open3(Unk_0201d2d0_Out *out) {
-    _ZN12Unk_0209ada413func_0209abb4Eh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
+    _ZN12ErrandRecord7setStepEh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), sTalkTopicQ06Open3.unk_00, sTalkTopicQ06Open3.unk_04, 0, 0);
     out->unk_00 = (u32)&unk_100;
     out->unk_04 = unk_11e;
@@ -8556,7 +8556,7 @@ void VillagerTalkTopics::selectQ07Open2(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::finishOpenedLetter() {
     void *r4;
-    _ZN12Unk_0209ada413func_0209abb4Eh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
+    _ZN12ErrandRecord7setStepEh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
     r4 = PlayerErrandSlot_GetVillager((void *)unk_15c_w, 0);
     SaveVillagers_AddRelation(data_021dfd8c, r4, _ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c), -0x14);
     _ZN12Unk_0201442015requestKeepItemEv(this);
@@ -8619,16 +8619,16 @@ void VillagerTalkTopics::showLetter() {
 void VillagerTalkTopics::selectDeliveryFin(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ06Fin;
     void *r7;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
+    switch (_ZN12ErrandRecord7getKindEv(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
     case 10:
-        _ZN12Unk_0209ada413func_0209abb4Eh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
+        _ZN12ErrandRecord7setStepEh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
         if (Unk_02026ab0_R1(&unk_120, 0x11a8, 0x12a7)) {
             Villager_AddReceivedItem(unk_fc->unk_82c, &unk_120);
         }
         break;
     case 0x13:
         r7 = Talk_FindLetterKind7or8(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
-        _ZN12Unk_0209ada413func_0209abb4Eh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
+        _ZN12ErrandRecord7setStepEh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
         d = &sTalkTopicQ07Fin;
         if (r7 != 0) {
             func_02065c94(r7);
@@ -8642,7 +8642,7 @@ void VillagerTalkTopics::selectDeliveryFin(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::selectDeliveryReminder(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
+    switch (_ZN12ErrandRecord7getKindEv(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
     case 10:
         d = &sTalkTopicQ06Con;
         break;
@@ -8659,7 +8659,7 @@ void VillagerTalkTopics::selectDeliveryReminder(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::selectDeliveryReport(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = 0;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
+    switch (_ZN12ErrandRecord7getKindEv(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
     case 10:
         d = &sTalkTopicQ06Report;
         break;
@@ -8685,7 +8685,7 @@ extern "C" void Talk_GetMoneyItem(u16 *out, u32 arg) {
 void VillagerTalkTopics::continueDeliveryReport(void *p) {
     u16 h[3];
     Unk_0201d568_SW s;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
+    switch (_ZN12ErrandRecord7getKindEv(((void * (*)())_ZN12VillagerTalk9getUnk150Ev)())) {
     case 10:
         TalkChoiceTable_Init(this, (Unk_0201c870_Tbl *)(&s));
         TalkChoiceTable_Set(this, (Unk_0201c870_Tbl *)(&s), 0, 0x24, 0x24, 0);
@@ -8895,7 +8895,7 @@ void VillagerTalkTopics::gotoDeliveryEnd() {
 
 void VillagerTalkTopics::selectDeliveryEnd(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d;
-    s32 r = _ZN12Unk_0209ada413func_0209ac64Ev((void *)(((VillagerTalk *)this)->getUnk150()));
+    s32 r = _ZN12ErrandRecord7getKindEv((void *)(((VillagerTalk *)this)->getUnk150()));
     switch (r) {
     case 0xa:
         d = &sTalkTopicQ06End;
@@ -8922,13 +8922,13 @@ void VillagerTalkTopics::selectCollectRequest(Unk_0201d2d0_Out *out) {
     s32 r4;
     u8 buf[2];
     s32 idx;
-    r4 = _ZN12Unk_0209ada413func_0209ac64Ev((void *)(((VillagerTalk *)this)->getUnk150()));
+    r4 = _ZN12ErrandRecord7getKindEv((void *)(((VillagerTalk *)this)->getUnk150()));
     idx = r6;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev((void *)((u32)PlanErrand_GetRecord(unk_160))) != 0) {
+    if (_ZN12ErrandRecord8isActiveEv((void *)((u32)PlanErrand_GetRecord(unk_160))) != 0) {
         r6 = ((u32)PlanErrand_GetStep(unk_160));
-        r4 = _ZN12Unk_0209ada413func_0209ac64Ev((void *)((u32)PlanErrand_GetRecord(unk_160)));
+        r4 = _ZN12ErrandRecord7getKindEv((void *)((u32)PlanErrand_GetRecord(unk_160)));
     }
-    _ZN12Unk_0209ada413getClassIndexEPi((void *)(((VillagerTalk *)this)->getUnk150()), &idx);
+    _ZN12ErrandRecord13getClassIndexEPi((void *)(((VillagerTalk *)this)->getUnk150()), &idx);
     if (r6 < PlanErrand_GetStepCount(r4) && idx < 5) {
         d.unk_00 = sTalkKeysQReq[idx][r6];
         if (r4 == 4) {
@@ -9181,11 +9181,11 @@ void VillagerTalkRequestStartTopics::prepareRequestItem() {
     s32 r5 = 0;
     pr.a = r5;
     pr.b = r5;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(unk_160)) != 0) {
+    if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(unk_160)) != 0) {
         r5 = PlanErrand_GetStep(unk_160);
     }
     Clock_GetDateTime(&pr);
-    switch ((u32)_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch ((u32)_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         if (unk_120 != 0xfff1) {
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_120, 0, 7);
@@ -9261,17 +9261,17 @@ void VillagerTalkRequestStartTopics::registerRequestAccepted() {
     void *r6 = unk_fc->unk_82c;
     s32 r4 = 0;
     s32 r7;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(unk_160)) == 0) {
-        r7 = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(unk_160)) == 0) {
+        r7 = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
         r4 = 1;
     } else {
-        r7 = _ZN12Unk_0209ada413func_0209ac64Ev(PlanErrand_GetRecord(unk_160));
+        r7 = _ZN12ErrandRecord7getKindEv(PlanErrand_GetRecord(unk_160));
     }
     PlanErrand_Assign(unk_160, r7, &unk_120, ((s32)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())), r4);
     VillagerSync_Act3D(r6, r7, &unk_120, (*(Unk_02025540_Tbl * *)&gCommManager)->unk_64, r4);
     Villager_GetState(r6);
     ((void (*)())VillagerState_GetErrand)();
-    ((s32 (*)())_ZN12Unk_0209ada413func_0209ad80Ev)();
+    ((s32 (*)())_ZN12ErrandRecord5clearEv)();
 }
 
 void VillagerTalkRequestStartTopics::selectQNo(Unk_020254ec_Out *out) {
@@ -9285,25 +9285,25 @@ void VillagerTalkRequestStartTopics::registerRequestDeclined() {
     void *r6 = unk_fc->unk_82c;
     s32 r4 = 0;
     s32 r7;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(unk_160)) == 0) {
-        r7 = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(unk_160)) == 0) {
+        r7 = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
         r4 = 1;
     } else {
-        r7 = _ZN12Unk_0209ada413func_0209ac64Ev(PlanErrand_GetRecord(unk_160));
+        r7 = _ZN12ErrandRecord7getKindEv(PlanErrand_GetRecord(unk_160));
     }
     PlanErrand_Assign(unk_160, r7, &unk_120, 0, r4);
     VillagerSync_Act3D(r6, r7, &unk_120, 4, r4);
     Villager_GetState(r6);
     ((void (*)())VillagerState_GetErrand)();
-    ((s32 (*)())_ZN12Unk_0209ada413func_0209ad80Ev)();
+    ((s32 (*)())_ZN12ErrandRecord5clearEv)();
 }
 
 void VillagerTalkRequestStartTopics::selectQCon(Unk_020254ec_Out *out) {
     Unk_020254ec_Data d = sTalkTopicQConDefault;
     s32 r6 = PlanErrand_GetStep(unk_160);
-    s32 r7 = _ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()));
+    s32 r7 = _ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()));
     s32 x = 0;
-    _ZN12Unk_0209ada413getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &x);
+    _ZN12ErrandRecord13getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &x);
     if (r6 < PlanErrand_GetStepCount(r7) && x < 5) {
         d.unk_00 = sTalkKeysQCon[x][r6];
     }
@@ -9339,7 +9339,7 @@ void VillagerTalkTopics::selectQ05Talk(Unk_0201d2d0_Out *out) {
 }
 
 void VillagerTalkTopics::openCatchPicker() {
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 0) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 0) {
         _ZN12Unk_020d771015setPocketFilterEjjj(this, (void *)((void (*)())Talk_FilterPickInsect), 0xd, 1);
     } else {
         _ZN12Unk_020d771015setPocketFilterEjjj(this, (void *)((void (*)())Talk_FilterPickFish), 0xd, 1);
@@ -9413,7 +9413,7 @@ void VillagerTalkTopics::compareCatchPrice() {
 
 void VillagerTalkTopics::selectQPwin(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Pwin;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Pwin;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9425,7 +9425,7 @@ void VillagerTalkTopics::takePlayerCatch() {
     u16 h;
     s32 r = MenuCtrl_GetIndex();
     h = 0xfff1;
-    func_0209909c(&h, 0, r);
+    Pocket_SetItem(&h, 0, r);
     _ZN12Unk_0201442015requestKeepItemEv(this);
     ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7a70));
 }
@@ -9452,7 +9452,7 @@ void VillagerTalkTopics::selectQPwin2(Unk_0201d2d0_Out *out) {
             VillagerSync_ReceivedItem(r7, unk_124, &unk_120);
         }
     }
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Pwin2;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, unk_11e, 0);
@@ -9463,7 +9463,7 @@ void VillagerTalkTopics::selectQPwin2(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::selectQPlose(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Plose;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Plose;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9480,7 +9480,7 @@ void VillagerTalkTopics::cancelRequestChain() {
 
 void VillagerTalkTopics::selectQPdraw(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Pdraw;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Pdraw;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9492,7 +9492,7 @@ void VillagerTalkTopics::selectQPdraw(Unk_0201d2d0_Out *out) {
 void VillagerTalkTopics::checkVillagerCatch() {
     u8 buf[2];
     Unk_0201d2d0_Out out;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0:
         if (Unk_02024df4_Range(PlanErrand_GetShownItem(unk_160), 0x12b0, 0x12e7)) {
             ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[14]));
@@ -9502,7 +9502,7 @@ void VillagerTalkTopics::checkVillagerCatch() {
             buf[0] = out.unk_04;
             _ZN15TalkWindowState14setNextMessageEPhPv(((u32 *)unk_3c), &buf[0], out.unk_00);
         } else {
-            _ZN12Unk_020d771013setPocketItemEjjj(this, (void *)((s32)Talk_GetPocketMaskForItem((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
+            _ZN12Unk_020d771013setPocketItemEjjj(this, (void *)((s32)Talk_GetPocketMaskForItem((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
             _ZN12Unk_020d771012openSubSceneEi(this, 0);
             ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7a90));
         }
@@ -9516,7 +9516,7 @@ void VillagerTalkTopics::checkVillagerCatch() {
             buf[1] = out.unk_04;
             _ZN15TalkWindowState14setNextMessageEPhPv(((u32 *)unk_3c), &buf[1], out.unk_00);
         } else {
-            _ZN12Unk_020d771013setPocketItemEjjj(this, (void *)((s32)Talk_GetPocketMaskForItem((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
+            _ZN12Unk_020d771013setPocketItemEjjj(this, (void *)((s32)Talk_GetPocketMaskForItem((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
             _ZN12Unk_020d771012openSubSceneEi(this, 0);
             ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7b20));
         }
@@ -9542,7 +9542,7 @@ void VillagerTalkTopics::onNloseCatchPicked() {
         s32 r = MenuCtrl_GetIndex();
         unk_120 = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), r);
         h = 0xfff1;
-        func_0209909c(&h, 0, r);
+        Pocket_SetItem(&h, 0, r);
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_120, 0, 4, 0);
         ((VillagerTalk *)this)->setNextQueuedFn((*(Unk_020d8938_Fn *)&data_020d7d10));
     }
@@ -9564,7 +9564,7 @@ void VillagerTalkTopics::gotoQNlose() {
 
 void VillagerTalkTopics::selectQNwin(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Nwin;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Nwin;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9576,7 +9576,7 @@ void VillagerTalkTopics::selectQNwin(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::selectQNlose(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Nlose;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Nlose;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9611,7 +9611,7 @@ void VillagerTalkTopics::selectQPay(Unk_0201d2d0_Out *out) {
             VillagerSync_ReceivedItem(r7, unk_124, &unk_120);
         }
     }
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Pay;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9642,7 +9642,7 @@ void VillagerTalkTopics::handOverRequestReward() {
 
 void VillagerTalkTopics::selectQRevenge(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data *d = &sTalkTopicQ01Revenge;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 1) {
         d = &sTalkTopicQ02Revenge;
     }
     Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)), d->unk_00, d->unk_04, 0, 0);
@@ -9653,20 +9653,20 @@ void VillagerTalkTopics::selectQRevenge(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::advanceRequestStep() {
     void *r4 = unk_fc->unk_82c;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
         if (Item_IsFurniture(&unk_120) != 0) {
             u32 v = Villager_GetFurnitureTasteScore(r4, &unk_120);
             u32 w = PlanErrand_AddCount(unk_160, (u8)v);
             VillagerSync_Act3C05(r4, (u8)w);
         }
     }
-    _ZN12Unk_0209ada413func_0209abb4Eh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
+    _ZN12ErrandRecord7setStepEh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
     VillagerSync_Act3C00(r4, 1);
     VillagerState_SetUnk1dBit1(Villager_GetState(r4));
 }
 
 void VillagerTalkTopics::openRequestItemPicker() {
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 2:
         if (((u32)PlanErrand_GetStep(unk_160)) <= 1) {
             _ZN12Unk_020d771015setPocketFilterEjjj(this, ((void (*)())Talk_FilterPickFossil), 0xd, 1);
@@ -9680,7 +9680,7 @@ void VillagerTalkTopics::openRequestItemPicker() {
         if (((u32)PlanErrand_GetStep(unk_160)) <= 1) {
             _ZN12Unk_020d771015setPocketFilterEjjj(this, ((void (*)())Talk_FilterPickShirt), 0xd, 1);
         } else {
-            _ZN12Unk_020d771013setPocketItemEjjj(this, ((void *)Talk_GetPocketMaskForItem((u16 *)_ZN12Unk_0209ada413func_0209ab94Ev(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
+            _ZN12Unk_020d771013setPocketItemEjjj(this, ((void *)Talk_GetPocketMaskForItem((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
         }
         _ZN12Unk_020d771012openSubSceneEi(this, 0);
         ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d79c0));
@@ -9718,7 +9718,7 @@ void VillagerTalkTopics::checkRequestItem() {
     Unk_0201d2d0_Out out;
     u8 b;
     void *r4 = unk_fc->unk_82c;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 2:
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[21]));
         if (unk_120 != 0xfff1) {
@@ -9797,7 +9797,7 @@ void VillagerTalkTopics::checkRequestItem() {
 
 void VillagerTalkTopics::selectQMiss(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data d = sTalkTopicQ04Miss;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
         d.unk_00 = (u32)sTalkKeyQ05Miss;
     }
     if (((Unk_0201d2d0_Menu *)unk_3c)) {
@@ -9816,7 +9816,7 @@ void VillagerTalkTopics::giveBackHeldItem() {
 void VillagerTalkTopics::selectQMissB(Unk_0201d2d0_Out *out) {
     u32 r6 = 2;
     u32 r7 = (u32)data_020c7a20;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 4) {
         r7 = (u32)data_020c7a2c;
         r6 = 3;
     }
@@ -9831,7 +9831,7 @@ void VillagerTalkTopics::selectQMissB(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::selectQThanks(Unk_0201d2d0_Out *out) {
     Unk_0201d2d0_Data d = sTalkTopicQThanksDefault;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 2:
         d.unk_00 = (u32)sTalkKeyQ03Thanks;
         break;
@@ -9855,8 +9855,8 @@ void VillagerTalkTopics::selectQThanks(Unk_0201d2d0_Out *out) {
 void VillagerTalkTopics::takeRequestItem() {
     void *r2 = ((void *)MenuCtrl_GetIndex());
     u16 h = 0xfff1;
-    func_0209909c(&h, 0, (s32)r2);
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
+    Pocket_SetItem(&h, 0, (s32)r2);
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
         _ZN12Unk_0201442016requestItemAct0FEv(this);
         if (Unk_020242d8_R1(_ZN23VillagerDataProfileView8getShirtEv(unk_fc->unk_82c), 0x11a8, 0x12a7)) {
             unk_198 = *_ZN23VillagerDataProfileView8getShirtEv(unk_fc->unk_82c);
@@ -9870,10 +9870,10 @@ void VillagerTalkTopics::takeRequestItem() {
 void VillagerTalkTopics::gotoQRewardTopic() {
     Unk_0201d2d0_Out out;
     u8 b;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 2) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 2) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[23]));
     } else {
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
+        if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
             ((Unk_0202ce90_Base *)this)->playOwnerIdleAnim();
         }
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[22]));
@@ -9918,7 +9918,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
     t = PlanErrand_GetRecord(unk_160);
     r7 = func_02063b8c(100);
     r5 = PlanErrand_GetStep(unk_160);
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(t)) {
+    switch (_ZN12ErrandRecord7getKindEv(t)) {
     case 0:
     case 1:
     case 2:
@@ -10049,7 +10049,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
 void VillagerTalkRequestItemTopics::selectQItemB(Unk_020238b0_Out *out) {
     void *r6 = unk_fc->unk_82c;
     u16 saved = unk_120;
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
+    if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 3) {
         saved = unk_198;
         unk_198 = 0xfff1;
     }
@@ -10075,7 +10075,7 @@ void VillagerTalkRequestItemTopics::handOverQItemB() {
 void VillagerTalkRequestItemTopics::gotoQClearOrEnd() {
     u8 b;
     Unk_020238b0_Out out;
-    s32 n = PlanErrand_GetStepCount(_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150())));
+    s32 n = PlanErrand_GetStepCount(_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())));
     if (PlanErrand_GetStep(unk_160) >= n - 1) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[25]));
     } else {
@@ -10090,7 +10090,7 @@ void VillagerTalkRequestItemTopics::gotoQClearOrEnd() {
 
 void VillagerTalkRequestItemTopics::selectQClear(Unk_020238b0_Out *out) {
     Unk_020238b0_Data d = sTalkTopicQClearDefault;
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 2:
         d.unk_00 = (u32)data_020c7a44;
         break;
@@ -10109,9 +10109,9 @@ void VillagerTalkRequestItemTopics::selectQClear(Unk_020238b0_Out *out) {
 
 void VillagerTalkRequestItemTopics::selectQEnd(Unk_020238b0_Out *out) {
     Unk_020238b0_Data *e = sTalkTopicsQEnd;
-    if (_ZN12Unk_0209ada48getClassEv(((void *)((VillagerTalk *)this)->getUnk150())) == 0) {
+    if (_ZN12ErrandRecord8getClassEv(((void *)((VillagerTalk *)this)->getUnk150())) == 0) {
         s32 idx = 0;
-        if (_ZN12Unk_0209ada413getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx) != 0) {
+        if (_ZN12ErrandRecord13getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx) != 0) {
             e = &sTalkTopicsQEnd[idx];
         }
     }
@@ -10123,7 +10123,7 @@ void VillagerTalkRequestItemTopics::selectQEnd(Unk_020238b0_Out *out) {
 
 void VillagerTalkRequestItemTopics::finishRequestChain() {
     void *r4 = unk_fc->unk_82c;
-    _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(unk_160), 3);
+    _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(unk_160), 3);
     VillagerSync_Act3C00(unk_fc->unk_82c, 3);
     if (_ZN11CommManager12isSlotActiveEi(((void * *)&gCommManager)[0], (u32)(((void **)((void * *)&gCommManager)[0])[0x64 / 4])) == 0) {
         Villager_UpdatePlanErrand(r4);
@@ -10135,7 +10135,7 @@ void VillagerTalkRequestItemTopics::finishRequestChain() {
 void VillagerTalkRequestItemTopics::selectQReturn(Unk_020238b0_Out *out) {
     Unk_020238b0_Data d = sTalkTopicQReturnDefault;
     s32 idx = 0;
-    _ZN12Unk_0209ada413getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx);
+    _ZN12ErrandRecord13getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx);
     if (idx < 5) {
         d.unk_00 = sTalkKeysQReturn[idx];
     }
@@ -10149,7 +10149,7 @@ void VillagerTalkRequestItemTopics::selectQReturn(Unk_020238b0_Out *out) {
 void VillagerTalkRequestItemTopics::selectQComp(Unk_020238b0_Out *out) {
     Unk_020238b0_Data d = sTalkTopicQCompDefault;
     s32 idx = 0;
-    _ZN12Unk_0209ada413getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx);
+    _ZN12ErrandRecord13getClassIndexEPi(((void *)((VillagerTalk *)this)->getUnk150()), &idx);
     if (idx < 5) {
         d.unk_00 = sTalkKeysQComp[idx];
     }
@@ -10185,7 +10185,7 @@ void VillagerTalkTopics::onArbeitItemPicked() {
         PlayerData_GetCurrent();
         unk_120 = *_ZN15PlayerInventory9getPocketEi(((void * (*)())_ZN10PlayerData13func_02098750Ev)(), t);
         h = 0xfff1;
-        func_0209909c(&h, 0, t);
+        Pocket_SetItem(&h, 0, t);
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[29]));
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_120, 0, 5, 0);
     } else {
@@ -10202,7 +10202,7 @@ void VillagerTalkTopics::selectEvArbeitReceive(Unk_0201d2d0_Out *out) {
     u16 h[2];
     Unk_0202368c_Obj o1, o2;
     Villager_MakePersonalityFileName(&unk_100, 30, sTalkTopicEvArbeit, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)));
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0xe: {
         unk_11e = 0xa;
         _ZN12ItemPickSpec3setEii(&o1, 0, 0);
@@ -10210,7 +10210,7 @@ void VillagerTalkTopics::selectEvArbeitReceive(Unk_0201d2d0_Out *out) {
         unk_198 = h[0];
         func_02063388(&o1);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_198, 0, 7);
-        _ZN12Unk_0209ada413func_0209abb4Eh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
+        _ZN12ErrandRecord7setStepEh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
         break;
     }
     case 0x10: {
@@ -10220,7 +10220,7 @@ void VillagerTalkTopics::selectEvArbeitReceive(Unk_0201d2d0_Out *out) {
         unk_198 = h[1];
         func_02063388(&o2);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_198, 0, 7);
-        _ZN12Unk_0209ada413func_0209abb4Eh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
+        _ZN12ErrandRecord7setStepEh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
         break;
     }
     case 0x11:
@@ -10231,7 +10231,7 @@ void VillagerTalkTopics::selectEvArbeitReceive(Unk_0201d2d0_Out *out) {
         } else {
             unk_11e = 0x16;
         }
-        _ZN12Unk_0209ada413func_0209abb4Eh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
+        _ZN12ErrandRecord7setStepEh(((void *)((VillagerTalk *)this)->getUnk150()), 1);
         break;
     default:
         unk_11e = 0xa;
@@ -10242,12 +10242,12 @@ void VillagerTalkTopics::selectEvArbeitReceive(Unk_0201d2d0_Out *out) {
 }
 
 void VillagerTalkTopics::giveArbeitReward() {
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0xe:
     case 0x10: {
-        s32 t = func_02098ffc();
+        s32 t = Pocket_FindEmpty();
         if (t >= 0) {
-            func_0209909c(&unk_198, 0, t);
+            Pocket_SetItem(&unk_198, 0, t);
             func_0203c42c((s32)((void *)_ZN10PlayerData10getCatalogEv(PlayerData_GetCurrent())), &unk_198, 0, 1);
         }
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_198, 0, 5, 0);
@@ -10273,7 +10273,7 @@ void VillagerTalkTopics::gotoEvArbeitEnd() {
 
 void VillagerTalkTopics::selectEvArbeitEnd(Unk_0201d2d0_Out *out) {
     Villager_MakePersonalityFileName(&unk_100, 30, sTalkTopicEvArbeit, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c)));
-    switch (_ZN12Unk_0209ada413func_0209ac64Ev(((void *)((VillagerTalk *)this)->getUnk150()))) {
+    switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 0xe:
         unk_11e = 0xb;
         break;
@@ -10309,7 +10309,7 @@ void VillagerTalkTopics::selectQ12Thanks(Unk_0201d2d0_Out *out) {
 void VillagerTalkTopics::checkPocketsForQItem() {
     u8 b;
     Unk_0201d2d0_Out out;
-    if (func_02098ffc() != -1) {
+    if (Pocket_FindEmpty() != -1) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[34]));
     } else {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[36]));
@@ -10385,8 +10385,8 @@ void VillagerTalkTopics::onQ12FullClose() {
     void *p;
     SaveVillagers_GetUnk3830(data_021dfd8c);
     p = ((void * (*)())_ZN18SickVillagerRecord13func_0209978cEv)();
-    if (((s32 (*)())_ZN12Unk_0209ada413func_0209ad68Ev)() != 0) {
-        _ZN12Unk_0209ada413func_0209abb4Eh(p, 1);
+    if (((s32 (*)())_ZN12ErrandRecord8isActiveEv)() != 0) {
+        _ZN12ErrandRecord7setStepEh(p, 1);
     }
 }
 
@@ -10400,7 +10400,7 @@ void VillagerTalkTopics::selectQ12FullPart1(Unk_0201d2d0_Out *out) {
 void VillagerTalkTopics::recheckPocketsForQItem() {
     u8 b;
     Unk_0201d2d0_Out out;
-    if (func_02098ffc() != -1) {
+    if (Pocket_FindEmpty() != -1) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[34]));
     } else {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[38]));
@@ -10523,7 +10523,7 @@ void VillagerTalkTopics::storeReservation() {
     HouseVisitInvite_Set(p + 0x88, _ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c), &s);
     Villager_GetState(unk_fc->unk_82c);
     ((void (*)())VillagerState_GetErrand)();
-    ((void (*)())_ZN12Unk_0209ada413func_0209ad80Ev)();
+    ((void (*)())_ZN12ErrandRecord5clearEv)();
     SaveVillagers_UpdateErrands(data_021dfd8c);
 }
 
@@ -10726,7 +10726,7 @@ BOOL VillagerTalkTopics::selectTsuHobbyHint() {
         (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7f28), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7f20), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7f08),
         (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7ef8), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7ef0)};
     s32 idx = 8;
-    if (Unk_02021ef8_IsZero(data_020e416c)) {
+    if (Unk_02021ef8_IsZero(gFieldSceneKind)) {
         if (unk_fc->unk_82c != 0) {
             idx = _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(unk_fc->unk_82c)));
         }
@@ -11233,7 +11233,7 @@ BOOL VillagerTalkTopics::selectTsuHobbyAct() {
         (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7e00), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7ee0), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7b58),
         (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7c08), (*(BOOL (VillagerTalkTopics::**)())nZ::data_020d7dd8)};
     s32 idx;
-    if (Unk_02021ef8_IsZero(data_020e416c)) {
+    if (Unk_02021ef8_IsZero(gFieldSceneKind)) {
         idx = VillagerState_GetActivity(Villager_GetState(unk_fc->unk_82c));
         if (Trend_IsValid(idx) != 0) {
             return (this->*tbl[idx])();
@@ -11376,7 +11376,7 @@ BOOL VillagerTalkTopics::selectTsuDress() {
     if (r5 != 0) {
         if (Unk_02021d50_R((u16 *)&h, 0x12a8, 0x12af)) {
             t = _ZN12VillagerData10getPatternEv(r7);
-            q = _ZN12Unk_02071ed013func_02071fa0Ev(_ZN7Pattern13func_02071e04Ev(t));
+            q = _ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(t));
             if (r5[0] == q[0] && memcmp(r5 + 1, q + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(r5, q) != 0) {
                 r4 = 1;
             } else if (_ZN8PlayerId13func_020941e8EPS_(r5, q) == 0) {
@@ -11389,8 +11389,8 @@ BOOL VillagerTalkTopics::selectTsuDress() {
                 }
             }
             if (r4 != -1) {
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, (u32)_ZN12Unk_02071ed013func_02071fa0Ev(_ZN7Pattern13func_02071e04Ev(t)), 0);
-                _ZN16ActorTalkRequest15setTownNameSlotEjj(this, (u32)func_0209409c(_ZN12Unk_02071ed013func_02071fa0Ev(_ZN7Pattern13func_02071e04Ev(t))), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, (u32)_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(t)), 0);
+                _ZN16ActorTalkRequest15setTownNameSlotEjj(this, (u32)func_0209409c(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(t))), 1);
             }
         } else {
             r4 = 0;
@@ -11532,15 +11532,15 @@ BOOL VillagerTalkRumorTopics::selectTsuFriend() {
 BOOL VillagerTalkRumorTopics::selectTsuSpot() {
     s32 t = 4;
     Unk_02021340_Map *map = gSceneBlockMap;
-    if (func_020b51a4() != 0) {
-        s32 v = func_020b51d4();
+    if (Scene_InVillagerHouse() != 0) {
+        s32 v = Scene_GetVillagerHouse();
         if (v == Villager_GetIndex(unk_fc->unk_82c)) {
             t = 3;
             goto end;
         }
     }
     if (map != NULL) {
-        BOOL z = ((u8 *)&data_020e416c)[0] == 0 ? TRUE : FALSE;
+        BOOL z = ((u8 *)&gFieldSceneKind)[0] == 0 ? TRUE : FALSE;
         if (z) {
             Unk_02021340_Scene *sc = unk_fc;
             Unk_02021340_Pos *pp = &sc->pos;
@@ -12357,7 +12357,7 @@ BOOL VillagerTalkTopics::selectTsuStar() {
     BOOL result;
     u8 *rec;
     void *q;
-    if (!Unk_02020b38_IsZero(data_020e416c)) {
+    if (!Unk_02020b38_IsZero(gFieldSceneKind)) {
         return FALSE;
     }
     base = Constellation_GetData();
@@ -13041,7 +13041,7 @@ void VillagerTalkHobbyTopics::selectEvFishing(Unk_0201ef00_Out *out) {
     Unk_021ed24c *dp = &gSaveData.unk_15ef4;
     sp14 = unk_fc->unk_82c;
     if (dp) {
-        func_02085818(v, dp);
+        ContestRecord_GetItem(v, dp);
         q = v;
     } else {
         v[1] = 0xfff1;
@@ -13057,8 +13057,8 @@ void VillagerTalkHobbyTopics::selectEvFishing(Unk_0201ef00_Out *out) {
         r6 = 0;
     } else if (dp) {
         if (Unk_0201f170_InRange(&id, 0x12e8, 0x131f)) {
-            sp1c = _ZN12Unk_0208581013func_020858acEv(dp);
-            r4 = ((void *)_ZN12Unk_0208581013func_0208586cEv(dp));
+            sp1c = _ZN13ContestRecord13func_020858acEv(dp);
+            r4 = ((void *)_ZN13ContestRecord17getHolderVillagerEv(dp));
             if (_ZN10VillagerId7isValidEv(r4)) {
                 Unk_0201f170_Rec *a = (Unk_0201f170_Rec *)r4;
                 Unk_0201f170_Rec *b = (Unk_0201f170_Rec *)_ZN12VillagerData13getVillagerIdEv(sp14);
@@ -13070,9 +13070,9 @@ void VillagerTalkHobbyTopics::selectEvFishing(Unk_0201ef00_Out *out) {
                 _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, r4, 1);
             } else if (_ZN8PlayerId13func_02094218Ev((void *)sp1c)) {
                 r6 = Talk_GetTourneyHourBlock(sp18);
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN12Unk_0208581013func_020858acEv(dp), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(dp), 1);
             }
-            _ZN16ActorTalkRequest17setFixedPointSlotEiji(this, _ZN12Unk_0208581013func_02085810Ev(dp), 0, 1, 3);
+            _ZN16ActorTalkRequest17setFixedPointSlotEiji(this, _ZN13ContestRecord7getSizeEv(dp), 0, 1, 3);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (void *)&id, 0, 7);
         }
     }
@@ -13106,7 +13106,7 @@ void VillagerTalkHobbyTopics::selectEvInsect(Unk_0201ef00_Out *out) {
     Unk_021ed24c *dp = &gSaveData.unk_15ef4;
     sp14 = unk_fc->unk_82c;
     if (dp) {
-        func_02085818(v, dp);
+        ContestRecord_GetItem(v, dp);
         q = v;
     } else {
         v[1] = 0xfff1;
@@ -13122,8 +13122,8 @@ void VillagerTalkHobbyTopics::selectEvInsect(Unk_0201ef00_Out *out) {
         r6 = 0;
     } else if (dp) {
         if (Unk_0201f170_InRange(&id, 0x12b0, 0x12e7)) {
-            sp1c = _ZN12Unk_0208581013func_020858acEv(dp);
-            r4 = ((void *)_ZN12Unk_0208581013func_0208586cEv(dp));
+            sp1c = _ZN13ContestRecord13func_020858acEv(dp);
+            r4 = ((void *)_ZN13ContestRecord17getHolderVillagerEv(dp));
             if (_ZN10VillagerId7isValidEv(r4)) {
                 Unk_0201f170_Rec *a = (Unk_0201f170_Rec *)r4;
                 Unk_0201f170_Rec *b = (Unk_0201f170_Rec *)_ZN12VillagerData13getVillagerIdEv(sp14);
@@ -13135,9 +13135,9 @@ void VillagerTalkHobbyTopics::selectEvInsect(Unk_0201ef00_Out *out) {
                 _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, r4, 1);
             } else if (_ZN8PlayerId13func_02094218Ev((void *)sp1c)) {
                 r6 = Talk_GetTourneyHourBlock(sp18);
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN12Unk_0208581013func_020858acEv(dp), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(dp), 1);
             }
-            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN12Unk_0208581013func_02085810Ev(dp) >> 12, 0, 3, 0, 0);
+            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN13ContestRecord7getSizeEv(dp) >> 12, 0, 3, 0, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (void *)&id, 0, 7);
         }
     }
@@ -13264,7 +13264,7 @@ void VillagerTalkAcornTopics::selectEvAcornTalk(u32 arg) {
     } else if (r6 == 0) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[2]));
     } else if (r7 == 0) {
-        if (func_02098f30(&tmp, Talk_IsAcornItem) > 0) {
+        if (Pocket_CountMatching(&tmp, Talk_IsAcornItem) > 0) {
             ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[4]));
         } else {
             ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[2]));
@@ -13361,7 +13361,7 @@ void VillagerTalkAcornTopics::onAcornPicked() {
         u32 r4 = ((u32)MenuCtrl_GetIndex());
         unk_120 = *(u16 *)((u32)_ZN15PlayerInventory9getPocketEi((void *)((u32)_ZN10PlayerData13func_02098750Ev((void *)((u32)PlayerData_GetCurrent()))), r4));
         c.unk_02 = 0xfff1;
-        func_0209909c(&c.unk_02, 0, r4);
+        Pocket_SetItem(&c.unk_02, 0, r4);
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_120, 0, 5, 0);
         ((VillagerTalk *)this)->setNextQueuedFn((*(Unk_020d8938_Fn *)nZ::data_020d7ba0));
     } else {
@@ -13472,7 +13472,7 @@ void VillagerTalkAcornTopics::selectEvAcornMsg15(Unk_0201e5a4_Out *out) {
 
 void VillagerTalkAcornTopics::selectEvSnowfesTalk(u32 arg) {
     u32 r6 = unk_fc->unk_82c;
-    u32 v = ((u32)_ZN12Unk_0208581013func_02085828Ev(data_021ed24c));
+    u32 v = ((u32)_ZN13ContestRecord16getVotedVillagerEv(gContestRecord));
     u32 r5 = 2;
     if (((VillagerTalkTopics *)this)->selectSituationGreeting((Unk_0201d2d0_Out *)arg)) {
         VillagerTalk_EnsureMemory((u8 *)this, (s32 *)(&unk_128), &unk_124, r6, 0);
@@ -13500,7 +13500,7 @@ void VillagerTalkAcornTopics::selectEvSnowfesTalk(u32 arg) {
 
 void VillagerTalkHolidayTopics::selectEvSnowfes(Unk_0201dc44_Ret *out) {
     void *o = unk_fc->unk_82c;
-    Unk_0201dc44_Id *p = _ZN12Unk_0208581013func_0208586cEv(data_021ed24c);
+    Unk_0201dc44_Id *p = _ZN13ContestRecord17getHolderVillagerEv(gContestRecord);
     s32 v = Event_GetDaysSinceStart(0x11);
     s32 a, b;
     if (v < 0) {
@@ -13532,7 +13532,7 @@ void VillagerTalkHolidayTopics::selectEvSnowfes(Unk_0201dc44_Ret *out) {
 }
 
 void VillagerTalkHolidayTopics::selectEvSnowfesB(Unk_0201dc44_Ret *out) {
-    Unk_0201dc44_Id *p = _ZN12Unk_0208581013func_02085828Ev(data_021ed24c);
+    Unk_0201dc44_Id *p = _ZN13ContestRecord16getVotedVillagerEv(gContestRecord);
     Unk_0201dc44_Id *q = (Unk_0201dc44_Id *)_ZN12VillagerData13getVillagerIdEv(unk_fc->unk_82c);
     s32 x;
     if (p->unk_00 == q->unk_00 && memcmp(p->unk_02, q->unk_02, 8) == 0 && p->unk_0b == q->unk_0b) {
@@ -13875,7 +13875,7 @@ void VillagerTalkTopics::giveEvBirthPresent() {
     Unk_0201d2d0_Out out;
     void *p;
     h = 0x3818;
-    func_02099014(&h, 0);
+    Pocket_AddItem(&h, 0);
     p = PlayerData_GetCurrent();
     _ZN12Unk_02097ff413func_020982dcEj(p, (u8)(u32)Clock_GetYear());
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvBirthTopicTable[4]));
@@ -14057,7 +14057,7 @@ s32 VillagerTalk::buyItemFromPlayer() {
     if (unk_19c_s > 0 && unk_120 != 0xfff1) {
         PlayerData_GetCurrent();
         s32 r4 = ((s32 (*)())_ZN10PlayerData13func_02098750Ev)();
-        s32 r2 = func_02098eb0(&unk_120);
+        s32 r2 = Pocket_FindItem(&unk_120);
         if (r2 >= 0) {
             u16 buf[2];
             buf[0] = 0xfff1;
@@ -14091,7 +14091,7 @@ s32 VillagerTalk::swapItemWithPlayer() {
     if (unk_198 != 0xfff1 && unk_120 != 0xfff1) {
         s32 r4 = ((s32)PlayerData_GetCurrent());
         s32 r6 = ((s32 (*)())_ZN10PlayerData13func_02098750Ev)();
-        s32 r2 = func_02098eb0(&unk_120);
+        s32 r2 = Pocket_FindItem(&unk_120);
         if (r2 >= 0) {
             _ZN15PlayerInventory9setPocketEPtij((void *)r6, &unk_198, r2, 0);
             func_0203c42c(_ZN10PlayerData10getCatalogEv((void *)r4), &unk_198, 0, 1);

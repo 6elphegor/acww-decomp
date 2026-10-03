@@ -160,7 +160,7 @@ struct Unk_02063cfc { Unk_02063cfc(); ~Unk_02063cfc(); };
 struct Unk_0205ca94 { Unk_0205ca94(); ~Unk_0205ca94(); };
 struct MatTexVramTask { MatTexVramTask(); };
 struct Unk_0205ef98 { Unk_0205ef98(); ~Unk_0205ef98(); };
-struct Unk_02032238 { Unk_02032238(); ~Unk_02032238(); };
+struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); };
 
@@ -724,7 +724,7 @@ extern u8 gSndHeapBuffer[];
 extern u8 data_020d5e20[];
 extern s32 gCamera;
 extern s32 gCameraDistance;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gCommManager;
 void _ZN6ItemIdD1Ev();
 BOOL _ZN12Unk_02006d1414testActionFlagEj(void *, s32 id);
@@ -773,7 +773,7 @@ void func_020abbcc(Unk_02005294_Vec3 *pos, s32 a);
 void func_0205e120(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
-s32 func_02030814(s32 a);
+s32 Ground_GetDefaultY(s32 a);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *a, void *b);
 void _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(void *a, void *b);
 void _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP16Unk_02053a54_Msg(void *a, Unk_020050e0 *b);
@@ -788,7 +788,7 @@ void PlayerActor_FieldPollPitfall(void *);
 void PlayerActor_FieldCheckStepUnit(void *);
 void PlayerActor_FieldRunStep(void *);
 void PlayerActor_FieldCheckUnitAhead(void *);
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gCommManager;
 extern Unk_021cb69c data_021cb69c;
@@ -1346,7 +1346,7 @@ struct Unk_02007c5c_Mtx {
 };
 class Unk_02007694;
 void MI_CpuFill8(void *p, u32 v, u32 n);
-void _ZN12Unk_0203223813func_020323d8Ev(void *p);
+void _ZN14CollisionState9beginStepEv(void *p);
 u16 WorldCurve_ToCurved(void *a, void *b);
 void _ZN12Unk_020102ec7setRotXEt(Unk_02007694 *o, u32 a);
 void WorldCurve_FromCurved(Unk_02007ebc_Vec *out, Unk_02007ebc_Vec *in);
@@ -1556,7 +1556,7 @@ extern char sPlayerActorMsgFile[];
 extern char sPlayerActorGetInsectMsgFile[];
 extern char sPlayerActorGetFishMsgFile[];
 extern char gSndMgr[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 u16 NetBuf_ReadU16(void *);
 void NetBuf_WriteU16(void *, u16);
 s16 NetBuf_ReadS16B(void *);
@@ -1739,7 +1739,7 @@ extern void *gCommManager;
 extern u32 sPlayerAct76Anims[];
 extern u16 data_020c61c0[];
 extern s16 data_02135f44[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 void func_0203d76c();
 s32 _ZN12Unk_020102ec13startAnimOnceEijt(Unk_02006d14 *, u32, u32, u32);
 s32 _ZN12Unk_02006d1415getHeldToolKindEv(Unk_02006d14 *);
@@ -1762,14 +1762,14 @@ void _ZN12Unk_020102ec9setAngleYEPs(Unk_02006d14 *, void *);
 void _ZN12Unk_020102ec17moveWithCollisionEv(Unk_02006d14 *);
 void *func_0209c60c();
 s32 func_0209c86c();
-s32 func_02030814(u32);
+s32 Ground_GetDefaultY(u32);
 s32 *func_0209c868(void *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void _ZN12Unk_020102ec10switchAnimEijt(Unk_02006d14 *, u32, u32, u32);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *);
 void _ZN12Unk_02006d1416updateFootstepFxEv(Unk_02006d14 *);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void PlayerActor_ApproachCoord(void *, s32);
 s32 func_020e9688(void *);
 s32 func_020e9650(void *, void *);
@@ -1810,7 +1810,7 @@ struct Unk_02006d14_Item { u32 unk_00; u32 unk_04; s16 unk_08; u8 pad_0a[2]; Unk
 struct Unk_0200e2e0 { u8 pad_00[0xc]; Unk_02009d5c_Sub unk_0c; };
 struct Unk_02009a78_Vec { s32 x, y, z; };
 struct Unk_02009624_Pair { u32 unk_00; u16 unk_04; u8 unk_06; };
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 struct Unk_02006d14_Data;
 extern Unk_02006d14_Data* gCommManager;
 extern s16 data_02135f44[];
@@ -1948,7 +1948,7 @@ void PlayerActor_InitAct32Work(u32* p);
 void PlayerActor_SetArgsAct30(Unk_02009d5c_Sub* p, u32 a, u32 b, u32 c, u32 d);
 static inline BOOL Unk_02009624_Check()
 {
-    if (data_020e416c == 0) {
+    if (gFieldSceneKind == 0) {
         return TRUE;
     }
     return FALSE;
@@ -2093,7 +2093,7 @@ void PlayerActor_NetReadPickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* out
 void PlayerActor_NetWritePickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
 void PlayerActor_SetArgsPickUpFanfare(Unk_0200a728_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
 extern Unk_02006d14_Data* gCommManager;
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 extern u8 sPlayerActorErrorMsgFile[];
 extern u8 sPlayerActorMsgFile[];
 extern void* gSceneBlockMap;
@@ -2254,8 +2254,8 @@ void func_0203d7f8();
 void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
 void* PlayerData_GetCurrent();
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void* p, u32 v);
-void _ZN12Unk_02097ff413func_0209801cEj(void* p, u32 v);
+BOOL _ZN12Unk_02097ff48testFlagEj(void* p, u32 v);
+void _ZN12Unk_02097ff47setFlagEj(void* p, u32 v);
 void PendingUnit_CommitAt(Unk_0200b144_Pos* p, u32 z);
 void PendingUnit_ApplyAt(Unk_0200b144_Pos* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
@@ -2474,13 +2474,13 @@ public:
     BOOL func_0200e248(void *msg);
     void func_02010a58(void *p);
 };
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
 extern void *gCommManager;
 extern u8 data_020c61d0[];
 extern u16 gPad[];
-s32 func_02098ffc();
-BOOL func_020b52f8();
+s32 Pocket_FindEmpty();
+BOOL Scene_InHouseRoom();
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 *BlockMap_GetItemPtrAtPos(void *, void *, u32);
 void FtrMgr_RemoveActor(s32, void *, void *);
@@ -2555,7 +2555,7 @@ BOOL func_02063b8c(u32 a);
 s32 func_020e780c(s32 a, s32 b);
 void PlayerActor_RequestTrip(Unk_02007694 *o, u32 a, s32 b);
 extern u32 gCommManager;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern u8 data_020d5e3c[];
 extern u8 data_020d5e44[];
@@ -2720,7 +2720,7 @@ struct Unk_0205dfa4_Base {
 struct Unk_0205dfa4 : Unk_0205dfa4_Base, Unk_0205dfa4_Sub {
 };
 extern s16 data_02135f44[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 gScreenTransition;
 extern u8 sHouseRoachActiveCount;
 extern Unk_020d6df4_Data *gCommManager;
@@ -2733,16 +2733,16 @@ s32 func_020af3bc(void *out, void *a, void *b, s32 c, s32 d);
 Unk_0205dfa4 &func_0205dfa4(void *p);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
-BOOL func_020b50e8();
-s32 func_020b52f8();
-s32 func_020b52d0();
-s32 func_020b5184();
-s32 func_020b4880();
+BOOL Scene_GetCurrent();
+s32 Scene_InHouseRoom();
+s32 Scene_InUnk6To8();
+s32 Scene_InTown();
+s32 Scene_NoPlayerInUnsharedScene();
 void func_020b78c4();
 s32 func_020b15ec();
 void _ZN12NpcEmotionFx5resetEv(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
-s32 func_0203081c(void *p, s32 a, s32 b);
+s32 Ground_GetHeightAt(void *p, s32 a, s32 b);
 void func_0203d76c();
 void _ZN8FaintBgm12startSilenceEv(void *p);
 void Net_WifiHostKeepAlive();
@@ -2925,7 +2925,7 @@ void func_0205ee10(void *p, u32 v);
 void *func_0205edfc(void *p);
 void PlayerActor_JointCbPre(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 s32 PlayerActor_GetSlotPosXZ(u16 *a, s32 *b, s32 *c, s32 d, s32 e);
 BOOL PlayerActor_GetSlotAngle(u16 *a, s32 b, s32 c);
 s32 PlayerData_GetBySessionSlot(s32 a);
@@ -2937,14 +2937,14 @@ void func_0205e120(void *p);
 s32 func_02063c18(s16 a);
 s32 func_02063c54(s16 a);
 s32 _ZN12Unk_020d93b86getYawEv(void *p);
-s32 func_020b4880();
+s32 Scene_NoPlayerInUnsharedScene();
 void func_020b78b8();
 s32 Net_GetMode();
 void Net_WifiHostKeepAlive();
 void func_0203d76c();
 BOOL func_0203d4d4();
 BOOL func_0203d978();
-u8 *func_020b50b4();
+u8 *Scene_GetCollision();
 s32 func_020b60b0(u8 *obj, Unk_0200d64c_Xyz *out);
 BOOL func_020b6080(u8 *obj, Unk_0200d64c_Xyz *out, s32 *a, u8 *b);
 s32 func_020b6048(u8 *obj, s32 *pa, u8 *pb);
@@ -3126,7 +3126,7 @@ void PlayerActor_GetFaceItem(u16 *out, void *obj);
 void PlayerActor_GetHat(u16 *out, void *obj);
 void PlayerActor_GetShirt(u16 *out, void *obj);
 extern u8 data_020c6194[], data_020c6198[], data_020c619c[], data_020c61a0[], data_020c61a4[], data_020c61a8[], data_020c61ac[], data_020c61b0[], data_020c61b4[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 sPlayerActionIsLocomotion[];
 struct Unk_021c1b3c {
     u8 unk_00[0x248];
@@ -3337,8 +3337,8 @@ struct Unk_02006d14 {
     void updateShownItemPos(u32 a, ...);
     s32 getHeldToolKind();
 };
-s32 func_020b50dc();
-s32 func_020b50e8();
+s32 Scene_GetPrevious();
+s32 Scene_GetCurrent();
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager *g, s32 i);
@@ -3546,7 +3546,7 @@ struct Unk_0200ff08_Obj {
 };
 inline BOOL Unk_0200f9d4_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 inline BOOL Unk_020102a0_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u32 sPlayerReachDist[];
 extern u32 data_020cb35c;
 extern u32 data_020cb360;
@@ -3744,9 +3744,9 @@ extern void *gCommManager;
 extern u8 sPlayerActionColliderFlag2[];
 extern u16 sPlayerAnimResIndex[];
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, u32 b);
-BOOL func_020b52d0(void);
-u32 func_020b50e8(void);
-u32 func_020b50b4(void);
+BOOL Scene_InUnk6To8(void);
+u32 Scene_GetCurrent(void);
+u32 Scene_GetCollision(void);
 void _ZN12Unk_020b696013func_020b6860EP12Unk_020b6a0cP4Vec3S3_S3_ih(u32 a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 void func_0205c2dc(void *a, s32 b, u32 c, u32 d);
 s32 func_0205c254(void *a);
@@ -3767,16 +3767,16 @@ s32 _ZN12Unk_0205d1f813func_0205d1f8Ev(void *a);
 void _ZN13MatTexPatAnim4initEPvS0_jS0_(void *a, s32 b, s32 c, u32 d, s32 e);
 void _ZN12Unk_020e0d0813func_02089040Ev(void *a);
 void _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-u32 func_02030814(u32 a);
+u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
 BOOL func_02063ca0(void *a);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(Unk_020102ec *a, Unk_02010924_Msg *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
 void _ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec(Unk_020102ec *a, void *b);
-void _ZN12Unk_02032238C1Ev(void *a);
-void _ZN12Unk_02032238D1Ev(void *a);
-void func_020309d4(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
+void _ZN14CollisionStateC1Ev(void *a);
+void _ZN14CollisionStateD1Ev(void *a);
+void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 void _ZN5Actor12calcVelocityEv(Unk_020102ec *a);
 void PlayerActor_TurnAngle(void *a);
 u32 PlayerActor_GetPlayerData(u32 a);
@@ -3823,13 +3823,13 @@ void PlayerActor_ApproachValue(s32 *p, s32 target, s32 rate, s32 maxstep, s32 mi
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 BOOL func_020947f0(s32 a);
-s32 func_0202ffdc(void);
+s32 Ground_GetExitAtPos(void);
 void func_02094420(s32 *p);
-void *func_020b4934(void);
-BOOL func_020b4b68(void *a, s32 b, s32 *c, s32 *d);
+void *Scene_GetWarpRequest(void);
+BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
 void func_02094400(s32 *p);
 BOOL func_0209c7a4(s32 v);
-BOOL func_020b52d0(void);
+BOOL Scene_InUnk6To8(void);
 void func_0203d76c(void);
 void func_0203da7c(void);
 s32 func_020951ec(s32 v);
@@ -4215,7 +4215,7 @@ public:
     u8 pad_775[0x27];
     Unk_0205ef98 unk_79c;
     u8 pad_79d[0x3];
-    Unk_02032238 unk_7a0;
+    CollisionState unk_7a0;
     u8 pad_7a1[0x2f];
     s32 unk_7d0;
     u8 pad_7d4[0x18];
@@ -4399,7 +4399,7 @@ void PlayerActor::vfunc_6c() {
             if (v[0] == 0xfff1) ok = TRUE; else ok = FALSE;
         }
         if (!ok && !_ZN12Unk_02006d1420getHeldHoldableIndexEv(this)) {
-            BOOL b = (data_020e416c == 0);
+            BOOL b = (gFieldSceneKind == 0);
             if (b) r5 += 0x15;
         }
         if ((u16)(r6 + 0xffc4) <= 1) {
@@ -4489,7 +4489,7 @@ void PlayerActor::readInput() {
         ((nN::PlayerActor *)this)->unk_144 = 0;
         ((nN::PlayerActor *)this)->unk_154 = r5c;
         if (_ZN12Unk_02006d1414testActionFlagEj(this, 0x1b)) {
-            if (func_020b4880() == 1) {
+            if (Scene_NoPlayerInUnsharedScene() == 1) {
                 if (!PlayerActor_IsWaitingForSlots(this)) {
                     _ZN12Unk_02006d1415clearActionFlagEj(this, 0x1b);
                     func_020b78b8();
@@ -4506,8 +4506,8 @@ void PlayerActor::readInput() {
         }
     } else {
     if (gGfxMainOnTop == 0) {
-        vc = func_020b60b0(func_020b50b4(), &p50);
-        if (func_020b6080(func_020b50b4(), &p68, &sp34, &sp30)) {
+        vc = func_020b60b0(Scene_GetCollision(), &p50);
+        if (func_020b6080(Scene_GetCollision(), &p68, &sp34, &sp30)) {
             got = TRUE;
             {
                 switch (sp34) {
@@ -4522,7 +4522,7 @@ void PlayerActor::readInput() {
                 case 2: case 3: case 6: case 7: case 9: case 11: case 12: case 13: case 14: case 15: case 16: case 17:
                     if (Unk_0200d64c_Both()) {
                         v4 = 1;
-                        v8 = func_020b6048(func_020b50b4(), 0, 0);
+                        v8 = func_020b6048(Scene_GetCollision(), 0, 0);
                         r5c = p50;
                     }
                     break;
@@ -5238,11 +5238,11 @@ void Unk_02008040::act76Update() {
         } else {
             r = t[3] == 0xfff1 ? TRUE : FALSE;
         }
-        if (!r && !_ZN12Unk_02006d1420getHeldHoldableIndexEv(this) && Unk_02008858_IsZero(data_020e416c)) {
+        if (!r && !_ZN12Unk_02006d1420getHeldHoldableIndexEv(this) && Unk_02008858_IsZero(gFieldSceneKind)) {
             PlayerActor_RequestStowItem(this, 2, 2, 0, 0, 0, 6, -1);
             break;
         }
-        if (Unk_02008858_IsZero(data_020e416c)) {
+        if (Unk_02008858_IsZero(gFieldSceneKind)) {
             func_0203d76c();
             _ZN12Unk_02006d1413setActionFlagEj(this, 0);
         }

@@ -21,8 +21,8 @@
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define func_0209865c _ZN10PlayerData13func_0209865cEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
-#define func_0209abc4 _ZN12Unk_0209ada413func_0209abc4Ev
+#define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
+#define ErrandRecord_getStep _ZN12ErrandRecord7getStepEv
 #define func_02135558 __register_global_object
 #define Mailbox_execNoMail _ZN7Mailbox10execNoMailEv
 class ProcBase {
@@ -575,16 +575,16 @@ s32 func_020e9650(void *a, void *b);
 s32 func_020e96ec(void *a, void *b);
 void *func_02095204(s32 n);
 void *func_020947f0(s32 n);
-BOOL func_0202ff64(void *v);
+BOOL Ground_IsOnLockedExit(void *v);
 u32 NpcActor_getAngleTo(void *p, void *q);
 s32 NpcActor_findAvoidPos(void *p, void *out);
 void func_020b101c();
-void *func_020b4934();
-void func_020b4a08(void *o, s32 v);
-void func_020b4bbc(void *o, s32 v);
+void *Scene_GetWarpRequest();
+void Scene_SavePlayerPos(void *o, s32 v);
+void SceneWarp_RequestExit(void *o, s32 v);
 void *Villager_GetState(void *o);
 void VillagerState_ResetRole(void *o);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 Mailbox_execNoMail(void *a, void *b, s32 c);
 s32 NpcTalkCtrl_isBusy(void *);
@@ -606,13 +606,13 @@ extern u8 gVec3Zero[];
 
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
-void func_0202ffb0(s32);
+void Ground_LockExit(s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 Unk_ov068_02270afc_Vec *func_020947f0(s32);
-s32 func_0202ff64(void *);
+s32 Ground_IsOnLockedExit(void *);
 void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
-s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void func_02003e70(void *, s32, s32, s32);
@@ -650,8 +650,8 @@ extern Unk_ov068_0226ee74_Grid *gSceneBlockMap;
 
 void *PlayerData_GetCurrent();
 u8 *func_0209865c(void *);
-s32 func_0209abb4(void *, s32);
-s32 func_0209abc4(void *);
+s32 ErrandRecord_setStep(void *, s32);
+s32 ErrandRecord_getStep(void *);
 s32 func_02063b8c(s32);
 void MI_CpuCopy8(void *, void *, u32);
 void DateTime_AddMinutes(void *, s32);
@@ -664,12 +664,12 @@ void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
-void func_0203002c(s32, s32);
+void Ground_UnlinkUnit(s32, s32);
 s32 func_0202d928(void *);
 s32 func_0202d948(void *);
 void Unk_02013474_enableFootsteps(void *);
-void func_020b50dc();
-s32 func_020b5198();
+void Scene_GetPrevious();
+s32 SceneId_IsTown();
 void func_020b1028();
 void func_0205b124(void *);
 void func_0205b120(void *);
@@ -716,8 +716,8 @@ BOOL HouseVisitVillager::vfunc_00() {
     unk_a56 = -1;
     unk_a54 = 3;
     unk_a58 = 0xb0;
-    func_020b50dc();
-    if (func_020b5198() != 0) {
+    Scene_GetPrevious();
+    if (SceneId_IsTown() != 0) {
         setVisitState(0);
     } else if (HouseVisit_IsCalled(&unk_898) != 0) {
         u32 buf[6];
@@ -760,9 +760,9 @@ BOOL HouseVisitVillager::preDelete() {
     Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)func_0209865c(PlayerData_GetCurrent());
     Unk_ov068_0226eee0_Mid &m = *t;
     Unk_ov068_0226eee0_Q1 &q = m;
-    if (func_0209abc4(&q) == 1) {
+    if (ErrandRecord_getStep(&q) == 1) {
         Unk_ov068_0226eee0_Q1 &q2 = m;
-        func_0209abb4(&q2, 2);
+        ErrandRecord_setStep(&q2, 2);
     }
     sHouseVisitVillager = NULL;
     return TRUE;
@@ -791,7 +791,7 @@ void HouseVisitVillager::func_ov068_0226ee74() {
         for (x = 0; x < 16; x++) {
             if (MapBlock_GetItemPtr(grid, x, y, z) != 0) {
                 if (Item_IsFurnitureOrF031() != 0) {
-                    func_0203002c(x, y);
+                    Ground_UnlinkUnit(x, y);
                 }
             }
         }
@@ -832,7 +832,7 @@ extern "C" BOOL HouseVisit_IsAppointmentNow(void *) {
 
 extern "C" void HouseVisit_SetFinished(void *) {
     using namespace sC;
-    func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 4);
+    ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
 BOOL HouseVisitVillager::vfunc_48() {
@@ -892,7 +892,7 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
 
 extern "C" BOOL HouseVisit_IsCalled(void *) {
     using namespace sC;
-    if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) != 0) {
+    if (ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -901,13 +901,13 @@ extern "C" BOOL HouseVisit_IsCalled(void *) {
 extern "C" void HouseVisit_SetCalled(void *p) {
     using namespace sC;
     if (HouseVisit_IsCalled(p) == 0) {
-        func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 1);
+        ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 1);
     }
 }
 
 extern "C" BOOL HouseVisit_IsDoorTalkDone(void *) {
     using namespace sC;
-    if ((u32)func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) > 1) {
+    if ((u32)ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) > 1) {
         return TRUE;
     }
     return FALSE;
@@ -916,13 +916,13 @@ extern "C" BOOL HouseVisit_IsDoorTalkDone(void *) {
 extern "C" void HouseVisit_SetDoorTalkDone(void *p) {
     using namespace sC;
     if (HouseVisit_IsDoorTalkDone(p) == 0) {
-        func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 2);
+        ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 2);
     }
 }
 
 extern "C" BOOL HouseVisit_IsFirstTalkPending(void *) {
     using namespace sC;
-    if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) == 2) {
+    if (ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) == 2) {
         return TRUE;
     }
     return FALSE;
@@ -930,7 +930,7 @@ extern "C" BOOL HouseVisit_IsFirstTalkPending(void *) {
 
 extern "C" void HouseVisit_SetFirstTalkDone(void *) {
     using namespace sC;
-    func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 3);
+    ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 3);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1193,7 +1193,7 @@ BOOL HouseVisitVillager::enterVisitCall() {
     u32 loc[6];
     unk_a3c = data_0213a740;
     unk_4cc.unk_44 = 0;
-    func_0202ffb0(0);
+    Ground_LockExit(0);
     func_0205b124(loc);
     unk_a4c = func_0205afdc(loc, &unk_a44);
     func_020b1028();
@@ -1272,7 +1272,7 @@ BOOL HouseVisitVillager::enterVisitGreetEnd() {
 void HouseVisitVillager::execVisitGreetEnd() {
     using namespace sB;
     if (setVisitState(5)) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
 }
 
@@ -1306,7 +1306,7 @@ void HouseVisitVillager::execVisitStay() {
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
-        if (func_0202ff64(&v)) {
+        if (Ground_IsOnLockedExit(&v)) {
             TalkRequest_AddPlayerTalk6(this, 0);
             unk_a51 = 1;
         }
@@ -1317,7 +1317,7 @@ BOOL HouseVisitVillager::enterVisitWander() {
     using namespace sB;
     if (NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8)) {
         NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-        func_0202ffb0(0);
+        Ground_LockExit(0);
         return TRUE;
     }
     return FALSE;
@@ -1350,7 +1350,7 @@ void HouseVisitVillager::execVisitWander() {
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
-            if (func_0202ff64(&v)) {
+            if (Ground_IsOnLockedExit(&v)) {
                 TalkRequest_AddPlayerTalk6(this, 0);
                 unk_a51 = 1;
                 return;
@@ -1463,7 +1463,7 @@ void HouseVisitVillager::execVisitTalkWait() {
     using namespace sA;
     if (unk_898.unk_3c != NULL) {
         if (unk_898.unk_3c->unk_04 == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
@@ -1483,10 +1483,10 @@ void HouseVisitVillager::execVisitLeave() {
             }
             HouseVisit_SetFinished(this);
             if (unk_a50 != 0) {
-                func_020b4a08(func_020b4934(), 0);
-                func_020b4bbc(func_020b4934(), 6);
+                Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 6);
             } else {
-                func_020b4bbc(func_020b4934(), 0);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
             }
         }
     }

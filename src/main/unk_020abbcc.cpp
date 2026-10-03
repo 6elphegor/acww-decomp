@@ -47,15 +47,15 @@ void NNS_G3dMdlSetMdlDiff(u32 a, u32 b, u32 c);
 void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
-s32 func_02030814(s32 a);
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_02033914 *p, Vec3 *pos, s32 a, s32 b);
-s32 _ZN12Unk_0203389c13func_02033914Ei(Unk_02033914 *p, s32 a);
-void func_02033988(Unk_02033914 *p);
-BOOL func_020b51fc(void);
+s32 Ground_GetDefaultY(s32 a);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_02033914 *p, Vec3 *pos, s32 a, s32 b);
+s32 _ZN14GroundInfoBase9getHeightEi(Unk_02033914 *p, s32 a);
+void GroundInfo_Destruct(Unk_02033914 *p);
+BOOL Scene_InMuseumRoom(void);
 s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 Col SceneLights_GetRoomColor(void);
 u8 func_020ac2c8(Vec3 *p, s32 q);
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 data_021f47e0[];
 }
 
@@ -118,17 +118,17 @@ extern "C" void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c) {
     }
     s32 lvl = func_020ac2c8(pos, a);
     off = 0;
-    if (data_020e416c == 0 ? 1 : off) {
-        _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&buf1, pos, 0, 0);
-        off = _ZN12Unk_0203389c13func_02033914Ei(&buf1, 0);
+    if (gFieldSceneKind == 0 ? 1 : off) {
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf1, pos, 0, 0);
+        off = _ZN14GroundInfoBase9getHeightEi(&buf1, 0);
         if (off > 0) {
             off = 0;
         }
-        func_02033988(&buf1);
-    } else if (func_020b51fc()) {
-        _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&buf2, pos, 0, 0);
-        off = _ZN12Unk_0203389c13func_02033914Ei(&buf2, 0);
-        func_02033988(&buf2);
+        GroundInfo_Destruct(&buf1);
+    } else if (Scene_InMuseumRoom()) {
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf2, pos, 0, 0);
+        off = _ZN14GroundInfoBase9getHeightEi(&buf2, 0);
+        GroundInfo_Destruct(&buf2);
     }
     d = pos->y - off;
     if (d < 0) {
@@ -153,7 +153,7 @@ extern "C" void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c) {
         if (a > 0) {
             s32 t;
             pos2 = *pos;
-            pos2.y = off + func_02030814(0);
+            pos2.y = off + Ground_GetDefaultY(0);
             t = WorldCurve_ToCurved(&out, &pos2);
             func_020e8388(data_021f47e0, out.x, out.y, out.z);
             func_020e8434(data_021f47e0, t);
@@ -180,6 +180,6 @@ extern "C" void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c) {
 extern "C" void func_020abbcc(Vec3 *pos, s32 a) {
     Vec3 v;
     v = *pos;
-    v.y = v.y - (func_02030814(0) + 0x800);
+    v.y = v.y - (Ground_GetDefaultY(0) + 0x800);
     func_020abc10(&v, a, 0xe00, 0x1000);
 }

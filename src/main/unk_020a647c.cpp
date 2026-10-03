@@ -13,7 +13,7 @@ struct CommManager {
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_020a64e0();
 void func_020a6560();
 }
@@ -39,7 +39,7 @@ extern "C" void func_020a64e4() {
     g->clearAuxLenB();
     u8 *base = (u8 *)g->getAuxBufB();
     u8 *p = base + 2;
-    s32 m = func_020b50e8();
+    s32 m = Scene_GetCurrent();
     g->unk_110 = p + 4;
     u8 *start = g->unk_110;
     data_020d07a0[0](m);

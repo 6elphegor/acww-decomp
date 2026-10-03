@@ -11,16 +11,16 @@ struct Unk_0202ff44_V3;
 struct Unk_02030608_Obj;
 struct Unk_02031304_Vec;
 struct Unk_020314f4_Vec;
-struct Unk_020d8d3cX;
+struct UnitShapeQueryX;
 class Unk_02032dc4_Cb;
-class Unk_02033edc;
+class CollisionWorld;
 
 struct Unk_020331a8_Cell {
     s32 unk_00, unk_04, unk_08, unk_0c;
     u8 unk_10, unk_11, unk_12, unk_13, unk_14;
 };
 
-// one entry of the terrain attribute table data_020c7c4c (0x7c entries of 30 bytes)
+// one entry of the terrain attribute table sGroundAttrTable (0x7c entries of 30 bytes)
 struct Unk_020c7c4c_Ent {
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ u16 unk_02;
@@ -36,12 +36,12 @@ struct Unk_020c7c4c_Ent {
 };
 typedef u32 (*Unk_020c7c3c_Fn)(s32);
 
-extern const u8 data_020c7c18[4];
+extern const u8 sDefaultGroundColors[4];
 extern const s32 data_020c7c1c;
-extern const u32 data_020c7c20[3];
-extern const Unk_020c7c3c_Fn data_020c7c2c[4];
-extern const Unk_020c7c3c_Fn data_020c7c3c[4];
-extern const Unk_020c7c4c_Ent data_020c7c4c[0x7c];
+extern const u32 sDigHoleRadii[3];
+extern const Unk_020c7c3c_Fn sGroundQuadAttr0Getters[4];
+extern const Unk_020c7c3c_Fn sGroundQuadAttr1Getters[4];
+extern const Unk_020c7c4c_Ent sGroundAttrTable[0x7c];
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -53,32 +53,32 @@ s32 func_020e94f8(void *v);
 void func_020e93a0(void *v, ...);
 
 // functions of this unit that the files declared with different stand-in prototypes
-void func_02030608(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
-s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags0);
-u32 func_02030d58(s32 a);
-u32 func_02031154(s32 x, s32 y);
-BOOL func_02031304(Unk_02031304_Vec *v);
-Unk_020d8d3cX *func_0203139c();
-u32 func_020313f4(s32 x, s32 y, u32 c);
-u32 func_02031474(s32 x, s32 y, u32 c);
-s32 func_020314f4(Unk_020314f4_Vec *p);
-void func_02031554(s32 *a, s32 *b);
-void func_02031574(s32 *a, s32 *b);
-u32 func_02031594(s32 i);
-void func_02031b78(void *p);
-void func_02031d5c(s32 *a, s32 b, s32 c);
-void func_02031dfc(void *p);
-void *func_02032218(void *p);
-void *func_02032228(void *p);
-void func_02033988(void *obj);
+void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
+s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0);
+u32 CollisionMap_IsBound(s32 a);
+u32 Ground_GetWalkLinks(s32 x, s32 y);
+BOOL Ground_IsRaisedOrOccupied(Unk_02031304_Vec *v);
+UnitShapeQueryX *Collision_GetShapeQuery();
+u32 Ground_GetQuadAttr1(s32 x, s32 y, u32 c);
+u32 Ground_GetQuadAttr0(s32 x, s32 y, u32 c);
+s32 Ground_GetUnitQuadrant(Unk_020314f4_Vec *p);
+void Vec3_MinInPlace(s32 *a, s32 *b);
+void Vec3_MaxInPlace(s32 *a, s32 *b);
+u32 CollisionMap_IsFullyBound(s32 i);
+void BoxCollider_ClearList(void *p);
+void TriangleTrigger_CheckAll(s32 *a, s32 b, s32 c);
+void TriangleTrigger_ClearList(void *p);
+void *CollisionTag_Destruct(void *p);
+void *CollisionTag_Construct(void *p);
+void GroundInfo_Destruct(void *obj);
 
 // methods called through a pointer to another view of the object (the names are the symbols)
 void _ZN12Unk_0202f04813func_0202f048Eii(void *p, s32 a, s32 b);
-void _ZN12Unk_0203343813func_02033438EP15Unk_0202f2ac_V3ii(void *self, void *v, s32 a, s32 b);
-void _ZN12Unk_0203389c13func_0203389cEiii(void *self, s32 a, s32 b, s32 c);
-s32 _ZN12Unk_0203389c13func_02033914Ei(void *obj, s32 a);
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *obj, void *v, s32 a, s32 b);
-Unk_020331a8_Cell *_ZN12Unk_02033b4013func_02033a0cEii(void *grid, s32 x, s32 z);
+void _ZN14GroundInfoCalc7computeEP15Unk_0202f2ac_V3ii(void *self, void *v, s32 a, s32 b);
+void _ZN14GroundInfoBase10setWaveDirEiii(void *self, s32 a, s32 b, s32 c);
+s32 _ZN14GroundInfoBase9getHeightEi(void *obj, s32 a);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *obj, void *v, s32 a, s32 b);
+Unk_020331a8_Cell *_ZN14GroundCellGrid7getCellEii(void *grid, s32 x, s32 z);
 }
 
 // ---- 2D vector; its functions and the empty destructor at 0x0202ea3c belong to the unit at 0x0202e9d4
@@ -102,9 +102,9 @@ struct FxVec3 {
     FxVec3(s32 a, s32 b, s32 c) { unk_00 = a; unk_04 = b; unk_08 = c; }
     ~FxVec3();
 };
-extern FxVec3 data_021bfa4c;
-extern FxVec3 data_021bfa70;
-extern Unk_02033edc data_021bfab8;
+extern FxVec3 sCollisionUpVector;
+extern FxVec3 sCollisionQueryMargin;
+extern CollisionWorld sCollisionWorld;
 
 // ---- triangle (vtable 0x020d8cc4, unit at 0x0202e9d4)
 class Unk_020d8cccX {
@@ -122,29 +122,29 @@ public:
     BOOL func_0202f364(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
 };
 
-// ---- {attribute, callback} pair (functions 0x020339cc-0x020339f8; symbols.txt: Unk_020339cc, see aliases.txt)
-class Unk_020339ccX {
+// ---- {attribute, callback} pair (functions 0x020339cc-0x020339f8; symbols.txt: CollisionTag, see aliases.txt)
+class CollisionTagX {
 public:
-    Unk_020339ccX();
-    ~Unk_020339ccX();
-    void func_020339cc(const Unk_020339ccX &o);
-    void func_020339d8(u32 a, u32 b);
+    CollisionTagX();
+    ~CollisionTagX();
+    void copyTag(const CollisionTagX &o);
+    void setTag(u32 a, u32 b);
 
     u8 unk_00;
     Unk_02032dc4_Cb *f_04;
 };
 
-// ---- the two list owners inside data_021bfab8 (empty classes)
-class Unk_02031b84 {
+// ---- the two list owners inside sCollisionWorld (empty classes)
+class BoxColliderListOwner {
 public:
-    Unk_02031b84();
-    ~Unk_02031b84();
+    BoxColliderListOwner();
+    ~BoxColliderListOwner();
 };
 
-class Unk_02031e08 {
+class TriangleTriggerListOwner {
 public:
-    Unk_02031e08();
-    ~Unk_02031e08();
+    TriangleTriggerListOwner();
+    ~TriangleTriggerListOwner();
 };
 
 // ---------------------------------------------------------------- unk_0202f600.cpp
@@ -155,29 +155,29 @@ struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-class Unk_0202fdf0 {
+class CollisionCircle {
 public:
     Unk_0202f660_V3 unk_00;
     s32 unk_0c;
 
-    BOOL func_0202fdf0(Unk_0202f660_V3 *pt);
-    void func_0202fe54(Unk_0202f660_V3 *pos, s32 radius);
-    ~Unk_0202fdf0();
-    Unk_0202fdf0(Unk_0202f660_V3 *pos, s32 radius);
-    Unk_0202fdf0();
+    BOOL containsXZ(Unk_0202f660_V3 *pt);
+    void setCircle(Unk_0202f660_V3 *pos, s32 radius);
+    ~CollisionCircle();
+    CollisionCircle(Unk_0202f660_V3 *pos, s32 radius);
+    CollisionCircle();
 };
-class Unk_0202f7b8X : public Unk_0202fdf0 {
+class CollisionCylinderX : public CollisionCircle {
 public:
     s32 unk_10;
 
-    BOOL func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL func_0202fccc(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL func_0202fcfc(Unk_0202f660_V3 *pos, s32 r);
-    void func_0202fd8c(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    ~Unk_0202f7b8X();
-    Unk_0202f7b8X(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    Unk_0202f7b8X();
+    BOOL clipSegmentSide(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
+    BOOL clipSegmentTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
+    BOOL landOnTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
+    BOOL pushOut(Unk_0202f660_V3 *pos, s32 r);
+    void setCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 height);
+    ~CollisionCylinderX();
+    CollisionCylinderX(Unk_0202f660_V3 *pos, s32 radius, s32 height);
+    CollisionCylinderX();
 };
 struct Unk_0202fe84_Range { s32 lo, hi; };
 struct Unk_0202fe84_Pad { s32 v[6]; Unk_0202fe84_Pad() {} ~Unk_0202fe84_Pad() {} };
@@ -196,25 +196,25 @@ struct Unk_02030608_Obj {
 };
 struct Unk_01ffcb5c_Chunk { u8 *unk_00; u8 *unk_04; };
 extern "C" Unk_01ffcb5c_Chunk *func_01ffcb5c(s32 x, s32 z);
-extern "C" void func_020304b4(s32 x, s32 z, s32 v);
-extern "C" void func_02030494(s32 x, s32 z, s32 v);
-#define TB(i, f, d) ((i) < 0x7c ? data_020c7c4c[i].f : (d))
-#define TS(i, d) ((i) < 0x7c ? ((v = data_020c7c4c[i].unk_06) > 0 ? 1 : v) : (d))
-extern "C" s32 _ZN12Unk_02033f7013func_02033e60Ev(void *p);
-extern "C" s32 _ZN12Unk_02033d4c13func_02033e48Ev(void *p);
-extern "C" void _ZN12Unk_02033d4c13func_02033e10Eii(void *p, s32 a, s32 b);
-extern "C" void _ZN12Unk_02033d4c13func_02033db0Ev(void *p);
-extern "C" BOOL _ZN12Unk_020339f813func_020339f8Ei(void *p, s32 v);
-extern "C" void func_02030380(s32 idx);
-extern "C" void func_0203030c(s32 idx);
-extern "C" void func_02030598(s32 v);
-extern "C" void _ZN12Unk_02033b4013func_02033a5cEiiiii(void *p, s32 a, s32 b, s32 c, s32 d, u32 e);
-extern "C" void _ZN12Unk_0203249413func_020324d8EPviiiii(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-extern "C" void _ZN12Unk_0203249413func_02032494EP12Unk_02032d60(void *a, void *b);
-extern "C" void _ZN12Unk_02032d6013func_02032864EPviiiii(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-extern "C" void _ZN12Unk_0203317013func_020331a8EP12Unk_02033a0ciiii(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-extern "C" BOOL func_020307c4(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
-extern "C" s32 func_020307ac(s32 x, s32 z);
+extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
+extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 v);
+#define TB(i, f, d) ((i) < 0x7c ? sGroundAttrTable[i].f : (d))
+#define TS(i, d) ((i) < 0x7c ? ((v = sGroundAttrTable[i].unk_06) > 0 ? 1 : v) : (d))
+extern "C" s32 _ZN12CollisionMap5resetEv(void *p);
+extern "C" s32 _ZN16DigHoleColliders5clearEv(void *p);
+extern "C" void _ZN16DigHoleColliders7addHoleEii(void *p, s32 a, s32 b);
+extern "C" void _ZN16DigHoleColliders6updateEv(void *p);
+extern "C" BOOL _ZN17CollisionMapIndex8setIndexEi(void *p, s32 v);
+extern "C" void CollisionMap_Reset(s32 idx);
+extern "C" void CollisionMap_ClearBlocks(s32 idx);
+extern "C" void CollisionMap_Select(s32 v);
+extern "C" void _ZN14GroundCellGrid8loadAreaEiiiii(void *p, s32 a, s32 b, s32 c, s32 d, u32 e);
+extern "C" void _ZN17ShapeCylinderList16collectFromUnitsEPviiiii(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+extern "C" void _ZN17ShapeCylinderList12addLinkWallsEP18WallEdgeListWriter(void *a, void *b);
+extern "C" void _ZN18WallEdgeListWriter14buildFromCellsEPviiiii(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+extern "C" void _ZN17FloorTriangleList14buildFromCellsEP12Unk_02033a0ciiii(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
+extern "C" s32 Collision_HasUnitShape(s32 x, s32 z);
 struct Unk_0203081c_A {
     u8 unk_00;
     u8 pad_01[0x13];
@@ -234,16 +234,16 @@ struct Unk_02033b94 {
     u8 unk_10[4];
     u8 unk_14;
 };
-extern "C" s32 func_02031284(s32 a, s32 b);
-extern "C" BOOL func_020311c0(s32 a, s32 b);
-extern "C" BOOL func_02030e48(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags);
-extern "C" BOOL func_02030d9c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
+extern "C" s32 Ground_CanPlaceItem(s32 a, s32 b);
+extern "C" BOOL Ground_IsShore(s32 a, s32 b);
+extern "C" BOOL Ground_IsWaterAround(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags);
+extern "C" BOOL Ground_FindWaterAlongDir(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
 struct Unk_020310f8_Obj {
     virtual void vfunc_00();
     virtual void vfunc_04();
     virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 d, s32 e);
 };
-extern "C" BOOL func_02031260(s32 a, s32 b);
+extern "C" BOOL Ground_IsGrassSurface(s32 a, s32 b);
 struct Unk_02030f10_Vec : Unk_02030e48_Vec { Unk_02030f10_Vec() {} };
 static inline BOOL Unk_02030f10_Flat(Unk_02033b94 *T)
 {
@@ -266,7 +266,7 @@ static inline BOOL Unk_02030be4_B(Unk_02033b94 *T)
     if (T->unk_10[0] == 0x14 && T->unk_10[1] == 0x14 && T->unk_10[2] == 0x14 && T->unk_10[3] == 0x14) return TRUE;
     return FALSE;
 }
-// result of func_02030908 (an Unk_020339ccX and the hit data)
+// result of Collision_TestSegment (an CollisionTagX and the hit data)
 struct Unk_02030908_D {
     u8 unk_00;
     u32 unk_04;
@@ -284,47 +284,47 @@ struct Unk_020309d4_Owner {
     Unk_02030e48_Vec unk_24;
 };
 extern "C" void VEC_Add(Unk_02030e48_Vec *out, Unk_02030e48_Vec *a, Unk_02030e48_Vec *b);
-extern "C" void _ZN12Unk_0203223813func_020323d8Ev(Unk_020309d4_Owner *o);
-extern "C" void _ZN12Unk_0203223813func_02032238Ei(Unk_020309d4_Owner *o, s32 v);
-extern "C" Unk_02033b94 *_ZN12Unk_02033b3c13func_02033b94Eiii(Unk_02033b94 *out, s32 x, s32 z, s32 flag);
-extern "C" Unk_02033b94 *_ZN12Unk_02033b3c13func_02033d2cEP16Unk_0203389c_Veci(Unk_02033b94 *out, Unk_02030e48_Vec *pos, s32 flag);
+extern "C" void _ZN14CollisionState9beginStepEv(Unk_020309d4_Owner *o);
+extern "C" void _ZN14CollisionState15updateWallFlagsEi(Unk_020309d4_Owner *o, s32 v);
+extern "C" Unk_02033b94 *_ZN10GroundCell4loadEiii(Unk_02033b94 *out, s32 x, s32 z, s32 flag);
+extern "C" Unk_02033b94 *_ZN10GroundCell9loadAtPosEP16Unk_0203389c_Veci(Unk_02033b94 *out, Unk_02030e48_Vec *pos, s32 flag);
 
 // ---------------------------------------------------------------- unk_020311c0.cpp
 struct Unk_0203182c_Vec { s32 x, y, z; };
 struct Unk_02031304_Vec { s32 x, y, z; };
-extern "C" BOOL func_020307c4(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
+extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 struct Unk_020314f4_Vec { s32 x, y, z; };
-struct Unk_020d8d3cX {
-    Unk_020d8d3cX();
-    virtual ~Unk_020d8d3cX();
+struct UnitShapeQueryX {
+    UnitShapeQueryX();
+    virtual ~UnitShapeQueryX();
     virtual s32 vfunc_08();
 };
 struct Unk_020d8ce8 {
     u8 pad_000[0x120];
-    Unk_020d8d3cX *unk_120;
+    UnitShapeQueryX *unk_120;
 };
 struct Unk_020318cc_Node {
     u8 pad_00[0x2c];
     Unk_020318cc_Node *unk_2c;
 };
-extern "C" s32 _ZN13Unk_020d8cf4X13func_02031d04Ev(Unk_020318cc_Node *n);
+extern "C" s32 _ZN12BoxColliderX8resetBoxEv(Unk_020318cc_Node *n);
 struct Unk_02031908_Vec { s32 x, y, z; };
-extern "C" BOOL _ZN13Unk_020d8cf4X13func_02031b90EiiiP16Unk_02031b90_VecsS1_(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s32 e, Unk_02031908_Vec *v);
+extern "C" BOOL _ZN12BoxColliderX8setupBoxEiiiP16Unk_02031b90_VecsS1_(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s32 e, Unk_02031908_Vec *v);
 struct Unk_02031960_P8 { s32 a, b; };
-struct Unk_02031618 {
+struct BoxColliderShape {
     u8 pad_00[4];
     Unk_0203182c_Vec unk_04;
     Unk_0203182c_Vec unk_10;
     Unk_0203182c_Vec unk_1c;
     s16 unk_28;
     s16 unk_2a;
-    Unk_02031618 *unk_2c;
+    BoxColliderShape *unk_2c;
     Unk_0203182c_Vec unk_30[4];
     Unk_02031960_P8 unk_60[4];
     Unk_0203182c_Vec unk_80;
     Unk_0203182c_Vec unk_8c;
 
-    BOOL func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec *b);
+    BOOL updateTransform(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec *b);
 };
 extern u8 data_021f47e0[];
 struct Unk_02031960_V : Unk_0203182c_Vec { Unk_02031960_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; } };
@@ -334,19 +334,19 @@ extern "C" void func_020e8404(void *m, s32 ang);
 extern "C" void func_020e84f8(void *m, s32 x, s32 y, s32 z);
 extern "C" void MTX_MultVec43(Unk_0203182c_Vec *p, void *m, Unk_0203182c_Vec *out);
 extern "C" void _ZN12Unk_0202f04813func_0202ef18Es(Unk_02031960_P8 *o, s32 ang);
-extern "C" void _ZN12Unk_020d8d50C1EP12Unk_0202f048S1_S1_iijj(void *out, Unk_02031960_P8 *a, Unk_02031960_P8 *b, Unk_02031960_P8 *c, s32 d, s32 e, s32 f, Unk_02031618 *n);
-extern "C" void _ZN12Unk_02032d6013func_02032d98EP17Unk_02032d60_Elem(s32 a, void *o);
-extern "C" void _ZN12Unk_020d8d50D1Ev(void *o);
-extern "C" void _ZN12Unk_0203317013func_02033170EP15Unk_0202f2ac_V3S1_S1_S1_jj(s32 a, Unk_0203182c_Vec *p, Unk_0203182c_Vec *q, Unk_0203182c_Vec *r, void *d, s32 e, Unk_02031618 *n);
+extern "C" void _ZN8WallEdgeC1EP12Unk_0202f048S1_S1_iijj(void *out, Unk_02031960_P8 *a, Unk_02031960_P8 *b, Unk_02031960_P8 *c, s32 d, s32 e, s32 f, BoxColliderShape *n);
+extern "C" void _ZN18WallEdgeListWriter11addEdgeCopyEP17Unk_02032d60_Elem(s32 a, void *o);
+extern "C" void _ZN8WallEdgeD1Ev(void *o);
+extern "C" void _ZN17FloorTriangleList11addTriangleEP15Unk_0202f2ac_V3S1_S1_S1_jj(s32 a, Unk_0203182c_Vec *p, Unk_0203182c_Vec *q, Unk_0203182c_Vec *r, void *d, s32 e, BoxColliderShape *n);
 static inline s32 Unk_02031618_Abs(s32 v) { if (v < 0) v = -v; return v; }
-extern "C" BOOL func_0203182c(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d);
+extern "C" BOOL Collision_IsSegmentOutsideBox(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d);
 
 // ---------------------------------------------------------------- unk_02031b78.cpp
 struct Unk_02031b90_Vec {
     s32 x, y, z;
 };
-extern "C" void _ZN12Unk_0203161813func_02031960EP16Unk_0203182c_VeciS1_(void* self, Unk_02031b90_Vec* a, s32 b, Unk_02031b90_Vec* c);
-struct Unk_020d8cf4X {
+extern "C" void _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_(void* self, Unk_02031b90_Vec* a, s32 b, Unk_02031b90_Vec* c);
+struct BoxColliderX {
     virtual void vfunc_00();
     s32 unk_04, unk_08, unk_0c;
     s32 unk_10, unk_14, unk_18;
@@ -359,10 +359,10 @@ struct Unk_020d8cf4X {
     u8 unk_80[0x18];
     u8 unk_98;
 
-    Unk_020d8cf4X();
-    ~Unk_020d8cf4X();
-    void func_02031b90(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk_02031b90_Vec* q);
-    void func_02031d04();
+    BoxColliderX();
+    ~BoxColliderX();
+    void setupBox(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk_02031b90_Vec* q);
+    void resetBox();
 };
 struct Unk_02031e10_Vec {
     s32 x, y, z;
@@ -370,18 +370,18 @@ struct Unk_02031e10_Vec {
 extern "C" s64 func_01ffd028(void* v, void* p);
 extern "C" void func_0202f3a8(void* out, Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c);
 extern "C" void _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(void* self, Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, void* d);
-struct Unk_020d8d74 : Unk_020d8cccX {
-    Unk_020d8d74* unk_38;
+struct TriangleTrigger : Unk_020d8cccX {
+    TriangleTrigger* unk_38;
     s32 unk_3c, unk_40, unk_44;
     s32 unk_48;
 
-    Unk_020d8d74();
-    virtual void vfunc_10(s32 a, s32 c, s32 b) = 0;
-    void func_02031e10(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, s32 d);
-    s32* func_02031ea0();
-    void func_02031ea4();
+    TriangleTrigger();
+    virtual void onActorNear(s32 a, s32 c, s32 b) = 0;
+    void setupTrigger(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, s32 d);
+    s32* getCenter();
+    void resetTrigger();
 };
-// ---------------------------------------------------------------- Unk_020d8d14 (triangle collision, three block layouts)
+// ---------------------------------------------------------------- SegmentCollisionVisitor (triangle collision, three block layouts)
 struct Unk_02031ed4_Vec {
     s32 x, y, z;
 };
@@ -398,9 +398,9 @@ struct Unk_02031ed4_Ent {
     Unk_02031ed4_Aux unk_14;
     u8 unk_1c[8];
 };
-extern "C" s32 _ZN13Unk_0202f7b8X13func_0202fc20EP15Unk_0202f660_V3S1_(void* ent, Unk_02031ed4_Vec* a, void* b);
-extern "C" s32 _ZN13Unk_0202f7b8X13func_0202fa70EP15Unk_0202f660_V3S1_(void* ent, Unk_02031ed4_Vec* a, void* b);
-extern "C" void _ZN13Unk_020339ccX13func_020339ccERKS_(void* dst, void* src);
+extern "C" s32 _ZN18CollisionCylinderX14clipSegmentTopEP15Unk_0202f660_V3S1_(void* ent, Unk_02031ed4_Vec* a, void* b);
+extern "C" s32 _ZN18CollisionCylinderX15clipSegmentSideEP15Unk_0202f660_V3S1_(void* ent, Unk_02031ed4_Vec* a, void* b);
+extern "C" void _ZN13CollisionTagX7copyTagERKS_(void* dst, void* src);
 extern "C" s32 _ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(void* a, void* b);
 extern "C" s32 _ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(void* a, void* out, void* b, void* c);
 static inline BOOL Unk_02031f90_Ge0(s32 v) {
@@ -410,9 +410,9 @@ static inline BOOL Unk_02031f90_Ge0(s32 v) {
     return FALSE;
 }
 // ---- collision visitor base (vtable 0x020d8cf8)
-struct Unk_020d8d00 {
-    Unk_020d8d00();
-    ~Unk_020d8d00();
+struct CollisionVisitor {
+    CollisionVisitor();
+    ~CollisionVisitor();
     virtual void vfunc_00(u8 *p);
     virtual void vfunc_04(u8 *p);
     virtual void vfunc_08(u8 *p);
@@ -445,50 +445,50 @@ struct Unk_02032028_L4 {
     s32 pad[3];
     Unk_02032028_L4(s32 a, s32 b, s32 c) : v4(a, b, c) {}
 };
-// ---------------------------------------------------------------- Unk_02032238 (accumulated collision flags) and friends
-struct Unk_020323f8 {
+// ---------------------------------------------------------------- CollisionState (accumulated collision flags) and friends
+struct CollisionContacts {
     s16 unk_00[2];
     u8 unk_04;
     u8 unk_05[3];
     s32 unk_08[2];
     s32 unk_10[2];
 
-    Unk_020323f8();
-    ~Unk_020323f8();
-    BOOL func_020323f8(s32 a, s32 b, s32 c);
-    void func_0203245c();
+    CollisionContacts();
+    ~CollisionContacts();
+    BOOL addContact(s32 a, s32 b, s32 c);
+    void clear();
 };
-struct Unk_02032238 {
+struct CollisionState {
     u32 unk_00;
     volatile u32 unk_04;
     s32 unk_08;
-    Unk_020323f8 unk_0c;
+    CollisionContacts unk_0c;
     s32 unk_24, unk_28, unk_2c;
 
-    Unk_02032238();
-    ~Unk_02032238();
-    void func_020323c8();
-    void func_020323d8();
-    void func_02032238(s32 v);
+    CollisionState();
+    ~CollisionState();
+    void reset();
+    void beginStep();
+    void updateWallFlags(s32 v);
 };
-// ---------------------------------------------------------------- Unk_020d8d28 (collision accumulator driver)
+// ---------------------------------------------------------------- MoveCollisionVisitor (collision accumulator driver)
 struct Unk_020d8d28_Best {
     s32 unk_00;
     s32 unk_04;
 };
-extern "C" s32 _ZN12Unk_0203249413func_02032604EP15Unk_02032808_V3iPj(u8* p, s32 a, void* b, s32* out, s32 c, s32 d);
-extern "C" void _ZN12Unk_0203249413func_02032658EP15Unk_02032808_V3iPv(u8* p, s32 a, s32 b, void* c, s32 d, s32 e);
-extern "C" void _ZN12Unk_02032dc413func_02032dc4EP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(u8* p, s32 a, void* b, s32 c, void* d, s32 e);
+extern "C" s32 _ZN17ShapeCylinderList9landOnTopEP15Unk_02032808_V3iPj(u8* p, s32 a, void* b, s32* out, s32 c, s32 d);
+extern "C" void _ZN17ShapeCylinderList7pushOutEP15Unk_02032808_V3iPv(u8* p, s32 a, s32 b, void* c, s32 d, s32 e);
+extern "C" void _ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(u8* p, s32 a, void* b, s32 c, void* d, s32 e);
 extern "C" s32 _ZN12Unk_020d8ccc13func_0202f2d8EP15Unk_0202f2ac_V3(void* p, void* v);
-extern "C" void* _ZN13Unk_020339ccXD2Ev(void* p);
-extern "C" void* _ZN13Unk_020339ccXC2Ev(void* p);
+extern "C" void* _ZN13CollisionTagXD2Ev(void* p);
+extern "C" void* _ZN13CollisionTagXC2Ev(void* p);
 struct Unk_020d8d28_Dead {
     s32 x, y, z;
     Unk_020d8d28_Dead() {}
     ~Unk_020d8d28_Dead() {}
 };
-struct Unk_020d8d28 : Unk_020d8d00 {
-    Unk_02032238* unk_04;
+struct MoveCollisionVisitor : CollisionVisitor {
+    CollisionState* unk_04;
     Unk_020d8d28_Best* unk_08;
     Unk_02030e48_Vec unk_0c;
     u16 unk_18;
@@ -496,26 +496,26 @@ struct Unk_020d8d28 : Unk_020d8d00 {
     s32 unk_20;
     u32 unk_24;
 
-    Unk_020d8d28() {}
+    MoveCollisionVisitor() {}
     virtual void vfunc_00(u8* p);
     virtual void vfunc_04(u8* p);
     virtual void vfunc_08(u8* p);
 };
 
-struct Unk_020d8d14 : Unk_020d8d00 {
+struct SegmentCollisionVisitor : CollisionVisitor {
     Unk_02031ed4_Vec* volatile unk_04;
     Unk_02031ed4_Vec unk_08;
     u32 unk_14;
     u8 unk_18;
     u8 unk_19[3];
-    Unk_020339ccX unk_1c;
+    CollisionTagX unk_1c;
     Unk_02031ed4_Vec unk_24;
     s32 unk_30;
     s32 unk_34;
     s32 unk_38;
     s32 unk_3c;
 
-    Unk_020d8d14() {}
+    SegmentCollisionVisitor() {}
     virtual void vfunc_00(u8* p);
     virtual void vfunc_04(u8* p);
     virtual void vfunc_08(u8* p);
@@ -532,17 +532,17 @@ extern "C" void _ZN12Unk_0202f04813func_0202efe4EPS_S0_(Unk_02032808_V2 *out, Un
 extern "C" void _ZN12Unk_0202f04813func_0202ef40Ev(Unk_02032808_V2 *v);
 extern "C" void _ZN12Unk_0202f04813func_0202eeecEPS_S0_(Unk_02032808_V2 *out, Unk_02032808_V2 *a, Unk_02032808_V2 *b);
 extern "C" s32 func_020e7b98(s32 x, s32 z);
-extern "C" void _ZN12Unk_020323f813func_020323f8Eiii(void *p, s32 ang, s32 a, s32 b);
+extern "C" void _ZN17CollisionContacts10addContactEiii(void *p, s32 ang, s32 a, s32 b);
 struct Unk_02032864_Static : Unk_02032808_V2 {
     inline Unk_02032864_Static(s32 x, s32 z) {
         _ZN12Unk_0202f04813func_0202f048Eii(this, x, z);
     }
     ~Unk_02032864_Static();
 };
-struct Unk_02032808 : Unk_0202f7b8X, Unk_020339ccX {
-    Unk_02032808();
-    ~Unk_02032808();
-    void func_02032808(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5);
+struct ShapeCylinder : CollisionCylinderX, CollisionTagX {
+    ShapeCylinder();
+    ~ShapeCylinder();
+    void setupShape(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5);
     /* 0x1c */ s32 unk_1c;
     /* 0x20 */ s16 unk_20;
     /* 0x22 */ s16 unk_22;
@@ -560,27 +560,27 @@ struct Unk_02032808_Flat {
 struct Unk_02032d60_Elem {
     u8 pad[0x30];
 };
-extern "C" void _ZN12Unk_020d8d5013func_02033044EPS_(void *dst, void *src);
-struct Unk_02032d60 {
-    BOOL func_02032d60(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, s32 d3);
-    BOOL func_02032d98(Unk_02032d60_Elem *e);
+extern "C" void _ZN8WallEdge8copyEdgeEPS_(void *dst, void *src);
+struct WallEdgeListWriter {
+    BOOL addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, s32 d3);
+    BOOL addEdgeCopy(Unk_02032d60_Elem *e);
     
-    void func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
+    void buildFromCells(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
     Unk_02032d60_Elem unk_00[0x18];
     /* 0x480 */ volatile u32 unk_480;
 };
-extern "C" void *_ZN12Unk_02033d4c13func_02033d4cEii(void *p, s32 x, s32 z);
-BOOL func_0203270c(Unk_02032808 *a, Unk_02032d60 *out, Unk_02032808 *b);
-struct Unk_02032494 {
-    Unk_02032494();
-    ~Unk_02032494();
-    void func_02032494(Unk_02032d60 *out);
-    void func_020324d8(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
-    BOOL func_020325cc(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5);
-    BOOL func_02032604(Unk_02032808_V3 *pos, s32 x, u32 *out);
-    BOOL func_02032658(Unk_02032808_V3 *pos, s32 x, void *q);
+extern "C" void *_ZN16DigHoleColliders11getRadiusAtEii(void *p, s32 x, s32 z);
+BOOL ShapeCylinder_AddLinkWall(ShapeCylinder *a, WallEdgeListWriter *out, ShapeCylinder *b);
+struct ShapeCylinderList {
+    ShapeCylinderList();
+    ~ShapeCylinderList();
+    void addLinkWalls(WallEdgeListWriter *out);
+    void collectFromUnits(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
+    BOOL addCylinder(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5);
+    BOOL landOnTop(Unk_02032808_V3 *pos, s32 x, u32 *out);
+    BOOL pushOut(Unk_02032808_V3 *pos, s32 x, void *q);
     volatile u32 unk_00;
-    Unk_02032808 unk_04[16];
+    ShapeCylinder unk_04[16];
 };
 struct Unk_020324d8_Obj {
     virtual void vfunc_00();
@@ -590,11 +590,11 @@ struct Unk_020324d8_Obj {
 
 // ---------------------------------------------------------------- unk_02032dc4.cpp
 extern "C" s32 func_020e7b98(s32 a, s32 b);
-extern "C" BOOL func_02031360(s32 id, s32 a);
+extern "C" BOOL GroundAttr_IsWater(s32 id, s32 a);
 extern s32 data_021bf988[];
 struct Unk_02032dc4_Out {
     s32 unk_00, unk_04, unk_08;
-    Unk_020323f8 unk_0c;
+    CollisionContacts unk_0c;
 };
 static inline void Unk_02032dc4_Set(Unk_0202f2ac_V3 *p, s32 y, s32 x, s32 z) {
     p->x = x;
@@ -605,10 +605,10 @@ struct Unk_02032dc4_V3 : Unk_0202f2ac_V3 {
     Unk_02032dc4_V3() {}
     Unk_02032dc4_V3(s32 b, s32 a, s32 c, s32 dummy) : Unk_0202f2ac_V3(a, b, c) {}
 };
-class Unk_020d8d50;
+class WallEdge;
 class Unk_02032dc4_Cb {
 public:
-    virtual void vfunc_00(Unk_020d8d50 *e, s32 arg, s32 r);
+    virtual void vfunc_00(WallEdge *e, s32 arg, s32 r);
 };
 class Unk_020d8ce4 {
 public:
@@ -626,19 +626,19 @@ public:
     BOOL func_0202ea40(Unk_0202f048 *a, Unk_0202f048 *b, s32 r);
     BOOL func_0202eb30(Unk_0202f048 *a, Unk_0202f048 *b, s32 r);
 };
-// declared before Unk_020d8d50: the three weak vtables (0x020d8d48, d54, d6c) come out in reverse declaration order
-class Unk_020d8d5c : public Unk_020d8cccX, public Unk_020339ccX {
+// declared before WallEdge: the three weak vtables (0x020d8d48, d54, d6c) come out in reverse declaration order
+class FloorTriangle : public Unk_020d8cccX, public CollisionTagX {
 public:
-    Unk_020d8d5c();
-    ~Unk_020d8d5c();
-    BOOL func_020333c4(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f);
+    FloorTriangle();
+    ~FloorTriangle();
+    BOOL setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f);
 };
 
-class Unk_020d8d50 : public Unk_020d8ce4, public Unk_020339ccX {
+class WallEdge : public Unk_020d8ce4, public CollisionTagX {
 public:
-    Unk_020d8d50();
-    Unk_020d8d50(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7);
-    ~Unk_020d8d50();
+    WallEdge();
+    WallEdge(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7);
+    ~WallEdge();
     virtual BOOL vfunc_00()
     {
         if (unk_28 == 3) {
@@ -647,25 +647,25 @@ public:
         return TRUE;
     }
     s32 unk_28, unk_2c;
-    BOOL func_02033010(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7);
-    BOOL func_02033044(Unk_020d8d50 *o);
+    BOOL setupEdge(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7);
+    BOOL copyEdge(WallEdge *o);
 };
-class Unk_02032dc4 {
+class WallEdgeList {
 public:
-    Unk_020d8d50 unk_00[24];
+    WallEdge unk_00[24];
     u32 unk_480;
-    Unk_02032dc4();
-    ~Unk_02032dc4();
-    BOOL func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_02032dc4_Out *out, s32 arg);
+    WallEdgeList();
+    ~WallEdgeList();
+    BOOL collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_02032dc4_Out *out, s32 arg);
 };
-class Unk_02033170 {
+class FloorTriangleList {
 public:
-    Unk_020d8d5c unk_00[40];
+    FloorTriangle unk_00[40];
     volatile u32 unk_a00;
-    Unk_02033170();
-    ~Unk_02033170();
-    void func_020331a8(class Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32 y1);
-    BOOL func_02033170(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f);
+    FloorTriangleList();
+    ~FloorTriangleList();
+    void buildFromCells(class Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32 y1);
+    BOOL addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f);
 };
 static inline void Unk_020331a8_SetU(u32 *v, s32 a, s32 b, s32 c) { v[0] = a; v[1] = b; v[2] = c; }
 struct Unk_02033438_G {
@@ -678,7 +678,7 @@ static inline void Unk_02033438_Set(Unk_0202f2ac_V3 *p, s32 x, s32 y, s32 z) {
     p->y = y;
     p->z = z;
 }
-class Unk_02033438 {
+class GroundInfoCalc {
 public:
     u8 unk_00;
     Unk_0202f2ac_V3 unk_04;
@@ -686,7 +686,7 @@ public:
     s32 unk_1c, unk_20;
     Unk_0202f2ac_V3 unk_24;
     s32 unk_30, unk_34, unk_38, unk_3c;
-    void func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg);
+    void compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg);
 };
 
 // ---------------------------------------------------------------- unk_0203389c.cpp
@@ -695,13 +695,13 @@ struct Unk_0203389c_Vec {
 };
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" long long func_020e9600(void *a, void *b);
-extern "C" BOOL func_020307c4(s32 a, s32 b, s32 *c, s32 *d, s32 *e);
-class Unk_0203389c {
+extern "C" BOOL Collision_GetUnitShape(s32 a, s32 b, s32 *c, s32 *d, s32 *e);
+class GroundInfoBase {
 public:
-    void func_0203389c(s32 a, s32 b, s32 c);
-    BOOL func_020338d0(s32 x);
-    s32 func_020338e8();
-    s32 func_02033914(s32 flag);
+    void setWaveDir(s32 a, s32 b, s32 c);
+    BOOL isBelowWaterSurface(s32 x);
+    s32 getWaterSurfaceY();
+    s32 getHeight(s32 flag);
 
     u8 pad_00[0x10];
     u8 unk_10[0xc];
@@ -715,17 +715,17 @@ public:
     s32 unk_38;
     s32 unk_3c;
 };
-class Unk_020339f8 {
+class CollisionMapIndex {
 public:
-    BOOL func_020339f8(s32 v);
+    BOOL setIndex(s32 v);
     s32 unk_00;
 };
-class Unk_02033b3c {
+class GroundCell {
 public:
-    Unk_02033b3c();
-    ~Unk_02033b3c();
-    void func_02033b94(s32 x, s32 y, s32 flag);
-    Unk_02033b3c *func_02033d2c(Unk_0203389c_Vec *p, s32 flag);
+    GroundCell();
+    ~GroundCell();
+    void load(s32 x, s32 y, s32 flag);
+    GroundCell *loadAtPos(Unk_0203389c_Vec *p, s32 flag);
 
     s32 unk_00;
     s32 unk_04;
@@ -737,60 +737,60 @@ public:
     u8 unk_13;
     u8 unk_14;
 };
-class Unk_02033b40 {
+class GroundCellGrid {
 public:
-    Unk_02033b40();
-    Unk_02033b3c *func_02033a0c(s32 x, s32 z);
-    void func_02033a5c(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
+    GroundCellGrid();
+    GroundCell *getCell(s32 x, s32 z);
+    void loadArea(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag);
 
-    Unk_02033b3c unk_00[0x31];
+    GroundCell unk_00[0x31];
     s32 unk_498;
     s32 unk_49c;
     s32 unk_4a0;
     s32 unk_4a4;
 };
-// the constructors and the destructor of the object whose other methods are Unk_02033438's and Unk_0203389c's
-class Unk_0203398c : public Unk_0203389c {
+// the constructors and the destructor of the object whose other methods are GroundInfoCalc's and GroundInfoBase's
+class GroundInfo : public GroundInfoBase {
 public:
-    Unk_0203398c(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
-    Unk_0203398c *func_0203398c(s32 x, s32 z, s32 a, s32 b);
-    Unk_0203398c *func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b);
+    GroundInfo(Unk_0203389c_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
+    GroundInfo *initAtUnit(s32 x, s32 z, s32 a, s32 b);
+    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
 };
-class Unk_02033d4c {
+class DigHoleColliders {
 public:
-    Unk_02033d4c() { func_02033e48(); }
-    u32 func_02033d4c(s32 a, s32 b);
-    void func_02033db0();
-    s32 func_02033df0();
-    BOOL func_02033e10(s32 a, s32 b);
-    void func_02033e48();
+    DigHoleColliders() { clear(); }
+    u32 getRadiusAt(s32 a, s32 b);
+    void update();
+    s32 findFreeSlot();
+    BOOL addHole(s32 a, s32 b);
+    void clear();
 
     u8 unk_00;
     u8 unk_01[4];
     s8 unk_05[4];
     s8 unk_09[4];
 };
-class Unk_02033f9c {
+class CollisionBlockRef {
 public:
-    Unk_02033f9c()
+    CollisionBlockRef()
     {
         unk_00 = 0;
         unk_04 = 0;
     }
-    ~Unk_02033f9c() {}
+    ~CollisionBlockRef() {}
 
     s32 unk_00;
     s32 unk_04;
 };
 // one map slot, size 0x138
-class Unk_02033f70 {
+class CollisionMap {
 public:
-    Unk_02033f70() { func_02033e60(); }
-    ~Unk_02033f70() {}
-    void func_02033e60();
+    CollisionMap() { reset(); }
+    ~CollisionMap() {}
+    void reset();
 
-    Unk_02033f9c unk_00[6][6];
+    CollisionBlockRef unk_00[6][6];
     Unk_0202ff44_Obj *unk_120;
     u32 unk_124;
     u32 unk_128;
@@ -800,36 +800,36 @@ public:
     s16 unk_132;
     s16 unk_134;
 };
-// the collision work area data_021bfab8
-class Unk_02033edc {
+// the collision work area sCollisionWorld
+class CollisionWorld {
 public:
-    ~Unk_02033edc() {}
+    ~CollisionWorld() {}
 
     /* 0x0000 */ s32 unk_00;
-    /* 0x0004 */ Unk_02033f70 unk_04[8];
-    /* 0x09c4 */ Unk_02032dc4 unk_9c4;
-    /* 0x0e48 */ Unk_02033170 unk_e48;
-    /* 0x184c */ Unk_02032494 unk_184c;
-    /* 0x1a90 */ Unk_02031b84 unk_1a90;
-    /* 0x1a91 */ Unk_02031e08 unk_1a91;
-    /* 0x1a94 */ Unk_02033b40 unk_1a94;
-    /* 0x1f3c */ Unk_02033d4c unk_1f3c;
+    /* 0x0004 */ CollisionMap unk_04[8];
+    /* 0x09c4 */ WallEdgeList unk_9c4;
+    /* 0x0e48 */ FloorTriangleList unk_e48;
+    /* 0x184c */ ShapeCylinderList unk_184c;
+    /* 0x1a90 */ BoxColliderListOwner unk_1a90;
+    /* 0x1a91 */ TriangleTriggerListOwner unk_1a91;
+    /* 0x1a94 */ GroundCellGrid unk_1a94;
+    /* 0x1f3c */ DigHoleColliders unk_1f3c;
 };
 
 // ---------------------------------------------------------------- inline helpers
-static inline Unk_02033f9c *Unk_0203030c_Get(Unk_02033f70 *m, s32 x, s32 y) {
+static inline CollisionBlockRef *Unk_0203030c_Get(CollisionMap *m, s32 x, s32 y) {
     if (x >= 0 && y >= 0 && (u32)x < m->unk_124 && (u32)y < m->unk_128) return &m->unk_00[y][x];
     return NULL;
 }
-static inline BOOL Unk_020303d0_IsSet(Unk_02033f9c *c) {
+static inline BOOL Unk_020303d0_IsSet(CollisionBlockRef *c) {
     if (c->unk_00 != 0 && c->unk_04 != 0) return TRUE;
     return FALSE;
 }
 static inline u8 Unk_020303d0_All(s32 idx) {
     s32 i, j;
-    for (i = data_021bfab8.unk_04[idx].unk_128 - 1; i >= 0; i--) {
-        for (j = data_021bfab8.unk_04[idx].unk_124 - 1; j >= 0; j--) {
-            Unk_02033f9c *row = data_021bfab8.unk_04[idx].unk_00[i];
+    for (i = sCollisionWorld.unk_04[idx].unk_128 - 1; i >= 0; i--) {
+        for (j = sCollisionWorld.unk_04[idx].unk_124 - 1; j >= 0; j--) {
+            CollisionBlockRef *row = sCollisionWorld.unk_04[idx].unk_00[i];
             if (!Unk_020303d0_IsSet(&row[j])) return 0;
         }
     }
@@ -837,95 +837,95 @@ static inline u8 Unk_020303d0_All(s32 idx) {
 }
 
 // ---------------------------------------------------------------- functions of this unit
-extern "C" BOOL func_0202fe84(s32 *a, s32 *b, s32 *c, s32 *d);
-extern "C" BOOL func_0202ff44(void);
-extern "C" BOOL func_0202ff64(Unk_0202ff44_V3 *p);
-extern "C" BOOL func_0202ffb0(s32 v);
-extern "C" s32 func_0202ffdc(Unk_0202ff44_V3 *p);
-extern "C" s32 func_0202fff0(s32 x, s32 z);
-extern "C" void func_0203002c(s32 x, s32 z);
-extern "C" BOOL func_0203006c(s32 x, s32 z, s32 mask);
-extern "C" BOOL func_02030164(s32 x, s32 z);
-extern "C" void func_020302cc(s32 v);
-extern "C" void func_020302f8(s32 idx);
-extern "C" void func_0203030c(s32 idx);
-extern "C" void func_02030380(s32 idx);
-extern "C" BOOL func_020303d0(s32 x, s32 y, s32 val, s32 idx);
-extern "C" void func_02030494(s32 x, s32 z, s32 mask);
-extern "C" void func_020304b4(s32 x, s32 z, s32 v);
-extern "C" void func_02030504(s32 a, s32 b);
-extern "C" void func_02030518(void);
-extern "C" BOOL func_02030528(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx);
-extern "C" void func_02030598(s32 v);
-extern "C" void func_02030608(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
-extern "C" s32 func_02030798(Unk_0202ff44_V3 *p);
-extern "C" s32 func_020307ac(s32 x, s32 z);
-extern "C" BOOL func_020307c4(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
-extern "C" s32 func_02030814(void);
-extern "C" s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags0);
-extern "C" BOOL func_020308b4(s32 *p, s32 a, s32 *c, s32 w, s32 h);
-extern "C" u8 func_02030908(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u32 flags);
-extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags);
-extern "C" s32 func_02030bc4();
-extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
-extern "C" u32 func_02030d58(s32 a);
-extern "C" BOOL func_02030d60(Unk_02030e48_Vec *pos);
-extern "C" BOOL func_02030d78(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, s32 *dir, u32 dist, u32 s5, s32 s6);
-extern "C" BOOL func_02030d9c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
-extern "C" BOOL func_02030e48(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags);
-extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag);
-extern "C" u16 func_02031060(s32 i);
-extern "C" u16 func_0203107c(s32 i);
-extern "C" BOOL func_02031098(u8 *out, s32 a, s32 b);
-extern "C" BOOL func_020310f8(s32 a, s32 b);
-extern "C" BOOL func_02031130(s32 a, s32 b);
-extern "C" u32 func_02031154(s32 x, s32 y);
-extern "C" BOOL func_02031194(s32 a, s32 b);
-extern "C" BOOL func_020311c0(s32 x, s32 y);
-extern "C" s32 func_020311ec(s32 x, s32 y);
-extern "C" s32 func_02031218(s32 x, s32 y);
-extern "C" s32 func_0203123c(s32 x, s32 y);
-extern "C" s32 func_02031260(s32 x, s32 y);
-extern "C" s32 func_02031284(s32 x, s32 y);
-extern "C" s32 func_020312a8(s32 x, s32 y);
-extern "C" BOOL func_020312d0(s32 x, s32 y);
-extern "C" BOOL func_020312ec(s32 x, s32 y);
-extern "C" BOOL func_02031304(Unk_02031304_Vec *v);
-extern "C" BOOL func_02031360(s32 t, s32 k);
-extern "C" Unk_020d8d3cX *func_0203139c();
-extern "C" u32 func_020313f4(s32 x, s32 y, u32 c);
-extern "C" u32 func_02031414(s32 t);
-extern "C" u32 func_0203142c(s32 t);
-extern "C" u32 func_02031444(s32 t);
-extern "C" u32 func_0203145c(s32 t);
-extern "C" u32 func_02031474(s32 x, s32 y, u32 c);
-extern "C" u32 func_02031494(s32 t);
-extern "C" u32 func_020314ac(s32 t);
-extern "C" u32 func_020314c4(s32 t);
-extern "C" u32 func_020314dc(s32 t);
-extern "C" s32 func_020314f4(Unk_020314f4_Vec *p);
-extern "C" void func_02031554(s32 *a, s32 *b);
-extern "C" void func_02031574(s32 *a, s32 *b);
-extern "C" u32 func_02031594(s32 i);
-extern "C" void func_02031618(s32 unused, Unk_0203182c_Vec *pos, Unk_0203182c_Vec *size, s32 a3, s32 a4, u32 flags, s32 mode);
-extern "C" BOOL func_0203182c(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d);
-extern "C" BOOL func_020318cc(Unk_020318cc_Node *n);
-extern "C" BOOL func_02031908(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s16 e, Unk_02031908_Vec *v);
-extern "C" void func_02031b78(void *p);
-extern "C" void func_02031d5c(s32* a, s32 b, s32 c);
-extern "C" s32 func_02031da4(Unk_020d8d74* node);
-extern "C" s32 func_02031de0(Unk_020d8d74* node);
-extern "C" void func_02031dfc(void *p);
-extern "C" void* func_02032218(void* p);
-extern "C" void* func_02032228(void* p);
-BOOL func_0203270c(Unk_02032808 *a, Unk_02032d60 *out, Unk_02032808 *b);
-extern "C" void func_02033078(Unk_0202f048 *out, Unk_020d8d50 *e);
-extern "C" void func_02033988(void *obj);
+extern "C" BOOL Ground_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d);
+extern "C" BOOL Ground_UnlockExit(void);
+extern "C" BOOL Ground_IsOnLockedExit(Unk_0202ff44_V3 *p);
+extern "C" BOOL Ground_LockExit(s32 v);
+extern "C" s32 Ground_GetExitAtPos(Unk_0202ff44_V3 *p);
+extern "C" s32 Ground_GetExitAt(s32 x, s32 z);
+extern "C" void Ground_UnlinkUnit(s32 x, s32 z);
+extern "C" BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask);
+extern "C" BOOL Ground_ClearPlantFlag(s32 x, s32 z);
+extern "C" void Ground_SetWaveLevel(s32 v);
+extern "C" void CollisionMap_Release(s32 idx);
+extern "C" void CollisionMap_ClearBlocks(s32 idx);
+extern "C" void CollisionMap_Reset(s32 idx);
+extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, s32 val, s32 idx);
+extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask);
+extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
+extern "C" void Collision_AddDigHole(s32 a, s32 b);
+extern "C" void Collision_UpdateDigHoles(void);
+extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx);
+extern "C" void CollisionMap_Select(s32 v);
+extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
+extern "C" s32 Collision_HasUnitShapeAt(Unk_0202ff44_V3 *p);
+extern "C" s32 Collision_HasUnitShape(s32 x, s32 z);
+extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
+extern "C" s32 Ground_GetDefaultY(void);
+extern "C" s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0);
+extern "C" BOOL Collision_ClampToRect(s32 *p, s32 a, s32 *c, s32 w, s32 h);
+extern "C" u8 Collision_TestSegment(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u32 flags);
+extern "C" void Collision_Move(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags);
+extern "C" s32 Ground_GetSpecialPieceKind();
+extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
+extern "C" u32 CollisionMap_IsBound(s32 a);
+extern "C" BOOL Ground_IsWaterAt(Unk_02030e48_Vec *pos);
+extern "C" BOOL Ground_FindWaterAhead(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, s32 *dir, u32 dist, u32 s5, s32 s6);
+extern "C" BOOL Ground_FindWaterAlongDir(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
+extern "C" BOOL Ground_IsWaterAround(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags);
+extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag);
+extern "C" u16 GroundAttr_GetDragSe(s32 i);
+extern "C" u16 GroundAttr_GetFootstepSe(s32 i);
+extern "C" BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b);
+extern "C" BOOL Ground_IsFreeGrass(s32 a, s32 b);
+extern "C" BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
+extern "C" u32 Ground_GetWalkLinks(s32 x, s32 y);
+extern "C" BOOL Ground_IsSandAboveSea(s32 a, s32 b);
+extern "C" BOOL Ground_IsShore(s32 x, s32 y);
+extern "C" s32 Ground_GetPlantFlag(s32 x, s32 y);
+extern "C" s32 Ground_GetDigKind(s32 x, s32 y);
+extern "C" s32 Ground_IsWalkable(s32 x, s32 y);
+extern "C" s32 Ground_IsGrassSurface(s32 x, s32 y);
+extern "C" s32 Ground_CanPlaceItem(s32 x, s32 y);
+extern "C" s32 Ground_GetWaterKind(s32 x, s32 y);
+extern "C" BOOL Ground_IsGrassUnit(s32 x, s32 y);
+extern "C" BOOL Ground_IsPond(s32 x, s32 y);
+extern "C" BOOL Ground_IsRaisedOrOccupied(Unk_02031304_Vec *v);
+extern "C" BOOL GroundAttr_IsWater(s32 t, s32 k);
+extern "C" UnitShapeQueryX *Collision_GetShapeQuery();
+extern "C" u32 Ground_GetQuadAttr1(s32 x, s32 y, u32 c);
+extern "C" u32 GroundAttr_GetQuadAttr1Q0(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr1Q1(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr1Q2(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr1Q3(s32 t);
+extern "C" u32 Ground_GetQuadAttr0(s32 x, s32 y, u32 c);
+extern "C" u32 GroundAttr_GetQuadAttr0Q0(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr0Q1(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr0Q2(s32 t);
+extern "C" u32 GroundAttr_GetQuadAttr0Q3(s32 t);
+extern "C" s32 Ground_GetUnitQuadrant(Unk_020314f4_Vec *p);
+extern "C" void Vec3_MinInPlace(s32 *a, s32 *b);
+extern "C" void Vec3_MaxInPlace(s32 *a, s32 *b);
+extern "C" u32 CollisionMap_IsFullyBound(s32 i);
+extern "C" void BoxCollider_GatherAll(s32 unused, Unk_0203182c_Vec *pos, Unk_0203182c_Vec *size, s32 a3, s32 a4, u32 flags, s32 mode);
+extern "C" BOOL Collision_IsSegmentOutsideBox(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d);
+extern "C" BOOL BoxCollider_Unregister(Unk_020318cc_Node *n);
+extern "C" BOOL BoxCollider_Register(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s16 e, Unk_02031908_Vec *v);
+extern "C" void BoxCollider_ClearList(void *p);
+extern "C" void TriangleTrigger_CheckAll(s32* a, s32 b, s32 c);
+extern "C" s32 TriangleTrigger_Unregister(TriangleTrigger* node);
+extern "C" s32 TriangleTrigger_Register(TriangleTrigger* node);
+extern "C" void TriangleTrigger_ClearList(void *p);
+extern "C" void* CollisionTag_Destruct(void* p);
+extern "C" void* CollisionTag_Construct(void* p);
+BOOL ShapeCylinder_AddLinkWall(ShapeCylinder *a, WallEdgeListWriter *out, ShapeCylinder *b);
+extern "C" void WallEdge_GetMidpoint(Unk_0202f048 *out, WallEdge *e);
+extern "C" void GroundInfo_Destruct(void *obj);
 
 // ---------------------------------------------------------------- objects
 // Data order: this unit is placed object by object (see object_order.txt).
-Unk_020d8d74 *data_021bf9b0;
-const Unk_020c7c4c_Ent data_020c7c4c[0x7c] = {
+TriangleTrigger *sTriangleTriggerList;
+const Unk_020c7c4c_Ent sGroundAttrTable[0x7c] = {
     {0xffff, 0xffff, 0, 0, -1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0xffff, 0xffff, 0, 0, -1, 0, 2, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0xffff, 0xffff, 0, 0, -1, 0, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -1052,16 +1052,16 @@ const Unk_020c7c4c_Ent data_020c7c4c[0x7c] = {
     {0x4b2, 0x4c2, 1, 1, -1, 0, 2, 0, 0, 123, 123, 123, 123, 123, 123, 123, 123, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 s32 data_021bf9a0 = func_01ffcb0c(0x20000, 0x800);
-FxVec3 data_021bfa4c(0, 0x1000, 0);
-Unk_020318cc_Node *data_021bf9b4;
-FxVec3 data_021bfa70(0x1000, 0x1000, 0x1000);
-Unk_02033f70 *data_020d8ce8 = &data_021bfab8.unk_04[0];
-const Unk_020c7c3c_Fn data_020c7c3c[4] = {func_02031414, func_0203142c, func_02031444, func_0203145c};
-const u32 data_020c7c20[3] = {0x800, 0xc00, 0x1000};
+FxVec3 sCollisionUpVector(0, 0x1000, 0);
+Unk_020318cc_Node *sBoxColliderList;
+FxVec3 sCollisionQueryMargin(0x1000, 0x1000, 0x1000);
+CollisionMap *gCurCollisionMap = &sCollisionWorld.unk_04[0];
+const Unk_020c7c3c_Fn sGroundQuadAttr1Getters[4] = {GroundAttr_GetQuadAttr1Q0, GroundAttr_GetQuadAttr1Q1, GroundAttr_GetQuadAttr1Q2, GroundAttr_GetQuadAttr1Q3};
+const u32 sDigHoleRadii[3] = {0x800, 0xc00, 0x1000};
 const s32 data_020c7c1c = -0x1000;
-const u8 data_020c7c18[4] = {0, 0, 0, 0};
+const u8 sDefaultGroundColors[4] = {0, 0, 0, 0};
 
-void Unk_02033f70::func_02033e60()
+void CollisionMap::reset()
 {
     s32 i, j;
     unk_124 = 0;
@@ -1079,7 +1079,7 @@ void Unk_02033f70::func_02033e60()
     }
 }
 
-void Unk_02033d4c::func_02033e48()
+void DigHoleColliders::clear()
 {
     u8 *p;
     unk_00 = 0;
@@ -1088,9 +1088,9 @@ void Unk_02033d4c::func_02033e48()
     }
 }
 
-BOOL Unk_02033d4c::func_02033e10(s32 a, s32 b)
+BOOL DigHoleColliders::addHole(s32 a, s32 b)
 {
-    s32 i = func_02033df0();
+    s32 i = findFreeSlot();
     if (i != -1) {
         unk_00 |= 1 << i;
         unk_05[i] = a;
@@ -1101,7 +1101,7 @@ BOOL Unk_02033d4c::func_02033e10(s32 a, s32 b)
     return FALSE;
 }
 
-s32 Unk_02033d4c::func_02033df0()
+s32 DigHoleColliders::findFreeSlot()
 {
     u32 i;
     for (i = 0; i < 4; i++) {
@@ -1112,7 +1112,7 @@ s32 Unk_02033d4c::func_02033df0()
     return -1;
 }
 
-void Unk_02033d4c::func_02033db0()
+void DigHoleColliders::update()
 {
     s32 i;
     u8 *p;
@@ -1126,7 +1126,7 @@ void Unk_02033d4c::func_02033db0()
     }
 }
 
-u32 Unk_02033d4c::func_02033d4c(s32 a, s32 b)
+u32 DigHoleColliders::getRadiusAt(s32 a, s32 b)
 {
     u32 i = 0;
     s8 *p5 = unk_05;
@@ -1134,63 +1134,63 @@ u32 Unk_02033d4c::func_02033d4c(s32 a, s32 b)
     u8 *p1 = unk_01;
     for (; p1 < (u8 *)unk_05; p5++, p9++, i++, p1++) {
         if (((unk_00 >> i) & 1) != 0 && *p1 < 3 && a == *p5 && b == *p9) {
-            return data_020c7c20[*p1];
+            return sDigHoleRadii[*p1];
         }
     }
     return 0;
 }
 
-Unk_02033b3c *Unk_02033b3c::func_02033d2c(Unk_0203389c_Vec *p, s32 flag)
+GroundCell *GroundCell::loadAtPos(Unk_0203389c_Vec *p, s32 flag)
 {
-    func_02033b94(p->x >> 13, p->z >> 13, flag);
+    load(p->x >> 13, p->z >> 13, flag);
     return this;
 }
 
-void Unk_02033b3c::func_02033b94(s32 x, s32 y, s32 flag)
+void GroundCell::load(s32 x, s32 y, s32 flag)
 {
     if (flag == 0) {
         unk_14 = func_01ffcb2c(x, y);
         s32 a = unk_14;
-        unk_10 = a < 0x7c ? data_020c7c4c[a].unk_0c : 0;
+        unk_10 = a < 0x7c ? sGroundAttrTable[a].unk_0c : 0;
         s32 b0 = unk_10;
-        unk_00 = b0 < 0x7c ? data_020c7c4c[b0].unk_1c << 8 : 0;
-        unk_11 = a < 0x7c ? data_020c7c4c[a].unk_0d : 0;
+        unk_00 = b0 < 0x7c ? sGroundAttrTable[b0].unk_1c << 8 : 0;
+        unk_11 = a < 0x7c ? sGroundAttrTable[a].unk_0d : 0;
         s32 b1 = unk_11;
-        unk_04 = b1 < 0x7c ? data_020c7c4c[b1].unk_1c << 8 : 0;
-        unk_12 = a < 0x7c ? data_020c7c4c[a].unk_0e : 0;
+        unk_04 = b1 < 0x7c ? sGroundAttrTable[b1].unk_1c << 8 : 0;
+        unk_12 = a < 0x7c ? sGroundAttrTable[a].unk_0e : 0;
         s32 b2 = unk_12;
-        unk_08 = b2 < 0x7c ? data_020c7c4c[b2].unk_1c << 8 : 0;
-        unk_13 = a < 0x7c ? data_020c7c4c[a].unk_0f : 0;
+        unk_08 = b2 < 0x7c ? sGroundAttrTable[b2].unk_1c << 8 : 0;
+        unk_13 = a < 0x7c ? sGroundAttrTable[a].unk_0f : 0;
         s32 b3 = unk_13;
-        unk_0c = b3 < 0x7c ? data_020c7c4c[b3].unk_1c << 8 : 0;
+        unk_0c = b3 < 0x7c ? sGroundAttrTable[b3].unk_1c << 8 : 0;
     } else {
         unk_14 = func_01ffcb2c(x, y);
         s32 a = unk_14;
-        unk_10 = a < 0x7c ? data_020c7c4c[a].unk_10 : 0;
+        unk_10 = a < 0x7c ? sGroundAttrTable[a].unk_10 : 0;
         s32 b0 = unk_10;
-        unk_00 = b0 < 0x7c ? data_020c7c4c[b0].unk_1c << 8 : 0;
-        unk_11 = a < 0x7c ? data_020c7c4c[a].unk_11 : 0;
+        unk_00 = b0 < 0x7c ? sGroundAttrTable[b0].unk_1c << 8 : 0;
+        unk_11 = a < 0x7c ? sGroundAttrTable[a].unk_11 : 0;
         s32 b1 = unk_11;
-        unk_04 = b1 < 0x7c ? data_020c7c4c[b1].unk_1c << 8 : 0;
-        unk_12 = a < 0x7c ? data_020c7c4c[a].unk_12 : 0;
+        unk_04 = b1 < 0x7c ? sGroundAttrTable[b1].unk_1c << 8 : 0;
+        unk_12 = a < 0x7c ? sGroundAttrTable[a].unk_12 : 0;
         s32 b2 = unk_12;
-        unk_08 = b2 < 0x7c ? data_020c7c4c[b2].unk_1c << 8 : 0;
-        unk_13 = a < 0x7c ? data_020c7c4c[a].unk_13 : 0;
+        unk_08 = b2 < 0x7c ? sGroundAttrTable[b2].unk_1c << 8 : 0;
+        unk_13 = a < 0x7c ? sGroundAttrTable[a].unk_13 : 0;
         s32 b3 = unk_13;
-        unk_0c = b3 < 0x7c ? data_020c7c4c[b3].unk_1c << 8 : 0;
+        unk_0c = b3 < 0x7c ? sGroundAttrTable[b3].unk_1c << 8 : 0;
     }
 }
 
-Unk_02033b40::Unk_02033b40()
+GroundCellGrid::GroundCellGrid()
 {
     unk_498 = unk_49c = unk_4a0 = unk_4a4 = 0;
 }
 
-Unk_02033b3c::Unk_02033b3c()
+GroundCell::GroundCell()
 {
 }
 
-void Unk_02033b40::func_02033a5c(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag)
+void GroundCellGrid::loadArea(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag)
 {
     s32 z, x;
     s32 dz = z1 - z0 + 1;
@@ -1202,7 +1202,7 @@ void Unk_02033b40::func_02033a5c(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag)
         unk_4a4 = z1;
         for (z = unk_4a0; z <= unk_4a4; z++) {
             for (x = unk_498; x <= unk_49c; x++) {
-                ((Unk_02033b3c *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18))->func_02033b94(x, z, flag);
+                ((GroundCell *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18))->load(x, z, flag);
             }
         }
     } else {
@@ -1212,21 +1212,21 @@ void Unk_02033b40::func_02033a5c(s32 x0, s32 x1, s32 z0, s32 z1, s32 flag)
         unk_4a4 = z0 + 6;
         for (z = unk_4a0; z <= unk_4a4; z++) {
             for (x = unk_498; x <= unk_49c; x++) {
-                ((Unk_02033b3c *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18))->func_02033b94(x, z, flag);
+                ((GroundCell *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18))->load(x, z, flag);
             }
         }
     }
 }
 
-Unk_02033b3c *Unk_02033b40::func_02033a0c(s32 x, s32 z)
+GroundCell *GroundCellGrid::getCell(s32 x, s32 z)
 {
     if (x >= unk_498 && x <= unk_49c && z >= unk_4a0 && z <= unk_4a4) {
-        return (Unk_02033b3c *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18);
+        return (GroundCell *)((u8 *)this + (z - unk_4a0) * 0xa8 + (x - unk_498) * 0x18);
     }
     return NULL;
 }
 
-BOOL Unk_020339f8::func_020339f8(s32 v)
+BOOL CollisionMapIndex::setIndex(s32 v)
 {
     if (v >= 0 && v < 8) {
         unk_00 = v;
@@ -1235,65 +1235,65 @@ BOOL Unk_020339f8::func_020339f8(s32 v)
     return FALSE;
 }
 
-Unk_020339ccX::Unk_020339ccX()
+CollisionTagX::CollisionTagX()
 {
     unk_00 = 0;
     f_04 = 0;
 }
 
-Unk_020339ccX::~Unk_020339ccX()
+CollisionTagX::~CollisionTagX()
 {
 }
 
-void Unk_020339ccX::func_020339d8(u32 a, u32 b)
+void CollisionTagX::setTag(u32 a, u32 b)
 {
     unk_00 = a;
     f_04 = (Unk_02032dc4_Cb *)b;
 }
 
-void Unk_020339ccX::func_020339cc(const Unk_020339ccX &o)
+void CollisionTagX::copyTag(const CollisionTagX &o)
 {
     unk_00 = o.unk_00;
     f_04 = o.f_04;
 }
 
-Unk_0203398c::Unk_0203398c(Unk_0203389c_Vec *v, s32 a, s32 b)
+GroundInfo::GroundInfo(Unk_0203389c_Vec *v, s32 a, s32 b)
 {
-    _ZN12Unk_0203343813func_02033438EP15Unk_0202f2ac_V3ii(this, v, a, b);
+    _ZN14GroundInfoCalc7computeEP15Unk_0202f2ac_V3ii(this, v, a, b);
 }
 
-Unk_0203398c *Unk_0203398c::func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b)
+GroundInfo *GroundInfo::initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b)
 {
-    _ZN12Unk_0203343813func_02033438EP15Unk_0202f2ac_V3ii(this, v, a, b);
+    _ZN14GroundInfoCalc7computeEP15Unk_0202f2ac_V3ii(this, v, a, b);
     return this;
 }
 
-Unk_0203398c *Unk_0203398c::func_0203398c(s32 x, s32 z, s32 a, s32 b)
+GroundInfo *GroundInfo::initAtUnit(s32 x, s32 z, s32 a, s32 b)
 {
     Unk_0203389c_Vec v;
     v.x = (x << 13) + 0x1000;
     v.y = 0;
     v.z = (z << 13) + 0x1000;
-    _ZN12Unk_0203343813func_02033438EP15Unk_0202f2ac_V3ii(this, &v, a, b);
+    _ZN14GroundInfoCalc7computeEP15Unk_0202f2ac_V3ii(this, &v, a, b);
     return this;
 }
 
-Unk_0203398c::~Unk_0203398c()
+GroundInfo::~GroundInfo()
 {
 }
 
-extern "C" void func_02033988(void *obj)
+extern "C" void GroundInfo_Destruct(void *obj)
 {
 }
 
-s32 Unk_0203389c::func_02033914(s32 flag)
+s32 GroundInfoBase::getHeight(s32 flag)
 {
     if (flag == 0) {
         return unk_38;
     }
     s32 a, b, c;
     Unk_0203389c_Vec v;
-    if (func_020307c4(unk_1c, unk_20, &a, &b, &c) && c != 2) {
+    if (Collision_GetUnitShape(unk_1c, unk_20, &a, &b, &c) && c != 2) {
         s32 z = unk_20;
         v.x = (unk_1c << 13) + 0x1000;
         v.y = 0;
@@ -1308,7 +1308,7 @@ s32 Unk_0203389c::func_02033914(s32 flag)
     return unk_38;
 }
 
-s32 Unk_0203389c::func_020338e8()
+s32 GroundInfoBase::getWaterSurfaceY()
 {
     if (unk_34 == 0x16) {
         s32 t = FX_Div(0x1e000, 0x64000);
@@ -1317,7 +1317,7 @@ s32 Unk_0203389c::func_020338e8()
     return unk_3c;
 }
 
-BOOL Unk_0203389c::func_020338d0(s32 x)
+BOOL GroundInfoBase::isBelowWaterSurface(s32 x)
 {
     if (unk_30 != 0) {
         if (x <= unk_3c) {
@@ -1328,7 +1328,7 @@ BOOL Unk_0203389c::func_020338d0(s32 x)
     return FALSE;
 }
 
-void Unk_0203389c::func_0203389c(s32 a, s32 b, s32 c)
+void GroundInfoBase::setWaveDir(s32 a, s32 b, s32 c)
 {
     b -= a;
     s32 v = 0;
@@ -1341,8 +1341,8 @@ void Unk_0203389c::func_0203389c(s32 a, s32 b, s32 c)
     func_020e93a0(&unk_24, (s16)(c + (s16)v));
 }
 
-void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
-    Unk_02033438_G *g = (Unk_02033438_G *)data_020d8ce8;
+void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
+    Unk_02033438_G *g = (Unk_02033438_G *)gCurCollisionMap;
     s32 gc = g->unk_132;
     s32 sl = g->unk_134;
     volatile Unk_0202f2ac_V3 ctr;
@@ -1355,19 +1355,19 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
     unk_1c = pos->x >> 13;
     unk_20 = pos->z >> 13;
     r = func_01ffcb2c(unk_1c, unk_20);
-    s32 k = func_020314f4((Unk_020314f4_Vec *)(pos));
+    s32 k = Ground_GetUnitQuadrant((Unk_020314f4_Vec *)(pos));
     if (flag != 0) {
-        unk_34 = func_020313f4(unk_1c, unk_20, k);
+        unk_34 = Ground_GetQuadAttr1(unk_1c, unk_20, k);
     } else {
-        unk_34 = func_02031474(unk_1c, unk_20, k);
+        unk_34 = Ground_GetQuadAttr0(unk_1c, unk_20, k);
     }
-    unk_38 = unk_34 < 0x7c ? (data_020c7c4c[unk_34].unk_1c << 8) : 0;
+    unk_38 = unk_34 < 0x7c ? (sGroundAttrTable[unk_34].unk_1c << 8) : 0;
     unk_3c = 0xfffee000;
-    unk_30 = unk_34 < 0x7c ? data_020c7c4c[unk_34].unk_14 : 0;
+    unk_30 = unk_34 < 0x7c ? sGroundAttrTable[unk_34].unk_14 : 0;
     unk_24.x = 0;
     unk_24.y = 0;
     unk_24.z = 0x1000;
-    if (func_02031360(unk_34, arg)) {
+    if (GroundAttr_IsWater(unk_34, arg)) {
         if (r == 0x52) {
             cx = (pos->x & 0xffffe000) + 0x1000;
             ctr.x = cx;
@@ -1377,10 +1377,10 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 a(cx - 0x1000, 0, cz + 0x1000);
             Unk_0202f2ac_V3 b(a.x, a.y, a.z - func_01ffcb0c(sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x + func_01ffcb0c(sl, 0x1666), a.y, a.z);
-            Unk_020d8cccX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&data_021bfa4c);
+            Unk_020d8cccX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&sCollisionUpVector);
             if (tri.func_0202f2d8(pos)) {
                 unk_34 = 0x16;
-                _ZN12Unk_0203389c13func_0203389cEiii(this, gc, sl, 0x6000);
+                _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0x6000);
             } else {
                 unk_30 = 0;
                 unk_34 = 0x13;
@@ -1396,10 +1396,10 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 a(cx + 0xb33, 0, cz - 0xb33);
             Unk_0202f2ac_V3 b(a.x, a.y, a.z + func_01ffcb0c(0x1000 - sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x - func_01ffcb0c(0x1000 - sl, 0x1666), a.y, a.z);
-            Unk_020d8cccX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&data_021bfa4c);
+            Unk_020d8cccX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&sCollisionUpVector);
             if (!tri.func_0202f2d8(pos)) {
                 unk_34 = 0x16;
-                _ZN12Unk_0203389c13func_0203389cEiii(this, gc, sl, 0x6000);
+                _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0x6000);
             } else {
                 unk_30 = 0;
                 unk_34 = 0x13;
@@ -1415,10 +1415,10 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 a(cx + 0x1000, 0, cz + 0x1000);
             Unk_0202f2ac_V3 b(a.x, a.y, a.z - func_01ffcb0c(sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x - func_01ffcb0c(sl, 0x1666), a.y, a.z);
-            Unk_020d8cccX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&data_021bfa4c);
+            Unk_020d8cccX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&sCollisionUpVector);
             if (tri.func_0202f2d8(pos)) {
                 unk_34 = 0x16;
-                _ZN12Unk_0203389c13func_0203389cEiii(this, gc, sl, 0xffffa000);
+                _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0xffffa000);
             } else {
                 unk_30 = 0;
                 unk_34 = 0x13;
@@ -1434,10 +1434,10 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 a(cx - 0xb33, 0, cz - 0xb33);
             Unk_0202f2ac_V3 b(a.x, a.y, a.z + func_01ffcb0c(0x1000 - sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x + func_01ffcb0c(0x1000 - sl, 0x1666), a.y, a.z);
-            Unk_020d8cccX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&data_021bfa4c);
+            Unk_020d8cccX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&sCollisionUpVector);
             if (!tri.func_0202f2d8(pos)) {
                 unk_34 = 0x16;
-                _ZN12Unk_0203389c13func_0203389cEiii(this, gc, sl, 0xffffa000);
+                _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0xffffa000);
             } else {
                 unk_30 = 0;
                 unk_34 = 0x13;
@@ -1457,14 +1457,14 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
                 unk_34 = 0x13;
             } else {
                 unk_34 = 0x16;
-                _ZN12Unk_0203389c13func_0203389cEiii(this, gc, sl, 0xffff8000);
+                _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0xffff8000);
             }
             unk_00 = 1;
             unk_04.x = ctr.x;
             unk_04.y = 0;
             unk_04.z = e;
         } else {
-            u32 t = unk_34 < 0x7c ? data_020c7c4c[unk_34].unk_0b : 0;
+            u32 t = unk_34 < 0x7c ? sGroundAttrTable[unk_34].unk_0b : 0;
             if (t != 0) {
                 s32 ang = 0;
                 s32 i;
@@ -1485,25 +1485,25 @@ void Unk_02033438::func_02033438(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
     }
 }
 
-Unk_020d8d5c::Unk_020d8d5c() {}
+FloorTriangle::FloorTriangle() {}
 
-Unk_020d8d5c::~Unk_020d8d5c() {}
+FloorTriangle::~FloorTriangle() {}
 
-BOOL Unk_020d8d5c::func_020333c4(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f) {
-    func_020339d8(e, f);
+BOOL FloorTriangle::setupFloor(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f) {
+    setTag(e, f);
     func_0202f364(a, b, c, d);
     return TRUE;
 }
 
-Unk_02033170::Unk_02033170() : unk_a00(0) {}
+FloorTriangleList::FloorTriangleList() : unk_a00(0) {}
 
-Unk_02033170::~Unk_02033170() {}
+FloorTriangleList::~FloorTriangleList() {}
 
-void Unk_02033170::func_020331a8(Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32 y1) {
+void FloorTriangleList::buildFromCells(Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32 y1) {
     s32 y, x;
     for (y = y0; y <= y1; y++) {
         for (x = x0; x <= x1; x++) {
-            Unk_020331a8_Cell *cell = _ZN12Unk_02033b4013func_02033a0cEii(grid, x, y);
+            Unk_020331a8_Cell *cell = _ZN14GroundCellGrid7getCellEii(grid, x, y);
             if (cell == NULL) {
                 continue;
             }
@@ -1515,79 +1515,79 @@ void Unk_02033170::func_020331a8(Unk_02033a0c *grid, s32 x0, s32 x1, s32 y0, s32
             s32 xl = xc - 0x1000;
             s32 zr = yc + 0x1000;
             s32 zl = yc - 0x1000;
-            u32 t = (s32)cell->unk_14 < 0x7c ? data_020c7c4c[cell->unk_14].unk_15 : 0;
+            u32 t = (s32)cell->unk_14 < 0x7c ? sGroundAttrTable[cell->unk_14].unk_15 : 0;
             if (t != 0) {
                 Unk_0202f2ac_V3 a(xl, cell->unk_00, zl);
                 Unk_0202f2ac_V3 b(xl, cell->unk_00, zr);
                 Unk_0202f2ac_V3 c(xr, cell->unk_00, zr);
                 Unk_0202f2ac_V3 d(xr, cell->unk_00, zl);
-                func_02033170(&a, &b, &c, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_10, 0);
-                func_02033170(&a, &c, &d, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_10, 0);
+                addTriangle(&a, &b, &c, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_10, 0);
+                addTriangle(&a, &c, &d, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_10, 0);
             } else {
                 Unk_0202f2ac_V3 a0(xc, cell->unk_00, yc);
                 Unk_0202f2ac_V3 a1(xr, cell->unk_00, zl);
                 Unk_0202f2ac_V3 a2(xl, cell->unk_00, zl);
-                func_02033170(&a0, &a1, &a2, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_10, 0);
+                addTriangle(&a0, &a1, &a2, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_10, 0);
                 Unk_0202f2ac_V3 b0(ctr.x, cell->unk_04, ctr.z);
                 Unk_0202f2ac_V3 b1(xl, cell->unk_04, zl);
                 Unk_0202f2ac_V3 b2(xl, cell->unk_04, zr);
-                func_02033170(&b0, &b1, &b2, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_11, 0);
+                addTriangle(&b0, &b1, &b2, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_11, 0);
                 Unk_0202f2ac_V3 c0(ctr.x, cell->unk_08, ctr.z);
                 Unk_0202f2ac_V3 c1(xl, cell->unk_08, zr);
                 Unk_0202f2ac_V3 c2(xr, cell->unk_08, zr);
-                func_02033170(&c0, &c1, &c2, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_12, 0);
+                addTriangle(&c0, &c1, &c2, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_12, 0);
                 Unk_0202f2ac_V3 d0(ctr.x, cell->unk_0c, ctr.z);
                 Unk_0202f2ac_V3 d1(xr, cell->unk_0c, zr);
                 Unk_0202f2ac_V3 d2(xr, cell->unk_0c, zl);
-                func_02033170(&d0, &d1, &d2, (Unk_0202f2ac_V3 *)&data_021bfa4c, cell->unk_13, 0);
+                addTriangle(&d0, &d1, &d2, (Unk_0202f2ac_V3 *)&sCollisionUpVector, cell->unk_13, 0);
             }
         }
     }
 }
 
-BOOL Unk_02033170::func_02033170(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f) {
+BOOL FloorTriangleList::addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f) {
     if (unk_a00 < 40) {
         u32 i = unk_a00;
         unk_a00 = i + 1;
-        return unk_00[i].func_020333c4(a, b, c, d, e, f);
+        return unk_00[i].setupFloor(a, b, c, d, e, f);
     }
     return FALSE;
 }
 
-Unk_020d8d50::Unk_020d8d50() {}
+WallEdge::WallEdge() {}
 
-Unk_020d8d50::~Unk_020d8d50() {}
+WallEdge::~WallEdge() {}
 
-Unk_020d8d50::Unk_020d8d50(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7) {
-    func_02033010(a, b, c, p4, p5, p6, p7);
+WallEdge::WallEdge(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7) {
+    setupEdge(a, b, c, p4, p5, p6, p7);
 }
 
-extern "C" void func_02033078(Unk_0202f048 *out, Unk_020d8d50 *e) {
+extern "C" void WallEdge_GetMidpoint(Unk_0202f048 *out, WallEdge *e) {
     out->func_0202f048((e->unk_04.x + e->unk_0c.x) >> 1, (e->unk_04.y + e->unk_0c.y) >> 1);
 }
 
-BOOL Unk_020d8d50::func_02033044(Unk_020d8d50 *o) {
-    func_020339cc(*o);
+BOOL WallEdge::copyEdge(WallEdge *o) {
+    copyTag(*o);
     func_0202edf8(&o->unk_04, &o->unk_0c, &o->unk_14);
     unk_28 = o->unk_28;
     unk_2c = o->unk_2c;
     return TRUE;
 }
 
-BOOL Unk_020d8d50::func_02033010(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7) {
-    func_020339d8(p6, p7);
+BOOL WallEdge::setupEdge(Unk_0202f048 *a, Unk_0202f048 *b, Unk_0202f048 *c, s32 p4, s32 p5, u32 p6, u32 p7) {
+    setTag(p6, p7);
     func_0202edf8(a, b, c);
     unk_28 = p5;
     unk_2c = p4;
     return TRUE;
 }
 
-Unk_02032dc4::Unk_02032dc4() : unk_480(0) {}
+WallEdgeList::WallEdgeList() : unk_480(0) {}
 
-Unk_02032dc4::~Unk_02032dc4() {}
+WallEdgeList::~WallEdgeList() {}
 
-BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_02032dc4_Out *out, s32 arg) {
-    Unk_020d8d50 *e;
+BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_02032dc4_Out *out, s32 arg) {
+    WallEdge *e;
     s32 py;
     BOOL result = FALSE;
     Unk_0202f048 a, b, d;
@@ -1610,7 +1610,7 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
                 t1b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {
-                    out->unk_0c.func_020323f8(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
+                    out->unk_0c.addContact(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1634,7 +1634,7 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
                 t2b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {
-                    out->unk_0c.func_020323f8(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
+                    out->unk_0c.addContact(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1657,7 +1657,7 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
                 t3b.z = a.y;
                 s32 k = e->unk_28;
                 if (k != 3) {
-                    out->unk_0c.func_020323f8(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
+                    out->unk_0c.addContact(func_020e7b98(e->unk_14.x, e->unk_14.y), k, e->unk_00);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1671,23 +1671,23 @@ BOOL Unk_02032dc4::func_02032dc4(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r
     return result;
 }
 
-BOOL Unk_02032d60::func_02032d98(Unk_02032d60_Elem *e) {
+BOOL WallEdgeListWriter::addEdgeCopy(Unk_02032d60_Elem *e) {
     if (unk_480 < 0x18) {
         u32 n = unk_480;
         unk_480 = n + 1;
-        _ZN12Unk_020d8d5013func_02033044EPS_(&unk_00[n], e);
+        _ZN8WallEdge8copyEdgeEPS_(&unk_00[n], e);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_02032d60::func_02032d60(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, s32 d3) {
-    Unk_020d8d50 t((Unk_0202f048 *)a, (Unk_0202f048 *)b, (Unk_0202f048 *)c, d0, d1, d2, d3);
-    BOOL r = func_02032d98((Unk_02032d60_Elem *)&t);
+BOOL WallEdgeListWriter::addEdge(void *a, void *b, void *c, s32 d0, s32 d1, s32 d2, s32 d3) {
+    WallEdge t((Unk_0202f048 *)a, (Unk_0202f048 *)b, (Unk_0202f048 *)c, d0, d1, d2, d3);
+    BOOL r = addEdgeCopy((Unk_02032d60_Elem *)&t);
     return r;
 }
 
-void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag) {
+void WallEdgeListWriter::buildFromCells(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag) {
     s32 z, x;
     Unk_020331a8_Cell *qx, *qz;
     s32 zw;
@@ -1697,10 +1697,10 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
         x = x1;
         zw = (z << 13) + 0x1000;
         for (; x >= x0; x--) {
-            Unk_020331a8_Cell *q = _ZN12Unk_02033b4013func_02033a0cEii(grid, x, z);
+            Unk_020331a8_Cell *q = _ZN14GroundCellGrid7getCellEii(grid, x, z);
             if (q == 0) continue;
-            qx = _ZN12Unk_02033b4013func_02033a0cEii(grid, x + 1, z);
-            qz = _ZN12Unk_02033b4013func_02033a0cEii(grid, x, z + 1);
+            qx = _ZN14GroundCellGrid7getCellEii(grid, x + 1, z);
+            qz = _ZN14GroundCellGrid7getCellEii(grid, x, z + 1);
             p.x = (x << 13) + 0x1000;
             p.y = 0;
             p.z = zw;
@@ -1710,11 +1710,11 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
                 _ZN12Unk_0202f04813func_0202f048Eii(&t30, p.x + 0x1000, p.z - 0x1000);
                 _ZN12Unk_0202f04813func_0202f048Eii(&t38, t30.x, p.z + 0x1000);
                 if (q->unk_0c > qx->unk_04) {
-                    func_02032d60(&t30, &t38, &sA, q->unk_0c, 1, q->unk_13, 0);
-                    if (flag) func_02032d60(&t30, &t38, &sB, 0x8000, 2, 2, 0);
+                    addEdge(&t30, &t38, &sA, q->unk_0c, 1, q->unk_13, 0);
+                    if (flag) addEdge(&t30, &t38, &sB, 0x8000, 2, 2, 0);
                 } else {
-                    func_02032d60(&t30, &t38, &sB, qx->unk_00, 1, qx->unk_10, 0);
-                    if (flag) func_02032d60(&t30, &t38, &sA, 0x8000, 2, 2, 0);
+                    addEdge(&t30, &t38, &sB, qx->unk_00, 1, qx->unk_10, 0);
+                    if (flag) addEdge(&t30, &t38, &sA, 0x8000, 2, 2, 0);
                 }
             }
             if (qz != 0 && q->unk_08 != qz->unk_00) {
@@ -1723,11 +1723,11 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
                 _ZN12Unk_0202f04813func_0202f048Eii(&t40, p.x - 0x1000, p.z + 0x1000);
                 _ZN12Unk_0202f04813func_0202f048Eii(&t48, p.x + 0x1000, t40.z);
                 if (q->unk_08 > qz->unk_00) {
-                    func_02032d60(&t40, &t48, &sC, q->unk_08, 1, q->unk_12, 0);
-                    if (flag) func_02032d60(&t40, &t48, &sD, 0x8000, 2, 2, 0);
+                    addEdge(&t40, &t48, &sC, q->unk_08, 1, q->unk_12, 0);
+                    if (flag) addEdge(&t40, &t48, &sD, 0x8000, 2, 2, 0);
                 } else {
-                    func_02032d60(&t40, &t48, &sD, qz->unk_00, 1, qz->unk_10, 0);
-                    if (flag) func_02032d60(&t40, &t48, &sC, 0x8000, 2, 2, 0);
+                    addEdge(&t40, &t48, &sD, qz->unk_00, 1, qz->unk_10, 0);
+                    if (flag) addEdge(&t40, &t48, &sC, 0x8000, 2, 2, 0);
                 }
             }
             if (q->unk_00 != q->unk_04) {
@@ -1736,11 +1736,11 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
                 _ZN12Unk_0202f04813func_0202f048Eii(&t50, p.x - 0x1000, p.z - 0x1000);
                 _ZN12Unk_0202f04813func_0202f048Eii(&t58, p.x + 0x1000, p.z + 0x1000);
                 if (q->unk_00 > q->unk_04) {
-                    func_02032d60(&t50, &t58, &sE, q->unk_00, 1, q->unk_10, 0);
-                    if (flag) func_02032d60(&t50, &t58, &sF, 0x8000, 2, 2, 0);
+                    addEdge(&t50, &t58, &sE, q->unk_00, 1, q->unk_10, 0);
+                    if (flag) addEdge(&t50, &t58, &sF, 0x8000, 2, 2, 0);
                 } else {
-                    func_02032d60(&t50, &t58, &sF, q->unk_04, 1, q->unk_11, 0);
-                    if (flag) func_02032d60(&t50, &t58, &sE, 0x8000, 2, 2, 0);
+                    addEdge(&t50, &t58, &sF, q->unk_04, 1, q->unk_11, 0);
+                    if (flag) addEdge(&t50, &t58, &sE, 0x8000, 2, 2, 0);
                 }
             } else if (q->unk_00 != q->unk_0c) {
                 static Unk_02032864_Static sG(0xb50, 0xb50);
@@ -1748,37 +1748,37 @@ void Unk_02032d60::func_02032864(void *grid, s32 x0, s32 x1, s32 z0, s32 z1, s32
                 _ZN12Unk_0202f04813func_0202f048Eii(&t60, p.x - 0x1000, p.z + 0x1000);
                 _ZN12Unk_0202f04813func_0202f048Eii(&t68, p.x + 0x1000, p.z - 0x1000);
                 if (q->unk_00 > q->unk_0c) {
-                    func_02032d60(&t60, &t68, &sG, q->unk_00, 1, q->unk_10, 0);
-                    if (flag) func_02032d60(&t60, &t68, &sH, 0x8000, 2, 2, 0);
+                    addEdge(&t60, &t68, &sG, q->unk_00, 1, q->unk_10, 0);
+                    if (flag) addEdge(&t60, &t68, &sH, 0x8000, 2, 2, 0);
                 } else {
-                    func_02032d60(&t60, &t68, &sH, q->unk_0c, 1, q->unk_13, 0);
-                    if (flag) func_02032d60(&t60, &t68, &sG, 0x8000, 2, 2, 0);
+                    addEdge(&t60, &t68, &sH, q->unk_0c, 1, q->unk_13, 0);
+                    if (flag) addEdge(&t60, &t68, &sG, 0x8000, 2, 2, 0);
                 }
             }
         }
     }
 }
 
-const Unk_020c7c3c_Fn data_020c7c2c[4] = {func_02031494, func_020314ac, func_020314c4, func_020314dc};
-Unk_02033edc data_021bfab8;
+const Unk_020c7c3c_Fn sGroundQuadAttr0Getters[4] = {GroundAttr_GetQuadAttr0Q0, GroundAttr_GetQuadAttr0Q1, GroundAttr_GetQuadAttr0Q2, GroundAttr_GetQuadAttr0Q3};
+CollisionWorld sCollisionWorld;
 
-Unk_02032808::Unk_02032808() {
+ShapeCylinder::ShapeCylinder() {
 }
 
-Unk_02032808::~Unk_02032808() {
+ShapeCylinder::~ShapeCylinder() {
 }
 
-void Unk_02032808::func_02032808(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5) {
+void ShapeCylinder::setupShape(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5) {
     s32 z = pos->z >> 13;
     s32 x = pos->x >> 13;
     unk_20 = x;
     unk_22 = z;
-    func_0202fd8c((Unk_0202f660_V3 *)pos, b, c);
+    setCylinder((Unk_0202f660_V3 *)pos, b, c);
     unk_1c = a4;
-    func_020339d8(a5, 0);
+    setTag(a5, 0);
 }
 
-BOOL func_0203270c(Unk_02032808 *a, Unk_02032d60 *out, Unk_02032808 *b) {
+BOOL ShapeCylinder_AddLinkWall(ShapeCylinder *a, WallEdgeListWriter *out, ShapeCylinder *b) {
     s32 dx = ((Unk_02032808_Flat *)b)->unk_20 - ((Unk_02032808_Flat *)a)->unk_20;
     s32 dz = ((Unk_02032808_Flat *)b)->unk_22 - ((Unk_02032808_Flat *)a)->unk_22;
     if ((dx == 0 && dz == 1) || (dx == 1 && (u32)(dz + 1) <= 2)) {
@@ -1799,66 +1799,66 @@ BOOL func_0203270c(Unk_02032808 *a, Unk_02032d60 *out, Unk_02032808 *b) {
         _ZN12Unk_0202f04813func_0202f048Eii(&p40, -p38.x, -p38.z);
         s32 m = ((Unk_02032808_Flat *)b)->unk_10;
         if (m > ((Unk_02032808_Flat *)a)->unk_10) m = ((Unk_02032808_Flat *)a)->unk_10;
-        out->func_02032d60(&p28, &p30, &p38, m, 3, 0, 0);
-        out->func_02032d60(&p28, &p30, &p40, m, 3, 0, 0);
+        out->addEdge(&p28, &p30, &p38, m, 3, 0, 0);
+        out->addEdge(&p28, &p30, &p40, m, 3, 0, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-Unk_02032494::Unk_02032494() {
+ShapeCylinderList::ShapeCylinderList() {
     unk_00 = 0;
 }
 
-Unk_02032494::~Unk_02032494() {
+ShapeCylinderList::~ShapeCylinderList() {
 }
 
-BOOL Unk_02032494::func_02032658(Unk_02032808_V3 *pos, s32 x, void *q) {
+BOOL ShapeCylinderList::pushOut(Unk_02032808_V3 *pos, s32 x, void *q) {
     BOOL r = FALSE;
-    Unk_02032808 *base = unk_04;
-    Unk_02032808 *e;
+    ShapeCylinder *base = unk_04;
+    ShapeCylinder *e;
     for (e = base; e < base + unk_00; e++) {
         volatile Unk_02032808_V3 d;
         d.x = pos->x;
         d.y = pos->y;
         d.z = pos->z;
-        if (e->func_0202fcfc((Unk_0202f660_V3 *)pos, x)) {
+        if (e->pushOut((Unk_0202f660_V3 *)pos, x)) {
             Unk_02032808_V3 t;
             func_020e9960(&t, pos, (Unk_02032808_V3 *)e);
             s32 ang = func_020e7b98(t.x, t.z);
-            _ZN12Unk_020323f813func_020323f8Eiii((u8 *)q + 0xc, ang, e->unk_1c, e->Unk_020339ccX::unk_00);
+            _ZN17CollisionContacts10addContactEiii((u8 *)q + 0xc, ang, e->unk_1c, e->CollisionTagX::unk_00);
             r = TRUE;
         }
     }
     return r;
 }
 
-BOOL Unk_02032494::func_02032604(Unk_02032808_V3 *pos, s32 x, u32 *out) {
-    Unk_02032808 *base = unk_04;
-    Unk_02032808 *e;
+BOOL ShapeCylinderList::landOnTop(Unk_02032808_V3 *pos, s32 x, u32 *out) {
+    ShapeCylinder *base = unk_04;
+    ShapeCylinder *e;
     for (e = base; e < base + unk_00; e++) {
         volatile Unk_02032808_V3 d;
         d.x = pos->x;
         d.y = pos->y;
         d.z = pos->z;
-        if (e->unk_1c == 1 && e->func_0202fccc((Unk_0202f660_V3 *)pos, (Unk_0202f660_V3 *)x)) {
-            *out = e->Unk_020339ccX::unk_00;
+        if (e->unk_1c == 1 && e->landOnTop((Unk_0202f660_V3 *)pos, (Unk_0202f660_V3 *)x)) {
+            *out = e->CollisionTagX::unk_00;
             return TRUE;
         }
     }
     return FALSE;
 }
 
-BOOL Unk_02032494::func_020325cc(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5) {
+BOOL ShapeCylinderList::addCylinder(Unk_02032808_V3 *pos, s32 b, s32 c, s32 a4, s32 a5) {
     if (unk_00 < 16) {
-        unk_04[unk_00].func_02032808(pos, b, c, a4, a5);
+        unk_04[unk_00].setupShape(pos, b, c, a4, a5);
         unk_00++;
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_02032494::func_020324d8(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag) {
+void ShapeCylinderList::collectFromUnits(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 flag) {
     s32 z, x;
     for (z = z0; z <= z1; z++) {
         x = x0;
@@ -1874,7 +1874,7 @@ void Unk_02032494::func_020324d8(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 
                         p.y = 0;
                         p.z = zw;
                         p.y = 0;
-                        func_020325cc(&p, a, b, 2, c);
+                        addCylinder(&p, a, b, 2, c);
                     }
                 } else {
                     Unk_02032808_V3 p;
@@ -1882,18 +1882,18 @@ void Unk_02032494::func_020324d8(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 
                     p.y = 0;
                     p.z = zw;
                     p.y = 0;
-                    func_020325cc(&p, a, b, 1, c);
+                    addCylinder(&p, a, b, 1, c);
                 }
             } else if (flag) {
-                if (data_021bfab8.unk_1f3c.unk_00 != 0) {
-                    void *r = _ZN12Unk_02033d4c13func_02033d4cEii(&data_021bfab8.unk_1f3c, x, z);
+                if (sCollisionWorld.unk_1f3c.unk_00 != 0) {
+                    void *r = _ZN16DigHoleColliders11getRadiusAtEii(&sCollisionWorld.unk_1f3c, x, z);
                     if (r != 0) {
                         Unk_02032808_V3 p;
                         p.x = (x << 13) + 0x1000;
                         p.y = 0;
                         p.z = zw;
                         p.y = 0;
-                        func_020325cc(&p, (s32)r, 0x1000, 2, 2);
+                        addCylinder(&p, (s32)r, 0x1000, 2, 2);
                     }
                 }
             }
@@ -1901,26 +1901,26 @@ void Unk_02032494::func_020324d8(void *obj, s32 x0, s32 x1, s32 z0, s32 z1, s32 
     }
 }
 
-void Unk_02032494::func_02032494(Unk_02032d60 *out) {
+void ShapeCylinderList::addLinkWalls(WallEdgeListWriter *out) {
     u32 n = unk_00;
-    Unk_02032808 *p = unk_04;
+    ShapeCylinder *p = unk_04;
     u32 i;
     for (i = 0; i < n; p++, i++) {
-        Unk_02032808 *q = unk_04;
+        ShapeCylinder *q = unk_04;
         u32 j;
         for (j = 0; j < n; q++, j++) {
-            func_0203270c(p, out, q);
+            ShapeCylinder_AddLinkWall(p, out, q);
         }
     }
 }
 
-Unk_020323f8::Unk_020323f8() {
-    func_0203245c();
+CollisionContacts::CollisionContacts() {
+    clear();
 }
 
-Unk_020323f8::~Unk_020323f8() {}
+CollisionContacts::~CollisionContacts() {}
 
-void Unk_020323f8::func_0203245c() {
+void CollisionContacts::clear() {
     s32* a = unk_08;
     s32* b = unk_10;
     s16* p = unk_00;
@@ -1934,7 +1934,7 @@ void Unk_020323f8::func_0203245c() {
     }
 }
 
-BOOL Unk_020323f8::func_020323f8(s32 a, s32 b, s32 c) {
+BOOL CollisionContacts::addContact(s32 a, s32 b, s32 c) {
     s16* p = unk_00;
     s32* q = unk_10;
     s32 i = 0;
@@ -1956,8 +1956,8 @@ BOOL Unk_020323f8::func_020323f8(s32 a, s32 b, s32 c) {
     return FALSE;
 }
 
-void Unk_02032238::func_020323d8() {
-    unk_0c.func_0203245c();
+void CollisionState::beginStep() {
+    unk_0c.clear();
     unk_08 = 0;
     unk_00 = unk_04;
     unk_04 = 0;
@@ -1966,7 +1966,7 @@ void Unk_02032238::func_020323d8() {
     unk_2c = 0;
 }
 
-void Unk_02032238::func_020323c8() {
+void CollisionState::reset() {
     unk_04 = 0;
     unk_00 = 0;
     unk_08 = 0;
@@ -1975,13 +1975,13 @@ void Unk_02032238::func_020323c8() {
     unk_2c = 0;
 }
 
-Unk_02032238::Unk_02032238() {
-    func_020323c8();
+CollisionState::CollisionState() {
+    reset();
 }
 
-Unk_02032238::~Unk_02032238() {}
+CollisionState::~CollisionState() {}
 
-void Unk_02032238::func_02032238(s32 v) {
+void CollisionState::updateWallFlags(s32 v) {
     s32 i = 0;
     s32 base = v + 0x8000;
     for (; i < unk_0c.unk_04; i++) {
@@ -2035,21 +2035,21 @@ void Unk_02032238::func_02032238(s32 v) {
     }
 }
 
-extern "C" void* func_02032228(void* p) {
-    _ZN13Unk_020339ccXC2Ev(p);
+extern "C" void* CollisionTag_Construct(void* p) {
+    _ZN13CollisionTagXC2Ev(p);
     return p;
 }
 
-extern "C" void* func_02032218(void* p) {
-    _ZN13Unk_020339ccXD2Ev(p);
+extern "C" void* CollisionTag_Destruct(void* p) {
+    _ZN13CollisionTagXD2Ev(p);
     return p;
 }
 
-void Unk_020d8d28::vfunc_00(u8* p) {
-    _ZN12Unk_02032dc413func_02032dc4EP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(p, (s32)unk_08, &unk_0c, unk_1c, unk_04, unk_20);
+void MoveCollisionVisitor::vfunc_00(u8* p) {
+    _ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(p, (s32)unk_08, &unk_0c, unk_1c, unk_04, unk_20);
 }
 
-void Unk_020d8d28::vfunc_04(u8* p) {
+void MoveCollisionVisitor::vfunc_04(u8* p) {
     u8* e;
     Unk_020d8d28_Dead dead;
     u8* end = p + *(s32*)(p + 0xa00) * 0x40;
@@ -2064,22 +2064,22 @@ void Unk_020d8d28::vfunc_04(u8* p) {
     }
 }
 
-void Unk_020d8d28::vfunc_08(u8* p) {
+void MoveCollisionVisitor::vfunc_08(u8* p) {
     s32 out;
     if (unk_24 & 1) {
-        s32 t = (s32)func_0203139c();
-        if (_ZN12Unk_0203249413func_02032604EP15Unk_02032808_V3iPj(p, (s32)unk_08, &unk_0c, &out, unk_20, t)) {
+        s32 t = (s32)Collision_GetShapeQuery();
+        if (_ZN17ShapeCylinderList9landOnTopEP15Unk_02032808_V3iPj(p, (s32)unk_08, &unk_0c, &out, unk_20, t)) {
             unk_04->unk_04 |= 1;
             unk_04->unk_08 = out;
         }
     }
     if (unk_24 & 6) {
-        s32 t = (s32)func_0203139c();
-        _ZN12Unk_0203249413func_02032658EP15Unk_02032808_V3iPv(p, (s32)unk_08, unk_1c, unk_04, unk_20, t);
+        s32 t = (s32)Collision_GetShapeQuery();
+        _ZN17ShapeCylinderList7pushOutEP15Unk_02032808_V3iPv(p, (s32)unk_08, unk_1c, unk_04, unk_20, t);
     }
 }
 
-void Unk_020d8d14::vfunc_00(u8* p) {
+void SegmentCollisionVisitor::vfunc_00(u8* p) {
     Unk_02031ed4_Vec out;
     Unk_02032028_Ent* e;
     unk_34 = *(s32*)(p + 0x480);
@@ -2105,7 +2105,7 @@ void Unk_020d8d14::vfunc_00(u8* p) {
                     d->x = x;
                     d->y = y;
                     d->z = z;
-                    _ZN13Unk_020339ccX13func_020339ccERKS_(&unk_1c, &e->unk_20);
+                    _ZN13CollisionTagX7copyTagERKS_(&unk_1c, &e->unk_20);
                     Unk_02031ed4_Vec* n = (Unk_02031ed4_Vec*)((u8*)r + 0x28);
                     unk_24 = *n;
                     unk_30 = e->unk_20.unk_00;
@@ -2116,7 +2116,7 @@ void Unk_020d8d14::vfunc_00(u8* p) {
     }
 }
 
-void Unk_020d8d14::vfunc_04(u8* p) {
+void SegmentCollisionVisitor::vfunc_04(u8* p) {
     Unk_02031ed4_Vec out;
     u8* e;
     u8* end;
@@ -2133,7 +2133,7 @@ void Unk_020d8d14::vfunc_04(u8* p) {
                 d->x = out.x;
                 d->y = out.y;
                 d->z = out.z;
-                _ZN13Unk_020339ccX13func_020339ccERKS_(&unk_1c, &ent->unk_38);
+                _ZN13CollisionTagX7copyTagERKS_(&unk_1c, &ent->unk_38);
                 Unk_02031ed4_Vec* n = &ent->unk_28;
                 unk_24 = *n;
                 unk_30 = ent->unk_38.unk_00;
@@ -2143,7 +2143,7 @@ void Unk_020d8d14::vfunc_04(u8* p) {
     }
 }
 
-void Unk_020d8d14::vfunc_08(u8* p) {
+void SegmentCollisionVisitor::vfunc_08(u8* p) {
     u8* r6;
     u8* e;
     volatile Unk_02031ed4_Vec t;
@@ -2152,15 +2152,15 @@ void Unk_020d8d14::vfunc_08(u8* p) {
     unk_3c = *(s32*)p;
     r6 = p + 4;
     e = r6;
-    g = (Unk_02031ed4_Vec *)&data_021bfa4c;
+    g = (Unk_02031ed4_Vec *)&sCollisionUpVector;
     for (; e < r6 + unk_3c * 0x24; e += 0x24) {
         Unk_02031ed4_Ent* ent = (Unk_02031ed4_Ent*)e;
         q0 = unk_04;
         t.x = q0->x;
         t.y = q0->y;
         t.z = q0->z;
-        if (_ZN13Unk_0202f7b8X13func_0202fc20EP15Unk_0202f660_V3S1_(e, unk_04, &unk_08)) {
-            _ZN13Unk_020339ccX13func_020339ccERKS_(&unk_1c, &ent->unk_14);
+        if (_ZN18CollisionCylinderX14clipSegmentTopEP15Unk_0202f660_V3S1_(e, unk_04, &unk_08)) {
+            _ZN13CollisionTagX7copyTagERKS_(&unk_1c, &ent->unk_14);
             unk_24.x = g->x;
             unk_24.y = g->y;
             unk_24.z = g->z;
@@ -2171,8 +2171,8 @@ void Unk_020d8d14::vfunc_08(u8* p) {
         t.x = q0->x;
         t.y = q0->y;
         t.z = q0->z;
-        if (_ZN13Unk_0202f7b8X13func_0202fa70EP15Unk_0202f660_V3S1_(e, unk_04, &unk_08)) {
-            _ZN13Unk_020339ccX13func_020339ccERKS_(&unk_1c, &ent->unk_14);
+        if (_ZN18CollisionCylinderX15clipSegmentSideEP15Unk_0202f660_V3S1_(e, unk_04, &unk_08)) {
+            _ZN13CollisionTagX7copyTagERKS_(&unk_1c, &ent->unk_14);
             Unk_02031ed4_Vec* q = unk_04;
             s32 z = q->z - ent->unk_00.z;
             s32 x = q->x - ent->unk_00.x;
@@ -2186,11 +2186,11 @@ void Unk_020d8d14::vfunc_08(u8* p) {
     }
 }
 
-Unk_020d8d74::Unk_020d8d74() {
-    func_02031ea4();
+TriangleTrigger::TriangleTrigger() {
+    resetTrigger();
 }
 
-void Unk_020d8d74::func_02031ea4() {
+void TriangleTrigger::resetTrigger() {
     unk_38 = 0;
     unk_48 = 0;
     unk_3c = 0;
@@ -2198,11 +2198,11 @@ void Unk_020d8d74::func_02031ea4() {
     unk_44 = 0;
 }
 
-s32* Unk_020d8d74::func_02031ea0() {
+s32* TriangleTrigger::getCenter() {
     return &unk_3c;
 }
 
-void Unk_020d8d74::func_02031e10(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, s32 d) {
+void TriangleTrigger::setupTrigger(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, s32 d) {
     Unk_02031e10_Vec v0, v1;
     u32 out[3];
     unk_48 = func_01ffcb0c(d, d);
@@ -2212,10 +2212,10 @@ void Unk_020d8d74::func_02031e10(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_0
     v1.x = a->x;
     v1.y = a->y;
     v1.z = a->z;
-    func_02031574((s32 *)(&v0), (s32 *)(b));
-    func_02031554((s32 *)(&v1), (s32 *)(b));
-    func_02031574((s32 *)(&v0), (s32 *)(c));
-    func_02031554((s32 *)(&v1), (s32 *)(c));
+    Vec3_MaxInPlace((s32 *)(&v0), (s32 *)(b));
+    Vec3_MinInPlace((s32 *)(&v1), (s32 *)(b));
+    Vec3_MaxInPlace((s32 *)(&v0), (s32 *)(c));
+    Vec3_MinInPlace((s32 *)(&v1), (s32 *)(c));
     s32 z = (v1.z + v0.z) >> 1;
     s32 y = (v1.y + v0.y) >> 1;
     s32 x = (v1.x + v0.x) >> 1;
@@ -2226,53 +2226,53 @@ void Unk_020d8d74::func_02031e10(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_0
     _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(this, a, b, c, out);
 }
 
-Unk_02031e08::Unk_02031e08() {}
+TriangleTriggerListOwner::TriangleTriggerListOwner() {}
 
-Unk_02031e08::~Unk_02031e08() {}
+TriangleTriggerListOwner::~TriangleTriggerListOwner() {}
 
-extern "C" void func_02031dfc(void *p) {
-    data_021bf9b0 = NULL;
+extern "C" void TriangleTrigger_ClearList(void *p) {
+    sTriangleTriggerList = NULL;
 }
 
-extern "C" s32 func_02031de0(Unk_020d8d74* node) {
+extern "C" s32 TriangleTrigger_Register(TriangleTrigger* node) {
     if (node->unk_38 == NULL) {
-        node->unk_38 = data_021bf9b0;
-        data_021bf9b0 = node;
+        node->unk_38 = sTriangleTriggerList;
+        sTriangleTriggerList = node;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" s32 func_02031da4(Unk_020d8d74* node) {
-    Unk_020d8d74* p;
-    Unk_020d8d74* prev;
-    for (p = data_021bf9b0, prev = NULL; p != NULL; prev = p, p = p->unk_38) {
+extern "C" s32 TriangleTrigger_Unregister(TriangleTrigger* node) {
+    TriangleTrigger* p;
+    TriangleTrigger* prev;
+    for (p = sTriangleTriggerList, prev = NULL; p != NULL; prev = p, p = p->unk_38) {
         if (p == node) {
             if (prev != NULL) {
                 prev->unk_38 = p->unk_38;
             } else {
-                data_021bf9b0 = p->unk_38;
+                sTriangleTriggerList = p->unk_38;
             }
-            node->func_02031ea4();
+            node->resetTrigger();
             return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" void func_02031d5c(s32* a, s32 b, s32 c) {
-    Unk_020d8d74* p;
-    p = data_021bf9b0;
+extern "C" void TriangleTrigger_CheckAll(s32* a, s32 b, s32 c) {
+    TriangleTrigger* p;
+    p = sTriangleTriggerList;
     if (p != NULL) {
         for (; p != NULL; p = p->unk_38) {
             if ((s64)p->unk_48 >= func_01ffd028(&p->unk_3c, a)) {
-                p->vfunc_10((s32)a, c, b);
+                p->onActorNear((s32)a, c, b);
             }
         }
     }
 }
 
-void Unk_020d8cf4X::func_02031d04() {
+void BoxColliderX::resetBox() {
     FxVec3* a;
     Unk_0202ea3c* b;
     s32 i;
@@ -2301,17 +2301,17 @@ void Unk_020d8cf4X::func_02031d04() {
     }
 }
 
-Unk_020d8cf4X::Unk_020d8cf4X() {
-    func_02031d04();
+BoxColliderX::BoxColliderX() {
+    resetBox();
 }
 
-Unk_020d8cf4X::~Unk_020d8cf4X() {}
+BoxColliderX::~BoxColliderX() {}
 
-void Unk_020d8cf4X::func_02031b90(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk_02031b90_Vec* q) {
+void BoxColliderX::setupBox(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk_02031b90_Vec* q) {
     unk_10 = a;
     unk_14 = b;
     unk_18 = c;
-    _ZN12Unk_0203161813func_02031960EP16Unk_0203182c_VeciS1_(this, p, s, q);
+    _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_(this, p, s, q);
     unk_04 = p->x;
     unk_08 = p->y;
     unk_0c = p->z;
@@ -2322,15 +2322,15 @@ void Unk_020d8cf4X::func_02031b90(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 
     unk_98 = 1;
 }
 
-void Unk_020d8cf4X::vfunc_00() {}
+void BoxColliderX::vfunc_00() {}
 
-Unk_02031b84::Unk_02031b84() {}
+BoxColliderListOwner::BoxColliderListOwner() {}
 
-Unk_02031b84::~Unk_02031b84() {}
+BoxColliderListOwner::~BoxColliderListOwner() {}
 
-extern "C" void func_02031b78(void *p) { data_021bf9b4 = 0; }
+extern "C" void BoxCollider_ClearList(void *p) { sBoxColliderList = 0; }
 
-BOOL Unk_02031618::func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec *b)
+BOOL BoxColliderShape::updateTransform(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec *b)
 {
     Unk_0203182c_Vec corners[4];
     Unk_0203182c_Vec hi, lo;
@@ -2388,8 +2388,8 @@ BOOL Unk_02031618::func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec 
                     hi.x = pv->x; hi.y = pv->y; hi.z = pv->z;
                     lo.x = pv->x; lo.y = pv->y; lo.z = pv->z;
                 } else {
-                    func_02031574(&hi.x, &pv->x);
-                    func_02031554(&lo.x, &pv->x);
+                    Vec3_MaxInPlace(&hi.x, &pv->x);
+                    Vec3_MinInPlace(&lo.x, &pv->x);
                 }
                 _ZN12Unk_0202f04813func_0202f048Eii(as, 0, 0x1000);
                 _ZN12Unk_0202f04813func_0202ef18Es(as, (s16)(ang + (i << 14)));
@@ -2405,8 +2405,8 @@ BOOL Unk_02031618::func_02031960(Unk_0203182c_Vec *a, s32 ang, Unk_0203182c_Vec 
                 hi.x = pv->x; hi.y = pv->y; hi.z = pv->z;
                 lo.x = pv->x; lo.y = pv->y; lo.z = pv->z;
             } else {
-                func_02031574(&hi.x, &pv->x);
-                func_02031554(&lo.x, &pv->x);
+                Vec3_MaxInPlace(&hi.x, &pv->x);
+                Vec3_MinInPlace(&lo.x, &pv->x);
             }
             _ZN12Unk_0202f04813func_0202f048Eii(as, 0, 0x1000);
             _ZN12Unk_0202f04813func_0202ef18Es(as, (s16)(ang + (i << 14)));
@@ -2435,7 +2435,7 @@ end:
     return result;
 }
 
-extern "C" BOOL func_02031908(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s16 e, Unk_02031908_Vec *v)
+extern "C" BOOL BoxCollider_Register(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, s16 e, Unk_02031908_Vec *v)
 {
     Unk_02031908_Vec s;
     s.x = 0x1000;
@@ -2446,26 +2446,26 @@ extern "C" BOOL func_02031908(Unk_020318cc_Node *n, s32 a, s32 b, s32 c, s32 d, 
         s.y = v->y;
         s.z = v->z;
     }
-    if (_ZN13Unk_020d8cf4X13func_02031b90EiiiP16Unk_02031b90_VecsS1_(n, a, b, c, d, e, &s)) {
-        n->unk_2c = data_021bf9b4;
-        data_021bf9b4 = n;
+    if (_ZN12BoxColliderX8setupBoxEiiiP16Unk_02031b90_VecsS1_(n, a, b, c, d, e, &s)) {
+        n->unk_2c = sBoxColliderList;
+        sBoxColliderList = n;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020318cc(Unk_020318cc_Node *n)
+extern "C" BOOL BoxCollider_Unregister(Unk_020318cc_Node *n)
 {
-    Unk_020318cc_Node *cur = data_021bf9b4;
+    Unk_020318cc_Node *cur = sBoxColliderList;
     Unk_020318cc_Node *prev = 0;
     while (cur != 0) {
         if (cur == n) {
             if (prev != 0) {
                 prev->unk_2c = cur->unk_2c;
             } else {
-                data_021bf9b4 = cur->unk_2c;
+                sBoxColliderList = cur->unk_2c;
             }
-            _ZN13Unk_020d8cf4X13func_02031d04Ev(n);
+            _ZN12BoxColliderX8resetBoxEv(n);
             return TRUE;
         }
         prev = cur;
@@ -2474,7 +2474,7 @@ extern "C" BOOL func_020318cc(Unk_020318cc_Node *n)
     return FALSE;
 }
 
-extern "C" BOOL func_0203182c(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d)
+extern "C" BOOL Collision_IsSegmentOutsideBox(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203182c_Vec *c, Unk_0203182c_Vec *d)
 {
     Unk_0203182c_Vec mn, mx;
     Unk_0203182c_Vec *pts[2];
@@ -2501,10 +2501,10 @@ extern "C" BOOL func_0203182c(Unk_0203182c_Vec *a, Unk_0203182c_Vec *b, Unk_0203
     return FALSE;
 }
 
-extern "C" void func_02031618(s32 unused, Unk_0203182c_Vec *pos, Unk_0203182c_Vec *size, s32 a3, s32 a4, u32 flags, s32 mode)
+extern "C" void BoxCollider_GatherAll(s32 unused, Unk_0203182c_Vec *pos, Unk_0203182c_Vec *size, s32 a3, s32 a4, u32 flags, s32 mode)
 {
     u8 *q;
-    Unk_02031618 *n = (Unk_02031618 *)data_021bf9b4;
+    BoxColliderShape *n = (BoxColliderShape *)sBoxColliderList;
     u32 m2 = flags & 2;
     u32 m1 = flags & 1;
     for (; n != 0; n = n->unk_2c) {
@@ -2527,68 +2527,68 @@ extern "C" void func_02031618(s32 unused, Unk_0203182c_Vec *pos, Unk_0203182c_Ve
             u8 res[4];
             q = res;
             s32 base;
-            for (i = 0; i < ((volatile Unk_02031618 *)n)->unk_2a; i++) {
-                *q = func_0203182c(pos, size, &n->unk_30[i & (n->unk_2a - 1)], &n->unk_30[(i + 1) & (n->unk_2a - 1)]);
+            for (i = 0; i < ((volatile BoxColliderShape *)n)->unk_2a; i++) {
+                *q = Collision_IsSegmentOutsideBox(pos, size, &n->unk_30[i & (n->unk_2a - 1)], &n->unk_30[(i + 1) & (n->unk_2a - 1)]);
                 q++;
             }
             base = n->unk_04.y + func_01ffcb0c(n->unk_10.z, n->unk_1c.y);
-            for (i = 0; i < ((volatile Unk_02031618 *)n)->unk_2a; i++) {
+            for (i = 0; i < ((volatile BoxColliderShape *)n)->unk_2a; i++) {
                 if (res[i & 3] == 0) {
                     Unk_02031960_P8 e0, e1;
                     u8 obj[0x34];
                     _ZN12Unk_0202f04813func_0202f048Eii(&e0, n->unk_30[i & (n->unk_2a - 1)].x, n->unk_30[i & (n->unk_2a - 1)].z);
                     _ZN12Unk_0202f04813func_0202f048Eii(&e1, n->unk_30[(i + 1) & (n->unk_2a - 1)].x, n->unk_30[(i + 1) & (n->unk_2a - 1)].z);
-                    _ZN12Unk_020d8d50C1EP12Unk_0202f048S1_S1_iijj(obj, &e0, &e1, &n->unk_60[i & (n->unk_2a - 1)], base, 1, 1, n);
-                    _ZN12Unk_02032d6013func_02032d98EP17Unk_02032d60_Elem(a3, obj);
-                    _ZN12Unk_020d8d50D1Ev(obj);
+                    _ZN8WallEdgeC1EP12Unk_0202f048S1_S1_iijj(obj, &e0, &e1, &n->unk_60[i & (n->unk_2a - 1)], base, 1, 1, n);
+                    _ZN18WallEdgeListWriter11addEdgeCopyEP17Unk_02032d60_Elem(a3, obj);
+                    _ZN8WallEdgeD1Ev(obj);
                 }
             }
         }
         if (m1 != 0) {
             s32 cc = n->unk_2a - 1;
-            _ZN12Unk_0203317013func_02033170EP15Unk_0202f2ac_V3S1_S1_S1_jj(a4, &n->unk_30[0], &n->unk_30[cc & 1], &n->unk_30[cc & 3], &data_021bfa4c, 1, n);
+            _ZN17FloorTriangleList11addTriangleEP15Unk_0202f2ac_V3S1_S1_S1_jj(a4, &n->unk_30[0], &n->unk_30[cc & 1], &n->unk_30[cc & 3], &sCollisionUpVector, 1, n);
             cc = n->unk_2a - 1;
-            _ZN12Unk_0203317013func_02033170EP15Unk_0202f2ac_V3S1_S1_S1_jj(a4, &n->unk_30[cc & 1], &n->unk_30[cc & 2], &n->unk_30[cc & 3], &data_021bfa4c, 1, n);
+            _ZN17FloorTriangleList11addTriangleEP15Unk_0202f2ac_V3S1_S1_S1_jj(a4, &n->unk_30[cc & 1], &n->unk_30[cc & 2], &n->unk_30[cc & 3], &sCollisionUpVector, 1, n);
         }
     }
 }
 
-Unk_020d8d3cX::Unk_020d8d3cX() {}
+UnitShapeQueryX::UnitShapeQueryX() {}
 
-Unk_020d8d3cX::~Unk_020d8d3cX() {}
+UnitShapeQueryX::~UnitShapeQueryX() {}
 
-s32 Unk_020d8d3cX::vfunc_08() { return 0; }
+s32 UnitShapeQueryX::vfunc_08() { return 0; }
 
-Unk_020d8d00::Unk_020d8d00() {}
+CollisionVisitor::CollisionVisitor() {}
 
-Unk_020d8d00::~Unk_020d8d00() {}
+CollisionVisitor::~CollisionVisitor() {}
 
-void Unk_020d8d00::vfunc_00(u8 *p) {}
+void CollisionVisitor::vfunc_00(u8 *p) {}
 
-void Unk_020d8d00::vfunc_04(u8 *p) {}
+void CollisionVisitor::vfunc_04(u8 *p) {}
 
-void Unk_020d8d00::vfunc_08(u8 *p) {}
+void CollisionVisitor::vfunc_08(u8 *p) {}
 
-extern "C" u32 func_02031594(s32 i)
+extern "C" u32 CollisionMap_IsFullyBound(s32 i)
 {
-    return data_021bfab8.unk_04[i].unk_130;
+    return sCollisionWorld.unk_04[i].unk_130;
 }
 
-extern "C" void func_02031574(s32 *a, s32 *b)
+extern "C" void Vec3_MaxInPlace(s32 *a, s32 *b)
 {
     if (b[0] > a[0]) a[0] = b[0];
     if (b[1] > a[1]) a[1] = b[1];
     if (b[2] > a[2]) a[2] = b[2];
 }
 
-extern "C" void func_02031554(s32 *a, s32 *b)
+extern "C" void Vec3_MinInPlace(s32 *a, s32 *b)
 {
     if (b[0] < a[0]) a[0] = b[0];
     if (b[1] < a[1]) a[1] = b[1];
     if (b[2] < a[2]) a[2] = b[2];
 }
 
-extern "C" s32 func_020314f4(Unk_020314f4_Vec *p)
+extern "C" s32 Ground_GetUnitQuadrant(Unk_020314f4_Vec *p)
 {
     Unk_020314f4_Vec v, w;
     s32 s, d;
@@ -2609,43 +2609,43 @@ extern "C" s32 func_020314f4(Unk_020314f4_Vec *p)
     return 0;
 }
 
-extern "C" u32 func_020314dc(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_0f : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr0Q3(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_0f : 0; }
 
-extern "C" u32 func_020314c4(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_0e : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr0Q2(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_0e : 0; }
 
-extern "C" u32 func_020314ac(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_0d : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr0Q1(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_0d : 0; }
 
-extern "C" u32 func_02031494(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_0c : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr0Q0(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_0c : 0; }
 
-extern "C" u32 func_02031474(s32 x, s32 y, u32 c)
+extern "C" u32 Ground_GetQuadAttr0(s32 x, s32 y, u32 c)
 {
-    return data_020c7c2c[c & 3](func_01ffcb2c(x, y));
+    return sGroundQuadAttr0Getters[c & 3](func_01ffcb2c(x, y));
 }
 
-extern "C" u32 func_0203145c(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_13 : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr1Q3(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_13 : 0; }
 
-extern "C" u32 func_02031444(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_12 : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr1Q2(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_12 : 0; }
 
-extern "C" u32 func_0203142c(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_11 : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr1Q1(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_11 : 0; }
 
-extern "C" u32 func_02031414(s32 t) { return t < 0x7c ? data_020c7c4c[t].unk_10 : 0; }
+extern "C" u32 GroundAttr_GetQuadAttr1Q0(s32 t) { return t < 0x7c ? sGroundAttrTable[t].unk_10 : 0; }
 
-extern "C" u32 func_020313f4(s32 x, s32 y, u32 c)
+extern "C" u32 Ground_GetQuadAttr1(s32 x, s32 y, u32 c)
 {
-    return data_020c7c3c[c & 3](func_01ffcb2c(x, y));
+    return sGroundQuadAttr1Getters[c & 3](func_01ffcb2c(x, y));
 }
 
-extern "C" Unk_020d8d3cX *func_0203139c()
+extern "C" UnitShapeQueryX *Collision_GetShapeQuery()
 {
-    static Unk_020d8d3cX inst;
-    Unk_020d8d3cX *p = ((Unk_020d8ce8 *)data_020d8ce8)->unk_120;
+    static UnitShapeQueryX inst;
+    UnitShapeQueryX *p = ((Unk_020d8ce8 *)gCurCollisionMap)->unk_120;
     if (p == 0) p = &inst;
     return p;
 }
 
-extern "C" BOOL func_02031360(s32 t, s32 k)
+extern "C" BOOL GroundAttr_IsWater(s32 t, s32 k)
 {
-    u32 v = t < 0x7c ? data_020c7c4c[t].unk_14 : 0;
+    u32 v = t < 0x7c ? sGroundAttrTable[t].unk_14 : 0;
     if (v != 0) {
         switch (k) {
         case 1:
@@ -2660,38 +2660,38 @@ extern "C" BOOL func_02031360(s32 t, s32 k)
     return FALSE;
 }
 
-extern "C" BOOL func_02031304(Unk_02031304_Vec *v)
+extern "C" BOOL Ground_IsRaisedOrOccupied(Unk_02031304_Vec *v)
 {
     u32 obj[16];
     s32 a, b, c;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(obj, v, 0, 0);
-    if (_ZN12Unk_0203389c13func_02033914Ei(obj, 0)) {
-        func_02033988(obj);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(obj, v, 0, 0);
+    if (_ZN14GroundInfoBase9getHeightEi(obj, 0)) {
+        GroundInfo_Destruct(obj);
         return TRUE;
     }
-    if (func_020307c4(v->x >> 13, v->z >> 13, &a, &b, &c)) {
-        func_02033988(obj);
+    if (Collision_GetUnitShape(v->x >> 13, v->z >> 13, &a, &b, &c)) {
+        GroundInfo_Destruct(obj);
         return TRUE;
     }
-    func_02033988(obj);
+    GroundInfo_Destruct(obj);
     return FALSE;
 }
 
-extern "C" BOOL func_020312ec(s32 x, s32 y)
+extern "C" BOOL Ground_IsPond(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
     if (t == 7) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_020312d0(s32 x, s32 y)
+extern "C" BOOL Ground_IsGrassUnit(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
     if (t == 3 || t == 0x1d) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 func_020312a8(s32 x, s32 y)
+extern "C" s32 Ground_GetWaterKind(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
     if (t == 8) return 1;
@@ -2699,59 +2699,59 @@ extern "C" s32 func_020312a8(s32 x, s32 y)
     return 0;
 }
 
-extern "C" s32 func_02031284(s32 x, s32 y)
+extern "C" s32 Ground_CanPlaceItem(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
-    if (t < 0x7c) return data_020c7c4c[t].unk_04;
+    if (t < 0x7c) return sGroundAttrTable[t].unk_04;
     return 0;
 }
 
-extern "C" s32 func_02031260(s32 x, s32 y)
+extern "C" s32 Ground_IsGrassSurface(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
-    if (t < 0x7c) return data_020c7c4c[t].unk_08;
+    if (t < 0x7c) return sGroundAttrTable[t].unk_08;
     return 0;
 }
 
-extern "C" s32 func_0203123c(s32 x, s32 y)
+extern "C" s32 Ground_IsWalkable(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
-    if (t < 0x7c) return data_020c7c4c[t].unk_05;
+    if (t < 0x7c) return sGroundAttrTable[t].unk_05;
     return 0;
 }
 
-extern "C" s32 func_02031218(s32 x, s32 y)
+extern "C" s32 Ground_GetDigKind(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
-    if (t < 0x7c) return data_020c7c4c[t].unk_09;
+    if (t < 0x7c) return sGroundAttrTable[t].unk_09;
     return 2;
 }
 
-extern "C" s32 func_020311ec(s32 x, s32 y)
+extern "C" s32 Ground_GetPlantFlag(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
     if (t < 0x7c) {
-        s32 v = data_020c7c4c[t].unk_06;
+        s32 v = sGroundAttrTable[t].unk_06;
         if (v > 0) v = 1;
         return v;
     }
     return -1;
 }
 
-extern "C" BOOL func_020311c0(s32 x, s32 y)
+extern "C" BOOL Ground_IsShore(s32 x, s32 y)
 {
     s32 t = func_01ffcb2c(x, y);
-    u32 v = t < 0x7c ? data_020c7c4c[t].unk_17 : 0;
+    u32 v = t < 0x7c ? sGroundAttrTable[t].unk_17 : 0;
     return v != 0 ? TRUE : FALSE;
 }
 
-extern "C" BOOL func_02031194(s32 a, s32 b)
+extern "C" BOOL Ground_IsSandAboveSea(s32 a, s32 b)
 {
     if (func_01ffcb2c(a, b) == 0x1e && func_01ffcb2c(a, b + 1) == 8) return TRUE;
     return FALSE;
 }
 
-extern "C" u32 func_02031154(s32 x, s32 y)
+extern "C" u32 Ground_GetWalkLinks(s32 x, s32 y)
 {
     Unk_01ffcb5c_Chunk *p = func_01ffcb5c(x >> 4, y >> 4);
     if (p) {
@@ -2766,52 +2766,52 @@ extern "C" u32 func_02031154(s32 x, s32 y)
     return 0;
 }
 
-extern "C" BOOL func_02031130(s32 a, s32 b)
+extern "C" BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b)
 {
-    if (func_02031154(a, b)) return FALSE;
-    return func_020310f8(a, b);
+    if (Ground_GetWalkLinks(a, b)) return FALSE;
+    return Ground_IsFreeGrass(a, b);
 }
 
-extern "C" BOOL func_020310f8(s32 a, s32 b)
+extern "C" BOOL Ground_IsFreeGrass(s32 a, s32 b)
 {
-    Unk_020310f8_Obj *o = (Unk_020310f8_Obj *)func_0203139c();
+    Unk_020310f8_Obj *o = (Unk_020310f8_Obj *)Collision_GetShapeQuery();
     if (o) {
         s32 x, y, z;
         if (o->vfunc_08(&x, &y, &z, a, b)) return FALSE;
     }
-    return func_02031260(a, b);
+    return Ground_IsGrassSurface(a, b);
 }
 
-extern "C" BOOL func_02031098(u8 *out, s32 a, s32 b)
+extern "C" BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b)
 {
     s32 i = func_01ffcb2c(a, b);
     if (i < 0x7c) {
-        out[0] = data_020c7c4c[i].unk_18;
-        out[1] = data_020c7c4c[i].unk_19;
-        out[2] = data_020c7c4c[i].unk_1a;
-        out[3] = data_020c7c4c[i].unk_1b;
+        out[0] = sGroundAttrTable[i].unk_18;
+        out[1] = sGroundAttrTable[i].unk_19;
+        out[2] = sGroundAttrTable[i].unk_1a;
+        out[3] = sGroundAttrTable[i].unk_1b;
         return TRUE;
     }
-    out[0] = data_020c7c18[0];
-    out[1] = data_020c7c18[1];
-    out[2] = data_020c7c18[2];
-    out[3] = data_020c7c18[3];
+    out[0] = sDefaultGroundColors[0];
+    out[1] = sDefaultGroundColors[1];
+    out[2] = sDefaultGroundColors[2];
+    out[3] = sDefaultGroundColors[3];
     return FALSE;
 }
 
-extern "C" u16 func_0203107c(s32 i)
+extern "C" u16 GroundAttr_GetFootstepSe(s32 i)
 {
-    if (i < 0x7c) return data_020c7c4c[i].unk_00;
+    if (i < 0x7c) return sGroundAttrTable[i].unk_00;
     return 0xffff;
 }
 
-extern "C" u16 func_02031060(s32 i)
+extern "C" u16 GroundAttr_GetDragSe(s32 i)
 {
-    if (i < 0x7c) return data_020c7c4c[i].unk_02;
+    if (i < 0x7c) return sGroundAttrTable[i].unk_02;
     return 0xffff;
 }
 
-extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
+extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag)
 {
     s32 dy, dx;
     s32 r5;
@@ -2824,9 +2824,9 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
     if (dy < 0) dy = -dy;
     if (dy > 1) return FALSE;
     if (flag) {
-        if (!func_02031284(c, d) || func_020311c0(c, d)) return FALSE;
+        if (!Ground_CanPlaceItem(c, d) || Ground_IsShore(c, d)) return FALSE;
     } else {
-        if (!func_02031284(c, d)) return FALSE;
+        if (!Ground_CanPlaceItem(c, d)) return FALSE;
     }
     LampLights.x = (a << 13) + 0x1000;
     LampLights.y = 0;
@@ -2835,7 +2835,7 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
     Q.y = 0;
     Q.z = (d << 13) + 0x1000;
     dx += dy;
-    r5 = func_0203081c((Unk_0202ff44_V3 *)(&Q), 0, 25);
+    r5 = Ground_GetHeightAt((Unk_0202ff44_V3 *)(&Q), 0, 25);
     if (dx == 1) {
         if (r5 != 0) return FALSE;
     } else if (dx == 2) {
@@ -2844,17 +2844,17 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
         l.R.x = Q.x;
         l.R.y = 0;
         l.R.z = LampLights.z;
-        tR = func_0203081c((Unk_0202ff44_V3 *)(&l.R), 0, 25);
+        tR = Ground_GetHeightAt((Unk_0202ff44_V3 *)(&l.R), 0, 25);
         if (tR == 0 && r5 == tR) {
-            _ZN12Unk_02033b3c13func_02033d2cEP16Unk_0203389c_Veci(&l.T, &l.R, 0);
+            _ZN10GroundCell9loadAtPosEP16Unk_0203389c_Veci(&l.T, &l.R, 0);
             if (Unk_02030f10_Flat(&l.T)) return TRUE;
         }
         l.S.x = LampLights.x;
         l.S.y = 0;
         l.S.z = Q.z;
-        tS = func_0203081c((Unk_0202ff44_V3 *)(&l.S), 0, 25);
+        tS = Ground_GetHeightAt((Unk_0202ff44_V3 *)(&l.S), 0, 25);
         if (tS == 0 && r5 == tS) {
-            _ZN12Unk_02033b3c13func_02033d2cEP16Unk_0203389c_Veci(&l.T2, &l.S, 0);
+            _ZN10GroundCell9loadAtPosEP16Unk_0203389c_Veci(&l.T2, &l.S, 0);
             if (Unk_02030f10_Flat(&l.T2)) return TRUE;
         }
         return FALSE;
@@ -2862,9 +2862,9 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
     return TRUE;
 }
 
-extern "C" BOOL func_02030e48(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags)
+extern "C" BOOL Ground_IsWaterAround(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags)
 {
-    Unk_0203398c a((Unk_0203389c_Vec *)pos, 0, flags);
+    GroundInfo a((Unk_0203389c_Vec *)pos, 0, flags);
     if (a.unk_30) {
         Unk_02030e48_Vec tmp;
         Unk_02030e48_Vec d[8];
@@ -2883,7 +2883,7 @@ extern "C" BOOL func_02030e48(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags)
         best = z;
         for (i = 0; i < 8; i++) {
             func_01ffd070(&tmp, pos, &d[i]);
-            Unk_0203398c b((Unk_0203389c_Vec *)&tmp, z, flags);
+            GroundInfo b((Unk_0203389c_Vec *)&tmp, z, flags);
             if (!b.unk_30) return FALSE;
             best = a.unk_3c;
         }
@@ -2893,7 +2893,7 @@ extern "C" BOOL func_02030e48(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags)
     return FALSE;
 }
 
-extern "C" BOOL func_02030d9c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags)
+extern "C" BOOL Ground_FindWaterAlongDir(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags)
 {
     if (count >= 1) {
         u32 step = dist / count;
@@ -2913,7 +2913,7 @@ extern "C" BOOL func_02030d9c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 
             p.x = pos->x + func_01ffcb0c(v.x, t);
             p.y = u;
             p.z = s;
-            if (func_02030e48(&p, r, &res, flags)) {
+            if (Ground_IsWaterAround(&p, r, &res, flags)) {
                 out->x = p.x;
                 out->y = p.y;
                 out->z = p.z;
@@ -2925,23 +2925,23 @@ extern "C" BOOL func_02030d9c(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 
     return FALSE;
 }
 
-extern "C" BOOL func_02030d78(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, s32 *dir, u32 dist, u32 s5, s32 s6)
+extern "C" BOOL Ground_FindWaterAhead(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, s32 *dir, u32 dist, u32 s5, s32 s6)
 {
-    return func_02030d9c(out, pos, dist, dir, s6, s5, 2);
+    return Ground_FindWaterAlongDir(out, pos, dist, dir, s6, s5, 2);
 }
 
-extern "C" BOOL func_02030d60(Unk_02030e48_Vec *pos)
+extern "C" BOOL Ground_IsWaterAt(Unk_02030e48_Vec *pos)
 {
-    return func_02030e48(pos, 0xa00, 0, 2);
+    return Ground_IsWaterAround(pos, 0xa00, 0, 2);
 }
 
-extern "C" u32 func_02030d58(s32 a) { return func_02031594(a); }
+extern "C" u32 CollisionMap_IsBound(s32 a) { return CollisionMap_IsFullyBound(a); }
 
-Unk_02033b3c::~Unk_02033b3c()
+GroundCell::~GroundCell()
 {
 }
 
-extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
+extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
 {
     s32 bx, bz, j, i;
     Unk_02033b94 DoorLight, Y, Z;
@@ -2952,11 +2952,11 @@ extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
         for (i = 0; i < 16; i++) {
             *a = bx + i;
             *b = bz + j;
-            _ZN12Unk_02033b3c13func_02033b94Eiii(&DoorLight, *a, *b, 0);
-            _ZN12Unk_02033b3c13func_02033b94Eiii(&Y, *a + 1, *b, 0);
+            _ZN10GroundCell4loadEiii(&DoorLight, *a, *b, 0);
+            _ZN10GroundCell4loadEiii(&Y, *a + 1, *b, 0);
             if (Unk_02030be4_A(&DoorLight)) {
                 if (Unk_02030be4_B(&Y)) {
-                    _ZN12Unk_02033b3c13func_02033b94Eiii(&Z, *a + 2, *b, 0);
+                    _ZN10GroundCell4loadEiii(&Z, *a + 2, *b, 0);
                     if (Unk_02030be4_B(&Z)) return 1;
                     return 0;
                 }
@@ -2965,7 +2965,7 @@ extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
                 && Y.unk_10[0] != 0x14 && Y.unk_10[1] == 0x14 && Y.unk_10[2] == 0x14 && Y.unk_10[3] != 0x14) {
                 s32 idx = Y.unk_10[3];
                 s32 v;
-                if (idx < 0x7c) v = data_020c7c4c[idx].unk_14;
+                if (idx < 0x7c) v = sGroundAttrTable[idx].unk_14;
                 else v = 0;
                 if (v == 0) return 2;
                 return 3;
@@ -2975,21 +2975,21 @@ extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
     return 4;
 }
 
-extern "C" s32 func_02030bc4()
+extern "C" s32 Ground_GetSpecialPieceKind()
 {
     s32 r = func_01ffcb2c();
     if (r >= 0x6f && r <= 0x70) return r - 0x6f;
     return -1;
 }
 
-extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags)
+extern "C" void Collision_Move(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags)
 {
     struct { Unk_02030e48_Vec LampLights, LightLevel, V1, C, WindowLight; } l;
     s32 lim, dx, dz;
     BOOL fl;
     l.LampLights = *pos;
     l.LightLevel = *tgt;
-    lim = (data_021bfa70.unk_00 + arg5) * 2;
+    lim = (sCollisionQueryMargin.unk_00 + arg5) * 2;
     dx = l.LampLights.x - tgt->x;
     if (dx < 0) dx = -dx;
     if (lim + dx > 0xc000) goto reset;
@@ -3004,12 +3004,12 @@ extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, U
     l.V1.z = arg5;
     l.C = l.LightLevel;
     l.WindowLight = l.LightLevel;
-    func_02031574((s32 *)(&l.C), (s32 *)(&l.LampLights));
-    func_02031554((s32 *)(&l.WindowLight), (s32 *)(&l.LampLights));
+    Vec3_MaxInPlace((s32 *)(&l.C), (s32 *)(&l.LampLights));
+    Vec3_MinInPlace((s32 *)(&l.WindowLight), (s32 *)(&l.LampLights));
     VEC_Add(&l.C, &l.V1, &l.C);
     VEC_Subtract(&l.WindowLight, &l.V1, &l.WindowLight);
-    Unk_020d8d28 o;
-    o.unk_04 = (Unk_02032238 *)self;
+    MoveCollisionVisitor o;
+    o.unk_04 = (CollisionState *)self;
     o.unk_08 = (Unk_020d8d28_Best *)&l.LampLights;
     o.unk_0c.x = l.LightLevel.x;
     o.unk_0c.y = l.LightLevel.y;
@@ -3018,10 +3018,10 @@ extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, U
     o.unk_1c = arg5;
     o.unk_20 = arg6;
     o.unk_24 = flags;
-    _ZN12Unk_0203223813func_020323d8Ev(self);
+    _ZN14CollisionState9beginStepEv(self);
     fl = (self->unk_00 & 2) ? TRUE : FALSE;
-    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&l.WindowLight, &l.C, &o, flags, 0, fl);
-    if ((flags & 4) && func_02031304((Unk_02031304_Vec *)(&l.LampLights))) {
+    ((void (*)(void *, void *, void *, u32, s32, s32))Collision_Query)(&l.WindowLight, &l.C, &o, flags, 0, fl);
+    if ((flags & 4) && Ground_IsRaisedOrOccupied((Unk_02031304_Vec *)(&l.LampLights))) {
         l.LampLights.x = tgt->x;
         l.LampLights.y = tgt->y;
         l.LampLights.z = tgt->z;
@@ -3031,15 +3031,15 @@ extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, U
         s32 r3;
         if (!(self->unk_00 & 2)) r2 = 0;
         r3 = (flags & 0x80) ? 1 : 0;
-        Unk_0203398c E((Unk_0203389c_Vec *)&l.LampLights, r2, r3);
-        if (l.LampLights.y < E.func_02033914(0) + 0x200) {
+        GroundInfo E((Unk_0203389c_Vec *)&l.LampLights, r2, r3);
+        if (l.LampLights.y < E.getHeight(0) + 0x200) {
             self->unk_04 |= 1;
             self->unk_08 = E.unk_34;
-            l.LampLights.y = E.func_02033914(0) + 0x200;
+            l.LampLights.y = E.getHeight(0) + 0x200;
         }
-        if (E.func_020338d0(l.LampLights.y)) self->unk_04 |= 2;
+        if (E.isBelowWaterSurface(l.LampLights.y)) self->unk_04 |= 2;
     }
-    _ZN12Unk_0203223813func_02032238Ei(self, hh);
+    _ZN14CollisionState15updateWallFlagsEi(self, hh);
     Unk_02030e48_Vec F;
     func_020e9960(&F, &l.LampLights, pos);
     self->unk_24.x = F.x;
@@ -3050,18 +3050,18 @@ extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, U
         pos->y = l.LampLights.y;
         pos->z = l.LampLights.z;
     }
-    if (arg6) func_02031d5c((s32 *)(&l.LampLights), arg5, arg6);
+    if (arg6) TriangleTrigger_CheckAll((s32 *)(&l.LampLights), arg5, arg6);
 }
 
-extern "C" u8 func_02030908(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u32 flags)
+extern "C" u8 Collision_TestSegment(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u32 flags)
 {
     Unk_02030e48_Vec LampLights, LightLevel, C;
     LampLights = *pos;
     LightLevel = *tgt;
     C = *tgt;
-    func_02031554((s32 *)(&LightLevel), (s32 *)(&LampLights));
-    func_02031574((s32 *)(&C), (s32 *)(&LampLights));
-    Unk_020d8d14 o;
+    Vec3_MinInPlace((s32 *)(&LightLevel), (s32 *)(&LampLights));
+    Vec3_MaxInPlace((s32 *)(&C), (s32 *)(&LampLights));
+    SegmentCollisionVisitor o;
     o.unk_30 = 0;
     o.unk_04 = (Unk_02031ed4_Vec *)&LampLights;
     o.unk_08.x = tgt->x;
@@ -3072,16 +3072,16 @@ extern "C" u8 func_02030908(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_0203
     o.unk_34 = 0;
     o.unk_38 = 0;
     o.unk_3c = 0;
-    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&LightLevel, &C, &o, flags, 1, 0);
+    ((void (*)(void *, void *, void *, u32, s32, s32))Collision_Query)(&LightLevel, &C, &o, flags, 1, 0);
     if (flags & 8) *pos = LampLights;
     out->unk_08.x = o.unk_24.x;
     out->unk_08.y = o.unk_24.y;
     out->unk_08.z = o.unk_24.z;
-    ((Unk_020339ccX *)out)->func_020339cc(o.unk_1c);
+    ((CollisionTagX *)out)->copyTag(o.unk_1c);
     return o.unk_18;
 }
 
-extern "C" BOOL func_020308b4(s32 *p, s32 a, s32 *c, s32 w, s32 h)
+extern "C" BOOL Collision_ClampToRect(s32 *p, s32 a, s32 *c, s32 w, s32 h)
 {
     s32 hw = w >> 1;
     s32 hh = h >> 1;
@@ -3099,12 +3099,12 @@ extern "C" BOOL func_020308b4(s32 *p, s32 a, s32 *c, s32 w, s32 h)
     return r;
 }
 
-extern "C" s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
+extern "C" s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
     Unk_0203081c_A a;
     Unk_0202ff44_V3 v14, v20;
     Unk_0203081c_B b;
     s32 r;
-    func_02032228(&a);
+    CollisionTag_Construct(&a);
     Unk_0203081c_Flags flags = (Unk_0203081c_Flags)(flags0 & ~6);
     v14.x = p->x;
     v14.y = p->y;
@@ -3114,26 +3114,26 @@ extern "C" s32 func_0203081c(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
     v20.z = p->z;
     v14.y = 0x64000;
     v20.y = 0xfff9c000;
-    if (func_02030908((Unk_02030908_D *)(&a), (Unk_02030e48_Vec *)(&v20), (Unk_02030e48_Vec *)(&v14), flags)) {
+    if (Collision_TestSegment((Unk_02030908_D *)(&a), (Unk_02030e48_Vec *)(&v20), (Unk_02030e48_Vec *)(&v14), flags)) {
         if (out) *out = a.unk_00;
         r = v20.y;
-        func_02032218(&a);
+        CollisionTag_Destruct(&a);
         return r;
     }
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&b, p, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b, p, 0, 0);
     if (out) *out = b.unk_34;
-    r = _ZN12Unk_0203389c13func_02033914Ei(&b, 0);
-    func_02033988(&b);
-    func_02032218(&a);
+    r = _ZN14GroundInfoBase9getHeightEi(&b, 0);
+    GroundInfo_Destruct(&b);
+    CollisionTag_Destruct(&a);
     return r;
 }
 
-extern "C" s32 func_02030814(void) {
+extern "C" s32 Ground_GetDefaultY(void) {
     return 0x200;
 }
 
-extern "C" BOOL func_020307c4(s32 x, s32 z, s32 *p, s32 *q, s32 *r) {
-    Unk_0202ff44_Obj *o = data_020d8ce8->unk_120;
+extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r) {
+    Unk_0202ff44_Obj *o = gCurCollisionMap->unk_120;
     if (o) {
         s32 a, b, c;
         if (o->vfunc_08(&a, &b, &c, x, z)) {
@@ -3146,21 +3146,21 @@ extern "C" BOOL func_020307c4(s32 x, s32 z, s32 *p, s32 *q, s32 *r) {
     return FALSE;
 }
 
-extern "C" s32 func_020307ac(s32 x, s32 z) {
+extern "C" s32 Collision_HasUnitShape(s32 x, s32 z) {
     s32 a, b, c;
-    return func_020307c4(x, z, &a, &b, &c);
+    return Collision_GetUnitShape(x, z, &a, &b, &c);
 }
 
-extern "C" s32 func_02030798(Unk_0202ff44_V3 *p) {
-    return func_020307ac(p->x >> 13, p->z >> 13);
+extern "C" s32 Collision_HasUnitShapeAt(Unk_0202ff44_V3 *p) {
+    return Collision_HasUnitShape(p->x >> 13, p->z >> 13);
 }
 
-extern "C" void func_02030608(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6) {
+extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6) {
     Unk_0202ff44_V3 v18, v24, v30, v3c;
     s32 x1, x2, z1, z2;
     BOOL f4 = (flags & 4) ? TRUE : FALSE;
-    func_020e9960(&v18, a, &data_021bfa70);
-    func_01ffd070(&v24, b, &data_021bfa70);
+    func_020e9960(&v18, a, &sCollisionQueryMargin);
+    func_01ffd070(&v24, b, &sCollisionQueryMargin);
     x1 = v18.x >> 13;
     z1 = v18.z >> 13;
     x2 = v24.x >> 13;
@@ -3173,64 +3173,64 @@ extern "C" void func_02030608(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_020306
     v3c.x >>= 1;
     v3c.y >>= 1;
     v3c.z >>= 1;
-    data_021bfab8.unk_184c.unk_00 = 0;
-    data_021bfab8.unk_9c4.unk_480 = 0;
-    data_021bfab8.unk_e48.unk_a00 = 0;
-    _ZN12Unk_02033b4013func_02033a5cEiiiii(&data_021bfab8.unk_1a94, x1, x2, z1, z2, p6);
+    sCollisionWorld.unk_184c.unk_00 = 0;
+    sCollisionWorld.unk_9c4.unk_480 = 0;
+    sCollisionWorld.unk_e48.unk_a00 = 0;
+    _ZN14GroundCellGrid8loadAreaEiiiii(&sCollisionWorld.unk_1a94, x1, x2, z1, z2, p6);
     if ((flags & 7) && !(flags & 0x20)) {
-        _ZN12Unk_0203249413func_020324d8EPviiiii(&data_021bfab8.unk_184c, (s32)func_0203139c(), x1, x2, z1, z2, f4);
+        _ZN17ShapeCylinderList16collectFromUnitsEPviiiii(&sCollisionWorld.unk_184c, (s32)Collision_GetShapeQuery(), x1, x2, z1, z2, f4);
     }
     if (!(flags & 0x40)) {
-        func_02031618((s32)(&data_021bfab8.unk_1a90), (Unk_0203182c_Vec *)(&v30), (Unk_0203182c_Vec *)(&v3c), (s32)(&data_021bfab8.unk_9c4), (s32)(&data_021bfab8.unk_e48), flags, 0);
-        func_02031618((s32)(&data_021bfab8.unk_1a90), (Unk_0203182c_Vec *)(&v30), (Unk_0203182c_Vec *)(&v3c), (s32)(&data_021bfab8.unk_9c4), (s32)(&data_021bfab8.unk_e48), flags, 1);
+        BoxCollider_GatherAll((s32)(&sCollisionWorld.unk_1a90), (Unk_0203182c_Vec *)(&v30), (Unk_0203182c_Vec *)(&v3c), (s32)(&sCollisionWorld.unk_9c4), (s32)(&sCollisionWorld.unk_e48), flags, 0);
+        BoxCollider_GatherAll((s32)(&sCollisionWorld.unk_1a90), (Unk_0203182c_Vec *)(&v30), (Unk_0203182c_Vec *)(&v3c), (s32)(&sCollisionWorld.unk_9c4), (s32)(&sCollisionWorld.unk_e48), flags, 1);
     }
     if (flags & 6) {
-        if (!(flags & 0x10)) _ZN12Unk_0203249413func_02032494EP12Unk_02032d60(&data_021bfab8.unk_184c, &data_021bfab8.unk_9c4);
-        _ZN12Unk_02032d6013func_02032864EPviiiii(&data_021bfab8.unk_9c4, &data_021bfab8.unk_1a94, x1, x2, z1, z2, f4);
+        if (!(flags & 0x10)) _ZN17ShapeCylinderList12addLinkWallsEP18WallEdgeListWriter(&sCollisionWorld.unk_184c, &sCollisionWorld.unk_9c4);
+        _ZN18WallEdgeListWriter14buildFromCellsEPviiiii(&sCollisionWorld.unk_9c4, &sCollisionWorld.unk_1a94, x1, x2, z1, z2, f4);
     }
     if (p5 && flags) {
-        _ZN12Unk_0203317013func_020331a8EP12Unk_02033a0ciiii(&data_021bfab8.unk_e48, &data_021bfab8.unk_1a94, x1, x2, z1, z2);
+        _ZN17FloorTriangleList14buildFromCellsEP12Unk_02033a0ciiii(&sCollisionWorld.unk_e48, &sCollisionWorld.unk_1a94, x1, x2, z1, z2);
     }
-    o->vfunc_08(&data_021bfab8.unk_184c);
-    o->vfunc_00(&data_021bfab8.unk_9c4);
-    o->vfunc_04(&data_021bfab8.unk_e48);
+    o->vfunc_08(&sCollisionWorld.unk_184c);
+    o->vfunc_00(&sCollisionWorld.unk_9c4);
+    o->vfunc_04(&sCollisionWorld.unk_e48);
 }
 
-extern "C" void func_02030598(s32 v) {
-    if (!_ZN12Unk_020339f813func_020339f8Ei(&data_021bfab8, v)) {
+extern "C" void CollisionMap_Select(s32 v) {
+    if (!_ZN17CollisionMapIndex8setIndexEi(&sCollisionWorld, v)) {
         if (v < 0) {
-            _ZN12Unk_020339f813func_020339f8Ei(&data_021bfab8, 0);
-            data_020d8ce8 = &data_021bfab8.unk_04[data_021bfab8.unk_00];
+            _ZN17CollisionMapIndex8setIndexEi(&sCollisionWorld, 0);
+            gCurCollisionMap = &sCollisionWorld.unk_04[sCollisionWorld.unk_00];
         } else {
-            _ZN12Unk_020339f813func_020339f8Ei(&data_021bfab8, 7);
-            data_020d8ce8 = &data_021bfab8.unk_04[data_021bfab8.unk_00];
+            _ZN17CollisionMapIndex8setIndexEi(&sCollisionWorld, 7);
+            gCurCollisionMap = &sCollisionWorld.unk_04[sCollisionWorld.unk_00];
         }
     } else {
-        data_020d8ce8 = &data_021bfab8.unk_04[data_021bfab8.unk_00];
+        gCurCollisionMap = &sCollisionWorld.unk_04[sCollisionWorld.unk_00];
     }
 }
 
-extern "C" BOOL func_02030528(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx) {
-    Unk_02033f70 *m = &data_021bfab8.unk_04[idx];
+extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx) {
+    CollisionMap *m = &sCollisionWorld.unk_04[idx];
     BOOL ok = TRUE;
-    func_02030380(idx);
+    CollisionMap_Reset(idx);
     if (a <= 6) m->unk_124 = (u8)a; else ok = FALSE;
     if (b <= 6) m->unk_128 = (u8)b; else ok = FALSE;
     m->unk_120 = o;
     m->unk_130 = 0;
-    func_02030598(0);
+    CollisionMap_Select(0);
     return ok;
 }
 
-extern "C" void func_02030518(void) {
-    _ZN12Unk_02033d4c13func_02033db0Ev(&data_021bfab8.unk_1f3c);
+extern "C" void Collision_UpdateDigHoles(void) {
+    _ZN16DigHoleColliders6updateEv(&sCollisionWorld.unk_1f3c);
 }
 
-extern "C" void func_02030504(s32 a, s32 b) {
-    _ZN12Unk_02033d4c13func_02033e10Eii(&data_021bfab8.unk_1f3c, a, b);
+extern "C" void Collision_AddDigHole(s32 a, s32 b) {
+    _ZN16DigHoleColliders7addHoleEii(&sCollisionWorld.unk_1f3c, a, b);
 }
 
-extern "C" void func_020304b4(s32 x, s32 z, s32 v) {
+extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v) {
     Unk_01ffcb5c_Chunk *ch = func_01ffcb5c(x >> 4, z >> 4);
     if (ch) {
         s32 n;
@@ -3249,38 +3249,38 @@ extern "C" void func_020304b4(s32 x, s32 z, s32 v) {
     }
 }
 
-extern "C" void func_02030494(s32 x, s32 z, s32 mask) {
-    s32 t = func_02031154(x, z) & ~mask;
-    func_020304b4(x, z, t);
+extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask) {
+    s32 t = Ground_GetWalkLinks(x, z) & ~mask;
+    Ground_SetWalkLinks(x, z, t);
 }
 
-extern "C" BOOL func_020303d0(s32 x, s32 y, s32 val, s32 idx) {
-    Unk_02033f9c *c = Unk_0203030c_Get(&data_021bfab8.unk_04[idx], x, y);
+extern "C" BOOL CollisionMap_SetBlock(s32 x, s32 y, s32 val, s32 idx) {
+    CollisionBlockRef *c = Unk_0203030c_Get(&sCollisionWorld.unk_04[idx], x, y);
     if (c) {
         c->unk_00 = val;
         c->unk_04 = val + 0x100;
-        data_021bfab8.unk_04[idx].unk_130 = Unk_020303d0_All(idx);
+        sCollisionWorld.unk_04[idx].unk_130 = Unk_020303d0_All(idx);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_02030380(s32 idx) {
-    _ZN12Unk_02033f7013func_02033e60Ev(&data_021bfab8.unk_04[idx]);
-    data_021bfab8.unk_9c4.unk_480 = 0;
-    data_021bfab8.unk_e48.unk_a00 = 0;
-    data_021bfab8.unk_184c.unk_00 = 0;
-    func_02031b78(&data_021bfab8.unk_1a90);
-    func_02031dfc(&data_021bfab8.unk_1a91);
-    _ZN12Unk_02033d4c13func_02033e48Ev(&data_021bfab8.unk_1f3c);
+extern "C" void CollisionMap_Reset(s32 idx) {
+    _ZN12CollisionMap5resetEv(&sCollisionWorld.unk_04[idx]);
+    sCollisionWorld.unk_9c4.unk_480 = 0;
+    sCollisionWorld.unk_e48.unk_a00 = 0;
+    sCollisionWorld.unk_184c.unk_00 = 0;
+    BoxCollider_ClearList(&sCollisionWorld.unk_1a90);
+    TriangleTrigger_ClearList(&sCollisionWorld.unk_1a91);
+    _ZN16DigHoleColliders5clearEv(&sCollisionWorld.unk_1f3c);
 }
 
-extern "C" void func_0203030c(s32 idx) {
-    Unk_02033f70 *m = &data_021bfab8.unk_04[idx];
+extern "C" void CollisionMap_ClearBlocks(s32 idx) {
+    CollisionMap *m = &sCollisionWorld.unk_04[idx];
     s32 y, x;
     for (y = 0; (u32)y < m->unk_128; y++) {
         for (x = 0; (u32)x < m->unk_124; x++) {
-            Unk_02033f9c *c = Unk_0203030c_Get(m, x, y);
+            CollisionBlockRef *c = Unk_0203030c_Get(m, x, y);
             if (c) {
                 c->unk_00 = 0;
                 c->unk_04 = 0;
@@ -3289,21 +3289,21 @@ extern "C" void func_0203030c(s32 idx) {
     }
 }
 
-extern "C" void func_020302f8(s32 idx) {
-    func_0203030c(idx);
-    func_02030380(idx);
+extern "C" void CollisionMap_Release(s32 idx) {
+    CollisionMap_ClearBlocks(idx);
+    CollisionMap_Reset(idx);
 }
 
-extern "C" void func_020302cc(s32 v) {
-    Unk_02033f70 *c = data_020d8ce8;
+extern "C" void Ground_SetWaveLevel(s32 v) {
+    CollisionMap *c = gCurCollisionMap;
     s16 t = c->unk_134;
     if (t != v) {
         c->unk_132 = t;
-        data_020d8ce8->unk_134 = v;
+        gCurCollisionMap->unk_134 = v;
     }
 }
 
-extern "C" BOOL func_02030164(s32 x, s32 z) {
+extern "C" BOOL Ground_ClearPlantFlag(s32 x, s32 z) {
     Unk_01ffcb5c_Chunk *ch = func_01ffcb5c(x >> 4, z >> 4);
     if (ch) {
         u8 *base = ch->unk_00;
@@ -3316,7 +3316,7 @@ extern "C" BOOL func_02030164(s32 x, s32 z) {
         z &= 0xf;
         cell = base + (x + (z << 4));
         old = *cell;
-        t = old < 0x7c ? ((v = data_020c7c4c[old].unk_06) > 0 ? 1 : v) : -1;
+        t = old < 0x7c ? ((v = sGroundAttrTable[old].unk_06) > 0 ? 1 : v) : -1;
         if (t == 1) {
             if (old == 3) {
                 *cell = 0x1d;
@@ -3326,10 +3326,10 @@ extern "C" BOOL func_02030164(s32 x, s32 z) {
                 *cell = 0x1e;
                 return TRUE;
             }
-            e0 = old < 0x7c ? data_020c7c4c[old].unk_0c : 0;
-            e1 = old < 0x7c ? data_020c7c4c[old].unk_0d : 0;
-            e2 = old < 0x7c ? data_020c7c4c[old].unk_0e : 0;
-            e3 = old < 0x7c ? data_020c7c4c[old].unk_0f : 0;
+            e0 = old < 0x7c ? sGroundAttrTable[old].unk_0c : 0;
+            e1 = old < 0x7c ? sGroundAttrTable[old].unk_0d : 0;
+            e2 = old < 0x7c ? sGroundAttrTable[old].unk_0e : 0;
+            e3 = old < 0x7c ? sGroundAttrTable[old].unk_0f : 0;
             d0 = -1;
             d1 = d2 = d3 = d4 = 0;
             for (i = 0; (u32)i < 0x7c; i++) {
@@ -3345,7 +3345,7 @@ extern "C" BOOL func_02030164(s32 x, s32 z) {
     return FALSE;
 }
 
-extern "C" BOOL func_0203006c(s32 x, s32 z, s32 mask) {
+extern "C" BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask) {
     Unk_01ffcb5c_Chunk *ch = func_01ffcb5c(x >> 4, z >> 4);
     if (ch) {
         s32 c;
@@ -3383,27 +3383,27 @@ extern "C" BOOL func_0203006c(s32 x, s32 z, s32 mask) {
     return FALSE;
 }
 
-extern "C" void func_0203002c(s32 x, s32 z) {
-    func_020304b4(x, z, 0);
-    func_02030494(x, z - 1, 4);
-    func_02030494(x, z + 1, 1);
-    func_02030494(x - 1, z, 8);
-    func_02030494(x + 1, z, 2);
+extern "C" void Ground_UnlinkUnit(s32 x, s32 z) {
+    Ground_SetWalkLinks(x, z, 0);
+    Ground_ClearWalkLinks(x, z - 1, 4);
+    Ground_ClearWalkLinks(x, z + 1, 1);
+    Ground_ClearWalkLinks(x - 1, z, 8);
+    Ground_ClearWalkLinks(x + 1, z, 2);
 }
 
-extern "C" s32 func_0202fff0(s32 x, s32 z) {
+extern "C" s32 Ground_GetExitAt(s32 x, s32 z) {
     s32 i = func_01ffcb2c(x, z);
     if (i >= 0x68 && i <= 0x6e) i -= 0x68; else i = -1;
-    if (i < 0 || i == data_020d8ce8->unk_12c) return -1;
+    if (i < 0 || i == gCurCollisionMap->unk_12c) return -1;
     return i;
 }
 
-extern "C" s32 func_0202ffdc(Unk_0202ff44_V3 *p) {
-    return func_0202fff0(p->x >> 13, p->z >> 13);
+extern "C" s32 Ground_GetExitAtPos(Unk_0202ff44_V3 *p) {
+    return Ground_GetExitAt(p->x >> 13, p->z >> 13);
 }
 
-extern "C" BOOL func_0202ffb0(s32 v) {
-    Unk_02033f70 *c = data_020d8ce8;
+extern "C" BOOL Ground_LockExit(s32 v) {
+    CollisionMap *c = gCurCollisionMap;
     s32 m = 0;
     if (c->unk_12c == -1) {
         c->unk_12c = v;
@@ -3412,18 +3412,18 @@ extern "C" BOOL func_0202ffb0(s32 v) {
     return m;
 }
 
-extern "C" BOOL func_0202ff64(Unk_0202ff44_V3 *p) {
+extern "C" BOOL Ground_IsOnLockedExit(Unk_0202ff44_V3 *p) {
     s32 i = func_01ffcb2c(p->x >> 13, p->z >> 13);
     if (i >= 0x68 && i <= 0x6e) i -= 0x68; else i = -1;
     if (i >= 0) {
-        if (i == data_020d8ce8->unk_12c) return TRUE;
+        if (i == gCurCollisionMap->unk_12c) return TRUE;
         return FALSE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0202ff44(void) {
-    Unk_02033f70 *c = data_020d8ce8;
+extern "C" BOOL Ground_UnlockExit(void) {
+    CollisionMap *c = gCurCollisionMap;
     s32 m = 0;
     if (c->unk_12c != -1) {
         c->unk_12c = -1;
@@ -3432,8 +3432,8 @@ extern "C" BOOL func_0202ff44(void) {
     return m;
 }
 
-extern "C" BOOL func_0202fe84(s32 *a, s32 *b, s32 *c, s32 *d) {
-    if (func_02030d58(0)) {
+extern "C" BOOL Ground_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d) {
+    if (CollisionMap_IsBound(0)) {
         struct { Unk_0202fe84_Range xr, yr; } l;
         Unk_0202fe84_Pad pad;
         s32 y, x;
@@ -3472,25 +3472,25 @@ extern "C" BOOL func_0202fe84(s32 *a, s32 *b, s32 *c, s32 *d) {
     return FALSE;
 }
 
-Unk_0202fdf0::Unk_0202fdf0() {
+CollisionCircle::CollisionCircle() {
     unk_00.x = 0;
     unk_00.y = 0;
     unk_00.z = 0;
     unk_0c = 0;
 }
 
-Unk_0202fdf0::Unk_0202fdf0(Unk_0202f660_V3 *pos, s32 radius) {
-    func_0202fe54(pos, radius);
+CollisionCircle::CollisionCircle(Unk_0202f660_V3 *pos, s32 radius) {
+    setCircle(pos, radius);
 }
 
-Unk_0202fdf0::~Unk_0202fdf0() {}
+CollisionCircle::~CollisionCircle() {}
 
-void Unk_0202fdf0::func_0202fe54(Unk_0202f660_V3 *pos, s32 radius) {
+void CollisionCircle::setCircle(Unk_0202f660_V3 *pos, s32 radius) {
     unk_00 = *pos;
     unk_0c = radius;
 }
 
-BOOL Unk_0202fdf0::func_0202fdf0(Unk_0202f660_V3 *pt) {
+BOOL CollisionCircle::containsXZ(Unk_0202f660_V3 *pt) {
     s32 dx = pt->x - unk_00.x;
     s32 dz = pt->z - unk_00.z;
     if ((dx < 0 ? -dx : dx) > unk_0c) {
@@ -3507,22 +3507,22 @@ BOOL Unk_0202fdf0::func_0202fdf0(Unk_0202f660_V3 *pt) {
     return TRUE;
 }
 
-Unk_0202f7b8X::Unk_0202f7b8X() {
+CollisionCylinderX::CollisionCylinderX() {
     unk_10 = 0;
 }
 
-Unk_0202f7b8X::Unk_0202f7b8X(Unk_0202f660_V3 *pos, s32 radius, s32 height) : Unk_0202fdf0(pos, radius) {
+CollisionCylinderX::CollisionCylinderX(Unk_0202f660_V3 *pos, s32 radius, s32 height) : CollisionCircle(pos, radius) {
     unk_10 = height;
 }
 
-Unk_0202f7b8X::~Unk_0202f7b8X() {}
+CollisionCylinderX::~CollisionCylinderX() {}
 
-void Unk_0202f7b8X::func_0202fd8c(Unk_0202f660_V3 *pos, s32 radius, s32 height) {
-    func_0202fe54(pos, radius);
+void CollisionCylinderX::setCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 height) {
+    setCircle(pos, radius);
     unk_10 = height;
 }
 
-BOOL Unk_0202f7b8X::func_0202fcfc(Unk_0202f660_V3 *pos, s32 r) {
+BOOL CollisionCylinderX::pushOut(Unk_0202f660_V3 *pos, s32 r) {
     s32 d = func_020e9650(&unk_00, pos);
     s32 lim = r + unk_0c;
     if (d < lim) {
@@ -3541,16 +3541,16 @@ BOOL Unk_0202f7b8X::func_0202fcfc(Unk_0202f660_V3 *pos, s32 r) {
     return FALSE;
 }
 
-BOOL Unk_0202f7b8X::func_0202fccc(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinderX::landOnTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 top = unk_00.y + unk_10;
-    if (a->y >= top && out->y < top && func_0202fdf0(out)) {
+    if (a->y >= top && out->y < top && containsXZ(out)) {
         out->y = top;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinderX::clipSegmentTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 top = unk_00.y + unk_10;
     s32 t;
     s32 y, z;
@@ -3569,7 +3569,7 @@ BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
                     l.P.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t);
                     l.P.y = y;
                     l.P.z = z;
-                    if (func_0202fdf0(&l.P)) {
+                    if (containsXZ(&l.P)) {
                         *out = l.P;
                         return TRUE;
                     }
@@ -3580,9 +3580,9 @@ BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     return FALSE;
 }
 
-BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinderX::clipSegmentSide(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 ymax, y1, z1, z2;
-    if (!func_0202fdf0(a)) {
+    if (!containsXZ(a)) {
         struct { Unk_0202f7b8_V3 LampLights, LightLevel, C, WindowLight; u32 pad[6]; } l;
         l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
         l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);

@@ -232,9 +232,9 @@ void func_020e885c(void *p);
 void func_020e877c(void *p);
 void *FrameHeap_Create(u32 size, void *heap);
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
-void *func_020b50e8(void);
-u32 func_020b4928(void *p);
-u32 func_020b491c(void *p);
+void *Scene_GetCurrent(void);
+u32 Scene_GetMaxPlayers(void *p);
+u32 Scene_GetMaxCharacters(void *p);
 s32 func_02084fbc(void);
 u32 ItemInfo_GetHoldableIndex(u16 *p);
 u32 ItemInfo_GetHoldableCount(void);
@@ -410,14 +410,14 @@ Unk_0205ec30::~Unk_0205ec30() {}
 
 extern "C" void func_0205eaf4(Unk_0205ec30 *self) {
     u32 cfg = gCommManager->unk_6c;
-    u32 n = func_020b4928(func_020b50e8());
+    u32 n = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 m, i, end;
     void *heap;
     if (cfg < n) {
         n = cfg;
     }
     m = n ? n : 1;
-    end = func_020b491c(func_020b50e8()) + func_02084fbc() - m;
+    end = Scene_GetMaxCharacters(Scene_GetCurrent()) + func_02084fbc() - m;
     for (i = 0; i < n; i++) {
         self->unk_dc[i].alloc((void *)func_0205ecf4(), (void *)func_0205ecf0(), (void *)func_0205ecec());
     }
@@ -438,7 +438,7 @@ extern "C" void func_0205ea74(Unk_0205ec30 *self) {
     void *heap = data_021c61b4;
     u32 n;
     u32 i = gCommManager->unk_6c;
-    n = func_020b4928(func_020b50e8());
+    n = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (i < n) {
         n = i;
     }
@@ -448,7 +448,7 @@ extern "C" void func_0205ea74(Unk_0205ec30 *self) {
     if (n == 0) {
         n = 1;
     }
-    u32 t = func_020b491c(func_020b50e8());
+    u32 t = Scene_GetMaxCharacters(Scene_GetCurrent());
     n = t + func_02084fbc() - n;
     n += 4;
     for (i = 4; i < n; i++) {

@@ -203,7 +203,7 @@ struct Unk_02063388 {
 
 // ---- externals ----
 extern "C" {
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 extern u8 data_021dfd8c[];
 
 void func_0204f3b4(s32 a);
@@ -212,7 +212,7 @@ void func_020e761c(s32 *p, s32 target, s32 step);
 void func_020e93a0(Unk_020dc034_V *v, s32 angle);
 void VEC_Add(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
 void FieldPos_SnapToUnitCenter(Unk_020dc034_V *a, Unk_020dc034_V *b);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
 void func_020e9960(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
 void func_020e759c(s32 *p, s32 a, s32 b);
@@ -456,7 +456,7 @@ BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner
         if (unk_50 >= 0x1492 && unk_50 <= 0x14fd) rr = TRUE;
         if (rr == 1 && unk_54 == 2) {
         near:
-            if (func_020b50e8() == 9 || func_020b50e8() == 0x10) {
+            if (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10) {
                 unk_bc = data_020ca688;
             } else {
                 unk_bc = data_020ca68c;
@@ -545,7 +545,7 @@ void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_
             return;
         }
     }
-    if (Unk_02058ddc_IsZero(*data_020e416c) == 1) {
+    if (Unk_02058ddc_IsZero(*gFieldSceneKind) == 1) {
         Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
         Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
         Field_DrawItemIcon(*id, &a, &b, ang[0], ang[1], ang[2]);
@@ -558,7 +558,7 @@ void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_
 
 void func_02058ddc(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
 {
-    if (Unk_02058ddc_IsZero(*data_020e416c) == 1) {
+    if (Unk_02058ddc_IsZero(*gFieldSceneKind) == 1) {
         Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
         Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
         Field_DrawIconModel(id, &a, &b, ang[0], ang[1], ang[2]);
@@ -1082,7 +1082,7 @@ void Unk_020dc034::func_02057e48()
             t2.x = 0;
             t2.y = 0;
             t2.z = 0x2000;
-            if (func_020b50e8() == 0x10) {
+            if (Scene_GetCurrent() == 0x10) {
                 unk_6c.x = s.x;
                 unk_6c.y = s.y;
                 unk_6c.z = s.z;
@@ -1150,7 +1150,7 @@ void Unk_020dc034::func_02057be8()
     t.x = 0;
     t.y = 0;
     t.z = 0x2000;
-    if (func_020b50e8() == 0x10) {
+    if (Scene_GetCurrent() == 0x10) {
         unk_6c.x = s.x;
         unk_6c.y = s.y;
         unk_6c.z = s.z;

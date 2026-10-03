@@ -70,16 +70,16 @@ struct Unk_02093aa8_Owner {
     /* 0x08 */ Unk_02093aa8_Node *unk_08;
 };
 
-class Unk_0203398c {
+class GroundInfo {
 public:
     u8 pad_00[0x24];
     s32 unk_24, unk_28, unk_2c;
     s32 unk_30;
     u8 pad_34[8];
     s32 unk_3c;
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_02093aa8_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_02093aa8_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
 
 extern "C" {
@@ -332,7 +332,7 @@ u32 func_02063b8c(u32);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -367,7 +367,7 @@ extern "C" s32 func_02094048(void *x);
 
 extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
 {
-    if (*b == func_020b50e8()) {
+    if (*b == Scene_GetCurrent()) {
         if (*c != 0x75 || *d == 0x75) return;
         if (func_02095204(*a) != 0 && PlayerActor_IsInAction(0x75, *a) != 0) return;
     } else {

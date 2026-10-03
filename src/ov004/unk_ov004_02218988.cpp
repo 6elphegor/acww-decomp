@@ -118,7 +118,7 @@ extern "C" {
 extern u16 data_020c6cc8;
 extern s16 data_02135f44[];
 extern u8 gTalkMsgIndexEnd[];
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 extern Unk_ov004_0224c740_Ent sFleaMarketBuyerTalkScripts[2];
 extern Unk_ov004_0224c7d0_Ent sFleaMarketBuyerActTable[9];
 extern u8 data_ov004_022507b0[0x28];
@@ -143,9 +143,9 @@ u32 Item_GetFurnitureIndex(void *);
 u32 Item_FindMoneyBagForAmount(void *, u32, u32);
 s32 func_02063b8c(s32);
 void *func_020947f0(s32);
-s32 func_0202ff64(void *);
-void func_0202ff44();
-void func_0202ffb0(s32);
+s32 Ground_IsOnLockedExit(void *);
+void Ground_UnlockExit();
+void Ground_LockExit(s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 s32 TalkRequest_IsActive();
 void Clock_GetDateTime(void *);
@@ -190,10 +190,10 @@ s32 func_01ffcb0c(s32, s32);
 s32 MenuCtrl_GetAmount();
 void ActorTalkRequest_setNumberSlot(void *, s32, u32, s32, s32, s32);
 s32 Hud_Hide();
-void TalkRequest_EndTalkWith(void *);
-void func_020b4bbc(s32, s32);
-s32 func_020b4934();
-void func_020b4a08(s32, s32);
+void TalkRequest_SetTargetDone(void *);
+void SceneWarp_RequestExit(s32, s32);
+s32 Scene_GetWarpRequest();
+void Scene_SavePlayerPos(s32, s32);
 s32 func_020e9650(void *, void *);
 void NpcActor_FindFreeUnitNear(void *, void *, void *);
 s32 NpcActionCtrl_getAction(void *);
@@ -225,8 +225,8 @@ s32 VillagerMemory_isFleaMarketVisited(s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
 s32 FtrInfo_GetUnk05();
-void func_020b50dc();
-s32 func_020b5178();
+void Scene_GetPrevious();
+s32 SceneId_IsTownUnk31();
 }
 
 // Members of the scene object, named after their constructors.
@@ -730,13 +730,13 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     } else {
         o = 0;
     }
-    func_020b50dc();
-    if (func_020b5178() != 0 ||
+    Scene_GetPrevious();
+    if (SceneId_IsTownUnk31() != 0 ||
         (vfunc_64() && o && func_02094218(o) && Villager_FindMemory(vfunc_64(), o) &&
          VillagerMemory_isFleaMarketVisited(Villager_FindMemory(vfunc_64(), o)))) {
         unk_adc = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
         func_020b1028();
-        func_0202ffb0(0);
+        Ground_LockExit(0);
         FtrMgr_SetSaleMode();
         Clock_GetDateTime(unk_ac8);
         unk_ac0 = 2;
@@ -887,7 +887,7 @@ BOOL FleaMarketBuyerVillager::mainAct02() {
     u8 c = unk_ad4;
     if (c == 1) {
         NpcActionCtrl_requestAction(&unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(8);
         return TRUE;
     } else if (c == 0) {
@@ -1033,10 +1033,10 @@ BOOL FleaMarketBuyerVillager::mainAct07() {
     v.z = q[2];
     if (!NpcTalkCtrl_isBusy(&unk_618)) {
         if (unk_ac0 == 5) {
-            func_020b4bbc(func_020b4934(), 0);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
-            func_020b4a08(func_020b4934(), 0);
-            func_020b4bbc(func_020b4934(), 6);
+            Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 6);
         }
         changeAct(8);
     }
@@ -1073,7 +1073,7 @@ BOOL FleaMarketBuyerVillager::mainAct06() {
     }
     Clock_GetDateTime(unk_ac8);
     if (!NpcTalkCtrl_isBusy(&unk_618)) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         if (unk_ac0 == 1) {
             unk_ac0 = 2;
             unk_ae0 = 0;
@@ -1247,7 +1247,7 @@ void FleaMarketBuyerVillagerTalk::vfunc_78(void *arg) {
 }
 
 BOOL FleaMarketBuyerVillager::vfunc_7c() {
-    if (Unk_ov004_022191cc_Is1(data_020e416c) == 0 || unk_ad6 == 0) {
+    if (Unk_ov004_022191cc_Is1(gFieldSceneKind) == 0 || unk_ad6 == 0) {
         return TRUE;
     }
     return FALSE;
@@ -1422,7 +1422,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
             FtrActorTable_GetInstance();
             unk_adc = (s32)FtrActorTable_countUsed();
             func_020b1028();
-            func_0202ffb0(0);
+            Ground_LockExit(0);
             FtrMgr_SetSaleMode();
             Clock_GetDateTime(unk_ac8);
         }
@@ -1439,8 +1439,8 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
             rec.a = src->a;
             rec.b = src->b;
             rec.c = src->c;
-            if (func_0202ff64(&rec)) {
-                func_0202ff44();
+            if (Ground_IsOnLockedExit(&rec)) {
+                Ground_UnlockExit();
                 break;
             }
         }
@@ -1456,7 +1456,7 @@ BOOL FleaMarketBuyerVillager::checkLeave() {
     rec.a = src->a;
     rec.b = src->b;
     rec.c = src->c;
-    if (func_0202ff64(&rec)) {
+    if (Ground_IsOnLockedExit(&rec)) {
         unk_ac0 = 5;
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;

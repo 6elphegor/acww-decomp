@@ -46,7 +46,7 @@ class SpNpcNookIntroTalk;
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define func_02060388 _ZN9HouseData13func_02060388Ev
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define func_02097ff4 _ZN12Unk_02097ff413func_02097ff4Ej
+#define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 
 struct Unk_ov068_02266680_Vec {
     s32 x, y, z;
@@ -96,7 +96,7 @@ struct ItemId {
 extern "C" {
 void *PlayerData_GetCurrent();
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 u32 NookShop_GetLevel(void *p);
 u32 func_020e7518(void *p);
 void ProcBase_RequestDelete(void *p);
@@ -114,7 +114,7 @@ void GameStart_Clear();
 BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
 s32 func_020978a4(void *self);
-void func_02097ff4(void *self, s32 a);
+void Unk_02097ff4_clearFlag(void *self, s32 a);
 void *func_02060388(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
@@ -152,7 +152,7 @@ struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); u32 pad[0x7c / 4]; };
-struct Unk_02032238 { Unk_02032238(); u32 pad[0x30 / 4]; };
+struct CollisionState { CollisionState(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); u32 pad[0x1c / 4]; u32 unk_1c; u32 pad_20[0x24 / 4]; u8 unk_44; u8 pad_45[3]; };
 struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
 struct Unk_020135e4 { Unk_020135e4(); u8 pad[0xb]; u8 unk_0b; };
@@ -231,7 +231,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -519,7 +519,7 @@ BOOL SpNpcNookIntro::vfunc_00() {
     if (p != NULL) {
         if (!GameStart_IsNewResident()) {
             if (!GameStart_IsNewTown()) {
-                func_02097ff4(p, 1);
+                Unk_02097ff4_clearFlag(p, 1);
             }
         }
     }
@@ -632,7 +632,7 @@ BOOL SpNpcNookIntro::setupAct04() {
 
 BOOL SpNpcNookIntro::mainAct04() {
     if (NpcActionCtrl_isActionDone(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
         }
@@ -667,7 +667,7 @@ void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
 void SpNpcNookIntroTalk::vfunc_78(Unk_ov068_02266f30_Out *out) {
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
-        func_02097ff4(p, 0x23);
+        Unk_02097ff4_clearFlag(p, 0x23);
     }
     out->unk_00 = data_ov068_0226fcfc;
     out->unk_04 = 0x22;

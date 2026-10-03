@@ -62,8 +62,8 @@ BOOL MenuKeys_HasUp(void *p);
 s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
 s32 Gfx2d_LoadCharFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_0203f07c(s32 i);
-s32 func_0203f0c0(void);
+s32 Emotion_GetSlot(s32 i);
+s32 Emotion_CountLearned(void);
 s32 Text_GetCharSortKey(s32 a);
 s32 Mem_Copy(void *src, void *dst, s32 n);
 s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
@@ -1673,9 +1673,9 @@ void Keyboard_LoadEmotionIcons(Keyboard *s)
     s32 v;
     s32 off;
     u32 p;
-    s->unk_04 = func_0203f0c0();
+    s->unk_04 = Emotion_CountLearned();
     for (i = 0; i < s->unk_04; i++) {
-        s->unk_28[i] = func_0203f07c(i);
+        s->unk_28[i] = Emotion_GetSlot(i);
     }
     File_LoadToBuffer((void *)"menu/chat2/ten0.bch", s->unk_2bbc, 0x1000);
     for (i = 0; i < s->unk_04; i++) {

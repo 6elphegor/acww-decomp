@@ -1586,7 +1586,7 @@ extern "C" {
 void DateTime_AddDays(void *p, s32 n);
 }
 extern "C" {
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 }
 extern "C" {
 BOOL GameStart_IsActive(void);
@@ -1595,7 +1595,7 @@ extern "C" {
 s32 PlayerData_GetCurrent(void);
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
+BOOL _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
 }
 extern "C" {
 u16 *Event_GetTodayList(void);
@@ -1622,7 +1622,7 @@ extern "C" {
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 }
 extern "C" {
-void func_020850e0(void);
+void TownSessionState_Get(void);
 }
 extern "C" {
 void func_02085178(void);
@@ -1643,7 +1643,7 @@ extern "C" {
 s32 _ZN16ActorTalkRequest15setTownNameSlotEjj(void *p, s32 a, s32 b);
 }
 extern "C" {
-s32 _ZN12Unk_02097ff413func_0209801cEj(s32 a, s32 b);
+s32 _ZN12Unk_02097ff47setFlagEj(s32 a, s32 b);
 }
 extern "C" {
 void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -1742,10 +1742,10 @@ extern "C" {
 void _ZN15KatieVisitState5clearEv(void);
 }
 extern "C" {
-s32 func_020b4934(void);
+s32 Scene_GetWarpRequest(void);
 }
 extern "C" {
-void func_020b4bbc(s32 a, s32 b);
+void SceneWarp_RequestExit(s32 a, s32 b);
 }
 extern "C" {
 extern u8 gScreenTransition;
@@ -4368,13 +4368,13 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-s32 func_02085174();
+s32 TownSessionState_GetPeteFall();
 }
 extern "C" {
-void _ZN12Unk_02086c0411pickFallPosEii(s32 a, void* p, u8 b);
+void _ZN13PeteFallState11pickFallPosEii(s32 a, void* p, u8 b);
 }
 extern "C" {
 void PlayerActor_LocalEndWatch();
@@ -4395,10 +4395,10 @@ extern "C" {
 s32 _ZN10PlayerData13func_02098a48Ev(void* p);
 }
 extern "C" {
-void* _ZN10PlayerData13func_02098698Ev(void* p);
+void* _ZN10PlayerData17getDailyTalkFlagsEv(void* p);
 }
 extern "C" {
-void _ZN12Unk_020877e013func_020877e0Ej(void* p, s32 a);
+void _ZN20PlayerDailyTalkFlags5clearEj(void* p, s32 a);
 }
 extern "C" {
 void GulliverQuest_Clear(void* p);
@@ -4820,7 +4820,7 @@ void SkyShotSequence::actUfoCrashed() {
         for (s32 i = 0; i < 4; i++) {
             void* p = PlayerData_GetResident(data_021d735c, i);
             if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
-                _ZN12Unk_020877e013func_020877e0Ej(_ZN10PlayerData13func_02098698Ev(p), 0x14);
+                _ZN20PlayerDailyTalkFlags5clearEj(_ZN10PlayerData17getDailyTalkFlagsEv(p), 0x14);
             }
         }
         GulliverQuest_Clear(data_021e58a6);
@@ -4862,8 +4862,8 @@ void SkyShotSequence::actPeteFallen() {
     if (unk_08 <= 0) {
         void* p = func_020947f0(unk_04);
         if (p) {
-            func_020850e0();
-            _ZN12Unk_02086c0411pickFallPosEii(func_02085174(), p, unk_18);
+            TownSessionState_Get();
+            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, unk_18);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
@@ -5120,22 +5120,22 @@ extern "C" {
 void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
-u32 _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
+u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
 }
 extern "C" {
 u32 _ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 extern "C" {
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
+void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
 }
 extern "C" {
 u32 LetterDelivery_PutInAddresseeMailbox(void *c);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_02097ff4Ej(void *p, u32 n);
+void _ZN12Unk_02097ff49clearFlagEj(void *p, u32 n);
 }
 extern "C" {
 void ItemPick_One(u16 *ret, ItemPickSpec q, u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -5437,16 +5437,16 @@ void Unk_020bc58c::sendWishLetters() {
     s32 i;
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(data_021d735c, i);
-        if (o != NULL && _ZN12Unk_02097ff413func_02098044Ej(o, 0x32) != 0) {
+        if (o != NULL && _ZN12Unk_02097ff48testFlagEj(o, 0x32) != 0) {
             Letter ctx;
             Unk_020bc99c_Loc l;
             l.a = func_02063b8c(3);
-            func_020656dc(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
+            Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.b, q, 0, 0, 1, 1, 0);
-            _ZN12Unk_0206555413func_02065588Etj(&ctx, l.b, 1);
+            _ZN12Unk_0206555410setPresentEtj(&ctx, l.b, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&ctx) != 0) {
-                _ZN12Unk_02097ff413func_02097ff4Ej(o, 0x32);
+                _ZN12Unk_02097ff49clearFlagEj(o, 0x32);
             }
         }
     }
@@ -5680,13 +5680,13 @@ extern "C" {
 s32 Weather_GetFallingPrecip();
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-void func_02085174();
+void TownSessionState_GetPeteFall();
 }
 extern "C" {
-s32 _ZN12Unk_02086c0415isVisitorActiveEv();
+s32 _ZN13PeteFallState15isVisitorActiveEv();
 }
 extern "C" {
 void func_02085170();
@@ -5727,13 +5727,13 @@ extern "C" {
 s32 func_02040c7c();
 }
 extern "C" {
-BOOL func_020b5164();
+BOOL Scene_InTownUnk31();
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(CommManager *);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 void func_020e759c(void *, s32, s32);
@@ -5742,7 +5742,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
+BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
 }
 extern "C" {
 BOOL SkyShot_HasMaxHits();
@@ -6330,7 +6330,7 @@ void Unk_020bbc28::updateFireworksShow() {
             }
         }
     } else if (kind == 0xf) {
-        if (func_020b5164()) {
+        if (Scene_InTownUnk31()) {
             MI_CpuCopy8(&s, &t2, 8);
             if (Event_GetState(0xf, &t2, r4)) {
                 r4 = TRUE;
@@ -6343,7 +6343,7 @@ void Unk_020bbc28::updateFireworksShow() {
         } else {
             r4 = TRUE;
         }
-    } else if (func_020b50e8() == 0x2c) {
+    } else if (Scene_GetCurrent() == 0x2c) {
         BOOL x;
         MI_CpuCopy8(&s, &t4, 8);
         if (Event_GetState(0xf, &t4, 1) == 2) {
@@ -6407,7 +6407,7 @@ void Unk_020bbc28::updateBalloon() {
                         }
                         u8 c = unk_2f24;
                         if (func_02063b8c(8) < c) {
-                            if (!_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !func_02063b8c(4)) {
+                            if (!_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !func_02063b8c(4)) {
                                 spawn(5, 0x2d, 0, 1);
                             } else {
                                 spawn(5, 0x2d, 0, 0);
@@ -6455,7 +6455,7 @@ void Unk_020bbc28::updateUfo() {
             u32 m = (u32)v % 10;
             if (unk_2f1a != v) {
                 if (m == 2 || m == 7) {
-                    func_020850e0();
+                    TownSessionState_Get();
                     func_02085170();
                     if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
                         if (unk_1464 != 6) {
@@ -6494,9 +6494,9 @@ void Unk_020bbc28::updatePete() {
             if (r != 1 && r != 2) {
                 if (unk_2f19 != unk_2f1b) {
                     if (unk_2f19 == 9 || unk_2f19 == 0x11) {
-                        func_020850e0();
-                        func_02085174();
-                        if (!_ZN12Unk_02086c0415isVisitorActiveEv()) {
+                        TownSessionState_Get();
+                        TownSessionState_GetPeteFall();
+                        if (!_ZN13PeteFallState15isVisitorActiveEv()) {
                             if (unk_1464 != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }
@@ -7119,7 +7119,7 @@ extern "C" {
 void _ZN12Unk_02003c309callResetEv(void*);
 }
 extern "C" {
-s32 func_020b5364(s32);
+s32 Scene_GetSkyKind(s32);
 }
 extern "C" {
 void RainSe_FadeVolume(void*);
@@ -7233,7 +7233,7 @@ extern "C" {
 void _ZN12Unk_020bbc2818updateShootingStarEv(void*);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 void _ZN12Unk_020bbc2813updateBalloonEv(void*);
@@ -7442,7 +7442,7 @@ extern "C" void SkySprites_UpdateEvents(Unk_020bacc0_Obj *obj) {
     _ZN12Unk_020bb25c13updateRainbowEv(obj);
     _ZN12Unk_020bbc2818updateShootingStarEv(obj);
     _ZN12Unk_020bbc2819updateFireworksShowEv(obj);
-    if (func_020b50e8() != 0x2c) {
+    if (Scene_GetCurrent() != 0x2c) {
         _ZN12Unk_020bbc2813updateBalloonEv(obj);
         _ZN12Unk_020bbc289updateUfoEv(obj);
         _ZN12Unk_020bbc2810updatePeteEv(obj);
@@ -7451,7 +7451,7 @@ extern "C" void SkySprites_UpdateEvents(Unk_020bacc0_Obj *obj) {
 }
 
 extern "C" void SkySprites_UpdateEventsIndoor(Unk_020bacc0_Obj *obj) {
-    s32 r = func_020b5364(0);
+    s32 r = Scene_GetSkyKind(0);
     if (r != 0 && r != 3) {
         if (data_021f1448.f34 == 1 && data_021f1448.f24 == 4) {
             _ZN12Unk_020bc58c18updateThunderFlashEv(obj);
@@ -7668,7 +7668,7 @@ extern "C" void RainSe_Init(Unk_020ba93c_Obj *p) {
 extern "C" void RainSe_Update(Unk_020ba93c_Obj *p) {
     s32 v[3];
     if (p->f0c != 0) {
-        s32 k = sRainSeIds[func_020b5364(0)];
+        s32 k = sRainSeIds[Scene_GetSkyKind(0)];
         if (k >= 0) {
             _ZN12Unk_02003c4011callRequestEPv(p, k);
         }
@@ -8906,7 +8906,7 @@ extern "C" {
 extern u8 sSkyCloudBgLayer[];
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 #define data_020e676c ((char *)"menu/star/a_bg.bch")
 #define data_020e6780 ((u8 *)"menu/star/bg.bsc")
@@ -8914,7 +8914,7 @@ extern "C" {
 void *PlayerData_GetCurrent(void);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 x);
+void _ZN12Unk_02097ff47setFlagEj(void *p, u32 x);
 }
 extern "C" {
 void SkySprites_OnStarWish(void *p);
@@ -9219,7 +9219,7 @@ BOOL SkyProc::vfunc_00() {
     using namespace n01;
     u32 r4 = 0;
     u32 v = 0;
-    BOOL t = (data_020e416c == 0);
+    BOOL t = (gFieldSceneKind == 0);
     if (t) {
         v = 1;
     }
@@ -9608,7 +9608,7 @@ extern "C" u32 Sky_IsShootingStarVisible(void) { return data_021f4420.unk_10; }
 extern "C" void Sky_WishOnShootingStar(void) {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        _ZN12Unk_02097ff413func_0209801cEj(p, 0x32);
+        _ZN12Unk_02097ff47setFlagEj(p, 0x32);
         SkySprites_OnStarWish(gSkySprites);
     }
 }

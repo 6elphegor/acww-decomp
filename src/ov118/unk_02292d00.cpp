@@ -13,8 +13,8 @@ extern u16 gPad[];
 extern u32 gCurrentHeap;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-extern u8 data_020e416c;
-extern u8 data_021ef360[];
+extern u8 gFieldSceneKind;
+extern u8 gTownReturnPos[];
 extern u8 data_021d7352[];
 extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
@@ -71,8 +71,8 @@ void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void func_020e761c(void *p, s32 a, s32 b);
 void *func_020947f0(s32 a);
-s32 func_020b4934();
-void *func_020b5010(void *p);
+s32 Scene_GetWarpRequest();
+void *ScenePos_GetPos(void *p);
 void func_020638d0(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
 BOOL MenuKeys_HasRight(void *pad);
@@ -799,14 +799,14 @@ void MapTab::initMapTab() {
     unk_ad = 0xe;
     selectEntry(0);
     buildEntryLists();
-    if (Unk_ov118_02294a58_IsZero(data_020e416c)) {
+    if (Unk_ov118_02294a58_IsZero(gFieldSceneKind)) {
         p = (Unk_ov118_02294a58_Vec *)func_020947f0(4);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
     } else {
-        func_020b4934();
-        p = (Unk_ov118_02294a58_Vec *)func_020b5010(data_021ef360);
+        Scene_GetWarpRequest();
+        p = (Unk_ov118_02294a58_Vec *)ScenePos_GetPos(gTownReturnPos);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;

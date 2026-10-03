@@ -105,10 +105,10 @@ public:
 #define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define func_02071e04 _ZN7Pattern13func_02071e04Ev
-#define func_02071f70 _ZN12Unk_02071ed013func_02071f70EPv
-#define func_02071fa0 _ZN12Unk_02071ed013func_02071fa0Ev
-#define func_02072064 _ZN12Unk_02071ed0D1Ev
+#define Pattern_getInfo _ZN7Pattern7getInfoEv
+#define PatternInfo_getTitle _ZN11PatternInfo8getTitleEPv
+#define PatternInfo_getAuthor _ZN11PatternInfo9getAuthorEv
+#define func_02072064 _ZN11PatternInfoD1Ev
 #define BlancaFaceRecord_getConcept _ZN16BlancaFaceRecord10getConceptEv
 #define BlancaFaceRecord_setConcept _ZN16BlancaFaceRecord10setConceptEj
 #define BlancaFaceRecord_setState _ZN16BlancaFaceRecord8setStateEj
@@ -152,9 +152,9 @@ void TalkWindowState_setSlotFromString(void *self, s32 a, u8 *b, char *c);
 void TalkWindowState_setSlot(void *self, s32 a, void *b);
 u32 BlancaFaceRecord_getConcept(u8 *p);
 s32 ChoiceList_getResult();
-Unk_ov074_02271564_A *func_02071e04();
-Unk_ov074_02271564_B *func_02071fa0(Unk_ov074_02271564_A *a);
-void func_02071f70(Unk_ov074_02271564_A *a, void *b);
+Unk_ov074_02271564_A *Pattern_getInfo();
+Unk_ov074_02271564_B *PatternInfo_getAuthor(Unk_ov074_02271564_A *a);
+void PatternInfo_getTitle(Unk_ov074_02271564_A *a, void *b);
 void func_02072064(Unk_ov074_02271564_A *a);
 BOOL func_02094218(Unk_ov074_02271564_B *b);
 BOOL func_020941e8(Unk_ov074_02271564_B *a, void *b);
@@ -164,7 +164,7 @@ s32 memcmp(void *a, void *b, s32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 u32 NpcActor_getAngleTo(void *p, u32 x);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void func_020e7518(void *p);
 s32 Random_Next(u8 *p);
 s32 NpcActionCtrl_isActionDone(void *p);
@@ -326,7 +326,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 MEMBER(Unk_02088d00, 0x514 - 0x4cc);
 struct Unk_020135e4 {
     u8 unk_00[0xc];
@@ -416,7 +416,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -829,7 +829,7 @@ BOOL SpNpcBlanca::setupAct00() { return TRUE; }
 
 BOOL SpNpcBlanca::mainAct00() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         SpNpcBlanca_ChangeAct(this, 1);
     }
     return TRUE;
@@ -968,8 +968,8 @@ void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_00 = ((char *)"sp_npc_mysterycat");
     u8 *const g = data_021eca50;
     BlancaFaceRecord_getPattern(g);
-    l = *func_02071e04();
-    m = *func_02071fa0(&l);
+    l = *Pattern_getInfo();
+    m = *PatternInfo_getAuthor(&l);
     if (func_02063b8c(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
         out->unk_04 = 3;
     } else {
@@ -990,7 +990,7 @@ next:
         setTownNameSlot(func_0209409c(&m), 0);
         buf[0] = BlancaFaceRecord_getConcept(g);
         TalkWindowState_setSlotFromString(unk_3c, 2, buf, ((char *)"st_impress"));
-        func_02071f70(&l, obj);
+        PatternInfo_getTitle(&l, obj);
         TalkWindowState_setSlot(unk_3c, 3, obj);
     }
     func_0206260c(obj);
@@ -1040,8 +1040,8 @@ void SpNpcBlancaTalk::vfunc_18() {
     getChoiceList();
     r5 = ChoiceList_getResult();
     BlancaFaceRecord_getPattern(data_021eca50);
-    l = *func_02071e04();
-    m = *func_02071fa0(&l);
+    l = *Pattern_getInfo();
+    m = *PatternInfo_getAuthor(&l);
     char *name = ((char *)"sp_npc_mysterycat");
     t = 0xff;
     switch (unk_1e) {

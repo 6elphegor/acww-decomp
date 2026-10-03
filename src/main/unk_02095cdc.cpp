@@ -81,15 +81,15 @@ public:
 };
 
 // Array of ten elements, indexed table getter at 0x02097020.
-class Unk_02097020 {
+class LetterOutbox {
 public:
-    Unk_02097020();
-    ~Unk_02097020();
-    Letter *func_02097020(s32 i);
-    void func_02096fd4();
-    BOOL func_02096fa0(u32 mask);
-    void func_02096fb8(u32 mask);
-    u8 *func_02096fc8();
+    LetterOutbox();
+    ~LetterOutbox();
+    Letter *getLetter(s32 i);
+    void clear();
+    BOOL testFlag(u32 mask);
+    void setFlag(u32 mask);
+    u8 *getLastDeliveryTime();
 
     /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u8 unk_988;
@@ -100,32 +100,32 @@ public:
     /* 0x98e */ u16 pad_98e;
 };
 
-class Unk_020970b8 {
+class PlayerMailbox {
 public:
-    Unk_020970b8();
-    ~Unk_020970b8();
-    Letter *func_020970b8(s32 i);
-    void func_02097078(u32 v);
-    u32 func_02097084();
-    void func_02097090();
+    PlayerMailbox();
+    ~PlayerMailbox();
+    Letter *getLetter(s32 i);
+    void setLastWifiMailId(u32 v);
+    u32 getLastWifiMailId();
+    void clear();
 
     /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u16 unk_988;
     /* 0x98a */ u16 pad_98a;
 };
 
-class Unk_02096d10 {
+class MotherLetterState {
 public:
-    void func_02096d10(u32 v);
-    u8 func_02096d1c();
-    BOOL func_02096d28(s32 i);
-    void func_02096d4c(s32 i);
-    void func_02096d6c(s32 i);
-    BOOL func_02096d8c(u32 mask);
-    void func_02096d9c(u32 mask);
-    void func_02096da4(s32 *v);
-    BOOL func_02096dbc(s32 *v);
-    void func_02096e00();
+    void setBirthdayLetterYear(u32 v);
+    u8 getBirthdayLetterYear();
+    BOOL isSent(s32 i);
+    void clearSent(s32 i);
+    void setSent(s32 i);
+    BOOL testFlag(u32 mask);
+    void setFlag(u32 mask);
+    void setLastDate(s32 *v);
+    BOOL checkLastDate(s32 *v);
+    void clear();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
@@ -135,10 +135,10 @@ public:
     /* 0x13 */ u8 pad_13;
 };
 
-class Unk_02096e28 : public Letter {
+class FutureLetter : public Letter {
 public:
-    void func_02096e28();
-    u8 *func_02096e50();
+    void clearFutureLetter();
+    u8 *getDeliveryDate();
 
     /* 0xf4 */ u8 unk_f4;
     /* 0xf5 */ u8 unk_f5;
@@ -146,21 +146,21 @@ public:
     /* 0xf7 */ u8 unk_f7;
 };
 
-class Unk_02096e78 : public Letter {
+class BottleLetterRecord : public Letter {
 public:
-    s32 func_02096e78();
-    void func_02096ed4();
-    BOOL func_02096ee8(s32 i);
-    void func_02096f10(s32 i);
-    void func_02096f30();
+    s32 pickUnusedMessage();
+    void clearUsedMessages();
+    BOOL isMessageUsed(s32 i);
+    void setMessageUsed(s32 i);
+    void clearRecord();
 
     /* 0xf4 */ u8 unk_f4[5];
 };
 
 class LetterStorage {
 public:
-    void func_02096f68();
-    Letter *func_02096f88(s32 i);
+    void clear();
+    Letter *getPage(s32 i);
 
     /* 0x000 */ Letter unk_00[75];
 };
@@ -206,8 +206,8 @@ extern u8 data_020e1e08[];
 extern u8 data_020e1e0c[];
 extern u8 data_020e1e10[];
 extern u8 data_020e1df8[];
-extern Unk_02097020 data_021eb98c;
-extern Unk_020970b8 data_021e935c[];
+extern LetterOutbox data_021eb98c;
+extern PlayerMailbox data_021e935c[];
 
 extern "C" {
 Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
@@ -229,11 +229,11 @@ void func_02063888(void *);
 void func_020638d0(void *, void *);
 s32 func_02063b8c(u32 n);
 s32 _ZN12Unk_0206555413func_02065578Ev(void *p);
-void _ZN12Unk_0206555413func_02065588Etj(void *, u32, s32);
+void _ZN12Unk_0206555410setPresentEtj(void *, u32, s32);
 void *func_0206561c(void);
 void *func_02065628(void);
 void func_02065640(void *a, void *b, void *c);
-s32 func_020656dc(void *, void *, u8 *, void *, void *, void *);
+s32 Letter_ComposeFromMail(void *, void *, u8 *, void *, void *, void *);
 void func_02065ac0(void *);
 void func_02065b28(void *p);
 void func_02065ba4(void *, void *);
@@ -327,32 +327,32 @@ void func_02096c58(u32 mask);
 void func_02096c68(u32 mask);
 BOOL func_02096c78(u32 mask);
 void func_02096c8c();
-void _ZN12Unk_02096d1013func_02096d10Ej(void *, u32);
-u32 _ZN12Unk_02096d1013func_02096d1cEv(void *);
-s32 _ZN12Unk_02096d1013func_02096d28Ei(void *, s32);
-void _ZN12Unk_02096d1013func_02096d4cEi(void *, s32);
-void _ZN12Unk_02096d1013func_02096d6cEi(void *, s32);
+void _ZN17MotherLetterState21setBirthdayLetterYearEj(void *, u32);
+u32 _ZN17MotherLetterState21getBirthdayLetterYearEv(void *);
+s32 _ZN17MotherLetterState6isSentEi(void *, s32);
+void _ZN17MotherLetterState9clearSentEi(void *, s32);
+void _ZN17MotherLetterState7setSentEi(void *, s32);
 BOOL func_02096d8c(u32 mask);
 void func_02096d9c(u32 mask);
-void _ZN12Unk_02096d1013func_02096da4EPi(void *, void *);
-s32 _ZN12Unk_02096d1013func_02096dbcEPi(void *, void *);
+void _ZN17MotherLetterState11setLastDateEPi(void *, void *);
+s32 _ZN17MotherLetterState13checkLastDateEPi(void *, void *);
 void func_02096e00();
-void _ZN12Unk_02096e2813func_02096e28Ev(void *);
-u8 *_ZN12Unk_02096e2813func_02096e50Ev(void *);
-Unk_02065554 *func_02096e54(void *);
-s32 _ZN12Unk_02096e7813func_02096e78Ev(void *p);
+void _ZN12FutureLetter17clearFutureLetterEv(void *);
+u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
+Unk_02065554 *FutureLetter_GetLetter(void *);
+s32 _ZN18BottleLetterRecord17pickUnusedMessageEv(void *p);
 void func_02096ed4();
 BOOL func_02096ee8(s32 i);
-void _ZN12Unk_02096e7813func_02096f10Ei(void *p, s32 v);
+void _ZN18BottleLetterRecord14setMessageUsedEi(void *p, s32 v);
 void func_02096f30();
-void *func_02096f44(void *p);
+void *BottleLetterRecord_GetLetter(void *p);
 void func_02096f68();
 Letter *func_02096f88(s32 i);
-s32 _ZN12Unk_0209702013func_02096fa0Ej(void *, u32);
-void _ZN12Unk_0209702013func_02096fb8Ej(void *, u32);
-u8 *_ZN12Unk_0209702013func_02096fc8Ev(void *);
+s32 _ZN12LetterOutbox8testFlagEj(void *, u32);
+void _ZN12LetterOutbox7setFlagEj(void *, u32);
+u8 *_ZN12LetterOutbox19getLastDeliveryTimeEv(void *);
 void func_02096fd4();
-void *_ZN12Unk_0209702013func_02097020Ei(void *, s32);
+void *_ZN12LetterOutbox9getLetterEi(void *, s32);
 void func_02097078(u32 v);
 u32 func_02097084();
 void func_02097090();
@@ -375,7 +375,7 @@ s32 func_02098320(s32);
 void *_ZN10PlayerData10getCatalogEv(void *a);
 void *_ZN10PlayerData8getIndexEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
-void *func_020991e4();
+void *Inventory_GetEmptyLetter();
 u32 Date_GetNthWeekdayDay(u32, u32, u32, u32);
 void DateTime_AddDays(void *, s32);
 s32 DateTime_Compare(void *, void *, u32);
@@ -387,8 +387,8 @@ u8 NetArea_GetSlotScene(s32 idx);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 void func_020b413c(void *);
 void func_020b4154(void *);
-s32 func_020b50e8();
-s32 func_020b50f4(void);
+s32 Scene_GetCurrent();
+s32 Scene_AllowsLetterDelivery(void);
 void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
@@ -415,7 +415,7 @@ extern const u8 sLetterPapersPersonality3[0x24];
 extern const u8 sLetterPapersPersonality5[0x24];
 
 extern "C" s32 LetterDelivery_DeliverOutgoing(void) {
-    Letter *base = data_021eb98c.func_02097020(0);
+    Letter *base = data_021eb98c.getLetter(0);
     s32 n = LetterList_Compact(base, 10);
     s32 i;
     volatile s32 flag = 0;
@@ -447,7 +447,7 @@ extern "C" BOOL LetterDelivery_IsMailboxFull(s32 idx) {
     if (idx == -1) {
         idx = (s32)_ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
     }
-    Letter *p = data_021e935c[idx].func_020970b8(0);
+    Letter *p = data_021e935c[idx].getLetter(0);
     s32 i;
     for (i = 0; i < 10; p++, i++) {
         if (((Unk_02065554 *)p)->func_02065578() == 0) {
@@ -458,7 +458,7 @@ extern "C" BOOL LetterDelivery_IsMailboxFull(s32 idx) {
 }
 
 extern "C" BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag) {
-    Letter *p = data_021e935c[idx].func_020970b8(0);
+    Letter *p = data_021e935c[idx].getLetter(0);
     s32 i;
     for (i = 0; i < 10; p++, i++) {
         if (((Unk_02065554 *)p)->func_02065578() == 0) {
@@ -486,7 +486,7 @@ extern "C" void LetterDelivery_SendToVillager(Letter *e) {
 
 extern "C" BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag) {
     s32 i;
-    Letter *p = data_021eb98c.func_02097020(0);
+    Letter *p = data_021eb98c.getLetter(0);
     for (i = 0; i < 10; p++, i++) {
         if (((Unk_02065554 *)p)->func_02065578() == 0) {
             func_02065e70(p, e);
@@ -578,13 +578,13 @@ extern "C" void func_020968e0(void) {}
 
 extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
-    if (func_02096e54(func_02097a3c(p))->func_02065578() != 0) return 1;
+    if (FutureLetter_GetLetter(func_02097a3c(p))->func_02065578() != 0) return 1;
     return 0;
 }
 
 extern "C" s32 LetterDelivery_HasFreeOutgoingSlot(void) {
     s32 i;
-    u8 *p = (u8 *)_ZN12Unk_0209702013func_02097020Ei(&data_021eb98c, 0);
+    u8 *p = (u8 *)_ZN12LetterOutbox9getLetterEi(&data_021eb98c, 0);
     for (i = 0; i < 10; p += 0xf4, i++) {
         if (((Unk_02065554 *)p)->func_02065578() == 0) return 1;
     }
@@ -595,7 +595,7 @@ extern "C" void LetterDelivery_Update(void) {
     u8 *r5;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) return;
     u8 *const g = (u8 *)&data_021eb98c;
-    r5 = _ZN12Unk_0209702013func_02096fc8Ev(g);
+    r5 = _ZN12LetterOutbox19getLastDeliveryTimeEv(g);
     Unk_020966f8_Rec LampLights;
     Unk_020966f8_Rec Y, Z;
     s32 z0, z1, z2;
@@ -606,7 +606,7 @@ extern "C" void LetterDelivery_Update(void) {
     LampLights.a = 0; LampLights.b = 0;
     Clock_GetDateTime(&LampLights);
     Y.a = 0; Y.b = 0; Z.a = 0; Z.b = 0;
-    if (_ZN12Unk_0209702013func_02096fa0Ej(g, 1)) {
+    if (_ZN12LetterOutbox8testFlagEj(g, 1)) {
         Y.a = 0; Y.b = 0;
         Y.d5 = r5[2];
         Y.d4 = r5[1];
@@ -631,14 +631,14 @@ extern "C" void LetterDelivery_Update(void) {
             if (DateTime_Compare(&LampLights, &Z, 0x3c) != -1) LetterDelivery_DeliverOutgoing();
         }
     } else {
-        _ZN12Unk_0209702013func_02096fb8Ej(g, 1);
+        _ZN12LetterOutbox7setFlagEj(g, 1);
     }
     z2 = 0; z1 = 0; z0 = 0;
     for (i = 0; i < 4; i++) {
         if (func_020978c8(data_021d735c, i)) {
             s0 = PlayerData_GetResident(data_021d735c, i);
-            r6 = _ZN12Unk_02096e2813func_02096e50Ev(func_02097a3c(s0));
-            s4 = func_02096e54(func_02097a3c(s0));
+            r6 = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(s0));
+            s4 = FutureLetter_GetLetter(func_02097a3c(s0));
             if (((Unk_02065554 *)s4)->func_02065578()) {
                 Y.a = z0; Y.b = z0;
                 Y.d5 = r6[2];
@@ -646,7 +646,7 @@ extern "C" void LetterDelivery_Update(void) {
                 Y.d3 = r6[0];
                 Y.d2 = 9;
                 if (DateTime_Compare(&LampLights, &Y, 0x3c) != ~z2) {
-                    if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12Unk_02096e2813func_02096e28Ev(func_02097a3c(s0));
+                    if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12FutureLetter17clearFutureLetterEv(func_02097a3c(s0));
                 }
             }
         }
@@ -698,23 +698,23 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
     }
     r4 = func_02097a30(r6);
     MotherLetter_ResetOtherMonths((u8)p->unk_04);
-    if (_ZN12Unk_02096d1013func_02096dbcEPi(r4, p) != 0) return;
+    if (_ZN17MotherLetterState13checkLastDateEPi(r4, p) != 0) return;
     if (MotherLetter_TrySendBirthday(p) != 0) {
-        _ZN12Unk_02096d1013func_02096d10Ej(r4, (u8)p->unk_00);
-        _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
+        _ZN17MotherLetterState21setBirthdayLetterYearEj(r4, (u8)p->unk_00);
+        _ZN17MotherLetterState11setLastDateEPi(r4, p);
         return;
     }
     if (MotherLetter_TrySendHoliday(p) != 0) {
-        _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
+        _ZN17MotherLetterState11setLastDateEPi(r4, p);
         return;
     }
     if (func_02063b8c(10) < 2) {
         if (MotherLetter_TrySendRandom(p) != 0) {
-            _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
+            _ZN17MotherLetterState11setLastDateEPi(r4, p);
             return;
         }
     }
-    _ZN12Unk_02096d1013func_02096da4EPi(r4, p);
+    _ZN17MotherLetterState11setLastDateEPi(r4, p);
 }
 
 extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
@@ -722,7 +722,7 @@ extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r6 = func_02097a30(r5);
     u8 *q = _ZN12Unk_02097ff413func_02098308Ev(r5);
     if (*(u16 *)q == 0) return 0;
-    if (p->unk_00 == _ZN12Unk_02096d1013func_02096d1cEv(r6)) return 0;
+    if (p->unk_00 == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;
     Unk_02096484_Rec LampLights;
     LampLights.d5 = p->unk_00;
@@ -800,7 +800,7 @@ extern "C" s32 MotherLetter_CountUnsent(s32 a, s32 n) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 cnt = 0, i = cnt;
     for (; i < n; a++, i++) {
-        if (_ZN12Unk_02096d1013func_02096d28Ei(g, a) == 0) cnt++;
+        if (_ZN17MotherLetterState6isSentEi(g, a) == 0) cnt++;
     }
     return cnt;
 }
@@ -809,7 +809,7 @@ extern "C" s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 cnt = 0, idx = a, i = cnt;
     for (; i < n; idx++, i++) {
-        if (_ZN12Unk_02096d1013func_02096d28Ei(g, idx) == 0) {
+        if (_ZN17MotherLetterState6isSentEi(g, idx) == 0) {
             if (cnt == k) return idx;
             cnt++;
         }
@@ -820,7 +820,7 @@ extern "C" s32 MotherLetter_GetNthUnsent(s32 a, s32 n, s32 k) {
 extern "C" void MotherLetter_ClearSent(s32 a, s32 n) {
     void *g = func_02097a30(PlayerData_GetCurrent());
     s32 i;
-    for (i = 0; i < n; a++, i++) _ZN12Unk_02096d1013func_02096d4cEi(g, a);
+    for (i = 0; i < n; a++, i++) _ZN17MotherLetterState9clearSentEi(g, a);
 }
 
 extern "C" s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d) {
@@ -839,7 +839,7 @@ extern "C" s32 MotherLetter_SendRandomUnsent(s32 a, s32 b, s32 c, s32 d) {
     vc = MotherLetter_Send(v8, c);
     if (vc != 0) {
         if (r7 == 1 && d == 1) MotherLetter_ClearSent(a, b);
-        else _ZN12Unk_02096d1013func_02096d6cEi(g, v8);
+        else _ZN17MotherLetterState7setSentEi(g, v8);
     }
     return vc;
 }
@@ -856,9 +856,9 @@ extern "C" s32 MotherLetter_Send(s32 a, s32 b) {
     rec[1] = 1;
     if (a == 0x1a) rec[1] = 0x12;
     rec[2] = LetterPaper_PickRandom(3, b);
-    func_020656dc(buf, rec, MotherLetter_GetFileName(a), rec + 1, rec + 2, (void *)r4);
+    Letter_ComposeFromMail(buf, rec, MotherLetter_GetFileName(a), rec + 1, rec + 2, (void *)r4);
     u32 t = MotherLetter_GetPresent(a);
-    if (t != 0xfff1) _ZN12Unk_0206555413func_02065588Etj(buf, t, 1);
+    if (t != 0xfff1) _ZN12Unk_0206555410setPresentEtj(buf, t, 1);
     if (LetterDelivery_PutInAddresseeMailbox((Letter *)buf)) {
         _ZN6LetterD1Ev(buf);
         return 1;
@@ -946,9 +946,9 @@ extern "C" u8 MotherLetter_GetMsgIndex(s32 x) {
 }
 
 extern "C" s32 BottleLetter_Open() {
-    void *r5 = func_020991e4();
+    void *r5 = Inventory_GetEmptyLetter();
     if (r5 == NULL) return FALSE;
-    void *o = func_02096f44(data_021eceac);
+    void *o = BottleLetterRecord_GetLetter(data_021eceac);
     if (!_ZN12Unk_0206555413func_02065578Ev(o)) {
         func_02065c94(o);
         return TRUE;
@@ -964,7 +964,7 @@ extern "C" s32 BottleLetter_Open() {
 }
 
 extern "C" s32 BottleLetter_CreateGameLetter(u8 *p) {
-    void *o = func_02096f44(data_021eceac);
+    void *o = BottleLetterRecord_GetLetter(data_021eceac);
     if (_ZN12Unk_0206555413func_02065578Ev(o)) return FALSE;
     if (BottleLetter_PlaceBottle() == 0) return FALSE;
     func_02065640(o, p, (void *)"ev_bottle");
@@ -1003,13 +1003,13 @@ extern "C" void BottleLetter_OnNewDay(s32 a) {
     if (a > 0) {
         if (BottleLetter_IsBottleInTown() == 0) {
             void *const o = data_021eceac;
-            if (_ZN12Unk_0206555413func_02065578Ev(func_02096f44(o))) {
+            if (_ZN12Unk_0206555413func_02065578Ev(BottleLetterRecord_GetLetter(o))) {
                 BottleLetter_PlaceBottle();
             } else if (func_02063b8c(10) == 7) {
                 u8 v = data_021edb68[0];
-                s32 r = _ZN12Unk_02096e7813func_02096e78Ev(o);
+                s32 r = _ZN18BottleLetterRecord17pickUnusedMessageEv(o);
                 v = r;
-                if (BottleLetter_CreateGameLetter(&v)) _ZN12Unk_02096e7813func_02096f10Ei(o, r);
+                if (BottleLetter_CreateGameLetter(&v)) _ZN18BottleLetterRecord14setMessageUsedEi(o, r);
             }
         }
     }
@@ -1035,7 +1035,7 @@ extern "C" void BottleLetter_WashUpThrownBottle() {
             }
             _ZN12Unk_0208f23813func_0208f168Ev(o);
             func_02065b28(r4);
-            func_02065e70(func_02096f44(data_021eceac), r4);
+            func_02065e70(BottleLetterRecord_GetLetter(data_021eceac), r4);
             func_02065c94(r4);
             if (BottleLetter_IsBottleInTown() == 0) BottleLetter_PlaceBottle();
         }

@@ -66,7 +66,7 @@ struct Unk_02006d14 {
 };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -134,7 +134,7 @@ void PlayerActor_OffsetByAngle(void *out, void *a, void *b, void *c, void *d);
 }
 
 extern "C" {
-s32 func_020b52f8();
+s32 Scene_InHouseRoom();
 }
 
 extern "C" {
@@ -194,11 +194,11 @@ s32 func_02063c18(s32 v);
 }
 
 extern "C" {
-void *func_020b4934();
+void *Scene_GetWarpRequest();
 }
 
 extern "C" {
-void func_020b4b68(void *a, s32 b, void *c, void *d);
+void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 }
 
 extern "C" {
@@ -372,9 +372,9 @@ extern "C" u16 *func_02094440() {
     if (!o) return 0;
     if (o->unk_7ec != 2) return 0;
     PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &data_020e1c74);
-    BOOL t = data_020e416c == 1 ? TRUE : FALSE;
+    BOOL t = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (t) {
-        if (func_020b52f8()) {
+        if (Scene_InHouseRoom()) {
             if (gCommManager->unk_68 == 0) {
                 if (FtrMgr_FindFurnitureFacingPlayer(&a, &b, 0, 0) < 0) {
                     r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, buf, 0);

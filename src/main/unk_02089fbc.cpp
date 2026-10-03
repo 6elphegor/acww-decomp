@@ -135,7 +135,7 @@ void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetRtcDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 void DateTime_Sub(void *a, void *b);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_020b7878(s32 x);
 u64 OS_GetTick();
 s32 MenuCtrl_IsMenuOpen();
@@ -205,7 +205,7 @@ void _ZN8HudClock7releaseEv(void *p);
 void _ZN8HudClock5resetEv(void *p);
 }
 
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern GameFontDesc gFontD;
 extern GameFontDesc gFontC;
 extern u8 data_020d479c[];
@@ -802,7 +802,7 @@ void HudClock::callDraw() {
 void HudClock::show() {
     unk_4e = 1;
     BOOL v = TRUE;
-    if (data_020e416c != 1) {
+    if (gFieldSceneKind != 1) {
         v = FALSE;
     }
     unk_4f = v ? 1 : 0;
@@ -1328,7 +1328,7 @@ void HudCountdown::incCountB() {
 void HudCountdown::show() {
     unk_98 = 1;
     BOOL t = TRUE;
-    if (data_020e416c != 1) t = FALSE;
+    if (gFieldSceneKind != 1) t = FALSE;
     unk_99 = (t != 0) ? 1 : 0;
 }
 
@@ -1604,7 +1604,7 @@ void HudCountdownLabels::updateRemaining() {
                 if (b0 == 0) {
                     unk_b8 = 0x258;
                     unk_a4 = 0;
-                    if (func_020b50e8() != 0x2e) {
+                    if (Scene_GetCurrent() != 0x2e) {
                         Snd_PlaySe(0x65);
                     }
                     func_020b7878(3);
@@ -1613,7 +1613,7 @@ void HudCountdownLabels::updateRemaining() {
                     u64 d = now - *(u64 *)&unk_cc;
                     u64 q = (d << 6) / 0x82ea;
                     if (q <= 0x44c) {
-                        if (func_020b50e8() != 0x2e) {
+                        if (Scene_GetCurrent() != 0x2e) {
                             Snd_PlaySe(0x64);
                         }
                     }
@@ -2627,7 +2627,7 @@ void HudControllerStates::updateHidden() {
 
 void HudControllerStates::updateSharedPanels() {
     if (func_0201188c() != 0) {
-        if (Unk_0208a150_IsOne(data_020e416c)) {
+        if (Unk_0208a150_IsOne(gFieldSceneKind)) {
             if (_ZN12HudCountdown10isFinishedEv(&unk_d0)) {
                 _ZN12HudCountdown4hideEv(&unk_d0);
                 if (_ZN12HudCountdown8isHiddenEv(&unk_d0)) {

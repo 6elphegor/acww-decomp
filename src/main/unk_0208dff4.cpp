@@ -10,7 +10,7 @@ s32 TalkRequest_IsActive();
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {

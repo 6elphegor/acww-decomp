@@ -158,7 +158,7 @@ void _ZN10PocketMenu15clearHighlightsEv(S *s);
 void _ZN10PocketMenu12selectTargetEj(S *s, u32 a);
 void _ZN10PocketMenu14clearSelectionEv(S *s);
 extern CommManager *gCommManager;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 data_021edb68;
 extern u8 gTouchHoldFrames;
 extern u8 gTouchCurY;
@@ -188,7 +188,7 @@ BOOL func_0204bab8(u16 *p);
 BOOL Item_IsHoldable(u16 *p);
 u32 Item_GetPrice(u16 *p);
 s32 _ZN12Unk_0206555413func_02065578Ev(void *obj);
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, u32 c);
+void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, u32 c);
 s32 _ZN12Unk_0206555413func_020655c0Ev(void *a);
 s32 _ZN12Unk_0206555413func_020655d0Ev(void *obj);
 void func_02065af0();
@@ -244,7 +244,7 @@ s32 func_020951ac();
 void *PlayerData_GetCurrent();
 s32 func_02097ac4(void *p, s32 a, s32 b);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 a);
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 a);
+void _ZN12Unk_02097ff47setFlagEj(void *p, u32 a);
 u16 *_ZN12Unk_02097ff413func_020983ccEv(void *p);
 void _ZN10PlayerData11setFaceItemEPt(void *o, u16 *p);
 u16 *_ZN10PlayerData11getFaceItemEv(void *o);
@@ -254,9 +254,9 @@ void _ZN10PlayerData8setShirtEPt(void *o, u16 *p);
 u16 *_ZN10PlayerData8getShirtEv(void *o);
 u16 *_ZN10PlayerData11getHeldItemEv(void *o);
 void *_ZN10PlayerData13func_02098750Ev(void *p);
-s32 func_02098ffc();
-s32 func_020991fc();
-s32 func_020b52f8();
+s32 Pocket_FindEmpty();
+s32 Inventory_FindEmptyLetter();
+s32 Scene_InHouseRoom();
 void _ZN14BgVramTaskPairC1Ev(void *p);
 void _ZN10BgVramTask6cancelEv(void *p);
 void *ProcBase_GetParent(void *p);
@@ -2026,7 +2026,7 @@ extern "C" void _ZN10PocketMenu9mainAct25Ev(S *s)
     s->unk_a4 = PocketMenu_GetTargetX(s, 0x24);
     s->unk_a8 = PocketMenu_GetTargetY(s, 0x24);
     r4 = s->unk_c0;
-    if (r4 != 5 || IsZero(data_020e416c)) {
+    if (r4 != 5 || IsZero(gFieldSceneKind)) {
         _ZN10PocketMenu17requestCameraPushEv(s);
     }
     if (_ZN10PocketMenu18requestUseOnPlayerEit(s, r4, s->unk_ac)) {
@@ -2077,9 +2077,9 @@ extern "C" void _ZN10PocketMenu9mainAct2BEv(S *s)
         void *p = PlayerData_GetCurrent();
         u32 v = s->unk_ac;
         if (v == 0x136a) {
-            _ZN12Unk_02097ff413func_0209801cEj(p, 0x27);
+            _ZN12Unk_02097ff47setFlagEj(p, 0x27);
         } else if (v == 0x137b) {
-            _ZN12Unk_02097ff413func_0209801cEj(p, 0x28);
+            _ZN12Unk_02097ff47setFlagEj(p, 0x28);
         }
         s->unk_b0 = 0;
         _ZN10PocketMenu11putHandBackEjj(s, s->unk_b6, 1);
@@ -2480,7 +2480,7 @@ extern "C" void PocketMenu_SetSlotItem(S *s, u32 id, u32 a, u32 b)
         InventoryItemGrid_SetSlotItem((u8 *)s + 0x358, t, a, b);
         InventoryItemGrid_RefreshSlot((u8 *)s + 0x358, t);
     } else if (PocketMenu_IsLetterTarget(s, id)) {
-        _ZN12Unk_0206555413func_02065588Etj(PocketMenu_GetLetter(s, id), a, b);
+        _ZN12Unk_0206555410setPresentEtj(PocketMenu_GetLetter(s, id), a, b);
     } else if (id == 0x25) {
         _ZN10PocketMenu15depositToWalletEt(s, a);
     }
@@ -2502,7 +2502,7 @@ extern "C" void PocketMenu_ClearLetter(S *s, u32 id)
 
 extern "C" u32 PocketMenu_FindEmptyPocket(S *s)
 {
-    s32 r = func_02098ffc();
+    s32 r = Pocket_FindEmpty();
     if (r == -1) {
         return 0x26;
     }
@@ -3619,10 +3619,10 @@ void PocketMenu::func_ov096_022965f0(u32 v) {
 }
 
 BOOL PocketMenu::canDropItem(s32 a) {
-    if (Unk_ov096_0229652c_IsZero(data_020e416c)) {
+    if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
         return PocketMenu_CanDropOutdoor(this, a);
     }
-    if (func_020b52f8()) {
+    if (Scene_InHouseRoom()) {
         if (PocketMenu_CanEditRoom(this)) {
             return TRUE;
         }
@@ -3632,7 +3632,7 @@ BOOL PocketMenu::canDropItem(s32 a) {
 }
 
 s32 PocketMenu::requestDropItem(s32 a) {
-    if (Unk_ov096_0229652c_IsZero(data_020e416c)) {
+    if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
         unk_c4 = FieldAction_RequestDrop(gCommManager->unk_64, a);
         if (unk_c4 == -1) {
             PocketMenu_ReturnToIdle((S *)this);
@@ -3642,7 +3642,7 @@ s32 PocketMenu::requestDropItem(s32 a) {
         }
         return 2;
     }
-    if (func_020b52f8()) {
+    if (Scene_InHouseRoom()) {
         return PocketMenu_RequestDropIndoor(this, a);
     }
     return 0;
@@ -3696,7 +3696,7 @@ void PocketMenu::actionTakeAttachment() {
 }
 
 BOOL PocketMenu::allocLetterSlot() {
-    s32 t = func_020991fc();
+    s32 t = Inventory_FindEmptyLetter();
     if (t == -1) {
         PocketMenu_ReturnToIdle((S *)this);
         PocketMenu_ShowMessage((S *)this, 2, 0xff, 1);
@@ -3984,11 +3984,11 @@ void PocketMenu::addItemOptions(s32 a) {
     switch (r4) {
     case 0:
         if (canDropItem(a)) {
-            ChoiceIdList_Add(unk_27f0, Unk_ov096_0229590c_IsZero(data_020e416c) ? 1 : 0xa, 2);
+            ChoiceIdList_Add(unk_27f0, Unk_ov096_0229590c_IsZero(gFieldSceneKind) ? 1 : 0xa, 2);
         }
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
             _ZN10PocketMenu15addFieldOptionsEt(this, a);
-        } else if (func_020b52f8()) {
+        } else if (Scene_InHouseRoom()) {
             PocketMenu_AddRoomItemOptions(this, a);
         }
         {
@@ -4027,13 +4027,13 @@ void PocketMenu::addLetterOptions(s32 a) {
         ChoiceIdList_Add(unk_27f0, 0x20, 4);
         break;
     case 4:
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
             _ZN10PocketMenu15addBottleOptionEv(this);
         }
         ChoiceIdList_Add(unk_27f0, 0x16, 5);
         if (testFlags(8) == 0) {
             if (_ZN12Unk_0206555413func_020655d0Ev(o) == 0xfff1) {
-                if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
+                if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
                     ChoiceIdList_Add(unk_27f0, 0x15, 0xa);
                 }
             }
@@ -4051,7 +4051,7 @@ void PocketMenu::addLetterOptions(s32 a) {
     if (_ZN12Unk_0206555413func_020655d0Ev(o) != 0xfff1) {
         ChoiceIdList_Add(unk_27f0, 0x18, 6);
     } else if (t == 1 || t == 3 || t == 6) {
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
             ChoiceIdList_Add(unk_27f0, 0x15, 0xa);
         }
     }

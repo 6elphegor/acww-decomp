@@ -81,7 +81,7 @@ struct Unk_ov070_Name {
 
 class PlayerData {
 public:
-    void *func_0209868c();
+    void *getSpNpcRecord();
     u16 *getHat();
     u16 *getFaceItem();
     u16 *getShirt();
@@ -92,10 +92,10 @@ public:
     void *getCatalog();
 };
 
-class Unk_02087ad8 {
+class PlayerSpNpcRecord {
 public:
-    u32 func_02087bdc();
-    void func_02087bc8(u32 v);
+    u32 getStyleScore();
+    void addStyleScore(u32 v);
 };
 
 class PlayerId {
@@ -233,7 +233,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -344,7 +344,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -442,16 +442,16 @@ extern u16 data_020c6cc8;
 PlayerData *PlayerData_GetCurrent();
 void *MI_CpuFill8(void *, s32, u32);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 func_020991fc();
-void *func_020991e4();
+s32 Inventory_FindEmptyLetter();
+void *Inventory_GetEmptyLetter();
 void func_020b4154(void *p);
 s32 _s32_div_f(s32, s32);
 s32 String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void MailText_SetSlot(s32 i, void *x);
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, void *f);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
 void func_0203c41c(void *a, u16 *p, s32 c);
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
+void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
 s32 func_020626cc(u16 *p, s32 mode);
 u32 func_02063b8c(u32 a);
 void Hud_Hide();
@@ -462,17 +462,17 @@ void PlayerActor_RequestWearFaceItemAlt(u16 *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02063388(ItemPickSpec *o);
-void func_02099014(u16 *, s32);
+void Pocket_AddItem(u16 *, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 Item_GetPrice(u16 *);
-s32 func_02098f30(Unk_02098f30_Out *out, s32 (*fn)(u16 *));
-void *func_020850e0();
-BOOL func_020851bc(void *p, s32 v);
-void func_020851a4(void *p, s32 v);
+s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *));
+void *TownSessionState_Get();
+BOOL TownSessionState_TestFlag(void *p, s32 v);
+void TownSessionState_SetFlag(void *p, s32 v);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetAmount();
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 void NpcActor_ChargePlayer(void *p, s32 v);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
@@ -603,7 +603,7 @@ BOOL SpNpcGracie::setupAct01() {
 
 BOOL SpNpcGracie::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -696,7 +696,7 @@ void SpNpcGracieTalk::onFeeEntered() {
         NpcActor_ChargePlayer(unk_b0, unk_bc);
     } else {
         Hud_Show();
-        func_020851a4(func_020850e0(), 10);
+        TownSessionState_SetFlag(TownSessionState_Get(), 10);
     }
     m->setNextMessage(&v, sSpNpcGracieKey);
 }
@@ -743,7 +743,7 @@ void SpNpcGracieTalk::attachOwner(SpNpcGracie *owner) {
 }
 
 void SpNpcGracieTalk::vfunc_78(TalkStartMsg *out) {
-    void *g = PlayerData_GetCurrent()->func_0209868c();
+    void *g = PlayerData_GetCurrent()->getSpNpcRecord();
     if (!Talk_CheckAndSetPlayerFlag(7, 1)) {
         unk_ac = 0;
     } else if (Talk_CheckAndSetPlayerFlag(8, 0)) {
@@ -751,7 +751,7 @@ void SpNpcGracieTalk::vfunc_78(TalkStartMsg *out) {
             unk_ac = 6;
         } else if (unk_b0->unk_658.unk_dc < 3) {
             unk_ac = 2;
-        } else if (((Unk_02087ad8 *)g)->func_02087bdc() >= 0x3d) {
+        } else if (((PlayerSpNpcRecord *)g)->getStyleScore() >= 0x3d) {
             unk_ac = 3;
         } else {
             unk_ac = 4;
@@ -759,7 +759,7 @@ void SpNpcGracieTalk::vfunc_78(TalkStartMsg *out) {
     } else {
         unk_ac = 1;
     }
-    if (func_020851bc(func_020850e0(), 10)) {
+    if (TownSessionState_TestFlag(TownSessionState_Get(), 10)) {
         if ((u32)(unk_ac - 2) <= 2) {
             unk_ac = 5;
         }
@@ -775,7 +775,7 @@ void SpNpcGracieTalk::vfunc_78(TalkStartMsg *out) {
 }
 
 void SpNpcGracieTalk::vfunc_64(u32 a) {
-    ((Unk_02087ad8 *)PlayerData_GetCurrent()->func_0209868c())->func_02087bc8(a);
+    ((PlayerSpNpcRecord *)PlayerData_GetCurrent()->getSpNpcRecord())->addStyleScore(a);
 }
 
 // ---- unit 2 ----
@@ -820,7 +820,7 @@ extern "C" u8 SpNpcGracie_ScoreByPrice(void *unused, s32 a, s32 kind) {
 void SpNpcGracieTalk::scoreOutfit() {
     s32 t;
     PlayerData *r6 = PlayerData_GetCurrent();
-    Unk_02087ad8 *r4 = (Unk_02087ad8 *)r6->func_0209868c();
+    PlayerSpNpcRecord *r4 = (PlayerSpNpcRecord *)r6->getSpNpcRecord();
     unk_c0[0].unk_00 = *r6->getHat();
     if (!Unk_ov070_IsNone(&unk_c0[0].unk_00)) {
         BOOL r = FALSE;
@@ -828,21 +828,21 @@ void SpNpcGracieTalk::scoreOutfit() {
             r = TRUE;
         }
         if (!r) {
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[0].unk_00), 0)));
+            r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[0].unk_00), 0)));
         } else {
             t = func_02063b8c(10);
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(t + 1));
+            r4->addStyleScore(Unk_ov070_02271bf8_Sh(t + 1));
         }
     } else {
         t = func_02063b8c(3);
-        r4->func_02087bc8(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
+        r4->addStyleScore(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
     }
     unk_c0[1].unk_00 = *r6->getFaceItem();
     if (!Unk_ov070_IsNone(&unk_c0[1].unk_00)) {
-        r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[1].unk_00), 1)));
+        r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[1].unk_00), 1)));
     } else {
         t = func_02063b8c(3);
-        r4->func_02087bc8(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
+        r4->addStyleScore(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
     }
     unk_c0[2].unk_00 = *r6->getShirt();
     if (!Unk_ov070_IsNone(&unk_c0[2].unk_00)) {
@@ -851,10 +851,10 @@ void SpNpcGracieTalk::scoreOutfit() {
             r = TRUE;
         }
         if (!r) {
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[2].unk_00), 2)));
+            r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[2].unk_00), 2)));
         } else {
             t = func_02063b8c(10);
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(t + 1));
+            r4->addStyleScore(Unk_ov070_02271bf8_Sh(t + 1));
         }
     }
 }
@@ -869,7 +869,7 @@ extern "C" BOOL SpNpcGracie_IsEmptyItem(u16 *p) {
 BOOL SpNpcGracieTalk::hasPocketRoomForOutfit() {
     Unk_02098f30_Out o;
     u8 n;
-    func_02098f30(&o, SpNpcGracie_IsEmptyItem);
+    Pocket_CountMatching(&o, SpNpcGracie_IsEmptyItem);
     n = 0;
     scoreOutfit();
     if (!Unk_ov070_IsNone(&unk_c0[0].unk_00)) {
@@ -981,7 +981,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
             if (!k) {
                 if (v >= 0x12a8 && v <= 0x12af) {
                 } else {
-                    func_02099014(&unk_c0[i].unk_00, 0);
+                    Pocket_AddItem(&unk_c0[i].unk_00, 0);
                 }
             }
         }
@@ -1010,16 +1010,16 @@ void SpNpcGracieTalk::vfunc_14() {
         unk_b0->unk_658.unk_dc++;
     }
     if (unk_1e == 0x24) {
-        if (func_020991fc() != -1) {
-            void *obj = func_020991e4();
+        if (Inventory_FindEmptyLetter() != -1) {
+            void *obj = Inventory_GetEmptyLetter();
             if (obj != NULL) {
-                Unk_02087ad8 *p = (Unk_02087ad8 *)r7->func_0209868c();
+                PlayerSpNpcRecord *p = (PlayerSpNpcRecord *)r7->getSpNpcRecord();
                 MsgString25 str;
                 u32 lvl = 0;
                 s.unk_00 = 0;
                 scoreOutfit();
-                if (p->func_02087bdc() > 0x15) {
-                    lvl = (u8)_s32_div_f((u8)(p->func_02087bdc() - 0x15), 10);
+                if (p->getStyleScore() > 0x15) {
+                    lvl = (u8)_s32_div_f((u8)(p->getStyleScore() - 0x15), 10);
                 }
                 if (lvl > 7) {
                     lvl = 7;
@@ -1027,17 +1027,17 @@ void SpNpcGracieTalk::vfunc_14() {
                 s.unk_00 = lvl;
                 s.unk_02 = 0x1565;
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &s.unk_02, 0, 5, 0);
-                String_FormatNumber(&str, p->func_02087bdc(), 10, 0, 0, 0);
+                String_FormatNumber(&str, p->getStyleScore(), 10, 0, 0, 0);
                 MailText_SetSlot(0, &str);
-                func_020656dc(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
+                Letter_ComposeFromMail(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
                 if (r7 != NULL) {
                     s.unk_04 = Item_MakePaper(0x10, 4);
                     func_0203c41c(r7->getCatalog(), &s.unk_04, 0);
                 }
                 if (lvl <= 2) {
-                    _ZN12Unk_0206555413func_02065588Etj(obj, 0x12a7, 1);
+                    _ZN12Unk_0206555410setPresentEtj(obj, 0x12a7, 1);
                 } else if (lvl <= 4) {
-                    _ZN12Unk_0206555413func_02065588Etj(obj, 0x1248, 1);
+                    _ZN12Unk_0206555410setPresentEtj(obj, 0x1248, 1);
                 }
             }
         }
@@ -1121,7 +1121,7 @@ void SpNpcGracieTalk::vfunc_18() {
         }
     }
     if (unk_1e == 9 && r4 == 0) {
-        if (func_020991fc() != -1) {
+        if (Inventory_FindEmptyLetter() != -1) {
             code = 0xb;
         } else {
             code = 0xc;

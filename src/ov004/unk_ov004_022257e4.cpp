@@ -302,7 +302,7 @@ public:
     BOOL bindTextures();
 
     /* 0x290 */ ModelAnim unk_290; // fields at 0x298 (u32), 0x2a8 (u32 *), 0x2b0/0x2b4/0x2b8 (u32) are read through F()
-    /* 0x2bc */ u32 unk_2bc[0x27];    // a Unk_020d8cf4 (ctor/dtor by hand: the original destroys it with D2)
+    /* 0x2bc */ u32 unk_2bc[0x27];    // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
     /* 0x358 */ u32 unk_358[0x27];
     /* 0x3f4 */ u32 unk_3f4[0x27];
     /* 0x490 */ u8 pad_490[8];
@@ -343,24 +343,24 @@ s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 void _ZN9AnimModel10attachAnimEv(void *);
 void _ZN9AnimModel12drawAnimatedEPv(void *, s32);
 s32 _ZN12G3dResAccess10findMatIdxEi(void *, u32);
-s32 func_020318cc(void *);
-s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
+s32 BoxCollider_Unregister(void *);
+s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
 void Clock_GetMinuteHour(u8 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void NNS_G3dBindMdlTex(void *, void *);
 void NNS_G3dBindMdlPltt(void *, void *);
 void *BgModelCache_Get(void);
 void *_ZN12BgModelCache12getGroundTexEv(void *);
-s32 func_020850e0(void);
+s32 TownSessionState_Get(void);
 s32 func_02085180(s32);
 s32 _ZN15TownTravelState7getModeEv(s32);
 s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
 void _ZN5Model15setInitCallbackEii(void *, void *, void *);
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 }
 
 extern "C" const u8 sCheckInGateHourLight[];
@@ -412,22 +412,22 @@ extern "C" void CheckInGate_InitRenderObj(Unk_ov004_02226458_Obj *o) {
 
 // @2226410
 CheckInGate::CheckInGate() {
-    _ZN12Unk_020d8cf4C1Ev(unk_2bc);
-    _ZN12Unk_020d8cf4C1Ev(unk_358);
-    _ZN12Unk_020d8cf4C1Ev(unk_3f4);
+    _ZN11BoxColliderC1Ev(unk_2bc);
+    _ZN11BoxColliderC1Ev(unk_358);
+    _ZN11BoxColliderC1Ev(unk_3f4);
 }
 
 // @2226374
 CheckInGate::~CheckInGate() {
-    _ZN12Unk_020d8cf4D2Ev(unk_3f4);
-    _ZN12Unk_020d8cf4D2Ev(unk_358);
-    _ZN12Unk_020d8cf4D2Ev(unk_2bc);
+    _ZN11BoxColliderD2Ev(unk_3f4);
+    _ZN11BoxColliderD2Ev(unk_358);
+    _ZN11BoxColliderD2Ev(unk_2bc);
 }
 
 // @2226158
 BOOL CheckInGate::vfunc_00() {
     s32 v;
-    s32 s = func_02085180(func_020850e0());
+    s32 s = func_02085180(TownSessionState_Get());
     RoomObjRes_Load(&unk_1a4, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&unk_248, "/roomObj/obj_check_in.nsbtx");
     _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_ec, RoomObjRes_GetModel(&unk_1a4), 0);
@@ -439,7 +439,7 @@ BOOL CheckInGate::vfunc_00() {
     setGroundMatFlags();
     initBodyAnim();
     initMatAnim();
-    v = func_020b50e8();
+    v = Scene_GetCurrent();
     switch (v) {
     case 0xb:
         if (_ZN11CommManager12isSlotActiveEi(gCommManager, *(u32 *)((u8 *)gCommManager + 0x64))) {
@@ -465,8 +465,8 @@ BOOL CheckInGate::vfunc_00() {
     F(s32, 0x494) = -1;
     static FxVec3 sa(0xb000, 0, 0x10800);
     static FxVec3 sb(0x15000, 0, 0x10800);
-    func_02031908(unk_358, 0x2000, 0x1c00, 0x2000, &sa, 0, 0);
-    func_02031908(unk_3f4, 0x2000, 0x1c00, 0x2000, &sb, 0, 0);
+    BoxCollider_Register(unk_358, 0x2000, 0x1c00, 0x2000, &sa, 0, 0);
+    BoxCollider_Register(unk_3f4, 0x2000, 0x1c00, 0x2000, &sb, 0, 0);
     return TRUE;
 }
 
@@ -489,8 +489,8 @@ BOOL CheckInGate::vfunc_0c() {
     RoomObjRes_Free(&unk_1a4);
     RoomObjTex_Reset(&unk_248);
     removeDoorCollision();
-    func_020318cc(unk_358);
-    func_020318cc(unk_3f4);
+    BoxCollider_Unregister(unk_358);
+    BoxCollider_Unregister(unk_3f4);
     return TRUE;
 }
 
@@ -629,7 +629,7 @@ void CheckInGate::setDoorOffset(s32 a) {
 // @2225c6c
 void CheckInGate::updateDoorCollision() {
     if (F(u8, 0x354)) {
-        func_020318cc(unk_2bc);
+        BoxCollider_Unregister(unk_2bc);
     }
     if (F(u8, 0x490)) {
         Unk_ov004_02225c6c_V3 v;
@@ -637,14 +637,14 @@ void CheckInGate::updateDoorCollision() {
         v.x = 0x10000;
         v.y = 0;
         v.z = z;
-        func_02031908(unk_2bc, 0x8000, 0, 0x2000, &v, 0, 0);
+        BoxCollider_Register(unk_2bc, 0x8000, 0, 0x2000, &v, 0, 0);
     }
 }
 
 // @2225c48
 void CheckInGate::removeDoorCollision() {
     if (F(u8, 0x354)) {
-        func_020318cc(unk_2bc);
+        BoxCollider_Unregister(unk_2bc);
     }
 }
 
@@ -793,7 +793,7 @@ void CheckInGate::updateState02() {
     _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
-    if (func_020b50e8() == 0xb) {
+    if (Scene_GetCurrent() == 0xb) {
         setDoorOffset(-0x2000);
     }
 }

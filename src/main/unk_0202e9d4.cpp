@@ -114,30 +114,30 @@ public:
     Unk_0202f660(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
 };
 
-class Unk_0202fdf0 {
+class CollisionCircle {
 public:
     Unk_0202f660_V3 unk_00;
     s32 unk_0c;
 
-    BOOL func_0202fdf0(Unk_0202f660_V3 *pt);
-    void func_0202fe54(Unk_0202f660_V3 *pos, s32 radius);
-    ~Unk_0202fdf0();
-    Unk_0202fdf0(Unk_0202f660_V3 *pos, s32 radius);
-    Unk_0202fdf0();
+    BOOL containsXZ(Unk_0202f660_V3 *pt);
+    void setCircle(Unk_0202f660_V3 *pos, s32 radius);
+    ~CollisionCircle();
+    CollisionCircle(Unk_0202f660_V3 *pos, s32 radius);
+    CollisionCircle();
 };
 
-class Unk_0202f7b8 : public Unk_0202fdf0 {
+class CollisionCylinder : public CollisionCircle {
 public:
     s32 unk_10;
 
     BOOL func_0202f7b8(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
     BOOL func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    ~Unk_0202f7b8();
-    Unk_0202f7b8(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    Unk_0202f7b8();
+    ~CollisionCylinder();
+    CollisionCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 height);
+    CollisionCylinder();
 };
 
-BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinder::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 t1, t2;
     s32 y, z, y2, z2;
     struct { Unk_0202f7b8_V3 LampLights, LightLevel, WindowLight, P1, P2; } l;
@@ -156,7 +156,7 @@ BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
                 l.P1.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t1);
                 l.P1.y = y;
                 l.P1.z = z;
-                if (func_0202fdf0(&l.P1)) {
+                if (containsXZ(&l.P1)) {
                     *out = l.P1;
                     return TRUE;
                 }
@@ -167,7 +167,7 @@ BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
                 l.P2.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t2);
                 l.P2.y = y2;
                 l.P2.z = z2;
-                if (func_0202fdf0(&l.P2)) {
+                if (containsXZ(&l.P2)) {
                     *out = l.P2;
                     return TRUE;
                 }
@@ -177,9 +177,9 @@ BOOL Unk_0202f7b8::func_0202f968(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     return FALSE;
 }
 
-BOOL Unk_0202f7b8::func_0202f7b8(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinder::func_0202f7b8(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 ymin, ymax, z;
-    if (!func_0202fdf0(a)) {
+    if (!containsXZ(a)) {
         struct { Unk_0202f7b8_V3 LampLights, LightLevel, C, WindowLight; u32 pad[6]; } l;
         l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
         l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);

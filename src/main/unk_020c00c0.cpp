@@ -35,7 +35,7 @@ struct CommManager {
 
 class Unk_02097ff4 {
 public:
-    BOOL func_02098044(u32 a);
+    BOOL testFlag(u32 a);
 };
 
 class SpNpcMissing1;
@@ -117,7 +117,7 @@ void DateTime_AddDays(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 }
 
 extern "C" {
@@ -161,7 +161,7 @@ void func_02067a84(void *a, void *b, u32 c);
 }
 
 extern "C" {
-void func_020850e0(void);
+void TownSessionState_Get(void);
 }
 
 extern "C" {
@@ -321,11 +321,11 @@ void func_02087210(void);
 }
 
 extern "C" {
-s32 func_020b4934(void);
+s32 Scene_GetWarpRequest(void);
 }
 
 extern "C" {
-void func_020b4bbc(s32 a, s32 b);
+void SceneWarp_RequestExit(s32 a, s32 b);
 }
 
 extern "C" {
@@ -544,7 +544,7 @@ extern "C" void Weather_Apply(WeatherRecord *self) {
     ((u32 *)buf)[0] = 0;
     ((u32 *)buf)[1] = 0;
     Clock_GetDateTime(buf);
-    if (func_020b50e8() == 0x3f) {
+    if (Scene_GetCurrent() == 0x3f) {
         data_021f4574 = Weather_UpdateDaily(self, buf);
         if (data_021f4574 == 0) {
             sWeatherPrevDayRain = self->unk_07;
@@ -617,12 +617,12 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
         sWeatherPrevDayRain = self->unk_07;
         self->unk_07 = 0;
     }
-    if (func_020b50e8() != 0x3f) {
+    if (Scene_GetCurrent() != 0x3f) {
         if (GameStart_IsActive()) {
             self->unk_04 = 4;
         } else {
             s32 t = PlayerData_GetCurrent();
-            if (t && ((Unk_02097ff4 *)t)->func_02098044(1)) {
+            if (t && ((Unk_02097ff4 *)t)->testFlag(1)) {
                 self->unk_04 = 4;
             } else {
                 Unk_020c010c_Ent *e = (Unk_020c010c_Ent *)Event_GetTodayList();

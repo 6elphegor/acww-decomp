@@ -84,7 +84,7 @@ void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 data_020db8b4;
 extern FishDisplay *gFishDisplay;
 extern u8 data_020ca314[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 void *_ZN12Unk_0209c15c13func_0209c25cEPt(void *, void *);
 s32 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(void *, void *, const char *);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
@@ -504,7 +504,7 @@ extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
             sFishDisplayRequests[a].unk_00 = b;
             break;
         case 1:
-            if (Unk_0204f4f8_IsZero(data_020e416c)) {
+            if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
                 if (func_0204f4e0(a) == 3) {
                     sFishDisplayRequests[a].unk_00 = b;
                 } else {
@@ -521,7 +521,7 @@ extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
             }
             break;
         case 2:
-            if (Unk_0204f4f8_IsZero(data_020e416c)) {
+            if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
                 if (func_0204f4e0(a) == 3 || func_0204f4e0(a) == 8 || func_0204f4e0(a) == 1) {
                     sFishDisplayRequests[a].unk_00 = b;
                 } else {

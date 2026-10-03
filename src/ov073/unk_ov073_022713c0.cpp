@@ -70,24 +70,24 @@ extern u8 gSaveData[];
 extern s16 data_02135f44[];
 extern u32 __ptmf_null[];
 
-s32 func_02098ffc(void);
+s32 Pocket_FindEmpty(void);
 void Hud_Hide(void);
 void Hud_Show(void);
 s32 NpcActor_CanPlayerPay(s32 a, s32 b);
 void NpcActor_ChargePlayer(s32 a, s32 b);
-s32 func_02099014(u16 *p, s32 a);
-void func_02098f30(void *buf, s32 (*cb)(u16 *));
+s32 Pocket_AddItem(u16 *p, s32 a);
+void Pocket_CountMatching(void *buf, s32 (*cb)(u16 *));
 s32 MenuCtrl_IsResultOk(void);
 s32 MenuCtrl_GetAmount(void);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 TalkRequest_EndTalkWith(void *p);
+s32 TalkRequest_SetTargetDone(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 s32 NpcActor_IsFrontAngle(s16 a);
 u32 func_02063b8c(u32 n);
 void func_020e7518(void *p);
 s32 Random_Next(void *p);
-void *func_020850e0();
-void *func_0208516c(void *p);
+void *TownSessionState_Get();
+void *TownSessionState_GetVisitorPos(void *p);
 void Npc_RotateOffsetXZ(void *out, void *pos, void *tbl, s32 ang);
 s32 Npc_IsPosBlocked(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -249,7 +249,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -357,7 +357,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -486,7 +486,7 @@ BOOL SpNpcJoan::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    _ZN10VisitorPos6setPosEii(func_0208516c(func_020850e0()), unk_5c.x, unk_5c.z);
+    _ZN10VisitorPos6setPosEii(TownSessionState_GetVisitorPos(TownSessionState_Get()), unk_5c.x, unk_5c.z);
     return TRUE;
 }
 
@@ -717,7 +717,7 @@ BOOL SpNpcJoan::setupAct00() {
 
 BOOL SpNpcJoan::mainAct00() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         Hud_Show();
         changeAct(1);
     }
@@ -826,7 +826,7 @@ extern "C" s32 SpNpcJoan_IsEmptyItem(u16 *p) {
 
 BOOL SpNpcJoanTalk::giveTurnips() {
     s32 n = 0;
-    s32 t = func_02098ffc();
+    s32 t = Pocket_FindEmpty();
     s32 i = 0;
     s32 m;
     u8 buf[8];
@@ -841,19 +841,19 @@ BOOL SpNpcJoanTalk::giveTurnips() {
     if (unk_c0 != 0) {
         m = n + 1;
     }
-    func_02098f30(buf, SpNpcJoan_IsEmptyItem);
+    Pocket_CountMatching(buf, SpNpcJoan_IsEmptyItem);
     if (t < 0 || buf[2] < m) {
         return FALSE;
     }
     while (n > 0) {
         a = 0x153a;
-        func_02099014(&a, 0);
+        Pocket_AddItem(&a, 0);
         n--;
     }
     if (unk_c0 > 0) {
         unk_c0 = unk_c0 - 1;
         b = unk_c0 + 0x1531;
-        func_02099014(&b, 0);
+        Pocket_AddItem(&b, 0);
     }
     return TRUE;
 }
@@ -1015,7 +1015,7 @@ b16:
     goto end;
 b19:
     if (res == 0) {
-        s32 t = func_02098ffc();
+        s32 t = Pocket_FindEmpty();
         if (NpcActor_CanPlayerPay(unk_b0, unk_bc) == 0) {
             cmd = 0x1b;
         } else if (t < 0) {
@@ -1047,7 +1047,7 @@ b25:
             cmd = 0x1b;
         } else {
             b = 0x1567;
-            if (func_02099014(&b, 0)) {
+            if (Pocket_AddItem(&b, 0)) {
                 cmd = 0x15;
                 NpcActor_ChargePlayer(unk_b0, 0x3e8);
                 _ZN8SaveData7setFlagEj(gSaveData, 4);
@@ -1180,7 +1180,7 @@ L_case16_else:
 L_case19:
     cmp r0, #0
     bne L_end
-    bl func_02098ffc
+    bl Pocket_FindEmpty
     mov r4, r0
     mov r0, r5
     add r0, #176
@@ -1261,7 +1261,7 @@ L_case25_a:
     strh r1, [r0, #4]
     add r0, sp, #12
     mov r1, #0
-    bl func_02099014
+    bl Pocket_AddItem
     cmp r0, #0
     beq L_case25_fail
     mov r4, #21

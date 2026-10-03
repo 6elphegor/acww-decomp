@@ -268,12 +268,12 @@ s32 func_0203efec(s32);
 s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
 s32 func_0203edc8();
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
-s32 func_02030bc4(s32, s32);
+s32 Ground_GetSpecialPieceKind(s32, s32);
 void FieldPos_FromBlockUnitCenter(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
 void *Heap_Alloc(void *, s32);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
-s32 func_020302cc();
+s32 Ground_SetWaveLevel();
 s32 FX_Div(s32 a, s32 b);
 s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
 
@@ -331,7 +331,7 @@ extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
         if (r3 != 0) {
             if (*(s8 *)(r3 + 0xe8) == b) {
                 FX_Div(o->unk_b0->unk_28 + 0xda2, 0xda2);
-                func_020302cc();
+                Ground_SetWaveLevel();
                 data_ov003_02235494 = 1;
             }
         }
@@ -380,7 +380,7 @@ BOOL FieldGround::vfunc_00() {
                 for (tx = 0; tx < 16; tx++) {
                     s32 o1, o2;
                     FieldUnit_FromBlockUnit(&o1, &o2, bx, by, tx, ty);
-                    s32 t = func_02030bc4(o1, o2);
+                    s32 t = Ground_GetSpecialPieceKind(o1, o2);
                     if (t != -1) {
                         Unk_ov003_02217910_V3 v;
                         v.x = 0;

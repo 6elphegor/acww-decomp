@@ -264,8 +264,8 @@ extern u16 gPad[];
 extern u8 *data_021c1b3c;
 
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
-void *func_020b4934();
-void func_020b4f58(void *a, s32 b, s32 c, s32 d);
+void *Scene_GetWarpRequest();
+void SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void SaveManager_RequestAct1C();
 void SaveManager_RequestAct05();
 void SaveManager_RequestAct06();
@@ -528,7 +528,7 @@ void TitleScreen::enterIdleTimeout() {}
 void TitleScreen::updateIdleTimeout() {
     if (unk_ac.isHidden()) {
         func_0203d52c();
-        func_020b4f58(func_020b4934(), 0x2c, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         stopBgm();
     }
 }
@@ -581,7 +581,7 @@ void TitleScreen::updateEraseResident() {
         TalkWindowState *r = TalkWindow_Get(0);
         if (r->unk_04 == 0) {
             r->detachRequest();
-            func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct06();
             stopBgm();
         }
@@ -595,7 +595,7 @@ void TitleScreen::updateEraseTown() {
         TalkWindowState *r = TalkWindow_Get(0);
         if (r->unk_04 == 0) {
             r->detachRequest();
-            func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct05();
             stopBgm();
         }
@@ -608,7 +608,7 @@ void TitleScreen::updateContinue() {
     TalkWindowState *r = TalkWindow_Get(0);
     if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
         r->detachRequest();
-        func_020b4f58(func_020b4934(), 6, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 6, 2, 2);
         stopBgm();
     }
 }
@@ -620,7 +620,7 @@ void TitleScreen::updateStartGame() {
         TalkWindowState *r = TalkWindow_Get(0);
         if (r->unk_04 == 0) {
             r->detachRequest();
-            func_020b4f58(func_020b4934(), 0x2d, 2, 0);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2d, 2, 0);
             stopBgm();
         }
     }
@@ -633,7 +633,7 @@ void TitleScreen::updateImmigration() {
         TalkWindowState *r = TalkWindow_Get(0);
         if (r->unk_04 == 0) {
             r->detachRequest();
-            func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct1C();
             stopBgm();
         }
@@ -646,7 +646,7 @@ void TitleScreen::updateTagMode() {
     TalkWindowState *r = TalkWindow_Get(0);
     if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
         r->detachRequest();
-        func_020b4f58(func_020b4934(), 0x30, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x30, 2, 2);
         stopBgm();
     }
 }

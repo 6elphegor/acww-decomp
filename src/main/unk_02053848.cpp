@@ -264,8 +264,8 @@ void func_02103978(void *a, void *b, s32 c, s32 d);
 void func_021037b4(void *a, void *b, s32 c, void *d);
 void *ResCache_GetModel(void *a, u32 tag);
 void *ResCache_FindModel(void *a);
-void *func_020716cc(void);
-void *_ZN12Unk_020718a413func_020716e8Eii(void *a, void *b, void *c);
+void *PatternTexCache_Get(void);
+void *_ZN15PatternTexCache15getPlayerTexKeyEii(void *a, void *b, void *c);
 void ThreeLayerAnimModel_ClearLayer3Mask(void *p);
 void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
 void AnimModel_SwitchAnmObj(void *p, void *q);
@@ -365,7 +365,7 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     unk_5c = ResCache_GetModel(p, 0x4e554c4c);
-    void *r = _ZN12Unk_020718a413func_020716e8Eii(func_020716cc(), b, c);
+    void *r = _ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), b, c);
     func_02103978(unk_5c, r, 0, 0);
     func_021037b4(unk_5c, r, 0, 0);
     Heap_Free(heap, h);

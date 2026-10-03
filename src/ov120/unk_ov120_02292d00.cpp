@@ -43,13 +43,13 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-extern u8 data_020e416c;
-extern u8 data_021ef360[];
+extern u8 gFieldSceneKind;
+extern u8 gTownReturnPos[];
 extern u8 data_021d7352[];
 extern u32 gCurrentHeap;
 extern s32 *func_020947f0(s32 v);
-extern void func_020b4934();
-extern s32 *func_020b5010(void *p);
+extern void Scene_GetWarpRequest();
+extern s32 *ScenePos_GetPos(void *p);
 void Gfx2d_LoadPaletteFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharFile(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
@@ -678,14 +678,14 @@ void MapViewerMenu::initMapViewer() {
     unk_ac = 0xe;
     selectEntry(0);
     buildEntryLists();
-    if (IsZero(data_020e416c)) {
+    if (IsZero(gFieldSceneKind)) {
         s32 *p = func_020947f0(4);
         v.x = p[0];
         v.y = p[1];
         v.z = p[2];
     } else {
-        func_020b4934();
-        s32 *p = func_020b5010(data_021ef360);
+        Scene_GetWarpRequest();
+        s32 *p = ScenePos_GetPos(gTownReturnPos);
         v.x = p[0];
         v.y = p[1];
         v.z = p[2];

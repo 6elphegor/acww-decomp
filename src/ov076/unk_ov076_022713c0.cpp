@@ -81,9 +81,9 @@ BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 func_02063b8c(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void func_02099014(u16 *, s32);
-void func_02099064();
-s32 func_02098ffc();
+void Pocket_AddItem(u16 *, s32);
+void Pocket_RemoveItem();
+s32 Pocket_FindEmpty();
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
@@ -92,7 +92,7 @@ s32 MenuCtrl_GetIndex();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02063388(ItemPickSpec *o);
 void EventWeekSlots_MarkPlayer(u32 id);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 void func_020e7530(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
 void FieldFish_ScareAround(Unk_ov076_Vec *v, s32 a);
@@ -236,7 +236,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -347,7 +347,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -538,7 +538,7 @@ BOOL SpNpcPascal::setupAct01() {
 
 BOOL SpNpcPascal::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -657,7 +657,7 @@ void SpNpcPascalTalk::onScallopPicked() {
     m.unk_00 = 5;
     if (MenuCtrl_IsResultOk()) {
         if (MenuCtrl_GetIndex() >= 0) {
-            func_02099064();
+            Pocket_RemoveItem();
         }
         m.unk_02 = 0x1559;
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.unk_02, 0, 5, 0);
@@ -728,7 +728,7 @@ void SpNpcPascalTalk::vfunc_14() {
             unk_b4 = 0x1373;
         }
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-        func_02099014(&unk_b4, 0);
+        Pocket_AddItem(&unk_b4, 0);
         unk_b0->unk_718 = 1;
         Talk_CheckAndSetPlayerFlag(0x18, 1);
         code = 0xc;
@@ -758,7 +758,7 @@ void SpNpcPascalTalk::vfunc_14() {
     case 13:
     case 14:
         if (unk_b0->unk_718 == 0) {
-            if (func_02098ffc() >= 0) {
+            if (Pocket_FindEmpty() >= 0) {
                 s32 t = func_02063b8c(9);
                 if (t <= 6) {
                     ItemPickSpec o0;
@@ -780,7 +780,7 @@ void SpNpcPascalTalk::vfunc_14() {
                     func_02063388(&o2);
                 }
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-                func_02099014(&unk_b4, 0);
+                Pocket_AddItem(&unk_b4, 0);
                 Talk_CheckAndSetPlayerFlag(0x18, 1);
             }
             unk_b0->unk_718 = 1;

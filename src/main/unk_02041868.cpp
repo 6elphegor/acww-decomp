@@ -56,8 +56,8 @@ struct Unk_02041e00_Ent {
 extern "C" {
 void Town_GetEnvironmentRank();
 s32 _ZN11CommManager12isSlotActiveEi(u32, u32);
-s32 func_020b5184();
-s32 func_020b5164();
+s32 Scene_InTown();
+s32 Scene_InTownUnk31();
 void Insect_EnableTrashFlies();
 void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated();
@@ -329,8 +329,8 @@ extern "C" void func_020418d4(Unk_02041880_Pair *p) {
 
 extern "C" void func_02041880(Unk_02041880_Pair *p) {
     if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->unk_64) != 0) return;
-    if (func_020b5184() == 0) {
-        if (func_020b5164() == 0) return;
+    if (Scene_InTown() == 0) {
+        if (Scene_InTownUnk31() == 0) return;
     }
     if (p->unk_01 != 0) sAntSpawnEnabled = 1;
     if (p->unk_01 != 0 || p->unk_00 != 0) Insect_EnableTrashFlies();

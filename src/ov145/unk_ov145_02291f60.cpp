@@ -203,7 +203,7 @@ typedef Unk_020e1c64 Unk_ov145_02292600_A;
 typedef ItemName Unk_ov145_02292600_B;
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 data_021ed0a0;
 extern u16 gPad[];
 extern u8 gTouchHeld;

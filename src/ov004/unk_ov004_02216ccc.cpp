@@ -114,7 +114,7 @@ void NpcActionCtrl_requestStand(void *, u32, u32);
 s32 NpcActor_getAngleToPlayer(void *, u32);
 void NpcActionCtrl_requestAction(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 void VillagerMood_requestApply(void *);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 void *func_02015aac(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
@@ -622,7 +622,7 @@ BOOL HouseOwnerAi::enterState01(HouseOwnerVillager *o) {
 void HouseOwnerAi::updateState01Step00(HouseOwnerVillager *o) {
     if (NpcTalkCtrl_isBusy(&o->unk_618) == 0) {
         VillagerMood_requestApply(&o->unk_838);
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         unk_0c = 1;
     }
 }

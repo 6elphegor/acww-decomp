@@ -156,7 +156,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -267,7 +267,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -351,14 +351,14 @@ struct Unk_ov004_0221e0b4_Ent {
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define func_020986d4 _ZN10PlayerData13func_020986d4Ev
-#define func_02071c5c _ZN14PlayerPatterns13func_02071c5cEv
-#define func_02071c1c _ZN12Unk_02071c1c13func_02071c1cEj
+#define PlayerPatterns_getPatternOrder _ZN14PlayerPatterns15getPatternOrderEv
+#define PatternOrder_getSlot _ZN12PatternOrder7getSlotEj
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define SickVillagerRecord_resetRecord _ZN18SickVillagerRecord11resetRecordEv
@@ -406,10 +406,10 @@ u32 MenuCtrl_GetIndex(void);
 u16 *MenuCtrl_GetChosenItems(void);
 void *PlayerData_GetCurrent(void);
 void *func_020986d4(void *p);
-void *func_02071c5c(void *p);
-u32 func_02071c1c(void *p, u32 i);
-void func_02070b68(s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_02070e4c(s32 a, s32 b, s32 c, s32 d, s32 e);
+void *PlayerPatterns_getPatternOrder(void *p);
+u32 PatternOrder_getSlot(void *p, u32 i);
+void PatternSrc_Swap(s32 a, s32 b, s32 c, s32 d, s32 e);
+void PatternSrc_Copy(s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02003ddc(void *p, s32 a, s32 b, s32 c);
 u16 *PlayerData_getShirt(void *p);
 u16 *PlayerData_getHat(void *p);
@@ -427,16 +427,16 @@ s32 func_02039e1c(void);
 s32 Talk_IsInOwnTown(void);
 s32 GameStart_IsActive(void);
 s32 func_02063b8c(s32 n);
-s32 func_02098044(void *p, s32 n);
-void func_0209801c(void *p, s32 n);
+s32 Unk_02097ff4_testFlag(void *p, s32 n);
+void Unk_02097ff4_setFlag(void *p, s32 n);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
 s32 NetArea_IsLocalOwner(void);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_GetUnk3830(void *p);
 s32 SickVillagerRecord_resetRecord(void *p);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 }
 
 class SpNpcBookerTalk : public Unk_020d7710 {
@@ -521,7 +521,7 @@ BOOL SpNpcBooker::vfunc_04() {
     NpcActor_setCollisionRadius(this, 0x100);
     NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0xd9);
     NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xd8);
-    if (func_020b50e8() != 0xb) {
+    if (Scene_GetCurrent() != 0xb) {
         unk_558.unk_0b = 1;
     }
     return TRUE;
@@ -533,7 +533,7 @@ BOOL SpNpcBooker::vfunc_00() {
     }
     unk_70c = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (CommManager_isOnline(gCommManager) && func_020b50e8() == 0xb) {
+    if (CommManager_isOnline(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (NpcActor_isNetOwner(this)) {
             changeAct(0);
         } else {
@@ -606,7 +606,7 @@ BOOL SpNpcBooker::mainAct01() {
         return TRUE;
     }
     if (!NpcTalkCtrl_isBusy(&unk_618)) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -694,9 +694,9 @@ void SpNpcBookerTalk::vfunc_78(void *arg) {
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
         out->unk_04 = func_02063b8c(3) + 8;
-    } else if (func_02098044(g, 0x1b) == 0) {
+    } else if (Unk_02097ff4_testFlag(g, 0x1b) == 0) {
         out->unk_04 = 0;
-        func_0209801c(g, 0x1b);
+        Unk_02097ff4_setFlag(g, 0x1b);
     } else {
         out->unk_04 = func_02063b8c(4) + 4;
     }
@@ -831,8 +831,8 @@ void SpNpcBookerTalk::runScript01() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        s32 t = func_02071c1c(func_02071c5c(func_020986d4(g)), idx);
-        func_02070e4c(9, t, 5, 0, 1);
+        s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(g)), idx);
+        PatternSrc_Copy(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
         buf[0] = 0x18;
         TalkWindowState_setNextMessage(unk_3c, buf, sSpNpcBookerMsgFiles[0]);
@@ -852,8 +852,8 @@ void SpNpcBookerTalk::runScript02() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        u32 t = func_02071c1c(func_02071c5c(func_020986d4(g)), idx);
-        func_02070b68(9, t, 5, 0, 1);
+        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(g)), idx);
+        PatternSrc_Swap(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
         u32 x;
         u32 y;

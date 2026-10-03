@@ -62,7 +62,7 @@ extern const Unk_ov004_0223dd88_Tbl sMuseumInfoPointsByScene[];
 
 s32 FX_Div(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u32 MuseumInfoPoint_GetItemCount(Rec *r);
 s32 MuseumInfoPoint_GetItemList(Rec *r);
@@ -442,7 +442,7 @@ BOOL MuseumRoom::onExecute() {
 }
 
 void MuseumRoom::spawnInfoPoints() {
-    s32 k = func_020b50e8();
+    s32 k = Scene_GetCurrent();
     u32 i;
     for (i = 0; i < 7; i++) {
         const Unk_ov004_0223dd88_Tbl *e = &sMuseumInfoPointsByScene[i];

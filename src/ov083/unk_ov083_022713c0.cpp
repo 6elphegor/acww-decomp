@@ -47,28 +47,28 @@ struct TalkStartMsg {
 extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
-void _ZN12Unk_02087ad813func_02087b24Ev(void *p);
-s32 func_02098ffc();
-s32 func_02098eb0(u16 *p);
-void func_02099014(u16 *p, s32 v);
-void func_02099064(s32 v);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
+s32 Pocket_FindEmpty();
+s32 Pocket_FindItem(u16 *p);
+void Pocket_AddItem(u16 *p, s32 v);
+void Pocket_RemoveItem(s32 v);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *func_020850e0();
-BOOL func_020851bc(void *p, s32 v);
-void func_020851a4(void *p, s32 v);
-void func_02085290(void *p);
-void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
+void *TownSessionState_Get();
+BOOL TownSessionState_TestFlag(void *p, s32 v);
+void TownSessionState_SetFlag(void *p, s32 v);
+void ContestRecord_JudgeGardens(void *p);
+void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void func_020856a4(void *p, s32 v);
+void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
@@ -76,7 +76,7 @@ extern u16 data_020c6cc8;
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
 
@@ -214,7 +214,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -325,7 +325,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -428,7 +428,7 @@ BOOL SpNpcTortimerFlowerFest::vfunc_00() {
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     unk_714 = Event_GetDaysSinceStart(0xe);
-    func_020856a4(data_021ed24c, 0);
+    ContestRecord_BeginFestival(gContestRecord, 0);
     return TRUE;
 }
 
@@ -464,9 +464,9 @@ BOOL SpNpcTortimerFlowerFest::mainAct00() {
         return TRUE;
     }
     unk_654 = 0x258;
-    u8 *const g = data_021ed24c;
-    func_02085290(g);
-    _ZN12Unk_0208581013func_02085900Ej(g, 3);
+    u8 *const g = gContestRecord;
+    ContestRecord_JudgeGardens(g);
+    _ZN13ContestRecord7setKindEj(g, 3);
     _ZN8SaveData7setFlagEj(gSaveData, 0xf);
     return TRUE;
 }
@@ -490,7 +490,7 @@ BOOL SpNpcTortimerFlowerFest::setupAct01() {
 
 BOOL SpNpcTortimerFlowerFest::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -515,7 +515,7 @@ void SpNpcTortimerFlowerFestTalk::vfunc_78(TalkStartMsg *out) {
     out->a = (u32)"sp_npc_turtle3";
     if (unk_b0 == -1) {
         h = 0x37e0;
-        unk_b0 = func_02098eb0(&h);
+        unk_b0 = Pocket_FindItem(&h);
         if (unk_b0 >= 0) {
             out->a = (u32)"sp_npc_turtle";
             out->b = 0;
@@ -532,9 +532,9 @@ void SpNpcTortimerFlowerFestTalk::vfunc_78(TalkStartMsg *out) {
             return;
         }
     }
-    if (!func_020851bc(func_020850e0(), 1)) {
+    if (!TownSessionState_TestFlag(TownSessionState_Get(), 1)) {
         u32 c;
-        func_020851a4(func_020850e0(), 1);
+        TownSessionState_SetFlag(TownSessionState_Get(), 1);
         c = *((u8 *)unk_ac + 0x714);
         if (c == 0) {
             out->b = 1;
@@ -562,15 +562,15 @@ void SpNpcTortimerFlowerFestTalk::vfunc_14() {
             h1 = 0x1559;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
             h2 = 0x1559;
-            func_02099014(&h2, 0);
+            Pocket_AddItem(&h2, 0);
             b1 = 4;
             unk_3c->setNextMessage(&b1, (void *)"sp_npc_turtle");
         }
     } else {
         if (unk_1e == 5 || unk_1e == 6 || unk_1e == 9) {
             if (!Talk_CheckAndSetPlayerFlag(0x1d, 1)) {
-                _ZN12Unk_02087ad813func_02087b24Ev(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()));
-                if (func_02098ffc() >= 0) {
+                _ZN17PlayerSpNpcRecord15setFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()));
+                if (Pocket_FindEmpty() >= 0) {
                     msg = 7;
                     NookShop_PickFlowerBag(&h3);
                     unk_b4 = h3;
@@ -579,7 +579,7 @@ void SpNpcTortimerFlowerFestTalk::vfunc_14() {
         }
         if (unk_1e == 7) {
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-            func_02099014(&unk_b4, 0);
+            Pocket_AddItem(&unk_b4, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4, 0, 7);
             msg = 8;
         }
@@ -601,7 +601,7 @@ void SpNpcTortimerFlowerFestTalk::vfunc_18() {
         s = (u8 *)"sp_npc_turtle";
         if (unk_1e == 0 && t == 0) {
             if (unk_b0 >= 0) {
-                func_02099064(unk_b0);
+                Pocket_RemoveItem(unk_b0);
                 h = 0x37e0;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }

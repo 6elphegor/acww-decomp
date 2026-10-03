@@ -71,8 +71,8 @@ u32 func_020978a4(u8 *base);
 u32 func_02063b8c();
 s32 _ZN12Unk_02097ff413func_02098338Ei(void *, s32);
 s32 _ZN10PlayerData8getIndexEv(void *);
-void _ZN12Unk_020970b813func_02097078Ej(void *, s32);
-s32 _ZN12Unk_020970b813func_02097084Ev(void *);
+void _ZN13PlayerMailbox17setLastWifiMailIdEj(void *, s32);
+s32 _ZN13PlayerMailbox17getLastWifiMailIdEv(void *);
 u8 *SaveManager_GetLetterStorage();
 s32 _ZN15PlayerInventory13getTotalBellsEi(u8 *, s32);
 s32 _ZN15PlayerInventory13getBellsSpaceEi(u8 *, s32);
@@ -247,13 +247,13 @@ extern "C" u8 *func_020979b0(void *p) {
 
 extern "C" s32 func_02097980(void *p) {
     s32 s = _ZN10PlayerData8getIndexEv(p);
-    if (s >= 0 && s < 4) return _ZN12Unk_020970b813func_02097084Ev(data_021e935c + s * 0x98c);
+    if (s >= 0 && s < 4) return _ZN13PlayerMailbox17getLastWifiMailIdEv(data_021e935c + s * 0x98c);
     return 0;
 }
 
 extern "C" void func_02097954(void *p, s32 v) {
     s32 s = _ZN10PlayerData8getIndexEv(p);
-    if (s >= 0 && s < 4) _ZN12Unk_020970b813func_02097078Ej(data_021e935c + s * 0x98c, v);
+    if (s >= 0 && s < 4) _ZN13PlayerMailbox17setLastWifiMailIdEj(data_021e935c + s * 0x98c, v);
 }
 
 extern "C" void *PlayerDataArray_Construct(void *p) {

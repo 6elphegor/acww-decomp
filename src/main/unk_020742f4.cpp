@@ -223,7 +223,7 @@ extern "C" {
 extern void *data_021c61ac;
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 extern "C" {
 extern void *gSceneBlockMap;
@@ -319,13 +319,13 @@ extern "C" {
 s32 Town_GetMaxOutdoorVillagers();
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
-s32 func_020b491c(s32);
+s32 Scene_GetMaxCharacters(s32);
 }
 extern "C" {
-s32 func_020b4928(s32);
+s32 Scene_GetMaxPlayers(s32);
 }
 extern "C" {
 void FieldPos_ToUnit(s32 *, s32 *, s32);
@@ -492,11 +492,11 @@ extern "C" {
 static inline s32 Unk_02077d58_Count()
 {
     s32 t;
-    if (Unk_02077d58_IsZero(data_020e416c)) {
+    if (Unk_02077d58_IsZero(gFieldSceneKind)) {
         t = Town_GetMaxOutdoorVillagers();
     } else {
-        t = func_020b491c(func_020b50e8());
-        t -= func_020b4928(func_020b50e8());
+        t = Scene_GetMaxCharacters(Scene_GetCurrent());
+        t -= Scene_GetMaxPlayers(Scene_GetCurrent());
     }
     return t;
 }
@@ -1156,10 +1156,10 @@ extern "C" {
 void _ZN11CommManager13appendControlEPvj(void *ctx, const void *p, u32 n);
 }
 extern "C" {
-void *_ZN12Unk_0209ada44initEv(void *);
+void *_ZN12ErrandRecord4initEv(void *);
 }
 extern "C" {
-void _ZN12Unk_0209ada413func_0209ada0Ev(void *);
+void _ZN12ErrandRecord13func_0209ada0Ev(void *);
 }
 extern "C" {
 void *VillagerStates_GetEntry(s32 i);
@@ -1174,13 +1174,13 @@ extern "C" {
 u32 VillagerState_GetPresence(void *p);
 }
 extern "C" {
-u32 _ZN12Unk_0209ada413func_0209ac64Ev(void *);
+u32 _ZN12ErrandRecord7getKindEv(void *);
 }
 extern "C" {
-u32 _ZN12Unk_0209ada413func_0209ab94Ev(void *);
+u32 _ZN12ErrandRecord7getItemEv(void *);
 }
 extern "C" {
-void _ZN12Unk_0209ada413func_0209ad54EhPth(void *a, u32 b, u32 c, u32 d);
+void _ZN12ErrandRecord5startEhPth(void *a, u32 b, u32 c, u32 d);
 }
 extern "C" {
 extern u8 *gCommManager;
@@ -1844,7 +1844,7 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
     Unk_020767f8_Tag *tp = &t;
     s32 i;
     t.b = 3;
-    _ZN12Unk_0209ada44initEv(obj);
+    _ZN12ErrandRecord4initEv(obj);
     for (i = 0; i < 8; i++) {
         void *p = VillagerStates_GetEntry(i);
         t.b = 3;
@@ -1852,9 +1852,9 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
         VillagerState_SetPresence(p, t.b);
         MI_CpuCopy8(buf + 1, obj, 12);
         void *q = VillagerState_GetErrand(p);
-        u32 a = _ZN12Unk_0209ada413func_0209ac64Ev(obj);
-        u32 b = _ZN12Unk_0209ada413func_0209ab94Ev(obj);
-        _ZN12Unk_0209ada413func_0209ad54EhPth(q, a, b, z8);
+        u32 a = _ZN12ErrandRecord7getKindEv(obj);
+        u32 b = _ZN12ErrandRecord7getItemEv(obj);
+        _ZN12ErrandRecord5startEhPth(q, a, b, z8);
         v = zc;
         MI_CpuCopy8(buf + 13, &v, 4);
         *(u32 *)((u8 *)p + 0x20) = v;
@@ -1863,7 +1863,7 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
         *(u16 *)((u8 *)p + 0x24) = t.h;
         buf += 0x13;
     }
-    _ZN12Unk_0209ada413func_0209ada0Ev(obj);
+    _ZN12ErrandRecord13func_0209ada0Ev(obj);
 }
 
 }
@@ -1875,7 +1875,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 extern "C" {
 extern u8 sInsectCatchResult;
@@ -1989,7 +1989,7 @@ extern "C" {
 void func_0206f804(void *p, u32 a);
 }
 extern "C" {
-void func_02070560(void *p);
+void PatternSrc_ApplyNetMove(void *p);
 }
 extern "C" {
 void func_02034048(void *p);
@@ -2251,7 +2251,7 @@ extern "C" void CommRecv_RoomWallFloor(u32 a) {
 extern "C" void CommRecv_PatternMove(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_02070560(buf);
+    PatternSrc_ApplyNetMove(buf);
 }
 extern "C" void CommRecv_SubCommand(u32 a, u32 b, u32 c, u32 d) {
     void *g = gCurrentHeap;
@@ -2334,7 +2334,7 @@ extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
     l.f = 1;
     CommManager *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, (void *)&l, a);
-    if (Unk_02075e60_IsZero(data_020e416c)) {
+    if (Unk_02075e60_IsZero(gFieldSceneKind)) {
         l.f = Insect_NetClaim(l.b);
     }
     _ZN11CommManager11beginRecordEv(g);
@@ -2353,7 +2353,7 @@ extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
 }
 extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
     volatile u8 n;
-    if (Unk_02075e60_IsZero(data_020e416c)) {
+    if (Unk_02075e60_IsZero(gFieldSceneKind)) {
         CommManager *g = gCommManager;
         _ZN11CommManager10readRecordEPhj(g, (void *)&n, a);
         u32 v = n;
@@ -2376,7 +2376,7 @@ extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
 extern "C" void CommRecv_FieldActorRelease(u32 a) {
     u8 b;
     _ZN11CommManager10readRecordEPhj(gCommManager, &b, a);
-    if (Unk_02075e60_IsZero(data_020e416c)) {
+    if (Unk_02075e60_IsZero(gFieldSceneKind)) {
         Insect_CancelCatch(b);
     }
 }
@@ -2385,7 +2385,7 @@ extern "C" void CommRecv_FieldActorRelease(u32 a) {
 // ======== unk_02075558.cpp ========
 namespace n3 {
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 void *SaveManager_Get();
@@ -2430,10 +2430,10 @@ extern "C" {
 void *PlanErrand_GetRecord(void *);
 }
 extern "C" {
-s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
+s32 _ZN12ErrandRecord8isActiveEv(void *);
 }
 extern "C" {
-s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *);
+s32 _ZN12ErrandRecord7getKindEv(void *);
 }
 extern "C" {
 u16 *PlanErrand_GetShownItem(void *);
@@ -2448,7 +2448,7 @@ extern "C" {
 void VillagerState_GetErrand();
 }
 extern "C" {
-void _ZN12Unk_0209ada413func_0209ad80Ev();
+void _ZN12ErrandRecord5clearEv();
 }
 extern "C" {
 void *PlayerData_GetBySessionSlot(void *);
@@ -2463,7 +2463,7 @@ extern "C" {
 void CommVillager_UnpackAct3C(u32 *, u8 *, u8 *, u16 *);
 }
 extern "C" {
-s32 _ZN12Unk_0209ada413func_0209abb4Eh(void *, u32);
+s32 _ZN12ErrandRecord7setStepEh(void *, u32);
 }
 extern "C" {
 s32 PlanErrand_ResetProgress(void *);
@@ -2592,7 +2592,7 @@ extern "C" {
 extern u8 data_021d7352[];
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 
@@ -2619,7 +2619,7 @@ static inline BOOL Unk_02075e1c_IsZero(u8 v) {
 extern "C" void CommRecv_FieldActorRemove(u32 n) {
     u8 buf;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
-    if (Unk_02075e1c_IsZero(data_020e416c)) {
+    if (Unk_02075e1c_IsZero(gFieldSceneKind)) {
         if (buf < 4) {
             HeldInsect_Remove(buf, 0);
         } else {
@@ -2849,29 +2849,29 @@ extern "C" void CommRecv_Act3C() {
         u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand();
         switch (l.a) {
         case 0:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
-                _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(r4), l.b);
+            if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
+                _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(r4), l.b);
             }
             break;
         case 1:
             PlanErrand_ResetProgress(r4);
             break;
         case 2:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+            if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
                 PlanErrand_AdvanceStep(r4);
             }
             break;
         case 3:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+            if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
                 PlanErrand_SetFossilGroup(r4, l.b);
             }
             break;
         case 4:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+            if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
                 PlanErrand_SetFlag(r4, l.b);
             }
         case 5:
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlanErrand_GetRecord(r4))) {
+            if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
                 *(r4 + 0x26) = l.b;
             }
             break;
@@ -2899,7 +2899,7 @@ extern "C" void CommRecv_Act3D() {
         BOOL r5 = t ? TRUE : FALSE;
         Villager_GetState(r6);
         VillagerState_GetErrand();
-        _ZN12Unk_0209ada413func_0209ad80Ev();
+        _ZN12ErrandRecord5clearEv();
         if (n < 4) {
             void *q = PlayerData_GetBySessionSlot((void *)n);
             if (q != NULL) {
@@ -2921,11 +2921,11 @@ extern "C" void CommRecv_Act3F() {
         Villager_GetPlan();
         void *r5 = VillagerPlanBlock_GetErrand();
         void *r4 = PlanErrand_GetRecord(r5);
-        if (_ZN12Unk_0209ada413func_0209ad68Ev(r4)) {
-            if (_ZN12Unk_0209ada413func_0209ac64Ev(r4) == 0) {
+        if (_ZN12ErrandRecord8isActiveEv(r4)) {
+            if (_ZN12ErrandRecord7getKindEv(r4) == 0) {
                 if (Unk_02075680_R(&l.x, 0x12b0, 0x12e7)) goto set;
             }
-            if (_ZN12Unk_0209ada413func_0209ac64Ev(r4) == 1) {
+            if (_ZN12ErrandRecord7getKindEv(r4) == 1) {
                 if (Unk_02075680_R(&l.x, 0x12e8, 0x131f)) {
                 set:
                     u16 *p = PlanErrand_GetShownItem(r5);
@@ -2987,7 +2987,7 @@ extern "C" void CommRecv_OwnNetState() {
 }
 
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0284(SaveManager_Get(), d, 1);
         }
@@ -2995,7 +2995,7 @@ extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
 }
 
 extern "C" void CommRecv_Act03() {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             SaveManager_Get();
             func_020a0254(1);
@@ -3004,7 +3004,7 @@ extern "C" void CommRecv_Act03() {
 }
 
 extern "C" void CommRecv_Act04(s32 a, s32 b, s32 c, s32 d) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a028c(SaveManager_Get(), d, 1);
         }
@@ -3176,7 +3176,7 @@ extern "C" {
 void func_020a696c(void *);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 u32 SaveManager_Get();
@@ -3201,14 +3201,14 @@ extern "C" void CommRecv_PlayerLeft() {
     Comm_RemoveMember(t);
 }
 extern "C" void CommRecv_Act06(u32 a, u32 b, u32 c, u32 d) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get()) {
             func_020a024c(SaveManager_Get(), d, 1);
         }
     }
 }
 extern "C" void CommRecv_Act07() {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get()) {
             func_020a02a8(SaveManager_Get(), 1);
         }
@@ -3497,7 +3497,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
 s32 SaveManager_Get();
@@ -3788,7 +3788,7 @@ extern "C" s32 CommCtrl_SendAct17() {
     return 0;
 }
 extern "C" void CommCtrl_RecvMemberInfo(u8 *a) {
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         if (SaveManager_Get() != 0) {
             s32 v = *a;
             func_020a02c8(SaveManager_Get(), v & 0xf);
@@ -3798,7 +3798,7 @@ extern "C" void CommCtrl_RecvMemberInfo(u8 *a) {
 }
 extern "C" void CommCtrl_RecvTownChunk(u8 *a, s32 b) {
     u32 n;
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         MI_CpuCopy8(a, &n, 4);
         s32 p = SaveManager_GetTownCompressBuf();
         MI_CpuCopy8(a + 4, (void *)(p + n), b - 4);
@@ -3823,7 +3823,7 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     } else {
         func_0208f1dc(func_0208f0b0(c));
     }
-    if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
             _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), c, 1);
         }
@@ -3837,7 +3837,7 @@ extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     } else {
         MI_CpuCopy8(a, (void *)func_0208f0b0(4), 0x84c);
     }
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), gCommManager->unk_64, 1);
         }
@@ -3869,14 +3869,14 @@ extern "C" void CommCtrl_Act08(u8 *a) {
     }
 }
 extern "C" void CommCtrl_RecvJoinReady() {
-    if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
             func_020a02a0(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void CommCtrl_RecvDateTime(void *a) {
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, (void *)func_020a0294(SaveManager_Get()), 8);
             func_020a0298(SaveManager_Get(), 1);
@@ -3884,7 +3884,7 @@ extern "C" void CommCtrl_RecvDateTime(void *a) {
     }
 }
 extern "C" void CommCtrl_RecvJoinDone() {
-    if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
             func_020a02b8(SaveManager_Get(), 1);
         }
@@ -3900,7 +3900,7 @@ extern "C" void CommCtrl_RecvStateBlocks(void *a, s32 b, s32 c) {
     CommBlock_ParseAll(a, b, c);
 }
 extern "C" void CommCtrl_Act0E(u8 *a, s32 b, s32 c) {
-    if (func_020b50e8() == 0x2e || func_020b50e8() == 9) {
+    if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 9) {
         s32 p = SaveManager_Get();
         if (p != 0) {
             if (Net_GetMyAid() == 0) {
@@ -3928,28 +3928,28 @@ extern "C" void CommCtrl_RecvSlotStatusAll(u8 *a) {
     }
 }
 extern "C" void CommCtrl_Act10(void *a, s32 b, s32 c) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0244(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void CommCtrl_Act11(void *a, s32 b, s32 c) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a023c(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void CommCtrl_Act12() {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a02b0(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void CommCtrl_Act13(void *a, s32 b, s32 c) {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a024c(SaveManager_Get(), c, 1);
         }
@@ -3960,7 +3960,7 @@ extern "C" void CommCtrl_Act14(void *a, s32 b, s32 c) {
 }
 extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
     u32 n;
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, &n, 4);
             s32 r = _ZN15SaveManagerTalk13func_020a148cEv(SaveManager_Get());
@@ -3979,7 +3979,7 @@ extern "C" void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b) {
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
 extern "C" void CommCtrl_Act17() {
-    if (func_020b50e8() == 0x2e) {
+    if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0208(SaveManager_Get(), 1);
         }

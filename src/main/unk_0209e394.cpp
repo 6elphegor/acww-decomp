@@ -192,11 +192,11 @@ s32 Comm_RequestSync(s32 v);
 }
 
 extern "C" {
-s32 func_020b4934();
+s32 Scene_GetWarpRequest();
 }
 
 extern "C" {
-void func_020b4f58(s32 a, s32 b, s32 c, s32 d);
+void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -204,7 +204,7 @@ s32 _ZN11CommManager8isOnlineEv(void *p);
 }
 
 extern "C" {
-void func_020b4a08(s32 a, s32 b);
+void Scene_SavePlayerPos(s32 a, s32 b);
 }
 
 extern "C" {
@@ -236,7 +236,7 @@ void _ZN10MsgRequest11setFileNameEPKc(void *p, u8 *q);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -531,7 +531,7 @@ void SaveMenu::enterIdle() {}
 
 void SaveMenu::updateIdle() {
     if ((gPad[1] & 8) != 0) {
-        if (func_020b50e8() != 0x2d) {
+        if (Scene_GetCurrent() != 0x2d) {
             if (func_0203d978() == 0) {
                 if (func_0203d99c() == 0) {
                     if (Unk_0209e7b4_Is2(gScreenTransition) != 0) {
@@ -592,9 +592,9 @@ void SaveMenu::updateQuitting() {
     TalkWindowState *o = TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
         if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
-            func_020b4a08(func_020b4934(), 0);
+            Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
             SaveManager_RequestAct1A();
         } else {
             SaveManager_RequestAct01();

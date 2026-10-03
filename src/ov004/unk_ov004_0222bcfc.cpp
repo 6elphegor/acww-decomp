@@ -26,7 +26,7 @@ public:
 };
 
 extern "C" {
-u32 func_020b50e8(void);
+u32 Scene_GetCurrent(void);
 void Clock_GetDateTime(void *p);
 void Snd_PlaySe(s32 a);
 NewYearCountdown *NewYearCountdown_Create();
@@ -54,7 +54,7 @@ BOOL NewYearCountdown::vfunc_00() {
 }
 
 BOOL NewYearCountdown::onExecute() {
-    u32 idx = func_020b50e8();
+    u32 idx = Scene_GetCurrent();
     Unk_0209d498_Time t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;

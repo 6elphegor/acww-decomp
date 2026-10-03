@@ -12,7 +12,7 @@ struct Basis {
     Vec3 a, b, c;
 };
 
-// the V3 type of the callee Unk_0202f7b8 (symbols.txt mangles it as Unk_0202f660_V3)
+// the V3 type of the callee CollisionCylinder (symbols.txt mangles it as Unk_0202f660_V3)
 struct Unk_0202f660_V3 {
     s32 x, y, z;
 };
@@ -48,15 +48,15 @@ struct Unk_020b6e10 {
     /* 0x00 */ Unk_020e44d4 unk_00[10];
 };
 
-struct Unk_0202f7b8 {
-    Unk_0202f7b8(Unk_0202f660_V3 *c, s32 a, s32 b);
+struct CollisionCylinder {
+    CollisionCylinder(Unk_0202f660_V3 *c, s32 a, s32 b);
     BOOL func_0202f968(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
     BOOL func_0202f7b8(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
     u8 pad[0x14];
 };
 
-// the original calls the D2 copy (0x0202fdb4) of the destructor, which a declared ~Unk_0202f7b8() would not
-extern "C" void _ZN12Unk_0202f7b8D2Ev(Unk_0202f7b8 *self);
+// the original calls the D2 copy (0x0202fdb4) of the destructor, which a declared ~CollisionCylinder() would not
+extern "C" void _ZN17CollisionCylinderD2Ev(CollisionCylinder *self);
 // base destructor: the original derived destructor calls the D1 copy (0x0202f620)
 extern "C" void _ZN12Unk_020d8cccD1Ev(Unk_020d8ccc *self);
 
@@ -113,7 +113,7 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     y3 = v4c.y;
     v4c.y = func_01ffcb0c(cs, y3) - func_01ffcb0c(sn, z);
     v4c.z = func_01ffcb0c(sn, y3) + func_01ffcb0c(cs, z);
-    Unk_0202f7b8 o((Unk_0202f660_V3 *)&v4c, a, b);
+    CollisionCylinder o((Unk_0202f660_V3 *)&v4c, a, b);
     if (o.func_0202f968((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
         o.func_0202f7b8((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
         func_020e944c(&v40, ang);
@@ -121,10 +121,10 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
         p->x = rx;
         p->y = ry;
         p->z = rz;
-        _ZN12Unk_0202f7b8D2Ev(&o);
+        _ZN17CollisionCylinderD2Ev(&o);
         return TRUE;
     }
-    _ZN12Unk_0202f7b8D2Ev(&o);
+    _ZN17CollisionCylinderD2Ev(&o);
     return FALSE;
 }
 

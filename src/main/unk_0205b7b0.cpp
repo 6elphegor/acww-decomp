@@ -62,7 +62,7 @@ extern void *gNetHeap;
 extern void *data_021c621c;
 extern char data_021c622c[];
 extern Unk_0205c3b0 data_021c6240;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u32 data_020cbf94, data_020cbf98, data_020cbf9c, data_020cbfa0, data_020cbfa4;
 extern u32 data_020c8b9c;
 extern u32 data_020c8ba0;
@@ -87,9 +87,9 @@ void *FrameHeap_Create(u32 size, void *parent, ...);
 u32 func_02094340(void);
 u32 func_0209433c(void);
 s32 Town_GetMaxOutdoorVillagers(void);
-void *func_020b50e8(void);
-s32 func_020b491c(void *);
-s32 func_020b4928(void *);
+void *Scene_GetCurrent(void);
+s32 Scene_GetMaxCharacters(void *);
+s32 Scene_GetMaxPlayers(void *);
 s32 func_02084fbc(void);
 u32 func_02077e28(void);
 u32 func_02077e20(void);
@@ -323,11 +323,11 @@ Unk_0205c3b0::~Unk_0205c3b0() {}
 void Unk_0205c3b0::func_0205c460() {
     void *heap = data_021c61e0;
     u32 n = gCommManager->unk_6c;
-    u32 m = func_020b4928(func_020b50e8());
+    u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     u32 k = m ? m : 1;
     u32 v[4];
-    v[0] = func_020b491c(func_020b50e8()) + func_02084fbc() - k;
+    v[0] = Scene_GetMaxCharacters(Scene_GetCurrent()) + func_02084fbc() - k;
     v[1] = func_0205c604();
     v[2] = func_0205c5fc();
     v[3] = func_0205c5f4();
@@ -538,12 +538,12 @@ extern "C" void func_0205bf68(void) {
 extern "C" void func_0205bed4(void *parent) {
     u32 s0 = 0, s1 = 0, s2 = 0, s3 = 0;
     u32 n = gCommManager->unk_6c;
-    u32 a = func_020b4928(func_020b50e8());
+    u32 a = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < a) {
         a = n;
     }
     u32 r = a != 0 ? a : 1;
-    u32 c = func_020b491c(func_020b50e8());
+    u32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     r = c + func_02084fbc() - r;
     s0 += ALIGN4(func_0205c604());
     s1 += ALIGN4(func_0205c5fc());
@@ -563,7 +563,7 @@ extern "C" void func_0205beb8(void) {
 extern "C" void func_0205be74(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0203c6c0());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d + 1);
     data_021c61dc = FrameHeap_Create(t, parent);
@@ -590,7 +590,7 @@ extern "C" void func_0205be04(void) {
 extern "C" void func_0205bdc4(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d178());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d);
     data_021c61d4 = FrameHeap_Create(t, parent);
@@ -656,7 +656,7 @@ extern "C" void func_0205bc60(void) {
 extern "C" void func_0205bc20(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205ed04());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d);
     data_021c61c0 = FrameHeap_Create(t, parent);
@@ -670,7 +670,7 @@ extern "C" void func_0205bc04(void) {
 extern "C" void func_0205bbbc(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d2fc());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 e = c + func_02084fbc();
     t += ALIGN4(s + 0x48) * e;
     data_021c61bc = FrameHeap_Create(t, parent);
@@ -697,7 +697,7 @@ extern "C" void func_0205bb48(void) {
 extern "C" void func_0205bb00(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205ecfc());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 e = c + func_02084fbc();
     t += ALIGN4(s + 0x48) * e;
     data_021c61b4 = FrameHeap_Create(t, parent);
@@ -711,7 +711,7 @@ extern "C" void func_0205bae4(void) {
 extern "C" void func_0205baa4(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205ffbc());
-    s32 c = func_020b491c(func_020b50e8());
+    s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d);
     data_021c61b0 = FrameHeap_Create(t, parent);
@@ -724,10 +724,10 @@ extern "C" void func_0205ba88(void) {
 
 extern "C" void func_0205ba1c(void *parent) {
     s32 n;
-    if (data_020e416c == 0 ? TRUE : FALSE) {
+    if (gFieldSceneKind == 0 ? TRUE : FALSE) {
         n = Town_GetMaxOutdoorVillagers();
     } else {
-        n = func_020b491c(func_020b50e8()) - func_020b4928(func_020b50e8());
+        n = Scene_GetMaxCharacters(Scene_GetCurrent()) - Scene_GetMaxPlayers(Scene_GetCurrent());
     }
     n += func_02084fbc();
     u32 s = 0, t = 0;
@@ -775,10 +775,10 @@ extern "C" void func_0205b944(void) {
 extern "C" void *func_0205b8c0(void *parent) {
     u32 t = 0;
     s32 n;
-    if (data_020e416c == 0 ? TRUE : FALSE) {
+    if (gFieldSceneKind == 0 ? TRUE : FALSE) {
         n = Town_GetMaxOutdoorVillagers();
     } else {
-        n = func_020b491c(func_020b50e8()) - func_020b4928(func_020b50e8());
+        n = Scene_GetMaxCharacters(Scene_GetCurrent()) - Scene_GetMaxPlayers(Scene_GetCurrent());
     }
     s32 m = func_02084fbc();
     u32 x = ALIGN4(ALIGN4(func_02077e28()) + 0x48);

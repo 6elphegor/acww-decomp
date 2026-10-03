@@ -371,8 +371,8 @@ extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
 extern s32 gBgHeap;
 
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 void _ZN12Unk_020b6a94C1Ev(void *self);
@@ -408,14 +408,14 @@ s32 TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 BOOL MenuCtrl_OpenLauncher(u32 a);
-u32 func_020b50e8();
-Unk_020b6960 *func_020b50b4();
+u32 Scene_GetCurrent();
+Unk_020b6960 *Scene_GetCollision();
 BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
 s32 func_020b6014(Unk_020b6960 *o, u32 a, u32 b);
 void *func_02095204(u32 x);
 void *func_020951ec(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 BOOL InputMode_IsTouch();
 void func_0203cb80(u32 a);
 void func_0203cb48(u32 a);
@@ -477,7 +477,7 @@ public:
     void changeAct(s32 state);
     void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor C1 / dtor D2 by hand, as the original calls them)
+    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
     /* 0x618 */ u32 unk_618[7];    // a Unk_020b6a94 (ctor C2 / dtor D1 by hand)
     /* 0x634 */ s32 unk_634;
@@ -542,7 +542,7 @@ void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
     switch (unk_1e) {
     case 0xe:
     case 0x1f:
-        if (func_020b50e8() == 6) {
+        if (Scene_GetCurrent() == 6) {
             r = sRoomTelephoneChoiceMsgsScene6[t];
         } else {
             r = sRoomTelephoneChoiceMsgs[t];
@@ -625,7 +625,7 @@ void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
         }
         break;
     }
-    if (func_020b50e8() != 6) {
+    if (Scene_GetCurrent() != 6) {
         func_0203ca94();
     }
     if (r) {

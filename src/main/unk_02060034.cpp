@@ -108,8 +108,8 @@ extern u8 data_021e6e3c[];
 extern u8 gSaveData[];
 extern void *data_020dcbd0[];
 extern u8 gSaveData[];
-s32 func_020b533c(u32 x);
-s32 func_020b530c(u32 x);
+s32 SceneId_GetHouseRoom(u32 x);
+s32 SceneId_IsHouseRoom(u32 x);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void HouseRoomMaps_UpdateAll();
@@ -129,7 +129,7 @@ BOOL func_02060654(s32 x);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void *__cxa_vec_cleanup(void *arr, u32 n, u32 sz, void (*dtor)(void *));
 void *__cxa_vec_ctor(void *arr, u32 n, u32 sz, void (*ctor)(void *), void (*dtor)(void *));
 void _ZN6ItemIdD1Ev(void *p);
@@ -342,8 +342,8 @@ extern "C" BOOL func_0206057c(s32 i) {
 }
 
 HouseRoom *HouseData::func_02060550(s32 x) {
-    if (func_020b530c(x)) {
-        return func_0206052c(func_020b533c(x));
+    if (SceneId_IsHouseRoom(x)) {
+        return func_0206052c(SceneId_GetHouseRoom(x));
     }
     return NULL;
 }
@@ -456,7 +456,7 @@ BOOL HouseData::func_020602cc(u32 v) {
 }
 
 extern "C" u32 func_020602ac(u32 x) {
-    s32 r = func_020b533c(x);
+    s32 r = SceneId_GetHouseRoom(x);
     u8 m = 0;
     if (r != -1) {
         m = 1 << r;
@@ -484,7 +484,7 @@ BOOL HouseData::func_0206022c() {
 
 extern "C" u16 *func_020601cc()
 {
-    HouseRoom *r = data_021e58a8.func_02060550(func_020b50e8());
+    HouseRoom *r = data_021e58a8.func_02060550(Scene_GetCurrent());
     if (r != 0) {
         return r->func_020607d4();
     }
@@ -504,7 +504,7 @@ extern "C" BOOL func_020601a4(s32 a, u16 *p)
 
 extern "C" BOOL func_02060190(u16 *p)
 {
-    return func_020601a4(func_020b50e8(), p);
+    return func_020601a4(Scene_GetCurrent(), p);
 }
 
 extern "C" BOOL func_02060174(s32 a)

@@ -203,15 +203,15 @@ BOOL ChoiceList_getResult(void *self);
 void ChoiceList_loadTexts(void *self);
 void ChoiceList_setEntry(void *self, s32 a, const u8 *b, s32 c, const char *d, s32 e, s32 f);
 void ChoiceList_reset(void *self, s32 a, s32 b);
-s32 TalkRequest_EndTalkWith(void *self);
+s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void ProcBase_RequestDelete(void *self);
 void *Mem_Alloc(u32 size);
 void Mem_Free(void *p);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *func_020b50b4(void);
-s32 func_020b50e8(void);
+Unk_020b6960 *Scene_GetCollision(void);
+s32 Scene_GetCurrent(void);
 Unk_ov004_022146ec_Actor *func_020951ec(u32);
 void func_01ffd070(void *, void *, void *);
 }
@@ -386,7 +386,7 @@ void MuseumExhibitInfo::mainAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             func_0203e47c(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
@@ -716,7 +716,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        func_020b68a8(func_020b50b4(), &unk_134, unk_5c, 0xc00, 0xe, unk_150);
+        func_020b68a8(Scene_GetCollision(), &unk_134, unk_5c, 0xc00, 0xe, unk_150);
     }
     return TRUE;
 }
@@ -746,7 +746,7 @@ BOOL MuseumExhibitInfo::vfunc_00() {
             }
         }
         l.a = (u16)gCommManager->unk_64;
-        *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((func_020b50e8() & 0x3f) << 2);
+        *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((Scene_GetCurrent() & 0x3f) << 2);
         l.c = unk_150;
         Character_setCharId(this, *(u16 *)&l);
         changeAct(0);

@@ -294,9 +294,9 @@ struct Unk_ov003_02216824_Rec {
     u16 unk_04;
 };
 
-class Unk_020970b8 {
+class PlayerMailbox {
 public:
-    BOOL func_020970b8(s32 i);
+    BOOL getLetter(s32 i);
 };
 
 extern "C" {
@@ -306,27 +306,27 @@ extern u8 data_021f47e0[];
 
 BOOL func_020b1454(void *o, s32 v);
 BOOL func_020b1d3c(u32 a, s32 b);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
 void _ZN9AnimModel8stepAnimEv(void *self);
 void _ZN9ModelAnim7replaceEiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
 BOOL MenuCtrl_IsFinished();
 BOOL PlayerActor_LocalRequestAct6BOr6C(s32 a);
 BOOL MenuCtrl_OpenLauncher(u32 a);
-s32 func_02030814(s32 a);
+s32 Ground_GetDefaultY(s32 a);
 BOOL PlayerActor_LocalRequestAct6A(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8528(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
-Unk_020970b8 *func_020979d8(void *p);
+PlayerMailbox *func_020979d8(void *p);
 BOOL _ZN12Unk_0206555413func_02065578Ev();
 s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
-void *func_020b50b4();
+void *Scene_GetCollision();
 void _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(void *self, void *o);
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
 u32 BuildingList_IndexOf(void *p);
-BOOL func_020b5184();
+BOOL Scene_InTown();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 func_020b1d80(u32 a);
@@ -430,9 +430,9 @@ BOOL Mailbox::vfunc_70() {
     v.y = unk_5c[1];
     v.z = unk_5c[2];
     v.y = v.y + 0x1000;
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(func_020b50b4(), &unk_2d4, &v, 0x1000, 7, b);
+    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_2d4, &v, 0x1000, 7, b);
     unk_2f0 = 1;
-    if (!func_020b5184()) {
+    if (!Scene_InTown()) {
         unk_2f0 = 0;
     } else {
         void *g = gCommManager;
@@ -453,7 +453,7 @@ BOOL Mailbox::vfunc_70() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(func_020b50b4(), &unk_2d4);
+    _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(Scene_GetCollision(), &unk_2d4);
     return TRUE;
 }
 
@@ -490,12 +490,12 @@ void Mailbox::vfunc_4c(u32 a, u8 b) {
 
 s32 Mailbox::countLetters() {
     if (isUsable()) {
-        Unk_020970b8 *p = func_020979d8(PlayerData_GetCurrent());
+        PlayerMailbox *p = func_020979d8(PlayerData_GetCurrent());
         if (p) {
             s32 n = 0;
             u32 i;
             for (i = n; i < 10; i++) {
-                if (p->func_020970b8(i)) {
+                if (p->getLetter(i)) {
                     if (_ZN12Unk_0206555413func_02065578Ev()) {
                         n++;
                     }
@@ -569,7 +569,7 @@ s32 Mailbox::enterUseOpen() {
         s32 a, b, c;
     } v;
     v.a = unk_5c[0];
-    v.b = func_02030814(0);
+    v.b = Ground_GetDefaultY(0);
     v.c = unk_5c[2] + 0x2000;
     if (PlayerActor_LocalRequestAct6A(&v)) {
         func_020b1454(this, 3);
@@ -615,7 +615,7 @@ s32 Mailbox::enterUseClose() {
 s32 Mailbox::execUseClose() {
     u8 s = unk_130;
     if (s == 0 || s == 2) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
 }
 

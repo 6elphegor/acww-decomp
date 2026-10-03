@@ -23,11 +23,11 @@ void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_020986d4Ev(void *a);
-void *_ZN14PlayerPatterns13func_02071c68Ej(void *o, u32 i);
-void *_ZN12Unk_02071ed013func_02071f5cEP18EncodedString16Buf(void *a, void *b);
-void *_ZN7Pattern13func_02071e58Ev(void *o);
-void *_ZN7Pattern13func_02071e04Ev(void *o);
-void *_ZN12Unk_02071ed013func_02072040Ev(void *o);
+void *_ZN14PlayerPatterns17getPatternByOrderEj(void *o, u32 i);
+void *_ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(void *a, void *b);
+void *_ZN7Pattern9getPixelsEv(void *o);
+void *_ZN7Pattern7getInfoEv(void *o);
+void *_ZN11PatternInfo14getPaletteDataEv(void *o);
 void Gfx2d_LinearToTilesInRow32(void *a, void *b, u32 c, u32 d, u32 e);
 void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
@@ -545,8 +545,8 @@ extern "C" void PatternSelect_LoadPatternIcons() {
     void *obj = _ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent());
     u8 i = 0;
     do {
-        void *t = _ZN14PlayerPatterns13func_02071c68Ej(obj, i);
-        t = _ZN7Pattern13func_02071e58Ev(t);
+        void *t = _ZN14PlayerPatterns17getPatternByOrderEj(obj, i);
+        t = _ZN7Pattern9getPixelsEv(t);
         Gfx2d_LinearToTilesInRow32(t, buf, i * 4, 4, 4);
         i++;
     } while (i < 8);
@@ -556,9 +556,9 @@ extern "C" void PatternSelect_LoadPatternIcons() {
     s32 off = 0;
     u8 k = 0;
     do {
-        void *t = _ZN14PlayerPatterns13func_02071c68Ej(obj, k);
-        t = _ZN7Pattern13func_02071e04Ev(t);
-        t = _ZN12Unk_02071ed013func_02072040Ev(t);
+        void *t = _ZN14PlayerPatterns17getPatternByOrderEj(obj, k);
+        t = _ZN7Pattern7getInfoEv(t);
+        t = _ZN11PatternInfo14getPaletteDataEv(t);
         MIi_CpuCopy16(t, (u8 *)buf2 + off * 2, 0x20);
         off += 0x10;
         k++;
@@ -786,7 +786,7 @@ void PatternSelectMenu::refreshNameLabel() {
     }
     _ZN12LabelBalloon6setPosEii(&unk_428, getSlotX(unk_6b6) - 0x78, x);
     _ZN18EncodedString16BufC1Ev(a);
-    _ZN12Unk_02071ed013func_02071f5cEP18EncodedString16Buf(_ZN7Pattern13func_02071e04Ev(_ZN14PlayerPatterns13func_02071c68Ej(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent()), unk_6b6)), a);
+    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent()), unk_6b6)), a);
     _ZN12Unk_020e0d80C1Ev(b);
     StrBuf_GameToAscii(b, a);
     _ZN12LabelBalloon7setTextEP6StrBuf(&unk_428, b);

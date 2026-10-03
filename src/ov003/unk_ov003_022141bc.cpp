@@ -244,7 +244,7 @@ struct Unk_ov003_SceneEntry {
 extern "C" {
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_OpenLauncher(u32 a);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e780c(s32 a, s32 b);
 }
 
@@ -375,7 +375,7 @@ BOOL BulletinBoard::enterBoardRead() {
 
 void BulletinBoard::execBoardRead() {
     if (MenuCtrl_IsFinished()) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
 }
 

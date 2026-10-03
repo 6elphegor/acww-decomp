@@ -168,7 +168,7 @@ s32 _ZN10ChoiceList9getResultEv(void *);
 void * _ZN15TalkWindowState13getChoiceListEv(void *);
 s32 CheckInGate_Close();
 s32 func_02073340();
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
+s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
 BOOL _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN11CommManager7isMyAidEj(void *, s32);
 BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
@@ -185,7 +185,7 @@ s32 _ZN15TalkWindowState12showBusyIconEv(void *, s32);
 s32 CheckInGate_IsOpen();
 s32 CheckInGate_Open();
 s32 Talk_IsInOwnTown();
-void _ZN12Unk_02097ff413func_0209801cEj(void *, s32);
+void _ZN12Unk_02097ff47setFlagEj(void *, s32);
 u32 Clock_GetTimeOfDay();
 void * _ZN10PlayerData13getFriendListEv(void *);
 void * FriendList_GetEntries(void *);
@@ -198,23 +198,23 @@ s32 _ZN8NpcActor13func_0201b9e8Eii(void *, s32 *, s32 *);
 BOOL NetArea_IsLocalOwner();
 Unk_ov048_Rec * TalkWindow_Get(s32);
 void SaveManager_RequestAct02();
-void * func_020b4934();
-s32 func_020b4f58(void *, s32, s32, s32);
-void * func_020850e0();
+void * Scene_GetWarpRequest();
+s32 SceneWarp_RequestFade(void *, s32, s32, s32);
+void * TownSessionState_Get();
 void * func_02085180(void *);
 Unk_ov048_0225b278_Ent * func_02095204(s32);
 void FieldPos_ToUnit(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
 void _ZN15TownTravelState8setAngleEi(void *, s32);
-s32 func_020b4aa8(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
+s32 Scene_SetSavedPos(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
 void Camera_SaveView();
 void SaveManager_RequestAct17();
 void SaveManager_RequestAct14();
-s32 func_020b4f18(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
+s32 SceneWarp_RequestAt(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
 s32 NetSession_GetLastSyncSlot();
 void * PlayerData_GetBySessionSlot();
 void _ZN15TalkWindowState13detachRequestEv(void *);
-void func_020b4bbc(void *, s32);
+void SceneWarp_RequestExit(void *, s32);
 void PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 func_020951b8(s32);
 void _ZN10PlayerData13func_02098a58Ev(void *);
@@ -253,7 +253,7 @@ s32 Camera_SetMode14();
 s32 PlayerActor_RequestTurnTo(s32, s32);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *);
 s32 Camera_IsBlending();
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 s32 Net_WifiStartHost(s32);
 s32 Comm_BeginHostSession();
 void * func_02063964(void *);
@@ -262,7 +262,7 @@ void func_020ea720(void *, s32);
 Unk_ov048_Vec * func_020947f0(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
 s32 _ZN10SpNpcActor8vfunc_0cEv();
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_0203d984();
 s32 _ZN10SpNpcActor8vfunc_00Ev();
 s32 _ZN15TownTravelState7getModeEv(void *);
@@ -527,7 +527,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -638,7 +638,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -944,10 +944,10 @@ BOOL SpNpcCopper::vfunc_04() {
     setCollisionRadius(0x100);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&unk_2a0, 0xd9);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0xd8);
-    if (func_020b50e8() != 0xb) {
+    if (Scene_GetCurrent() != 0xb) {
         unk_558.unk_0b = 1;
     }
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         unk_4cc.unk_44 = 0;
     }
     return TRUE;
@@ -959,7 +959,7 @@ BOOL SpNpcCopper::vfunc_00() {
     }
     unk_658.unk_7e4 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (_ZN11CommManager8isOnlineEv(gCommManager) && func_020b50e8() == 0xb) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (isNetOwner()) {
             SpNpcCopper_ChangeAct(this, 1);
         } else {
@@ -967,7 +967,7 @@ BOOL SpNpcCopper::vfunc_00() {
         }
         return TRUE;
     }
-    void *p = func_02085180(func_020850e0());
+    void *p = func_02085180(TownSessionState_Get());
     if (_ZN15TownTravelState7getModeEv(p) == 1 || _ZN15TownTravelState7getModeEv(p) == 2) {
         if (_ZN15TownTravelState7getModeEv(p) == 1) {
             unk_658.setTopic(6);
@@ -978,10 +978,10 @@ BOOL SpNpcCopper::vfunc_00() {
         unk_8e = _ZN15TownTravelState8getAngleEv(p);
         unk_94 = _ZN15TownTravelState8getAngleEv(p);
         _ZN15TownTravelState9clearModeEv(p);
-    } else if (func_020b50e8() == 0xd) {
+    } else if (Scene_GetCurrent() == 0xd) {
         func_0203d990();
         SpNpcCopper_ChangeAct(this, 9);
-    } else if (func_020b50e8() == 0xe) {
+    } else if (Scene_GetCurrent() == 0xe) {
         func_0203d990();
         SpNpcCopper_ChangeAct(this, 0xb);
     } else {
@@ -994,7 +994,7 @@ BOOL SpNpcCopper::vfunc_0c() {
     if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
-    if (func_020b50e8() == 0xd || func_020b50e8() == 0xe) {
+    if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0xe) {
         func_0203d984();
     }
     return TRUE;
@@ -1058,7 +1058,7 @@ BOOL SpNpcCopper::setupAct02() {
 
 BOOL SpNpcCopper::mainAct02() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
     return TRUE;
 }
@@ -1112,7 +1112,7 @@ BOOL SpNpcCopper::mainAct05() {
         break;
     case 3:
         if (func_020951b8(4) == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
         break;
     }
@@ -1153,7 +1153,7 @@ BOOL SpNpcCopper::mainAct06() {
             if (t == 0x46 || t == 0x6c) {
                 if (Net_GetMode() == 3) {
                     if (Net_PollConnected(NetOverlay_AssertAny()) != 0) {
-                        TalkRequest_EndTalkWith(this);
+                        TalkRequest_SetTargetDone(this);
                     }
                 } else {
                     unk_658.startComm(1, 0);
@@ -1164,7 +1164,7 @@ BOOL SpNpcCopper::mainAct06() {
                     NetOverlay_AssertWireless();
                     func_020ea720(buf, 0x11);
                     Comm_BeginHostSession();
-                    TalkRequest_EndTalkWith(this);
+                    TalkRequest_SetTargetDone(this);
                 }
             }
         } else {
@@ -1198,7 +1198,7 @@ BOOL SpNpcCopper::mainAct07() {
         break;
     case 2:
         if (func_020e7500(&unk_658.unk_7e6) == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
         break;
     }
@@ -1322,7 +1322,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
         _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
     skip:
         if (_ZN15LostChildRecord11isEscortingEv(r4)) {
-            _ZN12Unk_02097ff413func_0209801cEj(h, 0x36);
+            _ZN12Unk_02097ff47setFlagEj(h, 0x36);
             return TRUE;
         }
     }
@@ -1338,7 +1338,7 @@ BOOL SpNpcCopper::act08Step5() {
         }
         SpNpcCopper_ChangeAct(this, 3);
     } else {
-        func_020b4bbc(func_020b4934(), 0);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         SpNpcCopper_ChangeAct(this, 3);
     }
     return TRUE;
@@ -1684,7 +1684,7 @@ BOOL SpNpcCopper::act09Step2() {
 }
 
 BOOL SpNpcCopper::act09Step3() {
-    func_020b4bbc(func_020b4934(), 1);
+    SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
     return TRUE;
 }
 
@@ -1763,7 +1763,7 @@ BOOL SpNpcCopper::act0BStep2() {
 }
 
 BOOL SpNpcCopper::act0BStep3() {
-    func_020b4bbc(func_020b4934(), 1);
+    SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
     return TRUE;
 }
 
@@ -2106,7 +2106,7 @@ BOOL SpNpcCopper::mainAct0C() {
         s32 s;
         Unk_ov048_0225b278_Vec v;
         Unk_ov048_0225b278_Ent *e;
-        h = func_02085180(func_020850e0());
+        h = func_02085180(TownSessionState_Get());
         e = func_02095204(4);
         Unk_ov048_0225b278_Vec *pv = &e->unk_5c;
         v.x = pv->x;
@@ -2120,7 +2120,7 @@ BOOL SpNpcCopper::mainAct0C() {
         _ZN15TownTravelState8setAngleEi(h, unk_8e);
         Camera_SaveView();
         SaveManager_RequestAct14();
-        func_020b4f18(func_020b4934(), 0xc, &v, 0x800000, s, 2, 2);
+        SceneWarp_RequestAt(Scene_GetWarpRequest(), 0xc, &v, 0x800000, s, 2, 2);
         SpNpcCopper_ChangeAct(this, 3);
     }
     return TRUE;
@@ -2137,7 +2137,7 @@ BOOL SpNpcCopper::mainAct0D() {
         s32 s;
         Unk_ov048_0225b278_Vec v;
         Unk_ov048_0225b278_Ent *e;
-        h = func_02085180(func_020850e0());
+        h = func_02085180(TownSessionState_Get());
         e = func_02095204(4);
         Unk_ov048_0225b278_Vec *pv = &e->unk_5c;
         v.x = pv->x;
@@ -2149,10 +2149,10 @@ BOOL SpNpcCopper::mainAct0D() {
         FieldPos_ToUnit(&a, &b, &v);
         _ZN15TownTravelState7setModeEj(h, 2);
         _ZN15TownTravelState8setAngleEi(h, unk_8e);
-        func_020b4aa8(func_020b4934(), 0xc, &v, 0x800000, s, a, b);
+        Scene_SetSavedPos(Scene_GetWarpRequest(), 0xc, &v, 0x800000, s, a, b);
         Camera_SaveView();
         SaveManager_RequestAct17();
-        func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
         SpNpcCopper_ChangeAct(this, 3);
     }
     return TRUE;
@@ -2165,7 +2165,7 @@ BOOL SpNpcCopper::setupAct0E() {
 BOOL SpNpcCopper::mainAct0E() {
     if (TalkWindow_Get(0)->unk_04 == 5) {
         SaveManager_RequestAct02();
-        func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
         SpNpcCopper_ChangeAct(this, 3);
     }
     return TRUE;
@@ -2316,9 +2316,9 @@ void SpNpcCopperTalk::vfunc_78(void *arg) {
     } else if (getTopic() != 7 && getTopic() != 9 && getTopic() != 0xa) {
         if (Talk_IsInOwnTown() == 0) {
             setTopic(5);
-        } else if (_ZN12Unk_02097ff413func_02098044Ej(h, 5) == 0) {
+        } else if (_ZN12Unk_02097ff48testFlagEj(h, 5) == 0) {
             setTopic(0);
-            _ZN12Unk_02097ff413func_0209801cEj(h, 5);
+            _ZN12Unk_02097ff47setFlagEj(h, 5);
         } else {
             s32 t = Clock_GetTimeOfDay() + 1;
             setTopic(t);
@@ -2625,7 +2625,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
     u32 id = 0xff;
     switch (p) {
     case 0:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 8;
         } else {
             Unk_ov048_Global *g = gCommManager;
@@ -2639,7 +2639,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
         }
         break;
     case 1:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 0xe;
         } else {
             id = getInviteOrCloseGateMsg();
@@ -2647,7 +2647,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
         break;
     case 2:
         if (_ZN11CommManager7isMyAidEj(gCommManager, 0) == 0) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
+            if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
                 id = 8;
             } else {
                 void *s;
@@ -2680,7 +2680,7 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
     u32 id = 0xff;
     switch (p) {
     case 0:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 8;
         } else {
             Unk_ov048_Global *g = gCommManager;
@@ -2694,7 +2694,7 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
         }
         break;
     case 1:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 0xe;
         } else {
             id = getInviteOrCloseGateMsg();
@@ -3334,7 +3334,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     }
     if (checkNetError(b)) {
         Comm_ClearSyncState();
-        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(func_020850e0()))) {
+        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get()))) {
             if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()))) {
                 _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
             }
@@ -3342,7 +3342,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
-            if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(func_020850e0()))) {
+            if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get()))) {
                 if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent())) == 0) {
                     _ZN15LostChildRecord12setEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
                 }
@@ -3588,7 +3588,7 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
     if (_ZN11CommManager8isOnlineEv(g)) {
         return FALSE;
     }
-    if (func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0x2f) {
         return FALSE;
     }
     if (TalkRequest_IsActive()) {
@@ -3613,7 +3613,7 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
 }
 
 BOOL SpNpcCopper::vfunc_7c() {
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         return FALSE;
     }
     return SpNpcActor::vfunc_7c();

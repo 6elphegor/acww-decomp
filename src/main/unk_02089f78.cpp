@@ -158,7 +158,7 @@ extern "C" {
 void func_0208b040(void *p);
 }
 
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 
 class SpriteAnim {
 public:

@@ -57,10 +57,10 @@ struct ChoiceList {
 extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
-s32 func_02098ffc();
-s32 func_02098eb0(u16 *p);
-void func_02099014(u16 *p, s32 v);
-void func_02099064(s32 v);
+s32 Pocket_FindEmpty();
+s32 Pocket_FindItem(u16 *p);
+void Pocket_AddItem(u16 *p, s32 v);
+void Pocket_RemoveItem(s32 v);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
@@ -69,7 +69,7 @@ void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s3
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void Clock_GetDateTime(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
@@ -85,25 +85,25 @@ void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 v);
 void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, void *v);
 void _ZN8BlockMap13func_0204e328EPv(void *g, void *v);
 void *func_020947f0(s32 a);
-s32 func_0202ff64(void *p);
-void func_0202ff44();
-void func_0202ffb0(s32 a);
+s32 Ground_IsOnLockedExit(void *p);
+void Ground_UnlockExit();
+void Ground_LockExit(s32 a);
 void *func_02095204(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
 void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
-void *func_020b50b4();
+void *Scene_GetCollision();
 void *func_020b6048(void *a, s32 b, s32 c);
 void func_020b60b0(void *a, void *b);
 u16 *ShopStock_GetItemAt(s32 a, s32 b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetPrice(u16 *p);
-s32 func_020b4934();
-void func_020b4bbc(s32 a, s32 b);
-BOOL func_020b50dc();
+s32 Scene_GetWarpRequest();
+void SceneWarp_RequestExit(s32 a, s32 b);
+BOOL Scene_GetPrevious();
 s32 _ZN11CommManager8isOnlineEv(void *g);
 void NpcActor_ChargePlayer(void *o, s32 v);
 s32 NpcActor_CanPlayerPay(void *o, s32 v);
@@ -123,8 +123,8 @@ s32 func_020e96ec(void *a, void *b);
 s32 func_020e972c(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 memcmp(void *a, void *b, s32 n);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *h, u32 v);
-void _ZN12Unk_02097ff413func_0209801cEj(void *h, u32 v);
+s32 _ZN12Unk_02097ff48testFlagEj(void *h, u32 v);
+void _ZN12Unk_02097ff47setFlagEj(void *h, u32 v);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 extern u8 data_021ed284[];
 extern u8 data_021ed2c0[];
@@ -270,7 +270,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -383,7 +383,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -566,12 +566,12 @@ BOOL SpNpcRedd::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (func_020b50dc()) {
+    if (Scene_GetPrevious()) {
         changeAct(1);
     } else {
         changeAct(0);
     }
-    func_0202ffb0(0);
+    Ground_LockExit(0);
     unk_71a = 0xfff1;
     for (s32 i = 0; i < 3; i++) {
         unk_71c[i].unk_00 = 0xfff1;
@@ -778,7 +778,7 @@ BOOL SpNpcRedd::mainAct05() {
     if (unk_72c != 0 && ReddShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
-    TalkRequest_EndTalkWith(this);
+    TalkRequest_SetTargetDone(this);
     changeAct(7);
     return TRUE;
 }
@@ -800,7 +800,7 @@ BOOL SpNpcRedd::mainAct06() {
     v.y = pv->y;
     v.z = pv->z;
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        func_020b4bbc(func_020b4934(), 0);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(7);
     }
     return TRUE;
@@ -938,10 +938,10 @@ void SpNpcReddTalk::vfunc_78(TalkStartMsg *out) {
     if (unk_ac != 0 && unk_ac != 1 && unk_ac != 2) {
         u16 *pp = &unk_b0->unk_71a;
         if (Unk_ov052_022595dc_Eq(pp, &k1)) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(h, 0xc) != 0) {
+            if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
                 if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && unk_b8 == -1) {
                     x = 0x34a8;
-                    unk_b8 = func_02098eb0(&x);
+                    unk_b8 = Pocket_FindItem(&x);
                 }
                 if (unk_b8 >= 0) {
                     unk_ac = 5;
@@ -974,7 +974,7 @@ void SpNpcReddTalk::vfunc_78(TalkStartMsg *out) {
         return;
     }
     out->unk_04 = MSG_ID(unk_ac);
-    if (_ZN12Unk_02097ff413func_02098044Ej(h, 0xc) != 0) {
+    if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
         if (unk_ac == 0xa) {
             out->unk_04 = func_02063b8c(4) + 0x17;
             if (out->unk_04 == 0x1a) {
@@ -1028,13 +1028,13 @@ void SpNpcReddTalk::vfunc_14() {
         v[1] = 0x36fc;
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &v[1], 0, 5, 0);
         v[2] = 0x36fc;
-        func_02099014(&v[2], 0);
+        Pocket_AddItem(&v[2], 0);
         msg = 0x2f;
     case 0x2d:
         unk_b8 = -2;
         break;
     case 6:
-        if (_ZN12Unk_02097ff413func_02098044Ej(h, 0xc) == 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) == 0) {
             setTopic(3);
         } else {
             setTopic(10);
@@ -1050,7 +1050,7 @@ void SpNpcReddTalk::vfunc_14() {
         msg = 0x11;
         NpcActor_ChargePlayer(unk_b0, 0xbb8);
         setTopic(7);
-        _ZN12Unk_02097ff413func_0209801cEj(h, 0xc);
+        _ZN12Unk_02097ff47setFlagEj(h, 0xc);
         Talk_CheckAndSetPlayerFlag(1, 1);
         break;
     case 0x24:
@@ -1076,7 +1076,7 @@ void SpNpcReddTalk::vfunc_18() {
     case 0x2c:
         if (t == 0) {
             if (unk_b8 >= 0) {
-                func_02099064(unk_b8);
+                Pocket_RemoveItem(unk_b8);
                 v[1] = 0x34a8;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &v[1], 0, 5, 0);
             }
@@ -1109,7 +1109,7 @@ void SpNpcReddTalk::vfunc_18() {
     case 0x22:
         if (t == 0) {
             if (NpcActor_CanPlayerPay(unk_b0, unk_b4) != 0) {
-                if (func_02098ffc() >= 0) {
+                if (Pocket_FindEmpty() >= 0) {
                     s32 idx = SpNpcRedd_PickUnusedFlag(unk_b0, unk_b0->unk_734, 5);
                     unk_b0->unk_734[idx] = 1;
                     if (SpNpcRedd_CountUnusedFlags(unk_b0, unk_b0->unk_734, 5) == 0) {
@@ -1135,7 +1135,7 @@ void SpNpcReddTalk::vfunc_18() {
 
 void SpNpcReddTalk::completePurchase() {
     NpcActor_ChargePlayer(unk_b0, unk_b4);
-    func_02099014(&unk_b0->unk_71a, 0);
+    Pocket_AddItem(&unk_b0->unk_71a, 0);
     ReddShop_BuyAt(unk_b0->unk_724, unk_b0->unk_728, 0xf);
     u8 *const g = data_021ed284;
     _ZN12ReddLastSale8setBuyerEPKS_(g, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
@@ -1187,13 +1187,13 @@ void SpNpcRedd::vfunc_4c(u32 cmd, u32 arg) {
             Unk_ov052_Vec v;
             Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
             v = *src;
-            if (func_0202ff64(&v)) {
-                func_0202ff44();
+            if (Ground_IsOnLockedExit(&v)) {
+                Ground_UnlockExit();
             } else {
                 changeAct(1);
             }
         } else if (unk_658.getTopic() == 0xc) {
-            func_020b4bbc(func_020b4934(), 0);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             changeAct(1);
         }
@@ -1230,13 +1230,13 @@ BOOL SpNpcRedd::pickDisplayItem() {
     if (f) {
         void *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(func_020b50b4(), 0, 0)) {
+            if (o != func_020b6048(Scene_GetCollision(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             Unk_ov052_Vec v2;
-            func_020b60b0(func_020b50b4(), &v2);
+            func_020b60b0(Scene_GetCollision(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;
@@ -1266,7 +1266,7 @@ BOOL SpNpcRedd::tryFarewellTalk() {
     Unk_ov052_02258eac_Loc v;
     Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
     *(Unk_ov052_Vec *)&v = *src;
-    if (func_0202ff64(&v)) {
+    if (Ground_IsOnLockedExit(&v)) {
         if (unk_72e == 0) {
             unk_658.setTopic(1);
         } else {

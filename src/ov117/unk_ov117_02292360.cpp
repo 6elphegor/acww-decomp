@@ -57,15 +57,15 @@ extern u8 data_021dfd8c[];
 void Mem_Free(void *p);
 void *Mem_Alloc(u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void func_02030598(s32 a);
+void CollisionMap_Select(s32 a);
 Unk_ov117_02292b54_Grid *TownBlockMap_Get();
 s32 BlockMap_FindItemAnyAttr(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *StrBSize_Get(u16 *t);
 u32 MapBlock_GetAttr(void *c);
-s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
-BOOL func_02031098(u8 *out, s32 a, s32 b);
+s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
+BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b);
 void *SaveVillagers_Get(void *, s32);
 BOOL HousePos_IsValid(void *p);
 u16 Item_MakeNeighborHouse(u32 x);
@@ -152,14 +152,14 @@ extern "C" void TownMapMarkers_AddTerrainMarkers(TownMapMarkers *s) {
     s32 x, y;
     s32 n;
     Unk_ov117_02292b54_Grid *g;
-    func_02030598(1);
+    CollisionMap_Select(1);
     n = 0;
     g = TownBlockMap_Get();
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
             if (MapBlock_GetAttr(Unk_ov117_02292b54_GetCell(g, x, y)) & 4) {
                 s32 px, py;
-                s32 t = func_02030be4(&px, &py, x, y);
+                s32 t = Ground_FindTerrainMarker(&px, &py, x, y);
                 if (t != 4) {
                     px = px << 1;
                     py = py << 1;
@@ -188,7 +188,7 @@ extern "C" void TownMapMarkers_AddTerrainMarkers(TownMapMarkers *s) {
             }
         }
     }
-    func_02030598(0);
+    CollisionMap_Select(0);
 }
 
 extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
@@ -399,7 +399,7 @@ TownMapAcreImage::~TownMapAcreImage() {
 
 extern "C" void TownMapImage_DrawAcre(u8 *buf, s32 bx, s32 by) {
     u32 bx16, by16, n; u8 v; u32 ex, ey, i, j, k, l; BOOL ev, od;
-    func_02030598(1);
+    CollisionMap_Select(1);
     bx16 = (bx << 4) + 0x10;
     by16 = (by << 4) + 0x10;
     n = 0;
@@ -413,7 +413,7 @@ extern "C" void TownMapImage_DrawAcre(u8 *buf, s32 bx, s32 by) {
                     if ((ey & 1) == 0) ev = TRUE; else ev = FALSE;
                     if ((ex & 1) == 0) od = TRUE; else od = FALSE;
                     v = 0;
-                    if (func_02031098(out, bx16 + (ey >> 1), by16 + (ex >> 1))) {
+                    if (Ground_GetMapColors(out, bx16 + (ey >> 1), by16 + (ex >> 1))) {
                         if (ev) {
                             u8 t = (od ? out[0] : out[2]) & 0xf;
                             v = t;
@@ -427,7 +427,7 @@ extern "C" void TownMapImage_DrawAcre(u8 *buf, s32 bx, s32 by) {
             }
         }
     }
-    func_02030598(0);
+    CollisionMap_Select(0);
 }
 
 TownMapImage::TownMapImage() {

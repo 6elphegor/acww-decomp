@@ -103,7 +103,7 @@ extern void *gSceneBlockMap;
 extern s32 gCurrentHeap;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern void *gCommManager;
@@ -127,25 +127,25 @@ s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 NpcTalkCtrl_isBusy(void *);
-s32 func_020b4934(void);
-void func_020b4bbc(s32, s32);
+s32 Scene_GetWarpRequest(void);
+void SceneWarp_RequestExit(s32, s32);
 void *func_02015aac(void *);
 void func_02015ab0(void *, s32);
-s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, u32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcActor_ChargePlayer(void *, s32);
-void func_02099014(void *, s32);
+void Pocket_AddItem(void *, s32);
 void FtrMgr_RemoveActorByIndex(void);
 void Villager_RemoveFurnitureAt(void *, void *, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 void FtrMgr_SetSaleMode(void);
 void Unk_02013474_enableFootsteps(void *);
-void func_020b50dc(void);
-s32 func_020b5178(void);
-void func_0202ffb0(u32);
+void Scene_GetPrevious(void);
+s32 SceneId_IsTownUnk31(void);
+void Ground_LockExit(u32);
 s32 NpcActor_getNpcIndex(void *);
 s32 FgData_GetVillagerLayout(void *, s32, s32);
 void NpcActor_setTalkRequest(void *, void *);
@@ -156,7 +156,7 @@ void *VillagerDataProfileView_getShirt(void *o);
 void *Villager_GetState(void *o);
 void *VillagerData_getVillagerId(void *o);
 void *func_02095204(u32 a);
-s32 func_0202ff64(void *p);
+s32 Ground_IsOnLockedExit(void *p);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -166,14 +166,14 @@ s32 FtrActorGrid_getIndex(void *g, s32 x, s32 y, u32 z);
 void *FtrActorGrid_getActor(void *g, s32 x, s32 y, u32 z);
 u16 Item_MakeFurniture(void *p, u32 a);
 void FtrActor_findOwnTile(void *o, s32 *x, s32 *y, u32 a, u32 b);
-void *func_020b50b4();
+void *Scene_GetCollision();
 void func_020b60b0(void *a, void *b);
 void *func_020b6048(void *a, u32 b, u32 c);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
 u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
 void *FtrActor_GetFtrIndex();
-s32 func_02098ffc();
+s32 Pocket_FindEmpty();
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
 void Hud_Hide();
 u32 func_02063b8c(u32 a);
@@ -575,13 +575,13 @@ BOOL FleaMarketSellerVillager::vfunc_00() {
     FtrMgr_SetSaleMode();
     unk_894 = 0xfff1;
     Unk_02013474_enableFootsteps(&unk_558);
-    func_020b50dc();
-    if (func_020b5178()) {
+    Scene_GetPrevious();
+    if (SceneId_IsTownUnk31()) {
         changeAct(4);
     } else {
         changeAct(0);
     }
-    func_0202ffb0(0);
+    Ground_LockExit(0);
     unk_a54 = 0;
     unk_a50 = FgData_GetVillagerLayout(&unk_a54, NpcActor_getNpcIndex(this), gCurrentHeap);
     return TRUE;
@@ -744,7 +744,7 @@ BOOL FleaMarketSellerVillager::mainAct03() {
     a.y = p->y;
     a.z = p->z;
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        func_020b4bbc(func_020b4934(), 0);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(2);
     }
     return TRUE;
@@ -766,7 +766,7 @@ BOOL FleaMarketSellerVillager::mainAct01() {
             unk_a4c = 1;
         }
         unk_894 = 0xfff1;
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -846,7 +846,7 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
     }
     if (!same) {
         NpcActor_ChargePlayer(unk_1a0, unk_1a4);
-        func_02099014(&unk_1a0->unk_894, 0);
+        Pocket_AddItem(&unk_1a0->unk_894, 0);
         FleaMarketSellerVillager *o = unk_1a0;
         if (FtrActorGrid_getIndex(FtrActorGrid_GetInstance(), o->unk_898, o->unk_89c, 0) != -1) {
             FtrMgr_RemoveActorByIndex();
@@ -914,7 +914,7 @@ void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
             w = 0xfff1;
             r6 = 10 - Villager_CountFurnitureLike(unk_1a0->unk_82c, &w);
         }
-        if (!(unk_1a0->unk_898 != -1 && func_02098ffc() != -1 && r6 > 3 && NpcActor_CanPlayerPay(unk_1a0, unk_1a4))) {
+        if (!(unk_1a0->unk_898 != -1 && Pocket_FindEmpty() != -1 && r6 > 3 && NpcActor_CanPlayerPay(unk_1a0, unk_1a4))) {
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade4");
         } else {
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade3");
@@ -941,7 +941,7 @@ void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
 }
 
 BOOL FleaMarketSellerVillager::vfunc_7c() {
-    BOOL f = data_020e416c == 1 ? TRUE : FALSE;
+    BOOL f = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (!f || unk_a4e == 0) {
         return TRUE;
     }
@@ -1068,13 +1068,13 @@ BOOL FleaMarketSellerVillager::checkFurnitureTap() {
         }
         void *c = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), hx, hy, 0);
         if (c != NULL) {
-            if (c != func_020b6048(func_020b50b4(), 0, 0)) {
+            if (c != func_020b6048(Scene_GetCollision(), 0, 0)) {
                 return FALSE;
             }
         } else {
             ax = 0;
             ay = 0;
-            func_020b60b0(func_020b50b4(), &v1);
+            func_020b60b0(Scene_GetCollision(), &v1);
             FieldPos_ToUnit(&ax, &ay, &v1);
             if (ax != hx || ay != hy) {
                 return FALSE;
@@ -1150,7 +1150,7 @@ BOOL FleaMarketSellerVillager::checkPlayerLeaving() {
     v.x = s[0];
     v.y = s[1];
     v.z = s[2];
-    if (func_0202ff64(&v)) {
+    if (Ground_IsOnLockedExit(&v)) {
         unk_a4c = 3;
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;

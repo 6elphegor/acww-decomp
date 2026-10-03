@@ -113,7 +113,7 @@ struct Unk_02051a50_Bits {
     u32 pad : 1;
 };
 
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern void *gSceneBlockMap;
 extern u8 data_021e58a8[];
@@ -146,7 +146,7 @@ s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-u32 func_020b50e8();
+u32 Scene_GetCurrent();
 s32 NetArea_IsLocalOwner();
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *BlockMap_GetForArea(s32 a);
@@ -160,12 +160,12 @@ s32 _ZN9HouseData13func_0206052cEi(void *p, s32 a);
 Unk_02052620 *_ZN9HouseRoom13func_0206086cEv();
 void func_02060174(s32 a);
 void func_020601a4(s32 a, u16 *p);
-s32 func_020b530c(u32 id);
-s32 func_020b533c(u32 id);
-s32 func_020b51b8(u32 id);
-s32 func_020b51e8(u32 id);
-s32 func_020b5268(u32 id);
-s32 func_020b5298(u32 id);
+s32 SceneId_IsHouseRoom(u32 id);
+s32 SceneId_GetHouseRoom(u32 id);
+s32 SceneId_IsVillagerHouse(u32 id);
+s32 SceneId_GetVillagerHouse(u32 id);
+s32 SceneId_IsNookShop(u32 id);
+s32 SceneId_GetNookShop(u32 id);
 
 u32 func_02051518();
 void func_02051524(s32 *p);
@@ -402,14 +402,14 @@ BOOL Unk_02052620::func_02052620(u32 a, u32 b) { return unk_40.func_02052860(a, 
 // ---- 0x020514a4..0x020525a8 ----
 
 extern "C" Unk_02052620 *func_020525a8(u32 id) {
-    if (func_020b530c(id)) {
-        if (_ZN9HouseData13func_0206052cEi(data_021e58a8, func_020b533c(id))) {
+    if (SceneId_IsHouseRoom(id)) {
+        if (_ZN9HouseData13func_0206052cEi(data_021e58a8, SceneId_GetHouseRoom(id))) {
             return _ZN9HouseRoom13func_0206086cEv();
         }
-    } else if (func_020b51b8(id)) {
-        return &data_021c50e4[func_020b51e8(id)];
-    } else if (func_020b5268(id)) {
-        return &data_021c4f34[func_020b5298(id)];
+    } else if (SceneId_IsVillagerHouse(id)) {
+        return &data_021c50e4[SceneId_GetVillagerHouse(id)];
+    } else if (SceneId_IsNookShop(id)) {
+        return &data_021c4f34[SceneId_GetNookShop(id)];
     } else if (id == 10) {
         return &data_021c4e9c;
     }
@@ -488,7 +488,7 @@ Unk_0205242c_Item data_021c4e4c[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Ite
 Unk_0205242c_Item data_021c4e8c[4] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(1, 0), Unk_0205242c_Item(0, 1), Unk_0205242c_Item(1, 1) };
 
 extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
-    if (IsOne(data_020e416c) && a == func_020b50e8()) {
+    if (IsOne(gFieldSceneKind) && a == Scene_GetCurrent()) {
         Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
         if (o) {
             return o->vfunc_70(e, i);
@@ -572,7 +572,7 @@ extern "C" s32 func_020520a8(s32 a, Unk_020520a8_W *w) {
 }
 
 extern "C" void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e) {
-    if (a == func_020b50e8() && IsOne(data_020e416c)) {
+    if (a == Scene_GetCurrent() && IsOne(gFieldSceneKind)) {
         {
             Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
             if (o) {
@@ -630,7 +630,7 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     if (!o) return 0;
     if (_ZN11CommManager8isOnlineEv(gCommManager) && o && !_ZN8FtrActor9isPreviewEv(o)) {
         u32 t = o->vfunc_74(d);
-        w = (w & ~0x3f) | (func_020b50e8() & 0x3f);
+        w = (w & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         c = c & 1;
         w = (w & ~0x40) | (c << 6);
         t = t & 1;
@@ -656,7 +656,7 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
 
 extern "C" s32 func_02051da4(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
-    if (IsOne(data_020e416c)) {
+    if (IsOne(gFieldSceneKind)) {
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
             return func_02051d24(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
@@ -665,7 +665,7 @@ extern "C" s32 func_02051da4(s32 a, s32 b, u8 c, u8 d) {
 }
 
 extern "C" s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
-    if (!IsOne(data_020e416c)) return 0;
+    if (!IsOne(gFieldSceneKind)) return 0;
     Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
     o->vfunc_70(d, e);
@@ -677,7 +677,7 @@ extern "C" s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
 
 extern "C" s32 func_02051cc8(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
-    if (IsOne(data_020e416c)) {
+    if (IsOne(gFieldSceneKind)) {
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
             return func_02051c10(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
@@ -691,7 +691,7 @@ extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
         return func_02051d24(a, b, c, d, e, f, g);
     }
-    if (!(data_020e416c == 1 ? TRUE : FALSE)) {
+    if (!(gFieldSceneKind == 1 ? TRUE : FALSE)) {
         return 0;
     }
     p = (u8 *)_ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
@@ -717,7 +717,7 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
     s32 off;
     u32 idx;
     loc[0] = *h;
-    if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
+    if ((gFieldSceneKind == 1 ? TRUE : FALSE) && a == Scene_GetCurrent()) {
         o = gSceneBlockMap;
     } else {
         o = BlockMap_GetForArea(a);
@@ -773,7 +773,7 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
     Unk_0205242c_Self pk;
     u32 bits;
     loc[0] = *f;
-    if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
+    if ((gFieldSceneKind == 1 ? TRUE : FALSE) && a == Scene_GetCurrent()) {
         o = gSceneBlockMap;
     } else {
         o = BlockMap_GetForArea(a);
@@ -827,7 +827,7 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
 
 extern "C" void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     void *o;
-    if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
+    if ((gFieldSceneKind == 1 ? TRUE : FALSE) && a == Scene_GetCurrent()) {
         o = gSceneBlockMap;
     } else {
         o = BlockMap_GetForArea(a);
@@ -911,7 +911,7 @@ extern "C" void func_02051524(s32 *p) {
     data_021c4e38 = 0;
     s = gCommManager;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
-        if (data_021c4ee4.func_020529e4(0, func_020b50e8(), (Unk_02052ab4_Vec *)p) != 0) {
+        if (data_021c4ee4.func_020529e4(0, Scene_GetCurrent(), (Unk_02052ab4_Vec *)p) != 0) {
             data_021c4e38 = 1;
         } else {
             data_021c4e38 = 2;
@@ -920,7 +920,7 @@ extern "C" void func_02051524(s32 *p) {
         void *t;
         buf[0] = p[0] >> 9;
         buf[1] = p[2] >> 9;
-        buf[2] = func_020b50e8();
+        buf[2] = Scene_GetCurrent();
         t = gCommManager;
         _ZN11CommManager11beginRecordEv(t);
         _ZN11CommManager11writeRecordEPhj(t, buf, 3);

@@ -76,7 +76,7 @@ void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void func_02015ab0(void *o, s32 a);
 s32 NpcActor_getPlayerActor(void *o, s32 a);
 s32 NpcTalkCtrl_isBusy(void *o);
-void TalkRequest_EndTalkWith(void *o);
+void TalkRequest_SetTargetDone(void *o);
 void *func_02015aac(void *o);
 s32 NpcActor_getAngleTo(void *o, void *p);
 void NpcTalkCtrl_requestTurnAndTalk(void *o, s32 a, s32 b, s32 c);
@@ -453,7 +453,7 @@ BOOL CafeVillager::setupAct00() {
 
 BOOL CafeVillager::mainAct00() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
     return TRUE;

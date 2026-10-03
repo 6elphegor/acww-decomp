@@ -46,7 +46,7 @@ s32 _ZN12Unk_0201106c13func_02011410Ei(void *p, u32 v);
 void _ZN12Unk_0201106c13func_0201137cEi(void *p, u32 v);
 void _ZN12Unk_0201106c13func_02011408Ev(void *p);
 s32 InputMode_IsTouch(void);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 func_02038f00(void);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 func_0201188c(void);
@@ -106,7 +106,7 @@ extern "C" void func_020118a4(void) {
     }
 }
 
-extern "C" s32 func_0201188c(void) { return data_020c6c88[func_020b50e8()]; }
+extern "C" s32 func_0201188c(void) { return data_020c6c88[Scene_GetCurrent()]; }
 
 extern "C" u8 func_02011880(void) { return data_021bdb80.unk_254; }
 

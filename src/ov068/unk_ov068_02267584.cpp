@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 
-#define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define func_020af608 _ZN12Unk_020af53c13func_020af608Ejjj
 
 struct Unk_ov068_022678c4_Ent {
@@ -117,7 +117,7 @@ public:
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 u32 func_0201bc4c(void *p, s32 n);
 u32 func_0201bcbc(void *p, void *q);
@@ -159,8 +159,8 @@ u16 Item_MakeSnowman(u32);
 void BlockMap_SetItemAtUnit(void *m, u16 *v, s32 x, s32 y, s32 z);
 void Snowball_DropDisplacedItem(void *);
 s32 Snowball_Break(void *o, s32 a);
-void func_020339bc(void *, void *, s32, s32);
-s32 func_02033988(void *o);
+void GroundInfo_initAtPos(void *, void *, s32, s32);
+s32 GroundInfo_Destruct(void *o);
 void func_020e9960(void *, void *, void *);
 void func_020e94f8(void *);
 void func_020e9888(void *, s32);
@@ -187,10 +187,10 @@ s32 func_020e96a4(void *a, void *b);
 s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e780c(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
-s32 func_02031218(s32 x, s32 y);
+s32 Ground_GetDigKind(s32 x, s32 y);
 s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
 void func_020af3fc();
-s32 func_02033914(void *o, s32 f);
+s32 GroundInfoBase_getHeight(void *o, s32 f);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
 s32 _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(void *);
@@ -406,7 +406,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
             }
             if (Item_IsMarker(&cell) == 0 && o != 0 && d < t + (unk_268 + *(s32 *)(o + 0x268)) &&
                 *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 0) {
-                s32 r = func_02031218(sx, sy);
+                s32 r = Ground_GetDigKind(sx, sy);
                 switch (r) {
                 case 0:
                 case 1:
@@ -433,24 +433,24 @@ void Unk_ov068_02268214::execSnowballRoll() {
         }
     }
     applySnowballMotion();
-    func_020339bc(objA, &unk_5c, 0, 0);
-    if (func_02033914(objA, 0) < 0) {
+    GroundInfo_initAtPos(objA, &unk_5c, 0, 0);
+    if (GroundInfoBase_getHeight(objA, 0) < 0) {
         Snowball_ChangeState(this, 1);
-        func_02033988(objA);
+        GroundInfo_Destruct(objA);
         return;
     }
-    func_020339bc(objB, &unk_5c, 1, 0);
+    GroundInfo_initAtPos(objB, &unk_5c, 1, 0);
     if (objB[12] == 1) {
         switch (objB[13]) {
         case 0x16:
         case 0x17:
             Snowball_ChangeState(this, 5);
-            func_02033988(objB);
-            func_02033988(objA);
+            GroundInfo_Destruct(objB);
+            GroundInfo_Destruct(objA);
             return;
         }
     }
-    func_02033988(objB);
+    GroundInfo_Destruct(objB);
     if (grid != 0) {
         FieldPos_SnapToUnitCenter(objC, &unk_5c);
         u16 *c = BlockMap_GetItemPtrAtPos(grid, &unk_5c, 0);
@@ -460,13 +460,13 @@ void Unk_ov068_02268214::execSnowballRoll() {
                 if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
                     if (func_020e9650(o + 0x5c, &unk_5c) > *(s32 *)(o + 0x268) + unk_268) {
                         if (Snowball_ChangeState(this, 4) != 0) {
-                            func_02033988(objA);
+                            GroundInfo_Destruct(objA);
                             return;
                         }
                     }
                 } else {
                     if (Snowball_ChangeState(this, 4) != 0) {
-                        func_02033988(objA);
+                        GroundInfo_Destruct(objA);
                         return;
                     }
                 }
@@ -488,7 +488,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
                 for (i = 0; i < n; i++) {
                     if (func_020e780c((s16)(unk_27c[i] + 0x8000), ang) < 0x1000) {
                         if (Snowball_Break(this, 1) != 0) {
-                            func_02033988(objA);
+                            GroundInfo_Destruct(objA);
                             return;
                         }
                     }
@@ -496,7 +496,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
             }
         }
     }
-    func_02033988(objA);
+    GroundInfo_Destruct(objA);
 }
 
 s32 Unk_ov068_022678c4::enterSnowballFall() {
@@ -552,14 +552,14 @@ void Unk_ov068_022678c4::execSnowballFall() {
         unk_60 = unk_60 - unk_a8;
     }
     if (unk_274 & 2) {
-        func_020339bc(buf, &unk_5c, 0, 0);
+        GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
         lim = (s32)buf[15] - unk_268 - 0x200;
         if (unk_60 < lim) {
             _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
             unk_60 = lim;
             Snowball_ChangeState(this, 2);
         }
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
     }
 }
 
@@ -586,7 +586,7 @@ void Unk_ov068_022678c4::execSnowballSink() {
     s32 t = unk_268;
     t = t + (t >> 1);
     func_020e7820(&unk_26c, t, 0x200, t);
-    func_020339bc(buf, &unk_5c, 0, 0);
+    GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
     s32 *p = (s32 *)&buf[9];
     unk_5c += p[0] >> 5;
     unk_64 += p[2] >> 5;
@@ -599,7 +599,7 @@ void Unk_ov068_022678c4::execSnowballSink() {
     }
     _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
     unk_60 = (s32)buf[15] - unk_268 - 0x200;
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
 }
 
 s32 Unk_ov068_022678c4::enterSnowballBreak() {
@@ -702,7 +702,7 @@ s32 Unk_ov068_022678c4::enterSnowballSplash() {
 
 void Unk_ov068_022678c4::execSnowballSplash() {
     u32 buf[16];
-    func_020339bc(buf, &unk_5c, 0, 0);
+    GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
     s32 *p = (s32 *)&buf[9];
     unk_5c += p[0] >> 5;
     unk_64 += p[2] >> 5;
@@ -718,7 +718,7 @@ void Unk_ov068_022678c4::execSnowballSplash() {
     if (unk_60 < lim) {
         unk_60 = lim;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
 }
 
 s32 Unk_ov068_022678c4::enterSnowballToSnowman() {

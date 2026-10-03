@@ -80,7 +80,7 @@ extern s32 gCamera;
 }
 
 extern "C" {
-extern Unk_0203ecec_Global *data_021ef2f0;
+extern Unk_0203ecec_Global *gCurSceneInfo;
 }
 
 extern "C" {
@@ -208,15 +208,15 @@ u8 *func_02098314(s32 p);
 }
 
 extern "C" {
-s32 func_0203f048(u32 id);
+s32 Emotion_FindSlot(u32 id);
 }
 
 extern "C" {
-s32 func_0203f100(u8 *p, s32 i);
+s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-s32 func_0203f0fc(u8 *p, s32 i, u32 v);
+s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {

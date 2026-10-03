@@ -136,7 +136,7 @@ BOOL InputMode_IsTouch();
 BOOL InputMode_IsButtons();
 void InputMode_SetTouch(void);
 void InputMode_SetButtons(void);
-u8 *func_020b50b4();
+u8 *Scene_GetCollision();
 s32 func_020b6080(u8 *obj, void *out, s32 *a, u8 *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Clock_GetDateTime(void *p);
@@ -366,7 +366,7 @@ void ResidentSelect::updateTouchSelect() {
         return;
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
-        if (func_020b6080(func_020b50b4(), out, &a, &c) && a == 1) {
+        if (func_020b6080(Scene_GetCollision(), out, &a, &c) && a == 1) {
             gCommManager->unk_68 = c;
             unk_31c = c;
             changeState(3);

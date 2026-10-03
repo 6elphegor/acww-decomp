@@ -95,7 +95,7 @@ public:
 };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -477,7 +477,7 @@ static inline BOOL Both() {
 }
 
 static inline BOOL Unk_ov142_02293b34_IsOne() {
-    if (data_020e416c == 1) return TRUE;
+    if (gFieldSceneKind == 1) return TRUE;
     return FALSE;
 }
 
@@ -1742,7 +1742,7 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
         clearFlags(0x20);
         unk_bf = 6;
         BOOL t;
-        if (data_020e416c == 1) {
+        if (gFieldSceneKind == 1) {
             t = TRUE;
         } else {
             t = FALSE;
@@ -1767,7 +1767,7 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
             unk_bf = 5;
         }
         BOOL t;
-        if (data_020e416c == 1) {
+        if (gFieldSceneKind == 1) {
             t = TRUE;
         } else {
             t = FALSE;

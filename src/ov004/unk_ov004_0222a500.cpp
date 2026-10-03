@@ -7,8 +7,8 @@
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
-#define func_0203398c _ZN12Unk_0203398c13func_0203398cEiiii
+#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
+#define GroundInfo_initAtUnit _ZN10GroundInfo10initAtUnitEiiii
 #define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -34,7 +34,7 @@
 #define func_02060808 _ZN9HouseRoom13func_02060808EPtj
 #define func_02060834 _ZN9HouseRoom13func_02060834EPi
 #define func_02060850 _ZN9HouseRoom13func_02060850EPi
-#define func_020716e8 _ZN12Unk_020718a413func_020716e8Eii
+#define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
 #define func_020b1ddc _ZN12Unk_020b1ddc13func_020b1ddcEv
 #define func_020b1e74 _ZN12Unk_020b1ddc13func_020b1e74Ev
 #define func_020b6860 _ZN12Unk_020b696013func_020b6860EP12Unk_020b6a0cP4Vec3S3_S3_ih
@@ -109,8 +109,8 @@ struct AnimModel {
 extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *ctor, void *dtor);
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *dtor);
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 void _ZN16RoomScene22ShapeC1Ev(void *self);
 void _ZN16RoomScene22ShapeD1Ev(void *self);
 }
@@ -338,7 +338,7 @@ public:
     /* 0x0128 */ RoomWallpaper unk_128;
     /* 0x1228 */ RoomCarpet unk_1228;
     /* 0x3328 */ RoomEntranceColliders unk_3328;
-    /* 0x3460 */ u8 unk_3460[0x9c];  // Unk_020d8cf4 (C1 / D2 called by hand, as the original does)
+    /* 0x3460 */ u8 unk_3460[0x9c];  // BoxCollider (C1 / D2 called by hand, as the original does)
     /* 0x34fc */ u8 unk_34fc[0x24];  // RoomScene22Shape
     /* 0x3520 */ s8 unk_3520;
     /* 0x3521 */ s8 unk_3521;
@@ -354,23 +354,23 @@ public:
 
 // ---------------------------------------------------------------- externs
 extern "C" {
-u32 func_020b50e8(void);
-s32 func_020b52f8(void);
-s32 func_020b52d0(void);
-s32 func_020b5254(void);
-u32 func_020b5328(void);
+u32 Scene_GetCurrent(void);
+s32 Scene_InHouseRoom(void);
+s32 Scene_InUnk6To8(void);
+s32 Scene_InNookShop(void);
+u32 Scene_GetHouseRoom(void);
 void Snd_PlaySe(s32 a);
 void func_020b1e74(void *p);
 void func_020b1ddc(void *p);
-u32 func_020b50b4(void);
+u32 Scene_GetCollision(void);
 u32 func_020b6860(u32 o, void *obj, void *v, s32 a, s32 b, s32 c, s32 d);
 u32 func_020b6890(u32 o, void *obj);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
-u32 func_020716cc(void);
-u8 *func_020716e8(u32 a, u32 b, u32 c);
+u32 PatternTexCache_Get(void);
+u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
 void func_0203411c(u32 a, u16 *p);
 void func_0203414c(u32 a, u16 *p);
 BOOL func_0203c23c(void *o, u16 *p);
@@ -380,8 +380,8 @@ void *Wallpaper_GetTex(void *o);
 void *func_0206052c(void *self, u32 idx);
 void func_020607e0(void *o, u16 *p, u32 k);
 s32 func_02060808(void *self, u16 *a, u32 b);
-BOOL func_020318cc(void *self);
-BOOL func_02031908(void *self, s32 a, s32 b, s32 c, void *p, s32 s, void *q);
+BOOL BoxCollider_Unregister(void *self);
+BOOL BoxCollider_Register(void *self, s32 a, s32 b, s32 c, void *p, s32 s, void *q);
 void MatTexVramTask_cancel(void *self);
 BOOL MatTexVramTask_request(void *self, void *a, u32 b, void *c, u32 d, u32 e);
 void MatTexBinder_bindByIdx(void *self, u8 *a, s32 b, s32 c);
@@ -408,15 +408,15 @@ u32 Villager_GetWallpaper(void *self);
 u32 Villager_GetCarpet(void *self);
 u16 *func_02034134(s32 r);
 u16 *func_02034104(s32 r);
-void *func_0203398c(void *self, s32 a, s32 b, s32 c, s32 d);
-s32 func_02033914(void *self, s32 a);
-void func_02033988(void *self);
-s32 func_020b530c(s32 r);
-s32 func_020b533c(s32 r);
-s32 func_020b51b8(s32 r);
-s32 func_020b51e8(s32 r);
-s32 func_020b5268(s32 r);
-s32 func_020b5298(s32 r);
+void *GroundInfo_initAtUnit(void *self, s32 a, s32 b, s32 c, s32 d);
+s32 GroundInfoBase_getHeight(void *self, s32 a);
+void GroundInfo_Destruct(void *self);
+s32 SceneId_IsHouseRoom(s32 r);
+s32 SceneId_GetHouseRoom(s32 r);
+s32 SceneId_IsVillagerHouse(s32 r);
+s32 SceneId_GetVillagerHouse(s32 r);
+s32 SceneId_IsNookShop(s32 r);
+s32 SceneId_GetNookShop(s32 r);
 void Model_clearResource(void *self);
 void Unk_02003c30_callRelease(void *self);
 void AnimModel_drawAnimated(void *self, s32 a);
@@ -485,7 +485,7 @@ extern "C" RoomShell *RoomShell_Create() {
 }
 
 RoomShell::RoomShell() {
-    _ZN12Unk_020d8cf4C1Ev(unk_3460);
+    _ZN11BoxColliderC1Ev(unk_3460);
     _ZN16RoomScene22ShapeC1Ev(unk_34fc);
     unk_3534 = data_0213b91c;
     unk_3520 = unk_3521 = unk_3540 = -1;
@@ -493,7 +493,7 @@ RoomShell::RoomShell() {
 
 RoomShell::~RoomShell() {
     _ZN16RoomScene22ShapeD1Ev(unk_34fc);
-    _ZN12Unk_020d8cf4D2Ev(unk_3460);
+    _ZN11BoxColliderD2Ev(unk_3460);
 }
 
 BOOL RoomShell::vfunc_00() {
@@ -568,11 +568,11 @@ void RoomShell::calcRoomSize() {
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 16; i++) {
-        func_0203398c(buf, i, 10, 0, 0);
-        if (func_02033914(buf, 0) == 0) {
+        GroundInfo_initAtUnit(buf, i, 10, 0, 0);
+        if (GroundInfoBase_getHeight(buf, 0) == 0) {
             cnt++;
         }
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
     }
     unk_3522 = cnt;
 }
@@ -598,25 +598,25 @@ static inline BOOL Unk_ov004_0222b610_InB(u16 *p) {
 }
 
 extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, s32 *d) {
-    s32 r = func_020b50e8();
+    s32 r = Scene_GetCurrent();
     *d = 0;
     *b = *d;
-    if (func_020b530c(r)) {
-        void *o = func_0206052c(data_021e58a8, func_020b533c(r));
+    if (SceneId_IsHouseRoom(r)) {
+        void *o = func_0206052c(data_021e58a8, SceneId_GetHouseRoom(r));
         if (o != NULL) {
             *a = *func_02060850(o, b);
             *c = *func_02060834(o, d);
         }
-    } else if (func_020b51b8(r)) {
-        void *o = SaveVillagers_Get(data_021dfd8c, func_020b51e8(r));
+    } else if (SceneId_IsVillagerHouse(r)) {
+        void *o = SaveVillagers_Get(data_021dfd8c, SceneId_GetVillagerHouse(r));
         if (o != NULL) {
             u32 t = Villager_GetWallpaper(o);
             *a = t < 0x44 ? (u16)(t + 0x1100) : 0x1100;
             t = Villager_GetCarpet(o);
             *c = t < 0x44 ? (u16)(t + 0x1144) : 0x1144;
         }
-    } else if (func_020b5268(r)) {
-        s32 i = func_020b5298(r);
+    } else if (SceneId_IsNookShop(r)) {
+        s32 i = SceneId_GetNookShop(r);
         u16 *p = func_02034134(r);
         if (Unk_ov004_0222b610_InA(p)) {
             *a = *p;
@@ -761,8 +761,8 @@ void RoomWallpaper::applyDefault(u16 v, void *a, s32 b) {
 }
 
 extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
-    if (func_020b52f8()) {
-        void *r = func_0206052c(data_021e58a8, func_020b5328());
+    if (Scene_InHouseRoom()) {
+        void *r = func_0206052c(data_021e58a8, Scene_GetHouseRoom());
         if (r != NULL) {
             func_02060808(r, a, b);
         }
@@ -790,7 +790,7 @@ BOOL Unk_ov004_0222b15c::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
         if (v >= 0x1100 && v <= 0x1143) in = TRUE;
         if (in != FALSE) {
             if (Wallpaper_LoadTexture(&unk_2c, q) == 0) goto fail;
-            if (func_020b5254() == 0) {
+            if (Scene_InNookShop() == 0) {
                 MatTexBinder_bindByName(&unk_10f4, unk_10fc, "dummy_wall", "dummy_wall_pl");
             }
             void *r = Wallpaper_GetTex(&unk_2c);
@@ -798,19 +798,19 @@ BOOL Unk_ov004_0222b15c::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
             unk_00 = unk_02;
             unk_02 = *q;
             RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-            func_0203414c(func_020b50e8(), &unk_02);
+            func_0203414c(Scene_GetCurrent(), &unk_02);
             return TRUE;
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
             u32 t8 = Item_GetDesignSlot(q);
-            u32 h = func_020716cc();
-            u8 *idx = func_020716e8(h, (u8)t7, (u8)t8);
+            u32 h = PatternTexCache_Get();
+            u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
             MatTexBinder_bindByIdx(&unk_10f4, idx, 0, 0);
             unk_00 = unk_02;
             unk_02 = *q;
             unk_10f0 = key;
             RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-            func_0203414c(func_020b50e8(), &unk_02);
+            func_0203414c(Scene_GetCurrent(), &unk_02);
             return TRUE;
         }
     }
@@ -821,7 +821,7 @@ done:
     unk_02 = *q;
     unk_10f0 = key;
     RoomWallpaper_SaveToHouseRoom(this, &unk_02, key);
-    func_0203414c(func_020b50e8(), &unk_02);
+    func_0203414c(Scene_GetCurrent(), &unk_02);
     return TRUE;
 }
 
@@ -866,8 +866,8 @@ BOOL RoomCarpet::applyDefault(u16 v, G3dResAccess *a, s32 key) {
 }
 
 void RoomCarpet::saveToHouseRoom(u16 *q, u32 key) {
-    if (func_020b52f8() != 0) {
-        u32 t = func_020b5328();
+    if (Scene_InHouseRoom() != 0) {
+        u32 t = Scene_GetHouseRoom();
         void *o = func_0206052c(data_021e58a8, t);
         if (o != 0) {
             func_020607e0(o, q, key);
@@ -896,7 +896,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
         if (v >= 0x1144 && v <= 0x1187) in = TRUE;
         if (in != FALSE) {
             if (func_0203c23c(&unk_2c, q) == 0) goto fail;
-            if (func_020b5254() == 0) {
+            if (Scene_InNookShop() == 0) {
                 MatTexBinder_bindByName(&unk_20f4, unk_20fc, "dummy_floor", "dummy_floor_pl");
             }
             void *r = func_0203c234(&unk_2c);
@@ -904,19 +904,19 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
             unk_00 = unk_02;
             unk_02 = *q;
             saveToHouseRoom(&unk_02, key);
-            func_0203411c(func_020b50e8(), &unk_02);
+            func_0203411c(Scene_GetCurrent(), &unk_02);
             return TRUE;
         } else if (v >= 0x1188 && v <= 0x11a7) {
             u32 t7 = Item_GetDesignPlayer(q);
             u32 t8 = Item_GetDesignSlot(q);
-            u32 h = func_020716cc();
-            u8 *idx = func_020716e8(h, (u8)t7, (u8)t8);
+            u32 h = PatternTexCache_Get();
+            u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
             MatTexBinder_bindByIdx(&unk_20f4, idx, 0, 0);
             unk_00 = unk_02;
             unk_02 = *q;
             unk_20f0 = key;
             saveToHouseRoom(&unk_02, key);
-            func_0203411c(func_020b50e8(), &unk_02);
+            func_0203411c(Scene_GetCurrent(), &unk_02);
             return TRUE;
         }
     }
@@ -927,7 +927,7 @@ done:
     unk_02 = *q;
     unk_20f0 = key;
     saveToHouseRoom(&unk_02, key);
-    func_0203411c(func_020b50e8(), &unk_02);
+    func_0203411c(Scene_GetCurrent(), &unk_02);
     return TRUE;
 }
 
@@ -948,15 +948,15 @@ extern "C" u32 func_ov004_0222ae7c(Unk_ov004_0222ae7c_Obj *o) {
 
 // ---- class Z
 RoomEntranceColliders::RoomEntranceColliders() {
-    __cxa_vec_ctor(unk_00, 2, 0x9c, (void *)_ZN12Unk_020d8cf4C1Ev, (void *)_ZN12Unk_020d8cf4D2Ev);
+    __cxa_vec_ctor(unk_00, 2, 0x9c, (void *)_ZN11BoxColliderC1Ev, (void *)_ZN11BoxColliderD2Ev);
 }
 
 RoomEntranceColliders::~RoomEntranceColliders() {
-    __cxa_vec_cleanup(unk_00, 2, 0x9c, (void *)_ZN12Unk_020d8cf4D2Ev);
+    __cxa_vec_cleanup(unk_00, 2, 0x9c, (void *)_ZN11BoxColliderD2Ev);
 }
 
 extern "C" BOOL func_ov004_0222ae18() {
-    if (func_020b52f8() != 0 || func_020b52d0() != 0) return TRUE;
+    if (Scene_InHouseRoom() != 0 || Scene_InUnk6To8() != 0) return TRUE;
     return FALSE;
 }
 
@@ -974,8 +974,8 @@ BOOL RoomEntranceColliders::init() {
         b.x = 0x13000;
         b.y = 0;
         b.z = 0x1c000;
-        BOOL r0 = func_02031908(&unk_00[0], 0x2000, 0, 0x4000, &a, 0, 0);
-        BOOL r1 = func_02031908(&unk_00[1], 0x2000, 0, 0x4000, &b, 0, 0);
+        BOOL r0 = BoxCollider_Register(&unk_00[0], 0x2000, 0, 0x4000, &a, 0, 0);
+        BOOL r1 = BoxCollider_Register(&unk_00[1], 0x2000, 0, 0x4000, &b, 0, 0);
         if (r0 != 0 && r1 != 0) return TRUE;
         return FALSE;
     }
@@ -984,8 +984,8 @@ BOOL RoomEntranceColliders::init() {
 
 BOOL RoomEntranceColliders::release() {
     if (func_ov004_0222ae18() != 0) {
-        func_020318cc(&unk_00[0]);
-        func_020318cc(&unk_00[1]);
+        BoxCollider_Unregister(&unk_00[0]);
+        BoxCollider_Unregister(&unk_00[1]);
     }
     return TRUE;
 }
@@ -997,9 +997,9 @@ ItemId sRoomNoItem(0xfff1);
 }
 
 void RoomEntranceColliders::initScene0A() {
-    if (func_020b50e8() == 0xa) {
+    if (Scene_GetCurrent() == 0xa) {
         static FxVec3 s(0xe000, 0, data_020c8cc0 + 0x1000);
-        func_02031908(&unk_00[0], 0x8000, 0x2000, 0x1000, &s, 0, 0);
+        BoxCollider_Register(&unk_00[0], 0x8000, 0x2000, 0x1000, &s, 0, 0);
     }
 }
 
@@ -1007,8 +1007,8 @@ extern "C" char sRoomWallpaperMatNameStr[] = "m_dummy_wall";
 extern "C" const char *sRoomWallpaperMatName = sRoomWallpaperMatNameStr;
 
 void RoomEntranceColliders::releaseScene0A() {
-    if (func_020b50e8() == 0xa) {
-        func_020318cc(&unk_00[0]);
+    if (Scene_GetCurrent() == 0xa) {
+        BoxCollider_Unregister(&unk_00[0]);
     }
 }
 
@@ -1026,20 +1026,20 @@ struct Unk_ov004_0222ac54_V {
 
 void RoomScene22Shape::init() {
     Unk_ov004_0222ac54_V v;
-    if (func_020b50e8() == 0x22) {
+    if (Scene_GetCurrent() == 0x22) {
         unk_20 = 1;
     }
     if (unk_20 != 0) {
         v.x = 0x108f6;
         v.y = 0;
         v.z = 0x1351e;
-        func_020b6860(func_020b50b4(), this, &v, 0xf33, 0x6000, 0x16, 0xff);
+        func_020b6860(Scene_GetCollision(), this, &v, 0xf33, 0x6000, 0x16, 0xff);
     }
 }
 
 void RoomScene22Shape::update() {
     if (unk_20 != 0) {
-        func_020b6890(func_020b50b4(), this);
+        func_020b6890(Scene_GetCollision(), this);
     }
 }
 
@@ -1059,7 +1059,7 @@ extern "C" u16 *RoomShell_SetWallpaper(u16 *p, s32 key, u32 flag) {
         if (g != 0) {
             if (((Unk_ov004_0222b15c *)&g->unk_128)->setWallpaper(p, (G3dResAccess *)g->unk_ac, key) != 0) {
                 if (flag != 0) {
-                    if (func_020b5254() != 0) Snd_PlaySe(0x50);
+                    if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }
                 BOOL r2 = Unk_ov004_0222aacc_R1(sRoomShell->unk_128.getPrevItem(), 0x1100, 0x1143);
                 if (r2 != FALSE) return sRoomShell->unk_128.getPrevItem();
@@ -1077,7 +1077,7 @@ extern "C" u16 *RoomShell_SetCarpet(u16 *p, s32 key, u32 flag) {
         if (g != 0) {
             if (g->unk_1228.setCarpet(p, (G3dResAccess *)g->unk_ac, key) != 0) {
                 if (flag != 0) {
-                    if (func_020b5254() != 0) Snd_PlaySe(0x50);
+                    if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }
                 BOOL r2 = Unk_ov004_0222aacc_R1(sRoomShell->unk_1228.getPrevItem(), 0x1144, 0x1187);
                 if (r2 != FALSE) return sRoomShell->unk_1228.getPrevItem();

@@ -420,8 +420,8 @@ void DateTime_SubDays(void *, s32);
 void PlayerActor_SetLastPlayDate(void *, void *, void *);
 void *PlayerActor_Get(s32);
 void func_0203d984();
-void *func_020b4934();
-void func_020b4f58(void *, s32, s32, s32);
+void *Scene_GetWarpRequest();
+void SceneWarp_RequestFade(void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_02098a58Ev(void *);
 void *PlayerData_GetCurrentIndex();
@@ -440,9 +440,9 @@ s32 _ZN13BuildingActor15openDoorForExitEv(void *);
 void func_0203d990();
 void Field_SetDoorExitMode(s32);
 s32 _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
-void func_020b4bbc(void *, s32);
-void *func_020b50e8(void *);
-void func_020b49c4(void *, void *, void *, s32, s32, s32, s32);
+void SceneWarp_RequestExit(void *, s32);
+void *Scene_GetCurrent(void *);
+void Scene_SetTownReturnPos(void *, void *, void *, s32, s32, s32, s32);
 void _ZN13BuildingActor16openDoorForEntryEv(void *);
 s32 _ZN13BuildingActor8getGridXEv(void *);
 s32 _ZN13BuildingActor8getGridZEv(void *);
@@ -471,7 +471,7 @@ void func_020b0f3c();
 void func_02094f64(s32);
 BOOL func_020b0f0c();
 BOOL func_020b0f30();
-void func_020b49b4();
+void Scene_ResetTownReturnPos();
 void _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
 BOOL KappnTaxi_RequestPlayerGetOut();
 void _ZN19PlayerActionRequest6assignEiis(void *, s32, s32, s32);
@@ -516,8 +516,8 @@ BOOL KappnTaxi::vfunc_70() {
     unk_2c8.z = unk_5c[2];
     if (func_020b0f0c()) {
         unk_2da = 1;
-        func_020b4934();
-        func_020b49b4();
+        Scene_GetWarpRequest();
+        Scene_ResetTownReturnPos();
         setTaxiState(1);
     } else if (func_020b0f30()) {
         unk_2da = 1;
@@ -525,8 +525,8 @@ BOOL KappnTaxi::vfunc_70() {
             u16 t = 0xfff1;
             _ZN10PlayerData11setHeldItemEPt(p, &t);
         }
-        func_020b4934();
-        func_020b49b4();
+        Scene_GetWarpRequest();
+        Scene_ResetTownReturnPos();
         setTaxiState(0xa);
     } else {
         setTaxiState(0);
@@ -893,11 +893,11 @@ void KappnTaxi::execTaxiWarpTownHall() {
         void *q = BuildingList_FindByItem(0x5000);
         if (q != 0) {
             if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
-                func_020b4bbc(func_020b4934(), 9);
+                SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
                 v.z = v.z + 0x1000;
-                void *r4 = func_020b4934();
-                void *r1 = func_020b50e8(r4);
-                func_020b49c4(r4, r1, &v, 0xf000000, (s16)(sv + 0x8000), unk_2b4, unk_2b8);
+                void *r4 = Scene_GetWarpRequest();
+                void *r1 = Scene_GetCurrent(r4);
+                Scene_SetTownReturnPos(r4, r1, &v, 0xf000000, (s16)(sv + 0x8000), unk_2b4, unk_2b8);
                 func_0203d984();
             }
         }
@@ -1027,7 +1027,7 @@ BOOL KappnTaxi::enterTaxiLeaveEnd() {
 void KappnTaxi::execTaxiLeaveEnd() {
     if (sKappnTaxiLeaveTimer == 0) {
         func_0203d984();
-        func_020b4f58(func_020b4934(), 0x2c, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         _ZN10PlayerData13func_02098a58Ev(PlayerData_GetCurrent());
         _ZN8SaveData11resetPlayerEi(gSaveData, PlayerData_GetCurrentIndex());
     }

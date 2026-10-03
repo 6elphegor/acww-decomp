@@ -101,7 +101,7 @@ extern const Unk_0223f44c_Vec data_ov004_0224682c;
 // linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
 
 Unk_0223f44c_Vec *func_020947f0(s32 a);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 func_02063b8c(s32 a);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -212,7 +212,7 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
                 if (ang < 0) ang = (s16)-ang;
                 if (ang > 0x701) r7 = 0; else r7 = 1;
             }
-            if (func_020b50e8() == 0x10) r7 = 1;
+            if (Scene_GetCurrent() == 0x10) r7 = 1;
             self->unk_1f6 = r7;
         }
         u32 m = self->unk_1f6;
@@ -258,7 +258,7 @@ void Camera_UpdateMode10(Unk_021c3070 *self) {
 
 s32 Camera_GetShopTier() {
     s32 r = 0;
-    switch (func_020b50e8()) {
+    switch (Scene_GetCurrent()) {
     case 0x1a:
         r = 0;
         break;

@@ -313,17 +313,17 @@ struct Unk_0203389c_Vec {
     s32 x, y, z;
 };
 
-class Unk_0203389c {
+class GroundInfoBase {
 public:
     u8 pad_00[0x40];
-    s32 func_02033914(s32 a);
+    s32 getHeight(s32 a);
 };
 
-class Unk_0203398c : public Unk_0203389c {
+class GroundInfo : public GroundInfoBase {
 public:
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
 
 // main's 0x18-byte pool object
@@ -587,8 +587,8 @@ void Snd_PosNodeInit(void *, u32);
 void Snd_PosListUpdate(void *);
 void Snd_PosListInit(void *);
 void func_02004b60();
-s32 func_0202ffdc(void *);
-s32 func_02031284(s32 x, s32 y);
+s32 Ground_GetExitAtPos(void *);
+s32 Ground_CanPlaceItem(s32 x, s32 y);
 void func_0203442c();
 void *MapBlock_GetItemPtr(void *, u32, u32, u8);
 void *func_0203c2cc(void *);
@@ -649,14 +649,14 @@ s32 Date_GetWeatherPeriod(void *);
 s32 Clock_GetWeekday();
 void Clock_GetMinuteHour(void *);
 void Clock_GetDateTime(void *);
-s32 func_020b4904(s32);
-s32 func_020b50e8();
-BOOL func_020b51a4();
-BOOL func_020b51fc();
-s32 func_020b5254();
-BOOL func_020b52ac();
-BOOL func_020b52d0();
-BOOL func_020b52f8();
+s32 Scene_GetMaxFurniture(s32);
+s32 Scene_GetCurrent();
+BOOL Scene_InVillagerHouse();
+BOOL Scene_InMuseumRoom();
+s32 Scene_InNookShop();
+BOOL Scene_InUnk6Or7();
+BOOL Scene_InUnk6To8();
+BOOL Scene_InHouseRoom();
 void *func_020b8d98(void *);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
@@ -936,7 +936,7 @@ FurnitureManager::~FurnitureManager() {
 
 // @0x2235dfc unk_02235984.cpp
 BOOL FurnitureManager::vfunc_00() {
-    if (func_020b52f8() || func_020b51a4()) {
+    if (Scene_InHouseRoom() || Scene_InVillagerHouse()) {
         sFtrMgrTvSoundEnabled = 1;
     }
     unk_2a9 = 1;
@@ -949,7 +949,7 @@ BOOL FurnitureManager::vfunc_00() {
     FtrActorGrid_GetInstance()->clear();
     FtrContactSet_GetInstance()->clear();
     s32 flags = 0x1cc4;
-    if (func_020b51fc()) {
+    if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
     func_0209c1a4(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)func_0205c158,
@@ -971,8 +971,8 @@ BOOL FurnitureManager::onExecute() {
     sFtrMgrCycleCounter = (sFtrMgrCycleCounter + 1) % 0x28;
     if (FtrMgr_GetMaxFurniture() > 1) {
         if (Backup_GetStatus(gBackup) == 4) {
-            if (!func_020b52d0()) {
-                if (!func_020b52ac()) {
+            if (!Scene_InUnk6To8()) {
+                if (!Scene_InUnk6Or7()) {
                     TvScreen_UpdateSchedule(&unk_64);
                     FurnitureManager_UpdateTvSound(this);
                     TvScreen_Update(&unk_64);
@@ -1833,7 +1833,7 @@ extern "C" s32 FtrMgr_IsFurnitureEditable() {
     if (FtrMgr_IsSaleMode()) {
         return FALSE;
     }
-    if (func_020b52f8() || func_020b51a4()) {
+    if (Scene_InHouseRoom() || Scene_InVillagerHouse()) {
         return TRUE;
     }
     return FALSE;
@@ -1844,7 +1844,7 @@ extern "C" s32 FtrMgr_IsFurnitureUsable() {
     if (FtrMgr_IsFurnitureEditable()) {
         return TRUE;
     }
-    switch (func_020b50e8()) {
+    switch (Scene_GetCurrent()) {
     case 0x1f:
     case 0x21:
     case 0x22:
@@ -1869,7 +1869,7 @@ extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
                     e->unk_73c.set(1, 0);
-                    func_020515b8(func_020b50e8(), (u8 *)e + 0x5c, 0);
+                    func_020515b8(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
                 }
             }
         }
@@ -1894,12 +1894,12 @@ extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y) {
         return e->unk_78c + e->unk_5c.y;
     }
     Unk_0203389c_Vec v;
-    Unk_0203398c g;
+    GroundInfo g;
     v.x = (x << 13) + 0x1000;
     v.y = 0;
     v.z = (y << 13) + 0x1000;
-    g.func_020339bc(&v, 0, 0);
-    return g.func_02033914(0);
+    g.initAtPos(&v, 0, 0);
+    return g.getHeight(0);
 }
 
 // @0x2234f6c unk_02234774.cpp
@@ -3728,7 +3728,7 @@ extern "C" s32 FtrMgr_TestStepTarget(Unk_ov004_Vec3 *p, s16 ang, s32 dist) {
     if (FtrActor_IsPosClearOfCharacters(&v, 0x800, 0x2000, 0x800, 0) == 0) {
         return 1;
     }
-    s32 t = func_0202ffdc(&v);
+    s32 t = Ground_GetExitAtPos(&v);
     s32 zz = 0;
     if (t == -1) goto two;
     return zz;
@@ -3872,13 +3872,13 @@ extern "C" s32 FtrMgr_PickFurnitureComment(u32 key) {
 
 // @0x2234af8 unk_02234774.cpp
 extern "C" u32 FtrMgr_GetMaxFurniture() {
-    return func_020b4904(func_020b50e8());
+    return Scene_GetMaxFurniture(Scene_GetCurrent());
 }
 
 // @0x2234ad4 unk_02234774.cpp
 extern "C" BOOL FtrMgr_IsShopScene() {
-    s32 t = func_020b50e8();
-    if (func_020b5254() != 0 || t == 10 || t == 15) {
+    s32 t = Scene_GetCurrent();
+    if (Scene_InNookShop() != 0 || t == 10 || t == 15) {
         return TRUE;
     }
     return FALSE;
@@ -4280,7 +4280,7 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
             ok = FALSE;
             break;
         }
-        if (func_02031284(px, py) == 0) {
+        if (Ground_CanPlaceItem(px, py) == 0) {
             ok = FALSE;
             break;
         }
@@ -4340,7 +4340,7 @@ extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s
         *(u32 *)out = (u32)FtrActor_MakeSpawnArg(0, 0, Item_GetFurnitureIndex(tile), 0, 0, 2);
         return 3;
     }
-    if (func_020b52f8() == 0) {
+    if (Scene_InHouseRoom() == 0) {
         return 0;
     }
     pl = Item_GetFurnitureIndex(tile);

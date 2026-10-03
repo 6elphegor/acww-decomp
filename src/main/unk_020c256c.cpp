@@ -3,7 +3,7 @@
 extern "C" {
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
 s32 _ZN8NpcActor6isNearEPS_i(void *p, void *q, s32 n);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 void _ZN8NpcActor12setNpcHandleEPt(void *p, u16 *q);
 u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
@@ -148,7 +148,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 struct NpcActionCtrl {
@@ -217,7 +217,7 @@ struct NpcActor : Character {
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -597,7 +597,7 @@ BOOL SpNpcTest::setupAct01() {
 
 BOOL SpNpcTest::mainAct01() {
     if (unk_618.isBusy() == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;

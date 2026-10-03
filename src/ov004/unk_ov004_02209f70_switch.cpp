@@ -411,7 +411,7 @@ struct FtrStackedSet {
     Unk_ov004_02205c80_Obj *unk_04[4];
 };
 
-// ---- 0x022487cc : Unk_020d8cf4 (member at 0x628)
+// ---- 0x022487cc : BoxCollider (member at 0x628)
 class Unk_0202f048 {
 public:
     s32 x, y;
@@ -443,17 +443,17 @@ struct Unk_ov004_02206570_Act {
     s16 unk_8e;
 };
 
-struct Unk_020d8cf4 {
-    virtual void vfunc_00(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+struct BoxCollider {
+    virtual void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
     u8 pad_04[0x98];
-    Unk_020d8cf4();
-    ~Unk_020d8cf4();
+    BoxCollider();
+    ~BoxCollider();
 };
 
-struct FtrCollider : Unk_020d8cf4 {
+struct FtrCollider : BoxCollider {
     void *unk_9c;
     FtrCollider();
-    void vfunc_00(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+    void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
     void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
     void clearOwner();
     void setOwner(void *p);
@@ -1417,7 +1417,7 @@ s32 *_ZN10FtrContact22getClampedContactPointEv(void);
 u32 _ZN10FtrContact12getPushAngleEv(void *);
 
 u32 ItemInfo_IsReady(void);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 }

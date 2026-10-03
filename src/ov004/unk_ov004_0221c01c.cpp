@@ -159,7 +159,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -270,7 +270,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -363,12 +363,12 @@ struct Unk_ov004_0224d0a0_Ent {
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define func_0202e548 _ZN10SpNpcActor13func_0202e548Eii
-#define func_0209868c _ZN10PlayerData13func_0209868cEv
+#define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_02087c4c _ZN12Unk_02087ad813func_02087c4cEv
-#define func_02087c3c _ZN12Unk_02087ad813func_02087c3cEj
-#define func_02087c50 _ZN12Unk_02087ad813func_02087c50Ej
-#define func_02087c54 _ZN12Unk_02087ad813func_02087c54Ev
+#define PlayerSpNpcRecord_getCafeVisits _ZN17PlayerSpNpcRecord13getCafeVisitsEv
+#define PlayerSpNpcRecord_setCafeVisits _ZN17PlayerSpNpcRecord13setCafeVisitsEj
+#define PlayerSpNpcRecord_setSableTalkCount _ZN17PlayerSpNpcRecord17setSableTalkCountEj
+#define PlayerSpNpcRecord_getSableTalkCount _ZN17PlayerSpNpcRecord17getSableTalkCountEv
 #define PlayerId_getGender _ZN8PlayerId9getGenderEv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -426,12 +426,12 @@ void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 void func_0202e548(void *self, s32 a, s32 b);
 void TalkWindowState_setNextMessage(void *self, void *p, u32 d);
 void *PlayerData_GetCurrent(void);
-void *func_0209868c(void *p);
+void *PlayerData_getSpNpcRecord(void *p);
 void *PlayerData_getPlayerId(void *p);
-s32 func_02087c4c(void *p);
-void func_02087c3c(void *p, u32 v);
-void func_02087c50(void *self, u32 v);
-u32 func_02087c54(void *self);
+s32 PlayerSpNpcRecord_getCafeVisits(void *p);
+void PlayerSpNpcRecord_setCafeVisits(void *p, u32 v);
+void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
+u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 s32 PlayerId_getGender(void *p);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
 void Camera_UnmuteSe();
@@ -452,7 +452,7 @@ s32 SpNpcRoostGuest_getGuest(void *p);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 void Hud_Hide(void);
 void Hud_Show(void);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 void Model_GetJointWorldMtx(void *p, void *q, s32 n);
 void ThreeLayerAnimModel_updateLayers3(void *p);
@@ -706,7 +706,7 @@ BOOL SpNpcBrewster::mainAct01() {
             Hud_Show();
         }
         NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -811,7 +811,7 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
 
 void SpNpcBrewsterTalk::vfunc_78(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
-    void *h = func_0209868c(PlayerData_GetCurrent());
+    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     if (GameStart_IsActive() != 0) {
         out->unk_00 = sSpNpcBrewsterMsgFiles[1];
         out->unk_04 = 0x1f;
@@ -824,34 +824,34 @@ void SpNpcBrewsterTalk::vfunc_78(void *arg) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->unk_04 = 0x58;
             } else {
-                s32 c = func_02087c4c(h) >> 2;
+                s32 c = PlayerSpNpcRecord_getCafeVisits(h) >> 2;
                 out->unk_04 = data_ov004_0224cec8[c] + func_02063b8c(3);
             }
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (Talk_CheckAndSetPlayerFlag(0x16, 1) == 0) {
-                out->unk_04 = func_02087c4c(h) >> 1;
+                out->unk_04 = PlayerSpNpcRecord_getCafeVisits(h) >> 1;
             } else if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->unk_04 = 0x58;
             } else {
-                out->unk_04 = (func_02087c4c(h) >> 2) + 0x49;
+                out->unk_04 = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x49;
             }
         } else {
             if (Talk_CheckAndSetPlayerFlag(0x17, 0) == 0) {
                 Hud_Hide();
             }
-            out->unk_04 = (func_02087c4c(h) >> 2) + 0x14;
+            out->unk_04 = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x14;
         }
     }
 }
 
 void SpNpcBrewsterTalk::vfunc_14() {
-    void *h = func_0209868c(PlayerData_GetCurrent());
+    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if (GameStart_IsActive() == 0) {
         if ((s32)unk_1e >= 0x1c && (s32)unk_1e <= 0x23) {
-            if ((u32)func_02087c4c(h) >= 5) {
+            if ((u32)PlayerSpNpcRecord_getCafeVisits(h) >= 5) {
                 if (func_02063b8c(3) == 0) {
                     r = 0x2c;
                     goto next0;
@@ -883,13 +883,13 @@ void SpNpcBrewsterTalk::vfunc_14() {
 }
 
 void SpNpcBrewsterTalk::vfunc_18() {
-    void *h = func_0209868c(PlayerData_GetCurrent());
+    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     s32 t = getChoiceList()->getResult();
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if ((s32)unk_1e >= 0x24 && (s32)unk_1e <= 0x2b) {
         if (t != 0) {
-            r = (u8)((func_02087c4c(h) >> 2) + 0x28);
+            r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x28);
         } else {
             ((Unk_ov004_0221cc88_Obj *)unk_3c)->unk_14 = 0;
             setScript(2);
@@ -906,10 +906,10 @@ void SpNpcBrewsterTalk::vfunc_18() {
             } else {
                 NpcActor_ChargePlayer((s32)unk_b0, 200);
                 r = func_02063b8c(2);
-                r = (u8)(r + (((func_02087c4c(h) >> 2) << 1) + 0x1c));
+                r = (u8)(r + (((PlayerSpNpcRecord_getCafeVisits(h) >> 2) << 1) + 0x1c));
             }
         } else {
-            r = (u8)((func_02087c4c(h) >> 2) + 0x18);
+            r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x18);
         }
         break;
     }
@@ -946,7 +946,7 @@ void SpNpcBrewsterTalk::setScript(s32 v) {
 
 void SpNpcBrewsterTalk::runCoffeeScript() {
     TalkWindowState *r6 = unk_3c;
-    u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x24);
+    u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x24);
     void *r5 = &unk_b0->unk_564;
     u8 buf;
     switch (unk_b4) {
@@ -1098,9 +1098,9 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
             r6->unk_08 = 1;
             Talk_CheckAndSetPlayerFlag(0x17, 1);
-            void *p = func_0209868c(PlayerData_GetCurrent());
+            void *p = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
             if (func_02063b8c(0xa) < 5) {
-                func_02087c3c(p, func_02087c4c(p) + 1);
+                PlayerSpNpcRecord_setCafeVisits(p, PlayerSpNpcRecord_getCafeVisits(p) + 1);
             }
             setScript(0);
         }
@@ -1117,7 +1117,7 @@ void SpNpcBrewsterTalk::vfunc_70() {
 
 void SpNpcBrewsterTalk::runScript03() {
     TalkWindowState *r6 = unk_3c;
-    u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x51);
+    u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x51);
     void *r5 = &unk_b0->unk_564;
     u8 buf;
     switch (unk_b4) {

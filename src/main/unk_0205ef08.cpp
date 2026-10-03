@@ -8,16 +8,16 @@ struct Unk_0205f7f4_Mtx {
     s32 v[12];
 };
 
-class Unk_0203398c {
+class GroundInfo {
 public:
     u8 pad_00[0x24];
     s32 unk_24, unk_28, unk_2c;
     s32 unk_30;
     u8 pad_34[8];
     s32 unk_3c;
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_0205f1e8_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_0205f1e8_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
 
 class Unk_0205f6b4_Obj {
@@ -64,7 +64,7 @@ BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL func_020729cc(void *p, s32 h);
 u16 NetBuf_ReadU16();
 void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
-BOOL func_020b5198(u32 v);
+BOOL SceneId_IsTown(u32 v);
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(u32 v);
 void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
@@ -89,7 +89,7 @@ void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
 s32 func_0205fbb8(void *p);
 void func_0205553c(void *e, s32 a);
-void func_02033988(void *p);
+void GroundInfo_Destruct(void *p);
 }
 
 class Unk_0205f360 {
@@ -167,7 +167,7 @@ extern "C" BOOL func_0205f144(u8 *p)
     r6 = l.t[1] ? TRUE : FALSE;
     x = *(s8 *)(p + 3);
     y = *(s8 *)(p + 4);
-    if (func_020b5198(l.t[0])) {
+    if (SceneId_IsTown(l.t[0])) {
         o = TownBlockMap_Get();
         if (o != 0) {
             l.h[0] = id;

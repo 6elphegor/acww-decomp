@@ -18,7 +18,7 @@ extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
 extern u8 data_021ed210[];
 extern u8 data_021ed22e[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 
 s32 Snd_PlaySe(u32 a);
@@ -36,7 +36,7 @@ BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-void func_02096f44(void *p);
+void BottleLetterRecord_GetLetter(void *p);
 void func_02065c94();
 void *func_0208f158(void *p);
 void func_02065e70(void *p, void *q);
@@ -83,7 +83,7 @@ extern "C" void func_0206f7d0(u8 *p) {
 }
 
 extern "C" void func_0206f770(u8 *p, u32 id) {
-    if (Unk_0206f6fc_IsZero(data_020e416c)) {
+    if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8;
         s16 off;
         u8 *q;
@@ -104,7 +104,7 @@ extern "C" void func_0206f770(u8 *p, u32 id) {
 extern "C" void func_0206f6fc(u8 *p, u32 id) {
     u8 buf[5];
     Unk_0206f6fc_Pos pos;
-    if (Unk_0206f6fc_IsZero(data_020e416c)) {
+    if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8 = id;
         MI_CpuCopy8(p + 2, buf, 5);
         NetBuf_UnpackPair20(buf, &pos.x, &pos.z);
@@ -150,7 +150,7 @@ extern "C" void func_0206f668(u8 *p) {
 }
 
 extern "C" void func_0206f650() {
-    func_02096f44(data_021eceac);
+    BottleLetterRecord_GetLetter(data_021eceac);
     func_02065c94();
 }
 

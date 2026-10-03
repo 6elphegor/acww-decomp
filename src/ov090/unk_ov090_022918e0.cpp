@@ -263,7 +263,7 @@ s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect
 extern u32 gCurrentHeap;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 class Unk_02083b0_dummy;
@@ -599,7 +599,7 @@ void MenuTabBar::updateOpenTabMenu() {
         switch (unk_93) {
         case 0: {
             BOOL r = FALSE;
-            if (data_020e416c == 0) {
+            if (gFieldSceneKind == 0) {
                 r = TRUE;
             }
             if (r) {

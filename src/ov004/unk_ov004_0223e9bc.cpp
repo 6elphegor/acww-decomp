@@ -21,10 +21,10 @@ BOOL Item_IsNormalItem(u16 *p);
 BOOL Item_IsHoldable(u16 *p);
 s32 Item_GetKind(u16 *p);
 s32 Item_MakeFurniture(s32 a, s32 b);
-u32 func_020b50e8();
-BOOL func_020b5254();
-BOOL func_020b5268(u32 id);
-s32 func_020b5284();
+u32 Scene_GetCurrent();
+BOOL Scene_InNookShop();
+BOOL SceneId_IsNookShop(u32 id);
+s32 Scene_GetNookShop();
 void Item_FromPlacedForm(u16 *out, u16 *in);
 u16 *AbleShop_GetItem(void *tbl, s32 idx, u16 *out);
 u16 *NookShop_GetItem(void *tbl, s32 idx, u16 *out);
@@ -119,10 +119,10 @@ static inline BOOL Unk_ov004_0223f210_R(u16 *p, u32 lo, u32 hi) {
 extern "C" ShopStockPlacer *ShopStockPlacer_Create() { return new ShopStockPlacer; }
 
 extern "C" u8 *ShopStock_GetLayout() {
-    if (func_020b5254()) {
-        return (u8 *)sNookShopLayouts + (func_020b5284() << 10);
+    if (Scene_InNookShop()) {
+        return (u8 *)sNookShopLayouts + (Scene_GetNookShop() << 10);
     }
-    if (func_020b50e8() == 10) return (u8 *)sScene10ShopLayout;
+    if (Scene_GetCurrent() == 10) return (u8 *)sScene10ShopLayout;
     return (u8 *)sScene15ShopLayout;
 }
 
@@ -297,12 +297,12 @@ void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc16setupScene15Sho
 void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc11setupNoShopEv, 0};
 
 BOOL ShopStockPlacer::vfunc_00() {
-    unk_50 = func_020b5284();
-    if (func_020b5254()) {
+    unk_50 = Scene_GetNookShop();
+    if (Scene_InNookShop()) {
         unk_54 = 0;
-    } else if (func_020b50e8() == 0xa) {
+    } else if (Scene_GetCurrent() == 0xa) {
         unk_54 = 1;
-    } else if (func_020b50e8() == 0xf) {
+    } else if (Scene_GetCurrent() == 0xf) {
         unk_54 = 2;
     } else {
         unk_54 = 3;
@@ -394,13 +394,13 @@ void ShopStockPlacer::placeNookStock() {
 }
 
 BOOL ShopStockPlacer::setupNookShop() {
-    if (func_020b50e8() != 0x1f) placeNookStock();
+    if (Scene_GetCurrent() != 0x1f) placeNookStock();
     return TRUE;
 }
 
 extern "C" BOOL ShopStock_IsForSale(u16 *p) {
-    s32 t = func_020b50e8();
-    if (func_020b5268(t)) {
+    s32 t = Scene_GetCurrent();
+    if (SceneId_IsNookShop(t)) {
         s32 r = NookShop_FindItem(data_021ed104, p);
         BOOL k = FALSE;
         if (r != -1) k = TRUE;

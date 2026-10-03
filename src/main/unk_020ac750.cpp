@@ -382,7 +382,7 @@ extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 }
 extern "C" {
-u32 func_020b50e8();
+u32 Scene_GetCurrent();
 }
 extern "C" {
 void *MapBlock_GetItemPtr(void *a, s32 b, s32 c, s32 d);
@@ -475,10 +475,10 @@ extern "C" {
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 }
 extern "C" {
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 extern "C" {
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
+void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
 }
 extern "C" {
 void LetterDelivery_QueueOutgoing(void *a, s32 b);
@@ -562,7 +562,7 @@ extern "C" {
 extern u8 data_021ee25c[];
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 extern "C" {
 extern Unk_021c47c4 *gSceneBlockMap;
@@ -589,7 +589,7 @@ extern "C" {
 static inline BOOL IsEq(u32 c, u32 v) { if (c >= v && c <= v) return TRUE; return FALSE; }
 }
 extern "C" {
-static inline BOOL IsZ() { if (data_020e416c == 0) return TRUE; return FALSE; }
+static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
 extern "C" {
 struct Loc488 { u8 a; u8 pad; u16 b; };
@@ -702,7 +702,7 @@ extern "C" s32 StockList_FindItem(u16 *key, u16 *arr, u8 *bits, u32 n) {
 }
 extern "C" void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b) {
     if (IsZ()) return;
-    if (a != func_020b50e8()) return;
+    if (a != Scene_GetCurrent()) return;
     void *w = gSceneBlockMap;
     s32 bx = x >> 4;
     s32 by = y >> 4;
@@ -726,7 +726,7 @@ extern "C" void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b) {
 }
 extern "C" void Shop_RemoveSoldItem(u16 *p, u32 a, s32 b) {
     if (IsZ()) return;
-    if (a != func_020b50e8()) return;
+    if (a != Scene_GetCurrent()) return;
     Unk_021c47c4 *s = gSceneBlockMap;
     if (s == 0) return;
     void *q; u32 k = 0;
@@ -832,13 +832,13 @@ extern "C" {
 void NookShop_SetVisitState(int);
 }
 extern "C" {
-void func_020b4994();
+void Scene_GetRequestedScene();
 }
 extern "C" {
-int func_020b5268();
+int SceneId_IsNookShop();
 }
 extern "C" {
-int func_020b50e8();
+int Scene_GetCurrent();
 }
 extern "C" {
 void Clock_GetDateTime(WindowLight*);
@@ -868,7 +868,7 @@ extern "C" {
 int _ZN10PlayerData13func_02098a48Ev(void*);
 }
 extern "C" {
-int _ZN12Unk_02097ff413func_02098044Ej(void*, int);
+int _ZN12Unk_02097ff48testFlagEj(void*, int);
 }
 extern "C" {
 int _ZN22DateSeededRandomSource6randomEj(void*, int);
@@ -1263,9 +1263,9 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
         NookShop_SetVisitState(2);
         return;
     }
-    func_020b4994();
-    if (func_020b5268() == 0) {
-        int r = func_020b50e8();
+    Scene_GetRequestedScene();
+    if (SceneId_IsNookShop() == 0) {
+        int r = Scene_GetCurrent();
         if (r == 0x2c) return;
         if (r == 0x3f) return;
     }
@@ -1288,7 +1288,7 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     if (cnt != 0 && cnt != 1) {
         for (i = 0; i < 4; i++) {
             p = PlayerData_GetResident(data_021d735c, i);
-            if (p != 0 && _ZN10PlayerData13func_02098a48Ev(p) != 0 && _ZN12Unk_02097ff413func_02098044Ej(p, 1) == 0) {
+            if (p != 0 && _ZN10PlayerData13func_02098a48Ev(p) != 0 && _ZN12Unk_02097ff48testFlagEj(p, 1) == 0) {
                 ok = 0;
                 break;
             }
@@ -1975,13 +1975,13 @@ extern "C" {
 u32 _ZN10PlayerData13func_02098a48Ev();
 }
 extern "C" {
-u32 _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
+u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
 }
 extern "C" {
 u32 func_02097740(void *p, void *q);
 }
 extern "C" {
-void func_020656dc(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
+void Letter_ComposeFromMail(Letter *c, u8 *a, const char *s, const u32 *p, const u32 *q, void *r);
 }
 extern "C" {
 u32 LetterDelivery_PutInAddresseeMailbox(Letter *c);
@@ -2476,8 +2476,8 @@ extern "C" void ReddShop_SendPasswordLetters() {
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(data_021d735c, i);
-                if (p != NULL && _ZN10PlayerData13func_02098a48Ev() != 0 && _ZN12Unk_02097ff413func_02098044Ej(p, 12) != 0) {
-                    func_020656dc(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
+                if (p != NULL && _ZN10PlayerData13func_02098a48Ev() != 0 && _ZN12Unk_02097ff48testFlagEj(p, 12) != 0) {
+                    Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);
                     }
@@ -2640,7 +2640,7 @@ extern "C" {
 void VEC_Normalize(void *a, void *b);
 }
 extern "C" {
-s32 func_02030814(s32 a);
+s32 Ground_GetDefaultY(s32 a);
 }
 extern "C" {
 void func_020339bc(Unk_02033914 *p, Vec3 *pos, s32 a, s32 b);
@@ -2649,10 +2649,10 @@ extern "C" {
 s32 func_02033914(Unk_02033914 *p, s32 a);
 }
 extern "C" {
-void func_02033988(Unk_02033914 *p);
+void GroundInfo_Destruct(Unk_02033914 *p);
 }
 extern "C" {
-BOOL func_020b51fc(void);
+BOOL Scene_InMuseumRoom(void);
 }
 extern "C" {
 s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
@@ -2685,7 +2685,7 @@ extern "C" {
 void func_02000c8c();
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 extern "C" {
 extern u32 data_020e2dc4;
@@ -2787,7 +2787,7 @@ extern "C" {
 extern u8 gViewMtx[];
 }
 extern "C" {
-BOOL func_020b5184(void);
+BOOL Scene_InTown(void);
 }
 extern "C" {
 int NookShop_GetVisitState(void);
@@ -2820,7 +2820,7 @@ extern "C" {
 void ReddShop_RecordPurchase(u32 a, u32 b, u8 c, u32 d);
 }
 extern "C" {
-BOOL func_020b5268(u32 v);
+BOOL SceneId_IsNookShop(u32 v);
 }
 extern "C" {
 void _ZN11CommManager11beginRecordEv(void *h);
@@ -2874,10 +2874,10 @@ extern "C" {
 u32 NookShop_GetLevel(void *p);
 }
 extern "C" {
-void func_020656dc(void *o, void *a, const void *b, void *c, void *d, void *e);
+void Letter_ComposeFromMail(void *o, void *a, const void *b, void *c, void *d, void *e);
 }
 extern "C" {
-void _ZN12Unk_0206555413func_02065588Etj(void *o, u32 a, u32 b);
+void _ZN12Unk_0206555410setPresentEtj(void *o, u32 a, u32 b);
 }
 extern "C" {
 u32 Item_GetMemberPrice(void *p);
@@ -2907,7 +2907,7 @@ extern "C" {
 BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 }
 extern "C" {
-u32 func_020b50e8(void);
+u32 Scene_GetCurrent(void);
 }
 extern "C" {
 u16 *NookShop_GetItem(void *p, u32 i, u16 *v);
@@ -2967,10 +2967,10 @@ extern "C" {
 void NookPoints_SendMemberLetters(void);
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 i);
+BOOL _ZN12Unk_02097ff48testFlagEj(void *p, u32 i);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 i);
+void _ZN12Unk_02097ff47setFlagEj(void *p, u32 i);
 }
 extern "C" {
 extern void *gCommManager;
@@ -3062,7 +3062,7 @@ static inline BOOL cmp16(u16 *a, u16 *b) {
 }
 
 static inline BOOL isOne() {
-    if (data_020e416c == 1) {
+    if (gFieldSceneKind == 1) {
         return TRUE;
     }
     return FALSE;
@@ -3091,15 +3091,15 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                 int z = 0;
                 for (i = 0; i < n; i++) {
                     u32 j = i + 0x1c;
-                    if (i < 4 && !_ZN12Unk_02097ff413func_02098044Ej(r5, j)) {
+                    if (i < 4 && !_ZN12Unk_02097ff48testFlagEj(r5, j)) {
                         u32 obj[0x3d];
                         u8 ib;
                         _ZN6LetterC1Ev(obj);
                         ib = i;
-                        func_020656dc(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
-                        _ZN12Unk_0206555413func_02065588Etj(obj, kNookMemberGiftItems[i & 3], 1);
+                        Letter_ComposeFromMail(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
+                        _ZN12Unk_0206555410setPresentEtj(obj, kNookMemberGiftItems[i & 3], 1);
                         if (LetterDelivery_QueueOutgoing(obj, z)) {
-                            _ZN12Unk_02097ff413func_0209801cEj(r5, j);
+                            _ZN12Unk_02097ff47setFlagEj(r5, j);
                         }
                         _ZN6LetterD1Ev(obj);
                     }
@@ -3229,14 +3229,14 @@ extern "C" void NookShop_RecordBuyback(int a) {
     if (a > 0x249f0) {
         a = 0x249f0;
     }
-    Shop_RecordPurchase(0x3f, a, func_020b50e8(), x, 0, 1, 0);
+    Shop_RecordPurchase(0x3f, a, Scene_GetCurrent(), x, 0, 1, 0);
 }
 
 extern "C" void NookShop_BuyAt(u32 a, u32 b, u32 c, u32 d) {
     u16 v[2];
     u32 r;
     v[0] = *ShopStock_GetItemAt();
-    if (inRange2(v[0], v[0]) && func_020b50e8() == 0x1d) {
+    if (inRange2(v[0], v[0]) && Scene_GetCurrent() == 0x1d) {
         u32 i;
         v[1] = 0xfff1;
         for (i = 0; i < 0x25; i++) {
@@ -3283,8 +3283,8 @@ extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
         void *r4 = PlayerData_GetCurrent();
         u8 *d = data_021ed104;
         by = NookShop_GetLevel(d);
-        func_020656dc(obj, &by, "sp_npc_raccoon", data_020e2e40, data_020e2e3c, _ZN10PlayerData11getPlayerIdEv(r4));
-        _ZN12Unk_0206555413func_02065588Etj(obj, id, 1);
+        Letter_ComposeFromMail(obj, &by, "sp_npc_raccoon", data_020e2e40, data_020e2e3c, _ZN10PlayerData11getPlayerIdEv(r4));
+        _ZN12Unk_0206555410setPresentEtj(obj, id, 1);
         u32 r = Item_GetMemberPrice(&id);
         if (LetterDelivery_QueueOutgoing(obj, 0)) {
             NookShop_AddSales(d, r, 1);
@@ -3336,7 +3336,7 @@ extern "C" void Shop_OnPurchaseRecord(Bits *p, u32 arg) {
         Shop_RecordPurchase(a, 0, d, 1, 1, 0, 1);
     } else if (d == 15) {
         ReddShop_RecordPurchase(a, d, 0, 1);
-    } else if (func_020b5268(d)) {
+    } else if (SceneId_IsNookShop(d)) {
         Shop_RecordPurchase(a, p->b, d, c, 0, 0, 1);
     }
     if (a != 0x3f) {
@@ -3372,7 +3372,7 @@ extern "C" void NookShop_SetVisitState(int v) {
 }
 
 extern "C" void NookShop_OnSceneLoad(void) {
-    if (func_020b5184()) {
+    if (Scene_InTown()) {
         if (NookShop_GetVisitState() == 2) {
             if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
                 NookShop_ApplyRenovation();

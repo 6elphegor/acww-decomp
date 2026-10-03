@@ -11,11 +11,11 @@
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define CachedModel_release _ZN11CachedModel7releaseEv
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
@@ -72,7 +72,7 @@ public:
     u8 pad[0x6a70 - 0x4b20];
 };
 
-// main's Unk_020d8d3c (its destructor stubs 0x020315d0/f4/2031600/0x0203160c are byte-identical; the call in D0 goes to
+// main's UnitShapeQuery (its destructor stubs 0x020315d0/f4/2031600/0x0203160c are byte-identical; the call in D0 goes to
 // 0x020315d0, which symbols.txt names ...C2Ev, so the base is declared under another name whose D2 symbol is an alias of it)
 struct Unk_020d8d3c_B {
     virtual ~Unk_020d8d3c_B();
@@ -439,8 +439,8 @@ extern s16 data_02135f44[];
 extern s32 sItemPopScaleXZ[];
 extern s32 sItemPopScaleY[];
 
-void func_020339bc(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
-void func_02033988(Unk_ov003_0221a4a0_Buf *b);
+void GroundInfo_initAtPos(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
+void GroundInfo_Destruct(Unk_ov003_0221a4a0_Buf *b);
 void VEC_Add(void *a, void *b, void *out);
 void func_01ffd070(Unk_ov003_0221a4a0_V3 *out, void *m, Unk_ov003_0221a4a0_V3 *v);
 s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
@@ -455,7 +455,7 @@ u32 FieldItemFx_FindLandingUnit(void *p);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
-void func_0209801c(void *p, s32 a);
+void Unk_02097ff4_setFlag(void *p, s32 a);
 void Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 void Insect_SpawnBeeSwarm(void *p);
@@ -785,7 +785,7 @@ extern u8 *gFieldObjectManager;
 
 s32 CommManager_isOnline(void *p);
 void *PlayerData_GetCurrent(void);
-s32 func_02098044(void *p, s32 a);
+s32 Unk_02097ff4_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
 void FieldItemFx_StartBeeHiveDrop(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
@@ -980,7 +980,7 @@ s32 FieldPos_FromUnitCenter(Vec3 *out, s32 x, s32 z);
 s32 func_0208fb20(s32, void *, s32, void *);
 s32 func_0208fdac(void *);
 s32 func_0208fdc0(void *);
-s32 func_020b5184();
+s32 Scene_InTown();
 s32 BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 BlockMap_SetBuriedAtUnit(void *grid, s32 x, s32 y);
 s32 BlockMap_ClearBuriedAtUnit(void *grid, s32 x, s32 y);
@@ -5419,7 +5419,7 @@ extern "C" {
 void Field_SetUnitItem(s32 x, s32 y, u32 tile, s32 flag) {
     void *g;
     volatile u16 t[1];
-    func_020b5184();
+    Scene_InTown();
     g = gSceneBlockMap;
     if (g != 0) {
         t[0] = 0xfff1;
@@ -6372,7 +6372,7 @@ void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     Unk_ov003_0221b8bc_V3 e;
     Unk_ov003_0221b8bc_V3 d;
-    if (CommManager_isOnline(gCommManager) == 0 && func_02098044(PlayerData_GetCurrent(), 1) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1) == 0) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         Unk_ov003_0221b8bc_V3 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(o, &b);
@@ -7303,7 +7303,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
 {
     Unk_ov003_0221a4a0_Buf b;
     Unk_ov003_0221a4a0_V3 v;
-    func_020339bc(&b, &self->unk_18, 0, 0);
+    GroundInfo_initAtPos(&b, &self->unk_18, 0, 0);
     if (b.unk_30 != 0) {
         if (self->unk_4c == 0) {
             VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
@@ -7356,7 +7356,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 Sky_EndBalloonDrop();
                 if (self->unk_50 == 0) {
                     if (self->unk_08 == 0x137b) {
-                        func_0209801c(PlayerData_GetCurrent(), 0x30);
+                        Unk_02097ff4_setFlag(PlayerData_GetCurrent(), 0x30);
                     }
                     Field_SetUnitItem(self->unk_10, self->unk_14, self->unk_08, 0);
                 }
@@ -7365,7 +7365,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
             }
         }
     }
-    func_02033988(&b);
+    GroundInfo_Destruct(&b);
 }
 }
 

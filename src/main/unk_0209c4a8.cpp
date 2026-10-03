@@ -60,17 +60,17 @@ public:
 };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern const u8 data_020d064c[4];
 extern u8 gVec3Zero[];
 
-void func_020b4b68(void *o, u32 id, u32 *p24, s16 *f);
-void func_020b4aec(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
+void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
+void SceneExit_SnapPos(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
 void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
-void *func_020b4934();
-s32 func_020b4c64(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
-s32 func_020b50e8();
-s32 func_020b50dc();
+void *Scene_GetWarpRequest();
+s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
+s32 Scene_GetCurrent();
+s32 Scene_GetPrevious();
 Unk_0209c614_Actor *func_02095204(u32 n);
 
 u32 func_0209c7ec(u32 v);
@@ -266,7 +266,7 @@ extern "C" s32 func_0209c7a4(void *p) {
     Unk_0209c7a4_T t;
     s32 b, a;
     u32 c[3];
-    if (func_020b4c64(func_020b4934(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.unk_02, &t.unk_01, 0, 0)) {
+    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.unk_02, &t.unk_01, 0, 0)) {
         return func_0209c7ec(t.unk_00);
     }
     return 0;
@@ -274,11 +274,11 @@ extern "C" s32 func_0209c7a4(void *p) {
 
 extern "C" BOOL func_0209c614(u32 id) {
     Unk_0209c614_Actor *p = func_02095204(4);
-    void *o = func_020b4934();
+    void *o = Scene_GetWarpRequest();
     Unk_0209c614_S s;
     u32 a20, a24;
     Unk_0209c614_Vec v28, v34, v40, v4c;
-    s32 r = func_020b4c64(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);
+    s32 r = SceneExit_Resolve(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);
     func_0209c860(&data_021d7290, 0);
     if (r != 0 && p != 0) {
         Unk_0209c614_Vec *pv = &p->unk_5c;
@@ -286,8 +286,8 @@ extern "C" BOOL func_0209c614(u32 id) {
         v40.y = pv->y;
         v40.z = pv->z;
         s32 h = p->unk_8e;
-        func_020b4b68(func_020b4934(), id, &a24, &s.f);
-        func_020b4aec(func_020b4934(), id, &v34, &v40);
+        SceneExit_GetDoor(Scene_GetWarpRequest(), id, &a24, &s.f);
+        SceneExit_SnapPos(Scene_GetWarpRequest(), id, &v34, &v40);
         func_0209c85c(&data_021d7290, id);
         func_0209c854(&data_021d7290, a24);
         func_0209c850(&data_021d7290, s.a);
@@ -349,11 +349,11 @@ extern "C" void func_0209c5a0(u32 a, u32 b) {
 extern "C" void func_0209c540() {
     func_0209c878(&data_021d7290);
     BOOL is1;
-    if (data_020e416c == 1) is1 = TRUE;
+    if (gFieldSceneKind == 1) is1 = TRUE;
     else is1 = FALSE;
     if (is1) {
-        u32 r6 = func_020b50e8();
-        u32 r5 = func_020b50dc();
+        u32 r6 = Scene_GetCurrent();
+        u32 r5 = Scene_GetPrevious();
         u32 i = 0;
         u32 z = i;
         for (; i < 2; i++) {

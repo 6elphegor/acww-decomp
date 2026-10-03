@@ -2,7 +2,7 @@
 #include "types.h"
 
 extern "C" {
-u32 func_020b50d0(u32);
+u32 GroundSeason_IsSnowPhase(u32);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, u32);
 s32 Date_DaysBetween(void *, void *);
@@ -166,16 +166,16 @@ inline void SetVec(Vec3 *v, s32 x, s32 y, s32 z) {
 }
 
 class Unk_020b4948;
-extern "C" BOOL func_020b4948(Unk_020b4948 *);
-extern "C" u32 func_020b4958(Unk_020b4948 *);
-extern "C" s32 func_020b495c(Unk_020b4948 *);
-extern "C" Vec3 *func_020b4964(Unk_020b4948 *);
+extern "C" BOOL SceneWarp_HasNoPos(Unk_020b4948 *);
+extern "C" u32 SceneWarp_GetSpawnParam(Unk_020b4948 *);
+extern "C" s32 SceneWarp_GetAngle(Unk_020b4948 *);
+extern "C" Vec3 *SceneWarp_GetPos(Unk_020b4948 *);
 
 extern "C" {
-Unk_020b4948 *func_020b4934();
-u32 func_020b50e8();
-BOOL func_020b52ac();
-BOOL func_020b5184();
+Unk_020b4948 *Scene_GetWarpRequest();
+u32 Scene_GetCurrent();
+BOOL Scene_InUnk6Or7();
+BOOL Scene_InTown();
 BOOL _ZN11CommManager11isLocalSlotEj(void *, ...);
 void _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 PlayerSession_GetDataIndex(u32);
@@ -220,47 +220,47 @@ BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && func_020978c8(data_021d735c, PlayerSession_GetDataIndex(i))) {
-            if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || func_020b4948(func_020b4934())) {
+            if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
-                Vec3 *v = func_020b4964(func_020b4934());
+                Vec3 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
                 pos->x = v->x;
                 pos->y = v->y;
                 pos->z = v->z;
-                s32 t = func_020b495c(func_020b4934());
+                s32 t = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = t;
                 rot_->z = 0;
-                *out = func_020b4958(func_020b4934());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }
     } else {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager)) {
-            if (func_020b4948(func_020b4934())) {
+            if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
                 Vec3 v;
                 v.x = 0;
                 v.y = 0;
                 v.z = 0;
-                if (!func_020b5184() && func_020b4958(func_020b4934()) == 0x800000) {
+                if (!Scene_InTown() && SceneWarp_GetSpawnParam(Scene_GetWarpRequest()) == 0x800000) {
                     i &= 3;
                     v.x = (i << 10) - 0x800;
                     v.y = 0;
                     v.z = 0;
-                    func_020e93a0(&v, func_020b495c(func_020b4934()));
+                    func_020e93a0(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
                 Vec3 t;
-                func_01ffd070(&t, func_020b4964(func_020b4934()), &v);
+                func_01ffd070(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
                 pos->z = t.z;
-                s32 u = func_020b495c(func_020b4934());
+                s32 u = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = u;
                 rot_->z = 0;
-                *out = func_020b4958(func_020b4934());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }
@@ -270,8 +270,8 @@ BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *
 
 BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
     Unk_020afd04 *items = (Unk_020afd04 *)ptr;
-    if (items != NULL && func_020b50e8() != 0xd && func_020b50e8() != 0xe && func_020b50e8() != 0x2f) {
-        if (func_020b52ac()) {
+    if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
+        if (Scene_InUnk6Or7()) {
             _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
@@ -528,7 +528,7 @@ extern "C" BOOL func_020af72c(u32 idx) {
 
 void Unk_020af53c::func_020af694() {
     BOOL flag = FALSE;
-    u32 v = func_020b50d0(data_021e5890.f14);
+    u32 v = GroundSeason_IsSnowPhase(data_021e5890.f14);
     for (u32 i = 0; i < 3; i++) {
         if (v == 0) {
             if (func_020af72c(i)) {

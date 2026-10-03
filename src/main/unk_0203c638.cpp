@@ -242,23 +242,23 @@ void *_ZN12G3dResAccess10getTexDataEi(void *p, s32 v);
 }
 
 extern "C" {
-void *_ZN7Pattern13func_02071e58Ev(void *p);
+void *_ZN7Pattern9getPixelsEv(void *p);
 }
 
 extern "C" {
-void _ZN7Pattern13func_02071e04Ev(void *p);
+void _ZN7Pattern7getInfoEv(void *p);
 }
 
 extern "C" {
-void *_ZN12Unk_02071ed013func_02072040Ev();
+void *_ZN11PatternInfo14getPaletteDataEv();
 }
 
 extern "C" {
-void *_ZN19AbleSistersPatterns13func_02071b00Eh(void *tbl, u32 i);
+void *_ZN19AbleSistersPatterns10getPatternEh(void *tbl, u32 i);
 }
 
 extern "C" {
-void *_ZN14PlayerPatterns13func_02071c88Eh(void *p, u32 i);
+void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
 }
 
 extern "C" {
@@ -300,24 +300,24 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
         else i1 = -1;
         res = FALSE;
         if (i1 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns13func_02071b00Eh(data_021e6e4c, (u8)i1));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i1));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i1));
+            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
         if (*p >= 0x1429 && *p <= 0x1430) i2 = *p - 0x1429;
         else i2 = -1;
         res = FALSE;
         if (i2 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns13func_02071b00Eh(data_021e6e4c, (u8)i2));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i2));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i2));
+            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
         if (*p >= 0x13a0 && *p <= 0x13a7) i3 = *p - 0x13a0;
         else i3 = -1;
         res = FALSE;
         if (i3 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns13func_02071b00Eh(data_021e6e4c, (u8)i3));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i3));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i3));
+            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i3));
         }
     } else {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
@@ -338,10 +338,10 @@ extern "C" BOOL func_0203c6f8(void *a, void *b) {
     u16 id = 0x11a8;
     if (func_0203c764(a, &id, 0)) {
         if (b != 0) {
-            void *dst = _ZN7Pattern13func_02071e58Ev(b);
+            void *dst = _ZN7Pattern9getPixelsEv(b);
             MI_CpuCopy8(dst, func_0203c6e4(a), 0x200);
-            _ZN7Pattern13func_02071e04Ev(b);
-            void *dst2 = _ZN12Unk_02071ed013func_02072040Ev();
+            _ZN7Pattern7getInfoEv(b);
+            void *dst2 = _ZN11PatternInfo14getPaletteDataEv();
             MI_CpuCopy8(dst2, func_0203c6d0(a), 0x20);
             return TRUE;
         }

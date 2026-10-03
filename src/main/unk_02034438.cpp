@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 data_021c1ad4[];
 extern u8 data_021c1a6c[];
 extern u8 data_021c1a44[];
@@ -22,21 +22,21 @@ BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
-BOOL func_020b5364(s32 v);
-BOOL func_020b5184();
+BOOL Scene_GetSkyKind(s32 v);
+BOOL Scene_InTown();
 BOOL func_020b0f0c();
 void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
-s32 func_020b50dc(void);
-s32 func_020b5164(void);
-s32 func_020b4934(void);
-s32 func_020b49a8(void);
+s32 Scene_GetPrevious(void);
+s32 Scene_InTownUnk31(void);
+s32 Scene_GetWarpRequest(void);
+s32 SceneWarp_GetScene(void);
 s32 Snd_SetBgmTrackVariant(s32 a);
 void Snd_FadeInBgmTracks(s32 a);
 void Snd_FadeOutBgmTracks(s32 a);
@@ -51,7 +51,7 @@ void Snd_RestoreSubPlayers(void);
 void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 id);
+s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
@@ -662,7 +662,7 @@ struct BgModelCache {
 
 // extern declarations
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 data_021c1ad4[];
 extern u8 data_021c1a6c[];
 extern u8 data_021c1a44[];
@@ -683,12 +683,12 @@ BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
-BOOL func_020b5364(s32 v);
-BOOL func_020b5184();
+BOOL Scene_GetSkyKind(s32 v);
+BOOL Scene_InTown();
 BOOL func_020b0f0c();
 void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
@@ -699,10 +699,10 @@ void _ZN10BgmManager15releasePriorityEi(BgmManagerView *o, s32 a);
 void _ZN10BgmManager4pushEP14BgmRequestView(BgmManagerView *o, BgmRequest *e);
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
-s32 func_020b50dc(void);
-s32 func_020b5164(void);
-s32 func_020b4934(void);
-s32 func_020b49a8(void);
+s32 Scene_GetPrevious(void);
+s32 Scene_InTownUnk31(void);
+s32 Scene_GetWarpRequest(void);
+s32 SceneWarp_GetScene(void);
 s32 Snd_SetBgmTrackVariant(s32 a);
 void Snd_FadeInBgmTracks(s32 a);
 void Snd_FadeOutBgmTracks(s32 a);
@@ -719,9 +719,9 @@ void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
 Unk_020358d4_Src *func_020947f0(u32 n);
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_020358d4_Buf *p, Unk_020358d4_Src *pos, s32 a, s32 b);
-void func_02033988(Unk_020358d4_Buf *p);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 id);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_020358d4_Buf *p, Unk_020358d4_Src *pos, s32 a, s32 b);
+void GroundInfo_Destruct(Unk_020358d4_Buf *p);
+s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
@@ -829,8 +829,8 @@ void func_02036ba0(void);
 namespace Ns_02034ae8 {
 extern "C" {
 extern BgmManagerView *data_021c1b3c;
-s32 func_020b50e8(void);
-s32 func_020b5184(void);
+s32 Scene_GetCurrent(void);
+s32 Scene_InTown(void);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 Unk_020353b0_Rec *Bgm_GetPlayingRequest(void);
 }
@@ -846,7 +846,7 @@ s32 Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 s32 BgmTracks_FadeInForScene(void *p);
 s32 BgmTracks_FadeOutForScene(void *p);
 s32 BgmTracks_OnBgmStart(void *p, u32 a);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void *PlayerData_GetCurrent(void);
 }
 }
@@ -859,16 +859,16 @@ void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Release(u32 a);
 void Bgm_ReleaseTransient(u32 a);
 void Bgm_RequestTransient(u32 a);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 Bgm_GetSceneFade(void);
-s32 func_020b5184(void);
+s32 Scene_InTown(void);
 s32 Bgm_GetClock(void);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 extern u32 gCommManager;
 s32 _ZN11CommManager8isOnlineEv(u32 a);
 s32 PlayerData_GetCurrent(void);
 s32 func_020b0f0c(void);
-s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
+s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
 }
 }
 
@@ -884,9 +884,9 @@ BgmClock *Bgm_GetClock(void);
 
 static inline BOOL Unk_020341c0_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
-static inline BOOL Unk_02034938_IsA() { return data_020e416c == 0; }
+static inline BOOL Unk_02034938_IsA() { return gFieldSceneKind == 0; }
 
-static inline BOOL Unk_02034938_IsB() { return data_020e416c == 1; }
+static inline BOOL Unk_02034938_IsB() { return gFieldSceneKind == 1; }
 
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
@@ -1208,9 +1208,9 @@ void FieldSpecialBgm::start() {
             play(4, 0x45, 1);
         } else if (func_020b0f30() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
             play(0x1c, 0x46, 0);
-        } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0) {
+        } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0) {
             play(0x1d, 0x48, 0);
         }
     }
@@ -1491,7 +1491,7 @@ void FieldBgm::stop() {
 }
 
 void FieldBgm::start() {
-    if (Ns_02035e2c::func_020b5184() != 0 || func_020b5164() != 0) {
+    if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
         unk_04.start();
         unk_18.start();
         unk_24.start();
@@ -1499,7 +1499,7 @@ void FieldBgm::start() {
 }
 
 void FieldBgm::end() {
-    if (Ns_02035e2c::func_020b5184() != 0 || func_020b5164() != 0) {
+    if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
         unk_24.end();
         unk_18.end();
         unk_04.end();
@@ -1585,9 +1585,9 @@ extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
 }
 
 extern "C" s32 Bgm_IsSameSceneBgm(void) {
-    s32 a = Ns_02035e2c::func_020b50e8();
-    func_020b4934();
-    s32 b = func_020b49a8();
+    s32 a = Ns_02035e2c::Scene_GetCurrent();
+    Scene_GetWarpRequest();
+    s32 b = SceneWarp_GetScene();
     s32 x = Bgm_GetSceneBgmId(a);
     s32 y = Bgm_GetSceneBgmId(b);
     if (x == y && x != 0xffff) return TRUE;
@@ -1611,7 +1611,7 @@ void RoomBgmSceneView::stopSceneBgm() {
 }
 
 void RoomBgmSceneView::updateSceneBgm() {
-    s32 t = Ns_020354d8::func_020b50e8();
+    s32 t = Ns_020354d8::Scene_GetCurrent();
     if (unk_08 != t) {
         if (unk_0a != Bgm_GetSceneBgmId(t)) {
             stopSceneBgm();
@@ -1639,7 +1639,7 @@ void RoomBgmClosingView::updateClosingMusic() {
     BOOL a;
     void *p = Ns_020354d8::PlayerData_GetCurrent();
     if (p) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x23) != 0 || _ZN12Unk_02097ff413func_02098044Ej(p, 1) != 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(p, 0x23) != 0 || _ZN12Unk_02097ff48testFlagEj(p, 1) != 0) {
             a = TRUE;
         } else {
             a = FALSE;
@@ -1647,7 +1647,7 @@ void RoomBgmClosingView::updateClosingMusic() {
     } else {
         a = FALSE;
     }
-    s32 t = Ns_020354d8::func_020b50e8();
+    s32 t = Ns_020354d8::Scene_GetCurrent();
     BOOL b = t == 0x1f ? TRUE : FALSE;
     BOOL c = TRUE;
     if ((u8)(t + 0xe6) > 4 && b == 0) {
@@ -1844,17 +1844,17 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     Unk_020358d4_Src *p = func_020947f0(4);
     if (p) {
         Unk_020358d4_Buf b1;
-        _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&b1, p, 0, 0);
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b1, p, 0, 0);
         s32 k = b1.unk_34;
         Unk_020358d4_Src v(p->x, p->y, p->z + 0x2000);
         Unk_020358d4_Buf b2;
-        _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&b2, &v, 0, 0);
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b2, &v, 0, 0);
         s32 m = b2.unk_30;
         if (k == 0x13 || k == 0x16 || m == 1) {
             flag = 1;
         }
-        func_02033988(&b2);
-        func_02033988(&b1);
+        GroundInfo_Destruct(&b2);
+        GroundInfo_Destruct(&b1);
     }
     if (st == 0) {
         if (flag != 0) {
@@ -1871,7 +1871,7 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
 
 void BgmVolumeMixer::updateSceneDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
-    s32 t = Ns_020354d8::func_020b50e8();
+    s32 t = Ns_020354d8::Scene_GetCurrent();
     BOOL a = t == 0x27 ? TRUE : FALSE;
     BOOL b = t == 0x28 ? TRUE : FALSE;
     if (st == 0) {
@@ -2112,7 +2112,7 @@ void BgmSceneFade::reset() {
 void BgmSceneFade::func_020353b0(s32 a, s32 b) {
     s32 res = 0;
     s32 f = 0;
-    if (Ns_02034ae8::func_020b5184()) {
+    if (Ns_02034ae8::Scene_InTown()) {
         s32 a0 = (a == 0) ? 1 : 0;
         s32 a1 = (a == 1) ? 1 : 0;
         s32 a2 = (a == 2) ? 1 : 0;
@@ -2184,7 +2184,7 @@ void BgmSceneFade::update() {
         unk_0c--;
         if (unk_0c <= 0) {
             s32 v = 1;
-            if (IsZero(data_020e416c) && Ns_02034ae8::func_020b5184()) {
+            if (IsZero(gFieldSceneKind) && Ns_02034ae8::Scene_InTown()) {
                 u16 buf[2];
                 BOOL ok;
                 func_020947c0(buf, 4);
@@ -2263,10 +2263,10 @@ BgmTracks::BgmTracks() {}
 BgmTracks::~BgmTracks() {}
 
 extern "C" void BgmTracks_FadeOutForScene(void) {
-    s32 r = Ns_02034ae8::func_020b50e8();
+    s32 r = Ns_02034ae8::Scene_GetCurrent();
     s32 s;
-    func_020b4934();
-    s = func_020b49a8();
+    Scene_GetWarpRequest();
+    s = SceneWarp_GetScene();
     s32 a22 = (r == 0x22) ? 1 : 0;
     s32 a25 = (r == 0x25) ? 1 : 0;
     s32 a29 = (r == 0x29) ? 1 : 0;
@@ -2285,8 +2285,8 @@ extern "C" void BgmTracks_FadeOutForScene(void) {
 }
 
 extern "C" void BgmTracks_FadeInForScene(void) {
-    s32 t = func_020b50dc();
-    s32 r = Ns_02034ae8::func_020b50e8();
+    s32 t = Scene_GetPrevious();
+    s32 r = Ns_02034ae8::Scene_GetCurrent();
     s32 e20 = (t == 0x20) ? 1 : 0;
     s32 a22 = (t == 0x22) ? 1 : 0;
     s32 a23 = (t == 0x23) ? 1 : 0;
@@ -2305,11 +2305,11 @@ extern "C" void BgmTracks_FadeInForScene(void) {
 }
 
 extern "C" void BgmTracks_FadeOutScene22(void) {
-    if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeOutBgmTracks(5);
+    if (Ns_02034ae8::Scene_GetCurrent() == 0x22) Snd_FadeOutBgmTracks(5);
 }
 
 extern "C" void BgmTracks_FadeInScene22(void) {
-    if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeInBgmTracks(5);
+    if (Ns_02034ae8::Scene_GetCurrent() == 0x22) Snd_FadeInBgmTracks(5);
 }
 
 extern "C" void BgmTracks_OnBgmStart(s32 a, s32 b) {
@@ -2317,11 +2317,11 @@ extern "C" void BgmTracks_OnBgmStart(s32 a, s32 b) {
 }
 
 extern "C" void BgmTracks_Update(s32 a) {
-    if (Ns_02034ae8::func_020b5184() || func_020b5164()) BgmTracks_UpdateWeatherVariant(a);
+    if (Ns_02034ae8::Scene_InTown() || Scene_InTownUnk31()) BgmTracks_UpdateWeatherVariant(a);
 }
 
 extern "C" void BgmTracks_ApplySceneMask(void) {
-    s32 r = Ns_02034ae8::func_020b50e8();
+    s32 r = Ns_02034ae8::Scene_GetCurrent();
     s32 a22 = (r == 0x22) ? 1 : 0;
     s32 a23 = (r == 0x23) ? 1 : 0;
     s32 a24 = (r == 0x24) ? 1 : 0;
@@ -2661,10 +2661,10 @@ void BgmManager::forEachRequest(Unk_02034574_Fn fn) {
 void BgmManager::updateHourChime() {
     if (unk_24c.hasHourChanged()) {
         BOOL ok = TRUE;
-        if (!func_020b5364(1)) {
+        if (!Scene_GetSkyKind(1)) {
             ok = FALSE;
         }
-        if (func_020b5184()) {
+        if (Scene_InTown()) {
             if (func_020b0f0c()) {
                 ok = FALSE;
             }

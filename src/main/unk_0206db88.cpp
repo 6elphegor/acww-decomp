@@ -12,7 +12,7 @@ extern u8 data_021ed2f8[];
 extern u8 gMelodyEditPattern[];
 extern s32 sMelodyTimer;
 extern s32 gGfxMainOnTop;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 gCurrentHeap[];
 extern u8 sMenuWipeEdge[24];
 extern u8 sMenuWipeLine;
@@ -410,7 +410,7 @@ extern "C" BOOL MenuScreen_StepAct04() {
         MenuCtrl_SetMenuOnTop();
         Gfx2d_ResetLayer(1);
         sMenuScreenState.v = 5;
-        if (Unk_0206dc9c_IsZero(data_020e416c)) {
+        if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
             Sky_SetEngine(1);
         }
     }
@@ -420,7 +420,7 @@ extern "C" BOOL MenuScreen_StepAct04() {
 extern "C" BOOL MenuScreen_StepAct05() {
     if (data_021cb47c == 0) {
         sMenuScreenState.v = 6;
-        if (Unk_0206dc9c_IsZero(data_020e416c)) {
+        if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
             Sky_Disable();
         }
         Gfx2d_SetMainBgModeState(0);
@@ -447,7 +447,7 @@ extern "C" BOOL MenuScreen_StepAct08() {
     if (Camera_IsViewPushed()) {
         Camera_PopView();
     }
-    if (Unk_0206dc9c_IsZero(data_020e416c)) {
+    if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
         func_0203d4c8(0);
         Sky_SetEngine(1);
         Gfx2d_HideMainPlanes(8);
@@ -471,7 +471,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
             Gfx2d_ShowLayer(1);
             Gfx2d_ResetLayer(5);
             func_02011940();
-            if (Unk_0206dc9c_IsZero(data_020e416c)) {
+            if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
                 Sky_SetEngine(0);
             }
             MenuCtrl_ClearMenuOnTop();

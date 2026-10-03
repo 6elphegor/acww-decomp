@@ -88,8 +88,8 @@ void SaveData_Setup(void *p, s32 a);
 void SaveData_Apply(void *p);
 s32 TownBlockMap_Get();
 void Town_FindTownHallFront(s32 a, void *p, s32 b, s32 c);
-s32 func_020b4934();
-void func_020b4f18(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
+s32 Scene_GetWarpRequest();
+void SceneWarp_RequestAt(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
 s32 func_020e7500(void *p);
 s32 func_020e7518(void *p);
 void func_0203d984();
@@ -214,7 +214,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -322,7 +322,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -670,7 +670,7 @@ BOOL SpNpcKappn::mainAct03() {
         }
         _ZN8SaveData9clearFlagEj(gSaveData, 0x12);
         Town_FindTownHallFront(TownBlockMap_Get(), &l.v, 0, 0);
-        func_020b4f18(func_020b4934(), 0, &l.v, 0x400000, 0xffff8000, 3, 2);
+        SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &l.v, 0x400000, 0xffff8000, 3, 2);
         changeAct(2);
     }
     return TRUE;

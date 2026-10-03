@@ -4,7 +4,7 @@ extern "C" {
 extern u8 data_021c4d4c[0xe0];
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
 extern u32 data_021c4e38;
 extern void *gCommManager;
@@ -26,7 +26,7 @@ void func_02052a70(void *p, s32 v);
 void func_020728d4(void *p);
 void func_02072824(void *p, s32 a, s32 b);
 void func_020728a4(void *p, void *data, s32 size);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 s32 func_020529e4(void *p, s32 a, s32 b, void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 NetArea_IsLocalOwner();
@@ -61,7 +61,7 @@ extern "C" u32 func_02051468() { return func_02051518(); }
 
 extern "C" BOOL func_020513b0(s32 x, s32 y) {
     BOOL r;
-    if (data_020e416c == 1 ? TRUE : FALSE) {
+    if (gFieldSceneKind == 1 ? TRUE : FALSE) {
         void *p = gSceneBlockMap;
         u8 *q = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), x, y, 0);
         if (p != NULL && q != NULL) {

@@ -74,7 +74,7 @@ extern u8 data_021d7274[3];
 }
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -136,19 +136,19 @@ Unk_0209c614_Actor *func_02095204(u32 n);
 }
 
 extern "C" {
-void *func_020b4934();
+void *Scene_GetWarpRequest();
 }
 
 extern "C" {
-s32 func_020b4c64(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
+s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 }
 
 extern "C" {
-void func_020b4b68(void *o, u32 id, u32 *p24, s16 *f);
+void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
 }
 
 extern "C" {
-void func_020b4aec(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
+void SceneExit_SnapPos(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
 }
 
 extern "C" {
@@ -184,11 +184,11 @@ void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_020b50dc();
+s32 Scene_GetPrevious();
 }
 
 // ---- CommManager (comm state; only the methods used here)

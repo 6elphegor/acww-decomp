@@ -268,18 +268,18 @@ void func_020f43fc(void *p);
 void func_020f440c(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_OpenLauncher(u32 a);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 BOOL func_020951d0();
 BOOL func_020951c4();
 void func_020949a0(u32 a);
-void *func_020b4934();
-BOOL func_020b4bbc(void *o, s32 a);
-s32 func_020b50e8();
-void func_020b49c4(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
-s32 func_02030814(u32 a);
+void *Scene_GetWarpRequest();
+BOOL SceneWarp_RequestExit(void *o, s32 a);
+s32 Scene_GetCurrent();
+void Scene_SetTownReturnPos(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
+s32 Ground_GetDefaultY(u32 a);
 BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 BOOL MenuCtrl_IsResultOk();
 s32 ReddPassword_LearnCurrentPlayer();
@@ -306,7 +306,7 @@ void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, s32);
 s32 Event_GetState(u32, void *, u32);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void Visitor_ScheduleLow(void *, s32, void *);
 extern u16 sGracieCarVisitorProfile;
 extern u8 data_ov003_02231430[];
@@ -330,7 +330,7 @@ void func_020b24a4(s32, void *);
 s32 func_020b24ac(s32);
 void func_020547e4(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
-BOOL func_0203006c(s32, s32, s32);
+BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 Field_GetStructureTexSuffix();
 void Snd_PlaySe(u32);
@@ -573,7 +573,7 @@ void ReddTent::execTentTalk() {
     if (t) {
         if (t->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
@@ -695,12 +695,12 @@ void ReddTent::execTentWarp() {
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;
         if (getDoorPos(&v, &ang)) {
-            if (func_020b4bbc(func_020b4934(), t)) {
-                v.y = func_02030814(0);
+            if (SceneWarp_RequestExit(Scene_GetWarpRequest(), t)) {
+                v.y = Ground_GetDefaultY(0);
                 v.z = v.z + 0x1000;
-                void *o = func_020b4934();
-                s32 r = func_020b50e8();
-                func_020b49c4(o, r, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
+                void *o = Scene_GetWarpRequest();
+                s32 r = Scene_GetCurrent();
+                Scene_SetTownReturnPos(o, r, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
                 unk_232.f0 = 1;
             }
         }

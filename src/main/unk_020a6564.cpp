@@ -15,7 +15,7 @@ struct CommManager {
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_02084040();
 }
 
@@ -44,7 +44,7 @@ extern "C" void func_020a65f8() {}
 
 extern "C" void func_020a65c8(u8 *p) {
     u8 v = 0;
-    func_020b50e8();
+    Scene_GetCurrent();
     MI_CpuCopy8(p, &v, 1);
     if (v != 0) {
         func_02084040();

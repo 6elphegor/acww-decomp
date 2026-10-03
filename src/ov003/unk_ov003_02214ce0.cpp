@@ -266,7 +266,7 @@ extern "C" {
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, s32);
 s32 Event_GetState(u32, void *, u32);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void Visitor_ScheduleLow(void *, s32, void *);
 }
 
@@ -314,7 +314,7 @@ BOOL GracieCar::vfunc_70() {
     Clock_GetDateTime(&l);
     MI_CpuCopy8(&l, &m, 8);
     if (Unk_ov003_02214ce0_Chk(&m)) {
-        Visitor_ScheduleLow(&sGracieCarVisitorProfile, func_020b50e8(), &unk_5c);
+        Visitor_ScheduleLow(&sGracieCarVisitorProfile, Scene_GetCurrent(), &unk_5c);
     }
     return TRUE;
 }

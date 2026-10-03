@@ -103,15 +103,15 @@ void FieldPos_SnapToUnitCenter(Unk_ov088_Vec *a, Unk_ov088_Vec *b);
 BOOL TownMap_IsPosWalkable(Unk_ov088_Vec *a, s32 b);
 BOOL Npc_IsPosBlocked(void *p);
 void Npc_RotateOffsetXZ(void *out, Unk_ov088_Vec *a, Unk_ov088_Vec *b, s32 c);
-void TalkRequest_EndTalkWith(void *p);
-void *func_020850e0();
-VisitorPos *func_0208516c(void *p);
+void TalkRequest_SetTargetDone(void *p);
+void *TownSessionState_Get();
+VisitorPos *TownSessionState_GetVisitorPos(void *p);
 extern u32 gRandom[];
 extern Unk_ov088_Vec gVec3Zero;
-void func_0203f094(s32 a, s32 b);
-u32 func_0203f07c(s32 i);
-s32 func_0203f0b4();
-s32 func_0203f0c0();
+void Emotion_SetSlot(s32 a, s32 b);
+u32 Emotion_GetSlot(s32 i);
+s32 Emotion_FindFreeSlot();
+s32 Emotion_CountLearned();
 void MI_CpuFill8(void *p, s32 v, u32 n);
 void String_Load(void *a, u8 *b, const char *c);
 void *Choice_GetBmgName(s32 v);
@@ -121,8 +121,8 @@ extern u32 __ptmf_null[];
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 idx, u8 *p, void *s);
 s32 _ZN19Unk_020133cc_Player20getNewEmotionToLearnEv(void *self);
 s32 _ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(void *self);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *self, u32 v);
-void _ZN12Unk_02097ff413func_0209801cEj(void *self, u32 v);
+s32 _ZN12Unk_02097ff48testFlagEj(void *self, u32 v);
+void _ZN12Unk_02097ff47setFlagEj(void *self, u32 v);
 void _ZN9MsgString4copyEPS_(void *self, void *o);
 void _ZN12Unk_0201347416disableFootstepsEv(void *self);
 void _ZN12Unk_0201347415enableFootstepsEv(void *self);
@@ -229,7 +229,7 @@ public:
     virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void vfunc_88(s32 v);
+    virtual void openEmotionPage(s32 v);
 
     void attachOwner(SpNpcShrunk *owner);
     void scriptWaitThenEnd();
@@ -289,7 +289,7 @@ struct Unk_0201a794 {
 };
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -403,7 +403,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -613,7 +613,7 @@ BOOL SpNpcShrunk::vfunc_0c() {
         return FALSE;
     }
     if (func_02040c88() == 0) {
-        func_0208516c(func_020850e0())->pickRandomPos();
+        TownSessionState_GetVisitorPos(TownSessionState_Get())->pickRandomPos();
     }
     return TRUE;
 }
@@ -644,7 +644,7 @@ BOOL SpNpcShrunk::setupAct00() { return TRUE; }
 
 BOOL SpNpcShrunk::mainAct00() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
     return TRUE;
@@ -900,7 +900,7 @@ s32 SpNpcShrunkTalk::pickRandomUnlearnedEmotion(u8 *p, s32 n) {
     return r;
 }
 
-void SpNpcShrunkTalk::vfunc_88(s32 mode) {
+void SpNpcShrunkTalk::openEmotionPage(s32 mode) {
     ChoiceList *g;
     ChoiceEntry *slot;
     s32 z;
@@ -916,8 +916,8 @@ void SpNpcShrunkTalk::vfunc_88(s32 mode) {
     g->clear();
     r6 = 1;
     unk_b9[0] = r6;
-    for (i = 0; i < func_0203f0c0(); i++) {
-        unk_b9[func_0203f07c(i)] = r6;
+    for (i = 0; i < Emotion_CountLearned(); i++) {
+        unk_b9[Emotion_GetSlot(i)] = r6;
     }
     i = 0;
     z = 0;
@@ -935,7 +935,7 @@ void SpNpcShrunkTalk::vfunc_88(s32 mode) {
         } else if (mode == 1) {
             r6 = unk_d7[i];
         } else {
-            r6 = func_0203f07c(i);
+            r6 = Emotion_GetSlot(i);
         }
         slot = g->getEntry(i);
         b[1] = r6;
@@ -993,7 +993,7 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
             _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &b[1], (void *)"st_learn");
             unk_b4->unk_735 = 0;
             unk_b4->unk_734 = 0x14;
-            _ZN12Unk_02097ff413func_0209801cEj(PlayerData_GetCurrent(), 0x10);
+            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x10);
             b[0] = 0xc;
             unk_b4->teachEmotion(0, 0x17);
             r4->setNextMessage(&b[0], (void *)"sp_npc_reaction");
@@ -1005,9 +1005,9 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
 
 void SpNpcShrunkTalk::scriptOpenEmotionChoice() {
     if (unk_b8 == 0x17) {
-        vfunc_88(0);
+        openEmotionPage(0);
     } else {
-        vfunc_88(1);
+        openEmotionPage(1);
     }
     unk_b8 = 0xff;
     setScript(0);
@@ -1030,7 +1030,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
             b[0] = 0x18;
         } else {
             Talk_CheckAndSetPlayerFlag(0xe, 1);
-            if (func_0203f0b4() == -1) {
+            if (Emotion_FindFreeSlot() == -1) {
                 b[0] = 0x1a;
             }
         }
@@ -1065,10 +1065,10 @@ void SpNpcShrunkTalk::attachOwner(SpNpcShrunk *owner) {
 void SpNpcShrunkTalk::vfunc_78(TalkStartMsg *out) {
     out->a = (u32)"sp_npc_reaction";
     out->b = 1;
-    if (_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 0x10) == 1) {
+    if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x10) == 1) {
         if (Talk_CheckAndSetPlayerFlag(0xe, 0) == 0) {
             out->b = func_02063b8c(2) + 0x13;
-        } else if (func_0203f0c0() == 1) {
+        } else if (Emotion_CountLearned() == 1) {
             out->b = func_02063b8c(3) + 0xd;
         } else {
             out->b = func_02063b8c(3) + 0x10;
@@ -1093,14 +1093,14 @@ void SpNpcShrunkTalk::vfunc_14() {
         setScript(2);
         break;
     case 0x19: {
-        s32 r = func_0203f0b4();
+        s32 r = Emotion_FindFreeSlot();
         if (r != -1) {
             unk_b4->teachEmotion(r, unk_b8);
         }
         break;
     }
     case 0x1a:
-        vfunc_88(2);
+        openEmotionPage(2);
         break;
     }
 }
@@ -1124,7 +1124,7 @@ void SpNpcShrunkTalk::vfunc_18() {
         if (t == 4) {
             msg = 0x1b;
         } else {
-            b[0] = func_0203f07c(t);
+            b[0] = Emotion_GetSlot(t);
             _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 1, &b[0], (void *)"st_learn");
             unk_b4->teachEmotion(t, unk_b8);
             b[1] = unk_b8;
@@ -1172,7 +1172,7 @@ s32 SpNpcShrunk::getTeachableEmotion() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 void SpNpcShrunk::teachEmotion(s32 a, s32 b) {
-    func_0203f094(a, b);
+    Emotion_SetSlot(a, b);
     EventWeekSlots_MarkPlayer(0x43);
 }
 

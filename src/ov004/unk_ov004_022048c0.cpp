@@ -185,16 +185,16 @@ u16 *NookPoints_GetValuePtr(void *p);
 s32 NookPoints_GetRank(u32 x);
 s32 NookPoints_GetToNextRank(u16 *p);
 s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-Unk_020b6960 *func_020b50b4();
-BOOL TalkRequest_EndTalkWith(void *p);
+Unk_020b6960 *Scene_GetCollision();
+BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
-BOOL func_020318cc(void *self);
-void func_02031908(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
+BOOL BoxCollider_Unregister(void *self);
+void BoxCollider_Register(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 void *_ZN10PlayerData13getNookPointsEv(void *self);
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 extern char *sAtmMsgFilePtr;
@@ -233,7 +233,7 @@ public:
     void initCollision();
 
     /* 0x130 */ s32 unk_130;
-    /* 0x134 */ u8 unk_134[0x9c]; // Unk_020d8cf4 (ctor C1 / dtor D2 called by hand, as the original does)
+    /* 0x134 */ u8 unk_134[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
     /* 0x1d0 */ Unk_020b6e10 unk_1d0; // (ctor C2 / dtor D2 called by hand)
 };
 
@@ -265,14 +265,14 @@ struct Unk_ov004_Scene_Entry {
 };
 
 Atm::Atm() {
-    _ZN12Unk_020d8cf4C1Ev(unk_134);
+    _ZN11BoxColliderC1Ev(unk_134);
     _ZN12Unk_020b6e10C2Ev(&unk_1d0);
     sAtmInstance = 0;
 }
 
 Atm::~Atm() {
     _ZN12Unk_020b6e10D2Ev(&unk_1d0);
-    _ZN12Unk_020d8cf4D2Ev(unk_134);
+    _ZN11BoxColliderD2Ev(unk_134);
 }
 
 BOOL Atm::vfunc_00() {
@@ -285,7 +285,7 @@ BOOL Atm::vfunc_00() {
 
 BOOL Atm::onExecute() {
     execTalkAct();
-    func_020b50b4()->func_020b6928(&unk_1d0);
+    Scene_GetCollision()->func_020b6928(&unk_1d0);
     return TRUE;
 }
 
@@ -299,12 +299,12 @@ BOOL Atm::vfunc_0c() {
 }
 
 void Atm::initCollision() {
-    func_02031908(unk_134, 0x2000, 0x2000, 0x2000, unk_5c, 0, 0);
-    func_020b50b4()->func_020b68ec(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    BoxCollider_Register(unk_134, 0x2000, 0x2000, 0x2000, unk_5c, 0, 0);
+    Scene_GetCollision()->func_020b68ec(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {
-    return func_020318cc(unk_134);
+    return BoxCollider_Unregister(unk_134);
 }
 
 void Atm::setPointTexts() {
@@ -418,7 +418,7 @@ void Atm::execTalkAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             func_0203e47c(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

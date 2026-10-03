@@ -75,7 +75,7 @@ void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
 void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Item_IsBuildingOrOccupied();
-s32 func_020312a8(s32 x, s32 y);
+s32 Ground_GetWaterKind(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 extern u16 sInsectSpawnMaskLand[];
 extern u16 sInsectSpawnMaskDry[];
@@ -83,9 +83,9 @@ void InsectSpawn_BuildMasks();
 BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
 u32 MapBlock_GetAttr();
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
-s32 func_020312d0(s32 x, s32 y);
-s32 func_020312ec(s32 x, s32 y);
-s32 func_02031218(s32 x, s32 y);
+s32 Ground_IsGrassUnit(s32 x, s32 y);
+s32 Ground_IsPond(s32 x, s32 y);
+s32 Ground_GetDigKind(s32 x, s32 y);
 s32 Insect_LikesFlower(s32 kind, u16 *c);
 u32 func_02063b8c(u32 n);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
@@ -264,15 +264,15 @@ BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003
                     }
                     break;
                 case 4:
-                    if (func_020312d0(wx, wy) != 0) {
+                    if (Ground_IsGrassUnit(wx, wy) != 0) {
                         if (*c == 0xfff1) cnt++;
                     }
                     break;
                 case 6:
-                    if (func_020312ec(wx, wy) != 0) {
+                    if (Ground_IsPond(wx, wy) != 0) {
                         cnt++;
                     } else if (f20 != 0 && tx > 3 && ty > 3 && tx < 13 && ty < 13) {
-                        if (func_020312a8(wx, wy) == 2) cnt++;
+                        if (Ground_GetWaterKind(wx, wy) == 2) cnt++;
                     }
                     break;
                 case 1:
@@ -302,7 +302,7 @@ BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003
                     }
                     break;
                 case 9:
-                    if (func_02031218(wx, wy) == 0) {
+                    if (Ground_GetDigKind(wx, wy) == 0) {
                         if (*c == 0xfff1) cnt++;
                     }
                     break;
@@ -340,7 +340,7 @@ BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003
                     if (Field_IsGrownPalmTreeItem(c)) cnt++;
                     break;
                 case 5:
-                    if (func_020312a8(wx, wy) == 2) cnt++;
+                    if (Ground_GetWaterKind(wx, wy) == 2) cnt++;
                     break;
                 case 3:
                     break;

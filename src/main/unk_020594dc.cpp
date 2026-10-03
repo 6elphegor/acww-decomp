@@ -226,14 +226,14 @@ s32 LetterPaper_PickForPersonality();
 void _ZN6LetterC1Ev(void *obj);
 void _ZN6LetterD1Ev(void *obj);
 void func_02065920(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
-void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 f);
+void _ZN12Unk_0206555410setPresentEtj(void *obj, u32 v, s32 f);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 v);
+s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 v);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
-void func_020656dc(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
-s32 _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 v);
+void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
+s32 _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
 s32 _ZN8BlockMap13func_0204e474Eii(void *grid, s32 x, s32 y);
 s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
@@ -1457,10 +1457,10 @@ extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(data_021d735c, i);
             if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
-                if (func_0209c37c(z, 0x22)[0] != 0 || _ZN12Unk_02097ff413func_02098044Ej(p, 0xe)) {
+                if (func_0209c37c(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
                     _ZN6LetterC1Ev(objD);
                     by[0] = a;
-                    func_020656dc(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
+                    Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
                     LetterDelivery_PutInAddresseeMailbox(objD);
                     _ZN6LetterD1Ev(objD);
                 }
@@ -1496,11 +1496,11 @@ extern "C" void func_02059adc(void *self, s32 n)
             void *p = PlayerData_GetResident(data_021d735c, i);
             u32 obj[0x3e];
             u8 b;
-            if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff413func_02098044Ej(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
+            if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff48testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
                 _ZN6LetterC1Ev(obj);
                 b = id;
-                func_020656dc(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
-                _ZN12Unk_0206555413func_02065588Etj(obj, off, 1);
+                Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
+                _ZN12Unk_0206555410setPresentEtj(obj, off, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(obj)) {
                     _ZN8SaveData7setFlagEj(gSaveData, t);
                     _ZN6LetterD1Ev(obj);
@@ -1548,12 +1548,12 @@ extern "C" BOOL func_020599b0()
     u32 obj[0x3d];
     u8 b;
     void *p = PlayerData_GetCurrent();
-    if (p && _ZN12Unk_02097ff413func_02098044Ej(p, 3) && !_ZN12Unk_02097ff413func_02098044Ej(p, 0xe)) {
+    if (p && _ZN12Unk_02097ff48testFlagEj(p, 3) && !_ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
         _ZN6LetterC1Ev(obj);
         b = 0x1b;
-        func_020656dc(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, _ZN10PlayerData11getPlayerIdEv(p));
+        Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, _ZN10PlayerData11getPlayerIdEv(p));
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            _ZN12Unk_02097ff413func_0209801cEj(p, 0xe);
+            _ZN12Unk_02097ff47setFlagEj(p, 0xe);
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }
@@ -1574,7 +1574,7 @@ extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32
         if (v != -1) buf[1] = v;
         _ZN6LetterC1Ev(obj);
         func_02065920(obj, buf, data_021c5dec, &buf[1], r3, r2, 1);
-        if (p) _ZN12Unk_0206555413func_02065588Etj(obj, *p, 1);
+        if (p) _ZN12Unk_0206555410setPresentEtj(obj, *p, 1);
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;

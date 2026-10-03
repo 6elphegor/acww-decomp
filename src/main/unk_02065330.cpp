@@ -59,7 +59,7 @@ public:
     BOOL func_02065554();
     void func_02065564(u32 v);
     u8 func_02065578();
-    u32 func_02065588(u16 v, u32 w);
+    u32 setPresent(u16 v, u32 w);
     void func_020655ac(u32 v);
     u8 func_020655c0();
     u16 func_020655d0();
@@ -479,7 +479,7 @@ extern "C" void func_02065724(Unk_02065554 *self, void *a, void *b, void *c, s32
     func_02065a1c(self, &v, a, b, c);
 }
 
-extern "C" void func_020656dc(Unk_02065554 *self, void *a, void *b, u8 *pef, u8 *ped, void *obj) {
+extern "C" void Letter_ComposeFromMail(Unk_02065554 *self, void *a, void *b, u8 *pef, u8 *ped, void *obj) {
     u32 out;
     MailText_LoadLetter(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a, b);
     func_02065724(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out, pef, ped, obj);
@@ -536,7 +536,7 @@ void Unk_02065554::func_020655ac(u32 v) {
     unk_ee = (unk_ee & 0x3f) | (v << 6);
 }
 
-u32 Unk_02065554::func_02065588(u16 v, u32 w) {
+u32 Unk_02065554::setPresent(u16 v, u32 w) {
     u16 old = unk_f0;
     if (w == 0xff) w = 0;
     unk_f0 = v;

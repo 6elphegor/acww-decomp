@@ -13,7 +13,7 @@ void Mem_Free(void *);
 void *Heap_AllocAligned(void *, s32, s32);
 void MI_CpuFill8(void *, s32, s32);
 s32 Acre_HasPond(s32);
-s32 func_020303d0(s32, s32, s32, s32);
+s32 CollisionMap_SetBlock(s32, s32, s32, s32);
 u32 Acre_GetAttr(u32 x);
 extern void *gCurrentHeap;
 }
@@ -110,7 +110,7 @@ void MapBlock::bindBg(Unk_02037618_Sub *s, u32 t, u32 u) {
         t = unk_20->unk_0c;
     }
     if (t != 0) {
-        func_020303d0(unk_04, unk_08, t, u);
+        CollisionMap_SetBlock(unk_04, unk_08, t, u);
     }
 }
 

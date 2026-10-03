@@ -94,7 +94,7 @@ BOOL func_02072e44(CommManager *p);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -238,7 +238,7 @@ void func_02065b28(void *p);
 }
 
 extern "C" {
-void *func_02096f44(void *p);
+void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
@@ -290,7 +290,7 @@ void func_02065640(void *a, void *b, void *c);
 }
 
 extern "C" {
-void *func_020991e4();
+void *Inventory_GetEmptyLetter();
 }
 
 extern "C" {
@@ -386,13 +386,13 @@ BOOL Unk_020e1c88::onExecute() {
     s32 ob;
     s32 i;
     s32 j;
-    if (func_020b50e8() == 0x2e) goto ret1;
-    if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f || func_020b50e8() == 0xe) {
+    if (Scene_GetCurrent() == 0x2e) goto ret1;
+    if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f || Scene_GetCurrent() == 0xe) {
         if (func_020a03f0()) return TRUE;
         Unk_0209579c_Rec *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->unk_0e)) goto ret1;
-        if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
+        if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
             mode = Net_GetJoiningAid();
         } else {
             mode = NetSession_GetLastSyncSlot();
@@ -405,7 +405,7 @@ BOOL Unk_020e1c88::onExecute() {
         lr1[0] = 0;
         lr1[1] = 0;
         lr1[2] = 0;
-        if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
+        if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
             p1.x = 0x10000;
             p1.y = 2;
             p1.z = 0x5000;
@@ -431,7 +431,7 @@ BOOL Unk_020e1c88::onExecute() {
     do {
         if (!_ZN11CommManager11isLocalSlotEj(g, i) && _ZN11CommManager12isSlotActiveEi(g, i) && !func_02095204(i)) {
             if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
-                la == func_020b50e8() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
+                la == Scene_GetCurrent() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
                 p2.y = 2;
                 p2.z = ly1;
@@ -441,7 +441,7 @@ BOOL Unk_020e1c88::onExecute() {
             } else if (PlayerActor_TestSlotFlag(0x1b, ob)) {
                 u8 *bp = func_020952b0(i);
                 s32 *ip = func_020952bc(i);
-                if (*bp == func_020b50e8() && *ip != 0x93) {
+                if (*bp == Scene_GetCurrent() && *ip != 0x93) {
                     s32 *pp = func_020952a0(i);
                     p3.x = pp[0];
                     p3.y = pp[1];
@@ -464,7 +464,7 @@ BOOL Unk_020e1c88::onExecute() {
                         if (lv2 >= 0x93) {
                             ProcBase_RequestDelete(e);
                         } else if (PlayerActor_GetSlotPosXZ(&lb, &lx2, &ly2, -1, j)) {
-                            if (lb != func_020b50e8()) ProcBase_RequestDelete(e);
+                            if (lb != Scene_GetCurrent()) ProcBase_RequestDelete(e);
                         } else {
                             ProcBase_RequestDelete(e);
                         }

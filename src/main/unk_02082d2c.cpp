@@ -118,7 +118,7 @@ struct Unk_02082e80_Pos {
 };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -154,7 +154,7 @@ void FieldPos_SnapToUnitCenter(void *g, void *v);
 }
 
 extern "C" {
-void *func_020850e0();
+void *TownSessionState_Get();
 }
 
 extern "C" {
@@ -162,11 +162,11 @@ void *func_02085170(void *p);
 }
 
 extern "C" {
-void *func_0208516c(void *p);
+void *TownSessionState_GetVisitorPos(void *p);
 }
 
 extern "C" {
-void *func_02085174(void *p);
+void *TownSessionState_GetPeteFall(void *p);
 }
 
 extern "C" {
@@ -218,7 +218,7 @@ s32 func_0209ea50(void *a);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -270,7 +270,7 @@ s32 MapBlock_HasAllAttr(void *c, s32 v);
 }
 
 extern "C" {
-s32 func_02031194(s32 x, s32 y);
+s32 Ground_IsSandAboveSea(s32 x, s32 y);
 }
 
 extern "C" {
@@ -281,7 +281,7 @@ extern "C" {
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 }
 
-static inline BOOL Unk_02083058_IsA() { return data_020e416c == 0 ? TRUE : FALSE; }
+static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
 
 static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
     if (x < g->unk_04[0] && y < g->unk_04[1] && g->unk_00 != NULL) {

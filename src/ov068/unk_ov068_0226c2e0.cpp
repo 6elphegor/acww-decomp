@@ -27,8 +27,8 @@
 #define RoostGuestRoll_getAfternoonGuest _ZN14RoostGuestRoll17getAfternoonGuestEv
 #define RoostGuestRoll_getNoonGuest _ZN14RoostGuestRoll12getNoonGuestEv
 #define RoostGuestRoll_hasMorningGuest _ZN14RoostGuestRoll15hasMorningGuestEv
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define SaveRecord4_isDateActive _ZN11SaveRecord412isDateActiveEv
 #define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -193,7 +193,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -307,7 +307,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -588,7 +588,7 @@ void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 BOOL func_020e7500(void *p);
 void NpcLookAt_setManualAngles(void *self, s32 a, s16 b, s16 c, s16 d, s16 e);
 void TalkWindowState_setNextMessage(TalkWindowState *self, u8 *cmd, const char *tbl);
-BOOL func_02099014(u16 *p, s32 a);
+BOOL Pocket_AddItem(u16 *p, s32 a);
 void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Bgm_Release(u16 a);
 void LightSwitch_SetOff(s32 a, s32 b);
@@ -610,8 +610,8 @@ void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
 BOOL MenuCtrl_IsResultOk();
 u32 MenuCtrl_GetIndex();
-s32 func_02098eb0(u16 *p);
-void func_02099064();
+s32 Pocket_FindItem(u16 *p);
+void Pocket_RemoveItem();
 u32 TalkWindowState_getChoiceList(TalkWindowState *self);
 u32 ChoiceList_getResult(u32 a);
 
@@ -631,7 +631,7 @@ void KkShowFx_Start();
 namespace sB {
 extern "C" {
 void *PlayerData_GetCurrent();
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void NpcActor_setTalkRequest(void *p, void *q);
 void NpcActor_setNpcHandle(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
@@ -670,9 +670,9 @@ s32 RoostGuestRoll_hasMorningGuest(void *p);
 s32 Actor_spawn(u32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 func_02063b8c(s32 a);
-s32 func_02098eb0(u16 *p);
-s32 func_02098044(void *p, s32 a);
-void func_0209801c(void *p, s32 a);
+s32 Pocket_FindItem(u16 *p);
+s32 Unk_02097ff4_testFlag(void *p, s32 a);
+void Unk_02097ff4_setFlag(void *p, s32 a);
 void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
 void Unk_020d7710_openSubScene(void *self, u32 a);
 void func_0201578c(void *self, u16 *p, s32 a, s32 b);
@@ -938,7 +938,7 @@ BOOL SpNpcRoostGuest::mainAct01() {
         return TRUE;
     }
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
     return TRUE;
@@ -979,7 +979,7 @@ BOOL SpNpcRoostGuest::mainAct02() {
         return TRUE;
     }
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         if (PlayerActor_IsInAction(0x28, 4)) {
             PlayerActor_LocalRequestStandUp(0);
         }
@@ -1029,7 +1029,7 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
             u8 m = ((u8 *)&d)[2];
             if (m < 0x14 && m >= 0x13) {
                 h0 = 0x3530;
-                s32 r = func_02098eb0(&h0);
+                s32 r = Pocket_FindItem(&h0);
                 BOOL ok = FALSE;
                 if (r != -1) {
                     ok = TRUE;
@@ -1043,7 +1043,7 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
                 out->unk_04 = 0;
             } else if (Talk_CheckAndSetPlayerFlag(0xd, 0) != 0) {
                 h2 = 0x3530;
-                s32 r = func_02098eb0(&h2);
+                s32 r = Pocket_FindItem(&h2);
                 BOOL ok = FALSE;
                 if (r != -1) {
                     ok = TRUE;
@@ -1053,9 +1053,9 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
                 } else {
                     out->unk_04 = 0x12;
                 }
-            } else if (func_02098044(p, 7) == 0) {
+            } else if (Unk_02097ff4_testFlag(p, 7) == 0) {
                 out->unk_04 = 1;
-                func_0209801c(p, 7);
+                Unk_02097ff4_setFlag(p, 7);
             } else if (Talk_CheckAndSetPlayerFlag(0xc, 1) == 0) {
                 out->unk_04 = 2;
             } else {
@@ -1249,10 +1249,10 @@ void SpNpcRoostGuestTalk::func_ov068_0226cba4(s32 a) {
     u16 h1;
     if (a == 0) {
         h0 = 0x3530;
-        if (func_02098eb0(&h0) != -1) {
-            func_02099064();
+        if (Pocket_FindItem(&h0) != -1) {
+            Pocket_RemoveItem();
             h1 = 0x4a34;
-            func_02099014(&h1, 0);
+            Pocket_AddItem(&h1, 0);
         }
     }
 }
@@ -1457,7 +1457,7 @@ void SpNpcRoostGuestTalk::func_ov068_0226c530() {
             TalkWindowState_setNextMessage(unk_3c, &c0, sRoostGuestMsgFiles[unk_b0->unk_72c]);
         } else {
             h = unk_b0->unk_652;
-            if (func_02099014(&h, 0) == 0) {
+            if (Pocket_AddItem(&h, 0) == 0) {
                 c1 = 0xd;
                 TalkWindowState_setNextMessage(unk_3c, &c1, sRoostGuestMsgFiles[unk_b0->unk_72c]);
             } else {

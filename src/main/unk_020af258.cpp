@@ -84,7 +84,7 @@ BOOL func_02072e44(void *p);
 }
 
 extern "C" {
-u32 func_020b50e8();
+u32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -208,7 +208,7 @@ u32 func_0209888c(void *a);
 }
 
 extern "C" {
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 
 extern "C" {
@@ -324,7 +324,7 @@ extern u8 data_021ee25c[];
 }
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -360,7 +360,7 @@ static inline BOOL IsEq(u32 c, u32 v) { if (c >= v && c <= v) return TRUE; retur
 }
 
 extern "C" {
-static inline BOOL IsZ() { if (data_020e416c == 0) return TRUE; return FALSE; }
+static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
 // prototypes
 extern "C" s32 func_020af3bc(s32 a, s32 b, s32 c, s32 d, s16 e);
@@ -376,7 +376,7 @@ extern "C" void func_020af258(s32 m);
 
 
 extern "C" s32 func_020af3bc(s32 a, s32 b, s32 c, s32 d, s16 e) {
-    BOOL z = data_020e416c == 0;
+    BOOL z = gFieldSceneKind == 0;
     if (z && d > 0) return Snowball_TryPushAny(a, b, c, d, e);
     return 0;
 }

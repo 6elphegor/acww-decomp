@@ -25,7 +25,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
-s32 func_02098ffc();
+s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
 void *ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
@@ -1213,7 +1213,7 @@ void ChestMenu_QuickMove(S *s, u8 a, u32 b) {
 }
 
 u32 ChestMenu_FindFreePocket(S *s) {
-    s32 r = func_02098ffc();
+    s32 r = Pocket_FindEmpty();
     if (r == -1) {
         return 0x25;
     }

@@ -8,14 +8,14 @@
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
-#define func_02071c1c _ZN12Unk_02071c1c13func_02071c1cEj
-#define func_02071c2c _ZN12Unk_02071c1c13func_02071c2cEjj
-#define func_02071c5c _ZN14PlayerPatterns13func_02071c5cEv
-#define func_02071c68 _ZN14PlayerPatterns13func_02071c68Ej
-#define func_02071e04 _ZN7Pattern13func_02071e04Ev
-#define func_02071e58 _ZN7Pattern13func_02071e58Ev
-#define func_02071f5c _ZN12Unk_02071ed013func_02071f5cEP18EncodedString16Buf
-#define func_02072040 _ZN12Unk_02071ed013func_02072040Ev
+#define PatternOrder_getSlot _ZN12PatternOrder7getSlotEj
+#define PatternOrder_swap _ZN12PatternOrder4swapEjj
+#define PlayerPatterns_getPatternOrder _ZN14PlayerPatterns15getPatternOrderEv
+#define PlayerPatterns_getPatternByOrder _ZN14PlayerPatterns17getPatternByOrderEj
+#define Pattern_getInfo _ZN7Pattern7getInfoEv
+#define Pattern_getPixels _ZN7Pattern9getPixelsEv
+#define PatternInfo_getTitleEncoded _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf
+#define PatternInfo_getPaletteData _ZN11PatternInfo14getPaletteDataEv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
@@ -81,21 +81,21 @@ extern u8 gTouchPressX;
 extern u8 data_021edb68;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern u32 *gCurrentHeap;
 
 // main / runtime functions that are methods of other modules' classes, called with the object first
 void func_020624c0(void *p);
 void func_02062510(void *p);
-u32 func_02071c1c(void *p, u32 i);
-void func_02071c2c(void *p, u32 a, u32 b);
-void *func_02071c5c(void *p);
-void *func_02071c68(void *p, u32 i);
-void *func_02071e04(void *p);
-s32 func_02071e58(void *p);
-s32 func_02072040(void *p);
-void func_02071f5c(void *p, void *q);
+u32 PatternOrder_getSlot(void *p, u32 i);
+void PatternOrder_swap(void *p, u32 a, u32 b);
+void *PlayerPatterns_getPatternOrder(void *p);
+void *PlayerPatterns_getPatternByOrder(void *p, u32 i);
+void *Pattern_getInfo(void *p);
+s32 Pattern_getPixels(void *p);
+s32 PatternInfo_getPaletteData(void *p);
+void PatternInfo_getTitleEncoded(void *p, void *q);
 BOOL CommManager_isOnline(void *p);
 void LabelBalloon_setText(void *p, void *q);
 void LabelBalloon_setPos(void *p, s32 a, s32 b);
@@ -117,8 +117,8 @@ void BgVramTask_cancel(void *p);
 
 void *PlayerData_GetCurrent();
 u32 func_020b0f54();
-s32 func_02098ffc();
-s32 func_02099014(u16 *p, u32 v);
+s32 Pocket_FindEmpty();
+s32 Pocket_AddItem(u16 *p, u32 v);
 void Snd_PlaySe(s32 id);
 s32 StrBuf_GameToAscii(void *p, void *q);
 s32 FieldAction_RequestDrop(u32 p, u32 a);
@@ -142,7 +142,7 @@ void *ProcBase_GetParent();
 void ProcBase_RequestDelete();
 void MIi_CpuCopy16(s32 a, void *b, s32 c);
 void File_LoadToBuffer(const char *a, void *b, s32 c);
-BOOL func_020b52f8();
+BOOL Scene_InHouseRoom();
 void *Heap_AllocTail(void *a, s32 b);
 void Heap_Free(void *a, void *b);
 void Gfx2d_LinearToTilesInRow32(s32 a, void *b, s32 c, s32 d, s32 e);
@@ -778,7 +778,7 @@ void DesignTab::initDesignTab() {
     u32 z = 0;
     unk_a2 = z;
     unk_9c = z;
-    if (data_020e416c == 0) {
+    if (gFieldSceneKind == 0) {
         z = 1;
     }
     if (z != 0) {
@@ -807,7 +807,7 @@ void DesignTab::initDesignTab() {
 }
 
 BOOL DesignTab::canDecorateRoom() {
-    if (func_020b52f8()) {
+    if (Scene_InHouseRoom()) {
         Unk_ov121_Comm *g = gCommManager;
         if (CommManager_isOnline(g) && g->unk_64 != 0) {
             return FALSE;
@@ -881,7 +881,7 @@ void DesignTab::loadPatternIcons() {
     i = 0;
     k = 4;
     do {
-        Gfx2d_LinearToTilesInRow32(func_02071e58(func_02071c68((void *)v, i)), r5, i << 2, k, k);
+        Gfx2d_LinearToTilesInRow32(Pattern_getPixels(PlayerPatterns_getPatternByOrder((void *)v, i)), r5, i << 2, k, k);
         i = (u8)(i + 1);
     } while (i < 8);
     Gfx2d_LoadCharRange(r5, 8, 0xc0, 0xc0, 0x13f);
@@ -890,7 +890,7 @@ void DesignTab::loadPatternIcons() {
     i = 0;
     n = i;
     do {
-        MIi_CpuCopy16(func_02072040(func_02071e04(func_02071c68((void *)v, n))), (u8 *)r7 + i * 2, 0x20);
+        MIi_CpuCopy16(PatternInfo_getPaletteData(Pattern_getInfo(PlayerPatterns_getPatternByOrder((void *)v, n))), (u8 *)r7 + i * 2, 0x20);
         i += 0x10;
         n = (u8)(n + 1);
     } while (n < 8);
@@ -1385,7 +1385,7 @@ BOOL DesignTab::dropHeldOnTarget() {
 
 void DesignTab::swapPatternSlots(u32 a, u32 b) {
     if (a != b) {
-        func_02071c2c(func_02071c5c(func_020986d4(PlayerData_GetCurrent())), a, b);
+        PatternOrder_swap(PlayerPatterns_getPatternOrder(func_020986d4(PlayerData_GetCurrent())), a, b);
         u8 t = unk_1074[a];
         unk_1074[a] = unk_1074[b];
         unk_1074[b] = t;
@@ -1393,7 +1393,7 @@ void DesignTab::swapPatternSlots(u32 a, u32 b) {
 }
 
 u32 DesignTab::getSlotPattern(u32 i) {
-    return func_02071c1c(func_02071c5c(func_020986d4(PlayerData_GetCurrent())), i);
+    return PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(PlayerData_GetCurrent())), i);
 }
 
 void DesignTab::setPopupChoices(u32 i) {
@@ -1408,7 +1408,7 @@ void DesignTab::dropOnPlayerFigure() {
     volatile u16 v;
     u16 w;
     void *r6 = PlayerData_GetCurrent();
-    s32 s = func_02098ffc();
+    s32 s = Pocket_FindEmpty();
     v = *(u16 *)func_020983cc(r6);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7) && s == -1) {
         openMessageWindow(4, 1);
@@ -1425,7 +1425,7 @@ void DesignTab::dropOnPlayerFigure() {
     w = x;
     MenuScreen_UploadClothPattern(&w, (void *)&unk_804[1], unk_d8, unk_b8);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7)) {
-        func_02099014((u16 *)&v, 0);
+        Pocket_AddItem((u16 *)&v, 0);
     }
     resumeInput();
     Snd_PlaySe(0x6b);
@@ -1438,7 +1438,7 @@ void DesignTab::applyRoomDesignA(u32 m) {
         return;
     }
     PlayerData_GetCurrent();
-    s32 s = func_02098ffc();
+    s32 s = Pocket_FindEmpty();
     v = *RoomShell_GetCarpet();
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7) && s == -1) {
         openMessageWindow(4, 1);
@@ -1447,7 +1447,7 @@ void DesignTab::applyRoomDesignA(u32 m) {
     restoreCamera();
     func_02034228(getSlotPattern(unk_ae), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
-        func_02099014((u16 *)&v, 0);
+        Pocket_AddItem((u16 *)&v, 0);
     }
     resumeInput();
     startTargetBlink(unk_af);
@@ -1459,7 +1459,7 @@ void DesignTab::applyRoomDesignB(u32 m) {
         openMessageWindow(0x18, 1);
         return;
     }
-    s32 s = func_02098ffc();
+    s32 s = Pocket_FindEmpty();
     v = *RoomShell_GetWallpaper();
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7) && s == -1) {
         openMessageWindow(4, 1);
@@ -1468,7 +1468,7 @@ void DesignTab::applyRoomDesignB(u32 m) {
     restoreCamera();
     func_020342a4(getSlotPattern(unk_ae), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
-        func_02099014((u16 *)&v, 0);
+        Pocket_AddItem((u16 *)&v, 0);
     }
     resumeInput();
     startTargetBlink(unk_af);
@@ -1499,12 +1499,12 @@ void DesignTab::equipDesign(u32 m) {
         break;
     }
     if (t != 0xfff1) {
-        if (func_02098ffc() == -1) {
+        if (Pocket_FindEmpty() == -1) {
             openMessageWindow(4, 1);
             return;
         }
         w = t;
-        func_02099014(&w, 0);
+        Pocket_AddItem(&w, 0);
     }
     pushCamera();
     u32 u;
@@ -1674,7 +1674,7 @@ void DesignTab::refreshNameLabel() {
     }
     LabelBalloon_setPos(&unk_2d8, getSlotX(unk_ad) - 0x78, x);
     func_02062510(a);
-    func_02071f5c(func_02071e04(func_02071c68(func_020986d4(PlayerData_GetCurrent()), unk_ad)), a);
+    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(func_020986d4(PlayerData_GetCurrent()), unk_ad)), a);
     func_02089f44(b);
     StrBuf_GameToAscii(b, a);
     LabelBalloon_setText(&unk_2d8, b);

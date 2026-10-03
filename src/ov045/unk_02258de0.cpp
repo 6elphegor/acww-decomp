@@ -26,7 +26,7 @@ class SpNpcKatrinaTalk;
 extern "C" {
 void *PlayerData_GetCurrent();
 u32 func_02063b8c(u32 n);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void *func_020947f0(s32);
 s32 Clock_GetDateTime(void *);
@@ -69,8 +69,8 @@ void unk_618_func_02014198(void *self, u8 a, u8 b);
 BOOL unk_618_func_02014220(void *self);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 void base_vfunc_38(void *self, u32 a);
-void *func_020b4934();
-s32 func_020b4bbc(void *, s32);
+void *Scene_GetWarpRequest();
+s32 SceneWarp_RequestExit(void *, s32);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 func_020e7518(void *p);
 s32 Effect_Create(u32 kind, void *a, s32 b, s32 c);
@@ -262,7 +262,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -372,7 +372,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -633,7 +633,7 @@ BOOL SpNpcKatrina::setupAct01() {
 
 BOOL SpNpcKatrina::mainAct01() {
     if (!unk_618_func_02014220(&unk_618)) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -643,7 +643,7 @@ BOOL SpNpcKatrina::setupAct03() { return TRUE; }
 
 BOOL SpNpcKatrina::mainAct03() {
     if (!unk_618_func_02014220(&unk_618)) {
-        func_020b4bbc(func_020b4934(), 0);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(2);
     }
     return TRUE;

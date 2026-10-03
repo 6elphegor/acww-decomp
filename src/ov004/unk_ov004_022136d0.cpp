@@ -124,12 +124,12 @@ void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *func_020b50b4();
+Unk_020b6960 *Scene_GetCollision();
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Unk_020b6960 *self, Unk_020b6a94 *o, void *a, s32 b, s32 c, u8 d);
-u32 func_020b50e8();
+u32 Scene_GetCurrent();
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
 
@@ -228,7 +228,7 @@ BOOL RoomBoardSign::vfunc_00() {
     unk_152 = sRoomBoardSignSpawnMsg;
     unk_154 = sRoomBoardSignSpawnRadius;
     if (registerSelf()) {
-        u32 t = func_020b50e8();
+        u32 t = Scene_GetCurrent();
         setCharId((u16)(unk_150 | (t << 8)));
         changeAct(0);
         return TRUE;
@@ -238,7 +238,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(func_020b50b4(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
+    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
     return TRUE;
 }
 
@@ -362,7 +362,7 @@ void RoomBoardSign::mainAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

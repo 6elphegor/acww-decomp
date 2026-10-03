@@ -278,7 +278,7 @@ u16 *PlayerData_getHeldItem(s32 a);
 s32 func_02098750(s32 a);
 s32 PlayerData_getPlayerId(...);
 void Player_GetDeliveryRecipientName(void *a, void *b);
-void func_0209909c(u16 *a, s32 b, s32 c);
+void Pocket_SetItem(u16 *a, s32 b, s32 c);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
 void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
@@ -800,7 +800,7 @@ void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x) {
     volatile u16 w = 0xfff1;
     w = v;
     if (i >= 0 && i <= 0xe) {
-        func_0209909c((u16 *)&w, x, i);
+        Pocket_SetItem((u16 *)&w, x, i);
     } else if (i >= 0xf && i <= 0x1d) {
         s->unk_a34[i - 0xf] = v;
     }

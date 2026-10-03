@@ -7,32 +7,32 @@ struct Unk_0209b570_Ent {
 };
 // Record (12 bytes): two words, u16 at +8, type byte at +0x0a, bits at +0x0b.
 // The constructor/destructor are the unit's own functions 0x0209ada4 / 0x0209ada0 (aliases.txt).
-struct Unk_0209ada4 {
+struct ErrandRecord {
     u32 unk_00;
     u32 unk_04;
     u16 unk_08;
     u8 unk_0a;
     u8 unk_0b;
 
-    Unk_0209ada4();
-    ~Unk_0209ada4();
-    void func_0209ab8c(u16 *p);
-    u16 *func_0209ab94();
+    ErrandRecord();
+    ~ErrandRecord();
+    void setItem(u16 *p);
+    u16 *getItem();
     void setExtra(u8 v);
     u32 getExtra();
-    void func_0209abb4(u8 v);
-    u32 func_0209abc4();
+    void setStep(u8 v);
+    u32 getStep();
     s32 getSubGroup();
     s32 func_0209ac10();
     s32 setTimeFromNow(s32 x);
-    u32 func_0209ac64();
+    u32 getKind();
     BOOL getGroupIndex(s32 *out);
     s32 getGroup();
     BOOL getClassIndex(s32 *out);
     s32 getClass();
-    void func_0209ad54(u8 a, u16 *p, u8 b);
-    BOOL func_0209ad68();
-    void func_0209ad80();
+    void start(u8 a, u16 *p, u8 b);
+    BOOL isActive();
+    void clear();
     void func_0209ada0();
     void init();
 };
@@ -103,7 +103,7 @@ public:
 };
 
 // Slot: Y record, two records, flag byte at +0x24 (0x28 bytes)
-class PlayerErrandSlot : public Unk_0209ada4 {
+class PlayerErrandSlot : public ErrandRecord {
 public:
     PlayerErrandSlot();
     ~PlayerErrandSlot();
@@ -113,7 +113,7 @@ public:
 };
 
 // Y record with an index byte and a flag byte (0x10 bytes)
-class Unk_02099f98 : public Unk_0209ada4 {
+class ParcelErrand : public ErrandRecord {
 public:
     /* 0x0c */ u8 unk_0c;
     /* 0x0d */ u8 unk_0d;
@@ -124,7 +124,7 @@ public:
     HouseVisitInvite();
     ~HouseVisitInvite();
 
-    /* 0x0c */ Unk_0209ada4 unk_0c;
+    /* 0x0c */ ErrandRecord unk_0c;
     /* 0x18 */ u32 unk_18;
     /* 0x1c */ u32 unk_1c;
     /* 0x20 */ u8 unk_20[8];
@@ -138,7 +138,7 @@ public:
     /* 0x00 */ PlayerErrandSlot unk_00[2];
     /* 0x50 */ Unk_02003130 unk_50[3];
     /* 0x74 */ u8 unk_74;
-    /* 0x78 */ Unk_02099f98 unk_78;
+    /* 0x78 */ ParcelErrand unk_78;
     /* 0x88 */ HouseVisitInvite unk_88;
 };
 // ======== types of unk_0209a208.cpp ========
@@ -386,8 +386,8 @@ BOOL Errand_IsValidKind(u32 x);
 extern "C" BOOL Trend_IsValid(u32 x);
 extern "C" s32 PlanState_GetGroup(u32 x);
 
-extern "C" void *PlanErrand_Destruct(Unk_0209ada4 *self);
-extern "C" void *PlanErrand_Construct(Unk_0209ada4 *self);
+extern "C" void *PlanErrand_Destruct(ErrandRecord *self);
+extern "C" void *PlanErrand_Construct(ErrandRecord *self);
 extern "C" s32 Errand_GetSubGroup(u32 x);
 extern "C" s32 func_0209ac1c(u32 x);
 extern "C" void ErrandRecord_GetTime();
@@ -763,7 +763,7 @@ extern "C" void Trend_GetToolItem(u16 *out, s32 idx) {
 }
 
 }
-void Unk_0209ada4::init() {
+void ErrandRecord::init() {
     using namespace n5;
     unk_00 = 0;
     unk_04 = 0;
@@ -775,13 +775,13 @@ void Unk_0209ada4::init() {
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209ada0() {
+void ErrandRecord::func_0209ada0() {
     using namespace n5;}
 
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209ad80() {
+void ErrandRecord::clear() {
     using namespace n5;
     unk_0a = 0x16;
     unk_08 = 0xfff1;
@@ -797,13 +797,13 @@ extern "C" BOOL Errand_IsValidKind(u32 x) {
 }
 
 }
-BOOL Unk_0209ada4::func_0209ad68() {
+BOOL ErrandRecord::isActive() {
     using namespace n5; return Errand_IsValidKind(unk_0a); }
 
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209ad54(u8 a, u16 *p, u8 b) {
+void ErrandRecord::start(u8 a, u16 *p, u8 b) {
     using namespace n5;
     unk_0a = a;
     unk_08 = *p;
@@ -828,7 +828,7 @@ extern "C" s32 Errand_GetClass(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::getClass() {
+s32 ErrandRecord::getClass() {
     using namespace n5; return Errand_GetClass(unk_0a); }
 
 
@@ -843,7 +843,7 @@ extern "C" BOOL Errand_GetClassIndex(s32 *out, s32 x) {
 }
 
 }
-BOOL Unk_0209ada4::getClassIndex(s32 *out) {
+BOOL ErrandRecord::getClassIndex(s32 *out) {
     using namespace n5; return Errand_GetClassIndex(out, unk_0a); }
 
 
@@ -868,7 +868,7 @@ extern "C" s32 Errand_GetGroup(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::getGroup() {
+s32 ErrandRecord::getGroup() {
     using namespace n5; return Errand_GetGroup(unk_0a); }
 
 
@@ -884,19 +884,19 @@ extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x) {
 }
 
 }
-BOOL Unk_0209ada4::getGroupIndex(s32 *out) {
+BOOL ErrandRecord::getGroupIndex(s32 *out) {
     using namespace n5; return Errand_GetGroupIndex(out, unk_0a); }
 
 
 namespace n5 {
 }
-u32 Unk_0209ada4::func_0209ac64() {
+u32 ErrandRecord::getKind() {
     using namespace n5; return unk_0a; }
 
 
 namespace n5 {
 }
-s32 Unk_0209ada4::setTimeFromNow(s32 x) {
+s32 ErrandRecord::setTimeFromNow(s32 x) {
     using namespace n5;
     Clock_GetDateTime(this);
     return DateTime_AddMinutes(this, x);
@@ -919,7 +919,7 @@ extern "C" s32 func_0209ac1c(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::func_0209ac10() {
+s32 ErrandRecord::func_0209ac10() {
     using namespace n5; return func_0209ac1c(unk_0a); }
 
 
@@ -943,55 +943,55 @@ extern "C" s32 Errand_GetSubGroup(u32 x) {
 }
 
 }
-s32 Unk_0209ada4::getSubGroup() {
+s32 ErrandRecord::getSubGroup() {
     using namespace n5; return Errand_GetSubGroup(unk_0a); }
 
 
 namespace n5 {
 }
-u32 Unk_0209ada4::func_0209abc4() {
+u32 ErrandRecord::getStep() {
     using namespace n5; return ((Unk_0209abac_Bits *)&unk_0b)->lo; }
 
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209abb4(u8 v) {
+void ErrandRecord::setStep(u8 v) {
     using namespace n5; unk_0b = (unk_0b & ~0x1f) | (v & 0x1f); }
 
 
 namespace n5 {
 }
-u32 Unk_0209ada4::getExtra() {
+u32 ErrandRecord::getExtra() {
     using namespace n5; return ((Unk_0209abac_Bits *)&unk_0b)->hi; }
 
 
 namespace n5 {
 }
-void Unk_0209ada4::setExtra(u8 v) {
+void ErrandRecord::setExtra(u8 v) {
     using namespace n5; unk_0b = (unk_0b & ~0xe0) | ((v & 7) << 5); }
 
 
 namespace n5 {
 }
-u16 *Unk_0209ada4::func_0209ab94() {
+u16 *ErrandRecord::getItem() {
     using namespace n5; return &unk_08; }
 
 
 namespace n5 {
 }
-void Unk_0209ada4::func_0209ab8c(u16 *p) {
+void ErrandRecord::setItem(u16 *p) {
     using namespace n5; unk_08 = *p; }
 
 
 namespace n5 {
-extern "C" void *PlanErrand_Construct(Unk_0209ada4 *self) {
+extern "C" void *PlanErrand_Construct(ErrandRecord *self) {
     self->init();
     _ZN8PlayerIdC1EPv((u8 *)self + 0xc);
     *(u16 *)((u8 *)self + 0x24) = 0xfff1;
     return self;
 }
 
-extern "C" void *PlanErrand_Destruct(Unk_0209ada4 *self) {
+extern "C" void *PlanErrand_Destruct(ErrandRecord *self) {
     _ZN8PlayerIdC1Ev((u8 *)self + 0xc);
     self->func_0209ada0();
     return self;
@@ -1006,22 +1006,22 @@ struct PlayerErrandSlot;
 struct Unk_0209a4f4_Ent;
 
 typedef void (*Unk_0209a5b8_Fn)(void *);extern "C" {
-void *_ZN12Unk_0209ada413func_0209ad80Ev(void *p);
-void _ZN12Unk_0209ada413func_0209ada0Ev(void *p);
-void *_ZN12Unk_0209ada44initEv(void *p);
-s32 _ZN12Unk_0209ada413func_0209ab8cEPt(void *p, u16 *v);
-s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *p);
-s32 _ZN12Unk_0209ada413getGroupIndexEPi(void *p, s32 *out);
+void *_ZN12ErrandRecord5clearEv(void *p);
+void _ZN12ErrandRecord13func_0209ada0Ev(void *p);
+void *_ZN12ErrandRecord4initEv(void *p);
+s32 _ZN12ErrandRecord7setItemEPt(void *p, u16 *v);
+s32 _ZN12ErrandRecord7getKindEv(void *p);
+s32 _ZN12ErrandRecord13getGroupIndexEPi(void *p, s32 *out);
 s32 Errand_GetGroupIndex(s32 *out, s32 kind);
 s32 Errand_GetGroup(s32 kind);
 s32 Errand_GetClassIndex(u32 *out, s32 x);
-s32 _ZN12Unk_0209ada48getClassEv(void *p);
+s32 _ZN12ErrandRecord8getClassEv(void *p);
 s32 Errand_GetClass(s32 x);
-s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *p);
-s32 _ZN12Unk_0209ada413func_0209ad54EhPth(void *p, s32 a, u16 *b, s32 c);
-u32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
-void _ZN12Unk_0209ada413func_0209abb4Eh(void *p, s32 v);
-s32 _ZN12Unk_0209ada48setExtraEh(void *p, s32 v);
+s32 _ZN12ErrandRecord8isActiveEv(void *p);
+s32 _ZN12ErrandRecord5startEhPth(void *p, s32 a, u16 *b, s32 c);
+u32 _ZN12ErrandRecord7getStepEv(void *p);
+void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
+s32 _ZN12ErrandRecord8setExtraEh(void *p, s32 v);
 s32 ErrandRecord_GetTime(void *p);
 s32 _ZN12VillagerPlan8getStateEv(void *p);
 s32 _ZN12VillagerPlan9rollTrendEii(void *p);
@@ -1169,7 +1169,7 @@ extern "C" void PlanErrand_Clear(void *pp);
 
 extern "C" void PlanErrand_Clear(void *pp) {
     Unk_0209ab18 *self = (Unk_0209ab18 *)pp;
-    _ZN12Unk_0209ada413func_0209ad80Ev(self);
+    _ZN12ErrandRecord5clearEv(self);
     _ZN8PlayerId13func_02094294Ev(self->unk_0c);
     self->unk_22 = 7;
     self->unk_24 = 0xfff1;
@@ -1179,7 +1179,7 @@ extern "C" void PlanErrand_Clear(void *pp) {
 }
 
 extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b) {
-    _ZN12Unk_0209ada413func_0209ad54EhPth(p, a, b, 0);
+    _ZN12ErrandRecord5startEhPth(p, a, b, 0);
 }
 
 extern "C" void PlanErrand_Begin(Unk_0209ab18 *self, s32 a, u16 *b) {
@@ -1191,9 +1191,9 @@ extern "C" void PlanErrand_Begin(Unk_0209ab18 *self, s32 a, u16 *b) {
 extern "C" s32 PlanErrand_ResetProgress(void *pp) {
     Unk_0209ab18 *self = (Unk_0209ab18 *)pp;
     u16 v;
-    _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(self), 0);
+    _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(self), 0);
     v = 0xfff1;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(PlanErrand_GetRecord(self), &v);
+    _ZN12ErrandRecord7setItemEPt(PlanErrand_GetRecord(self), &v);
     _ZN8PlayerId13func_02094294Ev(PlanErrand_GetPlayer(self));
     *PlanErrand_GetShownItem(self) = 0xfff1;
 }
@@ -1202,9 +1202,9 @@ extern "C" void PlanErrand_Assign(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj,
     if (flag) {
         PlanErrand_Begin(self, a1, p);
     } else {
-        _ZN12Unk_0209ada413func_0209abb4Eh(PlanErrand_GetRecord(self), 0);
-        _ZN12Unk_0209ada413func_0209ab8cEPt(PlanErrand_GetRecord(self), p);
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(PlanErrand_GetRecord(self)) == 2) {
+        _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(self), 0);
+        _ZN12ErrandRecord7setItemEPt(PlanErrand_GetRecord(self), p);
+        if (_ZN12ErrandRecord7getKindEv(PlanErrand_GetRecord(self)) == 2) {
             if (PlanErrand_GetStep(self) == 2) {
                 BOOL r = FALSE;
                 if (*p >= 0x450c && *p <= 0x45db) {
@@ -1219,7 +1219,7 @@ extern "C" void PlanErrand_Assign(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj,
     if (obj) {
         _ZN8PlayerId13func_020942b8EPv(PlanErrand_GetPlayer(self), (s32)obj);
         Clock_GetDateTime(ErrandRecord_GetTime(PlanErrand_GetRecord(self)));
-        _ZN12Unk_0209ada48setExtraEh(PlanErrand_GetRecord(self), 0);
+        _ZN12ErrandRecord8setExtraEh(PlanErrand_GetRecord(self), 0);
     } else {
         _ZN8PlayerId13func_02094294Ev(PlanErrand_GetPlayer(self));
     }
@@ -1227,10 +1227,10 @@ extern "C" void PlanErrand_Assign(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj,
 
 extern "C" void PlanErrand_MarkReady(void *p) {
     void *o = PlanErrand_GetRecord(p);
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
-        if (_ZN12Unk_0209ada48getClassEv(o) == 0) {
-            if (_ZN12Unk_0209ada413func_0209abc4Ev(o) == 1) {
-                _ZN12Unk_0209ada413func_0209abb4Eh(o, 2);
+    if (_ZN12ErrandRecord8isActiveEv(o)) {
+        if (_ZN12ErrandRecord8getClassEv(o) == 0) {
+            if (_ZN12ErrandRecord7getStepEv(o) == 1) {
+                _ZN12ErrandRecord7setStepEh(o, 2);
             }
         }
     }
@@ -1241,12 +1241,12 @@ extern "C" void PlanErrand_AdvanceStep(Unk_0209ab18 *self) {
     s32 t;
     s32 a;
     s32 ok;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
-        if (_ZN12Unk_0209ada48getClassEv(o) == 0) {
-            t = PlanErrand_GetStepCount(_ZN12Unk_0209ada413func_0209ac64Ev(o));
+    if (_ZN12ErrandRecord8isActiveEv(o)) {
+        if (_ZN12ErrandRecord8getClassEv(o) == 0) {
+            t = PlanErrand_GetStepCount(_ZN12ErrandRecord7getKindEv(o));
             a = PlanErrand_GetStep(self);
             if (a < t - 1) {
-                if (_ZN12Unk_0209ada413func_0209ac64Ev(o) == 4) {
+                if (_ZN12ErrandRecord7getKindEv(o) == 4) {
                     ok = PlanErrand_IsFurnitureGoalMet(self);
                 } else {
                     ok = 1;
@@ -1428,8 +1428,8 @@ extern "C" u8 PlanErrand_AddCount(Unk_0209ab18 *p, s32 n) {
 extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self) {
     void *o = PlanErrand_GetRecord(self);
     s32 t;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(o)) {
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(o) == 4) {
+    if (_ZN12ErrandRecord8isActiveEv(o)) {
+        if (_ZN12ErrandRecord7getKindEv(o) == 4) {
             t = PlanErrand_GetStep(self);
             if (t < 6) {
                 if (PlanErrand_GetCount(self) >= sFurnitureGoalCounts[t]) {
@@ -1473,20 +1473,20 @@ extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p) {
 }
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self) {
-    _ZN12Unk_0209ada44initEv(self);
+    _ZN12ErrandRecord4initEv(self);
     __cxa_vec_ctor(self->unk_0c, 2, 0xc, func_02003130, func_02003100);
     return self;
 }
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self) {
     __cxa_vec_cleanup(self->unk_0c, 2, 0xc, func_02003100);
-    _ZN12Unk_0209ada413func_0209ada0Ev(self);
+    _ZN12ErrandRecord13func_0209ada0Ev(self);
     return self;
 }
 
 extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self) {
     s32 i;
-    _ZN12Unk_0209ada413func_0209ad80Ev(self);
+    _ZN12ErrandRecord5clearEv(self);
     for (i = 0; i < 2; i++) {
         func_020030e8(self->unk_0c[i]);
     }
@@ -1500,7 +1500,7 @@ extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6,
     if (Errand_GetGroup(kind) == 1) {
         if (Errand_GetGroupIndex(&idx, kind)) {
             v = 0xfff1;
-            _ZN12Unk_0209ada413func_0209ad54EhPth(self, kind, &v, r);
+            _ZN12ErrandRecord5startEhPth(self, kind, &v, r);
             {
                 Unk_0209a4f4_Ent *e = &sErrandKindSetups[idx];
                 if (e->unk_00) {
@@ -1548,11 +1548,11 @@ extern "C" BOOL func_0209a49c(s32 a, void *b) {
 extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
     BOOL r = FALSE;
     s32 idx;
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(self)) {
+    if (_ZN12ErrandRecord8isActiveEv(self)) {
         if (Errand_GetGroup(kind) == 1) {
-            if (kind == _ZN12Unk_0209ada413func_0209ac64Ev(self)) {
-                if (_ZN12Unk_0209ada413getGroupIndexEPi(self, &idx)) {
-                    if (_ZN12Unk_0209ada413func_0209abc4Ev(self) > sErrandKindSetups[idx].unk_10) {
+            if (kind == _ZN12ErrandRecord7getKindEv(self)) {
+                if (_ZN12ErrandRecord13getGroupIndexEPi(self, &idx)) {
+                    if (_ZN12ErrandRecord7getStepEv(self) > sErrandKindSetups[idx].unk_10) {
                         r = TRUE;
                     }
                 }
@@ -1563,7 +1563,7 @@ extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
 }
 
 extern "C" s32 PlayerErrandSlot_IsStepDone(void *self) {
-    return PlayerErrandSlot_IsPastStepLimit(self, _ZN12Unk_0209ada413func_0209ac64Ev(self));
+    return PlayerErrandSlot_IsPastStepLimit(self, _ZN12ErrandRecord7getKindEv(self));
 }
 
 extern "C" void func_0209a424(u8 *p, u32 v) {
@@ -1580,13 +1580,13 @@ extern "C" BOOL ErrandSetup_RandomShirt(void *p) {
     _ZN12ItemPickSpec3setEii(x, 2, 0);
     ItemPick_One(&out, x, 0, 0, 1, 1, 0);
     func_02063388(x);
-    _ZN12Unk_0209ada413func_0209ab8cEPt(p, &out);
+    _ZN12ErrandRecord7setItemEPt(p, &out);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_LetterBundle(void *p) {
     u16 v = 0x1565;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
+    _ZN12ErrandRecord7setItemEPt(p, &v);
     return TRUE;
 }
 
@@ -1627,24 +1627,24 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
 
 extern "C" BOOL ErrandSetup_FurnitureParcel(void *p) {
     u16 v = 0x1563;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
+    _ZN12ErrandRecord7setItemEPt(p, &v);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_Carpet(void *p) {
     u16 v = 0x1561;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
+    _ZN12ErrandRecord7setItemEPt(p, &v);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_WateringCan(void *p) {
     u16 v = 0x1564;
-    _ZN12Unk_0209ada413func_0209ab8cEPt(p, &v);
+    _ZN12ErrandRecord7setItemEPt(p, &v);
     return TRUE;
 }
 
 extern "C" void ParcelErrand_Clear(u8 *p) {
-    _ZN12Unk_0209ada413func_0209ad80Ev(p);
+    _ZN12ErrandRecord5clearEv(p);
     p[0xc] = 5;
     p[0xd] = 0;
 }
@@ -1685,27 +1685,27 @@ void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
 void Arbeit_ClearOnDuty(PlayerErrands *m);
 void HouseVisitInvite_Clear(HouseVisitInvite *x);
 void Arbeit_OnLetterWritten(void *p);
-void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i);
-s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 mask);
-s32 ParcelErrand_CountPendingRecipients(Unk_02099f98 *z, s32 v);
-s32 ParcelErrand_CountPending(Unk_02099f98 *z, u32 mask);
-void ParcelErrand_Clear(Unk_02099f98 *z);
+void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i);
+s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 mask);
+s32 ParcelErrand_CountPendingRecipients(ParcelErrand *z, s32 v);
+s32 ParcelErrand_CountPending(ParcelErrand *z, u32 mask);
+void ParcelErrand_Clear(ParcelErrand *z);
 s32 PlayerErrandSlot_Clear(PlayerErrandSlot *e);
-Unk_0209ada4 *PlayerErrandSlot_GetRecord(PlayerErrandSlot *e);
+ErrandRecord *PlayerErrandSlot_GetRecord(PlayerErrandSlot *e);
 Unk_02003130 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *e, s32 i);
 void PlayerErrandSlot_Start(PlayerErrandSlot *e, s32 a, s32 b, void *c);
-void *func_0209a108(Unk_02099f98 *z);
-void *func_0209a0dc(Unk_02099f98 *z, s32 v);
-void _ZN12Unk_0209ada413func_0209ab8cEPt(Unk_02099f98 *z, u16 *v);
-u16 *_ZN12Unk_0209ada413func_0209ab94Ev(Unk_0209ada4 *y);
-void _ZN12Unk_0209ada413func_0209abb4Eh(Unk_0209ada4 *y, s32 v);
-u32 _ZN12Unk_0209ada413func_0209abc4Ev(Unk_0209ada4 *y);
-u32 _ZN12Unk_0209ada411getSubGroupEv(Unk_0209ada4 *y);
-void _ZN12Unk_0209ada414setTimeFromNowEi(Unk_0209ada4 *y, s32 v);
-u32 _ZN12Unk_0209ada413func_0209ac64Ev(Unk_0209ada4 *y);
-void _ZN12Unk_0209ada413func_0209ad54EhPth(Unk_0209ada4 *y, s32 t, u16 *v, s32 k);
-s32 _ZN12Unk_0209ada413func_0209ad68Ev(Unk_0209ada4 *y);
-void _ZN12Unk_0209ada413func_0209ad80Ev(Unk_0209ada4 *y);
+void *ParcelErrand_GetRecord(ParcelErrand *z);
+void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
+void _ZN12ErrandRecord7setItemEPt(ParcelErrand *z, u16 *v);
+u16 *_ZN12ErrandRecord7getItemEv(ErrandRecord *y);
+void _ZN12ErrandRecord7setStepEh(ErrandRecord *y, s32 v);
+u32 _ZN12ErrandRecord7getStepEv(ErrandRecord *y);
+u32 _ZN12ErrandRecord11getSubGroupEv(ErrandRecord *y);
+void _ZN12ErrandRecord14setTimeFromNowEi(ErrandRecord *y, s32 v);
+u32 _ZN12ErrandRecord7getKindEv(ErrandRecord *y);
+void _ZN12ErrandRecord5startEhPth(ErrandRecord *y, s32 t, u16 *v, s32 k);
+s32 _ZN12ErrandRecord8isActiveEv(ErrandRecord *y);
+void _ZN12ErrandRecord5clearEv(ErrandRecord *y);
 s32 _ZN10VillagerId7isValidEv(Unk_02003130 *r);
 void func_020030d8(Unk_02003130 *r, Unk_02003130 *o);
 void func_020030e8(Unk_02003130 *r);
@@ -1757,15 +1757,15 @@ extern "C" void PlayerErrands_Clear(PlayerErrands *m);
 extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src);
 extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p);
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x);
-extern "C" BOOL ParcelErrand_IsFor(Unk_02099f98 *z, u16 *p);
-extern "C" BOOL func_0209a05c(Unk_02099f98 *z);
-extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v);
-extern "C" void *func_0209a108(Unk_02099f98 *z);
-extern "C" void func_0209a10c(Unk_02099f98 *z);
-extern "C" void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i);
-extern "C" s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 m);
+extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p);
+extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z);
+extern "C" void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
+extern "C" void *ParcelErrand_GetRecord(ParcelErrand *z);
+extern "C" void ParcelErrand_Start(ParcelErrand *z);
+extern "C" void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i);
+extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m);
 
-extern "C" s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 m) {
+extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m) {
     if (NookShop_IsOpenHour() == 0) {
         m = (u8)(m & ~3);
     } else if (NookShop_IsClosedToday(data_021ed104)) {
@@ -1786,7 +1786,7 @@ extern "C" s32 ParcelErrand_PickRecipient(Unk_02099f98 *z, s32 m) {
     return -1;
 }
 
-extern "C" void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i) {
+extern "C" void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i) {
     if ((u32)(i - 2) <= 1) {
         z->unk_0d &= ~4;
         z->unk_0d &= ~8;
@@ -1795,11 +1795,11 @@ extern "C" void ParcelErrand_RemoveRecipient(Unk_02099f98 *z, s32 i) {
     }
 }
 
-extern "C" void func_0209a10c(Unk_02099f98 *z) {
+extern "C" void ParcelErrand_Start(ParcelErrand *z) {
     u32 r = func_02063b8c(10) & 1;
     ParcelErrand_Clear(z);
     u16 v = sParcelItems[r];
-    _ZN12Unk_0209ada413func_0209ad54EhPth(z, 0x14, &v, 0);
+    _ZN12ErrandRecord5startEhPth(z, 0x14, &v, 0);
     for (s32 i = 0; i < 5; i++) {
         z->unk_0d |= 1 << i;
     }
@@ -1810,11 +1810,11 @@ extern "C" void func_0209a10c(Unk_02099f98 *z) {
     }
 }
 
-extern "C" void *func_0209a108(Unk_02099f98 *z) {
+extern "C" void *ParcelErrand_GetRecord(ParcelErrand *z) {
     return z;
 }
 
-extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v) {
+extern "C" void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v) {
     if (z->unk_0c < 5) {
         u16 t = sParcelRecipients[z->unk_0c];
         return (void *)Npc_GetName((void *)v, &t);
@@ -1822,15 +1822,15 @@ extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v) {
     return 0;
 }
 
-extern "C" BOOL func_0209a05c(Unk_02099f98 *z) {
+extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
     if (z->unk_0d) {
         u32 r = ParcelErrand_PickRecipient(z, z->unk_0d);
         if (r < 5) {
             ParcelErrand_RemoveRecipient(z, r);
             z->unk_0c = r;
-            _ZN12Unk_0209ada413func_0209abb4Eh(z, 0);
+            _ZN12ErrandRecord7setStepEh(z, 0);
             u16 v = sParcelItems[func_02063b8c(10) & 1];
-            _ZN12Unk_0209ada413func_0209ab8cEPt(z, &v);
+            _ZN12ErrandRecord7setItemEPt(z, &v);
             r = ParcelErrand_CountPendingRecipients(z, z->unk_0d);
             if ((r == 2 && (func_02063b8c(10) & 1)) || r == 1) {
                 z->unk_0d = 0;
@@ -1843,9 +1843,9 @@ extern "C" BOOL func_0209a05c(Unk_02099f98 *z) {
     return FALSE;
 }
 
-extern "C" BOOL ParcelErrand_IsFor(Unk_02099f98 *z, u16 *p) {
+extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
     if (z->unk_0c < 5 && PlayerData_GetCurrent() && !_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()))) {
-        if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12Unk_0209ada413func_0209ad68Ev(z) && _ZN12Unk_0209ada413func_0209abc4Ev(z) == 0) {
+        if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12ErrandRecord8isActiveEv(z) && _ZN12ErrandRecord7getStepEv(z) == 0) {
             BOOL in = FALSE;
             if (*p >= 0xd019 && *p <= 0xd01c) {
                 in = TRUE;
@@ -1884,7 +1884,7 @@ extern "C" BOOL ParcelErrand_IsFor(Unk_02099f98 *z, u16 *p) {
 HouseVisitInvite::HouseVisitInvite() : unk_18(0), unk_1c(0) {
     using namespace n3;
     func_020030e8(this);
-    _ZN12Unk_0209ada413func_0209ad80Ev(&unk_0c);
+    _ZN12ErrandRecord5clearEv(&unk_0c);
     unk_18 = 0;
     unk_1c = 0;
     MI_CpuFill8(unk_20, 0, 1);
@@ -1899,7 +1899,7 @@ HouseVisitInvite::~HouseVisitInvite() {
 
 namespace n3 {
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
-    _ZN12Unk_0209ada413func_0209ad80Ev(&x->unk_0c);
+    _ZN12ErrandRecord5clearEv(&x->unk_0c);
     func_020030e8(x);
     x->unk_18 = 0;
     x->unk_1c = 0;
@@ -1907,7 +1907,7 @@ extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
 }
 
 extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p) {
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(&x->unk_0c) && _ZN10VillagerId7isValidEv(p) && p->unk_00 == x->unk_00 &&
+    if (_ZN12ErrandRecord8isActiveEv(&x->unk_0c) && _ZN10VillagerId7isValidEv(p) && p->unk_00 == x->unk_00 &&
         memcmp(p->unk_02, x->unk_02, 8) == 0 && p->unk_0b == x->unk_0b) {
         return TRUE;
     }
@@ -1917,8 +1917,8 @@ extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p) {
 extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src) {
     HouseVisitInvite_Clear(x);
     u16 v = 0xfff1;
-    _ZN12Unk_0209ada413func_0209ad54EhPth(&x->unk_0c, 0x15, &v, 0);
-    _ZN12Unk_0209ada414setTimeFromNowEi(&x->unk_0c, 0);
+    _ZN12ErrandRecord5startEhPth(&x->unk_0c, 0x15, &v, 0);
+    _ZN12ErrandRecord14setTimeFromNowEi(&x->unk_0c, 0);
     func_020030d8(x, r);
     MI_CpuCopy8(src, &x->unk_18, 8);
 }
@@ -1958,7 +1958,7 @@ extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *
         s32 i;
         for (i = 0; i < 2; i++) {
             PlayerErrandSlot *e = &arr[i];
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(PlayerErrandSlot_GetRecord(e))) {
+            if (_ZN12ErrandRecord8isActiveEv(PlayerErrandSlot_GetRecord(e))) {
                 Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, idx);
                 if (q->unk_00 == p->unk_00 && memcmp(q->unk_02, p->unk_02, 8) == 0 && q->unk_0b == p->unk_0b) {
                     ret = e;
@@ -1977,8 +1977,8 @@ extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a,
         in = TRUE;
     }
     if (in) {
-        if (_ZN12Unk_0209ada413func_0209ad68Ev((Unk_0209ada4 *)func_0209a108(&m->unk_78))) {
-            ret = func_0209a0dc(&m->unk_78, a);
+        if (_ZN12ErrandRecord8isActiveEv((ErrandRecord *)ParcelErrand_GetRecord(&m->unk_78))) {
+            ret = ParcelErrand_GetRecipientName(&m->unk_78, a);
             goto end;
         }
     }
@@ -1993,9 +1993,9 @@ extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a,
         }
         PlayerErrandSlot *e = PlayerErrands_GetSlot(m, k);
         if (e) {
-            Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(e);
-            if (_ZN12Unk_0209ada413func_0209ad68Ev(y)) {
-                u16 *q = _ZN12Unk_0209ada413func_0209ab94Ev(y);
+            ErrandRecord *y = PlayerErrandSlot_GetRecord(e);
+            if (_ZN12ErrandRecord8isActiveEv(y)) {
+                u16 *q = _ZN12ErrandRecord7getItemEv(y);
                 BOOL same;
                 if (Item_IsFurniture(q)) {
                     if (Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(p)) {
@@ -2027,8 +2027,8 @@ extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m) {
 }
 
 extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m) {
-    Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(y) && _ZN12Unk_0209ada411getSubGroupEv(y) == 1) {
+    ErrandRecord *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
+    if (_ZN12ErrandRecord8isActiveEv(y) && _ZN12ErrandRecord11getSubGroupEv(y) == 1) {
         return TRUE;
     }
     return FALSE;
@@ -2088,10 +2088,10 @@ extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
 }
 
 extern "C" void Arbeit_OnLetterWritten(void *p) {
-    Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)p, 0));
-    if (_ZN12Unk_0209ada413func_0209ac64Ev(y) == 0xf) {
-        if (_ZN12Unk_0209ada413func_0209abc4Ev(y) == 0) {
-            _ZN12Unk_0209ada413func_0209abb4Eh(y, 1);
+    ErrandRecord *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)p, 0));
+    if (_ZN12ErrandRecord7getKindEv(y) == 0xf) {
+        if (_ZN12ErrandRecord7getStepEv(y) == 0) {
+            _ZN12ErrandRecord7setStepEh(y, 1);
         }
     }
 }
@@ -2106,29 +2106,29 @@ extern "C" void Arbeit_NotifyLetterWritten() {
 extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p) {
     if (p && _ZN12Unk_0206555413func_02065578Ev(p)) {
         PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
-        Unk_0209ada4 *y = PlayerErrandSlot_GetRecord(e);
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(y) == 0xf) {
+        ErrandRecord *y = PlayerErrandSlot_GetRecord(e);
+        if (_ZN12ErrandRecord7getKindEv(y) == 0xf) {
             s32 v = func_0206561c(p);
             if (v) {
                 Unk_02003130 tmp(v);
                 if (_ZN10VillagerId7isValidEv(&tmp)) {
                     Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, 1);
                     if (q->unk_00 == tmp.unk_00 && memcmp(q->unk_02, tmp.unk_02, 8) == 0 && q->unk_0b == tmp.unk_0b) {
-                        if (_ZN12Unk_0209ada413func_0209abc4Ev(y) < 2) {
-                            _ZN12Unk_0209ada413func_0209abb4Eh(y, 2);
+                        if (_ZN12ErrandRecord7getStepEv(y) < 2) {
+                            _ZN12ErrandRecord7setStepEh(y, 2);
                             return TRUE;
                         }
                         goto out;
                     }
                 }
-                if (_ZN12Unk_0209ada413func_0209abc4Ev(y) == 0) {
-                    _ZN12Unk_0209ada413func_0209abb4Eh(y, 1);
+                if (_ZN12ErrandRecord7getStepEv(y) == 0) {
+                    _ZN12ErrandRecord7setStepEh(y, 1);
                     return TRUE;
                 }
             out:;
             } else {
-                if (_ZN12Unk_0209ada413func_0209abc4Ev(y) == 0) {
-                    _ZN12Unk_0209ada413func_0209abb4Eh(y, 1);
+                if (_ZN12ErrandRecord7getStepEv(y) == 0) {
+                    _ZN12ErrandRecord7setStepEh(y, 1);
                     return TRUE;
                 }
             }
@@ -2163,11 +2163,11 @@ extern "C" void Arbeit_StartBbsTask(PlayerErrands *m) {
 }
 
 extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m) {
-    Unk_0209ada4 *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(r)) {
-        if (_ZN12Unk_0209ada413func_0209ac64Ev(r) == 0x12) {
-            if (_ZN12Unk_0209ada413func_0209abc4Ev(r) == 0) {
-                _ZN12Unk_0209ada413func_0209abb4Eh(r, 1);
+    ErrandRecord *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
+    if (_ZN12ErrandRecord8isActiveEv(r)) {
+        if (_ZN12ErrandRecord7getKindEv(r) == 0x12) {
+            if (_ZN12ErrandRecord7getStepEv(r) == 0) {
+                _ZN12ErrandRecord7setStepEh(r, 1);
             }
         }
     }
@@ -2226,10 +2226,10 @@ void func_020030d8(void *, void *);
 void func_020030e8(void *);
 void *func_02003100(void *);
 void *func_02003130(void *);
-void _ZN12Unk_0209ada413func_0209ad54EhPth(void *, u32, u16 *, u32);
-void _ZN12Unk_0209ada413func_0209ad80Ev(void *);
-void *_ZN12Unk_0209ada413func_0209ada0Ev(void *);
-void *_ZN12Unk_0209ada44initEv(void *);
+void _ZN12ErrandRecord5startEhPth(void *, u32, u16 *, u32);
+void _ZN12ErrandRecord5clearEv(void *);
+void *_ZN12ErrandRecord13func_0209ada0Ev(void *);
+void *_ZN12ErrandRecord4initEv(void *);
 void *__cxa_vec_ctor(void *, s32, s32, void *(*)(void *), void *(*)(void *));
 void __cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
 s32 Threshold_FindIndex(u32, u8 *, s32);
@@ -2243,27 +2243,27 @@ static inline BOOL Unk_02099124_R(u16 *p, u32 lo, u32 hi) {
     if (*p >= lo && *p <= hi) r = TRUE;
     return r;
 }extern "C" {
-void func_02098ff4(Unk_02098ff4 *p);
-s32 func_02098ffc();
-s32 func_0209909c(u16 *a, s32 b, s32 c);
+void PocketMatches_Init(Unk_02098ff4 *p);
+s32 Pocket_FindEmpty();
+s32 Pocket_SetItem(u16 *a, s32 b, s32 c);
 s32 Pocket_SetFoundItem(u16 *a, s32 b);
 u16 Item_PickRandomPresent();
 void Quat_ToMtx33(s32 *a, s32 *m);
 }
 
 
-extern "C" s32 func_02098f90(Unk_02098ff4 *self, s32 v);
-extern "C" void func_02098ff4(Unk_02098ff4 *p);
-extern "C" s32 func_02098ffc();
-extern "C" BOOL func_02099014(u16 *a, s32 b);
-extern "C" u16 func_02099048(s32 i);
-extern "C" void func_02099064(s32 c);
-extern "C" s32 func_0209909c(u16 *a, s32 b, s32 c);
+extern "C" s32 Pocket_CountKind(Unk_02098ff4 *self, s32 v);
+extern "C" void PocketMatches_Init(Unk_02098ff4 *p);
+extern "C" s32 Pocket_FindEmpty();
+extern "C" BOOL Pocket_AddItem(u16 *a, s32 b);
+extern "C" u16 Pocket_GetItem(s32 i);
+extern "C" void Pocket_RemoveItem(s32 c);
+extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c);
 extern "C" BOOL Pocket_AddFoundItem(u16 *a);
 extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b);
 extern "C" u16 Item_PickRandomPresent();
-extern "C" s32 func_020991e4();
-extern "C" s32 func_020991fc();
+extern "C" s32 Inventory_GetEmptyLetter();
+extern "C" s32 Inventory_FindEmptyLetter();
 extern "C" void func_02099214();
 extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out);
 extern "C" void Quat_ToMtx43(s32 *a, s32 *b);
@@ -2284,7 +2284,7 @@ namespace n2 {
 }
 SickVillagerRecord *SickVillagerRecord::constructRecord() {
     using namespace n2;
-    _ZN12Unk_0209ada44initEv(this);
+    _ZN12ErrandRecord4initEv(this);
     func_02003130(&unk_0c);
     __cxa_vec_ctor(unk_18, 5, 0x16, _ZN8PlayerIdC1EPv, _ZN8PlayerIdC1Ev);
     resetRecord();
@@ -2298,7 +2298,7 @@ SickVillagerRecord *SickVillagerRecord::destructRecord() {
     using namespace n2;
     __cxa_vec_cleanup(unk_18, 5, 0x16, _ZN8PlayerIdC1Ev);
     func_02003100(&unk_0c);
-    _ZN12Unk_0209ada413func_0209ada0Ev(this);
+    _ZN12ErrandRecord13func_0209ada0Ev(this);
     return this;
 }
 
@@ -2308,7 +2308,7 @@ namespace n2 {
 void SickVillagerRecord::resetRecord() {
     using namespace n2;
     s32 i;
-    _ZN12Unk_0209ada413func_0209ad80Ev(this);
+    _ZN12ErrandRecord5clearEv(this);
     func_020030e8(&unk_0c);
     for (i = 0; i < 5; i++) _ZN8PlayerId13func_02094294Ev(&unk_18[i]);
     unk_86[0] = 1;
@@ -2346,7 +2346,7 @@ void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
     resetRecord();
     func_020030d8(&unk_0c, a);
     v = 0x155e;
-    _ZN12Unk_0209ada413func_0209ad54EhPth(this, 9, &v, 0);
+    _ZN12ErrandRecord5startEhPth(this, 9, &v, 0);
     MI_CpuCopy8(b, unk_86, 4);
     MI_CpuCopy8(b, unk_8a, 4);
     unk_8a[3] = 1;
@@ -2575,11 +2575,11 @@ extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out) {
 extern "C" void func_02099214() {
 }
 
-extern "C" s32 func_020991fc() {
+extern "C" s32 Inventory_FindEmptyLetter() {
     return _ZN15PlayerInventory15findEmptyLetterEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
 }
 
-extern "C" s32 func_020991e4() {
+extern "C" s32 Inventory_GetEmptyLetter() {
     return _ZN15PlayerInventory14getEmptyLetterEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
 }
 
@@ -2603,11 +2603,11 @@ extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b) {
         Item_FromPlacedForm(&v[1], a);
         v[0] = v[1];
     }
-    func_0209909c(v, r, b);
+    Pocket_SetItem(v, r, b);
 }
 
 extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
-    s32 r = func_02098ffc();
+    s32 r = Pocket_FindEmpty();
     if (r == -1) return FALSE;
     if (*a == 0xfff1) return TRUE;
     if (*a >= 0xa7 && *a <= 0xc6) return TRUE;
@@ -2615,7 +2615,7 @@ extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
     return TRUE;
 }
 
-extern "C" s32 func_0209909c(u16 *a, s32 b, s32 c) {
+extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c) {
     void *r6 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         if (*a != 0xfff1 && b == 0) {
@@ -2631,7 +2631,7 @@ extern "C" s32 func_0209909c(u16 *a, s32 b, s32 c) {
     }
 }
 
-extern "C" void func_02099064(s32 c) {
+extern "C" void Pocket_RemoveItem(s32 c) {
     void *r4 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         u16 t = 0xfff1;
@@ -2639,34 +2639,34 @@ extern "C" void func_02099064(s32 c) {
     }
 }
 
-extern "C" u16 func_02099048(s32 i) {
+extern "C" u16 Pocket_GetItem(s32 i) {
     return *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), i);
 }
 
-extern "C" BOOL func_02099014(u16 *a, s32 b) {
+extern "C" BOOL Pocket_AddItem(u16 *a, s32 b) {
     u16 t;
-    s32 r = func_02098ffc();
+    s32 r = Pocket_FindEmpty();
     if (r != -1) {
         Item_FromPlacedForm(&t, a);
-        func_0209909c(&t, b, r);
+        Pocket_SetItem(&t, b, r);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" s32 func_02098ffc() {
+extern "C" s32 Pocket_FindEmpty() {
     return _ZN15PlayerInventory15findEmptyPocketEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
 }
 
-extern "C" void func_02098ff4(Unk_02098ff4 *p) {
+extern "C" void PocketMatches_Init(Unk_02098ff4 *p) {
     p->unk_02 = 0;
     p->unk_00 = 0;
 }
 
-extern "C" s32 func_02098f90(Unk_02098ff4 *self, s32 v) {
+extern "C" s32 Pocket_CountKind(Unk_02098ff4 *self, s32 v) {
     void *r7 = PlayerData_GetCurrent();
     s32 i;
-    func_02098ff4(self);
+    PocketMatches_Init(self);
     u16 *tbl = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(r7), 0);
     for (i = 0; i < 15; i++) {
         if (_ZN15PlayerInventory18isPocketFlagsClearEi(_ZN10PlayerData13func_02098750Ev(r7), i)) {
@@ -2699,12 +2699,12 @@ u16 *_ZN15PlayerInventory9getPocketEi(void *, u32);
 s32 _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
-void func_02098ff4(void *);
+void PocketMatches_Init(void *);
 }
 
-extern "C" s32 func_02098f30(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
+extern "C" s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
     PlayerData *o = PlayerData_GetCurrent();
-    func_02098ff4(out);
+    PocketMatches_Init(out);
     u16 *p = _ZN15PlayerInventory9getPocketEi(o->func_02098750(), 0);
     s32 i;
     for (i = 0; i < 15; i++) {
@@ -2718,7 +2718,7 @@ extern "C" s32 func_02098f30(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
     return out->count;
 }
 
-extern "C" s32 func_02098eb0(u16 *a) {
+extern "C" s32 Pocket_FindItem(u16 *a) {
     PlayerData *o = PlayerData_GetCurrent();
     u16 *p = _ZN15PlayerInventory9getPocketEi(o->func_02098750(), 0);
     s32 i;

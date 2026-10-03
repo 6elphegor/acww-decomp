@@ -10,8 +10,8 @@
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define BlendAnimModel_playBlend _ZN14BlendAnimModel9playBlendEiiiitt
 #define BlendAnimModel_stepBlend _ZN14BlendAnimModel9stepBlendEv
 #define BlendAnimModel_onJointCalcPost _ZN14BlendAnimModel15onJointCalcPostEPS_
@@ -652,10 +652,10 @@ void Unk_02003c40_callUpdateRelative(void *, V3 *);
 void Unk_02003c30_callReset(void *);
 s32 Snd_StopSe(s32, s32);
 void func_02004008(u32 a);
-BOOL func_020308b4(void *p, s32 a, void *c, s32 w, s32 h);
-s32 func_02033914(void *o, s32 f);
-void func_02033988(void *o);
-void *func_020339bc(void *o, void *v, s32 a, s32 b);
+BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
+s32 GroundInfoBase_getHeight(void *o, s32 f);
+void GroundInfo_Destruct(void *o);
+void *GroundInfo_initAtPos(void *o, void *v, s32 a, s32 b);
 void BlendAnimModel_playBlend(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 BlendAnimModel_stepBlend(void *);
 s32 BlendAnimModel_onJointCalcPost(void *, void *);
@@ -697,7 +697,7 @@ void func_0209c2dc(void *p);
 s32 func_0209c348(s32);
 void func_0209c364(u16 *);
 void func_0209c370(u16 *);
-void *func_020b50b4(void);
+void *Scene_GetCollision(void);
 s32 func_020b6080(void *, void *, void *, void *);
 void func_020b68ec(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 s32 func_020b6928(void *, void *);
@@ -1574,11 +1574,11 @@ extern "C" BOOL Aquarium_TestHeight800At(V3 *pos)
 {
     u32 buf[16];
     BOOL r = FALSE;
-    func_020339bc(buf, pos, r, r);
-    if (func_02033914(buf, r) == 0x800) {
+    GroundInfo_initAtPos(buf, pos, r, r);
+    if (GroundInfoBase_getHeight(buf, r) == 0x800) {
         r = TRUE;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return r;
 }
 
@@ -1596,11 +1596,11 @@ extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
         x = 0x1000;
     }
     if (o->unk_15c == 0x19 || o->unk_15c < 0x11) {
-        if (func_020308b4(&v.x, x, &sAquariumTankCenterA, 0xfc00, 0x3c00) != 0) {
+        if (Collision_ClampToRect(&v.x, x, &sAquariumTankCenterA, 0xfc00, 0x3c00) != 0) {
             r = TRUE;
         }
     } else {
-        if (func_020308b4(&v.x, x, &sAquariumTankCenterB, 0xfc00, 0x3c00) != 0) {
+        if (Collision_ClampToRect(&v.x, x, &sAquariumTankCenterB, 0xfc00, 0x3c00) != 0) {
             r = TRUE;
         }
     }
@@ -2308,7 +2308,7 @@ extern "C" void _ZN15AquariumPiranha8vfunc_00Ev(E75c *e) {
 extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o) {
     (o->*sAquariumPiranhaStates[o->unk_255])();
     s32 t = (sAquariumFishParams[30].unk_03 << 12) >> 7;
-    o->unk_256 = func_020308b4(&o->unk_1a8, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
+    o->unk_256 = Collision_ClampToRect(&o->unk_1a8, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->unk_164 << 12, 10);
     func_02088c64(o->unk_04, &o->unk_1a8, t, (sAquariumFishParams[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
     func_02089040(o->unk_04);
@@ -3096,7 +3096,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     u8 b;
     s32 t;
     V3 v;
-    if (func_020b6080(func_020b50b4(), &v, &t, &b)) {
+    if (func_020b6080(Scene_GetCollision(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {
@@ -3748,8 +3748,8 @@ extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
         self->unk_50[4].unk_50[4] = 0x700;
         sAquariumObstacleCount = 5;
         MuseumAquarium_CreateFreshwaterFish(self);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->unk_50[0].unk_50[0] = 0x8b00;
         self->unk_50[0].unk_50[1] = 0xfffff300;
@@ -3778,7 +3778,7 @@ extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
         self->unk_294[3] = 0xc00;
         self->unk_294[4] = 0x2000;
         MuseumAquarium_CreateSeaFish(self);
-        func_020b68ec(func_020b50b4(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     func_02004008(0x4da);
     return TRUE;
@@ -4018,10 +4018,10 @@ extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o) {
     s32 i;
     R **p;
     if (sAquariumRoom == 0) {
-        func_020b6928(func_020b50b4(), (u8 *)o + 0x2a8);
-        func_020b6928(func_020b50b4(), (u8 *)o + 0x550);
+        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x2a8);
+        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x550);
     } else if (sAquariumRoom == 1) {
-        func_020b6928(func_020b50b4(), (u8 *)o + 0x2a8);
+        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x2a8);
     }
     i = sAquariumEndFish - 1;
     p = &sAquariumFish[i];
@@ -4332,26 +4332,26 @@ loop0:
         }
         if (sAquariumRoom == 0) {
             if (type < 0x11) {
-                func_020308b4(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
+                Collision_ClampToRect(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
             } else if (type != 0x19) {
-                func_020308b4(ep, len, &sAquariumTankCenterB, 0x11c00, 0x5c00);
+                Collision_ClampToRect(ep, len, &sAquariumTankCenterB, 0x11c00, 0x5c00);
             } else {
-                func_020308b4(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
+                Collision_ClampToRect(ep, len, &sAquariumTankCenterA, 0x11c00, 0x5c00);
             }
         } else {
             switch (o->unk_1c8) {
             case 0:
-                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x1a000, 0x4dc3)) {
+                if (Collision_ClampToRect(ep, len, &sAquariumTankCenterA, 0x1a000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;
             case 1:
-                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x26000, 0x4dc3)) {
+                if (Collision_ClampToRect(ep, len, &sAquariumTankCenterA, 0x26000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;
             case 2:
-                if (func_020308b4(ep, len, &sAquariumTankCenterA, 0x2a000, 0x4dc3)) {
+                if (Collision_ClampToRect(ep, len, &sAquariumTankCenterA, 0x2a000, 0x4dc3)) {
                     (*ctx)->unk_1f0 = 1;
                 }
                 break;

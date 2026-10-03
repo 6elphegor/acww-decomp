@@ -1,12 +1,12 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 
-// Static tile entries built by __sinit (ctor = main func_020b4f8c, dtor = main func_020b4fc0).
+// Static tile entries built by __sinit (ctor = main SceneWarp_Init, dtor = main func_020b4fc0).
 struct Unk_ov004_Vec3 {
     s32 x, y, z;
 };
 
-extern "C" void func_020b4f8c(void *e, u8 id, Unk_ov004_Vec3 *v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
+extern "C" void SceneWarp_Init(void *e, u8 id, Unk_ov004_Vec3 *v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
 
 struct Unk_020b4fc0 {
     u8 type;
@@ -19,7 +19,7 @@ struct Unk_020b4fc0 {
     s16 unk_16;
     u8 unk_18;
     Unk_020b4fc0(u8 id, const Unk_ov004_Vec3 &v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
-        func_020b4f8c(this, id, (Unk_ov004_Vec3 *)&v, w, s, p, q, r, t);
+        SceneWarp_Init(this, id, (Unk_ov004_Vec3 *)&v, w, s, p, q, r, t);
     }
     ~Unk_020b4fc0();
 };

@@ -67,7 +67,7 @@ struct Unk_ov144_SceneEntry {
 
 extern "C" {
 extern u16 gPad[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gTouchCurY;
@@ -103,8 +103,8 @@ void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 s32 ScrollKnob_areAnimsDone(void *p);
 void HandCursor_disableObjWindow(void *p);
 void func_020e761c(void *p, s32 v, s32 n);
-s32 func_02098ffc();
-void func_0209909c(u16 *p, s32 a, s32 b);
+s32 Pocket_FindEmpty();
+void Pocket_SetItem(u16 *p, s32 a, s32 b);
 void func_02060044(u32 v);
 void MenuCtrl_SetResult(s32 v);
 void MenuCtrl_SetSongItem(u32 v);
@@ -836,7 +836,7 @@ BOOL MusicMenu::playSelectedSong() {
 }
 
 void MusicMenu::stopSong() {
-    if (IsZero(data_020e416c) == 0) {
+    if (IsZero(gFieldSceneKind) == 0) {
         FtrMgr_BroadcastStereosAct0();
     }
     scrollToSong(unk_bc);
@@ -851,16 +851,16 @@ BOOL MusicMenu::takeOutSong() {
     if (unk_ba == -1) {
         return FALSE;
     }
-    s32 t = func_02098ffc();
+    s32 t = Pocket_FindEmpty();
     s32 m = -1;
     if (t == m) {
         showMessage(0x10);
         return TRUE;
     }
     u16 v = unk_664[unk_ba];
-    func_0209909c(&v, 0, t);
+    Pocket_SetItem(&v, 0, t);
     if (unk_ba == unk_bc) {
-        if (IsZero(data_020e416c) == 0) {
+        if (IsZero(gFieldSceneKind) == 0) {
             FtrMgr_BroadcastStereosAct0();
         }
         unk_bc = -1;

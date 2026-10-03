@@ -173,7 +173,7 @@ void func_0203b9d4(void *self);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -193,11 +193,11 @@ s32 func_02098044(void *s, s32 a);
 }
 
 extern "C" {
-void *func_020b50dc();
+void *Scene_GetPrevious();
 }
 
 extern "C" {
-s32 func_020b530c(void *a);
+s32 SceneId_IsHouseRoom(void *a);
 }
 
 extern "C" {

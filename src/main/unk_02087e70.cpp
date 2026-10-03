@@ -62,7 +62,7 @@ void MIi_CpuCopyFast(void *a, void *b, u32 c);
 void DC_FlushRange(void *a, u32 b);
 void GX_LoadOAM(void *a, u32 b, u32 c);
 void GXS_LoadOAM(void *a, u32 b, u32 c);
-Unk_020b6960 *func_020b50b4();
+Unk_020b6960 *Scene_GetCollision();
 }
 
 extern s32 sOamAffineCountA;
@@ -113,7 +113,7 @@ void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
     }
     unk_20 = 0;
     unk_24 = b;
-    func_020b50b4()->func_020b68a8(this, a, c, 4, d);
+    Scene_GetCollision()->func_020b68a8(this, a, c, 4, d);
 }
 
 extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {

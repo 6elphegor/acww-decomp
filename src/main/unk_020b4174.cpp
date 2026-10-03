@@ -29,9 +29,9 @@ void func_0209f224(u32 x);
 void Save_InvalidateLetterStorage(void);
 u32 Save_SlotStampsMatch(void);
 u32 Save_ReadSlotAsyncStep(u32 a, void *p);
-void func_020b4f78(void *p, u32 x);
-void func_020b4968(u32 a, u32 b);
-u8 *func_020b4934(void);
+void SceneWarp_RequestScene(void *p, u32 x);
+void FieldScene_Request(u32 a, u32 b);
+u8 *Scene_GetWarpRequest(void);
 void VramQueue2d_Init(void);
 void VramQueueTex_Init(void);
 u64 OS_GetTick(void);
@@ -165,8 +165,8 @@ BOOL BootLogoScene::onExecute() {
             Gfx2d_SetMainPlanes(0);
             Gfx2d_SetSubPlanes(0);
             unk_50 = 4;
-            func_020b4f78(func_020b4934(), 0x2c);
-            func_020b4968(3, 2);
+            SceneWarp_RequestScene(Scene_GetWarpRequest(), 0x2c);
+            FieldScene_Request(3, 2);
         }
         break;
     }

@@ -222,9 +222,9 @@ public:
     u32 pad[0x26];
 };
 
-struct Unk_02032238 {
-    Unk_02032238();
-    ~Unk_02032238();
+struct CollisionState {
+    CollisionState();
+    ~CollisionState();
     u32 pad_00;
     /* 0x04 */ s32 unk_04;
     u32 pad_08[2];
@@ -232,16 +232,16 @@ struct Unk_02032238 {
     u8 pad_11[0x30 - 0x11];
 };
 
-class Unk_0203398c {
+class GroundInfo {
 public:
     u8 pad_00[0x34];
     s32 unk_34;
     u8 pad_38[0xc];
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
-typedef Unk_0203398c Loc;
+typedef GroundInfo Loc;
 
 class Unk_020e0d08 {
 public:
@@ -326,7 +326,7 @@ public:
     /* 0x1cc */ CachedModel unk_1cc;
     /* 0x268 */ s32 unk_268;
     /* 0x26c */ s32 unk_26c;
-    /* 0x270 */ Unk_02032238 unk_270;
+    /* 0x270 */ CollisionState unk_270;
     /* 0x2a0 */ SnowballCollider unk_2a0;
     /* 0x2e8 */ s32 unk_2e8;
     /* 0x2ec */ s32 unk_2ec;
@@ -417,7 +417,7 @@ s32 WorldCurve_ToCurved(void *out, void *in);
 void Quat_Mul(void *a, void *b, void *out);
 void Quat_ToMtx43(void *a, void *out);
 void Quat_Normalize(void *a);
-void func_020309d4(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
+void Collision_Move(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
@@ -433,14 +433,14 @@ s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 u16 Item_MakeSnowman(void *p);
 s32 Item_IsSnowman(u16 *c);
 s32 func_02063b8c(s32 a);
-s32 func_020307c4(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
-s32 func_02031284(s32 x, s32 y);
-s32 func_02031218(s32 x, s32 y);
+s32 Collision_GetUnitShape(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
+s32 Ground_CanPlaceItem(s32 x, s32 y);
+s32 Ground_GetDigKind(s32 x, s32 y);
 BOOL Item_IsMarker(void *p);
-s32 func_020b5184();
+s32 Scene_InTown();
 Rec *func_020af3f4();
 void String_Load(void *a, void *b, const char *c);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
@@ -582,7 +582,7 @@ BOOL Snowball::vfunc_00() {
     unk_318.x = unk_68.x;
     unk_318.y = pv->y;
     unk_318.z = pv->z;
-    func_020309d4(&unk_270, &unk_5c, &unk_68, 0, unk_26c, this, 0xb);
+    Collision_Move(&unk_270, &unk_5c, &unk_68, 0, unk_26c, this, 0xb);
     unk_68.x = unk_5c.x;
     unk_68.y = unk_5c.y;
     unk_68.z = unk_5c.z;
@@ -746,7 +746,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
     if (o->unk_39c == 0 && o->unk_398 == 0) {
         o->unk_5c.y -= 0x200;
     }
-    func_020309d4(&o->unk_270, &o->unk_5c, &o->unk_68, 0, o->unk_26c, o, kind);
+    Collision_Move(&o->unk_270, &o->unk_5c, &o->unk_68, 0, o->unk_26c, o, kind);
     u32 cur = o->unk_270.unk_10;
     if (cur > o->unk_365 && o->unk_39c == 0 && o->unk_398 == 0) {
         func_02003e70(o->unk_324, 0x81d, 0x7f, 0);
@@ -810,7 +810,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->unk_2ec = 0;
         o->unk_2f0 = 0;
     }
-    loc.func_020339bc(&o->unk_5c, 0, 0);
+    loc.initAtPos(&o->unk_5c, 0, 0);
     if (loc.unk_34 == 3) {
         if (o->unk_374.i == 0) {
             o->unk_268 = func_01ffcb0c(o->unk_268, (len >> 7) + 0x1000);
@@ -865,7 +865,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     s32 dist;
     ang = ang;
     p = (Unk_ov003_022132b4_Tgt *)func_02095204(4);
-    if (!func_020b5184()) return FALSE;
+    if (!Scene_InTown()) return FALSE;
     if (!p) return FALSE;
     if (o->unk_39c != 0 || o->unk_398 != 0) return FALSE;
     if (o->unk_268 < 0xa00) return FALSE;
@@ -1022,11 +1022,11 @@ extern "C" BOOL Snowball_CanBuildSnowmanAt(Pos *pos) {
         if (c) {
             if (Item_IsMarker(c)) return FALSE;
         }
-        t = func_020307c4(x, y, &s18, &s1c, &s20);
+        t = Collision_GetUnitShape(x, y, &s18, &s1c, &s20);
         if (x != px0 || y != py0) {
-            if (func_02031284(x, y)) {
+            if (Ground_CanPlaceItem(x, y)) {
                 if (t == 0 || (t != 0 && s20 == 2)) {
-                    r = func_02031218(x, y);
+                    r = Ground_GetDigKind(x, y);
                     switch (r) {
                     case 0:
                     case 1:
@@ -1036,8 +1036,8 @@ extern "C" BOOL Snowball_CanBuildSnowmanAt(Pos *pos) {
                                 if (i == 0 && j == 0) continue;
                                 py = y + j;
                                 px = x + i;
-                                u = func_020307c4(px, py, &s18, &s1c, &s20);
-                                if (func_02031284(px, py) && (u == 0 || s20 == 2)) continue;
+                                u = Collision_GetUnitShape(px, py, &s18, &s1c, &s20);
+                                if (Ground_CanPlaceItem(px, py) && (u == 0 || s20 == 2)) continue;
                                 return FALSE;
                             }
                         }
@@ -1305,7 +1305,7 @@ void Snowball::mainTalkEnd() {
     if (unk_3c) {
         if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

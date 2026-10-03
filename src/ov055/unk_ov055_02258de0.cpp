@@ -145,7 +145,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -258,7 +258,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -335,8 +335,8 @@ s32 _ZN10ChoiceList9getResultEv(void *self);
 void _ZN16ActorTalkRequest13func_02015ab0Ej(void *self, u32 v);
 void func_0203d984();
 void func_0203d990();
-void *func_020b4934();
-s32 func_020b4f58(void *a, s32 b, s32 c, s32 d);
+void *Scene_GetWarpRequest();
+s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u8 a, u8 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void Camera_SetMode20At(void *p);
@@ -575,7 +575,7 @@ BOOL SpNpcRover::setupAct01() {
 
 BOOL SpNpcRover::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        func_020b4f58(func_020b4934(), 0x2c, 2, 2);
+        SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         changeAct(2);
     }
     return TRUE;

@@ -4,7 +4,7 @@ extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
 void _ZN12Unk_0201347416disableFootstepsEv(void *self);
 void _ZN12Unk_0201347415enableFootstepsEv(void *self);
@@ -32,10 +32,10 @@ void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
 void *_ZN10PlayerData13func_020986a4Ev(void);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 a);
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 a);
+s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 a);
+void _ZN12Unk_02097ff47setFlagEj(void *p, s32 a);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
 u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
@@ -195,7 +195,7 @@ struct Unk_0201a794 {
 };
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_020e0cf4 {
     u8 unk_00[0x514 - 0x4cc - 4];
     u8 unk_44;
@@ -267,7 +267,7 @@ struct NpcActor : Character {
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -429,7 +429,7 @@ BOOL SpNpcMissing2::vfunc_04() {
     sSpNpcMissing2Instance = this;
     _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
     unk_658.attachOwner(this);
-    if (func_020b50e8()) {
+    if (Scene_GetCurrent()) {
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 1, 0x280, 0xcc, 0x133);
     }
@@ -438,7 +438,7 @@ BOOL SpNpcMissing2::vfunc_04() {
 }
 
 BOOL SpNpcMissing2::vfunc_a8() {
-    if (func_020b50e8()) {
+    if (Scene_GetCurrent()) {
         return SpNpcActor::vfunc_a8();
     }
     return data_020c6cf0;
@@ -450,7 +450,7 @@ BOOL SpNpcMissing2::vfunc_00() {
     }
     PlayerData_GetCurrent();
     changeAct(0);
-    if (func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0x2f) {
         unk_4cc.unk_44 = 0;
         _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         unk_5c = 0x10000;
@@ -539,7 +539,7 @@ BOOL SpNpcMissing2::setupAct00() {
 }
 
 BOOL SpNpcMissing2::mainAct00() {
-    if (func_020b50e8() == 0) {
+    if (Scene_GetCurrent() == 0) {
         changeAct(7);
     }
     return TRUE;
@@ -551,7 +551,7 @@ BOOL SpNpcMissing2::setupAct01() {
 
 BOOL SpNpcMissing2::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -661,8 +661,8 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
     Unk_020c1d80_Out *out = (Unk_020c1d80_Out *)outp;
     void *p = PlayerData_GetCurrent();
     out->unk_00 = sSpNpcMissing2MsgKey;
-    if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x33) == 0) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x39) == 0) {
+    if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(p, 0x39) == 0) {
             setTopic(0);
         } else {
             setTopic(1);
@@ -676,11 +676,11 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
     }
     switch (getTopic()) {
     case 0:
-        _ZN12Unk_02097ff413func_0209801cEj(p, 0x33);
+        _ZN12Unk_02097ff47setFlagEj(p, 0x33);
         out->unk_04 = 0;
         break;
     case 1:
-        _ZN12Unk_02097ff413func_0209801cEj(p, 0x33);
+        _ZN12Unk_02097ff47setFlagEj(p, 0x33);
         out->unk_04 = func_02063b8c(3) + 1;
         break;
     case 2:

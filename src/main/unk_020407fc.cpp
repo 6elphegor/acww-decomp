@@ -77,17 +77,17 @@ void func_02040a60(s32);
 void func_020402f8(void *, s32);
 void Event_RefreshToday(s32);
 void func_02040684(void *);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 _ZN11CommManager8isOnlineEv(void *);
-s32 func_020850e0(void);
-s32 func_0208517c(void);
-s32 _ZN12Unk_02086f1413func_02086f18Ev(void);
+s32 TownSessionState_Get(void);
+s32 TownSessionState_GetResettiFlag(void);
+s32 _ZN16ResettiVisitFlag5isSetEv(void);
 s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
 void Clock_GetDateTime(void *);
 void *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *p);
-s32 func_020b4934(void);
-void func_020b4bbc(s32, s32);
+s32 Scene_GetWarpRequest(void);
+void SceneWarp_RequestExit(s32, s32);
 void _ZN12BgmSceneFade13func_02035368Eii(void *, s32, s32);
 void _ZN12BgmSceneFade13func_020353b0Eii(void *, s32, s32);
 void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
@@ -110,15 +110,15 @@ s32 Melody_IsBusy(void);
 s32 TownBlockMap_Get(void);
 s32 Town_FindGulliverShip(s32, void *);
 s32 Town_FindTownHall(s32, void *, s32, s32);
-void func_020b4a08(s32, s32);
-void func_020b4f18(s32, s32, void *, s32, ...);
+void Scene_SavePlayerPos(s32, s32);
+void SceneWarp_RequestAt(s32, s32, void *, s32, ...);
 s32 NetArea_IsUnsharedScene(s32);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
 s32 func_0203d99c(void);
 s32 func_0203d984(void);
 s32 func_0203d990(void);
-s32 func_020b5164(void);
+s32 Scene_InTownUnk31(void);
 void Town_RefreshEventsOffline(void);
 void Town_UpdateDay(s32);
 s32 func_020b101c(void);
@@ -202,7 +202,7 @@ BOOL Unk_020da258::vfunc_00()
         return FALSE;
     }
     r5 = gSaveData;
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && func_020b50e8() != 0xd) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && Scene_GetCurrent() != 0xd) {
         if (data_021c3c90 != 0) {
             u32 k;
             t.a = 0;
@@ -220,7 +220,7 @@ BOOL Unk_020da258::vfunc_00()
         }
         r5[0x15e29] = 99;
         data_021c3c90 = 0;
-        if (func_020b5164() != 0 && data_021c3ca8.unk_03 == 0) {
+        if (Scene_InTownUnk31() != 0 && data_021c3ca8.unk_03 == 0) {
             Town_RefreshEventsOffline();
         }
     } else {
@@ -241,7 +241,7 @@ BOOL Unk_020da258::vfunc_00()
     case 3:
         break;
     default:
-        if (func_020b5164() == 0) {
+        if (Scene_InTownUnk31() == 0) {
             func_02040e14();
         } else {
             func_0203d990();
@@ -343,16 +343,16 @@ extern "C" BOOL func_02040d80(void)
     if (!Unk_02040ad8_IsTwo(gScreenTransition)) {
         return FALSE;
     }
-    if (func_020b50e8() == 0x3f) {
+    if (Scene_GetCurrent() == 0x3f) {
         return FALSE;
     }
-    if (func_020b50e8() == 0x2c) {
+    if (Scene_GetCurrent() == 0x2c) {
         return FALSE;
     }
-    if (func_020b50e8() == 6) {
+    if (Scene_GetCurrent() == 6) {
         return FALSE;
     }
-    if (NetArea_IsUnsharedScene(func_020b50e8()) != 0) {
+    if (NetArea_IsUnsharedScene(Scene_GetCurrent()) != 0) {
         return FALSE;
     }
     if (gActorDefaultParent != 0 && gActorDefaultParent->unk_0c != 6) {
@@ -488,8 +488,8 @@ extern "C" void func_02040b48(s32)
                     r = Town_FindTownHall(r, buf, 0, 0);
                 }
                 if (r != 0) {
-                    func_020b4a08(func_020b4934(), 0);
-                    func_020b4f18(func_020b4934(), 0x31, buf, 0x400000, 0, 2, 2);
+                    Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
+                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
                     _ZN12BgmSceneFade13func_020353b0Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
                     data_021c3ca8.unk_00 = 4;
                     data_021c3c98 = 1;
@@ -517,7 +517,7 @@ extern "C" void func_02040a84(s32)
     Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
     if (p->unk_04 == 0) {
         _ZN15TalkWindowState13detachRequestEv(p);
-        func_020b4bbc(func_020b4934(), 20);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
         _ZN12BgmSceneFade13func_02035368Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
         data_021c3c94 = 0;
         data_021c3ca8.unk_00 = 0;
@@ -549,10 +549,10 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return;
     }
-    if (func_020b50e8() == 0) {
-        func_020850e0();
-        func_0208517c();
-        if (_ZN12Unk_02086f1413func_02086f18Ev()) {
+    if (Scene_GetCurrent() == 0) {
+        TownSessionState_Get();
+        TownSessionState_GetResettiFlag();
+        if (_ZN16ResettiVisitFlag5isSetEv()) {
             if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
                 return;
             }
@@ -609,7 +609,7 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
 
 extern "C" BOOL func_02040908(void)
 {
-    switch (func_020b50e8()) {
+    switch (Scene_GetCurrent()) {
     case 6:
     case 12:
     case 13:

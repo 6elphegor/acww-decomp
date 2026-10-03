@@ -45,28 +45,28 @@ struct ChoiceList {
 extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
-void _ZN12Unk_02087ad813func_02087b24Ev(void *p);
-s32 func_02098ffc();
-s32 func_02098eb0(u16 *p);
-void func_02099014(u16 *p, s32 v);
-void func_02099064(s32 v);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
+s32 Pocket_FindEmpty();
+s32 Pocket_FindItem(u16 *p);
+void Pocket_AddItem(u16 *p, s32 v);
+void Pocket_RemoveItem(s32 v);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *func_020850e0();
-BOOL func_020851bc(void *p, s32 v);
-void func_020851a4(void *p, s32 v);
-void func_02085290(void *p);
-void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
+void *TownSessionState_Get();
+BOOL TownSessionState_TestFlag(void *p, s32 v);
+void TownSessionState_SetFlag(void *p, s32 v);
+void ContestRecord_JudgeGardens(void *p);
+void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void func_020856a4(void *p, s32 v);
+void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
@@ -74,7 +74,7 @@ extern u16 data_020c6cc8;
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
 
@@ -208,7 +208,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -319,7 +319,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -391,14 +391,14 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void String_Load(void *o, u8 *c, s32 a);
 void MailText_SetSlot(void *p, void *o);
-void func_020656dc(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
+void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
 void *_ZN10PlayerData10getCatalogEv(void *p);
 void func_0203c41c(void *p, u16 *q, s32 a);
 void Clock_GetDate(void *p);
 s32 Clock_GetTimeOfDay();
-void *func_020991e4();
-s32 func_020991fc();
+void *Inventory_GetEmptyLetter();
+s32 Inventory_FindEmptyLetter();
 extern u32 data_ov086_02271c20;
 extern u32 data_ov086_02271c24;
 extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
@@ -514,7 +514,7 @@ BOOL SpNpcTortimerCountdown::setupAct01() {
 
 BOOL SpNpcTortimerCountdown::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -541,7 +541,7 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     out->a = (u32)"sp_npc_turtle6";
     if (unk_b0 == -1) {
         h = 0x37e0;
-        unk_b0 = func_02098eb0(&h);
+        unk_b0 = Pocket_FindItem(&h);
         if (unk_b0 >= 0) {
             out->a = (u32)"sp_npc_turtle";
             out->b = 0;
@@ -583,7 +583,7 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     } else if (t.b2 < 6) {
         out->b = func_02063b8c(3) + 0x10;
         f = TRUE;
-    } else if (func_020851bc(func_020850e0(), 4) != 0) {
+    } else if (TownSessionState_TestFlag(TownSessionState_Get(), 4) != 0) {
         out->b = func_02063b8c(3) + 0x16;
         f = TRUE;
     } else {
@@ -591,7 +591,7 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
         f = TRUE;
     }
     if (!f) {
-        if (func_02098ffc() != -1) {
+        if (Pocket_FindEmpty() != -1) {
             if (func_02063b8c(2) == 0) {
                 out->b = func_02063b8c(3) + 0x19;
             }
@@ -619,17 +619,17 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
             l.h1 = 0x1559;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h1, 0, 5, 0);
             l.h2 = 0x1559;
-            func_02099014(&l.h2, 0);
+            Pocket_AddItem(&l.h2, 0);
             l.bb[1] = 4;
             unk_3c->setNextMessage(&l.bb[1], (u8 *)"sp_npc_turtle");
         }
     } else {
-        s32 r = func_020991fc();
+        s32 r = Inventory_FindEmptyLetter();
         switch (unk_1e) {
         case 0x13:
             msg = 0x14;
             if (r != -1) {
-                p = func_020991e4();
+                p = Inventory_GetEmptyLetter();
                 if (p != NULL) {
                     g = PlayerData_GetCurrent();
                     l.bb[0] = 2;
@@ -647,12 +647,12 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
                         i++;
                     } while (i < 4);
                     l.bb[0] = 0;
-                    func_020656dc(p, &l.bb[0], (u8 *)"ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, _ZN10PlayerData11getPlayerIdEv(g));
+                    Letter_ComposeFromMail(p, &l.bb[0], (u8 *)"ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, _ZN10PlayerData11getPlayerIdEv(g));
                     if (g != NULL) {
                         l.h3 = Item_MakePaper(0x1d, 4);
                         func_0203c41c(_ZN10PlayerData10getCatalogEv(g), &l.h3, 0);
                     }
-                    func_020851a4(func_020850e0(), 4);
+                    TownSessionState_SetFlag(TownSessionState_Get(), 4);
                     l.h4 = 0x1565;
                     _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h4, 0, 5, 0);
                     msg = 0x15;
@@ -665,7 +665,7 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
             l.h5 = 0x137d;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h5, 0, 5, 0);
             l.h6 = 0x137d;
-            func_02099014(&l.h6, 0);
+            Pocket_AddItem(&l.h6, 0);
             msg = 0x1c + func_02063b8c(3);
             break;
         }
@@ -686,7 +686,7 @@ void SpNpcTortimerCountdownTalk::vfunc_18() {
         s = (u8 *)"sp_npc_turtle";
         if (unk_1e == 0 && t == 0) {
             if (unk_b0 >= 0) {
-                func_02099064(unk_b0);
+                Pocket_RemoveItem(unk_b0);
                 h = 0x37e0;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }

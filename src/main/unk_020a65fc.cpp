@@ -21,7 +21,7 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -261,7 +261,7 @@ extern "C" void func_020a65fc() {
     g->clearAuxLenA();
     u8 *base = (u8 *)g->getAuxBufA();
     u8 *p = base + 2;
-    s32 m = func_020b50e8();
+    s32 m = Scene_GetCurrent();
     Unk_020a647c_Buf b;
     u32 i;
     for (i = 0; i < 2; i++) {

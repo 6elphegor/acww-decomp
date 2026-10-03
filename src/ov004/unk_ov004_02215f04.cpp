@@ -366,12 +366,12 @@ s32 VillagerMemory_isTalkedToday(void *);
 void VillagerMemory_setTalkedToday(void *);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
-void func_0203002c(s32, s32);
-s32 func_02031154(s32, s32);
+void Ground_UnlinkUnit(s32, s32);
+s32 Ground_GetWalkLinks(s32, s32);
 void FieldPos_FromUnitCenter(void *, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void VillagerId_makeFileName(void *, void *, u32, u32);
-void *func_020b51d4();
+void *Scene_GetVillagerHouse();
 s32 SaveVillagers_IsOccupied(void *, void *);
 void *SaveVillagers_Get(void *, void *);
 s32 ActorTalkRequest_setVillagerNameSlot(void *, void *, u32);
@@ -384,7 +384,7 @@ s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void func_02067a84(void *, void *, s32);
 s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
-s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_SetTargetDone(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u8 gTalkMsgIndexEnd[];
 extern u8 sBirthdayHostMsgFile[];
@@ -392,7 +392,7 @@ void *func_020679b4(void *);
 s32 func_020aa514(void *);
 void func_02067abc(void *, void *, s32);
 void func_02014e60(void *, void *, s32, s32, s32);
-void func_02099014(void *, s32);
+void Pocket_AddItem(void *, s32);
 void *func_02080dd8(void *);
 void func_02080da4(void *, s8);
 void func_0201578c(void *, void *, s32, s32);
@@ -405,9 +405,9 @@ s32 NpcRegistry_GetSlotCount();
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 void *MenuCtrl_GetIndex();
-u16 func_02099048();
+u16 Pocket_GetItem();
 s32 Item_GetPrice(u16 *);
-void func_02099064(void *);
+void Pocket_RemoveItem(void *);
 void func_02014ce4(void *, void *, s32, s32, s32);
 void *Villager_GetPlan(void *);
 u32 VillagerPlanBlock_GetPlan(void *);
@@ -497,7 +497,7 @@ extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in
         x = z;
         do {
             if (x != gx && y != gy) {
-                if (func_02031154(x, y)) {
+                if (Ground_GetWalkLinks(x, y)) {
                     count++;
                 }
             }
@@ -514,7 +514,7 @@ extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in
         for (y = 0; y < 14; y++) {
             for (x = 0; x < 16; x++) {
                 if (x != gx && y != gy) {
-                    if (func_02031154(x, y)) {
+                    if (Ground_GetWalkLinks(x, y)) {
                         if (k == pick) {
                             FieldPos_FromUnitCenter(out, x, y);
                             s32 d = func_020e7b98(out->x - in->x, out->z - in->z);
@@ -595,7 +595,7 @@ void BirthdayGuestVillager::blockFurnitureCells() {
         for (x = 0; x < 16; x++) {
             if (MapBlock_GetItemPtr(c, x, y, z)) {
                 if (Item_IsFurnitureOrF031()) {
-                    func_0203002c(x, y);
+                    Ground_UnlinkUnit(x, y);
                 }
             }
         }
@@ -713,7 +713,7 @@ void BirthdayGuestVillagerTalk::vfunc_78(void *arg) {
     o = unk_1a0;
     if (*(void **)((u8 *)o + 0x8d4)) {
         u8 *const g = gSaveData;
-        void *p = func_020b51d4();
+        void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(data_021dfd8c, p)) {
             Unk_020e1c64 loc;
             ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
@@ -1001,7 +1001,7 @@ BOOL BirthdayGuestVillager::setupAct06() { return TRUE; }
 void BirthdayGuestVillager::mainAct06() {
     void *p = *(void **)((u8 *)this + 0x8d4);
     if (p != NULL && *(u32 *)((u8 *)p + 4) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
     }
 }
 

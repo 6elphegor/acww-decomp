@@ -371,8 +371,8 @@ extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
 extern s32 gBgHeap;
 
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 void _ZN12Unk_020b6a94C1Ev(void *self);
@@ -408,14 +408,14 @@ s32 TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 BOOL MenuCtrl_OpenLauncher(u32 a);
-u32 func_020b50e8();
-Unk_020b6960 *func_020b50b4();
+u32 Scene_GetCurrent();
+Unk_020b6960 *Scene_GetCollision();
 BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
 s32 func_020b6014(Unk_020b6960 *o, u32 a, u32 b);
 void *func_02095204(u32 x);
 void *func_020951ec(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 BOOL InputMode_IsTouch();
 void func_0203cb80(u32 a);
 void func_0203cb48(u32 a);
@@ -477,7 +477,7 @@ public:
     void changeAct(s32 state);
     void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor C1 / dtor D2 by hand, as the original calls them)
+    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
     /* 0x618 */ u32 unk_618[7];    // a Unk_020b6a94 (ctor C2 / dtor D1 by hand)
     /* 0x634 */ s32 unk_634;
@@ -643,7 +643,7 @@ void RoomTelephone::execAct0E() {
         }
         TalkWindowState_setNextMessage(p, &c, sRoomTelephoneMsgFile2);
         p->unk_08 = 1;
-        if (func_020b50e8() == 6) {
+        if (Scene_GetCurrent() == 6) {
             changeAct(0xc);
         } else {
             changeAct(4);
@@ -738,8 +738,8 @@ void RoomTelephone::execAct07() {
         f = FALSE;
     }
     if (f) {
-        func_020b6928(func_020b50b4(), unk_370);
-        if (func_020b50e8() == 6) {
+        func_020b6928(Scene_GetCollision(), unk_370);
+        if (Scene_GetCurrent() == 6) {
             if (gCommManager->unk_68 != 4) {
                 return;
             }
@@ -751,7 +751,7 @@ void RoomTelephone::execAct07() {
                 f = FALSE;
             }
             if (f) {
-                if (func_020b6080(func_020b50b4(), &out, &a, &b)) {
+                if (func_020b6080(Scene_GetCollision(), &out, &a, &b)) {
                     if (a == 0xd) {
                         changeAct(0xa);
                     }
@@ -768,7 +768,7 @@ void RoomTelephone::enterAct06() {}
 void RoomTelephone::execAct05() {
     if (AnimFrameCtrl_isFinished((u8 *)this + 0x188)) {
         func_0203e47c(this, this);
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(6);
     }
 }
@@ -830,7 +830,7 @@ void RoomTelephone::enterAct01() {
 }
 
 void RoomTelephone::execAct00() {
-    s32 r5 = func_020b6014(func_020b50b4(), 0, 0);
+    s32 r5 = func_020b6014(Scene_GetCollision(), 0, 0);
     void *r0 = func_02095204(4);
     if (r5 && r0 && (void *)r5 == r0) {
         if (vfunc_48(func_020951ec(4))) {
@@ -838,7 +838,7 @@ void RoomTelephone::execAct00() {
             return;
         }
     }
-    func_020b6928(func_020b50b4(), unk_370);
+    func_020b6928(Scene_GetCollision(), unk_370);
 }
 
 void RoomTelephone::enterAct00() {}
@@ -886,7 +886,7 @@ void RoomTelephone::vfunc_6c() {
         break;
     case 0xe:
     case 0x1f:
-        if (func_020b50e8() == 6) {
+        if (Scene_GetCurrent() == 6) {
             openChoices(&data_ov004_0224e298, 3);
         } else {
             openChoices(&data_ov004_0224e2a0, 2);
@@ -986,9 +986,9 @@ BOOL RoomTelephone::vfunc_00() {
     v.v[0] = sRoomTelephonePos[0];
     v.v[1] = sRoomTelephonePos[1];
     v.v[2] = sRoomTelephonePos[2];
-    func_020b68ec(func_020b50b4(), unk_370, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
+    func_020b68ec(Scene_GetCollision(), unk_370, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
     u8 *const g = gSaveData;
-    if (func_020b50e8() == 6) {
+    if (Scene_GetCurrent() == 6) {
         if (SaveData_testFlag(g, 0) == 0) {
             changeAct(8);
             SaveData_setFlag(g, 0);
@@ -1004,11 +1004,11 @@ BOOL RoomTelephone::vfunc_00() {
 RoomTelephone::~RoomTelephone() {
     _ZN12Unk_020b6a94D1Ev(unk_618);
     _ZN12Unk_020b6e10D2Ev(unk_370);
-    _ZN12Unk_020d8cf4D2Ev(unk_2d4);
+    _ZN11BoxColliderD2Ev(unk_2d4);
 }
 
 RoomTelephone::RoomTelephone() {
-    _ZN12Unk_020d8cf4C1Ev(unk_2d4);
+    _ZN11BoxColliderC1Ev(unk_2d4);
     _ZN12Unk_020b6e10C2Ev(unk_370);
     _ZN12Unk_020b6a94C1Ev(unk_618);
 }

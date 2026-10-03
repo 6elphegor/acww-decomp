@@ -220,13 +220,13 @@ public:
     /* 0x40 */ u8 unk_40;
 };
 
-struct Unk_020d8cf4 {
-    virtual void vfunc_00();
+struct BoxCollider {
+    virtual void onEdgeContact();
     u8 pad_04[0x94];
     u8 unk_98;
 
-    Unk_020d8cf4();
-    ~Unk_020d8cf4();
+    BoxCollider();
+    ~BoxCollider();
 };
 
 class BarberMachine;
@@ -242,13 +242,13 @@ void func_02002dd0(void *o, u32 v);
 void func_020555ec(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
-s32 func_020318cc(void *p);
-void func_02031908(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
+s32 BoxCollider_Unregister(void *p);
+void BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 void func_020566bc(void *p);
 void func_020e7820(void *a, s32 b, s32 c, s32 d);
 void Snd_PlaySe(s32 a);
-void _ZN12Unk_020d8cf4C1Ev(void *self);
-void _ZN12Unk_020d8cf4D2Ev(void *self);
+void _ZN11BoxColliderC1Ev(void *self);
+void _ZN11BoxColliderD2Ev(void *self);
 s32 RoomObjRes_GetBca(void *o, u32 i);
 void RoomObj_PlaySe(void *o, s32 v);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
@@ -301,7 +301,7 @@ public:
     BOOL enterState01();
     BOOL enterState00();
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a Unk_020d8cf4 (ctor/dtor called by hand: the original destroys it with D2)
+    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
     /* 0x370 */ u8 unk_370;
 };
 
@@ -336,12 +336,12 @@ extern "C" WindowLight *BarberMachine_Create() {
 
 // @2225754
 BarberMachine::BarberMachine() {
-    _ZN12Unk_020d8cf4C1Ev(unk_2d4);
+    _ZN11BoxColliderC1Ev(unk_2d4);
 }
 
 // @22256d4
 BarberMachine::~BarberMachine() {
-    _ZN12Unk_020d8cf4D2Ev(unk_2d4);
+    _ZN11BoxColliderD2Ev(unk_2d4);
 }
 
 // @222564c
@@ -489,12 +489,12 @@ void WindowLight::updateState03() {
 
 // @22252cc
 void WindowLight::initCollision() {
-    func_02031908(&unk_2d4, 0x2000, 0x4000, 0x2000, unk_5c, 0, 0);
+    BoxCollider_Register(&unk_2d4, 0x2000, 0x4000, 0x2000, unk_5c, 0, 0);
 }
 
 // @22252bc
 void WindowLight::removeCollision() {
-    func_020318cc(&unk_2d4);
+    BoxCollider_Unregister(&unk_2d4);
 }
 
 // @2225290

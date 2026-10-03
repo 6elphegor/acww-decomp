@@ -288,7 +288,7 @@ void func_020b24a4(s32, void *);
 s32 _ZN12Unk_020b24ac13func_020b24acEv(void *);
 void _ZN9AnimModel8stepAnimEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
-BOOL func_0203006c(s32, s32, s32);
+BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 Field_GetStructureTexSuffix();
 u32 GateHouse_GetModelName();
@@ -355,7 +355,7 @@ BOOL GateHouse::vfunc_70() {
     FieldPos_ToUnit(&x, &y, unk_5c);
     s32 i;
     for (i = -2; i <= 2; i++) {
-        func_0203006c(x + i, y - 1, 0xf);
+        Ground_SetQuadrantsBlocked(x + i, y - 1, 0xf);
     }
     return TRUE;
 }

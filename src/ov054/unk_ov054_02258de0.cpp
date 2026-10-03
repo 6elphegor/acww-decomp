@@ -196,7 +196,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -305,7 +305,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -515,14 +515,14 @@ struct Unk_ov054_SceneEntry {
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_02096e50 _ZN12Unk_02096e2813func_02096e50Ev
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
+#define FutureLetter_getDeliveryDate _ZN12FutureLetter15getDeliveryDateEv
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define func_02098320 _ZN12Unk_02097ff413func_02098320Ev
 #define func_0209865c _ZN10PlayerData13func_0209865cEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
-#define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
+#define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define SaveData_clearFlag _ZN8SaveData9clearFlagEj
 #define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -550,8 +550,8 @@ void *func_02098320(void *g);
 s32 func_02097404(void *h);
 s32 func_020973e8(void *h);
 void func_020973e4(void *h, u8 i);
-void func_0209801c(void *g, s32 v);
-s32 func_02098044(void *g, s32 v);
+void Unk_02097ff4_setFlag(void *g, s32 v);
+s32 Unk_02097ff4_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
 s32 func_02060388(void *m);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -582,13 +582,13 @@ BOOL SaveManager_IsIdleAfterAct1F();
 void SaveManager_RequestAct1F();
 u32 func_020978a4(void *g);
 u32 func_02097a3c(void *h);
-u8 *func_02096e50(u32 h);
+u8 *FutureLetter_getDeliveryDate(u32 h);
 u32 func_020978c8(void *g, u32 i);
 u32 PlayerData_GetCurrentIndex();
 u32 PlayerData_GetResident(void *g, u32 i);
 u32 PlayerData_getPlayerId(u32 h);
 s32 func_02097414(void *p);
-u32 func_02099014(u16 *p, s32 a);
+u32 Pocket_AddItem(u16 *p, s32 a);
 BOOL TownState_IsPerfectStreak15();
 s32 Town_GetEnvironmentRank();
 u8 *TownEval_GetAdvice();
@@ -629,16 +629,16 @@ BOOL MenuCtrl_IsResultOk();
 void *func_0209865c(void *p);
 void *SickVillagerRecord_getParcelErrand(void *p);
 s32 MenuCtrl_GetIndex();
-u32 func_02099048(s32 a);
-void func_02099064(s32 a);
+u32 Pocket_GetItem(s32 a);
+void Pocket_RemoveItem(s32 a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL ParcelErrand_IsFor(void *a, void *b);
-void *func_0209a108(void *p);
-void func_0209abb4(void *p, s32 a);
+void *ParcelErrand_GetRecord(void *p);
+void ErrandRecord_setStep(void *p, s32 a);
 s32 func_02133150(s32 a, s32 b);
-void *func_020850e0();
-void func_020851a4(void *p, s32 a);
+void *TownSessionState_Get();
+void TownSessionState_SetFlag(void *p, s32 a);
 void SaveData_clearFlag(void *p, s32 a);
 void MenuCtrl_GetDateTime(void *p);
 s32 MenuCtrl_GetAmount();
@@ -655,7 +655,7 @@ s32 NetOverlay_Restore();
 
 s32 func_02063b8c(s32 a);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 s32 func_020951b8(s32 a);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 Unk_ov054_Vec *func_020947f0(s32 a);
@@ -673,8 +673,8 @@ void Actor_spawn(s32 a, u32 b, void *v, void *p, void *owner);
 void *TownBlockMap_Get();
 void func_020b0f48();
 BOOL Town_FindTownHall(void *r, s32 *a, s32 *b, s32 *c);
-void *func_020b4934();
-s32 func_020b4f18(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
+void *Scene_GetWarpRequest();
+s32 SceneWarp_RequestAt(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
 Unk_ov054_0225aa98_Rec *TalkWindow_Get(s32 a);
 
 BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k);
@@ -998,7 +998,7 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
             changeAct(9);
         }
     } else {
-        if (GameStart_IsActive() && func_02098044(r, 9) == 0) {
+        if (GameStart_IsActive() && Unk_02097ff4_testFlag(r, 9) == 0) {
             changeAct(0);
         } else {
             changeAct(2);
@@ -1169,7 +1169,7 @@ BOOL SpNpcPellyPhyllis::setupAct04() {
 
 BOOL SpNpcPellyPhyllis::mainAct04() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(5);
     }
     return TRUE;
@@ -1231,7 +1231,7 @@ BOOL SpNpcPellyPhyllis::mainAct08() {
         if (r) {
             if (Town_FindTownHall(r, &v[0], &a, &b)) {
                 v[2] += 0x1000;
-                func_020b4f18(func_020b4934(), 0, &v[0], 0xec00000, 0, 2, 2);
+                SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v[0], 0xec00000, 0, 2, 2);
             }
         }
         changeAct(5);
@@ -1306,13 +1306,13 @@ void SpNpcPellyPhyllisTalk::vfunc_78(TalkStartMsg *out) {
         goto end;
     }
     if (GameStart_IsActive()) {
-        if (!func_02098044(g0, 9)) {
+        if (!Unk_02097ff4_testFlag(g0, 9)) {
             if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
                 out->unk_04 = 0x12;
             } else {
                 out->unk_04 = 0x20;
             }
-            func_0209801c(g0, 9);
+            Unk_02097ff4_setFlag(g0, 9);
         } else {
             out->unk_04 = 7;
         }
@@ -1549,7 +1549,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
         ActorTalkRequest_setNumberSlot(this, r5, 4, 10, 1, 0);
         if (r5 == 0) {
             r5 = 0x15;
-            func_020851a4(func_020850e0(), 0);
+            TownSessionState_SetFlag(TownSessionState_Get(), 0);
             SaveData_clearFlag(gSaveData, 0x10);
         } else {
             r5 = 0x14;
@@ -1616,9 +1616,9 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
         if (Talk_IsInOwnTown(p)) {
             BOOL same;
             s32 r5 = MenuCtrl_GetIndex();
-            v[1] = func_02099048(r5);
+            v[1] = Pocket_GetItem(r5);
             if (r5 >= 0) {
-                func_02099064(r5);
+                Pocket_RemoveItem(r5);
             }
             if (Item_IsFurniture(&v[1])) {
                 v[2] = 0xfff1;
@@ -1642,7 +1642,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
                 } else {
                     r4 = 0x50;
                 }
-                func_0209abb4(func_0209a108(p), 1);
+                ErrandRecord_setStep(ParcelErrand_GetRecord(p), 1);
             }
         }
     }
@@ -1781,7 +1781,7 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
 
 void SpNpcPellyPhyllisTalk::vfunc_10() {
     if (unk_1e == 0xf) {
-        u8 *p = func_02096e50(func_02097a3c(PlayerData_GetCurrent()));
+        u8 *p = FutureLetter_getDeliveryDate(func_02097a3c(PlayerData_GetCurrent()));
         u32 b1 = p[1];
         u32 b0 = p[0];
         ActorTalkRequest_setNumberSlot(this, (s32)(p[2] + 0x7d0), 1, 4, 0, 0);
@@ -1954,14 +1954,14 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         }
         break;
     case 0x3e:
-        if (func_02098044(h, 0x20)) {
+        if (Unk_02097ff4_testFlag(h, 0x20)) {
             r5 = 0x4b;
             break;
         }
         if (TownState_IsPerfectStreak15()) {
             if (Talk_IsInOwnTown()) {
                 half0 = 0x1379;
-                if (func_02099014(&half0, r5)) {
+                if (Pocket_AddItem(&half0, r5)) {
                     r5 = 0x4d;
                     break;
                 }
@@ -1999,7 +1999,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     case 0x4e:
         half1 = 0x1379;
         Unk_020d7710_requestGiveItem(this, &half1, r5, 5, 1);
-        func_0209801c(h, 0x20);
+        Unk_02097ff4_setFlag(h, 0x20);
         break;
     case 0x3b:
         TalkWindowState_lockAdvance(ctx);
@@ -2122,14 +2122,14 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     case 0x5d:
     case 0x5e:
         if (r == 2) {
-            if (func_02098044(g, 4) == 0) {
+            if (Unk_02097ff4_testFlag(g, 4) == 0) {
                 id = 0x1a;
-                func_0209801c(g, 4);
+                Unk_02097ff4_setFlag(g, 4);
             } else {
                 id = 0x19;
             }
         } else if (r == 3) {
-            if (func_02098044(g, 1) != 0) {
+            if (Unk_02097ff4_testFlag(g, 1) != 0) {
                 id = 0x60;
             } else {
                 id = 0x35;
@@ -2317,13 +2317,13 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     L_r2:
         add r0, r7, #0
         mov r1, #4
-        bl func_02098044
+        bl Unk_02097ff4_testFlag
         cmp r0, #0
         bne L_r2_set
         mov r6, #26
         add r0, r7, #0
         mov r1, #4
-        bl func_0209801c
+        bl Unk_02097ff4_setFlag
         b L_end
     L_r2_set:
         mov r6, #25
@@ -2331,7 +2331,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     L_r3:
         add r0, r7, #0
         mov r1, #1
-        bl func_02098044
+        bl Unk_02097ff4_testFlag
         cmp r0, #0
         beq L_r3_clear
         mov r6, #96
@@ -2410,7 +2410,7 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     unk_b0 = 0;
     if (!Talk_IsInOwnTown()) {
         unk_b0 = 2;
-    } else if (func_02098044(g, 1) == 0 && func_02060388(data_021e58a8) != 0) {
+    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && func_02060388(data_021e58a8) != 0) {
         if (unk_ac->isLocalSlotActive()) {
             unk_b0 = 4;
         } else {
@@ -2486,7 +2486,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
         if (pos >= t && pos < sSpNpcPellyPhyllisDonationLevels[i + 1]) {
             func_020973e4(h, i);
             if (unk_c0 < t) {
-                func_0209801c(g, 0x16);
+                Unk_02097ff4_setFlag(g, 0x16);
                 v = i + 0x1f;
             } else {
                 v = i + 0x1f;

@@ -29,9 +29,9 @@ void func_0205be74();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
-u32 func_020b50e8();
-u32 func_020b4928(u32 a);
-u32 func_020b491c(u32 a);
+u32 Scene_GetCurrent();
+u32 Scene_GetMaxPlayers(u32 a);
+u32 Scene_GetMaxCharacters(u32 a);
 u32 func_02084fbc();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
@@ -88,7 +88,7 @@ Unk_0205cbe8::~Unk_0205cbe8() {}
 void Unk_0205cbe8::func_0205ccb0() {
     void *heap = data_021c61dc;
     u32 n = gCommManager[0x6c];
-    u32 m = func_020b4928(func_020b50e8());
+    u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
@@ -96,7 +96,7 @@ void Unk_0205cbe8::func_0205ccb0() {
     }
     ptr[4] = (u32)Heap_AllocAligned(heap, func_0203c6c0(), 4);
     if (m == 0) m = 1;
-    u32 q = func_020b491c(func_020b50e8());
+    u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
     m = (q + func_02084fbc()) - m;
     for (i = 5; i < m + 5; i++) {
         ptr[i] = (u32)Heap_AllocAligned(heap, func_0203c6c0(), 4);

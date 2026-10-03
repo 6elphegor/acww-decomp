@@ -368,8 +368,8 @@ u8 *FriendList_GetEntries(void);
 s32 FriendEntry_GetFriendData(u8 *p);
 u8 *DwcFriendData_GetBytes(s32 p);
 void _ZN12Unk_020a09909startTalkEPKch(u32 a, void *b, u32 c);
-void _ZN12Unk_02097ff413func_02097ff4Ej(s32 a, u32 b);
-void _ZN12Unk_02097ff413func_0209801cEj(s32 a, u32 b);
+void _ZN12Unk_02097ff49clearFlagEj(s32 a, u32 b);
+void _ZN12Unk_02097ff47setFlagEj(s32 a, u32 b);
 s32 Hud_GetCountdown(void);
 void _ZN12HudCountdown5startEii(s32 a, u32 b, u32 c);
 u32 _ZN11CommManager7getModeEv(void *g);
@@ -752,7 +752,7 @@ void _ZN12Unk_0208f23813func_0208f174Ev(void *p);
 void *PlayerData_GetCurrent(void);
 u32 PlayerData_Get(u32 x);
 s32 PlayerData_GetCurrentIndex(void);
-s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, u32 x);
+s32 _ZN12Unk_02097ff49clearFlagEj(void *p, u32 x);
 void *_ZN10PlayerData13func_02098a58Ev(void *p);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
@@ -942,7 +942,7 @@ BOOL CommCtrl_SendAct11();
 void NetSession_ReturnToSolo(Unk_020a25d8 *p, u32 a, u32 b);
 void NetOverlay_Restore();
 void *PlayerData_GetCurrent();
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 v);
+void _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
 void NetSession_SetLastSyncSlot(s32 v);
 void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
 void Comm_ResetPeerState(u32 v);
@@ -982,9 +982,9 @@ void HouseRoomMaps_BindBg();
 void Melody_SetPacked(u8 *p);
 BOOL CommSend_JoinDone(u32 v);
 BOOL SpNpcCopper_CheckKatieEscort();
-void *func_020b4934();
-void func_020b4bbc(void *p, u32 v);
-void func_020b4940(void *p, u32 v);
+void *Scene_GetWarpRequest();
+void SceneWarp_RequestExit(void *p, u32 v);
+void SceneWarp_SetFadeOut(void *p, u32 v);
 }
 }
 
@@ -1058,13 +1058,13 @@ void _ZN12Unk_020a09909startTalkEPKch(Unk_020a3238 *self, void *p, u32 n);
 s32 Save_InvalidateAll(Unk_020a3238 *self);
 s32 _ZN14SaveSlotWriter13eraseSlotStepEi(Unk_020a3238 *self, u32 n);
 TalkWindowState *TalkWindow_Get(s32 i);
-s32 func_020b4934();
-void func_020b4bbc(s32 a, s32 b);
-s32 func_020b50e8();
+s32 Scene_GetWarpRequest();
+void SceneWarp_RequestExit(s32 a, s32 b);
+s32 Scene_GetCurrent();
 s32 TownBlockMap_Get();
 void Town_FindTownHallFront(s32 a, Unk_020a3238_Vec *v, s32 b, s32 c);
-void func_020b4f18(s32 a, s32 b, Unk_020a3238_Vec *v, s32 c, s32 d, s32 e, s32 f);
-void func_020b4f58(s32 a, s32 b, s32 c, s32 d);
+void SceneWarp_RequestAt(s32 a, s32 b, Unk_020a3238_Vec *v, s32 c, s32 d, s32 e, s32 f);
+void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
 void GameStart_SetMode3();
 void GameStart_SetMode4();
@@ -1080,7 +1080,7 @@ void VillagerStates_Destroy();
 void SaveManager_StartGatekeeperTalk(void *p, s32 n);
 s32 func_020b013c();
 s32 PlayerData_GetCurrent(void *p);
-void _ZN12Unk_02097ff413func_02097ff4Ej(s32 a, s32 b);
+void _ZN12Unk_02097ff49clearFlagEj(s32 a, s32 b);
 void Clock_Init();
 void SaveVillagers_DailyUpdate(void *p, s32 n);
 s32 func_0204198c();
@@ -1116,7 +1116,7 @@ extern void *gCurrentHeap;
 extern u8 data_021dfd8c[];
 extern u8 data_021ed1a4[];
 extern Unk_020e27d4_Ent sSaveManagerStates[];
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void _ZN12Unk_020a09909startTalkEPKch(void *p, char *name, s32 id);
 s32 func_0203ca94(void);
 s32 _ZN11SaveManager13func_020a15c8Ej(void *p, s32 v);
@@ -1129,7 +1129,7 @@ s32 _ZN11SaveManager18showSequence2Msg0AEv(void *p);
 s32 _ZN11SaveManager13func_020a15f8Ev(void *p);
 void *PlayerData_GetCurrent(void);
 s32 MenuCtrl_ClearClockChangeFlags(void);
-s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
+s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
 s32 TownState_ClampDate(void *p);
 s32 SaveVillagers_UpdateAllRoomInfo(void *p);
 s32 Heap_Free(void *heap, void *p);
@@ -1304,7 +1304,7 @@ extern "C" SaveManager *SaveManager_Create() {
 }
 
 BOOL SaveManager::vfunc_00() {
-    if (NJ::func_020b50e8() == 6) {
+    if (NJ::Scene_GetCurrent() == 6) {
         if (NJ::TownBlockMap_Get() != 0) {
             NJ::_ZN12TownBlockMap13updateAcreIdsEv(NJ::TownBlockMap_Get());
             NJ::_ZN12TownBlockMap6bindBgEv(NJ::TownBlockMap_Get());
@@ -1315,14 +1315,14 @@ BOOL SaveManager::vfunc_00() {
     }
     NJ::data_021ed398 = 0;
     if (NJ::gCommManager->isOnline()) {
-        if (NJ::func_020b50e8() == 0xb || NJ::func_020b50e8() == 9) {
+        if (NJ::Scene_GetCurrent() == 0xb || NJ::Scene_GetCurrent() == 9) {
             return FALSE;
         }
     }
     NJ::gSaveManager = this;
     NJ::_ZN15SaveManagerTalk8setOwnerEj(&unk_54, this);
     unk_a8 = NJ::gCurrentHeap;
-    if (NJ::func_020b50e8() == 0x2e || NJ::func_020b50e8() == 6 || NJ::func_020b50e8() == 9 || NJ::func_020b50e8() == 0xb) {
+    if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
         unk_ac = NJ::Heap_Alloc(unk_a8, 0x15fe0);
         unk_b0 = NJ::Heap_Alloc(unk_a8, 0x15fe0);
         unk_c0 = NJ::Heap_Alloc(unk_a8, 0x11df4);
@@ -1334,10 +1334,10 @@ BOOL SaveManager::vfunc_00() {
         }
         NJ::LetterStorage_MarkValid(r4);
     }
-    if (NJ::func_020b50e8() == 9) {
+    if (NJ::Scene_GetCurrent() == 9) {
         unk_b8 = NJ::Heap_Alloc(unk_a8, 0x228c);
     }
-    if (NJ::func_020b50e8() == 0x2e) {
+    if (NJ::Scene_GetCurrent() == 0x2e) {
         unk_b4 = NJ::Heap_Alloc(unk_a8, 0x15fe0);
         unk_bc = NJ::Heap_Alloc(unk_a8, 0x84c);
     }
@@ -1355,21 +1355,21 @@ BOOL SaveManager::vfunc_00() {
 }
 
 BOOL SaveManager::vfunc_0c() {
-    if (NJ::func_020b50e8() == 6) {
+    if (NJ::Scene_GetCurrent() == 6) {
         NJ::SaveVillagers_UpdateAllRoomInfo(NJ::data_021dfd8c);
     }
     if (NJ::gCommManager->isOnline()) {
-        if (NJ::func_020b50e8() == 0xb || NJ::func_020b50e8() == 9) {
+        if (NJ::Scene_GetCurrent() == 0xb || NJ::Scene_GetCurrent() == 9) {
             return TRUE;
         }
     }
     NJ::gSaveManager = 0;
-    if (NJ::func_020b50e8() == 0x2e || NJ::func_020b50e8() == 6 || NJ::func_020b50e8() == 9 || NJ::func_020b50e8() == 0xb) {
+    if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
         NJ::Heap_Free(unk_a8, unk_ac);
         NJ::Heap_Free(unk_a8, unk_b0);
         NJ::Heap_Free(unk_a8, unk_c0);
     }
-    if (NJ::func_020b50e8() == 9) {
+    if (NJ::Scene_GetCurrent() == 9) {
         NJ::Heap_Free(unk_a8, unk_b8);
     }
     if (NJ::gTownTransferBuf) {
@@ -1384,7 +1384,7 @@ BOOL SaveManager::vfunc_0c() {
     if (unk_c4) {
         NJ::Heap_Free(unk_a8, unk_c4);
     }
-    if (NJ::func_020b50e8() == 0x2e) {
+    if (NJ::Scene_GetCurrent() == 0x2e) {
         NJ::Heap_Free(unk_a8, unk_b4);
         NJ::Heap_Free(unk_a8, unk_bc);
     }
@@ -1408,7 +1408,7 @@ void SaveManager::setState(s32 idx) {
 void SaveManager::enterAct00() {}
 
 void SaveManager::execAct00() {
-    s32 m = NJ::func_020b50e8();
+    s32 m = NJ::Scene_GetCurrent();
     if (Unk_020a42c4_IsTwo(NJ::gScreenTransition) != 0) {
         if (m == 9) {
             s32 t = NJ::sSaveManagerRequest;
@@ -1445,7 +1445,7 @@ void SaveManager::enterAct01() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_etc_sequence2", 1);
     NJ::MenuCtrl_ClearClockChangeFlags();
-    NJ::_ZN12Unk_02097ff413func_02097ff4Ej(r5, 2);
+    NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::data_021ed1a4);
     unk_9d = 0;
 }
@@ -1507,7 +1507,7 @@ void SaveManager::enterAct02() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_npc_gatekeeper", 0x66);
     NJ::MenuCtrl_ClearClockChangeFlags();
-    NJ::_ZN12Unk_02097ff413func_02097ff4Ej(r5, 2);
+    NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::data_021ed1a4);
     unk_9d = 0;
 }
@@ -1855,7 +1855,7 @@ void Unk_020a3238::execAct08() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        NI::func_020b4bbc(NI::func_020b4934(), 1);
+        NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 1);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -1870,7 +1870,7 @@ void Unk_020a3238::execAct09() {
         v.x = NI::data_020d0770.x;
         v.y = NI::data_020d0770.y;
         v.z = NI::data_020d0770.z;
-        NI::func_020b4f18(NI::func_020b4934(), 0xd, &v, 0x800000, 0, 3, 2);
+        NI::SceneWarp_RequestAt(NI::Scene_GetWarpRequest(), 0xd, &v, 0x800000, 0, 3, 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -1885,7 +1885,7 @@ void Unk_020a3238::execAct0A() {
         v.x = NI::data_020d0788.x;
         v.y = NI::data_020d0788.y;
         v.z = NI::data_020d0788.z;
-        NI::func_020b4f18(NI::func_020b4934(), 0xe, &v, 0x800000, 0, 3, 2);
+        NI::SceneWarp_RequestAt(NI::Scene_GetWarpRequest(), 0xe, &v, 0x800000, 0, 3, 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -1896,7 +1896,7 @@ void Unk_020a3238::execAct0B() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        NI::func_020b4f58(NI::func_020b4934(), 0x2f, 3, 2);
+        NI::SceneWarp_RequestFade(NI::Scene_GetWarpRequest(), 0x2f, 3, 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -1918,7 +1918,7 @@ void Unk_020a3238::execAct0C() {
         }
         NI::SaveData_Apply(NI::gSaveData);
         NI::VillagerStates_Destroy();
-        NI::func_020b4f58(NI::func_020b4934(), 0x2c, 3, 2);
+        NI::SceneWarp_RequestFade(NI::Scene_GetWarpRequest(), 0x2c, 3, 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -1947,7 +1947,7 @@ void Unk_020a3238::execAct0E() {
                 NI::GameStart_SetMode4();
             }
             NI::GameStart_SetupSave();
-            NI::func_020b4f58(NI::func_020b4934(), 0x2d, 3, 0);
+            NI::SceneWarp_RequestFade(NI::Scene_GetWarpRequest(), 0x2d, 3, 0);
             NI::_ZN11SaveManager8setStateEi(this, 0);
         }
     }
@@ -1962,7 +1962,7 @@ void Unk_020a3238::execAct0F() {
         if (o->unk_04 == 0) {
             o->detachRequest();
             NI::Town_FindTownHallFront(NI::TownBlockMap_Get(), &v, 0, 0);
-            NI::func_020b4f18(NI::func_020b4934(), 0, &v, 0x400000, -0x8000, 3, 2);
+            NI::SceneWarp_RequestAt(NI::Scene_GetWarpRequest(), 0, &v, 0x400000, -0x8000, 3, 2);
             NI::_ZN11SaveManager8setStateEi(this, 0);
         }
     }
@@ -1974,10 +1974,10 @@ void Unk_020a3238::execAct10() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        if (NI::func_020b50e8() == 6) {
-            NI::func_020b4bbc(NI::func_020b4934(), 2);
+        if (NI::Scene_GetCurrent() == 6) {
+            NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 2);
         } else {
-            NI::func_020b4bbc(NI::func_020b4934(), 0);
+            NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 0);
         }
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
@@ -1989,7 +1989,7 @@ void Unk_020a3238::execAct11() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        NI::func_020b4bbc(NI::func_020b4934(), 2);
+        NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
@@ -2036,7 +2036,7 @@ void Unk_020a3238::execAct12() {
 }
 
 void Unk_020a3238::enterAct13() {
-    NI::_ZN12Unk_02097ff413func_02097ff4Ej(NI::PlayerData_GetCurrent(this), 2);
+    NI::_ZN12Unk_02097ff49clearFlagEj(NI::PlayerData_GetCurrent(this), 2);
     unk_9d = 0;
 }
 
@@ -2213,11 +2213,11 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             if (NH::Net_IsReadyToSend()) {
                 NH::gCommManager->setMode(2);
                 if (NH::SpNpcCopper_CheckKatieEscort()) {
-                    NH::func_020b4bbc(NH::func_020b4934(), 2);
-                    NH::func_020b4940(NH::func_020b4934(), 3);
+                    NH::SceneWarp_RequestExit(NH::Scene_GetWarpRequest(), 2);
+                    NH::SceneWarp_SetFadeOut(NH::Scene_GetWarpRequest(), 3);
                 } else {
-                    NH::func_020b4bbc(NH::func_020b4934(), 0);
-                    NH::func_020b4940(NH::func_020b4934(), 3);
+                    NH::SceneWarp_RequestExit(NH::Scene_GetWarpRequest(), 0);
+                    NH::SceneWarp_SetFadeOut(NH::Scene_GetWarpRequest(), 3);
                 }
                 NH::data_021c3cb8 = 1;
                 p->unk_9d = 9;
@@ -2386,7 +2386,7 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
 
 extern "C" void SaveManager_EnterAct17(Unk_020a25d8 *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 0);
-    NH::_ZN12Unk_02097ff413func_0209801cEj(NH::PlayerData_GetCurrent(), 2);
+    NH::_ZN12Unk_02097ff47setFlagEj(NH::PlayerData_GetCurrent(), 2);
     NH::NetSession_SetLastSyncSlot(NH::gCommManager->unk_64);
 }
 
@@ -3292,7 +3292,7 @@ void SaveManager::execAct1E() {
 }
 
 void SaveManager::enterAct1F() {
-    NF::Net_GetMyAid(NF::_ZN12Unk_02097ff413func_02097ff4Ej(NF::PlayerData_GetCurrent(), 2));
+    NF::Net_GetMyAid(NF::_ZN12Unk_02097ff49clearFlagEj(NF::PlayerData_GetCurrent(), 2));
     NF::Comm_PrepareJoin();
     unk_9d = 0;
 }
@@ -5133,16 +5133,16 @@ extern "C" void SaveManager_StartGatekeeperTalk(u32 a, u32 b) {
     if (b == 0) {
         NB::_ZN12Unk_020a09909startTalkEPKch(a, (u8 *)"sp_npc_gatekeeper", 0x69);
     }
-    NB::_ZN12Unk_02097ff413func_02097ff4Ej(NB::PlayerData_GetCurrent(), 2);
+    NB::_ZN12Unk_02097ff49clearFlagEj(NB::PlayerData_GetCurrent(), 2);
     NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
 }
 
 extern "C" void SaveManager_StartSequence2Talk(u32 a) {
     NB::_ZN12Unk_020a09909startTalkEPKch(a, (u8 *)"sp_etc_sequence2", 7);
-    NB::_ZN12Unk_02097ff413func_02097ff4Ej(NB::PlayerData_GetCurrent(), 2);
+    NB::_ZN12Unk_02097ff49clearFlagEj(NB::PlayerData_GetCurrent(), 2);
     if (NB::func_0209f23c() != 0) {
         NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
-        NB::_ZN12Unk_02097ff413func_0209801cEj(NB::PlayerData_GetCurrent(), 2);
+        NB::_ZN12Unk_02097ff47setFlagEj(NB::PlayerData_GetCurrent(), 2);
     }
 }
 

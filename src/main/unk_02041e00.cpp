@@ -198,7 +198,7 @@ struct Unk_02042104_Bits {
     u16 h4;
     u16 h6[3];
 };
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 u32 func_02095204(u32 v);
 void PendingUnit_CancelAt(Unk_02042104_Pair *p, s32 k);
 void FieldAction_WaterFlowers(u32 v, Unk_02042104_Pair *p);
@@ -250,7 +250,7 @@ static inline BOOL Unk_02042660_InRange(u32 c, u32 lo, u32 hi) { BOOL r = FALSE;
 struct Unk_02042830_V3 { s32 x, y, z; };
 inline BOOL Unk_02042830_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 extern void *gSceneBlockMap;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 sDropUnitOffsets[];
 extern Unk_02042578_Entry sDropUnitOrder[];
 extern s8 sWaterOffsetsX[], sWaterOffsetsZ[];
@@ -270,9 +270,9 @@ s32 _ZN11CommManager8isOnlineEv(void *);
 s32 PendingUnit_Find(void *, s32);
 s32 _s32_div_f(s32, s32);
 void Scene_SetUnitItem(s32, s32, u32, s32);
-s32 func_020991e4(void);
-s32 func_02098ffc(void);
-s32 func_020b50e8(void);
+s32 Inventory_GetEmptyLetter(void);
+s32 Pocket_FindEmpty(void);
+s32 Scene_GetCurrent(void);
 u32 NetArea_FindSlotInScene(s32);
 void FieldAction_Submit(u8, u32);
 void Town_ClearObjectFcFdAtPos(void *, void *);
@@ -282,9 +282,9 @@ s32 func_02063ba4(s32);
 void FieldPos_ToUnit(void *, void *, void *);
 s32 PendingUnit_IndexAt(void *, s32);
 s32 Field_IsUnitClearOfOthers(void *, s32);
-s32 func_020b5184(void);
+s32 Scene_InTown(void);
 s32 func_020513b0(s32, s32);
-s32 func_02030f10(s32, s32, s32, s32, s32);
+s32 Ground_IsNeighbourReachable(s32, s32, s32, s32, s32);
 s32 _ZN8BlockMap13func_0204e378Eii(void *, s32, s32);
 u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Unk_020422c0_Pos *);
 BOOL FieldItemFx_StartPop(u32, u32, Unk_020422c0_Pos *);
@@ -382,7 +382,7 @@ s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
 void FieldItemFx_StartPop(s32 a, u16 b, Pos p);
 void PendingUnit_ApplyAt(Pos p, u8 a);
-s32 func_020b5184();
+s32 Scene_InTown();
 void *TownBlockMap_Get();
 s32 BlockMap_IsBuriedAtUnit(void *o, s32 x, s32 y);
 s32 _ZN8BlockMap13func_0204e3a0Eii(void *o, s32 x, s32 y);
@@ -459,7 +459,7 @@ void Town_ClearBeesReleased(void);
 void Town_SetBeesReleased(void);
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 v);
 s32 PlayerData_GetCurrent(void);
-s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
+s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
 BOOL Item_ToPlantedFieldId(u16 *out, u16 *out2, u16 c);
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
 struct CommManager {
@@ -591,7 +591,7 @@ void *TownBlockMap_Get(void);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_02063b8c(s32 a);
 s32 Item_IsFlower(void);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 func_0205f094(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldPos_FromUnitCenter(Unk_02044014_Vec3 *out, s32 x, s32 z);
 s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
@@ -909,7 +909,7 @@ BOOL PendingUnit_Add(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u
 void Tree_DropItems(Unk_021c3f8c_Pos *q, u32 kind, Unk_020452ec_Pos *pos);
 void Field_SetUnitItem(s32 x, s32 y, u32 a, u32 b);
 void Room_SetItemAtUnit(s32 x, s32 y, u32 a, u32 b);
-BOOL func_020b5184();
+BOOL Scene_InTown();
 s32 FieldItemFx_CancelAt(u32 kind, Unk_020452ec_Pos *pos);
 static inline s32 Unk_021c3f8c_GetX(Unk_021c3f8c_Pos p) { return p.v >> 8; }
 static inline s32 Unk_021c3f8c_GetY(Unk_021c3f8c_Pos p) { return p.v & 0xff; }
@@ -1063,12 +1063,12 @@ void Town_RebuildLitCedarList();
 void TownState_UpdateSeasonPeriod();
 s32 Town_IsClockBeforeLastUpdate();
 void Turnips_SpoilAll(void *);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 s32 Town_RefreshEvents(void *, s32);
 void TownState_UpdateSeasonPeriod();
 s32 Town_IsClockBeforeLastUpdate();
 void Turnips_SpoilAll(void *);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 s32 Town_RefreshEvents(void *, s32);
 void Town_UpdateDay(s32);
 s32 FieldActionFx_ClearAll(void *);
@@ -1089,8 +1089,8 @@ s32 Item_RandomSeashell(void *);
 s32 Clock_GetMinuteHour(void *);
 s32 BlockMap_SetItemAtUnit(void *, void *, s32, s32, s32);
 void BlockMap_SpoilTurnips(void *, Unk_02045e34_Map *);
-s32 func_020b5184();
-s32 func_020b5164();
+s32 Scene_InTown();
+s32 Scene_InTownUnk31();
 s32 func_020402e8();
 s32 func_02041b68();
 s32 Weather_GetPrevDayRain();
@@ -1182,7 +1182,7 @@ extern u16 gTownUpdater[];
 extern char gTownEval[];
 extern s32 sSeashellWeights[];
 extern char data_021ed1a4[];
-extern char data_021ed24c[];
+extern char gContestRecord[];
 extern char data_021ed0a0[];
 extern char data_021e58a8[];
 extern char data_021ed210[];
@@ -1199,8 +1199,8 @@ s32 _ZN11CommManager8isOnlineEv(void *);
 s32 _ZN11CommManager7isMyAidEj(void *, s32);
 void Clock_GetMinuteHour(void *);
 s32 PlayerActor_GetSlotPosXZ(void *, void *, void *, s32, s32);
-s32 func_020b5198(u32);
-s32 func_020b5178(u32);
+s32 SceneId_IsTown(u32);
+s32 SceneId_IsTownUnk31(u32);
 Unk_0204674c_P *TownBlockMap_Get();
 s32 func_02063b8c(s32);
 void Town_SpawnSeashellsInAcre(void *, void *, s32);
@@ -1264,7 +1264,7 @@ void Town_UpdateRedTurnips(void *, void *, s32);
 void Town_SpawnCoconut(void *, void *, s32);
 void Town_BuryGyroids(void *, void *, s32, s32, u32);
 void Town_UpgradeBuriedShovels(void *, void *, s32, s32);
-void _ZN12Unk_0208581017sendResultLettersEv(void *);
+void _ZN13ContestRecord17sendResultLettersEv(void *);
 void _ZN10MuseumData22checkCompletionLettersEv(void *);
 void _ZN9HouseData13func_020605a8Ev(void *);
 void NookShop_ApplyRenovation();
@@ -1604,7 +1604,7 @@ s32 _ZN11CommManager8isOnlineEv(void *);
 void BlockMap_SetItemAtUnit(void *b, u16 *id, s32 x, s32 y, s32 z);
 void BlockMap_SetBuriedAtUnit(void *b, s32 x, s32 y);
 void BlockMap_ClearBuriedAtUnit(void *b, s32 x, s32 y);
-void *func_020b50e8();
+void *Scene_GetCurrent();
 void func_0205f094(s32 x, s32 y, void *r, u16 id, s32 g);
 s32 _ZN8BlockMap13func_0204e3c8Eii();
 s32 _ZN8BlockMap13func_0204e3a0Eii();
@@ -1901,10 +1901,10 @@ void BlockMap_ClearBuried(void *a, s32 x, s32 y, s32 p4, s32 p5);
 void BlockMap_SetItemAtUnit(void *a, u16 *t, s32 x, s32 y, s32 z);
 void BlockMap_SetBuriedAtUnit(void *a, s32 x, s32 y);
 void BlockMap_ClearBuriedAtUnit(void *a, s32 x, s32 y);
-BOOL func_020b5198(void *a);
-BOOL func_020b5178(void *a);
-BOOL func_020b5184();
-BOOL func_020b5164();
+BOOL SceneId_IsTown(void *a);
+BOOL SceneId_IsTownUnk31(void *a);
+BOOL Scene_InTown();
+BOOL Scene_InTownUnk31();
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(void *a);
 void Field_SetUnitItem(void *a, void *b, void *c, void *d);
@@ -3355,7 +3355,7 @@ extern "C" void TownEval_EvaluateAcreAt(u8 *a, void *b, s32 i, s32 j) {
 
 namespace nN {
 extern "C" void Scene_SetUnitItem(void *a, void *b, void *c, void *d) {
-    if (func_020b5184() || func_020b5164()) {
+    if (Scene_InTown() || Scene_InTownUnk31()) {
         Field_SetUnitItem(a, b, c, d);
     } else {
         Room_SetItemAtUnit(a, b, c, 0);
@@ -3366,7 +3366,7 @@ extern "C" void Scene_SetUnitItem(void *a, void *b, void *c, void *d) {
 namespace nN {
 extern "C" void Area_PlaceItem(void *a, s32 x, s32 y, u32 v, s32 flag) {
     void *q;
-    if (func_020b5198(a) || func_020b5178(a)) {
+    if (SceneId_IsTown(a) || SceneId_IsTownUnk31(a)) {
         q = TownBlockMap_Get();
         if (q != NULL) {
             u16 t = 0xfff1;
@@ -4364,7 +4364,7 @@ extern "C" s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos 
                 BlockMap_ClearBuriedAtUnit(b, p->x, p->y);
             }
         } else {
-            void *o = func_020b50e8();
+            void *o = Scene_GetCurrent();
             func_0205f094((s8)p->x, (s8)p->y, o, e, g);
         }
     }
@@ -5495,7 +5495,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Town_SpawnCoconut(a, p, x);
         Town_BuryGyroids(a, p, x, y, e);
         Town_UpgradeBuriedShovels(a, p, x, y);
-        _ZN12Unk_0208581017sendResultLettersEv(data_021ed24c);
+        _ZN13ContestRecord17sendResultLettersEv(gContestRecord);
         _ZN10MuseumData22checkCompletionLettersEv(data_021ed0a0);
         char *const g = data_021e58a8;
         _ZN9HouseData13func_020605a8Ev(g);
@@ -5589,7 +5589,7 @@ extern "C" void Town_UpdateSeashellsOnline(void *a) {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     if (PlayerActor_GetSlotPosXZ(&l, x, &y, -1, i)) {
-                        if (func_020b5198(l.a) || func_020b5178(l.a)) {
+                        if (SceneId_IsTown(l.a) || SceneId_IsTownUnk31(l.a)) {
                             if ((s32)y >> 17 == 4) {
                                 found = 1;
                                 break;
@@ -5827,7 +5827,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
     days = dt / 60 / 24;
     TownState_UpdateSeasonPeriod();
     if (days >= 1 && flag == 0) {
-        if (func_020b5184() != 0 || func_020b5164() != 0) {
+        if (Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
             func_020402e8();
         }
     }
@@ -5835,11 +5835,11 @@ extern "C" void Town_UpdateDay(s32 flag) {
     if (days >= 1) {
         dt = Weather_GetPrevDayRain();
         if (flag == 0) {
-            if (func_020b5184() != 0 || func_020b5164() != 0) {
+            if (Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
                 _ZN11SaveRecord410expireDateEv(base + 0x15fc5);
             }
         }
-        if (flag != 0 || func_020b5184() != 0 || func_020b5164() != 0) {
+        if (flag != 0 || Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
             Town_ApplyElapsedDays(&l.t.w[2], &l.t, days, dt, flag);
             DateTime_SubHours(&l.t, 6);
             src->c = ((u8 *)&l.t)[5];
@@ -5982,7 +5982,7 @@ extern "C" void Town_OnLoad() {
         if (Town_IsClockBeforeLastUpdate() != 0) {
             Turnips_SpoilAll(gTownUpdater);
         }
-        if (func_020b50e8() == 0x3f) {
+        if (Scene_GetCurrent() == 0x3f) {
             Town_RefreshEvents(gTownUpdater, 1);
         } else {
             Town_UpdateDay(1);
@@ -6174,7 +6174,7 @@ extern "C" void PendingUnit_Set(Unk_021c3f8c *e, u8 kind, u16 pos, u16 a, u16 c,
 
 namespace nG {
 extern "C" void PendingUnit_WriteToMap(Unk_021c3f8c *e) {
-    if (func_020b5184()) {
+    if (Scene_InTown()) {
         Field_SetUnitItem(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_01_a);
         PendingUnit_NoteJunk(e);
     } else {
@@ -6198,7 +6198,7 @@ extern "C" void PendingUnit_NoteJunk(Unk_021c3f8c *e) {
 namespace nG {
 extern "C" s32 PendingUnit_Apply(Unk_021c3f8c *e) {
     s32 flag = 0;
-    if (func_020b5184()) {
+    if (Scene_InTown()) {
         void *p = TownBlockMap_Get();
         if (p) {
             s32 x, y;
@@ -7329,7 +7329,7 @@ extern "C" void FieldAction_OnNetResult(Unk_02044490_E *e, s32 t) {
             FieldAction_ApplyResult(e);
         }
     } else if (e->unk_01_2 != 0) {
-        if (t == func_020b50e8() && sPendingUnits != 0) {
+        if (t == Scene_GetCurrent() && sPendingUnits != 0) {
             if (PlayerActor_TestSlotFlag(10, 4)) {
                 FieldActionFx_Start(e);
                 FieldAction_ApplyResult(e);
@@ -7553,7 +7553,7 @@ extern "C" s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f) {
         t.z = p->z;
         Flower_SpawnPetalFx((u16 *)m, &t, 0, f);
         if (f == 0) {
-            func_0205f094((s8)p->x, (s8)p->z, func_020b50e8(), 0xfff1, 0);
+            func_0205f094((s8)p->x, (s8)p->z, Scene_GetCurrent(), 0xfff1, 0);
         }
     }
 }
@@ -7749,7 +7749,7 @@ extern "C" BOOL Town_CanReleaseBees(void) {
     BOOL r = FALSE;
     CommManager *g = *(CommManager **)gCommManager;
     if (_ZN11CommManager12isSlotActiveEi(g, g->unk_64) == 0) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 1) == 0) {
+        if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
             if (gTownUpdater[0x1c] == 0) {
                 r = TRUE;
             }
@@ -8077,7 +8077,7 @@ extern "C" s32 FieldAction_RequestToolAtPendingForAid(s32 a, s32 b, s32 c, u16 d
 
 namespace nC {
 extern "C" s32 FieldAction_RequestPickUp(s32 a, Pos *p, s32 c) {
-    if (func_020b5184()) {
+    if (Scene_InTown()) {
         Pos q(*p);
         return FieldAction_RequestPickUpOutdoor(a, &q);
     }
@@ -8266,7 +8266,7 @@ extern "C" s32 FieldAction_RequestFillHoleForAid(s32 a, Pos *p, s32 c) {
 
 namespace nC {
 extern "C" s32 FieldAction_RequestPitfall(s32 a, Pos *p) {
-    if (!func_020b5184()) {
+    if (!Scene_InTown()) {
         return -1;
     }
     void *o = TownBlockMap_Get();
@@ -8292,7 +8292,7 @@ extern "C" s32 FieldAction_RequestPitfall(s32 a, Pos *p) {
 
 namespace nC {
 extern "C" s32 FieldAction_RequestPitfallAt(s8 a, Pos *p) {
-    if (!func_020b5184()) {
+    if (!Scene_InTown()) {
         return -1;
     }
     void *o = TownBlockMap_Get();
@@ -8479,7 +8479,7 @@ extern "C" u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Unk_0204
             case 0x10:
             case 0x11:
             case 0x12:
-                if (!func_02030f10(p->x, p->y, x, y, 0)) {
+                if (!Ground_IsNeighbourReachable(p->x, p->y, x, y, 0)) {
                     t = NULL;
                 }
                 break;
@@ -8499,7 +8499,7 @@ extern "C" u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Unk_0204
             case 0x19:
                 break;
             case 0x1a:
-                if (!func_02030f10(p->x, p->y, x, y, 1)) {
+                if (!Ground_IsNeighbourReachable(p->x, p->y, x, y, 1)) {
                     t = NULL;
                 }
                 break;
@@ -8554,7 +8554,7 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out
                     }
                 }
             }
-            if (func_020b5184() == 0) {
+            if (Scene_InTown() == 0) {
                 if (func_020513b0(x, y)) {
                     p->x = x;
                     p->y = y;
@@ -8584,7 +8584,7 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
         u8 *o = (u8 *)func_02095204(4);
         if (w != NULL && o != NULL) {
             Unk_02042830_V3 *pv = (Unk_02042830_V3 *)(o + 0x5c);
-            if (Unk_02042830_IsZero(data_020e416c)) {
+            if (Unk_02042830_IsZero(gFieldSceneKind)) {
                 volatile u16 tmp;
                 tmp = 0xfff1;
                 tmp = e->unk_10;
@@ -8709,7 +8709,7 @@ extern "C" void FieldAction_WaterFlowers(void *self, Unk_020422c0_Pos *p) {
                 r = Flower_GetWateredForm(gTownUpdater, t, flag);
                 if (r != 0xfff1) {
                     found = 1;
-                    func_0205f094((s8)x, (s8)y, func_020b50e8(), r, 0);
+                    func_0205f094((s8)x, (s8)y, Scene_GetCurrent(), r, 0);
                 }
                 {
                     u32 v = *t;
@@ -8776,15 +8776,15 @@ extern "C" s32 FieldAction_Add(Unk_02042578_Entry *e, u32 a1, s32 type, Unk_0204
         if (e->unk_08 == 0 && e->unk_0c == 0) {
             if (type == 3 || type == 9 || type == 0x15) {
                 if (a6 == 0x1520) {
-                    if (func_020991e4() == 0) {
+                    if (Inventory_GetEmptyLetter() == 0) {
                         type++;
                     }
-                } else if (func_02098ffc() < 0) {
+                } else if (Pocket_FindEmpty() < 0) {
                     type++;
                 }
             }
             e->unk_00 = a1;
-            e->unk_04 = NetArea_FindSlotInScene(func_020b50e8());
+            e->unk_04 = NetArea_FindSlotInScene(Scene_GetCurrent());
             e->unk_08 = 1;
             e->unk_0c = type;
             e->unk_10 = a5;
@@ -9034,7 +9034,7 @@ extern "C" void FieldActionFx_Start(Unk_02042104_Bits *p) {
         u32 o = func_02095204(p->idx);
         if (o != 0) {
             Unk_02042104_Vec *q = (Unk_02042104_Vec *)(o + 0x5c);
-            if (Unk_02042104_IsZero(data_020e416c)) {
+            if (Unk_02042104_IsZero(gFieldSceneKind)) {
                 m.v[0] = *q;
                 m.p[2].hi = hi;
                 m.p[2].lo = lo;

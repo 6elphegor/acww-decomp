@@ -25,7 +25,7 @@ void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0209909c(u16 *p, s32 a, s32 b);
+void Pocket_SetItem(u16 *p, s32 a, s32 b);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete();
 
@@ -600,9 +600,9 @@ void PocketMenuUnk::initPocketMenuUnk() {
     unk_278b = 0;
     unk_2270.init(3, 1, 0);
     a = 0x11a9;
-    func_0209909c(&a, 1, 0);
+    Pocket_SetItem(&a, 1, 0);
     b = 0x1548;
-    func_0209909c(&b, 0, 2);
+    Pocket_SetItem(&b, 0, 2);
 }
 
 void PocketMenuUnk::releaseResources() {

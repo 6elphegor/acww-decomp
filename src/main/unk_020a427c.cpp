@@ -351,13 +351,13 @@ void _ZN12Unk_020a675413func_020a6760EPhS0_S0_(void *, u8 *, u8 *, u8 *);
 void _ZN12Unk_020a679013func_020a6790Ev(void *);
 void _ZN12Unk_020a679013func_020a67a0EPhS0_S0_Pj(void *, u8 *, u8 *, u8 *, u32 *);
 void func_020a681c(void *, s32, u32, u32, u32, u32);
-s32 func_020b4934(void);
-u32 func_020b4994(void);
-s32 func_020b49a8(s32 a);
-void func_020b4a08(s32 a, s32 b);
-void func_020b4f18(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
-void func_020b4f58(s32 a, s32 b, s32 c, s32 d);
-s32 func_020b50e8(void);
+s32 Scene_GetWarpRequest(void);
+u32 Scene_GetRequestedScene(void);
+s32 SceneWarp_GetScene(s32 a);
+void Scene_SavePlayerPos(s32 a, s32 b);
+void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
+void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
+s32 Scene_GetCurrent(void);
 void func_020b78dc(void);
 void func_020b78f4(s32 a);
 void func_020b7914(s32 a);
@@ -633,10 +633,10 @@ extern "C" void NetArea_SendMoveTarget() {
     CommManager *o = gCommManager;
     if (o->isMyAid(0)) {
         s32 r4 = o->unk_64;
-        func_020a6430(r4, func_020b4994());
+        func_020a6430(r4, Scene_GetRequestedScene());
     } else {
         Unk_020a6968 tmp;
-        tmp.func_020a6968(func_020b4994());
+        tmp.func_020a6968(Scene_GetRequestedScene());
         o = gCommManager;
         o->beginRecord();
         o->writeRecord((u8 *)&tmp, 1);
@@ -754,7 +754,7 @@ extern "C" void NetArea_SendStateToNewOwner() {
     if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         if (V3().getMoveState() == 3) {
             if (IsZero_020a5d4c(gScreenTransition)) {
-                if (!NetArea_IsUnsharedScene(func_020b50e8())) {
+                if (!NetArea_IsUnsharedScene(Scene_GetCurrent())) {
                     NetArea_SendStateA(V3().getHandoffSlot());
                 }
                 V3().setMoveState(5);
@@ -1099,11 +1099,11 @@ void NetSessionAreaView::updateMove() {
         break;
     case 2:
         flag = 1;
-        if (NetArea_IsUnsharedScene(func_020b50e8()) == 0) {
+        if (NetArea_IsUnsharedScene(Scene_GetCurrent()) == 0) {
             for (i = 3; i >= 0; i--) {
                 if (i != r7 && o->isSlotActive(i) != 0) {
                     s32 t = NetArea_GetSlotScene(i);
-                    if (t == func_020b50e8() && getMemberAck(i) == 0) {
+                    if (t == Scene_GetCurrent() && getMemberAck(i) == 0) {
                         flag = 0;
                         break;
                     }
@@ -1121,20 +1121,20 @@ void NetSessionAreaView::updateMove() {
         }
         break;
     case 4:
-        if (getOwnerAck() == 0 && NetArea_IsUnsharedScene(func_020b50e8()) == 0) break;
+        if (getOwnerAck() == 0 && NetArea_IsUnsharedScene(Scene_GetCurrent()) == 0) break;
         setOwnerAck(0);
         setMoveState(5);
         break;
     case 8:
         if (getHandoffSlot() != 4) {
-            if (NetArea_IsSlotOwner(getHandoffSlot()) == 0 && NetArea_IsUnsharedScene(func_020b50e8()) == 0) break;
+            if (NetArea_IsSlotOwner(getHandoffSlot()) == 0 && NetArea_IsUnsharedScene(Scene_GetCurrent()) == 0) break;
             setMoveState(9);
         } else {
             setMoveState(9);
         }
         break;
     case 9: {
-        u32 v = func_020b4994();
+        u32 v = Scene_GetRequestedScene();
         best = 4;
         for (i = 3; i >= 0; i--) {
             if (i != r7 && o->isSlotActive(i) != 0) {
@@ -1149,7 +1149,7 @@ void NetSessionAreaView::updateMove() {
             setStateSourceSlot(best);
             setBecomesOwner(0);
             o->clearAuxLenB();
-            if (NetArea_IsUnsharedScene(func_020b4994()) == 0) {
+            if (NetArea_IsUnsharedScene(Scene_GetRequestedScene()) == 0) {
                 CommManager *o2 = gCommManager;
                 o2->beginRecord();
                 o2->endRecord(0xe, getStateSourceSlot());
@@ -1163,7 +1163,7 @@ void NetSessionAreaView::updateMove() {
         break;
     }
     case 10:
-        if (o->getAuxLenB() != 0 || NetArea_IsUnsharedScene(func_020b4994()) != 0) {
+        if (o->getAuxLenB() != 0 || NetArea_IsUnsharedScene(Scene_GetRequestedScene()) != 0) {
             setMoveState(11);
         }
         break;
@@ -1213,8 +1213,8 @@ void NetSessionAreaView::notifyMovingOwner() {
     }
     if (r5 != getNotifiedOwnerMover()) {
         if (r5 < 4) {
-            if (o->isMyAid(r5) == 0 && (s32)NetArea_GetSlotScene(r5) == func_020b50e8() &&
-                NetArea_IsSlotOwner(r5) != 0 && NetArea_IsUnsharedScene(func_020b50e8()) == 0) {
+            if (o->isMyAid(r5) == 0 && (s32)NetArea_GetSlotScene(r5) == Scene_GetCurrent() &&
+                NetArea_IsSlotOwner(r5) != 0 && NetArea_IsUnsharedScene(Scene_GetCurrent()) == 0) {
                 CommManager *o2 = gCommManager;
                 o2->beginRecord();
                 o2->endRecord(0xd, r5);
@@ -1242,7 +1242,7 @@ void NetSessionAreaView::updateArrivingSlot() {
     s32 c = getArrivingSlot();
     if (c < 4) {
         u32 t = NetArea_GetSlotScene(c);
-        if ((s32)t == func_020b50e8()) {
+        if ((s32)t == Scene_GetCurrent()) {
             setArrivingSlot(4);
         }
     }
@@ -1270,7 +1270,7 @@ void NetSessionAreaView::notifyMovingMember() {
     if (r5 != getNotifiedMemberMover()) {
         if (r5 < 4) {
             if (o->isMyAid(r5) == 0 && NetArea_IsSlotOwner(saved) != 0 &&
-                (s32)NetArea_GetSlotScene(r5) == func_020b50e8() && NetArea_IsUnsharedScene(func_020b50e8()) == 0) {
+                (s32)NetArea_GetSlotScene(r5) == Scene_GetCurrent() && NetArea_IsUnsharedScene(Scene_GetCurrent()) == 0) {
                 CommManager *o2 = gCommManager;
                 o2->beginRecord();
                 o2->endRecord(0x11, r5);
@@ -1347,13 +1347,13 @@ void NetSessionState::updateSyncHost() {
                 }
             }
             if (ok) {
-                if (func_020b50e8() == 0x2e || func_020b50e8() == 0x2f || func_020b50e8() == 0xd) {
+                if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 0x2f || Scene_GetCurrent() == 0xd) {
                     ok = z1c;
                 }
             }
             if (ok) {
-                if (func_020b49a8(func_020b4934()) == 0x2e || func_020b49a8(func_020b4934()) == 0x2f ||
-                    func_020b49a8(func_020b4934()) == 0xd) {
+                if (SceneWarp_GetScene(Scene_GetWarpRequest()) == 0x2e || SceneWarp_GetScene(Scene_GetWarpRequest()) == 0x2f ||
+                    SceneWarp_GetScene(Scene_GetWarpRequest()) == 0xd) {
                     ok = z20;
                 }
             }
@@ -1578,9 +1578,9 @@ void NetSessionState::updateSyncClient() {
     st = g->unk_64;
     if (getMemberSyncReply(st) == 1) {
         BOOL r7 = FALSE;
-        s32 t = func_020b50e8();
+        s32 t = Scene_GetCurrent();
         if (t != 0x2e && t != 0xc && t != 0xd && t != 0xe && t != 0x2f) {
-            if (func_020b49a8(func_020b4934()) == 0x3f && gSceneCreating == 0) {
+            if (SceneWarp_GetScene(Scene_GetWarpRequest()) == 0x3f && gSceneCreating == 0) {
                 if (func_0203d56c()) {
                     r7 = TRUE;
                 }
@@ -1682,20 +1682,20 @@ void NetSessionState::updateSyncClient() {
         }
         setActiveSyncKind(getSyncKind());
         Net_SetJoiningAid(getSyncRequester());
-        func_020b4a08(func_020b4934(), 0);
+        Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
         if (getSyncKind() == 0) {
             s32 x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
             u8 *idb = (u8 *)&data_021d7352;
             if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->isEscorting() && (p = _ZN10PlayerData13func_020986a4Ev(x)->getTownId(), p[0] == *(u16 *)idb) &&
                 memcmp(p + 1, idb + 2, 8) == 0) {
-                func_020b4f58(func_020b4934(), 0x2f, 2, 2);
+                SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2f, 2, 2);
             } else {
                 static FxVec3 s;
-                func_020b4f18(func_020b4934(), 0xd, &s, 0x800000, 0, 2, 2);
+                SceneWarp_RequestAt(Scene_GetWarpRequest(), 0xd, &s, 0x800000, 0, 2, 2);
             }
         } else {
-            func_020b4f58(func_020b4934(), 0x2e, 2, 3);
+            SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
         }
         if (g->isMyAid(0)) {
             if (md == 0) {

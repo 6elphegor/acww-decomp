@@ -13,10 +13,10 @@ s32 Date_DaysBetween(void *a, void *b);
 void func_02097318(s32 v);
 void func_02097214(s32 v);
 void func_02097110(s32 v);
-void _ZN12Unk_02087ad813func_02087888Ev(void *p);
-void func_02087a20(void *p);
-void _ZN12Unk_020877e013func_02087870Ev(void *p);
-void _ZN12Unk_02087ad813func_02087b40Ev(void *p);
+void _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(void *p);
+void PlayerSpNpcRecord_SendMissingLetter(void *p);
+void _ZN20PlayerDailyTalkFlags8clearAllEv(void *p);
+void _ZN17PlayerSpNpcRecord19resetFireworksGivenEv(void *p);
 void _ZN15LostChildRecord5clearEv(void *p);
 void _ZN8SaveData9clearFlagEj(void *p, s32 v);
 extern u8 gSaveData[];
@@ -49,17 +49,17 @@ void _ZN8PlayerId13func_020941b4EPvtaP6TownId(void *, u32, u32, u32, u32);
 void _ZN8PlayerId13func_02094294Ev(void *);
 void _ZN8PlayerIdC1Ev(void *);
 void _ZN8PlayerIdC1EPv(void *);
-void _ZN14PlayerPatterns13func_02071d08EP12Unk_020942c8(void *, void *);
+void _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(void *, void *);
 void NookPoints_Init(void *);
 void func_0203c638(void *);
-void _ZN12Unk_02096e2813func_02096e28Ev(void *);
-void _ZN12Unk_02096d1013func_02096e00Ev(void *);
+void _ZN12FutureLetter17clearFutureLetterEv(void *);
+void _ZN17MotherLetterState5clearEv(void *);
 void PlayerWifiData_Create(void *);
 void FriendList_Clear(void *);
 void func_02087c80(void *);
 void func_020877cc(void *);
 void func_02097418(void *);
-void func_0203f0ec(void *);
+void EmotionSlots_Clear(void *);
 void MI_CpuFill8(void *, s32, u32);
 void func_0203c640(void *);
 void PlayerErrands_Clear(void *);
@@ -74,12 +74,12 @@ void func_02097420(void *);
 void FriendList_Destruct(void *);
 void PlayerWifiData_Destruct(void *);
 void _ZN13PlayerErrandsD1Ev(void *);
-void func_02096e58(void *);
+void FutureLetter_Destruct(void *);
 void func_0203ca88(void *);
 void func_0203c6a0(void *);
 void func_0203c6a4(void *);
 void func_0203ca8c(void *);
-void func_02096e68(void *);
+void FutureLetter_Construct(void *);
 void _ZN13PlayerErrandsC1Ev(void *);
 void PlayerWifiData_Construct(void *);
 void FriendList_Construct(void *);
@@ -95,7 +95,7 @@ u16 *func_02097f6c(void *, u32);
 s32 func_02097e98(void *, s32);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
-void func_02098ff4(void *);
+void PocketMatches_Init(void *);
 BOOL func_020030b4(void *);
 void func_020030d8(void *, void *);
 void func_020030e8(void *);
@@ -232,8 +232,8 @@ public:
     void *func_02098668();
     void *getFriendList();
     void *getWifiUserData();
-    void *func_0209868c();
-    void *func_02098698();
+    void *getSpNpcRecord();
+    void *getDailyTalkFlags();
     void *func_020986a4();
     void *func_020986b0();
     void *getNookPoints();
@@ -290,9 +290,9 @@ public:
     u8 unk_2266[12];
     u16 unk_2272;
 
-    void func_02097ff4(u32 bit);
-    void func_0209801c(u32 bit);
-    BOOL func_02098044(u32 bit);
+    void clearFlag(u32 bit);
+    void setFlag(u32 bit);
+    BOOL testFlag(u32 bit);
     void func_02098074();
     void *func_0209817c();
     void func_02098188(u32 idx, u32 v);
@@ -306,7 +306,7 @@ public:
     void func_020982e8();
     void func_020982f4(u32 a, u32 b);
     void *func_02098308();
-    void *func_02098314();
+    void *getEmotions();
     void *func_02098320();
     u8 *func_0209832c();
     s32 func_02098338(s32 n);
@@ -333,7 +333,7 @@ struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){}
 PlayerData::PlayerData() {
     func_0203c6a4(&unk_1b48);
     func_0203ca8c(&unk_1c6b);
-    func_02096e68(&unk_1c6c);
+    FutureLetter_Construct(&unk_1c6c);
     _ZN13PlayerErrandsC1Ev(&unk_1d64);
     PlayerWifiData_Construct(&unk_1e10);
     FriendList_Construct(&unk_1e60);
@@ -367,7 +367,7 @@ PlayerData::~PlayerData() {
     FriendList_Destruct(&unk_1e60);
     PlayerWifiData_Destruct(&unk_1e10);
     _ZN13PlayerErrandsD1Ev(&unk_1d64);
-    func_02096e58(&unk_1c6c);
+    FutureLetter_Destruct(&unk_1c6c);
     func_0203ca88(&unk_1c6b);
     func_0203c6a0(&unk_1b48);
 }
@@ -402,11 +402,11 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     ((PlayerInventory *)&unk_1148)->clear();
     func_02097ac4(&unk_1148, s6, 1);
     unk_220a = *s7;
-    _ZN14PlayerPatterns13func_02071d08EP12Unk_020942c8(this, &unk_2276);
+    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &unk_2276);
     NookPoints_Init(&unk_2208);
     func_0203c638(&unk_1b48);
-    _ZN12Unk_02096e2813func_02096e28Ev(&unk_1c6c);
-    _ZN12Unk_02096d1013func_02096e00Ev(&unk_223e);
+    _ZN12FutureLetter17clearFutureLetterEv(&unk_1c6c);
+    _ZN17MotherLetterState5clearEv(&unk_223e);
     PlayerWifiData_Create(&unk_1e10);
     FriendList_Clear(&unk_1e60);
     unk_2212 = 0x3884;
@@ -422,7 +422,7 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     unk_2214 = 0x11fa;
     func_020877cc(&unk_222b);
     func_02097418(&unk_21e4);
-    func_0203f0ec(&unk_21ec);
+    EmotionSlots_Clear(&unk_21ec);
     ((Unk_02097ff4 *)this)->func_0209832c();
     Clock_GetDate();
     MI_CpuFill8(&unk_2254, 0xff, 8);
@@ -456,13 +456,13 @@ u32 PlayerData::getFortune() { return unk_223d.hi; }
 
 void PlayerData::setFortune(u8 v) { unk_223d.hi = v; }
 
-extern "C" void func_02098778(void *p) { ((Unk_02097ff4 *)p)->func_02098044(0); }
+extern "C" void func_02098778(void *p) { ((Unk_02097ff4 *)p)->testFlag(0); }
 
 extern "C" void func_0209875c(void *p, u32 flag) {
     if (flag) {
-        ((Unk_02097ff4 *)p)->func_0209801c(0);
+        ((Unk_02097ff4 *)p)->setFlag(0);
     } else {
-        ((Unk_02097ff4 *)p)->func_02097ff4(0);
+        ((Unk_02097ff4 *)p)->clearFlag(0);
     }
 }
 
@@ -498,9 +498,9 @@ void *PlayerData::func_020986b0() { return &unk_222b; }
 
 void *PlayerData::func_020986a4() { return &unk_2230; }
 
-void *PlayerData::func_02098698() { return &unk_21f0; }
+void *PlayerData::getDailyTalkFlags() { return &unk_21f0; }
 
-void *PlayerData::func_0209868c() { return &unk_221a; }
+void *PlayerData::getSpNpcRecord() { return &unk_221a; }
 
 void *PlayerData::getWifiUserData() { return &unk_1e10; }
 
@@ -657,7 +657,7 @@ void *Unk_02097ff4::func_02098320()
     return unk_21e4;
 }
 
-void *Unk_02097ff4::func_02098314()
+void *Unk_02097ff4::getEmotions()
 {
     return unk_21ec;
 }
@@ -701,8 +701,8 @@ extern "C" void func_020981f8()
         func_02097318(t);
         func_02097214(r4);
         func_02097110(r4);
-        _ZN12Unk_02087ad813func_02087888Ev(((PlayerData *)p)->func_0209868c());
-        func_02087a20(((PlayerData *)p)->func_0209868c());
+        _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(((PlayerData *)p)->getSpNpcRecord());
+        PlayerSpNpcRecord_SendMissingLetter(((PlayerData *)p)->getSpNpcRecord());
         if (r4) {
             p->func_020984a8();
         }
@@ -710,9 +710,9 @@ extern "C" void func_020981f8()
             p->func_020982dc(0xff);
         }
         if (r4) {
-            _ZN12Unk_020877e013func_02087870Ev(((PlayerData *)p)->func_02098698());
+            _ZN20PlayerDailyTalkFlags8clearAllEv(((PlayerData *)p)->getDailyTalkFlags());
             ((PlayerData *)p)->setFortune(0);
-            _ZN12Unk_02087ad813func_02087b40Ev(((PlayerData *)p)->func_0209868c());
+            _ZN17PlayerSpNpcRecord19resetFireworksGivenEv(((PlayerData *)p)->getSpNpcRecord());
             _ZN8SaveData9clearFlagEj(gSaveData, 16);
         }
         if (r4 < 0) {
@@ -817,7 +817,7 @@ void Unk_02097ff4::func_02098074()
     }
 }
 
-BOOL Unk_02097ff4::func_02098044(u32 bit)
+BOOL Unk_02097ff4::testFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;
@@ -833,7 +833,7 @@ end:
     return r;
 }
 
-void Unk_02097ff4::func_0209801c(u32 bit)
+void Unk_02097ff4::setFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;
@@ -844,7 +844,7 @@ void Unk_02097ff4::func_0209801c(u32 bit)
     }
 }
 
-void Unk_02097ff4::func_02097ff4(u32 bit)
+void Unk_02097ff4::clearFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;

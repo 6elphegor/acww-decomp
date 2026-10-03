@@ -43,7 +43,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
-s32 func_02098ffc();
+s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
 s32 ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
@@ -1428,7 +1428,7 @@ extern "C" void LostFoundRecycleMenu_QuickMove(S *s, u32 a, u32 b) {
 }
 
 extern "C" u32 LostFoundRecycleMenu_FindFreePocket(S *s) {
-    s32 t = func_02098ffc();
+    s32 t = Pocket_FindEmpty();
     s32 m = -1;
     if (t == m) return 0x1f;
     return (u8)t;

@@ -7,7 +7,7 @@ struct Unk_02003a6c_Vec {
 extern u32 gCamera;
 extern Unk_02003a6c_Vec gCameraEye;
 extern u8 gSndMgr[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern u8 *data_021c1b3c;
 extern u8 data_021f5be0[];
 
@@ -103,7 +103,7 @@ void Clock_GetMinuteHour(void *);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -115,7 +115,7 @@ s32 func_020b0f30();
 }
 
 extern "C" {
-s32 func_020b5164();
+s32 Scene_InTownUnk31();
 }
 
 extern "C" {
@@ -486,8 +486,8 @@ static inline BOOL Unk_020040cc_check(u32 id, void *buf) {
     return FALSE;
 }
 
-static inline BOOL Unk_020040cc_isA() { return data_020e416c == 0; }
-static inline BOOL Unk_020040cc_isB() { return data_020e416c == 1; }
+static inline BOOL Unk_020040cc_isA() { return gFieldSceneKind == 0; }
+static inline BOOL Unk_020040cc_isB() { return gFieldSceneKind == 1; }
 
 struct Unk_020044e0_Obj {
     virtual void vfunc_00();
@@ -529,7 +529,7 @@ extern "C" void Snd_CreateScene() {
         NEW(8, func_020f1044);
     } else {
         Clock_GetMinuteHour(st);
-        switch (func_020b50e8()) {
+        switch (Scene_GetCurrent()) {
     case 6:
     case 7:
     case 8:
@@ -622,7 +622,7 @@ extern "C" void Snd_CreateScene() {
             }
             if (func_020b0f0c() != 0 || func_020b0f30() != 0) {
                 NEW(8, func_020f2878);
-            } else if (func_020b5164() != 0) {
+            } else if (Scene_InTownUnk31() != 0) {
                 NEW(8, func_020f1118);
             } else {
                 t[0] = 0;

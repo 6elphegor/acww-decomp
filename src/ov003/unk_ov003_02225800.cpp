@@ -7,7 +7,7 @@ struct Unk_0203389c_Vec {
     s32 x, y, z;
 };
 
-class Unk_0203389c {
+class GroundInfoBase {
 public:
     u8 pad_00[0x24];
     s32 unk_24, unk_28, unk_2c;
@@ -15,21 +15,21 @@ public:
     s32 unk_34;
     u8 pad_38[4];
     s32 unk_3c;
-    BOOL func_020338d0(s32 a);
-    s32 func_02033914(s32 a);
+    BOOL isBelowWaterSurface(s32 a);
+    s32 getHeight(s32 a);
 };
 
-class Unk_0203398c : public Unk_0203389c {
+class GroundInfo : public GroundInfoBase {
 public:
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
 
 extern "C" {
-void *_ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *self, Unk_0203389c_Vec *v, s32 a, s32 b);
-s32 _ZN12Unk_0203389c13func_02033914Ei(void *self, s32 a);
-void _ZN12Unk_0203398cD1Ev(void *self);
+void *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *self, Unk_0203389c_Vec *v, s32 a, s32 b);
+s32 _ZN14GroundInfoBase9getHeightEi(void *self, s32 a);
+void _ZN10GroundInfoD1Ev(void *self);
 }
 
 // byte offsets into the 0x25c-byte records / the 0x168 table (interior labels of symbols.txt)
@@ -78,10 +78,10 @@ public:
 };
 
 // ---- library sub-objects (declarations only; ctors/dtors live in main)
-class Unk_02032238 {
+class CollisionState {
 public:
-    Unk_02032238();
-    ~Unk_02032238();
+    CollisionState();
+    ~CollisionState();
     u32 pad[0x30 / 4];
 };
 
@@ -141,7 +141,7 @@ public:
     ~Insect();
 
     /* 0x000 */ InsectMatAnim unk_00;
-    /* 0x020 */ Unk_02032238 unk_20;
+    /* 0x020 */ CollisionState unk_20;
     /* 0x050 */ AnimModel unk_50;
     /* 0x108 */ Unk_02088b20 unk_108;
     /* 0x130 */ Unk_0209c0ac unk_130;
@@ -945,7 +945,7 @@ s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
 void Effect_End(s32 h);
 BOOL func_0203a4c4(void *p, s32 a, s32 b);
-void func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
+void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020e9650(void *a, void *b);
 void Unk_02003c40_callUpdateRelative(void *obj, V3 *v);
 void CommManager_beginRecord(Unk_020cbb18_Ptr *g);
@@ -1200,7 +1200,7 @@ s32 func_020e9650(void *a, void *b);
 void func_ov068_022687c0(void *p);
 BOOL File_Exists(char *s);
 s32 func_020639e8(char *buf, char *fmt, ...);
-void func_020309d4(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
+void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void func_02088b20(void *obj, void *v, s32 a, s32 b, s32 flags);
 void Unk_02003c40_callUpdateRelative(void *obj, void *v);
 void Unk_02003c30_callReset(void *obj);
@@ -1390,7 +1390,7 @@ void *InsectManager_Create();
 #undef func_0209c224
 #undef func_0209c25c
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -1473,8 +1473,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
-void func_020339bc(Buf *b, void *pos, s32 a, s32 c);
-void func_02033988(Buf *b);
+void GroundInfo_initAtPos(Buf *b, void *pos, s32 a, s32 c);
+void GroundInfo_Destruct(Buf *b);
 void *func_0209c0ac(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 Insect_SetAnimSpeed(Rec *self, s32 a);
@@ -1703,8 +1703,8 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -1791,9 +1791,9 @@ void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 NetArea_IsLocalOwner(void);
-void func_020339bc(Unk_ov003_0222abc0_Obj *o, V3 *p, s32 a, s32 b);
-s32 func_020338d0(Unk_ov003_0222abc0_Obj *o, s32 v);
-void func_02033988(Unk_ov003_0222abc0_Obj *o);
+void GroundInfo_initAtPos(Unk_ov003_0222abc0_Obj *o, V3 *p, s32 a, s32 b);
+s32 GroundInfoBase_isBelowWaterSurface(Unk_ov003_0222abc0_Obj *o, s32 v);
+void GroundInfo_Destruct(Unk_ov003_0222abc0_Obj *o);
 s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 Math_AngleXZ(V3 *a, V3 *b);
 void Insect_GetDirVec(V3 *out, s32 ang);
@@ -1977,7 +1977,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
-s32 func_02030814(u32 a);
+s32 Ground_GetDefaultY(u32 a);
 s32 func_02063b8c(s32 n);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 BOOL PlayerActor_LocalHoldsNet();
@@ -2105,7 +2105,7 @@ extern Unk_020cbb18_Ptr *gCommManager;
 extern u8 data_020e12cc[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
-BOOL func_02031218(s32 x, s32 y);
+BOOL Ground_GetDigKind(s32 x, s32 y);
 s32 func_0209c0ac(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -2113,7 +2113,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_020e9650(void *a, void *b);
 void AnimModel_setFrame(void *p, s32 v);
-s32 func_02030814(u32 a);
+s32 Ground_GetDefaultY(u32 a);
 void func_02041868();
 void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
@@ -2251,7 +2251,7 @@ s32 func_02063b8c(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void AnimModel_setFrame(void *p, s32 v);
-s32 func_02030814(u32 a);
+s32 Ground_GetDefaultY(u32 a);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
 s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
@@ -2665,7 +2665,7 @@ BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 func_02063b8c(s32 n);
 void AnimModel_setFrame(void *p, s32 v);
-s32 func_02030814(u32 a);
+s32 Ground_GetDefaultY(u32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 Unk_02095204_Obj *func_02095204(u32 n);
@@ -2676,7 +2676,7 @@ s32 Flower_GetColor(s32 a);
 s32 Flower_GetSpecies(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
-s32 func_020312a8(s32 x, s32 y);
+s32 Ground_GetWaterKind(s32 x, s32 y);
 void func_020e93a0(V3 *o, s32 a);
 BOOL CommManager_isOnline(void *g);
 u8 *CommManager_getSyncVar(void *g, s32 a);
@@ -2770,12 +2770,12 @@ extern "C" u32 Insect_TestFeelers(Rec *o) {
     u8 r = 0;
     V3 *p = &o->unk_1ec[0];
     s32 y = o->unk_204.y;
-    Unk_0203398c g0;
-    Unk_0203398c g1;
-    g0.func_020339bc((Unk_0203389c_Vec *)(p), 0, 0);
-    if (g0.func_02033914(1) > y) r++;
-    g1.func_020339bc((Unk_0203389c_Vec *)(p + 1), 0, 0);
-    if (g1.func_02033914(1) > y) r += 2;
+    GroundInfo g0;
+    GroundInfo g1;
+    g0.initAtPos((Unk_0203389c_Vec *)(p), 0, 0);
+    if (g0.getHeight(1) > y) r++;
+    g1.initAtPos((Unk_0203389c_Vec *)(p + 1), 0, 0);
+    if (g1.getHeight(1) > y) r += 2;
     return r;
 }
 }
@@ -2804,14 +2804,14 @@ extern "C" u32 Insect_TestFeelersHole(Rec *o) {
     u8 r = 0;
     V3 *p = &o->unk_1ec[0];
     s32 y = o->unk_204.y;
-    Unk_0203398c g0;
-    Unk_0203398c g1;
+    GroundInfo g0;
+    GroundInfo g1;
     s32 v;
-    g0.func_020339bc((Unk_0203389c_Vec *)(p), 0, 0);
-    v = g0.func_02033914(1);
+    g0.initAtPos((Unk_0203389c_Vec *)(p), 0, 0);
+    v = g0.getHeight(1);
     if (v < 0 || v > y) r++;
-    g1.func_020339bc((Unk_0203389c_Vec *)(p + 1), 0, 0);
-    v = g1.func_02033914(1);
+    g1.initAtPos((Unk_0203389c_Vec *)(p + 1), 0, 0);
+    v = g1.getHeight(1);
     if (v < 0 || v > y) r += 2;
     return r;
 }
@@ -2911,7 +2911,7 @@ extern "C" BOOL Insect_IsOverWater(s32 v) {
     s32 x = 0;
     s32 y = 0;
     FieldPos_ToUnit(&x, &y, v);
-    if (func_020312a8(x, y)) return TRUE;
+    if (Ground_GetWaterKind(x, y)) return TRUE;
     return FALSE;
 }
 }
@@ -3024,7 +3024,7 @@ extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
     dst = &o->unk_1d4;
     src = &o->unk_204;
     lim = src->y;
-    if (lim < func_02030814(0)) lim = func_02030814(0);
+    if (lim < Ground_GetDefaultY(0)) lim = Ground_GetDefaultY(0);
     i = 1;
     n1 = n + 1;
     for (; i < n1; i++) {
@@ -3033,9 +3033,9 @@ extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
         t.x = src->x + func_01ffcb0c(off, sx);
         t.z = src->z + func_01ffcb0c(off, sz);
         {
-            Unk_0203398c g;
-            g.func_020339bc((Unk_0203389c_Vec *)(&t), 0, 0);
-            if (g.func_02033914(1) > lim) {
+            GroundInfo g;
+            g.initAtPos((Unk_0203389c_Vec *)(&t), 0, 0);
+            if (g.getHeight(1) > lim) {
                 bad = 1;
             } else {
                 bad = 0;
@@ -3229,12 +3229,12 @@ namespace s14 {
 // 0x222de04
 extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     V3 v;
-    Unk_0203398c g;
+    GroundInfo g;
     V3 *pv = &o->unk_204;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    g.func_020339bc((Unk_0203389c_Vec *)(&v), 0, 1);
+    g.initAtPos((Unk_0203389c_Vec *)(&v), 0, 1);
     if (g.unk_30 != 0) {
         v.y = g.unk_3c + 0x100;
         Unk_02003c40_callRequestSustained(o->unk_174, 0x7e5);
@@ -4712,9 +4712,9 @@ extern "C" void Hopper_Jump(Rec *o) {
             o->unk_24c = 0;
         }
     } else {
-        Unk_0203398c g;
+        GroundInfo g;
         s32 v;
-        g.func_020339bc((Unk_0203389c_Vec *)(src), 0, 1);
+        g.initAtPos((Unk_0203389c_Vec *)(src), 0, 1);
         if (g.unk_30 != 0) {
             v = g.unk_3c;
             if (o->unk_251 == 0x11) {
@@ -4724,11 +4724,11 @@ extern "C" void Hopper_Jump(Rec *o) {
                 return;
             }
         } else {
-            v = g.func_02033914(1);
+            v = g.getHeight(1);
             if (v > 0x4000) {
-                v = func_02030814(0);
+                v = Ground_GetDefaultY(0);
             } else {
-                v += func_02030814(0);
+                v += Ground_GetDefaultY(0);
             }
         }
         if (!func_020e7870((u8 *)src + 4, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
@@ -5250,8 +5250,8 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
     saved.z = pos->z;
     V3 v;
     s32 lim;
-    Unk_0203398c g;
-    g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
+    GroundInfo g;
+    g.initAtPos((Unk_0203389c_Vec *)(pos), 0, 1);
     if (self->unk_24d == 0x35) {
         self->unk_23a = 0;
         Insect_GetDirVec(&v, self->unk_23c);
@@ -5286,7 +5286,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
     if (g.unk_30 != 0) {
         lim = g.unk_3c;
     } else {
-        lim = g.func_02033914(0);
+        lim = g.getHeight(0);
         if (lim > 0x4000) {
             lim = 0;
             pos->x = saved.x;
@@ -5294,7 +5294,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
         }
     }
     if (pos->y <= lim && *cnt > 0) {
-        if (g.func_020338d0(pos->y)) {
+        if (g.isBelowWaterSurface(pos->y)) {
             Insect_Despawn(self);
             Insect_SplashIfWater(self);
         } else {
@@ -5321,7 +5321,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
             }
             self->unk_254 = 0;
             *cnt = 0;
-            pos->y = lim + func_02030814(0);
+            pos->y = lim + Ground_GetDefaultY(0);
             if (self->unk_24d != 0x35) {
                 self->unk_238 = 0;
             }
@@ -5348,8 +5348,8 @@ extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
     s8 r7 = self->unk_24d;
     V3 v;
     s16 r6;
-    Unk_0203398c g;
-    g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
+    GroundInfo g;
+    g.initAtPos((Unk_0203389c_Vec *)(pos), 0, 1);
     if (Insect_FadeOut(self, 1)) {
         Insect_Despawn(self);
     }
@@ -5357,7 +5357,7 @@ extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
         return;
     }
     if (g.unk_30 != 0) {
-        if (g.func_020338d0(pos->y)) {
+        if (g.isBelowWaterSurface(pos->y)) {
             Insect_Despawn(self);
             Insect_SplashIfWater(self);
         } else {
@@ -5439,7 +5439,7 @@ extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
     if (r4 == 5) {
         s32 x, y;
         FieldPos_ToUnit(&x, &y, &self->unk_204);
-        if (func_02031218(x, y) == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
+        if (Ground_GetDigKind(x, y) == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
             func_0208fc88(0x80, &self->unk_204, 0, data_020e12cc);
         } else {
             self->unk_251 = 9;
@@ -5763,8 +5763,8 @@ extern "C" void Flea_Update(Rec *self) {
         save.y = pos->y;
         save.z = pos->z;
         s32 y0 = self->unk_228;
-        Unk_0203398c g;
-        g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
+        GroundInfo g;
+        g.initAtPos((Unk_0203389c_Vec *)(pos), 0, 1);
         Insect_SetScale(self, 200);
         if (Insect_SteerAroundObstacle(self) == 0) {
             V3 v;
@@ -5782,11 +5782,11 @@ extern "C" void Flea_Update(Rec *self) {
         if (g.unk_30 != 0) {
             y0 = g.unk_3c;
         } else {
-            y0 = g.func_02033914(1);
-            y0 += func_02030814(0);
+            y0 = g.getHeight(1);
+            y0 += Ground_GetDefaultY(0);
             if (y0 > 0x1000) {
                 if (y0 > 0x4000) {
-                    y0 = func_02030814(0);
+                    y0 = Ground_GetDefaultY(0);
                 } else {
                     pos->x = save.x;
                     pos->z = save.z;
@@ -5797,7 +5797,7 @@ extern "C" void Flea_Update(Rec *self) {
             rnd = func_02063b8c(3);
             *p = 0;
             pos->y = y0;
-            if (g.func_020338d0(pos->y)) {
+            if (g.isBelowWaterSurface(pos->y)) {
                 Insect_Despawn(self);
                 Insect_SplashIfWater(self);
             } else {
@@ -5996,16 +5996,16 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
     BOOL result;
     s16 *cnt;
     V3 v;
-    Unk_0203398c g;
+    GroundInfo g;
     V3 *pos = &self->unk_204;
     cnt = &self->unk_242;
     s32 r6 = 2;
     result = TRUE;
-    g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, result);
+    g.initAtPos((Unk_0203389c_Vec *)(pos), 0, result);
     s8 r7 = self->unk_24d;
     Insect_GetDirVec(&v, self->unk_23a);
     if (g.unk_30 != 0) {
-        if (g.func_020338d0(pos->y)) {
+        if (g.isBelowWaterSurface(pos->y)) {
             Insect_Despawn(self);
             Insect_SplashIfWater(self);
             result = FALSE;
@@ -6060,8 +6060,8 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6075,14 +6075,14 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     s16 *cnt = &self->unk_242;
     s32 ret = 0;
     Unk_ov003_0222abc0_Obj o;
-    func_020339bc(&o, pos, ret, 1);
+    GroundInfo_initAtPos(&o, pos, ret, 1);
     V3 *vel = &self->unk_1d4;
     V3 dir;
     Insect_GetDirVec(&dir, self->unk_23a);
     s32 nang;
     if (NetArea_IsLocalOwner() != 0 || self->unk_251 == 0x11) {
         if (o.unk_30 != 0) {
-            if (func_020338d0(&o, pos->y) != 0) {
+            if (GroundInfoBase_isBelowWaterSurface(&o, pos->y) != 0) {
                 Insect_Despawn(self);
                 Insect_SplashIfWater(self);
                 ret = 2;
@@ -6106,7 +6106,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
             }
         }
         Insect_SetMoveTarget(self, nang, 0xc000);
-        func_02033988(&o);
+        GroundInfo_Destruct(&o);
         return 0;
     }
     s32 r;
@@ -6120,7 +6120,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
             if (Insect_SetMoveTarget(self, self->unk_23a, 0xc000) == 0) {
                 vel->x += data_02135f44[((u16)self->unk_23a >> 4) * 2];
                 vel->z += data_02135f44[(((u16)self->unk_23a >> 4) * 2 + 1)];
-                func_02033988(&o);
+                GroundInfo_Destruct(&o);
                 return 0;
             }
         }
@@ -6138,7 +6138,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     }
     (*cnt)++;
     self->unk_24b = 1;
-    func_02033988(&o);
+    GroundInfo_Destruct(&o);
     return ret;
 }
 }
@@ -6151,8 +6151,8 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6200,8 +6200,8 @@ extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6293,8 +6293,8 @@ extern "C" void Spider_Update(Rec *self) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6372,8 +6372,8 @@ extern "C" void TreeBug_Update(Rec *self) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6434,8 +6434,8 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6480,8 +6480,8 @@ extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6526,8 +6526,8 @@ extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -6579,8 +6579,8 @@ extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7020,7 +7020,7 @@ extern "C" void Insect_PlaceOnPlantSide(Rec *o) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7057,7 +7057,7 @@ extern "C" void Insect_SetWanderBox(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7073,7 +7073,7 @@ extern "C" void Insect_Despawn(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7130,7 +7130,7 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7139,7 +7139,7 @@ namespace s06 {
 extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5) {
     Buf b;
     Vec3 *p = &self->unk_204;
-    func_020339bc(&b, p, 0, 0);
+    GroundInfo_initAtPos(&b, p, 0, 0);
     Vec3 *q = &self->unk_210;
     s32 r6 = FX_Div(s2 << 12, 0x10000);
     s32 r0 = FX_Div(a3 << 12, 0x10000);
@@ -7173,7 +7173,7 @@ extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, 
     self->unk_220 = self->unk_228;
     self->unk_236 = 0;
     self->unk_24e = 0;
-    func_02033988(&b);
+    GroundInfo_Destruct(&b);
 }
 }
 #undef func_020339bc
@@ -7181,7 +7181,7 @@ extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, 
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7200,7 +7200,7 @@ extern "C" s16 Insect_RandomAngle() {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7215,7 +7215,7 @@ extern "C" void Insect_UpdateButterfly(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7236,7 +7236,7 @@ extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) 
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7279,7 +7279,7 @@ extern "C" void Insect_InitButterfly(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7294,7 +7294,7 @@ extern "C" void Insect_UpdateMoth(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7319,7 +7319,7 @@ extern "C" void Insect_InitMoth(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7337,7 +7337,7 @@ extern "C" void Insect_InitFirefly(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7352,7 +7352,7 @@ extern "C" void Insect_UpdateFirefly(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7367,7 +7367,7 @@ extern "C" void Insect_InitMosquito(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7382,7 +7382,7 @@ extern "C" void Insect_UpdateMosquito(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7404,7 +7404,7 @@ extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7419,7 +7419,7 @@ extern "C" void Insect_UpdateTreeBug(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7505,7 +7505,7 @@ extern "C" void Insect_InitTreeBug(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7523,7 +7523,7 @@ extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -7538,7 +7538,7 @@ extern "C" void Insect_UpdateHopper(Rec *self) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -9131,20 +9131,20 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
             if (kind == 3) {
                 {
                     struct { u8 b[0x44]; } w;
-                    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&w, (Unk_0203389c_Vec *)(&e->unk_204), 0, 0);
-                    if (_ZN12Unk_0203389c13func_02033914Ei(&w, 0) > 0x4000) {
+                    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&w, (Unk_0203389c_Vec *)(&e->unk_204), 0, 0);
+                    if (_ZN14GroundInfoBase9getHeightEi(&w, 0) > 0x4000) {
                         big = TRUE;
                     } else {
                         big = FALSE;
                     }
-                    _ZN12Unk_0203398cD1Ev(&w);
+                    _ZN10GroundInfoD1Ev(&w);
                 }
                 if (big) {
-                    func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xa);
+                    Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xa);
                     goto after;
                 }
             }
-            func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xb);
+            Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xb);
         }
     after:
         if (e->unk_24d == 0x33 && flags == 0) {
@@ -10086,7 +10086,7 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
                 break;
             case 2:
                 Insect_LoadModel(a, o, 2);
-                func_020309d4(&o->unk_20, &o->unk_204, &o->unk_204, o->unk_23a, sInsectModelParams[o->unk_24d].b, zero, 10);
+                Collision_Move(&o->unk_20, &o->unk_204, &o->unk_204, o->unk_23a, sInsectModelParams[o->unk_24d].b, zero, 10);
                 break;
             case 3:
                 Insect_Update(a, o, i, 3);

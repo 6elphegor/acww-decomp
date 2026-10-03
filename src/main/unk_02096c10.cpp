@@ -17,15 +17,15 @@ public:
 };
 
 // Array of ten elements, indexed table getter at 0x02097020.
-class Unk_02097020 {
+class LetterOutbox {
 public:
-    Unk_02097020();
-    ~Unk_02097020();
-    Letter *func_02097020(s32 i);
-    void func_02096fd4();
-    BOOL func_02096fa0(u32 mask);
-    void func_02096fb8(u32 mask);
-    u8 *func_02096fc8();
+    LetterOutbox();
+    ~LetterOutbox();
+    Letter *getLetter(s32 i);
+    void clear();
+    BOOL testFlag(u32 mask);
+    void setFlag(u32 mask);
+    u8 *getLastDeliveryTime();
 
     /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u8 unk_988;
@@ -36,32 +36,32 @@ public:
     /* 0x98e */ u16 pad_98e;
 };
 
-class Unk_020970b8 {
+class PlayerMailbox {
 public:
-    Unk_020970b8();
-    ~Unk_020970b8();
-    Letter *func_020970b8(s32 i);
-    void func_02097078(u32 v);
-    u32 func_02097084();
-    void func_02097090();
+    PlayerMailbox();
+    ~PlayerMailbox();
+    Letter *getLetter(s32 i);
+    void setLastWifiMailId(u32 v);
+    u32 getLastWifiMailId();
+    void clear();
 
     /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u16 unk_988;
     /* 0x98a */ u16 pad_98a;
 };
 
-class Unk_02096d10 {
+class MotherLetterState {
 public:
-    void func_02096d10(u32 v);
-    u8 func_02096d1c();
-    BOOL func_02096d28(s32 i);
-    void func_02096d4c(s32 i);
-    void func_02096d6c(s32 i);
-    BOOL func_02096d8c(u32 mask);
-    void func_02096d9c(u32 mask);
-    void func_02096da4(s32 *v);
-    BOOL func_02096dbc(s32 *v);
-    void func_02096e00();
+    void setBirthdayLetterYear(u32 v);
+    u8 getBirthdayLetterYear();
+    BOOL isSent(s32 i);
+    void clearSent(s32 i);
+    void setSent(s32 i);
+    BOOL testFlag(u32 mask);
+    void setFlag(u32 mask);
+    void setLastDate(s32 *v);
+    BOOL checkLastDate(s32 *v);
+    void clear();
 
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
@@ -71,10 +71,10 @@ public:
     /* 0x13 */ u8 pad_13;
 };
 
-class Unk_02096e28 : public Letter {
+class FutureLetter : public Letter {
 public:
-    void func_02096e28();
-    u8 *func_02096e50();
+    void clearFutureLetter();
+    u8 *getDeliveryDate();
 
     /* 0xf4 */ u8 unk_f4;
     /* 0xf5 */ u8 unk_f5;
@@ -82,37 +82,37 @@ public:
     /* 0xf7 */ u8 unk_f7;
 };
 
-class Unk_02096e78 : public Letter {
+class BottleLetterRecord : public Letter {
 public:
-    s32 func_02096e78();
-    void func_02096ed4();
-    BOOL func_02096ee8(s32 i);
-    void func_02096f10(s32 i);
-    void func_02096f30();
+    s32 pickUnusedMessage();
+    void clearUsedMessages();
+    BOOL isMessageUsed(s32 i);
+    void setMessageUsed(s32 i);
+    void clearRecord();
 
     /* 0xf4 */ u8 unk_f4[5];
 };
 
 class LetterStorage {
 public:
-    void func_02096f68();
-    Letter *func_02096f88(s32 i);
+    void clear();
+    Letter *getPage(s32 i);
 
     /* 0x000 */ Letter unk_00[75];
 };
 
 // Vtable at 0x020e1db0.
-class Unk_020e1db0 : public GameProc {
+class LetterDeliveryProc : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    void func_02096c58(u32 mask);
-    void func_02096c68(u32 mask);
-    BOOL func_02096c78(u32 mask);
-    void func_02096c8c();
+    void clearProcFlag(u32 mask);
+    void setProcFlag(u32 mask);
+    BOOL testProcFlag(u32 mask);
+    void deliverLetters();
 
     /* 0x50 */ u16 unk_50;
     /* 0x52 */ u16 pad_52;
@@ -120,25 +120,25 @@ public:
 
 extern "C" {
 void LetterDelivery_Update(void *);
-s32 func_020b50f4(void);
+s32 Scene_AllowsLetterDelivery(void);
 s32 func_02063b8c(s32);
 void func_02065c94(void *);
 void _ZN6LetterD1Ev(void *);
 void _ZN6LetterC1Ev(void *);
 }
 
-Unk_020970b8::Unk_020970b8() {}
+PlayerMailbox::PlayerMailbox() {}
 
-Unk_020970b8::~Unk_020970b8() {}
+PlayerMailbox::~PlayerMailbox() {}
 
-Letter *Unk_020970b8::func_020970b8(s32 i) {
+Letter *PlayerMailbox::getLetter(s32 i) {
     if (i >= 0 && i < 10) {
         return &unk_00[i];
     }
     return NULL;
 }
 
-void Unk_020970b8::func_02097090() {
+void PlayerMailbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
         func_02065c94(&unk_00[i]);
@@ -146,26 +146,26 @@ void Unk_020970b8::func_02097090() {
     unk_988 = 0;
 }
 
-u32 Unk_020970b8::func_02097084() {
+u32 PlayerMailbox::getLastWifiMailId() {
     return unk_988;
 }
 
-void Unk_020970b8::func_02097078(u32 v) {
+void PlayerMailbox::setLastWifiMailId(u32 v) {
     unk_988 = v;
 }
 
-Unk_02097020::Unk_02097020() {}
+LetterOutbox::LetterOutbox() {}
 
-Unk_02097020::~Unk_02097020() {}
+LetterOutbox::~LetterOutbox() {}
 
-Letter *Unk_02097020::func_02097020(s32 i) {
+Letter *LetterOutbox::getLetter(s32 i) {
     if (i >= 0 && i < 10) {
         return &unk_00[i];
     }
     return NULL;
 }
 
-void Unk_02097020::func_02096fd4() {
+void LetterOutbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
         func_02065c94(&unk_00[i]);
@@ -177,59 +177,59 @@ void Unk_02097020::func_02096fd4() {
     unk_98b = 0;
 }
 
-u8 *Unk_02097020::func_02096fc8() {
+u8 *LetterOutbox::getLastDeliveryTime() {
     return &unk_988;
 }
 
-void Unk_02097020::func_02096fb8(u32 mask) {
+void LetterOutbox::setFlag(u32 mask) {
     unk_98c = unk_98c | mask;
 }
 
-BOOL Unk_02097020::func_02096fa0(u32 mask) {
+BOOL LetterOutbox::testFlag(u32 mask) {
     if (unk_98c & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-Letter *LetterStorage::func_02096f88(s32 i) {
+Letter *LetterStorage::getPage(s32 i) {
     if (i >= 0 && i < 3) {
         return &unk_00[i * 25];
     }
     return NULL;
 }
 
-void LetterStorage::func_02096f68() {
+void LetterStorage::clear() {
     s32 i;
     for (i = 0; i < 75; i++) {
         func_02065c94(&unk_00[i]);
     }
 }
 
-extern "C" Letter *func_02096f58(Letter *p) {
+extern "C" Letter *BottleLetterRecord_Construct(Letter *p) {
     _ZN6LetterC1Ev(p);
     return p;
 }
 
-extern "C" Letter *func_02096f48(Letter *p) {
+extern "C" Letter *BottleLetterRecord_Destruct(Letter *p) {
     _ZN6LetterD1Ev(p);
     return p;
 }
 
-extern "C" void func_02096f44() {}
+extern "C" void BottleLetterRecord_GetLetter() {}
 
-void Unk_02096e78::func_02096f30() {
+void BottleLetterRecord::clearRecord() {
     func_02065c94(this);
-    func_02096ed4();
+    clearUsedMessages();
 }
 
-void Unk_02096e78::func_02096f10(s32 i) {
+void BottleLetterRecord::setMessageUsed(s32 i) {
     u8 *p = unk_f4;
     s32 k = i >> 3;
     p[k] |= (1 << (i & 7));
 }
 
-BOOL Unk_02096e78::func_02096ee8(s32 i) {
+BOOL BottleLetterRecord::isMessageUsed(s32 i) {
     BOOL r = TRUE;
     if (((r << (i & 7)) & unk_f4[i >> 3]) == 0) {
         r = FALSE;
@@ -237,29 +237,29 @@ BOOL Unk_02096e78::func_02096ee8(s32 i) {
     return r;
 }
 
-void Unk_02096e78::func_02096ed4() {
+void BottleLetterRecord::clearUsedMessages() {
     s32 i;
     for (i = 0; i < 5; i++) {
         unk_f4[i] = 0;
     }
 }
 
-s32 Unk_02096e78::func_02096e78() {
+s32 BottleLetterRecord::pickUnusedMessage() {
     s32 i;
     s32 cnt = 0;
     i = cnt;
     for (; i < 0x28; i++) {
-        if (func_02096ee8(i) == 0) {
+        if (isMessageUsed(i) == 0) {
             cnt++;
         }
     }
     if (cnt == 0) {
-        func_02096ed4();
+        clearUsedMessages();
         cnt = 0x28;
     }
     s32 r = func_02063b8c(cnt);
     for (cnt = 0; cnt < 0x28; cnt++) {
-        if (func_02096ee8(cnt) == 0) {
+        if (isMessageUsed(cnt) == 0) {
             if (r > 0) {
                 r--;
             } else {
@@ -270,23 +270,23 @@ s32 Unk_02096e78::func_02096e78() {
     return 0;
 }
 
-extern "C" Letter *func_02096e68(Letter *p) {
+extern "C" Letter *FutureLetter_Construct(Letter *p) {
     _ZN6LetterC1Ev(p);
     return p;
 }
 
-extern "C" Letter *func_02096e58(Letter *p) {
+extern "C" Letter *FutureLetter_Destruct(Letter *p) {
     _ZN6LetterD1Ev(p);
     return p;
 }
 
-extern "C" void func_02096e54() {}
+extern "C" void FutureLetter_GetLetter() {}
 
-u8 *Unk_02096e28::func_02096e50() {
+u8 *FutureLetter::getDeliveryDate() {
     return &unk_f4;
 }
 
-void Unk_02096e28::func_02096e28() {
+void FutureLetter::clearFutureLetter() {
     func_02065c94(this);
     unk_f4 = 1;
     unk_f5 = 1;
@@ -298,7 +298,7 @@ extern "C" void func_02096e24() {}
 
 extern "C" void func_02096e20() {}
 
-void Unk_02096d10::func_02096e00() {
+void MotherLetterState::clear() {
     s32 i;
     unk_00 = 1;
     unk_01 = 1;
@@ -310,48 +310,48 @@ void Unk_02096d10::func_02096e00() {
     unk_03 = 100;
 }
 
-BOOL Unk_02096d10::func_02096dbc(s32 *v) {
-    if (func_02096d8c(0x80)) {
+BOOL MotherLetterState::checkLastDate(s32 *v) {
+    if (testFlag(0x80)) {
         if (unk_02 == v[0] && unk_01 == v[1] && unk_00 == v[2]) {
             return TRUE;
         }
         return FALSE;
     }
-    func_02096da4(v);
+    setLastDate(v);
     return TRUE;
 }
 
-void Unk_02096d10::func_02096da4(s32 *v) {
+void MotherLetterState::setLastDate(s32 *v) {
     unk_02 = v[0];
     unk_01 = v[1];
     unk_00 = v[2];
-    func_02096d9c(0x80);
+    setFlag(0x80);
 }
 
-void Unk_02096d10::func_02096d9c(u32 mask) {
+void MotherLetterState::setFlag(u32 mask) {
     unk_03 = unk_03 | mask;
 }
 
-BOOL Unk_02096d10::func_02096d8c(u32 mask) {
+BOOL MotherLetterState::testFlag(u32 mask) {
     if (unk_03 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_02096d10::func_02096d6c(s32 i) {
+void MotherLetterState::setSent(s32 i) {
     u8 *p = unk_04;
     s32 k = i >> 3;
     p[k] |= (1 << (i & 7));
 }
 
-void Unk_02096d10::func_02096d4c(s32 i) {
+void MotherLetterState::clearSent(s32 i) {
     u8 *p = unk_04;
     s32 k = i >> 3;
     p[k] &= ~(1 << (i & 7));
 }
 
-BOOL Unk_02096d10::func_02096d28(s32 i) {
+BOOL MotherLetterState::isSent(s32 i) {
     BOOL r = TRUE;
     if (((r << (i & 7)) & unk_04[i >> 3]) == 0) {
         r = FALSE;
@@ -359,58 +359,58 @@ BOOL Unk_02096d10::func_02096d28(s32 i) {
     return r;
 }
 
-u8 Unk_02096d10::func_02096d1c() {
+u8 MotherLetterState::getBirthdayLetterYear() {
     return unk_03 & 0x7f;
 }
 
-void Unk_02096d10::func_02096d10(u32 v) {
+void MotherLetterState::setBirthdayLetterYear(u32 v) {
     unk_03 = v | (unk_03 & 0x80);
 }
 
-extern "C" Unk_020e1db0 *func_02096ce4() {
-    return new Unk_020e1db0();
+extern "C" LetterDeliveryProc *LetterDeliveryProc_Create() {
+    return new LetterDeliveryProc();
 }
 
-BOOL Unk_020e1db0::vfunc_00() {
+BOOL LetterDeliveryProc::vfunc_00() {
     unk_50 = 0;
-    func_02096c68(1);
+    setProcFlag(1);
     return TRUE;
 }
 
-BOOL Unk_020e1db0::onExecute() {
-    if (func_02096c78(1)) {
-        if (func_020b50f4()) {
-            func_02096c8c();
+BOOL LetterDeliveryProc::onExecute() {
+    if (testProcFlag(1)) {
+        if (Scene_AllowsLetterDelivery()) {
+            deliverLetters();
         }
-        func_02096c58(1);
+        clearProcFlag(1);
     }
     return TRUE;
 }
 
-BOOL Unk_020e1db0::onDraw() {
+BOOL LetterDeliveryProc::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_020e1db0::vfunc_0c() {
+BOOL LetterDeliveryProc::vfunc_0c() {
     return TRUE;
 }
 
-void Unk_020e1db0::func_02096c8c() {
+void LetterDeliveryProc::deliverLetters() {
     LetterDelivery_Update(this);
 }
 
-BOOL Unk_020e1db0::func_02096c78(u32 mask) {
+BOOL LetterDeliveryProc::testProcFlag(u32 mask) {
     if (unk_50 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020e1db0::func_02096c68(u32 mask) {
+void LetterDeliveryProc::setProcFlag(u32 mask) {
     unk_50 = unk_50 | mask;
 }
 
-void Unk_020e1db0::func_02096c58(u32 mask) {
+void LetterDeliveryProc::clearProcFlag(u32 mask) {
     unk_50 = unk_50 & ~mask;
 }
 

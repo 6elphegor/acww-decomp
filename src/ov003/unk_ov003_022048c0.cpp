@@ -194,10 +194,10 @@ VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Unk_020b6960 *self, Unk_020b6a94 *o, s32 *a, s32 b, s32 c, u8 d);
-BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *func_020b50b4();
+Unk_020b6960 *Scene_GetCollision();
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void VillagerBoard_ResetTable();
@@ -270,7 +270,7 @@ BOOL VillagerBoard::vfunc_00() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(func_020b50b4(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
@@ -374,7 +374,7 @@ void VillagerBoard::mainReadEnd() {
     if (unk_3c) {
         if (((TalkWindowState *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

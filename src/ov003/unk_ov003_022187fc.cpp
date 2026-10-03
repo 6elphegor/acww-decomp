@@ -96,7 +96,7 @@ s32 MapBlockAcre_getAcreId(void *c);
 void MapBlock_SetItem(void *c, u16 *p, s32 a, s32 b, s32 d);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
-s32 func_020b5184();
+s32 Scene_InTown();
 s32 CommManager_isSlotActive(void *self, u32 v);
 s32 TownBlockMap_Get();
 s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
@@ -114,7 +114,7 @@ void *func_021065f8(void *p, s32 a);
 u16 *BuildingActor_getItemId(void *p);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 func_020b50bc();
+s32 GroundSeason_IsSnow();
 s32 BuildingActor_tryOpenDoorForExit(void *p);
 s32 BuildingActor_tryOpenDoorForEntry(void *p);
 s32 BuildingActor_openDoorForExit(void *p);
@@ -126,7 +126,7 @@ void func_0205c124(s32 a, s32 b);
 void *StrBSize_Get(s32 p);
 s32 func_020b2b28(void *self);
 s32 func_020b2a0c(void *self, s32 *a, s32 *b, s32 *c, u32 i);
-void func_0203006c(s32 x, s32 y, u32 v);
+void Ground_SetQuadrantsBlocked(s32 x, s32 y, u32 v);
 void FieldPos_FromUnitCenter(Unk_ov003_02218e2c_V3 *v, s32 x, s32 y);
 void func_020b16bc(void *o, void *p);
 s32 func_020b16ac(void *o);
@@ -325,7 +325,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
                                 m = (*p == 0x501e) ? 1 : 0;
                             }
                             if (m) {
-                                if (func_020b50bc() == 0) {
+                                if (GroundSeason_IsSnow() == 0) {
                                     go = 0;
                                 }
                             }
@@ -344,7 +344,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
             }
         }
     }
-    if (func_020b5184()) {
+    if (Scene_InTown()) {
         if (!CommManager_isSlotActive(gCommManager, gCommManager[0x64 / 4])) {
             s32 k = TownBlockMap_Get();
             if (func_020b0f0c() != 0 || func_020b0f30() != 0) {
@@ -403,7 +403,7 @@ s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y) {
         u32 i;
         for (i = 0; i < n; i++) {
             if (func_020b2a0c(p, &vc, &va, &vb, i)) {
-                func_0203006c(x + va, y + vb, (u8)vc);
+                Ground_SetQuadrantsBlocked(x + va, y + vb, (u8)vc);
             }
         }
     }
@@ -414,7 +414,7 @@ void FieldStructureMgr_CreateHeap(s32 a) { func_0205c124(0x1f000, 0); }
 
 void FieldStructureMgr_DestroyHeap(s32 a) { func_0205c108(a); }
 
-s32 Field_GetStructureTexSuffix() { return ((s8 *)sStructureTexSuffixes)[func_020b50bc()]; }
+s32 Field_GetStructureTexSuffix() { return ((s8 *)sStructureTexSuffixes)[GroundSeason_IsSnow()]; }
 
 u32 Field_GetSpawnedKind1Count() { return sSpawnedBuildingCount1; }
 

@@ -23,13 +23,13 @@ public:
     s32 get(u32 a);
 };
 
-extern "C" u8 data_020e416c;
+extern "C" u8 gFieldSceneKind;
 extern "C" u8 gTouchPrevHeld;
 extern "C" u8 gTouchPrevChanged;
 
-inline BOOL IsMode0() { return data_020e416c == 0; }
+inline BOOL IsMode0() { return gFieldSceneKind == 0; }
 inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
-inline BOOL IsMode1() { return data_020e416c == 1; }
+inline BOOL IsMode1() { return gFieldSceneKind == 1; }
 
 extern "C" BOOL func_020b6080(u8 *obj, Vec3 *out, s32 *a, u8 *b);
 extern "C" s32 func_020b6048(s32 a, s32 *pa, u8 *pb);

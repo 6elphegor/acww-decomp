@@ -113,11 +113,11 @@ BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
 Unk_ov046_02258e68_Actor *func_02095204(s32 n);
 s32 func_020e9650(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
-void *func_020b50b4();
+void *Scene_GetCollision();
 s32 func_020b6080(void *a, void *b, void *c, s32 d);
 void func_0203a304();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
 s32 func_020e7500(void *p);
 void Effect_End(s32 h);
@@ -185,7 +185,6 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void vfunc_88();
     void *func_02015aac();
     void func_02015ab0(u32 p);
     void setDaySlot(u32 a, u32 b);
@@ -263,7 +262,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -373,7 +372,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -421,7 +420,7 @@ public:
     virtual void vfunc_18();
     virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_84();
-    virtual void vfunc_88();
+    virtual void openConstellationPage();
 
     void onRenameChoice(s32 a);
     void onLookOrTimesChoice(s32 a);
@@ -687,7 +686,7 @@ BOOL SpNpcCeleste::mainAct03() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         unk_73a = 0;
         unk_658.setTopic(5);
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
     return TRUE;
@@ -696,7 +695,7 @@ BOOL SpNpcCeleste::mainAct03() {
 // ---- unit 3
 BOOL SpNpcCeleste::mainAct04() { return TRUE; }
 
-void SpNpcCelesteTalk::vfunc_88() {
+void SpNpcCelesteTalk::openConstellationPage() {
     TalkWindowState *o = unk_3c;
     ChoiceList *r7 = o->getChoiceList();
     u8 v = 0xf;
@@ -1071,7 +1070,7 @@ void SpNpcCelesteTalk::showFollowUpMenu() {
 
 // ---- unit 2
 void SpNpcCelesteTalk::showConstellationList() {
-    vfunc_88();
+    openConstellationPage();
 }
 
 void SpNpcCelesteTalk::startNameEntry() {
@@ -1446,7 +1445,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
             }
         }
         if (r6 != 0) {
-            if (func_020b6080(func_020b50b4(), &buf, &out, 0) != 0) {
+            if (func_020b6080(Scene_GetCollision(), &buf, &out, 0) != 0) {
                 if (out == 0x16) {
                     result = TRUE;
                     goto end;

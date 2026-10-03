@@ -7,13 +7,13 @@ extern u32 OVERLAY_0_ID[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_69_ID[];
 extern void *gCommManager;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gSceneBlockMap;
 extern u8 data_021dfd8c;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
-extern u8 data_021ef360;
+extern u8 gTownReturnPos;
 extern u32 gCurrentHeap;
 extern s32 gFrameCounter;
 extern u32 data_027e0148[];
@@ -118,18 +118,18 @@ public:
 };
 
 inline BOOL isFlag1() {
-    return data_020e416c == 1;
+    return gFieldSceneKind == 1;
 }
 
 static inline BOOL IsEnabled() {
-    if (data_020e416c == 0) {
+    if (gFieldSceneKind == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 static inline BOOL func_020b2768_is_flag() {
-    if (data_020e416c == 0) {
+    if (gFieldSceneKind == 0) {
         return TRUE;
     }
     return FALSE;
@@ -284,13 +284,13 @@ public:
     /* 0x228 */ u8 unk_228;
 };
 
-class Unk_020d8d3cX {
+class UnitShapeQueryX {
 public:
-    Unk_020d8d3cX();
-    virtual ~Unk_020d8d3cX();
+    UnitShapeQueryX();
+    virtual ~UnitShapeQueryX();
 };
 
-class Unk_020e3dcc : public Unk_020d8d3cX {
+class Unk_020e3dcc : public UnitShapeQueryX {
 public:
     Unk_020e3dcc();
     virtual ~Unk_020e3dcc();
@@ -314,7 +314,7 @@ public:
 };
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
-class FieldObjectShapeQuery : public Unk_020d8d3cX {
+class FieldObjectShapeQuery : public UnitShapeQueryX {
 public:
     virtual void vfunc_08();
     virtual ~FieldObjectShapeQuery() {}
@@ -353,11 +353,11 @@ void func_020639e8(char *buf, const char *fmt, ...);
 u32 func_02063b8c(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
 void Melody_PlayAt(void *p, s32 a);
-void func_020719b0(void *p);
-void func_02071a4c(void *p);
-void *func_02071a50(void *p);
-void _ZN12Unk_02071ae0D1Ev(void *p);
-void _ZN12Unk_02071ae0C1Ev(void *p);
+void Pattern_CopyFields(void *p);
+void TownFlagPattern_GetPattern(void *p);
+void *TownFlagPattern_InitDefault(void *p);
+void _ZN15TownFlagPatternD1Ev(void *p);
+void _ZN15TownFlagPatternC1Ev(void *p);
 void _ZN11CommManager9endRecordEjj(void *p, u32 a, u32 b);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *q, u32 n);
 void _ZN11CommManager11beginRecordEv(void *p);
@@ -369,13 +369,13 @@ void func_02084ffc(void);
 void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
 void _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
-void func_020b4934(void);
-s32 func_020b4ff0(void *a);
-s32 func_020b4ff8(void *a);
-u32 func_020b50e8(void);
-BOOL func_020b5184(void);
-BOOL func_020b51b8(u32 a);
-BOOL func_020b530c(u32 a);
+void Scene_GetWarpRequest(void);
+s32 ScenePos_GetUnitZ(void *a);
+s32 ScenePos_GetUnitX(void *a);
+u32 Scene_GetCurrent(void);
+BOOL Scene_InTown(void);
+BOOL SceneId_IsVillagerHouse(u32 a);
+BOOL SceneId_IsHouseRoom(u32 a);
 void func_020e761c(void *p, s32 a, s32 b);
 void Mem_Free(void *p);
 void *func_021012bc(char *name);
@@ -800,7 +800,7 @@ BOOL Unk_020e3dcc::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32
             return FALSE;
         }
         return TRUE;
-    } else if (func_020b50e8() == 0x1d && x == 3 && y == 4) {
+    } else if (Scene_GetCurrent() == 0x1d && x == 3 && y == 4) {
         *a = 0xe66;
         *b = 0x2000;
         *c = 10;
@@ -874,16 +874,16 @@ extern "C" u32 func_020b2514(u8 *p, u32 idx) {
 }
 
 Unk_020b246c_Sub::~Unk_020b246c_Sub() {
-    _ZN12Unk_02071ae0C1Ev(this);
+    _ZN15TownFlagPatternC1Ev(this);
 }
 
 Unk_020b246c_Sub::Unk_020b246c_Sub() {
-    _ZN12Unk_02071ae0D1Ev(this);
+    _ZN15TownFlagPatternD1Ev(this);
 }
 
 Unk_020b24ac *Unk_020b24ac::func_020b24d4() {
     unk_228 = func_02063b8c(3);
-    return (Unk_020b24ac *)func_02071a50(this);
+    return (Unk_020b24ac *)TownFlagPattern_InitDefault(this);
 }
 
 void Unk_020b24ac::func_020b24ac() {
@@ -893,9 +893,9 @@ void Unk_020b24ac::func_020b24ac() {
     }
 }
 
-extern "C" void func_020b24a4(void *p) { func_020719b0(p); }
+extern "C" void func_020b24a4(void *p) { Pattern_CopyFields(p); }
 
-extern "C" void func_020b249c(void *p) { func_02071a4c(p); }
+extern "C" void func_020b249c(void *p) { TownFlagPattern_GetPattern(p); }
 
 Unk_020b246c::~Unk_020b246c() {
     func_020b260c(this);
@@ -1510,7 +1510,7 @@ extern "C" u32 func_020b1614(u32 a) {
 }
 
 extern "C" BOOL func_020b15ec(void) {
-    if (!func_020b5184()) {
+    if (!Scene_InTown()) {
         return TRUE;
     }
     if (data_021ee2b4 != 0) {
@@ -1526,14 +1526,14 @@ extern "C" u32 func_020b15d4(void) {
 extern "C" u32 func_020b14f0(void) {
     s32 x, y;
     u16 *p;
-    if (!func_020b5184() || func_020b0f0c()) {
+    if (!Scene_InTown() || func_020b0f0c()) {
         return 0;
     }
     if (IsEnabled()) {
-        func_020b4934();
-        x = func_020b4ff8(&data_021ef360);
-        func_020b4934();
-        y = func_020b4ff0(&data_021ef360);
+        Scene_GetWarpRequest();
+        x = ScenePos_GetUnitX(&gTownReturnPos);
+        Scene_GetWarpRequest();
+        y = ScenePos_GetUnitZ(&gTownReturnPos);
         if (gSceneBlockMap) {
             s32 xh = x >> 4;
             s32 yh = y >> 4;
@@ -1778,7 +1778,7 @@ extern "C" u32 func_020b0fb0(u32 a) {
 
 extern "C" u32 func_020b0f80(u32 a) {
     u32 r = func_020b2c14(func_020b0fb0(a));
-    if (func_020b530c(a) && func_020b1034()) {
+    if (SceneId_IsHouseRoom(a) && func_020b1034()) {
         return r + 2;
     }
     return r;
@@ -1786,7 +1786,7 @@ extern "C" u32 func_020b0f80(u32 a) {
 
 extern "C" u32 func_020b0f54(void) {
     if (isFlag1()) {
-        return func_020b0f80(func_020b50e8());
+        return func_020b0f80(Scene_GetCurrent());
     }
     return 0;
 }
@@ -1840,9 +1840,9 @@ char data_021ee2c4[12];
 FieldObjectShapeQuery data_021ee2b0;
 
 extern "C" void func_020b0e60(void) {
-    u32 a = func_020b50e8();
+    u32 a = Scene_GetCurrent();
     s32 r = -1;
-    if (func_020b530c(a) || func_020b51b8(a)) {
+    if (SceneId_IsHouseRoom(a) || SceneId_IsVillagerHouse(a)) {
         r = 0;
     } else if (a == 0x1a) {
         r = 1;

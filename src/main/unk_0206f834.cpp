@@ -161,7 +161,7 @@ extern u8 data_021ed22e[];
 }
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -253,7 +253,7 @@ void func_02072824(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-void func_02096f44(void *p);
+void BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {

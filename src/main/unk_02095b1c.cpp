@@ -94,7 +94,7 @@ BOOL func_02072e44(CommManager *p);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
@@ -238,7 +238,7 @@ void func_02065b28(void *p);
 }
 
 extern "C" {
-void *func_02096f44(void *p);
+void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
@@ -290,7 +290,7 @@ void func_02065640(void *a, void *b, void *c);
 }
 
 extern "C" {
-void *func_020991e4();
+void *Inventory_GetEmptyLetter();
 }
 
 extern "C" {

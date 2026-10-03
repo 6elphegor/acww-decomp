@@ -169,7 +169,7 @@ void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, const void *, s32, const void *);
 s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
-s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_SetTargetDone(void *);
 void *func_02095204(u32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
@@ -195,7 +195,7 @@ void SickVillager_SetCurrentVisitor();
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 func_02099064();
+s32 Pocket_RemoveItem();
 void Unk_02014420_requestTakeItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
@@ -209,7 +209,7 @@ void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
-void func_0203002c(s32, s32);
+void Ground_UnlinkUnit(s32, s32);
 void VillagerMood_updateSoundPos(void *, void *);
 s32 func_0202d928();
 s32 func_0202d948(void *);
@@ -696,7 +696,7 @@ void SickVillager::blockFurnitureCells() {
         for (s32 x = 0; x < 16; x++) {
             if (MapBlock_GetItemPtr(p, x, y, z)) {
                 if (Item_IsFurnitureOrF031()) {
-                    func_0203002c(x, y);
+                    Ground_UnlinkUnit(x, y);
                 }
             }
         }
@@ -788,7 +788,7 @@ void SickVillagerTalk::vfunc_80() {
                 unk_1a4->changeAct(4);
             } else {
                 MenuCtrl_GetIndex();
-                func_02099064();
+                Pocket_RemoveItem();
                 buf[1] = func_02063b8c(3) + 16;
                 TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
@@ -1106,7 +1106,7 @@ void SickVillager::mainAct04() {
     Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)unk_89c.unk_3c;
     if (o != 0) {
         if (o->unk_04 == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

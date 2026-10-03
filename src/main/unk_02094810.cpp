@@ -77,7 +77,7 @@ struct PlayerSessionTable {
 struct Unk_020954f8_L { u32 out; u8 t[12]; };
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern const u8 data_020d0408[];
 extern const u32 data_020d03d8[];
 extern const u32 data_020d03e8[];
@@ -115,15 +115,15 @@ void _ZN12Unk_02006d1415clearActionFlagEj(Unk_02006d14 *o, s32 id);
 void _ZN12Unk_02006d1413setActionFlagEj(Unk_02006d14 *o, s32 id);
 s32 _ZN12Unk_02006d1413canAcceptTalkEj(Unk_02006d14 *o, s32 v);
 
-s32 func_020b52f8();
+s32 Scene_InHouseRoom();
 BOOL func_0203d978();
 s32 func_0203d878();
 void PlayerActor_GetHeldItem(void *out, Unk_02006d14 *o);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 s32 func_02063c18(s32 v);
-void *func_020b4934();
-void func_020b4b68(void *a, s32 b, void *c, void *d);
+void *Scene_GetWarpRequest();
+void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 s32 PlayerActor_RequestFishReelIn(Unk_02006d14 *o, u32 a, u32 b, s32 c);
 void PlayerActor_EndStandUpFront(Unk_02006d14 *o, s32 a);
@@ -143,7 +143,7 @@ void NetBuf_WriteS16(u8 *p, s32 v);
 void CommRecord_PackSource(void *p, s32 a, s32 b);
 s32 CommSyncVar_GetVarSize(s32 v);
 u16 NetBuf_ReadS16B(void *p);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager *g, s32 v);
 u32 _ZN11CommManager10getSyncVarEj(CommManager *g, u32 v);
@@ -199,7 +199,7 @@ extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32
         Unk_02006d14 *e = PlayerActor_Get(4);
         if (e != NULL) {
             s32 *p = (s32 *)&e->unk_5c;
-            *outb = func_020b50e8();
+            *outb = Scene_GetCurrent();
             *x = p[0];
             *y = p[2];
             return TRUE;
@@ -283,7 +283,7 @@ extern "C" void func_020954f8(void *dst, s32 x)
     Unk_020954f8_L l;
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
-        CommRecord_PackSource(l.t, func_020b50e8(), 0);
+        CommRecord_PackSource(l.t, Scene_GetCurrent(), 0);
         if (PlayerActor_GetSlotAction(&l.out, -1, 4)) {
             l.t[1] = l.out + 1;
         }
@@ -846,7 +846,7 @@ extern "C" s32 func_02094c38() {
             return _ZN12Unk_02006d1412requestAct76Ehhhjs(o, (u8)(r6 + 3), 0, 0, 6, -1);
         }
         u16 buf[2];
-        BOOL c = data_020e416c == 0 ? TRUE : FALSE;
+        BOOL c = gFieldSceneKind == 0 ? TRUE : FALSE;
         if (c) {
             PlayerActor_GetHeldItem(buf, o);
             BOOL c2;
@@ -993,7 +993,7 @@ extern "C" s32 func_02094898() {
             s32 r5 = o->unk_800;
             h = o->unk_8e;
             if (r5 != -1) {
-                func_020b4b68(func_020b4934(), r5, &pad, &h);
+                SceneExit_GetDoor(Scene_GetWarpRequest(), r5, &pad, &h);
             }
             s32 t = func_02063c18(h);
             Unk_02006d14_Vec *pv = &o->unk_5c;

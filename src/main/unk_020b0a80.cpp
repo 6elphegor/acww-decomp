@@ -15,47 +15,47 @@ u32 func_020b2c14(u32 a);
 }
 
 extern "C" {
-u32 func_020b50e8(void);
+u32 Scene_GetCurrent(void);
 }
 
 extern "C" {
-BOOL func_020b5268(u32 a);
+BOOL SceneId_IsNookShop(u32 a);
 }
 
 extern "C" {
-BOOL func_020b530c(u32 a);
+BOOL SceneId_IsHouseRoom(u32 a);
 }
 
 extern "C" {
-BOOL func_020b52e4(u32 a);
+BOOL SceneId_IsUnk6To8(u32 a);
 }
 
 extern "C" {
-BOOL func_020b5210(u32 a);
+BOOL SceneId_IsMuseumRoom(u32 a);
 }
 
 extern "C" {
-BOOL func_020b50bc(void);
+BOOL GroundSeason_IsSnow(void);
 }
 
 extern "C" {
-BOOL func_020b51b8(u32 a);
+BOOL SceneId_IsVillagerHouse(u32 a);
 }
 
 extern "C" {
-u32 func_0202ffdc(void);
+u32 Ground_GetExitAtPos(void);
 }
 
 extern "C" {
-u32 func_0203107c(u32 a);
+u32 GroundAttr_GetFootstepSe(u32 a);
 }
 
 extern "C" {
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *self, void *vec, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *self, void *vec, s32 a, s32 b);
 }
 
 extern "C" {
-void func_02033988(void *p);
+void GroundInfo_Destruct(void *p);
 }
 
 extern "C" {
@@ -119,7 +119,7 @@ extern void *gCommManager;
 }
 
 extern "C" {
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 extern "C" {
@@ -474,7 +474,7 @@ extern u8 sVBlankReady;
 }
 
 inline BOOL isFlag1() {
-    return data_020e416c == 1;
+    return gFieldSceneKind == 1;
 }
 inline BOOL isSpecial(u32 b) {
     BOOL r = TRUE;
@@ -484,26 +484,26 @@ inline BOOL isSpecial(u32 b) {
     return r;
 }
 inline BOOL isFlag0() {
-    return data_020e416c == 0;
+    return gFieldSceneKind == 0;
 }
 extern "C" u32 func_020b0d94(u32 a) {
-    u32 b = func_020b50e8();
-    u32 r = func_0203107c(a);
+    u32 b = Scene_GetCurrent();
+    u32 r = GroundAttr_GetFootstepSe(a);
     if (r == 0xffff) {
         if (isFlag0()) {
             r = 0xc8;
-        } else if (func_020b5268(b)) {
+        } else if (SceneId_IsNookShop(b)) {
             r = func_020b0d24(5);
-        } else if (func_020b530c(b) || func_020b52e4(b)) {
+        } else if (SceneId_IsHouseRoom(b) || SceneId_IsUnk6To8(b)) {
             r = func_020b0d24(6);
-        } else if (func_020b5210(b)) {
+        } else if (SceneId_IsMuseumRoom(b)) {
             r = func_020b0d24(5);
         } else {
             r = 0x4a6;
         }
     }
     if (r == 0xc0) {
-        if (func_020b50bc()) {
+        if (GroundSeason_IsSnow()) {
             if (isFlag0() || isSpecial(b)) {
                 r = 0x877;
             }
@@ -525,9 +525,9 @@ extern "C" u32 func_020b0d60(u32 a) {
 extern "C" u32 func_020b0d38(u32 a) {
     u8 buf[0x40];
     u32 r;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, (void *)a, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, (void *)a, 0, 0);
     r = func_020b0d60(*(u32 *)(buf + 0x34));
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return r;
 }
 
@@ -536,17 +536,17 @@ extern "C" u32 func_020b0d24(u32 a) {
 }
 
 extern "C" void func_020b0cbc(u32 a) {
-    if (func_0202ffdc() != (u32)-1) {
-        u32 b = func_020b50e8();
-        if (func_020b5268(b)) {
+    if (Ground_GetExitAtPos() != (u32)-1) {
+        u32 b = Scene_GetCurrent();
+        if (SceneId_IsNookShop(b)) {
             func_020b0d24(5);
             return;
         }
-        if (func_020b530c(b) || func_020b52e4(b)) {
+        if (SceneId_IsHouseRoom(b) || SceneId_IsUnk6To8(b)) {
             func_020b0d24(6);
             return;
         }
-        if (func_020b5210(b)) {
+        if (SceneId_IsMuseumRoom(b)) {
             func_020b0d24(5);
             return;
         }

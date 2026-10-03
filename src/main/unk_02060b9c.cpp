@@ -88,7 +88,7 @@ extern u8 data_020dcd90[60];
 
 
 extern "C" {
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 }
 
 extern "C" {
@@ -217,7 +217,7 @@ static inline BOOL Unk_02061168_IsOne(u8 v) {
 }
 }
 extern "C" void Item_ToPlacedForm(u16 *out, u16 *in, s32 n) {
-    if (Unk_02061168_IsOne(data_020e416c[0]) || n != 0) {
+    if (Unk_02061168_IsOne(gFieldSceneKind[0]) || n != 0) {
     u16 *pv = in;
     if (Unk_02061168_In(pv, 0x11a8, 0x12a7)) {
         s32 idx;

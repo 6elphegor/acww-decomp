@@ -42,7 +42,7 @@ extern Unk_021e5890_T data_021e5890;}
 extern "C" {
 void *File_LoadAlloc(void *, void *, s32, void *);
 extern char data_021e3680[];
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void _ZN7TownMap13func_0204df30Ev(char *);
 void BgHeap_Create(s32, s32);
 }
@@ -191,13 +191,13 @@ void BgModelCacheObj::clearEntries() {
 }
 
 BOOL BgModelCacheObj::setup(u32 flag) {
-    s32 t = func_020b50e8();
+    s32 t = Scene_GetCurrent();
     if (t == 0x2c) {
         _ZN7TownMap13func_0204df30Ev(data_021e3680);
     }
     clearEntries();
     unk_618 = flag;
-    t = func_020b50e8();
+    t = Scene_GetCurrent();
     u32 v;
     if ((u32)t < 0x33) {
         v = sBgHeapSizeByRoom[t];

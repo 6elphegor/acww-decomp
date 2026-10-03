@@ -45,28 +45,28 @@ struct ChoiceList {
 extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
-void _ZN12Unk_02087ad813func_02087b24Ev(void *p);
-s32 func_02098ffc();
-s32 func_02098eb0(u16 *p);
-BOOL func_02099014(u16 *p, s32 v);
-void func_02099064(s32 v);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
+s32 Pocket_FindEmpty();
+s32 Pocket_FindItem(u16 *p);
+BOOL Pocket_AddItem(u16 *p, s32 v);
+void Pocket_RemoveItem(s32 v);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
-void *func_020850e0();
-BOOL func_020851bc(void *p, s32 v);
-void func_020851a4(void *p, s32 v);
-void func_02085290(void *p);
-void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
+void *TownSessionState_Get();
+BOOL TownSessionState_TestFlag(void *p, s32 v);
+void TownSessionState_SetFlag(void *p, s32 v);
+void ContestRecord_JudgeGardens(void *p);
+void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void func_020856a4(void *p, s32 v);
+void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
@@ -74,7 +74,7 @@ extern u16 data_020c6cc8;
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
 
@@ -207,7 +207,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -318,7 +318,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -389,24 +389,24 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void String_Load(void *o, u8 *c, s32 a);
 void MailText_SetSlot(void *p, void *o);
-void func_020656dc(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
+void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
 void *_ZN10PlayerData10getCatalogEv(void *p);
 void func_0203c41c(void *p, u16 *q, s32 a);
-u32 func_02099048(s32 i);
+u32 Pocket_GetItem(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL MenuCtrl_BuildPocketMask(u32 cb);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 n);
-u32 _ZN12Unk_02087ad813func_02087c0cEv(void *p);
-u32 _ZN12Unk_02087ad813func_02087c20Ev(void *p);
-void _ZN12Unk_02087ad813func_02087c10Ei(void *p, s32 n);
-void _ZN12Unk_02087ad813func_02087bf8Ev(void *p);
+BOOL _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
+void _ZN12Unk_02097ff47setFlagEj(void *p, u32 n);
+u32 _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(void *p);
+u32 _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(void *p);
+void _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(void *p, s32 n);
+void _ZN17PlayerSpNpcRecord21advanceAcornPrizeStepEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m);
-s32 func_020991fc();
-void *func_020991e4();
+s32 Inventory_FindEmptyLetter();
+void *Inventory_GetEmptyLetter();
 extern const u8 sSpNpcCornimerPrizeTable[];
 extern u8 sSpNpcCornimerModelPath[];
 extern u8 sSpNpcCornimerTexturePath[];
@@ -521,7 +521,7 @@ BOOL SpNpcCornimer::vfunc_00() {
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
-    func_020856a4(data_021ed24c, 2);
+    ContestRecord_BeginFestival(gContestRecord, 2);
     return TRUE;
 }
 
@@ -566,7 +566,7 @@ BOOL SpNpcCornimer::setupAct01() {
 
 BOOL SpNpcCornimer::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -587,9 +587,9 @@ void SpNpcCornimerTalk::vfunc_78(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     _ZN10PlayerData13func_0209865cEv(g);
     out->a = (u8 *)"sp_npc_acorn";
-    if (_ZN12Unk_02097ff413func_02098044Ej(g, 0xf) == 0) {
+    if (_ZN12Unk_02097ff48testFlagEj(g, 0xf) == 0) {
         out->b = 0;
-        _ZN12Unk_02097ff413func_0209801cEj(g, 0xf);
+        _ZN12Unk_02097ff47setFlagEj(g, 0xf);
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
         out->b = 2;
@@ -614,7 +614,7 @@ extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m) {
 
 void SpNpcCornimerTalk::vfunc_14() {
     Unk_ov087_02271670_Buf buf;
-    void *g = _ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent());
+    void *g = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
     u32 k;
     buf.v[0] = 0xfff1;
     k = 0xff;
@@ -625,7 +625,7 @@ void SpNpcCornimerTalk::vfunc_14() {
             s32 i = 0;
             u32 cnt = 0;
             while (i < 15) {
-                buf.v[0] = func_02099048(i);
+                buf.v[0] = Pocket_GetItem(i);
                 if (Unk_ov087_02271478_Rng(&buf.v[0], 0x1542, 0x1546)) {
                     cnt++;
                 }
@@ -633,11 +633,11 @@ void SpNpcCornimerTalk::vfunc_14() {
             }
             _ZN16ActorTalkRequest13setNumberSlotEijiii(this, cnt, 2, 3, 0, 0);
             k = 5;
-        } else if (_ZN12Unk_02087ad813func_02087c0cEv(g) >= 12) {
+        } else if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) >= 12) {
             k = 0x17;
         } else {
-            u32 a = _ZN12Unk_02087ad813func_02087c0cEv(g);
-            u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
+            u32 a = _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g);
+            u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
             s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4] - b;
             if (d > 0) {
                 _ZN16ActorTalkRequest13setNumberSlotEijiii(this, d, 1, 3, 0, 0);
@@ -650,22 +650,22 @@ void SpNpcCornimerTalk::vfunc_14() {
     case 7:
     case 8:
     case 9:
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN12Unk_02087ad813func_02087c20Ev(g), 0, 3, 0, 0);
-        if (_ZN12Unk_02087ad813func_02087c0cEv(g) >= 12) {
+        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g), 0, 3, 0, 0);
+        if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) >= 12) {
             k = 0x16;
         } else {
             k = 0xa;
         }
         break;
     case 10: {
-        u32 t = _ZN12Unk_02087ad813func_02087c20Ev(g);
-        if (t >= (sSpNpcCornimerPrizeTable + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
-            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+        u32 t = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
+        if (t >= (sSpNpcCornimerPrizeTable + 2)[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4]) {
+            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &buf.v[1], 0, 7);
             k = 0xb;
         } else {
-            u32 a = _ZN12Unk_02087ad813func_02087c0cEv(g);
-            u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
+            u32 a = _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g);
+            u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
             s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4];
             d -= b;
             _ZN16ActorTalkRequest13setNumberSlotEijiii(this, d, 1, 3, 0, 0);
@@ -675,17 +675,17 @@ void SpNpcCornimerTalk::vfunc_14() {
     }
     case 11:
     case 13:
-        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
-        if (Unk_ov087_02271670_Z(func_02099014(&buf.v[2], 0))) {
+        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
+        if (Unk_ov087_02271670_Z(Pocket_AddItem(&buf.v[2], 0))) {
             k = 0xc;
         } else {
-            _ZN12Unk_02087ad813func_02087bf8Ev(g);
-            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+            _ZN17PlayerSpNpcRecord21advanceAcornPrizeStepEv(g);
+            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &buf.v[3], 0, 5, 0);
-            if (_ZN12Unk_02087ad813func_02087c0cEv(g) < 12) {
-                u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
-                if (b >= (sSpNpcCornimerPrizeTable + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
-                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+            if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) < 12) {
+                u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
+                if (b >= (sSpNpcCornimerPrizeTable + 2)[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4]) {
+                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
                     _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &buf.v[4], 0, 7);
                     k = 0xd;
                     break;
@@ -715,7 +715,7 @@ void SpNpcCornimerTalk::vfunc_18() {
     switch (unk_1e) {
     case 5:
         if (t5 == 0) {
-            void *g = _ZN10PlayerData13func_0209868cEv(g8);
+            void *g = _ZN10PlayerData14getSpNpcRecordEv(g8);
             s32 cntB;
             s32 cntA;
             buf.s[0] = 0xfff1;
@@ -723,14 +723,14 @@ void SpNpcCornimerTalk::vfunc_18() {
             cntB = 0;
             cntA = 0;
             for (; k < 15; k++) {
-                buf.s[0] = func_02099048(k);
+                buf.s[0] = Pocket_GetItem(k);
                 if (Unk_ov087_02271478_Rng(&buf.s[0], 0x1542, 0x1546)) {
                     if (Unk_ov087_02271478_Chk(&buf.s[0], &buf.s[2], 0x1546)) {
                         cntA++;
                     } else {
                         cntB++;
                     }
-                    func_02099064(k);
+                    Pocket_RemoveItem(k);
                 }
             }
             buf.s[0] = 0x1542;
@@ -738,7 +738,7 @@ void SpNpcCornimerTalk::vfunc_18() {
                 k = (u8)(func_02063b8c(3) + 7);
                 cntA = 1;
                 while (cntB > 0) {
-                    _ZN12Unk_02087ad813func_02087c10Ei(g, cntA);
+                    _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(g, cntA);
                     cntB--;
                 }
             } else if (cntB != 0) {
@@ -753,8 +753,8 @@ void SpNpcCornimerTalk::vfunc_18() {
     case 16:
         if (t5 == 0) {
             k = 0x12;
-            if (func_020991fc() != -1) {
-                void *obj = func_020991e4();
+            if (Inventory_FindEmptyLetter() != -1) {
+                void *obj = Inventory_GetEmptyLetter();
                 if (obj != NULL) {
                     k = 0x13;
                     buf.a = 2;
@@ -774,7 +774,7 @@ void SpNpcCornimerTalk::vfunc_18() {
                     i++;
                     if (i < 4) goto loop16;
                     buf.a = 2;
-                    func_020656dc(obj, &buf.a, (u8 *)"ev_fortune", &data_ov087_02271d84, &data_ov087_02271d80,
+                    Letter_ComposeFromMail(obj, &buf.a, (u8 *)"ev_fortune", &data_ov087_02271d84, &data_ov087_02271d80,
                                   _ZN10PlayerData11getPlayerIdEv(g8));
                     if (g8 != NULL) {
                         buf.s[1] = Item_MakePaper(0x1d, 4);

@@ -52,7 +52,7 @@ void MIi_CpuClear32(s32, void *, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 SceneLights_GetBaseColor();
-u16 func_020b5b98();
+u16 GroundSeason_GetColor();
 s32 TownState_GetSeasonPeriod();
 s32 File_Load(void *);
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
@@ -1024,7 +1024,7 @@ extern "C" void func_0208fe0c(Unk_0208fdcc_Obj *o)
         la.v = l4.v;
         l6.v = la.v;
         if ((f & 0x40) != 0) {
-            l8.v = func_020b5b98();
+            l8.v = GroundSeason_GetColor();
         } else if ((f & 0x20) != 0) {
             l2.v = func_0208ff30(o);
             lc.v = l2.v;

@@ -170,10 +170,10 @@ void Model_drawShapesDirect(void *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void PendingUnit_ApplyAt(void *p, u32 a);
-void func_020b5184(void);
+void Scene_InTown(void);
 void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
-u32 func_020b50e8(void);
+u32 Scene_GetCurrent(void);
 void Snd_PlaySe(s32 a);
 
 // the manager's methods called as plain functions with the object first (the symbols.txt names)
@@ -394,7 +394,7 @@ extern "C" void RoomItemIcons_DrawItem(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b,
 }
 
 extern "C" void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z) {
-    func_020b5184();
+    Scene_InTown();
     if (gSceneBlockMap != 0) {
         volatile u16 buf = 0xfff1;
         buf = v;

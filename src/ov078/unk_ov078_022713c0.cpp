@@ -73,18 +73,18 @@ s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
-void *func_0209a108(void *p);
-void func_0209a10c(void *p);
-u16 *_ZN12Unk_0209ada413func_0209ab94Ev(void *p);
-s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *p);
-s32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
-s32 func_0209a05c(void *p);
-s32 func_0209a0dc(void *p, void *q);
-void _ZN12Unk_0209ada413func_0209abb4Eh(void *p, s32 v);
-s32 func_02098ffc();
-s32 func_02098eb0(u16 *p);
-void func_02099014(u16 *p, s32 v);
-void func_02099064(s32 v);
+void *ParcelErrand_GetRecord(void *p);
+void ParcelErrand_Start(void *p);
+u16 *_ZN12ErrandRecord7getItemEv(void *p);
+s32 _ZN12ErrandRecord8isActiveEv(void *p);
+s32 _ZN12ErrandRecord7getStepEv(void *p);
+s32 ParcelErrand_NextRecipient(void *p);
+s32 ParcelErrand_GetRecipientName(void *p, void *q);
+void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
+s32 Pocket_FindEmpty();
+s32 Pocket_FindItem(u16 *p);
+void Pocket_AddItem(u16 *p, s32 v);
+void Pocket_RemoveItem(s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
@@ -112,9 +112,9 @@ void FieldPos_SnapToUnitCenter(Unk_ov078_Vec *a, Unk_ov078_Vec *b);
 BOOL TownMap_IsPosWalkable(Unk_ov078_Vec *a, s32 b);
 BOOL Npc_IsPosBlocked(void *p);
 void Npc_RotateOffsetXZ(void *out, Unk_ov078_Vec *a, Unk_ov078_Vec *b, s32 c);
-void TalkRequest_EndTalkWith(void *p);
-void *func_020850e0();
-VisitorPos *func_0208516c(void *p);
+void TalkRequest_SetTargetDone(void *p);
+void *TownSessionState_Get();
+VisitorPos *TownSessionState_GetVisitorPos(void *p);
 
 extern u32 gRandom[];
 extern Unk_ov078_Vec gVec3Zero;
@@ -263,7 +263,7 @@ struct Unk_0201a794 {
 };
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -373,7 +373,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -555,7 +555,7 @@ BOOL SpNpcSaharah::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    func_0208516c(func_020850e0())->setPos(unk_5c, unk_64);
+    TownSessionState_GetVisitorPos(TownSessionState_Get())->setPos(unk_5c, unk_64);
     return TRUE;
 }
 
@@ -585,7 +585,7 @@ BOOL SpNpcSaharah::setupAct00() { return TRUE; }
 
 BOOL SpNpcSaharah::mainAct00() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
     return TRUE;
@@ -829,13 +829,13 @@ void SpNpcSaharahTalk::vfunc_78(TalkStartMsg *out) {
     out->a = (u32)"sp_npc_camel";
     if (unk_b0 == -1) {
         h = 0x13ac;
-        unk_b0 = func_02098eb0(&h);
+        unk_b0 = Pocket_FindItem(&h);
     }
     if (unk_b0 >= 0) {
         out->b = 0x14;
         return;
     }
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a108(g)) != 0 && _ZN12Unk_0209ada413func_0209abc4Ev(func_0209a108(g)) == 3) {
+    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 3) {
         out->b = 0;
         return;
     }
@@ -843,28 +843,28 @@ void SpNpcSaharahTalk::vfunc_78(TalkStartMsg *out) {
         out->b = 1;
         return;
     }
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a108(g)) == 0) {
+    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) == 0) {
         out->b = 4;
         return;
     }
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a108(g)) != 0 && _ZN12Unk_0209ada413func_0209abc4Ev(func_0209a108(g)) == 0) {
-        if (func_0209a0dc(g, &o)) {
+    if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 0) {
+        if (ParcelErrand_GetRecipientName(g, &o)) {
             unk_3c->setSlot(0, &o);
         }
         out->b = 9;
         return;
     }
-    if (func_02098ffc() < 0) {
+    if (Pocket_FindEmpty() < 0) {
         out->b = 0x12;
         return;
     }
-    if (func_0209a05c(g)) {
-        if (func_0209a0dc(g, &o)) {
+    if (ParcelErrand_NextRecipient(g)) {
+        if (ParcelErrand_GetRecipientName(g, &o)) {
             unk_3c->setSlot(0, &o);
         }
         out->b = 0xa;
-    } else if (_ZN12Unk_0209ada413func_0209abc4Ev(func_0209a108(g)) == 1) {
-        _ZN12Unk_0209ada413func_0209abb4Eh(func_0209a108(g), 2);
+    } else if (_ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 1) {
+        _ZN12ErrandRecord7setStepEh(ParcelErrand_GetRecord(g), 2);
         out->b = 0xc;
     }
 }
@@ -885,14 +885,14 @@ void SpNpcSaharahTalk::vfunc_14() {
     switch (unk_1e) {
     case 5:
     case 10:
-        if (func_02098ffc() < 0) {
+        if (Pocket_FindEmpty() < 0) {
             msg = 0x1d;
             break;
         }
         if (unk_1e == 5) {
-            func_0209a10c(g);
+            ParcelErrand_Start(g);
         }
-        p = _ZN12Unk_0209ada413func_0209ab94Ev(func_0209a108(g));
+        p = _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g));
         {
             BOOL r;
             if (Item_IsFurniture(p)) {
@@ -920,9 +920,9 @@ void SpNpcSaharahTalk::vfunc_14() {
         }
     case 6:
     case 7:
-        func_02099014(_ZN12Unk_0209ada413func_0209ab94Ev(func_0209a108(g)), 2);
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(func_0209a108(g)), 2, 5, 0);
-        if (func_0209a0dc(g, &o3)) {
+        Pocket_AddItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2);
+        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
+        if (ParcelErrand_GetRecipientName(g, &o3)) {
             unk_3c->setSlot(0, &o3);
         }
         if (unk_1e != 10) {
@@ -945,7 +945,7 @@ void SpNpcSaharahTalk::vfunc_14() {
         msg = 0xd;
         break;
     case 0xe:
-        _ZN12Unk_0209ada413func_0209abb4Eh(func_0209a108(g), 3);
+        _ZN12ErrandRecord7setStepEh(ParcelErrand_GetRecord(g), 3);
         EventWeekSlots_MarkPlayer(0x3e);
         break;
     case 0x15:
@@ -961,7 +961,7 @@ void SpNpcSaharahTalk::vfunc_14() {
         unk_b0 = -2;
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
-        func_02099014(&h[0], 0);
+        Pocket_AddItem(&h[0], 0);
         break;
     }
     if (msg != 0) {
@@ -983,7 +983,7 @@ void SpNpcSaharahTalk::vfunc_18() {
     case 2:
     case 4:
         if (t == 0) {
-            if (func_02098ffc() < 0) {
+            if (Pocket_FindEmpty() < 0) {
                 msg = 0x1d;
             } else {
                 msg = 5;
@@ -998,13 +998,13 @@ void SpNpcSaharahTalk::vfunc_18() {
             h[0] = unk_b4[1].unk_00;
         }
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
-        func_02099014(&h[0], 0);
+        Pocket_AddItem(&h[0], 0);
         msg = 0xe;
         break;
     case 0x14:
         if (t == 0) {
             if (unk_b0 >= 0) {
-                func_02099064(unk_b0);
+                Pocket_RemoveItem(unk_b0);
                 h[1] = 0x13ac;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h[1], 0, 5, 0);
             }

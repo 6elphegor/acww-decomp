@@ -328,7 +328,7 @@ extern s32 data_020d9254;
 extern s32 data_020d9250;
 extern s16 data_02135f44[];
 extern Unk_0203a9b8_Vec gVec3Zero;
-extern Unk_0203a9b8_Cfg *data_021ef2f0;
+extern Unk_0203a9b8_Cfg *gCurSceneInfo;
 extern const Unk_0203a9b8_Row sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
 extern Unk_021c47c4 *gSceneBlockMap;
@@ -361,7 +361,7 @@ void Snd_PlaySe(s32 a);
 void Camera_GetLookAtPoint(void *out, void *o);
 void Camera_SetSwayPattern(void *o, s32 a);
 V3 *func_020947f0(s32 a);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_020e9960(void *out, void *a, void *b);
 void func_01ffd070(void *out, void *a, void *b);
 void func_020e9790(void *out, void *in, s32 s);
@@ -376,9 +376,9 @@ s32 Math_AngleXZ(void *a, void *b);
 void func_020e944c(void *v, s32 a);
 void func_020e93a0(void *v, s32 a);
 s32 MenuCtrl_GetTransitionProgress();
-s32 func_020b52f8();
-s32 func_020b51a4();
-s32 func_020b51fc();
+s32 Scene_InHouseRoom();
+s32 Scene_InVillagerHouse();
+s32 Scene_InMuseumRoom();
 s32 Camera_UpdateSway(void *self);
 void Camera_UpdateRoomFocus(void *self, s32 a);
 void FieldCamera_UpdateFocusZoom(void *self);
@@ -387,7 +387,7 @@ void func_020e92f4(void *v, s32 a);
 s32 func_0203edd0(void *p);
 s32 func_02063a9c(s32, s32, s32, s32, s32);
 s32 FX_Inv(s32);
-s32 func_0202fe84(s32 *, s32 *, s32 *, s32 *);
+s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
 void _ZN11ViewFrustum14setPerspectiveEitii(void *, s32, s32, s32, s32);
 void MTX_Inverse43(void *a, void *b);
@@ -398,9 +398,9 @@ void WorldCurve_Update(void *a, void *b);
 s32 NpcRegistry_PickRandomVillager(s32 a);
 Unk_0203be94_Obj *NpcRegistry_GetVillager(s32 i);
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *s, s32 a);
-void *func_020b50dc();
-s32 func_020b530c(void *a);
+s32 _ZN12Unk_02097ff48testFlagEj(void *s, s32 a);
+void *Scene_GetPrevious();
+s32 SceneId_IsHouseRoom(void *a);
 s32 NNS_G3dGetTex();
 void func_02135558(void *a, void *b, void *c);
 BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
@@ -608,7 +608,7 @@ BOOL Unk_020d93b8::vfunc_00() {
         }
     }
     calcRoomBounds();
-    s32 r = func_020b50e8();
+    s32 r = Scene_GetCurrent();
     if (r == 9) {
         data_020d9254 = 0x1000;
     } else {
@@ -666,8 +666,8 @@ BOOL Unk_020d93b8::vfunc_00() {
     case 0: {
         void *s = PlayerData_GetCurrent();
         if (s) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(s, 0x23)) {
-                if (func_020b530c(func_020b50dc()) != 0 || (s32)func_020b50dc() == 6) setMode(0xd);
+            if (_ZN12Unk_02097ff48testFlagEj(s, 0x23)) {
+                if (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || (s32)Scene_GetPrevious() == 6) setMode(0xd);
             }
         }
         break;
@@ -824,14 +824,14 @@ extern "C" void func_0203bac4(s32 a, s32 *x, s32 *z)
 
 void Unk_020d93b8::calcRoomBounds()
 {
-    if (data_021ef2f0->unk_04 == 0) {
-        func_0202fe84(&M(s32, 0x178), &M(s32, 0x17c), &M(s32, 0x180), &M(s32, 0x184));
+    if (gCurSceneInfo->unk_04 == 0) {
+        Ground_GetFloorBounds(&M(s32, 0x178), &M(s32, 0x17c), &M(s32, 0x180), &M(s32, 0x184));
         s32 m = data_020c8cb8;
         if (M(s32, 0x184) < m) {
             M(s32, 0x184) = m;
         }
     }
-    if (func_020b50e8() == 0x29) {
+    if (Scene_GetCurrent() == 0x29) {
         M(s32, 0x17c) += 0x4000;
         M(s32, 0x184) += 0x4000;
     } else {
@@ -1065,7 +1065,7 @@ void Unk_020d93b8::dragFocusTo(V3 *p)
 }
 
 BOOL Unk_020d93b8::initModeDefault() {
-    if (data_021ef2f0->unk_04 == 0) {
+    if (gCurSceneInfo->unk_04 == 0) {
         if (unk_1fc == 2) {
             unk_1f5 = 0;
         }
@@ -1104,8 +1104,8 @@ void Unk_020d93b8::updateModeDefault() {
         d.y = p->y;
         d.z = p->z;
     }
-    if (data_021ef2f0->unk_04 == 0) {
-        if (func_020b52f8() || func_020b51a4() || (func_020b51fc() && func_020b50e8() != 0x20 && func_020b50e8() != 0x22)) {
+    if (gCurSceneInfo->unk_04 == 0) {
+        if (Scene_InHouseRoom() || Scene_InVillagerHouse() || (Scene_InMuseumRoom() && Scene_GetCurrent() != 0x20 && Scene_GetCurrent() != 0x22)) {
             loadPose(sCameraPoseGrid[unk_1f0].v[unk_1ec], 0);
             unk_110.x = d.x;
             unk_110.y = d.y;
@@ -1181,7 +1181,7 @@ BOOL Unk_020d93b8::initMode1() {
         unk_218 = p->z;
         Camera_FinishBlend();
     } else {
-        if (data_021ef2f0->unk_04 == 0) {
+        if (gCurSceneInfo->unk_04 == 0) {
             loadPose(0xf, 0);
         } else {
             loadPose(0xe, 0);
@@ -1238,7 +1238,7 @@ void Unk_020d93b8::updateMode1() {
 }
 
 BOOL Unk_020d93b8::initModeFocus() {
-    if (data_021ef2f0->unk_04 == 0) {
+    if (gCurSceneInfo->unk_04 == 0) {
         loadPose(0xb, 0);
         unk_1f6 = 3;
         Camera_UpdateRoomFocus(this, 0);
@@ -1257,7 +1257,7 @@ BOOL Unk_020d93b8::initModeFocus() {
 }
 
 void Unk_020d93b8::updateModeFocus() {
-    if (data_021ef2f0->unk_04 == 0) {
+    if (gCurSceneInfo->unk_04 == 0) {
         Camera_UpdateRoomFocus(this, 0);
     } else {
         FieldCamera_UpdateFocusZoom(this);
@@ -1267,7 +1267,7 @@ void Unk_020d93b8::updateModeFocus() {
 }
 
 BOOL Unk_020d93b8::initMode3() {
-    if (data_021ef2f0->unk_04 == 0) {
+    if (gCurSceneInfo->unk_04 == 0) {
         loadPose(0x1c, 0);
     } else {
         loadPose(0x1b, 0);
@@ -1296,7 +1296,7 @@ void Unk_020d93b8::updateMode3() {
 }
 
 BOOL Unk_020d93b8::initMode4() {
-    if (data_021ef2f0->unk_04 == 0) {
+    if (gCurSceneInfo->unk_04 == 0) {
         loadPose(0xd, 0);
     } else {
         loadPose(0xc, 0);
@@ -1509,7 +1509,7 @@ extern "C" BOOL Camera_FocusOnPoint(Unk_0203a148_Vec *a) {
     if (gCamera->unk_1f8 == 9) {
         return FALSE;
     }
-    if (func_020b50e8() == 0xc) {
+    if (Scene_GetCurrent() == 0xc) {
         return FALSE;
     }
     s32 r = Camera_CalcPointSpan(func_020947f0(4), a, NULL, NULL);

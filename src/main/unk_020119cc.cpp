@@ -274,12 +274,12 @@ public:
 };
 
 // unk_020131a4.cpp
-struct Unk_0203398c {
+struct GroundInfo {
     u8 pad_00[0x30];
     s32 unk_30;
     u8 pad_34[0x10];
-    Unk_0203398c(u32 x, u32 y, u32 z, u32 w);
-    ~Unk_0203398c();
+    GroundInfo(u32 x, u32 y, u32 z, u32 w);
+    ~GroundInfo();
 };
 
 struct VillagerRoute;
@@ -2398,7 +2398,7 @@ void _ZN13NpcActionCtrl13func_02019854Ev(void *p);
 void _ZN12Unk_0201347413func_020135e0Ev(void *p);
 void func_020f43c8(void *p);
 void _ZN12Unk_020e0cf4D1Ev(void *p);
-void _ZN12Unk_02032238D1Ev(void *p);
+void _ZN14CollisionStateD1Ev(void *p);
 void _ZN12Unk_0201a13cD2Ev(void *p);
 void _ZN14NpcSpeechStateD2Ev(void *p);
 void _ZN9NpcLookAt16clearTargetActorEv(void *p);
@@ -2445,7 +2445,7 @@ s32 _ZN12Unk_0201106c13func_02011410Ei(void *p, u32 v);
 void _ZN12Unk_0201106c13func_0201137cEi(void *p, u32 v);
 void _ZN12Unk_0201106c13func_02011408Ev(void *p);
 s32 InputMode_IsTouch(void);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 func_02038f00(void);
 void *Mem_AllocTail(u32 size);
 void *FS_OpenFile(void *self, const char *path);
@@ -2598,7 +2598,7 @@ void MI_CpuFill8(void* p, u32 v, u32 n);
 BOOL _ZN12Unk_0201281011scanForPathEP16Unk_02012810_VecP17Unk_02012b94_PairP16Unk_020130f0_DiriS3_iP16Unk_02012f04_Obj(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern Unk_02013260_Entry sVillagerRouteTypes[];
 s32 _ZN8NpcActor19getTeachableEmotionEv();
-s32 func_0203f048(u32 v);
+s32 Emotion_FindSlot(u32 v);
 void Effect_Create(u32 a, void* b, void* c, u32 d);
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
 {
@@ -2717,7 +2717,7 @@ extern "C" {
 
 extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 s32 Net_GetJoiningAid(void);
 s32 func_02094348(void);
 s32 _ZN15TalkWindowState17setSlotFromStringEiii(u32 a, u32 b, u32 c, u32 d);
@@ -2951,7 +2951,7 @@ void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
 void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 void PlayerActor_LocalRequestAct36(void *a, void *b, void *c, void *d, void *e);
 void PlayerActor_RequestAct30(void *a, void *b, void *c, void *d, void *e);
 void func_02057418(void *a, s32 b, u32 c, s32 d, void *e, s32 f);
@@ -3107,7 +3107,7 @@ namespace nP {
 extern "C" {
 
 extern u8 gVec3Zero[];
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern Unk_0201a334_Vec3 sNpcObstacleProbeOffsets[];
 extern Unk_0201ab4c_Ent sNpcMoveModeTable[];
@@ -3130,12 +3130,12 @@ BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos);
 void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
 s32 Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(void *v);
-s32 func_0202ffdc(s32 id);
+s32 Ground_GetExitAtPos(s32 id);
 BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 id, s32 a, s32 b);
-s32 _ZN12Unk_0203389c13func_02033914Ei(void *buf, s32 a);
-s32 func_02030798(s32 id);
-void func_02033988(void *buf);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *buf, s32 id, s32 a, s32 b);
+s32 _ZN14GroundInfoBase9getHeightEi(void *buf, s32 a);
+s32 Collision_HasUnitShapeAt(s32 id);
+void GroundInfo_Destruct(void *buf);
 s32 _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
 void _ZN12Unk_02015b8c17playAnimKeepFrameEP18Unk_02015b8c_Scenejjj(void *a, void *b, s32 c, u32 d, s32 e);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *a, void *b, s32 c, u32 d, s32 e, s32 f, s32 g, s32 h);
@@ -3202,8 +3202,8 @@ s32 _ZN12Unk_02015b8c9getAnimIdEj(void *p, s32 a);
 void _ZN12NpcEmotionFx6updateEPvsit(void *a, void *b, s32 c, s32 d, s32 e);
 void _ZN11NpcMoveCtrl10updateTurnEP18Unk_0201a334_Scene(void *p, void *q);
 s32 NetArea_IsLocalOwner();
-void func_020309d4(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
-s32 func_02030814(s32 a);
+void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
+s32 Ground_GetDefaultY(s32 a);
 void _ZN12Unk_0201a13c6updateEP17Unk_0201a1e0_Base(void *p, void *q);
 void _ZN16NpcObstacleProbe5clearEv(void *p);
 void _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(void *p, void *q);
@@ -3257,7 +3257,7 @@ void *MI_CpuFill8(void *dst, s32 v, u32 n);
 void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 u8 Npc_GetInfoByte2(void *p);
 u8 *func_020841fc(void *p);
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 void func_02084254(void *a, s32 b, void *c, s32 d, void *e, void *f);
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020d77a4_Global *g, s32 v);
 BOOL _ZN11CommManager8isOnlineEv(Unk_020d77a4_Global *g);
@@ -3280,8 +3280,8 @@ BOOL NpcActor_IsFrontAngle(s32 x);
 BOOL NpcActor_IsFrontAngle(s32 x);
 BOOL Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
-BOOL func_020b51fc();
-s32 func_020b522c();
+BOOL Scene_InMuseumRoom();
+s32 Scene_GetMuseumRoom();
 void func_02054628(void *self, u32 flags);
 void MTX_RotY33_(Unk_0201be34_Mtx *m, s32 a, s32 b);
 void MTX_RotX33_(Unk_0201be34_Mtx *m, s32 a, s32 b);
@@ -3751,7 +3751,7 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
         } else {
             isX = p->unk_ea == 0xd011 ? TRUE : FALSE;
         }
-        if (isX && (func_020b51fc() == 0 || func_020b522c() != 1)) {
+        if (isX && (Scene_InMuseumRoom() == 0 || Scene_GetMuseumRoom() != 1)) {
             if (idx == 0x10) {
                 u8 *base = self->unk_d4;
                 u16 off = *(u16 *)(base + 6);
@@ -4131,7 +4131,7 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
-    func_02084254(&unk_ea, func_020b50e8(), &unk_5c, unk_8e, unk_568, unk_62d);
+    func_02084254(&unk_ea, Scene_GetCurrent(), &unk_5c, unk_8e, unk_568, unk_62d);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
@@ -4311,9 +4311,9 @@ BOOL NpcActor::onExecute() {
     _ZN12NpcEmotionFx6updateEPvsit(((void *)((u8 *)this + (0x420))), ((void *)((u8 *)this + (0x478))), (*(s16 *)((u8 *)this + (0x8e))), _ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)this + (0x334))), 0), ((Unk_0201b2b8_Bits *)((void *)((u8 *)this + (0x190))))->mid);
     _ZN11NpcMoveCtrl10updateTurnEP18Unk_0201a334_Scene(((void *)((u8 *)this + (0x350))), this);
     if (NetArea_IsLocalOwner() && (*(u8 *)((u8 *)this + (0x510))) && (*(s32 *)((u8 *)this + (0x638))) > 0) {
-        func_020309d4(((void *)((u8 *)this + (0x49c))), ((void *)((u8 *)this + (0x5c))), ((void *)((u8 *)this + (0x68))), (*(s16 *)((u8 *)this + (0x8e))), (*(s32 *)((u8 *)this + (0x638))), this, 0xf);
+        Collision_Move(((void *)((u8 *)this + (0x49c))), ((void *)((u8 *)this + (0x5c))), ((void *)((u8 *)this + (0x68))), (*(s16 *)((u8 *)this + (0x8e))), (*(s32 *)((u8 *)this + (0x638))), this, 0xf);
     }
-    (*(s32 *)((u8 *)this + (0x60))) = func_02030814(0);
+    (*(s32 *)((u8 *)this + (0x60))) = Ground_GetDefaultY(0);
     _ZN12Unk_0201a13c6updateEP17Unk_0201a1e0_Base(((void *)((u8 *)this + (0x3b0))), this);
     _ZN16NpcObstacleProbe5clearEv(((void *)((u8 *)this + (0x3a8))));
     _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(((void *)((u8 *)this + (0x3a8))), this);
@@ -4898,8 +4898,8 @@ void NpcObstacleProbe::clear() {
 namespace nP {
 extern "C" BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos) {
     u32 buf[16];
-    if (Unk_0201a834_IsOne(data_020e416c)) {
-        if (func_0202ffdc((s32)pos) != -1) {
+    if (Unk_0201a834_IsOne(gFieldSceneKind)) {
+        if (Ground_GetExitAtPos((s32)pos) != -1) {
             return TRUE;
         }
         if (FtrMgr_GetSurfaceHeightAtPos((s32)pos)) {
@@ -4907,14 +4907,14 @@ extern "C" BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos) {
         }
         return FALSE;
     }
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, (s32)pos, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, (s32)pos, 0, 0);
     s32 r;
-    if (buf[12] != 0 || _ZN12Unk_0203389c13func_02033914Ei(buf, 1) > 0 || func_02030798((s32)pos)) {
+    if (buf[12] != 0 || _ZN14GroundInfoBase9getHeightEi(buf, 1) > 0 || Collision_HasUnitShapeAt((s32)pos)) {
         r = 1;
     } else {
         r = 0;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return r;
 }
 }
@@ -6831,7 +6831,7 @@ void Unk_02017d74::act0EStep00(C_7d74 *c) {
                 _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
             }
             unk_98 = 2;
-        } else if (Unk_02017d74_Is(&d->unk_22, 0x1565) && d->unk_24 == 0 && (func_020b50e8() == 9 || func_020b50e8() == 0x10)) {
+        } else if (Unk_02017d74_Is(&d->unk_22, 0x1565) && d->unk_24 == 0 && (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10)) {
             if (func_020572e0(c)) {
                 u16 v = data_020c6cc8;
                 _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
@@ -8396,7 +8396,7 @@ u8 ActorTalkRequest::getSpeakerIndex() {
 
 namespace nH {
 extern "C" s32 TalkRequest_GetPlayerId(void) {
-    if (func_020b50e8() == 0x2f) {
+    if (Scene_GetCurrent() == 0x2f) {
         return Net_GetJoiningAid();
     }
     return func_02094348();
@@ -10049,7 +10049,7 @@ s32 Unk_020133cc_Player::getNewEmotionToLearn() {
             if (nD::_ZN8NpcActor14getTalkRequestEv(this) != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(nD::_ZN8NpcActor14getTalkRequestEv(this)) == NULL) {
                 s32 v = nD::_ZN13NpcActionCtrl12getEmotionIdEv(&unk_564);
                 if (v > 0 && v < 0x3c && v != getLastTaughtEmotion()) {
-                    if (func_0203f048((u8)v) == -1) {
+                    if (Emotion_FindSlot((u8)v) == -1) {
                         result = v;
                         setLastTaughtEmotion((u8)v);
                     }
@@ -10162,7 +10162,7 @@ extern "C" BOOL _ZN12Unk_0201281011scanForPathEP16Unk_02012810_VecP17Unk_02012b9
         y += step[1];
         if (x >= bound[0] || y >= bound[1]) continue;
         if (flag != 0) {
-            Unk_0203398c o(x, y, zero, zero);
+            GroundInfo o(x, y, zero, zero);
             if (o.unk_30 != 0) cnt++; else cnt = zero;
             if (cnt >= 4) break;
         }
@@ -11198,7 +11198,7 @@ inline NpcActor::~NpcActor() {
     *(u32 *)((u8 *)this + 0x514) = (u32)data_020d6f54;
     func_020f43c8((u8 *)this + 0x514);
     _ZN12Unk_020e0cf4D1Ev((u8 *)this + 0x4cc);
-    _ZN12Unk_02032238D1Ev((u8 *)this + 0x49c);
+    _ZN14CollisionStateD1Ev((u8 *)this + 0x49c);
     _ZN12Unk_0201a13cD2Ev((u8 *)this + 0x420);
     _ZN14NpcSpeechStateD2Ev((u8 *)this + 0x418);
     _ZN9NpcLookAt16clearTargetActorEv((u8 *)this + 0x3b0);

@@ -163,8 +163,8 @@ BOOL func_02094de0();
 BOOL func_02094960();
 void func_020949a0();
 BOOL func_02094898();
-u32 func_020b4934();
-void func_020b4bbc(u32 a, u32 b);
+u32 Scene_GetWarpRequest();
+void SceneWarp_RequestExit(u32 a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(s32 v);
 BOOL PlayerActor_LocalRequestLeaveRoom();
 Unk_0203e604_Obj *Character_FindInteractionTarget(Unk_0203e604_Obj *o);
@@ -560,7 +560,7 @@ extern "C" BOOL func_0203de70(Unk_0203dad4_Task *t) {
     if (o != NULL) {
         o->vfunc_4c(2, 4);
     }
-    func_020b4bbc(func_020b4934(), t->unk_16);
+    SceneWarp_RequestExit(Scene_GetWarpRequest(), t->unk_16);
     return TRUE;
 }
 
@@ -981,7 +981,7 @@ extern "C" BOOL TalkRequest_AddPlayerTalk7(u32 a, s32 b) {
     return FALSE;
 }
 
-extern "C" BOOL TalkRequest_EndTalkWith(u32 x) {
+extern "C" BOOL TalkRequest_SetTargetDone(u32 x) {
     if (!TalkRequest_IsCurrentKind(2) && !TalkRequest_IsCurrentKind(6) && !TalkRequest_IsCurrentKind(7)) {
         return FALSE;
     }

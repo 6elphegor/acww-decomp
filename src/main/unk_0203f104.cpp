@@ -114,7 +114,7 @@ s32 Backup_GetStatus(void *p);
 s32 func_02040264(s32 v);
 s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff413func_02098044Ej(s32 p, s32 v);
+s32 _ZN12Unk_02097ff48testFlagEj(s32 p, s32 v);
 s32 func_020400b0(...);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
@@ -1061,7 +1061,7 @@ extern "C" BOOL func_0203f14c(void) {
         r = TRUE;
     } else {
         s32 p = PlayerData_GetCurrent();
-        if (p == 0 || _ZN12Unk_02097ff413func_02098044Ej(p, 1) != 0) {
+        if (p == 0 || _ZN12Unk_02097ff48testFlagEj(p, 1) != 0) {
             r = TRUE;
         }
     }

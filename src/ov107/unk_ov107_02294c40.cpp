@@ -236,7 +236,7 @@ s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
 u16 *PendingUnit_GetActivePosOfAid(s32 a);
 void NetBuf_PackPair20(void *dst, s32 a, s32 b);
 u8 *func_02095204(s32 a);
-s32 func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 u32 func_02063b8c(s32 a);
 u16 MenuCtrl_GetPocketsFullItem();
 void Item_FromPlacedForm(void *a, void *b);
@@ -1560,7 +1560,7 @@ BOOL PocketsFullMenu::canReleaseFish() {
     s32 i = 0;
     s32 base = *(s16 *)(p + 0x8e);
     for (; i < 8; i++) {
-        if (func_02030d78(&unk_c0, q, (s16)(base + sFishReleaseProbeAngles[i]), 0x7800, 0xa00, 0xc)) {
+        if (Ground_FindWaterAhead(&unk_c0, q, (s16)(base + sFishReleaseProbeAngles[i]), 0x7800, 0xa00, 0xc)) {
             return TRUE;
         }
     }

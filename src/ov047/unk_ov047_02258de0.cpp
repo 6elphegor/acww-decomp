@@ -89,7 +89,7 @@ extern u8 __ptmf_null[];
 BOOL Talk_IsInOwnTown();
 void Talk_AdvanceDrama(void *self, void *out);
 BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFossilGroup(u16 *p);
@@ -100,18 +100,18 @@ BOOL MenuCtrl_BuildPocketMask(Unk_ov047_Cb cb);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 s32 func_0206fe34(void *g, s32 id);
-void *func_020850e0();
-s32 func_020851bc(void *p, s32 a);
-void func_020851a4(void *p, s32 a);
+void *TownSessionState_Get();
+s32 TownSessionState_TestFlag(void *p, s32 a);
+void TownSessionState_SetFlag(void *p, s32 a);
 void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 h, void *b, void *c);
 void *PlayerData_GetCurrent();
-u16 func_02099048(s32 a);
-void func_02099064(s32 a);
-void func_0209909c(u16 *p, s32 a, s32 b);
+u16 Pocket_GetItem(s32 a);
+void Pocket_RemoveItem(s32 a);
+void Pocket_SetItem(u16 *p, s32 a, s32 b);
 BOOL ParcelErrand_IsFor(u32 a, u16 *p);
-u32 func_0209a108(u32 a);
+u32 ParcelErrand_GetRecord(u32 a);
 s16 *func_0209c37c(s32 a, s32 b);
 s32 Clock_GetTimeOfDay();
 BOOL GameStart_IsActive();
@@ -154,11 +154,11 @@ s32 _ZN10MuseumData16getDonationStateEPt(void *g, u16 *p);
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *self, void *buf, void *name);
 void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *obj);
 u32 _ZN10ChoiceList9getResultEv();
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 v);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(u32 a, u32 b);
+void _ZN12Unk_02097ff47setFlagEj(void *p, u32 v);
+BOOL _ZN12Unk_02097ff48testFlagEj(u32 a, u32 b);
 u32 _ZN10PlayerData13func_0209865cEv(...);
 u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
-void _ZN12Unk_0209ada413func_0209abb4Eh(u32 a, s32 b);
+void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 void _ZN8SaveData7setFlagEj(void *g, u32 n);
 BOOL _ZN8SaveData8testFlagEj(void *g, u32 n);
 BOOL _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
@@ -197,11 +197,11 @@ BOOL _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define func_0209865c _ZN10PlayerData13func_0209865cEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
-#define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
+#define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
 #define SaveData_testFlag _ZN8SaveData8testFlagEj
 
@@ -310,7 +310,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -425,7 +425,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -958,7 +958,7 @@ BOOL SpNpcBlathers::setupAct03() {
 BOOL SpNpcBlathers::mainAct03() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         unk_732 = 0;
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
     return TRUE;
@@ -1068,7 +1068,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
         Unk_020e1c64 ob;
         unk_c4 = -1;
         unk_c4 = MenuCtrl_GetIndex();
-        unk_ca = func_02099048(unk_c4);
+        unk_ca = Pocket_GetItem(unk_c4);
         if (!Unk_ov047_0225a3e4_Same(&unk_ca, &m.unk_02)) {
             ActorTalkRequest_setItemNameSlot(this, &unk_ca, 0, 7);
             if (Unk_ov047_0225a4a8_R(&unk_ca, 0x1549, 0x1549)) {
@@ -1094,7 +1094,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
                         unk_ca = (u32)idx < 0x14 ? idx * 4 + 0x3934 : 0x3934;
                         s32 t = unk_c4;
                         if (t >= 0) {
-                            func_0209909c(&unk_ca, 0, t);
+                            Pocket_SetItem(&unk_ca, 0, t);
                         }
                         m.unk_00 = 0x42;
                     } else if (unk_ca >= 0x3934 && unk_ca <= 0x3983) {
@@ -1144,7 +1144,7 @@ void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
     m.unk_00 = 0x22;
     if (MenuCtrl_IsResultOk()) {
         unk_c4 = MenuCtrl_GetIndex();
-        unk_ca = func_02099048(unk_c4);
+        unk_ca = Pocket_GetItem(unk_c4);
         Unk_02014420_requestTakeItem(this, &unk_ca, 0, 10, 0);
         m.unk_00 = 0x19;
     } else {
@@ -1188,14 +1188,14 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
     u32 r7 = (u32)PlayerData_GetCurrent();
     if (MenuCtrl_IsResultOk() && Talk_IsInOwnTown()) {
         s32 r5 = MenuCtrl_GetIndex();
-        m.unk_02 = func_02099048(r5);
+        m.unk_02 = Pocket_GetItem(r5);
         if (r5 >= 0) {
-            func_02099064(r5);
+            Pocket_RemoveItem(r5);
         }
         if (!Unk_ov047_0225a3e4_Same(&m.unk_02, &m.unk_04)) {
             Unk_02014420_requestTakeItem(this, &m.unk_02, 2, 5, 0);
         }
-        func_0209abb4(func_0209a108(SickVillagerRecord_getParcelErrand(func_0209865c(r7))), 1);
+        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(func_0209865c(r7))), 1);
         m.unk_00 = 0xe7;
     }
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
@@ -1273,7 +1273,7 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
     }
     unk_ac = 0;
     if (Talk_IsInOwnTown() == 0) {
-        if (func_020851bc(func_020850e0(), 9) == 0) {
+        if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
             if (unk_b0->unk_732 != 0) {
                 out->unk_04 = 4;
             } else {
@@ -1286,8 +1286,8 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
                 out->unk_04 = 7;
             }
         }
-        func_020851a4(func_020850e0(), 9);
-    } else if (func_020851bc(func_020850e0(), 9) == 0) {
+        TownSessionState_SetFlag(TownSessionState_Get(), 9);
+    } else if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
         if (MuseumData_isComplete(data_021ed0a0)) {
             if (unk_b0->unk_732 != 0) {
                 out->unk_04 = 0;
@@ -1302,7 +1302,7 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
             }
         }
         unk_b0->unk_732 = 0;
-        func_020851a4(func_020850e0(), 9);
+        TownSessionState_SetFlag(TownSessionState_Get(), 9);
     } else if (MuseumData_isComplete(data_021ed0a0)) {
         if (unk_b0->unk_732 != 0) {
             out->unk_04 = 3;
@@ -1325,9 +1325,9 @@ void SpNpcBlathersTalk::commitDonation() {
         void *p = PlayerData_GetCurrent();
         MuseumData_donate(data_021ed0a0, &unk_ca);
         SaveData_setFlag(gSaveData, 0xc);
-        func_0209801c(p, 8);
+        Unk_02097ff4_setFlag(p, 8);
         if (unk_c4 >= 0) {
-            func_02099064(unk_c4);
+            Pocket_RemoveItem(unk_c4);
             unk_c4 = -1;
         }
         unk_ca = 0xfff1;
@@ -1467,9 +1467,9 @@ test:
             s32 a, b, r;
             MuseumData_donate(g, &unk_ca);
             SaveData_setFlag(gSaveData, 0xc);
-            func_0209801c(p, 8);
+            Unk_02097ff4_setFlag(p, 8);
             if (unk_c4 >= 0) {
-                func_02099064(unk_c4);
+                Pocket_RemoveItem(unk_c4);
                 unk_c4 = -1;
             }
             a = Item_GetFossilGroup(&unk_ca);
@@ -1539,11 +1539,11 @@ void SpNpcBlathersTalk::appraiseFossil() {
     u16 bufa, bufb;
     if (!Unk_ov047_022596e8_IsNone(&unk_ca)) {
         void *p = PlayerData_GetCurrent();
-        func_0209801c(p, 0x35);
+        Unk_02097ff4_setFlag(p, 0x35);
         ItemPick_FromRange(&bufb, 0x450c, 0x34, 0, 0, 0, 1, 10, 0, 1);
         unk_ca = bufb;
         if (unk_c4 >= 0) {
-            func_0209909c(&unk_ca, 0, unk_c4);
+            Pocket_SetItem(&unk_ca, 0, unk_c4);
         }
         ActorTalkRequest_setItemNameSlot(this, &unk_ca, 0, 7);
         ItemPick_FromRange(&bufa, 0x450c, 0x34, &unk_ca, 1, 0, 1, 10, 0, 1);
@@ -1870,7 +1870,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
         u32 r = (u32)PlayerData_GetCurrent();
         if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
             unk_cc = 0x18;
-        } else if (func_02098044(r, 0x35) == 0) {
+        } else if (Unk_02097ff4_testFlag(r, 0x35) == 0) {
             unk_c8 = 1;
             unk_cc = 0x17;
         } else {
@@ -1943,7 +1943,7 @@ void SpNpcBlathersTalk::onAppraiseAnotherChoice(u32 a) {
 
 void SpNpcBlathersTalk::onAppraiseDonatedFossilChoice(u32 a) {
     if (a == 0) {
-        if (func_02098044((u32)PlayerData_GetCurrent(), 0x35) == 0) {
+        if (Unk_02097ff4_testFlag((u32)PlayerData_GetCurrent(), 0x35) == 0) {
             unk_cc = 0x4b;
         } else {
             unk_cc = 0x19;

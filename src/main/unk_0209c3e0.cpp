@@ -12,7 +12,7 @@ public:
 
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 
 u8 data_021d7274[3];
 }
@@ -53,7 +53,7 @@ struct Unk_0209c41c_Pack {
 
 extern "C" BOOL func_0209c41c(Unk_0209c41c_Actor *self, u8 v) {
     BOOL is1;
-    if (data_020e416c == 1) is1 = TRUE;
+    if (gFieldSceneKind == 1) is1 = TRUE;
     else is1 = FALSE;
     if (is1) {
         if (self->vfunc_60(v)) {

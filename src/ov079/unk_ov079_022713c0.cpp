@@ -65,49 +65,49 @@ s32 _ZN8PlayerId13func_02094218Ev(void *p);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
-void *_ZN12Unk_0208581013func_020858acEv(void *p);
-void *_ZN12Unk_0208581013func_0208586cEv(void *p);
-s32 _ZN12Unk_0208581013func_02085810Ev(void *p);
-void func_02085818(u16 *out, void *p);
-void func_02085820(void *p, u16 *q);
-void _ZN12Unk_0208581013func_02085814Ei(void *p, s32 v);
-void _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(void *p, void *q);
-void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
-void _ZN12Unk_02087ad813func_02087b94Ei(void *p, s32 v);
+void *_ZN13ContestRecord13func_020858acEv(void *p);
+void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
+s32 _ZN13ContestRecord7getSizeEv(void *p);
+void ContestRecord_GetItem(u16 *out, void *p);
+void ContestRecord_SetItem(void *p, u16 *q);
+void _ZN13ContestRecord7setSizeEi(void *p, s32 v);
+void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
+void _ZN13ContestRecord7setKindEj(void *p, s32 v);
+void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02063388(Unk_0202368c_Obj *o);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void func_020947c0(u16 *out, void *p);
 void *func_02094348();
 void Clock_GetDateTime(void *p);
-s32 func_02098eb0(u16 *p);
-s32 func_02098ffc();
-void func_02099064(s32 v);
+s32 Pocket_FindItem(u16 *p);
+s32 Pocket_FindEmpty();
+void Pocket_RemoveItem(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 func_02085618(u16 *p);
+s32 Contest_GetCatchSize(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
 u32 func_02063b8c(u32 n);
-void func_02085784(void *g, u32 a);
+void ContestRecord_BeginContestDay(void *g, u32 a);
 u32 func_02060e24(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *g, void *p);
+void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u16 data_020c6cc8;
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u8 gSaveData[];
 extern u8 data_021dfd8c[];
 extern u32 __ptmf_null[];
@@ -253,7 +253,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -364,7 +364,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -475,21 +475,21 @@ BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
 
 extern "C" {
 void EventWeekSlots_MarkPlayer(u32 a);
-u32 func_02099048(s32 v);
-BOOL func_02099014(u16 *p, u32 a);
+u32 Pocket_GetItem(s32 v);
+BOOL Pocket_AddItem(u16 *p, u32 a);
 void *_ZN10PlayerData13func_020986d4Ev(void *p);
-void *_ZN14PlayerPatterns13func_02071c5cEv(void *p);
-u32 _ZN12Unk_02071c1c13func_02071c1cEj(void *p, u32 v);
-void *_ZN14PlayerPatterns13func_02071c88Eh(void *p, u32 v);
-void *_ZN7Pattern13func_02071e04Ev(void *p);
-void _ZN12Unk_02071ed013func_02071f70EPv(void *p, void *q);
+void *_ZN14PlayerPatterns15getPatternOrderEv(void *p);
+u32 _ZN12PatternOrder7getSlotEj(void *p, u32 v);
+void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 v);
+void *_ZN7Pattern7getInfoEv(void *p);
+void _ZN11PatternInfo8getTitleEPv(void *p, void *q);
 u16 *_ZN10PlayerData6getHatEv(void *p);
 u16 *_ZN10PlayerData8getShirtEv(void *p);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void PlayerActor_RequestWearHatAlt(u16 *p);
 void PlayerActor_RequestChangeHeldItem(u16 *p);
-void func_02070e4c(u32 a, u32 b, u32 c, u32 d, u32 e);
+void PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 func_0204b9e8(u16 *p);
@@ -517,8 +517,8 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
 BOOL func_02040c88();
-void *func_020850e0();
-void func_0208516c(void *p);
+void *TownSessionState_Get();
+void TownSessionState_GetVisitorPos(void *p);
 void _ZN10VisitorPos13pickRandomPosEv();
 void _ZN12Unk_0201442014requestEatItemEv(void *p);
 void _ZN12Unk_0201442017requestReturnItemEv(void *p);
@@ -595,7 +595,7 @@ BOOL SpNpcWendell::vfunc_0c() {
         return FALSE;
     }
     if (func_02040c88() == 0) {
-        func_0208516c(func_020850e0());
+        TownSessionState_GetVisitorPos(TownSessionState_Get());
         _ZN10VisitorPos13pickRandomPosEv();
     }
     return TRUE;
@@ -838,7 +838,7 @@ BOOL SpNpcWendell::setupAct00() { return TRUE; }
 
 BOOL SpNpcWendell::mainAct00() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
     return TRUE;
@@ -968,7 +968,7 @@ void SpNpcWendellTalk::onFoodPicked() {
     unk_c4 = -1;
     if (MenuCtrl_IsResultOk()) {
         unk_c4 = MenuCtrl_GetIndex();
-        unk_c0 = func_02099048(unk_c4);
+        unk_c0 = Pocket_GetItem(unk_c4);
         v = 2;
         BOOL f = FALSE;
         u16 c = unk_c0;
@@ -990,7 +990,7 @@ void SpNpcWendellTalk::onFoodPicked() {
             unk_c4 = -1;
         }
         if (unk_c4 >= 0) {
-            func_02099064(unk_c4);
+            Pocket_RemoveItem(unk_c4);
             unk_c4 = -1;
         }
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_c0, 0, 4, 0);
@@ -1013,7 +1013,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
     if (MenuCtrl_IsResultOk()) {
         void *g = PlayerData_GetCurrent();
         u32 a0 = MenuCtrl_GetIndex();
-        u32 r6 = _ZN12Unk_02071c1c13func_02071c1cEj(_ZN14PlayerPatterns13func_02071c5cEv(_ZN10PlayerData13func_020986d4Ev(g)), a0);
+        u32 r6 = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(_ZN10PlayerData13func_020986d4Ev(g)), a0);
         r4 = 0;
         if (Unk_ov079_02271718_Chk(this, &buf.v[4], 0x131f)) {
             r4 = 0x15;
@@ -1059,7 +1059,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
                 r4 = 9;
             }
         }
-        func_02070e4c(7, r4, 9, r6, 1);
+        PatternSrc_Copy(7, r4, 9, r6, 1);
         buf.t = 5;
         buf.v[0] = 0x3530;
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &buf.v[0], 0, 5, 0);
@@ -1100,10 +1100,10 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
                 PlayerActor_RequestChangeHeldItem(&buf.v[3]);
             }
         }
-        void *h = _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(g), r6);
+        void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(g), r6);
         u32 obj[9];
         _ZN8ItemNameC1Ev(obj);
-        _ZN12Unk_02071ed013func_02071f70EPv(_ZN7Pattern13func_02071e04Ev(h), obj);
+        _ZN11PatternInfo8getTitleEPv(_ZN7Pattern7getInfoEv(h), obj);
         unk_3c->setNamedSlot(1, obj, 7);
         _ZN8ItemNameD1Ev(obj);
     }
@@ -1179,7 +1179,7 @@ void SpNpcWendellTalk::vfunc_14() {
         _ZN12Unk_0201442017requestReturnItemEv(this);
         break;
     case 9:
-        if (func_02099014(&unk_c0, 0)) {
+        if (Pocket_AddItem(&unk_c0, 0)) {
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_c0, 0, 5, 0);
         }
         r = 0xa;

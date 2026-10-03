@@ -8,7 +8,7 @@ struct Unk_0203389c_Vec {
 typedef Unk_0203389c_Vec Unk_02093aa8_Vec;
 typedef Unk_0203389c_Vec Unk_02093748_Vec;
 
-class Unk_0203398c {
+class GroundInfo {
 public:
     u8 pad_00[0x24];
     s32 unk_24, unk_28, unk_2c;
@@ -16,9 +16,9 @@ public:
     s32 unk_34;
     u8 pad_38[4];
     s32 unk_3c;
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
+    GroundInfo() {}
+    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
+    ~GroundInfo();
 };
 
 struct Unk_020904f0_Vec {
@@ -732,13 +732,13 @@ s32 _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(void *p, u32 a, s32 b, s32 c
 
 void MI_CpuCopy8(void *, void *, u32);
 
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 b, s32 c, s32 d);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *buf, s32 b, s32 c, s32 d);
 
-void func_02033988(void *buf);
+void GroundInfo_Destruct(void *buf);
 
 s32 Weather_GetFallingPrecip(void);
 
-s32 func_020b50bc(void);
+s32 GroundSeason_IsSnow(void);
 
 void func_020e93a0(Unk_02091404_V *v, s16 a);
 
@@ -816,7 +816,7 @@ extern u8 data_020e165c[];
 
 extern u8 data_020e14c4[];
 
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 
 extern Unk_02092388_Data data_021d0830;
 
@@ -848,11 +848,11 @@ void func_0208fe0c(void *o);
 
 s32 Weather_GetFallingPrecip();
 
-s32 func_020b50bc();
+s32 GroundSeason_IsSnow();
 
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, s32 pos, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *buf, s32 pos, s32 a, s32 b);
 
-void func_02033988(void *buf);
+void GroundInfo_Destruct(void *buf);
 
 s32 Sky_GetLightColor(s32 a);
 
@@ -928,9 +928,9 @@ s32 Effect_SpawnParticleLandings(void *, s32, void *, s32, s32, s32, s32, s32, s
 
 s32 Effect_StartWaterColumn(s32, s32, s32, s32, void *, void *, void *);
 
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *, void *, s32, s32);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *, void *, s32, s32);
 
-void func_02033988(void *);
+void GroundInfo_Destruct(void *);
 
 s32 func_020e94f8(void *);
 
@@ -982,7 +982,7 @@ extern u8 data_020d0318[];
 
 extern u8 data_020d0390[];
 
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 
 extern Unk_021d0830 data_021d0830;
 
@@ -1006,11 +1006,11 @@ s32 _ZN10EffectSlot5clearEv(void *obj);
 
 s32 Weather_GetFallingPrecip();
 
-s32 func_020b50bc();
+s32 GroundSeason_IsSnow();
 
 s32 func_0208fe0c(void *obj);
 
-void func_02033988(void *o);
+void GroundInfo_Destruct(void *o);
 
 void func_020e944c(Unk_02093748_Vec *v, s32 a);
 
@@ -1027,7 +1027,7 @@ void EffectModel_InitUnitScale(void *o);
 void EffectModel_InitDefault(void *o);
 
 s32 Effect_SpawnParticleLandings(void *o, s32 a, void *b, s32 c, void *d, s32 e, void *f, s32 g, void *h);
-s32 _ZN12Unk_0203389c13func_020338e8Ev(void *p);
+s32 _ZN14GroundInfoBase16getWaterSurfaceYEv(void *p);
 }
 }
 
@@ -1306,11 +1306,11 @@ extern "C" s32 Effect_SpawnParticleLandings(Unk_02093aa8_Owner *o, s32 p1, s32 p
     if (n != NULL) {
         result = TRUE;
         while (n != NULL) {
-            Unk_0203398c g;
+            GroundInfo g;
             pos.x = n->x + n->ox;
             pos.y = n->y + n->oy;
             pos.z = n->z + n->oz;
-            g.func_020339bc(&pos, 0, 0);
+            g.initAtPos(&pos, 0, 0);
             if (g.unk_30 != 0) {
                 if (pos.y <= g.unk_3c) {
                     pos.y = g.unk_3c;
@@ -1349,13 +1349,13 @@ s32 EffectSplEmitter::spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, 
     if (n) {
         result = TRUE;
         for (; n;) {
-            Unk_0203398c o;
+            GroundInfo o;
             v.x = n->unk_08 + n->unk_38;
             v.y = n->unk_0c + n->unk_3c;
             v.z = n->unk_10 + n->unk_40;
-            o.func_020339bc(&v, 0, 0);
+            o.initAtPos(&v, 0, 0);
             if (o.unk_30 != 0) {
-                s32 h = _ZN12Unk_0203389c13func_020338e8Ev(&o);
+                s32 h = _ZN14GroundInfoBase16getWaterSurfaceYEv(&o);
                 if (v.y <= h) {
                     v.y = h;
                     if (id1 != -1) {
@@ -1443,15 +1443,15 @@ extern "C" s32 Effect_StartModel(s32 kind, s32 a, void *b, void *c, s32 d, Unk_0
 namespace R6 {
 extern "C" s32 Effect_CreateKind00(s32 a, void *b, u16 *c, s32 d)
 {
-    Unk_0203398c o;
+    GroundInfo o;
     s32 t, result, kind;
     const void *p;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     t = o.unk_34;
     p = data_020e1480;
     result = 3;
     kind = 2;
-    if (Unk_020935e8_IsOne(*data_020e416c)) {
+    if (Unk_020935e8_IsOne(*gFieldSceneKind)) {
         if (t == 9 || t == 3) {
             result = Effect_StartOneShot(2, a, b, c, d, (void *)p);
         }
@@ -1466,7 +1466,7 @@ extern "C" s32 Effect_CreateKind00(s32 a, void *b, u16 *c, s32 d)
             p = data_020e16d4;
         } else if (t != 3) {
             if (t == 0x13) kind = 0x17;
-        } else if (func_020b50bc() != 0) {
+        } else if (GroundSeason_IsSnow() != 0) {
             kind = 0x18;
             p = 0;
         }
@@ -1513,12 +1513,12 @@ namespace R6 {
 extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
 {
     u8 *const g = (u8 *)gEffectManager;
-    Unk_0203398c o;
+    GroundInfo o;
     s32 t, result;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     t = o.unk_34;
     result = 3;
-    if (Unk_020935e8_IsOne(*data_020e416c)) {
+    if (Unk_020935e8_IsOne(*gFieldSceneKind)) {
         if (t == 9 || t == 3) {
             result = Effect_StartOneShot(0x19, a, b, c, d, data_020e14b4);
         }
@@ -1527,7 +1527,7 @@ extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
         if (func_0208fb20(0x1b, b, c, data_020e14d4) != 0) {
             result = 2;
         }
-    } else if (t == 3 && func_020b50bc() != 0) {
+    } else if (t == 3 && GroundSeason_IsSnow() != 0) {
         _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(&(*(Unk_021d0830 *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
         if (func_0208fb20(0x1c, b, c, data_020e14ec) != 0) {
             result = 2;
@@ -1583,9 +1583,9 @@ extern "C" s32 Effect_CreateKind03(s32 a, void *b, void *c, s32 d)
 namespace R6 {
 extern "C" s32 Effect_CreateKind06(s32 a, void *b, void *c, s32 d)
 {
-    Unk_0203398c o;
+    GroundInfo o;
     s32 r, kind;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     if (o.unk_34 == 0x13) {
         kind = 0x2d;
     } else {
@@ -1613,9 +1613,9 @@ extern "C" s32 EffectKind07_InitEmitter1(void *a)
 namespace R6 {
 extern "C" s32 Effect_CreateKind07(s32 a, void *b, void *c, s32 d)
 {
-    Unk_0203398c o;
+    GroundInfo o;
     s32 r, kind;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     if (o.unk_34 == 0x13) {
         kind = 0x2e;
     } else {
@@ -1629,9 +1629,9 @@ extern "C" s32 Effect_CreateKind07(s32 a, void *b, void *c, s32 d)
 namespace R6 {
 extern "C" s32 Effect_CreateKind08(s32 a, void *b, void *c, s32 d)
 {
-    Unk_0203398c o;
+    GroundInfo o;
     s32 r, kind;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     if (o.unk_34 == 0x13) {
         kind = 0x30;
     } else {
@@ -1652,9 +1652,9 @@ extern "C" s32 EffectKind09_InitEmitter0(void *a)
 namespace R6 {
 extern "C" s32 Effect_CreateKind09(s32 a, void *b, void *c, s32 d)
 {
-    Unk_0203398c o;
+    GroundInfo o;
     s32 r, kind;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     if (o.unk_34 == 0x13) {
         kind = 0x32;
     } else {
@@ -1669,9 +1669,9 @@ namespace R6 {
 extern "C" s32 Effect_CreateKind0A(s32 a, void *b, void *c, s32 d)
 {
     u8 *const g = (u8 *)gEffectManager;
-    Unk_0203398c o;
+    GroundInfo o;
     s32 t, result;
-    o.func_020339bc((Unk_02093748_Vec *)b, 0, 0);
+    o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
     t = o.unk_34;
     result = 3;
     if (Weather_GetFallingPrecip() == 1) {
@@ -1679,7 +1679,7 @@ extern "C" s32 Effect_CreateKind0A(s32 a, void *b, void *c, s32 d)
         if (func_0208fb20(0x36, b, c, data_020e1594) != 0) {
             result = 2;
         }
-    } else if (func_020b50bc() != 0 && t == 3) {
+    } else if (GroundSeason_IsSnow() != 0 && t == 3) {
         _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(&(*(Unk_021d0830 *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
         if (func_0208fb20(0x35, b, c, data_020e15e4) != 0) {
             result = 2;
@@ -1731,9 +1731,9 @@ extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, 
 {
     Unk_02093748_Vec *v = (Unk_02093748_Vec *)b;
     u8 *const g = (u8 *)gEffectManager;
-    Unk_0203398c o;
+    GroundInfo o;
     s32 result;
-    o.func_020339bc(v, 0, 0);
+    o.initAtPos(v, 0, 0);
     result = 3;
     if (o.unk_30 != 0) {
         v->y = o.unk_3c;
@@ -1825,7 +1825,7 @@ extern "C" s32 EffectKind0E_InitEmitter0(Unk_02092830 *p) {
     pos.x = g->x;
     pos.y = g->y;
     pos.z = g->z;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&o, &pos, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&o, &pos, 0, 0);
     if (o.unk_30 != 0) {
         Unk_02092e98_Vec *pv = &o.unk_24;
         v.x = pv->x;
@@ -1841,7 +1841,7 @@ extern "C" s32 EffectKind0E_InitEmitter0(Unk_02092830 *p) {
         }
     }
     MI_CpuCopy8(g, gEffectManager + id.b[0], 0x1c);
-    func_02033988(&o);
+    GroundInfo_Destruct(&o);
 }
 }
 
@@ -1865,7 +1865,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(Unk_02092830 *p) {
         pos.x = r->unk_00;
         pos.y = r->unk_04;
         pos.z = r->unk_08;
-        _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&o, &pos, 0, 0);
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&o, &pos, 0, 0);
         if (o.unk_30 != 0) {
             Unk_02092e98_Vec *pv = &o.unk_24;
             v.x = pv->x;
@@ -1882,7 +1882,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(Unk_02092830 *p) {
         }
         if (r->unk_0e > 0) r->unk_0e--;
         s = 1;
-        func_02033988(&o);
+        GroundInfo_Destruct(&o);
     }
     if (s == 0) _ZN10EffectSlot5clearEv(r);
     return s;
@@ -2123,21 +2123,21 @@ namespace R4 {
 extern "C" s32 Effect_CreateKind22(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[17];
     s32 r;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     u32 t = buf[13];
     r = 3;
-    if (Unk_02092770_IsOne(data_020e416c)) {
+    if (Unk_02092770_IsOne(gFieldSceneKind)) {
         if (t == 9 || t == 3) {
             r = Effect_StartOneShot(0x4b, a, b, c, d, 0);
         }
     } else if (t == 0x16 || Weather_GetFallingPrecip() == 1) {
         r = Effect_StartOneShot(0x4d, a, b, c, d, 0);
-    } else if (t == 3 && func_020b50bc()) {
+    } else if (t == 3 && GroundSeason_IsSnow()) {
         r = Effect_StartOneShot(0x4e, a, b, c, d, 0);
     } else {
         r = Effect_StartOneShot(t == 0x13 ? 0x4c : 0x4b, a, b, c, d, 0);
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return r;
 }
 }
@@ -2151,7 +2151,7 @@ extern "C" s32 EffectKind23_InitEmitter0(void *a) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind23(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     s32 id;
     if (buf[13] == 0x13) {
         id = 0x6f;
@@ -2159,7 +2159,7 @@ extern "C" s32 Effect_CreateKind23(s32 a, s32 b, s32 c, s32 d) {
         id = 0x6e;
     }
     s32 res = Effect_StartOneShot(id, a, b, c, d, data_020e14c4);
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return res;
 }
 }
@@ -2274,14 +2274,14 @@ extern "C" s32 Effect_CreateKind26(s32 a, s32 b, s32 c, s32 d) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     u32 t = buf[13];
-    if (t == 0x13 || (func_020b50bc() && t == 3)) {
+    if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x55, a, b, c, d, data_020e16d4);
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
         return res;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return 3;
 }
 }
@@ -2289,14 +2289,14 @@ extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind28(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     u32 t = buf[13];
-    if (t == 0x13 || (func_020b50bc() && t == 3)) {
+    if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x56, a, b, c, d, data_020e16d4);
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
         return res;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return 3;
 }
 }
@@ -2344,18 +2344,18 @@ extern "C" void EffectKind29_InitEmitter0(Unk_02092388_Obj *o) {
 namespace R4 {
 extern "C" s32 Effect_StartOnSandOrSnow(s32 a, s32 b, s32 c, s32 d, s32 e, void *f) {
     u32 buf[16];
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     u32 t = buf[13];
     s32 r = -1;
-    if (t == 0x13 || (func_020b50bc() && t == 3)) {
+    if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         r = e;
     }
     if (r != -1) {
         s32 res = Effect_StartOneShot(e, a, b, c, d, f);
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
         return res;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return 3;
 }
 }
@@ -2859,20 +2859,20 @@ extern "C" s32 Effect_CreateKind37(s32 a, s32 b, s32 c, s32 d)
     s32 k;
     s32 id;
     s32 r;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     k = buf[13];
     id = -1;
-    if (func_020b50bc() != 0 && k == 3) {
+    if (GroundSeason_IsSnow() != 0 && k == 3) {
         id = 0x88;
     } else if (k == 0x13) {
         id = 0x87;
     }
     if (id != -1) {
         r = Effect_StartOneShot(id, a, b, c, d, data_020e14a0);
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
         return r;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return 3;
 }
 }
@@ -2884,20 +2884,20 @@ extern "C" s32 Effect_CreateKind38(s32 a, s32 b, s32 c, s32 d)
     s32 k;
     s32 id;
     s32 r;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     k = buf[13];
     id = -1;
-    if (func_020b50bc() != 0 && k == 3) {
+    if (GroundSeason_IsSnow() != 0 && k == 3) {
         id = 0x8a;
     } else if (k == 0x13) {
         id = 0x89;
     }
     if (id != -1) {
         r = Effect_StartOneShot(id, a, b, c, d, data_020e14a0);
-        func_02033988(buf);
+        GroundInfo_Destruct(buf);
         return r;
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return 3;
 }
 }
@@ -2929,14 +2929,14 @@ extern "C" s32 Effect_CreateKind39(s32 a, s32 b, s32 c, s32 d)
     u32 buf[17];
     s32 result;
     s32 k;
-    _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, b, 0, 0);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, b, 0, 0);
     k = buf[13];
     result = 3;
     if (k == 0x16 || Weather_GetFallingPrecip() == 1) {
         if (Effect_StartTracked(0x85, a, b, c, d, data_020e155c) == 0) {
             result = 2;
         }
-    } else if (k == 3 && func_020b50bc() != 0) {
+    } else if (k == 3 && GroundSeason_IsSnow() != 0) {
         if (Effect_StartTracked(0x86, a, b, c, d, data_020e1554) == 0) {
             result = 2;
         }
@@ -2945,7 +2945,7 @@ extern "C" s32 Effect_CreateKind39(s32 a, s32 b, s32 c, s32 d)
     } else {
         result = Effect_StartOneShot(0x83, a, b, c, d, NULL);
     }
-    func_02033988(buf);
+    GroundInfo_Destruct(buf);
     return result;
 }
 }

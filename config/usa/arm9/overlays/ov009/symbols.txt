@@ -76,7 +76,7 @@ _ZN13BuildingActor8vfunc_74Ev kind:label(thumb) addr:0x0225ca98
 _ZN13BuildingActor8vfunc_6cEi kind:function(thumb,size=0xd8) addr:0x0225cb4c
 _ZN13BuildingActor8vfunc_6cEj kind:label(thumb) addr:0x0225cb4c
 _ZN16BuildingCollider14isPlayerAtDoorEP23Unk_ov009_0225b880_Vec3iP22Unk_ov009_0225cc24_Obj kind:function(thumb,size=0xc4) addr:0x0225cc24
-_ZN16BuildingCollider8vfunc_10EP23Unk_ov009_0225b880_Vec3P22Unk_ov009_0225cc24_Obji kind:function(thumb,size=0x48) addr:0x0225cce8
+_ZN16BuildingCollider11onActorNearEP23Unk_ov009_0225b880_Vec3P22Unk_ov009_0225cc24_Obji kind:function(thumb,size=0x48) addr:0x0225cce8
 _ZN16BuildingColliderC1Ev kind:function(thumb,size=0x18) addr:0x0225cd30
 _ZN19BuildingShadowTable8getEntryEj kind:function(thumb,size=0xa) addr:0x0225cd48
 _ZN19BuildingShadowTable8getCountEv kind:function(thumb,size=0x4) addr:0x0225cd54

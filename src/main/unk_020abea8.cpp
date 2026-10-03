@@ -112,7 +112,7 @@ void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e84f8(void *m, s32 a, s32 b, s32 c);
 void MTX_Concat43(void *a, void *b, void *c);
 void VEC_Normalize(void *a, void *b);
-s32 func_02030814(s32 a);
+s32 Ground_GetDefaultY(s32 a);
 void WorldCurve_Apply(Vec3 *out, Vec3 *in);
 Col SceneLights_GetRoomColor(void);
 RGB SceneLights_GetFlashColor(void);
@@ -478,7 +478,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
                 hi = t + (pos->x + unk_0c);
                 if (pos->z != unk_18) {
                     neg = -*p7;
-                    s32 y = func_02030814(z1);
+                    s32 y = Ground_GetDefaultY(z1);
                     tmp.x = z2;
                     tmp.y = y;
                     tmp.z = neg;

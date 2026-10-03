@@ -20,7 +20,7 @@ void FieldPos_ToUnit(s32 *x, s32 *z, void *p);
 void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
-BOOL func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+BOOL Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void NetBuf_PackPair20(void *out, s32 a, s32 b);
 u32 func_02063b8c(u32 a);
 void *Heap_AllocTail(void *heap, u32 size);
@@ -79,7 +79,7 @@ struct Unk_0208f238 {
     void func_0208f1a8(u32 v);
 };
 struct Unk_02097ff4 {
-    s32 func_02098044(u32 v);
+    s32 testFlag(u32 v);
 };
 struct PlayerData {
     u16 *getHeldItem();
@@ -244,7 +244,7 @@ s32 InvItem_IsNotFishInsectOrFlower(u32);
 
 extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
     Unk_0229bc90_Pad pad;
-    if (((Unk_02097ff4 *)PlayerData_GetCurrent())->func_02098044(1) != 0) {
+    if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
         }
@@ -315,7 +315,7 @@ BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
             base += 0x3e8;
         }
     }
-    return func_02030d78(&unk_2b84, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
+    return Ground_FindWaterAhead(&unk_2b84, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
 }
 
 void PocketMenu::actionReleaseFish() {

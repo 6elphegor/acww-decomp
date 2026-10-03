@@ -80,7 +80,7 @@ extern s32 gCamera;
 }
 
 extern "C" {
-extern Unk_0203ecec_Global *data_021ef2f0;
+extern Unk_0203ecec_Global *gCurSceneInfo;
 }
 
 extern "C" {
@@ -203,19 +203,19 @@ u32 func_0203efec(u32 x);
 }
 
 extern "C" {
-u8 *_ZN12Unk_02097ff413func_02098314Ev(s32 p);
+u8 *_ZN12Unk_02097ff411getEmotionsEv(s32 p);
 }
 
 extern "C" {
-s32 func_0203f048(u32 id);
+s32 Emotion_FindSlot(u32 id);
 }
 
 extern "C" {
-s32 func_0203f100(u8 *p, s32 i);
+s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-s32 func_0203f0fc(u8 *p, s32 i, u32 v);
+s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
@@ -306,14 +306,14 @@ static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 // prototypes (test harness)
-extern "C" s32 func_0203f100(u8 *p, s32 i);
-extern "C" s32 func_0203f0fc(u8 *p, s32 i, u32 v);
-extern "C" void func_0203f0ec(u8 *p);
-extern "C" s32 func_0203f0c0(void);
-extern "C" s32 func_0203f0b4(void);
-extern "C" void func_0203f094(s32 i, s32 v);
-extern "C" s32 func_0203f07c(s32 i);
-extern "C" s32 func_0203f048(u32 id);
+extern "C" s32 EmotionSlots_Get(u8 *p, s32 i);
+extern "C" s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
+extern "C" void EmotionSlots_Clear(u8 *p);
+extern "C" s32 Emotion_CountLearned(void);
+extern "C" s32 Emotion_FindFreeSlot(void);
+extern "C" void Emotion_SetSlot(s32 i, s32 v);
+extern "C" s32 Emotion_GetSlot(s32 i);
+extern "C" s32 Emotion_FindSlot(u32 id);
 extern "C" u32 func_0203efec(u32 x);
 extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in);
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in);
@@ -323,38 +323,38 @@ extern "C" s32 func_0203edc8(void);
 extern "C" s32 WorldCurve_GetRadius(void);
 extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 
-extern "C" s32 func_0203f100(u8 *p, s32 i) { return p[i]; }
+extern "C" s32 EmotionSlots_Get(u8 *p, s32 i) { return p[i]; }
 
-extern "C" s32 func_0203f0fc(u8 *p, s32 i, u32 v) { p[i] = v; }
+extern "C" s32 EmotionSlots_Set(u8 *p, s32 i, u32 v) { p[i] = v; }
 
-extern "C" void func_0203f0ec(u8 *p) {
+extern "C" void EmotionSlots_Clear(u8 *p) {
     for (s32 i = 0; i < 4; i++) {
         p[i] = 0xff;
     }
 }
 
-extern "C" s32 func_0203f0c0(void) {
+extern "C" s32 Emotion_CountLearned(void) {
     u8 *p; s32 i, n;
-    p = _ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent());
+    p = _ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent());
     n = 0;
     for (i = 0; i < 4; i++) {
-        if (func_0203f100(p, i) != 0xff) {
+        if (EmotionSlots_Get(p, i) != 0xff) {
             n++;
         }
     }
     return n;
 }
 
-extern "C" s32 func_0203f0b4(void) { return func_0203f048(0xff); }
+extern "C" s32 Emotion_FindFreeSlot(void) { return Emotion_FindSlot(0xff); }
 
-extern "C" void func_0203f094(s32 i, s32 v) { func_0203f0fc(_ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent()), i, v); }
+extern "C" void Emotion_SetSlot(s32 i, s32 v) { EmotionSlots_Set(_ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent()), i, v); }
 
-extern "C" s32 func_0203f07c(s32 i) { return func_0203f100(_ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent()), i); }
+extern "C" s32 Emotion_GetSlot(s32 i) { return EmotionSlots_Get(_ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent()), i); }
 
-extern "C" s32 func_0203f048(u32 id) {
-    u8 *p = _ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent());
+extern "C" s32 Emotion_FindSlot(u32 id) {
+    u8 *p = _ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent());
     for (s32 i = 0; i < 4; i++) {
-        if (id == (u32)func_0203f100(p, i)) {
+        if (id == (u32)EmotionSlots_Get(p, i)) {
             return i;
         }
     }
@@ -369,7 +369,7 @@ extern "C" u32 func_0203efec(u32 x) {
 #pragma thumb on
 
 extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(data_021ef2f0->unk_04)) {
+    if (IsOne(gCurSceneInfo->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
         if (in->unk_08 <= (*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10) {
             s32 t = in->unk_08 - ((*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10);
@@ -392,7 +392,7 @@ extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(data_021ef2f0->unk_04)) {
+    if (IsOne(gCurSceneInfo->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
         s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
@@ -408,7 +408,7 @@ extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(data_021ef2f0->unk_04)) {
+    if (IsOne(gCurSceneInfo->unk_04)) {
         s32 ang = func_020e7b98(in->unk_08, in->unk_04);
         out->unk_00 = in->unk_00;
         s32 a = func_01ffcb0c(in->unk_08, in->unk_08);
@@ -424,7 +424,7 @@ extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s16 func_0203edd0(WorldCurve *o) {
-    if (IsOne(data_021ef2f0->unk_04)) {
+    if (IsOne(gCurSceneInfo->unk_04)) {
         s32 a = func_01ffcb0c(o->unk_08, o->unk_08);
         s32 b = func_01ffcb0c(o->unk_04, o->unk_04);
         s32 c = func_01ffcb0c(0x1f576, 0x1f576);
@@ -464,7 +464,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
         }
         o->unk_10 = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
     }
-    if (IsOne(data_021ef2f0->unk_04)) {
+    if (IsOne(gCurSceneInfo->unk_04)) {
         o->unk_0c = (FX_Div(o->unk_08, data_021c3b94) * 0x2999) >> 12;
     } else {
         o->unk_0c = 0;

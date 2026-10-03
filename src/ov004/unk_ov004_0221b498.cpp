@@ -155,7 +155,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -266,7 +266,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -337,10 +337,10 @@ struct Unk_ov004_0221b6d4_Bits {
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define func_0209868c _ZN10PlayerData13func_0209868cEv
+#define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
 #define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
-#define func_02087c50 _ZN12Unk_02087ad813func_02087c50Ej
-#define func_02087c54 _ZN12Unk_02087ad813func_02087c54Ev
+#define PlayerSpNpcRecord_setSableTalkCount _ZN17PlayerSpNpcRecord17setSableTalkCountEj
+#define PlayerSpNpcRecord_getSableTalkCount _ZN17PlayerSpNpcRecord17getSableTalkCountEv
 
 extern "C" {
 extern Unk_ov004_0221b954_Global *gCommManager;
@@ -377,10 +377,10 @@ void NpcTalkCtrl_requestTalk(void *self, u8 a, u8 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 BOOL NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
 BOOL CommManager_isOnline(void *g);
-void *func_0209868c(void *p);
+void *PlayerData_getSpNpcRecord(void *p);
 void ActorTalkRequest_setPartnerActor(void *self, void *p);
-void func_02087c50(void *self, u32 v);
-u32 func_02087c54(void *self);
+void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
+u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 void *PlayerData_GetCurrent();
 s32 func_02063b8c(s32);
 BOOL NetArea_IsLocalOwner();
@@ -391,7 +391,7 @@ s16 *func_0209c37c(s32 a, s32 b);
 s32 GameStart_IsActive();
 s32 Clock_GetWeekday();
 void *NpcRegistry_FindSpNpc(s32 n);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 void SewingMachine_Stop();
 s32 SewingMachine_IsStopped();
 void SewingMachine_Start();
@@ -579,7 +579,7 @@ BOOL SpNpcSable::mainAct01() {
         }
         SpNpcSable_SetTalkCount(this, t);
     }
-    TalkRequest_EndTalkWith(this);
+    TalkRequest_SetTargetDone(this);
     changeAct(2);
     return TRUE;
 }
@@ -831,11 +831,11 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
 }
 
 extern "C" u32 SpNpcSable_GetTalkCount(void *unused) {
-    return func_02087c54(func_0209868c(PlayerData_GetCurrent()));
+    return PlayerSpNpcRecord_getSableTalkCount(PlayerData_getSpNpcRecord(PlayerData_GetCurrent()));
 }
 
 extern "C" void SpNpcSable_SetTalkCount(void *unused, u32 a) {
-    func_02087c50(func_0209868c(PlayerData_GetCurrent()), a);
+    PlayerSpNpcRecord_setSableTalkCount(PlayerData_getSpNpcRecord(PlayerData_GetCurrent()), a);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

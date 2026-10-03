@@ -32,7 +32,7 @@ extern u32 data_020d6f54[];
 extern u32 gCommManager;
 extern u32 gVec3Zero;
 extern const s32 data_020c6cf0;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 s32 data_021bf97c = data_020c6cf0 - 0x8000;
@@ -64,7 +64,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); ~Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
@@ -127,7 +127,7 @@ struct NpcActor : Character {
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_020e0cf4 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -308,7 +308,7 @@ void SpNpcActor::getName(u32 a) { Npc_GetName(a, &unk_ea); }
 u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
 
 BOOL SpNpcActor::vfunc_7c() {
-    if (!Unk_0202e318_IsOne(data_020e416c) || unk_650 == 0) {
+    if (!Unk_0202e318_IsOne(gFieldSceneKind) || unk_650 == 0) {
         return TRUE;
     }
     return FALSE;

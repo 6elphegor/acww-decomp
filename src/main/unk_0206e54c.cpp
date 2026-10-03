@@ -91,17 +91,17 @@ extern u16 gPad[];
 void Mem_Clear(void *, s32);
 void Mem_Copy(u32, void *, s32);
 void MI_CpuCopy8(void *, const void *, u32);
-void *func_020991e4(void);
+void *Inventory_GetEmptyLetter(void);
 void func_02065e70(void *, void *);
 void func_02065b28(void *);
 u32 PlayerData_GetCurrent(void);
 void *func_02097a3c(u32);
-void *func_02096e54(void *);
-u8 *_ZN12Unk_02096e2813func_02096e50Ev(void *);
+void *FutureLetter_GetLetter(void *);
+u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
 void *_ZN10PlayerData13func_02098750Ev(u32);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
-void func_0209909c(u16 *, u32, u32);
+void Pocket_SetItem(u16 *, u32, u32);
 void func_0205137c();
 s32 InputMode_IsButtons();
 s32 InputMode_SetTouch();
@@ -113,7 +113,7 @@ void func_020e79a0(void *, void *);
 void func_020e7968(void *, u32);
 void MenuScreen_Update();
 BOOL func_0203d4d4();
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
 s32 func_0201188c();
 void func_0203da24(u32);
@@ -477,7 +477,7 @@ BOOL MenuManager::onExecute() {
     MenuCtrl_CreateRequestedMenu();
     MenuScreen_Update();
     if (func_0203d4d4()) return TRUE;
-    if (func_020b50e8() == 6) return TRUE;
+    if (Scene_GetCurrent() == 6) return TRUE;
     if (data_021d726c) return TRUE;
     if (TalkRequest_IsActive()) return TRUE;
     if (MenuCtrl_IsIdle()) {
@@ -793,7 +793,7 @@ extern "C" void MenuCtrl_RestorePockets() {
     tmp[0] = 0xfff1;
     for (i = 0; i < 15; i++) {
         tmp[0] = sPocketBackupItems[i];
-        func_0209909c(tmp, sPocketBackupFlags[i], i);
+        Pocket_SetItem(tmp, sPocketBackupFlags[i], i);
     }
 }
 
@@ -883,11 +883,11 @@ extern "C" void MenuCtrl_SetFutureLetter(void *a) {
 
 extern "C" void MenuCtrl_StoreFutureLetter(void) {
     u32 a = PlayerData_GetCurrent();
-    void *p = func_02096e54(func_02097a3c(a));
+    void *p = FutureLetter_GetLetter(func_02097a3c(a));
     u8 *q;
     func_02065e70(p, &sFutureLetter);
     func_02065b28(p);
-    q = _ZN12Unk_02096e2813func_02096e50Ev(func_02097a3c(a));
+    q = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(a));
     q[0] = 1;
     q[1] = 1;
     q[2] = 0;
@@ -898,7 +898,7 @@ extern "C" void MenuCtrl_StoreFutureLetter(void) {
 }
 
 extern "C" void MenuCtrl_ReturnFutureLetter(void) {
-    void *p = func_020991e4();
+    void *p = Inventory_GetEmptyLetter();
     if (p) {
         func_02065e70(p, &sFutureLetter);
     }

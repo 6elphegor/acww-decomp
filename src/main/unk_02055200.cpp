@@ -177,7 +177,7 @@ s32 func_02105dcc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
 void MTX_Concat43(void *a, void *b, void *c);
 extern void *gModelCacheHeap;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 extern void *gCurrentHeap;
 extern u32 (*data_0213bc18)(u32, u32, u32);
 extern u32 (*data_0213bc10)(u32, u32, u32);
@@ -241,7 +241,7 @@ BOOL c; s32 i; s32 j;
     for (j = 0; j < 0x3c; j++) { sResCacheTexs[j].unk_00 = NULL; sResCacheTexs[j].unk_04 = 0x4e554c4c; }
     sResCacheModelCount = 0; sResCacheTexCount = 0;
     c = FALSE;
-    if (data_020e416c == 0) c = TRUE;
+    if (gFieldSceneKind == 0) c = TRUE;
     ModelCacheHeap_Create(c ? 0x7800 : 0x10400, 0);
 }
 

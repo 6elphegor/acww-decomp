@@ -88,8 +88,8 @@ void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void FieldPos_FromBlockUnitCenter(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 c, s32 d);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-BOOL func_02031130(s32 a, s32 b);
-BOOL func_020310f8(s32 a, s32 b);
+BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
+BOOL Ground_IsFreeGrass(s32 a, s32 b);
 s32 func_02063b8c(s32 n);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
@@ -99,8 +99,8 @@ s32 func_020af590(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, v
 s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
 Unk_ov003_0222ed20_St *func_020af3f4();
 void func_020af514();
-s32 func_020b50bc();
-s32 func_020b5184();
+s32 GroundSeason_IsSnow();
+s32 Scene_InTown();
 BOOL func_020af564(void *o);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
@@ -127,7 +127,7 @@ Unk_ov003_0222eb10_Obj *sSnowballs[8];
 // ---- functions ----
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
-    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || func_020b50bc() == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || GroundSeason_IsSnow() == 0) {
         func_020af3f4();
         func_020af514();
         return;
@@ -153,7 +153,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
             }
         }
     }
-    if (func_020b5184() != 0) {
+    if (Scene_InTown() != 0) {
         if (func_020af564(data_021ed2e6) == 0) {
             if (func_020af3f4()->a.x != 0) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
@@ -412,7 +412,7 @@ extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
                 for (lx = 0; lx < 16; lx++) {
                     s32 x, y;
                     FieldUnit_FromBlockUnit(&x, &y, bx, by, lx, ly);
-                    if (!func_02031130(x, y) || !func_020310f8(x, y + 1) || !func_020310f8(x, y + 2)) {
+                    if (!Ground_IsFreeGrassOffPath(x, y) || !Ground_IsFreeGrass(x, y + 1) || !Ground_IsFreeGrass(x, y + 2)) {
                         UnitMaskPool_Mark(&pool, x, y);
                     } else if (d != 0) {
                         s32 ex = *(volatile s32 *)&x;

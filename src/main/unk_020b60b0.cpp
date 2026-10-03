@@ -41,15 +41,15 @@ struct Unk_0202f660_V3;
 struct Unk_0202e918_Vec3;
 
 // base of Unk_020b6a0c: symbols.txt names its base-object constructor/destructor and func_0202fd8c with the class
-// name Unk_0202f7b8X and these parameter types (labels at 0x0202fddc / 0x0202fda4 / 0x0202fd8c)
-struct Unk_0202f7b8X {
-    Unk_0202f7b8X();
-    ~Unk_0202f7b8X();
-    void func_0202fd8c(Unk_0202f660_V3 *a, s32 b, s32 c);
+// name CollisionCylinderX and these parameter types (labels at 0x0202fddc / 0x0202fda4 / 0x0202fd8c)
+struct CollisionCylinderX {
+    CollisionCylinderX();
+    ~CollisionCylinderX();
+    void setCylinder(Unk_0202f660_V3 *a, s32 b, s32 c);
     u8 pad[0x14];
 };
 
-struct Unk_020b6a0c : Unk_0202f7b8X {
+struct Unk_020b6a0c : CollisionCylinderX {
     Unk_020b6a0c();
     ~Unk_020b6a0c();
     BOOL func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
@@ -204,7 +204,7 @@ BOOL Unk_020b6a0c::func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Unk_020b69e0_Pad pad;
     unk_14 = d;
     unk_18 = e;
-    func_0202fd8c((Unk_0202f660_V3 *)a, (s32)b, (s32)c);
+    setCylinder((Unk_0202f660_V3 *)a, (s32)b, (s32)c);
     return TRUE;
 }
 
@@ -378,10 +378,10 @@ void _ZN12Unk_020d8cccC1Ev(void *t);
 BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *n);
 s32 _ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(void *t, Vec3 *p);
 BOOL _ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(void *t, Vec3 *out, Vec3 *a, Vec3 *b);
-void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_020b60dc_Cell *x, Vec3 *v, s32 a, s32 b);
-void _ZN12Unk_0203398c13func_0203398cEiiii(Unk_020b60dc_Cell *x, s32 a, s32 b, s32 c, s32 d);
-void func_02033988(Unk_020b60dc_Cell *x);
-s32 _ZN12Unk_0203389c13func_02033914Ei(Unk_020b60dc_Cell *x, s32 k);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_020b60dc_Cell *x, Vec3 *v, s32 a, s32 b);
+void _ZN10GroundInfo10initAtUnitEiiii(Unk_020b60dc_Cell *x, s32 a, s32 b, s32 c, s32 d);
+void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
+s32 _ZN14GroundInfoBase9getHeightEi(Unk_020b60dc_Cell *x, s32 k);
 void _ZN12Unk_0202f660C1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
 void _ZN12Unk_0202f660D1Ev(Unk_020b60dc_Line *l);
 BOOL _ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(void *n, Vec3 *out, Unk_020b60dc_Line *l);
@@ -397,24 +397,24 @@ void func_020e8344(Mtx43 *m, void *p);
 void func_020e8528(Mtx43 *m, s32 a, s32 b, s32 c);
 void func_020e8434(Mtx43 *m, s32 a);
 void func_0202f3a8(Vec3 *out, Vec3 *a, Vec3 *b, Vec3 *c);
-BOOL func_020307c4(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
+BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, Vec3 *v);
 s32 BuildingList_FindByGrid(s32 a, s32 b);
 s32 BuildingList_IndexOf(s32 a);
 
 extern s32 gGfxMainOnTop;
-extern Unk_020b60dc_Cfg *data_021ef2f0;
+extern Unk_020b60dc_Cfg *gCurSceneInfo;
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
 extern s32 data_020c7c1c;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
 extern Unk_020b60dc_Node *data_021ce638;
-extern u8 data_020e416c;
+extern u8 gFieldSceneKind;
 }
 
 inline BOOL Unk_020b60dc_IsMode0() {
-    return data_020e416c == 0;
+    return gFieldSceneKind == 0;
 }
 
 extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
@@ -432,14 +432,14 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
     p0 = t[0];
     Vec3 *pb = &t[1];
     p1 = *pb;
-    if (data_021ef2f0->unk_04 == 1) {
+    if (gCurSceneInfo->unk_04 == 1) {
         static s32 k1 = data_020c8cbc * 6;
         static s32 k2 = data_020c7c1c + WorldCurve_GetRadius();
         s32 kk = k1;
         if (func_020b7074(&r, &p0, &p1, k2, kk)) {
             WorldCurve_FromCurved(&v, &r);
             Unk_020b60dc_Cell x;
-            _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&x, &v, 0, 0);
+            _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&x, &v, 0, 0);
             if (x.unk_30 != 0) {
                 p1 = r;
                 v.y = data_020c7c1c;
@@ -447,7 +447,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                 self->unk_04 = v.y;
                 self->unk_08 = v.z;
             }
-            func_02033988(&x);
+            GroundInfo_Destruct(&x);
         }
         if (!func_020b60b0(self, 0)) {
             if (func_020b7074(&r, &p0, &p1, WorldCurve_GetRadius(), kk)) {
@@ -550,8 +550,8 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
         for (s32 gx = xlo; gx <= xhi; gx++) {
             for (s32 gz = zlo; gz <= zhi; gz++) {
                 Unk_020b60dc_Cell y;
-                _ZN12Unk_0203398c13func_0203398cEiiii(&y, gx, gz, 0, 0);
-                s32 h = _ZN12Unk_0203389c13func_02033914Ei(&y, 0);
+                _ZN10GroundInfo10initAtUnitEiiii(&y, gx, gz, 0, 0);
+                s32 h = _ZN14GroundInfoBase9getHeightEi(&y, 0);
                 if (h < 0x4000 && h != 0) {
                     s32 cx = (gx << 13) + 0x1000;
                     Vec3 s[5];
@@ -597,7 +597,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                     _ZN12Unk_020d8cccD2Ev(&ua[1]);
                     _ZN12Unk_020d8cccD2Ev(&ua[0]);
                 }
-                func_02033988(&y);
+                GroundInfo_Destruct(&y);
             }
         }
         if (found == 0 && p0.y > 0 && p1.y <= 0) {
@@ -616,11 +616,11 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             p1.y = r.y;
             p1.z = r.z;
             Unk_020b60dc_Cell z;
-            _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&z, &r, 0, 0);
+            _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&z, &r, 0, 0);
             self->unk_00 = r.x;
             self->unk_04 = r.y;
             self->unk_08 = r.z;
-            func_02033988(&z);
+            GroundInfo_Destruct(&z);
         }
     }
 
@@ -675,7 +675,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
         for (gx = bxh; gx >= bxl; gx--) {
             s32 ta, tb, tc;
             tc = 0;
-            if (func_020307c4(gx, gz, &ta, &tb, &tc) && tc != 0) {
+            if (Collision_GetUnitShape(gx, gz, &ta, &tb, &tc) && tc != 0) {
                 Vec3 f;
                 f.x = (gx << 13) + 0x1000;
                 f.y = 0;

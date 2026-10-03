@@ -114,14 +114,14 @@
 #define func_0202d8ec _ZN13VillagerActor8vfunc_0cEv
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
 #define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
-#define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define func_0203e42c _ZN9Character13func_0203e42cEv
 #define func_0203e450 _ZN9Character13func_0203e450Ev
 #define Character_isInFacingArcOf _ZN9Character15isInFacingArcOfEPS_ss
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02071b00 _ZN19AbleSistersPatterns13func_02071b00Eh
-#define func_02071e8c _ZN7Pattern13func_02071e8cEPS_
+#define AbleSistersPatterns_getPattern _ZN19AbleSistersPatterns10getPatternEh
+#define Pattern_equals _ZN7Pattern6equalsEPS_
 #define VillagerDataItemView_getHousePos _ZN20VillagerDataItemView11getHousePosEv
 #define VillagerDataProfileView_getCatchphrase _ZN23VillagerDataProfileView14getCatchphraseEPvS0_
 #define VillagerDataProfileView_setUmbrella _ZN23VillagerDataProfileView11setUmbrellaEPt
@@ -130,12 +130,12 @@
 #define VillagerData_getPattern _ZN12VillagerData10getPatternEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
-#define func_02085810 _ZN12Unk_0208581013func_02085810Ev
-#define func_02085814 _ZN12Unk_0208581013func_02085814Ei
-#define func_02085870 _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec
+#define ContestRecord_getSize _ZN13ContestRecord7getSizeEv
+#define ContestRecord_setSize _ZN13ContestRecord7setSizeEi
+#define ContestRecord_setHolderVillager _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec
 #define func_02088d38 _ZN12Unk_020e0d0813func_02088d38Ej
 #define func_02094218 _ZN8PlayerId13func_02094218Ev
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define VillagerPlan_isTrendOlderThan _ZN12VillagerPlan16isTrendOlderThanEPvj
 #define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
@@ -1180,7 +1180,7 @@ void VillagerMood_disableEffects(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
 void func_0203e450(void *);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void func_0203e42c(void *);
 void Villager_HalveTalkUrge(s32);
@@ -1260,8 +1260,8 @@ void Effect_SetPosition(s32, void *, s32, s32);
 s32 Effect_Create(s32, void *, s32, s32);
 void Effect_PlayById(s32, void *, s32, s32);
 void Npc_GetStateHeldItem(void *, void *);
-void func_020339bc(void *, void *, s32, s32);
-void func_02033988(void *);
+void GroundInfo_initAtPos(void *, void *, s32, s32);
+void GroundInfo_Destruct(void *);
 void func_02003ddc(void *, s32, s32, s32);
 s32 Unk_02015b8c_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1315,7 +1315,7 @@ void VillagerActor_setFlag834(void *);
 void VillagerTalk_setSpeakerStateUnk(void *, void *);
 void VillagerMood_disableEffects(void *);
 void NpcAnimCtrl_playHoldItemPose(void *, void *, void *, s32, s32);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void func_0203d93c(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
@@ -1441,7 +1441,7 @@ extern u8 data_ov068_0226f154[];
 extern u8 data_ov068_0226f15c[];
 extern s32 data_ov068_0226f178[];
 s32 NpcTalkCtrl_isBusy(void *);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
 void *func_020951ec(s32);
 void *X_func_ov068_02265f58(void *);
@@ -1554,7 +1554,7 @@ void VillagerDataProfileView_setUmbrella(void *, u16 *);
 void Villager_GetDefaultShirt(u16 *, void *);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
-s32 func_02071e8c(void *, void *);
+s32 Pattern_equals(void *, void *);
 s32 VillagerId_isValid(void *);
 s32 memcmp(void *, void *, s32);
 void *SaveVillagers_Get(void *, s32);
@@ -1589,8 +1589,8 @@ extern u8 gVec3Zero[];
 extern u32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern Unk_ov068_02263b90_Fn data_ov068_0226f910;
-void *func_02071b00(void *, u8);
-s32 func_02071e8c(void *, void *);
+void *AbleSistersPatterns_getPattern(void *, u8);
+s32 Pattern_equals(void *, void *);
 u32 Random_PickSetBit(u32, u32, u32);
 s32 PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(...);
@@ -1608,7 +1608,7 @@ s32 SaveVillagers_FindIndex(void *, s32);
 s32 SaveVillagers_GetRelationLevel(void *, s32, s32);
 void SaveVillagers_AddRelation(void *, s32, s32, s32);
 s32 NpcTalkCtrl_isBusy(void *);
-void TalkRequest_EndTalkWith(void *);
+void TalkRequest_SetTargetDone(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
 void func_ov068_02265994(void *);
@@ -1709,7 +1709,7 @@ extern u8 gRandom[];
 }
 extern "C" {
 void *PlayerData_GetCurrent();
-s32 func_02098044(void *, s32);
+s32 Unk_02097ff4_testFlag(void *, s32);
 void *Villager_GetState();
 void func_ov068_02265994(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
@@ -1834,7 +1834,7 @@ s32 func_01ffcb0c(s32, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 void *PlayerData_GetCurrent();
-s32 func_02098044(void *, s32);
+s32 Unk_02097ff4_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
 s32 func_ov068_022651e0(void *, void *, Unk_ov068_022649f4_Vec *);
 s32 func_ov068_02264a64(void *);
@@ -1961,10 +1961,10 @@ extern s16 data_ov068_02270c24;
 extern Unk_ov068_0225f1a0_Ent sFieldVillagerAiTable[];
 extern u8 data_ov068_0226f11c[];
 extern u8 data_ov068_0226f134[];
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u32 gSceneBlockMap;
 void *Villager_GetState(void *);
-s32 func_02098044(void *, s32);
+s32 Unk_02097ff4_testFlag(void *, s32);
 void Clock_GetDateTime(void *);
 void *VillagerData_getVillagerId(void *);
 s32 VillagerId_GetPersonality(void *);
@@ -1985,7 +1985,7 @@ void VillagerRoute_resetTarget(void *);
 void VillagerRoute_reset(void *);
 void *func_020951ec(s32);
 s32 Villager_IsTalkUrgeFull(void *, s32);
-s32 func_020b5164();
+s32 Scene_InTownUnk31();
 s32 NpcActor_getDistanceTo(void *, void *);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 func_ov068_02264a64(void *, u32);
@@ -2008,11 +2008,11 @@ s32 VillagerPlan_getState(s32);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 FishPick_PickForDate(void *, s32, s32, s32, s32, s32, s32);
 s32 InsectPick_PickForMonth(void *, s32, s32, s32, s32, s32);
-s32 func_02085618(void *);
-s32 func_02085810(void *);
-void func_02085870(void *, void *);
-void func_02085814(void *, s32);
-void func_02085820(void *, void *);
+s32 Contest_GetCatchSize(void *);
+s32 ContestRecord_getSize(void *);
+void ContestRecord_setHolderVillager(void *, void *);
+void ContestRecord_setSize(void *, s32);
+void ContestRecord_SetItem(void *, void *);
 s32 BlockMap_BlockHasAllAttr(u32, s32, s32, s32);
 s32 Weather_GetFallingPrecip();
 void *VillagerState_GetHeldItem(void *);
@@ -3652,7 +3652,7 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
     u8 *t = data_ov068_0226f11c;
-    u8 *g = data_021ed24c;
+    u8 *g = gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->vfunc_64()))) == 0) {
         t = data_ov068_0226f134;
     }
@@ -3666,13 +3666,13 @@ void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
                 k = TRUE;
             }
             if (k) {
-                s32 x = func_02085618(&v);
-                s32 y = func_02085810(g);
+                s32 x = Contest_GetCatchSize(&v);
+                s32 y = ContestRecord_getSize(g);
                 if ((x >> 12) > (y >> 12)) {
                     void *w = VillagerData_getVillagerId(o->vfunc_64());
-                    func_02085870(g, w);
-                    func_02085814(g, x);
-                    func_02085820(g, &v);
+                    ContestRecord_setHolderVillager(g, w);
+                    ContestRecord_setSize(g, x);
+                    ContestRecord_SetItem(g, &v);
                 }
             }
         }
@@ -3685,7 +3685,7 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b) {
     u8 *t = data_ov068_0226f11c;
-    u8 *g = data_021ed24c;
+    u8 *g = gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->vfunc_64()))) == 1) {
         t = data_ov068_0226f134;
     }
@@ -3699,14 +3699,14 @@ void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b) {
                 k = TRUE;
             }
             if (k) {
-                s32 x = func_02085618(&v);
-                s32 ty = func_02085810(g) * 10;
+                s32 x = Contest_GetCatchSize(&v);
+                s32 ty = ContestRecord_getSize(g) * 10;
                 s32 tx = x * 10;
                 if ((tx >> 12) > (ty >> 12)) {
                     void *w = VillagerData_getVillagerId(o->vfunc_64());
-                    func_02085870(g, w);
-                    func_02085814(g, x);
-                    func_02085820(g, &v);
+                    ContestRecord_setHolderVillager(g, w);
+                    ContestRecord_setSize(g, x);
+                    ContestRecord_SetItem(g, &v);
                 }
             }
         }
@@ -3966,7 +3966,7 @@ s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o) {
         k = FALSE;
     }
     s32 res = 0;
-    if (func_020b5164() == 0) {
+    if (Scene_InTownUnk31() == 0) {
         if (self->unk_f4 <= 0 && k != 0 && p != 0) {
             if (NpcActor_getDistanceTo(o, p) <= 0x7000) {
                 s32 d = NpcActor_getRelativeAngleTo(o, p);
@@ -4126,7 +4126,7 @@ void func_ov068_02265324(FieldVillagerAi *self, s32 a, FieldVillager *o) {
             s32 r6;
             void *t = PlayerData_GetCurrent();
             if (t != 0) {
-                r6 = func_02098044(t, 1);
+                r6 = Unk_02097ff4_testFlag(t, 1);
             } else {
                 r6 = 0;
             }
@@ -4166,7 +4166,7 @@ BOOL func_ov068_022652d0(void *self, Unk_ov068_Owner_649 *o) {
     void *a = PlayerData_GetCurrent();
     s32 t;
     if (a != 0) {
-        t = func_02098044(a, 1);
+        t = Unk_02097ff4_testFlag(a, 1);
     } else {
         t = 0;
     }
@@ -4964,7 +4964,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02264008(Unk_ov068_Owner *o) {
     void *p = PlayerData_GetCurrent();
     s32 r7;
     if (p != 0) {
-        r7 = func_02098044(p, 1);
+        r7 = Unk_02097ff4_testFlag(p, 1);
     } else {
         r7 = 0;
     }
@@ -5227,7 +5227,7 @@ void Unk_ov068_022638c0::func_ov068_02263930(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         VillagerMood_requestApply((u8 *)o + 0x838);
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
         unk_1c = 1;
@@ -5396,7 +5396,7 @@ void *func_ov068_02263600(void *unused, void *x) {
         u32 i; u16 mask; u32 cnt; mask = 0; cnt = 0; i = 0;
         goto test0;
     loop0:
-        if (x == 0 || func_02071e8c(func_02071b00(data_021e6e4c, i), x) == 0) {
+        if (x == 0 || Pattern_equals(AbleSistersPatterns_getPattern(data_021e6e4c, i), x) == 0) {
             mask |= 1 << i;
             cnt++;
         }
@@ -5405,7 +5405,7 @@ void *func_ov068_02263600(void *unused, void *x) {
         if (i < 8) goto loop0;
         u32 r = Random_PickSetBit(mask, cnt, 8);
         if (r < 8) {
-            return func_02071b00(data_021e6e4c, r);
+            return AbleSistersPatterns_getPattern(data_021e6e4c, r);
         }
     }
     return 0;
@@ -5556,7 +5556,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
     u8 *rec = VillagerData_getPattern(a);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
-    if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(b)) && func_02071e8c(VillagerData_getPattern(b), rec) != 0) {
+    if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(b)) && Pattern_equals(VillagerData_getPattern(b), rec) != 0) {
         u8 *r7 = VillagerData_getVillagerId(a);
         u8 *p10 = VillagerData_getVillagerId(b);
         ok = FALSE;
@@ -5586,7 +5586,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
                             if (t == *(u16 *)p10 && memcmp(q + 2, p10 + 2, 8) == 0 && q[0xb] == p10[0xb]) {
                             } else {
                                 if (!Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(e)) ||
-                                    func_02071e8c(VillagerData_getPattern(e), rec) == 0) {
+                                    Pattern_equals(VillagerData_getPattern(e), rec) == 0) {
                                     if (Villager_GetWhereabouts(e) != 0) {
                                         mask |= 1 << i;
                                         mask = (u8)mask;
@@ -6106,7 +6106,7 @@ BOOL Unk_ov068_02262294::func_ov068_02262338(Unk_ov068_Owner *o) {
 void Unk_ov068_02262294::func_ov068_02262304(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         FieldVillagerAi_SetResumeState(this, 0);
         unk_1c = 1;
     }
@@ -6493,7 +6493,7 @@ void Unk_ov068_02261574::func_ov068_02261644(Unk_ov068_Owner *o) {
 void Unk_ov068_02261574::func_ov068_022615f0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if ((NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) || unk_20 == 0) {
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         func_0203d93c();
         unk_1c = 3;
@@ -6777,7 +6777,7 @@ void Unk_ov068_0225fd54::func_ov068_02260cdc(Unk_ov068_Owner *o) {
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
-            func_020339bc(obj, &v, 0, 0);
+            GroundInfo_initAtPos(obj, &v, 0, 0);
             s32 r = obj[13];
             Unk_ov068_02260780_Vec v2;
             v2.x = v.x;
@@ -6793,7 +6793,7 @@ void Unk_ov068_0225fd54::func_ov068_02260cdc(Unk_ov068_Owner *o) {
             func_02011cf4((u8 *)o + 0x9b0, t, 1);
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0x128, 3);
             unk_1c = 2;
-            func_02033988(obj);
+            GroundInfo_Destruct(obj);
         }
     }
 }
@@ -6857,7 +6857,7 @@ void Unk_ov068_0225fd54::func_ov068_02260a64(Unk_ov068_Owner *o) {
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
-            func_020339bc(obj, &v, 0, 0);
+            GroundInfo_initAtPos(obj, &v, 0, 0);
             s32 r = obj[13];
             Unk_ov068_02260780_Vec v2;
             v2.x = v.x;
@@ -6871,7 +6871,7 @@ void Unk_ov068_0225fd54::func_ov068_02260a64(Unk_ov068_Owner *o) {
             }
             func_02003ddc((u8 *)o + 0x514, 0x7e9, 0x7f, 0);
             unk_1c = 4;
-            func_02033988(obj);
+            GroundInfo_Destruct(obj);
         } else {
             *(s32 *)((u8 *)o + 0x198) = unk_30;
             if (*(s32 *)((u8 *)o + 0x9fc) != -1) {
@@ -6945,7 +6945,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260780(Unk_ov068_Owner *o) {
     v.y = pv->y;
     v.z = pv->z;
     u32 obj[16];
-    func_020339bc(obj, &v, 0, 0);
+    GroundInfo_initAtPos(obj, &v, 0, 0);
     s32 r = obj[13];
     Unk_ov068_02260780_Vec v2;
     v2.x = v.x;
@@ -6959,7 +6959,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260780(Unk_ov068_Owner *o) {
     }
     func_02003ddc((u8 *)o + 0x514, 0x7e9, 0x7f, 0);
     VillagerMood_disableEffects((u8 *)o + 0x838);
-    func_02033988(obj);
+    GroundInfo_Destruct(obj);
     return TRUE;
 }
 
@@ -7168,7 +7168,7 @@ void Unk_ov068_0225fd54::func_ov068_022600e8(Unk_ov068_Owner *o) {
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         func_ov068_02263738(this, o, 4, 1, 1);
         func_0203e450(o);
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
         FieldVillagerAi_SetResumeState(this, 0);
@@ -7216,7 +7216,7 @@ void Unk_ov068_0225fd54::func_ov068_0225ff88(Unk_ov068_Owner *o) {
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         func_ov068_02263738(this, o, 4, 1, 1);
         func_0203e450(o);
-        TalkRequest_EndTalkWith(o);
+        TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         FieldVillagerAi_SetResumeState(this, 0);
         VillagerTalk_setInvitedByPartner(o, 0);

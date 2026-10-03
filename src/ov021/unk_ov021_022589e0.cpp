@@ -61,7 +61,7 @@ struct Unk_ov021_Rec {
     u32 w[5];
 };
 
-struct Unk_ov021_Scene {  // 24 bytes; main's table data_020e4280 points to it
+struct Unk_ov021_Scene {  // 24 bytes; main's table sSceneInfoTable points to it
     Unk_ov021_Head *head;
     s32 unk_04;
     Unk_ov021_Grid *grid;

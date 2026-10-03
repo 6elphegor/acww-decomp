@@ -9,7 +9,7 @@ u32 func_0209c08c(void);
 void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 u32 NetArea_GetMoveState(void);
 void NetArea_SetMoveState(u32 x);
-void func_020b5408(void);
+void Scene_ShutdownGraphics(void);
 void Scene_SetupGraphics(void);
 extern u32 gGfxFrameHooks;
 }
@@ -86,7 +86,7 @@ BOOL Unk_020e40cc::vfunc_00() {
 
 BOOL Unk_020e40cc::vfunc_0c() {
     gGfxFrameHooks = 0;
-    func_020b5408();
+    Scene_ShutdownGraphics();
     return TRUE;
 }
 

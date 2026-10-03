@@ -396,7 +396,7 @@ s32 func_020e9650(void *, void *);
 void TalkWindowState_setNextMessage(void *, void *, s32);
 s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
-s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_SetTargetDone(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
@@ -407,7 +407,7 @@ void *TalkWindowState_getChoiceList(void *);
 s32 ChoiceList_getResult(void *);
 void TalkWindowState_setNextMessageIfUnset(void *, void *, s32);
 void Unk_020d7710_requestGiveItem(void *, void *, s32, s32, s32);
-void func_02099014(void *, s32);
+void Pocket_AddItem(void *, s32);
 void *VillagerMemory_getFriendship(void *);
 void VillagerMemory_addFriendship(void *, s8);
 void ActorTalkRequest_setItemNameSlot(void *, void *, s32, s32);
@@ -424,9 +424,9 @@ s32 NpcRegistry_GetSlotCount();
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 void *MenuCtrl_GetIndex();
-u16 func_02099048();
+u16 Pocket_GetItem();
 s32 Item_GetPrice(u16 *);
-void func_02099064(void *);
+void Pocket_RemoveItem(void *);
 void Unk_02014420_requestTakeItem(void *, void *, s32, s32, s32);
 void *Villager_GetPlan(void *);
 u32 VillagerPlanBlock_GetPlan(void *);
@@ -805,9 +805,9 @@ void BirthdayHostVillagerTalk::vfunc_80() {
                 unk_1a0->changeAct(6);
             } else {
                 void *r6 = MenuCtrl_GetIndex();
-                x = func_02099048();
+                x = Pocket_GetItem();
                 s32 r4 = Item_GetPrice(&x);
-                func_02099064(r6);
+                Pocket_RemoveItem(r6);
                 ActorTalkRequest_setItemNameSlot(this, &x, 0, 7);
                 if (isLikedGift(&x)) {
                     b1 = func_02063b8c(2) + 0xd;
@@ -965,7 +965,7 @@ void BirthdayHostVillagerTalk::vfunc_14() {
     case 15:
     case 16:
         Unk_020d7710_requestGiveItem(this, &unk_1a0->unk_a48, 0, 5, 0);
-        func_02099014(&unk_1a0->unk_a48, 0);
+        Pocket_AddItem(&unk_1a0->unk_a48, 0);
         unk_1a0->changeAct(13);
         break;
     case 17:
@@ -1214,7 +1214,7 @@ void BirthdayHostVillager::mainAct06() {
     Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
     if (o != 0) {
         if (o->unk_04 == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
@@ -1271,7 +1271,7 @@ void BirthdayHostVillager::mainAct09() {
     Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
     if (o != 0) {
         if (o->unk_04 == 0) {
-            TalkRequest_EndTalkWith(this);
+            TalkRequest_SetTargetDone(this);
         }
     }
 }

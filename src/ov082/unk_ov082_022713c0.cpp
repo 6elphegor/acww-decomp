@@ -64,51 +64,51 @@ s32 _ZN8PlayerId13func_02094218Ev(void *p);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
-void *_ZN12Unk_0208581013func_020858acEv(void *p);
-void *_ZN12Unk_0208581013func_0208586cEv(void *p);
-s32 _ZN12Unk_0208581013func_02085810Ev(void *p);
-void func_02085818(u16 *out, void *p);
-void func_02085820(void *p, u16 *q);
-void _ZN12Unk_0208581013func_02085814Ei(void *p, s32 v);
-void _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(void *p, void *q);
-void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
-void _ZN12Unk_02087ad813func_02087b94Ei(void *p, s32 v);
+void *_ZN13ContestRecord13func_020858acEv(void *p);
+void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
+s32 _ZN13ContestRecord7getSizeEv(void *p);
+void ContestRecord_GetItem(u16 *out, void *p);
+void ContestRecord_SetItem(void *p, u16 *q);
+void _ZN13ContestRecord7setSizeEi(void *p, s32 v);
+void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
+void _ZN13ContestRecord7setKindEj(void *p, s32 v);
+void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_0209865cEv(void *p);
-void *_ZN10PlayerData13func_0209868cEv(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02063388(Unk_0202368c_Obj *o);
-void TalkRequest_EndTalkWith(void *p);
+void TalkRequest_SetTargetDone(void *p);
 void func_020947c0(u16 *out, void *p);
 void *func_02094348();
 void Clock_GetDateTime(void *p);
-s32 func_02098eb0(u16 *p);
-s32 func_02098ffc();
-void func_02099064(s32 v);
-void func_02099014(u16 *p, s32 v);
+s32 Pocket_FindItem(u16 *p);
+s32 Pocket_FindEmpty();
+void Pocket_RemoveItem(s32 v);
+void Pocket_AddItem(u16 *p, s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 func_02099048();
-s32 func_02085618(u16 *p);
+s32 Pocket_GetItem();
+s32 Contest_GetCatchSize(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
 u32 func_02063b8c(u32 n);
-void func_02085784(void *g, u32 a);
+void ContestRecord_BeginContestDay(void *g, u32 a);
 u32 func_02060e24(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *g, void *p);
+void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u16 data_020c6cc8;
-extern u8 data_021ed24c[];
+extern u8 gContestRecord[];
 extern u8 gSaveData[];
 extern u8 data_021dfd8c[];
 extern u32 __ptmf_null[];
@@ -252,7 +252,7 @@ struct Unk_0201ad18 {
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -363,7 +363,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -482,11 +482,11 @@ BOOL SpNpcTortimerBugOff::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    g = data_021ed24c;
-    func_02085784(g, 2);
-    func_02085818(&l.s2, g);
+    g = gContestRecord;
+    ContestRecord_BeginContestDay(g, 2);
+    ContestRecord_GetItem(&l.s2, g);
     if (!Unk_ov082_InRange(&l.s2, 0x12b0, 0x12e7)) {
-        _ZN12Unk_0208581013func_020858acEv(g);
+        _ZN13ContestRecord13func_020858acEv(g);
         rnd = func_02063b8c(2);
         l.t[0] = 0;
         l.t[1] = 0;
@@ -500,17 +500,17 @@ BOOL SpNpcTortimerBugOff::vfunc_00() {
                 InsectPick_PickAnyHour(&l.w0, &l.t[0], &l.t[1], rnd, (void *)idx, 0, 0);
             }
         }
-        func_02085820(g, &l.w0);
-        func_02085818(&l.s4, g);
+        ContestRecord_SetItem(g, &l.w0);
+        ContestRecord_GetItem(&l.s4, g);
         if (Unk_ov082_InRange(&l.s4, 0x12b0, 0x12e7)) {
             if (SaveVillagers_PickRandomExcept(data_021dfd8c, 0, 0) != 0) {
-                _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv());
-                _ZN12Unk_0208581013func_02085900Ej(g, 2);
+                _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv());
+                _ZN13ContestRecord7setKindEj(g, 2);
                 _ZN8SaveData7setFlagEj(gSaveData, 0xf);
             }
         }
-        unk_720 = func_02085618(&l.w0);
-        _ZN12Unk_0208581013func_02085814Ei(g, unk_720);
+        unk_720 = Contest_GetCatchSize(&l.w0);
+        _ZN13ContestRecord7setSizeEi(g, unk_720);
     }
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
@@ -559,7 +559,7 @@ BOOL SpNpcTortimerBugOff::setupAct01() {
 
 BOOL SpNpcTortimerBugOff::mainAct01() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
     return TRUE;
@@ -630,14 +630,14 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
     b = 0xc;
     if (MenuCtrl_IsResultOk()) {
         s32 r4 = MenuCtrl_GetIndex();
-        unk_c0 = func_02099048();
-        unk_ac->unk_720 = func_02085618(&unk_c0);
+        unk_c0 = Pocket_GetItem();
+        unk_ac->unk_720 = Contest_GetCatchSize(&unk_c0);
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_c0, 0, 4, 0);
         setNextScript(1);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_c0, 2, 7);
         _ZN16ActorTalkRequest13setNumberSlotEijiii(this, unk_ac->unk_720 >> 12, 4, 3, 0, 0);
         if (r4 >= 0) {
-            func_02099064(r4);
+            Pocket_RemoveItem(r4);
         }
         b = 0xd;
     } else {
@@ -673,7 +673,7 @@ void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
     Clock_GetDateTime(&rec);
     if (unk_c4 == -1) {
         x[1] = 0x37e0;
-        unk_c4 = func_02098eb0(&x[1]);
+        unk_c4 = Pocket_FindItem(&x[1]);
         if (unk_c4 >= 0) {
             out->a = (u32)"sp_npc_turtle";
             *((u8 *)out + 4) = 0;
@@ -688,12 +688,12 @@ void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
         func_020947c0(&x[0], func_02094348());
         if (!Talk_CheckAndSetPlayerFlag(0x1c, 0)) {
             x[2] = 0x1376;
-            if (Unk_ov082_Neg(func_02098eb0(&x[2]))) {
+            if (Unk_ov082_Neg(Pocket_FindItem(&x[2]))) {
                 if (!Unk_ov082_InRange(&x[0], 0x1376, 0x1376)) {
                     x[3] = 0x1377;
-                    if (Unk_ov082_Neg(func_02098eb0(&x[3]))) {
+                    if (Unk_ov082_Neg(Pocket_FindItem(&x[3]))) {
                         if (!Unk_ov082_InRange(&x[0], 0x1377, 0x1377)) {
-                            if (func_02098ffc() >= 0) {
+                            if (Pocket_FindEmpty() >= 0) {
                                 *((u8 *)out + 4) = 1;
                             } else {
                                 *((u8 *)out + 4) = 0;
@@ -712,18 +712,18 @@ void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
 
 s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
     u16 v, w;
-    u8 *r7 = data_021ed24c;
-    func_02085818(&v, r7);
+    u8 *r7 = gContestRecord;
+    ContestRecord_GetItem(&v, r7);
     if (Unk_ov082_InRange(&v, 0x12b0, 0x12e7)) {
-        void *r6 = _ZN12Unk_0208581013func_020858acEv(r7);
-        void *r4 = _ZN12Unk_0208581013func_0208586cEv(r7);
-        func_02085818(&w, r7);
+        void *r6 = _ZN13ContestRecord13func_020858acEv(r7);
+        void *r4 = _ZN13ContestRecord17getHolderVillagerEv(r7);
+        ContestRecord_GetItem(&w, r7);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &w, 1, 7);
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN12Unk_0208581013func_02085810Ev(r7) >> 12, 0, 3, 0, 0);
+        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN13ContestRecord7getSizeEv(r7) >> 12, 0, 3, 0, 0);
         if (_ZN8PlayerId13func_02094218Ev(r6)) {
-            _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN12Unk_0208581013func_020858acEv(r7), 1);
+            _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(r7), 1);
             u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
-            u16 *p = (u16 *)_ZN12Unk_0208581013func_020858acEv(r7);
+            u16 *p = (u16 *)_ZN13ContestRecord13func_020858acEv(r7);
             if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0 || _ZN8PlayerId13func_020941e8EPS_(p, q) == 0) {
                 return 1;
             }
@@ -754,7 +754,7 @@ void SpNpcTortimerBugOffTalk::vfunc_14() {
             ha = 0x1559;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &ha, 0, 5, 0);
             hb = 0x1559;
-            func_02099014(&hb, 0);
+            Pocket_AddItem(&hb, 0);
             b1 = 4;
             unk_3c->setNextMessage(&b1, (void *)"sp_npc_turtle");
         }
@@ -762,18 +762,18 @@ void SpNpcTortimerBugOffTalk::vfunc_14() {
     }
     if (unk_1e == 0xd || unk_1e == 0x10 || unk_1e == 0x13 || unk_1e == 0x16) {
         h0 = 0xfff1;
-        r6 = data_021ed24c;
+        r6 = gContestRecord;
         switch (unk_1e) {
         case 0xd:
             _ZN12Unk_0201442015requestKeepItemEv(this);
-            func_02085818(&x14, r6);
+            ContestRecord_GetItem(&x14, r6);
             if (!Unk_ov082_InRange(&x14, 0x12b0, 0x12e7)) {
                 msg = 0x16;
                 break;
             }
-            _ZN12Unk_02087ad813func_02087b94Ei(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()), 1);
+            _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()), 1);
             {
-                s32 v = _ZN12Unk_0208581013func_02085810Ev(r6);
+                s32 v = _ZN13ContestRecord7getSizeEv(r6);
                 if ((unk_ac->unk_720 >> 12) > (v >> 12)) {
                     msg = 0x10;
                     break;
@@ -809,10 +809,10 @@ void SpNpcTortimerBugOffTalk::vfunc_14() {
             } else {
                 msg = 0x15;
             }
-            func_02085820(r6, &unk_c0);
-            _ZN12Unk_0208581013func_02085814Ei(r6, unk_ac->unk_720);
-            _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(r6, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-            _ZN12Unk_0208581013func_02085900Ej(r6, 2);
+            ContestRecord_SetItem(r6, &unk_c0);
+            _ZN13ContestRecord7setSizeEi(r6, unk_ac->unk_720);
+            _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(r6, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+            _ZN13ContestRecord7setKindEj(r6, 2);
             _ZN8SaveData7setFlagEj(gSaveData, 0xf);
             _ZN12ItemPickSpec3setEii(&o, 0, 0);
             ItemPick_One(&h16, &o, 0, 0, 1, 1, 0);
@@ -820,7 +820,7 @@ void SpNpcTortimerBugOffTalk::vfunc_14() {
             func_02063388(&o);
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h0, 0, 7);
-            func_02099014(&h0, 0);
+            Pocket_AddItem(&h0, 0);
             break;
         }
     }
@@ -829,7 +829,7 @@ void SpNpcTortimerBugOffTalk::vfunc_14() {
         hc = 0x1376;
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &hc, 0, 5, 0);
         hd = 0x1376;
-        func_02099014(&hd, 0);
+        Pocket_AddItem(&hd, 0);
         msg = 4;
         Talk_CheckAndSetPlayerFlag(0x1c, 1);
         break;
@@ -855,7 +855,7 @@ void SpNpcTortimerBugOffTalk::vfunc_18() {
         s = (u8 *)"sp_npc_turtle";
         if (unk_1e == 0 && t == 0) {
             if (unk_c4 >= 0) {
-                func_02099064(unk_c4);
+                Pocket_RemoveItem(unk_c4);
                 h = 0x37e0;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }

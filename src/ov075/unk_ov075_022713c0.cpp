@@ -28,8 +28,8 @@ public:
 };
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
+#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define Unk_020d7710_requestCloseWindow _ZN12Unk_020d771018requestCloseWindowEj
 #define Unk_020d7710_requestReopenWindow _ZN12Unk_020d771019requestReopenWindowEv
@@ -51,9 +51,9 @@ public:
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
-#define func_02086eb0 _ZN12Unk_02086c0413func_02086eb0Ev
-#define func_02086ec4 _ZN12Unk_02086c0413func_02086ec4EP17Unk_02086ec4_Vec3
-#define func_02086edc _ZN12Unk_02086c0413func_02086edcEv
+#define PeteFallState_hasFallPos _ZN13PeteFallState10hasFallPosEv
+#define PeteFallState_getPos _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3
+#define PeteFallState_clear _ZN13PeteFallState5clearEv
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define Unk_ov075_0227188c_CallA() NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
@@ -79,8 +79,8 @@ struct TalkStartMsg {
 extern "C" {
 void *PlayerData_GetCurrent();
 s32 ChoiceList_getResult();
-s32 func_02098044(void *p, s32 a);
-s32 func_0209801c(void *p, s32 a);
+s32 Unk_02097ff4_testFlag(void *p, s32 a);
+s32 Unk_02097ff4_setFlag(void *p, s32 a);
 s32 func_02063b8c(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Unk_020d7710_requestCloseWindow(void *self, s32 a);
@@ -88,7 +88,7 @@ s32 Unk_020d7710_requestReopenWindow(void *self);
 BOOL NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTalk(void *self, s32 a, s32 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void TalkRequest_EndTalkWith(void *self);
+void TalkRequest_SetTargetDone(void *self);
 void NpcActionCtrl_requestPlayAnim(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void NpcMoveAnimSet_setStandAnim(void *p, s32 v);
@@ -116,11 +116,11 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 void Unk_02013474_enableFootsteps(void *p);
-void *func_020850e0();
-void *func_02085174(void *p);
-s32 func_02086eb0(void *p);
-void func_02086ec4(void *p, void *q);
-void func_02086edc(void *p);
+void *TownSessionState_Get();
+void *TownSessionState_GetPeteFall(void *p);
+s32 PeteFallState_hasFallPos(void *p);
+void PeteFallState_getPos(void *p, void *q);
+void PeteFallState_clear(void *p);
 s32 func_02040c88();
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
@@ -260,7 +260,7 @@ struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
+MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
     u32 unk_1c;
@@ -368,7 +368,7 @@ public:
     Unk_0201a794 unk_3b0;
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
+    CollisionState unk_49c;
     Unk_02088d00 unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
@@ -567,7 +567,7 @@ BOOL SpNpcPete::vfunc_00() {
     if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
-    if (func_02086eb0(func_02085174(func_020850e0())) != 0) {
+    if (PeteFallState_hasFallPos(TownSessionState_GetPeteFall(TownSessionState_Get())) != 0) {
         SpNpcPete_ChangeAct(this, 0);
     } else {
         SpNpcPete_ChangeAct(this, 4);
@@ -583,7 +583,7 @@ BOOL SpNpcPete::vfunc_0c() {
         return FALSE;
     }
     if (func_02040c88() == 0) {
-        func_02086edc(func_02085174(func_020850e0()));
+        PeteFallState_clear(TownSessionState_GetPeteFall(TownSessionState_Get()));
     }
     return TRUE;
 }
@@ -628,9 +628,9 @@ BOOL SpNpcPete::setupAct04() {
 }
 
 BOOL SpNpcPete::mainAct04() {
-    void *r5 = func_02085174(func_020850e0());
-    if (func_02086eb0(r5) != 0) {
-        func_02086ec4(r5, &unk_5c);
+    void *r5 = TownSessionState_GetPeteFall(TownSessionState_Get());
+    if (PeteFallState_hasFallPos(r5) != 0) {
+        PeteFallState_getPos(r5, &unk_5c);
         Unk_ov075_Vec3 *s = (Unk_ov075_Vec3 *)&unk_5c;
         Unk_ov075_Vec3 *d = (Unk_ov075_Vec3 *)&unk_68;
         d->x = unk_5c;
@@ -859,7 +859,7 @@ BOOL SpNpcPete::setupAct02() {
 
 BOOL SpNpcPete::mainAct02() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        TalkRequest_EndTalkWith(this);
+        TalkRequest_SetTargetDone(this);
         SpNpcPete_ChangeAct(this, 3);
     }
     return TRUE;
@@ -921,8 +921,8 @@ void SpNpcPeteTalk::scriptWakeUp() {
                 u8 buf[2];
                 unk_b4[0x714] = 1;
                 Unk_020d7710_requestReopenWindow(this);
-                if (func_02098044(p, 6) == 0) {
-                    func_0209801c(p, 6);
+                if (Unk_02097ff4_testFlag(p, 6) == 0) {
+                    Unk_02097ff4_setFlag(p, 6);
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[0] = 0x10;
                     unk_3c->setNextMessage(buf, (void *)"sp_npc_mpelican");
@@ -950,7 +950,7 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
 void SpNpcPeteTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_04 = 0x1a;
     if (unk_b4[0x714] != 0) {
-        if (func_02098044(PlayerData_GetCurrent(), 6) != 0) {
+        if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
             out->unk_04 = func_02063b8c(4) + 12;
         }
     }

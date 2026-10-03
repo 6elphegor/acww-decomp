@@ -278,7 +278,7 @@ u16 *PlayerData_getHeldItem(s32 a);
 s32 func_02098750(s32 a);
 s32 PlayerData_getPlayerId(...);
 void Player_GetDeliveryRecipientName(void *a, void *b);
-void func_0209909c(u16 *a, s32 b, s32 c);
+void Pocket_SetItem(u16 *a, s32 b, s32 c);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
 void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
