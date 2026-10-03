@@ -1592,3 +1592,4 @@ data_0220054c kind:bss addr:0x0220054c
 data_0220064c kind:bss addr:0x0220064c
 data_02200650 kind:bss addr:0x02200650
 data_0220066c kind:bss addr:0x0220066c
+data_02200670 kind:bss addr:0x02200670

@@ -898,3 +898,28 @@ src/autoload_2/unk_0213335c.c:
 src/autoload_2/unk_02133570.c:
     complete
     .text       start:0x02133570 end:0x02133acc
+
+src/autoload_2/unk_02133ad0.cpp:
+    complete
+    .text       start:0x02133ad0 end:0x02133aec
+
+src/autoload_2/unk_02133aec.c:
+    complete
+    .text       start:0x02133aec end:0x02133b68
+
+src/autoload_2/unk_02133b68.cpp:
+    complete
+    .text       start:0x02133b68 end:0x02133ccc
+
+src/autoload_2/unk_02133ccc.c:
+    complete
+    .text       start:0x02133ccc end:0x02133d04
+
+src/autoload_2/unk_02133d04.cpp:
+    complete
+    .text       start:0x02133d04 end:0x02134d70
+
+src/autoload_2/unk_0213510c.cpp:
+    complete
+    .text       start:0x0213510c end:0x02135914
+    .data       start:0x0213c6b0 end:0x0213c6b4
