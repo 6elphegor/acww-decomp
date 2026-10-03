@@ -76,7 +76,9 @@ for line in spec.read_text().splitlines():
         continue
     if p[0] == 'unit':
         src = Path(line.split(None, 1)[1].strip())
-        if not src.is_absolute() and not src.is_file():
+        # a relative source is relative to the spec's directory (never to the current directory: a stray file of
+        # the same name there must not be picked up)
+        if not src.is_absolute():
             src = spec.parent / src
     else:
         secs.append((p[0], int(p[1], 16), int(p[2], 16)))
