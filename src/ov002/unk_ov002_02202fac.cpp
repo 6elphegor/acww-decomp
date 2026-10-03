@@ -181,9 +181,9 @@ public:
     void reset();
     void copyFrom(MsgStringAttr *other);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 // buffer interface with write position at +4 and member at +8
@@ -194,8 +194,8 @@ public:
     virtual u32 capacity() = 0;
     virtual u8 *data() = 0;
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 // String buffer wrapping a text renderer (TextLabel) at +0x3c
@@ -344,8 +344,8 @@ public:
     virtual ~MsgRequest();
     virtual void vfunc_08();
     void setFileName(const char *src);
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -365,9 +365,9 @@ public:
     void unlockAdvance();
     void lockAdvance();
     void setNextMessageIfUnset(u8 *a, void *b);
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x00 */ s32 index;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ s32 nextState;
 };
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
@@ -1089,11 +1089,11 @@ void MenuErrorMessage::startTalk(u8 *a, s32 b) {
     TalkWindowState *p = TalkWindow_Get(1);
     talk.vfunc_08();
     talk.setFileName("obj_etc_error");
-    talk.unk_1e = *a;
+    talk.msgIndex = *a;
     p->attachRequest(&talk);
     p->disableInput();
     if (b == 0) p->setKeepSe();
-    p->unk_08 = 1;
+    p->nextState = 1;
     p->lockAdvance();
     state = 0;
     if (isFatal == 0) dimSubScreen();
@@ -1151,7 +1151,7 @@ void MenuErrorMessage::undim() { restoreBrightness(); }
 
 BOOL MenuErrorMessage::isTalkWaiting() {
     TalkWindowState *p = TalkWindow_Get(1);
-    if (p->unk_04 == 2) return TRUE;
+    if (p->state == 2) return TRUE;
     return FALSE;
 }
 
@@ -1164,7 +1164,7 @@ void MenuErrorMessage::advanceTalk() {
 
 BOOL MenuErrorMessage::finishTalk() {
     TalkWindowState *o = unk_fc;
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         return TRUE;
     }

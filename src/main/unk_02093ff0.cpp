@@ -7,16 +7,16 @@ struct Unk_02093aa8_Vec {
 // Effect entry (0x1c bytes), array gEffectManager[32], scratch entry at data_021d0830
 struct Unk_02093c28_Entry {
     /* 0x00 */ s32 x, y, z;
-    /* 0x0c */ s16 unk_0c;
-    /* 0x0e */ s16 unk_0e;
+    /* 0x0c */ s16 angle;
+    /* 0x0e */ s16 life;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
+    /* 0x14 */ s32 handle;
     /* 0x18 */ s32 unk_18;
 };
 
 struct Unk_02093bb4_Scratch {
     Unk_02093c28_Entry e;
-    /* 0x1c */ u16 unk_1c;
+    /* 0x1c */ u16 nextHandle;
 };
 
 struct Unk_02093c28_Handle {
@@ -25,30 +25,30 @@ struct Unk_02093c28_Handle {
 
 struct Unk_02093dc8_Root {
     s32 unk_00;
-    s32 unk_04, unk_08, unk_0c;
+    s32 posX, posY, posZ;
 };
 
 struct Unk_02093dc8_Ptr {
-    Unk_02093dc8_Root *unk_00;
+    Unk_02093dc8_Root *header;
 };
 
 // Particle object
 struct Unk_02093c28_Obj {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_02093c28_Handle unk_04;
+    /* 0x04 */ Unk_02093c28_Handle tag;
     /* 0x08 */ u32 unk_08;
-    /* 0x0c */ struct Unk_02093dc8_Obj *unk_0c;
+    /* 0x0c */ struct Unk_02093dc8_Obj *emitter;
 };
 
 struct Unk_02093dc8_Obj {
     /* 0x00 */ u8 pad_00[0x18];
-    /* 0x18 */ Unk_02093dc8_Ptr *unk_18;
+    /* 0x18 */ Unk_02093dc8_Ptr *resource;
     /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ s32 unk_20, unk_24, unk_28;
+    /* 0x20 */ s32 posX, posY, posZ;
     /* 0x2c */ u8 pad_2c[0x10];
-    /* 0x3c */ s16 unk_3c;
-    /* 0x3e */ s16 unk_3e;
-    /* 0x40 */ s16 unk_40;
+    /* 0x3c */ s16 axisX;
+    /* 0x3e */ s16 axisY;
+    /* 0x40 */ s16 axisZ;
     /* 0x42 */ u8 pad_42[0x12];
     /* 0x54 */ s32 unk_54;
 };
@@ -58,8 +58,8 @@ struct Unk_02093aa8_Node {
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ s32 x, y, z;
     /* 0x14 */ u8 pad_14[0x10];
-    /* 0x24 */ u16 unk_24;
-    /* 0x26 */ u16 unk_26;
+    /* 0x24 */ u16 lifeTime;
+    /* 0x26 */ u16 age;
     /* 0x28 */ u8 pad_28[0x10];
     /* 0x38 */ s32 ox, oy, oz;
 };
@@ -67,7 +67,7 @@ struct Unk_02093aa8_Node {
 struct Unk_02093aa8_Owner {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_02093aa8_Node *unk_08;
+    /* 0x08 */ Unk_02093aa8_Node *particles;
 };
 
 class GroundInfo {
@@ -202,9 +202,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgString;
@@ -217,7 +217,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 class MsgString : public MsgStringBase {
@@ -229,8 +229,8 @@ public:
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
@@ -245,7 +245,7 @@ public:
 
     void copyTo(void *dst, u32 n);
 
-    /* 0x0e */ u8 unk_0e[8];
+    /* 0x0e */ u8 text[8];
 };
 
 // 9-byte source buffer at +0x12
@@ -256,7 +256,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[9];
+    /* 0x12 */ u8 text[9];
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -265,8 +265,8 @@ public:
 class TownId {
 public:
     // constructors and methods at 0x020639b8.. are plain functions in symbols.txt (declared below, `this` first)
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
 
     s32 getTownRelation();
     void setTown(TownId *o);
@@ -295,9 +295,9 @@ public:
     void clear();
     void setRaw(void *src);
 
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
+    /* 0x0a */ u16 playerId;
+    /* 0x0c */ u8 playerName[8];
+    /* 0x14 */ s8 gender;
 };
 
 extern "C" {
@@ -409,45 +409,45 @@ void PlayerId::setRaw(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
 void PlayerId::clear()
 {
-    MI_CpuFill8(unk_0c, 0, 8);
-    unk_0a = 0;
-    unk_14 = 2;
+    MI_CpuFill8(playerName, 0, 8);
+    playerId = 0;
+    gender = 2;
     TownId_Clear(this);
 }
 
 void PlayerId::copyFrom(PlayerId *o)
 {
-    MI_CpuCopy8(o->unk_0c, unk_0c, 8);
-    unk_0a = o->unk_0a;
-    unk_14 = o->unk_14;
+    MI_CpuCopy8(o->playerName, playerName, 8);
+    playerId = o->playerId;
+    gender = o->gender;
     TownId_CopyFrom(this, o);
 }
 
 void PlayerId::copyTo(PlayerId *o)
 {
-    MI_CpuCopy8(unk_0c, o->unk_0c, 8);
-    o->unk_0a = unk_0a;
-    o->unk_14 = unk_14;
+    MI_CpuCopy8(playerName, o->playerName, 8);
+    o->playerId = playerId;
+    o->gender = gender;
     TownId_CopyTo(this, o);
 }
 
 BOOL PlayerId::isValid()
 {
-    if (TownId_IsValid(this) == 1 && unk_0a != 0) return TRUE;
+    if (TownId_IsValid(this) == 1 && playerId != 0) return TRUE;
     return FALSE;
 }
 
 BOOL PlayerId::equals(PlayerId *o)
 {
-    if (unk_0a == o->unk_0a && unk_14 == o->unk_14 && memcmp(unk_0c, o->unk_0c, 8) == 0) return TRUE;
+    if (playerId == o->playerId && gender == o->gender && memcmp(playerName, o->playerName, 8) == 0) return TRUE;
     return FALSE;
 }
 
 void PlayerId::set(void *src, u16 a, s8 b, TownId *p)
 {
-    MI_CpuCopy8(src, unk_0c, 8);
-    unk_0a = a;
-    unk_14 = b;
+    MI_CpuCopy8(src, playerName, 8);
+    playerId = a;
+    gender = b;
     if (p == NULL) p = &gSaveTownId;
     TownId_Assign(this, p);
 }
@@ -482,22 +482,22 @@ extern "C" u16 PlayerId_GenerateRandomId()
     return (u16)((u16)Random_GlobalBelow(0x7ffc) | 0x8000);
 }
 
-u16 PlayerId::getId() { return unk_0a; }
+u16 PlayerId::getId() { return playerId; }
 
-void PlayerId::setId(u16 v) { unk_0a = v; }
+void PlayerId::setId(u16 v) { playerId = v; }
 
-void PlayerId::setGender(u8 v) { unk_14 = v; }
+void PlayerId::setGender(u8 v) { gender = v; }
 
-s8 PlayerId::getGender() { return unk_14; }
+s8 PlayerId::getGender() { return gender; }
 
-void PlayerId::setName(void *src) { MI_CpuCopy8(src, unk_0c, 8); }
+void PlayerId::setName(void *src) { MI_CpuCopy8(src, playerName, 8); }
 
-u8 *PlayerId::getName() { return unk_0c; }
+u8 *PlayerId::getName() { return playerName; }
 
 void PlayerId::getNameString(MsgString *x)
 {
     EncodedString8 buf;
-    EncodedString_SetRaw(&buf, unk_0c, 8);
+    EncodedString_SetRaw(&buf, playerName, 8);
     x->fromEncoded(&buf, 0, 0);
 }
 
@@ -505,7 +505,7 @@ void PlayerId::setNameString(MsgString *x)
 {
     EncodedString8 buf;
     buf.fromMsgString(x);
-    buf.copyTo(unk_0c, 8);
+    buf.copyTo(playerName, 8);
 }
 
 extern "C" void PlayerId_GetTownId() {}
@@ -517,7 +517,7 @@ s32 TownId::getTownRelation()
     s32 r = 2;
     if (TownId_IsValid(this) != 0) {
         TownId *p = &gSaveTownId;
-        if (unk_00 == p->unk_00 && memcmp(unk_02, p->unk_02, 8) == 0) {
+        if (townId == p->townId && memcmp(townName, p->townName, 8) == 0) {
             r = 0;
         } else {
             r = 1;
@@ -537,5 +537,5 @@ MsgString9B::~MsgString9B() {}
 
 u32 MsgString9B::capacity() { return 9; }
 
-u8 *MsgString9B::data() { return unk_12; }
+u8 *MsgString9B::data() { return text; }
 

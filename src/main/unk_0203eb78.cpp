@@ -19,12 +19,12 @@ struct Unk_0203ebdc_List {
 };
 
 struct WorldCurve {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s16 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
+    /* 0x00 */ s32 x;
+    /* 0x04 */ s32 y;
+    /* 0x08 */ s32 z;
+    /* 0x0c */ s16 centerAngle;
+    /* 0x10 */ s32 flatDistance;
+    /* 0x14 */ s32 dropSlope;
 };
 
 struct Unk_0203ecec_Global {
@@ -42,10 +42,10 @@ struct Unk_0203ef38_Global {
 };
 
 struct Unk_0203f408_Entry {
-    /* 0x00 */ u16 unk_00;
+    /* 0x00 */ u16 eventId;
     /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x04 */ u32 start;
+    /* 0x08 */ u32 end;
 };
 
 union Unk_0203f218_Ver {

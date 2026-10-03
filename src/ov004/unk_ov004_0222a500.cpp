@@ -120,7 +120,7 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     u8 pad_04[4];
-    u32 unk_08;
+    u32 curFrame;
     u8 pad_0c[0xc];
 };
 
@@ -232,7 +232,7 @@ public:
     RoomShellMatAnim();
     virtual ~RoomShellMatAnim();
 
-    /* 0x18 */ u32 *unk_18;
+    /* 0x18 */ u32 *anmObj;
     /* 0x1c */ u32 pad_1c;
 };
 
@@ -523,7 +523,7 @@ BOOL RoomShell::onExecute() {
     RoomShellMatAnim *e = unk_108;
     if (func_ov004_0222ae7c((Unk_ov004_0222ae7c_Obj *)e)) {
         AnimFrameCtrl_step(e);
-        *unk_108[0].unk_18 = unk_108[0].unk_08;
+        *unk_108[0].anmObj = unk_108[0].curFrame;
     }
     if (unk_3528.x != 0) {
         s32 id = FtrMgr_GetCycleCounter(unk_3528.x);

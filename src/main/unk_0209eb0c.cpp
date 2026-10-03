@@ -35,7 +35,7 @@ class SaveChecksum {
 public:
     u16 get();
     void set(u16 v);
-    u16 unk_00;
+    u16 checksum;
 };
 
 void SaveRecord4::construct() {}
@@ -93,9 +93,9 @@ u8 SaveRecord4::getStamp() {
 }
 
 void SaveChecksum::set(u16 v) {
-    unk_00 = v;
+    checksum = v;
 }
 
 u16 SaveChecksum::get() {
-    return unk_00;
+    return checksum;
 }

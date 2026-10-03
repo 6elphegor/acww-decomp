@@ -8,9 +8,9 @@
 // namespace p<NN>, declared under the real symbol names.
 // ================================================================ library chain and TU02 helper classes (from the linked TU02 unit)
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
 };
 
 // ================================================================ plain value types
@@ -99,10 +99,10 @@ public:
     virtual BOOL postDraw();
     virtual ~Actor();
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -130,9 +130,9 @@ public:
     void detachTalkRequest(s32 a);
     void attachTalkRequest(s32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -144,8 +144,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -467,9 +467,9 @@ class TexVramSlot;
 
 class ModelResource {
 public:
-    u32 unk_04;
+    u32 fileData;
     u32 pad[10];
-    u8 unk_30;
+    u8 loadState;
     u8 unk_31;
     u8 pad2[2];
 
@@ -525,19 +525,19 @@ class AnimFrameCtrl {
 public:
     AnimFrameCtrl();
     virtual ~AnimFrameCtrl();
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
 public:
     ModelAnim();
     virtual ~ModelAnim();
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class FtrModelAnim : public ModelAnim {
@@ -1467,7 +1467,7 @@ BOOL FtrPhone::enterTalkAct04() {
 
 void FtrPhone::execTalkAct03() {
     if (unk_3c != 0) {
-        if (unk_3c->unk_04 == 0) {
+        if (unk_3c->state == 0) {
             detachTalkRequest((s32)(TalkMsgRequest *)this);
             setTalkAct(4);
         }
@@ -1478,7 +1478,7 @@ BOOL FtrPhone::enterTalkAct03() { return TRUE; }
 
 void FtrPhone::execTalkAct02() {
     if (unk_3c != 0) {
-        if (unk_3c->unk_04 != 0) {
+        if (unk_3c->state != 0) {
             setTalkAct(3);
         }
     }
@@ -1493,10 +1493,10 @@ struct Unk_ov004_0220a0e4_Pad {
 BOOL FtrPhone::enterTalkAct02() {
     Unk_ov004_0220a0e4_Pad pad;
     attachTalkRequest((s32)(TalkMsgRequest *)this);
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
     TalkMsgRequest &s = *this;
     s.setFileName(p10::data_ov004_0224bb44);
-    unk_1e = 0;
+    msgIndex = 0;
     return TRUE;
 }
 
@@ -2721,7 +2721,7 @@ BOOL FtrVillagerPic::enterTalkAct02() {
     if (r) idx = (s32)(t - 0x47d8) >> 2;
     else idx = -1;
     MsgRequest::setFileName(p13::data_ov004_0224bb70);
-    unk_1e = idx;
+    msgIndex = idx;
     return TRUE;
 }
 
@@ -3829,7 +3829,7 @@ BOOL FtrGyroid::enterFtrAct02() {
 }
 
 void FtrGyroid::execFtrAct01() {
-    updateSync((Unk_ov004_0220d69c_Vec *)unk_5c);
+    updateSync((Unk_ov004_0220d69c_Vec *)position);
     if (unk_85c != 0) {
         p16::_ZN14BlendAnimModel9stepBlendEv(b16_unk_534);
         unk_85c--;
@@ -3847,7 +3847,7 @@ void FtrGyroid::execFtrAct01() {
     if (p16::_ZN9FtrSwitch10isChangingEv(b16_unk_73c)) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 1, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, unk_5c, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
     }
 }
 
@@ -3856,7 +3856,7 @@ BOOL FtrGyroid::enterFtrAct01() {
     p16::_ZN8FtrActor10playSound1Ev(this);
     p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 1, 0);
     unk_85c = 0xffff;
-    p16::FieldPos_ToUnit(&a, &b, unk_5c);
+    p16::FieldPos_ToUnit(&a, &b, position);
     if (b16_unk_77a != 0) {
         if (b16_unk_768 != 0 || p16::Scene_InVillagerHouse() != 0) {
             p16::Snd_BgmSyncSetState(unk_840, 1);
@@ -3897,18 +3897,18 @@ BOOL FtrGyroid::enterFtrAct01() {
 }
 
 void FtrGyroid::execFtrAct00() {
-    updateSync((Unk_ov004_0220d69c_Vec *)unk_5c);
+    updateSync((Unk_ov004_0220d69c_Vec *)position);
     p16::_ZN14BlendAnimModel9stepBlendEv(b16_unk_534);
     if (p16::_ZN9FtrSwitch10isChangingEv(b16_unk_73c)) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, unk_5c, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
     }
 }
 
 BOOL FtrGyroid::enterFtrAct00() {
     s32 a, b;
-    p16::FieldPos_ToUnit(&a, &b, unk_5c);
+    p16::FieldPos_ToUnit(&a, &b, position);
     b16_unk_778 = 0xff;
     p16::RoomFtrState_RemoveGyroidBeat(a, b, p16::Scene_GetCurrent());
     setSyncState(0);
@@ -4057,7 +4057,7 @@ BOOL FtrGyroid::initModel() {
     if (b16_unk_768 == 1) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, unk_5c, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
     } else if (p16::_ZN8FtrActor9isPreviewEv(this) != 0) {
         changeAct(0, 0xff);
     } else if (p16::_ZN9FtrSwitch4isOnEv(b16_unk_73c) != 0) {
@@ -4672,7 +4672,7 @@ BOOL FtrStereo::enterTalkAct04() {
         }
         l.v = Unk_ov004_0220ec30_Val(t);
         p18::_ZN8ItemNameC1EPt(buf1, &l.v);
-        unk_1e = 5;
+        msgIndex = 5;
         p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)unk_3c), 0, buf1, 7);
         p18::_ZN8ItemNameD1Ev(buf1);
     } else {
@@ -4681,11 +4681,11 @@ BOOL FtrStereo::enterTalkAct04() {
         if (*p >= 0x1323 && *p <= 0x1368) ok = TRUE;
         if (ok) {
             p18::_ZN8ItemNameC1EPt(buf2, p);
-            unk_1e = 5;
+            msgIndex = 5;
             p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)unk_3c), 0, buf2, 7);
             p18::_ZN8ItemNameD1Ev(buf2);
         } else {
-            unk_1e = 6;
+            msgIndex = 6;
         }
     }
     return TRUE;
@@ -5705,7 +5705,7 @@ BOOL FtrBed::enterFtrAct08() {
     p21::_ZN9Character17attachTalkRequestEi(this, this);
     ((Unk_ov004_0220bdbc_P *)unk_3c)->unk_08 = 1;
     MsgRequest::setFileName(p21::data_ov004_0224bbb0);
-    unk_1e = 4;
+    msgIndex = 4;
     return TRUE;
 }
 
@@ -5755,10 +5755,10 @@ BOOL FtrBed::enterFtrAct04() {
     ((Unk_ov004_0220bdbc_P *)unk_3c)->unk_08 = 1;
     if (p21::GameStart_IsNewTown() || p21::GameStart_IsNewResident()) {
         MsgRequest::setFileName(p21::data_ov004_0224bbd0);
-        unk_1e = 0x19;
+        msgIndex = 0x19;
     } else {
         MsgRequest::setFileName(p21::data_ov004_0224bbe4);
-        unk_1e = 0;
+        msgIndex = 0;
     }
     return TRUE;
 }
@@ -5782,7 +5782,7 @@ void FtrBed::execFtrAct02() {
     u16 v = p21::_ZN10FtrContact12getPushAngleEv(o);
     Unk_ov004_0221076c_R *a = p21::_ZN10FtrContact15getContactPointEv(o);
     Unk_ov004_0221076c_R *b = p21::_ZN10FtrContact15getContactPointEv(o);
-    if (p21::PlayerActor_LocalRequestBedApproach(a, &b->unk_08, &v, (s16)(unk_8e - 0x4000), 1)) {
+    if (p21::PlayerActor_LocalRequestBedApproach(a, &b->unk_08, &v, (s16)(rotY - 0x4000), 1)) {
         changeAct(3, 0xff);
     }
 }
@@ -5823,8 +5823,8 @@ void FtrBed::execFtrAct01() {
 }
 
 BOOL FtrBed::enterFtrAct01() {
-    unk_842 = (unk_5c[0] < (p21::data_020c8cbc >> 1)) ? 1 : 0;
-    unk_843 = (unk_5c[2] < 0x16000) ? 1 : 0;
+    unk_842 = (position[0] < (p21::data_020c8cbc >> 1)) ? 1 : 0;
+    unk_843 = (position[2] < 0x16000) ? 1 : 0;
     if (unk_842) {
         if (unk_843) {
             unk_844 = 0;
@@ -5897,7 +5897,7 @@ void FtrBed::execFtrAct00() {
                                     v = p21::_ZN10FtrContact12getPushAngleEv(o);
                                     Unk_ov004_0221076c_R *ra = p21::_ZN10FtrContact15getContactPointEv(o);
                                     Unk_ov004_0221076c_R *rb = p21::_ZN10FtrContact15getContactPointEv(o);
-                                    p21::PlayerActor_LocalRequestBedApproach(ra, &rb->unk_08, &v, (s16)(unk_8e - 0x4000), 0);
+                                    p21::PlayerActor_LocalRequestBedApproach(ra, &rb->unk_08, &v, (s16)(rotY - 0x4000), 0);
                                     unk_840 = 0;
                                 }
                             }
@@ -5928,7 +5928,7 @@ s32 FtrBed::checkStepTile(Unk_ov004_022108f0_V *a, s32 b, Unk_ov004_022108f0_V *
         if (p21::FtrInfo_TestIndoorFlag2(p21::FtrActor_GetFtrIndex(obj)) != 0) {
             return 2;
         }
-        if (unk_8e == obj->unk_8e) {
+        if (rotY == obj->rotY) {
             if (Unk_ov004_02210dd8_Chk::R(*(u16 *)((u8 *)obj + 0xc))) {
                 Unk_ov004_02210d28 q1, q2;
                 u32 n1 = getLieTiles(&q1);
@@ -6280,9 +6280,9 @@ extern "C" void FtrBed_Create() {
 // ================================================================ FtrSeat ==========
 void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
     if (b22_unk_780 == 0) {
-        out->x = unk_5c[0];
-        out->y = unk_5c[1];
-        out->z = unk_5c[2];
+        out->x = position[0];
+        out->y = position[1];
+        out->z = position[2];
     } else {
         s32 *p = (s32 *)p22::_ZN10FtrContact22getClampedContactPointEv(o);
         out->x = p[0];
@@ -7439,7 +7439,7 @@ extern "C" void FtrBasic_Create() {
 
 // ---- functions of classes declared by a later part than the one that holds them
 void FtrGyroid::execFtrAct02() {
-    s32 v = updateSync((Unk_ov004_0220d69c_Vec *)&unk_5c[0]);
+    s32 v = updateSync((Unk_ov004_0220d69c_Vec *)&position[0]);
     if (v >= 0) {
         s32 i = v >> 12;
         p15::_ZN14BlendAnimModel8initAnimEiiitt(b15_f_534, p15::_ZN10FtrAnimSet6getBcaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 0, v - (i << 12), (u16)i, 0);
@@ -7448,7 +7448,7 @@ void FtrGyroid::execFtrAct02() {
     if (p15::_ZN9FtrSwitch10isChangingEv(b15_f_73c)) {
         p15::_ZN9FtrSwitch3setEji(b15_f_73c, 1, 0);
         u32 r4 = p15::Scene_GetCurrent();
-        p15::FtrSync_RequestToggleGyroid(r4, &unk_5c[0], p15::FtrActor_GetLayer(this));
+        p15::FtrSync_RequestToggleGyroid(r4, &position[0], p15::FtrActor_GetLayer(this));
     }
 }
 
@@ -7582,7 +7582,7 @@ BOOL FtrStorage::enterTalkAct09() {
             }
         }
     }
-    unk_1e = r5;
+    msgIndex = r5;
     list.release();
     return TRUE;
 }
@@ -7778,7 +7778,7 @@ void FtrBed::onChoice() {
 }
 
 void FtrBed::onMessageEnd() {
-    if (unk_1e == 0) {
+    if (msgIndex == 0) {
         u32 o = ((u32)unk_3c);
         u32 h = p20::_ZN15TalkWindowState13getChoiceListEv(o);
         p20::_ZN10ChoiceList5resetEii(h, 2, 1);
@@ -7792,7 +7792,7 @@ void FtrBed::onMessageEnd() {
         p20::_ZN10ChoiceList9loadTextsEv(h);
         p20::_ZN15TalkWindowState11openChoicesEi(o, 1);
     }
-    if (unk_1e == 0x19) {
+    if (msgIndex == 0x19) {
         changeAct(5, 0xff);
     }
 }

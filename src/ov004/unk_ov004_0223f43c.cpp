@@ -62,18 +62,18 @@ struct Unk_0223f534_Ent {
 // Camera object (gCamera); see src/main/unk_0203a058.cpp.
 struct Unk_021c3070 {
     /* 0x00 */ u8 unk_00[0xfc];
-    /* 0xfc */ s16 unk_fc, unk_fe;
-    /* 0x100 */ s32 unk_100, unk_104, unk_108, unk_10c, unk_110, unk_114, unk_118;
-    /* 0x11c */ u8 unk_11c[0x148 - 0x11c];
-    /* 0x148 */ s16 unk_148, unk_14a;
-    /* 0x14c */ s32 unk_14c, unk_150, unk_154, unk_158, unk_15c, unk_160, unk_164;
+    /* 0xfc */ s16 target, targetPitch;
+    /* 0x100 */ s32 targetDistance, targetOffset, targetOffsetY, targetOffsetZ, targetFocus, targetFocusY, targetFocusZ;
+    /* 0x11c */ u8 saved[0x148 - 0x11c];
+    /* 0x148 */ s16 current, currentPitch;
+    /* 0x14c */ s32 currentDistance, currentOffset, currentOffsetY, currentOffsetZ, currentFocus, currentFocusY, currentFocusZ;
     /* 0x168 */ u8 unk_168[0x1cc - 0x168];
-    /* 0x1cc */ Unk_0223f44c_Vec unk_1cc;
-    /* 0x1d8 */ s32 unk_1d8, unk_1dc, unk_1e0, unk_1e4, unk_1e8;
-    /* 0x1ec */ s32 unk_1ec, unk_1f0;
-    /* 0x1f4 */ u8 unk_1f4, unk_1f5, unk_1f6;
+    /* 0x1cc */ Unk_0223f44c_Vec focusPointA;
+    /* 0x1d8 */ s32 focusPointB, unk_1dc, unk_1e0, closeUpFactorTarget, closeUpFactor;
+    /* 0x1ec */ s32 presetCol, presetRow;
+    /* 0x1f4 */ u8 viewPushed, focusYawLocked, roomFocusSide;
     /* 0x1f7 */ u8 unk_1f7[0x21c - 0x1f7];
-    /* 0x21c */ Unk_0223f44c_Mode unk_21c;
+    /* 0x21c */ Unk_0223f44c_Mode modeParam;
 };
 
 struct Unk_ov004_0223fe00_Sub {
@@ -171,10 +171,10 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     s32 ang, r7;
     s32 t;
     if (a == 0) {
-        a = (Unk_ov004_0223fe00_Sub *)&self->unk_fc;
+        a = (Unk_ov004_0223fe00_Sub *)&self->target;
     }
     p = PlayerActor_GetBodyPos(4);
-    t = Camera_CalcPointSpan(p, &self->unk_1cc, &self->unk_110, &dy);
+    t = Camera_CalcPointSpan(p, &self->focusPointA, &self->targetFocus, &dy);
     if (t < 0x4800) {
         t = 0x4800;
     } else if (t > 0xb000) {
@@ -182,15 +182,15 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     }
     sc = FX_Div(t - 0x4800, 0x6800);
     inv = 0x1000 - sc;
-    self->unk_1e4 = inv;
-    Unk_020d93b8_lerpPoses(self, 0xb, sCameraPoseGrid[self->unk_1f0][self->unk_1ec], sc);
+    self->closeUpFactorTarget = inv;
+    Unk_020d93b8_lerpPoses(self, 0xb, sCameraPoseGrid[self->presetRow][self->presetCol], sc);
     d = gVec3Zero;
-    if (p->z > self->unk_1cc.z) {
+    if (p->z > self->focusPointA.z) {
         d = *p;
     } else {
-        d.x = self->unk_1cc.x;
-        d.y = self->unk_1cc.y;
-        d.z = self->unk_1cc.z;
+        d.x = self->focusPointA.x;
+        d.y = self->focusPointA.y;
+        d.z = self->focusPointA.z;
     }
     sp4 = Unk_0203b350_getRoomEdgeSide(self, &a->unk_14);
     sp8 = 0;
@@ -201,8 +201,8 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     s32 q = func_01ffcb0c(t >> 1, 0x2000);
     lim = (s16)func_01ffcb0c(q, 0xe02);
     if (lim > 0xe02) lim = 0xe02;
-    if (lim > 0 && self->unk_1f5 == 0) {
-        if (self->unk_1f6 == 3) {
+    if (lim > 0 && self->focusYawLocked == 0) {
+        if (self->roomFocusSide == 3) {
             if (ang > 0) r7 = 1; else r7 = 2;
             if (sp4 == 1 && r7 == 1) {
                 s32 b = ang < 0 ? (s16)-ang : ang;
@@ -213,9 +213,9 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
                 if (ang > 0x701) r7 = 0; else r7 = 1;
             }
             if (Scene_GetCurrent() == 0x10) r7 = 1;
-            self->unk_1f6 = r7;
+            self->roomFocusSide = r7;
         }
-        u32 m = self->unk_1f6;
+        u32 m = self->roomFocusSide;
         if (m == 1) lim = (s16)-lim;
         if (m != 0) {
             a->unk_00 = func_01ffcb0c(lim, inv);
@@ -229,9 +229,9 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
 BOOL Camera_InitMode10(Unk_021c3070 *self) {
     Unk_020d93b8_loadPose(self, 0x11, 0);
     Unk_020d93b8_setBlendPreset(self, 0);
-    self->unk_110 = gVec3Zero.x;
-    self->unk_114 = gVec3Zero.y;
-    self->unk_118 = gVec3Zero.z;
+    self->targetFocus = gVec3Zero.x;
+    self->targetFocusY = gVec3Zero.y;
+    self->targetFocusZ = gVec3Zero.z;
     Camera_FinishBlend();
     return TRUE;
 }
@@ -240,9 +240,9 @@ BOOL Camera_StartBlendToPlayer(Unk_021c3070 *self) {
     Unk_020d93b8_loadPose(self, sCameraPoseGrid[1][1], 0);
     Unk_020d93b8_setBlendPreset(self, 0);
     Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
-    self->unk_110 = p->x;
-    self->unk_114 = p->y;
-    self->unk_118 = p->z;
+    self->targetFocus = p->x;
+    self->targetFocusY = p->y;
+    self->targetFocusZ = p->z;
     Camera_StartBlend();
     return TRUE;
 }
@@ -302,9 +302,9 @@ void Camera_UpdateMode11(Unk_021c3070 *o) {
     a = 0;
     b = 0;
     c = 0;
-    o->unk_110 = 0;
-    o->unk_114 = b;
-    o->unk_118 = c;
+    o->targetFocus = 0;
+    o->targetFocusY = b;
+    o->targetFocusZ = c;
     Unk_0223f44c_Finish(o);
 }
 
@@ -320,16 +320,16 @@ void Camera_UpdateMode12(Unk_021c3070 *o) {
     a = 0;
     b = 0;
     c = 0;
-    o->unk_110 = 0;
-    o->unk_114 = b;
-    o->unk_118 = c;
+    o->targetFocus = 0;
+    o->targetFocusY = b;
+    o->targetFocusZ = c;
     Unk_0223f44c_Finish(o);
 }
 
 BOOL Camera_SetMode16At(Unk_0223f44c_Vec *v) {
     Unk_021c3070 *c = gCamera;
     if (c) {
-        Unk_0223f44c_Vec *d = &c->unk_1cc;
+        Unk_0223f44c_Vec *d = &c->focusPointA;
         *d = *v;
         return Unk_0203b350_setMode(gCamera, 0x10);
     }
@@ -349,30 +349,30 @@ void Camera_UpdateMode16(Unk_021c3070 *o) {
     Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
     Unk_0223f44c_Vec a, b;
     s32 d;
-    func_01ffd070(&a, p, &o->unk_1cc);
+    func_01ffd070(&a, p, &o->focusPointA);
     func_020e9790(&b, &a, 1);
-    o->unk_110 = b.x;
-    o->unk_114 = b.y;
-    o->unk_118 = b.z;
-    d = p->z - o->unk_1cc.z;
+    o->targetFocus = b.x;
+    o->targetFocusY = b.y;
+    o->targetFocusZ = b.z;
+    d = p->z - o->focusPointA.z;
     if (d < 0) {
         d = -d;
     }
-    o->unk_118 = o->unk_118 + (d >> 1);
+    o->targetFocusZ = o->targetFocusZ + (d >> 1);
     Unk_0223f44c_Finish(o);
 }
 
 BOOL Camera_InitMode14(Unk_021c3070 *o) {
-    Unk_020d93b8_loadPose(o, sCameraPoseGrid[o->unk_1f0][o->unk_1ec], 0);
+    Unk_020d93b8_loadPose(o, sCameraPoseGrid[o->presetRow][o->presetCol], 0);
     Unk_020d93b8_setBlendPreset(o, 0);
     Camera_StartBlend();
     return TRUE;
 }
 
 void Camera_UpdateMode14(Unk_021c3070 *o) {
-    o->unk_110 = data_ov004_0224682c.x;
-    o->unk_114 = data_ov004_0224682c.y;
-    o->unk_118 = data_ov004_0224682c.z;
+    o->targetFocus = data_ov004_0224682c.x;
+    o->targetFocusY = data_ov004_0224682c.y;
+    o->targetFocusZ = data_ov004_0224682c.z;
     Unk_0223f44c_Finish(o);
 }
 
@@ -384,9 +384,9 @@ BOOL Camera_InitMode15(Unk_021c3070 *o) {
 }
 
 void Camera_UpdateMode15(Unk_021c3070 *o) {
-    o->unk_110 = data_ov004_02246838.x;
-    o->unk_114 = data_ov004_02246838.y;
-    o->unk_118 = data_ov004_02246838.z;
+    o->targetFocus = data_ov004_02246838.x;
+    o->targetFocusY = data_ov004_02246838.y;
+    o->targetFocusZ = data_ov004_02246838.z;
     Unk_0223f44c_Finish(o);
 }
 
@@ -405,14 +405,14 @@ BOOL Camera_InitMode20(Unk_021c3070 *o) {
 }
 
 void Camera_UpdateMode20(Unk_021c3070 *o) {
-    o->unk_110 = o->unk_1cc.x;
-    o->unk_114 = o->unk_1cc.y;
-    o->unk_118 = o->unk_1cc.z;
+    o->targetFocus = o->focusPointA.x;
+    o->targetFocusY = o->focusPointA.y;
+    o->targetFocusZ = o->focusPointA.z;
     Unk_0223f44c_Finish(o);
 }
 
 void Camera_SetMode20At(Unk_0223f44c_Vec *v) {
-    gCamera->unk_1cc = *v;
+    gCamera->focusPointA = *v;
     Unk_0203b350_setMode(gCamera, 0x14);
 }
 
@@ -433,18 +433,18 @@ void RoomCamera_KkShowResetShot(void) {
 }
 
 #define COPY_TBL(o, t)                 \
-    o->unk_fc = t.a;                   \
-    o->unk_fe = t.b;                   \
-    o->unk_100 = t.w0;                 \
-    o->unk_104 = t.p.x;                \
-    o->unk_108 = t.p.y;                \
-    o->unk_10c = t.p.z;                \
-    o->unk_110 = t.q.x;                \
-    o->unk_114 = t.q.y;                \
-    o->unk_118 = t.q.z
+    o->target = t.a;                   \
+    o->targetPitch = t.b;                   \
+    o->targetDistance = t.w0;                 \
+    o->targetOffset = t.p.x;                \
+    o->targetOffsetY = t.p.y;                \
+    o->targetOffsetZ = t.p.z;                \
+    o->targetFocus = t.q.x;                \
+    o->targetFocusY = t.q.y;                \
+    o->targetFocusZ = t.q.z
 
 BOOL Camera_InitMode18(Unk_021c3070 *o) {
-    Unk_0223f44c_Mode *m = &o->unk_21c;
+    Unk_0223f44c_Mode *m = &o->modeParam;
     m->v0 = 0;
     m->v2 = -1;
     m->v4 = 0;
@@ -461,24 +461,24 @@ BOOL Camera_InitMode18(Unk_021c3070 *o) {
 }
 
 void Camera_UpdateMode18(Unk_021c3070 *o) {
-    Unk_0223f44c_Mode *m = &o->unk_21c;
+    Unk_0223f44c_Mode *m = &o->modeParam;
     Unk_0223f534_Ent *e;
     if (m->v4 == 1) {
         e = &sCameraKkShowShots[m->v2];
-        o->unk_110 = e->w0;
-        o->unk_114 = e->w1;
-        o->unk_118 = e->w2;
-        VEC_Subtract(&o->unk_110, &o->unk_104, &o->unk_110);
+        o->targetFocus = e->w0;
+        o->targetFocusY = e->w1;
+        o->targetFocusZ = e->w2;
+        VEC_Subtract(&o->targetFocus, &o->targetOffset, &o->targetFocus);
         if (Unk_0203b350_getDistance(o) > 0x1400) {
-            o->unk_100 = o->unk_100 + e->w6;
+            o->targetDistance = o->targetDistance + e->w6;
         }
-        o->unk_fc = o->unk_fc + e->h20;
+        o->target = o->target + e->h20;
         m->v0 = m->v0 + e->h20;
         {
             Unk_0223f6bc_V3 t(e->w3, 0, e->w4);
-            VEC_Add(&o->unk_110, &t, &o->unk_110);
+            VEC_Add(&o->targetFocus, &t, &o->targetFocus);
             func_020e93a0(&t, m->v0);
-            VEC_Subtract(&o->unk_110, &t, &o->unk_110);
+            VEC_Subtract(&o->targetFocus, &t, &o->targetFocus);
         }
     }
     Unk_0223f44c_Finish(o);
@@ -491,7 +491,7 @@ void Camera_KkShowWideShot(Unk_021c3070 *o) {
 }
 
 void Camera_KkShowPickShot(Unk_021c3070 *o) {
-    Unk_0223f44c_Mode *m = &o->unk_21c;
+    Unk_0223f44c_Mode *m = &o->modeParam;
     Unk_0223f534_Ent *e;
     s32 lim[2];
     s32 i;
@@ -525,34 +525,34 @@ void Camera_KkShowPickShot(Unk_021c3070 *o) {
     m->va = m->va ^ 1;
     m->v4 = 1;
     e = &sCameraKkShowShots[m->v2];
-    o->unk_110 = e->w0;
-    o->unk_114 = e->w1;
-    o->unk_118 = e->w2;
+    o->targetFocus = e->w0;
+    o->targetFocusY = e->w1;
+    o->targetFocusZ = e->w2;
     {
-        void *p = &o->unk_110;
-        VEC_Subtract(p, &o->unk_104, p);
+        void *p = &o->targetFocus;
+        VEC_Subtract(p, &o->targetOffset, p);
     }
-    o->unk_fe = e->h1e;
-    o->unk_fc = e->h1c;
-    o->unk_100 = e->w5;
+    o->targetPitch = e->h1e;
+    o->target = e->h1c;
+    o->targetDistance = e->w5;
     Camera_FinishBlend();
 }
 
 void Camera_KkShowResetShot(Unk_021c3070 *o) {
-    Unk_0223f44c_Mode *m = &o->unk_21c;
+    Unk_0223f44c_Mode *m = &o->modeParam;
     m->v0 = 0;
     m->v2 = 0;
     m->v4 = 2;
     COPY_TBL(o, sCameraKkShowSetup);
-    o->unk_148 = sCameraKkShowPrevSetup.a;
-    o->unk_14a = sCameraKkShowPrevSetup.b;
-    o->unk_14c = sCameraKkShowPrevSetup.w0;
-    o->unk_150 = sCameraKkShowPrevSetup.p.x;
-    o->unk_154 = sCameraKkShowPrevSetup.p.y;
-    o->unk_158 = sCameraKkShowPrevSetup.p.z;
-    o->unk_15c = sCameraKkShowPrevSetup.q.x;
-    o->unk_160 = sCameraKkShowPrevSetup.q.y;
-    o->unk_164 = sCameraKkShowPrevSetup.q.z;
+    o->current = sCameraKkShowPrevSetup.a;
+    o->currentPitch = sCameraKkShowPrevSetup.b;
+    o->currentDistance = sCameraKkShowPrevSetup.w0;
+    o->currentOffset = sCameraKkShowPrevSetup.p.x;
+    o->currentOffsetY = sCameraKkShowPrevSetup.p.y;
+    o->currentOffsetZ = sCameraKkShowPrevSetup.p.z;
+    o->currentFocus = sCameraKkShowPrevSetup.q.x;
+    o->currentFocusY = sCameraKkShowPrevSetup.q.y;
+    o->currentFocusZ = sCameraKkShowPrevSetup.q.z;
     Unk_020d93b8_setBlendParams(o, data_ov004_0224f31c);
     Camera_StartBlend();
 }

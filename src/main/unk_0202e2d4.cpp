@@ -97,11 +97,11 @@ public:
 
 struct Character : Actor {
     u8 pad_04[0x58];
-    Unk_0203e7a4_Vec unk_5c;
+    Unk_0203e7a4_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[0xe6 - 0x92];
     Character();
     virtual BOOL preDelete();
@@ -117,22 +117,22 @@ struct Character : Actor {
 
 struct NpcActor : Character {
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    ActorFollowCollider unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    ActorFollowCollider collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
     NpcActor();
     virtual ~NpcActor() {}
     virtual BOOL vfunc_00();
@@ -210,28 +210,28 @@ public:
     BOOL loadAnimSet();
     void setColliderSize(s32 a, s32 b);
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 SpNpcActor::~SpNpcActor() {}
 
 BOOL SpNpcActor::loadAnimSet() {
-    void *p = _ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&unk_640);
-    if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
+    void *p = _ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&animHeapHandle);
+    if (!_ZN11CachedModel16allocJointRecordEPv(&model, SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
     }
-    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
+    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&model, SpNpcAnimHeapRef_GetHeap(p))) {
         return TRUE;
     }
     return FALSE;
 }
 
 void SpNpcActor::setColliderSize(s32 a, s32 b) {
-    unk_648 = a;
-    unk_64c = b;
+    colliderRadius = a;
+    colliderHeight = b;
 }
 
 BOOL SpNpcActor::vfunc_04() {
@@ -239,7 +239,7 @@ BOOL SpNpcActor::vfunc_04() {
         return FALSE;
     }
     setColliderSize(0x1000, 0x2000);
-    unk_650 = 0;
+    talkMelodyPlayed = 0;
     return TRUE;
 }
 
@@ -247,7 +247,7 @@ BOOL SpNpcActor::vfunc_00() {
     if (!NpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !unk_558.unk_0b) {
+    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !footstepFx.unk_0b) {
         Unk_0203e7a4_Vec v;
         s16 s;
         v.x = 0;
@@ -255,34 +255,34 @@ BOOL SpNpcActor::vfunc_00() {
         v.z = 0;
         s = 0;
         if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
-            Unk_0203e7a4_Vec *p = &unk_5c;
+            Unk_0203e7a4_Vec *p = &position;
             p->x = v.x;
             p->y = v.y;
             p->z = v.z;
-            unk_8e = s;
-            unk_94 = s;
+            rotY = s;
+            moveAngleY = s;
         }
     }
-    if (!_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&unk_640)) {
-        if (!_ZN12NpcResHandle7acquireEv(&unk_640)) {
+    if (!_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&animHeapHandle)) {
+        if (!_ZN12NpcResHandle7acquireEv(&animHeapHandle)) {
             return FALSE;
         }
         if (!loadAnimSet()) {
             return FALSE;
         }
     }
-    if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&unk_2ac, this)) {
+    if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&faceAnim, this)) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&unk_334, this, getWalkAnimSpeedScale())) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&animCtrl, this, getWalkAnimSpeedScale())) {
         return FALSE;
     }
-    _ZN13NpcActionCtrl11startActionEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
-    _ZN19ActorFollowCollider13setupForActorEPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
+    _ZN13NpcActionCtrl11startActionEPhiiiisii(&actionCtrl, this, 0, 1, 0, 0, 0, 0, 0);
+    _ZN19ActorFollowCollider13setupForActorEPviijjjhi(&collider, this, colliderRadius, colliderHeight, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
     if (!NpcRegistry_AddSpNpc(this, &unk_ea)) {
         return FALSE;
     }
-    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
+    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
     return TRUE;
 }
 
@@ -298,7 +298,7 @@ BOOL SpNpcActor::vfunc_0c() {
     if (!NpcActor::vfunc_0c()) {
         return FALSE;
     }
-    _ZN12NpcResHandle7releaseEv(&unk_640);
+    _ZN12NpcResHandle7releaseEv(&animHeapHandle);
     return TRUE;
 }
 
@@ -307,13 +307,13 @@ void SpNpcActor::getName(u32 a) { Npc_GetName(a, &unk_ea); }
 u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
 
 BOOL SpNpcActor::canPlayTalkMelody() {
-    if (!Unk_0202e318_IsOne(gFieldSceneKind) || unk_650 == 0) {
+    if (!Unk_0202e318_IsOne(gFieldSceneKind) || talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void SpNpcActor::onTalkMelodyPlayed() { unk_650 = 1; }
+void SpNpcActor::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 u16 SpNpcActor::getSpecies() {
     u16 v = unk_ea;

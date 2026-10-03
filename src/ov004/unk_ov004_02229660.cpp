@@ -83,7 +83,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -104,9 +104,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -248,18 +248,18 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
     /* 0x000c */ u8 pad_0c[8];
-    /* 0x0014 */ s32 unk_14;
+    /* 0x0014 */ s32 openMode;
     /* 0x0018 */ u8 pad_18[0x16dc - 0x18];
-    /* 0x16dc */ u8 unk_16dc[4];
+    /* 0x16dc */ u8 voice[4];
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -629,9 +629,9 @@ void RoomTelephone::openTalk(const char *name, u32 flag) {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     vfunc_s08();
     setFileName(name);
-    unk_1e = flag;
+    msgIndex = flag;
     TalkWindowState_attachRequest(p, this);
-    p->unk_08 = 1;
+    p->nextState = 1;
 }
 
 void RoomTelephone::execAct0E() {
@@ -642,7 +642,7 @@ void RoomTelephone::execAct0E() {
             c = 0x18;
         }
         TalkWindowState_setNextMessage(p, &c, sRoomTelephoneMsgFile2);
-        p->unk_08 = 1;
+        p->nextState = 1;
         if (Scene_GetCurrent() == 6) {
             changeAct(0xc);
         } else {
@@ -655,7 +655,7 @@ void RoomTelephone::enterAct0E() {}
 
 void RoomTelephone::execAct0D() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
-    if (p->unk_04 == 5) {
+    if (p->state == 5) {
         MenuCtrl_OpenLauncher(0x30);
         changeAct(0xe);
     }
@@ -665,7 +665,7 @@ void RoomTelephone::enterAct0D() {}
 
 void RoomTelephone::execAct0C() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
-    if (p->unk_04 == 0) {
+    if (p->state == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
         changeAct(7);
@@ -676,7 +676,7 @@ void RoomTelephone::enterAct0C() {}
 
 void RoomTelephone::execAct0B() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
-    if (p->unk_04 == 0) {
+    if (p->state == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
         changeAct(7);
@@ -687,7 +687,7 @@ void RoomTelephone::enterAct0B() {}
 
 void RoomTelephone::execAct0A() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             changeAct(0xb);
         }
     }
@@ -700,7 +700,7 @@ void RoomTelephone::enterAct0A() {
 
 void RoomTelephone::execAct09() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
-    if (p->unk_04 == 0) {
+    if (p->state == 0) {
         TalkWindowState_detachRequest(p);
         unk_638 = 0;
         changeAct(7);
@@ -780,7 +780,7 @@ void RoomTelephone::enterAct05() {
 
 void RoomTelephone::execAct04() {
     if (unk_3c) {
-        if (!unk_3c->unk_04) {
+        if (!unk_3c->state) {
             changeAct(5);
         }
     }
@@ -790,7 +790,7 @@ void RoomTelephone::enterAct04() {}
 
 void RoomTelephone::execAct03() {
     if (unk_3c) {
-        if (!unk_3c->unk_04) {
+        if (!unk_3c->state) {
             changeAct(5);
         }
     }
@@ -800,7 +800,7 @@ void RoomTelephone::enterAct03() {}
 
 void RoomTelephone::execAct02() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             changeAct(3);
         }
     }
@@ -811,11 +811,11 @@ void RoomTelephone::enterAct02() {
     Character_attachTalkRequest(this, this);
     setFileName(data_ov004_0224e178);
     if (CommManager_isOnline(gCommManager)) {
-        unk_1e = 0x1d;
+        msgIndex = 0x1d;
     } else {
-        unk_1e = 0xe;
+        msgIndex = 0xe;
     }
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
 }
 
 void RoomTelephone::execAct01() {
@@ -880,7 +880,7 @@ void RoomTelephone::openChoices(Unk_ov004_0224e2b8_Str *p, s32 v) {
 
 void RoomTelephone::onMessageEnd() {
     TalkWindowState *m = unk_3c;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x1b:
         openChoices(&data_ov004_0224e2a8, -1);
         break;
@@ -893,30 +893,30 @@ void RoomTelephone::onMessageEnd() {
         }
         break;
     case 0xf:
-        m->unk_14 = 1;
+        m->openMode = 1;
         changeAct(0xd);
         break;
     case 0x20:
-        TalkVoice_clearVoiceOverride(m->unk_16dc);
+        TalkVoice_clearVoiceOverride(m->voice);
         break;
     case 0x2a:
     case 0x2b:
     case 0x2c:
-        TalkVoice_clearMsgModeOverride(m->unk_16dc);
+        TalkVoice_clearMsgModeOverride(m->voice);
         break;
     }
 }
 
 void RoomTelephone::onMessageStart() {
     TalkWindowState *m = unk_3c;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0xe:
-        TalkVoice_setVoiceOverride(m->unk_16dc, 0);
+        TalkVoice_setVoiceOverride(m->voice, 0);
         break;
     case 0x2a:
     case 0x2b:
     case 0x2c:
-        TalkVoice_setMsgModeOverride(m->unk_16dc, 0);
+        TalkVoice_setMsgModeOverride(m->voice, 0);
         break;
     }
 }
@@ -940,7 +940,7 @@ void RoomTelephone::vfunc_4c(u32 a, u8 b) {
 BOOL RoomTelephone::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, (s32 *)sRoomTelephonePos) < 0x2333) {
+        if (func_020e9650(o->position, (s32 *)sRoomTelephonePos) < 0x2333) {
             u32 d = (u16)(*(s16 *)((u8 *)o + 0x8e) - (F(s16, 0x8e) + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;
@@ -972,7 +972,7 @@ BOOL RoomTelephone::onExecute() {
 
 BOOL RoomTelephone::vfunc_00() {
     sRoomTelephone = this;
-    unk_5c[0] = sRoomTelephonePos[0]; unk_5c[1] = sRoomTelephonePos[1]; unk_5c[2] = sRoomTelephonePos[2];
+    position[0] = sRoomTelephonePos[0]; position[1] = sRoomTelephonePos[1]; position[2] = sRoomTelephonePos[2];
     setCharId(0);
     loadResources(sRoomTelephoneArcPath, sRoomTelephoneTexPath);
     if (RoomObjRes_GetBca(&unk_1a4, 0)) {

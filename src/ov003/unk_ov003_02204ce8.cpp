@@ -325,20 +325,20 @@ public:
     u8 pad_68[0x8e - 0x68];
     /* 0x8e */ u16 unk_8e;
     u8 pad_90[0x13c - 0x90];
-    /* 0x13c */ u8 unk_13c;
+    /* 0x13c */ u8 actionPressed;
     u8 pad_13d[3];
-    /* 0x140 */ s32 unk_140;
-    /* 0x144 */ u8 unk_144;
+    /* 0x140 */ s32 toolTargetKind;
+    /* 0x144 */ u8 hasTargetPos;
     u8 pad_145[0x154 - 0x145];
-    /* 0x154 */ s32 unk_154;
-    /* 0x158 */ s32 unk_158;
-    /* 0x15c */ s32 unk_15c;
+    /* 0x154 */ s32 targetPosX;
+    /* 0x158 */ s32 targetPosY;
+    /* 0x15c */ s32 targetPosZ;
     u8 pad_160[0x16c - 0x160];
-    /* 0x16c */ s32 unk_16c;
+    /* 0x16c */ s32 inputMode;
     u8 pad_170[0x6f0 - 0x170];
-    /* 0x6f0 */ s32 unk_6f0;
+    /* 0x6f0 */ s32 bodyPos;
     u8 pad_6f4[4];
-    /* 0x6f8 */ s32 unk_6f8;
+    /* 0x6f8 */ s32 bodyPosZ;
 };
 
 extern "C" {
@@ -437,43 +437,43 @@ struct Unk_ov003_022052f4_Item {
 
 struct Unk_ov003_022052f4_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_022052f4_V3 unk_5c;
+    Unk_ov003_022052f4_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x98 - 0x90];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0x154 - 0x9c];
-    s32 unk_154;
-    s32 unk_158;
-    s32 unk_15c;
+    s32 targetPosX;
+    s32 targetPosY;
+    s32 targetPosZ;
     u8 pad_160[4];
-    Unk_ov003_022052f4_Item *unk_164;
-    u8 unk_168;
+    Unk_ov003_022052f4_Item *toolHitActor;
+    u8 toolHitKind;
     u8 pad_169[3];
-    s32 unk_16c;
+    s32 inputMode;
     u8 pad_170[0x1ce - 0x170];
     u8 unk_1ce;
     u8 unk_1cf;
     u8 pad_1d0[0x1fc - 0x1d0];
     u8 unk_1fc;
     u8 pad_1fd[0x7ec - 0x1fd];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[4];
-    s32 unk_7f4;
+    s32 drawStep;
     u8 pad_7f8[4];
-    s32 unk_7fc;
+    s32 sessionSlot;
     u8 pad_800[8];
-    s32 unk_808;
+    s32 fieldQuery;
     u8 pad_80c[4];
-    s32 unk_810;
-    s32 unk_814;
+    s32 fieldAnswerKind;
+    s32 fieldAnswer;
     u8 pad_818[0x8cc - 0x818];
-    s32 unk_8cc;
-    s32 unk_8d0;
-    s32 unk_8d4;
-    s32 unk_8d8;
-    s32 unk_8dc;
-    s32 unk_8e0;
+    s32 aheadUnitX;
+    s32 aheadUnitZ;
+    s32 runUnitX;
+    s32 runUnitZ;
+    s32 pitfallUnitX;
+    s32 pitfallUnitZ;
 };
 
 typedef Unk_ov003_022052f4_Obj Obj;
@@ -599,9 +599,9 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_02205c28_V3 unk_5c;
+    /* 0x5c */ Unk_ov003_02205c28_V3 position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -620,8 +620,8 @@ public:
     virtual BOOL vfunc_5c(void *a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -656,32 +656,32 @@ public:
     /* 0x2cc */ u8 unk_2cc[8];
     /* 0x2d4 */ Unk_ov003_02205c90_Bits unk_2d4;
     /* 0x2d8 */ u8 pad_2d8[0x458 - 0x2d8];
-    /* 0x458 */ u16 unk_458;
-    /* 0x45a */ u16 unk_45a;
+    /* 0x458 */ u16 headPitch;
+    /* 0x45a */ u16 headYaw;
     /* 0x45c */ u8 pad_45c[0x59c - 0x45c];
-    /* 0x59c */ u8 unk_59c[0x628 - 0x59c];
+    /* 0x59c */ u8 heldItemModel[0x628 - 0x59c];
     /* 0x628 */ Unk_ov003_02205c28_V3 unk_628;
     /* 0x634 */ u8 pad_634[0x688 - 0x634];
     /* 0x688 */ Unk_ov003_02205c28_V3 unk_688;
     /* 0x694 */ u8 pad_694[0x700 - 0x694];
-    /* 0x700 */ s32 unk_700;
+    /* 0x700 */ s32 animId;
     /* 0x704 */ u8 pad_704[0x7d0 - 0x704];
-    /* 0x7d0 */ s32 unk_7d0;
+    /* 0x7d0 */ s32 actionWork;
     /* 0x7d4 */ u8 unk_7d4;
     /* 0x7d5 */ u8 unk_7d5;
     /* 0x7d6 */ u8 pad_7d6[0x7ec - 0x7d6];
-    /* 0x7ec */ s32 unk_7ec;
+    /* 0x7ec */ s32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ s32 unk_7f8;
-    /* 0x7fc */ s32 unk_7fc;
+    /* 0x7f8 */ s32 actionPriority;
+    /* 0x7fc */ s32 sessionSlot;
     /* 0x800 */ u8 pad_800[0x81e - 0x800];
-    /* 0x81e */ u16 unk_81e;
-    /* 0x820 */ u8 unk_820[0x82c - 0x820];
-    /* 0x82c */ s32 unk_82c;
-    /* 0x830 */ s32 unk_830;
-    /* 0x834 */ s32 unk_834;
+    /* 0x81e */ u16 shownItem;
+    /* 0x820 */ u8 shownItemPos[0x82c - 0x820];
+    /* 0x82c */ s32 shownItemScaleX;
+    /* 0x830 */ s32 shownItemScaleY;
+    /* 0x834 */ s32 shownItemScaleZ;
     /* 0x838 */ u8 pad_838[0x8ec - 0x838];
-    /* 0x8ec */ u8 unk_8ec[2];
+    /* 0x8ec */ u8 netData[2];
 };
 
 typedef Unk_ov003_02205c28_Obj Obj;
@@ -817,9 +817,9 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_02206574_V3 unk_5c;
+    /* 0x5c */ Unk_ov003_02206574_V3 position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -838,8 +838,8 @@ public:
     virtual BOOL vfunc_5c(void *a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -862,8 +862,8 @@ public:
 
     void MsgRequest_setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
     /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
     /* 0x3c */ Unk_ov003_022067c4_Shared *unk_3c;
     /* 0x40 */ u8 pad_40[4];
@@ -895,18 +895,18 @@ public:
     /* 0x2d4 */ u8 pad_2d4[0x2dc - 0x2d4];
     /* 0x2dc */ s32 unk_2dc;
     /* 0x2e0 */ u8 pad_2e0[0x59c - 0x2e0];
-    /* 0x59c */ u8 unk_59c[0x688 - 0x59c];
+    /* 0x59c */ u8 heldItemModel[0x688 - 0x59c];
     /* 0x688 */ Unk_ov003_02206574_V3 unk_688;
     /* 0x694 */ u8 pad_694[0x6dc - 0x694];
-    /* 0x6dc */ u8 unk_6dc[0x700 - 0x6dc];
-    /* 0x700 */ s32 unk_700;
+    /* 0x6dc */ u8 headTopPos[0x700 - 0x6dc];
+    /* 0x700 */ s32 animId;
     /* 0x704 */ u8 pad_704[5];
-    /* 0x709 */ u8 unk_709[0x7d0 - 0x709];
-    /* 0x7d0 */ Unk_ov003_02206c04_St unk_7d0;
-    /* 0x7ec */ s32 unk_7ec;
+    /* 0x709 */ u8 faceTex[0x7d0 - 0x709];
+    /* 0x7d0 */ Unk_ov003_02206c04_St actionWork;
+    /* 0x7ec */ s32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ s32 unk_7f8;
-    /* 0x7fc */ s32 unk_7fc;
+    /* 0x7f8 */ s32 actionPriority;
+    /* 0x7fc */ s32 sessionSlot;
 };
 
 typedef Unk_ov003_02206574_Obj Obj;
@@ -1042,38 +1042,38 @@ struct Unk_ov003_02206e94_Rec {
 
 struct Unk_ov003_02206e94_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_02206e94_V3 unk_5c;
+    Unk_ov003_02206e94_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x98 - 0x90];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0x230 - 0x9c];
-    u8 unk_230[0x2cc - 0x230];
+    u8 bodyModel[0x2cc - 0x230];
     u8 unk_2cc[8];
     Unk_ov003_02206e94_Bits unk_2d4;
     u8 pad_2d8[4];
     s32 unk_2dc;
     u8 unk_2e0;
     u8 pad_2e1[0x59c - 0x2e1];
-    u8 unk_59c[0x688 - 0x59c];
+    u8 heldItemModel[0x688 - 0x59c];
     s32 unk_688;
     s32 unk_68c;
     s32 unk_690;
     u8 pad_694[0x6dc - 0x694];
-    u8 unk_6dc[0x700 - 0x6dc];
-    s32 unk_700;
+    u8 headTopPos[0x700 - 0x6dc];
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_02206e94_Rec unk_7d0;
-    s32 unk_7ec;
+    Unk_ov003_02206e94_Rec actionWork;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x8e4 - 0x800];
-    u8 unk_8e4;
+    u8 tripCooldown;
     u8 pad_8e5[0x8ec - 0x8e5];
-    u8 unk_8ec[4];
+    u8 netData[4];
     u8 pad_8f0[0xc80 - 0x8f0];
-    u16 unk_c80;
+    u16 netSeq;
 };
 
 typedef Unk_ov003_02206e94_Obj Obj;
@@ -1248,28 +1248,28 @@ struct Unk_ov003_022077c8_Bits {
 
 struct Unk_ov003_022077c8_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_022077c8_V3 unk_5c;
+    Unk_ov003_022077c8_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x2cc - 0x90];
     u32 unk_2cc;
     Unk_ov003_022077c8_Bits unk_2d0;
     Unk_ov003_022077c8_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[0x6dc - 0x59c];
-    u8 unk_6dc[0x700 - 0x6dc];
-    s32 unk_700;
+    u8 heldItemModel[0x6dc - 0x59c];
+    u8 headTopPos[0x700 - 0x6dc];
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    s32 unk_7d0;
+    s32 actionWork;
     s32 unk_7d4;
     s32 unk_7d8;
     u8 pad_7dc[0x7ec - 0x7dc];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec[0x10];
+    u8 netData[0x10];
 };
 
 struct Unk_ov003_022077c8_Rec {
@@ -1487,30 +1487,30 @@ typedef Unk_ov003_02208190_RecC RecC;
 
 struct Unk_ov003_02208190_Obj {
     u8 pad_00[0x5c];
-    V3 unk_5c;
+    V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x2cc - 0x90];
     u8 unk_2cc[8];
     Unk_ov003_02208190_Bits unk_2d4;
     u8 pad_2d8[0x2e0 - 0x2d8];
     u8 unk_2e0;
     u8 pad_2e1[0x700 - 0x2e1];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    s32 unk_7d0;
+    s32 actionWork;
     u8 pad_7d4[0x7ec - 0x7d4];
-    s32 unk_7ec;
-    s32 unk_7f0;
-    s32 unk_7f4;
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 action;
+    s32 prevAction;
+    s32 drawStep;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x814 - 0x800];
-    s32 unk_814;
+    s32 fieldAnswer;
     u8 pad_818[0x8ec - 0x818];
-    u8 unk_8ec[0x10];
+    u8 netData[0x10];
     u8 pad_8fc[0xc80 - 0x8fc];
-    u16 unk_c80;
+    u16 netSeq;
 };
 
 typedef PlayerActionRequest Msg;
@@ -1663,22 +1663,22 @@ struct Unk_ov003_02208a58_Obj : Unk_ov003_02208a58_P0, Unk_ov003_02208a58_Sec {
     u8 unk_2cc[8];
     Unk_ov003_02208a58_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[0x28];
-    u8 unk_5c4[0x64];
+    u8 heldItemModel[0x28];
+    u8 bobber[0x64];
     Unk_ov003_02208a58_V3 unk_628;
     u8 pad_634[0x6f0 - 0x634];
-    Unk_ov003_02208a58_V3 unk_6f0;
-    s32 unk_6fc;
-    s32 unk_700;
+    Unk_ov003_02208a58_V3 bodyPos;
+    s32 bodyAnimSlot;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_02208a58_Rec unk_7d0;
+    Unk_ov003_02208a58_Rec actionWork;
     u8 pad_7e4[0x7ec - 0x7e4];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec;
+    u8 netData;
 };
 
 typedef Unk_ov003_02208a58_Obj Obj;
@@ -1872,12 +1872,12 @@ struct Unk_ov003_022093bc_Obj : public Unk_ov003_022093bc_Prim, public MsgReques
     /* 0x0f0 */ u8 pad_f0[0x10a - 0xf0];
     /* 0x10a */ u8 unk_10a;
     u8 pad_10b[0x128 - 0x10b];
-    /* 0x128 */ Ptr *unk_128;
+    /* 0x128 */ Ptr *window;
     u8 pad_12c[0x2cc - 0x12c];
     /* 0x2cc */ u32 unk_2cc[2];
     /* 0x2d4 */ s32 unk_2d4;
     /* 0x2d8 */ u8 pad_2d8[0x700 - 0x2d8];
-    /* 0x700 */ s32 unk_700;
+    /* 0x700 */ s32 animId;
     /* 0x704 */ u8 pad_704[0x7d0 - 0x704];
     /* 0x7d0 */ union {
         Unk_ov003_022093bc_RecA a;
@@ -1885,22 +1885,22 @@ struct Unk_ov003_022093bc_Obj : public Unk_ov003_022093bc_Prim, public MsgReques
         Unk_ov003_022093bc_RecC c;
     } unk_7d0;
     u8 pad_7e0[0x7ec - 0x7e0];
-    /* 0x7ec */ s32 unk_7ec;
+    /* 0x7ec */ s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ s32 unk_7f8;
-    /* 0x7fc */ u32 unk_7fc;
+    /* 0x7f8 */ s32 actionPriority;
+    /* 0x7fc */ u32 sessionSlot;
     u8 pad_800[0x808 - 0x800];
-    /* 0x808 */ s32 unk_808;
+    /* 0x808 */ s32 fieldQuery;
     u8 pad_80c[0x814 - 0x80c];
-    /* 0x814 */ s32 unk_814;
-    /* 0x818 */ s32 unk_818;
-    /* 0x81c */ u16 unk_81c;
+    /* 0x814 */ s32 fieldAnswer;
+    /* 0x818 */ s32 msgStep;
+    /* 0x81c */ u16 actionItem;
     u8 pad_81e[0x82c - 0x81e];
-    /* 0x82c */ s32 unk_82c;
-    /* 0x830 */ s32 unk_830;
-    /* 0x834 */ s32 unk_834;
+    /* 0x82c */ s32 shownItemScaleX;
+    /* 0x830 */ s32 shownItemScaleY;
+    /* 0x834 */ s32 shownItemScaleZ;
     u8 pad_838[0x8ec - 0x838];
-    /* 0x8ec */ Sub unk_8ec;
+    /* 0x8ec */ Sub netData;
 };
 typedef Unk_ov003_022093bc_Obj Obj;
 
@@ -2041,9 +2041,9 @@ struct Unk_ov003_02209d50_Rec2 {
 
 struct Unk_ov003_02209d50_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_02209d50_V3 unk_5c;
+    Unk_ov003_02209d50_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xc4 - 0x90];
     Unk_ov003_02209d50_V3 unk_c4;
     s16 unk_d0;
@@ -2056,26 +2056,26 @@ struct Unk_ov003_02209d50_Obj {
     u8 pad_2d8[0x628 - 0x2d8];
     Unk_ov003_02209d50_V3 unk_628;
     u8 pad_634[0x694 - 0x634];
-    Unk_ov003_02209d50_Blk unk_694;
+    Unk_ov003_02209d50_Blk itemHandMtx;
     u8 pad_6c4[0x700 - 0x6c4];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_02209d50_Rec unk_7d0;
+    Unk_ov003_02209d50_Rec actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x818 - 0x800];
-    s32 unk_818;
-    u16 unk_81c;
-    u16 unk_81e;
-    Unk_ov003_02209d50_V3 unk_820;
-    s32 unk_82c;
-    s32 unk_830;
-    s32 unk_834;
+    s32 msgStep;
+    u16 actionItem;
+    u16 shownItem;
+    Unk_ov003_02209d50_V3 shownItemPos;
+    s32 shownItemScaleX;
+    s32 shownItemScaleY;
+    s32 shownItemScaleZ;
     u8 pad_838[0x8ec - 0x838];
-    u8 unk_8ec[0x10];
+    u8 netData[0x10];
 };
 
 typedef Unk_ov003_02209d50_Obj Obj;
@@ -2256,11 +2256,11 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_0220a684_V3 unk_5c;
+    /* 0x5c */ Unk_ov003_0220a684_V3 position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[8];
-    /* 0x98 */ s32 unk_98;
+    /* 0x98 */ s32 speed;
     /* 0x9c */ u8 pad_9c[0xd4 - 0x9c];
 };
 
@@ -2279,8 +2279,8 @@ public:
     virtual BOOL vfunc_5c(void *a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -2303,8 +2303,8 @@ public:
 
     void MsgRequest_setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
     /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
     /* 0x3c */ Unk_ov003_0220a684_Shared *unk_3c;
     /* 0x40 */ u8 pad_40[4];
@@ -2313,22 +2313,22 @@ public:
 class Unk_ov003_0220a684_Obj : public Character, public TalkMsgRequest {
 public:
     /* 0x130 */ u8 pad_130[0x164 - 0x130];
-    /* 0x164 */ Unk_ov003_0220a684_Item *unk_164;
-    /* 0x168 */ u8 unk_168;
+    /* 0x164 */ Unk_ov003_0220a684_Item *toolHitActor;
+    /* 0x168 */ u8 toolHitKind;
     /* 0x169 */ u8 pad_169[0x2cc - 0x169];
     /* 0x2cc */ u8 unk_2cc[8];
     /* 0x2d4 */ u8 pad_2d4[0x700 - 0x2d4];
-    /* 0x700 */ s32 unk_700;
+    /* 0x700 */ s32 animId;
     /* 0x704 */ u8 pad_704[0x7d0 - 0x704];
-    /* 0x7d0 */ Unk_ov003_0220a684_Rec unk_7d0;
-    /* 0x7ec */ s32 unk_7ec;
+    /* 0x7d0 */ Unk_ov003_0220a684_Rec actionWork;
+    /* 0x7ec */ s32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ s32 unk_7f8;
-    /* 0x7fc */ s32 unk_7fc;
+    /* 0x7f8 */ s32 actionPriority;
+    /* 0x7fc */ s32 sessionSlot;
     /* 0x800 */ u8 pad_800[8];
-    /* 0x808 */ s32 unk_808;
+    /* 0x808 */ s32 fieldQuery;
     /* 0x80c */ u8 pad_80c[0x8ec - 0x80c];
-    /* 0x8ec */ u8 unk_8ec[4];
+    /* 0x8ec */ u8 netData[4];
 };
 
 typedef Unk_ov003_0220a684_Obj Obj;
@@ -2540,44 +2540,44 @@ struct Unk_ov003_0220b0f0_P0 {
 
 struct Unk_ov003_0220b0f0_Obj : Unk_ov003_0220b0f0_P0, Unk_ov003_0220b0f0_Sec {
     u8 pad_f0[0x140 - 0xf0];
-    s32 unk_140;
-    u8 unk_144;
+    s32 toolTargetKind;
+    u8 hasTargetPos;
     u8 pad_145[3];
-    s32 unk_148;
+    s32 toolTargetPosX;
     u8 pad_14c[4];
-    s32 unk_150;
-    s32 unk_154;
+    s32 toolTargetPosZ;
+    s32 targetPosX;
     u8 pad_158[4];
-    s32 unk_15c;
+    s32 targetPosZ;
     u8 pad_160[0x2cc - 0x160];
     u8 unk_2cc[8];
     Unk_ov003_0220b0f0_Bits unk_2d4;
     u8 pad_2d8[0x458 - 0x2d8];
-    s16 unk_458;
-    s16 unk_45a;
+    s16 headPitch;
+    s16 headYaw;
     u8 pad_45c[0x59c - 0x45c];
-    u8 unk_59c[0x28];
+    u8 heldItemModel[0x28];
     u8 pad_5c4[0x694 - 0x5c4];
-    Unk_ov003_0220b0f0_S30 unk_694;
+    Unk_ov003_0220b0f0_S30 itemHandMtx;
     u8 pad_6c4[0x6f0 - 0x6c4];
-    s32 unk_6f0;
+    s32 bodyPosX;
     u8 pad_6f4[4];
-    s32 unk_6f8;
+    s32 bodyPosZ;
     u8 pad_6fc[4];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_0220b0f0_Rec unk_7d0;
+    Unk_ov003_0220b0f0_Rec actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x808 - 0x800];
-    s32 unk_808;
+    s32 fieldQuery;
     u8 pad_80c[0x818 - 0x80c];
-    s32 unk_818;
+    s32 msgStep;
     u8 pad_81c[0x8ec - 0x81c];
-    u8 unk_8ec[2];
+    u8 netData[2];
 };
 
 typedef Unk_ov003_0220b0f0_Obj Obj;
@@ -2714,12 +2714,12 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_0220bc84_V3 unk_5c;
+    /* 0x5c */ Unk_ov003_0220bc84_V3 position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ Unk_ov003_0220bc84_V3 unk_c4;
-    /* 0xd0 */ s16 unk_d0;
+    /* 0xc4 */ Unk_ov003_0220bc84_V3 drawPos;
+    /* 0xd0 */ s16 drawTilt;
     /* 0xd2 */ u8 pad_d2[0xd4 - 0xd2];
 };
 
@@ -2738,8 +2738,8 @@ public:
     virtual BOOL vfunc_5c(void *a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -2781,32 +2781,32 @@ public:
     /* 0x0f0 */ u8 pad_f0[0x10a - 0xf0];
     /* 0x10a */ u8 unk_10a;
     /* 0x10b */ u8 pad_10b[0x128 - 0x10b];
-    /* 0x128 */ Unk_ov003_0220bc84_H *unk_128;
+    /* 0x128 */ Unk_ov003_0220bc84_H *window;
     /* 0x12c */ u8 pad_12c[0x294 - 0x12c];
     /* 0x294 */ Unk_ov003_0220bc84_T48 unk_294;
     /* 0x2c4 */ u8 pad_2c4[0x2d0 - 0x2c4];
     /* 0x2d0 */ Unk_ov003_0220bc84_Bits unk_2d0;
     /* 0x2d4 */ Unk_ov003_0220bc84_Bits unk_2d4;
     /* 0x2d8 */ u8 pad_2d8[0x458 - 0x2d8];
-    /* 0x458 */ s16 unk_458;
-    /* 0x45a */ s16 unk_45a;
+    /* 0x458 */ s16 headPitch;
+    /* 0x45a */ s16 headYaw;
     /* 0x45c */ u8 pad_45c[0x59c - 0x45c];
-    /* 0x59c */ u8 unk_59c[0x688 - 0x59c];
+    /* 0x59c */ u8 heldItemModel[0x688 - 0x59c];
     /* 0x688 */ Unk_ov003_0220bc84_V3 unk_688;
-    /* 0x694 */ Unk_ov003_0220bc84_T48 unk_694;
+    /* 0x694 */ Unk_ov003_0220bc84_T48 itemHandMtx;
     /* 0x6c4 */ u8 pad_6c4[0x700 - 0x6c4];
-    /* 0x700 */ s32 unk_700;
+    /* 0x700 */ s32 animId;
     /* 0x704 */ u8 pad_704[0x7d0 - 0x704];
-    /* 0x7d0 */ Unk_ov003_0220bc84_State unk_7d0;
+    /* 0x7d0 */ Unk_ov003_0220bc84_State actionWork;
     /* 0x7db */ u8 pad_7dc[0x7ec - 0x7dc];
-    /* 0x7ec */ s32 unk_7ec;
+    /* 0x7ec */ s32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ s32 unk_7f8;
-    /* 0x7fc */ s32 unk_7fc;
+    /* 0x7f8 */ s32 actionPriority;
+    /* 0x7fc */ s32 sessionSlot;
     /* 0x800 */ u8 pad_800[0x818 - 0x800];
-    /* 0x818 */ s32 unk_818;
+    /* 0x818 */ s32 msgStep;
     /* 0x81c */ u8 pad_81c[0x8ec - 0x81c];
-    /* 0x8ec */ u8 unk_8ec[8];
+    /* 0x8ec */ u8 netData[8];
 };
 
 typedef Unk_ov003_0220bc84_Obj Obj;
@@ -2947,36 +2947,36 @@ struct Unk_ov003_0220c448_Pair {
 
 struct Unk_ov003_0220c448_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_0220c448_V3 unk_5c;
+    Unk_ov003_0220c448_V3 position;
     u8 pad_68[0x8e - 0x68];
-    u16 unk_8e;
+    u16 rotY;
     u8 pad_90[0x98 - 0x90];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0x168 - 0x9c];
-    u8 unk_168;
+    u8 toolHitKind;
     u8 pad_169[0x2cc - 0x169];
     u8 unk_2cc[8];
     Unk_ov003_0220c448_Bits unk_2d4;
     u8 pad_2d8[4];
     s32 unk_2dc;
     u8 pad_2e0[0x59c - 0x2e0];
-    u8 unk_59c[0x604 - 0x59c];
-    Unk_ov003_0220c448_Blk unk_604;
+    u8 heldItemModel[0x604 - 0x59c];
+    Unk_ov003_0220c448_Blk heldItemJointMtx;
     u8 pad_634[0x688 - 0x634];
     s32 unk_688;
     s32 unk_68c;
     s32 unk_690;
     u8 pad_694[0x7d0 - 0x694];
-    u8 unk_7d0;
+    u8 actionWork;
     u8 pad_7d1[3];
     u8 unk_7d4;
     u8 pad_7d5[3];
     Unk_ov003_0220c448_V3 unk_7d8;
     u8 pad_7e4[0x7ec - 0x7e4];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 actionPriority;
+    s32 sessionSlot;
 };
 
 class Unk_ov003_0220c768_A {
@@ -3127,11 +3127,11 @@ struct Unk_ov003_0220cd4c_P0 {
 
 struct Unk_ov003_0220cd4c_Obj : Unk_ov003_0220cd4c_P0, Unk_ov003_0220cd4c_Sec {
     u8 pad_f0[0x140 - 0xf0];
-    s32 unk_140;
+    s32 toolTargetKind;
     u8 pad_144[4];
-    s32 unk_148;
+    s32 toolTargetPosX;
     u8 pad_14c[4];
-    s32 unk_150;
+    s32 toolTargetPosZ;
     u8 pad_154[0x294 - 0x154];
     Unk_ov003_0220cd4c_Blk unk_294;
     u8 pad_2c4[0x2cc - 0x2c4];
@@ -3140,32 +3140,32 @@ struct Unk_ov003_0220cd4c_Obj : Unk_ov003_0220cd4c_P0, Unk_ov003_0220cd4c_Sec {
     u8 pad_2d8[4];
     s32 unk_2dc;
     u8 pad_2e0[0x59c - 0x2e0];
-    u8 unk_59c[0x28];
-    u8 unk_5c4[0x64];
+    u8 heldItemModel[0x28];
+    u8 bobber[0x64];
     u8 pad_628[0x688 - 0x628];
     s32 unk_688;
     s32 unk_68c;
     s32 unk_690;
-    Unk_ov003_0220cd4c_Blk unk_694;
+    Unk_ov003_0220cd4c_Blk itemHandMtx;
     u8 pad_6c4[0x6f0 - 0x6c4];
-    s32 unk_6f0;
+    s32 bodyPosX;
     u8 pad_6f4[4];
-    s32 unk_6f8;
+    s32 bodyPosZ;
     u8 pad_6fc[4];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_0220cd4c_Rec unk_7d0;
+    Unk_ov003_0220cd4c_Rec actionWork;
     u8 pad_7d6[0x7ec - 0x7d6];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x80c - 0x800];
-    s32 unk_80c;
+    s32 dropQuery;
     u8 pad_810[0x818 - 0x810];
-    s32 unk_818;
+    s32 msgStep;
     u8 pad_81c[0x8ec - 0x81c];
-    u8 unk_8ec;
+    u8 netData;
 };
 
 struct Unk_ov003_0220d114_Ent {
@@ -3336,37 +3336,37 @@ struct Unk_ov003_0220d6f4_Obj : Unk_ov003_0220d6f4_P0, Unk_ov003_0220d6f4_Sec {
     u8 pad_f0[0x10a - 0xf0];
     u8 unk_10a;
     u8 pad_10b[0x128 - 0x10b];
-    Unk_ov003_0220d6f4_Net *unk_128;
+    Unk_ov003_0220d6f4_Net *window;
     u8 pad_12c[0x2cc - 0x12c];
     u8 unk_2cc[4];
     Unk_ov003_0220d6f4_Bits unk_2d0;
     Unk_ov003_0220d6f4_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[0x28];
-    u8 unk_5c4[0x64];
+    u8 heldItemModel[0x28];
+    u8 bobber[0x64];
     u8 pad_628[0x694 - 0x628];
-    Unk_ov003_0220d6f4_Blk unk_694;
+    Unk_ov003_0220d6f4_Blk itemHandMtx;
     u8 pad_6c4[0x700 - 0x6c4];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_0220d6f4_Rec unk_7d0;
+    Unk_ov003_0220d6f4_Rec actionWork;
     u8 pad_7d6[0x7ec - 0x7d6];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x80c - 0x800];
-    s32 unk_80c;
+    s32 dropQuery;
     u8 pad_810[0x818 - 0x810];
-    s32 unk_818;
-    u16 unk_81c;
-    u16 unk_81e;
+    s32 msgStep;
+    u16 actionItem;
+    u16 shownItem;
     u8 pad_820[0x8c0 - 0x820];
-    s32 unk_8c0;
-    s32 unk_8c4;
-    s32 unk_8c8;
+    s32 sePosX;
+    s32 sePosY;
+    s32 sePosZ;
     u8 pad_8cc[0x8ec - 0x8cc];
-    u8 unk_8ec;
+    u8 netData;
 };
 
 struct Unk_ov003_0220d6f4_Act {
@@ -3534,29 +3534,29 @@ struct Unk_ov003_0220e030_P0 {
 
 struct Unk_ov003_0220e030_Obj : Unk_ov003_0220e030_P0, Unk_ov003_0220e030_Sec {
     u8 pad_f0[0x13c - 0xf0];
-    u8 unk_13c;
+    u8 actionPressed;
     u8 pad_13d[0x2cc - 0x13d];
     u8 unk_2cc[8];
     u8 pad_2d4[0x59c - 0x2d4];
-    u8 unk_59c[0x28];
-    u8 unk_5c4[4];
+    u8 heldItemModel[0x28];
+    u8 bobber[4];
     s32 unk_5c8;
     Unk_ov003_0220e030_V3 unk_5cc;
     u8 pad_5d8[0x5fc - 0x5d8];
     u8 unk_5fc;
     u8 pad_5fd[0x7d0 - 0x5fd];
-    s16 unk_7d0;
+    s16 actionWork;
     u8 pad_7d2[0x7ec - 0x7d2];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x8c0 - 0x800];
-    Unk_ov003_0220e030_V3 unk_8c0;
+    Unk_ov003_0220e030_V3 sePos;
     u8 pad_8cc[0x8ec - 0x8cc];
-    u8 unk_8ec[4];
+    u8 netData[4];
     u8 pad_8f0[0xc80 - 0x8f0];
-    u16 unk_c80;
+    u16 netSeq;
 };
 
 typedef Unk_ov003_0220e030_Obj Obj;
@@ -3782,26 +3782,26 @@ struct Unk_ov003_0220e970_Obj : Unk_ov003_0220e970_P0, Unk_ov003_0220e970_Sec {
     u8 pad_f0[0x10a - 0xf0];
     u8 unk_10a;
     u8 pad_10b[0x128 - 0x10b];
-    Unk_ov003_0220e970_S128 *unk_128;
+    Unk_ov003_0220e970_S128 *window;
     u8 pad_12c[0x164 - 0x12c];
-    Unk_ov003_0220e970_Q *unk_164;
-    u8 unk_168;
+    Unk_ov003_0220e970_Q *toolHitActor;
+    u8 toolHitKind;
     u8 pad_169[0x2cc - 0x169];
     u8 unk_2cc[8];
     Unk_ov003_0220e970_Bits unk_2d4;
     u8 pad_2d8[0x664 - 0x2d8];
-    Unk_ov003_0220e970_Mtx unk_664;
+    Unk_ov003_0220e970_Mtx toolHandMtx;
     u8 pad_694[0x7d0 - 0x694];
-    Unk_ov003_0220e970_Rec unk_7d0;
+    Unk_ov003_0220e970_Rec actionWork;
     u8 pad_7d4[0x7ec - 0x7d4];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x818 - 0x800];
-    s32 unk_818;
+    s32 msgStep;
     u8 pad_81c[0x8ec - 0x81c];
-    u8 unk_8ec[4];
+    u8 netData[4];
 };
 
 typedef Unk_ov003_0220e970_Obj Obj;
@@ -3983,34 +3983,34 @@ struct Unk_ov003_0220f314_Rec7d0 {
 
 struct Unk_ov003_0220f314_Obj : Unk_ov003_0220f314_P0, Unk_ov003_0220f314_Sec {
     u8 pad_f0[0x140 - 0xf0];
-    s32 unk_140;
-    u8 unk_144;
+    s32 toolTargetKind;
+    u8 hasTargetPos;
     u8 pad_145[3];
-    s32 unk_148;
-    s32 unk_14c;
-    s32 unk_150;
-    s32 unk_154;
-    s32 unk_158;
-    s32 unk_15c;
+    s32 toolTargetPosX;
+    s32 toolTargetPosY;
+    s32 toolTargetPosZ;
+    s32 targetPosX;
+    s32 targetPosY;
+    s32 targetPosZ;
     u8 pad_160[0x168 - 0x160];
-    u8 unk_168;
+    u8 toolHitKind;
     u8 pad_169[0x1c0 - 0x169];
-    u8 unk_1c0[4];
+    u8 subCollider[4];
     u8 pad_1c4[0x2cc - 0x1c4];
     u8 unk_2cc[8];
     u8 pad_2d4[0x6f0 - 0x2d4];
-    s32 unk_6f0;
-    s32 unk_6f4;
-    s32 unk_6f8;
+    s32 bodyPosX;
+    s32 bodyPosY;
+    s32 bodyPosZ;
     u8 pad_6fc[0x7d0 - 0x6fc];
-    Unk_ov003_0220f314_Rec7d0 unk_7d0;
+    Unk_ov003_0220f314_Rec7d0 actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec[8];
+    u8 netData[8];
 };
 
 typedef Unk_ov003_0220f314_Obj Obj;
@@ -4201,19 +4201,19 @@ struct Unk_ov003_0220fc88_Obj : Unk_ov003_0220fc88_P0, Unk_ov003_0220fc88_Sec {
     Unk_ov003_0220fc88_Bits unk_2d0;
     Unk_ov003_0220fc88_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[4];
+    u8 heldItemModel[4];
     s32 unk_5a0;
     u8 pad_5a4[0x628 - 0x5a4];
     Unk_ov003_0220fc88_V3 unk_628;
     u8 pad_634[0x7d0 - 0x634];
-    Unk_ov003_0220fc88_RecB unk_7d0;
+    Unk_ov003_0220fc88_RecB actionWork;
     u8 pad_7e4[0x7ec - 0x7e4];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    u32 unk_7fc;
+    s32 actionPriority;
+    u32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec[4];
+    u8 netData[4];
 };
 
 struct Unk_ov003_0220fc88_Sub {
@@ -4367,24 +4367,24 @@ struct Unk_ov003_02210eb4_Rec {
 
 struct Unk_ov003_022105bc_Obj {
     u8 pad_00[0x5c];
-    u8 unk_5c[0x2cc - 0x5c];
+    u8 position[0x2cc - 0x5c];
     u8 unk_2cc[8];
     Unk_ov003_022105bc_Bits unk_2d4;
     u8 pad_2d8[0x700 - 0x2d8];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    u8 unk_7d0;
+    u8 actionWork;
     u8 unk_7d1;
     u8 pad_7d2[0x7ec - 0x7d2];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[4];
-    s32 unk_7f4;
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 drawStep;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec[2];
+    u8 netData[2];
     u8 pad_8ee[0xc80 - 0x8ee];
-    u16 unk_c80;
+    u16 netSeq;
 };
 
 typedef Unk_ov003_022105bc_Obj Obj;
@@ -4534,30 +4534,30 @@ struct Unk_ov003_02210ef0_Rec2 {
 
 struct Unk_ov003_02210ef0_Obj {
     u8 pad_00[0x5c];
-    Unk_ov003_02210ef0_V3 unk_5c;
+    Unk_ov003_02210ef0_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x2cc - 0x90];
     u8 unk_2cc[8];
     Unk_ov003_02210ef0_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[0x7d0 - 0x59c];
-    Unk_ov003_02210ef0_Rec unk_7d0;
+    u8 heldItemModel[0x7d0 - 0x59c];
+    Unk_ov003_02210ef0_Rec actionWork;
     u8 unk_7dc;
     u8 pad_7dd[0x7ec - 0x7dd];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
-    s32 unk_7fc;
+    s32 actionPriority;
+    s32 sessionSlot;
     u8 pad_800[0x814 - 0x800];
-    s32 unk_814;
+    s32 fieldAnswer;
     u8 pad_818[0x81c - 0x818];
-    u16 unk_81c;
-    u16 unk_81e;
+    u16 actionItem;
+    u16 shownItem;
     u8 pad_820[0x8ec - 0x820];
-    u8 unk_8ec[0xc];
+    u8 netData[0xc];
     u8 pad_8f8[0xc80 - 0x8f8];
-    u16 unk_c80;
+    u16 netSeq;
 };
 
 namespace Unk_ov003_02210f7c_Ns {
@@ -4707,20 +4707,20 @@ struct Unk_ov003_02211818_Obj {
     Unk_ov003_02211818_Bits unk_2d0;
     Unk_ov003_02211818_Bits unk_2d4;
     u8 pad_2d8[0x59c - 0x2d8];
-    u8 unk_59c[0x28];
-    u8 unk_5c4[0x64];
+    u8 heldItemModel[0x28];
+    u8 bobber[0x64];
     u8 pad_628[0x694 - 0x628];
-    Unk_ov003_02211818_Blk unk_694;
+    Unk_ov003_02211818_Blk itemHandMtx;
     u8 pad_6c4[0x700 - 0x6c4];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov003_02211818_Rec unk_7d0;
+    Unk_ov003_02211818_Rec actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7fc - 0x7f0];
-    u32 unk_7fc;
+    u32 sessionSlot;
     u8 pad_800[0x8ec - 0x800];
-    u8 unk_8ec[4];
+    u8 netData[4];
 };
 
 typedef Unk_ov003_02211818_Obj Obj;
@@ -4853,21 +4853,21 @@ struct Unk_ov003_02212140_Pair {
 
 struct Unk_ov003_02212140_Obj {
     u8 pad_00[0x5c];
-    s32 unk_5c;
+    s32 positionX;
     u8 pad_60[4];
-    s32 unk_64;
+    s32 positionZ;
     u8 pad_68[0x2d4 - 0x68];
     Unk_ov003_02212140_Bits unk_2d4;
     u8 pad_2d8[0x700 - 0x2d8];
-    s32 unk_700;
+    s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    u8 unk_7d0[0x10];
+    u8 actionWork[0x10];
     u8 pad_7e0[0x7ec - 0x7e0];
-    s32 unk_7ec;
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 unk_7f8;
+    s32 actionPriority;
     u8 pad_7fc[0x81c - 0x7fc];
-    u16 unk_81c;
+    u16 actionItem;
 };
 
 struct Unk_ov003_02212140_V3D : Unk_ov003_02212140_V3 {
@@ -5008,12 +5008,12 @@ extern "C" s32 PlayerActor_GetDigCountdownAt(V3 *a, s32 b) {
         v.x = r;
         v.y = r;
         v.z = r;
-        if (o->unk_7ec == 0x5e) {
-            s32 *p = (s32 *)(o->unk_7d0);
+        if (o->action == 0x5e) {
+            s32 *p = (s32 *)(o->actionWork);
             v.x = p[1];
             v.y = p[2];
             v.z = p[3];
-            s32 st = o->unk_700;
+            s32 st = o->animId;
             if (st == 0x4e) {
                 r = 0x16 - t;
             } else if (st == 0x4b) {
@@ -5044,13 +5044,13 @@ extern "C" s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b) {
         v.x = r;
         v.y = r;
         v.z = r;
-        s32 st = o->unk_7ec;
+        s32 st = o->action;
         if (st == 0x49) {
-            u8 *q = o->unk_7d0;
+            u8 *q = o->actionWork;
             FieldPos_FromUnitCenter(&v, q[0], q[1]);
             r = 8 - t;
         } else if (st == 0x5d) {
-            u8 *q = o->unk_7d0;
+            u8 *q = o->actionWork;
             FieldPos_FromUnitCenter(&v, q[0], q[1]);
             r = 5 - t;
         }
@@ -5073,7 +5073,7 @@ extern "C" s32 PlayerActor_IsLocalAct67HitAt(V3 *a) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         u32 t = o->unk_2d4.mid;
-        s32 st = o->unk_700;
+        s32 st = o->animId;
         if ((st == 0x67 && t == 5) || (st == 0x44 && t == 8)) {
             V3D v;
             PlayerActor_GetFrontUnitCenter(&v, o);
@@ -5088,8 +5088,8 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_IsLocalReleaseWaiting() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        if (o->unk_7ec == 6) {
-            if (o->unk_7d0[0xd] == 1) {
+        if (o->action == 6) {
+            if (o->actionWork[0xd] == 1) {
                 return TRUE;
             }
         }
@@ -5103,16 +5103,16 @@ extern "C" u16 PlayerActor_GetLocalShownItem() {
     Obj *o = PlayerActor_Get(4);
     u16 r = 0xfff1;
     if (o) {
-        switch (o->unk_7ec) {
+        switch (o->action) {
         case 0x57: {
-            u8 *q = o->unk_7d0;
+            u8 *q = o->actionWork;
             if (q[6] == 0) {
                 r = Unk_ov003_022125ac_B(q[8]);
             }
             break;
         }
         case 0x54: {
-            u8 *q = o->unk_7d0;
+            u8 *q = o->actionWork;
             if (q[4] == 0) {
                 u32 x = q[3];
                 if (x < 0x38) {
@@ -5122,8 +5122,8 @@ extern "C" u16 PlayerActor_GetLocalShownItem() {
             break;
         }
         case 0x5f:
-            if (Unk_ov003_022125ac_R(&o->unk_81c, 0x1549, 0x1549)) {
-                r = o->unk_81c;
+            if (Unk_ov003_022125ac_R(&o->actionItem, 0x1549, 0x1549)) {
+                r = o->actionItem;
             }
             break;
         }
@@ -5154,7 +5154,7 @@ extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (a) {
-            return PlayerActor_RequestFishRelease(o, &a, o->unk_7ec == 5 ? 1 : 0, 6, -1);
+            return PlayerActor_RequestFishRelease(o, &a, o->action == 5 ? 1 : 0, 6, -1);
         }
         return PlayerActor_RequestInsectShowCatch(o, 1, 0, 0, 6, -1);
     }
@@ -5235,7 +5235,7 @@ extern "C" s32 PlayerActor_LocalFaint(s32 a) {
         if (k <= PlayerActor_getRequiredPriority(o)) {
             return 0;
         }
-        if (o->unk_7ec == 0x78) {
+        if (o->action == 0x78) {
             return 0;
         }
         if (PlayerActor_RequestFaint(o, a + 2, 7, -1)) {
@@ -5254,7 +5254,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestAct77From(V3 *p) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        return Unk_02008040_requestAct77(o, func_020e7b98(p->x - o->unk_5c, p->z - o->unk_64), 6, -1);
+        return Unk_02008040_requestAct77(o, func_020e7b98(p->x - o->positionX, p->z - o->positionZ), 6, -1);
     }
     return 0;
 }
@@ -5272,7 +5272,7 @@ extern "C" s32 PlayerActor_LocalBeeSting() {
         }
         Unk_ov003_0221227c_Limit k = UNK_ov003_0221227c_5;
         if (k <= PlayerActor_getRequiredPriority(o)) {
-            s32 st = o->unk_7ec;
+            s32 st = o->action;
             if (st != 0x4f) {
                 return 0;
             }
@@ -5294,7 +5294,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestAct11() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         return PlayerActor_RequestAct11(o, 3, 5, -1);
     }
     return 0;
@@ -5305,7 +5305,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestThrowBottle() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        if (o->unk_7ec == 0x89) {
+        if (o->action == 0x89) {
             return 0;
         }
         return PlayerActor_RequestThrowBottle(o, 6, -1);
@@ -5322,7 +5322,7 @@ extern "C" s32 PlayerActor_SetWatchMode(s32 a, s32 b) {
     }
     if (o) {
         if (CommManager_isLocalSlot(gCommManager, b)) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             switch (a) {
             case 0:
                 TalkRequest_FinishSlingshot();
@@ -5345,8 +5345,8 @@ extern "C" s32 PlayerActor_LocalEndWatch() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         TalkRequest_FinishSlingshot();
-        if (o->unk_7ec != 0x77) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        if (o->action != 0x77) {
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
         }
         PlayerActor_SetHeadTilt(0, 0, 4);
@@ -5370,8 +5370,8 @@ namespace ns_02211818 {
 extern "C" BOOL PlayerActor_ConfirmReleaseCreature() {
     Obj *p = PlayerActor_Get(4);
     if (p) {
-        if (p->unk_7ec == 6) {
-            Rec *r = &p->unk_7d0;
+        if (p->action == 6) {
+            Rec *r = &p->actionWork;
             if (r->unk_0d == 1) {
                 r->unk_0d = 2;
                 return TRUE;
@@ -5478,7 +5478,7 @@ extern "C" u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p) {
 
 namespace ns_02211818 {
 extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
-    Rec *r4 = &o->unk_7d0;
+    Rec *r4 = &o->actionWork;
     volatile u16 t;
     u16 r7 = *(u16 *)(m + 0xc);
     u32 id;
@@ -5498,7 +5498,7 @@ extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
     r4->unk_0d = 0;
     if (r4->unk_0c == 0) {
         s32 i = Idx(&t, 0x12b0, 0x12e7);
-        HeldInsect_Start(i, o->unk_7fc);
+        HeldInsect_Start(i, o->sessionSlot);
         id = 0x9f;
     } else {
         r4->unk_08 = FishDisplay_Acquire();
@@ -5506,8 +5506,8 @@ extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
     }
     Unk_020102ec_startAnimOnce(o, id, 3, 3);
     Unk_02006d14_playSe(o, 0x4f);
-    r6 = o->unk_8ec;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    r6 = o->netData;
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_ReleaseCreatureSetNetItem(r6, r7);
         PlayerActor_ReleaseCreatureSetNetState(r6, 0);
     } else if (PlayerActor_ReleaseCreatureGetNetState(r6) >= 1) {
@@ -5520,19 +5520,19 @@ extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
 namespace ns_02211818 {
 extern "C" s32 PlayerActor_NetReleaseCreature(Obj *o, s16 a) {
     u16 t;
-    PlayerActor_ReleaseCreatureGetNetItem(o->unk_8ec, &t);
+    PlayerActor_ReleaseCreatureGetNetItem(o->netData, &t);
     return PlayerActor_RequestReleaseCreature(o, t, 5, a);
 }
 }
 
 namespace ns_02211818 {
 extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
-    Rec *r4 = &o->unk_7d0;
+    Rec *r4 = &o->actionWork;
     if (r4->unk_04 > -1) {
         Effect_End(r4->unk_04);
     }
     if (r4->unk_0c == 0) {
-        HeldInsect_Remove(o->unk_7fc, 1);
+        HeldInsect_Remove(o->sessionSlot, 1);
     } else {
         FishDisplay_Release(r4->unk_08);
     }
@@ -5541,7 +5541,7 @@ extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
 
 namespace ns_02211818 {
 extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
-    Rec *r6 = &o->unk_7d0;
+    Rec *r6 = &o->actionWork;
     Unk_ov003_02211818_T t;
     Blk b;
     V3 v50;
@@ -5553,12 +5553,12 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
     t.a = r6->unk_00;
     r7 = &r6->unk_04;
     Unk_02006d14_turnToCamera(o, 0x400);
-    b = o->unk_694;
+    b = o->itemHandMtx;
     v50.x = 0x4cd;
     v50.y = 0;
     v50.z = 0;
     m = o->unk_2d4.mid;
-    if (o->unk_700 != 0xa0 && (s32)m >= 0x10) {
+    if (o->animId != 0xa0 && (s32)m >= 0x10) {
         s32 q = (m - 15) * 0x19a / 12;
         v50.x = v50.x + q * 2;
         v50.y = v50.y + q;
@@ -5584,7 +5584,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
             }
         }
     }
-    if (o->unk_700 != 0xa0) {
+    if (o->animId != 0xa0) {
         if (m <= 10) {
             sc = 0;
         } else if (m < 0x10) {
@@ -5603,7 +5603,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         t.b = sc;
         t.c = sc;
         t.d = sc;
-        HeldInsect_SetHandMatrix(o->unk_7fc, &t.b, &b, 0);
+        HeldInsect_SetHandMatrix(o->sessionSlot, &t.b, &b, 0);
     } else {
         float f = (float)sc / 100.0f;
         float g;
@@ -5630,8 +5630,8 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
 
 namespace ns_02211818 {
 extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o) {
-    Rec *r0 = &o->unk_7d0;
-    u8 *r6 = o->unk_8ec;
+    Rec *r0 = &o->actionWork;
+    u8 *r6 = o->netData;
     u8 *r5 = &r0->unk_0d;
     switch (*r5) {
     case 0:
@@ -5646,7 +5646,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o) {
         }
         break;
     case 1:
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
             if (PlayerActor_ReleaseCreatureGetNetState(r6) >= 2) {
                 *r5 = 2;
             }
@@ -5656,7 +5656,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o) {
         if (r0->unk_04 > -1) {
             Effect_End(r0->unk_04);
         }
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             PlayerActor_ReleaseCreatureSetNetState(r6, 2);
         }
         Unk_020102ec_startAnimOnce(o, 0xa0, 3, 0);
@@ -5682,7 +5682,7 @@ extern "C" void PlayerActor_MainReleaseCreature(Obj *o) {
     v.z = pv->z;
     s32 d0 = o->unk_d0;
     Blk b1 = o->unk_294;
-    Blk b2 = o->unk_694;
+    Blk b2 = o->itemHandMtx;
     Unk_02006d14_calcHandMtx(o);
     PlayerActor_ReleaseCreatureUpdateModel(o);
     o->unk_c4.x = v.x;
@@ -5690,7 +5690,7 @@ extern "C" void PlayerActor_MainReleaseCreature(Obj *o) {
     o->unk_c4.z = v.z;
     o->unk_d0 = d0;
     o->unk_294 = b1;
-    o->unk_694 = b2;
+    o->itemHandMtx = b2;
     if (Unk_02006d14_netFollowTransform(o)) {
         Unk_020102ec_moveWithCollision(o);
     }
@@ -5739,7 +5739,7 @@ extern "C" void PlayerActor_Act11Update(Obj *o) {
 namespace ns_02211818 {
 extern "C" void PlayerActor_MainAct11(Obj *o) {
     PlayerActor_Act11Update(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Unk_02006d14_act10FaceTalkTarget(o);
     } else {
         Unk_02006d14_netFollowTransform(o);
@@ -5788,27 +5788,27 @@ extern "C" void PlayerActor_SetupPluckReach(Obj *o, u8 *m) {
     u8 *q = m + 0xc;
     u32 a = q[0];
     u32 b = q[1];
-    u8 *r = (u8 *)&o->unk_7d0;
+    u8 *r = (u8 *)&o->actionWork;
     r[0] = a;
     r[1] = b;
     r[2] = 0;
     s.a = a;
     s.b = b;
-    PlayerActor_PluckReachSetNetData(o->unk_8ec, &s);
+    PlayerActor_PluckReachSetNetData(o->netData, &s);
     Unk_020102ec_startAnim(o, 0x15, 3, 0);
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
-        HeldItemModel_PlayAnim(o->unk_59c, 0xb, 3, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0xb, 3, 0);
     }
 }
 }
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_NetPluckReach(Obj *o, s32 x) {
-    if (o->unk_7ec == 0x16) {
-        o->unk_c80 = x;
+    if (o->action == 0x16) {
+        o->netSeq = x;
     } else {
         Pair p(0, 0);
-        PlayerActor_PluckReachGetNetData(o->unk_8ec, &p);
+        PlayerActor_PluckReachGetNetData(o->netData, &p);
         Pair q = p;
         PlayerActor_RequestPluckReach(o, &q, 6, x);
     }
@@ -5817,9 +5817,9 @@ extern "C" void PlayerActor_NetPluckReach(Obj *o, s32 x) {
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_PluckReachUpdate(Obj *o) {
-    u8 *r = (u8 *)&o->unk_7d0;
+    u8 *r = (u8 *)&o->actionWork;
     if (r[2] == 0) {
-        s32 t = o->unk_814;
+        s32 t = o->fieldAnswer;
         if (t == 2) {
             r[2] = 2;
         } else if (t == 1) {
@@ -5832,10 +5832,10 @@ extern "C" void PlayerActor_PluckReachUpdate(Obj *o) {
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_PluckReachCheckEnd(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
-    u8 *r = (u8 *)&o->unk_7d0;
+    u8 *r = (u8 *)&o->actionWork;
     switch (r[2]) {
     case 0:
         break;
@@ -5847,7 +5847,7 @@ extern "C" void PlayerActor_PluckReachCheckEnd(Obj *o) {
         break;
     }
     case 2:
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
         break;
     }
@@ -5856,11 +5856,11 @@ extern "C" void PlayerActor_PluckReachCheckEnd(Obj *o) {
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_MainPluckReach(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_PluckReachUpdate(o);
     } else {
         Unk_020102ec_advanceAnim(o);
-        u8 *r = (u8 *)&o->unk_7d0;
+        u8 *r = (u8 *)&o->actionWork;
         s32 y = r[1];
         s32 x = r[0];
         Pair q(x, y);
@@ -5888,16 +5888,16 @@ extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m) {
     u8 *p = (u8 *)m + 0xc;
     V3 v;
     FieldPos_FromUnitCenter(&v, p[0], p[1]);
-    V3 *pv = (V3 *)&o->unk_7d0;
+    V3 *pv = (V3 *)&o->actionWork;
     *pv = v;
     ((u8 *)pv)[12] = 0;
     Unk_020102ec_startAnimOnce(o, 0x14, 3, 0);
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
-        HeldItemModel_PlayAnim(o->unk_59c, 0xe, 3, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0xe, 3, 0);
     }
     u16 *g = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
-    o->unk_81e = *g;
-    o->unk_81c = o->unk_81e;
+    o->shownItem = *g;
+    o->actionItem = o->shownItem;
 }
 }
 
@@ -5908,7 +5908,7 @@ extern "C" void PlayerActor_NetPluck() {
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_EndPluck(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             PlayerActor_PluckApply(o);
         }
@@ -5930,13 +5930,13 @@ extern "C" s32 PlayerActor_PluckApply(Obj *o) {
     s16 ang;
     u16 t2;
     Pair ab;
-    V3 *pv = (V3 *)&o->unk_7d0;
+    V3 *pv = (V3 *)&o->actionWork;
     V3 v = *pv;
     ab.a = 0;
     ab.b = 0;
     FieldPos_ToUnit(&ab.a, &ab.b, &v);
-    ang = o->unk_8e;
-    switch (o->unk_81c) {
+    ang = o->rotY;
+    switch (o->actionItem) {
     case 0x1f:
         Effect_Create(0x2e, &v, &ang, 0);
         break;
@@ -5968,7 +5968,7 @@ extern "C" s32 PlayerActor_PluckApply(Obj *o) {
         break;
     }
     default: {
-        u32 w = o->unk_81c;
+        u32 w = o->actionItem;
         if ((w >= 0x6e && w <= 0x73) || (w >= 0x74 && w <= 0x79) || (w >= 0x7a && w <= 0x7f) ||
             (w >= 0x80 && w <= 0x87) || w == 0x88 || w == 0x89 || (w >= 0x8a && w <= 0x8f) ||
             (w >= 0x90 && w <= 0x95) || (w >= 0x96 && w <= 0x9b) || (w >= 0x9c && w <= 0xa3)) {
@@ -5979,14 +5979,14 @@ extern "C" s32 PlayerActor_PluckApply(Obj *o) {
         }
     hit:
         Effect_PlayById2(0x54, &v, 0, 0);
-        t2 = o->unk_81c;
+        t2 = o->actionItem;
         Pair c(ab.a, ab.b);
-        Flower_SpawnPetalFxAt(&t2, &c, o->unk_8e, 2);
+        Flower_SpawnPetalFxAt(&t2, &c, o->rotY, 2);
         Unk_02006d14_playSe(o, 0x7d8);
         break;
     }
     }
-    switch (o->unk_81c) {
+    switch (o->actionItem) {
     case 0x1f:
     case 0x20:
         Unk_02006d14_playSe(o, 0x7d8);
@@ -6007,11 +6007,11 @@ extern "C" s32 PlayerActor_PluckApply(Obj *o) {
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_PluckCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     if (o->unk_2d4.mid >= 0xe) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             PlayerActor_ResumeWalkOrIdle(o);
         } else {
             Unk_02006d14_clearActionFlag(o, 0x12);
@@ -6023,7 +6023,7 @@ extern "C" void PlayerActor_PluckCheckEnd(Obj *o) {
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_MainPluck(Obj *o) {
     PlayerActor_PluckUpdate(o);
-    V3 *pv = (V3 *)&o->unk_7d0;
+    V3 *pv = (V3 *)&o->actionWork;
     V3 v = *pv;
     Unk_02006d14_netSyncNearPoint(o, &v);
     Unk_020102ec_updateBodyCollider(o);
@@ -6079,8 +6079,8 @@ extern "C" void PlayerActor_SetupDoorApproach(Obj *o, Msg *m) {
     s32 a = *(s32 *)p;
     s32 b = *(s32 *)(p + 4);
     s16 c = *(s16 *)(p + 8);
-    PlayerActor_DoorApproachSetWork(&o->unk_7d0, a, b, c);
-    PlayerActor_DoorApproachSetNetData(o->unk_8ec, a, b, c);
+    PlayerActor_DoorApproachSetWork(&o->actionWork, a, b, c);
+    PlayerActor_DoorApproachSetNetData(o->netData, a, b, c);
 }
 }
 
@@ -6088,18 +6088,18 @@ namespace ns_02210ef0 {
 extern "C" void PlayerActor_NetDoorApproach(Obj *o, s32 x) {
     s16 ang;
     V3 pos;
-    PlayerActor_DoorApproachGetNetData(o->unk_8ec, &pos.x, &pos.z, &ang);
-    pos.y = o->unk_5c.y;
-    V3 *pv = &o->unk_5c;
+    PlayerActor_DoorApproachGetNetData(o->netData, &pos.x, &pos.z, &ang);
+    pos.y = o->position.y;
+    V3 *pv = &o->position;
     *pv = pos;
-    o->unk_8e = ang;
+    o->rotY = ang;
     PlayerActor_RequestDoorApproach(o, pos.x, pos.z, ang, 6, x);
 }
 }
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_DoorApproachMove(Obj *o) {
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     PlayerActor_StepTowardPose(o, r->a, r->b, r->c);
 }
 }
@@ -6116,7 +6116,7 @@ extern "C" void PlayerActor_DoorApproachUpdate(Obj *o) {
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_DoorApproachCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        Rec *r = &o->unk_7d0;
+        Rec *r = &o->actionWork;
         PlayerActor_RequestDoorEnter(o, 1, r->a, r->b, r->c, 6, -1);
     }
 }
@@ -6180,7 +6180,7 @@ namespace ns_02210ef0 {
 extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     Unk_02006d14_setActionFlag(o, 4);
     u8 *p = (u8 *)m + 0xc;
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     s32 z = 0;
     s32 k = z;
     switch (p[0xa]) {
@@ -6199,29 +6199,29 @@ extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     Pair t = *(Pair *)p;
     s16 ang = *(s16 *)(p + 8);
     Unk_ov003_02210f7c_Ns::PlayerActor_DoorEnterSetWork(r, id, t.a, t.b, ang, k);
-    PlayerActor_DoorEnterSetNetData(o->unk_8ec, id, t.a, t.b, ang);
-    s32 b = CommManager_isLocalSlot(gCommManager, o->unk_7fc) ? 1 : 0;
-    Building_OpenDoorForEntryAt(&o->unk_5c, b);
+    PlayerActor_DoorEnterSetNetData(o->netData, id, t.a, t.b, ang);
+    s32 b = CommManager_isLocalSlot(gCommManager, o->sessionSlot) ? 1 : 0;
+    Building_OpenDoorForEntryAt(&o->position, b);
 }
 }
 
 namespace ns_02210ef0 {
 extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x) {
-    if ((u32)(o->unk_7ec - 0x38) <= 2) {
-        o->unk_c80 = x;
+    if ((u32)(o->action - 0x38) <= 2) {
+        o->netSeq = x;
     } else {
         u8 a;
         u8 f;
         s16 ang;
         s32 o1, o2;
         V3 pos;
-        PlayerActor_DoorEnterGetNetData(o->unk_8ec, &a, &pos.x, &pos.z, (u16 *)&ang);
-        pos.y = o->unk_5c.y;
-        if (PlayerActor_GetSlotPosXZ(&f, &o1, &o2, -1, o->unk_7fc)) {
-            o->unk_5c.x = o1;
-            o->unk_5c.z = o2;
+        PlayerActor_DoorEnterGetNetData(o->netData, &a, &pos.x, &pos.z, (u16 *)&ang);
+        pos.y = o->position.y;
+        if (PlayerActor_GetSlotPosXZ(&f, &o1, &o2, -1, o->sessionSlot)) {
+            o->position.x = o1;
+            o->position.z = o2;
         }
-        o->unk_8e = ang;
+        o->rotY = ang;
         PlayerActor_RequestDoorEnter(o, a, pos.x, pos.z, ang, 6, x);
     }
 }
@@ -6229,7 +6229,7 @@ extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x) {
 
 namespace ns_022105bc {
 extern "C" s32 PlayerActor_DoorEnterMove(Obj *o) {
-    Rec3 *r = (Rec3 *)&o->unk_7d0;
+    Rec3 *r = (Rec3 *)&o->actionWork;
     u8 *p = &r->cnt;
     if (r->cnt) {
         *p = r->cnt - 1;
@@ -6245,7 +6245,7 @@ extern "C" s32 PlayerActor_DoorEnterMove(Obj *o) {
 namespace ns_022105bc {
 extern "C" void PlayerActor_DoorEnterUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 == 0x32) {
+    if (o->animId == 0x32) {
         s32 m = o->unk_2d4.mid;
         if (m > 0x16) goto r_hi;
         if (m >= 0x16) goto hit;
@@ -6267,7 +6267,7 @@ extern "C" void PlayerActor_DoorEnterUpdate(Obj *o) {
     hit:
         Unk_02006d14_playFootstepSe(o);
     done:;
-    } else if (o->unk_700 == 0x33) {
+    } else if (o->animId == 0x33) {
         switch ((s32)o->unk_2d4.mid) {
         case 9:
         case 0x11:
@@ -6308,7 +6308,7 @@ extern "C" s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b) {
 namespace ns_022105bc {
 extern "C" void PlayerActor_SetupDoorEntered(Obj *o) {
     Unk_02006d14_clearActionFlag(o, 0);
-    o->unk_7f4 = 0;
+    o->drawStep = 0;
 }
 }
 
@@ -6364,16 +6364,16 @@ namespace ns_022105bc {
 extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     Unk_02006d14_clearActionFlag(o, 0);
     u8 *p = (u8 *)m + 0xc;
-    Rec2 *rec = (Rec2 *)&o->unk_7d0;
+    Rec2 *rec = (Rec2 *)&o->actionWork;
     s32 t = 0;
     void *g = gCommManager;
     s32 n;
-    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(g, o->sessionSlot)) {
         n = Field_GetDoorExitMode();
     } else {
         n = p[0];
     }
-    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(g, o->sessionSlot)) {
         void *q = PlayerData_GetCurrent();
         if (Scene_GetCurrent() == 0 && q != 0 && Unk_02097ff4_testFlag(q, 0x23) != 0 &&
             (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || Scene_GetPrevious() == 6)) {
@@ -6390,30 +6390,30 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     if (n != 0) {
         Unk_020102ec_startAnimOnce(o, 0x34, 0, 0);
         u = 0;
-        o->unk_7f4 = 1;
+        o->drawStep = 1;
     } else {
-        u = (u8)Building_GetDoorAnimParamAt(o->unk_5c);
+        u = (u8)Building_GetDoorAnimParamAt(o->position);
         if (u <= 1) {
             Unk_020102ec_startAnimOnce(o, 0x35, 0, 0);
         } else {
             Unk_020102ec_startAnim(o, 0x36, 0, 0);
         }
-        o->unk_7f4 = 1;
+        o->drawStep = 1;
     }
     rec->b = u;
     rec->a = t;
-    PlayerActor_DoorExitSetNetData(o->unk_8ec, n, t);
-    Building_OpenDoorForExitAt(o->unk_5c);
+    PlayerActor_DoorExitSetNetData(o->netData, n, t);
+    Building_OpenDoorForExitAt(o->position);
 }
 }
 
 namespace ns_022105bc {
 extern "C" void PlayerActor_NetDoorExit(Obj *o, s32 a) {
-    if (o->unk_7ec == 0x3b) {
-        o->unk_c80 = a;
+    if (o->action == 0x3b) {
+        o->netSeq = a;
     } else {
         Rec2 r;
-        PlayerActor_DoorExitGetNetData(o->unk_8ec, &r.a, &r.b);
+        PlayerActor_DoorExitGetNetData(o->netData, &r.a, &r.b);
         Unk_ov003_02210b94_Ns::PlayerActor_RequestDoorExitWith(o, r.a, r.b, 6, a);
     }
 }
@@ -6427,12 +6427,12 @@ extern "C" void PlayerActor_DoorExitUpdate(Obj *o) {
     if (c) {
         *p = c - 1;
         if (*p == 0) {
-            if (o->unk_700 == 0x36) {
+            if (o->animId == 0x36) {
                 Unk_020102ec_startAnimOnce(o, 0x35, 5, 0);
             }
         }
     } else {
-        if (o->unk_700 == 0x34) {
+        if (o->animId == 0x34) {
             s32 m = o->unk_2d4.mid;
             if (m > 0x1c) goto r_hi;
             if (m >= 0x1c) goto hit;
@@ -6459,7 +6459,7 @@ extern "C" void PlayerActor_DoorExitUpdate(Obj *o) {
         hit:
             Unk_02006d14_playFootstepSe(o);
         done:;
-        } else if (o->unk_700 == 0x35) {
+        } else if (o->animId == 0x35) {
             switch ((s32)o->unk_2d4.mid) {
             case 4:
             case 9:
@@ -6478,8 +6478,8 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     u16 v[8];
     if (!AnimFrameCtrl_isFinished(o->unk_2cc)) return;
     Unk_02006d14_nudgeForward(o);
-    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-    u8 *pst = &o->unk_7d0;
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+    u8 *pst = &o->actionWork;
     u8 st = *pst;
     PlayerActor_GetHeldItem(v, o);
     if (st <= 1) {
@@ -6502,7 +6502,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
             PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
             return;
         }
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             if (Unk_ov003_022107fc_Eq(v, &v[2])) {
                 Unk_02006d14_setActionFlag(o, 0);
             }
@@ -6518,7 +6518,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
         break;
     case 2: {
         void *g = gCommManager;
-        if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(g, o->sessionSlot)) {
             TownSessionState_ClearFlag(TownSessionState_Get(), 0);
         }
         if (Taxi_IsLeaving() == 0) {
@@ -6526,7 +6526,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
             return;
         }
         TalkRequest_FinishSceneEntry();
-        if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(g, o->sessionSlot)) {
             goto x;
         } else {
             PlayerActor_GetHeldItem(&v[1], o);
@@ -6540,7 +6540,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
         break;
     }
     case 3:
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             TownSessionState_ClearFlag(TownSessionState_Get(), 5);
             Unk_02097ff4_clearFlag(PlayerData_GetCurrent(), 1);
             TownBbs_UpdateDaily();
@@ -6576,9 +6576,9 @@ extern "C" void PlayerActor_SetupAct3C(Obj *o) {
     } else {
         Unk_020102ec_startAnimOnce(o, 0x35, 0, 0);
     }
-    o->unk_7f4 = 0;
+    o->drawStep = 0;
     if (TownSessionState_TestFlag(TownSessionState_Get(), 0) != 0 || TownSessionState_TestFlag(TownSessionState_Get(), 5) != 0) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             Bgm_RequestSilence(0x12, 0xf, 0);
         }
     }
@@ -6670,7 +6670,7 @@ namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_SetupStowItem(Obj *o, Arg a) {
     RecA *r = &a.unk_0c;
     H hh;
-    RecA *p7d0 = (RecA *)&o->unk_7d0;
+    RecA *p7d0 = (RecA *)&o->actionWork;
     PlayerActor_GetHeldItem(&hh, o);
     s32 q = PlayerActor_GetPlayerData(o);
     hh.b = 0xfff1;
@@ -6692,7 +6692,7 @@ extern "C" s32 PlayerActor_SetupStowItem(Obj *o, Arg a) {
     s32 y = r->b;
     s32 h2 = r->h;
     PlayerActor_StowItemSetWork(p7d0, st, bits, x, y, h2, v);
-    u8 *p8 = o->unk_8ec;
+    u8 *p8 = o->netData;
     switch (st) {
     case 0x38:
         break;
@@ -6716,7 +6716,7 @@ extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a) {
     u8 b;
     s16 h;
     s32 x, y;
-    PlayerActor_StowItemGetNetData(o->unk_8ec, &b, &x, &y, &h);
+    PlayerActor_StowItemGetNetData(o->netData, &b, &x, &y, &h);
     s32 id;
     switch (b & 0xf0) {
     case 0:
@@ -6738,7 +6738,7 @@ extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a) {
 
 namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_EndStowItem(Obj *o) {
-    if ((o->unk_7d0.bits & 3) == 2) {
+    if ((o->actionWork.bits & 3) == 2) {
         o->unk_5a0 = 0x1000;
     } else {
         o->unk_5a0 = 0;
@@ -6749,7 +6749,7 @@ extern "C" s32 PlayerActor_EndStowItem(Obj *o) {
 
 namespace ns_0220fc88 {
 extern "C" void PlayerActor_StowItemUpdate(Obj *o) {
-    RecB *r = &o->unk_7d0;
+    RecB *r = &o->actionWork;
     s32 *t = &r->timer;
     s32 target;
     if ((r->bits & 3) == 2) {
@@ -6784,12 +6784,12 @@ extern "C" void PlayerActor_StowItemUpdate(Obj *o) {
             break;
         case 0x10:
             Unk_02006d14_clearActionFlag(o, 0);
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             Unk_02006d14_requestAct10(o, 3, 5, -1);
             break;
         case 2:
             TalkRequest_FinishSceneEntry();
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
             break;
         }
@@ -6856,15 +6856,15 @@ namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Arg a) {
     RecA *r = &a.unk_0c;
     u8 bits = r->bits;
-    RecA *p7d0 = (RecA *)&o->unk_7d0;
-    HeldItemModel_PlayAnim(o->unk_59c, 0x24, 3, 1);
+    RecA *p7d0 = (RecA *)&o->actionWork;
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x24, 3, 1);
     s32 x, y, st;
     s16 h;
     if ((bits & 3) != 2) {
         Unk_020102ec_startAnimOnce(o, 0x62, 3, 0);
         u32 mid = o->unk_2d0.mid;
         AnimFrameCtrl_setup(o->unk_2cc, mid, 3, 0x1000, (u16)(mid - 1));
-        Sub *s = HeldItemModel_GetModel(o->unk_59c);
+        Sub *s = HeldItemModel_GetModel(o->heldItemModel);
         u32 mid2 = s->unk_a0.mid;
         AnimFrameCtrl_setup(s->unk_9c, mid2, 3, 0x1000, (u16)(mid2 - 1));
         Unk_02006d14_playSe(o, 0x858);
@@ -6883,7 +6883,7 @@ extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Arg a) {
     y = r->b;
     h = r->h;
     PlayerActor_StowUmbrellaSetWork(p7d0, st, bits, x, y, h);
-    u8 *p8 = o->unk_8ec;
+    u8 *p8 = o->netData;
     switch (st) {
     case 0x38:
         break;
@@ -6907,7 +6907,7 @@ extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a) {
     u8 b;
     s16 h;
     s32 x, y;
-    PlayerActor_StowUmbrellaGetNetData(o->unk_8ec, &b, &x, &y, &h);
+    PlayerActor_StowUmbrellaGetNetData(o->netData, &b, &x, &y, &h);
     s32 id;
     switch (b & 0xf0) {
     case 0:
@@ -6930,7 +6930,7 @@ extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a) {
 namespace ns_0220fc88 {
 extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    RecA *r = (RecA *)&o->unk_7d0;
+    RecA *r = (RecA *)&o->actionWork;
     if ((r->bits & 3) != 2) {
         if (o->unk_2d4.mid < 6) {
             if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5)) {
@@ -6950,7 +6950,7 @@ extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o) {
 
 namespace ns_0220fc88 {
 extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o) {
-    RecA *r = (RecA *)&o->unk_7d0;
+    RecA *r = (RecA *)&o->actionWork;
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_02006d14_setActionFlag(o, 1);
         switch (r->st) {
@@ -6964,12 +6964,12 @@ extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o) {
             break;
         case 0x10:
             Unk_02006d14_clearActionFlag(o, 0);
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             Unk_02006d14_requestAct10(o, 3, 5, -1);
             break;
         case 2:
             TalkRequest_FinishSceneEntry();
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
             break;
         }
@@ -7005,7 +7005,7 @@ extern "C" void PlayerActor_UmbrellaSpinInitWork(u8 *p) {
 namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_SetupUmbrellaSpin(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x63, 3, 0);
-    PlayerActor_UmbrellaSpinInitWork((u8 *)&o->unk_7d0);
+    PlayerActor_UmbrellaSpinInitWork((u8 *)&o->actionWork);
     Unk_02006d14_playSe(o, 0x856);
     Unk_02006d14_setActionFlag(o, 9);
 }
@@ -7019,7 +7019,7 @@ extern "C" s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b) {
 
 namespace ns_0220fc88 {
 extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o) {
-    s32 h = o->unk_7d0.a;
+    s32 h = o->actionWork.a;
     if (h != -1) {
         Effect_End(h);
     }
@@ -7029,13 +7029,13 @@ extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o) {
 namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    s32 *p = &o->unk_7d0.a;
+    s32 *p = &o->actionWork.a;
     V3 v(o->unk_628.x, o->unk_628.y, o->unk_628.z);
     WorldCurve_FromCurved(&v, &v);
-    if (o->unk_7d0.a == -1) {
+    if (o->actionWork.a == -1) {
         *p = Effect_Create(0x33, &v, &o->unk_8e, 0);
     } else {
-        Effect_SetPosition(o->unk_7d0.a, &v, &o->unk_8e);
+        Effect_SetPosition(o->actionWork.a, &v, &o->unk_8e);
     }
 }
 }
@@ -7043,12 +7043,12 @@ extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o) {
 namespace ns_0220fc88 {
 extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     u32 m = o->unk_2d4.mid;
     if (m >= 0xe) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             PlayerActor_ResumeWalkOrIdle(o);
         }
     }
@@ -7058,7 +7058,7 @@ extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o) {
 namespace ns_0220fc88 {
 extern "C" s32 PlayerActor_MainUmbrellaSpin(Obj *o) {
     PlayerActor_UmbrellaSpinEffect(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Unk_020102ec_moveWithCollision(o);
     } else {
         Unk_02006d14_netFollowTransform(o);
@@ -7082,10 +7082,10 @@ extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b) {
     Msg m;
     u8 *p = m.v_0220f314.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x46, a, b);
-    if (o->unk_144) {
-        PlayerActor_AxeSwingSetArgs(p, o->unk_154, o->unk_15c, 1);
+    if (o->hasTargetPos) {
+        PlayerActor_AxeSwingSetArgs(p, o->targetPosX, o->targetPosZ, 1);
     } else {
-        PlayerActor_AxeSwingSetArgs(p, o->unk_148, o->unk_150, o->unk_140 != 0 ? 1 : 0);
+        PlayerActor_AxeSwingSetArgs(p, o->toolTargetPosX, o->toolTargetPosZ, o->toolTargetKind != 0 ? 1 : 0);
     }
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
@@ -7134,11 +7134,11 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
         V3 v, A, B, C, D;
     } l;
     P2 *q = &a->unk_0c;
-    u8 *rec = (u8 *)&o->unk_7d0;
+    u8 *rec = (u8 *)&o->actionWork;
     s32 x = a->unk_0c.x;
     s32 z = q->z;
     u8 flag = q->flag;
-    PlayerActor_AxeSwingSetNetData(o->unk_8ec, x, z, flag);
+    PlayerActor_AxeSwingSetNetData(o->netData, x, z, flag);
     Unk_020102ec_startAnimOnce(o, 0x42, 3, 0);
     if (flag != 0) {
         l.v.x = x;
@@ -7157,12 +7157,12 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
             l.v.z = l.C.z;
         }
     }
-    s32 ang = func_020e7b98(l.v.x - o->unk_6f0, l.v.z - o->unk_6f8);
+    s32 ang = func_020e7b98(l.v.x - o->bodyPosX, l.v.z - o->bodyPosZ);
     l.D.x = l.v.x;
     l.D.y = l.v.y;
     l.D.z = l.v.z;
     PlayerActor_AxeSwingSetWork(rec, &l.D, ang);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Unk_02006d14_clearActionFlag(o, 0x14);
         if (Unk_02006d14_getHeldHoldableIndex(o) != 0xb) {
             if (!Random_GlobalBelow(8)) {
@@ -7177,26 +7177,26 @@ namespace ns_0220f314 {
 extern "C" s32 PlayerActor_NetAxeSwing(Obj *o, s32 a) {
     u8 c;
     s32 x, z;
-    PlayerActor_AxeSwingGetNetData(o->unk_8ec, &x, &z, &c);
+    PlayerActor_AxeSwingGetNetData(o->netData, &x, &z, &c);
     return PlayerActor_RequestAxeSwingAt(o, &x, &z, &c, 6, a);
 }
 }
 
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o) {
-    return Unk_02006d14_turnToward(o, o->unk_7d0.h);
+    return Unk_02006d14_turnToward(o, o->actionWork.h);
 }
 }
 
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o) {
     V3 t;
-    V3 *pv = &o->unk_7d0.v;
+    V3 *pv = &o->actionWork.v;
     t.x = pv->x;
     t.y = pv->y;
     t.z = pv->z;
     Unk_020102ec_setSubCollider(o, &t, 0xf33, 0x1000);
-    ActorCollider_submit(o->unk_1c0);
+    ActorCollider_submit(o->subCollider);
 }
 }
 
@@ -7212,7 +7212,7 @@ extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o) {
 
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o) {
-    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         PlayerActor_RequestAxeFollowThrough(o, 6, -1);
     }
@@ -7222,7 +7222,7 @@ extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o) {
 namespace ns_0220f314 {
 extern "C" void PlayerActor_MainAxeSwing(Obj *o) {
     s32 old = o->unk_98;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         s32 t;
         PlayerActor_AxeSwingTurn(o);
         Unk_020102ec_advanceAnim(o);
@@ -7275,7 +7275,7 @@ extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
-    ActorCollider_submit(o->unk_1c0);
+    ActorCollider_submit(o->subCollider);
 }
 }
 
@@ -7302,7 +7302,7 @@ extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...) {
     v[0] = 0;
     v[1] = 0;
     r = PlayerActor_AxeClassifyTarget(o, &a, &k, v);
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         k = 0;
     }
     switch (r) {
@@ -7335,7 +7335,7 @@ extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...) {
         }
         break;
     case 5:
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
         break;
     case 6:
@@ -7357,7 +7357,7 @@ extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...) {
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         s32 t;
         Unk_020102ec_moveWithCollision(o);
         Unk_020102ec_updateBodyCollider(o);
@@ -7372,7 +7372,7 @@ extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o) {
         Unk_020102ec_updateBodyCollider(o);
         t2 = PlayerActor_Decelerate(o->unk_98, 0);
         Unk_020102ec_setSpeed(o, &t2);
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
     PlayerActor_AxeFollowThroughTrackTarget(o);
 }
@@ -7411,7 +7411,7 @@ extern "C" s32 PlayerActor_Act48Update(Obj *o) {
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -7486,8 +7486,8 @@ extern "C" s32 PlayerActor_SetupAxeStrike(Obj *o, Arg4 *a) {
     Pair t;
     t.a = b0;
     t.b = b1;
-    PlayerActor_AxeStrikeSetWork((u8 *)&o->unk_7d0, b2, b3, &t.a);
-    PlayerActor_AxeStrikeSetNetData(o->unk_8ec, b2, b3, o->unk_168, b0, b1);
+    PlayerActor_AxeStrikeSetWork((u8 *)&o->actionWork, b2, b3, &t.a);
+    PlayerActor_AxeStrikeSetNetData(o->netData, b2, b3, o->toolHitKind, b0, b1);
     Unk_020102ec_startAnimOnce(o, 0x45, 3, 0);
     if (b3) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -7501,8 +7501,8 @@ extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a) {
         u8 a, b, c, d, e;
     } l;
     Pair t;
-    PlayerActor_AxeStrikeGetNetData(o->unk_8ec, &l.a, &l.b, &l.c, &l.d, &l.e);
-    o->unk_168 = l.c;
+    PlayerActor_AxeStrikeGetNetData(o->netData, &l.a, &l.b, &l.c, &l.d, &l.e);
+    o->toolHitKind = l.c;
     if (l.b == 0) {
         t.a = l.d;
         t.b = l.e;
@@ -7513,7 +7513,7 @@ extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a) {
 
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_EndAxeStrike(Obj *o) {
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             PlayerActor_AxeStrikeHit(o);
         }
@@ -7536,7 +7536,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
     u16 buf;
     s32 t = -0x333;
     Unk_020102ec_setSpeed(o, &t);
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     s32 n = Unk_02006d14_getHeldHoldableIndex(o);
     if (r->b2) {
         n++;
@@ -7546,7 +7546,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
             Unk_02006d14_playSe(o, 0x83f);
         }
     }
-    PlayerActor_SetHoldableItem(n, o->unk_7fc);
+    PlayerActor_SetHoldableItem(n, o->sessionSlot);
     Unk_02006d14_setActionFlag(o, 9);
     if (r->b3) {
         P2 q;
@@ -7558,7 +7558,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
         Unk_02006d14_clearActionFlag(o, 0x12);
         Unk_02006d14_clearActionFlag(o, 0x1c);
     }
-    switch (o->unk_168) {
+    switch (o->toolHitKind) {
     case 0: {
         V3 v;
         V3 *pv = &o->unk_5c;
@@ -7585,14 +7585,14 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
         break;
     case 2:
         Unk_02006d14_playSe(o, 0x7df);
-        if (o->unk_164) {
+        if (o->toolHitActor) {
             PlayerActor_GetHeldItem(&buf, o);
-            o->unk_164->vfunc_60(&buf);
+            o->toolHitActor->vfunc_60(&buf);
         }
         break;
     case 3:
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            if (Snowball_Break(o->unk_164, 1) == 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+            if (Snowball_Break(o->toolHitActor, 1) == 0) {
                 Unk_02006d14_playSe(o, 0x7df);
             }
         } else {
@@ -7600,15 +7600,15 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
         }
         break;
     }
-    o->unk_164 = 0;
-    o->unk_168 = 0;
+    o->toolHitActor = 0;
+    o->toolHitKind = 0;
 }
 }
 
 namespace ns_0220e970 {
 extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -7661,7 +7661,7 @@ extern "C" s32 PlayerActor_SetupAxeChop(Obj *o, Arg *a) {
     Rec &r = a->unk_0c;
     u32 c = r.b2;
     u32 d = r.b3;
-    PlayerActor_AxeChopSetWork(&o->unk_7d0, c, d, Pv(r.b0, r.b1));
+    PlayerActor_AxeChopSetWork(&o->actionWork, c, d, Pv(r.b0, r.b1));
     Unk_020102ec_startAnimOnce(o, 0x44, 3, 0);
     Unk_02006d14_setActionFlag(o, 0x1c);
 }
@@ -7674,7 +7674,7 @@ extern "C" void PlayerActor_NetAxeChop(Obj *o) {
 
 namespace ns_0220e970 {
 extern "C" s32 PlayerActor_EndAxeChop(Obj *o) {
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             PlayerActor_AxeChopHit(o);
         }
@@ -7693,7 +7693,7 @@ extern "C" s32 PlayerActor_AxeChopUpdate(Obj *o) {
 
 namespace ns_0220e970 {
 extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     s32 n = Unk_02006d14_getHeldHoldableIndex(o);
     if (r->b2) {
         n++;
@@ -7703,7 +7703,7 @@ extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
             Unk_02006d14_playSe(o, 0x83f);
         }
     }
-    PlayerActor_SetHoldableItem(n, o->unk_7fc);
+    PlayerActor_SetHoldableItem(n, o->sessionSlot);
     Unk_02006d14_setActionFlag(o, 9);
     Unk_02006d14_playSe(o, 0x83b);
     u32 x = r->b0;
@@ -7717,12 +7717,12 @@ extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
         P2 a;
         a.x = x;
         a.z = y;
-        Tree_RequestChop(o->unk_7fc, &a, 5);
+        Tree_RequestChop(o->sessionSlot, &a, 5);
     } else {
         P2 b;
         b.x = x;
         b.z = y;
-        Tree_RequestChop(o->unk_7fc, &b, 4);
+        Tree_RequestChop(o->sessionSlot, &b, 4);
     }
     Unk_02006d14_clearActionFlag(o, 0x1c);
 }
@@ -7730,9 +7730,9 @@ extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
 
 namespace ns_0220e970 {
 extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o) {
-    u32 b3 = o->unk_7d0.b3;
+    u32 b3 = o->actionWork.b3;
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         if (b3) {
             Unk_02008040_requestAct77(o, o->unk_8e, 6, -1);
         } else {
@@ -7740,7 +7740,7 @@ extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o) {
         }
     }
     if (b3 == 0) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             if (o->unk_2d4.mid > 8) {
                 PlayerActor_ResumeWalkOrIdle(o);
             }
@@ -7800,10 +7800,10 @@ namespace ns_0220e970 {
 extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Arg *a) {
     Rec *r = &a->unk_0c;
     u32 c = r->b2;
-    PlayerActor_AxeBreakSetWork(&o->unk_7d0, c, Pv(r->b0, r->b1));
-    PlayerActor_AxeBreakSetNetData(o->unk_8ec, c);
+    PlayerActor_AxeBreakSetWork(&o->actionWork, c, Pv(r->b0, r->b1));
+    PlayerActor_AxeBreakSetNetData(o->netData, c);
     Unk_020102ec_startAnimOnce(o, 0x47, 3, 0);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Bgm_RequestSilence(0x12, 0xf, 0);
     }
 }
@@ -7812,7 +7812,7 @@ extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Arg *a) {
 namespace ns_0220e970 {
 extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a) {
     u8 t;
-    PlayerActor_AxeBreakGetNetData(o->unk_8ec, &t);
+    PlayerActor_AxeBreakGetNetData(o->netData, &t);
     if (t == 0) {
         PlayerActor_RequestAxeBreak(o, 0, Pv(0, 0), 6, a);
     }
@@ -7821,13 +7821,13 @@ extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a) {
 
 namespace ns_0220e970 {
 extern "C" void PlayerActor_EndAxeBreak(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->sessionSlot));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
         }
     } else {
-        Rec *r = &o->unk_7d0;
+        Rec *r = &o->actionWork;
         if (r->b2) {
             P2 q;
             s32 y = r->b1;
@@ -7846,7 +7846,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->unk_2d4.mid >= 8) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 8)) {
-            Rec *r = &o->unk_7d0;
+            Rec *r = &o->actionWork;
             if (r->b2) {
                 P2 q;
                 s32 y = r->b1;
@@ -7860,7 +7860,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             Unk_02006d14_playSe(o, 0x840);
             Unk_02006d14_clearActionFlag(o, 0);
             Unk_02006d14_setActionFlag(o, 9);
-            Mtx t = o->unk_664;
+            Mtx t = o->toolHandMtx;
             V3 pos;
             pos.x = t.v.x;
             pos.y = t.v.y;
@@ -7892,7 +7892,7 @@ namespace ns_0220e970 {
 extern "C" void PlayerActor_AxeBreakCheckEnd(Obj *o) {
     if (o->unk_8e == 0) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-            if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc) || TalkRequest_AddPlayerMessage()) {
+            if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot) || TalkRequest_AddPlayerMessage()) {
                 PlayerActor_RequestAxeBrokenMessage(o, 6, -1);
             }
         }
@@ -7928,13 +7928,13 @@ namespace ns_0220e970 {
 extern "C" s32 PlayerActor_SetupAxeBrokenMessage(Obj *o) {
     struct Pad { s32 v[2]; Pad() {} ~Pad() {} } pad;
     Unk_020102ec_startAnim(o, 0x48, 3, 0);
-    PlayerActor_AxeBrokenMessageInitWork(&o->unk_7d0);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    PlayerActor_AxeBrokenMessageInitWork(&o->actionWork);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Character_attachTalkRequest(o, o);
         Sec &s = *o;
         MsgRequest_setFileName(&s, (void *)"obj_etc_player");
         o->unk_10a = 10;
-        o->unk_128->unk_08 = 1;
+        o->window->unk_08 = 1;
         Camera_SetMode4();
         Bgm_ReleasePriority(0x12);
         Bgm_RequestSilence(0xc, 0, 1);
@@ -7951,24 +7951,24 @@ extern "C" s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a) {
 
 namespace ns_0220e970 {
 extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o) {
-    Rec *p = &o->unk_7d0;
+    Rec *p = &o->actionWork;
     switch (p->b0) {
     case 0:
-        if (o->unk_128) {
-            if (o->unk_128->unk_04) {
+        if (o->window) {
+            if (o->window->unk_04) {
                 p->b0 = 1;
-                o->unk_818 = 12;
+                o->msgStep = 12;
             }
         }
         break;
     case 1:
-        if (o->unk_128) {
-            if (!o->unk_128->unk_04) {
+        if (o->window) {
+            if (!o->window->unk_04) {
                 Character_detachTalkRequest(o, o);
                 Unk_02006d14_clearActionFlag(o, 0x11);
                 TalkRequest_FinishPlayerMessage();
-                o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-                PlayerActor_SetHoldableItem(0, o->unk_7fc);
+                o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+                PlayerActor_SetHoldableItem(0, o->sessionSlot);
                 Unk_02006d14_setActionFlag(o, 0);
                 PlayerActor_requestWait(o, 3, 1, -1);
                 Camera_SetModeDefault();
@@ -7981,8 +7981,8 @@ extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o) {
 
 namespace ns_0220e970 {
 extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o) {
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        PlayerActor_SetHoldableItem(0, o->unk_7fc);
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        PlayerActor_SetHoldableItem(0, o->sessionSlot);
         Unk_02006d14_setActionFlag(o, 0);
     }
 }
@@ -7992,10 +7992,10 @@ namespace ns_0220e030 {
 extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_AxeBrokenMessageUpdate(o);
     } else {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
 }
 }
@@ -8036,16 +8036,16 @@ extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b) {
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Arg *a) {
     Unk_020102ec_startAnimOnce(o, 0x52, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x15, 3, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x15, 3, 0);
     P2 &q = a->unk_0c;
     struct { V3 t1, t2; } l;
     s32 z = q.z;
     s32 x = q.x;
     l.t1.x = x; l.t1.y = 0; l.t1.z = z;
     l.t2.x = x; l.t2.y = 0; l.t2.z = z;
-    FishBobber_setTargetPos(o->unk_5c4, &l.t2);
-    PlayerActor_FishCastSetNetData(o->unk_8ec, l.t1.x, l.t1.z);
-    o->unk_7d0 = func_020e7b98(l.t1.x - o->unk_5c, l.t1.z - o->unk_64);
+    FishBobber_setTargetPos(o->bobber, &l.t2);
+    PlayerActor_FishCastSetNetData(o->netData, l.t1.x, l.t1.z);
+    o->actionWork = func_020e7b98(l.t1.x - o->unk_5c, l.t1.z - o->unk_64);
 }
 }
 
@@ -8053,7 +8053,7 @@ namespace ns_0220e030 {
 extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a) {
     s32 x, z;
     struct { V3 v1, v2; } l;
-    PlayerActor_FishCastGetNetData(o->unk_8ec, &x, &z);
+    PlayerActor_FishCastGetNetData(o->netData, &x, &z);
     s32 y = o->unk_60;
     l.v1.x = x;
     l.v1.y = y;
@@ -8076,7 +8076,7 @@ extern "C" s32 PlayerActor_FishCastUpdate(Obj *o) {
 
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishCastTurn(Obj *o) {
-    return Unk_02006d14_turnToward(o, o->unk_7d0);
+    return Unk_02006d14_turnToward(o, o->actionWork);
 }
 }
 
@@ -8084,7 +8084,7 @@ namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         PlayerActor_RequestFishWait(o, 6, -1);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             Camera_SetMode5();
         }
     }
@@ -8093,7 +8093,7 @@ extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o) {
 
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_MainFishCast(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         s32 t;
         PlayerActor_FishCastTurn(o);
         PlayerActor_FishCastUpdate(o);
@@ -8128,7 +8128,7 @@ extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b) {
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x53, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x16, 3, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x16, 3, 0);
 }
 }
 
@@ -8150,7 +8150,7 @@ extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o) {
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -8195,20 +8195,20 @@ extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
     u8 kind;
     V3 pos;
     V3 cur;
-    u8 *p = o->unk_8ec;
+    u8 *p = o->netData;
     Unk_020102ec_startAnim(o, 0x54, 3, 0);
     void *g = gCommManager;
-    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(g, o->sessionSlot)) {
         PlayerActor_FishWaitGetNetData(p, &pos, &kind);
         if (kind == 3) {
             cur.x = pos.x;
             cur.y = pos.y;
             cur.z = pos.z;
-            FishBobber_setPos(o->unk_5c4, &cur);
+            FishBobber_setPos(o->bobber, &cur);
         }
     }
-    HeldItemModel_PlayAnim(o->unk_59c, 0x17, 3, 0);
-    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x17, 3, 0);
+    if (CommManager_isLocalSlot(g, o->sessionSlot)) {
         PlayerActor_FishWaitSetNetData(p, &o->unk_5cc, o->unk_5c8);
     }
 }
@@ -8216,10 +8216,10 @@ extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
 
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a) {
-    s32 st = o->unk_7ec;
+    s32 st = o->action;
     if (st != 0x4d) {
         if (st == 0x4f) {
-            o->unk_c80 = a;
+            o->netSeq = a;
         } else {
             PlayerActor_RequestFishWait(o, 6, a);
         }
@@ -8229,10 +8229,10 @@ extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a) {
 
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         BgmVolumeMixer_endFishDuck(data_021c1b3c + 0x1c4);
     } else if (a != 0x50 && a != 0x51) {
-        FishBobber_setState(o->unk_5c4, 1);
+        FishBobber_setState(o->bobber, 1);
     }
 }
 }
@@ -8242,8 +8242,8 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
     u8 kind;
     V3 pos;
     struct { V3 cur, t2, t3; } l;
-    u8 *p = o->unk_8ec;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    u8 *p = o->netData;
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_FishWaitSetNetData(p, &o->unk_5cc, o->unk_5c8);
     } else {
         PlayerActor_FishWaitGetNetData(p, &pos, &kind);
@@ -8252,11 +8252,11 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
         if (st == 4) goto case4;
         if (st == 3) goto end;
         if (k == 4) {
-            FishBobber_setState(o->unk_5c4, k);
+            FishBobber_setState(o->bobber, k);
             l.t2 = pos;
-            FishBobber_setPos(o->unk_5c4, &l.t2);
+            FishBobber_setPos(o->bobber, &l.t2);
         } else if (st >= 6) {
-            FishBobber_setState(o->unk_5c4, 0);
+            FishBobber_setState(o->bobber, 0);
         }
         goto end;
     case4: {
@@ -8266,14 +8266,14 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
         s32 dz = l.cur.z - pos.z;
         if (dx * dx + dz * dz >= 0x400000) {
             l.t3 = pos;
-            FishBobber_setPos(o->unk_5c4, &l.t3);
+            FishBobber_setPos(o->bobber, &l.t3);
         }
         if (k == 5) {
-            FishBobber_setState(o->unk_5c4, k);
+            FishBobber_setState(o->bobber, k);
             Unk_02006d14_playSe(o, 0x84f);
-            o->unk_8c0.x = pos.x;
-            o->unk_8c0.y = pos.y;
-            o->unk_8c0.z = pos.z;
+            o->sePos.x = pos.x;
+            o->sePos.y = pos.y;
+            o->sePos.z = pos.z;
         }
     }
     end:;
@@ -8294,13 +8294,13 @@ extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o) {
 
 namespace ns_0220e030 {
 extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
-    if (HeldItemModel_IsBobberLanded(o->unk_59c) && o->unk_5fc) {
+    if (HeldItemModel_IsBobberLanded(o->heldItemModel) && o->unk_5fc) {
         Unk_02006d14_playSe(o, 0x84b);
         V3 *p = &o->unk_5cc;
-        o->unk_8c0.x = p->x;
-        o->unk_8c0.y = p->y;
-        o->unk_8c0.z = p->z;
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        o->sePos.x = p->x;
+        o->sePos.y = p->y;
+        o->sePos.z = p->z;
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             BgmVolumeMixer_startFishDuck(data_021c1b3c + 0x1c4);
         }
     }
@@ -8310,17 +8310,17 @@ extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
     PlayerActor_FishWaitOnBobberLand(o);
-    if (HeldItemModel_IsBobberLanded(o->unk_59c)) {
+    if (HeldItemModel_IsBobberLanded(o->heldItemModel)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
-            if (FishBobber_getFish(o->unk_5c4)) {
+            if (FishBobber_getFish(o->bobber)) {
                 FishShadow_OnRodPulled();
             } else {
                 FieldFish_ScareAround(&o->unk_5cc, 0x1000);
             }
             PlayerActor_RequestFishReelIn(o, 0, 6, -1);
         } else {
-            if (o->unk_13c != 0 || TouchPick_GetGroundPos(Scene_GetTouchPicker(), 0)) {
-                if (FishBobber_tryHook(o->unk_5c4)) {
+            if (o->actionPressed != 0 || TouchPick_GetGroundPos(Scene_GetTouchPicker(), 0)) {
+                if (FishBobber_tryHook(o->bobber)) {
                     PlayerActor_RequestFishHook(o, 6, -1);
                 } else {
                     PlayerActor_RequestFishReelIn(o, 0, 6, -1);
@@ -8338,10 +8338,10 @@ extern "C" s32 PlayerActor_MainFishWait(Obj *o) {
     Unk_02006d14_netFollowTransform(o);
     PlayerActor_FishWaitFaceBobber(o);
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_FishWaitCheckInput(o);
     } else {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
 }
 }
@@ -8358,8 +8358,8 @@ extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b) {
 namespace ns_0220e030 {
 extern "C" s32 PlayerActor_SetupFishHook(Obj *o) {
     Unk_020102ec_startAnim(o, 0x55, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x18, 3, 0);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x18, 3, 0);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Bgm_RequestSilence(0x12, 0, 0);
     }
 }
@@ -8375,8 +8375,8 @@ namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o) {
     V3 *p = &o->unk_5cc;
     volatile s32 pad;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        switch (FishBobber_checkReelResult(o->unk_5c4)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        switch (FishBobber_checkReelResult(o->bobber)) {
         case 0:
             Unk_02006d14_playSeAt(o, 0x7f6, p);
             break;
@@ -8440,24 +8440,24 @@ extern "C" void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p) {
     u32 b = p[0xc];
-    PlayerActor_FishReelInSetWork((u8 *)&o->unk_7d0, b);
-    PlayerActor_FishReelInSetNetData(&o->unk_8ec, b);
+    PlayerActor_FishReelInSetWork((u8 *)&o->actionWork, b);
+    PlayerActor_FishReelInSetNetData(&o->netData, b);
     Unk_020102ec_startAnimOnce(o, 0x56, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x19, 3, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x19, 3, 0);
     Unk_02006d14_playSe(o, 0x84c);
     Unk_02006d14_playSe(o, 0x84e);
-    s32 *q = (s32 *)(o->unk_5c4 + 8);
-    o->unk_8c0 = q[0];
-    o->unk_8c4 = q[1];
-    o->unk_8c8 = q[2];
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) Camera_SetModeDefault();
+    s32 *q = (s32 *)(o->bobber + 8);
+    o->sePosX = q[0];
+    o->sePosY = q[1];
+    o->sePosZ = q[2];
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) Camera_SetModeDefault();
 }
 }
 
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_NetFishReelIn(Obj *o, s16 a) {
     u8 t;
-    PlayerActor_FishReelInGetNetData(&o->unk_8ec, &t);
+    PlayerActor_FishReelInGetNetData(&o->netData, &t);
     PlayerActor_RequestFishReelIn(o, t, 6, a);
 }
 }
@@ -8465,8 +8465,8 @@ extern "C" void PlayerActor_NetFishReelIn(Obj *o, s16 a) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_FishReelInCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-        if (*(u8 *)&o->unk_7d0) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+        if (*(u8 *)&o->actionWork) {
             Unk_02008040_requestAct79(o, 5, -1);
         } else {
             PlayerActor_requestWait(o, 3, 1, -1);
@@ -8497,7 +8497,7 @@ namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishEscape(Obj *o) {
     Unk_020102ec_setSpeed(o, (s32 *)sFishEscapeSpeed);
     Unk_020102ec_startAnimOnce(o, 0x57, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x1a, 3, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x1a, 3, 0);
 }
 }
 
@@ -8510,10 +8510,10 @@ extern "C" s32 PlayerActor_NetFishEscape(Obj *o, s16 a) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_FishEscapeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) Camera_SetModeDefault();
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) Camera_SetModeDefault();
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
-        HeldItemModel_PlayAnim(o->unk_59c, 0x13, 3, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x13, 3, 0);
     }
 }
 }
@@ -8544,13 +8544,13 @@ extern "C" s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishLand(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x58, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x1b, 3, 1);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x1b, 3, 1);
     Unk_02006d14_playSe(o, 0x84c);
     Unk_02006d14_playSe(o, 0x84e);
-    s32 *p = (s32 *)(o->unk_5c4 + 8);
-    o->unk_8c0 = p[0];
-    o->unk_8c4 = p[1];
-    o->unk_8c8 = p[2];
+    s32 *p = (s32 *)(o->bobber + 8);
+    o->sePosX = p[0];
+    o->sePosY = p[1];
+    o->sePosZ = p[2];
 }
 }
 
@@ -8563,7 +8563,7 @@ extern "C" s32 PlayerActor_NetFishLand(Obj *o, s16 a) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_FishLandCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (FishBobber_isCatchLanded(o->unk_5c4)) PlayerActor_RequestFishShowCatch(o, 0, 6, -1);
+        if (FishBobber_isCatchLanded(o->bobber)) PlayerActor_RequestFishShowCatch(o, 0, 6, -1);
     }
 }
 }
@@ -8573,7 +8573,7 @@ extern "C" void PlayerActor_MainFishLand(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_02006d14_netFollowTransform(o);
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) PlayerActor_FishLandCheckEnd(o);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) PlayerActor_FishLandCheckEnd(o);
 }
 }
 
@@ -8602,13 +8602,13 @@ extern "C" void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
     u32 b = p[0xc];
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     r->unk_04 = b;
     r->unk_00 = 0x39;
     r->unk_05 = Catalog_HasAllFish();
     if (b == 0) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            Act *a = FishBobber_getFish(o->unk_5c4);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+            Act *a = FishBobber_getFish(o->bobber);
             s8 v = a->unk_7e;
             r->unk_03 = v;
             if (v < 0x38) {
@@ -8619,20 +8619,20 @@ extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
         }
         r->unk_02 = 0;
         Unk_020102ec_startAnimOnce(o, 0x59, 3, 0);
-        HeldItemModel_PlayAnim(o->unk_59c, 0x1c, 3, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x1c, 3, 1);
     } else {
         r->unk_02 = 2;
         r->unk_00 = 0x3a;
-        o->unk_818 = 8;
+        o->msgStep = 8;
     }
-    PlayerActor_FishShowCatchSetNetData(&o->unk_8ec, b);
+    PlayerActor_FishShowCatchSetNetData(&o->netData, b);
 }
 }
 
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_NetFishShowCatch(Obj *o, s16 a) {
     u8 t;
-    PlayerActor_FishShowCatchGetNetData(&o->unk_8ec, &t);
+    PlayerActor_FishShowCatchGetNetData(&o->netData, &t);
     PlayerActor_RequestFishShowCatch(o, t, 6, a);
 }
 }
@@ -8655,10 +8655,10 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     V3 v6c;
     V3 v78;
     Unk_02006d14_turnToCamera(o, 0x400);
-    r6 = &o->unk_7d0;
-    a = FishBobber_getFish(o->unk_5c4);
+    r6 = &o->actionWork;
+    a = FishBobber_getFish(o->bobber);
     if (a) {
-        b = o->unk_694;
+        b = o->itemHandMtx;
         Fish_GetDisplayScale(&v54, a->unk_7e);
         v48.x = 0x4cd;
         v48.y = 0;
@@ -8688,7 +8688,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         FishCatch_SetDisplayPosScale(a, &v6c, &v78);
     }
     r5 = &r6->unk_02;
-    if (o->unk_700 == 0x59) {
+    if (o->animId == 0x59) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 3)) Camera_SetMode4();
     }
     if (o->unk_2d4.mid < 0x11 && *r5 < 5 && r6->unk_04 == 0) return;
@@ -8704,21 +8704,21 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
             o->unk_10a = v;
             tmp.t = v + 0x12e8;
             Catalog_AddCreature(&tmp.t);
-            o->unk_81c = o->unk_81e = tmp.t;
-            o->unk_128->unk_08 = 1;
+            o->actionItem = o->shownItem = tmp.t;
+            o->window->unk_08 = 1;
             Bgm_ReleasePriority(0x12);
             Bgm_RequestSilence(0xc, 0, 4);
             Bgm_Request(0xd, 0x39, 0x7f, 1);
         }
     case 1:
-        if (o->unk_128 == 0) return;
-        if (o->unk_128->unk_04 == 0) return;
+        if (o->window == 0) return;
+        if (o->window->unk_04 == 0) return;
         if (Catalog_HasAllFish() && r6->unk_05 == 0) {
             *r5 = 5;
-            o->unk_818 = 0xe;
+            o->msgStep = 0xe;
         } else {
             *r5 = 2;
-            o->unk_818 = 8;
+            o->msgStep = 8;
         }
         return;
     case 2: {
@@ -8729,20 +8729,20 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
             if (FieldAction_FindDropUnit(0x10, buf)) {
                 *r5 = 3;
                 BOOL in = FALSE;
-                u32 h = o->unk_81c;
+                u32 h = o->actionItem;
                 if (h >= 0x1320 && h <= 0x1322) in = TRUE;
                 if (in) {
-                    o->unk_818 = 4;
+                    o->msgStep = 4;
                 } else {
-                    o->unk_818 = 0;
+                    o->msgStep = 0;
                 }
             } else {
                 *r5 = 4;
-                o->unk_818 = 1;
+                o->msgStep = 1;
             }
         } else {
-            if (o->unk_128 == 0) return;
-            if (o->unk_128->unk_04 != 0) return;
+            if (o->window == 0) return;
+            if (o->window->unk_04 != 0) return;
             Character_detachTalkRequest(o, o);
             Unk_02006d14_clearActionFlag(o, 0x11);
             TalkRequest_FinishPlayerMessage();
@@ -8752,22 +8752,22 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         return;
     }
     case 3:
-        if (o->unk_818 >= 0xf) {
+        if (o->msgStep >= 0xf) {
             BOOL in = FALSE;
-            u32 h = o->unk_81c;
+            u32 h = o->actionItem;
             if (h >= 0x1320 && h <= 0x1322) in = TRUE;
             if (in) {
                 *r5 = 6;
-                if (o->unk_80c != -1) return;
-                o->unk_80c = FieldAction_RequestDropForAid(o->unk_7fc, o->unk_81c);
-                if (o->unk_80c == -1) return;
+                if (o->dropQuery != -1) return;
+                o->dropQuery = FieldAction_RequestDropForAid(o->sessionSlot, o->actionItem);
+                if (o->dropQuery == -1) return;
                 *r5 = 4;
             } else {
                 *r5 = 4;
             }
         } else {
-            if (o->unk_128 == 0) return;
-            if (o->unk_128->unk_04 != 0) return;
+            if (o->window == 0) return;
+            if (o->window->unk_04 != 0) return;
             Character_detachTalkRequest(o, o);
             Unk_02006d14_clearActionFlag(o, 0x11);
             PlayerActor_RequestFishStore(o, 1, 6, -1);
@@ -8775,28 +8775,28 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         }
         return;
     case 4:
-        if (o->unk_128 == 0) return;
-        if (o->unk_128->unk_04 != 0) return;
-        FishBobber_startCatchLift(o->unk_5c4);
+        if (o->window == 0) return;
+        if (o->window->unk_04 != 0) return;
+        FishBobber_startCatchLift(o->bobber);
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         TalkRequest_FinishPlayerMessage();
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_RequestFishRelease(o, data_ov003_02230ac0, 0, 6, -1);
         Camera_SetModeDefault();
         return;
     case 5:
-        if (o->unk_128 == 0) return;
-        if (o->unk_128->unk_04 != 0) return;
+        if (o->window == 0) return;
+        if (o->window->unk_04 != 0) return;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         TalkRequest_FinishPlayerMessage();
         Unk_02006d14_requestAct76(o, 1, r6->unk_03, 0, 6, -1);
         return;
     case 6:
-        if (o->unk_80c != -1) return;
-        o->unk_80c = FieldAction_RequestDropForAid(o->unk_7fc, o->unk_81c);
-        if (o->unk_80c == -1) return;
+        if (o->dropQuery != -1) return;
+        o->dropQuery = FieldAction_RequestDropForAid(o->sessionSlot, o->actionItem);
+        if (o->dropQuery == -1) return;
         *r5 = 4;
         return;
     }
@@ -8813,14 +8813,14 @@ extern "C" void PlayerActor_MainFishShowCatch(Obj *o) {
     sv.z = pv->z;
     s16 h = o->unk_d0;
     Blk b0 = o->unk_294;
-    Blk b1 = o->unk_694;
+    Blk b1 = o->itemHandMtx;
     Unk_02006d14_calcHandMtx(o);
     Unk_02006d14_netFollowTransform(o);
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_FishShowCatchUpdate(o);
     } else {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         Unk_02006d14_turnToCamera(o, 0x400);
     }
     o->unk_c4.x = sv.x;
@@ -8828,7 +8828,7 @@ extern "C" void PlayerActor_MainFishShowCatch(Obj *o) {
     o->unk_c4.z = sv.z;
     o->unk_d0 = h;
     o->unk_294 = b0;
-    o->unk_694 = b1;
+    o->itemHandMtx = b1;
 }
 }
 
@@ -8857,8 +8857,8 @@ extern "C" u32 PlayerActor_FishStoreGetNetState(u8 *p) {
 namespace ns_0220cd4c {
 extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b) {
     u8 v = b[0xc];
-    o->unk_7d0.unk_00 = v;
-    PlayerActor_FishStoreSetNetState(&o->unk_8ec, v);
+    o->actionWork.unk_00 = v;
+    PlayerActor_FishStoreSetNetState(&o->netData, v);
     Unk_020102ec_startAnimOnce(o, 0x5a, 3, 3);
     Unk_02006d14_playSe(o, 0x4f);
 }
@@ -8866,7 +8866,7 @@ extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b) {
 
 namespace ns_0220cd4c {
 extern "C" s32 PlayerActor_NetFishStore(Obj *o, s16 a) {
-    return PlayerActor_RequestFishStore(o, PlayerActor_FishStoreGetNetState(&o->unk_8ec), 6, a);
+    return PlayerActor_RequestFishStore(o, PlayerActor_FishStoreGetNetState(&o->netData), 6, a);
 }
 }
 
@@ -8876,9 +8876,9 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     V3 vf;
     Blk bl;
     V3 v48;
-    Act *p5 = FishBobber_getFish(o->unk_5c4);
+    Act *p5 = FishBobber_getFish(o->bobber);
     s32 f;
-    if (o->unk_700 == 0x5a) {
+    if (o->animId == 0x5a) {
         f = *(s32 *)&o->unk_2d4 >> 12;
         if ((u16)f < 6) {
             if (p5) {
@@ -8896,7 +8896,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     vf.x = f;
     vf.y = f;
     vf.z = f;
-    bl = o->unk_694;
+    bl = o->itemHandMtx;
     PlayerActor_ApplyHoldOffset(&bl, 0);
     v48.x = ((V3 *)&bl.v[9])->x;
     v48.y = ((V3 *)&bl.v[9])->y;
@@ -8913,43 +8913,43 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
         b.z = vf.z;
         FishCatch_SetDisplayPosScale(p5, &a, &b);
         v[0] = p5->unk_7e + 0x12e8;
-        if (f == 0) FishCatch_NetSendStored(o->unk_7fc);
+        if (f == 0) FishCatch_NetSendStored(o->sessionSlot);
     }
-    u8 *r6 = &o->unk_7d0.unk_00;
-    u8 *r7 = &o->unk_8ec;
+    u8 *r6 = &o->actionWork.unk_00;
+    u8 *r7 = &o->netData;
     switch (*r6) {
     case 0:
         if (!AnimFrameCtrl_isFinished(o->unk_2cc)) return;
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 6, 1, -1);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             v[3] = v[0];
             Pocket_AddFoundItem(&v[3]);
         }
-        FishBobber_endCatch(o->unk_5c4);
+        FishBobber_endCatch(o->bobber);
         break;
     case 1:
-        if (o->unk_700 == 0x5a) {
+        if (o->animId == 0x5a) {
             if (!AnimFrameCtrl_isFinished(o->unk_2cc)) return;
             Unk_020102ec_startAnim(o, 0x6c, 6, 6);
-            HeldItemModel_PlayAnim(o->unk_59c, 0x13, 6, 0);
+            HeldItemModel_PlayAnim(o->heldItemModel, 0x13, 6, 0);
         }
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            if (o->unk_818 == 5) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+            if (o->msgStep == 5) {
                 if (!MenuCtrl_OpenPocketsFullFish(v[0], p5)) return;
-                o->unk_818 = 6;
-            } else if (o->unk_818 == 6) {
+                o->msgStep = 6;
+            } else if (o->msgStep == 6) {
                 if (!MenuCtrl_IsFinished()) return;
-                o->unk_818 = 0xf;
+                o->msgStep = 0xf;
                 if (MenuCtrl_IsResultOk()) {
-                    FishBobber_setFish(o->unk_5c4, 0);
+                    FishBobber_setFish(o->bobber, 0);
                     if (Unk_02006d14_testActionFlag(o, 0x11)) {
                         Unk_02006d14_clearActionFlag(o, 0x11);
                         Character_detachTalkRequest(o, o);
                     }
                     TalkRequest_FinishPlayerMessage();
                     v[1] = MenuCtrl_GetPocketsFullItem();
-                    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+                    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                     if (Rng(&v[1], 0x12e8, 0x131f)) {
                         PlayerActor_RequestFishRelease(o, data_ov003_02230ac4, 0, 6, -1);
                     } else {
@@ -8959,13 +8959,13 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     return;
                 }
                 goto l378;
-            } else if (o->unk_818 >= 0xf) {
+            } else if (o->msgStep >= 0xf) {
             l378:
                 if (Rng(&v[0], 0x1320, 0x1322)) {
                     *r6 = 3;
-                    if (o->unk_80c == -1) {
-                        o->unk_80c = FieldAction_RequestDropForAid(o->unk_7fc, v[0]);
-                        if (o->unk_80c != -1) *r6 = 2;
+                    if (o->dropQuery == -1) {
+                        o->dropQuery = FieldAction_RequestDropForAid(o->sessionSlot, v[0]);
+                        if (o->dropQuery != -1) *r6 = 2;
                     }
                 } else {
                     if (p5) {
@@ -8982,7 +8982,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     PlayerActor_RequestFishRelease(o, data_ov003_02230ac8, 0, 6, -1);
                     PlayerActor_FishStoreSetNetState(r7, 2);
                 }
-                FishBobber_startCatchLift(o->unk_5c4);
+                FishBobber_startCatchLift(o->bobber);
                 if (Unk_02006d14_testActionFlag(o, 0x11)) {
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     Character_detachTalkRequest(o, o);
@@ -8990,7 +8990,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                 TalkRequest_FinishPlayerMessage();
             }
         } else {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             if (PlayerActor_FishStoreGetNetState(r7) == 2) {
                 if (p5) {
                     V3 a, b;
@@ -9003,20 +9003,20 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     b.z = vf.z;
                     FishCatch_SetDisplayPosScale(p5, &a, &b);
                 }
-                FishBobber_startCatchLift(o->unk_5c4);
+                FishBobber_startCatchLift(o->bobber);
                 *r6 = 2;
                 Unk_020102ec_startAnim(o, 0, 6, 6);
             }
         }
         break;
     case 2:
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 6, 1, -1);
         break;
     case 3:
-        if (o->unk_80c == -1) {
-            o->unk_80c = FieldAction_RequestDropForAid(o->unk_7fc, v[0]);
-            if (o->unk_80c != -1) *r6 = 2;
+        if (o->dropQuery == -1) {
+            o->dropQuery = FieldAction_RequestDropForAid(o->sessionSlot, v[0]);
+            if (o->dropQuery != -1) *r6 = 2;
         }
         break;
     }
@@ -9026,9 +9026,9 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
 namespace ns_0220cd4c {
 extern "C" void PlayerActor_FishStoreCheckEndRemote(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         Unk_020102ec_startAnim(o, 0x6c, 6, 6);
-        HeldItemModel_PlayAnim(o->unk_59c, 0x13, 6, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x13, 6, 0);
     }
 }
 }
@@ -9038,7 +9038,7 @@ extern "C" void PlayerActor_MainFishStore(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_02006d14_netFollowTransform(o);
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_FishStoreUpdate(o);
     } else {
         PlayerActor_FishStoreCheckEndRemote(o);
@@ -9051,8 +9051,8 @@ extern "C" s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b) {
     Msg m;
     u16 *p = (u16 *)&m.v_0220cd4c.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x56, a, b);
-    if (o->unk_140 == 2) {
-        *p = func_020e7b98(o->unk_148 - o->unk_6f0, o->unk_150 - o->unk_6f8);
+    if (o->toolTargetKind == 2) {
+        *p = func_020e7b98(o->toolTargetPosX - o->bodyPosX, o->toolTargetPosZ - o->bodyPosZ);
     } else {
         *p = o->unk_8e;
     }
@@ -9063,13 +9063,13 @@ extern "C" s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b) {
 
 namespace ns_0220cd4c {
 extern "C" void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b) {
-    Unk_ov003_0220cd4c_Rec *r = &o->unk_7d0;
+    Unk_ov003_0220cd4c_Rec *r = &o->actionWork;
     u32 z = 0;
     r->unk_00 = z;
     r->unk_02 = *(s16 *)(b + 0xc);
     r->unk_04 = 0xff;
     Unk_020102ec_startAnimOnce(o, 0x5b, 3, z);
-    HeldItemModel_PlayAnim(o->unk_59c, 3, 3, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 3, 3, 0);
 }
 }
 
@@ -9129,7 +9129,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
     v18.y = v0c.y;
     v18.z = v0c.z;
     PlayerActor_BugNetSwingGetSweep(o, &v18, &v24, &v30);
-    r5 = &o->unk_7d0;
+    r5 = &o->actionWork;
     if (r5->unk_00 == 0 && o->unk_2d4.mid < 6) {
         PlayerActor_GetHeldItem((u16 *)&st.w, o);
         s32 id;
@@ -9189,11 +9189,11 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
 
 namespace ns_0220c448 {
 extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out) {
-    V3 *pos = &o->unk_5c;
+    V3 *pos = &o->position;
     b->x = pos->x;
     b->y = pos->y;
     b->z = pos->z;
-    s32 idx = (o->unk_8e >> 4) * 2;
+    s32 idx = (o->rotY >> 4) * 2;
     s32 sn = data_02135f44[idx];
     s32 cs = data_02135f44[idx + 1];
     switch (o->unk_2d4.mid) {
@@ -9225,7 +9225,7 @@ extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out) {
         b->z += func_01ffcb0c(cs, 0x2800);
         break;
     }
-    Unk_ov003_0220c448_Blk l = o->unk_604;
+    Unk_ov003_0220c448_Blk l = o->heldItemJointMtx;
     V3 t(l.v[9], l.v[10], l.v[11]);
     WorldCurve_FromCurved(&t, &t);
     *out = t;
@@ -9241,8 +9241,8 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
-            HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
-            if (o->unk_168 == 4) {
+            HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
+            if (o->toolHitKind == 4) {
                 return 3;
             }
             if (a[0] != 0) {
@@ -9250,13 +9250,13 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
             }
             return 2;
         }
-        PlayerActor_OffsetByAngle(&v, o, &o->unk_5c, &o->unk_8e, data_ov003_02230adc);
+        PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, data_ov003_02230adc);
         FieldPos_SnapToUnitCenter(&v, &v);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
-            HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
             if (a[0] != 0) {
                 if (PlayerActor_BugNetSwingCanReach(o, &v, b, c)) {
                     return 1;
@@ -9269,7 +9269,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
         if (a[0] != 0) {
             V3 w;
             s32 u;
-            PlayerActor_OffsetByAngle(&w, o, &o->unk_5c, &o->unk_8e, data_ov003_02230ae0);
+            PlayerActor_OffsetByAngle(&w, o, &o->position, &o->rotY, data_ov003_02230ae0);
             FieldPos_SnapToUnitCenter(&w, &w);
             if (Ground_GetHeightAt(&w, &u, 0x19) >= 0x400) {
                 if (PlayerActor_BugNetSwingCanReach(o, &w, b, c)) {
@@ -9286,7 +9286,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
 namespace ns_0220c448 {
 extern "C" s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c) {
     volatile V3 base;
-    V3 *pv = &o->unk_5c;
+    V3 *pv = &o->position;
     base.x = pv->x;
     base.y = pv->y;
     base.z = pv->z;
@@ -9342,15 +9342,15 @@ extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
-            HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
             return 1;
         }
-        PlayerActor_OffsetByAngle(&v, o, &o->unk_5c, &o->unk_8e, data_ov003_02230ad4);
+        PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, data_ov003_02230ad4);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
-            HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
             return 1;
         }
     }
@@ -9368,7 +9368,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
         Unk_02006d14_setActionFlag(o, 9);
         Unk_02006d14_playSe(o, 0x846);
         o->unk_2dc = 0;
-        HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5)) {
             Unk_ov003_0220c448_Pair p;
             x = 0;
@@ -9386,7 +9386,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5) == 0) {
             goto end0;
         }
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
             Unk_ov003_0220c768_B q;
             GroundInfo_initAtPos(&q, b, 0, 0);
             if (q.unk_30 == 0) {
@@ -9398,7 +9398,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
         }
         Effect_Create(0xb, b, 0, 0);
         Unk_02006d14_setActionFlag(o, 9);
-        HeldItemModel_PlayAnim(o->unk_59c, 4, 3, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 4, 3, 1);
     }
 end0:
     CollisionTag_Destruct(&l);
@@ -9424,11 +9424,11 @@ extern "C" void PlayerActor_BugNetSwingUpdateRemote(Obj *o) {
 
 namespace ns_0220c448 {
 extern "C" void PlayerActor_BugNetSwingDecelerate(Obj *o) {
-    if (o->unk_98 != 0) {
-        s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
+    if (o->speed != 0) {
+        s32 t = PlayerActor_DecreaseClamped(o->speed, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
-        if (o->unk_98 == 0) {
-            Effect_Create(0x2b, &o->unk_5c, &o->unk_8e, 0);
+        if (o->speed == 0) {
+            Effect_Create(0x2b, &o->position, &o->rotY, 0);
         }
     }
 }
@@ -9439,13 +9439,13 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0 && o->unk_2dc != 0) {
         return;
     }
-    u8 *p = &o->unk_7d0;
+    u8 *p = &o->actionWork;
     if (p[0] != 0) {
         u32 id = p[4];
         if (id == 0xff) {
             PlayerActor_RequestInsectShowCatch(o, 0, id, 0x30, 6, -1);
         } else {
-            s32 r = Insect_GetCatchResult(id, (u8)o->unk_7fc);
+            s32 r = Insect_GetCatchResult(id, (u8)o->sessionSlot);
             if (r == 0) {
                 u32 t = (u8)Insect_FinishCatch(id);
                 PlayerActor_RequestInsectShowCatch(o, 0, id, t, 6, -1);
@@ -9454,9 +9454,9 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
             }
         }
     } else {
-        if (AnimFrameCtrl_isFinished(HeldItemModel_GetModel(o->unk_59c) + 0x9c)) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (AnimFrameCtrl_isFinished(HeldItemModel_GetModel(o->heldItemModel) + 0x9c)) {
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+            if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
                 PlayerActor_requestWait(o, 9, 1, -1);
             }
         }
@@ -9466,7 +9466,7 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
 
 namespace ns_0220c448 {
 extern "C" void PlayerActor_MainBugNetSwing(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_BugNetSwingTurn(o);
         PlayerActor_BugNetSwingUpdate(o);
         PlayerActor_BugNetSwingAdvanceAnim(o);
@@ -9486,8 +9486,8 @@ extern "C" void PlayerActor_MainBugNetSwing(Obj *o) {
         PlayerActor_BugNetSwingCheckEnd(o);
         PlayerActor_BugNetSwingTrackTarget(o);
     }
-    u8 *p = &o->unk_7d0;
-    V3 a, b(o->unk_604.v[9], o->unk_604.v[10], o->unk_604.v[11]);
+    u8 *p = &o->actionWork;
+    V3 a, b(o->heldItemJointMtx.v[9], o->heldItemJointMtx.v[10], o->heldItemJointMtx.v[11]);
     WorldCurve_FromCurved(&a, &b);
     *(V3 *)(p + 8) = a;
 }
@@ -9558,9 +9558,9 @@ extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Rec *r) {
     u32 c = q[2];
     if (c == 0) {
         Unk_020102ec_startAnimOnce(o, 0x5c, 3, 0);
-        HeldItemModel_PlayAnim(o->unk_59c, 5, 3, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 5, 3, 1);
     }
-    State *rec = &o->unk_7d0;
+    State *rec = &o->actionWork;
     rec->unk_07 = a;
     rec->unk_08 = b;
     rec->unk_06 = c;
@@ -9570,26 +9570,26 @@ extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Rec *r) {
         if (c == 3) {
             rec->unk_09 = 3;
             rec->unk_04 = 0x3b;
-            o->unk_818 = 8;
+            o->msgStep = 8;
         } else {
-            if (o->unk_700 == 0x6c) {
+            if (o->animId == 0x6c) {
                 rec->unk_06 = 2;
                 Unk_020102ec_startAnim(o, 0, 3, 3);
             }
             rec->unk_09 = 7;
         }
     } else {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             Bgm_RequestSilence(0x12, 0, 0);
             Hud_GetCountdown();
             HudCountdown_incCountB();
-            VillagerTrend_OnInsectCaught(&o->unk_5c);
+            VillagerTrend_OnInsectCaught(&o->position);
         }
         rec->unk_09 = 0;
     }
     rec->unk_00 = -1;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        PlayerActor_InsectShowCatchSetNetData(o->unk_8ec, rec->unk_09, a, b, c, 0);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        PlayerActor_InsectShowCatchSetNetData(o->netData, rec->unk_09, a, b, c, 0);
     }
 }
 }
@@ -9598,18 +9598,18 @@ namespace ns_0220ba90 {
 extern "C" void PlayerActor_NetInsectShowCatch(Obj *o, s32 a) {
     u8 buf[4];
     u32 e;
-    PlayerActor_InsectShowCatchGetNetData(o->unk_8ec, &buf[0], &buf[1], &buf[2], &buf[3], &e);
+    PlayerActor_InsectShowCatchGetNetData(o->netData, &buf[0], &buf[1], &buf[2], &buf[3], &e);
     PlayerActor_RequestInsectShowCatch(o, buf[3], buf[1], buf[2], 6, a);
 }
 }
 
 namespace ns_0220ba90 {
 extern "C" void PlayerActor_EndInsectShowCatch(Obj *o) {
-    if (o->unk_7d0.unk_00 != -1) {
-        Effect_End(o->unk_7d0.unk_00);
+    if (o->actionWork.unk_00 != -1) {
+        Effect_End(o->actionWork.unk_00);
     }
-    o->unk_458 = 0;
-    o->unk_45a = 0;
+    o->headPitch = 0;
+    o->headYaw = 0;
 }
 }
 
@@ -9631,8 +9631,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     u8 *p7;
     u8 b8;
     void *g;
-    rec = &o->unk_7d0;
-    sub = o->unk_8ec;
+    rec = &o->actionWork;
+    sub = o->netData;
     mode = rec->unk_06;
     u8 *st = &rec->unk_09;
     p7 = &rec->unk_07;
@@ -9640,7 +9640,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     if (mode == 0) {
         Unk_02006d14_turnToCamera(o, 0x400);
     }
-    s32 r7 = o->unk_7fc;
+    s32 r7 = o->sessionSlot;
     if (*st == 0) {
         if (CommManager_isLocalSlot(gCommManager, r7)) {
             *st = 1;
@@ -9652,7 +9652,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         }
         u32 bt = b8;
         if (bt == 0x18 || bt == 0x30 || (u8)(bt + 0xce) <= 1) {
-            t = o->unk_694;
+            t = o->itemHandMtx;
             PlayerActor_ApplyHoldOffset(&t, 0);
             vv.x = ((V3 *)((u8 *)&t + 0x24))->x;
             vv.y = ((V3 *)((u8 *)&t + 0x24))->y;
@@ -9662,11 +9662,11 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         }
         HeldInsect_Start(b8, (u8)r7);
     }
-    t2 = o->unk_694;
+    t2 = o->itemHandMtx;
     d.x = 0x4cd;
     d.y = 0;
     d.z = 0;
-    if (o->unk_700 != 0x5c) {
+    if (o->animId != 0x5c) {
         d.x = d.x + 0x333;
         d.y = d.y + 0x19a;
         d.z = d.z - 0x19a;
@@ -9693,12 +9693,12 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     L2.v[3] = 0;
     L2.v[4] = 0;
     u32 fr = o->unk_2d4.f;
-    if (fr < 0x17 && o->unk_700 == 0x5c) {
+    if (fr < 0x17 && o->animId == 0x5c) {
         goto tail;
     }
     g = gCommManager;
-    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    if (!CommManager_isLocalSlot(g, o->sessionSlot)) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         if (*st < 6 || *st == 9) {
             if (PlayerActor_InsectShowCatchGetNetState(sub) == 6) {
                 HeldInsect_Release((u8)r7, PlayerActor_InsectShowCatchGetNetAngle(sub));
@@ -9710,7 +9710,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     L2.v[2] = 0x64;
     L2.v[3] = 0x64;
     L2.v[4] = 0x64;
-    if (o->unk_700 == 0x5c) {
+    if (o->animId == 0x5c) {
         u32 f2 = o->unk_2d4.f;
         if (f2 <= 0x21) {
             s16 t = (f2 - 0x17) * 10;
@@ -9738,7 +9738,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         o->unk_10a = b8;
         L2.v[1] = b8 + 0x12b0;
         Catalog_AddCreature(&L2.v[1]);
-        o->unk_128->unk_08 = 1;
+        o->window->unk_08 = 1;
         Camera_SetMode4();
         if (Unk_02006d14_testActionFlag(o, 0x1a)) {
             Bgm_Release(0x3f);
@@ -9750,7 +9750,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         break;
     }
     case 2: {
-        Unk_ov003_0220bc84_H *h = o->unk_128;
+        Unk_ov003_0220bc84_H *h = o->window;
         if (h == 0) {
             break;
         }
@@ -9759,11 +9759,11 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         }
         if (Catalog_HasAllInsects() != 0 && rec->unk_0a == 0) {
             *st = 8;
-            o->unk_818 = 0xd;
+            o->msgStep = 0xd;
             break;
         }
         *st = 3;
-        o->unk_818 = 8;
+        o->msgStep = 8;
         break;
     }
     case 3: {
@@ -9772,14 +9772,14 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             L2.pr[1] = 0;
             if (FieldAction_FindDropUnit(0x10, L2.pr)) {
                 *st = 4;
-                o->unk_818 = 0;
+                o->msgStep = 0;
             } else {
                 *st = 5;
-                o->unk_818 = 1;
+                o->msgStep = 1;
             }
             return;
         }
-        Unk_ov003_0220bc84_H *h = o->unk_128;
+        Unk_ov003_0220bc84_H *h = o->window;
         if (h == 0) {
             break;
         }
@@ -9795,11 +9795,11 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         break;
     }
     case 4: {
-        if (o->unk_818 >= 0xf) {
+        if (o->msgStep >= 0xf) {
             *st = 5;
             break;
         }
-        Unk_ov003_0220bc84_H *h = o->unk_128;
+        Unk_ov003_0220bc84_H *h = o->window;
         if (h == 0) {
             break;
         }
@@ -9814,7 +9814,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         break;
     }
     case 5: {
-        Unk_ov003_0220bc84_H *h = o->unk_128;
+        Unk_ov003_0220bc84_H *h = o->window;
         if (h == 0) {
             break;
         }
@@ -9839,11 +9839,11 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     }
     case 6: {
         if (HeldInsect_GetStage((u8)r7) != 3) {
-            if (o->unk_458 == 0 && o->unk_45a == 0) {
-                o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            if (o->headPitch == 0 && o->headYaw == 0) {
+                o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                 switch (mode) {
                 case 2:
-                    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+                    if (CommManager_isLocalSlot(g, o->sessionSlot)) {
                         if (Unk_02006d14_testActionFlag(o, 0x11)) {
                             Unk_02006d14_clearActionFlag(o, 0x11);
                             MsgRequest *sec = o;
@@ -9861,13 +9861,13 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
                 }
                 return;
             }
-            PlayerActor_ApproachAngle(&o->unk_458, 0, 0x400, 0x1770000, 0xc0000);
-            PlayerActor_ApproachAngle(&o->unk_45a, 0, 0x400, 0x1770000, 0xc0000);
+            PlayerActor_ApproachAngle(&o->headPitch, 0, 0x400, 0x1770000, 0xc0000);
+            PlayerActor_ApproachAngle(&o->headYaw, 0, 0x400, 0x1770000, 0xc0000);
             return;
         } else {
             V3 *q = HeldInsect_GetPos(r7);
-            V3 *pv = &o->unk_5c;
-            pos.x = o->unk_5c.x;
+            V3 *pv = &o->position;
+            pos.x = o->position.x;
             pos.y = pv->y;
             pos.z = pv->z;
             pos.y = pos.y + 0x1b33;
@@ -9876,9 +9876,9 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             if (h >= 0x1800) {
                 h = 0x1800;
             }
-            yaw -= o->unk_8e;
-            PlayerActor_ApproachAngle(&o->unk_458, h, 0x400, 0x1770000, 0xc0000);
-            PlayerActor_ApproachAngle(&o->unk_45a, yaw, 0x400, 0x1770000, 0xc0000);
+            yaw -= o->rotY;
+            PlayerActor_ApproachAngle(&o->headPitch, h, 0x400, 0x1770000, 0xc0000);
+            PlayerActor_ApproachAngle(&o->headYaw, yaw, 0x400, 0x1770000, 0xc0000);
             return;
         }
     }
@@ -9890,7 +9890,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         return;
     }
     case 8: {
-        Unk_ov003_0220bc84_H *h = o->unk_128;
+        Unk_ov003_0220bc84_H *h = o->window;
         if (h == 0) {
             break;
         }
@@ -9914,23 +9914,23 @@ namespace ns_0220ba90 {
 extern "C" void PlayerActor_MainInsectShowCatch(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     volatile V3 sv;
-    V3 *pv = &o->unk_c4;
-    sv.x = o->unk_c4.x;
+    V3 *pv = &o->drawPos;
+    sv.x = o->drawPos.x;
     sv.y = pv->y;
     sv.z = pv->z;
-    s16 d0 = o->unk_d0;
+    s16 d0 = o->drawTilt;
     T48 a = o->unk_294;
-    T48 b = o->unk_694;
+    T48 b = o->itemHandMtx;
     Unk_02006d14_calcHandMtx(o);
     Unk_02006d14_netFollowTransform(o);
     Unk_020102ec_updateBodyCollider(o);
     ovcall::PlayerActor_InsectShowCatchUpdate(o);
-    o->unk_c4.x = sv.x;
-    o->unk_c4.y = sv.y;
-    o->unk_c4.z = sv.z;
-    o->unk_d0 = d0;
+    o->drawPos.x = sv.x;
+    o->drawPos.y = sv.y;
+    o->drawPos.z = sv.z;
+    o->drawTilt = d0;
     o->unk_294 = a;
-    o->unk_694 = b;
+    o->itemHandMtx = b;
 }
 }
 
@@ -9990,14 +9990,14 @@ namespace ns_0220ba90 {
 extern "C" void PlayerActor_SetupInsectStore(Obj *o, Rec *r) {
     u8 x, y;
     Unk_ov003_0220bc84_Pair *q = &r->unk_0c;
-    u8 *p = (u8 *)&o->unk_7d0;
+    u8 *p = (u8 *)&o->actionWork;
     x = q->a;
     y = q->b;
     p[0] = x;
     p[1] = y;
-    PlayerActor_InsectStoreSetNetData(o->unk_8ec, x, y, 0);
+    PlayerActor_InsectStoreSetNetData(o->netData, x, y, 0);
     Unk_020102ec_startAnimOnce(o, 0x5d, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 6, 3, 1);
+    HeldItemModel_PlayAnim(o->heldItemModel, 6, 3, 1);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
@@ -10005,15 +10005,15 @@ extern "C" void PlayerActor_SetupInsectStore(Obj *o, Rec *r) {
 namespace ns_0220ba90 {
 extern "C" s32 PlayerActor_NetInsectStore(Obj *o, s32 a) {
     u8 buf[4];
-    PlayerActor_InsectStoreGetNetData(o->unk_8ec, &buf[0], &buf[1], (u16 *)&buf[2]);
+    PlayerActor_InsectStoreGetNetData(o->netData, &buf[0], &buf[1], (u16 *)&buf[2]);
     return PlayerActor_RequestInsectStore(o, buf[0], buf[1], 6, a);
 }
 }
 
 namespace ns_0220ba90 {
 extern "C" void PlayerActor_EndInsectStore(Obj *o) {
-    o->unk_458 = 0;
-    o->unk_45a = 0;
+    o->headPitch = 0;
+    o->headYaw = 0;
 }
 }
 
@@ -10031,8 +10031,8 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
     pos.x = pv->x;
     pos.y = pv->y;
     pos.z = pv->z;
-    id = o->unk_7fc;
-    if (o->unk_700 == 0x5d) {
+    id = o->sessionSlot;
+    if (o->animId == 0x5d) {
         u32 m = o->unk_2d4.mid;
         if (m < 6) {
             h = 0x64 - m * 16;
@@ -10045,10 +10045,10 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
     w[1] = h;
     w[2] = h;
     w[3] = h;
-    cp = o->unk_694;
+    cp = o->itemHandMtx;
     PlayerActor_ApplyHoldOffset(&cp, 0);
-    u8 *rec = (u8 *)&o->unk_7d0;
-    u8 *p6 = o->unk_8ec;
+    u8 *rec = (u8 *)&o->actionWork;
+    u8 *p6 = o->netData;
     u8 *st = rec + 1;
     code = (u16)(rec[0] + 0x12b0);
     switch (rec[1]) {
@@ -10056,22 +10056,22 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) {
             goto tail;
         }
-        HeldInsect_Remove(o->unk_7fc, 1);
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        HeldInsect_Remove(o->sessionSlot, 1);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 6, 1, -1);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             w[0] = code;
             Pocket_AddFoundItem(w);
         }
         flag = 1;
         goto tail;
     case 1:
-        if (o->unk_700 == 0x5d) {
+        if (o->animId == 0x5d) {
             if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) {
                 goto tail;
             }
             Unk_020102ec_startAnim(o, 0x6c, 3, 3);
-            HeldItemModel_PlayAnim(o->unk_59c, 0, 3, 0);
+            HeldItemModel_PlayAnim(o->heldItemModel, 0, 3, 0);
         }
         pos.x -= 0x400;
         pos.y += 0x1b34;
@@ -10080,26 +10080,26 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         cp.v[9] = pos.x;
         cp.v[10] = pos.y;
         cp.v[11] = pos.z;
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            s32 s = o->unk_818;
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+            s32 s = o->msgStep;
             if (s == 5) {
                 if (MenuCtrl_OpenPocketsFullInsect(code) == 0) {
                     goto tail;
                 }
-                o->unk_818 = 6;
+                o->msgStep = 6;
                 goto tail;
             } else if (s == 6) {
                 if (MenuCtrl_IsFinished() == 0) {
                     goto tail;
                 }
-                o->unk_818 = 0xf;
+                o->msgStep = 0xf;
                 if (MenuCtrl_IsResultOk() != 0) {
                     if (Unk_02006d14_testActionFlag(o, 0x11)) {
                         Unk_02006d14_clearActionFlag(o, 0x11);
                         Character_detachTalkRequest(o, o);
                     }
                     TalkRequest_FinishPlayerMessage();
-                    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+                    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                     PlayerActor_requestWait(o, 6, 1, -1);
                     return;
                 }
@@ -10119,7 +10119,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             Unk_020102ec_startAnim(o, 0, 4, 4);
             return;
         } else {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             if (PlayerActor_InsectStoreGetNetState(p6) == 2) {
                 HeldInsect_Release(id, PlayerActor_InsectStoreGetNetAngle(p6));
                 *st = 2;
@@ -10129,12 +10129,12 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         }
     case 2:
         if (HeldInsect_GetStage(id) != 3) {
-            if (o->unk_458 == 0 && o->unk_45a == 0) {
-                o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            if (o->headPitch == 0 && o->headYaw == 0) {
+                o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                 PlayerActor_requestWait(o, 6, 1, -1);
             } else {
-                PlayerActor_ApproachAngle(&o->unk_458, 0, 0x400, 0x1770000, 0xc0000);
-                PlayerActor_ApproachAngle(&o->unk_45a, 0, 0x400, 0x1770000, 0xc0000);
+                PlayerActor_ApproachAngle(&o->headPitch, 0, 0x400, 0x1770000, 0xc0000);
+                PlayerActor_ApproachAngle(&o->headYaw, 0, 0x400, 0x1770000, 0xc0000);
             }
             return;
         } else {
@@ -10147,11 +10147,11 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             p3.y += 0x1b33;
             s32 yaw = func_020e7b98(q->x - p3.x, q->z - p3.z);
             s32 hh = func_020e7b98(q->y - p3.y, func_020e9650(q, &p3));
-            o->unk_45a = yaw;
+            o->headYaw = yaw;
             if (hh >= 0x1800) {
                 hh = 0x1800;
             }
-            o->unk_458 = hh;
+            o->headPitch = hh;
             return;
         }
     default:
@@ -10185,19 +10185,19 @@ extern "C" s32 PlayerActor_RequestShovelReady(Obj *o, s32 a, s16 b) {
     V3 v;
     s32 f;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x59, a, b);
-    if (o->unk_144 != 0) {
-        s32 z = o->unk_15c;
-        v.x = o->unk_154;
+    if (o->hasTargetPos != 0) {
+        s32 z = o->targetPosZ;
+        v.x = o->targetPosX;
         v.y = 0;
         v.z = z;
         f = 1;
     } else {
-        s32 z = o->unk_150;
-        v.x = o->unk_148;
+        s32 z = o->toolTargetPosZ;
+        v.x = o->toolTargetPosX;
         f = 0;
         v.y = 0;
         v.z = z;
-        if (o->unk_140 != 0) {
+        if (o->toolTargetKind != 0) {
             f = 1;
         }
     }
@@ -10250,7 +10250,7 @@ extern "C" void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c) 
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
     Unk_ov003_0220b0f0_B3 *q = &r->unk_0c;
-    Rec *rp = &o->unk_7d0;
+    Rec *rp = &o->actionWork;
     u32 a = q->a;
     u32 b = q->b;
     u32 c = q->c;
@@ -10258,7 +10258,7 @@ extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
     V3 out;
     V3C t;
     s32 acc;
-    PlayerActor_ShovelReadySetNetData(o->unk_8ec, a, b, c);
+    PlayerActor_ShovelReadySetNetData(o->netData, a, b, c);
     Unk_020102ec_startAnimOnce(o, 0x49, 3, 0);
     FieldPos_FromUnitCenter(&pos, a, b);
     if (c == 0) {
@@ -10278,7 +10278,7 @@ extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
         pos.z = out.z;
         FieldPos_SnapToUnitCenter(&pos, &pos);
     }
-    s32 h = func_020e7b98(pos.x - o->unk_6f0, pos.z - o->unk_6f8);
+    s32 h = func_020e7b98(pos.x - o->bodyPosX, pos.z - o->bodyPosZ);
     t.x = pos.x;
     t.y = pos.y;
     t.z = pos.z;
@@ -10289,19 +10289,19 @@ extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
 namespace ns_0220b0f0 {
 extern "C" s32 PlayerActor_NetShovelReady(Obj *o, s32 a) {
     u8 b[3];
-    PlayerActor_ShovelReadyGetNetData(o->unk_8ec, &b[0], &b[1], &b[2]);
+    PlayerActor_ShovelReadyGetNetData(o->netData, &b[0], &b[1], &b[2]);
     return PlayerActor_RequestShovelReadyAt(o, &b[0], &b[1], &b[2], 6, a);
 }
 }
 
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_ShovelReadyTurn(Obj *o) {
-    Rec *r4 = &o->unk_7d0;
+    Rec *r4 = &o->actionWork;
     s32 h;
     if (o->unk_98 == 0 && r4->unk_0e == 0) {
         V3 t;
         PlayerActor_GetFrontUnitCenter(&t, o);
-        h = func_020e7b98(t.x - o->unk_6f0, t.z - o->unk_6f8);
+        h = func_020e7b98(t.x - o->bodyPosX, t.z - o->bodyPosZ);
         r4->unk_0c = h;
         r4->unk_0e = 1;
         r4->unk_00.x = t.x;
@@ -10317,7 +10317,7 @@ extern "C" void PlayerActor_ShovelReadyTurn(Obj *o) {
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o) {
     V3 v;
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     v.x = r->unk_00.x;
     v.y = r->unk_00.y;
     v.z = r->unk_00.z;
@@ -10328,9 +10328,9 @@ extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o) {
 
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_ShovelReadyCheckEnd(Obj *o) {
-    Rec *r4 = &o->unk_7d0;
-    if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0 || o->unk_700 == 0x4a) {
-        if (o->unk_700 == 0x49) {
+    Rec *r4 = &o->actionWork;
+    if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0 || o->animId == 0x4a) {
+        if (o->animId == 0x49) {
             Unk_020102ec_startAnim(o, 0x4a, 3, 0);
         }
         if (o->unk_98 == 0) {
@@ -10356,7 +10356,7 @@ extern "C" void PlayerActor_ShovelReadyCheckEnd(Obj *o) {
 
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_ShovelReadyCheckEndRemote(Obj *o) {
-    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0x4a, 3, 0);
     }
@@ -10368,7 +10368,7 @@ extern "C" void PlayerActor_MainShovelReady(Obj *o) {
     s32 r4 = o->unk_98;
     s32 t = PlayerActor_DecreaseClamped(r4, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_ShovelReadyTurn(o);
         Unk_020102ec_advanceAnim(o);
         Unk_020102ec_moveWithCollision(o);
@@ -10433,20 +10433,20 @@ extern "C" void PlayerActor_SetupShovelWait(Obj *o, RecB *r) {
     Pair w2;
     Unk_ov003_0220b0f0_B3 *q = &r->unk_0c;
     u32 b = q->b;
-    u8 *p = (u8 *)&o->unk_7d0;
+    u8 *p = (u8 *)&o->actionWork;
     u32 a = q->a;
     w.a = a;
     w.b = b;
     PlayerActor_ShovelWaitSetWork(p, &w);
-    if (o->unk_808 == -1) {
+    if (o->fieldQuery == -1) {
         p[2] = 0;
     } else {
         p[2] = 1;
     }
     w2.a = a;
     w2.b = b;
-    PlayerActor_ShovelWaitSetNetData(o->unk_8ec, &w2);
-    if (o->unk_700 == 0x4a) {
+    PlayerActor_ShovelWaitSetNetData(o->netData, &w2);
+    if (o->animId == 0x4a) {
         Unk_020102ec_startAnim(o, 0x4a, 3, 0);
     }
 }
@@ -10457,7 +10457,7 @@ extern "C" s32 PlayerActor_NetShovelWait(Obj *o, s16 a) {
     Pair v;
     v.a = 0;
     v.b = 0;
-    PlayerActor_ShovelWaitGetNetData(o->unk_8ec, &v);
+    PlayerActor_ShovelWaitGetNetData(o->netData, &v);
     return PlayerActor_RequestShovelWait(o, v, 6, a);
 }
 }
@@ -10465,7 +10465,7 @@ extern "C" s32 PlayerActor_NetShovelWait(Obj *o, s16 a) {
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_ShovelWaitTrackTarget(Obj *o) {
     V3 v;
-    u8 *p = (u8 *)&o->unk_7d0;
+    u8 *p = (u8 *)&o->actionWork;
     FieldPos_FromUnitCenter(&v, p[0], p[1]);
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
     ActorCollider_submit((u8 *)o + 0x1c0);
@@ -10479,9 +10479,9 @@ extern "C" s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f) {
     s32 r6;
     u32 r7;
     Rec *r5;
-    if (o->unk_98 != 0) return -1;
+    if (o->speed != 0) return -1;
     r7 = 0;
-    r5 = &o->unk_7d0;
+    r5 = &o->actionWork;
     if (f != 0) {
         pos.x = v->x;
         pos.y = v->y;
@@ -10498,7 +10498,7 @@ extern "C" s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f) {
     xy.b = 0;
     FieldPos_ToUnit(&xy.a, &xy.b, &pos);
     if (r7 != 0) {
-        if (o->unk_808 != -1) r5->c = 1;
+        if (o->fieldQuery != -1) r5->c = 1;
     }
     switch (r6) {
     case 0:
@@ -10542,11 +10542,11 @@ extern "C" s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f) {
 
 namespace ns_0220a680 {
 extern "C" void PlayerActor_MainShovelWait(Obj *o) {
-    s32 r4 = o->unk_98;
+    s32 r4 = o->speed;
     s32 t = PlayerActor_Decelerate(r4, 0);
     Unk_020102ec_setSpeed(o, &t);
     Unk_020102ec_advanceAnim(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         V3 v;
         Unk_020102ec_moveWithCollision(o);
         Unk_020102ec_updateBodyCollider(o);
@@ -10557,12 +10557,12 @@ extern "C" void PlayerActor_MainShovelWait(Obj *o) {
     } else {
         if (Unk_02006d14_netFollowTransform(o)) Unk_020102ec_moveWithCollision(o);
         Unk_020102ec_updateBodyCollider(o);
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
     PlayerActor_ShovelWaitTrackTarget(o);
     if (r4 != 0) {
-        if (o->unk_98 == 0) {
-            Effect_Create(0x2a, &o->unk_5c, &o->unk_8e, 0);
+        if (o->speed == 0) {
+            Effect_Create(0x2a, &o->position, &o->rotY, 0);
         }
     }
 }
@@ -10601,7 +10601,7 @@ extern "C" void PlayerActor_Act5BUpdate(Obj *o) {
 namespace ns_0220a680 {
 extern "C" void PlayerActor_Act5BCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -10639,7 +10639,7 @@ extern "C" s32 PlayerActor_NetAct5C(Obj *o, s16 x) {
 namespace ns_0220a680 {
 extern "C" void PlayerActor_Act5CCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -10650,7 +10650,7 @@ extern "C" void PlayerActor_MainAct5C(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_moveWithCollision(o);
     Unk_020102ec_updateBodyCollider(o);
-    s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
+    s32 t = PlayerActor_DecreaseClamped(o->speed, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
     PlayerActor_Act5CCheckEnd(o);
 }
@@ -10709,8 +10709,8 @@ extern "C" void PlayerActor_SetupShovelStrike(Obj *o, Msg *m) {
     Pair p;
     p.a = a;
     p.b = b;
-    PlayerActor_ShovelStrikeSetWork(&o->unk_7d0, p, c);
-    PlayerActor_ShovelStrikeSetNetData(o->unk_8ec, c, a, b, o->unk_168);
+    PlayerActor_ShovelStrikeSetWork(&o->actionWork, p, c);
+    PlayerActor_ShovelStrikeSetNetData(o->netData, c, a, b, o->toolHitKind);
     Unk_020102ec_startAnimOnce(o, 0x4c, 3, 0);
     if (c != 0) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -10721,8 +10721,8 @@ extern "C" void PlayerActor_SetupShovelStrike(Obj *o, Msg *m) {
 namespace ns_0220a680 {
 extern "C" void PlayerActor_NetShovelStrike(Obj *o, s32 x) {
     u8 b[4];
-    PlayerActor_ShovelStrikeGetNetData(o->unk_8ec, &b[0], &b[1], &b[2], &b[3]);
-    o->unk_168 = b[3];
+    PlayerActor_ShovelStrikeGetNetData(o->netData, &b[0], &b[1], &b[2], &b[3]);
+    o->toolHitKind = b[3];
     if (b[0] == 0) {
         Pair p;
         p.a = b[1];
@@ -10734,9 +10734,9 @@ extern "C" void PlayerActor_NetShovelStrike(Obj *o, s32 x) {
 
 namespace ns_0220a680 {
 extern "C" void PlayerActor_EndShovelStrike(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            Rec *r = &o->unk_7d0;
+            Rec *r = &o->actionWork;
             if (r->c != 0) {
                 Pair p;
                 u32 b = r->b;
@@ -10761,7 +10761,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
     s32 k;
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5)) {
-        Rec *rc = &o->unk_7d0;
+        Rec *rc = &o->actionWork;
         if (rc->c != 0) {
             Pair pa;
             u32 b = rc->b;
@@ -10786,13 +10786,13 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
         p = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (p != NULL) {
             if (Unk_ov003_0220a7fc_Chk(p)) {
-                Tree_RequestShake(o->unk_7fc, Pair(xy[0], xy[1]), 1);
+                Tree_RequestShake(o->sessionSlot, Pair(xy[0], xy[1]), 1);
             }
         }
         Unk_02006d14_setActionFlag(o, 9);
         k = 0xf;
         if (p != NULL) k = (s32)(*p & 0xf000) >> 12;
-        switch (o->unk_168) {
+        switch (o->toolHitKind) {
         case 0:
             if (p != NULL) {
                 if (k <= 4) {
@@ -10825,11 +10825,11 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
         l_a9f0:
             Unk_02006d14_playSe(o, 0x844);
             {
-                V3 *pv = &o->unk_5c;
+                V3 *pv = &o->position;
                 pos.x = pv->x;
                 pos.y = pv->y;
                 pos.z = pv->z;
-                *(s16 *)&h[0] = o->unk_8e;
+                *(s16 *)&h[0] = o->rotY;
                 s32 r5, r6, r7, dz, dx;
                 s32 idx = ((u16)h[0] >> 4) * 2;
                 s32 sn = data_02135f44[idx];
@@ -10849,14 +10849,14 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
             break;
         case 2:
             Unk_02006d14_playSe(o, 0x7df);
-            if (o->unk_164 != NULL) {
+            if (o->toolHitActor != NULL) {
                 PlayerActor_GetHeldItem((u16 *)&h[1], o);
-                o->unk_164->vfunc_60((u16 *)&h[1]);
+                o->toolHitActor->vfunc_60((u16 *)&h[1]);
             }
             break;
         case 3:
-            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-                if (Snowball_Break(o->unk_164, 1) == 0) {
+            if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+                if (Snowball_Break(o->toolHitActor, 1) == 0) {
                     Unk_02006d14_playSe(o, 0x7df);
                 }
             } else {
@@ -10864,8 +10864,8 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
             }
             break;
         }
-        o->unk_164 = NULL;
-        o->unk_168 = 0;
+        o->toolHitActor = NULL;
+        o->toolHitKind = 0;
     }
 }
 }
@@ -10873,7 +10873,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
 namespace ns_0220a680 {
 extern "C" void PlayerActor_ShovelStrikeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
 }
@@ -10884,7 +10884,7 @@ extern "C" void PlayerActor_MainShovelStrike(Obj *o) {
     PlayerActor_ShovelStrikeUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     Unk_020102ec_updateBodyCollider(o);
-    s32 v = o->unk_98;
+    s32 v = o->speed;
     if (v < 0) v = -v;
     s32 t = PlayerActor_Decelerate(v, 0) * -1;
     Unk_020102ec_setSpeed(o, &t);
@@ -10925,9 +10925,9 @@ extern "C" s32 PlayerActor_SetupDig(Obj *o, Msg *m) {
     P3 *p = (P3 *)&m->v_0220a680.unk_0c;
     u32 id = p->id;
     V3 t = p->pos;
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     PlayerActor_DigSetWork(r, id, t);
-    if ((u32)(o->unk_700 - 0x49) <= 1) {
+    if ((u32)(o->animId - 0x49) <= 1) {
         if (r->a != 0) {
             Unk_020102ec_startAnimOnce(o, 0x4e, 3, 0);
         } else {
@@ -10947,18 +10947,18 @@ extern "C" void PlayerActor_NetDig(Obj *o) {
 
 namespace ns_02209d50 {
 extern "C" void PlayerActor_EndDig(Obj *o) {
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            Rec2 *r = (Rec2 *)&o->unk_7d0;
+            Rec2 *r = (Rec2 *)&o->actionWork;
             V3D p;
             p.x = r->unk_04.x;
             p.y = r->unk_04.y;
             p.z = r->unk_04.z;
-            if (o->unk_700 == 0x4b) {
-                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
+            if (o->animId == 0x4b) {
+                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
             } else {
-                FieldItemFx_StartDigUpTree(o->unk_7fc, p, o->unk_8e);
-                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigUpTree(o->sessionSlot, p, o->rotY);
+                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
         }
@@ -10971,13 +10971,13 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
     s16 h;
     V3D p;
     s32 a, b;
-    if (o->unk_700 != 0x49) {
-        Rec2 *r = (Rec2 *)&o->unk_7d0;
+    if (o->animId != 0x49) {
+        Rec2 *r = (Rec2 *)&o->actionWork;
         p.x = r->unk_04.x;
         p.y = r->unk_04.y;
         p.z = r->unk_04.z;
-        h = o->unk_8e;
-        if (o->unk_700 == 0x4b) {
+        h = o->rotY;
+        if (o->animId == 0x4b) {
             switch (o->unk_2d4.mid) {
             case 2:
                 Effect_Create(6, &p, 0, 0);
@@ -10988,7 +10988,7 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 break;
             case 7: {
                 Effect_Create(7, &p, &h, 0);
-                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
                 FieldPos_ToUnit(&a, &b, &p);
                 Collision_AddDigHole(a, b);
@@ -11008,8 +11008,8 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 Effect_Create(8, &p, &h, 0);
                 break;
             case 21: {
-                FieldItemFx_StartDigUpTree(o->unk_7fc, p, o->unk_8e);
-                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigUpTree(o->sessionSlot, p, o->rotY);
+                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
                 Unk_02006d14_playSe(o, 0x85c);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
                 break;
@@ -11024,14 +11024,14 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
 namespace ns_02209d50 {
 extern "C" void PlayerActor_DigCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (o->unk_700 == 0x49) {
-            if (*(u8 *)&o->unk_7d0 != 0) {
+        if (o->animId == 0x49) {
+            if (*(u8 *)&o->actionWork != 0) {
                 Unk_020102ec_startAnimOnce(o, 0x4e, 3, 0);
             } else {
                 Unk_020102ec_startAnimOnce(o, 0x4b, 3, 0);
             }
         } else {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
         }
     }
@@ -11042,10 +11042,10 @@ namespace ns_02209d50 {
 extern "C" void PlayerActor_MainDig(Obj *o) {
     V3 v;
     PlayerActor_DigUpdate(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Unk_020102ec_moveWithCollision(o);
     } else {
-        Rec2 *r = (Rec2 *)&o->unk_7d0;
+        Rec2 *r = (Rec2 *)&o->actionWork;
         v = r->unk_04;
         Unk_02006d14_netSyncNearPoint(o, &v);
     }
@@ -11079,8 +11079,8 @@ extern "C" s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5f, c, *(s16 *)&d);
     PlayerActor_DigUpItemSetArgs(&m.v_02209d50.unk_0c, v, a, b);
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        o->unk_81c = o->unk_81e = 0xfff1;
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        o->actionItem = o->shownItem = 0xfff1;
     }
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
@@ -11113,11 +11113,11 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     u8 b = pl->b;
     Unk_ov003_02209fc8_ItE dx;
 
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     r->unk_0c = 0;
     r->unk_00 = v;
     r->unk_0d = b;
-    s32 st = o->unk_700;
+    s32 st = o->animId;
     if (st == 0x49 || st == 0x4a || !Unk_ov003_02209fc8_IsNone(&loc)) {
         Unk_020102ec_startAnimOnce(o, 0x4f, 3, 0);
     } else {
@@ -11126,48 +11126,48 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     s32 z2 = o->unk_628.z;
     s32 y2 = o->unk_628.y;
     s32 x2 = o->unk_628.x;
-    o->unk_820.x = x2;
-    o->unk_820.y = y2;
-    o->unk_820.z = z2;
-    WorldCurve_FromCurved(&o->unk_820, &o->unk_820);
-    o->unk_82c = 0x1000;
-    o->unk_830 = 0x1000;
-    o->unk_834 = 0x1000;
+    o->shownItemPos.x = x2;
+    o->shownItemPos.y = y2;
+    o->shownItemPos.z = z2;
+    WorldCurve_FromCurved(&o->shownItemPos, &o->shownItemPos);
+    o->shownItemScaleX = 0x1000;
+    o->shownItemScaleY = 0x1000;
+    o->shownItemScaleZ = 0x1000;
     Unk_02006d14_clearActionFlag(o, 0xd);
     s32 xy[2];
     xy[0] = 0;
     xy[1] = 0;
     FieldPos_ToUnit(&xy[0], &xy[1], &v);
-    u16 t = o->unk_81c;
+    u16 t = o->actionItem;
     V2 pr;
     pr.x = xy[0];
     pr.y = xy[1];
-    PlayerActor_DigUpItemSetNetData(o->unk_8ec, pr, t, b);
+    PlayerActor_DigUpItemSetNetData(o->netData, pr, t, b);
     s32 px = *(volatile s32 *)&xy[0];
     s32 py = *(volatile s32 *)&xy[1];
     s32 hx = px >> 4;
     s32 hy = py >> 4;
     u16 *cell = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, px - (hx << 4), py - (hy << 4), 0);
     if (!Unk_ov003_02209fc8_IsNone(&loc)) {
-        o->unk_81c = o->unk_81e = loc;
+        o->actionItem = o->shownItem = loc;
         if (Unk_ov003_02209fc8_Rng(cell, 0xfc, 0xfd)) {
             *(u32 *)&o->unk_2d4 = (u32)((o->unk_2d0.mid - 1) << 16) >> 4;
             Unk_02006d14_setActionFlag(o, 0xd);
         }
     } else {
-        if (Unk_ov003_02209fc8_Eq(&o->unk_81c) || !CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (Unk_ov003_02209fc8_Eq(&o->actionItem) || !CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             if (cell == 0) {
-                o->unk_81c = o->unk_81e = 0xfff1;
+                o->actionItem = o->shownItem = 0xfff1;
             } else {
-                o->unk_81c = o->unk_81e = *cell;
+                o->actionItem = o->shownItem = *cell;
             }
         }
     }
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Bgm_RequestSilence(0x12, 0xf, 0);
-        if (Unk_ov003_02209fc8_Rng(&o->unk_81c, 0x1549, 0x1549)) VillagerTrend_OnItemDug(&o->unk_5c);
+        if (Unk_ov003_02209fc8_Rng(&o->actionItem, 0x1549, 0x1549)) VillagerTrend_OnItemDug(&o->position);
     }
-    o->unk_818 = 7;
+    o->msgStep = 7;
     Unk_02006d14_setActionFlag(o, 0x1c);
 }
 }
@@ -11178,10 +11178,10 @@ extern "C" void PlayerActor_NetDigUpItem(Obj *o, s32 a) {
     V3 v;
     u16 h;
     u8 b;
-    if (o->unk_7ec == 0) {
+    if (o->action == 0) {
         xy[0] = 0;
         xy[1] = 0;
-        PlayerActor_DigUpItemGetNetData(o->unk_8ec, xy, &h, &b);
+        PlayerActor_DigUpItemGetNetData(o->netData, xy, &h, &b);
         FieldPos_FromUnitCenter(&v, xy[0], xy[1]);
         V3 w = v;
         PlayerActor_RequestDigUpItemWith(o, w, h, b, 6, a);
@@ -11191,12 +11191,12 @@ extern "C" void PlayerActor_NetDigUpItem(Obj *o, s32 a) {
 
 namespace ns_02209d50 {
 extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p) {
-    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            Rec *r = &o->unk_7d0;
+            Rec *r = &o->actionWork;
             V3 v;
             v = r->unk_00;
-            Unk_ov003_02209ef4_P::FieldItemFx_StartDigHole(o->unk_7fc, &v, r->unk_0d);
+            Unk_ov003_02209ef4_P::FieldItemFx_StartDigHole(o->sessionSlot, &v, r->unk_0d);
             Unk_02006d14_clearActionFlag(o, 0x1c);
             Unk_02006d14_clearActionFlag(o, 9);
         }
@@ -11213,8 +11213,8 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
     Blk b0;
     Blk b1;
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 != 0x49) {
-        Rec *r = &o->unk_7d0;
+    if (o->animId != 0x49) {
+        Rec *r = &o->actionWork;
         p = r->unk_00;
         switch (o->unk_2d4.mid) {
         case 5:
@@ -11228,7 +11228,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             Effect_Create(8, &p, 0, 0);
             FieldPos_ToUnit(&a, &b, &p);
             Collision_AddDigHole(a, b);
-            FieldItemFx_StartDigHole(o->unk_7fc, p, r->unk_0d);
+            FieldItemFx_StartDigHole(o->sessionSlot, p, r->unk_0d);
             Unk_02006d14_setActionFlag(o, 0xd);
             Unk_02006d14_clearActionFlag(o, 0x1c);
             break;
@@ -11242,7 +11242,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             sv.z = pv->z;
             s16 h = o->unk_d0;
             b0 = o->unk_294;
-            b1 = o->unk_694;
+            b1 = o->itemHandMtx;
             Unk_02006d14_calcHandMtx(o);
             Unk_02006d14_updateShownItemPos(o, 0x1000);
             o->unk_c4.x = sv.x;
@@ -11250,15 +11250,15 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             o->unk_c4.z = sv.z;
             o->unk_d0 = h;
             o->unk_294 = b0;
-            o->unk_694 = b1;
+            o->itemHandMtx = b1;
         } else {
             s32 z2 = o->unk_628.z;
             s32 y2 = o->unk_628.y;
             s32 x2 = o->unk_628.x;
-            o->unk_820.x = x2;
-            o->unk_820.y = y2;
-            o->unk_820.z = z2;
-            WorldCurve_FromCurved(&o->unk_820, &o->unk_820);
+            o->shownItemPos.x = x2;
+            o->shownItemPos.y = y2;
+            o->shownItemPos.z = z2;
+            WorldCurve_FromCurved(&o->shownItemPos, &o->shownItemPos);
         }
     }
 }
@@ -11274,7 +11274,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
     } ab;
     u8 buf[0x24];
     V3 v0, v1, v2;
-    if (o->unk_700 == 0x49) {
+    if (o->animId == 0x49) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) Unk_020102ec_startAnimOnce(o, 0x4f, 3, 0);
         return;
     }
@@ -11282,15 +11282,15 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
     u8 *r6 = &r5->unk_0c;
     s32 lvl = (u32)(o->unk_2d4 << 4) >> 16;
     l = gCommManager;
-    if (CommManager_isLocalSlot(l, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(l, o->sessionSlot) != 0) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0x13) != 0) Camera_SetMode4();
     }
     if (lvl < 0x19) return;
     if (Unk_02006d14_turnToCamera(o, 0x400) == 0) return;
     if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) return;
-    if (CommManager_isLocalSlot(l, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(l, o->sessionSlot) == 0) {
         Unk_02006d14_clearActionFlag(o, 0x12);
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         return;
     }
     switch (*r6) {
@@ -11302,14 +11302,14 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         void *q = PlayerData_GetCurrent();
         MsgRequest &s = *o;
         MsgRequest_setFileName(&s, (void *)"obj_etc_player");
-        if (Unk_ov003_022099d0_R(&o->unk_81c, 0x136a, 0x136a)) {
+        if (Unk_ov003_022099d0_R(&o->actionItem, 0x136a, 0x136a)) {
             if (Unk_02097ff4_testFlag(q, 0x27) == 0) {
                 o->unk_10a = 0x21;
                 Unk_02097ff4_setFlag(q, 0x27);
                 goto l54;
             }
         }
-        if (Unk_ov003_022099d0_R(&o->unk_81c, 0x137b, 0x137b)) {
+        if (Unk_ov003_022099d0_R(&o->actionItem, 0x137b, 0x137b)) {
             if (Unk_02097ff4_testFlag(q, 0x28) == 0) {
                 o->unk_10a = 0x23;
                 Unk_02097ff4_setFlag(q, 0x28);
@@ -11317,30 +11317,30 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
             }
         }
         o->unk_10a = 1;
-        func_02062650(buf, &o->unk_81c);
-        TalkWindowState_setNamedSlot(o->unk_128, 0, buf, 7);
+        func_02062650(buf, &o->actionItem);
+        TalkWindowState_setNamedSlot(o->window, 0, buf, 7);
         func_0206260c(buf);
     l54:
-        o->unk_128->unk_08 = 1;
+        o->window->unk_08 = 1;
         Bgm_ReleasePriority(0x12);
         Bgm_RequestSilence(0xc, 0, 1);
         Bgm_Request(0xd, 0x39, 0x7f, 1);
-        o->unk_818 = 0xa;
+        o->msgStep = 0xa;
         break;
     }
     case 1:
-        if (o->unk_128 != 0) {
-            if (o->unk_128->unk_04 != 0) *r6 = 2;
+        if (o->window != 0) {
+            if (o->window->unk_04 != 0) *r6 = 2;
         }
         break;
     case 2:
         if (Pocket_FindEmpty() == -1) {
             *r6 = 3;
-            o->unk_818 = 2;
+            o->msgStep = 2;
             break;
         }
-        if (o->unk_128 == 0) break;
-        if (o->unk_128->unk_04 != 0) break;
+        if (o->window == 0) break;
+        if (o->window->unk_04 != 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         TalkRequest_FinishPlayerMessage();
@@ -11356,12 +11356,12 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         Camera_SetModeDefault();
         break;
     case 3:
-        if (o->unk_818 >= 0xf) {
+        if (o->msgStep >= 0xf) {
             *r6 = 4;
             break;
         }
-        if (o->unk_128 == 0) break;
-        if (o->unk_128->unk_04 != 0) break;
+        if (o->window == 0) break;
+        if (o->window->unk_04 != 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         ab.a1 = 0;
@@ -11376,8 +11376,8 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         Camera_SetModeDefault();
         break;
     case 4:
-        if (o->unk_128 == 0) break;
-        if (o->unk_128->unk_04 != 0) break;
+        if (o->window == 0) break;
+        if (o->window->unk_04 != 0) break;
         if (MenuCtrl_IsFinished() == 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
@@ -11385,14 +11385,14 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         *r6 = 5;
         break;
     case 5:
-        if (o->unk_808 != -1) break;
+        if (o->fieldQuery != -1) break;
         ab.a2 = 0;
         ab.b2 = 0;
         v2.x = r5->unk_00.x;
         v2.y = r5->unk_00.y;
         v2.z = r5->unk_00.z;
         FieldPos_ToUnit(&ab.a2, &ab.b2, &v2);
-        u32 hh = o->unk_81c;
+        u32 hh = o->actionItem;
         ab.p2.a = ab.a2;
         ab.p2.b = ab.b2;
         PlayerActor_RequestBuryItem(o, 2, &ab.p2, hh, 6, -1);
@@ -11405,7 +11405,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
 namespace ns_022093bc {
 extern "C" void PlayerActor_MainDigUpItem(Obj *o) {
     PlayerActor_DigUpItemUpdate(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
         if ((u32)(o->unk_2d4 << 4) >> 16 >= 0x19) Unk_020102ec_moveWithCollision(o);
     } else {
         V3 v;
@@ -11459,7 +11459,7 @@ extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m
     r->unk_02 = t2;
     r->unk_00 = t0;
     r->unk_01 = t1;
-    PlayerActor_DugItemStoreSetNetData(&o->unk_8ec, t0, t1, t2);
+    PlayerActor_DugItemStoreSetNetData(&o->netData, t0, t1, t2);
     Unk_020102ec_startAnimOnce(o, 0x50, 3, 0);
     Unk_02006d14_playSe(o, 0x4f);
 }
@@ -11468,7 +11468,7 @@ extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m
 namespace ns_022093bc {
 extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a) {
     u8 b[3];
-    PlayerActor_DugItemStoreGetNetData(&o->unk_8ec, &b[0], &b[1], &b[2]);
+    PlayerActor_DugItemStoreGetNetData(&o->netData, &b[0], &b[1], &b[2]);
     Pair p;
     p.a = b[0];
     p.b = b[1];
@@ -11480,7 +11480,7 @@ namespace ns_022093bc {
 extern "C" void PlayerActor_DugItemStoreShrink(Obj *o) {
     s32 r4;
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 == 0x50) {
+    if (o->animId == 0x50) {
         s32 t = (s32)(((u32)(o->unk_2d4 >> 12) << 16) >> 4);
         r4 = 0x1000 - t / 6;
         if (r4 < 0) {
@@ -11490,9 +11490,9 @@ extern "C" void PlayerActor_DugItemStoreShrink(Obj *o) {
     } else {
         r4 = 0;
     }
-    o->unk_82c = r4;
-    o->unk_830 = r4;
-    o->unk_834 = r4;
+    o->shownItemScaleX = r4;
+    o->shownItemScaleY = r4;
+    o->shownItemScaleZ = r4;
     Unk_02006d14_updateShownItemPos(o, r4);
 }
 }
@@ -11504,23 +11504,23 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
     switch (g->unk_02) {
     case 0:
         if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) break;
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) break;
-        Pocket_AddFoundItem(&o->unk_81c);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) break;
+        Pocket_AddFoundItem(&o->actionItem);
         break;
     case 1:
-        if (o->unk_700 == 0x50) {
+        if (o->animId == 0x50) {
             if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) break;
             Unk_020102ec_startAnim(o, 0x6c, 3, 3);
         }
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
-            s32 s = o->unk_818;
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
+            s32 s = o->msgStep;
             if (s == 5) {
-                if (MenuCtrl_OpenPocketsFullDug(o->unk_81c) != 0) o->unk_818 = 6;
+                if (MenuCtrl_OpenPocketsFullDug(o->actionItem) != 0) o->msgStep = 6;
             } else if (s == 6) {
                 if (MenuCtrl_IsFinished() == 0) break;
-                o->unk_818 = 0xf;
+                o->msgStep = 0xf;
                 if (MenuCtrl_IsResultOk() == 0) goto l76c;
                 Unk_02006d14_clearActionFlag(o, 0xd);
                 if (Unk_02006d14_testActionFlag(o, 0x11) != 0) {
@@ -11528,7 +11528,7 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
                     Character_detachTalkRequest(o, o);
                 }
                 TalkRequest_FinishPlayerMessage();
-                o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+                o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                 PlayerActor_requestWait(o, 3, 1, -1);
             } else if (s >= 0xf) {
             l76c:
@@ -11540,15 +11540,15 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
                 *st = *st + 1;
             }
         } else {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             Unk_02006d14_clearActionFlag(o, 0xd);
         }
         break;
     case 2:
-        if (o->unk_808 != -1) break;
+        if (o->fieldQuery != -1) break;
         Pair p;
         u32 pb = g->unk_01;
-        u32 v = o->unk_81c;
+        u32 v = o->actionItem;
         u32 pa = g->unk_00;
         p.a = pa;
         p.b = pb;
@@ -11602,10 +11602,10 @@ extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     FieldPos_FromUnitCenter(&v, x, z);
     h = m->v_022093bc.unk_0c.h;
     if (k == 2) {
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
-            o->unk_808 = FieldAction_RequestToolAtPendingForAid(o->unk_7fc, 2, 0, o->unk_81c);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
+            o->fieldQuery = FieldAction_RequestToolAtPendingForAid(o->sessionSlot, 2, 0, o->actionItem);
         }
-    } else if (o->unk_700 == 0x6c) {
+    } else if (o->animId == 0x6c) {
         k = 3;
     }
     r->unk_00 = h;
@@ -11614,7 +11614,7 @@ extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     r->unk_04 = k;
     r->unk_07 = 0;
     r->unk_02 = func_020e7b98(v.x - o->unk_5c.x, v.z - o->unk_5c.z);
-    PlayerActor_BuryItemSetNetData(&o->unk_8ec, h, (u8)x, (u8)z, k);
+    PlayerActor_BuryItemSetNetData(&o->netData, h, (u8)x, (u8)z, k);
     Unk_020102ec_startAnimOnce(o, 0x49, 7, 0);
     Unk_02006d14_clearActionFlag(o, 0xd);
 }
@@ -11634,15 +11634,15 @@ extern "C" void PlayerActor_BuryItemTurn(Obj *o) {
 namespace ns_022093bc {
 extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o) {
     Unk_ov003_022093bc_RecA *r = &o->unk_7d0.a;
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         return;
     }
-    if (o->unk_814 == 1) r->unk_07 = 1;
-    if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0 || o->unk_700 == 0x4a) {
+    if (o->fieldAnswer == 1) r->unk_07 = 1;
+    if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0 || o->animId == 0x4a) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) Unk_020102ec_startAnim(o, 0x4a, 3, 0);
         if (r->unk_04 == 2 && r->unk_07 == 0) return;
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         Pair p;
         u32 pb = r->unk_06;
         u32 pa = r->unk_05;
@@ -11680,16 +11680,16 @@ namespace ns_02208a58 {
 extern "C" void PlayerActor_SetupFillHole(Obj *o, Unk_ov003_02209314_Arg *a) {
     V3 v;
     u8 *q = (u8 *)&a->unk_0c;
-    Rec *r4 = &o->unk_7d0;
+    Rec *r4 = &o->actionWork;
     u32 b = q[4];
     FieldPos_FromUnitCenter(&v, q[2], q[3]);
-    *(u16 *)&o->unk_7d0.unk_00 = a->unk_0c;
+    *(u16 *)&o->actionWork.unk_00 = a->unk_0c;
     r4->unk_12 = b;
     r4->unk_04.x = v.x;
     r4->unk_04.y = v.y;
     r4->unk_04.z = v.z;
     r4->unk_10 = func_020e7b98(v.x - o->unk_5c.x, v.z - o->unk_5c.z);
-    switch (o->unk_700) {
+    switch (o->animId) {
     case 0x4a:
         Unk_020102ec_startAnimOnce(o, 0x51, 3, 0);
         break;
@@ -11717,22 +11717,22 @@ extern "C" void PlayerActor_EndFillHole(Obj *o) {
     V3 w;
     V3 x;
     void *g = gCommManager;
-    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
+    if (!CommManager_isLocalSlot(g, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            Rec *r = &o->unk_7d0;
+            Rec *r = &o->actionWork;
             v.x = r->unk_04.x;
             v.y = r->unk_04.y;
             v.z = r->unk_04.z;
-            if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(g, o->sessionSlot)) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
-                FieldItemFx_StartFillHole(o->unk_7fc, &w);
+                FieldItemFx_StartFillHole(o->sessionSlot, &w);
             } else {
                 x.x = v.x;
                 x.y = v.y;
                 x.z = v.z;
-                FieldItemFx_StartFillHoleWithItem(o->unk_7fc, &x);
+                FieldItemFx_StartFillHoleWithItem(o->sessionSlot, &x);
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
         }
@@ -11742,7 +11742,7 @@ extern "C" void PlayerActor_EndFillHole(Obj *o) {
 
 namespace ns_02208a58 {
 extern "C" void PlayerActor_FillHoleTurn(Obj *o) {
-    Unk_02006d14_turnToward(o, o->unk_7d0.unk_10);
+    Unk_02006d14_turnToward(o, o->actionWork.unk_10);
 }
 }
 
@@ -11752,8 +11752,8 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
     V3 w;
     V3 x;
     s16 h;
-    if (o->unk_700 != 0x49) {
-        Rec *r = &o->unk_7d0;
+    if (o->animId != 0x49) {
+        Rec *r = &o->actionWork;
         v.x = r->unk_04.x;
         v.y = r->unk_04.y;
         v.z = r->unk_04.z;
@@ -11764,11 +11764,11 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
             Effect_Create(9, &v, &h, 0);
             break;
         case 5:
-            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
-                FieldItemFx_StartFillHole(o->unk_7fc, &w);
+                FieldItemFx_StartFillHole(o->sessionSlot, &w);
             } else {
                 u16 *p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
                 BOOL f = FALSE;
@@ -11777,7 +11777,7 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
                     x.x = v.x;
                     x.y = v.y;
                     x.z = v.z;
-                    FieldItemFx_StartFillHoleWithItem(o->unk_7fc, &x);
+                    FieldItemFx_StartFillHoleWithItem(o->sessionSlot, &x);
                 }
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
@@ -11798,15 +11798,15 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
 namespace ns_02208a58 {
 extern "C" void PlayerActor_FillHoleCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        Rec *r5 = &o->unk_7d0;
-        if (o->unk_700 == 0x49) {
+        Rec *r5 = &o->actionWork;
+        if (o->animId == 0x49) {
             Unk_020102ec_startAnimOnce(o, 0x51, 3, 0);
         } else {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             u32 b = r5->unk_12;
             if (b == 1) {
                 Unk_02007694_requestAct05(o, 3, 5, -1);
-            } else if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) && b == 3) {
+            } else if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) && b == 3) {
                 if (Unk_02006d14_testActionFlag(o, 0x11)) {
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     Character_detachTalkRequest(o, o);
@@ -11825,7 +11825,7 @@ extern "C" void PlayerActor_MainFillHole(Obj *o) {
     V3 v;
     PlayerActor_FillHoleTurn(o);
     PlayerActor_FillHoleUpdate(o);
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     v.x = r->unk_04.x;
     v.y = r->unk_04.y;
     v.z = r->unk_04.z;
@@ -11859,7 +11859,7 @@ extern "C" void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out) {
 namespace ns_02208a58 {
 extern "C" void PlayerActor_SetupWateringCan(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x61, 3, 0);
-    o->unk_7d0.unk_00 = -1;
+    o->actionWork.unk_00 = -1;
 }
 }
 
@@ -11872,8 +11872,8 @@ extern "C" s32 PlayerActor_NetWateringCan(Obj *o, s16 b) {
 namespace ns_02208a58 {
 extern "C" void PlayerActor_EndWateringCan(Obj *o) {
     V3 t;
-    if (o->unk_7d0.unk_00 != -1) {
-        Effect_End(o->unk_7d0.unk_00);
+    if (o->actionWork.unk_00 != -1) {
+        Effect_End(o->actionWork.unk_00);
     }
     PlayerActor_GetFrontPoint(&t, o);
     sWateringActive = 0;
@@ -11890,7 +11890,7 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
     V3 t2;
     Unk_020102ec_advanceAnim(o);
     s32 k = o->unk_2d4.mid;
-    s32 *h = &o->unk_7d0.unk_00;
+    s32 *h = &o->actionWork.unk_00;
     if (k >= 5 && k <= 0x23) {
         s32 z = o->unk_628.z;
         s32 y = o->unk_628.y;
@@ -11931,16 +11931,16 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
 namespace ns_02208a58 {
 extern "C" void PlayerActor_WateringCanCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
-    u8 *p6 = &o->unk_8ec;
+    u8 *p6 = &o->netData;
     PlayerActor_WateringCanSetNetData(p6, 0);
     if (o->unk_2d4.mid >= 0x21 && PlayerActor_ResumeWalkOrIdle(o)) {
-        s32 *p4 = &o->unk_7d0.unk_00;
+        s32 *p4 = &o->actionWork.unk_00;
         PlayerActor_WateringCanSetNetData(p6, 1);
-        if (o->unk_7d0.unk_00 != -1) {
-            Effect_End(o->unk_7d0.unk_00);
+        if (o->actionWork.unk_00 != -1) {
+            Effect_End(o->actionWork.unk_00);
             *p4 = -1;
         }
     }
@@ -11951,15 +11951,15 @@ namespace ns_02208a58 {
 extern "C" void PlayerActor_WateringCanCheckEndRemote(Obj *o) {
     u8 b;
     s32 out;
-    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-    u8 *p6 = &o->unk_8ec;
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+    u8 *p6 = &o->netData;
     PlayerActor_WateringCanGetNetData(p6, &b);
-    if (b != 0 && PlayerActor_GetSlotAction(&out, -1, o->unk_7fc) && out == 0x63) {
+    if (b != 0 && PlayerActor_GetSlotAction(&out, -1, o->sessionSlot) && out == 0x63) {
         PlayerActor_RequestWateringCan(o, 6, -1);
-        s32 *p4 = &o->unk_7d0.unk_00;
+        s32 *p4 = &o->actionWork.unk_00;
         PlayerActor_WateringCanSetNetData(p6, 1);
-        if (o->unk_7d0.unk_00 != -1) {
-            Effect_End(o->unk_7d0.unk_00);
+        if (o->actionWork.unk_00 != -1) {
+            Effect_End(o->actionWork.unk_00);
             *p4 = -1;
         }
     } else {
@@ -11975,7 +11975,7 @@ extern "C" void PlayerActor_MainWateringCan(Obj *o) {
     PlayerActor_WateringCanUpdate(o);
     Unk_020102ec_updateBodyCollider(o);
     Unk_020102ec_submitSceneCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_WateringCanCheckEnd(o);
     } else {
         PlayerActor_WateringCanCheckEndRemote(o);
@@ -11994,13 +11994,13 @@ extern "C" s32 PlayerActor_RequestSlingshot(Obj *o, s32 a, s16 b) {
 
 namespace ns_02208a58 {
 extern "C" void PlayerActor_SetupSlingshot(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) && !TalkRequest_AddSlingshot()) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) && !TalkRequest_AddSlingshot()) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     } else {
-        Sky_OnSlingshotFired(o->unk_7fc);
+        Sky_OnSlingshotFired(o->sessionSlot);
         Unk_020102ec_startAnimOnce(o, 0x5f, 3, 0);
-        HeldItemModel_PlayAnim(o->unk_59c, 0x22, 3, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x22, 3, 1);
     }
 }
 }
@@ -12017,20 +12017,20 @@ extern "C" void PlayerActor_SlingshotUpdate(Obj *o) {
     V3 w;
     Unk_02006d14_turnAwayFromCamera(o, 0x400);
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 == 0x5f) {
-        v.x = o->unk_6f0.x;
-        v.y = o->unk_6f0.y;
-        v.z = o->unk_6f0.z;
+    if (o->animId == 0x5f) {
+        v.x = o->bodyPos.x;
+        v.y = o->bodyPos.y;
+        v.z = o->bodyPos.z;
         v.y += 0xb00;
         v.z += 0x300;
         if (o->unk_2d4.mid < 0xb) {
             Unk_02006d14_playSeAt(o, 0x851, &v);
         } else if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xb)) {
-            FishBobber_setState(o->unk_5c4, 9);
+            FishBobber_setState(o->bobber, 9);
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
-            FishBobber_setPos(o->unk_5c4, &w);
+            FishBobber_setPos(o->bobber, &w);
             Unk_02006d14_playSe(o, 0x852);
             Unk_02006d14_playSe(o, 0x853);
             Unk_02006d14_setActionFlag(o, 9);
@@ -12043,8 +12043,8 @@ namespace ns_02208a58 {
 extern "C" void PlayerActor_SlingshotCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0x60, 3, 3);
-        if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         }
     }
 }
@@ -12139,13 +12139,13 @@ extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m) {
     VD d;
     V3 pos;
     FieldPos_FromUnitCenter(&pos, a, b);
-    d.x = pos.x - o->unk_5c.x;
-    d.z = pos.z - o->unk_5c.z;
+    d.x = pos.x - o->position.x;
+    d.z = pos.z - o->position.z;
     s32 ang = func_020e7b98(d.x, d.z);
     PlayerActor_Act66SetWork(r, c, ang, pos);
     p.a = a;
     p.b = b;
-    PlayerActor_Act66SetNetData(o->unk_8ec, &p);
+    PlayerActor_Act66SetNetData(o->netData, &p);
     Unk_020102ec_startAnim(o, 0x64, 3, 0);
     if (r->unk_0f == 1) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -12155,13 +12155,13 @@ extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_NetAct66(Obj *o, s32 a) {
-    if (o->unk_7ec == 0x66) {
-        o->unk_c80 = a;
+    if (o->action == 0x66) {
+        o->netSeq = a;
     } else {
         Pair p;
         p.a = 0;
         p.b = 0;
-        PlayerActor_Act66GetNetData(o->unk_8ec, &p);
+        PlayerActor_Act66GetNetData(o->netData, &p);
         PlayerActor_RequestAct66(o, p, 0, 6, a);
     }
 }
@@ -12169,13 +12169,13 @@ extern "C" void PlayerActor_NetAct66(Obj *o, s32 a) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_EndAct66(Obj *o, s32 a) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
         if (a == 2) {
             Unk_02006d14_clearActionFlag(o, 0x1c);
         } else if (a != 0x67) {
             if (Unk_02006d14_testActionFlag(o, 0x1c)) {
                 V3 *p = (V3 *)((u8 *)o + 0x7d0);
-                FieldItemFx_StartHoleShrink(o->unk_7fc, *p);
+                FieldItemFx_StartHoleShrink(o->sessionSlot, *p);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
             }
         } else {
@@ -12189,7 +12189,7 @@ extern "C" void PlayerActor_EndAct66(Obj *o, s32 a) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act66Turn(Obj *o) {
-    s16 h = o->unk_8e;
+    s16 h = o->rotY;
     PlayerActor_TurnAngle(&h, *(s16 *)((u8 *)o + 0x7dc));
     Unk_020102ec_setAngleY(o, &h);
 }
@@ -12199,11 +12199,11 @@ namespace ns_02208108 {
 extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
     RecC *r = (RecC *)((u8 *)o + 0x7d0);
     void *g = gCommManager;
-    if (CommManager_isLocalSlot(g, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(g, o->sessionSlot) != 0) {
         if (r->unk_0f == 0) {
-            if (o->unk_814 == 1) {
+            if (o->fieldAnswer == 1) {
                 r->unk_0f = 1;
-            } else if (o->unk_814 == 2) {
+            } else if (o->fieldAnswer == 2) {
                 r->unk_0f = 2;
             }
         }
@@ -12211,8 +12211,8 @@ extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
     if (r->unk_0e < 2) {
         r->unk_0e++;
     } else {
-        if (CommManager_isLocalSlot(g, o->unk_7fc) == 0) {
-            o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        if (CommManager_isLocalSlot(g, o->sessionSlot) == 0) {
+            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
         }
         switch (r->unk_0f) {
         case 0:
@@ -12226,7 +12226,7 @@ extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
             break;
         }
         case 2:
-            o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
             break;
         }
@@ -12239,7 +12239,7 @@ extern "C" void PlayerActor_MainAct66(Obj *o) {
     RecC *r = (RecC *)((u8 *)o + 0x7d0);
     Unk_020102ec_advanceAnim(o);
     V3 v;
-    v.x = o->unk_7d0;
+    v.x = o->actionWork;
     v.y = r->unk_04;
     v.z = r->unk_08;
     if (Unk_02006d14_netSyncNearPoint(o, &v)) {
@@ -12279,12 +12279,12 @@ extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     VD d;
     u8 *q = m + 0xc;
     V3D l(*(s32 *)(m + 0xc), *(s32 *)(q + 4), *(s32 *)(q + 8));
-    d.x = l.x - o->unk_5c.x;
-    d.z = l.z - o->unk_5c.z;
+    d.x = l.x - o->position.x;
+    d.z = l.z - o->position.z;
     s32 ang = func_020e7b98(d.x, d.z);
     PlayerActor_Act67SetWork((RecC *)((u8 *)o + 0x7d0), ang, l);
     Unk_020102ec_startAnimOnce(o, 0x65, 3, 0);
-    FieldItemFx_StartHoleShrink(o->unk_7fc, l);
+    FieldItemFx_StartHoleShrink(o->sessionSlot, l);
     Unk_02006d14_clearActionFlag(o, 0x1c);
     Unk_02006d14_playSe(o, 0x7da);
     Unk_02006d14_setActionFlag(o, 9);
@@ -12299,9 +12299,9 @@ extern "C" void PlayerActor_NetAct67(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67Effect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 == 0x65) {
+    if (o->animId == 0x65) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 3) || AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xd)) {
-            Effect_Create(0x23, &o->unk_5c, &o->unk_8e, 0);
+            Effect_Create(0x23, &o->position, &o->rotY, 0);
         }
     }
 }
@@ -12309,7 +12309,7 @@ extern "C" void PlayerActor_Act67Effect(Obj *o) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67Turn(Obj *o) {
-    s16 h = o->unk_8e;
+    s16 h = o->rotY;
     PlayerActor_TurnAngle(&h, *(s16 *)((u8 *)o + 0x7d0));
     Unk_020102ec_setAngleY(o, &h);
 }
@@ -12318,7 +12318,7 @@ extern "C" void PlayerActor_Act67Turn(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     if (o->unk_2d4.mid >= 0x16) {
@@ -12329,7 +12329,7 @@ extern "C" void PlayerActor_Act67CheckEnd(Obj *o) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67CheckEndRemote(Obj *o) {
-    o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         PlayerActor_requestWait(o, 3, 1, -1);
     }
@@ -12348,7 +12348,7 @@ extern "C" void PlayerActor_MainAct67(Obj *o) {
         PlayerActor_Act67Turn(o);
     }
     Unk_020102ec_updateBodyCollider(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_Act67CheckEnd(o);
     } else {
         PlayerActor_Act67CheckEndRemote(o);
@@ -12406,12 +12406,12 @@ extern "C" void PlayerActor_SetupTreeShake(Obj *o, u8 *m) {
     u8 b0 = q[8];
     u8 b1 = q[9];
     VD d;
-    V3D v(*(s32 *)(m + 0xc), o->unk_5c.y, *(s32 *)(q + 4));
-    d.x = v.x - o->unk_5c.x;
-    d.z = v.z - o->unk_5c.z;
+    V3D v(*(s32 *)(m + 0xc), o->position.y, *(s32 *)(q + 4));
+    d.x = v.x - o->position.x;
+    d.z = v.z - o->position.z;
     s32 ang = func_020e7b98(d.x, d.z);
     PlayerActor_TreeShakeSetWork((RecA *)((u8 *)o + 0x7d0), ang, v.x, v.z, b0, b1);
-    PlayerActor_TreeShakeSetNetData(o->unk_8ec, v.x, v.z, b0 | (b1 << 4));
+    PlayerActor_TreeShakeSetNetData(o->netData, v.x, v.z, b0 | (b1 << 4));
     if (b1 != 0) {
         Unk_020102ec_startAnimOnce(o, 0x66, 3, 0);
     } else {
@@ -12423,12 +12423,12 @@ extern "C" void PlayerActor_SetupTreeShake(Obj *o, u8 *m) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_NetTreeShake(Obj *o, s32 a) {
-    if (o->unk_7ec == 0x68) {
-        o->unk_c80 = a;
+    if (o->action == 0x68) {
+        o->netSeq = a;
     } else {
         s32 x, z;
         u8 f;
-        PlayerActor_TreeShakeGetNetData(o->unk_8ec, &x, &z, &f);
+        PlayerActor_TreeShakeGetNetData(o->netData, &x, &z, &f);
         bool t0 = f != 0;
         bool t1 = (f >> 4) != 0;
         PlayerActor_RequestTreeShake(o, x, z, t0, t1, 6, a);
@@ -12438,7 +12438,7 @@ extern "C" void PlayerActor_NetTreeShake(Obj *o, s32 a) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_EndTreeShake(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
         RecA *r = (RecA *)((u8 *)o + 0x7d0);
         if (r->unk_0a < 5) {
             V3 v(r->unk_00, 0, r->unk_04);
@@ -12446,7 +12446,7 @@ extern "C" void PlayerActor_EndTreeShake(Obj *o) {
             p.a = 0;
             p.b = 0;
             FieldPos_ToUnit(&p.a, &p.b, &v);
-            Tree_RequestShake(o->unk_7fc, p, 2);
+            Tree_RequestShake(o->sessionSlot, p, 2);
         }
     }
 }
@@ -12454,7 +12454,7 @@ extern "C" void PlayerActor_EndTreeShake(Obj *o) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_TreeShakeTurn(Obj *o) {
-    s16 h = o->unk_8e;
+    s16 h = o->rotY;
     PlayerActor_TurnAngle(&h, *(s16 *)((u8 *)o + 0x7d8));
     Unk_020102ec_setAngleY(o, &h);
 }
@@ -12468,12 +12468,12 @@ extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o) {
             PlayerActor_RequestTreeShakeRelease(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
         }
     } else {
-        s32 t = o->unk_814;
+        s32 t = o->fieldAnswer;
         if (t == 1) {
             r->unk_0c = 1;
             o->unk_2e0 = 1;
         } else if (t == 2) {
-            o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
         }
     }
@@ -12483,7 +12483,7 @@ extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_TreeShakeCheckEndRemote(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
-    o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+    o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
     if (r->unk_0c != 0) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
             PlayerActor_RequestTreeShakeRelease(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
@@ -12501,15 +12501,15 @@ extern "C" void PlayerActor_MainTreeShake(Obj *o) {
     p.b = 0;
     FieldPos_ToUnit(&p.a, &p.b, &v);
     if (r->unk_0a > 5) {
-        Tree_KeepShaking(o->unk_7fc, p);
+        Tree_KeepShaking(o->sessionSlot, p);
     } else {
         r->unk_0a++;
         if (r->unk_0a == 5) {
-            Tree_RequestShake(o->unk_7fc, p, 2);
+            Tree_RequestShake(o->sessionSlot, p, 2);
         }
     }
     Unk_020102ec_advanceAnim(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_TreeShakeTurn(o);
         Unk_020102ec_updateBodyCollider(o);
         PlayerActor_TreeShakeCheckEnd(o);
@@ -12563,12 +12563,12 @@ extern "C" void PlayerActor_SetupTreeShakeRelease(Obj *o, Msg *m) {
     u8 r4 = *((u8 *)r0 + 8);
     u8 r6 = *((u8 *)r0 + 9);
     s32 r2 = *(s32 *)((u8 *)r0 + 4);
-    s32 y = o->unk_5c.y;
+    s32 y = o->position.y;
     t.x = m->v_022077c8.unk_0c.x;
     t.y = y;
     t.z = r2;
-    d.x = t.x - o->unk_5c.x;
-    d.z = r2 - o->unk_5c.z;
+    d.x = t.x - o->position.x;
+    d.z = r2 - o->position.z;
     s32 r7 = func_020e7b98(d.x, d.z);
     o1 = 0;
     o2 = 0;
@@ -12588,12 +12588,12 @@ extern "C" void PlayerActor_TreeShakeReleaseUpdate(Obj *o) {
     Pair p;
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(&o->unk_2cc, 5)) {
-        s32 *r0 = &o->unk_7d0;
+        s32 *r0 = &o->actionWork;
         s32 y = r0[2];
         s32 x = r0[1];
         p.a = x;
         p.b = y;
-        Tree_RequestShake(o->unk_7fc, &p, 3);
+        Tree_RequestShake(o->sessionSlot, &p, 3);
         Unk_02006d14_clearActionFlag(o, 0x12);
         Unk_02006d14_setActionFlag(o, 9);
     }
@@ -12602,7 +12602,7 @@ extern "C" void PlayerActor_TreeShakeReleaseUpdate(Obj *o) {
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_TreeShakeReleaseTurn(Obj *o) {
-    s16 v = o->unk_8e;
+    s16 v = o->rotY;
     PlayerActor_TurnAngle(&v, *(s16 *)((u8 *)o + 0x7d2));
     Unk_020102ec_setAngleY(o, &v);
 }
@@ -12612,9 +12612,9 @@ namespace ns_022077c8 {
 extern "C" void PlayerActor_TreeShakeReleaseCheckEnd(Obj *o) {
     u8 r4 = *((u8 *)o + 0x7dc);
     if (AnimFrameCtrl_isFinished(&o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         if (r4 != 0) {
-            Unk_02008040_requestAct77(o, o->unk_8e, 6, -1);
+            Unk_02008040_requestAct77(o, o->rotY, 6, -1);
         } else {
             PlayerActor_requestWait(o, 3, 1, -1);
         }
@@ -12625,9 +12625,9 @@ extern "C" void PlayerActor_TreeShakeReleaseCheckEnd(Obj *o) {
 namespace ns_022077c8 {
 extern "C" void PlayerActor_MainTreeShakeRelease(Obj *o) {
     Pair p;
-    s32 *r4 = &o->unk_7d0;
+    s32 *r4 = &o->actionWork;
     PlayerActor_TreeShakeReleaseUpdate(o);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_TreeShakeReleaseTurn(o);
         Unk_020102ec_updateBodyCollider(o);
     } else {
@@ -12691,22 +12691,22 @@ extern "C" void PlayerActor_SetupMailboxOpen(Obj *o, Msg *m) {
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    PlayerActor_MailboxOpenSetWork((V3 *)&o->unk_7d0, v);
-    PlayerActor_MailboxOpenSetNetData(o->unk_8ec, &v);
+    PlayerActor_MailboxOpenSetWork((V3 *)&o->actionWork, v);
+    PlayerActor_MailboxOpenSetNetData(o->netData, &v);
 }
 }
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_NetMailboxOpen(Obj *o, s16 a) {
     V3 v;
-    PlayerActor_MailboxOpenGetNetData(o->unk_8ec, &v);
+    PlayerActor_MailboxOpenGetNetData(o->netData, &v);
     PlayerActor_RequestMailboxOpen(o, v, 6, a);
 }
 }
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_MailboxOpenMove(Obj *o) {
-    s32 *r2 = &o->unk_7d0;
+    s32 *r2 = &o->actionWork;
     PlayerActor_StepTowardPose(o, r2[0], r2[2], -0x8000);
 }
 }
@@ -12739,7 +12739,7 @@ extern "C" s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s16 b) {
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_SetupMailboxWait(Obj *o) {
-    if (o->unk_700 != 0x7a) {
+    if (o->animId != 0x7a) {
         Unk_020102ec_startAnimOnce(o, 0x38, 3, 0);
     }
     u32 t = o->unk_2d0.mid - 1;
@@ -12771,7 +12771,7 @@ extern "C" s32 PlayerActor_RequestMailboxClose(Obj *o, s32 a, s16 b) {
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_SetupMailboxClose(Obj *o) {
-    if (o->unk_700 != 0x7a) {
+    if (o->animId != 0x7a) {
         Unk_020102ec_startAnimOnce(o, 0x7a, 3, 0);
     }
     u32 v = o->unk_2d0.mid;
@@ -12790,8 +12790,8 @@ extern "C" void PlayerActor_MailboxCloseUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_isFinished(&o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 3);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         }
     }
 }
@@ -12821,16 +12821,16 @@ extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m) {
     if (t == 3 || t == 4 || t == 10) {
         Unk_020102ec_startAnimOnce(o, 0x69, 3, 6);
         if (t == 3) {
-            HeldItemModel_PlayAnim(o->unk_59c, 0x14, 3, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 0x14, 3, 1);
         } else if (t == 4) {
-            HeldItemModel_PlayAnim(o->unk_59c, 2, 9, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 2, 9, 1);
         }
     } else {
         Unk_020102ec_startAnimOnce(o, 0x68, 3, 6);
     }
     TalkRequest_AddLeaveRoom();
-    s32 *r4 = &o->unk_7d0;
-    *r4 = Effect_Create(0x34, o->unk_6dc, 0, 0);
+    s32 *r4 = &o->actionWork;
+    *r4 = Effect_Create(0x34, o->headTopPos, 0, 0);
     ((u8 *)r4)[4] = b;
     if (b >= 2) {
         Snd_PlaySe(0x51);
@@ -12855,11 +12855,11 @@ namespace ns_022077c8 {
 extern "C" void PlayerActor_FaintEffect(Obj *o) {
     s32 *r4;
     Unk_020102ec_advanceAnim(o);
-    r4 = &o->unk_7d0;
+    r4 = &o->actionWork;
     if (*r4 == -1) {
-        *r4 = Effect_Create(0x34, o->unk_6dc, 0, 0);
+        *r4 = Effect_Create(0x34, o->headTopPos, 0, 0);
     } else {
-        Effect_SetPosition(*r4, o->unk_6dc, 0, 0);
+        Effect_SetPosition(*r4, o->headTopPos, 0, 0);
     }
 }
 }
@@ -12876,12 +12876,12 @@ extern "C" void PlayerActor_FaintWarp(Obj *o) {
         }
     } else if (AnimFrameCtrl_hasPassedFrame(&o->unk_2cc, 0x2f)) {
         r6 = TownBlockMap_Get();
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             if (r4->unk_04 == 0) {
                 if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
-                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &o->unk_5c, 0x1b800000, 0, 2, 2);
+                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &o->position, 0x1b800000, 0, 2, 2);
                 }
-            } else if (o->unk_7fc == 0) {
+            } else if (o->sessionSlot == 0) {
                 if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
                     v.z += 0x2000;
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &v, 0x1b800000, 0, 2, 2);
@@ -12916,7 +12916,7 @@ extern "C" s32 PlayerActor_RequestAct6E(Obj *o, s32 a, s16 b) {
 namespace ns_022077c8 {
 extern "C" void PlayerActor_SetupAct6E(Obj *o) {
     s16 v;
-    *(u8 *)&o->unk_7d0 = 0;
+    *(u8 *)&o->actionWork = 0;
     v = -0x8000;
     Unk_020102ec_setAngleY(o, &v);
     Unk_02006d14_clearActionFlag(o, 0);
@@ -12935,7 +12935,7 @@ namespace ns_022077c8 {
 extern "C" void PlayerActor_Act6EUpdateAnim(Obj *o) {
     if (Unk_ov003_022078e0_IsTwo(gScreenTransition)) {
         Unk_020102ec_advanceAnim(o);
-        if (o->unk_700 == 0x6a) {
+        if (o->animId == 0x6a) {
             u32 m = o->unk_2d4.mid;
             if (m == 0x13 || m == 0x19 || m == 0x1e) {
                 Unk_02006d14_playFootstepSe(o);
@@ -12961,7 +12961,7 @@ extern "C" void PlayerActor_Act6ECheckEnd(Obj *o) {
             FaintBgm_fadeOut(data_021c1b3c + 0x2e4);
             Unk_02006d14_nudgeForward(o);
             TalkRequest_FinishSceneEntry();
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_GetHeldItem(v, o);
             if (Item_IsFurniture(v)) {
                 v[1] = 0xfff1;
@@ -13008,16 +13008,16 @@ extern "C" s32 PlayerActor_RequestTrip(Obj *o, s32 a, s32 b) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_SetupTrip(Obj *o) {
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     s32 st = Unk_02006d14_getHeldToolKind(o);
-    o->unk_7d0.unk_00 = st;
+    o->actionWork.unk_00 = st;
     switch (st) {
     case 4:
-        HeldItemModel_PlayAnim(o->unk_59c, 7, 2, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 7, 2, 1);
         Unk_020102ec_startAnimOnce(o, 0x8d, 2, 0);
         break;
     case 3:
-        HeldItemModel_PlayAnim(o->unk_59c, 0x1d, 2, 1);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x1d, 2, 1);
         Unk_020102ec_startAnimOnce(o, 0x8d, 2, 0);
         break;
     case 10:
@@ -13046,9 +13046,9 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
     V3 va;
     V3 out1;
     V3 out2;
-    TwoLayerAnimModel_updateLayers(o->unk_230);
-    hh[0] = o->unk_8e;
-    if (o->unk_7d0.unk_04_b == 0) {
+    TwoLayerAnimModel_updateLayers(o->bodyModel);
+    hh[0] = o->rotY;
+    if (o->actionWork.unk_04_b == 0) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xa) != 0) {
             PlayerActor_GetHeldItem(&hh[1], o);
             BOOL ok = FALSE;
@@ -13061,8 +13061,8 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
             if (ok) {
                 s32 t = o->unk_688;
                 if (t == 0 && o->unk_68c == 0 && o->unk_690 == 0) {
-                    V3 *pv = &o->unk_5c;
-                    va.x = o->unk_5c.x;
+                    V3 *pv = &o->position;
+                    va.x = o->position.x;
                     va.y = pv->y;
                     va.z = pv->z;
                 } else {
@@ -13072,18 +13072,18 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
                     WorldCurve_FromCurved(&va, &va);
                 }
                 Effect_Create(0x32, &va, 0, 0);
-                PlayerActor_SetHoldableItem(0, o->unk_7fc);
+                PlayerActor_SetHoldableItem(0, o->sessionSlot);
             }
         }
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 7) != 0) {
-            PlayerActor_OffsetByAngle(&out1, o, &o->unk_5c, &hh[0], (u32)data_ov003_02230ad0);
+            PlayerActor_OffsetByAngle(&out1, o, &o->position, &hh[0], (u32)data_ov003_02230ad0);
             vb.x = out1.x;
             vb.y = out1.y;
             vb.z = out1.z;
             Effect_Create(0x39, &vb, (s32)&hh[0], 0);
         }
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 9) != 0) {
-            PlayerActor_OffsetByAngle(&out2, o, &o->unk_5c, &hh[0], (u32)data_ov003_02230ad8);
+            PlayerActor_OffsetByAngle(&out2, o, &o->position, &hh[0], (u32)data_ov003_02230ad8);
             vb.x = out2.x;
             vb.y = out2.y;
             vb.z = out2.z;
@@ -13095,11 +13095,11 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_TripCheckEnd(Obj *o) {
-    if (o->unk_7d0.unk_04_b == 1) {
+    if (o->actionWork.unk_04_b == 1) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             PlayerActor_requestWait(o, 3, 1, -1);
-            o->unk_8e4 = 0x3c;
+            o->tripCooldown = 0x3c;
         }
     }
 }
@@ -13107,19 +13107,19 @@ extern "C" void PlayerActor_TripCheckEnd(Obj *o) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_TripUpdate(Obj *o) {
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     if (r->unk_04_b == 0) {
-        s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x7b);
+        s32 t = PlayerActor_DecreaseClamped(o->speed, 0, 0x7b);
         Unk_020102ec_setSpeed(o, &t);
-        if (o->unk_98 == 0) {
+        if (o->speed == 0) {
             if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
                 switch (r->unk_00) {
                 case 4:
-                    HeldItemModel_PlayAnim(o->unk_59c, 8, 3, 0);
+                    HeldItemModel_PlayAnim(o->heldItemModel, 8, 3, 0);
                     Unk_020102ec_startAnimOnce(o, 0x8e, 3, 0);
                     break;
                 case 3:
-                    HeldItemModel_PlayAnim(o->unk_59c, 0x1e, 3, 0);
+                    HeldItemModel_PlayAnim(o->heldItemModel, 0x1e, 3, 0);
                     Unk_020102ec_startAnimOnce(o, 0x8e, 3, 0);
                     break;
                 case 10:
@@ -13130,7 +13130,7 @@ extern "C" void PlayerActor_TripUpdate(Obj *o) {
                     break;
                 }
                 r->unk_04_b = 1;
-                if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
+                if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
                     void *p = PlayerData_GetCurrent();
                     if (p != 0) {
                         if (Unk_02097ff4_testFlag(p, 0x17) != 0) {
@@ -13166,7 +13166,7 @@ extern "C" s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b) {
 namespace ns_02206e94 {
 extern "C" s32 PlayerActor_SetupAct72(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x9c, 3, 0);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
         Sky_WishOnShootingStar();
     }
 }
@@ -13180,8 +13180,8 @@ extern "C" s32 PlayerActor_NetAct72(Obj *o, s32 a) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_Act72Decelerate(Obj *o) {
-    if (o->unk_98 != 0) {
-        s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
+    if (o->speed != 0) {
+        s32 t = PlayerActor_DecreaseClamped(o->speed, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
     }
 }
@@ -13191,10 +13191,10 @@ namespace ns_02206e94 {
 extern "C" void PlayerActor_Act72CheckEnd(Obj *o) {
     Unk_02006d14_turnToCamera(o, 0x59a);
     if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
         if (o->unk_2d4.mid >= 0x1a) {
             PlayerActor_ResumeWalkOrIdle(o);
         }
@@ -13242,18 +13242,18 @@ namespace ns_02206e94 {
 extern "C" s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a) {
     Unk_ov003_022072b8_P *q = (Unk_ov003_022072b8_P *)(a + 0xc);
     V3 v;
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     s32 c0 = q->a;
     s32 c1 = q->b;
     FieldPos_FromUnitCenter(&v, c0, c1);
-    o->unk_7d0.unk_00 = v.x;
+    o->actionWork.unk_00 = v.x;
     r->unk_04 = v.z;
     r->unk_08 = -1;
     Unk_020102ec_startAnim(o, 0x90, 3, 0);
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
-        HeldItemModel_PlayAnim(o->unk_59c, 0xf, 3, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0xf, 3, 0);
     }
-    PlayerActor_PitfallFallSetNetData(o->unk_8ec, c0, c1);
+    PlayerActor_PitfallFallSetNetData(o->netData, c0, c1);
     Unk_02006d14_playSe(o, 0x7ee);
 }
 }
@@ -13262,7 +13262,7 @@ namespace ns_02206e94 {
 extern "C" s32 PlayerActor_NetPitfallFall(Obj *o, s32 a) {
     u8 b[2];
     s32 p[2];
-    PlayerActor_PitfallFallGetNetData(o->unk_8ec, &b[0], &b[1]);
+    PlayerActor_PitfallFallGetNetData(o->netData, &b[0], &b[1]);
     p[0] = b[0];
     p[1] = b[1];
     return PlayerActor_RequestPitfallFall(o, p, 6, a);
@@ -13271,36 +13271,36 @@ extern "C" s32 PlayerActor_NetPitfallFall(Obj *o, s32 a) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a) {
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     Unk_ov003_0220714c_T v;
     s32 z = r->unk_04;
-    s32 y = o->unk_5c.y;
+    s32 y = o->position.y;
     s32 x = r->unk_00;
     v.x = x;
     v.y = y;
     v.z = z;
-    V3 *pw = &o->unk_5c;
+    V3 *pw = &o->position;
     pw->x = v.x;
     pw->y = v.y;
     pw->z = v.z;
     if (Unk_02006d14_testActionFlag(o, 0x12) != 0) {
         if (a == 0x74 || a == 0x75) {
             V3 t;
-            V3 *pv = &o->unk_5c;
-            t.x = o->unk_5c.x;
+            V3 *pv = &o->position;
+            t.x = o->position.x;
             t.y = pv->y;
             t.z = pv->z;
-            FieldItemFx_StartPitfallHole(o->unk_7fc, &t);
+            FieldItemFx_StartPitfallHole(o->sessionSlot, &t);
         }
         Unk_02006d14_clearActionFlag(o, 0x12);
     }
     if (a != 0x74 && a != 0x75) {
         V3 t;
-        V3 *pv = &o->unk_5c;
-        t.x = o->unk_5c.x;
+        V3 *pv = &o->position;
+        t.x = o->position.x;
         t.y = pv->y;
         t.z = pv->z;
-        FieldItemFx_StartPitfallClose(o->unk_7fc, &t);
+        FieldItemFx_StartPitfallClose(o->sessionSlot, &t);
     }
     if (a != 0x74) {
         s32 h = r->unk_08;
@@ -13314,29 +13314,29 @@ extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a) {
 namespace ns_02206e94 {
 extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    s32 *p = (s32 *)&o->unk_7d0.unk_08;
+    s32 *p = (s32 *)&o->actionWork.unk_08;
     s32 z = 0;
     if (*p == -1) {
-        *p = Effect_Create(0x4c, o->unk_6dc, z, z);
+        *p = Effect_Create(0x4c, o->headTopPos, z, z);
     } else {
-        Effect_SetPosition(*p, o->unk_6dc, z, z);
+        Effect_SetPosition(*p, o->headTopPos, z, z);
     }
-    Unk_02006d14_playSeAt(o, 0x8a, &o->unk_5c);
+    Unk_02006d14_playSeAt(o, 0x8a, &o->position);
 }
 }
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
-    Rec *r = &o->unk_7d0;
-    if (o->unk_700 == 0x90) {
+    Rec *r = &o->actionWork;
+    if (o->animId == 0x90) {
         volatile V3 v;
         s32 z = r->unk_04;
         s32 x = r->unk_00;
         v.x = x;
         v.y = 0;
         v.z = z;
-        PlayerActor_StepTowardPose(o, x, z, o->unk_8e);
-        V3 &pv = o->unk_5c;
+        PlayerActor_StepTowardPose(o, x, z, o->rotY);
+        V3 &pv = o->position;
         s32 pz = pv.z;
         s32 px = pv.x;
         if (px == v.x && pz == v.z) {
@@ -13346,14 +13346,14 @@ extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
         }
     }
     if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
-        if (o->unk_700 == 0x91) {
+        if (o->animId == 0x91) {
             PlayerActor_RequestPitfallStruggle(o, r->unk_08, 6, -1);
             Unk_02006d14_setActionFlag(o, 9);
         } else {
             struct { V3 pad; V3 b; } l;
             Unk_020102ec_startAnimOnce(o, 0x91, 3, 0);
-            V3 *pv = &o->unk_5c;
-            l.b.x = o->unk_5c.x;
+            V3 *pv = &o->position;
+            l.b.x = o->position.x;
             l.b.y = pv->y;
             l.b.z = pv->z;
             Unk_ov003_02206fd8_X x;
@@ -13369,10 +13369,10 @@ extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
             c.x = l.b.x;
             c.y = l.b.y;
             c.z = l.b.z;
-            FieldItemFx_StartPitfallHole(o->unk_7fc, &c);
+            FieldItemFx_StartPitfallHole(o->sessionSlot, &c);
             Unk_02006d14_clearActionFlag(o, 0x12);
             if (Unk_02006d14_getHeldToolKind(o) == 4) {
-                HeldItemModel_PlayAnim(o->unk_59c, 0x10, 3, 1);
+                HeldItemModel_PlayAnim(o->heldItemModel, 0x10, 3, 1);
             }
             GroundInfo_Destruct(&x);
         }
@@ -13404,28 +13404,28 @@ extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a) {
     Unk_020102ec_startAnim(o, 0x92, 3, 0);
     o->unk_2dc = 0x800;
     t = a[3];
-    Rec *r = &o->unk_7d0;
+    Rec *r = &o->actionWork;
     r->unk_04 = 0x800;
     r->unk_08 = 0x800;
     r->unk_0c = 0;
     r->unk_10 = 0;
-    o->unk_7d0.unk_00 = PlayerActor_getInputMagnitude(o);
+    o->actionWork.unk_00 = PlayerActor_getInputMagnitude(o);
     r->unk_14 = PlayerActor_getInputAngleRaw(o);
     r->unk_18 = t;
     Unk_02006d14_clearActionFlag(o, 9);
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
-        HeldItemModel_PlayAnim(o->unk_59c, 0x11, 3, 0);
-        HeldItemModel_SetAnimSpeed(o->unk_59c, 0x800);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x11, 3, 0);
+        HeldItemModel_SetAnimSpeed(o->heldItemModel, 0x800);
     }
 }
 }
 
 namespace ns_02206e94 {
 extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a) {
-    s32 st = o->unk_7ec;
+    s32 st = o->action;
     if (st != 0x73) {
         if (st == 0x74) {
-            o->unk_c80 = a;
+            o->netSeq = a;
         } else {
             PlayerActor_RequestPitfallStruggle(o, -1, 6, a);
         }
@@ -13435,23 +13435,23 @@ extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a) {
 
 namespace ns_02206e94 {
 extern "C" void PlayerActor_EndPitfallStruggle(Obj *o, s32 a) {
-    if (o->unk_7d0.unk_18 != -1) {
-        Effect_End(o->unk_7d0.unk_18);
+    if (o->actionWork.unk_18 != -1) {
+        Effect_End(o->actionWork.unk_18);
     }
     if (a != 0x75) {
         V3 v;
-        V3 *pv = &o->unk_5c;
-        v.x = o->unk_5c.x;
+        V3 *pv = &o->position;
+        v.x = o->position.x;
         v.y = pv->y;
         v.z = pv->z;
-        FieldItemFx_StartPitfallClose(o->unk_7fc, &v);
+        FieldItemFx_StartPitfallClose(o->sessionSlot, &v);
     }
 }
 }
 
 namespace ns_02206574 {
 extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
-    Unk_ov003_02206c04_St *r6 = &o->unk_7d0;
+    Unk_ov003_02206c04_St *r6 = &o->actionWork;
     s32 *r4 = &r6->f4;
     if (r6->fc >= 10) {
         *r4 = *r4 + 0x1333;
@@ -13466,24 +13466,24 @@ extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
     }
     o->unk_2dc = *r4;
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
-        HeldItemModel_SetAnimSpeed(o->unk_59c, *r4);
+        HeldItemModel_SetAnimSpeed(o->heldItemModel, *r4);
     }
     Unk_020102ec_advanceAnim(o);
     s32 *r4b = &r6->f18;
     s32 z = 0;
     if (r6->f18 == -1) {
-        *r4b = Effect_Create(0x4c, (V3 *)o->unk_6dc, (void *)z, z);
+        *r4b = Effect_Create(0x4c, (V3 *)o->headTopPos, (void *)z, z);
     } else {
-        Effect_SetPosition(r6->f18, o->unk_6dc, (void *)z, z);
+        Effect_SetPosition(r6->f18, o->headTopPos, (void *)z, z);
     }
-    Unk_02006d14_playSeAt(o, 0x8a, &o->unk_5c);
+    Unk_02006d14_playSeAt(o, 0x8a, &o->position);
 }
 }
 
 namespace ns_02206574 {
 extern "C" void PlayerActor_PitfallStruggleInput(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        Unk_ov003_02206c04_St *p = &o->unk_7d0;
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        Unk_ov003_02206c04_St *p = &o->actionWork;
         s32 *q = &p->f10;
         s32 r4 = p->f0;
         s32 h = p->f14;
@@ -13499,7 +13499,7 @@ extern "C" void PlayerActor_PitfallStruggleInput(Obj *o) {
         s32 i2 = ((u16)s8 >> 4) * 2;
         b.x = func_01ffcb0c(data_02135f44[i2], s4);
         b.z = func_01ffcb0c(data_02135f44[i2 + 1], s4);
-        o->unk_7d0.f0 = s4;
+        o->actionWork.f0 = s4;
         p->f14 = s8;
         r4 = 0;
         func_020e9960(&d, &a, &b);
@@ -13567,13 +13567,13 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
     if (st == 10 || (u32)(st - 3) <= 1) {
         Unk_020102ec_startAnimOnce(o, 0x94, 3, 0);
         if (Unk_02006d14_getHeldToolKind(o) == 4) {
-            HeldItemModel_PlayAnim(o->unk_59c, 0x12, 3, 1);
+            HeldItemModel_PlayAnim(o->heldItemModel, 0x12, 3, 1);
         }
     } else {
         Unk_020102ec_startAnimOnce(o, 0x93, 3, 0);
     }
-    V3 *pv = &o->unk_5c;
-    pos.x = o->unk_5c.x;
+    V3 *pv = &o->position;
+    pos.x = o->position.x;
     pos.y = pv->y;
     pos.z = pv->z;
     GroundInfo_initAtPos(buf, &pos, 0, 0);
@@ -13583,11 +13583,11 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
         Effect_PlayById(0x90, &pos, 0, 0);
     }
     Unk_02006d14_setActionFlag(o, 9);
-    pv = &o->unk_5c;
-    pos2.x = o->unk_5c.x;
+    pv = &o->position;
+    pos2.x = o->position.x;
     pos2.y = pv->y;
     pos2.z = pv->z;
-    FieldItemFx_StartPitfallClose(o->unk_7fc, &pos2);
+    FieldItemFx_StartPitfallClose(o->sessionSlot, &pos2);
     Unk_02006d14_playSe(o, 0x7e9);
     GroundInfo_Destruct(buf);
 }
@@ -13602,7 +13602,7 @@ extern "C" s32 PlayerActor_NetPitfallClimbOut(Obj *o, s32 a) {
 namespace ns_02206574 {
 extern "C" s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         u16 k = 3;
         if (Unk_02006d14_getHeldToolKind(o) == 4) {
             k *= (u32)k;
@@ -13635,9 +13635,9 @@ extern "C" s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b) {
 namespace ns_02206574 {
 extern "C" void PlayerActor_SetupBeeSting(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x71, 3, 0);
-    *(u8 *)&o->unk_7d0 = 0;
+    *(u8 *)&o->actionWork = 0;
     if (Unk_02006d14_getHeldToolKind(o) == 3) {
-        HeldItemModel_PlayAnim(o->unk_59c, 0x13, 3, 0);
+        HeldItemModel_PlayAnim(o->heldItemModel, 0x13, 3, 0);
     }
     Unk_02006d14_clearActionFlag(o, 0x1a);
     Bgm_Release(0x3f);
@@ -13669,7 +13669,7 @@ namespace ns_02206574 {
 extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
     Unk_ov003_022067c4_Pad pad;
 
-    switch (o->unk_700) {
+    switch (o->animId) {
     case 0x71:
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
             Unk_020102ec_startAnimOnce(o, 0x72, 0, 0);
@@ -13689,7 +13689,7 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
             if (r5) {
                 PlayerData_SetStungFace(r5, 1);
                 u8 *q = PlayerData_getFaceType(r5) + 0x10;
-                PlayerFaceTexRef_load(o->unk_709, q);
+                PlayerFaceTexRef_load(o->faceTex, q);
                 if (Unk_02097ff4_testFlag(r5, 0x17)) {
                     Unk_02097ff4_setFlag(r5, 0x19);
                 }
@@ -13702,11 +13702,11 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
         }
         break;
     case 0x75: {
-        u8 *p = (u8 *)&o->unk_7d0;
-        s16 prev = o->unk_8e;
+        u8 *p = (u8 *)&o->actionWork;
+        s16 prev = o->rotY;
         Unk_02006d14_turnToCamera(o, 0x59a);
         if (prev != 0) {
-            if (o->unk_8e == 0) {
+            if (o->rotY == 0) {
                 Bgm_ReleasePriority(0x19);
                 Bgm_Request(0xd, 0x40, 0x7f, 1);
             }
@@ -13717,7 +13717,7 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
             Character_attachTalkRequest(o, o);
             Unk_02006d14_setActionFlag(o, 0x11);
             MsgRequest_setFileName(&(TalkMsgRequest &)*o, "obj_etc_player");
-            o->unk_1e = 0x14;
+            o->msgIndex = 0x14;
             o->unk_3c->unk_08 = 1;
             Camera_SetMode4();
         case 1:
@@ -13733,7 +13733,7 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
                     Character_detachTalkRequest(o, o);
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     TalkRequest_FinishPlayerMessage();
-                    o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+                    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                     PlayerActor_requestWait(o, 3, 1, -1);
                     Unk_02006d14_clearActionFlag(o, 7);
                     Camera_SetModeDefault();
@@ -13780,8 +13780,8 @@ extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a) {
 
 namespace ns_02206574 {
 extern "C" void PlayerActor_EndAct80(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->sessionSlot));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
         }
@@ -13794,11 +13794,11 @@ extern "C" s32 PlayerActor_Act80Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xd)) {
         u16 t[2];
-        s32 r = PlayerData_GetBySessionSlot(o->unk_7fc);
+        s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
         t[0] = 0xfff1;
         PlayerData_setHeldItem(r, &t[0]);
         t[1] = 0xfff1;
-        HeldItemModel_SetItem(o->unk_59c, &t[1], 0);
+        HeldItemModel_SetItem(o->heldItemModel, &t[1], 0);
         Unk_02006d14_playSe(o, 0x850);
         V3 v;
         s32 tz = o->unk_688.z;
@@ -13808,7 +13808,7 @@ extern "C" s32 PlayerActor_Act80Update(Obj *o) {
         v.y = ty;
         v.z = tz;
         WorldCurve_FromCurved(&v, &v);
-        Effect_Create(0x24, &v, &o->unk_8e, 0);
+        Effect_Create(0x24, &v, &o->rotY, 0);
         Unk_02006d14_setActionFlag(o, 9);
     }
 }
@@ -13818,12 +13818,12 @@ namespace ns_02206574 {
 extern "C" s32 PlayerActor_Act80CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         u16 t = 0x137d;
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
+        if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             s32 r4 = Pocket_FindItem(&t);
             if (r4 != -1) {
                 Unk_02006d14_clearActionFlag(o, 0);
-                PlayerActor_SetHoldableItem(0x15, o->unk_7fc);
+                PlayerActor_SetHoldableItem(0x15, o->sessionSlot);
                 Pocket_RemoveItem(r4);
                 PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
                 return;
@@ -13854,13 +13854,13 @@ extern "C" s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b) {
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_SetupFirework(Obj *o) {
-    s32 *r2 = &o->unk_7d0;
+    s32 *r2 = &o->actionWork;
     *r2 = -1;
     ((u8 *)r2)[4] = 0;
     ((u8 *)r2)[5] = 0x14;
     Unk_020102ec_startAnim(o, 0x7c, 9, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x28, 0, 1);
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x28, 0, 1);
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Camera_SetMode4();
         BgmVolumeMixer_startFireworkDuck(data_021c1b3c + 0x1c4);
     }
@@ -13875,16 +13875,16 @@ extern "C" s32 PlayerActor_NetFirework(Obj *o, s32 a) {
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_EndFirework(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->sessionSlot));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
         }
         Camera_SetModeDefault();
         BgmVolumeMixer_endFireworkDuck(data_021c1b3c + 0x1c4);
     }
-    if (o->unk_7d0 != -1) {
-        Effect_End(o->unk_7d0);
+    if (o->actionWork != -1) {
+        Effect_End(o->actionWork);
     }
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
@@ -13898,13 +13898,13 @@ extern "C" void PlayerActor_EndFirework(Obj *o) {
 namespace ns_02205c28 {
 extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    s32 *r6 = &o->unk_7d0;
+    s32 *r6 = &o->actionWork;
     u8 *r4 = (u8 *)r6 + 4;
     Unk_ov003_02206120_V3 v(o->unk_628.x, o->unk_628.y, o->unk_628.z);
     WorldCurve_FromCurved((V3 *)&v, (V3 *)&v);
     s32 z = 0;
     s32 m1 = ~z;
-    if (o->unk_7d0 == m1) {
+    if (o->actionWork == m1) {
         u16 t[2];
         (*r4)++;
         s32 cnt = *r4;
@@ -13925,21 +13925,21 @@ extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
             }
             PlayerActor_GetHeldItem(&t[1], o);
             if (t[1] == 0x137f) {
-                *r6 = Effect_Create(0x35, (V3 *)&v, &o->unk_8e, z);
+                *r6 = Effect_Create(0x35, (V3 *)&v, &o->rotY, z);
             } else {
-                *r6 = Effect_Create(0x36, (V3 *)&v, &o->unk_8e, z);
+                *r6 = Effect_Create(0x36, (V3 *)&v, &o->rotY, z);
             }
         }
     } else {
-        Effect_SetPosition(o->unk_7d0, (V3 *)&v, &o->unk_8e, 0);
+        Effect_SetPosition(o->actionWork, (V3 *)&v, &o->rotY, 0);
     }
 }
 }
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_FireworkCheckEnd(Obj *o) {
-    if (AnimFrameCtrl_isFinished(HeldItemModel_GetModel(o->unk_59c) + 0x9c)) {
-        u8 *q = (u8 *)&o->unk_7d0;
+    if (AnimFrameCtrl_isFinished(HeldItemModel_GetModel(o->heldItemModel) + 0x9c)) {
+        u8 *q = (u8 *)&o->actionWork;
         u8 *r1 = q + 4;
         if (*r1 != 0) {
             *r1 = *r1 - 1;
@@ -13951,12 +13951,12 @@ extern "C" void PlayerActor_FireworkCheckEnd(Obj *o) {
             }
             if (*r2 == 0) {
                 u16 t[2];
-                s32 r = PlayerData_GetBySessionSlot(o->unk_7fc);
+                s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
                 t[0] = 0xfff1;
                 PlayerData_setHeldItem(r, &t[0]);
                 t[1] = 0xfff1;
-                HeldItemModel_SetItem(o->unk_59c, &t[1], 0);
-                o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+                HeldItemModel_SetItem(o->heldItemModel, &t[1], 0);
+                o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
                 PlayerActor_requestWait(o, 9, 1, -1);
             }
         }
@@ -13984,9 +13984,9 @@ extern "C" s32 PlayerActor_RequestAct82(Obj *o, s32 a, s32 b) {
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_SetupAct82(Obj *o) {
-    o->unk_7d0 = -1;
+    o->actionWork = -1;
     Unk_020102ec_startAnimOnce(o, 0x7d, 3, 0);
-    HeldItemModel_PlayAnim(o->unk_59c, 0x2a, 0, 0);
+    HeldItemModel_PlayAnim(o->heldItemModel, 0x2a, 0, 0);
     Unk_02006d14_playSe(o, 0x85d);
 }
 }
@@ -13999,14 +13999,14 @@ extern "C" s32 PlayerActor_NetAct82(Obj *o, s32 a) {
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_EndAct82(Obj *o) {
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
+        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->sessionSlot));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
         }
     }
-    if (o->unk_7d0 != -1) {
-        Effect_End(o->unk_7d0);
+    if (o->actionWork != -1) {
+        Effect_End(o->actionWork);
     }
 }
 }
@@ -14016,22 +14016,22 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 f = o->unk_2d4.f;
     if (f >= 0xe && f <= 0x18) {
-        s32 *r4 = &o->unk_7d0;
+        s32 *r4 = &o->actionWork;
         Unk_ov003_02206120_V3 v(o->unk_688.x, o->unk_688.y, o->unk_688.z);
         WorldCurve_FromCurved((V3 *)&v, (V3 *)&v);
-        if (o->unk_7d0 == -1) {
-            *r4 = Effect_Create(0x31, (V3 *)&v, &o->unk_8e, 0);
+        if (o->actionWork == -1) {
+            *r4 = Effect_Create(0x31, (V3 *)&v, &o->rotY, 0);
         } else {
-            Effect_SetPosition(o->unk_7d0, (V3 *)&v, &o->unk_8e, 0);
+            Effect_SetPosition(o->actionWork, (V3 *)&v, &o->rotY, 0);
         }
     }
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0x18)) {
         u16 t[2];
-        s32 r = PlayerData_GetBySessionSlot(o->unk_7fc);
+        s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
         t[0] = 0xfff1;
         PlayerData_setHeldItem(r, &t[0]);
         t[1] = 0xfff1;
-        HeldItemModel_SetItem(o->unk_59c, &t[1], 0);
+        HeldItemModel_SetItem(o->heldItemModel, &t[1], 0);
     }
 }
 }
@@ -14039,10 +14039,10 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
 namespace ns_02205c28 {
 extern "C" void PlayerActor_Act82CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
-    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         u32 f = o->unk_2d4.f;
         if (f >= 0x18) {
             PlayerActor_ResumeWalkOrIdle(o);
@@ -14085,22 +14085,22 @@ extern "C" s32 PlayerActor_NetThrowBottle(Obj *o, s32 a) {
 namespace ns_02205c28 {
 extern "C" void PlayerActor_ThrowBottleShowItem(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    if (o->unk_700 == 0x8f) {
+    if (o->animId == 0x8f) {
         s32 f = o->unk_2d4.f;
         if (f >= 6 && f <= 0x19) {
             Unk_02006d14_setActionFlag(o, 0xd);
-            o->vfunc_5c(o->unk_820);
-            o->unk_81e = 0x1520;
+            o->vfunc_5c(o->shownItemPos);
+            o->shownItem = 0x1520;
             s32 v = (f - 6) * 0x333;
             if (f >= 0xb) {
                 v = 0x1000;
             }
-            o->unk_82c = v;
-            o->unk_830 = v;
-            o->unk_834 = v;
+            o->shownItemScaleX = v;
+            o->shownItemScaleY = v;
+            o->shownItemScaleZ = v;
             if (f == 0x19) {
                 Unk_02006d14_clearActionFlag(o, 0xd);
-                BottleThrow_Start(o->unk_7fc);
+                BottleThrow_Start(o->sessionSlot);
             }
         }
     }
@@ -14111,18 +14111,18 @@ namespace ns_02205c28 {
 extern "C" void PlayerActor_ThrowBottleLook(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 3);
-    } else if (o->unk_700 == 0) {
-        if (BottleThrow_IsActive(o->unk_7fc) == 0) {
+    } else if (o->animId == 0) {
+        if (BottleThrow_IsActive(o->sessionSlot) == 0) {
             PlayerActor_SetHeadTilt(0, 0, 4);
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             Unk_02007694_requestAct05(o, 3, 5, -1);
         } else {
             V3 a, b;
-            V3 *q = BottleThrow_GetPos(o->unk_7fc);
+            V3 *q = BottleThrow_GetPos(o->sessionSlot);
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
-            V3 *pv = &o->unk_5c;
+            V3 *pv = &o->position;
             b.x = pv->x;
             b.y = pv->y;
             b.z = pv->z;
@@ -14132,7 +14132,7 @@ extern "C" void PlayerActor_ThrowBottleLook(Obj *o) {
                 h = 0;
             }
             PlayerActor_SetHeadTilt(h, 0, 4);
-            s16 tmp = o->unk_8e;
+            s16 tmp = o->rotY;
             PlayerActor_TurnAngle(&tmp, yaw);
             Unk_020102ec_setAngleY(o, &tmp);
         }
@@ -14180,7 +14180,7 @@ extern "C" void PlayerActor_SetupFishRelease(Obj *o, Rec *r) {
     u8 x, y;
     u8 *p;
     Unk_ov003_02205e58_Pair *q = &r->unk_0c;
-    p = (u8 *)&o->unk_7d0;
+    p = (u8 *)&o->actionWork;
     x = q->a;
     y = q->b;
     if (y == 0) {
@@ -14188,30 +14188,30 @@ extern "C" void PlayerActor_SetupFishRelease(Obj *o, Rec *r) {
     }
     p[0] = x;
     p[1] = y;
-    PlayerActor_FishReleaseSetNetData(o->unk_8ec, x, y);
+    PlayerActor_FishReleaseSetNetData(o->netData, x, y);
 }
 }
 
 namespace ns_02205c28 {
 extern "C" s32 PlayerActor_NetFishRelease(Obj *o, s32 a) {
     u8 buf[2];
-    PlayerActor_FishReleaseGetNetData(o->unk_8ec, &buf[0], &buf[1]);
+    PlayerActor_FishReleaseGetNetData(o->netData, &buf[0], &buf[1]);
     return PlayerActor_RequestFishRelease(o, &buf[0], buf[1], 6, a);
 }
 }
 
 namespace ns_02205c28 {
 extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
-    u8 *p = (u8 *)&o->unk_7d0;
+    u8 *p = (u8 *)&o->actionWork;
     if (p[0] != 0) {
-        s32 t = o->unk_7fc;
+        s32 t = o->sessionSlot;
         if (FishCatch_IsActive(t)) {
             V3 a, b;
             V3 *q = FishCatch_GetPos(t);
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
-            V3 *pv = &o->unk_5c;
+            V3 *pv = &o->position;
             b.x = pv->x;
             b.y = pv->y;
             b.z = pv->z;
@@ -14223,16 +14223,16 @@ extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
             } else if (h <= -0x1000) {
                 h = -0x1000;
             }
-            s32 d = (s16)(yaw - o->unk_8e);
+            s32 d = (s16)(yaw - o->rotY);
             if ((u16)(d + 0x2aaa) >= 0x5554) {
-                PlayerActor_SetHeadTilt(0, 0, o->unk_7fc);
+                PlayerActor_SetHeadTilt(0, 0, o->sessionSlot);
             } else {
-                PlayerActor_ApproachAngle(&o->unk_458, h, 0x400, 0x1770000, 0xc0000);
-                PlayerActor_ApproachAngle(&o->unk_45a, d, 0x400, 0x1770000, 0xc0000);
+                PlayerActor_ApproachAngle(&o->headPitch, h, 0x400, 0x1770000, 0xc0000);
+                PlayerActor_ApproachAngle(&o->headYaw, d, 0x400, 0x1770000, 0xc0000);
             }
         } else {
-            PlayerActor_SetHeadTilt(0, 0, o->unk_7fc);
-            o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+            PlayerActor_SetHeadTilt(0, 0, o->sessionSlot);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             if (p[1] != 0) {
                 Unk_02007694_requestAct05(o, 3, 5, -1);
             } else {
@@ -14257,7 +14257,7 @@ extern "C" void PlayerActor_MainFishRelease(Obj *o) {
 namespace ns_02205c28 {
 extern "C" s32 PlayerActor_ResumeWalkOrIdle(Obj *o) {
     if (Unk_02006d14_getTargetWalkSpeed(o) > 0) {
-        o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWalk(o, 0, 1, -1);
     } else {
         Unk_02006d14_tryInteract(o);
@@ -14268,17 +14268,17 @@ extern "C" s32 PlayerActor_ResumeWalkOrIdle(Obj *o) {
 namespace ns_022052f4 {
 extern "C" BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa) {
     V3 v;
-    if (o->unk_16c == 1) {
+    if (o->inputMode == 1) {
         V3 t;
-        PlayerActor_OffsetByAngle(&t, o, &o->unk_5c, &o->unk_8e, sFieldFrontDist);
+        PlayerActor_OffsetByAngle(&t, o, &o->position, &o->rotY, sFieldFrontDist);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;
         if (Unk_02006d14_isPosInReach(o, &v, 0xd) && Unk_02006d14_startFieldQuery(o, &v, 2, *pa) && Unk_02006d14_requestByFieldAnswer(o, &v, 0)) return TRUE;
     } else {
-        v.x = o->unk_154;
-        v.y = o->unk_158;
-        v.z = o->unk_15c;
+        v.x = o->targetPosX;
+        v.y = o->targetPosY;
+        v.z = o->targetPosZ;
         if (Unk_02006d14_isPosInReach(o, &v, 0xd) && Unk_02006d14_startFieldQuery(o, &v, 2, *pa) && Unk_02006d14_requestByFieldAnswer(o, &v, 0)) return TRUE;
     }
     return FALSE;
@@ -14324,15 +14324,15 @@ aac:
         case 2: return 4;
         }
     }
-    if (o->unk_814 == 1) {
-        switch (o->unk_810) {
+    if (o->fieldAnswer == 1) {
+        switch (o->fieldAnswerKind) {
         case 6: r = 2; break;
         case 7: r = 3; break;
         case 12:
         case 13: r = 4; break;
         case 14: r = 6; break;
         }
-    } else if (o->unk_814 == 2) {
+    } else if (o->fieldAnswer == 2) {
         r = 5;
     } else {
         r = 0;
@@ -14362,9 +14362,9 @@ extern "C" s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f) {
         case 2: return 2;
         }
     }
-    if (o->unk_814 == 2) return 7;
-    if (o->unk_814 == 0) return 0;
-    switch (o->unk_810) {
+    if (o->fieldAnswer == 2) return 7;
+    if (o->fieldAnswer == 0) return 0;
+    switch (o->fieldAnswerKind) {
     case 23: return 1;
     case 12:
     case 13: return 2;
@@ -14386,17 +14386,17 @@ namespace ns_022052f4 {
 extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt) {
     s16 ang;
     V3 t1, t0;
-    if (func_020e972c(tgt, &o->unk_5c)) {
-        ang = o->unk_8e;
+    if (func_020e972c(tgt, &o->position)) {
+        ang = o->rotY;
     } else {
-        ang = func_020e7b98(tgt->x - o->unk_5c.x, tgt->z - o->unk_5c.z);
+        ang = func_020e7b98(tgt->x - o->position.x, tgt->z - o->position.z);
     }
-    PlayerActor_OffsetByAngle(&t0, o, &o->unk_5c, &ang, sFishCastFarDist);
+    PlayerActor_OffsetByAngle(&t0, o, &o->position, &ang, sFishCastFarDist);
     out->x = t0.x;
     out->y = t0.y;
     out->z = t0.z;
     BOOL r4 = Ground_IsWaterAt(out);
-    PlayerActor_OffsetByAngle(&t1, o, &o->unk_5c, &ang, sFishCastNearDist);
+    PlayerActor_OffsetByAngle(&t1, o, &o->position, &ang, sFishCastNearDist);
     if (r4 && Ground_IsWaterAt(&t1)) return TRUE;
     return FALSE;
 }
@@ -14408,17 +14408,17 @@ extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
     V3 out;
     p.x = 0;
     p.y = 0;
-    PlayerActor_OffsetByAngle(&out, o, &o->unk_5c, &o->unk_8e, data_ov003_02230ae8);
+    PlayerActor_OffsetByAngle(&out, o, &o->position, &o->rotY, data_ov003_02230ae8);
     FieldPos_ToUnit(&p.x, &p.y, &out);
     BOOL same = FALSE;
     s32 x = p.x;
-    if (*(volatile s32 *)&p.x == o->unk_8cc && p.y == o->unk_8d0) same = TRUE;
+    if (*(volatile s32 *)&p.x == o->aheadUnitX && p.y == o->aheadUnitZ) same = TRUE;
     if (same) {
-        o->unk_8cc = x;
-        o->unk_8d0 = p.y;
+        o->aheadUnitX = x;
+        o->aheadUnitZ = p.y;
     } else {
-        o->unk_8cc = x;
-        o->unk_8d0 = p.y;
+        o->aheadUnitX = x;
+        o->aheadUnitZ = p.y;
         s32 x0 = *(volatile s32 *)&p.x, y = p.y, hx = x0 >> 4, hy = y >> 4;
         u16 *c = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x0 - (hx << 4), y - (hy << 4), 0);
         if (c != NULL) {
@@ -14426,7 +14426,7 @@ extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
                 V2 q;
                 q.x = p.x;
                 q.y = p.y;
-                Tree_RequestShake(o->unk_7fc, &q, 1);
+                Tree_RequestShake(o->sessionSlot, &q, 1);
             }
         }
     }
@@ -14438,17 +14438,17 @@ extern "C" void PlayerActor_FieldRunStep(Obj *o) {
     V2 p;
     p.x = 0;
     p.y = 0;
-    if (o->unk_98 > 0x53f) {
-        FieldPos_ToUnit(&p.x, &p.y, &o->unk_5c);
+    if (o->speed > 0x53f) {
+        FieldPos_ToUnit(&p.x, &p.y, &o->position);
         BOOL same = FALSE;
         s32 x = p.x;
-        if (*(volatile s32 *)&p.x == o->unk_8d4 && p.y == o->unk_8d8) same = TRUE;
+        if (*(volatile s32 *)&p.x == o->runUnitX && p.y == o->runUnitZ) same = TRUE;
         if (same) {
-            o->unk_8d4 = x;
-            o->unk_8d8 = p.y;
+            o->runUnitX = x;
+            o->runUnitZ = p.y;
         } else {
-            o->unk_8d4 = x;
-            o->unk_8d8 = p.y;
+            o->runUnitX = x;
+            o->runUnitZ = p.y;
             V2 q;
             q.x = p.x;
             q.y = p.y;
@@ -14462,12 +14462,12 @@ namespace ns_022052f4 {
 extern "C" void PlayerActor_FieldCheckStepUnit(Obj *o) {
     if (Unk_02006d14_testActionFlag(o, 0xb)) return;
     if (Unk_02006d14_testActionFlag(o, 0x16)) return;
-    if (!PlayerActor_isLocomotionAction(o, o->unk_7ec)) return;
-    if (o->unk_808 != -1) return;
+    if (!PlayerActor_isLocomotionAction(o, o->action)) return;
+    if (o->fieldQuery != -1) return;
     V2 p;
     p.x = 0;
     p.y = 0;
-    FieldPos_ToUnit(&p.x, &p.y, &o->unk_5c);
+    FieldPos_ToUnit(&p.x, &p.y, &o->position);
     s32 t = Unk_02006d14_getHeldToolKind(o);
     s32 k = 0;
     switch (t) {
@@ -14479,14 +14479,14 @@ extern "C" void PlayerActor_FieldCheckStepUnit(Obj *o) {
     V2 q;
     q.x = p.x;
     q.y = p.y;
-    o->unk_808 = FieldAction_RequestPitfall(o->unk_7fc, &q, k);
-    if (o->unk_808 != -1) {
+    o->fieldQuery = FieldAction_RequestPitfall(o->sessionSlot, &q, k);
+    if (o->fieldQuery != -1) {
         if (Unk_02006d14_getFieldAnswerKind(o) == 0x19) {
             PlayerActor_clearRequests(o);
             Unk_02006d14_setActionFlag(o, 0x16);
             Unk_02006d14_setActionFlag(o, 0x13);
-            o->unk_8dc = p.x;
-            o->unk_8e0 = p.y;
+            o->pitfallUnitX = p.x;
+            o->pitfallUnitZ = p.y;
         }
     }
 }
@@ -14495,11 +14495,11 @@ extern "C" void PlayerActor_FieldCheckStepUnit(Obj *o) {
 namespace ns_022052f4 {
 extern "C" void PlayerActor_FieldPollPitfall(Obj *o) {
     if (Unk_02006d14_testActionFlag(o, 0x16)) {
-        switch (o->unk_814) {
+        switch (o->fieldAnswer) {
         case 1: {
             s32 v[2];
-            v[0] = o->unk_8dc;
-            v[1] = o->unk_8e0;
+            v[0] = o->pitfallUnitX;
+            v[1] = o->pitfallUnitZ;
             PlayerActor_RequestPitfallFall(o, v, 6, -1);
             Unk_02006d14_clearActionFlag(o, 0x16);
             Unk_02006d14_clearActionFlag(o, 0x13);
@@ -14528,7 +14528,7 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     u8 *fl;
     s32 tm;
     u32 A, B, C;
-    if (o->unk_7f4 == 0) return;
+    if (o->drawStep == 0) return;
     night = FALSE;
     if (Unk_02006d14_isGuestInSession(o)) night = TRUE;
     cnt = PlayerSession_GetTanTimer();
@@ -14584,9 +14584,9 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
     u16 buf[2];
     s32 k;
     u32 id;
-    o->unk_168 = 0;
+    o->toolHitKind = 0;
     if (o->unk_1fc == 0) return FALSE;
-    o->unk_168 = 1;
+    o->toolHitKind = 1;
     k = o->unk_1ce;
     id = o->unk_1cf;
     PlayerActor_GetHeldItem(buf, o);
@@ -14598,13 +14598,13 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
             BOOL f = Unk_ov003_022052f4_Rng(buf, 0x1376, 0x1376);
             if (f || Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) {
                 if (it->vfunc_60(buf) == 1) {
-                    o->unk_168 = 4;
+                    o->toolHitKind = 4;
                     break;
                 }
             } else {
-                o->unk_164 = it;
+                o->toolHitActor = it;
             }
-            o->unk_168 = 2;
+            o->toolHitKind = 2;
         }
         break;
     }
@@ -14613,8 +14613,8 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
         Item *it = Snowball_FindByParam(id);
         if (it != NULL) {
             BOOL f = Unk_ov003_022052f4_Rng(buf, 0x1376, 0x1376);
-            if (!f && !Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) o->unk_164 = it;
-            o->unk_168 = 3;
+            if (!f && !Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) o->toolHitActor = it;
+            o->toolHitKind = 3;
         }
         break;
     }
@@ -14632,7 +14632,7 @@ extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
         Unk_ov003_02204f3c_Pad pad;
         Unk_ov003_02204ce8_Vec t, s, z, va, vb, vc;
     } l;
-    if (self->unk_13c) {
+    if (self->actionPressed) {
         l.z.x = 0;
         l.z.y = 0;
         l.z.z = 0;
@@ -14640,34 +14640,34 @@ extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
             return TRUE;
         }
     }
-    if (!Unk_02006d14_isPosInReach(self, &self->unk_154, mode)) {
-        if (self->unk_140 == 1 || self->unk_144) {
+    if (!Unk_02006d14_isPosInReach(self, &self->targetPosX, mode)) {
+        if (self->toolTargetKind == 1 || self->hasTargetPos) {
             if (Unk_02006d14_interactAt(self, mode)) {
                 return TRUE;
             }
         }
         goto fail;
     }
-    switch (self->unk_140) {
+    switch (self->toolTargetKind) {
     case 1:
-        if (self->unk_140 != 0) {
+        if (self->toolTargetKind != 0) {
             if (PlayerActor_FieldInteractFront(self, &mode)) {
                 return TRUE;
             }
         }
         if (mode == 2 || mode == 1 || mode == 10 || mode == 0) {
-            if (self->unk_140 != 0) {
+            if (self->toolTargetKind != 0) {
                 if (mode == 10) {
-                    l.va.x = self->unk_154;
-                    l.va.y = self->unk_158;
-                    l.va.z = self->unk_15c;
+                    l.va.x = self->targetPosX;
+                    l.va.y = self->targetPosY;
+                    l.va.z = self->targetPosZ;
                     if (PlayerActor_FieldStartToolAction(self, 0, &l.va.x)) {
                         return TRUE;
                     }
                 } else {
-                    l.vb.x = self->unk_154;
-                    l.vb.y = self->unk_158;
-                    l.vb.z = self->unk_15c;
+                    l.vb.x = self->targetPosX;
+                    l.vb.y = self->targetPosY;
+                    l.vb.z = self->targetPosZ;
                     if (PlayerActor_FieldStartToolAction(self, mode, &l.vb.x)) {
                         return TRUE;
                     }
@@ -14686,8 +14686,8 @@ extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
         }
         break;
     }
-    if (self->unk_16c == 2 && mode == 5) {
-        FieldPos_ToUnit(&xy[0], &xy[1], &self->unk_154);
+    if (self->inputMode == 2 && mode == 5) {
+        FieldPos_ToUnit(&xy[0], &xy[1], &self->targetPosX);
         s32 hx, hy, x, y;
         x = *(volatile s32 *)&xy[0];
         y = *(volatile s32 *)&xy[1];
@@ -14749,20 +14749,20 @@ extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
         }
     }
 after_tile:
-    if (self->unk_144) {
+    if (self->hasTargetPos) {
         if (Unk_02006d14_interactAt(self, mode)) {
             return TRUE;
         }
     }
-    if (self->unk_16c == 2) {
+    if (self->inputMode == 2) {
         switch (mode) {
         case 1: {
-            ang = func_020e7b98(self->unk_154 - self->unk_6f0, self->unk_15c - self->unk_6f8);
+            ang = func_020e7b98(self->targetPosX - self->bodyPos, self->targetPosZ - self->bodyPosZ);
             PlayerActor_OffsetByAngle(&l.t, self, self->unk_5c, &ang, sFieldFrontDist);
             if (Unk_02006d14_isPosInReach(self, &l.t.x, mode)) {
-                s32 *pa = &self->unk_154;
-                s32 *pb = &self->unk_158;
-                s32 *pc = &self->unk_15c;
+                s32 *pa = &self->targetPosX;
+                s32 *pb = &self->targetPosY;
+                s32 *pc = &self->targetPosZ;
                 l.s.x = *pa;
                 l.s.y = *pb;
                 l.s.z = *pc;
@@ -14773,14 +14773,14 @@ after_tile:
                 l.z.y = 0;
                 l.z.z = 0;
                 if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
-                    self->unk_154 = l.s.x;
-                    self->unk_158 = l.s.y;
-                    self->unk_15c = l.s.z;
+                    self->targetPosX = l.s.x;
+                    self->targetPosY = l.s.y;
+                    self->targetPosZ = l.s.z;
                     return TRUE;
                 }
-                self->unk_154 = l.s.x;
-                self->unk_158 = l.s.y;
-                self->unk_15c = l.s.z;
+                self->targetPosX = l.s.x;
+                self->targetPosY = l.s.y;
+                self->targetPosZ = l.s.z;
             }
             break;
         }
@@ -14793,10 +14793,10 @@ after_tile:
             }
             break;
         case 3:
-            if (Ground_IsWaterAt(&self->unk_154)) {
-                l.vc.x = self->unk_154;
-                l.vc.y = self->unk_158;
-                l.vc.z = self->unk_15c;
+            if (Ground_IsWaterAt(&self->targetPosX)) {
+                l.vc.x = self->targetPosX;
+                l.vc.y = self->targetPosY;
+                l.vc.z = self->targetPosZ;
                 if (PlayerActor_FieldStartToolAction(self, mode, &l.vc.x)) {
                     return TRUE;
                 }
@@ -14806,7 +14806,7 @@ after_tile:
     }
 fail:
     if (mode == 0) {
-        if (self->unk_13c) {
+        if (self->actionPressed) {
             if (Sky_IsShootingStarVisible()) {
                 PlayerActor_RequestAct72(self, 6, -1);
                 return TRUE;
@@ -14907,16 +14907,16 @@ extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a) {
     if (PlayerActor_FieldInteractFront(self, &a)) {
         return TRUE;
     }
-    if (self->unk_16c == 1) {
+    if (self->inputMode == 1) {
         Unk_ov003_02204ce8_Vec t;
         PlayerActor_OffsetByAngle(&t, self, self->unk_5c, &self->unk_8e, data_ov003_02230af0);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;
     } else {
-        v.x = self->unk_154;
-        v.y = self->unk_158;
-        v.z = self->unk_15c;
+        v.x = self->targetPosX;
+        v.y = self->targetPosY;
+        v.z = self->targetPosZ;
         if (!Unk_02006d14_isPosInReach(self, &v.x, 0xc)) {
             return FALSE;
         }

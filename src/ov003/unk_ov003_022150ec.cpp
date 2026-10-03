@@ -51,9 +51,9 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -76,8 +76,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -92,13 +92,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -233,9 +233,9 @@ struct ModelAnim {
     ModelAnim();
     ~ModelAnim();
     u8 pad_00[8];
-    /* 0x08 */ s32 unk_08;
+    /* 0x08 */ s32 curFrame;
     u8 pad_0c[0xc];
-    /* 0x18 */ s32 *unk_18;
+    /* 0x18 */ s32 *anmObj;
     u8 pad_1c[4];
 };
 
@@ -405,7 +405,7 @@ void CountdownDigit::operator delete(void *p) {}
 // ---------------------------------------------------------------- Y methods
 void CountdownSign::execNewYear() {
     _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
-    *unk_2b0.unk_18 = unk_2b0.unk_08;
+    *unk_2b0.anmObj = unk_2b0.curFrame;
 }
 
 BOOL CountdownSign::enterNewYear() {
@@ -417,7 +417,7 @@ BOOL CountdownSign::enterNewYear() {
 
 void CountdownSign::execCountdown() {
     _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
-    *unk_2b0.unk_18 = unk_2b0.unk_08;
+    *unk_2b0.anmObj = unk_2b0.curFrame;
     u32 tm[2];
     tm[0] = 0;
     tm[1] = 0;
@@ -505,9 +505,9 @@ BOOL CountdownSign::vfunc_70() {
     u32 i = 0;
     s32 v[3];
     do {
-        s32 c = unk_5c[2] + 0x500;
-        s32 b = unk_5c[1] + 0x2500;
-        s32 a = unk_5c[0] + sCountdownDigitOffsetsX[i];
+        s32 c = position[2] + 0x500;
+        s32 b = position[1] + 0x2500;
+        s32 a = position[0] + sCountdownDigitOffsetsX[i];
         v[0] = a;
         v[1] = b;
         v[2] = c;

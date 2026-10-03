@@ -31,82 +31,82 @@ public:
     void calcPlanes();
 
     /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04[3];
-    /* 0x10 */ s32 unk_10[3];
-    /* 0x1c */ s32 unk_1c[3];
-    /* 0x28 */ s32 unk_28[3];
+    /* 0x04 */ s32 leftPlane[3];
+    /* 0x10 */ s32 topPlane[3];
+    /* 0x1c */ s32 rightPlane[3];
+    /* 0x28 */ s32 bottomPlane[3];
     /* 0x34 */ s32 unk_34[6];
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ u16 unk_58;
+    /* 0x4c */ s32 aspect;
+    /* 0x50 */ s32 nearClip;
+    /* 0x54 */ s32 farClip;
+    /* 0x58 */ u16 fovy;
 };
 
 void ViewFrustum::calcPlanes() {
     s32 v[12];
-    s32 idx = unk_58 >> 4;
+    s32 idx = fovy >> 4;
     s32 s = FX_Div(data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
-    s32 y = func_01ffcb0c(unk_50, s);
-    s32 x = func_01ffcb0c(unk_4c, y);
+    s32 y = func_01ffcb0c(nearClip, s);
+    s32 x = func_01ffcb0c(aspect, y);
     v[0] = -x;
     v[1] = -y;
-    v[2] = -unk_50;
+    v[2] = -nearClip;
     v[3] = -x;
     v[4] = y;
-    v[5] = -unk_50;
+    v[5] = -nearClip;
     v[6] = x;
     v[7] = y;
-    v[8] = -unk_50;
+    v[8] = -nearClip;
     v[9] = x;
     v[10] = -y;
-    v[11] = -unk_50;
-    VEC_CrossProduct(&v[3], &v[0], &unk_04[0]);
-    VEC_CrossProduct(&v[6], &v[3], &unk_10[0]);
-    VEC_CrossProduct(&v[9], &v[6], &unk_1c[0]);
-    VEC_CrossProduct(&v[0], &v[9], &unk_28[0]);
-    VEC_Normalize(&unk_04[0], &unk_04[0]);
-    VEC_Normalize(&unk_10[0], &unk_10[0]);
-    VEC_Normalize(&unk_1c[0], &unk_1c[0]);
-    VEC_Normalize(&unk_28[0], &unk_28[0]);
+    v[11] = -nearClip;
+    VEC_CrossProduct(&v[3], &v[0], &leftPlane[0]);
+    VEC_CrossProduct(&v[6], &v[3], &topPlane[0]);
+    VEC_CrossProduct(&v[9], &v[6], &rightPlane[0]);
+    VEC_CrossProduct(&v[0], &v[9], &bottomPlane[0]);
+    VEC_Normalize(&leftPlane[0], &leftPlane[0]);
+    VEC_Normalize(&topPlane[0], &topPlane[0]);
+    VEC_Normalize(&rightPlane[0], &rightPlane[0]);
+    VEC_Normalize(&bottomPlane[0], &bottomPlane[0]);
 }
 
 s32 ViewFrustum::testSphere(void *m, void *v, s32 r, s32 *out) {
     MTX_MultVec43(v, m, out);
     s32 t = -out[2];
-    if (t < unk_50 - r) {
+    if (t < nearClip - r) {
         return 0x7fffffff;
     }
-    if (t > unk_54 + r) {
+    if (t > farClip + r) {
         return 0x7fffffff;
     }
     {
-        s32 a = func_01ffcb0c(out[2], unk_04[2]);
-        s32 b = func_01ffcb0c(out[0], unk_04[0]);
-        s32 c = func_01ffcb0c(out[1], unk_04[1]);
+        s32 a = func_01ffcb0c(out[2], leftPlane[2]);
+        s32 b = func_01ffcb0c(out[0], leftPlane[0]);
+        s32 c = func_01ffcb0c(out[1], leftPlane[1]);
         if (a + (b + c) > r) {
             return 0x7fffffff;
         }
     }
     {
-        s32 a = func_01ffcb0c(out[2], unk_10[2]);
-        s32 b = func_01ffcb0c(out[0], unk_10[0]);
-        s32 c = func_01ffcb0c(out[1], unk_10[1]);
+        s32 a = func_01ffcb0c(out[2], topPlane[2]);
+        s32 b = func_01ffcb0c(out[0], topPlane[0]);
+        s32 c = func_01ffcb0c(out[1], topPlane[1]);
         if (a + (b + c) > r) {
             return 0x7fffffff;
         }
     }
     {
-        s32 a = func_01ffcb0c(out[2], unk_1c[2]);
-        s32 b = func_01ffcb0c(out[0], unk_1c[0]);
-        s32 c = func_01ffcb0c(out[1], unk_1c[1]);
+        s32 a = func_01ffcb0c(out[2], rightPlane[2]);
+        s32 b = func_01ffcb0c(out[0], rightPlane[0]);
+        s32 c = func_01ffcb0c(out[1], rightPlane[1]);
         if (a + (b + c) > r) {
             return 0x7fffffff;
         }
     }
     {
-        s32 a = func_01ffcb0c(out[2], unk_28[2]);
-        s32 b = func_01ffcb0c(out[0], unk_28[0]);
-        s32 c = func_01ffcb0c(out[1], unk_28[1]);
+        s32 a = func_01ffcb0c(out[2], bottomPlane[2]);
+        s32 b = func_01ffcb0c(out[0], bottomPlane[0]);
+        s32 c = func_01ffcb0c(out[1], bottomPlane[1]);
         if (a + (b + c) > r) {
             return 0x7fffffff;
         }

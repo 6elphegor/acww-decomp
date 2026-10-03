@@ -6,11 +6,11 @@ public:
     virtual ~ViewFrustum() {}
     void setPerspective(s32 a, u16 b, s32 c, s32 d);
 
-    /* 0x04 */ u8 unk_04[0x48];
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ u16 unk_58;
+    /* 0x04 */ u8 leftPlane[0x48];
+    /* 0x4c */ s32 aspect;
+    /* 0x50 */ s32 nearClip;
+    /* 0x54 */ s32 farClip;
+    /* 0x58 */ u16 fovy;
 };
 extern "C" void _ZN11ViewFrustum10calcPlanesEv(ViewFrustum *o);
 
@@ -19,9 +19,9 @@ ViewFrustum::ViewFrustum() {
 }
 
 void ViewFrustum::setPerspective(s32 a, u16 b, s32 c, s32 d) {
-    unk_4c = a;
-    unk_58 = b;
-    unk_50 = c;
-    unk_54 = d;
+    aspect = a;
+    fovy = b;
+    nearClip = c;
+    farClip = d;
     _ZN11ViewFrustum10calcPlanesEv(this);
 }

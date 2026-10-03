@@ -7,16 +7,16 @@ struct Unk_02093aa8_Vec {
 // Effect entry (0x1c bytes), array gEffectManager[32], scratch entry at data_021d0830
 struct Unk_02093c28_Entry {
     /* 0x00 */ s32 x, y, z;
-    /* 0x0c */ s16 unk_0c;
-    /* 0x0e */ s16 unk_0e;
+    /* 0x0c */ s16 angle;
+    /* 0x0e */ s16 life;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
+    /* 0x14 */ s32 handle;
     /* 0x18 */ s32 unk_18;
 };
 
 struct Unk_02093bb4_Scratch {
     Unk_02093c28_Entry e;
-    /* 0x1c */ u16 unk_1c;
+    /* 0x1c */ u16 nextHandle;
 };
 
 struct Unk_02093c28_Handle {
@@ -25,30 +25,30 @@ struct Unk_02093c28_Handle {
 
 struct Unk_02093dc8_Root {
     s32 unk_00;
-    s32 unk_04, unk_08, unk_0c;
+    s32 posX, posY, posZ;
 };
 
 struct Unk_02093dc8_Ptr {
-    Unk_02093dc8_Root *unk_00;
+    Unk_02093dc8_Root *header;
 };
 
 // Particle object
 struct Unk_02093c28_Obj {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_02093c28_Handle unk_04;
+    /* 0x04 */ Unk_02093c28_Handle tag;
     /* 0x08 */ u32 unk_08;
-    /* 0x0c */ struct Unk_02093dc8_Obj *unk_0c;
+    /* 0x0c */ struct Unk_02093dc8_Obj *emitter;
 };
 
 struct Unk_02093dc8_Obj {
     /* 0x00 */ u8 pad_00[0x18];
-    /* 0x18 */ Unk_02093dc8_Ptr *unk_18;
+    /* 0x18 */ Unk_02093dc8_Ptr *resource;
     /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ s32 unk_20, unk_24, unk_28;
+    /* 0x20 */ s32 posX, posY, posZ;
     /* 0x2c */ u8 pad_2c[0x10];
-    /* 0x3c */ s16 unk_3c;
-    /* 0x3e */ s16 unk_3e;
-    /* 0x40 */ s16 unk_40;
+    /* 0x3c */ s16 axisX;
+    /* 0x3e */ s16 axisY;
+    /* 0x40 */ s16 axisZ;
     /* 0x42 */ u8 pad_42[0x12];
     /* 0x54 */ s32 unk_54;
 };
@@ -58,8 +58,8 @@ struct Unk_02093aa8_Node {
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ s32 x, y, z;
     /* 0x14 */ u8 pad_14[0x10];
-    /* 0x24 */ u16 unk_24;
-    /* 0x26 */ u16 unk_26;
+    /* 0x24 */ u16 lifeTime;
+    /* 0x26 */ u16 age;
     /* 0x28 */ u8 pad_28[0x10];
     /* 0x38 */ s32 ox, oy, oz;
 };
@@ -67,7 +67,7 @@ struct Unk_02093aa8_Node {
 struct Unk_02093aa8_Owner {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_02093aa8_Node *unk_08;
+    /* 0x08 */ Unk_02093aa8_Node *particles;
 };
 
 class GroundInfo {
@@ -202,9 +202,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgString;
@@ -217,7 +217,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 class MsgString : public MsgStringBase {
@@ -229,8 +229,8 @@ public:
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
@@ -245,7 +245,7 @@ public:
 
     void copyTo(void *dst, u32 n);
 
-    /* 0x0e */ u8 unk_0e[8];
+    /* 0x0e */ u8 text[8];
 };
 
 // 9-byte source buffer at +0x12
@@ -256,7 +256,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[9];
+    /* 0x12 */ u8 text[9];
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -272,8 +272,8 @@ public:
     void TownId_Assign(TownId *o);
     void TownId_Clear();
 
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
 
     s32 getTownRelation();
     void setTown(TownId *o);
@@ -301,9 +301,9 @@ public:
     void clear();
     void setRaw(void *src);
 
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
+    /* 0x0a */ u16 playerId;
+    /* 0x0c */ u8 playerName[8];
+    /* 0x14 */ s8 gender;
 };
 
 extern "C" {
@@ -360,7 +360,7 @@ EncodedString8::~EncodedString8() {}
 
 u32 EncodedString8::capacity() { return 8; }
 
-void EncodedString8::copyTo(void *dst, u32 n) { MI_CpuCopy8(unk_0e, dst, n); }
+void EncodedString8::copyTo(void *dst, u32 n) { MI_CpuCopy8(text, dst, n); }
 
-u8 *EncodedString8::data() { return unk_0e; }
+u8 *EncodedString8::data() { return text; }
 

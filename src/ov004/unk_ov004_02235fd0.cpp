@@ -119,38 +119,38 @@ public:
     virtual BOOL vfunc_20();
     virtual BOOL preDraw();
     virtual BOOL postDraw();
-    virtual ~Actor() { func_020e79a0(gActorList, &unk_50); }
+    virtual ~Actor() { func_020e79a0(gActorList, &listNode); }
 
     void calcModelMatrix(void *out);
     void updatePosition(Unk_02002cb0_Vec *v);
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ Unk_ov004_02236320_V3 unk_5c;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s32 unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ u8 unk_74[0x18];
-    /* 0x8c */ s16 unk_8c;
-    /* 0x8e */ s16 unk_8e;
-    /* 0x90 */ s16 unk_90;
-    /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u16 unk_94;
-    /* 0x96 */ s16 unk_96;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u32 unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ Unk_ov004_02236320_V3 position;
+    /* 0x68 */ s32 prevPosition;
+    /* 0x6c */ s32 prevPositionY;
+    /* 0x70 */ s32 prevPositionZ;
+    /* 0x74 */ u8 viewPos[0x18];
+    /* 0x8c */ s16 rotX;
+    /* 0x8e */ s16 rotY;
+    /* 0x90 */ s16 rotZ;
+    /* 0x92 */ s16 moveAngleX;
+    /* 0x94 */ u16 moveAngleY;
+    /* 0x96 */ s16 moveAngleZ;
+    /* 0x98 */ s32 speed;
+    /* 0x9c */ s32 gravity;
+    /* 0xa0 */ s32 maxFallSpeed;
+    /* 0xa4 */ s32 velocity;
+    /* 0xa8 */ s32 velocityY;
+    /* 0xac */ s32 velocityZ;
+    /* 0xb0 */ u32 actorFlags;
+    /* 0xb4 */ s32 cullHeight;
+    /* 0xb8 */ s32 cullRadius;
+    /* 0xbc */ s32 cullDepth;
     /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ u16 unk_d0;
+    /* 0xc4 */ s32 drawPos;
+    /* 0xc8 */ s32 drawPosY;
+    /* 0xcc */ s32 drawPosZ;
+    /* 0xd0 */ u16 drawTilt;
 };
 
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
@@ -579,11 +579,11 @@ BOOL HouseRoach::setup() {
     BlendAnimModel_initAnim(unk_120, r, 0, 0x1000, 0, 0);
     AnimModel_attachAnim(unk_120);
     Unk_02003c30_callReset(unk_114);
-    s16 *q = &unk_92;
-    q[1] = unk_8e;
+    s16 *q = &moveAngleX;
+    q[1] = rotY;
     unk_228 = q[1];
-    unk_9c = -819;
-    unk_98 = unk_d4;
+    gravity = -819;
+    speed = unk_d4;
     unk_22a = 0;
     unk_263 = 0;
     unk_264 = 0;
@@ -600,7 +600,7 @@ void HouseRoach::updateState() {
         updateCrawl();
         break;
     case 1:
-        unk_98 = unk_d4;
+        speed = unk_d4;
         if (unk_22c-- > 0) {
             break;
         }
@@ -611,7 +611,7 @@ void HouseRoach::updateState() {
         unk_22c = (Random_GlobalBelow(10) + 3) * 20;
         break;
     case 2:
-        Effect_PlayById(0x50, &unk_5c, 0, 0);
+        Effect_PlayById(0x50, &position, 0, 0);
         F08(this) = F08(this) - 1;
         unk_110 = 2;
         playSe(2);
@@ -626,8 +626,8 @@ void HouseRoach::updateState() {
         }
         break;
     }
-    Unk_ov004_02236320_V3 *pv = &unk_5c;
-    v.x = unk_5c.x;
+    Unk_ov004_02236320_V3 *pv = &position;
+    v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
     Unk_02003c40_callUpdateRelative(unk_114, &v);
@@ -651,7 +651,7 @@ void HouseRoach::updateCollision() {
     p = (Unk_ov004_02236320_V3 *)this;
     p = (Unk_ov004_02236320_V3 *)((u8 *)p + 0x5c);
     n = 1;
-    ang = unk_8e;
+    ang = rotY;
     t = FX_Div(0x1000, 0x2000);
     switch (Scene_GetHouseRoom()) {
     case 1:
@@ -703,7 +703,7 @@ void HouseRoach::updateCollision() {
         move();
     }
     updatePosition((Unk_02002cb0_Vec *)&unk_1d8);
-    Collision_Move(&unk_dc, p, &unk_68, ang, 0x666, this, 0xf);
+    Collision_Move(&unk_dc, p, &prevPosition, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
             BoxCollider_Unregister((u8 *)&o0 + i * 0x9c);
@@ -717,11 +717,11 @@ void HouseRoach::updateCollision() {
 
 void HouseRoach::updateAppear() {
     Unk_ov004_02236320_V3 v;
-    unk_98 = unk_d4;
+    speed = unk_d4;
     updateCollision();
-    unk_5c.y = unk_6c;
-    Unk_ov004_02236320_V3 *pv = &unk_5c;
-    v.x = unk_5c.x;
+    position.y = prevPositionY;
+    Unk_ov004_02236320_V3 *pv = &position;
+    v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
     Unk_02003c40_callUpdateRelative(unk_114, &v);
@@ -756,7 +756,7 @@ BOOL HouseRoach::execute() {
     }
     if (F08(this) != 0) {
         Unk_ov004_02236320_Mtx buf;
-        unk_d0 = WorldCurve_ToCurved(&unk_c4, &unk_5c);
+        drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         calcModelMatrix(&buf);
         unk_184 = buf;
     } else {
@@ -769,13 +769,13 @@ BOOL HouseRoach::execute() {
 }
 
 BOOL HouseRoach::checkHeight() {
-    if (unk_5c.y >= 0xc00) {
-        unk_5c.y = unk_6c;
+    if (position.y >= 0xc00) {
+        position.y = prevPositionY;
         if ((unk_dc[1] & 1) != 0) {
             u8 buf[0x40];
             unk_10c = 2;
-            GroundInfo_initAtPos(buf, &unk_5c, 0, 0);
-            unk_5c.y = GroundInfoBase_getHeight(buf, 1);
+            GroundInfo_initAtPos(buf, &position, 0, 0);
+            position.y = GroundInfoBase_getHeight(buf, 1);
             GroundInfo_Destruct(buf);
             return TRUE;
         }
@@ -810,7 +810,7 @@ BOOL HouseRoach::checkStomped() {
 
 BOOL HouseRoach::draw() {
     if (unk_110 != 4) {
-        Unk_ov004_02236320_V3 *pv = &unk_5c;
+        Unk_ov004_02236320_V3 *pv = &position;
         if (F08(this) > 0x1f) {
             F08(this) = 0x1f;
         }
@@ -864,7 +864,7 @@ u8 HouseRoach::probeWalls() {
     s16 ang;
     func_020323b0(&o1);
     GroundInfo_initAtPos(o2, r4r, r6, r6);
-    ang = unk_8e;
+    ang = rotY;
     if (unk_248[0].x == 0 || unk_248[0].z == 0) {
         unk_248[0].x = unk_230[0].x;
         unk_248[0].y = unk_230[0].y;
@@ -893,13 +893,13 @@ u8 HouseRoach::probeWalls() {
 }
 
 void HouseRoach::setProbePoints(s32 dist, s32 delta) {
-    Unk_ov004_02236320_V3 *pv = &unk_5c;
-    s16 ang = unk_8e;
+    Unk_ov004_02236320_V3 *pv = &position;
+    s16 ang = rotY;
     u32 idx;
-    unk_230[0].x = unk_5c.x;
+    unk_230[0].x = position.x;
     unk_230[0].y = pv->y;
     unk_230[0].z = pv->z;
-    unk_230[1].x = unk_5c.x;
+    unk_230[1].x = position.x;
     unk_230[1].y = pv->y;
     unk_230[1].z = pv->z;
     unk_248[0].x = unk_230[0].x;
@@ -929,14 +929,14 @@ Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
-            a = &unk_5c;
+            a = &position;
             b = &p->unk_5c;
             c = &g->unk_5c;
-            d1 = unk_5c.x - p->unk_5c.x;
+            d1 = position.x - p->unk_5c.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;
             if (d2 < 0) d2 = -d2;
-            d3 = unk_5c.x - c->x;
+            d3 = position.x - c->x;
             if (d3 < 0) d3 = -d3;
             d4 = a->z - c->z;
             if (d4 < 0) d4 = -d4;
@@ -950,7 +950,7 @@ Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
 }
 
 void HouseRoach::updateCrawl() {
-    u8 *self0 = (u8 *)&unk_5c;
+    u8 *self0 = (u8 *)&position;
     s32 res = 0;
     u8 i;
     s32 zero = 0;
@@ -964,7 +964,7 @@ void HouseRoach::updateCrawl() {
         if (o != 0 && res == 0) {
             u8 *q = (u8 *)(o + 0x5c);
             unk_22c = unk_22c - 1;
-            unk_98 = zero;
+            speed = zero;
             if (unk_22c <= 0) {
                 unk_10c = 1;
                 unk_22c = (Random_GlobalBelow(4) + 1) * 20;
@@ -982,21 +982,21 @@ void HouseRoach::updateCrawl() {
     if (res == 2) {
         Unk_ov004_02236320_Ent *t = getNearestCharacter();
         if (t) {
-            s16 *q92 = &unk_92;
+            s16 *q92 = &moveAngleX;
             q92[1] = Math_AngleXZ(&t->unk_5c, self0);
-            unk_8e = q92[1];
+            rotY = q92[1];
         }
     }
 }
 
 void HouseRoach::updateHitBox() {
-    ActorPlacedCollider_setupForActorAt(unk_1d8, this, &unk_5c, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
+    ActorPlacedCollider_setupForActorAt(unk_1d8, this, &position, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
     ActorCollider_submit(unk_1d8);
 }
 
 BOOL HouseRoach::move() {
-    s32 a = unk_8e;
-    Unk_ov004_02236320_V3 *p6 = &unk_5c;
+    s32 a = rotY;
+    Unk_ov004_02236320_V3 *p6 = &position;
     s32 hit = 0;
     u8 i;
     setProbePoints(0x3c, 0xe38);
@@ -1021,7 +1021,7 @@ BOOL HouseRoach::move() {
                         unk_22e = unk_22e + 1;
                         unk_22a = 1;
                         hit = 1;
-                        unk_98 = unk_d8;
+                        speed = unk_d8;
                         playSe(1);
                     }
                 }
@@ -1072,9 +1072,9 @@ BOOL HouseRoach::move() {
         }
         playSe(m > 0 ? 0 : 0);
     }
-    s16 *q92 = &unk_92;
+    s16 *q92 = &moveAngleX;
     q92[1] = a;
-    unk_8e = q92[1];
+    rotY = q92[1];
     return TRUE;
 }
 

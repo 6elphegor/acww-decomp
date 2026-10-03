@@ -160,16 +160,16 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
-    u32 unk_5c;
-    u32 unk_60;
-    u32 unk_64;
-    u32 unk_68;
+    u32 position;
+    u32 positionY;
+    u32 positionZ;
+    u32 prevPosition;
     u32 pad_6c;
-    u32 unk_70;
+    u32 prevPositionZ;
     u32 pad_74[(0x8c - 0x74) / 4];
-    s16 unk_8c, unk_8e, unk_90, unk_92, unk_94, unk_96;
+    s16 rotX, rotY, rotZ, moveAngleX, moveAngleY, moveAngleZ;
     u32 pad_98[(0xd4 - 0x98) / 4];
-    u32 unk_d4, unk_d8, unk_dc;
+    u32 charNode, unk_d8, unk_dc;
 };
 
 class NpcActor : public Character {
@@ -200,22 +200,22 @@ public:
 
     u16 pad_e0[5];
     u16 unk_ea;
-    Unk_02053d3c unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    Unk_02053d3c model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    Unk_020323b0 unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    Unk_020323b0 collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class VillagerActor : public NpcActor {
@@ -243,16 +243,16 @@ public:
     virtual void vfunc_b8();
     virtual void vfunc_bc();
 
-    /* 0x640 */ u32 unk_640;
-    /* 0x644 */ u32 unk_644;
-    /* 0x648 */ u32 unk_648;
-    /* 0x64c */ Unk_0202d7f4 unk_64c;
-    /* 0x680 */ Unk_0202d5e8 unk_680;
-    /* 0x824 */ Unk_02082088 unk_824;
-    /* 0x82c */ void *unk_82c;
-    /* 0x830 */ void *unk_830;
+    /* 0x640 */ u32 eventKind;
+    /* 0x644 */ u32 talkPartnerId;
+    /* 0x648 */ u32 invitedByPartner;
+    /* 0x64c */ Unk_0202d7f4 clothModel;
+    /* 0x680 */ Unk_0202d5e8 villagerTalk;
+    /* 0x824 */ Unk_02082088 animHeapHandle;
+    /* 0x82c */ void *villagerData;
+    /* 0x830 */ void *villagerState;
     /* 0x834 */ u32 unk_834;
-    /* 0x838 */ VillagerMood unk_838;
+    /* 0x838 */ VillagerMood mood;
 };
 
 // Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
@@ -294,7 +294,7 @@ public:
     virtual void update();
     virtual void onTaskDone();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     void *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -400,9 +400,9 @@ BOOL CafeVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
-    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0x1e);
-    NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0x1e);
-    NpcMoveAnimSet_setRunAnim(&unk_2a0, 0x1e);
+    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
+    NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x1e);
+    NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x1e);
     NpcActor_setTalkRequest(this, &unk_898);
     unk_898.attachOwner(this);
     return TRUE;
@@ -435,7 +435,7 @@ void CafeVillager::changeAct(s32 idx) {
 }
 
 BOOL CafeVillager::setupAct02() {
-    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -447,12 +447,12 @@ BOOL CafeVillager::setupAct00() {
     if (p) {
         v = NpcActor_getAngleTo(this, p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, v, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, v, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct00() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -473,7 +473,7 @@ void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
 
 void CafeVillagerTalk::start(void *arg) {
     Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022508e0, 0x28, "ai_shop3");
+    VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
     out->unk_00 = data_ov004_022508e0;
     out->unk_04 = Random_GlobalBelow(5);
 }
@@ -483,7 +483,7 @@ void CafeVillagerTalk::onMessageEnd() {}
 void CafeVillagerTalk::onChoice() {}
 
 BOOL CafeVillager::vfunc_48() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;

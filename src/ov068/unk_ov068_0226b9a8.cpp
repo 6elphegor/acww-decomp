@@ -96,7 +96,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -117,9 +117,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -265,9 +265,9 @@ struct ModelAnim {
     ModelAnim();
     ~ModelAnim();
     /* 0x00 */ u8 pad_00[8];
-    /* 0x08 */ Unk_ov068_022702b4_Word unk_08;
+    /* 0x08 */ Unk_ov068_022702b4_Word curFrame;
     /* 0x0c */ u8 pad_0c[0xc];
-    /* 0x18 */ u32 *unk_18;
+    /* 0x18 */ u32 *anmObj;
     /* 0x1c */ u32 pad_1c;
 };
 struct RoomObjTex {
@@ -429,10 +429,10 @@ BOOL TaxiInterior::vfunc_00() {
 BOOL TaxiInterior::onExecute() {
     updateRainState();
     AnimFrameCtrl_step(&unk_2b0);
-    *unk_2b0.unk_18 = unk_2b0.unk_08.v;
+    *unk_2b0.anmObj = unk_2b0.curFrame.v;
     AnimModel_stepAnim(&unk_ec);
     AnimFrameCtrl_step(&unk_290);
-    *unk_290.unk_18 = unk_290.unk_08.v;
+    *unk_290.anmObj = unk_290.curFrame.v;
     if (unk_430) {
         AnimModel_stepAnim(&unk_2d0);
     }
@@ -525,7 +525,7 @@ void TaxiInterior::playBodyAnim(s32 a) {
     BlendAnimModel_initAnim(&unk_ec, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&unk_ec.unk_a4)->mid, 0);
     void *r6 = Model_getRenderObj(&unk_ec);
     void *q = RoomObjRes_GetBma(&unk_1a4, 0);
-    ModelAnim_replace(&unk_290, r6, q, a, 0x1000, unk_290.unk_08.b.mid);
+    ModelAnim_replace(&unk_290, r6, q, a, 0x1000, unk_290.curFrame.b.mid);
 }
 
 BOOL TaxiInterior::setRainState(s32 s) {

@@ -95,12 +95,12 @@ extern "C" void *gCurrentHeap;
 
 class AnimFrameCtrl {
 public:
-    u32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    u8 unk_14;
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    u32 numFrames;
+    s32 curFrame;
+    s32 prevFrame;
+    s32 frameStep;
+    u8 playMode;
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     virtual ~AnimFrameCtrl();
     BOOL isFinished();
     void setup(s32 frames, u8 mode, s32 speed, u16 last);
@@ -113,8 +113,8 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
 
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class MatTexPatTrack {
@@ -576,7 +576,7 @@ BOOL TexPatVramAnim::update() {
 void TexPatVramAnim::getFrameIndices(s32 *a, s32 *b) {
     *b = -1;
     *a = *b;
-    u8 *r7 = NNSi_G3dGetTexPatAnmFV(unk_7c, 0, (u32)(unk_08 << 4) >> 16);
+    u8 *r7 = NNSi_G3dGetTexPatAnmFV(unk_7c, 0, (u32)(curFrame << 4) >> 16);
     if (r7 != NULL) {
         u8 *first = NNSi_G3dGetTexPatAnmTexNameByIdx(unk_7c, r7[2]);
         r7 = NNSi_G3dGetTexPatAnmPlttNameByIdx(unk_7c, r7[3]);
@@ -841,52 +841,52 @@ extern "C" s32 Model_BindMatTexByIdx(u8 *hdr, const char *name, s32 p, s32 q, s3
 AnimFrameCtrl::~AnimFrameCtrl() {}
 
 void AnimFrameCtrl::step() {
-    s32 cur = unk_08;
-    unk_0c = cur;
-    u8 m = unk_14;
+    s32 cur = curFrame;
+    prevFrame = cur;
+    u8 m = playMode;
     s32 v;
     if (m & 2) {
-        s32 sp = unk_10;
+        s32 sp = frameStep;
         if (cur >= sp) {
             v = cur - sp;
         } else if ((m & 1) == 0) {
-            v = cur + (unk_04 - sp);
+            v = cur + (numFrames - sp);
         } else {
             v = 0;
         }
     } else {
-        v = cur + unk_10;
-        if (v >= (s32)unk_04) {
+        v = cur + frameStep;
+        if (v >= (s32)numFrames) {
             if ((m & 1) == 0) {
-                v = v - unk_04;
+                v = v - numFrames;
             } else {
-                v = unk_04 - 0x1000;
+                v = numFrames - 0x1000;
             }
         }
     }
-    unk_08 = v;
+    curFrame = v;
 }
 
 void AnimFrameCtrl::setup(s32 frames, u8 mode, s32 speed, u16 last) {
     if (last == 0xffff) {
         last = frames - 1;
     }
-    unk_04 = frames << 12;
-    unk_08 = last << 12;
-    unk_10 = speed;
-    unk_14 = mode;
-    unk_0c = unk_08;
+    numFrames = frames << 12;
+    curFrame = last << 12;
+    frameStep = speed;
+    playMode = mode;
+    prevFrame = curFrame;
 }
 
 BOOL AnimFrameCtrl::isFinished() {
-    switch (unk_14) {
+    switch (playMode) {
     case 1:
-        if (unk_08 >= (s32)unk_04 - 0x1000) {
+        if (curFrame >= (s32)numFrames - 0x1000) {
             return TRUE;
         }
         return FALSE;
     case 3:
-        if (unk_08 == 0) {
+        if (curFrame == 0) {
             return TRUE;
         }
         return FALSE;
@@ -896,15 +896,15 @@ BOOL AnimFrameCtrl::isFinished() {
 
 BOOL AnimFrameCtrl::hasPassedFrame(s32 x) {
     s32 lim = x << 12;
-    s32 a = unk_08;
-    s32 b = unk_0c;
+    s32 a = curFrame;
+    s32 b = prevFrame;
     if (b == a) {
         if (a == x) {
             return TRUE;
         }
         return FALSE;
     }
-    BOOL flag = (unk_14 & 2) ? TRUE : FALSE;
+    BOOL flag = (playMode & 2) ? TRUE : FALSE;
     if (flag) {
         if (b > a) {
             if (b <= lim) goto no;
@@ -1172,7 +1172,7 @@ void MatTexPatAnim::update() {
 }
 
 void MatTexPatAnim::applyFrame() {
-    u32 frame = (u32)(unk_08 << 4) >> 16;
+    u32 frame = (u32)(curFrame << 4) >> 16;
     s32 i;
     for (i = 0; i < unk_26; i++) {
         if (!unk_28[i].isPaused()) {
@@ -1234,8 +1234,8 @@ extern "C" void MatTexPatAnim_ResumeMaterial(Unk_02055cd0_Obj *p, void *q) {
 }
 
 ModelAnim::ModelAnim() {
-    unk_1c = 0;
-    unk_18 = 0;
+    resMdl = 0;
+    anmObj = 0;
 }
 
 ModelAnim::~ModelAnim() {

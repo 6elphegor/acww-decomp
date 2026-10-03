@@ -9,20 +9,20 @@ struct CommManager {
 
 struct Unk_02095774_Ent {
     u8 pad_00[0x5c];
-    s32 unk_5c[3];
+    s32 position[3];
     u8 pad_68[0x8e - 0x68];
     s16 unk_8e;
 };
 
 struct Unk_0209579c_Rec {
     u8 pad_00[0xe];
-    u8 unk_0e;
+    u8 state;
 };
 
 struct Unk_02095dcc_Grid {
     u8 pad_00[0xc];
-    s32 unk_0c;
-    s32 unk_10;
+    s32 unitsX;
+    s32 unitsZ;
 };
 
 struct ItemPickSpec {
@@ -76,7 +76,7 @@ public:
     virtual ~Letter();
 
     /* 0x04 */ u8 unk_04[0xec];
-    /* 0xf0 */ u16 unk_f0;
+    /* 0xf0 */ u16 present;
     /* 0xf2 */ u16 pad_f2;
 };
 
@@ -162,7 +162,7 @@ public:
     void clear();
     Letter *getPage(s32 i);
 
-    /* 0x000 */ Letter unk_00[75];
+    /* 0x000 */ Letter letters[75];
 };
 
 struct Unk_02095f38_G {
@@ -970,7 +970,7 @@ extern "C" s32 BottleLetter_IsBottleInTown() {
     Unk_02095dcc_Grid *g = TownBlockMap_Get();
     s32 y, x, hx, hy;
     u16 *c;
-    for (y = 0; y < g->unk_10; y++) {
+    for (y = 0; y < g->unitsZ; y++) {
         x = 0;
         goto test0;
     loop0:
@@ -984,7 +984,7 @@ extern "C" s32 BottleLetter_IsBottleInTown() {
         hy = y;
         y = hy;
     test0:
-        if (x < g->unk_0c) goto loop0;
+        if (x < g->unitsX) goto loop0;
     }
     return FALSE;
 }

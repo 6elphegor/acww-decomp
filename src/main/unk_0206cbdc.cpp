@@ -34,9 +34,9 @@ class MsgStringAttr {
 public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
+    s32 form;
+    u8 attrA;
+    u8 attrB;
 };
 
 class MsgString;
@@ -48,7 +48,7 @@ public:
     virtual u32 capacity() = 0;
     virtual u8 *data() = 0;
 
-    MsgStringAttr unk_04;
+    MsgStringAttr attr;
 };
 
 class MsgString : public MsgStringBase {
@@ -60,8 +60,8 @@ public:
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
-    u32 unk_04;
-    MsgStringAttr unk_08;
+    u32 length;
+    MsgStringAttr attr;
 };
 
 // 0x28-byte destination buffer at +0xe
@@ -412,12 +412,12 @@ void LetterTextLine::createLabel() {
         unk_3c = MsgTextLabel_CreateVram(unk_40, 0x14, 2);
         if (unk_3c != NULL) {
             u8 a, b;
-            unk_3c->unk_2c = unk_42;
-            if (unk_43) unk_3c->unk_50 = 1;
-            else unk_3c->unk_50 = 2;
-            unk_3c->unk_55 = 0;
-            unk_3c->unk_39 = 0;
-            unk_3c->unk_38 = 0xf;
+            unk_3c->vramLoader = unk_42;
+            if (unk_43) unk_3c->copyMode = 1;
+            else unk_3c->copyMode = 2;
+            unk_3c->rowStride1K = 0;
+            unk_3c->bgColor = 0;
+            unk_3c->fgColor = 0xf;
             if (unk_47) {
                 a = 0xb;
                 b = 0;
@@ -445,7 +445,7 @@ void LetterTextLine::redrawIfDirty(BOOL b) {
             TextLabel *t;
             unk_44 = 0;
             t = unk_3c;
-            t->unk_10 = (u32)data();
+            t->textStart = (u32)data();
             if (b) unk_3c->alignRight();
             unk_3c->requestRedraw();
         }

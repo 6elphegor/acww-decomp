@@ -81,9 +81,9 @@ public:
     virtual ~ModelAnim();
 
     /* 0x04 */ u8 pad_04[4];
-    /* 0x08 */ s32 unk_08;
+    /* 0x08 */ s32 curFrame;
     /* 0x0c */ u8 pad_0c[0x18 - 0x0c];
-    /* 0x18 */ s32 *unk_18;
+    /* 0x18 */ s32 *anmObj;
     /* 0x1c */ u8 pad_1c[4];
 };
 
@@ -4975,7 +4975,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
             AnimModel_stepAnim(e->unk_b0);
             if (id == 0x18) {
                 AnimFrameCtrl_step(e);
-                *e->unk_00.unk_18 = e->unk_00.unk_08;
+                *e->unk_00.anmObj = e->unk_00.curFrame;
             }
         }
         if (MuseumInsect_GetSe((s8)id, 0) > 0) {

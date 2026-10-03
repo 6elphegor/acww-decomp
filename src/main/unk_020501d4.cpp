@@ -396,9 +396,9 @@ BOOL StrBuf_GetBytes(StrBuf *obj, u8 *dst, s32 size) {
 }
 
 GameFont::GameFont() {
-    unk_00 = NULL;
-    unk_04 = NULL;
-    unk_08 = NULL;
+    header = NULL;
+    glyphs = NULL;
+    bitmaps = NULL;
 }
 
 GameFont::~GameFont() {
@@ -414,34 +414,34 @@ void GameFont_Load(GameFontDesc *font, const char *name, void *arg2, GameFontDes
         files[i] = arg2 != NULL ? File_LoadF("/font/%s_%s_%s.bin", name, sGameFontFileParts[i], arg2)
                                 : File_LoadF("/font/%s_%s.bin", name, sGameFontFileParts[i]);
     }
-    font->unk_00 = (GameFontHeader *)files[0];
-    font->unk_04 = (GameFontGlyph *)files[1];
-    font->unk_08 = (u8 *)files[2];
-    font->unk_0c = ext;
+    font->header = (GameFontHeader *)files[0];
+    font->glyphs = (GameFontGlyph *)files[1];
+    font->bitmaps = (u8 *)files[2];
+    font->subFont = ext;
     font->unk_10 = arg4;
 }
 
 void GameFont_Free(GameFontDesc *font) {
-    if (font->unk_00 != NULL) {
-        Mem_Free(font->unk_00);
-        font->unk_00 = NULL;
+    if (font->header != NULL) {
+        Mem_Free(font->header);
+        font->header = NULL;
     }
-    if (font->unk_04 != NULL) {
-        Mem_Free(font->unk_04);
-        font->unk_04 = NULL;
+    if (font->glyphs != NULL) {
+        Mem_Free(font->glyphs);
+        font->glyphs = NULL;
     }
-    if (font->unk_08 != NULL) {
-        Mem_Free(font->unk_08);
-        font->unk_08 = NULL;
+    if (font->bitmaps != NULL) {
+        Mem_Free(font->bitmaps);
+        font->bitmaps = NULL;
     }
 }
 
 u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c) {
     u32 width = 0;
     if (c & 0x80000000) {
-        width = GameFont_GetGlyphWidth(font->unk_0c, c & 0x7fffffff);
-    } else if (c < font->unk_00->unk_00) {
-        width = font->unk_04[c].unk_02;
+        width = GameFont_GetGlyphWidth(font->subFont, c & 0x7fffffff);
+    } else if (c < font->header->glyphCount) {
+        width = font->glyphs[c].width;
     }
     return width;
 }
@@ -449,12 +449,12 @@ u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c) {
 const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c) {
     const u8 *glyph = NULL;
     if (c & 0x80000000) {
-        glyph = GameFont_GetGlyphBitmap(font->unk_0c, c & 0x7fffffff);
+        glyph = GameFont_GetGlyphBitmap(font->subFont, c & 0x7fffffff);
     } else {
-        GameFontHeader *info = font->unk_00;
-        if (c < info->unk_00) {
-            u32 size = (u32)(info->unk_04 * info->unk_06) >> 3;
-            glyph = font->unk_08 + size * c;
+        GameFontHeader *info = font->header;
+        if (c < info->glyphCount) {
+            u32 size = (u32)(info->cellWidth * info->cellHeight) >> 3;
+            glyph = font->bitmaps + size * c;
         }
     }
     return glyph;
@@ -470,28 +470,28 @@ s32 GameFont_FindGlyph(GameFontDesc *font, s32 c) {
     s32 v;
     s32 neg;
     u32 count;
-    if (font->unk_0c != NULL && c <= 7 && c >= 1) {
+    if (font->subFont != NULL && c <= 7 && c >= 1) {
         ok = TRUE;
     }
     if (ok) {
-        result = GameFont_FindGlyph(font->unk_0c, c + 0x20);
+        result = GameFont_FindGlyph(font->subFont, c + 0x20);
         if (result != -1) {
             result |= data_020ca638;
         }
     } else {
-        count = font->unk_00->unk_00;
+        count = font->header->glyphCount;
         i = 0;
         neg = ~i;
         for (; i < count; i++) {
             v = neg;
             if ((i & 0x80000000) != 0) {
-                GameFontDesc *sec = ((volatile GameFontDesc *)font)->unk_0c;
+                GameFontDesc *sec = ((volatile GameFontDesc *)font)->subFont;
                 idx = i & 0x7fffffff;
-                if (idx < sec->unk_00->unk_00) {
-                    v = sec->unk_04[idx].unk_00;
+                if (idx < sec->header->glyphCount) {
+                    v = sec->glyphs[idx].code;
                 }
             } else if (i < count) {
-                v = font->unk_04[i].unk_00;
+                v = font->glyphs[i].code;
             }
             if (v == c) {
                 result = i;
@@ -504,57 +504,57 @@ s32 GameFont_FindGlyph(GameFontDesc *font, s32 c) {
 }
 
 void TextLabel::requestRedraw() {
-    unk_54 = 1;
-    if (unk_58 == 2) {
+    redrawPending = 1;
+    if (group == 2) {
         render();
-        unk_54 = 0;
+        redrawPending = 0;
     }
 }
 
 void TextLabel::requestClear(s32 arg1) {
-    unk_5c = arg1;
-    if (unk_58 == 2 && unk_5c != -1) {
+    clearRequest = arg1;
+    if (group == 2 && clearRequest != -1) {
         clear();
-        unk_5c = -1;
+        clearRequest = -1;
     }
 }
 
 void TextLabel::alignCenter() {
     u32 width = measureWidth();
-    u32 total = unk_20 * 8;
+    u32 total = widthTiles * 8;
     if (total > width) {
-        unk_30 = (total - width) / 2;
+        xOffset = (total - width) / 2;
     } else {
-        unk_30 = 0;
+        xOffset = 0;
     }
 }
 
 void TextLabel::alignRight() {
     u32 width = measureWidth();
-    u32 total = unk_20 * 8;
+    u32 total = widthTiles * 8;
     if (total > width) {
-        unk_30 = total - width;
+        xOffset = total - width;
     } else {
-        unk_30 = 0;
+        xOffset = 0;
     }
 }
 
 void TextLabel::setHighlight(u8 arg1, u8 arg2, u32 arg3, u32 arg4) {
-    unk_3a = arg1;
-    unk_3b = arg2;
-    unk_40 = arg3;
-    unk_44 = arg4;
+    highlightAFg = arg1;
+    highlightABg = arg2;
+    highlightAStart = arg3;
+    highlightALen = arg4;
 }
 
 void TextLabel::setHighlights(u8 arg1, u8 arg2, u32 arg3, u32 arg4, u8 arg5, u8 arg6, u32 arg7, u32 arg8) {
-    unk_3a = arg1;
-    unk_3b = arg2;
-    unk_40 = arg3;
-    unk_44 = arg4;
-    unk_3c = arg5;
-    unk_3d = arg6;
-    unk_48 = arg7;
-    unk_4c = arg8;
+    highlightAFg = arg1;
+    highlightABg = arg2;
+    highlightAStart = arg3;
+    highlightALen = arg4;
+    highlightBFg = arg5;
+    highlightBBg = arg6;
+    highlightBStart = arg7;
+    highlightBLen = arg8;
 }
 
 u32 TextLabel::getWidthInTiles() {
@@ -562,17 +562,17 @@ u32 TextLabel::getWidthInTiles() {
 }
 
 void TextLabel::beginMeasure() {
-    unk_68 = 0;
-    unk_64 = -1;
+    curX = 0;
+    curGlyph = -1;
 }
 
 void TextLabel::measureChar(u32 c) {
-    unk_64 = GameFont_FindGlyph(unk_28, c);
-    if (unk_64 == -1) {
-        unk_64 = GameFont_FindGlyph(unk_28, 0x40);
+    curGlyph = GameFont_FindGlyph(font, c);
+    if (curGlyph == -1) {
+        curGlyph = GameFont_FindGlyph(font, 0x40);
     }
-    unk_68 += GameFont_GetGlyphWidth(unk_28, unk_64);
-    unk_68 += unk_34;
+    curX += GameFont_GetGlyphWidth(font, curGlyph);
+    curX += letterSpacing;
 }
 
 void TextLabel::endMeasure() {}
@@ -614,7 +614,7 @@ extern "C" void Text_ResetLabels(void) {
 }
 
 void TextLabel::clearTileBuffer() {
-    MI_CpuFill8(gTextTileBuffer, (u8)(unk_39 | (unk_39 << 4)), 0x400);
+    MI_CpuFill8(gTextTileBuffer, (u8)(bgColor | (bgColor << 4)), 0x400);
 }
 
 extern "C" void TextLabel_FlushGroup(s32 arg0) {
@@ -624,66 +624,66 @@ extern "C" void TextLabel_FlushGroup(s32 arg0) {
         if (obj == NULL) {
             break;
         }
-        if (obj->unk_58 != arg0) {
+        if (obj->group != arg0) {
             continue;
         }
-        if (obj->unk_5c != -1) {
+        if (obj->clearRequest != -1) {
             obj->clear();
-            obj->unk_5c = -1;
+            obj->clearRequest = -1;
         }
-        if (obj->unk_54) {
+        if (obj->redrawPending) {
             obj->render();
-            obj->unk_54 = 0;
+            obj->redrawPending = 0;
         }
     }
 }
 
 void TextLabel::render() {
-    u32 height = unk_28->unk_00->unk_06;
-    u32 limit = unk_24 << 3;
+    u32 height = font->header->cellHeight;
+    u32 limit = heightTiles << 3;
 
-    unk_74 = unk_38;
-    if (unk_18 != -1) {
-        unk_70 = unk_18 << 5;
-    } else if (unk_1c != 0) {
-        unk_70 = 0;
+    savedFgColor = fgColor;
+    if (tileIndex != -1) {
+        destOffset = tileIndex << 5;
+    } else if (destBuffer != 0) {
+        destOffset = 0;
     }
-    unk_75 = 0;
-    for (unk_6c = 0; unk_6c < height && unk_6c < limit; unk_6c += 8) {
-        u32 next = unk_6c + 8;
-        unk_75 = (next >= height || next >= limit) ? 1 : 0;
+    isLastRow = 0;
+    for (curRowY = 0; curRowY < height && curRowY < limit; curRowY += 8) {
+        u32 next = curRowY + 8;
+        isLastRow = (next >= height || next >= limit) ? 1 : 0;
         draw();
-        if (unk_55) {
-            unk_70 += 0x400;
+        if (rowStride1K) {
+            destOffset += 0x400;
         } else {
-            unk_70 += unk_60;
+            destOffset += rowBytes;
         }
     }
 }
 
 void TextLabel::beginRow() {
     clearTileBuffer();
-    unk_38 = unk_74;
-    unk_64 = -1;
-    unk_68 = unk_30;
-    unk_78 = 0;
+    fgColor = savedFgColor;
+    curGlyph = -1;
+    curX = xOffset;
+    charIndex = 0;
 }
 
 void TextLabel::drawChar(u32 c) {
     u32 start;
 
-    unk_64 = GameFont_FindGlyph(unk_28, c);
-    if (unk_64 == -1) {
-        unk_64 = GameFont_FindGlyph(unk_28, 0x40);
+    curGlyph = GameFont_FindGlyph(font, c);
+    if (curGlyph == -1) {
+        curGlyph = GameFont_FindGlyph(font, 0x40);
     }
-    start = unk_68;
-    unk_68 += drawGlyph();
+    start = curX;
+    curX += drawGlyph();
     drawLetterSpacing();
-    unk_68 += unk_34;
-    if (unk_75 && unk_57) {
+    curX += letterSpacing;
+    if (isLastRow && underline) {
         drawUnderline(start);
     }
-    unk_78++;
+    charIndex++;
 }
 
 void TextLabel::flushRow() {
@@ -694,23 +694,23 @@ void TextLabel::flushRow() {
     u8 bg;
     u8 bgHigh;
 
-    size = unk_60;
+    size = rowBytes;
     if (size > 0x400) {
         size = 0x400;
     }
     DC_FlushRange(gTextTileBuffer, size);
-    if (unk_50 == 2 || unk_50 == 3) {
-        sTextVramLoadFuncsA[unk_2c](gTextTileBuffer, unk_70, size);
+    if (copyMode == 2 || copyMode == 3) {
+        sTextVramLoadFuncsA[vramLoader](gTextTileBuffer, destOffset, size);
     }
-    if (unk_50 == 1 || unk_50 == 3) {
-        sTextVramLoadFuncsB[unk_2c](gTextTileBuffer, unk_70, size);
+    if (copyMode == 1 || copyMode == 3) {
+        sTextVramLoadFuncsB[vramLoader](gTextTileBuffer, destOffset, size);
     }
-    if (unk_50 == 0) {
-        if (unk_56) {
-            dst = (u8 *)(unk_1c + unk_70);
+    if (copyMode == 0) {
+        if (blendOverBg) {
+            dst = (u8 *)(destBuffer + destOffset);
             src = gTextTileBuffer;
             end = src + size;
-            bg = unk_39;
+            bg = bgColor;
             bgHigh = bg << 4;
             for (; src < end; src++, dst++) {
                 if ((*dst & 0xf0) == bgHigh) {
@@ -723,7 +723,7 @@ void TextLabel::flushRow() {
                 }
             }
         } else {
-            MI_CpuCopy8(gTextTileBuffer, (void *)(unk_1c + unk_70), size);
+            MI_CpuCopy8(gTextTileBuffer, (void *)(destBuffer + destOffset), size);
         }
     }
 }
@@ -746,11 +746,11 @@ u32 TextLabel::drawGlyph() {
     u8 *pixel;
     u32 start = 0;
 
-    width = unk_28->unk_00->unk_04;
-    glyphWidth = GameFont_GetGlyphWidth(unk_28, unk_64);
-    glyph = GameFont_GetGlyphBitmap(unk_28, unk_64);
+    width = font->header->cellWidth;
+    glyphWidth = GameFont_GetGlyphWidth(font, curGlyph);
+    glyph = GameFont_GetGlyphBitmap(font, curGlyph);
     mask = 0x80;
-    pos = (unk_6c * width) >> 3;
+    pos = (curRowY * width) >> 3;
 
     drawBackground = TRUE;
     if (!isInHighlightA() && !isInHighlightB()) {
@@ -765,7 +765,7 @@ u32 TextLabel::drawGlyph() {
                 bit = glyph[pos] & mask;
                 color = bit ? fg : bg;
                 if (bit || drawBackground) {
-                    u32 px = unk_68 + x;
+                    u32 px = curX + x;
                     tile = px >> 3;
                     index = (row * 8 + (px - tile * 8)) >> 1;
                     if (tile < 0x20) {
@@ -802,8 +802,8 @@ void TextLabel::drawLetterSpacing() {
     if (isInHighlightA() || isInHighlightB()) {
         color = getBgColor();
         for (row = 0; row < 8; row++) {
-            for (x = 0; x < unk_34; x++) {
-                px = unk_68 + x;
+            for (x = 0; x < letterSpacing; x++) {
+                px = curX + x;
                 tile = px >> 3;
                 index = (row * 8 + (px - tile * 8)) >> 1;
                 if (tile < 0x20) {
@@ -830,7 +830,7 @@ void TextLabel::drawUnderline(u32 x) {
 
     color = getFgColor();
     high = color << 4;
-    for (; x < unk_68; x++) {
+    for (; x < curX; x++) {
         tile = x >> 3;
         index = ((x - tile * 8) + 0x30) >> 1;
         if (tile < 0x20) {
@@ -853,44 +853,44 @@ void TextLabel::clear() {
 
     clearTileBuffer();
 
-    if (unk_5c == 0) {
-        size = unk_60;
+    if (clearRequest == 0) {
+        size = rowBytes;
     } else {
-        size = unk_5c << 5;
+        size = clearRequest << 5;
     }
     if (size > 0x400) {
         size = 0x400;
     }
 
     offset = 0;
-    if (unk_18 != -1) {
-        offset = unk_18 << 5;
-    } else if (unk_1c != 0) {
+    if (tileIndex != -1) {
+        offset = tileIndex << 5;
+    } else if (destBuffer != 0) {
         offset = 0;
     }
 
-    for (i = 0; i < unk_24; i++) {
+    for (i = 0; i < heightTiles; i++) {
         DC_FlushRange(gTextTileBuffer, size);
-        if (unk_50 == 2 || unk_50 == 3) {
-            sTextVramLoadFuncsA[unk_2c](gTextTileBuffer, offset, size);
+        if (copyMode == 2 || copyMode == 3) {
+            sTextVramLoadFuncsA[vramLoader](gTextTileBuffer, offset, size);
         }
-        if (unk_50 == 1 || unk_50 == 3) {
-            sTextVramLoadFuncsB[unk_2c](gTextTileBuffer, offset, size);
+        if (copyMode == 1 || copyMode == 3) {
+            sTextVramLoadFuncsB[vramLoader](gTextTileBuffer, offset, size);
         }
-        if (unk_50 == 0) {
-            MI_CpuCopy8(gTextTileBuffer, (void *)(unk_1c + offset), size);
+        if (copyMode == 0) {
+            MI_CpuCopy8(gTextTileBuffer, (void *)(destBuffer + offset), size);
         }
-        if (unk_55) {
+        if (rowStride1K) {
             offset += 0x400;
         } else {
-            offset += unk_60;
+            offset += rowBytes;
         }
     }
 }
 
 BOOL TextLabel::isInHighlightA() {
     BOOL result = FALSE;
-    if (unk_78 >= unk_40 && unk_78 < unk_40 + unk_44) {
+    if (charIndex >= highlightAStart && charIndex < highlightAStart + highlightALen) {
         result = TRUE;
     }
     return result;
@@ -898,28 +898,28 @@ BOOL TextLabel::isInHighlightA() {
 
 BOOL TextLabel::isInHighlightB() {
     BOOL result = FALSE;
-    if (unk_78 >= unk_48 && unk_78 < unk_48 + unk_4c) {
+    if (charIndex >= highlightBStart && charIndex < highlightBStart + highlightBLen) {
         result = TRUE;
     }
     return result;
 }
 
 u8 TextLabel::getFgColor() {
-    u8 result = unk_38;
+    u8 result = fgColor;
     if (isInHighlightA()) {
-        result = unk_3a;
+        result = highlightAFg;
     } else if (isInHighlightB()) {
-        result = unk_3c;
+        result = highlightBFg;
     }
     return result;
 }
 
 u8 TextLabel::getBgColor() {
-    u8 result = unk_39;
+    u8 result = bgColor;
     if (isInHighlightA()) {
-        result = unk_3b;
+        result = highlightABg;
     } else if (isInHighlightB()) {
-        result = unk_3d;
+        result = highlightBBg;
     }
     return result;
 }
@@ -945,82 +945,82 @@ TextLabel::TextLabel(u32 arg1, s32 arg2, s32 arg3) {
     Unk_02050288_08 zero;
 
     unk_04 = 0;
-    unk_08 = *(Unk_02050288_08 *)func_02133ef8(&zero, sizeof(zero));
-    unk_10 = 0;
-    unk_18 = arg1;
-    unk_1c = 0;
-    unk_20 = arg2;
-    unk_24 = arg3;
-    unk_28 = &gFontA;
-    unk_2c = 2;
-    unk_30 = 0;
-    unk_34 = 1;
-    unk_38 = 1;
-    unk_39 = 0xf;
-    unk_3a = 0;
-    unk_3b = 0;
-    unk_3c = 0;
-    unk_3d = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_50 = 1;
-    unk_54 = 0;
-    unk_55 = 0;
-    unk_56 = 0;
-    unk_57 = 0;
-    unk_58 = 0;
-    unk_5c = -1;
-    unk_60 = arg2 << 5;
-    unk_64 = -1;
-    unk_68 = 0;
-    unk_6c = 0;
-    unk_70 = 0;
-    unk_74 = 1;
-    unk_75 = 0;
-    unk_78 = 0;
+    listLink = *(Unk_02050288_08 *)func_02133ef8(&zero, sizeof(zero));
+    textStart = 0;
+    tileIndex = arg1;
+    destBuffer = 0;
+    widthTiles = arg2;
+    heightTiles = arg3;
+    font = &gFontA;
+    vramLoader = 2;
+    xOffset = 0;
+    letterSpacing = 1;
+    fgColor = 1;
+    bgColor = 0xf;
+    highlightAFg = 0;
+    highlightABg = 0;
+    highlightBFg = 0;
+    highlightBBg = 0;
+    highlightAStart = 0;
+    highlightALen = 0;
+    highlightBStart = 0;
+    highlightBLen = 0;
+    copyMode = 1;
+    redrawPending = 0;
+    rowStride1K = 0;
+    blendOverBg = 0;
+    underline = 0;
+    group = 0;
+    clearRequest = -1;
+    rowBytes = arg2 << 5;
+    curGlyph = -1;
+    curX = 0;
+    curRowY = 0;
+    destOffset = 0;
+    savedFgColor = 1;
+    isLastRow = 0;
+    charIndex = 0;
 }
 
 TextLabel::TextLabel(s32 arg1, s32 arg2, s32 arg3) {
     Unk_02050288_08 zero;
 
     unk_04 = 0;
-    unk_08 = *(Unk_02050288_08 *)func_02133ef8(&zero, sizeof(zero));
-    unk_10 = 0;
-    unk_18 = -1;
-    unk_1c = arg1;
-    unk_20 = arg2;
-    unk_24 = arg3;
-    unk_28 = &gFontA;
-    unk_2c = 5;
-    unk_30 = 0;
-    unk_34 = 1;
-    unk_38 = 1;
-    unk_39 = 0xf;
-    unk_3a = 0;
-    unk_3b = 0;
-    unk_3c = 0;
-    unk_3d = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_50 = 0;
-    unk_54 = 0;
-    unk_55 = 0;
-    unk_56 = 0;
-    unk_57 = 0;
-    unk_58 = 0;
-    unk_5c = -1;
-    unk_60 = arg2 << 5;
-    unk_64 = -1;
-    unk_68 = 0;
-    unk_6c = 0;
-    unk_70 = 0;
-    unk_74 = 1;
-    unk_75 = 0;
-    unk_78 = 0;
+    listLink = *(Unk_02050288_08 *)func_02133ef8(&zero, sizeof(zero));
+    textStart = 0;
+    tileIndex = -1;
+    destBuffer = arg1;
+    widthTiles = arg2;
+    heightTiles = arg3;
+    font = &gFontA;
+    vramLoader = 5;
+    xOffset = 0;
+    letterSpacing = 1;
+    fgColor = 1;
+    bgColor = 0xf;
+    highlightAFg = 0;
+    highlightABg = 0;
+    highlightBFg = 0;
+    highlightBBg = 0;
+    highlightAStart = 0;
+    highlightALen = 0;
+    highlightBStart = 0;
+    highlightBLen = 0;
+    copyMode = 0;
+    redrawPending = 0;
+    rowStride1K = 0;
+    blendOverBg = 0;
+    underline = 0;
+    group = 0;
+    clearRequest = -1;
+    rowBytes = arg2 << 5;
+    curGlyph = -1;
+    curX = 0;
+    curRowY = 0;
+    destOffset = 0;
+    savedFgColor = 1;
+    isLastRow = 0;
+    charIndex = 0;
 }
 
 TextLabel::~TextLabel() {}

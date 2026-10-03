@@ -15,41 +15,41 @@ struct TownUpdater {
 
 // member at offset 0x18 of gTownEval (data_021c40e4)
 struct TownEvalAdvice {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 acreX;
+    s32 acreZ;
+    s32 reason;
     TownEvalAdvice();
     ~TownEvalAdvice();
 };
 
 struct Unk_0204a768_Cell {
     u8 pad_00[0x10];
-    Unk_0204a768_Pos unk_10;
+    Unk_0204a768_Pos rafflesiaPos;
     u8 pad_18[0xc];
 };
 
 // gTownEval (0x284 bytes; data_021c40d0, data_021c40e4, data_021c40ec, data_021c4110 are its offsets 4, 0x18,
 // 0x20, 0x44). Its destructor is implicit (it destroys unk_18).
 struct TownEval {
-    u32 unk_00;
-    s32 unk_04[5];
-    TownEvalAdvice unk_18;
+    u32 rank;
+    s32 counts[5];
+    TownEvalAdvice advice;
     u8 pad_24[0x10];
-    Unk_0204a768_Pos unk_34;
-    Unk_0204a768_Pos unk_3c;
-    Unk_0204a768_Cell unk_44[4][4];
+    Unk_0204a768_Pos rafflesiaBlock;
+    Unk_0204a768_Pos rafflesiaUnit;
+    Unk_0204a768_Cell acres[4][4];
 };
 
 struct Unk_021c4350_Cell {
     u8 pad_00[0x14];
-    Unk_0204a768_Pos unk_14;
+    Unk_0204a768_Pos unit;
     u8 pad_1c[8];
 };
 
 // sFieldActions (0x46c bytes; data_021c43bc is its offset 0x6c)
 struct Unk_021c4350 {
-    Unk_021c4350_Cell unk_00[3];
-    u8 unk_6c[0x400];
+    Unk_021c4350_Cell requests[3];
+    u8 chopCounts[0x400];
 };
 
 // element of sLitCedars (24 x 8 bytes); the constructor is LitCedarPos_Construct of another unit
@@ -60,8 +60,8 @@ struct LitCedarPos {
 
 // sPendingUnits (0x144 bytes; data_021c3f8c is its offset 4: 20 entries of 0x10 bytes)
 struct Unk_021c3f88 {
-    u32 unk_00;
-    u32 unk_04[0x50];
+    u32 enabled;
+    u32 entries[0x50];
 };
 
 namespace nZ {
@@ -85,25 +85,25 @@ struct Unk_02042104_Date {
 };
 struct Unk_020419b4 {
     u8 pad00[0x64];
-    s32 unk_64;
+    s32 threadState;
     u8 pad68[0xc0 - 0x68];
-    u32 unk_c0;
-    u32 unk_c4;
+    u32 callerThread;
+    u32 heap;
     u8 unk_c8[8];
     u8 unk_d0[8];
     u32 unk_d8;
     u8 unk_dc;
     u8 paddd[3];
-    u32 unk_e0;
+    u32 stackGuardLow;
     u8 pade4[0x10e4 - 0xe4];
-    u32 unk_10e4;
-    u8 unk_10e8;
-    u8 unk_10e9;
-    u8 unk_10ea;
+    u32 stackGuardHigh;
+    u8 hasArgs;
+    u8 done;
+    u8 started;
 };
 struct Unk_02041ac0_Glob {
     u32 pad[8];
-    Unk_020419b4 *unk_20;
+    Unk_020419b4 *updateThread;
 };
 extern Unk_02041ac0_Glob gTownUpdater;
 extern u32 gCurrentHeap;
@@ -224,22 +224,22 @@ struct Unk_020422c0_Map {
 struct Unk_02042564_Obj {
     u8 y;
     u8 x;
-    s16 unk_02;
-    s16 unk_04;
+    s16 hits;
+    s16 timer;
 };
 struct Unk_02042578_Entry {
-    u32 unk_00;
-    u32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
-    Unk_020422c0_Pos unk_14;
-    u8 unk_1c;
+    u32 aid;
+    u32 area;
+    s32 state;
+    s32 kind;
+    u16 item;
+    u16 oldItem;
+    Unk_020422c0_Pos unit;
+    u8 layer;
     u8 unk_1d;
     s8 unk_1e;
     u8 pad_1f;
-    s32 unk_20;
+    s32 mode;
 };
 struct Unk_02042350_Obj {
     Unk_02042578_Entry e[3];
@@ -660,15 +660,15 @@ struct Unk_02044490_E {
     u8 unk_01_3 : 2;
     u8 unk_01_5 : 2;
     u8 unk_01_7 : 1;
-    u16 unk_02;
-    u16 unk_04;
-    u16 unk_06[3];
-    u16 unk_0c;
+    u16 unit;
+    u16 item;
+    u16 dropUnits[3];
+    u16 dropItem;
 };
 struct Unk_02044490_H6 { u16 a, b, c; };
 struct Unk_02044490_R {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 state;
     u8 pad_0c[0x24 - 0xc];
 };
 extern Unk_02044490_R sFieldActions[];
@@ -695,9 +695,9 @@ struct Unk_02044774_S {
     u8 unk_01_0 : 5;
     u8 unk_01_5 : 2;
     u8 unk_01_7 : 1;
-    u16 unk_02;
-    u16 unk_04;
-    u16 unk_06;
+    u16 unit;
+    u16 oldItem;
+    u16 item;
 };
 s32 PendingUnit_Reserve(u32 a, Unk_02043f04_Pos *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 s32 TreeDrop_Spawn(Unk_02044490_E *e, Unk_02044774_S *s, s32 t);
@@ -732,7 +732,7 @@ struct Unk_020449e8_Src {
     u8 f : 1;
     u16 pos;
     u16 code;
-    u16 unk_06;
+    u16 item;
 };
 struct Unk_02045214_Ent {
     u8 kind : 3;
@@ -746,17 +746,17 @@ struct Unk_02045214_Ent {
     u8 rest[13];
 };
 struct Unk_02044dd8_Ent {
-    s32 unk_00;
+    s32 aid;
     s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
-    s32 unk_14;
-    s32 unk_18;
-    u8 unk_1c;
+    s32 state;
+    s32 kind;
+    u16 item;
+    u16 oldItem;
+    s32 unitX;
+    s32 unitZ;
+    u8 layer;
     u8 unk_1d;
-    s8 unk_1e;
+    s8 extra;
     u8 pad_1f;
     u8 pad_20[4];
 };
@@ -878,9 +878,9 @@ struct Unk_021c3f8c {
       s8 unk_02_d : 2;
       u8 unk_03;
       u32 unk_04;
-      Unk_021c3f8c_Pos unk_08;
-      u16 unk_0a;
-      u16 unk_0c;
+      Unk_021c3f8c_Pos unit;
+      u16 item;
+      u16 oldItem;
       u16 unk_0e;
 };
 struct Unk_020452ec_Pos {
@@ -968,8 +968,8 @@ struct Unk_02045c18_Bits {
     s8 unk_02_c : 4;
     u8 unk_02_d : 2;
     u8 pad[5];
-    u16 unk_08;
-    u16 unk_0a;
+    u16 unit;
+    u16 item;
 };
 struct Unk_02045d40_Ent {
     s32 a;
@@ -977,17 +977,17 @@ struct Unk_02045d40_Ent {
 };
 struct Unk_02045d98_Src {
     u8 pad[0x34];
-    s32 unk_34, unk_38, unk_3c, unk_40;
+    s32 rafflesiaBlockX, rafflesiaBlockZ, rafflesiaUnitX, rafflesiaUnitZ;
 };
 struct Unk_02046a0_Ts {
     s32 w[4];
 };
 struct Unk_02045e34_Map {
     u8 pad[4];
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
+    s32 width;
+    s32 height;
+    s32 unitsX;
+    s32 unitsZ;
 };
 struct Unk_020463fc_Sz {
     s32 w, h;
@@ -998,7 +998,7 @@ struct Unk_020463fc_Map {
 };
 struct Unk_02046514_Ent {
     u8 pad[0x88];
-    u8 unk_88;
+    u8 beachShells;
     u8 pad2[7];
 };
 struct Unk_02046230_Ts {
@@ -1009,7 +1009,7 @@ struct Unk_020460dc_Obj {
 };
 struct Unk_0204625c_Obj {
     u8 pad[0x20];
-    s32 unk_20;
+    s32 updateThread;
 };
 static inline BOOL Unk_02046358_R1(u16 *p) {
     BOOL r = FALSE;
@@ -1437,34 +1437,34 @@ extern "C" {
 
 struct Unk_02047798_Map {
     u8 pad_00[4];
-    s32 unk_04;
-    s32 unk_08;
+    s32 width;
+    s32 height;
 };
 struct Unk_02047830_Pos {
     s32 x;
     s32 y;
 };
 struct Unk_021c40cc {
-    u32 unk_00;
+    u32 rank;
     u8 pad_04[0x2c];
     s32 unk_30_0 : 4;
     s32 unk_30_4 : 1;
     s32 unk_30_5 : 1;
-    s32 unk_34;
-    s32 unk_38;
-    s32 unk_3c;
-    s32 unk_40;
+    s32 rafflesiaBlockX;
+    s32 rafflesiaBlockZ;
+    s32 rafflesiaUnitX;
+    s32 rafflesiaUnitZ;
 };
 struct Unk_021c40ec {
     u8 pad_00[4];
-    u8 unk_04;
+    u8 jacobsAcres;
     u8 pad_05[8];
-    u8 unk_0d;
-    u8 unk_0e;
+    u8 buriedFossils;
+    u8 rocks;
 };
 struct Unk_021c4110_Cell {
     u8 pad_00[0x18];
-    u16 unk_18;
+    u16 rocks;
     u8 pad_1a[6];
     s32 unk_20_0 : 1;
     s32 unk_20_1 : 1;
@@ -1796,21 +1796,21 @@ struct Unk_020499c4_CellFlags {
     s32 f14 : 1;
 };
 struct Unk_020499c4_Cell {
-    s32 unk_00;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u16 unk_0e;
-    Unk_020499c4_Pos unk_10;
-    u16 unk_18;
+    s32 score;
+    u8 trees00;
+    u8 trees01;
+    u8 trees10;
+    u8 trees11;
+    u16 weeds;
+    u16 groundItems;
+    u16 garbage;
+    u16 flowers;
+    Unk_020499c4_Pos rafflesiaPos;
+    u16 rocks;
     u8 pad_1a[3];
-    u8 unk_1d;
+    u8 buriedFossils;
     u8 pad_1e[2];
-    Unk_020499c4_CellFlags unk_20;
+    Unk_020499c4_CellFlags flags;
 };
 struct Unk_020499c4_Row {
     Unk_020499c4_Cell cells[4];
@@ -1824,30 +1824,30 @@ struct Unk_020499c4_AFlags {
 };
 struct Unk_020499c4_Dim {
     s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 width;
+    s32 height;
 };
 struct Unk_020499c4 {
-    s32 unk_00;
+    s32 rank;
     u8 pad_04[0x14];
-    u8 unk_18[0xc];
-    u8 unk_24;
-    u8 unk_25;
-    u16 unk_26;
-    u16 unk_28;
-    u16 unk_2a;
-    u8 unk_2c;
-    u8 unk_2d;
-    u8 unk_2e;
+    u8 advice[0xc];
+    u8 jacobsAcres;
+    u8 flowerAcres;
+    u16 flowers;
+    u16 weeds;
+    u16 trees;
+    u8 furnitureTreeAcres;
+    u8 buriedFossils;
+    u8 rocks;
     u8 pad_2f;
-    Unk_020499c4_AFlags unk_30;
-    s32 unk_34;
-    s32 unk_38;
-    Unk_020499c4_Pos unk_3c;
+    Unk_020499c4_AFlags townFlags;
+    s32 rafflesiaBlockX;
+    s32 rafflesiaBlockZ;
+    Unk_020499c4_Pos rafflesiaUnit;
     Unk_020499c4_Row rows[4];
 };
 struct Unk_020499c4_Counts {
-    s32 unk_00;
+    s32 rank;
     s32 counts[5];
 };
 extern Unk_020499c4_Counts gTownEval;
@@ -1925,19 +1925,19 @@ namespace nO {
 extern "C" {
 
 struct Unk_02049e40_Out {
-      s32 unk_00;
-      u8 unk_04[2][2];
-      u16 unk_08;
-      u16 unk_0a;
-      u16 unk_0c;
-      u16 unk_0e;
-      s32 unk_10;
-      s32 unk_14;
-      u16 unk_18;
-      u16 unk_1a;
-      u8 unk_1c;
-      u8 unk_1d;
-      u32 unk_20;
+      s32 score;
+      u8 trees[2][2];
+      u16 weeds;
+      u16 groundItems;
+      u16 garbage;
+      u16 flowers;
+      s32 rafflesiaX;
+      s32 rafflesiaZ;
+      u16 rocks;
+      u16 litCedars;
+      u8 shells;
+      u8 buriedFossils;
+      u32 flags;
 };
 struct Unk_0204a1c0_Bits {
     u32 lo : 6;
@@ -1964,13 +1964,13 @@ void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, s32 x, s32 
 void TownEval_RemoveObject(Unk_02049e40_Out *out, void *map, s32 x, s32 z, s32 n);
 void TownEval_CalcScore(Unk_02049e40_Out *out);
 struct Unk_0204a6b8_Out {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 acreX;
+    s32 acreZ;
+    s32 reason;
 };
 struct Unk_0204a6b8_In {
-    s32 unk_00;
-    s32 unk_04;
+    s32 acreX;
+    s32 acreZ;
 };
 void TownEval_PickAdvice(Unk_0204a6b8_Out *out, Unk_0204a6b8_In *in, Unk_02049e40_Out *res);
 }
@@ -2433,11 +2433,11 @@ TownEval gTownEval;
 }
 
 TownEvalAdvice::TownEvalAdvice() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_00 = -1;
-    unk_04 = -1;
-    unk_08 = -1;
+    acreX = 0;
+    acreZ = 0;
+    acreX = -1;
+    acreZ = -1;
+    reason = -1;
 }
 
 TownEvalAdvice::~TownEvalAdvice() {}
@@ -2841,27 +2841,27 @@ const u16 sTreeDropFruit[6] = {
 
 namespace nO {
 extern "C" void TownEval_PickAdvice(Unk_0204a6b8_Out *out, Unk_0204a6b8_In *in, Unk_02049e40_Out *res) {
-    out->unk_00 = in->unk_00;
-    out->unk_04 = in->unk_04;
-    if (out->unk_00 < 0) {
-        out->unk_08 = -1;
+    out->acreX = in->acreX;
+    out->acreZ = in->acreZ;
+    if (out->acreX < 0) {
+        out->reason = -1;
     } else {
         s32 sc[6];
         s32 *q, i;
         q = sc;
         for (i = 0; i < 6; i++) *q++ = 0;
-        s32 n = res->unk_04[0][0] + res->unk_04[1][0] + res->unk_04[0][1] + res->unk_04[1][1];
+        s32 n = res->trees[0][0] + res->trees[1][0] + res->trees[0][1] + res->trees[1][1];
         if (n > 15) {
             sc[0] = (n - 15) * 2;
         } else if (n < 12) {
             sc[1] = (12 - n) * 2;
         }
-        s32 a = res->unk_08;
+        s32 a = res->weeds;
         if (a >= 3) sc[2] = a - 2;
-        s32 b = res->unk_0a;
+        s32 b = res->groundItems;
         if (b >= 3) sc[3] = b - 2;
-        sc[4] = res->unk_0c * 10;
-        if (((s32)(res->unk_20 << 31) >> 31) != 0) sc[5] = 50;
+        sc[4] = res->garbage * 10;
+        if (((s32)(res->flags << 31) >> 31) != 0) sc[5] = 50;
         s32 best = -1;
         s32 bi = -1;
         q = sc;
@@ -2871,25 +2871,25 @@ extern "C" void TownEval_PickAdvice(Unk_0204a6b8_Out *out, Unk_0204a6b8_In *in, 
                 bi = i;
             }
         }
-        out->unk_08 = bi;
+        out->reason = bi;
     }
 }
 }
 
 namespace nO {
 extern "C" void TownEval_CalcScore(Unk_02049e40_Out *out) {
-    s32 n = out->unk_04[0][0] + out->unk_04[1][0] + out->unk_04[0][1] + out->unk_04[1][1];
-    out->unk_00 = 100;
+    s32 n = out->trees[0][0] + out->trees[1][0] + out->trees[0][1] + out->trees[1][1];
+    out->score = 100;
     if (n > 15) {
-        out->unk_00 += (n - 15) * -2;
+        out->score += (n - 15) * -2;
     } else if (n < 12) {
-        out->unk_00 += (12 - n) * -2;
+        out->score += (12 - n) * -2;
     }
-    if (out->unk_08 >= 3) out->unk_00 -= out->unk_08 - 2;
-    if (out->unk_0a >= 3) out->unk_00 -= out->unk_0a - 2;
-    out->unk_00 += out->unk_0c * -10;
-    if (((s32)(out->unk_20 << 31) >> 31) == 1) out->unk_00 -= 50;
-    if (out->unk_0e >= 3) out->unk_00 += out->unk_0e - 2;
+    if (out->weeds >= 3) out->score -= out->weeds - 2;
+    if (out->groundItems >= 3) out->score -= out->groundItems - 2;
+    out->score += out->garbage * -10;
+    if (((s32)(out->flags << 31) >> 31) == 1) out->score -= 50;
+    if (out->flowers >= 3) out->score += out->flowers - 2;
 }
 }
 
@@ -2908,20 +2908,20 @@ extern "C" void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, 
     s32 j, i;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 2; j++) {
-            out->unk_04[j][i] = 0;
+            out->trees[j][i] = 0;
         }
     }
-    out->unk_08 = 0;
-    out->unk_0a = 0;
-    out->unk_0c = 0;
-    out->unk_0e = 0;
-    out->unk_20 = 0;
-    out->unk_10 = -1;
-    out->unk_14 = -1;
-    out->unk_18 = 0;
-    out->unk_1a = 0;
-    out->unk_1c = 0;
-    out->unk_1d = 0;
+    out->weeds = 0;
+    out->groundItems = 0;
+    out->garbage = 0;
+    out->flowers = 0;
+    out->flags = 0;
+    out->rafflesiaX = -1;
+    out->rafflesiaZ = -1;
+    out->rocks = 0;
+    out->litCedars = 0;
+    out->shells = 0;
+    out->buriedFossils = 0;
     u16 *p = BlockMap_GetItemPtr(map, x, z, 0, 0, 0);
     i = 0;
     BOOL fl[3];
@@ -2935,19 +2935,19 @@ extern "C" void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, 
             if ((v >= 0x26 && v <= 0x2a) || (v >= 0x5d && v <= 0x61) || (v >= 0x2f && v <= 0x56) ||
                 (v >= 0x57 && v <= 0x5b) || (v >= 0x66 && v <= 0x68) || v == 0x69 || (v >= 0x6a && v <= 0x6c) ||
                 v == 0x6d || (v >= 0xc8 && v <= 0xcf)) {
-                out->unk_04[(i & 0xf) >> 3][i >> 7]++;
+                out->trees[(i & 0xf) >> 3][i >> 7]++;
                 switch (*p - 0x66) {
                 case 0:
                 case 4:
-                    out->unk_20 |= 0x10;
+                    out->flags |= 0x10;
                     break;
                 case 1:
                 case 5:
-                    out->unk_20 |= 8;
+                    out->flags |= 8;
                     break;
                 case 2:
                 case 6:
-                    out->unk_20 |= 0x20;
+                    out->flags |= 0x20;
                     break;
                 case 3:
                     break;
@@ -2956,57 +2956,57 @@ extern "C" void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, 
                 u32 t = *p;
                 if (t >= 0x26 && t <= 0x2a) x1 = TRUE;
                 if (x1 || (t >= 0x66 && t <= 0x68)) {
-                    out->unk_20 |= 0x800;
+                    out->flags |= 0x800;
                 } else if (t >= 0x5d && t <= 0x61 && (Item_IsTreeStage3(p) || Item_IsTreeGrown(p))) {
-                    out->unk_20 |= 0x1000;
+                    out->flags |= 0x1000;
                 } else if (*p == 0x6d) {
-                    out->unk_1a++;
+                    out->litCedars++;
                 }
             } else if (v == 0x25 || v == 0x5c || v == 0xc7 || (v >= 0x6e && v <= 0x73) || (v >= 0x74 && v <= 0x79) ||
                        (v >= 0x7a && v <= 0x7f) || (v >= 0x80 && v <= 0x87) || v == 0x89) {
                 TownEval_RemoveObject(out, map, x, z, i);
             } else if (v >= 0x21 && v <= 0x24) {
-                out->unk_08++;
+                out->weeds++;
             } else {
                 BOOL x2 = fl[1];
                 if (v <= 0x1d) x2 = TRUE;
                 if (x2) {
                     switch (v - 0x1a) {
                     case 1:
-                        out->unk_10 = i % 16;
-                        out->unk_14 = i / 16;
-                        out->unk_20 = (out->unk_20 & ~1) | 1;
+                        out->rafflesiaX = i % 16;
+                        out->rafflesiaZ = i / 16;
+                        out->flags = (out->flags & ~1) | 1;
                         break;
                     case 0:
-                        out->unk_20 |= 2;
-                        out->unk_0e++;
+                        out->flags |= 2;
+                        out->flowers++;
                         break;
                     case 2:
                     case 3:
-                        out->unk_0e++;
+                        out->flowers++;
                         break;
                     default:
-                        out->unk_20 |= 4;
-                        out->unk_0e++;
+                        out->flags |= 4;
+                        out->flowers++;
                         break;
                     }
                 } else if ((v >= 0x8a && v <= 0x8f) || (v >= 0x90 && v <= 0x95) || (v >= 0x96 && v <= 0x9b) ||
                            (v >= 0x9c && v <= 0xa3) || v == 0xa5) {
-                    out->unk_20 |= 4;
-                    out->unk_0e++;
+                    out->flags |= 4;
+                    out->flowers++;
                 } else if (v >= 0xe3 && v <= 0xe7) {
-                    out->unk_18++;
+                    out->rocks++;
                 } else if (v >= 0xe8 && v <= 0xfb) {
                     s32 k = (v - 0xe8) / 5;
-                    ((Unk_0204a1c0_Bits *)&out->unk_20)->mid |= 1 << k;
+                    ((Unk_0204a1c0_Bits *)&out->flags)->mid |= 1 << k;
                 }
             }
             break;
         case 1:
             if (v == 0x1548) {
-                out->unk_20 |= 0x400;
+                out->flags |= 0x400;
             } else if (v >= 0x1320 && v <= 0x1322) {
-                out->unk_0c++;
+                out->garbage++;
             } else if (v == 0x1568) {
                 TownEval_RemoveObject(out, map, x, z, i);
             } else {
@@ -3017,21 +3017,21 @@ extern "C" void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, 
                     u32 t = *p;
                     if (t >= 0x1554 && t <= 0x155c) x3 = TRUE;
                     if (x3) {
-                        out->unk_1c++;
+                        out->shells++;
                     } else if (t >= 0x154a && t <= 0x1553) {
-                        out->unk_20 |= 0x4000;
+                        out->flags |= 0x4000;
                     } else if (t >= 0x1518 && t <= 0x151c) {
                     } else if (t >= 0x1542 && t <= 0x1546) {
                     } else {
-                        out->unk_0a++;
+                        out->groundItems++;
                     }
                 } else {
                     switch (*p) {
                     case 0x1549:
-                        out->unk_1d++;
+                        out->buriedFossils++;
                         break;
                     case 0x1566:
-                        out->unk_20 |= 0x2000;
+                        out->flags |= 0x2000;
                         break;
                     }
                 }
@@ -3040,12 +3040,12 @@ extern "C" void TownEval_EvaluateAndCleanAcre(Unk_02049e40_Out *out, void *map, 
         case 2: {
             s32 r = i % 16;
             s32 q = i / 16;
-            if (!BlockMap_IsBuried(map, x, z, r, q)) out->unk_0a++;
+            if (!BlockMap_IsBuried(map, x, z, r, q)) out->groundItems++;
             break;
         }
         case 3:
         case 4:
-            out->unk_0a++;
+            out->groundItems++;
             break;
         }
     }
@@ -3058,20 +3058,20 @@ extern "C" void TownEval_EvaluateAcre(Unk_02049e40_Out *out, void *map, s32 x, s
     s32 j, i;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 2; j++) {
-            out->unk_04[j][i] = 0;
+            out->trees[j][i] = 0;
         }
     }
-    out->unk_08 = 0;
-    out->unk_0a = 0;
-    out->unk_0c = 0;
-    out->unk_0e = 0;
-    out->unk_20 = 0;
-    out->unk_10 = -1;
-    out->unk_14 = -1;
-    out->unk_18 = 0;
-    out->unk_1a = 0;
-    out->unk_1c = 0;
-    out->unk_1d = 0;
+    out->weeds = 0;
+    out->groundItems = 0;
+    out->garbage = 0;
+    out->flowers = 0;
+    out->flags = 0;
+    out->rafflesiaX = -1;
+    out->rafflesiaZ = -1;
+    out->rocks = 0;
+    out->litCedars = 0;
+    out->shells = 0;
+    out->buriedFossils = 0;
     u16 *p = BlockMap_GetItemPtr(map, x, z, 0, 0, 0);
     i = 0;
     BOOL fl[3];
@@ -3085,19 +3085,19 @@ extern "C" void TownEval_EvaluateAcre(Unk_02049e40_Out *out, void *map, s32 x, s
             if ((v >= 0x26 && v <= 0x2a) || (v >= 0x5d && v <= 0x61) || (v >= 0x2f && v <= 0x56) ||
                 (v >= 0x57 && v <= 0x5b) || (v >= 0x66 && v <= 0x68) || v == 0x69 || (v >= 0x6a && v <= 0x6c) ||
                 v == 0x6d || (v >= 0xc8 && v <= 0xcf)) {
-                out->unk_04[(i & 0xf) >> 3][i >> 7]++;
+                out->trees[(i & 0xf) >> 3][i >> 7]++;
                 switch (*p - 0x66) {
                 case 0:
                 case 4:
-                    out->unk_20 |= 0x10;
+                    out->flags |= 0x10;
                     break;
                 case 1:
                 case 5:
-                    out->unk_20 |= 8;
+                    out->flags |= 8;
                     break;
                 case 2:
                 case 6:
-                    out->unk_20 |= 0x20;
+                    out->flags |= 0x20;
                     break;
                 case 3:
                     break;
@@ -3106,48 +3106,48 @@ extern "C" void TownEval_EvaluateAcre(Unk_02049e40_Out *out, void *map, s32 x, s
                 u32 t = *p;
                 if (t >= 0x26 && t <= 0x2a) x1 = TRUE;
                 if (x1 || (t >= 0x66 && t <= 0x68)) {
-                    out->unk_20 |= 0x800;
+                    out->flags |= 0x800;
                 } else if (t >= 0x5d && t <= 0x61 && Item_IsTreeGrown(p)) {
-                    out->unk_20 |= 0x1000;
+                    out->flags |= 0x1000;
                 } else if (*p == 0x6d) {
-                    out->unk_1a++;
+                    out->litCedars++;
                 }
             } else if (v >= 0x21 && v <= 0x24) {
-                out->unk_08++;
+                out->weeds++;
             } else {
                 BOOL x2 = fl[1];
                 if (v <= 0x1d) x2 = TRUE;
                 if (x2) {
                     switch (v - 0x1a) {
                     case 1:
-                        out->unk_10 = i % 16;
-                        out->unk_14 = i / 16;
-                        out->unk_20 = (out->unk_20 & ~1) | 1;
+                        out->rafflesiaX = i % 16;
+                        out->rafflesiaZ = i / 16;
+                        out->flags = (out->flags & ~1) | 1;
                         break;
                     case 0:
-                        out->unk_20 |= 2;
-                        out->unk_0e++;
+                        out->flags |= 2;
+                        out->flowers++;
                         break;
                     case 2:
                     case 3:
-                        out->unk_0e++;
+                        out->flowers++;
                         break;
                     default:
-                        out->unk_20 |= 4;
-                        out->unk_0e++;
+                        out->flags |= 4;
+                        out->flowers++;
                         break;
                     }
                 } else if ((v >= 0x8a && v <= 0x8f) || (v >= 0x90 && v <= 0x95) || (v >= 0x96 && v <= 0x9b) ||
                            (v >= 0x9c && v <= 0xa3) || v == 0xa5 || (v >= 0x6e && v <= 0x73) ||
                            (v >= 0x74 && v <= 0x79) || (v >= 0x7a && v <= 0x7f) || (v >= 0x80 && v <= 0x87)) {
-                    out->unk_20 |= 4;
-                    out->unk_0e++;
+                    out->flags |= 4;
+                    out->flowers++;
                 }
             }
             break;
         case 1:
             if (v >= 0x1320 && v <= 0x1322) {
-                out->unk_0c++;
+                out->garbage++;
             } else {
                 s32 r = i % 16;
                 s32 q = i / 16;
@@ -3156,21 +3156,21 @@ extern "C" void TownEval_EvaluateAcre(Unk_02049e40_Out *out, void *map, s32 x, s
                     u32 t = *p;
                     if (t >= 0x1554 && t <= 0x155c) x3 = TRUE;
                     if (x3) {
-                        out->unk_1c++;
+                        out->shells++;
                     } else if (t >= 0x154a && t <= 0x1553) {
-                        out->unk_20 |= 0x4000;
+                        out->flags |= 0x4000;
                     } else if (t >= 0x1518 && t <= 0x151c) {
                     } else if (t >= 0x1542 && t <= 0x1546) {
                     } else {
-                        out->unk_0a++;
+                        out->groundItems++;
                     }
                 } else {
                     switch (*p) {
                     case 0x1549:
-                        out->unk_1d++;
+                        out->buriedFossils++;
                         break;
                     case 0x1566:
-                        out->unk_20 |= 0x2000;
+                        out->flags |= 0x2000;
                         break;
                     }
                 }
@@ -3179,12 +3179,12 @@ extern "C" void TownEval_EvaluateAcre(Unk_02049e40_Out *out, void *map, s32 x, s
         case 2: {
             s32 r = i % 16;
             s32 q = i / 16;
-            if (!BlockMap_IsBuried(map, x, z, r, q)) out->unk_0a++;
+            if (!BlockMap_IsBuried(map, x, z, r, q)) out->groundItems++;
             break;
         }
         case 3:
         case 4:
-            out->unk_0a++;
+            out->groundItems++;
             break;
         }
     }
@@ -3214,20 +3214,20 @@ extern "C" void TownEval_EvaluateAndClean(Unk_020499c4 *a, Unk_020499c4_Dim *b, 
     by = -1;
     bx = -1;
     best = 0;
-    a->unk_24 = 0;
-    a->unk_26 = 0;
-    a->unk_25 = 0;
-    a->unk_28 = 0;
-    a->unk_2a = 0;
-    a->unk_2c = 0;
-    a->unk_2d = 0;
-    a->unk_34 = by;
-    a->unk_38 = by;
-    a->unk_3c.p.a = by;
-    a->unk_3c.p.b = by;
+    a->jacobsAcres = 0;
+    a->flowers = 0;
+    a->flowerAcres = 0;
+    a->weeds = 0;
+    a->trees = 0;
+    a->furnitureTreeAcres = 0;
+    a->buriedFossils = 0;
+    a->rafflesiaBlockX = by;
+    a->rafflesiaBlockZ = by;
+    a->rafflesiaUnit.p.a = by;
+    a->rafflesiaUnit.p.b = by;
     
-    a->unk_2e = 0;
-    *(u8 *)&a->unk_30 = 0;
+    a->rocks = 0;
+    *(u8 *)&a->townFlags = 0;
     for (k = 0; k < 5; k++) {
         gTownEval.counts[k] = 0;
     }
@@ -3235,39 +3235,39 @@ extern "C" void TownEval_EvaluateAndClean(Unk_020499c4 *a, Unk_020499c4_Dim *b, 
         for (i = 0; i < w; i++) {
             Unk_020499c4_Cell *cell = &a->rows[i].cells[j];
             TownEval_EvaluateAndCleanAcre(cell, b, i + 1, j + 1);
-            if (cell->unk_20.f1) a->unk_24++;
-            if (cell->unk_20.f2) a->unk_25++;
-            if (cell->unk_20.f4) a->unk_2c++;
-            if (cell->unk_1d) a->unk_2d += cell->unk_1d;
-            a->unk_2e += cell->unk_18;
-            a->unk_30.nib = a->unk_30.nib | cell->unk_20.nib;
-            a->unk_30.f4 = a->unk_30.f4 | cell->unk_20.f10;
-            a->unk_30.f5 = a->unk_30.f5 | cell->unk_20.f13;
-            a->unk_2a += cell->unk_04 + cell->unk_06 + cell->unk_05 + cell->unk_07;
-            a->unk_26 += cell->unk_0e;
-            a->unk_28 += cell->unk_08;
-            s32 t = cell->unk_0c;
-            if (t > 0) a->unk_30.f7 = 1;
-            a->unk_30.f6 = a->unk_30.f6 | cell->unk_20.f14;
-            v = cell->unk_00;
+            if (cell->flags.f1) a->jacobsAcres++;
+            if (cell->flags.f2) a->flowerAcres++;
+            if (cell->flags.f4) a->furnitureTreeAcres++;
+            if (cell->buriedFossils) a->buriedFossils += cell->buriedFossils;
+            a->rocks += cell->rocks;
+            a->townFlags.nib = a->townFlags.nib | cell->flags.nib;
+            a->townFlags.f4 = a->townFlags.f4 | cell->flags.f10;
+            a->townFlags.f5 = a->townFlags.f5 | cell->flags.f13;
+            a->trees += cell->trees00 + cell->trees10 + cell->trees01 + cell->trees11;
+            a->flowers += cell->flowers;
+            a->weeds += cell->weeds;
+            s32 t = cell->garbage;
+            if (t > 0) a->townFlags.f7 = 1;
+            a->townFlags.f6 = a->townFlags.f6 | cell->flags.f14;
+            v = cell->score;
             gTownEval.counts[TownEval_GetScoreRank(a, v)]++;
             if (v < best) {
                 by = i;
                 bx = j;
                 best = v;
             }
-            if (cell->unk_20.f0) {
-                a->unk_34 = i;
-                a->unk_38 = j;
-                { s32 yy = cell->unk_10.p.b; s32 xx = cell->unk_10.p.a; a->unk_3c.p.a = xx; a->unk_3c.p.b = yy; }
+            if (cell->flags.f0) {
+                a->rafflesiaBlockX = i;
+                a->rafflesiaBlockZ = j;
+                { s32 yy = cell->rafflesiaPos.p.b; s32 xx = cell->rafflesiaPos.p.a; a->rafflesiaUnit.p.a = xx; a->rafflesiaUnit.p.b = yy; }
             }
         }
     }
     Unk_020499c4_Pair pr;
     pr.a = by;
     pr.b = bx;
-    TownEval_PickAdvice(a->unk_18, &pr, &a->rows[by].cells[bx]);
-    a->unk_00 = TownEval_GetTownRank(a, nZ::gTownEval.unk_04, w, h);
+    TownEval_PickAdvice(a->advice, &pr, &a->rows[by].cells[bx]);
+    a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
 }
 }
 
@@ -3281,59 +3281,59 @@ extern "C" void TownEval_Evaluate(Unk_020499c4 *a, Unk_020499c4_Dim *b) {
     by = -1;
     bx = -1;
     best = 10000;
-    a->unk_24 = 0;
-    a->unk_26 = 0;
-    a->unk_25 = 0;
-    a->unk_28 = 0;
-    a->unk_2a = 0;
-    a->unk_2c = 0;
-    a->unk_2d = 0;
-    a->unk_34 = by;
-    a->unk_38 = by;
-    a->unk_3c.p.a = by;
-    a->unk_3c.p.b = by;
+    a->jacobsAcres = 0;
+    a->flowers = 0;
+    a->flowerAcres = 0;
+    a->weeds = 0;
+    a->trees = 0;
+    a->furnitureTreeAcres = 0;
+    a->buriedFossils = 0;
+    a->rafflesiaBlockX = by;
+    a->rafflesiaBlockZ = by;
+    a->rafflesiaUnit.p.a = by;
+    a->rafflesiaUnit.p.b = by;
     
-    a->unk_2e = 0;
-    *(u8 *)&a->unk_30 = 0;
+    a->rocks = 0;
+    *(u8 *)&a->townFlags = 0;
     for (k = 0; k < 5; k++) {
         gTownEval.counts[k] = 0;
     }
-    w = b->unk_04 - 2;
-    h = b->unk_08 - 2;
+    w = b->width - 2;
+    h = b->height - 2;
     for (i = 0; i < w; i++) {
         for (j = 0; j < h; j++) {
             Unk_020499c4_Cell *cell = &a->rows[i].cells[j];
             TownEval_EvaluateAcre(cell, b, i + 1, j + 1);
-            if (cell->unk_20.f1) a->unk_24++;
-            if (cell->unk_20.f2) a->unk_25++;
-            if (cell->unk_20.f4) a->unk_2c++;
-            if (cell->unk_1d) a->unk_2d += cell->unk_1d;
-            a->unk_30.f5 = a->unk_30.f5 | cell->unk_20.f13;
-            a->unk_2a += cell->unk_04 + cell->unk_06 + cell->unk_05 + cell->unk_07;
-            a->unk_26 += cell->unk_0e;
-            a->unk_28 += cell->unk_08;
-            s32 t = cell->unk_0c;
-            if (t > 0) a->unk_30.f7 = 1;
-            a->unk_30.f6 = a->unk_30.f6 | cell->unk_20.f14;
-            v = cell->unk_00;
+            if (cell->flags.f1) a->jacobsAcres++;
+            if (cell->flags.f2) a->flowerAcres++;
+            if (cell->flags.f4) a->furnitureTreeAcres++;
+            if (cell->buriedFossils) a->buriedFossils += cell->buriedFossils;
+            a->townFlags.f5 = a->townFlags.f5 | cell->flags.f13;
+            a->trees += cell->trees00 + cell->trees10 + cell->trees01 + cell->trees11;
+            a->flowers += cell->flowers;
+            a->weeds += cell->weeds;
+            s32 t = cell->garbage;
+            if (t > 0) a->townFlags.f7 = 1;
+            a->townFlags.f6 = a->townFlags.f6 | cell->flags.f14;
+            v = cell->score;
             gTownEval.counts[TownEval_GetScoreRank(a, v)]++;
             if (v < best) {
                 by = i;
                 bx = j;
                 best = v;
             }
-            if (cell->unk_20.f0) {
-                a->unk_34 = i;
-                a->unk_38 = j;
-                { s32 yy = cell->unk_10.p.b; s32 xx = cell->unk_10.p.a; a->unk_3c.p.a = xx; a->unk_3c.p.b = yy; }
+            if (cell->flags.f0) {
+                a->rafflesiaBlockX = i;
+                a->rafflesiaBlockZ = j;
+                { s32 yy = cell->rafflesiaPos.p.b; s32 xx = cell->rafflesiaPos.p.a; a->rafflesiaUnit.p.a = xx; a->rafflesiaUnit.p.b = yy; }
             }
         }
     }
     Unk_020499c4_Pair pr;
     pr.a = by;
     pr.b = bx;
-    TownEval_PickAdvice(a->unk_18, &pr, &a->rows[by].cells[bx]);
-    a->unk_00 = TownEval_GetTownRank(a, nZ::gTownEval.unk_04, w, h);
+    TownEval_PickAdvice(a->advice, &pr, &a->rows[by].cells[bx]);
+    a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
 }
 }
 
@@ -3431,7 +3431,7 @@ extern "C" void Town_WitherSapling(void *a, u32 v, s32 x, s32 y) {
     }
     s32 bx = x >> 4;
     s32 by = y >> 4;
-    u8 *p = &((Unk_02049790_Row *)nZ::gTownEval.unk_44)[bx].cells[by].sub[0][0];
+    u8 *p = &((Unk_02049790_Row *)nZ::gTownEval.acres)[bx].cells[by].sub[0][0];
     p += ((x - (bx << 4)) >> 3) * 2;
     s32 yi = (y - (by << 4)) >> 3;
     p[yi]--;
@@ -4163,7 +4163,7 @@ extern "C" void Town_LimitSaplingsPerQuadrant(void *a, void *q, s32 w, s32 h) {
     for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
             t = BlockMap_GetItemPtr(q, x + 1, y + 1, 0, 0, 0);
-            TreeQuota_InitAll(s, &((Unk_020480a8_Cell (*)[4])nZ::gTownEval.unk_44)[x][y]);
+            TreeQuota_InitAll(s, &((Unk_020480a8_Cell (*)[4])nZ::gTownEval.acres)[x][y]);
             for (i = 0; i < 256; t++, i++) {
                 if (t != NULL && Item_IsTreeStage0(t) != 0) {
                     TreeQuota_AddAt(s, *t, x + 1, y + 1, i & 15, (i >> 4) & 15);
@@ -4441,7 +4441,7 @@ extern "C" void Town_SpawnBeeTrees(void *a, void *b, s32 w, s32 h) {
     for (x = 0; x < w; x++) {
         ok = TRUE;
         for (y = 0; y < h; y++) {
-            if (((Unk_020480a8_Cell (*)[4])nZ::gTownEval.unk_44)[x][y].b3 != 0) {
+            if (((Unk_020480a8_Cell (*)[4])nZ::gTownEval.acres)[x][y].b3 != 0) {
                 ok = FALSE;
                 break;
             }
@@ -4456,7 +4456,7 @@ extern "C" void Town_SpawnBeeTrees(void *a, void *b, s32 w, s32 h) {
 
 namespace nL {
 extern "C" void Town_SpawnFurnitureTrees(void *a, void *b, s32 c, s32 d) {
-    s32 n = 2 - (*(Unk_02048104_Hdr *)&nZ::gTownEval.unk_18.unk_08).v;
+    s32 n = 2 - (*(Unk_02048104_Hdr *)&nZ::gTownEval.advice.reason).v;
     while (n != 0) {
         s32 x = Random_GlobalBelow(c);
         s32 y = Random_GlobalBelow(d);
@@ -4471,7 +4471,7 @@ extern "C" void Town_SpawnBellTrees(void *a, void *b, s32 w, s32 h) {
     s32 x, y;
     for (y = 0; y < h; y++) {
         for (x = 0; x < w; x++) {
-            if (((Unk_020480a8_Cell (*)[4])nZ::gTownEval.unk_44)[x][y].b5 == 0) {
+            if (((Unk_020480a8_Cell (*)[4])nZ::gTownEval.acres)[x][y].b5 == 0) {
                 Town_MakeSpecialTree(a, b, x + 1, y + 1, 2);
             }
         }
@@ -4671,13 +4671,13 @@ extern "C" void Town_SpawnClover(void *a, void *b, s32 c, s32 d) {
 
 namespace nK {
 extern "C" void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c, s32 d) {
-    s32 t = c * d - (*(Unk_021c40ec *)&nZ::gTownEval.unk_18.unk_08).unk_04;
+    s32 t = c * d - (*(Unk_021c40ec *)&nZ::gTownEval.advice.reason).jacobsAcres;
     if (t > 0) {
         s32 n = Random_GlobalBelow(t);
         s32 x, y;
         for (y = 0; y < d; y++) {
             for (x = 0; x < c; x++) {
-                if (((Unk_021c4110 *)nZ::gTownEval.unk_44)[x].cell[y].unk_20_1 == 0) {
+                if (((Unk_021c4110 *)nZ::gTownEval.acres)[x].cell[y].unk_20_1 == 0) {
                     if (n == 0) {
                         out->x = x;
                         out->y = y;
@@ -4707,7 +4707,7 @@ extern "C" void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d) {
 
 namespace nK {
 extern "C" void Town_TrySpawnJacobsLadder(void *a, void *b, s32 c, s32 d) {
-    if (gTownEval.unk_00 == 4) {
+    if (gTownEval.rank == 4) {
         if (Random_GlobalBelow(100) < 50) Town_SpawnJacobsLadder(a, b, c, d);
     }
 }
@@ -4724,9 +4724,9 @@ extern "C" s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d) {
 namespace nK {
 extern "C" s32 Town_WitherRafflesia(void *a, void *b) {
     s32 u, v, x, y;
-    u = gTownEval.unk_3c; v = gTownEval.unk_40; x = gTownEval.unk_34; y = gTownEval.unk_38;
+    u = gTownEval.rafflesiaUnitX; v = gTownEval.rafflesiaUnitZ; x = gTownEval.rafflesiaBlockX; y = gTownEval.rafflesiaBlockZ;
     if (BlockMap_GetItemPtr(b, x + 1, y + 1, u, v, 0)) {
-        u = gTownEval.unk_3c; v = gTownEval.unk_40; x = gTownEval.unk_34; y = gTownEval.unk_38;
+        u = gTownEval.rafflesiaUnitX; v = gTownEval.rafflesiaUnitZ; x = gTownEval.rafflesiaBlockX; y = gTownEval.rafflesiaBlockZ;
         BlockMap_PlaceItemAt(a, b, x + 1, y + 1, u, v, 0x89, 0);
     }
 }
@@ -4734,11 +4734,11 @@ extern "C" s32 Town_WitherRafflesia(void *a, void *b) {
 
 namespace nK {
 extern "C" s32 Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d) {
-    s32 x = gTownEval.unk_00;
+    s32 x = gTownEval.rank;
     s32 y;
     if (x == 0) {
-        x = gTownEval.unk_34;
-        y = gTownEval.unk_38;
+        x = gTownEval.rafflesiaBlockX;
+        y = gTownEval.rafflesiaBlockZ;
         if (x < 0 && y < 0) Town_SpawnRafflesia(a, b, c, d);
     } else {
         Town_WitherRafflesia(a, b);
@@ -4748,7 +4748,7 @@ extern "C" s32 Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d) {
 
 namespace nK {
 extern "C" void Town_BuryFossils(void *a, void *b, s32 c, s32 d) {
-    s32 n = 3 - (*(Unk_021c40ec *)&nZ::gTownEval.unk_18.unk_08).unk_0d;
+    s32 n = 3 - (*(Unk_021c40ec *)&nZ::gTownEval.advice.reason).buriedFossils;
     s32 x = Random_GlobalBelow(c - 1);
     s32 y = Random_GlobalBelow(d - 1);
     for (; n > 0; n--) {
@@ -4773,9 +4773,9 @@ namespace nK {
 extern "C" BOOL Town_ConvertRockInAcre(void *a, void *b, Unk_021c4110_Cell *cell, s32 d, s32 e, s32 f) {
     s32 x, y;
     s32 ox, oy;
-    s32 v = cell->unk_18;
+    s32 v = cell->rocks;
     s32 n = Random_GlobalBelow(v);
-    cell->unk_18 = v - 1;
+    cell->rocks = v - 1;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
             u16 *p = BlockMap_GetItemPtr(b, e + 1, f + 1, x, y, 0);
@@ -4806,8 +4806,8 @@ extern "C" s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32
     s32 x, y;
     for (y = 0; y < d; y++) {
         for (x = 0; x < c; x++) {
-            Unk_021c4110_Cell *cell = &((Unk_021c4110 *)nZ::gTownEval.unk_44)[x].cell[y];
-            s32 v = cell->unk_18;
+            Unk_021c4110_Cell *cell = &((Unk_021c4110 *)nZ::gTownEval.acres)[x].cell[y];
+            s32 v = cell->rocks;
             if (v > 0) {
                 r -= v;
                 if (r < 0) {
@@ -4822,7 +4822,7 @@ extern "C" s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32
 
 namespace nK {
 extern "C" void Town_UpdateSpecialRocks(void *a, void *b, s32 c, s32 d) {
-    s32 cnt = (*(Unk_021c40ec *)&nZ::gTownEval.unk_18.unk_08).unk_0e;
+    s32 cnt = (*(Unk_021c40ec *)&nZ::gTownEval.advice.reason).rocks;
     s32 i;
     for (i = 0; i < 4; i++) {
         if (cnt <= 0) return;
@@ -4845,8 +4845,8 @@ extern "C" void Town_ClearObjectsFcFd(void *a) {
     Unk_02047798_Map *m;
     m = TownBlockMap_Get();
     if (m) {
-        w = m->unk_04 - 2;
-        h = m->unk_08 - 2;
+        w = m->width - 2;
+        h = m->height - 2;
         for (y = 1; y <= h; y++) {
             for (x = 1; x <= w; x++) {
                 for (i = 0; i < 16; i++) {
@@ -5076,7 +5076,7 @@ extern "C" void Town_DropAcorns(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s3
         s32 x, y;
         for (y = 0; y < e; y++) {
             for (x = 0; x < d; x++) {
-                if (((s32)(*(u32 *)(((u8 *)nZ::gTownEval.unk_44) + x * 0x90 + y * 0x24 + 0x20) << 20) >> 31) != 0) {
+                if (((s32)(*(u32 *)(((u8 *)nZ::gTownEval.acres) + x * 0x90 + y * 0x24 + 0x20) << 20) >> 31) != 0) {
                     Town_DropAcornsInAcre(a, b, x, y);
                 }
             }
@@ -5547,7 +5547,7 @@ extern "C" u16 Item_RandomSeashell(void *a) {
 namespace nI {
 extern "C" void Town_SpawnSeashellsInAcre(void *a, void *b, s32 c) {
     TownEval_EvaluateAcreAt(gTownEval, b, c, 3);
-    s32 lv = *(u8 *)(((char *)nZ::gTownEval.unk_44) + c * 0x90 + 0x88);
+    s32 lv = *(u8 *)(((char *)nZ::gTownEval.acres) + c * 0x90 + 0x88);
     if (lv < 4) {
         Town_SpawnItemInAcre(a, b, c + 1, 4, Item_RandomSeashell(a), (void *)Town_IsSandAt, 0);
     }
@@ -5622,10 +5622,10 @@ extern "C" void Town_UpdateSeashells(void *a) {
 namespace nH {
 extern "C" void Town_RefillSeashells(void *p, void *q) {
     Unk_02045e34_Map *m = (Unk_02045e34_Map *)q;
-    s32 h = m->unk_04 - 2;
+    s32 h = m->width - 2;
     s32 i;
     for (i = 0; i < h; i++) {
-        s32 n = 2 - ((Unk_02046514_Ent *)((u8 *)nZ::gTownEval.unk_44))[i].unk_88;
+        s32 n = 2 - ((Unk_02046514_Ent *)((u8 *)nZ::gTownEval.acres))[i].beachShells;
         while (n > 0) {
             Town_SpawnItemInAcre(p, q, i + 1, 4, Item_RandomSeashell(p), Town_IsSandAt, 0);
             n--;
@@ -5781,7 +5781,7 @@ extern "C" void Turnips_SpoilAll(void *p) {
 
 namespace nH {
 extern "C" void Town_ApplyElapsedDays(void *a, void *b, s32 c, s32 d, s32 e) {
-    s32 t = ((Unk_0204625c_Obj *)gTownUpdater)->unk_20;
+    s32 t = ((Unk_0204625c_Obj *)gTownUpdater)->updateThread;
     if (t != 0) {
         TownUpdateThread_Request(a, b, c, d);
     } else {
@@ -5910,7 +5910,7 @@ extern "C" void Town_RebuildLitCedarList() {
     p = (Unk_02045e34_Map *)TownBlockMap_Get();
     LitCedarList_Clear();
     if (p != 0) {
-        w = p->unk_04 - 2;
+        w = p->width - 2;
         q = LitCedarList_Get();
         j = 0; z = 0; k = 0;
         for (; j < 2; j++) {
@@ -5962,14 +5962,14 @@ extern "C" void Town_OnLoad() {
     Unk_02045e34_Map *p = (Unk_02045e34_Map *)TownBlockMap_Get();
     Clock_Update(0);
     if (p != 0) {
-        s32 w = p->unk_04 - 2;
-        s32 h = p->unk_08 - 2;
+        s32 w = p->width - 2;
+        s32 h = p->height - 2;
         s32 i, j;
         s32 z = 0;
         for (i = 0; i < w; i++) {
             u8 *row;
             j = z;
-            row = ((u8 *)nZ::gTownEval.unk_44) + i * 0x90;
+            row = ((u8 *)nZ::gTownEval.acres) + i * 0x90;
             for (; j < h; j++) {
                 TownEval_EvaluateAcre(row + j * 0x24, p, i + 1, j + 1);
             }
@@ -5999,8 +5999,8 @@ namespace nH {
 extern "C" void Town_InitNew() {
     Unk_02045e34_Map *p = (Unk_02045e34_Map *)TownBlockMap_Get();
     if (p != 0) {
-        s32 w = p->unk_04 - 2;
-        s32 h = p->unk_08 - 2;
+        s32 w = p->width - 2;
+        s32 h = p->height - 2;
         TownEval_EvaluateAndClean(&gTownEval, p, w, h);
         Town_BuryFossils(gTownUpdater, p, w, h);
         Town_BuryPitfallSeed(gTownUpdater, p, w, h);
@@ -6033,7 +6033,7 @@ extern "C" s32 Town_GetEnvironmentRank() {
 
 namespace nH {
 extern "C" void *TownEval_GetAdvice() {
-    return ((u8 *)&nZ::gTownEval.unk_18);
+    return ((u8 *)&nZ::gTownEval.advice);
 }
 }
 
@@ -6046,10 +6046,10 @@ extern "C" void *Town_GetUpdater() {
 namespace nH {
 extern "C" BOOL Town_GetRafflesiaPos(void *out) {
     BOOL r = FALSE;
-    s32 a = gTownEval.unk_34;
-    s32 b = gTownEval.unk_38;
-    s32 c = gTownEval.unk_3c;
-    s32 d = gTownEval.unk_40;
+    s32 a = gTownEval.rafflesiaBlockX;
+    s32 b = gTownEval.rafflesiaBlockZ;
+    s32 c = gTownEval.rafflesiaUnitX;
+    s32 d = gTownEval.rafflesiaUnitZ;
     if (a != -1 && b != -1 && c != -1 && d != -1) {
         if (TownBlockMap_Get() != 0) {
             FieldPos_FromBlockUnit(out, a + 1, b + 1, c, d);
@@ -6145,8 +6145,8 @@ extern "C" void Field_UpdateActions() {
 namespace nH {
 extern "C" void PendingUnit_Clear(Unk_02045c18_Bits *p) {
     p->unk_00_lo = 7;
-    p->unk_08 = 0xffff;
-    p->unk_0a = 0xfff1;
+    p->unit = 0xffff;
+    p->item = 0xfff1;
     p->unk_01_a = 0;
     p->unk_01_d = 0;
     p->unk_02_a = 0;
@@ -6159,9 +6159,9 @@ extern "C" void PendingUnit_Clear(Unk_02045c18_Bits *p) {
 namespace nG {
 extern "C" void PendingUnit_Set(Unk_021c3f8c *e, u8 kind, u16 pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
     e->unk_00_a = kind;
-    e->unk_08.v = pos;
-    e->unk_0a = a;
-    e->unk_0c = c;
+    e->unit.v = pos;
+    e->item = a;
+    e->oldItem = c;
     e->unk_00_k = k;
     e->unk_01_a = b;
     e->unk_01_c = c2;
@@ -6175,10 +6175,10 @@ extern "C" void PendingUnit_Set(Unk_021c3f8c *e, u8 kind, u16 pos, u16 a, u16 c,
 namespace nG {
 extern "C" void PendingUnit_WriteToMap(Unk_021c3f8c *e) {
     if (Scene_InTown()) {
-        Field_SetUnitItem(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_01_a);
+        Field_SetUnitItem(e->unit.v >> 8, e->unit.v & 0xff, e->item, e->unk_01_a);
         PendingUnit_NoteJunk(e);
     } else {
-        Room_SetItemAtUnit(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_02_b);
+        Room_SetItemAtUnit(e->unit.v >> 8, e->unit.v & 0xff, e->item, e->unk_02_b);
     }
 }
 }
@@ -6186,7 +6186,7 @@ extern "C" void PendingUnit_WriteToMap(Unk_021c3f8c *e) {
 namespace nG {
 extern "C" void PendingUnit_NoteJunk(Unk_021c3f8c *e) {
     Unk_02045af8_Pad pad;
-    u16 v = e->unk_0a;
+    u16 v = e->item;
     if (v >= 0x154a && v <= 0x1553) {
         gTownJunkInsectFlags[1] = 1;
     } else if (v >= 0x1320 && v <= 0x1322) {
@@ -6202,8 +6202,8 @@ extern "C" s32 PendingUnit_Apply(Unk_021c3f8c *e) {
         void *p = TownBlockMap_Get();
         if (p) {
             s32 x, y;
-            y = e->unk_08.v & 0xff;
-            x = e->unk_08.v >> 8;
+            y = e->unit.v & 0xff;
+            x = e->unit.v >> 8;
             s32 xh = x >> 4;
             s32 yh = y >> 4;
             u16 *r = BlockMap_GetItemPtr(p, xh, yh, x - (xh << 4), y - (yh << 4), 0);
@@ -6287,7 +6287,7 @@ extern "C" s32 PendingUnit_Apply(Unk_021c3f8c *e) {
                     break;
                 case 25:
                     if (e->unk_02_c >= 0) {
-                        e->unk_0a = 0xfff1;
+                        e->item = 0xfff1;
                     }
                     break;
                 case 8:
@@ -6327,7 +6327,7 @@ extern "C" void PendingUnit_Commit(Unk_021c3f8c *e) {
         PendingUnit_WriteToMap(e);
         e->unk_01_d = 1;
         e->unk_02_a = 0;
-        e->unk_0a = e->unk_0c;
+        e->item = e->oldItem;
         e->unk_01_a = 1;
         break;
     default:
@@ -6345,7 +6345,7 @@ extern "C" s32 PendingUnit_Reset(Unk_021c3f8c *e) {
 
 namespace nG {
 extern "C" s32 PendingUnit_Flush(Unk_021c3f8c *e) {
-    if (e->unk_08.v != 0xffff) {
+    if (e->unit.v != 0xffff) {
         switch (e->unk_00_k) {
         case 4:
         case 10:
@@ -6366,7 +6366,7 @@ extern "C" void PendingUnit_SetIndex(s32 idx, u8 kind, Unk_020452ec_Pos *pos, u1
     Unk_021c3f8c_Pos p;
     p.b.x = pos->x;
     p.b.y = pos->y;
-    PendingUnit_Set(&((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[idx], kind, p.v, a, c, k, b, c2, d, f, g);
+    PendingUnit_Set(&((Unk_021c3f8c *)nZ::sPendingUnits.entries)[idx], kind, p.v, a, c, k, b, c2, d, f, g);
 }
 }
 
@@ -6416,8 +6416,8 @@ extern "C" BOOL PendingUnit_Reserve(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, f);
     if (i >= 0) {
-        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i];
-        if ((kind & 3) == ((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i].unk_00_a && e->unk_01_d != 0) {
+        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i];
+        if ((kind & 3) == ((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i].unk_00_a && e->unk_01_d != 0) {
             Unk_020452ec_Pos t2;
             t2.x = pos->x;
             t2.y = pos->y;
@@ -6441,7 +6441,7 @@ extern "C" void PendingUnit_Replace(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, f);
     if (i >= 0) {
-        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i];
+        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i];
         if (e->unk_01_d == 0) {
             switch (e->unk_00_k) {
             case 1:
@@ -6450,7 +6450,7 @@ extern "C" void PendingUnit_Replace(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c
             case 7: {
                 Unk_021c3f8c_Pos q;
                 q.v = 0xfff1;
-                q.v = e->unk_0c;
+                q.v = e->oldItem;
                 Unk_020452ec_Pos t2;
                 t2.x = pos->x;
                 t2.y = pos->y;
@@ -6485,7 +6485,7 @@ extern "C" void PendingUnit_ApplyAt(Unk_020452ec_Pos *pos, s32 flag) {
 namespace nG {
 extern "C" void PendingUnit_ApplyIndex(s32 i) {
     if (i >= 0) {
-        PendingUnit_Apply(&((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i]);
+        PendingUnit_Apply(&((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i]);
     }
 }
 }
@@ -6497,8 +6497,8 @@ extern "C" void PendingUnit_ApplyAtIfAid(Unk_020452ec_Pos *pos, u32 v, s32 flag)
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
     if (i >= 0) {
-        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i];
-        if ((u8)(v & 3) == ((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i].unk_00_a) {
+        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i];
+        if ((u8)(v & 3) == ((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i].unk_00_a) {
             PendingUnit_Apply(e);
         }
     }
@@ -6512,10 +6512,10 @@ extern "C" void PendingUnit_CancelAt(Unk_020452ec_Pos *pos, s32 flag) {
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
     if (i >= 0) {
-        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i];
+        Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i];
         Unk_020452ec_Pos xy;
-        Unk_0204548c_Unpack(e->unk_08, e->unk_08, &xy);
-        if (FieldItemFx_CancelAt(((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i].unk_00_a, &xy) == 0) {
+        Unk_0204548c_Unpack(e->unit, e->unit, &xy);
+        if (FieldItemFx_CancelAt(((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i].unk_00_a, &xy) == 0) {
             switch (e->unk_00_k) {
             case 4:
             case 10:
@@ -6539,14 +6539,14 @@ extern "C" void PendingUnit_CommitAt(Unk_020452ec_Pos *pos, s32 flag) {
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
     if (i >= 0) {
-        PendingUnit_CommitForAid(&((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i]);
+        PendingUnit_CommitForAid(&((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i]);
     }
 }
 }
 
 namespace nG {
 extern "C" void PendingUnit_CommitForAid(Unk_021c3f8c *e) {
-    Unk_021c3f8c *p = ((Unk_021c3f8c *)nZ::sPendingUnits.unk_04);
+    Unk_021c3f8c *p = ((Unk_021c3f8c *)nZ::sPendingUnits.entries);
     for (s32 i = 0; i < 20; p++, i++) {
         if (p->unk_00_a == e->unk_00_a && p->unk_01_d != 0) {
             p->unk_01_d = 0;
@@ -6560,7 +6560,7 @@ namespace nG {
 extern "C" void PendingUnit_ClearActiveOfAid(u32 kind) {
     s32 i = PendingUnit_FindActiveOfAid(kind);
     if (i >= 0) {
-        PendingUnit_Clear(&((Unk_021c3f8c *)nZ::sPendingUnits.unk_04)[i]);
+        PendingUnit_Clear(&((Unk_021c3f8c *)nZ::sPendingUnits.entries)[i]);
     }
 }
 }
@@ -6593,9 +6593,9 @@ extern "C" void PendingUnits_Flush() {
 namespace nG {
 extern "C" s32 PendingUnit_Find(Unk_020452ec_Pos *pos, s32 flag) {
     s32 result = -1;
-    Unk_021c3f8c *e = ((Unk_021c3f8c *)nZ::sPendingUnits.unk_04);
+    Unk_021c3f8c *e = ((Unk_021c3f8c *)nZ::sPendingUnits.entries);
     for (s32 i = 0; i < 20; e++, i++) {
-        if (pos->x == Unk_021c3f8c_GetX(e->unk_08) && pos->y == Unk_021c3f8c_GetY(e->unk_08) && flag == e->unk_02_b) {
+        if (pos->x == Unk_021c3f8c_GetX(e->unit) && pos->y == Unk_021c3f8c_GetY(e->unit) && flag == e->unk_02_b) {
             result = i;
             break;
         }
@@ -6607,9 +6607,9 @@ extern "C" s32 PendingUnit_Find(Unk_020452ec_Pos *pos, s32 flag) {
 namespace nG {
 extern "C" s32 PendingUnit_FindByAid(s32 kind, Unk_020452ec_Pos *pos, s32 flag) {
     s32 result = -1;
-    Unk_021c3f8c *e = ((Unk_021c3f8c *)nZ::sPendingUnits.unk_04);
+    Unk_021c3f8c *e = ((Unk_021c3f8c *)nZ::sPendingUnits.entries);
     for (s32 i = 0; i < 20; e++, i++) {
-        if (kind == e->unk_00_a && pos->x == Unk_021c3f8c_GetX(e->unk_08) && pos->y == Unk_021c3f8c_GetY(e->unk_08) && flag == e->unk_02_b) {
+        if (kind == e->unk_00_a && pos->x == Unk_021c3f8c_GetX(e->unit) && pos->y == Unk_021c3f8c_GetY(e->unit) && flag == e->unk_02_b) {
             result = i;
             break;
         }
@@ -6644,7 +6644,7 @@ extern "C" s32 PendingUnit_FindActiveOfAid(u32 a) {
     i = 0;
     r = -1;
     a = (u8)(a & 3);
-    e = ((Unk_02045214_Ent *)nZ::sPendingUnits.unk_04);
+    e = ((Unk_02045214_Ent *)nZ::sPendingUnits.entries);
     for (; i < 20; e++, i++) {
         if (a == e->kind && e->flag) {
             r = i;
@@ -6661,7 +6661,7 @@ extern "C" s32 PendingUnit_FindBySlot(u32 a, u32 b) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = 0;
     }
-    Unk_02045214_Ent *e = ((Unk_02045214_Ent *)nZ::sPendingUnits.unk_04);
+    Unk_02045214_Ent *e = ((Unk_02045214_Ent *)nZ::sPendingUnits.entries);
     for (s32 i = 0; i < 20; e++, i++) {
         if (a == e->kind && b == e->unk_b1_2) {
             r = i;
@@ -6674,7 +6674,7 @@ extern "C" s32 PendingUnit_FindBySlot(u32 a, u32 b) {
 
 namespace nF {
 extern "C" Unk_02045214_Ent *PendingUnit_Get(u32 i) {
-    return &((Unk_02045214_Ent *)nZ::sPendingUnits.unk_04)[i];
+    return &((Unk_02045214_Ent *)nZ::sPendingUnits.entries)[i];
 }
 }
 
@@ -6687,7 +6687,7 @@ extern "C" u8 *PendingUnit_GetActivePosOfAid(u32 a) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = 0;
     }
-    e = ((Unk_02045214_Ent *)nZ::sPendingUnits.unk_04);
+    e = ((Unk_02045214_Ent *)nZ::sPendingUnits.entries);
     for (i = 0; i < 20; e++, i++) {
         if (a == e->kind && e->flag) {
             r = (u8 *)e + 8;
@@ -6761,8 +6761,8 @@ extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p) {
     Unk_020449e8_Pos t;
     s32 r;
     s32 fl;
-    v = e->unk_12;
-    fl = e->unk_1c;
+    v = e->oldItem;
+    fl = e->layer;
     t.x = p->x;
     t.y = p->y;
     r = PendingUnit_IndexAt(&t, fl);
@@ -6774,9 +6774,9 @@ extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p) {
             res = TRUE;
         }
     } else {
-        Unk_02045214_Ent *g = &((Unk_02045214_Ent *)nZ::sPendingUnits.unk_04)[r];
-        if (g->kind == (u8)(e->unk_00 & 3)) {
-            if (g->sf == e->unk_1e) {
+        Unk_02045214_Ent *g = &((Unk_02045214_Ent *)nZ::sPendingUnits.entries)[r];
+        if (g->kind == (u8)(e->aid & 3)) {
+            if (g->sf == e->extra) {
                 if (g->flag) {
                     res = TRUE;
                 }
@@ -6791,22 +6791,22 @@ namespace nF {
 extern "C" BOOL FieldAction_PreApplyOffline(Unk_020449e8_Src *s, Unk_02044dd8_Ent *e) {
     volatile u16 v = 0xfff1;
     BOOL res = FALSE;
-    v = s->unk_06;
+    v = s->item;
     switch (s->kind) {
     case 0x13: {
         u32 c;
         if (Unk_020449e8_R(&v, c, 0x1518, 0x151c)) {
-            s->unk_06 = sFruitSaplings2[c - 0x1518];
+            s->item = sFruitSaplings2[c - 0x1518];
         } else {
             switch (c) {
             case 0x1548:
-                s->unk_06 = 0xc8;
+                s->item = 0xc8;
                 break;
             case 0x151d:
-                s->unk_06 = 0x26;
+                s->item = 0x26;
                 break;
             case 0x151e:
-                s->unk_06 = 0x5d;
+                s->item = 0x5d;
                 break;
             }
         }
@@ -6814,9 +6814,9 @@ extern "C" BOOL FieldAction_PreApplyOffline(Unk_020449e8_Src *s, Unk_02044dd8_En
     }
     case 0xf: {
         Unk_020449e8_Pos t;
-        u32 r = Field_AidOrLocal(e->unk_00);
-        t.x = e->unk_14;
-        t.y = e->unk_18;
+        u32 r = Field_AidOrLocal(e->aid);
+        t.x = e->unitX;
+        t.y = e->unitZ;
         FieldAction_WaterFlowers(r, &t);
         res = TRUE;
         break;
@@ -6828,8 +6828,8 @@ extern "C" BOOL FieldAction_PreApplyOffline(Unk_020449e8_Src *s, Unk_02044dd8_En
         break;
     case 0xe: {
         Unk_020449e8_Pos t;
-        t.x = e->unk_14;
-        t.y = e->unk_18;
+        t.x = e->unitX;
+        t.y = e->unitZ;
         MoneyRock_OnHit(&data_021c47bc, &t);
         break;
     }
@@ -6849,36 +6849,36 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
     u16 *t;
     s32 x, y;
     if (o == NULL) {
-        e->unk_08 = 3;
+        e->state = 3;
         return;
     }
-    x = e->unk_14;
-    y = e->unk_18;
+    x = e->unitX;
+    y = e->unitZ;
     {
         s32 tx = x >> 4;
         s32 ty = y >> 4;
         t = BlockMap_GetItemPtr(o, tx, ty, x - (tx << 4), y - (ty << 4), 0);
     }
     if (t == NULL) {
-        e->unk_08 = 3;
+        e->state = 3;
         return;
     }
     p.x = x;
     p.y = y;
     if (!FieldAction_CanReserveUnit(idx, &p)) {
-        e->unk_08 = 3;
+        e->state = 3;
         return;
     }
-    s.a = e->unk_00;
+    s.a = e->aid;
     s.b = idx;
     s.c = e->unk_1d;
-    s.kind = e->unk_0c;
+    s.kind = e->kind;
     ((u8 *)&s.pos)[1] = x;
     ((u8 *)&s.pos)[0] = y;
     s.code = *t;
-    s.unk_06 = e->unk_10;
+    s.item = e->item;
     s.e = (u8)arg;
-    s.f = e->unk_1c;
+    s.f = e->layer;
     CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g)) {
         if (NetArea_IsLocalOwner()) {
@@ -6890,16 +6890,16 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
             _ZN11CommManager9endRecordEjj(g, 0x31, 6);
         }
     } else {
-        e->unk_08 = 2;
+        e->state = 2;
         if (!FieldAction_PreApplyOffline(&s, e)) {
-            s8 sb = e->unk_1e;
-            p2.x = e->unk_14;
-            p2.y = e->unk_18;
-            if (!PendingUnit_Reserve(0, &p2, s.unk_06, s.code, s.kind, s.c, s.e, 4, s.f, sb)) {
-                e->unk_08 = 3;
+            s8 sb = e->extra;
+            p2.x = e->unitX;
+            p2.y = e->unitZ;
+            if (!PendingUnit_Reserve(0, &p2, s.item, s.code, s.kind, s.c, s.e, 4, s.f, sb)) {
+                e->state = 3;
             } else {
-                s32 px = *(volatile s32 *)&e->unk_14;
-                s32 py = *(volatile s32 *)&e->unk_18;
+                s32 px = *(volatile s32 *)&e->unitX;
+                s32 py = *(volatile s32 *)&e->unitZ;
                 u8 *pp = (u8 *)&out.pos;
                 pp[1] = px;
                 pp[0] = py;
@@ -7125,14 +7125,14 @@ extern "C" void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t) {
     e.unk_01_5 = src->unk_01_5;
     e.unk_01_7 = src->unk_01_7;
     e.unk_01_3 = src->unk_00_4;
-    Unk_02044774_PP pp = *(Unk_02044774_PP *)&src->unk_02;
-    *(Unk_02044774_PP *)&e.unk_02 = pp;
-    e.unk_04 = src->unk_06;
+    Unk_02044774_PP pp = *(Unk_02044774_PP *)&src->unit;
+    *(Unk_02044774_PP *)&e.unit = pp;
+    e.item = src->item;
     for (i = 0; i < 3; i++) {
         ((u16 *)&e + i)[3] = 0xffff;
     }
-    s32 x = e.unk_02 >> 8;
-    s32 z = e.unk_02 & 0xff;
+    s32 x = e.unit >> 8;
+    s32 z = e.unit & 0xff;
     if (flag != 0) {
         switch (e.unk_00_3) {
         case 12:
@@ -7144,32 +7144,32 @@ extern "C" void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t) {
             Unk_02043f04_Pos p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.unk_04, 0xfff1, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
             Unk_02043f04_Pos q;
             q.x = x;
             q.z = z;
-            FieldItemFx_StartPop(t, e.unk_04, &q);
+            FieldItemFx_StartPop(t, e.item, &q);
             break;
         }
         case 26: {
             Unk_02043f04_Pos p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.unk_04, 0xfff1, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
             if (!Field_IsLocalAid(t)) {
                 Unk_02043f04_Pos q;
                 q.x = x;
                 q.z = z;
-                FieldItemFx_StartPop(t, e.unk_04, &q);
+                FieldItemFx_StartPop(t, e.item, &q);
             }
             break;
         }
         default: {
-            u32 h = src->unk_04;
+            u32 h = src->oldItem;
             Unk_02043f04_Pos p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.unk_04, h, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, h, e.unk_00_3, e.unk_01_3, e.unk_01_5, 4, e.unk_01_7, -1);
             if (TreeDrop_Spawn(&e, src, t)) {
                 e.unk_00_0 = 1;
                 mask = 14;
@@ -7179,14 +7179,14 @@ extern "C" void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t) {
         }
         if (Field_IsLocalAid(t)) {
             Unk_02044490_R *r = &sFieldActions[src->unk_00_2];
-            r->unk_08 = 2;
+            r->state = 2;
         } else {
             FieldActionFx_Start(&e);
         }
     } else {
         if (Field_IsLocalAid(t)) {
             Unk_02044490_R *r = &sFieldActions[src->unk_00_2];
-            r->unk_08 = 3;
+            r->state = 3;
         }
     }
     Unk_02043e94_G *g = gCommManager;
@@ -7198,8 +7198,8 @@ extern "C" void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t) {
 
 namespace nE {
 extern "C" void FieldAction_ApplyResult(Unk_02044490_E *e) {
-    s32 x = e->unk_02 >> 8;
-    s32 z = e->unk_02 & 0xff;
+    s32 x = e->unit >> 8;
+    s32 z = e->unit & 0xff;
     switch (e->unk_00_3) {
     case 12:
     case 13:
@@ -7211,7 +7211,7 @@ extern "C" void FieldAction_ApplyResult(Unk_02044490_E *e) {
         Unk_02043f04_Pos p;
         p.x = x;
         p.z = z;
-        FieldItemFx_StartPop(e->unk_00_1, e->unk_04, &p);
+        FieldItemFx_StartPop(e->unk_00_1, e->item, &p);
         break;
     }
     }
@@ -7228,9 +7228,9 @@ extern "C" void FieldAction_ApplyResult(Unk_02044490_E *e) {
     s32 t3 = e->unk_00_3;
     p1.x = x;
     p1.z = z;
-    PendingUnit_Replace(e->unk_00_1, &p1, e->unk_04, h, t3, f3, f5, 4, f7, -1);
+    PendingUnit_Replace(e->unk_00_1, &p1, e->item, h, t3, f3, f5, 4, f7, -1);
     if (e->unk_00_0) {
-        u16 w = e->unk_0c;
+        u16 w = e->dropItem;
         s32 zero = 0;
         s32 i;
         for (i = 0; i < 3; i++) {
@@ -7239,7 +7239,7 @@ extern "C" void FieldAction_ApplyResult(Unk_02044490_E *e) {
             u16 v = ((u16 *)ee)[i];
             s32 px = v >> 8;
             s32 pz = v & 0xff;
-            volatile u16 vv = e->unk_06[i];
+            volatile u16 vv = e->dropUnits[i];
             if (vv != 0xffff) {
                 Unk_02043f04_Pos p2;
                 s32 g7 = e->unk_01_7;
@@ -7254,8 +7254,8 @@ extern "C" void FieldAction_ApplyResult(Unk_02044490_E *e) {
 
 namespace nE {
 extern "C" void FieldAction_CancelPendingForResult(Unk_02044490_E *e) {
-    s32 x = e->unk_02 >> 8;
-    s32 z = e->unk_02 & 0xff;
+    s32 x = e->unit >> 8;
+    s32 z = e->unit & 0xff;
     switch (e->unk_00_3) {
     case 12:
     case 13:
@@ -7281,7 +7281,7 @@ extern "C" void FieldAction_CancelPendingForResult(Unk_02044490_E *e) {
             u16 v = ((u16 *)ee)[i];
             s32 px = v >> 8;
             s32 pz = v & 0xff;
-            volatile u16 vv = e->unk_06[i];
+            volatile u16 vv = e->dropUnits[i];
             if (vv != 0xffff) {
                 Unk_02043f04_Pos p2;
                 s32 f2 = e->unk_01_7;
@@ -7303,9 +7303,9 @@ extern "C" void FieldAction_ApplyResultOffscreen(Unk_02044490_E *e, s32 m) {
     case 23:
         return;
     }
-    Area_PlaceItem(m, e->unk_02 >> 8, e->unk_02 & 0xff, e->unk_04, e->unk_01_3);
+    Area_PlaceItem(m, e->unit >> 8, e->unit & 0xff, e->item, e->unk_01_3);
     if (e->unk_00_0) {
-        u16 w = e->unk_0c;
+        u16 w = e->dropItem;
         volatile s32 z = 0;
         s32 i;
         for (i = 0; i < 3; i++) {
@@ -7323,9 +7323,9 @@ extern "C" void FieldAction_OnNetResult(Unk_02044490_E *e, s32 t) {
     if (gCommManager->unk_64 == e->unk_00_1) {
         Unk_02044490_R *r = &sFieldActions[e->unk_01_0];
         if (e->unk_01_2 == 0) {
-            r->unk_08 = 3;
+            r->state = 3;
         } else {
-            r->unk_08 = 2;
+            r->state = 2;
             FieldAction_ApplyResult(e);
         }
     } else if (e->unk_01_2 != 0) {
@@ -8579,7 +8579,7 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
     if (w == NULL) {
         return 0;
     }
-    switch (e->unk_08) {
+    switch (e->state) {
     case 2: {
         u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (w != NULL && o != NULL) {
@@ -8587,7 +8587,7 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
             if (Unk_02042830_IsZero(gFieldSceneKind)) {
                 volatile u16 tmp;
                 tmp = 0xfff1;
-                tmp = e->unk_10;
+                tmp = e->item;
                 BOOL s8 = 1, s7 = 1, s6 = 1, s5 = 1, s4 = 1, s3 = 1, s2 = 1, s1 = 0;
                 u32 v = tmp;
                 if (tmp <= 5) {
@@ -8629,9 +8629,9 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
                 }
                 if (s8 || Unk_02042660_InRange(v, 0xa7, 0xc6) || v == 0x1e) {
                     Unk_020422c0_Pos q;
-                    q.x = e->unk_14.x;
-                    q.y = e->unk_14.y;
-                    if (FieldItemFx_StartPop(e->unk_00, e->unk_10, &q)) {
+                    q.x = e->unit.x;
+                    q.y = e->unit.y;
+                    if (FieldItemFx_StartPop(e->aid, e->item, &q)) {
                         res = 1;
                     }
                 } else {
@@ -8640,9 +8640,9 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
                     a.y = pv->y;
                     a.z = pv->z;
                     Unk_020422c0_Pos q;
-                    q.x = e->unk_14.x;
-                    q.y = e->unk_14.y;
-                    if (FieldItemFx_StartDrop(e->unk_00, e->unk_10, &q, &a)) {
+                    q.x = e->unit.x;
+                    q.y = e->unit.y;
+                    if (FieldItemFx_StartDrop(e->aid, e->item, &q, &a)) {
                         res = 1;
                     }
                 }
@@ -8651,11 +8651,11 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
                 a.x = pv->x;
                 a.y = pv->y;
                 a.z = pv->z;
-                u32 b = e->unk_1c;
+                u32 b = e->layer;
                 Unk_020422c0_Pos q;
-                q.x = e->unk_14.x;
-                q.y = e->unk_14.y;
-                if (ItemDrop_StartToUnit(e->unk_00, e->unk_10, &q, &a, b)) {
+                q.x = e->unit.x;
+                q.y = e->unit.y;
+                if (ItemDrop_StartToUnit(e->aid, e->item, &q, &a, b)) {
                     res = 1;
                 }
             }
@@ -8773,7 +8773,7 @@ namespace nB {
 extern "C" s32 FieldAction_Add(Unk_02042578_Entry *e, u32 a1, s32 type, Unk_020422c0_Pos *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10) {
     s32 i, res = -1;
     for (i = 0; i < 3; e++, i++) {
-        if (e->unk_08 == 0 && e->unk_0c == 0) {
+        if (e->state == 0 && e->kind == 0) {
             if (type == 3 || type == 9 || type == 0x15) {
                 if (a6 == 0x1520) {
                     if (Inventory_GetEmptyLetter() == 0) {
@@ -8783,18 +8783,18 @@ extern "C" s32 FieldAction_Add(Unk_02042578_Entry *e, u32 a1, s32 type, Unk_0204
                     type++;
                 }
             }
-            e->unk_00 = a1;
-            e->unk_04 = NetArea_FindSlotInScene(Scene_GetCurrent());
-            e->unk_08 = 1;
-            e->unk_0c = type;
-            e->unk_10 = a5;
-            e->unk_12 = a6;
+            e->aid = a1;
+            e->area = NetArea_FindSlotInScene(Scene_GetCurrent());
+            e->state = 1;
+            e->kind = type;
+            e->item = a5;
+            e->oldItem = a6;
             s32 py = pos->y;
-            e->unk_14.x = pos->x;
-            e->unk_14.y = py;
-            e->unk_1c = a8;
+            e->unit.x = pos->x;
+            e->unit.y = py;
+            e->layer = a8;
             e->unk_1d = a7;
-            e->unk_20 = a9;
+            e->mode = a9;
             e->unk_1e = a10;
             FieldAction_Submit(i, a9);
             res = i;
@@ -8808,8 +8808,8 @@ extern "C" s32 FieldAction_Add(Unk_02042578_Entry *e, u32 a1, s32 type, Unk_0204
 namespace nB {
 extern "C" void FieldAction_Clear(Unk_02042578_Entry *e, s32 i) {
     Unk_02042578_Entry *q = &e[i];
-    q->unk_08 = 0;
-    q->unk_0c = 0;
+    q->state = 0;
+    q->kind = 0;
 }
 }
 
@@ -8821,18 +8821,18 @@ extern "C" void MoneyRock_Init(Unk_02042564_Obj *self) {
 
 namespace nB {
 extern "C" void MoneyRock_Reset(Unk_02042564_Obj *self) {
-    self->unk_02 = 0;
-    self->unk_04 = -1;
+    self->hits = 0;
+    self->timer = -1;
 }
 }
 
 namespace nB {
 extern "C" void MoneyRock_Update(Unk_02042564_Obj *self) {
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
-        if (self->unk_04 > 0) {
-            self->unk_04--;
+        if (self->timer > 0) {
+            self->timer--;
         }
-        if (self->unk_04 == 0) {
+        if (self->timer == 0) {
             u16 v = *(u16 *)self;
             s32 x = v >> 8;
             s32 y = v & 0xff;
@@ -8842,7 +8842,7 @@ extern "C" void MoneyRock_Update(Unk_02042564_Obj *self) {
             if (PendingUnit_Find(&q, 0) < 0) {
                 u32 t = 0xe3;
                 void *m = TownBlockMap_Get();
-                self->unk_04 = -1;
+                self->timer = -1;
                 if (m != NULL) {
                     s32 hx = x >> 4, hy = y >> 4;
                     u16 *tile = BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
@@ -8861,15 +8861,15 @@ extern "C" void MoneyRock_Update(Unk_02042564_Obj *self) {
 namespace nB {
 extern "C" void MoneyRock_OnHit(Unk_02042564_Obj *self, Unk_020422c0_Pos *p) {
     Unk_020422c0_Pos q;
-    if (self->unk_04 < 0) {
+    if (self->timer < 0) {
         s32 py = p->y;
         self->x = p->x;
         self->y = py;
-        self->unk_04 = ((FengShui_GetWestTotal() * 0x3c0) >> 12) + 150;
+        self->timer = ((FengShui_GetWestTotal() * 0x3c0) >> 12) + 150;
     }
-    self->unk_02 = self->unk_02 + 1;
-    if (self->unk_02 >= 8) {
-        self->unk_02 = 8;
+    self->hits = self->hits + 1;
+    if (self->hits >= 8) {
+        self->hits = 8;
     }
     q.x = p->x;
     q.y = p->y;
@@ -8918,7 +8918,7 @@ extern "C" BOOL MoneyRock_TrySpawnBagAt(Unk_02042564_Obj *self, void *m, Unk_020
             s32 qy = p->y;
             q.x = p->x;
             q.y = qy;
-            PendingUnit_Reserve(0, &q, ((u16 *)sMoneyRockBags)[self->unk_02], 0xfff1, 0, 0, 0, 3, 0, -1);
+            PendingUnit_Reserve(0, &q, ((u16 *)sMoneyRockBags)[self->hits], 0xfff1, 0, 0, 0, 3, 0, -1);
             r = TRUE;
         }
     }
@@ -8968,7 +8968,7 @@ extern "C" void ChopCount_Set(Unk_020422c0_Map *m, Unk_020422c0_Pos *p, u32 v) {
 
 namespace nB {
 extern "C" void ChopCount_ClearAll(void) {
-    MI_CpuFill8(nZ::sFieldActions.unk_6c, 0, 0x400);
+    MI_CpuFill8(nZ::sFieldActions.chopCounts, 0, 0x400);
 }
 }
 

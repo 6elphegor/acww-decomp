@@ -839,8 +839,8 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     u8 pad_04[0x14];
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class FishFinMatAnim : public ModelAnim {
@@ -4011,8 +4011,8 @@ extern "C" void FishFinModel_Release(u8 *a) {
     CachedModel_release(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])));
     PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
     ModelSlotPool_release(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
-    sFishFinModel.unk_11c.unk_18 = 0;
-    sFishFinModel.unk_11c.unk_1c = 0;
+    sFishFinModel.unk_11c.anmObj = 0;
+    sFishFinModel.unk_11c.resMdl = 0;
 }
 
 

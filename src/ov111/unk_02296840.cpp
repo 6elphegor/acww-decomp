@@ -1133,11 +1133,11 @@ void ChatMenu_CreateTextLabel(S *s) {
     if (s->textLabel == NULL) {
         s->textLabel = (TextLabel *)MsgTextLabel_CreateVram(0x13d, 0x15, 2);
         if (s->textLabel != NULL) {
-            s->textLabel->unk_2c = 3;
-            s->textLabel->unk_50 = 1;
-            s->textLabel->unk_55 = 0;
-            s->textLabel->unk_39 = 2;
-            s->textLabel->unk_38 = 1;
+            s->textLabel->vramLoader = 3;
+            s->textLabel->copyMode = 1;
+            s->textLabel->rowStride1K = 0;
+            s->textLabel->bgColor = 2;
+            s->textLabel->fgColor = 1;
             if (s->hasSelection()) {
                 u32 a = s->selectionEnd;
                 u32 b = s->selectionStart;
@@ -1165,7 +1165,7 @@ void ChatMenu_RedrawText(S *s) {
     if (s->textLabel != NULL) {
         ((MsgString *)&s->balloonText)->fromEncoded(&s->text, 0, 0);
         TextLabel *t = s->textLabel;
-        t->unk_10 = ((TextLabel *)&s->balloonText)->measureWidth();
+        t->textStart = ((TextLabel *)&s->balloonText)->measureWidth();
         s->textLabel->requestRedraw();
         s->lengthGauge = Text_GetLength(s->text.bytes, 0x20) * 0x1f / 0x20;
         if (s->lengthGauge > 0x1f) {

@@ -86,19 +86,19 @@ public:
     virtual BOOL vfunc_3c();
     virtual ~ProcBase();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
-    /* 0x10 */ u8 unk_10;
-    /* 0x11 */ u8 unk_11;
-    /* 0x12 */ u8 unk_12;
-    /* 0x13 */ u8 unk_13;
-    /* 0x14 */ TreeNode unk_14;
-    /* 0x28 */ QNode unk_28;
-    /* 0x38 */ QNode unk_38;
-    /* 0x48 */ void *unk_48;
+    /* 0x04 */ u32 id;
+    /* 0x08 */ u32 param;
+    /* 0x0c */ u16 profile;
+    /* 0x0e */ u8 state;
+    /* 0x0f */ u8 deletePending;
+    /* 0x10 */ u8 activatePending;
+    /* 0x11 */ u8 createRetry;
+    /* 0x12 */ u8 group;
+    /* 0x13 */ u8 procFlags;
+    /* 0x14 */ TreeNode treeNode;
+    /* 0x28 */ QNode executeNode;
+    /* 0x38 */ QNode drawNode;
+    /* 0x48 */ void *seq;
     /* 0x4c */ Heap *unk_4c;
 };
 
@@ -186,37 +186,37 @@ static inline BOOL isTwo(u32 v) {
 
 extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
-    func_020e7b80(&self->unk_14);
-    self->unk_14.unk_10 = self;
-    self->unk_28.unk_00 = NULL;
-    self->unk_28.unk_04 = NULL;
-    self->unk_28.unk_08 = self;
-    self->unk_28.unk_0c = 0;
-    self->unk_28.unk_0e = 0;
-    self->unk_38.unk_00 = NULL;
-    self->unk_38.unk_04 = NULL;
-    self->unk_38.unk_08 = self;
-    self->unk_38.unk_0c = 0;
-    self->unk_38.unk_0e = 0;
-    self->unk_04 = sProcNextId;
+    func_020e7b80(&self->treeNode);
+    self->treeNode.unk_10 = self;
+    self->executeNode.unk_00 = NULL;
+    self->executeNode.unk_04 = NULL;
+    self->executeNode.unk_08 = self;
+    self->executeNode.unk_0c = 0;
+    self->executeNode.unk_0e = 0;
+    self->drawNode.unk_00 = NULL;
+    self->drawNode.unk_04 = NULL;
+    self->drawNode.unk_08 = self;
+    self->drawNode.unk_0c = 0;
+    self->drawNode.unk_0e = 0;
+    self->id = sProcNextId;
     sProcNextId++;
-    self->unk_08 = sProcCreateParam;
-    self->unk_0c = sProcCreateProfile;
-    self->unk_12 = sProcCreateGroup;
-    func_020e7af4(&gProcTree, &self->unk_14, (TreeNode *)sProcCreateParent);
-    SceneDesc *d = gProfileTable[self->unk_0c];
+    self->param = sProcCreateParam;
+    self->profile = sProcCreateProfile;
+    self->group = sProcCreateGroup;
+    func_020e7af4(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
+    SceneDesc *d = gProfileTable[self->profile];
     u16 a = d->unk_04;
-    QNode *q1 = &self->unk_28;
+    QNode *q1 = &self->executeNode;
     q1->unk_0c = a;
     q1->unk_0e = a;
     u16 b = d->unk_06;
-    QNode *q2 = &self->unk_38;
+    QNode *q2 = &self->drawNode;
     q2->unk_0c = b;
     q2->unk_0e = b;
     ProcBase *parent = ProcBase_GetParent(self);
     if (parent != NULL) {
-        if ((parent->unk_13 & 1) != 0 || (parent->unk_13 & 2) != 0) self->unk_13 |= 2;
-        if ((parent->unk_13 & 4) != 0 || (parent->unk_13 & 8) != 0) self->unk_13 |= 8;
+        if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) self->procFlags |= 2;
+        if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) self->procFlags |= 8;
     }
     return self;
 }
@@ -241,14 +241,14 @@ extern "C" BOOL _ZN8ProcBase8vfunc_04Ev(ProcBase *self) {
 
 extern "C" void _ZN17Unk_020d8c7c_Base10postCreateEi(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e79a0(&gTaskCreateList, &self->unk_28);
+    func_020e79a0(&gTaskCreateList, &self->executeNode);
     if (isThree(gTaskPhase)) {
-        self->unk_10 = 1;
+        self->activatePending = 1;
         return;
     }
-    Task_InsertByPriority(&gTaskExecuteList, &self->unk_28);
-    Task_InsertByPriority(&gTaskDrawList, &self->unk_38);
-    self->unk_0e = 1;
+    Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
+    Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
+    self->state = 1;
 }
 
 extern "C" BOOL _ZN8ProcBase8vfunc_0cEv(ProcBase *self) {
@@ -256,7 +256,7 @@ extern "C" BOOL _ZN8ProcBase8vfunc_0cEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
-    if ((self->unk_48 == NULL || func_020ed7e4(self->unk_48) != 0) && self->unk_14.unk_04 == NULL) {
+    if ((self->seq == NULL || func_020ed7e4(self->seq) != 0) && self->treeNode.unk_04 == NULL) {
     } else {
         return FALSE;
     }
@@ -265,10 +265,10 @@ extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
 
 extern "C" void _ZN8ProcBase8vfunc_14Ev(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e7a7c(&gProcTree, &self->unk_14);
-    func_020e79a0(&gTaskDeleteList, &self->unk_28);
+    func_020e7a7c(&gProcTree, &self->treeNode);
+    func_020e79a0(&gTaskDeleteList, &self->executeNode);
     if (self->unk_4c != NULL) func_020e8c88(self->unk_4c);
-    if (self->unk_48 != NULL) func_020ed8cc(self->unk_48);
+    if (self->seq != NULL) func_020ed8cc(self->seq);
     delete self;
 }
 
@@ -280,49 +280,49 @@ extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {
 }
 
 extern "C" void ProcBase_RequestDelete(ProcBase *self) {
-    if (self->unk_0f != 0) return;
-    if (isTwo(self->unk_0e)) return;
-    self->unk_0f = 1;
+    if (self->deletePending != 0) return;
+    if (isTwo(self->state)) return;
+    self->deletePending = 1;
     self->vfunc_30();
 }
 
 extern "C" ProcBase *ProcBase_GetParent(ProcBase *self) {
-    TreeNode *parent = self->unk_14.unk_00;
+    TreeNode *parent = self->treeNode.unk_00;
     if (parent != NULL) return parent->unk_10;
     return NULL;
 }
 
 extern "C" void ProcBase_SetExecutePriority(ProcBase *self, u16 v) {
-    if (isOne(self->unk_0e)) {
+    if (isOne(self->state)) {
         if (isThree(gTaskPhase)) {
-            self->unk_28.unk_0e = v;
+            self->executeNode.unk_0e = v;
             return;
         }
-        func_020e79a0(&gTaskExecuteList, &self->unk_28);
-        QNode *q = &self->unk_28;
+        func_020e79a0(&gTaskExecuteList, &self->executeNode);
+        QNode *q = &self->executeNode;
         q->unk_0c = v;
         q->unk_0e = v;
-        Task_InsertByPriority(&gTaskExecuteList, &self->unk_28);
+        Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
     } else {
-        QNode *q = &self->unk_28;
+        QNode *q = &self->executeNode;
         q->unk_0c = v;
         q->unk_0e = v;
     }
 }
 
 extern "C" void ProcBase_SetDrawPriority(ProcBase *self, u16 v) {
-    if (isOne(self->unk_0e)) {
+    if (isOne(self->state)) {
         if (isFive(gTaskPhase)) {
-            self->unk_38.unk_0e = v;
+            self->drawNode.unk_0e = v;
             return;
         }
-        func_020e79a0(&gTaskDrawList, &self->unk_38);
-        QNode *q = &self->unk_38;
+        func_020e79a0(&gTaskDrawList, &self->drawNode);
+        QNode *q = &self->drawNode;
         q->unk_0c = v;
         q->unk_0e = v;
-        Task_InsertByPriority(&gTaskDrawList, &self->unk_38);
+        Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
     } else {
-        QNode *q = &self->unk_38;
+        QNode *q = &self->drawNode;
         q->unk_0c = v;
         q->unk_0e = v;
     }
@@ -459,14 +459,14 @@ extern "C" void _ZN8ProcBasedlEPv(void *p) {
 
 extern "C" void ProcBase_StartCreate(ProcBase *self) {
     func_020ecb78(self);
-    if (self->unk_0f != 0) return;
-    if (self->unk_10 != 0) return;
-    if (!isZero(self->unk_0e)) return;
+    if (self->deletePending != 0) return;
+    if (self->activatePending != 0) return;
+    if (!isZero(self->state)) return;
     if (isTwo(gTaskPhase)) {
-        self->unk_11 = 1;
+        self->createRetry = 1;
         return;
     }
-    func_020e7968(&gTaskCreateList, &self->unk_28);
+    func_020e7968(&gTaskCreateList, &self->executeNode);
 }
 
 extern "C" void func_020ecb78(ProcBase *self) {
@@ -474,18 +474,18 @@ extern "C" void func_020ecb78(ProcBase *self) {
 }
 
 extern "C" u32 func_020ecaf4(ProcBase *self) {
-    u16 id = self->unk_0c;
+    u16 id = self->profile;
     u32 r = ProcBase_RunPhase(self, data_0213b12c, data_0213b144, data_0213b14c);
     if (r == 1) Proc_CallDeleteHook(id);
     return r;
 }
 
 extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
-    TreeNode *root = &self->unk_14;
+    TreeNode *root = &self->treeNode;
     TreeNode *end = func_01ffcfc0(root);
     TreeNode *n = root->unk_04;
     while (n != NULL && n != end) {
-        if (isZero(n->unk_10->unk_0e)) return TRUE;
+        if (isZero(n->unk_10->state)) return TRUE;
         n = func_01ffcffc(n);
     }
     return FALSE;
@@ -530,7 +530,7 @@ extern "C" void Proc_CallDeleteHook(u32 a) {
 
 extern "C" ProcBase *Proc_CreateChild(u32 a, ProcBase *parent, u32 c, u32 d) {
     if (parent == NULL) return NULL;
-    return Proc_Create(a, &parent->unk_14, c, d);
+    return Proc_Create(a, &parent->treeNode, c, d);
 }
 
 extern "C" ProcBase *Proc_CreateRoot(u32 a, u32 b, u32 c) {

@@ -18,8 +18,8 @@ public:
     u32 isValid();
 
     /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
+    /* 0x0a */ u8 personality;
+    /* 0x0b */ u8 species;
 };
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
@@ -31,18 +31,18 @@ extern const u32 sPersonalityVoiceTypes[];
 extern char *sPersonalityPrefixes[6];
 
 u32 VillagerId::isValid() {
-    if (TownId_IsValid(this) == 1 && VillagerId_IsValidSpecies(unk_0b) == 1) return TRUE;
+    if (TownId_IsValid(this) == 1 && VillagerId_IsValidSpecies(species) == 1) return TRUE;
     return FALSE;
 }
 
 void VillagerId::set(u32 id, u32 type, void *s) {
-    unk_0b = id;
-    unk_0a = type;
+    species = id;
+    personality = type;
     if (s == 0) s = &gSaveTownId;
     TownId_Assign(this, s);
 }
 
-extern "C" u32 VillagerId_GetPersonality(VillagerId *o) { return o->unk_0a; }
+extern "C" u32 VillagerId_GetPersonality(VillagerId *o) { return o->personality; }
 
 extern "C" u32 Villager_PersonalityToGender(u32 t) {
     u32 r = 2;

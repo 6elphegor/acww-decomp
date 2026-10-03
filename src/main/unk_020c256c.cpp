@@ -72,7 +72,7 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
 
-    /* 0x04 */ u32 unk_04[0x38 / 4];
+    /* 0x04 */ u32 fileName[0x38 / 4];
     /* 0x3c */ u32 unk_3c;
     /* 0x40 */ u8 unk_40;
 };
@@ -128,8 +128,8 @@ public:
     void setPhase(s32 v);
     void attachOwner(u32 v);
 
-    s32 unk_ac;
-    u32 unk_b0;
+    s32 phase;
+    u32 owner;
 };
 
 // ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
@@ -187,11 +187,11 @@ public:
 
 struct Character : Actor {
     u8 pad_04[0x58];
-    Unk_0203e7a4_Vec unk_5c;
+    Unk_0203e7a4_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[0xe6 - 0x92];
     Character();
     virtual BOOL preDelete();
@@ -207,22 +207,22 @@ struct Character : Actor {
 
 struct NpcActor : Character {
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    ActorFollowCollider unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    ActorFollowCollider collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
     NpcActor() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -268,10 +268,10 @@ public:
     virtual u16 getSpecies();
     virtual BOOL getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcTest;
@@ -536,7 +536,7 @@ BOOL SpNpcTest::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    unk_70c = unk_8e;
+    unk_70c = rotY;
     return TRUE;
 }
 
@@ -574,7 +574,7 @@ void SpNpcTest::changeAct(s32 state) {
 }
 
 BOOL SpNpcTest::setupAct00() {
-    unk_564.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -589,13 +589,13 @@ BOOL SpNpcTest::setupAct01() {
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
     unk_658.setPhase(0);
     return TRUE;
 }
 
 BOOL SpNpcTest::mainAct01() {
-    if (unk_618.isBusy() == 0) {
+    if (talkCtrl.isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -607,13 +607,13 @@ BOOL SpNpcTest::mainAct02() {
 }
 
 BOOL SpNpcTest::setupAct03() {
-    unk_564.requestAction(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTest::mainAct03() {
-    if (unk_564.getAction() == 3) {
-        if (unk_564.isActionDone() == 1) {
+    if (actionCtrl.getAction() == 3) {
+        if (actionCtrl.isActionDone() == 1) {
             changeAct(0);
         }
     }
@@ -626,12 +626,12 @@ SpNpcTestTalk::~SpNpcTestTalk() {}
 
 void SpNpcTestTalk::attachOwner(u32 v) {
     vfunc_08();
-    unk_b0 = v;
-    unk_ac = 1;
+    owner = v;
+    phase = 1;
 }
 
 void SpNpcTestTalk::setPhase(s32 v) {
-    unk_ac = v;
+    phase = v;
 }
 
 void SpNpcTestTalk::startPhase00(Unk_020c270c_Out *out) {
@@ -641,9 +641,9 @@ void SpNpcTestTalk::startPhase00(Unk_020c270c_Out *out) {
 
 void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
     static Unk_020c269c_Fn tbl[1] = { (Unk_020c269c_Fn)&SpNpcTestTalk::startPhase00 };
-    if (unk_ac >= 0 && unk_ac < 1) {
-        if (tbl[unk_ac]) {
-            (this->*tbl[unk_ac])((void *)out);
+    if (phase >= 0 && phase < 1) {
+        if (tbl[phase]) {
+            (this->*tbl[phase])((void *)out);
         }
     }
 }
@@ -664,9 +664,9 @@ char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
 void SpNpcTestTalk::onMessageEnd(void *a) {
     static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
-    if (unk_ac >= 0 && unk_ac < 1) {
-        if (tbl[unk_ac]) {
-            (this->*tbl[unk_ac])(a);
+    if (phase >= 0 && phase < 1) {
+        if (tbl[phase]) {
+            (this->*tbl[phase])(a);
         }
     }
 }

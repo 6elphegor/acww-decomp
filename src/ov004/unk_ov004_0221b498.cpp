@@ -87,7 +87,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -213,13 +213,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -255,22 +255,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -288,10 +288,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct Unk_ov004_0221b954_Global {
@@ -486,8 +486,8 @@ BOOL SpNpcSable::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    unk_708 = unk_8e;
-    unk_4cc.unk_1c |= 2;
+    unk_708 = rotY;
+    collider.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
             changeAct(0);
@@ -529,21 +529,21 @@ void SpNpcSable::changeAct(s32 state) {
 }
 
 BOOL SpNpcSable::setupAct00() {
-    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0xe4, 0, data_020c6cc8, unk_70c);
+    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xe4, 0, data_020c6cc8, unk_70c);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct00() {
-    if (unk_708 != unk_8e) {
+    if (unk_708 != rotY) {
         changeAct(3);
         return TRUE;
     }
-    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0xe4, &unk_2a0)) {
+    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0xe4, &moveAnimSet)) {
         if (SewingMachine_IsStopped()) {
             SewingMachine_Start();
             u32 t = unk_70e * 0x38;
-            SewingMachine_SetFrame((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
+            SewingMachine_SetFrame((u16)(t + (((u32)model.unk_a4 << 4) >> 16)));
         }
     }
     return TRUE;
@@ -551,24 +551,24 @@ BOOL SpNpcSable::mainAct00() {
 
 BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) >= 6) {
-        NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+        NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     }
     SewingMachine_Stop();
     if (SpNpcSable_GetTalkCount(this) < 6) {
-        NpcTalkCtrl_requestTalk(&unk_618, 1, 0);
+        NpcTalkCtrl_requestTalk(&talkCtrl, 1, 0);
     } else {
         NpcActor *p = func_02015aac(&unk_658);
         s32 r = 0;
         if (p) {
             r = NpcActor_getAngleTo(this, p);
         }
-        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
+        NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
     if (!CommManager_isOnline(gCommManager) && !Talk_CheckAndSetPlayerFlag(0x11, 1)) {
@@ -588,13 +588,13 @@ BOOL SpNpcSable::setupAct02() { return TRUE; }
 BOOL SpNpcSable::mainAct02() { return TRUE; }
 
 BOOL SpNpcSable::setupAct03() {
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_708, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_708, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct03() {
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(0);
         }
     }
@@ -602,7 +602,7 @@ BOOL SpNpcSable::mainAct03() {
 }
 
 BOOL SpNpcSable::setupAct04() {
-    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -628,11 +628,11 @@ BOOL SpNpcSable::mainAct04() {
             changeAct(0);
         }
     } else if (!NetArea_IsLocalOwner()) {
-        if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0xe4, &unk_2a0)) {
+        if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0xe4, &moveAnimSet)) {
             if (SewingMachine_IsStopped()) {
                 SewingMachine_Start();
                 u32 t = unk_70e * 0x38;
-                SewingMachine_SetFrame((u16)(t + (((u32)unk_ec.unk_a4 << 4) >> 16)));
+                SewingMachine_SetFrame((u16)(t + (((u32)model.unk_a4 << 4) >> 16)));
             }
         } else if (!SewingMachine_IsStopped()) {
             SewingMachine_Stop();
@@ -643,7 +643,7 @@ end:
 }
 
 BOOL SpNpcSable::setupAct05() {
-    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -661,14 +661,14 @@ BOOL SpNpcSable::mainAct05() {
 
 BOOL SpNpcSable::setupAct06() {
     SewingMachine_Stop();
-    unk_70c = unk_ec.unk_a4 >> 12;
+    unk_70c = model.unk_a4 >> 12;
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct06() { return TRUE; }
 
 void SpNpcSable::onLeaveTalk() {
-    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
 }
 
 SpNpcSableTalk::SpNpcSableTalk() {}
@@ -755,7 +755,7 @@ void SpNpcSableTalk::onMessageEnd() {}
 void SpNpcSableTalk::onChoice() {}
 
 BOOL SpNpcSable::vfunc_48() {
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -764,7 +764,7 @@ BOOL SpNpcSable::vfunc_48() {
 void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
     switch (idx) {
     case 3:
-        unk_558.unk_08 = v;
+        footstepFx.unk_08 = v;
         if (v != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, v);
             changeAct(6);
@@ -777,7 +777,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
         }
         break;
     case 0:
-        unk_558.unk_08 = v;
+        footstepFx.unk_08 = v;
         if (v != 4 && v != gCommManager->unk_64) {
             NpcActor_netSetSlotsIfOwner(this, 1, v, v);
             changeAct(5);

@@ -51,12 +51,12 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ u8 unk_c4[0xc];
-    /* 0xd0 */ u16 unk_d0;
+    /* 0xc4 */ u8 drawPos[0xc];
+    /* 0xd0 */ u16 drawTilt;
     /* 0xd2 */ u8 pad_d2[2];
 };
 
@@ -78,8 +78,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -94,13 +94,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -232,16 +232,16 @@ public:
 class AnimFrameCtrl {
 public:
     virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     void step();
     BOOL isFinished();
     BOOL hasPassedFrame(s32 a);
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -252,8 +252,8 @@ public:
     void init(s32 a, s32 b, s32 c, u16 d);
     BOOL allocMatAnm(u32 a, void *c);
 
-    s32 *unk_18;
-    u32 unk_1c;
+    s32 *anmObj;
+    u32 resMdl;
 };
 
 class Model {
@@ -427,9 +427,9 @@ BOOL Mailbox::vfunc_70() {
     struct {
         s32 x, y, z;
     } v;
-    v.x = unk_5c[0];
-    v.y = unk_5c[1];
-    v.z = unk_5c[2];
+    v.x = position[0];
+    v.y = position[1];
+    v.z = position[2];
     v.y = v.y + 0x1000;
     _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_2d4, &v, 0x1000, 7, b);
     unk_2f0 = 1;
@@ -468,8 +468,8 @@ BOOL Mailbox::vfunc_48(void *a) {
         return FALSE;
     }
     if (unk_130 == 2 && a) {
-        if (func_020e9650((u8 *)a + 0x5c, unk_5c) < 0x2333) {
-            if (func_020e780c((s16)(unk_8e + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
+        if (func_020e9650((u8 *)a + 0x5c, position) < 0x2333) {
+            if (func_020e780c((s16)(rotY + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
                 return TRUE;
             }
         }
@@ -516,11 +516,11 @@ BOOL Mailbox::vfunc_b8(void *a) {
     struct {
         s32 a, b, c;
     } v;
-    s32 z = unk_5c[2] - 0x1000;
-    v.a = unk_5c[0] + 0x2000;
+    s32 z = position[2] - 0x1000;
+    v.a = position[0] + 0x2000;
     v.b = 0;
     v.c = z;
-    unk_d0 = WorldCurve_ToCurved(unk_c4, &v);
+    drawTilt = WorldCurve_ToCurved(drawPos, &v);
     makeCurvedMatrix((Unk_ov009_0225bc88_Blk *)a);
     *(Unk_ov009_0225bc88_Blk *)data_021f47e0 = *(Unk_ov009_0225bc88_Blk *)a;
     func_020e8528(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
@@ -569,9 +569,9 @@ s32 Mailbox::enterUseOpen() {
     struct {
         s32 a, b, c;
     } v;
-    v.a = unk_5c[0];
+    v.a = position[0];
     v.b = Ground_GetDefaultY(0);
-    v.c = unk_5c[2] + 0x2000;
+    v.c = position[2] + 0x2000;
     if (PlayerActor_LocalRequestMailboxOpen(&v)) {
         Building_RequestState(this, 3);
     }
@@ -690,7 +690,7 @@ BOOL Mailbox::enterHasMail() {
 
 void Mailbox::execHasMail() {
     unk_2b4.step();
-    *unk_2b4.unk_18 = unk_2b4.unk_08;
+    *unk_2b4.anmObj = unk_2b4.curFrame;
 }
 
 BOOL Mailbox::enterLidOpen() {
@@ -703,7 +703,7 @@ BOOL Mailbox::enterLidOpen() {
 void Mailbox::execLidOpen() {
     _ZN9AnimModel8stepAnimEv(unk_138);
     unk_2b4.step();
-    *unk_2b4.unk_18 = unk_2b4.unk_08;
+    *unk_2b4.anmObj = unk_2b4.curFrame;
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         Building_RequestState(this, 4);
     }
@@ -718,7 +718,7 @@ BOOL Mailbox::enterLidOpened() {
 
 void Mailbox::execLidOpened() {
     unk_2b4.step();
-    *unk_2b4.unk_18 = unk_2b4.unk_08;
+    *unk_2b4.anmObj = unk_2b4.curFrame;
 }
 
 BOOL Mailbox::enterLidClose() {
@@ -740,7 +740,7 @@ void Mailbox::execLidClose() {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
     unk_2b4.step();
-    *unk_2b4.unk_18 = unk_2b4.unk_08;
+    *unk_2b4.anmObj = unk_2b4.curFrame;
 }
 
 BOOL Mailbox::enterMailGone() {
@@ -759,6 +759,6 @@ void Mailbox::execMailGone() {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
     unk_2b4.step();
-    *unk_2b4.unk_18 = unk_2b4.unk_08;
+    *unk_2b4.anmObj = unk_2b4.curFrame;
 }
 

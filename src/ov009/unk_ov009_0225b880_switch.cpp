@@ -68,14 +68,14 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ s16 unk_d0;
+    /* 0xc4 */ s32 drawPos;
+    /* 0xc8 */ s32 drawPosY;
+    /* 0xcc */ s32 drawPosZ;
+    /* 0xd0 */ s16 drawTilt;
     /* 0xd2 */ u16 pad_d2;
 };
 
@@ -104,9 +104,9 @@ public:
     void clearTalkStartMode();
     void setInteractionRange(s32 v);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -124,8 +124,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 // Secondary base at +0xec (vtable 0x020ddcf0 in main)

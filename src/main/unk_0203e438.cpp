@@ -59,11 +59,11 @@ struct Unk_0203e5d0_Node {
 };
 
 struct Unk_0203e5d0_List {
-    /* 0x00 */ Unk_0203e5d0_Node *unk_00;
-    /* 0x04 */ u32 unk_04;
+    /* 0x00 */ Unk_0203e5d0_Node *head;
+    /* 0x04 */ u32 tail;
     Unk_0203e5d0_List() {
-        unk_00 = 0;
-        unk_04 = 0;
+        head = 0;
+        tail = 0;
     }
 };
 
@@ -74,7 +74,7 @@ extern u8 sCharInteractSyncResult;
 
 struct Unk_0203e938_Net {
     /* 0x00 */ u8 pad_00[0x64];
-    /* 0x64 */ u32 unk_64;
+    /* 0x64 */ u32 myAid;
 };
 
 struct Unk_0203e4f0_Vec {
@@ -275,7 +275,7 @@ public:
     virtual ~Actor() { func_020e79a0(gActorList, &unk_50); }
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -312,9 +312,9 @@ public:
     void setCharId(u32 a);
     u32 getCharId();
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -328,9 +328,9 @@ public:
 Unk_0203e5d0_List gCharacterList;
 
 Character::Character() {
-    unk_d4.unk_00 = 0;
-    unk_d4.unk_04 = 0;
-    unk_d4.unk_08 = 0;
+    charNode.unk_00 = 0;
+    charNode.unk_04 = 0;
+    charNode.unk_08 = 0;
 }
 
 Character::~Character() {}
@@ -343,17 +343,17 @@ BOOL Character::vfunc_04() {
     if (!Actor::vfunc_04()) {
         return FALSE;
     }
-    unk_d4.unk_08 = 0;
-    unk_d4.unk_0c = this;
+    charNode.unk_08 = 0;
+    charNode.unk_0c = this;
     setInteractionRange(0x3000);
-    unk_e8 = 0;
+    charFlags = 0;
     setTalkStartMode1();
     return TRUE;
 }
 
 void Character::postCreate(s32 a) {
     if (a == 2) {
-        func_020652dc(&gCharacterList, &unk_d4);
+        func_020652dc(&gCharacterList, &charNode);
     }
     _ZN5Actor10postCreateEv(this, a);
 }
@@ -362,7 +362,7 @@ BOOL Character::preDelete() {
     if (!Actor::preDelete()) {
         return FALSE;
     }
-    func_020e79a0(&gCharacterList, &unk_d4);
+    func_020e79a0(&gCharacterList, &charNode);
     return TRUE;
 }
 
@@ -373,10 +373,10 @@ BOOL Character::preExecute() {
     return FALSE;
 }
 
-u32 Character::getCharId() { return unk_d4.unk_08; }
+u32 Character::getCharId() { return charNode.unk_08; }
 
 void Character::setCharId(u32 a) {
-    unk_d4.unk_08 = a | (*(u16 *)((u8 *)this + 0xc) << 16);
+    charNode.unk_08 = a | (*(u16 *)((u8 *)this + 0xc) << 16);
 }
 
 extern "C" Character *Character_FindByCharId(u32 id) {
@@ -388,7 +388,7 @@ extern "C" Character *Character_FindByCharId(u32 id) {
 }
 
 extern "C" Character *Character_FindInteractionTarget(Character *self) {
-    for (Unk_0203e5d0_Node *n = gCharacterList.unk_00; n; n = n->unk_04) {
+    for (Unk_0203e5d0_Node *n = gCharacterList.head; n; n = n->unk_04) {
         Character *o = n->unk_0c;
         if (o == self) {
             continue;
@@ -413,13 +413,13 @@ BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
 
 BOOL Character::isInInteractionRange(Character *other) {
     Unk_0203e4f0_Vec d;
-    if (unk_e4 == 0) {
+    if (interactionRangeSq == 0) {
         return TRUE;
     }
     d.x = other->getInteractionPos()->x - getInteractionPos()->x;
     d.y = other->getInteractionPos()->y - getInteractionPos()->y;
     d.z = other->getInteractionPos()->z - getInteractionPos()->z;
-    if (func_020e9630(&d) < (long long)unk_e4) {
+    if (func_020e9630(&d) < (long long)interactionRangeSq) {
         return TRUE;
     }
     return FALSE;
@@ -439,7 +439,7 @@ BOOL Character::checkInteraction(Character *other) {
 
 void Character::vfunc_4c(u32 a, u8 b) {}
 
-Unk_0203e4f0_Vec *Character::getInteractionPos() { return (Unk_0203e4f0_Vec *)unk_5c; }
+Unk_0203e4f0_Vec *Character::getInteractionPos() { return (Unk_0203e4f0_Vec *)position; }
 
 BOOL Character::acceptsInteractionOutOfRange(void *a) { return FALSE; }
 
@@ -451,7 +451,7 @@ void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 
 void Character::detachTalkRequest(s32 a) { Talk_DetachRequest(a); }
 
-void Character::setInteractionRange(s32 v) { unk_e4 = func_01ffcb0c(v); }
+void Character::setInteractionRange(s32 v) { interactionRangeSq = func_01ffcb0c(v); }
 
 void Character::setTalkStartMode0() {
     clearCharFlags(3);

@@ -10,9 +10,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgStringBase {
@@ -30,8 +30,8 @@ public:
     u8 copy(MsgString *other);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 // 0xc-byte record, see unk_020a6914.cpp (whose ctor BmgMsgAttr_Init and dtor BmgMsgAttr_Fini are still C functions there)
@@ -39,7 +39,7 @@ struct BmgMsgAttr {
     BmgMsgAttr();
     ~BmgMsgAttr();
 
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 textOffset;
     /* 0x04 */ u8 unk_04;
     /* 0x05 */ u8 unk_05;
     /* 0x06 */ u8 unk_06;
@@ -86,14 +86,14 @@ public:
     void close();
     u8 open(const char *path);
 
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05[0x3f];
-    /* 0x44 */ u8 unk_44[0x48];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
-    /* 0x90 */ u32 unk_90[3];
-    /* 0x9c */ u32 unk_9c;
-    /* 0xa0 */ u32 unk_a0;
+    /* 0x04 */ u8 hasAttributes;
+    /* 0x05 */ u8 filePath[0x3f];
+    /* 0x44 */ u8 file[0x48];
+    /* 0x8c */ u8 isOpen;
+    /* 0x8d */ u8 msgIndex;
+    /* 0x90 */ u32 entry[3];
+    /* 0x9c */ u32 textOffset;
+    /* 0xa0 */ u32 textSize;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1783,14 +1783,14 @@ void ChoiceListCursor::createLabels() {
         ChoiceString *buf = e->getText();
         TextLabel *t = MsgTextLabel_CreateVram(size, 0xd, 2);
         if (t) {
-            t->unk_2c = 1;
-            t->unk_10 = (u32)buf->data();
-            t->unk_50 = 2;
-            t->unk_39 = 0xe;
-            t->unk_38 = i + 1;
-            t->unk_58 = 2;
+            t->vramLoader = 1;
+            t->textStart = (u32)buf->data();
+            t->copyMode = 2;
+            t->bgColor = 0xe;
+            t->fgColor = i + 1;
+            t->group = 2;
             t->requestClear(0);
-            t->unk_58 = 0;
+            t->group = 0;
             labels[i] = t;
         }
     }
@@ -2077,14 +2077,14 @@ void ChoiceSliderCursor::createLabels() {
         ChoiceString *text = a->getText();
         TextLabel *o = MsgTextLabel_CreateVram(font, 13, 2);
         if (o) {
-            o->unk_2c = 1;
-            o->unk_10 = (u32)text->data();
-            o->unk_50 = 2;
-            o->unk_39 = 14;
-            o->unk_38 = i + 1;
-            o->unk_58 = 2;
+            o->vramLoader = 1;
+            o->textStart = (u32)text->data();
+            o->copyMode = 2;
+            o->bgColor = 14;
+            o->fgColor = i + 1;
+            o->group = 2;
             o->requestClear(zero);
-            o->unk_58 = 0;
+            o->group = 0;
             labels[i] = o;
         }
     }

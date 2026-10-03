@@ -53,9 +53,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgString;
@@ -68,7 +68,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 class MsgString : public MsgStringBase {
@@ -80,8 +80,8 @@ public:
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 class BmgReader {
@@ -91,7 +91,7 @@ public:
     virtual u32 getBuffer() = 0;
     virtual u32 getBufferSize() = 0;
 
-    /* 0x04 */ u8 unk_04;
+    /* 0x04 */ u8 hasAttributes;
 };
 
 extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);

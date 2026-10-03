@@ -426,8 +426,8 @@ public:
     virtual BOOL vfunc_bc();
 
     /* 0x004 */ u8 pad_04[0x58];
-    /* 0x05c */ Unk_ov068_0225f23c_Vec unk_5c;
-    /* 0x068 */ Unk_ov068_0225f23c_Vec unk_68;
+    /* 0x05c */ Unk_ov068_0225f23c_Vec position;
+    /* 0x068 */ Unk_ov068_0225f23c_Vec prevPosition;
     /* 0x074 */ u8 pad_74[0x150 - 0x74];
     /* 0x150 */ Unk_ov068_022661c8_Blk unk_150;
     /* 0x180 */ u8 pad_180[0x3b0 - 0x180];
@@ -441,16 +441,16 @@ public:
     /* 0x4cc */ u8 unk_4cc[0x508 - 0x4cc];
     /* 0x508 */ u8 unk_508;
     /* 0x509 */ u8 pad_509[0x560 - 0x509];
-    /* 0x560 */ u8 unk_560;
-    /* 0x561 */ u8 unk_561;
-    /* 0x562 */ u8 unk_562;
+    /* 0x560 */ u8 partnerPlayer;
+    /* 0x561 */ u8 updateEnabled;
+    /* 0x562 */ u8 drawEnabled;
     /* 0x563 */ u8 pad_563[0x618 - 0x563];
     /* 0x618 */ u8 unk_618[0x10];
-    /* 0x628 */ void *unk_628;
+    /* 0x628 */ void *curHeldTool;
     /* 0x62c */ u8 pad_62c[0x680 - 0x62c];
-    /* 0x680 */ Unk_ov068_0226fb80_Sub680 unk_680;
+    /* 0x680 */ Unk_ov068_0226fb80_Sub680 villagerTalk;
     /* 0x824 */ u8 pad_824[0x82c - 0x824];
-    /* 0x82c */ void *unk_82c;
+    /* 0x82c */ void *villagerData;
     /* 0x830 */ u8 pad_830[8];
     /* 0x838 */ u8 unk_838[0x5b];
     /* 0x893 */ u8 unk_893;
@@ -3298,13 +3298,13 @@ BOOL FieldVillager::vfunc_a8() {
     using namespace ns_02265d34;
     BOOL r = FALSE;
     BOOL f = FALSE;
-    if (unk_82c != NULL) {
-        if (Villager_GetState(unk_82c) != NULL) {
+    if (villagerData != NULL) {
+        if (Villager_GetState(villagerData) != NULL) {
             f = TRUE;
         }
     }
     if (f) {
-        if (VillagerState_GetRole(Villager_GetState(unk_82c)) == 1) {
+        if (VillagerState_GetRole(Villager_GetState(villagerData)) == 1) {
             r = TRUE;
         }
     }
@@ -3316,8 +3316,8 @@ BOOL FieldVillager::vfunc_04() {
     if (func_0202dab0(this) == 0) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &unk_680);
-    unk_680.vfunc_08();
+    NpcActor_setTalkRequest(this, &villagerTalk);
+    villagerTalk.vfunc_08();
     unk_9f4 = NULL;
     unk_9f8 = 0;
     unk_a08 = 3;
@@ -3325,7 +3325,7 @@ BOOL FieldVillager::vfunc_04() {
     if (Unk_ov068_02266320_IsZero(HeldToolModel_load((&unk_9b0), &buf))) {
         return FALSE;
     }
-    unk_628 = (&unk_9b0);
+    curHeldTool = (&unk_9b0);
     unk_9fc = -1;
     unk_a00 = 0;
     unk_a01 = 0;
@@ -3394,14 +3394,14 @@ BOOL FieldVillager::onDraw() {
     if (unk_894.unk_18 != 0) {
         r = (this->*unk_894.unk_18)();
     } else {
-        Unk_ov068_0225f23c_Vec *pv = &unk_5c;
-        unk_478.x = unk_5c.x;
+        Unk_ov068_0225f23c_Vec *pv = &position;
+        unk_478.x = position.x;
         unk_478.y = pv->y;
         unk_478.z = pv->z;
-        unk_484.x = unk_5c.x;
+        unk_484.x = position.x;
         unk_484.y = pv->y;
         unk_484.z = pv->z;
-        unk_490.x = unk_5c.x;
+        unk_490.x = position.x;
         unk_490.y = pv->y;
         unk_490.z = pv->z;
     }
@@ -3414,7 +3414,7 @@ BOOL FieldVillager::vfunc_0c() {
         return FALSE;
     }
     HeldToolModel_release((&unk_9b0));
-    unk_628 = NULL;
+    curHeldTool = NULL;
     if (unk_9fc != -1) {
         Effect_End(unk_9fc);
         unk_9fc = -1;
@@ -3434,7 +3434,7 @@ BOOL FieldVillager::onToolHit(u16 *p) {
         if (vfunc_64() != NULL) {
             Villager_HalveTalkUrge(vfunc_64());
         }
-        if (Villager_HasFlea(unk_82c) != 0) {
+        if (Villager_HasFlea(villagerData) != 0) {
             X_func_ov068_0225f840((&unk_9f0), this);
             X_func_ov068_0225f838((&unk_9f0), sFleaRemovedHoldFrames);
             result = TRUE;
@@ -3489,7 +3489,7 @@ BOOL FieldVillager::isPlayerFacing() {
     if (unk_508 != 0 && ActorCollider_isHitByGroup(unk_4cc, 4) != 0) {
         Unk_ov068_02265ee8_Obj *p = (Unk_ov068_02265ee8_Obj *)PlayerActor_GetCharacter(4);
         if (p != NULL && p->unk_98 != 0) {
-            s16 d = Math_AngleXZ(&p->unk_5c, &unk_5c) - p->unk_94;
+            s16 d = Math_AngleXZ(&p->unk_5c, &position) - p->unk_94;
             if (d < 0) {
                 d = -d;
             }
@@ -3503,7 +3503,7 @@ BOOL FieldVillager::isPlayerFacing() {
 
 void FieldVillager::updateStareTimer() {
     using namespace ns_02265d34;
-    if (unk_562 != 0 && unk_561 != 0 && unk_894.unk_18 != 0 && NpcTalkCtrl_isBusy(unk_618) == 0 && getPlayerMemory() != 0) {
+    if (drawEnabled != 0 && updateEnabled != 0 && unk_894.unk_18 != 0 && NpcTalkCtrl_isBusy(unk_618) == 0 && getPlayerMemory() != 0) {
         if (isPlayerFacing()) {
             unk_a02++;
             if ((s32)unk_a02 >= 100) {
@@ -4076,7 +4076,7 @@ s32 FieldVillager_IsInRect(Unk_ov068_0226546c_Rect *r, Unk_ov068_02265434_Vec *a
 namespace ns_02265324 {
 extern "C" {
 s32 FieldVillager_IsNearCameraFocus(Unk_ov068_0226546c_Rect *r, FieldVillager *o) {
-    Unk_ov068_02265434_Vec *pb = (Unk_ov068_02265434_Vec *)&o->unk_5c;
+    Unk_ov068_02265434_Vec *pb = (Unk_ov068_02265434_Vec *)&o->position;
     s32 res = 0;
     if (gCamera != 0) {
         Unk_ov068_02265434_Vec v;
@@ -4155,7 +4155,7 @@ done:
     if (r4 == 7) {
         r4 = FieldVillagerAi_PickRandomRouteType(self);
     }
-    VillagerRoute_start(self->unk_3c, &o->unk_5c, r4, a, o);
+    VillagerRoute_start(self->unk_3c, &o->position, r4, a, o);
 }
 }
 }
@@ -7332,7 +7332,7 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
     using namespace ns_0225f1a0;
     switch (idx) {
     case 3:
-        unk_560 = v;
+        partnerPlayer = v;
         if (VillagerTalk_hasPartner(this)) {
             unk_9f8 = 1;
             unk_9f4 = (Unk_ov068_0225f904_Menu *)VillagerTalk_getPartner(this);
@@ -7399,17 +7399,17 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
             unk_9f8 = 0x10;
             break;
         }
-        VillagerTalk_begin((&unk_680), this, unk_9f8);
-        func_02015ab0((&unk_680), NpcActor_getPlayerActor(this, 4));
+        VillagerTalk_begin((&villagerTalk), this, unk_9f8);
+        func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         FieldVillagerAi_ChangeState(&unk_8b4, this, r6);
         break;
     }
     case 0:
-        unk_560 = v;
-        VillagerTalk_begin((&unk_680), this, unk_9f8);
-        func_02015ab0((&unk_680), NpcActor_getPlayerActor(this, 4));
+        partnerPlayer = v;
+        VillagerTalk_begin((&villagerTalk), this, unk_9f8);
+        func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         if (unk_9f4) {
-            ActorTalkRequest_setPartnerActor((&unk_680), unk_9f4);
+            ActorTalkRequest_setPartnerActor((&villagerTalk), unk_9f4);
         }
         FieldVillagerAi_ChangeState(&unk_8b4, this, 5);
         if (unk_9f8 == 2) {
@@ -7421,7 +7421,7 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
         unk_9f8 = 0;
         break;
     case 5:
-        unk_560 = v;
+        partnerPlayer = v;
         FieldVillagerAi_SaveResumeState(&unk_8b4);
         FieldVillagerAi_ChangeState(&unk_8b4, this, 6);
         break;
@@ -7432,8 +7432,8 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
         if (unk_a08 == 0) {
             t = Villager_GetWhereabouts(vfunc_64());
             q = VillagerDataItemView_getHousePos(vfunc_64());
-            FieldPos_FromUnitCenter(&unk_5c, ((u8 *)q)[0], ((u8 *)q)[1]);
-            { Unk_ov068_0225f23c_Vec *sp = &unk_5c; Unk_ov068_0225f23c_Vec *d = &unk_68; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
+            FieldPos_FromUnitCenter(&position, ((u8 *)q)[0], ((u8 *)q)[1]);
+            { Unk_ov068_0225f23c_Vec *sp = &position; Unk_ov068_0225f23c_Vec *d = &prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
             sv = VillagerStates_GetBirthdayHost();
             if (sv == Villager_GetIndex(vfunc_64()) || (u32)(t - 3) <= 4) {
                 FieldVillagerAi_ChangeState(&unk_8b4, this, 0xc);
@@ -7501,13 +7501,13 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
         buf.b = o->unk_478.y;
         buf.c = o->unk_478.z;
         Effect_PlayById(0x81, &buf, 0, 0);
-        if (Villager_HasFlea(o->unk_82c)) {
+        if (Villager_HasFlea(o->villagerData)) {
             unk_00 = Random_GlobalBelow(0xf) + 0xf;
         } else {
             unk_00 = -1;
         }
     } else if (unk_00 == -1) {
-        if (Villager_HasFlea(o->unk_82c)) {
+        if (Villager_HasFlea(o->villagerData)) {
             unk_00 = Random_GlobalBelow(10) + 0xf;
         }
     }
@@ -7516,7 +7516,7 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
 void FieldVillagerFxTimer::stop(FieldVillager *o) {
     using namespace ns_0225f1a0;
     unk_00 = -1;
-    Villager_RemoveFlea(o->unk_82c);
+    Villager_RemoveFlea(o->villagerData);
 }
 
 u32 FieldVillagerFxTimer::getHoldCount() {
@@ -7692,7 +7692,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameInsect(unk_0c, unk_10)) {
-        s32 r = getInsectIfNear(&buf, unk_0c, &o->unk_5c, o->unk_40c);
+        s32 r = getInsectIfNear(&buf, unk_0c, &o->position, o->unk_40c);
         if (r != -1 && r == unk_10) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
@@ -7749,7 +7749,7 @@ void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameFish(unk_0c, unk_10)) {
-        if (getFishPosIfNear(&buf, unk_0c, &o->unk_5c, o->unk_40c)) {
+        if (getFishPosIfNear(&buf, unk_0c, &o->position, o->unk_40c)) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
             resetLook(o);
@@ -7773,12 +7773,12 @@ void FieldVillagerLook::update(FieldVillager *o) {
                     if (NpcLookAt_canSeeTarget(o->unk_3b0, o) == 0) {
                         s32 r;
                         idx = -1;
-                        r = findInsectNear(&buf, &idx, &o->unk_5c, 0x5000);
+                        r = findInsectNear(&buf, &idx, &o->position, 0x5000);
                         if (r != -1) {
                             startLookAtInsect(o, idx, r, &buf);
                         } else {
                             idx = -1;
-                            r = findFishNear(&buf, &idx, &o->unk_5c, 0x5000);
+                            r = findFishNear(&buf, &idx, &o->position, 0x5000);
                             if (r != -1) {
                                 startLookAtFish(o, idx, r, &buf);
                             }

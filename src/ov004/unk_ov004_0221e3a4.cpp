@@ -83,7 +83,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -212,13 +212,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -255,22 +255,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -288,10 +288,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct Unk_ov004_0221b954_Global {
@@ -372,7 +372,7 @@ BOOL SpNpcTortimer2::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xff);
+    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xff);
     return TRUE;
 }
 
@@ -382,8 +382,8 @@ BOOL SpNpcTortimer2::vfunc_00() {
     }
     sSpNpcTortimer2 = this;
     changeAct(0);
-    unk_4cc.unk_1c |= 2;
-    unk_4cc.unk_44 = 0;
+    collider.unk_1c |= 2;
+    collider.unk_44 = 0;
     return TRUE;
 }
 
@@ -418,13 +418,13 @@ void SpNpcTortimer2::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer2::setupAct00() {
-    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_658 = 0xa;
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct00() {
-    if (((u32)unk_ec.unk_a4 << 4) >> 16 == (((u32)unk_ec.unk_a0 << 4) >> 16) - 1) {
+    if (((u32)model.unk_a4 << 4) >> 16 == (((u32)model.unk_a0 << 4) >> 16) - 1) {
         if (func_020e7518(&unk_658) == 0 && SaveManager_IsIdle()) {
             changeAct(1);
         }
@@ -433,15 +433,15 @@ BOOL SpNpcTortimer2::mainAct00() {
 }
 
 BOOL SpNpcTortimer2::setupAct01() {
-    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x100, 1, data_020c6cc8, 0);
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x100, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct01() {
-    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0x100, &unk_2a0) && NpcActionCtrl_isActionDone(&unk_564)) {
-        NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x101, 1, data_020c6cc8, 0);
+    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0x100, &moveAnimSet) && NpcActionCtrl_isActionDone(&actionCtrl)) {
+        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x101, 1, data_020c6cc8, 0);
     }
-    if (NpcAnimCtrl_isPlayingAnim(&unk_334, 0x101, &unk_2a0) && NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0x101, &moveAnimSet) && NpcActionCtrl_isActionDone(&actionCtrl)) {
         changeAct(0);
     }
     return TRUE;
@@ -453,7 +453,7 @@ BOOL SpNpcTortimer2::mainAct01() {
 extern "C" BOOL SpNpcTortimer2_IsIdle() {
     SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (NpcAnimCtrl_isPlayingAnim(&y->unk_334, 0xff, &y->unk_2a0) && sSpNpcTortimer2->unk_654 == 0) {
+        if (NpcAnimCtrl_isPlayingAnim(&y->animCtrl, 0xff, &y->moveAnimSet) && sSpNpcTortimer2->unk_654 == 0) {
             return TRUE;
         }
         return FALSE;

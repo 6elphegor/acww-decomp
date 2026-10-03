@@ -4,11 +4,11 @@ class AnimFrameCtrl {
 public:
     virtual ~AnimFrameCtrl();
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -17,8 +17,8 @@ public:
     virtual ~ModelAnim();
     BOOL allocMatAnm(u32 a, void *c);
 
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 extern "C" {
@@ -41,12 +41,12 @@ extern "C" void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c) {
 }
 
 BOOL ModelAnim::allocMatAnm(u32 a, void *c) {
-    if (unk_18 != 0 || unk_1c != 0) {
+    if (anmObj != 0 || resMdl != 0) {
         return FALSE;
     }
-    unk_18 = (u32)Gfx3d_AllocAnmObj(a, sMatAnmHeader, c);
-    unk_1c = a;
-    if (unk_18 != 0) {
+    anmObj = (u32)Gfx3d_AllocAnmObj(a, sMatAnmHeader, c);
+    resMdl = a;
+    if (anmObj != 0) {
         return TRUE;
     }
     return FALSE;

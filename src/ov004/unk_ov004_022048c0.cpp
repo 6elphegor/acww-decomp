@@ -59,10 +59,10 @@ public:
     virtual BOOL postDraw();
     virtual ~Actor();
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -90,9 +90,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -104,8 +104,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class ChoiceList {
@@ -119,9 +119,9 @@ struct TalkWindowState {
     s32 setSlot(s32 idx, void *p);
     void setNextMessage(u8 *src, void *s);
 
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
 };
 
 // Slots 0x10..0x18 are overridden by the derived class's own new virtuals (named after their addresses).
@@ -299,8 +299,8 @@ BOOL Atm::vfunc_0c() {
 }
 
 void Atm::initCollision() {
-    BoxCollider_Register(unk_134, 0x2000, 0x2000, 0x2000, unk_5c, 0, 0);
-    Scene_GetTouchPicker()->addBox(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    BoxCollider_Register(unk_134, 0x2000, 0x2000, 0x2000, position, 0, 0);
+    Scene_GetTouchPicker()->addBox(&unk_1d0, (Vec3 *)position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {
@@ -328,8 +328,8 @@ void Atm::setPointTexts() {
 BOOL Atm::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, unk_5c) < 0x2333) {
-            u32 d = (u16)(o->unk_8e - (unk_8e + 0x8000));
+        if (func_020e9650(o->position, position) < 0x2333) {
+            u32 d = (u16)(o->rotY - (rotY + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;
             }
@@ -396,15 +396,15 @@ BOOL Atm::enterTalkAct01() {
     Unk_02204a38_Pad pad;
     Character_attachTalkRequest(this, this);
     setFileName(sAtmMsgFilePtr);
-    unk_1e = 0;
+    msgIndex = 0;
     setPointTexts();
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
     return TRUE;
 }
 
 void Atm::execTalkAct01() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             setTalkAct(2);
         }
     }
@@ -416,7 +416,7 @@ BOOL Atm::enterTalkAct02() {
 
 void Atm::execTalkAct02() {
     if (unk_3c) {
-        if (unk_3c->unk_04 == 0) {
+        if (unk_3c->state == 0) {
             Character_detachTalkRequest(this, this);
             TalkRequest_SetTargetDone(this);
         }
@@ -427,7 +427,7 @@ void Atm::onMessageStart() {}
 
 void Atm::onMessageEnd() {
     u8 buf[2];
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 1:
     case 2:
         if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
@@ -444,7 +444,7 @@ void Atm::onMessageEnd() {
 // ================================================================ Atm
 void Atm::onChoice() {
     u8 buf[4];
-    u32 st = unk_1e;
+    u32 st = msgIndex;
     s32 v = unk_3c->getChoiceList()->getResult();
     if (st == 0 || st == 7) {
         switch (v) {

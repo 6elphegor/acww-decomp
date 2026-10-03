@@ -142,9 +142,9 @@ public:
 
 class TexVramSlot {
 public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 texKeyBase;
+    u32 tex4x4KeyBase;
+    u32 plttKeyBase;
     u8 unk_10;
     u8 unk_11;
 
@@ -166,12 +166,12 @@ public:
 
 class ModelResource {
 public:
-    u32 unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    TexVramTask unk_14;
-    u8 unk_30;
+    u32 fileData;
+    void *fileHeap;
+    void *model;
+    void *texture;
+    TexVramTask texVramTask;
+    u8 loadState;
     u8 unk_31;
 
     ModelResource();

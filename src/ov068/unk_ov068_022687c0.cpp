@@ -126,13 +126,13 @@ struct Unk_ov068_02268214_Flags {
 class Unk_ov068_02268214 {
 public:
     /* 0x000 */ u8 pad_000[0x5c];
-    /* 0x05c */ s32 unk_5c;
-    /* 0x060 */ s32 unk_60;
-    /* 0x064 */ s32 unk_64;
+    /* 0x05c */ s32 position;
+    /* 0x060 */ s32 positionY;
+    /* 0x064 */ s32 positionZ;
     /* 0x068 */ u8 pad_068[8];
-    /* 0x070 */ s32 unk_70;
+    /* 0x070 */ s32 prevPositionZ;
     /* 0x074 */ u8 pad_074[0x34];
-    /* 0x0a8 */ s32 unk_a8;
+    /* 0x0a8 */ s32 velocityY;
     /* 0x0ac */ u8 pad_0ac[0xf4 - 0xac];
     /* 0x0f4 */ s32 unk_f4;
     /* 0x0f8 */ u8 pad_0f8[0x130 - 0xf8];

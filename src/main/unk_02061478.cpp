@@ -34,9 +34,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class EncodedString : public EncodedStringBase {
@@ -46,7 +46,7 @@ public:
     virtual u32 capacity() = 0;
     virtual u8 *data() = 0;
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 // 16-byte raw buffer (vtable 0x020dd30c, in the next unit)

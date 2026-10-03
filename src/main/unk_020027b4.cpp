@@ -309,35 +309,35 @@ public:
     static void *findByProfile(u32 id, Actor *o);
     static void *findById(u32 id);
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ s32 unk_60;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s32 unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ u8 unk_74[0x18];
-    /* 0x8c */ s16 unk_8c;
-    /* 0x8e */ s16 unk_8e;
-    /* 0x90 */ s16 unk_90;
-    /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u16 unk_94;
-    /* 0x96 */ s16 unk_96;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u32 unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ s32 position;
+    /* 0x60 */ s32 positionY;
+    /* 0x64 */ s32 positionZ;
+    /* 0x68 */ s32 prevPosition;
+    /* 0x6c */ s32 prevPositionY;
+    /* 0x70 */ s32 prevPositionZ;
+    /* 0x74 */ u8 viewPos[0x18];
+    /* 0x8c */ s16 rotX;
+    /* 0x8e */ s16 rotY;
+    /* 0x90 */ s16 rotZ;
+    /* 0x92 */ s16 moveAngleX;
+    /* 0x94 */ u16 moveAngleY;
+    /* 0x96 */ s16 moveAngleZ;
+    /* 0x98 */ s32 speed;
+    /* 0x9c */ s32 gravity;
+    /* 0xa0 */ s32 maxFallSpeed;
+    /* 0xa4 */ s32 velocity;
+    /* 0xa8 */ s32 velocityY;
+    /* 0xac */ s32 velocityZ;
+    /* 0xb0 */ u32 actorFlags;
+    /* 0xb4 */ s32 cullHeight;
+    /* 0xb8 */ s32 cullRadius;
+    /* 0xbc */ s32 cullDepth;
     /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ u16 unk_d0;
+    /* 0xc4 */ s32 drawPos;
+    /* 0xc8 */ s32 drawPosY;
+    /* 0xcc */ s32 drawPosZ;
+    /* 0xd0 */ u16 drawTilt;
 };
 
 // Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
@@ -350,8 +350,8 @@ public:
     u32 isValid();
 
     /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
+    /* 0x0a */ u8 personality;
+    /* 0x0b */ u8 species;
 };
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);

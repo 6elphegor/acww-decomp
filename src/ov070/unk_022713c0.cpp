@@ -167,7 +167,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -291,13 +291,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -333,22 +333,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -366,10 +366,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 typedef void (SpNpcGracieTalk::*Unk_ov070_0227277c_Fn)();
@@ -556,7 +556,7 @@ BOOL SpNpcGracie::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     unk_658.unk_dc = 0;
     return TRUE;
 }
@@ -584,7 +584,7 @@ void SpNpcGracie::changeAct(s32 state) {
 }
 
 BOOL SpNpcGracie::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -596,12 +596,12 @@ BOOL SpNpcGracie::setupAct01() {
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcGracie::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -992,7 +992,7 @@ void SpNpcGracieTalk::onMessageEnd() {
     Unk_ov070_02271524_Out s;
     u8 code = 0xff;
     PlayerData *r7 = PlayerData_GetCurrent();
-    s32 c = unk_1e;
+    s32 c = msgIndex;
     if (c >= 0xf && c <= 0x22) {
         u8 n = unk_b0->unk_658.unk_dc;
         if (n < 5) {
@@ -1008,7 +1008,7 @@ void SpNpcGracieTalk::onMessageEnd() {
         code = i + 0xf;
         unk_b0->unk_658.unk_dc++;
     }
-    if (unk_1e == 0x24) {
+    if (msgIndex == 0x24) {
         if (Inventory_FindEmptyLetter() != -1) {
             void *obj = Inventory_GetEmptyLetter();
             if (obj != NULL) {
@@ -1041,7 +1041,7 @@ void SpNpcGracieTalk::onMessageEnd() {
             }
         }
     }
-    c = unk_1e;
+    c = msgIndex;
     switch (c) {
     case 0:
         if (ItemList_GetTownClassRank(r7->getShirt(), 0) == 0x22) {
@@ -1104,7 +1104,7 @@ void SpNpcGracieTalk::onChoice() {
     s32 r4 = getChoiceList()->getResult();
     u8 *r6 = sSpNpcGracieKey;
     u8 code = 0xff;
-    s32 c = unk_1e;
+    s32 c = msgIndex;
     if (c >= 0xf && c < 0x23) {
         if (unk_b0->unk_658.unk_dc < 5) {
             s32 i = SpNpcGracie_PickUnaskedQuestion(unk_b0, unk_b0->unk_658.unk_c8, 0x14);
@@ -1119,7 +1119,7 @@ void SpNpcGracieTalk::onChoice() {
             code = 0x23;
         }
     }
-    if (unk_1e == 9 && r4 == 0) {
+    if (msgIndex == 9 && r4 == 0) {
         if (Inventory_FindEmptyLetter() != -1) {
             code = 0xb;
         } else {
@@ -1134,7 +1134,7 @@ void SpNpcGracieTalk::onChoice() {
 
 BOOL SpNpcGracie::vfunc_48() {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
     }
     return r;

@@ -200,9 +200,9 @@ class MsgStringAttr {
 public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
+    s32 form;
+    u8 attrA;
+    u8 attrB;
 };
 
 class MsgString : public MsgStringBase {
@@ -213,8 +213,8 @@ public:
     virtual u8 *data() = 0;
     void clear();
 
-    u32 unk_04;
-    MsgStringAttr unk_08;
+    u32 length;
+    MsgStringAttr attr;
 };
 
 class MsgString406 : public MsgString {

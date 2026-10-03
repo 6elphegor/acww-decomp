@@ -45,7 +45,7 @@ struct NpcActor {
     virtual void vfunc_a0();
     virtual void vfunc_a4();
     u8 pad_04[0x58];
-    u32 unk_5c;
+    u32 position;
 };
 
 // The villager slots hold VillagerActors; slot 0xa8 is VillagerActor's own virtual.
@@ -207,7 +207,7 @@ NpcActor *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 8; s++, i++) {
         if (isVillagerSlotUsed(s)) {
-            FieldPos_ToUnit(&x, &y, &s->unk_00->unk_5c);
+            FieldPos_ToUnit(&x, &y, &s->unk_00->position);
             if (x == a && y == b) {
                 r = s->unk_00;
                 break;
@@ -349,7 +349,7 @@ NpcActor *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 4; s++, i++) {
         if (isSpNpcSlotUsed(s)) {
-            FieldPos_ToUnit(&x, &y, &s->unk_00->unk_5c);
+            FieldPos_ToUnit(&x, &y, &s->unk_00->position);
             if (x == a && y == b) {
                 r = s->unk_00;
                 break;

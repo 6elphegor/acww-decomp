@@ -722,13 +722,13 @@ public:
     virtual void onEventTag(void *p);
     virtual void start(Unk_020c0538_Out *out);
 
-    /* 0x04 */ u8 unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ u8 fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
     /* 0x1f */ u8 unk_1f[0x1d];
     /* 0x3c */ Unk_020c0408_Obj *unk_3c;
     /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ SpNpcKatie *unk_ac;
-    /* 0xb0 */ s32 unk_b0;
+    /* 0xac */ SpNpcKatie *katie;
+    /* 0xb0 */ s32 topic;
 
     s32 getTopic();
     void setTopic(s32 v);
@@ -741,7 +741,7 @@ public:
     virtual ~SpNpcActor();
 
     /* 0x004 */ u8 unk_004[0x5c - 4];
-    /* 0x05c */ u8 unk_05c[0x2a0 - 0x5c];
+    /* 0x05c */ u8 position[0x2a0 - 0x5c];
     /* 0x2a0 */ u8 unk_2a0[0xc];
     /* 0x2ac */ u8 unk_2ac[0x3b0 - 0x2ac];
     /* 0x3b0 */ u8 unk_3b0[0x564 - 0x3b0];

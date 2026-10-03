@@ -61,7 +61,7 @@ public:
     void clearTalkStartMode();
 
     /* 0x00 */ u8 pad_00[0xe8];
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe8 */ u16 charFlags;
 };
 
 class Unk_0203e604_Obj {
@@ -93,25 +93,25 @@ public:
 
 struct Unk_0203dad4_Task {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203dad4_Task *unk_04;
-    /* 0x08 */ u8 unk_08;
+    /* 0x04 */ Unk_0203dad4_Task *next;
+    /* 0x08 */ u8 priority;
     /* 0x09 */ u8 pad[3];
-    /* 0x0c */ u32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
+    /* 0x0c */ u32 requesterId;
+    /* 0x10 */ u32 targetId;
+    /* 0x14 */ u8 phase;
+    /* 0x15 */ u8 kind;
+    /* 0x16 */ u8 state;
+    /* 0x17 */ u8 result;
     /* 0x18 */ u8 unk_18;
     /* 0x19 */ u8 unk_19;
 };
 
-struct Unk_0203dc50_List {
-    Unk_0203dad4_Task *unk_00;
-    u32 unk_04;
-    Unk_0203dc50_List() {
-        unk_00 = 0;
-        unk_04 = 0;
+struct TalkRequestList {
+    Unk_0203dad4_Task *head;
+    u32 tail;
+    TalkRequestList() {
+        head = 0;
+        tail = 0;
     }
 };
 
@@ -120,7 +120,7 @@ typedef BOOL (*Unk_0203dbb8_Fn)(Unk_0203dad4_Task *);
 extern Unk_0203dad4_Task *gTalkRequestCurrent;
 extern u32 sTalkTargetId;
 extern u32 sTalkRequestFlags;
-extern Unk_0203dc50_List sTalkRequestList;
+extern TalkRequestList sTalkRequestList;
 extern Unk_0203dbb8_Fn sTalkRequestRunFns[];
 extern Unk_0203dbb8_Fn sTalkRequestStartFns[];
 extern Unk_0203dbb8_Fn sTalkRequestBeginFns[];
@@ -136,9 +136,9 @@ Unk_0203e604_Obj *PlayerActor_GetActor(s32 id);
 u32 _ZN9Character9getCharIdEv(Unk_0203e604_Obj *o);
 Unk_0203e604_Obj *Character_FindByCharId(u32 id);
 Unk_0203dad4_Task *TalkRequestPool_Alloc();
-void PrioList_Insert(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
-void TalkRequestList_FreeAll(Unk_0203dc50_List *l);
-void func_020e79a0(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
+void PrioList_Insert(TalkRequestList *l, Unk_0203dad4_Task *t);
+void TalkRequestList_FreeAll(TalkRequestList *l);
+void func_020e79a0(TalkRequestList *l, Unk_0203dad4_Task *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
 void Scene_CheckExit();
@@ -211,7 +211,7 @@ void TalkRequestQueue_StartNext(Unk_0203dad4_Task *t);
 
 struct Unk_0203d5e4_Arg {
     u8 unk_00[0x3c];
-    u32 unk_3c;
+    u32 window;
 };
 
 extern "C" BOOL TalkRequest_FinishExclusive(u32 x);
@@ -237,15 +237,15 @@ void Character::setAreaSynced() { setCharFlags(4); }
 BOOL Character::isAreaSynced() { return testCharFlags(4); }
 
 BOOL Character::testCharFlags(u32 mask) {
-    if (unk_e8 & mask) {
+    if (charFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Character::setCharFlags(u32 mask) { unk_e8 = unk_e8 | mask; }
+void Character::setCharFlags(u32 mask) { charFlags = charFlags | mask; }
 
-void Character::clearCharFlags(u32 mask) { unk_e8 = unk_e8 & ~mask; }
+void Character::clearCharFlags(u32 mask) { charFlags = charFlags & ~mask; }
 
 extern "C" TalkRequestQueue *TalkRequestQueue_Create(void) {
     return new TalkRequestQueue();
@@ -264,20 +264,20 @@ extern "C" void TalkRequestQueue_StartInitial(void) {
     Unk_0203dad4_Task *s = TalkRequestPool_Alloc();
     s32 r = Field_GetExitedBuildingKey();
     if (r != 0) {
-        s->unk_0c = (u32)r;
-        s->unk_10 = 0;
-        s->unk_15 = 0xc;
-        s->unk_14 = 2;
-        s->unk_16 = 7;
+        s->requesterId = (u32)r;
+        s->targetId = 0;
+        s->kind = 0xc;
+        s->phase = 2;
+        s->state = 7;
     } else {
-        s->unk_0c = 0;
-        s->unk_10 = 0;
-        s->unk_15 = 4;
-        s->unk_14 = 3;
-        s->unk_16 = 5;
+        s->requesterId = 0;
+        s->targetId = 0;
+        s->kind = 4;
+        s->phase = 3;
+        s->state = 5;
     }
-    s->unk_08 = 1;
-    s->unk_17 = 5;
+    s->priority = 1;
+    s->result = 5;
     gTalkRequestCurrent = s;
 }
 
@@ -307,7 +307,7 @@ extern "C" BOOL TalkRequest_StartMenu(Unk_0203dad4_Task *s) {
     if (!PlayerActor_RequestAct05()) {
         return FALSE;
     }
-    MenuCtrl_RequestOpen(s->unk_16);
+    MenuCtrl_RequestOpen(s->state);
     return TRUE;
 }
 
@@ -323,21 +323,21 @@ extern "C" BOOL TalkRequest_EndMenu(void) {
 }
 
 extern "C" BOOL TalkRequest_AcquireHostLock(Unk_0203dad4_Task *s) {
-    switch (CharInteractSync_Check(s->unk_10)) {
+    switch (CharInteractSync_Check(s->targetId)) {
     case 2:
-        s->unk_16 = 2;
+        s->state = 2;
         break;
     case 1:
-        s->unk_16 = 1;
+        s->state = 1;
         break;
     case 0:
         return FALSE;
     }
-    if (s->unk_15 != 7 && !PlayerActor_RequestAct10()) {
+    if (s->kind != 7 && !PlayerActor_RequestAct10()) {
         return FALSE;
     }
-    TalkRequest_SetTalkTarget(s->unk_10);
-    CharInteractSync_RequestLock(s->unk_10);
+    TalkRequest_SetTalkTarget(s->targetId);
+    CharInteractSync_RequestLock(s->targetId);
     return TRUE;
 }
 
@@ -346,37 +346,37 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(Unk_0203dad4_Task *t) {
     switch (r) {
     case 2:
         if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-            Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
+            Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
             if (_ZN9Character12isAreaSyncedEv()) {
-                if (t->unk_17 == 1) {
+                if (t->result == 1) {
                     if (!o->vfunc_58(PlayerActor_GetActor(4))) {
                         return FALSE;
                     }
                 }
             }
         }
-        t->unk_16 = 2;
+        t->state = 2;
         break;
     case 1:
-        t->unk_16 = 0;
+        t->state = 0;
         break;
     case 0:
         return FALSE;
     }
-    if (t->unk_15 != 7) {
+    if (t->kind != 7) {
         if (!PlayerActor_RequestAct10()) {
             return FALSE;
         }
     }
-    TalkRequest_SetTalkTarget(t->unk_10);
+    TalkRequest_SetTalkTarget(t->targetId);
     if (r == 1) {
-        CharInteractSync_SendQuery(t->unk_10, t->unk_17);
+        CharInteractSync_SendQuery(t->targetId, t->result);
     }
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_AcquireTarget(Unk_0203dad4_Task *t) {
-    Character_FindByCharId(t->unk_10);
+    Character_FindByCharId(t->targetId);
     if (_ZN9Character12isAreaSyncedEv()) {
         if (!TalkRequest_AcquireAreaTarget(t)) {
             return FALSE;
@@ -399,37 +399,37 @@ extern "C" void TalkRequest_NotifyTarget(Unk_0203e604_Obj *o, u32 v) {
 }
 
 extern "C" void TalkRequest_ReleaseTarget(Unk_0203dad4_Task *t, u32 v) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
     if (o != NULL) {
         if (_ZN9Character12isAreaSyncedEv()) {
             if (CharInteractSync_CheckArea() == 1) {
-                CharInteractSync_SendEvent(t->unk_10, v);
+                CharInteractSync_SendEvent(t->targetId, v);
             }
         }
         o->vfunc_4c(v, 4);
     }
     TalkRequest_SetTalkTarget(0);
-    if (t->unk_15 == 7) {
+    if (t->kind == 7) {
         PlayerActor_SetEventLock(0);
     }
 }
 
 extern "C" BOOL TalkRequest_StartTalk(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *a = Character_FindByCharId(t->unk_10);
-    Unk_0203e604_Obj *b = Character_FindByCharId(t->unk_0c);
+    Unk_0203e604_Obj *a = Character_FindByCharId(t->targetId);
+    Unk_0203e604_Obj *b = Character_FindByCharId(t->requesterId);
     if (!PlayerActor_CanStartTalk()) {
         return FALSE;
     }
-    t->unk_17 = 0;
+    t->result = 0;
     if (a == NULL) {
         Unk_0203e604_Obj *n = Character_FindInteractionTarget(b);
         if (n == NULL) {
             return FALSE;
         }
-        t->unk_10 = _ZN9Character9getCharIdEv(n);
+        t->targetId = _ZN9Character9getCharIdEv(n);
     } else if (!_ZN9Character16checkInteractionEPS_(a, b)) {
         if (a->vfunc_54(b)) {
-            t->unk_17 = 5;
+            t->result = 5;
         } else {
             return FALSE;
         }
@@ -442,47 +442,47 @@ extern "C" BOOL TalkRequest_StartTalk(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL TalkRequest_BeginTalk(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
-    switch (t->unk_16) {
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+    switch (t->state) {
     case 0:
     case 1:
         switch (sCharInteractSyncResult) {
         case 1:
-            if (t->unk_15 == 7) {
-                t->unk_16 = 8;
+            if (t->kind == 7) {
+                t->state = 8;
             } else {
-                t->unk_16 = 2;
+                t->state = 2;
             }
             break;
         case 2:
-            t->unk_16 = 3;
+            t->state = 3;
             break;
         }
         break;
     }
-    if (t->unk_16 == 8) {
+    if (t->state == 8) {
         if (!PlayerActor_CanStartTalk()) {
             return FALSE;
         }
         if (!PlayerActor_RequestAct10()) {
             return FALSE;
         }
-        t->unk_16 = 2;
+        t->state = 2;
     }
-    switch (t->unk_16) {
+    switch (t->state) {
     case 2: {
         o->vfunc_4c(3, 4);
         s32 r = _ZN9Character16getTalkStartModeEv(o);
-        if (t->unk_17 == 5) {
+        if (t->result == 5) {
             r = 2;
         }
         if (r == 2) {
             PlayerActor_RequestAct10();
-            TalkRequest_NotifyTarget(o, t->unk_17);
-            t->unk_16 = 5;
+            TalkRequest_NotifyTarget(o, t->result);
+            t->state = 5;
         } else {
             PlayerActor_RequestStowThenAct10();
-            t->unk_16 = 4;
+            t->state = 4;
         }
         return TRUE;
     }
@@ -497,11 +497,11 @@ extern "C" BOOL TalkRequest_BeginTalk(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL TalkRequest_StartTalk6(Unk_0203dad4_Task *t) {
-    Character_FindByCharId(t->unk_0c);
+    Character_FindByCharId(t->requesterId);
     if (!PlayerActor_CanStartTalk()) {
         return FALSE;
     }
-    t->unk_17 = 1;
+    t->result = 1;
     if (TalkRequest_AcquireTarget(t)) {
         PlayerActor_RequestAct10();
         return TRUE;
@@ -510,12 +510,12 @@ extern "C" BOOL TalkRequest_StartTalk6(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL TalkRequest_RunTalk(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
-    switch (t->unk_16) {
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+    switch (t->state) {
     case 4:
         if (PlayerActor_IsStowFinished()) {
-            TalkRequest_NotifyTarget(o, t->unk_17);
-            t->unk_16 = 5;
+            TalkRequest_NotifyTarget(o, t->result);
+            t->state = 5;
         }
         break;
     case 5:
@@ -536,7 +536,7 @@ extern "C" BOOL TalkRequest_EndTalk(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL TalkRequest_StartTalk7(Unk_0203dad4_Task *t) {
-    if (Character_FindByCharId(t->unk_0c) == NULL) {
+    if (Character_FindByCharId(t->requesterId) == NULL) {
         return FALSE;
     }
     if (!PlayerActor_CanAcceptTalk()) {
@@ -545,12 +545,12 @@ extern "C" BOOL TalkRequest_StartTalk7(Unk_0203dad4_Task *t) {
     if (!PlayerActor_SetEventLock(1)) {
         return FALSE;
     }
-    t->unk_17 = 1;
+    t->result = 1;
     return TalkRequest_AcquireTarget(t);
 }
 
 extern "C" BOOL TalkRequest_StartSceneExit(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_0c);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->requesterId);
     if (!PlayerActor_CanStartTalk()) {
         return FALSE;
     }
@@ -560,7 +560,7 @@ extern "C" BOOL TalkRequest_StartSceneExit(Unk_0203dad4_Task *t) {
     if (o != NULL) {
         o->vfunc_4c(2, 4);
     }
-    SceneWarp_RequestExit(Scene_GetWarpRequest(), t->unk_16);
+    SceneWarp_RequestExit(Scene_GetWarpRequest(), t->state);
     return TRUE;
 }
 
@@ -582,34 +582,34 @@ extern "C" BOOL TalkRequest_BeginEventWarp(Unk_0203dad4_Task *) {
 }
 
 extern "C" BOOL TalkRequest_BeginSceneEntryChar(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_0c);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->requesterId);
     if (o == NULL) {
         return FALSE;
     }
-    if (t->unk_16 == 7) {
-        switch (CharInteractSync_Check(t->unk_0c)) {
+    if (t->state == 7) {
+        switch (CharInteractSync_Check(t->requesterId)) {
         case 2:
-            t->unk_16 = 2;
+            t->state = 2;
             break;
         case 1:
-            t->unk_16 = 1;
-            CharInteractSync_RequestLock(t->unk_0c);
+            t->state = 1;
+            CharInteractSync_RequestLock(t->requesterId);
             break;
         }
     }
-    if (t->unk_16 == 1) {
+    if (t->state == 1) {
         switch (sCharInteractSyncResult) {
         case 1:
-            t->unk_16 = 2;
+            t->state = 2;
             break;
         case 2:
-            CharInteractSync_RequestLock(t->unk_0c);
+            CharInteractSync_RequestLock(t->requesterId);
             break;
         }
     }
-    if (t->unk_16 == 2) {
+    if (t->state == 2) {
         o->vfunc_4c(6, 4);
-        t->unk_16 = 5;
+        t->state = 5;
         return TRUE;
     }
     return FALSE;
@@ -628,7 +628,7 @@ extern "C" BOOL TalkRequest_RunSceneEntry(Unk_0203dad4_Task *t) {
     if (!b) {
         return FALSE;
     }
-    if (t->unk_17 == 6) {
+    if (t->result == 6) {
         return TRUE;
     }
     return FALSE;
@@ -641,12 +641,12 @@ extern "C" BOOL TalkRequest_StartExclusive(Unk_0203dad4_Task *t) {
     if (!PlayerActor_RequestAct10()) {
         return FALSE;
     }
-    t->unk_16 = 5;
+    t->state = 5;
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_RunExclusive(Unk_0203dad4_Task *t) {
-    if (t->unk_16 == 6) {
+    if (t->state == 6) {
         return TRUE;
     }
     return FALSE;
@@ -666,31 +666,31 @@ extern "C" BOOL TalkRequest_StartLeaveRoom(Unk_0203dad4_Task *t) {
     if (!PlayerActor_LocalRequestLeaveRoom()) {
         return FALSE;
     }
-    t->unk_16 = 5;
+    t->state = 5;
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_RunLeaveRoom(Unk_0203dad4_Task *t) {
-    if (t->unk_16 == 6) {
+    if (t->state == 6) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL TalkRequest_StartSimple(Unk_0203dad4_Task *t) {
-    t->unk_16 = 5;
+    t->state = 5;
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_RunSimple(Unk_0203dad4_Task *t) {
-    if (t->unk_16 == 6) {
+    if (t->state == 6) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL TalkRequest_RunNetSyncHold(Unk_0203dad4_Task *t) {
-    if (t->unk_16 == 6) {
+    if (t->state == 6) {
         PlayerActor_SetEventLock(0);
         return TRUE;
     }
@@ -704,13 +704,13 @@ extern "C" BOOL TalkRequest_StepPass(Unk_0203dad4_Task *) { return TRUE; }
 extern "C" BOOL TalkRequest_StepBlock(Unk_0203dad4_Task *) { return FALSE; }
 
 extern "C" void TalkRequestQueue_StartNext(Unk_0203dad4_Task *) {
-    Unk_0203dad4_Task *t = sTalkRequestList.unk_00;
+    Unk_0203dad4_Task *t = sTalkRequestList.head;
     Unk_0203dbb8_Fn *tbl = sTalkRequestStartFns;
-    for (; t != NULL; t = t->unk_04) {
-        if (tbl[t->unk_15](t)) {
+    for (; t != NULL; t = t->next) {
+        if (tbl[t->kind](t)) {
             func_020e79a0(&sTalkRequestList, t);
             gTalkRequestCurrent = t;
-            t->unk_14 = 2;
+            t->phase = 2;
             break;
         }
     }
@@ -718,26 +718,26 @@ extern "C" void TalkRequestQueue_StartNext(Unk_0203dad4_Task *) {
 
 extern "C" void TalkRequestQueue_StepBegin(Unk_0203dad4_Task *) {
     Unk_0203dad4_Task *t = gTalkRequestCurrent;
-    if (t->unk_14 == 2) {
-        if (sTalkRequestBeginFns[t->unk_15](t)) {
-            gTalkRequestCurrent->unk_14 = 3;
+    if (t->phase == 2) {
+        if (sTalkRequestBeginFns[t->kind](t)) {
+            gTalkRequestCurrent->phase = 3;
         }
     }
 }
 
 extern "C" void TalkRequestQueue_StepRun(Unk_0203dad4_Task *) {
     Unk_0203dad4_Task *t = gTalkRequestCurrent;
-    if (t->unk_14 == 3) {
-        if (sTalkRequestRunFns[t->unk_15](t)) {
-            gTalkRequestCurrent->unk_14 = 4;
+    if (t->phase == 3) {
+        if (sTalkRequestRunFns[t->kind](t)) {
+            gTalkRequestCurrent->phase = 4;
         }
     }
 }
 
 extern "C" void TalkRequestQueue_StepEnd(Unk_0203dad4_Task *) {
     Unk_0203dad4_Task *t = gTalkRequestCurrent;
-    if (t->unk_14 == 4) {
-        if (sTalkRequestEndFns[t->unk_15](t)) {
+    if (t->phase == 4) {
+        if (sTalkRequestEndFns[t->kind](t)) {
             TalkRequest_FinishCurrent();
         }
     }
@@ -775,7 +775,7 @@ extern "C" BOOL TalkRequest_IsCurrentKind(u32 x) {
     if (gTalkRequestCurrent == NULL) {
         return FALSE;
     }
-    if (gTalkRequestCurrent->unk_15 == x) {
+    if (gTalkRequestCurrent->kind == x) {
         return TRUE;
     }
     return FALSE;
@@ -786,15 +786,15 @@ extern "C" BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e) {
     if (t == NULL) {
         return FALSE;
     }
-    t->unk_0c = a;
-    t->unk_10 = b;
-    t->unk_15 = c;
-    t->unk_08 = d;
-    t->unk_16 = e;
-    t->unk_17 = 0;
+    t->requesterId = a;
+    t->targetId = b;
+    t->kind = c;
+    t->priority = d;
+    t->state = e;
+    t->result = 0;
     t->unk_18 = 0;
     t->unk_19 = 0;
-    t->unk_14 = 1;
+    t->phase = 1;
     PrioList_Insert(&sTalkRequestList, t);
     return TRUE;
 }
@@ -819,7 +819,7 @@ extern "C" BOOL TalkRequest_FinishLeaveRoom() {
     if (!TalkRequest_IsCurrentKind(8)) {
         return FALSE;
     }
-    gTalkRequestCurrent->unk_16 = 6;
+    gTalkRequestCurrent->state = 6;
     return TRUE;
 }
 
@@ -889,7 +889,7 @@ extern "C" BOOL TalkRequest_AddPlayerExclusive(u32 x) {
 }
 
 extern "C" BOOL TalkRequest_IsExclusiveRunning(u32 x) {
-    if (TalkRequest_IsCurrentKind(x) && gTalkRequestCurrent->unk_16 != 6) {
+    if (TalkRequest_IsCurrentKind(x) && gTalkRequestCurrent->state != 6) {
         return TRUE;
     }
     return FALSE;
@@ -899,7 +899,7 @@ extern "C" BOOL TalkRequest_FinishExclusive(u32 x) {
     if (!TalkRequest_IsCurrentKind(x)) {
         return FALSE;
     }
-    gTalkRequestCurrent->unk_16 = 6;
+    gTalkRequestCurrent->state = 6;
     return TRUE;
 }
 
@@ -926,7 +926,7 @@ extern "C" BOOL TalkRequest_FinishPlayerMessage(void) {
     if (!TalkRequest_IsCurrentKind(9)) {
         return FALSE;
     }
-    gTalkRequestCurrent->unk_16 = 6;
+    gTalkRequestCurrent->state = 6;
     return TRUE;
 }
 
@@ -945,7 +945,7 @@ extern "C" BOOL TalkRequest_FinishSlingshot(void) {
     if (!TalkRequest_IsCurrentKind(0xe)) {
         return FALSE;
     }
-    gTalkRequestCurrent->unk_16 = 6;
+    gTalkRequestCurrent->state = 6;
     return TRUE;
 }
 
@@ -953,7 +953,7 @@ extern "C" BOOL TalkRequest_FinishSceneEntry(void) {
     if (!TalkRequest_IsCurrentKind(4) && !TalkRequest_IsCurrentKind(0xc)) {
         return FALSE;
     }
-    gTalkRequestCurrent->unk_17 = 6;
+    gTalkRequestCurrent->result = 6;
     return TRUE;
 }
 
@@ -987,10 +987,10 @@ extern "C" BOOL TalkRequest_SetTargetDone(u32 x) {
     }
     Unk_0203dad4_Task *p = gTalkRequestCurrent;
     u32 v = _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)x);
-    if (p->unk_10 != v) {
+    if (p->targetId != v) {
         return FALSE;
     }
-    p->unk_16 = 6;
+    p->state = 6;
     return TRUE;
 }
 
@@ -1017,7 +1017,7 @@ extern "C" s32 Talk_AttachRequestToWindow0(u32 x) {
 }
 
 extern "C" s32 Talk_DetachRequest(Unk_0203d5e4_Arg *p) {
-    return _ZN15TalkWindowState13detachRequestEv(p->unk_3c);
+    return _ZN15TalkWindowState13detachRequestEv(p->window);
 }
 
 extern "C" void TalkRequest_FinishCurrent(void) {
@@ -1038,18 +1038,18 @@ extern "C" BOOL TalkRequest_BeginNetSyncHold(void) {
     }
     PlayerActor_SetEventLock(1);
     Unk_0203dad4_Task *p = TalkRequestPool_Alloc();
-    p->unk_0c = 0;
-    p->unk_10 = 0;
-    p->unk_15 = 0xd;
-    p->unk_14 = 3;
-    p->unk_16 = 5;
+    p->requesterId = 0;
+    p->targetId = 0;
+    p->kind = 0xd;
+    p->phase = 3;
+    p->state = 5;
     gTalkRequestCurrent = p;
     return TRUE;
 }
 
 extern "C" BOOL TalkRequest_EndNetSyncHold(void) {
     if (TalkRequest_IsCurrentKind(0xd)) {
-        gTalkRequestCurrent->unk_16 = 6;
+        gTalkRequestCurrent->state = 6;
         return TRUE;
     }
     return FALSE;
@@ -1069,7 +1069,7 @@ extern Unk_0203dbb8_Fn sTalkRequestRunFns[15];
 extern Unk_0203dbb8_Fn sTalkRequestStartFns[15];
 extern Unk_0203dbb8_Fn sTalkRequestEndFns[15];
 extern u32 sTalkTargetId;
-extern Unk_0203dc50_List sTalkRequestList;
+extern TalkRequestList sTalkRequestList;
 
 Unk_0203dbb8_Fn sTalkRequestBeginFns[15] = {
     (Unk_0203dbb8_Fn)TalkRequest_StepUnused, (Unk_0203dbb8_Fn)TalkRequest_StepPass, (Unk_0203dbb8_Fn)TalkRequest_BeginTalk,
@@ -1110,4 +1110,4 @@ Unk_0203dbb8_Fn sTalkRequestEndFns[15] = {
 
 u32 sTalkTargetId;
 
-Unk_0203dc50_List sTalkRequestList;
+TalkRequestList sTalkRequestList;

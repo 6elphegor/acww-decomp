@@ -530,8 +530,8 @@ public:
     void clearAll();
     void stampToday();
 
-    u8 unk_00[3];
-    u32 unk_04[2];
+    u8 date[3];
+    u32 flags[2];
 };
 
 class PlayerSpNpcRecord {
@@ -1011,9 +1011,9 @@ extern "C" void PlayerSpNpcRecord_GetInsuranceDate() {}
 void PlayerDailyTalkFlags::stampToday() {
     u8 tmp[3];
     Ns_020874d8::Clock_GetDate(tmp);
-    unk_00[2] = tmp[2];
-    unk_00[1] = tmp[1];
-    unk_00[0] = tmp[0];
+    date[2] = tmp[2];
+    date[1] = tmp[1];
+    date[0] = tmp[0];
 }
 
 u32 PlayerSpNpcRecord::getInsuranceClaims() { return unk_0f; }
@@ -1117,13 +1117,13 @@ extern "C" void PlayerDailyTalkFlags_Construct() {}
 extern "C" void PlayerDailyTalkFlags_Destruct() {}
 
 void PlayerDailyTalkFlags::clearAll() {
-    Ns_020874d8::MI_CpuFill8(unk_04, 0, 8);
+    Ns_020874d8::MI_CpuFill8(flags, 0, 8);
 }
 
 void PlayerDailyTalkFlags::setDate(u8 *src) {
-    unk_00[2] = src[2];
-    unk_00[1] = src[1];
-    unk_00[0] = src[0];
+    date[2] = src[2];
+    date[1] = src[1];
+    date[0] = src[0];
 }
 
 BOOL PlayerDailyTalkFlags::test(u32 i) {
@@ -1132,7 +1132,7 @@ BOOL PlayerDailyTalkFlags::test(u32 i) {
     u32 b = i & 0x1f;
     if (w < 2) {
         r = TRUE;
-        if (((r << b) & unk_04[w]) != 0) {
+        if (((r << b) & flags[w]) != 0) {
             goto out;
         }
     }
@@ -1146,7 +1146,7 @@ void PlayerDailyTalkFlags::set(u32 i) {
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {
-        unk_04[w] = *(volatile u32 *)&unk_04[w] | (1 << b);
+        flags[w] = *(volatile u32 *)&flags[w] | (1 << b);
     }
     Ns_020874d8::Clock_GetDate(tmp);
     setDate(tmp);
@@ -1156,7 +1156,7 @@ void PlayerDailyTalkFlags::clear(u32 i) {
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {
-        unk_04[w] = ~(1 << b) & *(volatile u32 *)&unk_04[w];
+        flags[w] = ~(1 << b) & *(volatile u32 *)&flags[w];
     }
 }
 

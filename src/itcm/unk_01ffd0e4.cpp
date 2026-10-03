@@ -55,19 +55,19 @@ public:
     virtual BOOL vfunc_3c();
     virtual ~ProcBase();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
-    /* 0x10 */ u8 unk_10;
-    /* 0x11 */ u8 unk_11;
-    /* 0x12 */ u8 unk_12;
-    /* 0x13 */ u8 unk_13;
-    /* 0x14 */ TreeNode unk_14;
-    /* 0x28 */ QNode unk_28;
-    /* 0x38 */ QNode unk_38;
-    /* 0x48 */ void *unk_48;
+    /* 0x04 */ u32 id;
+    /* 0x08 */ u32 param;
+    /* 0x0c */ u16 profile;
+    /* 0x0e */ u8 state;
+    /* 0x0f */ u8 deletePending;
+    /* 0x10 */ u8 activatePending;
+    /* 0x11 */ u8 createRetry;
+    /* 0x12 */ u8 group;
+    /* 0x13 */ u8 procFlags;
+    /* 0x14 */ TreeNode treeNode;
+    /* 0x28 */ QNode executeNode;
+    /* 0x38 */ QNode drawNode;
+    /* 0x48 */ void *seq;
     /* 0x4c */ Heap *unk_4c;
 };
 
@@ -134,7 +134,7 @@ extern "C" BOOL _ZN8ProcBase9onExecuteEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase10preExecuteEv(ProcBase *self) {
-    if (self->unk_0f != 0 || (self->unk_13 & 2) != 0) {
+    if (self->deletePending != 0 || (self->procFlags & 2) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -148,7 +148,7 @@ extern "C" BOOL _ZN8ProcBase6onDrawEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase7preDrawEv(ProcBase *self) {
-    if (self->unk_0f != 0 || (self->unk_13 & 8) != 0) {
+    if (self->deletePending != 0 || (self->procFlags & 8) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -158,57 +158,57 @@ extern "C" BOOL _ZN8ProcBase8postDrawEv(ProcBase *self) {
 }
 
 extern "C" BOOL func_01ffd1b4(ProcBase *self) {
-    if (self->unk_0f != 0) {
-        self->unk_0f = 0;
-        if (isOne(self->unk_0e)) {
-            func_020e79a0(&gTaskExecuteList, &self->unk_28);
-            func_020e79a0(&gTaskDrawList, &self->unk_38);
+    if (self->deletePending != 0) {
+        self->deletePending = 0;
+        if (isOne(self->state)) {
+            func_020e79a0(&gTaskExecuteList, &self->executeNode);
+            func_020e79a0(&gTaskDrawList, &self->drawNode);
         } else {
-            func_020e79a0(&gTaskCreateList, &self->unk_28);
+            func_020e79a0(&gTaskCreateList, &self->executeNode);
         }
-        func_020e7930(&gTaskDeleteList, &self->unk_28);
-        self->unk_0e = 2;
-        for (TreeNode *c = self->unk_14.unk_04; c != NULL; c = c->unk_0c) {
+        func_020e7930(&gTaskDeleteList, &self->executeNode);
+        self->state = 2;
+        for (TreeNode *c = self->treeNode.unk_04; c != NULL; c = c->unk_0c) {
             ProcBase_RequestDelete(c->unk_10);
         }
     } else {
         ProcBase *parent = ProcBase_GetParent(self);
         if (parent != NULL) {
-            if ((parent->unk_13 & 1) != 0 || (parent->unk_13 & 2) != 0) {
-                self->unk_13 |= 2;
-            } else if (*(const u8 *)&self->unk_13 & 2) {
-                self->unk_13 &= ~2;
+            if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) {
+                self->procFlags |= 2;
+            } else if (*(const u8 *)&self->procFlags & 2) {
+                self->procFlags &= ~2;
             }
-            if ((parent->unk_13 & 4) != 0 || (parent->unk_13 & 8) != 0) {
-                self->unk_13 |= 8;
-            } else if (*(const u8 *)&self->unk_13 & 8) {
-                self->unk_13 &= ~8;
+            if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) {
+                self->procFlags |= 8;
+            } else if (*(const u8 *)&self->procFlags & 8) {
+                self->procFlags &= ~8;
             }
         }
-        if (isOne(self->unk_0e)) {
-            QNode *q = &self->unk_28;
+        if (isOne(self->state)) {
+            QNode *q = &self->executeNode;
             if (changed(q)) {
-                func_020e79a0(&gTaskExecuteList, &self->unk_28);
-                q = &self->unk_28;
+                func_020e79a0(&gTaskExecuteList, &self->executeNode);
+                q = &self->executeNode;
                 q->unk_0c = q->unk_0e;
                 Task_InsertByPriority(&gTaskExecuteList, q);
             }
-            q = &self->unk_38;
+            q = &self->drawNode;
             if (changed(q)) {
-                func_020e79a0(&gTaskDrawList, &self->unk_38);
-                q = &self->unk_38;
+                func_020e79a0(&gTaskDrawList, &self->drawNode);
+                q = &self->drawNode;
                 q->unk_0c = q->unk_0e;
                 Task_InsertByPriority(&gTaskDrawList, q);
             }
-        } else if (!isTwo(self->unk_0e)) {
-            if (self->unk_11 != 0) {
-                self->unk_11 = 0;
-                func_020e7968(&gTaskCreateList, &self->unk_28);
-            } else if (self->unk_10 != 0) {
-                self->unk_10 = 0;
-                Task_InsertByPriority(&gTaskExecuteList, &self->unk_28);
-                Task_InsertByPriority(&gTaskDrawList, &self->unk_38);
-                self->unk_0e = 1;
+        } else if (!isTwo(self->state)) {
+            if (self->createRetry != 0) {
+                self->createRetry = 0;
+                func_020e7968(&gTaskCreateList, &self->executeNode);
+            } else if (self->activatePending != 0) {
+                self->activatePending = 0;
+                Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
+                Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
+                self->state = 1;
             }
         }
     }

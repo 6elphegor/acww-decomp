@@ -7,19 +7,19 @@ public:
     virtual ~Letter();
 
     /* 0x04 */ u8 unk_04[0xec];
-    /* 0xf0 */ u16 unk_f0;
+    /* 0xf0 */ u16 present;
     /* 0xf2 */ u16 pad_f2;
 };
 
 struct Unk_020973e4 {
-    u32 unk_00;
-    u8 unk_04;
+    u32 balance;
+    u8 donationLevel;
 };
 
 struct Unk_020973ec_G {
     u32 unk_00;
     u32 unk_04;
-    s32 unk_08;
+    s32 donationTotal;
 };
 
 extern "C" {
@@ -78,24 +78,24 @@ extern "C" void PlayerBank_Construct() {}
 extern "C" void PlayerBank_Destruct() {}
 
 extern "C" void PlayerBank_Clear(Unk_020973e4 *p) {
-    p->unk_00 = 0;
-    p->unk_04 = 0;
+    p->balance = 0;
+    p->donationLevel = 0;
 }
 
-extern "C" u32 PlayerBank_GetBalance(Unk_020973e4 *p) { return p->unk_00; }
+extern "C" u32 PlayerBank_GetBalance(Unk_020973e4 *p) { return p->balance; }
 
-extern "C" void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v) { p->unk_00 = v; }
+extern "C" void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v) { p->balance = v; }
 
-extern "C" s32 Donation_GetTotal() { return data_021e9350.unk_08; }
+extern "C" s32 Donation_GetTotal() { return data_021e9350.donationTotal; }
 
 extern "C" void Donation_SetTotal(s32 v) {
     if (v > 999999999) v = 999999999;
-    data_021e9350.unk_08 = v;
+    data_021e9350.donationTotal = v;
 }
 
-extern "C" u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p) { return p->unk_04; }
+extern "C" u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p) { return p->donationLevel; }
 
-extern "C" void PlayerBank_SetDonationLevel(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
+extern "C" void PlayerBank_SetDonationLevel(Unk_020973e4 *p, u32 v) { p->donationLevel = v; }
 
 extern "C" void PlayerBank_PayInterest(s32 n) {
     s32 s = PlayerData_GetCurrent();

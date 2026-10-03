@@ -167,11 +167,11 @@ class Unk_020942c8 {
 public:
     Unk_020942c8();
     ~Unk_020942c8();
-    u16 unk_00;
-    Unk_02071fa4_Id8 unk_02;
-    u16 unk_0a;
-    Unk_02071fa4_Id8 unk_0c;
-    s8 unk_14;
+    u16 townId;
+    Unk_02071fa4_Id8 townName;
+    u16 playerId;
+    Unk_02071fa4_Id8 playerName;
+    s8 gender;
     u8 unk_15;
     BOOL func_020941e8(Unk_020942c8 *o);
 };
@@ -217,8 +217,8 @@ class Pattern {
 public:
     Pattern();
     ~Pattern();
-    long long unk_00[0x40];
-    PatternInfo unk_200;
+    long long pixels[0x40];
+    PatternInfo info;
 
     PatternInfo *getInfo();
     void fill(u32 v);
@@ -228,7 +228,7 @@ public:
 };
 class TownFlagPattern {
 public:
-    Pattern unk_00;
+    Pattern pixels;
     TownFlagPattern();
     ~TownFlagPattern();
 };
@@ -245,7 +245,7 @@ class AbleSistersPatterns {
 public:
     AbleSistersPatterns();
     ~AbleSistersPatterns();
-    Pattern unk_00[8];
+    Pattern patterns[8];
 
     Pattern *getPattern(u8 i);
     void initDefaultPatterns();
@@ -254,8 +254,8 @@ class PlayerPatterns {
 public:
     PlayerPatterns();
     ~PlayerPatterns();
-    Pattern unk_00[8];
-    PatternOrder unk_1140;
+    Pattern patterns[8];
+    PatternOrder patternOrder;
 
     PatternOrder *getPatternOrder();
     Pattern *getPatternByOrder(u32 i);
@@ -394,8 +394,8 @@ void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf
 }
 BOOL PatternInfo::infoEquals(PatternInfo *o) {
     using namespace n4;
-    if (unk_26.lo == o->unk_26.lo && unk_26.hi == o->unk_26.hi && unk_00 == o->unk_00 &&
-        memcmp(&unk_02, &o->unk_02, 8) == 0 && U125_calls::_ZN8PlayerId6equalsEPS_(this, o) != 0) {
+    if (unk_26.lo == o->unk_26.lo && unk_26.hi == o->unk_26.hi && townId == o->townId &&
+        memcmp(&townName, &o->townName, 8) == 0 && U125_calls::_ZN8PlayerId6equalsEPS_(this, o) != 0) {
         for (u32 i = 0; i < 16; i++) {
             if (unk_16.b[i] != o->unk_16.b[i]) return FALSE;
         }
@@ -445,11 +445,11 @@ namespace n4 {
 }
 void PatternInfo::setAuthor(Unk_020942c8 *src) {
     using namespace n4;
-    unk_00 = src->unk_00;
-    unk_02 = src->unk_02;
-    unk_0a = src->unk_0a;
-    unk_0c = src->unk_0c;
-    unk_14 = src->unk_14;
+    townId = src->townId;
+    townName = src->townName;
+    playerId = src->playerId;
+    playerName = src->playerName;
+    gender = src->gender;
     unk_15 = src->unk_15;
 }
 namespace n4 {
@@ -513,7 +513,7 @@ namespace n4 {
 }
 BOOL Pattern::equals(Pattern *o) {
     using namespace n4;
-    if (unk_200.infoEquals(&o->unk_200)) {
+    if (info.infoEquals(&o->info)) {
         u32 *p = (u32 *)this;
         u32 *q = (u32 *)o;
         for (u32 i = 0; i < 0x80; i++) {
@@ -557,7 +557,7 @@ namespace n4 {
 }
 PatternInfo *Pattern::getInfo() {
     using namespace n4;
-    return &unk_200;
+    return &info;
 }
 namespace n4 {
 }
@@ -583,7 +583,7 @@ void PlayerPatterns::initDefaultPatterns(Unk_020942c8 *a) {
         }
         Mem_Free(t);
     }
-    unk_1140.reset();
+    patternOrder.reset();
 }
 namespace n4 {
 }
@@ -593,8 +593,8 @@ void PlayerPatterns::replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b) {
         PatternInfo *s = getPattern(i)->getInfo();
         Unk_020942c8 *base = s->getAuthor();
         Unk_020942c8 *p = PlayerId_GetTownId(base);
-        if (p->unk_00 == b->unk_00) {
-            if (memcmp(&p->unk_02, &b->unk_02, 8) == 0) {
+        if (p->townId == b->townId) {
+            if (memcmp(&p->townName, &b->townName, 8) == 0) {
                 if (U125_calls::_ZN8PlayerId6equalsEPS_(base, a)) {
                     _ZN6TownId7setTownEPS_(s->getAuthor(), PlayerId_GetTownId(a));
                 }
@@ -606,19 +606,19 @@ namespace n4 {
 }
 Pattern *PlayerPatterns::getPattern(u8 i) {
     using namespace n4;
-    return &unk_00[i & 7];
+    return &patterns[i & 7];
 }
 namespace n4 {
 }
 Pattern *PlayerPatterns::getPatternByOrder(u32 i) {
     using namespace n4;
-    return &unk_00[unk_1140.getSlot(i)];
+    return &patterns[patternOrder.getSlot(i)];
 }
 namespace n4 {
 }
 PatternOrder *PlayerPatterns::getPatternOrder() {
     using namespace n4;
-    return &unk_1140;
+    return &patternOrder;
 }
 namespace n4 {
 }
@@ -681,7 +681,7 @@ namespace n4 {
 }
 Pattern *AbleSistersPatterns::getPattern(u8 i) {
     using namespace n4;
-    return &unk_00[i & 7];
+    return &patterns[i & 7];
 }
 namespace n4 {
 }

@@ -44,9 +44,9 @@ class MsgStringAttr {
 public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgStringBase {
@@ -64,8 +64,8 @@ public:
     virtual u8 *data() = 0;
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 class MsgTextLabel : public TextLabel {
@@ -716,13 +716,13 @@ void NameLabelBalloonView::createLabel() {
         unk_6c = MsgTextLabel_CreateVram(width, 0x14, 2);
         MsgTextLabel *o = unk_6c;
         if (o != NULL) {
-            o->unk_2c = 4;
+            o->vramLoader = 4;
             MsgTextLabel *p = unk_6c;
-            p->unk_10 = (u32)((MsgString *)((u8 *)this + 0x38))->data();
-            unk_6c->unk_50 = 2;
-            unk_6c->unk_55 = 1;
-            unk_6c->unk_39 = t;
-            unk_6c->unk_38 = 0xd;
+            p->textStart = (u32)((MsgString *)((u8 *)this + 0x38))->data();
+            unk_6c->copyMode = 2;
+            unk_6c->rowStride1K = 1;
+            unk_6c->bgColor = t;
+            unk_6c->fgColor = 0xd;
             unk_6c->requestRedraw();
         }
     }
@@ -937,12 +937,12 @@ void HudClock::createMonthLabel() {
         monthLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x94 : 0x80, 3, 2);
         MsgTextLabel *o = monthLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            monthLabel->unk_50 = 2;
-            monthLabel->unk_55 = 1;
-            monthLabel->unk_39 = 0;
-            monthLabel->unk_38 = 0xc;
-            monthLabel->unk_28 = &gFontC;
+            o->vramLoader = 4;
+            monthLabel->copyMode = 2;
+            monthLabel->rowStride1K = 1;
+            monthLabel->bgColor = 0;
+            monthLabel->fgColor = 0xc;
+            monthLabel->font = &gFontC;
             monthLabel->requestRedraw();
             monthDirty = 1;
         }
@@ -954,12 +954,12 @@ void HudClock::createDayLabel() {
         dayLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x97 : 0x83, 3, 2);
         MsgTextLabel *o = dayLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            dayLabel->unk_50 = 2;
-            dayLabel->unk_55 = 1;
-            dayLabel->unk_39 = 0;
-            dayLabel->unk_38 = 0xc;
-            dayLabel->unk_28 = &gFontC;
+            o->vramLoader = 4;
+            dayLabel->copyMode = 2;
+            dayLabel->rowStride1K = 1;
+            dayLabel->bgColor = 0;
+            dayLabel->fgColor = 0xc;
+            dayLabel->font = &gFontC;
             dayLabel->requestRedraw();
             dayDirty = 1;
         }
@@ -971,12 +971,12 @@ void HudClock::createWeekdayLabel() {
         weekdayLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x9a : 0x86, 2, 2);
         MsgTextLabel *o = weekdayLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            weekdayLabel->unk_50 = 2;
-            weekdayLabel->unk_55 = 1;
-            weekdayLabel->unk_39 = 0;
-            weekdayLabel->unk_38 = 0xa;
-            weekdayLabel->unk_28 = &gFontC;
+            o->vramLoader = 4;
+            weekdayLabel->copyMode = 2;
+            weekdayLabel->rowStride1K = 1;
+            weekdayLabel->bgColor = 0;
+            weekdayLabel->fgColor = 0xa;
+            weekdayLabel->font = &gFontC;
             weekdayLabel->requestRedraw();
             weekdayDirty = 1;
         }
@@ -988,12 +988,12 @@ void HudClock::createAmPmLabel() {
         amPmLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xd4 : 0x88, 2, 1);
         MsgTextLabel *o = amPmLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            amPmLabel->unk_50 = 2;
-            amPmLabel->unk_55 = 1;
-            amPmLabel->unk_39 = 0;
-            amPmLabel->unk_38 = 9;
-            amPmLabel->unk_28 = &gFontD;
+            o->vramLoader = 4;
+            amPmLabel->copyMode = 2;
+            amPmLabel->rowStride1K = 1;
+            amPmLabel->bgColor = 0;
+            amPmLabel->fgColor = 9;
+            amPmLabel->font = &gFontD;
             amPmLabel->requestRedraw();
             amPmDirty = 1;
         }
@@ -1005,12 +1005,12 @@ void HudClock::createHourLabel() {
         hourLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xf4 : 0xa8, 2, 1);
         MsgTextLabel *o = hourLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            hourLabel->unk_50 = 2;
-            hourLabel->unk_55 = 1;
-            hourLabel->unk_39 = 0;
-            hourLabel->unk_38 = 9;
-            hourLabel->unk_28 = &gFontD;
+            o->vramLoader = 4;
+            hourLabel->copyMode = 2;
+            hourLabel->rowStride1K = 1;
+            hourLabel->bgColor = 0;
+            hourLabel->fgColor = 9;
+            hourLabel->font = &gFontD;
             hourLabel->requestRedraw();
             hourDirty = 1;
         }
@@ -1022,12 +1022,12 @@ void HudClock::createMinuteLabel() {
         minuteLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xf6 : 0xaa, 2, 1);
         MsgTextLabel *o = minuteLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            minuteLabel->unk_50 = 2;
-            minuteLabel->unk_55 = 1;
-            minuteLabel->unk_39 = 0;
-            minuteLabel->unk_38 = 9;
-            minuteLabel->unk_28 = &gFontD;
+            o->vramLoader = 4;
+            minuteLabel->copyMode = 2;
+            minuteLabel->rowStride1K = 1;
+            minuteLabel->bgColor = 0;
+            minuteLabel->fgColor = 9;
+            minuteLabel->font = &gFontD;
             minuteLabel->requestRedraw();
             minuteDirty = 1;
         }
@@ -1039,14 +1039,14 @@ void HudClock::createColonLabel() {
         colonLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xd8 : 0x8c, 1, 2);
         MsgTextLabel *o = colonLabel;
         if (o != NULL) {
-            o->unk_2c = 4;
-            colonLabel->unk_10 = (u32)kHudColonString;
-            colonLabel->unk_50 = 2;
-            colonLabel->unk_55 = 1;
-            colonLabel->unk_28 = &gFontC;
+            o->vramLoader = 4;
+            colonLabel->textStart = (u32)kHudColonString;
+            colonLabel->copyMode = 2;
+            colonLabel->rowStride1K = 1;
+            colonLabel->font = &gFontC;
             colonLabel->alignCenter();
-            colonLabel->unk_39 = 0;
-            colonLabel->unk_38 = 9;
+            colonLabel->bgColor = 0;
+            colonLabel->fgColor = 9;
             colonLabel->requestClear(0);
         }
     }
@@ -1098,7 +1098,7 @@ void HudClockLabels::refreshMonth() {
         monthDirty = 0;
         String_FormatNumber(&monthText, month, 2, 0, 0, 1);
         TextLabel *t = monthLabel;
-        t->unk_10 = monthText.vfunc_0c();
+        t->textStart = monthText.vfunc_0c();
         monthLabel->alignRight();
         monthLabel->requestRedraw();
     }
@@ -1109,7 +1109,7 @@ void HudClockLabels::refreshDay() {
         dayDirty = 0;
         String_FormatNumber(&dayText, day, 2, 0, 0, 1);
         TextLabel *t = dayLabel;
-        t->unk_10 = dayText.vfunc_0c();
+        t->textStart = dayText.vfunc_0c();
         dayLabel->requestRedraw();
     }
 }
@@ -1119,7 +1119,7 @@ void HudClockLabels::refreshWeekday() {
         weekdayDirty = 0;
         s32 i = *(volatile s32 *)&weekday;
         const u16 *e = &kHudWeekdayGlyphs[i];
-        weekdayLabel->unk_10 = (u32)e;
+        weekdayLabel->textStart = (u32)e;
         weekdayLabel->alignCenter();
         weekdayLabel->requestRedraw();
     }
@@ -1130,7 +1130,7 @@ void HudClockLabels::refreshAmPm() {
         amPmDirty = 0;
         s32 i = 0;
         if (hour >= 12) i = 1;
-        amPmLabel->unk_10 = (u32)kHudAmPmStrings[i];
+        amPmLabel->textStart = (u32)kHudAmPmStrings[i];
         amPmLabel->alignCenter();
         amPmLabel->requestRedraw();
     }
@@ -1144,7 +1144,7 @@ void HudClockLabels::refreshHour() {
         if (c == 0) c = 12;
         String_FormatNumber(&hourText, c, 2, 0, 0, 1);
         TextLabel *t = hourLabel;
-        t->unk_10 = hourText.vfunc_0c();
+        t->textStart = hourText.vfunc_0c();
         hourLabel->alignRight();
         hourLabel->requestRedraw();
     }
@@ -1155,7 +1155,7 @@ void HudClockLabels::refreshMinute() {
         minuteDirty = 0;
         String_FormatNumber(&minuteText, minute, 2, 6, 0, 1);
         TextLabel *t = minuteLabel;
-        t->unk_10 = minuteText.vfunc_0c();
+        t->textStart = minuteText.vfunc_0c();
         minuteLabel->alignCenter();
         minuteLabel->requestRedraw();
     }
@@ -1439,14 +1439,14 @@ void HudCountdownLabels::createLabels() {
 void HudCountdownLabels::createMinutesLabel() {
     minutesLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x114 : 0x80, 3, 2);
     if (minutesLabel != NULL) {
-        minutesLabel->unk_2c = 4;
-        minutesLabel->unk_50 = 2;
-        minutesLabel->unk_55 = 1;
-        minutesLabel->unk_39 = 0;
-        minutesLabel->unk_38 = 0xc;
-        minutesLabel->unk_28 = &gFontC;
+        minutesLabel->vramLoader = 4;
+        minutesLabel->copyMode = 2;
+        minutesLabel->rowStride1K = 1;
+        minutesLabel->bgColor = 0;
+        minutesLabel->fgColor = 0xc;
+        minutesLabel->font = &gFontC;
         TextLabel *t = minutesLabel;
-        t->unk_10 = (u32)((StrBuf *)minutesText)->data();
+        t->textStart = (u32)((StrBuf *)minutesText)->data();
         minutesDirty = 1;
     }
 }
@@ -1454,14 +1454,14 @@ void HudCountdownLabels::createMinutesLabel() {
 void HudCountdownLabels::createSecondsLabel() {
     secondsLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x117 : 0x83, 3, 2);
     if (secondsLabel != NULL) {
-        secondsLabel->unk_2c = 4;
-        secondsLabel->unk_50 = 2;
-        secondsLabel->unk_55 = 1;
-        secondsLabel->unk_39 = 0;
-        secondsLabel->unk_38 = 0xc;
-        secondsLabel->unk_28 = &gFontC;
+        secondsLabel->vramLoader = 4;
+        secondsLabel->copyMode = 2;
+        secondsLabel->rowStride1K = 1;
+        secondsLabel->bgColor = 0;
+        secondsLabel->fgColor = 0xc;
+        secondsLabel->font = &gFontC;
         TextLabel *t = secondsLabel;
-        t->unk_10 = (u32)((StrBuf *)secondsText)->data();
+        t->textStart = (u32)((StrBuf *)secondsText)->data();
         secondsDirty = 1;
     }
 }
@@ -1469,14 +1469,14 @@ void HudCountdownLabels::createSecondsLabel() {
 void HudCountdownLabels::createCountALabel() {
     countALabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x174 : 0xa8, 2, 1);
     if (countALabel != NULL) {
-        countALabel->unk_2c = 4;
-        countALabel->unk_50 = 2;
-        countALabel->unk_55 = 1;
-        countALabel->unk_39 = 0;
-        countALabel->unk_38 = 5;
-        countALabel->unk_28 = &gFontD;
+        countALabel->vramLoader = 4;
+        countALabel->copyMode = 2;
+        countALabel->rowStride1K = 1;
+        countALabel->bgColor = 0;
+        countALabel->fgColor = 5;
+        countALabel->font = &gFontD;
         TextLabel *t = countALabel;
-        t->unk_10 = (u32)((StrBuf *)countAText)->data();
+        t->textStart = (u32)((StrBuf *)countAText)->data();
         countADirty = 1;
     }
 }
@@ -1484,14 +1484,14 @@ void HudCountdownLabels::createCountALabel() {
 void HudCountdownLabels::createCountBLabel() {
     countBLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x176 : 0xaa, 2, 1);
     if (countBLabel != NULL) {
-        countBLabel->unk_2c = 4;
-        countBLabel->unk_50 = 2;
-        countBLabel->unk_55 = 1;
-        countBLabel->unk_39 = 0;
-        countBLabel->unk_38 = 5;
-        countBLabel->unk_28 = &gFontD;
+        countBLabel->vramLoader = 4;
+        countBLabel->copyMode = 2;
+        countBLabel->rowStride1K = 1;
+        countBLabel->bgColor = 0;
+        countBLabel->fgColor = 5;
+        countBLabel->font = &gFontD;
         TextLabel *t = countBLabel;
-        t->unk_10 = (u32)((StrBuf *)countBText)->data();
+        t->textStart = (u32)((StrBuf *)countBText)->data();
         countBDirty = 1;
     }
 }
@@ -2341,15 +2341,15 @@ void HudWallet::createLabel() {
     if (label == NULL) {
         label = MsgTextLabel_CreateVram(0x80, 8, 1);
         if (label != NULL) {
-            label->unk_2c = 4;
-            label->unk_50 = 2;
-            label->unk_55 = 1;
-            label->unk_39 = 0;
-            label->unk_38 = 0xc;
+            label->vramLoader = 4;
+            label->copyMode = 2;
+            label->rowStride1K = 1;
+            label->bgColor = 0;
+            label->fgColor = 0xc;
             TextLabel *o = label;
             StrBuf *s = &text;
-            o->unk_10 = (u32)s->data();
-            label->unk_28 = &gFontD;
+            o->textStart = (u32)s->data();
+            label->font = &gFontD;
             label->alignRight();
             label->requestRedraw();
         }

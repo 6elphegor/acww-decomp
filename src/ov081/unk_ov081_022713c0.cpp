@@ -178,7 +178,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -330,13 +330,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -372,22 +372,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -405,10 +405,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcTortimerFishingTourney : public SpNpcActor {
@@ -541,9 +541,9 @@ BOOL SpNpcTortimerFishingTourney::vfunc_00() {
             _ZN8SaveData7setFlagEj(gSaveData, 0xf);
         }
     }
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
-    unk_4cc.unk_1c |= 2;
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
+    collider.unk_1c |= 2;
     return TRUE;
 }
 
@@ -570,7 +570,7 @@ void SpNpcTortimerFishingTourney::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFishingTourney::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -582,12 +582,12 @@ BOOL SpNpcTortimerFishingTourney::setupAct01() {
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFishingTourney::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -828,10 +828,10 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd() {
     s = (u8 *)"sp_npc_turtle1";
     msg = 0xff;
     if (unk_c4 >= 0) {
-        if (unk_1e == 1 || unk_1e == 4) {
+        if (msgIndex == 1 || msgIndex == 4) {
             unk_c4 = -2;
         }
-        if (unk_1e == 2) {
+        if (msgIndex == 2) {
             h1 = 0x1559;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
             h2 = 0x1559;
@@ -840,13 +840,13 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd() {
             unk_3c->setNextMessage(&m1, (void *)"sp_npc_turtle");
         }
     } else {
-        switch (unk_1e) {
+        switch (msgIndex) {
         case 0xd:
         case 0x10:
         case 0x13:
             h0 = 0xfff1;
             g = gContestRecord;
-            switch (unk_1e) {
+            switch (msgIndex) {
             case 0xd:
                 _ZN12Unk_0201442015requestKeepItemEv(this);
                 _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()), 1);
@@ -889,7 +889,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd() {
             }
             break;
         }
-        switch (unk_1e) {
+        switch (msgIndex) {
         case 1:
             h4 = 0x1374;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h4, 0, 5, 0);
@@ -922,7 +922,7 @@ void SpNpcTortimerFishingTourneyTalk::onChoice() {
     msg = 0xff;
     if (unk_c4 >= 0) {
         s = (u8 *)"sp_npc_turtle";
-        if (unk_1e == 0 && t == 0) {
+        if (msgIndex == 0 && t == 0) {
             if (unk_c4 >= 0) {
                 Pocket_RemoveItem(unk_c4);
                 h = 0x37e0;
@@ -935,7 +935,7 @@ void SpNpcTortimerFishingTourneyTalk::onChoice() {
             unk_3c->setNextMessage(&b1, s);
         }
     } else {
-        if (unk_1e == 8) {
+        if (msgIndex == 8) {
             if (t != 0) {
                 if (getRecordHolder() == 0) {
                     msg = 9;
@@ -955,7 +955,7 @@ void SpNpcTortimerFishingTourneyTalk::onChoice() {
 
 BOOL SpNpcTortimerFishingTourney::vfunc_48() {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
     }
     return r;

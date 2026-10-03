@@ -42,12 +42,12 @@ struct RGB {
 };
 
 struct Unk_020ac0c4_Entry {
-    u8 *unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u16 unk_0c;
-    u16 unk_0e;
-    u32 unk_10;
+    u8 *texRes;
+    u32 texImageParam;
+    u32 plttBase;
+    u16 width;
+    u16 height;
+    u32 texFormat;
     u8 unk_14;
     u8 unk_15[3];
 };
@@ -222,29 +222,29 @@ extern "C" void ObjShadow_Init(void *arg) {
             char *name = sObjShadowTexDefs[i].unk_00;
             char buf[36];
             func_020639e8(buf, "%s_pl", name);
-            e->unk_00 = 0;
-            e->unk_04 = 0;
-            e->unk_08 = 0;
-            e->unk_00 = res;
+            e->texRes = 0;
+            e->texImageParam = 0;
+            e->plttBase = 0;
+            e->texRes = res;
             e->unk_14 = sObjShadowTexDefs[i].unk_06;
-            u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->unk_00, name);
-            u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->unk_00, buf);
-            Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->unk_00;
+            u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->texRes, name);
+            u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->texRes, buf);
+            Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->texRes;
             texData = Unk_020ac500_TexData(tex, idx1);
             u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;
             u32 plttKey = (u16)tex->plttKey;
             u32 texParam = *texData;
             u32 texKey = (u16)tex->texKey;
-            e->unk_04 = texParam + texKey;
-            e->unk_08 = plttOfs + plttKey;
-            e->unk_04 |= sObjShadowTexDefs[i].unk_04 << 18;
-            e->unk_04 |= sObjShadowTexDefs[i].unk_05 << 16;
-            e->unk_10 = (*texData >> 26) & 7;
-            if (e->unk_10 != 2) {
-                e->unk_08 >>= 1;
+            e->texImageParam = texParam + texKey;
+            e->plttBase = plttOfs + plttKey;
+            e->texImageParam |= sObjShadowTexDefs[i].unk_04 << 18;
+            e->texImageParam |= sObjShadowTexDefs[i].unk_05 << 16;
+            e->texFormat = (*texData >> 26) & 7;
+            if (e->texFormat != 2) {
+                e->plttBase >>= 1;
             }
-            e->unk_0c = 1 << (((*texData >> 20) & 7) + 3);
-            e->unk_0e = 1 << (((*texData >> 23) & 7) + 3);
+            e->width = 1 << (((*texData >> 20) & 7) + 3);
+            e->height = 1 << (((*texData >> 23) & 7) + 3);
             e++;
         }
         static Vec3Z2 v;
@@ -294,7 +294,7 @@ extern "C" void ObjShadow_Exit() {
     Unk_020ac0c4_Entry *e = sObjShadowTextures;
     u32 i;
     for (i = 0; i < 3; i++) {
-        e->unk_00 = 0;
+        e->texRes = 0;
         e++;
     }
     s32 heap = gBgHeap;
@@ -430,15 +430,15 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
     }
     if (a == 0 && b == 0) {
         unk_20 = 0;
-        unk_24 = unk_30->unk_0c << 12;
+        unk_24 = unk_30->width << 12;
     } else {
-        unk_20 = func_01ffcb0c(unk_30->unk_0c << 12, a);
-        unk_24 = func_01ffcb0c(unk_30->unk_0c << 12, b);
+        unk_20 = func_01ffcb0c(unk_30->width << 12, a);
+        unk_24 = func_01ffcb0c(unk_30->width << 12, b);
     }
     s32 *p6 = unk_1c;
     s32 *p7 = unk_28;
     for (i = 0; i < unk_14; i++) {
-        *p7++ = func_01ffcb0c(0x1000 - FX_Div(*p6, shift), unk_30->unk_0e << 12);
+        *p7++ = func_01ffcb0c(0x1000 - FX_Div(*p6, shift), unk_30->height << 12);
         p6++;
     }
     return TRUE;
@@ -447,12 +447,12 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
 void ObjShadowStrip::draw(Vec3 *pos) {
     Vec3 tmp;
     Col c0, c1;
-    if (unk_30 != 0 && unk_30->unk_00 != 0) {
+    if (unk_30 != 0 && unk_30->texRes != 0) {
         u8 lvl = ObjShadow_GetObjAlpha(pos, unk_10);
         if (lvl > 1) {
             NNS_G3dGeFlushBuffer();
-            REG(0x40004a8) = unk_30->unk_04;
-            REG(0x40004ac) = unk_30->unk_08;
+            REG(0x40004a8) = unk_30->texImageParam;
+            REG(0x40004ac) = unk_30->plttBase;
             REG(0x4000440) = 1;
             G3_LoadMtx43(sObjShadowViewMtx);
             REG(0x40004a4) = (lvl << 16) | ((unk_30->unk_14 << 24) | 0x8080);

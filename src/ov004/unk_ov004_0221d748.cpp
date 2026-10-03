@@ -41,8 +41,8 @@ struct ChoiceList {
 
 struct TalkWindowState {
     u8 pad_00[4];
-    s32 unk_04;
-    s32 unk_08;
+    s32 state;
+    s32 nextState;
     void setNextMessage(u8 *a, void *b);
 };
 
@@ -86,7 +86,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -214,13 +214,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -256,22 +256,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -289,10 +289,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct Unk_ov004_0221b954_Vec {
@@ -518,10 +518,10 @@ BOOL SpNpcBooker::vfunc_04() {
     NpcActor_setTalkRequest(this, &unk_658);
     unk_658.attachOwner(this);
     NpcActor_setCollisionRadius(this, 0x100);
-    NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0xd9);
-    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xd8);
+    NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xd9);
+    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xd8);
     if (Scene_GetCurrent() != 0xb) {
-        unk_558.unk_0b = 1;
+        footstepFx.unk_0b = 1;
     }
     return TRUE;
 }
@@ -530,8 +530,8 @@ BOOL SpNpcBooker::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    unk_70c = unk_8e;
-    unk_4cc.unk_1c |= 2;
+    unk_70c = rotY;
+    collider.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (NpcActor_isNetOwner(this)) {
             changeAct(0);
@@ -581,7 +581,7 @@ void SpNpcBooker::changeAct(s32 state) {
 }
 
 BOOL SpNpcBooker::setupAct00() {
-    NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
+    NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
     return TRUE;
 }
 
@@ -596,15 +596,15 @@ BOOL SpNpcBooker::setupAct01() {
     if (q) {
         r = NpcActor_getAngleTo(this, q);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcBooker::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
-    if (!NpcTalkCtrl_isBusy(&unk_618)) {
+    if (!NpcTalkCtrl_isBusy(&talkCtrl)) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -616,13 +616,13 @@ BOOL SpNpcBooker::setupAct02() { return TRUE; }
 BOOL SpNpcBooker::mainAct02() { return TRUE; }
 
 BOOL SpNpcBooker::setupAct03() {
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcBooker::mainAct03() {
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(0);
         }
     }
@@ -703,7 +703,7 @@ void SpNpcBookerTalk::start(void *arg) {
 }
 
 void SpNpcBookerTalk::onMessageEnd() {
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x1a:
         Unk_020d7710_setSubSceneKind(this, 0x1f, 0);
         Unk_020d7710_openSubScene(this, 2);
@@ -724,7 +724,7 @@ void SpNpcBookerTalk::onChoice() {
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(o));
     u32 d = sSpNpcBookerMsgFiles[0];
     u32 r = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0xf:
         if (t == 0) {
             Unk_ov004_0221b954_Global *s = gCommManager;
@@ -832,7 +832,7 @@ void SpNpcBookerTalk::runScript01() {
         u32 idx = MenuCtrl_GetIndex();
         s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Copy(9, t, 5, 0, 1);
-        func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
+        func_02003ddc(&unk_ac->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
         TalkWindowState_setNextMessage(unk_3c, buf, sSpNpcBookerMsgFiles[0]);
     } else {
@@ -853,7 +853,7 @@ void SpNpcBookerTalk::runScript02() {
         u32 idx = MenuCtrl_GetIndex();
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Swap(9, t, 5, 0, 1);
-        func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
+        func_02003ddc(&unk_ac->seEmitter, 0x50, 0x7f, 0);
         u32 x;
         u32 y;
         if (t < 8) {
@@ -909,17 +909,17 @@ void SpNpcBookerTalk::runScript03() {
 }
 
 BOOL SpNpcBooker::vfunc_48() {
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcBooker::vfunc_58(void *p) {
-    if (unk_558.unk_0b != 0) {
+    if (footstepFx.unk_0b != 0) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
@@ -930,7 +930,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
     s32 b;
     switch (cmd) {
     case 3:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, arg);
             changeAct(6);
@@ -945,7 +945,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
         changeAct(1);
         break;
     case 0:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(5);

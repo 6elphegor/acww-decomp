@@ -207,11 +207,11 @@ class Unk_020942c8 {
 public:
     Unk_020942c8();
     ~Unk_020942c8();
-    u16 unk_00;
-    Unk_02071fa4_Id8 unk_02;
-    u16 unk_0a;
-    Unk_02071fa4_Id8 unk_0c;
-    s8 unk_14;
+    u16 townId;
+    Unk_02071fa4_Id8 townName;
+    u16 playerId;
+    Unk_02071fa4_Id8 playerName;
+    s8 gender;
     u8 unk_15;
     BOOL func_020941e8(Unk_020942c8 *o);
 };
@@ -258,8 +258,8 @@ class Pattern {
 public:
     Pattern();
     ~Pattern();
-    u8 unk_00[0x200];
-    PatternInfo unk_200;
+    u8 pixels[0x200];
+    PatternInfo info;
 
     PatternInfo *getInfo();
     void fill(u32 v);
@@ -285,7 +285,7 @@ class AbleSistersPatterns {
 public:
     AbleSistersPatterns();
     ~AbleSistersPatterns();
-    Pattern unk_00[8];
+    Pattern patterns[8];
 
     Pattern *getPattern(u8 i);
     void initDefaultPatterns();
@@ -294,8 +294,8 @@ class PlayerPatterns {
 public:
     PlayerPatterns();
     ~PlayerPatterns();
-    Pattern unk_00[8];
-    PatternOrder unk_1140;
+    Pattern patterns[8];
+    PatternOrder patternOrder;
 
     PatternOrder *getPatternOrder();
     Pattern *getPatternByOrder(u32 i);

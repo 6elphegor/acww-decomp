@@ -22,9 +22,9 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -44,15 +44,15 @@ public:
     virtual BOOL vfunc_5c();
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
@@ -65,8 +65,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {

@@ -38,14 +38,14 @@ public:
 class AnimFrameCtrl {
 public:
     virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     void step();
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -56,8 +56,8 @@ public:
     void init(s32 a, s32 b, s32 c, u16 d);
     BOOL allocMatAnm(u32 a, void *c);
 
-    s32 *unk_18;
-    u32 unk_1c;
+    s32 *anmObj;
+    u32 resMdl;
 };
 
 class TexPatVramAnim {
@@ -660,7 +660,7 @@ BOOL FieldGroundPiece::updateAnims() {
         ModelAnim *e = &unk_b4[2];
         for (; p < e; p++) {
             p->step();
-            *p->unk_18 = p->unk_08;
+            *p->anmObj = p->curFrame;
         }
         return TRUE;
     }
@@ -730,7 +730,7 @@ BOOL FieldGroundBlock::updateAnims() {
     e = &unk_a8[2];
     for (; p < e; p++) {
         p->step();
-        *p->unk_18 = p->unk_08;
+        *p->anmObj = p->curFrame;
     }
     return TRUE;
 }

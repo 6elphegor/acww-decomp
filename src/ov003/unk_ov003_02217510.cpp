@@ -52,7 +52,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -74,8 +74,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -90,13 +90,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -303,20 +303,20 @@ void ShopBuilding::vfunc_78() {
     if (unk_2b0 == -1) {
         if (unk_232.f1) {
             setFileName("obj_etc_error");
-            unk_1e = 0;
+            msgIndex = 0;
         } else {
-            unk_1e = 4;
+            msgIndex = 4;
         }
     } else {
         void *x = PlayerData_GetCurrent();
         if (GameStart_IsActive() || Unk_02097ff4_testFlag(x, 0x23)) {
             setFileName("sp_etc_sequence4");
-            unk_1e = 0x15;
+            msgIndex = 0x15;
         } else if (isClosedToday()) {
-            unk_1e = 7;
+            msgIndex = 7;
         } else if (unk_232.f1) {
             setFileName("obj_etc_error");
-            unk_1e = 0;
+            msgIndex = 0;
         } else {
             BOOL k = FALSE;
             u8 *p = data_021ed104;
@@ -335,9 +335,9 @@ void ShopBuilding::vfunc_78() {
                 }
             }
             if (k) {
-                unk_1e = 7;
+                msgIndex = 7;
             } else {
-                unk_1e = unk_2b0 & 3;
+                msgIndex = unk_2b0 & 3;
             }
         }
     }

@@ -104,8 +104,8 @@ struct Unk_020cbb18_Ov049 {
 };
 
 struct TalkStartMsg {
-    char *unk_00;
-    u8 unk_04;
+    char *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov049_0225a714_Name {
@@ -341,7 +341,7 @@ public:
     virtual void update();
     virtual void onTaskDone();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     void *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -486,7 +486,7 @@ struct Unk_020f4080 {
 };
 
 struct Pattern {
-    u8 unk_00[0x960 - 0x738];
+    u8 pixels[0x960 - 0x738];
     Pattern();
     ~Pattern();
 };
@@ -512,13 +512,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -562,22 +562,22 @@ public:
     void setCollisionRadius(s32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -596,10 +596,10 @@ public:
     virtual s32 getWalkAnimSpeedScale();
     void setColliderSize(s32 a, s32 b);
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcMabel : public SpNpcActor {
@@ -971,7 +971,7 @@ BOOL SpNpcMabel::vfunc_04() {
     setColliderSize(0x119a, 0x2000);
     setCollisionRadius(0xf00);
     unk_962 = data_020c6cc8;
-    NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x333, 0xcc, 0x133);
+    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x333, 0xcc, 0x133);
     return TRUE;
 }
 
@@ -982,14 +982,14 @@ BOOL SpNpcMabel::vfunc_00() {
     }
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
-            unk_4cc.unk_1c |= 2;
-            unk_5c = 0xd000;
-            unk_64 = 0x19000;
-            unk_8e = 0;
-            unk_94 = 0;
+            collider.unk_1c |= 2;
+            position = 0xd000;
+            positionZ = 0x19000;
+            rotY = 0;
+            moveAngleY = 0;
             changeAct(10);
         } else {
-            unk_4cc.unk_1c |= 2;
+            collider.unk_1c |= 2;
             changeAct(8);
         }
     } else {
@@ -1046,7 +1046,7 @@ BOOL SpNpcMabel::mainAct00() {
 
 BOOL SpNpcMabel::setupAct01() {
     s32 v;
-    NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
+    NpcActionCtrl_requestStand(&actionCtrl, 1, unk_962);
     unk_962 = data_020c6cc8;
     unk_960 = Random_GlobalBelow(5) * 20 + 100;
     if (Talk_IsDramaPending(this, &v, 2)) {
@@ -1067,9 +1067,9 @@ BOOL SpNpcMabel::mainAct01() {
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
-    s32 r4 = func_020e780c(unk_8e, t);
-    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
-    if (r6 > 0x5000 && func_020e96ec(&out, &unk_5c)) {
+    s32 r4 = func_020e780c(rotY, t);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
+    if (r6 > 0x5000 && func_020e96ec(&out, &position)) {
         changeAct(3);
     } else if (r4 > 0x2000) {
         changeAct(2);
@@ -1089,7 +1089,7 @@ BOOL SpNpcMabel::mainAct01() {
 }
 
 BOOL SpNpcMabel::setupAct02() {
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1109,16 +1109,16 @@ BOOL SpNpcMabel::mainAct02() {
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
-    func_020e780c(unk_8e, r4);
-    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
+    func_020e780c(rotY, r4);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (r6 > 0x5000) {
-        if (func_020e96ec(&out, &unk_5c)) {
+        if (func_020e96ec(&out, &position)) {
             changeAct(3);
         }
     }
-    NpcMoveCtrl_setTargetAngle(&unk_350, r4);
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    NpcMoveCtrl_setTargetAngle(&moveCtrl, r4);
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(1);
         }
     }
@@ -1126,7 +1126,7 @@ BOOL SpNpcMabel::mainAct02() {
 }
 
 BOOL SpNpcMabel::setupAct03() {
-    NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1145,18 +1145,18 @@ BOOL SpNpcMabel::mainAct03() {
     Unk_ov049_0225aba8_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (t > 0x6000) {
-        if (NpcActionCtrl_getAction(&unk_564) == 1) {
-            NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (NpcActionCtrl_getAction(&unk_564) == 2) {
-            NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    NpcMoveCtrl_setWaypoint(&unk_350, &out);
-    if (t <= 0x5000 || func_020e972c(&out, &unk_5c) != 0) {
+    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    if (t <= 0x5000 || func_020e972c(&out, &position) != 0) {
         changeAct(1);
     }
     return TRUE;
@@ -1168,12 +1168,12 @@ BOOL SpNpcMabel::setupAct04() {
     if (p) {
         r = getAngleTo(p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct04() {
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
     if (unk_964 != 0 && AbleShop_IsPurchaseSynced() == 0) {
@@ -1190,12 +1190,12 @@ BOOL SpNpcMabel::setupAct05() {
     if (p) {
         r = getAngleTo(p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 1);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 1);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct05() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(6);
     }
@@ -1207,7 +1207,7 @@ BOOL SpNpcMabel::setupAct06() { return TRUE; }
 BOOL SpNpcMabel::mainAct06() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct07() {
-    NpcActionCtrl_requestAction(&unk_564, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1218,8 +1218,8 @@ BOOL SpNpcMabel::mainAct07() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&unk_564) == 0xa) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 0xa) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             unk_962 = 0x18;
             changeAct(1);
         }
@@ -1283,13 +1283,13 @@ BOOL SpNpcMabel::mainAct09() {
 }
 
 BOOL SpNpcMabel::setupAct0A() {
-    NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
+    NpcActionCtrl_requestStand(&actionCtrl, 1, unk_962);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct0A() {
     s32 t = getAngleToPlayer(4);
-    if (func_020e780c(unk_8e, t) >= data_020c6cc0) {
+    if (func_020e780c(rotY, t) >= data_020c6cc0) {
         changeAct(0xb);
     } else {
         tryStartShopItemTalk();
@@ -1299,13 +1299,13 @@ BOOL SpNpcMabel::mainAct0A() {
 
 BOOL SpNpcMabel::setupAct0B() {
     s32 f = getAngleToPlayer(4);
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct0B() {
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(0xa);
         }
     }
@@ -1318,7 +1318,7 @@ BOOL SpNpcMabel::mainAct0C() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0D() {
     unk_967 = 0x32;
-    NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1331,18 +1331,18 @@ BOOL SpNpcMabel::mainAct0D() {
     Unk_ov049_0225aba8_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (t > 0x6000) {
-        if (NpcActionCtrl_getAction(&unk_564) == 1) {
-            NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (NpcActionCtrl_getAction(&unk_564) == 2) {
-            NpcActionCtrl_requestAction(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    NpcMoveCtrl_setWaypoint(&unk_350, &out);
-    if (t <= 0x5000 || func_020e972c(&out, &unk_5c) != 0 || func_020e7518(&unk_967) == 0) {
+    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    if (t <= 0x5000 || func_020e972c(&out, &position) != 0 || func_020e7518(&unk_967) == 0) {
         unk_658.vfunc_08();
         func_02015ab0(&unk_658, getPlayerActor(4));
         changeAct(4);
@@ -1353,7 +1353,7 @@ BOOL SpNpcMabel::mainAct0D() {
 void SpNpcMabel::onJoinTalk() { changeAct(0xe); }
 
 void SpNpcMabel::onLeaveTalk() {
-    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(1);
 }
 
@@ -1362,19 +1362,19 @@ BOOL SpNpcMabel::setupAct0E() { return setupAct01(); }
 BOOL SpNpcMabel::mainAct0E() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0F() {
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 // ---- owner states and dialog base (unit 0225aa48)
 
 BOOL SpNpcMabel::mainAct0F() {
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
-            NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+            NpcActionCtrl_requestStand(&actionCtrl, 1, unk_962);
         }
     }
-    NpcMoveCtrl_setTargetAngle(&unk_350, getAngleToPlayer(4));
+    NpcMoveCtrl_setTargetAngle(&moveCtrl, getAngleToPlayer(4));
     TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
@@ -1400,31 +1400,31 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
-        out->unk_00 = sSpNpcMabelMsgKeys[2];
-        out->unk_04 = 6;
+        out->msgKey = sSpNpcMabelMsgKeys[2];
+        out->msgIndex = 6;
         return;
     }
     if (getTopic() == 2 && ParcelErrand_IsFor(r6, &unk_ac->unk_ea) != 0) {
-        out->unk_04 = 0x2e;
-        out->unk_00 = sSpNpcMabelMsgKeys[0];
+        out->msgIndex = 0x2e;
+        out->msgKey = sSpNpcMabelMsgKeys[0];
         return;
     }
     if (getTopic() == 2 && Talk_IsDramaPending(unk_ac, buf, 2) != 0) {
         unk_ac->unk_965 = 1;
         Unk_ov049_0225a714_Bits *b = (Unk_ov049_0225a714_Bits *)buf;
-        out->unk_04 = *(sSpNpcMabelDramaMsgTable + b->mid * 7 + b->hi);
-        out->unk_00 = sSpNpcMabelMsgKeys[1];
+        out->msgIndex = *(sSpNpcMabelDramaMsgTable + b->mid * 7 + b->hi);
+        out->msgKey = sSpNpcMabelMsgKeys[1];
         return;
     }
-    out->unk_04 = sSpNpcMabelTopicMsgs[unk_b0];
-    out->unk_00 = sSpNpcMabelMsgKeys[0];
+    out->msgIndex = sSpNpcMabelTopicMsgs[unk_b0];
+    out->msgKey = sSpNpcMabelMsgKeys[0];
     if (getTopic() == 4) {
         unk_b8 = (s32)Item_GetPrice(&unk_ac->unk_734);
         ActorTalkRequest_setNumberSlot(this, unk_b8, 0, 0xa, 1, 0);
         ActorTalkRequest_setItemNameSlot(this, &unk_ac->unk_734, 0, 7);
         if (GameStart_IsActive() != 0) {
-            out->unk_00 = sSpNpcMabelMsgKeys[2];
-            out->unk_04 = 0x1e;
+            out->msgKey = sSpNpcMabelMsgKeys[2];
+            out->msgIndex = 0x1e;
         }
     } else if (getTopic() == 5) {
         u8 *g = gSaveData;
@@ -1450,16 +1450,16 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         Unk_ov049_0225a714_P c(*PlayerId_GetTownId(&a));
         Unk_ov049_0225a714_P d(*PlayerId_GetTownId(&b));
         if (GameStart_IsActive() != 0) {
-            out->unk_00 = sSpNpcMabelMsgKeys[2];
-            out->unk_04 = 0x1d;
+            out->msgKey = sSpNpcMabelMsgKeys[2];
+            out->msgIndex = 0x1d;
         } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
             ActorTalkRequest_setTownNameSlot(this, &c, 3);
-            out->unk_04 = 0x33;
+            out->msgIndex = 0x33;
         } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && PlayerId_equals(&a, &b) != 0) {
         } else {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
-            out->unk_04 = 0x32;
+            out->msgIndex = 0x32;
         }
         TownId_Destruct(&d);
         TownId_Destruct(&c);
@@ -1538,7 +1538,7 @@ void SpNpcMabelTalk::dispatchShopMessageEnd() {
         {0x23, *(SpNpcMabelTalk::Fn0 *)data_ov049_0225bab8},
     };
     u32 i = 0;
-    u8 *idp = &unk_1e;
+    u8 *idp = &msgIndex;
     goto test0;
 loop0:
     u32 id = tbl[i].id;
@@ -1710,7 +1710,7 @@ void SpNpcMabelTalk::dispatchShopChoice() {
         {0x38, *(SpNpcMabelTalk::Fn *)data_ov049_0225ba60},
     };
     u32 i = 0;
-    u8 *idp = &unk_1e;
+    u8 *idp = &msgIndex;
     goto test0;
 loop0:
     u32 off = i * 12;
@@ -1941,7 +1941,7 @@ void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
 
 void SpNpcMabelTalk::onDramaMenuChoice() {
     u8 m[2];
-    if ((s32)unk_1e >= 0 && (s32)unk_1e <= 0x11) {
+    if ((s32)msgIndex >= 0 && (s32)msgIndex <= 0x11) {
         s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c));
         if (t != 2) {
             m[1] = sSpNpcMabelDramaMenuMsgs[t];
@@ -2215,14 +2215,14 @@ void SpNpcMabelTalk::sellItemToPlayer() {
 }
 
 BOOL SpNpcMabel::vfunc_48() {
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcMabel::vfunc_58() {
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked() != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -2233,7 +2233,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
-        *(u8 *)&unk_558.unk_08 = arg;
+        *(u8 *)&footstepFx.unk_08 = arg;
         if (arg != 4) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, arg);
             changeAct(0xc);
@@ -2244,7 +2244,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
         }
         break;
     case 1:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             netSetSlotsIfOwner(1, arg, arg);
             changeAct(9);
@@ -2269,7 +2269,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
         }
         break;
     case 0:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             netSetSlotsIfOwner(1, arg, arg);
             changeAct(9);
@@ -2331,15 +2331,15 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     Unk_ov049_02258ee0_Vec v;
     Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov049_02258ee0_Flags() ? TRUE : FALSE;
-    if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
+    if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
     unk_734 = 0xfff1;
-    Unk_ov049_02258ee0_Pos *pv = (Unk_ov049_02258ee0_Pos *)&p->unk_5c;
-    v.x = p->unk_5c;
+    Unk_ov049_02258ee0_Pos *pv = (Unk_ov049_02258ee0_Pos *)&p->position;
+    v.x = p->position;
     v.y = pv->y;
     v.z = pv->z;
-    u32 ang = p->unk_8e;
+    u32 ang = p->rotY;
     bx = 0;
     by = 0;
     s32 idx = ((u16)ang >> 4) * 2;

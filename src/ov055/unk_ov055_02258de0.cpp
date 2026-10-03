@@ -27,8 +27,8 @@ public:
 };
 
 struct TalkStartMsg {
-    const void *unk_00;
-    u8 unk_04;
+    const void *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_0201bc1c;
@@ -77,7 +77,7 @@ public:
     void *func_02015aac();
     void func_02015ab0(u32 p);
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -202,13 +202,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -247,22 +247,22 @@ public:
     s32 getDistanceToPlayer(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -280,10 +280,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct TownExchangeRecord {
@@ -516,7 +516,7 @@ BOOL SpNpcRover::vfunc_00() {
     sSpNpcRoverInstance = this;
     loadTagModeOverlay();
     changeAct(0);
-    Camera_SetMode20At(&unk_5c);
+    Camera_SetMode20At(&position);
     TalkRequestFlags_SetSceneHold();
     prepareTagData();
     return TRUE;
@@ -556,7 +556,7 @@ void SpNpcRover::changeAct(s32 state) {
 }
 
 BOOL SpNpcRover::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -568,12 +568,12 @@ BOOL SpNpcRover::mainAct00() {
 }
 
 BOOL SpNpcRover::setupAct01() {
-    _ZN11NpcTalkCtrl11requestTalkEhh(&unk_618, 0, 1);
+    _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
     return TRUE;
 }
 
 BOOL SpNpcRover::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         changeAct(2);
     }
@@ -594,14 +594,14 @@ void SpNpcRoverTalk::attachOwner(SpNpcRover *owner) {
 }
 
 void SpNpcRoverTalk::start(TalkStartMsg *out) {
-    out->unk_00 = sSpNpcRoverMsgKey;
-    out->unk_04 = 0x38;
+    out->msgKey = sSpNpcRoverMsgKey;
+    out->msgIndex = 0x38;
 }
 
 void SpNpcRoverTalk::onMessageEnd() {
     u8 m[4];
     void *r6 = unk_3c;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x39:
         if (func_020e9a18(NetOverlay_AssertOv067()) == 0) {
             if (unk_ac->unk_70c != 0) {
@@ -631,7 +631,7 @@ void SpNpcRoverTalk::onMessageEnd() {
 
 void SpNpcRoverTalk::onChoice() {
     s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
-    if (unk_1e == 0x3a && t == 1) {
+    if (msgIndex == 0x3a && t == 1) {
         Comm_EndOv067Mode();
     }
 }
@@ -735,14 +735,14 @@ void SpNpcRover::restoreOwnTransfer() {
 }
 
 BOOL SpNpcRover::vfunc_48() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0 || netIsTalkLocked() != 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcRover::vfunc_58() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0 || netIsTalkLocked() != 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;

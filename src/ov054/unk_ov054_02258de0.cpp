@@ -66,8 +66,8 @@ struct Unk_ov054_02258e58_Sub {
 };
 
 struct TalkStartMsg {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov054_0225aa98_Rec {
@@ -131,7 +131,7 @@ public:
     virtual void onTaskDone();
 
     /* 0x04 */ u8 pad_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x1e */ u8 msgIndex;
     /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
     /* 0x3c */ Unk_ov054_02258e58_Sub *unk_3c;
     /* 0x40 */ u8 pad_40[0xac - 0x40];
@@ -245,11 +245,11 @@ public:
     virtual void vfunc_58(void *p);
     void setInteractionRange(s32 v);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[0xea - 0x96];
 };
 
@@ -294,22 +294,22 @@ public:
     void setNpcHandle(u16 *p);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -328,10 +328,10 @@ public:
     virtual s32 getWalkAnimSpeedScale();
     void setColliderSize(s32 a, s32 b);
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 typedef void (SpNpcPellyPhyllisTalk::*Unk_ov054_0225b9c4_Fn)();
@@ -949,9 +949,9 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         if (m) {
             unk_804 = 0;
             unk_808 = 1;
-            unk_5c = sSpNpcPellyPhyllisCounterPos[1].a;
-            unk_60 = sSpNpcPellyPhyllisCounterPos[1].b;
-            unk_64 = sSpNpcPellyPhyllisCounterPos[1].c;
+            position = sSpNpcPellyPhyllisCounterPos[1].a;
+            positionY = sSpNpcPellyPhyllisCounterPos[1].b;
+            positionZ = sSpNpcPellyPhyllisCounterPos[1].c;
             l.unk_06[0] = 0;
             l.unk_06[1] = 0;
             l.unk_06[2] = 0;
@@ -962,9 +962,9 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         } else {
             unk_804 = 1;
             unk_808 = 0;
-            unk_5c = sSpNpcPellyPhyllisCounterPos[0].a;
-            unk_60 = sSpNpcPellyPhyllisCounterPos[0].b;
-            unk_64 = sSpNpcPellyPhyllisCounterPos[0].c;
+            position = sSpNpcPellyPhyllisCounterPos[0].a;
+            positionY = sSpNpcPellyPhyllisCounterPos[0].b;
+            positionZ = sSpNpcPellyPhyllisCounterPos[0].c;
         }
     } else {
         Clock_GetMinuteHour(&l);
@@ -975,7 +975,7 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
                 unk_804 = 1;
             }
         }
-        NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x399, 0xcc, 0x133);
+        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0xcc, 0x133);
         l.unk_02 = sSpNpcPellyPhyllisHandles[unk_804];
         setNpcHandle(&l.unk_02);
         unk_ea = sSpNpcPellyPhyllisHandles[unk_804];
@@ -1003,8 +1003,8 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
             changeAct(2);
         }
     }
-    unk_800 = unk_8e;
-    unk_4cc.unk_1c |= 2;
+    unk_800 = rotY;
+    collider.unk_1c |= 2;
     if (unk_804 == 0) {
         Bgm_Request(0x11, 0x55, 0x7f, 0);
     } else if (unk_804 == 1) {
@@ -1113,7 +1113,7 @@ BOOL SpNpcPellyPhyllis::mainAct01() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct02() {
-    NpcActionCtrl_requestStand(&unk_564, 1, unk_80e);
+    NpcActionCtrl_requestStand(&actionCtrl, 1, unk_80e);
     unk_80c = 0xff;
     if (unk_810 == 0) {
         s32 v;
@@ -1129,7 +1129,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
     if (!isOnline()) {
         if (updateWindow()) {
             changeAct(3);
-            NpcMoveCtrl_setTurnMode(&unk_350, data_ov054_0225b348[unk_808]);
+            NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[unk_808]);
         }
         if (unk_80c != 0xff) {
             if (!func_020e7500(&unk_80c)) {
@@ -1142,7 +1142,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
 
 BOOL SpNpcPellyPhyllis::setupAct03() {
     u32 i = unk_808 * 12;
-    NpcActionCtrl_requestAction(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcPellyPhyllisCounterPos + i), *(s32 *)(data_ov054_0225b3b4 + i), 0x800, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcPellyPhyllisCounterPos + i), *(s32 *)(data_ov054_0225b3b4 + i), 0x800, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1150,11 +1150,11 @@ BOOL SpNpcPellyPhyllis::mainAct03() {
     isOnline();
     if (updateWindow()) {
         changeAct(3);
-        NpcMoveCtrl_setTurnMode(&unk_350, data_ov054_0225b348[unk_808]);
+        NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[unk_808]);
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&unk_564) == 6) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 6) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(6);
         }
     }
@@ -1162,12 +1162,12 @@ BOOL SpNpcPellyPhyllis::mainAct03() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct04() {
-    NpcTalkCtrl_requestTalk(&unk_618, 1, 0);
+    NpcTalkCtrl_requestTalk(&talkCtrl, 1, 0);
     return TRUE;
 }
 
 BOOL SpNpcPellyPhyllis::mainAct04() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(5);
     }
@@ -1179,8 +1179,8 @@ BOOL SpNpcPellyPhyllis::setupAct05() { return TRUE; }
 BOOL SpNpcPellyPhyllis::mainAct05() { return TRUE; }
 
 BOOL SpNpcPellyPhyllis::setupAct06() {
-    NpcMoveCtrl_setTurnMode(&unk_350, 0);
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_800, 0, 0, data_020c6cc8, 0);
+    NpcMoveCtrl_setTurnMode(&moveCtrl, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_800, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1190,8 +1190,8 @@ BOOL SpNpcPellyPhyllis::mainAct06() {
         changeAct(3);
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(2);
         }
     }
@@ -1199,7 +1199,7 @@ BOOL SpNpcPellyPhyllis::mainAct06() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct07() {
-    NpcActionCtrl_requestAction(&unk_564, 10, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 10, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1210,8 +1210,8 @@ BOOL SpNpcPellyPhyllis::mainAct07() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    if (NpcActionCtrl_getAction(&unk_564) == 10) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 10) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             unk_80e = 0x18;
             changeAct(2);
         }
@@ -1307,27 +1307,27 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     if (GameStart_IsActive()) {
         if (!Unk_02097ff4_testFlag(g0, 9)) {
             if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
-                out->unk_04 = 0x12;
+                out->msgIndex = 0x12;
             } else {
-                out->unk_04 = 0x20;
+                out->msgIndex = 0x20;
             }
             Unk_02097ff4_setFlag(g0, 9);
         } else {
-            out->unk_04 = 7;
+            out->msgIndex = 7;
         }
         r4 = 2;
         goto end;
     }
     v[1] = 0xd006;
     if (ParcelErrand_IsFor(g1, &v[1]) || (v[2] = 0xd007, ParcelErrand_IsFor(g1, &v[2]))) {
-        out->unk_04 = 0x5f;
+        out->msgIndex = 0x5f;
         r4 = 0;
         goto end;
     }
     if (unk_ac->unk_810 == 0) {
         if (Talk_IsDramaPending(unk_ac, v, r4)) {
             Unk_ov054_0225a7c4_Bits *b = (Unk_ov054_0225a7c4_Bits *)v;
-            out->unk_04 = *(sSpNpcPellyPhyllisDramaMsgTable + b->mid * 6 + b->hi);
+            out->msgIndex = *(sSpNpcPellyPhyllisDramaMsgTable + b->mid * 6 + b->hi);
             r4 = 1;
             unk_ac->unk_810 = r4;
             goto end;
@@ -1336,15 +1336,15 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     r7 = TRUE;
 end:
     if (r7) {
-        out->unk_04 = sSpNpcPellyPhyllisGreetingMsgs[unk_ac->unk_808];
+        out->msgIndex = sSpNpcPellyPhyllisGreetingMsgs[unk_ac->unk_808];
         r4 = 0;
         if (unk_ac->unk_808 == 0) {
             if (unk_ac->isLocalSlotActive()) {
-                out->unk_04 = 8;
+                out->msgIndex = 8;
             }
         }
     }
-    out->unk_00 = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][r4];
+    out->msgKey = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][r4];
 }
 
 u32 SpNpcPellyPhyllisTalk::getMailResultMsg() {
@@ -1779,7 +1779,7 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
 }
 
 void SpNpcPellyPhyllisTalk::onMessageStart() {
-    if (unk_1e == 0xf) {
+    if (msgIndex == 0xf) {
         u8 *p = FutureLetter_getDeliveryDate(PlayerData_GetFutureLetter(PlayerData_GetCurrent()));
         u32 b1 = p[1];
         u32 b0 = p[0];
@@ -1788,7 +1788,7 @@ void SpNpcPellyPhyllisTalk::onMessageStart() {
         ActorTalkRequest_setDaySlot(this, b0, 3);
     }
     if (GameStart_IsActive()) {
-        u32 id = unk_1e;
+        u32 id = msgIndex;
         if (id != 0x24 && id != 0x25 && id != 0x26) {
             return;
         }
@@ -1835,7 +1835,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     u8 msg;
     u16 half0;
     u16 half1;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x02:
         TalkWindowState_lockAdvance(ctx);
         break;
@@ -2023,7 +2023,7 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     char *tbl = *(char **)((u8 *)data_ov054_0225b974 + unk_ac->unk_804 * 12);
     u32 r4 = 0;
     u8 msg;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x02:
     case 0x20:
     case 0x23:
@@ -2078,7 +2078,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     void *g = PlayerData_GetCurrent();
     u32 id = 0xff;
     u8 m;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x5f:
         if (r == 0) {
             Unk_020d7710_setPocketFilter(this, (void *)SpNpcPellyPhyllis_IsDeliveryItem, 0xd, 0);
@@ -2371,7 +2371,7 @@ void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
     u32 id = 0xff;
     u32 k = 1;
     u8 m[2];
-    s32 t = unk_1e;
+    s32 t = msgIndex;
     if (t >= 0 && t <= 0x19) {
         if (r == 1) {
             id = data_ov054_0225b350[unk_ac->unk_808];
@@ -2390,7 +2390,7 @@ void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
 void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     PlayerData_GetCurrent();
-    if (unk_1e == 0x12) {
+    if (msgIndex == 0x12) {
         switch (r) {
         case 0:
             PlayerOptions_SetHiragana(0);
@@ -2500,8 +2500,8 @@ BOOL SpNpcPellyPhyllis::vfunc_48(Character *o) {
     BOOL r = FALSE;
     s32 bx, by, cx, cy;
     Unk_ov054_0225902c_Vec pos;
-    Unk_ov054_0225902c_Vec *pv = (Unk_ov054_0225902c_Vec *)&o->unk_5c;
-    pos.x = o->unk_5c;
+    Unk_ov054_0225902c_Vec *pv = (Unk_ov054_0225902c_Vec *)&o->position;
+    pos.x = o->position;
     pos.y = pv->y;
     pos.z = pv->z;
     bx = 0;
@@ -2515,7 +2515,7 @@ BOOL SpNpcPellyPhyllis::vfunc_48(Character *o) {
     dst.y = pd->y;
     dst.z = pd->z;
     FieldPos_ToUnit(&cx, &cy, &dst);
-    if (NpcTalkCtrl_isBusy(&unk_618) != 0 || netIsTalkLocked()) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked()) {
         return FALSE;
     }
     if (unk_654 == 2 || unk_654 == 0 || unk_654 == 9) {
@@ -2530,7 +2530,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, arg);
             changeAct(0xb);
@@ -2546,7 +2546,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
         changeAct(1);
         break;
     case 0:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             netSetSlotsIfOwner(1, arg, arg);
             changeAct(0xa);
@@ -2587,7 +2587,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
 }
 
 BOOL SpNpcPellyPhyllis::canStartSave() {
-    if (unk_2ac.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
+    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
         return TRUE;
     }
     return FALSE;

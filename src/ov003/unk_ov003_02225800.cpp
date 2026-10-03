@@ -42,14 +42,14 @@ struct Unk_ov003_Off2 { u8 pad[0x2]; u8 at; };
 // ---- main-module classes (declarations only)
 class AnimFrameCtrl {
 public:
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     virtual ~AnimFrameCtrl();
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -57,8 +57,8 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
 
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 // ---- ov009 actor (only the methods used here)

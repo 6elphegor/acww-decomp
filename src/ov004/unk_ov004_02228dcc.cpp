@@ -81,7 +81,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -102,9 +102,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -407,7 +407,7 @@ BOOL TarotProps::onExecute() {
     _ZN9AnimModel8stepAnimEv(&unk_290[2]);
     _ZN13AnimFrameCtrl4stepEv(&unk_6b4);
     *unk_6b4.unk_18 = unk_6b4.unk_08;
-    func_020e8388(&data_021f47e0, unk_5c[0], unk_5c[1], unk_5c[2]);
+    func_020e8388(&data_021f47e0, position[0], position[1], position[2]);
     unk_290[1].unk_64 = data_021f47e0;
     unk_290[2].unk_64 = data_021f47e0;
     execAct();

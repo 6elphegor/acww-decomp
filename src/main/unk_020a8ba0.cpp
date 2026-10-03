@@ -394,14 +394,14 @@ public:
     void parse(u8 *p);
 
     void eq(s32 x, s32 y, u8 *f) {
-        if (unk_00 == x && unk_04 == y) *f = 1;
+        if (group == x && id == y) *f = 1;
     }
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ char *unk_0c;
-    /* 0x10 */ u8 *unk_10;
+    /* 0x00 */ s32 group;
+    /* 0x04 */ s32 id;
+    /* 0x08 */ u32 argLen;
+    /* 0x0c */ char *args;
+    /* 0x10 */ u8 *raw;
 };
 
 // 0x020e2a08: small state object (position + two bytes)
@@ -412,9 +412,9 @@ public:
     void reset();
     void copyFrom(MsgStringAttr *other);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class EncodedStringBase {
@@ -436,7 +436,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 // buffer interface with write position at +4 and member at +8
@@ -457,8 +457,8 @@ public:
     u8 set(u8 *str);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 class MsgString33 : public MsgString {
@@ -488,12 +488,12 @@ public:
     MsgRequest();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct BmgMsgAttr {
-    u32 unk_00;
+    u32 textOffset;
     u8 unk_04;
     u8 unk_05;
     u8 unk_06;
@@ -524,8 +524,8 @@ public:
     void processTag();
     void reset();
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u8 unk_08[0x1c];
+    /* 0x04 */ u8 *cursor;
+    /* 0x08 */ u8 callStack[0x1c];
 };
 
 class MsgWalker : public MsgParser {
@@ -552,16 +552,16 @@ public:
     void onCharFindNth();
     void resetQuery();
 
-    /* 0x24 */ u32 unk_24;
-    /* 0x28 */ MsgTag unk_28;
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u32 unk_48;
-    /* 0x4c */ u32 unk_4c;
-    /* 0x50 */ u32 unk_50;
-    /* 0x54 */ u32 unk_54;
-    /* 0x58 */ u8 unk_58;
+    /* 0x24 */ u32 mode;
+    /* 0x28 */ MsgTag tag;
+    /* 0x3c */ u32 curChar;
+    /* 0x40 */ s32 findGroup;
+    /* 0x44 */ s32 findId;
+    /* 0x48 */ u32 targetIndex;
+    /* 0x4c */ u32 charCount;
+    /* 0x50 */ u32 targetLines;
+    /* 0x54 */ u32 lineCount;
+    /* 0x58 */ u8 isDone;
 };
 
 class MsgProcessor;
@@ -581,8 +581,8 @@ public:
     void onBegin();
     void setProcessor(MsgProcessor *v);
 
-    /* 0x7c */ u32 unk_7c;
-    /* 0x80 */ MsgProcessor *unk_80;
+    /* 0x7c */ u32 mode;
+    /* 0x80 */ MsgProcessor *processor;
 };
 
 class MsgProcessor : public MsgParser {
@@ -596,8 +596,8 @@ public:
     void setLabel(MsgTextLabel *p);
     u32 run(u8 *p);
 
-    /* 0x24 */ MsgTextLabel *unk_24;
-    /* 0x28 */ u8 unk_28;
+    /* 0x24 */ MsgTextLabel *label;
+    /* 0x28 */ u8 stopAtNewline;
 };
 
 class MsgRenderProcessor : public MsgProcessor {
@@ -609,7 +609,7 @@ public:
     virtual void onChar(u32 c);
     virtual void onTag(u8 *p);
 
-    /* 0x2c */ u32 unk_2c;
+    /* 0x2c */ u32 altTextEnd;
 };
 
 class MsgCopyProcessor : public MsgProcessor {
@@ -621,10 +621,10 @@ public:
     void finish();
     void beginCopy(MsgString *s, u8 *str, u32 mode, u8 flag);
 
-    /* 0x2c */ MsgString *unk_2c;
-    /* 0x30 */ u8 *unk_30;
-    /* 0x34 */ u32 unk_34;
-    /* 0x38 */ u8 unk_38;
+    /* 0x2c */ MsgString *dest;
+    /* 0x30 */ u8 *srcText;
+    /* 0x34 */ u32 copyMode;
+    /* 0x38 */ u8 result;
 };
 
 class MsgRunner {
@@ -634,9 +634,9 @@ public:
     BOOL advance();
     void reset();
 
-    /* 0x00 */ MsgWalker *unk_00;
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u8 *unk_08;
+    /* 0x00 */ MsgWalker *walker;
+    /* 0x04 */ u8 *text;
+    /* 0x08 */ u8 *stopPos;
 };
 
 // BMG message file reader
@@ -658,14 +658,14 @@ public:
     void close();
     u8 open(const char *path);
 
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05[0x3f];
-    /* 0x44 */ u8 unk_44[0x48];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
-    /* 0x90 */ u32 unk_90[3];
-    /* 0x9c */ u32 unk_9c;
-    /* 0xa0 */ u32 unk_a0;
+    /* 0x04 */ u8 hasAttributes;
+    /* 0x05 */ u8 filePath[0x3f];
+    /* 0x44 */ u8 file[0x48];
+    /* 0x8c */ u8 isOpen;
+    /* 0x8d */ u8 msgIndex;
+    /* 0x90 */ u32 entry[3];
+    /* 0x9c */ u32 textOffset;
+    /* 0xa0 */ u32 textSize;
 };
 
 class MsgUiProc : public GameProc {
@@ -679,31 +679,31 @@ public:
 };
 
 struct BmgInfEntryAttr {
-    u32 unk_00;
-    u8 unk_04[6];
+    u32 textOffset;
+    u8 attrs[6];
 };
 
 struct BmgInfHeader {
-    u32 unk_00;
-    u32 unk_04;
-    u16 unk_08;
-    u16 unk_0a;
+    u32 magic;
+    u32 size;
+    u16 msgCount;
+    u16 entrySize;
     u16 unk_0c;
     u8 unk_0e;
 };
 
 struct BmgDatHeader {
-    u32 unk_00;
-    u32 unk_04;
+    u32 magic;
+    u32 size;
     u32 unk_08;
 };
 
 struct BmgFileHeader {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u8 unk_10;
+    u32 magic;
+    u32 type;
+    u32 fileSize;
+    u32 sectionCount;
+    u8 encoding;
     u8 pad[0xb];
     u32 unk_1c;
 };

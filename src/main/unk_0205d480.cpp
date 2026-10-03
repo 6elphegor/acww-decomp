@@ -48,9 +48,9 @@ public:
 
 class TexVramSlot {
 public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 texKeyBase;
+    u32 tex4x4KeyBase;
+    u32 plttKeyBase;
     u8 unk_10;
     u8 unk_11;
 

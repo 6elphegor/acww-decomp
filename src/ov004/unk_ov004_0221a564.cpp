@@ -274,7 +274,7 @@ public:
     u8 pad_1a1[3];
 };
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
-struct VillagerMood { VillagerMood(); ~VillagerMood(); u8 pad[0x5b]; u8 unk_5b; };
+struct VillagerMood { VillagerMood(); ~VillagerMood(); u8 pad[0x5b]; u8 severeSickness; };
 class RoomFreeUnitMap {
 public:
     RoomFreeUnitMap();
@@ -303,16 +303,16 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
-    u32 unk_5c;
-    u32 unk_60;
-    u32 unk_64;
-    u32 unk_68;
+    u32 position;
+    u32 positionY;
+    u32 positionZ;
+    u32 prevPosition;
     u32 pad_6c;
-    u32 unk_70;
+    u32 prevPositionZ;
     u32 pad_74[(0x8c - 0x74) / 4];
-    s16 unk_8c, unk_8e, unk_90, unk_92, unk_94, unk_96;
+    s16 rotX, rotY, rotZ, moveAngleX, moveAngleY, moveAngleZ;
     u32 pad_98[(0xd4 - 0x98) / 4];
-    u32 unk_d4, unk_d8, unk_dc;
+    u32 charNode, unk_d8, unk_dc;
 };
 
 class NpcActor : public Character {
@@ -343,22 +343,22 @@ public:
 
     u16 pad_e0[5];
     u16 unk_ea;
-    Unk_02053d3c unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    Unk_02053d3c model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    Unk_020323b0 unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    Unk_020323b0 collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class VillagerActor : public NpcActor {
@@ -384,16 +384,16 @@ public:
     virtual void vfunc_b8();
     virtual void vfunc_bc();
 
-    /* 0x640 */ u32 unk_640;
-    /* 0x644 */ u32 unk_644;
-    /* 0x648 */ u32 unk_648;
-    /* 0x64c */ Unk_0202d7f4 unk_64c;
-    /* 0x680 */ Unk_0202d5e8 unk_680;
-    /* 0x824 */ Unk_02082088 unk_824;
-    /* 0x82c */ void *unk_82c;
-    /* 0x830 */ void *unk_830;
+    /* 0x640 */ u32 eventKind;
+    /* 0x644 */ u32 talkPartnerId;
+    /* 0x648 */ u32 invitedByPartner;
+    /* 0x64c */ Unk_0202d7f4 clothModel;
+    /* 0x680 */ Unk_0202d5e8 villagerTalk;
+    /* 0x824 */ Unk_02082088 animHeapHandle;
+    /* 0x82c */ void *villagerData;
+    /* 0x830 */ void *villagerState;
     /* 0x834 */ u32 unk_834;
-    /* 0x838 */ VillagerMood unk_838;
+    /* 0x838 */ VillagerMood mood;
 };
 
 // Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
@@ -435,7 +435,7 @@ public:
     virtual void update();
     virtual void onTaskDone(u32 a);
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     void *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -632,14 +632,14 @@ BOOL SickVillager::vfunc_04() {
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
     *((u8 *)this + 0xa3c) = p[0x8e];
     if (unk_89c.getSickStage() > 1) {
-        NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0xea);
-        NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xe9);
-        NpcMoveCtrl_setSpeedPreset(&unk_350, 1, 0xa4, 0x10, 0x10);
-        NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-        unk_838.unk_5b = 1;
+        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xea);
+        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xe9);
+        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0xa4, 0x10, 0x10);
+        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        mood.severeSickness = 1;
     } else {
-        NpcMoveCtrl_setSpeedPreset(&unk_350, 1, 0xcd, 0x14, 0x14);
-        unk_838.unk_5b = 0;
+        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0xcd, 0x14, 0x14);
+        mood.severeSickness = 0;
     }
     changeAct(0);
     return TRUE;
@@ -651,7 +651,7 @@ BOOL SickVillager::vfunc_00() {
     }
     unk_a44 = PMB(data_ov004_0224ca68);
     blockFurnitureCells();
-    Unk_02013474_enableFootsteps(&unk_558);
+    Unk_02013474_enableFootsteps(&footstepFx);
     return TRUE;
 }
 
@@ -679,7 +679,7 @@ BOOL SickVillager::preDelete() {
 
 BOOL SickVillager::updateAct() {
     execAct();
-    VillagerMood_updateSoundPos(&unk_838, this);
+    VillagerMood_updateSoundPos(&mood, this);
     return TRUE;
 }
 
@@ -706,16 +706,16 @@ void SickVillager::blockFurnitureCells() {
 void SickVillager::func_ov004_0221b1b0() {
     void *p = PlayerData_GetCurrent();
     if (p) {
-        if (unk_82c) {
+        if (villagerData) {
             void *g = PlayerData_getPlayerId(p);
-            void *t = Villager_FindOrCreateMemory(unk_82c, g);
+            void *t = Villager_FindOrCreateMemory(villagerData, g);
             VillagerMemory_RecordTalk(t, 0, 0, 0);
         }
     }
 }
 
 BOOL SickVillager::vfunc_48() {
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
     if (unk_898 > 1) {
@@ -726,17 +726,17 @@ BOOL SickVillager::vfunc_48() {
 
 void SickVillager::vfunc_4c(u32 idx, u32 v) {
     Unk_ov004_0221b0f0_Vec vec;
-    vec.x = unk_5c;
-    vec.y = unk_60;
-    vec.z = unk_64;
+    vec.x = position;
+    vec.y = positionY;
+    vec.z = positionZ;
     vec.y += 0x2000;
     switch (idx) {
     case 3:
-        unk_558.unk_08 = v;
+        footstepFx.unk_08 = v;
         changeAct(2);
         break;
     case 0:
-        unk_558.unk_08 = v;
+        footstepFx.unk_08 = v;
         func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
         changeAct(3);
         break;
@@ -802,10 +802,10 @@ void SickVillagerTalk::update() {
 void SickVillagerTalk::start(Unk_ov004_0221af1c_Out *out) {
     out->unk_00 = (u32)data_ov004_0225095c;
     getSickStage();
-    if (unk_1a4->unk_838.unk_5b == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->unk_82c), data_ov004_0225095c, 0x28, "q12_ask1_2");
+    if (unk_1a4->mood.severeSickness == 0) {
+        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_0225095c, 0x28, "q12_ask1_2");
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->unk_82c), data_ov004_0225095c, 0x28, "q12_ask3_5");
+        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_0225095c, 0x28, "q12_ask3_5");
     }
     unk_1a4->unk_895 = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
@@ -830,7 +830,7 @@ void SickVillagerTalk::onMessageEnd() {
     u8 b[6];
     SickVillager *o = unk_1a4;
     if (o->unk_895 == 0) {
-        switch (unk_1e) {
+        switch (msgIndex) {
         case 0:
         case 1:
         case 2: {
@@ -863,7 +863,7 @@ void SickVillagerTalk::onMessageEnd() {
         }
         }
     } else {
-        switch (unk_1e) {
+        switch (msgIndex) {
         case 7:
         case 8:
         case 9:
@@ -888,11 +888,11 @@ void SickVillagerTalk::onMessageEnd() {
 s32 SickVillagerTalk::onChoice() {
     u8 buf[6];
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_1a4->unk_89c.unk_3c));
-    if (unk_1a4->unk_838.unk_5b == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->unk_82c), data_ov004_02250984, 0x28, "q12_sick1_2");
+    if (unk_1a4->mood.severeSickness == 0) {
+        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_02250984, 0x28, "q12_sick1_2");
         unk_1a4->unk_895 = 1;
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->unk_82c), data_ov004_02250984, 0x28, "q12_sick3_5");
+        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_02250984, 0x28, "q12_sick3_5");
         unk_1a4->unk_895 = 1;
     }
     if (unk_1a4->unk_894 == 0) {
@@ -968,76 +968,76 @@ void SickVillager::execAct() {
 }
 
 BOOL SickVillager::setupAct00() {
-    return NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
+    return NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
 }
 
 void SickVillager::mainAct00() {
     Unk_ov004_0221a7d4_Vec v;
-    if (unk_838.unk_5b != 0) {
-        if (NpcActionCtrl_getAction(&unk_564) == 1) {
+    if (mood.severeSickness != 0) {
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             if (gFrameCounter % 14 == 0) {
-                VillagerMood_playMood3Effect(&unk_838, this);
+                VillagerMood_playMood3Effect(&mood, this);
             }
         }
     }
-    if (unk_4cc.unk_3c != 0) {
-        if (NpcActionCtrl_getAction(&unk_564) == 1) {
+    if (collider.unk_3c != 0) {
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             if (changeAct(1)) {
                 return;
             }
         }
     }
-    if (NpcActionCtrl_getAction(&unk_564) == 0) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 0) {
         if (unk_a6e != 0) {
             unk_a6e--;
         }
         if (unk_a6e == 0) {
-            unk_a6c = Room_PickRandomWalkTarget(&unk_a7c, (u8 *)this + 0x5c, unk_8e);
+            unk_a6c = Room_PickRandomWalkTarget(&unk_a7c, (u8 *)this + 0x5c, rotY);
             unk_a70.x = unk_a7c.x;
             unk_a70.y = unk_a7c.y;
             unk_a70.z = unk_a7c.z;
-            if (unk_a6c != unk_8e) {
-                if (NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_a6c, 0, 0, data_020c6cc8, 0) == 0) {
+            if (unk_a6c != rotY) {
+                if (NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_a6c, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
-                if (unk_838.unk_5b != 0) {
+                if (mood.severeSickness != 0) {
                     unk_a6e = Random_GlobalBelow(0x46) + 0x32;
                 } else {
                     unk_a6e = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
+                if (NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
-                if (unk_838.unk_5b != 0) {
+                if (mood.severeSickness != 0) {
                     unk_a6e = Random_GlobalBelow(0x46) + 0x32;
                 } else {
                     unk_a6e = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
-            if (NpcActionCtrl_isActionDone(&unk_564) != 0) {
-                NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
+            if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
+                NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
             }
         }
     } else {
-        if (NpcActionCtrl_getAction(&unk_564) == 3) {
-            if (NpcActionCtrl_isActionDone(&unk_564) != 0) {
-                NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+            if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
+                NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
-        } else if (NpcActionCtrl_getAction(&unk_564) == 1) {
+        } else if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             switch (NpcActor_findAvoidPos(this, &v)) {
             case 1:
-                NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
+                NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
                 break;
             case 2:
                 unk_a70 = v;
-                NpcMoveCtrl_setWaypoint(&unk_350, &unk_a70);
+                NpcMoveCtrl_setWaypoint(&moveCtrl, &unk_a70);
                 break;
             default:
                 if (func_020e96ec(&unk_a70, &unk_a7c) != 0) {
                     unk_a70 = unk_a7c;
-                    NpcMoveCtrl_setWaypoint(&unk_350, &unk_a7c);
+                    NpcMoveCtrl_setWaypoint(&moveCtrl, &unk_a7c);
                 } else if (func_020e9650(&unk_a7c, (u8 *)this + 0x5c) < 0x200) {
                     changeAct(1);
                 }
@@ -1048,7 +1048,7 @@ void SickVillager::mainAct00() {
 }
 
 BOOL SickVillager::setupAct01() {
-    if (NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8)) {
+    if (NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8)) {
         unk_a88 = 0x46;
         return TRUE;
     }
@@ -1058,10 +1058,10 @@ BOOL SickVillager::setupAct01() {
 void SickVillager::mainAct01() {
     switch (unk_a88) {
     case 0x45:
-        NpcActionCtrl_requestEmotion(&unk_564, 1, 7, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&actionCtrl, 1, 7, data_020c6cc8);
         break;
     case 1:
-        NpcActionCtrl_requestEmotion(&unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&actionCtrl, 1, 0, data_020c6cc8);
         unk_a6e = Random_GlobalBelow(0x14) + 0x14;
         break;
     case 0:
@@ -1077,7 +1077,7 @@ void SickVillager::mainAct01() {
 
 BOOL SickVillager::setupAct02() {
     if (unk_898 == 1) {
-        NpcActionCtrl_requestEmotion(&unk_564, 2, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion(&actionCtrl, 2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -1088,7 +1088,7 @@ BOOL SickVillager::setupAct03() {
     BOOL r;
     void *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, NpcActor_getAngleTo(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;

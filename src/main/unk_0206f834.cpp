@@ -11,9 +11,9 @@ public:
     void reset();
     void copyFrom(MsgStringAttr *other);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class EncodedStringBase {
@@ -37,7 +37,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 // buffer interface with write position at +4 and member at +8
@@ -50,8 +50,8 @@ public:
     BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -525,19 +525,19 @@ BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len);
 void LabelString::setLayerColors(u32 id, u8 x, u8 y) {
     s32 t = Gfx2d_GetLayerBgIndex(id);
     if (unk_3c != NULL) {
-        unk_3c->unk_2c = t;
+        unk_3c->vramLoader = t;
         if (Gfx2d_IsMainScreenLayer(id) != 0) {
-            unk_3c->unk_50 = 2;
+            unk_3c->copyMode = 2;
         } else {
-            unk_3c->unk_50 = 1;
+            unk_3c->copyMode = 1;
         }
         if (t == 4) {
-            unk_3c->unk_55 = 1;
+            unk_3c->rowStride1K = 1;
         } else {
-            unk_3c->unk_55 = 0;
+            unk_3c->rowStride1K = 0;
         }
-        unk_3c->unk_39 = y;
-        unk_3c->unk_38 = x;
+        unk_3c->bgColor = y;
+        unk_3c->fgColor = x;
     }
 }
 
@@ -548,7 +548,7 @@ void LabelString::createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
     unk_3c = MsgTextLabel_CreateVram(a, b, 2);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        unk_3c->unk_28 = &gFontC;
+        unk_3c->font = &gFontC;
     }
 }
 
@@ -559,9 +559,9 @@ void LabelString::createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
     unk_3c = MsgTextLabel_CreateVram(a, b, 1);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        unk_3c->unk_28 = &gFontD;
+        unk_3c->font = &gFontD;
     } else {
-        unk_3c->unk_28 = &gFontB;
+        unk_3c->font = &gFontB;
     }
 }
 
@@ -571,25 +571,25 @@ void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
     }
     unk_3c = MsgTextLabel_CreateBuffer(a, b, 2);
     if (unk_3c != NULL) {
-        unk_3c->unk_39 = y;
-        unk_3c->unk_38 = x;
-        unk_3c->unk_58 = 2;
+        unk_3c->bgColor = y;
+        unk_3c->fgColor = x;
+        unk_3c->group = 2;
     }
 }
 
 void LabelString::redrawAligned(s32 a, s32 b) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)data();
+        o->textStart = (u32)data();
         if (b != 0) {
-            unk_3c->unk_57 = 1;
+            unk_3c->underline = 1;
         } else {
-            unk_3c->unk_57 = 0;
+            unk_3c->underline = 0;
         }
         if (a != 0) {
             unk_3c->alignCenter();
         } else {
-            unk_3c->unk_30 = 0;
+            unk_3c->xOffset = 0;
         }
         unk_3c->requestRedraw();
     }
@@ -598,13 +598,13 @@ void LabelString::redrawAligned(s32 a, s32 b) {
 void LabelString::redrawOffset(s32 a, s32 b) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)data();
+        o->textStart = (u32)data();
         if (a != 0) {
             unk_3c->alignCenter();
         } else {
-            unk_3c->unk_30 = 0;
+            unk_3c->xOffset = 0;
         }
-        unk_3c->unk_30 = unk_3c->unk_30 + b;
+        unk_3c->xOffset = unk_3c->xOffset + b;
         unk_3c->requestRedraw();
     }
 }
@@ -612,7 +612,7 @@ void LabelString::redrawOffset(s32 a, s32 b) {
 void LabelString::redrawRight() {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)data();
+        o->textStart = (u32)data();
         unk_3c->alignRight();
         unk_3c->requestRedraw();
     }
@@ -621,8 +621,8 @@ void LabelString::redrawRight() {
 void LabelString::redrawAt(s32 v) {
     TextLabel *o = unk_3c;
     if (o != NULL) {
-        o->unk_10 = (u32)data();
-        unk_3c->unk_30 = v;
+        o->textStart = (u32)data();
+        unk_3c->xOffset = v;
         unk_3c->requestRedraw();
     }
 }

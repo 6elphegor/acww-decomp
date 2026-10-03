@@ -58,12 +58,12 @@ struct CharaClothTexRef {
     ~CharaClothTexRef();
 };
 struct SpNpcAnimHeapRef {
-    u32 unk_00;
+    u32 slot;
     SpNpcAnimHeapRef();
     ~SpNpcAnimHeapRef();
 };
 struct VillagerAnimHeapRef {
-    u32 unk_00;
+    u32 slot;
     VillagerAnimHeapRef();
     ~VillagerAnimHeapRef();
 };

@@ -65,7 +65,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -87,8 +87,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -103,13 +103,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -349,16 +349,16 @@ public:
 class PlayerActTaxiGetIn {
 public:
     /* 0x00 */ u8 pad_00[0x5c];
-    /* 0x5c */ s32 unk_5c;
+    /* 0x5c */ s32 positionX;
     /* 0x60 */ u8 pad_60[4];
-    /* 0x64 */ s32 unk_64;
+    /* 0x64 */ s32 positionZ;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x2cc - 0x90];
     /* 0x2cc */ u8 unk_2cc[0x7ec - 0x2cc];
-    /* 0x7ec */ u32 unk_7ec;
+    /* 0x7ec */ u32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ u32 unk_7f8;
+    /* 0x7f8 */ u32 actionPriority;
 
     void mainTaxiGetIn();
     void mainTaxiGetInFinish();
@@ -372,16 +372,16 @@ public:
 class PlayerActTaxiGetOut {
 public:
     /* 0x00 */ u8 pad_00[0x5c];
-    /* 0x5c */ s32 unk_5c;
+    /* 0x5c */ s32 positionX;
     /* 0x60 */ u8 pad_60[4];
-    /* 0x64 */ s32 unk_64;
+    /* 0x64 */ s32 positionZ;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x2cc - 0x90];
     /* 0x2cc */ u8 unk_2cc[0x7ec - 0x2cc];
-    /* 0x7ec */ u32 unk_7ec;
+    /* 0x7ec */ u32 action;
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
-    /* 0x7f8 */ u32 unk_7f8;
+    /* 0x7f8 */ u32 actionPriority;
 
     void mainTaxiGetOut();
     void mainTaxiGetOutFinish();
@@ -512,9 +512,9 @@ KappnTaxi::~KappnTaxi() {
 
 BOOL KappnTaxi::vfunc_70() {
     void *p = PlayerData_GetCurrent();
-    unk_2c8.x = unk_5c[0];
-    unk_2c8.y = unk_5c[1];
-    unk_2c8.z = unk_5c[2];
+    unk_2c8.x = position[0];
+    unk_2c8.y = position[1];
+    unk_2c8.z = position[2];
     if (Taxi_IsArriving()) {
         unk_2da = 1;
         Scene_GetWarpRequest();
@@ -583,7 +583,7 @@ void KappnTaxi::vfunc_60(u32 a, void *b) {
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        func_01ffd070(&out, &unk_5c, &v);
+        func_01ffd070(&out, &position, &v);
         unk_2c8.x = out.x;
         unk_2c8.y = out.y;
         unk_2c8.z = out.z;
@@ -778,7 +778,7 @@ BOOL KappnTaxi::enterTaxiTalk() {
     } else {
         r = FALSE;
     }
-    unk_1e = r;
+    msgIndex = r;
     _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(rec, (TalkMsgRequest *)this);
     rec[2] = 1;
     Unk_ov068_0226a940_Loc l;
@@ -1040,7 +1040,7 @@ void KappnTaxi::execTaxiLeaveEnd() {
 extern "C" s32 KappnTaxi_RequestPlayerGetOut() {
     PlayerActTaxiGetOut *p = (PlayerActTaxiGetOut *)PlayerActor_Get(4);
     if (p != 0) {
-        p->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->unk_7ec);
+        p->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->action);
         return p->requestTaxiGetOut(6, -1);
     }
     return 0;
@@ -1049,7 +1049,7 @@ extern "C" s32 KappnTaxi_RequestPlayerGetOut() {
 extern "C" s32 KappnTaxi_RequestPlayerGetIn() {
     PlayerActTaxiGetIn *p = (PlayerActTaxiGetIn *)PlayerActor_Get(4);
     if (p != 0) {
-        p->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->unk_7ec);
+        p->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->action);
         return p->requestTaxiGetIn(6, -1);
     }
     return 0;
@@ -1065,7 +1065,7 @@ void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Loc l;
     Unk_ov068_0226a940_Words w;
     _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x82, 0, 0);
-    unk_8e = 0;
+    rotY = 0;
     _ZN12Unk_02006d1415clearActionFlagEj(this);
     void *r4 = PlayerActor_GetPlayerData(this);
     if (r4 != 0) {
@@ -1085,9 +1085,9 @@ void PlayerActTaxiGetOut::netTaxiGetOut() {
 }
 
 void PlayerActTaxiGetOut::endTaxiGetOut() {
-    unk_5c = unk_5c + 0x1c00;
-    unk_64 = unk_64 - 0x2c00;
-    unk_8e = unk_8e + 0x8000;
+    positionX = positionX + 0x1c00;
+    positionZ = positionZ - 0x2c00;
+    rotY = rotY + 0x8000;
 }
 
 void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
@@ -1099,7 +1099,7 @@ void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
 
 void PlayerActTaxiGetOut::mainTaxiGetOutFinish() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_2cc) != 0) {
-        unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(this, unk_7ec);
+        actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
         _ZN12Unk_02006d1412requestAct10Esji(this, 0, 5, -1);
         *(u8 *)PlayerSession_GetSessionFlags() = 0;
     }
@@ -1118,16 +1118,16 @@ s32 PlayerActTaxiGetIn::requestTaxiGetIn(s32 a, s32 b) {
 
 void PlayerActTaxiGetIn::setupTaxiGetIn() {
     _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x83, 3, 0);
-    unk_8e = 0;
+    rotY = 0;
 }
 
 void PlayerActTaxiGetIn::netTaxiGetIn() {
 }
 
 void PlayerActTaxiGetIn::endTaxiGetIn() {
-    unk_5c = unk_5c - 0x1c00;
-    unk_64 = unk_64 + 0x2c00;
-    unk_8e = unk_8e + 0x8000;
+    positionX = positionX - 0x1c00;
+    positionZ = positionZ + 0x2c00;
+    rotY = rotY + 0x8000;
 }
 
 void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
@@ -1139,7 +1139,7 @@ void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
 
 void PlayerActTaxiGetIn::mainTaxiGetInFinish() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_2cc) != 0) {
-        unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(this, unk_7ec);
+        actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
         _ZN11PlayerActor12requestAct01Ejj(this, 9, -1);
     }
 }

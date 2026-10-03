@@ -77,9 +77,9 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -102,8 +102,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -118,13 +118,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -388,7 +388,7 @@ no:
 
 
 void ReddTent::onMessageStart() {
-    if (unk_1e == 2) {
+    if (msgIndex == 2) {
         u32 obj[0x38 / 4];
         _ZN18ReddPasswordStringC1Ev(obj);
         if (_ZN8ReddShop11getPasswordEv(data_021ed2c0)->getPromptText(obj)) {
@@ -400,9 +400,9 @@ void ReddTent::onMessageStart() {
 
 
 void ReddTent::onMessageEnd() {
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 2:
-        unk_3c->unk_14 = 1;
+        unk_3c->openMode = 1;
         setTentState(4);
         break;
     case 3:
@@ -494,17 +494,17 @@ BOOL ReddTent::enterTentTalkOpen() {
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("sp_npc_fox");
     if (vfunc_8c() == 0) {
-        unk_1e = 0x34;
+        msgIndex = 0x34;
         if (unk_232.f1 == 0) {
             BuildingOccupancy_Leave(unk_132, 0);
         }
     } else {
         if (unk_232.f1) {
-            unk_1e = 0x31;
+            msgIndex = 0x31;
         } else if (ReddPassword_CurrentPlayerKnows()) {
-            unk_1e = 0x32;
+            msgIndex = 0x32;
         } else {
-            unk_1e = 0;
+            msgIndex = 0;
         }
     }
     ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;

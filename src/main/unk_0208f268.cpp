@@ -68,7 +68,7 @@ public:
 
     /* 0x04 */ u8 unk_04[0x58];
     /* 0x5c */ void *unk_5c;
-    /* 0x60 */ u8 unk_60[4];
+    /* 0x60 */ u8 resTex[4];
     /* 0x64 */ u8 unk_64[0x30];
     /* 0x94 */ u8 unk_94[8];
     /* 0x9c */ u8 unk_9c[0x1c];
@@ -88,8 +88,8 @@ class ModelAnim : public Unk_020dbe7c_Anim {
 public:
     ModelAnim();
     virtual ~ModelAnim();
-    /* 0x18 */ u32 *unk_18;
-    /* 0x1c */ u32 unk_1c;
+    /* 0x18 */ u32 *anmObj;
+    /* 0x1c */ u32 resMdl;
 };
 
 struct Unk_0208f480_Mtx {
@@ -158,12 +158,12 @@ struct EffectEmitterTag {
 };
 
 struct EffectEmitterEntry {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ EffectEmitterTag unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0c */ Unk_0208f8fc_Obj *unk_0c;
-    /* 0x10 */ EffectEmitterCbs unk_10;
+    /* 0x00 */ s32 resourceId;
+    /* 0x04 */ EffectEmitterTag tag;
+    /* 0x08 */ u8 isActive;
+    /* 0x09 */ u8 emitterIndex;
+    /* 0x0c */ Unk_0208f8fc_Obj *emitter;
+    /* 0x10 */ EffectEmitterCbs callbacks;
 };
 
 struct EffectSplPool {
@@ -207,15 +207,15 @@ struct Unk_0208fdcc_B {
 
 struct EffectSplEmitter {
     u8 unk_00[0x18];
-    Unk_0208fdcc_B *unk_18;
+    Unk_0208fdcc_B *resource;
     u8 unk_1c[4];
-    s32 unk_20;
-    s32 unk_24;
-    s32 unk_28;
+    s32 posX;
+    s32 posY;
+    s32 posZ;
     u8 unk_2c[0x2e];
-    u16 unk_5a;
+    u16 color;
     u8 unk_5c[0x24];
-    u8 unk_80;
+    u8 tintVariant;
 };
 
 struct Unk_0208ffe4_V {
@@ -868,7 +868,7 @@ static inline void Unk_0208fb20_GetTag(EffectEmitterTag *r, EffectEmitterTag p)
 
 static inline void Unk_0208fb20_SetTag(EffectEmitterEntry *e, EffectEmitterTag t)
 {
-    e->unk_04 = t;
+    e->tag = t;
 }
 
 static inline void Unk_0208fb20_Fill(void *p, s32 v, u32 n)
@@ -1007,7 +1007,7 @@ BOOL EffectSplProc::vfunc_0c()
 extern "C" s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o)
 {
     s32 idx = TownState_GetSeasonPeriod();
-    return sEffectSeasonTintTables[o->unk_80][idx];
+    return sEffectSeasonTintTables[o->tintVariant][idx];
 }
 
 extern "C" s16 EffectSpl_GetSeasonTint()
@@ -1017,7 +1017,7 @@ extern "C" s16 EffectSpl_GetSeasonTint()
 
 extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
 {
-    u32 f = o->unk_18->unk_00->unk_50;
+    u32 f = o->resource->unk_00->unk_50;
     if ((f & 0x80) != 0) {
         volatile Unk_0208fe0c_U l0, l2, l4, l6, l8, la, lc, le;
         l4.v = SceneLights_GetBaseColor();
@@ -1039,7 +1039,7 @@ extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
         l6.c.r = (u16)(l8.c.r * l6.c.r / 31);
         l6.c.g = (u16)(l8.c.g * l6.c.g / 31);
         l6.c.b = (u16)(l8.c.b * l6.c.b / 31);
-        o->unk_5a = l6.v;
+        o->color = l6.v;
     }
 }
 
@@ -1049,20 +1049,20 @@ extern "C" void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o)
     EffectSpl_ApplySceneTint(o);
     v = sEffectSplEmitPos;
     if (v != NULL) {
-        o->unk_20 = v[0] + o->unk_18->unk_00->unk_04;
-        o->unk_24 = v[1] + o->unk_18->unk_00->unk_08;
-        o->unk_28 = v[2] + o->unk_18->unk_00->unk_0c;
+        o->posX = v[0] + o->resource->unk_00->unk_04;
+        o->posY = v[1] + o->resource->unk_00->unk_08;
+        o->posZ = v[2] + o->resource->unk_00->unk_0c;
     }
 }
 
 extern "C" void EffectCb_InitAtPos(EffectEmitterEntry *e)
 {
-    EffectSpl_InitEmitterAtPos((EffectSplEmitter *)e->unk_0c);
+    EffectSpl_InitEmitterAtPos((EffectSplEmitter *)e->emitter);
 }
 
 extern "C" s32 EffectCb_UpdateTint(EffectEmitterEntry *e)
 {
-    EffectSpl_ApplySceneTint((EffectSplEmitter *)e->unk_0c);
+    EffectSpl_ApplySceneTint((EffectSplEmitter *)e->emitter);
     return 1;
 }
 
@@ -1173,13 +1173,13 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
     for (i = 0; i < count; i++) {
         e = EffectSplPool_FindInactive(pool, *ids);
         if (e != NULL) {
-            e->unk_08 = 1;
-            e->unk_09 = i;
-            Unk_0208fb20_GetTag(&x, e->unk_04);
+            e->isActive = 1;
+            e->emitterIndex = i;
+            Unk_0208fb20_GetTag(&x, e->tag);
             x.unk_01 = sEffectSplProc->unk_54;
             x.unk_02 = i;
             Unk_0208fb20_SetTag(e, x);
-            EffectEmitterCbs *cb = &e->unk_10;
+            EffectEmitterCbs *cb = &e->callbacks;
             if (cb != NULL) {
                 cb->unk_00(e);
             }
@@ -1217,16 +1217,16 @@ extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a
     c = tag.unk_02;
     d = tag.unk_03;
     r = 0;
-    e->unk_0c = (Unk_0208f8fc_Obj *)SPL_Create(sEffectSplProc->unk_50, id, a2);
-    if (e->unk_0c != NULL) {
-        e->unk_00 = id;
-        e->unk_08 = 1;
-        e->unk_10.unk_00 = cb->unk_00;
-        e->unk_10.unk_04 = cb->unk_04;
-        e->unk_04.unk_00 = tag.unk_00;
-        e->unk_04.unk_01 = b;
-        e->unk_04.unk_02 = c;
-        e->unk_04.unk_03 = d;
+    e->emitter = (Unk_0208f8fc_Obj *)SPL_Create(sEffectSplProc->unk_50, id, a2);
+    if (e->emitter != NULL) {
+        e->resourceId = id;
+        e->isActive = 1;
+        e->callbacks.unk_00 = cb->unk_00;
+        e->callbacks.unk_04 = cb->unk_04;
+        e->tag.unk_00 = tag.unk_00;
+        e->tag.unk_01 = b;
+        e->tag.unk_02 = c;
+        e->tag.unk_03 = d;
         cb->unk_00(e);
         r = 1;
     }
@@ -1235,10 +1235,10 @@ extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a
 
 extern "C" void EffectSplEntry_Release(EffectEmitterEntry *e)
 {
-    if (e->unk_0c != NULL) {
-        e->unk_0c->unk_1c = (e->unk_0c->unk_1c & ~1) | 1;
+    if (e->emitter != NULL) {
+        e->emitter->unk_1c = (e->emitter->unk_1c & ~1) | 1;
     }
-    e->unk_00 = -1;
+    e->resourceId = -1;
 }
 
 
@@ -1249,12 +1249,12 @@ EffectSplPool::EffectSplPool()
     s32 i;
     e = p->unk_04;
     do {
-        e->unk_00 = -1;
+        e->resourceId = -1;
         e++;
     } while (e != &p->unk_04[32]);
     p->unk_00 = 0;
     for (i = 0; i < 0x20; i++) {
-        p->unk_04[i].unk_00 = -1;
+        p->unk_04[i].resourceId = -1;
     }
 }
 
@@ -1265,17 +1265,17 @@ extern "C" void EffectSplPool_Update(EffectSplPool *p)
     EffectEmitterEntry *e = p->unk_04;
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (e->unk_00 != ~w) {
-            EffectEmitterCbs *cb = &e->unk_10;
-            e->unk_08 = 0;
+        if (e->resourceId != ~w) {
+            EffectEmitterCbs *cb = &e->callbacks;
+            e->isActive = 0;
             if (cb != NULL) {
                 if (cb->unk_04(e)) {
-                    e->unk_08 = 1;
+                    e->isActive = 1;
                 }
             }
             {
                 BOOL t;
-                if (e->unk_08 == 1) {
+                if (e->isActive == 1) {
                     t = TRUE;
                 } else {
                     t = z;
@@ -1296,8 +1296,8 @@ extern "C" void EffectSplPool_ReleaseAll(EffectSplPool *p)
     EffectEmitterEntry *e = p->unk_04;
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (e->unk_00 != ~z) {
-            e->unk_08 = 0;
+        if (e->resourceId != ~z) {
+            e->isActive = 0;
             EffectSplEntry_Release(e);
             p->unk_00 = i;
         }
@@ -1311,9 +1311,9 @@ extern "C" EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 
     EffectEmitterEntry *r = NULL;
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (id == e->unk_00) {
+        if (id == e->resourceId) {
             BOOL f;
-            if (e->unk_08 == 1) {
+            if (e->isActive == 1) {
                 f = TRUE;
             } else {
                 f = FALSE;
@@ -1338,7 +1338,7 @@ extern "C" EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, s32
     tag.unk_02 = c;
     for (i = 0; i < 0x20; i++) {
         cur = p->unk_00;
-        if (p->unk_04[cur].unk_00 == -1) {
+        if (p->unk_04[cur].resourceId == -1) {
             tag.unk_00 = cur;
             if (EffectSplEntry_Start(&p->unk_04[cur], id, a2, a3, cb, tag)) {
                 r = &p->unk_04[p->unk_00];
@@ -1517,7 +1517,7 @@ void EffectModel::update() {
         for (i = 1; i < 3; i++) {
             if ((&unk_dc)[i] != 0) {
                 _ZN13AnimFrameCtrl4stepEv(&unk_e8[i]);
-                *unk_e8[i].unk_18 = unk_e8[i].unk_08;
+                *unk_e8[i].anmObj = unk_e8[i].unk_08;
             }
         }
         if (_ZN13AnimFrameCtrl10isFinishedEv(unk_24.unk_9c) != 0) {

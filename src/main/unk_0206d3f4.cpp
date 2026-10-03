@@ -16,9 +16,9 @@ class MsgStringAttr {
 public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
+    s32 form;
+    u8 attrA;
+    u8 attrB;
 };
 
 class EncodedString : public EncodedStringBase {
@@ -28,7 +28,7 @@ public:
     virtual u32 capacity() = 0;
     virtual u8 *data() = 0;
 
-    MsgStringAttr unk_04;
+    MsgStringAttr attr;
 };
 
 // local text buffer, vtable 0x020ddf5c (0x38 bytes)

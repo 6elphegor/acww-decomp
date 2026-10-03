@@ -51,7 +51,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -73,8 +73,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -89,13 +89,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
     void setSlot(s32 a, void *q);
 };
 
@@ -276,7 +276,7 @@ BOOL TownSign::vfunc_70() {
 }
 
 BOOL TownSign::onDraw() {
-    ObjShadow_DrawSign(unk_5c);
+    ObjShadow_DrawSign(position);
     return TRUE;
 }
 
@@ -284,7 +284,7 @@ void TownSign::vfunc_78() {
     u16 v[2];
     u32 obj[9];
     setFileName("obj_etc_board");
-    unk_1e = unk_2b0 % 14 + 1;
+    msgIndex = unk_2b0 % 14 + 1;
     u16 w;
     if (data_021ed150.unk_58 < 5) {
         w = data_021ed150.unk_58 + 0x1518;

@@ -41,9 +41,9 @@ public:
     void detachRequest();
     void attachRequest(TalkMsgRequest *p);
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x00 */ u32 index;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ s32 nextState;
 };
 
 class PlayerData {
@@ -136,8 +136,8 @@ public:
     virtual ~MsgRequest();
     virtual void vfunc_08();
     void setFileName(const char *s);
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -554,7 +554,7 @@ void TitleScreen::updateOpenMenu() {
             *((u8 *)this + 0x72) = talk.getGreetingMsg();
         }
         r->attachRequest(&talk);
-        r->unk_08 = 1;
+        r->nextState = 1;
         changeState(2);
     }
 }
@@ -567,7 +567,7 @@ void TitleScreen::enterBackToTitle() {}
 
 void TitleScreen::updateBackToTitle() {
     TalkWindowState *r = TalkWindow_Get(0);
-    if (r->unk_04 == 0) {
+    if (r->state == 0) {
         r->detachRequest();
         changeState(0);
         blinkText.requestVariant(1);
@@ -579,7 +579,7 @@ void TitleScreen::enterEraseResident() { func_ov147_022929c0(); }
 void TitleScreen::updateEraseResident() {
     if (Unk_ov147_022924c0_IsTwo()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        if (r->unk_04 == 0) {
+        if (r->state == 0) {
             r->detachRequest();
             SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct06();
@@ -593,7 +593,7 @@ void TitleScreen::enterEraseTown() { func_ov147_022929c0(); }
 void TitleScreen::updateEraseTown() {
     if (Unk_ov147_022924c0_IsTwo()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        if (r->unk_04 == 0) {
+        if (r->state == 0) {
             r->detachRequest();
             SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct05();
@@ -606,7 +606,7 @@ void TitleScreen::enterContinue() { func_ov147_022929c0(); }
 
 void TitleScreen::updateContinue() {
     TalkWindowState *r = TalkWindow_Get(0);
-    if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
+    if (Unk_ov147_022924c0_IsTwo() && r->state == 0) {
         r->detachRequest();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 6, 2, 2);
         stopBgm();
@@ -618,7 +618,7 @@ void TitleScreen::enterStartGame() { func_ov147_022929c0(); }
 void TitleScreen::updateStartGame() {
     if (Unk_ov147_022924c0_IsTwo()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        if (r->unk_04 == 0) {
+        if (r->state == 0) {
             r->detachRequest();
             SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2d, 2, 0);
             stopBgm();
@@ -631,7 +631,7 @@ void TitleScreen::enterImmigration() { func_ov147_022929c0(); }
 void TitleScreen::updateImmigration() {
     if (Unk_ov147_022924c0_IsTwo()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        if (r->unk_04 == 0) {
+        if (r->state == 0) {
             r->detachRequest();
             SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
             SaveManager_RequestAct1C();
@@ -644,7 +644,7 @@ void TitleScreen::enterTagMode() { func_ov147_022929c0(); }
 
 void TitleScreen::updateTagMode() {
     TalkWindowState *r = TalkWindow_Get(0);
-    if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
+    if (Unk_ov147_022924c0_IsTwo() && r->state == 0) {
         r->detachRequest();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x30, 2, 2);
         stopBgm();
@@ -655,7 +655,7 @@ void TitleScreen::enterWifiSettings() { func_ov147_022929c0(); }
 
 void TitleScreen::updateWifiSettings() {
     TalkWindowState *r = TalkWindow_Get(0);
-    if (Unk_ov147_022924c0_IsTwo() && r->unk_04 == 0) {
+    if (Unk_ov147_022924c0_IsTwo() && r->state == 0) {
         r->detachRequest();
         Scene_Request(2, 2, 0, 0);
         stopBgm();
@@ -708,7 +708,7 @@ void TitleTalk::onMessageEnd() {
         r5->lockAdvance();
         return;
     }
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x2d:
     case 0x2e:
     case 0x2f:
@@ -837,7 +837,7 @@ void TitleTalk::openResidentChoices() {
 }
 
 void TitleTalk::onWindowClose() {
-    if (unk_1e == 0x24 || unk_1e == 0x27) {
+    if (msgIndex == 0x24 || msgIndex == 0x27) {
         Snd_PlaySe(0x3a);
     }
 }
@@ -854,7 +854,7 @@ void TitleTalk::onChoice() {
     static Fn t3[5] = { &TitleTalk::chooseContinue, 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
     static Fn *tbl[4] = { t0, t1, t2, t3 };
     s32 mode = 3;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0:
         if (r5 == 0) {
             sp0->setNextMessage(&gTalkMsgIndexEnd, 0);

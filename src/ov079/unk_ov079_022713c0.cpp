@@ -158,7 +158,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -311,13 +311,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -353,22 +353,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -386,10 +386,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct Unk_ov079_Vec3 {
@@ -624,10 +624,10 @@ void SpNpcWendell::changeAct(s32 state) {
 
 BOOL SpNpcWendell::setupAct02() {
     unk_651 = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
-    _ZN12Unk_0201347415enableFootstepsEv(&unk_558);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, NULL, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, NULL, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -656,7 +656,7 @@ BOOL SpNpcWendell::isInViewBox(Unk_ov079_Vec3 *a, Unk_ov079_Vec3 *b) {
 }
 
 BOOL SpNpcWendell::isNearCameraTarget() {
-    Unk_ov079_Vec3 *b = (Unk_ov079_Vec3 *)&unk_5c;
+    Unk_ov079_Vec3 *b = (Unk_ov079_Vec3 *)&position;
     BOOL r = FALSE;
     Unk_ov079_Vec3 v;
     if (gCamera != 0) {
@@ -678,9 +678,9 @@ BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
     for (i = 0; i < 6; i++) {
         s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
-        v.x = t + unk_5c;
+        v.x = t + position;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
-        v.z = t + unk_64;
+        v.z = t + positionZ;
         FieldPos_SnapToUnitCenter(&v, &v);
         if (TownMap_IsPosWalkable(&v, r)) {
             *px = v.x;
@@ -695,7 +695,7 @@ BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
 BOOL SpNpcWendell::getOffsetPosIfFree(Unk_ov079_Vec3 *out, void *in) {
     BOOL r = FALSE;
     Unk_ov079_Vec3 v;
-    Npc_RotateOffsetXZ(&v, &unk_5c, in, unk_94);
+    Npc_RotateOffsetXZ(&v, &position, in, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
         out->y = v.y;
@@ -706,9 +706,9 @@ BOOL SpNpcWendell::getOffsetPosIfFree(Unk_ov079_Vec3 *out, void *in) {
 }
 
 BOOL SpNpcWendell::handleCollision() {
-    void *p564 = &unk_564;
-    void *p350 = &unk_350;
-    s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&unk_3a8);
+    void *p564 = &actionCtrl;
+    void *p350 = &moveCtrl;
+    s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov079_Vec3 v;
     if (!_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(p350, this, 1)) {
@@ -741,7 +741,7 @@ BOOL SpNpcWendell::handleCollision() {
 }
 
 BOOL SpNpcWendell::checkCollisionWhileMoving() {
-    if (unk_98 != 0) {
+    if (speed != 0) {
         if (handleCollision()) {
             return TRUE;
         }
@@ -750,7 +750,7 @@ BOOL SpNpcWendell::checkCollisionWhileMoving() {
 }
 
 BOOL SpNpcWendell::mainAct02() {
-    void *p = &unk_564;
+    void *p = &actionCtrl;
     BOOL a = isNearCameraTarget();
     func_020e7518(&unk_651);
     if (a) {
@@ -764,17 +764,17 @@ BOOL SpNpcWendell::mainAct02() {
                     v.y = ((Unk_ov079_Vec3 *)gVec3Zero)->y;
                     v.z = ((Unk_ov079_Vec3 *)gVec3Zero)->z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
-                        s32 t = Math_AngleXZ(&unk_5c, &v);
-                        if (NpcActor_IsFrontAngle((s16)(t - unk_8e))) {
+                        s32 t = Math_AngleXZ(&position, &v);
+                        if (NpcActor_IsFrontAngle((s16)(t - rotY))) {
                             t = 1;
                             if (Random_GlobalBelow(4) == 0) {
                                 t = 2;
                             }
-                            if (t != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {
+                            if (t != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
                                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, t, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 unk_651 = 0x64;
                             }
-                        } else if (_ZN13NpcActionCtrl9getActionEv(&unk_564) != 4) {
+                        } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 4, 1, v.x, v.z, 0, t, 0, 0, data_020c6cc8, 0);
                             unk_651 = 0x50;
                         }
@@ -784,33 +784,33 @@ BOOL SpNpcWendell::mainAct02() {
                 } else {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
-            } else if (unk_98 != 0) {
-                if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 1 || _ZN13NpcActionCtrl9getActionEv(&unk_564) == 2 || _ZN13NpcActionCtrl9getActionEv(&unk_564) == 4) {
+            } else if (speed != 0) {
+                if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
                     if (unk_651 == 0) {
                         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        Unk_ov079_Vec3 *q = (Unk_ov079_Vec3 *)_ZN11NpcMoveCtrl14getDestinationEv(&unk_350);
+                        Unk_ov079_Vec3 *q = (Unk_ov079_Vec3 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
                         Unk_ov079_Vec3 w;
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&unk_5c, &w) - unk_8e)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
                 }
             }
         }
-    } else if (unk_98 != 0) {
+    } else if (speed != 0) {
         changeAct(3);
     }
     return FALSE;
 }
 
 BOOL SpNpcWendell::setupAct03() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_651 = 0;
-    _ZN12Unk_0201347416disableFootstepsEv(&unk_558);
+    _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
     return TRUE;
 }
 
@@ -823,11 +823,11 @@ BOOL SpNpcWendell::mainAct03() {
 
 BOOL SpNpcWendell::setupAct04() {
     void *p = unk_658.func_02015aac();
-    s32 x = unk_8e;
+    s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
     return TRUE;
 }
 
@@ -836,7 +836,7 @@ BOOL SpNpcWendell::mainAct04() { return TRUE; }
 BOOL SpNpcWendell::setupAct00() { return TRUE; }
 
 BOOL SpNpcWendell::mainAct00() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -1141,7 +1141,7 @@ void SpNpcWendellTalk::start(TalkStartMsg *out) {
 }
 
 void SpNpcWendellTalk::onMessageStart() {
-    if (unk_1e == 0xf) {
+    if (msgIndex == 0xf) {
         _ZN12Unk_0201442014requestEatItemEv(this);
     }
 }
@@ -1150,7 +1150,7 @@ void SpNpcWendellTalk::onMessageEnd() {
     u8 *const str = (u8 *)"sp_npc_walrus";
     u8 r = 0xff;
     u8 v;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 3:
         r = 0xf;
         break;
@@ -1200,7 +1200,7 @@ void SpNpcWendellTalk::onChoice() {
     s32 t = getChoiceList()->getResult();
     u8 *const str = (u8 *)"sp_npc_walrus";
     u8 r = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0:
         if (t == 0) {
             _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcWendell_AcceptAnyItem, 0xd, 1);
@@ -1222,7 +1222,7 @@ void SpNpcWendellTalk::onChoice() {
 
 BOOL SpNpcWendell::vfunc_48() {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
     }
     return r;

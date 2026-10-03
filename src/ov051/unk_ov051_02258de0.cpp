@@ -44,8 +44,8 @@ struct Unk_ov051_02258e68_Rec {
 };
 
 struct TalkStartMsg {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_02067918 {
@@ -148,7 +148,7 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -267,13 +267,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -309,22 +309,22 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -342,10 +342,10 @@ public:
     virtual u32 getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcKappnTalk : public Unk_020d7710 {
@@ -564,7 +564,7 @@ BOOL SpNpcKappn::vfunc_04() {
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.attachOwner(this);
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0xfb);
+    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfb);
     return TRUE;
 }
 
@@ -574,7 +574,7 @@ BOOL SpNpcKappn::vfunc_00() {
     }
     sSpNpcKappnInstance = this;
     changeAct(0);
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     TalkRequestFlags_SetSceneHold();
     unk_714 = 0x29;
     return TRUE;
@@ -598,7 +598,7 @@ BOOL SpNpcKappn::updateAct() {
         r = (this->*sSpNpcKappnActTable[unk_654].exit)();
     }
     if (func_020e7518(&unk_716) == 1) {
-        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0x8f, 1, data_020c6cc8, 0);
+        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
 }
@@ -629,7 +629,7 @@ BOOL SpNpcKappn::mainAct00() {
 }
 
 BOOL SpNpcKappn::setupAct01() {
-    _ZN11NpcTalkCtrl11requestTalkEhh(&unk_618, 1, 0);
+    _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 1, 0);
     return TRUE;
 }
 
@@ -707,11 +707,11 @@ void SpNpcKappnTalk::onSignalTag(s32 a) {
 }
 
 void SpNpcKappnTalk::start(TalkStartMsg *out) {
-    out->unk_00 = (u32)sSpNpcKappnMsgKey;
+    out->msgKey = (u32)sSpNpcKappnMsgKey;
     if (GameStart_IsNewTown() || GameStart_IsMode3()) {
-        out->unk_04 = 0;
+        out->msgIndex = 0;
     } else {
-        out->unk_04 = 0x28;
+        out->msgIndex = 0x28;
     }
 }
 
@@ -762,7 +762,7 @@ void SpNpcKappnTalk::onMessageStart() {
         u8 pad[3];
         u32 w[2];
     } l;
-    if (unk_1e == 0 || unk_1e == 2) {
+    if (msgIndex == 0 || msgIndex == 2) {
         void *h = TalkWindow_Get(0);
         s32 r4 = 0x19;
         l.w[0] = 0;
@@ -945,7 +945,7 @@ void SpNpcKappnTalk::onMessageEnd() {
         {0x32, *(Fn *)data_ov051_02259fd4},
     };
     u32 i = 0;
-    u8 *idp = &unk_1e;
+    u8 *idp = &msgIndex;
     goto test0;
 loop0:
     u32 id = tbl[i].id;
@@ -1169,7 +1169,7 @@ void SpNpcKappnTalk::onChoice() {
         {0x30, *(FnU *)data_ov051_0225a00c},
     };
     u32 i = 0;
-    u8 *idp = &unk_1e;
+    u8 *idp = &msgIndex;
     goto test0;
 loop0:
     u32 off = i * 12;
@@ -1184,13 +1184,13 @@ test0:
 }
 
 extern "C" u32 SpNpcKappn_GetAnimFrame() {
-    return sSpNpcKappnInstance->unk_ec.unk_a4.mid;
+    return sSpNpcKappnInstance->model.unk_a4.mid;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 extern "C" void SpNpcKappn_GetAnimState() {
-    _ZN12Unk_02015b8c9getAnimIdEj(&sSpNpcKappnInstance->unk_334, 0);
+    _ZN12Unk_02015b8c9getAnimIdEj(&sSpNpcKappnInstance->animCtrl, 0);
 }
 
 extern "C" void *data_ov051_02259f74[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};

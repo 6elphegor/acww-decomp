@@ -9,20 +9,20 @@ struct CommManager {
 
 struct Unk_02095774_Ent {
     u8 pad_00[0x5c];
-    s32 unk_5c[3];
+    s32 position[3];
     u8 pad_68[0x8e - 0x68];
     s16 unk_8e;
 };
 
 struct Unk_0209579c_Rec {
     u8 pad_00[0xe];
-    u8 unk_0e;
+    u8 state;
 };
 
 struct Unk_02095dcc_Grid {
     u8 pad_00[0xc];
-    s32 unk_0c;
-    s32 unk_10;
+    s32 unitsX;
+    s32 unitsZ;
 };
 
 struct ItemPickSpec {
@@ -406,7 +406,7 @@ BOOL PlayerNetSync::onExecute() {
             s32 n = g->unk_68;
             if (n < 4) {
                 CommSyncVar_SetVar(n + 4, (u8 *)o + 0x8e, 0, 0);
-                CommSyncVar_SetVar(n, o->unk_5c, 0, 0);
+                CommSyncVar_SetVar(n, o->position, 0, 0);
                 CommSyncVar_SetVar(n + 8, 0, 0, 0);
             }
         }

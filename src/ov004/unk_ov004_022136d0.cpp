@@ -21,9 +21,9 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -45,15 +45,15 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
     s32 setSlot(s32 idx, void *p);
 };
 
@@ -66,8 +66,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -238,7 +238,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, position, unk_154, 0x10, unk_150);
     return TRUE;
 }
 
@@ -286,8 +286,8 @@ BOOL RoomBoardSign::vfunc_48(void *a) {
     Character *o = (Character *)a;
     s32 lim = unk_154 + 0x2ccd;
     if (o) {
-        if (func_020e9650(o->unk_5c, unk_5c) < lim) {
-            if (func_020e780c((s16)(unk_8e + 0x8000), o->unk_8e) < 0x1300) {
+        if (func_020e9650(o->position, position) < lim) {
+            if (func_020e780c((s16)(rotY + 0x8000), o->rotY) < 0x1300) {
                 return TRUE;
             }
         }
@@ -341,14 +341,14 @@ BOOL RoomBoardSign::setupAct01() {
     Unk_02213774_Pad pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
-    unk_1e = unk_152;
-    unk_3c->unk_08 = 1;
+    msgIndex = unk_152;
+    unk_3c->nextState = 1;
     return TRUE;
 }
 
 void RoomBoardSign::mainAct01() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             changeAct(2);
         }
     }
@@ -360,7 +360,7 @@ BOOL RoomBoardSign::setupAct02() {
 
 void RoomBoardSign::mainAct02() {
     if (unk_3c) {
-        if (unk_3c->unk_04 == 0) {
+        if (unk_3c->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

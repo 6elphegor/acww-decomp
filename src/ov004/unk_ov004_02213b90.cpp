@@ -22,9 +22,9 @@ public:
     virtual BOOL postDraw();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -44,15 +44,15 @@ public:
     virtual BOOL vfunc_5c();
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
@@ -65,8 +65,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -355,7 +355,7 @@ extern "C" void *MuseumExhibitInfo_GetByIndex(s32 i) {
 
 void MuseumExhibitInfo::mainAct03() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             changeAct(2);
         }
     }
@@ -370,20 +370,20 @@ BOOL MuseumExhibitInfo::setupAct03() {
     if ((u32)MuseumData_getDonationState(g, &id[1]) <= 1) {
         MsgString9B obj;
         if (MuseumData_getDonorName(g, &obj, &id[1])) {
-            unk_1e = 3;
+            msgIndex = 3;
             TalkWindowState_setSlot(unk_3c, 0, &obj);
         }
     } else {
-        unk_1e = 4;
+        msgIndex = 4;
     }
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
     unk_168++;
     return TRUE;
 }
 
 void MuseumExhibitInfo::mainAct02() {
     if (unk_3c) {
-        if (unk_3c->unk_04 == 0) {
+        if (unk_3c->state == 0) {
             Character_detachTalkRequest(this, this);
             TalkRequest_SetTargetDone(this);
         }
@@ -392,7 +392,7 @@ void MuseumExhibitInfo::mainAct02() {
 
 void MuseumExhibitInfo::mainAct01() {
     if (unk_3c) {
-        if (unk_3c->unk_04) {
+        if (unk_3c->state) {
             changeAct(2);
         }
     }
@@ -414,25 +414,25 @@ BOOL MuseumExhibitInfo::setupAct01() {
     TalkMsgRequest &s = *this;
     s.setFileName(sMuseumExhibitMsgFile);
     if (isAnyDonated() == 0) {
-        unk_1e = 0;
+        msgIndex = 0;
     } else if (unk_158 == 3) {
         if (unk_164 == 1) {
-            unk_1e = 5;
+            msgIndex = 5;
         } else {
-            unk_1e = unk_15c;
+            msgIndex = unk_15c;
         }
     } else if (unk_158 <= 1) {
         u32 n = countDonatedFromCursor();
         if (n > 3) n = 3;
-        unk_1e = (n - 1) % 3 + 5;
+        msgIndex = (n - 1) % 3 + 5;
     } else {
         if (MuseumData_getDonationState(&data_021ed0a0, &l.sel) != 2) {
-            unk_1e = 1;
+            msgIndex = 1;
         } else {
-            unk_1e = 2;
+            msgIndex = 2;
         }
     }
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
     return TRUE;
 }
 
@@ -503,9 +503,9 @@ BOOL MuseumExhibitInfo::onMessageEnd() {
     u8 b[7];
     if (isAutoTalkKind() == 0) {
         if (unk_158 == 3) {
-            if (unk_1e != 5) {
+            if (msgIndex != 5) {
                 if (isAllDonated()) {
-                    u32 e = unk_1e;
+                    u32 e = msgIndex;
                     if (unk_15c == e) {
                         b[0] = e + 1;
                         TalkWindowState_setNextMessage(unk_3c, &b[0], 0);
@@ -544,7 +544,7 @@ void MuseumExhibitInfo::onMessageStart() {
         u16 w1, w2;
         if (unk_158 <= 1) {
             u32 n = 0;
-            switch (unk_1e) {
+            switch (msgIndex) {
             case 5: n = 1; break;
             case 6: n = 2; break;
             case 7: n = 3; break;
@@ -715,7 +715,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        TouchPicker_addSphere(Scene_GetTouchPicker(), &unk_134, unk_5c, 0xc00, 0xe, unk_150);
+        TouchPicker_addSphere(Scene_GetTouchPicker(), &unk_134, position, 0xc00, 0xe, unk_150);
     }
     return TRUE;
 }
@@ -739,9 +739,9 @@ BOOL MuseumExhibitInfo::vfunc_00() {
                 v[1] = 0;
                 v[2] = data_02135f44[idx + 1];
                 func_01ffd070(out, o->pos, v);
-                unk_5c[0] = out[0];
-                unk_5c[1] = out[1];
-                unk_5c[2] = out[2];
+                position[0] = out[0];
+                position[1] = out[1];
+                position[2] = out[2];
             }
         }
         l.a = (u16)gCommManager->unk_64;

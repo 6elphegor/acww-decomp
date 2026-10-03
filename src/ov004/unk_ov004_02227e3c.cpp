@@ -81,7 +81,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -102,9 +102,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -243,8 +243,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct Unk_ov004_0224dd98_Rec {
@@ -501,7 +501,7 @@ BOOL RecycleBox::func_ov004_02228478() {
 BOOL RecycleBox::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, unk_5c) < 0x299a) {
+        if (func_020e9650(o->position, position) < 0x299a) {
             if (func_020e780c((s16)(F(s16, 0x8e) + 0x8000), *(s16 *)((u8 *)o + 0x8e)) < 0x1200) {
                 return TRUE;
             }
@@ -636,7 +636,7 @@ BOOL RecycleBox::enterAct01() {
     Unk_ov004_02227fb8_Pad pad;
     _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
-    MsgRequest::unk_1e = 0;
+    MsgRequest::msgIndex = 0;
     TalkMsgRequest::unk_3c->unk_08 = 1;
     return TRUE;
 }

@@ -34,7 +34,7 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
 
-    /* 0x04 */ u32 unk_04[0x38 / 4];
+    /* 0x04 */ u32 fileName[0x38 / 4];
     /* 0x3c */ u32 unk_3c;
     /* 0x40 */ u8 unk_40;
 };

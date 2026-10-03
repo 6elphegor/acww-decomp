@@ -261,12 +261,12 @@ void LabelBalloon::setClampToScreen(u8 v) { clampToScreen = v; }
 void LabelBalloon::refreshText(s32 flag) {
     TextLabel *p = label;
     if (p) {
-        p->unk_10 = (u32)text.data();
+        p->textStart = (u32)text.data();
         label->requestRedraw();
     }
     p = label2;
     if (p) {
-        p->unk_10 = (u32)text2.data();
+        p->textStart = (u32)text2.data();
         label2->requestRedraw();
     }
     if (flag) {
@@ -461,17 +461,17 @@ void LabelBalloon::fitToText() {
     if (centerText != 0) {
         u32 full = n * 8;
         if (label != NULL) {
-            label->unk_30 = full > w0 ? (full - w0) >> 1 : 0;
+            label->xOffset = full > w0 ? (full - w0) >> 1 : 0;
         }
         if (label2 != NULL) {
-            label2->unk_30 = full > w1 ? (full - w1) >> 1 : 0;
+            label2->xOffset = full > w1 ? (full - w1) >> 1 : 0;
         }
     } else {
         if (label != NULL) {
-            label->unk_30 = 0;
+            label->xOffset = 0;
         }
         if (label2 != NULL) {
-            label2->unk_30 = 0;
+            label2->xOffset = 0;
         }
     }
 }
@@ -486,38 +486,38 @@ void LabelBalloon::createLabels() {
     if (label == NULL) {
         label = MsgTextLabel_CreateVram(0x41, 0x14, 2);
         if (label != NULL) {
-            label->unk_2c = 4;
+            label->vramLoader = 4;
             TextLabel *t = label;
-            t->unk_10 = (u32)((StrBuf *)&text)->data();
-            label->unk_58 = 1;
+            t->textStart = (u32)((StrBuf *)&text)->data();
+            label->group = 1;
             if (onBufferA != 0) {
-                label->unk_50 = 2;
+                label->copyMode = 2;
             }
             if (two) {
-                label->unk_28 = (GameFontDesc *)gFontB;
+                label->font = (GameFontDesc *)gFontB;
             } else {
-                label->unk_28 = (GameFontDesc *)gFontA;
+                label->font = (GameFontDesc *)gFontA;
             }
-            label->unk_55 = 1;
-            label->unk_39 = 0;
-            label->unk_38 = 3;
+            label->rowStride1K = 1;
+            label->bgColor = 0;
+            label->fgColor = 3;
             label->requestRedraw();
         }
     }
     if (label2 == NULL && two) {
         label2 = MsgTextLabel_CreateVram(0x61, 0x14, 2);
         if (label2 != NULL) {
-            label2->unk_2c = 4;
+            label2->vramLoader = 4;
             TextLabel *t = label2;
-            t->unk_10 = (u32)((StrBuf *)&text2)->data();
-            label2->unk_58 = 1;
+            t->textStart = (u32)((StrBuf *)&text2)->data();
+            label2->group = 1;
             if (onBufferA != 0) {
-                label2->unk_50 = 2;
+                label2->copyMode = 2;
             }
-            label2->unk_28 = (GameFontDesc *)gFontB;
-            label2->unk_55 = 1;
-            label2->unk_39 = 0;
-            label2->unk_38 = 3;
+            label2->font = (GameFontDesc *)gFontB;
+            label2->rowStride1K = 1;
+            label2->bgColor = 0;
+            label2->fgColor = 3;
             label2->requestRedraw();
         }
     }

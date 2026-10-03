@@ -24,12 +24,12 @@ public:
     WorldCurve();
     ~WorldCurve();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s16 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
+    /* 0x00 */ s32 x;
+    /* 0x04 */ s32 y;
+    /* 0x08 */ s32 z;
+    /* 0x0c */ s16 centerAngle;
+    /* 0x10 */ s32 flatDistance;
+    /* 0x14 */ s32 dropSlope;
 };
 
 struct Unk_0203ecec_Global {
@@ -38,10 +38,10 @@ struct Unk_0203ecec_Global {
 };
 
 struct Unk_0203f408_Entry {
-    /* 0x00 */ u16 unk_00;
+    /* 0x00 */ u16 eventId;
     /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x04 */ u32 start;
+    /* 0x08 */ u32 end;
 };
 
 union Unk_0203f218_Ver {
@@ -370,66 +370,66 @@ extern "C" u32 WorldCurve_AngleToDistance(u32 x) {
 
 extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
     if (IsOne(gCurSceneInfo->unk_04)) {
-        s32 base = in->unk_04 + 0x1f576;
-        if (in->unk_08 <= (*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10) {
-            s32 t = in->unk_08 - ((*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10);
+        s32 base = in->y + 0x1f576;
+        if (in->z <= (*(volatile s32 *)&gWorldCurve.z) - gWorldCurve.flatDistance) {
+            s32 t = in->z - ((*(volatile s32 *)&gWorldCurve.z) - gWorldCurve.flatDistance);
             if (t < 0) {
                 t = -t;
             }
-            base -= func_01ffcb0c(gWorldCurve.unk_14, t);
+            base -= func_01ffcb0c(gWorldCurve.dropSlope, t);
         }
-        s32 ang = (FX_Div(in->unk_08, sWorldCurveZScale) * 0x2999) << 4 >> 16;
-        out->unk_00 = in->unk_00;
+        s32 ang = (FX_Div(in->z, sWorldCurveZScale) * 0x2999) << 4 >> 16;
+        out->x = in->x;
         s32 idx = (u16)ang >> 4;
-        out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
-        out->unk_08 = func_01ffcb0c(base, data_02135f44[idx * 2]);
+        out->y = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
+        out->z = func_01ffcb0c(base, data_02135f44[idx * 2]);
         return ang;
     }
-    out->unk_00 = in->unk_00;
-    out->unk_04 = in->unk_04;
-    out->unk_08 = in->unk_08;
+    out->x = in->x;
+    out->y = in->y;
+    out->z = in->z;
     return 0;
 }
 
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
     if (IsOne(gCurSceneInfo->unk_04)) {
-        s32 base = in->unk_04 + 0x1f576;
-        s32 ang = (FX_Div(in->unk_08, sWorldCurveZScale) * 0x2999) << 4 >> 16;
-        out->unk_00 = in->unk_00;
+        s32 base = in->y + 0x1f576;
+        s32 ang = (FX_Div(in->z, sWorldCurveZScale) * 0x2999) << 4 >> 16;
+        out->x = in->x;
         s32 idx = (u16)ang >> 4;
-        out->unk_04 = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
-        out->unk_08 = func_01ffcb0c(base, data_02135f44[idx * 2]);
+        out->y = func_01ffcb0c(base, data_02135f44[idx * 2 + 1]);
+        out->z = func_01ffcb0c(base, data_02135f44[idx * 2]);
         return ang;
     }
-    out->unk_00 = in->unk_00;
-    out->unk_04 = in->unk_04;
-    out->unk_08 = in->unk_08;
+    out->x = in->x;
+    out->y = in->y;
+    out->z = in->z;
     return 0;
 }
 
 extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
     if (IsOne(gCurSceneInfo->unk_04)) {
-        s32 ang = func_020e7b98(in->unk_08, in->unk_04);
-        out->unk_00 = in->unk_00;
-        s32 a = func_01ffcb0c(in->unk_08, in->unk_08);
-        s32 b = func_01ffcb0c(in->unk_04, in->unk_04);
-        out->unk_04 = FX_Sqrt(b + a) - 0x1f576;
-        out->unk_08 = WorldCurve_AngleToDistance(ang);
+        s32 ang = func_020e7b98(in->z, in->y);
+        out->x = in->x;
+        s32 a = func_01ffcb0c(in->z, in->z);
+        s32 b = func_01ffcb0c(in->y, in->y);
+        out->y = FX_Sqrt(b + a) - 0x1f576;
+        out->z = WorldCurve_AngleToDistance(ang);
         return ang;
     }
-    out->unk_00 = in->unk_00;
-    out->unk_04 = in->unk_04;
-    out->unk_08 = in->unk_08;
+    out->x = in->x;
+    out->y = in->y;
+    out->z = in->z;
     return 0;
 }
 
 extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o) {
     if (IsOne(gCurSceneInfo->unk_04)) {
-        s32 a = func_01ffcb0c(o->unk_08, o->unk_08);
-        s32 b = func_01ffcb0c(o->unk_04, o->unk_04);
+        s32 a = func_01ffcb0c(o->z, o->z);
+        s32 b = func_01ffcb0c(o->y, o->y);
         s32 c = func_01ffcb0c(0x1f576, 0x1f576);
         s32 r = FX_Sqrt(b + a - c);
-        s32 x = func_020e7b98(o->unk_08, o->unk_04);
+        s32 x = func_020e7b98(o->z, o->y);
         s32 y = func_020e7b98(r, 0x1f576);
         return x - y;
     }
@@ -441,20 +441,20 @@ extern "C" s32 WorldCurve_GetAngleScale(void) { return 0x2999; }
 extern "C" s32 WorldCurve_GetRadius(void) { return 0x1f576; }
 
 WorldCurve::WorldCurve() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_14 = FX_Div(0x1000, 0xa000);
-    unk_10 = 0xe000;
+    x = 0;
+    y = 0;
+    z = 0;
+    centerAngle = 0;
+    dropSlope = FX_Div(0x1000, 0xa000);
+    flatDistance = 0xe000;
 }
 
 WorldCurve::~WorldCurve() {}
 
 extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
-    o->unk_00 = in->unk_00;
-    o->unk_04 = in->unk_04;
-    o->unk_08 = in->unk_08;
+    o->x = in->x;
+    o->y = in->y;
+    o->z = in->z;
     if (gCamera) {
         s32 v = _ZN12Unk_020d93b88getPitchEv();
         if (v > 0x27f7) {
@@ -462,12 +462,12 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
         } else if (v < 0x21fd) {
             v = 0x21fd;
         }
-        o->unk_10 = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
+        o->flatDistance = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
     }
     if (IsOne(gCurSceneInfo->unk_04)) {
-        o->unk_0c = (FX_Div(o->unk_08, sWorldCurveZScale) * 0x2999) >> 12;
+        o->centerAngle = (FX_Div(o->z, sWorldCurveZScale) * 0x2999) >> 12;
     } else {
-        o->unk_0c = 0;
+        o->centerAngle = 0;
     }
 }
 

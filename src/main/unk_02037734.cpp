@@ -7,9 +7,9 @@ class MsgStringAttr {
 public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgStringBase {
@@ -30,8 +30,8 @@ public:
     u8 setLine(u8 *str);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 // 0x2c bytes (ctor func_020b4154, dtor func_020b413c)
@@ -512,17 +512,17 @@ void CommCautionWindow::renderLine() {
     if (buf != NULL) {
         MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
         if (o != NULL) {
-            o->unk_2c = 5;
-            o->unk_10 = (u32)unk_250.data();
-            o->unk_58 = 2;
-            o->unk_50 = 0;
-            o->unk_28 = (GameFontDesc *)gFontA;
-            o->unk_55 = 0;
+            o->vramLoader = 5;
+            o->textStart = (u32)unk_250.data();
+            o->group = 2;
+            o->copyMode = 0;
+            o->font = (GameFontDesc *)gFontA;
+            o->rowStride1K = 0;
             o->alignCenter();
-            o->unk_39 = 1;
-            o->unk_38 = 0;
+            o->bgColor = 1;
+            o->fgColor = 0;
             o->requestRedraw();
-            u32 w = o->unk_30;
+            u32 w = o->xOffset;
             MsgTextLabel_Destroy(o);
             if (unk_e4 >= 0 && unk_e0 != 0) {
                 renderCountdown(buf, w);
@@ -546,16 +546,16 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     s32 px = x + unk_e0 + off;
     MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
     if (o != NULL) {
-        o->unk_2c = 5;
-        o->unk_10 = (u32)((MsgString *)&t)->data();
-        o->unk_58 = 2;
-        o->unk_50 = 0;
-        o->unk_28 = (GameFontDesc *)gFontA;
-        o->unk_55 = 0;
-        o->unk_30 = px;
-        o->unk_39 = 1;
-        o->unk_38 = 0;
-        o->unk_56 = 1;
+        o->vramLoader = 5;
+        o->textStart = (u32)((MsgString *)&t)->data();
+        o->group = 2;
+        o->copyMode = 0;
+        o->font = (GameFontDesc *)gFontA;
+        o->rowStride1K = 0;
+        o->xOffset = px;
+        o->bgColor = 1;
+        o->fgColor = 0;
+        o->blendOverBg = 1;
         o->requestRedraw();
         MsgTextLabel_Destroy(o);
     }

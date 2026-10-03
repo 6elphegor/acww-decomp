@@ -51,9 +51,9 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -76,8 +76,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -91,8 +91,8 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class MsgString9B {
@@ -106,8 +106,8 @@ class TalkWindowState {
 public:
     s32 setSlot(s32 idx, void *p);
     u8 pad_00[4];
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ s32 nextState;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -270,7 +270,7 @@ BOOL VillagerBoard::vfunc_00() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, position, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
@@ -297,8 +297,8 @@ BOOL VillagerBoard::vfunc_48(void *a) {
     clearTalkStartMode();
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->unk_5c, unk_5c) < 0x2333) {
-            if (func_020e780c(-0x8000, o->unk_8e) <= 0x1100) {
+        if (func_020e9650(o->position, position) < 0x2333) {
+            if (func_020e780c(-0x8000, o->rotY) <= 0x1100) {
                 return TRUE;
             }
         }
@@ -350,8 +350,8 @@ BOOL VillagerBoard::setupRead() {
     Unk_02204930_Pad pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
-    unk_1e = 0;
-    ((TalkWindowState *)unk_3c)->unk_08 = 1;
+    msgIndex = 0;
+    ((TalkWindowState *)unk_3c)->nextState = 1;
     MsgString9B buf;
     _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
     ((TalkWindowState *)unk_3c)->setSlot(0, &buf);
@@ -360,7 +360,7 @@ BOOL VillagerBoard::setupRead() {
 
 void VillagerBoard::mainRead() {
     if (unk_3c) {
-        if (((TalkWindowState *)unk_3c)->unk_04) {
+        if (((TalkWindowState *)unk_3c)->state) {
             changeAct(2);
         }
     }
@@ -372,7 +372,7 @@ BOOL VillagerBoard::setupReadEnd() {
 
 void VillagerBoard::mainReadEnd() {
     if (unk_3c) {
-        if (((TalkWindowState *)unk_3c)->unk_04 == 0) {
+        if (((TalkWindowState *)unk_3c)->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

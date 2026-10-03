@@ -183,13 +183,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
-    u32 unk_5c;
-    u32 unk_60;
-    u32 unk_64;
+    u32 position;
+    u32 positionY;
+    u32 positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xd4 - 0x90];
-    u32 unk_d4, unk_d8, unk_dc;
+    u32 charNode, unk_d8, unk_dc;
 };
 
 class NpcActor : public Character {
@@ -221,22 +221,22 @@ public:
 
     u16 pad_e0[5];
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -253,7 +253,7 @@ public:
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL getWalkAnimSpeedScale();
-    SpNpcAnimHeapHandle unk_640;
+    SpNpcAnimHeapHandle animHeapHandle;
     u32 unk_654;
 };
 
@@ -295,7 +295,7 @@ public:
     virtual void update();
     virtual void onTaskDone();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     Unk_ov068_02266bd0_Scene *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -469,7 +469,7 @@ BOOL SpNpcNookIntro::vfunc_04() {
     NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
     NpcActor_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((FieldVillager *)this);
-    NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x399, 0x133, 0x199);
+    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0x133, 0x199);
     return TRUE;
 }
 
@@ -513,8 +513,8 @@ BOOL SpNpcNookIntro::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    unk_710 = unk_8e;
-    unk_4cc.unk_1c |= 2;
+    unk_710 = rotY;
+    collider.unk_1c |= 2;
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         if (!GameStart_IsNewResident()) {
@@ -571,12 +571,12 @@ BOOL SpNpcNookIntro::setupAct01() {
     if (p != NULL) {
         x = NpcActor_getAngleTo(this, p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, x, 1);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, x, 1);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         Camera_SetModeDefault();
         Bgm_RequestSilence(0x13, 0x3c, 0);
         Bgm_Release(0x47);
@@ -606,13 +606,13 @@ BOOL SpNpcNookIntro::mainAct02() {
 }
 
 BOOL SpNpcNookIntro::setupAct03() {
-    NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct03() {
-    if (NpcActionCtrl_getAction(&unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(&unk_564)) {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             changeAct(4);
         }
     }
@@ -620,18 +620,18 @@ BOOL SpNpcNookIntro::mainAct03() {
 }
 
 BOOL SpNpcNookIntro::setupAct04() {
-    unk_714 = unk_5c;
-    unk_718 = unk_60;
-    unk_71c = unk_64;
+    unk_714 = position;
+    unk_718 = positionY;
+    unk_71c = positionZ;
     unk_714 -= 0x2000;
     unk_71c += 0xa000;
-    NpcActionCtrl_requestAction(&unk_564, 2, 1, unk_714, unk_71c, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 2, 1, unk_714, unk_71c, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_720 = 0x3c;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (NpcActionCtrl_isActionDone(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
+    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || func_020e7518(&unk_720) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -677,7 +677,7 @@ void SpNpcNookIntroTalk::onMessageEnd() {
     Unk_ov068_02266bd0_Scene *sc = unk_3c;
     volatile u8 buf = gU8None;
     buf = 0;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0x22:
         TalkWindowState_setNextMessage(sc, gTalkMsgIndexEnd, 0);
         sc->unk_14 = 0;

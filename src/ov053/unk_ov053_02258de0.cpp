@@ -46,8 +46,8 @@ struct Unk_ov053_02258e7c_Loc : Unk_ov053_Vec {
 };
 
 struct TalkStartMsg {
-    const void *unk_00;
-    u8 unk_04;
+    const void *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov053_02259428_Ent {
@@ -99,7 +99,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -224,13 +224,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -271,22 +271,22 @@ public:
     s32 getDistanceToPlayer(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -304,10 +304,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcHarrietTalk : public SpNpcTalkRequest {
@@ -594,7 +594,7 @@ BOOL SpNpcHarriet::vfunc_04() {
     unk_658.attachOwner(this);
     setCollisionRadius(0x100);
     const Unk_ov053_Vec *d = &data_ov053_0225a1a0;
-    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, d->x, d->y, d->z);
+    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, d->x, d->y, d->z);
     return TRUE;
 }
 
@@ -607,7 +607,7 @@ BOOL SpNpcHarriet::vfunc_00() {
         Ground_LockExit(0);
     }
     unk_718 = 0;
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     unk_715 = 0;
     if (_ZN11CommManager8isOnlineEv(g)) {
         changeAct(1);
@@ -662,7 +662,7 @@ BOOL SpNpcHarriet::mainAct00() {
 }
 
 BOOL SpNpcHarriet::setupAct01() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -678,7 +678,7 @@ BOOL SpNpcHarriet::mainAct01() {
 }
 
 BOOL SpNpcHarriet::setupAct02() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActor *p = (NpcActor *)unk_658.func_02015aac();
     s32 r4 = 0;
     if (p) {
@@ -686,7 +686,7 @@ BOOL SpNpcHarriet::setupAct02() {
     }
     if (unk_658.getTopic() == 5) {
         Unk_ov053_Vec v;
-        Unk_ov053_Vec *pv = (Unk_ov053_Vec *)&unk_5c;
+        Unk_ov053_Vec *pv = (Unk_ov053_Vec *)&position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -695,10 +695,10 @@ BOOL SpNpcHarriet::setupAct02() {
         unk_717 = 0x1f;
     }
     if (unk_658.getTopic() == 5 || unk_658.getTopic() == 8 || unk_658.getTopic() == 10) {
-        _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r4, 1);
+        _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r4, 1);
         return TRUE;
     } else {
-        _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r4, 0);
+        _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r4, 0);
         return TRUE;
     }
 }
@@ -707,7 +707,7 @@ BOOL SpNpcHarriet::mainAct02() {
     if (func_020e7518(&unk_717) == 1) {
         Bgm_ReleasePriority(0xe);
     }
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         s32 prev = unk_654;
         Hud_Show();
         if (unk_658.getTopic() == 4 || unk_658.getTopic() == 3) {
@@ -723,7 +723,7 @@ BOOL SpNpcHarriet::mainAct02() {
                     changeAct(3);
                 }
             } else if (unk_658.getTopic() == 10) {
-                if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+                if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
                     SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
                     changeAct(3);
                 }
@@ -746,13 +746,13 @@ BOOL SpNpcHarriet::setupAct03() { return TRUE; }
 BOOL SpNpcHarriet::mainAct03() { return TRUE; }
 
 BOOL SpNpcHarriet::setupAct04() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, unk_718, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, unk_718, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct04() {
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             changeAct(1);
         }
     }
@@ -761,32 +761,32 @@ BOOL SpNpcHarriet::mainAct04() {
 
 BOOL SpNpcHarriet::setupAct05() {
     unk_715 = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct05() {
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 6) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
         const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[unk_715];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&unk_350, &v);
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             unk_715++;
             u32 off = *(volatile u8 *)&unk_715 * 0xc;
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (unk_715 >= 2) {
                 changeAct(4);
             }
         }
     }
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             u32 off = unk_715;
             off = off * 0xc;
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -799,71 +799,71 @@ BOOL SpNpcHarriet::setupAct06() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    s32 r = Math_AngleXZ(&unk_5c, &v);
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
+    s32 r = Math_AngleXZ(&position, &v);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct06() {
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 6) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
         const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToCustomer[unk_715];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&unk_350, &v);
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             unk_715++;
             u32 off = *(volatile u8 *)&unk_715 * 0xc;
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (unk_715 >= 2) {
                 changeAct(2);
             }
         }
     }
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             u32 off = unk_715;
             off = off * 0xc;
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
 }
 
 BOOL SpNpcHarriet::setupAct07() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     unk_715 = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct07() {
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 6) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
         const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[unk_715];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&unk_350, &v);
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             unk_715++;
             u32 t = data_020c6cc8;
             u32 off = *(volatile u8 *)&unk_715 * 0xc;
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
             if (unk_715 >= 2) {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, -0x4000, 0, 0, t, 0);
+                _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, -0x4000, 0, 0, t, 0);
             }
         }
     }
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             u32 off = unk_715;
             if (off >= 2) {
                 changeAct(8);
             } else {
                 off = off * 0xc;
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
+                _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
             }
         }
     }
@@ -872,7 +872,7 @@ BOOL SpNpcHarriet::mainAct07() {
 
 BOOL SpNpcHarriet::setupAct08() {
     unk_716 = 0x64;
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xf1, 1, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xf1, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -887,11 +887,11 @@ BOOL SpNpcHarriet::mainAct08() {
         out[0] = unk_658.getNewHairStyle();
         PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
         BarberMachine_Start();
-        func_02003ddc(&unk_514, 0x41, 0x7f, 0);
+        func_02003ddc(&seEmitter, 0x41, 0x7f, 0);
     }
-    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&unk_334, 0xf1, &unk_2a0)) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0xf1, &moveAnimSet)) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -915,7 +915,7 @@ BOOL SpNpcHarriet::mainAct09() {
     FieldPos_ToUnit(&bx1, &by1, &v);
     switch (unk_714) {
     case 0:
-        if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+        if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
             Camera_SetModeDefault();
             unk_714 = 1;
         }
@@ -977,8 +977,8 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
         {sSpNpcHarrietMsgKey, 6},    {sSpNpcHarrietMsgKey, 7},
     };
     if (getTopic() == 4) {
-        out->unk_00 = tbl[unk_ac].p;
-        out->unk_04 = getQuestionsStartMsg();
+        out->msgKey = tbl[unk_ac].p;
+        out->msgIndex = getQuestionsStartMsg();
     } else {
         if (getTopic() != 0 && getTopic() != 3 && getTopic() != 5 &&
             getTopic() != 7 && getTopic() != 8 && getTopic() != 9 &&
@@ -999,14 +999,14 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
             }
         }
         if (unk_ac >= 0 && unk_ac < 0xe) {
-            out->unk_04 = tbl[unk_ac].v;
-            out->unk_00 = tbl[unk_ac].p;
+            out->msgIndex = tbl[unk_ac].v;
+            out->msgKey = tbl[unk_ac].p;
         }
     }
 }
 
 void SpNpcHarrietTalk::onTalkEnd() {
-    u32 t = unk_1e;
+    u32 t = msgIndex;
     if (t == 0xe || t == 0x37) {
         if ((t == 0xe && unk_b5 == 1) || (t == 0x37 && unk_b5 == 2)) {
             PlayerActor_LocalRequestSit();
@@ -1017,7 +1017,7 @@ void SpNpcHarrietTalk::onTalkEnd() {
 }
 
 void SpNpcHarrietTalk::onWindowClose() {
-    if (unk_1e == 0xc) {
+    if (msgIndex == 0xc) {
         Bgm_RequestSilence(0xe, 0x46, 0);
     }
 }
@@ -1026,7 +1026,7 @@ void SpNpcHarrietTalk::onMessageEnd() {
     void *p = PlayerData_GetCurrent();
     const void *tbl = sSpNpcHarrietMsgKey;
     u32 msg = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0xd:
         if (unk_b6 == unk_b8 && unk_b7 == unk_b9) {
             msg = 0x37;
@@ -1057,7 +1057,7 @@ void SpNpcHarrietTalk::onMessageEnd() {
                 r = 0;
             }
         }
-        const u8 *q = &sSpNpcHarrietStyleTable[(unk_1e - 0x2f) * 2];
+        const u8 *q = &sSpNpcHarrietStyleTable[(msgIndex - 0x2f) * 2];
         unk_b6 = q[r];
         break;
     }
@@ -1093,7 +1093,7 @@ void SpNpcHarrietTalk::onChoice() {
     s32 arg = getChoiceList()->getResult();
     const void *tbl = sSpNpcHarrietMsgKey;
     u32 msg = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 1:
     case 2:
     case 4:
@@ -1150,14 +1150,14 @@ s32 SpNpcHarrietTalk::getQuestionsStartMsg() {
 }
 
 BOOL SpNpcHarriet::vfunc_48() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL SpNpcHarriet::vfunc_58() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -1165,13 +1165,13 @@ BOOL SpNpcHarriet::vfunc_58() {
 
 void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
     PlayerData_GetCurrent();
-    unk_558.unk_08 = arg;
+    footstepFx.unk_08 = arg;
     switch (cmd) {
     case 3:
         changeAct(10);
         break;
     case 1:
-        unk_558.unk_08 = arg;
+        footstepFx.unk_08 = arg;
         unk_658.vfunc_08();
         unk_658.func_02015ab0(getPlayerActor(4));
         if (unk_658.getTopic() == 4 || unk_658.getTopic() == 3) {

@@ -72,8 +72,8 @@ struct Unk_ov075_Vec4 {
 };
 
 struct TalkStartMsg {
-    const char *unk_00;
-    u8 unk_04;
+    const char *msgKey;
+    u8 msgIndex;
 };
 
 extern "C" {
@@ -136,8 +136,8 @@ s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
 }
 
 struct TalkWindowState {
-    u32 unk_00;
-    s32 unk_04;
+    u32 index;
+    s32 state;
     void setNextMessage(u8 *a, void *b);
 };
 
@@ -181,7 +181,7 @@ public:
     void func_02015ab0(u32 p);
     void getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -315,14 +315,14 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
-    s32 unk_68, unk_6c, unk_70;
+    s32 position, positionY, positionZ;
+    s32 prevPosition, prevPositionY, prevPositionZ;
     u8 pad_74[0x8e - 0x74];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -357,22 +357,22 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -390,10 +390,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcPete : public SpNpcActor {
@@ -571,7 +571,7 @@ BOOL SpNpcPete::vfunc_00() {
     } else {
         SpNpcPete_ChangeAct(this, 4);
     }
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     return TRUE;
 }
 
@@ -611,9 +611,9 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
 }
 
 BOOL SpNpcPete::setupAct00() {
-    NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0xef, 1, data_020c6cc8, 0);
-    NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xef);
+    NpcLookAt_setTarget(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xef, 1, data_020c6cc8, 0);
+    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xef);
     return TRUE;
 }
 
@@ -622,20 +622,20 @@ BOOL SpNpcPete::mainAct00() {
 }
 
 BOOL SpNpcPete::setupAct04() {
-    unk_558.unk_09 = 0;
+    footstepFx.unk_09 = 0;
     return TRUE;
 }
 
 BOOL SpNpcPete::mainAct04() {
     void *r5 = TownSessionState_GetPeteFall(TownSessionState_Get());
     if (PeteFallState_hasFallPos(r5) != 0) {
-        PeteFallState_getPos(r5, &unk_5c);
-        Unk_ov075_Vec3 *s = (Unk_ov075_Vec3 *)&unk_5c;
-        Unk_ov075_Vec3 *d = (Unk_ov075_Vec3 *)&unk_68;
-        d->x = unk_5c;
+        PeteFallState_getPos(r5, &position);
+        Unk_ov075_Vec3 *s = (Unk_ov075_Vec3 *)&position;
+        Unk_ov075_Vec3 *d = (Unk_ov075_Vec3 *)&prevPosition;
+        d->x = position;
         d->y = s->y;
         d->z = s->z;
-        unk_558.unk_09 = 1;
+        footstepFx.unk_09 = 1;
         SpNpcPete_ChangeAct(this, 0);
     }
     return TRUE;
@@ -643,10 +643,10 @@ BOOL SpNpcPete::mainAct04() {
 
 BOOL SpNpcPete::setupAct05() {
     unk_715 = 0;
-    NpcActionCtrl_requestAction(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    Unk_02013474_enableFootsteps(&unk_558);
-    Unk_02013474_enableFootsteps(&unk_558);
-    NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    Unk_02013474_enableFootsteps(&footstepFx);
+    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -679,7 +679,7 @@ extern "C" s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b) {
 }
 
 s32 SpNpcPete::isInCameraBox() {
-    Unk_ov075_Vec3 *p = (Unk_ov075_Vec3 *)&unk_5c;
+    Unk_ov075_Vec3 *p = (Unk_ov075_Vec3 *)&position;
     s32 r = 0;
     if (gCamera != 0) {
         Unk_ov075_Vec3 v;
@@ -701,9 +701,9 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     for (i = 0; i < 6; i++) {
         s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
-        v.x = t + unk_5c;
+        v.x = t + position;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
-        v.z = t + unk_64;
+        v.z = t + positionZ;
         FieldPos_SnapToUnitCenter(&v, &v);
         if (TownMap_IsPosWalkable(&v, r) != 0) {
             *px = v.x;
@@ -718,7 +718,7 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
 BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
     BOOL r = FALSE;
     Unk_ov075_Vec4 t;
-    Npc_RotateOffsetXZ(&t, &unk_5c, p, unk_94);
+    Npc_RotateOffsetXZ(&t, &position, p, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.v[0];
         out->y = t.v[1];
@@ -729,9 +729,9 @@ BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
 }
 
 BOOL SpNpcPete::steerAroundObstacle() {
-    void *a = &unk_564;
-    void *b = &unk_350;
-    s32 r6 = NpcLookAt_getObstacleBits(&unk_3a8);
+    void *a = &actionCtrl;
+    void *b = &moveCtrl;
+    s32 r6 = NpcLookAt_getObstacleBits(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov075_Vec3 t;
     if (NpcMoveCtrl_hasArrived(b, this, 1) == 0) {
@@ -766,7 +766,7 @@ BOOL SpNpcPete::steerAroundObstacle() {
 }
 
 BOOL SpNpcPete::tryAvoidObstacle() {
-    if (unk_98 != 0) {
+    if (speed != 0) {
         if (steerAroundObstacle()) {
             return TRUE;
         }
@@ -776,7 +776,7 @@ BOOL SpNpcPete::tryAvoidObstacle() {
 
 
 BOOL SpNpcPete::mainAct05() {
-    void *r4 = &unk_564;
+    void *r4 = &actionCtrl;
     s32 r6 = isInCameraBox();
     func_020e7518(&unk_715);
     if (r6 != 0) {
@@ -790,8 +790,8 @@ BOOL SpNpcPete::mainAct05() {
                     a.y = ((Unk_ov075_Vec3 *)gVec3Zero)->y;
                     a.z = ((Unk_ov075_Vec3 *)gVec3Zero)->z;
                     if (pickWanderTarget(&a.x, &a.z) != 0) {
-                        r6 = Math_AngleXZ(&unk_5c, &a);
-                        if (NpcActor_IsFrontAngle((s16)(r6 - unk_8e)) != 0) {
+                        r6 = Math_AngleXZ(&position, &a);
+                        if (NpcActor_IsFrontAngle((s16)(r6 - rotY)) != 0) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
@@ -809,17 +809,17 @@ BOOL SpNpcPete::mainAct05() {
                     Unk_ov075_0227188c_CallA();
                 }
             } else {
-                if (unk_98 != 0) {
-                    if (NpcActionCtrl_getAction(&unk_564) == 1 || NpcActionCtrl_getAction(&unk_564) == 2 || NpcActionCtrl_getAction(&unk_564) == 4) {
+                if (speed != 0) {
+                    if (NpcActionCtrl_getAction(&actionCtrl) == 1 || NpcActionCtrl_getAction(&actionCtrl) == 2 || NpcActionCtrl_getAction(&actionCtrl) == 4) {
                         if (unk_715 == 0) {
                             Unk_ov075_0227188c_CallA();
                         } else {
                             Unk_ov075_Vec3 b;
-                            Unk_ov075_Vec3 *q = NpcMoveCtrl_getDestination(&unk_350);
+                            Unk_ov075_Vec3 *q = NpcMoveCtrl_getDestination(&moveCtrl);
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;
-                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&unk_5c, &b) - unk_8e)) == 0) {
+                            if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &b) - rotY)) == 0) {
                                 Unk_ov075_0227188c_CallA();
                             }
                         }
@@ -833,15 +833,15 @@ BOOL SpNpcPete::mainAct05() {
 
 BOOL SpNpcPete::setupAct01() {
     void *r4 = unk_658.func_02015aac();
-    s32 r6 = unk_8e;
+    s32 r6 = rotY;
     if (unk_714 != 0) {
-        NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
-        unk_4cc.unk_1c &= ~2;
+        NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        collider.unk_1c &= ~2;
     }
     if (r4 != 0) {
         r6 = NpcActor_getAngleTo(this, r4);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r6, 0);
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r6, 0);
     return TRUE;
 }
 
@@ -851,13 +851,13 @@ BOOL SpNpcPete::mainAct01() {
 
 BOOL SpNpcPete::setupAct02() {
     if (unk_714 == 0) {
-        NpcTalkCtrl_requestTalk(&unk_618, 0, 0);
+        NpcTalkCtrl_requestTalk(&talkCtrl, 0, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcPete::mainAct02() {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         SpNpcPete_ChangeAct(this, 3);
     }
@@ -898,7 +898,7 @@ void SpNpcPeteTalk::scriptWakeUp() {
     u8 *o;
     switch (unk_b0) {
     case 0:
-        if (unk_3c->unk_04 == 5) {
+        if (unk_3c->state == 5) {
             NpcActionCtrl_requestPlayAnim(unk_b4 + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
             NpcMoveAnimSet_setStandAnim(unk_b4 + 0x2a0, 0);
             unk_b0 = unk_b0 + 1;
@@ -947,18 +947,18 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
 }
 
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
-    out->unk_04 = 0x1a;
+    out->msgIndex = 0x1a;
     if (unk_b4[0x714] != 0) {
         if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
-            out->unk_04 = Random_GlobalBelow(4) + 12;
+            out->msgIndex = Random_GlobalBelow(4) + 12;
         }
     }
-    out->unk_00 = "sp_npc_mpelican";
+    out->msgKey = "sp_npc_mpelican";
 }
 
 void SpNpcPeteTalk::onMessageEnd() {
     PlayerData_GetCurrent();
-    if (unk_1e == 0x1a) {
+    if (msgIndex == 0x1a) {
         Unk_020d7710_requestCloseWindow(this, 0);
         setScript(1);
     }
@@ -971,8 +971,8 @@ void SpNpcPeteTalk::onChoice() {
 
 BOOL SpNpcPete::vfunc_48() {
     BOOL r = FALSE;
-    if (unk_558.unk_09 != 0) {
-        if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (footstepFx.unk_09 != 0) {
+        if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
             r = TRUE;
         }
     }

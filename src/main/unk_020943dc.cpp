@@ -19,27 +19,27 @@ struct Unk_02006d14 {
     s32 unk_450;
     s32 unk_454;
     u8 pad_458[4];
-    u16 unk_45c;
-    u16 unk_45e;
+    u16 headPitchTarget;
+    u16 headYawTarget;
     u8 pad_460[0x59c - 0x460];
-    u8 unk_59c[4];
+    u8 heldItemModel[4];
     u8 pad_5a0[0x5c8 - 0x5a0];
     s32 unk_5c8;
     u8 pad_5cc[0x694 - 0x5cc];
-    Unk_02006d14_Blk unk_694;
+    Unk_02006d14_Blk itemHandMtx;
     u8 pad_6c4[0x6f0 - 0x6c4];
-    u8 unk_6f0[0x10];
-    s32 unk_700;
+    u8 bodyPos[0x10];
+    s32 animId;
     u8 pad_704[0x709 - 0x704];
-    u8 unk_709[0x7ec - 0x709];
-    s32 unk_7ec;
+    u8 faceTex[0x7ec - 0x709];
+    s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
-    u32 unk_7f8;
+    u32 actionPriority;
     u8 pad_7fc[4];
-    s32 unk_800;
-    s32 unk_804;
+    s32 exitIndex;
+    s32 exitMode;
     u8 pad_808[0x8e7 - 0x808];
-    s8 unk_8e7;
+    s8 pendingAct76Kind;
 
     void playSe(u32 a);
     void setActionFlag(u32 a);
@@ -225,7 +225,7 @@ u32 sPlayerFrontItemDist = 0xccd;
 
 extern "C" u8 *PlayerActor_GetBodyPos(u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
-    if (o) return o->unk_6f0;
+    if (o) return o->bodyPos;
     return 0;
 }
 
@@ -244,7 +244,7 @@ extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
     u16 v[8];
     if (!o) return FALSE;
     void *p = PlayerData_GetBySessionSlot(idx);
-    if (o->unk_700 >= 0xa1) {
+    if (o->animId >= 0xa1) {
         if (a == 0 || ItemInfo_GetHoldableCount() < a) {
             v[1] = 0xfff1;
             _ZN10PlayerData11setHeldItemEPt(p, &v[1]);
@@ -258,14 +258,14 @@ extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
         v[3] = 0xfff1;
         _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
         v[4] = 0xfff1;
-        HeldItemModel_SetItem(o->unk_59c, &v[4], 0);
+        HeldItemModel_SetItem(o->heldItemModel, &v[4], 0);
         _ZN12Unk_020102ec10replayAnimEv(o);
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
         _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
-        HeldItemModel_SetItem(o->unk_59c, &v[0], p);
+        HeldItemModel_SetItem(o->heldItemModel, &v[0], p);
         _ZN12Unk_020102ec10replayAnimEv(o);
-        HeldItemModel_Update(o->unk_59c);
+        HeldItemModel_Update(o->heldItemModel);
     }
     return TRUE;
 }
@@ -287,7 +287,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
     }
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
-    if (o->unk_700 >= 0xa1) return FALSE;
+    if (o->animId >= 0xa1) return FALSE;
     switch (kind) {
     case 0:
         _ZN12Unk_02006d1415setShirtTextureEPv(o, p);
@@ -314,14 +314,14 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     PlayerData_SetStungFace(p, a);
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
-    if (o->unk_700 >= 0xa1) return FALSE;
+    if (o->animId >= 0xa1) return FALSE;
     u8 *v;
     if (a) {
         v = _ZN10PlayerData11getFaceTypeEv(p) + 0x10;
     } else {
         v = _ZN10PlayerData11getFaceTypeEv(p);
     }
-    _ZN16PlayerFaceTexRef4loadEj(&o->unk_709[0], v);
+    _ZN16PlayerFaceTexRef4loadEj(&o->faceTex[0], v);
     return TRUE;
 }
 
@@ -338,8 +338,8 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
         if (!o->testActionFlag(0x15)) {
             o->setActionFlag(0x15);
         }
-        o->unk_45c = a;
-        o->unk_45e = b;
+        o->headPitchTarget = a;
+        o->headYawTarget = b;
         return TRUE;
     }
     return FALSE;
@@ -361,7 +361,7 @@ extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
 
 extern "C" void PlayerActor_GetHandMtx(Unk_02006d14_Blk *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
-    *out = o->unk_694;
+    *out = o->itemHandMtx;
 }
 
 extern "C" u16 *PlayerActor_GetItemInFront() {
@@ -370,7 +370,7 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
     u32 buf[3];
     s32 a, b;
     if (!o) return 0;
-    if (o->unk_7ec != 2) return 0;
+    if (o->action != 2) return 0;
     PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &sPlayerFrontItemDist);
     BOOL t = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (t) {
@@ -392,14 +392,14 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
 extern "C" void PlayerActor_SetLocalExitId(s32 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
-        o->unk_800 = *p;
+        o->exitIndex = *p;
     }
 }
 
 extern "C" void PlayerActor_SetLocalExitKind(s32 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
-        o->unk_804 = *p;
+        o->exitMode = *p;
     }
 }
 

@@ -24,9 +24,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 // destination-side buffer interface
@@ -38,7 +38,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(class MsgString *src);
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 // buffer interface with write position at +4 and member at +8
@@ -52,8 +52,8 @@ public:
     u8 copy(MsgString *other);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 class UiWidget {
@@ -474,11 +474,11 @@ BOOL ChatBalloon::requestClose() {
 
 void ChatBalloon::refreshLabelsUnk() {
     if (unk_98 != NULL) {
-        unk_98->unk_50 = 3;
+        unk_98->copyMode = 3;
         unk_98->requestRedraw();
     }
     if (unk_9c != NULL) {
-        unk_9c->unk_50 = 3;
+        unk_9c->copyMode = 3;
         unk_9c->requestRedraw();
     }
 }
@@ -648,7 +648,7 @@ void ChatBalloon::fitToText() {
             hi = lo;
         }
         _ZN10SpriteAnim8setFrameEii(&unk_1c, hi, 0);
-        unk_98->unk_30 = pad;
+        unk_98->xOffset = pad;
     }
     w2 = unk_9c->measureWidth();
     n2 = (w2 + 7) >> 3;
@@ -661,7 +661,7 @@ void ChatBalloon::fitToText() {
     }
     _ZN10SpriteAnim8setFrameEii(&unk_30, hi, 0);
     if (unk_0c == 0 && unk_9c != NULL) {
-        unk_9c->unk_30 = (n2 * 8 - w2) >> 1;
+        unk_9c->xOffset = (n2 * 8 - w2) >> 1;
     }
 }
 
@@ -669,18 +669,18 @@ void ChatBalloon::createNameLabel() {
     if (unk_0c != 0 && unk_98 == NULL) {
         unk_98 = MsgTextLabel_CreateVram((*(volatile s32 *)&unk_0c << 3) + 0x1c0, 8, 2);
         if (unk_98 != NULL) {
-            unk_98->unk_2c = 4;
+            unk_98->vramLoader = 4;
             TextLabel *t = unk_98;
-            t->unk_10 = (u32)((StrBuf *)&unk_88)->data();
+            t->textStart = (u32)((StrBuf *)&unk_88)->data();
             if (gGfxMainOnTop == 0) {
-                unk_98->unk_50 = 3;
+                unk_98->copyMode = 3;
             } else {
-                unk_98->unk_50 = 2;
+                unk_98->copyMode = 2;
             }
-            unk_98->unk_58 = 1;
-            unk_98->unk_55 = 1;
-            unk_98->unk_39 = 0xe;
-            unk_98->unk_38 = 0xd;
+            unk_98->group = 1;
+            unk_98->rowStride1K = 1;
+            unk_98->bgColor = 0xe;
+            unk_98->fgColor = 0xd;
             unk_98->requestRedraw();
         }
     }
@@ -697,18 +697,18 @@ void ChatBalloon::createTextLabel() {
     if (unk_9c == NULL) {
         unk_9c = MsgTextLabel_CreateVram((unk_0c << 6) + 0xc0, 0x14, 2);
         if (unk_9c != NULL) {
-            unk_9c->unk_2c = 4;
+            unk_9c->vramLoader = 4;
             TextLabel *t = unk_9c;
-            t->unk_10 = (u32)((MsgString *)&unk_54)->data();
+            t->textStart = (u32)((MsgString *)&unk_54)->data();
             if (gGfxMainOnTop == 0) {
-                unk_9c->unk_50 = 3;
+                unk_9c->copyMode = 3;
             } else {
-                unk_9c->unk_50 = 2;
+                unk_9c->copyMode = 2;
             }
-            unk_9c->unk_58 = 1;
-            unk_9c->unk_55 = 1;
-            unk_9c->unk_39 = 0xf;
-            unk_9c->unk_38 = 0xd;
+            unk_9c->group = 1;
+            unk_9c->rowStride1K = 1;
+            unk_9c->bgColor = 0xf;
+            unk_9c->fgColor = 0xd;
             unk_9c->requestRedraw();
         }
     }

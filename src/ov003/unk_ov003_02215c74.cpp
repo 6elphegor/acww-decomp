@@ -82,7 +82,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -104,8 +104,8 @@ public:
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -120,13 +120,13 @@ public:
 
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
     u8 pad_00[0x14];
-    s32 unk_14;
+    s32 openMode;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -259,14 +259,14 @@ public:
 class AnimFrameCtrl {
 public:
     virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     void step();
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -277,8 +277,8 @@ public:
     void initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f);
     BOOL allocMatAnm(u32 a, void *c);
 
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class AnimModel {
@@ -449,7 +449,7 @@ BOOL VillagerHouse::vfunc_70() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     Unk_ov003_Vec tmp;
-    func_01ffd070(&tmp, &unk_5c, &v);
+    func_01ffd070(&tmp, &position, &v);
     Actor_spawn(0x18, idx, &tmp, 0, this);
     sVillagerHouses[idx] = (u32)this;
     s32 k = getHouseVariant();
@@ -559,15 +559,15 @@ void VillagerHouse::vfunc_78() {
     void *p = SaveVillagers_Get(gSaveVillagers, idx);
     setFileName("obj_etc_closed");
     if (func_0207e274(p) == 0) {
-        unk_1e = 6;
+        msgIndex = 6;
     } else if (unk_232.f1) {
         setFileName("obj_etc_error");
-        unk_1e = 0;
+        msgIndex = 0;
     } else if (void *q = VillagerData_getVillagerId(p)) {
         if (unk_233 == 0) {
-            unk_1e = sVillagerHouseClosedMsgs[VillagerId_GetPersonality(q)];
+            msgIndex = sVillagerHouseClosedMsgs[VillagerId_GetPersonality(q)];
         } else {
-            unk_1e = sVillagerHouseClosedMsgsAlt[VillagerId_GetPersonality(q)];
+            msgIndex = sVillagerHouseClosedMsgsAlt[VillagerId_GetPersonality(q)];
         }
     }
     u32 l[9];

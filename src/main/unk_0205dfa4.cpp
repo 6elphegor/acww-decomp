@@ -11,9 +11,9 @@ public:
 
 class TexVramSlot {
 public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 texKeyBase;
+    u32 tex4x4KeyBase;
+    u32 plttKeyBase;
     u8 unk_10;
     u8 unk_11;
     TexVramSlot();
@@ -81,13 +81,13 @@ public:
 
 class AnimFrameCtrl {
 public:
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     virtual ~AnimFrameCtrl();
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -95,8 +95,8 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     void replace(s32 a, s32 b, s32 c, s32 e, u16 f);
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class HeldItemTexAnim : public ModelAnim {

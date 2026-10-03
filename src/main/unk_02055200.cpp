@@ -3,36 +3,36 @@
 struct Unk_020553f8_Res {
     u32 unk_00;
     u32 unk_04;
-    u32 unk_08;
+    u32 matOffset;
     u8 unk_0c[0xc];
-    u8 unk_18;
+    u8 numMat;
 };
 
 struct Unk_0205562c_Dict {
     u8 pad_00[6];
-    u16 unk_06;
+    u16 entryOffset;
 };
 
 struct Unk_0205562c_Blk {
     u32 unk_00;
-    Unk_0205562c_Dict unk_04;
+    Unk_0205562c_Dict dict;
 };
 
 struct Unk_02055744_Obj {
     u32 unk_00;
-    u32 unk_04;
+    u32 blockSize;
 };
 
 struct Unk_02055820_Slot {
-    void *unk_00;
-    u32 unk_04;
+    void *data;
+    u32 key;
 };
 
 class TexVramSlot {
 public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 texKeyBase;
+    u32 tex4x4KeyBase;
+    u32 plttKeyBase;
     u8 unk_10;
     u8 unk_11;
 
@@ -80,16 +80,16 @@ public:
     void initRenderObj();
     void reset();
 
-    /* 0x04 */ u16 unk_04;
+    /* 0x04 */ u16 modelFlags;
     /* 0x06 */ u16 unk_06;
     /* 0x08 */ u8 unk_08[0x2c];
-    /* 0x34 */ s32 unk_34;
+    /* 0x34 */ s32 renderUserPtr;
     /* 0x38 */ u8 unk_38[0x24];
     /* 0x5c */ Unk_020553f8_Res *unk_5c;
-    /* 0x60 */ u32 unk_60;
+    /* 0x60 */ u32 resTex;
     /* 0x64 */ u8 unk_64[0x24];
-    /* 0x88 */ u8 unk_88[0xc];
-    /* 0x94 */ u32 unk_94;
+    /* 0x88 */ u8 baseTrans[0xc];
+    /* 0x94 */ u32 texVramSlot;
 };
 
 class Unk_020dbe14 {
@@ -100,14 +100,14 @@ public:
 
 class AnimFrameCtrl {
 public:
-    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
     virtual ~AnimFrameCtrl();
 
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
@@ -124,8 +124,8 @@ public:
     BOOL allocJointAnm(u32 a, void *c);
     BOOL allocMatAnm(u32 a, void *c);
 
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 s32 sResCacheModelCount;
@@ -197,8 +197,8 @@ void *Gfx3d_CopyModel(u32 *a, void *heap);
 
 void ModelAnim::initFromResource(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e) {
     _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)((u8 *)a + 4), c, d, e);
-    NNS_G3dAnmObjInit((void *)unk_18, a, unk_1c, (u32)b);
-    *(u32 *)unk_18 = e << 12;
+    NNS_G3dAnmObjInit((void *)anmObj, a, resMdl, (u32)b);
+    *(u32 *)anmObj = e << 12;
 }
 
 void ModelAnim::init(s32 a, s32 b, s32 c, u16 e) {
@@ -222,11 +222,11 @@ void ModelAnim::replaceWithTex(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f) {
 }
 
 void ModelAnim::addToRenderObj(u32 a) {
-    NNS_G3dRenderObjAddAnmObj(a, unk_18);
+    NNS_G3dRenderObjAddAnmObj(a, anmObj);
 }
 
 void ModelAnim::removeFromRenderObj(u32 a) {
-    NNS_G3dRenderObjRemoveAnmObj(a, unk_18);
+    NNS_G3dRenderObjRemoveAnmObj(a, anmObj);
 }
 
 Unk_020dbe14::Unk_020dbe14() {
@@ -237,8 +237,8 @@ Unk_020dbe14::~Unk_020dbe14() {
 
 extern "C" void ResCache_Init(void) {
 BOOL c; s32 i; s32 j;
-    for (i = 0; i < 0x96; i++) { sResCacheModels[i].unk_00 = NULL; sResCacheModels[i].unk_04 = 0x4e554c4c; }
-    for (j = 0; j < 0x3c; j++) { sResCacheTexs[j].unk_00 = NULL; sResCacheTexs[j].unk_04 = 0x4e554c4c; }
+    for (i = 0; i < 0x96; i++) { sResCacheModels[i].data = NULL; sResCacheModels[i].key = 0x4e554c4c; }
+    for (j = 0; j < 0x3c; j++) { sResCacheTexs[j].data = NULL; sResCacheTexs[j].key = 0x4e554c4c; }
     sResCacheModelCount = 0; sResCacheTexCount = 0;
     c = FALSE;
     if (gFieldSceneKind == 0) c = TRUE;
@@ -258,8 +258,8 @@ extern "C" u32 ResCache_FindModel(u32 key) {
     i = 0;
     n = sResCacheModelCount;
     for (; i < n; i++) {
-        if (key == sResCacheModels[i].unk_04) {
-            return (u32)sResCacheModels[i].unk_00;
+        if (key == sResCacheModels[i].key) {
+            return (u32)sResCacheModels[i].data;
         }
     }
     return 0;
@@ -271,8 +271,8 @@ extern "C" u32 ResCache_FindTex(u32 key) {
         return 0;
     }
     for (i = 0; i < 0x3c; i++) {
-        if (key == sResCacheTexs[i].unk_04) {
-            return (u32)sResCacheTexs[i].unk_00;
+        if (key == sResCacheTexs[i].key) {
+            return (u32)sResCacheTexs[i].data;
         }
     }
     return 0;
@@ -301,8 +301,8 @@ extern "C" void *ResCache_GetModel(u32 *a, u32 key) {
             return NULL;
         }
         s32 n = sResCacheModelCount;
-        sResCacheModels[n].unk_00 = r;
-        sResCacheModels[n].unk_04 = key;
+        sResCacheModels[n].data = r;
+        sResCacheModels[n].key = key;
         sResCacheModelCount++;
     }
     return r;
@@ -332,8 +332,8 @@ extern "C" void *ResCache_GetTex(void *a, u32 key) {
             return NULL;
         }
         s32 n = sResCacheTexCount;
-        sResCacheTexs[n].unk_00 = r;
-        sResCacheTexs[n].unk_04 = key;
+        sResCacheTexs[n].data = r;
+        sResCacheTexs[n].key = key;
         sResCacheTexCount++;
     }
     return r;
@@ -341,7 +341,7 @@ extern "C" void *ResCache_GetTex(void *a, u32 key) {
 
 extern "C" BOOL Gfx3d_LoadTexWithKeys(Unk_02055744_Obj *a, u32 y, u32 z) {
     NNS_G3dTexSetTexKey(a, y, z);
-    DC_FlushRange(a, a->unk_04);
+    DC_FlushRange(a, a->blockSize);
     NNS_G3dTexLoad(a, 1);
     return TRUE;
 }
@@ -361,7 +361,7 @@ extern "C" BOOL Gfx3d_LoadTex(Unk_02055744_Obj *a, u32 b) {
 
 extern "C" BOOL Gfx3d_LoadPlttWithKey(Unk_02055744_Obj *a, u32 x) {
     NNS_G3dPlttSetPlttKey(a, x);
-    DC_FlushRange(a, a->unk_04);
+    DC_FlushRange(a, a->blockSize);
     NNS_G3dPlttLoad(a, 1);
     return TRUE;
 }
@@ -391,18 +391,18 @@ Model::~Model() {
 void Model::reset() {
     NNS_G3dRenderObjInit(unk_08, NULL);
     unk_5c = NULL;
-    unk_60 = 0;
+    resTex = 0;
     MTX_Identity43_(unk_64);
-    unk_04 = 0;
-    unk_94 = 0;
+    modelFlags = 0;
+    texVramSlot = 0;
 }
 
 void Model::initRenderObj() {
     NNS_G3dRenderObjInit(unk_08, unk_5c);
-    Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
+    Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
     s32 i;
-    for (i = 0; i < unk_5c->unk_18; i++) {
-        u8 *ent = (u8 *)&b->unk_04 + b->unk_04.unk_06;
+    for (i = 0; i < unk_5c->numMat; i++) {
+        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));
@@ -416,10 +416,10 @@ void Model::initRenderObj() {
 
 BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
     unk_5c = a;
-    unk_60 = b;
-    if (unk_60 != 0) {
-        NNS_G3dBindMdlTex(unk_5c, unk_60);
-        NNS_G3dBindMdlPltt(unk_5c, unk_60);
+    resTex = b;
+    if (resTex != 0) {
+        NNS_G3dBindMdlTex(unk_5c, resTex);
+        NNS_G3dBindMdlPltt(unk_5c, resTex);
     }
     initRenderObj();
     return TRUE;
@@ -427,7 +427,7 @@ BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
 
 BOOL Model::setResource(Unk_020553f8_Res *a, u32 b) {
     unk_5c = a;
-    unk_60 = b;
+    resTex = b;
     initRenderObj();
     return TRUE;
 }
@@ -484,7 +484,7 @@ void Model::applyTransform(s32 *p) {
     s32 v[3];
     MI_Copy36B(unk_64, data_027e0184);
     data_027e0148[0x7c / 4] &= ~0xa4;
-    NNS_G3dGlbSetBaseTrans(unk_88);
+    NNS_G3dGlbSetBaseTrans(baseTrans);
     if (p == NULL) {
         v[0] = v[1] = v[2] = 0x1000;
         NNS_G3dGlbSetBaseScale(v);
@@ -504,22 +504,22 @@ void *Model::getRenderObj() {
 
 void Model::setCallback(s32 a, s32 b, s32 c, s32 d, s32 e) {
     func_02103d50(unk_08, a, e, b, c);
-    unk_34 = d;
+    renderUserPtr = d;
 }
 
 void Model::setInitCallback(s32 a, s32 b) {
     func_02103d48(unk_08, a);
-    unk_34 = b;
+    renderUserPtr = b;
 }
 
 void Model::setPolygonId(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
+    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
     i = 0;
     u32 sh = v << 24;
-    for (; i < unk_5c->unk_18; i++) {
-        u8 *ent = (u8 *)&b->unk_04 + b->unk_04.unk_06;
+    for (; i < unk_5c->numMat; i++) {
+        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));
@@ -531,11 +531,11 @@ void Model::setPolygonId(u32 v) {
 void Model::setAlpha(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
+    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
     i = 0;
     u32 sh = v << 16;
-    for (; i < unk_5c->unk_18; i++) {
-        u8 *ent = (u8 *)&b->unk_04 + b->unk_04.unk_06;
+    for (; i < unk_5c->numMat; i++) {
+        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));
@@ -560,23 +560,23 @@ TexVramSlot::~TexVramSlot() {}
 
 void TexVramSlot::alloc(void *a, void *b, void *c) {
     if (a != NULL) {
-        unk_04 = data_0213bc10((u32)a, 0, 0);
+        texKeyBase = data_0213bc10((u32)a, 0, 0);
     }
     if (b != NULL) {
-        unk_08 = data_0213bc10((u32)b, 1, 0);
+        tex4x4KeyBase = data_0213bc10((u32)b, 1, 0);
     }
     if (c != NULL) {
-        unk_0c = data_0213bc18((u32)c, 0, 0);
+        plttKeyBase = data_0213bc18((u32)c, 0, 0);
     }
     unk_10 = 1;
 }
 
 u32 TexVramSlot::makeTexKey(u32 a) {
-    return makeKeyWithBase(a, unk_04);
+    return makeKeyWithBase(a, texKeyBase);
 }
 
 u32 TexVramSlot::makeTex4x4Key(u32 a) {
-    return makeKeyWithBase(a, unk_08);
+    return makeKeyWithBase(a, tex4x4KeyBase);
 }
 
 u32 TexVramSlot::makeKeyWithBase(u32 a, u32 b) {
@@ -584,15 +584,15 @@ u32 TexVramSlot::makeKeyWithBase(u32 a, u32 b) {
 }
 
 u32 TexVramSlot::makePlttKey(u32 a) {
-    return (unk_0c & 0xffff) | ((a >> 3) << 16);
+    return (plttKeyBase & 0xffff) | ((a >> 3) << 16);
 }
 
 u32 TexVramSlot::makeTexKeyAt(u32 a, u32 b) {
-    return makeKeyAtOffset(b, unk_04, a);
+    return makeKeyAtOffset(b, texKeyBase, a);
 }
 
 u32 TexVramSlot::makeTex4x4KeyAt(u32 a, u32 b) {
-    return makeKeyAtOffset(b, unk_08, a);
+    return makeKeyAtOffset(b, tex4x4KeyBase, a);
 }
 
 u32 TexVramSlot::makeKeyAtOffset(u32 a, u32 b, u32 c) {
@@ -605,7 +605,7 @@ u32 TexVramSlot::makeKeyAtOffset(u32 a, u32 b, u32 c) {
 }
 
 u32 TexVramSlot::makePlttKeyAt(u32 a, u32 b) {
-    u32 v = (unk_0c & 0xffff) << 3;
+    u32 v = (plttKeyBase & 0xffff) << 3;
     v += ((a & 0xffff0000) >> 16) << 3;
     u32 r = (b >> 3) << 16;
     return r | ((v >> 3) & 0xffff);
@@ -624,9 +624,9 @@ void TexVramSlot::relocateTexture(void *p) {
 }
 
 void TexVramSlot::clear(void) {
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
+    texKeyBase = 0;
+    tex4x4KeyBase = 0;
+    plttKeyBase = 0;
     unk_10 = 0;
     unk_11 = 0;
 }

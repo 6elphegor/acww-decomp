@@ -15,9 +15,9 @@ public:
     void lockAdvance();
     void setNextMessage(u8 *b, void *c);
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x00 */ u32 index;
+    /* 0x04 */ u32 state;
+    /* 0x08 */ u32 nextState;
 };
 
 struct CommManager {
@@ -53,8 +53,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -127,7 +127,7 @@ public:
     typedef s32 (SaveManager::*Fn)();
 
     SaveManager() {
-        unk_d8 = 0;
+        hostDateTime = 0;
         unk_dc = 0;
     }
     virtual BOOL vfunc_00();
@@ -162,35 +162,35 @@ public:
     void enterAct00();
     void setState(s32 idx);
 
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ SaveManagerTalk unk_54;
-    /* 0x9c */ u8 unk_9c;
-    /* 0x9d */ u8 unk_9d;
+    /* 0x50 */ s32 act;
+    /* 0x54 */ SaveManagerTalk talk;
+    /* 0x9c */ u8 slotStep;
+    /* 0x9d */ u8 actStep;
     /* 0x9e */ u8 pad_9e[0xa8 - 0x9e];
-    /* 0xa8 */ void *unk_a8;
-    /* 0xac */ void *unk_ac;
-    /* 0xb0 */ void *unk_b0;
-    /* 0xb4 */ void *unk_b4;
-    /* 0xb8 */ void *unk_b8;
-    /* 0xbc */ void *unk_bc;
-    /* 0xc0 */ void *unk_c0;
-    /* 0xc4 */ void *unk_c4;
-    /* 0xc8 */ void *unk_c8;
+    /* 0xa8 */ void *bufferHeap;
+    /* 0xac */ void *workBuf;
+    /* 0xb0 */ void *readBackBuf;
+    /* 0xb4 */ void *saveDataCopy;
+    /* 0xb8 */ void *playerDataCopy;
+    /* 0xbc */ void *villagerTransferBackup;
+    /* 0xc0 */ void *letterStorage;
+    /* 0xc4 */ void *townCompressBuf;
+    /* 0xc8 */ void *townCompressThread;
     /* 0xcc */ u8 pad_cc[0xd4 - 0xcc];
-    /* 0xd4 */ u8 unk_d4;
+    /* 0xd4 */ u8 sendChunk;
     /* 0xd5 */ u8 pad_d5[0xd8 - 0xd5];
-    /* 0xd8 */ u32 unk_d8;
+    /* 0xd8 */ u32 hostDateTime;
     /* 0xdc */ u32 unk_dc;
     /* 0xe0 */ u8 pad_e0[0xeb - 0xe0];
-    /* 0xeb */ u8 unk_eb[0x12];
+    /* 0xeb */ u8 ctrlAct0E[0x12];
     /* 0xfd */ u8 unk_fd;
-    /* 0xfe */ u8 unk_fe;
-    /* 0xff */ u8 unk_ff[4];
-    /* 0x103 */ u8 unk_103[4];
-    /* 0x107 */ u8 unk_107;
+    /* 0xfe */ u8 freePlayerSlot;
+    /* 0xff */ u8 transferDests[4];
+    /* 0x103 */ u8 transferReceived[4];
+    /* 0x107 */ u8 noSaveData;
     /* 0x108 */ u8 unk_108;
-    /* 0x109 */ Unk_020e2824_Nib unk_109;
-    /* 0x10a */ Unk_020e2824_Nib unk_10a;
+    /* 0x109 */ Unk_020e2824_Nib slotStatus;
+    /* 0x10a */ Unk_020e2824_Nib slotOrder;
 };
 
 // the three file-scope objects of __sinit (constructors and destructors are functions of other units)
@@ -247,13 +247,13 @@ void AxBbsNotice_Destruct(void *p);
 // ---- unk_0209ecf8.cpp
 
 struct TownCompressThread {
-    u8 unk_00[0x64];
-    s32 unk_64;
+    u8 thread[0x64];
+    s32 threadState;
     u8 pad_68[0xc0 - 0x68];
-    u32 unk_c0;
+    u32 stackGuardLow;
     u8 pad_c4[0x10c4 - 0xc4];
-    u32 unk_10c4;
-    u8 unk_10c8;
+    u32 stackGuardHigh;
+    u8 done;
 
     u8 isDone();
     void start(u32 a);
@@ -262,9 +262,9 @@ struct TownCompressThread {
 };
 
 struct TownCompressBuffer {
-    u32 unk_00;
-    u8 unk_04[4];
-    u8 unk_08[4];
+    u32 size;
+    u8 data[4];
+    u8 dataBody[4];
 
     u32 getSize();
     void decompress();
@@ -273,11 +273,11 @@ struct TownCompressBuffer {
 
 struct Unk_0209f304 {
     u8 pad_00[0xb4];
-    void *unk_b4;
+    void *saveDataCopy;
     u8 pad_b8[0xeb - 0xb8];
-    u8 unk_eb;
+    u8 ctrlAct0E;
     u8 pad_ec[0xf4 - 0xec];
-    u8 unk_f4[4];
+    u8 ctrlAct10[4];
     u8 pad_f8[0x10a - 0xf8];
     u8 unk_10a_lo : 4;
     u8 unk_10a_hi : 4;
@@ -402,9 +402,9 @@ u8 func_0209f23c(void);
 
 struct Unk_0209f638 {
     u8 pad_00[0xeb];
-    u8 unk_eb[5];
-    u8 unk_f0[0x1f - 5];
-     u8 unk_10a;
+    u8 ctrlAct0E[5];
+    u8 recvAct06[0x1f - 5];
+     u8 slotOrder;
 };
 
 struct Unk_0209fb48_V3 { s32 v[3]; };
@@ -482,37 +482,37 @@ void LostChild_ApplyReceived(Unk_0209f638 *p);
 
 struct Unk_020cbb18_ff4c {
     u8 pad_00[0x68];
-    volatile s32 unk_68;
+    volatile s32 localSlot;
 };
 
 struct Unk_021ed3b0 {
     u8 pad_00[0x50];
-    s32 unk_50;
+    s32 act;
     u8 pad_54[0x9d - 0x54];
-    u8 unk_9d;
+    u8 actStep;
     u8 pad_9e[0xc0 - 0x9e];
-    s32 unk_c0;
-    s32 unk_c4;
-    s32 unk_c8;
+    s32 letterStorage;
+    s32 townCompressBuf;
+    s32 townCompressThread;
     u8 pad_cc[4];
-    u16 unk_d0;
+    u16 hostMemberMask;
     u8 unk_d2;
-    u8 unk_d3;
+    u8 hostDataIndex;
     u8 pad_d4;
-    u8 unk_d5;
-    u8 unk_d6;
+    u8 joinReady;
+    u8 dateTimeReceived;
     u8 pad_d7;
-    u8 unk_d8[8];
-    u8 unk_e0;
-    u8 unk_e1;
-    u8 unk_e2;
-    u8 unk_e3[4];
-    u8 unk_e7[4];
-    u8 unk_eb[4];
-    u8 unk_ef;
-    u8 unk_f0[4];
-    u8 unk_f4[4];
-    u8 unk_f8[4];
+    u8 hostDateTime[8];
+    u8 joinDone;
+    u8 ctrlAct12;
+    u8 recvAct07;
+    u8 recvAct04[4];
+    u8 recvAct02[4];
+    u8 ctrlAct0E[4];
+    u8 recvAct03;
+    u8 recvAct06[4];
+    u8 ctrlAct10[4];
+    u8 ctrlAct11[4];
     u8 unk_fc;
     u8 unk_fd;
 };
@@ -632,18 +632,18 @@ public:
     s32 saveSlotStep(s32 arg);
 
      u32 unk_00[0x14];
-     s32 unk_50;
+     s32 act;
      u32 unk_54[0x12];
-     u8 unk_9c;
-     u8 unk_9d;
-     u8 unk_9e;
+     u8 slotStep;
+     u8 actStep;
+     u8 blockCursor;
      u8 unk_9f;
-     s16 unk_a0;
+     s16 dirtyFirstBlock;
      s16 unk_a2;
-     s32 unk_a4;
-     u32 unk_a8;
-     u8 *unk_ac;
-     u8 *unk_b0;
+     s32 dirtySize;
+     u32 bufferHeap;
+     u8 *workBuf;
+     u8 *readBackBuf;
 };
 
 class Unk_020a0990 {
@@ -651,7 +651,7 @@ public:
     void startTalk(const char *str, u8 flag);
 
      u32 unk_00[0x15];
-     TalkMsgRequest unk_54;
+     TalkMsgRequest talk;
 };
 
 namespace NE {
@@ -774,19 +774,19 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 class Unk_020a1c88 {
 public:
     u8 pad_00[0x9d];
-    u8 unk_9d;
+    u8 actStep;
     u8 pad_9e[0xcc - 0x9e];
     u16 unk_cc;
-    u16 unk_ce;
+    u16 memberMask;
     u8 pad_d0[0xe1 - 0xd0];
-    u8 unk_e1;
-    u8 unk_e2;
+    u8 ctrlAct12;
+    u8 recvAct07;
     u8 pad_e3[0xf0 - 0xe3];
-    u8 unk_f0[8];
-    u8 unk_f8[6];
-    u8 unk_fe;
+    u8 recvAct06[8];
+    u8 ctrlAct11[6];
+    u8 freePlayerSlot;
     u8 pad_ff[0x107 - 0xff];
-    u8 unk_107;
+    u8 noSaveData;
 
     void enterAct1E();
     void execAct1D();
@@ -871,24 +871,24 @@ struct TownBlockMap {
 
 struct Unk_020a25d8 {
     u8 pad_00[0x9d];
-    u8 unk_9d;
+    u8 actStep;
     u8 pad_9e[0xc8 - 0x9e];
-    u32 unk_c8;
+    u32 townCompressThread;
     u8 pad_cc[2];
-    u16 unk_ce;
-    u16 unk_d0;
+    u16 memberMask;
+    u16 hostMemberMask;
     u8 unk_d2;
-    u8 unk_d3;
-    u8 unk_d4;
-    u8 unk_d5;
-    u8 unk_d6;
+    u8 hostDataIndex;
+    u8 sendChunk;
+    u8 joinReady;
+    u8 dateTimeReceived;
     u8 pad_d7;
-    u8 unk_d8[8];
-    u8 unk_e0;
-    u8 unk_e1;
+    u8 hostDateTime[8];
+    u8 joinDone;
+    u8 ctrlAct12;
     u8 pad_e2[0xf0 - 0xe2];
-    u8 unk_f0[8];
-    u8 unk_f8[4];
+    u8 recvAct06[8];
+    u8 ctrlAct11[4];
 };
 
 struct Unk_020a2ecc_Reg {
@@ -999,9 +999,9 @@ class Unk_020a3238;
 class Unk_020a3238 {
 public:
     u8 pad_00[0x9d];
-    u8 unk_9d;
+    u8 actStep;
     u8 pad_9e[0x10a - 0x9e];
-    u8 unk_10a;
+    u8 slotOrder;
 
     void enterAct14();
     void execAct13();
@@ -1320,12 +1320,12 @@ BOOL SaveManager::vfunc_00() {
         }
     }
     NJ::gSaveManager = this;
-    NJ::_ZN15SaveManagerTalk8setOwnerEj(&unk_54, this);
-    unk_a8 = NJ::gCurrentHeap;
+    NJ::_ZN15SaveManagerTalk8setOwnerEj(&talk, this);
+    bufferHeap = NJ::gCurrentHeap;
     if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
-        unk_ac = NJ::Heap_Alloc(unk_a8, 0x15fe0);
-        unk_b0 = NJ::Heap_Alloc(unk_a8, 0x15fe0);
-        unk_c0 = NJ::Heap_Alloc(unk_a8, 0x11df4);
+        workBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
+        readBackBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
+        letterStorage = NJ::Heap_Alloc(bufferHeap, 0x11df4);
         NJ::Save_ReadSlot(2);
         void *r4 = NJ::SaveManager_GetLetterStorage();
         s32 r6 = NJ::Save_Sum16(r4, 0x11df4);
@@ -1335,19 +1335,19 @@ BOOL SaveManager::vfunc_00() {
         NJ::LetterStorage_MarkValid(r4);
     }
     if (NJ::Scene_GetCurrent() == 9) {
-        unk_b8 = NJ::Heap_Alloc(unk_a8, 0x228c);
+        playerDataCopy = NJ::Heap_Alloc(bufferHeap, 0x228c);
     }
     if (NJ::Scene_GetCurrent() == 0x2e) {
-        unk_b4 = NJ::Heap_Alloc(unk_a8, 0x15fe0);
-        unk_bc = NJ::Heap_Alloc(unk_a8, 0x84c);
+        saveDataCopy = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
+        villagerTransferBackup = NJ::Heap_Alloc(bufferHeap, 0x84c);
     }
     if (NJ::sSaveManagerRequest == 0x14 || NJ::sSaveManagerRequest == 0x15) {
-        unk_c4 = NJ::Heap_Alloc(unk_a8, 0x15fe4);
-        unk_c8 = NJ::Heap_Alloc(unk_a8, 0x10cc);
-        NJ::_ZN18TownCompressThread4initEv(unk_c8);
+        townCompressBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe4);
+        townCompressThread = NJ::Heap_Alloc(bufferHeap, 0x10cc);
+        NJ::_ZN18TownCompressThread4initEv(townCompressThread);
     }
     if (NJ::sSaveManagerRequest == 0x14) {
-        void *p = NJ::Heap_Alloc(unk_a8, 0x15fe0);
+        void *p = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
         NJ::gTownTransferBuf = p;
         NJ::_ZN11SaveRecord410clearStateEv((u8 *)p + 0x15fdc);
     }
@@ -1365,35 +1365,35 @@ BOOL SaveManager::vfunc_0c() {
     }
     NJ::gSaveManager = 0;
     if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
-        NJ::Heap_Free(unk_a8, unk_ac);
-        NJ::Heap_Free(unk_a8, unk_b0);
-        NJ::Heap_Free(unk_a8, unk_c0);
+        NJ::Heap_Free(bufferHeap, workBuf);
+        NJ::Heap_Free(bufferHeap, readBackBuf);
+        NJ::Heap_Free(bufferHeap, letterStorage);
     }
     if (NJ::Scene_GetCurrent() == 9) {
-        NJ::Heap_Free(unk_a8, unk_b8);
+        NJ::Heap_Free(bufferHeap, playerDataCopy);
     }
     if (NJ::gTownTransferBuf) {
-        NJ::Heap_Free(unk_a8, NJ::gTownTransferBuf);
+        NJ::Heap_Free(bufferHeap, NJ::gTownTransferBuf);
         NJ::gTownTransferBuf = 0;
     }
-    if (unk_c8) {
+    if (townCompressThread) {
         NJ::_ZN18TownCompressThread4killEv();
-        NJ::Heap_Free(unk_a8, unk_c8);
-        unk_c8 = 0;
+        NJ::Heap_Free(bufferHeap, townCompressThread);
+        townCompressThread = 0;
     }
-    if (unk_c4) {
-        NJ::Heap_Free(unk_a8, unk_c4);
+    if (townCompressBuf) {
+        NJ::Heap_Free(bufferHeap, townCompressBuf);
     }
     if (NJ::Scene_GetCurrent() == 0x2e) {
-        NJ::Heap_Free(unk_a8, unk_b4);
-        NJ::Heap_Free(unk_a8, unk_bc);
+        NJ::Heap_Free(bufferHeap, saveDataCopy);
+        NJ::Heap_Free(bufferHeap, villagerTransferBackup);
     }
     return TRUE;
 }
 
 BOOL SaveManager::onExecute() {
-    if (NJ::sSaveManagerStates[unk_50].exec) {
-        (this->*NJ::sSaveManagerStates[unk_50].exec)();
+    if (NJ::sSaveManagerStates[act].exec) {
+        (this->*NJ::sSaveManagerStates[act].exec)();
     }
     return TRUE;
 }
@@ -1402,7 +1402,7 @@ void SaveManager::setState(s32 idx) {
     if (NJ::sSaveManagerStates[idx].enter) {
         (this->*NJ::sSaveManagerStates[idx].enter)();
     }
-    unk_50 = idx;
+    act = idx;
 }
 
 void SaveManager::enterAct00() {}
@@ -1447,11 +1447,11 @@ void SaveManager::enterAct01() {
     NJ::MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::gSaveTownState);
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void SaveManager::execAct01() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
             if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
@@ -1460,39 +1460,39 @@ void SaveManager::execAct01() {
                     NJ::NetOverlay_Restore();
                 }
             }
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1: {
         s32 r = NJ::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r != 3) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.lo);
+        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 6;
+            actStep = 6;
         }
         break;
     }
     case 4:
         NJ::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 5;
+        actStep = 5;
         break;
     case 5:
         break;
@@ -1509,11 +1509,11 @@ void SaveManager::enterAct02() {
     NJ::MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::gSaveTownState);
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void SaveManager::execAct02() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
             if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
@@ -1522,39 +1522,39 @@ void SaveManager::execAct02() {
                     NJ::NetOverlay_Restore();
                 }
             }
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1: {
         s32 r = NJ::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r != 3) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.lo);
+        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 6;
+            actStep = 6;
         }
         break;
     }
     case 4:
         NJ::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 5;
+        actStep = 5;
         break;
     case 5:
         break;
@@ -1568,32 +1568,32 @@ void SaveManager::execAct02() {
 void SaveManager::enterAct03() {
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_etc_sequence1", 0x28);
     NJ::PlayerOptions_Commit();
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct03() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
             NI::Clock_Init();
-            unk_9d = unk_9d + 1;
+            actStep = actStep + 1;
         }
         break;
     case 1:
         NI::SaveVillagers_DailyUpdate(NI::gSaveVillagers, 0);
-        unk_9d = unk_9d + 1;
+        actStep = actStep + 1;
         break;
     case 2:
         NI::SaveData_Setup(NI::gSaveData, 2);
-        unk_9d = unk_9d + 1;
+        actStep = actStep + 1;
         break;
     case 3:
         NI::TownUpdateThread_Create();
-        unk_9d = unk_9d + 1;
+        actStep = actStep + 1;
         break;
     case 4:
         NI::SaveData_Apply(NI::gSaveData);
-        unk_9d = unk_9d + 1;
+        actStep = actStep + 1;
         break;
     default:
         NI::_ZN11SaveManager8setStateEi(this, 4);
@@ -1602,56 +1602,56 @@ void Unk_020a3238::execAct03() {
 }
 
 void Unk_020a3238::enterAct04() {
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct04() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
-        unk_9d = 1;
+        actStep = 1;
         break;
     case 1:
         if (NI::TownUpdateThread_Start() != 0) {
-            unk_9d = 2;
+            actStep = 2;
         } else {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     case 2:
         if (NI::TownUpdateThread_PollDone() != 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     case 3: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 6;
+            actStep = 6;
         } else if (r != 3) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     }
     case 4: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
         if (r == 1) {
-            unk_9d = 6;
+            actStep = 6;
         } else if (r == 0) {
-            unk_9d = 5;
+            actStep = 5;
         }
         break;
     }
     case 5: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
         if (r == 1) {
-            unk_9d = 6;
+            actStep = 6;
         } else if (r == 0) {
-            unk_9d = 8;
+            actStep = 8;
         }
         break;
     }
     case 6:
         NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 7;
+        actStep = 7;
         break;
     case 7:
         break;
@@ -1664,55 +1664,55 @@ void Unk_020a3238::execAct04() {
 
 void Unk_020a3238::enterAct05() {
     NI::_ZN12Unk_020a09909startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 0xc);
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct05() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1: {
         s32 r = NI::Save_InvalidateAll(this);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
         s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 0);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     }
     case 3: {
         s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 1);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     }
     case 4: {
         s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 2);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 7;
+            actStep = 7;
         }
         break;
     }
     case 5:
         NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 6;
+        actStep = 6;
         break;
     case 6:
         break;
@@ -1737,56 +1737,56 @@ void Unk_020a3238::enterAct06() {
     if (NI::PlayerDataArray_CountUsed(NI::gSavePlayers) == 0) {
         *(u8 *)(d + 0x15e76) = 0;
     }
-    unk_9d = 0;
+    actStep = 0;
     NI::_ZN11MsgString9BD1Ev(buf);
 }
 
 void Unk_020a3238::execAct06() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r != 3) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     }
     case 4: {
         s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
         if (r == 1) {
-            unk_9d = 5;
+            actStep = 5;
         } else if (r == 0) {
-            unk_9d = 7;
+            actStep = 7;
         }
         break;
     }
     case 5:
         NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 6;
+        actStep = 6;
         break;
     case 6:
         break;
@@ -1799,46 +1799,46 @@ void Unk_020a3238::execAct06() {
 
 void Unk_020a3238::enterAct07() {
     NI::_ZN12Unk_020a09909startTalkEPKch(this, (u32 *)"sp_etc_sequence3", 0x27);
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct07() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r != 3) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
         if (r == 1) {
-            unk_9d = 4;
+            actStep = 4;
         } else if (r == 0) {
-            unk_9d = 6;
+            actStep = 6;
         }
         break;
     }
     case 4:
         NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
-        unk_9d = 5;
+        actStep = 5;
         break;
     case 5:
         break;
@@ -1853,7 +1853,7 @@ void Unk_020a3238::enterAct08() {}
 
 void Unk_020a3238::execAct08() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 1);
         NI::_ZN11SaveManager8setStateEi(this, 0);
@@ -1865,7 +1865,7 @@ void Unk_020a3238::enterAct09() {}
 void Unk_020a3238::execAct09() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         v.x = NI::data_020d0770.x;
         v.y = NI::data_020d0770.y;
@@ -1880,7 +1880,7 @@ void Unk_020a3238::enterAct0A() {}
 void Unk_020a3238::execAct0A() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         v.x = NI::data_020d0788.x;
         v.y = NI::data_020d0788.y;
@@ -1894,7 +1894,7 @@ void Unk_020a3238::enterAct0B() {}
 
 void Unk_020a3238::execAct0B() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         NI::SceneWarp_RequestFade(NI::Scene_GetWarpRequest(), 0x2f, 3, 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
@@ -1905,7 +1905,7 @@ void Unk_020a3238::enterAct0C() {}
 
 void Unk_020a3238::execAct0C() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         s32 r = NI::Save_LoadSync();
         if (r == 4 || r == 1) {
@@ -1927,7 +1927,7 @@ void Unk_020a3238::enterAct0D() {}
 
 void Unk_020a3238::execAct0D() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         NI::Scene_Request(2, 3, 0, 0);
         NI::_ZN11SaveManager8setStateEi(this, 0);
@@ -1939,7 +1939,7 @@ void Unk_020a3238::enterAct0E() {}
 void Unk_020a3238::execAct0E() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::gScreenTransition)) {
-        if (o->unk_04 == 0) {
+        if (o->state == 0) {
             o->detachRequest();
             if (NI::_ZN8SaveData8testFlagEj(NI::gSaveData, 0x12) != 0) {
                 NI::GameStart_SetMode3();
@@ -1959,7 +1959,7 @@ void Unk_020a3238::execAct0F() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::gScreenTransition)) {
-        if (o->unk_04 == 0) {
+        if (o->state == 0) {
             o->detachRequest();
             NI::Town_FindTownHallFront(NI::TownBlockMap_Get(), &v, 0, 0);
             NI::SceneWarp_RequestAt(NI::Scene_GetWarpRequest(), 0, &v, 0x400000, -0x8000, 3, 2);
@@ -1972,7 +1972,7 @@ void Unk_020a3238::enterAct10() {}
 
 void Unk_020a3238::execAct10() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         if (NI::Scene_GetCurrent() == 6) {
             NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 2);
@@ -1987,7 +1987,7 @@ void Unk_020a3238::enterAct11() {}
 
 void Unk_020a3238::execAct11() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         NI::SceneWarp_RequestExit(NI::Scene_GetWarpRequest(), 2);
         NI::_ZN11SaveManager8setStateEi(this, 0);
@@ -1995,35 +1995,35 @@ void Unk_020a3238::execAct11() {
 }
 
 void Unk_020a3238::enterAct12() {
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct12() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r != 3) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r == 0) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
         s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r == 0) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     }
@@ -2037,35 +2037,35 @@ void Unk_020a3238::execAct12() {
 
 void Unk_020a3238::enterAct13() {
     NI::_ZN12Unk_02097ff49clearFlagEj(NI::PlayerData_GetCurrent(this), 2);
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void Unk_020a3238::execAct13() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r != 3) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(unk_10a << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r == 0) {
-            unk_9d = 2;
+            actStep = 2;
         }
         break;
     }
     case 2: {
         s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
         if (r == 1) {
-            unk_9d = 3;
+            actStep = 3;
         } else if (r == 0) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     }
@@ -2083,40 +2083,40 @@ void Unk_020a3238::enterAct14() {
 }
 
 extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
-    switch (p->unk_9d) {
+    switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommCtrl_SendAct07()) {
-            p->unk_9d = 1;
+            p->actStep = 1;
         }
         break;
     case 1:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (p->unk_d0 != 0) {
-            p->unk_d4 = 0;
-            p->unk_9d = 2;
+        } else if (p->hostMemberMask != 0) {
+            p->sendChunk = 0;
+            p->actStep = 2;
         }
         break;
     case 2:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::CommSend_VillagerTransfer(&p->unk_d4)) {
-            p->unk_d4 = 0;
-            p->unk_9d = 3;
+        } else if (NH::CommSend_VillagerTransfer(&p->sendChunk)) {
+            p->sendChunk = 0;
+            p->actStep = 3;
         }
         break;
     case 3:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->unk_c8)) {
+        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->townCompressThread)) {
             BOOL r6 = TRUE;
             s32 r5 = 3;
             for (; r5 >= 0; r5--) {
                 if (r5 != 0) {
                     u32 m = (u16)(1 << r5);
-                    if (m == (m & p->unk_d0)) {
+                    if (m == (m & p->hostMemberMask)) {
                         if (NH::PlayerData_IsUsedByIndex(r5 + 3) == 0) {
                             r6 = FALSE;
                             break;
@@ -2125,7 +2125,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
                 }
             }
             if (!r6) {
-                p->unk_9d = 4;
+                p->actStep = 4;
             }
         }
         break;
@@ -2135,7 +2135,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
         } else if (NH::func_020a03f0()) {
             NH::PlayerActor_GetActor(4);
             NH::ProcBase_RequestDelete();
-            p->unk_9d = 5;
+            p->actStep = 5;
         }
         break;
     case 5:
@@ -2143,14 +2143,14 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             NH::Comm_SetLostFlag();
         } else if (NH::PlayerActor_GetActor(4) == 0) {
             if (NH::CommSend_JoinReady()) {
-                p->unk_9d = 6;
+                p->actStep = 6;
             }
         }
         break;
     case 6:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (p->unk_d6 != 0) {
+        } else if (p->dateTimeReceived != 0) {
             u32 r7 = NH::Net_GetMyAid();
             CommManager *r5 = NH::gCommManager;
             r5->unk_64 = r7;
@@ -2162,7 +2162,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             u32 zero = 0;
             s32 i = 3;
             for (; i >= 0; i--) {
-                if (p->unk_d0 & (1 << i)) {
+                if (p->hostMemberMask & (1 << i)) {
                     r5->setSlotActive(i, 1);
                     cnt = (u8)(cnt + 1);
                 } else {
@@ -2171,15 +2171,15 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             }
             r5->setMemberCount(cnt);
             NH::NetArea_SetSlotStatus(r7, 0xc, 1, 0, 7);
-            NH::PlayerSession_SetDataIndex(0, p->unk_d3);
+            NH::PlayerSession_SetDataIndex(0, p->hostDataIndex);
             NH::PlayerSession_SetDataIndex(r7, r7 + 3);
             NH::MI_CpuCopy8(NH::gTownTransferBuf, NH::gSaveData, 0x15fe0);
             u8 buf1[8];
             u8 buf2[8];
-            NH::MI_CpuCopy8(p->unk_d8, buf1, 8);
+            NH::MI_CpuCopy8(p->hostDateTime, buf1, 8);
             u32 *const r7p = &NH::data_021ed304;
             u32 r6b = NH::ClockOffset_CalcMinutes(r7p, buf1);
-            NH::MI_CpuCopy8(p->unk_d8, buf2, 8);
+            NH::MI_CpuCopy8(p->hostDateTime, buf2, 8);
             u32 h = NH::ClockOffset_CalcSeconds(r7p, buf2);
             *r7p = r6b;
             NH::data_021ed2d0.unk_38 = h;
@@ -2195,14 +2195,14 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             NH::Weather_RerollRainSlant();
             p->unk_d2 = 1;
             r5->setMode(1);
-            p->unk_9d = 7;
+            p->actStep = 7;
         }
         break;
     case 7:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommSend_JoinDone(NH::Comm_GetRemoteMask())) {
-            p->unk_9d = 8;
+            p->actStep = 8;
         }
         break;
     case 8:
@@ -2220,7 +2220,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
                     NH::SceneWarp_SetFadeOut(NH::Scene_GetWarpRequest(), 3);
                 }
                 NH::data_021c3cb8 = 1;
-                p->unk_9d = 9;
+                p->actStep = 9;
             }
         }
         break;
@@ -2238,14 +2238,14 @@ extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
 }
 
 extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
-    switch (p->unk_9d) {
+    switch (p->actStep) {
     case 0: {
         u32 r5 = NH::Comm_GetRemoteMask();
         r5 |= 1 << NH::NetSession_GetLastSyncSlot();
         if (NH::Comm_IsConnectionLost(r5)) {
             NH::Comm_SetLostFlag();
         } else if (NH::NetSession_GetCtrl07Received()) {
-            p->unk_9d = 1;
+            p->actStep = 1;
         }
         break;
     }
@@ -2256,8 +2256,8 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(r5)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->unk_9d, 1, 0xd, 0x2f);
-            if (p->unk_9d > 2) {
+            NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->actStep, 1, 0xd, 0x2f);
+            if (p->actStep > 2) {
                 NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
                 CommManager *g = NH::gCommManager;
                 g->setMemberCount((u8)(g->unk_6c + 1));
@@ -2271,56 +2271,56 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommSend_MemberInfo((u16)(1 << NH::sJoiningAid))) {
-            p->unk_9d = 4;
+            p->actStep = 4;
         }
         break;
     case 4:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommBlock_BuildPacket(NH::sJoiningAid)) {
-            p->unk_9d = 5;
+            p->actStep = 5;
         }
         break;
     case 5:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommSend_BuiltPacket((u16)(1 << NH::sJoiningAid))) {
-            p->unk_d4 = 0;
-            p->unk_9d = 6;
+            p->sendChunk = 0;
+            p->actStep = 6;
         }
         break;
     case 6:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (NH::CommSend_SyncVarChunk(&p->unk_d4, (u16)(1 << NH::sJoiningAid))) {
-            p->unk_9d = 7;
+        } else if (NH::CommSend_SyncVarChunk(&p->sendChunk, (u16)(1 << NH::sJoiningAid))) {
+            p->actStep = 7;
         }
         break;
     case 7:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommSend_SlotStatusAll(NH::sJoiningAid)) {
-            NH::_ZN18TownCompressThread5startEj(p->unk_c8, 1);
-            p->unk_d4 = 0;
-            p->unk_9d = 8;
+            NH::_ZN18TownCompressThread5startEj(p->townCompressThread, 1);
+            p->sendChunk = 0;
+            p->actStep = 8;
         }
         break;
     case 8:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->unk_c8)) {
+        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->townCompressThread)) {
             NH::DC_FlushAll();
-            if (NH::CommSend_TownChunk(&p->unk_d4, (u16)(1 << NH::sJoiningAid))) {
-                p->unk_9d = 9;
+            if (NH::CommSend_TownChunk(&p->sendChunk, (u16)(1 << NH::sJoiningAid))) {
+                p->actStep = 9;
             }
         }
         break;
     case 9:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (p->unk_d5 != 0) {
+        } else if (p->joinReady != 0) {
             if (NH::CommSend_DateTime((u16)(1 << NH::sJoiningAid))) {
-                p->unk_9d = 10;
+                p->actStep = 10;
             }
         }
         break;
@@ -2330,11 +2330,11 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         } else {
             NH::_Z20NetOverlay_AssertAnyv();
             if (NH::Net_IsReadyToSend()) {
-                if (p->unk_e0 != 0) {
+                if (p->joinDone != 0) {
                     NH::gCommManager->setMode(2);
                     p->unk_d2 = 1;
                     NH::JoinHistory_Push(NH::sJoiningAid);
-                    p->unk_9d = 11;
+                    p->actStep = 11;
                 }
             }
         }
@@ -2347,7 +2347,7 @@ extern "C" void SaveManager_EnterAct16(Unk_020a25d8 *p) {
 }
 
 extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
-    switch (p->unk_9d) {
+    switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
@@ -2357,14 +2357,14 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
             g->setMemberCount((u8)(g->unk_6c + 1));
             g->setSlotActive(NH::sJoiningAid, 1);
             NH::Comm_ResetPeerState(NH::sJoiningAid);
-            p->unk_9d = 1;
+            p->actStep = 1;
         }
         break;
     case 1:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::CommSend_PlayerData(&p->unk_d4, (u16)(1 << NH::sJoiningAid))) {
-            p->unk_9d = 2;
+        } else if (NH::CommSend_PlayerData(&p->sendChunk, (u16)(1 << NH::sJoiningAid))) {
+            p->actStep = 2;
         }
         break;
     case 2:
@@ -2373,10 +2373,10 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
         } else {
             NH::_Z20NetOverlay_AssertAnyv();
             if (NH::Net_IsReadyToSend()) {
-                if (p->unk_e0 != 0) {
+                if (p->joinDone != 0) {
                     NH::gCommManager->setMode(2);
                     p->unk_d2 = 1;
-                    p->unk_9d = 3;
+                    p->actStep = 3;
                 }
             }
         }
@@ -2391,13 +2391,13 @@ extern "C" void SaveManager_EnterAct17(Unk_020a25d8 *p) {
 }
 
 extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
-    switch (p->unk_9d) {
+    switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager13func_020a15c8Ej(p, 0)) {
-            p->unk_ce = NH::Comm_GetMemberMask();
-            p->unk_9d = 1;
+            p->memberMask = NH::Comm_GetMemberMask();
+            p->actStep = 1;
         }
         break;
     case 1:
@@ -2405,7 +2405,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30413func_0209f304EPhj(p, &p->unk_9d, 1);
+            NH::_ZN12Unk_0209f30413func_0209f304EPhj(p, &p->actStep, 1);
         }
         break;
     case 3:
@@ -2413,7 +2413,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
             NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager18isTransferReceivedEj(p, NH::gCommManager->unk_64)) {
             NH::_ZN11SaveManager22backupVillagerTransferEv(p);
-            p->unk_9d = 4;
+            p->actStep = 4;
         }
         break;
     case 4:
@@ -2424,7 +2424,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     case 9:
     case 10:
     case 11:
-        NH::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(p, &p->unk_9d, 4, 0xe, 0x14, 1, 0, 1);
+        NH::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(p, &p->actStep, 4, 0xe, 0x14, 1, 0, 1);
         break;
     case 12:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -2445,7 +2445,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
             }
             if (r6) {
                 if (NH::CommCtrl_SendAct11()) {
-                    p->unk_9d = 0xd;
+                    p->actStep = 0xd;
                 }
             }
         }
@@ -2453,12 +2453,12 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     case 13:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (p->unk_e1 != 0) {
+        } else if (p->ctrlAct12 != 0) {
             NH::NetSession_ReturnToSolo(p, NH::sSessionResidentIndex, 0);
             NH::sSessionResidentIndex = 7;
             NH::NetOverlay_Restore();
             NH::Weather_RerollRainSlant();
-            p->unk_9d = 0x19;
+            p->actStep = 0x19;
         }
         break;
     case 14:
@@ -2472,7 +2472,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     case 22:
     case 23:
     case 24:
-        NH::SaveManager_RunSessionEnd(p, &p->unk_9d, 0xe, 0x14, 1, 1);
+        NH::SaveManager_RunSessionEnd(p, &p->actStep, 0xe, 0x14, 1, 1);
         break;
     default:
         NH::_ZN11SaveManager13func_020a15f8Ev(p);
@@ -2486,15 +2486,15 @@ extern "C" void SaveManager_EnterAct18(Unk_020a25d8 *p) {
 }
 
 extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
-    switch (p->unk_9d) {
+    switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager13func_020a15c8Ej(p, 0)) {
-            p->unk_ce = NH::Comm_GetMemberMask();
+            p->memberMask = NH::Comm_GetMemberMask();
             NH::VillagerTransfer_PlanSwap(p);
             NH::LostChild_ResetAndPairLast(p);
-            p->unk_9d = 1;
+            p->actStep = 1;
         }
         break;
     case 1:
@@ -2502,14 +2502,14 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->unk_9d, 1, 0x2e, 0x2e);
+            NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::_ZN12Unk_0209f30413func_0209f344Ev(p)) {
-            p->unk_9d = 4;
+            p->actStep = 4;
         }
         break;
     case 4:
@@ -2523,7 +2523,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
             NH::TownExchange_Clear(r6);
             NH::_ZN11SaveManager22backupVillagerTransferEv(p);
             NH::JoinHistory_Remove((u8)r5);
-            p->unk_9d = 5;
+            p->actStep = 5;
         }
         break;
     case 5:
@@ -2534,7 +2534,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
     case 10:
     case 11: {
         u32 t = NH::Comm_GetRemoteMask();
-        NH::SaveManager_RunSyncedSaveHost(p, &p->unk_9d, 1, 5, 0xf, 0x15, 4, 1, t);
+        NH::SaveManager_RunSyncedSaveHost(p, &p->actStep, 1, 5, 0xf, 0x15, 4, 1, t);
         break;
     }
     case 12:
@@ -2547,7 +2547,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
             for (; r5 >= 0; r5--) {
                 if (g->isSlotActive(r5)) {
                     if (!g->isMyAid(r5)) {
-                        if (p->unk_f8[r5] == 0) {
+                        if (p->ctrlAct11[r5] == 0) {
                             r6 = FALSE;
                             break;
                         }
@@ -2561,7 +2561,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
             }
             if (r6) {
                 if (NH::CommCtrl_SendAct12((u16)(1 << NH::NetSession_GetLastSyncSlot()))) {
-                    p->unk_9d = 0xd;
+                    p->actStep = 0xd;
                 }
             }
         }
@@ -2584,7 +2584,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
                     g->writeRecord(&b, 1);
                     g->endRecord(5, 5);
                 }
-                p->unk_9d = 0xe;
+                p->actStep = 0xe;
             }
         }
         break;
@@ -2599,7 +2599,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
             for (; r5 >= 0; r5--) {
                 if (g->isSlotActive(r5)) {
                     if (!g->isMyAid(r5)) {
-                        if (p->unk_f0[r5] == 0) {
+                        if (p->recvAct06[r5] == 0) {
                             r6 = FALSE;
                             break;
                         }
@@ -2614,7 +2614,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
                 if (g->unk_6c == 1) {
                     NH::Town_OnLoad();
                 }
-                p->unk_9d = 0x1a;
+                p->actStep = 0x1a;
             }
         }
         break;
@@ -2629,7 +2629,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
     case 23:
     case 24:
     case 25:
-        NH::SaveManager_RunSessionEnd(p, &p->unk_9d, 0xf, 0x15, NH::Comm_GetRemoteMask(), 1);
+        NH::SaveManager_RunSessionEnd(p, &p->actStep, 0xf, 0x15, NH::Comm_GetRemoteMask(), 1);
         break;
     default:
         NH::_ZN11SaveManager13func_020a15f8Ev(p);
@@ -2643,13 +2643,13 @@ extern "C" void SaveManager_EnterAct19(Unk_020a25d8 *p) {
 }
 
 void Unk_020a1c88::execAct19() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
-            unk_ce = NG::Comm_GetMemberMask();
-            unk_9d = 1;
+            memberMask = NG::Comm_GetMemberMask();
+            actStep = 1;
         }
         break;
     case 1:
@@ -2657,7 +2657,7 @@ void Unk_020a1c88::execAct19() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &unk_9d, 1);
+            NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &actStep, 1);
         }
         break;
     case 3:
@@ -2665,7 +2665,7 @@ void Unk_020a1c88::execAct19() {
             NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->unk_64)) {
             NG::_ZN11SaveManager22backupVillagerTransferEv(this);
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     case 4:
@@ -2676,7 +2676,7 @@ void Unk_020a1c88::execAct19() {
     case 9:
     case 10:
     case 11:
-        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &unk_9d, 4, 0xf, 0x15, 1, 1, 1);
+        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0xf, 0x15, 1, 1, 1);
         break;
     case 12:
         if (NG::Comm_IsConnectionLost(1)) {
@@ -2688,7 +2688,7 @@ void Unk_020a1c88::execAct19() {
             }
             if (r5) {
                 if (NG::CommCtrl_SendAct11()) {
-                    unk_9d = 0xd;
+                    actStep = 0xd;
                 }
             }
         }
@@ -2700,14 +2700,14 @@ void Unk_020a1c88::execAct19() {
             NG::_Z20NetOverlay_AssertAnyv();
             if (NG::Net_IsReadyToSend()) {
                 u32 t = NG::Comm_GetMemberMask();
-                if (unk_ce != t) {
+                if (memberMask != t) {
                     CommManager *r5;
                     NG::NetSession_RemoveSlot(NG::NetSession_GetLastSyncSlot());
                     r5 = NG::gCommManager;
                     r5->setMode(2);
                     r5->beginRecord();
                     r5->endRecord(6, 0);
-                    unk_9d = 0xe;
+                    actStep = 0xe;
                 }
             }
         }
@@ -2715,9 +2715,9 @@ void Unk_020a1c88::execAct19() {
     case 14:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (unk_e2) {
+        } else if (recvAct07) {
             NG::Weather_RerollRainSlant();
-            unk_9d = 0x1a;
+            actStep = 0x1a;
         }
         break;
     case 15:
@@ -2731,7 +2731,7 @@ void Unk_020a1c88::execAct19() {
     case 23:
     case 24:
     case 25:
-        NG::SaveManager_RunSessionEnd(this, &unk_9d, 0xf, 0x15, 1, 1);
+        NG::SaveManager_RunSessionEnd(this, &actStep, 0xf, 0x15, 1, 1);
         break;
     default:
         NG::_ZN11SaveManager13func_020a15f8Ev(this);
@@ -2745,7 +2745,7 @@ void Unk_020a1c88::enterAct1A() {
 }
 
 void Unk_020a1c88::execAct1A() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
@@ -2754,7 +2754,7 @@ void Unk_020a1c88::execAct1A() {
                 NG::VillagerTransfer_PlanRotate(this);
                 NG::LostChild_ResetAndPairAll(this);
             }
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1:
@@ -2762,14 +2762,14 @@ void Unk_020a1c88::execAct1A() {
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30413func_0209f390EPhjjj(this, &unk_9d, 1, 0x2e, 0x2e);
+            NG::_ZN12Unk_0209f30413func_0209f390EPhjjj(this, &actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
         } else if (NG::_ZN12Unk_0209f30413func_0209f344Ev(this)) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     case 4:
@@ -2789,10 +2789,10 @@ void Unk_020a1c88::execAct1A() {
                     NG::TownExchange_Clear(NG::TownExchange_GetForAid(r5 + 1));
                 }
                 NG::_ZN11SaveManager22backupVillagerTransferEv(this);
-                unk_9d = 5;
+                actStep = 5;
             }
         } else {
-            unk_9d = 5;
+            actStep = 5;
         }
         break;
     case 5:
@@ -2804,7 +2804,7 @@ void Unk_020a1c88::execAct1A() {
     case 11: {
         BOOL r5;
         if (NG::func_0209f23c()) r5 = TRUE; else r5 = FALSE;
-        NG::SaveManager_RunSyncedSaveHost(this, &unk_9d, 1, 5, 0x10, 0x16, 4, r5, NG::Comm_GetRemoteMask());
+        NG::SaveManager_RunSyncedSaveHost(this, &actStep, 1, 5, 0x10, 0x16, 4, r5, NG::Comm_GetRemoteMask());
         break;
     }
     case 12:
@@ -2815,9 +2815,9 @@ void Unk_020a1c88::execAct1A() {
             if (NG::Net_IsReadyToSend()) {
                 if (!NG::func_0209f23c()) {
                     NG::gCommManager->setMode(2);
-                    unk_9d = 0xe;
+                    actStep = 0xe;
                 } else {
-                    unk_9d = 0xd;
+                    actStep = 0xd;
                 }
             }
         }
@@ -2829,7 +2829,7 @@ void Unk_020a1c88::execAct1A() {
             CommManager *r5 = NG::gCommManager;
             r5->beginRecord();
             r5->endRecord(7, 5);
-            unk_9d = 0x1b;
+            actStep = 0x1b;
         }
         break;
     case 13:
@@ -2842,7 +2842,7 @@ void Unk_020a1c88::execAct1A() {
             for (; r5 >= 0; r5--) {
                 if (r7->isSlotActive(r5)) {
                     if (!r7->isMyAid(r5)) {
-                        if (!unk_f8[r5]) {
+                        if (!ctrlAct11[r5]) {
                             r6 = FALSE;
                             break;
                         }
@@ -2863,7 +2863,7 @@ void Unk_020a1c88::execAct1A() {
             }
             if (r6) {
                 if (NG::CommCtrl_SendAct12(NG::Comm_GetRemoteMask())) {
-                    unk_9d = 0xf;
+                    actStep = 0xf;
                 }
             }
         }
@@ -2881,7 +2881,7 @@ void Unk_020a1c88::execAct1A() {
             for (; r5 >= 0; r5--) {
                 if (r7->isSlotActive(r5)) {
                     if (!r7->isMyAid(r5)) {
-                        if (!unk_f0[r5]) {
+                        if (!recvAct06[r5]) {
                             r6 = FALSE;
                             break;
                         }
@@ -2892,7 +2892,7 @@ void Unk_020a1c88::execAct1A() {
             if (r6) {
                 NG::NetSession_ReturnToSolo(this, 7, 1);
                 NG::NetOverlay_Restore();
-                unk_9d = 0x1b;
+                actStep = 0x1b;
             }
         }
         break;
@@ -2907,7 +2907,7 @@ void Unk_020a1c88::execAct1A() {
     case 24:
     case 25:
     case 26:
-        NG::SaveManager_RunSessionEnd(this, &unk_9d, 0x10, 0x16, NG::Comm_GetRemoteMask(), 1);
+        NG::SaveManager_RunSessionEnd(this, &actStep, 0x10, 0x16, NG::Comm_GetRemoteMask(), 1);
         break;
     default: {
         u8 b;
@@ -2927,12 +2927,12 @@ void Unk_020a1c88::enterAct1B() {
 }
 
 void Unk_020a1c88::execAct1B() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1:
@@ -2940,7 +2940,7 @@ void Unk_020a1c88::execAct1B() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &unk_9d, 1);
+            NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &actStep, 1);
         }
         break;
     case 3:
@@ -2949,10 +2949,10 @@ void Unk_020a1c88::execAct1B() {
         } else if (NG::func_0209f23c()) {
             if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->unk_64)) {
                 NG::_ZN11SaveManager22backupVillagerTransferEv(this);
-                unk_9d = 4;
+                actStep = 4;
             }
         } else {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     case 4:
@@ -2966,7 +2966,7 @@ void Unk_020a1c88::execAct1B() {
         BOOL a, b;
         if (NG::func_0209f23c()) a = FALSE; else a = TRUE;
         if (NG::func_0209f23c()) b = TRUE; else b = FALSE;
-        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &unk_9d, 4, 0x11, 0x17, b, a, 1);
+        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0x11, 0x17, b, a, 1);
         break;
     }
     case 12:
@@ -2976,9 +2976,9 @@ void Unk_020a1c88::execAct1B() {
             NG::_Z20NetOverlay_AssertAnyv();
             if (NG::Net_IsReadyToSend()) {
                 if (!NG::func_0209f23c()) {
-                    unk_9d = 0xd;
+                    actStep = 0xd;
                 } else {
-                    unk_9d = 0xe;
+                    actStep = 0xe;
                 }
             }
         }
@@ -2986,9 +2986,9 @@ void Unk_020a1c88::execAct1B() {
     case 13:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (unk_e2) {
+        } else if (recvAct07) {
             NG::gCommManager->setMode(2);
-            unk_9d = 0x1c;
+            actStep = 0x1c;
         }
         break;
     case 14:
@@ -3010,7 +3010,7 @@ void Unk_020a1c88::execAct1B() {
             }
             if (r6) {
                 if (NG::CommCtrl_SendAct11()) {
-                    unk_9d = 0xf;
+                    actStep = 0xf;
                 }
             }
         }
@@ -3018,10 +3018,10 @@ void Unk_020a1c88::execAct1B() {
     case 15:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (unk_e1) {
+        } else if (ctrlAct12) {
             if (NG::CommCtrl_SendAct13()) {
                 NG::gCommManager->setErrorMode(2);
-                unk_9d = 0x10;
+                actStep = 0x10;
             }
         }
         break;
@@ -3031,7 +3031,7 @@ void Unk_020a1c88::execAct1B() {
             NG::NetSession_ReturnToSolo(this, NG::sSessionResidentIndex, 0);
             NG::NetOverlay_Restore();
             NG::sSessionResidentIndex = 7;
-            unk_9d = 0x1c;
+            actStep = 0x1c;
         }
         break;
     case 17:
@@ -3045,7 +3045,7 @@ void Unk_020a1c88::execAct1B() {
     case 25:
     case 26:
     case 27:
-        NG::SaveManager_RunSessionEnd(this, &unk_9d, 0x11, 0x17, 1, 1);
+        NG::SaveManager_RunSessionEnd(this, &actStep, 0x11, 0x17, 1, 1);
         break;
     default: {
         u8 b;
@@ -3086,7 +3086,7 @@ void Unk_020a1c88::enterAct1D() {
     }
     NG::_Z25NetOverlay_AssertWirelessv();
     NG::func_020ea720(buf, 10);
-    unk_fe = NG::PlayerDataArray_FindUnused(NG::gSavePlayers);
+    freePlayerSlot = NG::PlayerDataArray_FindUnused(NG::gSavePlayers);
 }
 
 void Unk_020a1c88::execAct1D() {
@@ -3129,21 +3129,21 @@ void Unk_020a1c88::execAct1D() {
 }
 
 void Unk_020a1c88::enterAct1E() {
-    unk_9d = 0;
+    actStep = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
-        unk_107 = 1;
+        noSaveData = 1;
     } else {
-        unk_107 = 0;
+        noSaveData = 0;
     }
 }
 
 void SaveManager::execAct1E() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else if (func_020a15c8(0)) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1:
@@ -3153,7 +3153,7 @@ void SaveManager::execAct1E() {
             s32 r = NF::func_020a0210();
             if (r > 0) {
                 if (r < 4) {
-                    unk_9d = 2;
+                    actStep = 2;
                 }
             }
         }
@@ -3162,14 +3162,14 @@ void SaveManager::execAct1E() {
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else if (unk_fd != 0) {
-            if (unk_107 == 0) {
+            if (noSaveData == 0) {
                 NF::SaveData_Setup(NF::gSaveData, 5);
                 NF::SaveData_Apply(NF::gSaveData);
             } else {
                 NF::_ZN8SaveData7setFlagEj(NF::gSaveData, 0x12);
             }
             NF::PlayerOptions_Commit();
-            unk_9d = 3;
+            actStep = 3;
         }
         break;
     case 3:
@@ -3178,9 +3178,9 @@ void SaveManager::execAct1E() {
         } else {
             s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
             if (r == 1) {
-                unk_9d = 0xb;
+                actStep = 0xb;
             } else if (r == 0) {
-                unk_9d = 4;
+                actStep = 4;
             }
         }
         break;
@@ -3190,10 +3190,10 @@ void SaveManager::execAct1E() {
         } else {
             s32 r = verifySlotsStep();
             if (r == 1) {
-                unk_9d = 0xb;
+                actStep = 0xb;
             } else if (r != 3) {
                 NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
-                unk_9d = 5;
+                actStep = 5;
             }
         }
         break;
@@ -3201,11 +3201,11 @@ void SaveManager::execAct1E() {
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else {
-            s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+            s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
             if (r == 1) {
-                unk_9d = 0xb;
+                actStep = 0xb;
             } else if (r == 0) {
-                unk_9d = 6;
+                actStep = 6;
             }
         }
         break;
@@ -3213,37 +3213,37 @@ void SaveManager::execAct1E() {
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else {
-            u32 t = unk_eb[NF::func_020a0210()];
+            u32 t = ctrlAct0E[NF::func_020a0210()];
             if (t == 1) {
                 NF::_ZN11SaveRecord416setStateValidAltEv(NF::gSaveFooter);
-                unk_eb[NF::func_020a0210()] = 0;
+                ctrlAct0E[NF::func_020a0210()] = 0;
                 NF::gCommManager->setErrorMode(2);
-                unk_9d = 7;
+                actStep = 7;
             } else if (t == 2) {
-                unk_9d = 0x11;
+                actStep = 0x11;
             }
         }
         break;
     case 7: {
         NF::Comm_IsConnectionLost(-1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0xb;
+            actStep = 0xb;
         } else if (r == 0) {
-            unk_9d = 8;
+            actStep = 8;
         }
         break;
     }
     case 8:
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
-            unk_9d = 0xa;
+            actStep = 0xa;
         } else {
             s32 i = NF::func_020a0210();
             if (NF::CommCtrl_SendAct0E(1, (u16)(1 << i))) {
                 NF::gCommManager->setErrorMode(0);
-                unk_9d = 9;
+                actStep = 9;
             }
         }
         break;
@@ -3253,19 +3253,19 @@ void SaveManager::execAct1E() {
             if (NF::Wifi_EndSession(this)) {
                 NF::NetOverlay_Restore();
             }
-            unk_9d = 0x16;
+            actStep = 0x16;
         }
         break;
     }
     case 10: {
         NF::Comm_IsConnectionLost(-1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0xb;
+            actStep = 0xb;
         } else if (r == 0) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0x11;
+            actStep = 0x11;
         }
         break;
     }
@@ -3281,7 +3281,7 @@ void SaveManager::execAct1E() {
     case 20:
     case 21: {
         s32 i = NF::func_020a0210();
-        NF::SaveManager_RunSessionEnd(this, &unk_9d, 0xb, 0x11, (u16)(1 << i), 1);
+        NF::SaveManager_RunSessionEnd(this, &actStep, 0xb, 0x11, (u16)(1 << i), 1);
         break;
     }
     default:
@@ -3294,39 +3294,39 @@ void SaveManager::execAct1E() {
 void SaveManager::enterAct1F() {
     NF::Net_GetMyAid(NF::_ZN12Unk_02097ff49clearFlagEj(NF::PlayerData_GetCurrent(), 2));
     NF::Comm_PrepareJoin();
-    unk_9d = 0;
+    actStep = 0;
 }
 
 void SaveManager::execAct1F() {
-    switch (unk_9d) {
+    switch (actStep) {
     case 0:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::Comm_SetLostFlag();
         } else if (NF::CommCtrl_SendAct14()) {
-            unk_9d = 1;
+            actStep = 1;
         }
         break;
     case 1:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::Comm_SetLostFlag();
-        } else if (NF::CommSend_PlayerDataToHost(&unk_d4)) {
-            unk_d4 = 0;
-            unk_9d = 2;
+        } else if (NF::CommSend_PlayerDataToHost(&sendChunk)) {
+            sendChunk = 0;
+            actStep = 2;
         }
         break;
     case 2:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::Comm_SetLostFlag();
-        } else if (NF::CommSend_LetterStorageToHost(&unk_d4)) {
-            unk_d4 = 0;
-            unk_9d = 3;
+        } else if (NF::CommSend_LetterStorageToHost(&sendChunk)) {
+            sendChunk = 0;
+            actStep = 3;
         }
         break;
     case 3:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::Comm_SetLostFlag();
         } else if (NF::CommCtrl_SendAct17()) {
-            unk_9d = 4;
+            actStep = 4;
         }
         break;
     case 4:
@@ -3334,10 +3334,10 @@ void SaveManager::execAct1F() {
             NF::Comm_SetLostFlag();
         } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
             NF::Hud_GetWallet()->freezeValue();
-            NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), unk_b8, 0x228c);
+            NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), playerDataCopy, 0x228c);
             NF::_ZN10PlayerData5resetEv(NF::PlayerData_GetCurrent());
             NF::_ZN8SaveData11resetPlayerEi(NF::gSaveData, NF::PlayerData_GetCurrentIndex());
-            unk_9d = 5;
+            actStep = 5;
         }
         break;
     case 5:
@@ -3346,44 +3346,44 @@ void SaveManager::execAct1F() {
         } else {
             s32 r = verifySlotsStep();
             if (r == 1) {
-                unk_9d = 0xb;
+                actStep = 0xb;
             } else if (r != 3) {
                 NF::gCommManager->setErrorMode(2);
-                unk_9d = 6;
+                actStep = 6;
             }
         }
         break;
     case 6: {
         NF::Comm_IsConnectionLost(1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0xb;
+            actStep = 0xb;
         } else if (r == 0) {
-            unk_9d = 7;
+            actStep = 7;
         }
         break;
     }
     case 7:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
-            unk_9d = 0xa;
+            actStep = 0xa;
         } else if (NF::CommCtrl_SendAct0E(1, 1)) {
-            unk_9d = 8;
+            actStep = 8;
         }
         break;
     case 8:
         if (NF::Comm_IsConnectionLost(1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
-            unk_9d = 0xa;
+            actStep = 0xa;
         } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
-            u32 t = unk_eb[0];
+            u32 t = ctrlAct0E[0];
             if (t == 1) {
                 NF::gCommManager->setErrorMode(0);
-                unk_9d = 9;
+                actStep = 9;
             } else if (t == 2) {
                 NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
-                unk_9d = 0xa;
+                actStep = 0xa;
             }
         }
         break;
@@ -3391,19 +3391,19 @@ void SaveManager::execAct1F() {
         if (NF::Wifi_EndSession(this)) {
             NF::NetOverlay_Restore();
         }
-        NF::MI_CpuCopy8(unk_b8, NF::PlayerData_GetCurrent(), 0x228c);
+        NF::MI_CpuCopy8(playerDataCopy, NF::PlayerData_GetCurrent(), 0x228c);
         NF::Hud_GetWallet()->unfreezeValue();
-        unk_9d = 0x16;
+        actStep = 0x16;
         break;
     case 10: {
         NF::Comm_IsConnectionLost(1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
+        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0xb;
+            actStep = 0xb;
         } else if (r == 0) {
             NF::gCommManager->setErrorMode(0);
-            unk_9d = 0x11;
+            actStep = 0x11;
         }
         break;
     }
@@ -3418,7 +3418,7 @@ void SaveManager::execAct1F() {
     case 19:
     case 20:
     case 21:
-        NF::SaveManager_RunSessionEnd(this, &unk_9d, 0xb, 0x11, 1, 1);
+        NF::SaveManager_RunSessionEnd(this, &actStep, 0xb, 0x11, 1, 1);
         break;
     default:
         NF::_ZN11SaveManager8setStateEi(this, 0);
@@ -3475,7 +3475,7 @@ void SaveManagerTalk::setOwner(u32 v) {
 
 void SaveManagerTalk::onMessageEnd() {
     void *o = NF::TalkWindow_Get(0);
-    switch (((u8 *)unk_04)[0x1a]) {
+    switch (((u8 *)fileName)[0x1a]) {
     case 0xa:
         NF::_ZN15TalkWindowState11lockAdvanceEv(o);
         break;
@@ -3506,31 +3506,31 @@ extern "C" void Save_StoreCurrentPlayerToResident(void) {
 void SaveManager::backupVillagerTransfer() {
     u8 *const g = NF::data_021e7f8c;
     NF::_ZN18TownExchangeRecord16incrementCounterEv(g);
-    Unk_020a14ac_Ns::MI_CpuCopy8(g, unk_bc, 0x84c);
+    Unk_020a14ac_Ns::MI_CpuCopy8(g, villagerTransferBackup, 0x84c);
 }
 
 void SaveManager::restoreVillagerTransfer() {
-    NF::MI_CpuCopy8(unk_bc, NF::data_021e7f8c, 0x84c);
+    NF::MI_CpuCopy8(villagerTransferBackup, NF::data_021e7f8c, 0x84c);
 }
 
 u32 SaveManager::func_020a148c() {
-    return unk_fe;
+    return freePlayerSlot;
 }
 
 u32 SaveManager::getTransferDest(u32 i) {
-    return unk_ff[i];
+    return transferDests[i];
 }
 
 void SaveManager::setTransferDest(u32 i, u8 v) {
-    unk_ff[i] = v;
+    transferDests[i] = v;
 }
 
 u32 SaveManager::isTransferReceived(u32 i) {
-    return unk_103[i];
+    return transferReceived[i];
 }
 
 void SaveManager::setTransferReceived(u32 i, u8 v) {
-    unk_103[i] = v;
+    transferReceived[i] = v;
 }
 
 AxMail sAxMailBuf;
@@ -3746,66 +3746,66 @@ s32 SaveManager::verifySlotsStep() {
     s32 r = 0;
     static Fn tbl[4] = {&SaveManager::verifyStepReset, &SaveManager::verifyStepSlot0, &SaveManager::verifyStepSlot1,
                         &SaveManager::verifyStepChoose};
-    if (tbl[unk_9c] != 0) {
-        r = (this->*tbl[unk_9c])();
+    if (tbl[slotStep] != 0) {
+        r = (this->*tbl[slotStep])();
     }
     if (r != 3) {
-        unk_9c = 0;
+        slotStep = 0;
         return r;
     }
     return 3;
 }
 
 s32 SaveManager::verifyStepReset() {
-    unk_109.hi = 3;
-    unk_109.lo = 3;
-    unk_10a.lo = 3;
-    unk_10a.hi = 3;
-    unk_9c = unk_9c + 1;
+    slotStatus.hi = 3;
+    slotStatus.lo = 3;
+    slotOrder.lo = 3;
+    slotOrder.hi = 3;
+    slotStep = slotStep + 1;
     return 3;
 }
 
 s32 SaveManager::verifyStepSlot0() {
-    unk_109.hi = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 0);
-    if (unk_109.hi == 3) {
+    slotStatus.hi = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 0);
+    if (slotStatus.hi == 3) {
         return 3;
     }
-    unk_9c = unk_9c + 1;
+    slotStep = slotStep + 1;
     return 3;
 }
 
 s32 SaveManager::verifyStepSlot1() {
-    unk_109.lo = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 1);
-    if (unk_109.lo == 3) {
+    slotStatus.lo = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 1);
+    if (slotStatus.lo == 3) {
         return 3;
     }
-    unk_9c = unk_9c + 1;
+    slotStep = slotStep + 1;
     return 3;
 }
 
 s32 SaveManager::verifyStepChoose() {
     s32 r = 0;
-    if (unk_109.lo == 1 || unk_109.hi == 1) {
+    if (slotStatus.lo == 1 || slotStatus.hi == 1) {
         r = 1;
-    } else if (unk_109.hi != 0 && unk_109.lo != 0) {
-        unk_10a.lo = 1;
-        unk_10a.hi = 0;
+    } else if (slotStatus.hi != 0 && slotStatus.lo != 0) {
+        slotOrder.lo = 1;
+        slotOrder.hi = 0;
         r = 4;
-    } else if (unk_109.hi != 0) {
-        unk_10a.lo = 1;
-        unk_10a.hi = 0;
-    } else if (unk_109.lo != 0) {
-        unk_10a.lo = 0;
-        unk_10a.hi = 1;
+    } else if (slotStatus.hi != 0) {
+        slotOrder.lo = 1;
+        slotOrder.hi = 0;
+    } else if (slotStatus.lo != 0) {
+        slotOrder.lo = 0;
+        slotOrder.hi = 1;
     } else {
-        unk_10a.lo = (u8)NF::Save_SlotStampsMatch();
-        if (unk_10a.lo == 1) {
-            unk_10a.hi = 0;
+        slotOrder.lo = (u8)NF::Save_SlotStampsMatch();
+        if (slotOrder.lo == 1) {
+            slotOrder.hi = 0;
         } else {
-            unk_10a.hi = 1;
+            slotOrder.hi = 1;
         }
     }
-    unk_9c = 6;
+    slotStep = 6;
     return r;
 }
 
@@ -3815,10 +3815,10 @@ s32 SaveSlotWriter::saveSlotStep(s32 arg) {
         &SaveSlotWriter::stepFindDirty, &SaveSlotWriter::stepWriteDirty, &SaveSlotWriter::stepCommit,
         *(Unk_020a09d8_State *)NE::__ptmf_null};
     s32 r = 3;
-    if (tbl[unk_9c]) r = (this->*tbl[unk_9c])(arg);
-    if (unk_9c == 6) {
+    if (tbl[slotStep]) r = (this->*tbl[slotStep])(arg);
+    if (slotStep == 6) {
         r = 0;
-        unk_9c = r;
+        slotStep = r;
     }
     return r;
 }
@@ -3828,25 +3828,25 @@ s32 SaveSlotWriter::stepPrepare(s32 idx) {
     a[0] = NE::gSaveData;
     a[1] = NE::gSaveData;
     a[2] = NE::SaveManager_GetLetterStorage();
-    NE::MI_CpuFill8(unk_ac, 0, NE::sSaveSlotSizes[idx]);
-    NE::MI_CpuCopy8(a[idx], unk_ac, NE::sSaveSlotDataSizes[idx]);
-    unk_9e = 0;
-    unk_a0 = -1;
-    unk_a4 = 0;
-    unk_9c = 1;
+    NE::MI_CpuFill8(workBuf, 0, NE::sSaveSlotSizes[idx]);
+    NE::MI_CpuCopy8(a[idx], workBuf, NE::sSaveSlotDataSizes[idx]);
+    blockCursor = 0;
+    dirtyFirstBlock = -1;
+    dirtySize = 0;
+    slotStep = 1;
     return 3;
 }
 
 s32 SaveSlotWriter::stepChecksum(s32 mode) {
     if (mode == 2) {
-        u8 *b = unk_ac;
+        u8 *b = workBuf;
         *(u16 *)(b + 0x11df2) = NE::Save_CalcChecksum(b, 0x11df4, *(u16 *)(b + 0x11df2));
     } else {
         s32 s = 0;
         if (mode == 1) s = verifySlotStep(s);
         if (s == 3) return 3;
         if (s == 1) return 1;
-        u8 *buf = unk_ac;
+        u8 *buf = workBuf;
         if (mode == 0) {
             NE::_ZN11SaveRecord48newStampEv(buf + 0x15fdc);
         } else if (s == 0) {
@@ -3870,7 +3870,7 @@ s32 SaveSlotWriter::stepChecksum(s32 mode) {
         NE::Save_Sum16(buf, 0x15fe0);
         NE::Save_Sum16(buf, 0x15fe0);
     }
-    unk_9c = 2;
+    slotStep = 2;
     return 3;
 }
 
@@ -3882,11 +3882,11 @@ s32 SaveSlotWriter::stepReadBack(s32 idx) {
         NE::Backup_EndAccess(NE::gBackup);
         return 1;
     } else if (r == 4) {
-        NE::MI_CpuFill8(unk_b0, 0, size);
-        NE::Backup_ReadAsync(NE::gBackup, unk_b0, size, off);
+        NE::MI_CpuFill8(readBackBuf, 0, size);
+        NE::Backup_ReadAsync(NE::gBackup, readBackBuf, size, off);
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
-        unk_9c = 3;
+        slotStep = 3;
     }
     return 3;
 }
@@ -3895,25 +3895,25 @@ s32 SaveSlotWriter::stepFindDirty(s32 idx) {
     s32 size = NE::sSaveSlotSizes[idx];
     s32 q = size / 0x200;
     s32 rem = size % 0x200;
-    while (unk_9e <= q) {
+    while (blockCursor <= q) {
         s32 n = 0x200;
-        if (unk_9e == q) n = rem;
-        s32 o = unk_9e << 9;
-        if (memEqual(unk_ac + o, unk_b0 + o, n) == 0) {
-            if (unk_a0 == -1) unk_a0 = unk_9e;
-            unk_a4 = unk_a4 + n;
-            if (unk_9e == q) {
-                unk_9c = 4;
-                unk_9e = unk_9e + 1;
+        if (blockCursor == q) n = rem;
+        s32 o = blockCursor << 9;
+        if (memEqual(workBuf + o, readBackBuf + o, n) == 0) {
+            if (dirtyFirstBlock == -1) dirtyFirstBlock = blockCursor;
+            dirtySize = dirtySize + n;
+            if (blockCursor == q) {
+                slotStep = 4;
+                blockCursor = blockCursor + 1;
                 return 3;
             }
-        } else if (unk_a4 != 0) {
-            unk_9c = 4;
+        } else if (dirtySize != 0) {
+            slotStep = 4;
             return 3;
         }
-        unk_9e = unk_9e + 1;
+        blockCursor = blockCursor + 1;
     }
-    if (unk_9e > q) unk_9c = 5;
+    if (blockCursor > q) slotStep = 5;
     return 3;
 }
 
@@ -3924,13 +3924,13 @@ s32 SaveSlotWriter::stepWriteDirty(s32 idx) {
         NE::Backup_EndAccess(NE::gBackup);
         return 1;
     } else if (r == 4) {
-        s32 o = unk_a0 << 9;
-        NE::Backup_WriteAsync(NE::gBackup, o + off, unk_ac + o, unk_a4);
+        s32 o = dirtyFirstBlock << 9;
+        NE::Backup_WriteAsync(NE::gBackup, o + off, workBuf + o, dirtySize);
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
-        unk_a0 = -1;
-        unk_a4 = 0;
-        unk_9c = 3;
+        dirtyFirstBlock = -1;
+        dirtySize = 0;
+        slotStep = 3;
     }
     return 3;
 }
@@ -3940,8 +3940,8 @@ s32 SaveSlotWriter::stepCommit(s32 idx) {
     a[0] = NE::gSaveData;
     a[1] = NE::gSaveData;
     a[2] = NE::SaveManager_GetLetterStorage();
-    NE::MI_CpuCopy8(unk_ac, a[idx], NE::sSaveSlotDataSizes[idx]);
-    unk_9c = 6;
+    NE::MI_CpuCopy8(workBuf, a[idx], NE::sSaveSlotDataSizes[idx]);
+    slotStep = 6;
     return 3;
 }
 
@@ -3953,8 +3953,8 @@ s32 SaveSlotWriter::eraseSlotStep(s32 idx) {
         NE::Backup_EndAccess(NE::gBackup);
         return 1;
     } else if (r == 4) {
-        NE::MI_CpuFill8(unk_ac, 0xff, size);
-        NE::Backup_WriteAsync(NE::gBackup, off, unk_ac, size);
+        NE::MI_CpuFill8(workBuf, 0xff, size);
+        NE::Backup_WriteAsync(NE::gBackup, off, workBuf, size);
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
         return 0;
@@ -3982,7 +3982,7 @@ extern "C" s32 Save_ReadAndCheckSlot(s32 idx, s32 flag) {
     s32 r = NE::Save_ReadSlotSync(idx, flag);
     if (r == 0) {
         u8 *buf;
-        if (flag != 0) buf = NE::gSaveManager->unk_ac;
+        if (flag != 0) buf = NE::gSaveManager->workBuf;
         else buf = NE::gSaveData;
         s32 t = NE::Save_Sum16(buf, 0x15fe0);
         if (NE::_ZN8SaveData7isValidEv(buf) == 0) return 4;
@@ -4016,7 +4016,7 @@ extern "C" BOOL Save_ReadSlotSync(u32 idx, s32 flag) {
     if (flag != 0 && idx <= 1) {
         SaveSlotWriter *g = NE::gSaveManager;
         if (g == NULL) return TRUE;
-        buf = g->unk_ac;
+        buf = g->workBuf;
     }
     if (NE::Backup_Read(NE::gBackup, buf, size, off) != 0) return TRUE;
     return FALSE;
@@ -4027,12 +4027,12 @@ s32 SaveSlotWriter::verifySlotStep(s32 idx) {
     s32 off = NE::sSaveSlotOffsets[idx];
     s32 size = NE::sSaveSlotSizes[idx];
     if (r == 4) {
-        NE::MI_CpuFill8(unk_b0, 0, size);
-        NE::Backup_ReadAsync(NE::gBackup, unk_b0, size, off);
+        NE::MI_CpuFill8(readBackBuf, 0, size);
+        NE::Backup_ReadAsync(NE::gBackup, readBackBuf, size, off);
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
-        if (NE::_ZN8SaveData7isValidEv(NE::gSaveManager->unk_b0) == 0) return 4;
-        if (NE::Save_Sum16(unk_b0, NE::sSaveSlotDataSizes[idx]) == 0) return 0;
+        if (NE::_ZN8SaveData7isValidEv(NE::gSaveManager->readBackBuf) == 0) return 4;
+        if (NE::Save_Sum16(readBackBuf, NE::sSaveSlotDataSizes[idx]) == 0) return 0;
         return 4;
     } else if (r == 1) {
         NE::Backup_EndAccess(NE::gBackup);
@@ -4095,12 +4095,12 @@ BOOL SaveSlotWriter::memEqual(u8 *p, u8 *q, s32 n) {
 
 void Unk_020a0990::startTalk(const char *str, u8 flag) {
     TalkWindowState *o = NE::TalkWindow_Get(0);
-    unk_54.vfunc_08();
-    unk_54.setFileName(str);
-    unk_54.unk_1e = flag;
+    talk.vfunc_08();
+    talk.setFileName(str);
+    talk.msgIndex = flag;
     o->lockAdvance();
-    o->attachRequest(&unk_54);
-    o->unk_08 = 1;
+    o->attachRequest(&talk);
+    o->nextState = 1;
 }
 
 extern "C" void SaveManager_RequestAct01(void) { NE::sSaveManagerRequest = 1; }
@@ -4139,44 +4139,44 @@ extern "C" void SaveManager_RequestAct1C(void) { NE::sSaveManagerRequest = 0x1c;
 
 extern "C" BOOL SaveManager_IsIdle(void) {
     SaveSlotWriter *p = NE::gSaveManager;
-    if (p != NULL && p->unk_50 == 0) return TRUE;
+    if (p != NULL && p->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct12Failed(void) {
     SaveSlotWriter *p = NE::gSaveManager;
-    if (p != NULL && p->unk_50 == 0x12 && p->unk_9d == 3) return TRUE;
+    if (p != NULL && p->act == 0x12 && p->actStep == 3) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_IsIdleForRoom(void) {
     SaveSlotWriter *p = NE::gSaveManager;
-    if (p != NULL && p->unk_50 == 0) return TRUE;
+    if (p != NULL && p->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_IsIdleAfterAct13() {
     Unk_021ed3b0 *g = ND::gSaveManager;
-    if (g && g->unk_50 == 0) return TRUE;
+    if (g && g->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct13Failed() {
     Unk_021ed3b0 *g = ND::gSaveManager;
-    if (g && g->unk_50 == 0x13 && g->unk_9d == 3) return TRUE;
+    if (g && g->act == 0x13 && g->actStep == 3) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_IsIdleAfterAct1F() {
     Unk_021ed3b0 *g = ND::gSaveManager;
-    if (g && g->unk_50 == 0) return TRUE;
+    if (g && g->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct1FFailed() {
     Unk_021ed3b0 *g = ND::gSaveManager;
-    if (g && g->unk_50 == 0x1f) {
-        u32 t = g->unk_9d;
+    if (g && g->act == 0x1f) {
+        u32 t = g->actStep;
         if (t == 0xf || t == 0x14) return TRUE;
     }
     return FALSE;
@@ -4277,14 +4277,14 @@ extern "C" void GameStart_SetupSave() {
         if (ND::GameStart_IsNewTown()) ND::_ZN8SaveData5resetEv(ND::gSaveData);
         if (ND::GameStart_IsMode3()) {
             Unk_020cbb18_ff4c *g = ND::gCommManager;
-            g->unk_68 = 0;
-            ND::PlayerSession_SetDataIndex(g->unk_68, 0);
+            g->localSlot = 0;
+            ND::PlayerSession_SetDataIndex(g->localSlot, 0);
         } else {
             void *p = ND::gSavePlayers;
             s32 t = ND::PlayerDataArray_FindUnused(p);
             Unk_020cbb18_ff4c *g = ND::gCommManager;
-            g->unk_68 = 0;
-            ND::PlayerSession_SetDataIndex(g->unk_68, t);
+            g->localSlot = 0;
+            ND::PlayerSession_SetDataIndex(g->localSlot, t);
             ND::PlayerDataArray_CreateResident(p, ND::data_020e252c, 0, t);
         }
     }
@@ -4309,17 +4309,17 @@ extern "C" u32 func_020a03c4() {
 
 extern "C" s32 SaveManager_GetLetterStorage() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->unk_c0;
+    return ND::gSaveManager->letterStorage;
 }
 
 extern "C" s32 SaveManager_GetTownCompressBuf() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->unk_c4;
+    return ND::gSaveManager->townCompressBuf;
 }
 
 extern "C" s32 SaveManager_GetTownCompressThread() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->unk_c8;
+    return ND::gSaveManager->townCompressThread;
 }
 
 extern "C" Unk_021ed3b0 *SaveManager_Get() { return ND::gSaveManager; }
@@ -4359,42 +4359,42 @@ extern "C" BOOL GameStart_IsMode4() {
 
 extern "C" void GameStart_Clear() { ND::sGameStartMode = 0; }
 
-extern "C" void func_020a02c8(Unk_021ed3b0 *p, u32 v) { p->unk_d0 = v; }
+extern "C" void func_020a02c8(Unk_021ed3b0 *p, u32 v) { p->hostMemberMask = v; }
 
-extern "C" void func_020a02c0(Unk_021ed3b0 *p, u32 v) { p->unk_d3 = v; }
+extern "C" void func_020a02c0(Unk_021ed3b0 *p, u32 v) { p->hostDataIndex = v; }
 
-extern "C" void func_020a02b8(Unk_021ed3b0 *p, u32 v) { p->unk_e0 = v; }
+extern "C" void func_020a02b8(Unk_021ed3b0 *p, u32 v) { p->joinDone = v; }
 
-extern "C" void func_020a02b0(Unk_021ed3b0 *p, u32 v) { p->unk_e1 = v; }
+extern "C" void func_020a02b0(Unk_021ed3b0 *p, u32 v) { p->ctrlAct12 = v; }
 
-extern "C" void func_020a02a8(Unk_021ed3b0 *p, u32 v) { p->unk_e2 = v; }
+extern "C" void func_020a02a8(Unk_021ed3b0 *p, u32 v) { p->recvAct07 = v; }
 
-extern "C" void func_020a02a0(Unk_021ed3b0 *p, u32 v) { p->unk_d5 = v; }
+extern "C" void func_020a02a0(Unk_021ed3b0 *p, u32 v) { p->joinReady = v; }
 
-extern "C" void func_020a0298(Unk_021ed3b0 *p, u32 v) { p->unk_d6 = v; }
+extern "C" void func_020a0298(Unk_021ed3b0 *p, u32 v) { p->dateTimeReceived = v; }
 
-extern "C" u8 *func_020a0294(Unk_021ed3b0 *p) { return p->unk_d8; }
+extern "C" u8 *func_020a0294(Unk_021ed3b0 *p) { return p->hostDateTime; }
 
-extern "C" void func_020a028c(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_e3[i] = v; }
+extern "C" void func_020a028c(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct04[i] = v; }
 
-extern "C" void func_020a0284(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_e7[i] = v; }
+extern "C" void func_020a0284(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct02[i] = v; }
 
-extern "C" void func_020a027c(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_eb[i] = v; }
+extern "C" void func_020a027c(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct0E[i] = v; }
 
 extern "C" void func_020a0268(Unk_021ed3b0 *p) {
     s32 i;
-    for (i = 3; i >= 0; i--) p->unk_eb[i] = 0;
+    for (i = 3; i >= 0; i--) p->ctrlAct0E[i] = 0;
 }
 
 extern "C" void func_020a0254(u32 v) {
-    if (ND::gSaveManager) ND::gSaveManager->unk_ef = v;
+    if (ND::gSaveManager) ND::gSaveManager->recvAct03 = v;
 }
 
-extern "C" void func_020a024c(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_f0[i] = v; }
+extern "C" void func_020a024c(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct06[i] = v; }
 
-extern "C" void func_020a0244(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_f4[i] = v; }
+extern "C" void func_020a0244(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct10[i] = v; }
 
-extern "C" void func_020a023c(Unk_021ed3b0 *p, s32 i, u32 v) { p->unk_f8[i] = v; }
+extern "C" void func_020a023c(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct11[i] = v; }
 
 extern "C" void func_020a0228(u32 v) {
     if (ND::gSaveManager) ND::gSaveManager->unk_fc = v;
@@ -4419,15 +4419,15 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     ND::Wifi_EndSession(a);
     if (b < 7) {
         g = ND::gCommManager;
-        ND::PlayerSession_ClearDataIndex(g->unk_68);
-        g->unk_68 = 0;
+        ND::PlayerSession_ClearDataIndex(g->localSlot);
+        g->localSlot = 0;
     }
     g = ND::gCommManager;
     ND::_ZN11CommManager14setMemberCountEj(g, 1);
     if (b < 7) {
-        ND::PlayerSession_SetDataIndex(g->unk_68, b);
+        ND::PlayerSession_SetDataIndex(g->localSlot, b);
     }
-    s = g->unk_68;
+    s = g->localSlot;
     ND::PlayerSession_GetDataIndex(s);
     for (i = 3; i >= 0; i--) {
         if (i != s) ND::PlayerSession_ClearDataIndex(i);
@@ -4725,7 +4725,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
                 if (i != 0) {
                     u32 bit = 1 << i;
                     if (mask & bit) {
-                        if (self->unk_f0[i] == 0) {
+                        if (self->recvAct06[i] == 0) {
                             flag = FALSE;
                             m = m | bit;
                             m = (u16)m;
@@ -4749,7 +4749,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
                 NC::Comm_SetLostFlag();
                 return 0x20;
             }
-            if (self->unk_eb[0]) {
+            if (self->ctrlAct0E[0]) {
                 if (NC::CommCtrl_SendAct13()) {
                     *st = base + 3;
                 }
@@ -4809,7 +4809,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
                 if (i != 0) {
                     u32 bit = 1 << i;
                     if (mask & bit) {
-                        if (self->unk_f0[i] == 0) {
+                        if (self->recvAct06[i] == 0) {
                             flag = FALSE;
                             m = m | bit;
                             m = (u16)m;
@@ -4870,7 +4870,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->unk_10a << 24) >> 28);
+        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->slotOrder << 24) >> 28);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4886,7 +4886,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
         o2 = NC::gCommManager;
         for (; i >= 0; i--) {
             if (o2->isSlotActive(i) && !o2->isMyAid(i)) {
-                u8 v = self->unk_eb[i];
+                u8 v = self->ctrlAct0E[i];
                 if (v == 0) {
                     r6 = 0;
                     break;
@@ -4925,7 +4925,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->unk_10a << 24) >> 28);
+        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->slotOrder << 24) >> 28);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4941,7 +4941,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
         o5 = NC::gCommManager;
         for (; i >= 0; i--) {
             if (o5->isSlotActive(i) && !o5->isMyAid(i)) {
-                u8 v = self->unk_eb[i];
+                u8 v = self->ctrlAct0E[i];
                 if (v == 0) {
                     r7 = 0;
                     break;
@@ -4985,7 +4985,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
         if (r == 1) {
             *p = fail;
         } else if (r != 3) {
-            NB::MI_CpuCopy8(NB::gSaveData, unk_b4, 0x15fe0);
+            NB::MI_CpuCopy8(NB::gSaveData, saveDataCopy, 0x15fe0);
             *p = base + 1;
         }
     } else if (v == base + 1) {
@@ -5032,11 +5032,11 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (unk_eb == 1) {
+        if (ctrlAct0E == 1) {
             NB::func_020a0268(this);
             NB::_ZN11SaveRecord416setStateValidAltEv(NB::gSaveFooter);
             *p = base + 5;
-        } else if (unk_eb == 2) {
+        } else if (ctrlAct0E == 2) {
             *p = a5;
         }
     } else if (v == base + 5) {
@@ -5049,7 +5049,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             *p = fail;
         } else if (r == 0) {
             if (a7 != 0) {
-                NB::MI_CpuCopy8(unk_b4, NB::gSaveData, 0x15fe0);
+                NB::MI_CpuCopy8(saveDataCopy, NB::gSaveData, 0x15fe0);
             }
             *p = base + 6;
         }
@@ -5066,9 +5066,9 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (unk_eb == 1) {
+        if (ctrlAct0E == 1) {
             *p = base + 8;
-        } else if (unk_eb == 2) {
+        } else if (ctrlAct0E == 2) {
             *p = a5;
         }
     }
@@ -5108,7 +5108,7 @@ BOOL Unk_0209f304::func_0209f344() {
     s32 i = 3;
     u8 *g = NB::gCommManager;
     for (; i >= 0; i--) {
-        if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0 && unk_f4[i] == 0) {
+        if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0 && ctrlAct10[i] == 0) {
             r = FALSE;
             break;
         }
@@ -5180,28 +5180,28 @@ extern "C" void NetOverlay_Restore(void) {
 }
 
 void TownCompressBuffer::compress() {
-    s32 r = NB::func_021164ec(NB::gSaveData, 0x15fe0, unk_04);
+    s32 r = NB::func_021164ec(NB::gSaveData, 0x15fe0, data);
     if (r == 0) {
-        unk_00 = 0;
-        NB::MI_CpuCopy8(NB::gSaveData, unk_04, 0x15fe0);
+        size = 0;
+        NB::MI_CpuCopy8(NB::gSaveData, data, 0x15fe0);
     } else {
-        unk_00 = r;
+        size = r;
     }
 }
 
 void TownCompressBuffer::decompress() {
     void *dst = NB::SaveManager_GetTownTransferBuf();
-    if (unk_00 != 0) {
+    if (size != 0) {
         u8 ctx[0x10];
-        NB::func_021163b0(ctx, dst, unk_04);
-        NB::func_021162b0(ctx, unk_08, unk_00 - 4);
+        NB::func_021163b0(ctx, dst, data);
+        NB::func_021162b0(ctx, dataBody, size - 4);
     } else {
-        NB::MI_CpuCopy8(unk_04, dst, 0x15fe0);
+        NB::MI_CpuCopy8(data, dst, 0x15fe0);
     }
 }
 
 u32 TownCompressBuffer::getSize() {
-    return unk_00;
+    return size;
 }
 
 extern "C" void TownCompressThread_Main(s32 a) {
@@ -5211,16 +5211,16 @@ extern "C" void TownCompressThread_Main(s32 a) {
     } else {
         ((TownCompressBuffer *)NB::SaveManager_GetTownCompressBuf())->decompress();
     }
-    ((TownCompressThread *)NB::SaveManager_GetTownCompressThread())->unk_10c8 = 1;
+    ((TownCompressThread *)NB::SaveManager_GetTownCompressThread())->done = 1;
     NB::OS_ExitThread();
 }
 
 void TownCompressThread::init() {
-    unk_c0 = 0x3039;
-    unk_10c4 = 0x3039;
-    unk_10c8 = 0;
+    stackGuardLow = 0x3039;
+    stackGuardHigh = 0x3039;
+    done = 0;
     NB::MI_CpuFill8(this, 0, 0xc0);
-    unk_64 = 2;
+    threadState = 2;
 }
 
 void TownCompressThread::kill() {
@@ -5230,12 +5230,12 @@ void TownCompressThread::kill() {
 }
 
 void TownCompressThread::start(u32 a) {
-    NB::OS_CreateThread(this, (void *)NB::TownCompressThread_Main, a, &unk_10c4, 0x1000, 0x1e);
+    NB::OS_CreateThread(this, (void *)NB::TownCompressThread_Main, a, &stackGuardHigh, 0x1000, 0x1e);
     NB::OS_WakeupThreadDirect(this);
 }
 
 u8 TownCompressThread::isDone() {
-    return unk_10c8;
+    return done;
 }
 
 extern "C" s32 Wifi_EndSession(void) {

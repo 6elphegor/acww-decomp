@@ -87,10 +87,10 @@ public:
     virtual BOOL postDraw();
     virtual ~Actor();
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -115,9 +115,9 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -129,8 +129,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -452,9 +452,9 @@ class TexVramSlot;
 
 class ModelResource {
 public:
-    u32 unk_04;
+    u32 fileData;
     u32 pad[10];
-    u8 unk_30;
+    u8 loadState;
     u8 unk_31;
     u8 pad2[2];
 
@@ -510,19 +510,19 @@ class AnimFrameCtrl {
 public:
     AnimFrameCtrl();
     virtual ~AnimFrameCtrl();
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
 public:
     ModelAnim();
     virtual ~ModelAnim();
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class FtrModelAnim : public ModelAnim {
@@ -1936,9 +1936,9 @@ u16 gFtrSoundNone = 0xffff;
 // @022091fc
 FxVec3 *FtrActor::getInteractionPos() {
     static FxVec3 v;
-    v.x = unk_5c[0];
-    v.y = unk_5c[1];
-    v.z = unk_5c[2];
+    v.x = position[0];
+    v.y = position[1];
+    v.z = position[2];
     u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o) {
         s32 i = *(u16 *)(o + 0x8e) >> 4;
@@ -2532,8 +2532,8 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         Unk_ov004_022077a4_Vec3 p1, p2, r;
         volatile Unk_ov004_022077a4_Vec3 q;
         if (!((FtrActor *)this)->isPreview()) {
-            FieldPos_FromBlockUnitCenter(unk_5c, 0, 0, f.bits.lo, f.bits.mid);
-            unk_5c[1] = FtrMgr_GetSurfaceHeightAtPos(unk_5c);
+            FieldPos_FromBlockUnitCenter(position, 0, 0, f.bits.lo, f.bits.mid);
+            position[1] = FtrMgr_GetSurfaceHeightAtPos(position);
             unk_14c = 0x1000;
             unk_150 = 0x1000;
             unk_154 = 0x1000;
@@ -2549,9 +2549,9 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             q.x = qx;
             q.y = qy;
             q.z = qz;
-            unk_5c[0] = p1.x + qx;
-            unk_5c[1] = p1.y + q.y;
-            unk_5c[2] = p1.z + q.z;
+            position[0] = p1.x + qx;
+            position[1] = p1.y + q.y;
+            position[2] = p1.z + q.z;
             unk_14c = 0x400;
             unk_150 = 0x400;
             unk_154 = 0x400;
@@ -2559,7 +2559,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             sFtrPreviewPitch = func_020e7b98(r.z, r.y) - 0xb000;
             sFtrPreviewYaw = func_020e7b98(r.x, r.z) + 0x8000;
         }
-        unk_8e = f.bits.dir << 14;
+        rotY = f.bits.dir << 14;
         unk_280 = f.bits.id;
         if (unk_280 >= 0x6e9) {
             unk_280 = 0x6e8;
@@ -2567,9 +2567,9 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         f.tmp = Item_MakeFurniture(unk_280, 0);
         unk_284 = f.bits.flag;
         if (!((FtrActor *)this)->isPreview() && unk_284 == 0) {
-            unk_5c[1] = 0;
+            position[1] = 0;
             if (Scene_GetCurrent() == 10) {
-                unk_5c[1] = FtrMgr_GetSurfaceHeightAtPos(unk_5c);
+                position[1] = FtrMgr_GetSurfaceHeightAtPos(position);
             }
         }
         unk_77c = FtrInfo_GetDmaUnk02(unk_280);
@@ -2583,11 +2583,11 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         unk_790 = FtrInfo_GetIndoorFlagPair(unk_280);
         if (!((FtrActor *)this)->isPreview()) {
             if (unk_780 == 2) {
-                unk_5c[0] += 0x1000;
-                unk_5c[2] += 0x1000;
+                position[0] += 0x1000;
+                position[2] += 0x1000;
             }
             if (unk_284 == 1) {
-                ((FtrStackLink *)(unk_178))->attachAt(f.bits.lo, f.bits.mid, unk_8e);
+                ((FtrStackLink *)(unk_178))->attachAt(f.bits.lo, f.bits.mid, rotY);
             }
         }
         FtrActor_UpdateMtx((Self *)this);
@@ -2634,9 +2634,9 @@ void Unk_ov004_022077a4::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
     Unk_ov004_022077a4_Vec3 d;
     Unk_ov004_022077a4_Vec3 e;
     s32 ox, oy;
-    c.x = unk_5c[0];
-    c.y = unk_5c[1];
-    c.z = unk_5c[2];
+    c.x = position[0];
+    c.y = position[1];
+    c.z = position[2];
     if (x != 0) {
         VEC_Add(&c, x, &c);
     }
@@ -2765,7 +2765,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
             FtrActor_MakeItemForAngle(&b, this, ang);
             a = b;
         } else {
-            FtrActor_MakeItemForAngle(&c, this, (s16)(unk_8e + y));
+            FtrActor_MakeItemForAngle(&c, this, (s16)(rotY + y));
             a = c;
         }
         ((void (*)(u32))FtrMgr_IsSaleMode)(Scene_GetCurrent());
@@ -3143,7 +3143,7 @@ void FtrActor::spawnEffectAtCorner(s32 a) {
     s32 r[3];
     FtrActor_GetCorner(this, p, a);
     FtrActor_GetCenter(this, (Vec3 *)q);
-    s32 y = unk_5c[1];
+    s32 y = position[1];
     r[0] = (p[0] + q[0]) >> 1;
     r[1] = y;
     r[2] = (p[2] + q[2]) >> 1;
@@ -3224,7 +3224,7 @@ FtrModelAnim::~FtrModelAnim() {
 
 // @02206e74
 u32 FtrModelAnim::getAnmObj() {
-    return unk_18;
+    return anmObj;
 }
 
 // @02206e38
@@ -4260,7 +4260,7 @@ u8 FtrVisNodes::isVisible() { return unk_04; }
 // @02205954
 BOOL FtrActor::startRotate(s32 a) {
     if (_ZN8FtrActor11canRotateByEi(this)) {
-        unk_168 = unk_8e + a;
+        unk_168 = rotY + a;
         setAct(2);
         PlayerActor_PlayLocalSe(0x4c4);
         return TRUE;
@@ -4277,7 +4277,7 @@ BOOL FtrActor::startPush(s16 a) {
     func_020e93a0(&v, a);
     if (canMoveBy((s32)&v)) {
         Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)unk_5c, &v);
+        func_01ffd070(&w, (Vec3 *)position, &v);
         unk_16c[0] = w.x;
         unk_16c[1] = w.y;
         unk_16c[2] = w.z;
@@ -4301,7 +4301,7 @@ BOOL FtrActor::startPull(s16 a) {
     func_020e93a0(&v, (s16)(a + 0x8000));
     if (canMoveBy((s32)&v)) {
         Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)unk_5c, &v);
+        func_01ffd070(&w, (Vec3 *)position, &v);
         unk_16c[0] = w.x;
         unk_16c[1] = w.y;
         unk_16c[2] = w.z;
@@ -4484,7 +4484,7 @@ BOOL FtrActor::execIdle() {}
 // @022052f4
 BOOL FtrActor::enterRotate() {
     ((FtrTopItems *)unk_188)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
-    s32 d = (s16)(unk_168 - unk_8e);
+    s32 d = (s16)(unk_168 - rotY);
     ((Unk_ov004_022077a4 *)this)->moveTiles(0, d);
     if (d < 0) d = 1; else d = 0;
     VCALL98(this, d);
@@ -4504,7 +4504,7 @@ BOOL FtrActor::enterRotate() {
 
 // @0220521c
 BOOL FtrActor::execRotate() {
-    s32 d = (s16)(unk_168 - unk_8e);
+    s32 d = (s16)(unk_168 - rotY);
     BOOL neg;
     if (d < 0) neg = TRUE; else neg = FALSE;
     VCALL9C(this, neg);
@@ -4519,7 +4519,7 @@ BOOL FtrActor::execRotate() {
         }
         v.release();
     }
-    if (func_020e7530(&unk_8e, unk_168, 0x700)) {
+    if (func_020e7530(&rotY, unk_168, 0x700)) {
         setAct(1);
         ((FtrTopItems *)unk_188)->dropAll((Unk_ov004_02205c80_Obj *)this);
     }
@@ -4528,12 +4528,12 @@ BOOL FtrActor::execRotate() {
 // @022051a4
 BOOL FtrActor::enterPush() {
     Unk_ov004_0224882c_Buf buf;
-    func_020e9960(&buf, unk_16c, unk_5c);
+    func_020e9960(&buf, unk_16c, position);
     ((FtrTopItems *)unk_188)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
     ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
-        if (FtrMoveAnim_StartPush(g, unk_24c, unk_5c, unk_168)) {
+        if (FtrMoveAnim_StartPush(g, unk_24c, position, unk_168)) {
             VCALL94(this, 1);
             spawnActorC0AtTile(0);
             return TRUE;
@@ -4548,15 +4548,15 @@ void FtrActor::execPush() {
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_Step(g, unk_24c, buf.v)) {
-            unk_5c[0] = unk_16c[0];
-            unk_5c[1] = unk_16c[1];
-            unk_5c[2] = unk_16c[2];
+            position[0] = unk_16c[0];
+            position[1] = unk_16c[1];
+            position[2] = unk_16c[2];
             setAct(1);
             ((FtrTopItems *)unk_188)->dropAll((Unk_ov004_02205c80_Obj *)this);
         } else {
-            unk_5c[0] = buf.v[0];
-            unk_5c[1] = buf.v[1];
-            unk_5c[2] = buf.v[2];
+            position[0] = buf.v[0];
+            position[1] = buf.v[1];
+            position[2] = buf.v[2];
         }
     }
 }
@@ -4564,12 +4564,12 @@ void FtrActor::execPush() {
 // @022050c0
 BOOL FtrActor::enterPull() {
     Unk_ov004_0224882c_Buf buf;
-    func_020e9960(&buf, unk_16c, unk_5c);
+    func_020e9960(&buf, unk_16c, position);
     ((FtrTopItems *)unk_188)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
     ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
-        if (FtrMoveAnim_StartPull(g, unk_24c, unk_5c, unk_168)) {
+        if (FtrMoveAnim_StartPull(g, unk_24c, position, unk_168)) {
             VCALL94(this, 0);
             spawnActorC0AtTile(1);
             return TRUE;
@@ -4660,7 +4660,7 @@ BOOL FtrActor::enterPreview() {
 // ================================================================ FtrActor
 void FtrActor::execPreview() {
     if (unk_77c != 0x23 && unk_77c != 0x24 && unk_77c != 0x25) {
-        unk_8e += 0x400;
+        rotY += 0x400;
     }
     FtrActor_GetFtrIndex(this);
     s32 v = FX_Div(FtrInfo_GetDmaUnk05Fx(), 0x64000) >> 2;

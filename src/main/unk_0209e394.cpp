@@ -12,9 +12,9 @@ public:
     void openChoices(s32 v);
     void detachRequest();
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x00 */ u32 index;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ u32 nextState;
 };
 
 class MsgRequest {
@@ -22,8 +22,8 @@ public:
     MsgRequest();
     virtual ~MsgRequest();
     virtual void vfunc_08();
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -559,16 +559,16 @@ void SaveMenu::updateOpenTalk() {
         p->vfunc_08();
         if (GameStart_IsNewTown() != 0 || GameStart_IsNewResident() != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence4");
-            talk.unk_1e = 4;
+            talk.msgIndex = 4;
         } else if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
-            talk.unk_1e = 4;
+            talk.msgIndex = 4;
         } else {
             _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
-            talk.unk_1e = 0;
+            talk.msgIndex = 0;
         }
         _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &talk);
-        o->unk_08 = 1;
+        o->nextState = 1;
         setState(2);
     } else {
         setState(0);
@@ -579,7 +579,7 @@ void SaveMenu::enterTalking() {}
 
 void SaveMenu::updateTalking() {
     TalkWindowState *o = TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         TalkRequest_FinishSaveMenu();
         setState(0);
@@ -590,7 +590,7 @@ void SaveMenu::enterQuitting() {}
 
 void SaveMenu::updateQuitting() {
     TalkWindowState *o = TalkWindow_Get(0);
-    if (o->unk_04 == 0) {
+    if (o->state == 0) {
         o->detachRequest();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
         if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
@@ -667,7 +667,7 @@ void SaveMenuTalk::setOwner(SaveMenu *owner) {
 }
 
 void SaveMenuTalk::onMessageEnd() {
-    if (unk_1e == 0) {
+    if (msgIndex == 0) {
         TalkWindowState *o = (TalkWindowState *)unk_3c;
         void *h = o->getChoiceList();
         _ZN10ChoiceList5resetEii(h, 2, 1);
@@ -688,7 +688,7 @@ void SaveMenuTalk::onMessageEnd() {
 void SaveMenuTalk::onChoice() {
     TalkWindowState *o = (TalkWindowState *)unk_3c;
     s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 4:
         switch (r) {
         case 0:

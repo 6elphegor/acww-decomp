@@ -70,9 +70,9 @@ public:
 
 class TexVramSlot {
 public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 texKeyBase;
+    u32 tex4x4KeyBase;
+    u32 plttKeyBase;
     u8 unk_10;
     u8 unk_11;
 
@@ -84,12 +84,12 @@ public:
 
 class ModelResource {
 public:
-    u32 unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    TexVramTask unk_14;
-    u8 unk_30;
+    u32 fileData;
+    void *fileHeap;
+    void *model;
+    void *texture;
+    TexVramTask texVramTask;
+    u8 loadState;
     u8 unk_31;
 
     ModelResource();
@@ -110,37 +110,37 @@ static inline BOOL Unk_02055014_IsTwo(u8 v) {
 }
 
 void TexVramSlot::setKeys(u32 a, u32 b, u32 c) {
-    unk_04 = a;
-    unk_08 = b;
-    unk_0c = c;
+    texKeyBase = a;
+    tex4x4KeyBase = b;
+    plttKeyBase = c;
     unk_11 = 1;
 }
 
 ModelResource::ModelResource() {
-    unk_04 = 0;
-    unk_08 = NULL;
-    unk_0c = NULL;
-    unk_10 = NULL;
-    unk_30 = 0;
+    fileData = 0;
+    fileHeap = NULL;
+    model = NULL;
+    texture = NULL;
+    loadState = 0;
     unk_31 = 0;
 }
 
 ModelResource::~ModelResource() {}
 
 void ModelResource::release(void) {
-    if (unk_04 != 0) {
-        Heap_Free(unk_08, (void *)unk_04);
+    if (fileData != 0) {
+        Heap_Free(fileHeap, (void *)fileData);
     }
-    unk_04 = 0;
-    unk_08 = NULL;
-    unk_0c = NULL;
-    unk_10 = NULL;
-    unk_30 = 0;
-    unk_14.cancel();
+    fileData = 0;
+    fileHeap = NULL;
+    model = NULL;
+    texture = NULL;
+    loadState = 0;
+    texVramTask.cancel();
 }
 
 u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
-    u32 st = unk_30;
+    u32 st = loadState;
     if (st == 3) {
         return st;
     }
@@ -148,63 +148,63 @@ u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
         heap = gCurrentHeap;
     }
     if (st == 0) {
-        unk_04 = (u32)File_LoadAlloc(res, heap, -4, 0);
-        unk_08 = heap;
-        void *q = NNS_G3dGetTex((void *)unk_04);
+        fileData = (u32)File_LoadAlloc(res, heap, -4, 0);
+        fileHeap = heap;
+        void *q = NNS_G3dGetTex((void *)fileData);
         b->relocateTexture(q);
-        unk_14.requestTexResource((u32 *)q, 1);
-        unk_30 = 1;
-        return unk_30;
+        texVramTask.requestTexResource((u32 *)q, 1);
+        loadState = 1;
+        return loadState;
     }
     if (st == 1) {
-        if (!Unk_02055014_IsTwo(unk_14.unk_0d)) {
+        if (!Unk_02055014_IsTwo(texVramTask.unk_0d)) {
             return st;
         }
-        unk_30 = 2;
+        loadState = 2;
     }
-    if (unk_30 == 2) {
-        u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)unk_04));
-        unk_0c = Gfx3d_CopyModel(p, tex);
-        void *q = NNS_G3dGetTex((void *)unk_04);
-        NNS_G3dBindMdlTex(unk_0c, q);
-        NNS_G3dBindMdlPltt(unk_0c, q);
-        Heap_Free(unk_08, (void *)unk_04);
-        unk_08 = NULL;
-        unk_04 = 0;
-        unk_30 = 3;
+    if (loadState == 2) {
+        u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)fileData));
+        model = Gfx3d_CopyModel(p, tex);
+        void *q = NNS_G3dGetTex((void *)fileData);
+        NNS_G3dBindMdlTex(model, q);
+        NNS_G3dBindMdlPltt(model, q);
+        Heap_Free(fileHeap, (void *)fileData);
+        fileHeap = NULL;
+        fileData = 0;
+        loadState = 3;
     }
-    return unk_30;
+    return loadState;
 }
 
 u32 ModelResource::loadTexture(void *a, TexVramSlot *b, void *c) {
-    u32 st = unk_30;
+    u32 st = loadState;
     if (st == 3) {
         return st;
     }
     if (st == 0) {
         b->relocateTexture(a);
-        unk_14.requestTexResource((u32 *)a, 1);
-        unk_30 = 1;
-        return unk_30;
+        texVramTask.requestTexResource((u32 *)a, 1);
+        loadState = 1;
+        return loadState;
     }
     if (st == 1) {
-        if (!Unk_02055014_IsTwo(unk_14.unk_0d)) {
+        if (!Unk_02055014_IsTwo(texVramTask.unk_0d)) {
             return st;
         }
-        unk_30 = 2;
+        loadState = 2;
     }
-    if (unk_30 == 2) {
-        unk_10 = Gfx3d_CopyTex(a, c);
-        unk_30 = 3;
+    if (loadState == 2) {
+        texture = Gfx3d_CopyTex(a, c);
+        loadState = 3;
     }
-    return unk_30;
+    return loadState;
 }
 
 void *ModelResource::getModel(void) {
-    return unk_0c;
+    return model;
 }
 
 void *ModelResource::getTexture(void) {
-    return unk_10;
+    return texture;
 }
 

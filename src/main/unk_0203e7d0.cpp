@@ -85,11 +85,11 @@ struct Unk_0203e5d0_Node {
 };
 
 struct Unk_0203e5d0_List {
-    /* 0x00 */ Unk_0203e5d0_Node *unk_00;
-    /* 0x04 */ u32 unk_04;
+    /* 0x00 */ Unk_0203e5d0_Node *head;
+    /* 0x04 */ u32 tail;
     Unk_0203e5d0_List() {
-        unk_00 = 0;
-        unk_04 = 0;
+        head = 0;
+        tail = 0;
     }
 };
 
@@ -100,7 +100,7 @@ extern u8 sCharInteractSyncResult;
 
 struct Unk_0203e938_Net {
     /* 0x00 */ u8 pad_00[0x64];
-    /* 0x64 */ u32 unk_64;
+    /* 0x64 */ u32 myAid;
 };
 
 struct Unk_0203e4f0_Vec {
@@ -327,8 +327,8 @@ extern "C" s32 CharInteractSync_Check(u32 id) {
     if (!_ZN11CommManager8isOnlineEv(o)) {
         return 2;
     }
-    if (o->unk_64 == 0) {
-        if (CharInteractSync_IsFree((u8)o->unk_64, id)) {
+    if (o->myAid == 0) {
+        if (CharInteractSync_IsFree((u8)o->myAid, id)) {
             return 2;
         }
         return 0;
@@ -339,8 +339,8 @@ extern "C" s32 CharInteractSync_Check(u32 id) {
 extern "C" void CharInteractSync_RequestLock(u32 id) {
     Unk_0203e938_Net *o = gCommManager;
     if (_ZN11CommManager8isOnlineEv(o)) {
-        if (o->unk_64 == 0) {
-            sCharInteractLockIds[o->unk_64] = id;
+        if (o->myAid == 0) {
+            sCharInteractLockIds[o->myAid] = id;
         } else {
             u8 buf[5];
             sCharInteractSyncResult = 0;
@@ -360,7 +360,7 @@ extern "C" void CharInteractSync_RequestLock(u32 id) {
 extern "C" void CharInteractSync_ReleaseLock(void) {
     Unk_0203e938_Net *o = gCommManager;
     if (_ZN11CommManager8isOnlineEv(o)) {
-        if (o->unk_64 == 0) {
+        if (o->myAid == 0) {
             CharInteractSync_ClearLock(0);
         } else {
             CharInteractSync_SendReply(3, 0);

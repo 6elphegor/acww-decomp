@@ -20,7 +20,7 @@ public:
     virtual BOOL vfunc_58();
     virtual BOOL vfunc_5c(Unk_0205f8d4_Vec *out);
     u8 pad_50[0xc];
-    Unk_0205f8d4_Vec unk_5c;
+    Unk_0205f8d4_Vec position;
 };
 
 // Local scratch object filled by _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii and cleaned by GroundInfo_Destruct.
@@ -616,7 +616,7 @@ void FishBobber::setState(s32 state)
     case 7: {
         Unk_0205f8d4_Vec a, b;
         if (!unk_28->vfunc_5c(&unk_1c)) {
-            Unk_0205f8d4_Vec *pv = &unk_28->unk_5c;
+            Unk_0205f8d4_Vec *pv = &unk_28->position;
             unk_1c.x = pv->x;
             unk_1c.y = pv->y;
             unk_1c.z = pv->z;
@@ -640,7 +640,7 @@ void FishBobber::setState(s32 state)
     case 8: {
         Unk_0205f8d4_Vec c, d;
         if (!unk_28->vfunc_5c(&unk_1c)) {
-            Unk_0205f8d4_Vec *pv = &unk_28->unk_5c;
+            Unk_0205f8d4_Vec *pv = &unk_28->position;
             unk_1c.x = pv->x;
             unk_1c.y = pv->y;
             unk_1c.z = pv->z;

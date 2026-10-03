@@ -279,9 +279,9 @@ public:
     BOOL hasItemOnTop();
 
     /* 0x04 */ u8 pad_04[0x5c - 4];
-    /* 0x5c */ Unk_ov004_Vec3 unk_5c;
+    /* 0x5c */ Unk_ov004_Vec3 position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x14c - 0x90];
     /* 0x14c */ s32 unk_14c;
     /* 0x150 */ u8 pad_150[0x284 - 0x150];
@@ -1889,9 +1889,9 @@ extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y) {
     FtrActor *e = FtrActorGrid_GetInstance()->getActor(x, y, 0);
     if (e != NULL) {
         if (e->unk_788 == 1) {
-            return e->unk_5c.y;
+            return e->position.y;
         }
-        return e->unk_78c + e->unk_5c.y;
+        return e->unk_78c + e->position.y;
     }
     Unk_0203389c_Vec v;
     GroundInfo g;
@@ -4137,7 +4137,7 @@ extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos,
 extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) {
     FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindFacingFurniture(a, b, &o->unk_5c, o->unk_8e, c, d);
+        return FtrMgr_FindFacingFurniture(a, b, &o->position, o->rotY, c, d);
     }
     return -1;
 }
@@ -4424,7 +4424,7 @@ testL:
 extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
     FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindPlacement(a, b, &o->unk_5c, o->unk_8e, c);
+        return FtrMgr_FindPlacement(a, b, &o->position, o->rotY, c);
     }
     return 0;
 }

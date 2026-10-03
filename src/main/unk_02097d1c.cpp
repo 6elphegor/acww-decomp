@@ -152,7 +152,7 @@ class PlayerPatterns {
 public:
     PlayerPatterns();
     ~PlayerPatterns();
-    u8 unk_00[0x1148];
+    u8 patterns[0x1148];
 };
 
 class Letter {
@@ -197,36 +197,36 @@ public:
     PlayerData();
     ~PlayerData();
 
-    /* 0x1148 */ Unk_0209865c_Grp unk_1148;
-    /* 0x1b40 */ u8 unk_1b40[8];
-    /* 0x1b48 */ u8 unk_1b48[0x123];
-    /* 0x1c6b */ u8 unk_1c6b[1];
-    /* 0x1c6c */ u8 unk_1c6c[0xf8];
-    /* 0x1d64 */ u8 unk_1d64[0xac];
-    /* 0x1e10 */ u8 unk_1e10[0x50];
-    /* 0x1e60 */ u8 unk_1e60[0x384];
-    /* 0x21e4 */ u8 unk_21e4[8];
-    /* 0x21ec */ u8 unk_21ec[4];
-    /* 0x21f0 */ u8 unk_21f0[0x18];
-    /* 0x2208 */ u8 unk_2208[2];
-    /* 0x220a */ u16 unk_220a;
-    /* 0x220c */ u16 unk_220c;
-    /* 0x220e */ u16 unk_220e;
-    /* 0x2210 */ u16 unk_2210;
-    /* 0x2212 */ u16 unk_2212;
-    /* 0x2214 */ u16 unk_2214;
-    /* 0x2216 */ s16 unk_2216;
-    /* 0x2218 */ u8 unk_2218[2];
-    /* 0x221a */ u8 unk_221a[0x11];
-    /* 0x222b */ u8 unk_222b[5];
-    /* 0x2230 */ u8 unk_2230[0xc];
-    /* 0x223c */ Unk_0209865c_Nib unk_223c;
-    /* 0x223d */ Unk_0209865c_Tri unk_223d;
-    /* 0x223e */ u8 unk_223e[0x15];
-    /* 0x2253 */ u8 unk_2253;
+    /* 0x1148 */ Unk_0209865c_Grp inventory;
+    /* 0x1b40 */ u8 wallet[8];
+    /* 0x1b48 */ u8 catalog[0x123];
+    /* 0x1c6b */ u8 options[1];
+    /* 0x1c6c */ u8 futureLetter[0xf8];
+    /* 0x1d64 */ u8 errands[0xac];
+    /* 0x1e10 */ u8 wifiUserData[0x50];
+    /* 0x1e60 */ u8 friendList[0x384];
+    /* 0x21e4 */ u8 bank[8];
+    /* 0x21ec */ u8 emotions[4];
+    /* 0x21f0 */ u8 dailyTalkFlags[0x18];
+    /* 0x2208 */ u8 nookPoints[2];
+    /* 0x220a */ u16 heldItem;
+    /* 0x220c */ u16 shirt;
+    /* 0x220e */ u16 hat;
+    /* 0x2210 */ u16 faceItem;
+    /* 0x2212 */ u16 bed;
+    /* 0x2214 */ u16 inventoryBackground;
+    /* 0x2216 */ s16 lastPlayDate;
+    /* 0x2218 */ u8 birthday[2];
+    /* 0x221a */ u8 spNpcRecord[0x11];
+    /* 0x222b */ u8 dramaRecord[5];
+    /* 0x2230 */ u8 lostChildRecord[0xc];
+    /* 0x223c */ Unk_0209865c_Nib faceHair;
+    /* 0x223d */ Unk_0209865c_Tri hairColorTanFortune;
+    /* 0x223e */ u8 motherLetterState[0x15];
+    /* 0x2253 */ u8 birthdayTalkYear;
     /* 0x2254 */ u8 unk_2254[8];
-    /* 0x225c */ u8 unk_225c[0x1a];
-    /* 0x2276 */ u8 unk_2276[0x16];
+    /* 0x225c */ u8 foreignVillagerRecord[0x1a];
+    /* 0x2276 */ u8 id[0x16];
 
     void *getErrands();
     void *func_02098668();
@@ -331,130 +331,130 @@ struct Unk_020981f8_Pos { u8 a, b, c, d; };
 struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){} };
 
 PlayerData::PlayerData() {
-    Catalog_Construct(&unk_1b48);
-    PlayerOptions_ConstructInPlayer(&unk_1c6b);
-    FutureLetter_Construct(&unk_1c6c);
-    _ZN13PlayerErrandsC1Ev(&unk_1d64);
-    PlayerWifiData_Construct(&unk_1e10);
-    FriendList_Construct(&unk_1e60);
-    PlayerBank_Construct(&unk_21e4);
-    PlayerDailyTalkFlags_Construct(&unk_21f0);
-    NookPoints_Create(&unk_2208);
-    unk_220a = 0xfff1;
-    unk_220c = 0xfff1;
-    unk_220e = 0xfff1;
-    unk_2210 = 0xfff1;
-    unk_2212 = 0xfff1;
-    unk_2214 = 0xfff1;
-    PlayerSpNpcRecord_Construct(&unk_221a);
-    func_020877dc(&unk_222b);
-    LostChildRecord_Construct(&unk_2230);
-    func_02096e24(&unk_223e);
-    _ZN21ForeignVillagerRecordC1Ev(&unk_225c);
-    _ZN8PlayerIdC1EPv(&unk_2276);
+    Catalog_Construct(&catalog);
+    PlayerOptions_ConstructInPlayer(&options);
+    FutureLetter_Construct(&futureLetter);
+    _ZN13PlayerErrandsC1Ev(&errands);
+    PlayerWifiData_Construct(&wifiUserData);
+    FriendList_Construct(&friendList);
+    PlayerBank_Construct(&bank);
+    PlayerDailyTalkFlags_Construct(&dailyTalkFlags);
+    NookPoints_Create(&nookPoints);
+    heldItem = 0xfff1;
+    shirt = 0xfff1;
+    hat = 0xfff1;
+    faceItem = 0xfff1;
+    bed = 0xfff1;
+    inventoryBackground = 0xfff1;
+    PlayerSpNpcRecord_Construct(&spNpcRecord);
+    func_020877dc(&dramaRecord);
+    LostChildRecord_Construct(&lostChildRecord);
+    func_02096e24(&motherLetterState);
+    _ZN21ForeignVillagerRecordC1Ev(&foreignVillagerRecord);
+    _ZN8PlayerIdC1EPv(&id);
 }
 
 PlayerData::~PlayerData() {
-    _ZN8PlayerIdC1Ev(&unk_2276);
-    _ZN21ForeignVillagerRecordD1Ev(&unk_225c);
-    func_02096e20(&unk_223e);
-    LostChildRecord_Destruct(&unk_2230);
-    func_020877d8(&unk_222b);
-    PlayerSpNpcRecord_Destruct(&unk_221a);
-    NookPoints_Destroy(&unk_2208);
-    PlayerDailyTalkFlags_Destruct(&unk_21f0);
-    PlayerBank_Destruct(&unk_21e4);
-    FriendList_Destruct(&unk_1e60);
-    PlayerWifiData_Destruct(&unk_1e10);
-    _ZN13PlayerErrandsD1Ev(&unk_1d64);
-    FutureLetter_Destruct(&unk_1c6c);
-    PlayerOptions_DestructInPlayer(&unk_1c6b);
-    Catalog_Destruct(&unk_1b48);
+    _ZN8PlayerIdC1Ev(&id);
+    _ZN21ForeignVillagerRecordD1Ev(&foreignVillagerRecord);
+    func_02096e20(&motherLetterState);
+    LostChildRecord_Destruct(&lostChildRecord);
+    func_020877d8(&dramaRecord);
+    PlayerSpNpcRecord_Destruct(&spNpcRecord);
+    NookPoints_Destroy(&nookPoints);
+    PlayerDailyTalkFlags_Destruct(&dailyTalkFlags);
+    PlayerBank_Destruct(&bank);
+    FriendList_Destruct(&friendList);
+    PlayerWifiData_Destruct(&wifiUserData);
+    _ZN13PlayerErrandsD1Ev(&errands);
+    FutureLetter_Destruct(&futureLetter);
+    PlayerOptions_DestructInPlayer(&options);
+    Catalog_Destruct(&catalog);
 }
 
 void PlayerData::fillZero() { MI_CpuFill8(this, 0, 0x228c); }
 
 void PlayerData::reset() {
     fillZero();
-    _ZN8PlayerId5clearEv(&unk_2276);
-    ((PlayerInventory *)&unk_1148)->clear();
-    Catalog_Clear(&unk_1b48);
-    PlayerErrands_Clear(&unk_1d64);
-    unk_220a = 0xfff1;
-    NookPoints_Reset(&unk_2208);
-    unk_2212 = 0xfff1;
-    unk_2253 = 0xff;
+    _ZN8PlayerId5clearEv(&id);
+    ((PlayerInventory *)&inventory)->clear();
+    Catalog_Clear(&catalog);
+    PlayerErrands_Clear(&errands);
+    heldItem = 0xfff1;
+    NookPoints_Reset(&nookPoints);
+    bed = 0xfff1;
+    birthdayTalkYear = 0xff;
     MI_CpuFill8(&unk_2254, 0xff, 8);
-    _ZN21ForeignVillagerRecord5clearEv(&unk_225c);
+    _ZN21ForeignVillagerRecord5clearEv(&foreignVillagerRecord);
 }
 
-BOOL PlayerData::isUsed() { _ZN8PlayerId7isValidEv(&unk_2276); }
+BOOL PlayerData::isUsed() { _ZN8PlayerId7isValidEv(&id); }
 
 void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
     Unk_0209865c_Bits bits;
-    _ZN8PlayerId3setEPvtaP6TownId(&unk_2276, p1, p2, p3, s0);
+    _ZN8PlayerId3setEPvtaP6TownId(&id, p1, p2, p3, s0);
     setFaceType(s1);
     setHairStyle(s2);
     setHairColor(s3);
     setTan(s4);
     setFortune(0);
     PlayerData_SetStungFace(this, s5);
-    ((PlayerInventory *)&unk_1148)->clear();
-    PlayerInventory_SetWallet(&unk_1148, s6, 1);
-    unk_220a = *s7;
-    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &unk_2276);
-    NookPoints_Init(&unk_2208);
-    Catalog_Init(&unk_1b48);
-    _ZN12FutureLetter17clearFutureLetterEv(&unk_1c6c);
-    _ZN17MotherLetterState5clearEv(&unk_223e);
-    PlayerWifiData_Create(&unk_1e10);
-    FriendList_Clear(&unk_1e60);
-    unk_2212 = 0x3884;
+    ((PlayerInventory *)&inventory)->clear();
+    PlayerInventory_SetWallet(&inventory, s6, 1);
+    heldItem = *s7;
+    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &id);
+    NookPoints_Init(&nookPoints);
+    Catalog_Init(&catalog);
+    _ZN12FutureLetter17clearFutureLetterEv(&futureLetter);
+    _ZN17MotherLetterState5clearEv(&motherLetterState);
+    PlayerWifiData_Create(&wifiUserData);
+    FriendList_Clear(&friendList);
+    bed = 0x3884;
     bits.a = 0;
     bits.b = 1;
     bits.c = 1;
     setLastPlayDate(bits);
     ((Unk_02097ff4 *)this)->clearBirthday();
-    unk_220c = 0x11a8;
-    func_02087c80(&unk_221a);
-    unk_2210 = 0xfff1;
-    unk_220e = 0xfff1;
-    unk_2214 = 0x11fa;
-    func_020877cc(&unk_222b);
-    PlayerBank_Clear(&unk_21e4);
-    EmotionSlots_Clear(&unk_21ec);
+    shirt = 0x11a8;
+    func_02087c80(&spNpcRecord);
+    faceItem = 0xfff1;
+    hat = 0xfff1;
+    inventoryBackground = 0x11fa;
+    func_020877cc(&dramaRecord);
+    PlayerBank_Clear(&bank);
+    EmotionSlots_Clear(&emotions);
     ((Unk_02097ff4 *)this)->getDayUpdateDate();
     Clock_GetDate();
     MI_CpuFill8(&unk_2254, 0xff, 8);
 }
 
-void *PlayerData::getPlayerId() { return &unk_2276; }
+void *PlayerData::getPlayerId() { return &id; }
 
 void PlayerData::getIndex() { PlayerId_FindResidentIndex(getPlayerId()); }
 
-u32 PlayerData::getFaceType() { return unk_223c.lo; }
+u32 PlayerData::getFaceType() { return faceHair.lo; }
 
-void PlayerData::setFaceType(u8 v) { unk_223c.lo = v; }
+void PlayerData::setFaceType(u8 v) { faceHair.lo = v; }
 
-u32 PlayerData::getHairStyle() { return unk_223c.hi; }
+u32 PlayerData::getHairStyle() { return faceHair.hi; }
 
-void PlayerData::setHairStyle(u8 v) { unk_223c.hi = v; }
+void PlayerData::setHairStyle(u8 v) { faceHair.hi = v; }
 
-u32 PlayerData::getHairColor() { return unk_223d.lo; }
+u32 PlayerData::getHairColor() { return hairColorTanFortune.lo; }
 
-void PlayerData::setHairColor(u8 v) { unk_223d.lo = v; }
+void PlayerData::setHairColor(u8 v) { hairColorTanFortune.lo = v; }
 
-u32 PlayerData::getTan() { return unk_223d.mid; }
+u32 PlayerData::getTan() { return hairColorTanFortune.mid; }
 
-void PlayerData::setTan(u8 v) { unk_223d.mid = v; }
+void PlayerData::setTan(u8 v) { hairColorTanFortune.mid = v; }
 
-s32 PlayerData::getLastPlayDate() { return unk_2216; }
+s32 PlayerData::getLastPlayDate() { return lastPlayDate; }
 
-void PlayerData::setLastPlayDate(Unk_0209865c_Bits v) { unk_2216 = *(u16 *)&v; }
+void PlayerData::setLastPlayDate(Unk_0209865c_Bits v) { lastPlayDate = *(u16 *)&v; }
 
-u32 PlayerData::getFortune() { return unk_223d.hi; }
+u32 PlayerData::getFortune() { return hairColorTanFortune.hi; }
 
-void PlayerData::setFortune(u8 v) { unk_223d.hi = v; }
+void PlayerData::setFortune(u8 v) { hairColorTanFortune.hi = v; }
 
 extern "C" void PlayerData_HasStungFace(void *p) { ((Unk_02097ff4 *)p)->testFlag(0); }
 
@@ -466,49 +466,49 @@ extern "C" void PlayerData_SetStungFace(void *p, u32 flag) {
     }
 }
 
-void *PlayerData::getInventory() { return &unk_1148; }
+void *PlayerData::getInventory() { return &inventory; }
 
-void *PlayerData::getHeldItem() { return &unk_220a; }
+void *PlayerData::getHeldItem() { return &heldItem; }
 
-void PlayerData::setHeldItem(u16 *v) { unk_220a = *v; }
+void PlayerData::setHeldItem(u16 *v) { heldItem = *v; }
 
-void *PlayerData::getShirt() { return &unk_220c; }
+void *PlayerData::getShirt() { return &shirt; }
 
-void PlayerData::setShirt(u16 *v) { unk_220c = *v; }
+void PlayerData::setShirt(u16 *v) { shirt = *v; }
 
-void *PlayerData::getHat() { return &unk_220e; }
+void *PlayerData::getHat() { return &hat; }
 
-void PlayerData::setHat(u16 *v) { unk_220e = *v; }
+void PlayerData::setHat(u16 *v) { hat = *v; }
 
-void *PlayerData::getFaceItem() { return &unk_2210; }
+void *PlayerData::getFaceItem() { return &faceItem; }
 
-void PlayerData::setFaceItem(u16 *v) { unk_2210 = *v; }
+void PlayerData::setFaceItem(u16 *v) { faceItem = *v; }
 
-void *PlayerData::getBed() { return &unk_2212; }
+void *PlayerData::getBed() { return &bed; }
 
-void PlayerData::setBed(u16 *v) { unk_2212 = *v; }
+void PlayerData::setBed(u16 *v) { bed = *v; }
 
 void PlayerData::getPatterns() {}
 
-void *PlayerData::getCatalog() { return &unk_1b48; }
+void *PlayerData::getCatalog() { return &catalog; }
 
-void *PlayerData::getNookPoints() { return &unk_2208; }
+void *PlayerData::getNookPoints() { return &nookPoints; }
 
-void *PlayerData::getDramaRecord() { return &unk_222b; }
+void *PlayerData::getDramaRecord() { return &dramaRecord; }
 
-void *PlayerData::getLostChildRecord() { return &unk_2230; }
+void *PlayerData::getLostChildRecord() { return &lostChildRecord; }
 
-void *PlayerData::getDailyTalkFlags() { return &unk_21f0; }
+void *PlayerData::getDailyTalkFlags() { return &dailyTalkFlags; }
 
-void *PlayerData::getSpNpcRecord() { return &unk_221a; }
+void *PlayerData::getSpNpcRecord() { return &spNpcRecord; }
 
-void *PlayerData::getWifiUserData() { return &unk_1e10; }
+void *PlayerData::getWifiUserData() { return &wifiUserData; }
 
-void *PlayerData::getFriendList() { return &unk_1e60; }
+void *PlayerData::getFriendList() { return &friendList; }
 
-void *PlayerData::func_02098668() { return &unk_1c6b; }
+void *PlayerData::func_02098668() { return &options; }
 
-void *PlayerData::getErrands() { return &unk_1d64; }
+void *PlayerData::getErrands() { return &errands; }
 
 void Unk_02097ff4::func_020984a8()
 {

@@ -147,7 +147,7 @@ public:
     void func_02015ab0(u32 p);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -294,13 +294,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -336,22 +336,22 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -369,10 +369,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcPascal : public SpNpcActor {
@@ -490,8 +490,8 @@ BOOL SpNpcPascal::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    unk_4cc.unk_1c |= 2;
-    unk_71a = unk_8e;
+    collider.unk_1c |= 2;
+    unk_71a = rotY;
     changeAct(0);
     return TRUE;
 }
@@ -519,7 +519,7 @@ void SpNpcPascal::changeAct(s32 state) {
 }
 
 BOOL SpNpcPascal::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -531,12 +531,12 @@ BOOL SpNpcPascal::setupAct01() {
     if (p != NULL) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r, 0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -549,13 +549,13 @@ BOOL SpNpcPascal::setupAct03() {
     if (unk_718 == 1) {
         unk_71a = unk_71a + 0x8000;
     }
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, (s16)unk_71a, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, (s16)unk_71a, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct03() {
-    if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
+    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             if (unk_718 == 0) {
                 changeAct(0);
             } else {
@@ -567,34 +567,34 @@ BOOL SpNpcPascal::mainAct03() {
 }
 
 BOOL SpNpcPascal::setupAct04() {
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xf9, 1, 0, 0);
-    func_02003ddc(&unk_514, 0x814, 0x7f, 0);
-    unk_8e = unk_8e + 0x8000;
-    unk_94 = unk_8e;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, unk_8e);
-    s32 t = -(unk_8e / 6);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xf9, 1, 0, 0);
+    func_02003ddc(&seEmitter, 0x814, 0x7f, 0);
+    rotY = rotY + 0x8000;
+    moveAngleY = rotY;
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
+    s32 t = -(rotY / 6);
     if (t < 0) {
         t = -t;
     }
     unk_720 = t;
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
-    unk_71c = unk_64;
+    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
+    unk_71c = positionZ;
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct04() {
     Unk_ov076_Vec v;
-    if (_ZN12Unk_02015b8c9getAnimIdEj(&unk_334, 0) == 0xf9 &&
-        _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&unk_334, this)) {
+    if (_ZN12Unk_02015b8c9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
+        _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&animCtrl, this)) {
         changeAct(5);
     } else {
-        if (_ZN12Unk_02015b8c9getAnimIdEj(&unk_334, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
+        if (_ZN12Unk_02015b8c9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
             *((u8 *)this + 0x511) = 0;
             *((u8 *)this + 0x510) = 0;
         }
-        func_020e7530(&unk_8e, 0, unk_720);
+        func_020e7530(&rotY, 0, unk_720);
         if (((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0x1b) {
-            Unk_ov076_Vec *pv = (Unk_ov076_Vec *)&unk_5c;
+            Unk_ov076_Vec *pv = (Unk_ov076_Vec *)&position;
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
@@ -602,30 +602,30 @@ BOOL SpNpcPascal::mainAct04() {
             v.z = v.z + 0x3800;
             FieldFish_ScareAround(&v, 0x5000);
             Effect_Create(0x16, &v, 0, 0);
-            func_02003ddc(&unk_514, 0x7ed, 0x7f, 0);
+            func_02003ddc(&seEmitter, 0x7ed, 0x7f, 0);
         }
     }
-    unk_94 = unk_8e;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, unk_8e);
+    moveAngleY = rotY;
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
     return TRUE;
 }
 
 BOOL SpNpcPascal::setupAct05() {
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xfa, 0, 0, 0);
-    _ZN9NpcLookAt7disableEv(&unk_3b0);
-    unk_8e = 0;
-    unk_94 = 0;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, 0);
-    unk_64 += 0x4000;
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xfa, 0, 0, 0);
+    _ZN9NpcLookAt7disableEv(&lookAt);
+    rotY = 0;
+    moveAngleY = 0;
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, 0);
+    positionZ += 0x4000;
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct05() {
-    unk_94 = 0;
-    unk_8e = 0;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&unk_350, 0);
-    unk_64 += 0xeb;
-    if (unk_64 > unk_71c + 0x14000) {
+    moveAngleY = 0;
+    rotY = 0;
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, 0);
+    positionZ += 0xeb;
+    if (positionZ > unk_71c + 0x14000) {
         ProcBase_RequestDelete(this);
     }
     return TRUE;
@@ -703,11 +703,11 @@ void SpNpcPascalTalk::onMessageEnd() {
     u8 code = 0xff;
     u8 msg;
     u16 oa, ob, oc, v;
-    s32 t0 = unk_1e;
+    s32 t0 = msgIndex;
     if (t0 == 0xfe || (t0 >= 0xf && t0 <= 0xfd)) {
         code = (u8)(Random_GlobalBelow(2) + 0xd);
     }
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 4:
         _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
         _ZN12Unk_020d771012openSubSceneEi(this, 0);
@@ -721,7 +721,7 @@ void SpNpcPascalTalk::onMessageEnd() {
         break;
     case 10:
     case 11:
-        if (unk_1e == 10) {
+        if (msgIndex == 10) {
             unk_b4 = 0x4a38;
         } else {
             unk_b4 = 0x1373;
@@ -797,7 +797,7 @@ void SpNpcPascalTalk::onChoice() {
     s32 mode = getChoiceList()->getResult();
     u8 *tag = sSpNpcPascalKey;
     u8 code = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0:
     case 1:
         if (mode == 0) {
@@ -838,7 +838,7 @@ BOOL SpNpcPascal::vfunc_48() {
     if (Talk_CheckAndSetPlayerFlag(0x18, r) == 1) {
         return r;
     }
-    if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
     }
     return r;

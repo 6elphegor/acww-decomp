@@ -45,10 +45,10 @@ struct Unk_0203f554_Tbl {
 };
 
 struct Unk_0203f408_Entry {
-    /* 0x00 */ u16 unk_00;
+    /* 0x00 */ u16 eventId;
     /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x04 */ u32 start;
+    /* 0x08 */ u32 end;
 };
 
 class EventDayList {
@@ -883,7 +883,7 @@ extern "C" s32 Event_GetDaysSinceStart(u32 id) {
         l.b[2] = 0;
         l.b[1] = 0;
         l.b[0] = 0;
-        u8 *e4 = (u8 *)&e->unk_04;
+        u8 *e4 = (u8 *)&e->start;
         l.w[2] = 0;
         l.w[3] = 0;
         l.b[13] = l.b[5];
@@ -897,7 +897,7 @@ extern "C" s32 Event_GetDaysSinceStart(u32 id) {
 extern "C" Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *e) {
     Unk_0203f408_Entry *r = NULL;
     for (s32 i = 0; i < 7; e++, i++) {
-        if (e->unk_00 == id) {
+        if (e->eventId == id) {
             r = e;
             break;
         }
@@ -915,7 +915,7 @@ extern "C" s32 EventDayList_GetState(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
         l.b[3] = p[4];
         l.b[2] = p[3];
         l.b[1] = p[2];
-        u32 lim = e->unk_04;
+        u32 lim = e->start;
         if (lim <= l.w[0]) {
             l.w[1] = z;
             l.w[2] = z;
@@ -1023,8 +1023,8 @@ extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) 
 extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
     Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.unk_04);
     if (e) {
-        *a = e->unk_04;
-        *b = e->unk_08;
+        *a = e->start;
+        *b = e->end;
     } else {
         *a = 1;
         *b = 1;

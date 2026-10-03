@@ -201,9 +201,9 @@ struct TownUnitShapeQuery {
 
 class TownMap {
 public:
-    u8 unk_00[0x24];
-    AcreItemGrid unk_24[16];
-    BuriedMask unk_2024[16];
+    u8 acres[0x24];
+    AcreItemGrid items[16];
+    BuriedMask buried[16];
     u8 unk_2224_lo : 2;
     u8 unk_2224_hi : 6;
 
@@ -1267,9 +1267,9 @@ TownMap::TownMap() {}
 TownMap::~TownMap() {}
 
 void TownMap::clear() {
-    u8 *p = unk_00;
-    AcreItemGrid *a = unk_24;
-    BuriedMask *b = unk_2024;
+    u8 *p = acres;
+    AcreItemGrid *a = items;
+    BuriedMask *b = buried;
     s32 i, j;
     for (i = 0; i < 0x24; i++) *p++ = 0x86;
     for (j = 0; j < 16; j++) {

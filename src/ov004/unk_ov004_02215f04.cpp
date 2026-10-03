@@ -42,9 +42,9 @@ public:
     virtual BOOL vfunc_58(void *a);
 
     u32 pad_04[0x58 / 4];
-    s32 unk_5c[3];
+    s32 position[3];
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xe0 - 0x90];
 };
 
@@ -109,14 +109,14 @@ public:
     virtual void vfunc_b8();
     virtual void vfunc_bc();
 
-    /* 0x640 */ u32 unk_640;
-    /* 0x644 */ u32 unk_644;
-    /* 0x648 */ u32 unk_648;
+    /* 0x640 */ u32 eventKind;
+    /* 0x644 */ u32 talkPartnerId;
+    /* 0x648 */ u32 invitedByPartner;
     /* 0x64c */ u8 unk_64c[0x680 - 0x64c];
     /* 0x680 */ u8 unk_680[0x824 - 0x680];
     /* 0x824 */ u8 unk_824[8];
-    /* 0x82c */ void *unk_82c;
-    /* 0x830 */ void *unk_830;
+    /* 0x82c */ void *villagerData;
+    /* 0x830 */ void *villagerState;
     /* 0x834 */ u32 unk_834;
     /* 0x838 */ u8 unk_838[0x894 - 0x838];
 };
@@ -216,7 +216,7 @@ public:
     virtual void onTaskDone();
 
     u8 pad_04[0x1e - 4];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     Unk_ov004_0221572c_Sub *unk_3c;
     u8 pad_40[0x1a0 - 0x40];
@@ -602,9 +602,9 @@ void BirthdayGuestVillager::blockFurnitureCells() {
 void BirthdayGuestVillager::func_ov004_02216a0c() {
     void *p = PlayerData_GetCurrent();
     if (p) {
-        if (unk_82c) {
+        if (villagerData) {
             void *r = PlayerData_getPlayerId(p);
-            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(unk_82c, r), 0, 0, 0);
+            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(villagerData, r), 0, 0, 0);
         }
     }
 }
@@ -621,9 +621,9 @@ BOOL BirthdayGuestVillager::vfunc_48() {
 
 void BirthdayGuestVillager::vfunc_4c(s32 a, u32 b) {
     Unk_ov004_Vec3 v;
-    v.x = unk_5c[0];
-    v.y = unk_5c[1];
-    v.z = unk_5c[2];
+    v.x = position[0];
+    v.y = position[1];
+    v.z = position[2];
     v.y += 0x2000;
     switch (a) {
     case 3:
@@ -654,9 +654,9 @@ void BirthdayGuestVillager::vfunc_4c(s32 a, u32 b) {
 
 void *BirthdayGuestVillagerTalk::getPlayerMemory() {
     BirthdayGuestVillager *o = unk_1a0;
-    if (o && o->unk_82c) {
+    if (o && o->villagerData) {
         void *r = PlayerData_getPlayerId(PlayerData_GetCurrent());
-        return Villager_FindOrCreateMemory(unk_1a0->unk_82c, r);
+        return Villager_FindOrCreateMemory(unk_1a0->villagerData, r);
     }
     return 0;
 }
@@ -687,7 +687,7 @@ void BirthdayGuestVillagerTalk::attachOwner(VillagerActor *owner) {
 void BirthdayGuestVillagerTalk::start(void *arg) {
     BirthdayGuestVillager *o = unk_1a0;
     u32 *out = (u32 *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(o->unk_82c), sBirthdayGuestMsgFile, 0x28, (u32)"ev_nbirth");
+    VillagerId_makeFileName(VillagerData_getVillagerId(o->villagerData), sBirthdayGuestMsgFile, 0x28, (u32)"ev_nbirth");
     out[0] = (u32)sBirthdayGuestMsgFile;
     s32 r6 = 2;
     if (isNotTalkedYet()) {
@@ -717,7 +717,7 @@ void BirthdayGuestVillagerTalk::start(void *arg) {
         }
         BirthdayGuestVillager *o2 = unk_1a0;
         if (o2) {
-            void *m = o2->unk_82c;
+            void *m = o2->villagerData;
             if (m) {
                 ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(m), 0);
             }
@@ -773,7 +773,7 @@ void BirthdayGuestVillager::mainAct00() {
     Unk_ov004_022162f0_Actor *a = (Unk_ov004_022162f0_Actor *)BirthdayHostVillager_Get(this);
     s32 d;
     if (a) {
-        d = func_020e9650(&a->pos, unk_5c);
+        d = func_020e9650(&a->pos, position);
     } else {
         d = data_020c8cbc;
     }
@@ -797,13 +797,13 @@ void BirthdayGuestVillager::mainAct00() {
             unk_a4a--;
         }
         if (unk_a4a == 0) {
-            unk_a48 = Room_PickRandomWalkTarget(&unk_a58, (Unk_ov004_Vec3 *)unk_5c, unk_8e);
+            unk_a48 = Room_PickRandomWalkTarget(&unk_a58, (Unk_ov004_Vec3 *)position, rotY);
             unk_a4c.x = unk_a58.x;
             unk_a4c.y = unk_a58.y;
             unk_a4c.z = unk_a58.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
-                d = func_020e7b98(a->pos.x - unk_5c[0], a->pos.z - unk_5c[2]);
-                s32 df = func_020e780c(unk_8e, d);
+                d = func_020e7b98(a->pos.x - position[0], a->pos.z - position[2]);
+                s32 df = func_020e780c(rotY, d);
                 Unk_ov004_Vec3 *pa = &a->pos;
                 s32 xx = *(volatile s32 *)&a->pos.x;
                 Unk_ov004_Vec3 *pq = &unk_a58;
@@ -818,7 +818,7 @@ void BirthdayGuestVillager::mainAct00() {
                 }
             }
             s16 t = unk_a48;
-            if (t != unk_8e) {
+            if (t != rotY) {
                 if (!NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
@@ -859,7 +859,7 @@ void BirthdayGuestVillager::mainAct00() {
                     unk_a4c.y = unk_a58.y;
                     unk_a4c.z = unk_a58.z;
                     NpcMoveCtrl_setWaypoint(unk_350, pw);
-                } else if (func_020e9650(&unk_a58, unk_5c) < 0x200) {
+                } else if (func_020e9650(&unk_a58, position) < 0x200) {
                     NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
                 }
                 break;
@@ -874,7 +874,7 @@ BOOL BirthdayGuestVillager::setupAct01() {
         void *p = &unk_564;
         BirthdayHostVillager *o = BirthdayHostVillager_Get();
         if (o != NULL) {
-            unk_a48 = func_020e7b98(o->unk_5c[0] - unk_5c[0], o->unk_5c[2] - unk_5c[2]);
+            unk_a48 = func_020e7b98(o->position[0] - position[0], o->position[2] - position[2]);
             BirthdayHostVillager *g = sBirthdayHostVillager;
             BOOL r;
             if (g != NULL && (u32)g->unk_894 <= 1) {
@@ -897,8 +897,8 @@ void BirthdayGuestVillager::mainAct01() {
     s32 b = (s16)(a + 0x8000);
     BirthdayHostVillager *o = BirthdayHostVillager_Get();
     if (o != NULL) {
-        s32 da = func_020e780c(a, unk_8e);
-        s32 db = func_020e780c(b, o->unk_8e);
+        s32 da = func_020e780c(a, rotY);
+        s32 db = func_020e780c(b, o->rotY);
         if (da <= 0x500 && db <= 0x500) {
             if (Random_GlobalBelow(2)) {
                 if (changeAct(3)) {

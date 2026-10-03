@@ -330,9 +330,9 @@ public:
     MsgStringAttr();
     virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class EncodedStringBase {
@@ -354,7 +354,7 @@ public:
     virtual u32 capacity() = 0;
     virtual u8 *data() = 0;
 
-    /* 0x04 */ MsgStringAttr unk_04;
+    /* 0x04 */ MsgStringAttr attr;
 };
 
 class MsgString : public MsgStringBase {
@@ -366,8 +366,8 @@ public:
     u8 set(u8 *str);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 struct Unk_020dd30c_Buf {
@@ -422,20 +422,20 @@ ItemName::~ItemName() {}
 BOOL ItemName::setFromItem(u16 *p) {
     struct { u32 pad; u16 t[2]; } l;
     Item_FromPlacedForm(l.t, p);
-    MsgStringAttr *r = &unk_08;
+    MsgStringAttr *r = &attr;
     if (Item_IsNormalItem(l.t)) {
         setString((u8 *)ItemInfo_GetName(l.t));
-        r->unk_04 = ItemInfo_GetNameForm(l.t);
-        r->unk_09 = ItemInfo_GetNameAttrB(l.t);
-        r->unk_08 = ItemInfo_GetNameAttrA(l.t);
+        r->form = ItemInfo_GetNameForm(l.t);
+        r->attrB = ItemInfo_GetNameAttrB(l.t);
+        r->attrA = ItemInfo_GetNameAttrA(l.t);
         return TRUE;
     }
     if (Item_IsFurniture(l.t)) {
         s32 x = Item_GetFurnitureIndex(l.t);
         setString((u8 *)FtrInfo_GetName(x));
-        r->unk_04 = FtrInfo_GetNameForm(x);
-        r->unk_09 = FtrInfo_GetNameAttrB(x);
-        r->unk_08 = FtrInfo_GetNameAttrA(x);
+        r->form = FtrInfo_GetNameForm(x);
+        r->attrB = FtrInfo_GetNameAttrB(x);
+        r->attrA = FtrInfo_GetNameAttrA(x);
         return TRUE;
     }
     return FALSE;

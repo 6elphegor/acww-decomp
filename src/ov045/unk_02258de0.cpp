@@ -123,7 +123,7 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x1d];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -325,11 +325,11 @@ public:
     virtual void vfunc_58(void *p);
     void setInteractionRange(s32 v);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[0xea - 0x96];
 };
 
@@ -367,22 +367,22 @@ public:
     void setCollisionRadius(s32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -400,10 +400,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 struct Unk_ov045_02259070_Rec {
@@ -554,7 +554,7 @@ BOOL SpNpcKatrina::vfunc_00() {
     }
     sSpNpcKatrinaInstance = this;
     changeAct(0);
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     unk_740 = 0xff;
     unk_741 = 0xff;
     return TRUE;
@@ -572,7 +572,7 @@ BOOL SpNpcKatrina::onDraw() {
     if (!NpcActor::onDraw()) {
         return FALSE;
     }
-    Model_GetJointWorldMtx(&unk_ec, &unk_65c, 0xe);
+    Model_GetJointWorldMtx(&model, &unk_65c, 0xe);
     TarotProps_Draw();
     return TRUE;
 }
@@ -582,13 +582,13 @@ u8 *SpNpcKatrina::getTexturePath() { return sSpNpcKatrinaTexturePath; }
 u8 *SpNpcKatrina::getModelPath() { return sSpNpcKatrinaModelPath; }
 
 BOOL SpNpcKatrina::updateAct() {
-    s32 t = NpcActionCtrl_getEmotionId(&unk_564);
+    s32 t = NpcActionCtrl_getEmotionId(&actionCtrl);
     if (t != 0x1e && t != 0x20) {
-    } else if (NpcActionCtrl_isActionDone(&unk_564)) {
+    } else if (NpcActionCtrl_isActionDone(&actionCtrl)) {
         unk_68c.onEventTag(0);
     }
     if (unk_654 == -1) {
-        if (t == 0x21 && ((((u32)unk_ec.unk_a4 << 4) >> 16)) >= 0x12) {
+        if (t == 0x21 && ((((u32)model.unk_a4 << 4) >> 16)) >= 0x12) {
             unk_654 = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
             unk_754 = 0x16;
         }
@@ -616,7 +616,7 @@ void SpNpcKatrina::changeAct(s32 state) {
 }
 
 BOOL SpNpcKatrina::setupAct00() {
-    unk_564_func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    unk_564_func_020196b4(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -632,12 +632,12 @@ BOOL SpNpcKatrina::setupAct01() {
     if (p) {
         getAngleTo(p);
     }
-    unk_618_func_02014198(&unk_618, 1, 0);
+    unk_618_func_02014198(&talkCtrl, 1, 0);
     return TRUE;
 }
 
 BOOL SpNpcKatrina::mainAct01() {
-    if (!unk_618_func_02014220(&unk_618)) {
+    if (!unk_618_func_02014220(&talkCtrl)) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -647,7 +647,7 @@ BOOL SpNpcKatrina::mainAct01() {
 BOOL SpNpcKatrina::setupAct03() { return TRUE; }
 
 BOOL SpNpcKatrina::mainAct03() {
-    if (!unk_618_func_02014220(&unk_618)) {
+    if (!unk_618_func_02014220(&talkCtrl)) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(2);
     }
@@ -663,7 +663,7 @@ SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
 void SpNpcKatrinaTalk::onEventTag(s32 a) {
-    if (a != NpcActionCtrl_getEmotionId(&unk_b0->unk_564) || NpcActionCtrl_getAction(&unk_b0->unk_564) != 8) {
+    if (a != NpcActionCtrl_getEmotionId(&unk_b0->actionCtrl) || NpcActionCtrl_getAction(&unk_b0->actionCtrl) != 8) {
         switch (a) {
         case 0x1e:
             TarotProps_StartAct01();
@@ -713,7 +713,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
     void *h = PlayerData_GetCurrent();
     u8 *gp = gSaveData;
     u32 sel = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 9:
     case 11:
         setSubSceneKind(0x13, 0);
@@ -755,7 +755,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
     }
     u32 cur = unk_b0->unk_741;
     if (cur != 0xff) {
-        if (cur == unk_1e) {
+        if (cur == msgIndex) {
             s32 kind;
             void *arg;
             void *p;
@@ -822,7 +822,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
             unk_b0->unk_741 = 0xff;
             unk_b0->unk_740 = 0xff;
         }
-        if (unk_b0->unk_740 == unk_1e) {
+        if (unk_b0->unk_740 == msgIndex) {
             sel = unk_b0->unk_741;
         }
     }
@@ -833,7 +833,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
 }
 
 void SpNpcKatrinaTalk::onMessageStart() {
-    if (unk_1e == 0xe || unk_1e == 0x17) {
+    if (msgIndex == 0xe || msgIndex == 0x17) {
         Bgm_RequestSilence(0x10, 0, 0);
     }
 }
@@ -845,7 +845,7 @@ void SpNpcKatrinaTalk::onChoice() {
     getChoiceList();
     st = ChoiceList_getResult();
     sel = 0xff;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 1:
     case 3:
     case 5:
@@ -855,7 +855,7 @@ void SpNpcKatrinaTalk::onChoice() {
             } else {
                 sel = 7;
             }
-        } else if (unk_1e == 5 && st == 1) {
+        } else if (msgIndex == 5 && st == 1) {
             sel = 0x14;
         }
         break;
@@ -956,9 +956,9 @@ BOOL SpNpcKatrina::vfunc_48() {
     by = r;
     FieldPos_ToUnit(&bx, &by, &rec);
     if (unk_658 == 0) {
-        s32 x = unk_5c;
+        s32 x = position;
         if (rec.a > x - 0x1000 && rec.a < x + 0x1000) {
-            s32 z = unk_64;
+            s32 z = positionZ;
             if (rec.c > z + 0x2000 && rec.c < z + 0x4000) {
                 r = TRUE;
             }

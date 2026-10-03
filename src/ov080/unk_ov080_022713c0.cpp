@@ -95,7 +95,7 @@ public:
     void setItemNameSlot(u32 a, u32 b, u32 c);
     void func_02015ab0(u32 a);
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x1d];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -235,11 +235,11 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[0xea - 0x96];
 };
 
@@ -276,22 +276,22 @@ public:
     BOOL getAngleTo(NpcActor *p);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -309,10 +309,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 class SpNpcTortimer : public SpNpcActor {
@@ -398,9 +398,9 @@ BOOL SpNpcTortimer::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    NpcAnimCtrl_playAnim(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
-    unk_4cc.unk_1c |= 2;
+    NpcAnimCtrl_playAnim(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
+    collider.unk_1c |= 2;
     if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1) == 0) {
         TalkRequestFlags_SetEventWarpBlock();
     }
@@ -437,7 +437,7 @@ void SpNpcTortimer::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer::setupAct00() {
-    unk_564_func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    unk_564_func_020196b4(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -449,12 +449,12 @@ BOOL SpNpcTortimer::setupAct01() {
     if (p != NULL) {
         x = getAngleTo((NpcActor *)p);
     }
-    unk_618_func_020141b4(&unk_618, 0, x, 0);
+    unk_618_func_020141b4(&talkCtrl, 0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer::mainAct01() {
-    if (unk_618_func_02014220(&unk_618) == 0) {
+    if (unk_618_func_02014220(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -533,10 +533,10 @@ void SpNpcTortimerTalk::onMessageEnd() {
     Unk_ov080_02271648_Buf buf;
     u32 r = 0xff;
     if (unk_b0 >= 0) {
-        if (unk_1e == 1 || unk_1e == 4) {
+        if (msgIndex == 1 || msgIndex == 4) {
             unk_b0 = -2;
         }
-        if (unk_1e == 2) {
+        if (msgIndex == 2) {
             buf.v[0] = 0x1559;
             this->requestGiveItem(&buf.v[0], 0, 5, 0);
             buf.v[1] = 0x1559;
@@ -551,7 +551,7 @@ void SpNpcTortimerTalk::onMessageEnd() {
             str = (u8 *)"sp_etc_sequence5_2";
         } else {
             str = (u8 *)"sp_npc_turtle7";
-            switch (unk_1e) {
+            switch (msgIndex) {
             case 0:
             case 2:
                 buf.v[2] = 0x1375;
@@ -593,7 +593,7 @@ void SpNpcTortimerTalk::onChoice() {
     u8 r = 0xff;
     if (unk_b0 >= 0) {
         u8 *const str = (u8 *)"sp_npc_turtle";
-        if (unk_1e == 0 && t == 0) {
+        if (msgIndex == 0 && t == 0) {
             if (unk_b0 >= 0) {
                 Pocket_RemoveItem(unk_b0);
                 buf.v = 0x37e0;
@@ -612,7 +612,7 @@ void SpNpcTortimerTalk::onChoice() {
 
 BOOL SpNpcTortimer::vfunc_48() {
     BOOL r = FALSE;
-    if (unk_618_func_02014220(&unk_618) == 0) {
+    if (unk_618_func_02014220(&talkCtrl) == 0) {
         r = TRUE;
     }
     return r;

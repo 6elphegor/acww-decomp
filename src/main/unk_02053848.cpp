@@ -62,20 +62,20 @@ class Model {
 public:
     Model();
     virtual ~Model();
-    u16 unk_04;
+    u16 modelFlags;
     u8 pad_06[2];
-    u32 unk_08;
-    u8 *unk_0c;
+    u32 renderObj;
+    u8 *renderResMdl;
     u8 pad_10[8];
-    Unk_02054584_Data *unk_18;
+    Unk_02054584_Data *renderAnmJnt;
     s32 unk_1c;
-    Unk_02054584_Data *unk_20;
+    Unk_02054584_Data *renderAnmVis;
     u8 pad_24[0x18];
-    void *unk_3c;
+    void *renderJntRecord;
     u8 pad_40[0x1c];
     void *unk_5c;
     u8 pad_60[0x34];
-    void *unk_94;
+    void *texVramSlot;
 
     BOOL clearResource(void);
     void initRenderObj(void);
@@ -298,7 +298,7 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
         unk_5c = ResCache_GetModel(p, tag);
     }
     if (q != NULL) {
-        Gfx3d_LoadTexAndPltt(q, unk_94);
+        Gfx3d_LoadTexAndPltt(q, texVramSlot);
         NNS_G3dBindMdlTex(unk_5c, q);
         NNS_G3dBindMdlPltt(unk_5c, q);
     }
@@ -324,7 +324,7 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
-            Gfx3d_LoadTexAndPltt(q, unk_94);
+            Gfx3d_LoadTexAndPltt(q, texVramSlot);
             NNS_G3dBindMdlTex(unk_5c, q);
         }
     }
@@ -383,7 +383,7 @@ void CachedModel::setFromFile(void *a) {
 }
 
 BOOL CachedModel::allocJointRecord(void *heap) {
-    u32 size = unk_0c[0x17] * 0x58;
+    u32 size = renderResMdl[0x17] * 0x58;
     if (heap == NULL) {
         heap = gCurrentHeap;
     }
@@ -391,8 +391,8 @@ BOOL CachedModel::allocJointRecord(void *heap) {
     if (p == NULL) {
         return FALSE;
     }
-    unk_3c = p;
-    unk_08 |= 1;
+    renderJntRecord = p;
+    renderObj |= 1;
     return TRUE;
 }
 
@@ -504,8 +504,8 @@ void AnimModel::stepAnim()
 
 s32 AnimModel::drawAnimated(void *q)
 {
-    if (unk_3c != 0) {
-        unk_08 |= 1;
+    if (renderJntRecord != 0) {
+        renderObj |= 1;
     }
     _ZN5Model10drawScaledEPi(this, q);
 }
@@ -514,8 +514,8 @@ void AnimModel::setFrame(s32 v)
 {
     unk_a4 = v << 12;
     unk_b4->unk_00 = unk_a4;
-    if (unk_3c != 0) {
-        unk_08 |= 1;
+    if (renderJntRecord != 0) {
+        renderObj |= 1;
     }
 }
 
@@ -547,13 +547,13 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
 
 s32 AnimModel::attachAnim()
 {
-    NNS_G3dRenderObjAddAnmObj(&unk_08, unk_b4);
+    NNS_G3dRenderObjAddAnmObj(&renderObj, unk_b4);
 }
 
 void AnimModel::detachJointAnim()
 {
     if (unk_b4 != 0) {
-        NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_18);
+        NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmJnt);
         unk_b4 = 0;
     }
 }
@@ -561,7 +561,7 @@ void AnimModel::detachJointAnim()
 void AnimModel::detachVisAnim()
 {
     if (unk_b4 != 0) {
-        NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_20);
+        NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmVis);
         unk_b4 = 0;
     }
 }
@@ -569,11 +569,11 @@ void AnimModel::detachVisAnim()
 void AnimModel::detachAnim()
 {
     if (unk_b4 != 0) {
-        if (unk_18 == unk_b4) {
-            NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_18);
+        if (renderAnmJnt == unk_b4) {
+            NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmJnt);
             unk_b4 = 0;
-        } else if (unk_20 == unk_b4) {
-            NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_20);
+        } else if (renderAnmVis == unk_b4) {
+            NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmVis);
             unk_b4 = 0;
         }
     }
@@ -810,9 +810,9 @@ BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
 void TwoLayerAnimModel::updateLayers() {
     stepBlend();
     if (unk_14c != 0 || unk_150 != 0) {
-        if (_ZN10JointBlend7advanceEv(&unk_110) != 0 && (unk_04 & 0x4000) != 0) {
+        if (_ZN10JointBlend7advanceEv(&unk_110) != 0 && (modelFlags & 0x4000) != 0) {
             clearLayer2Mask();
-            unk_04 = unk_04 & 0xffffbfff;
+            modelFlags = modelFlags & 0xffffbfff;
         }
         _ZN13AnimFrameCtrl4stepEv(&unk_f8);
         *(u32 *)unk_f4 = unk_f8.unk_a4;
@@ -836,9 +836,9 @@ void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOO
     _ZN13AnimFrameCtrl5setupEihit(&unk_f8, *(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(unk_f4, a, unk_5c, 0);
     if (g != 0) {
-        unk_04 = unk_04 | 0x4000;
+        modelFlags = modelFlags | 0x4000;
     } else {
-        unk_04 = unk_04 & 0xffffbfff;
+        modelFlags = modelFlags & 0xffffbfff;
     }
 }
 
@@ -990,9 +990,9 @@ BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
 void ThreeLayerAnimModel::updateLayers3() {
     updateLayers();
     if (unk_1ac != 0 || unk_1b0 != 0) {
-        if (_ZN10JointBlend7advanceEv(&unk_170) != 0 && (unk_04 & 0x8000) != 0) {
+        if (_ZN10JointBlend7advanceEv(&unk_170) != 0 && (modelFlags & 0x8000) != 0) {
             ThreeLayerAnimModel_ClearLayer3Mask(this);
-            unk_04 = unk_04 & 0xffff7fff;
+            modelFlags = modelFlags & 0xffff7fff;
         }
         _ZN13AnimFrameCtrl4stepEv(&unk_158);
         *(u32 *)unk_154 = unk_158.unk_a4;
@@ -1009,9 +1009,9 @@ void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, B
     _ZN13AnimFrameCtrl5setupEihit(&unk_158, *(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(unk_154, a, unk_5c, 0);
     if (g != 0) {
-        unk_04 = unk_04 | 0x8000;
+        modelFlags = modelFlags | 0x8000;
     } else {
-        unk_04 = unk_04 & 0xffff7fff;
+        modelFlags = modelFlags & 0xffff7fff;
     }
 }
 

@@ -38,11 +38,11 @@ public:
 
 class HouseRoom {
 public:
-    RoomItemGrid unk_000[2];
-    RoomFtrState unk_400;
-    u16 unk_448;
-    u16 unk_44a;
-    u16 unk_44c;
+    RoomItemGrid layers[2];
+    RoomFtrState ftrState;
+    u16 wallpaper;
+    u16 carpet;
+    u16 song;
     u8 unk_44e_0 : 1;
     u8 unk_44e_1 : 1;
     HouseRoom();
@@ -71,10 +71,10 @@ struct Unk_0206022c_Bits {
 
 class HouseData {
 public:
-    HouseRoom unk_0000[5];
-    s32 unk_1590;
-    SongSet unk_1594;
-    Unk_0206022c_Bits unk_15a0;
+    HouseRoom rooms[5];
+    s32 debt;
+    SongSet songs;
+    Unk_0206022c_Bits status;
 
     HouseData();
     ~HouseData();
@@ -146,8 +146,8 @@ BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 
 class Unk_020601cc_Dflt {
 public:
-    u16 unk_00;
-    inline Unk_020601cc_Dflt() { unk_00 = 0xfff1; }
+    u16 item;
+    inline Unk_020601cc_Dflt() { item = 0xfff1; }
     ~Unk_020601cc_Dflt();
 };
 
@@ -208,27 +208,27 @@ void RoomItemGrid::clear() {
 RoomItemGrid *RoomItemGrid::getGrid() { return this; }
 
 HouseRoom::HouseRoom() { u16 v = 0xfff1;
-    unk_448 = v;
-    unk_44a = v;
-    unk_44c = v; }
+    wallpaper = v;
+    carpet = v;
+    song = v; }
 
 HouseRoom::~HouseRoom() {}
 
 void HouseRoom::reset(s32 i) {
-    RoomItemGrid *p = &unk_000[0];
+    RoomItemGrid *p = &layers[0];
     s32 j = 0;
     for (; j < 2; p++, j++) {
         p->clear();
     }
-    unk_400.reset();
+    ftrState.reset();
     static Unk_020608b8_W t1[5] = { Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e) };
-    unk_448 = t1[i].v;
+    wallpaper = t1[i].v;
     static Unk_020608b8_W t2[5] = { Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182) };
-    unk_44a = t2[i].v;
-    unk_44c = 0xfff1;
+    carpet = t2[i].v;
+    song = 0xfff1;
     if (i == 0) {
-        RoomItemGrid *a = unk_000[0].getGrid();
-        RoomItemGrid *b = unk_000[1].getGrid();
+        RoomItemGrid *a = layers[0].getGrid();
+        RoomItemGrid *b = layers[1].getGrid();
         if (a) {
             a->unk_00[0xa6] = 0x3808;
             a->unk_00[0xa9] = 0x374c;
@@ -247,56 +247,56 @@ MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
     }
     if (p) {
         for (s32 i = 0; i < 2; i++) {
-            p->unk_04[i] = (u32)unk_000[i].getGrid();
+            p->unk_04[i] = (u32)layers[i].getGrid();
         }
         p->unk_0c = 0;
     }
     return p;
 }
 
-RoomFtrState *HouseRoom::func_0206086c() { return &unk_400; }
+RoomFtrState *HouseRoom::func_0206086c() { return &ftrState; }
 
 u16 *HouseRoom::getWallpaper(s32 *out) {
     if (out) *out = unk_44e_0;
-    return &unk_448;
+    return &wallpaper;
 }
 
 u16 *HouseRoom::getCarpet(s32 *out) {
     if (out) *out = unk_44e_1;
-    return &unk_44a;
+    return &carpet;
 }
 
 void HouseRoom::setWallpaper(u16 *src, u32 flag) {
-    unk_448 = *src;
+    wallpaper = *src;
     unk_44e_0 = flag;
 }
 
 void HouseRoom::setCarpet(u16 *src, u32 flag) {
-    unk_44a = *src;
+    carpet = *src;
     unk_44e_1 = flag;
 }
 
-u16 *HouseRoom::getSong() { return &unk_44c; }
+u16 *HouseRoom::getSong() { return &song; }
 
-void HouseRoom::setSong(u16 *src) { unk_44c = *src; }
+void HouseRoom::setSong(u16 *src) { song = *src; }
 
 HouseData::HouseData() {}
 
 HouseData::~HouseData() {}
 
 void HouseData::reset() {
-    HouseRoom *p = &unk_0000[0];
+    HouseRoom *p = &rooms[0];
     s32 i = 0;
     u8 buf[0x50];
     for (; i < 5; p++, i++) {
         p->reset(i);
     }
-    unk_15a0.a = 0;
-    unk_1594.clear();
+    status.a = 0;
+    songs.clear();
     OS_GetOwnerInfo(buf);
-    unk_15a0.d = buf[1];
-    unk_15a0.c = unk_15a0.d;
-    unk_15a0.e = 0;
+    status.d = buf[1];
+    status.c = status.d;
+    status.e = 0;
 }
 
 extern "C" BOOL PlayerHouse_ReplaceStructure(s32 x) {
@@ -315,15 +315,15 @@ extern "C" BOOL PlayerHouse_ReplaceStructure(s32 x) {
 }
 
 void HouseData::applyPendingWork() {
-    if (unk_15a0.c != unk_15a0.d) {
-        unk_15a0.c = unk_15a0.d;
+    if (status.c != status.d) {
+        status.c = status.d;
     }
-    u32 b = unk_15a0.b;
+    u32 b = status.b;
     if (b != getLevel()) {
         if (PlayerHouse_ReplaceStructure(b)) {
-            unk_15a0.a = unk_15a0.b;
-            unk_15a0.d = unk_15a0.e;
-            unk_15a0.c = unk_15a0.d;
+            status.a = status.b;
+            status.d = status.e;
+            status.c = status.d;
             HouseRoomMaps_UpdateAll();
             HouseRoomMaps_BindBg();
             _ZN8SaveData7setFlagEj(gSaveData, 13);
@@ -332,8 +332,8 @@ void HouseData::applyPendingWork() {
 }
 
 void HouseData::resetDebt() {
-    unk_1590 = 0x4d58;
-    unk_15a0.cnt = 0;
+    debt = 0x4d58;
+    status.cnt = 0;
 }
 
 extern "C" BOOL HouseData_IsValidRoomIndex(s32 i) {
@@ -351,7 +351,7 @@ HouseRoom *HouseData::getRoomForScene(s32 x) {
 HouseRoom *HouseData::getRoom(s32 idx) {
     HouseRoom *r = NULL;
     if (HouseData_IsValidRoomIndex(idx)) {
-        r = &unk_0000[idx];
+        r = &rooms[idx];
     }
     return r;
 }
@@ -369,26 +369,26 @@ MapBlockEntry *HouseData::buildRoomBlockEntry(s32 idx, void *heap) {
 }
 
 BOOL HouseData::isUpgradePending() {
-    if (unk_15a0.b != getLevel()) return TRUE;
+    if (status.b != getLevel()) return TRUE;
     return FALSE;
 }
 
-u32 HouseData::getLevel() { return unk_15a0.a; }
+u32 HouseData::getLevel() { return status.a; }
 
 BOOL HouseData::requestLevelUp() {
-    if (unk_15a0.b == getLevel()) {
+    if (status.b == getLevel()) {
         if ((s32)getLevel() < 6) {
-            unk_15a0.b = (u8)(getLevel() + 1);
+            status.b = (u8)(getLevel() + 1);
             return TRUE;
         }
     }
     return FALSE;
 }
 
-u8 HouseData::getRoofColor() { return (u8)(unk_15a0.c & 0xf); }
+u8 HouseData::getRoofColor() { return (u8)(status.c & 0xf); }
 
 BOOL HouseData::orderRoofPaint(u32 v) {
-    unk_15a0.d = (u8)(v & 0xf);
+    status.d = (u8)(v & 0xf);
     return TRUE;
 }
 
@@ -407,25 +407,25 @@ extern "C" u16 func_020603c8() {
     return 0x1003;
 }
 
-u8 HouseData::getRoachCount() { return unk_15a0.cnt; }
+u8 HouseData::getRoachCount() { return status.cnt; }
 
-void HouseData::setRoachCount(u8 v) { unk_15a0.cnt = v; }
+void HouseData::setRoachCount(u8 v) { status.cnt = v; }
 
 void HouseData::addRoachesForDays(s32 v) {
     if (v >= 7) {
-        s32 t = unk_15a0.cnt + (v - 6);
+        s32 t = status.cnt + (v - 6);
         if (t > 10) t = 10;
-        unk_15a0.cnt = t;
+        status.cnt = t;
     }
 }
 
-s32 HouseData::getDebt() { return unk_1590; }
+s32 HouseData::getDebt() { return debt; }
 
 void HouseData::setDebt(s32 v) {
     if (v < 0) {
-        unk_1590 = 0;
+        debt = 0;
     } else {
-        unk_1590 = v;
+        debt = v;
     }
 }
 
@@ -439,7 +439,7 @@ void HouseData::startLoan() {
 }
 
 s32 HouseData::isUpgradePaidOff() {
-    if (unk_15a0.b == getLevel()) {
+    if (status.b == getLevel()) {
         if (getDebt() == 0) {
             return _ZN8SaveData8testFlagEj(gSaveData, 13);
         }
@@ -449,7 +449,7 @@ s32 HouseData::isUpgradePaidOff() {
 
 BOOL HouseData::orderUpgrade(u32 v) {
     if (requestLevelUp()) {
-        unk_15a0.e = v;
+        status.e = v;
         return TRUE;
     }
     return FALSE;
@@ -468,9 +468,9 @@ BOOL HouseData::setRoomFlag(u32 x, u32 set) {
     u32 m = HouseData_GetRoomFlagMask(x);
     if (m) {
         if (set) {
-            unk_15a0.f = unk_15a0.f | m;
+            status.f = status.f | m;
         } else {
-            unk_15a0.f = unk_15a0.f & ~m;
+            status.f = status.f & ~m;
         }
         return TRUE;
     }
@@ -478,7 +478,7 @@ BOOL HouseData::setRoomFlag(u32 x, u32 set) {
 }
 
 BOOL HouseData::hasRoomFlags() {
-    if (unk_15a0.f != 0) return TRUE;
+    if (status.f != 0) return TRUE;
     return FALSE;
 }
 
@@ -489,7 +489,7 @@ extern "C" u16 *HouseRoom_GetCurrentSong()
         return r->getSong();
     }
     static Unk_020601cc_Dflt dflt;
-    return &dflt.unk_00;
+    return &dflt.item;
 }
 
 extern "C" BOOL HouseRoom_SetSongForScene(s32 a, u16 *p)

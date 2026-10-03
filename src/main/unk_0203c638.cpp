@@ -8,8 +8,8 @@ public:
     MsgRequest();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class BmgReader {
@@ -117,10 +117,10 @@ public:
     u32 getPartDir();
     BOOL isAppendPart();
 
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ u32 unk_24;
-    /* 0x28 */ MsgString *unk_28;
-    /* 0x2c */ u32 *unk_2c;
+    /* 0x20 */ u32 folder;
+    /* 0x24 */ u32 part;
+    /* 0x28 */ MsgString *dest;
+    /* 0x2c */ u32 *namePosOut;
 };
 
 // ---- container singleton at 0x021c3280
@@ -132,11 +132,11 @@ public:
     MailTextBuilder *func_0203cdc8();
     BOOL func_0203d36c(BOOL b);
 
-    /* 0x000 */ u8 unk_00[0x5c];
-    /* 0x05c */ BmgReader unk_5c;
-    /* 0x300 */ u8 unk_300[0x200];
-    /* 0x500 */ s32 unk_500;
-    /* 0x504 */ u8 unk_504[11 * 0x34];
+    /* 0x000 */ u8 expander[0x5c];
+    /* 0x05c */ BmgReader reader;
+    /* 0x300 */ u8 output[0x200];
+    /* 0x500 */ s32 namePos;
+    /* 0x504 */ u8 slots[11 * 0x34];
 };
 
 // ---- free functions on the 0x34-byte entries at 0x021c3784
@@ -211,12 +211,12 @@ u32 PlayerOptions_GetTalkVoice();
 }
 
 // ---- 0x0203c638 .. 0x0203c924
-struct Unk_0203c640 {
-    u8 unk_000[0x100];
-    u8 unk_100[9];
-    u8 unk_109[9];
-    u8 unk_112[9];
-    u8 unk_11b[8];
+struct Catalog {
+    u8 furnitureBits[0x100];
+    u8 wallpaperBits[9];
+    u8 carpetBits[9];
+    u8 songBits[9];
+    u8 paperBits[8];
 };
 
 struct ItemId {
@@ -226,7 +226,7 @@ struct ItemId {
 };
 
 extern "C" {
-void Catalog_Clear(Unk_0203c640 *p);
+void Catalog_Clear(Catalog *p);
 }
 
 extern "C" {
@@ -368,14 +368,14 @@ extern "C" void Catalog_Construct() {}
 
 extern "C" void Catalog_Destruct() {}
 
-extern "C" void Catalog_Clear(Unk_0203c640 *p) {
+extern "C" void Catalog_Clear(Catalog *p) {
     u32 i;
-    for (i = 0; i < 0x100; i++) p->unk_000[i] = 0;
-    for (i = 0; i < 9; i++) p->unk_100[i] = 0;
-    for (i = 0; i < 9; i++) p->unk_109[i] = 0;
-    for (i = 0; i < 9; i++) p->unk_112[i] = 0;
-    for (i = 0; i < 8; i++) p->unk_11b[i] = 0;
+    for (i = 0; i < 0x100; i++) p->furnitureBits[i] = 0;
+    for (i = 0; i < 9; i++) p->wallpaperBits[i] = 0;
+    for (i = 0; i < 9; i++) p->carpetBits[i] = 0;
+    for (i = 0; i < 9; i++) p->songBits[i] = 0;
+    for (i = 0; i < 8; i++) p->paperBits[i] = 0;
 }
 
-extern "C" void Catalog_Init(Unk_0203c640 *p) { Catalog_Clear(p); }
+extern "C" void Catalog_Init(Catalog *p) { Catalog_Clear(p); }
 

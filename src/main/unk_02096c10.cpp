@@ -12,7 +12,7 @@ public:
     void Letter_Copy(Letter *src);
 
     /* 0x04 */ u8 unk_04[0xec];
-    /* 0xf0 */ u16 unk_f0;
+    /* 0xf0 */ u16 present;
     /* 0xf2 */ u16 pad_f2;
 };
 
@@ -98,7 +98,7 @@ public:
     void clear();
     Letter *getPage(s32 i);
 
-    /* 0x000 */ Letter unk_00[75];
+    /* 0x000 */ Letter letters[75];
 };
 
 // Vtable at 0x020e1db0.
@@ -194,7 +194,7 @@ BOOL LetterOutbox::testFlag(u32 mask) {
 
 Letter *LetterStorage::getPage(s32 i) {
     if (i >= 0 && i < 3) {
-        return &unk_00[i * 25];
+        return &letters[i * 25];
     }
     return NULL;
 }
@@ -202,7 +202,7 @@ Letter *LetterStorage::getPage(s32 i) {
 void LetterStorage::clear() {
     s32 i;
     for (i = 0; i < 75; i++) {
-        Letter_Clear(&unk_00[i]);
+        Letter_Clear(&letters[i]);
     }
 }
 

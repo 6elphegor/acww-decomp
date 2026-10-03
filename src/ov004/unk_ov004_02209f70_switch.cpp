@@ -5,9 +5,9 @@
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
 // ================================================================ library chain and TU02 helper classes (from the linked TU02 unit)
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
 };
 
 // ================================================================ plain value types
@@ -96,10 +96,10 @@ public:
     virtual BOOL postDraw();
     virtual ~Actor();
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
@@ -127,9 +127,9 @@ public:
     void detachTalkRequest(s32 a);
     void attachTalkRequest(s32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -141,8 +141,8 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -464,9 +464,9 @@ class TexVramSlot;
 
 class ModelResource {
 public:
-    u32 unk_04;
+    u32 fileData;
     u32 pad[10];
-    u8 unk_30;
+    u8 loadState;
     u8 unk_31;
     u8 pad2[2];
 
@@ -522,19 +522,19 @@ class AnimFrameCtrl {
 public:
     AnimFrameCtrl();
     virtual ~AnimFrameCtrl();
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 numFrames;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
+    u32 playMode;
 };
 
 class ModelAnim : public AnimFrameCtrl {
 public:
     ModelAnim();
     virtual ~ModelAnim();
-    u32 unk_18;
-    u32 unk_1c;
+    u32 anmObj;
+    u32 resMdl;
 };
 
 class FtrModelAnim : public ModelAnim {

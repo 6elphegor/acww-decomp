@@ -68,14 +68,14 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ s16 unk_d0;
+    /* 0xc4 */ s32 drawPos;
+    /* 0xc8 */ s32 drawPosY;
+    /* 0xcc */ s32 drawPosZ;
+    /* 0xd0 */ s16 drawTilt;
     /* 0xd2 */ u16 pad_d2;
 };
 
@@ -104,9 +104,9 @@ public:
     void clearTalkStartMode();
     void setInteractionRange(s32 v);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u16 pad_ea;
 };
 
@@ -124,8 +124,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 // Secondary base at +0xec (vtable 0x020ddcf0 in main)
@@ -893,8 +893,8 @@ BOOL BuildingActor::vfunc_00() {
     } m;
     Unk_ov009_0225b880_Vec3 v;
     BuildingList_Add(this);
-    unk_228 = unk_5c[0] >> 13;
-    unk_22c = unk_5c[2] >> 13;
+    unk_228 = position[0] >> 13;
+    unk_22c = position[2] >> 13;
     Character_setCharId(this, (u16)(((unk_22c & 0xff) << 8) | (unk_228 & 0xff)));
     unk_132 = *(u32 *)((u8 *)this + 8);
     unk_134 = unk_132 & 0xfff;
@@ -908,7 +908,7 @@ BOOL BuildingActor::vfunc_00() {
     Model_setInitCallback(unk_138, (void *)Building_InitModelCallback, this);
     b2 = b1;
     createShadows(&b2);
-    s32 ang = WorldCurve_Apply(&v, &unk_5c[0]);
+    s32 ang = WorldCurve_Apply(&v, &position[0]);
     func_020e8388(&m, v.x, v.y, v.z);
     func_020e8434(&m, ang);
     createColliders((Unk_ov009_0225bc88_Blk *)&m);
@@ -1003,9 +1003,9 @@ BOOL BuildingActor::preDelete() {
 void BuildingActor::initEntryArea() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        s32 z = unk_5c[2] + r->unk_44;
-        s32 y = unk_5c[1];
-        s32 x = unk_5c[0] + r->unk_40;
+        s32 z = position[2] + r->unk_44;
+        s32 y = position[1];
+        s32 x = position[0] + r->unk_40;
         unk_290 = x;
         unk_294 = y;
         unk_298 = z;
@@ -1300,8 +1300,8 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
 
 void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk m;
-    func_020e8388(&m, unk_c4, unk_c8, unk_cc);
-    func_020e8434(&m, unk_d0);
+    func_020e8388(&m, drawPos, drawPosY, drawPosZ);
+    func_020e8434(&m, drawTilt);
     *out = m;
 }
 
@@ -1361,7 +1361,7 @@ void BuildingActor::func_ov009_0225d0d8() {
 void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk blk;
     if (!vfunc_b8(&blk)) {
-        unk_d0 = WorldCurve_ToCurved(&unk_c4, unk_5c);
+        drawTilt = WorldCurve_ToCurved(&drawPos, position);
         makeCurvedMatrix(&blk);
     }
     unk_19c = blk;
@@ -1449,9 +1449,9 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);
                     Building_LocalToWorld(&wb, (s32)&b, (s32)m);
                     Building_LocalToWorld(&wc, (s32)&c, (s32)m);
-                    func_01ffd070(&la, unk_5c, &a);
-                    func_01ffd070(&lb, unk_5c, &b);
-                    func_01ffd070(&lc, unk_5c, &c);
+                    func_01ffd070(&la, position, &a);
+                    func_01ffd070(&lb, position, &b);
+                    func_01ffd070(&lc, position, &c);
                     e6 = new (e6) TouchPickTriangle;
                     Scene_GetTouchPicker()->addTriangle(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
@@ -2062,7 +2062,7 @@ BOOL BuildingActor::vfunc_48(Character *a) {
     if (a == NULL) {
         return FALSE;
     }
-    s32 d = func_020e780c((s16)(unk_8e + 0x8000), a->unk_8e);
+    s32 d = func_020e780c((s16)(rotY + 0x8000), a->rotY);
     if (d <= 0x1000) {
         if (getEntranceType() != 0) {
             if ((unk_231 & 8) != 0 && getEntranceType() == 2) {
@@ -2113,7 +2113,7 @@ void BuildingActor::onMessageEnd() {
 void BuildingActor::vfunc_78() {
     Unk_ov009_0225bce0_Pad pad;
     setFileName((const char *)sBuildingDefaultMsgFile);
-    unk_1e = 0;
+    msgIndex = 0;
 }
 
 void BuildingActor::vfunc_7c() {}
@@ -2153,9 +2153,9 @@ BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
         }
         return TRUE;
     }
-    out->x = unk_5c[0];
-    out->y = unk_5c[1];
-    out->z = unk_5c[2];
+    out->x = position[0];
+    out->y = position[1];
+    out->z = position[2];
     return FALSE;
 }
 
@@ -2208,11 +2208,11 @@ BOOL BuildingActor::vfunc_98() { return FALSE; }
 BOOL BuildingActor::isOffscreen() {
     if (gCamera != 0) {
         Unk_ov009_0225b880_Vec3 *g = &gCameraLookAt;
-        s32 dx = unk_5c[0] - g->x;
+        s32 dx = position[0] - g->x;
         if (dx < 0) {
             dx = -dx;
         }
-        s32 dz = unk_5c[2] - g->z;
+        s32 dz = position[2] - g->z;
         if (dx > getViewRangeX() || dz > getViewRangeFront() || dz < -getViewRangeBack()) {
             return TRUE;
         }
@@ -2332,9 +2332,9 @@ void BuildingSeEmitter::playSeHeld(u32 a) {
 
 Unk_ov009_0225da90_Vec3 BuildingActor::vfunc_b4() {
     Unk_ov009_0225da90_Vec3 r;
-    r.x = unk_5c[0];
-    r.y = unk_5c[1];
-    r.z = unk_5c[2];
+    r.x = position[0];
+    r.y = position[1];
+    r.z = position[2];
     return r;
 }
 

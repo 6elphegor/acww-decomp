@@ -170,7 +170,7 @@ void LabelButton::setLabelText() {
     MsgString::copy((MsgString *)&text);
     TextLabel *o = label;
     if (o != NULL) {
-        o->unk_10 = (u32)text.data();
+        o->textStart = (u32)text.data();
         label->alignCenter();
         label->requestRedraw();
         textColorDirty = 1;
@@ -230,16 +230,16 @@ void LabelButton::createLabel() {
     if (label == NULL) {
         label = MsgTextLabel_CreateVram(sLabelButtonKindLabelVram[kind], 6, 2);
         if (label != NULL) {
-            label->unk_2c = 4;
+            label->vramLoader = 4;
             TextLabel *t = label;
-            t->unk_10 = (u32)text.data();
+            t->textStart = (u32)text.data();
             if (onBufferA != 0) {
-                label->unk_50 = 2;
+                label->copyMode = 2;
             }
-            label->unk_55 = 1;
+            label->rowStride1K = 1;
             label->alignCenter();
-            label->unk_39 = 0;
-            label->unk_38 = sLabelButtonKindTextColors[kind];
+            label->bgColor = 0;
+            label->fgColor = sLabelButtonKindTextColors[kind];
             label->requestRedraw();
             textColorDirty = 1;
         }

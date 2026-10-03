@@ -76,12 +76,12 @@ struct ChoiceList {
 
 
 struct TalkWindowState {
-    u32 unk_00;
-    u32 unk_04;
-    s32 unk_08;
-    u32 unk_0c;
+    u32 index;
+    u32 state;
+    s32 nextState;
+    u32 stateStep;
     u32 unk_10;
-    s32 unk_14;
+    s32 openMode;
 };
 
 class ActorTalkRequest {
@@ -125,7 +125,7 @@ public:
     void setItemNameSlot(u32 a, u32 b, u32 c);
     ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
     TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
@@ -255,13 +255,13 @@ public:
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
-    s32 unk_5c, unk_60, unk_64;
+    s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
     u8 pad_9c[0xea - 0x9c];
 };
 
@@ -296,22 +296,22 @@ public:
     s32 getPlayerActor(u32 v);
 
     u16 unk_ea;
-    ThreeLayerAnimModel unk_ec;
-    Unk_0201ad3c unk_2a0;
-    NpcFaceAnim unk_2ac;
-    NpcAnimCtrl unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
+    ThreeLayerAnimModel model;
+    Unk_0201ad3c moveAnimSet;
+    NpcFaceAnim faceAnim;
+    NpcAnimCtrl animCtrl;
+    Unk_0201accc moveCtrl;
+    Unk_0201a8bc obstacleProbe;
     Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    NpcSpeechState unk_418;
-    Unk_0201a13c unk_420;
-    CollisionState unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    NpcActionCtrl unk_564;
-    Unk_02014254 unk_618;
+    Unk_0201a794 lookAt;
+    NpcSpeechState speechState;
+    Unk_0201a13c emotionFx;
+    CollisionState collisionState;
+    Unk_02088d00 collider;
+    Unk_020f4080 seEmitter;
+    Unk_020135e4 footstepFx;
+    NpcActionCtrl actionCtrl;
+    Unk_02014254 talkCtrl;
 };
 
 class SpNpcActor : public NpcActor {
@@ -329,10 +329,10 @@ public:
     virtual void getSpecies();
     virtual s32 getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
+    SpNpcAnimHeapHandle animHeapHandle;
+    s32 colliderRadius;
+    s32 colliderHeight;
+    u8 talkMelodyPlayed;
 };
 
 
@@ -739,7 +739,7 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &unk_65c);
     unk_65c.attachOwner((Unk_ov068_0226ccd4_Owner *)this);
-    unk_4cc.unk_45 = 0;
+    collider.unk_45 = 0;
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
@@ -817,19 +817,19 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     NpcActor_setNpcHandle(this, &h);
     if (unk_72c == 7) {
         setInteractionRange(0x5000);
-        unk_5c = 0xf000;
-        unk_64 = 0x13000;
-        unk_8e = 0;
-        unk_94 = 0;
-        NpcMoveAnimSet_setStandAnim(&unk_2a0, 0x102);
-        NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0x102);
-        NpcMoveAnimSet_setRunAnim(&unk_2a0, 0x102);
-        NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        position = 0xf000;
+        positionZ = 0x13000;
+        rotY = 0;
+        moveAngleY = 0;
+        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x102);
+        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x102);
+        NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x102);
+        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     } else {
-        NpcMoveAnimSet_setStandAnim(&unk_2a0, 0x1e);
-        NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0x1e);
-        NpcMoveAnimSet_setRunAnim(&unk_2a0, 0x1e);
-        NpcLookAt_setPitchLimit(&unk_3b0, 0);
+        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
+        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x1e);
+        NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x1e);
+        NpcLookAt_setPitchLimit(&lookAt, 0);
     }
     return TRUE;
 }
@@ -843,10 +843,10 @@ BOOL SpNpcRoostGuest::vfunc_00() {
         func_02105f90(*(s32 *)((u8 *)this + 0x148), 3);
     }
     changeAct(0);
-    unk_4cc.unk_1c |= 2;
+    collider.unk_1c |= 2;
     if (unk_72c == 3) {
-        NpcAnimCtrl_playAnim(&unk_334, this, 0x142, 0, 0, 0x1000, 0, 1);
-        ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
+        NpcAnimCtrl_playAnim(&animCtrl, this, 0x142, 0, 0, 0x1000, 0, 1);
+        ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     }
     return TRUE;
 }
@@ -895,11 +895,11 @@ void SpNpcRoostGuest::changeAct(s32 state) {
 BOOL SpNpcRoostGuest::setupAct00() {
     using namespace sB;
     if (unk_72c == 7) {
-        NpcLookAt_setTarget(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-        NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x105, 0, data_020c6cc8, 0);
-        NpcLookAt_setManualAngles(&unk_3b0, 0, -0xc18, 0, data_020c6cc4, data_020c6cbc);
+        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x105, 0, data_020c6cc8, 0);
+        NpcLookAt_setManualAngles(&lookAt, 0, -0xc18, 0, data_020c6cc4, data_020c6cbc);
     } else {
-        NpcLookAt_setTarget(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        NpcLookAt_setTarget(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     }
     return TRUE;
 }
@@ -924,19 +924,19 @@ BOOL SpNpcRoostGuest::mainAct00() {
 BOOL SpNpcRoostGuest::setupAct01() {
     using namespace sB;
     if (unk_72c == 7) {
-        NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x102, 0, data_020c6cc8, 0);
+        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x102, 0, data_020c6cc8, 0);
     }
-    NpcLookAt_setTarget(&unk_3b0, 4, 0, 0, gVec3Zero, 4, data_020c6d1c, 0);
-    NpcTalkCtrl_requestTalk(&unk_618, 0, 0);
+    NpcLookAt_setTarget(&lookAt, 4, 0, 0, gVec3Zero, 4, data_020c6d1c, 0);
+    NpcTalkCtrl_requestTalk(&talkCtrl, 0, 0);
     return TRUE;
 }
 
 BOOL SpNpcRoostGuest::mainAct01() {
     using namespace sB;
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
@@ -962,10 +962,10 @@ BOOL SpNpcRoostGuest::mainAct03() {
 
 BOOL SpNpcRoostGuest::setupAct02() {
     using namespace sB;
-    NpcActionCtrl_requestPlayAnim(&unk_564, 1, 0x102, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x102, 0, data_020c6cc8, 0);
     Camera_SetMode18();
-    NpcLookAt_setManualAngles(&unk_3b0, 0, 0, 0x1000, data_020c6cc4, data_020c6cbc);
-    NpcTalkCtrl_requestTalk(&unk_618, 0, 1);
+    NpcLookAt_setManualAngles(&lookAt, 0, 0, 0x1000, data_020c6cc4, data_020c6cbc);
+    NpcTalkCtrl_requestTalk(&talkCtrl, 0, 1);
     Bgm_RequestSilence(0x10, 0xf, 0);
     Bgm_DisableHourChime();
     return TRUE;
@@ -974,10 +974,10 @@ BOOL SpNpcRoostGuest::setupAct02() {
 // ---- owner ----
 BOOL SpNpcRoostGuest::mainAct02() {
     using namespace sB;
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerActor_IsInAction(0x28, 4)) {
             PlayerActor_LocalRequestStandUp(0);
@@ -1094,7 +1094,7 @@ void SpNpcRoostGuestTalk::onMessageStart(s32 a) {
 
 void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
     using namespace sB;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 12:
     case 13: {
         u16 v = unk_b0->unk_652;
@@ -1127,7 +1127,7 @@ void SpNpcRoostGuestTalk::dispatchKkMessageEnd(s32 a) {
         {9, *(Unk_ov068_0226cd18_Fn *)data_ov068_0227042c},
     };
     s32 i = 0;
-    u8 *pc = &unk_1e;
+    u8 *pc = &msgIndex;
     for (; (u32)i < 3; i++) {
         u32 off = i * 12;
         u32 id = tbl[i].id;
@@ -1162,7 +1162,7 @@ void SpNpcRoostGuestTalk::onKkAskSongRequest() {
 
 void SpNpcRoostGuestTalk::onKkStartShow() {
     using namespace sB;
-    unk_3c->unk_14 = 0;
+    unk_3c->openMode = 0;
     unk_b0->unk_740 = 0x2d;
     setScript(2);
 }
@@ -1184,7 +1184,7 @@ void SpNpcRoostGuestTalk::dispatchKkChoice(s32 a) {
         {0xe, *(Unk_ov068_02270780_Fn1 *)data_ov068_0227039c},
     };
     u32 i = 0;
-    u8 *pe = &unk_1e;
+    u8 *pe = &msgIndex;
     goto test;
 loop:
     u32 idv = tbl[i].id;
@@ -1334,7 +1334,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
         if (unk_b0->unk_740 == 0x2d) {
             LightSwitch_SetOff(0, 0x1e);
             LightSwitch_SetOn(1, 1, 0);
-            NpcLookAt_setManualAngles(&unk_b0->unk_3b0, 0, -0xc18, 0, 0x276, 0x276);
+            NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, -0xc18, 0, 0x276, 0x276);
         }
         if (func_020e7500(&unk_b0->unk_740) == 0) {
             RoomCamera_KkShowWideShot();
@@ -1390,17 +1390,17 @@ void SpNpcRoostGuestTalk::scriptPerform() {
         s32 t1 = p->unk_01;
         if (t1 != unk_b8.unk_01) {
             if (t1 == -1) {
-                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthM0);
+                NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthM0);
             } else {
-                NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthTextures[t1]);
+                NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthTextures[t1]);
             }
         }
         s32 t2 = p->unk_02;
         if (t2 != unk_b8.unk_02 || p->unk_00 != unk_b8.unk_00) {
             if (t2 == 1) {
-                NpcLookAt_setManualAngles(&unk_b0->unk_3b0, 0, 0, 0, 0x100, 0x200);
+                NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, 0, 0, 0x100, 0x200);
             } else {
-                NpcLookAt_setManualAngles(&unk_b0->unk_3b0, 0, -0xc18, 0, 0x100, 0x200);
+                NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, -0xc18, 0, 0x100, 0x200);
             }
             u16 v = data_020c6cc8;
             if (unk_b8.unk_14 == 0) {
@@ -1409,16 +1409,16 @@ void SpNpcRoostGuestTalk::scriptPerform() {
             }
             s32 t0 = p->unk_00;
             if (t0 == 3) {
-                NpcActionCtrl_requestPlayAnim(&unk_b0->unk_564, 2, 0x103, 0, v, 0);
+                NpcActionCtrl_requestPlayAnim(&unk_b0->actionCtrl, 2, 0x103, 0, v, 0);
             } else if (t0 == 4) {
-                NpcActionCtrl_requestPlayAnim(&unk_b0->unk_564, 2, 0x104, 0, v, 0);
+                NpcActionCtrl_requestPlayAnim(&unk_b0->actionCtrl, 2, 0x104, 0, v, 0);
             }
         }
         if ((u8)(s8)(p->unk_00 - 3) <= 1) {
-            unk_b0->unk_ec.unk_a4 = 0;
-            unk_b0->unk_ec.unk_ac = p->unk_08;
-            ThreeLayerAnimModel_updateLayers3(&unk_b0->unk_ec);
-            unk_b0->unk_ec.unk_ac = 0;
+            unk_b0->model.unk_a4 = 0;
+            unk_b0->model.unk_ac = p->unk_08;
+            ThreeLayerAnimModel_updateLayers3(&unk_b0->model);
+            unk_b0->model.unk_ac = 0;
         }
         {
             s32 t3 = p->unk_03;
@@ -1429,9 +1429,9 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                     KkShowFx_CallUnk1f70();
                 }
                 if (p->unk_03 == 1) {
-                    NpcFaceAnim_setMouthTexture(&unk_b0->unk_2ac, (u32)sKkMouthM0);
-                    NpcFaceAnim_resumeMouthMaterial(&unk_b0->unk_2ac);
-                    NpcActionCtrl_requestStand(&unk_b0->unk_564, 2, 0x28);
+                    NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthM0);
+                    NpcFaceAnim_resumeMouthMaterial(&unk_b0->faceAnim);
+                    NpcActionCtrl_requestStand(&unk_b0->actionCtrl, 2, 0x28);
                 }
             }
         }
@@ -1477,8 +1477,8 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
 void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
     if (func_020e7500(&unk_b0->unk_740) == 0) {
-        NpcLookAt_setManualAngles(&unk_b0->unk_3b0, 0, 0, 0x1000, 0x276, 0x276);
-        unk_3c->unk_08 = 1;
+        NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, 0, 0x1000, 0x276, 0x276);
+        unk_3c->nextState = 1;
         setScript(0);
     }
 }

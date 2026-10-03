@@ -23,9 +23,9 @@ public:
     void reset();
     void copyFrom(MsgStringAttr *other);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ s32 form;
+    /* 0x08 */ u8 attrA;
+    /* 0x09 */ u8 attrB;
 };
 
 class MsgStringBase {
@@ -47,8 +47,8 @@ public:
     u8 set(u8 *str);
     void clear();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ MsgStringAttr unk_08;
+    /* 0x04 */ u32 length;
+    /* 0x08 */ MsgStringAttr attr;
 };
 
 class MsgString33 : public MsgString {
@@ -68,8 +68,8 @@ public:
     virtual void vfunc_08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class BmgReader {
@@ -95,11 +95,11 @@ public:
     void getArgs3(u8 *a, u8 *b, u8 *c);
     void parse(u8 *p);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ char *unk_0c;
-    /* 0x10 */ char *unk_10;
+    /* 0x00 */ s32 group;
+    /* 0x04 */ s32 id;
+    /* 0x08 */ u32 argLen;
+    /* 0x0c */ char *args;
+    /* 0x10 */ char *raw;
 };
 
 class MsgParser {
@@ -116,8 +116,8 @@ public:
     void skip(s32 n);
     void reset();
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u8 unk_08[0x1c];
+    /* 0x04 */ u8 *cursor;
+    /* 0x08 */ u8 callStack[0x1c];
 };
 
 class MsgWalker : public MsgParser {
@@ -184,15 +184,15 @@ public:
     void appendChar();
     u8 expand(u8 a, u8 b);
 
-    /* 0x24 */ StringBank *unk_24;
-    /* 0x28 */ MsgTag unk_28;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u32 unk_40;
-    /* 0x44 */ u8 unk_44;
-    /* 0x45 */ u8 unk_45;
-    /* 0x46 */ u8 unk_46;
-    /* 0x47 */ u8 unk_47;
-    /* 0x48 */ u8 unk_48;
+    /* 0x24 */ StringBank *bank;
+    /* 0x28 */ MsgTag tag;
+    /* 0x3c */ s32 curChar;
+    /* 0x40 */ u32 outLen;
+    /* 0x44 */ u8 nameCharPending;
+    /* 0x45 */ u8 success;
+    /* 0x46 */ u8 resolveAltText;
+    /* 0x47 */ u8 nicknameMode;
+    /* 0x48 */ u8 capitalizeNext;
 };
 
 class TabooCensorWriter : public MsgWalker {
@@ -214,13 +214,13 @@ public:
     void setSource(MsgString *p);
     void resetWriter();
 
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ MsgString *unk_28;
-    /* 0x2c */ MsgString *unk_2c;
-    /* 0x30 */ u8 *unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x24 */ s32 mode;
+    /* 0x28 */ MsgString *source;
+    /* 0x2c */ MsgString *dest;
+    /* 0x30 */ u8 *scanPos;
+    /* 0x34 */ u8 atEnd;
+    /* 0x38 */ s32 curChar;
+    /* 0x3c */ s32 remaining;
 };
 
 class MsgCharReader : public MsgWalker {
@@ -233,9 +233,9 @@ public:
     virtual void onTag(u8 *p);
     virtual BOOL canContinue();
 
-    /* 0x24 */ u32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ u32 unk_2c;
+    /* 0x24 */ u32 text;
+    /* 0x28 */ s32 remaining;
+    /* 0x2c */ u32 curChar;
 };
 
 class MsgString25 : public MsgString {
@@ -256,7 +256,7 @@ public:
     virtual u32 getBufferSize();
     void clearBuffer();
 
-    /* 0xa4 */ u8 unk_a4[0x400];
+    /* 0xa4 */ u8 buffer[0x400];
 };
 
 class StringMsgRequest : public MsgRequest {
@@ -265,10 +265,10 @@ public:
     virtual ~StringMsgRequest();
     virtual u32 vfunc_0c();
 
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ MsgString *unk_24;
-    /* 0x28 */ u8 unk_28;
-    /* 0x29 */ u8 unk_29;
+    /* 0x20 */ u32 dirIndex;
+    /* 0x24 */ MsgString *dest;
+    /* 0x28 */ u8 resolveAltText;
+    /* 0x29 */ u8 nicknameMode;
 };
 
 class MsgString256 : public MsgString {
@@ -290,7 +290,7 @@ public:
 
     /* 0x14 */ u32 unk_14;
     /* 0x18 */ u32 unk_18;
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 isLoaded;
 };
 
 // text loader, global at 0x021ee50c
@@ -305,15 +305,15 @@ public:
     BOOL load(StringMsgRequest *req);
     void reset();
 
-    /* 0x000 */ StringExpander unk_000;
-    /* 0x04c */ BmgReader1K unk_04c;
-    /* 0x4f0 */ MsgStringAttr unk_4f0;
-    /* 0x4fc */ u8 unk_4fc[0x400];
-    /* 0x8fc */ MsgString33 unk_8fc[11];
-    /* 0xb38 */ Unk_Buf *unk_b38;
-    /* 0xb3c */ TabooCensorWriter unk_b3c;
-    /* 0xb7c */ MsgCharReader unk_b7c;
-    /* 0xbac */ ArticleCacheEntry unk_bac[16];
+    /* 0x000 */ StringExpander expander;
+    /* 0x04c */ BmgReader1K reader;
+    /* 0x4f0 */ MsgStringAttr attr;
+    /* 0x4fc */ u8 output[0x400];
+    /* 0x8fc */ MsgString33 slots[11];
+    /* 0xb38 */ Unk_Buf *nameSource;
+    /* 0xb3c */ TabooCensorWriter censor;
+    /* 0xb7c */ MsgCharReader charReader;
+    /* 0xbac */ ArticleCacheEntry articles[16];
 };
 
 struct Empty {
@@ -348,7 +348,7 @@ extern "C" MsgString256 *String_GetTabooScratch(void) {
     return &inst;
 }
 
-ArticleCacheEntry::ArticleCacheEntry() : unk_1c(0) { clear(); }
+ArticleCacheEntry::ArticleCacheEntry() : isLoaded(0) { clear(); }
 
 ArticleCacheEntry::~ArticleCacheEntry() {}
 
@@ -365,45 +365,45 @@ BmgReader1K::BmgReader1K() : BmgReader(0) {}
 BmgReader1K::~BmgReader1K() {}
 
 void BmgReader1K::clearBuffer() {
-    MI_CpuFill8(unk_a4, 0, 0x400);
+    MI_CpuFill8(buffer, 0, 0x400);
 }
 
 u32 BmgReader1K::getBuffer() {
-    return (u32)unk_a4;
+    return (u32)buffer;
 }
 
 u32 BmgReader1K::getBufferSize() {
     return 0x400;
 }
 
-StringExpander::StringExpander(StringBank *owner) : unk_24(owner) {
-    unk_3c = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_45 = 1;
-    unk_46 = 0;
-    unk_47 = 0;
-    unk_48 = 0;
+StringExpander::StringExpander(StringBank *owner) : bank(owner) {
+    curChar = 0;
+    outLen = 0;
+    nameCharPending = 0;
+    success = 1;
+    resolveAltText = 0;
+    nicknameMode = 0;
+    capitalizeNext = 0;
 }
 
 StringExpander::~StringExpander() {}
 
 u8 StringExpander::expand(u8 a, u8 b) {
-    unk_45 = 1;
-    unk_40 = 0;
-    unk_46 = a;
-    unk_47 = b;
-    unk_48 = 0;
-    unk_3c = 0;
+    success = 1;
+    outLen = 0;
+    resolveAltText = a;
+    nicknameMode = b;
+    capitalizeNext = 0;
+    curChar = 0;
     reset();
-    begin((u8 *)unk_24->unk_04c.getBuffer());
+    begin((u8 *)bank->reader.getBuffer());
     run(FALSE);
-    if (unk_45 && unk_47) {
+    if (success && nicknameMode) {
         if (!canCheckName() || !differsFromName()) {
-            unk_45 = 0;
+            success = 0;
         }
     }
-    return unk_45;
+    return success;
 }
 
 void StringExpander::onBegin() {}
@@ -411,27 +411,27 @@ void StringExpander::onBegin() {}
 void StringExpander::onEnd() {}
 
 void StringExpander::onChar(u32 c) {
-    if (unk_48) {
+    if (capitalizeNext) {
         c = Text_ToUpper(c);
-        unk_48 = 0;
+        capitalizeNext = 0;
     }
-    if (unk_47 && unk_44) {
+    if (nicknameMode && nameCharPending) {
         if (!differsFromLast(c)) {
-            unk_45 = 0;
+            success = 0;
         }
-        unk_44 = 0;
+        nameCharPending = 0;
     }
-    if (unk_45) {
-        unk_3c = c;
+    if (success) {
+        curChar = c;
         appendChar();
     }
 }
 
 void StringExpander::onTag(u8 *cmd) {
     typedef void (StringExpander::*Fn)();
-    unk_28.parse(cmd);
-    s32 a = unk_28.unk_00;
-    s32 b = unk_28.unk_04;
+    tag.parse(cmd);
+    s32 a = tag.group;
+    s32 b = tag.id;
     Fn fn = 0;
     if (a == 0 && b == 2) {
         fn = &StringExpander::insertNameChar0;
@@ -449,7 +449,7 @@ void StringExpander::onTag(u8 *cmd) {
         fn = &StringExpander::insertGlyphTag10;
     } else if (a == 0xff && b == 2) {
         fn = &StringExpander::handleTagFF02;
-    } else if (a == 4 && unk_28.isSlotTag()) {
+    } else if (a == 4 && tag.isSlotTag()) {
         fn = &StringExpander::insertSlot;
     } else if (a == 0xb && b == 0) {
         fn = &StringExpander::setAttr;
@@ -459,127 +459,127 @@ void StringExpander::onTag(u8 *cmd) {
     if (fn) {
         (this->*fn)();
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
 BOOL StringExpander::canContinue() {
-    return unk_45;
+    return success;
 }
 
 void StringExpander::appendChar() {
-    s8 c = unk_3c;
-    if (0x400 - unk_40 > 1) {
-        u32 i = unk_40++;
-        unk_24->unk_4fc[i] = c;
+    s8 c = curChar;
+    if (0x400 - outLen > 1) {
+        u32 i = outLen++;
+        bank->output[i] = c;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
 void StringExpander::appendRawTag() {
-    char *p = unk_28.unk_10;
-    u32 n = unk_28.unk_08 + 5;
-    if (0x400 - unk_40 > n) {
+    char *p = tag.raw;
+    u32 n = tag.argLen + 5;
+    if (0x400 - outLen > n) {
         for (u32 i = 0; i < n; i++) {
-            (unk_24->unk_4fc + unk_40)[i] = p[i];
+            (bank->output + outLen)[i] = p[i];
         }
-        unk_40 += n;
+        outLen += n;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
 void StringExpander::appendTagTail() {
     u32 a;
     char *b, *c;
-    unk_28.getAltTextArgs(&a, &b, &c);
-    u32 n = unk_28.unk_08 - 1;
-    BOOL ok = 0x400 - unk_40 > n;
+    tag.getAltTextArgs(&a, &b, &c);
+    u32 n = tag.argLen - 1;
+    BOOL ok = 0x400 - outLen > n;
     skip(a * 2);
     if (ok) {
         for (u32 i = 0; i < n; i++) {
-            (unk_24->unk_4fc + unk_40)[i] = c[i];
+            (bank->output + outLen)[i] = c[i];
         }
-        unk_40 += n;
+        outLen += n;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
 void StringExpander::insertNameChar0() {
-    if (unk_47) {
-        u32 a = Msg_GetCharAt(unk_24->unk_b38->vfunc_0c(), 0);
-        if (unk_48) {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 0);
+        if (capitalizeNext) {
             a = Text_ToUpper(a);
-            unk_48 = 0;
+            capitalizeNext = 0;
         }
         if (String_IsNonNullChar(a)) {
-            unk_3c = a;
+            curChar = a;
             appendChar();
-            unk_44 = 1;
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
 void StringExpander::insertNameChar1() {
-    if (unk_47) {
-        u32 a = Msg_GetCharAt(unk_24->unk_b38->vfunc_0c(), 1);
-        if (unk_48) {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 1);
+        if (capitalizeNext) {
             a = Text_ToUpper(a);
-            unk_48 = 0;
+            capitalizeNext = 0;
         }
         if (String_IsNonNullChar(a)) {
-            unk_3c = a;
+            curChar = a;
             appendChar();
-            unk_44 = 1;
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
 void StringExpander::insertNameChar2() {
-    if (unk_47) {
-        u32 a = Msg_GetCharAt(unk_24->unk_b38->vfunc_0c(), 2);
-        if (unk_48) {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 2);
+        if (capitalizeNext) {
             a = Text_ToUpper(a);
-            unk_48 = 0;
+            capitalizeNext = 0;
         }
         if (String_IsNonNullChar(a)) {
-            unk_3c = a;
+            curChar = a;
             appendChar();
-            unk_44 = 1;
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
 void StringExpander::insertNameLast2() {
-    if (unk_47) {
+    if (nicknameMode) {
         u32 v, b, a;
-        v = unk_24->unk_b38->vfunc_0c();
+        v = bank->nameSource->vfunc_0c();
         a = Msg_GetCharFromEnd(v, 0);
         b = Msg_GetCharFromEnd(v, 1);
-        if (unk_48) {
+        if (capitalizeNext) {
             a = Text_ToUpper(a);
-            unk_48 = 0;
+            capitalizeNext = 0;
         }
-        if (unk_48) {
+        if (capitalizeNext) {
             b = Text_ToUpper(b);
-            unk_48 = 0;
+            capitalizeNext = 0;
         }
         if (String_IsNonNullChar(a) && String_IsNonNullChar(b)) {
-            unk_3c = b;
+            curChar = b;
             appendChar();
-            unk_3c = a;
+            curChar = a;
             appendChar();
-            unk_44 = 1;
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
@@ -597,7 +597,7 @@ void StringExpander::insertGlyphTag10() {
 }
 
 void StringExpander::handleTagFF02() {
-    if (unk_46) {
+    if (resolveAltText) {
         appendTagTail();
     } else {
         appendRawTag();
@@ -605,24 +605,24 @@ void StringExpander::handleTagFF02() {
 }
 
 void StringExpander::insertSlot() {
-    pushText(unk_24->unk_8fc[unk_28.getSlotIndex()].data());
+    pushText(bank->slots[tag.getSlotIndex()].data());
 }
 
 void StringExpander::setAttr() {
     u8 a, b, c;
-    unk_28.getArgs3(&a, &b, &c);
-    MsgStringAttr *p = &unk_24->unk_4f0;
+    tag.getArgs3(&a, &b, &c);
+    MsgStringAttr *p = &bank->attr;
     s32 v = a;
     if (a >= 3) {
         v = -1;
     }
-    p->unk_04 = v;
-    p->unk_08 = b;
-    p->unk_09 = c;
+    p->form = v;
+    p->attrA = b;
+    p->attrB = c;
 }
 
 void StringExpander::setCapitalizeNext() {
-    unk_48 = 1;
+    capitalizeNext = 1;
 }
 
 extern "C" BOOL String_IsNonNullChar(u32 x) {
@@ -635,7 +635,7 @@ extern "C" BOOL String_IsNonNullChar(u32 x) {
 
 BOOL StringExpander::differsFromLast(s32 c) {
     BOOL r = TRUE;
-    if (unk_3c == c) {
+    if (curChar == c) {
         r = FALSE;
     }
     return r;
@@ -646,95 +646,95 @@ BOOL StringExpander::canCheckName() {
 }
 
 BOOL StringExpander::differsFromName() {
-    u8 *p = (u8 *)unk_24->unk_b38->vfunc_0c();
-    return strcmp(p, (u8 *)unk_24->unk_4fc) != 0;
+    u8 *p = (u8 *)bank->nameSource->vfunc_0c();
+    return strcmp(p, (u8 *)bank->output) != 0;
 }
 
 TabooCensorWriter::TabooCensorWriter() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
+    mode = 0;
+    source = 0;
+    dest = 0;
+    scanPos = 0;
+    atEnd = 0;
+    curChar = 0;
+    remaining = 0;
 }
 
 TabooCensorWriter::~TabooCensorWriter() {}
 
 void TabooCensorWriter::resetWriter() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
+    mode = 0;
+    source = 0;
+    dest = 0;
+    scanPos = 0;
+    atEnd = 0;
+    curChar = 0;
+    remaining = 0;
     reset();
 }
 
 void TabooCensorWriter::setSource(MsgString *p) {
-    unk_28 = p;
-    unk_30 = p->data();
+    source = p;
+    scanPos = p->data();
 }
 
 void TabooCensorWriter::setDest(MsgString *p) {
-    unk_2c = p;
+    dest = p;
 }
 
 void TabooCensorWriter::restartScan() {
     reset();
-    begin(unk_30);
+    begin(scanPos);
 }
 
 void TabooCensorWriter::censorChars(s32 n) {
-    unk_24 = 2;
-    unk_3c = n;
+    mode = 2;
+    remaining = n;
     run(FALSE);
-    unk_24 = 0;
+    mode = 0;
 }
 
 void TabooCensorWriter::copyChar() {
-    unk_24 = 1;
-    unk_3c = 1;
+    mode = 1;
+    remaining = 1;
     run(FALSE);
-    unk_24 = 0;
+    mode = 0;
 }
 
 s32 TabooCensorWriter::readChar() {
-    unk_24 = 3;
-    unk_3c = 1;
-    unk_38 = 0;
+    mode = 3;
+    remaining = 1;
+    curChar = 0;
     run(FALSE);
-    unk_24 = 0;
-    return unk_38;
+    mode = 0;
+    return curChar;
 }
 
 void TabooCensorWriter::onBegin() {}
 
 void TabooCensorWriter::onEnd() {
-    if (unk_24 == 1 || unk_24 == 2) {
-        unk_34 = 1;
+    if (mode == 1 || mode == 2) {
+        atEnd = 1;
     }
 }
 
 void TabooCensorWriter::onChar(u32 c) {
-    unk_38 = c;
-    if (unk_24 == 1) {
+    curChar = c;
+    if (mode == 1) {
         appendChar(c);
         if (c != 10) {
-            unk_3c--;
+            remaining--;
         }
-    } else if (unk_24 == 2) {
+    } else if (mode == 2) {
         if (c == 10) {
             appendChar(10);
         } else {
             appendChar(0x20);
-            unk_3c--;
+            remaining--;
         }
-    } else if (unk_24 == 3) {
+    } else if (mode == 3) {
         if (c != 10) {
-            unk_3c--;
+            remaining--;
         }
     }
 }
@@ -742,9 +742,9 @@ void TabooCensorWriter::onChar(u32 c) {
 void TabooCensorWriter::onTag(u8 *p) {}
 
 BOOL TabooCensorWriter::canContinue() {
-    BOOL r = unk_3c > 0;
-    if ((unk_24 == 1 || unk_24 == 2) && !r) {
-        unk_30 = unk_04;
+    BOOL r = remaining > 0;
+    if ((mode == 1 || mode == 2) && !r) {
+        scanPos = cursor;
     }
     return r;
 }
@@ -753,13 +753,13 @@ u8 TabooCensorWriter::appendChar(u32 c) {
     u8 buf[3];
     func_02133ef8(buf, 3);
     buf[0] = c;
-    return unk_2c->append(buf);
+    return dest->append(buf);
 }
 
 MsgCharReader::MsgCharReader() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
+    text = 0;
+    remaining = 0;
+    curChar = 0;
 }
 
 MsgCharReader::~MsgCharReader() {}
@@ -769,21 +769,21 @@ void MsgCharReader::onBegin() {}
 void MsgCharReader::onEnd() {}
 
 void MsgCharReader::onChar(u32 c) {
-    unk_2c = c;
-    unk_28--;
+    curChar = c;
+    remaining--;
 }
 
 void MsgCharReader::onTag(u8 *p) {}
 
 BOOL MsgCharReader::canContinue() {
-    return unk_28 > 0;
+    return remaining > 0;
 }
 
 extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name) {
     StringMsgRequest req;
     req.setFileName(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
+    req.msgIndex = *key;
+    req.dest = buf;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
     return r;
@@ -792,9 +792,9 @@ extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name) {
 extern "C" BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name) {
     StringMsgRequest req;
     req.setFileName(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    req.unk_28 = 1;
+    req.msgIndex = *key;
+    req.dest = buf;
+    req.resolveAltText = 1;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
     return r;
@@ -805,17 +805,17 @@ extern "C" BOOL String_Load2d(MsgString *buf, u8 *key, const char *name) {
         name = "2d_menu";
     }
     StringMsgRequest req;
-    req.unk_20 = 1;
+    req.dirIndex = 1;
     req.setFileName(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
+    req.msgIndex = *key;
+    req.dest = buf;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
     return r;
 }
 
 extern "C" u8 String_SetSlot(u32 idx, MsgString *other) {
-    return gStringBank.unk_8fc[idx].copy(other);
+    return gStringBank.slots[idx].copy(other);
 }
 
 extern "C" s32 Str_LenN(const char *s, u32 max) {
@@ -1064,13 +1064,13 @@ extern "C" BOOL String_GetDayOrdinal(MsgString *buf, u8 v) {
 extern "C" BOOL String_MakeNickname(MsgString *buf, u32 x, u8 *key) {
     StringMsgRequest req;
     req.setFileName("st_nickn");
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    req.unk_29 = 1;
-    gStringBank.unk_b38 = (Unk_Buf *)x;
+    req.msgIndex = *key;
+    req.dest = buf;
+    req.nicknameMode = 1;
+    gStringBank.nameSource = (Unk_Buf *)x;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
-    gStringBank.unk_b38 = 0;
+    gStringBank.nameSource = 0;
     return r;
 }
 
@@ -1086,11 +1086,11 @@ extern "C" ArticleCacheEntry *String_GetArticle(u8 *key) {
     ArticleCacheEntry *r = NULL;
     s32 i = *key;
     if (i < 0x10) {
-        ArticleCacheEntry *e = &gStringBank.unk_bac[i];
-        if (e->unk_1c != 0) {
+        ArticleCacheEntry *e = &gStringBank.articles[i];
+        if (e->isLoaded != 0) {
             r = e;
         } else if (String_Load(e, key, "st_article")) {
-            e->unk_1c = 1;
+            e->isLoaded = 1;
             r = e;
         }
     }
@@ -1098,39 +1098,39 @@ extern "C" ArticleCacheEntry *String_GetArticle(u8 *key) {
 }
 
 void StringBank::reset() {
-    unk_04c.clearBuffer();
-    unk_4f0.reset();
-    MI_CpuFill8(unk_4fc, 0, 0x400);
+    reader.clearBuffer();
+    attr.reset();
+    MI_CpuFill8(output, 0, 0x400);
 }
 
 BOOL StringBank::load(StringMsgRequest *req) {
     char path[0x44];
-    func_020639e8(path, "%s/%s.bmg", req->vfunc_0c(), req->unk_04);
-    BOOL ok = unk_04c.open(path);
-    BOOL t = ok ? unk_04c.loadMessage(&req->unk_1e) : FALSE;
+    func_020639e8(path, "%s/%s.bmg", req->vfunc_0c(), req->fileName);
+    BOOL ok = reader.open(path);
+    BOOL t = ok ? reader.loadMessage(&req->msgIndex) : FALSE;
     ok = ok & t;
     if (ok) {
         ok = TRUE;
     } else {
         ok = FALSE;
     }
-    unk_04c.close();
+    reader.close();
     if (ok) {
-        MsgString *dst = req->unk_24;
-        ok &= unk_000.expand(req->unk_28, req->unk_29);
+        MsgString *dst = req->dest;
+        ok &= expander.expand(req->resolveAltText, req->nicknameMode);
         if (ok) {
             ok = TRUE;
         } else {
             ok = FALSE;
         }
         if (dst) {
-            ok &= dst->set(unk_4fc);
+            ok &= dst->set(output);
             if (ok) {
                 ok = TRUE;
             } else {
                 ok = FALSE;
             }
-            dst->unk_08.copyFrom(&unk_4f0);
+            dst->attr.copyFrom(&attr);
         }
     }
     return ok;
@@ -1140,43 +1140,43 @@ BOOL StringBank::beginTabooCheck(MsgString *buf) {
     Empty e;
     StringMsgRequest req;
     req.setFileName("st_taboo");
-    req.unk_1e = 0;
+    req.msgIndex = 0;
     reset();
     BOOL r = gStringBank.load(&req);
     if (r) {
         String_GetTabooScratch()->copy(buf);
         buf->clear();
-        unk_b3c.resetWriter();
-        unk_b3c.setSource(String_GetTabooScratch());
-        unk_b3c.setDest(buf);
-        unk_b7c.unk_24 = 0;
-        unk_b7c.unk_28 = 0;
-        unk_b7c.unk_2c = 0;
-        unk_b7c.reset();
+        censor.resetWriter();
+        censor.setSource(String_GetTabooScratch());
+        censor.setDest(buf);
+        charReader.text = 0;
+        charReader.remaining = 0;
+        charReader.curChar = 0;
+        charReader.reset();
     }
     return r;
 }
 
 BOOL StringBank::censorTaboo() {
     BOOL result = FALSE;
-    unk_b3c.restartScan();
-    u8 *start = unk_4fc;
-    while (unk_b3c.unk_34 == 0) {
+    censor.restartScan();
+    u8 *start = output;
+    while (censor.atEnd == 0) {
         char *s = (char *)start;
         s32 n = 0;
         for (; s != NULL && *s != 0xa; s = Msg_SkipLines(s, 1)) {
-            unk_b7c.unk_24 = (u32)s;
+            charReader.text = (u32)s;
             n = matchTabooWord();
             if (n > 0) {
                 break;
             }
         }
-        unk_b3c.restartScan();
+        censor.restartScan();
         if (n > 0) {
-            unk_b3c.censorChars(n);
+            censor.censorChars(n);
             result = TRUE;
         } else {
-            unk_b3c.copyChar();
+            censor.copyChar();
         }
     }
     return result;
@@ -1184,18 +1184,18 @@ BOOL StringBank::censorTaboo() {
 
 s32 StringBank::matchTabooWord() {
     s32 count = 0;
-    unk_b3c.restartScan();
-    unk_b7c.reset();
-    unk_b7c.begin((u8 *)unk_b7c.unk_24);
+    censor.restartScan();
+    charReader.reset();
+    charReader.begin((u8 *)charReader.text);
     for (;;) {
-        unk_b7c.unk_28 = 1;
-        unk_b7c.unk_2c = 0;
-        unk_b7c.run(FALSE);
-        u32 c = unk_b7c.unk_2c;
+        charReader.remaining = 1;
+        charReader.curChar = 0;
+        charReader.run(FALSE);
+        u32 c = charReader.curChar;
         if (c == 0xa || c == 0) {
             break;
         }
-        if (String_CharEqualsIgnoreCase((u32)unk_b3c.readChar(), c)) {
+        if (String_CharEqualsIgnoreCase((u32)censor.readChar(), c)) {
             count++;
         } else {
             count = 0;
@@ -1218,18 +1218,18 @@ extern "C" BOOL String_CharEqualsIgnoreCase(u32 a, u32 b) {
     return r;
 }
 
-StringBank::StringBank() : unk_000(this), unk_b38(0) {
-    MI_CpuFill8(unk_4fc, 0, 0x400);
+StringBank::StringBank() : expander(this), nameSource(0) {
+    MI_CpuFill8(output, 0, 0x400);
 }
 
 StringBank::~StringBank() {}
 
-StringMsgRequest::StringMsgRequest() : unk_20(0), unk_24(0), unk_28(0), unk_29(0) {}
+StringMsgRequest::StringMsgRequest() : dirIndex(0), dest(0), resolveAltText(0), nicknameMode(0) {}
 
 StringMsgRequest::~StringMsgRequest() {}
 
 u32 StringMsgRequest::vfunc_0c() {
     static const char *const tbl[2] = {"/script/ENG/string", "/script/ENG/2d"};
-    return (u32)tbl[unk_20];
+    return (u32)tbl[dirIndex];
 }
 

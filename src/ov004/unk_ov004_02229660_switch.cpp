@@ -83,7 +83,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -104,9 +104,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -248,18 +248,18 @@ public:
     virtual void vfunc_s08();
     void setFileName(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 struct TalkWindowState {
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
+    /* 0x0000 */ u32 index;
+    /* 0x0004 */ s32 state;
+    /* 0x0008 */ s32 nextState;
     /* 0x000c */ u8 pad_0c[8];
-    /* 0x0014 */ s32 unk_14;
+    /* 0x0014 */ s32 openMode;
     /* 0x0018 */ u8 pad_18[0x16dc - 0x18];
-    /* 0x16dc */ u8 unk_16dc[4];
+    /* 0x16dc */ u8 voice[4];
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -539,7 +539,7 @@ void RoomTelephone::onChoice(u32 a_, u8 b_) {
     TalkWindowState *p = unk_3c;
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
     u32 r = 0;
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 0xe:
     case 0x1f:
         if (Scene_GetCurrent() == 6) {

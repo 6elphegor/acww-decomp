@@ -59,7 +59,7 @@ public:
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 unk_5c[3];
+    /* 0x5c */ s32 position[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
@@ -80,9 +80,9 @@ public:
 
     void setCharId(u32 a);
 
-    /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ u16 unk_e8;
+    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xe4 */ s32 interactionRangeSq;
+    /* 0xe8 */ u16 charFlags;
     /* 0xea */ u8 unk_ea;
     /* 0xeb */ u8 pad_eb;
 };
@@ -178,8 +178,8 @@ public:
     MsgRequest();
     virtual ~MsgRequest();
     virtual void vfunc_08();
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
+    /* 0x04 */ char fileName[0x1a];
+    /* 0x1e */ u8 msgIndex;
 };
 
 class TalkMsgRequest : public MsgRequest {
@@ -486,7 +486,7 @@ void BarberMachine::updateState03() {
 
 // @22252cc
 void BarberMachine::initCollision() {
-    BoxCollider_Register(&unk_2d4, 0x2000, 0x4000, 0x2000, unk_5c, 0, 0);
+    BoxCollider_Register(&unk_2d4, 0x2000, 0x4000, 0x2000, position, 0, 0);
 }
 
 // @22252bc
