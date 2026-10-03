@@ -7,6 +7,18 @@
     .data       start:0x020d1f60 end:0x020e7500 kind:data align:32
     .bss        start:0x020e7500 end:0x020e7500 kind:bss align:32
 
+src/main/unk_02000800.cpp:
+    complete
+    .text       start:0x02000800 end:0x02000b44
+
+src/main/unk_02000b44.cpp:
+    complete
+    .text       start:0x02000b44 end:0x02000b48
+
+src/main/unk_02000b7c.cpp:
+    complete
+    .text       start:0x02000b7c end:0x02000b84
+
 src/main/unk_02000c2c.cpp:
     complete
     .text       start:0x02000c2c end:0x0200137c

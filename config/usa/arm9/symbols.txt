@@ -24,7 +24,9 @@ AutoloadCallback kind:function(arm,size=0x4) addr:0x02000a58
 func_02000a5c kind:function(arm,size=0xe8) addr:0x02000a5c
 func_02000b44 kind:function(arm,size=0x4) addr:0x02000b44
 BuildInfo kind:data(any) addr:0x02000b48
+data_02000b6c kind:data(any) addr:0x02000b6c
 func_02000b7c kind:function(thumb,size=0x8) addr:0x02000b7c
+data_02000b84 kind:data(any) addr:0x02000b84
 NitroMain kind:function(thumb,size=0x60) addr:0x02000c2c
 _ZN12Unk_02000c8cD1Ev kind:function(thumb,size=0x2) addr:0x02000c8c
 _ZN6Vec3Z2D1Ev kind:label(thumb) addr:0x02000c8c
