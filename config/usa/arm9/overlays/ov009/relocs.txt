@@ -4,7 +4,7 @@ from:0x0225b8da kind:thumb_call to:0x02003e50 module:main
 from:0x0225b908 kind:thumb_call to:0x02003e80 module:main
 from:0x0225b922 kind:thumb_call to:0x02003ecc module:main
 from:0x0225b93c kind:thumb_call_arm to:0x020f43c8 module:autoload(2)
-from:0x0225b948 kind:load to:0x0213b9c4 module:autoload(2)
+from:0x0225b948 kind:load to:0x0213b9bc add:0x8 module:autoload(2)
 from:0x0225b950 kind:thumb_call_arm to:0x020f3e50 module:autoload(2)
 from:0x0225b970 kind:load to:0x020b1f65 module:main
 from:0x0225b9a4 kind:thumb_call to:0x0225b9b8 module:overlay(9)
